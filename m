@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DC907DFA98
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 20:03:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 401F17DFA9D
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 20:03:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377471AbjKBTBu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 15:01:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58200 "EHLO
+        id S1377562AbjKBTB4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 15:01:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377470AbjKBTB1 (ORCPT
+        with ESMTP id S1377485AbjKBTBc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 15:01:27 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9773C1A4
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 12:01:05 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5a7af53bde4so18440867b3.0
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 12:01:05 -0700 (PDT)
+        Thu, 2 Nov 2023 15:01:32 -0400
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A96951B3
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 12:01:07 -0700 (PDT)
+Received: by mail-pg1-x549.google.com with SMTP id 41be03b00d2f7-5b9a1494e65so955006a12.2
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 12:01:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698951665; x=1699556465; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1698951667; x=1699556467; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Rg7Y2F3d2P/Lfj0TKe4CpTmzIJyzpFCp7F88tqW9MEo=;
-        b=Wz7PEDOpP8bT7uOAqM4YZqcntclQ+VrbTbUY02jVqzFITNkAuVQZa1o4Brzz5YzDos
-         qcq2xbeS/bCLvY+Yy5JhSYNLZx2iKVlQR9DPanQnacdbwa8PVSp7Wnjf06+tLO/3o90O
-         j2JXo3C7Tw5pD4tgYUC0jk2zDPKQ7Hee7BhFCqOPWrUzDArcqKGjS5sKdU7Mxq/6rfoG
-         t7LC5melF/g3AQfVk55O/prxFPQ6g1ObObpVZga4YwkTb9ZxRts1jJguZEBJiuQHSMOr
-         syIlRpkv00SbTj5WvCsZV00lKH3DAc5uOE6mlxR2RwGX/b84dZgmGK0nHoEqibWR/yut
-         3MBg==
+        bh=aVzeNsrhFxDI/jOpRx8dBpYw5Z5e6SHn+B/lZdoXIWc=;
+        b=O0kw0Mgoje4pYGsmFeJcdjG1CJO06LpZC1UU0bYWUZsrVBdz6EcCfjyTCpIS13cJO5
+         SKkeRR3er7hN12nPml93bUKVjMCVctVKLSS0ctZRrnjO9kvUOj1CtymP7BDnsQAj/MRS
+         TEHXbWoc3XtYLzKOw5Zol+YsIJY6bLXWaGs1UyDFoSm6HRlg4GyrQmYa+V1URa+8TUms
+         /JIwitUra/r0A0Pfy3LqVpYvSPucPZj0PBDDec1byWh5W5YaFadYSwd7uBGuTc4Sihti
+         qkVNOe6Bm9iUAQ09ujkhYyjqnknh/kymBCTQOusCP0S2hGegUwmnZgFDKdttzRupCxBK
+         e5rg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698951665; x=1699556465;
+        d=1e100.net; s=20230601; t=1698951667; x=1699556467;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Rg7Y2F3d2P/Lfj0TKe4CpTmzIJyzpFCp7F88tqW9MEo=;
-        b=Ev80l5kYEqEKORNdopcOUpTUSyEpa/puP9DKwynWLcehOWss/zbsN+g3zIimuwA2Kr
-         fH0f8DsT5xxO4ty5MUNnmxb5keJaNYHTJ6FshuhZ+GbyV0ytQLam3WCJXFm28BPRJu1C
-         vGR4OpBvZys4ibkWRlYsiVO2Zrf3zZJ8+BXKa5Vc/J1rQh7Oy2gl8z/pRds7FJR7G3bx
-         hBHLHlAYWPn1s60d/mQPurklUKUO/o4dUNsklFPuN+bik1TNA4XemqCKpzWS/wB30Nne
-         +I8RypwNP8FLek4H/oFFU79NYMNZwKM/YipLfygBQSaxabKGqENqfM66EAPbVRUzWtnL
-         HETQ==
-X-Gm-Message-State: AOJu0Yw0IeqOpjmvDY0NNpvj9pBcnbWlYQfyIdBNk/rHOUD5ZtLzhVKH
-        +YR0bXt+r8F7m2Q+TG8P6o0FIc13TVv7kg==
-X-Google-Smtp-Source: AGHT+IE8n6eTtopja7qu/fau3v6vHCmgrxCSEJDacZC7bHZXWEWiKDj1pjZA5cccI7k4yK5oQgd8OqcSZYjPtQ==
+        bh=aVzeNsrhFxDI/jOpRx8dBpYw5Z5e6SHn+B/lZdoXIWc=;
+        b=Vmh4zFofdCgShnVud1otQo86ieZ+lRsnJfXAqiGi1YSaT7qkev6TNK/r+0+w2YMKrD
+         XHlm2Pg9XPKxcc5Dazi+3d4xoWomFNOhWgYOlFkOCbOsGp8YS0fTltChRDGQTofUOTzg
+         rOxWpHDglJTBGFbzA2ilbGms7Ulg2XISkyo/1p4i3yNfAhe+Zmia6T+JC9YVioNKkBvv
+         qaUjo3Tu/VLOctp1qXpItlyPo7/68g+65E2UieNK7Ygo+c9fYAuOaKIbCibaI9YYnqMp
+         xe/P5SDkG5Az4AT5PdpbAS0mT0C2uwEFvPf7e2QewW6bTVYG5scsdsgWs0E66r/QZq90
+         uw7A==
+X-Gm-Message-State: AOJu0YwX0BGXsV9OPa7NcdLUeyDPYP+Su6kOHi+yFyxFkQCuddiwKHW4
+        +Gecac0wLYCw533PzcS36MI6SYigbR3ruA==
+X-Google-Smtp-Source: AGHT+IGC+gTosBpbNifDSoF4YeNYx4QzxVdvqPxSVnhtp5e49MURkp36/roScjs4oz5FkSSIQbXiXmkQBVFgMA==
 X-Received: from xllamas.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5070])
- (user=cmllamas job=sendgmr) by 2002:a81:83c6:0:b0:59b:eea4:a5a6 with SMTP id
- t189-20020a8183c6000000b0059beea4a5a6mr11732ywf.0.1698951664760; Thu, 02 Nov
- 2023 12:01:04 -0700 (PDT)
-Date:   Thu,  2 Nov 2023 18:59:16 +0000
+ (user=cmllamas job=sendgmr) by 2002:a63:4106:0:b0:5bd:3e1c:c163 with SMTP id
+ o6-20020a634106000000b005bd3e1cc163mr14660pga.1.1698951667091; Thu, 02 Nov
+ 2023 12:01:07 -0700 (PDT)
+Date:   Thu,  2 Nov 2023 18:59:17 +0000
 In-Reply-To: <20231102185934.773885-1-cmllamas@google.com>
 Mime-Version: 1.0
 References: <20231102185934.773885-1-cmllamas@google.com>
 X-Mailer: git-send-email 2.42.0.869.gea05f2083d-goog
-Message-ID: <20231102185934.773885-16-cmllamas@google.com>
-Subject: [PATCH 15/21] binder: relocate binder_alloc_clear_buf()
+Message-ID: <20231102185934.773885-17-cmllamas@google.com>
+Subject: [PATCH 16/21] binder: refactor page range allocation
 From:   Carlos Llamas <cmllamas@google.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         "=?UTF-8?q?Arve=20Hj=C3=B8nnev=C3=A5g?=" <arve@android.com>,
@@ -74,159 +74,166 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move this function up along with binder_alloc_get_page() so that their
-prototypes aren't necessary.
-
-No functional change in this patch.
+Instead of looping through the page range twice to first determine if
+the mmap lock is required, simply do it per-page as needed. Split out
+all this logic into a separate binder_get_user_page_remote() function.
 
 Signed-off-by: Carlos Llamas <cmllamas@google.com>
 ---
- drivers/android/binder_alloc.c | 124 ++++++++++++++++-----------------
- 1 file changed, 61 insertions(+), 63 deletions(-)
+ drivers/android/binder_alloc.c | 107 +++++++++++++++------------------
+ 1 file changed, 47 insertions(+), 60 deletions(-)
 
 diff --git a/drivers/android/binder_alloc.c b/drivers/android/binder_alloc.c
-index d2a38dee12db..4821a29799c8 100644
+index 4821a29799c8..56936430954f 100644
 --- a/drivers/android/binder_alloc.c
 +++ b/drivers/android/binder_alloc.c
-@@ -699,8 +699,68 @@ static void binder_free_buf_locked(struct binder_alloc *alloc,
- 	binder_insert_free_buffer(alloc, buffer);
+@@ -203,14 +203,51 @@ static void binder_free_page_range(struct binder_alloc *alloc,
+ 	}
  }
  
-+/**
-+ * binder_alloc_get_page() - get kernel pointer for given buffer offset
-+ * @alloc: binder_alloc for this proc
-+ * @buffer: binder buffer to be accessed
-+ * @buffer_offset: offset into @buffer data
-+ * @pgoffp: address to copy final page offset to
-+ *
-+ * Lookup the struct page corresponding to the address
-+ * at @buffer_offset into @buffer->user_data. If @pgoffp is not
-+ * NULL, the byte-offset into the page is written there.
-+ *
-+ * The caller is responsible to ensure that the offset points
-+ * to a valid address within the @buffer and that @buffer is
-+ * not freeable by the user. Since it can't be freed, we are
-+ * guaranteed that the corresponding elements of @alloc->pages[]
-+ * cannot change.
-+ *
-+ * Return: struct page
-+ */
-+static struct page *binder_alloc_get_page(struct binder_alloc *alloc,
-+					  struct binder_buffer *buffer,
-+					  binder_size_t buffer_offset,
-+					  pgoff_t *pgoffp)
++static int binder_get_user_page_remote(struct binder_alloc *alloc,
++				       struct binder_lru_page *lru_page,
++				       unsigned long addr)
 +{
-+	binder_size_t buffer_space_offset = buffer_offset +
-+		(buffer->user_data - alloc->buffer);
-+	pgoff_t pgoff = buffer_space_offset & ~PAGE_MASK;
-+	size_t index = buffer_space_offset >> PAGE_SHIFT;
-+	struct binder_lru_page *lru_page;
++	struct page *page;
++	int ret = 0;
 +
-+	lru_page = &alloc->pages[index];
-+	*pgoffp = pgoff;
-+	return lru_page->page_ptr;
-+}
++	if (!mmget_not_zero(alloc->mm))
++		return -ESRCH;
 +
-+/**
-+ * binder_alloc_clear_buf() - zero out buffer
-+ * @alloc: binder_alloc for this proc
-+ * @buffer: binder buffer to be cleared
-+ *
-+ * memset the given buffer to 0
-+ */
- static void binder_alloc_clear_buf(struct binder_alloc *alloc,
--				   struct binder_buffer *buffer);
-+				   struct binder_buffer *buffer)
-+{
-+	size_t bytes = binder_alloc_buffer_size(alloc, buffer);
-+	binder_size_t buffer_offset = 0;
-+
-+	while (bytes) {
-+		unsigned long size;
-+		struct page *page;
-+		pgoff_t pgoff;
-+
-+		page = binder_alloc_get_page(alloc, buffer,
-+					     buffer_offset, &pgoff);
-+		size = min_t(size_t, bytes, PAGE_SIZE - pgoff);
-+		memset_page(page, pgoff, 0, size);
-+		bytes -= size;
-+		buffer_offset += size;
++	mmap_write_lock(alloc->mm);
++	if (!alloc->vma) {
++		pr_err("%d: %s failed, no vma\n", alloc->pid, __func__);
++		ret = -ESRCH;
++		goto out;
 +	}
++
++	page = alloc_page(GFP_KERNEL | __GFP_HIGHMEM | __GFP_ZERO);
++	if (!page) {
++		pr_err("%d: failed to allocate page\n", alloc->pid);
++		ret = -ENOMEM;
++		goto out;
++	}
++
++	ret = vm_insert_page(alloc->vma, addr, page);
++	if (ret) {
++		pr_err("%d: %s failed to insert page at %lx with %d\n",
++		       alloc->pid, __func__, addr, ret);
++		__free_page(page);
++		ret = -ENOMEM;
++		goto out;
++	}
++
++	lru_page->page_ptr = page;
++out:
++	mmap_write_unlock(alloc->mm);
++	mmput_async(alloc->mm);
++	return ret;
 +}
 +
- /**
-  * binder_alloc_free_buf() - free a binder buffer
-  * @alloc:	binder_alloc for this proc
-@@ -1137,68 +1197,6 @@ static inline bool check_buffer(struct binder_alloc *alloc,
- 		(!buffer->allow_user_free || !buffer->transaction);
+ static int binder_allocate_page_range(struct binder_alloc *alloc,
+ 				      unsigned long start, unsigned long end)
+ {
+-	struct vm_area_struct *vma = NULL;
+ 	struct binder_lru_page *page;
+-	struct mm_struct *mm = NULL;
+ 	unsigned long page_addr;
+-	bool need_mm = false;
+ 
+ 	binder_alloc_debug(BINDER_DEBUG_BUFFER_ALLOC,
+ 			   "%d: allocate pages %lx-%lx\n",
+@@ -222,32 +259,9 @@ static int binder_allocate_page_range(struct binder_alloc *alloc,
+ 	trace_binder_update_page_range(alloc, true, start, end);
+ 
+ 	for (page_addr = start; page_addr < end; page_addr += PAGE_SIZE) {
+-		page = &alloc->pages[(page_addr - alloc->buffer) / PAGE_SIZE];
+-		if (!page->page_ptr) {
+-			need_mm = true;
+-			break;
+-		}
+-	}
+-
+-	if (need_mm && mmget_not_zero(alloc->mm))
+-		mm = alloc->mm;
+-
+-	if (mm) {
+-		mmap_write_lock(mm);
+-		vma = alloc->vma;
+-	}
+-
+-	if (!vma && need_mm) {
+-		binder_alloc_debug(BINDER_DEBUG_USER_ERROR,
+-				   "%d: binder_alloc_buf failed to map pages in userspace, no vma\n",
+-				   alloc->pid);
+-		goto err_no_vma;
+-	}
+-
+-	for (page_addr = start; page_addr < end; page_addr += PAGE_SIZE) {
+-		int ret;
++		unsigned long index;
+ 		bool on_lru;
+-		size_t index;
++		int ret;
+ 
+ 		index = (page_addr - alloc->buffer) / PAGE_SIZE;
+ 		page = &alloc->pages[index];
+@@ -262,26 +276,15 @@ static int binder_allocate_page_range(struct binder_alloc *alloc,
+ 			continue;
+ 		}
+ 
+-		if (WARN_ON(!vma))
+-			goto err_page_ptr_cleared;
+-
+ 		trace_binder_alloc_page_start(alloc, index);
+-		page->page_ptr = alloc_page(GFP_KERNEL |
+-					    __GFP_HIGHMEM |
+-					    __GFP_ZERO);
+-		if (!page->page_ptr) {
+-			pr_err("%d: binder_alloc_buf failed for page at %lx\n",
+-			       alloc->pid, page_addr);
+-			goto err_alloc_page_failed;
+-		}
++
+ 		page->alloc = alloc;
+ 		INIT_LIST_HEAD(&page->lru);
+ 
+-		ret = vm_insert_page(vma, page_addr, page->page_ptr);
++		ret = binder_get_user_page_remote(alloc, page, page_addr);
+ 		if (ret) {
+-			pr_err("%d: binder_alloc_buf failed to map page at %lx in userspace\n",
+-			       alloc->pid, page_addr);
+-			goto err_vm_insert_page_failed;
++			binder_free_page_range(alloc, start, page_addr);
++			return ret;
+ 		}
+ 
+ 		if (index + 1 > alloc->pages_high)
+@@ -289,24 +292,8 @@ static int binder_allocate_page_range(struct binder_alloc *alloc,
+ 
+ 		trace_binder_alloc_page_end(alloc, index);
+ 	}
+-	if (mm) {
+-		mmap_write_unlock(mm);
+-		mmput_async(mm);
+-	}
+-	return 0;
+ 
+-err_vm_insert_page_failed:
+-	__free_page(page->page_ptr);
+-	page->page_ptr = NULL;
+-err_alloc_page_failed:
+-err_page_ptr_cleared:
+-	binder_free_page_range(alloc, start, page_addr);
+-err_no_vma:
+-	if (mm) {
+-		mmap_write_unlock(mm);
+-		mmput_async(mm);
+-	}
+-	return vma ? -ENOMEM : -ESRCH;
++	return 0;
  }
  
--/**
-- * binder_alloc_get_page() - get kernel pointer for given buffer offset
-- * @alloc: binder_alloc for this proc
-- * @buffer: binder buffer to be accessed
-- * @buffer_offset: offset into @buffer data
-- * @pgoffp: address to copy final page offset to
-- *
-- * Lookup the struct page corresponding to the address
-- * at @buffer_offset into @buffer->user_data. If @pgoffp is not
-- * NULL, the byte-offset into the page is written there.
-- *
-- * The caller is responsible to ensure that the offset points
-- * to a valid address within the @buffer and that @buffer is
-- * not freeable by the user. Since it can't be freed, we are
-- * guaranteed that the corresponding elements of @alloc->pages[]
-- * cannot change.
-- *
-- * Return: struct page
-- */
--static struct page *binder_alloc_get_page(struct binder_alloc *alloc,
--					  struct binder_buffer *buffer,
--					  binder_size_t buffer_offset,
--					  pgoff_t *pgoffp)
--{
--	binder_size_t buffer_space_offset = buffer_offset +
--		(buffer->user_data - alloc->buffer);
--	pgoff_t pgoff = buffer_space_offset & ~PAGE_MASK;
--	size_t index = buffer_space_offset >> PAGE_SHIFT;
--	struct binder_lru_page *lru_page;
--
--	lru_page = &alloc->pages[index];
--	*pgoffp = pgoff;
--	return lru_page->page_ptr;
--}
--
--/**
-- * binder_alloc_clear_buf() - zero out buffer
-- * @alloc: binder_alloc for this proc
-- * @buffer: binder buffer to be cleared
-- *
-- * memset the given buffer to 0
-- */
--static void binder_alloc_clear_buf(struct binder_alloc *alloc,
--				   struct binder_buffer *buffer)
--{
--	size_t bytes = binder_alloc_buffer_size(alloc, buffer);
--	binder_size_t buffer_offset = 0;
--
--	while (bytes) {
--		unsigned long size;
--		struct page *page;
--		pgoff_t pgoff;
--
--		page = binder_alloc_get_page(alloc, buffer,
--					     buffer_offset, &pgoff);
--		size = min_t(size_t, bytes, PAGE_SIZE - pgoff);
--		memset_page(page, pgoff, 0, size);
--		bytes -= size;
--		buffer_offset += size;
--	}
--}
--
- /**
-  * binder_alloc_copy_user_to_buffer() - copy src user to tgt user
-  * @alloc: binder_alloc for this proc
+ static inline void binder_alloc_set_vma(struct binder_alloc *alloc,
 -- 
 2.42.0.869.gea05f2083d-goog
 
