@@ -2,156 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 29EAF7DF710
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 16:52:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA0B47DF716
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 16:53:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377091AbjKBPwR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 11:52:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40406 "EHLO
+        id S1377083AbjKBPxB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 11:53:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347653AbjKBPwO (ORCPT
+        with ESMTP id S1377060AbjKBPw7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 11:52:14 -0400
-Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACE7A1B5
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 08:51:57 -0700 (PDT)
-Received: by mail-pg1-x549.google.com with SMTP id 41be03b00d2f7-5a08e5c7debso868014a12.2
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 08:51:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698940317; x=1699545117; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=n3KS4TORQ08dXaJsqxd4Pb+jR6Q6AdhcH6h0cpJ7xRs=;
-        b=RN0UVusdj7tpK4hQeFYbhvaU4omd5amSOlKVxzal4e/nLCstlMRgxT8KS/lWr65n+r
-         6KNMcJ1uKXesH49i3odou+YkBwJ/tIhElW36o05O1Ng3MGOW1zTOynUX0OWlSK9iMlHj
-         OJMx4TYtkPZdEEKgufM2y157tcR2VvjSNNRsDidCaRHU/7AGqt2eLsOIb0GjDh4h5UkI
-         d3xSLnn7aKg34XyKrRvm0qT7UzZTcqDYj4o2l8TTa90NNHoGCdJWPnuATWPv334jHVIS
-         in4oABR4fLBPKErRzF5sU0/Cy34MuQs7nc5sUT00ipFmdSGxD/NyK8sttyJUHhWQTYBy
-         +O1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698940317; x=1699545117;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=n3KS4TORQ08dXaJsqxd4Pb+jR6Q6AdhcH6h0cpJ7xRs=;
-        b=ckX6tHcgcfrBwiS6rfL0XVkl6gu2cKc2WDHTiBGGLGs+EZHcR75N0CJH83e4NAg2sV
-         Oly0af0hqir/APirpS5z4stktYMieCBbvmATEW8FvcQzPTxnouYIPb2+Vt2xpsXwtWri
-         oaduFAPwXOKyofz2Tmf/zUjJZS3Juvd0JS2qsyznPqIeUHHuXtTHiJriro4h8xcoLTJs
-         rWokORLXMgRFbNULbrObWdeUun61lREUDrb5c1fQfUR2P3ZFlamjCfWwJrhTxbHkKJe8
-         ASNxyxykBZiYR/OPbRdz9y3B8bCJCE4WjUWAFbWOPLtqCe9jQFGypcTt4Jm4Ya6FFoK2
-         mpvg==
-X-Gm-Message-State: AOJu0YwPxaCsJr8VKfMRIkl4iUPxWV80+uB73roGZ0+jKbBqc06OFY/r
-        aJd4G39bfqNehBJCePg4FLsyXGEbk+0=
-X-Google-Smtp-Source: AGHT+IFDcwl4s8UdqmTM5rWncqnvjP5M1c0a+jaZEj3IxvzEAcY13jClAPWsClQownnFGH/6j2HG46oUm7Q=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:902:efd1:b0:1c6:2b9d:570b with SMTP id
- ja17-20020a170902efd100b001c62b9d570bmr344133plb.7.1698940317130; Thu, 02 Nov
- 2023 08:51:57 -0700 (PDT)
-Date:   Thu, 2 Nov 2023 08:51:55 -0700
-In-Reply-To: <33686031-c1df-4ef5-a6ac-1aab7f5c656e@intel.com>
-Mime-Version: 1.0
-References: <20231027182217.3615211-1-seanjc@google.com> <20231027182217.3615211-10-seanjc@google.com>
- <482bfea6f54ea1bb7d1ad75e03541d0ba0e5be6f.camel@intel.com>
- <ZUKMsOdg3N9wmEzy@google.com> <33686031-c1df-4ef5-a6ac-1aab7f5c656e@intel.com>
-Message-ID: <ZUPFmwWjPFlXRlPi@google.com>
-Subject: Re: [PATCH v13 09/35] KVM: Add KVM_EXIT_MEMORY_FAULT exit to report
- faults to userspace
-From:   Sean Christopherson <seanjc@google.com>
-To:     Xiaoyao Li <xiaoyao.li@intel.com>
-Cc:     Kai Huang <kai.huang@intel.com>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
-        "brauner@kernel.org" <brauner@kernel.org>,
-        "oliver.upton@linux.dev" <oliver.upton@linux.dev>,
-        "chenhuacai@kernel.org" <chenhuacai@kernel.org>,
-        "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>,
-        "palmer@dabbelt.com" <palmer@dabbelt.com>,
-        "maz@kernel.org" <maz@kernel.org>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
-        "willy@infradead.org" <willy@infradead.org>,
-        "anup@brainfault.org" <anup@brainfault.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "kvm-riscv@lists.infradead.org" <kvm-riscv@lists.infradead.org>,
-        "mic@digikod.net" <mic@digikod.net>,
-        "liam.merwick@oracle.com" <liam.merwick@oracle.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        Isaku Yamahata <isaku.yamahata@intel.com>,
-        "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
-        "david@redhat.com" <david@redhat.com>,
-        "tabba@google.com" <tabba@google.com>,
-        "amoorthy@google.com" <amoorthy@google.com>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "michael.roth@amd.com" <michael.roth@amd.com>,
-        "kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "chao.p.peng@linux.intel.com" <chao.p.peng@linux.intel.com>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        Vishal Annapurve <vannapurve@google.com>,
-        "vbabka@suse.cz" <vbabka@suse.cz>,
-        "mail@maciej.szmigiero.name" <mail@maciej.szmigiero.name>,
-        "yu.c.zhang@linux.intel.com" <yu.c.zhang@linux.intel.com>,
-        "qperret@google.com" <qperret@google.com>,
-        "dmatlack@google.com" <dmatlack@google.com>,
-        Yilun Xu <yilun.xu@intel.com>,
-        "isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>,
-        "ackerleytng@google.com" <ackerleytng@google.com>,
-        "jarkko@kernel.org" <jarkko@kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        Wei W Wang <wei.w.wang@intel.com>
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 2 Nov 2023 11:52:59 -0400
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2056.outbound.protection.outlook.com [40.107.244.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BA70185;
+        Thu,  2 Nov 2023 08:52:44 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BE0u4dxS3qTDApjBWqlkfHAuqLVC6N4Tb1rORwll5UeWCmyrjLU9yXm+cKNoYBfUADTsEdPuoytEsS61A0+DKbWUzBzPJjMUxUCsp0EzsEGOT4DI71VEWbmvNisAQZJ6Nu3ShSdf357oaXWy2cESk/aqhV9LF2rwNVUABsCGWQjbxqflgoH0gkGfqXfckZfoHdxkieST7FSRtlLLPjVdnZ5w54XWsFUA7eV+//3GfduhQ8mVy5j2PVzcQ51wkp3FBImZiiONl6PToq2F3IGbibWpDIUXq3v1M1hbOueuCvf/d5JSrMhAGn0Jw4cnFIc9hppTmn6YOAPft03vh6Ru2Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=R6/nRVwpHhaZbEXYAtB7TcSXzk/2ayIoRRMXztS292I=;
+ b=WwMcOXepyIflEfY7khbMv+CXM8OaqOR1mMJRQtHJEPLbG62eCDd9ZA+gw48mGIMrUh5Sw6Rq+S4QhkvkMmVBtDFFYoSPz70DJ8+SPYcj5YwDneG0HyyIo9uwXz4KyKIYg0P4L/bhwleL3GX8olM/44d+LrgxjV/yJsMj8Wi7oaUcRDjxSMbsikOR6SdcAD5Esx1Xjgydv4FcDQZX8gilGXEqaFeC5bFQgqYA/I9Wes2DZ7dkk9DZVR0/2xWRKtKyHsZTwgFNTYIHj16eF5dYrNYBq6uqU8a1AAGDJD1ijszbccv54+LoqmRi6GhONqc5frUN2OGqrmnoTr9ORJZrIg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=intel.com smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=R6/nRVwpHhaZbEXYAtB7TcSXzk/2ayIoRRMXztS292I=;
+ b=n8WhzNNamTRy9rYGAliJ/D6MsEhWgcRLRXX5Nv6T8d4ChonwQjCukiuvxfUP7zK9BkQvXV44bXHLu4la9ITtUQhPZlLY3QidKK/nd9yZIeG3seBBjhb4z9+FA5RY6xvQ1A75ixscZ09GpNDu0XQ1UNlz3FzCIHGHOVrcHxOWwXo=
+Received: from MN2PR20CA0021.namprd20.prod.outlook.com (2603:10b6:208:e8::34)
+ by CY8PR12MB7731.namprd12.prod.outlook.com (2603:10b6:930:86::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.19; Thu, 2 Nov
+ 2023 15:52:42 +0000
+Received: from BL6PEPF0001AB4B.namprd04.prod.outlook.com
+ (2603:10b6:208:e8:cafe::23) by MN2PR20CA0021.outlook.office365.com
+ (2603:10b6:208:e8::34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.19 via Frontend
+ Transport; Thu, 2 Nov 2023 15:52:42 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ BL6PEPF0001AB4B.mail.protection.outlook.com (10.167.242.69) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.6954.20 via Frontend Transport; Thu, 2 Nov 2023 15:52:38 +0000
+Received: from ethanolx7ea3host.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.32; Thu, 2 Nov
+ 2023 10:52:37 -0500
+From:   Terry Bowman <terry.bowman@amd.com>
+To:     <alison.schofield@intel.com>, <vishal.l.verma@intel.com>,
+        <ira.weiny@intel.com>, <bwidawsk@kernel.org>,
+        <dan.j.williams@intel.com>, <dave.jiang@intel.com>,
+        <Jonathan.Cameron@huawei.com>, <linux-cxl@vger.kernel.org>
+CC:     <terry.bowman@amd.com>, <Smita.KoralahalliChannabasappa@amd.com>,
+        <rrichter@amd.com>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] cxl/pci: Change CXL AER support check to use native AER
+Date:   Thu, 2 Nov 2023 10:52:32 -0500
+Message-ID: <20231102155232.1421261-1-terry.bowman@amd.com>
+X-Mailer: git-send-email 2.34.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL6PEPF0001AB4B:EE_|CY8PR12MB7731:EE_
+X-MS-Office365-Filtering-Correlation-Id: 18322f65-bd35-4f24-6127-08dbdbbbbf3c
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 16m/cH4mPzwof7SXTyKXBQRb03+v3Pcbp+s7qu4pRv9Pn14hnGMc/D++Jlg8D5wC4vTcyhwRp9kBKkLuqt/zb/VfmcAX5VIF6AYWSP38KThru9TRVRpb1rABCZ54cx4uxm/NY1wzhB0G0ylo80EkvJ6il95oaaIrMGfQ0SHQPoa4M+Jb7ug7gohqV4xF5ES6m8CvrOmGyXIdjLFm2CL0YXIHNl+JfD4f7t0yOmLhuxa9Abf9PAjJ1OVY1fjp5gZDOpa1DStA/EsXblg5v+eDOic04Z1UYQxzVfutOlvtkhCX3A2ydvzdAOoTO/WAE6t+5POlge5QeM7V5z8r23uQvtbIkNjXl4AyIMB6ZTitb88B6RxeJ3kgjhf8f2CuuRhjsLtlWxVQHEEojiDp/Fl2dA5TV75+Z9iTJ5fOivKWOMnReMflN4/kgK4cSoDZDnWG54BbSPrtpo5/XtWrTCE/oyU0JTfhvRJXHkhjiH2e3hFhXNaKCKTSpKVWO/gNGUMEl3GE+yUeUBk04ppTMeIZnij3FSYWMZBw+0myrVHMXEK8i03tsu8GSA3FW2uTGGIQYHc5BM6UO6c6WFkfgJd1mGjBOKgoKf9YhziqPtLkby2ARoFSWuMlj5bfd0fxvPo7YzX7BBKzLB7HrOvZVtMaNhdug7e4w953H6f3fb99NNp4zpgdmyofIju6iUrxLLQNQo5btdScZO0V5m8Q6RCGwE+hm0ysp+0cRmwePPy4F4k1LPFlvD7MNwiWB8MATr/AtABbykGWEewyK21szJd6bQ==
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(346002)(396003)(39860400002)(136003)(376002)(230922051799003)(186009)(64100799003)(82310400011)(451199024)(1800799009)(36840700001)(46966006)(40470700004)(47076005)(40480700001)(40460700003)(36860700001)(4326008)(316002)(70206006)(110136005)(54906003)(478600001)(70586007)(6666004)(7696005)(44832011)(8676002)(41300700001)(8936002)(86362001)(5660300002)(2906002)(1076003)(2616005)(426003)(336012)(356005)(26005)(16526019)(81166007)(82740400003)(36756003)(83380400001)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Nov 2023 15:52:38.8548
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 18322f65-bd35-4f24-6127-08dbdbbbbf3c
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: BL6PEPF0001AB4B.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR12MB7731
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 02, 2023, Xiaoyao Li wrote:
-> On 11/2/2023 1:36 AM, Sean Christopherson wrote:
-> > > KVM_CAP_MEMORY_FAULT_INFO is x86 only, is it better to put this function to
-> > > <asm/kvm_host.h>?
-> > I'd prefer to keep it in generic code, as it's highly likely to end up there
-> > sooner than later.  There's a known use case for ARM (exit to userspace on missing
-> > userspace mapping[*]), and I'm guessing pKVM (also ARM) will also utilize this API.
-> > 
-> > [*]https://lore.kernel.org/all/20230908222905.1321305-8-amoorthy@google.com
-> 
-> I wonder how this CAP is supposed to be checked in userspace, for guest
-> memfd case? 
+Native CXL protocol errors are delivered to the OS through AER
+reporting. The owner of AER owns CXL Protocol error management with
+respect to _OSC negotiation.[1] CXL device errors are handled by a
+separate interrupt with native control gated by _OSC control field
+'CXL Memory Error Reporting Control'.
 
-It's basically useless for guest_memfd.
+The CXL driver incorrectly checks for 'CXL Memory Error Reporting
+Control' before accessing AER registers and caching RCH downport
+AER registers. Replace the current check in these 2 cases with
+native AER checks.
 
-> 	if (!kvm_check_extension(s, KVM_CAP_MEMORY_FAULT_INFO) &&
-> 	    run->exit_reason == KVM_EXIT_MEMORY_FAULT)
-> 		abort("unexpected KVM_EXIT_MEMORY_FAULT");
-> 
-> In my implementation of QEMU patches, I find it's unnecessary. When
-> userspace gets an exit with KVM_EXIT_MEMORY_FAULT, it implies
-> "KVM_CAP_MEMORY_FAULT_INFO".
-> 
-> So I don't see how it is necessary in this series. Whether it's necessary or
-> not for [*], I don't have the answer but we can leave the discussion to that
-> patch series.
+[1] CXL 3.0 - 9.17.2 CXL _OSC, Table-9-26, Interpretation of CXL
+_OSC Support Fields, p.641
 
-It's not strictly necessary there either.
+Fixes: 5d2ffbe4b81a ("cxl/port: Store the downstream port's Component Register mappings in struct cxl_dport")
+Signed-off-by: Terry Bowman <terry.bowman@amd.com>
+Reviewed-by: Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
+---
+ drivers/cxl/core/pci.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-However, Oliver felt (and presumably still feels) quite strongly, and I agree,
-that neither reporting extra information shouldn't be tightly coupled to
-KVM_CAP_EXIT_ON_MISSING or KVM_CAP_GUEST_MEMFD.
-
-E.g. if userspace develops a "standalone" use case for KVM_CAP_MEMORY_FAULT_INFO,
-userspace should be able to check for support without having to take a dependency
-on KVM_CAP_GUEST_MEMFD, especially since because KVM_CAP_GUEST_MEMFD may not be
-supported, i.e. userspace should be able to do:
-
-	if (!kvm_check_extension(s, KVM_CAP_MEMORY_FAULT_INFO))
-		abort("KVM_CAP_MEMORY_FAULT_INFO required for fancy feature XYZ");
-
+diff --git a/drivers/cxl/core/pci.c b/drivers/cxl/core/pci.c
+index 01c441f2e25e..b29f6d09744b 100644
+--- a/drivers/cxl/core/pci.c
++++ b/drivers/cxl/core/pci.c
+@@ -812,7 +812,7 @@ static void cxl_disable_rch_root_ints(struct cxl_dport *dport)
+ 	 * the root cmd register's interrupts is required. But, PCI spec
+ 	 * shows these are disabled by default on reset.
+ 	 */
+-	if (bridge->native_cxl_error) {
++	if (bridge->native_aer) {
+ 		aer_cmd_mask = (PCI_ERR_ROOT_CMD_COR_EN |
+ 				PCI_ERR_ROOT_CMD_NONFATAL_EN |
+ 				PCI_ERR_ROOT_CMD_FATAL_EN);
+@@ -828,7 +828,7 @@ void cxl_setup_parent_dport(struct device *host, struct cxl_dport *dport)
+ 	struct pci_host_bridge *host_bridge;
+ 
+ 	host_bridge = to_pci_host_bridge(dport_dev);
+-	if (host_bridge->native_cxl_error)
++	if (host_bridge->native_aer)
+ 		dport->rcrb.aer_cap = cxl_rcrb_to_aer(dport_dev, dport->rcrb.base);
+ 
+ 	dport->reg_map.host = host;
+-- 
+2.34.1
 
