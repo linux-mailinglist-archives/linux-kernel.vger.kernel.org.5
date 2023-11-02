@@ -2,445 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 251387DEBE8
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 05:35:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D783C7DEBEB
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 05:36:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348486AbjKBEfj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 00:35:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53650 "EHLO
+        id S1348485AbjKBEgZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 00:36:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348449AbjKBEfh (ORCPT
+        with ESMTP id S1348495AbjKBEgY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 00:35:37 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33C1FDC;
-        Wed,  1 Nov 2023 21:35:31 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BC06AC433C7;
-        Thu,  2 Nov 2023 04:35:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698899730;
-        bh=vkP5ILlDUKxsuCRGEjX+vb+IPKR8azlx5GzsKQin1A0=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=Kfr7SLgMpSnCbA6c1D4ztUZlyTDIdKZq9BUmoirFgF95kf3EdiLtzKk2bPjtt5ZPj
-         BgOgPdslW84YYPo9EPdHeD12nJRjm0/YFjOF2d1WC8PW4/+4L/oyIRZWwLc0XQwfzF
-         2jT2v1PkluQpQtIrmHYUNRQ8HLnCJ8FW7tvCCtkiugBqw6YrE6a6w12z/iMnPvMUaj
-         lYxqZgjjTzlKL38VoHX0+yw6HYFavwXm8Cn50GZXDXfML8WHEoJ8hk1vBXrud2DAUA
-         n8YnoUiGLiWmUJxif1k9NU4i0t16YW39mR5cYP+HIFBRhm2S1aE5x/PN/zon1XDulp
-         hy+6NYc7UiYvw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 4AEBFCE091E; Wed,  1 Nov 2023 21:35:30 -0700 (PDT)
-Date:   Wed, 1 Nov 2023 21:35:30 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-Cc:     RCU <rcu@vger.kernel.org>,
-        Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Hillf Danton <hdanton@sina.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
-        Frederic Weisbecker <frederic@kernel.org>
-Subject: Re: [PATCH v2 1/3] rcu: Reduce synchronize_rcu() latency
-Message-ID: <70578164-6c12-47ca-9528-163b688c1b47@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20231030131254.488186-1-urezki@gmail.com>
- <20231030131254.488186-2-urezki@gmail.com>
+        Thu, 2 Nov 2023 00:36:24 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90B2D127
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Nov 2023 21:36:19 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-9a58dbd5daeso77659466b.2
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Nov 2023 21:36:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1698899778; x=1699504578; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=b4e1IhG3dgX5+0jBGESSJg3foTb8prRBl9Wa07epnXo=;
+        b=JtMDgyaMijhzsJ48mDezJaUQnAOc0ypv8MwVD7WzeSiIpznZEuxAR3yfTeoUGTTEUe
+         VEdoqnr6tV/3D/xXvH5nesoGvr0fNGOYtiX3Fma504NrTx249UCRvFNul7aIX+Lf+797
+         tqsAzpF505qJT9XRVUuj/zhWhFV8mAUXlncJTGlKlgs3UuB5mOgRSmPbdOT/e0um8HoR
+         K0+nr5Wz5Xh5jyfBmXOTWu7ou6UyrAGfLlhgv5J/MvLVtNOD7c45IfNvTvhuSwfq+ac4
+         h4SYzSOcYV9sS+uHDOQDxpU5R4dIBBHOqIcCKMHbONpoxvlix5G4nf/z1hP3GvkKhVdN
+         /8DQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698899778; x=1699504578;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=b4e1IhG3dgX5+0jBGESSJg3foTb8prRBl9Wa07epnXo=;
+        b=ucyoMPLMB86ctMORPriBQEcfITglKL12I6+aPCj582fRMMeoQX4Pqr7ZjFKtsr9OJC
+         T0MyYDNUi00j035MOrOq3L6lLtN/VQpzD5hgBoDM7BMP+OZcxjBP6Aju+4guLg2t0CF5
+         B4AUkyl2Lbp2TXKcHe5LKdC3snFg15M3Ih9rSTkFqb3iIRz2bknWM+amUAtWZaohG5WM
+         5814cEbXvFsGzJ0OeIXE6FZziTyd9CHuJtDZBV9+vFpuPRkfbHFK4Jq59KdsC4VVNR7q
+         d3NfchPEdhKHz8EO65cK9XE4cjvbl+/YcT1NPmXpIuj+NatlZxyg67fRRl14VR8zSySa
+         wIuA==
+X-Gm-Message-State: AOJu0Yz6DTso3UMNB3fVYV0Nzn8IZyhgMzT6JiOpX+KxH0SXWZM1/sbd
+        c/UeFPih/O52tPT0Tphc0Twk+C/Dcx3jFFXVehaiDUbSwG7LJvet7/U=
+X-Google-Smtp-Source: AGHT+IEKxBn75Of5h7wUg/bwjn/Aaw9ALtXjPAMj7mA/p8EzPQ/S83r/m6SM658Ar5S2hd0wvqu47J/73O0hobvY8zY=
+X-Received: by 2002:a17:907:a45:b0:9d5:b7fb:7b62 with SMTP id
+ be5-20020a1709070a4500b009d5b7fb7b62mr3860026ejc.20.1698899777742; Wed, 01
+ Nov 2023 21:36:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231030131254.488186-2-urezki@gmail.com>
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+References: <20231102005310.439588-1-longman@redhat.com>
+In-Reply-To: <20231102005310.439588-1-longman@redhat.com>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Wed, 1 Nov 2023 21:35:39 -0700
+Message-ID: <CAJD7tkZLKiKJQRgJ6MexFwt2_iDHeBzyDxuT3ZWtL0yjN+7pHg@mail.gmail.com>
+Subject: Re: [PATCH v2] cgroup/rstat: Reduce cpu_lock hold time in cgroup_rstat_flush_locked()
+To:     Waiman Long <longman@redhat.com>
+Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Joe Mario <jmario@redhat.com>,
+        Sebastian Jug <sejug@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 30, 2023 at 02:12:52PM +0100, Uladzislau Rezki (Sony) wrote:
-> A call to a synchronize_rcu() can be optimized from a latency
-> point of view. Workloads which depend on this can benefit of it.
-> 
-> The delay of wakeme_after_rcu() callback, which unblocks a waiter,
-> depends on several factors:
-> 
-> - how fast a process of offloading is started. Combination of:
->     - !CONFIG_RCU_NOCB_CPU/CONFIG_RCU_NOCB_CPU;
->     - !CONFIG_RCU_LAZY/CONFIG_RCU_LAZY;
->     - other.
-> - when started, invoking path is interrupted due to:
->     - time limit;
->     - need_resched();
->     - if limit is reached.
-> - where in a nocb list it is located;
-> - how fast previous callbacks completed;
-> 
-> Example:
-> 
-> 1. On our embedded devices i can easily trigger the scenario when
-> it is a last in the list out of ~3600 callbacks:
-> 
-> <snip>
->   <...>-29      [001] d..1. 21950.145313: rcu_batch_start: rcu_preempt CBs=3613 bl=28
-> ...
->   <...>-29      [001] ..... 21950.152578: rcu_invoke_callback: rcu_preempt rhp=00000000b2d6dee8 func=__free_vm_area_struct.cfi_jt
->   <...>-29      [001] ..... 21950.152579: rcu_invoke_callback: rcu_preempt rhp=00000000a446f607 func=__free_vm_area_struct.cfi_jt
->   <...>-29      [001] ..... 21950.152580: rcu_invoke_callback: rcu_preempt rhp=00000000a5cab03b func=__free_vm_area_struct.cfi_jt
->   <...>-29      [001] ..... 21950.152581: rcu_invoke_callback: rcu_preempt rhp=0000000013b7e5ee func=__free_vm_area_struct.cfi_jt
->   <...>-29      [001] ..... 21950.152582: rcu_invoke_callback: rcu_preempt rhp=000000000a8ca6f9 func=__free_vm_area_struct.cfi_jt
->   <...>-29      [001] ..... 21950.152583: rcu_invoke_callback: rcu_preempt rhp=000000008f162ca8 func=wakeme_after_rcu.cfi_jt
->   <...>-29      [001] d..1. 21950.152625: rcu_batch_end: rcu_preempt CBs-invoked=3612 idle=....
-> <snip>
-> 
-> 2. We use cpuset/cgroup to classify tasks and assign them into
-> different cgroups. For example "backgrond" group which binds tasks
-> only to little CPUs or "foreground" which makes use of all CPUs.
-> Tasks can be migrated between groups by a request if an acceleration
-> is needed.
-> 
-> See below an example how "surfaceflinger" task gets migrated.
-> Initially it is located in the "system-background" cgroup which
-> allows to run only on little cores. In order to speed it up it
-> can be temporary moved into "foreground" cgroup which allows
-> to use big/all CPUs:
-> 
-> cgroup_attach_task():
->  -> cgroup_migrate_execute()
->    -> cpuset_can_attach()
->      -> percpu_down_write()
->        -> rcu_sync_enter()
->          -> synchronize_rcu()
->    -> now move tasks to the new cgroup.
->  -> cgroup_migrate_finish()
-> 
-> <snip>
->          rcuop/1-29      [000] .....  7030.528570: rcu_invoke_callback: rcu_preempt rhp=00000000461605e0 func=wakeme_after_rcu.cfi_jt
->     PERFD-SERVER-1855    [000] d..1.  7030.530293: cgroup_attach_task: dst_root=3 dst_id=22 dst_level=1 dst_path=/foreground pid=1900 comm=surfaceflinger
->    TimerDispatch-2768    [002] d..5.  7030.537542: sched_migrate_task: comm=surfaceflinger pid=1900 prio=98 orig_cpu=0 dest_cpu=4
-> <snip>
-> 
-> "Boosting a task" depends on synchronize_rcu() latency:
-> 
-> - first trace shows a completion of synchronize_rcu();
-> - second shows attaching a task to a new group;
-> - last shows a final step when migration occurs.
-> 
-> 3. To address this drawback, maintain a separate track that consists
-> of synchronize_rcu() callers only. After completion of a grace period
-> users are awaken directly, it is limited by allowed threshold, others
-> are deferred(if still exist) to a worker to complete the rest.
-> 
-> 4. This patch reduces the latency of synchronize_rcu() approximately
-> by ~30-40% on synthetic tests. The real test case, camera launch time,
-> shows(time is in milliseconds):
-> 
-> 1-run 542 vs 489 improvement 9%
-> 2-run 540 vs 466 improvement 13%
-> 3-run 518 vs 468 improvement 9%
-> 4-run 531 vs 457 improvement 13%
-> 5-run 548 vs 475 improvement 13%
-> 6-run 509 vs 484 improvement 4%
-> 
-> Synthetic test:
-> 
-> Hardware: x86_64 64 CPUs, 64GB of memory
-> 
-> - 60K tasks(simultaneous);
-> - each task does(1000 loops)
->      synchronize_rcu();
->      kfree(p);
-> 
-> default: CONFIG_RCU_NOCB_CPU: takes 323 seconds to complete all users;
-> patch: CONFIG_RCU_NOCB_CPU: takes 240 seconds to complete all users.
-> 
-> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+On Wed, Nov 1, 2023 at 5:53=E2=80=AFPM Waiman Long <longman@redhat.com> wro=
+te:
+>
+> When cgroup_rstat_updated() isn't being called concurrently with
+> cgroup_rstat_flush_locked(), its run time is pretty short. When
+> both are called concurrently, the cgroup_rstat_updated() run time
+> can spike to a pretty high value due to high cpu_lock hold time in
+> cgroup_rstat_flush_locked(). This can be problematic if the task calling
+> cgroup_rstat_updated() is a realtime task running on an isolated CPU
+> with a strict latency requirement. The cgroup_rstat_updated() call can
+> happens when there is a page fault even though the task is running in
 
-This looks pretty close!  Some questions and comments below, much of
-which being what I managed not to write down in earlier discussions.  :-/
+s/happens/happen
+
+> user space most of the time.
+>
+> The percpu cpu_lock is used to protect the update tree -
+> updated_next and updated_children. This protection is only needed
+> when cgroup_rstat_cpu_pop_updated() is being called. The subsequent
+> flushing operation which can take a much longer time does not need
+> that protection.
+
+nit: add: as it is already protected by cgroup_rstat_lock.
+
+>
+> To reduce the cpu_lock hold time, we need to perform all the
+> cgroup_rstat_cpu_pop_updated() calls up front with the lock
+> released afterward before doing any flushing. This patch adds a new
+> cgroup_rstat_updated_list() function to return a singly linked list of
+> cgroups to be flushed.
+>
+> By adding some instrumentation code to measure the maximum elapsed times
+> of the new cgroup_rstat_updated_list() function and each cpu iteration of
+> cgroup_rstat_updated_locked() around the old cpu_lock lock/unlock pair
+> on a 2-socket x86-64 server running parallel kernel build, the maximum
+> elapsed times are 27us and 88us respectively. The maximum cpu_lock hold
+> time is now reduced to about 30% of the original.
+>
+> Below were the run time distribution of cgroup_rstat_updated_list()
+> during the same period:
+>
+>       Run time             Count
+>       --------             -----
+>          t <=3D 1us       12,574,302
+>    1us < t <=3D 5us        2,127,482
+>    5us < t <=3D 10us           8,445
+>   10us < t <=3D 20us           6,425
+>   20us < t <=3D 30us              50
+>
+> Signed-off-by: Waiman Long <longman@redhat.com>
+
+LGTM with some nits.
+
+Reviewed-by: Yosry Ahmed <yosryahmed@google.com>
 
 > ---
->  kernel/rcu/tree.c     | 154 +++++++++++++++++++++++++++++++++++++++++-
->  kernel/rcu/tree_exp.h |   2 +-
->  2 files changed, 154 insertions(+), 2 deletions(-)
-> 
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index 78554e7181dd..f04846b543de 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -1384,6 +1384,125 @@ static void rcu_poll_gp_seq_end_unlocked(unsigned long *snap)
->  		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+>  include/linux/cgroup-defs.h |  6 +++++
+>  kernel/cgroup/rstat.c       | 45 ++++++++++++++++++++++++-------------
+>  2 files changed, 36 insertions(+), 15 deletions(-)
+>
+> diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h
+> index 265da00a1a8b..daaf6d4eb8b6 100644
+> --- a/include/linux/cgroup-defs.h
+> +++ b/include/linux/cgroup-defs.h
+> @@ -491,6 +491,12 @@ struct cgroup {
+>         struct cgroup_rstat_cpu __percpu *rstat_cpu;
+>         struct list_head rstat_css_list;
+>
+> +       /*
+> +        * A singly-linked list of cgroup structures to be rstat flushed.
+> +        * Protected by cgroup_rstat_lock.
+
+Do you think we should mention that this is a scratch area for
+cgroup_rstat_flush_locked()? IOW, this field will be invalid or may
+contain garbage otherwise.
+
+It might be also useful to mention that the scope of usage for this is
+for each percpu flushing iteration. The cgroup_rstat_lock can be
+dropped between percpu flushing iterations, so different flushers can
+reuse this field safely because it is re-initialized in every
+iteration and only used there.
+
+> +        */
+> +       struct cgroup   *rstat_flush_next;
+> +
+>         /* cgroup basic resource statistics */
+>         struct cgroup_base_stat last_bstat;
+>         struct cgroup_base_stat bstat;
+> diff --git a/kernel/cgroup/rstat.c b/kernel/cgroup/rstat.c
+> index d80d7a608141..a86d40ed8bda 100644
+> --- a/kernel/cgroup/rstat.c
+> +++ b/kernel/cgroup/rstat.c
+> @@ -145,6 +145,34 @@ static struct cgroup *cgroup_rstat_cpu_pop_updated(s=
+truct cgroup *pos,
+>         return pos;
 >  }
->  
+>
 > +/*
-> + * There are three lists for handling synchronize_rcu() users.
-> + * A first list corresponds to new coming users, second for users
-> + * which wait for a grace period and third is for which a grace
-> + * period is passed.
+> + * Return a list of updated cgroups to be flushed
 > + */
-> +static struct sr_normal_state {
-> +	struct llist_head srs_next;	/* request a GP users. */
-> +	struct llist_head srs_wait;	/* wait for GP users. */
-> +	struct llist_head srs_done;	/* ready for GP users. */
-> +
-> +	/*
-> +	 * In order to add a batch of nodes to already
-> +	 * existing srs-done-list, a tail of srs-wait-list
-> +	 * is maintained.
-> +	 */
-> +	struct llist_node *srs_wait_tail;
-> +} sr;
 
-It would be good to put these fields into the rcu_state structure.
-Unlike kfree_rcu(), I have no ambitions for the mm guys ever taking
-this one.  ;-)
+Why not just on a single line?
+/* Return a list of updated cgroups to be flushed */
 
-> +/* Disabled by default. */
-> +static int rcu_normal_wake_from_gp;
-> +module_param(rcu_normal_wake_from_gp, int, 0644);
-> +
-> +static void rcu_sr_normal_complete(struct llist_node *node)
+> +static struct cgroup *cgroup_rstat_updated_list(struct cgroup *root, int=
+ cpu)
 > +{
-> +	struct rcu_synchronize *rs = container_of(
-> +		(struct rcu_head *) node, struct rcu_synchronize, head);
-> +	unsigned long oldstate = (unsigned long) rs->head.func;
+> +       raw_spinlock_t *cpu_lock =3D per_cpu_ptr(&cgroup_rstat_cpu_lock, =
+cpu);
+> +       struct cgroup *head, *tail, *next;
+> +       unsigned long flags;
 > +
-> +	WARN_ONCE(!poll_state_synchronize_rcu(oldstate),
-> +		"A full grace period is not passed yet: %lu",
-> +		rcu_seq_diff(get_state_synchronize_rcu(), oldstate));
-
-This needs to either:
-
-1.	Use poll_state_synchronize_rcu_full(), or
-
-2.	Avoid firing unless expedited grace periods have been disabled.
-	Note that forcing synchronize_rcu() to synchronize_rcu_expedited()
-	does not help because there might still be call_rcu() invocations
-	advancing normal grace periods.
-
-As it stands, you can have false-positive WARN_ONCE()s.  These can happen
-when a normal and an expedited grace period overlap in time.
-
-> +	/* Finally. */
-> +	complete(&rs->completion);
-> +}
-> +
-> +static void rcu_sr_normal_gp_cleanup_work(struct work_struct *work)
-> +{
-> +	struct llist_node *done, *rcu, *next;
-> +
-> +	done = llist_del_all(&sr.srs_done);
-> +	if (!done)
-> +		return;
-> +
-> +	llist_for_each_safe(rcu, next, done)
-> +		rcu_sr_normal_complete(rcu);
-> +}
-> +static DECLARE_WORK(sr_normal_gp_cleanup, rcu_sr_normal_gp_cleanup_work);
-> +
-> +/*
-> + * This is hard-coded and it is a maximum number of
-> + * synchronize_rcu() users(might be +1 extra), which
-> + * are awaken directly by the rcu_gp_kthread(). The
-> + * reset is deferred to a dedicated worker.
-
-s/reset/rest/
-
-> + */
-> +#define MAX_SR_WAKE_FROM_GP 5
-> +
-> +/*
-> + * Helper function for rcu_gp_cleanup().
-> + */
-> +static void rcu_sr_normal_gp_cleanup(void)
-> +{
-> +	struct llist_node *head, *tail, *pos;
-> +	int i = 0;
-> +
-> +	if (llist_empty(&sr.srs_wait))
-> +		return;
-> +
-> +	tail = READ_ONCE(sr.srs_wait_tail);
-> +	head = __llist_del_all(&sr.srs_wait);
-> +
-> +	llist_for_each_safe(pos, head, head) {
-> +		rcu_sr_normal_complete(pos);
-> +
-> +		if (++i == MAX_SR_WAKE_FROM_GP) {
-> +			/* If last, process it also. */
-> +			if (head && !head->next)
-> +				continue;
-> +			break;
-
-Save a line this way?
-
-			if (!head || head->next)
-				break;
-
-> +		}
-> +	}
-> +
-> +	if (head) {
-> +		/* Can be not empty. */
-> +		llist_add_batch(head, tail, &sr.srs_done);
-> +		queue_work(system_highpri_wq, &sr_normal_gp_cleanup);
-> +	}
-> +}
-> +
-> +/*
-> + * Helper function for rcu_gp_init().
-> + */
-> +static void rcu_sr_normal_gp_init(void)
-> +{
-> +	struct llist_node *head, *tail;
-> +
-> +	if (llist_empty(&sr.srs_next))
-> +		return;
-> +
-> +	tail = llist_del_all(&sr.srs_next);
-> +	head = llist_reverse_order(tail);
-
-Hmmm...  I am not loving this list-reverse operation.  Once someone
-figures out how to generate a long list, it is going to hurt quite badly.
-
-Except...  Why do we need to reverse the list in the first place?
-It appears that one reason is to be able to get the tail of the list.
-Is it also necessary to do the wakeups in order, or could they be
-reversed?  It seems like they should -- the average latency would remain
-the same.  If so, couldn't we have a single llist with two pointers into
-it (more accurately, to its tail pointers), one for the first done item,
-and the other for the first item waiting on the current grace period?
-
-Then it would not be necessary to reverse the list, nor would it be
-necessary to move elemetns from one list to another.  Just copy one
-pointer to the next.
-
-If it ever becomes necessary to put extra elements back, which would be
-challenging if there were no other elements in the list.  The usual way
-to handle this is to have a dummy element to isolate the enqueuers from
-the requeuer.  The GP kthread then enqueues the dummy element if the
-list is empty, which means that enqueue and optimized wakeup are never
-looking at the same pointer.  Alternatively, just use dummy elements to
-mark the segments in the list, with the added pointers always referencing
-these dummy elements.  Might need a VC to make this make sense...
-
-Or is there some reason that this approach would break things?
-
-> +	/*
-> +	 * A waiting list of GP should be empty on this step,
-> +	 * since a GP-kthread, rcu_gp_init() -> gp_cleanup(),
-> +	 * rolls it over. If not, it is a BUG, warn a user.
-> +	 */
-> +	WARN_ON_ONCE(!llist_empty(&sr.srs_wait));
-> +
-> +	WRITE_ONCE(sr.srs_wait_tail, tail);
-> +	__llist_add_batch(head, tail, &sr.srs_wait);
-
-So sr.srs_wait_tail keeps a pointer into the list, and acts kind of like
-a rcu_segcblist tail pointer.
-
-> +}
-> +
-> +static void rcu_sr_normal_add_req(struct rcu_synchronize *rs)
-> +{
-> +	llist_add((struct llist_node *) &rs->head, &sr.srs_next);
-
-s/&rs->head/&rs->head.next/?
-
+> +       /*
+> +        * The _irqsave() is needed because cgroup_rstat_lock is
+> +        * spinlock_t which is a sleeping lock on PREEMPT_RT. Acquiring
+> +        * this lock with the _irq() suffix only disables interrupts on
+> +        * a non-PREEMPT_RT kernel. The raw_spinlock_t below disables
+> +        * interrupts on both configurations. The _irqsave() ensures
+> +        * that interrupts are always disabled and later restored.
+> +        */
+> +       raw_spin_lock_irqsave(cpu_lock, flags);
+> +       head =3D tail =3D cgroup_rstat_cpu_pop_updated(NULL, root, cpu);
+> +       while (tail) {
+> +               next =3D cgroup_rstat_cpu_pop_updated(tail, root, cpu);
+> +               tail->rstat_flush_next =3D next;
+> +               tail =3D next;
+> +       }
+> +       raw_spin_unlock_irqrestore(cpu_lock, flags);
+> +       return head;
 > +}
 > +
 >  /*
->   * Initialize a new grace period.  Return false if no grace period required.
->   */
-> @@ -1418,6 +1537,7 @@ static noinline_for_stack bool rcu_gp_init(void)
->  	/* Record GP times before starting GP, hence rcu_seq_start(). */
->  	rcu_seq_start(&rcu_state.gp_seq);
->  	ASSERT_EXCLUSIVE_WRITER(rcu_state.gp_seq);
-> +	rcu_sr_normal_gp_init();
->  	trace_rcu_grace_period(rcu_state.name, rcu_state.gp_seq, TPS("start"));
->  	rcu_poll_gp_seq_start(&rcu_state.gp_seq_polled_snap);
->  	raw_spin_unlock_irq_rcu_node(rnp);
-> @@ -1787,6 +1907,9 @@ static noinline void rcu_gp_cleanup(void)
->  	}
->  	raw_spin_unlock_irq_rcu_node(rnp);
->  
-> +	// Make synchronize_rcu() users aware of the end of old grace period.
-> +	rcu_sr_normal_gp_cleanup();
-> +
->  	// If strict, make all CPUs aware of the end of the old grace period.
->  	if (IS_ENABLED(CONFIG_RCU_STRICT_GRACE_PERIOD))
->  		on_each_cpu(rcu_strict_gp_boundary, NULL, 0);
-> @@ -3500,6 +3623,35 @@ static int rcu_blocking_is_gp(void)
->  	return true;
->  }
->  
-> +/*
-> + * Helper function for the synchronize_rcu() API.
-> + */
-> +static void synchronize_rcu_normal(void)
-> +{
-> +	struct rcu_synchronize rs;
-> +
-> +	if (READ_ONCE(rcu_normal_wake_from_gp)) {
-> +		init_rcu_head_on_stack(&rs.head);
-> +		init_completion(&rs.completion);
-> +
-> +		/*
-> +		 * This code might be preempted, therefore take a GP
-> +		 * snapshot before adding a request.
-> +		 */
-> +		rs.head.func = (void *) get_state_synchronize_rcu();
-> +		rcu_sr_normal_add_req(&rs);
-> +
-> +		/* Kick a GP and start waiting. */
-> +		(void) start_poll_synchronize_rcu();
-> +
-> +		/* Now we can wait. */
-> +		wait_for_completion(&rs.completion);
-> +		destroy_rcu_head_on_stack(&rs.head);
-> +	} else {
-> +		wait_rcu_gp(call_rcu_hurry);
-> +	}
-
-Please save some indentation as follows:
-
-	if (!READ_ONCE(rcu_normal_wake_from_gp)) {
-		wait_rcu_gp(call_rcu_hurry);
-		return;
-	}
-	init_rcu_head_on_stack(&rs.head);
-	...
-
-Same number of lines.
-
-> +}
-> +
->  /**
->   * synchronize_rcu - wait until a grace period has elapsed.
->   *
-> @@ -3551,7 +3703,7 @@ void synchronize_rcu(void)
->  		if (rcu_gp_is_expedited())
->  			synchronize_rcu_expedited();
->  		else
-> -			wait_rcu_gp(call_rcu_hurry);
-> +			synchronize_rcu_normal();
->  		return;
->  	}
->  
-> diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
-> index 6d7cea5d591f..279a37beb05a 100644
-> --- a/kernel/rcu/tree_exp.h
-> +++ b/kernel/rcu/tree_exp.h
-> @@ -987,7 +987,7 @@ void synchronize_rcu_expedited(void)
->  
->  	/* If expedited grace periods are prohibited, fall back to normal. */
->  	if (rcu_gp_is_normal()) {
-> -		wait_rcu_gp(call_rcu_hurry);
-> +		synchronize_rcu_normal();
->  		return;
->  	}
->  
-> -- 
-> 2.30.2
-> 
+>   * A hook for bpf stat collectors to attach to and flush their stats.
+>   * Together with providing bpf kfuncs for cgroup_rstat_updated() and
+> @@ -179,21 +207,9 @@ static void cgroup_rstat_flush_locked(struct cgroup =
+*cgrp)
+>         lockdep_assert_held(&cgroup_rstat_lock);
+>
+>         for_each_possible_cpu(cpu) {
+> -               raw_spinlock_t *cpu_lock =3D per_cpu_ptr(&cgroup_rstat_cp=
+u_lock,
+> -                                                      cpu);
+> -               struct cgroup *pos =3D NULL;
+> -               unsigned long flags;
+> +               struct cgroup *pos =3D cgroup_rstat_updated_list(cgrp, cp=
+u);
+>
+> -               /*
+> -                * The _irqsave() is needed because cgroup_rstat_lock is
+> -                * spinlock_t which is a sleeping lock on PREEMPT_RT. Acq=
+uiring
+> -                * this lock with the _irq() suffix only disables interru=
+pts on
+> -                * a non-PREEMPT_RT kernel. The raw_spinlock_t below disa=
+bles
+> -                * interrupts on both configurations. The _irqsave() ensu=
+res
+> -                * that interrupts are always disabled and later restored=
+.
+> -                */
+> -               raw_spin_lock_irqsave(cpu_lock, flags);
+> -               while ((pos =3D cgroup_rstat_cpu_pop_updated(pos, cgrp, c=
+pu))) {
+> +               for (; pos; pos =3D pos->rstat_flush_next) {
+>                         struct cgroup_subsys_state *css;
+>
+>                         cgroup_base_stat_flush(pos, cpu);
+> @@ -205,7 +221,6 @@ static void cgroup_rstat_flush_locked(struct cgroup *=
+cgrp)
+>                                 css->ss->css_rstat_flush(css, cpu);
+>                         rcu_read_unlock();
+>                 }
+> -               raw_spin_unlock_irqrestore(cpu_lock, flags);
+>
+>                 /* play nice and yield if necessary */
+>                 if (need_resched() || spin_needbreak(&cgroup_rstat_lock))=
+ {
+> --
+> 2.39.3
+>
