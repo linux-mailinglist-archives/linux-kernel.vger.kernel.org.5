@@ -2,152 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 18DC37DFC7A
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 23:39:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E9737DFC7B
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 23:40:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377508AbjKBWjA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 18:39:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40326 "EHLO
+        id S1377514AbjKBWkd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 18:40:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234638AbjKBWi7 (ORCPT
+        with ESMTP id S229675AbjKBWkb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 18:38:59 -0400
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F4D2197;
-        Thu,  2 Nov 2023 15:38:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1698964727;
-        bh=WyzxI/clJruJ4BLPu4RXlK39VrnkLyClpw2spayrCow=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Dj7bHAuYxqQXHKn6q14pF2PVkcp8pSkaofNNHFG0CFPX2K/i4SqezpHGJSrPayRCg
-         yUoQJO838jo3dyRvLDKsDQzLoJriLUKD5eNjnk/3JdqrswL+DbirKhk38nrWK35hAt
-         mkrnfYWq7VDes2T1keSouBoLGUcZjAQArQxyzM4n0vydgN2CkJeY6NUWmhZnFK+Z/S
-         XlQRZ5mQLu/5wQTMhw4luwjx7a5kaXkpfuIwuh9kksVhcXxRfWsjBKdO7IMuo74Om7
-         jVoxryil/0eWLYwbxHFf3b91eSkreBzb31zX7QX7EMWsmVbYrrfvAvkqLpXqFudb4N
-         nduMoKaWI3QhA==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SLzLb0d6qz4wc2;
-        Fri,  3 Nov 2023 09:38:46 +1100 (AEDT)
-Date:   Fri, 3 Nov 2023 09:38:46 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Hector Martin <marcan@marcan.st>
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: manual merge of the pmdomain tree with the
- asahi-soc tree
-Message-ID: <20231103093846.489e12db@canb.auug.org.au>
-In-Reply-To: <20230925111007.46e31ba2@canb.auug.org.au>
-References: <20230925111007.46e31ba2@canb.auug.org.au>
+        Thu, 2 Nov 2023 18:40:31 -0400
+Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10AD7B7;
+        Thu,  2 Nov 2023 15:40:29 -0700 (PDT)
+Received: by mail-il1-x12d.google.com with SMTP id e9e14a558f8ab-3594c100735so4419275ab.1;
+        Thu, 02 Nov 2023 15:40:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698964828; x=1699569628; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Qc8asfYOeO/AOwc/brrfBGOOvr6zT/uDTRraWYt21O4=;
+        b=YFdqAowQLwabt2w2zzPeDWLSwP0gaJFysRShrtpeiElZUZDmjEyojza/kijnCjEGdG
+         gqJCL+z48Jc9fdonjD83jaAEUXQrCRAph7e7m/Zdg/saOn+zUBPzd1MyceFw/DzLAn/n
+         YLrTCHU80l9z4ELEehIOOXD8j8IlQS0fHEJJx3KfcUd56fulDkOzwRxkc87qe21ksxUp
+         KvNiGPILeLqzSP0GOb3cFcWkWCrGRlTZljGtu2XKYS8ccwoTT8OHPlYvfzRcqdMfa6Ot
+         7ZGQDE8tdG3uGbZ1U+W7/0vMlMz5+8c/3PRNitMwUcTU+mEPK1hqneae1xwqzPgju9RE
+         UO+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698964828; x=1699569628;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Qc8asfYOeO/AOwc/brrfBGOOvr6zT/uDTRraWYt21O4=;
+        b=tGjtZ7VHXOP0Niwq/GOmgLLmjbMDbeMvsUiakbsFOp9ktv7WLcR/yw04OuoS1itesw
+         Q9L01yAqMfDLtb5H2H+no98PiWpRjjNAHk5/gh9vw7e4yMtLj0RNmqlHZrRmMejtUXEN
+         beF65feuvcfNIhNH9FdoMgPX45jvWKtxr6OQYCw4jyqk7b4VRBVANaTBkdRMySP3lAFd
+         4Dwpqhpc8W+RiBRErZ6najSz/m4Roj60DY2ikEDbyJKKeUizu6/ncYcnEnjoMswJ4e7A
+         b2Kxb6onmRE+3GxodfHnJefQa/+JwYGBuNmKoOOPUuFP01SEc9bYAI0IJdIZHzm/7BfX
+         5C5Q==
+X-Gm-Message-State: AOJu0YxBmicHXPFqkErHYaXfGlytN5aqcfeqTdBlMan5zICrkJVRIf9Q
+        dtH+IvINElNcSaWxHA/zUJoFGWZN1cJ4yKGTttc=
+X-Google-Smtp-Source: AGHT+IEAD4K9sHQRK7LJB/PKdoDtBLxq6pbnMYlsV5/1F/rg1Wi1wcKDZddZCjp5HWhGR6oag/OCQe+mARwPp1pjcfY=
+X-Received: by 2002:a92:d74b:0:b0:359:3ff:17c6 with SMTP id
+ e11-20020a92d74b000000b0035903ff17c6mr943748ilq.4.1698964828290; Thu, 02 Nov
+ 2023 15:40:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/+uQaB/grItLM5mXUdj0wsLn";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20231102200202.920461-1-nphamcs@gmail.com> <CAJD7tkY8iPBo99+1gdsSRMNDu4jkVKz8rb=W+xk9=GE0y=kSuw@mail.gmail.com>
+ <20231102205022.GA3265934@cmpxchg.org> <CAJD7tkacw52fwr6bUk5frepaRN071mmCeGke4s-jMwAXjKqSPg@mail.gmail.com>
+In-Reply-To: <CAJD7tkacw52fwr6bUk5frepaRN071mmCeGke4s-jMwAXjKqSPg@mail.gmail.com>
+From:   Nhat Pham <nphamcs@gmail.com>
+Date:   Thu, 2 Nov 2023 15:40:17 -0700
+Message-ID: <CAKEwX=MwNE_q3m+in8gO7XnjE5uhdFOpUyGzdteimSP1FJN7hg@mail.gmail.com>
+Subject: Re: [RFC PATCH v2] zswap: memcontrol: implement zswap writeback disabling
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>, akpm@linux-foundation.org,
+        tj@kernel.org, lizefan.x@bytedance.com,
+        cerasuolodomenico@gmail.com, sjenning@redhat.com,
+        ddstreet@ieee.org, vitaly.wool@konsulko.com, mhocko@kernel.org,
+        roman.gushchin@linux.dev, shakeelb@google.com,
+        muchun.song@linux.dev, hughd@google.com, corbet@lwn.net,
+        konrad.wilk@oracle.com, senozhatsky@chromium.org, rppt@kernel.org,
+        linux-mm@kvack.org, kernel-team@meta.com,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        david@ixit.cz
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/+uQaB/grItLM5mXUdj0wsLn
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-
-Hi all,
-
-On Mon, 25 Sep 2023 11:10:07 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
+On Thu, Nov 2, 2023 at 1:54=E2=80=AFPM Yosry Ahmed <yosryahmed@google.com> =
 wrote:
->=20
-> Today's linux-next merge of the pmdomain tree got a conflict in:
->=20
->   drivers/soc/apple/Kconfig
->=20
-> between commit:
->=20
->   6fca0adc61cf ("soc: apple: mailbox: Add ASC/M3 mailbox driver")
->=20
-> from the asahi-soc tree and commit:
->=20
->   1bfadf2edd65 ("pmdomain: apple: Move Kconfig option to the pmdomain sub=
-system")
->=20
-> from the pmdomain tree.
->=20
-> I fixed it up (see below) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
->=20
-> diff --cc drivers/soc/apple/Kconfig
-> index c5203c388bf4,eff486a77337..000000000000
-> --- a/drivers/soc/apple/Kconfig
-> +++ b/drivers/soc/apple/Kconfig
-> @@@ -4,35 -4,9 +4,22 @@@ if ARCH_APPLE || COMPILE_TES
->  =20
->   menu "Apple SoC drivers"
->  =20
-> - config APPLE_PMGR_PWRSTATE
-> - 	bool "Apple SoC PMGR power state control"
-> - 	depends on PM
-> - 	select REGMAP
-> - 	select MFD_SYSCON
-> - 	select PM_GENERIC_DOMAINS
-> - 	select RESET_CONTROLLER
-> - 	default ARCH_APPLE
-> - 	help
-> - 	  The PMGR block in Apple SoCs provides high-level power state
-> - 	  controls for SoC devices. This driver manages them through the
-> - 	  generic power domain framework, and also provides reset support.
-> -=20
->  +config APPLE_MAILBOX
->  +	tristate "Apple SoC mailboxes"
->  +	depends on PM
->  +	depends on ARCH_APPLE || (64BIT && COMPILE_TEST)
->  +	default ARCH_APPLE
->  +	help
->  +	  Apple SoCs have various co-processors required for certain
->  +	  peripherals to work (NVMe, display controller, etc.). This
->  +	  driver adds support for the mailbox controller used to
->  +	  communicate with those.
->  +
->  +	  Say Y here if you have an Apple SoC.
->  +
->   config APPLE_RTKIT
->   	tristate "Apple RTKit co-processor IPC protocol"
->  -	depends on MAILBOX
->  +	depends on APPLE_MAILBOX
->   	depends on ARCH_APPLE || COMPILE_TEST
->   	default ARCH_APPLE
->   	help
+>
+> On Thu, Nov 2, 2023 at 1:50=E2=80=AFPM Johannes Weiner <hannes@cmpxchg.or=
+g> wrote:
+> >
+> > On Thu, Nov 02, 2023 at 01:27:24PM -0700, Yosry Ahmed wrote:
+> > > On Thu, Nov 2, 2023 at 1:02=E2=80=AFPM Nhat Pham <nphamcs@gmail.com> =
+wrote:
+> > > > @@ -201,6 +201,12 @@ int swap_writepage(struct page *page, struct w=
+riteback_control *wbc)
+> > > >                 folio_end_writeback(folio);
+> > > >                 return 0;
+> > > >         }
+> > > > +
+> > > > +       if (!mem_cgroup_zswap_writeback_enabled(folio_memcg(folio))=
+) {
+> > > > +               folio_mark_dirty(folio);
+> > > > +               return AOP_WRITEPAGE_ACTIVATE;
+> > > > +       }
+> > > > +
+> > >
+> > > I am not a fan of this, because it will disable using disk swap if
+> > > "zswap_writeback" is disabled, even if zswap is disabled or the page
+> > > was never in zswap. The term zswap_writeback makes no sense here tbh.
+> > >
+> > > I am still hoping someone else will suggest better semantics, because
+> > > honestly I can't think of anything. Perhaps something like
+> > > memory.swap.zswap_only or memory.swap.types which accepts a string
+> > > (e.g. "zswap"/"all",..).
+> >
+> > I had suggested the writeback name.
+> >
+> > My thinking was this: from a user pov, the way zswap is presented and
+> > described, is a fast writeback cache that sits on top of swap. It's
+> > implemented as this lookaside thing right now, but that's never how it
+> > was sold. And frankly, that's not how it's expected to work, either.
+> >
+> > From the docs:
+> >
+> >   Zswap is a lightweight compressed cache for swap pages.
+> >
+> >   Zswap evicts pages from compressed cache on an LRU basis to the
+> >   backing swap device when the compressed pool reaches its size limit.
+> >
+> > When zswap is enabled, IO to the swap device is expected to come from
+> > zswap. Everything else would be a cache failure. There are a few cases
+> > now where zswap rejects and bypasses to swap. It's not a stretch to
+> > call them accelerated writeback or writethrough. But also, these
+> > represent failures and LRU inversions, we're working on fixing them.
+> >
+> > So from a user POV it's reasonable to say if I have zswap enabled and
+> > disable writeback, I don't expect swapfile IO.
+>
+> Makes sense (although now you had me thinking whether
+> memory.zswap.writethrough is a better name).
 
-This is now a conflict between the asahi-soc tree and Linus' tree.
+Hmmm I lean towards writeback because it's already used in zswap
+context. Users not familiar with the writethrough concept might be
+confused by the naming.
 
---=20
-Cheers,
-Stephen Rothwell
+>
+> >
+> > But yes, if zswap isn't enabled at all, this shouldn't prevent pages
+> > from going to swap.
+>
+> Right, at least mem_cgroup_zswap_writeback_enabled() should always
+> return true if zswap is disabled.
 
---Sig_/+uQaB/grItLM5mXUdj0wsLn
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+Sure enough! In the next version, I'll always return true in this case.
 
------BEGIN PGP SIGNATURE-----
+>
+> One more unrelated thing,  I think we should drop the
+> cgroup_subsys_on_dfl() check there. I understand the interface is only
+> exposed in v2, but I don't see any reason why it wouldn't work in v1.
+> Let's not make it harder for anyone who tries to expose this in v1
+> (whether upstream or in an internal patch).
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmVEJPYACgkQAVBC80lX
-0GzpTgf/aehLs0Om0hF/+6Fza0QxKH/hmc/zowU3y12JGlDvhQeq2sXHDxv2s8op
-hEC4gnXsaOBKScC4rXXiEZ4vX3ess0WQ6KcFaQnjK3ctCRUqBJvyqdCTKQXIdWjX
-P8vg2fHneGEI6sVfy0IIy6FVI1jI5yfjmNqkp7v2N0yilFglTUxvYI4XLPCeK3p3
-stIlPU1QQuwaJhYxpDJnGOj1HsncrvA0prnsjIBkXTPvYZUNLcRUERSTsUiM2f3P
-coVt9Ke/c7Mo5lLVFhhGhUigIv+aGpH94UP3r62uLcRttA6qwxvR0b6S4Sruu2ua
-UDiPBS3fQFeFfj3Si3ja38rFOLBlBA==
-=30ox
------END PGP SIGNATURE-----
+I don't have anything against cgroup v1 per se :) I just happened to
+notice that zswap charging is not available in v1, so I just played it
+safe here.
 
---Sig_/+uQaB/grItLM5mXUdj0wsLn--
+If nobody objects I can unguard this feature from v1. Seems
+reasonable to me tbh.
