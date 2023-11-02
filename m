@@ -2,134 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FC577DF0F8
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 12:14:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18E2C7DF103
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 12:16:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229674AbjKBLOo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 07:14:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43832 "EHLO
+        id S1347307AbjKBLPz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 07:15:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229483AbjKBLOn (ORCPT
+        with ESMTP id S229728AbjKBLPx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 07:14:43 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D65BAE7
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 04:14:37 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2c50fbc218bso9975371fa.3
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 04:14:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698923676; x=1699528476; darn=vger.kernel.org;
-        h=user-agent:in-reply-to:content-transfer-encoding
-         :content-disposition:mime-version:references:message-id:subject:cc
-         :to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=o58wFnf6szPGgzlryUFb1pArzVhpE+Bc8B/ye0mh1Ic=;
-        b=U53jqP9VsUBak53Y5BfKYfegk3kaVH4KZAkUP0KAhHPKM/eAbu3Dhyy2tSC/G70F16
-         pLEfg6e/NzHbe30i0hvgPA2D0qvph/Iza4vRoYLPLavuHyAUlz21bQsaWMWWffq31Y/u
-         BLEEulyy+BSJz7zVF24Xj6Se21AQ9seOR9HcWAhMTrGE4tC6zAS1BN7rRb2XDSOze1MP
-         Ggox8NcFXFQVfDLjqcbHTzinBsBtnaRybKmPymlBwQRt74BVx6uM/mwSMWFg5aCzr23Q
-         L4yJLhnYyNYhwmgWa8c4VKYmMz+sT5S266ehiOmXNS09PIS+a+sOHgXWTOI3UMvwe4yK
-         Fkrg==
+        Thu, 2 Nov 2023 07:15:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4327F187
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 04:14:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1698923698;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5X9zXTo8eLbZpNfNphwqZUMseNZ35B8f3qHoWgzx6M0=;
+        b=UyRQN0WYcFSZz4Dn8thqtY2nYcsdFEHEO2KsSUU928Svs0IA2cXzLRNAq0LboOcLTAXviP
+        UNFYGa3KMwpLMP7JviHXnc5bgcljhLYRvNhuyXuyeNY73NPBDErXhL+/o05fWC1emUoH8s
+        iHtdMd5DcuDtLGHprPr3mnmSm+Gbb3U=
+Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
+ [209.85.208.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-390-2GUG9ZsQMQ-y97uMqEqVEQ-1; Thu, 02 Nov 2023 07:14:57 -0400
+X-MC-Unique: 2GUG9ZsQMQ-y97uMqEqVEQ-1
+Received: by mail-lj1-f198.google.com with SMTP id 38308e7fff4ca-2c3e3672dc8so1137681fa.1
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 04:14:56 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698923676; x=1699528476;
-        h=user-agent:in-reply-to:content-transfer-encoding
-         :content-disposition:mime-version:references:message-id:subject:cc
-         :to:from:date:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=o58wFnf6szPGgzlryUFb1pArzVhpE+Bc8B/ye0mh1Ic=;
-        b=AydoT+RIPVFqB57h8NZBx+stG0px8H4r9nqy9k+rE9ZfTsbtV8iMl5b0n80hmC++EQ
-         iicdJRCi/TWTD971uXByfphOyVmT7P7ih42obiVA0IEHI9mOOuMnBChnM9tjscwyG9qm
-         Zk6vDdQT6DcOW/6ko021udcLFvq08rpbWIfzEKN/eCoiGqqhYBQYMDtTf6qJyPXVW2Z4
-         XI2qfvFPEDaWN6hD6voEColsnsk77NIImd354xFbuG9gbWPvlApPWtlTVQCHROqQCfz/
-         2434LU3k2rj2IyGwoYi0omFI6/qZs+n2VVbOvIS9u0crabBaZYeL6uardfK99Xac0nBG
-         6bMA==
-X-Gm-Message-State: AOJu0YznhRtQbUjR++W67EiISLtH+WaKthby/zXjvXVjxm7eV2RMt+jp
-        Kuuc/rU7ZJNi+0g82FJy2AmroQ==
-X-Google-Smtp-Source: AGHT+IH9UK7cZnl9aI1aNQH4ht0Hk9DmI3/B0c72F9p/BRC6XUjOOYp1gCJA1VqoiNTczqzaa+kmgQ==
-X-Received: by 2002:a2e:be10:0:b0:2c4:fdc9:c8a3 with SMTP id z16-20020a2ebe10000000b002c4fdc9c8a3mr16743697ljq.50.1698923676107;
-        Thu, 02 Nov 2023 04:14:36 -0700 (PDT)
-Received: from mutt (c-9b0ee555.07-21-73746f28.bbcust.telenor.se. [85.229.14.155])
-        by smtp.gmail.com with ESMTPSA id bd4-20020a05651c168400b002c6ee08c2casm215421ljb.105.2023.11.02.04.14.35
+        d=1e100.net; s=20230601; t=1698923695; x=1699528495;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=5X9zXTo8eLbZpNfNphwqZUMseNZ35B8f3qHoWgzx6M0=;
+        b=MVJ8fwDJd+JmoWerFLvn/8vrnXwJL8XG0SYNgB1jEEliuBV0jhfGGEGcfxx3Sxxmpa
+         0LDrxrcjJiZDa1QhfKIZwSnYIsj+5OPeSPRhEFVjBIdRNeGAWpTOnv4f5PlSv50YBHTS
+         Qzcl+vaH6iXZpz5cTPrzAKjyx8Jd0g7hf8FHHWrwN7RMjFF/CJBgVglIdsWi9YWW9Ovr
+         nzfI42sghBfgUgNviIlfxZH3e/E7h9K0oCkMhVsauLZd/IGnjiCOohw6RL93B4f/eCbs
+         qSxTyRoJ5YjbYAczNyMbekfS+EcPYQzeWJvFTV6NqVAEmKIKhwbM04xrjLCn5faA1s1p
+         ruYA==
+X-Gm-Message-State: AOJu0YwsEOQpLHm14lVVODZBI1CULH55T0TWYHIO0PEiliFTP7d7kUg0
+        p/PPvaObadDuhaRqHE/Tt9ZtM2kIhFjO4FUqKq7kM+10VDEZbniewjw4yyBXQ0IF0DtpCAEP9nr
+        CNZKGo1iispNpUvSFUBm/BcMj
+X-Received: by 2002:a2e:3306:0:b0:2c5:519:bb1b with SMTP id d6-20020a2e3306000000b002c50519bb1bmr12741484ljc.2.1698923695607;
+        Thu, 02 Nov 2023 04:14:55 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHIpcoz45TDqA5S9HUXzHFHPPonuHMZEBqFML5f/SHsIM081u0+qPTrXpL9C2SsQVtX6luAMw==
+X-Received: by 2002:a2e:3306:0:b0:2c5:519:bb1b with SMTP id d6-20020a2e3306000000b002c50519bb1bmr12741468ljc.2.1698923695235;
+        Thu, 02 Nov 2023 04:14:55 -0700 (PDT)
+Received: from gerbillo.redhat.com (146-241-226-153.dyn.eolo.it. [146.241.226.153])
+        by smtp.gmail.com with ESMTPSA id k16-20020a05600c1c9000b003fee567235bsm2654539wms.1.2023.11.02.04.14.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Nov 2023 04:14:35 -0700 (PDT)
-Date:   Thu, 2 Nov 2023 12:14:33 +0100
-From:   Anders Roxell <anders.roxell@linaro.org>
-To:     =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-Cc:     Andrii Nakryiko <andrii@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>, bpf@vger.kernel.org,
-        Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
-        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@rivosinc.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Larysa Zaremba <larysa.zaremba@intel.com>
-Subject: Re: [PATCH bpf] selftests/bpf: Fix broken build where char is
- unsigned
-Message-ID: <20231102111433.GA364395@mutt>
-References: <20231102103537.247336-1-bjorn@kernel.org>
+        Thu, 02 Nov 2023 04:14:54 -0700 (PDT)
+Message-ID: <f41c06eafd983584647e7d61561ea6282cdb735e.camel@redhat.com>
+Subject: Re: [PATCH net] dccp: check for ccid in ccid_hc_tx_send_packet
+From:   Paolo Abeni <pabeni@redhat.com>
+To:     Bragatheswaran Manickavel <bragathemanick0908@gmail.com>,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org
+Cc:     dccp@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        syzbot+c71bc336c5061153b502@syzkaller.appspotmail.com
+Date:   Thu, 02 Nov 2023 12:14:53 +0100
+In-Reply-To: <20231028144136.3462-1-bragathemanick0908@gmail.com>
+References: <20231028144136.3462-1-bragathemanick0908@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231102103537.247336-1-bjorn@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-11-02 11:35, Björn Töpel wrote:
-> From: Björn Töpel <bjorn@rivosinc.com>
-> 
-> There are architectures where char is not signed. If so, the following
-> error is triggered:
-> 
->   | xdp_hw_metadata.c:435:42: error: result of comparison of constant -1 \
->   |   with expression of type 'char' is always true \
->   |   [-Werror,-Wtautological-constant-out-of-range-compare]
->   |   435 |         while ((opt = getopt(argc, argv, "mh")) != -1) {
->   |       |                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ^  ~~
->   | 1 error generated.
-> 
-> Correct by changing the char to int.
-> 
-> Fixes: bb6a88885fde ("selftests/bpf: Add options and frags to xdp_hw_metadata")
-> Signed-off-by: Björn Töpel <bjorn@rivosinc.com>
+On Sat, 2023-10-28 at 20:11 +0530, Bragatheswaran Manickavel wrote:
+> ccid_hc_tx_send_packet might be called with a NULL ccid pointer
+> leading to a NULL pointer dereference
 
-Thank you for the patch.
-I saw the same failure when I built selftests/bpf for arm64.
+You should describe how such event could happen.
 
-With this patch ontop of today's next-20231102, fixes that build issue.
+> Below mentioned commit has similarly changes
+> commit 276bdb82dedb ("dccp: check ccid before dereferencing")
+>=20
+> Reported-by: syzbot+c71bc336c5061153b502@syzkaller.appspotmail.com
+> Closes: https://syzkaller.appspot.com/bug?extid=3Dc71bc336c5061153b502
 
-Tested-by: Anders Roxell <anders.roxell@linaro.org>
+and add a suitable fixes here.
 
+(beyond taking care of other critical code paths, as reported by Eric).
 
-Cheers,
-Anders
+Thanks!
 
-> ---
->  tools/testing/selftests/bpf/xdp_hw_metadata.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/tools/testing/selftests/bpf/xdp_hw_metadata.c b/tools/testing/selftests/bpf/xdp_hw_metadata.c
-> index 17c0f92ff160..c3ba40d0b9de 100644
-> --- a/tools/testing/selftests/bpf/xdp_hw_metadata.c
-> +++ b/tools/testing/selftests/bpf/xdp_hw_metadata.c
-> @@ -430,7 +430,7 @@ static void print_usage(void)
->  
->  static void read_args(int argc, char *argv[])
->  {
-> -	char opt;
-> +	int opt;
->  
->  	while ((opt = getopt(argc, argv, "mh")) != -1) {
->  		switch (opt) {
-> 
-> base-commit: cb3c6a58be50c65014296aa3455cae0fa1e82eac
-> -- 
-> 2.40.1
-> 
+Paolo
 
