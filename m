@@ -2,86 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 35BC17DECB8
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 07:00:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E6277DECBD
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 07:01:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232461AbjKBGAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 02:00:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35350 "EHLO
+        id S233028AbjKBGA7 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 2 Nov 2023 02:00:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231876AbjKBGA2 (ORCPT
+        with ESMTP id S232647AbjKBGA4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 02:00:28 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC7A312E;
-        Wed,  1 Nov 2023 23:00:25 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 902FEC116AE;
-        Thu,  2 Nov 2023 06:00:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698904825;
-        bh=TT6oGmKBvrWb94S/vP7d37OfMVFkbdfOksx84tXkYIk=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=b6XE/ZHBMLjtASbMMN8/6ByBnKKdvtKquvR6CelIrF5eOPLQ8DMZAOljjerNhqK//
-         SutgZS76sJlX+YETNSZXTJTqy8c3q2u3lb17gARz9MFjCsGwwqwmH/Rg+hVnE3k2uf
-         BIyhuXDqs/yAfTMz46fKjaTrmdAg1ORe1IJmNNKRfzYjKqUtK3nTLAmQcgUj4K8vyr
-         9i9B2Px7LEdG4kVIAu2smrPUR+glDlm5BjBdpgL/5sJj4EWiIhriRTMpFSjTkmnxMc
-         gTvY/j+3BPwSaeLlhATqdyOBH8/X+GKt0yjy2UfkBw8fXDy5Pj18C3ruQYFsshW5/x
-         poDJL7QpB4Nfw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 7A7F3C43168;
-        Thu,  2 Nov 2023 06:00:25 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        Thu, 2 Nov 2023 02:00:56 -0400
+Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A832136;
+        Wed,  1 Nov 2023 23:00:54 -0700 (PDT)
+Received: by mail-pj1-f47.google.com with SMTP id 98e67ed59e1d1-2809a824bbbso550579a91.3;
+        Wed, 01 Nov 2023 23:00:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698904854; x=1699509654;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=y7sJxaZR3sZtUdEi8so+QgQKNnLkiEyQfQp6cbd46+M=;
+        b=fFIDUpecYRlVp0D5pKvrn5EbfcFNhiEsxDS5qSCPlUWDk2ECVJR3fFBu+WE/o9N4up
+         sV/Ti/cvCEg3iBLZ4HYVboOsQUMfG/bYoz2sgyFi02DS2omLwxJgWDrZphq/e4KmB9Z6
+         Nr3TuzoYOyYzRnZWknOU9pJqAEunwDI3mScaxTUiRQl1AqWteDPnW0fEL+00h4s9cpOv
+         w31UxVnqe0Db++nkO+tV12+morXH9nFEL15KrGaS9UTJ4a9Jkk3LwdaoH5fPm/UhyBcI
+         1enKHmHJuuAsM5PRX50xcSY4HXOSQImMzX6ctZRMRBDgfjivH0IqOC/RbKZ/RX7E9dIT
+         fl2w==
+X-Gm-Message-State: AOJu0Yy5IWoBrvkNEhOMQO+UlKUZdbsIHDPnYfKkaVjCR3C3l8X55M99
+        AAEfV1DuKYNyvNefSV2M0dx9R/daQFtDtc1bX9Q=
+X-Google-Smtp-Source: AGHT+IH6+y7swXL7j3RAXG1QsA0AgXdwSi3Rgzy8GDw/e26SSaefQSQzZEdVM30CfkvCypBS/GX5DZWXv7Tz5/PIf7g=
+X-Received: by 2002:a17:90a:10c9:b0:280:b062:208 with SMTP id
+ b9-20020a17090a10c900b00280b0620208mr4517916pje.35.1698904853536; Wed, 01 Nov
+ 2023 23:00:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v3 1/2] selftests/bpf: Convert CHECK macros to
- ASSERT_* macros in bpf_iter
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <169890482549.9002.3230353368904918414.git-patchwork-notify@kernel.org>
-Date:   Thu, 02 Nov 2023 06:00:25 +0000
-References: <DB3PR10MB6835E9C8DFCA226DD6FEF914E8A3A@DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM>
-In-Reply-To: <DB3PR10MB6835E9C8DFCA226DD6FEF914E8A3A@DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM>
-To:     Yuran Pereira <yuran.pereira@hotmail.com>
-Cc:     bpf@vger.kernel.org, yonghong.song@linux.dev, sinquersw@gmail.com,
-        ast@kernel.org, brauner@kernel.org, daniel@iogearbox.net,
-        haoluo@google.com, iii@linux.ibm.com, john.fastabend@gmail.com,
-        jolsa@kernel.org, kpsingh@kernel.org, kuifeng@meta.com,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        mykolal@fb.com, sdf@google.com, shuah@kernel.org, song@kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231031120526.11502-1-nick.forrington@arm.com>
+ <20231031120526.11502-3-nick.forrington@arm.com> <ZUEfXU34ZijKe8aA@kernel.org>
+ <3ae2cf90-b0a1-5f54-56aa-ed4a04dca8b0@arm.com>
+In-Reply-To: <3ae2cf90-b0a1-5f54-56aa-ed4a04dca8b0@arm.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Wed, 1 Nov 2023 23:00:42 -0700
+Message-ID: <CAM9d7cjQs0BrFAMa4=PGxxPBoGOAVzermH=0HrA1rhegmAA8zg@mail.gmail.com>
+Subject: Re: [PATCH 2/2] perf lock info: Enforce exactly one of --map and --thread
+To:     Nick Forrington <nick.forrington@arm.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+On Wed, Nov 1, 2023 at 7:35 AM Nick Forrington <nick.forrington@arm.com> wrote:
+>
+>
+> On 31/10/2023 15:38, Arnaldo Carvalho de Melo wrote:
+> > Em Tue, Oct 31, 2023 at 12:05:25PM +0000, Nick Forrington escreveu:
+> >> Improve error reporting for command line arguments.
+> >>
+> >> Display error/usage if neither --map or --thread are specified (rather
+> >> than a non user-friendly error "Unknown type of information").
+> >>
+> >> Display error/usage if both --map and --thread are specified (rather
+> >> than ignoring "--map" and displaying only thread information).
+> > Shouldn't one of them be the default so that we type less for the most
+> > common usage?
+> >
+> > - Arnaldo
+> >
+>
+> There isn't an obvious choice (to me) for which would be the default.
+>
+> Both options display completely different data/outputs, so I think it
+> makes sense to be explicit about which data is requested.
 
-This series was applied to bpf/bpf-next.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
+Maybe we can default to display both. :)
 
-On Sat, 28 Oct 2023 10:54:13 +0530 you wrote:
-> As it was pointed out by Yonghong Song [1], in the bpf selftests the use
-> of the ASSERT_* series of macros is preferred over the CHECK macro.
-> This patch replaces all CHECK calls in bpf_iter with the appropriate
-> ASSERT_* macros.
-> 
-> [1] https://lore.kernel.org/lkml/0a142924-633c-44e6-9a92-2dc019656bf2@linux.dev
-> 
-> [...]
+Thanks,
+Namhyung
 
-Here is the summary with links:
-  - [bpf-next,v3,1/2] selftests/bpf: Convert CHECK macros to ASSERT_* macros in bpf_iter
-    https://git.kernel.org/bpf/bpf-next/c/ed47cb27586d
-  - [bpf-next,v3,2/2] selftests/bpf: Add malloc failure checks in bpf_iter
-    https://git.kernel.org/bpf/bpf-next/c/cb3c6a58be50
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+>
+>
+> An alternative could be to use sub-commands e.g. "perf lock info
+> threads" or just "perf lock threads", although changing the existing
+> options would be more disruptive.
+>
+>
+> Cheers,
+> Nick
+>
+> >> Signed-off-by: Nick Forrington <nick.forrington@arm.com>
+> >> ---
+> >>   tools/perf/builtin-lock.c | 25 +++++++++++++++++++++++++
+> >>   1 file changed, 25 insertions(+)
+> >>
+> >> diff --git a/tools/perf/builtin-lock.c b/tools/perf/builtin-lock.c
+> >> index 3aa8ba5ad928..cf29f648d291 100644
+> >> --- a/tools/perf/builtin-lock.c
+> >> +++ b/tools/perf/builtin-lock.c
+> >> @@ -2021,6 +2021,27 @@ static int check_lock_report_options(const struct option *options,
+> >>      return 0;
+> >>   }
+> >>
+> >> +static int check_lock_info_options(const struct option *options,
+> >> +                               const char * const *usage)
+> >> +{
+> >> +    if (!info_map && !info_threads) {
+> >> +            pr_err("Requires one of --map or --threads\n");
+> >> +            parse_options_usage(usage, options, "map", 0);
+> >> +            parse_options_usage(NULL, options, "threads", 0);
+> >> +            return -1;
+> >> +
+> >> +    }
+> >> +
+> >> +    if (info_map && info_threads) {
+> >> +            pr_err("Cannot show map and threads together\n");
+> >> +            parse_options_usage(usage, options, "map", 0);
+> >> +            parse_options_usage(NULL, options, "threads", 0);
+> >> +            return -1;
+> >> +    }
+> >> +
+> >> +    return 0;
+> >> +}
+> >> +
+> >>   static int check_lock_contention_options(const struct option *options,
+> >>                                       const char * const *usage)
+> >>
+> >> @@ -2709,6 +2730,10 @@ int cmd_lock(int argc, const char **argv)
+> >>                      if (argc)
+> >>                              usage_with_options(info_usage, info_options);
+> >>              }
+> >> +
+> >> +            if (check_lock_info_options(info_options, info_usage) < 0)
+> >> +                    return -1;
+> >> +
+> >>              /* recycling report_lock_ops */
+> >>              trace_handler = &report_lock_ops;
+> >>              rc = __cmd_report(true);
+> >> --
+> >> 2.42.0
+> >>
+> >>
