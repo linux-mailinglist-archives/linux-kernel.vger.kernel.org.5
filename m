@@ -2,56 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 406CE7DE93D
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 01:17:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F37E97DE941
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 01:19:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234125AbjKBARZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Nov 2023 20:17:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33212 "EHLO
+        id S234168AbjKBASw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Nov 2023 20:18:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230285AbjKBARY (ORCPT
+        with ESMTP id S229727AbjKBASu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Nov 2023 20:17:24 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47F38109;
-        Wed,  1 Nov 2023 17:17:16 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C268C433C7;
-        Thu,  2 Nov 2023 00:17:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698884235;
-        bh=TOJiriu7zo/tOZp6wt6uoQqF/K8RoG8GBogF+O+OlHg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Fjz3k9HJotc18Y2AY4yosYabz+yl+n9B5E2DMxuLA98Igdoc8atWUGT0w+Potdj6A
-         vwaXd+5HCxLsFFXkHLjfI2gvOJCxDD4B39nauPuyv3sEEoJDz1HkBFHu37FoJErQ/L
-         te5TuHlyVDtNK6u6J2UM/8xVrR9NnT70JwKk2XKUcws4GzIRlHV9Qqacaodm+VE7YA
-         lWBAms4Kg4g33Uqcu4iLejvPxtJmK4y84z9URimUl4UZ4ArqtGty5L4+6b3BZJa5sc
-         rdN7ZED6BS2xdswu9HFD3YCyfp5gV1Dxg8wlObHLVTXRMjzkgN+Q+XTR8+CpzamRHS
-         Uw/8gSJq2YEJg==
-Date:   Thu, 2 Nov 2023 00:17:11 +0000
-From:   Conor Dooley <conor@kernel.org>
-To:     Dmitry Rokosov <ddrokosov@salutedevices.com>
-Cc:     Rob Herring <robh@kernel.org>, linux-leds@vger.kernel.org,
-        lee@kernel.org, linux-kernel@vger.kernel.org,
-        kernel@sberdevices.ru, andy.shevchenko@gmail.com,
-        conor+dt@kernel.org, pavel@ucw.cz,
-        krzysztof.kozlowski+dt@linaro.org, rockosov@gmail.com,
-        robh+dt@kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v3 11/11] dt-bindings: leds: aw200xx: fix led pattern and
- add reg constraints
-Message-ID: <20231102-concave-untapped-804a5956faab@spud>
-References: <20231101142445.8753-1-ddrokosov@salutedevices.com>
- <20231101142445.8753-12-ddrokosov@salutedevices.com>
- <169885374980.409399.3653628333009308100.robh@kernel.org>
- <20231101-bolster-anaerobic-244cd1a8c205@spud>
- <20231101174422.zs5er6tqethm46ur@CAB-WSD-L081021>
+        Wed, 1 Nov 2023 20:18:50 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E34FDB;
+        Wed,  1 Nov 2023 17:18:47 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-6bcdfcde944so94208b3a.1;
+        Wed, 01 Nov 2023 17:18:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698884327; x=1699489127; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=s8957ZXAMokJVu3Z7wnJ8VE74hgqLOzUJ6al4SM64Ng=;
+        b=JKkP9IYbru2m2sGLIKUPz/TIVekLUsqWanPUqh5f8Ht0fOUS1yxZyAd0MjiNirMb7u
+         0uCJD17ETntvRXi015vO+xfzMvM2BVk7k8PWSGEa7WhmumWfIeuC6SjzIu+Q7LfchdY4
+         Lkvn6e74KrAQlxEO0USCjRY+n74vi7Dm1ldUFhfd4bQQyJFYmDyqOXuwS+BY3COnU8zt
+         PTUNSpwFpqK+V//oiEVBzwKt5z2XAd8VmUj9JO780C6vsHL9aqiIcSSEaQKZkW5TEDwO
+         CAL4Cm4JrEgPN/Ewz6lCyC/cvT+Pid1A2fTD7bj3xngWC8l//k2dXlY/kIn8xGtudWgt
+         VClg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698884327; x=1699489127;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=s8957ZXAMokJVu3Z7wnJ8VE74hgqLOzUJ6al4SM64Ng=;
+        b=gpBBclWMdjx6c/zXCSIxkYGExGABZuCV9xGDy25rayHQcdX4MktB39sd/jMfr+MDzt
+         gcHu8kZJwBohIC6NCFriN+YRNi80a4uPBoxOA3P54sNdQdQBocJgiTlh7mvbSU4c07Y9
+         unk29A+3/EGD+bvSA6h+JDnAxCjqBZC7J99NEBuX4qUQPwI4dK8xmsxiwShc3cAU/3rJ
+         RL/+X/67jzW0TQxzXR2e2ArCZdFdsA8ymn1Hm3Gr1xsfjZohtNh6wQTmKK+xXzNTSBAe
+         nIOGzNq3ZcUQq1SJ6Uq1EcSG3PWLyr8UCR+0OtitpCECZzcBfTj4LNz/nGr/qKuPWpEh
+         xxug==
+X-Gm-Message-State: AOJu0Ywd3jpry52lZdooUO2F45DvevLkE4401LzyKONRJq32wJ1Ndhfk
+        4tsUeKovcOVzVB5IlE6Hg5Q=
+X-Google-Smtp-Source: AGHT+IFflYaHUWBqCJRXS9+gKRfaZkgRQi57kLnq0Fw4deD2a8UANa0uI1zHkwc6lO2flirPhblOmA==
+X-Received: by 2002:a05:6a20:2d22:b0:163:c167:964a with SMTP id g34-20020a056a202d2200b00163c167964amr20592204pzl.1.1698884326940;
+        Wed, 01 Nov 2023 17:18:46 -0700 (PDT)
+Received: from hoboy.vegasvil.org ([2601:640:8000:54:e2d5:5eff:fea5:802f])
+        by smtp.gmail.com with ESMTPSA id l13-20020a056a00140d00b006c2fcb25c15sm1583592pfu.162.2023.11.01.17.18.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Nov 2023 17:18:46 -0700 (PDT)
+Date:   Wed, 1 Nov 2023 17:18:44 -0700
+From:   Richard Cochran <richardcochran@gmail.com>
+To:     Edward Adam Davis <eadavis@qq.com>
+Cc:     habetsm.xilinx@gmail.com, davem@davemloft.net,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        reibax@gmail.com,
+        syzbot+df3f3ef31f60781fa911@syzkaller.appspotmail.com,
+        syzkaller-bugs@googlegroups.com
+Subject: Re: [PATCH net-next V2] ptp: fix corrupted list in ptp_open
+Message-ID: <ZULq5ILoM07oH1wr@hoboy.vegasvil.org>
+References: <tencent_2C67C6D2537B236F497823BCC457976F9705@qq.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="1KMrlXhM842v/S70"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231101174422.zs5er6tqethm46ur@CAB-WSD-L081021>
-X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+In-Reply-To: <tencent_2C67C6D2537B236F497823BCC457976F9705@qq.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,103 +74,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Oct 31, 2023 at 06:25:42PM +0800, Edward Adam Davis wrote:
+> There is no lock protection when writing ptp->tsevqs in ptp_open(),
+> ptp_release(), which can cause data corruption,
 
---1KMrlXhM842v/S70
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+NAK.
 
-On Wed, Nov 01, 2023 at 08:44:22PM +0300, Dmitry Rokosov wrote:
-> Hello Conor,
->=20
-> On Wed, Nov 01, 2023 at 04:17:14PM +0000, Conor Dooley wrote:
-> > On Wed, Nov 01, 2023 at 11:04:16AM -0500, Rob Herring wrote:
-> > >=20
-> > > On Wed, 01 Nov 2023 17:24:45 +0300, Dmitry Rokosov wrote:
-> > > > AW200XX controllers have the capability to declare more than 0xf LE=
-Ds,
-> > > > therefore, it is necessary to accept LED names using an appropriate
-> > > > regex pattern.
-> > > >=20
-> > > > The register offsets can be adjusted within the specified range, wi=
-th
-> > > > the maximum value corresponding to the highest number of LEDs that =
-can
-> > > > be connected to the controller.
-> > > >=20
-> > > > Fixes: e338a05e76ca ("dt-bindings: leds: Add binding for AW200xx")
-> > > > Signed-off-by: Dmitry Rokosov <ddrokosov@salutedevices.com>
-> > > > ---
-> > > >  .../bindings/leds/awinic,aw200xx.yaml         | 64 +++++++++++++++=
-++--
-> > > >  1 file changed, 58 insertions(+), 6 deletions(-)
-> > > >=20
-> > >=20
-> > > My bot found errors running 'make DT_CHECKER_FLAGS=3D-m dt_binding_ch=
-eck'
-> > > on your patch (DT_CHECKER_FLAGS is new in v5.13):
-> > >=20
-> > > yamllint warnings/errors:
-> > >=20
-> > > dtschema/dtc warnings/errors:
-> > > /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindin=
-gs/leds/awinic,aw200xx.example.dtb: led-controller@3a: led@0: Unevaluated p=
-roperties are not allowed ('reg' was unexpected)
-> > > 	from schema $id: http://devicetree.org/schemas/leds/awinic,aw200xx.y=
-aml#
-> > > /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindin=
-gs/leds/awinic,aw200xx.example.dtb: led-controller@3a: led@1: Unevaluated p=
-roperties are not allowed ('reg' was unexpected)
-> > > 	from schema $id: http://devicetree.org/schemas/leds/awinic,aw200xx.y=
-aml#
-> > > /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindin=
-gs/leds/awinic,aw200xx.example.dtb: led-controller@3a: led@2: Unevaluated p=
-roperties are not allowed ('reg' was unexpected)
-> > > 	from schema $id: http://devicetree.org/schemas/leds/awinic,aw200xx.y=
-aml#
-> >=20
-> > Looks like you need to drop the second part of this hunk from the patch.
-> > @@ -45,17 +45,12 @@ properties:
-> >      maxItems: 1
-> > =20
-> >  patternProperties:
-> > -  "^led@[0-9a-f]$":
-> > +  "^led@[0-9a-f]+$":
-> >      type: object
-> >      $ref: common.yaml#
-> >      unevaluatedProperties: false
-> > =20
-> >      properties:
-> > -      reg:
-> > -        description:
-> > -          LED number
-> > -        maxItems: 1
-> > -
-> >        led-max-microamp:
-> >          default: 9780
-> >          description: |
-> >=20
-> > Each LED still only has one reg entry, right?
->=20
-> You're right... the maxItems for 'reg' is still needed. I'll back it in
-> the next version.
-> But I don't understand, why my dt_binding_check run doesn't show me this
-> problem... I don't specify DT_CHECKER_FLAGS, maybe this is a root cause.
+You haven't identified any actual data corruption issue.
 
-I dunno! I do `make dt_binding_check W=3D1 DT_SCHEMA_FILES=3D"$filename"` to
-test stuff.
+If there is an issue, please state what it is.
 
-Also, you can keep the tag.
+Thanks,
+Richard
 
---1KMrlXhM842v/S70
-Content-Type: application/pgp-signature; name="signature.asc"
 
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZULqhgAKCRB4tDGHoIJi
-0q4BAQC5YTzHsZRRP1WxLFh3vu211rMVno+IX+YO5RazUkgsMAEArUlNxt0UhTjw
-Nq+4zijW6+jINWj/Jd91+bh5kDWepgk=
-=fKHp
------END PGP SIGNATURE-----
-
---1KMrlXhM842v/S70--
