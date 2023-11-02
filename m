@@ -2,58 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CE6B7DF2D1
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 13:51:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BDAF7DF2E2
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 13:53:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346479AbjKBMvW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 08:51:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46522 "EHLO
+        id S1346867AbjKBMw6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 08:52:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230149AbjKBMvV (ORCPT
+        with ESMTP id S229770AbjKBMw4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 08:51:21 -0400
-Received: from mail-yw1-x112c.google.com (mail-yw1-x112c.google.com [IPv6:2607:f8b0:4864:20::112c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BDB8125
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 05:51:15 -0700 (PDT)
-Received: by mail-yw1-x112c.google.com with SMTP id 00721157ae682-59e88a28b98so8057847b3.1
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 05:51:15 -0700 (PDT)
+        Thu, 2 Nov 2023 08:52:56 -0400
+Received: from mail-yw1-x112d.google.com (mail-yw1-x112d.google.com [IPv6:2607:f8b0:4864:20::112d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE63BBD
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 05:52:50 -0700 (PDT)
+Received: by mail-yw1-x112d.google.com with SMTP id 00721157ae682-5b35579f475so10848567b3.3
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 05:52:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698929475; x=1699534275; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1698929570; x=1699534370; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=9pU8l6Ru1lmyLGco+UhPIPJQZlA30Z+Oa9JgbnH5Dks=;
-        b=AZbKVW0219z6rAdwYz6L4Xoh5ZTuSdZPFZecqQ+CTAHD0kFVyPYG5WCrqAU7GXuU69
-         iHKyX+nn5IJfv8VJ6zsJH8NJAWzGRI8pcbu5Pf5+yRTHJGgTDhu1SVTy4JW22jYVelm3
-         S2GC5N6br4nNJm601OGIDiTE41SMDW/gC+Mxrl3csQDtprKFqQ20jGUokq2MBNaUv3wm
-         o3HLTGQcSO3CfmzILDt6bEU62ZfDEYJBAuxcZVSV1+qHpWdge+1PEJxSF2SU4VhOVISn
-         fMT+FIWKmSdhYleoVOxwkGAlZyik0GLuo3r/DM8j8jOPbDxFKGba3D1tWUIKQWhm0PMB
-         Wk3A==
+        bh=NkAF/PZfI+WcIMVb9OirzvXLigR8HCnTm5LBRbHreQ8=;
+        b=HKFjuCEBzZNDtxo9mafOGcMP2X8s7uKQEkDa0gw88hmSN9Cp6HUlecaLFoMR/NgxHR
+         H180gAotxMwDNENxS1gaHZ2/7Q2dC2Jr0RZp55GJuOFdOxfIyxeBhOr9PudzZroKG8Kn
+         AmAEBY1nR97bTwKGhsL/dbkpEyfcfQXVHSQQDGJZmJzkW3uPSkrq3/qTGlt02vgy8xKS
+         f+Ck2Q+alNhVT36BDAN1w+SMNBbMtqkMeD5/o4NT9q9vAGrW2ZIi7rMTqmsumn3eul0x
+         J73rQMMprF4nrdIK10Q8LvYEBmELmj1muN85e3zssgrXwUDgJa2br8uEYqUaWyFm+Y34
+         yF8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698929475; x=1699534275;
+        d=1e100.net; s=20230601; t=1698929570; x=1699534370;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=9pU8l6Ru1lmyLGco+UhPIPJQZlA30Z+Oa9JgbnH5Dks=;
-        b=ePEbq2bg5FLEo42p5+W/9pT2H4TMyXms+s9IvDkCGsccy9/4nLoZJ61J98i4ZKr1G9
-         Zdzp4Otk8qXWbtkME6qWGKhhmA0TlaOlUEMIzK2p0pO1iarnqXCWLXgjy7B6a98Klb41
-         p6t8QsjhC7jeqteU4SmadosQrmexGlLBeXW9387+zCY5dYAFKfVyBDMcEuU80UoDPW6G
-         LNrMOtP5/xP5SV79WGy31eq6r+tDj4sP2AV6A17N3pH8tnxYZ1YXcGzLsFaxKYoUbu7y
-         6KbCy9ifTzUMgPOn5LxEYYYJAbYsVS6/36KHURU1GCDPjPF83uB6K215WCrO+nIzyULb
-         vRuw==
-X-Gm-Message-State: AOJu0Yye998z9lmD5oe6wD45yhsE+I4eN1aLAi9LlSJVx8OxuWP9whH4
-        SzxYWpWADmF4tNL1KgI/zJcH/RINzXhog2/+LsQEOQ==
-X-Google-Smtp-Source: AGHT+IGRkYgLvFHHFjBhSWduql5eL+9bAHhVMQTgHxjzn6sHcDECaO2Lh/+qYRAoq7rT1SgPFNKls6mPJcZrLdU2ueU=
-X-Received: by 2002:a81:ac64:0:b0:5af:97b6:9def with SMTP id
- z36-20020a81ac64000000b005af97b69defmr4708633ywj.24.1698929474829; Thu, 02
- Nov 2023 05:51:14 -0700 (PDT)
+        bh=NkAF/PZfI+WcIMVb9OirzvXLigR8HCnTm5LBRbHreQ8=;
+        b=v6NOtmXwXvQq71WgSMSiZ6eJd6fB5HGUydlyiJH6g4L3zGUsDMfbrRBGA3EFemNa2d
+         F1pY/HI0cdW/nY7pf/P58Jq9qZhnmiT+o80kb7tTns1O7cPQVU9V7nsjs+r3EDXJ71Kx
+         KHrUN3X/SC2GE8xCik7HWdcxft5opHSxfcAOtRQnrkhP2qTJ/ihqoEYiBbvQY0DXBXFN
+         rGaCrsavgO16lF5J+zOeSIa38HjiqMODgKTiARlRX3cYjzj3jXwdFjLHRDgd/ipClHte
+         RmjDRoy0fLVzEAaU+/wkwb1FUxJTf5+nQDBmXUwYZBgiJkHMpJr/Zx2BZLlK2NZYf2gB
+         YOeg==
+X-Gm-Message-State: AOJu0Yye5MpbA/2ye8Oy5enKBKT6URudj6GJzjEZ7VjMskzU7ohL/2m1
+        bl6cRHoahWo6BG32Va3jmdVOrga2zg/b2rkJIPqKyA==
+X-Google-Smtp-Source: AGHT+IEm5KTzKFJCbkkeKGbycJaUyyW8Clx4xfeXUOila9bUE2hnM4hISA/tiCWJmcYbmvIqZOLlyTt4OscrRjvOsrI=
+X-Received: by 2002:a05:690c:ec8:b0:5a7:cc02:68b0 with SMTP id
+ cs8-20020a05690c0ec800b005a7cc0268b0mr28010361ywb.23.1698929570185; Thu, 02
+ Nov 2023 05:52:50 -0700 (PDT)
 MIME-Version: 1.0
-References: <20231030072337.2341539-2-contact@jookia.org> <20231030072337.2341539-3-contact@jookia.org>
-In-Reply-To: <20231030072337.2341539-3-contact@jookia.org>
+References: <20231030072337.2341539-2-contact@jookia.org> <20231030072337.2341539-6-contact@jookia.org>
+In-Reply-To: <20231030072337.2341539-6-contact@jookia.org>
 From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 2 Nov 2023 13:51:03 +0100
-Message-ID: <CACRpkdbm5KYj8KWNQJ20jq7XLbW-_ykX1_t=kse9-otB1FSPSQ@mail.gmail.com>
-Subject: Re: [RFC PATCH v4 1/7] drm/panel: nv3052c: Document known register names
+Date:   Thu, 2 Nov 2023 13:52:39 +0100
+Message-ID: <CACRpkdZYfqyOhzzoNMUCAkQoUKSLD99SNUthZ7-m=rmcNvWUMg@mail.gmail.com>
+Subject: Re: [RFC PATCH v4 4/7] drm/panel: nv3052c: Add Fascontek FS035VG158
+ LCD display
 To:     John Watts <contact@jookia.org>
 Cc:     dri-devel@lists.freedesktop.org,
         Neil Armstrong <neil.armstrong@linaro.org>,
@@ -89,13 +90,12 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 On Mon, Oct 30, 2023 at 8:24=E2=80=AFAM John Watts <contact@jookia.org> wro=
 te:
 
-> Many of these registers have a known name in the public datasheet.
-> Document them as comments for reference.
+> This display is extremely similar to the LTK035C5444T, but still has
+> some minor variations in panel initialization.
 >
 > Signed-off-by: John Watts <contact@jookia.org>
 > Reviewed-by: Jessica Zhang <quic_jesszhan@quicinc.com>
 
-This makes things better so:
 Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
 Yours,
