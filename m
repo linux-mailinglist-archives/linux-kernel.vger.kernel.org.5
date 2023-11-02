@@ -2,442 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E91C7DF5E4
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 16:12:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 843A17DF5EF
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Nov 2023 16:13:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345932AbjKBPM2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 11:12:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35504 "EHLO
+        id S1347433AbjKBPM6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 11:12:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234149AbjKBPMS (ORCPT
+        with ESMTP id S235479AbjKBPMt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 11:12:18 -0400
-Received: from mx.skole.hr (mx1.hosting.skole.hr [161.53.165.185])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5EF8182;
-        Thu,  2 Nov 2023 08:12:11 -0700 (PDT)
-Received: from mx1.hosting.skole.hr (localhost.localdomain [127.0.0.1])
-        by mx.skole.hr (mx.skole.hr) with ESMTP id 1BE7D83472;
-        Thu,  2 Nov 2023 16:12:10 +0100 (CET)
-From:   =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
-Date:   Thu, 02 Nov 2023 16:11:11 +0100
-Subject: [PATCH v7 05/10] clk: mmp: Add Marvell PXA1908 clock driver
+        Thu, 2 Nov 2023 11:12:49 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E404D4E
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 08:12:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698937956; x=1730473956;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=CLy1y5nIqzAmMc0U1jCcdZeU6NVug+2ZBa3uUHFLFTk=;
+  b=FPYztSgR1V5+y4LSbvXsaNiiFX2n2wDfTdFQqd9S01L0LVdRgbYMq33P
+   GMBIsekUDjKgYLiytSBERk7+2YIbvFSfvbPf5ahYfCaqwDEIKaz9FVPnV
+   Gw5fNIvsdx0qhaXjzx0tkCImrngK5ePNZbfGX3kOmc55HC1tcWbzR8TkE
+   aUjj7+mbCCWnaHGWU0Hu9DEA7Rxvpm8VjS9j2rVZWEHgz6lUSuz2KMOnD
+   O8OsV9c1ZuD/6KOqif4g0inn8TW4mWHUuvoPIQ+wmBoUM50Xw5o9D0iLJ
+   05BeRurFHDKs5h8yF/v2iI7c8P8Avbm+zaSnt+osQriCPA6olmcybeITN
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10882"; a="1660142"
+X-IronPort-AV: E=Sophos;i="6.03,271,1694761200"; 
+   d="scan'208";a="1660142"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2023 08:12:35 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10882"; a="737784550"
+X-IronPort-AV: E=Sophos;i="6.03,271,1694761200"; 
+   d="scan'208";a="737784550"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga006.jf.intel.com with ESMTP; 02 Nov 2023 08:12:31 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 76FA0560; Thu,  2 Nov 2023 17:12:30 +0200 (EET)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Jani Nikula <jani.nikula@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Cc:     Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Hans de Goede <hdegoede@redhat.com>
+Subject: [rft, PATCH v3 00/15] drm/i915/dsi: 2nd attempt to get rid of IOSF GPIO
+Date:   Thu,  2 Nov 2023 17:12:13 +0200
+Message-Id: <20231102151228.668842-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20231102-pxa1908-lkml-v7-5-cabb1a0cb52b@skole.hr>
-References: <20231102-pxa1908-lkml-v7-0-cabb1a0cb52b@skole.hr>
-In-Reply-To: <20231102-pxa1908-lkml-v7-0-cabb1a0cb52b@skole.hr>
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Tony Lindgren <tony@atomide.com>,
-        =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>,
-        Daniel Mack <daniel@zonque.org>,
-        Haojian Zhuang <haojian.zhuang@gmail.com>,
-        Robert Jarzmik <robert.jarzmik@free.fr>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, Leo Yan <leoy@marvell.com>,
-        Zhangfei Gao <zhangfei.gao@marvell.com>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Tony Luck <tony.luck@intel.com>,
-        "Guilherme G. Piccoli" <gpiccoli@igalia.com>
-Cc:     linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
-        alsa-devel@alsa-project.org, linux-hardening@vger.kernel.org,
-        phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
-        Karel Balej <balejk@matfyz.cz>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=13438;
- i=duje.mihanovic@skole.hr; h=from:subject:message-id;
- bh=yK+teqJg8MfpQoaT9jnaX2/azKJK39SdWyllqeh5+WA=;
- b=owEBbQKS/ZANAwAIAZoRnrBCLZbhAcsmYgBlQ7w43+BBdzzfOaVwzAz0Fxb2Ueqoora7bkYCQ
- +fwC2Kk/72JAjMEAAEIAB0WIQRT351NnD/hEPs2LXiaEZ6wQi2W4QUCZUO8OAAKCRCaEZ6wQi2W
- 4YaTD/wKGtz2eDqEgjMk8hAwNNFftUdxrIZUTpNh8q1mm5JbJ3KvLCikfmfgVdt3NL4xQ7VqvoT
- QiuzDTeHbwWscGBPNKCOaI05WKhDlnazHLPlGt5p4sD9kflf1gjae6CjGtpYzDL5QGykr7ertn2
- vyNUG7RpVx465ylcLAD5CnLNf1Femie69HwsPcAZK2xODqr5MigO2ZdPzlVUfqTZHAnrvBDc3qU
- QZdgdGh1KI9EkwoFs/N8V5zazTSPxHWJf2hMpzS0cVlgLQ5bL4zjtJDE8DvfFZBDGRb8Pwwf14R
- pEj0tAttD7qwIuCDbOn6/l1fnl+pXuuy2Pip+dWrMGK/1/MbRu9a4mfrjFDPnB6hp52GB/yMKv1
- 10kncGGG/rEuBOzeq3La8sEiHjz0QmcxFViBjOGyMV/VkaiLfPDFQFuAhVl2uU4C9spegXBxCwc
- ++9EBDsWyM1b9WiTdVAFpSjWjU66pOjJzh1TZb994yGmDzxd9yPZpzUMVk9oCggO/5XFYsS+gFB
- oQKRFpy3F6ibbVNgpBy+BKq5pV/1/mMdFfuhYdV2HGfeUrsok0gle9ev9+8iq2l03rkaVXvR8Fn
- aS1rtIX590YKUBgMC3uf6qIRAHiR2q7pH0dT+317CxhrVSpTxAdnaFMethowAEnvP7SY51j/9C/
- GpKCVb9BH026vJw==
-X-Developer-Key: i=duje.mihanovic@skole.hr; a=openpgp;
- fpr=53DF9D4D9C3FE110FB362D789A119EB0422D96E1
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add driver for Marvell PXA1908 clock controller blocks. The SoC has
-numerous clock controller blocks, currently supporting APBC, APBCP, MPMU
-and APMU.
+DSI code for VBT has a set of ugly GPIO hacks, one of which is direct
+talking to GPIO IP behind the actual driver's back. A second attempt
+to fix that is here.
 
-Signed-off-by: Duje Mihanović <duje.mihanovic@skole.hr>
----
- drivers/clk/mmp/Makefile         |   2 +-
- drivers/clk/mmp/clk-of-pxa1908.c | 328 +++++++++++++++++++++++++++++++++++++++
- 2 files changed, 329 insertions(+), 1 deletion(-)
+If I understood correctly, my approach should work in the similar way as
+the current IOSF GPIO.
 
-diff --git a/drivers/clk/mmp/Makefile b/drivers/clk/mmp/Makefile
-index 441bf83080a1..69f9c3afde83 100644
---- a/drivers/clk/mmp/Makefile
-+++ b/drivers/clk/mmp/Makefile
-@@ -11,4 +11,4 @@ obj-$(CONFIG_MACH_MMP_DT) += clk-of-pxa168.o clk-of-pxa910.o
- obj-$(CONFIG_COMMON_CLK_MMP2) += clk-of-mmp2.o clk-pll.o pwr-island.o
- obj-$(CONFIG_COMMON_CLK_MMP2_AUDIO) += clk-audio.o
- 
--obj-y += clk-of-pxa1928.o
-+obj-$(CONFIG_ARCH_MMP) += clk-of-pxa1928.o clk-of-pxa1908.o
-diff --git a/drivers/clk/mmp/clk-of-pxa1908.c b/drivers/clk/mmp/clk-of-pxa1908.c
-new file mode 100644
-index 000000000000..753dd031b147
---- /dev/null
-+++ b/drivers/clk/mmp/clk-of-pxa1908.c
-@@ -0,0 +1,328 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+#include <linux/bits.h>
-+#include <linux/clk-provider.h>
-+#include <linux/of_address.h>
-+#include <linux/slab.h>
-+#include <linux/spinlock.h>
-+#include <linux/units.h>
-+
-+#include <dt-bindings/clock/marvell,pxa1908.h>
-+
-+#include "clk.h"
-+
-+#define APMU_CLK_GATE_CTRL	0x40
-+#define MPMU_UART_PLL		0x14
-+
-+#define APBC_UART0		0x0
-+#define APBC_UART1		0x4
-+#define APBC_GPIO		0x8
-+#define APBC_PWM0		0xc
-+#define APBC_PWM1		0x10
-+#define APBC_PWM2		0x14
-+#define APBC_PWM3		0x18
-+#define APBC_SSP0		0x1c
-+#define APBC_SSP1		0x20
-+#define APBC_IPC_RST		0x24
-+#define APBC_RTC		0x28
-+#define APBC_TWSI0		0x2c
-+#define APBC_KPC		0x30
-+#define APBC_SWJTAG		0x40
-+#define APBC_SSP2		0x4c
-+#define APBC_TWSI1		0x60
-+#define APBC_THERMAL		0x6c
-+#define APBC_TWSI3		0x70
-+
-+#define APBCP_UART2		0x1c
-+#define APBCP_TWSI2		0x28
-+#define APBCP_AICER		0x38
-+
-+#define APMU_CCIC1		0x24
-+#define APMU_ISP		0x38
-+#define APMU_DSI1		0x44
-+#define APMU_DISP1		0x4c
-+#define APMU_CCIC0		0x50
-+#define APMU_SDH0		0x54
-+#define APMU_SDH1		0x58
-+#define APMU_USB		0x5c
-+#define APMU_NF 		0x60
-+#define APMU_VPU		0xa4
-+#define APMU_GC 		0xcc
-+#define APMU_SDH2		0xe0
-+#define APMU_GC2D		0xf4
-+#define APMU_TRACE		0x108
-+#define APMU_DVC_DFC_DEBUG	0x140
-+
-+#define MPMU_NR_CLKS		39
-+#define APBC_NR_CLKS		19
-+#define APBCP_NR_CLKS		4
-+#define APMU_NR_CLKS		17
-+
-+struct pxa1908_clk_unit {
-+	struct mmp_clk_unit unit;
-+	void __iomem *mpmu_base;
-+	void __iomem *apmu_base;
-+	void __iomem *apbc_base;
-+	void __iomem *apbcp_base;
-+	void __iomem *apbs_base;
-+	void __iomem *ciu_base;
-+};
-+
-+static struct mmp_param_fixed_rate_clk fixed_rate_clks[] = {
-+	{PXA1908_CLK_CLK32, "clk32", NULL, 0, 32768},
-+	{PXA1908_CLK_VCTCXO, "vctcxo", NULL, 0, 26 * HZ_PER_MHZ},
-+	{PXA1908_CLK_PLL1_624, "pll1_624", NULL, 0, 624 * HZ_PER_MHZ},
-+	{PXA1908_CLK_PLL1_416, "pll1_416", NULL, 0, 416 * HZ_PER_MHZ},
-+	{PXA1908_CLK_PLL1_499, "pll1_499", NULL, 0, 499 * HZ_PER_MHZ},
-+	{PXA1908_CLK_PLL1_832, "pll1_832", NULL, 0, 832 * HZ_PER_MHZ},
-+	{PXA1908_CLK_PLL1_1248, "pll1_1248", NULL, 0, 1248 * HZ_PER_MHZ},
-+};
-+
-+static struct mmp_param_fixed_factor_clk fixed_factor_clks[] = {
-+	{PXA1908_CLK_PLL1_D2, "pll1_d2", "pll1_624", 1, 2, 0},
-+	{PXA1908_CLK_PLL1_D4, "pll1_d4", "pll1_d2", 1, 2, 0},
-+	{PXA1908_CLK_PLL1_D6, "pll1_d6", "pll1_d2", 1, 3, 0},
-+	{PXA1908_CLK_PLL1_D8, "pll1_d8", "pll1_d4", 1, 2, 0},
-+	{PXA1908_CLK_PLL1_D12, "pll1_d12", "pll1_d6", 1, 2, 0},
-+	{PXA1908_CLK_PLL1_D13, "pll1_d13", "pll1_624", 1, 13, 0},
-+	{PXA1908_CLK_PLL1_D16, "pll1_d16", "pll1_d8", 1, 2, 0},
-+	{PXA1908_CLK_PLL1_D24, "pll1_d24", "pll1_d12", 1, 2, 0},
-+	{PXA1908_CLK_PLL1_D48, "pll1_d48", "pll1_d24", 1, 2, 0},
-+	{PXA1908_CLK_PLL1_D96, "pll1_d96", "pll1_d48", 1, 2, 0},
-+	{PXA1908_CLK_PLL1_32, "pll1_32", "pll1_d13", 2, 3, 0},
-+	{PXA1908_CLK_PLL1_208, "pll1_208", "pll1_d2", 2, 3, 0},
-+	{PXA1908_CLK_PLL1_117, "pll1_117", "pll1_624", 3, 16, 0},
-+};
-+
-+static struct mmp_clk_factor_masks uart_factor_masks = {
-+	.factor = 2,
-+	.num_mask = GENMASK(12, 0),
-+	.den_mask = GENMASK(12, 0),
-+	.num_shift = 16,
-+	.den_shift = 0,
-+};
-+
-+static struct u32_fract uart_factor_tbl[] = {
-+	{.numerator = 8125, .denominator = 1536},	/* 14.745MHz */
-+};
-+
-+static DEFINE_SPINLOCK(pll1_lock);
-+static struct mmp_param_general_gate_clk pll1_gate_clks[] = {
-+	{PXA1908_CLK_PLL1_D2_GATE, "pll1_d2_gate", "pll1_d2", 0, APMU_CLK_GATE_CTRL, 29, 0, &pll1_lock},
-+	{PXA1908_CLK_PLL1_416_GATE, "pll1_416_gate", "pll1_416", 0, APMU_CLK_GATE_CTRL, 27, 0, &pll1_lock},
-+	{PXA1908_CLK_PLL1_624_GATE, "pll1_624_gate", "pll1_624", 0, APMU_CLK_GATE_CTRL, 26, 0, &pll1_lock},
-+	{PXA1908_CLK_PLL1_832_GATE, "pll1_832_gate", "pll1_832", 0, APMU_CLK_GATE_CTRL, 30, 0, &pll1_lock},
-+	{PXA1908_CLK_PLL1_1248_GATE, "pll1_1248_gate", "pll1_1248", 0, APMU_CLK_GATE_CTRL, 28, 0, &pll1_lock},
-+};
-+
-+static void pxa1908_pll_init(struct pxa1908_clk_unit *pxa_unit)
-+{
-+	struct mmp_clk_unit *unit = &pxa_unit->unit;
-+
-+	mmp_register_fixed_rate_clks(unit, fixed_rate_clks,
-+					ARRAY_SIZE(fixed_rate_clks));
-+
-+	mmp_register_fixed_factor_clks(unit, fixed_factor_clks,
-+					ARRAY_SIZE(fixed_factor_clks));
-+
-+	mmp_clk_register_factor("uart_pll", "pll1_d4",
-+			CLK_SET_RATE_PARENT,
-+			pxa_unit->mpmu_base + MPMU_UART_PLL,
-+			&uart_factor_masks, uart_factor_tbl,
-+			ARRAY_SIZE(uart_factor_tbl), NULL);
-+
-+}
-+
-+static DEFINE_SPINLOCK(pwm0_lock);
-+static DEFINE_SPINLOCK(pwm2_lock);
-+
-+static DEFINE_SPINLOCK(uart0_lock);
-+static DEFINE_SPINLOCK(uart1_lock);
-+static DEFINE_SPINLOCK(uart2_lock);
-+
-+static const char * const uart_parent_names[] = {"pll1_117", "uart_pll"};
-+static const char * const ssp_parent_names[] = {"pll1_d16", "pll1_d48", "pll1_d24", "pll1_d12"};
-+
-+static struct mmp_param_gate_clk apbc_gate_clks[] = {
-+	{PXA1908_CLK_TWSI0, "twsi0_clk", "pll1_32", CLK_SET_RATE_PARENT, APBC_TWSI0, 0x7, 3, 0, 0, NULL},
-+	{PXA1908_CLK_TWSI1, "twsi1_clk", "pll1_32", CLK_SET_RATE_PARENT, APBC_TWSI1, 0x7, 3, 0, 0, NULL},
-+	{PXA1908_CLK_TWSI3, "twsi3_clk", "pll1_32", CLK_SET_RATE_PARENT, APBC_TWSI3, 0x7, 3, 0, 0, NULL},
-+	{PXA1908_CLK_GPIO, "gpio_clk", "vctcxo", CLK_SET_RATE_PARENT, APBC_GPIO, 0x7, 3, 0, 0, NULL},
-+	{PXA1908_CLK_KPC, "kpc_clk", "clk32", CLK_SET_RATE_PARENT, APBC_KPC, 0x7, 3, 0, MMP_CLK_GATE_NEED_DELAY, NULL},
-+	{PXA1908_CLK_RTC, "rtc_clk", "clk32", CLK_SET_RATE_PARENT, APBC_RTC, 0x87, 0x83, 0, MMP_CLK_GATE_NEED_DELAY, NULL},
-+	{PXA1908_CLK_PWM0, "pwm0_clk", "pwm01_apb_share", CLK_SET_RATE_PARENT, APBC_PWM0, 0x2, 2, 0, 0, &pwm0_lock},
-+	{PXA1908_CLK_PWM1, "pwm1_clk", "pwm01_apb_share", CLK_SET_RATE_PARENT, APBC_PWM1, 0x6, 2, 0, 0, NULL},
-+	{PXA1908_CLK_PWM2, "pwm2_clk", "pwm23_apb_share", CLK_SET_RATE_PARENT, APBC_PWM2, 0x2, 2, 0, 0, NULL},
-+	{PXA1908_CLK_PWM3, "pwm3_clk", "pwm23_apb_share", CLK_SET_RATE_PARENT, APBC_PWM3, 0x6, 2, 0, 0, NULL},
-+	{PXA1908_CLK_UART0, "uart0_clk", "uart0_mux", CLK_SET_RATE_PARENT, APBC_UART0, 0x7, 3, 0, 0, &uart0_lock},
-+	{PXA1908_CLK_UART1, "uart1_clk", "uart1_mux", CLK_SET_RATE_PARENT, APBC_UART1, 0x7, 3, 0, 0, &uart1_lock},
-+};
-+
-+static struct mmp_param_mux_clk apbc_mux_clks[] = {
-+	{0, "uart0_mux", uart_parent_names, ARRAY_SIZE(uart_parent_names), CLK_SET_RATE_PARENT, APBC_UART0, 4, 3, 0, &uart0_lock},
-+	{0, "uart1_mux", uart_parent_names, ARRAY_SIZE(uart_parent_names), CLK_SET_RATE_PARENT, APBC_UART1, 4, 3, 0, &uart1_lock},
-+	{0, "ssp0_mux", ssp_parent_names, ARRAY_SIZE(ssp_parent_names), 0, APBC_SSP0, 4, 3, 0, NULL},
-+	{0, "ssp2_mux", ssp_parent_names, ARRAY_SIZE(ssp_parent_names), 0, APBC_SSP2, 4, 3, 0, NULL},
-+};
-+
-+static void pxa1908_apb_periph_clk_init(struct pxa1908_clk_unit *pxa_unit)
-+{
-+	struct mmp_clk_unit *unit = &pxa_unit->unit;
-+
-+	mmp_clk_register_gate(NULL, "pwm01_apb_share", "pll1_d48",
-+			CLK_SET_RATE_PARENT,
-+			pxa_unit->apbc_base + APBC_PWM0,
-+			0x5, 1, 0, 0, &pwm0_lock);
-+	mmp_clk_register_gate(NULL, "pwm23_apb_share", "pll1_d48",
-+			CLK_SET_RATE_PARENT,
-+			pxa_unit->apbc_base + APBC_PWM2,
-+			0x5, 1, 0, 0, &pwm2_lock);
-+	mmp_register_mux_clks(unit, apbc_mux_clks, pxa_unit->apbc_base,
-+			ARRAY_SIZE(apbc_mux_clks));
-+	mmp_register_gate_clks(unit, apbc_gate_clks, pxa_unit->apbc_base,
-+			ARRAY_SIZE(apbc_gate_clks));
-+}
-+
-+static struct mmp_param_gate_clk apbcp_gate_clks[] = {
-+	{PXA1908_CLK_UART2, "uart2_clk", "uart2_mux", CLK_SET_RATE_PARENT, APBCP_UART2, 0x7, 0x3, 0x0, 0, &uart2_lock},
-+	{PXA1908_CLK_TWSI2, "twsi2_clk", "pll1_32", CLK_SET_RATE_PARENT, APBCP_TWSI2, 0x7, 0x3, 0x0, 0, NULL},
-+	{PXA1908_CLK_AICER, "ripc_clk", NULL, 0, APBCP_AICER, 0x7, 0x2, 0x0, 0, NULL},
-+};
-+
-+static struct mmp_param_mux_clk apbcp_mux_clks[] = {
-+	{0, "uart2_mux", uart_parent_names, ARRAY_SIZE(uart_parent_names), CLK_SET_RATE_PARENT, APBCP_UART2, 4, 3, 0, &uart2_lock},
-+};
-+
-+static void pxa1908_apb_p_periph_clk_init(struct pxa1908_clk_unit *pxa_unit)
-+{
-+	struct mmp_clk_unit *unit = &pxa_unit->unit;
-+
-+	mmp_register_mux_clks(unit, apbcp_mux_clks, pxa_unit->apbcp_base,
-+			ARRAY_SIZE(apbcp_mux_clks));
-+	mmp_register_gate_clks(unit, apbcp_gate_clks, pxa_unit->apbcp_base,
-+			ARRAY_SIZE(apbcp_gate_clks));
-+}
-+
-+static DEFINE_SPINLOCK(sdh0_lock);
-+static DEFINE_SPINLOCK(sdh1_lock);
-+static DEFINE_SPINLOCK(sdh2_lock);
-+
-+static const char * const sdh_parent_names[] = {"pll1_416", "pll1_624"};
-+
-+static struct mmp_clk_mix_config sdh_mix_config = {
-+	.reg_info = DEFINE_MIX_REG_INFO(3, 8, 2, 6, 11),
-+};
-+
-+static struct mmp_param_gate_clk apmu_gate_clks[] = {
-+	{PXA1908_CLK_USB, "usb_clk", NULL, 0, APMU_USB, 0x9, 0x9, 0x1, 0, NULL},
-+	{PXA1908_CLK_SDH0, "sdh0_clk", "sdh0_mix_clk", CLK_SET_RATE_PARENT | CLK_SET_RATE_UNGATE, APMU_SDH0, 0x12, 0x12, 0x0, 0, &sdh0_lock},
-+	{PXA1908_CLK_SDH1, "sdh1_clk", "sdh1_mix_clk", CLK_SET_RATE_PARENT | CLK_SET_RATE_UNGATE, APMU_SDH1, 0x12, 0x12, 0x0, 0, &sdh1_lock},
-+	{PXA1908_CLK_SDH2, "sdh2_clk", "sdh2_mix_clk", CLK_SET_RATE_PARENT | CLK_SET_RATE_UNGATE, APMU_SDH2, 0x12, 0x12, 0x0, 0, &sdh2_lock}
-+};
-+
-+static void pxa1908_axi_periph_clk_init(struct pxa1908_clk_unit *pxa_unit)
-+{
-+	struct mmp_clk_unit *unit = &pxa_unit->unit;
-+
-+	mmp_register_general_gate_clks(unit, pll1_gate_clks,
-+			pxa_unit->apmu_base, ARRAY_SIZE(pll1_gate_clks));
-+
-+	sdh_mix_config.reg_info.reg_clk_ctrl = pxa_unit->apmu_base + APMU_SDH0;
-+	mmp_clk_register_mix(NULL, "sdh0_mix_clk", sdh_parent_names,
-+			ARRAY_SIZE(sdh_parent_names), CLK_SET_RATE_PARENT,
-+			&sdh_mix_config, &sdh0_lock);
-+	sdh_mix_config.reg_info.reg_clk_ctrl = pxa_unit->apmu_base + APMU_SDH1;
-+	mmp_clk_register_mix(NULL, "sdh1_mix_clk", sdh_parent_names,
-+			ARRAY_SIZE(sdh_parent_names), CLK_SET_RATE_PARENT,
-+			&sdh_mix_config, &sdh1_lock);
-+	sdh_mix_config.reg_info.reg_clk_ctrl = pxa_unit->apmu_base + APMU_SDH2;
-+	mmp_clk_register_mix(NULL, "sdh2_mix_clk", sdh_parent_names,
-+			ARRAY_SIZE(sdh_parent_names), CLK_SET_RATE_PARENT,
-+			&sdh_mix_config, &sdh2_lock);
-+
-+	mmp_register_gate_clks(unit, apmu_gate_clks, pxa_unit->apmu_base,
-+			ARRAY_SIZE(apmu_gate_clks));
-+}
-+
-+static void __init pxa1908_apbc_clk_init(struct device_node *np)
-+{
-+	struct pxa1908_clk_unit *pxa_unit;
-+
-+	pxa_unit = kzalloc(sizeof(*pxa_unit), GFP_KERNEL);
-+	if (!pxa_unit)
-+		return;
-+
-+	pxa_unit->apbc_base = of_iomap(np, 0);
-+	if (!pxa_unit->apbc_base) {
-+		pr_err("failed to map apbc registers\n");
-+		kfree(pxa_unit);
-+		return;
-+	}
-+
-+	mmp_clk_init(np, &pxa_unit->unit, APBC_NR_CLKS);
-+
-+	pxa1908_apb_periph_clk_init(pxa_unit);
-+}
-+CLK_OF_DECLARE(pxa1908_apbc, "marvell,pxa1908-apbc", pxa1908_apbc_clk_init);
-+
-+static void __init pxa1908_apbcp_clk_init(struct device_node *np)
-+{
-+	struct pxa1908_clk_unit *pxa_unit;
-+
-+	pxa_unit = kzalloc(sizeof(*pxa_unit), GFP_KERNEL);
-+	if (!pxa_unit)
-+		return;
-+
-+	pxa_unit->apbcp_base = of_iomap(np, 0);
-+	if (!pxa_unit->apbcp_base) {
-+		pr_err("failed to map apbcp registers\n");
-+		kfree(pxa_unit);
-+		return;
-+	}
-+
-+	mmp_clk_init(np, &pxa_unit->unit, APBCP_NR_CLKS);
-+
-+	pxa1908_apb_p_periph_clk_init(pxa_unit);
-+}
-+CLK_OF_DECLARE(pxa1908_apbcp, "marvell,pxa1908-apbcp", pxa1908_apbcp_clk_init);
-+
-+static void __init pxa1908_mpmu_clk_init(struct device_node *np)
-+{
-+	struct pxa1908_clk_unit *pxa_unit;
-+
-+	pxa_unit = kzalloc(sizeof(*pxa_unit), GFP_KERNEL);
-+	if (!pxa_unit)
-+		return;
-+
-+	pxa_unit->mpmu_base = of_iomap(np, 0);
-+	if (!pxa_unit->mpmu_base) {
-+		pr_err("failed to map mpmu registers\n");
-+		kfree(pxa_unit);
-+		return;
-+	}
-+
-+	mmp_clk_init(np, &pxa_unit->unit, MPMU_NR_CLKS);
-+
-+	pxa1908_pll_init(pxa_unit);
-+}
-+CLK_OF_DECLARE(pxa1908_mpmu, "marvell,pxa1908-mpmu", pxa1908_mpmu_clk_init);
-+
-+static void __init pxa1908_apmu_clk_init(struct device_node *np)
-+{
-+	struct pxa1908_clk_unit *pxa_unit;
-+
-+	pxa_unit = kzalloc(sizeof(*pxa_unit), GFP_KERNEL);
-+	if (!pxa_unit)
-+		return;
-+
-+	pxa_unit->apmu_base = of_iomap(np, 0);
-+	if (!pxa_unit->apmu_base) {
-+		pr_err("failed to map apmu registers\n");
-+		kfree(pxa_unit);
-+		return;
-+	}
-+
-+	mmp_clk_init(np, &pxa_unit->unit, APMU_NR_CLKS);
-+
-+	pxa1908_axi_periph_clk_init(pxa_unit);
-+}
-+CLK_OF_DECLARE(pxa1908_apmu, "marvell,pxa1908-apmu", pxa1908_apmu_clk_init);
+Hans, I believe you have some devices that use this piece of code,
+is it possible to give a test run on (one of) them?
+
+In v3:
+- incorporated series by Jani
+- incorporated couple of precursor patches by Hans
+- added Rb tag for used to be first three patches (Andi)
+- rebased on top of the above changes
+- fixed indexing for multi-community devices, such as Cherry View
+
+In v2:
+- added a few cleanup patches
+- reworked to use dynamic GPIO lookup tables
+- converted CHV as well
+
+Andy Shevchenko (8):
+  drm/i915/dsi: Replace while(1) with one with clear exit condition
+  drm/i915/dsi: Get rid of redundant 'else'
+  drm/i915/dsi: Replace check with a (missing) MIPI sequence name
+  drm/i915/dsi: Extract common soc_gpio_set_value() helper
+  drm/i915/dsi: Replace poking of VLV GPIOs behind the driver's back
+  drm/i915/dsi: Prepare soc_gpio_set_value() to distinguish GPIO
+    communities
+  drm/i915/dsi: Replace poking of CHV GPIOs behind the driver's back
+  drm/i915/iosf: Drop unused APIs
+
+Hans de Goede (2):
+  drm/i915/dsi: Remove GPIO lookup table at the end of
+    intel_dsi_vbt_gpio_init()
+  drm/i915/dsi: Fix wrong initial value for GPIOs in bxt_exec_gpio()
+
+Jani Nikula (5):
+  drm/i915/dsi: assume BXT gpio works for non-native GPIO
+  drm/i915/dsi: switch mipi_exec_gpio() from dev_priv to i915
+  drm/i915/dsi: clarify GPIO exec sequence
+  drm/i915/dsi: rename platform specific *_exec_gpio() to
+    *_gpio_set_value()
+  drm/i915/dsi: bxt/icl GPIO set value do not need gpio source
+
+ drivers/gpu/drm/i915/display/intel_dsi_vbt.c | 355 +++++++------------
+ drivers/gpu/drm/i915/vlv_sideband.c          |  17 -
+ drivers/gpu/drm/i915/vlv_sideband.h          |   3 -
+ 3 files changed, 137 insertions(+), 238 deletions(-)
 
 -- 
-2.42.0
-
+2.40.0.1.gaa8946217a0b
 
