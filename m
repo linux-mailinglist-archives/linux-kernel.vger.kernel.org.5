@@ -2,67 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C4067E0216
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 12:20:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 751137E0219
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 12:20:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346538AbjKCLRA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 07:17:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34598 "EHLO
+        id S1346591AbjKCLRF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 07:17:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346433AbjKCLQz (ORCPT
+        with ESMTP id S1346172AbjKCLQ5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 07:16:55 -0400
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C12541A8
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 04:16:48 -0700 (PDT)
-Received: by mail-yb1-xb32.google.com with SMTP id 3f1490d57ef6-d9b9adaf291so1883313276.1
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Nov 2023 04:16:48 -0700 (PDT)
+        Fri, 3 Nov 2023 07:16:57 -0400
+Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A604AD53
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 04:16:53 -0700 (PDT)
+Received: by mail-yb1-xb34.google.com with SMTP id 3f1490d57ef6-da2b9234a9fso1908198276.3
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Nov 2023 04:16:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699010208; x=1699615008; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1699010212; x=1699615012; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=xKHI0k8nzChvhVsaB9D37QiIrFajCLKKOBjE3n1Grbw=;
-        b=smwzoLdOi4Ps+70SlYBJlmazovFek2oLvKyNwCVQPSwAUoEPUj6DS+X3S5bDfzFf/T
-         AKWQwsfhNYeJO59Fx77fyWz8nlxTSh8xy6fccnVLPOheG0vq28GRGehr1gqUeU4POf9a
-         kl9y5AMb2X6etfW/Vq0Vk8JYSD1wTtLbgFcP/il7vIG8SsMW6elwOKc6YsR6J2Mk7saP
-         hb4O5QXzcq8SQyYKpvu/m84HnFf6Bib5hlJmnifHKMtJeUzPGZ/jP4rbnLuRIGggjI08
-         JT7o3xMyKkh9FyfsUHdaZyAq2GEkWH7f+aXP8R0FUO4O5BMl6fuZ+BrUixq00X6KGD8H
-         Wm9Q==
+        bh=/bnG70HwW3iO72CF0/4itOzvrNtdpkPDD7Xih6QQ8lo=;
+        b=Tu0xmNWsQ4yH2sbys9vS9BOvbtpYa3ssLU0ejfBcHC+v9MEZl8bMPYk6IMZdBySPUU
+         5/UUxpbJ52y53QcvamQZ+mnTSjn2jjVKSFPKUGkYJS8gXcEQNSD3aE4laBKNDQ87B2xc
+         ObG9Zyh2SE70S7FDsZ7F6qn0r6Z9199RMSBcKTLn7oKomaZpE3bsSnQsUPTf9E0t7AUU
+         /MfuL4QBsRF+wfyVIEIp9zx0jHWe4ioIJEHUs/Egv9ApIe7f2PkZZmGnPz0Mr610JJ/M
+         0wEnUHCz7HPyXSYK+9qg2fuZmSLFNuSKj8BywJPPjknF51Mi3zD0v5orrWqFgrIGgKct
+         508A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699010208; x=1699615008;
+        d=1e100.net; s=20230601; t=1699010212; x=1699615012;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=xKHI0k8nzChvhVsaB9D37QiIrFajCLKKOBjE3n1Grbw=;
-        b=I6NeMuGIRumZ+D6yQ4xc6wvR26GI4TsukFyoTN5wgEb/RBo8f84klwVtS7eh2TknqS
-         ed32onP2AJKVD8luGjc6fp9m/aiPpAxMdsAxsfPlzcbyDD5N1zNoYa3fI4dJr96pyuAR
-         oUwRE+r/Oygvlo7/NO85ZaYTaPby/fhHqdbRH4WNcdUZs1YR3tJ28Drr0rYfOSUaLwwu
-         63PlhsD2dGY7QxjtTi8C0hLy8ZT6Aw/XvZ9sRhZU4HWP4Op9gimkwlxlRVy2K1F0cFGI
-         dvB/ddJzu3OEpldWANZS/IXe6k/lVB4IMSH3YtaDR8Po6cUvKLDqU8Xx0bNpkFfYA712
-         FAVQ==
-X-Gm-Message-State: AOJu0Yx669EVJ6T1bSQgq1nigsMGSljyx3rDDyadFnL6aq1eeY510wLe
-        UYdnIm76WD7efVwK28gnzxHoV/VqWBmQpAGDR0BE5Q==
-X-Google-Smtp-Source: AGHT+IGmV803BXUlUgCOSEnde/6YW5dwT6J76wUXUY/NtHZW3BUKdm1jumFpk8mkx5rjrlMiHzX+lacdXUIn3C8xP2w=
-X-Received: by 2002:a25:dfc7:0:b0:d0f:846c:ef7b with SMTP id
- w190-20020a25dfc7000000b00d0f846cef7bmr18708560ybg.17.1699010207876; Fri, 03
- Nov 2023 04:16:47 -0700 (PDT)
+        bh=/bnG70HwW3iO72CF0/4itOzvrNtdpkPDD7Xih6QQ8lo=;
+        b=nQqR1KktSz2gs4+AR0oJ/GT5vaD8mmErL1IMrt84yuw6141Bq58OlhA8M0aDZNJ3JI
+         DTdrv5nNY1EuJGDAfA6bWPpBJr3ZZsrX9DiKBp4vBfCwUF83yRvKHZ12TKztLcwh4KUX
+         q57U+RfT5yRhLxuVxcs6XnLG/3HwF/qJkZH85Tc4r0Zef/BZcVMn6kZNoEMQofe7n+L6
+         LqeVmnMsqbhCp88eTbZoOeSdTHOGO+Ox/hms0yV6CEoUYlks4v3jtDr+PonqFhDuWWOu
+         +fgJbhHN5eWYKoVdurymOktf0/FUlCOApvXtLx1am39NBmkh3X1ZfAHjOCLZ7a/AqMlk
+         jc8A==
+X-Gm-Message-State: AOJu0YxWn7UI0zKLT8gZjryhLA+AyiJcptAyUc5cYSqhwQS/flj/QpHh
+        WAGuKYOTSf1oInYYfzffUTbhKsgZdT9e1xMePGyygw==
+X-Google-Smtp-Source: AGHT+IEXTzL2QO+gTiJqUA6q4a7gjIAAnUOgnpabV9KOAPQ6A0FsX2NCHedPda00oErtIg1w+Zm70o7SWllTKyODvIA=
+X-Received: by 2002:a25:da0d:0:b0:d85:eac0:c7d2 with SMTP id
+ n13-20020a25da0d000000b00d85eac0c7d2mr19685721ybf.6.1699010212336; Fri, 03
+ Nov 2023 04:16:52 -0700 (PDT)
 MIME-Version: 1.0
-References: <20231026061458.1116276-1-n-yadav@ti.com> <8b7f948d-316c-4135-875a-de455ff4849c@intel.com>
- <8148dae9-e3fc-4589-ba57-a3f7a3e63b80@intel.com> <7054b3bb-de99-3fb0-5f17-78249f31c53f@ti.com>
- <42f1b9a6-2dad-42ca-a41c-3a57f87323cc@ti.com>
-In-Reply-To: <42f1b9a6-2dad-42ca-a41c-3a57f87323cc@ti.com>
+References: <20231030224809.59245-1-beanhuo@iokpp.de>
+In-Reply-To: <20231030224809.59245-1-beanhuo@iokpp.de>
 From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Fri, 3 Nov 2023 12:16:12 +0100
-Message-ID: <CAPDyKFrCSTW3G6H7qS89d+UQ6RJcAYcKSPULVT8J7XKsUDpHdw@mail.gmail.com>
-Subject: Re: [PATCH] mmc: sdhci_am654: fix start loop index for TAP value parsing
-To:     Vignesh Raghavendra <vigneshr@ti.com>
-Cc:     Nitin Yadav <n-yadav@ti.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Fri, 3 Nov 2023 12:16:16 +0100
+Message-ID: <CAPDyKFqXa_nVBTSXwUqecAAiDkFxdqHjq1QOWbe0Oa9kkvpEZA@mail.gmail.com>
+Subject: Re: [v5] mmc: Add quirk MMC_QUIRK_BROKEN_CACHE_FLUSH for Micron eMMC Q2J54A
+To:     Bean Huo <beanhuo@iokpp.de>
+Cc:     cLoehle@hyperstone.com, adrian.hunter@intel.com,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bean Huo <beanhuo@micron.com>,
+        Rafael Beims <rafael.beims@toradex.com>, stable@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,138 +69,132 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 30 Oct 2023 at 09:07, Vignesh Raghavendra <vigneshr@ti.com> wrote:
+On Mon, 30 Oct 2023 at 23:48, Bean Huo <beanhuo@iokpp.de> wrote:
 >
-> Hi Nitin, Adrian
+> From: Bean Huo <beanhuo@micron.com>
 >
-> On 27/10/23 11:41, Nitin Yadav wrote:
-> > Hi Adrian,
-> >
-> > On 26/10/23 12:33, Adrian Hunter wrote:
-> >> On 26/10/23 10:00, Adrian Hunter wrote:
-> >>> On 26/10/23 09:14, Nitin Yadav wrote:
-> >>>> ti,otap-del-sel-legacy/ti,itap-del-sel-legacy passed from DT
-> >>>> are currently ignored for all SD/MMC and eMMC modes. Fix this
-> >>>> by making start loop index to MMC_TIMING_LEGACY.
-> >>>>
-> >>>> Fixes: 8ee5fc0e0b3be ("mmc: sdhci_am654: Update OTAPDLY writes")
-> >>>>
-> >>>
-> >>> There isn't usually a blank line here
-> >>>
-> >>> Perhaps a Cc: stable@vger.kernel.org tag?
-> >>>
-> >>>> Signed-off-by: Nitin Yadav <n-yadav@ti.com>
-> >>>
-> >>> Nevertheless:
-> >>>
-> >>> Acked-by: Adrian Hunter <adrian.hunter@intel.com>
-> >>
-> >> Sorry, sent that prematurely - see comment below
-> >>
-> >>>
-> >>>
-> >>>> ---
-> >>>>  drivers/mmc/host/sdhci_am654.c | 2 +-
-> >>>>  1 file changed, 1 insertion(+), 1 deletion(-)
-> >>>>
-> >>>> diff --git a/drivers/mmc/host/sdhci_am654.c b/drivers/mmc/host/sdhci_am654.c
-> >>>> index 544aaaf5cb0f..aae9d255c6a1 100644
-> >>>> --- a/drivers/mmc/host/sdhci_am654.c
-> >>>> +++ b/drivers/mmc/host/sdhci_am654.c
-> >>>> @@ -606,7 +606,7 @@ static int sdhci_am654_get_otap_delay(struct sdhci_host *host,
-> >>>>            return 0;
-> >>>>    }
-> >>>>
-> >>
-> >> Isn't the MMC_TIMING_LEGACY information read at the top of
-> >> sdhci_am654_get_otap_delay()?
-> > Loop also take care of ITAP. Looks like at some point single property
-> > ti,otap-del-sel was used for all modes and then we moved to one property
-> > per mode:
-> > https://lore.kernel.org/r/20200108150920.14547-3-faiz_abbas@ti.com
-> > (since v5.7)
+> Micron MTFC4GACAJCN eMMC supports cache but requires that flush cache
+> operation be allowed only after a write has occurred. Otherwise, the
+> cache flush command or subsequent commands will time out.
 >
-> Looks like ti,otap-del-sel is deprecated for a while now (since v5.7+).
-> I think that's sufficient enough time to drop it now (don't see any in
-> kernel DT use this property). Lets drop the above code which handles
-> MMC_TIMING_LEGACY separately, so that below for() loop can handle the
-> whole set of bindings efficiently.
->
-> Since this patch is marked for stable, can we get rid of the check for
-> deprecated property in a follow up patch?
+> Signed-off-by: Bean Huo <beanhuo@micron.com>
+> Signed-off-by: Rafael Beims <rafael.beims@toradex.com>
+> Cc: stable@vger.kernel.org
 
-This seems reasonable to me, however, let's also get the DT
-maintainers view on this.
-
-I have queued up $subject patch as a fix and tagged it for stable
-kernels. Feel free to post the patches to remove the support for the
-deprecated binding on top.
+Applied for fixes, thanks!
 
 Kind regards
 Uffe
 
 
+> ---
 >
-> Something like below? (completely untested):
+> Changelog:
+> v4--v5:
+>     1. In the case of a successful flush, set writing_flag in _mmc_flush_cache()
+> v3--v4:
+>     1. Add helper function for this quirk in drivers/mmc/core/card.h.
+>     2. Set card->written_flag only for REQ_OP_WRITE.
+> v2--v3:
+>     1. Set card->written_flag in mmc_blk_mq_issue_rq().
+> v1--v2:
+>     1. Add Rafael's test-tag, and Co-developed-by.
+>     2. Check host->card whether NULL or not in __mmc_start_request() before asserting host->card->->quirks
+> ---
+>  drivers/mmc/core/block.c  | 4 +++-
+>  drivers/mmc/core/card.h   | 4 ++++
+>  drivers/mmc/core/mmc.c    | 8 ++++++--
+>  drivers/mmc/core/quirks.h | 7 ++++---
+>  include/linux/mmc/card.h  | 2 ++
+>  5 files changed, 19 insertions(+), 6 deletions(-)
 >
+> diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
+> index 3a8f27c3e310..152dfe593c43 100644
+> --- a/drivers/mmc/core/block.c
+> +++ b/drivers/mmc/core/block.c
+> @@ -2381,8 +2381,10 @@ enum mmc_issued mmc_blk_mq_issue_rq(struct mmc_queue *mq, struct request *req)
+>                         }
+>                         ret = mmc_blk_cqe_issue_flush(mq, req);
+>                         break;
+> -               case REQ_OP_READ:
+>                 case REQ_OP_WRITE:
+> +                       card->written_flag = true;
+> +                       fallthrough;
+> +               case REQ_OP_READ:
+>                         if (host->cqe_enabled)
+>                                 ret = mmc_blk_cqe_issue_rw_rq(mq, req);
+>                         else
+> diff --git a/drivers/mmc/core/card.h b/drivers/mmc/core/card.h
+> index 4edf9057fa79..b7754a1b8d97 100644
+> --- a/drivers/mmc/core/card.h
+> +++ b/drivers/mmc/core/card.h
+> @@ -280,4 +280,8 @@ static inline int mmc_card_broken_sd_cache(const struct mmc_card *c)
+>         return c->quirks & MMC_QUIRK_BROKEN_SD_CACHE;
+>  }
 >
-> diff --git a/drivers/mmc/host/sdhci_am654.c b/drivers/mmc/host/sdhci_am654.c
-> index c125485ba80e..50c8d3051096 100644
-> --- a/drivers/mmc/host/sdhci_am654.c
-> +++ b/drivers/mmc/host/sdhci_am654.c
-> @@ -577,32 +577,17 @@ static int sdhci_am654_get_otap_delay(struct sdhci_host *host,
->         int i;
->         int ret;
+> +static inline int mmc_card_broken_cache_flush(const struct mmc_card *c)
+> +{
+> +       return c->quirks & MMC_QUIRK_BROKEN_CACHE_FLUSH;
+> +}
+>  #endif
+> diff --git a/drivers/mmc/core/mmc.c b/drivers/mmc/core/mmc.c
+> index 8180983bd402..11053f920ac4 100644
+> --- a/drivers/mmc/core/mmc.c
+> +++ b/drivers/mmc/core/mmc.c
+> @@ -2086,13 +2086,17 @@ static int _mmc_flush_cache(struct mmc_host *host)
+>  {
+>         int err = 0;
 >
-> -       ret = device_property_read_u32(dev, td[MMC_TIMING_LEGACY].otap_binding,
-> -                                &sdhci_am654->otap_del_sel[MMC_TIMING_LEGACY]);
-> -       if (ret) {
-> -               /*
-> -                * ti,otap-del-sel-legacy is mandatory, look for old binding
-> -                * if not found.
-> -                */
-> -               ret = device_property_read_u32(dev, "ti,otap-del-sel",
-> -                                              &sdhci_am654->otap_del_sel[0]);
-> -               if (ret) {
-> -                       dev_err(dev, "Couldn't find otap-del-sel\n");
-> -
-> -                       return ret;
-> -               }
-> -
-> -               dev_info(dev, "Using legacy binding ti,otap-del-sel\n");
-> -               sdhci_am654->legacy_otapdly = true;
-> -
-> -               return 0;
-> -       }
-> -
-> -       for (i = MMC_TIMING_MMC_HS; i <= MMC_TIMING_MMC_HS400; i++) {
-> +       for (i = MMC_TIMING_LEGACY; i <= MMC_TIMING_MMC_HS400; i++) {
->
->                 ret = device_property_read_u32(dev, td[i].otap_binding,
->                                                &sdhci_am654->otap_del_sel[i]);
->                 if (ret) {
-> +                       if (i == MMC_TIMING_LEGACY) {
-> +                               dev_err(dev, "ti,otap-del-sel-legacy is mandatory");
-> +                               return ret;
-> +                       }
+> +       if (mmc_card_broken_cache_flush(host->card) && !host->card->written_flag)
+> +               return err;
 > +
->                         dev_dbg(dev, "Couldn't find %s\n",
->                                 td[i].otap_binding);
->                         /*
+>         if (_mmc_cache_enabled(host)) {
+>                 err = mmc_switch(host->card, EXT_CSD_CMD_SET_NORMAL,
+>                                  EXT_CSD_FLUSH_CACHE, 1,
+>                                  CACHE_FLUSH_TIMEOUT_MS);
+>                 if (err)
+> -                       pr_err("%s: cache flush error %d\n",
+> -                              mmc_hostname(host), err);
+> +                       pr_err("%s: cache flush error %d\n", mmc_hostname(host), err);
+> +               else
+> +                       host->card->written_flag = false;
+>         }
 >
+>         return err;
+> diff --git a/drivers/mmc/core/quirks.h b/drivers/mmc/core/quirks.h
+> index 32b64b564fb1..5e68c8b4cdca 100644
+> --- a/drivers/mmc/core/quirks.h
+> +++ b/drivers/mmc/core/quirks.h
+> @@ -110,11 +110,12 @@ static const struct mmc_fixup __maybe_unused mmc_blk_fixups[] = {
+>                   MMC_QUIRK_TRIM_BROKEN),
 >
+>         /*
+> -        * Micron MTFC4GACAJCN-1M advertises TRIM but it does not seems to
+> -        * support being used to offload WRITE_ZEROES.
+> +        * Micron MTFC4GACAJCN-1M supports TRIM but does not appear to suppor
+> +        * WRITE_ZEROES offloading. It also supports caching, but the cache can
+> +        * only be flushed after a write has occurred.
+>          */
+>         MMC_FIXUP("Q2J54A", CID_MANFID_MICRON, 0x014e, add_quirk_mmc,
+> -                 MMC_QUIRK_TRIM_BROKEN),
+> +                 MMC_QUIRK_TRIM_BROKEN | MMC_QUIRK_BROKEN_CACHE_FLUSH),
 >
-> >>
-> >>>> -  for (i = MMC_TIMING_MMC_HS; i <= MMC_TIMING_MMC_HS400; i++) {
-> >>>> +  for (i = MMC_TIMING_LEGACY; i <= MMC_TIMING_MMC_HS400; i++) {
-> >>>>
-> >>>>            ret = device_property_read_u32(dev, td[i].otap_binding,
-> >>>>                                           &sdhci_am654->otap_del_sel[i]);
-> >>>
-> >>
-> >
+>         /*
+>          * Kingston EMMC04G-M627 advertises TRIM but it does not seems to
+> diff --git a/include/linux/mmc/card.h b/include/linux/mmc/card.h
+> index daa2f40d9ce6..7b12eebc5586 100644
+> --- a/include/linux/mmc/card.h
+> +++ b/include/linux/mmc/card.h
+> @@ -295,7 +295,9 @@ struct mmc_card {
+>  #define MMC_QUIRK_BROKEN_HPI   (1<<13)         /* Disable broken HPI support */
+>  #define MMC_QUIRK_BROKEN_SD_DISCARD    (1<<14) /* Disable broken SD discard support */
+>  #define MMC_QUIRK_BROKEN_SD_CACHE      (1<<15) /* Disable broken SD cache support */
+> +#define MMC_QUIRK_BROKEN_CACHE_FLUSH   (1<<16) /* Don't flush cache until the write has occurred */
 >
+> +       bool                    written_flag;   /* Indicates eMMC has been written since power on */
+>         bool                    reenable_cmdq;  /* Re-enable Command Queue */
+>
+>         unsigned int            erase_size;     /* erase size in sectors */
 > --
-> Regards
-> Vignesh
+> 2.34.1
+>
