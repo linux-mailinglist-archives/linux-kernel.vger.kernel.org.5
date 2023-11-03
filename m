@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6956A7E0444
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 15:04:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DBA987E0449
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 15:04:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377866AbjKCOEO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 10:04:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50562 "EHLO
+        id S1377871AbjKCOEN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 10:04:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377848AbjKCOEC (ORCPT
+        with ESMTP id S1377781AbjKCOD6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 10:04:02 -0400
+        Fri, 3 Nov 2023 10:03:58 -0400
 Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EEE8D4D;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F403D49;
         Fri,  3 Nov 2023 07:03:55 -0700 (PDT)
 Received: from dggpemm100001.china.huawei.com (unknown [172.30.72.54])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4SMMpQ12P0z1P7pT;
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4SMMpQ1KByz1P7pc;
         Fri,  3 Nov 2023 22:00:46 +0800 (CST)
 Received: from localhost.localdomain (10.175.112.125) by
  dggpemm100001.china.huawei.com (7.185.36.93) with Microsoft SMTP Server
@@ -29,9 +29,9 @@ CC:     <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
         David Hildenbrand <david@redhat.com>,
         <linux-s390@vger.kernel.org>,
         Kefeng Wang <wangkefeng.wang@huawei.com>
-Subject: [PATCH 13/18] mm: memory: use a folio in insert_page_into_pte_locked()
-Date:   Fri, 3 Nov 2023 22:01:14 +0800
-Message-ID: <20231103140119.2306578-14-wangkefeng.wang@huawei.com>
+Subject: [PATCH 14/18] mm: remove mm_counter_file()
+Date:   Fri, 3 Nov 2023 22:01:15 +0800
+Message-ID: <20231103140119.2306578-15-wangkefeng.wang@huawei.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20231103140119.2306578-1-wangkefeng.wang@huawei.com>
 References: <20231103140119.2306578-1-wangkefeng.wang@huawei.com>
@@ -52,35 +52,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use mm_counter_file_folio() to save one compound_head() call in
-insert_page_into_pte_locked().
+Since no one call mm_counter_file(), remove it.
 
 Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
 ---
- mm/memory.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ include/linux/mm.h | 7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
 
-diff --git a/mm/memory.c b/mm/memory.c
-index 2d90da70a1c8..584fe9a550b9 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -1845,11 +1845,14 @@ static int validate_page_before_insert(struct page *page)
- static int insert_page_into_pte_locked(struct vm_area_struct *vma, pte_t *pte,
- 			unsigned long addr, struct page *page, pgprot_t prot)
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index f5f76504b212..9353c5709c45 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -2583,6 +2583,7 @@ static inline void dec_mm_counter(struct mm_struct *mm, int member)
+ 	mm_trace_rss_stat(mm, member);
+ }
+ 
++/* Optimized variant when folio is already known not to be anon */
+ static inline int mm_counter_file_folio(struct folio *folio)
  {
-+	struct folio *folio;
-+
- 	if (!pte_none(ptep_get(pte)))
- 		return -EBUSY;
-+	folio = page_folio(page);
- 	/* Ok, finally just insert the thing.. */
--	get_page(page);
--	inc_mm_counter(vma->vm_mm, mm_counter_file(page));
-+	folio_get(folio);
-+	inc_mm_counter(vma->vm_mm, mm_counter_file_folio(folio));
- 	page_add_file_rmap(page, vma, false);
- 	set_pte_at(vma->vm_mm, addr, pte, mk_pte(page, prot));
- 	return 0;
+ 	if (folio_test_swapbacked(folio))
+@@ -2590,12 +2591,6 @@ static inline int mm_counter_file_folio(struct folio *folio)
+ 	return MM_FILEPAGES;
+ }
+ 
+-/* Optimized variant when page is already known not to be PageAnon */
+-static inline int mm_counter_file(struct page *page)
+-{
+-	return mm_counter_file_folio(page_folio(page));
+-}
+-
+ static inline int mm_counter_folio(struct folio *folio)
+ {
+ 	if (folio_test_anon(folio))
 -- 
 2.27.0
 
