@@ -2,84 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BAD127E028A
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 13:06:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 576677E0287
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 13:06:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346628AbjKCMGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 08:06:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39018 "EHLO
+        id S1346571AbjKCMGj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 08:06:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346653AbjKCMGv (ORCPT
+        with ESMTP id S1346467AbjKCMGh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 08:06:51 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EF34D57;
-        Fri,  3 Nov 2023 05:06:41 -0700 (PDT)
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A3BZGQA031141;
-        Fri, 3 Nov 2023 12:06:20 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=kKIHQVcNCXx8xzP1vq3F8HzZ8M04S9wN1C8UYOfoloA=;
- b=FPWERMw0r5QgRbvxUes7znJKuko1j+Qnt/Q7jqFKQSaiAnMyetfMEUrKjelOaqMEDTYd
- N8RAChAlsOcs0IOO+X5fFLQFe1ogTu2ab81C6h1A/A5m2FphGrdrLJUmMCZAaj1N/4Fn
- isTIQXetsGjlHgC5zsd5QY99irG5OeaKn9lytNfYLvb+dCgMP26w3y+iKgiDyytQ5Cc+
- HQwmLLT4+ORubG218bNe58rWdlC/mzyoKbJd7tBPZGQmThJD+fj7vpOUDg9T5TR+Q3RW
- qnrC6beojyI0enTHjB9uCkgWkAUMqn4+zychmw08B1RC8a2JpNIQx4NZjoqy864nPzfO nA== 
-Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u4v8mrh7g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 03 Nov 2023 12:06:19 +0000
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-        by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3A3C6Iv4008003
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 3 Nov 2023 12:06:18 GMT
-Received: from [10.216.26.1] (10.80.80.8) by nasanex01a.na.qualcomm.com
- (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Fri, 3 Nov
- 2023 05:06:13 -0700
-Message-ID: <02a67a6d-30fd-4b15-349d-1cd8afab13ca@quicinc.com>
-Date:   Fri, 3 Nov 2023 17:36:09 +0530
+        Fri, 3 Nov 2023 08:06:37 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A48571BC;
+        Fri,  3 Nov 2023 05:06:31 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BFFD5C433C8;
+        Fri,  3 Nov 2023 12:06:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1699013191;
+        bh=l8la88+WIRco7bNmYSw5aIS4j73NGdDemhYyZdVP1A8=;
+        h=Date:From:To:Cc:Subject:From;
+        b=rB6DdT6t5D5wfHA3gEdGLwrXeFb18HXJvuCSIZAOEBJv4Fn9o6Ixicf5S4EV7Fcqg
+         ST4KtWJ8ojtsQL14ricYBharunNHX/96Gmx/tyF1K3w1QtKW3azeFAcd3yBxmlCeuP
+         KNzC+FBxE+yJYM8cISSoLp9+Y/CQvvKU8sc8AkaU=
+Date:   Fri, 3 Nov 2023 13:06:27 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Jiri Slaby <jslaby@suse.cz>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
+Subject: [GIT PULL] TTY/Serial driver updates for 6.7-rc1
+Message-ID: <ZUTiQ-zSU7oE1BhJ@kroah.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.1
-Subject: Re: [RFC PATCH 1/5] mtd: nand: ecc-qcom: Add support for ECC Engine
- Driver
-Content-Language: en-US
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-CC:     <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
-        <conor+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <richard@nod.at>, <vigneshr@ti.com>, <broonie@kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
-        <linux-spi@vger.kernel.org>, <quic_srichara@quicinc.com>,
-        <qpic_varada@quicinc.com>
-References: <20231031120307.1600689-1-quic_mdalam@quicinc.com>
- <20231031120307.1600689-2-quic_mdalam@quicinc.com>
- <20231031162856.1d9e3246@xps-13>
-From:   Md Sadre Alam <quic_mdalam@quicinc.com>
-In-Reply-To: <20231031162856.1d9e3246@xps-13>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: YIFGWj8pYVzMeszAA2MTkWchuZn1GNCH
-X-Proofpoint-ORIG-GUID: YIFGWj8pYVzMeszAA2MTkWchuZn1GNCH
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-03_12,2023-11-02_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 adultscore=0
- bulkscore=0 impostorscore=0 mlxscore=0 malwarescore=0 mlxlogscore=999
- spamscore=0 clxscore=1015 suspectscore=0 priorityscore=1501
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2310240000 definitions=main-2311030101
-X-Spam-Status: No, score=-6.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -88,215 +47,495 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The following changes since commit 58720809f52779dc0f08e53e54b014209d13eebb:
 
+  Linux 6.6-rc6 (2023-10-15 13:34:39 -0700)
 
-On 10/31/2023 8:58 PM, Miquel Raynal wrote:
-> Hi,
-> 
-> quic_mdalam@quicinc.com wrote on Tue, 31 Oct 2023 17:33:03 +0530:
-> 
-> Commit log is missing.
+are available in the Git repository at:
 
-Having a separate device node for ECC was NAK-ed
-https://www.spinics.net/lists/linux-arm-msm/msg177596.html
+  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/tty.git tags/tty-6.7-rc1
 
-It is fine to drop this patch ? keep ECC support inlined in both
-raw nand and Serial nand driver.
+for you to fetch changes up to 64ebf8797249e792af2143eb9e4bd404d10a022e:
 
+  serdev: Replace custom code with device_match_acpi_handle() (2023-10-27 13:04:11 +0200)
 
-> 
->> Signed-off-by: Md Sadre Alam <quic_mdalam@quicinc.com>
->> Signed-off-by: Sricharan R <quic_srichara@quicinc.com>
-> 
-> If Sricharan is a co developer you need to use the right tags. Please
-> have a look at the documentation. Using the two SoB here does not mean
-> anything
-Ok will fix
+----------------------------------------------------------------
+TTY/Serial changes for 6.7-rc1
 
-> 
->> ---
->>   drivers/mtd/nand/Kconfig    |   7 ++
->>   drivers/mtd/nand/Makefile   |   1 +
->>   drivers/mtd/nand/ecc-qcom.c | 198 ++++++++++++++++++++++++++++++++++++
->>   3 files changed, 206 insertions(+)
->>   create mode 100644 drivers/mtd/nand/ecc-qcom.c
->>
->> diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
->> index 5b0c2c95f10c..333cec8187c8 100644
->> --- a/drivers/mtd/nand/Kconfig
->> +++ b/drivers/mtd/nand/Kconfig
->> @@ -61,6 +61,13 @@ config MTD_NAND_ECC_MEDIATEK
->>   	help
->>   	  This enables support for the hardware ECC engine from Mediatek.
->>   
->> +config MTD_NAND_ECC_QCOM
->> +	tristate "Qualcomm hardware ECC engine"
->> +	depends on ARCH_QCOM
-> 
-> Same comment as Mark regarding COMPILE_TEST
-Ok
-> 
->> +	select MTD_NAND_ECC
->> +	help
->> +	  This enables support for the hardware ECC engine from Qualcomm.
->> +
->>   endmenu
->>   
->>   endmenu
->> diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
->> index 19e1291ac4d5..c73b8a3456ec 100644
->> --- a/drivers/mtd/nand/Makefile
->> +++ b/drivers/mtd/nand/Makefile
->> @@ -3,6 +3,7 @@
->>   nandcore-objs := core.o bbt.o
->>   obj-$(CONFIG_MTD_NAND_CORE) += nandcore.o
->>   obj-$(CONFIG_MTD_NAND_ECC_MEDIATEK) += ecc-mtk.o
->> +obj-$(CONFIG_MTD_NAND_ECC_QCOM) += ecc-qcom.o qpic_common.o
->>   
->>   obj-y	+= onenand/
->>   obj-y	+= raw/
->> diff --git a/drivers/mtd/nand/ecc-qcom.c b/drivers/mtd/nand/ecc-qcom.c
->> new file mode 100644
->> index 000000000000..a85423ed368a
->> --- /dev/null
->> +++ b/drivers/mtd/nand/ecc-qcom.c
->> @@ -0,0 +1,198 @@
->> +// SPDX-License-Identifier: GPL-2.0 OR MIT
->> +/*
->> + * QCOM ECC Engine  Driver.
->> + * Copyright (C) 2023  Qualcomm Inc.
->> + * Authors:	Md sadre Alam		<quic_mdalam@quicinc.com>
->> + *		Sricharan R		<quic_srichara@quicinc.com>
->> + */
->> +
->> +#include <linux/platform_device.h>
->> +#include <linux/dma-mapping.h>
->> +#include <linux/interrupt.h>
->> +#include <linux/clk.h>
->> +#include <linux/module.h>
->> +#include <linux/iopoll.h>
->> +#include <linux/of.h>
->> +#include <linux/of_platform.h>
->> +#include <linux/mutex.h>
->> +#include <linux/mtd/nand-qpic-common.h>
->> +
->> +
->> +
->> +/* ECC modes supported by the controller */
->> +#define ECC_NONE        BIT(0)
->> +#define ECC_RS_4BIT     BIT(1)
->> +#define ECC_BCH_4BIT    BIT(2)
->> +#define ECC_BCH_8BIT    BIT(3)
->> +
->> +struct qpic_ecc_caps {
->> +	u32 err_mask;
->> +	u32 err_shift;
->> +	const u8 *ecc_strength;
->> +	const u32 *ecc_regs;
->> +	u8 num_ecc_strength;
->> +	u8 ecc_mode_shift;
->> +	u32 parity_bits;
->> +	int pg_irq_sel;
->> +};
->> +
->> +
->> +struct qcom_nand_host *to_qcom_nand_host(struct nand_chip *chip)
->> +{
->> +	return container_of(chip, struct qcom_nand_host, chip);
->> +}
->> +EXPORT_SYMBOL(to_qcom_nand_host);
->> +
->> +struct qcom_nand_controller *
->> +get_qcom_nand_controller(struct nand_chip *chip)
->> +{
->> +	return container_of(chip->controller, struct qcom_nand_controller,
->> +			    controller);
->> +}
->> +EXPORT_SYMBOL(get_qcom_nand_controller);
->> +
->> +static struct qpic_ecc *qpic_ecc_get(struct device_node *np)
->> +{
->> +	struct platform_device *pdev;
->> +	struct qpic_ecc *ecc;
->> +
->> +	pdev = of_find_device_by_node(np);
->> +	if (!pdev)
->> +		return ERR_PTR(-EPROBE_DEFER);
->> +
->> +	ecc = platform_get_drvdata(pdev);
->> +	if (!ecc) {
->> +		put_device(&pdev->dev);
->> +		return ERR_PTR(-EPROBE_DEFER);
->> +	}
->> +
->> +	return ecc;
->> +}
->> +
->> +struct qpic_ecc *of_qpic_ecc_get(struct device_node *of_node)
->> +{
->> +	struct qpic_ecc *ecc = NULL;
->> +	struct device_node *np;
->> +
->> +	np = of_parse_phandle(of_node, "nand-ecc-engine", 0);
->> +	/* for backward compatibility */
-> 
-> There is no backward compatibility to handle upstream
+Here is the big set of tty/serial driver changes for 6.7-rc1.  Included
+in here are:
+  - console/vgacon cleanups and removals from Arnd
+  - tty core and n_tty cleanups from Jiri
+  - lots of 8250 driver updates and cleanups
+  - sc16is7xx serial driver updates
+  - dt binding updates
+  - first set of port lock wrapers from Thomas for the printk fixes
+    coming in future releases
+  - other small serial and tty core cleanups and updates
 
-Ok will fix in V1
+All of these have been in linux-next for a while with no reported
+issues.
 
-> 
->> +	if (!np)
->> +		np = of_parse_phandle(of_node, "ecc-engine", 0);
->> +	if (np) {
->> +		ecc = qpic_ecc_get(np);
->> +		of_node_put(np);
->> +	}
->> +
->> +	return ecc;
->> +}
->> +EXPORT_SYMBOL(of_qpic_ecc_get);
->> +
->> +int qcom_ecc_config(struct qpic_ecc  *ecc, int ecc_strength,
->> +			bool wide_bus)
->> +{
->> +	ecc->ecc_modes = (ECC_RS_4BIT | ECC_BCH_8BIT);
->> +
->> +	if (ecc_strength >= 8) {
-> 
-> If your engine does not support more than an 8-bit strength this
-> condition seems a bit strange.
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Max ECC supported 8-bit only, forcing it to 8-bit.
+----------------------------------------------------------------
+Alexey Dobriyan (1):
+      serial: initialize retinfo in uart_get_info()
 
-> 
->> +		/* 8 bit ECC defaults to BCH ECC on all platforms */
->> +		ecc->bch_enabled = true;
->> +		ecc->ecc_mode = 1;
-> 
-> ecc_modes above, ecc_mode here, not very clear what this is.
-> Please give meaningful names to your variables, not just the bit name
-> that this is capturing because here it's unclear what this is.
+André Draszik (3):
+      tty: serial: samsung_tty: remove dead code
+      tty: serial: samsung: drop earlycon support for unsupported platforms
+      dt-bindings: serial: drop unsupported samsung bindings
 
-ok will fix in V1
+Andy Shevchenko (12):
+      serial: 8250_port: Introduce UART_IIR_FIFO_ENABLED_16750
+      serial: 8250_aspeed_vuart: Use dev_err_probe() instead of dev_err()
+      serial: 8250_of: Use dev_err_probe() instead of dev_warn()
+      serial: 8250_bcm7271: Use dev_err_probe() instead of dev_err()
+      serial: 8250_aspeed_vuart: Use devm_clk_get_enabled()
+      serial: 8250_of: Use devm_clk_get_enabled()
+      serial: 8250_dw: Use devm_clk_get_optional_enabled()
+      serial: core: Simplify uart_get_rs485_mode()
+      serial: 8250_bcm7271: Use devm_clk_get_optional_enabled()
+      serdev: Make use of device_set_node()
+      serdev: Simplify devm_serdev_device_open() function
+      serdev: Replace custom code with device_match_acpi_handle()
 
-> 
->> +
->> +		if (wide_bus) {
->> +			ecc->ecc_bytes_hw = 14;
->> +			ecc->spare_bytes = 0;
-> 
-> Spare bytes depend on the flash, you can't use constant values like
-> that.
-Ok will fix in V1
-> 
-> I also don't understand what wide_bus is and why it has an impact of
-> only 1 on the number of ECC bytes. Please make all this more explicit.
+Arnd Bergmann (11):
+      vgacon: rework Kconfig dependencies
+      vgacon: rework screen_info #ifdef checks
+      dummycon: limit Arm console size hack to footbridge
+      vgacon, arch/*: remove unused screen_info definitions
+      vgacon: remove screen_info dependency
+      vgacon: clean up global screen_info instances
+      vga16fb: drop powerpc support
+      hyperv: avoid dependency on screen_info
+      efi: move screen_info into efi init code
+      console: fix up ARM screen_info reference
+      vgacon: fix mips/sibyte build regression
 
-wide_bus 1 means 16-bit wide and wide_bus 0 means 8-bit wide.
-there different configuration for ecc config for 16-bit wide bus
-and 8-bit wide bus. This is recommended configuration by IP team,
-Will reconfirm this with IP folks and come back.
+Azeem Shaikh (1):
+      vt: Replace strlcpy with strscpy
 
+Bo Liu (1):
+      tty: hvc: remove set but unused variable
 
-Regards,
-Alam.
+Cameron Williams (11):
+      tty: 8250: Remove UC-257 and UC-431
+      tty: 8250: Add support for additional Brainboxes UC cards
+      tty: 8250: Add support for Brainboxes UP cards
+      tty: 8250: Add support for Intashield IS-100
+      tty: 8250: Fix port count of PX-257
+      tty: 8250: Fix up PX-803/PX-857
+      tty: 8250: Add support for additional Brainboxes PX cards
+      tty: 8250: Add support for Intashield IX cards
+      tty: 8250: Add Brainboxes Oxford Semiconductor-based quirks
+      tty: 8250: Fix IS-200 PCI ID comment
+      tty: 8250: Add note for PX-835
+
+Chen Ni (1):
+      tty: serial: ma35d1_serial: Add missing check for ioremap
+
+Claudiu Beznea (1):
+      dt-bindings: serial: renesas,scif: document r9a08g045 support
+
+Crescent CY Hsieh (4):
+      tty: serial: 8250: Modify MOXA enum name within 8250_pci.c
+      tty: serial: 8250: Cleanup MOXA configurations
+      tty: serial: 8250: Relocate macros within 8250_pci.c
+      tty: serial: 8250: Add support for MOXA Mini PCIe boards
+
+Daniel Starke (2):
+      tty: n_gsm: fix race condition in status line change on dead connections
+      tty: n_gsm: add copyright Siemens Mobility GmbH
+
+David Woodhouse (3):
+      hvc/xen: fix event channel handling for secondary consoles
+      hvc/xen: fix error path in xen_hvc_init() to always register frontend driver
+      hvc/xen: fix console unplug
+
+Erwan Le Ray (1):
+      serial: stm32: add support for break control
+
+Fabio Estevam (2):
+      dt-bindings: serial: mxs: Fix compatible list
+      serial: amba-pl011: Do not complain when DMA is absent
+
+Florian Eckert (1):
+      tty: whitespaces in descriptions corrected by replacing tabs with spaces
+
+Francesco Dolcini (1):
+      dt-bindings: serial: rs485: Add rs485-rts-active-high
+
+Greg Kroah-Hartman (4):
+      Merge 6.6-rc4 into tty-next
+      tty: vt: make vtconsole_class constant
+      tty: vc_screen: make vc_class constant
+      Merge 6.6-rc6 into tty-next
+
+Hanno Böck (1):
+      tty: Restrict access to TIOCLINUX' copy-and-paste subcommands
+
+Hugo Villeneuve (7):
+      serial: sc16is7xx: remove unused to_sc16is7xx_port macro
+      serial: sc16is7xx: improve comments about variants
+      serial: sc16is7xx: use device_property APIs when configuring irda mode
+      dt-bindings: sc16is7xx: convert to YAML
+      dt-bindings: serial: max310x: convert to YAML
+      dt-bindings: serial: sc16is7xx: move 'allOf' block after 'required'
+      serial: max310x: remove trailing whitespaces
+
+Ilpo Järvinen (4):
+      serial: 8250_mid: Remove 8250_pci usage
+      tty: serial: 8250_exar: Does not use anything from 8250_pci
+      tty/serial: Sort drivers in makefile
+      tty/serial: 8250: Sort drivers in Makefile
+
+Jiri Slaby (SUSE) (15):
+      tty: n_tty: use 'retval' instead of 'c'
+      tty: n_tty: rename and retype 'retval' in n_tty_ioctl()
+      tty: n_tty: use min3() in copy_from_read_buf()
+      tty: n_tty: invert the condition in copy_from_read_buf()
+      tty: n_tty: use do-while in n_tty_check_{,un}throttle()
+      tty: switch tty_{,un}throttle_safe() to return a bool
+      tty: invert return values of tty_{,un}throttle_safe()
+      tty: fix up and plug in tty_ioctl kernel-doc
+      tty: fix kernel-doc for functions in tty.h
+      tty: stop using ndash in kernel-doc
+      tty: tty_buffer: use bool for 'restart' in tty_buffer_unlock_exclusive()
+      tty: convert THROTTLE constants into enum
+      tty: early return from send_break() on TTY_DRIVER_HARDWARE_BREAK
+      tty: don't check for signal_pending() in send_break()
+      tty: use 'if' in send_break() instead of 'goto'
+
+Julien Malik (1):
+      serial: xilinx_uartps: unset STOPBRK when setting STARTBRK
+
+Kees Cook (2):
+      mxser: Annotate struct mxser_board with __counted_by
+      serial: 8250_pci1xxxx: Annotate struct pci1xxxx_8250 with __counted_by
+
+Krzysztof Kozlowski (3):
+      dt-bindings: serial: fix regex pattern for matching serial node children
+      dt-bindings: serial: allow naming of Bluetooth with GPS children
+      dt-bindings: serial: re-order entries to match coding convention
+
+Lucas Tanure (1):
+      tty: serial: meson: Add a earlycon for the S4 SoC
+
+Marek Vasut (1):
+      dt-bindings: serial: imx: Document wakeup-source property
+
+Matthew Howell (2):
+      serial: exar: Revert "serial: exar: Add support for Sealevel 7xxxC serial cards"
+      serial: exar: Add RS-485 support for Sealevel XR17V35X based cards
+
+Max Filippov (7):
+      serial: add PORT_GENERIC definition
+      serial: core: tidy invalid baudrate handling in uart_get_baud_rate
+      dt-bindings: serial: document esp32-uart
+      drivers/tty/serial: add driver for the ESP32 UART
+      dt-bindings: serial: document esp32s3-acm
+      drivers/tty/serial: add ESP32S3 ACM gadget driver
+      serial/esp32_uart: use prescaler when available
+
+Muhammad Usama Anjum (1):
+      tty/sysrq: replace smp_processor_id() with get_cpu()
+
+Pavel Krasavin (1):
+      tty: serial: meson: fix hard LOCKUP on crtscts mode
+
+Randy Dunlap (1):
+      serial: core: fix kernel-doc for uart_port_unlock_irqrestore()
+
+Sascha Hauer (1):
+      serial: imx: Put DMA enabled UART in separate lock subclass
+
+Simon Arlott (1):
+      docs: ABI: sysfs-tty: close times are in centiseconds
+
+Thomas Gleixner (74):
+      serial: core: Provide port lock wrappers
+      serial: core: Use lock wrappers
+      serial: 21285: Use port lock wrappers
+      serial: 8250_aspeed_vuart: Use port lock wrappers
+      serial: 8250_bcm7271: Use port lock wrappers
+      serial: 8250: Use port lock wrappers
+      serial: 8250_dma: Use port lock wrappers
+      serial: 8250_dw: Use port lock wrappers
+      serial: 8250_exar: Use port lock wrappers
+      serial: 8250_fsl: Use port lock wrappers
+      serial: 8250_mtk: Use port lock wrappers
+      serial: 8250_omap: Use port lock wrappers
+      serial: 8250_pci1xxxx: Use port lock wrappers
+      serial: altera_jtaguart: Use port lock wrappers
+      serial: altera_uart: Use port lock wrappers
+      serial: amba-pl010: Use port lock wrappers
+      serial: amba-pl011: Use port lock wrappers
+      serial: apb: Use port lock wrappers
+      serial: ar933x: Use port lock wrappers
+      serial: arc_uart: Use port lock wrappers
+      serial: atmel: Use port lock wrappers
+      serial: bcm63xx-uart: Use port lock wrappers
+      serial: cpm_uart: Use port lock wrappers
+      serial: digicolor: Use port lock wrappers
+      serial: dz: Use port lock wrappers
+      serial: linflexuart: Use port lock wrappers
+      serial: fsl_lpuart: Use port lock wrappers
+      serial: icom: Use port lock wrappers
+      serial: imx: Use port lock wrappers
+      serial: ip22zilog: Use port lock wrappers
+      serial: jsm: Use port lock wrappers
+      serial: liteuart: Use port lock wrappers
+      serial: lpc32xx_hs: Use port lock wrappers
+      serial: ma35d1: Use port lock wrappers
+      serial: mcf: Use port lock wrappers
+      serial: men_z135_uart: Use port lock wrappers
+      serial: meson: Use port lock wrappers
+      serial: milbeaut_usio: Use port lock wrappers
+      serial: mpc52xx: Use port lock wrappers
+      serial: mps2-uart: Use port lock wrappers
+      serial: msm: Use port lock wrappers
+      serial: mvebu-uart: Use port lock wrappers
+      serial: omap: Use port lock wrappers
+      serial: owl: Use port lock wrappers
+      serial: pch: Use port lock wrappers
+      serial: pic32: Use port lock wrappers
+      serial: pmac_zilog: Use port lock wrappers
+      serial: pxa: Use port lock wrappers
+      serial: qcom-geni: Use port lock wrappers
+      serial: rda: Use port lock wrappers
+      serial: rp2: Use port lock wrappers
+      serial: sa1100: Use port lock wrappers
+      serial: samsung_tty: Use port lock wrappers
+      serial: sb1250-duart: Use port lock wrappers
+      serial: sc16is7xx: Use port lock wrappers
+      serial: tegra: Use port lock wrappers
+      serial: core: Use port lock wrappers
+      serial: mctrl_gpio: Use port lock wrappers
+      serial: txx9: Use port lock wrappers
+      serial: sh-sci: Use port lock wrappers
+      serial: sifive: Use port lock wrappers
+      serial: sprd: Use port lock wrappers
+      serial: st-asc: Use port lock wrappers
+      serial: stm32: Use port lock wrappers
+      serial: sunhv: Use port lock wrappers
+      serial: sunplus-uart: Use port lock wrappers
+      serial: sunsab: Use port lock wrappers
+      serial: sunsu: Use port lock wrappers
+      serial: sunzilog: Use port lock wrappers
+      serial: timbuart: Use port lock wrappers
+      serial: uartlite: Use port lock wrappers
+      serial: ucc_uart: Use port lock wrappers
+      serial: vt8500: Use port lock wrappers
+      serial: xilinx_uartps: Use port lock wrappers
+
+Thomas Richard (1):
+      serial: 8250_omap: Set the console genpd always on if no console suspend
+
+Tony Lindgren (5):
+      serial: 8250: Check for valid console index
+      serial: 8250_omap: Drop pm_runtime_irq_safe()
+      printk: Check valid console index for preferred console
+      printk: Constify name for add_preferred_console()
+      serial: core: Fix runtime PM handling for pending tx
+
+Uwe Kleine-König (1):
+      serial: imx: Simplify compatibility handling
+
+Wolfram Sang (2):
+      serial: core: remove cruft from uapi header
+      serial: core: add comment about definitely used port types
+
+Yi Yang (2):
+      tty: vcc: Add check for kstrdup() in vcc_probe()
+      tty: tty_jobctrl: fix pid memleak in disassociate_ctty()
+
+Zhang Shurong (1):
+      tty: serial: linflexuart: Fix to check return value of platform_get_irq() in linflex_probe()
+
+ Documentation/ABI/testing/sysfs-tty                |  15 +-
+ .../devicetree/bindings/serial/esp,esp32-acm.yaml  |  42 ++
+ .../devicetree/bindings/serial/esp,esp32-uart.yaml |  51 ++
+ .../devicetree/bindings/serial/fsl-imx-uart.yaml   |   2 +
+ .../devicetree/bindings/serial/fsl-mxs-auart.yaml  |  13 +-
+ .../devicetree/bindings/serial/maxim,max310x.txt   |  48 --
+ .../devicetree/bindings/serial/maxim,max310x.yaml  |  74 ++
+ .../bindings/serial/nvidia,tegra20-hsuart.yaml     |  10 +-
+ .../devicetree/bindings/serial/nxp,sc16is7xx.txt   | 118 ----
+ .../devicetree/bindings/serial/nxp,sc16is7xx.yaml  | 127 ++++
+ .../devicetree/bindings/serial/qcom,msm-uart.yaml  |   4 +-
+ .../bindings/serial/qcom,msm-uartdm.yaml           |   4 +-
+ .../bindings/serial/renesas,em-uart.yaml           |  14 +-
+ .../devicetree/bindings/serial/renesas,hscif.yaml  |   4 +-
+ .../devicetree/bindings/serial/renesas,scif.yaml   |   1 +
+ .../devicetree/bindings/serial/renesas,scifa.yaml  |   4 +-
+ .../devicetree/bindings/serial/renesas,scifb.yaml  |   4 +-
+ .../devicetree/bindings/serial/rs485.yaml          |   4 +
+ .../devicetree/bindings/serial/samsung_uart.yaml   |   8 +-
+ .../devicetree/bindings/serial/serial.yaml         |  18 +-
+ Documentation/driver-api/tty/index.rst             |   1 +
+ Documentation/driver-api/tty/tty_ioctl.rst         |  10 +
+ arch/alpha/kernel/proto.h                          |   2 +
+ arch/alpha/kernel/setup.c                          |   8 +-
+ arch/alpha/kernel/sys_sio.c                        |   8 +-
+ arch/arm/include/asm/setup.h                       |   5 +
+ arch/arm/include/asm/vga.h                         |   1 +
+ arch/arm/kernel/atags_parse.c                      |  20 +-
+ arch/arm/kernel/efi.c                              |   6 -
+ arch/arm/kernel/setup.c                            |   7 +-
+ arch/arm64/kernel/efi.c                            |   4 -
+ arch/arm64/kernel/image-vars.h                     |   2 +
+ arch/csky/kernel/setup.c                           |  12 -
+ arch/hexagon/kernel/Makefile                       |   2 -
+ arch/hexagon/kernel/screen_info.c                  |   3 -
+ arch/ia64/kernel/setup.c                           |  53 +-
+ arch/loongarch/kernel/efi.c                        |   8 +-
+ arch/loongarch/kernel/image-vars.h                 |   2 +
+ arch/loongarch/kernel/setup.c                      |   3 -
+ arch/mips/jazz/setup.c                             |   9 -
+ arch/mips/kernel/setup.c                           |  11 -
+ arch/mips/mti-malta/malta-setup.c                  |   4 +-
+ arch/mips/sibyte/swarm/setup.c                     |  27 +-
+ arch/mips/sni/setup.c                              |  18 +-
+ arch/nios2/kernel/setup.c                          |   5 -
+ arch/powerpc/kernel/setup-common.c                 |  16 -
+ arch/riscv/kernel/image-vars.h                     |   2 +
+ arch/riscv/kernel/setup.c                          |  12 -
+ arch/sh/kernel/setup.c                             |   5 -
+ arch/sparc/kernel/setup_32.c                       |  13 -
+ arch/sparc/kernel/setup_64.c                       |  13 -
+ arch/x86/kernel/setup.c                            |   2 +-
+ arch/xtensa/kernel/setup.c                         |  12 -
+ drivers/firmware/efi/efi-init.c                    |  14 +-
+ drivers/firmware/efi/libstub/efi-stub-entry.c      |   8 +-
+ drivers/firmware/pcdp.c                            |   1 -
+ drivers/gpu/drm/hyperv/hyperv_drm_drv.c            |   7 +-
+ drivers/hv/vmbus_drv.c                             |   6 +-
+ drivers/tty/hvc/hvc_xen.c                          |  39 +-
+ drivers/tty/hvc/hvcs.c                             |   2 -
+ drivers/tty/mxser.c                                |   2 +-
+ drivers/tty/n_gsm.c                                |   3 +
+ drivers/tty/n_tty.c                                |  75 +-
+ drivers/tty/serdev/core.c                          |  24 +-
+ drivers/tty/serial/21285.c                         |   8 +-
+ drivers/tty/serial/8250/8250_aspeed_vuart.c        |  33 +-
+ drivers/tty/serial/8250/8250_bcm7271.c             |  69 +-
+ drivers/tty/serial/8250/8250_core.c                |  14 +-
+ drivers/tty/serial/8250/8250_dma.c                 |   8 +-
+ drivers/tty/serial/8250/8250_dw.c                  |  35 +-
+ drivers/tty/serial/8250/8250_exar.c                |  63 +-
+ drivers/tty/serial/8250/8250_fsl.c                 |   6 +-
+ drivers/tty/serial/8250/8250_mid.c                 |  18 +-
+ drivers/tty/serial/8250/8250_mtk.c                 |   8 +-
+ drivers/tty/serial/8250/8250_of.c                  |  44 +-
+ drivers/tty/serial/8250/8250_omap.c                | 114 ++-
+ drivers/tty/serial/8250/8250_pci.c                 | 597 ++++++++++++----
+ drivers/tty/serial/8250/8250_pci1xxxx.c            |  10 +-
+ drivers/tty/serial/8250/8250_port.c                | 111 ++-
+ drivers/tty/serial/8250/Kconfig                    |   2 +-
+ drivers/tty/serial/8250/Makefile                   |  44 +-
+ drivers/tty/serial/Kconfig                         |  26 +
+ drivers/tty/serial/Makefile                        | 126 ++--
+ drivers/tty/serial/altera_jtaguart.c               |  28 +-
+ drivers/tty/serial/altera_uart.c                   |  20 +-
+ drivers/tty/serial/amba-pl010.c                    |  20 +-
+ drivers/tty/serial/amba-pl011.c                    |  74 +-
+ drivers/tty/serial/apbuart.c                       |   8 +-
+ drivers/tty/serial/ar933x_uart.c                   |  26 +-
+ drivers/tty/serial/arc_uart.c                      |  16 +-
+ drivers/tty/serial/atmel_serial.c                  |  24 +-
+ drivers/tty/serial/bcm63xx_uart.c                  |  22 +-
+ drivers/tty/serial/cpm_uart.c                      |   8 +-
+ drivers/tty/serial/digicolor-usart.c               |  18 +-
+ drivers/tty/serial/dz.c                            |  32 +-
+ drivers/tty/serial/esp32_acm.c                     | 459 ++++++++++++
+ drivers/tty/serial/esp32_uart.c                    | 784 +++++++++++++++++++++
+ drivers/tty/serial/fsl_linflexuart.c               |  32 +-
+ drivers/tty/serial/fsl_lpuart.c                    |  88 +--
+ drivers/tty/serial/icom.c                          |  26 +-
+ drivers/tty/serial/imx.c                           | 128 ++--
+ drivers/tty/serial/ip22zilog.c                     |  36 +-
+ drivers/tty/serial/jsm/jsm_neo.c                   |   4 +-
+ drivers/tty/serial/jsm/jsm_tty.c                   |  16 +-
+ drivers/tty/serial/liteuart.c                      |  20 +-
+ drivers/tty/serial/lpc32xx_hs.c                    |  26 +-
+ drivers/tty/serial/ma35d1_serial.c                 |  25 +-
+ drivers/tty/serial/max310x.c                       |   2 +-
+ drivers/tty/serial/mcf.c                           |  20 +-
+ drivers/tty/serial/men_z135_uart.c                 |   8 +-
+ drivers/tty/serial/meson_uart.c                    |  48 +-
+ drivers/tty/serial/milbeaut_usio.c                 |  16 +-
+ drivers/tty/serial/mpc52xx_uart.c                  |  12 +-
+ drivers/tty/serial/mps2-uart.c                     |  16 +-
+ drivers/tty/serial/msm_serial.c                    |  38 +-
+ drivers/tty/serial/mvebu-uart.c                    |  18 +-
+ drivers/tty/serial/omap-serial.c                   |  38 +-
+ drivers/tty/serial/owl-uart.c                      |  26 +-
+ drivers/tty/serial/pch_uart.c                      |  10 +-
+ drivers/tty/serial/pic32_uart.c                    |  20 +-
+ drivers/tty/serial/pmac_zilog.c                    |  52 +-
+ drivers/tty/serial/pxa.c                           |  30 +-
+ drivers/tty/serial/qcom_geni_serial.c              |   8 +-
+ drivers/tty/serial/rda-uart.c                      |  34 +-
+ drivers/tty/serial/rp2.c                           |  20 +-
+ drivers/tty/serial/sa1100.c                        |  20 +-
+ drivers/tty/serial/samsung_tty.c                   | 171 +----
+ drivers/tty/serial/sb1250-duart.c                  |  12 +-
+ drivers/tty/serial/sc16is7xx.c                     |  83 ++-
+ drivers/tty/serial/serial-tegra.c                  |  32 +-
+ drivers/tty/serial/serial_core.c                   | 131 ++--
+ drivers/tty/serial/serial_mctrl_gpio.c             |   4 +-
+ drivers/tty/serial/serial_port.c                   |   4 +-
+ drivers/tty/serial/serial_txx9.c                   |  26 +-
+ drivers/tty/serial/sh-sci.c                        |  68 +-
+ drivers/tty/serial/sifive.c                        |  16 +-
+ drivers/tty/serial/sprd_serial.c                   |  30 +-
+ drivers/tty/serial/st-asc.c                        |  18 +-
+ drivers/tty/serial/stm32-usart.c                   |  51 +-
+ drivers/tty/serial/sunhv.c                         |  28 +-
+ drivers/tty/serial/sunplus-uart.c                  |  26 +-
+ drivers/tty/serial/sunsab.c                        |  34 +-
+ drivers/tty/serial/sunsu.c                         |  46 +-
+ drivers/tty/serial/sunzilog.c                      |  42 +-
+ drivers/tty/serial/timbuart.c                      |   8 +-
+ drivers/tty/serial/uartlite.c                      |  18 +-
+ drivers/tty/serial/ucc_uart.c                      |   4 +-
+ drivers/tty/serial/vt8500_serial.c                 |   8 +-
+ drivers/tty/serial/xilinx_uartps.c                 |  58 +-
+ drivers/tty/sysrq.c                                |   3 +-
+ drivers/tty/tty.h                                  |  13 +-
+ drivers/tty/tty_buffer.c                           |   5 +-
+ drivers/tty/tty_io.c                               | 130 ++--
+ drivers/tty/tty_ioctl.c                            | 234 +++---
+ drivers/tty/tty_jobctrl.c                          |  17 +-
+ drivers/tty/tty_port.c                             |   6 +-
+ drivers/tty/vcc.c                                  |  16 +-
+ drivers/tty/vt/consolemap.c                        |   2 +-
+ drivers/tty/vt/keyboard.c                          |   7 +-
+ drivers/tty/vt/vc_screen.c                         |  32 +-
+ drivers/tty/vt/vt.c                                |  29 +-
+ drivers/video/console/Kconfig                      |  11 +-
+ drivers/video/console/dummycon.c                   |   7 +-
+ drivers/video/console/vgacon.c                     |  68 +-
+ drivers/video/fbdev/Kconfig                        |   2 +-
+ drivers/video/fbdev/hyperv_fb.c                    |   8 +-
+ drivers/video/fbdev/vga16fb.c                      |   9 +-
+ include/linux/console.h                            |   9 +-
+ include/linux/serial_core.h                        |  91 ++-
+ include/linux/tty.h                                |  25 +-
+ include/uapi/linux/gsmmux.h                        |   1 +
+ include/uapi/linux/serial_core.h                   |  21 +-
+ include/uapi/linux/serial_reg.h                    |   1 +
+ kernel/printk/printk.c                             |  12 +-
+ 174 files changed, 4087 insertions(+), 2354 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/serial/esp,esp32-acm.yaml
+ create mode 100644 Documentation/devicetree/bindings/serial/esp,esp32-uart.yaml
+ delete mode 100644 Documentation/devicetree/bindings/serial/maxim,max310x.txt
+ create mode 100644 Documentation/devicetree/bindings/serial/maxim,max310x.yaml
+ delete mode 100644 Documentation/devicetree/bindings/serial/nxp,sc16is7xx.txt
+ create mode 100644 Documentation/devicetree/bindings/serial/nxp,sc16is7xx.yaml
+ create mode 100644 Documentation/driver-api/tty/tty_ioctl.rst
+ delete mode 100644 arch/hexagon/kernel/screen_info.c
+ create mode 100644 drivers/tty/serial/esp32_acm.c
+ create mode 100644 drivers/tty/serial/esp32_uart.c
