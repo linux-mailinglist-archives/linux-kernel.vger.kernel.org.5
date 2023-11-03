@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 21D897E043D
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 15:04:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FB197E044A
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 15:04:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377786AbjKCOEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 10:04:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37222 "EHLO
+        id S1377887AbjKCOEI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 10:04:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377809AbjKCODz (ORCPT
+        with ESMTP id S1377777AbjKCOD6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 10:03:55 -0400
+        Fri, 3 Nov 2023 10:03:58 -0400
 Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4493BD57;
-        Fri,  3 Nov 2023 07:03:51 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54965D48;
+        Fri,  3 Nov 2023 07:03:55 -0700 (PDT)
 Received: from dggpemm100001.china.huawei.com (unknown [172.30.72.54])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4SMMpQ084Pz1P7nW;
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4SMMpQ0R1Xz1P7pS;
         Fri,  3 Nov 2023 22:00:46 +0800 (CST)
 Received: from localhost.localdomain (10.175.112.125) by
  dggpemm100001.china.huawei.com (7.185.36.93) with Microsoft SMTP Server
@@ -29,9 +29,9 @@ CC:     <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
         David Hildenbrand <david@redhat.com>,
         <linux-s390@vger.kernel.org>,
         Kefeng Wang <wangkefeng.wang@huawei.com>
-Subject: [PATCH 10/18] mm: memory: use mm_counter_file_folio() in copy_present_pte()
-Date:   Fri, 3 Nov 2023 22:01:11 +0800
-Message-ID: <20231103140119.2306578-11-wangkefeng.wang@huawei.com>
+Subject: [PATCH 11/18] mm: memory: use mm_counter_file_folio() in wp_page_copy()
+Date:   Fri, 3 Nov 2023 22:01:12 +0800
+Message-ID: <20231103140119.2306578-12-wangkefeng.wang@huawei.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20231103140119.2306578-1-wangkefeng.wang@huawei.com>
 References: <20231103140119.2306578-1-wangkefeng.wang@huawei.com>
@@ -60,18 +60,18 @@ Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/mm/memory.c b/mm/memory.c
-index 09009094a5f2..d35ca499bf1c 100644
+index d35ca499bf1c..661c649afc22 100644
 --- a/mm/memory.c
 +++ b/mm/memory.c
-@@ -960,7 +960,7 @@ copy_present_pte(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma,
- 	} else if (page) {
- 		folio_get(folio);
- 		page_dup_file_rmap(page, false);
--		rss[mm_counter_file(page)]++;
-+		rss[mm_counter_file_folio(folio)]++;
- 	}
- 
- 	/*
+@@ -3158,7 +3158,7 @@ static vm_fault_t wp_page_copy(struct vm_fault *vmf)
+ 	if (likely(vmf->pte && pte_same(ptep_get(vmf->pte), vmf->orig_pte))) {
+ 		if (old_folio) {
+ 			if (!folio_test_anon(old_folio)) {
+-				dec_mm_counter(mm, mm_counter_file(&old_folio->page));
++				dec_mm_counter(mm, mm_counter_file_folio(old_folio));
+ 				inc_mm_counter(mm, MM_ANONPAGES);
+ 			}
+ 		} else {
 -- 
 2.27.0
 
