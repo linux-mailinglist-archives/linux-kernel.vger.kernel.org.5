@@ -2,66 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4377B7E0213
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 12:20:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D9387E021C
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 12:20:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346088AbjKCLQj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 07:16:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56294 "EHLO
+        id S1346530AbjKCLQx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 07:16:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229960AbjKCLQh (ORCPT
+        with ESMTP id S232235AbjKCLQu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 07:16:37 -0400
-Received: from mail-yw1-x112c.google.com (mail-yw1-x112c.google.com [IPv6:2607:f8b0:4864:20::112c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A79B71A8
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 04:16:31 -0700 (PDT)
-Received: by mail-yw1-x112c.google.com with SMTP id 00721157ae682-5a7c95b8d14so23230407b3.3
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Nov 2023 04:16:31 -0700 (PDT)
+        Fri, 3 Nov 2023 07:16:50 -0400
+Received: from mail-yw1-x112d.google.com (mail-yw1-x112d.google.com [IPv6:2607:f8b0:4864:20::112d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 158E3D4B
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 04:16:44 -0700 (PDT)
+Received: by mail-yw1-x112d.google.com with SMTP id 00721157ae682-5a7dd65052aso23549347b3.0
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Nov 2023 04:16:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699010191; x=1699614991; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1699010203; x=1699615003; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=6Zlnj1QcdhJuExKWm5OBOLI9EIo/svVqPZVVzvpe520=;
-        b=x9H5rEP/6RSqakgyBKSdUHmsY459HuL4YJIZ+0i54OyymR0ImjKjm7RpjM1VHK6dux
-         JVKMFipuY7/J3/8cGHNsvlcjxvTHIhLkppiuG+NOa8wqR28fVeqvKPEm4L74BcQjMA8e
-         BI4m9cg2eGf3Qr4rjZPVIciVWT87VTbGE05ST52GiPlNEWzuRIk3jHEdmlcLVU0WLfIE
-         X1GyyE2wOa6thh5vfo27bOwnu9YL4O+BDbMjb0RklYD9GFzMj+DinoBWGDaV7ungBVkM
-         12aM9jdkbImnTECUAfRF0GJD2C6OfVhqj0kmBYTHsN0FFDtnKZafZ7fJ/mA1VNEWPGOZ
-         WlQw==
+        bh=buw+fPQjkqOoDJ8FzsNomO2ko/plF9LZXlM9e/ZYhhY=;
+        b=yL+1gIOJp99Yc/HIpyHLBisbBEKXmzvMQvr3opwzR9L774pGIket9PdfXQ+HALqYCw
+         pYhui5SrzUDQgeob+UVWKAYGcwDYEFdoWSCgfZyK2xIGl03qUUNqaTvr/sOTPps5tQ7U
+         8wZxqJH2NuadX4PxZgS3erSHUJ43JTeAVbS5TtaWC1Ow4SDKWv50CeRr27FWymo5ZpDv
+         cszQx1GdCKnjJHrJjc80iPrllxQEx7BsbYZNQnSOP3sbDhsHjtcsI3K+3KDazALZnWMP
+         0PQcxg6IBoL3cPfT17EOFsvoCznzCFndVpsH3ZScZMyOcNVKE9/81TDPBU9ntfZ60ko+
+         4Z5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699010191; x=1699614991;
+        d=1e100.net; s=20230601; t=1699010203; x=1699615003;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=6Zlnj1QcdhJuExKWm5OBOLI9EIo/svVqPZVVzvpe520=;
-        b=uyPi9YIfFtfFHY6ra35AUy6ykY4teSXLzWJnGWVtUiXwI/Uh5h8rXuzjy2QVKYgo1K
-         BCId4OUm342HUgQlcKJtFO6h9iHr5XfMozrulmmoK8fCAw3hYE0y5DXlVVFSzPZgexu+
-         CKVlSk4C/XfxDA5qHM0axXdIYBZkxJZGNR+XsidsUrzEm2yeX+w7ahCJc5kvbXHMCiCx
-         NzH3cZko9kylSGldfBotI0B3RPVrCozKayQA/LfPfL79HwALeM6i0OW/116YYkHRBchX
-         FumNdO6sMA4eA+CJUdgPUzSJ9g6vurOUXcJ08VcFjgEimwn4nurM+N13wdeA+YibhwHa
-         w00A==
-X-Gm-Message-State: AOJu0YxLRmttDIY20hpVRfbbVwKMWZ71z0rmKidRglahqUmj4MLmd7a0
-        Uj1UFPo/bvwOt3EsvIAnsJYZYfvoOYFHYj9QfgQgAA==
-X-Google-Smtp-Source: AGHT+IFQB2tqr6cHk3NEpb+OYZbDnMccJdFpi1Iu915+DK9hWrC0ZE2LOgaTVVsJiLX3xg6hLwz6VWOx0XpNveCijAs=
-X-Received: by 2002:a0d:eb03:0:b0:5b3:2128:5667 with SMTP id
- u3-20020a0deb03000000b005b321285667mr2285433ywe.6.1699010190826; Fri, 03 Nov
- 2023 04:16:30 -0700 (PDT)
+        bh=buw+fPQjkqOoDJ8FzsNomO2ko/plF9LZXlM9e/ZYhhY=;
+        b=QvhoYdkPswULnTSPcXcSEHHAKE4lj4+YzqIoBgzm4YiAFg1YNhcamzMcatIKtFNhgO
+         Sh0e9Hvt0hUyj4AZA7hI5c5lHfvx32EpuySJDLxHhEZYaUCG09y2ucamoH5ZvbOD+6VG
+         mxSz7La6WfHVCyDmjkWxqOBlwZnk0oJpcqMmHohWI5d7zbOwHcqzaWwnu+Jrco8k7VpV
+         JOm2pmRUGFH3pqGb085ndmcdokuQDL0kldhXgqi5aYzIcUPK7ABjxTOFNHzLbCiW1wmU
+         bKr7eodSYjPQfvAtkp/h+n2SDT43vdBda8LA2vYP9hiqpx9SXU/7dK6w4PzkSSconZZr
+         p1lg==
+X-Gm-Message-State: AOJu0YyxOzdgfzP/9h3QSVlZyD7VfmNiYNpV9/po0wU/hk7dxn7Grzob
+        MQ81k2+fnI5jhF/m4MJ6QtkleyY2+j3GPawGtDBtLMxD83PNWaUi
+X-Google-Smtp-Source: AGHT+IGyjr6NUayCQQujZiQaRSFdUxMLM11x+h8U7pT93Rf9UXiFzMrsaJqTmrsddlV1FpetiqrpSWTM/dUHzF7hDgo=
+X-Received: by 2002:a25:b11c:0:b0:d9b:351:6657 with SMTP id
+ g28-20020a25b11c000000b00d9b03516657mr20462930ybj.23.1699010203288; Fri, 03
+ Nov 2023 04:16:43 -0700 (PDT)
 MIME-Version: 1.0
-References: <TYZPR01MB5556B56D834E02F41C44D81DC95FA@TYZPR01MB5556.apcprd01.prod.exchangelabs.com>
- <TYZPR01MB5556A3E71554A2EC08597EA4C9CDA@TYZPR01MB5556.apcprd01.prod.exchangelabs.com>
-In-Reply-To: <TYZPR01MB5556A3E71554A2EC08597EA4C9CDA@TYZPR01MB5556.apcprd01.prod.exchangelabs.com>
+References: <20231026061458.1116276-1-n-yadav@ti.com>
+In-Reply-To: <20231026061458.1116276-1-n-yadav@ti.com>
 From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Fri, 3 Nov 2023 12:15:54 +0100
-Message-ID: <CAPDyKFpqCkxD9LmFqRM_AaEie0pbgFEsLTYmoj71pEr78+OssA@mail.gmail.com>
-Subject: Re: [PATCH v2] mmc: meson-mx-sdhc: Fix initialization frozen issue
-To:     Ziyang Huang <hzyitc@outlook.com>
-Cc:     neil.armstrong@linaro.org, khilman@baylibre.com,
-        jbrunet@baylibre.com, martin.blumenstingl@googlemail.com,
-        yinxin_1989@aliyun.com, regressions@leemhuis.info,
-        briannorris@chromium.org, linux-mmc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Anand Moon <linux.amoon@gmail.com>
+Date:   Fri, 3 Nov 2023 12:16:07 +0100
+Message-ID: <CAPDyKFoxXHmFKOx2_Noi9s7Fd9CVuduwCu0wvm3OHRgaDeM7Gg@mail.gmail.com>
+Subject: Re: [PATCH] mmc: sdhci_am654: fix start loop index for TAP value parsing
+To:     Nitin Yadav <n-yadav@ti.com>
+Cc:     adrian.hunter@intel.com, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
@@ -73,87 +67,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+ Anand
+On Thu, 26 Oct 2023 at 08:15, Nitin Yadav <n-yadav@ti.com> wrote:
+>
+> ti,otap-del-sel-legacy/ti,itap-del-sel-legacy passed from DT
+> are currently ignored for all SD/MMC and eMMC modes. Fix this
+> by making start loop index to MMC_TIMING_LEGACY.
+>
+> Fixes: 8ee5fc0e0b3be ("mmc: sdhci_am654: Update OTAPDLY writes")
+>
+> Signed-off-by: Nitin Yadav <n-yadav@ti.com>
 
-On Tue, 10 Oct 2023 at 18:44, Ziyang Huang <hzyitc@outlook.com> wrote:
->
-> Commit 4bc31edebde5 ("mmc: core: Set HS clock speed before sending
-> HS CMD13") set HS clock (52MHz) before switching to HS mode. For this
-> freq, FCLK_DIV5 will be selected and div value is 10 (reg value is 9).
-> Then we set rx_clk_phase to 11 or 15 which is out of range and make
-> hardware frozen. After we send command request, no irq will be
-> interrupted and the mmc driver will keep to wait for request finished,
-> even durning rebooting.
->
-> So let's set it to Phase 90 which should work in most cases. Then let
-> meson_mx_sdhc_execute_tuning() to find the accurate value for data
-> transfer.
->
-> If this doesn't work, maybe need to define a factor in dts.
->
-> Fixes: e4bf1b0970ef ("mmc: host: meson-mx-sdhc: new driver for the Amlogic Meson SDHC host")
-> Signed-off-by: Ziyang Huang <hzyitc@outlook.com>
-
-Let's give this a try! Although, rather than queuing it as a fix for
-v6.7, I am picking it for v6.8 and adding a stable tag, this should
-allow it to become a bit more tested first.
+Applied for fixes and by adding a stable tag, thanks!
 
 Kind regards
 Uffe
 
 
 > ---
-> Changes since v1:
->   Use Phase 90 instand of value 1
+>  drivers/mmc/host/sdhci_am654.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
->  drivers/mmc/host/meson-mx-sdhc-mmc.c | 26 +++++---------------------
->  1 file changed, 5 insertions(+), 21 deletions(-)
+> diff --git a/drivers/mmc/host/sdhci_am654.c b/drivers/mmc/host/sdhci_am654.c
+> index 544aaaf5cb0f..aae9d255c6a1 100644
+> --- a/drivers/mmc/host/sdhci_am654.c
+> +++ b/drivers/mmc/host/sdhci_am654.c
+> @@ -606,7 +606,7 @@ static int sdhci_am654_get_otap_delay(struct sdhci_host *host,
+>                 return 0;
+>         }
 >
-> diff --git a/drivers/mmc/host/meson-mx-sdhc-mmc.c b/drivers/mmc/host/meson-mx-sdhc-mmc.c
-> index 97168cdfa8e9..29698fceb89c 100644
-> --- a/drivers/mmc/host/meson-mx-sdhc-mmc.c
-> +++ b/drivers/mmc/host/meson-mx-sdhc-mmc.c
-> @@ -269,7 +269,7 @@ static int meson_mx_sdhc_enable_clks(struct mmc_host *mmc)
->  static int meson_mx_sdhc_set_clk(struct mmc_host *mmc, struct mmc_ios *ios)
->  {
->         struct meson_mx_sdhc_host *host = mmc_priv(mmc);
-> -       u32 rx_clk_phase;
-> +       u32 val, rx_clk_phase;
->         int ret;
+> -       for (i = MMC_TIMING_MMC_HS; i <= MMC_TIMING_MMC_HS400; i++) {
+> +       for (i = MMC_TIMING_LEGACY; i <= MMC_TIMING_MMC_HS400; i++) {
 >
->         meson_mx_sdhc_disable_clks(mmc);
-> @@ -290,27 +290,11 @@ static int meson_mx_sdhc_set_clk(struct mmc_host *mmc, struct mmc_ios *ios)
->                 mmc->actual_clock = clk_get_rate(host->sd_clk);
->
->                 /*
-> -                * according to Amlogic the following latching points are
-> -                * selected with empirical values, there is no (known) formula
-> -                * to calculate these.
-> +                * Phase 90 should work in most cases. For data transmission,
-> +                * meson_mx_sdhc_execute_tuning() will find a accurate value
->                  */
-> -               if (mmc->actual_clock > 100000000) {
-> -                       rx_clk_phase = 1;
-> -               } else if (mmc->actual_clock > 45000000) {
-> -                       if (ios->signal_voltage == MMC_SIGNAL_VOLTAGE_330)
-> -                               rx_clk_phase = 15;
-> -                       else
-> -                               rx_clk_phase = 11;
-> -               } else if (mmc->actual_clock >= 25000000) {
-> -                       rx_clk_phase = 15;
-> -               } else if (mmc->actual_clock > 5000000) {
-> -                       rx_clk_phase = 23;
-> -               } else if (mmc->actual_clock > 1000000) {
-> -                       rx_clk_phase = 55;
-> -               } else {
-> -                       rx_clk_phase = 1061;
-> -               }
-> -
-> +               regmap_read(host->regmap, MESON_SDHC_CLKC, &val);
-> +               rx_clk_phase = FIELD_GET(MESON_SDHC_CLKC_CLK_DIV, val) / 4;
->                 regmap_update_bits(host->regmap, MESON_SDHC_CLK2,
->                                    MESON_SDHC_CLK2_RX_CLK_PHASE,
->                                    FIELD_PREP(MESON_SDHC_CLK2_RX_CLK_PHASE,
+>                 ret = device_property_read_u32(dev, td[i].otap_binding,
+>                                                &sdhci_am654->otap_del_sel[i]);
 > --
-> 2.34.1
+> 2.25.1
 >
