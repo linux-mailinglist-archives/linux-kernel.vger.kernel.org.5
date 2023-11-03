@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E5177E05F2
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 16:59:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC4777E05F5
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 16:59:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344668AbjKCP7W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 11:59:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55142 "EHLO
+        id S1344558AbjKCP7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 11:59:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344558AbjKCP7U (ORCPT
+        with ESMTP id S1344505AbjKCP7e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 11:59:20 -0400
+        Fri, 3 Nov 2023 11:59:34 -0400
 Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E5C9D4F;
-        Fri,  3 Nov 2023 08:59:17 -0700 (PDT)
-X-QQ-mid: bizesmtp87t1699027144tuxhh48b
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39327D5F;
+        Fri,  3 Nov 2023 08:59:29 -0700 (PDT)
+X-QQ-mid: bizesmtp64t1699027156tvs9nek9
 Received: from main2-ubuntu.tail147f4.ts.net ( [202.201.15.117])
         by bizesmtp.qq.com (ESMTP) with 
-        id ; Fri, 03 Nov 2023 23:59:01 +0800 (CST)
+        id ; Fri, 03 Nov 2023 23:59:13 +0800 (CST)
 X-QQ-SSF: 01200000000000B06000000A0000000
-X-QQ-FEAT: LE7C6P2vL8TDvuFtQgm7U5nmg5IefRLiYgMU7BisqY8a+MfFY5YFw57t6eU2N
-        mHG9XUzklv0HbI1UYbnludIhogZCI7W/IazcZj+b/17hSpDlk9STyb/1qy8aOE2wUbOzCOZ
-        EJn/pf7LRNuuDgsl1ei03i4F64rI0B4WYb761k/inK0WMo/2LPTxfduiL64kC54tN2qYj6t
-        hSep7h9sssI09uh7yXGRmhB/6Z75f2XrvS/dhZRHxDT6hhxRWQRSbLi4gjCZaegiLml9nXo
-        uSCfn4EBkxIyImAQMxNPNtmyG7cYWqYRM00FNDOSz631ECpoP+OjLEe1sXE5O7xcvql3Riv
-        8CaSaqWCZoYQNtMBmJ3hnYreg2Te9iyb3F76nRBVtDUVxQ8ajDjjBSD9mAMXg==
+X-QQ-FEAT: znfcQSa1hKbGuZsoOVNlc1WvbvEkFGnTx1nx7spI6Tuzd0sHLnkw7AiMgni3t
+        ZggaII50uNhW4y9QfvuvOyeS4F6auFyNTJw8NQCg+vLjRI5V2SC6LCN9adAn0v67sJ3OSX/
+        ApylcxyFajCfrERC+YlFJVy8SGFJrBzCX2pVZ4xg8IbilwZDlWfF607cx65tZkc/N5v0pBo
+        5KJ44BzBG+chXyP6BguFE6wzB2WGXdJq47gbtwJbgnW6dVctfCnU818SNsx7tWsczxLqyqh
+        u4yC+u7f5c5hMGNKdyDBqUc2ZmUsHeTUO2gp5wzAo1jI1qkf08kTw9ItQQe6yQ05zfvbyXV
+        s7UC4ZqDN0fbnt0BzlvuczseCniFWDH+IfzMMqsezOL6Jc3njt6dIop1FXbag==
 X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 6960832744754887515
+X-BIZMAIL-ID: 3788500215190827511
 From:   Yuan Tan <tanyuan@tinylab.org>
 To:     falcon@tinylab.org, arnd@arndb.de, linux-kernel@vger.kernel.org,
         linux-mips@vger.kernel.org, linux-riscv@lists.infradead.org,
@@ -36,9 +36,9 @@ Cc:     linux@weissschuh.net, palmer@rivosinc.com,
         paul.walmsley@sifive.com, paulburton@kernel.org,
         paulmck@kernel.org, tim.bird@sony.com, tsbogend@alpha.franken.de,
         w@1wt.eu, tanyuan@tinylab.org, i@maskray.me
-Subject: [PATCH v1 03/14] compiler: add unique __SECTION_NAME()
-Date:   Fri,  3 Nov 2023 23:58:59 +0800
-Message-Id: <3c10b123c7ec27fbd942dd9a07d877743616c935.1699025537.git.tanyuan@tinylab.org>
+Subject: [PATCH v1 04/14] compiler: add unique LABEL_NAME()
+Date:   Fri,  3 Nov 2023 23:59:11 +0800
+Message-Id: <db3498efc33b3065a0acb534d034f7d33ad03e19.1699025537.git.tanyuan@tinylab.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1699025537.git.tanyuan@tinylab.org>
 References: <cover.1699025537.git.tanyuan@tinylab.org>
@@ -57,40 +57,25 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Zhangjin Wu <falcon@tinylab.org>
 
-The new section helper is added for LD_DEAD_CODE_DATA_ELIMINATION to
-generate unique section name (strigified).
+unique LABEL is required by SHF_LINK_ORDER support.
 
 Signed-off-by: Zhangjin Wu <falcon@tinylab.org>
-Signed-off-by: Yuan Tan <tanyuan@tinylab.org>
 ---
- include/linux/compiler.h | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ include/linux/compiler.h | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
 diff --git a/include/linux/compiler.h b/include/linux/compiler.h
-index 405b19cf6cf3..5a9cc3209b12 100644
+index 5a9cc3209b12..b178f5d51ad6 100644
 --- a/include/linux/compiler.h
 +++ b/include/linux/compiler.h
-@@ -227,11 +227,25 @@ static inline void *offset_to_ptr(const int *off)
- 
- #endif /* __ASSEMBLY__ */
- 
-+/* Import __stringify. */
-+#ifndef __stringify
-+#include <linux/stringify.h>
-+#endif
-+
- /* Quite-unique ID. */
- #ifndef __QUITE_UNIQUE_ID
- # define __QUITE_UNIQUE_ID(prefix) __PASTE(__PASTE(prefix, __LINE__), __COUNTER__)
+@@ -246,6 +246,12 @@ static inline void *offset_to_ptr(const int *off)
+ #endif
  #endif
  
-+/* Quite-unique Section NAME. */
-+#ifndef __SECTION_NAME
-+#ifdef CONFIG_LD_DEAD_CODE_DATA_ELIMINATION
-+# define __SECTION_NAME(prefix) __stringify(__QUITE_UNIQUE_ID(prefix.))
-+#else
-+# define __SECTION_NAME(prefix) __stringify(prefix)
-+#endif
++/* Unique Label NAME. */
++/* Label is file scope, __LINE__ is enough, and not change in the same macro call */
++#ifndef __LABEL_NAME
++# define __LABEL_NAME(prefix) __stringify(__PASTE(__PASTE(prefix, _), __LINE__))
 +#endif
 +
  /* &a[0] degrades to a pointer: a different type from an array */
