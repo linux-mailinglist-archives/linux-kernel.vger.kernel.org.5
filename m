@@ -2,116 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F8377DFE68
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 04:30:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8E127DFE70
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 04:39:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231617AbjKCDal (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 23:30:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58538 "EHLO
+        id S231337AbjKCDhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 23:37:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229570AbjKCDah (ORCPT
+        with ESMTP id S229459AbjKCDhN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 23:30:37 -0400
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EC2919E;
-        Thu,  2 Nov 2023 20:30:33 -0700 (PDT)
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4SM5q64rhTz4f3n6G;
-        Fri,  3 Nov 2023 11:30:26 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-        by mail.maildlp.com (Postfix) with ESMTP id 3FF501A0176;
-        Fri,  3 Nov 2023 11:30:30 +0800 (CST)
-Received: from [10.174.176.73] (unknown [10.174.176.73])
-        by APP4 (Coremail) with SMTP id gCh0CgAnt9ZUaURlM4vDEg--.56230S3;
-        Fri, 03 Nov 2023 11:30:30 +0800 (CST)
-Subject: Re: [PATCH] nbd: fix uaf in nbd_open
-To:     Li Lingfeng <lilingfeng@huaweicloud.com>, josef@toxicpanda.com
-Cc:     linux-kernel@vger.kernel.org, hch@lst.de,
-        linux-block@vger.kernel.org, nbd@other.debian.org, axboe@kernel.dk,
-        chaitanya.kulkarni@wdc.com, yukuai1@huaweicloud.com,
-        houtao1@huawei.com, yi.zhang@huawei.com, yangerkun@huawei.com,
-        lilingfeng3@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
-References: <20231103101334.1750094-1-lilingfeng@huaweicloud.com>
-From:   Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <07045515-6668-19bc-def8-45fb0e9fe2ed@huaweicloud.com>
-Date:   Fri, 3 Nov 2023 11:30:28 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Thu, 2 Nov 2023 23:37:13 -0400
+Received: from mail-oa1-f71.google.com (mail-oa1-f71.google.com [209.85.160.71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE1D4CE
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 20:37:06 -0700 (PDT)
+Received: by mail-oa1-f71.google.com with SMTP id 586e51a60fabf-1e9f6006f9cso2144159fac.3
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 20:37:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698982626; x=1699587426;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=uh5rI2PuAfSF/BHwUbOtXzmR4MYj4GNwrdflTHtJU8I=;
+        b=AvEVn9ocVPr9NstQVNYOSH48OeTzDmjWBBuUAMTRr7UQxo3oEhH6MTdnnt12moYIfR
+         uwnW1Fg+uYJf5cpqXO41grgCpR/rCa1suSXzO1rYBwF3L04W0ThHOue2pp58mbyyt7pT
+         tewhHmuaXSDnRU0Vnh/RyLF+usExW6XrvrL1qC+KzOAfD5iJRXVFSvapeQbm/q77rY5O
+         r6MwkuKxAHyLDAE1ZAs7DF3BAY13+/RdEhHqQhHq7PjPr4nqBkMrvrPM//BHVvXF+sNC
+         YkgRTDhYpeaJxgnb53J1NAaZXzo9M/82WD4j2N1AkASe12eIP8fmQIAe7oM54ulXluKk
+         1jtg==
+X-Gm-Message-State: AOJu0YzBKsR+8w/rxmZN7dGTM/skAtTkCtVnejOHnF0kNkY+KCYd0efy
+        iXqz14O5Ucy0W2G8FQbjdRKPvXYHlX9bP9PFW5DPYgkym+UH
+X-Google-Smtp-Source: AGHT+IFkXq2OXhRt74CrJnLG1hhoCYC63DajCxLf1auT4ElKM58xfuz0rtHRUeNrNEeqQH7oN/hD8vu7Ec5rbG/nGUocVMyKKlWe
 MIME-Version: 1.0
-In-Reply-To: <20231103101334.1750094-1-lilingfeng@huaweicloud.com>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgAnt9ZUaURlM4vDEg--.56230S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7uF4fKw17Jr47uw4fCry7Awb_yoW8GrW3pF
-        Z8GF1qk3y8Wr43Ka1xJw17ZF1rXw1UW348uFnru3sI9F9xKr9I9r48GF95WFn8tr47Arsr
-        XFWqqw18Z3Z7CrDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUU9F14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-        W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
-        0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
-        kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
-        67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
-        CI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E
-        3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcS
-        sGvfC2KfnxnUUI43ZEXa7VUbXdbUUUUUU==
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
-X-Spam-Status: No, score=-5.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6870:e9a1:b0:1e9:9bef:b1df with SMTP id
+ r33-20020a056870e9a100b001e99befb1dfmr10055517oao.3.1698982626141; Thu, 02
+ Nov 2023 20:37:06 -0700 (PDT)
+Date:   Thu, 02 Nov 2023 20:37:06 -0700
+In-Reply-To: <a33a632b-9cb6-3187-53b2-5e3309ea0467@gmail.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000e92c4906093737be@google.com>
+Subject: Re: [syzbot] [jfs?] UBSAN: array-index-out-of-bounds in diWrite
+From:   syzbot <syzbot+c1056fdfe414463fdb33@syzkaller.appspotmail.com>
+To:     ghandatmanas@gmail.com, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, syzkaller@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hello,
 
-ÔÚ 2023/11/03 18:13, Li Lingfeng Ð´µÀ:
-> From: Li Lingfeng <lilingfeng3@huawei.com>
-> 
-> Commit 4af5f2e03013 ("nbd: use blk_mq_alloc_disk and
-> blk_cleanup_disk") cleans up disk by blk_cleanup_disk() and it won't set
-> disk->private_data as NULL as before. UAF may be triggered in nbd_open()
-> if someone tries to open nbd device right after nbd_put() since refcount
-> of nbd device is zero and private_data is not NULL.
-> 
-Do you mean that nbd_open concurrent with nbd_dev_remove?
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+UBSAN: array-index-out-of-bounds in diWrite
 
-nbd_open		nbd_dev_remove
-			 del_gendisk
-			 kfree(nbd)
-  mutex_lock
-  nbd = disk->private_data
-  -> UAF
-  refcount_inc_not_zero
+diWrite: Offset too large
+================================================================================
+UBSAN: array-index-out-of-bounds in fs/jfs/jfs_imap.c:754:4
+index 255 is out of range for type 'struct dtslot[128]'
+CPU: 0 PID: 5416 Comm: syz-executor.0 Not tainted 6.6.0-syzkaller-11928-gbc3012f4e3a9-dirty #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/09/2023
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x1b5/0x2a0 lib/dump_stack.c:106
+ ubsan_epilogue lib/ubsan.c:217 [inline]
+ __ubsan_handle_out_of_bounds+0xf0/0x120 lib/ubsan.c:348
+ diWrite+0x148c/0x2020 fs/jfs/jfs_imap.c:754
+ txCommit+0xa03/0x6a00 fs/jfs/jfs_txnmgr.c:1255
+ jfs_mkdir+0x8d7/0xad0 fs/jfs/namei.c:290
+ vfs_mkdir+0x2f1/0x4b0 fs/namei.c:4106
+ do_mkdirat+0x255/0x390 fs/namei.c:4129
+ __do_sys_mkdirat fs/namei.c:4144 [inline]
+ __se_sys_mkdirat fs/namei.c:4142 [inline]
+ __x64_sys_mkdirat+0x89/0xa0 fs/namei.c:4142
+ do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+ do_syscall_64+0x44/0x110 arch/x86/entry/common.c:82
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+RIP: 0033:0x7fefe747ad39
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fefe859c0c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000102
+RAX: ffffffffffffffda RBX: 00007fefe759bf80 RCX: 00007fefe747ad39
+RDX: 00000000000001ff RSI: 00000000200000c0 RDI: ffffffffffffff9c
+RBP: 00007fefe74d7567 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 000000000000000b R14: 00007fefe759bf80 R15: 00007ffd5e8e9838
+ </TASK>
+================================================================================
 
-Looks like it's possible, but you should use READ/WRITE_ONCE() here,
-because disk->pravate_data can be accessed concurrently.
 
-Thanks,
-Kuai
+Tested on:
 
-> Fixes: 4af5f2e03013 ("nbd: use blk_mq_alloc_disk and blk_cleanup_disk")
-> Signed-off-by: Li Lingfeng <lilingfeng3@huawei.com>
-> ---
->   drivers/block/nbd.c | 1 +
->   1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
-> index 800f131222fc..aab93b836e84 100644
-> --- a/drivers/block/nbd.c
-> +++ b/drivers/block/nbd.c
-> @@ -250,6 +250,7 @@ static void nbd_dev_remove(struct nbd_device *nbd)
->   	struct gendisk *disk = nbd->disk;
->   
->   	del_gendisk(disk);
-> +	disk->private_data = NULL;
->   	put_disk(disk);
->   	blk_mq_free_tag_set(&nbd->tag_set);
->   
-> 
+commit:         bc3012f4 Merge tag 'v6.7-p1' of git://git.kernel.org/p..
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+console output: https://syzkaller.appspot.com/x/log.txt?x=10ece56b680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=aa4ab0f6bdaaea8a
+dashboard link: https://syzkaller.appspot.com/bug?extid=c1056fdfe414463fdb33
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=17fe65a0e80000
 
