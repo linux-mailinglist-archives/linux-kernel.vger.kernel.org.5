@@ -2,78 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EF4267DFDB4
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 02:18:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 125817DFDB9
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 02:26:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377633AbjKCBSM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 21:18:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41346 "EHLO
+        id S1377802AbjKCB0R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 21:26:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229615AbjKCBSK (ORCPT
+        with ESMTP id S1377644AbjKCB0P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 21:18:10 -0400
-Received: from mail-oi1-f199.google.com (mail-oi1-f199.google.com [209.85.167.199])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3ED22134
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 18:18:08 -0700 (PDT)
-Received: by mail-oi1-f199.google.com with SMTP id 5614622812f47-3b3f4ab1238so2132817b6e.3
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 18:18:08 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698974287; x=1699579087;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Syo/xZNxlT3+iBmwN/KDrUvAObkr3bn44b7dU+FqZfA=;
-        b=iKFEfJ0GkHn86hYMGLhCgEfiP8JpKiI11c29pPHoGz20EG8Xerfn9RTcZwZTF8vFPr
-         ELSMjCcz7wD+eRNTQN5pfJgPcboX2fQvdLhC84IyQs9YXLD2dkJwjMiLTKEUtgtoSP3D
-         pxxvUW6CIYBNhoY2r2pQJooKzyAvVpO2YcdP342nUPjusRuY7uaNfVO1yylbhTfinsgu
-         D1Pmw+IB72DglFj9N3+zuhTK6JCz2Cjlwn7traXol9zNhdnga+pPmlQtSXdWqGO9zByX
-         9MOxG2Gj2Fa7YGXNOQL0o6qvgyobK8bUOfQ/xJF2rEo81ppcOsmMZfBX7Js5aIpPXYMt
-         aQJA==
-X-Gm-Message-State: AOJu0Ywzk+kQOk5CjXEnPVYhT7MRCQMVihJUbWhn09cq7CaYX+39/W4x
-        aYobAsL2Etirpn4yQcLfVjPiU6fXZpp7qsj4uhVhsV2eIo65IJ4=
-X-Google-Smtp-Source: AGHT+IG0dJz0e1N4gfGHyYYJwcU1GJ46CX31TqLEKsyD/WOIHdmFYxjGFOomFvY15Hf3gi9BmyqzpvPiy1C1DPBszxxhhyNq4/yx
-MIME-Version: 1.0
-X-Received: by 2002:a05:6808:3083:b0:3ad:aeed:7eeb with SMTP id
- bl3-20020a056808308300b003adaeed7eebmr7745270oib.6.1698974287646; Thu, 02 Nov
- 2023 18:18:07 -0700 (PDT)
-Date:   Thu, 02 Nov 2023 18:18:07 -0700
-In-Reply-To: <00000000000055ef9a0609336580@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000e5d6a906093546db@google.com>
-Subject: Re: [syzbot] test uaf in iommufd_vfio_ioas
-From:   syzbot <syzbot+d31adfb277377ef8fcba@syzkaller.appspotmail.com>
-To:     linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+        Thu, 2 Nov 2023 21:26:15 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DEEA187;
+        Thu,  2 Nov 2023 18:26:12 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 45F0FC433C7;
+        Fri,  3 Nov 2023 01:26:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698974772;
+        bh=//5GHmxZWE+RdGR7IAxAjoJOrEPnrQndbNswNuG5uDQ=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=a0kn0bjMaoVRUCqfW9MmLvgratp2FEQhJKhPvG1zCdDlE5+06m4Ja/AesJ74wXKny
+         qbbEBVDNQ7G60/HnwWUUczeqq9oADnuU/3I9hOmKtM3WVumMEhUmBJcH/tz21KILqI
+         1v9GLX0/GMXXHJm/tuIlY/yx3ApcqqYGM5gMjwLKu+hUOGQBxuFVTwvbKxYCD6cIYB
+         cncK6xT972Hmfg8MOG7+Ok1me1O95nokYe1+xSDmKTNiQuAY4Xh6Q30QI09FNofGWy
+         GhB0LmxmDy/QdvOHh2r1hI8UugAB6MjM4ZpSy3t2WCxI20gck97VA+s8NJg5rCt6/X
+         IYcFFjGXg8Bzg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 3110EC395FC;
+        Fri,  3 Nov 2023 01:26:12 +0000 (UTC)
+Subject: Re: [GIT PULL] first round of SCSI updates for the 6.4+ merge window
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <4e8e9b1fd477b46139a77cb57323df5a7476b1b9.camel@HansenPartnership.com>
+References: <4e8e9b1fd477b46139a77cb57323df5a7476b1b9.camel@HansenPartnership.com>
+X-PR-Tracked-List-Id: <linux-scsi.vger.kernel.org>
+X-PR-Tracked-Message-Id: <4e8e9b1fd477b46139a77cb57323df5a7476b1b9.camel@HansenPartnership.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-misc
+X-PR-Tracked-Commit-Id: a75a16c62a2540f11eeae4f2b50e95deefb652ea
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 6ed92e559a2ea572ae2bac5cbeddd1dc8cb667b6
+Message-Id: <169897477219.31710.8207407080323640161.pr-tracker-bot@kernel.org>
+Date:   Fri, 03 Nov 2023 01:26:12 +0000
+To:     James Bottomley <James.Bottomley@HansenPartnership.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-scsi <linux-scsi@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For archival purposes, forwarding an incoming command email to
-linux-kernel@vger.kernel.org.
+The pull request you sent on Thu, 02 Nov 2023 08:28:10 -0400:
 
-***
+> git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-misc
 
-Subject: test uaf in iommufd_vfio_ioas
-Author: lizhi.xu@windriver.com
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/6ed92e559a2ea572ae2bac5cbeddd1dc8cb667b6
 
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 2af9b20dbb39
+Thank you!
 
-diff --git a/drivers/iommu/iommufd/vfio_compat.c b/drivers/iommu/iommufd/vfio_compat.c
-index 6c810bf80f99..85cff4489757 100644
---- a/drivers/iommu/iommufd/vfio_compat.c
-+++ b/drivers/iommu/iommufd/vfio_compat.c
-@@ -138,6 +138,8 @@ int iommufd_vfio_ioas(struct iommufd_ucmd *ucmd)
- 
- 	case IOMMU_VFIO_IOAS_SET:
- 		ioas = iommufd_get_ioas(ucmd->ictx, cmd->ioas_id);
-+		if (!ioas)
-+			return -EINVAL;
- 		if (IS_ERR(ioas))
- 			return PTR_ERR(ioas);
- 		xa_lock(&ucmd->ictx->objects);
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
