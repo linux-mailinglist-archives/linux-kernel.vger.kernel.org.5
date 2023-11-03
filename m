@@ -2,259 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 630307E046E
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 15:11:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D29B37E047A
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 15:14:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377686AbjKCOKp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 10:10:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45816 "EHLO
+        id S1377710AbjKCOOf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 10:14:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233010AbjKCOKn (ORCPT
+        with ESMTP id S230052AbjKCOOd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 10:10:43 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52E301BD;
-        Fri,  3 Nov 2023 07:10:40 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1cc2575dfc7so17391635ad.1;
-        Fri, 03 Nov 2023 07:10:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699020640; x=1699625440; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=vRdYzHxL3gfr6VCUgayf89+jAGfr/W9R5c0lf16Blfg=;
-        b=WljhiQyQJliRXfl/MCPnCWrXgFaMx19aakdYEHbvJl/H1rQCkab5sLGTNBDF4xZr5t
-         wc2ZfLJo3/Pn7WbwiVQxfeMvYXbp/9QR0u5a16F7x2U+16P1IT3KJqSP+Ke1ikMRMEsq
-         7ZyVHtGjO90YlCZHgFMJ8f0oo+B1R8/MH8iMF4wu9yB21z6aDeGjzXhZS05mf5V6MYzA
-         ez8/35J7+WIrZkD24rIuCR8MO3JVnJ7sDYZavOpQJoHnQFiNvxxw8R1BMMnOnmU1GhDD
-         yT+25HwXIJtL9rjd8ChyCxrV4sbPnw5ieSPTIpdnxCsdK0ax2zcnicy+NhxUi3m633I0
-         V8VA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699020640; x=1699625440;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vRdYzHxL3gfr6VCUgayf89+jAGfr/W9R5c0lf16Blfg=;
-        b=RQAEgbzFdKR4DyeHmrptjTSS8krpI/wSLT38MQF/VdQ7uw1Mv8w9djrr40xPa0b+/w
-         bvTjiI4MgVfApU7jxAmqvPmHIzQw3spgRM4deY0SCIbMHYtiAp4T9B6t8lRGtNlfDtkA
-         +K4ZpY2p2C9n+Z07Qf44pA4RIzL30TbRL7tq016q/xB4+miT9P+W08ckINDnV+O758xN
-         mQEuwKGPc0f3ZkHUmHf5fdmw7pszOKo6g+6lnMGAfrJOmZywYqZ4dicsVBVo52dyqX/3
-         im/SS1KV1goA52pqIbQayjJbrxEzt+GS+nFAst+XfQyQkJqCjA5hyq5ddOSGqggoxdMJ
-         FVtg==
-X-Gm-Message-State: AOJu0YxYnLOQMyBMfwcyryRr8ctfktfwXoiab4wmmopmVdmpABgg21mb
-        bEyDnyFYJR/6a3ctE8cjt/Y=
-X-Google-Smtp-Source: AGHT+IH1ub89ebQ5wde40LLn6GkKI7dOJTPjO3pvmfEJkZ2lynARmsZ+dyNh2ohUu3mu6QpmxKCx+Q==
-X-Received: by 2002:a17:903:44d:b0:1cc:87f8:96bc with SMTP id iw13-20020a170903044d00b001cc87f896bcmr4405162plb.15.1699020639556;
-        Fri, 03 Nov 2023 07:10:39 -0700 (PDT)
-Received: from debian.me ([103.131.18.64])
-        by smtp.gmail.com with ESMTPSA id a6-20020a170902ee8600b001c0a4146961sm1458058pld.19.2023.11.03.07.10.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Nov 2023 07:10:39 -0700 (PDT)
-Received: by debian.me (Postfix, from userid 1000)
-        id 71BAA948E4FE; Fri,  3 Nov 2023 21:10:35 +0700 (WIB)
-Date:   Fri, 3 Nov 2023 21:10:35 +0700
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-To:     Daire Byrne <daire@dneg.com>,
-        Linux NFS <linux-nfs@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>
-Cc:     Chuck Lever <chuck.lever@oracle.com>,
-        Jeff Layton <jlayton@kernel.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>
-Subject: Re: autofs mount/umount hangs with recent kernel?
-Message-ID: <ZUT_W8yoJ5wqSvLv@debian.me>
-References: <CAPt2mGNPSi-+3WdeMsOjkJ2vOqZcRE2S6i=eqi+UA2RmzywAyg@mail.gmail.com>
+        Fri, 3 Nov 2023 10:14:33 -0400
+Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04olkn2049.outbound.protection.outlook.com [40.92.74.49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C9461B9;
+        Fri,  3 Nov 2023 07:14:31 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=axD8LArIxeWyQW08Em0pZmAwtOKI2jPukNQ07bUcHIjEel9rKPO0/o0QNamzCdn/WRKOiB6Ms4RRWtKTOlW9kwwRN26J/q+0OwyMu242xIAWHCdjQyux65l1QiLp9kULbP5uqezPWhmg2RTlfv2D2wsA0iFvvbSU7MDuRP16mqhG2bnke/COiD2F5qjhFK1qjQmO6X2oVfq7rdnmbITY9zs/J9GFdXUYfq7q88KOXYKbHWuTVExzNY+bOu6KvRdihc2lQIhATlHeW6RcxjEv31r/WRxWS965DKMomPCs0g+Xq9NYLUumjVythoiYTkTtBJjU4IVpnG+QARoY31gzDw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=k+nXWJ9l2Nzvhb0DgkgpKphQ1eiIkENT9fRJZTinJT8=;
+ b=LmDh8LKpZV6Vqw348CM1M1FZcCdjhnaV1h0L14979DGeAzTu+kBXtfnj7I7yrrYtsumecCTz6xUdhMqz6jTHazNrySohB0CCuDpifQsbF3TLkBCNm/2t0hTcOexAdpDIR2HpPkhC8bygJmrH/rTyZ+M6I18VEn+2Z4iYSzxWO6Yiwyli+qthuPl5AVBuM210B3baRqhCXTsYu5dtNjEGfHJKdp4mn+xGNkspfNYANID81PjZnntbMZ1zzhHu4YL2okyLMEYl8nDMJy3KmeIkVQSr169/6cqPauHoSlW7XsrzehhljH1hWjpOf+teRGfZp7EVE4C7W7l9KopIxTZMgw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=k+nXWJ9l2Nzvhb0DgkgpKphQ1eiIkENT9fRJZTinJT8=;
+ b=B+YzI/aSIpxsiqATQWeusHPeAPb76oNqTwTgDUADRJo6Lfzyuwe8WdL/RzuMmx/lRGiG6KjOHtqkGlMMV41jpZEGjjEmw3mcYsUcwncGL0+LxDJd9UkLVJYoBNGbuLFg62RlB2QjjCe15mVK6UnPk/FmoNsCzyyJpjAPnJnz+kypbErWwQuC0zPYuuUkJVafxGPqxQyxAPB7Ib94Zsf5QPOTwi4ns7+D42qnkbHt6ZFsq7Ful4oqS1uZze5I00z13//7W0NUvUv2MNIph8uSeuiMk5FyHlx1eQAEKbA/ause/WyDyHGuwFHUY9EWCBY0BmVf+6SAssF7FogCBEVl+A==
+Received: from DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:42a::7)
+ by AM7PR10MB3938.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:14e::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.21; Fri, 3 Nov
+ 2023 14:14:29 +0000
+Received: from DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::e2b0:8d7e:e293:bd97]) by DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::e2b0:8d7e:e293:bd97%7]) with mapi id 15.20.6954.021; Fri, 3 Nov 2023
+ 14:14:29 +0000
+From:   Yuran Pereira <yuran.pereira@hotmail.com>
+To:     gregkh@linuxfoundation.org, yuran.pereira@hotmail.com
+Cc:     bcm-kernel-feedback-list@broadcom.com, davem@davemloft.net,
+        edumazet@google.com, florian.fainelli@broadcom.com,
+        justin.chen@broadcom.com, kuba@kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        pabeni@redhat.com
+Subject: Re: [PATCH] Prevent out-of-bounds read/write in bcmasp_netfilt_rd and bcmasp_netfilt_wr
+Date:   Fri,  3 Nov 2023 19:44:05 +0530
+Message-ID: <DB3PR10MB6835D962C88C7E862CBDE659E8A5A@DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <DB3PR10MB68352DF6CB458CCF97C416ECE8A5A@DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM>
+References: <DB3PR10MB68352DF6CB458CCF97C416ECE8A5A@DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TMN:  [n6ln9tYHJudKv1i+74YC2EWF4ygHTFlw]
+X-ClientProxiedBy: JNAP275CA0007.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4c::12)
+ To DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:42a::7)
+X-Microsoft-Original-Message-ID: <20231103141405.1620527-1-yuran.pereira@hotmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="joeJk2L0VzDKjgFZ"
-Content-Disposition: inline
-In-Reply-To: <CAPt2mGNPSi-+3WdeMsOjkJ2vOqZcRE2S6i=eqi+UA2RmzywAyg@mail.gmail.com>
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DB3PR10MB6835:EE_|AM7PR10MB3938:EE_
+X-MS-Office365-Filtering-Correlation-Id: bddc0aac-398d-4d20-560f-08dbdc7730f1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: GWyGL+9ZSiz0nBOn0Qemv0ABH+22oTVKog/Ah2zNuyynoDweW0IkUX95gD6NDb+/d2vizkYpso+tFa0ek/TbtgUKUfzwkVpm5IqNb6+ctrgmdc35s0ISylz3tgXlWORjggc8y4atRshQvEBh9ddlIenMF7MVZgLLKFs5IEZgr+AaokRSQ8m1dcfV+UNCK6nfc3OmPQhGMm9JyMqTx6McUnuU0MfeDpSKn71bHdgIF/+axSBIWG/4Z8S6CWZrvZmUwywBT7V0Ox+W6cHlSMqPvxLzi65jzoAMCfO31VOmsidFUB5ZMyao6Dk0AWQTmJXqR+NqxqYxZP8ukcYAqLXm56ejAywgY2JnDwJvfWU0lB92PUMxoOKlYYCI/Q6wJY/5UGukAKSk8BcOgLaF4qj/WZjfxiNXE/E8qkm/h+gwpy4tbJDbwHK8fzIt9vtiVRqxNG/gIIA01xR8Z3p9lwPn3OLkHNYP7Gr72yPtPosZvFYfgAuBE7yZ5ZC6Tv22wQ+mr1QOC1QDVA/FucCQPX9nfegYMxvZBUNxcdKTX0p3gU+fHJ+cDjbneHK2ovBMiirKoHUQquAATUgJvxh+y9vIjrDiDc8GU4mgDDfreI9I5p7YVtcvE7OU+QpD+0gfjkho
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?jD0+3qHYkh/xb0Q/m4LUiy8I0NbzmKEBm0jSYUGoAEzkBt+oawIZBvpT0iBj?=
+ =?us-ascii?Q?a4yGNCMTJjJTYa9Dmp3jvNjuGVdolWCMyhSdRUtiCG95CoBuQvSfsI3KKzYa?=
+ =?us-ascii?Q?TGgONCMQ+gmiDBOl96kodiTpoAVsuV74MwV9tZ3r/fRKTTpd8lTYtA6FP1rn?=
+ =?us-ascii?Q?xSkISP+hIxy9/To0VW8+4LhLatsbirwF9qnALhSakB9H+T18qIcTG21Mcn4A?=
+ =?us-ascii?Q?61GAuf+5VZGH5nLemgaWtV08cMqaPr4+2Os9vb22z5bDOgdshPR6PknNofi4?=
+ =?us-ascii?Q?sBkNaZ+4A2KsmMOSzKSfCaoSMtv3hmIfjlxQ3AOgogrTSq7NgIsX8+iwhp5m?=
+ =?us-ascii?Q?SqfF0qDxEpSKYM6q5Jrcl9DoYBmBFdpqOYjkjuQmHnA2PPxIhCiOTlnqVlgQ?=
+ =?us-ascii?Q?q4rpPmKOL/44II8FcnNVN8HSfcz98ZOPONYIuZmBUcQOuKBSeeJmh6NguaH6?=
+ =?us-ascii?Q?pvBFIvCW/5pm/XAk2XtiweEEs1674lP5OV910UpFIF/kZg5NBtkz5X4PfY6b?=
+ =?us-ascii?Q?fYAp+3qi6VCQ+6CwaBKL3rmv73G1VjWeBtszw2ydmNWK+DJVr46nXYDIK7cj?=
+ =?us-ascii?Q?+w7JMyHMc3Esvh2fojZx3Oeo8rXw7CtQRYuZiijb8Afrp7t1vM+eRyG3nVPg?=
+ =?us-ascii?Q?xs1Mu4j/e9+K9Lw8AjAfxx2jl4pB2KQHPHoxtSrk94oW0JASQc6BEXELLBJ5?=
+ =?us-ascii?Q?KUzuBYap6l602AV7QognCG5BRVyBUw/tkqZQ/fUFYDEBPv6lFWV2Bw6FeMQ2?=
+ =?us-ascii?Q?mNbSba5zs7kUhwk/1SdleCekp1eJoYoeMz6PLffHoAIzJZO21gaedWaiUVX4?=
+ =?us-ascii?Q?SfQBUtx5bkd6ZbpWjyXxXo8F9QkRK4nrC8oR0zNzNkZqd6SsPSoMuFkSG5rk?=
+ =?us-ascii?Q?5/Dlwg61TYnO/wH6ryuJgiSIH+9ljfqUTGLME640QkIipa6RaPpNHhMwLgWy?=
+ =?us-ascii?Q?unJwDXkzNcaNNf+Y70umx9WGXEZXzn7ujJhygPWMeqhQR0bEghKyiRJMgEIx?=
+ =?us-ascii?Q?yPmnK+FNfeAqZWNRpebBmO+6fhCk3b/mQlBvWYWTBCS3B3QOMx1epWnpXJVs?=
+ =?us-ascii?Q?voSP2JmE54Bogwh+I7SxYKI2ihebs87hQwkpiZW5bwOdQOBpRSGfO9H/rDaW?=
+ =?us-ascii?Q?wu9T6Q2XoJq/TQI7+m37pGie2cRAkFPN+/pwhZ0dMWvoMydQuxYHuh5n1n0j?=
+ =?us-ascii?Q?hRGNu6EItFkMZw3Tq62pi/pDd7/hY4GRyXiuMpYqzJKAjK4tE/N7BBbjfNo?=
+ =?us-ascii?Q?=3D?=
+X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-6b909.templateTenant
+X-MS-Exchange-CrossTenant-Network-Message-Id: bddc0aac-398d-4d20-560f-08dbdc7730f1
+X-MS-Exchange-CrossTenant-AuthSource: DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Nov 2023 14:14:28.9372
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM7PR10MB3938
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+I guess that explains why the first check returns 0.
 
---joeJk2L0VzDKjgFZ
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+```
+static int bcmasp_netfilt_wr_m_wake(struct bcmasp_priv *priv,
+...
+{
+		...
+        if (first_byte && (!IS_ALIGNED(offset, 4) || size < 3)) {
+            match_val = bcmasp_netfilt_rd(priv, nfilt,
+                              ASP_NETFILT_MATCH,
+                              ALIGN_DOWN(offset, 4));
+            mask_val = bcmasp_netfilt_rd(priv, nfilt,
+                             ASP_NETFILT_MASK,
+                             ALIGN_DOWN(offset, 4));
+        }
 
-On Fri, Nov 03, 2023 at 09:40:44AM +0000, Daire Byrne wrote:
-> Hi,
->=20
-> We have large compute clusters that, amongst other things, spend their
-> day mounting & unounting lots of Linux NFS servers via autofs. This
-> has worked fine for many years and client kernel versions and was
-> working without incident even with our current v6.3.x production
-> kernels.
->=20
-> During the v6.6-rc cycle while testing that kernel, I noticed that
-> every now and then, the umount/mount would hang randomly and the
-> compute host would get stuck and not complete it's work until a
-> reboot. I thought I'd wait until v6.6 was released and check again -
-> the issue persists.
->=20
-> I have not had the opportunity to test the v6.4 & v6.5 kernels in
-> between yet. The stack traces look something like this:
+        shift = (3 - (offset % 4)) * 8;
+        match_val &= ~GENMASK(shift + 7, shift);
+        mask_val &= ~GENMASK(shift + 7, shift);
+        match_val |= (u32)(*((u8 *)match) << shift);
+        mask_val |= (u32)(*((u8 *)mask) << shift);
 
-Please do bisection to find the exact commit that introduces your
-regression. See Documentation/admin-guide/bug-bisect.rst in the kernel
-sources for more information.
-
->=20
-> [202752.264187] INFO: task umount.nfs:58118 blocked for more than 245 sec=
-onds.
-> [202752.264237]       Tainted: G            E      6.6.0-1.dneg.x86_64 #1
-
-Can you reproduce on untainted (vanilla) kernel?
-
-> [202752.264267] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs"
-> disables this message.
-> [202752.264296] task:umount.nfs      state:D stack:0     pid:58118
-> ppid:1      flags:0x00004002
-> [202752.264304] Call Trace:
-> [202752.264308]  <TASK>
-> [202752.264313]  __schedule+0x30b/0xa10
-> [202752.264327]  schedule+0x68/0xf0
-> [202752.264332]  io_schedule+0x16/0x40
-> [202752.264337]  __folio_lock+0xfc/0x220
-> [202752.264346]  ? srso_alias_return_thunk+0x5/0x7f
-> [202752.264353]  ? __pfx_wake_page_function+0x10/0x10
-> [202752.264361]  truncate_inode_pages_range+0x441/0x460
-> [202752.264411]  truncate_inode_pages_final+0x41/0x50
-> [202752.264425]  nfs_evict_inode+0x1a/0x40 [nfs]
-> [202752.264476]  evict+0xdc/0x190
-> [202752.264485]  dispose_list+0x4d/0x70
-> [202752.264491]  evict_inodes+0x16b/0x1b0
-> [202752.264499]  generic_shutdown_super+0x3e/0x160
-> [202752.264507]  kill_anon_super+0x17/0x50
-> [202752.264513]  nfs_kill_super+0x27/0x50 [nfs]
-> [202752.264556]  deactivate_locked_super+0x35/0x90
-> [202752.264562]  deactivate_super+0x42/0x50
-> [202752.264568]  cleanup_mnt+0x109/0x170
-> [202752.264574]  __cleanup_mnt+0x12/0x20
-> [202752.264580]  task_work_run+0x61/0x90
-> [202752.264588]  exit_to_user_mode_prepare+0x1d8/0x200
-> [202752.264596]  syscall_exit_to_user_mode+0x1c/0x40
-> [202752.264603]  do_syscall_64+0x48/0x90
-> [202752.264609]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-> [202752.264617] RIP: 0033:0x7fcb9befeba7
-> [202752.264622] RSP: 002b:00007ffdd63ef348 EFLAGS: 00000246 ORIG_RAX:
-> 00000000000000a6
-> [202752.264628] RAX: 0000000000000000 RBX: 00005561e35da010 RCX:
-> 00007fcb9befeba7
-> [202752.264632] RDX: 0000000000000001 RSI: 0000000000000000 RDI:
-> 00005561e35da1e0
-> [202752.264634] RBP: 00005561e35da1e0 R08: 00005561e35dbfa0 R09:
-> 00005561e35db790
-> [202752.264637] R10: 00007ffdd63eeda0 R11: 0000000000000246 R12:
-> 00007fcb9c442d78
-> [202752.264640] R13: 0000000000000000 R14: 00005561e35db2c0 R15:
-> 00007ffdd63f0dcb
-> [202752.264648]  </TASK>
->=20
-> [202752.264658] INFO: task mount.nfs:60827 blocked for more than 122 seco=
-nds.
-> [202752.264686]       Tainted: G            E      6.6.0-1.dneg.x86_64 #1
-> [202752.264713] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs"
-> disables this message.
-> [202752.264743] task:mount.nfs       state:D stack:0     pid:60827
-> ppid:60826  flags:0x00004000
-> [202752.264751] Call Trace:
-> [202752.264753]  <TASK>
-> [202752.264757]  __schedule+0x30b/0xa10
-> [202752.264763]  ? srso_alias_return_thunk+0x5/0x7f
-> [202752.264771]  schedule+0x68/0xf0
-> [202752.264776]  schedule_preempt_disabled+0x15/0x30
-> [202752.264782]  rwsem_down_write_slowpath+0x2b3/0x640
-> [202752.264788]  ? try_to_wake_up+0x242/0x5f0
-> [202752.264797]  ? __x86_indirect_jump_thunk_r15+0x20/0x20
-> [202752.264803]  ? wake_up_q+0x50/0x90
-> [202752.264809]  down_write+0x55/0x70
-> [202752.264815]  super_lock+0x44/0x130
-> [202752.264821]  ? kernfs_activate+0x54/0x60
-> [202752.264828]  ? srso_alias_return_thunk+0x5/0x7f
-> [202752.264833]  ? kernfs_add_one+0x11f/0x160
-> [202752.264841]  grab_super+0x2e/0x80
-> [202752.264847]  grab_super_dead+0x31/0xe0
-> [202752.264855]  ? srso_alias_return_thunk+0x5/0x7f
-> [202752.264860]  ? sysfs_create_link_nowarn+0x22/0x40
-> [202752.264865]  ? srso_alias_return_thunk+0x5/0x7f
-> [202752.264871]  ? __pfx_nfs_compare_super+0x10/0x10 [nfs]
-> [202752.264915]  sget_fc+0xd4/0x280
-> [202752.264921]  ? __pfx_nfs_set_super+0x10/0x10 [nfs]
-> [202752.264965]  nfs_get_tree_common+0x86/0x520 [nfs]
-> [202752.265009]  nfs_try_get_tree+0x5c/0x2e0 [nfs]
-> [202752.265052]  ? srso_alias_return_thunk+0x5/0x7f
-> [202752.265058]  ? try_module_get+0x1d/0x30
-> [202752.265064]  ? srso_alias_return_thunk+0x5/0x7f
-> [202752.265068]  ? get_nfs_version+0x29/0x90 [nfs]
-> [202752.265111]  ? srso_alias_return_thunk+0x5/0x7f
-> [202752.265116]  ? nfs_fs_context_validate+0x4fe/0x710 [nfs]
-> [202752.265163]  nfs_get_tree+0x38/0x60 [nfs]
-> [202752.265202]  vfs_get_tree+0x2a/0xe0
-> [202752.265207]  ? capable+0x19/0x20
-> [202752.265213]  path_mount+0x2fe/0xa90
-> [202752.265219]  ? putname+0x55/0x70
-> [202752.265226]  do_mount+0x80/0xa0
-> [202752.265233]  __x64_sys_mount+0x8b/0xe0
-> [202752.265240]  do_syscall_64+0x3b/0x90
-> [202752.265245]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-> [202752.265250] RIP: 0033:0x7fbf5d4ff26a
-> [202752.265253] RSP: 002b:00007ffeb24fdd98 EFLAGS: 00000202 ORIG_RAX:
-> 00000000000000a5
-> [202752.265258] RAX: ffffffffffffffda RBX: 0000000000000000 RCX:
-> 00007fbf5d4ff26a
-> [202752.265261] RDX: 000055c814e78100 RSI: 000055c814e771e0 RDI:
-> 000055c814e77320
-> [202752.265264] RBP: 00007ffeb24fdfb0 R08: 000055c814e85510 R09:
-> 000000000000006d
-> [202752.265266] R10: 0000000000000004 R11: 0000000000000202 R12:
-> 00007fbf5e2307e0
-> [202752.265269] R13: 00007ffeb24fdfb0 R14: 00007ffeb24fde90 R15:
-> 000055c814e855a0
-> [202752.265277]  </TASK>
->=20
-> And like I said, the mount/umount against the server hangs
-> indefinitely on the client. It is somewhat interesting that autofs
-> still tries to trigger a subsequent mount even though the umount has
-> not completed.
->=20
-> The NFS servers are running RHEL8.5 and we are using NFSv3. I also
-> reproduced it with a fairly recent nfs-utils-2.6.2 on the client
-> compute hosts.
-
-What distro on the client?
-
->=20
-> Because these happen quite rarely, it takes time and many clients and
-> mount/umount cycles to reproduce, so I thought I'd post here before
-> working through the bisect testing. If you think this is better as a
-> kernel.org bugzilla ticket, I'm happy to do that too.
-
-For now, posting to the ML is preferred as many developers don't take
-a look on bugzilla.kernel.org.
-
-Thanks.
-
---=20
-An old man doll... just what I always wanted! - Clara
-
---joeJk2L0VzDKjgFZ
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZUT/VQAKCRD2uYlJVVFO
-o9YGAQC6TVhfKtbAQH4iO0E7UDc9W+XXwCC0R7RmC7azt60qcAEAq9xy7cZqv45W
-GvOa9uEgMdd/l3Scd8a4XSj/+p0ccAI=
-=V4vb
------END PGP SIGNATURE-----
-
---joeJk2L0VzDKjgFZ--
+```
