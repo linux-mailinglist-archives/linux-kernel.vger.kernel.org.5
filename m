@@ -2,157 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A3927E0103
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 11:30:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 288A57E017D
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 11:31:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376296AbjKCKOC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 06:14:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42476 "EHLO
+        id S1347811AbjKCKOY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 06:14:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347633AbjKCKOB (ORCPT
+        with ESMTP id S1347768AbjKCKOW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 06:14:01 -0400
-Received: from mail-vk1-xa2c.google.com (mail-vk1-xa2c.google.com [IPv6:2607:f8b0:4864:20::a2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9329E13E;
-        Fri,  3 Nov 2023 03:13:58 -0700 (PDT)
-Received: by mail-vk1-xa2c.google.com with SMTP id 71dfb90a1353d-495eb6e2b80so697172e0c.1;
-        Fri, 03 Nov 2023 03:13:58 -0700 (PDT)
+        Fri, 3 Nov 2023 06:14:22 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C9E8D45;
+        Fri,  3 Nov 2023 03:14:20 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id 41be03b00d2f7-5b9a453d3d3so1483321a12.0;
+        Fri, 03 Nov 2023 03:14:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699006437; x=1699611237; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1699006460; x=1699611260; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=z+ADtzhxZ6RdxuvI42DF3VVuo0agKsBYzgsrJ1KxhwY=;
-        b=cEAMqvZxa/ukoJSyhapG7RB3vcz0WWA+DyySwTCR/0lU9g+8QlD7+7F8ug1uyBg2ad
-         6H6CbPXFR+L1baSGprtgGw9XkntXHdmY2zI7d7f1Mt50srx7fKsdkM0bCbqzDD1zppfF
-         V9iak0GYmNuJMX/OOiToO/BtvWDwK0r/ZvCX6j8HBhwo18GhZymGj+n/8mE5D/d0mCtv
-         KcxFjGxgUNfQe2smZ0vjeteXmxr6fRJx8kDvb5UINIrl+Rr4DSTHiyWBR4z8O5vX5+bz
-         cttgrctArS+zoSnoRrRewMLuLuqJMp8eXG1zVP/Ql0Ycb4BcGHIYFwrQaBni2xW8ugKz
-         yf2Q==
+        bh=i+65RYNQvrsYrl13TceHEcGyzemoLF4Zru1PnHMz1K0=;
+        b=JN/mzlqVVL/9mkVYtjPLsDAAqIR5JIBrKqxQP9BtZiQs1VCHZF1QGXTWjPjWjz6f0m
+         zHqF/bc6a445reEQ+7pzhX0zgz2qteNEZDHZMkrEdJWp2HVygTef7nTDtlW5WouyyOtZ
+         seitizdWBPUIx3Fe4RxadyJ430i1PNhjdIm2xHcz1S4k1Oplt5JLoUtFWvFOhcHsSmDH
+         EN2R9TX78mnih06ObNuHx5N25B+W9AuXyBPuKT9OYCZQf0/jy0QdBTOUGikkRIQiO7RP
+         Xgy1cG+rzhJ8nq5QSrwKajdN89Cg6EudpuA4j/HfkSxQpeiS+q4brfq3E9JY9+0b6H+o
+         oyAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699006437; x=1699611237;
+        d=1e100.net; s=20230601; t=1699006460; x=1699611260;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=z+ADtzhxZ6RdxuvI42DF3VVuo0agKsBYzgsrJ1KxhwY=;
-        b=kaJvT19UMhEuQ/fTqUj++yvdmD2vF1HId21NFNgj68jM1QNSsDFNfcWILqceygD1P3
-         ZF98GEwFV5fua0x8+no/YOpUbXI96vCFlC9mZCcTcn+nlfxWfxT27J4zxpbpI6JqL1/x
-         rs21pFZrplsUntcq9iw5WarVF1t/KVui5rBDz7GS+SMrZHjHHbHnaRT5SIhjtVaQp8MC
-         8iHIXlBIOzqRH6TOaKWMgunQv41ldgi0oyq9A0gKa29Zn/lT90TA5gjvig0cI0AVuLIR
-         RNd2AtKYdycdWRtyxjKQZv4KconQhZ7rOHklTZnNNeATQsF+ZKoZTDLHMRHbpCdZU0Ib
-         g/+w==
-X-Gm-Message-State: AOJu0Yyid8BlC4WEUQAd9+PNbrqAu5iFNVxbGZM4GLnodw6K5zgoaghV
-        JhzBiwR6ZoLKtbnGZoLEp45+V7HCoWaRUz3iyQg=
-X-Google-Smtp-Source: AGHT+IELdAyAxzEZSxxVdN+ZxlNC5S4Rw4tVjjvEyx4Ff8WI+DQAaKEYH7mlutWHSDQ1+D59y5Swv5KEvsM7MujC188=
-X-Received: by 2002:a1f:29d7:0:b0:4ac:5d9:e655 with SMTP id
- p206-20020a1f29d7000000b004ac05d9e655mr249516vkp.0.1699006437640; Fri, 03 Nov
- 2023 03:13:57 -0700 (PDT)
+        bh=i+65RYNQvrsYrl13TceHEcGyzemoLF4Zru1PnHMz1K0=;
+        b=SqcKWJ44A6FKJofE/0oqLTvDhBUIlOK4ClqCcqdR+EMGmx7HKcOIHOeNE8+2socMne
+         XNmnWtemHN8V9uAYnIjpxi948oc6geq93uXtwgF65KT7FwogSTe3vBeYmhCTIpj0/eCM
+         8oIjEvEWAad1qz/mpefHeKH7xoRcNt7NDnFycjZGF4dqt77aL4Xqb14o5tSdJ90FbC7I
+         DZqUn/cftoTZcGOB8byWCs4b3J1EruMS+kOSBNqTu3XTnVNKLLsay3LaaX7vaetuRMo4
+         nsUxIsbV2FXyO7OaDYnRh7jmWV97mUO789z+f19jDAudM2xU6Pj2pMixvQ4hp1WLgMmT
+         4ATw==
+X-Gm-Message-State: AOJu0YzaT5zbiTx90RrxGwA0KgXQjNi0fx1VXRfvWVU5pILoOg/32XOZ
+        YFtibEoRebUMEEJ6NXtEjnvoBdKJ+prQZoFW4tM=
+X-Google-Smtp-Source: AGHT+IEfXBZkMD60Ek69aexCEMY0kuPUwQUkokIY0a8ul1daeS5gkXGiQtacM1dJw2OBh7enk1ei3a+HfozZN6rDsE0=
+X-Received: by 2002:a17:90a:4b07:b0:27f:f260:ceaf with SMTP id
+ g7-20020a17090a4b0700b0027ff260ceafmr17099164pjh.10.1699006459735; Fri, 03
+ Nov 2023 03:14:19 -0700 (PDT)
 MIME-Version: 1.0
-References: <20231018103337.34622-1-victorshihgli@gmail.com>
-In-Reply-To: <20231018103337.34622-1-victorshihgli@gmail.com>
-From:   Victor Shih <victorshihgli@gmail.com>
-Date:   Fri, 3 Nov 2023 18:13:45 +0800
-Message-ID: <CAK00qKBH5P3naXUHhbQ3zgMzQrUxy=v8r84a8RCcdNORVoRPkA@mail.gmail.com>
-Subject: Re: [PATCH V2] mmc: sdhci-pci-gli: GL975[05]: Mask the replay timer
- timeout of AER
-To:     ulf.hansson@linaro.org, adrian.hunter@intel.com
-Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        benchuanggli@gmail.com, HL.Liu@genesyslogic.com.tw,
-        Greg.tu@genesyslogic.com.tw, SeanHY.Chen@genesyslogic.com.tw,
-        kai.heng.feng@canonical.com,
-        Victor Shih <victor.shih@genesyslogic.com.tw>
+References: <20231103095549.490744-1-lizhijian@fujitsu.com> <20231103095549.490744-2-lizhijian@fujitsu.com>
+In-Reply-To: <20231103095549.490744-2-lizhijian@fujitsu.com>
+From:   Greg Sword <gregsword0@gmail.com>
+Date:   Fri, 3 Nov 2023 18:14:09 +0800
+Message-ID: <CAEz=Lcu012KvkJbEC=ZeTFZk1vg51B2h66E6Hoh0JOcez58a=w@mail.gmail.com>
+Subject: Re: [PATCH RFC V2 1/6] RDMA/rxe: RDMA/rxe: don't allow registering
+ !PAGE_SIZE mr
+To:     Li Zhijian <lizhijian@fujitsu.com>
+Cc:     zyjzyj2000@gmail.com, jgg@ziepe.ca, leon@kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        rpearsonhpe@gmail.com, matsuda-daisuke@fujitsu.com,
+        bvanassche@acm.org, yi.zhang@redhat.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Ulf
-
-Please help review this patch and give me some advice.
-I look forward to your reply.
-
-Thanks, Victor Shih
-
-On Wed, Oct 18, 2023 at 6:33=E2=80=AFPM Victor Shih <victorshihgli@gmail.co=
-m> wrote:
+On Fri, Nov 3, 2023 at 5:56=E2=80=AFPM Li Zhijian <lizhijian@fujitsu.com> w=
+rote:
 >
-> From: Victor Shih <victor.shih@genesyslogic.com.tw>
+> rxe_set_page() only store one PAGE_SIZE page by the step of page_size.
+> when page_size !=3D PAGE_SIZE, we cannot restore the address with wrong
+> index and page_offset.
 >
-> Due to a flaw in the hardware design, the GL975x replay timer frequently
-> times out when ASPM is enabled. As a result, the warning messages that wi=
-ll
-> often appear in the system log when the system accesses the GL975x
-> PCI config. Therefore, the replay timer timeout must be masked.
+> Let's take a look how current the xarray is being used.
 >
-> Signed-off-by: Victor Shih <victor.shih@genesyslogic.com.tw>
+> 0. offset =3D iova & (page_size -1); // offset is less than page_size
+>                                       but may not PAGE_SIZE
+> 1. index =3D (iova - mr.iova) >> page_shift;
+> 2. page =3D xa_load(&mr->page_list, index);
+> 3. page_va =3D kmap_local_page(page) // map one page only, that means onl=
+y
+>                                       memory [page_va, page_va + PAGE_SIZ=
+E)
+>                                       is valid for this mapping.
+> 4. memcpy(addr, page_va + offset, bytes);
+>
+> - when page_size > PAGE_SIZE, the offset could be beyond PAGE_SIZE,
+>   then page_va + offset may be invalid.
+> - when page_size < PAGE_SIZE, the offset may get lost.
+>
+> Note that this patch will break some ULPs that try to register 4K
+> MR when PAGE_SIZE is not 4K. SRP and nvme over RXE is known to be
+> impacted.
+>
+> Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
+>
 > ---
->
-> Updates in V2:
->  - Modify the commit message.
->
 > ---
+>  drivers/infiniband/sw/rxe/rxe_mr.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
 >
->  drivers/mmc/host/sdhci-pci-gli.c | 16 ++++++++++++++++
->  1 file changed, 16 insertions(+)
+> diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/r=
+xe/rxe_mr.c
+> index f54042e9aeb2..3755e530e6dc 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_mr.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_mr.c
+> @@ -234,6 +234,12 @@ int rxe_map_mr_sg(struct ib_mr *ibmr, struct scatter=
+list *sgl,
+>         struct rxe_mr *mr =3D to_rmr(ibmr);
+>         unsigned int page_size =3D mr_page_size(mr);
 >
-> diff --git a/drivers/mmc/host/sdhci-pci-gli.c b/drivers/mmc/host/sdhci-pc=
-i-gli.c
-> index d83261e857a5..d8a991b349a8 100644
-> --- a/drivers/mmc/host/sdhci-pci-gli.c
-> +++ b/drivers/mmc/host/sdhci-pci-gli.c
-> @@ -28,6 +28,9 @@
->  #define PCI_GLI_9750_PM_CTRL   0xFC
->  #define   PCI_GLI_9750_PM_STATE          GENMASK(1, 0)
->
-> +#define PCI_GLI_9750_CORRERR_MASK                              0x214
-> +#define   PCI_GLI_9750_CORRERR_MASK_REPLAY_TIMER_TIMEOUT         BIT(12)
+> +       if (page_size !=3D PAGE_SIZE) {
+> +               rxe_err_mr(mr, "Unsupport mr page size %x, expect PAGE_SI=
+ZE(%lx)\n",
+> +                          page_size, PAGE_SIZE);
+> +               return -EINVAL;
+> +       }
+
+Are you kidding us? What problem you are fixing? Do you make tests in your =
+host?
+
+A  rubbish patch.
+
 > +
->  #define SDHCI_GLI_9750_CFG2          0x848
->  #define   SDHCI_GLI_9750_CFG2_L1DLY    GENMASK(28, 24)
->  #define   GLI_9750_CFG2_L1DLY_VALUE    0x1F
-> @@ -152,6 +155,9 @@
->  #define PCI_GLI_9755_PM_CTRL     0xFC
->  #define   PCI_GLI_9755_PM_STATE    GENMASK(1, 0)
->
-> +#define PCI_GLI_9755_CORRERR_MASK                              0x214
-> +#define   PCI_GLI_9755_CORRERR_MASK_REPLAY_TIMER_TIMEOUT         BIT(12)
-> +
->  #define SDHCI_GLI_9767_GM_BURST_SIZE                   0x510
->  #define   SDHCI_GLI_9767_GM_BURST_SIZE_AXI_ALWAYS_SET    BIT(8)
->
-> @@ -561,6 +567,11 @@ static void gl9750_hw_setting(struct sdhci_host *hos=
-t)
->         value &=3D ~PCI_GLI_9750_PM_STATE;
->         pci_write_config_dword(pdev, PCI_GLI_9750_PM_CTRL, value);
->
-> +       /* mask the replay timer timeout of AER */
-> +       pci_read_config_dword(pdev, PCI_GLI_9750_CORRERR_MASK, &value);
-> +       value |=3D PCI_GLI_9750_CORRERR_MASK_REPLAY_TIMER_TIMEOUT;
-> +       pci_write_config_dword(pdev, PCI_GLI_9750_CORRERR_MASK, value);
-> +
->         gl9750_wt_off(host);
->  }
->
-> @@ -770,6 +781,11 @@ static void gl9755_hw_setting(struct sdhci_pci_slot =
-*slot)
->         value &=3D ~PCI_GLI_9755_PM_STATE;
->         pci_write_config_dword(pdev, PCI_GLI_9755_PM_CTRL, value);
->
-> +       /* mask the replay timer timeout of AER */
-> +       pci_read_config_dword(pdev, PCI_GLI_9755_CORRERR_MASK, &value);
-> +       value |=3D PCI_GLI_9755_CORRERR_MASK_REPLAY_TIMER_TIMEOUT;
-> +       pci_write_config_dword(pdev, PCI_GLI_9755_CORRERR_MASK, value);
-> +
->         gl9755_wt_off(pdev);
->  }
->
+>         mr->nbuf =3D 0;
+>         mr->page_shift =3D ilog2(page_size);
+>         mr->page_mask =3D ~((u64)page_size - 1);
 > --
-> 2.25.1
+> 2.41.0
 >
