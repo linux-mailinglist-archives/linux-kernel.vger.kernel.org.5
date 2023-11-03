@@ -2,115 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 185387E0780
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 18:35:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 490467E0784
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 18:36:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229750AbjKCRfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 13:35:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52540 "EHLO
+        id S230122AbjKCRgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 13:36:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229729AbjKCRfo (ORCPT
+        with ESMTP id S229648AbjKCRga (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 13:35:44 -0400
-Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1824136;
-        Fri,  3 Nov 2023 10:35:41 -0700 (PDT)
-Received: by mail-oi1-x22f.google.com with SMTP id 5614622812f47-3b3f55e1bbbso1440107b6e.2;
-        Fri, 03 Nov 2023 10:35:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699032940; x=1699637740; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lUwsWoeHAo55a1n3qauNOQy9fcQJhbfyl72sCPND1PU=;
-        b=PT1fgG7YsNpp9usDusCO4dgMc7yOJWHkU+MLzmWpRPV0alGf+j7x5yfwFOYdKWnPU+
-         DntaC8gWL8JOnPfYDf1x/Y1vYl6HBza11w28Aga+/BNgD53yiYvpfByYhpEsjrf9k5dM
-         j37nTCKEdFEyGmjPoCJF5c2bBKIA6WAgBmqA5nNT8bo7VAD6Ur5KI0sFe+PyW7S/zqng
-         3qBmXTSY55wo+rEbp/XjwC25oJTF8wTKRV9caJmwDYVY/kVop4/qqHpPpeJ99qp3WJw4
-         5KPNKCn4dXCdsdB4nw/LNTFyK8oZJT5SNi7mYZ/KnuWzq3dLNFvg6cfHb3wWw4l6cbYY
-         UE3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699032940; x=1699637740;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=lUwsWoeHAo55a1n3qauNOQy9fcQJhbfyl72sCPND1PU=;
-        b=QOKubI8d6FjSsLfPIDclt1e23PWquEqu4xVdOiObE5ah3fTHb5c6mu8ZYG4Tn5j+RZ
-         XpQ/QphjgkNhWD+6WbilmnZJiDc3tbxe4sWPAu65FMCDV620QZTdAYVNpxNY3LlYsgZR
-         f+iposx9SomGQjNchUDJqfAPwHXkGSk421+pb1hSDXZVvvWk4PJWPJ0ooMmiS+m2dWHA
-         Q7HmOY0T0SEpk91mcCcpPRe5FCPZoFlYdtdey0DGR9F/BjRg0H8MYtspAlKeRKjRn7ej
-         aTdC8ekcJvIEWOb2eYPAVHHDUmAsio+2PRd67rtCtBlt4OMvesNo59/o+eYcqSLwkWTm
-         LIww==
-X-Gm-Message-State: AOJu0YxelNrkbqSKRBxXvHLvOBYk/x1BW+8gTp6lrXDxtv8pEfFb7Fzh
-        zfDE810YIT0GGlLmPuLVOPw=
-X-Google-Smtp-Source: AGHT+IFQ2I3RmOkyhEiO+fRoT4DEDUqtaffOko/ziN69QCFscEtnwzTeK+l+PHxYKHP8i561szQpNw==
-X-Received: by 2002:a05:6808:68a:b0:3a8:ccf0:103f with SMTP id k10-20020a056808068a00b003a8ccf0103fmr21522378oig.3.1699032940475;
-        Fri, 03 Nov 2023 10:35:40 -0700 (PDT)
-Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
-        by smtp.gmail.com with ESMTPSA id 6-20020a05620a04c600b007749dc7881dsm908113qks.48.2023.11.03.10.35.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Nov 2023 10:35:40 -0700 (PDT)
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailauth.nyi.internal (Postfix) with ESMTP id 4EED127C005B;
-        Fri,  3 Nov 2023 13:35:39 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Fri, 03 Nov 2023 13:35:39 -0400
-X-ME-Sender: <xms:aS9FZfy2uIbk6232CNjeP_GDmV4uOXLt3iv9sinL9zkOAiNBwCHzqQ>
-    <xme:aS9FZXRtUtENb5myvkyVGrc4OYlxrDALibxmUms-QezAJPcdneoaRTSZ7UE2msjSv
-    QWKLU3wQjrjojoRsA>
-X-ME-Received: <xmr:aS9FZZUqv6RIw3QoQz1f5KLuL-77Ir3TdedB--zpQk27vW753jwdisza1IM>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedruddtkedguddtudcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhq
-    uhhnucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrf
-    grthhtvghrnhephedugfduffffteeutddvheeuveelvdfhleelieevtdeguefhgeeuveei
-    udffiedvnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
-    epsghoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqieelvdeghedt
-    ieegqddujeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghilhdrtghomhesfh
-    higihmvgdrnhgrmhgv
-X-ME-Proxy: <xmx:aS9FZZhr5qHY-_aQarg9fd-oieECbBHJXBxo3KCrPTVKXr1WZM9zZw>
-    <xmx:aS9FZRAkKjARQtqFDUX1CPl4AkJ2-FGM2oO0G7AGlUUZLskOUStwWw>
-    <xmx:aS9FZSJX_v10FVN3qbHDbTO2qBLwaOS4WBYBRgEUYuiG4P5pRTVzOQ>
-    <xmx:ay9FZQDYgbOTPKerpYwSyK-2M3Tk5IKh_x5C0r88FU7AztESd-cRng>
-Feedback-ID: iad51458e:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 3 Nov 2023 13:35:37 -0400 (EDT)
-Date:   Fri, 3 Nov 2023 10:34:27 -0700
-From:   Boqun Feng <boqun.feng@gmail.com>
-To:     Benno Lossin <benno.lossin@proton.me>
-Cc:     Alice Ryhl <aliceryhl@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
-        Todd Kjos <tkjos@android.com>,
-        Martijn Coenen <maco@android.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Carlos Llamas <cmllamas@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org,
-        Gary Guo <gary@garyguo.net>,
-        =?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        Matt Gilbride <mattgilbride@google.com>,
-        Jeffrey Vander Stoep <jeffv@google.com>,
-        Matthew Maurer <mmaurer@google.com>
-Subject: Re: [PATCH RFC 02/20] rust_binder: add binderfs support to Rust
- binder
-Message-ID: <ZUUvI0leuPfhCOfE@boqun-archlinux>
-References: <20231101-rust-binder-v1-0-08ba9197f637@google.com>
- <20231101-rust-binder-v1-2-08ba9197f637@google.com>
- <sRVdoCqLbxM1-EH0iKVlb9eOEU-wt410-WT5rFTQNNYgmiW6EEpKvCCJyVppOmFYhXBcCN3SsXUXULzpmmweYBGDVHW619pjsIZvorv8Fc8=@proton.me>
+        Fri, 3 Nov 2023 13:36:30 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61C73D44
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 10:36:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699032984; x=1730568984;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=8nJxPpdWo23mUiPSbv26x2/L9tiHfBG+mDDAc7c42Bc=;
+  b=UbGE7xfwCsYk8yZxfzL0qRNItq1tm+IMQbd7UWtSW/UdP9c9WfCduVsr
+   KYKNBMp+JoY9KeHAaeY/sZWPDbdgAZnRlrHPEV4GxXvDKK4mSbbYbJ4oZ
+   Kss2m2uEbTXmfLIli2GH0g1ZtB1rU075HwditGZdlXea4atIloA7/vllH
+   Obo148aD8sIZO5nBp9p/XRsyb2w3SyXCZLqpZItKxM1iMDXOeVk6j/IsT
+   1fCTiWDkGe5Vnq9ksqHdbSOBXvgsd/kjP/ARC6OYuLVGY5XebS7q0eA0h
+   i8a6fge9YIgXUV8qQjSeN2LaLkhgg5Qq/AwHzmU/2/JfCJchDoFyf4boA
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10883"; a="387879592"
+X-IronPort-AV: E=Sophos;i="6.03,273,1694761200"; 
+   d="scan'208";a="387879592"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2023 10:36:12 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10883"; a="738138407"
+X-IronPort-AV: E=Sophos;i="6.03,273,1694761200"; 
+   d="scan'208";a="738138407"
+Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
+  by orsmga006.jf.intel.com with ESMTP; 03 Nov 2023 10:36:10 -0700
+Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qyy5X-0002lj-2w;
+        Fri, 03 Nov 2023 17:36:07 +0000
+Date:   Sat, 4 Nov 2023 01:36:05 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Shannon Nelson <shannon.nelson@amd.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        "Michael S. Tsirkin" <mst@redhat.com>
+Subject: drivers/vdpa/pds/debugfs.c:269:49: warning: '%02d' directive output
+ may be truncated writing between 2 and 11 bytes into a region of size 6
+Message-ID: <202311040109.RfgJoE7L-lkp@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <sRVdoCqLbxM1-EH0iKVlb9eOEU-wt410-WT5rFTQNNYgmiW6EEpKvCCJyVppOmFYhXBcCN3SsXUXULzpmmweYBGDVHW619pjsIZvorv8Fc8=@proton.me>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -118,74 +63,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 03, 2023 at 04:30:54PM +0000, Benno Lossin wrote:
-> On 01.11.23 19:01, Alice Ryhl wrote:
-> > +/// There is one context per binder file (/dev/binder, /dev/hwbinder, etc)
-> > +#[pin_data]
-> > +pub(crate) struct Context {
-> > +    #[pin]
-> > +    manager: Mutex<Manager>,
-> > +    pub(crate) name: CString,
-> > +    #[pin]
-> > +    links: ListLinks,
-> > +}
-> > +
-> > +kernel::list::impl_has_list_links! {
-> > +    impl HasListLinks<0> for Context { self.links }
-> > +}
-> > +kernel::list::impl_list_arc_safe! {
-> > +    impl ListArcSafe<0> for Context { untracked; }
-> > +}
-> > +kernel::list::impl_list_item! {
-> > +    impl ListItem<0> for Context {
-> > +        using ListLinks;
-> > +    }
-> > +}
-> 
-> I think at some point it would be worth introducing a derive macro that
-> does this for us. So for example:
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   8f6f76a6a29f36d2f3e4510d0bde5046672f6924
+commit: 9a8864d2a8dc5c49acd66284fd382871d99b5db8 pds_vdpa: pds_vdps.rst and Kconfig
+date:   4 months ago
+config: alpha-allyesconfig (https://download.01.org/0day-ci/archive/20231104/202311040109.RfgJoE7L-lkp@intel.com/config)
+compiler: alpha-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231104/202311040109.RfgJoE7L-lkp@intel.com/reproduce)
 
-Agreed.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311040109.RfgJoE7L-lkp@intel.com/
 
-> 
->     #[pin_data]
->     #[derive(HasListLinks)]
->     pub(crate) struct Context {
->         #[pin]
->         manager: Mutex<Manager>,
->         pub(crate) name: CString,
->         #[pin]
->         #[links]
->         links: ListLinks,
->     }
-> 
-> And if you need multiple links you could do:
-> 
->     #[pin_data]
->     #[derive(HasListLinks)]
->     struct Foo {
->         #[links = 0]
->         a_list: ListLinks,
+All warnings (new ones prefixed by >>):
 
-we will need more discussion on how the derive syntax would look like,
-but I'd expect we can reference the field with names instead of numbers
-if we use derive macros. In other words type numbering to distinguish
-different fields should be an implementation detail.
+   drivers/vdpa/pds/debugfs.c: In function 'pds_vdpa_debugfs_add_vdpadev':
+>> drivers/vdpa/pds/debugfs.c:269:49: warning: '%02d' directive output may be truncated writing between 2 and 11 bytes into a region of size 6 [-Wformat-truncation=]
+     269 |                 snprintf(name, sizeof(name), "vq%02d", i);
+         |                                                 ^~~~
+   drivers/vdpa/pds/debugfs.c:269:46: note: directive argument in the range [-2147483641, 254]
+     269 |                 snprintf(name, sizeof(name), "vq%02d", i);
+         |                                              ^~~~~~~~
+   drivers/vdpa/pds/debugfs.c:269:17: note: 'snprintf' output between 5 and 14 bytes into a destination of size 8
+     269 |                 snprintf(name, sizeof(name), "vq%02d", i);
+         |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Regards,
-Boqun
 
->         #[links = 1]
->         b_list: ListLinks,
->     }
-> 
-> Same for `ListItem` and `HasWork`. I have not yet taken a look at your
-> linked list implementation, so I don't know if this is possible (since
-> `ListItem` seems to have multiple "backends").
-> 
-> I think this improvement can wait though, just wanted to mention it.
-> 
-> -- 
-> Cheers,
-> Benno
-> 
+vim +269 drivers/vdpa/pds/debugfs.c
+
+151cc834f3ddafe Shannon Nelson 2023-05-19  259  
+151cc834f3ddafe Shannon Nelson 2023-05-19  260  void pds_vdpa_debugfs_add_vdpadev(struct pds_vdpa_aux *vdpa_aux)
+151cc834f3ddafe Shannon Nelson 2023-05-19  261  {
+151cc834f3ddafe Shannon Nelson 2023-05-19  262  	int i;
+151cc834f3ddafe Shannon Nelson 2023-05-19  263  
+151cc834f3ddafe Shannon Nelson 2023-05-19  264  	debugfs_create_file("config", 0400, vdpa_aux->dentry, vdpa_aux->pdsv, &config_fops);
+151cc834f3ddafe Shannon Nelson 2023-05-19  265  
+151cc834f3ddafe Shannon Nelson 2023-05-19  266  	for (i = 0; i < vdpa_aux->pdsv->num_vqs; i++) {
+151cc834f3ddafe Shannon Nelson 2023-05-19  267  		char name[8];
+151cc834f3ddafe Shannon Nelson 2023-05-19  268  
+151cc834f3ddafe Shannon Nelson 2023-05-19 @269  		snprintf(name, sizeof(name), "vq%02d", i);
+151cc834f3ddafe Shannon Nelson 2023-05-19  270  		debugfs_create_file(name, 0400, vdpa_aux->dentry,
+151cc834f3ddafe Shannon Nelson 2023-05-19  271  				    &vdpa_aux->pdsv->vqs[i], &vq_fops);
+151cc834f3ddafe Shannon Nelson 2023-05-19  272  	}
+151cc834f3ddafe Shannon Nelson 2023-05-19  273  }
+151cc834f3ddafe Shannon Nelson 2023-05-19  274  
+
+:::::: The code at line 269 was first introduced by commit
+:::::: 151cc834f3ddafec869269fe48036460d920d08a pds_vdpa: add support for vdpa and vdpamgmt interfaces
+
+:::::: TO: Shannon Nelson <shannon.nelson@amd.com>
+:::::: CC: Michael S. Tsirkin <mst@redhat.com>
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
