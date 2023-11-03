@@ -2,45 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CCBF7E0B59
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 23:59:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8936B7E0B66
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 23:59:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377963AbjKCW40 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 18:56:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34990 "EHLO
+        id S1377974AbjKCW42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 18:56:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377663AbjKCW4U (ORCPT
+        with ESMTP id S1377673AbjKCW4U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 3 Nov 2023 18:56:20 -0400
 Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C3C7D6A
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 15:56:15 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6250ED6F
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 15:56:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         sang-engineering.com; h=from:to:cc:subject:date:message-id
         :in-reply-to:references:mime-version:content-transfer-encoding;
-         s=k1; bh=TiJf9ojlNhxPnbwNmLPWFg4kCpD3p403c86z54PQPYc=; b=l5gDiE
-        J0Y/10+Tr0gW2tra8ruaauzW5TGXXvtazMBns04VQdHcy2KUfRkR5YcJjq+ofCnx
-        6uqV8ds+yEYX3uDNly1DjG7GAWbd6x2OoVq3qaKY36VVhEZzv1koMan8JWgzdgVd
-        aS9ZG+7ba+pEx0OFpus+p7v0xaQwBOnScr0AHpZeViWw8W3vUXVp7Wj1I8MJdguq
-        15iWnXPj2o9JvT3dzqreWoIosMEcU2xmKy1aVFf2aY0TBPF59hYKPlf++9kwm4Sx
-        /Iph2xaQlcyiE42Qp/x5R1zLuc9Mz7hRh34Cdu9kAU2QSCA/5AUcjtcD5MwEo3ER
-        4eVNYa1G39M1LnWg==
-Received: (qmail 1327910 invoked from network); 3 Nov 2023 23:56:13 +0100
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 3 Nov 2023 23:56:13 +0100
-X-UD-Smtp-Session: l3s3148p1@iCk8aUcJCM5ehhrK
+         s=k1; bh=fmrU2g6eF1M/O9NhTkCGo0q8tJfP+vuJFadhZEhBZqk=; b=bBNUBH
+        kTPO9XBWgGHWN/xKtJuHwwsT/4ldN0N7Bfhgzj97e8bmNLSdmsfKSwXmQ2a+JTh4
+        /PSSBjswK0XthI/X0n4JxDWvT6U+g8aS6fYDuITqkgJ5ZeRYI7gJTW2GWQ1ia6dZ
+        JymuzTl+Kdf8Vo4AoAXoiC6RZigjkp2IRONIBVwESm8VPKGSZk+L6Sq3FzSV+vqu
+        KXIgzZp8TmUdoFfyLmpFlO9hT3jngZa0xI8ZaAemMahix3flJ16POcv40EC71HmR
+        7CDOiJd4wgTKA4v1ys9UhxFMi0RXikbIn0uSJn+/fi4sRY9hvQYltJACHQjXIaJF
+        uGtY5dn4bCkVNh5g==
+Received: (qmail 1327964 invoked from network); 3 Nov 2023 23:56:14 +0100
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 3 Nov 2023 23:56:14 +0100
+X-UD-Smtp-Session: l3s3148p1@xx1IaUcJEM5ehhrK
 From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
 To:     linux-renesas-soc@vger.kernel.org
 Cc:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Conor Dooley <conor.dooley@microchip.com>,
         Geert Uytterhoeven <geert+renesas@glider.be>,
-        Johan Hovold <johan@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v4 2/3] dt-bindings: gnss: u-blox: add "reset-gpios" binding
-Date:   Fri,  3 Nov 2023 23:55:59 +0100
-Message-Id: <20231103225601.6499-3-wsa+renesas@sang-engineering.com>
+        Johan Hovold <johan@kernel.org>, linux-kernel@vger.kernel.org
+Subject: [PATCH v4 3/3] gnss: ubx: add support for the reset gpio
+Date:   Fri,  3 Nov 2023 23:56:00 +0100
+Message-Id: <20231103225601.6499-4-wsa+renesas@sang-engineering.com>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20231103225601.6499-1-wsa+renesas@sang-engineering.com>
 References: <20231103225601.6499-1-wsa+renesas@sang-engineering.com>
@@ -57,43 +52,70 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 The Renesas KingFisher board includes a U-Blox Neo-M8 chip. This chip
-has a reset pin which is also wired on the board. Introduce a binding to
-support this reset pin.
+has a reset pin which is also wired on the board. Add code to the driver
+to support this reset pin. Because my GNSS device is hooked up via UART
+and I2C simultaneously, I could verify functionality by opening/closing
+the GNSS device using UART and see if the corresponding I2C device was
+visible on the bus.
 
 Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
 Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 ---
- Documentation/devicetree/bindings/gnss/u-blox,neo-6m.yaml | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/gnss/ubx.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/gnss/u-blox,neo-6m.yaml b/Documentation/devicetree/bindings/gnss/u-blox,neo-6m.yaml
-index 4835a280b3bf..8e97e475613f 100644
---- a/Documentation/devicetree/bindings/gnss/u-blox,neo-6m.yaml
-+++ b/Documentation/devicetree/bindings/gnss/u-blox,neo-6m.yaml
-@@ -41,6 +41,9 @@ properties:
-     description: >
-       Backup voltage regulator
+diff --git a/drivers/gnss/ubx.c b/drivers/gnss/ubx.c
+index 9b76b101ba5e..e7d151cbc8c3 100644
+--- a/drivers/gnss/ubx.c
++++ b/drivers/gnss/ubx.c
+@@ -7,6 +7,7 @@
  
-+  reset-gpios:
-+    maxItems: 1
+ #include <linux/errno.h>
+ #include <linux/gnss.h>
++#include <linux/gpio/consumer.h>
+ #include <linux/init.h>
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+@@ -18,6 +19,7 @@
+ 
+ struct ubx_data {
+ 	struct regulator *vcc;
++	struct gpio_desc *reset_gpio;
+ };
+ 
+ static int ubx_set_active(struct gnss_serial *gserial)
+@@ -29,6 +31,8 @@ static int ubx_set_active(struct gnss_serial *gserial)
+ 	if (ret)
+ 		return ret;
+ 
++	gpiod_set_value_cansleep(data->reset_gpio, 0);
 +
- required:
-   - compatible
-   - vcc-supply
-@@ -49,10 +52,12 @@ unevaluatedProperties: false
+ 	return 0;
+ }
  
- examples:
-   - |
-+    #include <dt-bindings/gpio/gpio.h>
-     serial {
-         gnss {
-             compatible = "u-blox,neo-8";
-             v-bckp-supply = <&gnss_v_bckp_reg>;
-             vcc-supply = <&gnss_vcc_reg>;
-+            reset-gpios = <&gpio 1 GPIO_ACTIVE_LOW>;
-         };
-     };
+@@ -37,6 +41,8 @@ static int ubx_set_standby(struct gnss_serial *gserial)
+ 	struct ubx_data *data = gnss_serial_get_drvdata(gserial);
+ 	int ret;
+ 
++	gpiod_set_value_cansleep(data->reset_gpio, 1);
++
+ 	ret = regulator_disable(data->vcc);
+ 	if (ret)
+ 		return ret;
+@@ -90,6 +96,13 @@ static int ubx_probe(struct serdev_device *serdev)
+ 	if (ret < 0 && ret != -ENODEV)
+ 		goto err_free_gserial;
+ 
++	/* Start with reset asserted */
++	data->reset_gpio = devm_gpiod_get_optional(&serdev->dev, "reset", GPIOD_OUT_HIGH);
++	if (IS_ERR(data->reset_gpio)) {
++		ret = PTR_ERR(data->reset_gpio);
++		goto err_free_gserial;
++	}
++
+ 	ret = gnss_serial_register(gserial);
+ 	if (ret)
+ 		goto err_free_gserial;
 -- 
 2.35.1
 
