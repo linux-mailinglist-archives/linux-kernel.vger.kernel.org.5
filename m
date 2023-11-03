@@ -2,140 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 228AD7E02A3
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 13:14:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C96C7E02A5
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 13:14:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346667AbjKCMOK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 08:14:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51248 "EHLO
+        id S1346726AbjKCMO1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 08:14:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345837AbjKCMOJ (ORCPT
+        with ESMTP id S1345837AbjKCMOZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 08:14:09 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B7A1123;
-        Fri,  3 Nov 2023 05:14:03 -0700 (PDT)
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A3AxT8O028056;
-        Fri, 3 Nov 2023 12:13:37 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=46A8X1eP2WUVzUclJZb6kwAOpw9cdJyQ7xhfMFXTtpI=;
- b=n2JYyDB0uA1jEpZte4SSsLHsu8VaV6zwq5pv9X6isD/+eiOms4ks2/SIgrhAfEyM+Mb7
- lgYJ5uIU3U54M6ZZFPbnH0PDzt2ZGS8l1nsBRKE8Sk+L0tF0o8MQ7Z5NST7R/HT8vqf7
- bdEW/3bwsj4pJdLg53dYYRyF3puDbSmBbTd6U/752h+e2Ut66wev68Yim9LJbqGHr+kU
- kjiHiqebXXVdh1o2Tei7FSfiZuqRx6PjvODz8r/8MICNykREDu1hcOFAtC6ZfRqOvIq/
- u8VTuCa7anFnBaJedgo7Sv++RMiNcWLO2oEwPMyYAhJCrIfmvJR8wjSfg0iFBas7Satp HA== 
-Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u4yk0r4hj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 03 Nov 2023 12:13:37 +0000
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-        by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3A3CDaWh027723
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 3 Nov 2023 12:13:36 GMT
-Received: from [10.216.26.1] (10.80.80.8) by nasanex01a.na.qualcomm.com
- (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Fri, 3 Nov
- 2023 05:13:30 -0700
-Message-ID: <99036bf8-ae62-5f25-fef4-6eb05d42f4af@quicinc.com>
-Date:   Fri, 3 Nov 2023 17:43:24 +0530
+        Fri, 3 Nov 2023 08:14:25 -0400
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D842D44;
+        Fri,  3 Nov 2023 05:14:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=uGWXOxmGU6DijpJJLAD9Go42xjGlOch3s+DAI+XWLI0=; b=VQasqY3JRsMGSCiXl/ygTaJTha
+        d5TgpVFRabepseEvnzDZ+yjcH/AVdGfAWz+X4svsx2o7AsV09fm+JfCLbQ6kmndwJpQC+kh1YuigU
+        VJnRJF/GzPjWOgT3ic/S+Kv7gpk2yLz9Aam8jtk5sv4to969wcoIh5F7IbN72hbSAZBE=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1qyt3j-000oOe-Vj; Fri, 03 Nov 2023 13:13:55 +0100
+Date:   Fri, 3 Nov 2023 13:13:55 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Marco von Rosenberg <marcovr@selfnet.de>
+Cc:     Florian Fainelli <florian.fainelli@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net: phy: broadcom: Wire suspend/resume for BCM54612E
+Message-ID: <6d45f4da-c45e-4d35-869f-85dd4ec37b31@lunn.ch>
+References: <20231030225446.17422-1-marcovr@selfnet.de>
+ <5414570.Sb9uPGUboI@5cd116mnfx>
+ <fe3ad92f-31d9-4509-b851-017218229e19@lunn.ch>
+ <4890615.31r3eYUQgx@5cd116mnfx>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.1
-Subject: Re: [RFC PATCH 4/5] spi: qpic: Add support for qpic spi nand driver
-Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
-        <conor+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
-        <broonie@kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-mtd@lists.infradead.org>, <linux-spi@vger.kernel.org>,
-        <quic_srichara@quicinc.com>, <qpic_varada@quicinc.com>
-References: <20231031120307.1600689-1-quic_mdalam@quicinc.com>
- <20231031120307.1600689-5-quic_mdalam@quicinc.com>
- <691607ce-ed05-4fd8-9989-ebd58f2e1664@linaro.org>
-From:   Md Sadre Alam <quic_mdalam@quicinc.com>
-In-Reply-To: <691607ce-ed05-4fd8-9989-ebd58f2e1664@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: uZH-wH5qIg5B4Fu3Ppk4OaLQ38eHave5
-X-Proofpoint-GUID: uZH-wH5qIg5B4Fu3Ppk4OaLQ38eHave5
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-03_12,2023-11-02_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
- priorityscore=1501 mlxscore=0 spamscore=0 malwarescore=0 suspectscore=0
- impostorscore=0 mlxlogscore=930 bulkscore=0 lowpriorityscore=0
- adultscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2310240000 definitions=main-2311030102
-X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4890615.31r3eYUQgx@5cd116mnfx>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Nov 03, 2023 at 02:47:38AM +0100, Marco von Rosenberg wrote:
+> On Wednesday, November 1, 2023 11:06:56 PM CET Andrew Lunn wrote:
+> > On Wed, Nov 01, 2023 at 10:42:52PM +0100, Marco von Rosenberg wrote:
+> > > On Tuesday, October 31, 2023 1:31:11 AM CET Andrew Lunn wrote:
+> > > > Are we talking about a device which as been suspended? The PHY has
+> > > > been left running because there is no suspend callback? Something then
+> > > > triggers a resume. The bootloader then suspends the active PHY? Linux
+> > > > then boots, detects its a resume, so does not touch the hardware
+> > > > because there is no resume callback? The suspended PHY is then
+> > > > useless.
+> > > 
+> > > Hi Andrew,
+> > > 
+> > > thanks for your feedback. I guess a bit of context is missing here. The
+> > > issue has nothing to do with an ordinary suspension of the OS. The main
+> > > point is that on initial power-up, the bootloader suspends the PHY before
+> > > booting Linux. With a resume callback defined, Linux would call it on
+> > > boot and make the PHY usable.
+> > 
+> > Ah, so you rely on phy_attach_direct() calling phy_resume(phydev).
+> > 
+> > This seems an odd way to solve the problem. It was not Linux which
+> > suspend the PHY, so using resume is asymmetric.
+> > 
+> > I think soft_reset() or config_init() should be taking the PHY out of
+> > suspend.
+> 
+> I agree with all of your points. This is just one way which happens to solve
+> this specific problem. Of course it might be asymmetric to see the patch as
+> a solution to my problem. However is there anything fundamentally wrong with
+> adding suspend/resume callbacks?
 
+No, there is nothing wrong with that at all, if you want to support
+suspend/resume. I do however see that as a different use case to what
+you describe as your problem. It fixing your problem is more of a side
+effect.
 
-On 10/31/2023 10:43 PM, Krzysztof Kozlowski wrote:
-> On 31/10/2023 13:03, Md Sadre Alam wrote:
->> Add qpic spi nand driver support for qcom soc.
-> 
-> What is "qcom soc"? Did you mean Qualcomm and SoC?
+We can go with this fix, but please change your justification in the
+commit message. Also, its unlikely, but resume could be made
+conditional in phy_attach_direct(), and you would then be back to a
+broken PHY on boot. Fixing this in config_init() is the correct way
+for your use case.
 
-Yes Qualcomm SoC
-
-> 
->>
->> Signed-off-by: Md Sadre Alam <quic_mdalam@quicinc.com>
->> Signed-off-by: Sricharan R <quic_srichara@quicinc.com>
->> ---
->>   drivers/spi/Kconfig          |   7 +
->>   drivers/spi/Makefile         |   1 +
->>   drivers/spi/spi-qpic-snand.c | 604 +++++++++++++++++++++++++++++++++++
->>   3 files changed, 612 insertions(+)
->>   create mode 100644 drivers/spi/spi-qpic-snand.c
->>
-> 
-> ...
-> 
->> +
->> +static int qcom_snand_remove(struct platform_device *pdev)
->> +{
->> +	struct spi_controller *ctlr = platform_get_drvdata(pdev);
->> +	spi_unregister_master(ctlr);
->> +
->> +	return 0;
->> +}
->> +
->> +static const struct qcom_nandc_props ipq9574_snandc_props = {
->> +	.dev_cmd_reg_start = 0x7000,
->> +	.is_bam = true,
->> +	.qpic_v2 = true,
->> +};
->> +
->> +static const struct of_device_id qcom_snandc_of_match[] = {
->> +	{
->> +		.compatible = "qcom,ipq9574-nand",
-> 
-> Please run scripts/checkpatch.pl and fix reported warnings. Some
-> warnings can be ignored, but the code here looks like it needs a fix.
-> Feel free to get in touch if the warning is not clear.
-
-Ok
-> 
-> Best regards,
-> Krzysztof
-> 
+       Andrew
