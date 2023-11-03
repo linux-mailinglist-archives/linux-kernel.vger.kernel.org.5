@@ -2,162 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 607EF7E03E0
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 14:43:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84C0E7E03E3
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 14:44:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377219AbjKCNn5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 09:43:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42182 "EHLO
+        id S1377616AbjKCNoP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 09:44:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229463AbjKCNnz (ORCPT
+        with ESMTP id S229463AbjKCNoM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 09:43:55 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB40F91
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 06:43:49 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-540fb78363bso3507106a12.0
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Nov 2023 06:43:49 -0700 (PDT)
+        Fri, 3 Nov 2023 09:44:12 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEC551B2
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 06:44:09 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id 41be03b00d2f7-517ab9a4a13so1644131a12.1
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Nov 2023 06:44:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699019028; x=1699623828; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
+        d=gmail.com; s=20230601; t=1699019049; x=1699623849; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=lUofKOMyeRiI+omqXkiEakkUIo+DrNpKtlG2soH1hyM=;
-        b=bLf5XRcMyEQS+A6VzcqQ7oniZtuv+c5QbcJH8ZrO1gD2F3YKxYy6q9wT9aXZJtJZyV
-         b2JhVtQJPKXQvPufMQPTRbsbox2GrdrDUaiquse8TTcMcQfxPpltRDpFPz7fm5YIc2Kd
-         yBIoNZj8xRYOZNBA8fXqlP1PeE0iFve+58QDeWaSpJxsMeE3N8C7QU+GlebUs7jg/dIG
-         uotV6COaLWVjrYVjCNZ/oCombQoo7lUb3kPqprUOxgDr1+SPMqLWPu+UmNfgRRTb2KMm
-         uyRKfgk3RHSzz7bGTq7eZWYLp32sH1X2m1+XpzqlU8NEDBND3fzmuCKiQ928/iO350Cj
-         7lKg==
+        bh=cAwnuNWOqdk8r7RMLFguMdGxoKK8GFPpsUqe+jMzKdA=;
+        b=HD72wpgre/aRN7z4j5VH/VaiLXvjlaZMhA6TLb1lPeOOccfOIqFh71h1MPKA7YZOB7
+         L3i2MbNw5JFHDdR1002HwqKoDbM8q/MkatZwiuzwJM8TSIdH91tHxAcxZE0oyfhHTsXz
+         N7fyV3sZEjazy/nSqMEtteF+AEGDWAJ/f15xPP7ZEjZg3ynPc2A5Q7/YjtIAk1ac6JYz
+         OTell7CmWJAwQCL89VHbmpS9SCgFfKz7h/mtYa12lHUqSmCMS/HVUGpYphjX6TxZODhX
+         RAgZjUzoVsdd32mlMU655ri1nvw7Pu8PoK59Bk70uJWOMaTQJIIngiZfTzKX+Qp/1igK
+         ftXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699019028; x=1699623828;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
+        d=1e100.net; s=20230601; t=1699019049; x=1699623849;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=lUofKOMyeRiI+omqXkiEakkUIo+DrNpKtlG2soH1hyM=;
-        b=pTO5GqnEDjsVKH0N1U74C5LH+MXnUXPirnADD1uw+HqRwdty/tk7Z51Qh3d4yQOV9V
-         G/wwfSu5P2cfflG33viyPYek5sMkVj1g8GTUJIUBo1473lYTgb+qfkSwaEhF4V2HzM+x
-         nddglpKZRvDzHNmycgYHRlSosI5837C7HiU/QcxVkamUQV7iDo89X/K+uDrKxCCJpizo
-         pyYAWbsIwi0kPxBvJ7z/7OvwchNvgV0a7m9ahHImZzaClaKWn6Ua69kvARklPMgSYMS/
-         9X6D3uUa+V7txY6jGwwpvfslomBcXpliKJ2EswNG5ixvdpU4YWGPDpZtD8SCuJUahC2d
-         Q5eA==
-X-Gm-Message-State: AOJu0YyzLHjJQGvJZRjKyPMhIqQ9v9b00fLOPulyrUUJx/YvSs7DO59/
-        fGqMsctDw/S6xAhaGhBCSEp13g==
-X-Google-Smtp-Source: AGHT+IHqghtWI10o8Tcmh5vhSCxDwxO1tNoQ75PZTGXfeXlLlP9UEgy1jVpcoqzocj/4UskzEIA5Kg==
-X-Received: by 2002:a50:9552:0:b0:543:7201:7c70 with SMTP id v18-20020a509552000000b0054372017c70mr9221760eda.7.1699019028368;
-        Fri, 03 Nov 2023 06:43:48 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.218.126])
-        by smtp.gmail.com with ESMTPSA id 29-20020a508e5d000000b0052ffc2e82f1sm1010569edx.4.2023.11.03.06.43.46
+        bh=cAwnuNWOqdk8r7RMLFguMdGxoKK8GFPpsUqe+jMzKdA=;
+        b=paCRZSf4YdGzFW/4L2PyeQzMM8ouU9+W5lCiwdjE5KOUWngGKEHD2o0T0Nl4uMIm1B
+         DRvLL+CTNLtosJCX0wJ/VBWxzu0sNUzjV9zHNqquM5CUI5RF+SEOgDsdyNTjey+pSNls
+         2aulauSAPU+6pThK5LQRG5zN44RJ4MrvhzrrLwS0jkvgupmVbszGmzaCMFfwy2i6T4RA
+         6ZDNXKwKZmPsqvFuYWv99znrr7dTHJN63Lr85XIyT2EpxQGEY1UgaJPJtthw56C3mUWm
+         a6VNVGWM59pBwnvLSisw0tj6gaxI/HDEBW748EwrKA+FYKfS0L9eLBmciOn2PwDHdCQk
+         wVLQ==
+X-Gm-Message-State: AOJu0YxuKT9RFV+Age2mvGcVRBacJZpmP4Ee8UoGX2V6uV3bk3iactbk
+        NB3C20VGmE3B3/o7vovdi8A=
+X-Google-Smtp-Source: AGHT+IGt8gFlTfzrJIRGBAC72qQjPlYWGPSABBzTLE9SMs00eMp4wOMMiOVSjuxBEX+fQWfTPHQfvw==
+X-Received: by 2002:a05:6a21:7881:b0:17e:2afd:407f with SMTP id bf1-20020a056a21788100b0017e2afd407fmr28675924pzc.9.1699019049094;
+        Fri, 03 Nov 2023 06:44:09 -0700 (PDT)
+Received: from [192.168.0.106] ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id s1-20020aa78281000000b006b4a5569694sm1462691pfm.83.2023.11.03.06.44.02
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 03 Nov 2023 06:43:47 -0700 (PDT)
-Message-ID: <7af13415-ca58-4084-9aea-f805cf266bb8@linaro.org>
-Date:   Fri, 3 Nov 2023 14:43:45 +0100
+        Fri, 03 Nov 2023 06:44:08 -0700 (PDT)
+Message-ID: <1578a6d3-e2f0-443e-85d1-55c639aa1910@gmail.com>
+Date:   Fri, 3 Nov 2023 20:43:58 +0700
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/3] soundwire: qcom: drop unneeded DAI .set_stream
- callback
+Subject: Re: Regression apparently caused by commit
+ 088a40980efbc2c449b72f0f2c7ebd82f71d08e2 "ASoC: amd: acp: add pm ops support
+ for acp pci driver"
 Content-Language: en-US
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Sanyog Kale <sanyog.r.kale@intel.com>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Banajit Goswami <bgoswami@quicinc.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
+To:     syed saba kareem <ssabakar@amd.com>,
+        Marian Postevca <posteuca@mutex.one>,
+        Syed Saba Kareem <Syed.SabaKareem@amd.com>
+Cc:     broonie@kernel.org, alsa-devel@alsa-project.org,
+        Vijendar.Mukunda@amd.com, Basavaraj.Hiregoudar@amd.com,
+        Sunil-kumar.Dommati@amd.com, Liam Girdwood <lgirdwood@gmail.com>,
         Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, linux-arm-msm@vger.kernel.org,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-References: <20231025144601.268645-1-krzysztof.kozlowski@linaro.org>
- <322002af-09e8-4d4c-bc85-81654c6b5f9d@linux.intel.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <322002af-09e8-4d4c-bc85-81654c6b5f9d@linux.intel.com>
+        Takashi Iwai <tiwai@suse.com>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        Venkata Prasad Potturu <venkataprasad.potturu@amd.com>,
+        V sujith kumar Reddy <Vsujithkumar.Reddy@amd.com>,
+        ye xingchen <ye.xingchen@zte.com.cn>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>
+References: <87a5v8szhc.fsf@mutex.one> <ZUQssoD2rUHSYQ2v@debian.me>
+ <610d562f-0bbc-485c-ad63-9534fa4ba937@amd.com>
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+In-Reply-To: <610d562f-0bbc-485c-ad63-9534fa4ba937@amd.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/10/2023 17:12, Pierre-Louis Bossart wrote:
+On 03/11/2023 20:30, syed saba kareem wrote:
 > 
+> On 11/3/23 04:41, Bagas Sanjaya wrote:
+>> On Thu, Aug 03, 2023 at 10:22:07PM +0300, Marian Postevca wrote:
+>>> I'm trying to develop a sound machine driver based on the acp legacy driver.
+>>> The first version of the driver was sent for review on the alsa mailing list this
+>>> spring: https://lore.kernel.org/all/20230320203519.20137-1-posteuca@mutex.one
+>>>
+>>> I'm trying to fix some of the issues that were brought up during the review back then,
+>>> but when I ported the patches to the latest commit on the for-next
+>>> branch, I noticed a regression where I couldn't hear any sound at all.
+>>>
+>>> So I started a bisect session and found that the first bad commit is:
+>>> ASoC: amd: acp: add pm ops support for acp pci driver
+>>> commit 088a40980efbc2c449b72f0f2c7ebd82f71d08e2
+>>> https://lore.kernel.org/lkml/20230622152406.3709231-11-Syed.SabaKareem@amd.com
+>>>
+>>> If I revert this commit sound works as expected. So I started tinkering a little bit
+>>> with it and I believe that what happens is that the acp pci driver
+>>> enters the autosuspend state and never leaves this state at all.
+>>> I noticed this because if I increase the autosuspend delay to a much
+>>> larger value, then the sound works until that delay passes.
+>>> I added traces and I can see that when the delay expires the suspend callback snd_acp_suspend()
+>>> gets called, but the resume callback snd_acp_resume() never gets called.
+>>>
+>>> I'm no expert in runtime power management (though I did read a bit on it), so I don't understand
+>>> all the things that happen underneath, but one thing that is not clear to me is who's supposed
+>>> to mark activity on this device and keep it from entering autosuspend if the user wants to play
+>>> some sound? Shouldn't there be some counterpart that calls pm_runtime_mark_last_busy() ?
+>>> I looked through the code and can't find who's calling pm_runtime_mark_last_busy().
+>>>
+>>> Some help here would be welcome. Is there something missing in my machine driver code, or
+>>> is the runtime pm handling in acp pci driver wrong?
+>> Thanks for the regression report. I'm adding it to regzbot:
+>>
+>> #regzbot ^introduced: 088a40980efbc2
+>>
+> We were working on some other priority tasks, will upstream the changes
 > 
-> On 10/25/23 09:45, Krzysztof Kozlowski wrote:
->> Qualcomm Soundwire controller drivers do not support multi-link setups,
->> so DAI .set_stream() callback will not be used.  What's more, if called
->> it will overwrite the sdw_stream_runtime runtime set in DAI .startup
->> (qcom_swrm_startup()) causing issues (unsupported multi-link error) when
->> two Soundwire controllers are passed as codec DAIs.
+> by next week.
 > 
-> This last sentence is confusing at best.
-> 
-> A controller can have one or more managers, each of whom can have one or
-> more peripherals.
-> 
-> only peripherals should expose codec DAIs, managers should expose CPU DAIs.
-> 
-> Put differently, the controller is the host part while the peripheral is
-> the codec part. "controllers passed as codec DAIs" is not really
-> possible, or this was a typo?
 
-No, it wasn't a typo. Take a look here:
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/arm64/boot/dts/qcom/sc8280xp-lenovo-thinkpad-x13s.dts#n1023
+OK, thanks!
 
-The <&swr0 0> is the controller, although probably I should call it
-manager, but in case of Qualcomm I think they are 1-to-1.
-
-Best regards,
-Krzysztof
+-- 
+An old man doll... just what I always wanted! - Clara
 
