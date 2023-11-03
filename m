@@ -2,105 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B7E07E07C4
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 18:51:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5E027E07CB
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 18:56:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232372AbjKCRvv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 13:51:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44256 "EHLO
+        id S232312AbjKCR4A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 13:56:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229605AbjKCRvu (ORCPT
+        with ESMTP id S229605AbjKCRz5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 13:51:50 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1B1A1D42;
-        Fri,  3 Nov 2023 10:51:47 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 77F962F4;
-        Fri,  3 Nov 2023 10:52:29 -0700 (PDT)
-Received: from [10.57.81.32] (unknown [10.57.81.32])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7D4DC3F738;
-        Fri,  3 Nov 2023 10:51:41 -0700 (PDT)
-Message-ID: <1cbc6def-8255-4a13-99b0-145d3f8ffcac@arm.com>
-Date:   Fri, 3 Nov 2023 17:51:39 +0000
+        Fri, 3 Nov 2023 13:55:57 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5DE7D44;
+        Fri,  3 Nov 2023 10:55:54 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-54366784377so3785083a12.3;
+        Fri, 03 Nov 2023 10:55:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699034153; x=1699638953; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=SelOsO4e7GQx4YbT87ZuQxwsrQ0BMcUUcVqEb+J9ljQ=;
+        b=KcmXVTpKamYccmaCVCqm2XmsgsbX9wCA88bH2cS+o+2rC8hxHo7kbMdZKWbpccEtuE
+         M24Rqman/uZ2iucQMDiJ3LeMk+ju+08itQOSoXk2AUEXZYv+0VhjjO+ZxumfCjV2zm7W
+         txYa1LHqjB1P+kfGStPLDohxSCJzBFmfA8HHuHUsQT/6ZzTxbvsIJPTdfKEUduBgqaSz
+         UJCLGIdNRHvVy8gSUKlK056ZHCaju2scPRctU/WvGpkI9aj/5sRUuT+o3DwFVIbUeEIj
+         Nzft2SA8+6KboxJzveO6uLPdIDjk+mgIV0Ge3Bzc3nDPJxRuyeaJRatTWmcme25V9P3h
+         pRYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699034153; x=1699638953;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=SelOsO4e7GQx4YbT87ZuQxwsrQ0BMcUUcVqEb+J9ljQ=;
+        b=pe09NGcLED9mqI0vvk9srZJPpHR1bf42CaQ2M2qgskM2HzvyHv5KF5tJ3wRhuf/gCd
+         ABJZ6gxKGt+OY5dnLhMBk4/qWIBMDfEigO+KNZxGbV6yYxDWIajMFJ13ConzTOSr4eiS
+         lriedq7K82C8OEQ5ZWgyjENQ2AQP3yUPo+sf/0wjpQXEc3vdwNHFQ3dOXWEO7Y2AO2JU
+         oXaklDyBLlX8QYo0aczfPVdfMMwHoEDz6dEUWXb72U1IW6ux7Yi8jw/WhWvgNF+muyye
+         ecLIsfzhQxm8w4pSmjvEtLZaRx/HXFznlQxei40ESq6jjbNdXRiDKKWC23xgyNzvnSVL
+         cBfw==
+X-Gm-Message-State: AOJu0YwdOzTcI2U/K6j57Zsda6VjGOPH/S9jhvIhrvFGj4vGfYaKgxV8
+        9TYPOjWAGFJXPJRVlWAgBlHewKbMQHhpfw==
+X-Google-Smtp-Source: AGHT+IHtBfN5qqilHam3HPfW97af6GjBiqTqanKMhhWgWDVGR9JFL8UGu7zLUnI5jEJnj7wKSgSvCA==
+X-Received: by 2002:a17:906:c14f:b0:9bd:f155:eb54 with SMTP id dp15-20020a170906c14f00b009bdf155eb54mr7760058ejc.6.1699034153179;
+        Fri, 03 Nov 2023 10:55:53 -0700 (PDT)
+Received: from fedora.. (host-62-211-113-16.retail.telecomitalia.it. [62.211.113.16])
+        by smtp.gmail.com with ESMTPSA id wj6-20020a170907050600b009ddf1a84379sm80306ejb.51.2023.11.03.10.55.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 Nov 2023 10:55:52 -0700 (PDT)
+From:   f.storniolo95@gmail.com
+To:     luigi.leonardi@outlook.com, kvm@vger.kernel.org
+Cc:     davem@davemloft.net, edumazet@google.com, mst@redhat.com,
+        imbrenda@linux.vnet.ibm.com, kuba@kernel.org, asias@redhat.com,
+        stefanha@redhat.com, pabeni@redhat.com, sgarzare@redhat.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        Filippo Storniolo <f.storniolo95@gmail.com>
+Subject: [PATCH net 0/4] vsock: fix server prevents clients from reconnecting
+Date:   Fri,  3 Nov 2023 18:55:47 +0100
+Message-ID: <20231103175551.41025-1-f.storniolo95@gmail.com>
+X-Mailer: git-send-email 2.41.0
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 08/10] arm64: Kconfig.platforms: Add config for Marvell
- PXA1908 platform
-Content-Language: en-GB
-To:     =?UTF-8?Q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Tony Lindgren <tony@atomide.com>,
-        Daniel Mack <daniel@zonque.org>,
-        Haojian Zhuang <haojian.zhuang@gmail.com>,
-        Robert Jarzmik <robert.jarzmik@free.fr>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, Leo Yan <leoy@marvell.com>,
-        Zhangfei Gao <zhangfei.gao@marvell.com>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Tony Luck <tony.luck@intel.com>,
-        "Guilherme G . Piccoli" <gpiccoli@igalia.com>
-Cc:     linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
-        alsa-devel@alsa-project.org, linux-hardening@vger.kernel.org,
-        phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
-        Karel Balej <balejk@matfyz.cz>
-References: <20231102152033.5511-1-duje.mihanovic@skole.hr>
- <20231102152033.5511-3-duje.mihanovic@skole.hr>
- <ffb08cc2-705a-468e-b6d2-9ce591c08ab4@arm.com> <2919185.e9J7NaK4W3@radijator>
-From:   Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <2919185.e9J7NaK4W3@radijator>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-11-03 5:02 pm, Duje Mihanović wrote:
-> On Friday, November 3, 2023 4:34:54 PM CET Robin Murphy wrote:
->> On 2023-11-02 3:20 pm, Duje Mihanović wrote:
->>> +config ARCH_MMP
->>> +	bool "Marvell MMP SoC Family"
->>> +	select ARM_GIC
->>> +	select ARM_ARCH_TIMER
->>> +	select ARM_SMMU
->>
->> NAK, not only is selecting user-visible symbols generally frowned upon,
->> and ignoring their dependencies even worse, but for a multiplatform
->> kernel the user may well want this to be a module.
->>
->> If having the SMMU driver built-in is somehow fundamentally required for
->> this platform to boot, that would represent much bigger problems.
-> 
-> The SoC can boot without SMMU and PDMA, but not GIC, pinctrl or the arch
-> timer. I see that most other SoCs still select drivers and frameworks they
-> presumably need for booting, with the exceptions of ARCH_BITMAIN, ARCH_LG1K
-> and a couple others. Which of these two options should I go for?
+From: Filippo Storniolo <f.storniolo95@gmail.com>
 
-Well, you don't really need to select ARM_GIC or ARM_ARCH_TIMER here 
-either, since those are already selected by ARM64 itself. Keeping 
-PINCTRL_SINGLE is fair, although you should also select PINCTRL as its 
-dependency.
+This patch series introduce fix and tests for the following vsock bug:
+If the same remote peer, using the same port, tries to connect
+to a server on a listening port more than once, the server will
+reject the connection, causing a "connection reset by peer"
+error on the remote peer. This is due to the presence of a
+dangling socket from a previous connection in both the connected
+and bound socket lists.
+The inconsistency of the above lists only occurs when the remote
+peer disconnects and the server remains active.
+This bug does not occur when the server socket is closed.
 
-As an additional nit, the file seems to be primarily ordered by symbol 
-name, so it might be nice to slip ARCH_MMC in between ARCH_MESON and 
-ARCH_MVEBU.
+More details on the first patch changelog.
+The remaining patches are refactoring and test.
 
-Cheers,
-Robin.
+Filippo Storniolo (4):
+  vsock/virtio: remove socket from connected/bound list on shutdown
+  test/vsock fix: add missing check on socket creation
+  test/vsock: refactor vsock_accept
+  test/vsock: add dobule bind connect test
+
+ net/vmw_vsock/virtio_transport_common.c | 16 +++--
+ tools/testing/vsock/util.c              | 87 +++++++++++++++++++++----
+ tools/testing/vsock/util.h              |  3 +
+ tools/testing/vsock/vsock_test.c        | 50 ++++++++++++++
+ 4 files changed, 139 insertions(+), 17 deletions(-)
+
+-- 
+2.41.0
+
