@@ -2,134 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 58E7C7E0178
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 11:31:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FBBE7E0041
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 11:29:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346351AbjKCH6S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 03:58:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37186 "EHLO
+        id S1346334AbjKCH6I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 03:58:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346272AbjKCH6Q (ORCPT
+        with ESMTP id S1346272AbjKCH6H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 03:58:16 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D9FADE
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 00:58:10 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-5230a22cfd1so2927597a12.1
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Nov 2023 00:58:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google; t=1698998289; x=1699603089; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=yPAmSObx1rTjBn4nXLAthbW9IygJi6dwZRaXAiU/c0k=;
-        b=iUYsi+nYIOwDGO18ci6KREkynsVFgTPPqLnNOTd+lFrGU3oJkp6OvBGHg6cLOx0G3N
-         fhOcrmfozaqcOa8umdvum/WMWb0o6oQPGQ22T4AqXOiyg/DMDbzXMPWKK4WgfAZpcwfa
-         zAgGXT2yaIV4Xg+9HWx+lUbi7y88Bf1+AmDCc=
+        Fri, 3 Nov 2023 03:58:07 -0400
+Received: from mail-oa1-f72.google.com (mail-oa1-f72.google.com [209.85.160.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07CA51A8
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 00:58:05 -0700 (PDT)
+Received: by mail-oa1-f72.google.com with SMTP id 586e51a60fabf-1efa8a172d5so2336084fac.2
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Nov 2023 00:58:05 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698998289; x=1699603089;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=yPAmSObx1rTjBn4nXLAthbW9IygJi6dwZRaXAiU/c0k=;
-        b=N6FZcJlTLh343g6O3zy9w2YAk/VgGaAhoZ2Ci+SAuR+hFfX2iFWrHs68Kqkp6ilAb3
-         uTjutNM1GbwmEuIZSATgMk9eaKTgV086/ShI272gbEfi3WxLM4GWVc1plR8CQO1tnYEz
-         d8mzQvWQvcWDpkq3vdmIkLnCF7ZZ2QVbdZb5xUs0Ue79kD8IBn3QgfAVZBo8rMuWDlo1
-         5dwC5iPDVIoh7iWDhp2xCmUXhHLv41OXLDcux4g+mA/JYFbxLz7SpRLmTZVs5dM12sci
-         vebfTZ4nRheumnMsbR63Me9jZc+aiLKXrxvqaRd7a1ADXf1iHCprtwab2t5+f6yY1ya3
-         lHvw==
-X-Gm-Message-State: AOJu0YwYTqMsTi0n1kDvFdDH380EVUYwoWfxVO1ulwOxmVhJ+DzBmKAW
-        MkuXFAbhYXglx3jqeAPwSXrmIQ==
-X-Google-Smtp-Source: AGHT+IGJK4iQupnRNttfSqheROBdR5rFmsaz8iuN25//lT545h/Jxz3DPSmcllXwCFl24PhKzhp3iw==
-X-Received: by 2002:a17:907:3683:b0:9b2:be5e:7545 with SMTP id bi3-20020a170907368300b009b2be5e7545mr5710534ejc.36.1698998288263;
-        Fri, 03 Nov 2023 00:58:08 -0700 (PDT)
-Received: from prevas-ravi.prevas.se ([81.216.59.226])
-        by smtp.gmail.com with ESMTPSA id m21-20020a1709066d1500b009b9aa8fffdasm598994ejr.131.2023.11.03.00.58.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Nov 2023 00:58:07 -0700 (PDT)
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-To:     Russell King <linux@armlinux.org.uk>
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ARM: VDSO: remove cntvct_ok global variable
-Date:   Fri,  3 Nov 2023 08:57:59 +0100
-Message-Id: <20231103075800.3254680-1-linux@rasmusvillemoes.dk>
-X-Mailer: git-send-email 2.40.1.1.g1c60b9335d
+        d=1e100.net; s=20230601; t=1698998284; x=1699603084;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=hNY2A1VRYM730zo4D6FwWs8ZBTWlnuXaE3Em8+3bjI4=;
+        b=FEn0F58etA4IJ1fmgyudzFuNtpvefGuvpXYKrDOfTIp4+bfW7NheHUW1zQJt9nXozT
+         W7ZMbHi6kK4FPtWMrKOU9htJjT5Q3pGFzEfwDaci70TlTvXlFh9+TJwbkSR+JdFa8FtN
+         6W3DHjjyqEYiVUwtlzd2WFAcpHrtUwTu5XM+9l5binX1gLJehGNG+fRxEnGcgz6JHzJg
+         oRy3lELcSzvBP2OGpDHoiWaNgocuP2eyPULLWIKx643TQ4Ok4BEoEhx2PIU8/iyOzA4o
+         1Cnzm4fnNX8iXxk9mx4xH7DPc24SZ2r/Na03xibnfjiRQL5LblNZorBqvXQL14T3D7LF
+         2l/w==
+X-Gm-Message-State: AOJu0Ywik2/1fE0FWs8nEp52WtHfkI4DpLgJDtxIfleogfl7UrxPcog7
+        wJcAKPk4G8PVDnYAilb+fYrXyuD9D3AEM3zK9KTWJHuE8PEblK4=
+X-Google-Smtp-Source: AGHT+IHo2iAxYAMI4yviGBJZy0mJcXTIIbjzeN7lJ8cqC4rf0R+UQlK9CrYcb8ivp7hGt67AXujz+HF089rAbvFF674hr+kZmMJc
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6871:341c:b0:1ef:9f6c:3de0 with SMTP id
+ nh28-20020a056871341c00b001ef9f6c3de0mr8442796oac.7.1698998284417; Fri, 03
+ Nov 2023 00:58:04 -0700 (PDT)
+Date:   Fri, 03 Nov 2023 00:58:04 -0700
+In-Reply-To: <00000000000055ef9a0609336580@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000003781d906093adda5@google.com>
+Subject: Re: [syzbot] test uaf in iommufd_vfio_ioas
+From:   syzbot <syzbot+d31adfb277377ef8fcba@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The cntvct_ok variable has not had any external user since commit
-c7a18100bdff ("lib/vdso: Avoid highres update if clocksource is not
-VDSO capable").
+For archival purposes, forwarding an incoming command email to
+linux-kernel@vger.kernel.org.
 
-It also only has one user in vdso.c, once during init, so rather than
-having the caller of patch_vdso() initialize cntvct_ok, just call
-cntvct_functional() directly and avoid the global variable entirely.
+***
 
-Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
----
- arch/arm/include/asm/vdso/vsyscall.h |  1 -
- arch/arm/kernel/vdso.c               | 10 +++-------
- 2 files changed, 3 insertions(+), 8 deletions(-)
+Subject: test uaf in iommufd_vfio_ioas
+Author: lizhi.xu@windriver.com
 
-diff --git a/arch/arm/include/asm/vdso/vsyscall.h b/arch/arm/include/asm/vdso/vsyscall.h
-index 47e41ae8ccd0..9a2cd2673a82 100644
---- a/arch/arm/include/asm/vdso/vsyscall.h
-+++ b/arch/arm/include/asm/vdso/vsyscall.h
-@@ -9,7 +9,6 @@
- #include <asm/cacheflush.h>
- 
- extern struct vdso_data *vdso_data;
--extern bool cntvct_ok;
- 
- /*
-  * Update the vDSO data page to keep in sync with kernel timekeeping.
-diff --git a/arch/arm/kernel/vdso.c b/arch/arm/kernel/vdso.c
-index f297d66a8a76..ba87ffc6f194 100644
---- a/arch/arm/kernel/vdso.c
-+++ b/arch/arm/kernel/vdso.c
-@@ -67,11 +67,9 @@ struct elfinfo {
- 	char		*dynstr;	/* ptr to .dynstr section */
- };
- 
--/* Cached result of boot-time check for whether the arch timer exists,
-- * and if so, whether the virtual counter is useable.
-+/* Boot-time check for whether the arch timer exists, and if so,
-+ * whether the virtual counter is useable.
-  */
--bool cntvct_ok __ro_after_init;
--
- static bool __init cntvct_functional(void)
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 2af9b20dbb39
+
+diff --git a/drivers/iommu/iommufd/main.c b/drivers/iommu/iommufd/main.c
+index e71523cbd0de..8d2dba522baf 100644
+--- a/drivers/iommu/iommufd/main.c
++++ b/drivers/iommu/iommufd/main.c
+@@ -137,6 +137,7 @@ static struct iommufd_object *iommufd_object_remove(struct iommufd_ctx *ictx,
+ 						    u32 id, bool extra_put)
  {
- 	struct device_node *np;
-@@ -172,7 +170,7 @@ static void __init patch_vdso(void *ehdr)
- 	 * want programs to incur the slight additional overhead of
- 	 * dispatching through the VDSO only to fall back to syscalls.
- 	 */
--	if (!cntvct_ok) {
-+	if (!cntvct_functional()) {
- 		vdso_nullpatch_one(&einfo, "__vdso_gettimeofday");
- 		vdso_nullpatch_one(&einfo, "__vdso_clock_gettime");
- 		vdso_nullpatch_one(&einfo, "__vdso_clock_gettime64");
-@@ -213,8 +211,6 @@ static int __init vdso_init(void)
- 	vdso_total_pages = 1; /* for the data/vvar page */
- 	vdso_total_pages += text_pages;
+ 	struct iommufd_object *obj;
++	struct iommufd_ioas *ioas;
+ 	XA_STATE(xas, &ictx->objects, id);
  
--	cntvct_ok = cntvct_functional();
--
- 	patch_vdso(vdso_start);
+ 	xa_lock(&ictx->objects);
+@@ -159,7 +160,9 @@ static struct iommufd_object *iommufd_object_remove(struct iommufd_ctx *ictx,
+ 	}
  
- 	return 0;
--- 
-2.40.1.1.g1c60b9335d
-
+ 	xas_store(&xas, NULL);
+-	if (ictx->vfio_ioas == container_of(obj, struct iommufd_ioas, obj))
++	ioas = container_of(obj, struct iommufd_ioas, obj);
++	ioas->obj = NULL;
++	if (ictx->vfio_ioas == ioas)
+ 		ictx->vfio_ioas = NULL;
+ 
+ out_xa:
+diff --git a/drivers/iommu/iommufd/vfio_compat.c b/drivers/iommu/iommufd/vfio_compat.c
+index 6c810bf80f99..06317d0bd95e 100644
+--- a/drivers/iommu/iommufd/vfio_compat.c
++++ b/drivers/iommu/iommufd/vfio_compat.c
+@@ -140,6 +140,8 @@ int iommufd_vfio_ioas(struct iommufd_ucmd *ucmd)
+ 		ioas = iommufd_get_ioas(ucmd->ictx, cmd->ioas_id);
+ 		if (IS_ERR(ioas))
+ 			return PTR_ERR(ioas);
++		if (!ioas->obj)
++			return -EINVAL;
+ 		xa_lock(&ucmd->ictx->objects);
+ 		ucmd->ictx->vfio_ioas = ioas;
+ 		xa_unlock(&ucmd->ictx->objects);
