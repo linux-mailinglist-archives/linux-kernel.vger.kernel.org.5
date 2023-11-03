@@ -2,134 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AEEC47E07EF
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 19:09:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA3777E0884
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 19:54:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232849AbjKCSJK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 14:09:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56320 "EHLO
+        id S1345498AbjKCSyB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 14:54:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230197AbjKCSJI (ORCPT
+        with ESMTP id S1345932AbjKCSx6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 14:09:08 -0400
-Received: from mail-vs1-xe30.google.com (mail-vs1-xe30.google.com [IPv6:2607:f8b0:4864:20::e30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8CE2CF;
-        Fri,  3 Nov 2023 11:09:05 -0700 (PDT)
-Received: by mail-vs1-xe30.google.com with SMTP id ada2fe7eead31-45d955fcabdso354071137.0;
-        Fri, 03 Nov 2023 11:09:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699034945; x=1699639745; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=eGLlL5spY81cqVy4x7DOzEYruuO1Kblfx9KL9KmbIWg=;
-        b=mUuv2rnkPwN5bKYLpkLIuxvyFK+hqTJoO+McpKmzCw5gD4fLls7P6LXUN0WC9hwyMk
-         UGTtm3c4Ua7tL0g1f2+XsobRQ61F9FtiC9Tfbk6rVbOqFCag+0wngCRYsHXeZK9lvoq0
-         Z+IFxdZJQ+ieZW0TwYN+wZ2exCL/64/+E+czBWgqV9qbHVQ+9aFNLFc+lMRJ8tSHKJYX
-         qteUPHjRqhoKc/2618EF3SihxOYXml6uwUK78QweWX/bI+4sY479G5Un9OS5HLeqBTGs
-         jschS34WFR1/ozsyr9lrm07okp2jBzp7JICbB9SaaSEo01vTVJ4BOFWbRcVxbZjMN3XG
-         rlQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699034945; x=1699639745;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=eGLlL5spY81cqVy4x7DOzEYruuO1Kblfx9KL9KmbIWg=;
-        b=QMw/+J5F1SIcMLX1352RRL9cBIZ7wa4Hs2paputBl5vg632tSjM44oLhuqLgSa5uFo
-         i9m5EN0VR7KoqtK1FAVHn8IUaL3RhPclGas8GUHJi58MwC1RNLlERpY0iVbBP+ewA91Y
-         WDdgmvBa0nehHETpPFAkp5/+jR1RogaRaP8b2I7jL6R2jiCOB5wes6Z5Y4txRYeedmeD
-         tMwpoW+ApmWT1kev+OZicXE3UCvUPBdLuoSSZVZQAtRjJEgvHVS4pIvPGUzAPjrtK3DY
-         f660kFAQwKAF5hN/g7uhQ+k68DjVBZEEEuPkalX1AlL5UqNcVQ7kAgyRMrsNT+g6M+R1
-         Lkvg==
-X-Gm-Message-State: AOJu0YzqdVMUHUtREGxN8QsRPBEKpB7pZoUn1Y1myuxsr9al6EqSCjEL
-        uo9imq4wzcI6VyBc5KSeIKJ4sF/TAD6fCPN+z64=
-X-Google-Smtp-Source: AGHT+IEoycj2jgmlH4pfGN5KGdT9fnWYQSgwREN1B2qQZAp3bnWMzm9iYhm1g5s9NikHt5f/kIRc0NksBf1xS8NnN5s=
-X-Received: by 2002:a67:a248:0:b0:45d:6d96:62f1 with SMTP id
- t8-20020a67a248000000b0045d6d9662f1mr4729949vsh.9.1699034944808; Fri, 03 Nov
- 2023 11:09:04 -0700 (PDT)
+        Fri, 3 Nov 2023 14:53:58 -0400
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D048BD;
+        Fri,  3 Nov 2023 11:53:55 -0700 (PDT)
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A3IJrGl025758;
+        Fri, 3 Nov 2023 18:53:54 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=aX1ZdNjYKDkIA6z+Y41dUOjCE75DizEEdXwX5jTL2Bk=;
+ b=o/C5hcPg4iwuIhp/1s99xQ4HHjKlN/IWr39hpdkzISL5ZfhVoLu8EfD/cEEWGJIkCogn
+ 0Uhe9LuyZ8zOxzBZvJCDzQfyBuFY1EJyd7/5QGYgEQ/FELvqr8kgd33fM1k8g0qskVPe
+ KO3NAbCjdtjI4UC2UvYZGTZ+3Eq5gg2/CA0lWUXav8FXz8oxK/iBP57gVDtNwcyGviMV
+ luYEqvQ54tVpeRIl5PBLjyf9OkLfFe0cDjko/VDmmpZSXBwTjDBFVTniATsI/VmcXhfl
+ Z2keffnBowVsjh92EF02U1gAmuhS+vaG6sLFFNDFiL4OMf+ToP5hqTT/001K/CoWaUHy RA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u561x8wks-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 03 Nov 2023 18:53:53 +0000
+Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3A3ILmH4031319;
+        Fri, 3 Nov 2023 18:53:52 GMT
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u561x8wdr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 03 Nov 2023 18:53:52 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3A3GZYex000597;
+        Fri, 3 Nov 2023 18:53:27 GMT
+Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
+        by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3u1cmtr95t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 03 Nov 2023 18:53:27 +0000
+Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
+        by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3A3IrLEI10748464
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 3 Nov 2023 18:53:21 GMT
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5289420040;
+        Fri,  3 Nov 2023 18:53:21 +0000 (GMT)
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 025D620043;
+        Fri,  3 Nov 2023 18:53:21 +0000 (GMT)
+Received: from p-imbrenda (unknown [9.152.224.66])
+        by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Fri,  3 Nov 2023 18:53:20 +0000 (GMT)
+Date:   Fri, 3 Nov 2023 19:12:04 +0100
+From:   Claudio Imbrenda <imbrenda@linux.ibm.com>
+To:     Nina Schoetterl-Glausch <nsg@linux.ibm.com>
+Cc:     Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        David Hildenbrand <dahi@linux.vnet.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>, kvm@vger.kernel.org,
+        Michael Mueller <mimu@linux.vnet.ibm.com>,
+        linux-s390@vger.kernel.org,
+        Cornelia Huck <cornelia.huck@de.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/4] KVM: s390: vsie: Fix STFLE interpretive execution
+ identification
+Message-ID: <20231103191204.47a90d49@p-imbrenda>
+In-Reply-To: <20231103173008.630217-2-nsg@linux.ibm.com>
+References: <20231103173008.630217-1-nsg@linux.ibm.com>
+        <20231103173008.630217-2-nsg@linux.ibm.com>
+Organization: IBM
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-References: <20231102183751.47413-1-pstanner@redhat.com> <CAKFNMok9WTV5uX3BBfr8eYiuJXvUY6TuYW=tQYvBzdCUYsxcwA@mail.gmail.com>
- <437ec6fa34af1ccfadee2d62770e52d99ebf75c3.camel@redhat.com>
-In-Reply-To: <437ec6fa34af1ccfadee2d62770e52d99ebf75c3.camel@redhat.com>
-From:   Ryusuke Konishi <konishi.ryusuke@gmail.com>
-Date:   Sat, 4 Nov 2023 03:08:48 +0900
-Message-ID: <CAKFNMokwjSwzT3T6vQZ_-6evPNUqNUuk+D=LGA5cuOm3-xx0aw@mail.gmail.com>
-Subject: Re: [PATCH] fs/nilfs2: copy userspace-array safely
-To:     Philipp Stanner <pstanner@redhat.com>
-Cc:     linux-nilfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Dave Airlie <airlied@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: rva-logwUAu3Pp6wSgdEVHrGjSsS7XMY
+X-Proofpoint-GUID: AlekBG3XKEz1fthEpn1Cn0aK3OZVElX0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-03_18,2023-11-02_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ priorityscore=1501 bulkscore=0 impostorscore=0 malwarescore=0
+ clxscore=1015 mlxscore=0 suspectscore=0 phishscore=0 spamscore=0
+ adultscore=0 mlxlogscore=999 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2310240000 definitions=main-2311030159
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 4, 2023 at 2:56=E2=80=AFAM Philipp Stanner wrote:
->
-> On Sat, 2023-11-04 at 02:44 +0900, Ryusuke Konishi wrote:
-> > On Fri, Nov 3, 2023 at 3:38=E2=80=AFAM Philipp Stanner wrote:
-> > >
-> > > ioctl.c utilizes memdup_user() to copy a userspace array. This is
-> > > done
-> > > without an overflow-check.
-> > >
-> > > Use the new wrapper memdup_array_user() to copy the array more
-> > > safely.
-> > >
-> > > Suggested-by: Dave Airlie <airlied@redhat.com>
-> > > Signed-off-by: Philipp Stanner <pstanner@redhat.com>
-> > > ---
-> > > Linus recently merged this new wrapper for Kernel v6.7
-> >
-> > The following overflow check is performed just before the usage of
-> > memdup_user():
-> >
-> >         if (nsegs > UINT_MAX / sizeof(__u64))
-> >                 goto out;
-> >
-> > This was introduced by commit 1ecd3c7ea76488 ("nilfs2: avoid
-> > overflowing segment numbers in nilfs_ioctl_clean_segments()") to
-> > avoid
-> > overflowing nsegs * sizeof(__u64) in the subsequent call to
-> > memdup_user().
-> >
-> > I learned about memdup_array_user() this time, and it seems to check
-> > for overflow when multiplying two size_t arguments (i.e. the number
-> > of
-> > elements and size of the array to be copied).
-> >
-> > Since size_t is 32-bit or 64-bit depending on the architecture, I
-> > think the overflow check that memdup_array_user() does
-> > is included in the above upper limit check by UINT_MAX.
-> >
-> > So, for security reasons, I don't think this change is necessary.
-> > (Am
-> > I missing something?)
->
-> No, I think you are right. My commit message was very generic =E2=80=93 i=
-t's
-> more about unifying array-duplication.
-> I should rephrase it.
->
-> >
-> > In terms of cleanup, I think the clarification this patch brings is
-> > good, but in that case, I'm concerned about the duplication of
-> > overflow checks.
->
-> Alright, so would you prefer a patch that uses memdup_array_user() and,
-> consequently, removes the preceding check?
->
-> Regards,
-> P.
+On Fri,  3 Nov 2023 18:30:05 +0100
+Nina Schoetterl-Glausch <nsg@linux.ibm.com> wrote:
 
-Yeah.  If you could revise it as a cleanup patch, I would like to
-adopt it for the next cycle.
+> STFLE can be interpretively executed.
+> This occurs when the facility list designation is unequal to zero.
+> Perform the check before applying the address mask instead of after.
+> 
+> Fixes: 66b630d5b7f2 ("KVM: s390: vsie: support STFLE interpretation")
+> Signed-off-by: Nina Schoetterl-Glausch <nsg@linux.ibm.com>
 
-Regards,
-Ryusuke Konishi
+Reviewed-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
+
+> ---
+>  arch/s390/kvm/vsie.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/s390/kvm/vsie.c b/arch/s390/kvm/vsie.c
+> index 61499293c2ac..d989772fe211 100644
+> --- a/arch/s390/kvm/vsie.c
+> +++ b/arch/s390/kvm/vsie.c
+> @@ -988,9 +988,10 @@ static void retry_vsie_icpt(struct vsie_page *vsie_page)
+>  static int handle_stfle(struct kvm_vcpu *vcpu, struct vsie_page *vsie_page)
+>  {
+>  	struct kvm_s390_sie_block *scb_s = &vsie_page->scb_s;
+> -	__u32 fac = READ_ONCE(vsie_page->scb_o->fac) & 0x7ffffff8U;
+> +	__u32 fac = READ_ONCE(vsie_page->scb_o->fac);
+>  
+>  	if (fac && test_kvm_facility(vcpu->kvm, 7)) {
+> +		fac = fac & 0x7ffffff8U;
+>  		retry_vsie_icpt(vsie_page);
+>  		if (read_guest_real(vcpu, fac, &vsie_page->fac,
+>  				    sizeof(vsie_page->fac)))
+
