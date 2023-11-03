@@ -2,133 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 25FE07E02C6
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 13:26:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC4D57E02C9
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 13:27:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346878AbjKCM0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 08:26:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47296 "EHLO
+        id S1376321AbjKCM1N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 08:27:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346442AbjKCM0q (ORCPT
+        with ESMTP id S1376270AbjKCM1L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 08:26:46 -0400
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0410123
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 05:26:43 -0700 (PDT)
-Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A2NOgrf010612;
-        Fri, 3 Nov 2023 12:26:34 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type :
- content-transfer-encoding; s=corp-2023-03-30;
- bh=zgHrw6VGeyWMel+aZHOfhG+ULGqf048GVY0ovi8BZ68=;
- b=X0diECclx6eH3KP9Gq39pZ9xuHFiYx69oCscDi9jxdtWPxA+EjKA99MgkizkLJGziItB
- 550XC+1GWeoiwK3PqMNdXwSAiGxetQXGZN3roNisALsB+/49ct03qbKDNWmpZs7JzV4W
- R1fq+ylmE+vvhoY+DSFWZcV3AiLhcq+HchpYHpH81l/xOtrjctOXo7USwuZ6cybDov5+
- vETsO3j+yeX/l/iSZy2U5RKdfZYbyoL+LrDRvSqqNy096Omf8I9t5PEpm0ECX8EsEoJO
- iYWviV5NkhOmQKhEeTfXr98uKIV2vPR5sFYozuXv6gqKbOmwguYicT4UkzChIpmZiNO1 tw== 
-Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3u0tuuks6m-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 03 Nov 2023 12:26:34 +0000
-Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3A3AlWk9001040;
-        Fri, 3 Nov 2023 12:26:33 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3u0rrab69e-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 03 Nov 2023 12:26:33 +0000
-Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3A3CQXvT039969;
-        Fri, 3 Nov 2023 12:26:33 GMT
-Received: from ca-dev63.us.oracle.com (ca-dev63.us.oracle.com [10.211.8.221])
-        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 3u0rrab66c-1;
-        Fri, 03 Nov 2023 12:26:33 +0000
-From:   Steve Sistare <steven.sistare@oracle.com>
-To:     virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>, Eli Cohen <elic@nvidia.com>,
-        Si-Wei Liu <si-wei.liu@oracle.com>,
-        Dragos Tatulea <dtatulea@nvidia.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        Eugenio Perez Martin <eperezma@redhat.com>,
-        Steve Sistare <steven.sistare@oracle.com>
-Subject: [PATCH V3] vdpa/mlx5: preserve CVQ vringh index
-Date:   Fri,  3 Nov 2023 05:26:27 -0700
-Message-Id: <1699014387-194368-1-git-send-email-steven.sistare@oracle.com>
-X-Mailer: git-send-email 1.8.3.1
+        Fri, 3 Nov 2023 08:27:11 -0400
+Received: from mail-ot1-f72.google.com (mail-ot1-f72.google.com [209.85.210.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F33081A8
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 05:27:04 -0700 (PDT)
+Received: by mail-ot1-f72.google.com with SMTP id 46e09a7af769-6ce37a2b2e9so2469068a34.0
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Nov 2023 05:27:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699014424; x=1699619224;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=lbURBXZ/3HBo11neS1hBFiZneNWug5j0JM5oUnIOIkc=;
+        b=PTw3B7vfJ6YXswSJ7f9JYaYgRk5gklX7B7fVvW4sJ9NHEN1cJW97KxrnKuqfW/hl7S
+         Dve7Off/BTRzN/iQTOuTfZXQnmfP/M+ZKwFc83L6wypI9PypKzp4tox3qvUP/t2uui4J
+         1LwY+m9CPiUb9WzseahovPr2JTGCwqLaPQAwJp1fEUA6yNyDBRIyaDR4gzRljGvUsaf6
+         mZkg7IUeaBx7V519PgmXiQ1fDP0sxvxK54yp9apHa8Pde2LZE+7ZJYe35obASapGnImZ
+         4zFQwyrQlQp4OeF5KTXk7IW36cD1krukjdWYWbPJOzArNcgrBcGOXFo4tfpn/HnZFmx/
+         G/AQ==
+X-Gm-Message-State: AOJu0YyZ7q6Wtx0Yb1spcufQHilyyRh2Yy2LmJF+jmAhjuqkQTFpu5qY
+        i1R1V1UMo5Ab/RRlM9l0stwUpv1b9rwRWMZiyTtusRXyhDHU
+X-Google-Smtp-Source: AGHT+IF432B2k/4JgF8MvDVFRRX/gAgDGc4yukU2jI9h9EJThloFIMpXblHdmi8bUUS4mHAw67tALiKWRT92dEEXtFtICAKoXVO9
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-03_12,2023-11-02_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=0
- malwarescore=0 phishscore=0 spamscore=0 adultscore=0 bulkscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2310240000 definitions=main-2311030104
-X-Proofpoint-GUID: oBBaOlEfpjy3wDarKlIvSnjZvFlr3MBP
-X-Proofpoint-ORIG-GUID: oBBaOlEfpjy3wDarKlIvSnjZvFlr3MBP
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6870:a11a:b0:1ea:85b:62a3 with SMTP id
+ m26-20020a056870a11a00b001ea085b62a3mr10048223oae.1.1699014424405; Fri, 03
+ Nov 2023 05:27:04 -0700 (PDT)
+Date:   Fri, 03 Nov 2023 05:27:04 -0700
+In-Reply-To: <000000000000af7bd706084b7cb2@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000003c325306093e9f25@google.com>
+Subject: Re: [syzbot] [exfat?] INFO: task hung in fat_write_inode
+From:   syzbot <syzbot+6f75830acb2e4cdc8e50@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, brauner@kernel.org,
+        hirofumi@mail.parknet.co.jp, linkinjeon@kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sj1557.seo@samsung.com, syzkaller-bugs@googlegroups.com,
+        viro@zeniv.linux.org.uk, willy@infradead.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=2.3 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,RCVD_IN_SORBS_WEB,SORTED_RECIPS,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
+X-Spam-Level: **
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-mlx5_vdpa does not preserve userland's view of vring base for the control
-queue in the following sequence:
+syzbot has bisected this issue to:
 
-ioctl VHOST_SET_VRING_BASE
-ioctl VHOST_VDPA_SET_STATUS VIRTIO_CONFIG_S_DRIVER_OK
-  mlx5_vdpa_set_status()
-    setup_cvq_vring()
-      vringh_init_iotlb()
-        vringh_init_kern()
-          vrh->last_avail_idx = 0;
-ioctl VHOST_GET_VRING_BASE
+commit fb96458067a8043c256befe4bfe4fb3ebc81de1b
+Author: Matthew Wilcox (Oracle) <willy@infradead.org>
+Date:   Mon Oct 16 20:10:48 2023 +0000
 
-To fix, restore the value of cvq->vring.last_avail_idx after calling
-vringh_init_iotlb.
+    buffer: return bool from grow_dev_folio()
 
-Fixes: 5262912ef3cf ("vdpa/mlx5: Add support for control VQ and MAC setting")
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=154b4ef7680000
+start commit:   2dac75696c6d Add linux-next specific files for 20231018
+git tree:       linux-next
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=174b4ef7680000
+console output: https://syzkaller.appspot.com/x/log.txt?x=134b4ef7680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=6f8545e1ef7a2b66
+dashboard link: https://syzkaller.appspot.com/bug?extid=6f75830acb2e4cdc8e50
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=148fed9d680000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1019f523680000
 
-Signed-off-by: Steve Sistare <steven.sistare@oracle.com>
-Acked-by: Eugenio Pérez <eperezma@redhat.com>
-Acked-by: Jason Wang <jasowang@redhat.com>
----
- drivers/vdpa/mlx5/net/mlx5_vnet.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+Reported-by: syzbot+6f75830acb2e4cdc8e50@syzkaller.appspotmail.com
+Fixes: fb96458067a8 ("buffer: return bool from grow_dev_folio()")
 
-diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-index 946488b8989f..ca972af3c89a 100644
---- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
-+++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-@@ -2795,13 +2795,18 @@ static int setup_cvq_vring(struct mlx5_vdpa_dev *mvdev)
- 	struct mlx5_control_vq *cvq = &mvdev->cvq;
- 	int err = 0;
- 
--	if (mvdev->actual_features & BIT_ULL(VIRTIO_NET_F_CTRL_VQ))
-+	if (mvdev->actual_features & BIT_ULL(VIRTIO_NET_F_CTRL_VQ)) {
-+		u16 idx = cvq->vring.last_avail_idx;
-+
- 		err = vringh_init_iotlb(&cvq->vring, mvdev->actual_features,
- 					MLX5_CVQ_MAX_ENT, false,
- 					(struct vring_desc *)(uintptr_t)cvq->desc_addr,
- 					(struct vring_avail *)(uintptr_t)cvq->driver_addr,
- 					(struct vring_used *)(uintptr_t)cvq->device_addr);
- 
-+		if (!err)
-+			cvq->vring.last_avail_idx = cvq->vring.last_used_idx = idx;
-+	}
- 	return err;
- }
- 
--- 
-2.39.3
-
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
