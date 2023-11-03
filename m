@@ -2,139 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 04E087E0C18
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 00:20:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE1BD7E0C15
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 00:20:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231489AbjKCXRa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 19:17:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41646 "EHLO
+        id S1377689AbjKCXRo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 19:17:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231259AbjKCXR2 (ORCPT
+        with ESMTP id S230145AbjKCXRm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 19:17:28 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5E09D5A
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 16:17:25 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5b31e000e97so36317857b3.1
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Nov 2023 16:17:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1699053445; x=1699658245; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=wL2niLMenc8rXWamhCVdrH1GL3hMVyvGfUspx7X4DS0=;
-        b=y34aghm2O6SNvK8GRGqx/sn9ZtIKtyEKMe8V+/zJansECIFreEzwNQdaN7qaCTMxno
-         iQyNclZxVpo458htEdZJR3G15cLAf//+VCR0X7Bb9mY8NQfPYk2RLQxot9vowL58J+WQ
-         5hHhx/vsC4Fi5BrmYkOcz2Ry0VrZACj8kcr2w0P5oaF34k83fCp/HQQiRzJGW8Gpgnpt
-         LE8G4T/CWtPumWqO8WdX3VhR7PfMiIcBYnlzl1o/d6i7pLaKqyDczwP5Xg+Vnz46J/mp
-         wCPQ54D8JTsXgyveHL72zftw7M4doAMgz1QNm9HMEpFyaIBnh8OXueGidAopbHc09qPm
-         VOOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699053445; x=1699658245;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=wL2niLMenc8rXWamhCVdrH1GL3hMVyvGfUspx7X4DS0=;
-        b=WppjfBU56TeeSK02rHbnCY1Gu6mlDBlz7+y/KNF68aEth0tYVnDE1xeSjhcXgZFTw+
-         VNzdJgchK1GUo4T4j4mQFcmIEHLwzVsosduQ32Cyel52M56tMdj6m6DI3WLjRA6E5BX1
-         SClbcToPoEqx6ngsJ/TyJbCk1BhvdsoQgO0HrULdrOMO92VFMizKvpXgX9xBnSoeN6R8
-         Ww314mz1TYCgwHL8RNXnzvRSXXsacnk6QmRqnjVBQrVxtQB1CU1PK1I33qvt9RK8C3Y6
-         r1fPsxCYCSqOL9McIw78gYGWffr1RHkFag2vMxC4NPZErK5MRsfxzhirbXCAvoX0wKlM
-         pI/Q==
-X-Gm-Message-State: AOJu0YzY1SqYRZMnmj7/xqO+27auOrvrbuArYcAEKbXSeOauYp3TsaEf
-        PVAjD2J6UWW7J6oQSJ9fhtYGKnx9omg=
-X-Google-Smtp-Source: AGHT+IGJDyi83TwJx+I35GsLQytKZmA4RJCyClEGAPsqdhhOEgS+Lm1oHaoRVNSHVuwQA3+7WVp40Ul4xUY=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a81:4958:0:b0:59f:3cde:b33a with SMTP id
- w85-20020a814958000000b0059f3cdeb33amr84737ywa.6.1699053444944; Fri, 03 Nov
- 2023 16:17:24 -0700 (PDT)
-Date:   Fri, 3 Nov 2023 16:17:23 -0700
-In-Reply-To: <CA+EHjTzGzXnfXHh0m5iHt9m3BxerkUS56EVPDA_az6n2FRnk3w@mail.gmail.com>
-Mime-Version: 1.0
-References: <20231027182217.3615211-1-seanjc@google.com> <20231027182217.3615211-17-seanjc@google.com>
- <CA+EHjTzj4drYKONVOLP19DYpJ4O8kSXcFzw2AKier1QdcFKx_Q@mail.gmail.com>
- <ZUF8A5KpwpA6IKUH@google.com> <CA+EHjTwTT9cFzYTtwT43nLJS01Sgt0NqzUgKAnfo2fiV3tEvXg@mail.gmail.com>
- <ZULJYg5cf1UrNq3e@google.com> <CA+EHjTzGzXnfXHh0m5iHt9m3BxerkUS56EVPDA_az6n2FRnk3w@mail.gmail.com>
-Message-ID: <ZUV_g1_3pj62OgF-@google.com>
-Subject: Re: [PATCH v13 16/35] KVM: Add KVM_CREATE_GUEST_MEMFD ioctl() for
- guest-specific backing memory
-From:   Sean Christopherson <seanjc@google.com>
-To:     Fuad Tabba <tabba@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Anup Patel <anup@brainfault.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>, kvm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Xiaoyao Li <xiaoyao.li@intel.com>,
-        Xu Yilun <yilun.xu@intel.com>,
-        Chao Peng <chao.p.peng@linux.intel.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Anish Moorthy <amoorthy@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Isaku Yamahata <isaku.yamahata@intel.com>,
-        "=?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?=" <mic@digikod.net>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Maciej Szmigiero <mail@maciej.szmigiero.name>,
-        David Hildenbrand <david@redhat.com>,
-        Quentin Perret <qperret@google.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Wang <wei.w.wang@intel.com>,
-        Liam Merwick <liam.merwick@oracle.com>,
-        Isaku Yamahata <isaku.yamahata@gmail.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        Fri, 3 Nov 2023 19:17:42 -0400
+Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::227])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E1B1D5A;
+        Fri,  3 Nov 2023 16:17:38 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id F059920003;
+        Fri,  3 Nov 2023 23:17:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1699053457;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=x9+2Ds6qHlsKkAZ8Qimij0GdkxZaoPt8iNhbBiZi5kM=;
+        b=jLQHORFQnfhLF6sIACk/BnEWzYQErzbRUEQX4AAjXrHk3ZABz3/TCBG/lpwPtbXlFhUYXe
+        lInoLK32DOG1W10Ak1XJhOClDFqwlFmCp8EdZekwAOd7rPsvFHw5NmSb1rMMPqYtYjC8J8
+        unlPnhqgHBxuFARFW5LENl3CynTN81v8AeUCGAeXGPN2bmIWMEWY9b8vfiN1/B05wfKxri
+        uNXKpNNspVQfVI4iZIx0mJrt2gWLvoPrTIIOPzTMjdrhaGJmy5F0BuGwydTZtcxjQ+D2F6
+        dgw7tl7gBYbiKtXPAEllqySA1QDXoWjsgXRJc0fU4fmL4dDKm0NS3YDuvSSPyA==
+Date:   Sat, 4 Nov 2023 00:17:35 +0100
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Mia Lin <mimi05633@gmail.com>
+Cc:     avifishman70@gmail.com, tmaimon77@gmail.com, tali.perry1@gmail.com,
+        venture@google.com, yuenn@google.com, benjaminfair@google.com,
+        a.zummo@towertech.it, KWLIU@nuvoton.com, JJLIU0@nuvoton.com,
+        KFLIN@nuvoton.com, mylin1@nuvoton.com, openbmc@lists.ozlabs.org,
+        linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 1/1] rtc: nuvoton: Compatible with NCT3015Y-R and
+ NCT3018Y-R
+Message-ID: <20231103231735b4769ca4@mail.local>
+References: <20230913013719.8342-1-mimi05633@gmail.com>
+ <20230913013719.8342-2-mimi05633@gmail.com>
+ <20231103231639fd4b631c@mail.local>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231103231639fd4b631c@mail.local>
+X-GND-Sasl: alexandre.belloni@bootlin.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 02, 2023, Fuad Tabba wrote:
-> On Wed, Nov 1, 2023 at 9:55=E2=80=AFPM Sean Christopherson <seanjc@google=
-.com> wrote:
-> > E.g. a misbehaving userspace could prematurely delete a memslot.  And t=
-he more
-> > fun example is intrahost migration, where the plan is to allow pointing=
- multiple
-> > guest_memfd files at a single guest_memfd inode:
-> > https://lore.kernel.org/all/cover.1691446946.git.ackerleytng@google.com
-> >
-> > There was a lot of discussion for this, but it's scattered all over the=
- place.
-> > The TL;DR is is that the inode will represent physical memory, and a fi=
-le will
-> > represent a given "struct kvm" instance's view of that memory.  And so =
-the memory
-> > isn't reclaimed until the inode is truncated/punched.
-> >
-> > I _think_ this reflects the most recent plan from the guest_memfd side:
-> > https://lore.kernel.org/all/1233d749211c08d51f9ca5d427938d47f008af1f.16=
-89893403.git.isaku.yamahata@intel.com
+On 04/11/2023 00:16:40+0100, Alexandre Belloni wrote:
+> On 13/09/2023 09:37:19+0800, Mia Lin wrote:
+> > The NCT3015Y-R and NCT3018Y-R use the same datasheet
+> >     but have different topologies as follows.
+> > - Topology (Only 1st i2c can set TWO bit and HF bit)
+> >   In NCT3015Y-R,
+> >     rtc 1st i2c is connected to a host CPU
+> >     rtc 2nd i2c is connected to a BMC
+> >   In NCT3018Y-R,
+> >     rtc 1st i2c is connected to a BMC
+> >     rtc 2nd i2c is connected to a host CPU
+> > In order to be compatible with NCT3015Y-R and NCT3018Y-R,
+> > - In probe,
+> >   If part number is NCT3018Y-R, only set HF bit to 24-Hour format.
+> >   Else, do nothing
+> > - In set_time,
+> >   If part number is NCT3018Y-R && TWO bit is 0,
+> >      change TWO bit to 1, and restore TWO bit after updating time.
+> > 
+> > Signed-off-by: Mia Lin <mimi05633@gmail.com>
+> > ---
 
-Doh, sitting in my TODO folder...
+I forgot to add, please include a changelog here, this will make my
+reviews easier (and faster).
 
-https://lore.kernel.org/all/20231016115028.996656-1-michael.roth@amd.com
+> >  drivers/rtc/rtc-nct3018y.c | 52 +++++++++++++++++++++++++++++++++-----
+> >  1 file changed, 46 insertions(+), 6 deletions(-)
+> > 
+> > diff --git a/drivers/rtc/rtc-nct3018y.c b/drivers/rtc/rtc-nct3018y.c
+> > index ed4e606be8e5..b006b58e15e2 100644
+> > --- a/drivers/rtc/rtc-nct3018y.c
+> > +++ b/drivers/rtc/rtc-nct3018y.c
+> > @@ -23,6 +23,7 @@
+> >  #define NCT3018Y_REG_CTRL	0x0A /* timer control */
+> >  #define NCT3018Y_REG_ST		0x0B /* status */
+> >  #define NCT3018Y_REG_CLKO	0x0C /* clock out */
+> > +#define NCT3018Y_REG_PART	0x21 /* part info */
+> >  
+> >  #define NCT3018Y_BIT_AF		BIT(7)
+> >  #define NCT3018Y_BIT_ST		BIT(7)
+> > @@ -37,10 +38,12 @@
+> >  #define NCT3018Y_REG_BAT_MASK		0x07
+> >  #define NCT3018Y_REG_CLKO_F_MASK	0x03 /* frequenc mask */
+> >  #define NCT3018Y_REG_CLKO_CKE		0x80 /* clock out enabled */
+> > +#define NCT3018Y_REG_PART_NCT3018Y	0x02
+> >  
+> >  struct nct3018y {
+> >  	struct rtc_device *rtc;
+> >  	struct i2c_client *client;
+> > +	int part_num;
+> >  #ifdef CONFIG_COMMON_CLK
+> >  	struct clk_hw clkout_hw;
+> >  #endif
+> > @@ -177,8 +180,27 @@ static int nct3018y_rtc_read_time(struct device *dev, struct rtc_time *tm)
+> >  static int nct3018y_rtc_set_time(struct device *dev, struct rtc_time *tm)
+> >  {
+> >  	struct i2c_client *client = to_i2c_client(dev);
+> > +	struct nct3018y *nct3018y = dev_get_drvdata(dev);
+> >  	unsigned char buf[4] = {0};
+> > -	int err;
+> > +	int err, flags;
+> > +	int restore_flags = 0;
+> > +
+> > +	flags = i2c_smbus_read_byte_data(client, NCT3018Y_REG_CTRL);
+> > +	if (flags < 0) {
+> > +		dev_dbg(&client->dev, "Failed to read NCT3018Y_REG_CTRL.\n");
+> > +		return flags;
+> > +	}
+> > +
+> > +	/* Check and set TWO bit */
+> > +	if ((nct3018y->part_num & NCT3018Y_REG_PART_NCT3018Y) && !(flags & NCT3018Y_BIT_TWO)) {
+> > +		restore_flags = 1;
+> > +		flags |= NCT3018Y_BIT_TWO;
+> > +		err = i2c_smbus_write_byte_data(client, NCT3018Y_REG_CTRL, flags);
+> > +		if (err < 0) {
+> > +			dev_dbg(&client->dev, "Unable to write NCT3018Y_REG_CTRL.\n");
+> > +			return err;
+> > +		}
+> > +	}
+> >  
+> >  	buf[0] = bin2bcd(tm->tm_sec);
+> >  	err = i2c_smbus_write_byte_data(client, NCT3018Y_REG_SC, buf[0]);
+> > @@ -212,6 +234,18 @@ static int nct3018y_rtc_set_time(struct device *dev, struct rtc_time *tm)
+> >  		return -EIO;
+> >  	}
+> >  
+> > +	/* Restore TWO bit */
+> > +	if (restore_flags) {
+> > +		if (nct3018y->part_num & NCT3018Y_REG_PART_NCT3018Y)
+> > +			flags &= ~NCT3018Y_BIT_TWO;
+> > +
+> > +		err = i2c_smbus_write_byte_data(client, NCT3018Y_REG_CTRL, flags);
+> > +		if (err < 0) {
+> > +			dev_dbg(&client->dev, "Unable to write NCT3018Y_REG_CTRL.\n");
+> > +			return err;
+> > +		}
+> > +	}
+> > +
+> >  	return err;
+> >  }
+> >  
+> > @@ -479,11 +513,17 @@ static int nct3018y_probe(struct i2c_client *client)
+> >  		dev_dbg(&client->dev, "%s: NCT3018Y_BIT_TWO is set\n", __func__);
+> >  	}
+> >  
+> > -	flags = NCT3018Y_BIT_TWO;
+> > -	err = i2c_smbus_write_byte_data(client, NCT3018Y_REG_CTRL, flags);
+> > -	if (err < 0) {
+> > -		dev_dbg(&client->dev, "Unable to write NCT3018Y_REG_CTRL\n");
+> > -		return err;
+> > +	nct3018y->part_num = i2c_smbus_read_byte_data(client, NCT3018Y_REG_PART);
+> > +	if (nct3018y->part_num < 0) {
+> > +		dev_dbg(&client->dev, "Failed to read NCT3018Y_REG_PART.\n");
+> > +		return nct3018y->part_num;
+> > +	} else if (nct3018y->part_num & NCT3018Y_REG_PART_NCT3018Y) {
+> 
+> This is a weird way to check as this will accept any value of
+> NCT3018Y_REG_PART as long as bit 1 is set, is this really what you want?
+> 
+> > +		flags = NCT3018Y_BIT_HF;
+> > +		err = i2c_smbus_write_byte_data(client, NCT3018Y_REG_CTRL, flags);
+> > +		if (err < 0) {
+> > +			dev_dbg(&client->dev, "Unable to write NCT3018Y_REG_CTRL.\n");
+> > +			return err;
+> > +		}
+> >  	}
+> >  
+> >  	flags = 0;
+> > -- 
+> > 2.17.1
+> > 
+> 
+> -- 
+> Alexandre Belloni, co-owner and COO, Bootlin
+> Embedded Linux and Kernel engineering
+> https://bootlin.com
 
-> Thanks for pointing that out. I think this might be the way to go.
-> I'll have a closer look at this and see how to get it to work with
-> pKVM.
+-- 
+Alexandre Belloni, co-owner and COO, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
