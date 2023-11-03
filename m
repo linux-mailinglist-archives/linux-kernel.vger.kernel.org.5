@@ -2,372 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 060C17E04B8
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 15:31:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BAFE37E04B4
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 15:31:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377858AbjKCO3e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 10:29:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44944 "EHLO
+        id S1377867AbjKCOaN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 10:30:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377836AbjKCO3c (ORCPT
+        with ESMTP id S1377809AbjKCOaL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 10:29:32 -0400
-Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D81FD48;
-        Fri,  3 Nov 2023 07:29:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
-        ; s=x; h=Subject:Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Cc:To
-        :From:subject:date:message-id:reply-to;
-        bh=N/2FR5XgREo2owYdfgPOLRpgoh9tf+0eP6E/Ob0CAgE=; b=WG8kH2K9kmnfOpqRySGGdRWeUy
-        L668m6A8fFG1NVdyd2EL2qDUb2pJJyLfFokQmxDl4aczyc+1IEsjkVsCkVYBFIsLCug21s7ji+IJj
-        og8JaZmH7PhbqQe1lJnkY29hz3BnOKr9jQ3HVM6ZHMQdDUePyBuJ0lcLP5KgurT70wTo=;
-Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:53152 helo=pettiford.lan)
-        by mail.hugovil.com with esmtpa (Exim 4.92)
-        (envelope-from <hugo@hugovil.com>)
-        id 1qyvAl-0005If-64; Fri, 03 Nov 2023 10:29:24 -0400
-From:   Hugo Villeneuve <hugo@hugovil.com>
-To:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
-        leoyang.li@nxp.com, robh@kernel.org
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, hugo@hugovil.com,
-        Hugo Villeneuve <hvilleneuve@dimonoff.com>
-Date:   Fri,  3 Nov 2023 10:28:31 -0400
-Message-Id: <20231103142831.2116163-4-hugo@hugovil.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231103142831.2116163-1-hugo@hugovil.com>
-References: <20231103142831.2116163-1-hugo@hugovil.com>
+        Fri, 3 Nov 2023 10:30:11 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03C6AD47
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 07:29:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1699021759;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=TFrz1T06ZV9wRLR/AaSeQ5njOC3A6YG14M3hWOUp/Z8=;
+        b=PI8g1NoO7oBqanPAtr7FbGRl94EhKb241AR3qXem348/pCLWdnMKDntwG9ciwv0JKXrzDD
+        dZV2Lt/15SDc+WLQLG4PepXH5UdCiWMdr4FjuwSiEVIad0i+IWyots1yyFE8k6jiAH1b0c
+        z11+eDwFWECDw0DwptG2uMjssB58YhE=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-640-7wfN8l6gP6aaWWEhvau41g-1; Fri, 03 Nov 2023 10:29:17 -0400
+X-MC-Unique: 7wfN8l6gP6aaWWEhvau41g-1
+Received: by mail-qv1-f70.google.com with SMTP id 6a1803df08f44-670b675b2c5so23907396d6.0
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Nov 2023 07:29:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699021757; x=1699626557;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=TFrz1T06ZV9wRLR/AaSeQ5njOC3A6YG14M3hWOUp/Z8=;
+        b=JacWpelkGqsJhq4u6K6CfPUkpuVWKrSGBcXvgZfd/cqswpUfYOZio59WNeSv8CswPB
+         VIRaVkaesqO35tYt5YaH1rx+b+BMg+XRRfD++Lbb/xe/0kmAWVGL8WTk7+hjtD2EZzLZ
+         Kb6rlC0EGn+FDo2QLMPAZ2RrJfejfs5HZYSq/6OrUvPW1EyCdw8n6yI3DJInRA5PsCK6
+         Uh68OM0DzlRymWHsfSutcYlgMOlUGtaC67sWZFokYVnhVVw+JCh4FLwxh+zjwkWIRtDl
+         a/3uCzDirwrNvMyICvjWF7saaWbQwlGscCmnp1BkFLiVCBFARI82FYN1dGdNdvfVUGAO
+         1jeQ==
+X-Gm-Message-State: AOJu0YzN0yG3NLugN2LEq24ASPiXX6y76nJ9OL0eAkwBkNP1RP4CfGfs
+        bgWudxZCBkd8MT1DsAWrFdAzc/k5jvF9NAI8vjBU+3OSlI4Q2FVjMCXV7o/X4Ii/xz2OragFKsJ
+        4Rhk+ZdIzttX1QRjB8gm+rlTy
+X-Received: by 2002:ad4:5c62:0:b0:66d:8184:dd8c with SMTP id i2-20020ad45c62000000b0066d8184dd8cmr26898766qvh.54.1699021757280;
+        Fri, 03 Nov 2023 07:29:17 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFnf6nWK8JYc1GZzpLOlS0paMCKupoCJR7jKRm8P63Ly0yon6nTC76VZNwvH/JsM2gH3J4Sxg==
+X-Received: by 2002:ad4:5c62:0:b0:66d:8184:dd8c with SMTP id i2-20020ad45c62000000b0066d8184dd8cmr26898743qvh.54.1699021757003;
+        Fri, 03 Nov 2023 07:29:17 -0700 (PDT)
+Received: from localhost.localdomain ([151.29.128.41])
+        by smtp.gmail.com with ESMTPSA id ne18-20020a056214425200b0066cf4fa7b47sm792703qvb.4.2023.11.03.07.29.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 Nov 2023 07:29:16 -0700 (PDT)
+Date:   Fri, 3 Nov 2023 15:29:10 +0100
+From:   Juri Lelli <juri.lelli@redhat.com>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Qais Yousef <qyousef@layalina.io>, Hao Luo <haoluo@google.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Xia Fukun <xiafukun@huawei.com>
+Subject: Re: [PATCH v2] cgroup/cpuset: Change nr_deadline_tasks to an
+ atomic_t value
+Message-ID: <ZUUDtm4+OO+DQHX5@localhost.localdomain>
+References: <20231024141834.4073262-1-longman@redhat.com>
+ <rzzosab2z64ae5kemem6evu5qsggef2mcjz3yw2ieysoxzsvvp@26mlfo2qidml>
+ <8e1b5497-d4ca-50a0-7cb1-ffa098e0a1c2@redhat.com>
+ <ZUN5XyOs3pWcJBo2@localhost.localdomain>
+ <63726aac-2a9b-11f2-6c24-9f33ced68706@redhat.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 70.80.174.168
-X-SA-Exim-Mail-From: hugo@hugovil.com
+In-Reply-To: <63726aac-2a9b-11f2-6c24-9f33ced68706@redhat.com>
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
-Subject: [PATCH v4 3/3] arm64: dts: freescale: introduce rve-gateway board
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+On 02/11/23 09:01, Waiman Long wrote:
+> 
+> On 11/2/23 06:26, Juri Lelli wrote:
+> > Hi Waiman,
+> > 
+> > On 01/11/23 13:59, Waiman Long wrote:
+> > > On 11/1/23 12:34, Michal Koutný wrote:
+> > > > On Tue, Oct 24, 2023 at 10:18:34AM -0400, Waiman Long <longman@redhat.com> wrote:
+> > > > > The nr_deadline_tasks field in cpuset structure was introduced by
+> > > > > commit 6c24849f5515 ("sched/cpuset: Keep track of SCHED_DEADLINE task
+> > > > > in cpusets"). Unlike nr_migrate_dl_tasks which is only modified under
+> > > > > cpuset_mutex, nr_deadline_tasks can be updated under two different
+> > > > > locks - cpuset_mutex in most cases or css_set_lock in cgroup_exit(). As
+> > > > > a result, data races can happen leading to incorrect nr_deadline_tasks
+> > > > > value.
+> > > > The effect is that dl_update_tasks_root_domain() processes tasks
+> > > > unnecessarily or that it incorrectly skips dl_add_task_root_domain()?
+> > > The effect is that dl_update_tasks_root_domain() may return incorrectly or
+> > > it is doing unnecessary work. Will update the commit log to reflect that.
+> > > > > Since it is not practical to somehow take cpuset_mutex in cgroup_exit(),
+> > > > > the easy way out to avoid this possible race condition is by making
+> > > > > nr_deadline_tasks an atomic_t value.
+> > > > If css_set_lock is useless for this fields and it's going to be atomic,
+> > > > could you please add (presumably) a cleanup that moves dec_dl_tasks_cs()
+> > > > from under css_set_lock in cgroup_exit() to a (new but specific)
+> > > > cpuset_cgrp_subsys.exit() handler?
+> > > But css_set_lock is needed for updating other css data. It is true that we
+> > > can move dec_dl_tasks_cs() outside of the lock. I can do that in the next
+> > > version.
+> > Not sure if you had a chance to check my last question/comment on your
+> > previous posting?
+> > 
+> > https://lore.kernel.org/lkml/ZSjfBWgZf15TchA5@localhost.localdomain/
+> 
+> Thanks for the reminder. I look at your comment again. Even though
+> dl_rebuild_rd_accounting() operates on css(es) via css_task_iter_start() and
+> css_task_iter_next(), the css_set_lock is released at the end of it. So it
+> is still possible that a task can call cgroup_exit() after
+> css_task_iter_next() and is being processed by dl_add_task_root_domain(). Is
+> there a helper in the do_exit() path to nullify the dl_task() check. Or
+> maybe we can also check for PF_EXITING in dl_add_task_root_domain() under
+> the pi_lock and do the dl_task() check the under pi_lock to synchronize with
+> dl_add_task_root_domain(). What do you think?
+> 
+> I still believe that it doesn't really matter if we call dec_dl_tasks_cs()
+> inside or outside the css_set_lock.
 
-The RVE gateway board is based on a Variscite VAR-SOM-NANO,
-with a NXP MX8MN nano CPU.
-
-Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
----
- arch/arm64/boot/dts/freescale/Makefile        |   1 +
- .../boot/dts/freescale/imx8mn-rve-gateway.dts | 282 ++++++++++++++++++
- 2 files changed, 283 insertions(+)
- create mode 100644 arch/arm64/boot/dts/freescale/imx8mn-rve-gateway.dts
-
-diff --git a/arch/arm64/boot/dts/freescale/Makefile b/arch/arm64/boot/dts/freescale/Makefile
-index 300049037eb0..c99da779ef7b 100644
---- a/arch/arm64/boot/dts/freescale/Makefile
-+++ b/arch/arm64/boot/dts/freescale/Makefile
-@@ -98,6 +98,7 @@ dtb-$(CONFIG_ARCH_MXC) += imx8mn-bsh-smm-s2pro.dtb
- dtb-$(CONFIG_ARCH_MXC) += imx8mn-evk.dtb
- dtb-$(CONFIG_ARCH_MXC) += imx8mn-ddr3l-evk.dtb
- dtb-$(CONFIG_ARCH_MXC) += imx8mn-ddr4-evk.dtb
-+dtb-$(CONFIG_ARCH_MXC) += imx8mn-rve-gateway.dtb
- dtb-$(CONFIG_ARCH_MXC) += imx8mn-tqma8mqnl-mba8mx.dtb
- dtb-$(CONFIG_ARCH_MXC) += imx8mn-var-som-symphony.dtb
- dtb-$(CONFIG_ARCH_MXC) += imx8mn-venice-gw7902.dtb
-diff --git a/arch/arm64/boot/dts/freescale/imx8mn-rve-gateway.dts b/arch/arm64/boot/dts/freescale/imx8mn-rve-gateway.dts
-new file mode 100644
-index 000000000000..186f54fd06c6
---- /dev/null
-+++ b/arch/arm64/boot/dts/freescale/imx8mn-rve-gateway.dts
-@@ -0,0 +1,282 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/*
-+ * Copyright 2023 DimOnOff
-+ */
-+
-+/dts-v1/;
-+
-+#include <dt-bindings/usb/pd.h>
-+#include "imx8mn-var-som.dtsi"
-+
-+/ {
-+	model = "RVE gateway";
-+	compatible = "rve,rve-gateway", "variscite,var-som-mx8mn", "fsl,imx8mn";
-+
-+	crystal_duart_24m: crystal-duart-24m {
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <24000000>;
-+	};
-+
-+	gpio-keys {
-+		compatible = "gpio-keys";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_gpio_keys>;
-+
-+		key-enter {
-+			label = "enter";
-+			gpios = <&gpio1 1 GPIO_ACTIVE_LOW>;
-+			linux,code = <KEY_ENTER>;
-+		};
-+
-+		key-exit {
-+			label = "exit";
-+			gpios = <&gpio3 23 GPIO_ACTIVE_LOW>;
-+			linux,code = <KEY_ESC>;
-+		};
-+	};
-+
-+	lcd {
-+		compatible = "hit,hd44780";
-+		display-height-chars = <2>;
-+		display-width-chars = <20>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_lcd>;
-+		data-gpios = <&gpio5  1 GPIO_ACTIVE_HIGH>,
-+			     <&gpio1  6 GPIO_ACTIVE_HIGH>,
-+			     <&gpio1 14 GPIO_ACTIVE_HIGH>,
-+			     <&gpio4 28 GPIO_ACTIVE_HIGH>,
-+			     <&gpio5 24 GPIO_ACTIVE_HIGH>,
-+			     <&gpio5  2 GPIO_ACTIVE_HIGH>,
-+			     <&gpio1 12 GPIO_ACTIVE_HIGH>,
-+			     <&gpio5 25 GPIO_ACTIVE_HIGH>;
-+		enable-gpios = <&gpio5 23 GPIO_ACTIVE_HIGH>;
-+		rs-gpios = <&gpio1 7 GPIO_ACTIVE_HIGH>;
-+		rw-gpios = <&gpio4 27 GPIO_ACTIVE_HIGH>;
-+	};
-+
-+	reg_3p3v: regulator-3p3v {
-+		compatible = "regulator-fixed";
-+		regulator-name = "3P3V";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		regulator-always-on;
-+	};
-+
-+	/* Bourns PEC12R rotary encoder, 24 steps. */
-+	rotary: rotary-encoder {
-+		compatible = "rotary-encoder";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_rotary>;
-+		gpios = <&gpio1  5 GPIO_ACTIVE_LOW>, /* A */
-+			<&gpio3 21 GPIO_ACTIVE_LOW>; /* B */
-+		linux,axis = <0>; /* REL_X */
-+		rotary-encoder,encoding = "gray";
-+		rotary-encoder,relative-axis;
-+	};
-+};
-+
-+&ecspi1 {
-+	cs-gpios = <&gpio5 9 GPIO_ACTIVE_LOW>;
-+
-+	duart1: serial@0 {
-+		compatible = "nxp,sc16is752";
-+		reg = <0>;
-+		spi-rx-bus-width = <1>;
-+		spi-tx-bus-width = <1>;
-+		spi-max-frequency = <4000000>;
-+		clocks = <&crystal_duart_24m>;
-+		interrupt-parent = <&gpio3>;
-+		interrupts = <22 IRQ_TYPE_EDGE_FALLING>;
-+		gpio-controller;
-+		#gpio-cells = <2>;
-+		gpio-line-names = "RADIO0", "RADIO1", "RADIO2", "RADIO3",
-+		"RADIO4", "RADIO_RESET", "TP12", "TP11";
-+		linux,rs485-enabled-at-boot-time;
-+		rs485-rts-active-low;
-+	};
-+
-+	/delete-node/ touchscreen@0;
-+};
-+
-+&ecspi2 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_ecspi2>;
-+	cs-gpios = <&gpio5 13 GPIO_ACTIVE_LOW>;
-+	/delete-property/ dmas;
-+	/delete-property/ dma-names;
-+	status = "okay";
-+
-+	duart2: serial@0 {
-+		compatible = "nxp,sc16is752";
-+		reg = <0>;
-+		spi-rx-bus-width = <1>;
-+		spi-tx-bus-width = <1>;
-+		spi-max-frequency = <4000000>;
-+		clocks = <&crystal_duart_24m>;
-+		interrupt-parent = <&gpio3>;
-+		interrupts = <20 IRQ_TYPE_EDGE_FALLING>;
-+		gpio-controller;
-+		#gpio-cells = <2>;
-+		gpio-line-names = "LED_B_USER", "LED_R_USER", "LED_G_USER",
-+		"GPIO_EXT3", "GPIO_EXT2", "GPIO_EXT1", "GPIO_EXT0", "TP13";
-+		linux,rs485-enabled-at-boot-time;
-+		rs485-rts-active-low;
-+	};
-+};
-+
-+/* Configure PWM pins in GPIO mode: */
-+&gpio5 {
-+	gpio-line-names = "", "", "", "PWM3", "PWM2", "PWM1";
-+};
-+
-+&gpu {
-+	status = "disabled";
-+};
-+
-+&i2c2 {
-+	clock-frequency = <400000>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_i2c2>;
-+	status = "okay";
-+
-+	/* Carrier board EEPROM */
-+	eeprom_cb: eeprom@56 {
-+		compatible = "atmel,24c04";
-+		reg = <0x56>;
-+		pagesize = <16>;
-+		vcc-supply = <&reg_3p3v>;
-+	};
-+
-+	lm75: sensor@48 {
-+		compatible = "st,stlm75";
-+		reg = <0x48>;
-+		vs-supply = <&reg_3p3v>;
-+	};
-+
-+	mcp7940: rtc@6f {
-+		compatible = "microchip,mcp7940x";
-+		reg = <0x6f>;
-+	};
-+};
-+
-+&i2c3 {
-+	codec@1a {
-+		status = "disabled";
-+	};
-+};
-+
-+&i2c4 {
-+	clock-frequency = <400000>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_i2c4>;
-+	status = "okay";
-+
-+	pcf8574_1: gpio@38 {
-+		compatible = "nxp,pcf8574";
-+		reg = <0x38>;
-+		gpio-controller;
-+		#gpio-cells = <2>;
-+		gpio-line-names = "LED_B_COMM3", "LED_R_COMM3", "LED_G_COMM3",
-+		"TP14", "TP15", "LED_G_COMM4", "LED_R_COMM4", "LED_B_COMM4";
-+	};
-+
-+	pcf8574_2: gpio@39 {
-+		compatible = "nxp,pcf8574";
-+		reg = <0x39>;
-+		gpio-controller;
-+		#gpio-cells = <2>;
-+		gpio-line-names = "LED_B_COMM2", "LED_G_COMM2", "LED_B_COMM1",
-+		"LED_R_COMM2", "LED_R_COMM1", "LED_G_COMM1", "TP16", "TP17";
-+	};
-+};
-+
-+/* Bluetooth */
-+&uart2 {
-+	status = "disabled";
-+};
-+
-+&usbotg1 {
-+	dr_mode = "host";
-+	disable-over-current;
-+	status = "okay";
-+};
-+
-+/* SD interface on expansion connector. */
-+&usdhc2 {
-+	vmmc-supply = <&reg_3p3v>;
-+	cd-gpios = <&gpio1 13 GPIO_ACTIVE_LOW>;
-+};
-+
-+&iomuxc {
-+	pinctrl_ecspi1: ecspi1grp {
-+		fsl,pins = <
-+			MX8MN_IOMUXC_ECSPI1_SCLK_ECSPI1_SCLK	0x13
-+			MX8MN_IOMUXC_ECSPI1_MOSI_ECSPI1_MOSI	0x13
-+			MX8MN_IOMUXC_ECSPI1_MISO_ECSPI1_MISO	0x13
-+			MX8MN_IOMUXC_ECSPI1_SS0_GPIO5_IO9	0x13 /* SS0 */
-+			MX8MN_IOMUXC_SAI5_RXD1_GPIO3_IO22	0x13 /* SC16 IRQ */
-+		>;
-+	};
-+
-+	pinctrl_ecspi2: ecspi2grp {
-+		fsl,pins = <
-+			MX8MN_IOMUXC_ECSPI2_SCLK_ECSPI2_SCLK	0x13
-+			MX8MN_IOMUXC_ECSPI2_MOSI_ECSPI2_MOSI	0x13
-+			MX8MN_IOMUXC_ECSPI2_MISO_ECSPI2_MISO	0x13
-+			MX8MN_IOMUXC_ECSPI2_SS0_GPIO5_IO13	0x13 /* SS0 */
-+			MX8MN_IOMUXC_SAI5_RXC_GPIO3_IO20	0x13 /* SC16 IRQ */
-+		>;
-+	};
-+
-+	pinctrl_gpio_keys: gpiokeysgrp {
-+		fsl,pins = <
-+			MX8MN_IOMUXC_GPIO1_IO01_GPIO1_IO1	0xc6 /* Enter */
-+			MX8MN_IOMUXC_SAI5_RXD2_GPIO3_IO23	0xc6 /* Exit */
-+		>;
-+	};
-+
-+	pinctrl_i2c2: i2c2grp {
-+		fsl,pins = <
-+			MX8MN_IOMUXC_I2C2_SCL_I2C2_SCL		0x400001c3
-+			MX8MN_IOMUXC_I2C2_SDA_I2C2_SDA		0x400001c3
-+		>;
-+	};
-+
-+	pinctrl_i2c4: i2c4grp {
-+		fsl,pins = <
-+			MX8MN_IOMUXC_I2C4_SCL_I2C4_SCL		0x400001c3
-+			MX8MN_IOMUXC_I2C4_SDA_I2C4_SDA		0x400001c3
-+		>;
-+	};
-+
-+	pinctrl_lcd: lcdgrp {
-+		fsl,pins = <
-+			MX8MN_IOMUXC_SAI3_TXD_GPIO5_IO1		0x00000156 /* D0 */
-+			MX8MN_IOMUXC_GPIO1_IO06_GPIO1_IO6	0x00000156 /* D1 */
-+			MX8MN_IOMUXC_GPIO1_IO14_GPIO1_IO14	0x00000156 /* D2 */
-+			MX8MN_IOMUXC_SAI3_RXFS_GPIO4_IO28	0x00000156 /* D3 */
-+			MX8MN_IOMUXC_UART2_RXD_GPIO5_IO24	0x00000156 /* D4 */
-+			MX8MN_IOMUXC_SAI3_MCLK_GPIO5_IO2	0x00000156 /* D5 */
-+			MX8MN_IOMUXC_GPIO1_IO12_GPIO1_IO12	0x00000156 /* D6 */
-+			MX8MN_IOMUXC_UART2_TXD_GPIO5_IO25	0x00000156 /* D7 */
-+			MX8MN_IOMUXC_UART1_TXD_GPIO5_IO23	0x00000156 /* E */
-+			MX8MN_IOMUXC_GPIO1_IO07_GPIO1_IO7	0x00000156 /* RS */
-+			MX8MN_IOMUXC_SAI2_MCLK_GPIO4_IO27	0x00000156 /* R/W */
-+		>;
-+	};
-+
-+	pinctrl_rotary: rotarygrp {
-+		fsl,pins = <
-+			MX8MN_IOMUXC_GPIO1_IO05_GPIO1_IO5	0x00000156 /* A */
-+			MX8MN_IOMUXC_SAI5_RXD0_GPIO3_IO21	0x00000156 /* B */
-+		>;
-+	};
-+
-+	/* Override Card Detect function GPIO value (GPIO1_IO10) from SOM: */
-+	pinctrl_usdhc2_gpio: usdhc2gpiogrp {
-+		fsl,pins = <
-+			MX8MN_IOMUXC_GPIO1_IO13_GPIO1_IO13	0x41
-+		>;
-+	};
-+};
--- 
-2.39.2
+Hummm, what if we move dec_dl_tasks_cs outside css_set_lock guard in
+cgroup_exit and we grab cpuset_mutex (for dl_tasks) before doing the
+decrement in there?
 
