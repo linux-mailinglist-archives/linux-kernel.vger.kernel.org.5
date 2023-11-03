@@ -2,91 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D39217E0358
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 14:08:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 326B07E035C
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 14:08:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376513AbjKCNIe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 09:08:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44822 "EHLO
+        id S1376466AbjKCNI6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 09:08:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbjKCNId (ORCPT
+        with ESMTP id S1377623AbjKCNI5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 09:08:33 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31911111;
-        Fri,  3 Nov 2023 06:08:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=FVKgUj0uIHkMY78KC2G3LoMl8HM52HmVt0kx80HproA=; b=bbOoB+IOaYQ7ibWjfJ0UuoeNc9
-        tqG6JFZK+5q/P5hbo3bF24UolPUzIHBjInC9ad/2V4q8sMTi2PeKiAhIdoE9tUgBfF5ejOLGmQOKL
-        hvPT68kZzruopT6g92dRJ5stja0/mnoWKg+4ykIFhdh9d8RqtBG/8vQJuqJQgYrIUGwo7FCBqRmZy
-        mqx61wXt+mhGOh1n7qXCNtAMTvA0zFrFszr00Nt31MdL4IvEOR0aBFlY2eJKmiNBNzcMl2OLnjkw9
-        fIqyiGQBItdk26uVw/BtIObjQK9Rp2+QIvDlZW3bBuEOiI8KvUXjQVJ4Qenhu4xziGBXDI96ri8cM
-        Zk5Ib0xQ==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qytuI-005WWa-EH; Fri, 03 Nov 2023 13:08:15 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id C451D30027B; Fri,  3 Nov 2023 14:08:14 +0100 (CET)
-Date:   Fri, 3 Nov 2023 14:08:14 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     John Hubbard <jhubbard@nvidia.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Xu <peterx@redhat.com>, Shuah Khan <shuah@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Muhammad Usama Anjum <usama.anjum@collabora.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
-Subject: Re: [PATCH v3 11/11] selftests: error out if kernel header files are
- not yet built
-Message-ID: <20231103130814.GC8262@noisy.programming.kicks-ass.net>
-References: <20230606071637.267103-1-jhubbard@nvidia.com>
- <20230606071637.267103-12-jhubbard@nvidia.com>
- <20231103121652.GA6217@noisy.programming.kicks-ass.net>
- <a002f903-723f-40ae-8d7a-421ab2e082e2@redhat.com>
- <20231103124606.GB8262@noisy.programming.kicks-ass.net>
- <15ff806d-59ab-46ab-8891-05ab917a1528@redhat.com>
+        Fri, 3 Nov 2023 09:08:57 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC5D6111
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 06:08:51 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49140C433C7;
+        Fri,  3 Nov 2023 13:08:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699016931;
+        bh=Q7bthhPoFjkWUMlyFUZKED1Byw57+VTorIZ5iPKMrmI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=s7u8rZegwQaDQ0DVB0SWfhvzDOx6s4B2KWdYGuJfQFnK7NiWYZ3fK2qriOHdVWgef
+         FjEnXwODUNWC/2ZADbWtGIBmFE3sNmf5sDT7+5nwnbd12e8ENhEkOHQPYC44qVOcL5
+         2CdToKfZ1foCN03SGj2Ig5YVkgQLBx/xVsGzsK15NeO6tXEhL69MC2coX8T/nZY2Rc
+         t5jXHDZkQbiDGZ3W3mJcyVfVBBTbcimbk39f/xBz+G3yk6Ie6kTq1oXCDqZ9X2Bpzg
+         6Xsdutfcgt+QTVcRI7Liq2sdez+MaQZK9UjPNQKTyfqGU/+Umm7YBp2wG1/sxIPJS2
+         pLdGAyH/CHJ4g==
+Date:   Fri, 3 Nov 2023 13:08:45 +0000
+From:   Conor Dooley <conor@kernel.org>
+To:     Christian Marangi <ansuelsmth@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Robert Marko <robimarko@gmail.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [net-next RFC PATCH v3 4/4] dt-bindings: Document bindings for
+ Marvell Aquantia PHY
+Message-ID: <20231103-outboard-murkiness-e3256874c9a7@spud>
+References: <20231102150032.10740-1-ansuelsmth@gmail.com>
+ <20231102150032.10740-4-ansuelsmth@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="YBRbmXQ7LbrT3SgB"
 Content-Disposition: inline
-In-Reply-To: <15ff806d-59ab-46ab-8891-05ab917a1528@redhat.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20231102150032.10740-4-ansuelsmth@gmail.com>
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 03, 2023 at 01:59:28PM +0100, David Hildenbrand wrote:
 
-> Okay. the question is if your workflow can be easily adjusted, or if we can
-> improve that header handling as a whole.
+--YBRbmXQ7LbrT3SgB
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-So on IRC the following was suggested:
+Yo,
 
-  make O=defconfig-build headers ; make O=defconfig-build -C tools/testing/selftests/x86
+On Thu, Nov 02, 2023 at 04:00:32PM +0100, Christian Marangi wrote:
+> Document bindings for Marvell Aquantia PHY.
+>=20
+> The Marvell Aquantia PHY require a firmware to work correctly and there
+> at least 3 way to load this firmware.
+>=20
+> Describe all the different way and document the binding "firmware-name"
+> to load the PHY firmware from userspace.
+>=20
+> Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+> ---
+> Changes v3:
+> - Make DT description more OS agnostic
+> - Use custom select to fix dtbs checks
+> Changes v2:
+> - Add DT patch
+>=20
+>  .../bindings/net/marvell,aquantia.yaml        | 126 ++++++++++++++++++
+>  1 file changed, 126 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/net/marvell,aquanti=
+a.yaml
+>=20
+> diff --git a/Documentation/devicetree/bindings/net/marvell,aquantia.yaml =
+b/Documentation/devicetree/bindings/net/marvell,aquantia.yaml
+> new file mode 100644
+> index 000000000000..d43cf28a4d61
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/net/marvell,aquantia.yaml
+> @@ -0,0 +1,126 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/net/marvell,aquantia.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Marvell Aquantia Ethernet PHY
+> +
+> +maintainers:
+> +  - Christian Marangi <ansuelsmth@gmail.com>
+> +
+> +description: |
+> +  Marvell Aquantia Ethernet PHY require a firmware to be loaded to actua=
+lly
+> +  work.
+> +
+> +  This can be done and is implemented by OEM in 3 different way:
+> +    - Attached SPI directly to the PHY with the firmware. The PHY will
 
-But that makes absolutely no sense to me; because the headers and
-selftests are not .config dependent. Furthermore I don't want them in a
-kernel build dir.
+You a word here? Should that not be "SPI flash"?
 
-> The problem I had with this recently: just because we did a "make headers"
-> once in a git tree doesn't mean that it is still up-to-date.
-> 
-> So once some selftest changes showed up that require newer headers, building
-> the selftests again fails without a hint that another round of "make
-> headers" would be required.
+> +      self load the firmware in the presence of this configuration.
 
-Yeah, so I've been adding #ifndef guards all over the place for decades
-and that just works. You need it in normal userspace too.
+> +    - Dedicated partition on system NAND with firmware in it. NVMEM
+> +      subsystem will be used and the declared NVMEM cell will load
+> +      the firmware to the PHY using the PHY mailbox interface.
+> +    - Manually provided firmware loaded from a file in the filesystem.
+> +
+> +  If declared, NVMEM will always take priority over filesystem provided
+> +  firmware.
 
-This super reliance on the very latestesetst headers is just a total
-pain.
+This section here reads entirely like "software policy". The first
+bullet in your list is fine - as that is what the PHY will do itself.
+The second and third bullets here seem like two different ways that
+someone could integrate their system, and I am not objecting to either
+of those ways of doing things.
+The priority system that you mention however I don't think is suitable
+for a description of the hardware - the PHY itself doesn't require that
+an external-to-it flash device take priority over something in the
+filesystem, right?
+
+
+--YBRbmXQ7LbrT3SgB
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZUTw3QAKCRB4tDGHoIJi
+0qf4AQDU5T+OXQT6MxLXyNCp4aiexeUQQeT+wge60Mjxod2E6AD/Tj2SZ7SnSWNL
+2wwCzdXT8D+xgkafSOHsTzmCVBiQQQ0=
+=TObr
+-----END PGP SIGNATURE-----
+
+--YBRbmXQ7LbrT3SgB--
