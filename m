@@ -2,173 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EBC917E01C1
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 12:14:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AEC07E01E6
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 12:14:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377845AbjKCKzC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 06:55:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49542 "EHLO
+        id S1377856AbjKCKzH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 06:55:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377655AbjKCKy7 (ORCPT
+        with ESMTP id S1377655AbjKCKzG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 06:54:59 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC160123;
-        Fri,  3 Nov 2023 03:54:53 -0700 (PDT)
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A36uP1Q007216;
-        Fri, 3 Nov 2023 10:54:47 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id; s=qcppdkim1;
- bh=zJIxMj8i903lRQualscB1Cxu9wrn8Os5GCB+f70+kf0=;
- b=CqWTYuZRBWmqeuHoLNdxfoYDQcWN0f2MjAZW8sjmtSyK4qCjJggjlxebLear127vb2aJ
- e1wTLAL0ltm56EXBhri7gsu692jgVEbV9Qoy1H3yMFWWTTL29Y+VSFm6b6zS75WHIZPa
- +/0jIcvZThXQZjkmbbRL1kpA8+wZ9nJJgDGWHaLYyyImGEJIfOXMz1DIEeuvWAeBE71h
- S/mOU9VF40+K+KBkqGn8vmeJfwKIWXExhUZPBUhrVVxO/bI4vqZz0aecAbjIEn1YMA9C
- FWp020ul8a1BhIsdG8+du3C8zn4v1INKkRgzP+u4TdqtAlWp6oKFWPZohHBehbfz3Jd+ 5w== 
-Received: from apblrppmta02.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u4ss98p72-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 03 Nov 2023 10:54:46 +0000
-Received: from pps.filterd (APBLRPPMTA02.qualcomm.com [127.0.0.1])
-        by APBLRPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 3A3AshmT001914;
-        Fri, 3 Nov 2023 10:54:43 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 3u0ucmcqbp-1;
-        Fri, 03 Nov 2023 10:54:43 +0000
-Received: from APBLRPPMTA02.qualcomm.com (APBLRPPMTA02.qualcomm.com [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3A3Ashms001907;
-        Fri, 3 Nov 2023 10:54:43 GMT
-Received: from hu-maiyas-hyd.qualcomm.com (hu-anshar-hyd.qualcomm.com [10.213.110.5])
-        by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 3A3Asg6H001905;
-        Fri, 03 Nov 2023 10:54:43 +0000
-Received: by hu-maiyas-hyd.qualcomm.com (Postfix, from userid 4089000)
-        id 0DCC252A387; Fri,  3 Nov 2023 16:24:42 +0530 (+0530)
-From:   Ankit Sharma <quic_anshar@quicinc.com>
-To:     cros-qcom-dts-watchers@chromium.org, agross@kernel.org,
-        andersson@kernel.org, konrad.dybcio@linaro.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
-Cc:     Ankit Sharma <quic_anshar@quicinc.com>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, quic_ashayj@quicinc.com,
-        quic_atulpant@quicinc.com, quic_rgottimu@quicinc.com,
-        quic_shashim@quicinc.com, quic_pkondeti@quicinc.com
-Subject: [PATCH v2] arm64: dts: qcom: sc7280: Add capacity and DPC properties
-Date:   Fri,  3 Nov 2023 16:24:40 +0530
-Message-Id: <20231103105440.23904-1-quic_anshar@quicinc.com>
-X-Mailer: git-send-email 2.17.1
-X-QCInternal: smtphost
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: OOF7__Xzbn3Gk3pYcGFYgCsrv7wHsagb
-X-Proofpoint-GUID: OOF7__Xzbn3Gk3pYcGFYgCsrv7wHsagb
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-03_11,2023-11-02_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- bulkscore=0 malwarescore=0 phishscore=0 impostorscore=0 clxscore=1015
- mlxscore=0 mlxlogscore=882 suspectscore=0 spamscore=0 adultscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2310240000 definitions=main-2311030090
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+        Fri, 3 Nov 2023 06:55:06 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9BA4187;
+        Fri,  3 Nov 2023 03:54:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=Um8xrYpMdBObopBnzerBAfI2E5OpRpvtMoUTBQ8de/k=; b=biXWhoSA7RtRlMm4H8bTZkOGpu
+        VCIAeKrLBRWO4+pK0QhXJWI99kBjB6fc/wAUsF/tAwtrKNXBevQKHGX626hnZ6X7y0f6FcbV5XYJK
+        8dvM5fW0ABhIGGjEns7PCZis9nIpcj+ZBIDTxuFwX2cuBn0JMrYn3E1fGkb2/BgchWNW7OemtET7s
+        DGWDDMxcFKs0nMB8nnLr5Dn5k5TClKxV/mR++dVwpp9vc5RxsMy2EFCNf6fbQyjQsdZY1+IKTNDDO
+        mJcygAudTSh9qFVs4VZiErGDAKvXunOArZhc34Y+i8pL+CvmXRJfRcxNGsrP1+zuuMzxnoeRgR2wU
+        ttfAoolA==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:43298)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1qyrpH-0005SE-0p;
+        Fri, 03 Nov 2023 10:54:55 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1qyrpI-0008Kv-8X; Fri, 03 Nov 2023 10:54:56 +0000
+Date:   Fri, 3 Nov 2023 10:54:56 +0000
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Gavin Shan <gshan@redhat.com>
+Cc:     James Morse <james.morse@arm.com>, linux-pm@vger.kernel.org,
+        loongarch@lists.linux.dev, linux-acpi@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev,
+        x86@kernel.org, Salil Mehta <salil.mehta@huawei.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        jianyong.wu@arm.com, justin.he@arm.com
+Subject: Re: [RFC PATCH v2 15/35] ACPI: processor: Add support for processors
+ described as container packages
+Message-ID: <ZUTRgNtpcVtcMFqJ@shell.armlinux.org.uk>
+References: <20230913163823.7880-1-james.morse@arm.com>
+ <20230913163823.7880-16-james.morse@arm.com>
+ <50571c2f-aa3c-baeb-3add-cd59e0eddc02@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <50571c2f-aa3c-baeb-3add-cd59e0eddc02@redhat.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The "capacity-dmips-mhz" and "dynamic-power-coefficient" are
-used to build Energy Model which in turn is used by EAS to take
-placement decisions. So add it to SC7280 soc.
+On Mon, Sep 18, 2023 at 03:02:53PM +1000, Gavin Shan wrote:
+> 
+> On 9/14/23 02:38, James Morse wrote:
+> > ACPI has two ways of describing processors in the DSDT. Either as a device
+> > object with HID ACPI0007, or as a type 'C' package inside a Processor
+> > Container. The ACPI processor driver probes CPUs described as devices, but
+> > not those described as packages.
+> > 
+> > Duplicate descriptions are not allowed, the ACPI processor driver already
+> > parses the UID from both devices and containers. acpi_processor_get_info()
+> > returns an error if the UID exists twice in the DSDT.
+> > 
+> > The missing probe for CPUs described as packages creates a problem for
+> > moving the cpu_register() calls into the acpi_processor driver, as CPUs
+> > described like this don't get registered, leading to errors from other
+> > subsystems when they try to add new sysfs entries to the CPU node.
+> > (e.g. topology_sysfs_init()'s use of topology_add_dev() via cpuhp)
+> > 
+> > To fix this, parse the processor container and call acpi_processor_add()
+> > for each processor that is discovered like this. The processor container
+> > handler is added with acpi_scan_add_handler(), so no detach call will
+> > arrive.
+> > 
+> > Qemu TCG describes CPUs using packages in a processor container.
+> > 
+> > Signed-off-by: James Morse <james.morse@arm.com>
+> > ---
+> >   drivers/acpi/acpi_processor.c | 22 ++++++++++++++++++++++
+> >   1 file changed, 22 insertions(+)
+> > 
+> 
+> I don't understand the last sentence of the commit log. QEMU
+> always have "ACPI0007" for the processor devices.
 
-Signed-off-by: Ankit Sharma <quic_anshar@quicinc.com>
----
-changes in v2: https://lore.kernel.org/all/20231103095358.29312-1-quic_anshar@quicinc.com/
- - updated commit message and subject.
+I think what James is referring to is the use of Processor Containers
+(see
+https://uefi.org/specs/ACPI/6.5/08_Processor_Configuration_and_Control.html#processor-container-device)
 
- arch/arm64/boot/dts/qcom/sc7280.dtsi | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+which are defined using HID ACPI0010. This seems to be what
+build_cpus_aml() is doing. It creates:
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-index 8601253aec70..b1890824188c 100644
---- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-@@ -176,6 +176,8 @@
- 					   &CLUSTER_SLEEP_0>;
- 			next-level-cache = <&L2_0>;
- 			operating-points-v2 = <&cpu0_opp_table>;
-+			capacity-dmips-mhz = <1024>;
-+			dynamic-power-coefficient = <100>;
- 			interconnects = <&gem_noc MASTER_APPSS_PROC 3 &mc_virt SLAVE_EBI1 3>,
- 					<&epss_l3 MASTER_EPSS_L3_APPS &epss_l3 SLAVE_EPSS_L3_SHARED>;
- 			qcom,freq-domain = <&cpufreq_hw 0>;
-@@ -204,6 +206,8 @@
- 					   &CLUSTER_SLEEP_0>;
- 			next-level-cache = <&L2_100>;
- 			operating-points-v2 = <&cpu0_opp_table>;
-+			capacity-dmips-mhz = <1024>;
-+			dynamic-power-coefficient = <100>;
- 			interconnects = <&gem_noc MASTER_APPSS_PROC 3 &mc_virt SLAVE_EBI1 3>,
- 					<&epss_l3 MASTER_EPSS_L3_APPS &epss_l3 SLAVE_EPSS_L3_SHARED>;
- 			qcom,freq-domain = <&cpufreq_hw 0>;
-@@ -227,6 +231,8 @@
- 					   &CLUSTER_SLEEP_0>;
- 			next-level-cache = <&L2_200>;
- 			operating-points-v2 = <&cpu0_opp_table>;
-+			capacity-dmips-mhz = <1024>;
-+			dynamic-power-coefficient = <100>;
- 			interconnects = <&gem_noc MASTER_APPSS_PROC 3 &mc_virt SLAVE_EBI1 3>,
- 					<&epss_l3 MASTER_EPSS_L3_APPS &epss_l3 SLAVE_EPSS_L3_SHARED>;
- 			qcom,freq-domain = <&cpufreq_hw 0>;
-@@ -250,6 +256,8 @@
- 					   &CLUSTER_SLEEP_0>;
- 			next-level-cache = <&L2_300>;
- 			operating-points-v2 = <&cpu0_opp_table>;
-+			capacity-dmips-mhz = <1024>;
-+			dynamic-power-coefficient = <100>;
- 			interconnects = <&gem_noc MASTER_APPSS_PROC 3 &mc_virt SLAVE_EBI1 3>,
- 					<&epss_l3 MASTER_EPSS_L3_APPS &epss_l3 SLAVE_EPSS_L3_SHARED>;
- 			qcom,freq-domain = <&cpufreq_hw 0>;
-@@ -273,6 +281,8 @@
- 					   &CLUSTER_SLEEP_0>;
- 			next-level-cache = <&L2_400>;
- 			operating-points-v2 = <&cpu4_opp_table>;
-+			capacity-dmips-mhz = <1946>;
-+			dynamic-power-coefficient = <520>;
- 			interconnects = <&gem_noc MASTER_APPSS_PROC 3 &mc_virt SLAVE_EBI1 3>,
- 					<&epss_l3 MASTER_EPSS_L3_APPS &epss_l3 SLAVE_EPSS_L3_SHARED>;
- 			qcom,freq-domain = <&cpufreq_hw 1>;
-@@ -296,6 +306,8 @@
- 					   &CLUSTER_SLEEP_0>;
- 			next-level-cache = <&L2_500>;
- 			operating-points-v2 = <&cpu4_opp_table>;
-+			capacity-dmips-mhz = <1946>;
-+			dynamic-power-coefficient = <520>;
- 			interconnects = <&gem_noc MASTER_APPSS_PROC 3 &mc_virt SLAVE_EBI1 3>,
- 					<&epss_l3 MASTER_EPSS_L3_APPS &epss_l3 SLAVE_EPSS_L3_SHARED>;
- 			qcom,freq-domain = <&cpufreq_hw 1>;
-@@ -319,6 +331,8 @@
- 					   &CLUSTER_SLEEP_0>;
- 			next-level-cache = <&L2_600>;
- 			operating-points-v2 = <&cpu4_opp_table>;
-+			capacity-dmips-mhz = <1946>;
-+			dynamic-power-coefficient = <520>;
- 			interconnects = <&gem_noc MASTER_APPSS_PROC 3 &mc_virt SLAVE_EBI1 3>,
- 					<&epss_l3 MASTER_EPSS_L3_APPS &epss_l3 SLAVE_EPSS_L3_SHARED>;
- 			qcom,freq-domain = <&cpufreq_hw 1>;
-@@ -342,6 +356,8 @@
- 					   &CLUSTER_SLEEP_0>;
- 			next-level-cache = <&L2_700>;
- 			operating-points-v2 = <&cpu7_opp_table>;
-+			capacity-dmips-mhz = <1985>;
-+			dynamic-power-coefficient = <552>;
- 			interconnects = <&gem_noc MASTER_APPSS_PROC 3 &mc_virt SLAVE_EBI1 3>,
- 					<&epss_l3 MASTER_EPSS_L3_APPS &epss_l3 SLAVE_EPSS_L3_SHARED>;
- 			qcom,freq-domain = <&cpufreq_hw 2>;
+	\_SB.CPUS - processor container with ACPI0010
+
+and then builds the processor devices underneath that object using
+ACPI0007.
+
+I think the use of "packages" there is wrong, it should be "processor
+devices" - taking the terminology from the above specification link.
+As far as I can see, QEMU does not (yet) use the option of embedding
+child processor containers beneath a parent.
+
 -- 
-2.17.1
-
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
