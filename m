@@ -2,123 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DC5E7E0224
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 12:20:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E72317E021D
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 12:20:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346645AbjKCLRV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 07:17:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58260 "EHLO
+        id S1346471AbjKCLSp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 07:18:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346673AbjKCLRQ (ORCPT
+        with ESMTP id S229463AbjKCLSn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 07:17:16 -0400
-Received: from mail-yw1-x112a.google.com (mail-yw1-x112a.google.com [IPv6:2607:f8b0:4864:20::112a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF524D69
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 04:17:01 -0700 (PDT)
-Received: by mail-yw1-x112a.google.com with SMTP id 00721157ae682-5a82f176860so23427437b3.1
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Nov 2023 04:17:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699010220; x=1699615020; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=oWqvGHOpDjXeJF4gaG5FvSChunLowe+31JAI0Z5rk34=;
-        b=aTAeo++ufcpuOK6ygynGRX8GpEjrCX4iIsxGeSzbXaI/UKqI822QKIIZ7KYNfbZL6W
-         q7ZuC/BGDP7M7RxUi84roEW10U/GV3F1+ITWIErXRQD7d0j86xRq3eztwsU6C+B3NVki
-         SUgg4HVAQX2aBtJmbJosEktwRXGkmr4D/HuzOB5Sc7MOUXRz8HZRPnFfLfCbGlWsJysp
-         XZlmDIEfk4O228DHLlYe1dGixLQAYCmwmbvNEzQn+j6KRRaUUTEJwWxVJeR8agxVBhnS
-         dVbfe993pSvGL8axGrZTLwphROUuFWh/dULncYfyOZRy0xo/WE6tvlqIMpA0iG042yZ8
-         7K6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699010220; x=1699615020;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=oWqvGHOpDjXeJF4gaG5FvSChunLowe+31JAI0Z5rk34=;
-        b=g2oPNO2a3E27RG5kr18tbybREzA9WAnCU4BTl3ExuCHQSK4iFlTccuCGLJfswSuLlg
-         7rac4swx/QnsfoYLeZr6qQY5EKFxd5IFl6uraM2XWZKq2OXjS3LEAHEydopaWT4V3S9O
-         iCsrTpfYxdrhW20UTBrcIkdgc00eMQs9+Rv1Hr7B3HTk9sUlfpZmlWph5n7hz+paE+IN
-         FToCm07WRiU8+HrGdge9m0n91TsPTgBE9qbvX8leQbUOzUMajBU+KStkKYJdZMxLAdBs
-         FR0vX0Zf85svbjLx/+BUr6TCXmDBWCGBDM3Gkp8cQscYHy5h8fjG7ApyZC92vJU8xM7Q
-         gIMw==
-X-Gm-Message-State: AOJu0YyC5tHBEHKllkJN/Vlb3a0lHqn8+GtQqGo2TC8BoiEUql339RZ2
-        x60kjzXPsL3VE1Yx5n5EYDx4ySawMkyPky/GrQeDXw==
-X-Google-Smtp-Source: AGHT+IFLVZi6pW8xuPrCXex8Mha8wM8l8BM1AAWvvxpzrUbGuBa0q1spsqLLCOnrl8AxOXZ62UTRQpiJM5P5rka57OE=
-X-Received: by 2002:a81:4f04:0:b0:5a7:e5b8:997a with SMTP id
- d4-20020a814f04000000b005a7e5b8997amr2573913ywb.10.1699010220701; Fri, 03 Nov
- 2023 04:17:00 -0700 (PDT)
+        Fri, 3 Nov 2023 07:18:43 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A6CB1A8;
+        Fri,  3 Nov 2023 04:18:36 -0700 (PDT)
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A39tve4008925;
+        Fri, 3 Nov 2023 11:17:58 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=gUn+QmFcufcRA3kXSasIqyQsdDgA+H0KX3jGhhzdXc8=;
+ b=a8C/eFpHqd64x4uS0HhydQjBWyiUrPTDhkRHa5KfHZElho6JlSCvfC4FjX1OZSjYzOOk
+ ufw/VFfVLwjMAW+pZFr/GsFb5yjOpmfCJEpUEpkJGA0wMul9GAv3wZU/B96OzSWey6YS
+ r2XCUv/LzefuCvPpp6J4LNu1sxYS749v6A5/CalNK8qWvw3CJuHHNt0vLsOldBUwMmZC
+ hSANqKSFX1/t494qsT8NiNuwNZumhYbHKojP7M7Q/kzI1+kzoSe8HBkjyDONRNIlDNyj
+ LUZCokX+25/hVEowXPcNUaHs+lYIW/Gk9I5mAsmRIWeJvo59t5IbZfAZwaB2tRXAOI3T /Q== 
+Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u4sddgsc0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 03 Nov 2023 11:17:58 +0000
+Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
+        by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3A3BHvNR014058
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 3 Nov 2023 11:17:57 GMT
+Received: from [10.214.66.81] (10.80.80.8) by nasanex01c.na.qualcomm.com
+ (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Fri, 3 Nov
+ 2023 04:17:54 -0700
+Message-ID: <c5eb223b-b7b1-c85f-a0d5-ab3cc3e86efa@quicinc.com>
+Date:   Fri, 3 Nov 2023 16:47:51 +0530
 MIME-Version: 1.0
-References: <20231103004220.1666641-1-asmadeus@codewreck.org>
-In-Reply-To: <20231103004220.1666641-1-asmadeus@codewreck.org>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Fri, 3 Nov 2023 12:16:25 +0100
-Message-ID: <CAPDyKFrPaScaQE340g8cD_xR+KoX=JuSc9xtCW=B+HZKYjf1aQ@mail.gmail.com>
-Subject: Re: [PATCH] Revert "mmc: core: Capture correct oemid-bits for eMMC cards"
-To:     Dominique Martinet <asmadeus@codewreck.org>
-Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Dominique Martinet <dominique.martinet@atmark-techno.com>,
-        stable@vger.kernel.org, Avri Altman <avri.altman@wdc.com>,
-        Alex Fetters <Alex.Fetters@garmin.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] soc: qcom: llcc: Fix dis_cap_alloc and retain_on_pc
+ configuration
+Content-Language: en-US
+To:     Atul Dhudase <quic_adhudase@quicinc.com>, <agross@kernel.org>,
+        <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
+        <swboyd@chromium.org>, <isaacm@codeaurora.org>,
+        <dianders@chromium.org>
+CC:     <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20231103105712.1159213-1-quic_adhudase@quicinc.com>
+From:   Mukesh Ojha <quic_mojha@quicinc.com>
+In-Reply-To: <20231103105712.1159213-1-quic_adhudase@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01c.na.qualcomm.com (10.45.79.139)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: RLfGNlVWJkg_jtahr_DjE4X6ib-M53pa
+X-Proofpoint-GUID: RLfGNlVWJkg_jtahr_DjE4X6ib-M53pa
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-03_11,2023-11-02_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 malwarescore=0
+ bulkscore=0 lowpriorityscore=0 adultscore=0 impostorscore=0
+ priorityscore=1501 mlxscore=0 spamscore=0 clxscore=1011 phishscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2310240000 definitions=main-2311030094
+X-Spam-Status: No, score=-6.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 3 Nov 2023 at 01:42, Dominique Martinet <asmadeus@codewreck.org> wrote:
->
-> From: Dominique Martinet <dominique.martinet@atmark-techno.com>
->
-> This reverts commit 84ee19bffc9306128cd0f1c650e89767079efeff.
->
-> The commit above made quirks with an OEMID fail to be applied, as they
-> were checking card->cid.oemid for the full 16 bits defined in MMC_FIXUP
-> macros but the field would only contain the bottom 8 bits.
->
-> eMMC v5.1A might have bogus values in OEMID's higher bits so another fix
-> will be made, but it has been decided to revert this until that is ready.
->
-> Fixes: 84ee19bffc93 ("mmc: core: Capture correct oemid-bits for eMMC cards")
-> Link: https://lkml.kernel.org/r/ZToJsSLHr8RnuTHz@codewreck.org
-> Link: https://lkml.kernel.org/r/CAPDyKFqkKibcXnwjnhc3+W1iJBHLeqQ9BpcZrSwhW2u9K2oUtg@mail.gmail.com
-> Signed-off-by: Dominique Martinet <dominique.martinet@atmark-techno.com>
-> Cc: stable@vger.kernel.org
-> Cc: Avri Altman <avri.altman@wdc.com>
-> Cc: Ulf Hansson <ulf.hansson@linaro.org>
-> Cc: Alex Fetters <Alex.Fetters@garmin.com>
-
-Applied for fixes, thanks!
-
-Kind regards
-Uffe
 
 
+On 11/3/2023 4:27 PM, Atul Dhudase wrote:
+> While programming dis_cap_alloc and retain_on_pc, set a bit
+> corresponding to a specific SCID without disturbing the
+> previously configured bits.
+> 
+> Fixes: c14e64b46944 ("soc: qcom: llcc: Support chipsets that can write to llcc")
+> Signed-off-by: Atul Dhudase <quic_adhudase@quicinc.com>
 > ---
-> Here's the revert as discussed in "mmc: truncate quirks' oemid to 8
-> bits"' patch thread.
-> Feel free to ignore if you already have something, I just checked your
-> -next branch quickly and might have missed it.
->
->  drivers/mmc/core/mmc.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/mmc/core/mmc.c b/drivers/mmc/core/mmc.c
-> index 4a4bab9aa726..89cd48fcec79 100644
-> --- a/drivers/mmc/core/mmc.c
-> +++ b/drivers/mmc/core/mmc.c
-> @@ -104,7 +104,7 @@ static int mmc_decode_cid(struct mmc_card *card)
->         case 3: /* MMC v3.1 - v3.3 */
->         case 4: /* MMC v4 */
->                 card->cid.manfid        = UNSTUFF_BITS(resp, 120, 8);
-> -               card->cid.oemid         = UNSTUFF_BITS(resp, 104, 8);
-> +               card->cid.oemid         = UNSTUFF_BITS(resp, 104, 16);
->                 card->cid.prod_name[0]  = UNSTUFF_BITS(resp, 96, 8);
->                 card->cid.prod_name[1]  = UNSTUFF_BITS(resp, 88, 8);
->                 card->cid.prod_name[2]  = UNSTUFF_BITS(resp, 80, 8);
+>   drivers/soc/qcom/llcc-qcom.c | 8 ++++----
+>   1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/soc/qcom/llcc-qcom.c b/drivers/soc/qcom/llcc-qcom.c
+> index 674abd0d6700..509d972c1bd9 100644
+> --- a/drivers/soc/qcom/llcc-qcom.c
+> +++ b/drivers/soc/qcom/llcc-qcom.c
+> @@ -941,15 +941,15 @@ static int _qcom_llcc_cfg_program(const struct llcc_slice_config *config,
+>   		u32 disable_cap_alloc, retain_pc;
+> 
+>   		disable_cap_alloc = config->dis_cap_alloc << config->slice_id;
+> -		ret = regmap_write(drv_data->bcast_regmap,
+> -				LLCC_TRP_SCID_DIS_CAP_ALLOC, disable_cap_alloc);
+> +		ret = regmap_update_bits(drv_data->bcast_regmap, LLCC_TRP_SCID_DIS_CAP_ALLOC,
+> +				BIT(config->slice_id), disable_cap_alloc);
+>   		if (ret)
+>   			return ret;
+> 
+>   		if (drv_data->version < LLCC_VERSION_4_1_0_0) {
+>   			retain_pc = config->retain_on_pc << config->slice_id;
+> -			ret = regmap_write(drv_data->bcast_regmap,
+> -					LLCC_TRP_PCB_ACT, retain_pc);
+> +			ret = regmap_update_bits(drv_data->bcast_regmap, LLCC_TRP_PCB_ACT,
+> +					BIT(config->slice_id), retain_pc);
+
+Good catch, LGTM
+
+  Thanks
+-Mukesh
+
+>   			if (ret)
+>   				return ret;
+>   		}
 > --
-> 2.41.0
->
+> 2.25.1
+> 
