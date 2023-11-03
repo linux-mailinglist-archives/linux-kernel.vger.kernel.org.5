@@ -2,163 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C8227E05E8
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 16:58:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A6FB7E05EC
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 16:59:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344008AbjKCP6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 11:58:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49660 "EHLO
+        id S1344181AbjKCP66 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 11:58:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344730AbjKCP6L (ORCPT
+        with ESMTP id S234328AbjKCP64 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 11:58:11 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D15C2D52
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 08:58:03 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 8671B1F45F;
-        Fri,  3 Nov 2023 15:58:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1699027082; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=vFnigUx+7qpYC+4Dey3mI9qEiFvu9YLcz7iE7OLqZ90=;
-        b=VofaeDom1pVNONfjHJKV2C4nen1wdPd5tNWU8B4lP67L1CAT0gxyWpPAAqwpd7CGiMJBKV
-        ylf/2V97EZvUCkrWSnB+JZhHcmX4P1VSBrayb4HOI5DlE4HVxEX903Il9KNb2Tej0V3Bbu
-        OfmrRuOaTAzOTl3ltYyIB7wO7JxcoDo=
-Received: from suse.cz (pmladek.udp.ovpn2.prg.suse.de [10.100.201.202])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id CD51A2C38D;
-        Fri,  3 Nov 2023 15:58:01 +0000 (UTC)
-Date:   Fri, 3 Nov 2023 16:58:01 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org, Mukesh Ojha <quic_mojha@quicinc.com>,
-        Chunlei Wang <chunlei.wang@mediatek.com>
-Subject: Re: [RFC PATCH printk v1] printk: ringbuffer: Do not skip
- non-finalized with prb_next_seq()
-Message-ID: <ZUUYiYpCecPoI8mv@alley>
-References: <ZTkxOJbDLPy12n41@alley>
- <87zfzwp8pk.fsf@jogness.linutronix.de>
- <ZUToEzarc_F-bEXT@alley>
- <8734xnj74k.fsf@jogness.linutronix.de>
+        Fri, 3 Nov 2023 11:58:56 -0400
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.155.65.254])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FE78194;
+        Fri,  3 Nov 2023 08:58:51 -0700 (PDT)
+X-QQ-mid: bizesmtp83t1699027115tqmp7mar
+Received: from main2-ubuntu.tail147f4.ts.net ( [202.201.15.117])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Fri, 03 Nov 2023 23:58:32 +0800 (CST)
+X-QQ-SSF: 01200000000000B06000000A0000000
+X-QQ-FEAT: 3M0okmaRx3gtg4dkowId3SRZK6iJt7bmG/bknUDKf+3ULUZKiHp/tkQ2jHTjZ
+        qCAJtCYV+PBISnAzK2lTT9gQ93lFd4WLGlpACg09bFke2VMU51xGkofztcVkF64kLeB/I40
+        gt7AiMXFEF2xrMMx0HrXUSXv2jHoH+pff3Xms4oos9d5sxvTKIeoM4HgumgCEXWN1DXMZGG
+        mOnRKFHyB0tdauEDaWiRCJ4WkEsUYt3jBksdkZqXTIOM4Sg1erJZuCIGNrgNzHJvUOE0TQI
+        qfM8VoqG8AKNC9mj7MLM6aOKtJ7PJZrzG9XhTTXhE/GAatyk3aTKEWjcCrmwWhXqp/YBb1k
+        Fal2Ut2duOE5o37lshvTGlRfYJ/VnEvHOdQu3tDN7OWkjvzEFMMskq1oA1G7g==
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 4824966276626844455
+From:   Yuan Tan <tanyuan@tinylab.org>
+To:     falcon@tinylab.org, arnd@arndb.de, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-riscv@lists.infradead.org,
+        luc.vanoostenryck@gmail.com, linux-sparse@vger.kernel.org
+Cc:     linux@weissschuh.net, palmer@rivosinc.com,
+        paul.walmsley@sifive.com, paulburton@kernel.org,
+        paulmck@kernel.org, tim.bird@sony.com, tsbogend@alpha.franken.de,
+        w@1wt.eu, tanyuan@tinylab.org, i@maskray.me
+Subject: [PATCH v1 01/14] DCE/DSE: allow keep unique bounded sections
+Date:   Fri,  3 Nov 2023 23:58:30 +0800
+Message-Id: <c1af88e9c5e5956f22de6b9e7e69186dfad68767.1699025537.git.tanyuan@tinylab.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <cover.1699025537.git.tanyuan@tinylab.org>
+References: <cover.1699025537.git.tanyuan@tinylab.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8734xnj74k.fsf@jogness.linutronix.de>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 2023-11-03 14:37:23, John Ogness wrote:
-> On 2023-11-03, Petr Mladek <pmladek@suse.com> wrote:
-> >> Generally we have not concerned ourselves with readers. But I agree we
-> >> should make the optimization coherent with what a reader can actually
-> >> read. It might save some CPU cycles for polling tasks.
-> >
-> > I wanted to agree. But then I found this scenario:
-> >
-> > CPU0				CPU1
-> >
-> > console_unlock()
-> >   console_flush_all()
-> >
-> > 				printk()
-> > 				  vprintk_store()
-> >     return;
-> > 				    prb_final_commit;
-> >
-> > 				  console_trylock();  # failed
+From: Zhangjin Wu <falcon@tinylab.org>
 
-      __console_unlock();
+The bounded sections may break the elimination of some dead code.
 
-    while (prb_read_valid() || console_trylock();
+Some unused syscalls have been wrongly kept by `__ex_table`, we will
+unique `__ex_table` for every inserting and then remove the unused ones
+explicitly and eventually, the unused syscalls will be eliminated.
 
-I added the __console_unlock() and console_trylock()
-to have the full picture.
+In the future, we should find better methods to solve such issue:
 
-> >
-> > Now, the race:
-> >
-> >   + console_flush_all() did not flush the message from CPU1 because
-> >     it was not finalized in time.
-> >
-> >   + CPU1 failed to get console_lock() => CPU0 is responsible for
-> >     flushing
-> >
-> >   + prb_read_valid() failed on CPU0 because it did not see
-> >     the prb_desc finalized (missing barrier).
-> 
-> For semaphores, up() and down_trylock() successfully take and release a
-> raw spin lock. That provides the necessary barriers so that CPU0 sees
-> the record that CPU1 finalized.
+  Some code may use '.pushsection/.popsection' to insert data
+  to a bounded section, use `sys_sendfile` as an example:
 
-I see. Hmm, we should document this. The spinlock is an implementaion
-detail.
+      sys_sendfile:
 
-IMHO, up()/down()/down_trylock() are quite special. I think
-that the theory is that lock() and unlock() are one-way barriers.
-And trylock() is one-way barrier only when it succeds.
+        ".pushsection __ex_table,\"\"\n"
+        ...
+	".long		((" insn ") - .)\n"
+        ...
+        ".popsection"
 
-By other words, _trylock() on CPU1 normally would not guarantee
-that CPU0 would see the finalized record after unlock(). [*]
+  `insn` is an address in `sys_sendfile`, even if no real user uses
+  sys_sendfile, the keeping of __ex_table will become a 'user' and
+  break the elimination of `sys_sendfile`.
 
+All of the bounded sections should be uniqued, and we should check if
+they are the last users of the code, if so, those sections should be
+removed and the code should be eliminated.
 
-Maybe, we could rely on the existing behavior but we should at least
-document it.
+Signed-off-by: Zhangjin Wu <falcon@tinylab.org>
+---
+ include/asm-generic/vmlinux.lds.h | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-Note that I thouht many times about using spin_trylock() in
-down_trylock(). It would make more sense because trylock()
-should not be be blocking operations. But I see now,
-that it might break users depending on the full barrier.
+diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
+index 9c59409104f6..ea8170e11ab1 100644
+--- a/include/asm-generic/vmlinux.lds.h
++++ b/include/asm-generic/vmlinux.lds.h
+@@ -103,6 +103,7 @@
+ #define RODATA_MAIN .rodata .rodata.[0-9a-zA-Z_]* .rodata..L*
+ #define BSS_MAIN .bss .bss.[0-9a-zA-Z_]* .bss..compoundliteral*
+ #define SBSS_MAIN .sbss .sbss.[0-9a-zA-Z_]*
++#define BSEC_MAIN(sec) sec sec##.[0-9a-zA-Z_]*
+ #else
+ #define TEXT_MAIN .text
+ #define DATA_MAIN .data
+@@ -110,6 +111,7 @@
+ #define RODATA_MAIN .rodata
+ #define BSS_MAIN .bss
+ #define SBSS_MAIN .sbss
++#define BSEC_MAIN(sec) sec
+ #endif
+ 
+ /*
+@@ -201,12 +203,12 @@
+ 
+ #define BOUNDED_SECTION_PRE_LABEL(_sec_, _label_, _BEGIN_, _END_)	\
+ 	_BEGIN_##_label_ = .;						\
+-	KEEP(*(_sec_))							\
++	KEEP(*(BSEC_MAIN(_sec_)))					\
+ 	_END_##_label_ = .;
+ 
+ #define BOUNDED_SECTION_POST_LABEL(_sec_, _label_, _BEGIN_, _END_)	\
+ 	_label_##_BEGIN_ = .;						\
+-	KEEP(*(_sec_))							\
++	KEEP(*(BSEC_MAIN(_sec_)))					\
+ 	_label_##_END_ = .;
+ 
+ #define BOUNDED_SECTION_BY(_sec_, _label_)				\
+-- 
+2.34.1
 
-
-Note: It is possible that I get it wrong. It is so easy to get lost
-      in barriers.
-
-
-> >> Writing and reading of @last_finalized_seq will provide the necessary
-> >> boundaries to guarantee this:
-> >> 
-> >> ...finalize record...
-> >> atomic_long_try_cmpxchg_release(&desc_ring->last_finalized_seq, ...);
-> >> 
-> >> and
-> >> 
-> >> atomic_long_read_acquire(&desc_ring->last_finalized_seq);
-> >> ...read record...
-> >
-> > Yup. something like this.
-> >
-> > Well, it is suspicious that there is no _release() counter part.
-> 
-> Take a closer look above. The cmpxchg (on the writer side) does the
-> release. I have the litmus tests to verify that is correct and
-> sufficient for what we want: to guarantee that for any read
-> @last_finalized_seq value, the CPU can also read the associated record.
-
-The barrier is only in _prb_commit() which sets the committed state.
-
-desc_make_final() uses cmpxchg_relaxed() so that it is not guaranteed
-that other CPUs would see the "finalized" state.
-
-> I am finalizing a new version of the "fix console flushing on panic"
-> series [0] that will also include the prb_next_seq() fix. If needed, we
-> can continue this discussion based on the new code.
-
-OK, maybe it would look different in the new version. And it might
-be better to continue the discussion on the new code.
-
-Best Regards,
-Petr
 
