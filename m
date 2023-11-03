@@ -2,82 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 36E317E0AF2
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 23:07:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4733C7E0AFC
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 23:16:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233981AbjKCWHL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 18:07:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33908 "EHLO
+        id S230360AbjKCWQA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 18:16:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230392AbjKCWHJ (ORCPT
+        with ESMTP id S230326AbjKCWP6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 18:07:09 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B26B3CF
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 15:07:06 -0700 (PDT)
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A3Igq87000619;
-        Fri, 3 Nov 2023 22:06:52 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=0gCDYWyMupjCSYdZi6Z0Pu/Ss7lkOQ3z5t61ayKmQQM=;
- b=SZ235DvO6m/uhUBZmDhXfDVSDmKk6e0bgzUxRIhpLpG2qgnFWRhIpdG5ms6xFjIDUCmf
- +AXhQSpWUrCdAHD+17CI8sUhDCeptI4kw2tUhGph1JpawFhBvb41jfjaWPQRowQUuXrB
- VJl7UDIsuP+ZmOrULLYWYrGs3TSSah8ZSJuDsXrdrITiFMdRNj3EfHHzjF5D/guhrozT
- dFEBKYWfuzDQb8EEDC6KrjWzRR0NlREhyiXX2XsrWN9G26dE+gNNk06HS3oRJGcSbrq9
- 4OP8vqE1MSM1XCoS516HA3hWShCOM4zyhpL1Xd/drr0V2FSGAg2zNHuDPAXeKU3swUyf dg== 
-Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u4sfta3nf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 03 Nov 2023 22:06:52 +0000
-Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
-        by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3A3M6p6Q020439
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 3 Nov 2023 22:06:51 GMT
-Received: from [10.216.13.74] (10.80.80.8) by nasanex01c.na.qualcomm.com
- (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Fri, 3 Nov
- 2023 15:06:45 -0700
-Message-ID: <981deaf3-c7e2-4bbc-86b8-2151bf0b6e00@quicinc.com>
-Date:   Sat, 4 Nov 2023 03:36:42 +0530
+        Fri, 3 Nov 2023 18:15:58 -0400
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DA71D68
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 15:15:55 -0700 (PDT)
+Received: by mail-yb1-xb35.google.com with SMTP id 3f1490d57ef6-d8a000f6a51so2608730276.3
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Nov 2023 15:15:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore.com; s=google; t=1699049754; x=1699654554; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ccOCsVenhg7pWMdO3laccrRAXnIeEc+431O9cttQg7I=;
+        b=OSnCDqWeIzqFkJFw0JIMR4iLA9VyIF68FFXdAw+eGAIls0bJjIfQUjFgl7Mu5OND0n
+         ze9cemaWQR9ZxDT/Fl+OdqLmAu5G9O5j84Om6Lw5LN0ZMofsh/nMhQIiHfthEsT6ibYz
+         DIURQuH4QCQvWsZV7xlUsJZuuPGMiGvFhj8/ij0GLSTfAhQPMb7RVsp+TjHhfVsxyQOO
+         tssqLGNYXQuAWaAM+llRNLXnhL3bJhrG6LHgL38yjLzDR8h9/MJP5SNXyqBn+UtMTmz/
+         wui6bugClKmc7ovx0bOofRHLio3pU0bCip+7ODGAJQfvbhIkPXNnI2ZjPrznR12mCV/W
+         ZJ5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699049754; x=1699654554;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ccOCsVenhg7pWMdO3laccrRAXnIeEc+431O9cttQg7I=;
+        b=PoOKv/VRCONbVX6LA1g1IEPjMj0ui/yFjuPm3vGC12MhPra6XgA0a2mnGtVE5G3J/i
+         JbysCLdn/dsdo2uNGLZzoNaK5L4wYB2oRA+SJbiUE4k6gWG0USQ//YBhLFqsDavPj5MZ
+         c0yhR1Eqq7tvrWYpgcYQKvL8pCHQFpE2KrEY3oOz5kW2GtU19rMV0dj7FyqA3gblBrtc
+         L2jvCO25h0U08AhvK7X+zu1pzHzHmCul7yI6O2snr2xnCmbNm6TUm67WpzLijwKll82d
+         990qBBwGT77L8B2EcxYK0gIuQigUmNtIjBDGgGsWcLz44ws18zCKpxDEAayl1oCGpGiy
+         eZeA==
+X-Gm-Message-State: AOJu0Ywiay3vUecN3NxZy2FWwRmesKaX6UZhm7en4YOGiExrFRov6MvL
+        K5D8P8xG1U2hsmT+G2sSVHTRMfFo2Lh2M5JlXFPI
+X-Google-Smtp-Source: AGHT+IFXMOMQ73ZCAvSg6LD6VZpXmYTcSO6q5zw8IRAbMI+vp7J9LIJ0t0H+f7n6Vr/G+r+30PRzXEL4q0W7UTYfaRI=
+X-Received: by 2002:a25:7652:0:b0:d9c:c79:ca1c with SMTP id
+ r79-20020a257652000000b00d9c0c79ca1cmr23470882ybc.55.1699049754011; Fri, 03
+ Nov 2023 15:15:54 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/3] iommu/arm-smmu: re-enable context caching in smmu
- reset operation
-Content-Language: en-US
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-CC:     <will@kernel.org>, <robin.murphy@arm.com>, <joro@8bytes.org>,
-        <a39.skl@gmail.com>, <konrad.dybcio@linaro.org>,
-        <quic_saipraka@quicinc.com>, <quic_pkondeti@quicinc.com>,
-        <quic_molvera@quicinc.com>, <linux-arm-kernel@lists.infradead.org>,
-        <iommu@lists.linux.dev>, <linux-kernel@vger.kernel.org>,
-        <qipl.kernel.upstream@quicinc.com>
-References: <20231103215124.1095-1-quic_bibekkum@quicinc.com>
- <20231103215124.1095-4-quic_bibekkum@quicinc.com>
- <CAA8EJpob0DoXd_UTEiJf8z3JncaWk_1rgit6c4dqQ0gB6JDFxQ@mail.gmail.com>
-From:   Bibek Kumar Patro <quic_bibekkum@quicinc.com>
-In-Reply-To: <CAA8EJpob0DoXd_UTEiJf8z3JncaWk_1rgit6c4dqQ0gB6JDFxQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01c.na.qualcomm.com (10.45.79.139)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: W6tAzUGGkiD9vKqC9-s4dkoZMbCMREBP
-X-Proofpoint-ORIG-GUID: W6tAzUGGkiD9vKqC9-s4dkoZMbCMREBP
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-03_21,2023-11-02_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
- priorityscore=1501 adultscore=0 spamscore=0 mlxscore=0 malwarescore=0
- mlxlogscore=999 suspectscore=0 impostorscore=0 lowpriorityscore=0
- phishscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2310240000 definitions=main-2311030187
+References: <1696457386-3010-6-git-send-email-wufan@linux.microsoft.com>
+ <c53599e9d278fc55be30e3bac9411328.paul@paul-moore.com> <616a6fd7-47b1-4b46-af23-46f9b1a3eedf@linux.microsoft.com>
+ <CAHC9VhScdtqJeUTTUQVk4D70tTLz4TgU_aRTMRnHa0OARyubaw@mail.gmail.com> <c40cd6a6-5c32-4e72-8831-f87ee0a09324@linux.microsoft.com>
+In-Reply-To: <c40cd6a6-5c32-4e72-8831-f87ee0a09324@linux.microsoft.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Fri, 3 Nov 2023 18:15:42 -0400
+Message-ID: <CAHC9VhR9scT7V7dvN5zhAYdExORB9arWaR7Gbix1AUtAMDPHcg@mail.gmail.com>
+Subject: Re: [PATCH RFC v11 5/19] ipe: introduce 'boot_verified' as a trust provider
+To:     Fan Wu <wufan@linux.microsoft.com>
+Cc:     corbet@lwn.net, zohar@linux.ibm.com, jmorris@namei.org,
+        serge@hallyn.com, tytso@mit.edu, ebiggers@kernel.org,
+        axboe@kernel.dk, agk@redhat.com, snitzer@kernel.org,
+        eparis@redhat.com, linux-doc@vger.kernel.org,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org, linux-block@vger.kernel.org,
+        dm-devel@redhat.com, audit@vger.kernel.org,
+        roberto.sassu@huawei.com, linux-kernel@vger.kernel.org,
+        Deven Bowers <deven.desai@linux.microsoft.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -85,94 +79,123 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Nov 2, 2023 at 6:46=E2=80=AFPM Fan Wu <wufan@linux.microsoft.com> w=
+rote:
+> On 10/26/2023 3:12 PM, Paul Moore wrote:
+> > On Thu, Oct 26, 2023 at 5:33=E2=80=AFPM Fan Wu <wufan@linux.microsoft.c=
+om> wrote:
+> >> On 10/23/2023 8:52 PM, Paul Moore wrote:
+> >>> On Oct  4, 2023 Fan Wu <wufan@linux.microsoft.com> wrote:
+> >>>>
+> >>>> IPE is designed to provide system level trust guarantees, this usual=
+ly
+> >>>> implies that trust starts from bootup with a hardware root of trust,
+> >>>> which validates the bootloader. After this, the bootloader verifies =
+the
+> >>>> kernel and the initramfs.
+> >>>>
+> >>>> As there's no currently supported integrity method for initramfs, an=
+d
+> >>>> it's typically already verified by the bootloader, introduce a prope=
+rty
+> >>>> that causes the first superblock to have an execution to be "pinned"=
+,
+> >>>> which is typically initramfs.
+> >>>>
+> >>>> When the "pinned" device is unmounted, it will be "unpinned" and
+> >>>> `boot_verified` property will always evaluate to false afterward.
+> >>>>
+> >>>> We use a pointer with a spin_lock to "pin" the device instead of rcu
+> >>>> because rcu synchronization may sleep, which is not allowed when
+> >>>> unmounting a device.
+> >>>>
+> >>>> Signed-off-by: Deven Bowers <deven.desai@linux.microsoft.com>
+> >>>> Signed-off-by: Fan Wu <wufan@linux.microsoft.com>
+> >> ...
+> >>>> ---
+> >>>>    security/ipe/eval.c          | 72 +++++++++++++++++++++++++++++++=
+++++-
+> >>>>    security/ipe/eval.h          |  2 +
+> >>>>    security/ipe/hooks.c         | 12 ++++++
+> >>>>    security/ipe/hooks.h         |  2 +
+> >>>>    security/ipe/ipe.c           |  1 +
+> >>>>    security/ipe/policy.h        |  2 +
+> >>>>    security/ipe/policy_parser.c | 35 +++++++++++++++++-
+> >>>>    7 files changed, 124 insertions(+), 2 deletions(-)
 
+...
 
-On 11/4/2023 3:28 AM, Dmitry Baryshkov wrote:
-> On Fri, 3 Nov 2023 at 23:53, Bibek Kumar Patro
-> <quic_bibekkum@quicinc.com> wrote:
->>
->> Context caching is re-enabled in the prefetch buffer for Qualcomm SoCs
->> through SoC specific reset ops, which is disabled in the default MMU-500
->> reset ops, but is expected for context banks using ACTLR register to
->> retain the prefetch value during reset and runtime suspend.
->>
->> Signed-off-by: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
->> ---
->>   drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 26 ++++++++++++++++++----
->>   1 file changed, 22 insertions(+), 4 deletions(-)
->>
->> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
->> index 590b7c285299..f342b4778cf1 100644
->> --- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
->> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
->> @@ -457,11 +457,29 @@ static int qcom_smmu_def_domain_type(struct device *dev)
->>          return match ? IOMMU_DOMAIN_IDENTITY : 0;
->>   }
->>
->> +#define ARM_MMU500_ACTLR_CPRE          BIT(1)
->> +
->> +static int qcom_smmu500_reset(struct arm_smmu_device *smmu)
->> +{
->> +       int i;
->> +       u32 reg;
->> +
->> +       arm_mmu500_reset(smmu);
->> +
->> +               for (i = 0; i < smmu->num_context_banks; ++i) {
->> +                       reg = arm_smmu_cb_read(smmu, i, ARM_SMMU_CB_ACTLR);
->> +                       reg |= ARM_MMU500_ACTLR_CPRE;
->> +                       arm_smmu_cb_write(smmu, i, ARM_SMMU_CB_ACTLR, reg);
->> +               }
-> 
-> Wrong indentation. Did you run your patches through checkpatch.pl?
-> 
+> >>>> +/**
+> >>>> + * from_pinned - Determine whether @sb is the pinned super_block.
+> >>>> + * @sb: Supplies a super_block to check against the pinned super_bl=
+ock.
+> >>>> + *
+> >>>> + * Return:
+> >>>> + * * true   - @sb is the pinned super_block
+> >>>> + * * false  - @sb is not the pinned super_block
+> >>>> + */
+> >>>> +static bool from_pinned(const struct super_block *sb)
+> >>>> +{
+> >>>> +    bool rv;
+> >>>> +
+> >>>> +    if (!sb)
+> >>>> +            return false;
+> >>>> +    spin_lock(&pin_lock);
+> >>>> +    rv =3D !IS_ERR_OR_NULL(pinned_sb) && pinned_sb =3D=3D sb;
+> >>>> +    spin_unlock(&pin_lock);
+> >>>
+> >>> It's okay for an initial version, but I still think you need to get
+> >>> away from this spinlock in from_pinned() as quickly as possible.
+> >>> Maybe I'm wrong, but this looks like a major source of lock contentio=
+n.
+> >>>
+> >>> I understand the issue around RCU and the potential for matching on
+> >>> a reused buffer/address, but if you modified IPE to have its own LSM
+> >>> security blob in super_block::security you could mark the superblock
+> >>> when it was mounted and do a lockless lookup here in from_pinned().
+> >>
+> >> Thank you for the suggestion. After some testing, I discovered that
+> >> switching to RCU to pin the super block and using a security blob to
+> >> mark a pinned super block works. This approach do avoid many spinlock
+> >> operations. I'll incorporate these changes in the next version of the =
+patch.
+> >
+> > I probably wasn't as clear as I should have been, I was thinking of
+> > doing away with the @pinned_sb global variable entirely, as well as
+> > its associated lock problems and simply marking the initramfs/initrd
+> > superblock when it was mounted.  I will admit that I haven't fully
+> > thought about all the implementation details, but I think you could
+> > leverage the security_sb_mount() hook to set a flag in IPE's
+> > superblock metadata when the initramfs was mounted.
+>
+> I wasn't able to find a way to let LSM pin initramfs/initrd during mount
+> time ...
 
-Yes Dmitry, I did run checkpatch.pl script on this patch as well as 
-others, got 0 errors and 0 warnings. With -f option as well. Did not
-get any related errors and warnings.
+I haven't had to look at the kernel init code in a while, and I don't
+recall ever looking at the initramfs code, but I spent some time
+digging through the code and I wonder if it would be possible to mark
+the initramfs superblock in wait_for_initramfs() via a new LSM hook
+using @current->fs->root.mnt->mnt_sb?  Although I'm not completely
+sure that it's populated.  Have you already looked at an approach like
+this?
 
->> +
->> +       return 0;
->> +}
->> +
->>   static int qcom_sdm845_smmu500_reset(struct arm_smmu_device *smmu)
->>   {
->>          int ret;
->>
->> -       arm_mmu500_reset(smmu);
->> +       qcom_smmu500_reset(smmu);
->>
->>          /*
->>           * To address performance degradation in non-real time clients,
->> @@ -488,7 +506,7 @@ static const struct arm_smmu_impl qcom_smmu_500_impl = {
->>          .init_context = qcom_smmu_init_context,
->>          .cfg_probe = qcom_smmu_cfg_probe,
->>          .def_domain_type = qcom_smmu_def_domain_type,
->> -       .reset = arm_mmu500_reset,
->> +       .reset = qcom_smmu500_reset,
->>          .write_s2cr = qcom_smmu_write_s2cr,
->>          .tlb_sync = qcom_smmu_tlb_sync,
->>   };
->> @@ -507,7 +525,7 @@ static const struct arm_smmu_impl sm8550_smmu_500_impl = {
->>          .init_context = qcom_smmu_init_context,
->>          .cfg_probe = qcom_smmu_cfg_probe,
->>          .def_domain_type = qcom_smmu_def_domain_type,
->> -       .reset = arm_mmu500_reset,
->> +       .reset = qcom_smmu500_reset,
->>          .write_s2cr = qcom_smmu_write_s2cr,
->>          .tlb_sync = qcom_smmu_tlb_sync,
->>   };
->> @@ -523,7 +541,7 @@ static const struct arm_smmu_impl qcom_adreno_smmu_v2_impl = {
->>   static const struct arm_smmu_impl qcom_adreno_smmu_500_impl = {
->>          .init_context = qcom_adreno_smmu_init_context,
->>          .def_domain_type = qcom_smmu_def_domain_type,
->> -       .reset = arm_mmu500_reset,
->> +       .reset = qcom_smmu500_reset,
->>          .alloc_context_bank = qcom_adreno_smmu_alloc_context_bank,
->>          .write_sctlr = qcom_adreno_smmu_write_sctlr,
->>          .tlb_sync = qcom_smmu_tlb_sync,
->> --
->> 2.17.1
->>
-> 
-> 
+> But I think we could replace the global variable with a flag
+> variable ipe_sb_state so we could use atomic operation to only mark one
+> drive as pinned without any lock. The code will be like:
+>
+> static void pin_sb(const struct super_block *sb)
+> {
+>         if (!sb)
+>                 return;
+>
+>         if (!test_and_set_bit_lock(IPE_SB_PINNED, &ipe_sb_state)) {
+>                 ipe_sb(sb)->pinned =3D true;
+>         }
+> }
+>
+> Would this sound better?
+>
+> -Fan
+
+--=20
+paul-moore.com
