@@ -2,56 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DFD237E0AE7
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 23:01:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4841A7E0AEB
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 23:04:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233064AbjKCWB2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 18:01:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41184 "EHLO
+        id S231908AbjKCWEN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 18:04:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232776AbjKCWBZ (ORCPT
+        with ESMTP id S230076AbjKCWEL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 18:01:25 -0400
-Received: from mail-yw1-x1133.google.com (mail-yw1-x1133.google.com [IPv6:2607:f8b0:4864:20::1133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC252D63
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 15:01:21 -0700 (PDT)
-Received: by mail-yw1-x1133.google.com with SMTP id 00721157ae682-5a8ee23f043so30190427b3.3
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Nov 2023 15:01:21 -0700 (PDT)
+        Fri, 3 Nov 2023 18:04:11 -0400
+Received: from mail-yw1-x1132.google.com (mail-yw1-x1132.google.com [IPv6:2607:f8b0:4864:20::1132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DCC0D55
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 15:04:09 -0700 (PDT)
+Received: by mail-yw1-x1132.google.com with SMTP id 00721157ae682-5af5b532d8fso29820477b3.2
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Nov 2023 15:04:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699048881; x=1699653681; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1699049048; x=1699653848; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=BYqhTmNXb9G7gJbSyD6id2o7LS6FWzJ6rtOkac47hAw=;
-        b=F+nQTkWYdGekP9o/iDDA4tFarQP8SEwwFszzGtEVB6btmxDJHV9KA0yGhXhdeAJVjA
-         7KuOPrF+S4cGGqXNy9Fd74Z7W7f0039BPdow/+VSUU4ZmY6XHkPy86KjpnHBxv3lxhiK
-         gOe+5/Nps0Gn9QvruYNBKLCFP9U/S9bu0ZivTol1U9hdkKETXS2DGWe/0NBNMWb3R0Lf
-         DgaG+eFhl4leRrYOXKMszHHe/fgViGnwNnmmP0pU88qTkjnZKG7bryS0KXiaZVw+v+wm
-         j7w8OoPycAdxA/wqhUVbCOW4os+bdIjK2yRFI9Sj47dG04n6oRkSyqFUO0meWQh2OdWr
-         UP8Q==
+        bh=AnftwWj2fmumOnfc6sWWQOXUgHreNmOtpI7GXbZS8Gg=;
+        b=Mnl/i9Dxgi2rGGpiYyrf8VU1UhsBrO4qpNDCgRYpUWyF7ENxP6/6Q3XZ+C2q8xQqRv
+         eXLtee6LBirYUPvsfmGlFGaLtHn88BtnT4fzBmeGjfJwxo90HnDuV1LQ8YH5tGd7PlF0
+         LkM+fhFgF9+L5liCxDJarTWkpH917oCJ4LuXG0Q57O+VTGnIh9ppGPb9f958kwzyXTWL
+         Regubt3fOgRICoOuSd++j/eMCL6q4o5qpbFfoC73M0+wWTQmm3yxXwcnhmYWm3sI8FFu
+         JMpIycyPVx6F6NMSeToex8j6qVyZ2m/H9dHF4ru4+Qr3v0nC4ZknO7ZIiAIiZBi0inEd
+         nS4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699048881; x=1699653681;
+        d=1e100.net; s=20230601; t=1699049048; x=1699653848;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=BYqhTmNXb9G7gJbSyD6id2o7LS6FWzJ6rtOkac47hAw=;
-        b=XKt+GWn5glv+QXeAkSUtAzVusXozvZhscfANyUsTsWiLSm/5JJluNgm0IradA5Nmsr
-         4xRLtnmvwUBPD2HlYFxhiHzePupSH0sMWcKZ6SdutqTI5pmAM+MvYtNJsdtl3eaxIayj
-         Rk/Z/wCoktfHTEAy9eBgW+t1CyHV5jF9K08AXBmXNmMV27EhMjIQR7daQgWzztRfwjaD
-         8XzUaRfpBbyfSoL1Vd+edBHa2NPzmMiZgpBXGM/gyNQrdrvSPPWe4MGGrdozodOiOOUK
-         A6ntHrwQ6Ib2mnWYMPyiAUb9LhsxX5zcT4oXMrEJrCweVLnhsI6uV2iZLZLJck1Cx+ls
-         tz4w==
-X-Gm-Message-State: AOJu0YwXbO5yKFWvSMd8uM2e+LqcLbmCAXmzOwy7iNnl8QZiqWkjSwDn
-        vxqttuu0a/Xw4E4e8vlzt1GfsPMv1NxZzcVyn3sxwA==
-X-Google-Smtp-Source: AGHT+IHBmpng10V/3ZppWAw0mb3tfwjNCUoY2XY/FhvN123GIZ3qKWwR9YYBDbSST6Fc1QMmALfW0xflp+636V3zadc=
-X-Received: by 2002:a5b:e8c:0:b0:da0:cc14:b66 with SMTP id z12-20020a5b0e8c000000b00da0cc140b66mr20480553ybr.9.1699048880909;
- Fri, 03 Nov 2023 15:01:20 -0700 (PDT)
+        bh=AnftwWj2fmumOnfc6sWWQOXUgHreNmOtpI7GXbZS8Gg=;
+        b=Ww9CjDDtzZfWANDVUZRiI4brnxUoOy7+DaydWKsxYp9Pc916VbekX4qpt5FZS4WItU
+         loXH0m1ZglwJUFUcHfrJXsQjkW5+Z7j3dcyLc+34nWncDsnI3ffGknDXkKeuv7XOzvTA
+         iVG/ABtcSO0eQbb5PSFrsPaV1LLdrttevenmvAY/KBjv/fl4ze03eHyVztPzQfKmV7U6
+         DmRVXeLMDp1DJOntscPFYdFiug6C1qCBc6e84RSDQ0ywZLkJ2LiyCc73VA7P+4bqEB5C
+         RdSczLOTN0p9f6xGswOk5/OCviEe93T2e9y/mX5UaP6/Jaayv2IsK+NDR9i3clpnvpXI
+         Is1w==
+X-Gm-Message-State: AOJu0Ywzzv4AetxBjBZ7IAbCUEqYTsKTvAIxiR/hDweLcx6rTO+9STsK
+        Zg2X/ModLWWhUAk9Ov9x0JTjeZYNu68rMrPgBl9KmQ==
+X-Google-Smtp-Source: AGHT+IEBKADZmcpxaBWv+My9vk2fj0c1No4HfAgNSeAdlKEBeiXKixwfvLL7peGAr9/x2dH+9RDFHoJF/vltu+YHb3Y=
+X-Received: by 2002:a05:690c:ec8:b0:5a7:a817:be43 with SMTP id
+ cs8-20020a05690c0ec800b005a7a817be43mr5192486ywb.6.1699049048248; Fri, 03 Nov
+ 2023 15:04:08 -0700 (PDT)
 MIME-Version: 1.0
-References: <20231103215124.1095-1-quic_bibekkum@quicinc.com> <20231103215124.1095-3-quic_bibekkum@quicinc.com>
-In-Reply-To: <20231103215124.1095-3-quic_bibekkum@quicinc.com>
+References: <20231103215124.1095-1-quic_bibekkum@quicinc.com> <20231103215124.1095-2-quic_bibekkum@quicinc.com>
+In-Reply-To: <20231103215124.1095-2-quic_bibekkum@quicinc.com>
 From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Sat, 4 Nov 2023 00:01:09 +0200
-Message-ID: <CAA8EJpqWdHwF_mZoXt8wpYeKLWQEFs3H83c-OsLVYVGYmi5mkQ@mail.gmail.com>
-Subject: Re: [PATCH 2/3] iommu/arm-smmu: add ACTLR data and support for SM8550
+Date:   Sat, 4 Nov 2023 00:03:57 +0200
+Message-ID: <CAA8EJpozPAAaTLwD_0d1_zKh9oNN5tFdSshn2icGFBe7vuMqiA@mail.gmail.com>
+Subject: Re: [PATCH 1/3] iommu/arm-smmu: introduction of ACTLR for custom
+ prefetcher settings
 To:     Bibek Kumar Patro <quic_bibekkum@quicinc.com>
 Cc:     will@kernel.org, robin.murphy@arm.com, joro@8bytes.org,
         a39.skl@gmail.com, konrad.dybcio@linaro.org,
@@ -73,148 +75,146 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 On Fri, 3 Nov 2023 at 23:53, Bibek Kumar Patro
 <quic_bibekkum@quicinc.com> wrote:
 >
-> Add ACTLR data table for SM8550 along with support for
-> same including SM8550 specific implementation operations.
+> Currently in Qualcomm  SoCs the default prefetch is set to 1 which allows
+> the TLB to fetch just the next page table. MMU-500 features ACTLR
+> register which is implementation defined and is used for Qualcomm SoCs
+> to have a prefetch setting of 1/3/7/15 enabling TLB to prefetch
+> the next set of page tables accordingly allowing for faster translations.
+>
+> ACTLR value is unique for each SMR (Stream matching register) and stored
+> in a pre-populated table. This value is set to the register during
+> context bank initialisation.
 >
 > Signed-off-by: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
 > ---
->  drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 85 +++++++++++++++++++++-
->  1 file changed, 81 insertions(+), 4 deletions(-)
+>  drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 34 ++++++++++++++++++++++
+>  drivers/iommu/arm/arm-smmu/arm-smmu-qcom.h |  2 ++
+>  drivers/iommu/arm/arm-smmu/arm-smmu.c      |  5 ++--
+>  drivers/iommu/arm/arm-smmu/arm-smmu.h      |  5 ++++
+>  4 files changed, 44 insertions(+), 2 deletions(-)
 >
 > diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-> index 68c1f4908473..590b7c285299 100644
+> index ae7cae015193..68c1f4908473 100644
 > --- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
 > +++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-> @@ -25,6 +25,64 @@ struct actlr_data {
->         u32 actlr;
->  };
+> @@ -14,6 +14,17 @@
 >
-> +static const struct actlr_data sm8550_apps_actlr_data[] = {
-> +       { 0x18a0, 0x0000, 0x00000103 },
-> +       { 0x18e0, 0x0000, 0x00000103 },
-> +       { 0x0800, 0x0020, 0x00000001 },
-> +       { 0x1800, 0x00c0, 0x00000001 },
-> +       { 0x1820, 0x0000, 0x00000001 },
-> +       { 0x1860, 0x0000, 0x00000001 },
-> +       { 0x0c01, 0x0020, 0x00000303 },
-> +       { 0x0c02, 0x0020, 0x00000303 },
-> +       { 0x0c03, 0x0020, 0x00000303 },
-> +       { 0x0c04, 0x0020, 0x00000303 },
-> +       { 0x0c05, 0x0020, 0x00000303 },
-> +       { 0x0c06, 0x0020, 0x00000303 },
-> +       { 0x0c07, 0x0020, 0x00000303 },
-> +       { 0x0c08, 0x0020, 0x00000303 },
-> +       { 0x0c09, 0x0020, 0x00000303 },
-> +       { 0x0c0c, 0x0020, 0x00000303 },
-> +       { 0x0c0d, 0x0020, 0x00000303 },
-> +       { 0x0c0e, 0x0020, 0x00000303 },
-> +       { 0x0c0f, 0x0020, 0x00000303 },
-> +       { 0x1961, 0x0000, 0x00000303 },
-> +       { 0x1962, 0x0000, 0x00000303 },
-> +       { 0x1963, 0x0000, 0x00000303 },
-> +       { 0x1964, 0x0000, 0x00000303 },
-> +       { 0x1965, 0x0000, 0x00000303 },
-> +       { 0x1966, 0x0000, 0x00000303 },
-> +       { 0x1967, 0x0000, 0x00000303 },
-> +       { 0x1968, 0x0000, 0x00000303 },
-> +       { 0x1969, 0x0000, 0x00000303 },
-> +       { 0x196c, 0x0000, 0x00000303 },
-> +       { 0x196d, 0x0000, 0x00000303 },
-> +       { 0x196e, 0x0000, 0x00000303 },
-> +       { 0x196f, 0x0000, 0x00000303 },
-> +       { 0x19c1, 0x0010, 0x00000303 },
-> +       { 0x19c2, 0x0010, 0x00000303 },
-> +       { 0x19c3, 0x0010, 0x00000303 },
-> +       { 0x19c4, 0x0010, 0x00000303 },
-> +       { 0x19c5, 0x0010, 0x00000303 },
-> +       { 0x19c6, 0x0010, 0x00000303 },
-> +       { 0x19c7, 0x0010, 0x00000303 },
-> +       { 0x19c8, 0x0010, 0x00000303 },
-> +       { 0x19c9, 0x0010, 0x00000303 },
-> +       { 0x19cc, 0x0010, 0x00000303 },
-> +       { 0x19cd, 0x0010, 0x00000303 },
-> +       { 0x19ce, 0x0010, 0x00000303 },
-> +       { 0x19cf, 0x0010, 0x00000303 },
-> +       { 0x1c00, 0x0002, 0x00000103 },
-> +       { 0x1c01, 0x0000, 0x00000001 },
-> +       { 0x1920, 0x0000, 0x00000103 },
-> +       { 0x1923, 0x0000, 0x00000103 },
-> +       { 0x1924, 0x0000, 0x00000103 },
-> +       { 0x1940, 0x0000, 0x00000103 },
-> +       { 0x1941, 0x0004, 0x00000103 },
-> +       { 0x1943, 0x0000, 0x00000103 },
-> +       { 0x1944, 0x0000, 0x00000103 },
-> +       { 0x1947, 0x0000, 0x00000103 },
+>  #define QCOM_DUMMY_VAL -1
+>
+> +struct actlr_config {
+> +       const struct actlr_data *adata;
+> +       u32 size;
+
+This should be size_t.
+
+Also could you please drop the separate struct actlr_config and move
+these two fields into struct qcom_smmu_config.
+
 > +};
-
-This is nearly impossible to handle.
-Please add defines for 0x1, 0x103 and 0x303. Also please consider
-adding comments for the devices.
-
+> +
+> +struct actlr_data {
+> +       u16 sid;
+> +       u16 mask;
+> +       u32 actlr;
+> +};
 > +
 >  static struct qcom_smmu *to_qcom_smmu(struct arm_smmu_device *smmu)
 >  {
 >         return container_of(smmu, struct qcom_smmu, smmu);
-> @@ -444,6 +502,16 @@ static const struct arm_smmu_impl sdm845_smmu_500_impl = {
->         .tlb_sync = qcom_smmu_tlb_sync,
->  };
->
+> @@ -270,6 +281,26 @@ static const struct of_device_id qcom_smmu_client_of_match[] __maybe_unused = {
+>  static int qcom_smmu_init_context(struct arm_smmu_domain *smmu_domain,
+>                 struct io_pgtable_cfg *pgtbl_cfg, struct device *dev)
+>  {
+> +       struct arm_smmu_device *smmu = smmu_domain->smmu;
+> +       struct qcom_smmu *qsmmu = to_qcom_smmu(smmu);
+> +       const struct actlr_config *actlrcfg;
+> +       struct arm_smmu_smr *smr = smmu->smrs;
+> +       int idx = smmu_domain->cfg.cbndx;
+> +       int i;
+> +       u16 id;
+> +       u16 mask;
 > +
-> +static const struct arm_smmu_impl sm8550_smmu_500_impl = {
-> +       .init_context = qcom_smmu_init_context,
-> +       .cfg_probe = qcom_smmu_cfg_probe,
-> +       .def_domain_type = qcom_smmu_def_domain_type,
-> +       .reset = arm_mmu500_reset,
-> +       .write_s2cr = qcom_smmu_write_s2cr,
-> +       .tlb_sync = qcom_smmu_tlb_sync,
-> +};
-> +
->  static const struct arm_smmu_impl qcom_adreno_smmu_v2_impl = {
->         .init_context = qcom_adreno_smmu_init_context,
->         .def_domain_type = qcom_smmu_def_domain_type,
-> @@ -507,6 +575,11 @@ static const struct qcom_smmu_config qcom_smmu_impl0_cfg = {
->         .reg_offset = qcom_smmu_impl0_reg_offset,
->  };
->
-> +static const struct actlr_config sm8550_actlrcfg = {
-> +       .adata = sm8550_apps_actlr_data,
-> +       .size = ARRAY_SIZE(sm8550_apps_actlr_data),
-> +};
-> +
->  /*
->   * It is not yet possible to use MDP SMMU with the bypass quirk on the msm8996,
->   * there are not enough context banks.
-> @@ -530,16 +603,20 @@ static const struct qcom_smmu_match_data sdm845_smmu_500_data = {
->         /* Also no debug configuration. */
->  };
->
-> +
-> +static const struct qcom_smmu_match_data sm8550_smmu_500_impl0_data = {
-> +       .impl = &sm8550_smmu_500_impl,
-> +       .adreno_impl = &qcom_adreno_smmu_500_impl,
-> +       .cfg = &qcom_smmu_impl0_cfg,
-> +       .actlrcfg = &sm8550_actlrcfg,
-> +};
+> +       if (qsmmu->actlrcfg) {
+> +               actlrcfg = qsmmu->actlrcfg;
+> +               for (i = 0; i < actlrcfg->size; ++i) {
+> +                       id = actlrcfg->adata[i].sid;
+> +                       mask = actlrcfg->adata[i].mask;
+> +                       if (!smr_is_subset(*smr, id, mask))
+> +                               arm_smmu_cb_write(smmu, idx, ARM_SMMU_CB_ACTLR,
+> +                                               actlrcfg->adata[i].actlr);
+> +               }
+> +       }
 
-This structure doesn't seem to be linked. Did you test your patches?
+Consider extracting this to a separate function. This way you can
+reduce 4 indentation levels into a single loop.
 
 > +
->  static const struct qcom_smmu_match_data qcom_smmu_500_impl0_data = {
->         .impl = &qcom_smmu_500_impl,
->         .adreno_impl = &qcom_adreno_smmu_500_impl,
->         .cfg = &qcom_smmu_impl0_cfg,
+>         smmu_domain->cfg.flush_walk_prefer_tlbiasid = true;
+>
+>         return 0;
+> @@ -459,6 +490,9 @@ static struct arm_smmu_device *qcom_smmu_create(struct arm_smmu_device *smmu,
+>         qsmmu->smmu.impl = impl;
+>         qsmmu->cfg = data->cfg;
+>
+> +       if (data->actlrcfg && (data->actlrcfg->size))
+> +               qsmmu->actlrcfg = data->actlrcfg;
+> +
+>         return &qsmmu->smmu;
+>  }
+>
+> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.h b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.h
+> index 593910567b88..4b6862715070 100644
+> --- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.h
+> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.h
+> @@ -9,6 +9,7 @@
+>  struct qcom_smmu {
+>         struct arm_smmu_device smmu;
+>         const struct qcom_smmu_config *cfg;
+> +       const struct actlr_config *actlrcfg;
+>         bool bypass_quirk;
+>         u8 bypass_cbndx;
+>         u32 stall_enabled;
+> @@ -25,6 +26,7 @@ struct qcom_smmu_config {
 >  };
 >
-> -/*
-> - * Do not add any more qcom,SOC-smmu-500 entries to this list, unless they need
-> - * special handling and can not be covered by the qcom,smmu-500 entry.
-> - */
-
-Leave the comment in place.
-
->  static const struct of_device_id __maybe_unused qcom_smmu_impl_of_match[] = {
->         { .compatible = "qcom,msm8996-smmu-v2", .data = &msm8996_smmu_data },
->         { .compatible = "qcom,msm8998-smmu-v2", .data = &qcom_smmu_v2_data },
+>  struct qcom_smmu_match_data {
+> +       const struct actlr_config *actlrcfg;
+>         const struct qcom_smmu_config *cfg;
+>         const struct arm_smmu_impl *impl;
+>         const struct arm_smmu_impl *adreno_impl;
+> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.c b/drivers/iommu/arm/arm-smmu/arm-smmu.c
+> index 4c79ef6f4c75..38ac1cbc799b 100644
+> --- a/drivers/iommu/arm/arm-smmu/arm-smmu.c
+> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu.c
+> @@ -992,9 +992,10 @@ static int arm_smmu_find_sme(struct arm_smmu_device *smmu, u16 id, u16 mask)
+>                  * expect simply identical entries for this case, but there's
+>                  * no harm in accommodating the generalisation.
+>                  */
+> -               if ((mask & smrs[i].mask) == mask &&
+> -                   !((id ^ smrs[i].id) & ~smrs[i].mask))
+> +
+> +               if (smr_is_subset(smrs[i], id, mask))
+>                         return i;
+> +
+>                 /*
+>                  * If the new entry has any other overlap with an existing one,
+>                  * though, then there always exists at least one stream ID
+> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.h b/drivers/iommu/arm/arm-smmu/arm-smmu.h
+> index 703fd5817ec1..b1638bbc41d4 100644
+> --- a/drivers/iommu/arm/arm-smmu/arm-smmu.h
+> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu.h
+> @@ -501,6 +501,11 @@ static inline void arm_smmu_writeq(struct arm_smmu_device *smmu, int page,
+>                 writeq_relaxed(val, arm_smmu_page(smmu, page) + offset);
+>  }
+>
+> +static inline bool smr_is_subset(struct arm_smmu_smr smrs, u16 id, u16 mask)
+> +{
+> +       return (mask & smrs.mask) == mask && !((id ^ smrs.id) & ~smrs.mask);
+> +}
+> +
+>  #define ARM_SMMU_GR0           0
+>  #define ARM_SMMU_GR1           1
+>  #define ARM_SMMU_CB(s, n)      ((s)->numpage + (n))
 > --
 > 2.17.1
 >
