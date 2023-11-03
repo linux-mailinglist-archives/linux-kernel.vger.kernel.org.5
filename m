@@ -2,76 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B812E7E07A2
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 18:40:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D07B7E07B3
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 18:43:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230267AbjKCRkh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 13:40:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35114 "EHLO
+        id S230260AbjKCRno (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 13:43:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjKCRkd (ORCPT
+        with ESMTP id S229450AbjKCRnm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 13:40:33 -0400
-Received: from mout.web.de (mout.web.de [212.227.15.3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB146D4D;
-        Fri,  3 Nov 2023 10:40:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
-        t=1699033220; x=1699638020; i=frank.scheiner@web.de;
-        bh=D1Ff6zuwtY98nJgeBbrqLgsy5DKYVpDPHNBFpmWdWPs=;
-        h=X-UI-Sender-Class:Date:From:Subject:To:Cc:References:
-         In-Reply-To;
-        b=KolMr2RrB0nqjWiWmQFiaqd883LRtbgABaHxnUiibfIMQ02t0eLj83+oolt7UR3+
-         sxTQsMd3YccO2b46Jk78FOVQ7IdQaqcbGy2rJVOudP/DxEzSb66Fo9SDL37z71Mto
-         p4+N5smPOwIIK9OOJ8CKTWNCDCxnpm1ET1dhkeIF0KEwXQIHKzAA3Qnti3I8YlXLD
-         gyEYCeIlFHVbkWTMpIM9xpY+q9oz083ymFDhl/3N4qvGENT8O7YE+P9PBRhAvrqkM
-         2bQnox/aunYd+vzRNYH0s2Q51KMmFmAk1PSkUkucsaNB0QRfbR213RO0TYQvYtj7y
-         muzgTdqkxlRutbv82Q==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.30] ([84.152.247.25]) by smtp.web.de (mrweb005
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1MCogm-1r7jb20LBY-009ArV; Fri, 03
- Nov 2023 18:40:20 +0100
-Message-ID: <6e745433-d7eb-45df-b607-5589f1e04e86@web.de>
-Date:   Fri, 3 Nov 2023 18:40:19 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From:   Frank Scheiner <frank.scheiner@web.de>
-Subject: Re: [GIT PULL] asm-generic updates for v6.7
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        =?UTF-8?B?VG9tw6HFoSBHbG96YXI=?= <tglozar@gmail.com>,
-        linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>
-References: <340fc037-c18f-417f-8aaa-9cf88c9052f4@app.fastmail.com>
- <8ff191a0-41fa-4f36-86e8-3d32ff3fe75c@web.de>
- <CAHk-=whFLZ67ffzt1juryCYcYz6eL_XjQF8WucDzwUR5H65+rA@mail.gmail.com>
-Content-Language: en-US
-In-Reply-To: <CAHk-=whFLZ67ffzt1juryCYcYz6eL_XjQF8WucDzwUR5H65+rA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+        Fri, 3 Nov 2023 13:43:42 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADB8C136;
+        Fri,  3 Nov 2023 10:43:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699033416; x=1730569416;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:content-transfer-encoding:mime-version;
+  bh=aIvZEKHaJxoPCdC0kbJg+1YILsDyr+aIf900fUUKC04=;
+  b=ltUOQcOyy/4ylDF0Xrra6yton99Wor6Pf90fpH0B0N561+RyAviTA2HA
+   2u/ebxf49Ccd0CbhUD1TFt4pxvwzsCr6jLnW9nwj9VD2QoNbBAouiEIE/
+   1KgiixuPsWYHMUSLRc1VTqgUzFmLQYKR2sloJBQCjkp0UrZxRoOuovJq8
+   NQ+2NJSVgXMQtBJMx63xHBZhOzb9wZA83KoptFJaF7tF0PlHDTnzTi0FY
+   dUkGCosGLOLJCJ2f/qlauD/YHoQ0s17wuiCh1TXlg5ySdEHxj47lLBQuu
+   LU4krZ+ucEx8etCTURvO5NN0Pbu74FOs+rKsJ+OZ7B2PbE1kXVq0omfcb
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10883"; a="387880936"
+X-IronPort-AV: E=Sophos;i="6.03,273,1694761200"; 
+   d="scan'208";a="387880936"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2023 10:43:36 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10883"; a="738139242"
+X-IronPort-AV: E=Sophos;i="6.03,273,1694761200"; 
+   d="scan'208";a="738139242"
+Received: from tinggan-mobl.amr.corp.intel.com (HELO [10.213.173.96]) ([10.213.173.96])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2023 10:43:35 -0700
+Message-ID: <1cf3bf9cb37ddcf0022f680c3f7f4442c6218c10.camel@linux.intel.com>
+Subject: Re: [PATCH v2] thermal: core: Add trip thresholds for trip crossing
+ detection
+From:   srinivas pandruvada <srinivas.pandruvada@linux.intel.com>
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux PM <linux-pm@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Lukasz Luba <lukasz.luba@arm.com>
+Date:   Fri, 03 Nov 2023 13:43:33 -0400
+In-Reply-To: <3fe787bc-f85c-4268-833f-86922415c4d3@linaro.org>
+References: <12317335.O9o76ZdvQC@kreacher>
+         <6b22f4715641bc4ffc76eea8a4e6358bcbea9e1c.camel@linux.intel.com>
+         <3fe787bc-f85c-4268-833f-86922415c4d3@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:GZLXJonp3/Hn/EMdh3oIDngRhT+fIAlI6by69124eDw2KgQZdjB
- TQZG0qhKzbqBBg8EuK5WfpbPs8P6NULdXxlK8l7Hvk5p+DcEj/8MAH5T8WoIEzseuoMinlG
- y0OIDBrfhTcgem45x2lv+O0wr9cwGuHmyUNd4deY6Y/3SL/ZnvJ+PgTtq3TEQ4k1ICx9xIw
- ftp/HvEN4fD6i0z8T3lJQ==
-UI-OutboundReport: notjunk:1;M01:P0:Grrv3FJ4CII=;AFX2EHWMSQ1YGNT3TJPPa6KZdxg
- OCSb9XmRrjtAMOYDqY0Vnc40WiJ/PuOZc+6ZZALmXym+8uGA0sUWuyp8WwR4jTNbXaql1KS8t
- tfTQTZrke5/VrFLTRjfz7shfT79/rssSnxP8BCdoObdCk9etlNYPViqRzN4EJKYqLyUaSFj7f
- 4N2Wwtx2LVPbcxXB+gjtJKcDByzkVFaLzvw1aA5wshuqw5rRMQtyebeL1L67/v9QwEKY3emBa
- IEvnwPERBn5+QuMl3vOZI+hEr1KovKk+xKsaU7EU5C1a6pLTfEYeoTmwbCJcPNIPJiJRoBRxq
- fAyBZteRmLTwIrHRoXexMpmGI5PXBJ2eB7nMX8+LVjNwqmKiJFewOVfwlwDhf8UyeaRz41Gpv
- 9JRv7mepKeuOzVdxEqF53xtH8wEssD56MPCCrpXekwAjL+1x8WFHYabJ4ZRjpdH4tJ94Uk1f1
- cqjg1W/iDOCAIjIpakV6FBChx8/kW+O9rgTI4mM2URjUhZYlZpKiwQXaaVxq0MaKrcy2ZMUjv
- bu9whMh31dtXmnZHXiCw/6Uuj4vH2GVhj8sKy7AZLFk+VxuIzAOp9YLlVgPrR23v48ZdmL/zD
- Lfh6eheKvzMGC9Mv10pWlHtPgip2VvKfaRwWHH4tGsb0a/E9Avek/TRBhXz9DdS/yjEUaMgDF
- EJuEC3cfOLGd3Xta2GWu8OvZ4+RoQ4xR6CBAqZvo2tmcDwjsyL6LIKN+FRGhsiGW6OC3PwdfS
- MJtE82fow0J5xgzXs9+d1A4pIOkS0gl2Q/ddz+A08ct6D+/Zcleu9c/D4JDE9g1GCkcxn6OzQ
- YBqRvIlHiFiZT7bZYIrEhgl2lHeseuu7v9jIpqJFxTDoerHh+kdPH83Os6ov3oBbswH+SNGB0
- j+HTU6InCVNrPkd+yGXcHjjNwMkgL5AJSHFUyR7Q2gUyQh9h1Psbft1oP3UzpCuia4dM1fakH
- Re7jCQ==
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+MIME-Version: 1.0
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,46 +69,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02.11.23 18:28, Linus Torvalds wrote:
-> On Thu, 2 Nov 2023 at 00:24, Frank Scheiner <frank.scheiner@web.de> wrot=
-e:
->>
->> so the ia64 removal happened despite the efforts - not only from us - t=
-o
->> keep it alive in Linux. That is a - sad - fact now.
->
-> Well, I'd have personally been willing to resurrect it, but I was told
-> several times that other projects were basically just waiting for the
-> kernel support to die.
->
-> Has the itanium situation really changed?
+On Fri, 2023-11-03 at 17:30 +0100, Daniel Lezcano wrote:
+> On 03/11/2023 16:42, srinivas pandruvada wrote:
+> > On Fri, 2023-11-03 at 15:56 +0100, Rafael J. Wysocki wrote:
+> > > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > >=20
+> > > The trip crossing detection in handle_thermal_trip() does not
+> > > work
+> > > correctly in the cases when a trip point is crossed on the way up
+> > > and
+> > > then the zone temperature stays above its low temperature (that
+> > > is,
+> > > its
+> > > temperature decreased by its hysteresis).=C2=A0 The trip temperature
+> > > may
+> > > be passed by the zone temperature subsequently in that case, even
+> > > multiple times, but that does not count as the trip crossing as
+> > > long
+> > > as
+> > > the zone temperature does not fall below the trip's low
+> > > temperature
+> > > or,
+> > > in other words, until the trip is crossed on the way down.
+> >=20
+> > In other words you want to avoid multiple trip UP notifications
+> > without
+> > a corresponding DOWN notification.
+> >=20
+> > This will reduce unnecessary noise to user space. Is this the
+> > intention?
+>=20
+> Not only reduce noise but give a correct information. Otherwise the=20
+> userspace will have to figure out if there are duplicate events after
+> the first event happened. The same happen (less often) when crossing
+> the=20
+> trip point the way down.
+Correct.
+The patch looks good to me.
 
-Well, we definitely made some progress in this regard. But as you wrote,
-this was not a pressing issue as long as ia64 stayed in the kernel.
-Which is why I wanted to concentrate on kernel support first and
-foremost. My thinking was that a working architecture wouldn't be
-dropped*. And with kernel support saved, we could have gone full steam
-ahead into the other projects.
+Thanks,
+Srinivas
 
-Well, we did proceed with tackling the problems in the other projects
-anyhow from the start, but now the situation is a little different.
 
-*)
-https://lore.kernel.org/linux-ia64/CAHk-=3DwjEmZ19T4XpVb0_Hacm53xJG_w5ygcu=
-orwC0xBoT-myUA@mail.gmail.com/
+>=20
+>=20
+>=20
 
-> So I'd be willing to come back to the "can we resurrect it"
-> discussion, but not immediately - more along the lines of a "look,
-> we've been maintaining it out of tree for a year, the other
-> infrastructure is still alive, there is no impact on the rest of the
-> kernel, can we please try again"?
-
-That is really something.
-
-We'll see where this goes. I always hope for the best. (-:
-
-If you feel like checking on our status, you know where to look (see my
-email to you from 2023-09-23).
-
-Cheers,
-Frank
