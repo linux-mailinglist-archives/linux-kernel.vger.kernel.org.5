@@ -2,224 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 58A3B7E0625
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 17:04:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AAD167E0623
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 17:03:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345396AbjKCQDv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 12:03:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43640 "EHLO
+        id S1345344AbjKCQDs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 12:03:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234328AbjKCQDq (ORCPT
+        with ESMTP id S234376AbjKCQDq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 3 Nov 2023 12:03:46 -0400
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19781D60;
-        Fri,  3 Nov 2023 09:03:37 -0700 (PDT)
-X-QQ-mid: bizesmtp82t1699027400trjco16j
-Received: from main2-ubuntu.tail147f4.ts.net ( [202.201.15.117])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Sat, 04 Nov 2023 00:03:17 +0800 (CST)
-X-QQ-SSF: 01200000000000B06000000A0000000
-X-QQ-FEAT: 7jw2iSiCazpcnkkT53zBV9E5I5T5DJqx1+TFUtxUfN3lRCahCSRmfodfnKjxV
-        CZUVooP/s2ON1Xc7NqKw/750amPGn/HA/QmC3hjD503kq78AFBll7c+JW7zZRKRKgJ0dcBA
-        fXrP4Q/oKyJmpMBY1aZwrgZA1L/EGsKMQUoOR5PupOxOnqtERz2toMY1qeVlWz/p7KZxsIk
-        nY3oUd1ez40xtO3mx3yORZ0/HqylV4ibH6wp8aFM49EMpckQtLLAlVtwabPzzZ1qoI8noCY
-        kYqhHDaoRthiGZg8naGoZeJJbGLrnRX5aIuzhSSszoQ36q6A0qlPDzDhUQFX3EVfpuXiQec
-        mHMA3CCDPcDduASmtFWHo2AIgBomj0FnSbxAaz5DqO7Pmr8zO8=
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 5481933520797404592
-From:   Yuan Tan <tanyuan@tinylab.org>
-To:     falcon@tinylab.org, arnd@arndb.de, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-riscv@lists.infradead.org,
-        luc.vanoostenryck@gmail.com, linux-sparse@vger.kernel.org
-Cc:     linux@weissschuh.net, palmer@rivosinc.com,
-        paul.walmsley@sifive.com, paulburton@kernel.org,
-        paulmck@kernel.org, tim.bird@sony.com, tsbogend@alpha.franken.de,
-        w@1wt.eu, tanyuan@tinylab.org, i@maskray.me
-Subject: [PATCH v1 12/14] DCE/DSE: riscv: build reference for .pushsection in assembly
-Date:   Sat,  4 Nov 2023 00:03:15 +0800
-Message-Id: <26be8db18604f9a9e5eee9f03cc77ed034059d9a.1699025537.git.tanyuan@tinylab.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1699025537.git.tanyuan@tinylab.org>
-References: <cover.1699025537.git.tanyuan@tinylab.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C5C2CA
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 09:03:40 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-da040c021aeso2526962276.3
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Nov 2023 09:03:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1699027419; x=1699632219; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=gTzXxPv+gObuuXQua2/KBmP4Hxk1HM7FnDHk5jUfbw4=;
+        b=bTQRZquv+FPn1uDggpHuh+TsylPV1ByoIx70jjWT7FW0rcw970VgvYNzA3cvEz051I
+         XmBDNFYBQN9EHjK7V7ByNMyMbvyAfyWVTdYdGcjZx6eGbgvmgoYSsOnrG+/ST3OJphOT
+         DVRxHP/aEiKgjQ9CuRoYKRrubommkYUIUD1gMKPhsFp9GQYqNP/aTnG+L72agxhK6imD
+         P/NE7F28v9Q3jXkQMzFkSDF5J6UtD+LzeTGnKfBxg8NY37sNSPXA2a+uACut0iB7PteK
+         XcAY1I/bD5YI0tgzY+OF9mNQlEOnmpE//0eKmrD7JlpK0BeptMgcFUCYB6tIBqWbQGd8
+         6F8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699027419; x=1699632219;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=gTzXxPv+gObuuXQua2/KBmP4Hxk1HM7FnDHk5jUfbw4=;
+        b=qkq7RcMvnOk8+R7R0KLrR5EtDjg9Op836j820yl7ZAn/fpGKx6jzaWhLr1xYCXoDn8
+         Y1lptn7YxMkrIJtm2eb2rmURzPxkQ5MXvzRN7B2tUGt7edQf/PlP7T+uL/O8rQjz53j4
+         UxOlzT75smGrHoSkCvbNr7MLQRLzwNCnnomKuDD/VTgBSZuPaLhtU9xTeyL05RAad5Jy
+         ll0dL2vJ3NClNHJgElU0CoJbMl5N/+glawUBMyYFa55HrCxKSQPiAyq/15kneWtf1DAY
+         LjDhTgd1+c3gtotVBcH4MsbsdPiwhYmhpvUCjSqmh4nGYSRmNkw7TupiZqSUTEoGwMQo
+         Zg/A==
+X-Gm-Message-State: AOJu0YxV6XgL/oWBjR8h/MRXsLQ0BbMvCLZQeMBW2+TM70Iyz+t1mfdN
+        kCFbHIo0+d+YvryZmMvcV5+ALyMHL+M=
+X-Google-Smtp-Source: AGHT+IHMdfpUDNksgB/Anwg08XNWUFG0UAqwDQelIsUFZSICwXGPRzrG+IYrnbhm1ObmCNhZXQ0QXsqhIJY=
+X-Received: from glider.muc.corp.google.com ([2a00:79e0:9c:201:74c:1f8e:4661:7aaa])
+ (user=glider job=sendgmr) by 2002:a25:488:0:b0:da0:5452:29f7 with SMTP id
+ 130-20020a250488000000b00da0545229f7mr425792ybe.4.1699027419431; Fri, 03 Nov
+ 2023 09:03:39 -0700 (PDT)
+Date:   Fri,  3 Nov 2023 17:03:32 +0100
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.42.0.869.gea05f2083d-goog
+Message-ID: <20231103160335.2464561-1-glider@google.com>
+Subject: [PATCH v8 0/3] Implement MTE tag compression for swapped pages
+From:   Alexander Potapenko <glider@google.com>
+To:     glider@google.com, catalin.marinas@arm.com, will@kernel.org,
+        pcc@google.com, andreyknvl@gmail.com,
+        andriy.shevchenko@linux.intel.com, aleksander.lobakin@intel.com,
+        linux@rasmusvillemoes.dk, yury.norov@gmail.com,
+        alexandru.elisei@arm.com
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        eugenis@google.com, syednwaris@gmail.com, william.gray@linaro.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the SECTION_SHF_LINK_ORDER method and the SECTION_SHF_GROUP method
-to refactor __ASM_EXTABLE_RAW, so it won't produce orphan sections
-anymore.
+Currently, when MTE pages are swapped out, the tags are kept in the
+memory, occupying PAGE_SIZE/32 bytes per page. This is especially
+problematic for devices that use zram-backed in-memory swap, because
+tags stored uncompressed in the heap effectively reduce the available
+amount of swap memory.
 
-Signed-off-by: Yuan Tan <tanyuan@tinylab.org>
-Signed-off-by: Zhangjin Wu <falcon@tinylab.org>
----
- arch/riscv/include/asm/asm-extable.h |  7 ++--
- arch/riscv/lib/uaccess.S             | 60 ++++++++++++++--------------
- 2 files changed, 32 insertions(+), 35 deletions(-)
+The RLE-based algorithm suggested by Evgenii Stepanov and implemented in
+this patch series is able to efficiently compress fixed-size tag buffers,
+resulting in practical compression ratio of 2x. In many cases it is
+possible to store the compressed data in 63-bit Xarray values, resulting
+in no extra memory allocations.
 
-diff --git a/arch/riscv/include/asm/asm-extable.h b/arch/riscv/include/asm/asm-extable.h
-index 7164d871e038..99e472b7a1be 100644
---- a/arch/riscv/include/asm/asm-extable.h
-+++ b/arch/riscv/include/asm/asm-extable.h
-@@ -29,7 +29,7 @@
- #endif
- 
- #define __ASM_EXTABLE_RAW(insn, fixup, type, data)	\
--	.pushsection	__SECTION_NAME(__ex_table), "a";		\
-+	__ASM_EXTABLE_PUSH_SECTION;			\
- 	.balign		4;				\
- 	.long		((insn) - .);			\
- 	.long		((fixup) - .);			\
-@@ -37,9 +37,8 @@
- 	.short		(data);				\
- 	.popsection;
- 
--	.macro		_asm_extable, insn, fixup
--	__ASM_EXTABLE_RAW(\insn, \fixup, EX_TYPE_FIXUP, 0)
--	.endm
-+#define _asm_extable(insn, fixup)			\
-+	__ASM_EXTABLE_RAW(insn, fixup, EX_TYPE_FIXUP, 0)
- 
- #else /* __ASSEMBLY__ */
- 
-diff --git a/arch/riscv/lib/uaccess.S b/arch/riscv/lib/uaccess.S
-index 09b47ebacf2e..91c76d3fbe2f 100644
---- a/arch/riscv/lib/uaccess.S
-+++ b/arch/riscv/lib/uaccess.S
-@@ -4,11 +4,9 @@
- #include <asm/asm-extable.h>
- #include <asm/csr.h>
- 
--	.macro fixup op reg addr lbl
--100:
--	\op \reg, \addr
--	_asm_extable	100b, \lbl
--	.endm
-+#define fixup(op, reg, addr, lbl)	\
-+	100: op reg, addr;		\
-+	_asm_extable(100b, lbl)
- 
- ENTRY(__asm_copy_to_user)
- ENTRY(__asm_copy_from_user)
-@@ -50,9 +48,9 @@ ENTRY(__asm_copy_from_user)
- 	beq	a0, t1, .Lskip_align_dst
- 1:
- 	/* a5 - one byte for copying data */
--	fixup lb      a5, 0(a1), 10f
-+	fixup(lb, a5, 0(a1), 10f)
- 	addi	a1, a1, 1	/* src */
--	fixup sb      a5, 0(a0), 10f
-+	fixup(sb, a5, 0(a0), 10f)
- 	addi	a0, a0, 1	/* dst */
- 	bltu	a0, t1, 1b	/* t1 - start of aligned dst */
- 
-@@ -77,22 +75,22 @@ ENTRY(__asm_copy_from_user)
- 	 */
- 	addi	t0, t0, -(8*SZREG) /* not to over run */
- 2:
--	fixup REG_L   a4,        0(a1), 10f
--	fixup REG_L   a5,    SZREG(a1), 10f
--	fixup REG_L   a6,  2*SZREG(a1), 10f
--	fixup REG_L   a7,  3*SZREG(a1), 10f
--	fixup REG_L   t1,  4*SZREG(a1), 10f
--	fixup REG_L   t2,  5*SZREG(a1), 10f
--	fixup REG_L   t3,  6*SZREG(a1), 10f
--	fixup REG_L   t4,  7*SZREG(a1), 10f
--	fixup REG_S   a4,        0(a0), 10f
--	fixup REG_S   a5,    SZREG(a0), 10f
--	fixup REG_S   a6,  2*SZREG(a0), 10f
--	fixup REG_S   a7,  3*SZREG(a0), 10f
--	fixup REG_S   t1,  4*SZREG(a0), 10f
--	fixup REG_S   t2,  5*SZREG(a0), 10f
--	fixup REG_S   t3,  6*SZREG(a0), 10f
--	fixup REG_S   t4,  7*SZREG(a0), 10f
-+	fixup(REG_L, a4,        0(a1), 10f)
-+	fixup(REG_L, a5,    SZREG(a1), 10f)
-+	fixup(REG_L, a6,  2*SZREG(a1), 10f)
-+	fixup(REG_L, a7,  3*SZREG(a1), 10f)
-+	fixup(REG_L, t1,  4*SZREG(a1), 10f)
-+	fixup(REG_L, t2,  5*SZREG(a1), 10f)
-+	fixup(REG_L, t3,  6*SZREG(a1), 10f)
-+	fixup(REG_L, t4,  7*SZREG(a1), 10f)
-+	fixup(REG_S, a4,        0(a0), 10f)
-+	fixup(REG_S, a5,    SZREG(a0), 10f)
-+	fixup(REG_S, a6,  2*SZREG(a0), 10f)
-+	fixup(REG_S, a7,  3*SZREG(a0), 10f)
-+	fixup(REG_S, t1,  4*SZREG(a0), 10f)
-+	fixup(REG_S, t2,  5*SZREG(a0), 10f)
-+	fixup(REG_S, t3,  6*SZREG(a0), 10f)
-+	fixup(REG_S, t4,  7*SZREG(a0), 10f)
- 	addi	a0, a0, 8*SZREG
- 	addi	a1, a1, 8*SZREG
- 	bltu	a0, t0, 2b
-@@ -130,7 +128,7 @@ ENTRY(__asm_copy_from_user)
- 	sub	t4, a5, t3
- 
- 	/* Load the first word to combine with second word */
--	fixup REG_L   a5, 0(a1), 10f
-+	fixup(REG_L, a5, 0(a1), 10f)
- 
- 3:
- 	/* Main shifting copy
-@@ -142,11 +140,11 @@ ENTRY(__asm_copy_from_user)
- 
- 	/* At least one iteration will be executed */
- 	srl	a4, a5, t3
--	fixup REG_L   a5, SZREG(a1), 10f
-+	fixup(REG_L, a5, SZREG(a1), 10f)
- 	addi	a1, a1, SZREG
- 	sll	a2, a5, t4
- 	or	a2, a2, a4
--	fixup REG_S   a2, 0(a0), 10f
-+	fixup(REG_S, a2, 0(a0), 10f)
- 	addi	a0, a0, SZREG
- 	bltu	a0, t1, 3b
- 
-@@ -163,9 +161,9 @@ ENTRY(__asm_copy_from_user)
- 	 */
- 	bgeu	a0, t0, .Lout_copy_user  /* check if end of copy */
- 4:
--	fixup lb      a5, 0(a1), 10f
-+	fixup(lb, a5, 0(a1), 10f)
- 	addi	a1, a1, 1	/* src */
--	fixup sb      a5, 0(a0), 10f
-+	fixup(sb, a5, 0(a0), 10f)
- 	addi	a0, a0, 1	/* dst */
- 	bltu	a0, t0, 4b	/* t0 - end of dst */
- 
-@@ -205,7 +203,7 @@ ENTRY(__clear_user)
- 	bgeu t0, t1, 2f
- 	bltu a0, t0, 4f
- 1:
--	fixup REG_S, zero, (a0), 11f
-+	fixup(REG_S, zero, (a0), 11f)
- 	addi a0, a0, SZREG
- 	bltu a0, t1, 1b
- 2:
-@@ -217,12 +215,12 @@ ENTRY(__clear_user)
- 	li a0, 0
- 	ret
- 4: /* Edge case: unalignment */
--	fixup sb, zero, (a0), 11f
-+	fixup(sb, zero, (a0), 11f)
- 	addi a0, a0, 1
- 	bltu a0, t0, 4b
- 	j 1b
- 5: /* Edge case: remainder */
--	fixup sb, zero, (a0), 11f
-+	fixup(sb, zero, (a0), 11f)
- 	addi a0, a0, 1
- 	bltu a0, a3, 5b
- 	j 3b
+This patch series depends on "lib/bitmap: add bitmap_{read,write}()"
+(https://lore.kernel.org/linux-arm-kernel/20231030153210.139512-1-glider@google.com/T/)
+that is mailed separately.
+
+v8:
+ - split off the bitmap_read()/bitmap_write() series
+ - simplified the compression logic (only compress data if it fits into
+   a pointer)
+
+v7:
+ - fixed comments by Yury Norov, Andy Shevchenko, Rasmus Villemoes
+ - added perf tests for bitmap_read()/bitmap_write()
+ - more efficient bitmap_write() implementation (meant to be sent in v5)
+
+v6:
+ - fixed comments by Yury Norov
+ - fixed handling of sizes divisible by MTE_GRANULES_PER_PAGE / 2
+   (caught while testing on a real device)
+
+v5:
+ - fixed comments by Andy Shevchenko, Catalin Marinas, and Yury Norov
+ - added support for 16K- and 64K pages
+ - more efficient bitmap_write() implementation
+
+v4:
+ - fixed a bunch of comments by Andy Shevchenko and Yury Norov
+ - added Documentation/arch/arm64/mte-tag-compression.rst
+
+v3:
+ - as suggested by Andy Shevchenko, use
+   bitmap_get_value()/bitmap_set_value() written by Syed Nayyar Waris
+ - switched to unsigned long to reduce typecasts
+ - simplified the compression code
+
+v2:
+ - as suggested by Yuri Norov, replace the poorly implemented struct
+   bitq with <linux/bitmap.h>
+
+
+
+Alexander Potapenko (3):
+  arm64: mte: implement CONFIG_ARM64_MTE_COMP
+  arm64: mte: add a test for MTE tags compression
+  arm64: mte: add compression support to mteswap.c
+
+ Documentation/arch/arm64/index.rst            |   1 +
+ .../arch/arm64/mte-tag-compression.rst        | 154 ++++++++
+ arch/arm64/Kconfig                            |  21 +
+ arch/arm64/include/asm/mtecomp.h              |  39 ++
+ arch/arm64/mm/Makefile                        |   2 +
+ arch/arm64/mm/mtecomp.c                       | 257 +++++++++++++
+ arch/arm64/mm/mtecomp.h                       |  12 +
+ arch/arm64/mm/mteswap.c                       |  88 ++++-
+ arch/arm64/mm/test_mtecomp.c                  | 364 ++++++++++++++++++
+ 9 files changed, 934 insertions(+), 4 deletions(-)
+ create mode 100644 Documentation/arch/arm64/mte-tag-compression.rst
+ create mode 100644 arch/arm64/include/asm/mtecomp.h
+ create mode 100644 arch/arm64/mm/mtecomp.c
+ create mode 100644 arch/arm64/mm/mtecomp.h
+ create mode 100644 arch/arm64/mm/test_mtecomp.c
+
 -- 
-2.34.1
+2.42.0.869.gea05f2083d-goog
 
