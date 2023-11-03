@@ -2,172 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED23B7E0680
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 17:27:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 817A17E0694
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 17:30:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345443AbjKCQ0u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 12:26:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51440 "EHLO
+        id S1344957AbjKCQah (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 12:30:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345287AbjKCQ0r (ORCPT
+        with ESMTP id S229845AbjKCQaf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 12:26:47 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B46E0D6A;
-        Fri,  3 Nov 2023 09:26:25 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-9c53e8b7cf4so335509666b.1;
-        Fri, 03 Nov 2023 09:26:25 -0700 (PDT)
+        Fri, 3 Nov 2023 12:30:35 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C760D191
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 09:30:29 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-40853c639abso16993045e9.0
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Nov 2023 09:30:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699028784; x=1699633584; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LTnkfaaMf1CLAmf1Rg2wsHS7BcVuqGkZNamaGh2FvQ4=;
-        b=UbsJInSOefG71c85sFN7Bv5MY6GB5OP67Kvnhp9H344IpQHR4/IEjCmK9GODo3hH+Z
-         D9lfwHBaaj6YHRIbgZrhFcMKe8/fIb63XbjAm4cSpm064nq4WuMVWLrxpeTL0KiNNTye
-         i8HxNE/FbFeJgtPn6Lo20COmwlJU1xbvw5TqcQeZvqVUebkylipMPpKXad8XW262u+bF
-         09TumWtKl3EQPRJrZ4SSa9r6Hr/o7KxAipmVAoonPu/5GWZgoxIxEq9ajW1EQBDqPvCe
-         HvD+d57Kyh9BSIJxeHzk4ufy1GWNrt1bcKDQva2JQVb+dgD7DNJoLB2PGEK2C6Ae6IVJ
-         yk1g==
+        d=linaro.org; s=google; t=1699029028; x=1699633828; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=gIkzMbx9D/76gKi93VnRryrPgyBjD5wxQisCsbr7Cg8=;
+        b=Ortm+lvKn+zEQR8KE8FnEhPGcp2+sFQr377n4QRhMt8q8y3lJMxuoB0E/R8D0wcDZW
+         CkOH1frrJGmwUVFK4w/QGmXvf+TWTdKg95y6GC7g1+f/z2aE85zMzur38lm1Q4haEeO2
+         gKtmWnrYmD5nmCVMZyZATJu1zT3ibnkKq3pAHNtIX0VGKZoZiDTffTHHzXDmTfK8qsfw
+         hgnm+vF1DLPKsfER5s2ajmZ+4RTktnLVb5UrpwtMIG3ljGdYjSJ1ujbo0a9U/+f5lKYc
+         27x9IDy+Cbe+YhvTXhgLBhD3HUMKPGaNTblx/IqWvHS2/q5qmdpAiB2CUl39zAGsFEIA
+         PH9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699028784; x=1699633584;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=LTnkfaaMf1CLAmf1Rg2wsHS7BcVuqGkZNamaGh2FvQ4=;
-        b=XnRLCTSEJyYTQmJRTvAcHuzbY4rxZXHDVX7qxP4ltN9Q1mIy5/eOJxb5IXYueMwCRK
-         eHOXidJsvjX1eloVfffhOJ5DTjWj4y4z6/sC+4vhRkBWzDqbBjt2q+BQUEt1/OtKIxMm
-         dUQndXrjgqAuunpB3YIY0gvdLl0SNtqdepwQ/W1tmC7KIPPV+Zd6Ce0LGnn80WJPU9fu
-         ciW1rKF1jMv9MzbntKy7mnK0WY2hGarNL6d97d0Dt75eg5f5oJsy06WoAEyzWw4O2W17
-         ye6+kenxAWotvdUImMxPtBsO+J+XHUXfJOxUiHBLXV4s8yJCDFoH917+OrWmRT/izA9P
-         TWHg==
-X-Gm-Message-State: AOJu0Yye/ix8LnEtUe7A2wU2/oFLVBsF7jLCrXFhkZShCK7vCJG2BBbZ
-        dstqzrsA50Hr2tw/cxt23MJa9ujL44p38Q2LQ3jFsq6t
-X-Google-Smtp-Source: AGHT+IGakKETpikSrE5Xosw/DkfZZRBaiBc5vn5u0MXOqWdum9NK7AqxWpxFtFIqEj9IQslRRfFGUnfUvUQePkXGpyQ=
-X-Received: by 2002:a17:907:3685:b0:9bd:a7a5:3a5a with SMTP id
- bi5-20020a170907368500b009bda7a53a5amr7824353ejc.36.1699028784033; Fri, 03
- Nov 2023 09:26:24 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1699029028; x=1699633828;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=gIkzMbx9D/76gKi93VnRryrPgyBjD5wxQisCsbr7Cg8=;
+        b=KAfdl1r6CVffXTg6hagS6xst6LhXnVVYwwzEGkiTpZNls6DalcO+MBUb0fS4huZr8V
+         F7Rx8BWFwnU0raon5mJBqEXlWyT6M4vSLYuKc7X03KmaVXpb5I+cI6rC10EtCMfQy5wx
+         jI03WBCgPJOriDvbEj/AnjNmOJqO7fs04lo24VDu9iW/cjoCSwtjxaCHANc3AG9v7veD
+         nH9ZEmBY2F8MfZZDpxxrnlfvg7zoDd5PqE4xX5wthz13y/vkK1S4BNblbhuqwSbyZfbM
+         +Lnv5/EaXNtE5HPzbOAjM1BJkjI3RXW4LyWmvGEMnRbqBjwtAk721mJIHxxEopdj8zU0
+         87QA==
+X-Gm-Message-State: AOJu0Yx+uAHvkWN3RU9Cs7DzSgQ5SK82OLnr2dmlOrj3RXRSHOwGfqdt
+        KhUQ6ZCbvvhjqdSDI5IuohAI0A==
+X-Google-Smtp-Source: AGHT+IHTu1tR0p32Loha6gIBv3u6cccdwtqrVuQM2e78wXiyYxzOhNg6m4CurIuBKv0iKA4ermztHw==
+X-Received: by 2002:a05:600c:4897:b0:401:38dc:8916 with SMTP id j23-20020a05600c489700b0040138dc8916mr17906557wmp.10.1699029028073;
+        Fri, 03 Nov 2023 09:30:28 -0700 (PDT)
+Received: from ?IPV6:2a05:6e02:1041:c10:7a26:df60:2875:9dfb? ([2a05:6e02:1041:c10:7a26:df60:2875:9dfb])
+        by smtp.googlemail.com with ESMTPSA id bh5-20020a05600c3d0500b004094e565e71sm3121394wmb.23.2023.11.03.09.30.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 03 Nov 2023 09:30:27 -0700 (PDT)
+Message-ID: <3fe787bc-f85c-4268-833f-86922415c4d3@linaro.org>
+Date:   Fri, 3 Nov 2023 17:30:26 +0100
 MIME-Version: 1.0
-References: <20231103112237.1756288-1-anders.roxell@linaro.org>
-In-Reply-To: <20231103112237.1756288-1-anders.roxell@linaro.org>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 3 Nov 2023 09:26:12 -0700
-Message-ID: <CAEf4BzahAuskkD9YqxQpZDaUcu_jTuNAfbkkwP4dzJH=cTaVKA@mail.gmail.com>
-Subject: Re: [PATCH] selftests: bpf: xskxceiver: ksft_print_msg: fix format
- type error
-To:     Anders Roxell <anders.roxell@linaro.org>
-Cc:     bjorn@kernel.org, magnus.karlsson@intel.com,
-        maciej.fijalkowski@intel.com, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] thermal: core: Add trip thresholds for trip crossing
+ detection
+Content-Language: en-US
+To:     srinivas pandruvada <srinivas.pandruvada@linux.intel.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux PM <linux-pm@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Lukasz Luba <lukasz.luba@arm.com>
+References: <12317335.O9o76ZdvQC@kreacher>
+ <6b22f4715641bc4ffc76eea8a4e6358bcbea9e1c.camel@linux.intel.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+In-Reply-To: <6b22f4715641bc4ffc76eea8a4e6358bcbea9e1c.camel@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 3, 2023 at 4:23=E2=80=AFAM Anders Roxell <anders.roxell@linaro.=
-org> wrote:
->
-> Crossbuilding selftests/bpf for architecture arm64, format specifies
-> type error show up like.
->
-> xskxceiver.c:912:34: error: format specifies type 'int' but the argument
-> has type '__u64' (aka 'unsigned long long') [-Werror,-Wformat]
->  ksft_print_msg("[%s] expected meta_count [%d], got meta_count [%d]\n",
->                                                                 ~~
->                                                                 %llu
->                 __func__, pkt->pkt_nb, meta->count);
->                                        ^~~~~~~~~~~
-> xskxceiver.c:929:55: error: format specifies type 'unsigned long long' bu=
-t
->  the argument has type 'u64' (aka 'unsigned long') [-Werror,-Wformat]
->  ksft_print_msg("Frag invalid addr: %llx len: %u\n", addr, len);
->                                     ~~~~             ^~~~
->
+On 03/11/2023 16:42, srinivas pandruvada wrote:
+> On Fri, 2023-11-03 at 15:56 +0100, Rafael J. Wysocki wrote:
+>> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+>>
+>> The trip crossing detection in handle_thermal_trip() does not work
+>> correctly in the cases when a trip point is crossed on the way up and
+>> then the zone temperature stays above its low temperature (that is,
+>> its
+>> temperature decreased by its hysteresis).  The trip temperature may
+>> be passed by the zone temperature subsequently in that case, even
+>> multiple times, but that does not count as the trip crossing as long
+>> as
+>> the zone temperature does not fall below the trip's low temperature
+>> or,
+>> in other words, until the trip is crossed on the way down.
+> 
+> In other words you want to avoid multiple trip UP notifications without
+> a corresponding DOWN notification.
+> 
+> This will reduce unnecessary noise to user space. Is this the
+> intention?
 
-With u64s it might be %llx or %lx, depending on architecture, so best
-is to force cast to (long long) or (unsigned long long) and then use
-%llx.
+Not only reduce noise but give a correct information. Otherwise the 
+userspace will have to figure out if there are duplicate events after 
+the first event happened. The same happen (less often) when crossing the 
+trip point the way down.
 
-> Fixing the issues by using the proposed format specifiers by the
-> compilor.
->
-> Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
-> ---
->  tools/testing/selftests/bpf/xskxceiver.c | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
->
-> diff --git a/tools/testing/selftests/bpf/xskxceiver.c b/tools/testing/sel=
-ftests/bpf/xskxceiver.c
-> index 591ca9637b23..dc03692f34d8 100644
-> --- a/tools/testing/selftests/bpf/xskxceiver.c
-> +++ b/tools/testing/selftests/bpf/xskxceiver.c
-> @@ -908,7 +908,7 @@ static bool is_metadata_correct(struct pkt *pkt, void=
- *buffer, u64 addr)
->         struct xdp_info *meta =3D data - sizeof(struct xdp_info);
->
->         if (meta->count !=3D pkt->pkt_nb) {
-> -               ksft_print_msg("[%s] expected meta_count [%d], got meta_c=
-ount [%d]\n",
-> +               ksft_print_msg("[%s] expected meta_count [%d], got meta_c=
-ount [%llu]\n",
->                                __func__, pkt->pkt_nb, meta->count);
->                 return false;
->         }
-> @@ -926,11 +926,11 @@ static bool is_frag_valid(struct xsk_umem_info *ume=
-m, u64 addr, u32 len, u32 exp
->
->         if (addr >=3D umem->num_frames * umem->frame_size ||
->             addr + len > umem->num_frames * umem->frame_size) {
-> -               ksft_print_msg("Frag invalid addr: %llx len: %u\n", addr,=
- len);
-> +               ksft_print_msg("Frag invalid addr: %lx len: %u\n", addr, =
-len);
->                 return false;
->         }
->         if (!umem->unaligned_mode && addr % umem->frame_size + len > umem=
-->frame_size) {
-> -               ksft_print_msg("Frag crosses frame boundary addr: %llx le=
-n: %u\n", addr, len);
-> +               ksft_print_msg("Frag crosses frame boundary addr: %lx len=
-: %u\n", addr, len);
->                 return false;
->         }
->
-> @@ -1029,7 +1029,7 @@ static int complete_pkts(struct xsk_socket_info *xs=
-k, int batch_size)
->                         u64 addr =3D *xsk_ring_cons__comp_addr(&xsk->umem=
-->cq, idx + rcvd - 1);
->
->                         ksft_print_msg("[%s] Too many packets completed\n=
-", __func__);
-> -                       ksft_print_msg("Last completion address: %llx\n",=
- addr);
-> +                       ksft_print_msg("Last completion address: %lx\n", =
-addr);
->                         return TEST_FAILURE;
->                 }
->
-> @@ -1513,7 +1513,7 @@ static int validate_tx_invalid_descs(struct ifobjec=
-t *ifobject)
->         }
->
->         if (stats.tx_invalid_descs !=3D ifobject->xsk->pkt_stream->nb_pkt=
-s / 2) {
-> -               ksft_print_msg("[%s] tx_invalid_descs incorrect. Got [%u]=
- expected [%u]\n",
-> +               ksft_print_msg("[%s] tx_invalid_descs incorrect. Got [%ll=
-u] expected [%u]\n",
->                                __func__, stats.tx_invalid_descs,
->                                ifobject->xsk->pkt_stream->nb_pkts);
->                 return TEST_FAILURE;
-> --
-> 2.42.0
->
->
+
+
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
+
