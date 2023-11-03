@@ -2,59 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D7127E006D
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 11:30:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60D1A7E00B5
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 11:30:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346442AbjKCIes (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 04:34:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45042 "EHLO
+        id S1346477AbjKCIfP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 04:35:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235601AbjKCIeq (ORCPT
+        with ESMTP id S1346462AbjKCIfM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 04:34:46 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80DCD1BC
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 01:34:44 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EB571C433C7;
-        Fri,  3 Nov 2023 08:34:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699000484;
-        bh=sE+MpiHqWgJ5iIw/npYzRDsl6/Gv+LYVgh0WxYn1jWU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nXpshMam9XLnIcy9bgwXkkE6rGoW0x477Hcqyz2l524SMDdjizinUd1BnNDHh+nPT
-         Zd37Mk7T1KdVVXG9Q0UrCCdAZ2QlWcSpjlRTewSsqLAaf045giyTjiIfZIkyXdWYF0
-         nafF8hPZlK95LobtO+FgH5631ypn0hiZET+/GKRBwPJJQMtefPzfh1MGnPUdLxHK4g
-         GwvVRKHx3i+2Lti2fcur6Jn6PcBDPwPFIkhL+CtRX5Hm2hNZFyC2fGT0qolgmuF5sS
-         JlYTtP63IjQpkImjxAITzg/fHhXZL1IeOGgWpp34KrkfK6pGZsnO+ULdT0soxL/rDl
-         W88rmsv0i9FJQ==
-Date:   Fri, 3 Nov 2023 08:34:38 +0000
-From:   Conor Dooley <conor@kernel.org>
-To:     Evan Green <evan@rivosinc.com>
-Cc:     Palmer Dabbelt <palmer@rivosinc.com>,
-        David Laight <David.Laight@aculab.com>,
-        Jisheng Zhang <jszhang@kernel.org>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Andrew Jones <ajones@ventanamicro.com>,
-        Anup Patel <apatel@ventanamicro.com>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Greentime Hu <greentime.hu@sifive.com>,
-        Ley Foon Tan <leyfoon.tan@starfivetech.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Sunil V L <sunilvl@ventanamicro.com>,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
-Subject: Re: [PATCH] RISC-V: Probe misaligned access speed in parallel
-Message-ID: <20231103-uproar-rumbling-0a7a5ecb385e@spud>
-References: <20230915184904.1976183-1-evan@rivosinc.com>
- <CALs-Hsu_1x2FpjWXbmioSi6x30NXdNgrQ=t=EBknB0O06DA12A@mail.gmail.com>
+        Fri, 3 Nov 2023 04:35:12 -0400
+Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DCD9D44
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 01:35:07 -0700 (PDT)
+Received: by mail-qv1-xf31.google.com with SMTP id 6a1803df08f44-6754b4091b6so10227216d6.3
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Nov 2023 01:35:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1699000506; x=1699605306; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3nQWbcL/T3TlB1kRiOiag95+zWhxfHJr1Pmr2d9D+9g=;
+        b=YQVK7PF/aMkEdA4TBNiIHNokXsWd40GWGEq2V2Zl/K+b3tWX1jr3FJ5ii9wWss143S
+         ACLGrbu3Wzpw4U55EPArfsHlBTnnrgDnpV+a4gVw2yP9D0SWlU2/nikaFfVpiLhb1qdk
+         Pe9WJ4+PsvwMwfayGcydLfXnOuNlaVU3kZwLIJXvXKjWqsx2a5ktQ3+DUCQrpI4PTb91
+         Zu8N5Lohow0UB4ecD0cP6w80YvKtk4CKTpil+7ZILUFiUuk/f7281f2TiN+CAj3huf8z
+         Q4xzZdGBRRcVE0hjv2uuprc/bf2hymLFP6RAUODSPDvlXGi2pUKLTwbdm39JhzKv2v0g
+         4QzA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699000506; x=1699605306;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3nQWbcL/T3TlB1kRiOiag95+zWhxfHJr1Pmr2d9D+9g=;
+        b=n0WswvDrLJd73LvoxrN2oiIGpDP0qZcPFTDebEOLAAwcWGk6EV2yZrGkIiyKU864pW
+         7cwQMobbYcXFbRJpMTgEEQUVFYJd5Kg1qqU/FV4k2rZwNqKrBQH06rb4/6aOwCsINr4b
+         G+jF8Vnt7GflHaVJ52usXtojWY91Z+MaP1miPn6a8ehYgmfEezNT/gIEN5dHMU8SXNsk
+         VGtxHEAalsz0rxg4TAnkAG6f4GiDRT5IGewcW2mV4WAPMWxWhDwRZHPaheYRbxYuRth8
+         VqsXi8s5/tnksQGt65twGxm86PcF8bpkyUDGVttRssQs+kWF8iD/WVo9dU46M7wc3wRj
+         M6jA==
+X-Gm-Message-State: AOJu0YyxgyCfegKhERSHtJyecnJ+6gyptUXZlOo+EToCi/kYwZcIZKkt
+        I8Px1pcooCdMarvjQKs23tqhb9QnmsUFJmFx2Y16Ew==
+X-Google-Smtp-Source: AGHT+IE5DsGvANqbxsuQaF1SolgSwmrS1iC1E8eMAmyRA11uXOzJOvVgtHl40CnD/cimv1XB1JU47T1UIzAeFdJ2hGk=
+X-Received: by 2002:ad4:5bc4:0:b0:671:567d:b134 with SMTP id
+ t4-20020ad45bc4000000b00671567db134mr18052970qvt.56.1699000506207; Fri, 03
+ Nov 2023 01:35:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="G1VAzj1/yjoi+Jgm"
-Content-Disposition: inline
-In-Reply-To: <CALs-Hsu_1x2FpjWXbmioSi6x30NXdNgrQ=t=EBknB0O06DA12A@mail.gmail.com>
-X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+References: <20231102073056.174480-1-sumit.garg@linaro.org>
+ <20231102073056.174480-2-sumit.garg@linaro.org> <CAC_iWjL_DLrKqbxvnWPmOYxLULjC46LMca5cF_sza1LDyifuWA@mail.gmail.com>
+ <CAFA6WYO9S8n3uK9DYOMmFX=Sj1nSDFfKErZY4Xe4CM8+SgGhcA@mail.gmail.com>
+In-Reply-To: <CAFA6WYO9S8n3uK9DYOMmFX=Sj1nSDFfKErZY4Xe4CM8+SgGhcA@mail.gmail.com>
+From:   Jens Wiklander <jens.wiklander@linaro.org>
+Date:   Fri, 3 Nov 2023 09:34:55 +0100
+Message-ID: <CAHUa44Gto99R5iGPkE8SMZDT2GyvZ8fTgH9SVyrX7Hqk0XjBCg@mail.gmail.com>
+Subject: Re: [PATCH v4 1/2] tee: optee: Fix supplicant based device enumeration
+To:     Sumit Garg <sumit.garg@linaro.org>
+Cc:     Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        op-tee@lists.trustedfirmware.org, jan.kiszka@siemens.com,
+        arnd@linaro.org, ardb@kernel.org, jerome.forissier@linaro.org,
+        masahisa.kojima@linaro.org, maxim.uvarov@linaro.org,
+        jarkko.sakkinen@linux.intel.com, linux-kernel@vger.kernel.org,
+        diogo.ivo@siemens.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -63,71 +75,148 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
---G1VAzj1/yjoi+Jgm
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Thu, Nov 02, 2023 at 03:41:58PM -0700, Evan Green wrote:
-> On Fri, Sep 15, 2023 at 11:49=E2=80=AFAM Evan Green <evan@rivosinc.com> w=
+On Fri, Nov 3, 2023 at 6:52=E2=80=AFAM Sumit Garg <sumit.garg@linaro.org> w=
 rote:
+>
+> Hi Ilias,
+>
+> On Thu, 2 Nov 2023 at 19:58, Ilias Apalodimas
+> <ilias.apalodimas@linaro.org> wrote:
 > >
-> > Probing for misaligned access speed takes about 0.06 seconds. On a
-> > system with 64 cores, doing this in smp_callin() means it's done
-> > serially, extending boot time by 3.8 seconds. That's a lot of boot time.
+> > Hi Sumit,
 > >
-> > Instead of measuring each CPU serially, let's do the measurements on
-> > all CPUs in parallel. If we disable preemption on all CPUs, the
-> > jiffies stop ticking, so we can do this in stages of 1) everybody
-> > except core 0, then 2) core 0.
-> >
-> > The measurement call in smp_callin() stays around, but is now
-> > conditionalized to only run if a new CPU shows up after the round of
-> > in-parallel measurements has run. The goal is to have the measurement
-> > call not run during boot or suspend/resume, but only on a hotplug
-> > addition.
-> >
-> > Signed-off-by: Evan Green <evan@rivosinc.com>
->=20
-> Shoot, I saw the other thread [1] where it seems like my use of
-> alloc_pages() in this context is improper? I had thought I was
-> alright, as Documentation/core-api/memory-allocation.rst says:
->=20
->  > If the allocation is performed from an atomic context, e.g interrupt
->  > handler, use ``GFP_NOWAIT``.
->=20
-> Any tips for reproducing that splat? I have CONFIG_DEBUG_ATOMIC_SLEEP
-> on (it's in the defconfig), and lockdep, and I'm on Conor's
-> linux-6.6.y-rt, but so far I'm not seeing it.
+> > On Thu, 2 Nov 2023 at 09:31, Sumit Garg <sumit.garg@linaro.org> wrote:
+> > >
+> > > Currently supplicant dependent optee device enumeration only register=
+s
+> > > devices whenever tee-supplicant is invoked for the first time. But it
+> > > forgets to remove devices when tee-supplicant daemon stops running an=
+d
+> > > closes its context gracefully. This leads to following error for fTPM
+> > > driver during reboot/shutdown:
+> > >
+> > > [   73.466791] tpm tpm0: ftpm_tee_tpm_op_send: SUBMIT_COMMAND invoke =
+error: 0xffff3024
+> > >
+> > > Fix this by adding an attribute for supplicant dependent devices so t=
+hat
+> > > the user-space service can detect and detach supplicant devices befor=
+e
+> > > closing the supplicant:
+> > >
+> > > $ for dev in /sys/bus/tee/devices/*; do if [[ -f "$dev/need_supplican=
+t" && -f "$dev/driver/unbind" ]]; \
+> > >       then echo $(basename "$dev") > $dev/driver/unbind; fi done
+> > >
+> > > Reported-by: Jan Kiszka <jan.kiszka@siemens.com>
+> > > Link: https://github.com/OP-TEE/optee_os/issues/6094
 
-It was originally produced in hardware, but I can also see these issues
-in QEMU's emulation of my hardware (although as you may have seen, I get
-them both with and without this patch). My qemu incantation was
-something like:
-	$(qemu) -M microchip-icicle-kit \
-		-m 3G -smp 5 \
-		-kernel vmlinux.bin \
-		-dtb mpfs-icicle.dtb \
-		-initrd initramfs \
-		-display none -serial null \
-		-serial stdio \
-		-D qemu.log -d unimp
+Checkpatch complains here, we should use "Closes:" instead of "Link:".
 
-Where the kernel was built from the .config in that branch in my repo.
+> > > Fixes: 5f178bb71e3a ("optee: enable support for multi-stage bus enume=
+ration")
+> > > Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+> > > ---
+> > >  .../ABI/testing/sysfs-bus-optee-devices         |  9 +++++++++
+> > >  drivers/tee/optee/device.c                      | 17 +++++++++++++++=
+--
+> > >  2 files changed, 24 insertions(+), 2 deletions(-)
+> > >
+> > > diff --git a/Documentation/ABI/testing/sysfs-bus-optee-devices b/Docu=
+mentation/ABI/testing/sysfs-bus-optee-devices
+> > > index 0f58701367b6..d914f6629662 100644
+> > > --- a/Documentation/ABI/testing/sysfs-bus-optee-devices
+> > > +++ b/Documentation/ABI/testing/sysfs-bus-optee-devices
+> > > @@ -6,3 +6,12 @@ Description:
+> > >                 OP-TEE bus provides reference to registered drivers u=
+nder this directory. The <uuid>
+> > >                 matches Trusted Application (TA) driver and correspon=
+ding TA in secure OS. Drivers
+> > >                 are free to create needed API under optee-ta-<uuid> d=
+irectory.
+> > > +
+> > > +What:          /sys/bus/tee/devices/optee-ta-<uuid>/need_supplicant
+> > > +Date:          July 2008
+> >
+> > nit, date needs changing
+> >
+>
+> Thanks for catching that. If nothing major comes up then I hope Jens
+> can correct it while applying.
+
+Sure, I can update it to November 2023.
+
+I'll fix the date and the "Closes:" tag if there's no v5.
 
 Cheers,
-Conor.
+Jens
 
---G1VAzj1/yjoi+Jgm
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZUSwngAKCRB4tDGHoIJi
-0pnVAQDoGrbuX8WYBNusBkNvYdfa6NNmwBhgyGi8nakTAO0FNwD+I6uqKJlLCnrN
-Gas947oBPmncixilSkkp8KNlJBLUlAA=
-=BjY9
------END PGP SIGNATURE-----
-
---G1VAzj1/yjoi+Jgm--
+>
+> > > +KernelVersion: 6.7
+> > > +Contact:       op-tee@lists.trustedfirmware.org
+> > > +Description:
+> > > +               Allows to distinguish whether an OP-TEE based TA/devi=
+ce requires user-space
+> > > +               tee-supplicant to function properly or not. This attr=
+ibute will be present for
+> > > +               devices which depend on tee-supplicant to be running.
+> > > diff --git a/drivers/tee/optee/device.c b/drivers/tee/optee/device.c
+> > > index 64f0e047c23d..4b1092127694 100644
+> > > --- a/drivers/tee/optee/device.c
+> > > +++ b/drivers/tee/optee/device.c
+> > > @@ -60,7 +60,16 @@ static void optee_release_device(struct device *de=
+v)
+> > >         kfree(optee_device);
+> > >  }
+> > >
+> > > -static int optee_register_device(const uuid_t *device_uuid)
+> > > +static ssize_t
+> >
+> > (struct device *dev,
+> > > +                                   struct device_attribute *attr,
+> > > +                                   char *buf)
+> > > +{
+> > > +       return 0;
+> > > +}
+> > > +
+> > > +static DEVICE_ATTR_RO(need_supplicant);
+> > > +
+> > > +static int optee_register_device(const uuid_t *device_uuid, u32 func=
+)
+> > >  {
+> > >         struct tee_client_device *optee_device =3D NULL;
+> > >         int rc;
+> > > @@ -83,6 +92,10 @@ static int optee_register_device(const uuid_t *dev=
+ice_uuid)
+> > >                 put_device(&optee_device->dev);
+> > >         }
+> > >
+> > > +       if (func =3D=3D PTA_CMD_GET_DEVICES_SUPP)
+> > > +               device_create_file(&optee_device->dev,
+> > > +                                  &dev_attr_need_supplicant);
+> > > +
+> > >         return rc;
+> > >  }
+> > >
+> > > @@ -142,7 +155,7 @@ static int __optee_enumerate_devices(u32 func)
+> > >         num_devices =3D shm_size / sizeof(uuid_t);
+> > >
+> > >         for (idx =3D 0; idx < num_devices; idx++) {
+> > > -               rc =3D optee_register_device(&device_uuid[idx]);
+> > > +               rc =3D optee_register_device(&device_uuid[idx], func)=
+;
+> > >                 if (rc)
+> > >                         goto out_shm;
+> > >         }
+> > > --
+> > > 2.34.1
+> > >
+> >
+> > Other than that
+> > Reviewed-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>
+>
+> Thanks.
+>
+> -Sumit
