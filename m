@@ -2,188 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C1FE47E05C5
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 16:52:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56E707E05C3
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 16:51:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343814AbjKCPwJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 11:52:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50258 "EHLO
+        id S234294AbjKCPvc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 11:51:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230110AbjKCPwH (ORCPT
+        with ESMTP id S230110AbjKCPva (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 11:52:07 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F0C2111
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 08:51:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1699026685;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=cQfUHragInpQXkGJlCrmUlsPxp9RJTqS4atEg6g9qME=;
-        b=JmlTba1pM1UX2NwooDLN+O05x451+XsMd8NwRFMzo0T3ChlwVSxpBEme0FNCyyZ3KEYc6x
-        gj/GLi4lTEH/DmZoAjOx1EGoIiAItGTItJkkIaANE6wS95YQilIN/O08mu5JGnzaZjis2I
-        qGT/u7/S1AJK5kLgxsSbdqfRauHyR6o=
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com
- [209.85.166.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-139-89O-kuX3Nn-PH7pA5Lgygw-1; Fri, 03 Nov 2023 11:51:24 -0400
-X-MC-Unique: 89O-kuX3Nn-PH7pA5Lgygw-1
-Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-357a7a97128so20184525ab.2
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Nov 2023 08:51:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699026683; x=1699631483;
-        h=content-transfer-encoding:mime-version:organization:references
-         :in-reply-to:message-id:subject:cc:to:from:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=cQfUHragInpQXkGJlCrmUlsPxp9RJTqS4atEg6g9qME=;
-        b=mw3mgFeC90a0HMfI1P1P82gQUdcAEzcmS5AlKXKEuKLMarWHk8PFsDo+YKqyvDpM0a
-         +nU7tbp4EFQz9QS87JuUrCBby+OIqvPpANBP3SymIGSyDhgEBrvNK/eRE4mHukon5Ihx
-         sfHtyJouX03Po6g39wXSkqA4j8OAVxZxjvsiXen1YMTfeJWOeL3M0fPlOswkWiWLZOzl
-         3BOjfMARQYcYNI8ceoHe2mQlI2B95pgVBRDeblAiHtqvBp5HyYlYnD2aF+EiVMr6+357
-         fQ5JeQEeK3ZdoCC21QnK/cMriwBLPCAFwJQ+59WOkqtizvaj2ZSQfcaNBHWfwI63YiOf
-         Af9Q==
-X-Gm-Message-State: AOJu0YxRjHP0M0ljL+jiCms2QFxk3eN9Z4My2ZtNTiIpBYQiOU2QksyE
-        QJStDvmxSXAbg0OlfZ0pp2lBEvpGFzzMah3949H8dKzoz/v5NSxKVPokHYnRr0ybAIvd4fW5YyQ
-        jIXQ1j7ZRDpxTeu1oXYUaua5W
-X-Received: by 2002:a05:6e02:1846:b0:357:8d71:347f with SMTP id b6-20020a056e02184600b003578d71347fmr34486478ilv.8.1699026683230;
-        Fri, 03 Nov 2023 08:51:23 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFGj8CHxufE7VHtH3JkFgjEN1b6NgZYdSnvw1WC8K1DBeYPqTQM5Psn/dldpSTv/MzEpAzisw==
-X-Received: by 2002:a05:6e02:1846:b0:357:8d71:347f with SMTP id b6-20020a056e02184600b003578d71347fmr34486459ilv.8.1699026683002;
-        Fri, 03 Nov 2023 08:51:23 -0700 (PDT)
-Received: from redhat.com ([38.15.60.12])
-        by smtp.gmail.com with ESMTPSA id b16-20020a92ce10000000b003596a440efasm281748ilo.19.2023.11.03.08.51.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Nov 2023 08:51:22 -0700 (PDT)
-Date:   Fri, 3 Nov 2023 09:51:19 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     "Tian, Kevin" <kevin.tian@intel.com>
-Cc:     "Chatre, Reinette" <reinette.chatre@intel.com>,
-        "jgg@nvidia.com" <jgg@nvidia.com>,
-        "yishaih@nvidia.com" <yishaih@nvidia.com>,
-        "shameerali.kolothum.thodi@huawei.com" 
-        <shameerali.kolothum.thodi@huawei.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        "Liu, Jing2" <jing2.liu@intel.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "Yu, Fenghua" <fenghua.yu@intel.com>,
-        "tom.zanussi@linux.intel.com" <tom.zanussi@linux.intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "patches@lists.linux.dev" <patches@lists.linux.dev>
-Subject: Re: [RFC PATCH V3 00/26] vfio/pci: Back guest interrupts from
- Interrupt Message Store (IMS)
-Message-ID: <20231103095119.63aa796f.alex.williamson@redhat.com>
-In-Reply-To: <BN9PR11MB5276BCEA3275EC7203E06FDA8CA5A@BN9PR11MB5276.namprd11.prod.outlook.com>
-References: <cover.1698422237.git.reinette.chatre@intel.com>
-        <BL1PR11MB52710EAB683507AD7FAD6A5B8CA0A@BL1PR11MB5271.namprd11.prod.outlook.com>
-        <20231101120714.7763ed35.alex.williamson@redhat.com>
-        <BN9PR11MB52769292F138F69D8717BE8D8CA6A@BN9PR11MB5276.namprd11.prod.outlook.com>
-        <20231102151352.1731de78.alex.williamson@redhat.com>
-        <BN9PR11MB5276BCEA3275EC7203E06FDA8CA5A@BN9PR11MB5276.namprd11.prod.outlook.com>
-Organization: Red Hat
+        Fri, 3 Nov 2023 11:51:30 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 886901BF;
+        Fri,  3 Nov 2023 08:51:27 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E4E77C433C7;
+        Fri,  3 Nov 2023 15:51:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699026687;
+        bh=IutdH8zanBFtnsKY2r07pCOYRS1qw6WY7R1gK1g7a3Q=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=IeOGr+JIPmLiaqdsuoEAC2A3yTBwWlAQu81syWGQJgrKR3+daJ4NzIgaFJWetDsjC
+         HBxaazVVECApMigMVXfZjFI4c/NxmYuGjMy/oB6HwJq7q1oP1Uki9lKJWwvNQQEpwv
+         TaA9YYLwD6yCIK7lYU651utt12Jc9CszHNPF+cqh5KNdne0MYLhk2dfA7rJAal4ZI7
+         aq4k8h00/wayv2T16EHJQLfiNXn5XKJMMmX3b46rDcHUQNXQSXs3cWqgOq8UwzYzeo
+         2uB8/WEejtHQULZoqF2OYU6kA6Zb2ZaEIzUMkdueDCnKWkbGSd8JhQqtoTqpNsH1bI
+         QHczVoicdoTLQ==
+Date:   Fri, 3 Nov 2023 10:51:25 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/1] PCI: Use FIELD_PREP() and remove *_SHIFT defines
+Message-ID: <20231103155125.GA155966@bhelgaas>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <7dcedbee-8d81-1cb5-a5a6-020df8ea2@linux.intel.com>
 X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 3 Nov 2023 07:23:13 +0000
-"Tian, Kevin" <kevin.tian@intel.com> wrote:
-
-> > From: Alex Williamson <alex.williamson@redhat.com>
-> > Sent: Friday, November 3, 2023 5:14 AM
+On Fri, Nov 03, 2023 at 04:07:19PM +0200, Ilpo Järvinen wrote:
+> On Fri, 3 Nov 2023, Ilpo Järvinen wrote:
+> 
+> > On Tue, 31 Oct 2023, Bjorn Helgaas wrote:
+> > > On Fri, Oct 27, 2023 at 11:38:11AM +0300, Ilpo Järvinen wrote:
+> > > > Instead of open-coded masking and shifting with PCI_CONF1_* bitfields,
+> > > > use GENMASK() and FIELD_PREP(), and then remove the *_SHIFT defines
+> > > > that are no longer needed.
 > > 
-> > On Thu, 2 Nov 2023 03:14:09 +0000
-> > "Tian, Kevin" <kevin.tian@intel.com> wrote:
-> >   
-> > > > From: Tian, Kevin
-> > > > Sent: Thursday, November 2, 2023 10:52 AM
+> > > > @@ -797,19 +799,15 @@ static inline pci_power_t mid_pci_get_power_state(struct pci_dev *pdev)
+> > > >   * Section 3.2.2.3.2, Figure 3-2, p. 50.
+> > > >   */
 > > > >  
-> > > > >
-> > > > > Without an in-tree user of this code, we're just chopping up code for
-> > > > > no real purpose.  There's no reason that a variant driver requiring IMS
-> > > > > couldn't initially implement their own SET_IRQS ioctl.  Doing that  
-> > > >
-> > > > this is an interesting idea. We haven't seen a real usage which wants
-> > > > such MSI emulation on IMS for variant drivers. but if the code is
-> > > > simple enough to demonstrate the 1st user of IMS it might not be
-> > > > a bad choice. There are additional trap-emulation required in the
-> > > > device MMIO bar (mostly copying MSI permission entry which contains
-> > > > PASID info to the corresponding IMS entry). At a glance that area
-> > > > is 4k-aligned so should be doable.
+> > > > -#define PCI_CONF1_BUS_SHIFT	16 /* Bus number */
+> > > > -#define PCI_CONF1_DEV_SHIFT	11 /* Device number */
+> > > > -#define PCI_CONF1_FUNC_SHIFT	8  /* Function number */
+> > > > -
+> > > > -#define PCI_CONF1_BUS_MASK	0xff
+> > > > -#define PCI_CONF1_DEV_MASK	0x1f
+> > > > -#define PCI_CONF1_FUNC_MASK	0x7
+> > > > +#define PCI_CONF1_BUS_MASK	GENMASK(23, 16)
+> > > > +#define PCI_CONF1_DEV_MASK	GENMASK(15, 11)
+> > > > +#define PCI_CONF1_FUNC_MASK	GENMASK(10, 8)
+> > > >  #define PCI_CONF1_REG_MASK	0xfc /* Limit aligned offset to a maximum of 256B */
 > > > >  
+> > > >  #define PCI_CONF1_ENABLE	BIT(31)
+> > > > -#define PCI_CONF1_BUS(x)	(((x) & PCI_CONF1_BUS_MASK) << PCI_CONF1_BUS_SHIFT)
+> > > > -#define PCI_CONF1_DEV(x)	(((x) & PCI_CONF1_DEV_MASK) << PCI_CONF1_DEV_SHIFT)
+> > > > -#define PCI_CONF1_FUNC(x)	(((x) & PCI_CONF1_FUNC_MASK) << PCI_CONF1_FUNC_SHIFT)
+> > > > +#define PCI_CONF1_BUS(x)	FIELD_PREP(PCI_CONF1_BUS_MASK, (x))
+> > > > +#define PCI_CONF1_DEV(x)	FIELD_PREP(PCI_CONF1_DEV_MASK, (x))
+> > > > +#define PCI_CONF1_FUNC(x)	FIELD_PREP(PCI_CONF1_FUNC_MASK, (x))
+> > > >  #define PCI_CONF1_REG(x)	((x) & PCI_CONF1_REG_MASK)
+> > > 
+> > > I love getting rid of the _SHIFT #defines.
 > > >
-> > > misread the spec. the MSI-X permission table which provides
-> > > auxiliary data to MSI-X table is not 4k-aligned. It sits in the 1st
-> > > 4k page together with many other registers. emulation of them
-> > > could be simple with a native read/write handler but not sure
-> > > whether any of them may sit in a hot path to affect perf due to
-> > > trap...  
+> > > I'm a dinosaur and haven't been completely converted to the wonders of
+> > > GENMASK yet.
 > > 
-> > I'm not sure if you're referring to a specific device spec or the PCI
-> > spec, but the PCI spec has long included an implementation note
-> > suggesting alignment of the MSI-X vector table and pba and separation
-> > from CSRs, and I see this is now even more strongly worded in the 6.0
-> > spec.
+> > Okay but would it convince even "a dinosaur" like you :-) if you imagine
+> > a Bit Location column in some spec which says:
+> > 	23:16
 > > 
-> > Note though that for QEMU, these are emulated in the VMM and not
-> > written through to the device.  The result of writes to the vector
-> > table in the VMM are translated to vector use/unuse operations, which
-> > we see at the kernel level through SET_IRQS ioctl calls.  Are you
-> > expecting to get PASID information written by the guest through the
-> > emulated vector table?  That would entail something more than a simple
-> > IMS backend to MSI-X frontend.  Thanks,
-> >   
+> > GENMASK just happens to mystically repeat those two numbers:
+> > 	GENMASK(23, 16)
+> > 
+> > Pretty magic, isn't it?
+> > 
+> > > PCI_CONF1_ADDRESS is the only user of PCI_CONF1_BUS etc,
+> > > so I think this would be simpler overall:
+> > > 
+> > >   #define PCI_CONF1_BUS  0x00ff0000
+> > >   #define PCI_CONF1_DEV  0x0000f800
+> > >   #define PCI_CONF1_FUNC 0x00000700
+> > >   #define PCI_CONF1_REG  0x000000ff
+> > > 
+> > >   #define PCI_CONF1_ADDRESS(bus, dev, func, reg) \
+> > >     (FIELD_PREP(PCI_CONF1_BUS, (bus)) | \
+> > >      FIELD_PREP(PCI_CONF1_DEV, (dev)) | \
+> > >      FIELD_PREP(PCI_CONF1_FUNC, (func)) | \
+> > >      FIELD_PREP(PCI_CONF1_REG, (reg & ~0x3)))
 > 
-> I was referring to IDXD device spec. Basically it allows a process to
-> submit a descriptor which contains a completion interrupt handle.
-> The handle is the index of a MSI-X entry or IMS entry allocated by
-> the idxd driver. To mark the association between application and
-> related handles the driver records the PASID of the application
-> in an auxiliary structure for MSI-X (called MSI-X permission table)
-> or directly in the IMS entry. This additional info includes whether
-> an MSI-X/IMS entry has PASID enabled and if yes what is the PASID
-> value to be checked against the descriptor.
+> This ended up not working, because FIELD_PREP() detects ext regs not 
+> fitting into PCI_CONF1_REG:
+> 	FIELD_PREP(PCI_CONF1_REG, (reg) & ~0x3)
 > 
-> As you said virtualizing MSI-X table itself is via SET_IRQS and it's
-> 4k aligned. Then we also need to capture guest updates to the MSI-X
-> permission table and copy the PASID information into the
-> corresponding IMS entry when using the IMS backend. It's MSI-X
-> permission table not 4k aligned then trapping it will affect adjacent
-> registers.
+> There are two partially overlapping things here when it comes to reg 
+> (addressing side and parameter input side):
 > 
-> My quick check in idxd spec doesn't reveal an real impact in perf
-> critical path. Most registers are configuration/control registers
-> accessed at driver init time and a few interrupt registers related
-> to errors or administrative purpose.
+> #define PCI_CONF1_REG_ADDR	0x000000ff
+> // for PCI_CONF1_EXT_ADDRESS:
+> #define PCI_CONF1_EXT_REG_ADDR	0x0f000000
+> 
+> /* PCI Config register (parameter input side) */
+> #define PCI_CONF1_REG		0x0fc
+> #define PCI_CONF1_EXT_REG	0xf00
+> 
+> Would those 4 defines be acceptable? Or should I mark the input side with
+> _IN or use different prefix for the defines?
 
-Right, it looks like you'll need to trap writes to the MSI-X
-Permissions Table via a sparse mmap capability to avoid assumptions
-whether it lives on the same page as the MSI-X vector table or PBA.
-Ideally the hardware folks have considered this to avoid any conflict
-with latency sensitive registers.
+No opinion here yet.  Maybe PCI_CONF1_EXT_ADDRESS() needs to
+explicitly pull out the low 8 bits before giving them to
+PCI_CONF1_ADDRESS()?
 
-The variant driver would use this for collecting the meta data relative
-to the IMS interrupt, but this is all tangential to whether we
-preemptively slice up vfio-pci-core's SET_IRQS ioctl or the iDXD driver
-implements its own.
+> > Yes, it makes sense to remove the extra layer.
+> > 
+> > One additional thing, I just noticed lots of arch/ code is duplicating 
+> > this calculation so perhaps this should also be moved outside of 
+> > drivers/pci/ into include/linux/pci.h ? (Not in the same patch.)
+> 
+> I also noticed you took PCI_CONF1_ENABLE away from PCI_CONF1_ADDRESS(),
+> did you intend for it to be moved at the caller site?
+> 
+> Moving it outside of PCI_CONF1_ADDRESS() would certainly help reusing this 
+> code as notall arch code wants PCI_CONF1_ENABLE I think.
 
-And just to be clear, I don't expect the iDXD variant driver to go to
-extraordinary lengths to duplicate the core ioctl, we can certainly
-refactor and export things where it makes sense, but I think it likely
-makes more sense for the variant driver to implement the shell of the
-ioctl rather than trying to multiplex the entire core ioctl with an ops
-structure that's so intimately tied to the core implementation and
-focused only on the MSI-X code paths.  Thanks,
+Honestly, I didn't think about PCI_CONF1_ENABLE; I just wanted to show
+the idea of using FIELD_PREP() directly in PCI_CONF1_ADDRESS().
 
-Alex
+I *did* later think that the "& ~0x3" part maybe doesn't belong in
+PCI_CONF1_ADDRESS(), since that's really connected with the use of
+readl()/writel() in the caller.  Hmmm, I guess only
+faraday_raw_pci_read_config() and ixp4xx_config_addr() actually use
+this.  Maybe those places should mask out the low bits themselves?
 
+Maybe the same with PCI_CONF1_ENABLE, since ixp4xx_config_addr()
+removes that bit anyway?  Not sure.
+
+Bjorn
