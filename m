@@ -2,322 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 716397E0163
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 11:31:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03C187E014B
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 11:31:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231345AbjKCGhD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 02:37:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38944 "EHLO
+        id S231838AbjKCGkw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 02:40:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229480AbjKCGhB (ORCPT
+        with ESMTP id S230502AbjKCGku (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 02:37:01 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AE711B9
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 23:36:55 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F6DAC433C9
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 06:36:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698993415;
-        bh=uGFIe74ep8DudwxIo3EhJhTyvWFwIB7jua7bjSCIcVQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=bVqdP7wYxD/+mfgI8o4q2okqrApZzo/HhdONohcbEKuFqBaI2JGdFU3SsroSEZN5y
-         9IX3fFnZHtB1oSuFTlqyUjlxz1fszzH8IdN4HZaVpK8V01jOyJcCghR2OgAoibg+L3
-         opW3G36Ns30BcsFWgB97qVvacjoyivNZyAsrNhKhgFhalBWrcH00SGvDTIGWCwcqr+
-         6H1YjFFvb8zS7F/7XZe2AjN+lhRR3iJ+xEgXIMvpgMuUoa71NXj3Ta40hXWbnEEP/o
-         ut0MHCBSevuAC9NDFS7/adn6tSva6T2QwcjXnpReiEqXTy3xG2mTcjmzvb9I4TGuZv
-         y1DSfTEq/nilQ==
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-9adca291f99so254729566b.2
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 23:36:55 -0700 (PDT)
-X-Gm-Message-State: AOJu0Yylp56w0LRK206KAnyfSoxopVrP8jaoBFbsfyaL/OLMR0h4/3bv
-        b8O3zK3fyl7RINZv3Nnugec2u85Kdgfg2i2MeEU=
-X-Google-Smtp-Source: AGHT+IH2wBy6C2v47QiEh+/oIl5NyvvXKljpz9IZdiO0ck4H9/hLyqt4SMvbZndPDC38Xsxq6wwIJ7eYInuD9Wn0Y/U=
-X-Received: by 2002:a17:907:a08a:b0:9c7:db3:8b36 with SMTP id
- hu10-20020a170907a08a00b009c70db38b36mr5915977ejc.74.1698993413600; Thu, 02
- Nov 2023 23:36:53 -0700 (PDT)
-MIME-Version: 1.0
-References: <ZTWoDSPxGO-ApR4r@P70.localdomain> <82f1b533-3bd8-4418-843a-718d9a6b5786@leemhuis.info>
- <CAAhV-H5DH3Oj3ttSpa_k6jUdZ+0_pMwgoaqUTGGFr46j7DMXRw@mail.gmail.com>
- <ba16ad66-4b35-4fb4-b4e6-1d785f260eea@ristioja.ee> <CAAhV-H64AKdGoHnVLLOYXznpr_aq1jC_TUYXFQRdOjoBxanxkw@mail.gmail.com>
- <c3bb7983-86e4-424e-aadd-e82a0cb6ef37@ristioja.ee> <CAAhV-H7UTnTWQeT_qo7VgBczaZo37zjosREr16H8DsLi21XPqQ@mail.gmail.com>
- <CAAhV-H7fJS3-3_hqA4BUdH+q5EG6wSmEoPpO-fUZn5h35O=6OA@mail.gmail.com>
- <31ed0db1-9398-4c46-a391-fc644ec49268@ristioja.ee> <CAAhV-H4MekBgYZ1nJ-M7bnpo3bczOMcTanij18ACCALz2svjQQ@mail.gmail.com>
- <ZUSJDG82vzbuyFEY@P70.localdomain>
-In-Reply-To: <ZUSJDG82vzbuyFEY@P70.localdomain>
-From:   Huacai Chen <chenhuacai@kernel.org>
-Date:   Fri, 3 Nov 2023 14:36:42 +0800
-X-Gmail-Original-Message-ID: <CAAhV-H6GyOnTOm6b8Xp=ySctyE-T905WKDUS2AZuqnEyzM7ZEg@mail.gmail.com>
-Message-ID: <CAAhV-H6GyOnTOm6b8Xp=ySctyE-T905WKDUS2AZuqnEyzM7ZEg@mail.gmail.com>
-Subject: Re: Blank screen on boot of Linux 6.5 and later on Lenovo ThinkPad L570
-To:     Evan Preston <x.arch@epreston.net>
-Cc:     Jaak Ristioja <jaak@ristioja.ee>,
-        Linux regressions mailing list <regressions@lists.linux.dev>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux DRI Development <dri-devel@lists.freedesktop.org>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        Thorsten Leemhuis <regressions@leemhuis.info>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Bagas Sanjaya <bagasdotme@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+        Fri, 3 Nov 2023 02:40:50 -0400
+Received: from esa5.hgst.iphmx.com (esa5.hgst.iphmx.com [216.71.153.144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 990A9CA;
+        Thu,  2 Nov 2023 23:40:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1698993644; x=1730529644;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=0H8uF6uRphhgAW1p0wYu2vVQFz4P/6cLqDRwxZeXSFg=;
+  b=rsnRsJjkZGqOkPWzUuNF4Um60pROJyxl/oy+CTCBkGYG90YVNtE8SkOP
+   SMeYYIu/C6egBDe6qQQNwzkS+QO5F4C2s5VvQteYw+1ocfqd9mlOBsbTE
+   YJ2We99u6esSgMwfTRcxdxpKUca7oaGksr0SyvfjzD+Vcd9LxZwvrX1j1
+   fRG/3MZzkgqC/xy+DC5HfsGuiD2/zcm5r6thH+bhRxuv/Js0vFjzTUPsa
+   mAmzQ8SPGetb5B7SSrhaCs8oP3aNapgDWQB0K5Lx49b/MNRJbmi3xPUqu
+   QzTSG+K4oP+e2TC2JBEnHh+HkYiDHq6aC+nVzhszPp6uUga1QqbrBhsnR
+   Q==;
+X-CSE-ConnectionGUID: oXSkYV8YTcGmSNO/AeMgPA==
+X-CSE-MsgGUID: fy1ME5LkS1uTBlyKzn0P3g==
+X-IronPort-AV: E=Sophos;i="6.03,273,1694707200"; 
+   d="scan'208";a="1450049"
+Received: from mail-dm6nam04lp2041.outbound.protection.outlook.com (HELO NAM04-DM6-obe.outbound.protection.outlook.com) ([104.47.73.41])
+  by ob1.hgst.iphmx.com with ESMTP; 03 Nov 2023 14:40:43 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=XHsLhJqtNQo+Gy/SQ0pk4PDIrb+OXXg3Ce6TlxyaBjelit/m9GaN8gpC8R1x/BKJgWREWNIwz+UDAfvAbPjohwtul1U/+NQLgKx3Zx7rsLCqJSqSAsUNg+tvtxi8Dgdqmsilf+tg5cIjOkR82rUDtxvmrkL4IpdfMYDQnMk0SP1DnYniHx/K1LgCa3g30uJWAoZoto/yeNtjID5WCvucEiSoOaeqSiVHBvJxmTZG8zAu4+8VtkhAhlAUoVdHNpUwRp20ZDBPd+Dc8ME1Vs8PB1JixjonXQdpDb3MhczRU9s/Wghy8fl6E6VZFZa2HoFoQaR/FQdiPKBegvbdSch+Vg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=9JplVVXdViekdH5PgGZ7q3SPGySzB0BSBe9ChXVg3XI=;
+ b=Nu3FLEk2TAj6WbYVeh0+FyDVdJ+xPo6DlCl1llVLTR754LAjXsUv2FGEnfuncxsvG7pyBCt9rIGRDLZg/u/fidA+Xoh0xaMMyjMRVDVKeIyMTnh7F+viE7gihdNDe1HAvUm82mzf5fSJfrWZQqjxA1heHjcfHp4y1i6UINIcqcJzdMcW0fWEw18PTZE4IcbzrBly4Kx4Mx0J2rOeuK383TsSSt9xo3V/0cCGjvJPaB9gOdqyHhd/YIjZN9mJPZyKVCvMXhn1QF+ZXQfjBeIZ867MmnDdDN9k6i6WmgMhskYFvAlzkaDb5DAVDjZIV79UmkNx7MkdUBj48os10AwZKw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9JplVVXdViekdH5PgGZ7q3SPGySzB0BSBe9ChXVg3XI=;
+ b=KSiuGLMENpN9rHhNLvF4VluylbTiGYwGygRpcnFB/kvGTjBTBG+6FEE581xnl1Ifcuf207TupOblEp6psPQqu0j1QAO2WCkRStyFO5764HSmQMmaZN0znPSNYokYqa6G0mzFe6hVTrTMQz4V/Kuj7E2HFoMznIcLV/0F+i2KNAo=
+Received: from DM6PR04MB6575.namprd04.prod.outlook.com (2603:10b6:5:1b7::7) by
+ CH0PR04MB8034.namprd04.prod.outlook.com (2603:10b6:610:f8::9) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6954.21; Fri, 3 Nov 2023 06:40:41 +0000
+Received: from DM6PR04MB6575.namprd04.prod.outlook.com
+ ([fe80::83bc:d5e1:c29:88dd]) by DM6PR04MB6575.namprd04.prod.outlook.com
+ ([fe80::83bc:d5e1:c29:88dd%5]) with mapi id 15.20.6954.021; Fri, 3 Nov 2023
+ 06:40:41 +0000
+From:   Avri Altman <Avri.Altman@wdc.com>
+To:     Dominique Martinet <asmadeus@codewreck.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+CC:     "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Dominique Martinet <dominique.martinet@atmark-techno.com>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        Alex Fetters <Alex.Fetters@garmin.com>
+Subject: RE: [PATCH] Revert "mmc: core: Capture correct oemid-bits for eMMC
+ cards"
+Thread-Topic: [PATCH] Revert "mmc: core: Capture correct oemid-bits for eMMC
+ cards"
+Thread-Index: AQHaDe6wuGa60xkLQE+wyC+Jey7ipbBoJUEA
+Date:   Fri, 3 Nov 2023 06:40:41 +0000
+Message-ID: <DM6PR04MB657502AC388792B93D17E79DFCA5A@DM6PR04MB6575.namprd04.prod.outlook.com>
+References: <20231103004220.1666641-1-asmadeus@codewreck.org>
+In-Reply-To: <20231103004220.1666641-1-asmadeus@codewreck.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=wdc.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DM6PR04MB6575:EE_|CH0PR04MB8034:EE_
+x-ms-office365-filtering-correlation-id: 2dfda5ec-e896-4989-0c7b-08dbdc37ccb3
+wdcipoutbound: EOP-TRUE
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: cVREeU0JYIlQPdPlf2iLnzcpn/Q3Q9qG0BFSoNdZnBixYFEfLVmkmIoqObWi0pRVDIKqZqCCh0e5pZetlHNyy/IQ2ILiSC6pIy/0qM021ux4v6SwLyDsdn2s+qEfhOBJUiU15YJ7FDu9eTlsOA8U94+jhtwPmcG9SnODkV8iqjj6qmCm75gdb7gLX+G/pa81yWK0AAAU1RZ2iJkKjNmd7ppt1CWannvgT+1x/dffoh/UI7qeOyXcFIiLozfgp1Ha+65zHnZ3YUqdj256HyBypheR23RPDtZIbQGvNgiYJsgnA6miEYIT+PwSTkp9S2RPZ2fXvpj6+xOlH0tayInFZDgcjhKXlT5Ip2qb67pboBBT4bMnwjj9ukWvzEdJ8dhnTCUM+KfDdxmj0LonAnTUuhXNx5z6xqWRU6EDghAerBRcdAc1C35BFbFFjiEn4k5j5W/JC74ECknyYgAn+0bCSdzEzibiyD7luaonsUYAfaAH7ZEkmk7HZiWI8KddcNl4MW9wXgpzXH0zTSgxAq/l8eSHiHBFj7Lc2z30VoCuJO7AALxCjnDL1gUmNqsNIKDlS9c0M3jVAPuVehRMkvzE+CBz8WuL7coYk3BlzWWlD8iKDXJANs6iCMKCfXQj0UfJ5APA5JLwW9pJS5j7OeeR+g==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR04MB6575.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(366004)(396003)(346002)(39860400002)(376002)(230922051799003)(451199024)(186009)(64100799003)(1800799009)(71200400001)(122000001)(8936002)(26005)(38070700009)(2906002)(33656002)(41300700001)(8676002)(966005)(110136005)(86362001)(5660300002)(82960400001)(478600001)(54906003)(4326008)(76116006)(66446008)(66946007)(316002)(64756008)(66476007)(66556008)(52536014)(9686003)(6506007)(7696005)(55016003)(83380400001)(38100700002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?uZKOCArLMu0jdd8+07Naoe/6jfwP1OjsR4FqLXu7oO2ms4XemESlprSNraP4?=
+ =?us-ascii?Q?9SAkFLruKktdwJe5eAFs5BPhqRGOuv1Il89pE0IxXcplIJ1RXbwXk1ytqcip?=
+ =?us-ascii?Q?TyyBIDsv/Z2op31RewOpbuRqkkMopVZek32HpXO/x2wcW1CC0PSOgf/TYhA3?=
+ =?us-ascii?Q?qKT/T9DQGBXn6Fa0MDe4qt4CsG9zaSaYI638sp0iwNCIMEFpjijhHke++isr?=
+ =?us-ascii?Q?ajbAx/lf27Z8jWfEvskmndr3ZAzC1/mdie00RSIPeiqUP6wCPmuBOXtHYenj?=
+ =?us-ascii?Q?f+tPWfwLG38yx7LVhACvJLk7y15Scv/TbsUrNmXKtoSkJVe9LANsLxBfGtju?=
+ =?us-ascii?Q?KFOOySDNcAGQUVTRqwJTgisNGRV5vI99IFTWq4DKwdl2urNiS0sCGruMN+v8?=
+ =?us-ascii?Q?rgxiJECVUCA3uYNm1wPyavhn6A6AXPzh3vKZqGK/Fn7+fiufkjLLd8/50LgH?=
+ =?us-ascii?Q?gtdjxxk5Rf2ffHhXAbTqk+E+nCT5iHiXf8A5ncJ6Uf7d7DpNtpKZnpV/wDLp?=
+ =?us-ascii?Q?NtJKDBKLNitUIhVjyEyYPH458A/UE88Wg4nugtR647Ae18c7cZFjm54tq+QD?=
+ =?us-ascii?Q?qNyjybXA7sq9yd0Ou+nK3elWNws+yDLJeFHLeJbTLuL3riufGSLCV2UuAbvW?=
+ =?us-ascii?Q?Y1xut5RbFgc9/wI+A+9XUZAnbVyXm+GOP1QlR9fstRKOqG2ZIBwxN0Ram8nX?=
+ =?us-ascii?Q?x6hD2FiqN65zVmVa9Nx1bB1HAo4irtFzwYaP/s03SjxvXw/td6u3UCmpFgGK?=
+ =?us-ascii?Q?VXUYWj1DVix3aW840grf2bMrMPvfhCbimXNFtT9kkworIgoMTI/Dee2pINl/?=
+ =?us-ascii?Q?qtf77vAyCKKEcm7Ssx7sru5OaCU9su5VH7Twbq1zzsGzgSyPFLTc9DkyKdMK?=
+ =?us-ascii?Q?QSlFfnjxbOcz6KqSM42b2swGC10gummCI9/wLG0IbzGA/yNhto6RayEkUeBf?=
+ =?us-ascii?Q?oN+NbeDeYor3DM4nE+kYAo8/QZAvs18p0Vkl6Qzu0vRWFP1RRgpHmW4yznhe?=
+ =?us-ascii?Q?IE8I1GKbfDZZNEEO1TnOnlH7QN1FC0JaIQDaaMnQKuA5MyT3njlLOzq4XPqA?=
+ =?us-ascii?Q?atrgjDwfDwWQ4Pw8QFo4gBxQ3Va78lFCssdUcoOg/TKiS3eAr3W2PntcUg0/?=
+ =?us-ascii?Q?g76gToLjXEa7Pah6Gjiysr5ZVc1APDF6Y8u5y0XWH3pTeqyFRRTTvUJI43gQ?=
+ =?us-ascii?Q?BCg0xsl0KFwKAfxUlLAhMko9MKSAbAeB0MEXCmstVvMMSydqc1UBpNZ2miHW?=
+ =?us-ascii?Q?waQRK9ZZAPLRIwHn782McbyAxLszK7natc4as2s6QDa6a1XJ3FGZ3NurWTrR?=
+ =?us-ascii?Q?oIVayhaJyRp1NU55OcTbY9mlyPKmM4W0mdKIUsgHUnyIg14TzTdn+QFqTwpg?=
+ =?us-ascii?Q?yPAFjhzIKbgnTOhmdCiQvFm5aZfc57OfuCiEovE76P1G2MR5RoRTIFVYngaG?=
+ =?us-ascii?Q?KM3G7xewQu7Ntf0D9rmiCLJovuu3M/CVsvT3UQHt++cSx61XP8u1BeqXHc/0?=
+ =?us-ascii?Q?/pV+fb0YbRi36j1+h4EDKh0rCQhX0+NIu0ds1x1eqzwgGoJeFQlQsNitt3gU?=
+ =?us-ascii?Q?jsY3p9Uj3SUL4uHJo7e0Najq2DYNWId7b87KsPMM?=
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_PDS_OTHER_BAD_TLD,T_SCC_BODY_TEXT_LINE,
-        WEIRD_PORT autolearn=ham autolearn_force=no version=3.4.6
+MIME-Version: 1.0
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: hiFTqCEX9n8Eo3R/ZO95E0rWJNzB+Ri9ZcdKhjlgkKs3d2Wo/NZlfSQ1DZ2XaDhwgifIk1pX9sLIO8H8ticrlELqdeZv5MJ0MxZn8XqLyQAT/W2KhH64THf30vGUwzlzBMbUvjOgeT1IuLR3YdJL16DbRaejbxTdM+3onPqiqRWRM9yVMl1ONegPSNkGBZ0qLTen1IzzyODCk6ReWxyETWqqKlHZ0cgEEd4OI8BruftXK+WUfKSosU8tX+VPLa2+ADPF8ij9JFWaA0bZyRDOoPCZ83hyzGa/+Do7VviAV6scWyaLalKwfKfrs7aV1iJaigw/ydSm8q67mCuVoF66exMXuDtz9+/MX01F6aR08JZVBPYqqLK1Vd8z3R3aRC4gOqeOwpi9eSQfCHFs8dw8P5e3uyDc0sMDVVQNrGUNumZFvA2S5Fes9WWzwnwkdbJZ/8I85BzquoTsHZSx8lpOorB8f5gheqKFfp9qSRNiR4v+ilWOT86KxokRJx3Lgg4sQrIpeyj4OjAPUzaGVyVIjLMU3xuz8J7se1pQNN/PeMBdx8DiR3+v1bccnQs6YOA94k9Rh8ZbhanE6G2cdiE58ZI+OVOPv4hmhLpGyoiMKxOkYQ81x4MClssiMacCMCclJI+bvO2EAyAP9ywWmmW4mgYe2spxnAQBHvoEDzPZtT3nPM8ndOavjugSk3rZQuooMznNakLqs4SuPlgZdv0MtD0Ld7t+uO9dKdbrytv48da3D44Um6KtozhztCuy39VQyjCI2T3VicQFKvEwAkR+GYFrPDTC9U9erRcwccnXBEWn6A86mzVN77fTGBl47N4YEkowrVMxNCbhoAx6ud9DKt8BlvV5Bp3/Cx2Irkgup7F9EeoxDJoh9WIE2Hn4EATUi7tQg/o8X/HFzG1RQrIiIRGLLYH55WUi59A51+7J1vU=
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR04MB6575.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2dfda5ec-e896-4989-0c7b-08dbdc37ccb3
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Nov 2023 06:40:41.8372
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: mRmE4t/z++4BqsL0kCKdC3PxI9d6L1EONtvgDYeUYVkQIlNvw7N0ZaWCAbPEMltrxQK5PTMrOSdPf/9/pqFxwA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR04MB8034
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Evan,
+> From: Dominique Martinet <dominique.martinet@atmark-techno.com>
+>=20
+> This reverts commit 84ee19bffc9306128cd0f1c650e89767079efeff.
+>=20
+> The commit above made quirks with an OEMID fail to be applied, as they
+> were checking card->cid.oemid for the full 16 bits defined in MMC_FIXUP
+> macros but the field would only contain the bottom 8 bits.
+>=20
+> eMMC v5.1A might have bogus values in OEMID's higher bits so another fix
+> will be made, but it has been decided to revert this until that is ready.
+>=20
+> Fixes: 84ee19bffc93 ("mmc: core: Capture correct oemid-bits for eMMC
+> cards")
+> Link: https://lkml.kernel.org/r/ZToJsSLHr8RnuTHz@codewreck.org
+> Link:
+> https://lkml.kernel.org/r/CAPDyKFqkKibcXnwjnhc3+W1iJBHLeqQ9BpcZrSwh
+> W2u9K2oUtg@mail.gmail.com
+> Signed-off-by: Dominique Martinet <dominique.martinet@atmark-
+> techno.com>
+> Cc: stable@vger.kernel.org
+> Cc: Avri Altman <avri.altman@wdc.com>
+> Cc: Ulf Hansson <ulf.hansson@linaro.org>
+> Cc: Alex Fetters <Alex.Fetters@garmin.com>
+Reviewed-by: Avri Altman <avri.altman@wdc.com>
 
-On Fri, Nov 3, 2023 at 1:54=E2=80=AFPM Evan Preston <x.arch@epreston.net> w=
-rote:
->
-> Hi Huacai,
->
-> On 2023-11-02 Thu 08:38pm, Huacai Chen wrote:
-> > Hi, Jaak,
-> >
-> > On Wed, Nov 1, 2023 at 7:52=E2=80=AFPM Jaak Ristioja <jaak@ristioja.ee>=
- wrote:
-> > >
-> > > On 31.10.23 14:17, Huacai Chen wrote:
-> > > > Hi, Jaak and Evan,
-> > > >
-> > > > On Sun, Oct 29, 2023 at 9:42=E2=80=AFAM Huacai Chen <chenhuacai@ker=
-nel.org> wrote:
-> > > >>
-> > > >> On Sat, Oct 28, 2023 at 7:06=E2=80=AFPM Jaak Ristioja <jaak@ristio=
-ja.ee> wrote:
-> > > >>>
-> > > >>> On 26.10.23 03:58, Huacai Chen wrote:
-> > > >>>> Hi, Jaak,
-> > > >>>>
-> > > >>>> On Thu, Oct 26, 2023 at 2:49=E2=80=AFAM Jaak Ristioja <jaak@rist=
-ioja.ee> wrote:
-> > > >>>>>
-> > > >>>>> On 25.10.23 16:23, Huacai Chen wrote:
-> > > >>>>>> On Wed, Oct 25, 2023 at 6:08=E2=80=AFPM Thorsten Leemhuis
-> > > >>>>>> <regressions@leemhuis.info> wrote:
-> > > >>>>>>>
-> > > >>>>>>> Javier, Dave, Sima,
-> > > >>>>>>>
-> > > >>>>>>> On 23.10.23 00:54, Evan Preston wrote:
-> > > >>>>>>>> On 2023-10-20 Fri 05:48pm, Huacai Chen wrote:
-> > > >>>>>>>>> On Fri, Oct 20, 2023 at 5:35=E2=80=AFPM Linux regression tr=
-acking (Thorsten
-> > > >>>>>>>>> Leemhuis) <regressions@leemhuis.info> wrote:
-> > > >>>>>>>>>> On 09.10.23 10:54, Huacai Chen wrote:
-> > > >>>>>>>>>>> On Mon, Oct 9, 2023 at 4:45=E2=80=AFPM Bagas Sanjaya <bag=
-asdotme@gmail.com> wrote:
-> > > >>>>>>>>>>>> On Mon, Oct 09, 2023 at 09:27:02AM +0800, Huacai Chen wr=
-ote:
-> > > >>>>>>>>>>>>> On Tue, Sep 26, 2023 at 10:31=E2=80=AFPM Huacai Chen <c=
-henhuacai@kernel.org> wrote:
-> > > >>>>>>>>>>>>>> On Tue, Sep 26, 2023 at 7:15=E2=80=AFPM Linux regressi=
-on tracking (Thorsten
-> > > >>>>>>>>>>>>>> Leemhuis) <regressions@leemhuis.info> wrote:
-> > > >>>>>>>>>>>>>>> On 13.09.23 14:02, Jaak Ristioja wrote:
-> > > >>>>>>>>>>>>>>>>
-> > > >>>>>>>>>>>>>>>> Upgrading to Linux 6.5 on a Lenovo ThinkPad L570 (In=
-tegrated Intel HD
-> > > >>>>>>>>>>>>>>>> Graphics 620 (rev 02), Intel(R) Core(TM) i7-7500U) r=
-esults in a blank
-> > > >>>>>>>>>>>>>>>> screen after boot until the display manager starts..=
-. if it does start
-> > > >>>>>>>>>>>>>>>> at all. Using the nomodeset kernel parameter seems t=
-o be a workaround.
-> > > >>>>>>>>>>>>>>>>
-> > > >>>>>>>>>>>>>>>> I've bisected this to commit 60aebc9559492cea6a9625f=
-514a8041717e3a2e4
-> > > >>>>>>>>>>>>>>>> ("drivers/firmware: Move sysfb_init() from device_in=
-itcall to
-> > > >>>>>>>>>>>>>>>> subsys_initcall_sync").
-> > > >>>>>>>>>>>>>>>
-> > > >>>>>>>>>>>>> As confirmed by Jaak, disabling DRM_SIMPLEDRM makes thi=
-ngs work fine
-> > > >>>>>>>>>>>>> again. So I guess the reason:
-> > > >>>>>>>>>>
-> > > >>>>>>>>>> Well, this to me still looks a lot (please correct me if I=
-'m wrong) like
-> > > >>>>>>>>>> regression that should be fixed, as DRM_SIMPLEDRM was enab=
-led beforehand
-> > > >>>>>>>>>> if I understood things correctly. Or is there a proper fix=
- for this
-> > > >>>>>>>>>> already in the works and I just missed this? Or is there s=
-ome good
-> > > >>>>>>>>>> reason why this won't/can't be fixed?
-> > > >>>>>>>>>
-> > > >>>>>>>>> DRM_SIMPLEDRM was enabled but it didn't work at all because=
- there was
-> > > >>>>>>>>> no corresponding platform device. Now DRM_SIMPLEDRM works b=
-ut it has a
-> > > >>>>>>>>> blank screen. Of course it is valuable to investigate furth=
-er about
-> > > >>>>>>>>> DRM_SIMPLEDRM on Jaak's machine, but that needs Jaak's effo=
-rt because
-> > > >>>>>>>>> I don't have a same machine.
-> > > >>>>>>>
-> > > >>>>>>> Side note: Huacai, have you tried working with Jaak to get do=
-wn to the
-> > > >>>>>>> real problem? Evan, might you be able to help out here?
-> > > >>>>>> No, Jaak has no response after he 'fixed' his problem by disab=
-ling SIMPLEDRM.
-> > > >>>>>>
-> > > >>>>>
-> > > >>>>> I'm sorry, what was it exactly you want me to do? Please be min=
-dful that
-> > > >>>>> I'm not familiar with the internals of the Linux kernel and DRI=
-, and it
-> > > >>>>> might sometimes take weeks before I have time to work and respo=
-nd on this.
-> > > >>>> It doesn't matter. I hope you can do some experiments to investi=
-gate
-> > > >>>> deeper. The first experiment you can do is enabling SIMPLEFB (i.=
-e.
-> > > >>>> CONFIG_FB_SIMPLE) instead of SIMPLEDRM (CONFIG_DRM_SIMPLEDRM) to=
- see
-> > > >>>> whether there is also a blank screen. If no blank screen, that
-> > > >>>> probably means SIMPLEDRM has a bug, if still blank screen, that =
-means
-> > > >>>> the firmware may pass wrong screen information.
-> > > >>>
-> > > >>> Testing with 6.5.9 I get a blank screen with CONFIG_DRM_SIMPLEDRM=
-=3Dy and
-> > > >>> get no blank screen with CONFIG_FB_SIMPLE=3Dy and CONFIG_DRM_SIMP=
-LEDRM unset.
-> > > >> CONFIG_FB_SIMPLE and  CONFIG_DRM_SIMPLEDRM use the same device cre=
-ated
-> > > >> by sysfb_init(). Since FB_SIMPLE works fine, I think the real prob=
-lem
-> > > >> is that DRM_SIMPLEDRM has a bug. The next step is to enable
-> > > >> CONFIG_DRM_SIMPLEDRM and trace its initialization. In detail, addi=
-ng
-> > > >> some printk() in simpledrm_probe() and its sub-routines to see whe=
-re
-> > > >> the driver fails. The output of these printk() can be seen by the
-> > > >> 'dmesg' command after boot.
-> > > > I need your help. I tried with my laptop (ThinkPad E490, Intel Core
-> > > > i3-8145U, UHD Graphics 620) but I can't reproduce your problem. So
-> > > > please patch your 6.5.x kernel with this temporary patch [1], then
-> > > > build a "bad kernel" with SIMPLEDRM enabled. And after booting your
-> > > > machine with this "bad kernel", please give me the dmesg output. Th=
-ank
-> > > > you very much.
-> > > >
-> > > > [1] http://ddns.miaomiaomiao.top:9000/download/kernel/patch-6.5.9
-> > >
-> > > I'm unable to download it. Can you please send it by e-mail?
-> > I'm sorry, please download from attachment.
->
-> When applying this patch the first hunk (drivers/firmware/sysfb.c) fails =
-for
-> me with 6.5.9.  Attempting to load the 6.5.9 kernel without this patch
-> produces no dmesg output on my machine.
-You copy-paste the patch? If you download it directly it can be
-applied successfully, I think.
+> ---
+> Here's the revert as discussed in "mmc: truncate quirks' oemid to 8 bits"=
+'
+> patch thread.
+> Feel free to ignore if you already have something, I just checked your -n=
+ext
+> branch quickly and might have missed it.
+>=20
+>  drivers/mmc/core/mmc.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/mmc/core/mmc.c b/drivers/mmc/core/mmc.c index
+> 4a4bab9aa726..89cd48fcec79 100644
+> --- a/drivers/mmc/core/mmc.c
+> +++ b/drivers/mmc/core/mmc.c
+> @@ -104,7 +104,7 @@ static int mmc_decode_cid(struct mmc_card *card)
+>         case 3: /* MMC v3.1 - v3.3 */
+>         case 4: /* MMC v4 */
+>                 card->cid.manfid        =3D UNSTUFF_BITS(resp, 120, 8);
+> -               card->cid.oemid         =3D UNSTUFF_BITS(resp, 104, 8);
+> +               card->cid.oemid         =3D UNSTUFF_BITS(resp, 104, 16);
+>                 card->cid.prod_name[0]  =3D UNSTUFF_BITS(resp, 96, 8);
+>                 card->cid.prod_name[1]  =3D UNSTUFF_BITS(resp, 88, 8);
+>                 card->cid.prod_name[2]  =3D UNSTUFF_BITS(resp, 80, 8);
+> --
+> 2.41.0
 
-Huacai
-
->
-> Evan
->
-> >
-> > Huacai
-> >
-> > >
-> > > Jaak
-> > >
-> > > >
-> > > >
-> > > > Huacai
-> > > >
-> > > >>
-> > > >> Huacai
-> > > >>
-> > > >>>
-> > > >>> Jaak
-> > > >>>
-> > > >>>>
-> > > >>>> Huacai
-> > > >>>>
-> > > >>>>>
-> > > >>>>> Jaak
-> > > >>>>>
-> > > >>>>>>>
-> > > >>>>>>> But I write this mail for a different reason:
-> > > >>>>>>>
-> > > >>>>>>>> I am having the same issue on a Lenovo Thinkpad P70 (Intel
-> > > >>>>>>>> Corporation HD Graphics 530 (rev 06), Intel(R) Core(TM) i7-6=
-700HQ).
-> > > >>>>>>>> Upgrading from Linux 6.4.12 to 6.5 and later results in only=
- a blank
-> > > >>>>>>>> screen after boot and a rapidly flashing device-access-statu=
-s
-> > > >>>>>>>> indicator.
-> > > >>>>>>>
-> > > >>>>>>> This additional report makes me wonder if we should revert th=
-e culprit
-> > > >>>>>>> (60aebc9559492c ("drivers/firmware: Move sysfb_init() from
-> > > >>>>>>> device_initcall to subsys_initcall_sync") [v6.5-rc1]). But I =
-guess that
-> > > >>>>>>> might lead to regressions for some users? But the patch descr=
-iption says
-> > > >>>>>>> that this is not a common configuration, so can we maybe get =
-away with that?
-> > > >>>>>>    From my point of view, this is not a regression, 60aebc9559=
-492c
-> > > >>>>>> doesn't cause a problem, but exposes a problem. So we need to =
-fix the
-> > > >>>>>> real problem (SIMPLEDRM has a blank screen on some conditions)=
-. This
-> > > >>>>>> needs Jaak or Evan's help.
-> > > >>>>>>
-> > > >>>>>> Huacai
-> > > >>>>>>>
-> > > >>>>>>> Ciao, Thorsten (wearing his 'the Linux kernel's regression tr=
-acker' hat)
-> > > >>>>>>> --
-> > > >>>>>>> Everything you wanna know about Linux kernel regression track=
-ing:
-> > > >>>>>>> https://linux-regtracking.leemhuis.info/about/#tldr
-> > > >>>>>>> If I did something stupid, please tell me, as explained on th=
-at page.
-> > > >>>>>>>
-> > > >>>>>>>>>>>>> When SIMPLEDRM takes over the framebuffer, the screen i=
-s blank (don't
-> > > >>>>>>>>>>>>> know why). And before 60aebc9559492cea6a9625f ("drivers=
-/firmware: Move
-> > > >>>>>>>>>>>>> sysfb_init() from device_initcall to subsys_initcall_sy=
-nc") there is
-> > > >>>>>>>>>>>>> no platform device created for SIMPLEDRM at early stage=
-, so it seems
-> > > >>>>>>>>>>>>> also "no problem".
-> > > >>>>>>>>>>>> I don't understand above. You mean that after that commi=
-t the platform
-> > > >>>>>>>>>>>> device is also none, right?
-> > > >>>>>>>>>>> No. The SIMPLEDRM driver needs a platform device to work,=
- and that
-> > > >>>>>>>>>>> commit makes the platform device created earlier. So, bef=
-ore that
-> > > >>>>>>>>>>> commit, SIMPLEDRM doesn't work, but the screen isn't blan=
-k; after that
-> > > >>>>>>>>>>> commit, SIMPLEDRM works, but the screen is blank.
-> > > >>>>>>>>>>>
-> > > >>>>>>>>>>> Huacai
-> > > >>>>>>>>>>>>
-> > > >>>>>>>>>>>> Confused...
-> > > >>>>>>>>>>>>
-> > > >>>>>>>>>>>> --
-> > > >>>>>>>>>>>> An old man doll... just what I always wanted! - Clara
-> > > >>>>>>>>>>>
-> > > >>>>>>>>>>>
-> > > >>>>>>>>
-> > > >>>>>>>>
-> > > >>>>>
-> > > >>>
-> > >
->
->
