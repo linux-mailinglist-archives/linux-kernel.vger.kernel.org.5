@@ -2,49 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 370597E0243
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 12:36:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DFC57E0247
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 12:37:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343711AbjKCLgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 07:36:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43460 "EHLO
+        id S233426AbjKCLhc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 07:37:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233328AbjKCLgp (ORCPT
+        with ESMTP id S233073AbjKCLhb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 07:36:45 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7E68134
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 04:36:42 -0700 (PDT)
-Received: from kwepemm000013.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4SMJXc0k0rzrV35;
-        Fri,  3 Nov 2023 19:33:36 +0800 (CST)
-Received: from [10.174.178.46] (10.174.178.46) by
- kwepemm000013.china.huawei.com (7.193.23.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Fri, 3 Nov 2023 19:36:40 +0800
-Subject: Re: [PATCH v4 3/5] ubi: Add six fault injection type for testing
-To:     ZhaoLong Wang <wangzhaolong1@huawei.com>,
-        <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>
-CC:     <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <yi.zhang@huawei.com>, <yangerkun@huawei.com>
-References: <20231103065536.3778940-1-wangzhaolong1@huawei.com>
- <20231103065536.3778940-4-wangzhaolong1@huawei.com>
-From:   Zhihao Cheng <chengzhihao1@huawei.com>
-Message-ID: <f4f9fd14-23a6-0ce1-fedc-7428123a63f3@huawei.com>
-Date:   Fri, 3 Nov 2023 19:36:39 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        Fri, 3 Nov 2023 07:37:31 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A330C134
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 04:37:28 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1EADDC15;
+        Fri,  3 Nov 2023 04:38:11 -0700 (PDT)
+Received: from FVFF77S0Q05N (unknown [10.57.37.92])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 14DC53F703;
+        Fri,  3 Nov 2023 04:37:26 -0700 (PDT)
+Date:   Fri, 3 Nov 2023 11:37:21 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Ilkka Koskinen <ilkka@os.amperecomputing.com>,
+        Will Deacon <will@kernel.org>
+Cc:     Besar Wicaksono <bwicaksono@nvidia.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Raag Jadav <raag.jadav@intel.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] perf: arm_cspmu: Reject events meant for other PMUs
+Message-ID: <ZUTbcQcseeoHhl8d@FVFF77S0Q05N>
+References: <20231103001654.35565-1-ilkka@os.amperecomputing.com>
 MIME-Version: 1.0
-In-Reply-To: <20231103065536.3778940-4-wangzhaolong1@huawei.com>
-Content-Type: text/plain; charset="gbk"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.178.46]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemm000013.china.huawei.com (7.193.23.81)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-5.8 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231103001654.35565-1-ilkka@os.amperecomputing.com>
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -52,34 +46,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ÔÚ 2023/11/3 14:55, ZhaoLong Wang Ð´µÀ:
-> This commit adds six fault injection type for testing to cover the
-> abnormal path of the UBI driver.
->
-> Inject the following faults when the UBI reads the LEB:
->   +----------------------------+-----------------------------------+
->   |    Interface name          |       emulate behavior            |
->   +----------------------------+-----------------------------------+
->   |  emulate_eccerr            | ECC error                         |
->   +----------------------------+-----------------------------------+
->   |  emulate_read_failure      | read failure                      |
->   |----------------------------+-----------------------------------+
->   |  emulate_io_ff             | read content as all FF            |
->   |----------------------------+-----------------------------------+
->   |  emulate_io_ff_bitflips    | content FF with MTD err reported  |
->   +----------------------------+-----------------------------------+
->   |  emulate_bad_hdr           | bad leb header                    |
->   |----------------------------+-----------------------------------+
->   |  emulate_bad_hdr_ebadmsg   | bad header with ECC err           |
->   +----------------------------+-----------------------------------+
->
-> Signed-off-by: ZhaoLong Wang <wangzhaolong1@huawei.com>
+On Thu, Nov 02, 2023 at 05:16:54PM -0700, Ilkka Koskinen wrote:
+> Coresight PMU driver didn't reject events meant for other PMUs.
+> This caused some of the Core PMU events disappearing from
+> the output of "perf list". In addition, trying to run e.g.
+> 
+>      $ perf stat -e r2 sleep 1
+> 
+> made Coresight PMU driver to handle the event instead of letting
+> Core PMU driver to deal with it.
+> 
+> Cc: stable@vger.kernel.org
+> Fixes: e37dfd65731d ("perf: arm_cspmu: Add support for ARM CoreSight PMU driver")
+> Signed-off-by: Ilkka Koskinen <ilkka@os.amperecomputing.com>
+
+Acked-by: Mark Rutland <mark.rutland@arm.com>
+
+Will, are you happy to pick this up?
+
+Mark.
+
 > ---
->   drivers/mtd/ubi/debug.c |  30 +++++++
->   drivers/mtd/ubi/debug.h | 172 ++++++++++++++++++++++++++++++++++++++--
->   drivers/mtd/ubi/io.c    |  76 +++++++++++++++++-
->   drivers/mtd/ubi/ubi.h   |  30 ++++---
->   4 files changed, 287 insertions(+), 21 deletions(-)
-
-Reviewed-by: Zhihao Cheng <chengzhihao1@huawei.com>
-
+>  drivers/perf/arm_cspmu/arm_cspmu.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/drivers/perf/arm_cspmu/arm_cspmu.c b/drivers/perf/arm_cspmu/arm_cspmu.c
+> index 42b72042f6b3..2cc35dded007 100644
+> --- a/drivers/perf/arm_cspmu/arm_cspmu.c
+> +++ b/drivers/perf/arm_cspmu/arm_cspmu.c
+> @@ -676,6 +676,9 @@ static int arm_cspmu_event_init(struct perf_event *event)
+>  
+>  	cspmu = to_arm_cspmu(event->pmu);
+>  
+> +	if (event->attr.type != event->pmu->type)
+> +		return -ENOENT;
+> +
+>  	/*
+>  	 * Following other "uncore" PMUs, we do not support sampling mode or
+>  	 * attach to a task (per-process mode).
+> -- 
+> 2.40.1
+> 
