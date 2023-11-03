@@ -2,49 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 919197E0325
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 13:48:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB4DC7E032B
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 13:51:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346710AbjKCMsj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 08:48:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46864 "EHLO
+        id S1346467AbjKCMvC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 08:51:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbjKCMsh (ORCPT
+        with ESMTP id S229379AbjKCMvB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 08:48:37 -0400
+        Fri, 3 Nov 2023 08:51:01 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79F19CE
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 05:48:35 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5570C433C7;
-        Fri,  3 Nov 2023 12:48:32 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B934083;
+        Fri,  3 Nov 2023 05:50:58 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 635ADC433C8;
+        Fri,  3 Nov 2023 12:50:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699015715;
-        bh=OogBIZR4ZyTsmzPlBhZjRPRCtrTTw2tdeKdpttcq/eI=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=MHbjb/g1M4ksYSJjVAhfLgP2SZ0twH1NkfVvwdtuNMA5qIf59TCyDLjog4QrQ5mAF
-         FJDF4X4wCGi1OQypa57ijcy4kuVU7PRqU+6tkUlfHDONSx8fy0KpQ/yAdr8ybXZO2f
-         7QvxyNgxQVlc93IiQo7lnnyLtO0U8FnTcjMeSHbbpca6SpVEV1398z58i5c9eTK+de
-         OiAgMHO0+Iq3DAHWpS+mJ64Qceu35RoKIOY+laZkshRiRx8HIM/7SN2v4EY06VHM69
-         nyJ9Q8od4gmX9I7o8m0WZ45YLjUe39f126HVrVi834Cqo4YTGGy42AqwW7bjVy2Q4G
-         kE+LLuK6bKuZg==
-Message-ID: <4f06d727-d424-44f8-bd80-53c452b289d3@kernel.org>
-Date:   Fri, 3 Nov 2023 13:48:30 +0100
+        s=k20201202; t=1699015858;
+        bh=tpVeCHb6HdnxG19HyK4tr17TCWu8QGpwvVyw91n0C3o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dU+t/8GP5PWYnJ3mF/RPJxShcO4CJguARUQx6z/D274XFk1AH0mwXfXZaKyEgi5rC
+         qrcOu3uAtFjIoLBqWjVAEmrm+Zw5ReArNCVPDwkgK6s/ZllN1EgVoWrYnUPVpzVGNO
+         0f037jv0cGrJANLx3qRS06HCxXy7qaL6BrJVLSlILENz+zP/QLkxcfhn9BQjIu9mbZ
+         HEPyYwCbWeDH+kHR5Hz6kQe7Zuu8IC83FNCeI+TRcMKaOzPe5Xoan/ol/Q5o5Hyd2G
+         Wv5y5lPcovvDC6SXyfT2JFiEZI4IHsGKVpFKeNG+P1FXEMO1fe9KhTmHPx/ftZlmxt
+         fGXqi4BNH13CQ==
+Date:   Fri, 3 Nov 2023 12:50:53 +0000
+From:   Conor Dooley <conor@kernel.org>
+To:     Ben Wolsieffer <ben.wolsieffer@hefring.com>
+Cc:     linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Alain Volmat <alain.volmat@foss.st.com>,
+        Erwan Leray <erwan.leray@foss.st.com>,
+        Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Subject: Re: [PATCH v2 3/5] dt-bindings: spi: add stm32f7-spi compatible
+Message-ID: <20231103-recognize-unwashed-b8f1a83fe851@spud>
+References: <20231102193722.3042245-1-ben.wolsieffer@hefring.com>
+ <20231102193722.3042245-4-ben.wolsieffer@hefring.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Race between of_iommu_configure() and iommu_probe_device()
-To:     Hector Martin <marcan@marcan.st>, iommu@lists.linux.dev,
-        Asahi Linux <asahi@lists.linux.dev>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     Janne Grunau <j@jannau.net>, Rob Herring <robh+dt@kernel.org>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-References: <a36ddb05-9e5f-dfae-81e2-0da5e4925743@marcan.st>
-Content-Language: en-US
-From:   Konrad Dybcio <konradybcio@kernel.org>
-In-Reply-To: <a36ddb05-9e5f-dfae-81e2-0da5e4925743@marcan.st>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="xFgagCuWH1g6GYrR"
+Content-Disposition: inline
+In-Reply-To: <20231102193722.3042245-4-ben.wolsieffer@hefring.com>
 X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -56,50 +62,56 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--xFgagCuWH1g6GYrR
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 3.11.2023 12:55, Hector Martin wrote:
-> I just hit a crash in of_iommu_xlate() -> apple_dart_of_xlate() because
-> dev->iommu was NULL. of_iommu_xlate() first calls iommu_fwspec_init
-> which calls dev_iommu_get(), which allocates that member if NULL. That
-> means it got freed in between, but the only thing that can do that is
-> dev_iommu_free(), which is called from __iommu_probe_device() in the
-> error path. That is serialized via a static lock, but not against the
-> xlate stuff.
-> 
-> I think the specific sequence of events was as follows:
-> 
-> - IOMMU driver has not probed yet
-> - Device driver tries to probe, and gets deferred via of_iommu_xlate()
-> -> driver_deferred_probe_check_state() because there are no IOMMU ops yet
-> - IOMMU driver probes
-> - IOMMU driver registration triggers device probes
-> - IOMMU device probe fails, because there is no fwnode/OF data yet (e.g.
-> apple_dart_probe_device returns ENODEV if dev_iommu_priv_get() returns
-> NULL, and that is set in apple_dart_of_xlate())
-> - __iommu_probe_device is in the error exit path, and at this exact
-> point a parallel device probe is running of_iommu_xlate()
-> - of_iommu_xlate() calls iommu_fwspec_init(), which ensures dev->iommu
-> is non-NULL, which at this point it is
-> - immediately after that, __iommu_probe_device() calls dev_iommu_free()
-> since it is in the process of erroring out. This frees and sets
-> dev->iommu to NULL.
-> - of_iommu_xlate() calls ops->of_xlate()
-> - apple_dart_of_xlate() calls dev_iommu_priv_set(), which crashes
-> because dev->iommu is now NULL.
-> 
-> As far as I can tell it's not just the specific driver xlate call
-> setting priv that's the problem here, but there is one big race between
-> the entire fwspec codepath (accessing dev->iommu->fwspec) and
-> __iommu_probe_device() (allocating and freeing dev->iommu).
-> 
-> Thinking about this whole thing is making my brain hurt. Thoughts? How
-> do we fix this?
-FWIW I've been getting inexplicable boot-time crashes that sometimes
-spew out a fraction of a log line like:
+On Thu, Nov 02, 2023 at 03:37:20PM -0400, Ben Wolsieffer wrote:
+> The STM32F7 SPI peripheral is nearly identical to the STM32F4, with the
+> only significant differences being support for a wider range of word
+> sizes and the addition of 32-bit transmit and receive FIFOs.
 
-[x.yyyyyyyy] addr.iommu
+A wider range of supported word sizes and some additional buffers,
+implies that the F4 could be used as a fallback compatible. Does the
+register map change incompatibly in the process of widening the FIFOs or
+something like that?
 
-on some Qualcomm devices every now and then for quite some time..
-Not very common though. Might be this, might be something else..
+Cheers,
+Conor.
 
-Konrad
+>=20
+> Signed-off-by: Ben Wolsieffer <ben.wolsieffer@hefring.com>
+> ---
+>  Documentation/devicetree/bindings/spi/st,stm32-spi.yaml | 1 +
+>  1 file changed, 1 insertion(+)
+>=20
+> diff --git a/Documentation/devicetree/bindings/spi/st,stm32-spi.yaml b/Do=
+cumentation/devicetree/bindings/spi/st,stm32-spi.yaml
+> index ae0f082bd377..5754d603f34f 100644
+> --- a/Documentation/devicetree/bindings/spi/st,stm32-spi.yaml
+> +++ b/Documentation/devicetree/bindings/spi/st,stm32-spi.yaml
+> @@ -23,6 +23,7 @@ properties:
+>    compatible:
+>      enum:
+>        - st,stm32f4-spi
+> +      - st,stm32f7-spi
+>        - st,stm32h7-spi
+> =20
+>    reg:
+> --=20
+> 2.42.0
+>=20
+
+--xFgagCuWH1g6GYrR
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZUTsrQAKCRB4tDGHoIJi
+0hFgAQDn41RZMbwCjYlwJX5Iqbm4K/r3lki7VmpwDMCGGJwkkQD/Xgytkq5TEODG
+DyLPUNhil6uYE+5x8ylXmqmrv8T72gU=
+=liLb
+-----END PGP SIGNATURE-----
+
+--xFgagCuWH1g6GYrR--
