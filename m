@@ -2,49 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 54DE27E0709
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 17:53:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B12B7E0704
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 17:52:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345811AbjKCQxd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 12:53:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48640 "EHLO
+        id S1345638AbjKCQwy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 12:52:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234388AbjKCQxb (ORCPT
+        with ESMTP id S1344556AbjKCQwx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 12:53:31 -0400
+        Fri, 3 Nov 2023 12:52:53 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 536F01BF;
-        Fri,  3 Nov 2023 09:53:24 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA1FAC433C9;
-        Fri,  3 Nov 2023 16:53:23 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9C67FB
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 09:52:50 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81D36C433C8;
+        Fri,  3 Nov 2023 16:52:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699030404;
-        bh=kCzStcz7CoMutFcDAU184FL4PCQg1iWiTdGyamRM7WY=;
-        h=From:Date:Subject:To:Cc:From;
-        b=dQrjqNPQdo/dHg+4PM28mBvTJZhWYd0E9eWFblLf/jx82vlWPTIDf0rZNH7yLVpJH
-         gNGQdNKQ/PRSn4nexm3tBRrj3y7eDOXNzJ/+LwJOgUeMMGUfySB39tmovXAnoClZbn
-         gv6007vbOoxnfT4qWx2WVP9wZzc76nuNc/ungIKDI4eIunSreIzo0v7TgjU50j/1D8
-         ncUOy7AkhKBFj/zHXyf8QhLfZNhJv67hWQxbAkqynFat20/isvNuxhiL4dMWxtHQZv
-         scjDhob4necNbf3nzkN2yTn20MeoHhEyHfnn8J+FQKUtZModjm1zqR+VgqEuFlnIm9
-         G8qqFV8/w2apA==
-Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2c6ec78a840so31077751fa.1;
-        Fri, 03 Nov 2023 09:53:23 -0700 (PDT)
-X-Gm-Message-State: AOJu0Yz54LeZxTmHFDzsdKKQ8MomvFx+vVTHA60pkatabOVmjx5kd7tg
-        IyWysx9VB6PWsYwlJxpIKCx3clyPZvWiHTlZz/M=
-X-Google-Smtp-Source: AGHT+IGGiypPxQRwtotTkJhzKO3049gaZIIrBT+TiH0MG55EJXYjr9BKM1QeQwUKH80RPOnECjqb1vB2E6v7NcTp1D4=
-X-Received: by 2002:a2e:3207:0:b0:2c6:f136:96bb with SMTP id
- y7-20020a2e3207000000b002c6f13696bbmr4469096ljy.17.1699030402446; Fri, 03 Nov
- 2023 09:53:22 -0700 (PDT)
+        s=k20201202; t=1699030370;
+        bh=K+AWM+g16f6TCciCdpbXKjq6QoLeLnYSS3177Re7WV4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=u6Ysm8k5ChAO4XemOmOjhx9P0UbJw0BMp0ENkfORfw5NRHEekqQaJd7TFZoo6in+x
+         wZfcV8AXyYRDO09LmHJ1wT3uD+TZqOcq1Cft9zsdPRczvnLbTgdLo5seaCo2+rigEB
+         A+GSiqQS72v8NqsI9xYC6knPh/f69Wv5OGfcCqlNvzh38myv1Jy7RdUgyFjEslGuWp
+         25aVjx+5ESBWJ50qXJJ8NMDOWxQHH87ajElQz4o/UOcXW94/uP5EbatmzsfCpDL5d/
+         6HJyC0PhsBW5sEbRuueMbs9O9FFLs5x8fH2IDgex7HgVepCW8rCsGW58IjvM0O51cG
+         4KUcmoLelgtyQ==
+Date:   Fri, 3 Nov 2023 16:52:44 +0000
+From:   Simon Horman <horms@kernel.org>
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        Hayes Wang <hayeswang@realtek.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Edward Hill <ecgh@chromium.org>,
+        Laura Nao <laura.nao@collabora.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        linux-usb@vger.kernel.org, Grant Grundler <grundler@chromium.org>,
+        =?utf-8?B?QmrDuHJu?= Mork <bjorn@mork.no>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH v5 8/8] r8152: Block future register access if register
+ access fails
+Message-ID: <20231103165244.GB714036@kernel.org>
+References: <20231020210751.3415723-1-dianders@chromium.org>
+ <20231020140655.v5.8.Ib2affdbfdc2527aaeef9b46d4f23f7c04147faeb@changeid>
+ <20231025162824.GK57304@kernel.org>
+ <CAD=FV=XVJVkyA09Ca_YGa5xRS4jGra4cw-6ArgwCekMzn7uWcA@mail.gmail.com>
 MIME-Version: 1.0
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Sat, 4 Nov 2023 01:52:44 +0900
-X-Gmail-Original-Message-ID: <CAK7LNATanSD3N_dmwKAGEqEkCLUb7TL2cp67pP-WBWFOWBxG1g@mail.gmail.com>
-Message-ID: <CAK7LNATanSD3N_dmwKAGEqEkCLUb7TL2cp67pP-WBWFOWBxG1g@mail.gmail.com>
-Subject: [GIT PULL] Kbuild updates for v6.7-rc1
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAD=FV=XVJVkyA09Ca_YGa5xRS4jGra4cw-6ArgwCekMzn7uWcA@mail.gmail.com>
 X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -55,171 +63,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Linus,
+On Wed, Oct 25, 2023 at 01:24:55PM -0700, Doug Anderson wrote:
+> Hi,
+> 
+> On Wed, Oct 25, 2023 at 9:28 AM Simon Horman <horms@kernel.org> wrote:
+> >
+> > On Fri, Oct 20, 2023 at 02:06:59PM -0700, Douglas Anderson wrote:
+> >
+> > ...
+> >
+> > > @@ -9603,25 +9713,14 @@ static bool rtl8152_supports_lenovo_macpassthru(struct usb_device *udev)
+> > >       return 0;
+> > >  }
+> > >
+> > > -static int rtl8152_probe(struct usb_interface *intf,
+> > > -                      const struct usb_device_id *id)
+> > > +static int rtl8152_probe_once(struct usb_interface *intf,
+> > > +                           const struct usb_device_id *id, u8 version)
+> > >  {
+> > >       struct usb_device *udev = interface_to_usbdev(intf);
+> > >       struct r8152 *tp;
+> > >       struct net_device *netdev;
+> > > -     u8 version;
+> > >       int ret;
+> > >
+> > > -     if (intf->cur_altsetting->desc.bInterfaceClass != USB_CLASS_VENDOR_SPEC)
+> > > -             return -ENODEV;
+> > > -
+> > > -     if (!rtl_check_vendor_ok(intf))
+> > > -             return -ENODEV;
+> > > -
+> > > -     version = rtl8152_get_version(intf);
+> > > -     if (version == RTL_VER_UNKNOWN)
+> > > -             return -ENODEV;
+> > > -
+> > >       usb_reset_device(udev);
+> > >       netdev = alloc_etherdev(sizeof(struct r8152));
+> > >       if (!netdev) {
+> > > @@ -9784,10 +9883,20 @@ static int rtl8152_probe(struct usb_interface *intf,
+> > >       else
+> > >               device_set_wakeup_enable(&udev->dev, false);
+> > >
+> > > +     /* If we saw a control transfer error while probing then we may
+> > > +      * want to try probe() again. Consider this an error.
+> > > +      */
+> > > +     if (test_bit(PROBE_SHOULD_RETRY, &tp->flags))
+> > > +             goto out2;
+> >
+> > Sorry for being a bit slow here, but if this is an error condition,
+> > sould ret be set to an error value?
+> >
+> > As flagged by Smatch.
+> 
+> Thanks for the note. I think we're OK, though. If you look at the
+> "out:" label, which is right after "out1" it tests for the same bit.
+> That will set "ret = -EAGAIN" for us.
 
+Thanks, and sorry for being even slower than the previous time.
+I see your point regarding "out:" and agree that the code is correct.
 
-Please pull Kbuild updates for v6.7.
-Thanks.
+> I'll admit it probably violates the principle of least astonishment,
+> but there's a method to my madness. Specifically:
+> 
+> a) We need a test here to make sure we don't return "success" if the
+> bit is set. The driver doesn't error check for success when it
+> modifies HW registers so it might _thnk_ it was successful but still
+> have this bit set. ...so we need this check right before we return
+> "success".
+> 
+> b) We also need to test for this bit if we're in the error handling
+> code. Even though the driver doesn't check for success in lots of
+> places, there still could be some places that notice an error. It may
+> return any kind of error here, so we need to override it to -EAGAIN.
+> 
+> ...so I just set "ret = -EAGAIN" in one place.
+> 
+> Does that make sense? If you want to submit a patch adjusting the
+> comment to make this more obvious, I'm happy to review it.
 
-
-You will see a conflict in modpost.
-
-The fix is available in linux-next.
-
-
-
-The reason for the conflict is the following commit
-that got in via the module tree.
-
-
-commit 04311b9b306388288f72cf6ebde659274b06ffd6
-Author: Tiezhu Yang <yangtiezhu@loongson.cn>
-Date:   Fri Jun 16 09:51:33 2023 +0800
-
-    module: Make is_valid_name() return bool
-
-
-
-
-My pull request moved is_valid_name()
-from scripts/mod/modpost.c to scripts/mod/modpost.h
-
-
-
-
-
-The following changes since commit 8a749fd1a8720d4619c91c8b6e7528c0a355c0aa:
-
-  Linux 6.6-rc4 (2023-10-01 14:15:13 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git
-tags/kbuild-v6.7
-
-for you to fetch changes up to 5f56cb030e4bcf14be2233332d5cd83fff62a376:
-
-  kbuild: support 'userldlibs' syntax (2023-11-01 23:26:01 +0900)
-
-----------------------------------------------------------------
-Kbuild updates for v6.7
-
- - Implement the binary search in modpost for faster symbol lookup
-
- - Respect HOSTCC when linking host programs written in Rust
-
- - Change the binrpm-pkg target to generate kernel-devel RPM package
-
- - Fix endianness issues for tee and ishtp MODULE_DEVICE_TABLE
-
- - Unify vdso_install rules
-
- - Remove unused __memexit* annotations
-
- - Eliminate stale whitelisting for __devinit/__devexit from modpost
-
- - Enable dummy-tools to handle the -fpatchable-function-entry flag
-
- - Add 'userldlibs' syntax
-
-----------------------------------------------------------------
-Jack Brennen (1):
-      modpost: Optimize symbol search from linear to binary search
-
-Jiri Slaby (SUSE) (1):
-      kbuild: dummy-tools: pretend we understand -fpatchable-function-entry
-
-Masahiro Yamada (25):
-      kbuild: rpm-pkg: generate kernel.spec in rpmbuild/SPECS/
-      kbuild: make binrpm-pkg always produce kernel-devel package
-      modpost: fix tee MODULE_DEVICE_TABLE built on big-endian host
-      modpost: fix ishtp MODULE_DEVICE_TABLE built on big-endian host
-      modpost: define TO_NATIVE() using bswap_* functions
-      modpost: refactor check_sec_ref()
-      modpost: factor out the common boilerplate of section_rel(a)
-      csky: remove unused cmd_vdso_install
-      UML: remove unused cmd_vdso_install
-      kbuild: unify vdso_install rules
-      kbuild: unify no-compiler-targets and no-sync-config-targets
-      kbuild: remove ARCH_POSTLINK from module builds
-      kbuild: avoid too many execution of scripts/pahole-flags.sh
-      kbuild: simplify cmd_ld_multi_m
-      modpost: remove ALL_EXIT_DATA_SECTIONS macro
-      linux/init: remove __memexit* annotations
-      modpost: disallow *driver to reference .meminit* sections
-      modpost: remove more symbol patterns from the section check whitelist
-      modpost: remove MEM_INIT_SECTIONS macro
-      modpost: remove EXIT_SECTIONS macro
-      modpost: disallow the combination of EXPORT_SYMBOL and __meminit*
-      modpost: use ALL_INIT_SECTIONS for the section check from DATA_SECTIONS
-      modpost: merge sectioncheck table entries regarding init/exit sections
-      modpost: squash ALL_{INIT,EXIT}_TEXT_SECTIONS to ALL_TEXT_SECTIONS
-      kbuild: support 'userldlibs' syntax
-
-Matthew Maurer (1):
-      rust: Respect HOSTCC when linking for host
-
-Ricardo B. Marliere (1):
-      docs: kbuild: add INSTALL_DTBS_PATH
-
-Simon Glass (1):
-      kbuild: Correct missing architecture-specific hyphens
-
- .gitignore                             |   1 -
- Documentation/kbuild/kbuild.rst        |   6 +
- Documentation/kbuild/makefiles.rst     |  11 ++
- MAINTAINERS                            |   2 +-
- Makefile                               |  38 +++---
- arch/arm/Makefile                      |   7 +-
- arch/arm/vdso/Makefile                 |  25 ----
- arch/arm64/Makefile                    |   9 +-
- arch/arm64/kernel/vdso/Makefile        |  10 --
- arch/arm64/kernel/vdso32/Makefile      |  10 --
- arch/csky/kernel/vdso/Makefile         |  10 --
- arch/loongarch/Makefile                |   4 +-
- arch/loongarch/vdso/Makefile           |  10 --
- arch/mips/Makefile.postlink            |   3 -
- arch/parisc/Makefile                   |   8 +-
- arch/powerpc/Makefile.postlink         |   3 -
- arch/riscv/Makefile                    |   9 +-
- arch/riscv/Makefile.postlink           |   3 -
- arch/riscv/kernel/compat_vdso/Makefile |  10 --
- arch/riscv/kernel/vdso/Makefile        |  10 --
- arch/s390/Makefile                     |   6 +-
- arch/s390/kernel/vdso32/Makefile       |  10 --
- arch/s390/kernel/vdso64/Makefile       |  10 --
- arch/sparc/Makefile                    |   5 +-
- arch/sparc/vdso/Makefile               |  27 -----
- arch/x86/Makefile                      |   7 +-
- arch/x86/Makefile.postlink             |   3 -
- arch/x86/entry/vdso/Makefile           |  27 -----
- arch/x86/um/vdso/Makefile              |  12 --
- include/asm-generic/vmlinux.lds.h      |   6 -
- include/linux/init.h                   |   3 -
- rust/Makefile                          |   2 +
- scripts/Makefile.btf                   |  19 +++
- scripts/Makefile.build                 |   2 +-
- scripts/Makefile.host                  |   2 +
- scripts/Makefile.modfinal              |   5 +-
- scripts/Makefile.package               |  10 +-
- scripts/Makefile.userprogs             |   6 +-
- scripts/Makefile.vdsoinst              |  45 +++++++
- scripts/dummy-tools/gcc                |  10 ++
- scripts/mod/Makefile                   |   4 +-
- scripts/mod/file2alias.c               |  14 +--
- scripts/mod/modpost.c                  | 201 ++++++++------------------------
- scripts/mod/modpost.h                  |  50 +++++---
- scripts/mod/symsearch.c                | 199 +++++++++++++++++++++++++++++++
- scripts/package/mkspec                 |   6 +
- scripts/pahole-flags.sh                |  30 -----
- scripts/remove-stale-files             |   2 +-
- 48 files changed, 443 insertions(+), 469 deletions(-)
- create mode 100644 scripts/Makefile.btf
- create mode 100644 scripts/Makefile.vdsoinst
- create mode 100644 scripts/mod/symsearch.c
- delete mode 100755 scripts/pahole-flags.sh
-
-
---
-Best Regards
-Masahiro Yamada
+Thanks it does make sense.
+And I don't think any further action is required.
