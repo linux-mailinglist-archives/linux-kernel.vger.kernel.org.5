@@ -2,68 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 25CC67E089A
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 19:58:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 979037E08A0
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 19:58:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376499AbjKCS6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 14:58:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42574 "EHLO
+        id S1346297AbjKCS6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 14:58:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345926AbjKCS6D (ORCPT
+        with ESMTP id S1376681AbjKCS6S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 14:58:03 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A48B6D60;
-        Fri,  3 Nov 2023 11:57:57 -0700 (PDT)
+        Fri, 3 Nov 2023 14:58:18 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EF33D69;
+        Fri,  3 Nov 2023 11:58:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
-        t=1699037855; x=1699642655; i=w_armin@gmx.de;
-        bh=crjd0fdGfmTMPgr2YiAk3gnA49LR1woP6H9fXrLQ3lk=;
+        t=1699037857; x=1699642657; i=w_armin@gmx.de;
+        bh=abA6cd0ROFO4J9zU8gqjq2QNr351dN8dosUIAA7azF8=;
         h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:
          References;
-        b=itdz12JPTqhLyQbY3KSuebIYNJp8Pm66zJ9uiYV3+a5sV0ZSJO1ArN240dITWKs1
-         qoBMR1qP55e7t36cLLuRamN/GcLcDuf3PC4AHIbUamvhuOaLTKg8ZvqpxOvaXzrnz
-         6ut+dHIICyQXoL9ud82LRkrBF2PQxav1OCzfeoNt7Lcy8v8uMkkzU6rg9T4wx7j1c
-         Z3JK7tOoI46JCt8EBHKrmACpMJTiwDRnEHIU7+z0GTFBsgZ1wTgLza89EmhZeRiZG
-         k2na6v+jEfDdBZkUgmY3Q4gspWK5zjT2AWBBL5176ZKHu90TVIxRvVHdOR8a7NbEu
-         08EdMThLTNusDWG9aw==
+        b=M7745ibwygmmfuTQ/hkpeFKNodU1fsiadL6W9S3gmRTHRGG9nIzmRxtFQXMLsicE
+         +L7+FUbpD/lg0/Uk0V5sDn6DfGGNso7n3R01RCzSN3BAMAEu41wc5aRsCdZ6TkVhP
+         +hE73vWhbk9NQebT4+B7/X3sC2ibTdNVAhCPlP1/8ZsUOQ81lXSsWhCi6B5Q7kTrU
+         //7iwItw304mLOug8tuUpOQ+ktt9Zh6B3/WHiMVPpjFL0itKIdn9JTOXFc6vXAhxY
+         78Hi04FsXp15wXSbThdaJ+3hNAWFP/NvFBuqeZMpBBSv13zMszT9XGXfO9JkvQxG7
+         jechva8WR13bhf4zdw==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from mx-amd-b650.users.agdsn.de ([141.30.226.129]) by mail.gmx.net
- (mrgmx104 [212.227.17.168]) with ESMTPSA (Nemesis) id
- 1MowGU-1rnEcD30Fq-00qPzR; Fri, 03 Nov 2023 19:57:35 +0100
+ (mrgmx004 [212.227.17.190]) with ESMTPSA (Nemesis) id
+ 1N8XTv-1rTdIH4BOL-014PlR; Fri, 03 Nov 2023 19:57:37 +0100
 From:   Armin Wolf <W_Armin@gmx.de>
 To:     pali@kernel.org
 Cc:     jdelvare@suse.com, linux@roeck-us.net, linux-hwmon@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 6/9] hwmon: (dell-smm) Introduce helper function for data init
-Date:   Fri,  3 Nov 2023 19:57:13 +0100
-Message-Id: <20231103185716.11007-7-W_Armin@gmx.de>
+Subject: [PATCH 7/9] hwmon: (dell-smm) Add support for WMI SMM interface
+Date:   Fri,  3 Nov 2023 19:57:14 +0100
+Message-Id: <20231103185716.11007-8-W_Armin@gmx.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231103185716.11007-1-W_Armin@gmx.de>
 References: <20231103185716.11007-1-W_Armin@gmx.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:gY4bbZFrcedFAAvxypYxQopmhkCS4BccMx9PQDXnwgLhDmdz7a1
- QFAQ+scgz+YuYvzo/bzBYgUZy3ZwZIpwG64YVhWc72tCt5PLyo8jnhecRf8AKSOAiPCJ1VQ
- mj+mpzB2nwNfzOAL1SXo95iY5RlmK/0nqgjq4K55LZTDV7nspiLdRh54WbkD5qgur+p/awp
- DNpFPgrQkgvbDUMKR+xZQ==
-UI-OutboundReport: notjunk:1;M01:P0:RxhdxOFe/O0=;0MI+IggVXSYaqppV/AlpLmTvsfO
- xVm7YhTL4C2A0hlgwPDz92rxmMGaupBfXK03KxPY4SJGRpyCI9xzVQQFKfP3AQ7d3OHnUX3xM
- HUIM3BkUpODkgtL7AsZi9jErindHo8au7WVoua6EEa9C+VmNXfPM7SNpcgaGmLj6n2ckThh3T
- +H8shnWcyA9K0d0MxnCH73fePs99SjPYgU4Z8LaObGCEtGyTRSgILwnylALFJe+6foseNZx3c
- eTXQ8aYe7Izbj9P3pqwewZIPwWil6JCXHIWWgvp5J3XUnPyxeTlA9xVS92ml6gXwQkUeMdOfd
- i1ZxZpirJaonjiLfStsP5HUCwssF56aIUyJy0iAo/4awaZdY4vlHKe9i0px8WGwcfjTjpI0Jq
- i3Q0VEJKZfubg30jc9UFL5vD6IVA+vc9QYBsk2w5KbUp0zfFoVlIH43xDeYmIp60IASxGr3Zf
- npU4E1jbW4XC5OVvoN3gjn/mU6vaIArTu3Y7YnjPFb+Hc8dRYWOAQ9gz6cUrE982G4N3Qh7fv
- ePnx2Sdz7jbVaLokXgjmnyn+b/NAjnN/T7nxEq8xOlmF4EqRO36YJFZvULvWbQErC33SkkymJ
- nEinfIPQpgyIwwZajG49HnoszN7forVA5tydJMi/QZn6QA4csn8wTISAYI94eyxsN2fdndFrJ
- J7R9xVMiUYhApJAvUQbVEhZrOdoj2vDKrcrJzWa1r4NlBqwtXv5vy6sGTHBH7RuI30wUd1/iJ
- 6txq6QiJH3fguiblZUQ2ndyZs1thBcpmiyPmHJnjMUkbf00FPkYvmFg/6TDD7qO1XtO+m4uZu
- +hf3g19Q+d5uGvoQe+hlrqH9ceLXgeHi0SnPUhQrGaE5kxa3nmIBeHVgHJFskVTaCiT4x9BbN
- a0BaI8pK/LQUyp6FLi88rWYTgRwg2q/fazQ/Czb0cWsRoecNDgMZSiJKr70m6clbP22xh0P0S
- fXgA5PCsRtd/Gx0n97FVjMqAJCI=
+X-Provags-ID: V03:K1:QLUs7fSpPGa6yht+1yEeTo7UptI8AAyeBxyB5y70OH+oEsApvni
+ lXWuktKSvcGSzr4ThEZeQJbrhP58lz/DpjFSez2LVJu2jmLWXeFGVS3pmRjIafG0pVk1V3e
+ gvriwYWUdRRT+GXnDgWpAGxhCUeEbCni/4139Dt/4G/4u4DQpLRLRWWYkMWRnHlJ+2UZrxp
+ 7eHYO4sDR1b7LDBLBNltQ==
+UI-OutboundReport: notjunk:1;M01:P0:lBIeKzykNcI=;p/TpR9cv/DUh9eMVFroaSH8T5yi
+ S4eA9sQkpKAA5b7XErGFoBwMmwL4kRiTvJYLtcesW3AsZJsQXqBVI+4mIKQJkhfJIxIM/QmR3
+ RaEkAPKmAcgKGopKTB6ULhuVR6UG2KGlUHhYkYTD2EPGuBRI4uweTQ/eAFmfZrmS7g3ZWVXUu
+ 8Dhw9Q5CqcnXmRo1fksTNsSqkwUIBaniFvG9wpL5c+2V7K5JDsnUaDz9xRQgsW2cpScMWZ6Ex
+ +DH+BaZTf2Qsb9WqpQOpjSs6nxHM5xrLgJNmztfbmwhzJwlgQVwqncwpF7DaFH9rNVmgJoezp
+ apjdpDY3C7ZbwTasDgnbckRXYHB+SC7GAu+z9BQhpd3W0uyQJT/SN5P2wcZqSAzVY3dvuAAwt
+ RHMECBA7HXo3dca97GS1eKjA6U9WWUPOjCfKMv1N4bF+3fEmjBnz9HL15FrnMiWrTbgoEqPIj
+ P0vMplyUrDlkPNEibKvsAmbhXDQVrFgH265DcoJiMh6NZfgYcJscWqWF6T+Pk28UNztxm9W5q
+ TjMNEqVPSYZ/5pFC7hXbm5FWUWVWPaDJQdGtoRfsXI4coFWio7JQMC7qYmqchJU63RU+0waJ7
+ ab0YtUaczod2HY061fRi/i1g1SH8fpeP1AoPIDEi3F/Ret4CRRRCAviGBT538c3my1zA73foV
+ O22zjtJ+dCc2T7peNn0nko560RdM/ir6PAS1E2dtL8FXvBDBhCw0T7LN/uwi/Lru74olp/gI/
+ MNrXjlTaCVHytNxKElf4OafXPp9MQJp3sW6il1tzcG4HIXsP0gFgF2ILrKyI5LRC4RPFNgsyZ
+ AENjTvlDshIKKDHjqagJG6P4erTY1MXmJIDkQ+1Y+MVsHLbw3O9A09KunxlAyDBPocCzwHKlQ
+ 752ngmAZmbFYGIILzrQbdwqag+M5kdfQC2rH1LGvws1gpAdXeN4qQp0eXFmnniIqQAbxCumHI
+ ElnIM/w/LvzH1P1luD8JH/qxsVs=
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -72,97 +72,349 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the future, multiple SMM calling backends will exist,
-with each backend being required to initialize its data.
-Introduce a helper function for this so the code necessary
-to initialize dell_smm_data is not duplicated between
-different backends.
+Some Dell machines like the Dell Optiplex 7000 do not support
+the legacy SMM interface, but instead expect all SMM calls
+to be issued over a special WMI interface.
+Add support for this interface so users can control the fans
+on those machines.
 
 Tested-by: <serverror@serverror.com>
 Signed-off-by: Armin Wolf <W_Armin@gmx.de>
 =2D--
- drivers/hwmon/dell-smm-hwmon.c | 46 +++++++++++++++++++++-------------
- 1 file changed, 28 insertions(+), 18 deletions(-)
+ drivers/hwmon/Kconfig          |   1 +
+ drivers/hwmon/dell-smm-hwmon.c | 164 +++++++++++++++++++++++++++++----
+ drivers/platform/x86/wmi.c     |   1 +
+ 3 files changed, 147 insertions(+), 19 deletions(-)
 
+diff --git a/drivers/hwmon/Kconfig b/drivers/hwmon/Kconfig
+index cf27523eed5a..76cb05db1dcf 100644
+=2D-- a/drivers/hwmon/Kconfig
++++ b/drivers/hwmon/Kconfig
+@@ -512,6 +512,7 @@ config SENSORS_DS1621
+
+ config SENSORS_DELL_SMM
+ 	tristate "Dell laptop SMM BIOS hwmon driver"
++	depends on ACPI_WMI
+ 	depends on X86
+ 	imply THERMAL
+ 	help
 diff --git a/drivers/hwmon/dell-smm-hwmon.c b/drivers/hwmon/dell-smm-hwmon=
 .c
-index 4a2c0d1ffa5b..2547b09929e6 100644
+index 2547b09929e6..36d41262d579 100644
 =2D-- a/drivers/hwmon/dell-smm-hwmon.c
 +++ b/drivers/hwmon/dell-smm-hwmon.c
-@@ -623,6 +623,11 @@ static void __init i8k_init_procfs(struct device *dev=
-)
+@@ -12,6 +12,7 @@
+
+ #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
++#include <linux/acpi.h>
+ #include <linux/capability.h>
+ #include <linux/cpu.h>
+ #include <linux/ctype.h>
+@@ -34,8 +35,10 @@
+ #include <linux/thermal.h>
+ #include <linux/types.h>
+ #include <linux/uaccess.h>
++#include <linux/wmi.h>
+
+ #include <linux/i8k.h>
++#include <asm/unaligned.h>
+
+ #define I8K_SMM_FN_STATUS	0x0025
+ #define I8K_SMM_POWER_STATUS	0x0069
+@@ -66,6 +69,8 @@
+ #define I8K_POWER_AC		0x05
+ #define I8K_POWER_BATTERY	0x01
+
++#define DELL_SMM_WMI_GUID	"F1DDEE52-063C-4784-A11E-8A06684B9B01"
++
+ #define DELL_SMM_NO_TEMP	10
+ #define DELL_SMM_NO_FANS	3
+
+@@ -219,6 +224,69 @@ static const struct dell_smm_ops i8k_smm_ops =3D {
+ 	.smm_call =3D i8k_smm_call,
+ };
+
++/*
++ * Call the System Management Mode BIOS over WMI.
++ */
++static int wmi_smm_call(struct device *dev, struct smm_regs *regs)
++{
++	struct wmi_device *wdev =3D container_of(dev, struct wmi_device, dev);
++	struct acpi_buffer out =3D { ACPI_ALLOCATE_BUFFER, NULL };
++	u32 wmi_payload[] =3D {
++		sizeof(regs->eax),
++		regs->eax,
++		sizeof(regs->ebx),
++		regs->ebx,
++		sizeof(regs->ecx),
++		regs->ecx,
++		sizeof(regs->edx),
++		regs->edx
++	};
++	const struct acpi_buffer in =3D {
++		.length =3D sizeof(wmi_payload),
++		.pointer =3D &wmi_payload,
++	};
++	union acpi_object *obj;
++	acpi_status status;
++	u32 *wmi_response;
++	int ret =3D 0;
++	int i;
++
++	status =3D wmidev_evaluate_method(wdev, 0x0, 0x1, &in, &out);
++	if (ACPI_FAILURE(status))
++		return -EIO;
++
++	obj =3D out.pointer;
++	if (!obj)
++		return -ENODATA;
++
++	if (obj->type !=3D ACPI_TYPE_BUFFER && obj->buffer.length !=3D sizeof(wm=
+i_payload)) {
++		ret =3D -ENOMSG;
++
++		goto err_free;
++	}
++
++	wmi_response =3D (u32 *)obj->buffer.pointer;
++
++	/* Check if register size is correct */
++	for (i =3D 0; i < ARRAY_SIZE(wmi_payload); i +=3D 2) {
++		if (get_unaligned_le32(&wmi_response[i]) !=3D sizeof(wmi_response[i + 1=
+])) {
++			ret =3D -ENOMSG;
++
++			goto err_free;
++		}
++	}
++
++	regs->eax =3D get_unaligned_le32(&wmi_response[1]);
++	regs->ebx =3D get_unaligned_le32(&wmi_response[3]);
++	regs->ecx =3D get_unaligned_le32(&wmi_response[5]);
++	regs->edx =3D get_unaligned_le32(&wmi_response[7]);
++
++err_free:
++	kfree(obj);
++
++	return ret;
++}
++
+ static int dell_smm_call(const struct dell_smm_ops *ops, struct smm_regs =
+*regs)
+ {
+ 	int eax =3D regs->eax;
+@@ -306,7 +374,7 @@ static int i8k_get_fan_type(struct dell_smm_data *data=
+, u8 fan)
+ /*
+  * Read the fan nominal rpm for specific fan speed.
+  */
+-static int __init i8k_get_fan_nominal_speed(const struct dell_smm_data *d=
+ata, u8 fan, int speed)
++static int i8k_get_fan_nominal_speed(const struct dell_smm_data *data, u8=
+ fan, int speed)
+ {
+ 	struct smm_regs regs =3D {
+ 		.eax =3D I8K_SMM_GET_NOM_SPEED,
+@@ -349,7 +417,7 @@ static int i8k_set_fan(const struct dell_smm_data *dat=
+a, u8 fan, int speed)
+ 	return dell_smm_call(data->ops, &regs);
+ }
+
+-static int __init i8k_get_temp_type(const struct dell_smm_data *data, u8 =
+sensor)
++static int i8k_get_temp_type(const struct dell_smm_data *data, u8 sensor)
+ {
+ 	struct smm_regs regs =3D {
+ 		.eax =3D I8K_SMM_GET_TEMP_TYPE,
+@@ -401,7 +469,7 @@ static int i8k_get_temp(const struct dell_smm_data *da=
+ta, u8 sensor)
+ 	return temp;
+ }
+
+-static int __init dell_smm_get_signature(const struct dell_smm_ops *ops, =
+int req_fn)
++static int dell_smm_get_signature(const struct dell_smm_ops *ops, int req=
+_fn)
+ {
+ 	struct smm_regs regs =3D { .eax =3D req_fn, };
+ 	int rc;
+@@ -986,7 +1054,7 @@ static const struct hwmon_chip_info dell_smm_chip_inf=
+o =3D {
+ 	.info =3D dell_smm_info,
+ };
+
+-static int __init dell_smm_init_cdev(struct device *dev, u8 fan_num)
++static int dell_smm_init_cdev(struct device *dev, u8 fan_num)
  {
  	struct dell_smm_data *data =3D dev_get_drvdata(dev);
+ 	struct thermal_cooling_device *cdev;
+@@ -1017,7 +1085,7 @@ static int __init dell_smm_init_cdev(struct device *=
+dev, u8 fan_num)
+ 	return ret;
+ }
 
-+	strscpy(data->bios_version, i8k_get_dmi_data(DMI_BIOS_VERSION),
-+		sizeof(data->bios_version));
-+	strscpy(data->bios_machineid, i8k_get_dmi_data(DMI_PRODUCT_SERIAL),
-+		sizeof(data->bios_machineid));
-+
- 	/* Only register exit function if creation was successful */
- 	if (proc_create_data("i8k", 0, NULL, &i8k_proc_ops, data))
- 		devm_add_action_or_reset(dev, i8k_exit_procfs, NULL);
-@@ -1078,6 +1083,26 @@ static int __init dell_smm_init_hwmon(struct device=
- *dev)
+-static int __init dell_smm_init_hwmon(struct device *dev)
++static int dell_smm_init_hwmon(struct device *dev)
+ {
+ 	struct dell_smm_data *data =3D dev_get_drvdata(dev);
+ 	struct device *dell_smm_hwmon_dev;
+@@ -1083,7 +1151,7 @@ static int __init dell_smm_init_hwmon(struct device =
+*dev)
  	return PTR_ERR_OR_ZERO(dell_smm_hwmon_dev);
  }
 
-+static int __init dell_smm_init_data(struct device *dev, const struct del=
+-static int __init dell_smm_init_data(struct device *dev, const struct del=
 l_smm_ops *ops)
++static int dell_smm_init_data(struct device *dev, const struct dell_smm_o=
+ps *ops)
+ {
+ 	struct dell_smm_data *data;
+
+@@ -1409,6 +1477,9 @@ static const struct dmi_system_id i8k_whitelist_fan_=
+control[] __initconst =3D {
+ 	{ }
+ };
+
++/*
++ * Legacy SMM backend driver.
++ */
+ static int __init dell_smm_probe(struct platform_device *pdev)
+ {
+ 	int ret;
+@@ -1434,6 +1505,47 @@ static struct platform_driver dell_smm_driver =3D {
+
+ static struct platform_device *dell_smm_device;
+
++/*
++ * WMI SMM backend driver.
++ */
++static int dell_smm_wmi_probe(struct wmi_device *wdev, const void *contex=
+t)
 +{
-+	struct dell_smm_data *data;
++	struct dell_smm_ops *ops;
++	int ret;
 +
-+	data =3D devm_kzalloc(dev, sizeof(*data), GFP_KERNEL);
-+	if (!data)
++	ops =3D devm_kzalloc(&wdev->dev, sizeof(*ops), GFP_KERNEL);
++	if (!ops)
 +		return -ENOMEM;
 +
-+	mutex_init(&data->i8k_mutex);
-+	dev_set_drvdata(dev, data);
++	ops->smm_call =3D wmi_smm_call;
++	ops->smm_dev =3D &wdev->dev;
 +
-+	data->ops =3D ops;
-+	/* All options must not be 0 */
-+	data->i8k_fan_mult =3D fan_mult ? : I8K_FAN_MULT;
-+	data->i8k_fan_max =3D fan_max ? : I8K_FAN_HIGH;
-+	data->i8k_pwm_mult =3D DIV_ROUND_UP(255, data->i8k_fan_max);
++	if (dell_smm_get_signature(ops, I8K_SMM_GET_DELL_SIG1) &&
++	    dell_smm_get_signature(ops, I8K_SMM_GET_DELL_SIG2))
++		return -ENODEV;
++
++	ret =3D dell_smm_init_data(&wdev->dev, ops);
++	if (ret < 0)
++		return ret;
++
++	return dell_smm_init_hwmon(&wdev->dev);
++}
++
++static const struct wmi_device_id dell_smm_wmi_id_table[] =3D {
++	{ DELL_SMM_WMI_GUID, NULL },
++	{ }
++};
++MODULE_DEVICE_TABLE(wmi, dell_smm_wmi_id_table);
++
++static struct wmi_driver dell_smm_wmi_driver =3D {
++	.driver =3D {
++		.name =3D KBUILD_MODNAME,
++		.probe_type =3D PROBE_PREFER_ASYNCHRONOUS,
++	},
++	.id_table =3D dell_smm_wmi_id_table,
++	.probe =3D dell_smm_wmi_probe,
++};
++
+ /*
+  * Probe for the presence of a supported laptop.
+  */
+@@ -1485,33 +1597,43 @@ static void __init dell_smm_init_dmi(void)
+ 	}
+ }
+
+-static int __init i8k_init(void)
++static int __init dell_smm_legacy_check(void)
+ {
+-	/*
+-	 * Get DMI information
+-	 */
+ 	if (!dmi_check_system(i8k_dmi_table)) {
+ 		if (!ignore_dmi && !force)
+ 			return -ENODEV;
+
+-		pr_info("not running on a supported Dell system.\n");
++		pr_info("Probing for legacy SMM handler on unsupported machine\n");
+ 		pr_info("vendor=3D%s, model=3D%s, version=3D%s\n",
+ 			i8k_get_dmi_data(DMI_SYS_VENDOR),
+ 			i8k_get_dmi_data(DMI_PRODUCT_NAME),
+ 			i8k_get_dmi_data(DMI_BIOS_VERSION));
+ 	}
+
+-	dell_smm_init_dmi();
+-
+-	/*
+-	 * Get SMM Dell signature
+-	 */
+ 	if (dell_smm_get_signature(&i8k_smm_ops, I8K_SMM_GET_DELL_SIG1) &&
+ 	    dell_smm_get_signature(&i8k_smm_ops, I8K_SMM_GET_DELL_SIG2)) {
+ 		if (!force)
+ 			return -ENODEV;
+
+-		pr_err("Unable to get Dell SMM signature\n");
++		pr_warn("Forcing legacy SMM calls on a possibly incompatible machine\n"=
+);
++	}
 +
 +	return 0;
 +}
 +
- static const struct dmi_system_id i8k_dmi_table[] __initconst =3D {
- 	{
- 		.ident =3D "Dell G5 5590",
-@@ -1386,26 +1411,11 @@ static const struct dmi_system_id i8k_whitelist_fa=
-n_control[] __initconst =3D {
++static int __init i8k_init(void)
++{
++	int ret;
++
++	dell_smm_init_dmi();
++
++	ret =3D dell_smm_legacy_check();
++	if (ret < 0) {
++		/*
++		 * On modern machines, SMM communication happens over WMI, meaning
++		 * the SMM handler might not react to legacy SMM calls.
++		 */
++		return wmi_driver_register(&dell_smm_wmi_driver);
+ 	}
 
- static int __init dell_smm_probe(struct platform_device *pdev)
+ 	dell_smm_device =3D platform_create_bundle(&dell_smm_driver, dell_smm_pr=
+obe, NULL, 0, NULL,
+@@ -1522,8 +1644,12 @@ static int __init i8k_init(void)
+
+ static void __exit i8k_exit(void)
  {
--	struct dell_smm_data *data;
- 	int ret;
+-	platform_device_unregister(dell_smm_device);
+-	platform_driver_unregister(&dell_smm_driver);
++	if (dell_smm_device) {
++		platform_device_unregister(dell_smm_device);
++		platform_driver_unregister(&dell_smm_driver);
++	} else {
++		wmi_driver_unregister(&dell_smm_wmi_driver);
++	}
+ }
 
--	data =3D devm_kzalloc(&pdev->dev, sizeof(struct dell_smm_data), GFP_KERN=
-EL);
--	if (!data)
--		return -ENOMEM;
--
--	mutex_init(&data->i8k_mutex);
--	platform_set_drvdata(pdev, data);
--	data->ops =3D &i8k_smm_ops;
--
--	strscpy(data->bios_version, i8k_get_dmi_data(DMI_BIOS_VERSION),
--		sizeof(data->bios_version));
--	strscpy(data->bios_machineid, i8k_get_dmi_data(DMI_PRODUCT_SERIAL),
--		sizeof(data->bios_machineid));
--
--	/* All options must not be 0 */
--	data->i8k_fan_mult =3D fan_mult ? : I8K_FAN_MULT;
--	data->i8k_fan_max =3D fan_max ? : I8K_FAN_HIGH;
--	data->i8k_pwm_mult =3D DIV_ROUND_UP(255, data->i8k_fan_max);
-+	ret =3D dell_smm_init_data(&pdev->dev, &i8k_smm_ops);
-+	if (ret < 0)
-+		return ret;
+ module_init(i8k_init);
+diff --git a/drivers/platform/x86/wmi.c b/drivers/platform/x86/wmi.c
+index a78ddd83cda0..0b3e63c21d26 100644
+=2D-- a/drivers/platform/x86/wmi.c
++++ b/drivers/platform/x86/wmi.c
+@@ -106,6 +106,7 @@ MODULE_DEVICE_TABLE(acpi, wmi_device_ids);
+ static const char * const allow_duplicates[] =3D {
+ 	"05901221-D566-11D1-B2F0-00A0C9062910",	/* wmi-bmof */
+ 	"8A42EA14-4F2A-FD45-6422-0087F7A7E608",	/* dell-wmi-ddv */
++	"F1DDEE52-063C-4784-A11E-8A06684B9B01", /* dell-smm-hwmon */
+ 	NULL
+ };
 
- 	ret =3D dell_smm_init_hwmon(&pdev->dev);
- 	if (ret)
 =2D-
 2.39.2
 
