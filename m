@@ -2,146 +2,294 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C4997DFEFE
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 07:01:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9243E7DFF0B
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 07:10:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230257AbjKCGBs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 02:01:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36646 "EHLO
+        id S229929AbjKCGJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 02:09:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229727AbjKCGBq (ORCPT
+        with ESMTP id S229379AbjKCGJr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 02:01:46 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21F8A1BD
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 23:01:39 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-53dd752685fso2825242a12.3
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 23:01:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698991297; x=1699596097; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ukb8C5mDZsObaz53quLRVItiO2EF/GZE516uqejG/ko=;
-        b=Uq5X9lDDg11NNxXl17Y3k1jv8//M4ed08HADWK+b9BD+z3hve1KgAtMpCkIEcwUYZa
-         /iTWijZBcq5gznKDa4ORjoOXVHyx3Wdnwuk/gPhNXZUS9hIpvFX0qkkvZ7lgU1GBnt0g
-         lOPtYflLXojV31Zd2XDEjdjJMk5RfSKjuVWqEWVonMgol5KTSC4wa9aks0xq6egxe/JV
-         iY1Qw5UHke4hJlsqv1niFDpXIss9/9l8jaLOCwYLoSPrScbgktMQ9pyJ1pzMFbWorkEc
-         c9vfKsRFfq5nHg0aXnOQVwMabj15t5yzS7RCTadMl7Yo60eAN4vtzjfWJj/lRPoiNfw6
-         vhfA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698991297; x=1699596097;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ukb8C5mDZsObaz53quLRVItiO2EF/GZE516uqejG/ko=;
-        b=D+zRwY96g5+FeGLXgofnLW8Nv3kK//k3ULZaxw26z8BqEPHwVhJs8VprXedpTv168+
-         +MK/HkWD8kkXP4jBOu7ChE1m8YNaXy2bbFjqot2TyLTnDbr0IUd3BwC5XnLZPH84Cstl
-         SkEmqOpBC01RFlo/q3yX0PbMvywjQOxOFOrNAIFr82LrXJ62CQSpTQtv6o9+gVeRAOom
-         XG/XvqFebLtAaLb6F/4CZ1+RyMUKUXCPDYd1I/4XcdJNKIjgR5nlN6DcOLV/+zc3aI4B
-         MiB97dsDJlGs5zq4NUy8vt5CCzuuLqXWfD1y0oEzPdOBLPyBNJi6+voftVlKqpAQZ/zF
-         Tuow==
-X-Gm-Message-State: AOJu0Yz67E59cZdYTcXMKodFR31helIxC7fN86YrTq8npfdcW5QcmgEa
-        MfTQUGgYHcoGrYW/widO2iAOPg==
-X-Google-Smtp-Source: AGHT+IG/ottftTOCLDvRabQSmO51TPU5plBCAZTFoa9mzIMz0bWPwX8u081urBBrSA0HCRk5BA8v3g==
-X-Received: by 2002:aa7:c90f:0:b0:53e:34c5:fc14 with SMTP id b15-20020aa7c90f000000b0053e34c5fc14mr16474627edt.23.1698991297468;
-        Thu, 02 Nov 2023 23:01:37 -0700 (PDT)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id i14-20020aa7c9ce000000b0053fa13e27dcsm563137edt.48.2023.11.02.23.01.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Nov 2023 23:01:37 -0700 (PDT)
-Date:   Fri, 3 Nov 2023 09:01:34 +0300
-From:   Dan Carpenter <dan.carpenter@linaro.org>
-To:     oe-kbuild@lists.linux.dev,
-        Mika Westerberg <mika.westerberg@linux.intel.com>
-Cc:     lkp@intel.com, oe-kbuild-all@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: drivers/thunderbolt/tmu.c:617 tb_switch_tmu_change_mode() warn:
- missing unwind goto?
-Message-ID: <9a426df0-2ad2-48e7-aa6a-21e5c40ec839@kadam.mountain>
+        Fri, 3 Nov 2023 02:09:47 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6A02CCA
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 23:09:44 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 75FCB2F4;
+        Thu,  2 Nov 2023 23:10:25 -0700 (PDT)
+Received: from [10.162.41.8] (a077893.blr.arm.com [10.162.41.8])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 666153F67D;
+        Thu,  2 Nov 2023 23:09:39 -0700 (PDT)
+Message-ID: <6281f889-d665-451b-a864-e2751fce8017@arm.com>
+Date:   Fri, 3 Nov 2023 11:39:36 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] arm64/arm: arm_pmuv3: perf: Don't truncate 64-bit
+ registers
+Content-Language: en-US
+To:     Ilkka Koskinen <ilkka@os.amperecomputing.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Zaid Al-Bassam <zalbassam@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Russell King <linux@armlinux.org.uk>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20231102183012.1251410-1-ilkka@os.amperecomputing.com>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+In-Reply-To: <20231102183012.1251410-1-ilkka@os.amperecomputing.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mika,
 
-FYI, the error/warning was bisected to this commit, please ignore it if it's irrelevant.
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   4652b8e4f3ffa48c706ec334f048c217a7d9750d
-commit: c437dcb18310f296eb9db58a361f309f7817014d thunderbolt: Fix a couple of style issues in TMU code
-config: i386-randconfig-141-20231102 (https://download.01.org/0day-ci/archive/20231103/202311030814.AXtCk7PO-lkp@intel.com/config)
-compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
-reproduce: (https://download.01.org/0day-ci/archive/20231103/202311030814.AXtCk7PO-lkp@intel.com/reproduce)
+On 11/3/23 00:00, Ilkka Koskinen wrote:
+> The driver used to truncate several 64-bit registers such as PMCEID[n]
+> registers used to describe whether architectural and microarchitectural
+> events in range 0x4000-0x401f exist. Due to discarding the bits, the
+> driver made the events invisible, even if they existed.
+> 
+> Moreover, PMCCFILTR and PMCR registers have additional bits in the upper
+> 32 bits. This patch makes them available although they aren't currently
+> used. Finally, functions handling PMXEVCNTR and PMXEVTYPER registers are
+> removed as they not being used at all.
+> 
+> Fixes: df29ddf4f04b ("arm64: perf: Abstract system register accesses away")
+> Reported-by: Carl Worth <carl@os.amperecomputing.com>
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-| Closes: https://lore.kernel.org/r/202311030814.AXtCk7PO-lkp@intel.com/
+This needs an URL for the original bug report in the following format.
 
-smatch warnings:
-drivers/thunderbolt/tmu.c:617 tb_switch_tmu_change_mode() warn: missing unwind goto?
+    Reported-by: Carl Worth <carl@os.amperecomputing.com>
+    Closes: https://lore.kernel.org/..
 
-vim +617 drivers/thunderbolt/tmu.c
+Otherwise, the following checkpatch warning shows up.
 
-c437dcb18310f2 Mika Westerberg 2022-10-07  596  static int tb_switch_tmu_change_mode(struct tb_switch *sw)
-b017a46d486cd4 Gil Fine        2022-05-26  597  {
-b017a46d486cd4 Gil Fine        2022-05-26  598  	struct tb_port *up, *down;
-b017a46d486cd4 Gil Fine        2022-05-26  599  	int ret;
-b017a46d486cd4 Gil Fine        2022-05-26  600  
-b017a46d486cd4 Gil Fine        2022-05-26  601  	up = tb_upstream_port(sw);
-7ce542219b6323 Gil Fine        2022-09-23  602  	down = tb_switch_downstream_port(sw);
-b017a46d486cd4 Gil Fine        2022-05-26  603  	ret = tb_port_tmu_set_unidirectional(down, sw->tmu.unidirectional_request);
-b017a46d486cd4 Gil Fine        2022-05-26  604  	if (ret)
-b017a46d486cd4 Gil Fine        2022-05-26  605  		goto out;
-b017a46d486cd4 Gil Fine        2022-05-26  606  
-b017a46d486cd4 Gil Fine        2022-05-26  607  	if (sw->tmu.unidirectional_request)
-7ce542219b6323 Gil Fine        2022-09-23  608  		ret = tb_switch_tmu_rate_write(tb_switch_parent(sw),
-7ce542219b6323 Gil Fine        2022-09-23  609  					       sw->tmu.rate_request);
-b017a46d486cd4 Gil Fine        2022-05-26  610  	else
-b017a46d486cd4 Gil Fine        2022-05-26  611  		ret = tb_switch_tmu_rate_write(sw, sw->tmu.rate_request);
-b017a46d486cd4 Gil Fine        2022-05-26  612  	if (ret)
-b017a46d486cd4 Gil Fine        2022-05-26  613  		return ret;
+WARNING: Reported-by: should be immediately followed by Closes: with a URL to the report
+#17: 
+Reported-by: Carl Worth <carl@os.amperecomputing.com>
+Signed-off-by: Ilkka Koskinen <ilkka@os.amperecomputing.com>
 
-These error paths should be goto out;
+> Signed-off-by: Ilkka Koskinen <ilkka@os.amperecomputing.com>
+> ---
+> 
+> v2:
+> 
+>   * Took arm32 specific code from Marc Zyngier's review comment
+>     * Fixed a couple of typos in the commit message
+> 
+>     I have tested the patch on Arm64. However, what comes to Arm32 part, I have
+>     only compared the code with Arm32 specification and cross compiled it.
+> 
+>   * https://lore.kernel.org/all/20231027012243.111070-1-ilkka@os.amperecomputing.com/
+> 
+> v3:
+> 
+>   * Removed read/write_pmxevcntr() and read/write_pmxevtyper() as suggested
+>     by Mark Rutland
+>   * Changed handling of PMCCFILTR and PMCR to 64-bit on Aarch64. Aarch32 doesn't
+>     seem to use the upper 32 bits.
+>     
+> 
+> Tested the patch on Arm64. Arm32 version was only built and not tested on actual
+> hardware.
+> 
+> ---
+> 
+> arch/arm/include/asm/arm_pmuv3.h   | 48 ++++++++++++++----------------
+>  arch/arm64/include/asm/arm_pmuv3.h | 25 ++++------------
+>  drivers/perf/arm_pmuv3.c           |  6 ++--
+>  3 files changed, 31 insertions(+), 48 deletions(-)
+> 
+> diff --git a/arch/arm/include/asm/arm_pmuv3.h b/arch/arm/include/asm/arm_pmuv3.h
+> index 72529f5e2bed..a41b503b7dcd 100644
+> --- a/arch/arm/include/asm/arm_pmuv3.h
+> +++ b/arch/arm/include/asm/arm_pmuv3.h
+> @@ -23,6 +23,8 @@
+>  #define PMUSERENR		__ACCESS_CP15(c9,  0, c14, 0)
+>  #define PMINTENSET		__ACCESS_CP15(c9,  0, c14, 1)
+>  #define PMINTENCLR		__ACCESS_CP15(c9,  0, c14, 2)
+> +#define PMCEID2			__ACCESS_CP15(c9,  0, c14, 4)
+> +#define PMCEID3			__ACCESS_CP15(c9,  0, c14, 5)
+>  #define PMMIR			__ACCESS_CP15(c9,  0, c14, 6)
+>  #define PMCCFILTR		__ACCESS_CP15(c14, 0, c15, 7)
+>  
+> @@ -150,21 +152,6 @@ static inline u64 read_pmccntr(void)
+>  	return read_sysreg(PMCCNTR);
+>  }
+>  
+> -static inline void write_pmxevcntr(u32 val)
+> -{
+> -	write_sysreg(val, PMXEVCNTR);
+> -}
+> -
+> -static inline u32 read_pmxevcntr(void)
+> -{
+> -	return read_sysreg(PMXEVCNTR);
+> -}
+> -
+> -static inline void write_pmxevtyper(u32 val)
+> -{
+> -	write_sysreg(val, PMXEVTYPER);
+> -}
+> -
+>  static inline void write_pmcntenset(u32 val)
+>  {
+>  	write_sysreg(val, PMCNTENSET);
+> @@ -205,16 +192,6 @@ static inline void write_pmuserenr(u32 val)
+>  	write_sysreg(val, PMUSERENR);
+>  }
+>  
+> -static inline u32 read_pmceid0(void)
+> -{
+> -	return read_sysreg(PMCEID0);
+> -}
+> -
+> -static inline u32 read_pmceid1(void)
+> -{
+> -	return read_sysreg(PMCEID1);
+> -}
+> -
+>  static inline void kvm_set_pmu_events(u32 set, struct perf_event_attr *attr) {}
+>  static inline void kvm_clr_pmu_events(u32 clr) {}
+>  static inline bool kvm_pmu_counter_deferred(struct perf_event_attr *attr)
+> @@ -231,6 +208,7 @@ static inline void kvm_vcpu_pmu_resync_el0(void) {}
+>  
+>  /* PMU Version in DFR Register */
+>  #define ARMV8_PMU_DFR_VER_NI        0
+> +#define ARMV8_PMU_DFR_VER_V3P1      0x4
+>  #define ARMV8_PMU_DFR_VER_V3P4      0x5
+>  #define ARMV8_PMU_DFR_VER_V3P5      0x6
+>  #define ARMV8_PMU_DFR_VER_IMP_DEF   0xF
+> @@ -251,4 +229,24 @@ static inline bool is_pmuv3p5(int pmuver)
+>  	return pmuver >= ARMV8_PMU_DFR_VER_V3P5;
+>  }
+>  
+> +static inline u64 read_pmceid0(void)
+> +{
+> +	u64 val = read_sysreg(PMCEID0);
+> +
+> +	if (read_pmuver() >= ARMV8_PMU_DFR_VER_V3P1)
+> +		val |= (u64)read_sysreg(PMCEID2) << 32;
+> +
+> +	return val;
+> +}
+> +
+> +static inline u64 read_pmceid1(void)
+> +{
+> +	u64 val = read_sysreg(PMCEID1);
+> +
+> +	if (read_pmuver() >= ARMV8_PMU_DFR_VER_V3P1)
+> +		val |= (u64)read_sysreg(PMCEID3) << 32;
+> +
+> +	return val;
+> +}
+> +
+>  #endif
+> diff --git a/arch/arm64/include/asm/arm_pmuv3.h b/arch/arm64/include/asm/arm_pmuv3.h
+> index 18dc2fb3d7b7..c27404fa4418 100644
+> --- a/arch/arm64/include/asm/arm_pmuv3.h
+> +++ b/arch/arm64/include/asm/arm_pmuv3.h
+> @@ -46,12 +46,12 @@ static inline u32 read_pmuver(void)
+>  			ID_AA64DFR0_EL1_PMUVer_SHIFT);
+>  }
+>  
+> -static inline void write_pmcr(u32 val)
+> +static inline void write_pmcr(u64 val)
+>  {
+>  	write_sysreg(val, pmcr_el0);
+>  }
+>  
+> -static inline u32 read_pmcr(void)
+> +static inline u64 read_pmcr(void)
+>  {
+>  	return read_sysreg(pmcr_el0);
+>  }
+> @@ -71,21 +71,6 @@ static inline u64 read_pmccntr(void)
+>  	return read_sysreg(pmccntr_el0);
+>  }
+>  
+> -static inline void write_pmxevcntr(u32 val)
+> -{
+> -	write_sysreg(val, pmxevcntr_el0);
+> -}
+> -
+> -static inline u32 read_pmxevcntr(void)
+> -{
+> -	return read_sysreg(pmxevcntr_el0);
+> -}
+> -
+> -static inline void write_pmxevtyper(u32 val)
+> -{
+> -	write_sysreg(val, pmxevtyper_el0);
+> -}
+> -
+>  static inline void write_pmcntenset(u32 val)
+>  {
+>  	write_sysreg(val, pmcntenset_el0);
+> @@ -106,7 +91,7 @@ static inline void write_pmintenclr(u32 val)
+>  	write_sysreg(val, pmintenclr_el1);
+>  }
+>  
+> -static inline void write_pmccfiltr(u32 val)
+> +static inline void write_pmccfiltr(u64 val)
+>  {
+>  	write_sysreg(val, pmccfiltr_el0);
+>  }
+> @@ -126,12 +111,12 @@ static inline void write_pmuserenr(u32 val)
+>  	write_sysreg(val, pmuserenr_el0);
+>  }
+>  
+> -static inline u32 read_pmceid0(void)
+> +static inline u64 read_pmceid0(void)
+>  {
+>  	return read_sysreg(pmceid0_el0);
+>  }
+>  
+> -static inline u32 read_pmceid1(void)
+> +static inline u64 read_pmceid1(void)
+>  {
+>  	return read_sysreg(pmceid1_el0);
+>  }
+> diff --git a/drivers/perf/arm_pmuv3.c b/drivers/perf/arm_pmuv3.c
+> index 18b91b56af1d..6ca7be05229c 100644
+> --- a/drivers/perf/arm_pmuv3.c
+> +++ b/drivers/perf/arm_pmuv3.c
+> @@ -428,12 +428,12 @@ static inline bool armv8pmu_event_is_chained(struct perf_event *event)
+>  #define	ARMV8_IDX_TO_COUNTER(x)	\
+>  	(((x) - ARMV8_IDX_COUNTER0) & ARMV8_PMU_COUNTER_MASK)
+>  
+> -static inline u32 armv8pmu_pmcr_read(void)
+> +static inline u64 armv8pmu_pmcr_read(void)
+>  {
+>  	return read_pmcr();
+>  }
+>  
+> -static inline void armv8pmu_pmcr_write(u32 val)
+> +static inline void armv8pmu_pmcr_write(u64 val)
+>  {
+>  	val &= ARMV8_PMU_PMCR_MASK;
+>  	isb();
+> @@ -957,7 +957,7 @@ static int armv8pmu_set_event_filter(struct hw_perf_event *event,
+>  static void armv8pmu_reset(void *info)
+>  {
+>  	struct arm_pmu *cpu_pmu = (struct arm_pmu *)info;
+> -	u32 pmcr;
+> +	u64 pmcr;
+>  
+>  	/* The counter and interrupt enable registers are unknown at reset. */
+>  	armv8pmu_disable_counter(U32_MAX);
 
-b017a46d486cd4 Gil Fine        2022-05-26  614  
-b017a46d486cd4 Gil Fine        2022-05-26  615  	ret = tb_switch_set_tmu_mode_params(sw, sw->tmu.rate_request);
-b017a46d486cd4 Gil Fine        2022-05-26  616  	if (ret)
-b017a46d486cd4 Gil Fine        2022-05-26 @617  		return ret;
+Otherwise, this LGTM.
 
-Same.  (I guess before goto out was a do-nothing goto so it didn't
-matter).
-
-b017a46d486cd4 Gil Fine        2022-05-26  618  
-b017a46d486cd4 Gil Fine        2022-05-26  619  	ret = tb_port_tmu_set_unidirectional(up, sw->tmu.unidirectional_request);
-b017a46d486cd4 Gil Fine        2022-05-26  620  	if (ret)
-b017a46d486cd4 Gil Fine        2022-05-26  621  		goto out;
-b017a46d486cd4 Gil Fine        2022-05-26  622  
-b017a46d486cd4 Gil Fine        2022-05-26  623  	ret = tb_port_tmu_time_sync_enable(down);
-b017a46d486cd4 Gil Fine        2022-05-26  624  	if (ret)
-b017a46d486cd4 Gil Fine        2022-05-26  625  		goto out;
-b017a46d486cd4 Gil Fine        2022-05-26  626  
-b017a46d486cd4 Gil Fine        2022-05-26  627  	ret = tb_port_tmu_time_sync_enable(up);
-b017a46d486cd4 Gil Fine        2022-05-26  628  	if (ret)
-b017a46d486cd4 Gil Fine        2022-05-26  629  		goto out;
-b017a46d486cd4 Gil Fine        2022-05-26  630  
-b017a46d486cd4 Gil Fine        2022-05-26  631  	return 0;
-b017a46d486cd4 Gil Fine        2022-05-26  632  
-b017a46d486cd4 Gil Fine        2022-05-26  633  out:
-c437dcb18310f2 Mika Westerberg 2022-10-07  634  	tb_switch_tmu_change_mode_prev(sw);
-b017a46d486cd4 Gil Fine        2022-05-26  635  	return ret;
-b017a46d486cd4 Gil Fine        2022-05-26  636  }
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
-
+Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
