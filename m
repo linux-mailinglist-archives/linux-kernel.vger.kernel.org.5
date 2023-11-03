@@ -2,119 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 07DE27E0B41
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 23:48:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 471727E0B3F
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 23:48:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345671AbjKCWni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 18:43:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49798 "EHLO
+        id S1376729AbjKCWoL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 18:44:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230439AbjKCWng (ORCPT
+        with ESMTP id S1345174AbjKCWoJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 18:43:36 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0677719D;
-        Fri,  3 Nov 2023 15:43:34 -0700 (PDT)
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A3M28F6010502;
-        Fri, 3 Nov 2023 22:43:19 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=qcppdkim1;
- bh=wV/y6SpEV/wr7npshNa1xl9xwZnKZ0TZmfop5ZPBask=;
- b=gKsoUDwiQHk+XLjSDgNY6EjqzILzvCZKMqJ839JkqN+v8z1y6kR4I3mNYPvVLOmmawCX
- 1TOD4MH0MG3XUPD21NwC/pVbZomP6mhcqLWY2wbDx/Ar1I3q9D2mF3ErDdJD6XtQMLz9
- i4gnSdqodXmaPOjrUz90kKQIpqdLhj8VuooiYQh1eZ4IZX2b4ag0VQWgYl7jlH5Hv+qn
- kIjfVeGESe3RZtrooilApaiLWgT1NY32c0dRtfUTu6y5rgkaizT5bzoGE86PHpoANgw9
- xoUiLuYfZWIPmfZj/xb3FMcWHRZLBXm+1OdhCtIHuZxTRPnH0QpWzNH/I49gaZbJmeIg yg== 
-Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u4r00janc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 03 Nov 2023 22:43:19 +0000
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-        by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3A3MhIZK004400
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 3 Nov 2023 22:43:18 GMT
-Received: from hu-eberman-lv.qualcomm.com (10.49.16.6) by
- nasanex01b.na.qualcomm.com (10.46.141.250) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.39; Fri, 3 Nov 2023 15:43:17 -0700
-From:   Elliot Berman <quic_eberman@quicinc.com>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-CC:     Abel Vesa <abel.vesa@linaro.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Elliot Berman <quic_eberman@quicinc.com>,
-        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>
-Subject: [RESEND PATCH v2] dt-bindings: qcom,pdc: Add compatible for SM8550
-Date:   Fri, 3 Nov 2023 15:43:03 -0700
-Message-ID: <20231103224304.764730-1-quic_eberman@quicinc.com>
-X-Mailer: git-send-email 2.41.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.49.16.6]
-X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: zvT6Syc_CgV6sH_Zni0cj5UsiS7Tq8iW
-X-Proofpoint-GUID: zvT6Syc_CgV6sH_Zni0cj5UsiS7Tq8iW
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-03_21,2023-11-02_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxscore=0
- mlxlogscore=704 clxscore=1011 impostorscore=0 spamscore=0 bulkscore=0
- priorityscore=1501 suspectscore=0 malwarescore=0 lowpriorityscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2310240000 definitions=main-2311030192
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Fri, 3 Nov 2023 18:44:09 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F995D6D
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 15:44:06 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5a9012ab0adso36502087b3.1
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Nov 2023 15:44:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1699051445; x=1699656245; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:reply-to:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VHUs19MXg68FJ/UikGSWl1xtUmfy1ZNYmGDVs0epASU=;
+        b=eRdP5MYTex7drFSvnL8KqbMuun5bFCt9F19Ie+gn87Sws08TPDik6fMEhpWDYHc+Tq
+         zj1nW1YWspv3f5JvTv1gOvybTkExyY/sczl0YsQXlTbrNl6tnb6AKVRANhaKdQGG+iVg
+         VOPV+IGfWF7Is5mFbH9KuY2/7GQMN+uLeHlxXxK4etRrzBtwGPq13ju0tatp0KEqpcqq
+         luPgfWcMtusTndj7JjPY/IgwxqxvIUdRzBZNemKtxs+1rQ9ZC9YBZ9XLdGPmlj0tlQ4Q
+         Rb0QZnAeePkNn/31ORt4eC/8YJXMcosXX5awUpGrPE9kJaL/SFDBvAPuSssBGFwUE1ez
+         y47g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699051445; x=1699656245;
+        h=cc:to:from:subject:message-id:mime-version:date:reply-to
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=VHUs19MXg68FJ/UikGSWl1xtUmfy1ZNYmGDVs0epASU=;
+        b=JDkNjBTlniRcJoOHFQafoP8vhYc0DqpYzbAFy8PnV9AEhmwq75jpTvgMwnGzjXiriE
+         aIs1ehpq42L3P2928uzfz8Dhoo25JOvTP7ds2apPAeXfKKlpG1V8ICDTRb75Mz/xys5p
+         fsmibYevCVgd6ImRO5BMOHnyRHIgdFo+mXMjucUIkgcpVQHfEjrDc9VO440q/lh9nvEx
+         ugK1mR7t8IzKf5uSprF2dHT0jNUpOfpAv1E0MLNvtyql+vYpJapT61mnWfUKOFVCe3DK
+         6rwXRedW0A4y+l/567rlBNU6KU7JHiD+zUmE15yZ7PULpiSUFSmrbW5+BQUAYP3mCCVr
+         tS7g==
+X-Gm-Message-State: AOJu0YzL/mVurRK1Hjd3ds9zQ/sklIBhOcqLB9myLe//mj0VdplgY4ye
+        XLzf2GfDI5z/Fz+gHbkjwTNA8n32Lwc=
+X-Google-Smtp-Source: AGHT+IHPtAwEWr+ctDqsScG5V+Q52QTEUJtI+qEU6hGf5rCAVAqdsox8vEdKuTAwtWiJ7ZeFf05HMmjUPRE=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a81:a056:0:b0:59b:ca80:919a with SMTP id
+ x83-20020a81a056000000b0059bca80919amr78967ywg.0.1699051445462; Fri, 03 Nov
+ 2023 15:44:05 -0700 (PDT)
+Reply-To: Sean Christopherson <seanjc@google.com>
+Date:   Fri,  3 Nov 2023 15:44:02 -0700
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.42.0.869.gea05f2083d-goog
+Message-ID: <20231103224402.347278-1-seanjc@google.com>
+Subject: [PATCH] x86/fpu/xstate: Always preserve non-user xfeatures/flags in __state_perm
+From:   Sean Christopherson <seanjc@google.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org
+Cc:     linux-kernel@vger.kernel.org, Maxim Levitsky <mlevitsk@redhat.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Chao Gao <chao.gao@intel.com>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        John Allen <john.allen@amd.com>, kvm@vger.kernel.org,
+        Sean Christopherson <seanjc@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Abel Vesa <abel.vesa@linaro.org>
+When granting userspace or a KVM guest access to an xfeature, preserve the
+entity's existing supervisor and software-defined permissions as tracked
+by __state_perm, i.e. use __state_perm to track *all* permissions even
+though all supported supervisor xfeatures are granted to all FPUs and
+FPU_GUEST_PERM_LOCKED disallows changing permissions.
 
-Document the compatible for SM8550 PDC.
+Effectively clobbering supervisor permissions results in inconsistent
+behavior, as xstate_get_group_perm() will report supervisor features for
+process that do NOT request access to dynamic user xfeatures, whereas any
+and all supervisor features will be absent from the set of permissions for
+any process that is granted access to one or more dynamic xfeatures (which
+right now means AMX).
 
-Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Signed-off-by: Elliot Berman <quic_eberman@quicinc.com>
+The inconsistency isn't problematic because fpu_xstate_prctl() already
+strips out everything except user xfeatures:
+
+        case ARCH_GET_XCOMP_PERM:
+                /*
+                 * Lockless snapshot as it can also change right after the
+                 * dropping the lock.
+                 */
+                permitted = xstate_get_host_group_perm();
+                permitted &= XFEATURE_MASK_USER_SUPPORTED;
+                return put_user(permitted, uptr);
+
+        case ARCH_GET_XCOMP_GUEST_PERM:
+                permitted = xstate_get_guest_group_perm();
+                permitted &= XFEATURE_MASK_USER_SUPPORTED;
+                return put_user(permitted, uptr);
+
+and similarly KVM doesn't apply the __state_perm to supervisor states
+(kvm_get_filtered_xcr0() incorporates xstate_get_guest_group_perm()):
+
+        case 0xd: {
+                u64 permitted_xcr0 = kvm_get_filtered_xcr0();
+                u64 permitted_xss = kvm_caps.supported_xss;
+
+But if KVM in particular were to ever change, dropping supervisor
+permissions would result in subtle bugs in KVM's reporting of supported
+CPUID settings.  And the above behavior also means that having supervisor
+xfeatures in __state_perm is correctly handled by all users.
+
+Dropping supervisor permissions also creates another landmine for KVM.  If
+more dynamic user xfeatures are ever added, requesting access to multiple
+xfeatures in separate ARCH_REQ_XCOMP_GUEST_PERM calls will result in the
+second invocation of __xstate_request_perm() computing the wrong ksize, as
+as the mask passed to xstate_calculate_size() would not contain *any*
+supervisor features.
+
+Commit 781c64bfcb73 ("x86/fpu/xstate: Handle supervisor states in XSTATE
+permissions") fudged around the size issue for userspace FPUs, but for
+reasons unknown skipped guest FPUs.  Lack of a fix for KVM "works" only
+because KVM doesn't yet support virtualizing features that have supervisor
+xfeatures, i.e. as of today, KVM guest FPUs will never need the relevant
+xfeatures.
+
+Simply extending the hack-a-fix for guests would temporarily solve the
+ksize issue, but wouldn't address the inconsistency issue and would leave
+another lurking pitfall for KVM.  KVM support for virtualizing CET will
+likely add CET_KERNEL as a guest-only xfeature, i.e. CET_KERNEL will not
+be set in xfeatures_mask_supervisor() and would again be dropped when
+granting access to dynamic xfeatures.
+
+Note, the existing clobbering behavior is rather subtle.  The @permitted
+parameter to __xstate_request_perm() comes from:
+
+	permitted = xstate_get_group_perm(guest);
+
+which is either fpu->guest_perm.__state_perm or fpu->perm.__state_perm,
+where __state_perm is initialized to:
+
+        fpu->perm.__state_perm          = fpu_kernel_cfg.default_features;
+
+and copied to the guest side of things:
+
+	/* Same defaults for guests */
+	fpu->guest_perm = fpu->perm;
+
+fpu_kernel_cfg.default_features contains everything except the dynamic
+xfeatures, i.e. everything except XFEATURE_MASK_XTILE_DATA:
+
+        fpu_kernel_cfg.default_features = fpu_kernel_cfg.max_features;
+        fpu_kernel_cfg.default_features &= ~XFEATURE_MASK_USER_DYNAMIC;
+
+When __xstate_request_perm() restricts the local "mask" variable to
+compute the user state size:
+
+	mask &= XFEATURE_MASK_USER_SUPPORTED;
+	usize = xstate_calculate_size(mask, false);
+
+it subtly overwrites the target __state_perm with "mask" containing only
+user xfeatures:
+
+	perm = guest ? &fpu->guest_perm : &fpu->perm;
+	/* Pairs with the READ_ONCE() in xstate_get_group_perm() */
+	WRITE_ONCE(perm->__state_perm, mask);
+
+Cc: Maxim Levitsky <mlevitsk@redhat.com>
+Cc: Weijiang Yang <weijiang.yang@intel.com>
+Cc: Dave Hansen <dave.hansen@intel.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Chao Gao <chao.gao@intel.com>
+Cc: Rick Edgecombe <rick.p.edgecombe@intel.com>
+Cc: John Allen <john.allen@amd.com>
+Cc: kvm@vger.kernel.org
+Link: https://lore.kernel.org/all/ZTqgzZl-reO1m01I@google.com
+Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
-I noticed this patch was never picked up while running make dtbs_check.
-No changes since it was last sent except the trivial rebase that came
-from me picking the change up.
 
-Original patch:
-https://lore.kernel.org/lkml/20230127132558.1176730-1-abel.vesa@linaro.org/
+Note, I haven't tested the PASID side of things, so someone with more know-how
+definitely needs to take this for a spin.
 
- .../devicetree/bindings/interrupt-controller/qcom,pdc.yaml       | 1 +
- 1 file changed, 1 insertion(+)
+ arch/x86/kernel/fpu/xstate.c | 18 +++++++++++-------
+ 1 file changed, 11 insertions(+), 7 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/interrupt-controller/qcom,pdc.yaml b/Documentation/devicetree/bindings/interrupt-controller/qcom,pdc.yaml
-index 4847b04be1a1..e613145f658b 100644
---- a/Documentation/devicetree/bindings/interrupt-controller/qcom,pdc.yaml
-+++ b/Documentation/devicetree/bindings/interrupt-controller/qcom,pdc.yaml
-@@ -40,6 +40,7 @@ properties:
-           - qcom,sm8250-pdc
-           - qcom,sm8350-pdc
-           - qcom,sm8450-pdc
-+          - qcom,sm8550-pdc
-       - const: qcom,pdc
+diff --git a/arch/x86/kernel/fpu/xstate.c b/arch/x86/kernel/fpu/xstate.c
+index ef6906107c54..73f6bc00d178 100644
+--- a/arch/x86/kernel/fpu/xstate.c
++++ b/arch/x86/kernel/fpu/xstate.c
+@@ -1601,16 +1601,20 @@ static int __xstate_request_perm(u64 permitted, u64 requested, bool guest)
+ 	if ((permitted & requested) == requested)
+ 		return 0;
  
-   reg:
+-	/* Calculate the resulting kernel state size */
++	/*
++	 * Calculate the resulting kernel state size.  Note, @permitted also
++	 * contains supervisor xfeatures even though supervisor are always
++	 * permitted for kernel and guest FPUs, and never permitted for user
++	 * FPUs.
++	 */
+ 	mask = permitted | requested;
+-	/* Take supervisor states into account on the host */
+-	if (!guest)
+-		mask |= xfeatures_mask_supervisor();
+ 	ksize = xstate_calculate_size(mask, compacted);
+ 
+-	/* Calculate the resulting user state size */
+-	mask &= XFEATURE_MASK_USER_SUPPORTED;
+-	usize = xstate_calculate_size(mask, false);
++	/*
++	 * Calculate the resulting user state size.  Take care not to clobber
++	 * the supervisor xfeatures in the new mask!
++	 */
++	usize = xstate_calculate_size(mask & XFEATURE_MASK_USER_SUPPORTED, false);
+ 
+ 	if (!guest) {
+ 		ret = validate_sigaltstack(usize);
+
+base-commit: 45b890f7689eb0aba454fc5831d2d79763781677
 -- 
-2.41.0
+2.42.0.869.gea05f2083d-goog
 
