@@ -2,76 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 25EAB7E02E6
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 13:29:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C1CC7E02E9
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 13:31:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376737AbjKCM3a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 08:29:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45804 "EHLO
+        id S1376317AbjKCMbZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 08:31:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376499AbjKCM3V (ORCPT
+        with ESMTP id S1346763AbjKCMbX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 08:29:21 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FB72184
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 05:29:11 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2c594196344so27068231fa.3
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Nov 2023 05:29:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699014550; x=1699619350; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=A5e6ystGbmI0nEkqiwKt50qKqvjyJaFKyap2sSy1xpA=;
-        b=qJu9DniQ8gCLQXeGzU4agasudpouNHUZUUvgSAvAlrjjEbXk0vF8VOnigIRhsybhyu
-         p6WMScll49ut2x8jM94GlpIEJRtdlyI0KsozOCy5kqO86UfyNpIrjqD3PJ8XW4Fk4tk6
-         p/Q6H16EErLDtSfMb4JgUtXr6dIU1KR52ah5LxVjFilxmAxHt0YvPdATPZwKqgvOczYr
-         jQVSYucUCJ9zjqz/uff9qHMQBQi9GiUz4glhJo6bCJ0bfxDkNZiRpgjwybUWszz4Xq+3
-         607pjPNepdpjULGWPp0sKy9Y0Zhm26Ouk1VaA5TtA0Zp9gVpMJI+H6NPi7lHdeFCQoG2
-         hZaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699014550; x=1699619350;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=A5e6ystGbmI0nEkqiwKt50qKqvjyJaFKyap2sSy1xpA=;
-        b=Y+YJulojqgEVocAZ/q1rxt7gZRcfgdLM0yBYlIeLXbadscoEIIWa7JWvDmyewt2EHA
-         ugcl+yqPUUuHfhrcVoUEF4NnNvEdjfMqIf31Ubeig10FRa+/BOsPt28p2go9kldXmesr
-         DFu9sMseLnpcybikRRpLkcATvPsObP7SRyy0aKJ0dbq/HGBj8wZfhMINPSimNRRAmwP1
-         drk/VfL3oDy2fFZPXzp6vNhvsmoM2vbmBt58Ufjauy21scPNTzE6yfUfMfs572axFsaD
-         NQxxRUhORlRziJUJm1eBELxiADPq9EwQgspxufW94R/hF08ljk1w1hkPHsugbzVv6S5L
-         RFCQ==
-X-Gm-Message-State: AOJu0YynEq0vZKKmJFcpDWTanQQyqfvj/GdCZImGhecW3zFJ9doFF5Nd
-        USqd2m++PyLMa5qN2Jp493WWcw==
-X-Google-Smtp-Source: AGHT+IFSyzh5KwJXI4OKuLt+dl2RkcJyWFKztY+vd/mINRRKQ+5WKzfLaB1CZgR2/nY/F0Q+0hxo+A==
-X-Received: by 2002:a2e:97d1:0:b0:2c5:2eaa:5397 with SMTP id m17-20020a2e97d1000000b002c52eaa5397mr15816719ljj.11.1699014549852;
-        Fri, 03 Nov 2023 05:29:09 -0700 (PDT)
-Received: from [127.0.0.1] ([37.228.218.3])
-        by smtp.gmail.com with ESMTPSA id ay8-20020a05600c1e0800b0040772138bb7sm2402918wmb.2.2023.11.03.05.29.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Nov 2023 05:29:09 -0700 (PDT)
-From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-Date:   Fri, 03 Nov 2023 12:29:04 +0000
-Subject: [PATCH v4 7/7] media: qcom: camss: Flag CSID-lites to support more
- CSIDs
+        Fri, 3 Nov 2023 08:31:23 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 446961BC
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 05:31:17 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id D9F23219CD;
+        Fri,  3 Nov 2023 12:31:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1699014675; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=O+YgCJq25QQVRQEVc/Dh1/YtbZe8Mgg4zoVci01F4Aw=;
+        b=F2Vl3rGLh5JtaarP8oUd0VPXRBqcpJblNSZTgqF7VVGhobscRm2cWjNsKmMEWfKp0bj9jD
+        Ta/aFLVpASLAZ81Wg5uICQpp7jgtc5+hJjePFHwoJqnlV7nfe8qkSfd14fUaPzdzKL00Ji
+        9mRApPpba4NJaTO4H2u/bOaEkPyR2gQ=
+Received: from suse.cz (pmladek.udp.ovpn2.prg.suse.de [10.100.201.202])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 4D9C32C24A;
+        Fri,  3 Nov 2023 12:31:15 +0000 (UTC)
+Date:   Fri, 3 Nov 2023 13:31:15 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org, Mukesh Ojha <quic_mojha@quicinc.com>,
+        Chunlei Wang <chunlei.wang@mediatek.com>
+Subject: Re: [RFC PATCH printk v1] printk: ringbuffer: Do not skip
+ non-finalized with prb_next_seq()
+Message-ID: <ZUToEzarc_F-bEXT@alley>
+References: <ZTkxOJbDLPy12n41@alley>
+ <87zfzwp8pk.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20231103-b4-camss-named-power-domains-v4-7-33a905359dbc@linaro.org>
-References: <20231103-b4-camss-named-power-domains-v4-0-33a905359dbc@linaro.org>
-In-Reply-To: <20231103-b4-camss-named-power-domains-v4-0-33a905359dbc@linaro.org>
-To:     hverkuil-cisco@xs4all.nl, laurent.pinchart@ideasonboard.com,
-        Robert Foss <rfoss@kernel.org>,
-        Todor Tomov <todor.too@gmail.com>,
-        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        matti.lehtimaki@gmail.com, quic_grosikop@quicinc.com
-Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-X-Mailer: b4 0.13-dev-26615
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87zfzwp8pk.fsf@jogness.linutronix.de>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -82,163 +58,316 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matti Lehtimäki <matti.lehtimaki@gmail.com>
+On Thu 2023-11-02 14:54:23, John Ogness wrote:
+> On 2023-10-25, Petr Mladek <pmladek@suse.com> wrote:
+> > there seems to be missing word in the subject:
+> >
+> >     s/non-finalized/non-finalized records/
+> 
+> Ack.
+> 
+> > On Thu 2023-10-19 15:31:45, John Ogness wrote:
+> >> Commit f244b4dc53e5 ("printk: ringbuffer: Improve prb_next_seq()
+> >> performance") introduced an optimization for prb_next_seq() by
+> >> using best-effort to track recently finalized records. However,
+> >> the order of finalization does not necessarily match the order
+> >> of the records. This can lead to prb_next_seq() returning
+> >> higher than desired sequence numbers, which results in the
+> >> reader skipping over records that are not yet finalized. From
+> >> the reader's perspective it results in messages never being
+> >> seen.
+> >
+> > IMHO, "messages never being seen" is too strong.
+> 
+> Agreed. A reader does not use prb_next_seq() to decide what to print
+> next. Worst case it thinks records are available that are not (available
+> for that reader).
+> 
+> > I have found only one (or two) scenarios where the messages might
+> > really get lost.
+> >
+> > 1. It might happen when real console is replacing a boot console.
+> >    The real console is initialized with the value returned
+> >    by prb_next_seq(). And the boot console might not be able
+> >    to flush earlier non-finalized records.
+> 
+> This cannot happen because in this situation console_init_seq() sets
+> @seq to the lowest boot console counter.
 
-Some platforms such as SC7280 have 3 CSIDs and 2 CSID-lites but current
-code has hardcoded 2 as the maximum number of CSIDs. Remove the hardcoded
-maximum number of VFEs to handle all possible combinations of CSIDs and
-CSID-lites.
+You are right.
 
-Signed-off-by: Matti Lehtimäki <matti.lehtimaki@gmail.com>
-Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
----
- .../media/platform/qcom/camss/camss-csid-gen2.c    | 31 +++++++++++-----------
- drivers/media/platform/qcom/camss/camss-csid.c     |  5 ++++
- drivers/media/platform/qcom/camss/camss-csid.h     |  7 +++++
- drivers/media/platform/qcom/camss/camss.c          |  3 +++
- 4 files changed, 30 insertions(+), 16 deletions(-)
+> > 2. The other scenario is based on the fact that console_unlock()
+> >    or pr_flush() might see lower prb_next_seq() than the last
+> >    reserved record. It means that they might not flush all
+> >    pending records.
+> >
+> >    But wait! This is actually the opposite case. pr_flush()
+> >    and console_unlock() might miss the messages when
+> >    they see too low prb_next_seq().
+> >
+> >    Important: This problem existed since introducing
+> > 	      the lockless ring buffer!
+> >
+> >    The question is. Should pr_flush() and console_unlock()
+> >    wait until all registered messages get finalized?
+> >
+> >    It would need to ignore only the last record when it
+> >    is not finalized because it might be a continuous line.
+> 
+> Yes, this is the question to answer.
+> 
+> With the lockless ringbuffer we allow multiple CPUs/contexts to write
+> simultaneously into the buffer. This creates an ambiguity as some
+> writers will finalize sooner.
+> 
+> IMHO we need 2 different functions:
 
-diff --git a/drivers/media/platform/qcom/camss/camss-csid-gen2.c b/drivers/media/platform/qcom/camss/camss-csid-gen2.c
-index 05ff5fa8095a8..b11de4797ccae 100644
---- a/drivers/media/platform/qcom/camss/camss-csid-gen2.c
-+++ b/drivers/media/platform/qcom/camss/camss-csid-gen2.c
-@@ -21,7 +21,6 @@
-  * interface support. As a result of that it has an
-  * alternate register layout.
-  */
--#define IS_LITE		(csid->id >= 2 ? 1 : 0)
- 
- #define CSID_HW_VERSION		0x0
- #define		HW_VERSION_STEPPING	0
-@@ -35,13 +34,13 @@
- #define	CSID_CSI2_RX_IRQ_MASK	0x24
- #define CSID_CSI2_RX_IRQ_CLEAR	0x28
- 
--#define CSID_CSI2_RDIN_IRQ_STATUS(rdi)		((IS_LITE ? 0x30 : 0x40) \
-+#define CSID_CSI2_RDIN_IRQ_STATUS(rdi)		((csid_is_lite(csid) ? 0x30 : 0x40) \
- 						 + 0x10 * (rdi))
--#define CSID_CSI2_RDIN_IRQ_MASK(rdi)		((IS_LITE ? 0x34 : 0x44) \
-+#define CSID_CSI2_RDIN_IRQ_MASK(rdi)		((csid_is_lite(csid) ? 0x34 : 0x44) \
- 						 + 0x10 * (rdi))
--#define CSID_CSI2_RDIN_IRQ_CLEAR(rdi)		((IS_LITE ? 0x38 : 0x48) \
-+#define CSID_CSI2_RDIN_IRQ_CLEAR(rdi)		((csid_is_lite(csid) ? 0x38 : 0x48) \
- 						 + 0x10 * (rdi))
--#define CSID_CSI2_RDIN_IRQ_SET(rdi)		((IS_LITE ? 0x3C : 0x4C) \
-+#define CSID_CSI2_RDIN_IRQ_SET(rdi)		((csid_is_lite(csid) ? 0x3C : 0x4C) \
- 						 + 0x10 * (rdi))
- 
- #define CSID_TOP_IRQ_STATUS	0x70
-@@ -73,7 +72,7 @@
- #define			CGC_MODE_DYNAMIC_GATING		0
- #define			CGC_MODE_ALWAYS_ON		1
- 
--#define CSID_RDI_CFG0(rdi)			((IS_LITE ? 0x200 : 0x300) \
-+#define CSID_RDI_CFG0(rdi)			((csid_is_lite(csid) ? 0x200 : 0x300) \
- 						 + 0x100 * (rdi))
- #define		RDI_CFG0_BYTE_CNTR_EN		0
- #define		RDI_CFG0_FORMAT_MEASURE_EN	1
-@@ -98,32 +97,32 @@
- #define		RDI_CFG0_PACKING_FORMAT		30
- #define		RDI_CFG0_ENABLE			31
- 
--#define CSID_RDI_CFG1(rdi)			((IS_LITE ? 0x204 : 0x304)\
-+#define CSID_RDI_CFG1(rdi)			((csid_is_lite(csid) ? 0x204 : 0x304)\
- 						+ 0x100 * (rdi))
- #define		RDI_CFG1_TIMESTAMP_STB_SEL	0
- 
--#define CSID_RDI_CTRL(rdi)			((IS_LITE ? 0x208 : 0x308)\
-+#define CSID_RDI_CTRL(rdi)			((csid_is_lite(csid) ? 0x208 : 0x308)\
- 						+ 0x100 * (rdi))
- #define		RDI_CTRL_HALT_CMD		0
- #define			HALT_CMD_HALT_AT_FRAME_BOUNDARY		0
- #define			HALT_CMD_RESUME_AT_FRAME_BOUNDARY	1
- #define		RDI_CTRL_HALT_MODE		2
- 
--#define CSID_RDI_FRM_DROP_PATTERN(rdi)			((IS_LITE ? 0x20C : 0x30C)\
-+#define CSID_RDI_FRM_DROP_PATTERN(rdi)			((csid_is_lite(csid) ? 0x20C : 0x30C)\
- 							+ 0x100 * (rdi))
--#define CSID_RDI_FRM_DROP_PERIOD(rdi)			((IS_LITE ? 0x210 : 0x310)\
-+#define CSID_RDI_FRM_DROP_PERIOD(rdi)			((csid_is_lite(csid) ? 0x210 : 0x310)\
- 							+ 0x100 * (rdi))
--#define CSID_RDI_IRQ_SUBSAMPLE_PATTERN(rdi)		((IS_LITE ? 0x214 : 0x314)\
-+#define CSID_RDI_IRQ_SUBSAMPLE_PATTERN(rdi)		((csid_is_lite(csid) ? 0x214 : 0x314)\
- 							+ 0x100 * (rdi))
--#define CSID_RDI_IRQ_SUBSAMPLE_PERIOD(rdi)		((IS_LITE ? 0x218 : 0x318)\
-+#define CSID_RDI_IRQ_SUBSAMPLE_PERIOD(rdi)		((csid_is_lite(csid) ? 0x218 : 0x318)\
- 							+ 0x100 * (rdi))
--#define CSID_RDI_RPP_PIX_DROP_PATTERN(rdi)		((IS_LITE ? 0x224 : 0x324)\
-+#define CSID_RDI_RPP_PIX_DROP_PATTERN(rdi)		((csid_is_lite(csid) ? 0x224 : 0x324)\
- 							+ 0x100 * (rdi))
--#define CSID_RDI_RPP_PIX_DROP_PERIOD(rdi)		((IS_LITE ? 0x228 : 0x328)\
-+#define CSID_RDI_RPP_PIX_DROP_PERIOD(rdi)		((csid_is_lite(csid) ? 0x228 : 0x328)\
- 							+ 0x100 * (rdi))
--#define CSID_RDI_RPP_LINE_DROP_PATTERN(rdi)		((IS_LITE ? 0x22C : 0x32C)\
-+#define CSID_RDI_RPP_LINE_DROP_PATTERN(rdi)		((csid_is_lite(csid) ? 0x22C : 0x32C)\
- 							+ 0x100 * (rdi))
--#define CSID_RDI_RPP_LINE_DROP_PERIOD(rdi)		((IS_LITE ? 0x230 : 0x330)\
-+#define CSID_RDI_RPP_LINE_DROP_PERIOD(rdi)		((csid_is_lite(csid) ? 0x230 : 0x330)\
- 							+ 0x100 * (rdi))
- 
- #define CSID_TPG_CTRL		0x600
-diff --git a/drivers/media/platform/qcom/camss/camss-csid.c b/drivers/media/platform/qcom/camss/camss-csid.c
-index 95873f988f7e2..d393618ed54cb 100644
---- a/drivers/media/platform/qcom/camss/camss-csid.c
-+++ b/drivers/media/platform/qcom/camss/camss-csid.c
-@@ -897,3 +897,8 @@ void msm_csid_unregister_entity(struct csid_device *csid)
- 	media_entity_cleanup(&csid->subdev.entity);
- 	v4l2_ctrl_handler_free(&csid->ctrls);
- }
-+
-+inline bool csid_is_lite(struct csid_device *csid)
-+{
-+	return csid->camss->res->csid_res[csid->id].is_lite;
-+}
-diff --git a/drivers/media/platform/qcom/camss/camss-csid.h b/drivers/media/platform/qcom/camss/camss-csid.h
-index 30d94eb2eb041..fddccb69da13a 100644
---- a/drivers/media/platform/qcom/camss/camss-csid.h
-+++ b/drivers/media/platform/qcom/camss/camss-csid.h
-@@ -215,5 +215,12 @@ extern const struct csid_hw_ops csid_ops_4_1;
- extern const struct csid_hw_ops csid_ops_4_7;
- extern const struct csid_hw_ops csid_ops_gen2;
- 
-+/*
-+ * csid_is_lite - Check if CSID is CSID lite.
-+ * @csid: CSID Device
-+ *
-+ * Return whether CSID is CSID lite
-+ */
-+bool csid_is_lite(struct csid_device *csid);
- 
- #endif /* QC_MSM_CAMSS_CSID_H */
-diff --git a/drivers/media/platform/qcom/camss/camss.c b/drivers/media/platform/qcom/camss/camss.c
-index f5226eb8bf4fc..51ad12f1d9d7d 100644
---- a/drivers/media/platform/qcom/camss/camss.c
-+++ b/drivers/media/platform/qcom/camss/camss.c
-@@ -638,6 +638,7 @@ static const struct camss_subdev_resources csid_res_845[] = {
- 				{ 384000000 } },
- 		.reg = { "csid2" },
- 		.interrupt = { "csid2" },
-+		.is_lite = true,
- 		.ops = &csid_ops_gen2
- 	}
- };
-@@ -812,6 +813,7 @@ static const struct camss_subdev_resources csid_res_8250[] = {
- 				{ 0 } },
- 		.reg = { "csid2" },
- 		.interrupt = { "csid2" },
-+		.is_lite = true,
- 		.ops = &csid_ops_gen2
- 	},
- 	/* CSID3 */
-@@ -824,6 +826,7 @@ static const struct camss_subdev_resources csid_res_8250[] = {
- 				{ 0 } },
- 		.reg = { "csid3" },
- 		.interrupt = { "csid3" },
-+		.is_lite = true,
- 		.ops = &csid_ops_gen2
- 	}
- };
+I thought about this as well.
 
--- 
-2.42.0
+> 1. A function that reports the last contiguous finalized record for a
+> reader. This is useful for syslog and kmsg_dump to know what is
+> available for them to read. We can use @last_finalized_seq for this,
+> optimizing it correctly this time.
 
+I would use this also for console_unlock() as well, see below.
+
+> 2. A function that reports the last reserved sequence number of a
+> writer. This is useful for pr_flush and console_unlock to know when they
+> are finished.
+
+This looks like the right solution for pr_flush() when it is called
+with a timeout.
+
+I am a bit afraid that console_unlock() or pr_flush() without a timeout
+might get blocked when some CPU is not able to finalize a message.
+It is realistic, especially during panic() when other CPUs might
+get stopped by NMI.
+
+Anyway, it would require waiting for the pending writers.
+And only pr_flush() uses the sleep between checks.
+
+So, I would personally use the @last_finalized_seq for
+console_unlock() and pr_flush() without a timeout. We could
+always call defer_console_output() when it is lower then
+the last reserved seq.
+
+Well, we actually do not even need to do this because
+the reserved records must be added by some printk().
+And this printk() will either flush the pending messages
+or it will call defer_console_output().
+
+The above paragraph describes a scenario which is not obvious.
+We should probably document it somewhere, probably in the description
+of prb_last_finalized_seq() or how it will be called.
+
+> This function can begin with @last_finalized_seq, looking
+> for the last finalized record (skipping over any non-finalized).
+
+I though about using desc_ring->head_id or looking for the
+last reserved sequence number.
+
+Well, it is just a question where to cut the waiting. And
+the very last finalized sequence number might be good
+as well.
+
+> > I agree that this might be optimized. I think about reducing the
+> > number of cmpxchg even more, something like:
+> >
+> > static void desc_update_last_finalized(struct prb_desc_ring *desc_ring)
+> > {
+> > 	struct prb_desc_ring *desc_ring = &rb->desc_ring;
+> > 	u64 prev_seq = desc_last_finalized_seq(desc_ring);
+> > 	u64 seq = prev_seq;
+> >
+> > try_again:
+> > 	while (_prb_read_valid(rb, &seq, NULL, NULL))
+> > 		seq++;
+> >
+> > 	if (seq == prev_seq)
+> > 		return;
+> >
+> > 	oldval = __u64seq_to_ulseq(prev_seq);
+> > 	newval = __u64seq_to_ulseq(seq);
+> >
+> > 	if (!atomic_long_try_cmpxchg_relaxed(&desc_ring->last_finalized_seq,
+> > 					     &oldval, newval)) {
+> > 		prev_seq = seq;
+> > 		goto try_again;
+> > 	}
+> > }
+> 
+> I am fine with this implementation.
+> 
+> > It looks to me that we could keep passing desc_ring as the parameter.
+> 
+> No, _prb_read_valid() needs it.
+
+Ah, I see.
+
+> > I feel that we need a read barrier here. It should be between the
+> > above
+> >
+> > 	atomic_long_read(&desc_ring->last_finalized_seq))
+> >
+> > and the below
+> >
+> > 	while (_prb_read_valid(rb, &seq, NULL, NULL))
+> > 		seq++;
+> >
+> > It should make sure that the _prb_read_valid() will see all messages
+> > finalized which were seen finalized by the CPU updating
+> > desc_ring->last_finalized_seq.
+> 
+> Generally we have not concerned ourselves with readers. But I agree we
+> should make the optimization coherent with what a reader can actually
+> read. It might save some CPU cycles for polling tasks.
+
+I wanted to agree. But then I found this scenario:
+
+CPU0				CPU1
+
+console_unlock()
+  console_flush_all()
+
+				printk()
+				  vprintk_store()
+    return;
+				    prb_final_commit;
+
+				  console_trylock();  # failed
+
+  while (prb_read_valid());
+
+
+Now, the race:
+
+  + console_flush_all() did not flush the message from CPU1 because
+    it was not finalized in time.
+
+  + CPU1 failed to get console_lock() => CPU0 is responsible for
+    flushing
+
+  + prb_read_valid() failed on CPU0 because it did not see
+    the prb_desc finalized (missing barrier).
+
+
+Result: The message does not reach the console until another printk()
+	tries to flush messages.
+
+Sigh: Even the barrier in prb_next_seq() would not help in this case
+      because the while cycle checks prb_read_valid().
+
+Reason: The race is on printk/console_unlock() level. We would need
+	something like:
+
+vprintk_emit()
+{
+
+	vprintk_store()
+
+	if (!in_sched) {
+		/*
+		 * Make sure that either the current console_lock() owner
+		 * will see the finalized messages or we will see
+		 * free console_lock().
+		 */
+		smp_mb();
+
+		if (console_trylock_spinning())
+			console_unlock();
+	} ...
+
+}
+
+and
+
+console_unlock()
+{
+	do {
+		console_flush_all();
+
+		__console_unlock();
+
+		/*
+		 * Make sure that we either a newly stored message
+		 * or the writer will see free console_lock().
+		 */
+		 smp_mb();
+	} while(prb_read_valid(prb, next_seq, NULL) && console_trylock());
+}
+
+I believe that it is not needed for defer_console_output()
+and wake_up_klogd() because there the barrier is hidden
+in the irq_work API.
+
+We needed it only for console_unlock() because there is the race
+when console_lock() is temporary released.
+
+
+> Writing and reading of @last_finalized_seq will provide the necessary
+> boundaries to guarantee this:
+> 
+> ...finalize record...
+> atomic_long_try_cmpxchg_release(&desc_ring->last_finalized_seq, ...);
+> 
+> and
+> 
+> atomic_long_read_acquire(&desc_ring->last_finalized_seq);
+> ...read record...
+
+Yup. something like this.
+
+Well, it is suspicious that there is no _release() counter part.
+It suggests that this might not be the right solution. Maybe
+the barriers really needed to be on the reader side.
+
+> This guarantees that if a reader sees a certain @last_finalized_seq
+> value, that they will also see the record that was finalized.
+> 
+> This will be the 13th memory barrier pair to be added to the
+> documentation.
+
+I know. We need to be careful about the design to do not
+make it over-complicated.
+
+Well, I still feel that the barrier in desc_update_last_finalized()
+and prb_next_seq() might be needed when the prb_next_seq()
+caller gives up when there is no progress (no new message
+could be proceed).
+
+And I think that there will be some users in the nbcon code.
+
+But again, this need not be the right location. Usually,
+the prb_next_seq() caller will be responsible for flushing
+new messages. And there has to be a barrier between the
+writer and the flusher like in the vprintk_emit()/console_unlock()
+case above.
+
+I mean, that the flusher either has to see the bigger prb_next_seq()
+or it has to be scheduled to check it again later. And this
+need to be handled by a barrier in vprintk_emit().
+
+
+Sigh, sigh, sigh, my brain is cycling now ;-)
+
+My notice that atomic_long_read_acquire() in prb_next_seq()
+would not have _release() counter part suggests that
+the prb API for readers does not help with synchronization.
+
+I have to think more about it. Maybe some acquire/release
+or synchronized for_each_finalized_seq() API
+might be useful.
+
+Or maybe the synchronization has to be on the printk() level.
+
+
+Anyway, I feel that this might fall to the "perfection is
+the enemy of good" category. We only need to make sure that
+the flush will not get stuck. And that the final flush will try
+hard.
+
+The races are probably hard to hit in practice.
+
+
+Best Regards,
+Petr
