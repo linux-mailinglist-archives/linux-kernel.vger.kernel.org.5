@@ -2,74 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 933947E0759
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 18:25:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ACE27E0761
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 18:30:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377348AbjKCRZo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 13:25:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35914 "EHLO
+        id S1345483AbjKCRaU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 13:30:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230224AbjKCRZn (ORCPT
+        with ESMTP id S229482AbjKCRaT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 13:25:43 -0400
-Received: from mail-oi1-f170.google.com (mail-oi1-f170.google.com [209.85.167.170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B768713E;
-        Fri,  3 Nov 2023 10:25:37 -0700 (PDT)
-Received: by mail-oi1-f170.google.com with SMTP id 5614622812f47-3b3ec45d6e9so1375650b6e.0;
-        Fri, 03 Nov 2023 10:25:37 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699032337; x=1699637137;
-        h=date:subject:message-id:references:in-reply-to:cc:to:from
-         :mime-version:content-transfer-encoding:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=kQjjfhlnmzRDjE/9MY7CPSCRY6bOaSf38w1z3/ED/wE=;
-        b=f6q+l2SElQVk7tA5l5ddTHiSiEnhZmbM0CoJMU5SOxIlSQDA7A3MZjZrIKRxzt5LOc
-         KrVlQNeYrBJaCH/5qQWxNncpa1RyT5Qn/qBb8J4HztMut8ZeBTJr6wz4TY498Hv1QFKD
-         sg2sDLkwRbZKoFQLwtvs1F6f6N0Xk5/hkQR6rxc+02Iwy5FJ+APjPF4OYsa6a5+BGUQx
-         H05RwCgt2PKzE5DGGqTJVZJWu6NTiCOEJNNZtV6hIddJnZpJ69d5EIqmo797zY1nicVl
-         tG86RX0wXsl1iYnVFWsbbu+wkhK/O1B6OKK9LQaFFYHRyWkQv5XVcqq19BvCiO8G+lE9
-         ddSw==
-X-Gm-Message-State: AOJu0Yz2VJvlRtXpWh5es5XMLaaacMruRtZlyUrqb3miyKIKslAv/DtR
-        4IC8aENaq4aLSOB5fBwKIw==
-X-Google-Smtp-Source: AGHT+IEn/XQUwpNA3WOf8aGalFihRK9hfZ7HarRN/GOuhh8KZILh/0W541V6OttK/nZwQh1czqr5zA==
-X-Received: by 2002:a05:6870:169a:b0:1e9:9e04:1d1e with SMTP id j26-20020a056870169a00b001e99e041d1emr26781631oae.48.1699032336788;
-        Fri, 03 Nov 2023 10:25:36 -0700 (PDT)
-Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id e5-20020a056870450500b001e12bb81363sm367717oao.35.2023.11.03.10.25.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Nov 2023 10:25:36 -0700 (PDT)
-Received: (nullmailer pid 1588221 invoked by uid 1000);
-        Fri, 03 Nov 2023 17:25:34 -0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+        Fri, 3 Nov 2023 13:30:19 -0400
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDDE8136;
+        Fri,  3 Nov 2023 10:30:16 -0700 (PDT)
+Received: from pps.filterd (m0353722.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A3H9QiC002850;
+        Fri, 3 Nov 2023 17:30:16 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=F/MbwI7I3lpLeDSp5tJGhwWlILsNf2tIxZUSdv1jJW4=;
+ b=kq46efc0g04pDo+g0qI8SQr+byAcAF/1W989ivWJuNW+08Z3RUQvxynp3e9N57q72d4s
+ krV73avZ3rVLEWV4/sK5rCemKeOmzSI1oAgesn2frV8CWLOWuf3WDIM/p/CamDB6yTdS
+ Es+ZcI0aFxTwnR6WShTyjGAjyuuP5tRKWjsuJddEpxXON6YyyFOMZSd0rghp6aonxdM+
+ jHPUZidZpHMDaru8ShIIW6RRJZBwmzBKV+3lpG9m0nRLBjoJoLV2CDaP7s4NBPfrEmTq
+ ERf98zCEy4b4g639mqNpjucpdNK9K9/T0v+33MCyOm2ISPkHFWv3fDGgc2yQP4JA8IV0 hQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u550x0jm6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 03 Nov 2023 17:30:15 +0000
+Received: from m0353722.ppops.net (m0353722.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3A3HMDbb011979;
+        Fri, 3 Nov 2023 17:30:15 GMT
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u550x0jkd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 03 Nov 2023 17:30:15 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3A3GOdS7000614;
+        Fri, 3 Nov 2023 17:30:14 GMT
+Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
+        by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3u1cmtqt16-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 03 Nov 2023 17:30:14 +0000
+Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
+        by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3A3HU9Ni13828734
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 3 Nov 2023 17:30:09 GMT
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A565620049;
+        Fri,  3 Nov 2023 17:30:09 +0000 (GMT)
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5D2DC2004B;
+        Fri,  3 Nov 2023 17:30:09 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+        by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Fri,  3 Nov 2023 17:30:09 +0000 (GMT)
+From:   Nina Schoetterl-Glausch <nsg@linux.ibm.com>
+To:     Vasily Gorbik <gor@linux.ibm.com>,
+        David Hildenbrand <dahi@linux.vnet.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Michael Mueller <mimu@linux.vnet.ibm.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Nina Schoetterl-Glausch <nsg@linux.ibm.com>,
+        Cornelia Huck <cornelia.huck@de.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        David Hildenbrand <david@redhat.com>,
+        Sven Schnelle <svens@linux.ibm.com>, kvm@vger.kernel.org
+Subject: [PATCH 0/4] KVM: s390: Fix minor bugs in STFLE shadowing
+Date:   Fri,  3 Nov 2023 18:30:04 +0100
+Message-Id: <20231103173008.630217-1-nsg@linux.ibm.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-From:   Rob Herring <robh@kernel.org>
-To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        Robert Foss <rfoss@kernel.org>, Andy Gross <agross@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        vincent.knecht@mailoo.org,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        matti.lehtimaki@gmail.com, quic_grosikop@quicinc.com,
-        laurent.pinchart@ideasonboard.com,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        hverkuil-cisco@xs4all.nl, Todor Tomov <todor.too@gmail.com>
-In-Reply-To: <20231103-b4-camss-sc8280xp-v2-1-b7af4d253a20@linaro.org>
-References: <20231103-b4-camss-sc8280xp-v2-0-b7af4d253a20@linaro.org>
- <20231103-b4-camss-sc8280xp-v2-1-b7af4d253a20@linaro.org>
-Message-Id: <169903233490.1588205.2821182125390694665.robh@kernel.org>
-Subject: Re: [PATCH v2 1/6] media: dt-bindings: media: camss: Add
- qcom,sc8280xp-camss binding
-Date:   Fri, 03 Nov 2023 12:25:34 -0500
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: Q_zCaKUp-8IIUHy5yN_UU-IkoDTomx56
+X-Proofpoint-GUID: Q87tJPGnOcREUlAH-YTmxrOv4QvkE00p
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-03_16,2023-11-02_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=617 bulkscore=0
+ clxscore=1011 phishscore=0 spamscore=0 priorityscore=1501 malwarescore=0
+ adultscore=0 suspectscore=0 impostorscore=0 mlxscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2310240000
+ definitions=main-2311030146
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,51 +98,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Fix two bugs in the STFLE vsie implementation.
+The first concerns the identification if the guest is intending
+to use interpretive execution for STFLE for its guest.
+The second fixes too much of the guests memory being accessed when
+shadowing.
 
-On Fri, 03 Nov 2023 16:25:04 +0000, Bryan O'Donoghue wrote:
-> Add bindings for qcom,sc8280xp-camss in order to support the camera
-> subsystem for sc8280xp as found in the Lenovo x13s Laptop.
-> 
-> This patch depends on:
-> https://lore.kernel.org/linux-arm-msm/20231026105345.3376-2-bryan.odonoghue@linaro.org/
-> https://lore.kernel.org/linux-arm-msm/20231026105345.3376-3-bryan.odonoghue@linaro.org/
-> 
-> Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> ---
->  .../bindings/media/qcom,sc8280xp-camss.yaml        | 581 +++++++++++++++++++++
->  1 file changed, 581 insertions(+)
-> 
+Nina Schoetterl-Glausch (4):
+  KVM: s390: vsie: Fix STFLE interpretive execution identification
+  KVM: s390: vsie: Fix length of facility list shadowed
+  KVM: s390: cpu model: Use previously unused constant
+  KVM: s390: Minor refactor of base/ext facility lists
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+ arch/s390/include/asm/facility.h |  6 +++++
+ arch/s390/include/asm/kvm_host.h |  2 +-
+ arch/s390/kernel/Makefile        |  2 +-
+ arch/s390/kernel/facility.c      | 18 +++++++++++++
+ arch/s390/kvm/kvm-s390.c         | 44 ++++++++++++++------------------
+ arch/s390/kvm/vsie.c             | 15 +++++++++--
+ 6 files changed, 58 insertions(+), 29 deletions(-)
+ create mode 100644 arch/s390/kernel/facility.c
 
-yamllint warnings/errors:
 
-dtschema/dtc warnings/errors:
-Documentation/devicetree/bindings/media/qcom,sc8280xp-camss.example.dts:26:18: fatal error: dt-bindings/clock/qcom,sc8280xp-camcc.h: No such file or directory
-   26 |         #include <dt-bindings/clock/qcom,sc8280xp-camcc.h>
-      |                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-compilation terminated.
-make[2]: *** [scripts/Makefile.lib:419: Documentation/devicetree/bindings/media/qcom,sc8280xp-camss.example.dtb] Error 1
-make[2]: *** Waiting for unfinished jobs....
-make[1]: *** [/builds/robherring/dt-review-ci/linux/Makefile:1427: dt_binding_check] Error 2
-make: *** [Makefile:234: __sub-make] Error 2
-
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20231103-b4-camss-sc8280xp-v2-1-b7af4d253a20@linaro.org
-
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
+base-commit: 05d3ef8bba77c1b5f98d941d8b2d4aeab8118ef1
+-- 
+2.39.2
 
