@@ -2,74 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 87B437E087A
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 19:50:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 235C57E0876
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 19:49:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345343AbjKCSuN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 14:50:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45100 "EHLO
+        id S234248AbjKCStn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 14:49:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230368AbjKCSuL (ORCPT
+        with ESMTP id S230197AbjKCStm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 14:50:11 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E581D4B
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 11:49:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1699037360;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=RpbYT9SzTc/xmcrawP8dennNWLPo+v9u/X8zga55vvs=;
-        b=UPJgvbRBFQ/iwksIiI9wuAgfukS9B2cn8QOGdkXwWe7MqyLIW8BgB+mf5np0fcVHB0OGiA
-        qvvyflH85jnQLVUj0Cc85ALeyBNQwxxJ+g1spg81YDKVsTyVStjt7Ix31f/beEMGk58DP8
-        kY73ggySIgu4obcouIswXFnMvTli4ic=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-454-BE10pA7oMeeBnsdBX9otPA-1; Fri, 03 Nov 2023 14:49:19 -0400
-X-MC-Unique: BE10pA7oMeeBnsdBX9otPA-1
-Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-9dd4e40349bso14859666b.0
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Nov 2023 11:49:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699037358; x=1699642158;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=RpbYT9SzTc/xmcrawP8dennNWLPo+v9u/X8zga55vvs=;
-        b=YWP9Jyaaf/h9u+BqF3WloS2ltRfd7DUHORMROrRpGA1MOxpfVu4XwC7L4xA+UW0FAY
-         MFKVet/DGvcgcvilYAph30LL+aOTaQ+79+TBYTomOZzF5TwunI54qy4knFCf6B+IVpT1
-         hrMn62nuQ2dVlJovIvYxSeOamFzascNj0TcMGxi5TDUfHjdSgoqjdqNyK3beHu/SB2l/
-         mg26IyuaDQx+lwI7ZYefXShvM1mqmuRN/xYVONk0NHcCYvFeBkSskfULqSBa++6/ZcgY
-         NNpePeiFJMhD90Tv/Ew3rEUZnDJVTjWs0dLWCWG704FLZszEVsv/jbLIDN7gCy+Iqun+
-         GbKQ==
-X-Gm-Message-State: AOJu0YwYmYDd4FJVaY08VilgIbVnMvGFHv+Qf2mjTohOKmA9f6U5iGYa
-        pa1GTosPOGJ8Mubtiul0xZ7C+nOUXbpVGn0uNdDaqWXh5ArxvPjvRVfEkVBdLAMBBa7GZxm4oUb
-        yxX2vXL6IxF5GOGrEeodQbvRn
-X-Received: by 2002:a17:907:7e92:b0:9b2:bf2d:6b65 with SMTP id qb18-20020a1709077e9200b009b2bf2d6b65mr17287371ejc.4.1699037357971;
-        Fri, 03 Nov 2023 11:49:17 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGr56jYMAaIdUBHapGDiUsxpOD0wl3SxAYzOKNd70AAZbwIT8wq1IAkOYVVvUoqEPOzb+kzSQ==
-X-Received: by 2002:a17:907:7e92:b0:9b2:bf2d:6b65 with SMTP id qb18-20020a1709077e9200b009b2bf2d6b65mr17287358ejc.4.1699037357636;
-        Fri, 03 Nov 2023 11:49:17 -0700 (PDT)
-Received: from pstanner-thinkpadt14sgen1.fritz.box ([2001:9e8:32d1:5200:227b:d2ff:fe26:2a7a])
-        by smtp.gmail.com with ESMTPSA id o5-20020a17090608c500b009b29553b648sm1163679eje.206.2023.11.03.11.49.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Nov 2023 11:49:17 -0700 (PDT)
-From:   Philipp Stanner <pstanner@redhat.com>
-To:     Ryusuke Konishi <konishi.ryusuke@gmail.com>
-Cc:     linux-nilfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Philipp Stanner <pstanner@redhat.com>,
-        Dave Airlie <airlied@redhat.com>
-Subject: [PATCH v2] fs/nilfs2: use standard array-copy-function
-Date:   Fri,  3 Nov 2023 19:48:32 +0100
-Message-ID: <20231103184831.99406-2-pstanner@redhat.com>
-X-Mailer: git-send-email 2.41.0
+        Fri, 3 Nov 2023 14:49:42 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BFD4184;
+        Fri,  3 Nov 2023 11:49:36 -0700 (PDT)
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A3IR546016764;
+        Fri, 3 Nov 2023 18:49:22 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : from : to : cc : references : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=V4iWzqRHOUbACCWPKoiAq+ncPwLVlJrHH2OBYCcZKBI=;
+ b=HyXMIt8aozdCojV335Wsqm5kCz0dJuAvoMaD5I0yDYBpmSza5jnpQRWLUQQr0hWwEsy9
+ VHiwtnntuJxFBU+2AjlRgI8q76RA6EL7NslWK8rDCPYCf6AsI6d4CgPQAEiyWpHEo8Uy
+ t8wSYpNuDZMrcbErawdLIgaKXhVZ82b6Hg5a9DEO50nKTP/l6Sw9hZKor1BpNXvk/zdo
+ 2zSPHYqNswrgiAQdmrbEbGNyXM1OmP6ouLMtF49TgsaKIflRsd0v4cgexmWahyD1y13Q
+ 23bqPOB1Ftk1ArEWnOxAcTfkFI3vO1fr46AwBFdfueIAGexXXv2ka99l622NvXHTf8ac 2g== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u4wmjhaqf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 03 Nov 2023 18:49:21 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3A3InKhA011089
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 3 Nov 2023 18:49:20 GMT
+Received: from [10.249.21.155] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Fri, 3 Nov
+ 2023 11:49:13 -0700
+Message-ID: <3be5e95f-85d2-4abf-a8b4-18b019341602@quicinc.com>
+Date:   Sat, 4 Nov 2023 00:19:08 +0530
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC 2/8] usb: dwc3: core: Register vendor hooks for dwc3-qcom
+Content-Language: en-US
+From:   Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
+To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        "Conor Dooley" <conor+dt@kernel.org>
+CC:     <linux-usb@vger.kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        <linux-kernel@vger.kernel.org>,
+        "Thinh Nguyen" <Thinh.Nguyen@synopsys.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <quic_ppratap@quicinc.com>, <quic_jackp@quicinc.com>,
+        <quic_wcheng@quicinc.com>, Andy Gross <agross@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>
+References: <20231017131851.8299-1-quic_kriskura@quicinc.com>
+ <20231017131851.8299-3-quic_kriskura@quicinc.com>
+ <e700133b-58f7-4a4d-8e5c-0d04441b789b@linaro.org>
+ <5ef66bdc-9645-4bbe-8182-baa7fe4c583a@quicinc.com>
+In-Reply-To: <5ef66bdc-9645-4bbe-8182-baa7fe4c583a@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: oIkqhL3-zpoiPmr7Mi0Cnuw2gWddhm6G
+X-Proofpoint-GUID: oIkqhL3-zpoiPmr7Mi0Cnuw2gWddhm6G
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-03_18,2023-11-02_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 phishscore=0
+ suspectscore=0 bulkscore=0 clxscore=1015 priorityscore=1501
+ mlxlogscore=999 malwarescore=0 spamscore=0 adultscore=0 mlxscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2310240000 definitions=main-2311030157
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,57 +92,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ioctl.c utilizes memdup_user() to copy a userspace array. An overflow
-check is performed manually before the function's invocation.
 
-The new function memdup_array_user() standardizes copying userspace
-arrays, thus, improving readability by making it more clear that an
-array is being copied. Additionally, it also performs an overflow check.
 
-Remove the (now redundant) manual overflow-check and replace
-memdup_user() with memdup_array_user().
+On 11/4/2023 12:15 AM, Krishna Kurapati PSSNV wrote:
+> 
+> 
+> On 11/3/2023 8:44 PM, Bryan O'Donoghue wrote:
+>> On 17/10/2023 14:18, Krishna Kurapati wrote:
+>>>
+>>> The following are the requirements aimed in this implementation:
+>>>
+>>> 1. When enum in device mode, Glue/core must stay active.
+>>>
+>>> 2. When cable is connected but UDC is not written yet, then glue/core
+>>> must be suspended.
+>>>
+>>> 3. Upon removing cable in device mode, the disconnect event must be
+>>> generated and unblock runtime suspend for dwc3 core.
+>>>
+>>> Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
+>>
+> 
+> Hi Bryan,
+> 
+>> What happens to this code if you
+>>
+>> static int count;
+>>
+>> 1. sleep in dwc3_probe for 10 milliseconds
+>> 2. return -EPROBE_DEFER
+>> 3. if count++ < 5 goto 1
+>>
+>> i.e. if we simulate say waiting on a PHY driver to probe in dwc3_probe()
+>>
+> The vendor hooks are used in __dwc3_set_mode and role_switch_set calls 
+> in core and drd files respectively. These are invoked only if we are OTG 
+> capable. The drd_work is initialized in core_init_mode which is called 
+> at the end of dwc3_probe. If dwc3_probe fails and gets deferred before 
+> that, none of the vendor hooks will be fired and dwc3_qcom_probe is also 
+> deferred.
+> 
+> However I see that if core_init_mode fails (the cleanup is already done 
+> in drd to prevent set_role from getting invoked already),  I need to 
+> cleanup vendor hooks in error path of dwc3_probe().
+> 
+>> and what happens if we introduce a 100 millsecond sleep into 
+>> dwc3_qcom_probe() - and run a fake disconnect event from 
+>> dwc3_qcom_probe_core() directly ?
+>>
+>> In other words if make it that dwc3_probe() completes and struct 
+>> dwc3_glue_ops->notify_cable_disconnect() fires prior to 
+>> dwc3_qcom_probe_core() completing ?
+>>
+>> i.e. I don't immediately see how you've solved the probe() completion 
+>> race condition here.
+>>
+> Just wanted to understand the situation clearly. Is this the sequence 
+> you are referring to ?
+> 
+> 1. dwc3_probe is successful and role switch is registered properly.
+> 2. added delay after dwc3_qcom_probe_core and before interconnect_init
+> 3. Between this delay, we got a disconnect notificiation from glink
+> 4. We are clearing the qscratch reg in case of device mode and 
+> un-registering notifier in case of host mode.
+> 
+> If so, firstly I don't see any issue if we process disconnect event 
+> before qcom probe is complete. If we reached this stage, the clocks/gdsc 
+> is definitely ON and register accesses are good to go.
+> 
+> If we are in host mode at this point, we would just unregister to 
+> usb-core notifier and mark last busy. If we are in device mode, we would 
+> just clear the hs_phy_ctrl reg of qscratch. After the 100ms delay you 
+> mentioned we would call dwc3_remove anyways and cleanup the vendor 
+> hooks. But is the concern here that, what if we enter runtime_suspend at 
+> this point ?
+> 
 
-In addition, improve the grammar of the comment above
-memdup_array_user().
+Just to clarify one more thing. The probe completion requirement came in 
+because, before the device tree was flattened, dwc3-qcom and core are 
+two different platform devices. And if the dwc3 core device probe got 
+deferred, dwc3-qcom probe still gets successfully completed. The glue 
+would never know when to register vendor hook callbacks to dwc3-core as 
+it would never know when the core probe was completed.
 
-Suggested-by: Dave Airlie <airlied@redhat.com>
-Signed-off-by: Philipp Stanner <pstanner@redhat.com>
----
-Changes in v2:
-- Rename + rephrase commit so that it's clear that this is a
-  cleanup-patch.
-- Mention the grammar improvement of the comment in the commit message.
-- Remove the preceding manual overflow-check, since that is now
-  redundant.
----
- fs/nilfs2/ioctl.c | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
+That is the reason we wanted to find out accurate point where core probe 
+is done to ensure we can properly register these callbacks.
 
-diff --git a/fs/nilfs2/ioctl.c b/fs/nilfs2/ioctl.c
-index 40ffade49f38..cfb6aca5ec38 100644
---- a/fs/nilfs2/ioctl.c
-+++ b/fs/nilfs2/ioctl.c
-@@ -872,16 +872,14 @@ static int nilfs_ioctl_clean_segments(struct inode *inode, struct file *filp,
- 	nsegs = argv[4].v_nmembs;
- 	if (argv[4].v_size != argsz[4])
- 		goto out;
--	if (nsegs > UINT_MAX / sizeof(__u64))
--		goto out;
- 
- 	/*
- 	 * argv[4] points to segment numbers this ioctl cleans.  We
--	 * use kmalloc() for its buffer because memory used for the
--	 * segment numbers is enough small.
-+	 * use kmalloc() for its buffer because the memory used for the
-+	 * segment numbers is small enough.
- 	 */
--	kbufs[4] = memdup_user((void __user *)(unsigned long)argv[4].v_base,
--			       nsegs * sizeof(__u64));
-+	kbufs[4] = memdup_array_user((void __user *)(unsigned long)argv[4].v_base,
-+				     nsegs, sizeof(__u64));
- 	if (IS_ERR(kbufs[4])) {
- 		ret = PTR_ERR(kbufs[4]);
- 		goto out;
--- 
-2.41.0
-
+Regards,
+Krishna,
