@@ -2,76 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE5267DFEB7
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 06:29:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF90F7DFEE1
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 06:36:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229958AbjKCF3F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 01:29:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59170 "EHLO
+        id S229656AbjKCFgn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 01:36:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbjKCF3D (ORCPT
+        with ESMTP id S234305AbjKCFf2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 01:29:03 -0400
-Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F88E1A6
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 22:28:57 -0700 (PDT)
-Received: by mail-ot1-x329.google.com with SMTP id 46e09a7af769-6ce31c4a653so927066a34.3
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 22:28:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698989337; x=1699594137; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=R5BuWds/Km7S1ap/RjvexaNEcZ8RFMVEsbKbJHRq8sI=;
-        b=J9zcEp3qm+4bRTtdvA/9kaLHA+PkHKw2mOzybVUOvLH2JNHwG5ej6tZgg9La0Dlotk
-         pLG2QwMIV1ApCKOxXpbqXScqV0bh/dqPjbei8OrSwrTQX/8lqfSiZhLIDCF783cLRm4i
-         QVz+CR4CtZfH9q6iaCvXWp6RKOXBqqdHrs/l2jbq9xr6Z6DJlRDr31lviyKUtt6V16fb
-         JGYP3VkdG2c0X5oJ3XMsPy0mVJyTfnX0OX2q2VLrAPcaO0o68INpa1pbSKRQ+ahjbRtY
-         Ch8tTaWaV5dJzqST+e6Tn1layj05meqP8nmNxh/ypbnEG7nJKMp277Rb4uIJeOOKNlib
-         vQ/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698989337; x=1699594137;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=R5BuWds/Km7S1ap/RjvexaNEcZ8RFMVEsbKbJHRq8sI=;
-        b=luN11zoeq/EmVEx2116DuEHY3uAYm3P9G7k2kXPQzra5SjytSKI6jjKXsID/gSZM0x
-         S1WGhpGpEint6NSUj0J6UWcHszegTKLHayxbH88kfsTK7M9404P+aYHEYpZHwCQ/Vaz/
-         5FQufYm6AVcwcFLOPou1Q8Wp48sg7O4y9xxxJsF9wMS1PPTYHihKA+pCymi/3RxUfUr+
-         SjbrF5KkQ8EQGC9FlsSLSld8R2DV4wSwIs5woVUutpRUkhfpkMrCexKFuAodSfU15+VA
-         cEi/tz797N/rPoFFQkPREXPf3CfuSFi1q3XTVwIyGwGYmfFdgrU2GgmhBIJEcOR7i94f
-         0pAA==
-X-Gm-Message-State: AOJu0YzNyftiopGc7CoICd80pdI5XJdnGU/s6iuphy7tsOW+lBPewVE9
-        tDB3QGAHCj/th/xgrxQ4xGozWw==
-X-Google-Smtp-Source: AGHT+IEvTVDta+QU5POWQFXjIRIq+4Spd7NzF6ZNGRMoKviplKh2yc6/E+96Cv7AM3VXzgvFFAAbSQ==
-X-Received: by 2002:a05:6830:1d9:b0:6c0:e5c3:40b5 with SMTP id r25-20020a05683001d900b006c0e5c340b5mr20551418ota.6.1698989336873;
-        Thu, 02 Nov 2023 22:28:56 -0700 (PDT)
-Received: from localhost ([122.172.80.14])
-        by smtp.gmail.com with ESMTPSA id r19-20020aa78b93000000b0069343e474bcsm592667pfd.104.2023.11.02.22.28.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Nov 2023 22:28:56 -0700 (PDT)
-Date:   Fri, 3 Nov 2023 10:58:54 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Nishanth Menon <nm@ti.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Stephan Gerhold <stephan.gerhold@kernkonzept.com>
-Cc:     linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V2 0/3] OPP: Simplify required-opp handling
-Message-ID: <20231103052854.bc7jqaubc5uj6ncj@vireshk-i7>
-References: <cover.1698661048.git.viresh.kumar@linaro.org>
+        Fri, 3 Nov 2023 01:35:28 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92D5E1A6;
+        Thu,  2 Nov 2023 22:35:22 -0700 (PDT)
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A34KPfK015248;
+        Fri, 3 Nov 2023 05:35:10 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=3QTZMrtNQ5iXV3Oe5LVRAtX8boxCFoz2CC9S7yIUmwY=;
+ b=p2/i3aY+Apx1DCyzbVxvndiq5BURvy0PvlAgedw2EWo6nCD+xkDvhYSn6SMdnPIjlV0+
+ FHGYQKuiZyIpPg2h08MMjsoUIMm2CYEc91HdjIXjs+AFJaUmnF4FfLcT84TA6vHxNMCF
+ dkmviEXGhDfUr2HPGXGtybZZg1ADLp0PtiHmYaF34ZqzlxI1qYXupTE+ndGiS/7R4VSv
+ VZzC/nJkdYq+EEwj4A1IMhTbA1pcol0SWjjXhLivqRyEMkjj+TUp4p7e9WwWLeG04Dbk
+ VATgp7NI9F18P46zUJFLuDGiTPJ3sd/a+vRYexSQKJ5RNqmGOPuFbYNyKecggxdGAwdB Kg== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u477ptctp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 03 Nov 2023 05:35:09 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3A35Z9hc019035
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 3 Nov 2023 05:35:09 GMT
+Received: from [10.249.8.98] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Thu, 2 Nov
+ 2023 22:35:03 -0700
+Message-ID: <f0820464-16d6-47fd-90bc-cf80b5d76058@quicinc.com>
+Date:   Fri, 3 Nov 2023 11:04:59 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1698661048.git.viresh.kumar@linaro.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC 1/8] dt-bindings: usb: qcom,dwc3: Add bindings to enable
+ runtime
+To:     Caleb Connolly <caleb.connolly@linaro.org>,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Bjorn Andersson <andersson@kernel.org>,
+        "Konrad Dybcio" <konrad.dybcio@linaro.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+CC:     <quic_wcheng@quicinc.com>, <linux-usb@vger.kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        "Philipp Zabel" <p.zabel@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        <devicetree@vger.kernel.org>, <quic_ppratap@quicinc.com>,
+        <quic_jackp@quicinc.com>
+References: <20231017131851.8299-1-quic_kriskura@quicinc.com>
+ <20231017131851.8299-2-quic_kriskura@quicinc.com>
+ <272a9764-1cae-4d86-88b1-00175de83333@linaro.org>
+ <960101cc-78c0-49cf-ab62-90614eeb9ee2@quicinc.com>
+ <dbf4a48e-c808-4611-96b1-563ece1e451a@linaro.org>
+Content-Language: en-US
+From:   Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
+In-Reply-To: <dbf4a48e-c808-4611-96b1-563ece1e451a@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: xwJggyNvg_32N2PTZ1CiQ1B-Zou6tdu-
+X-Proofpoint-ORIG-GUID: xwJggyNvg_32N2PTZ1CiQ1B-Zou6tdu-
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-03_05,2023-11-02_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 malwarescore=0
+ phishscore=0 adultscore=0 clxscore=1015 priorityscore=1501 mlxscore=0
+ mlxlogscore=746 bulkscore=0 impostorscore=0 lowpriorityscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2310240000 definitions=main-2311030045
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,25 +94,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30-10-23, 15:54, Viresh Kumar wrote:
-> Hello,
-> 
-> I wasn't able to test this locally (despite trying to hack it around) and need
-> help from someone who is `virt_devs` field of `struct dev_pm_opp_config`.
-> 
-> Pushed here:
-> 
-> git://git.kernel.org/pub/scm/linux/kernel/git/vireshk/pm.git opp/required-opps
-> 
-> V1->V2:
-> - Support opp-level 0, drop vote i.e..
-> - Fix OPP pointer while calling dev_pm_opp_set_opp() recursively.
-> - Minor checks and fixes.
-> - Add Reviewed-by from Ulf.
 
-Stephan, Ulf,
 
-Any feedback on this before I merge it ?
+On 11/3/2023 12:10 AM, Caleb Connolly wrote:
+>> Hi Caleb,
+>>
+>>    There are two types of platforms, some use extcon and some use 
+>> role-switch to deliver vbus/id notifications. Extcon targets already 
+>> have this qscratch modifications present today in vbus and id 
+>> handlers. But for role-switch based targets we don't have any way to 
+>> get this notification to dwc3-qcom. In this implementation, I wanted 
+>> to get those notications from core to glue and for this we implenented 
+>> vendor hooks.
+>>
+>> The property added has been used to do two things:
+>>
+>> 1. Register glue's vendor hooks to core driver
+>> 2. Do runtime_allow for glue (and by default for core as the dt is not 
+>> flattened)
+>>
+>> In case of extcon, we don't want to register vendor hooks as 
+>> notifications are not necessary.
+> 
+> Could it just be enabled when role_switch is present then?
+>>
 
--- 
-viresh
+So we would register vendor hooks when usb-role-switch is present but 
+don't do runtime allow, and leave that option to user space right ?
+I think it would work and we can do away with the binding completely.
+
+Will wait for comments from other folks as well on this approach.
+
+Thanks for the review,
+Krishna,
