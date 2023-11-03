@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B58F07E02E2
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 13:29:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 81F497E02E8
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 13:29:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376711AbjKCM30 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 08:29:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39946 "EHLO
+        id S1376529AbjKCM3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 08:29:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376553AbjKCM3U (ORCPT
+        with ESMTP id S1376466AbjKCM3U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 3 Nov 2023 08:29:20 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEB5FD5B
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 05:29:07 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-408425c7c10so14914175e9.0
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Nov 2023 05:29:07 -0700 (PDT)
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E252CD4B
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 05:29:08 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-4083dbc43cfso12881695e9.3
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Nov 2023 05:29:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699014546; x=1699619346; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1699014547; x=1699619347; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=Kfmsv1+9a7xxjyHODu3lURwTZ23LFgQq1tCajTllXGQ=;
-        b=hNfv1JGpj5M/h6XSF9pm1tlKSQKiMhZHAaDy/fCYFbNmPknyUPlPUyVH/Mdtajxzx7
-         WIoC82Hv910kMCKIS/AXRiOUAEZUUM2y8Rb8uFKlRVWzbGxJIy9I4o3sbgvAK1X/WCMg
-         OZfcQDCJNWoqGhV3akDq+fBRf9twxhoWyPNCP8spEYSwsAFgoyZWW4kKXEvJnZwp2guC
-         OF14Ygo0sNpp9oHjr7NXM+4BECO8Fsv8wlOcQBR3tlgtqjqTLrfbz+BaXFvJupEtUXia
-         d1VJq/dA2TDaKBosGn3AmIlB2XhpUdN7j+4dY6BUgBMSrPgftMIPxe+zm5ztepb2LSdG
-         F+8A==
+        bh=md6OhgYeiqhW8v0ZSLxkHkjOlO44qdIptAA7zD8mXLI=;
+        b=WFMvMzv/rrLiWMFY+y/J+drJSVY7+l7AQkEhF4g4yHCHVcQNbIUymwfq5dsnkKpWs2
+         8SGMxSEzyN1aSR8Vp7c7db2GXkpwbRn1iRSTlEqC0h+0bKNyULIzuEpCVU2dLyMkoIHW
+         rG7aU4CxKuDv2EtnOIGIPm+TKfvazapZ44byCbrrRM1Fe1rGiqD1a8YMkuSRLaqY1lwq
+         ogEv7LWBoRb7S/Qj+TrxwpYhZJPqmUqadNk8yfYK2i57CJUf+O+Znz3okaJnZFUeNQre
+         rZxwGtH/X7epioKVCa/ExVfqFoi9pyUkRTWYTp3l/nzpli/AigUJa1wdifR04YWvX9b5
+         96Fg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699014546; x=1699619346;
+        d=1e100.net; s=20230601; t=1699014547; x=1699619347;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Kfmsv1+9a7xxjyHODu3lURwTZ23LFgQq1tCajTllXGQ=;
-        b=EaQtVScD/4mqezGULdMLAxs5j5g/xoRqSZymeM3uIvM4hmJ1y3NymH2Lb2GES64T85
-         xXUAX6P+BVT6Pz7gSQiesjiAvLYNTdIf7A+UtmF5jiztJ4X47YImkRjsMELgNQYx/yAM
-         /FU4MJH3hWJlZ+CW+DnRe8JRTBzYm7+lsjYCmYGwLqmHzXRAEDD4kjOFqwlNetOoXOhF
-         Z5b/bzL7mYy9xHCvo1cINMITLqXG91iy6PrFqqqWWkzaNx3e+4bBU5YGXV49Fi6SMdNa
-         6clZ2M1lSDL4/XWHjFtzrO9h55XQFw6ggW1TVdmUBOOWnEkbcQp1DDxYUT20nz2z5q/9
-         J52A==
-X-Gm-Message-State: AOJu0YzdaAAe9aEdty9XD5EwzT7VFI+hx2Fa3/BurK2klbLJTm800ca1
-        rV0gKn3qh06PHYTHdi0f+ixTbw==
-X-Google-Smtp-Source: AGHT+IE4lIhsKBaURieeZTScfYBWF0zYielGo2SjTzn0k/QM/wK27e+idd46GZUocyi6msJTXDOoCQ==
-X-Received: by 2002:a05:600c:4748:b0:408:53d4:52dd with SMTP id w8-20020a05600c474800b0040853d452ddmr17182240wmo.22.1699014546138;
-        Fri, 03 Nov 2023 05:29:06 -0700 (PDT)
+        bh=md6OhgYeiqhW8v0ZSLxkHkjOlO44qdIptAA7zD8mXLI=;
+        b=JiqNrVA93dKCrZ+uwsmec8GpevmifNDshYsk//wRL7wOs4fGcFbz3qP7tHEVTP8M2U
+         kwHI6pv3K5QCjHY+0r2wvaXwABWWhvvJkhxtlt5KYKakeULB5LoS2vUKZVOxl1R8Gh86
+         0VFahouHSHZp7nCzmzopw/wvMzh4MJGyzspu3LYR6eGwA8lIKnG3IbI9IQ6tHbnTJ6sX
+         hTSm9n1SJ5lIWgmtmJNb4CMbOlEVadOEwioZsjeHZ7TcXNrJQVhuu/FnkA0ePGKtyxq9
+         e95TFEJgW6m2NhBG/xB0HzJswO8M1Gvd0ze1qzjMGxcA+axhIL+sv9cD/xndmPcg88tw
+         L+Zg==
+X-Gm-Message-State: AOJu0YwjmtCat4iL/sNKVxLcLMQsHAgx3FA9VxTCdiJUHa1CD34ncbGP
+        2CmAqAemNzBIWUssnopB/KIwgg==
+X-Google-Smtp-Source: AGHT+IF8W4JPi04xenzBvy9qy59h+hoWM+8JppoAbmeROMLCKzMN73KeMi7yiAw0OkQ3wr6vhGHr9g==
+X-Received: by 2002:a05:600c:350c:b0:409:6e0e:e95c with SMTP id h12-20020a05600c350c00b004096e0ee95cmr2099114wmq.21.1699014547402;
+        Fri, 03 Nov 2023 05:29:07 -0700 (PDT)
 Received: from [127.0.0.1] ([37.228.218.3])
-        by smtp.gmail.com with ESMTPSA id ay8-20020a05600c1e0800b0040772138bb7sm2402918wmb.2.2023.11.03.05.29.05
+        by smtp.gmail.com with ESMTPSA id ay8-20020a05600c1e0800b0040772138bb7sm2402918wmb.2.2023.11.03.05.29.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Nov 2023 05:29:05 -0700 (PDT)
+        Fri, 03 Nov 2023 05:29:06 -0700 (PDT)
 From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-Date:   Fri, 03 Nov 2023 12:29:01 +0000
-Subject: [PATCH v4 4/7] media: qcom: camss: Move VFE power-domain specifics
- into vfe.c
+Date:   Fri, 03 Nov 2023 12:29:02 +0000
+Subject: [PATCH v4 5/7] media: qcom: camss: Add support for named
+ power-domains
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20231103-b4-camss-named-power-domains-v4-4-33a905359dbc@linaro.org>
+Message-Id: <20231103-b4-camss-named-power-domains-v4-5-33a905359dbc@linaro.org>
 References: <20231103-b4-camss-named-power-domains-v4-0-33a905359dbc@linaro.org>
 In-Reply-To: <20231103-b4-camss-named-power-domains-v4-0-33a905359dbc@linaro.org>
 To:     hverkuil-cisco@xs4all.nl, laurent.pinchart@ideasonboard.com,
@@ -82,221 +82,120 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Moving the location of the hooks to VFE power domains has several
-advantages.
+Right now we use fixed indexes to assign power-domains, with a
+requirement for the TOP GDSC to come last in the list.
 
-1. Separation of concerns and functional decomposition.
-   vfe.c should be responsible for and know best how manage
-   power-domains for a VFE, excising from camss.c follows this
-   principle.
+Adding support for named power-domains means the declaration in the dtsi
+can come in any order.
 
-2. Embedding a pointer to genpd in struct camss_vfe{} meas that we can
-   dispense with a bunch of kmalloc array inside of camss.c.
+After this change we continue to support the old indexing - if a SoC
+resource declaration or the in-use dtb doesn't declare power-domain names
+we fall back to the default legacy indexing.
 
-3. Splitting up titan top gdsc from vfe/ife gdsc provides a base for
-   breaking up magic indexes in dtsi.
+From this point on though new SoC additions should contain named
+power-domains, eventually we will drop support for legacy indexing.
 
-Suggested-by: Matti Lehtimäki <matti.lehtimaki@gmail.com>
 Tested-by: Matti Lehtimäki <matti.lehtimaki@gmail.com>
 Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
 ---
- drivers/media/platform/qcom/camss/camss-vfe.c | 24 +++++++++-
- drivers/media/platform/qcom/camss/camss-vfe.h |  2 +
- drivers/media/platform/qcom/camss/camss.c     | 68 +++++++++++++++------------
- drivers/media/platform/qcom/camss/camss.h     |  4 +-
- 4 files changed, 63 insertions(+), 35 deletions(-)
+ drivers/media/platform/qcom/camss/camss-vfe.c | 24 +++++++++++++++++++++++-
+ drivers/media/platform/qcom/camss/camss.c     | 26 +++++++++++++++++++++-----
+ drivers/media/platform/qcom/camss/camss.h     |  2 ++
+ 3 files changed, 46 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/media/platform/qcom/camss/camss-vfe.c b/drivers/media/platform/qcom/camss/camss-vfe.c
-index 5172eb5612a1c..defff24f07ce3 100644
+index defff24f07ce3..123e5ead7602d 100644
 --- a/drivers/media/platform/qcom/camss/camss-vfe.c
 +++ b/drivers/media/platform/qcom/camss/camss-vfe.c
-@@ -14,6 +14,7 @@
- #include <linux/mutex.h>
- #include <linux/of.h>
- #include <linux/platform_device.h>
-+#include <linux/pm_domain.h>
- #include <linux/pm_runtime.h>
- #include <linux/spinlock_types.h>
- #include <linux/spinlock.h>
-@@ -1381,8 +1382,13 @@ int msm_vfe_subdev_init(struct camss *camss, struct vfe_device *vfe,
+@@ -1382,7 +1382,29 @@ int msm_vfe_subdev_init(struct camss *camss, struct vfe_device *vfe,
  	if (!res->line_num)
  		return -EINVAL;
  
--	if (res->has_pd)
--		vfe->genpd = camss->genpd[id];
-+	if (res->has_pd) {
-+		vfe->genpd = dev_pm_domain_attach_by_id(camss->dev, id);
+-	if (res->has_pd) {
++	/* Power domain */
++
++	if (res->pd_name) {
++		vfe->genpd = dev_pm_domain_attach_by_name(camss->dev,
++							  res->pd_name);
 +		if (IS_ERR(vfe->genpd)) {
 +			ret = PTR_ERR(vfe->genpd);
 +			return ret;
 +		}
 +	}
- 
- 	vfe->line_num = res->line_num;
- 	vfe->ops->subdev_init(dev, vfe);
-@@ -1506,6 +1512,20 @@ int msm_vfe_subdev_init(struct camss *camss, struct vfe_device *vfe,
- 	return 0;
- }
- 
-+/*
-+ * msm_vfe_genpd_cleanup - Cleanup VFE genpd linkages
-+ * @vfe: VFE device
-+ *
-+ */
-+void msm_vfe_genpd_cleanup(struct vfe_device *vfe)
-+{
-+	if (vfe->genpd_link)
-+		device_link_del(vfe->genpd_link);
 +
-+	if (vfe->genpd)
-+		dev_pm_domain_detach(vfe->genpd, true);
-+}
-+
- /*
-  * vfe_link_setup - Setup VFE connections
-  * @entity: Pointer to media entity structure
-diff --git a/drivers/media/platform/qcom/camss/camss-vfe.h b/drivers/media/platform/qcom/camss/camss-vfe.h
-index 992a2103ec44c..cdbe59d8d437e 100644
---- a/drivers/media/platform/qcom/camss/camss-vfe.h
-+++ b/drivers/media/platform/qcom/camss/camss-vfe.h
-@@ -159,6 +159,8 @@ struct camss_subdev_resources;
- int msm_vfe_subdev_init(struct camss *camss, struct vfe_device *vfe,
- 			const struct camss_subdev_resources *res, u8 id);
- 
-+void msm_vfe_genpd_cleanup(struct vfe_device *vfe);
-+
- int msm_vfe_register_entities(struct vfe_device *vfe,
- 			      struct v4l2_device *v4l2_dev);
- 
++	if (!vfe->genpd && res->has_pd) {
++		/*
++		 * Legacy magic index.
++		 * Requires
++		 * power-domain = <VFE_X>,
++		 *                <VFE_Y>,
++		 *                <TITAN_TOP>
++		 * id must correspondng to the index of the VFE which must
++		 * come before the TOP GDSC. VFE Lite has no individually
++		 * collapasible domain which is why id < vfe_num is a valid
++		 * check.
++		 */
+ 		vfe->genpd = dev_pm_domain_attach_by_id(camss->dev, id);
+ 		if (IS_ERR(vfe->genpd)) {
+ 			ret = PTR_ERR(vfe->genpd);
 diff --git a/drivers/media/platform/qcom/camss/camss.c b/drivers/media/platform/qcom/camss/camss.c
-index ed01a3ac7a38e..f10a47f1aee7d 100644
+index f10a47f1aee7d..d565260fee0d6 100644
 --- a/drivers/media/platform/qcom/camss/camss.c
 +++ b/drivers/media/platform/qcom/camss/camss.c
-@@ -1487,7 +1487,9 @@ static const struct media_device_ops camss_media_ops = {
- static int camss_configure_pd(struct camss *camss)
- {
- 	struct device *dev = camss->dev;
-+	const struct camss_resources *res = camss->res;
- 	int i;
-+	int vfepd_num;
- 	int ret;
- 
- 	camss->genpd_num = of_count_phandle_with_args(dev->of_node,
-@@ -1506,45 +1508,42 @@ static int camss_configure_pd(struct camss *camss)
- 	if (camss->genpd_num == 1)
+@@ -1523,12 +1523,28 @@ static int camss_configure_pd(struct camss *camss)
  		return 0;
  
--	camss->genpd = devm_kmalloc_array(dev, camss->genpd_num,
--					  sizeof(*camss->genpd), GFP_KERNEL);
--	if (!camss->genpd)
--		return -ENOMEM;
-+	/* count the # of VFEs which have flagged power-domain */
-+	for (vfepd_num = i = 0; i < camss->vfe_total_num; i++) {
-+		if (res->vfe_res[i].has_pd)
-+			vfepd_num++;
-+	}
- 
--	camss->genpd_link = devm_kmalloc_array(dev, camss->genpd_num,
--					       sizeof(*camss->genpd_link),
--					       GFP_KERNEL);
--	if (!camss->genpd_link)
--		return -ENOMEM;
-+	/*
-+	 * If the number of power-domains is greater than the number of VFEs
-+	 * then the additional power-domain is for the entire CAMSS block the
-+	 * 'top' power-domain.
-+	 */
-+	if (camss->genpd_num <= vfepd_num)
-+		return 0;
- 
  	/*
- 	 * VFE power domains are in the beginning of the list, and while all
- 	 * power domains should be attached, only if TITAN_TOP power domain is
- 	 * found in the list, it should be linked over here.
+-	 * VFE power domains are in the beginning of the list, and while all
+-	 * power domains should be attached, only if TITAN_TOP power domain is
+-	 * found in the list, it should be linked over here.
++	 * If a power-domain name is defined try to use it.
++	 * It is possible we are running a new kernel with an old dtb so
++	 * fallback to indexes even if a pd_name is defined but not found.
  	 */
--	for (i = 0; i < camss->genpd_num; i++) {
--		camss->genpd[i] = dev_pm_domain_attach_by_id(camss->dev, i);
--		if (IS_ERR(camss->genpd[i])) {
--			ret = PTR_ERR(camss->genpd[i]);
--			goto fail_pm;
--		}
-+	camss->genpd = dev_pm_domain_attach_by_id(camss->dev, camss->genpd_num - 1);
-+	if (IS_ERR(camss->genpd)) {
-+		ret = PTR_ERR(camss->genpd);
-+		goto fail_pm;
- 	}
--
--	if (i > camss->res->vfe_num) {
--		camss->genpd_link[i - 1] = device_link_add(camss->dev, camss->genpd[i - 1],
--							   DL_FLAG_STATELESS | DL_FLAG_PM_RUNTIME |
--							   DL_FLAG_RPM_ACTIVE);
--		if (!camss->genpd_link[i - 1]) {
--			ret = -EINVAL;
--			goto fail_pm;
--		}
-+	camss->genpd_link = device_link_add(camss->dev, camss->genpd,
-+					    DL_FLAG_STATELESS | DL_FLAG_PM_RUNTIME |
-+					    DL_FLAG_RPM_ACTIVE);
-+	if (!camss->genpd_link) {
-+		ret = -EINVAL;
-+		goto fail_pm;
- 	}
- 
- 	return 0;
- 
- fail_pm:
--	for (--i ; i >= 0; i--)
--		dev_pm_domain_detach(camss->genpd[i], true);
-+	dev_pm_domain_detach(camss->genpd, true);
- 
- 	return ret;
- }
-@@ -1566,18 +1565,25 @@ static int camss_icc_get(struct camss *camss)
- 	return 0;
- }
- 
--static void camss_genpd_cleanup(struct camss *camss)
-+static void camss_genpd_subdevice_cleanup(struct camss *camss)
- {
- 	int i;
- 
-+	for (i = 0; i < camss->vfe_total_num; i++)
-+		msm_vfe_genpd_cleanup(&camss->vfe[i]);
-+}
+-	camss->genpd = dev_pm_domain_attach_by_id(camss->dev, camss->genpd_num - 1);
+-	if (IS_ERR(camss->genpd)) {
++	if (camss->res->pd_name) {
++		camss->genpd = dev_pm_domain_attach_by_name(camss->dev,
++							    camss->res->pd_name);
++		if (IS_ERR(camss->genpd)) {
++			ret = PTR_ERR(camss->genpd);
++			goto fail_pm;
++		}
++	}
 +
-+static void camss_genpd_cleanup(struct camss *camss)
-+{
- 	if (camss->genpd_num == 1)
- 		return;
- 
--	if (camss->genpd_num > camss->res->vfe_num)
--		device_link_del(camss->genpd_link[camss->genpd_num - 1]);
-+	if (camss->genpd_link)
-+		device_link_del(camss->genpd_link);
-+
-+	dev_pm_domain_detach(camss->genpd, true);
- 
--	for (i = 0; i < camss->genpd_num; i++)
--		dev_pm_domain_detach(camss->genpd[i], true);
-+	camss_genpd_subdevice_cleanup(camss);
- }
- 
- /*
++	if (!camss->genpd) {
++		/*
++		 * Legacy magic index. TITAN_TOP GDSC must be the last
++		 * item in the power-domain list.
++		 */
++		camss->genpd = dev_pm_domain_attach_by_id(camss->dev,
++							  camss->genpd_num - 1);
++	}
++	if (IS_ERR_OR_NULL(camss->genpd)) {
+ 		ret = PTR_ERR(camss->genpd);
+ 		goto fail_pm;
+ 	}
 diff --git a/drivers/media/platform/qcom/camss/camss.h b/drivers/media/platform/qcom/camss/camss.h
-index b854cff1774d4..1ba824a2cb76c 100644
+index 1ba824a2cb76c..cd8186fe1797b 100644
 --- a/drivers/media/platform/qcom/camss/camss.h
 +++ b/drivers/media/platform/qcom/camss/camss.h
-@@ -107,8 +107,8 @@ struct camss {
- 	struct vfe_device *vfe;
- 	atomic_t ref_count;
- 	int genpd_num;
--	struct device **genpd;
--	struct device_link **genpd_link;
-+	struct device *genpd;
-+	struct device_link *genpd_link;
- 	struct icc_path *icc_path[ICC_SM8250_COUNT];
- 	const struct camss_resources *res;
- 	unsigned int vfe_total_num;
+@@ -48,6 +48,7 @@ struct camss_subdev_resources {
+ 	u32 clock_rate[CAMSS_RES_MAX][CAMSS_RES_MAX];
+ 	char *reg[CAMSS_RES_MAX];
+ 	char *interrupt[CAMSS_RES_MAX];
++	char *pd_name;
+ 	u8 line_num;
+ 	bool has_pd;
+ 	const void *ops;
+@@ -84,6 +85,7 @@ enum icc_count {
+ 
+ struct camss_resources {
+ 	enum camss_version version;
++	const char *pd_name;
+ 	const struct camss_subdev_resources *csiphy_res;
+ 	const struct camss_subdev_resources *csid_res;
+ 	const struct camss_subdev_resources *ispif_res;
 
 -- 
 2.42.0
