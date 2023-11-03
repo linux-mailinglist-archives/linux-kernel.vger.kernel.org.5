@@ -2,137 +2,342 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 087E77E0792
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 18:38:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26DBB7E07BC
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 18:47:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230235AbjKCRiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 13:38:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43124 "EHLO
+        id S231186AbjKCRrM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 13:47:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230141AbjKCRiB (ORCPT
+        with ESMTP id S229450AbjKCRrK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 13:38:01 -0400
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2044.outbound.protection.outlook.com [40.107.93.44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D17FD55;
-        Fri,  3 Nov 2023 10:37:55 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=l/hr8nFKI1IP0KuMWLk7bB/85uf76nzhGBRkjj4lxToa6aIRl2Lc+00lux1C9HYjZnTBX2a7yvhffBEOjkk5x/gzHyVjF72rMtg3BXtHWELAl1QcX8+/1wtWaD/GIiGRetuVpEeMTz8f3cajDhwUcVX7DrPa7VQGiHkiRF0A2FUDc6bIxLQtXOQ/AFc0gutVy3zABDvWp7Odbqgr9EK1ecBF5cHyr3ySFisuw59bVv4pu7Csl133w561qKzoGl1y2mdNVeRsr0zF1Cn+xPyIUGxNTrsGq4A+xBtIWUQ1arJFdM8WO507Apw8+ujVpwDhyB4rLR9BtZvrDUpc64MCTQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=q0ozF1gjgUDAL1RLCi1BDaXJ0vlcO/jq7+OdECVHnZM=;
- b=PNemjdiXjbQMadYePTMvaIeTP1BavmBijW0uenjMwnokUIPz4PUnrjJnyby0ZWdtZQIL1xwJ6vLcNwvbKGYPXsgkuhiU2I2YQngOOmXakd8lAn9oK+pWL+OKDuGOVj6p9YdQD6TSEn/skHR8g8jyKS4S9azwJHOa0m+CDp7BWCB1pMO0IaJlW1IQqRBcEGLVBK6aOfiljR39giJrgz3tYjFBWu0jQ89bFIhsNSUFo/6bqW7dQsm3lVEg3Nyi/zrUtlegKUz+c0jO2zr6Bp7UEXxtG/6b0sAtRm9N+Apg8WlBVtQzJFwNOM5bp3dUf4qaebGMXbXeCgT2QR6AnHt2ew==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=q0ozF1gjgUDAL1RLCi1BDaXJ0vlcO/jq7+OdECVHnZM=;
- b=Ommqu/+H9feDdphHxygruSoa/ALEzkrw3ZLoT6chRFZjIvO4+dYcFIqC6X9YAD2cnswUIgnKjBS+1QSNUhLd90glkycmMlQm5JsF2YrEF3JIRJ3rnVDZPYhnZps5SpwAHfZaH8PzSabu1sT0c6yPaFLHocc6UA20RNRdQPfziHkPx2GT3ujWjP1TaRTb+NWkT2nxCMVENWxx3PQJ9i0tIkaq9LpRs9QTs37aTGFJKbUJlFAdUHEB0XTa6HJGBQMiKp/8abCshlZ+w5BHuqhEXm2KbkUMKAUFv4cXYWnt00WzMbk1nkgGZvVIr1WWYrJHw6gwdy6/wWaQorA2weTFWg==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by DS0PR12MB7801.namprd12.prod.outlook.com (2603:10b6:8:140::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.21; Fri, 3 Nov
- 2023 17:37:51 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::b53a:1092:9be2:cfb9]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::b53a:1092:9be2:cfb9%4]) with mapi id 15.20.6933.027; Fri, 3 Nov 2023
- 17:37:51 +0000
-Date:   Fri, 3 Nov 2023 14:37:50 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Cindy Lu <lulu@redhat.com>
-Cc:     jasowang@redhat.com, mst@redhat.com, yi.l.liu@intel.com,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
-Subject: Re: [RFC v1 8/8] iommu: expose the function
- iommu_device_use_default_domain
-Message-ID: <20231103173750.GC4488@nvidia.com>
-References: <20231103171641.1703146-1-lulu@redhat.com>
- <20231103171641.1703146-9-lulu@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231103171641.1703146-9-lulu@redhat.com>
-X-ClientProxiedBy: BL1PR13CA0375.namprd13.prod.outlook.com
- (2603:10b6:208:2c0::20) To LV2PR12MB5869.namprd12.prod.outlook.com
- (2603:10b6:408:176::16)
+        Fri, 3 Nov 2023 13:47:10 -0400
+Received: from snail.cherry.relay.mailchannels.net (snail.cherry.relay.mailchannels.net [23.83.223.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AFF718B
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 10:47:04 -0700 (PDT)
+X-Sender-Id: dreamhost|x-authsender|kjlx@templeofstupid.com
+Received: from relay.mailchannels.net (localhost [127.0.0.1])
+        by relay.mailchannels.net (Postfix) with ESMTP id B1554502360
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 17:39:46 +0000 (UTC)
+Received: from pdx1-sub0-mail-a277.dreamhost.com (unknown [127.0.0.6])
+        (Authenticated sender: dreamhost)
+        by relay.mailchannels.net (Postfix) with ESMTPA id 6688F5023DE
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 17:39:46 +0000 (UTC)
+ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1699033186; a=rsa-sha256;
+        cv=none;
+        b=kHrEKo6dgd+yhnIf5aMMtgN8qZhPg7Y+SbKisW+BRaazAApYh1M9KbM8QAK/Bz40STcmwS
+        DRdbRqbC0tamHqAUkMe/2Pdyu9o5erYgytKHVI01VrmMjTE+p07RtNZStSbP+PKECCKgjp
+        ydhrhaFeXou0hJAZJQWLUKou0IGYJ1BGcA+Lcq1/DSoQgDSjhxkC5S3u1o3Q1iCH0b2Pdf
+        p0MyVQcCG78bx3NVe6JF07SN3PA1LKRW+HbiJiF97vf+lxyhvrEqR1NUGGnBbXsC7d9my0
+        /g5GNdFkuhr+HpyeXPOe7Gs+wArx2za3d8XXx9uaKbVlyfqEmY2ZAQSGxMv3ng==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=mailchannels.net;
+        s=arc-2022; t=1699033186;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         dkim-signature; bh=7CfAwxtc1GjVGjPpAu1RZavwIvZcA14MkN7wWbXh4lQ=;
+        b=GBMGbwynk7axeze7jT75t027PuB2Z4pTTxdbxAdWcTUog3TKvUR7+hyPEFF5GOl32AmhL4
+        ATJaY43ZVvRV+WNcFJq/2wiD7+iEMW2M4Bn34FaIgaonWIGJShMdNk0R3YWHTpYFW3oF6g
+        m3skiHPIxnWn6bDCkQnzTpR1QEobzg1H4ZvOiZ4D6oQ4QbauU77UArfPIlDysK1fWAaRmH
+        SXfyyAivjajOpCeuO05YJ0zCoYGGcrI7zFGVV/Yc9rmXpfmnL6HXx/zgtPv1TIcsMiVYgr
+        dfHhCrQplKXJPIFqoVdE5QEmGWKI/eiNyGQE+gcK/JuqSwegNq7QP5hWDtaAWw==
+ARC-Authentication-Results: i=1;
+        rspamd-76878f7dcc-vwwx9;
+        auth=pass smtp.auth=dreamhost smtp.mailfrom=kjlx@templeofstupid.com
+X-Sender-Id: dreamhost|x-authsender|kjlx@templeofstupid.com
+X-MC-Relay: Neutral
+X-MailChannels-SenderId: dreamhost|x-authsender|kjlx@templeofstupid.com
+X-MailChannels-Auth-Id: dreamhost
+X-Blushing-Inform: 0c9abc8f64449e4a_1699033186552_2730902570
+X-MC-Loop-Signature: 1699033186552:2722986492
+X-MC-Ingress-Time: 1699033186552
+Received: from pdx1-sub0-mail-a277.dreamhost.com (pop.dreamhost.com
+ [64.90.62.162])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384)
+        by 100.123.68.53 (trex/6.9.2);
+        Fri, 03 Nov 2023 17:39:46 +0000
+Received: from kmjvbox.templeofstupid.com (c-73-231-176-24.hsd1.ca.comcast.net [73.231.176.24])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: kjlx@templeofstupid.com)
+        by pdx1-sub0-mail-a277.dreamhost.com (Postfix) with ESMTPSA id 4SMSg60sC3zxQ
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 10:39:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=templeofstupid.com;
+        s=dreamhost; t=1699033186;
+        bh=7CfAwxtc1GjVGjPpAu1RZavwIvZcA14MkN7wWbXh4lQ=;
+        h=Date:From:To:Cc:Subject:Content-Type;
+        b=E7DGPSnRfTpJMYKw5mWau4sSlqen++SJbzkyB0xiFEw5vCxIo+aySGIfSI8pk7vJL
+         4IDipHBSX93pXeRVFtCWqt65gkmjOPs9mC1xm5xMOAgWZ1/wH3f7h6wDLDG8xUZnpF
+         vo/TgUr90YwkD5sgB3TTaGgLmfJOwic6xUmGCnRFeol2y9T2UNDiYjDetugxLdLrY3
+         lUVUTphNQYW81i2Wm7hmQQX7aKiniQ/rEJtFG7oe8iGPF3Bx4KuFZVIithgrAtd8ms
+         KJ9QkeknrMPPg58cdeV5RBAtDfl19kSDR0OUuKVid7cVXDn/T7Q/VmTJbBPLsb/NTT
+         FIqEXX+nf5bZA==
+Received: from johansen (uid 1000)
+        (envelope-from kjlx@templeofstupid.com)
+        id e00cd
+        by kmjvbox.templeofstupid.com (DragonFly Mail Agent v0.12);
+        Fri, 03 Nov 2023 10:39:47 -0700
+Date:   Fri, 3 Nov 2023 10:39:47 -0700
+From:   Krister Johansen <kjlx@templeofstupid.com>
+To:     Miklos Szeredi <miklos@szeredi.hu>, linux-fsdevel@vger.kernel.org
+Cc:     Miklos Szeredi <mszeredi@redhat.com>, linux-kernel@vger.kernel.org,
+        German Maglione <gmaglione@redhat.com>,
+        Greg Kurz <groug@kaod.org>, Max Reitz <mreitz@redhat.com>,
+        Bernd Schubert <bernd.schubert@fastmail.fm>
+Subject: [resend PATCH v4] fuse: share lookup state between submount and its
+ parent
+Message-ID: <20231103173947.GA2059@templeofstupid.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|DS0PR12MB7801:EE_
-X-MS-Office365-Filtering-Correlation-Id: f5375515-4675-41da-6ae6-08dbdc939aa7
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: vgigNFdrDZ8+dR8zW9kZPVmic74pQ8CJObFNky3JWpiarqUMu6DzSfDy/+9/8y8W5+DMI4dFQ70zznx2UEJCmP0HAw49oOXk3oOe2R03zRKTgCeTwa5NRPuDs43r4QSH1bZhNPPBa4wh7/36AzRfVSzSedmDfBBYZL5Qaekev5Dudfei8154ZGA2IInuIQPWojHnVLewctCKbSTljgQMSgG5FpVBPtMsna3NrI0lfyZlcqr+kVtewF0F4RScxFtmgYSYyyi5OEWP+ajN2R0HnbKB7ad4+LGxRYn3rcgqSdmFNjVhRBVRDS+1+nM9+so/bKm4PtIUCLZvcz+YHQbCbMyJ/8hbwQxjWCuNkZgBLvqqfVsXaEO5YXGV58Y4LoUUSVxJM/bCD+zdEa9p104CwYQnLig/EqbX2HG1EHevsfzZC6A0l+HGB0GVGMJtDQfkhRNNNQI+aUurGdKbrYpd6QKz2+iBq+N0UYKJQZMBVeuwpRjwIJ0p3UQVt6dcyfgrpZBRKDR+/MPFxOUbrHI/T+pDs9BexCeoDGJhnc/LhvPpRnzodTpKMPyrANwTlZ/V
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(376002)(39860400002)(346002)(366004)(230922051799003)(64100799003)(186009)(451199024)(1800799009)(86362001)(6512007)(6916009)(66476007)(66946007)(33656002)(66556008)(36756003)(478600001)(316002)(8676002)(6486002)(6506007)(4326008)(8936002)(2616005)(41300700001)(1076003)(26005)(5660300002)(4744005)(2906002)(38100700002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?K2YvSElqVmFlZDljYnpSOUg0RHNsaklrdEN6N1ZLUDNGRVV2dlpocGhvMEV1?=
- =?utf-8?B?RGhHb3VBdjF5dHRYR0lMdFo4RDUzMmpnZmJsc3NwbW5tSEFnRDZQc0QxWW9l?=
- =?utf-8?B?Si9TeUx3ZTM5VDhpdENza3dRanhNMnhPSFNORjM4Mkl3TkVQeCtXTXdwTmhV?=
- =?utf-8?B?OGlLWXFWUmFXVkZNMDZQVnpWRGlEVlNCVEZEbGtTVytFNE9PVU9sQUdpZE4r?=
- =?utf-8?B?S08vMUh2Q2JHZnJ3MXRxTDdTeU9xdi9zTWxESFVKeUZCbG0wZ1R6SG1ROGxw?=
- =?utf-8?B?dkl3ejBOZjJHcXRXRzlhTU5SWlU5VUlKN09iMkd4RjVScGl1MlF5dzlzOWpu?=
- =?utf-8?B?WGdoN3ZURVJOakdqZm8wVHBrVkZ0UDFKV2NGcGNsY2NxMlpvTjBSUCt4cVc0?=
- =?utf-8?B?cDQ3dGVNNU0vVmRYeE1wQlNvS3RjR2szMmQ5a0VnSDN1Wkt4TGxWTFE0dWo3?=
- =?utf-8?B?ZGpXNXQweW5PSlF2cEhac3A5Y0V1WWxtc1BxOVY5Y2lqeVNTWW5FOWM5akM4?=
- =?utf-8?B?d3BBWDBBYmJlUkFNVXlCZ0RvUllHMUZrVWFTUCt4ajA0cEdwTFVFbzZrcFNY?=
- =?utf-8?B?aGp1UEZhT1R1SU5QWm0vQk51TVdySDN5WTNoTkxMVTduUCs2UnhNTjRWdU9L?=
- =?utf-8?B?TkpucnRpOUpUNUhCSzFOenFhQkFtWUhzdmFQb3QyNmFhYzhMM2xpajVSdkw4?=
- =?utf-8?B?WGs2RHgvVTdnYkV6MEhwZ1RqcjBkWlFiNTRTa3NtWS9wT2ROR2cyNUErakpI?=
- =?utf-8?B?RWw3TlV0TzR1aW5XdllybW0wYWR2SHBMRG5RS1QyMW1lWWNsc0RKYkVqTWJi?=
- =?utf-8?B?SFhtd3oweHNwMEtoRTJxczRBSDcvcWhrM2ZXUUl6OThYaG5YVEJoaGhxbTZY?=
- =?utf-8?B?SUtYUGhOZmZXbEtLNHRJaWRHUDFaSmJ3dGc0Yi9ENGRiaXo4YmxPZDUvaGhG?=
- =?utf-8?B?N05CQnRxU095S05oMGM5aVV4bkxwTVI2RUxXaWZ1YUJsM01pTHMzWGV6QjVh?=
- =?utf-8?B?SkwwdWhRQTRwTDQ5b3NWRUNyZmlrUm1RMjd3aUl6aENLKzRpOVRiK2pGcUZa?=
- =?utf-8?B?WFU3VFJHMFZaL0xzYlkyanZCODZlcFMrRUJYMlM5R3pPU2ZMMnNtQUpvbjN1?=
- =?utf-8?B?dTBPb3VoUklyY3JGM3ZHZUF4NjRQSVNydWRkeUdMVGd5K3BoSjdYdWhGMjl2?=
- =?utf-8?B?V3F0ODM0V3RXYU9vQ1doUzBTcGprOEJIc2FkMkFBZ0FaR0RjbWhoZUxTTXlL?=
- =?utf-8?B?RC92YU56ZnZyako0ZVVRZ0xFYU4rRHgycVhNaWUzOCtUSVhTbDF0MHJxbk1r?=
- =?utf-8?B?am53RWRhd2NiVW14OEhJV1JIdi9qUVNsbWF1L2h2cE9lenpFWkwzQ0VmTWlI?=
- =?utf-8?B?a2Irb3gxMjZxSTlISUNKSXp1VWdSZW00UG1SeTJPdGhza0tUc0pZMmtnNzR4?=
- =?utf-8?B?N1o3R2dJakFBQ1hzdVpqNTlMeTJsQXdlRU03cThQSThUM2dPQm9OVE9YcDJo?=
- =?utf-8?B?VE1YVUhuamFRSnNBMCs4aE5SQi9PVG45dnE4em1SbjllR1l6MlNoMEVKajJN?=
- =?utf-8?B?ZzNNbjg3TXdYcVVsdmFIcXluUExrMzlWTmtkMUNOWEF4WmltYXEvUDZOTlBF?=
- =?utf-8?B?a3VnSm0xZDdOUmt5eVo1Uk4yUW5rbWVxRjFOL2R1NHF1b1Y1ay9iNG9MSHB4?=
- =?utf-8?B?L0dFcE9XZXJZdnRzY3BCQ1RFNnEwUGZ4MGtoZm1OSmIxMkM2VmdPZTh0R1Bp?=
- =?utf-8?B?cjEzMWxNdTM3aXBQdDRjTy83Ni8yVXdhQWkzMzQ3RCs1VFl2RXl1VmpYTjly?=
- =?utf-8?B?OXBoN1V1ZjJocktVY3JvTzZocU9WSm1UMmtXZWFONXBFWUJQcTZFYkJwemVv?=
- =?utf-8?B?d0Fjb3Z4cDl3NnJEZnA5S3V2WHdOOHlJZGs0dDBFUnFhRzV3Q3FCbjhreXh6?=
- =?utf-8?B?L0Jia0NFMGtuUEZqbHhlYnZGb0lLNmw3VE9Rek8zeGxIK01XdVptUVYxTFFj?=
- =?utf-8?B?YldXVG95UXI2VlNCWmNEVTNRTUJDdWliN3ZQbjVFeVdkMnVMdm1SZzRWMzN5?=
- =?utf-8?B?RlRBQWtxN2c4eS9ZdGE5bVNmeWdqNERRZzgzcVRVbVNEY1BZUXdZbEhNcWNF?=
- =?utf-8?Q?I86NhT4YhmcdxgrZ5OY35yRub?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f5375515-4675-41da-6ae6-08dbdc939aa7
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Nov 2023 17:37:51.7342
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: X+fOJLfbyybLgqAXkNsBmI4G7cAWFfuHbQ8ZpyGo98gYMrgpIisgqDeQMehWfe8b
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB7801
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 04, 2023 at 01:16:41AM +0800, Cindy Lu wrote:
-> Expose the function iommu_device_use_default_domain() and
-> iommu_device_unuse_default_domain()，
-> While vdpa bind the iommufd device and detach the iommu device,
-> vdpa need to call the function
-> iommu_device_unuse_default_domain() to release the owner
+Fuse submounts do not perform a lookup for the nodeid that they inherit
+from their parent.  Instead, the code decrements the nlookup on the
+submount's fuse_inode when it is instantiated, and no forget is
+performed when a submount root is evicted.
 
-Definately not. You need to set the driver_managed_dma flag.
+Trouble arises when the submount's parent is evicted despite the
+submount itself being in use.  In this author's case, the submount was
+in a container and deatched from the initial mount namespace via a
+MNT_DEATCH operation.  When memory pressure triggered the shrinker, the
+inode from the parent was evicted, which triggered enough forgets to
+render the submount's nodeid invalid.
 
-Jason
+Since submounts should still function, even if their parent goes away,
+solve this problem by sharing refcounted state between the parent and
+its submount.  When all of the references on this shared state reach
+zero, it's safe to forget the final lookup of the fuse nodeid.
+
+Signed-off-by: Krister Johansen <kjlx@templeofstupid.com>
+Cc: stable@vger.kernel.org
+Fixes: 1866d779d5d2 ("fuse: Allow fuse_fill_super_common() for submounts")
+---
+Changes since v3:
+
+- Remove rcu head from lookup tracking struct along with unnecessary
+  kfree_rcu call. (Feedback from Miklos Szeredi)
+- Make nlookup one implicitly.  Remove from struct and simplify places
+  where it was being used. (Feedback from Miklos Szeredi)
+- Remove unnecessary spinlock acquisition. (Feedback from Miklos
+  Szeredi)
+- Add a WARN_ON if the lookup tracking cookie cannot be found during
+  fuse_fill_super_submount.  (Feedback from Miklos Szeredi)
+
+Changes since v2:
+
+- Move to an approach where the lookup is shared between the submount's
+  parent and children.  Use a reference counted lookup cookie to decide
+  when it is safe to perform the forget of the final reference.
+  (Feedback from Miklos Szeredi)
+
+Changes since v1:
+
+- Cleanups to pacify test robot
+
+Changes since RFC:
+
+- Modified fuse_fill_super_submount to always fail if dentry cannot be
+  revalidated.  (Feedback from Bernd Schubert)
+- Fixed up an edge case where looked up but subsequently declared
+  invalid dentries were not correctly tracking nlookup.  (Error was
+  introduced in my RFC).
+---
+ fs/fuse/fuse_i.h | 15 ++++++++++
+ fs/fuse/inode.c  | 74 ++++++++++++++++++++++++++++++++++++++++++++++--
+ 2 files changed, 86 insertions(+), 3 deletions(-)
+
+diff --git a/fs/fuse/fuse_i.h b/fs/fuse/fuse_i.h
+index 405252bb51f2..9377c46f14c4 100644
+--- a/fs/fuse/fuse_i.h
++++ b/fs/fuse/fuse_i.h
+@@ -63,6 +63,19 @@ struct fuse_forget_link {
+ 	struct fuse_forget_link *next;
+ };
+ 
++/* Submount lookup tracking */
++struct fuse_submount_lookup {
++	/** Refcount */
++	refcount_t count;
++
++	/** Unique ID, which identifies the inode between userspace
++	 * and kernel */
++	u64 nodeid;
++
++	/** The request used for sending the FORGET message */
++	struct fuse_forget_link *forget;
++};
++
+ /** FUSE inode */
+ struct fuse_inode {
+ 	/** Inode data */
+@@ -158,6 +171,8 @@ struct fuse_inode {
+ 	 */
+ 	struct fuse_inode_dax *dax;
+ #endif
++	/** Submount specific lookup tracking */
++	struct fuse_submount_lookup *submount_lookup;
+ };
+ 
+ /** FUSE inode state bits */
+diff --git a/fs/fuse/inode.c b/fs/fuse/inode.c
+index 444418e240c8..243bda3cfdf6 100644
+--- a/fs/fuse/inode.c
++++ b/fs/fuse/inode.c
+@@ -68,6 +68,24 @@ struct fuse_forget_link *fuse_alloc_forget(void)
+ 	return kzalloc(sizeof(struct fuse_forget_link), GFP_KERNEL_ACCOUNT);
+ }
+ 
++static struct fuse_submount_lookup *fuse_alloc_submount_lookup(void)
++{
++	struct fuse_submount_lookup *sl;
++
++	sl = kzalloc(sizeof(struct fuse_submount_lookup), GFP_KERNEL_ACCOUNT);
++	if (!sl)
++		return NULL;
++	sl->forget = fuse_alloc_forget();
++	if (!sl->forget)
++		goto out_free;
++
++	return sl;
++
++out_free:
++	kfree(sl);
++	return NULL;
++}
++
+ static struct inode *fuse_alloc_inode(struct super_block *sb)
+ {
+ 	struct fuse_inode *fi;
+@@ -113,6 +131,17 @@ static void fuse_free_inode(struct inode *inode)
+ 	kmem_cache_free(fuse_inode_cachep, fi);
+ }
+ 
++static void fuse_cleanup_submount_lookup(struct fuse_conn *fc,
++					 struct fuse_submount_lookup *sl)
++{
++	if (!refcount_dec_and_test(&sl->count))
++		return;
++
++	fuse_queue_forget(fc, sl->forget, sl->nodeid, 1);
++	sl->forget = NULL;
++	kfree(sl);
++}
++
+ static void fuse_evict_inode(struct inode *inode)
+ {
+ 	struct fuse_inode *fi = get_fuse_inode(inode);
+@@ -132,6 +161,11 @@ static void fuse_evict_inode(struct inode *inode)
+ 					  fi->nlookup);
+ 			fi->forget = NULL;
+ 		}
++
++		if (fi->submount_lookup) {
++			fuse_cleanup_submount_lookup(fc, fi->submount_lookup);
++			fi->submount_lookup = NULL;
++		}
+ 	}
+ 	if (S_ISREG(inode->i_mode) && !fuse_is_bad(inode)) {
+ 		WARN_ON(!list_empty(&fi->write_files));
+@@ -332,6 +366,13 @@ void fuse_change_attributes(struct inode *inode, struct fuse_attr *attr,
+ 		fuse_dax_dontcache(inode, attr->flags);
+ }
+ 
++static void fuse_init_submount_lookup(struct fuse_submount_lookup *sl,
++				      u64 nodeid)
++{
++	sl->nodeid = nodeid;
++	refcount_set(&sl->count, 1);
++}
++
+ static void fuse_init_inode(struct inode *inode, struct fuse_attr *attr,
+ 			    struct fuse_conn *fc)
+ {
+@@ -395,12 +436,22 @@ struct inode *fuse_iget(struct super_block *sb, u64 nodeid,
+ 	 */
+ 	if (fc->auto_submounts && (attr->flags & FUSE_ATTR_SUBMOUNT) &&
+ 	    S_ISDIR(attr->mode)) {
++		struct fuse_inode *fi;
++
+ 		inode = new_inode(sb);
+ 		if (!inode)
+ 			return NULL;
+ 
+ 		fuse_init_inode(inode, attr, fc);
+-		get_fuse_inode(inode)->nodeid = nodeid;
++		fi = get_fuse_inode(inode);
++		fi->nodeid = nodeid;
++		fi->submount_lookup = fuse_alloc_submount_lookup();
++		if (!fi->submount_lookup) {
++			iput(inode);
++			return NULL;
++		}
++		/* Sets nlookup = 1 on fi->submount_lookup->nlookup */
++		fuse_init_submount_lookup(fi->submount_lookup, nodeid);
+ 		inode->i_flags |= S_AUTOMOUNT;
+ 		goto done;
+ 	}
+@@ -423,11 +474,11 @@ struct inode *fuse_iget(struct super_block *sb, u64 nodeid,
+ 		iput(inode);
+ 		goto retry;
+ 	}
+-done:
+ 	fi = get_fuse_inode(inode);
+ 	spin_lock(&fi->lock);
+ 	fi->nlookup++;
+ 	spin_unlock(&fi->lock);
++done:
+ 	fuse_change_attributes(inode, attr, NULL, attr_valid, attr_version);
+ 
+ 	return inode;
+@@ -1465,6 +1516,8 @@ static int fuse_fill_super_submount(struct super_block *sb,
+ 	struct super_block *parent_sb = parent_fi->inode.i_sb;
+ 	struct fuse_attr root_attr;
+ 	struct inode *root;
++	struct fuse_submount_lookup *sl;
++	struct fuse_inode *fi;
+ 
+ 	fuse_sb_defaults(sb);
+ 	fm->sb = sb;
+@@ -1487,12 +1540,27 @@ static int fuse_fill_super_submount(struct super_block *sb,
+ 	 * its nlookup should not be incremented.  fuse_iget() does
+ 	 * that, though, so undo it here.
+ 	 */
+-	get_fuse_inode(root)->nlookup--;
++	fi = get_fuse_inode(root);
++	fi->nlookup--;
++
+ 	sb->s_d_op = &fuse_dentry_operations;
+ 	sb->s_root = d_make_root(root);
+ 	if (!sb->s_root)
+ 		return -ENOMEM;
+ 
++	/*
++	 * Grab the parent's submount_lookup pointer and take a
++	 * reference on the shared nlookup from the parent.  This is to
++	 * prevent the last forget for this nodeid from getting
++	 * triggered until all users have finished with it.
++	 */
++	sl = parent_fi->submount_lookup;
++	WARN_ON(!sl);
++	if (sl) {
++		refcount_inc(&sl->count);
++		fi->submount_lookup = sl;
++	}
++
+ 	return 0;
+ }
+ 
+-- 
+2.25.1
+
