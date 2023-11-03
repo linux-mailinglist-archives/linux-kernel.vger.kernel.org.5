@@ -2,60 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A92EA7DFEFD
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 07:00:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C4997DFEFE
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 07:01:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230164AbjKCGAP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 02:00:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54500 "EHLO
+        id S230257AbjKCGBs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 02:01:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230257AbjKCGAM (ORCPT
+        with ESMTP id S229727AbjKCGBq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 02:00:12 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C9D01B4
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 23:00:03 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-9d2e6c8b542so242521066b.0
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 23:00:03 -0700 (PDT)
+        Fri, 3 Nov 2023 02:01:46 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21F8A1BD
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 23:01:39 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-53dd752685fso2825242a12.3
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 23:01:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698991202; x=1699596002; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1698991297; x=1699596097; darn=vger.kernel.org;
         h=content-disposition:mime-version:message-id:subject:cc:to:from:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=ZxDSdMzVCpjHsvR+qZrln4myCmxkfc2LuMbC+pvU/84=;
-        b=ZPME3n6RnkaqT4H76e+wnFZhYT1NE0Uueug2maXIyjCp9bU0B8kvLeBD/wVq/GDXcC
-         fTPpsnXyEoSrqnKhJPYJBjiuBXbMLW+2rMbt14p8WzI7Mf0IYcYSK10+zzmmE6QRtgTk
-         Rxxlh93oaCp1piuWVhrMODwSHLNlH/eG3H7YRQwEhXYa5eIMps6h5HQwDZ+1zEzgf489
-         nZJvQA/IhhbpIwRYxevl1RK8j3EY0cSlrMmkFH8CIZ9b7hA7TPCnlzLlcWFF5oP8s8pp
-         hSRMWGiFZjW2k7b9n6jXTRhguQx2TKk1T0ssQjhpYK01bQ/S0YU6WqkauMC6gYiRCq+K
-         6IVA==
+        bh=ukb8C5mDZsObaz53quLRVItiO2EF/GZE516uqejG/ko=;
+        b=Uq5X9lDDg11NNxXl17Y3k1jv8//M4ed08HADWK+b9BD+z3hve1KgAtMpCkIEcwUYZa
+         /iTWijZBcq5gznKDa4ORjoOXVHyx3Wdnwuk/gPhNXZUS9hIpvFX0qkkvZ7lgU1GBnt0g
+         lOPtYflLXojV31Zd2XDEjdjJMk5RfSKjuVWqEWVonMgol5KTSC4wa9aks0xq6egxe/JV
+         iY1Qw5UHke4hJlsqv1niFDpXIss9/9l8jaLOCwYLoSPrScbgktMQ9pyJ1pzMFbWorkEc
+         c9vfKsRFfq5nHg0aXnOQVwMabj15t5yzS7RCTadMl7Yo60eAN4vtzjfWJj/lRPoiNfw6
+         vhfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698991202; x=1699596002;
+        d=1e100.net; s=20230601; t=1698991297; x=1699596097;
         h=content-disposition:mime-version:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZxDSdMzVCpjHsvR+qZrln4myCmxkfc2LuMbC+pvU/84=;
-        b=rK9taVxo1XXp2U2Q63lYvyQ67DWQP+ZBCJZ5U54acX43WKZl1JeZZ3mF6Hw1j7zMad
-         og823HIoPzpoKU5SCNdQFHWxF2iMPjSFrmCql6XPnTij1F3vyRIL99a3OIrua7796Gki
-         62xr9DUJK7epkFFXHH14MuZaPMuI+bpTNrRsCfd+9p1qbZm97s94cUoEfknNGH/E+9CN
-         iFLirKysuHK12L9EroQDfiPGKqL3IxPCPv6xbS1/8QFI/sd/u75o5U3lG09zf6CwoAv7
-         gTkW4Plndpxrcu1NXauZdm5w5bFIQ0diooybfhnXv6albSaTI//oZZqBbPus9F+3bNVU
-         SMOw==
-X-Gm-Message-State: AOJu0YypW5YCZ7d1KvdcbKTnnGIxQAlaXqaf6GZGVg4obsxW/sx1o7xu
-        KFFr9dUlVIksBYyNCm/JK7Lp/x/WzkJT6lYaIwU=
-X-Google-Smtp-Source: AGHT+IETB8T1GhUXYuMPcptvFaualbInBCIx8AiSdFPyi1Gp2XP3C8B1h6EpdqwUNTo2KtbGkxL/uA==
-X-Received: by 2002:a17:906:478b:b0:9c7:4e5d:12bc with SMTP id cw11-20020a170906478b00b009c74e5d12bcmr6141917ejc.51.1698991201698;
-        Thu, 02 Nov 2023 23:00:01 -0700 (PDT)
+        bh=ukb8C5mDZsObaz53quLRVItiO2EF/GZE516uqejG/ko=;
+        b=D+zRwY96g5+FeGLXgofnLW8Nv3kK//k3ULZaxw26z8BqEPHwVhJs8VprXedpTv168+
+         +MK/HkWD8kkXP4jBOu7ChE1m8YNaXy2bbFjqot2TyLTnDbr0IUd3BwC5XnLZPH84Cstl
+         SkEmqOpBC01RFlo/q3yX0PbMvywjQOxOFOrNAIFr82LrXJ62CQSpTQtv6o9+gVeRAOom
+         XG/XvqFebLtAaLb6F/4CZ1+RyMUKUXCPDYd1I/4XcdJNKIjgR5nlN6DcOLV/+zc3aI4B
+         MiB97dsDJlGs5zq4NUy8vt5CCzuuLqXWfD1y0oEzPdOBLPyBNJi6+voftVlKqpAQZ/zF
+         Tuow==
+X-Gm-Message-State: AOJu0Yz67E59cZdYTcXMKodFR31helIxC7fN86YrTq8npfdcW5QcmgEa
+        MfTQUGgYHcoGrYW/widO2iAOPg==
+X-Google-Smtp-Source: AGHT+IG/ottftTOCLDvRabQSmO51TPU5plBCAZTFoa9mzIMz0bWPwX8u081urBBrSA0HCRk5BA8v3g==
+X-Received: by 2002:aa7:c90f:0:b0:53e:34c5:fc14 with SMTP id b15-20020aa7c90f000000b0053e34c5fc14mr16474627edt.23.1698991297468;
+        Thu, 02 Nov 2023 23:01:37 -0700 (PDT)
 Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id t9-20020a1709060c4900b00997c1d125fasm507494ejf.170.2023.11.02.23.00.00
+        by smtp.gmail.com with ESMTPSA id i14-20020aa7c9ce000000b0053fa13e27dcsm563137edt.48.2023.11.02.23.01.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Nov 2023 23:00:01 -0700 (PDT)
-Date:   Fri, 3 Nov 2023 08:59:58 +0300
+        Thu, 02 Nov 2023 23:01:37 -0700 (PDT)
+Date:   Fri, 3 Nov 2023 09:01:34 +0300
 From:   Dan Carpenter <dan.carpenter@linaro.org>
-To:     oe-kbuild@lists.linux.dev, Kent Overstreet <kmo@daterainc.com>
+To:     oe-kbuild@lists.linux.dev,
+        Mika Westerberg <mika.westerberg@linux.intel.com>
 Cc:     lkp@intel.com, oe-kbuild-all@lists.linux.dev,
         linux-kernel@vger.kernel.org
-Subject: fs/bcachefs/chardev.c:391 bch2_ioctl_fs_usage() warn: check for
- integer overflow 'replica_entries_bytes'
-Message-ID: <84d54213-e093-4c6e-a126-4df1253ca73d@kadam.mountain>
+Subject: drivers/thunderbolt/tmu.c:617 tb_switch_tmu_change_mode() warn:
+ missing unwind goto?
+Message-ID: <9a426df0-2ad2-48e7-aa6a-21e5c40ec839@kadam.mountain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -69,67 +70,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Mika,
+
+FYI, the error/warning was bisected to this commit, please ignore it if it's irrelevant.
+
 tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
 head:   4652b8e4f3ffa48c706ec334f048c217a7d9750d
-commit: 22502ac23a2eaa3714b77d4a9242df352a9cd0c0 bcachefs: Redo filesystem usage ioctls
-config: x86_64-randconfig-161-20231102 (https://download.01.org/0day-ci/archive/20231103/202311030618.5bKFt0YI-lkp@intel.com/config)
+commit: c437dcb18310f296eb9db58a361f309f7817014d thunderbolt: Fix a couple of style issues in TMU code
+config: i386-randconfig-141-20231102 (https://download.01.org/0day-ci/archive/20231103/202311030814.AXtCk7PO-lkp@intel.com/config)
 compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
-reproduce: (https://download.01.org/0day-ci/archive/20231103/202311030618.5bKFt0YI-lkp@intel.com/reproduce)
+reproduce: (https://download.01.org/0day-ci/archive/20231103/202311030814.AXtCk7PO-lkp@intel.com/reproduce)
 
 If you fix the issue in a separate patch/commit (i.e. not just a new version of
 the same patch/commit), kindly add following tags
 | Reported-by: kernel test robot <lkp@intel.com>
 | Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-| Closes: https://lore.kernel.org/r/202311030618.5bKFt0YI-lkp@intel.com/
+| Closes: https://lore.kernel.org/r/202311030814.AXtCk7PO-lkp@intel.com/
 
-New smatch warnings:
-fs/bcachefs/chardev.c:391 bch2_ioctl_fs_usage() warn: check for integer overflow 'replica_entries_bytes'
+smatch warnings:
+drivers/thunderbolt/tmu.c:617 tb_switch_tmu_change_mode() warn: missing unwind goto?
 
-Old smatch warnings:
-fs/bcachefs/chardev.c:444 bch2_ioctl_fs_usage() warn: maybe return -EFAULT instead of the bytes remaining?
-fs/bcachefs/chardev.c:524 bch2_ioctl_read_super() warn: maybe return -EFAULT instead of the bytes remaining?
+vim +617 drivers/thunderbolt/tmu.c
 
-vim +/replica_entries_bytes +391 fs/bcachefs/chardev.c
+c437dcb18310f2 Mika Westerberg 2022-10-07  596  static int tb_switch_tmu_change_mode(struct tb_switch *sw)
+b017a46d486cd4 Gil Fine        2022-05-26  597  {
+b017a46d486cd4 Gil Fine        2022-05-26  598  	struct tb_port *up, *down;
+b017a46d486cd4 Gil Fine        2022-05-26  599  	int ret;
+b017a46d486cd4 Gil Fine        2022-05-26  600  
+b017a46d486cd4 Gil Fine        2022-05-26  601  	up = tb_upstream_port(sw);
+7ce542219b6323 Gil Fine        2022-09-23  602  	down = tb_switch_downstream_port(sw);
+b017a46d486cd4 Gil Fine        2022-05-26  603  	ret = tb_port_tmu_set_unidirectional(down, sw->tmu.unidirectional_request);
+b017a46d486cd4 Gil Fine        2022-05-26  604  	if (ret)
+b017a46d486cd4 Gil Fine        2022-05-26  605  		goto out;
+b017a46d486cd4 Gil Fine        2022-05-26  606  
+b017a46d486cd4 Gil Fine        2022-05-26  607  	if (sw->tmu.unidirectional_request)
+7ce542219b6323 Gil Fine        2022-09-23  608  		ret = tb_switch_tmu_rate_write(tb_switch_parent(sw),
+7ce542219b6323 Gil Fine        2022-09-23  609  					       sw->tmu.rate_request);
+b017a46d486cd4 Gil Fine        2022-05-26  610  	else
+b017a46d486cd4 Gil Fine        2022-05-26  611  		ret = tb_switch_tmu_rate_write(sw, sw->tmu.rate_request);
+b017a46d486cd4 Gil Fine        2022-05-26  612  	if (ret)
+b017a46d486cd4 Gil Fine        2022-05-26  613  		return ret;
 
-22502ac23a2eaa Kent Overstreet 2019-12-16  375  static long bch2_ioctl_fs_usage(struct bch_fs *c,
-22502ac23a2eaa Kent Overstreet 2019-12-16  376  				struct bch_ioctl_fs_usage __user *user_arg)
-1c6fdbd8f2465d Kent Overstreet 2017-03-16  377  {
-22502ac23a2eaa Kent Overstreet 2019-12-16  378  	struct bch_ioctl_fs_usage *arg = NULL;
-22502ac23a2eaa Kent Overstreet 2019-12-16  379  	struct bch_replicas_usage *dst_e, *dst_end;
-22502ac23a2eaa Kent Overstreet 2019-12-16  380  	struct bch_fs_usage_online *src;
-22502ac23a2eaa Kent Overstreet 2019-12-16  381  	u32 replica_entries_bytes;
-22502ac23a2eaa Kent Overstreet 2019-12-16  382  	unsigned i;
-22502ac23a2eaa Kent Overstreet 2019-12-16  383  	int ret = 0;
-1c6fdbd8f2465d Kent Overstreet 2017-03-16  384  
-1c6fdbd8f2465d Kent Overstreet 2017-03-16  385  	if (!test_bit(BCH_FS_STARTED, &c->flags))
-1c6fdbd8f2465d Kent Overstreet 2017-03-16  386  		return -EINVAL;
-1c6fdbd8f2465d Kent Overstreet 2017-03-16  387  
-22502ac23a2eaa Kent Overstreet 2019-12-16  388  	if (get_user(replica_entries_bytes, &user_arg->replica_entries_bytes))
+These error paths should be goto out;
 
-This comes from the user.
+b017a46d486cd4 Gil Fine        2022-05-26  614  
+b017a46d486cd4 Gil Fine        2022-05-26  615  	ret = tb_switch_set_tmu_mode_params(sw, sw->tmu.rate_request);
+b017a46d486cd4 Gil Fine        2022-05-26  616  	if (ret)
+b017a46d486cd4 Gil Fine        2022-05-26 @617  		return ret;
 
-1c6fdbd8f2465d Kent Overstreet 2017-03-16  389  		return -EFAULT;
-1c6fdbd8f2465d Kent Overstreet 2017-03-16  390  
-22502ac23a2eaa Kent Overstreet 2019-12-16 @391  	arg = kzalloc(sizeof(*arg) + replica_entries_bytes, GFP_KERNEL);
+Same.  (I guess before goto out was a do-nothing goto so it didn't
+matter).
 
-This can lead to an integer overflow on 32 bit systems.
-
-This API is a bit problematice because we don't ensure that sizeof()
-bytes is divisible by sizeof(struct bch_replicas_usage).  Use
-struct_size() or size_add() to fix the integer overflow.
-
-22502ac23a2eaa Kent Overstreet 2019-12-16  392  	if (!arg)
-22502ac23a2eaa Kent Overstreet 2019-12-16  393  		return -ENOMEM;
-1c6fdbd8f2465d Kent Overstreet 2017-03-16  394  
-22502ac23a2eaa Kent Overstreet 2019-12-16  395  	src = bch2_fs_usage_read(c);
-22502ac23a2eaa Kent Overstreet 2019-12-16  396  	if (!src) {
-22502ac23a2eaa Kent Overstreet 2019-12-16  397  		ret = -ENOMEM;
-22502ac23a2eaa Kent Overstreet 2019-12-16  398  		goto err;
-1c6fdbd8f2465d Kent Overstreet 2017-03-16  399  	}
-1c6fdbd8f2465d Kent Overstreet 2017-03-16  400  
-22502ac23a2eaa Kent Overstreet 2019-12-16  401  	arg->capacity		= c->capacity;
-22502ac23a2eaa Kent Overstreet 2019-12-16  402  	arg->used		= bch2_fs_sectors_used(c, src);
-22502ac23a2eaa Kent Overstreet 2019-12-16  403  	arg->online_reserved	= src->online_reserved;
+b017a46d486cd4 Gil Fine        2022-05-26  618  
+b017a46d486cd4 Gil Fine        2022-05-26  619  	ret = tb_port_tmu_set_unidirectional(up, sw->tmu.unidirectional_request);
+b017a46d486cd4 Gil Fine        2022-05-26  620  	if (ret)
+b017a46d486cd4 Gil Fine        2022-05-26  621  		goto out;
+b017a46d486cd4 Gil Fine        2022-05-26  622  
+b017a46d486cd4 Gil Fine        2022-05-26  623  	ret = tb_port_tmu_time_sync_enable(down);
+b017a46d486cd4 Gil Fine        2022-05-26  624  	if (ret)
+b017a46d486cd4 Gil Fine        2022-05-26  625  		goto out;
+b017a46d486cd4 Gil Fine        2022-05-26  626  
+b017a46d486cd4 Gil Fine        2022-05-26  627  	ret = tb_port_tmu_time_sync_enable(up);
+b017a46d486cd4 Gil Fine        2022-05-26  628  	if (ret)
+b017a46d486cd4 Gil Fine        2022-05-26  629  		goto out;
+b017a46d486cd4 Gil Fine        2022-05-26  630  
+b017a46d486cd4 Gil Fine        2022-05-26  631  	return 0;
+b017a46d486cd4 Gil Fine        2022-05-26  632  
+b017a46d486cd4 Gil Fine        2022-05-26  633  out:
+c437dcb18310f2 Mika Westerberg 2022-10-07  634  	tb_switch_tmu_change_mode_prev(sw);
+b017a46d486cd4 Gil Fine        2022-05-26  635  	return ret;
+b017a46d486cd4 Gil Fine        2022-05-26  636  }
 
 -- 
 0-DAY CI Kernel Test Service
