@@ -2,59 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 12B8B7E00A8
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 11:30:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34EEE7E009D
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 11:30:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234753AbjKCIp7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 04:45:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56518 "EHLO
+        id S234918AbjKCIqj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 04:46:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230019AbjKCIp5 (ORCPT
+        with ESMTP id S230019AbjKCIqh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 04:45:57 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E671D43
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 01:45:51 -0700 (PDT)
-Received: from [100.117.177.39] (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: shreeya)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 036C066073C9;
-        Fri,  3 Nov 2023 08:45:45 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1699001150;
-        bh=dMSSp0WNJccGaiWHXlt7QxZVa6x1rQi1UFIAFAGqrDA=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=RF0gGn4F9OL2gI+0q9ydnHjGCw+C+oeptdjgXkCaVuNfb8ZN8Q6WLIvBEK0wgQOQg
-         LSeM4NY1T4sv42Jy/zkXaD8bUybBwwZGo6/EcJ7sAJKFMjxzkOHBvwMXx7K78CsVZv
-         E37Orrcnz8d3b61ROtbiSMpkibnRhSMwltN2W2VeD9fqBbg5VSfwHlkL1UWDkSYFle
-         AYz+afWyUZj45vxePhe2aSEwLQLyzRQ+IgBVWPI+Dl83/TyQtyvunpunMNARoo/sQ0
-         nhBaAzQe/dLv1eVpwP68JKKGv0rlDdJ0TdUCPjd5Nr9pvp5qx/L4yvT+jKz9AyJAMB
-         bTko/Ts/Uickg==
-Message-ID: <6eee0469-2536-4130-5b96-734dc8e96728@collabora.com>
-Date:   Fri, 3 Nov 2023 14:15:32 +0530
+        Fri, 3 Nov 2023 04:46:37 -0400
+Received: from mail-oa1-x36.google.com (mail-oa1-x36.google.com [IPv6:2001:4860:4864:20::36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E3ECD43;
+        Fri,  3 Nov 2023 01:46:31 -0700 (PDT)
+Received: by mail-oa1-x36.google.com with SMTP id 586e51a60fabf-1eb7a8e9dd0so1095030fac.3;
+        Fri, 03 Nov 2023 01:46:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699001190; x=1699605990; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=mVywe0D/U3C5N1dPQibx8KoiHM6ZJRIDGPFvHnYX9lg=;
+        b=DhBAWwfm5Gb3ffnfJ5j6UTwPKxkNHf+VtKuBnpauiMtP5/azQDmeov53Fc5n7OcKu3
+         0xCmTPmp3725qCFF/baDH/xKxoTYiCJi3tdz+z3ua+s8eZlHaaUtSpubGqKWWCsTx5S9
+         g6tHIMi2WlqXcQER91dl6A4eydYDtmj5/4xU3fS7/4hGeoofUSFXgW0GpCSxamhbSa1T
+         WDPmMKIbPBpvw7X/mnGok4GDjiUX1UQGNdjWsF3E09GFlflxb2Xl352f+nqbym9m681f
+         sDiYCBg0Z+Ven2pbiMYgdR1SXuT4KMSZBqr1LozhiOpN4bT+rxZfmhz0p+ILriQ1bxdZ
+         9etA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699001190; x=1699605990;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mVywe0D/U3C5N1dPQibx8KoiHM6ZJRIDGPFvHnYX9lg=;
+        b=wcdMix5oOTcsb5nvw2TxA5AtyygcKb0tR6SAZXYlKfrqwPCnAnm2l14DP4X4wmPaYa
+         HV8xeXhTa3c1L97SGEA9HwZJxRr1Y+LJXP8aN2v1TBsHh+kA2pjnaUO7Jz0UcGXuNFvf
+         dNsNDSwD7Q68XI3xZGbnHf78H4IT5bvh/S+2BYP2sqaFBeXpHpN0Uuw+VFZ7wfWzU0Qq
+         UkQq+5EU4qQlt+YK3tbiL655OEdyEu3bJWF9lG7/8NodpGoSVKkP7D8MX2Z4j1S2bGik
+         sBetbbLGlauODKjcn8mGDTndm8doDua5BBiIUyLlZs7dV9fThIjiONER1f0mf0RQOFmg
+         duVg==
+X-Gm-Message-State: AOJu0YzQYrAV2pF+A3yNvJNBLZQ3AbR9tWvH/3FjxrKWl0DwzwOUViiT
+        YpIQdtpZtPhqUCeQ72GYQ20=
+X-Google-Smtp-Source: AGHT+IERRA7t6kiipduzM4sDbD9g3jrgnHi7jIHWJSoE6sMHhxpxJGtMy+DHjS/QrwyNgkq8Mg0TSw==
+X-Received: by 2002:a05:6870:b013:b0:1e9:9742:7dfd with SMTP id y19-20020a056870b01300b001e997427dfdmr23542991oae.31.1699001190331;
+        Fri, 03 Nov 2023 01:46:30 -0700 (PDT)
+Received: from debian.me ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id u4-20020a654c04000000b005a9b20408a7sm784642pgq.23.2023.11.03.01.46.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 Nov 2023 01:46:29 -0700 (PDT)
+Received: by debian.me (Postfix, from userid 1000)
+        id DA73191D73C3; Fri,  3 Nov 2023 15:46:26 +0700 (WIB)
+Date:   Fri, 3 Nov 2023 15:46:26 +0700
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+To:     Ken Moffat <zarniwhoop@ntlworld.com>,
+        Jonathan Corbet <corbet@lwn.net>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Documentation <linux-doc@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Akira Yokosawa <akiyks@gmail.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        David Vernet <void@manifault.com>,
+        Miguel Ojeda <ojeda@kernel.org>, James Seo <james@equiv.tech>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Federico Vaga <federico.vaga@vaga.pv.it>,
+        Carlos Bilbao <carlos.bilbao@amd.com>
+Subject: Re: [PATCH RFC RESEND 0/4] Documentation: Web fonts for kernel
+ documentation
+Message-ID: <ZUSzYtBpvAmM3ZRs@debian.me>
+References: <20231102123225.32768-1-bagasdotme@gmail.com>
+ <874ji48658.fsf@meer.lwn.net>
+ <ZUQ-K7MXzHZ_oyVK@llamedos.localdomain>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH] fs: udf: super.c: Fix a use-after-free issue in
- udf_finalize_lvid
-Content-Language: en-US
-To:     Jan Kara <jack@suse.cz>
-Cc:     jack@suse.com, linux-kernel@vger.kernel.org, kernel@collabora.com,
-        groeck@google.com, zsm@google.com,
-        syzbot+82df44ede2faca24c729@syzkaller.appspotmail.com
-References: <20231030202418.847494-1-shreeya.patel@collabora.com>
- <20231031113754.vwrj3pubynb6bnef@quack3>
- <30b49da5-fc1a-3a18-7eeb-d5bbb08b3e9c@collabora.com>
- <20231102110510.m4niipobiu7j3rup@quack3>
- <20231102110742.jzoee5nqmgs3kilg@quack3>
-From:   Shreeya Patel <shreeya.patel@collabora.com>
-In-Reply-To: <20231102110742.jzoee5nqmgs3kilg@quack3>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="6kmgiKCzrjAfMsus"
+Content-Disposition: inline
+In-Reply-To: <ZUQ-K7MXzHZ_oyVK@llamedos.localdomain>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -64,87 +88,129 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--6kmgiKCzrjAfMsus
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 02/11/23 16:37, Jan Kara wrote:
-> On Thu 02-11-23 12:05:10, Jan Kara wrote:
->> On Thu 02-11-23 15:34:52, Shreeya Patel wrote:
->>> On 31/10/23 17:07, Jan Kara wrote:
->>>> On Tue 31-10-23 01:54:18, Shreeya Patel wrote:
->>>>> Add some error handling cases in udf_sb_lvidiu() and redefine
->>>>> the descCRCLength in order to avoid use-after-free issue in
->>>>> udf_finalize_lvid.
->>>>>
->>>>> Following use-after-free issue was reported by syzbot :-
->>>>>
->>>>> https://syzkaller.appspot.com/bug?extid=46073c22edd7f242c028
->>>>>
->>>>> BUG: KASAN: use-after-free in crc_itu_t+0x97/0xc8 lib/crc-itu-t.c:60
->>>>> Read of size 1 at addr ffff88816fba0000 by task syz-executor.0/32133
->>>>>
->>>>> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/06/2023
->>>>> Call Trace:
->>>>> <TASK>
->>>>> __dump_stack lib/dump_stack.c:88 [inline]
->>>>> dump_stack_lvl+0x1e3/0x2cb lib/dump_stack.c:106
->>>>> print_address_description mm/kasan/report.c:284 [inline]
->>>>> print_report+0x13c/0x462 mm/kasan/report.c:395
->>>>> kasan_report+0xa9/0xd5 mm/kasan/report.c:495
->>>>> crc_itu_t+0x97/0xc8 lib/crc-itu-t.c:60
->>>>> udf_finalize_lvid+0x111/0x23b fs/udf/super.c:2022
->>>>> udf_sync_fs+0xba/0x123 fs/udf/super.c:2378
->>>>> sync_filesystem+0xe8/0x216 fs/sync.c:56
->>>>> generic_shutdown_super+0x6b/0x334 fs/super.c:474
->>>>> kill_block_super+0x79/0xd6 fs/super.c:1459
->>>>> deactivate_locked_super+0xa0/0x101 fs/super.c:332
->>>>> cleanup_mnt+0x2de/0x361 fs/namespace.c:1192
->>>>> task_work_run+0x22b/0x2d4 kernel/task_work.c:179
->>>>> resume_user_mode_work include/linux/resume_user_mode.h:49 [inline]
->>>>> exit_to_user_mode_loop+0xc4/0xd3 kernel/entry/common.c:171
->>>>> exit_to_user_mode_prepare+0xb4/0x115 kernel/entry/common.c:204
->>>>> __syscall_exit_to_user_mode_work kernel/entry/common.c:286 [inline]
->>>>> syscall_exit_to_user_mode+0xae/0x278 kernel/entry/common.c:297
->>>>> do_syscall_64+0x5d/0x93 arch/x86/entry/common.c:99
->>>>> entry_SYSCALL_64_after_hwframe+0x63/0xcd
->>>>> RIP: 0033:0x7e8195fb6e17
->>>>>
->>>>> Fixes: ebbd5e99f60a ("udf: factor out LVID finalization for reuse")
->>>>> Reported-by: syzbot+82df44ede2faca24c729@syzkaller.appspotmail.com
->>>>> Signed-off-by: Shreeya Patel <shreeya.patel@collabora.com>
->>>> Thanks for the patch but not every syzbot report is actually a bug. In this
->>>> case you can notice that udf_load_logicalvolint() is actually checking
->>>> validity of the Logical Volume Integrity Descriptor. The fact that later
->>>> udf_sb_lvidiu() call overflows the buffer size is caused by the fact that
->>>> syzbot overwrites the UDF filesystem while it is mounted and so the values
->>>> we checked are not the same as the value we later use. That is not a
->>>> problem we try to protect against (it is equivalent to corrupting memory).
->>>> I'm working on patches to so that syzbot can reasonably easily avoid
->>>> creating such invalid scenarios but so far they did not land. So I'm sorry
->>>> but I will not apply your fix.
->>> Thanks for the information and it definitely makes sense to not let
->>> syzbot create such invalid scenarios. Maybe we can add some kind of
->>> filtering in syzbot for these kind of issues in future but I wonder how
->>> to even identify these reports from syzbot which is purposely trying to
->>> do some memory corruption. It seems hard to identify them without
->>> understanding what the reproducer is doing.  Maybe this is a question for
->>> the syzbot team.
->   
-> Hit send too early ;)
->
-> I have discussed this with the syzbot team and as you noticed the problem
-> is it is very hard to detect the corruption scenario in an automated way.
-> What we plan to do (next round of patches submitted yesterday [1]) is that
-> we will not allow processes to open devices for writing when they are
-> mounted. This will effectively not allow syzbot to corrupt buffer cache of
-> a mounted filesystem and so should address these issues.
+On Fri, Nov 03, 2023 at 12:26:19AM +0000, Ken Moffat wrote:
+> On Thu, Nov 02, 2023 at 10:35:47AM -0600, Jonathan Corbet wrote:
+>=20
+> Jon, some slight nit-picking below, after comments on the stated
+> problem.
+>=20
+> > Bagas Sanjaya <bagasdotme@gmail.com> writes:
+> >=20
+> [...]
+> > >
+> > > The solution
+> > > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > >
+> > > Uniform the font choices by leveraging web fonts. Most of people read=
+ing
+> > > the kernel docs should already have modern browser that supports this
+> > > feature (e.g. Chrome/Chromium and Firefox). The fonts are downloaded
+> > > automatically when loading the page, but only if the reader don't
+> > > already have ones installed locally. Subsequent docs page loading will
+> > > use the browser cache to retrieve the fonts. If for some reasons the
+> > > fonts fail to load, the browser will fall back to fallback fonts
+> > > commonly seen on other sites.
+> >=20
+> Bagas,
+>=20
+> If loading the web font fails, you will get whichever fallback
+> fonts are enabled by fontconfig and whichever fonts you, or your
+> distro, have installed.  If those fonts are not generally adequate
+> you should complain to your distro, or install different fonts in
+> ~/.local/share/fotns and perhaps change your fonts.conf entries.
 
-Thanks for this work, it will save us some time as well :)
+I beg to differ.
 
+That's depending on font-family rule. For example, if I write it as:
 
-Regards,
-Shreeya Patel
+```
+body {
+	font-family: "Liberation Sans", Helvetica, Arial, sans-serif;
+}
+```
 
-> 								Honza
->   
-> [1] https://lore.kernel.org/all/20231101173542.23597-1-jack@suse.cz
->
+browsers will try loading the first three fonts, in order. If a font
+isn't available, they will try the next one until they can. Only then
+when all other options are exhausted, generic fallback font will kick
+in.
 
+And yes, I do copying all fonts from my Windows installation (since
+I dual-boot both it and Debian), then configure GNOME to use Segoe UI
+as UI font (as it looks nicer to me). I also drop in font substitution
+rules in `~/.config/fontconfig/conf.d` since I'm not the fan of
+(obviously non-free) S=C3=B6hne and substitute it with Inter and Source
+Code Pro.
+
+>=20
+> > So my immediate response to this is pretty uniformly negative.
+> >=20
+> > - If you don't like serif, tweaking conf.py is easy enough without
+> >   pushing it on everybody else.
+> >=20
+> > - I'm not thrilled about adding a bunch of binary font data to the
+> >   kernel, and suspect a lot of people would not feel that the bloat is
+> >   worth it.
+> >=20
+>=20
+> Jon,
+>=20
+> As I understand it the (woff) fonts would be downloaded on request
+> by the browser if this went in.  So not a bunch of binary font data
+> in the kernel, but a download from google (adding to the popularity
+> of the font) and yet more font data in the browser cache.  I don't
+> have any desire to see woff fonts referenced in the docs, just
+> nit-picking about the details.
+
+But I wasn't considering people using terminal-only browsers (like
+Lynx).
+
+>=20
+> However -
+>=20
+> > - The licensing of the fonts is not fully free.
+> >=20
+>=20
+> AFAICS, the SIL OFL allows everything except changing the font name.
+> If you have the right tools you can apparently fix things like "that
+> specific glyph looks ugly" or "you put a latin breve on a cyrillic
+> letter" (apparently they should differ) or "You mismapped this
+> codepoint to the wrong glyph". What you cannot do, if those changes
+> are not accepted by the font designer/maintainer, or if the font is
+> no-longer maintained, is fork it and provide it under the same name.
+>=20
+> You can fork, but the font name has to be changed (e.g. LinLibertine
+> -> Libertinus and then the serif forked to CommonSerif).
+>=20
+> Oh, and you cannot sell the fonts by themselves, but you can bundle
+> them with a distro or embed them.
+> https://www.tldrlegal.com/license/open-font-license-ofl-explained
+>=20
+> Question: is that not free enough, or is that site wrong ?  If not
+> free enough, is there a better licence for fonts ?
+
+Yet Debian distributes OFL fonts in its main archive...
+
+For me, for the fonts, I'd like CC-BY-SA instead.
+
+Thanks.
+
+--=20
+An old man doll... just what I always wanted! - Clara
+
+--6kmgiKCzrjAfMsus
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZUSzXwAKCRD2uYlJVVFO
+o2kSAP9OiWMN4avk4kAZdm2oGRch0M+/NeExTW/cph9LdbqHhwEA7qIWmTFHufcs
+9Mlih2xOkjGFDJfmqDPv5jeAgI6CYAw=
+=qrkE
+-----END PGP SIGNATURE-----
+
+--6kmgiKCzrjAfMsus--
