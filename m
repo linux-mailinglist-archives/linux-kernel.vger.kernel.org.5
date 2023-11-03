@@ -2,104 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B1A367E0276
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 13:01:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D35A7E0265
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 12:55:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233328AbjKCMBm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 08:01:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42068 "EHLO
+        id S1343674AbjKCLzt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 07:55:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229486AbjKCMBj (ORCPT
+        with ESMTP id S229379AbjKCLzr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 08:01:39 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 207F4D43;
-        Fri,  3 Nov 2023 05:01:37 -0700 (PDT)
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A3BoWgF001467;
-        Fri, 3 Nov 2023 12:01:04 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=tXdWCP6IvP9CCfwXmUw4Ls+/FsbFNc7XchVYpI+k12M=;
- b=fkRnU2AQOs8UXqSZ8FzeKzIT7YiBvbKlR1WP4dBqOUqFh+mAgk8gcdGJF5hRFzeCyr57
- BGre8D7yDAKHa0RQRgOJw8lYT6C79AMkUYCFuTDvV1rw/gr6fYuAAGJ+hNMM+1P+BzZi
- iYi/qwaY3r8Ba1CB4FeR2w9SuSbutR7JyYrfEu3cOTLvPmbc1cnuE7EZOmychgOgZR3s
- kyXmnYtOER5blCxPw1e7AmSPIut+olNzQRcXu5IixBDavUK76ZroJPQAW/1JaDZ5NWvW
- VQaVOUQulElI0zvOxymqIAOrIqYkOTB3/1F4dRjKWROrP2qtSWrbPKpCi9i6K+AQTSGY wA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u50bb09hf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 03 Nov 2023 12:01:02 +0000
-Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3A3BpISY003056;
-        Fri, 3 Nov 2023 12:00:47 GMT
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u50bb09a2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 03 Nov 2023 12:00:46 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3A39GltY007674;
-        Fri, 3 Nov 2023 12:00:41 GMT
-Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
-        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3u1dmp5qw5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 03 Nov 2023 12:00:41 +0000
-Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
-        by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3A3C0ci735783114
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 3 Nov 2023 12:00:38 GMT
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E9B3520043;
-        Fri,  3 Nov 2023 12:00:37 +0000 (GMT)
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A204A20040;
-        Fri,  3 Nov 2023 12:00:37 +0000 (GMT)
-Received: from p-imbrenda (unknown [9.152.224.66])
-        by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Fri,  3 Nov 2023 12:00:37 +0000 (GMT)
-Date:   Fri, 3 Nov 2023 12:55:37 +0100
-From:   Claudio Imbrenda <imbrenda@linux.ibm.com>
-To:     Philipp Stanner <pstanner@redhat.com>
-Cc:     Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, kvm@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        x86@kernel.org, Dave Airlie <airlied@redhat.com>
-Subject: Re: [PATCH 2/3] arch/s390/kvm: copy userspace-array safely
-Message-ID: <20231103125537.037bb8c5@p-imbrenda>
-In-Reply-To: <20231102181526.43279-3-pstanner@redhat.com>
-References: <20231102181526.43279-1-pstanner@redhat.com>
-        <20231102181526.43279-3-pstanner@redhat.com>
-Organization: IBM
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Fri, 3 Nov 2023 07:55:47 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 64E811A8
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 04:55:42 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D2CE42F4;
+        Fri,  3 Nov 2023 04:56:24 -0700 (PDT)
+Received: from [10.57.71.183] (unknown [10.57.71.183])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B8F6A3F703;
+        Fri,  3 Nov 2023 04:55:40 -0700 (PDT)
+Message-ID: <3d2ce7a4-44cc-49f8-ad20-b99f79e7e9f1@arm.com>
+Date:   Fri, 3 Nov 2023 11:55:39 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: dvPBF6m8S3gwk57u1Rzys3oxgSAuDOic
-X-Proofpoint-GUID: EmI6eegtLK_AUBAz3S7z00xHUhVjhFQV
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-03_12,2023-11-02_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 spamscore=0
- lowpriorityscore=0 suspectscore=0 impostorscore=0 mlxscore=0
- priorityscore=1501 bulkscore=0 mlxlogscore=999 clxscore=1011
- malwarescore=0 phishscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2310240000 definitions=main-2311030100
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH v1] mm: zswap: Store large folios without splitting
+Content-Language: en-GB
+To:     Nhat Pham <nphamcs@gmail.com>
+Cc:     Seth Jennings <sjenning@redhat.com>,
+        Dan Streetman <ddstreet@ieee.org>,
+        Vitaly Wool <vitaly.wool@konsulko.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Domenico Cerasuolo <cerasuolodomenico@gmail.com>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20231019110543.3284654-1-ryan.roberts@arm.com>
+ <CAKEwX=PfAMZ2qJtwKwJsVx3TZWxV5z2ZaU1Epk1UD=DBdMsjFA@mail.gmail.com>
+ <983c10ae-cb9a-4ae1-91ab-4112b836efb5@arm.com>
+ <CAKEwX=NN7fxgM-_LDNNjxzncmyXieJS=sjRcMkXEUsz7H7KdmQ@mail.gmail.com>
+From:   Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <CAKEwX=NN7fxgM-_LDNNjxzncmyXieJS=sjRcMkXEUsz7H7KdmQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -107,36 +52,418 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu,  2 Nov 2023 19:15:25 +0100
-Philipp Stanner <pstanner@redhat.com> wrote:
-
-> guestdbg.c utilizes memdup_user() to copy a userspace array. This,
-> currently, does not check for an overflow.
+On 02/11/2023 01:37, Nhat Pham wrote:
+> On Mon, Oct 30, 2023 at 4:57 AM Ryan Roberts <ryan.roberts@arm.com> wrote:
+>>
+>> Hi Nhat - thanks for the review!
+>>
+>>
+>> On 27/10/2023 19:49, Nhat Pham wrote:
+>>> On Thu, Oct 19, 2023 at 4:06 AM Ryan Roberts <ryan.roberts@arm.com> wrote:
+>>>>
+>>>> Previously zswap would refuse to store any folio bigger than order-0,
+>>>> and therefore all of those folios would be sent directly to the swap
+>>>> file. This is a minor inconvenience since swap can currently only
+>>>> support order-0 and PMD-sized THP, but with the pending introduction of
+>>>> "small-sized THP", and corresponding changes to swapfile to support any
+>>>> order of folio, these large folios will become more prevalent and
+>>>> without this zswap change, zswap will become unusable. Independently of
+>>>> the "small-sized THP" feature, this change makes it possible to store
+>>>> existing PMD-sized THPs in zswap.
+>>>>
+>>>> Modify zswap_store() to allow storing large folios. The function is
+>>>> split into 2 parts; zswap_store() does all the per-folio operations
+>>>> (i.e. checking there is enough space, etc). Then it calls a new helper,
+>>>> zswap_store_page(), for each page in the folio, which are stored as
+>>>> their own entries in the zswap pool. (These entries continue to be
+>>>> loaded back individually as single pages). If a store fails for any
+>>>> single page, then all previously successfully stored folio pages are
+>>>> invalidated.
+>>>>
+>>>> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+>>>> ---
+>>>> I've tested this on arm64 (m2) with zswap enabled, and running
+>>>> vm-scalability's `usemem` across multiple cores from within a
+>>>> memory-constrained memcg to force high volumes of swap. I've also run mm
+>>>> selftests and observe no regressions (although there is nothing [z]swap
+>>>> specific there) - does zswap have any specific tests I should run?
+>>>
+>>> There is a zswap kselftest in the cgroup suite:
+>>> https://lore.kernel.org/all/20230621153548.428093-1-cerasuolodomenico@gmail.com/
+>>
+>> ahh great - I'll run that against future versions.
+>>
+>>>
+>>> Regardless, I feel like this kind of change is probably better to be tested
+>>> via stress tests anyway - allocating a bunch of anon memory with a certain
+>>> pattern, making sure they're not corrupted after being zswapped out etc.
+>>
+>> Yes - that's exactly what the `usemem` test I described above is doing (and its
+>> not reporting any corruption).
 > 
-> Use the new wrapper memdup_array_user() to copy the array more safely.
-> 
-> Suggested-by: Dave Airlie <airlied@redhat.com>
-> Signed-off-by: Philipp Stanner <pstanner@redhat.com>
+> Nice, and I assume no regression (in runtime for e.g) in the usemem test
+> as well?
 
-Acked-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
+I was mainly focussing on correctness. I don't recall seeing any perf
+regression, but don't have the data to check right now. I'll post numbers with
+the next version (although I'm likely not going to have bandwidth until early
+December to pick this up again).
 
-> ---
->  arch/s390/kvm/guestdbg.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> diff --git a/arch/s390/kvm/guestdbg.c b/arch/s390/kvm/guestdbg.c
-> index 3765c4223bf9..80879fc73c90 100644
-> --- a/arch/s390/kvm/guestdbg.c
-> +++ b/arch/s390/kvm/guestdbg.c
-> @@ -213,8 +213,8 @@ int kvm_s390_import_bp_data(struct kvm_vcpu *vcpu,
->  	else if (dbg->arch.nr_hw_bp > MAX_BP_COUNT)
->  		return -EINVAL;
->  
-> -	bp_data = memdup_user(dbg->arch.hw_bp,
-> -			      sizeof(*bp_data) * dbg->arch.nr_hw_bp);
-> +	bp_data = memdup_array_user(dbg->arch.hw_bp, dbg->arch.nr_hw_bp,
-> +				    sizeof(*bp_data));
->  	if (IS_ERR(bp_data))
->  		return PTR_ERR(bp_data);
->  
+>>
+>>>
+>>>
+>>>>
+>>>> This is based on mm-stable, since mm-unstable contains a zswap patch
+>>>> known to be buggy [1]. I thought it would be best to get comments on the
+>>>> shape, then do the rebase after that patch has been fixed.
+>>>>
+>>>> For context, small-sized THP is being discussed here [2], and I'm
+>>>> working on changes to swapfile to support non-PMD-sized large folios
+>>>> here [3].
+>>>>
+>>>> [1] https://lore.kernel.org/linux-mm/21606fe5-fb9b-4d37-98ab-38c96819893b@arm.com/
+>>>> [2] https://lore.kernel.org/linux-mm/20230929114421.3761121-1-ryan.roberts@arm.com/
+>>>> [3] https://lore.kernel.org/linux-mm/20231017161302.2518826-1-ryan.roberts@arm.com/
+>>>>
+>>>> Thanks,
+>>>> Ryan
+>>>>
+>>>>
+>>>>  mm/zswap.c | 155 +++++++++++++++++++++++++++++++++--------------------
+>>>>  1 file changed, 98 insertions(+), 57 deletions(-)
+>>>>
+>>>> diff --git a/mm/zswap.c b/mm/zswap.c
+>>>> index 37d2b1cb2ecb..51cbfc4e1ef8 100644
+>>>> --- a/mm/zswap.c
+>>>> +++ b/mm/zswap.c
+>>>> @@ -1188,18 +1188,17 @@ static void zswap_fill_page(void *ptr, unsigned long value)
+>>>>         memset_l(page, value, PAGE_SIZE / sizeof(unsigned long));
+>>>>  }
+>>>>
+>>>> -bool zswap_store(struct folio *folio)
+>>>> +static bool zswap_store_page(struct folio *folio, long index,
+>>>> +                            struct obj_cgroup *objcg, struct zswap_pool *pool)
+>>>>  {
+>>>>         swp_entry_t swp = folio->swap;
+>>>>         int type = swp_type(swp);
+>>>> -       pgoff_t offset = swp_offset(swp);
+>>>> -       struct page *page = &folio->page;
+>>>> +       pgoff_t offset = swp_offset(swp) + index;
+>>>> +       struct page *page = folio_page(folio, index);
+>>>>         struct zswap_tree *tree = zswap_trees[type];
+>>>>         struct zswap_entry *entry, *dupentry;
+>>>>         struct scatterlist input, output;
+>>>>         struct crypto_acomp_ctx *acomp_ctx;
+>>>> -       struct obj_cgroup *objcg = NULL;
+>>>> -       struct zswap_pool *pool;
+>>>>         struct zpool *zpool;
+>>>>         unsigned int dlen = PAGE_SIZE;
+>>>>         unsigned long handle, value;
+>>>> @@ -1208,51 +1207,11 @@ bool zswap_store(struct folio *folio)
+>>>>         gfp_t gfp;
+>>>>         int ret;
+>>>>
+>>>> -       VM_WARN_ON_ONCE(!folio_test_locked(folio));
+>>>> -       VM_WARN_ON_ONCE(!folio_test_swapcache(folio));
+>>>> -
+>>>> -       /* Large folios aren't supported */
+>>>> -       if (folio_test_large(folio))
+>>>> -               return false;
+>>>> -
+>>>> -       if (!zswap_enabled || !tree)
+>>>> +       /* entry keeps the references if successfully stored. */
+>>>> +       if (!zswap_pool_get(pool))
+>>>>                 return false;
+>>>> -
+>>>> -       /*
+>>>> -        * If this is a duplicate, it must be removed before attempting to store
+>>>> -        * it, otherwise, if the store fails the old page won't be removed from
+>>>> -        * the tree, and it might be written back overriding the new data.
+>>>> -        */
+>>>> -       spin_lock(&tree->lock);
+>>>> -       dupentry = zswap_rb_search(&tree->rbroot, offset);
+>>>> -       if (dupentry) {
+>>>> -               zswap_duplicate_entry++;
+>>>> -               zswap_invalidate_entry(tree, dupentry);
+>>>> -       }
+>>>> -       spin_unlock(&tree->lock);
+>>>> -
+>>>> -       /*
+>>>> -        * XXX: zswap reclaim does not work with cgroups yet. Without a
+>>>> -        * cgroup-aware entry LRU, we will push out entries system-wide based on
+>>>> -        * local cgroup limits.
+>>>> -        */
+>>>> -       objcg = get_obj_cgroup_from_folio(folio);
+>>>> -       if (objcg && !obj_cgroup_may_zswap(objcg))
+>>>> -               goto reject;
+>>>> -
+>>>> -       /* reclaim space if needed */
+>>>> -       if (zswap_is_full()) {
+>>>> -               zswap_pool_limit_hit++;
+>>>> -               zswap_pool_reached_full = true;
+>>>> -               goto shrink;
+>>>> -       }
+>>>> -
+>>>> -       if (zswap_pool_reached_full) {
+>>>> -              if (!zswap_can_accept())
+>>>> -                       goto shrink;
+>>>> -               else
+>>>> -                       zswap_pool_reached_full = false;
+>>>> -       }
+>>>> +       if (objcg)
+>>>> +               obj_cgroup_get(objcg);
+>>>>
+>>>>         /* allocate entry */
+>>>>         entry = zswap_entry_cache_alloc(GFP_KERNEL);
+>>>> @@ -1260,6 +1219,8 @@ bool zswap_store(struct folio *folio)
+>>>>                 zswap_reject_kmemcache_fail++;
+>>>>                 goto reject;
+>>>>         }
+>>>> +       entry->objcg = objcg;
+>>>> +       entry->pool = pool;
+>>>>
+>>>>         if (zswap_same_filled_pages_enabled) {
+>>>>                 src = kmap_atomic(page);
+>>>> @@ -1277,11 +1238,6 @@ bool zswap_store(struct folio *folio)
+>>>>         if (!zswap_non_same_filled_pages_enabled)
+>>>>                 goto freepage;
+>>>>
+>>>> -       /* if entry is successfully added, it keeps the reference */
+>>>> -       entry->pool = zswap_pool_current_get();
+>>>> -       if (!entry->pool)
+>>>> -               goto freepage;
+>>>> -
+>>>>         /* compress */
+>>>>         acomp_ctx = raw_cpu_ptr(entry->pool->acomp_ctx);
+>>>>
+>>>> @@ -1337,7 +1293,6 @@ bool zswap_store(struct folio *folio)
+>>>>         entry->length = dlen;
+>>>>
+>>>>  insert_entry:
+>>>> -       entry->objcg = objcg;
+>>>>         if (objcg) {
+>>>>                 obj_cgroup_charge_zswap(objcg, entry->length);
+>>>>                 /* Account before objcg ref is moved to tree */
+>>>> @@ -1373,19 +1328,105 @@ bool zswap_store(struct folio *folio)
+>>>>
+>>>>  put_dstmem:
+>>>>         mutex_unlock(acomp_ctx->mutex);
+>>>> -       zswap_pool_put(entry->pool);
+>>>>  freepage:
+>>>>         zswap_entry_cache_free(entry);
+>>>>  reject:
+>>>>         if (objcg)
+>>>>                 obj_cgroup_put(objcg);
+>>>> +       zswap_pool_put(pool);
+>>>>         return false;
+>>>> +}
+>>>>
+>>>> +bool zswap_store(struct folio *folio)
+>>>> +{
+>>>> +       long nr_pages = folio_nr_pages(folio);
+>>>> +       swp_entry_t swp = folio->swap;
+>>>> +       int type = swp_type(swp);
+>>>> +       pgoff_t offset = swp_offset(swp);
+>>>> +       struct zswap_tree *tree = zswap_trees[type];
+>>>> +       struct zswap_entry *entry;
+>>>> +       struct obj_cgroup *objcg = NULL;
+>>>> +       struct zswap_pool *pool;
+>>>> +       bool ret = false;
+>>>> +       long i;
+>>>> +
+>>>> +       VM_WARN_ON_ONCE(!folio_test_locked(folio));
+>>>> +       VM_WARN_ON_ONCE(!folio_test_swapcache(folio));
+>>>> +
+>>>> +       if (!zswap_enabled || !tree)
+>>>> +               return false;
+>>>> +
+>>>> +       /*
+>>>> +        * If this is a duplicate, it must be removed before attempting to store
+>>>> +        * it, otherwise, if the store fails the old page won't be removed from
+>>>> +        * the tree, and it might be written back overriding the new data.
+>>>> +        */
+>>>> +       spin_lock(&tree->lock);
+>>>> +       for (i = 0; i < nr_pages; i++) {
+>>>> +               entry = zswap_rb_search(&tree->rbroot, offset + i);
+>>>> +               if (entry) {
+>>>> +                       zswap_duplicate_entry++;
+>>>> +                       zswap_invalidate_entry(tree, entry);
+>>>> +               }
+>>>> +       }
+>>>> +       spin_unlock(&tree->lock);
+>>>> +
+>>>> +       /*
+>>>> +        * XXX: zswap reclaim does not work with cgroups yet. Without a
+>>>> +        * cgroup-aware entry LRU, we will push out entries system-wide based on
+>>>> +        * local cgroup limits.
+>>>> +        */
+>>>> +       objcg = get_obj_cgroup_from_folio(folio);
+>>>> +       if (objcg && !obj_cgroup_may_zswap(objcg))
+>>>> +               goto put_objcg;
+>>>
+>>> Hmm would this make more sense to check these limits
+>>> at a higher order page level or at a backing page (4 KB)
+>>> level?
+>>>
+>>> What if the cgroup still has some space before the new
+>>> folio comes in, but the new folio would drive the pool size
+>>> beyond the limit? Ditto for global zswap pool limit.
+>>
+>> I did consider this, but I thought I would keep it simple for the RFC and accept
+>> that we may go over the limits by (HPAGE_PMD_NR - 1) pages. It sounds like you
+>> don't think that will be acceptable.
+> 
+> Not necessarily unacceptable - I just wanted to point out a potential
+> change in our assumption with zswap that might go unnoticed.
+> 
+> I think there should be at least some sort of documentation or
+> comments spelling this out.
+> 
+>>
+>> I see 2 options:
+>>
+>>   - move this checking logic to be per-page in zswap_store_page()
+>>   - pass a size (or nr_pages or order) to obj_cgroup_may_zswap(),
+>>     zswap_is_full() and zswap_can_accept() so they know how much we are
+>>     proposing to add and can make a correct decision.
+>>
+>> Personally I prefer the second option for efficiency.
+> 
+> Hmm if we go with the second option, how should this decision
+> be made? It's impossible to predict the post-compression size
+> of the huge page, even if we know its order.
+
+But we have a worst case size (the uncompressed size). So we could use that as a
+conservative estimate? It means we might under-utilize the quota a bit, but I
+guess that's better than going over?
+
+> 
+> I don't have a better suggestion than the first option, so if
+> anyone else has a better idea please chime in :)
+> 
+> Personally, I would not flat out NACK this patch because of this
+> limitation though, as long as it is at least spelled out somewhere.
+
+OK, that sounds like the easiest approach :). I'm happy to just add a comment
+for v2.
+
+> 
+>>
+>>>
+>>> Previously, the object size is capped by the size of
+>>> a page (since we don't accept bigger size pages into
+>>> zswap). If zswap limit is exceded, it will not be exceeded
+>>> by more than 4 KB. No big deal. But I'm not sure
+>>> this will be OK as we move to bigger and bigger
+>>> sizes for the pages...
+>>>
+>>> If we do decide to check the cgroup's zswap limit for
+>>> each backing page, I'm not sure how the reclaim logic
+>>> (which will be introduced in the cgroup-aware zswap
+>>> LRU patch) will interact with this though.
+>>
+>> Ok so this points us in the direction of my option 2 above as well?
+>>
+>>>
+>>>> +
+>>>> +       /* reclaim space if needed */
+>>>> +       if (zswap_is_full()) {
+>>>> +               zswap_pool_limit_hit++;
+>>>> +               zswap_pool_reached_full = true;
+>>>> +               goto shrink;
+>>>> +       }
+>>>> +
+>>>> +       if (zswap_pool_reached_full) {
+>>>> +               if (!zswap_can_accept())
+>>>> +                       goto shrink;
+>>>> +               else
+>>>> +                       zswap_pool_reached_full = false;
+>>>> +       }
+>>>> +
+>>>> +       pool = zswap_pool_current_get();
+>>>> +       if (!pool)
+>>>> +               goto put_objcg;
+>>>> +
+>>>> +       /*
+>>>> +        * Store each page of the folio as a separate entry. If we fail to store
+>>>> +        * a page, unwind by removing all the previous pages we stored.
+>>>> +        */
+>>>> +       for (i = 0; i < nr_pages; i++) {
+>>>> +               if (!zswap_store_page(folio, i, objcg, pool)) {
+>>>> +                       spin_lock(&tree->lock);
+>>>> +                       for (i--; i >= 0; i--) {
+>>>> +                               entry = zswap_rb_search(&tree->rbroot, offset + i);
+>>>> +                               if (entry)
+>>>> +                                       zswap_invalidate_entry(tree, entry);
+>>>> +                       }
+>>>> +                       spin_unlock(&tree->lock);
+>>>> +                       goto put_pool;
+>>>> +               }
+>>>> +       }
+>>>> +
+>>>> +       ret = true;
+>>>> +put_pool:
+>>>> +       zswap_pool_put(pool);
+>>>> +put_objcg:
+>>>> +       if (objcg)
+>>>> +               obj_cgroup_put(objcg);
+>>>> +       return ret;
+>>>>  shrink:
+>>>>         pool = zswap_pool_last_get();
+>>>>         if (pool && !queue_work(shrink_wq, &pool->shrink_work))
+>>>>                 zswap_pool_put(pool);
+>>>> -       goto reject;
+>>>> +       goto put_objcg;
+>>>>  }
+>>>>
+>>>>  bool zswap_load(struct folio *folio)
+>>>>
+>>>> base-commit: 158978945f3173b8c1a88f8c5684a629736a57ac
+>>>> --
+>>>> 2.25.1
+>>>>
+>>>>
+>>>
+>>> I don't see anything else that is obviously wrong with this.
+>>> Seems straightforward to me.
+>>>
+>>> But I'm not too super familiar with THP swapping
+>>> logic either :) So maybe someone with exposure to both
+>>> should take a look too.
+>>>
+>>> And would it make sense to introduce a gate that guard
+>>> this so that users can opt-in/opt-out of this new feature,
+>>> at least as we experiment more with it to get more
+>>> data?
+>>
+>> There is already a gate at a higher level; CONFIG_THP_SWAP. If that is not
+>> enabled, then all large folios will be split to single pages before a swap entry
+>> is even allocated.
+> 
+> Hmm is there a runtime option as well, or does it not make sense to have
+> it? But yeah, in principle I'm not against having a single knob controlling
+> this behavior for both swap and zswap (as opposed to a zswap-specific
+> knob).
+
+There is no runtime knob equivalent to CONFIG_THP_SWAP at the moment, so I guess
+that proves that it is not needed at the swap level. And I don't really see the
+benefit for explicitly disabling at the zswap level. So I would prefer to keep
+it simple and not add any new runtime knob.
+
+The closest existing knob is the runtime THP sysfs interface - if THP is
+disabled (from boot) then there are no THPs to swap. (of course if disabled
+after boot, there may still be some THPs that were created earlier).
+
+> 
+> I'll defer any further objections to this aspect to other zswap contributors
+> and maintainers :)
+>>
+>> I considered adding a separate gate for this, but given the above control, I
+>> didn't think the zswap-specific control was really neccessary. What do you think?
+>>
+>> Thanks,
+>> Ryan
+>>
+>>
 
