@@ -2,106 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E35157E012F
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 11:31:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E36F17E00CC
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 11:30:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376419AbjKCKQA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 06:16:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46686 "EHLO
+        id S1376431AbjKCKRz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 06:17:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347822AbjKCKP5 (ORCPT
+        with ESMTP id S1347710AbjKCKRx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 06:15:57 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38B86D44
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 03:15:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699006551; x=1730542551;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=TZUUIiytq6t8tRTC62HdL1HiQAGC5RLMZxKJbE8EqJU=;
-  b=aDM5UI2D/VNYxhkKab/yqIu0DgJ7m2sP3vzk1qdcpZfrpOFHTylGG0OT
-   NfEnhfZYVQK6aGhKv8CIwxYkMu4r2UACEmLE0RjY2V7pipTW3BtqBDbT8
-   4lXoEOHNMXN1OhqVgwdd829mkwmbi2l0NwAVUVIXjCQQMPOUqnYtYKRHh
-   9N3wNERs3uv0dEvbonUmUgJNoM1eAPzpTV13RLv6tAIc/7iRZRQeBzgpj
-   8xosuOfBE8YJwvQghllBICLJJ1NGDcJ3wUzN/AJ6gs4JsCVFskFHfjXS4
-   YxVP+myBzLMbps0RRU7kNsaZP4x5Opq9d1FJnDAbveSISWWiYHORCycJb
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10882"; a="10454057"
-X-IronPort-AV: E=Sophos;i="6.03,273,1694761200"; 
-   d="scan'208";a="10454057"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2023 03:15:51 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10882"; a="1093027148"
-X-IronPort-AV: E=Sophos;i="6.03,273,1694761200"; 
-   d="scan'208";a="1093027148"
-Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by fmsmga005.fm.intel.com with ESMTP; 03 Nov 2023 03:15:49 -0700
-Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qyrDP-0002RY-0Q;
-        Fri, 03 Nov 2023 10:15:47 +0000
-Date:   Fri, 3 Nov 2023 18:14:53 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Dave Marchevsky <davemarchevsky@fb.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>
-Subject: arch/arm64/include/asm/cmpxchg.h:171:1: sparse: sparse: cast
- truncates bits from constant value (dead00000000eb9f becomes 9f)
-Message-ID: <202311031857.EQ4KMqNb-lkp@intel.com>
+        Fri, 3 Nov 2023 06:17:53 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10F12BD;
+        Fri,  3 Nov 2023 03:17:51 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id 98e67ed59e1d1-27d0e3d823fso1689732a91.1;
+        Fri, 03 Nov 2023 03:17:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699006670; x=1699611470; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MhxTJQGMh8ltKKPnPVtqpBjXF5p/wr+ULWRQ+shWLIs=;
+        b=lt5HKvyQj6tb1dLamowGMDbzs+Pzo13FDT4fHgNs0kGdM9P+c3G+q43PuyCs+H1364
+         QnzkCN3IbRj7Zdv0xpNwNSixv6WzUX1wKv9X0+uOCoGWtySAlYdwdbhtwXBCl57NZMb9
+         Irr9N2d0AGkfzFI7sOQFD2zZWAOxpyrcZfFSPyqETyEz+n/WfTlnI1WqSqh494q6RQUx
+         5qLxKUD2if6mLV3FtV1T+qYZ2dk+7ypT000lIe9+XA545hsyjYI8G3asRiHjYviMB/LL
+         cfoJyHPVHYzg/aabpAb8TmIQl23CeCukTL3y7zME/8MtFh290ySvad6j4l8DJDXollUt
+         KtOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699006670; x=1699611470;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=MhxTJQGMh8ltKKPnPVtqpBjXF5p/wr+ULWRQ+shWLIs=;
+        b=BgNwao285TxlRraB440DtxkLmbOl1yFdJaMgg4Hj9osE8uudZYD0vINUg/8UNmHheQ
+         Rywq1QIoPNta+miT2ajbPg6tpVZLkuFk32yZoPXaPtlQWJ+Lnj4W6r84/pixw2cOlVsz
+         85YRVK9xGa9fGArrlKIW4Ta0aB4lgyHJsnbKDy2+KzMRhsU5+SRYvRJ33v5Yrb2TCs/j
+         TdOsxfMyWFFKnli6O05KH4rrT6Sjtf3Dvu8XvwB8dx1r1xNAKbMpO2Btb7DsVVry1FWC
+         j/OVtNyUgG3ZNLcCTLK6Mba551HoLluKyMZV4FRS6MrCqc0VXrtNRqXrOT9qLPx+aMUw
+         wP+Q==
+X-Gm-Message-State: AOJu0YxwUBbV1iQQQDWdQVe83TXM+1cL4HMCes29jBYnh08Q5lhipcYm
+        IDocexVWTaBxzrzuzmOPvH7e7Sw6c4Eb++LYv+k=
+X-Google-Smtp-Source: AGHT+IF4Y6zyjw+lVjE6TYLYP5fZ9dRGR/tj0oc+OyQfakp3GSURHGqozYGj/Ftl8MK9cqcBG2P8vlBeMCLvp4joVSo=
+X-Received: by 2002:a17:90a:bf07:b0:27d:1df4:26f3 with SMTP id
+ c7-20020a17090abf0700b0027d1df426f3mr17225360pjs.15.1699006669939; Fri, 03
+ Nov 2023 03:17:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20231103095549.490744-1-lizhijian@fujitsu.com>
+In-Reply-To: <20231103095549.490744-1-lizhijian@fujitsu.com>
+From:   Greg Sword <gregsword0@gmail.com>
+Date:   Fri, 3 Nov 2023 18:17:39 +0800
+Message-ID: <CAEz=LcvrztPxSZj5uiaDe-mdC0qD4km07d8aFuVPOb5dgnHNug@mail.gmail.com>
+Subject: Re: [PATCH RFC V2 0/6] rxe_map_mr_sg() fix cleanup and refactor
+To:     Li Zhijian <lizhijian@fujitsu.com>
+Cc:     zyjzyj2000@gmail.com, jgg@ziepe.ca, leon@kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        rpearsonhpe@gmail.com, matsuda-daisuke@fujitsu.com,
+        bvanassche@acm.org, yi.zhang@redhat.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   8f6f76a6a29f36d2f3e4510d0bde5046672f6924
-commit: c3c510ce431cd99fa10dcd50d995c8e89330ee5b bpf: Add 'owner' field to bpf_{list,rb}_node
-date:   4 months ago
-config: arm64-randconfig-r122-20231102 (https://download.01.org/0day-ci/archive/20231103/202311031857.EQ4KMqNb-lkp@intel.com/config)
-compiler: aarch64-linux-gcc (GCC) 13.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20231103/202311031857.EQ4KMqNb-lkp@intel.com/reproduce)
+On Fri, Nov 3, 2023 at 5:58=E2=80=AFPM Li Zhijian <lizhijian@fujitsu.com> w=
+rote:
+>
+> I don't collect the Reviewed-by to the patch1-2 this time, since i
+> think we can make it better.
+>
+> Patch1-2: Fix kernel panic[1] and benifit to make srp work again.
+>           Almost nothing change from V1.
+> Patch3-5: cleanups # newly add
+> Patch6: make RXE support PAGE_SIZE aligned mr # newly add, but not fully =
+tested
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311031857.EQ4KMqNb-lkp@intel.com/
+Do some work. Do not use these rubbish patch to waste our time.
 
-sparse warnings: (new ones prefixed by >>)
-   kernel/bpf/helpers.c: note: in included file (through arch/arm64/include/asm/atomic.h, include/linux/atomic.h, include/asm-generic/bitops/atomic.h, ...):
->> arch/arm64/include/asm/cmpxchg.h:171:1: sparse: sparse: cast truncates bits from constant value (dead00000000eb9f becomes 9f)
->> arch/arm64/include/asm/cmpxchg.h:171:1: sparse: sparse: cast truncates bits from constant value (dead00000000eb9f becomes eb9f)
->> arch/arm64/include/asm/cmpxchg.h:171:1: sparse: sparse: cast truncates bits from constant value (dead00000000eb9f becomes eb9f)
->> arch/arm64/include/asm/cmpxchg.h:171:1: sparse: sparse: cast truncates bits from constant value (dead00000000eb9f becomes 9f)
->> arch/arm64/include/asm/cmpxchg.h:171:1: sparse: sparse: cast truncates bits from constant value (dead00000000eb9f becomes eb9f)
->> arch/arm64/include/asm/cmpxchg.h:171:1: sparse: sparse: cast truncates bits from constant value (dead00000000eb9f becomes eb9f)
-   kernel/bpf/helpers.c:2419:18: sparse: sparse: context imbalance in 'bpf_rcu_read_lock' - wrong count at exit
-   kernel/bpf/helpers.c:2424:18: sparse: sparse: context imbalance in 'bpf_rcu_read_unlock' - unexpected unlock
-
-vim +171 arch/arm64/include/asm/cmpxchg.h
-
-10b663aef1c247 Catalin Marinas 2012-03-05  167  
-305d454aaa292b Will Deacon     2015-10-08  168  __CMPXCHG_GEN()
-305d454aaa292b Will Deacon     2015-10-08  169  __CMPXCHG_GEN(_acq)
-305d454aaa292b Will Deacon     2015-10-08  170  __CMPXCHG_GEN(_rel)
-305d454aaa292b Will Deacon     2015-10-08 @171  __CMPXCHG_GEN(_mb)
-10b663aef1c247 Catalin Marinas 2012-03-05  172  
-
-:::::: The code at line 171 was first introduced by commit
-:::::: 305d454aaa292be3a09a9d674e6c35f5b4249a13 arm64: atomics: implement native {relaxed, acquire, release} atomics
-
-:::::: TO: Will Deacon <will.deacon@arm.com>
-:::::: CC: Catalin Marinas <catalin.marinas@arm.com>
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+>
+> My bad arm64 mechine offten hangs when doing blktests even though i use t=
+he
+> default siw driver.
+>
+> - nvme and ULPs(rtrs, iser) always registers 4K mr still don't supported =
+yet.
+>
+> [1] https://lore.kernel.org/all/CAHj4cs9XRqE25jyVw9rj9YugffLn5+f=3D1znaBE=
+nu1usLOciD+g@mail.gmail.com/T/
+>
+> Li Zhijian (6):
+>   RDMA/rxe: RDMA/rxe: don't allow registering !PAGE_SIZE mr
+>   RDMA/rxe: set RXE_PAGE_SIZE_CAP to PAGE_SIZE
+>   RDMA/rxe: remove unused rxe_mr.page_shift
+>   RDMA/rxe: Use PAGE_SIZE and PAGE_SHIFT to extract address from
+>     page_list
+>   RDMA/rxe: cleanup rxe_mr.{page_size,page_shift}
+>   RDMA/rxe: Support PAGE_SIZE aligned MR
+>
+>  drivers/infiniband/sw/rxe/rxe_mr.c    | 80 ++++++++++++++++-----------
+>  drivers/infiniband/sw/rxe/rxe_param.h |  2 +-
+>  drivers/infiniband/sw/rxe/rxe_verbs.h |  9 ---
+>  3 files changed, 48 insertions(+), 43 deletions(-)
+>
+> --
+> 2.41.0
+>
