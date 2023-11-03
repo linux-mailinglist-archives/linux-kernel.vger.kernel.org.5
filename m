@@ -2,80 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 391A67E07E8
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 19:04:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 458737E07EB
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 19:06:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232865AbjKCSEs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 14:04:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45002 "EHLO
+        id S233023AbjKCSGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 14:06:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232786AbjKCSEq (ORCPT
+        with ESMTP id S230197AbjKCSGa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 14:04:46 -0400
-Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8E081B9
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 11:04:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-        s=smtpout1; t=1699034677;
-        bh=Tsur74u9o1zq0A+Iyqn7Ggc+7HPlh9cHB7EQ+wrOyQI=;
-        h=From:To:Cc:Subject:Date:From;
-        b=e9F/4Ma5bgCPzBCGV2pEii7QV32OoONx3dwdsrszZWiBZd0iJQfUJrwxivbqFUKkP
-         xBTvxjPm1EZwcJdzeSYHxS146Z46j6DzucBwt6YjHjTGpApSM3/xlgBrcvtqO7BS4p
-         FYiN9yWlBcOEr7oR1frc99PQMQ7fsfa1yywLoGlG98W9cPLqSyfDC0OU75aXDZuWBO
-         kIuMUZL7n6b9/DD+HVhmOyMRrycL4vhgqSa8tf5IEKIIbTanfTIGAz13dzcd4AbB/v
-         QWuiGV9u+Pz2QRhyEMUdWBK+VYO36S0VymdZWiKsG74eiIdWzFFR9TPQIyXM3KDokZ
-         jvoa8+1gIvF2Q==
-Received: from thinkos.internal.efficios.com (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
-        by smtpout.efficios.com (Postfix) with ESMTPSA id 4SMTCn2mF4z1b5n;
-        Fri,  3 Nov 2023 14:04:37 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Rik van Riel <riel@surriel.com>
-Subject: [PATCH] rseq uapi: Remove unused header <asm/byteorder.h>
-Date:   Fri,  3 Nov 2023 14:04:53 -0400
-Message-Id: <20231103180453.81188-1-mathieu.desnoyers@efficios.com>
-X-Mailer: git-send-email 2.39.2
+        Fri, 3 Nov 2023 14:06:30 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A18FC1B9;
+        Fri,  3 Nov 2023 11:06:27 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F98BC433C8;
+        Fri,  3 Nov 2023 18:06:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699034787;
+        bh=IFDcXU62Y6AY7KAbz4GH/eO1AKs/ZOiOmheqQ7Q3C1E=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=Pt93r4Xh2Uxy0VwYyvbPFkC9AdQxRrNNB9x0zkJLXhJ5wgP8xMDOecChJde5pgwgX
+         kDQOWtHylnwOBmM0CupcRMgHwT2OcYRvLxhtmMnE9XLwZMj2VMn6WXZXEdf+rquCNc
+         RNon4t/nPnLR8sLTeXjoAmciF+0klYR+929uMqDn8rry41BmcSAEizX5wRhk39R6IZ
+         /7UqEjuVQMl8AjnoCWrjZE4jN3iQlj4A9ztngPawb13rVjw/5rx8UVPA0zZwfU6F14
+         b8DKoSmhtP6FOb0oBztarLUT1UFa1MsvtNRrWjcN8qFijWEjMm+WA+2QrW5emFJchi
+         k7RMLA0NBM8eQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id E3624CE0D1D; Fri,  3 Nov 2023 11:06:26 -0700 (PDT)
+Date:   Fri, 3 Nov 2023 11:06:26 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Z qiang <qiang.zhang1211@gmail.com>
+Cc:     frederic@kernel.org, joel@joelfernandes.org, boqun.feng@gmail.com,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rcu: Force quiescent states only for ongoing grace period
+Message-ID: <b9b3502d-4b45-4bcd-b08a-a177bba80cca@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20231101033507.21651-1-qiang.zhang1211@gmail.com>
+ <9f15280f-45a3-4e3f-832d-cea5c77eb449@paulmck-laptop>
+ <CALm+0cULD+R1EmWVRi1RZJJgD=CGb2oxxGMZojU7A9z8Wj_QVQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALm+0cULD+R1EmWVRi1RZJJgD=CGb2oxxGMZojU7A9z8Wj_QVQ@mail.gmail.com>
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-commit bfdf4e620805 ("rseq: Remove broken uapi field layout on 32-bit little endian")
-removed use of asm/byteorder.h without removing the include.
+On Fri, Nov 03, 2023 at 03:14:11PM +0800, Z qiang wrote:
+> >
+> > On Wed, Nov 01, 2023 at 11:35:07AM +0800, Zqiang wrote:
+> > > Currently, when running the rcutorture testing, if the fqs_task
+> > > kthread was created, the periodic fqs operations will be performed,
+> > > regardless of whether the grace-period is ongoing. however, if there
+> > > is no ongoing grace-period, invoke the rcu_force_quiescent_state() has
+> > > no effect, because when the new grace-period starting, will clear all
+> > > flags int rcu_state.gp_flags in rcu_gp_init(). this commit therefore add
+> > > rcu_gp_in_progress() check in rcu_force_quiescent_state(), if there is
+> > > no ongoing grace-period, return directly.
+> > >
+> > > Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
+> >
+> > Nice optimization, but one question below.
+> >
+> >                                                 Thanx, Paul
+> >
+> > > ---
+> > >  kernel/rcu/tree.c | 2 ++
+> > >  1 file changed, 2 insertions(+)
+> > >
+> > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > > index aa4c808978b8..5b4279ef66da 100644
+> > > --- a/kernel/rcu/tree.c
+> > > +++ b/kernel/rcu/tree.c
+> > > @@ -2338,6 +2338,8 @@ void rcu_force_quiescent_state(void)
+> > >       struct rcu_node *rnp;
+> > >       struct rcu_node *rnp_old = NULL;
+> > >
+> > > +     if (!rcu_gp_in_progress())
+> > > +             return;
+> >
+> > Suppose that the grace period that was in progress above ends right
+> > at this point in the code.  We will still do the useless grace
+> > forcing of quiescent states.  Which means that this code path
+> > does need to be tested.
+> >
+> > So, when you run rcutorture with this change, how often has the
+> > grace period ended before this function returns?  If that happens
+> > reasonably often, say more than once per minute or so, then this
+> > works nicely.  If not, we do need to do something to make sure
+> > that that code path gets tested.
+> >
+> > Thoughts?
+> 
+> Thanks for the suggestion, I will add some debug information to test again.
 
-Remove the now unneeded asm/byteorder.h include.
+Very good, and I look forward to seeing what you come up with!
 
-Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Reported-by: Steven Rostedt (Google) <rostedt@goodmis.org>
-Cc: Steven Rostedt (Google) <rostedt@goodmis.org>
-Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
-Cc: Rik van Riel <riel@surriel.com>
----
- include/uapi/linux/rseq.h | 1 -
- 1 file changed, 1 deletion(-)
+							Thanx, Paul
 
-diff --git a/include/uapi/linux/rseq.h b/include/uapi/linux/rseq.h
-index c233aae5eac9..2c89d421d9f4 100644
---- a/include/uapi/linux/rseq.h
-+++ b/include/uapi/linux/rseq.h
-@@ -11,7 +11,6 @@
-  */
- 
- #include <linux/types.h>
--#include <asm/byteorder.h>
- 
- enum rseq_cpu_id_state {
- 	RSEQ_CPU_ID_UNINITIALIZED		= -1,
--- 
-2.39.2
-
+> Thanks
+> Zqiang
+> 
+> >
+> > >       /* Funnel through hierarchy to reduce memory contention. */
+> > >       rnp = raw_cpu_read(rcu_data.mynode);
+> > >       for (; rnp != NULL; rnp = rnp->parent) {
+> > > --
+> > > 2.17.1
+> > >
