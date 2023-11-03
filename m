@@ -2,294 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9243E7DFF0B
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 07:10:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A395B7DFF17
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 07:22:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229929AbjKCGJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 02:09:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60982 "EHLO
+        id S231631AbjKCGQd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 02:16:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbjKCGJr (ORCPT
+        with ESMTP id S229727AbjKCGQc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 02:09:47 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6A02CCA
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 23:09:44 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 75FCB2F4;
-        Thu,  2 Nov 2023 23:10:25 -0700 (PDT)
-Received: from [10.162.41.8] (a077893.blr.arm.com [10.162.41.8])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 666153F67D;
-        Thu,  2 Nov 2023 23:09:39 -0700 (PDT)
-Message-ID: <6281f889-d665-451b-a864-e2751fce8017@arm.com>
-Date:   Fri, 3 Nov 2023 11:39:36 +0530
+        Fri, 3 Nov 2023 02:16:32 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 083ADCA
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 23:16:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698992185; x=1730528185;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=9jHkBKj9vFoE1PXdMlM0Bvfm8ZcZurSAFkjdr/YE9pY=;
+  b=K+uOzlpIU55z7DcXhQkwS4saSRrK3JxbXZJMrTkDsDq5FqTP/Vl5/2dw
+   0889vpOOCF1UwsWbtqzG3X0VwSj1yaoTO6yZw7t3V6I4YyG+j8Lpd8Oyw
+   sE9a+sqPfftwpAN+86pMmaSL36AMV5DC4pldBV1Tu5FjFSqAsIk8gTQh9
+   vWrQfMlqprYFIzd0c86q8KZtvdRgBRsIITw0iZ/j95lUPU1EM/qJnXxof
+   fdgRkf354t3WwDQUsvjN0K8IrN+qei7Pu6kjLZR2Puaep1nX0eQRjL24d
+   Q4j+u0u+XTwmls7jqxIyzSN5j3DsafU/Rgfq+Cs9PjjGiNzI0eGycrUdg
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10882"; a="419995026"
+X-IronPort-AV: E=Sophos;i="6.03,273,1694761200"; 
+   d="scan'208";a="419995026"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2023 23:16:25 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10882"; a="935012661"
+X-IronPort-AV: E=Sophos;i="6.03,273,1694761200"; 
+   d="scan'208";a="935012661"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2023 23:16:23 -0700
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     "Yasunori Gotou (Fujitsu)" <y-goto@fujitsu.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "rafael@kernel.org" <rafael@kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Zhijian Li (Fujitsu)" <lizhijian@fujitsu.com>
+Subject: Re: [PATCH RFC 3/4] mm/vmstat: rename pgdemote_* to pgdemote_dst_*
+ and add pgdemote_src_*
+In-Reply-To: <TYWPR01MB10082911F0687F0674F991F3D90A6A@TYWPR01MB10082.jpnprd01.prod.outlook.com>
+        (Yasunori Gotou's message of "Thu, 2 Nov 2023 09:45:38 +0000")
+References: <20231102025648.1285477-1-lizhijian@fujitsu.com>
+        <20231102025648.1285477-4-lizhijian@fujitsu.com>
+        <87r0l81zfd.fsf@yhuang6-desk2.ccr.corp.intel.com>
+        <fbca99e1-40c4-4ffd-a0a1-89728dd0b900@fujitsu.com>
+        <TYWPR01MB1008262A8FCBBEF0331EB16FD90A6A@TYWPR01MB10082.jpnprd01.prod.outlook.com>
+        <871qd81ttm.fsf@yhuang6-desk2.ccr.corp.intel.com>
+        <TYWPR01MB10082911F0687F0674F991F3D90A6A@TYWPR01MB10082.jpnprd01.prod.outlook.com>
+Date:   Fri, 03 Nov 2023 14:14:21 +0800
+Message-ID: <87sf5nz7lu.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] arm64/arm: arm_pmuv3: perf: Don't truncate 64-bit
- registers
-Content-Language: en-US
-To:     Ilkka Koskinen <ilkka@os.amperecomputing.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Zaid Al-Bassam <zalbassam@google.com>,
-        Reiji Watanabe <reijiw@google.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Russell King <linux@armlinux.org.uk>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20231102183012.1251410-1-ilkka@os.amperecomputing.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-In-Reply-To: <20231102183012.1251410-1-ilkka@os.amperecomputing.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=ascii
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+"Yasunori Gotou (Fujitsu)" <y-goto@fujitsu.com> writes:
+
+>> > Hello,
+>> >
+>> >> On 02/11/2023 13:45, Huang, Ying wrote:
+>> >> > Li Zhijian <lizhijian@fujitsu.com> writes:
+>> >> >
+>> >> >> pgdemote_src_*: pages demoted from this node.
+>> >> >> pgdemote_dst_*: pages demoted to this node.
+>> >> >>
+>> >> >> So that we are able to know their demotion per-node stats by checking
+>> this.
+>> >> >>
+>> >> >> In the environment, node0 and node1 are DRAM, node3 is PMEM.
+>> >> >>
+>> >> >> Global stats:
+>> >> >> $ grep -E 'demote' /proc/vmstat
+>> >> >> pgdemote_src_kswapd 130155
+>> >> >> pgdemote_src_direct 113497
+>> >> >> pgdemote_src_khugepaged 0
+>> >> >> pgdemote_dst_kswapd 130155
+>> >> >> pgdemote_dst_direct 113497
+>> >> >> pgdemote_dst_khugepaged 0
+>> >> >>
+>> >> >> Per-node stats:
+>> >> >> $ grep demote /sys/devices/system/node/node0/vmstat
+>> >> >> pgdemote_src_kswapd 68454
+>> >> >> pgdemote_src_direct 83431
+>> >> >> pgdemote_src_khugepaged 0
+>> >> >> pgdemote_dst_kswapd 0
+>> >> >> pgdemote_dst_direct 0
+>> >> >> pgdemote_dst_khugepaged 0
+>> >> >>
+>> >> >> $ grep demote /sys/devices/system/node/node1/vmstat
+>> >> >> pgdemote_src_kswapd 185834
+>> >> >> pgdemote_src_direct 30066
+>> >> >> pgdemote_src_khugepaged 0
+>> >> >> pgdemote_dst_kswapd 0
+>> >> >> pgdemote_dst_direct 0
+>> >> >> pgdemote_dst_khugepaged 0
+>> >> >>
+>> >> >> $ grep demote /sys/devices/system/node/node3/vmstat
+>> >> >> pgdemote_src_kswapd 0
+>> >> >> pgdemote_src_direct 0
+>> >> >> pgdemote_src_khugepaged 0
+>> >> >> pgdemote_dst_kswapd 254288
+>> >> >> pgdemote_dst_direct 113497
+>> >> >> pgdemote_dst_khugepaged 0
+>> >> >>
+>> >> >>  From above stats, we know node3 is the demotion destination which
+>> >> >> one the node0 and node1 will demote to.
+>> >> >
+>> >> > Why do we need these information?  Do you have some use case?
+>> >>
+>> >> I recall our customers have mentioned that they want to know how much
+>> >> the memory is demoted to the CXL memory device in a specific period.
+>> >
+>> > I'll mention about it more.
+>> >
+>> > I had a conversation with one of our customers. He expressed a desire
+>> > for more detailed profile information to analyze the behavior of
+>> > demotion (and promotion) when his workloads are executed.
+>> > If the results are not satisfactory for his workloads, he wants to
+>> > tune his servers for his workloads with these profiles.
+>> > Additionally, depending on the results, he may want to change his server
+>> configuration.
+>> > For example, he may want to buy more expensive DDR memories rather than
+>> cheaper CXL memory.
+>> >
+>> > In my impression, our customers seems to think that CXL memory is NOT as
+>> reliable as DDR memory yet.
+>> > Therefore, they want to prepare for the new world that CXL will bring,
+>> > and want to have a method for the preparation by profiling information as
+>> much as possible.
+>> >
+>> > it this enough for your question?
+>> 
+>> I want some more detailed information about how these stats are used?
+>> Why isn't per-node pgdemote_xxx counter enough?
+>
+> I rechecked the customer's original request.
+>
+> - If a memory area is demoted to a CXL memory node, he wanted to analyze how it affects performance
+>  of their workload, such as latency. He wanted to use CXL Node memory usage as basic
+>  information for the analysis.
+>
+> - If he notices that demotion occurs well on a server and CXL memories are used 85% constantly, he 
+>   may want to add DDR DRAM or select some other ways to avoid demotion.
+>   (His image is likely Swap free/used.)
+>   IIRC, demotion target is not spread to all of the CXL memory node, right? 
+>   Then, he needs to know how CXL memory is occupied by demoted memory.
+>
+> If I misunderstand something, or you have any better idea,
+> please let us know. I'll talk with him again. (It will be next week...)
 
 
-On 11/3/23 00:00, Ilkka Koskinen wrote:
-> The driver used to truncate several 64-bit registers such as PMCEID[n]
-> registers used to describe whether architectural and microarchitectural
-> events in range 0x4000-0x401f exist. Due to discarding the bits, the
-> driver made the events invisible, even if they existed.
-> 
-> Moreover, PMCCFILTR and PMCR registers have additional bits in the upper
-> 32 bits. This patch makes them available although they aren't currently
-> used. Finally, functions handling PMXEVCNTR and PMXEVTYPER registers are
-> removed as they not being used at all.
-> 
-> Fixes: df29ddf4f04b ("arm64: perf: Abstract system register accesses away")
-> Reported-by: Carl Worth <carl@os.amperecomputing.com>
+To check CXL memory usage, /proc/PID/numa_maps,
+/sys/fs/cgroup/CGROUP/memory.numa_stat, and
+/sys/devices/system/node/nodeN/meminfo can be used for process, cgroup,
+and NUMA node respectively.  Is this enough?
 
-This needs an URL for the original bug report in the following format.
+--
+Best Regards,
+Huang, Ying
 
-    Reported-by: Carl Worth <carl@os.amperecomputing.com>
-    Closes: https://lore.kernel.org/..
+>> >
+>> >>
+>> >>
+>> >> >>>   	mod_node_page_state(NODE_DATA(target_nid),
+>> >> >>> -		    PGDEMOTE_KSWAPD + reclaimer_offset(),
+>> >> nr_succeeded);
+>> >> >>> +		    PGDEMOTE_DST_KSWAPD + reclaimer_offset(),
+>> >> nr_succeeded);
+>> >>
+>> >> But if the *target_nid* is only indicate the preferred node, this
+>> >> accounting maybe not accurate.
+>> >>
 
-Otherwise, the following checkpatch warning shows up.
-
-WARNING: Reported-by: should be immediately followed by Closes: with a URL to the report
-#17: 
-Reported-by: Carl Worth <carl@os.amperecomputing.com>
-Signed-off-by: Ilkka Koskinen <ilkka@os.amperecomputing.com>
-
-> Signed-off-by: Ilkka Koskinen <ilkka@os.amperecomputing.com>
-> ---
-> 
-> v2:
-> 
->   * Took arm32 specific code from Marc Zyngier's review comment
->     * Fixed a couple of typos in the commit message
-> 
->     I have tested the patch on Arm64. However, what comes to Arm32 part, I have
->     only compared the code with Arm32 specification and cross compiled it.
-> 
->   * https://lore.kernel.org/all/20231027012243.111070-1-ilkka@os.amperecomputing.com/
-> 
-> v3:
-> 
->   * Removed read/write_pmxevcntr() and read/write_pmxevtyper() as suggested
->     by Mark Rutland
->   * Changed handling of PMCCFILTR and PMCR to 64-bit on Aarch64. Aarch32 doesn't
->     seem to use the upper 32 bits.
->     
-> 
-> Tested the patch on Arm64. Arm32 version was only built and not tested on actual
-> hardware.
-> 
-> ---
-> 
-> arch/arm/include/asm/arm_pmuv3.h   | 48 ++++++++++++++----------------
->  arch/arm64/include/asm/arm_pmuv3.h | 25 ++++------------
->  drivers/perf/arm_pmuv3.c           |  6 ++--
->  3 files changed, 31 insertions(+), 48 deletions(-)
-> 
-> diff --git a/arch/arm/include/asm/arm_pmuv3.h b/arch/arm/include/asm/arm_pmuv3.h
-> index 72529f5e2bed..a41b503b7dcd 100644
-> --- a/arch/arm/include/asm/arm_pmuv3.h
-> +++ b/arch/arm/include/asm/arm_pmuv3.h
-> @@ -23,6 +23,8 @@
->  #define PMUSERENR		__ACCESS_CP15(c9,  0, c14, 0)
->  #define PMINTENSET		__ACCESS_CP15(c9,  0, c14, 1)
->  #define PMINTENCLR		__ACCESS_CP15(c9,  0, c14, 2)
-> +#define PMCEID2			__ACCESS_CP15(c9,  0, c14, 4)
-> +#define PMCEID3			__ACCESS_CP15(c9,  0, c14, 5)
->  #define PMMIR			__ACCESS_CP15(c9,  0, c14, 6)
->  #define PMCCFILTR		__ACCESS_CP15(c14, 0, c15, 7)
->  
-> @@ -150,21 +152,6 @@ static inline u64 read_pmccntr(void)
->  	return read_sysreg(PMCCNTR);
->  }
->  
-> -static inline void write_pmxevcntr(u32 val)
-> -{
-> -	write_sysreg(val, PMXEVCNTR);
-> -}
-> -
-> -static inline u32 read_pmxevcntr(void)
-> -{
-> -	return read_sysreg(PMXEVCNTR);
-> -}
-> -
-> -static inline void write_pmxevtyper(u32 val)
-> -{
-> -	write_sysreg(val, PMXEVTYPER);
-> -}
-> -
->  static inline void write_pmcntenset(u32 val)
->  {
->  	write_sysreg(val, PMCNTENSET);
-> @@ -205,16 +192,6 @@ static inline void write_pmuserenr(u32 val)
->  	write_sysreg(val, PMUSERENR);
->  }
->  
-> -static inline u32 read_pmceid0(void)
-> -{
-> -	return read_sysreg(PMCEID0);
-> -}
-> -
-> -static inline u32 read_pmceid1(void)
-> -{
-> -	return read_sysreg(PMCEID1);
-> -}
-> -
->  static inline void kvm_set_pmu_events(u32 set, struct perf_event_attr *attr) {}
->  static inline void kvm_clr_pmu_events(u32 clr) {}
->  static inline bool kvm_pmu_counter_deferred(struct perf_event_attr *attr)
-> @@ -231,6 +208,7 @@ static inline void kvm_vcpu_pmu_resync_el0(void) {}
->  
->  /* PMU Version in DFR Register */
->  #define ARMV8_PMU_DFR_VER_NI        0
-> +#define ARMV8_PMU_DFR_VER_V3P1      0x4
->  #define ARMV8_PMU_DFR_VER_V3P4      0x5
->  #define ARMV8_PMU_DFR_VER_V3P5      0x6
->  #define ARMV8_PMU_DFR_VER_IMP_DEF   0xF
-> @@ -251,4 +229,24 @@ static inline bool is_pmuv3p5(int pmuver)
->  	return pmuver >= ARMV8_PMU_DFR_VER_V3P5;
->  }
->  
-> +static inline u64 read_pmceid0(void)
-> +{
-> +	u64 val = read_sysreg(PMCEID0);
-> +
-> +	if (read_pmuver() >= ARMV8_PMU_DFR_VER_V3P1)
-> +		val |= (u64)read_sysreg(PMCEID2) << 32;
-> +
-> +	return val;
-> +}
-> +
-> +static inline u64 read_pmceid1(void)
-> +{
-> +	u64 val = read_sysreg(PMCEID1);
-> +
-> +	if (read_pmuver() >= ARMV8_PMU_DFR_VER_V3P1)
-> +		val |= (u64)read_sysreg(PMCEID3) << 32;
-> +
-> +	return val;
-> +}
-> +
->  #endif
-> diff --git a/arch/arm64/include/asm/arm_pmuv3.h b/arch/arm64/include/asm/arm_pmuv3.h
-> index 18dc2fb3d7b7..c27404fa4418 100644
-> --- a/arch/arm64/include/asm/arm_pmuv3.h
-> +++ b/arch/arm64/include/asm/arm_pmuv3.h
-> @@ -46,12 +46,12 @@ static inline u32 read_pmuver(void)
->  			ID_AA64DFR0_EL1_PMUVer_SHIFT);
->  }
->  
-> -static inline void write_pmcr(u32 val)
-> +static inline void write_pmcr(u64 val)
->  {
->  	write_sysreg(val, pmcr_el0);
->  }
->  
-> -static inline u32 read_pmcr(void)
-> +static inline u64 read_pmcr(void)
->  {
->  	return read_sysreg(pmcr_el0);
->  }
-> @@ -71,21 +71,6 @@ static inline u64 read_pmccntr(void)
->  	return read_sysreg(pmccntr_el0);
->  }
->  
-> -static inline void write_pmxevcntr(u32 val)
-> -{
-> -	write_sysreg(val, pmxevcntr_el0);
-> -}
-> -
-> -static inline u32 read_pmxevcntr(void)
-> -{
-> -	return read_sysreg(pmxevcntr_el0);
-> -}
-> -
-> -static inline void write_pmxevtyper(u32 val)
-> -{
-> -	write_sysreg(val, pmxevtyper_el0);
-> -}
-> -
->  static inline void write_pmcntenset(u32 val)
->  {
->  	write_sysreg(val, pmcntenset_el0);
-> @@ -106,7 +91,7 @@ static inline void write_pmintenclr(u32 val)
->  	write_sysreg(val, pmintenclr_el1);
->  }
->  
-> -static inline void write_pmccfiltr(u32 val)
-> +static inline void write_pmccfiltr(u64 val)
->  {
->  	write_sysreg(val, pmccfiltr_el0);
->  }
-> @@ -126,12 +111,12 @@ static inline void write_pmuserenr(u32 val)
->  	write_sysreg(val, pmuserenr_el0);
->  }
->  
-> -static inline u32 read_pmceid0(void)
-> +static inline u64 read_pmceid0(void)
->  {
->  	return read_sysreg(pmceid0_el0);
->  }
->  
-> -static inline u32 read_pmceid1(void)
-> +static inline u64 read_pmceid1(void)
->  {
->  	return read_sysreg(pmceid1_el0);
->  }
-> diff --git a/drivers/perf/arm_pmuv3.c b/drivers/perf/arm_pmuv3.c
-> index 18b91b56af1d..6ca7be05229c 100644
-> --- a/drivers/perf/arm_pmuv3.c
-> +++ b/drivers/perf/arm_pmuv3.c
-> @@ -428,12 +428,12 @@ static inline bool armv8pmu_event_is_chained(struct perf_event *event)
->  #define	ARMV8_IDX_TO_COUNTER(x)	\
->  	(((x) - ARMV8_IDX_COUNTER0) & ARMV8_PMU_COUNTER_MASK)
->  
-> -static inline u32 armv8pmu_pmcr_read(void)
-> +static inline u64 armv8pmu_pmcr_read(void)
->  {
->  	return read_pmcr();
->  }
->  
-> -static inline void armv8pmu_pmcr_write(u32 val)
-> +static inline void armv8pmu_pmcr_write(u64 val)
->  {
->  	val &= ARMV8_PMU_PMCR_MASK;
->  	isb();
-> @@ -957,7 +957,7 @@ static int armv8pmu_set_event_filter(struct hw_perf_event *event,
->  static void armv8pmu_reset(void *info)
->  {
->  	struct arm_pmu *cpu_pmu = (struct arm_pmu *)info;
-> -	u32 pmcr;
-> +	u64 pmcr;
->  
->  	/* The counter and interrupt enable registers are unknown at reset. */
->  	armv8pmu_disable_counter(U32_MAX);
-
-Otherwise, this LGTM.
-
-Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
+[snip]
