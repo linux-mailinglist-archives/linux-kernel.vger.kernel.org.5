@@ -2,229 +2,297 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 729E57DFEE6
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 06:41:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 772E67DFEE8
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 06:46:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229571AbjKCFln (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 01:41:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38034 "EHLO
+        id S229749AbjKCFqF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 01:46:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229463AbjKCFll (ORCPT
+        with ESMTP id S229463AbjKCFqC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 01:41:41 -0400
-Received: from smtp.smtpout.orange.fr (smtp-19.smtpout.orange.fr [80.12.242.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 897A818B
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 22:41:37 -0700 (PDT)
-Received: from [192.168.1.18] ([86.243.2.178])
-        by smtp.orange.fr with ESMTPA
-        id ymvyqyGqr2IvKymvyq7BJd; Fri, 03 Nov 2023 06:41:34 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-        s=t20230301; t=1698990094;
-        bh=/HR6R2/dBCV5KtAoNDtBGcIdggMj4KflzvoVgbVGe3Y=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=HrKlVHjxRPVmpNH5/JYmdS7ezpXE5VbSGMHB9kFVsrtdIczKexOlVpcjbntVXskkn
-         yH/VptbmPQ7pkeTwiEJ0Z0Y/c4if7NC4lXmSn5zLiXZB5XoyovKjaa7BIrL9BOXGj0
-         D8VuWrku7V3IS2lI2ZU4eBaOuNc0FNcFPyktfY9KrVMv7VSE5ZHgUcLXHyf+70lLZ3
-         rGvnAFe0p5j7N7stVCohDqe3EOPS9+S1Cx9B7gFRoBQYRucAtQzqMDAL3sn0z18Hii
-         u53db/Eyo0FlHiqhXKXn4i8J8TjNqfSyUwQsQGuzFihhAPsYuiaw7SQykwbiaHcPIe
-         gqh0soOGbQ8Bg==
-X-ME-Helo: [192.168.1.18]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Fri, 03 Nov 2023 06:41:34 +0100
-X-ME-IP: 86.243.2.178
-Message-ID: <133a66fe-a7e7-42e2-822b-1f3caea7862a@wanadoo.fr>
-Date:   Fri, 3 Nov 2023 06:41:30 +0100
+        Fri, 3 Nov 2023 01:46:02 -0400
+Received: from bird.elm.relay.mailchannels.net (bird.elm.relay.mailchannels.net [23.83.212.17])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 743801A6
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 22:45:56 -0700 (PDT)
+X-Sender-Id: hostpapa|x-authuser|x.reply@epreston.net
+Received: from relay.mailchannels.net (localhost [127.0.0.1])
+        by relay.mailchannels.net (Postfix) with ESMTP id C4FA5841BC0;
+        Fri,  3 Nov 2023 05:45:54 +0000 (UTC)
+Received: from s147.servername.online (unknown [127.0.0.6])
+        (Authenticated sender: hostpapa)
+        by relay.mailchannels.net (Postfix) with ESMTPA id 9D1FE841679;
+        Fri,  3 Nov 2023 05:45:53 +0000 (UTC)
+ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1698990353; a=rsa-sha256;
+        cv=none;
+        b=g8FWJUE1jGA/p9wprs+jc0mCzZVfeNCFnApllJFpf8FiRfcFWz++Dh+nE0o7CsO0Q4J/DB
+        4+1+hMQGrQ7dn3L/xZrnvE67IkUK+Eoqd02xnZKCLb+vuuGz03jgFzpJiwyw3CrXAHx8qI
+        Q6TaTSs32X/FfvQxiCKMnrv1+L2p86vjUM7BxSLYUwur1DxKoTHwYvWqkQaG8TVCD1x4+T
+        kqwBy7dF1YE/F8Af8MCtWypE6OFoXh4PwN1DtENSHIj/YdiwwSeSkmu5ROdCMf8W1BmNZ0
+        YZvYSLqLmCrwz87prUr0ydSTCEuXYlJ0R560AJCQrbHfsk1JRbNNJE/CFQVdGA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=mailchannels.net;
+        s=arc-2022; t=1698990353;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:dkim-signature;
+        bh=iOcwJOPeJ8LW/FdY//YnVIMSB4MCNRdxvLdVWXUV3YY=;
+        b=27eo8H5tYbei77DE+86pkUPIU/A6hUCbDaELfpblx0TQnjLP1hXGOvEohOVeIXCITNyyj6
+        4L0x7zRyx22dOXY36CpDGdGnEqPwH+OaVmH/yf9egkMvFjTSWPiesfwe7SFxMdxtHr2nAB
+        Bi3ZFbZOci+tCDlBr2dsBGiOKlx3uyUp7B8iHxnzAMprU2NWh3gHNe5MygC2QfXnttdZrE
+        erf+BSFzQGB17jo0yyu8E0C1zycxtrW0uy1Atn5xs5/WFoggk5DPNoKZ7Kf0fvhbcI4BBp
+        1ihcwGW24HaMYgWurhvkJ6WHAyqJtQf/damZnm2UX7EDTWdRIcPTK+jlUMGTsw==
+ARC-Authentication-Results: i=1;
+        rspamd-79d8cddc67-sdlhj;
+        auth=pass smtp.auth=hostpapa smtp.mailfrom=x.arch@epreston.net
+X-Sender-Id: hostpapa|x-authuser|x.reply@epreston.net
+X-MC-Relay: Neutral
+X-MailChannels-SenderId: hostpapa|x-authuser|x.reply@epreston.net
+X-MailChannels-Auth-Id: hostpapa
+X-Keen-Wide-Eyed: 40429521226e4cd5_1698990354486_2334182038
+X-MC-Loop-Signature: 1698990354486:3333365556
+X-MC-Ingress-Time: 1698990354486
+Received: from s147.servername.online (s147.servername.online
+ [204.44.192.62])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384)
+        by 100.101.67.91 (trex/6.9.2);
+        Fri, 03 Nov 2023 05:45:54 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=epreston.net; s=default; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=iOcwJOPeJ8LW/FdY//YnVIMSB4MCNRdxvLdVWXUV3YY=; b=rCRptVahp5Wm6vTq0z6ttKQADG
+        rq1m/x5db/G8fgK8SBflaLYc8eBo5cwDByGw/Dgj40mQ13ElOtKQtSgx2JmwVvOdPm3b75uklM8gs
+        XLS7UL1WqUK8KoJxK6ELOy5Cw8c2FEoioc+rWTXqx96ZTEO+Ez72tag8ur6GKtViEttLBYK5aVfNN
+        olY8JYm0YKw9QBo1er3k8k18OiYH7yfVLY8/sOS/r0HsFheSLySgXWrx5OW8gHab5ZI1plEZ73zba
+        wPhyceiYGVqvISlMXP56B6qOcQgpBUcC6Ut8c2RTSJYejmyavQNrmoDe3m23xtKAYNQAoIrOiNjOc
+        U49lAODw==;
+Received: from [50.35.115.28] (port=58340 helo=P70.localdomain)
+        by s147.servername.online with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96.2)
+        (envelope-from <x.arch@epreston.net>)
+        id 1qyn09-008fw9-1A;
+        Thu, 02 Nov 2023 22:45:53 -0700
+Date:   Thu, 2 Nov 2023 22:45:48 -0700
+From:   Evan Preston <x.arch@epreston.net>
+To:     Huacai Chen <chenhuacai@kernel.org>
+Cc:     Jaak Ristioja <jaak@ristioja.ee>,
+        Linux regressions mailing list <regressions@lists.linux.dev>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux DRI Development <dri-devel@lists.freedesktop.org>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        Thorsten Leemhuis <regressions@leemhuis.info>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Bagas Sanjaya <bagasdotme@gmail.com>,
+        Evan Preston <x.arch@epreston.net>
+Subject: Re: Blank screen on boot of Linux 6.5 and later on Lenovo ThinkPad
+ L570
+Message-ID: <ZUSJDG82vzbuyFEY@P70.localdomain>
+References: <ZTWoDSPxGO-ApR4r@P70.localdomain>
+ <82f1b533-3bd8-4418-843a-718d9a6b5786@leemhuis.info>
+ <CAAhV-H5DH3Oj3ttSpa_k6jUdZ+0_pMwgoaqUTGGFr46j7DMXRw@mail.gmail.com>
+ <ba16ad66-4b35-4fb4-b4e6-1d785f260eea@ristioja.ee>
+ <CAAhV-H64AKdGoHnVLLOYXznpr_aq1jC_TUYXFQRdOjoBxanxkw@mail.gmail.com>
+ <c3bb7983-86e4-424e-aadd-e82a0cb6ef37@ristioja.ee>
+ <CAAhV-H7UTnTWQeT_qo7VgBczaZo37zjosREr16H8DsLi21XPqQ@mail.gmail.com>
+ <CAAhV-H7fJS3-3_hqA4BUdH+q5EG6wSmEoPpO-fUZn5h35O=6OA@mail.gmail.com>
+ <31ed0db1-9398-4c46-a391-fc644ec49268@ristioja.ee>
+ <CAAhV-H4MekBgYZ1nJ-M7bnpo3bczOMcTanij18ACCALz2svjQQ@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/5] perf annotate: Move some fields to annotated_source
-To:     Namhyung Kim <namhyung@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>
-Cc:     Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org
-References: <20231102222653.4165959-1-namhyung@kernel.org>
- <20231102222653.4165959-5-namhyung@kernel.org>
-Content-Language: fr
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-In-Reply-To: <20231102222653.4165959-5-namhyung@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CAAhV-H4MekBgYZ1nJ-M7bnpo3bczOMcTanij18ACCALz2svjQQ@mail.gmail.com>
+X-AuthUser: x.reply@epreston.net
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_PDS_OTHER_BAD_TLD,T_SCC_BODY_TEXT_LINE,
+        WEIRD_PORT autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 02/11/2023 à 23:26, Namhyung Kim a écrit :
-> Some fields in the struct annotation are only used with annotated_source
-> so better to be moved there in order to reduce memory consumption for
-> other symbols.
+Hi Huacai,
+
+On 2023-11-02 Thu 08:38pm, Huacai Chen wrote:
+> Hi, Jaak,
 > 
-> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> ---
->   tools/perf/ui/browsers/annotate.c | 12 ++++++------
->   tools/perf/util/annotate.c        | 17 +++++++++--------
->   tools/perf/util/annotate.h        | 14 +++++++-------
->   3 files changed, 22 insertions(+), 21 deletions(-)
+> On Wed, Nov 1, 2023 at 7:52 PM Jaak Ristioja <jaak@ristioja.ee> wrote:
+> >
+> > On 31.10.23 14:17, Huacai Chen wrote:
+> > > Hi, Jaak and Evan,
+> > >
+> > > On Sun, Oct 29, 2023 at 9:42 AM Huacai Chen <chenhuacai@kernel.org> wrote:
+> > >>
+> > >> On Sat, Oct 28, 2023 at 7:06 PM Jaak Ristioja <jaak@ristioja.ee> wrote:
+> > >>>
+> > >>> On 26.10.23 03:58, Huacai Chen wrote:
+> > >>>> Hi, Jaak,
+> > >>>>
+> > >>>> On Thu, Oct 26, 2023 at 2:49 AM Jaak Ristioja <jaak@ristioja.ee> wrote:
+> > >>>>>
+> > >>>>> On 25.10.23 16:23, Huacai Chen wrote:
+> > >>>>>> On Wed, Oct 25, 2023 at 6:08 PM Thorsten Leemhuis
+> > >>>>>> <regressions@leemhuis.info> wrote:
+> > >>>>>>>
+> > >>>>>>> Javier, Dave, Sima,
+> > >>>>>>>
+> > >>>>>>> On 23.10.23 00:54, Evan Preston wrote:
+> > >>>>>>>> On 2023-10-20 Fri 05:48pm, Huacai Chen wrote:
+> > >>>>>>>>> On Fri, Oct 20, 2023 at 5:35 PM Linux regression tracking (Thorsten
+> > >>>>>>>>> Leemhuis) <regressions@leemhuis.info> wrote:
+> > >>>>>>>>>> On 09.10.23 10:54, Huacai Chen wrote:
+> > >>>>>>>>>>> On Mon, Oct 9, 2023 at 4:45 PM Bagas Sanjaya <bagasdotme@gmail.com> wrote:
+> > >>>>>>>>>>>> On Mon, Oct 09, 2023 at 09:27:02AM +0800, Huacai Chen wrote:
+> > >>>>>>>>>>>>> On Tue, Sep 26, 2023 at 10:31 PM Huacai Chen <chenhuacai@kernel.org> wrote:
+> > >>>>>>>>>>>>>> On Tue, Sep 26, 2023 at 7:15 PM Linux regression tracking (Thorsten
+> > >>>>>>>>>>>>>> Leemhuis) <regressions@leemhuis.info> wrote:
+> > >>>>>>>>>>>>>>> On 13.09.23 14:02, Jaak Ristioja wrote:
+> > >>>>>>>>>>>>>>>>
+> > >>>>>>>>>>>>>>>> Upgrading to Linux 6.5 on a Lenovo ThinkPad L570 (Integrated Intel HD
+> > >>>>>>>>>>>>>>>> Graphics 620 (rev 02), Intel(R) Core(TM) i7-7500U) results in a blank
+> > >>>>>>>>>>>>>>>> screen after boot until the display manager starts... if it does start
+> > >>>>>>>>>>>>>>>> at all. Using the nomodeset kernel parameter seems to be a workaround.
+> > >>>>>>>>>>>>>>>>
+> > >>>>>>>>>>>>>>>> I've bisected this to commit 60aebc9559492cea6a9625f514a8041717e3a2e4
+> > >>>>>>>>>>>>>>>> ("drivers/firmware: Move sysfb_init() from device_initcall to
+> > >>>>>>>>>>>>>>>> subsys_initcall_sync").
+> > >>>>>>>>>>>>>>>
+> > >>>>>>>>>>>>> As confirmed by Jaak, disabling DRM_SIMPLEDRM makes things work fine
+> > >>>>>>>>>>>>> again. So I guess the reason:
+> > >>>>>>>>>>
+> > >>>>>>>>>> Well, this to me still looks a lot (please correct me if I'm wrong) like
+> > >>>>>>>>>> regression that should be fixed, as DRM_SIMPLEDRM was enabled beforehand
+> > >>>>>>>>>> if I understood things correctly. Or is there a proper fix for this
+> > >>>>>>>>>> already in the works and I just missed this? Or is there some good
+> > >>>>>>>>>> reason why this won't/can't be fixed?
+> > >>>>>>>>>
+> > >>>>>>>>> DRM_SIMPLEDRM was enabled but it didn't work at all because there was
+> > >>>>>>>>> no corresponding platform device. Now DRM_SIMPLEDRM works but it has a
+> > >>>>>>>>> blank screen. Of course it is valuable to investigate further about
+> > >>>>>>>>> DRM_SIMPLEDRM on Jaak's machine, but that needs Jaak's effort because
+> > >>>>>>>>> I don't have a same machine.
+> > >>>>>>>
+> > >>>>>>> Side note: Huacai, have you tried working with Jaak to get down to the
+> > >>>>>>> real problem? Evan, might you be able to help out here?
+> > >>>>>> No, Jaak has no response after he 'fixed' his problem by disabling SIMPLEDRM.
+> > >>>>>>
+> > >>>>>
+> > >>>>> I'm sorry, what was it exactly you want me to do? Please be mindful that
+> > >>>>> I'm not familiar with the internals of the Linux kernel and DRI, and it
+> > >>>>> might sometimes take weeks before I have time to work and respond on this.
+> > >>>> It doesn't matter. I hope you can do some experiments to investigate
+> > >>>> deeper. The first experiment you can do is enabling SIMPLEFB (i.e.
+> > >>>> CONFIG_FB_SIMPLE) instead of SIMPLEDRM (CONFIG_DRM_SIMPLEDRM) to see
+> > >>>> whether there is also a blank screen. If no blank screen, that
+> > >>>> probably means SIMPLEDRM has a bug, if still blank screen, that means
+> > >>>> the firmware may pass wrong screen information.
+> > >>>
+> > >>> Testing with 6.5.9 I get a blank screen with CONFIG_DRM_SIMPLEDRM=y and
+> > >>> get no blank screen with CONFIG_FB_SIMPLE=y and CONFIG_DRM_SIMPLEDRM unset.
+> > >> CONFIG_FB_SIMPLE and  CONFIG_DRM_SIMPLEDRM use the same device created
+> > >> by sysfb_init(). Since FB_SIMPLE works fine, I think the real problem
+> > >> is that DRM_SIMPLEDRM has a bug. The next step is to enable
+> > >> CONFIG_DRM_SIMPLEDRM and trace its initialization. In detail, adding
+> > >> some printk() in simpledrm_probe() and its sub-routines to see where
+> > >> the driver fails. The output of these printk() can be seen by the
+> > >> 'dmesg' command after boot.
+> > > I need your help. I tried with my laptop (ThinkPad E490, Intel Core
+> > > i3-8145U, UHD Graphics 620) but I can't reproduce your problem. So
+> > > please patch your 6.5.x kernel with this temporary patch [1], then
+> > > build a "bad kernel" with SIMPLEDRM enabled. And after booting your
+> > > machine with this "bad kernel", please give me the dmesg output. Thank
+> > > you very much.
+> > >
+> > > [1] http://ddns.miaomiaomiao.top:9000/download/kernel/patch-6.5.9
+> >
+> > I'm unable to download it. Can you please send it by e-mail?
+> I'm sorry, please download from attachment.
+
+When applying this patch the first hunk (drivers/firmware/sysfb.c) fails for 
+me with 6.5.9.  Attempting to load the 6.5.9 kernel without this patch 
+produces no dmesg output on my machine.
+
+Evan
+
 > 
-> diff --git a/tools/perf/ui/browsers/annotate.c b/tools/perf/ui/browsers/annotate.c
-> index d2470f87344d..1b42db70c998 100644
-> --- a/tools/perf/ui/browsers/annotate.c
-> +++ b/tools/perf/ui/browsers/annotate.c
-> @@ -384,7 +384,7 @@ static bool annotate_browser__toggle_source(struct annotate_browser *browser)
->   		if (al->idx_asm < offset)
->   			offset = al->idx;
->   
-> -		browser->b.nr_entries = notes->nr_entries;
-> +		browser->b.nr_entries = notes->src->nr_entries;
->   		notes->options->hide_src_code = false;
->   		browser->b.seek(&browser->b, -offset, SEEK_CUR);
->   		browser->b.top_idx = al->idx - offset;
-> @@ -402,7 +402,7 @@ static bool annotate_browser__toggle_source(struct annotate_browser *browser)
->   		if (al->idx_asm < offset)
->   			offset = al->idx_asm;
->   
-> -		browser->b.nr_entries = notes->nr_asm_entries;
-> +		browser->b.nr_entries = notes->src->nr_asm_entries;
->   		notes->options->hide_src_code = true;
->   		browser->b.seek(&browser->b, -offset, SEEK_CUR);
->   		browser->b.top_idx = al->idx_asm - offset;
-> @@ -435,7 +435,7 @@ static void ui_browser__init_asm_mode(struct ui_browser *browser)
->   {
->   	struct annotation *notes = browser__annotation(browser);
->   	ui_browser__reset_index(browser);
-> -	browser->nr_entries = notes->nr_asm_entries;
-> +	browser->nr_entries = notes->src->nr_asm_entries;
->   }
->   
->   static int sym_title(struct symbol *sym, struct map *map, char *title,
-> @@ -860,7 +860,7 @@ static int annotate_browser__run(struct annotate_browser *browser,
->   					   browser->b.height,
->   					   browser->b.index,
->   					   browser->b.top_idx,
-> -					   notes->nr_asm_entries);
-> +					   notes->src->nr_asm_entries);
->   		}
->   			continue;
->   		case K_ENTER:
-> @@ -991,8 +991,8 @@ int symbol__tui_annotate(struct map_symbol *ms, struct evsel *evsel,
->   
->   	ui_helpline__push("Press ESC to exit");
->   
-> -	browser.b.width = notes->max_line_len;
-> -	browser.b.nr_entries = notes->nr_entries;
-> +	browser.b.width = notes->src->max_line_len;
-> +	browser.b.nr_entries = notes->src->nr_entries;
->   	browser.b.entries = &notes->src->source,
->   	browser.b.width += 18; /* Percentage */
->   
-> diff --git a/tools/perf/util/annotate.c b/tools/perf/util/annotate.c
-> index 92a9adf9d5eb..ee7b8e1848a8 100644
-> --- a/tools/perf/util/annotate.c
-> +++ b/tools/perf/util/annotate.c
-> @@ -2808,19 +2808,20 @@ void annotation__mark_jump_targets(struct annotation *notes, struct symbol *sym)
->   void annotation__set_offsets(struct annotation *notes, s64 size)
->   {
->   	struct annotation_line *al;
-> +	struct annotated_source *src = notes->src;
->   
-> -	notes->max_line_len = 0;
-> -	notes->nr_entries = 0;
-> -	notes->nr_asm_entries = 0;
-> +	src->max_line_len = 0;
-> +	src->nr_entries = 0;
-> +	src->nr_asm_entries = 0;
->   
-> -	list_for_each_entry(al, &notes->src->source, node) {
-> +	list_for_each_entry(al, &src->source, node) {
->   		size_t line_len = strlen(al->line);
->   
-> -		if (notes->max_line_len < line_len)
-> -			notes->max_line_len = line_len;
-> -		al->idx = notes->nr_entries++;
-> +		if (src->max_line_len < line_len)
-> +			src->max_line_len = line_len;
-> +		al->idx = src->nr_entries++;
->   		if (al->offset != -1) {
-> -			al->idx_asm = notes->nr_asm_entries++;
-> +			al->idx_asm = src->nr_asm_entries++;
->   			/*
->   			 * FIXME: short term bandaid to cope with assembly
->   			 * routines that comes with labels in the same column
-> diff --git a/tools/perf/util/annotate.h b/tools/perf/util/annotate.h
-> index d8a221591926..c51ceb857bd6 100644
-> --- a/tools/perf/util/annotate.h
-> +++ b/tools/perf/util/annotate.h
-> @@ -268,10 +268,13 @@ struct cyc_hist {
->    * returns.
->    */
->   struct annotated_source {
-> -	struct list_head   source;
-> -	int    		   nr_histograms;
-> -	size_t		   sizeof_sym_hist;
-> -	struct sym_hist	   *histograms;
-> +	struct list_head	source;
-> +	int    			nr_histograms;
+> Huacai
+> 
+> >
+> > Jaak
+> >
+> > >
+> > >
+> > > Huacai
+> > >
+> > >>
+> > >> Huacai
+> > >>
+> > >>>
+> > >>> Jaak
+> > >>>
+> > >>>>
+> > >>>> Huacai
+> > >>>>
+> > >>>>>
+> > >>>>> Jaak
+> > >>>>>
+> > >>>>>>>
+> > >>>>>>> But I write this mail for a different reason:
+> > >>>>>>>
+> > >>>>>>>> I am having the same issue on a Lenovo Thinkpad P70 (Intel
+> > >>>>>>>> Corporation HD Graphics 530 (rev 06), Intel(R) Core(TM) i7-6700HQ).
+> > >>>>>>>> Upgrading from Linux 6.4.12 to 6.5 and later results in only a blank
+> > >>>>>>>> screen after boot and a rapidly flashing device-access-status
+> > >>>>>>>> indicator.
+> > >>>>>>>
+> > >>>>>>> This additional report makes me wonder if we should revert the culprit
+> > >>>>>>> (60aebc9559492c ("drivers/firmware: Move sysfb_init() from
+> > >>>>>>> device_initcall to subsys_initcall_sync") [v6.5-rc1]). But I guess that
+> > >>>>>>> might lead to regressions for some users? But the patch description says
+> > >>>>>>> that this is not a common configuration, so can we maybe get away with that?
+> > >>>>>>    From my point of view, this is not a regression, 60aebc9559492c
+> > >>>>>> doesn't cause a problem, but exposes a problem. So we need to fix the
+> > >>>>>> real problem (SIMPLEDRM has a blank screen on some conditions). This
+> > >>>>>> needs Jaak or Evan's help.
+> > >>>>>>
+> > >>>>>> Huacai
+> > >>>>>>>
+> > >>>>>>> Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+> > >>>>>>> --
+> > >>>>>>> Everything you wanna know about Linux kernel regression tracking:
+> > >>>>>>> https://linux-regtracking.leemhuis.info/about/#tldr
+> > >>>>>>> If I did something stupid, please tell me, as explained on that page.
+> > >>>>>>>
+> > >>>>>>>>>>>>> When SIMPLEDRM takes over the framebuffer, the screen is blank (don't
+> > >>>>>>>>>>>>> know why). And before 60aebc9559492cea6a9625f ("drivers/firmware: Move
+> > >>>>>>>>>>>>> sysfb_init() from device_initcall to subsys_initcall_sync") there is
+> > >>>>>>>>>>>>> no platform device created for SIMPLEDRM at early stage, so it seems
+> > >>>>>>>>>>>>> also "no problem".
+> > >>>>>>>>>>>> I don't understand above. You mean that after that commit the platform
+> > >>>>>>>>>>>> device is also none, right?
+> > >>>>>>>>>>> No. The SIMPLEDRM driver needs a platform device to work, and that
+> > >>>>>>>>>>> commit makes the platform device created earlier. So, before that
+> > >>>>>>>>>>> commit, SIMPLEDRM doesn't work, but the screen isn't blank; after that
+> > >>>>>>>>>>> commit, SIMPLEDRM works, but the screen is blank.
+> > >>>>>>>>>>>
+> > >>>>>>>>>>> Huacai
+> > >>>>>>>>>>>>
+> > >>>>>>>>>>>> Confused...
+> > >>>>>>>>>>>>
+> > >>>>>>>>>>>> --
+> > >>>>>>>>>>>> An old man doll... just what I always wanted! - Clara
+> > >>>>>>>>>>>
+> > >>>>>>>>>>>
+> > >>>>>>>>
+> > >>>>>>>>
+> > >>>>>
+> > >>>
+> >
 
-If this int...
-
-> +	size_t			sizeof_sym_hist;
-> +	struct sym_hist		*histograms;
-> +	int			nr_entries;
-> +	int			nr_asm_entries;
-> +	u16			max_line_len;
-
-... and these int and u16 were grouped, you would also save a hole in 
-the struct and reduce padding.
-
-
-On x86_64, after patch 4/5:
-struct annotated_source {
-	struct list_head           source;               /*     0    16 */
-	int                        nr_histograms;        /*    16     4 */
-
-	/* XXX 4 bytes hole, try to pack */			<====
-
-	size_t                     sizeof_sym_hist;      /*    24     8 */
-	struct sym_hist *          histograms;           /*    32     8 */
-	int                        nr_entries;           /*    40     4 */
-	int                        nr_asm_entries;       /*    44     4 */
-	u16                        max_line_len;         /*    48     2 */
-
-	/* size: 56, cachelines: 1, members: 7 */
-	/* sum members: 46, holes: 1, sum holes: 4 */
-	/* padding: 6 */					<====
-	/* last cacheline: 56 bytes */
-};
-
-After patch 5/5, the struct would be just 64 bytes. If fields are 
-re-ordered, it would be 56 bytes.
-
-Because of rounding in memory allocations, 56 or 64 shouldn't change 
-anything. But it would be more future proof, should something else be 
-added here in the future.
-
-CJ
-
->   };
->   
->   struct annotated_branch {
-> @@ -289,9 +292,6 @@ struct LOCKABLE annotation {
->   	struct annotation_line	**offsets;
->   	int			nr_events;
->   	int			max_jump_sources;
-> -	int			nr_entries;
-> -	int			nr_asm_entries;
-> -	u16			max_line_len;
->   	struct {
->   		u8		addr;
->   		u8		jumps;
 
