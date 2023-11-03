@@ -2,97 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C62167E00B1
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 11:30:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42A217E0067
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 11:29:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233506AbjKCHJr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 03:09:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49930 "EHLO
+        id S234598AbjKCHMu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 03:12:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232885AbjKCHJp (ORCPT
+        with ESMTP id S234512AbjKCHMs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 03:09:45 -0400
-Received: from mail-oa1-f70.google.com (mail-oa1-f70.google.com [209.85.160.70])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96388186
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 00:09:43 -0700 (PDT)
-Received: by mail-oa1-f70.google.com with SMTP id 586e51a60fabf-1e9adea7952so2023445fac.0
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Nov 2023 00:09:43 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698995383; x=1699600183;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=yjSjm833K8pQ/tBVNwZvawYgMwdzkZ3/+2zagrqEt2c=;
-        b=Tmn7hYvd5dPW7/5I+jmwHA6kyKnAmhhBu/WzWPaD1XnADLuUfZIMQpwKHkqQ3I/9jO
-         udDlxXdvL+g8VcO0Amd3FYZlU4OTPk7YEGZHU1b+kpxz/ANxyLMu3cm2BXQmTQRddCrg
-         Tkny2PNcgSc3aRT4/ZBqYe2IaD42XFae8kMlDGMKGfu2N6GEAUjTfkGEHeY+WKujYSlT
-         NV/UpPTi6dTSnc6GJHkLiqVY61Av55fOZnAOtda4BmhrvFwKSwWDSUZ4PzAtBLTo0ST9
-         uEhDN52qFIX6rkK/XLKv583I9ueLesPBQYNQwEd3Yt48Vv82u9JuacCKowBJQwOjA73Q
-         L2pw==
-X-Gm-Message-State: AOJu0YwG6WZ4jclKhz8ufvbyxQ+vcNpP1P1SvDqHa/Uj6Y+P3z7X5ODT
-        GuSBEbHzYub1E/OMKv160mlFC53qbkTsRWoTHNXjZW03uGyVlII=
-X-Google-Smtp-Source: AGHT+IGITsWWYwN8y+p4wAGwxHFgbBLcXVaniHllPxytRRBI4kAq5aLKD5Z00wQkqMWBxjD/BdgpkuppJ1pgFAv3P9esXRk622Ry
+        Fri, 3 Nov 2023 03:12:48 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 740C9186;
+        Fri,  3 Nov 2023 00:12:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698995562; x=1730531562;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=jmqohwjW/b1Gj1tSFbJgVKBOkBp3iU7UqUowR8+rmss=;
+  b=EOiG2iHA6ysPWC2VFS/X0pIkxZO/DhpqII76iOWigBbejSUWoomh8tSF
+   I4DMmuDp0OhadX2RNr1RrMM+d0t7A85ODkSJQy2llwr+YzCLU89aCl6cm
+   Ak5+ELXc4YPIcvPcLG97nED+rqmuNNPze62YCk56lsjHHIGPJI2j5sphr
+   dhCEt4UqUBsVjuMRBpsZmX6hnDw5+QQdFT2SaHs0eVV+yI6qI9+v36m5L
+   O09oEJzR8/8uKM3Yj3fW2x3UV8PaKb7ikDA4hlY11LAGDr0KfWzBeOHLb
+   DGcYB2tNsaijCyF3twYecHYp6mtAZUAbxa1GS8jsShbIHnF/bBwoCI3GX
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10882"; a="386065255"
+X-IronPort-AV: E=Sophos;i="6.03,273,1694761200"; 
+   d="scan'208";a="386065255"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2023 00:12:42 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10882"; a="905256191"
+X-IronPort-AV: E=Sophos;i="6.03,273,1694761200"; 
+   d="scan'208";a="905256191"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2023 00:12:38 -0700
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Gregory Price <gourry.memverge@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-cxl@vger.kernel.org,
+        linux-mm@kvack.org, akpm@linux-foundation.org,
+        aneesh.kumar@linux.ibm.com, weixugc@google.com, apopple@nvidia.com,
+        tim.c.chen@intel.com, dave.hansen@intel.com, shy828301@gmail.com,
+        gregkh@linuxfoundation.org, rafael@kernel.org,
+        Gregory Price <gregory.price@memverge.com>
+Subject: Re: [RFC PATCH v3 0/4] Node Weights and Weighted Interleave
+In-Reply-To: <fe7ns7dvrhwp6o7fnn53wt7tuidsncjctgav4bdirwfmjxarne@3oyfe22mxc35>
+        (Michal Hocko's message of "Thu, 2 Nov 2023 10:28:11 +0100")
+References: <20231031003810.4532-1-gregory.price@memverge.com>
+        <rm43wgtlvwowjolzcf6gj4un4qac4myngxqnd2jwt5yqxree62@t66scnrruttc>
+        <20231031152142.GA3029315@cmpxchg.org>
+        <jgh5b5bm73qe7m3qmnsjo3drazgfaix3ycqmom5u6tfp6hcerj@ij4vftrutvrt>
+        <87msvy6wn8.fsf@yhuang6-desk2.ccr.corp.intel.com>
+        <ivhxexthtfums73nkko6yoy635h3cpetv4sqaemrmqd5pbhpq6@6zrizaoxgdwi>
+        <87il6k1y82.fsf@yhuang6-desk2.ccr.corp.intel.com>
+        <fe7ns7dvrhwp6o7fnn53wt7tuidsncjctgav4bdirwfmjxarne@3oyfe22mxc35>
+Date:   Fri, 03 Nov 2023 15:10:37 +0800
+Message-ID: <87jzqzz502.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6870:63a1:b0:1ef:b9bc:e2cf with SMTP id
- t33-20020a05687063a100b001efb9bce2cfmr8287236oap.5.1698995382841; Fri, 03 Nov
- 2023 00:09:42 -0700 (PDT)
-Date:   Fri, 03 Nov 2023 00:09:42 -0700
-In-Reply-To: <00000000000055ef9a0609336580@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000044f99c06093a30cc@google.com>
-Subject: Re: [syzbot] test uaf in iommufd_vfio_ioas
-From:   syzbot <syzbot+d31adfb277377ef8fcba@syzkaller.appspotmail.com>
-To:     linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=ascii
+X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For archival purposes, forwarding an incoming command email to
-linux-kernel@vger.kernel.org.
+Michal Hocko <mhocko@suse.com> writes:
 
-***
+> On Thu 02-11-23 14:11:09, Huang, Ying wrote:
+>> Michal Hocko <mhocko@suse.com> writes:
+>> 
+>> > On Wed 01-11-23 10:21:47, Huang, Ying wrote:
+>> >> Michal Hocko <mhocko@suse.com> writes:
+>> > [...]
+>> >> > Well, I am not convinced about that TBH. Sure it is probably a good fit
+>> >> > for this specific CXL usecase but it just doesn't fit into many others I
+>> >> > can think of - e.g. proportional use of those tiers based on the
+>> >> > workload - you get what you pay for.
+>> >> 
+>> >> For "pay", per my understanding, we need some cgroup based
+>> >> per-memory-tier (or per-node) usage limit.  The following patchset is
+>> >> the first step for that.
+>> >> 
+>> >> https://lore.kernel.org/linux-mm/cover.1655242024.git.tim.c.chen@linux.intel.com/
+>> >
+>> > Why do we need a sysfs interface if there are plans for cgroup API?
+>> 
+>> They are for different target.  The cgroup API proposed here is to
+>> constrain the DRAM usage in a system with DRAM and CXL memory.  The less
+>> you pay, the less DRAM and more CXL memory you use.
+>
+> Right, but why the usage distribution requires its own interface and
+> cannot be combined with the access control part of it?
 
-Subject: test uaf in iommufd_vfio_ioas
-Author: lizhi.xu@windriver.com
+Per my understanding, they are orthogonal.
 
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 2af9b20dbb39
+Weighted-interleave is a memory allocation policy, other memory
+allocation policies include local first, etc.
 
-diff --git a/drivers/iommu/iommufd/main.c b/drivers/iommu/iommufd/main.c
-index e71523cbd0de..6b75f9fab6ce 100644
---- a/drivers/iommu/iommufd/main.c
-+++ b/drivers/iommu/iommufd/main.c
-@@ -208,11 +208,14 @@ static int iommufd_destroy(struct iommufd_ucmd *ucmd)
- {
- 	struct iommu_destroy *cmd = ucmd->cmd;
- 	struct iommufd_object *obj;
-+	struct iommufd_ioas *ioas;
- 
- 	obj = iommufd_object_remove(ucmd->ictx, cmd->id, false);
- 	if (IS_ERR(obj))
- 		return PTR_ERR(obj);
- 	iommufd_object_ops[obj->type].destroy(obj);
-+	ioas = container_of(obj, struct iommufd_ioas, obj);
-+	ioas->obj = NULL;
- 	kfree(obj);
- 	return 0;
- }
-diff --git a/drivers/iommu/iommufd/vfio_compat.c b/drivers/iommu/iommufd/vfio_compat.c
-index 6c810bf80f99..06317d0bd95e 100644
---- a/drivers/iommu/iommufd/vfio_compat.c
-+++ b/drivers/iommu/iommufd/vfio_compat.c
-@@ -140,6 +140,8 @@ int iommufd_vfio_ioas(struct iommufd_ucmd *ucmd)
- 		ioas = iommufd_get_ioas(ucmd->ictx, cmd->ioas_id);
- 		if (IS_ERR(ioas))
- 			return PTR_ERR(ioas);
-+		if (!ioas->obj)
-+			return -EINVAL;
- 		xa_lock(&ucmd->ictx->objects);
- 		ucmd->ictx->vfio_ioas = ioas;
- 		xa_unlock(&ucmd->ictx->objects);
+Usage limit is to constrain the usage of specific memory types
+(e.g. DRAM) for a cgroup.  It can be used together with local first
+policy and some other memory allocation policy.
+
+--
+Best Regards,
+Huang, Ying
