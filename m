@@ -2,61 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A6ECF7E0C39
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 00:33:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7453D7E0C3B
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 00:34:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234164AbjKCXcE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 19:32:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39458 "EHLO
+        id S229700AbjKCXeF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 19:34:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232527AbjKCXbx (ORCPT
+        with ESMTP id S229461AbjKCXeE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 19:31:53 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5439F1BF
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 16:31:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699054310; x=1730590310;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=i9hp/V+bIdyxTG4LoGGDFHA/+wEh1RJKZImbtjZgMXQ=;
-  b=c3meKUe+NfBVizJ5Uv/I1n/sIn1iNT824Psn+v6JHIEVuDutEKlB0kqp
-   jPQ7ttW9vNdWu1Y0+GbNME8ZQLnXgVvLU7/Grhwn2njvVYMStqZJ0llHj
-   vWTOEkLm7uzfmC0PCAkFUcZkPAs3MW6U/beSxXwtSbXtPVlC5T/CsZblz
-   mayfdlityWbTab9o7l1VS3RscG225SMJRYwO8ozhsWmzpR7clfehMqV8G
-   zyr7MOLvPeOkP8RD1q0GrUoMHkJ0o5yOwMdYSjEbdcMRM0ZhpuwIJda5i
-   xTR6ZLhmkWVgBaEx+ThE5/6PxY4HY7mUr+qI+yiJCBtHBvNPjGGG9PF8/
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10883"; a="420156110"
-X-IronPort-AV: E=Sophos;i="6.03,275,1694761200"; 
-   d="scan'208";a="420156110"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2023 16:31:30 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.03,275,1694761200"; 
-   d="scan'208";a="3066510"
-Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by fmviesa002.fm.intel.com with ESMTP; 03 Nov 2023 16:31:29 -0700
-Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qz3dP-00033c-11;
-        Fri, 03 Nov 2023 23:31:27 +0000
-Date:   Sat, 4 Nov 2023 07:30:26 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Tanmay Shah <tanmay.shah@amd.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Ben Levinsky <ben.levinsky@amd.com>
-Subject: drivers/remoteproc/xlnx_r5_remoteproc.c:209:20: sparse: sparse: cast
- removes address space '__iomem' of expression
-Message-ID: <202311040724.0CdOhSe6-lkp@intel.com>
+        Fri, 3 Nov 2023 19:34:04 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7CB9E3;
+        Fri,  3 Nov 2023 16:34:01 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 39B91C433C7;
+        Fri,  3 Nov 2023 23:34:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699054441;
+        bh=BlDHKJ8MfuP1syUXuj+F9v0M+e2vkRXHkcoaDgJdNOY=;
+        h=From:Date:Subject:To:Cc:Reply-To:From;
+        b=L7Vq9hxdy9X4SJeQ3HdjBdrgBfG+nIv6yQeBW/MV2Jm3Vb+ymvqEI7lZJ3rJ3wZq3
+         AmcX6RClTFsH/slsJwKv21XfoCc7ihDG7WpvN4nJcPSPrpEwQlthG+NPGrlhXTpxaV
+         G5seE6/1enrLwv2P4xH7scFgpVLSEXxO5U1RzhhUiz50ZOK+2El/wYaorqJqSiji1E
+         bOa4XAbeYNJqKtGBSjbJG5o4vjCb0JWkn/QEUqfjXaQn9Av4kLhC69aCLRPMkr5ClA
+         XEkBJFbv/9HKvvvRT4E1AqmyoEDX1aRwZimiw/FwamOmtX3fU7G9DJ4Zs2O89QvdZA
+         GGnS58hEuvPVg==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by smtp.lore.kernel.org (Postfix) with ESMTP id 15F81C4332F;
+        Fri,  3 Nov 2023 23:34:01 +0000 (UTC)
+From:   Davide Cavalca via B4 Relay <devnull+dcavalca.meta.com@kernel.org>
+Date:   Fri, 03 Nov 2023 23:33:42 +0000
+Subject: [PATCH] rpm-pkg: simplify installkernel %post
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20231103-rpmpost-v1-1-9c18afab47f4@meta.com>
+X-B4-Tracking: v=1; b=H4sIAFWDRWUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDI2NDQwNj3aKC3IL84hLdNNNkS0tTUyNLQ8s0JaDqgqLUtMwKsEnRsbW1AG7
+ r41lZAAAA
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>
+Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Davide Cavalca <dcavalca@meta.com>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1699054440; l=1637;
+ i=dcavalca@meta.com; s=20231103; h=from:subject:message-id;
+ bh=X5JC+W01uXiyXPVwSIF965qjWZWJ67z2pjY23Aa3nRA=;
+ b=P/fwUPABI1VqrtkXrn3F4SbHZSLLxC/fFwBtcokkm2L/H4YTgu3ESNj4oYbXwAiF1LqOCDRrJ
+ j9Hs9PSf7MaBETvJfqIJnlqTUHIMjYvwf+QJgK6vs4El3C26IFbFvpL
+X-Developer-Key: i=dcavalca@meta.com; a=ed25519;
+ pk=9b8tquSs5okUyZ8q4DQqRfT95N/++7b/GgqRBdqUDBU=
+X-Endpoint-Received: by B4 Relay for dcavalca@meta.com/20231103 with auth_id=95
+X-Original-From: Davide Cavalca <dcavalca@meta.com>
+Reply-To: <dcavalca@meta.com>
+X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,50 +67,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   e392ea4d4d00880bf94550151b1ace4f88a4b17a
-commit: 6b291e8020a8bd90e94ee13d61f251040425c90d drivers: remoteproc: Add Xilinx r5 remoteproc driver
-date:   11 months ago
-config: arm64-randconfig-r122-20231102 (https://download.01.org/0day-ci/archive/20231104/202311040724.0CdOhSe6-lkp@intel.com/config)
-compiler: aarch64-linux-gcc (GCC) 13.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20231104/202311040724.0CdOhSe6-lkp@intel.com/reproduce)
+From: Davide Cavalca <dcavalca@meta.com>
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311040724.0CdOhSe6-lkp@intel.com/
+The %post currently does a shuffling dance before calling installkernel.
+This isn't actually necessary afaict, and the current implementation
+ends up triggering downstream issues such as
+https://github.com/systemd/systemd/issues/29568
 
-sparse warnings: (new ones prefixed by >>)
->> drivers/remoteproc/xlnx_r5_remoteproc.c:209:20: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/remoteproc/xlnx_r5_remoteproc.c:315:20: sparse: sparse: cast removes address space '__iomem' of expression
+This commit simplifies the logic to remove the shuffling. For reference,
+the original logic was added in commit 3c9c7a14b627("rpm-pkg: add %post
+section to create initramfs and grub hooks").
 
-vim +/__iomem +209 drivers/remoteproc/xlnx_r5_remoteproc.c
+Signed-off-by: Davide Cavalca <dcavalca@meta.com>
+---
+ scripts/package/kernel.spec | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
-   190	
-   191	/*
-   192	 * zynqmp_r5_mem_region_map()
-   193	 * @rproc: single R5 core's corresponding rproc instance
-   194	 * @mem: mem descriptor to map reserved memory-regions
-   195	 *
-   196	 * Callback to map va for memory-region's carveout.
-   197	 *
-   198	 * return 0 on success, otherwise non-zero value on failure
-   199	 */
-   200	static int zynqmp_r5_mem_region_map(struct rproc *rproc,
-   201					    struct rproc_mem_entry *mem)
-   202	{
-   203		void __iomem *va;
-   204	
-   205		va = ioremap_wc(mem->dma, mem->len);
-   206		if (IS_ERR_OR_NULL(va))
-   207			return -ENOMEM;
-   208	
- > 209		mem->va = (void *)va;
-   210	
-   211		return 0;
-   212	}
-   213	
+diff --git a/scripts/package/kernel.spec b/scripts/package/kernel.spec
+index 3eee0143e0c5..cc4292c03ea2 100644
+--- a/scripts/package/kernel.spec
++++ b/scripts/package/kernel.spec
+@@ -77,11 +77,7 @@ rm -rf %{buildroot}
+ 
+ %post
+ if [ -x /sbin/installkernel -a -r /boot/vmlinuz-%{KERNELRELEASE} -a -r /boot/System.map-%{KERNELRELEASE} ]; then
+-cp /boot/vmlinuz-%{KERNELRELEASE} /boot/.vmlinuz-%{KERNELRELEASE}-rpm
+-cp /boot/System.map-%{KERNELRELEASE} /boot/.System.map-%{KERNELRELEASE}-rpm
+-rm -f /boot/vmlinuz-%{KERNELRELEASE} /boot/System.map-%{KERNELRELEASE}
+-/sbin/installkernel %{KERNELRELEASE} /boot/.vmlinuz-%{KERNELRELEASE}-rpm /boot/.System.map-%{KERNELRELEASE}-rpm
+-rm -f /boot/.vmlinuz-%{KERNELRELEASE}-rpm /boot/.System.map-%{KERNELRELEASE}-rpm
++/sbin/installkernel %{KERNELRELEASE} /boot/vmlinuz-%{KERNELRELEASE} /boot/System.map-%{KERNELRELEASE}
+ fi
+ 
+ %preun
 
+---
+base-commit: e392ea4d4d00880bf94550151b1ace4f88a4b17a
+change-id: 20231103-rpmpost-f5c99552919f
+
+Best regards,
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Davide Cavalca <dcavalca@meta.com>
+
