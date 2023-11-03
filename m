@@ -2,131 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E0667E0861
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 19:44:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5CAE7E0862
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 19:45:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343961AbjKCSoY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 14:44:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37670 "EHLO
+        id S1344215AbjKCSpE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 14:45:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234292AbjKCSoW (ORCPT
+        with ESMTP id S232566AbjKCSpC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 14:44:22 -0400
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2086.outbound.protection.outlook.com [40.107.92.86])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18486D6A;
-        Fri,  3 Nov 2023 11:44:15 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HmWdk9cHziZ6E/20m1SaeHpNZDjhq0TINqO5k5gVq4ngrfyzvaivRSUGkuuPi1qg2youeZiptuujxCMKDqvmm5H1kKEG6juwJucZeMFPJo34avq4RUpKxoEhBV/y8NlrFy35wDYFfRB7Vhlzp10aS8XMmfv2+15auKC2SbxsOxrpq1AQpfqonP4qL8zICtMDB1e8iwsN043wxBk0WhmC9WTdK5nCHAMsKpGFqGCaNOXVMcugEmkFITIofesagoo1RLdCvU+i2zVYrbUDKJDtUpsJ6IyfaMc2CJo3o7kei3p+Bxx6p74eT0TyA+PqQzR0H9dfxhXa17Dn/MpSeSb8Hw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=4LhsGfsLxMuPDe+MNkpY1lKJXyuQEv/AFtrE1y74pZU=;
- b=Yg2XiE93X35Num0WH3kwLU8ImRL3p4ia6lJn1E+GO+59OQUZmqllP5YHhUSLMUKFFspzp0IZuIh6aGXWHtqtJcFgfbnYp2NdTW8kmxZbiI+qHEvD0q6e5oQD7ujRUXG3ru7b0r/ghdtydv0NR2Tsy+8ZYooCp1EaiSWQptYspfYqxzgovik9DhA8/6rn9bctW5FaDuZS3ZwUgT7QOofpizI64CJi3QajToIxrWpf/21jTVpl+MlDUBN5k+mOOlHuw4RslrSazCaCSIrACJg7FGMcJPouX+91Tsk0nBMFtkyIGUS+uc5teIU7MEDm3jDkHanhRO52ZJeHs1cJAJ6n1Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4LhsGfsLxMuPDe+MNkpY1lKJXyuQEv/AFtrE1y74pZU=;
- b=TzhUeYEq+LBy+9n3uMUhipGJPAWxmWWdKlGAk5PT5WgtfJvBavr1ajoS8H9V06I06lV58EiOtTQu2LNSRyJd1xLyRsopK4xMenfH73+YxbGcFtexZj+j/ZhLE0sKT0ni8CLxvGNFnXyvTsoVzCclmqmsDjFQWKZc+jucfPdK7Ro=
-Received: from CH2PR15CA0013.namprd15.prod.outlook.com (2603:10b6:610:51::23)
- by BN9PR12MB5068.namprd12.prod.outlook.com (2603:10b6:408:135::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.21; Fri, 3 Nov
- 2023 18:44:08 +0000
-Received: from DS2PEPF00003448.namprd04.prod.outlook.com
- (2603:10b6:610:51:cafe::3) by CH2PR15CA0013.outlook.office365.com
- (2603:10b6:610:51::23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.22 via Frontend
- Transport; Fri, 3 Nov 2023 18:44:07 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB03.amd.com; pr=C
-Received: from SATLEXMB03.amd.com (165.204.84.17) by
- DS2PEPF00003448.mail.protection.outlook.com (10.167.17.75) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6954.19 via Frontend Transport; Fri, 3 Nov 2023 18:44:07 +0000
-Received: from SATLEXMB06.amd.com (10.181.40.147) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.32; Fri, 3 Nov
- 2023 13:44:07 -0500
-Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB06.amd.com
- (10.181.40.147) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.32; Fri, 3 Nov
- 2023 13:44:06 -0500
-Received: from xhdradheys41.xilinx.com (10.180.168.240) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server id 15.1.2507.32 via Frontend
- Transport; Fri, 3 Nov 2023 13:44:04 -0500
-From:   Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
-To:     <broonie@kernel.org>
-CC:     <linux-spi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <git@amd.com>, Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>,
-        "Radhey Shyam Pandey" <radhey.shyam.pandey@amd.com>
-Subject: [PATCH] spi: spi-zynq-qspi: add spi-mem to driver kconfig dependencies
-Date:   Sat, 4 Nov 2023 00:13:51 +0530
-Message-ID: <1699037031-702858-1-git-send-email-radhey.shyam.pandey@amd.com>
-X-Mailer: git-send-email 2.1.1
+        Fri, 3 Nov 2023 14:45:02 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05BB2184
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 11:45:00 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1cc2575dfc7so19997085ad.1
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Nov 2023 11:45:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699037099; x=1699641899; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=vi9i7BH5SJFXe9yvdoMNH7A2nK29qOJicsyy3NPBNKM=;
+        b=I1iOh2X2QkWQuSRD5NGq52mh88ZIvCnXywM3R6IK4z28mNZfDiXZOlifISKUiSeXMZ
+         I22NSMcyv90hngigu8X2L4MwechIbhOQ1NOHXejPOu7YaCkPfXjmoy4uHOIueMmtloZz
+         WLLT1QqG/YFPJkd+aPb0kkjK5uAkWmi7f8gAbyjimgKvfm5HN5r167ejo4K7ey4l0J3r
+         svnzaxcV/L5Nt3ol/dat0IAa/B4qtCNeDzLs/Gi5j5zL1Bb4S2xjzQ8fmQcLfbB018px
+         c1PPKnXwygXJeMWGYRX4Ovla4o6QNmbzAuA2mv+axsajGJ28i5F0AsVClW/R06m1/LVp
+         4h6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699037099; x=1699641899;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=vi9i7BH5SJFXe9yvdoMNH7A2nK29qOJicsyy3NPBNKM=;
+        b=eC5NYIee2KRo8aBMotHHeq+sEVVBmLSRxf6O8qlw92tdkaGhZDBEF980GxHcyT2YHJ
+         2DXn9CFwf0ZYcG9ei98fKQImEA1Kif5qDkoG/iJEokGejw0aK3ZVnCHN09tToP8IbA6B
+         LO9p1qVNIoQNtsBN2TYSpmUlh2Ij8FkFFa6W+kb0leasCTeQ+6BEgBf1+VJWG4Atm5LD
+         BCPRxcqWRVMzjEYyBKAw3WJkzC670OCRmv1QDYlwRuf+qTPEk6xhHs4u8yldIsAf9dRf
+         9hE/qJyqdGBr99dUzQyvw/A6Xom8P8mTkHxzh9MmvS7MSwx5zF6ZPC0PrjTEgJgr2M0a
+         QmXw==
+X-Gm-Message-State: AOJu0Yx8vRfjQFSwBNHgyQYzjDth2uTDASb0DYcq4F2pH32edTuo6+HP
+        TGo6uf+ZPuI4QhL38lqwWf0=
+X-Google-Smtp-Source: AGHT+IG50DCmBBcOVKSGZ/DBbJtvVwaoNL+SSgA9Vl/rozZksO0yLCvULX9+9JEru4DMqperxujV8Q==
+X-Received: by 2002:a17:902:d18d:b0:1c9:e2ed:66fe with SMTP id m13-20020a170902d18d00b001c9e2ed66femr16394484plb.52.1699037099336;
+        Fri, 03 Nov 2023 11:44:59 -0700 (PDT)
+Received: from rin-ROG-STRIX-G10CES-G10CES.. (111-255-201-13.dynamic-ip.hinet.net. [111.255.201.13])
+        by smtp.gmail.com with ESMTPSA id q20-20020a170902e31400b001c613b4aa33sm1678257plc.287.2023.11.03.11.44.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 Nov 2023 11:44:58 -0700 (PDT)
+From:   Yiwei Lin <s921975628@gmail.com>
+To:     mingo@redhat.com, peterz@infradead.org
+Cc:     vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        wuyun.abel@bytedance.com, linux-kernel@vger.kernel.org,
+        s921975628@gmail.com
+Subject: [PATCH v3 0/1] sched/fair: Track current se's EEVDF parameters
+Date:   Sat,  4 Nov 2023 02:44:31 +0800
+Message-Id: <20231103184432.9247-1-s921975628@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS2PEPF00003448:EE_|BN9PR12MB5068:EE_
-X-MS-Office365-Filtering-Correlation-Id: bb209b03-daf8-4a6f-35f1-08dbdc9cdc93
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: yctbtr58Fv03CQPkCB40IJRf2e+gDSCyKk/SBAM0U7NPTlBD46D/vHrPVCFjzky0U8hKPDilQGwxd6ZZhWKzlefy/pgOIDGyoo8ehvu108DUiGRk8hqe/pDaL8B/aOn+zSqx9WwbBHWo/cYRZHBoHUu/SrwIdJz0qYKHQHxqILUm+K/kl4uzyjIuOfKKLOuxfBbCoy+W0T0Vk9PS0UMvjJVd9z4Ip/5DF06lZZDkC9uP2oJqXcMkOfI0+YXNsO4Elpi9lswN4NpU6FU22Z1jMVKxsoxlU2lTzacv2V5EObI/gt5LmbLvZRtJDlbmX/OkTK7AbjBxHTfYYz73u/j8hFm0Uh54k/uCkFL9VDDizmu/zoAL2omM7q1R0OuCyfsaaXx3G8cBtuVuTpuWIW4ZvByBE+DRzYOjFEQvz+Opz/hYbpAPt0GJOnWN+RZq5CGibkbCqCH2JuaqLV4YkURyFvaFv6hCFSm4Vei1UXHCDP6OwSB4S3Ajg2CntDW//1ZO0tVzQz5FzhSpqWc7eb8Th561DATywEaIRpZOSoKu08xSUsSmu9cr+DXI6IV+GHNfxD2m3Y6LkaKluCdDtU6e6S0xIMkx5fTVubKvH0YUYhPkJ2KaELBYBSLWAIhQOC5q+NEXBFOfKhLxagbUDcTWXUsEFI7FVD+oPlT396qn9sGEYrMPptrEIsiWUVEBzaUKlMOYHGl3yhFNF+vY603j62af3/qypAxYwXV38HnMobyGKNFkZA3KH9dlIt05TnSN1rrSVwVFdUUO2qLffkIK7Q==
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(136003)(396003)(376002)(346002)(39860400002)(230922051799003)(451199024)(82310400011)(1800799009)(186009)(64100799003)(46966006)(36840700001)(40470700004)(86362001)(2906002)(4744005)(40460700003)(36756003)(26005)(41300700001)(426003)(2616005)(356005)(81166007)(6666004)(36860700001)(336012)(478600001)(82740400003)(47076005)(70586007)(54906003)(6916009)(70206006)(316002)(8676002)(4326008)(8936002)(5660300002)(40480700001)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Nov 2023 18:44:07.5919
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: bb209b03-daf8-4a6f-35f1-08dbdc9cdc93
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: DS2PEPF00003448.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR12MB5068
-X-Spam-Status: No, score=1.4 required=5.0 tests=AC_FROM_MANY_DOTS,BAYES_00,
-        DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        FORGED_SPF_HELO,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Level: *
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>
+Changelog:
+v2 -> v3:
+    - Simplify how we avg_vruntime_add() and avg_vruntime_sub() when
+neeed
+    - Do not avg_vruntime_add() the contributions of 'curr' again when
+put_prev_entity()
+v1 -> v2:
+    - Consider the contribution to avg_vruntime for 'curr'
 
-Zynq QSPI driver has been converted to use spi-mem framework so
-add spi-mem to driver kconfig dependencies.
+ kernel/sched/fair.c | 40 ++++++++++++----------------------------
+ 1 file changed, 12 insertions(+), 28 deletions(-)
 
-Fixes: 67dca5e580f1 ("spi: spi-mem: Add support for Zynq QSPI controller")
-Signed-off-by: Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>
-Signed-off-by: Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
----
- drivers/spi/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/spi/Kconfig b/drivers/spi/Kconfig
-index c7b8596cf990..1336815a0c2c 100644
---- a/drivers/spi/Kconfig
-+++ b/drivers/spi/Kconfig
-@@ -1158,6 +1158,7 @@ config SPI_XTENSA_XTFPGA
- config SPI_ZYNQ_QSPI
- 	tristate "Xilinx Zynq QSPI controller"
- 	depends on ARCH_ZYNQ || COMPILE_TEST
-+	depends on SPI_MEM
- 	help
- 	  This enables support for the Zynq Quad SPI controller
- 	  in master mode.
 -- 
 2.34.1
 
