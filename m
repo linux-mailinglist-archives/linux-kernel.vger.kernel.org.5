@@ -2,230 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 471727E0B3F
+	by mail.lfdr.de (Postfix) with ESMTP id A19687E0B40
 	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 23:48:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376729AbjKCWoL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 18:44:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35122 "EHLO
+        id S1377587AbjKCWoR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 18:44:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345174AbjKCWoJ (ORCPT
+        with ESMTP id S1376818AbjKCWoP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 18:44:09 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F995D6D
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 15:44:06 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5a9012ab0adso36502087b3.1
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Nov 2023 15:44:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1699051445; x=1699656245; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:reply-to:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VHUs19MXg68FJ/UikGSWl1xtUmfy1ZNYmGDVs0epASU=;
-        b=eRdP5MYTex7drFSvnL8KqbMuun5bFCt9F19Ie+gn87Sws08TPDik6fMEhpWDYHc+Tq
-         zj1nW1YWspv3f5JvTv1gOvybTkExyY/sczl0YsQXlTbrNl6tnb6AKVRANhaKdQGG+iVg
-         VOPV+IGfWF7Is5mFbH9KuY2/7GQMN+uLeHlxXxK4etRrzBtwGPq13ju0tatp0KEqpcqq
-         luPgfWcMtusTndj7JjPY/IgwxqxvIUdRzBZNemKtxs+1rQ9ZC9YBZ9XLdGPmlj0tlQ4Q
-         Rb0QZnAeePkNn/31ORt4eC/8YJXMcosXX5awUpGrPE9kJaL/SFDBvAPuSssBGFwUE1ez
-         y47g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699051445; x=1699656245;
-        h=cc:to:from:subject:message-id:mime-version:date:reply-to
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=VHUs19MXg68FJ/UikGSWl1xtUmfy1ZNYmGDVs0epASU=;
-        b=JDkNjBTlniRcJoOHFQafoP8vhYc0DqpYzbAFy8PnV9AEhmwq75jpTvgMwnGzjXiriE
-         aIs1ehpq42L3P2928uzfz8Dhoo25JOvTP7ds2apPAeXfKKlpG1V8ICDTRb75Mz/xys5p
-         fsmibYevCVgd6ImRO5BMOHnyRHIgdFo+mXMjucUIkgcpVQHfEjrDc9VO440q/lh9nvEx
-         ugK1mR7t8IzKf5uSprF2dHT0jNUpOfpAv1E0MLNvtyql+vYpJapT61mnWfUKOFVCe3DK
-         6rwXRedW0A4y+l/567rlBNU6KU7JHiD+zUmE15yZ7PULpiSUFSmrbW5+BQUAYP3mCCVr
-         tS7g==
-X-Gm-Message-State: AOJu0YzL/mVurRK1Hjd3ds9zQ/sklIBhOcqLB9myLe//mj0VdplgY4ye
-        XLzf2GfDI5z/Fz+gHbkjwTNA8n32Lwc=
-X-Google-Smtp-Source: AGHT+IHPtAwEWr+ctDqsScG5V+Q52QTEUJtI+qEU6hGf5rCAVAqdsox8vEdKuTAwtWiJ7ZeFf05HMmjUPRE=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a81:a056:0:b0:59b:ca80:919a with SMTP id
- x83-20020a81a056000000b0059bca80919amr78967ywg.0.1699051445462; Fri, 03 Nov
- 2023 15:44:05 -0700 (PDT)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Fri,  3 Nov 2023 15:44:02 -0700
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.42.0.869.gea05f2083d-goog
-Message-ID: <20231103224402.347278-1-seanjc@google.com>
-Subject: [PATCH] x86/fpu/xstate: Always preserve non-user xfeatures/flags in __state_perm
-From:   Sean Christopherson <seanjc@google.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org
-Cc:     linux-kernel@vger.kernel.org, Maxim Levitsky <mlevitsk@redhat.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Chao Gao <chao.gao@intel.com>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        John Allen <john.allen@amd.com>, kvm@vger.kernel.org,
-        Sean Christopherson <seanjc@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 3 Nov 2023 18:44:15 -0400
+Received: from BN6PR00CU002.outbound.protection.outlook.com (mail-eastus2azon11021006.outbound.protection.outlook.com [52.101.56.6])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E766D70;
+        Fri,  3 Nov 2023 15:44:12 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=oOfoyObKiQ1mSjpVmF1M3fhq3/N11lUuj7qtwA44WYmsXSJF24TSXocqlrL9AwzGZkmFvR4ZMaXJDlMtdkKV6sIDEvP4DKAJ5rligdlxgQeC7dQCU4YkXbmEWkcDbxTGbLRm6cEt9uU2IFVwumY7vdf8gTIiOjmuNcc8cXIZ3M/HAy8Q2Yec6AkvB7pmB5jZYNCMuR/suMsjcBuzWzI8vGxihEGFHlEhu/qwZ4OQ4a25WntI0A/GzH9Drv3uJbxeUxsHJRMAsvYGayuoq/dvsfATC1kzlUWwHdeDfSP9pxEjz0o8+TVP4X6eEJCbM7OpmL4Y7Wb2XrzPouOQXzNQTg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Do1Inb4Bg6HrjIawh4HzgXg/Lz/WMuJnWCLyN7kHpXE=;
+ b=lziLRzE4gTo1H3Gk/duRQG3qqFJSTg53C8QnbXKaG3Y9q9CQQNWqjWGo7pTe928CRt0oRYO16j20nMoaC2NRzce8LXByHaI2j72Tlzs53rYe/YpNFTRBZ8VW5MsfLgyAhP2GcOsoSuPaTFrfoLNaWIgXDD1EmarabkiRlzy9GUC/L2HnuYQ0NZqYM2VZ/tArsK8GbF7o9sSy5QLTCDWnmZHCsCtsHfbLHs42DhDzjj0NHt2D0hW/BsBDiohisvBv85rLxl4AAV/n+vzOvV14v08we+YgzPku7beNavaNYaYQ4Y7Kn7MMCqnt1xbuGnLZxZOuFCZfxKRdDQagWo1cAA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Do1Inb4Bg6HrjIawh4HzgXg/Lz/WMuJnWCLyN7kHpXE=;
+ b=i7jyLPbPiYP5476WDkDCmHu5FFpHZKmCkEcGGd0JSwYleIBXEfK08rOd59mBS9Wy1Fgdndt4DY86apbpLoIIiCpBhU9WrUBtkgxzeO0aixapYfzO5H0BvE9GWtVcTTW8hwmf6N+lVRPXVDw61vJDRQtYrEv7jucRLny056hOL2I=
+Received: from PH7PR21MB3116.namprd21.prod.outlook.com (2603:10b6:510:1d0::10)
+ by CY5PR21MB3444.namprd21.prod.outlook.com (2603:10b6:930:f::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6977.12; Fri, 3 Nov
+ 2023 22:44:09 +0000
+Received: from PH7PR21MB3116.namprd21.prod.outlook.com
+ ([fe80::b0b2:906f:67fe:322a]) by PH7PR21MB3116.namprd21.prod.outlook.com
+ ([fe80::b0b2:906f:67fe:322a%5]) with mapi id 15.20.6977.012; Fri, 3 Nov 2023
+ 22:44:09 +0000
+From:   Haiyang Zhang <haiyangz@microsoft.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+CC:     "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        KY Srinivasan <kys@microsoft.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        Dexuan Cui <decui@microsoft.com>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: RE: [PATCH net,v2] hv_netvsc: fix race of netvsc and VF
+ register_netdevice
+Thread-Topic: [PATCH net,v2] hv_netvsc: fix race of netvsc and VF
+ register_netdevice
+Thread-Index: AQHaCFKpKET2UnWjhkeRl4AacA94KLBmhFAAgAK2PJA=
+Date:   Fri, 3 Nov 2023 22:44:08 +0000
+Message-ID: <PH7PR21MB31169E4E03163358946BF95DCAA5A@PH7PR21MB3116.namprd21.prod.outlook.com>
+References: <1698355354-12869-1-git-send-email-haiyangz@microsoft.com>
+ <20231101220730.2b7cc7d1@kernel.org>
+In-Reply-To: <20231101220730.2b7cc7d1@kernel.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=c223206b-d339-4527-8658-b770b1fdaf94;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2023-11-03T22:32:15Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PH7PR21MB3116:EE_|CY5PR21MB3444:EE_
+x-ms-office365-filtering-correlation-id: 79e540b1-2ec0-465e-f8a1-08dbdcbe646f
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: is2tu15sa+OqzXChbJrl6nuXGXlZaX+fIGTOsPEkSRzIfYsxmna7IDYl+4FdYOlXhbbz2vNVj4Wi9C19lNqlM7VIWTxtEzgRh6cXfxysSKZf6lWsHoAvZdrOqx5jK1U1rWEGZeZOiIAoHBVTXmU3vStqL7YEoZvRTlFF78lic7Z6bece5vbVRqIw6bgH6xTflu7pLLo3u0/puHZFeTnuNaAaBJP5AtWg8Vyv1f91o9VvfkFLQvtvSCn6yyZ9oEAAMW+DPSd9vx8SFwsG6C8N8yILjxVRX1Toe9NfUKuFSFcLYKUhN5uhG3mbxXRTJUnyeY3YW5+tbxgIajdKYTqgRQrEQQ7TZdjBPz3ffXmW8teioBiq1xCuSG8OXmk46MuUI5UeUML6UlzC/r1G9t89PCIlgZwiuCykb8+h8jFAKaN4at8dTKC98HWXa3DeN1lSW+1tS6My+XPrdUpWwtF9ZL5erDX9lWTPM0yw4udvnVQKBaR6Zh2Bceviaa8ZIRaV/yCx0pxYxnr1L4HH563j5etptQqP47y0cJQmIkyEUa9xfLDrnhtrKPa1FzJuijXZ3UdgGNC/ibNWlt8ivyzyBZcaFphbOSXaOQeTse2yPt1N+6ztIaRwul7TBM15GNANsp3s2uVB0PueLFZIMzfYy8npm61Z4HyDt0HQc1U+XNM=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR21MB3116.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(136003)(346002)(39860400002)(366004)(396003)(230922051799003)(1800799009)(64100799003)(451199024)(186009)(54906003)(82950400001)(66476007)(64756008)(66446008)(66556008)(82960400001)(66946007)(122000001)(316002)(38070700009)(6916009)(76116006)(26005)(10290500003)(6506007)(7696005)(71200400001)(478600001)(53546011)(9686003)(38100700002)(86362001)(2906002)(5660300002)(8990500004)(52536014)(41300700001)(33656002)(8936002)(8676002)(4326008)(83380400001)(55016003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?7hf7yvdDH9fg8kC/+EMP9aZscZYkCHAGVA9uRIz/52umhQlA06zpC0YINi4K?=
+ =?us-ascii?Q?Nu9anYXXbXgF3kWxxxjIIyB8SAZfqW3i4FDLCNbY0kajm5HPtFOIoncT0lKt?=
+ =?us-ascii?Q?ofhl/4IZmcWXDW5rdrsKn6YnZUpaulqT4O0lsM9PuCuNC6cT4z3yH3lHAIKZ?=
+ =?us-ascii?Q?2uIKedeusyJzZxdYWMn0vDrsddsd0zpuJDsYaXd8fg07QpD42aiK9d4VXAjG?=
+ =?us-ascii?Q?9gxYUjdonU37OcycJh20tJExXuya8RDpB2JQq4YZ4hj3AoZplwM7Hlkkgdzv?=
+ =?us-ascii?Q?FlGF+g5EUywP4ROWDi3jzOFFi5mOXfWlrH0QzwENGB1+7sB0x9fK+Dt/fy7X?=
+ =?us-ascii?Q?WtwDXg52pKue4WOb47otx8tCo3caBGjNgyLbXazqWc3k+B/JMDcK9zeTwYY/?=
+ =?us-ascii?Q?XQvrRfzwyWy08b660HZr9gEt8miizPd0Z2VdQTRclQsgiAn+ox6cufJJGifO?=
+ =?us-ascii?Q?aL+oy/a+9GxvVCXumEKtv4AVTRackaoQLHSyNAHh+UFElkAlaZsHju5hOrxm?=
+ =?us-ascii?Q?0+ALC8K4PisA9LQzAWesBIcPeSTXL4ct+F5sSEY2vd/r71NRtE0MkY8kWy16?=
+ =?us-ascii?Q?eIHQBVOLdmZ2EDp+4dadaCiczTaUfsdebagzUOdnOeXCPdGcQqsOQ+Rh0wAd?=
+ =?us-ascii?Q?75wflIPX2imA0Yyo4o0o9NMgzg4cs44inuqgNL2hQBM7CSwSXdRaRgF5EimK?=
+ =?us-ascii?Q?Tpr65Z8jGk4DUxgVtr36uDUlDYpy1XotKaFfck3qKd86fTua/4jvwjPqObwP?=
+ =?us-ascii?Q?P112FdJnpkyyeSIYKVLAZg0EIF9waYGcoXixi+avfB1HnTrc7MgFjaRlxfb8?=
+ =?us-ascii?Q?0WZqLuOmIP5ihYIZ2ktTq954GGwSKx45/pRgEyZ7RnupIdw2xCIO9u+PTWc6?=
+ =?us-ascii?Q?hEGK4N2GsTVnadHG8cyWJRORZWEVWFvYDzSjPw6ODcEleD432hdBSlmvHZ7y?=
+ =?us-ascii?Q?8snXYAzfHGYbDYuQTC2rHSmmQX3O1ixXGnV79mUKukjDsoy8/p7yk9//XYBF?=
+ =?us-ascii?Q?Q0uUooSQeov5Ly8zdwGS446+VVyTEOpD7HYmf2wYZT2scJmTBs1shErFx/QO?=
+ =?us-ascii?Q?ExPkoqe2LYIjrV5LGzXw5b5n0yhMMMGo3+qPPWeY1mydnz7pbO+E9t/2A4DV?=
+ =?us-ascii?Q?bFN231MQPnZHIYtRrYlK4aMl+BONwPcAMW5w2rWzVo1/DAl3BC9qvAmiO/el?=
+ =?us-ascii?Q?u6WFsEVNtjcdfZTmw/4ZEfHxuPNbB5VqqgM+jHusLOwUr/mJiqjt7k5aJBO9?=
+ =?us-ascii?Q?1ZkbOhNgg4/BYnl5BroxSznblgZIAHHoPvlps/aG5Spp/F1YM4ONrjHcGyYa?=
+ =?us-ascii?Q?GZd4oOkw8vTBXmb1Ojv9zeue1vfb79HBZlgU4gag+eIxplF+/SRpsBIcy34t?=
+ =?us-ascii?Q?8oHRb7gCXUMSJTE+akVFZN56J/u2bEfSwOnLhRAD2pJkriAqFqblStJP7p11?=
+ =?us-ascii?Q?UepG0yqEG7O++J5Jg6FGgTPLyMOrCTM95jwZDrr4dCVcoTNtKN4rTUZUSooW?=
+ =?us-ascii?Q?OSDYqjA/gTsS3fmQcslOn0Rv/mHXUxGFK7TMH71X5ZX154kjmQ1WVjhe/HdZ?=
+ =?us-ascii?Q?OiEctZ3p0FLIl2Q4k9OSMhXwi++2b0xM8w2TkH5z?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH7PR21MB3116.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 79e540b1-2ec0-465e-f8a1-08dbdcbe646f
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Nov 2023 22:44:08.9736
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 3qX3ixAhQT1dYm6kr3zF5SdQPwtkrGPM26GILihen/FLlAa5xLHyqzuJ3pUufABQJqKSFsNkbaJ/3NiR25FY7A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR21MB3444
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When granting userspace or a KVM guest access to an xfeature, preserve the
-entity's existing supervisor and software-defined permissions as tracked
-by __state_perm, i.e. use __state_perm to track *all* permissions even
-though all supported supervisor xfeatures are granted to all FPUs and
-FPU_GUEST_PERM_LOCKED disallows changing permissions.
 
-Effectively clobbering supervisor permissions results in inconsistent
-behavior, as xstate_get_group_perm() will report supervisor features for
-process that do NOT request access to dynamic user xfeatures, whereas any
-and all supervisor features will be absent from the set of permissions for
-any process that is granted access to one or more dynamic xfeatures (which
-right now means AMX).
 
-The inconsistency isn't problematic because fpu_xstate_prctl() already
-strips out everything except user xfeatures:
+> -----Original Message-----
+> From: Jakub Kicinski <kuba@kernel.org>
+> Sent: Thursday, November 2, 2023 1:08 AM
+> To: Haiyang Zhang <haiyangz@microsoft.com>
+> Cc: linux-hyperv@vger.kernel.org; netdev@vger.kernel.org; KY Srinivasan
+> <kys@microsoft.com>; wei.liu@kernel.org; Dexuan Cui
+> <decui@microsoft.com>; edumazet@google.com; pabeni@redhat.com;
+> davem@davemloft.net; linux-kernel@vger.kernel.org; stable@vger.kernel.org
+> Subject: Re: [PATCH net,v2] hv_netvsc: fix race of netvsc and VF
+> register_netdevice
+>=20
+> On Thu, 26 Oct 2023 14:22:34 -0700 Haiyang Zhang wrote:
+> > And, move register_netdevice_notifier() earlier, so the call back
+> > function is set before probing.
+>=20
+> Are you sure you need this? I thought the netdev notifier "replays"
+> registration events (i.e. sends "fake" events for already present
+> netdevs).
+>=20
+> If I'm wrong this should still be a separate patch from the rtnl
+> reorder.
 
-        case ARCH_GET_XCOMP_PERM:
-                /*
-                 * Lockless snapshot as it can also change right after the
-                 * dropping the lock.
-                 */
-                permitted = xstate_get_host_group_perm();
-                permitted &= XFEATURE_MASK_USER_SUPPORTED;
-                return put_user(permitted, uptr);
+I tested, NETDEV_REGISTER is indeed replayed, but NETDEV_POST_INIT=20
+is not.  And we will use NETDEV_POST_INIT soon.
 
-        case ARCH_GET_XCOMP_GUEST_PERM:
-                permitted = xstate_get_guest_group_perm();
-                permitted &= XFEATURE_MASK_USER_SUPPORTED;
-                return put_user(permitted, uptr);
+Also, we want to get notified by NETDEV_POST_INIT immediately from=20
+VF, before VF NIC shows up to upper layers. So, even if we make=20
+NETDEV_POST_INIT to be replayed, that may be too late.
 
-and similarly KVM doesn't apply the __state_perm to supervisor states
-(kvm_get_filtered_xcr0() incorporates xstate_get_guest_group_perm()):
+I will put the register_netdevice_notifier() change to a separate patch.
 
-        case 0xd: {
-                u64 permitted_xcr0 = kvm_get_filtered_xcr0();
-                u64 permitted_xss = kvm_caps.supported_xss;
-
-But if KVM in particular were to ever change, dropping supervisor
-permissions would result in subtle bugs in KVM's reporting of supported
-CPUID settings.  And the above behavior also means that having supervisor
-xfeatures in __state_perm is correctly handled by all users.
-
-Dropping supervisor permissions also creates another landmine for KVM.  If
-more dynamic user xfeatures are ever added, requesting access to multiple
-xfeatures in separate ARCH_REQ_XCOMP_GUEST_PERM calls will result in the
-second invocation of __xstate_request_perm() computing the wrong ksize, as
-as the mask passed to xstate_calculate_size() would not contain *any*
-supervisor features.
-
-Commit 781c64bfcb73 ("x86/fpu/xstate: Handle supervisor states in XSTATE
-permissions") fudged around the size issue for userspace FPUs, but for
-reasons unknown skipped guest FPUs.  Lack of a fix for KVM "works" only
-because KVM doesn't yet support virtualizing features that have supervisor
-xfeatures, i.e. as of today, KVM guest FPUs will never need the relevant
-xfeatures.
-
-Simply extending the hack-a-fix for guests would temporarily solve the
-ksize issue, but wouldn't address the inconsistency issue and would leave
-another lurking pitfall for KVM.  KVM support for virtualizing CET will
-likely add CET_KERNEL as a guest-only xfeature, i.e. CET_KERNEL will not
-be set in xfeatures_mask_supervisor() and would again be dropped when
-granting access to dynamic xfeatures.
-
-Note, the existing clobbering behavior is rather subtle.  The @permitted
-parameter to __xstate_request_perm() comes from:
-
-	permitted = xstate_get_group_perm(guest);
-
-which is either fpu->guest_perm.__state_perm or fpu->perm.__state_perm,
-where __state_perm is initialized to:
-
-        fpu->perm.__state_perm          = fpu_kernel_cfg.default_features;
-
-and copied to the guest side of things:
-
-	/* Same defaults for guests */
-	fpu->guest_perm = fpu->perm;
-
-fpu_kernel_cfg.default_features contains everything except the dynamic
-xfeatures, i.e. everything except XFEATURE_MASK_XTILE_DATA:
-
-        fpu_kernel_cfg.default_features = fpu_kernel_cfg.max_features;
-        fpu_kernel_cfg.default_features &= ~XFEATURE_MASK_USER_DYNAMIC;
-
-When __xstate_request_perm() restricts the local "mask" variable to
-compute the user state size:
-
-	mask &= XFEATURE_MASK_USER_SUPPORTED;
-	usize = xstate_calculate_size(mask, false);
-
-it subtly overwrites the target __state_perm with "mask" containing only
-user xfeatures:
-
-	perm = guest ? &fpu->guest_perm : &fpu->perm;
-	/* Pairs with the READ_ONCE() in xstate_get_group_perm() */
-	WRITE_ONCE(perm->__state_perm, mask);
-
-Cc: Maxim Levitsky <mlevitsk@redhat.com>
-Cc: Weijiang Yang <weijiang.yang@intel.com>
-Cc: Dave Hansen <dave.hansen@intel.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Chao Gao <chao.gao@intel.com>
-Cc: Rick Edgecombe <rick.p.edgecombe@intel.com>
-Cc: John Allen <john.allen@amd.com>
-Cc: kvm@vger.kernel.org
-Link: https://lore.kernel.org/all/ZTqgzZl-reO1m01I@google.com
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
-
-Note, I haven't tested the PASID side of things, so someone with more know-how
-definitely needs to take this for a spin.
-
- arch/x86/kernel/fpu/xstate.c | 18 +++++++++++-------
- 1 file changed, 11 insertions(+), 7 deletions(-)
-
-diff --git a/arch/x86/kernel/fpu/xstate.c b/arch/x86/kernel/fpu/xstate.c
-index ef6906107c54..73f6bc00d178 100644
---- a/arch/x86/kernel/fpu/xstate.c
-+++ b/arch/x86/kernel/fpu/xstate.c
-@@ -1601,16 +1601,20 @@ static int __xstate_request_perm(u64 permitted, u64 requested, bool guest)
- 	if ((permitted & requested) == requested)
- 		return 0;
- 
--	/* Calculate the resulting kernel state size */
-+	/*
-+	 * Calculate the resulting kernel state size.  Note, @permitted also
-+	 * contains supervisor xfeatures even though supervisor are always
-+	 * permitted for kernel and guest FPUs, and never permitted for user
-+	 * FPUs.
-+	 */
- 	mask = permitted | requested;
--	/* Take supervisor states into account on the host */
--	if (!guest)
--		mask |= xfeatures_mask_supervisor();
- 	ksize = xstate_calculate_size(mask, compacted);
- 
--	/* Calculate the resulting user state size */
--	mask &= XFEATURE_MASK_USER_SUPPORTED;
--	usize = xstate_calculate_size(mask, false);
-+	/*
-+	 * Calculate the resulting user state size.  Take care not to clobber
-+	 * the supervisor xfeatures in the new mask!
-+	 */
-+	usize = xstate_calculate_size(mask & XFEATURE_MASK_USER_SUPPORTED, false);
- 
- 	if (!guest) {
- 		ret = validate_sigaltstack(usize);
-
-base-commit: 45b890f7689eb0aba454fc5831d2d79763781677
--- 
-2.42.0.869.gea05f2083d-goog
+Thanks,
+- Haiyang
 
