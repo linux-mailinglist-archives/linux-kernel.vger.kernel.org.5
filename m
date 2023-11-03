@@ -2,53 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6958C7DFE62
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 04:28:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E4587DFE65
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 04:30:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229677AbjKCD13 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 23:27:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58874 "EHLO
+        id S229907AbjKCD2h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 23:28:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229488AbjKCD11 (ORCPT
+        with ESMTP id S229570AbjKCD2f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 23:27:27 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2741A19E
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 20:27:24 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 45865C433C7;
-        Fri,  3 Nov 2023 03:27:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698982043;
-        bh=9LT1+qDnNn2RNVUpkmD/wQ5PnuRan+wlGSZF4IJKXj0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=hZEBM6jA7kPxoqpEu7bNHQCacASE0ulPskriERVuBGaqrYc5oDBxo2EpDF/ksZvZg
-         KAJ1QQUCXTmiom3C2rT8JPWta+B0dfFhQrQopm19u61L0h38+sY/D+UVV8c34q2+8F
-         58LzL/Ud6/UaphDbCoSNztt9PyHXumQAJyez7hhJ/2Hv9wOhDeDvozqCnHFu4UsMRB
-         +4G/DT0+tedMCIPe8NowyOpjUK27PQWEkoioQHbdnfxggh/weC9ehF3L/JrNUJGgY4
-         Y/vW3iCY0qL/0XD7ngACJ3Q0+swTatxapPZKkSZN7xLC9MmcrUoOZOZs0Lf37UvA45
-         U6mT6AJcLvJ/A==
-Date:   Fri, 3 Nov 2023 12:27:19 +0900
-From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To:     Francis Laniel <flaniel@linux.microsoft.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux trace kernel <linux-trace-kernel@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Andrii Nakryiko <andrii@kernel.org>
-Subject: Re: [PATCH for-next] tracing/kprobes: Add symbol counting check
- when module loads
-Message-Id: <20231103122719.829de1daad83a08fe09ab2bd@kernel.org>
-In-Reply-To: <5987802.lOV4Wx5bFT@pwmachine>
-References: <169854904604.132316.12500381416261460174.stgit@devnote2>
-        <1868732.tdWV9SEqCh@pwmachine>
-        <20231101081509.605080231a2736b91331cb85@kernel.org>
-        <5987802.lOV4Wx5bFT@pwmachine>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-8.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        Thu, 2 Nov 2023 23:28:35 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8E9719E;
+        Thu,  2 Nov 2023 20:28:31 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-9c3aec5f326so540443866b.1;
+        Thu, 02 Nov 2023 20:28:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698982110; x=1699586910; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=zb/a36wLOX8RMsCCsQ/Odv/4Pe7YOEMbRJ5Kk+EkPKg=;
+        b=RCW08A5LFe0uQ5cYvG65HdGznvgkdt+iZE3KqWUp09BvudoUx25Ga0eZ1niD8PvN9r
+         VaVxkANEel8xcNC+HSUlaM0EvMG9MBzEwgbS9ULX9ElFTgcXXwlY5Vt+HyA5H0fzOyYa
+         fbqVSXAqUgzO4aWEC8IGRs3BgIMFnDOPYtmXkhSLxyxF5tDkJmaACHj6sBEDXq0TZdeL
+         +TIGXM+klAtLc8akx8uoUJHWBPjbLXAj5lrLEySZIvDOp5D24C8cf3zBtGArGzFYfKHe
+         yY4A5O0lsiC8qnPZONOmYAyHmx0VnijDWmsK32h9Z6clquKrHQtYfHX3LlfX+eIATmru
+         347w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698982110; x=1699586910;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=zb/a36wLOX8RMsCCsQ/Odv/4Pe7YOEMbRJ5Kk+EkPKg=;
+        b=Xr1L0/4FETA+G9yNsYtFuKBNjyqWF26kEfQYP8JMZ0BJpkhLMxATYOKOPwCJDSTPSA
+         jwHWMhD6b6b6FASCbM+CRShw0dai7pb7v2a/KMzbAbEy+G7oDqkYqcT+qSJeYCVEy9bV
+         Bjnc9hNdMlKpsXZ3Tj3hDUfa7MjoLhrKIfcsHTfB6o4xOKw20yIuYfhcqLjnJK++mMgs
+         2v4ul4jPEE17SsPPhOhI6BjlDXpGGPSe+G+MK4b0ICnwJIqFRjjVtcptVj7tC5+dQP2s
+         hQwrttlCGSAKN5QBuhwYrFuZ2PggnQEQINP1CWsKiBgVlDmmwkwZgsDgfCzyne9a0FPe
+         g6QQ==
+X-Gm-Message-State: AOJu0YySRg/ZQqFIMp1ZN66q+D5Mv2UnfKs10DPlzfrnoo+H9Ew9Q7Um
+        saJwMhUPl6eae4HZaYDPfeWuGeOxPGYXYNXIWW4=
+X-Google-Smtp-Source: AGHT+IHLoKNmS9eyyf4W6p2GhUKWMvawf2nQfjJZXE6Hghrwd8VFwEN8fXmOqR7kdMieSsVR+kgjZ++bD2Ima2x2qt0=
+X-Received: by 2002:a17:907:968d:b0:9b2:b808:6a1c with SMTP id
+ hd13-20020a170907968d00b009b2b8086a1cmr1385757ejc.35.1698982109881; Thu, 02
+ Nov 2023 20:28:29 -0700 (PDT)
+MIME-Version: 1.0
+References: <20231103024119.15031-1-dakr@redhat.com>
+In-Reply-To: <20231103024119.15031-1-dakr@redhat.com>
+From:   Dave Airlie <airlied@gmail.com>
+Date:   Fri, 3 Nov 2023 13:28:18 +1000
+Message-ID: <CAPM=9tx7n+v-c-Qjd7O9GFOgyX4EbFZ=Jk_VOM9i0z6BmocJZw@mail.gmail.com>
+Subject: Re: [PATCH] drm/nouveau/gr/gf100-: unlock mutex failing to create
+ golden context
+To:     Danilo Krummrich <dakr@redhat.com>
+Cc:     nouveau@lists.freedesktop.org, faith@gfxstrand.net,
+        lyude@redhat.com, kherbst@redhat.com,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,105 +70,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 02 Nov 2023 14:57:12 +0200
-Francis Laniel <flaniel@linux.microsoft.com> wrote:
+On Fri, 3 Nov 2023 at 12:41, Danilo Krummrich <dakr@redhat.com> wrote:
+>
+> Do not return from gf100_gr_chan_new() with fecs mutex held when failing
+> to create the golden context image.
 
-> Hi!
-> 
-> Le mercredi 1 novembre 2023, 01:15:09 EET Masami Hiramatsu a écrit :
-> > Hi,
-> > 
-> > On Tue, 31 Oct 2023 23:24:43 +0200
-> > 
-> > Francis Laniel <flaniel@linux.microsoft.com> wrote:
-> > > > @@ -729,17 +744,55 @@ static int count_mod_symbols(void *data, const
-> > > > char
-> > > > *name, unsigned long unused) return 0;
-> > > > 
-> > > >  }
-> > > > 
-> > > > -static unsigned int number_of_same_symbols(char *func_name)
-> > > > +static unsigned int number_of_same_symbols(const char *mod, const char
-> > > > *func_name) {
-> > > > 
-> > > >  	struct sym_count_ctx ctx = { .count = 0, .name = func_name };
-> > > > 
-> > > > -	kallsyms_on_each_match_symbol(count_symbols, func_name, &ctx.count);
-> > > > +	if (!mod)
-> > > > +		kallsyms_on_each_match_symbol(count_symbols, func_name,
-> > > 
-> > > &ctx.count);
-> > > 
-> > > > -	module_kallsyms_on_each_symbol(NULL, count_mod_symbols, &ctx);
-> > > > +	module_kallsyms_on_each_symbol(mod, count_mod_symbols, &ctx);
-> > > 
-> > > I may be missing something here or reviewing too quickly.
-> > > Wouldn't this function return count to be 0 if func_name is only part of
-> > > the module named mod?
-> > 
-> > No, please read below.
-> > 
-> > > Indeed, if the function is not in kernel symbol,
-> > > kallsyms_on_each_match_symbol() will not loop.
-> > > And, by giving mod to module_kallsyms_on_each_symbol(), the corresponding
-> > > module will be skipped, so count_mob_symbols() would not be called.
-> > > Hence, we would have 0 as count, which would lead to ENOENT later.
-> > 
-> > Would you mean the case func_name is on the specific module?
-> > If 'mod' is specified, module_kallsyms_on_each_symbol() only loops on
-> > symbols in the module names 'mod'.
-> > 
-> > int module_kallsyms_on_each_symbol(const char *modname,
-> >                                    int (*fn)(void *, const char *, unsigned
-> > long), void *data)
-> > {
-> >         struct module *mod;
-> >         unsigned int i;
-> >         int ret = 0;
-> > 
-> >         mutex_lock(&module_mutex);
-> >         list_for_each_entry(mod, &modules, list) {
-> >                 struct mod_kallsyms *kallsyms;
-> > 
-> >                 if (mod->state == MODULE_STATE_UNFORMED)
-> >                         continue;
-> > 
-> >                 if (modname && strcmp(modname, mod->name))
-> >                         continue;
-> > ...
-> > 
-> > So with above change, 'if mod is not specified, search the symbols in kernel
-> > and all modules. If mod is sepecified, search the symbol on the specific
-> > module'.
-> > 
-> > Thus, "if func_name is only part of the module named mod", the
-> > module_kallsyms_on_each_symbol() will count the 'func_name' in 'mod' module
-> > correctly.
-> 
-> Sorry, I looked to quickly and forgot about the return value of strcmp()...
-
-No problem, strcmp() always traps us :)
-
-> 
-> From the code, everything seems OK!
-> If I have some time, I will test it and potentially come back with a "Tested-
-> by" tag but without any warranty.
-
-
-Thank you!
-
-
-
-> 
-> > Thank you,
-> > 
-> > 
-> > Thank you,
-> 
-> Best regards.
-> 
-> 
-
-
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Reviewed-by: Dave Airlie <airlied@redhat.com>
+>
+> Cc: <stable@vger.kernel.org> # v6.2+
+> Fixes: ca081fff6ecc ("drm/nouveau/gr/gf100-: generate golden context during first object alloc")
+> Signed-off-by: Danilo Krummrich <dakr@redhat.com>
+> ---
+>  drivers/gpu/drm/nouveau/nvkm/engine/gr/gf100.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/gpu/drm/nouveau/nvkm/engine/gr/gf100.c b/drivers/gpu/drm/nouveau/nvkm/engine/gr/gf100.c
+> index c494a1ff2d57..f72d3aa33442 100644
+> --- a/drivers/gpu/drm/nouveau/nvkm/engine/gr/gf100.c
+> +++ b/drivers/gpu/drm/nouveau/nvkm/engine/gr/gf100.c
+> @@ -442,6 +442,7 @@ gf100_gr_chan_new(struct nvkm_gr *base, struct nvkm_chan *fifoch,
+>         if (gr->data == NULL) {
+>                 ret = gf100_grctx_generate(gr, chan, fifoch->inst);
+>                 if (ret) {
+> +                       mutex_unlock(&gr->fecs.mutex);
+>                         nvkm_error(&base->engine.subdev, "failed to construct context\n");
+>                         return ret;
+>                 }
+> --
+> 2.41.0
+>
