@@ -2,81 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DBC97E0BEE
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 00:10:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EFC57E0C16
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 00:20:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231215AbjKCXKi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 19:10:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50750 "EHLO
+        id S231277AbjKCXLc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 19:11:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231152AbjKCXKf (ORCPT
+        with ESMTP id S230226AbjKCXLa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 19:10:35 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 047D71BD;
-        Fri,  3 Nov 2023 16:10:32 -0700 (PDT)
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A3N8l4Y025731;
-        Fri, 3 Nov 2023 23:10:29 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=PG9zHYHPHYASOSDagI1nr8iOKbFVHRx5ABeNnOYiXaQ=;
- b=H/1kgC9i79nSIlHiv1ppnw0aX6NWRR1eDdAYb6PopSjRyFr284NB/R3DXI8rKjCrUJDU
- 0woKWAPZDatl2vKDw4P/3dK7WRFOmc34t3htF8h3rbijJJHQm0GsS3P+0KzRALNjgsoW
- PDDFjVsxQznhgoFYIBhDC223wVYuqWkQGWd1j2qA9dnNsrwPgqP9W/9fF+kBXTBrlb04
- xSq8SIbg6JOV7/6TUXYq/BeVgN1U8VToKR+NvEkloDUGjyeJgg7PJqf42c3H5i7fi0Jc
- aTFlQX2iRwwNeIIvBgkxHyXMDMnJ0vfOC5VyoKEJjz37+Z8+Tm4U4O6PRGfpPU5+2gu1 hw== 
-Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u5a97003c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 03 Nov 2023 23:10:28 +0000
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-        by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3A3NAR70016737
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 3 Nov 2023 23:10:27 GMT
-Received: from [10.71.108.203] (10.80.80.8) by nasanex01b.na.qualcomm.com
- (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Fri, 3 Nov
- 2023 16:10:27 -0700
-Message-ID: <17535d7a-73e2-465b-941c-99db4092327a@quicinc.com>
-Date:   Fri, 3 Nov 2023 16:10:26 -0700
+        Fri, 3 Nov 2023 19:11:30 -0400
+Received: from mail-oi1-f208.google.com (mail-oi1-f208.google.com [209.85.167.208])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA9871BD
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 16:11:27 -0700 (PDT)
+Received: by mail-oi1-f208.google.com with SMTP id 5614622812f47-3b51e0bd5c0so3881791b6e.2
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Nov 2023 16:11:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699053087; x=1699657887;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=CvhMA5vwNRzWu65SJGEeddhJb2JU6sR1loI4Z11L+Zw=;
+        b=sNV3V5EERago4GpxNo+1uukXcMkcbDFvWDF+A7UrYJt1hIaJtR1BviuaoPR+HYWCMV
+         p2joWd+LyKmW/TMLWtoes7tEN32DLL3dhuad4kpjvPJ4BU0+3LEAl4hyFKczMS/T4soo
+         inyEmMBHRcWmcR8C2/uWD61Vhj3o6h0acie9gipu1BCGh2Es57tCdNo3iYse/ssby5Ni
+         FsmKqyks1neGGe2U8OJ8gEosplSvZYUwXcT43aw72QjbROGysVtuBaCjTp+240TLLvOO
+         MDjousgz2lbA8AxslU7C4eXevvky1pXOykOg2NL1Op7I2/ikLNTwF3VTK+mvCdv53vlK
+         bzWQ==
+X-Gm-Message-State: AOJu0YwAzjTJxmzYyPbgB0WOjLjJOZp2XRYrNJu5jrwxXgQWrTuna244
+        aBX0qwP2b3EW3OjRE2AENGErSDecKvOATs924GExfG+MbnmS
+X-Google-Smtp-Source: AGHT+IEbOT7zy+LOW+19lFyQcULJd8dT0Zo0D+pVBfsaG8eEoTVRz58N2hSTZsSI9U71l/7MRC0GYFl414x/Us/Sf3QmEm4NuwZE
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] arm64: dts: qcom: sm8550-qrd: add sound card
-Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20230612173758.286411-1-krzysztof.kozlowski@linaro.org>
-From:   Elliot Berman <quic_eberman@quicinc.com>
-In-Reply-To: <20230612173758.286411-1-krzysztof.kozlowski@linaro.org>
+X-Received: by 2002:a05:6808:19a8:b0:3a7:3737:60fd with SMTP id
+ bj40-20020a05680819a800b003a7373760fdmr8317522oib.7.1699053087289; Fri, 03
+ Nov 2023 16:11:27 -0700 (PDT)
+Date:   Fri, 03 Nov 2023 16:11:27 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000b8f8610609479fa3@google.com>
+Subject: [syzbot] [bpf?] [net?] BUG: unable to handle kernel NULL pointer
+ dereference in sk_psock_verdict_data_ready
+From:   syzbot <syzbot+fd7b34375c1c8ce29c93@syzkaller.appspotmail.com>
+To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, edumazet@google.com,
+        jakub@cloudflare.com, john.fastabend@gmail.com, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        pabeni@redhat.com, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: Wbb5gXFQ9P8k2ux1n--P6T0cPR-fCRoy
-X-Proofpoint-GUID: Wbb5gXFQ9P8k2ux1n--P6T0cPR-fCRoy
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-03_21,2023-11-02_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- suspectscore=0 bulkscore=0 malwarescore=0 phishscore=0 adultscore=0
- lowpriorityscore=0 priorityscore=1501 mlxlogscore=714 mlxscore=0
- clxscore=1015 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2310240000 definitions=main-2311030196
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -84,121 +58,110 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krzysztof,
+Hello,
 
-On 6/12/2023 10:37 AM, Krzysztof Kozlowski wrote:
-> Add the sound card node with tested playback over WSA8845 speakers and
-> WCD9385 headset over USB Type-C.  The recording links were not tested,
-> but should be similar to previous platforms.
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> 
-> ---
-> 
-> Bindings for the sound card were not sent to LKML. Work-in-progress is
-> available here:
-> https://github.com/krzk/linux/tree/n/audio-wsa884x-on-top-of-wip-sm8450-audio-on-next
+syzbot found the following issue on:
 
-Do you plan to send the bindings up? I can send this patch out if you don't have the cycle:
+HEAD commit:    55c900477f5b net: fill in MODULE_DESCRIPTION()s under driv..
+git tree:       net-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=12586b51680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=429fa76d04cf393c
+dashboard link: https://syzkaller.appspot.com/bug?extid=fd7b34375c1c8ce29c93
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=154a6ac7680000
 
-https://github.com/krzk/linux/commit/f678691570386a11eb75dceca7291b4e05d981da
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/c2f876eca348/disk-55c90047.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/fae06633f86c/vmlinux-55c90047.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/9bdbf63cb857/bzImage-55c90047.xz
 
-> 
-> Depends on my previous patch adding WSA8845 speakers:
-> https://lore.kernel.org/linux-arm-msm/20230608094323.267278-1-krzysztof.kozlowski@linaro.org/T/#t
-> ---
->  arch/arm64/boot/dts/qcom/sm8550-qrd.dts | 81 +++++++++++++++++++++++++
->  1 file changed, 81 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/sm8550-qrd.dts b/arch/arm64/boot/dts/qcom/sm8550-qrd.dts
-> index 7ef7079dd640..cb0369fbbc81 100644
-> --- a/arch/arm64/boot/dts/qcom/sm8550-qrd.dts
-> +++ b/arch/arm64/boot/dts/qcom/sm8550-qrd.dts
-> @@ -97,6 +97,87 @@ pmic_glink_sbu: endpoint {
->  		};
->  	};
->  
-> +	sound {
-> +		compatible = "qcom,sm8550-sndcard", "qcom,sm8450-sndcard";
-> +		model = "SM8550-QRD";
-> +		audio-routing = "SpkrLeft IN", "WSA_SPK1 OUT",
-> +				"SpkrRight IN", "WSA_SPK2 OUT",
-> +				"IN1_HPHL", "HPHL_OUT",
-> +				"IN2_HPHR", "HPHR_OUT",
-> +				"AMIC2", "MIC BIAS2",
-> +				"VA DMIC0", "MIC BIAS1",
-> +				"VA DMIC1", "MIC BIAS1",
-> +				"VA DMIC2", "MIC BIAS3",
-> +				"TX DMIC0", "MIC BIAS1",
-> +				"TX DMIC1", "MIC BIAS2",
-> +				"TX DMIC2", "MIC BIAS3",
-> +				"TX SWR_ADC1", "ADC2_OUTPUT";
-> +
-> +		wcd-playback-dai-link {
-> +			link-name = "WCD Playback";
-> +
-> +			cpu {
-> +				sound-dai = <&q6apmbedai RX_CODEC_DMA_RX_0>;
-> +			};
-> +
-> +			codec {
-> +				sound-dai = <&wcd938x 0>, <&swr1 0>, <&lpass_rxmacro 0>;
-> +			};
-> +
-> +			platform {
-> +				sound-dai = <&q6apm>;
-> +			};
-> +		};
-> +
-> +		wcd-capture-dai-link {
-> +			link-name = "WCD Capture";
-> +
-> +			cpu {
-> +				sound-dai = <&q6apmbedai TX_CODEC_DMA_TX_3>;
-> +			};
-> +
-> +			codec {
-> +				sound-dai = <&wcd938x 1>, <&swr2 0>, <&lpass_txmacro 0>;
-> +			};
-> +
-> +			platform {
-> +				sound-dai = <&q6apm>;
-> +			};
-> +		};
-> +
-> +		wsa-dai-link {
-> +			link-name = "WSA Playback";
-> +
-> +			cpu {
-> +				sound-dai = <&q6apmbedai WSA_CODEC_DMA_RX_0>;
-> +			};
-> +
-> +			codec {
-> +				sound-dai = <&north_spkr>, <&south_spkr>, <&swr0 0>, <&lpass_wsamacro 0>;
-> +			};
-> +
-> +			platform {
-> +				sound-dai = <&q6apm>;
-> +			};
-> +		};
-> +
-> +		va-dai-link {
-> +			link-name = "VA Capture";
-> +
-> +			cpu {
-> +				sound-dai = <&q6apmbedai TX_CODEC_DMA_TX_3>;
-> +			};
-> +
-> +			codec {
-> +				sound-dai = <&lpass_vamacro 0>;
-> +			};
-> +
-> +			platform {
-> +				sound-dai = <&q6apm>;
-> +			};
-> +		};
-> +	};
-> +
->  	vph_pwr: vph-pwr-regulator {
->  		compatible = "regulator-fixed";
->  		regulator-name = "vph_pwr";
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+fd7b34375c1c8ce29c93@syzkaller.appspotmail.com
+
+BUG: kernel NULL pointer dereference, address: 0000000000000000
+#PF: supervisor instruction fetch in kernel mode
+#PF: error_code(0x0010) - not-present page
+PGD 637d5067 P4D 637d5067 PUD 631c2067 PMD 0 
+Oops: 0010 [#1] PREEMPT SMP KASAN
+CPU: 0 PID: 6103 Comm: syz-executor.1 Not tainted 6.6.0-rc7-syzkaller-02075-g55c900477f5b #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/09/2023
+RIP: 0010:0x0
+Code: Unable to access opcode bytes at 0xffffffffffffffd6.
+RSP: 0018:ffffc9000314f868 EFLAGS: 00010246
+RAX: dffffc0000000000 RBX: ffff888028b0b000 RCX: 0000000000000000
+RDX: 1ffff1100f3c305c RSI: ffffffff8848f069 RDI: ffff888028b0b000
+RBP: 0000000000000004 R08: 0000000000000007 R09: 0000000000000000
+R10: ffff888079e18000 R11: 0000000000000000 R12: ffff888079e18000
+R13: 0000000000000000 R14: ffff888028b0b000 R15: ffff888028b0b000
+FS:  00007fc30c5666c0(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffffffffffffffd6 CR3: 0000000025154000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ sk_psock_verdict_data_ready net/core/skmsg.c:1228 [inline]
+ sk_psock_verdict_data_ready+0x207/0x3d0 net/core/skmsg.c:1208
+ unix_dgram_sendmsg+0x11b3/0x1ca0 net/unix/af_unix.c:2116
+ sock_sendmsg_nosec net/socket.c:730 [inline]
+ __sock_sendmsg+0xd5/0x180 net/socket.c:745
+ ____sys_sendmsg+0x2ac/0x940 net/socket.c:2558
+ ___sys_sendmsg+0x135/0x1d0 net/socket.c:2612
+ __sys_sendmmsg+0x1a1/0x450 net/socket.c:2698
+ __do_sys_sendmmsg net/socket.c:2727 [inline]
+ __se_sys_sendmmsg net/socket.c:2724 [inline]
+ __x64_sys_sendmmsg+0x9c/0x100 net/socket.c:2724
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7fc30b87cae9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fc30c5660c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000133
+RAX: ffffffffffffffda RBX: 00007fc30b99bf80 RCX: 00007fc30b87cae9
+RDX: 0000000000000002 RSI: 0000000020001680 RDI: 0000000000000003
+RBP: 00007fc30b8c847a R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 000000000000000b R14: 00007fc30b99bf80 R15: 00007ffc0cccf7e8
+ </TASK>
+Modules linked in:
+CR2: 0000000000000000
+---[ end trace 0000000000000000 ]---
+RIP: 0010:0x0
+Code: Unable to access opcode bytes at 0xffffffffffffffd6.
+RSP: 0018:ffffc9000314f868 EFLAGS: 00010246
+RAX: dffffc0000000000 RBX: ffff888028b0b000 RCX: 0000000000000000
+RDX: 1ffff1100f3c305c RSI: ffffffff8848f069 RDI: ffff888028b0b000
+RBP: 0000000000000004 R08: 0000000000000007 R09: 0000000000000000
+R10: ffff888079e18000 R11: 0000000000000000 R12: ffff888079e18000
+R13: 0000000000000000 R14: ffff888028b0b000 R15: ffff888028b0b000
+FS:  00007fc30c5666c0(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffffffffffffffd6 CR3: 0000000025154000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
