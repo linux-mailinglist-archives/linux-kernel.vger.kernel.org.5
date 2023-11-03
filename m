@@ -2,165 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A19687E0B40
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 23:48:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BBCD67E0B43
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 23:48:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377587AbjKCWoR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 18:44:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35290 "EHLO
+        id S1345662AbjKCWo4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 18:44:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376818AbjKCWoP (ORCPT
+        with ESMTP id S230439AbjKCWoy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 18:44:15 -0400
-Received: from BN6PR00CU002.outbound.protection.outlook.com (mail-eastus2azon11021006.outbound.protection.outlook.com [52.101.56.6])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E766D70;
-        Fri,  3 Nov 2023 15:44:12 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=oOfoyObKiQ1mSjpVmF1M3fhq3/N11lUuj7qtwA44WYmsXSJF24TSXocqlrL9AwzGZkmFvR4ZMaXJDlMtdkKV6sIDEvP4DKAJ5rligdlxgQeC7dQCU4YkXbmEWkcDbxTGbLRm6cEt9uU2IFVwumY7vdf8gTIiOjmuNcc8cXIZ3M/HAy8Q2Yec6AkvB7pmB5jZYNCMuR/suMsjcBuzWzI8vGxihEGFHlEhu/qwZ4OQ4a25WntI0A/GzH9Drv3uJbxeUxsHJRMAsvYGayuoq/dvsfATC1kzlUWwHdeDfSP9pxEjz0o8+TVP4X6eEJCbM7OpmL4Y7Wb2XrzPouOQXzNQTg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Do1Inb4Bg6HrjIawh4HzgXg/Lz/WMuJnWCLyN7kHpXE=;
- b=lziLRzE4gTo1H3Gk/duRQG3qqFJSTg53C8QnbXKaG3Y9q9CQQNWqjWGo7pTe928CRt0oRYO16j20nMoaC2NRzce8LXByHaI2j72Tlzs53rYe/YpNFTRBZ8VW5MsfLgyAhP2GcOsoSuPaTFrfoLNaWIgXDD1EmarabkiRlzy9GUC/L2HnuYQ0NZqYM2VZ/tArsK8GbF7o9sSy5QLTCDWnmZHCsCtsHfbLHs42DhDzjj0NHt2D0hW/BsBDiohisvBv85rLxl4AAV/n+vzOvV14v08we+YgzPku7beNavaNYaYQ4Y7Kn7MMCqnt1xbuGnLZxZOuFCZfxKRdDQagWo1cAA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Do1Inb4Bg6HrjIawh4HzgXg/Lz/WMuJnWCLyN7kHpXE=;
- b=i7jyLPbPiYP5476WDkDCmHu5FFpHZKmCkEcGGd0JSwYleIBXEfK08rOd59mBS9Wy1Fgdndt4DY86apbpLoIIiCpBhU9WrUBtkgxzeO0aixapYfzO5H0BvE9GWtVcTTW8hwmf6N+lVRPXVDw61vJDRQtYrEv7jucRLny056hOL2I=
-Received: from PH7PR21MB3116.namprd21.prod.outlook.com (2603:10b6:510:1d0::10)
- by CY5PR21MB3444.namprd21.prod.outlook.com (2603:10b6:930:f::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6977.12; Fri, 3 Nov
- 2023 22:44:09 +0000
-Received: from PH7PR21MB3116.namprd21.prod.outlook.com
- ([fe80::b0b2:906f:67fe:322a]) by PH7PR21MB3116.namprd21.prod.outlook.com
- ([fe80::b0b2:906f:67fe:322a%5]) with mapi id 15.20.6977.012; Fri, 3 Nov 2023
- 22:44:09 +0000
-From:   Haiyang Zhang <haiyangz@microsoft.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-CC:     "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        KY Srinivasan <kys@microsoft.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        Dexuan Cui <decui@microsoft.com>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-Subject: RE: [PATCH net,v2] hv_netvsc: fix race of netvsc and VF
- register_netdevice
-Thread-Topic: [PATCH net,v2] hv_netvsc: fix race of netvsc and VF
- register_netdevice
-Thread-Index: AQHaCFKpKET2UnWjhkeRl4AacA94KLBmhFAAgAK2PJA=
-Date:   Fri, 3 Nov 2023 22:44:08 +0000
-Message-ID: <PH7PR21MB31169E4E03163358946BF95DCAA5A@PH7PR21MB3116.namprd21.prod.outlook.com>
-References: <1698355354-12869-1-git-send-email-haiyangz@microsoft.com>
- <20231101220730.2b7cc7d1@kernel.org>
-In-Reply-To: <20231101220730.2b7cc7d1@kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=c223206b-d339-4527-8658-b770b1fdaf94;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2023-11-03T22:32:15Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microsoft.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PH7PR21MB3116:EE_|CY5PR21MB3444:EE_
-x-ms-office365-filtering-correlation-id: 79e540b1-2ec0-465e-f8a1-08dbdcbe646f
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: is2tu15sa+OqzXChbJrl6nuXGXlZaX+fIGTOsPEkSRzIfYsxmna7IDYl+4FdYOlXhbbz2vNVj4Wi9C19lNqlM7VIWTxtEzgRh6cXfxysSKZf6lWsHoAvZdrOqx5jK1U1rWEGZeZOiIAoHBVTXmU3vStqL7YEoZvRTlFF78lic7Z6bece5vbVRqIw6bgH6xTflu7pLLo3u0/puHZFeTnuNaAaBJP5AtWg8Vyv1f91o9VvfkFLQvtvSCn6yyZ9oEAAMW+DPSd9vx8SFwsG6C8N8yILjxVRX1Toe9NfUKuFSFcLYKUhN5uhG3mbxXRTJUnyeY3YW5+tbxgIajdKYTqgRQrEQQ7TZdjBPz3ffXmW8teioBiq1xCuSG8OXmk46MuUI5UeUML6UlzC/r1G9t89PCIlgZwiuCykb8+h8jFAKaN4at8dTKC98HWXa3DeN1lSW+1tS6My+XPrdUpWwtF9ZL5erDX9lWTPM0yw4udvnVQKBaR6Zh2Bceviaa8ZIRaV/yCx0pxYxnr1L4HH563j5etptQqP47y0cJQmIkyEUa9xfLDrnhtrKPa1FzJuijXZ3UdgGNC/ibNWlt8ivyzyBZcaFphbOSXaOQeTse2yPt1N+6ztIaRwul7TBM15GNANsp3s2uVB0PueLFZIMzfYy8npm61Z4HyDt0HQc1U+XNM=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR21MB3116.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(136003)(346002)(39860400002)(366004)(396003)(230922051799003)(1800799009)(64100799003)(451199024)(186009)(54906003)(82950400001)(66476007)(64756008)(66446008)(66556008)(82960400001)(66946007)(122000001)(316002)(38070700009)(6916009)(76116006)(26005)(10290500003)(6506007)(7696005)(71200400001)(478600001)(53546011)(9686003)(38100700002)(86362001)(2906002)(5660300002)(8990500004)(52536014)(41300700001)(33656002)(8936002)(8676002)(4326008)(83380400001)(55016003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?7hf7yvdDH9fg8kC/+EMP9aZscZYkCHAGVA9uRIz/52umhQlA06zpC0YINi4K?=
- =?us-ascii?Q?Nu9anYXXbXgF3kWxxxjIIyB8SAZfqW3i4FDLCNbY0kajm5HPtFOIoncT0lKt?=
- =?us-ascii?Q?ofhl/4IZmcWXDW5rdrsKn6YnZUpaulqT4O0lsM9PuCuNC6cT4z3yH3lHAIKZ?=
- =?us-ascii?Q?2uIKedeusyJzZxdYWMn0vDrsddsd0zpuJDsYaXd8fg07QpD42aiK9d4VXAjG?=
- =?us-ascii?Q?9gxYUjdonU37OcycJh20tJExXuya8RDpB2JQq4YZ4hj3AoZplwM7Hlkkgdzv?=
- =?us-ascii?Q?FlGF+g5EUywP4ROWDi3jzOFFi5mOXfWlrH0QzwENGB1+7sB0x9fK+Dt/fy7X?=
- =?us-ascii?Q?WtwDXg52pKue4WOb47otx8tCo3caBGjNgyLbXazqWc3k+B/JMDcK9zeTwYY/?=
- =?us-ascii?Q?XQvrRfzwyWy08b660HZr9gEt8miizPd0Z2VdQTRclQsgiAn+ox6cufJJGifO?=
- =?us-ascii?Q?aL+oy/a+9GxvVCXumEKtv4AVTRackaoQLHSyNAHh+UFElkAlaZsHju5hOrxm?=
- =?us-ascii?Q?0+ALC8K4PisA9LQzAWesBIcPeSTXL4ct+F5sSEY2vd/r71NRtE0MkY8kWy16?=
- =?us-ascii?Q?eIHQBVOLdmZ2EDp+4dadaCiczTaUfsdebagzUOdnOeXCPdGcQqsOQ+Rh0wAd?=
- =?us-ascii?Q?75wflIPX2imA0Yyo4o0o9NMgzg4cs44inuqgNL2hQBM7CSwSXdRaRgF5EimK?=
- =?us-ascii?Q?Tpr65Z8jGk4DUxgVtr36uDUlDYpy1XotKaFfck3qKd86fTua/4jvwjPqObwP?=
- =?us-ascii?Q?P112FdJnpkyyeSIYKVLAZg0EIF9waYGcoXixi+avfB1HnTrc7MgFjaRlxfb8?=
- =?us-ascii?Q?0WZqLuOmIP5ihYIZ2ktTq954GGwSKx45/pRgEyZ7RnupIdw2xCIO9u+PTWc6?=
- =?us-ascii?Q?hEGK4N2GsTVnadHG8cyWJRORZWEVWFvYDzSjPw6ODcEleD432hdBSlmvHZ7y?=
- =?us-ascii?Q?8snXYAzfHGYbDYuQTC2rHSmmQX3O1ixXGnV79mUKukjDsoy8/p7yk9//XYBF?=
- =?us-ascii?Q?Q0uUooSQeov5Ly8zdwGS446+VVyTEOpD7HYmf2wYZT2scJmTBs1shErFx/QO?=
- =?us-ascii?Q?ExPkoqe2LYIjrV5LGzXw5b5n0yhMMMGo3+qPPWeY1mydnz7pbO+E9t/2A4DV?=
- =?us-ascii?Q?bFN231MQPnZHIYtRrYlK4aMl+BONwPcAMW5w2rWzVo1/DAl3BC9qvAmiO/el?=
- =?us-ascii?Q?u6WFsEVNtjcdfZTmw/4ZEfHxuPNbB5VqqgM+jHusLOwUr/mJiqjt7k5aJBO9?=
- =?us-ascii?Q?1ZkbOhNgg4/BYnl5BroxSznblgZIAHHoPvlps/aG5Spp/F1YM4ONrjHcGyYa?=
- =?us-ascii?Q?GZd4oOkw8vTBXmb1Ojv9zeue1vfb79HBZlgU4gag+eIxplF+/SRpsBIcy34t?=
- =?us-ascii?Q?8oHRb7gCXUMSJTE+akVFZN56J/u2bEfSwOnLhRAD2pJkriAqFqblStJP7p11?=
- =?us-ascii?Q?UepG0yqEG7O++J5Jg6FGgTPLyMOrCTM95jwZDrr4dCVcoTNtKN4rTUZUSooW?=
- =?us-ascii?Q?OSDYqjA/gTsS3fmQcslOn0Rv/mHXUxGFK7TMH71X5ZX154kjmQ1WVjhe/HdZ?=
- =?us-ascii?Q?OiEctZ3p0FLIl2Q4k9OSMhXwi++2b0xM8w2TkH5z?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Fri, 3 Nov 2023 18:44:54 -0400
+Received: from mail-yw1-x1130.google.com (mail-yw1-x1130.google.com [IPv6:2607:f8b0:4864:20::1130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF25019D
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 15:44:51 -0700 (PDT)
+Received: by mail-yw1-x1130.google.com with SMTP id 00721157ae682-5a7afd45199so31391267b3.0
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Nov 2023 15:44:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1699051491; x=1699656291; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=5pXAnVldJ3nanWX3o4K4wMNI9RumqfofpvcrvhRbJBE=;
+        b=fqNFeKIPqyosj7ToLadcFM9ouLlO98EpCPZyqqUO2rks+giE3X41D+3Mq0gVFo9ZzA
+         dKZjh6j0AC0rpJtfs7/pCjEf7JzbahKJOcAue+p8ZS8jH6zd4c6mL8kjhClKxo9QmIX+
+         UCUIxuFX4wfkej0IWLNpgUHfR8mQBaleVIRR1DS5JIvhu6gCA2A068x3ttDOMSeis3hw
+         FCKUbIBC57WeMKeNLuxFNGnTgUv3v7xLIE7ADbacxkPuCkNPK4Hf7pPxrYZaEzgX1lPh
+         fJJaGnNkwMlIHFh88sUbRMXTiZglXZsmBWFo7heUvjYKKNUh0jTja6payAsR6cRvo2tJ
+         kFLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699051491; x=1699656291;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=5pXAnVldJ3nanWX3o4K4wMNI9RumqfofpvcrvhRbJBE=;
+        b=uMSTjameZVJqzAN9gzTmY4vZCG9cAzXfsVGHJ5v+pp6iDqnbMGkCdIIIXxw4o1ijwp
+         psiqbSg6jYzoFhy0uEBBnb28O9riEOniQ/6ubS0Tt8zjsMQKDIzG4b/DkQH3HIDZy+jx
+         yXWmlZMUeAoAnrBMgxBubmFcXHBAsHK1FjENE163tt5Ug+jm2/qnp+pZFfhKgU/VHKSi
+         YChT3L2HZgsUombqTm5zmXoqnM2yoq4k681TqPKu0qkrcREmsDzkneYsoG+i3rAXf83G
+         NcdAzB3+IAdWMp75px16LktnUxLhOMTf+7fH74f9bFXlu6Y//FYrvLJ6aISFhwj8rG2W
+         EjYw==
+X-Gm-Message-State: AOJu0Yz9OcxbxBlRcvhRaT0jZt4JQb9GhI6s3qO8DhB29PVG0ReoUbHH
+        Ymm59pi/ePr83IjeoM8ZEZ6oS7qn51mA9wgqDZV9u3retjwOnJRa
+X-Google-Smtp-Source: AGHT+IEm9VwzgigzWfkuoz9kqjEtpavw7kmTAvP+ZZNOjFYy+eTQNahaWC/UkcJxqxAHwTChWi2eyod6Er9zTty6Shw=
+X-Received: by 2002:a05:690c:f04:b0:5a7:bc38:fff2 with SMTP id
+ dc4-20020a05690c0f0400b005a7bc38fff2mr5168299ywb.15.1699051491000; Fri, 03
+ Nov 2023 15:44:51 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR21MB3116.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 79e540b1-2ec0-465e-f8a1-08dbdcbe646f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Nov 2023 22:44:08.9736
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 3qX3ixAhQT1dYm6kr3zF5SdQPwtkrGPM26GILihen/FLlAa5xLHyqzuJ3pUufABQJqKSFsNkbaJ/3NiR25FY7A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR21MB3444
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+References: <20231103215124.1095-1-quic_bibekkum@quicinc.com>
+In-Reply-To: <20231103215124.1095-1-quic_bibekkum@quicinc.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Sat, 4 Nov 2023 00:44:39 +0200
+Message-ID: <CAA8EJpqtZXNSz2-VEdQL2XTxi6GnZBkLABLe1qSUcwCbfoEHVQ@mail.gmail.com>
+Subject: Re: [PATCH 0/3] iommu/arm-smmu: introduction of ACTLR implementation
+ for Qualcomm SoCs
+To:     Bibek Kumar Patro <quic_bibekkum@quicinc.com>
+Cc:     will@kernel.org, robin.murphy@arm.com, joro@8bytes.org,
+        a39.skl@gmail.com, konrad.dybcio@linaro.org,
+        quic_saipraka@quicinc.com, quic_pkondeti@quicinc.com,
+        quic_molvera@quicinc.com, linux-arm-kernel@lists.infradead.org,
+        iommu@lists.linux.dev, linux-kernel@vger.kernel.org,
+        qipl.kernel.upstream@quicinc.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 3 Nov 2023 at 23:53, Bibek Kumar Patro
+<quic_bibekkum@quicinc.com> wrote:
+>
+> This patch series consists of three parts and covers the following:
+>
+> 1. Introducing intital set of driver changes to implement ACTLR register
+> for custom prefetcher settings in Qualcomm SoCs.
+>
+> 2. Adding ACTLR data and implementation operations for SM8550.
+>
+> 3. Re-enabling context caching for Qualcomm SoCs to retain prefetcher
+> settings during reset and runtime suspend.
+>
+> Link to discussion on RFC posted on ACTLR implementation:
+> https://lore.kernel.org/all/a01e7e60-6ead-4a9e-ba90-22a8a6bbd03f@quicinc.com/
+
+First two patches in that thread were not archived for some reason.
+
+However, as there was a previous iteration, it is suggested to include
+the changelog between RFC and v1.
+
+>
+> Bibek Kumar Patro (3):
+>   iommu/arm-smmu: introduction of ACTLR for custom prefetcher settings
+>   iommu/arm-smmu: add ACTLR data and support for sm8550
+>   iommu/arm-smmu: re-enable context caching in smmu reset operation
+>
+>  drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 143 ++++++++++++++++++++-
+>  drivers/iommu/arm/arm-smmu/arm-smmu-qcom.h |   2 +
+
+Although it is not mentioned in the MAINTAINERS file, could you please
+CC linux-arm-msm when sending v2?
+
+>  drivers/iommu/arm/arm-smmu/arm-smmu.c      |   5 +-
+>  drivers/iommu/arm/arm-smmu/arm-smmu.h      |   5 +
+>  4 files changed, 146 insertions(+), 9 deletions(-)
+>
+> --
+> 2.17.1
+>
 
 
-> -----Original Message-----
-> From: Jakub Kicinski <kuba@kernel.org>
-> Sent: Thursday, November 2, 2023 1:08 AM
-> To: Haiyang Zhang <haiyangz@microsoft.com>
-> Cc: linux-hyperv@vger.kernel.org; netdev@vger.kernel.org; KY Srinivasan
-> <kys@microsoft.com>; wei.liu@kernel.org; Dexuan Cui
-> <decui@microsoft.com>; edumazet@google.com; pabeni@redhat.com;
-> davem@davemloft.net; linux-kernel@vger.kernel.org; stable@vger.kernel.org
-> Subject: Re: [PATCH net,v2] hv_netvsc: fix race of netvsc and VF
-> register_netdevice
->=20
-> On Thu, 26 Oct 2023 14:22:34 -0700 Haiyang Zhang wrote:
-> > And, move register_netdevice_notifier() earlier, so the call back
-> > function is set before probing.
->=20
-> Are you sure you need this? I thought the netdev notifier "replays"
-> registration events (i.e. sends "fake" events for already present
-> netdevs).
->=20
-> If I'm wrong this should still be a separate patch from the rtnl
-> reorder.
-
-I tested, NETDEV_REGISTER is indeed replayed, but NETDEV_POST_INIT=20
-is not.  And we will use NETDEV_POST_INIT soon.
-
-Also, we want to get notified by NETDEV_POST_INIT immediately from=20
-VF, before VF NIC shows up to upper layers. So, even if we make=20
-NETDEV_POST_INIT to be replayed, that may be too late.
-
-I will put the register_netdevice_notifier() change to a separate patch.
-
-Thanks,
-- Haiyang
-
+-- 
+With best wishes
+Dmitry
