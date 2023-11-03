@@ -2,61 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 530677E0C62
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 00:43:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 478547E0C6D
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 00:52:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230253AbjKCXn0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 19:43:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44930 "EHLO
+        id S229953AbjKCXuk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 19:50:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229476AbjKCXnZ (ORCPT
+        with ESMTP id S229488AbjKCXui (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 19:43:25 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 544C6D48;
-        Fri,  3 Nov 2023 16:43:22 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id ffacd0b85a97d-32f8246103cso517499f8f.1;
-        Fri, 03 Nov 2023 16:43:22 -0700 (PDT)
+        Fri, 3 Nov 2023 19:50:38 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D90FD44;
+        Fri,  3 Nov 2023 16:50:35 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-4084095722aso19114325e9.1;
+        Fri, 03 Nov 2023 16:50:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699055000; x=1699659800; darn=vger.kernel.org;
-        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fYCqZrVNGN2mIiQCLNklLY55LWgupbs56ES5k10+bBg=;
-        b=izndATHn1TwiU5cxtdKcYqnGZSd8bo17Ne+6X80it3cq75eJPH9DUcs+de/Rvk3OjQ
-         aPNaLRGiGyBMOoFQdU7km4DUSBX9prSXsIO0V/qDAJgLWvsiSY5bGcPx+gKDgFdu9AhQ
-         rO7IepD+0ZBAfydEuYfkAPazx4lYQ8ptPQwzMs7MgwJECiJiS7Hh24QrpGAB8cxXqNxk
-         +ke2u5ssBcnBiGDkQ445mMpx0xWwEsCG1U0mxOtNo+oJIhbNhiIrGDc24oUpiWUtFH5/
-         2QKVWcXvoU+/3WGWqO4ll2i1Qb5Wv813YnNKuWxv2XzdsQQZex9M2YFBpIio08CFypBS
-         ljLw==
+        d=gmail.com; s=20230601; t=1699055434; x=1699660234; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=sACPr0rKi8cX3KlKRVHiT5WKzJVsmN4Phr38A3lXp/c=;
+        b=AMIAUpo0R5sa1oZlvUZMRjAl/GjX5nEppcH1B671I03X2TGPsMHzdiJ06v/JlGA3/4
+         CQ2cmwDv1dPxuOzuMK3J8q3bNvernmkB6f8tucwP0MzQWlxcBP6H0vTerlxMEDZV5bX8
+         xPVd2Zp6dtmZK2dNg/yhc+gIXL8GRnWsoKabz4ES2Avk08F5ZOylJ32Ucwao9ga9JE8G
+         g1sswnOdiPy7N6C2CGscYyRV4jt9OIdg7DDYFf82ALOPF+lbZXGC9lu5NjUKT9WgTU+k
+         uJaQaTgO7VKWbzWJcnSvcnXgxYqWoLugJpP8ayA4n15Fh0SOhTzq+C0OYc6++oZHVxAX
+         Tbfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699055000; x=1699659800;
-        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fYCqZrVNGN2mIiQCLNklLY55LWgupbs56ES5k10+bBg=;
-        b=PX0Fctd4iMQUNhI7RaT3Kz8PQSHr74abzjifYiT/shTK/GPAAQ+SKfMQ1X2+mShDv1
-         njn5abTripLp9eWrCjyAqZM+yos+NrmACAvm3JK4GCBZRBYbHJ/lDKhUHwYL92VHgc15
-         4W8uwfjKP3s2aIBrAfzVS0dkUjfS360vEMpE+zVMzJM9LZll+LGLKUToeWbPGeUQifo5
-         sJ/ph9lKQL80xC2BLsxuPoqjjiq+qeiCDRRTBPiwYZCQE8sgpqI4e8NL9Ro0ygRKmnH7
-         yXMRIRPm5wd+4owMsAfAgg068u4Wq0kfuHltroJm66B1NN3+dMryx57blpXhuS6vo88b
-         6LWQ==
-X-Gm-Message-State: AOJu0Yw84nbNbm9/orPbgWPMuneB1kvKvOhurIFSOyh1s2C1B+HbHQLc
-        qPaTYmNkwNYAtC21OkxHJtGeos7iYnlFH9SJ
-X-Google-Smtp-Source: AGHT+IE3UIErq3s44P5X8FLUBvx23u92ky4//OEqSGX6pvS923TCn2oJbN67sSoyczLKMJq/rZDynQ==
-X-Received: by 2002:a5d:6c65:0:b0:32d:eac9:da52 with SMTP id r5-20020a5d6c65000000b0032deac9da52mr16238232wrz.5.1699055000345;
-        Fri, 03 Nov 2023 16:43:20 -0700 (PDT)
-Received: from localhost.localdomain ([94.203.174.192])
-        by smtp.gmail.com with ESMTPSA id p14-20020a5d68ce000000b0032daf848f68sm2993793wrw.59.2023.11.03.16.43.17
+        d=1e100.net; s=20230601; t=1699055434; x=1699660234;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=sACPr0rKi8cX3KlKRVHiT5WKzJVsmN4Phr38A3lXp/c=;
+        b=ZMzHnqOWQBhBY7dsPGT/yVZ+0K9hTnCbStcczLRnSPTpYxhjK62Sfkp4SE2FXtEIlG
+         yeiaUfbRyZOS2mue1ZB6UDjg1JsHQIefqc9u58wMNMMnwHvjaBNFHq7fx6LlNUQmDjs1
+         InVOkJu+QMDX8KesIscwkIM1tECnq5hImnjpfx375hVawWjfRhDEl2PvVRrmhvEq1xGI
+         YcldMqpUfSW+DLKWamkIqJxCTpeRfAwTh62OZoNOxAvgmffMDKbk+zTbNH9oU98JYQTI
+         zhXay6rcx/cGkb9l3inTiuxvPKqSHKUO3togIGM4NMnlDsDZYgsetiWNUWcdIQeDXZWr
+         WmJQ==
+X-Gm-Message-State: AOJu0YwRLfd4BE/I+0Z9wAiTrQXZc8vVBjvYBZoRQqdp2R47VdlZxPU7
+        ej1ubAm3t47yWachtNJqWQ==
+X-Google-Smtp-Source: AGHT+IEWWMG1J4JfSIlgllBm7mvq8Movg0NCBRyRh8TmsSN+k2vGJ/Di1X7yLXiLZLHwYVZsXDttBQ==
+X-Received: by 2002:a05:600c:4707:b0:408:5919:5f97 with SMTP id v7-20020a05600c470700b0040859195f97mr20266318wmo.25.1699055433652;
+        Fri, 03 Nov 2023 16:50:33 -0700 (PDT)
+Received: from octinomon (202.51.199.146.dyn.plus.net. [146.199.51.202])
+        by smtp.gmail.com with ESMTPSA id h15-20020a05600c314f00b004094d4292aesm3916805wmo.18.2023.11.03.16.50.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Nov 2023 16:43:19 -0700 (PDT)
-From:   Dmitrii Bundin <dmitrii.bundin.a@gmail.com>
-To:     linux-kbuild@vger.kernel.org
-Cc:     masahiroy@kernel.org, nathan@kernel.org, ndesaulniers@google.com,
-        nicolas@fjasle.eu, linux-kernel@vger.kernel.org,
-        dmitrii.bundin.a@gmail.com
-Subject: [PATCH] kbuild: deb-pkg: apply short --rules-file option
-Date:   Sat,  4 Nov 2023 02:42:47 +0300
-Message-Id: <20231103234247.4505-1-dmitrii.bundin.a@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Fri, 03 Nov 2023 16:50:33 -0700 (PDT)
+Date:   Fri, 3 Nov 2023 23:50:31 +0000
+From:   Jules Irenge <jbi.octave@gmail.com>
+To:     mark.rutland@arm.com
+Cc:     alexander.shishkin@linux.intel.com, jolsa@kernel.org,
+        namhyung@kernel.org, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, adrian.hunter@intel.com
+Subject: [PATCH 1/3] perf tool x86: Remove unnecessary  conversion to bool
+Message-ID: <ZUWHRwR-n5y9vE9o@octinomon>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -67,29 +69,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The long --rules-file option might not be available for some older
-versions of dpkg-buildpackage resulting in build failures. The -R option
-has been available since 1.14.17 allowing builds for larger allowing
-builds for larger set of versions of dpkg-buildpackage.
+coccinelle reports a warning at x86__is_amd_cpu()
 
-Signed-off-by: Dmitrii Bundin <dmitrii.bundin.a@gmail.com>
+WARNING: conversion to bool not needed here
+
+To fix this, the unnecessary bool conversion is removed here
+
+Signed-off-by: Jules Irenge <jbi.octave@gmail.com>
 ---
- scripts/Makefile.package | 2 +-
+ tools/perf/arch/x86/util/env.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/scripts/Makefile.package b/scripts/Makefile.package
-index 2bcab02da965..0afbf5ad2919 100644
---- a/scripts/Makefile.package
-+++ b/scripts/Makefile.package
-@@ -148,7 +148,7 @@ deb-pkg srcdeb-pkg bindeb-pkg:
- 	$(if $(findstring source, $(build-type)), \
- 		--unsigned-source --compression=$(KDEB_SOURCE_COMPRESS)) \
- 	$(if $(findstring binary, $(build-type)), \
--		--rules-file='$(MAKE) -f debian/rules' --jobs=1 -r$(KBUILD_PKG_ROOTCMD) -a$$(cat debian/arch), \
-+		-R'$(MAKE) -f debian/rules' --jobs=1 -r$(KBUILD_PKG_ROOTCMD) -a$$(cat debian/arch), \
- 		--no-check-builddeps) \
- 	$(DPKG_FLAGS))
- 
+diff --git a/tools/perf/arch/x86/util/env.c b/tools/perf/arch/x86/util/env.c
+index 3e537ffb1353..5b0db77f8e0f 100644
+--- a/tools/perf/arch/x86/util/env.c
++++ b/tools/perf/arch/x86/util/env.c
+@@ -15,5 +15,5 @@ bool x86__is_amd_cpu(void)
+ 	is_amd = env.cpuid && strstarts(env.cpuid, "AuthenticAMD") ? 1 : -1;
+ 	perf_env__exit(&env);
+ ret:
+-	return is_amd >= 1 ? true : false;
++	return is_amd >= 1;
+ }
 -- 
-2.17.1
+2.41.0
 
