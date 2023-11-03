@@ -2,198 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D40E7E098B
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 20:39:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2DE37E0994
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 20:42:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377087AbjKCTjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 15:39:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40070 "EHLO
+        id S1377703AbjKCTme (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 15:42:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230291AbjKCTjJ (ORCPT
+        with ESMTP id S230192AbjKCTmb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 15:39:09 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D121D5F
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 12:38:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1699040307;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=18fxGFPyEfYX6zujRVQDCVGp1gVPnAg8xcOJqGUDNpU=;
-        b=WEkItedecRds0qOcBxKgV+BlXanqPNvIhVM5BPB+KWD42h5LD+wCXlA7+0afMHD2HRzct6
-        aw1oH+KuwFhmX5ToyHwMeCo/q/KLiUER6Ujmq6O+OslgxjzVLMGrjuMrAeY9wibNMVIyYB
-        tK+yddk4hNYtAkEd+AB9NeOH7Z9pGw8=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-245-bNRsA7GlPoSFKZa-v7tnVQ-1; Fri, 03 Nov 2023 15:38:26 -0400
-X-MC-Unique: bNRsA7GlPoSFKZa-v7tnVQ-1
-Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-9cd789f0284so173717766b.3
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Nov 2023 12:38:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699040305; x=1699645105;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=18fxGFPyEfYX6zujRVQDCVGp1gVPnAg8xcOJqGUDNpU=;
-        b=P6/DobYHG7A40Um7wKIq3m9XbXf/RsezWbacDA+ULrl0hJ0mj/qDVpgsLXKcZVLO6r
-         OA10XGXLO6l6sDD5CI38eRVBxH8yaKA7EXymaWCrqF4TuumnfmOv49umq/vzsz9ruljJ
-         xblcXTgNELj08gwKsxGCOqWkv9Ud8/a0wz/gpfkrgzzCIjPJbIw5L2Y0/hhYXhe5WR/2
-         4atNuVWmsy8qD1vS0/1KyajPlKT5czGYAkGzOlby5cznNfspEyQLS7SWXesA+4SyFamw
-         5bFiE7vxgr+iyBnLcCsvmzOpqzik5MlrFjuKDRrXUMnkFM6r+a5WuXNPy/bgMRhSa/l0
-         sKEw==
-X-Gm-Message-State: AOJu0Yy78HkzqaDLZv0KUVF+1X0Cc/yZhq6AkFeVaAe3xkEYuJwpI57S
-        7RQmcykxRrrfRak7SvZJVNQApK1+OddHGbdY4qzxLgZYTcXtuMzayMXzXsK6JCQBZQDS/hpM9iY
-        AbWulMwzdfL2DWWXFd2ev6CRF
-X-Received: by 2002:a17:907:3da1:b0:9b7:37de:6009 with SMTP id he33-20020a1709073da100b009b737de6009mr8119034ejc.3.1699040305104;
-        Fri, 03 Nov 2023 12:38:25 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IH2EgYFYkxhAFVhtUcYX07z+ZAHa6gRCnHShMvlzepM1PxNvaeqEAxxrCtaSa8ojD2/gCJsUw==
-X-Received: by 2002:a17:907:3da1:b0:9b7:37de:6009 with SMTP id he33-20020a1709073da100b009b737de6009mr8119007ejc.3.1699040304766;
-        Fri, 03 Nov 2023 12:38:24 -0700 (PDT)
-Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? ([2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
-        by smtp.gmail.com with ESMTPSA id lk22-20020a170906cb1600b0099d804da2e9sm1220533ejb.225.2023.11.03.12.38.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 03 Nov 2023 12:38:24 -0700 (PDT)
-Message-ID: <d6466210-fdb7-e9e2-68bb-551b263f439d@redhat.com>
-Date:   Fri, 3 Nov 2023 20:38:20 +0100
+        Fri, 3 Nov 2023 15:42:31 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D3B0D50;
+        Fri,  3 Nov 2023 12:42:29 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 33E87C433C8;
+        Fri,  3 Nov 2023 19:42:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699040548;
+        bh=S85mameRPRRNGRNjFJvCP+oPALlyzRxrT6MFpHRCEe0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GzCaKem2q+eRgkJPHAs1kSEEwbZyja+YMIXwdLgxn3tacI/VlZw5Arffaqr4qS6gS
+         MDU9oU1CdkUYttX6hutisSUoEbI+hhqy8eHya+wGV1+o5LpkvAZaNh8A6ms9YhsXub
+         sB/d2h7QO7CJnkNp+LU5MdU8ns0MQ2q7J0CgYBxeDLCyaPxNZUHiQAOsStCoC1+U0L
+         kdDhxsfSUAXfQkzyHPq2LtPz1J99V4ZokwLnptzBMbps4rJU7emN6abn+xEyMGMcoD
+         UNeiqpppc13fg1ljvPTz/sqnDS0ByfGT9RJVNthohdgwSdZx5/nsA9RgOEC7hk9B0K
+         Ym84V8O7uqRhw==
+Date:   Fri, 3 Nov 2023 12:46:33 -0700
+From:   Bjorn Andersson <andersson@kernel.org>
+To:     Abel Vesa <abel.vesa@linaro.org>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Kevin Hilman <khilman@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andy Gross <agross@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
+        Vikash Garodia <quic_vgarodia@quicinc.com>,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Taniya Das <tdas@qti.qualcomm.com>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-media@vger.kernel.org
+Subject: Re: [PATCH RESEND v3 1/5] PM: domains: Allow devices attached to
+ genpd to be managed by HW
+Message-ID: <f2tufov2amxapubo4r3wqnzuf3qgm2bt2hc6g5zszj4r5w47xf@vmw3on4axns4>
+References: <20231101-gdsc-hwctrl-v3-0-0740ae6b2b04@linaro.org>
+ <20231101-gdsc-hwctrl-v3-1-0740ae6b2b04@linaro.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2 6/9] PCI: Rename is_thunderbolt to is_tunneled
-Content-Language: en-US, nl
-To:     Mario Limonciello <mario.limonciello@amd.com>,
-        Karol Herbst <kherbst@redhat.com>,
-        Lyude Paul <lyude@redhat.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        =?UTF-8?Q?Ilpo_J=c3=a4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Lukas Wunner <lukas@wunner.de>
-Cc:     Danilo Krummrich <dakr@redhat.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Xinhui Pan <Xinhui.Pan@amd.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Mark Gross <markgross@kernel.org>,
-        Andreas Noever <andreas.noever@gmail.com>,
-        Michael Jamet <michael.jamet@intel.com>,
-        Yehezkel Bernat <YehezkelShB@gmail.com>,
-        =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>,
-        =?UTF-8?Q?Marek_Beh=c3=ban?= <kabel@kernel.org>,
-        "Maciej W . Rozycki" <macro@orcam.me.uk>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        "open list:DRM DRIVER FOR NVIDIA GEFORCE/QUADRO GPUS" 
-        <dri-devel@lists.freedesktop.org>,
-        "open list:DRM DRIVER FOR NVIDIA GEFORCE/QUADRO GPUS" 
-        <nouveau@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:RADEON and AMDGPU DRM DRIVERS" 
-        <amd-gfx@lists.freedesktop.org>,
-        "open list:PCI SUBSYSTEM" <linux-pci@vger.kernel.org>,
-        "open list:ACPI" <linux-acpi@vger.kernel.org>,
-        "open list:X86 PLATFORM DRIVERS" 
-        <platform-driver-x86@vger.kernel.org>,
-        "open list:THUNDERBOLT DRIVER" <linux-usb@vger.kernel.org>
-References: <20231103190758.82911-1-mario.limonciello@amd.com>
- <20231103190758.82911-7-mario.limonciello@amd.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <20231103190758.82911-7-mario.limonciello@amd.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231101-gdsc-hwctrl-v3-1-0740ae6b2b04@linaro.org>
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 11/3/23 20:07, Mario Limonciello wrote:
-> The `is_thunderbolt` bit has been used to indicate that a PCIe device
-> contained the Intel VSEC which is used by various parts of the kernel
-> to change behavior. To later allow usage with USB4 controllers as well,
-> rename this to `is_tunneled`.
+On Wed, Nov 01, 2023 at 11:04:07AM +0200, Abel Vesa wrote:
+> From: Ulf Hansson <ulf.hansson@linaro.org>
 > 
-> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
+> Some power-domains may be capable of relying on the HW to control the power
+> for a device that's hooked up to it. Typically, for these kinds of
+> configurations the device doesn't really need to be attached to a PM domain
+> (genpd), from Linux point of view.
 
-Here is my ack for the trivial drivers/platform/x86/apple-gmux.c change:
+Per patch 5, this description isn't correct.
 
-Acked-by: Hans de Goede <hdegoede@redhat.com>
-
-Bjorn, feel free to route this through the PCI tree.
+Linux enables the power-domain, which in turn enables parent domains
+etc. Once the firmware is booted the hardware-control mechanism is
+engaged, but until then, and in order to keep the supplies to the domain
+voted for, Linux needs a proper genpd.
 
 Regards,
+Bjorn
 
-Hans
-
-
-
-
-> ---
->  drivers/pci/pci.c                 | 2 +-
->  drivers/pci/probe.c               | 2 +-
->  drivers/platform/x86/apple-gmux.c | 2 +-
->  include/linux/pci.h               | 2 +-
->  4 files changed, 4 insertions(+), 4 deletions(-)
+> However, in some cases the behaviour of
+> the power-domain and its device can be changed in runtime.
 > 
-> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-> index 59c01d68c6d5..d9aa5a39f585 100644
-> --- a/drivers/pci/pci.c
-> +++ b/drivers/pci/pci.c
-> @@ -3032,7 +3032,7 @@ bool pci_bridge_d3_possible(struct pci_dev *bridge)
->  			return true;
->  
->  		/* Even the oldest 2010 Thunderbolt controller supports D3. */
-> -		if (bridge->is_thunderbolt)
-> +		if (bridge->is_tunneled)
->  			return true;
->  
->  		/* Platform might know better if the bridge supports D3 */
-> diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
-> index 795534589b98..518413d15402 100644
-> --- a/drivers/pci/probe.c
-> +++ b/drivers/pci/probe.c
-> @@ -1597,7 +1597,7 @@ static void set_pcie_thunderbolt(struct pci_dev *dev)
->  	/* Is the device part of a Thunderbolt controller? */
->  	vsec = pci_find_vsec_capability(dev, PCI_VENDOR_ID_INTEL, PCI_VSEC_ID_INTEL_TBT);
->  	if (vsec)
-> -		dev->is_thunderbolt = 1;
-> +		dev->is_tunneled = 1;
+> To allow a consumer driver to change the behaviour of the PM domain for its
+> device, let's provide a new function, dev_pm_genpd_set_hwmode(). Moreover,
+> let's add a corresponding optional genpd callback, ->set_hwmode_dev(),
+> which the genpd provider should implement if it can support switching
+> between HW controlled mode and SW controlled mode. Similarly, add the
+> dev_pm_genpd_get_hwmode() to allow consumers to read the current mode and
+> its corresponding optional genpd callback, ->get_hwmode_dev(), which the
+> genpd provider can also implement for reading back the mode from the
+> hardware.
+> 
+> Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+> Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+> ---
+>  drivers/base/power/domain.c | 69 +++++++++++++++++++++++++++++++++++++++++++++
+>  include/linux/pm_domain.h   | 17 +++++++++++
+>  2 files changed, 86 insertions(+)
+> 
+> diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
+> index da1777e39eaa..3fb1a234c7f2 100644
+> --- a/drivers/base/power/domain.c
+> +++ b/drivers/base/power/domain.c
+> @@ -550,6 +550,75 @@ void dev_pm_genpd_synced_poweroff(struct device *dev)
 >  }
+>  EXPORT_SYMBOL_GPL(dev_pm_genpd_synced_poweroff);
 >  
->  static void set_pcie_untrusted(struct pci_dev *dev)
-> diff --git a/drivers/platform/x86/apple-gmux.c b/drivers/platform/x86/apple-gmux.c
-> index 1417e230edbd..20315aa4463a 100644
-> --- a/drivers/platform/x86/apple-gmux.c
-> +++ b/drivers/platform/x86/apple-gmux.c
-> @@ -774,7 +774,7 @@ static int gmux_resume(struct device *dev)
->  
->  static int is_thunderbolt(struct device *dev, void *data)
+> +/**
+> + * dev_pm_genpd_set_hwmode - Set the HW mode for the device and its PM domain.
+> + *
+> + * @dev: Device for which the HW-mode should be changed.
+> + * @enable: Value to set or unset the HW-mode.
+> + *
+> + * Some PM domains can rely on HW signals to control the power for a device. To
+> + * allow a consumer driver to switch the behaviour for its device in runtime,
+> + * which may be beneficial from a latency or energy point of view, this function
+> + * may be called.
+> + *
+> + * It is assumed that the users guarantee that the genpd wouldn't be detached
+> + * while this routine is getting called.
+> + *
+> + * Returns 0 on success and negative error values on failures.
+> + */
+> +int dev_pm_genpd_set_hwmode(struct device *dev, bool enable)
+> +{
+> +	struct generic_pm_domain *genpd;
+> +	int ret = 0;
+> +
+> +	genpd = dev_to_genpd_safe(dev);
+> +	if (!genpd)
+> +		return -ENODEV;
+> +
+> +	if (!genpd->set_hwmode_dev)
+> +		return -EOPNOTSUPP;
+> +
+> +	genpd_lock(genpd);
+> +
+> +	if (dev_gpd_data(dev)->hw_mode == enable)
+> +		goto out;
+> +
+> +	ret = genpd->set_hwmode_dev(genpd, dev, enable);
+> +	if (!ret)
+> +		dev_gpd_data(dev)->hw_mode = enable;
+> +
+> +out:
+> +	genpd_unlock(genpd);
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL_GPL(dev_pm_genpd_set_hwmode);
+> +
+> +/**
+> + * dev_pm_genpd_get_hwmode - Get the HW mode setting for the device.
+> + *
+> + * @dev: Device for which the current HW-mode setting should be fetched.
+> + *
+> + * This helper function allows consumer drivers to fetch the current HW mode
+> + * setting of its the device.
+> + *
+> + * It is assumed that the users guarantee that the genpd wouldn't be detached
+> + * while this routine is getting called.
+> + */
+> +bool dev_pm_genpd_get_hwmode(struct device *dev)
+> +{
+> +	struct generic_pm_domain *genpd;
+> +
+> +	genpd = dev_to_genpd_safe(dev);
+> +	if (!genpd)
+> +		return false;
+> +
+> +	if (genpd->get_hwmode_dev)
+> +		return genpd->get_hwmode_dev(genpd, dev);
+> +
+> +	return dev_gpd_data(dev)->hw_mode;
+> +}
+> +EXPORT_SYMBOL_GPL(dev_pm_genpd_get_hwmode);
+> +
+>  static int _genpd_power_on(struct generic_pm_domain *genpd, bool timed)
 >  {
-> -	return to_pci_dev(dev)->is_thunderbolt;
-> +	return to_pci_dev(dev)->is_tunneled;
->  }
+>  	unsigned int state_idx = genpd->state_idx;
+> diff --git a/include/linux/pm_domain.h b/include/linux/pm_domain.h
+> index 34663d0d5c55..0e7d177fdc3e 100644
+> --- a/include/linux/pm_domain.h
+> +++ b/include/linux/pm_domain.h
+> @@ -151,6 +151,10 @@ struct generic_pm_domain {
+>  	int (*set_performance_state)(struct generic_pm_domain *genpd,
+>  				     unsigned int state);
+>  	struct gpd_dev_ops dev_ops;
+> +	int (*set_hwmode_dev)(struct generic_pm_domain *domain,
+> +			      struct device *dev, bool enable);
+> +	bool (*get_hwmode_dev)(struct generic_pm_domain *domain,
+> +			      struct device *dev);
+>  	int (*attach_dev)(struct generic_pm_domain *domain,
+>  			  struct device *dev);
+>  	void (*detach_dev)(struct generic_pm_domain *domain,
+> @@ -213,6 +217,7 @@ struct generic_pm_domain_data {
+>  	unsigned int performance_state;
+>  	unsigned int default_pstate;
+>  	unsigned int rpm_pstate;
+> +	bool hw_mode;
+>  	void *data;
+>  };
 >  
->  static int gmux_probe(struct pnp_dev *pnp, const struct pnp_device_id *id)
-> diff --git a/include/linux/pci.h b/include/linux/pci.h
-> index 439c2dac8a3e..b1724f25fb02 100644
-> --- a/include/linux/pci.h
-> +++ b/include/linux/pci.h
-> @@ -440,7 +440,7 @@ struct pci_dev {
->  	unsigned int	is_virtfn:1;
->  	unsigned int	is_hotplug_bridge:1;
->  	unsigned int	shpc_managed:1;		/* SHPC owned by shpchp */
-> -	unsigned int	is_thunderbolt:1;	/* Thunderbolt controller */
-> +	unsigned int	is_tunneled:1;		/* Tunneled TBT or USB4 link */
->  	unsigned int	no_command_complete:1;	/* No command completion */
->  	/*
->  	 * Devices marked being untrusted are the ones that can potentially
-
+> @@ -242,6 +247,8 @@ int dev_pm_genpd_remove_notifier(struct device *dev);
+>  void dev_pm_genpd_set_next_wakeup(struct device *dev, ktime_t next);
+>  ktime_t dev_pm_genpd_get_next_hrtimer(struct device *dev);
+>  void dev_pm_genpd_synced_poweroff(struct device *dev);
+> +int dev_pm_genpd_set_hwmode(struct device *dev, bool enable);
+> +bool dev_pm_genpd_get_hwmode(struct device *dev);
+>  
+>  extern struct dev_power_governor simple_qos_governor;
+>  extern struct dev_power_governor pm_domain_always_on_gov;
+> @@ -310,6 +317,16 @@ static inline ktime_t dev_pm_genpd_get_next_hrtimer(struct device *dev)
+>  static inline void dev_pm_genpd_synced_poweroff(struct device *dev)
+>  { }
+>  
+> +static inline int dev_pm_genpd_set_hwmode(struct device *dev, bool enable)
+> +{
+> +	return -EOPNOTSUPP;
+> +}
+> +
+> +static inline bool dev_pm_genpd_get_hwmode(struct device *dev)
+> +{
+> +	return false;
+> +}
+> +
+>  #define simple_qos_governor		(*(struct dev_power_governor *)(NULL))
+>  #define pm_domain_always_on_gov		(*(struct dev_power_governor *)(NULL))
+>  #endif
+> 
+> -- 
+> 2.34.1
+> 
