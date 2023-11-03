@@ -2,129 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B6A767E0999
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 20:43:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C550A7E099E
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 20:48:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377811AbjKCTnR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 15:43:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59910 "EHLO
+        id S1377769AbjKCTsh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 15:48:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234453AbjKCTnP (ORCPT
+        with ESMTP id S229689AbjKCTsg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 15:43:15 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB0DADB;
-        Fri,  3 Nov 2023 12:43:12 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2585BC433C7;
-        Fri,  3 Nov 2023 19:43:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699040592;
-        bh=CFSrDlVUM0+gZalq2vpH/rAxg1gkP2kOq+1l1toyv8k=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pVm9iB9VSfX2kugsBsG83Jfa0Q0eQcbYrBFjmoWBQ+Bcv11MmJzm7e1r1RkqnT4j9
-         MiBichAfocfVllA5cJ8OatOs/qcC8tMZui00fM7kvRtNQI8Ro1u1UuXEOdmNPOf91z
-         EeR2ix+M0s+c2qv/f2crxX9+9JTXOQUOeVXtICN4lOPpKeJBn+WJNDJCFr1A7xFpCY
-         B0VRQ5E+DMIL07jvMTyUZp4MBU3wdxEDiylzRNQRehq4rKELlvEAoxhGkr/4U0s7qO
-         MbHQPoF0ltnidEH1wcl3qufWnQtH59YTis/hXEBL9KhulanOJwwJ/A4TJxZU2pS5F8
-         BjAxKgvBjudMQ==
-Date:   Fri, 3 Nov 2023 12:47:17 -0700
-From:   Bjorn Andersson <andersson@kernel.org>
-To:     Abel Vesa <abel.vesa@linaro.org>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Kevin Hilman <khilman@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andy Gross <agross@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
-        Vikash Garodia <quic_vgarodia@quicinc.com>,
-        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Taniya Das <tdas@qti.qualcomm.com>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-media@vger.kernel.org,
-        Taniya Das <quic_tdas@quicinc.com>
-Subject: Re: [PATCH RESEND v3 2/5] PM: domains: Add the domain HW-managed
- mode to the summary
-Message-ID: <7ep4opcrephg3iyfpvwtuwqxjsw3jx6mgeapjz4ryawt5w7xzq@qluhryilt2nl>
-References: <20231101-gdsc-hwctrl-v3-0-0740ae6b2b04@linaro.org>
- <20231101-gdsc-hwctrl-v3-2-0740ae6b2b04@linaro.org>
+        Fri, 3 Nov 2023 15:48:36 -0400
+Received: from mail-yw1-x1129.google.com (mail-yw1-x1129.google.com [IPv6:2607:f8b0:4864:20::1129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93466D50;
+        Fri,  3 Nov 2023 12:48:30 -0700 (PDT)
+Received: by mail-yw1-x1129.google.com with SMTP id 00721157ae682-5a8ada42c2aso28715157b3.3;
+        Fri, 03 Nov 2023 12:48:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699040910; x=1699645710; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=71hiR2M4614A24flgU9oexTeRtUyJjbPBhFi4ecHoW8=;
+        b=AfiRWiK6RK+k5QFQIOrpHpabefUGbYKckx2MvlCO+ykbeLljcEk2MJO9UQ78tdAbD5
+         x0Zxzy6ezoKiRvRXZoalXUmlpU3HJbyVLbE48DxuugN5p/XV2y36H7mtF4pgyPjC/ICw
+         jZFwqopdw946GNjxHXow68Dp0ss8psem43+CPv4DTErtPJXcxDoZ4ZzKfR41U68HZpfP
+         gsHAcMNgXoGUPad1iUuGSgEmvVniw3xW3bW5/Vyge+/PHU5D42DyFB7lTVx8WvGA+2+i
+         5BumEBQIkWXgvSHk5W5GMEdA7Z3Ucbm7tdRRTDXRqD8KLhxfOnTxXD6FUahmFfwfbu9T
+         g+Bw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699040910; x=1699645710;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=71hiR2M4614A24flgU9oexTeRtUyJjbPBhFi4ecHoW8=;
+        b=YLXJ/A+Lp1nf4fAAa8aeyVk1xNeC4sT3amVvEReXvrvSOzmDohX2uAh+QuBsbaI/vl
+         uepBVok/OgtLAONNCW8xXKoKVb2Irfr8Ljdtcu4jTfzGCuYI5z7wzKCFIoTPjFEFmtwn
+         vcEJo/xqNdJmgCCaYNBIJkXxcAVAEU9rXWre4Sc49KhY9s1nyeJWsDJffNaw4IbF++/u
+         atneQZZKUAw/ECY7TNmJYbzazEmhxHRczMSOEipUtSp5M7ly5Xue2LAOkTOc+SYMAydA
+         GEblWfTgMiJa6zaQvwZFl/Ty6umfDm3bI7T+Wm7brFKeD46ZpNkTJfxu/VQ1DExSeij+
+         emnQ==
+X-Gm-Message-State: AOJu0Yy4zW57R/nIMMJOawa4EYzegJij9lMXH6J/CZOZ2lFIaGMBANSl
+        6lHUFomB2LjZ/Oob0pQRelM=
+X-Google-Smtp-Source: AGHT+IGXUJ4A2QHfkW46307v/6Xfx4nO2jmU4DTmuZXW8DJ39U79ZOJVTB0xJUJkv9QfuKFHWgDLCA==
+X-Received: by 2002:a81:7893:0:b0:5a7:a989:b85c with SMTP id t141-20020a817893000000b005a7a989b85cmr3816975ywc.16.1699040909707;
+        Fri, 03 Nov 2023 12:48:29 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id o63-20020a0dfe42000000b005463e45458bsm1308339ywf.123.2023.11.03.12.48.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 Nov 2023 12:48:29 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Fri, 3 Nov 2023 12:48:27 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Antoniu Miclaus <antoniu.miclaus@analog.com>
+Cc:     Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Jean Delvare <jdelvare@suse.com>, linux-rtc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hwmon@vger.kernel.org
+Subject: Re: [PATCH v5 2/2] rtc: max31335: add driver support
+Message-ID: <f2a58018-d907-4401-a2d9-fe53bebc1459@roeck-us.net>
+References: <20231103140051.43174-1-antoniu.miclaus@analog.com>
+ <20231103140051.43174-2-antoniu.miclaus@analog.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20231101-gdsc-hwctrl-v3-2-0740ae6b2b04@linaro.org>
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231103140051.43174-2-antoniu.miclaus@analog.com>
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 01, 2023 at 11:04:08AM +0200, Abel Vesa wrote:
-> Now that genpd supports dynamically switching the control for an
-> attached device between hardware- and software-mode,  let's add this
-> information to the genpd summary in debugfs.
+On Fri, Nov 03, 2023 at 04:00:26PM +0200, Antoniu Miclaus wrote:
+> RTC driver for MAX31335 ±2ppm Automotive Real-Time Clock with
+> Integrated MEMS Resonator.
 > 
-> Suggested-by: Taniya Das <quic_tdas@quicinc.com>
-> Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
-> Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
-
-Reviewed-by: Bjorn Andersson <andersson@kernel.org>
-
-Regards,
-Bjorn
-
+> Signed-off-by: Antoniu Miclaus <antoniu.miclaus@analog.com>
 > ---
->  drivers/base/power/domain.c | 15 +++++++++++++--
->  1 file changed, 13 insertions(+), 2 deletions(-)
+>  MAINTAINERS                |   8 +
+>  drivers/rtc/Kconfig        |  20 ++
+>  drivers/rtc/Makefile       |   1 +
+>  drivers/rtc/rtc-max31335.c | 700 +++++++++++++++++++++++++++++++++++++
+>  4 files changed, 729 insertions(+)
+>  create mode 100644 drivers/rtc/rtc-max31335.c
 > 
-> diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
-> index 3fb1a234c7f2..7044271ec93b 100644
-> --- a/drivers/base/power/domain.c
-> +++ b/drivers/base/power/domain.c
-> @@ -3181,6 +3181,15 @@ static void rtpm_status_str(struct seq_file *s, struct device *dev)
->  	seq_printf(s, "%-25s  ", p);
->  }
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index dd5de540ec0b..bc484cb997ab 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -12823,6 +12823,14 @@ F:	Documentation/devicetree/bindings/hwmon/adi,max31827.yaml
+>  F:	Documentation/hwmon/max31827.rst
+>  F:	drivers/hwmon/max31827.c
 >  
-> +static void mode_status_str(struct seq_file *s, struct device *dev)
-> +{
-> +	struct generic_pm_domain_data *gpd_data;
+> +MAX31335 RTC DRIVER
+> +M:	Antoniu Miclaus <antoniu.miclaus@analog.com>
+> +L:	linux-rtc@vger.kernel.org
+> +S:	Supported
+> +W:	https://ez.analog.com/linux-software-drivers
+> +F:	Documentation/devicetree/bindings/rtc/adi,max31335.yaml
+> +F:	drivers/rtc/rtc-max31335.c
 > +
-> +	gpd_data = to_gpd_data(dev->power.subsys_data->domain_data);
-> +
-> +	seq_printf(s, "%20s", gpd_data->hw_mode ? "HW" : "SW");
-> +}
-> +
->  static void perf_status_str(struct seq_file *s, struct device *dev)
->  {
->  	struct generic_pm_domain_data *gpd_data;
-> @@ -3239,6 +3248,7 @@ static int genpd_summary_one(struct seq_file *s,
->  		seq_printf(s, "\n    %-50s  ", kobj_path);
->  		rtpm_status_str(s, pm_data->dev);
->  		perf_status_str(s, pm_data->dev);
-> +		mode_status_str(s, pm_data->dev);
->  		kfree(kobj_path);
->  	}
+>  MAX6650 HARDWARE MONITOR AND FAN CONTROLLER DRIVER
+>  L:	linux-hwmon@vger.kernel.org
+>  S:	Orphan
+> diff --git a/drivers/rtc/Kconfig b/drivers/rtc/Kconfig
+> index d7502433c78a..360da13fe61b 100644
+> --- a/drivers/rtc/Kconfig
+> +++ b/drivers/rtc/Kconfig
+> @@ -373,6 +373,26 @@ config RTC_DRV_MAX8997
+>  	  This driver can also be built as a module. If so, the module
+>  	  will be called rtc-max8997.
 >  
-> @@ -3255,8 +3265,9 @@ static int summary_show(struct seq_file *s, void *data)
->  	int ret = 0;
->  
->  	seq_puts(s, "domain                          status          children                           performance\n");
-> -	seq_puts(s, "    /device                                             runtime status\n");
-> -	seq_puts(s, "----------------------------------------------------------------------------------------------\n");
-> +	seq_puts(s, "    /device                                             runtime status                           managed by\n");
-> +	seq_puts(s, "------------------------------------------------------------------------------------------------------------\n");
+> +config RTC_DRV_MAX31335
+> +	tristate "Analog Devices MAX31335"
+> +	depends on I2C
+> +	select REGMAP_I2C
+> +	help
+> +	  If you say yes here you get support for the Analog Devices
+> +	  MAX31335.
 > +
->  
->  	ret = mutex_lock_interruptible(&gpd_list_lock);
->  	if (ret)
-> 
-> -- 
-> 2.34.1
-> 
+> +	  This driver can also be built as a module. If so, the module
+> +	  will be called rtc-max31335.
+> +
+> +config RTC_DRV_MAX31335_HWMON
+> +	bool "HWMON support for Analog Devices MAX31335"
+> +	depends on RTC_DRV_MAX31335 && HWMON
+> +	depends on !(RTC_DRV_MAX31335=y && HWMON=m)
+> +	default y
+> +	help
+> +	  Say Y here if you want to expose temperature sensor data on
+> +	  rtc-max31335.
+
+CONFIG_RTC_DRV_MAX31335_HWMON is not used in the driver. What is the point
+of having it ?
+
+Guenter
