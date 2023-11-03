@@ -2,147 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B4367E080E
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 19:25:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C00007E0814
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 19:26:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343574AbjKCSZH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 14:25:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55822 "EHLO
+        id S1343498AbjKCS0G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 14:26:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230197AbjKCSZF (ORCPT
+        with ESMTP id S1343919AbjKCS0E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 14:25:05 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA91FCF;
-        Fri,  3 Nov 2023 11:24:59 -0700 (PDT)
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A3Dm83J004645;
-        Fri, 3 Nov 2023 18:24:31 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=Q4A1/ShYumvFEKJwseEisL4WJre6JGG+MXAB1DSfkCM=;
- b=LTd6P5L/52RMaij4t6W3kKSwp6G300cKxSV5Euc6Kd5hISCTHHNlAsaKFPcyLp29yVtk
- 9C9sckItG0A0yfRvYZGfYGnL58D0mJsDYogGjO/ebvDulDHFh1HvJIS/3cFnljWVl6MO
- qWpZwDjuaZSbUxLgyggxeP1FZTkfn3aP9ySZI+QDQs34hBW3rECFLfvpimn1Vinr33ON
- dB/V2R1pvyfFInjPgEVYiiHK4YkpO13NOOe22BmuVE04030gu52N9DzevWrJslfXLTRL
- zc7FhF6ujtWeQx43HzUT45e8n5f8hNTlUzBBeTJ38FZOCVVyXCbbWuxZ9RJNiMw6tCcS Rg== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u4wmjh95a-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 03 Nov 2023 18:24:30 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3A3IOTqx008092
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 3 Nov 2023 18:24:29 GMT
-Received: from [10.249.21.155] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Fri, 3 Nov
- 2023 11:24:22 -0700
-Message-ID: <29752cbf-9fe4-48ce-bf21-0bb3daf7d691@quicinc.com>
-Date:   Fri, 3 Nov 2023 23:54:16 +0530
+        Fri, 3 Nov 2023 14:26:04 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17E2BD4D;
+        Fri,  3 Nov 2023 11:25:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
+        t=1699035934; x=1699640734; i=w_armin@gmx.de;
+        bh=87/6Z3GDCuuONgRARk2VNGy0KZIfFryJJ5Sgbd/1RO0=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=WVyd9C4jYmsIHwQrA80qciR8Y1qyAO1meHf226IrXYGv6j0OwnQ35DbAJLLtebc3
+         XAsZNwrd55nutucwFIqViZi4gVrmRtrKGMToTkqwz6N3bSiEk5CwqNjydgnaO7gEc
+         1XLtlMDbiGXNRsUGnzoF0+X7BfhI2Ug4Jjbq8rqfwjH5aESmKIHayvURyylJmG4GT
+         YOHFmYgnEejbQ4wYPZFk95iz1B1uIc/1lmjEZkGk/bMpHNfKR7Qb0bmiim7UPyszq
+         LCKYUtuzx42FXHMHBIDxE1+031AZ7Kux6+34CyYxFXXijQ5Dnt3T49lY5RXA0M1dU
+         cC9LiIxrRtXsIP2UQA==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from mx-amd-b650.users.agdsn.de ([141.30.226.129]) by mail.gmx.net
+ (mrgmx005 [212.227.17.190]) with ESMTPSA (Nemesis) id
+ 1Mk0Ne-1rjGyc13VY-00kT1u; Fri, 03 Nov 2023 19:25:34 +0100
+From:   Armin Wolf <W_Armin@gmx.de>
+To:     jithu.joseph@intel.com, hdegoede@redhat.com, markgross@kernel.org,
+        ilpo.jarvinen@linux.intel.com
+Cc:     Dell.Client.Kernel@dell.com, platform-driver-x86@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 1/4] platform/x86: wmi: Add wmidev_block_set()
+Date:   Fri,  3 Nov 2023 19:25:23 +0100
+Message-Id: <20231103182526.3524-1-W_Armin@gmx.de>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC 1/8] dt-bindings: usb: qcom,dwc3: Add bindings to enable
- runtime
-To:     Caleb Connolly <caleb.connolly@linaro.org>,
-        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Bjorn Andersson <andersson@kernel.org>,
-        "Konrad Dybcio" <konrad.dybcio@linaro.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-CC:     <quic_wcheng@quicinc.com>, <linux-usb@vger.kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        "Philipp Zabel" <p.zabel@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        <devicetree@vger.kernel.org>, <quic_ppratap@quicinc.com>,
-        <quic_jackp@quicinc.com>
-References: <20231017131851.8299-1-quic_kriskura@quicinc.com>
- <20231017131851.8299-2-quic_kriskura@quicinc.com>
- <272a9764-1cae-4d86-88b1-00175de83333@linaro.org>
- <960101cc-78c0-49cf-ab62-90614eeb9ee2@quicinc.com>
- <dbf4a48e-c808-4611-96b1-563ece1e451a@linaro.org>
- <f0820464-16d6-47fd-90bc-cf80b5d76058@quicinc.com>
- <96b3ebe5-781a-432a-9a73-2217a2a674f4@linaro.org>
-Content-Language: en-US
-From:   Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
-In-Reply-To: <96b3ebe5-781a-432a-9a73-2217a2a674f4@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: LFkoDZoWy75NbMtvUKFsJCg-alEyYpK7
-X-Proofpoint-GUID: LFkoDZoWy75NbMtvUKFsJCg-alEyYpK7
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-03_17,2023-11-02_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 phishscore=0
- suspectscore=0 bulkscore=0 clxscore=1015 priorityscore=1501
- mlxlogscore=582 malwarescore=0 spamscore=0 adultscore=0 mlxscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2310240000 definitions=main-2311030153
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:rYZiZr8I1iEnWabFYZyuNzae7HyUJaA7e66F4OBa48ofukr5/Oi
+ nRfeyeFC/gbwhksR/SFJgys6/wZ80EvppQMKtnfwipXNK+pCLhP1ukbo1f7ihp5WD+AexMC
+ VhjAXu82Nky9+8jYOCx+34bPe/7pxWKHXEXoMOTeDBsaAqkpodD32sn4SDRzlthtXafmqmd
+ ZF8UxaNkHHzp6OUP7No3g==
+UI-OutboundReport: notjunk:1;M01:P0:AO80qY1xqck=;mwIb49Y7ZM/H3DhA3/huyU3Llpb
+ y2Qxn7rrnlSrtySjpWGH/NolzUUnPP4OcVF5YvVjg8AGkCND8++dQgqwf3Ns+aTtlsvaTqx3w
+ 64WKB7dnprdlpsT5cwtG3XrawLA4LE8ppWlTHAYzNOvvf3q41KeZxFiFCC6+B0XymXpYjZxLY
+ ot1EiK4+x+LAsyEy8K+Ms1ktdGMHOdMqrWFhUbMy9Mhn+6skBS4VcaV8Mu1Rlokbyn+Sqt/tP
+ ULOpGeWYWvMXmLK5W2vh9k/ynWGl6Ex2Hbp3crPjsLnYxO6LQrRwmKKTLwXXta3f3KzQJ62dK
+ Tw25PgdKsEMDrakJRf3/zk+mkP+/UNhxHIWqDBRRxpILFk8qKx9vF6oV0NLUNWnv1hfmDDeod
+ /qgv6jrPjEfV8iTMbvnj8dA9hV8dlfx9WV9Ka4Te5IoMFrjHqL5DiggjDbiCTD8NJNhRzg3tg
+ sHgqFcM+27xj8O3TH/5CsafICilY3o06nKYBKjSjuO9WtuQSIyXyLwkJqaXmrlByQeBuoIFkI
+ 1tfOuVR9Xv0DQ1FjLa5vmoDHPiOXv4UgV0nPA2iLdoLgL3CSQSFpmzvH1cpDE16H8NARfgDee
+ rc/SZl1+nEpoUxNsb5Uie6Uy5v9EXKDEJw0cfB9QO4IsGAJRwxdiyNyfht0EhwliQOCQV2XDU
+ d26bCmxy2LU5nlf+UEjyZldFIWoT27b9A+4vp+DaiLesbZpCvAlZZeplQU5oEXxZiVGplz4xV
+ azshg5yxA6yRI5UlnIaoYroBgKbVy+BsxojC1g5tNZITK6imJ5SjdLkqkKdfWl+dEhLh/Be6+
+ ccdMWPFNsXJEQtbAdxFvdWFVVt5mZCVemC2n+38RhLiLsOKfJT+iq2nJMwYyhk9HvUjZ52pG7
+ t+AnTSl56yttvs3Nw4Qay//2CKWfBRHX7vUNYi/ZiS2mjl7+zqdVrEvHS35z/n1f5fN0B6zuC
+ GZCLjbVs7tzuM3n3Bq9aCOITGaQ=
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Currently, WMI drivers have to use the deprecated GUID-based
+interface when setting data blocks. This prevents those
+drivers from fully moving away from this interface.
 
+Provide wmidev_block_set() so drivers using wmi_set_block() can
+fully migrate to the modern bus-based interface.
 
-On 11/3/2023 8:26 PM, Caleb Connolly wrote:
-> 
-> 
-> On 03/11/2023 05:34, Krishna Kurapati PSSNV wrote:
->>
->>
->> On 11/3/2023 12:10 AM, Caleb Connolly wrote:
->>>> Hi Caleb,
->>>>
->>>>     There are two types of platforms, some use extcon and some use
->>>> role-switch to deliver vbus/id notifications. Extcon targets already
->>>> have this qscratch modifications present today in vbus and id
->>>> handlers. But for role-switch based targets we don't have any way to
->>>> get this notification to dwc3-qcom. In this implementation, I wanted
->>>> to get those notications from core to glue and for this we
->>>> implenented vendor hooks.
->>>>
->>>> The property added has been used to do two things:
->>>>
->>>> 1. Register glue's vendor hooks to core driver
->>>> 2. Do runtime_allow for glue (and by default for core as the dt is
->>>> not flattened)
->>>>
->>>> In case of extcon, we don't want to register vendor hooks as
->>>> notifications are not necessary.
->>>
->>> Could it just be enabled when role_switch is present then?
->>>>
->>
->> So we would register vendor hooks when usb-role-switch is present but
->> don't do runtime allow, and leave that option to user space right ?
->> I think it would work and we can do away with the binding completely.
-> 
-> Can we still enable runtime suspend? Maybe someone else wants to chime
-> in here, but I'd guess that it's preferable to have it enabled by
-> default, particularly for devices like phones. Or are there side effects
-> from this?
->>
+Tested with a custom SSDT from the Intel Slim Bootloader project.
 
-AFAIK, I don't see any side effects whether we enable runtime from user 
-space or do runtime_allow() here in kernel itself and leave qscratch 
-config to vendor hooks.
+Signed-off-by: Armin Wolf <W_Armin@gmx.de>
+=2D--
+Changes in v2:
+- applies on pdx86/for-next
+=2D--
+ drivers/platform/x86/wmi.c | 64 ++++++++++++++++++++------------------
+ include/linux/wmi.h        |  2 ++
+ 2 files changed, 36 insertions(+), 30 deletions(-)
 
-But leaving it enabled by default, we do this for almost all targets in 
-downstream today. So I guess there would be no side effects.
+diff --git a/drivers/platform/x86/wmi.c b/drivers/platform/x86/wmi.c
+index 5c27b4aa9690..9d9a050e7086 100644
+=2D-- a/drivers/platform/x86/wmi.c
++++ b/drivers/platform/x86/wmi.c
+@@ -536,41 +536,50 @@ EXPORT_SYMBOL_GPL(wmidev_block_query);
+  *
+  * Return: acpi_status signaling success or error.
+  */
+-acpi_status wmi_set_block(const char *guid_string, u8 instance,
+-			  const struct acpi_buffer *in)
++acpi_status wmi_set_block(const char *guid_string, u8 instance, const str=
+uct acpi_buffer *in)
+ {
+-	struct wmi_block *wblock;
+-	struct guid_block *block;
+ 	struct wmi_device *wdev;
+-	acpi_handle handle;
+-	struct acpi_object_list input;
+-	union acpi_object params[2];
+-	char method[WMI_ACPI_METHOD_NAME_SIZE];
+ 	acpi_status status;
 
-Regards,
-Krishna,
+-	if (!in)
+-		return AE_BAD_DATA;
+-
+ 	wdev =3D wmi_find_device_by_guid(guid_string);
+ 	if (IS_ERR(wdev))
+ 		return AE_ERROR;
+
+-	wblock =3D container_of(wdev, struct wmi_block, dev);
+-	block =3D &wblock->gblock;
+-	handle =3D wblock->acpi_device->handle;
++	status =3D  wmidev_block_set(wdev, instance, in);
++	wmi_device_put(wdev);
+
+-	if (block->instance_count <=3D instance) {
+-		status =3D AE_BAD_PARAMETER;
++	return status;
++}
++EXPORT_SYMBOL_GPL(wmi_set_block);
+
+-		goto err_wdev_put;
+-	}
++/**
++ * wmidev_block_set - Write to a WMI block
++ * @wdev: A wmi bus device from a driver
++ * @instance: Instance index
++ * @in: Buffer containing new values for the data block
++ *
++ * Write contents of the input buffer to an ACPI-WMI data block.
++ *
++ * Return: acpi_status signaling success or error.
++ */
++acpi_status wmidev_block_set(struct wmi_device *wdev, u8 instance, const =
+struct acpi_buffer *in)
++{
++	struct wmi_block *wblock =3D container_of(wdev, struct wmi_block, dev);
++	acpi_handle handle =3D wblock->acpi_device->handle;
++	struct guid_block *block =3D &wblock->gblock;
++	char method[WMI_ACPI_METHOD_NAME_SIZE];
++	struct acpi_object_list input;
++	union acpi_object params[2];
+
+-	/* Check GUID is a data block */
+-	if (block->flags & (ACPI_WMI_EVENT | ACPI_WMI_METHOD)) {
+-		status =3D AE_ERROR;
++	if (!in)
++		return AE_BAD_DATA;
+
+-		goto err_wdev_put;
+-	}
++	if (block->instance_count <=3D instance)
++		return AE_BAD_PARAMETER;
++
++	/* Check GUID is a data block */
++	if (block->flags & (ACPI_WMI_EVENT | ACPI_WMI_METHOD))
++		return AE_ERROR;
+
+ 	input.count =3D 2;
+ 	input.pointer =3D params;
+@@ -582,14 +591,9 @@ acpi_status wmi_set_block(const char *guid_string, u8=
+ instance,
+
+ 	get_acpi_method_name(wblock, 'S', method);
+
+-	status =3D acpi_evaluate_object(handle, method, &input, NULL);
+-
+-err_wdev_put:
+-	wmi_device_put(wdev);
+-
+-	return status;
++	return acpi_evaluate_object(handle, method, &input, NULL);
+ }
+-EXPORT_SYMBOL_GPL(wmi_set_block);
++EXPORT_SYMBOL_GPL(wmidev_block_set);
+
+ static void wmi_dump_wdg(const struct guid_block *g)
+ {
+diff --git a/include/linux/wmi.h b/include/linux/wmi.h
+index 763bd382cf2d..207544968268 100644
+=2D-- a/include/linux/wmi.h
++++ b/include/linux/wmi.h
+@@ -35,6 +35,8 @@ extern acpi_status wmidev_evaluate_method(struct wmi_dev=
+ice *wdev,
+ extern union acpi_object *wmidev_block_query(struct wmi_device *wdev,
+ 					     u8 instance);
+
++acpi_status wmidev_block_set(struct wmi_device *wdev, u8 instance, const =
+struct acpi_buffer *in);
++
+ u8 wmidev_instance_count(struct wmi_device *wdev);
+
+ extern int set_required_buffer_size(struct wmi_device *wdev, u64 length);
+=2D-
+2.39.2
+
