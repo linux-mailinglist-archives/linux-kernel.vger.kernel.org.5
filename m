@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 468AA7E04E7
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 15:46:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21D897E043D
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 15:04:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229572AbjKCOpz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 10:45:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37334 "EHLO
+        id S1377786AbjKCOEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 10:04:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377812AbjKCODz (ORCPT
+        with ESMTP id S1377809AbjKCODz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 3 Nov 2023 10:03:55 -0400
 Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45563D60;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4493BD57;
         Fri,  3 Nov 2023 07:03:51 -0700 (PDT)
 Received: from dggpemm100001.china.huawei.com (unknown [172.30.72.54])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4SMMpP5yQNz1P7pR;
-        Fri,  3 Nov 2023 22:00:45 +0800 (CST)
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4SMMpQ084Pz1P7nW;
+        Fri,  3 Nov 2023 22:00:46 +0800 (CST)
 Received: from localhost.localdomain (10.175.112.125) by
  dggpemm100001.china.huawei.com (7.185.36.93) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Fri, 3 Nov 2023 22:03:46 +0800
+ 15.1.2507.31; Fri, 3 Nov 2023 22:03:47 +0800
 From:   Kefeng Wang <wangkefeng.wang@huawei.com>
 To:     Andrew Morton <akpm@linux-foundation.org>
 CC:     <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
@@ -29,9 +29,9 @@ CC:     <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
         David Hildenbrand <david@redhat.com>,
         <linux-s390@vger.kernel.org>,
         Kefeng Wang <wangkefeng.wang@huawei.com>
-Subject: [PATCH 09/18] mm: memory: use a folio in do_set_pmd()
-Date:   Fri, 3 Nov 2023 22:01:10 +0800
-Message-ID: <20231103140119.2306578-10-wangkefeng.wang@huawei.com>
+Subject: [PATCH 10/18] mm: memory: use mm_counter_file_folio() in copy_present_pte()
+Date:   Fri, 3 Nov 2023 22:01:11 +0800
+Message-ID: <20231103140119.2306578-11-wangkefeng.wang@huawei.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20231103140119.2306578-1-wangkefeng.wang@huawei.com>
 References: <20231103140119.2306578-1-wangkefeng.wang@huawei.com>
@@ -52,40 +52,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use a folio in do_set_pmd(), which save one compound_head() call.
+Use mm_counter_file_folio() to save one compound_head() call.
 
 Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
 ---
- mm/memory.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ mm/memory.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/mm/memory.c b/mm/memory.c
-index 1f18ed4a5497..09009094a5f2 100644
+index 09009094a5f2..d35ca499bf1c 100644
 --- a/mm/memory.c
 +++ b/mm/memory.c
-@@ -4313,12 +4313,13 @@ vm_fault_t do_set_pmd(struct vm_fault *vmf, struct page *page)
- 	unsigned long haddr = vmf->address & HPAGE_PMD_MASK;
- 	pmd_t entry;
- 	vm_fault_t ret = VM_FAULT_FALLBACK;
-+	struct folio *folio;
- 
- 	if (!transhuge_vma_suitable(vma, haddr))
- 		return ret;
- 
--	page = compound_head(page);
--	if (compound_order(page) != HPAGE_PMD_ORDER)
-+	folio = page_folio(page);
-+	if (folio_order(folio) != HPAGE_PMD_ORDER)
- 		return ret;
- 
- 	/*
-@@ -4350,7 +4351,7 @@ vm_fault_t do_set_pmd(struct vm_fault *vmf, struct page *page)
- 	if (write)
- 		entry = maybe_pmd_mkwrite(pmd_mkdirty(entry), vma);
- 
--	add_mm_counter(vma->vm_mm, mm_counter_file(page), HPAGE_PMD_NR);
-+	add_mm_counter(vma->vm_mm, mm_counter_file_folio(folio), HPAGE_PMD_NR);
- 	page_add_file_rmap(page, vma, true);
+@@ -960,7 +960,7 @@ copy_present_pte(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma,
+ 	} else if (page) {
+ 		folio_get(folio);
+ 		page_dup_file_rmap(page, false);
+-		rss[mm_counter_file(page)]++;
++		rss[mm_counter_file_folio(folio)]++;
+ 	}
  
  	/*
 -- 
