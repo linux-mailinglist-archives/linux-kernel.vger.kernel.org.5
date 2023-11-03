@@ -2,131 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B285E7E022D
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 12:24:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F04527E0231
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 12:27:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346966AbjKCLY6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 07:24:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53866 "EHLO
+        id S230076AbjKCL0u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 07:26:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346918AbjKCLY6 (ORCPT
+        with ESMTP id S229379AbjKCL0s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 07:24:58 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 480D8134;
-        Fri,  3 Nov 2023 04:24:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699010692; x=1730546692;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=EExSE5kMyxSHF8UhIPZ9SnLdv7qwCLGarLJ+9vT1VuA=;
-  b=jaxhAuAXTdDLYy2Ym8nu1a4NdLZslrrZxTvBIfvCjiECYyrmkMBpEvLn
-   uQvHvhZlsktFh9frvuYjt3GdAIL0pnum3+uARKRjG8D/0Xaa3foAfKvyz
-   YzRacNcCnH4qeWjJbHh/CPi4uvOR6eGUfpL5G2u01q2JYcp3Gzdhm1aUY
-   2MsZmRnv8QCUDx+xMlzaFRHqAWlpqOFvDSZqXXb7bK2eobQ+l4Iasbzmj
-   tMemi4YXl+ez5DPavUcEzZigdS97k/TEBSaiyxPi8gdIrCnaA0DfNS1RF
-   RiCADA8EwxZq5LOARR9YjUQAQQOSOR0XkpAzucilAy1mZmYAwf4qwbezE
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10882"; a="379328287"
-X-IronPort-AV: E=Sophos;i="6.03,273,1694761200"; 
-   d="scan'208";a="379328287"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2023 04:24:51 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10882"; a="905312869"
-X-IronPort-AV: E=Sophos;i="6.03,273,1694761200"; 
-   d="scan'208";a="905312869"
-Received: from pors-mobl3.ger.corp.intel.com ([10.252.35.38])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2023 04:24:49 -0700
-Date:   Fri, 3 Nov 2023 13:24:47 +0200 (EET)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Reinette Chatre <reinette.chatre@intel.com>
-cc:     linux-kselftest@vger.kernel.org, Shuah Khan <shuah@kernel.org>,
-        Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>,
-        =?ISO-8859-15?Q?Maciej_Wiecz=F3r-Retman?= 
-        <maciej.wieczor-retman@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 17/24] selftests/resctrl: Create struct for input
- parameter
-In-Reply-To: <d22a4ce2-9e81-4d65-8381-e5ab5fa706ed@intel.com>
-Message-ID: <2e266bb-653f-2fe2-9dbc-db8388f6aff1@linux.intel.com>
-References: <20231024092634.7122-1-ilpo.jarvinen@linux.intel.com> <20231024092634.7122-18-ilpo.jarvinen@linux.intel.com> <d22a4ce2-9e81-4d65-8381-e5ab5fa706ed@intel.com>
+        Fri, 3 Nov 2023 07:26:48 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA2C7134;
+        Fri,  3 Nov 2023 04:26:42 -0700 (PDT)
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A3BApAX021726;
+        Fri, 3 Nov 2023 11:26:27 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=lfQIATagDXr/IHl018bEVxuu1E+1OhBeQ1S0dtuTD7U=;
+ b=Wkxl8puXjlYAzj4Ieivbx7VPVNi5cMv7U0Dz3OdlbtfIF8kIv0o1qaoZ8kRbYjRLFYGm
+ m+B+W8vDhRMX8BTZtAghu/Z7DLNKpqzkXzLZ8UlPNwdnA5o4lsoJPxOtvumUWtUe5ovQ
+ Nig6XYuhWkPR4lSKvEIVM/I2r9x5RvKnWNGgieXoR0bAI7LGLYZcj5/ekdNhAJ+vW9vu
+ Mo4f2/fjUPdTvArWmm5yJyvmAyJxQTDqmxuHxk186F09m5h1Or9mWsaZwkUcV/TTJtu4
+ Y8AH466xorSLTzurkd9bl6XkiZ9ZonYnrVH5SDkDzXLkFsAm7AG12YrEM2c4FH5xJjiU Sw== 
+Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u47dy31jf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 03 Nov 2023 11:26:27 +0000
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+        by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3A3BQQJg016440
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 3 Nov 2023 11:26:26 GMT
+Received: from [10.216.26.1] (10.80.80.8) by nasanex01a.na.qualcomm.com
+ (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Fri, 3 Nov
+ 2023 04:26:20 -0700
+Message-ID: <0140b8b9-0043-4cf4-0704-7727774dba0f@quicinc.com>
+Date:   Fri, 3 Nov 2023 16:56:17 +0530
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-1829071547-1699010691=:1725"
-X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.1
+Subject: Re: [RFC PATCH 2/5] arm64: dts: qcom: ipq9574: Add ecc engine support
+Content-Language: en-US
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>, <agross@kernel.org>,
+        <andersson@kernel.org>, <robh+dt@kernel.org>,
+        <conor+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
+        <broonie@kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-mtd@lists.infradead.org>, <linux-spi@vger.kernel.org>,
+        <quic_srichara@quicinc.com>, <qpic_varada@quicinc.com>
+References: <20231031120307.1600689-1-quic_mdalam@quicinc.com>
+ <20231031120307.1600689-3-quic_mdalam@quicinc.com>
+ <873c1b14-5b7c-4fb1-8f09-6344a4bf901b@linaro.org>
+From:   Md Sadre Alam <quic_mdalam@quicinc.com>
+In-Reply-To: <873c1b14-5b7c-4fb1-8f09-6344a4bf901b@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: ZK53JGex603L5pTAe7eCzW7u4s1svBif
+X-Proofpoint-ORIG-GUID: ZK53JGex603L5pTAe7eCzW7u4s1svBif
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-03_11,2023-11-02_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 bulkscore=0 malwarescore=0 priorityscore=1501
+ suspectscore=0 phishscore=0 impostorscore=0 mlxscore=0 mlxlogscore=798
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2310240000 definitions=main-2311030096
+X-Spam-Status: No, score=-6.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
 
---8323329-1829071547-1699010691=:1725
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
 
-On Thu, 2 Nov 2023, Reinette Chatre wrote:
-> On 10/24/2023 2:26 AM, Ilpo Järvinen wrote:
+On 10/31/2023 8:53 PM, Konrad Dybcio wrote:
+> On 31.10.2023 13:03, Md Sadre Alam wrote:
+>> Signed-off-by: Md Sadre Alam <quic_mdalam@quicinc.com>
+>> Signed-off-by: Sricharan R <quic_srichara@quicinc.com>
+>> ---
+> Hello,
 > 
-> > diff --git a/tools/testing/selftests/resctrl/mba_test.c b/tools/testing/selftests/resctrl/mba_test.c
-> > index d3bf4368341e..5157a3f74fee 100644
-> > --- a/tools/testing/selftests/resctrl/mba_test.c
-> > +++ b/tools/testing/selftests/resctrl/mba_test.c
-> > @@ -141,13 +141,13 @@ void mba_test_cleanup(void)
-> >  	remove(RESULT_FILE_NAME);
-> >  }
-> >  
-> > -int mba_schemata_change(int cpu_no, const char * const *benchmark_cmd)
-> > +int mba_schemata_change(const struct user_params *uparams)
-> >  {
-> >  	struct resctrl_val_param param = {
-> >  		.resctrl_val	= MBA_STR,
-> >  		.ctrlgrp	= "c1",
-> >  		.mongrp		= "m1",
-> > -		.cpu_no		= cpu_no,
-> > +		.cpu_no		= uparams->cpu,
-> >  		.filename	= RESULT_FILE_NAME,
-> >  		.bw_report	= "reads",
-> >  		.setup		= mba_setup
-> > @@ -156,7 +156,7 @@ int mba_schemata_change(int cpu_no, const char * const *benchmark_cmd)
-> >  
-> >  	remove(RESULT_FILE_NAME);
-> >  
-> > -	ret = resctrl_val(benchmark_cmd, &param);
-> > +	ret = resctrl_val(uparams->benchmark_cmd, &param);
-> >  	if (ret)
-> >  		goto out;
-> >  
+> you're missing:
 > 
-> How about a new member of struct resctrl_val_param that points to 
-> uparams? That would remove cpu_no from resctrl_val_param
-> and have everything available when a test needs to run ... not copying
-> some user parameters into struct resctrl_val_param and passing
-> others as parameters.
+> - dt-bindings (make dtbs_check is unhappy)
+> - a commit message
+> - Co-developed-by for Sricharan
 
-I'm a bit allergic to adding more stuff into resctrl_val_param. It seems 
-a structure where random stuff has been thrown at just because it exists.
-In general, your point is very valid though because the members of 
-resctrl_val_param should be auditted through to see how many of them are 
-even useful after adding uparams and struct resctrl_test.
+> 
+> status should read "okay" instead, but in this case it's unnecessary
+> as you're defining the node and lack of the status property also means
+> that device is enabled
+> 
+> however
+> 
+> this ECC engine seems to be a part of the NAND controller, so it's
+> unlikely that the DT maintainers will agree for it to have a separate
+> node
+> 
 
-I could get rid of copying parameters from uparams to params and just 
-passing uparams instead of benchmark_cmd into resctrl_val(). Would you be 
-okay with that?
 
-Oh, and I really should rename resctrl_val() one day to something more 
-meaningful too. :-) (but it won't be part of this series and will likely 
-be another conflicty nightmare because resctrl_val_param too needs to 
-be renamed...).
+Will drop this patch as this was NAK-ed
+QPIC controller has the ecc pipelined so will keep the ecc support
+inlined in both raw nand and serial nand driver.
 
--- 
- i.
+Regards
+Alam.
 
---8323329-1829071547-1699010691=:1725--
+
