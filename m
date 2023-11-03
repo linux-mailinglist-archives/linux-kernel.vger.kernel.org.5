@@ -2,144 +2,298 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB7B27E0399
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 14:14:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A13F7E03A3
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 14:15:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377406AbjKCNOC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 09:14:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40248 "EHLO
+        id S1377647AbjKCNPH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 09:15:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233264AbjKCNOB (ORCPT
+        with ESMTP id S1376554AbjKCNPF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 09:14:01 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2B1A10CC;
-        Fri,  3 Nov 2023 06:13:47 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1cc3bb4c307so21978145ad.0;
-        Fri, 03 Nov 2023 06:13:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699017227; x=1699622027; darn=vger.kernel.org;
-        h=content-transfer-encoding:subject:from:cc:to:content-language
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3MwPMVH4LDuJgobt9cfmpj/2pKioxsX4geRXK7wNjBk=;
-        b=TrlksywTK7VN2uE8xbljLFhGFEJqhwkkquWyjt1BHcgtRlrbS2RCYqtRRh/s+h346n
-         KbWbdk/l/5+QSVQ9Qzlx/Br9FbjmEULcRaYuOvJCw2VSZ1Orw6wS9spPiK8EKCfKn4ZO
-         EC7B+e6G87ftgcwjfw3OagqnRmfuv3wZj5H5CdmwqYniJcxIV/hUUOmV9BQZNMtb+yGm
-         E0c5asW2HaEKVYguQPIrzcwwvp0k10OKL2GlpzAj2kTDBBIGKwP+XYHYCHhcsFHJjlij
-         8Vt7ZAgERMswDVnDr+lCs8+4+Y1wf8BelBv277F7s0ES91iVrrodWDN9L8Ur0mOHRO5H
-         +o7A==
+        Fri, 3 Nov 2023 09:15:05 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9511D54
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 06:14:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1699017246;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=JeaDcEiv+OJg0rs4GLDtEP9L7bFfkuejpkBRQMtkogU=;
+        b=RV6Y2NS9Zew2F7oDI2WGqAf6pXsBfWgAZF8FEmCg4O6gTFpSIN8pyBTm/ur2Ag+go2bvSo
+        53iyGgivQe/j0CDq29QXP6lbRbEiRlXn/kQRQEYxV69rgotPS0fMCWdUXE7Jp7oUbV1lpv
+        f17F7AoMPlpn5CPDpRseloM3ja0BXro=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-660-namQgnXzP46eHX0wco1Jfg-1; Fri, 03 Nov 2023 09:14:05 -0400
+X-MC-Unique: namQgnXzP46eHX0wco1Jfg-1
+Received: by mail-ed1-f72.google.com with SMTP id 4fb4d7f45d1cf-54061ad6600so1767384a12.3
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Nov 2023 06:14:05 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699017227; x=1699622027;
-        h=content-transfer-encoding:subject:from:cc:to:content-language
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=3MwPMVH4LDuJgobt9cfmpj/2pKioxsX4geRXK7wNjBk=;
-        b=CmTnnHx+rAbnAu14L4mOGSji1IkZOdt2+a+mG2ET9hPif2EaUzaRwvMXRJa9VteTlY
-         mTaIDn9glYJYZpnMBW8QPBGouGO2M4JVY2Ng7R2dC5ZqdEQjlsq5HDxvOiBZqiv2m1i+
-         BqIrd49CMl3/0YDi9UNSR8GaHL7CXnVaPm1PA/VmumLgdoINO5ITBRsXi7X/1CM7qwZ5
-         Hg+0RWigKiXlAA3q+YnW5msUvMnuIg5oHOAbgjPdL9ogiRHdWfcoJxRBy0UDz6UOFpfZ
-         1MZJxSUiFalkOh5lU80qxkqaPfvFQgdCUv417miyN0dxRjY5sUn6qOCxTW/rBHMufVo8
-         nI0Q==
-X-Gm-Message-State: AOJu0YzGEWF9b+ToWC1+NYaRbvMTDfJWe1DRs/8K05wzwaZTJivVsg7V
-        0yTxo9Af3u6it5ks/2sGJQ+lNymML4E=
-X-Google-Smtp-Source: AGHT+IGox8sPxCi41z2/fQ07a38d3a66J0bRgzx3BiBzfXjqXw/i/vdXI5phmjIVWUfpgfDcGS/OIA==
-X-Received: by 2002:a17:902:e54e:b0:1cc:3fe1:f45e with SMTP id n14-20020a170902e54e00b001cc3fe1f45emr17035703plf.27.1699017226695;
-        Fri, 03 Nov 2023 06:13:46 -0700 (PDT)
-Received: from [192.168.0.106] ([103.131.18.64])
-        by smtp.gmail.com with ESMTPSA id iw14-20020a170903044e00b001cc50146b43sm1377428plb.202.2023.11.03.06.13.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 03 Nov 2023 06:13:46 -0700 (PDT)
-Message-ID: <2fa930bb-54dd-4942-a88d-05a47c8e9731@gmail.com>
-Date:   Fri, 3 Nov 2023 20:13:39 +0700
+        d=1e100.net; s=20230601; t=1699017244; x=1699622044;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=JeaDcEiv+OJg0rs4GLDtEP9L7bFfkuejpkBRQMtkogU=;
+        b=uQfzjZ5mdQ1yhbLOVdjTySAWxuyn2cx98Ifuxw7j5RwKRbrFts2y83VXTQEYG/VrDd
+         dY76ur3jHkIYxDD8eGbGZr5eabUxnhdEcFSZUaKOmTHBCoIS5ej7v0UMhsh8GtjUCERA
+         hW/xCRIhDW1x90i4AOq6Sugz3avnDTFBtILnU6DiADE8Aq+L9VYU8n36Ui73y8l5QeR3
+         g7mcYiPyIQrtO+Fyy7tbnoYXy1as6o91u6gReBR8kJywr71hIJvY9p7wAbxX+ZZuujIY
+         QnrZTWg0f7A5bSVjw10i5u8lWdsgLwmdaQNwyL/lGzUOza+p0Pdb8YH0O5B4tWadK+cg
+         Lafg==
+X-Gm-Message-State: AOJu0YwPGFUzNvurTRWwPOJkCL5VRkJ1f5Z75Nwp9ppt2izWMQYWu4DQ
+        G+0xd5VlV0P3/vRBNUIcqqlsknTZLoxUs2J9JoYG0r0/grON4MbrVvxP4jH5dpvHK/agtOLzUAh
+        capczGdczuRVLCVQlfDOJagqt
+X-Received: by 2002:a50:aad8:0:b0:543:6444:ef2a with SMTP id r24-20020a50aad8000000b005436444ef2amr7882703edc.32.1699017244398;
+        Fri, 03 Nov 2023 06:14:04 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IE3lBEphXT3+HJ50//TEhF8drMREBzcuwnqkwelfwZLHV53PXj0681AMylRS6SA/ZFsXHXmIQ==
+X-Received: by 2002:a50:aad8:0:b0:543:6444:ef2a with SMTP id r24-20020a50aad8000000b005436444ef2amr7882683edc.32.1699017244056;
+        Fri, 03 Nov 2023 06:14:04 -0700 (PDT)
+Received: from pollux ([2a02:810d:4b3f:de9c:abf:b8ff:feee:998b])
+        by smtp.gmail.com with ESMTPSA id h15-20020a056402094f00b0053116e45317sm944419edz.44.2023.11.03.06.14.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 Nov 2023 06:14:03 -0700 (PDT)
+Date:   Fri, 3 Nov 2023 14:14:01 +0100
+From:   Danilo Krummrich <dakr@redhat.com>
+To:     Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
+Cc:     airlied@gmail.com, daniel@ffwll.ch, matthew.brost@intel.com,
+        thomas.hellstrom@linux.intel.com, sarah.walker@imgtec.com,
+        donald.robson@imgtec.com, boris.brezillon@collabora.com,
+        faith@gfxstrand.net, dri-devel@lists.freedesktop.org,
+        nouveau@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH drm-misc-next v8 09/12] drm/gpuvm: reference count
+ drm_gpuvm structures
+Message-ID: <ZUTyGTxcH7WlHKsv@pollux>
+References: <20231101233113.8059-1-dakr@redhat.com>
+ <20231101233113.8059-10-dakr@redhat.com>
+ <be93d9ef-3d3e-4262-a280-d2922b983ca1@amd.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        Linux Wireless <linux-wireless@vger.kernel.org>
-Cc:     Anjaneyulu <pagadala.yesu.anjaneyulu@intel.com>,
-        Gregory Greenman <gregory.greenman@intel.com>,
-        Johannes Berg <johannes.berg@intel.com>,
-        =?UTF-8?B?TmlrbMSBdnMgS2/EvGVzxYZpa292cw==?= 
-        <pinkflames.linux@gmail.com>,
-        Fabio Comolli <fabio.comolli@gmail.com>
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-Subject: Fwd: iwlmvm: Linux 6.7 pre-rc1 prints stack trace of
- iwl_op_mode_mvm_start; caused by commit b6e3d1ba4fcf
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <be93d9ef-3d3e-4262-a280-d2922b983ca1@amd.com>
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_FILL_THIS_FORM_SHORT,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-I notice a regression report on Bugzilla [1]. Quoting from it:
-
-> When testing the branch that will become Linux 6.7-rc1, ever since commit b6e3d1ba4fcf02176846d03a930203d8133c0aaf I have observed the following abbreviated kernel stack trace (please see attachments for the full trace):
+On Fri, Nov 03, 2023 at 08:18:35AM +0100, Christian König wrote:
+> Am 02.11.23 um 00:31 schrieb Danilo Krummrich:
+> > Implement reference counting for struct drm_gpuvm.
 > 
-> ```
-> [    6.733281]  ? __warn+0xc3/0x1d0
-> [    6.733284]  ? iwl_op_mode_mvm_start+0x9c4/0x9d0 [iwlmvm]
-> [    6.733299]  ? report_bug+0x167/0x220
-> [    6.733301]  ? handle_bug+0x3d/0x90
-> [    6.733304]  ? exc_invalid_op+0x1a/0x60
-> [    6.733306]  ? asm_exc_invalid_op+0x1a/0x20
-> [    6.733309]  ? iwl_op_mode_mvm_start+0x9c4/0x9d0 [iwlmvm]
-> [    6.733325]  _iwl_op_mode_start+0x66/0xe0 [iwlwifi]
-> [    6.733338]  iwl_opmode_register+0x87/0xd0 [iwlwifi]
-> [    6.733350]  ? __cfi_init_module+0x10/0x10 [iwlmvm]
-> [    6.733364]  init_module+0x22/0xff0 [iwlmvm]
-> [    6.733378]  ? __cfi_init_module+0x10/0x10 [iwlmvm]
-> [    6.733392]  do_one_initcall+0x129/0x380
-> [    6.733395]  ? idr_alloc_cyclic+0x148/0x1e0
-> [    6.733397]  ? security_kernfs_init_security+0x41/0x80
-> [    6.733399]  ? __kernfs_new_node+0x1be/0x250
-> [    6.733401]  ? preempt_count_add+0x55/0xb0
-> [    6.733404]  ? up_write+0x4a/0xe0
-> [    6.733406]  ? preempt_count_add+0x55/0xb0
-> [    6.733408]  ? sysvec_call_function+0xa4/0xb0
-> [    6.733410]  ? asm_sysvec_call_function+0x1a/0x20
-> [    6.733411]  ? free_unref_page_prepare+0xf3/0x410
-> [    6.733413]  ? preempt_count_add+0x62/0xb0
-> [    6.733415]  ? _raw_spin_trylock+0x19/0x60
-> [    6.733417]  ? _raw_spin_unlock+0x11/0x30
-> [    6.733419]  ? __kmem_cache_free+0x29a/0x3c0
-> [    6.733421]  ? vfree+0xd2/0x150
-> [    6.733422]  ? slab_post_alloc_hook+0x76/0x3d0
-> [    6.733425]  ? do_init_module+0x3f/0x230
-> [    6.733427]  ? __kmem_cache_alloc_node+0x1fe/0x2f0
-> [    6.733430]  do_init_module+0x7a/0x230
-> [    6.733432]  __se_sys_init_module+0x1a0/0x220
-> [    6.733435]  do_syscall_64+0x7a/0x100
-> [    6.733438]  ? syscall_exit_to_user_mode+0x2d/0x1d0
-> [    6.733440]  ? do_syscall_64+0x89/0x100
-> [    6.733442]  ? do_user_addr_fault+0x4e7/0x680
-> [    6.733444]  ? exc_page_fault+0x61/0x150
-> [    6.733446]  entry_SYSCALL_64_after_hwframe+0x6e/0x76
-> ```
+> From the design point of view what is that good for?
+
+It was discussed in this thread [1].
+
+Essentially, the idea is to make sure that vm_bo->vm is always valid without the
+driver having the need to take extra care. It also ensures that GPUVM can't be
+freed with mappings still held.
+
 > 
-> I did try reverting the offending commit but the result did not compile and I did not want to dig deeper to identify any subsequent commits what would need reverting to fix compilation.
+> Background is that the most common use case I see is that this object is
+> embedded into something else and a reference count is then not really a good
+> idea.
+
+Do you have a specific use-case in mind where this would interfere?
+
 > 
-> If it's relevant, I'm building the kernel with Clang 17.0.4 toolchain by setting the LLVM=1 variable. CFI is enabled but I'm not sure if it's actually functional.
+> Thanks,
+> Christian.
 
-See Bugzilla for the full thread.
+[1] https://lore.kernel.org/dri-devel/6fa058a4-20d3-44b9-af58-755cfb375d75@redhat.com/
 
-Anyway, I'm adding this regression to regzbot:
+> 
+> > 
+> > Signed-off-by: Danilo Krummrich <dakr@redhat.com>
+> > ---
+> >   drivers/gpu/drm/drm_gpuvm.c            | 44 +++++++++++++++++++-------
+> >   drivers/gpu/drm/nouveau/nouveau_uvmm.c | 20 +++++++++---
+> >   include/drm/drm_gpuvm.h                | 31 +++++++++++++++++-
+> >   3 files changed, 78 insertions(+), 17 deletions(-)
+> > 
+> > diff --git a/drivers/gpu/drm/drm_gpuvm.c b/drivers/gpu/drm/drm_gpuvm.c
+> > index 53e2c406fb04..6a88eafc5229 100644
+> > --- a/drivers/gpu/drm/drm_gpuvm.c
+> > +++ b/drivers/gpu/drm/drm_gpuvm.c
+> > @@ -746,6 +746,8 @@ drm_gpuvm_init(struct drm_gpuvm *gpuvm, const char *name,
+> >   	gpuvm->rb.tree = RB_ROOT_CACHED;
+> >   	INIT_LIST_HEAD(&gpuvm->rb.list);
+> > +	kref_init(&gpuvm->kref);
+> > +
+> >   	gpuvm->name = name ? name : "unknown";
+> >   	gpuvm->flags = flags;
+> >   	gpuvm->ops = ops;
+> > @@ -770,15 +772,8 @@ drm_gpuvm_init(struct drm_gpuvm *gpuvm, const char *name,
+> >   }
+> >   EXPORT_SYMBOL_GPL(drm_gpuvm_init);
+> > -/**
+> > - * drm_gpuvm_destroy() - cleanup a &drm_gpuvm
+> > - * @gpuvm: pointer to the &drm_gpuvm to clean up
+> > - *
+> > - * Note that it is a bug to call this function on a manager that still
+> > - * holds GPU VA mappings.
+> > - */
+> > -void
+> > -drm_gpuvm_destroy(struct drm_gpuvm *gpuvm)
+> > +static void
+> > +drm_gpuvm_fini(struct drm_gpuvm *gpuvm)
+> >   {
+> >   	gpuvm->name = NULL;
+> > @@ -790,7 +785,33 @@ drm_gpuvm_destroy(struct drm_gpuvm *gpuvm)
+> >   	drm_gem_object_put(gpuvm->r_obj);
+> >   }
+> > -EXPORT_SYMBOL_GPL(drm_gpuvm_destroy);
+> > +
+> > +static void
+> > +drm_gpuvm_free(struct kref *kref)
+> > +{
+> > +	struct drm_gpuvm *gpuvm = container_of(kref, struct drm_gpuvm, kref);
+> > +
+> > +	if (drm_WARN_ON(gpuvm->drm, !gpuvm->ops->vm_free))
+> > +		return;
+> > +
+> > +	drm_gpuvm_fini(gpuvm);
+> > +
+> > +	gpuvm->ops->vm_free(gpuvm);
+> > +}
+> > +
+> > +/**
+> > + * drm_gpuvm_bo_put() - drop a struct drm_gpuvm reference
+> > + * @gpuvm: the &drm_gpuvm to release the reference of
+> > + *
+> > + * This releases a reference to @gpuvm.
+> > + */
+> > +void
+> > +drm_gpuvm_put(struct drm_gpuvm *gpuvm)
+> > +{
+> > +	if (gpuvm)
+> > +		kref_put(&gpuvm->kref, drm_gpuvm_free);
+> > +}
+> > +EXPORT_SYMBOL_GPL(drm_gpuvm_put);
+> >   static int
+> >   __drm_gpuva_insert(struct drm_gpuvm *gpuvm,
+> > @@ -843,7 +864,7 @@ drm_gpuva_insert(struct drm_gpuvm *gpuvm,
+> >   	if (unlikely(!drm_gpuvm_range_valid(gpuvm, addr, range)))
+> >   		return -EINVAL;
+> > -	return __drm_gpuva_insert(gpuvm, va);
+> > +	return __drm_gpuva_insert(drm_gpuvm_get(gpuvm), va);
+> >   }
+> >   EXPORT_SYMBOL_GPL(drm_gpuva_insert);
+> > @@ -876,6 +897,7 @@ drm_gpuva_remove(struct drm_gpuva *va)
+> >   	}
+> >   	__drm_gpuva_remove(va);
+> > +	drm_gpuvm_put(va->vm);
+> >   }
+> >   EXPORT_SYMBOL_GPL(drm_gpuva_remove);
+> > diff --git a/drivers/gpu/drm/nouveau/nouveau_uvmm.c b/drivers/gpu/drm/nouveau/nouveau_uvmm.c
+> > index 54be12c1272f..cb2f06565c46 100644
+> > --- a/drivers/gpu/drm/nouveau/nouveau_uvmm.c
+> > +++ b/drivers/gpu/drm/nouveau/nouveau_uvmm.c
+> > @@ -1780,6 +1780,18 @@ nouveau_uvmm_bo_unmap_all(struct nouveau_bo *nvbo)
+> >   	}
+> >   }
+> > +static void
+> > +nouveau_uvmm_free(struct drm_gpuvm *gpuvm)
+> > +{
+> > +	struct nouveau_uvmm *uvmm = uvmm_from_gpuvm(gpuvm);
+> > +
+> > +	kfree(uvmm);
+> > +}
+> > +
+> > +static const struct drm_gpuvm_ops gpuvm_ops = {
+> > +	.vm_free = nouveau_uvmm_free,
+> > +};
+> > +
+> >   int
+> >   nouveau_uvmm_ioctl_vm_init(struct drm_device *dev,
+> >   			   void *data,
+> > @@ -1830,7 +1842,7 @@ nouveau_uvmm_ioctl_vm_init(struct drm_device *dev,
+> >   		       NOUVEAU_VA_SPACE_END,
+> >   		       init->kernel_managed_addr,
+> >   		       init->kernel_managed_size,
+> > -		       NULL);
+> > +		       &gpuvm_ops);
+> >   	/* GPUVM takes care from here on. */
+> >   	drm_gem_object_put(r_obj);
+> > @@ -1849,8 +1861,7 @@ nouveau_uvmm_ioctl_vm_init(struct drm_device *dev,
+> >   	return 0;
+> >   out_gpuvm_fini:
+> > -	drm_gpuvm_destroy(&uvmm->base);
+> > -	kfree(uvmm);
+> > +	drm_gpuvm_put(&uvmm->base);
+> >   out_unlock:
+> >   	mutex_unlock(&cli->mutex);
+> >   	return ret;
+> > @@ -1902,7 +1913,6 @@ nouveau_uvmm_fini(struct nouveau_uvmm *uvmm)
+> >   	mutex_lock(&cli->mutex);
+> >   	nouveau_vmm_fini(&uvmm->vmm);
+> > -	drm_gpuvm_destroy(&uvmm->base);
+> > -	kfree(uvmm);
+> > +	drm_gpuvm_put(&uvmm->base);
+> >   	mutex_unlock(&cli->mutex);
+> >   }
+> > diff --git a/include/drm/drm_gpuvm.h b/include/drm/drm_gpuvm.h
+> > index 0c2e24155a93..4e6e1fd3485a 100644
+> > --- a/include/drm/drm_gpuvm.h
+> > +++ b/include/drm/drm_gpuvm.h
+> > @@ -247,6 +247,11 @@ struct drm_gpuvm {
+> >   		struct list_head list;
+> >   	} rb;
+> > +	/**
+> > +	 * @kref: reference count of this object
+> > +	 */
+> > +	struct kref kref;
+> > +
+> >   	/**
+> >   	 * @kernel_alloc_node:
+> >   	 *
+> > @@ -273,7 +278,23 @@ void drm_gpuvm_init(struct drm_gpuvm *gpuvm, const char *name,
+> >   		    u64 start_offset, u64 range,
+> >   		    u64 reserve_offset, u64 reserve_range,
+> >   		    const struct drm_gpuvm_ops *ops);
+> > -void drm_gpuvm_destroy(struct drm_gpuvm *gpuvm);
+> > +
+> > +/**
+> > + * drm_gpuvm_get() - acquire a struct drm_gpuvm reference
+> > + * @gpuvm: the &drm_gpuvm to acquire the reference of
+> > + *
+> > + * This function acquires an additional reference to @gpuvm. It is illegal to
+> > + * call this without already holding a reference. No locks required.
+> > + */
+> > +static inline struct drm_gpuvm *
+> > +drm_gpuvm_get(struct drm_gpuvm *gpuvm)
+> > +{
+> > +	kref_get(&gpuvm->kref);
+> > +
+> > +	return gpuvm;
+> > +}
+> > +
+> > +void drm_gpuvm_put(struct drm_gpuvm *gpuvm);
+> >   bool drm_gpuvm_range_valid(struct drm_gpuvm *gpuvm, u64 addr, u64 range);
+> >   bool drm_gpuvm_interval_empty(struct drm_gpuvm *gpuvm, u64 addr, u64 range);
+> > @@ -673,6 +694,14 @@ static inline void drm_gpuva_init_from_op(struct drm_gpuva *va,
+> >    * operations to drivers.
+> >    */
+> >   struct drm_gpuvm_ops {
+> > +	/**
+> > +	 * @vm_free: called when the last reference of a struct drm_gpuvm is
+> > +	 * dropped
+> > +	 *
+> > +	 * This callback is mandatory.
+> > +	 */
+> > +	void (*vm_free)(struct drm_gpuvm *gpuvm);
+> > +
+> >   	/**
+> >   	 * @op_alloc: called when the &drm_gpuvm allocates
+> >   	 * a struct drm_gpuva_op
+> 
 
-#regzbot introduced: b6e3d1ba4fcf02 https://bugzilla.kernel.org/show_bug.cgi?id=218095
-#regzbot title: new iwlwifi firmware statistics API triggers stack trace
-
-Thanks.
-
-[1]: https://bugzilla.kernel.org/show_bug.cgi?id=218095
-
--- 
-An old man doll... just what I always wanted! - Clara
