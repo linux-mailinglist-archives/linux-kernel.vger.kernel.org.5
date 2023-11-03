@@ -2,121 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D4C67E061F
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 17:03:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B008A7E0620
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 17:03:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344730AbjKCQDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 12:03:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50458 "EHLO
+        id S1344951AbjKCQDZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 12:03:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234637AbjKCQDQ (ORCPT
+        with ESMTP id S234328AbjKCQDR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 12:03:16 -0400
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60516D5B;
-        Fri,  3 Nov 2023 09:03:10 -0700 (PDT)
-X-QQ-mid: bizesmtp71t1699027375tdhm453g
-Received: from main2-ubuntu.tail147f4.ts.net ( [202.201.15.117])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Sat, 04 Nov 2023 00:02:52 +0800 (CST)
-X-QQ-SSF: 01200000000000B06000000A0000000
-X-QQ-FEAT: NcwpCxVQ7UNhf+mNoYKTlmUzCKrTx3/uLfRK9iw8b01sSRqpsgDYV8WUoq0+F
-        bEVqW3uxHwMcq7cQk2v9IJTcEH5r/B/VLMPT6wOIogDyXcUP+URvzaHAuu/LDdBPo2y2PfX
-        7Mvj8Mqe2Ivk0sKa4LuqIN72w9m3gc5Lcqg/zqWO640FM0vG0kG9EircxCKhMl7uzB00yoH
-        1GP93ZVIalqTmrPj4vUjf6sev/hgXIrNQSDbJHjlwx52aJ9EmGcU4IM89eMwaKIUIKHp/FG
-        vghOQ3hDkGX/eU+m4e94hHqprk/L/vOU8YSOvFJylFesXI+PLvYCD4xzTz8P1EhFUlvtRb/
-        xog9r+mNfQz65z8LEQVxAy/3lxXueH3B9eIMSnlsByWsQU4YjU=
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 14770929756585809619
-From:   Yuan Tan <tanyuan@tinylab.org>
-To:     falcon@tinylab.org, arnd@arndb.de, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-riscv@lists.infradead.org,
-        luc.vanoostenryck@gmail.com, linux-sparse@vger.kernel.org
-Cc:     linux@weissschuh.net, palmer@rivosinc.com,
-        paul.walmsley@sifive.com, paulburton@kernel.org,
-        paulmck@kernel.org, tim.bird@sony.com, tsbogend@alpha.franken.de,
-        w@1wt.eu, tanyuan@tinylab.org, i@maskray.me
-Subject: [PATCH v1 11/14] DCE/DSE: riscv: build reference for .pushsection in C functions
-Date:   Sat,  4 Nov 2023 00:02:50 +0800
-Message-Id: <ab9af3f07b520c8679a586770e3d488cb4866e8e.1699025537.git.tanyuan@tinylab.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1699025537.git.tanyuan@tinylab.org>
-References: <cover.1699025537.git.tanyuan@tinylab.org>
+        Fri, 3 Nov 2023 12:03:17 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0923D64
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 09:03:11 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-507e85ebf50so2770297e87.1
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Nov 2023 09:03:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1699027389; x=1699632189; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ihGdFd0nqrzmFvEDZxhHQ2+8zpelaN2AcwyF1dKV48M=;
+        b=G2yBKHfC5I4VBNSL4OadPQ5Ywl6SpyEWzx6qSO8LNDoNgYLxm871fRKmtagehGxHDF
+         5gYdsrdb64kuAnO2tHRc7VjVewshryra9pQRgOTzTitfpNNNvCZJFKGdsTQF2yK3RZIk
+         vvBMWB86TNEbMAc426+6uaoLSLV21SvHff62Q=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699027389; x=1699632189;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ihGdFd0nqrzmFvEDZxhHQ2+8zpelaN2AcwyF1dKV48M=;
+        b=WuWnNqMXBHXOAcpLuBou0K8JXYjQK7cpV4hv+dlIIoGcuO6Nl+qytrH9oqv1p4Q7fd
+         iArHcxWgISRJcRXQ6WRnDnFsIS92FnpJe/tc2pBzfTl9xieDUfnny16VTO12c41tE9OI
+         eU2T3LFsAt6HjxVVucsUmUcpUpyeS9QFs7P9GqqnZvCM8vcUFAJqqbOjAslh4XE6YFjT
+         QhKQXAoUnCVxa0uVWOClqr00gwc8HFspEU+OyJFurDCH1NAa80efznfUP5wa5uQ0QWDv
+         1zAS2VNNj4tsKHFqbgSSNk4r0Ymf3rlYaf8hDI4MYPUwYO32PrmAFNCno7o053pXNjIA
+         P/mg==
+X-Gm-Message-State: AOJu0YzrvyQsosaDj6JdJmI5Bio9+xElk27SnPodQaJYr0cmpc3eZRuv
+        u3w3/6elVNV6BASlO9RUwiUD3X/5bsxdCZEUUXX5Ffft
+X-Google-Smtp-Source: AGHT+IH9xKMjl3Vqi9Msm5EtknWLMn7XXCwd6PLA9wPJfwnnst/G5Q/cKYe4ALPOHGg+Regm6vfgUw==
+X-Received: by 2002:a05:6512:60f:b0:507:a9ae:5c2 with SMTP id b15-20020a056512060f00b00507a9ae05c2mr16639801lfe.44.1699027388839;
+        Fri, 03 Nov 2023 09:03:08 -0700 (PDT)
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com. [209.85.208.47])
+        by smtp.gmail.com with ESMTPSA id c12-20020a056402120c00b005438ce5bf80sm1080981edw.20.2023.11.03.09.03.08
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 03 Nov 2023 09:03:08 -0700 (PDT)
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-51e24210395so15263a12.0
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Nov 2023 09:03:08 -0700 (PDT)
+X-Received: by 2002:a05:6402:254b:b0:543:faac:e135 with SMTP id
+ l11-20020a056402254b00b00543faace135mr229008edb.3.1699027387964; Fri, 03 Nov
+ 2023 09:03:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231102221309.1971910-1-hsinyi@chromium.org> <20231102221309.1971910-5-hsinyi@chromium.org>
+In-Reply-To: <20231102221309.1971910-5-hsinyi@chromium.org>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Fri, 3 Nov 2023 09:02:55 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=XEnk1TuWsJB6W5PGisg3_0A3HZMGpxEUrtcDxXK=Z+Eg@mail.gmail.com>
+Message-ID: <CAD=FV=XEnk1TuWsJB6W5PGisg3_0A3HZMGpxEUrtcDxXK=Z+Eg@mail.gmail.com>
+Subject: Re: [PATCH v2 4/4] drm/panel-edp: Choose correct preferred mode
+To:     Hsin-Yi Wang <hsinyi@chromium.org>
+Cc:     Neil Armstrong <neil.armstrong@linaro.org>,
+        Jessica Zhang <quic_jesszhan@quicinc.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the SECTION_SHF_LINK_ORDER method and the SECTION_SHF_GROUP method
-to refactor __ASM_EXTABLE_RAW, so it won't produce orphan sections
-anymore.
+Hi,
 
-Signed-off-by: Yuan Tan <tanyuan@tinylab.org>
-Signed-off-by: Zhangjin Wu <falcon@tinylab.org>
----
- arch/riscv/include/asm/asm-extable.h | 34 ++++++++++++++++++++++++++--
- 1 file changed, 32 insertions(+), 2 deletions(-)
+On Thu, Nov 2, 2023 at 3:13=E2=80=AFPM Hsin-Yi Wang <hsinyi@chromium.org> w=
+rote:
+>
+> If a non generic edp-panel is under aux-bus, the mode read from edid woul=
+d
+> still be selected as preferred and results in multiple preferred modes,
+> which is ambiguous.
+>
+> If a hard-coded mode is present, unset the preferred bit of the modes rea=
+d
+> from edid.
+>
+> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+> ---
+> v1->v2: split patches from drm_modes.
+> ---
+>  drivers/gpu/drm/panel/panel-edp.c | 7 +++++--
+>  1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/arch/riscv/include/asm/asm-extable.h b/arch/riscv/include/asm/asm-extable.h
-index d0be5a838242..7164d871e038 100644
---- a/arch/riscv/include/asm/asm-extable.h
-+++ b/arch/riscv/include/asm/asm-extable.h
-@@ -13,6 +13,21 @@
- 
- #ifdef __ASSEMBLY__
- 
-+#if defined(CONFIG_SECTION_SHF_LINK_ORDER_SUPPORT)
-+#define __ASM_EXTABLE_PUSH_SECTION			\
-+	__LABEL_NAME(.L__ex_table) :			\
-+	.pushsection __SECTION_NAME(__ex_table), "ao", __LABEL_NAME(.L__ex_table)
-+
-+#elif defined(CONFIG_SECTION_SHF_GROUP_SUPPORT)
-+#define __ASM_EXTABLE_PUSH_SECTION			\
-+	.attach_to_group __SECTION_NAME(__ex_table);	\
-+	.pushsection __SECTION_NAME(__ex_table), "a?"
-+
-+#else
-+#define __ASM_EXTABLE_PUSH_SECTION			\
-+	.pushsection __SECTION_NAME(__ex_table), "a"
-+#endif
-+
- #define __ASM_EXTABLE_RAW(insn, fixup, type, data)	\
- 	.pushsection	__SECTION_NAME(__ex_table), "a";		\
- 	.balign		4;				\
-@@ -32,8 +47,23 @@
- #include <linux/stringify.h>
- #include <asm/gpr-num.h>
- 
--#define __ASM_EXTABLE_RAW(insn, fixup, type, data)	\
--	".pushsection "	__SECTION_NAME(__ex_table) ", \"a\"\n"		\
-+#ifdef CONFIG_SECTION_SHF_LINK_ORDER_SUPPORT
-+#define __ASM_EXTABLE_PUSH_SECTION				\
-+	__LABEL_NAME(.L__ex_table) ":"				\
-+	".pushsection "	__SECTION_NAME(__ex_table) ", \"ao\"," __LABEL_NAME(.L__ex_table) "\n"
-+
-+#elif defined(CONFIG_SECTION_SHF_GROUP_SUPPORT)
-+#define __ASM_EXTABLE_PUSH_SECTION				\
-+	".attach_to_group " __SECTION_NAME(__ex_table) "\n"	\
-+	".pushsection "	__SECTION_NAME(__ex_table) ", \"a?\"\n"
-+
-+#else
-+#define __ASM_EXTABLE_PUSH_SECTION				\
-+	".pushsection "	__SECTION_NAME(__ex_table) ", \"a\"\n"
-+#endif
-+
-+#define __ASM_EXTABLE_RAW(insn, fixup, type, data)		\
-+	__ASM_EXTABLE_PUSH_SECTION				\
- 	".balign	4\n"				\
- 	".long		((" insn ") - .)\n"		\
- 	".long		((" fixup ") - .)\n"		\
--- 
-2.34.1
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
 
+Do you think this should have a "Fixes?" As per discussion on V1 [1],
+this has probably been a bit broken from the beginning, though I guess
+it only became a big deal after the AUX bus made it so that the panel
+driver commonly had the EDID...
+
+[1] https://lore.kernel.org/r/CAD=3DFV=3DWHzCdiYumsxUm_am+ALqq9SOOrjf=3DJYH=
+qJuiKFB+Dnsw@mail.gmail.com
