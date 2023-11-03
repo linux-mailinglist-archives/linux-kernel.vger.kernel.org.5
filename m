@@ -2,262 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 18DF37E0627
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 17:04:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 869C17E062B
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 17:04:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345514AbjKCQEI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 12:04:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46266 "EHLO
+        id S1345305AbjKCQEh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 12:04:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345695AbjKCQD4 (ORCPT
+        with ESMTP id S1344453AbjKCQEf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 12:03:56 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB07DD75
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 09:03:48 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d9cb4de3bf0so2677694276.0
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Nov 2023 09:03:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1699027428; x=1699632228; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=kakEavv2Bx4kC7ui8vSjgo++eh6M+uQZM7WF3AfKH1U=;
-        b=KHTIeOviOjzGd7htZ/U2VaxaMZg5B6gkjXM8170aY89bNhBhPON1wB1PEHELMqFBGt
-         0YiCXjcxQ8nI2qtejl/VIjHGPZdL+2Nv55TtEeJuO7e9DMTvWlGWsMVSIHtjOz9Y22XT
-         PSLVKcUHD0ajFFGS8mLQVRpWUkmcW9JI/eyasWtHuMvCqlSzw3pN15jjeO4EK9Bhd9Jd
-         TV0S+I/o7RdCo4XdPxvTrShUmr7XGC+Hsws6Un1M1A3t2rJHD6nR0R+BwJK0X0C5dxBu
-         dZzRqtrrXVGB0/J4tZPncMz70WlhVAuf0Oo04XwdEqPe+4e9MycU8jKbw1pawRpry7pI
-         bArw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699027428; x=1699632228;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=kakEavv2Bx4kC7ui8vSjgo++eh6M+uQZM7WF3AfKH1U=;
-        b=X+hq87MjL7w0u3kM/MZCwoeLSP9X781aBUwC+OEMffxCBtUGTmqPpHJuqnNlFBwCBN
-         44O+Yg6IXxHKFmXmuJXcbJI4cF94NNuJzMhGt7xz3T6UOV8BldDgpbuDtH69MEdOupbW
-         /7LMqts1ChsZ+aYy+LROmAkovdhwkar/Bw1PY9LpshHSKu/B4dDSDsvHqWMtsT4H2pNQ
-         i/Xta7xqFg/skApLTH/OI9b1m2ieOk8S29kh6OIBE8Gkr0wO+RVJ0gH0Eh3+L0Vf9ldP
-         YOatdW5IuSI1N0J0+lO4RBTqP7wZSD1aNrrDo2L8MxZ+TzicmL97n1TttWMxbn1C55bZ
-         dK9g==
-X-Gm-Message-State: AOJu0YxzScH0b3jjdGmzNoKyrQXbSSjtPPd51QxGCV8t0qbGf2WHqjGK
-        iTrwqvh4dJFIftax7kCbDmyJRL7gH74=
-X-Google-Smtp-Source: AGHT+IHR9RZ3AGRYHVoGIfBerEYYQF7lrQOl7qGnkNHzxbQ4hBmSQ407bgV+B4b0VM3Hx1nwqixE0RPesMI=
-X-Received: from glider.muc.corp.google.com ([2a00:79e0:9c:201:74c:1f8e:4661:7aaa])
- (user=glider job=sendgmr) by 2002:a25:770f:0:b0:da0:73c2:db78 with SMTP id
- s15-20020a25770f000000b00da073c2db78mr452259ybc.9.1699027428174; Fri, 03 Nov
- 2023 09:03:48 -0700 (PDT)
-Date:   Fri,  3 Nov 2023 17:03:35 +0100
-In-Reply-To: <20231103160335.2464561-1-glider@google.com>
-Mime-Version: 1.0
-References: <20231103160335.2464561-1-glider@google.com>
-X-Mailer: git-send-email 2.42.0.869.gea05f2083d-goog
-Message-ID: <20231103160335.2464561-4-glider@google.com>
-Subject: [PATCH v8 3/3] arm64: mte: add compression support to mteswap.c
-From:   Alexander Potapenko <glider@google.com>
-To:     glider@google.com, catalin.marinas@arm.com, will@kernel.org,
-        pcc@google.com, andreyknvl@gmail.com,
-        andriy.shevchenko@linux.intel.com, aleksander.lobakin@intel.com,
-        linux@rasmusvillemoes.dk, yury.norov@gmail.com,
-        alexandru.elisei@arm.com
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        eugenis@google.com, syednwaris@gmail.com, william.gray@linaro.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 3 Nov 2023 12:04:35 -0400
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE9041BC;
+        Fri,  3 Nov 2023 09:04:31 -0700 (PDT)
+X-QQ-mid: bizesmtp78t1699027456tnrc347s
+Received: from main2-ubuntu.tail147f4.ts.net ( [202.201.15.117])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Sat, 04 Nov 2023 00:04:13 +0800 (CST)
+X-QQ-SSF: 01200000000000B06000000A0000000
+X-QQ-FEAT: mot7IUESEd/O3Ye3RvUm0u0JfDP8ilGw6DJ+bg2ku9yW02xqru4czyWnDR4JC
+        EQdnw8q1TsviTHclgFaJRSxxEJSFDKoZfMUzfWIOoWQW5FI9+0rOhbgL2xFjAIQLOk/WiNb
+        Ze0d8K6zH/AYLaKpQIAtAZG4jS7M72shuT9euUEJaCCA/CcImxoiQrXkdoAg+grDS7lI/xU
+        DnpaZjUvJet9LH1I1tXUT2k+8t0nGwPGjmBS7XYMcEABQ3GlVXZx8/iDCsrMmgIy1Mf4YxT
+        25ig0IbUsLLwVXn/38HbQVCzou/49TJyeRhZOCpzf0rKiNfEg1KrsIRdd33Cz5XTnn7Ws/O
+        zQ60yzEUchZNK3VB1+XcP3Ha7KKHjs9ib0py4O2
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 6096022325544553150
+From:   Yuan Tan <tanyuan@tinylab.org>
+To:     falcon@tinylab.org, arnd@arndb.de, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-riscv@lists.infradead.org,
+        luc.vanoostenryck@gmail.com, linux-sparse@vger.kernel.org
+Cc:     linux@weissschuh.net, palmer@rivosinc.com,
+        paul.walmsley@sifive.com, paulburton@kernel.org,
+        paulmck@kernel.org, tim.bird@sony.com, tsbogend@alpha.franken.de,
+        w@1wt.eu, tanyuan@tinylab.org, i@maskray.me
+Subject: [PATCH v1 13/14] DCE/DSE: add SECTION_NO_KEEP_SUPPORT option
+Date:   Sat,  4 Nov 2023 00:04:10 +0800
+Message-Id: <4ad1b8cb7cd54c57e74e877235f64b5be5bbbe8f.1699025537.git.tanyuan@tinylab.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <cover.1699025537.git.tanyuan@tinylab.org>
+References: <cover.1699025537.git.tanyuan@tinylab.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update mteswap.c to perform inline compression of memory tags when
-possible.
+It is able to drop the brute KEEP() keyword for some sections, when the
+sections are able to link or group together with one of the used
+sections.
 
-If CONFIG_ARM64_MTE_COMP is enabled, mteswap.c will attemt to compress
-saved tags for a struct page and store them directly in Xarray entry
-instead of wasting heap space.
+Some syscalls are actually orphan sections.
+SECTION_SHF_LINK_ORDER_SUPPORT or SECTION_SHF_GROUP_SUPPORT creates
+references for these sections, eliminating the need for the KEEP()
+directive.
 
-Soon after booting Android, tag compression saves ~2x memory previously
-spent by mteswap.c on tag allocations. On a moderately loaded device with
-~20% tagged pages, this leads to saving several megabytes of kernel heap:
-
-  # cat /sys/kernel/debug/mteswap/stats
-  8 bytes: 102496 allocations, 67302 deallocations
-  128 bytes: 212234 allocations, 178278 deallocations
-  uncompressed tag storage size: 8851200
-  compressed tag storage size: 4346368
-
-Signed-off-by: Alexander Potapenko <glider@google.com>
-
+Signed-off-by: Yuan Tan <tanyuan@tinylab.org>
+Signed-off-by: Zhangjin Wu <falcon@tinylab.org>
 ---
- v8:
-  - adapt to the new compression API, abandon mteswap_{no,}comp.c
-  - move stats collection to mteswap.c
+ include/asm-generic/vmlinux.lds.h | 24 ++++++++++++++++++------
+ init/Kconfig                      |  9 +++++++++
+ 2 files changed, 27 insertions(+), 6 deletions(-)
 
- v5:
-  - drop a dead variable from _mte_free_saved_tags() in mteswap_comp.c
-  - ensure MTE compression works with arbitrary page sizes
-  - update patch description
-
- v4:
-  - minor code simplifications suggested by Andy Shevchenko, added
-    missing header dependencies
-  - changed compression API names to reflect modifications made to
-    memcomp.h (as suggested by Yury Norov)
-
- v3:
-  - Addressed comments by Andy Shevchenko in another patch:
-   - fixed includes order
-   - replaced u64 with unsigned long
-   - added MODULE_IMPORT_NS(MTECOMP)
----
- arch/arm64/mm/mteswap.c | 88 +++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 84 insertions(+), 4 deletions(-)
-
-diff --git a/arch/arm64/mm/mteswap.c b/arch/arm64/mm/mteswap.c
-index a31833e3ddc54..0f558942d88b8 100644
---- a/arch/arm64/mm/mteswap.c
-+++ b/arch/arm64/mm/mteswap.c
-@@ -1,28 +1,48 @@
- // SPDX-License-Identifier: GPL-2.0-only
+diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
+index ea8170e11ab1..f10afc42a1ac 100644
+--- a/include/asm-generic/vmlinux.lds.h
++++ b/include/asm-generic/vmlinux.lds.h
+@@ -201,18 +201,30 @@
+ # endif
+ #endif
  
-+#include <linux/debugfs.h>
- #include <linux/pagemap.h>
- #include <linux/xarray.h>
- #include <linux/slab.h>
- #include <linux/swap.h>
- #include <linux/swapops.h>
- #include <asm/mte.h>
-+#include <asm/mtecomp.h>
-+#include "mtecomp.h"
+-#define BOUNDED_SECTION_PRE_LABEL(_sec_, _label_, _BEGIN_, _END_)	\
++#ifdef CONFIG_SECTION_NO_KEEP_SUPPORT
++#define NO_KEEP(sec) sec
++#else
++#define NO_KEEP(sec) KEEP(sec)
++#endif
 +
-+enum mteswap_counters {
-+	MTESWAP_CTR_INLINE = 0,
-+	MTESWAP_CTR_NOINLINE,
-+	MTESWAP_CTR_SIZE
-+};
-+static atomic_long_t alloc_counters[MTESWAP_CTR_SIZE];
-+static atomic_long_t dealloc_counters[MTESWAP_CTR_SIZE];
++#define _BOUNDED_SECTION_PRE_LABEL(_sec_, _label_, _BEGIN_, _END_, _KEEP_, ...)	\
+ 	_BEGIN_##_label_ = .;						\
+-	KEEP(*(BSEC_MAIN(_sec_)))					\
++	_KEEP_(*(BSEC_MAIN(_sec_)))					\
+ 	_END_##_label_ = .;
  
- static DEFINE_XARRAY(mte_pages);
- 
- void *mte_allocate_tag_storage(void)
- {
--	/* tags granule is 16 bytes, 2 tags stored per byte */
--	return kmalloc(MTE_PAGE_TAG_STORAGE, GFP_KERNEL);
-+	void *ret;
+-#define BOUNDED_SECTION_POST_LABEL(_sec_, _label_, _BEGIN_, _END_)	\
++#define BOUNDED_SECTION_PRE_LABEL(_sec_, _label_, _BEGIN_, _END_, ...)		\
++	_BOUNDED_SECTION_PRE_LABEL(_sec_, _label_, _BEGIN_, _END_, ##__VA_ARGS__, KEEP)
 +
-+	ret = kmalloc(MTE_PAGE_TAG_STORAGE, GFP_KERNEL);
-+	if (ret)
-+		atomic_long_inc(&alloc_counters[MTESWAP_CTR_NOINLINE]);
-+	return ret;
- }
++#define _BOUNDED_SECTION_POST_LABEL(_sec_, _label_, _BEGIN_, _END_, _KEEP_, ...)\
+ 	_label_##_BEGIN_ = .;						\
+-	KEEP(*(BSEC_MAIN(_sec_)))					\
++	_KEEP_(*(BSEC_MAIN(_sec_)))					\
+ 	_label_##_END_ = .;
  
- void mte_free_tag_storage(char *storage)
- {
--	kfree(storage);
-+	if (!mte_is_compressed(storage)) {
-+		kfree(storage);
-+		atomic_long_dec(&alloc_counters[MTESWAP_CTR_NOINLINE]);
-+	} else {
-+		atomic_long_dec(&alloc_counters[MTESWAP_CTR_INLINE]);
-+	}
- }
- 
- int mte_save_tags(struct page *page)
- {
--	void *tag_storage, *ret;
-+	void *tag_storage, *ret, *compressed;
- 
- 	if (!page_mte_tagged(page))
- 		return 0;
-@@ -32,6 +52,12 @@ int mte_save_tags(struct page *page)
- 		return -ENOMEM;
- 
- 	mte_save_page_tags(page_address(page), tag_storage);
-+	compressed = mte_compress(tag_storage);
-+	if (compressed) {
-+		mte_free_tag_storage(tag_storage);
-+		tag_storage = (void *)compressed;
-+		atomic_long_inc(&alloc_counters[MTESWAP_CTR_INLINE]);
-+	}
- 
- 	/* lookup the swap entry.val from the page */
- 	ret = xa_store(&mte_pages, page_swap_entry(page).val, tag_storage,
-@@ -50,13 +76,20 @@ int mte_save_tags(struct page *page)
- void mte_restore_tags(swp_entry_t entry, struct page *page)
- {
- 	void *tags = xa_load(&mte_pages, entry.val);
-+	void *tag_storage = NULL;
- 
- 	if (!tags)
- 		return;
- 
- 	if (try_page_mte_tagging(page)) {
-+		if (mte_is_compressed(tags)) {
-+			tag_storage = mte_allocate_tag_storage();
-+			mte_decompress(tags, tag_storage);
-+			tags = tag_storage;
-+		}
- 		mte_restore_page_tags(page_address(page), tags);
- 		set_page_mte_tagged(page);
-+		mte_free_tag_storage(tag_storage);
- 	}
- }
- 
-@@ -83,3 +116,50 @@ void mte_invalidate_tags_area(int type)
- 	}
- 	xa_unlock(&mte_pages);
- }
+-#define BOUNDED_SECTION_BY(_sec_, _label_)				\
+-	BOUNDED_SECTION_PRE_LABEL(_sec_, _label_, __start, __stop)
++#define BOUNDED_SECTION_POST_LABEL(_sec_, _label_, _BEGIN_, _END_, ...)		\
++	_BOUNDED_SECTION_POST_LABEL(_sec_, _label_, _BEGIN_, _END_, ##__VA_ARGS__, KEEP)
 +
-+/* DebugFS interface. */
-+static int stats_show(struct seq_file *seq, void *v)
-+{
-+	unsigned long total_mem_alloc = 0, total_mem_dealloc = 0;
-+	unsigned long total_num_alloc = 0, total_num_dealloc = 0;
-+	unsigned long sizes[2] = { 8, MTE_PAGE_TAG_STORAGE };
-+	long alloc, dealloc;
-+	unsigned long size;
-+	int i;
++#define BOUNDED_SECTION_BY(_sec_, _label_, ...)				\
++	_BOUNDED_SECTION_PRE_LABEL(_sec_, _label_, __start, __stop, ##__VA_ARGS__, KEEP)
+ 
+ #define BOUNDED_SECTION(_sec)	 BOUNDED_SECTION_BY(_sec, _sec)
+ 
+diff --git a/init/Kconfig b/init/Kconfig
+index 9599d2de44e8..aeb859e410b2 100644
+--- a/init/Kconfig
++++ b/init/Kconfig
+@@ -1467,6 +1467,13 @@ config HAVE_SECTION_NO_KEEP_SUPPORT
+ 	depends on HAVE_SECTION_SHF_LINK_ORDER_SUPPORT || HAVE_SECTION_SHF_GROUP_SUPPORT
+ 	default y
+ 
++config SECTION_NO_KEEP_SUPPORT
++	bool
++	depends on SECTION_SHF_LINK_ORDER_SUPPORT || SECTION_SHF_GROUP_SUPPORT
++	default y
++	help
++	  This option allows some sections unkept so they can be GC
 +
-+	for (i = 0; i < MTESWAP_CTR_SIZE; i++) {
-+		alloc = atomic_long_read(&alloc_counters[i]);
-+		dealloc = atomic_long_read(&dealloc_counters[i]);
-+		total_num_alloc += alloc;
-+		total_num_dealloc += dealloc;
-+		size = sizes[i];
-+		/*
-+		 * Do not count 8-byte buffers towards compressed tag storage
-+		 * size.
-+		 */
-+		if (i) {
-+			total_mem_alloc += (size * alloc);
-+			total_mem_dealloc += (size * dealloc);
-+		}
-+		seq_printf(seq,
-+			   "%lu bytes: %lu allocations, %lu deallocations\n",
-+			   size, alloc, dealloc);
-+	}
-+	seq_printf(seq, "uncompressed tag storage size: %lu\n",
-+		   (total_num_alloc - total_num_dealloc) *
-+			   MTE_PAGE_TAG_STORAGE);
-+	seq_printf(seq, "compressed tag storage size: %lu\n",
-+		   total_mem_alloc - total_mem_dealloc);
-+	return 0;
-+}
-+DEFINE_SHOW_ATTRIBUTE(stats);
-+
-+static int mteswap_init(void)
-+{
-+	struct dentry *mteswap_dir;
-+
-+	mteswap_dir = debugfs_create_dir("mteswap", NULL);
-+	debugfs_create_file("stats", 0444, mteswap_dir, NULL, &stats_fops);
-+	return 0;
-+}
-+module_init(mteswap_init);
+ config HAVE_SECTION_SHF_LINK_ORDER_SUPPORT
+ 	bool
+ 	depends on AS_IS_GNU && AS_VERSION >= 23500
+@@ -1765,6 +1772,7 @@ config RESTRICTED_TRIM_UNUSED_SYSCALLS
+ config SECTION_SHF_LINK_ORDER_SUPPORT
+ 	bool "Using SHF_LINK_ORDER attribute (EXPERIMENTAL)" if EXPERT
+ 	depends on HAVE_SECTION_SHF_LINK_ORDER_SUPPORT
++	select SECTION_NO_KEEP_SUPPORT
+ 	help
+ 	  Say Y here to trim more 'unused' syscalls wrongly kept by __ex_table
+ 	  like sections in kernel space.
+@@ -1778,6 +1786,7 @@ config SECTION_SHF_LINK_ORDER_SUPPORT
+ config SECTION_SHF_GROUP_SUPPORT
+ 	bool "Using SHF_GROUP attribute (EXPERIMENTAL)" if EXPERT
+ 	depends on HAVE_SECTION_SHF_GROUP_SUPPORT
++	select SECTION_NO_KEEP_SUPPORT
+ 	help
+ 	  Say Y here to trim more 'unused' syscalls wrongly kept by __ex_table
+ 	  like sections in kernel space.
 -- 
-2.42.0.869.gea05f2083d-goog
+2.34.1
 
