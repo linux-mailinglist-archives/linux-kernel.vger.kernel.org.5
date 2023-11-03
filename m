@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A9D77E0540
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 16:06:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5743C7E054E
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 16:12:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232810AbjKCPGS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 11:06:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41692 "EHLO
+        id S233052AbjKCPMl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 11:12:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbjKCPGQ (ORCPT
+        with ESMTP id S229454AbjKCPMk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 11:06:16 -0400
+        Fri, 3 Nov 2023 11:12:40 -0400
 Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B3E21B2
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 08:06:14 -0700 (PDT)
-Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.207])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4SMPDr4J34z6K7JW;
-        Fri,  3 Nov 2023 23:05:16 +0800 (CST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99684D48
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 08:12:34 -0700 (PDT)
+Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.200])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4SMPJT5mw5z67JwR;
+        Fri,  3 Nov 2023 23:08:25 +0800 (CST)
 Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
  (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Fri, 3 Nov
- 2023 15:06:11 +0000
-Date:   Fri, 3 Nov 2023 15:06:10 +0000
+ 2023 15:12:32 +0000
+Date:   Fri, 3 Nov 2023 15:12:30 +0000
 From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
 To:     Andrew Jeffery <andrew@codeconstruct.com.au>
 CC:     <minyard@acm.org>, <openipmi-developer@lists.sourceforge.net>,
         <linux-kernel@vger.kernel.org>, <aladyshev22@gmail.com>,
         <jk@codeconstruct.com.au>
-Subject: Re: [PATCH 09/10] ipmi: kcs_bmc: Add module_kcs_bmc_driver()
-Message-ID: <20231103150610.0000616f@Huawei.com>
-In-Reply-To: <20231103061522.1268637-10-andrew@codeconstruct.com.au>
+Subject: Re: [PATCH 10/10] ipmi: kcs_bmc: Add subsystem kerneldoc
+Message-ID: <20231103151230.0000161e@Huawei.com>
+In-Reply-To: <20231103061522.1268637-11-andrew@codeconstruct.com.au>
 References: <20231103061522.1268637-1-andrew@codeconstruct.com.au>
-        <20231103061522.1268637-10-andrew@codeconstruct.com.au>
+        <20231103061522.1268637-11-andrew@codeconstruct.com.au>
 Organization: Huawei Technologies Research and Development (UK) Ltd.
 X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 MIME-Version: 1.0
@@ -51,12 +51,19 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri,  3 Nov 2023 16:45:21 +1030
+On Fri,  3 Nov 2023 16:45:22 +1030
 Andrew Jeffery <andrew@codeconstruct.com.au> wrote:
 
-> Remove some cruft in the client modules by adding the usual module macro
-> for the KCS subsystem.
+> Provide kerneldoc describing the relationships between and the
+> behaviours of the structures and functions of the KCS subsystem.
 > 
 > Signed-off-by: Andrew Jeffery <andrew@codeconstruct.com.au>
-Good stuff
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Seems reasonable but I've only a superficial idea of how this all fits
+together so no tag from me.
+
+There is the fun question of whether function documentation should be
+next to the implementation or in the header.  As long as it's
+consistent in a given subsystem I don't personally thing it matters
+that much.
+
+Jonathan
