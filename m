@@ -2,86 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 09DBE7E00FB
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 11:30:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40CC07E0109
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 11:30:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235447AbjKCILu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 04:11:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48464 "EHLO
+        id S235360AbjKCILs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 04:11:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235098AbjKCILr (ORCPT
+        with ESMTP id S230094AbjKCILq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 04:11:47 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E29701A8;
-        Fri,  3 Nov 2023 01:11:41 -0700 (PDT)
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A359R76014714;
-        Fri, 3 Nov 2023 08:11:34 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=u3JwXlcRcYPnxvK4HEmxg7Tn23cs0JQWAl1lXbwAKV0=;
- b=C2ssioIo2o3NeAxVbkPngBn48yRuC9fY5RUWjUHzkmB/RKMa1uv1MpH6/G9kCM9p3GSv
- GVeMaHq9RuAUzlAFddNsBKDEXBELfYHdc34Kbtln/z+3xg8lAJ4FXxNYrP65j9C+Ujd8
- KAR245B0IDRgbBLOe8yPmeshctzMT9e0omuMKrQwl2vEy5dZqHnkS7SEySHgziXPDDoZ
- 90p8K+zM4Ld4NlJpNZA4YRrO1qdkwy1f028gIbKEb/aS8a+3uyh9umJslu7dsryXReeO
- X5nb0yiNhL09p01FFDeNWWDWaa+zprCJTm5hOspS5kdyKYGVP7R3MqqqWGP+y//eN540 lA== 
-Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u477ptpat-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 03 Nov 2023 08:11:34 +0000
-Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
-        by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3A38BX1o006588
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 3 Nov 2023 08:11:33 GMT
-Received: from [10.216.16.147] (10.80.80.8) by nasanex01c.na.qualcomm.com
- (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Fri, 3 Nov
- 2023 01:11:27 -0700
-Message-ID: <b6a023e9-bb54-44d6-8a48-5f6204da5b95@quicinc.com>
-Date:   Fri, 3 Nov 2023 13:41:23 +0530
+        Fri, 3 Nov 2023 04:11:46 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97AA7123;
+        Fri,  3 Nov 2023 01:11:40 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1cc2575dfc7so14999775ad.1;
+        Fri, 03 Nov 2023 01:11:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698999100; x=1699603900; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=P1zG46v3yYULs6HTAoiydnarKk6Z7cvMgep7Y/bVUSA=;
+        b=hrsRW9/PnUPMA4BcyAKt1FAPndCrlOExvQpO7pxoSbAgNUmDPv9XchtTGPoVojUlGA
+         +2IuLNY2HYd1Lyg/La8SSgac4X0ltkOSAiDjpJZzADOdGqaII2AUM0FLKVwkA2lgvPKU
+         WiNgiUwSNYTs+WXFmvdz3a1WBa8CT3SaCl67wC8gL5ALabFa/438vRCX75+a0qnqj7p9
+         s7nTuz7WOpIr1Qy/cK4UgdKwtTyPHWZj0LxytEdzJHeygcISumxNwU6UQ03G+8Uplq0U
+         Y0DS6w1BHZUvgv601jQKUhoIKfdBcAJeSeQrUs+Qb2o66/qQYoHtV5F48ucUxCddUjCo
+         YZpw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698999100; x=1699603900;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=P1zG46v3yYULs6HTAoiydnarKk6Z7cvMgep7Y/bVUSA=;
+        b=vDVQCyOoedBAhcqryPOZiGDVKLftTv0VNAPg2W2SYTrpcA4z1PfJFSORo7nqQghtwV
+         lC6IMialJ3pfsEP7nAJns8FQNiHnldcwuIvuGSGlqlDy/rpokN+ZBvqynN9c77vyrt+R
+         97aBQZSrnOs2jrAKMfrRK9A+1bop9W/gkvldsbWia2LpSKowgDov77rYs9mTqkevcn+5
+         RnO5xBDISrjS37XB5bnamFkhciaLzYsWHdwUTPg8F+OSuyCMgmhPBY+csZpqwa3V4bHs
+         /5bfMT+rgT6SBMxwOU50onGpc42uBcIwim7L7S0jv3g17pKzhNUPgl0nLcQJTyDfO7Cb
+         qqsw==
+X-Gm-Message-State: AOJu0YzQcCooaJkrjvfjo8Aua/Omp8JTmufgR91sfpwYwfoFI70o/d8u
+        ANZiv65HQEwpeQbijK23eNA=
+X-Google-Smtp-Source: AGHT+IGQXuw4znO2Dw4M5l6O2Es9a8zUyaadJePmeZgfYhLn8RpT4NdGcAeG8yODYjMgcMtPTfKFvg==
+X-Received: by 2002:a17:902:e0d4:b0:1ca:200b:8dce with SMTP id e20-20020a170902e0d400b001ca200b8dcemr14134555pla.41.1698999099934;
+        Fri, 03 Nov 2023 01:11:39 -0700 (PDT)
+Received: from debian.me ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id jf6-20020a170903268600b001b03a1a3151sm882657plb.70.2023.11.03.01.11.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 Nov 2023 01:11:38 -0700 (PDT)
+Received: by debian.me (Postfix, from userid 1000)
+        id 7E0EC91C7163; Fri,  3 Nov 2023 15:11:36 +0700 (WIB)
+Date:   Fri, 3 Nov 2023 15:11:36 +0700
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Documentation <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Akira Yokosawa <akiyks@gmail.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        David Vernet <void@manifault.com>,
+        Miguel Ojeda <ojeda@kernel.org>, James Seo <james@equiv.tech>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Federico Vaga <federico.vaga@vaga.pv.it>,
+        Carlos Bilbao <carlos.bilbao@amd.com>,
+        linux-spdx@vger.kernel.org, Richard Fontana <rfontana@redhat.com>
+Subject: Re: [PATCH RFC 1/4] LICENSES: Add SIL Open Font License 1.1
+Message-ID: <ZUSrOKDuvcSL6gOH@debian.me>
+References: <20231102120053.30630-1-bagasdotme@gmail.com>
+ <20231102120053.30630-2-bagasdotme@gmail.com>
+ <2023110222-renewed-monologue-008e@gregkh>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.0
-Subject: Re: [PATCH V3 4/4] arm64: dts: qcom: ipq5018: Add tsens node
-Content-Language: en-US
-To:     Robert Marko <robimarko@gmail.com>
-CC:     Sricharan R <srichara@win-platform-upstream01.qualcomm.com>,
-        <krzysztof.kozlowski@linaro.org>, <agross@kernel.org>,
-        <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
-        <srinivas.kandagatla@linaro.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <thara.gopinath@gmail.com>, <rafael@kernel.org>,
-        <daniel.lezcano@linaro.org>, <linux-arm-msm@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-pm@vger.kernel.org>, <dmitry.baryshkov@linaro.org>
-References: <20230922115116.2748804-1-srichara@win-platform-upstream01.qualcomm.com>
- <20230922115116.2748804-5-srichara@win-platform-upstream01.qualcomm.com>
- <1c6ecc92-89d3-3b7e-c2d0-e2fded9b446d@gmail.com>
- <f44b6e59-c26e-1026-49b7-e02ff02d7562@quicinc.com>
- <CAOX2RU6j75+8tFMTu=fVKY=mBkv8OaZJzWYUfnqkwfJY01QqYw@mail.gmail.com>
-From:   Sricharan Ramabadhran <quic_srichara@quicinc.com>
-In-Reply-To: <CAOX2RU6j75+8tFMTu=fVKY=mBkv8OaZJzWYUfnqkwfJY01QqYw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01c.na.qualcomm.com (10.45.79.139)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: dJiFYVTVgberLcXSF2KIYI7ivCo-g49y
-X-Proofpoint-ORIG-GUID: dJiFYVTVgberLcXSF2KIYI7ivCo-g49y
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-03_06,2023-11-02_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 malwarescore=0
- phishscore=0 adultscore=0 clxscore=1011 priorityscore=1501 mlxscore=0
- mlxlogscore=999 bulkscore=0 impostorscore=0 lowpriorityscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2310240000 definitions=main-2311030066
-X-Spam-Status: No, score=-6.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="/KWzKcdL50ByjLLA"
+Content-Disposition: inline
+In-Reply-To: <2023110222-renewed-monologue-008e@gregkh>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -90,51 +86,101 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-<..>
 
->>> On 22. 09. 2023. 13:51, Sricharan R wrote:
->>>> From: Sricharan Ramabadhran <quic_srichara@quicinc.com>
->>>>
->>>> IPQ5018 has tsens V1.0 IP with 4 sensors.
->>>> There is no RPM, so tsens has to be manually enabled. Adding the tsens
->>>> and nvmem node and IPQ5018 has 4 thermal sensors (zones). With the
->>>> critical temperature being 120'C and action is to reboot. Adding all
->>>> the 4 zones here.
->>>>
->>>> Signed-off-by: Sricharan Ramabadhran <quic_srichara@quicinc.com>
->>>> ---
->>>>    [v3] Ordered the qfprom device node properties as per
->>>>         Krzysztof's comments
->>>>
->>>>    arch/arm64/boot/dts/qcom/ipq5018.dtsi | 169 ++++++++++++++++++++++++++
->>>>    1 file changed, 169 insertions(+)
->>>>
->>>> diff --git a/arch/arm64/boot/dts/qcom/ipq5018.dtsi
->>>> b/arch/arm64/boot/dts/qcom/ipq5018.dtsi
->>>> index 9f13d2dcdfd5..9e28b54ebcbd 100644
->>>> --- a/arch/arm64/boot/dts/qcom/ipq5018.dtsi
->>>> +++ b/arch/arm64/boot/dts/qcom/ipq5018.dtsi
->>>> @@ -93,6 +93,117 @@ soc: soc@0 {
->>>>            #size-cells = <1>;
->>>>            ranges = <0 0 0 0xffffffff>;
->>>> +        qfprom: qfprom@a0000 {
->>>> +            compatible = "qcom,ipq5018-qfprom", "qcom,qfprom";
->>> Hi,
->>>
->>> "qcom,ipq5018-qfprom" needs to be documented in QFPROM bindings first.
->>
->>    Already posted here [1]. Initially had it in the same series, but kept
->>    it separately based on review comments.
->>
->>    [1] https://www.spinics.net/lists/devicetree/msg633408.html
-> 
-> Well, if it's not part of the same series then this addition would
-> cause a warning as its
-> undocumented.
-> 
-> I also dont see where is it documented as part of the v2 series.
+--/KWzKcdL50ByjLLA
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-  Then in that case, will keep it in same series again in V4
+On Thu, Nov 02, 2023 at 03:06:19PM +0100, Greg Kroah-Hartman wrote:
+> On Thu, Nov 02, 2023 at 07:00:43PM +0700, Bagas Sanjaya wrote:
+> > Add the license text along with appropriate tags for reference and
+> > tooling. The text is taken from the text as distributed in Google
+> > Fonts's zip files.
+> >=20
+> > As the license itself may or may note be compatible with GPLv2,
+> > let's take on the err side and require combining it with
+> > GPL-compatible licenses when using the license.
+> >=20
+> > Cc: linux-spdx@vger.kernel.org
+> > Cc: Richard Fontana <rfontana@redhat.com>
+> > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > Signed-off-by: Bagas Sanjaya <bagasdotme@gmail.com>
+> > ---
+> >  LICENSES/dual/OFL-1.1 | 107 ++++++++++++++++++++++++++++++++++++++++++
+>=20
+> You add this license, but then never actually reference it in the later
+> changes, so it's going to be very confusing as to why it is here.  Any
+> way to add it to the font files themselves so our checker tools can
+> handle this properly?
 
-Regards,
-  Sricharan
+There is TTF name string ID called "License". For example, on IBM Plex Sans,
+the string value is:
+
+```
+This Font Software is licensed under the SIL Open Font License, Version 1.1=
+=2E This license is available with a FAQ at: http://scripts.sil.org/OFL
+```
+
+Checking that string requires scripting fontforge, and since the string val=
+ue
+may differ (but has the same license) across different fonts, scripting it
+can be non-trivial.
+
+>=20
+> And, it's not going to work as a dual-license, you can't just suddenly
+> dual-license those font files, right?
+
+I was thinking of putting OFL in LICENSES/exceptions instead due to this
+nature.
+
+>=20
+> >  1 file changed, 107 insertions(+)
+> >  create mode 100644 LICENSES/dual/OFL-1.1
+> >=20
+> > diff --git a/LICENSES/dual/OFL-1.1 b/LICENSES/dual/OFL-1.1
+> > new file mode 100644
+> > index 00000000000000..00b8db08bd0e54
+> > --- /dev/null
+> > +++ b/LICENSES/dual/OFL-1.1
+> > @@ -0,0 +1,107 @@
+> > +Valid-License-Identifier: OFL-1.1
+> > +SPDX-URL: https://spdx.org/licenses/OFL-1.1
+> > +Usage-Guide:
+> > +  Do NOT use this license for code, but it's acceptable for fonts (whe=
+re the
+> > +  license is specifically written for them). It's best to use it toget=
+her
+> > +  with a GPL2 compatible license using "OR", as OFL-1.1 texts processe=
+d by
+> > +  the kernel's build system might combine it with content taken from m=
+ore
+> > +  restrictive licenses.
+> > +  To use the SIL Open Font License 1.1, put the following SPDX tag/val=
+ue pair
+> > +  into a comment according to the placement guidelines in the licensin=
+g rules
+> > +  documentation:
+> > +    SPDX-License-Identifier: OFL-1.1
+>=20
+> Where did this Usage-Guide from?
+
+Adapted from LICENSES/dual/CC-BY-4.0.
+
+Thanks.
+
+--=20
+An old man doll... just what I always wanted! - Clara
+
+--/KWzKcdL50ByjLLA
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZUSrNAAKCRD2uYlJVVFO
+owOVAQDfc6tg3jOz4yW4hs8/7Tdj2N5B9WFJcdKKBu41RNyd5AEAmor1Fmesa51e
+GupVUCytz7URedQA/dvn3osN4cGy0ww=
+=tuOf
+-----END PGP SIGNATURE-----
+
+--/KWzKcdL50ByjLLA--
