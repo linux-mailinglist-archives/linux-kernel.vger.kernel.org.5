@@ -2,113 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 89A657DFE31
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 04:00:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A5207DFE35
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 04:04:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229879AbjKCDA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 23:00:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55018 "EHLO
+        id S229717AbjKCDDf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 23:03:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbjKCDAx (ORCPT
+        with ESMTP id S229459AbjKCDDe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 23:00:53 -0400
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2053.outbound.protection.outlook.com [40.107.93.53])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5662F1A1;
-        Thu,  2 Nov 2023 20:00:47 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WFUMHqpZ4tmWTyny4jHx3Z72E8jq0YcI7UDQBGFZ5GDt/PPmPVRYMEb3TmnA4g+WlsW/d+DrupqJM+RAiMpuGwV5dC3V1pkTd6yQA2/pYLsrEHWGwUFXbClwhZ+DVGr1fVcARsCU6F3++AQlTu9eE+HCjAxaC2r8D3mP2OjGzuBO8NUUoQ6UNNouE806okfi5YhhQD+SIfCLOFo2jVcZ87QrxLXxiP+1pO8OCc/03QdN1eXMhp41DJx68AHjX6nx+v528sc1vt8u/CFI9M5hsLnkP2ECbbzyKsnxybjSA/7S4XHEngDEt2FdL69d9J8Ne8oxmK6QW29mR9snaM6NnA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=6nvC8xVdyWlD9+6+K9LzbLoEZzVFxWPObDtxhqEhns8=;
- b=kCsAJCRSymPBU6pfaz4Pb3bpqCzVA27wu00RspIjl9tlPn2L66N3umsuWqqNhYd0NFp3R1V2qxDfbqpA/gqCXO/JMft/eL4tiOw3j8zQK0sJ6iDcfBSC9ihgoXyzG7VgZueNQspDQsZKuTIGaWJ5/N1dp3UI3WA1jJLp/CBpp99z6MmaKvf23G9eF+dIjl5fjLBFWt5ZjPoYlTQoX3sU1G1s1tjiTR/zZ3wrnH5UFr8auE0XCrw0PO9YefddLwYjdkrsZyDRMzz5/9JyvZdq32W3/RYSG7WBM4IV8LJ0mDJuidyniXjsczUHeqRtNP9EIoTrure8seKUpBQ4zrmV2w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6nvC8xVdyWlD9+6+K9LzbLoEZzVFxWPObDtxhqEhns8=;
- b=U+ez/QQxkbCfNkXMcnBnxU4IwGFX4cN/VWrEl56A4a0gC2zQhFgi6erKYX9/7bJZLj36oVmVIUCR7ELODEo4VHf0BK58z560G/1x3SGjS6IbAOcGU5tiXqCd3S5bRarUqtHi19pTIl4K3yIZCWBSzl9tD2wq4/J72jyzwZxv6lo=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from SJ2PR12MB8690.namprd12.prod.outlook.com (2603:10b6:a03:540::10)
- by LV8PR12MB9136.namprd12.prod.outlook.com (2603:10b6:408:18e::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.21; Fri, 3 Nov
- 2023 03:00:44 +0000
-Received: from SJ2PR12MB8690.namprd12.prod.outlook.com
- ([fe80::87d4:680b:51ef:181]) by SJ2PR12MB8690.namprd12.prod.outlook.com
- ([fe80::87d4:680b:51ef:181%7]) with mapi id 15.20.6933.029; Fri, 3 Nov 2023
- 03:00:44 +0000
-Date:   Fri, 3 Nov 2023 11:00:23 +0800
-From:   Huang Rui <ray.huang@amd.com>
-To:     Wyes Karny <wyes.karny@amd.com>
-Cc:     "rafael@kernel.org" <rafael@kernel.org>,
-        "viresh.kumar@linaro.org" <viresh.kumar@linaro.org>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Yuan, Perry" <Perry.Yuan@amd.com>
-Subject: Re: [PATCH] cpufreq/amd-pstate: Fix scaling_min_freq and
- scaling_max_freq update
-Message-ID: <ZURiR+y05DVnSmV8@amd.com>
-References: <20230922061229.475966-1-wyes.karny@amd.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230922061229.475966-1-wyes.karny@amd.com>
-X-ClientProxiedBy: SI2PR06CA0007.apcprd06.prod.outlook.com
- (2603:1096:4:186::9) To SJ2PR12MB8690.namprd12.prod.outlook.com
- (2603:10b6:a03:540::10)
+        Thu, 2 Nov 2023 23:03:34 -0400
+Received: from mail-oa1-f78.google.com (mail-oa1-f78.google.com [209.85.160.78])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC5B61A3
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 20:03:27 -0700 (PDT)
+Received: by mail-oa1-f78.google.com with SMTP id 586e51a60fabf-1ef5310a497so2269964fac.1
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 20:03:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698980607; x=1699585407;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Gu8Pr5FR+7rDJWQtouwNM75A3jZ28Jj8CfrNRZgzMJQ=;
+        b=OfYGDKvOKasRGwaA2hMJMfnoCG3cxgwJj/gaWHbMxa09QL2i90k7H4DKMy2TWKY7vN
+         +i6VPghGo+JR91i9dPgYhfrDZVbwGTgJWE9Ok8fdmSvs/9hX8ECmXB/pNZnp/vUDn1xv
+         gTEbPC4krXvhH45Fo6J6j+Xo6R2v61VMJR3ay9e30N93ZQgi9X5mrJYR/yjjLKIwbVpJ
+         fJLlvU2aj2gS4b5N9JQ/oT9zI8rxAwRNCkVhROBz5/ucIJcOlWeq0UsMrMuFbGf4s0WL
+         YOXSVbMIxQ0PbT5Mo7vZqEUlzpIbyqglZp/w3HCEldCB+jb6Jj68um53GxIn/nJDUmHj
+         BykA==
+X-Gm-Message-State: AOJu0YxDiX1GMUkuKROcj85TtQX6MQDNKkONwI620VqM2cxGgbaLmgJD
+        8KFLv/kazxtnRiDFiUEPN6ngJbemRAFJRAvqjBIjcA4NCJra
+X-Google-Smtp-Source: AGHT+IFUK8Kmaq0Ql85CNV2I6w2QpDbzcZ84OmWFUQ5RhfV2P2EUOdD1OmvZ5zwFqHfCaRz8Tq65edNLne0MpaD4QKf9MNNd+4j2
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ2PR12MB8690:EE_|LV8PR12MB9136:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4f255c25-11af-43ea-b36d-08dbdc1911f6
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: TTebYR1W5DG+uMS94Q1o0kj5cv7zjnxOUVILkVZ2zL1xpb9Ds9n8szpgFuI9DVp2WX2RdxI29LqYdzrj027ZZu1fFUFldjsQImUeksVUGpnmhhhjzyii5BLBKsXaRGbNA2TY0YYZqe8ET5XNlhnJMRZuIFOQZrpaMVgK4QQfNgr0jcfNxO9ZTmpT08u0CQjAwhV3NEO/byWxgyVamB76Nw2AacebyFnu6ZXR7KEI1ry5jf3CoQcxzW+4mC2fMHJkY2gQEG3ghLV+satTdDAaTKxoG6pR2LnPwpv5MO8BYfC+RAPCtzAKH7RvBQKF1nkg5EGsZAhkraSgORs1E0NY18sCK55+7iuPr3QHAr5XP1vA2/TlXBjRTVBUTEYABubS16A8FqIepDaHn1MFtNHtMiEe6rhb88ApxNOIGtxXPCPr1fmijr7QWu2Y9tV4H7OZFY9hjRkQ33kNlmxuSyuc6dc2i0QL4Y8btl+O3kLjQgqoMxwd8n9f6NeMcs77CECatN9+y7ZMMiQzaaE7KiqaLMEWxmoKL1Vw4cv1GXHJzJBT3TR0hvtYwrl1k/tRAjiRm5MM8iIzVSKALdekEpug5Qr5t+r3KlHt7qurxWAUdiY=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR12MB8690.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(136003)(39860400002)(346002)(376002)(366004)(230922051799003)(451199024)(186009)(1800799009)(64100799003)(6506007)(26005)(38100700002)(5660300002)(37006003)(66476007)(66946007)(316002)(66556008)(54906003)(6636002)(4326008)(8676002)(8936002)(6666004)(6862004)(41300700001)(15650500001)(2906002)(2616005)(478600001)(6486002)(6512007)(86362001)(36756003)(83380400001)(67856001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Nh5HyWt6LNypU5fyh36crwocwBt7YrnlEM7WTqoSQgysqvEH+zNn93H6PqIh?=
- =?us-ascii?Q?+il/M3deXpx6ox00qPB1/MCspoY/6R57GtXQyaWJ2T6Ti8iAjOSUJYgp2vsU?=
- =?us-ascii?Q?Ucd2pi8Oz1cgTLgMEDmZMyqEcHvwsJVUAMjw23EZbnkMwTD2oZGd8a47IGRK?=
- =?us-ascii?Q?KRm/FKKahg39DEoDyhtGem7F7pjOcWU5lTAtVWVxaMzDakUL2eOicK1wMuCL?=
- =?us-ascii?Q?RF/rKS6SQtZS/fsU6o65CHpq86YfA2oI7cih0vkI9lGaDe3IYmt+Xt0pPjpl?=
- =?us-ascii?Q?0p2Qw4bhZKGFN1FKU7AZG7Y7u8lnDR2Gd7Q8DBFFakvwhORxkUTMSHeHAbfv?=
- =?us-ascii?Q?EZcOaKA4Dqf2DPG1BKELM2rTfYNU26Sxib/glIkITJKSUguZEG0rkEF6UrJv?=
- =?us-ascii?Q?zhhEwHvGmwUvul9ti3hdy7ifbIKixaUcXuniAju2xGQ9iJDzQpwDDTH3VNgF?=
- =?us-ascii?Q?XvxyyoA9HRsVzplnnaEMD5bt5l5nYiXS/et4tcHTjtTXIv9dUlOXVNjF9Yg4?=
- =?us-ascii?Q?UTBBeTZh3/dC8brH/HWRotURIBIfW3LCfjB7LQXwp1ovVnGtRy/vbBWcAUYb?=
- =?us-ascii?Q?hGtxylDut4bIutX5T+W9I0/LZF2fOHiFC3q3ZOG8NuP5PSOA4HpfNsQYmync?=
- =?us-ascii?Q?btBmoK042xJ8DZln9in1pGFOFEsjGVoZrluWOezl7le2t/kRFdqM0axVrHSi?=
- =?us-ascii?Q?4fyGMD5hR4lgV4xB8RVvvVNEgl5rsUF9diR9/Ud9wXHH67ecq2ln5a9PPRWo?=
- =?us-ascii?Q?CJQyC9qL/2mVJo/FXJOUC3JCaoMSwvLJd3AXJgZ8nzUa9G5mZVijF7x2Na8h?=
- =?us-ascii?Q?uLQIxvwWGmeDyh3LCOgwlrAh+zvR8HwxeDQFLhpMVAlF2vY0DIRxaIbpR1Qn?=
- =?us-ascii?Q?+jx82s3mjrSmSkzbK3z7vSmqIThwJTnhjlPsAXr/yiT2NtePQgY+rRu8rPva?=
- =?us-ascii?Q?M/htFJ4MiGNZ2e9zAH7hEr2DxlhBBewNAq89zh99Qn6pasLSIOrppK1gS4Ni?=
- =?us-ascii?Q?SJUq9wIZ6xctZwI34tHaRsJTkDX8cPO31pPRbginfAjWRg2XYSqD5QQteXeK?=
- =?us-ascii?Q?PqbW01l5E2CwjfUJJwmfjl8BhxTxBXnqG4MdCWov2RnHg+9OfkWCq/a4pgqL?=
- =?us-ascii?Q?iwdlZqBqlI+BVl4jy78C0mqGx55l9Z7qXGNWkKKvPrKAGGL3hvzbSfCrA4Do?=
- =?us-ascii?Q?cD1RqZI4eg7H7K+rGosImvz4nyEl36pifKkFt7Yj/l6ie8w7g1+I1Jq2SJ+j?=
- =?us-ascii?Q?QOJbiexmY6Y1TXa3cNBxoc+BVtuc9zn4EsFxzfbu2hyJThAp0YPauPgt1f8B?=
- =?us-ascii?Q?Wl9aHSJHlvZtiIHgpwQkp9EHOUal3+Y2z6ISuYxAZotW72dUfH89UsGyUnRk?=
- =?us-ascii?Q?l+mKNQZdOByZpIxNKlZfOel3YpgymbHMrsDJODlMN2Z3QMnzU7D3mMRyBedp?=
- =?us-ascii?Q?/bGlxKcdChefFmBUkN6Gk6OfKYHqUIxcpIh1tgKxdCGSHHuRj9RvBsfyMWib?=
- =?us-ascii?Q?cP1lrEpoVHtbfqMTliedcNk38Xb569OgDCbeqb25KJEaToKg+1h+jjW6Zjmm?=
- =?us-ascii?Q?7PVpwmaq6nvkKA5XnQvyZjCcWot/AllX9LSo0Xnk?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4f255c25-11af-43ea-b36d-08dbdc1911f6
-X-MS-Exchange-CrossTenant-AuthSource: SJ2PR12MB8690.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Nov 2023 03:00:43.8730
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: js2ioK3HVV92WoqxCTbLEpi/9MupSVDBiMKRE5JjYAVH7LvRMpwMV+B+6WVIrkT1F5l8eLmpo6fb167WSgP9Ag==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV8PR12MB9136
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+X-Received: by 2002:a05:6870:218a:b0:1e9:a253:afb1 with SMTP id
+ l10-20020a056870218a00b001e9a253afb1mr9691138oae.9.1698980607139; Thu, 02 Nov
+ 2023 20:03:27 -0700 (PDT)
+Date:   Thu, 02 Nov 2023 20:03:27 -0700
+In-Reply-To: <000000000000a6429e0609331930@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000091a5b2060936bf6d@google.com>
+Subject: Re: [syzbot] [btrfs?] KASAN: slab-use-after-free Read in btrfs_qgroup_account_extent
+From:   syzbot <syzbot+e0b615318f8fcfc01ceb@syzkaller.appspotmail.com>
+To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -116,201 +56,195 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 22, 2023 at 02:12:29PM +0800, Wyes Karny wrote:
-> When amd_pstate is running, writing to scaling_min_freq and
-> scaling_max_freq has no effect. These values are only passed to the
-> policy level, but not to the platform level. This means that the
-> platform does not know about the frequency limits set by the user. To
-> fix this, update the min_perf and max_perf values at the platform level
-> whenever the user changes the scaling_min_freq and scaling_max_freq
-> values.
-> 
-> Signed-off-by: Wyes Karny <wyes.karny@amd.com>
+syzbot has found a reproducer for the following issue on:
 
-Acked-by: Huang Rui <ray.huang@amd.com>
+HEAD commit:    4652b8e4f3ff Merge tag '6.7-rc-ksmbd-server-fixes' of git:..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=10b8cbd7680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=d855e3560c4c99c4
+dashboard link: https://syzkaller.appspot.com/bug?extid=e0b615318f8fcfc01ceb
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14b6f140e80000
 
-> ---
->  drivers/cpufreq/amd-pstate.c | 60 ++++++++++++++++++++++++++++--------
->  include/linux/amd-pstate.h   |  4 +++
->  2 files changed, 51 insertions(+), 13 deletions(-)
-> 
-> diff --git a/drivers/cpufreq/amd-pstate.c b/drivers/cpufreq/amd-pstate.c
-> index 9a1e194d5cf8..4839cdd2715e 100644
-> --- a/drivers/cpufreq/amd-pstate.c
-> +++ b/drivers/cpufreq/amd-pstate.c
-> @@ -307,11 +307,11 @@ static int pstate_init_perf(struct amd_cpudata *cpudata)
->  		highest_perf = AMD_CPPC_HIGHEST_PERF(cap1);
->  
->  	WRITE_ONCE(cpudata->highest_perf, highest_perf);
-> -
-> +	WRITE_ONCE(cpudata->max_limit_perf, highest_perf);
->  	WRITE_ONCE(cpudata->nominal_perf, AMD_CPPC_NOMINAL_PERF(cap1));
->  	WRITE_ONCE(cpudata->lowest_nonlinear_perf, AMD_CPPC_LOWNONLIN_PERF(cap1));
->  	WRITE_ONCE(cpudata->lowest_perf, AMD_CPPC_LOWEST_PERF(cap1));
-> -
-> +	WRITE_ONCE(cpudata->min_limit_perf, AMD_CPPC_LOWEST_PERF(cap1));
->  	return 0;
->  }
->  
-> @@ -329,11 +329,12 @@ static int cppc_init_perf(struct amd_cpudata *cpudata)
->  		highest_perf = cppc_perf.highest_perf;
->  
->  	WRITE_ONCE(cpudata->highest_perf, highest_perf);
-> -
-> +	WRITE_ONCE(cpudata->max_limit_perf, highest_perf);
->  	WRITE_ONCE(cpudata->nominal_perf, cppc_perf.nominal_perf);
->  	WRITE_ONCE(cpudata->lowest_nonlinear_perf,
->  		   cppc_perf.lowest_nonlinear_perf);
->  	WRITE_ONCE(cpudata->lowest_perf, cppc_perf.lowest_perf);
-> +	WRITE_ONCE(cpudata->min_limit_perf, cppc_perf.lowest_perf);
->  
->  	if (cppc_state == AMD_PSTATE_ACTIVE)
->  		return 0;
-> @@ -432,6 +433,10 @@ static void amd_pstate_update(struct amd_cpudata *cpudata, u32 min_perf,
->  	u64 prev = READ_ONCE(cpudata->cppc_req_cached);
->  	u64 value = prev;
->  
-> +	min_perf = clamp_t(unsigned long, min_perf, cpudata->min_limit_perf,
-> +			cpudata->max_limit_perf);
-> +	max_perf = clamp_t(unsigned long, max_perf, cpudata->min_limit_perf,
-> +			cpudata->max_limit_perf);
->  	des_perf = clamp_t(unsigned long, des_perf, min_perf, max_perf);
->  
->  	if ((cppc_state == AMD_PSTATE_GUIDED) && (gov_flags & CPUFREQ_GOV_DYNAMIC_SWITCHING)) {
-> @@ -470,6 +475,22 @@ static int amd_pstate_verify(struct cpufreq_policy_data *policy)
->  	return 0;
->  }
->  
-> +static int amd_pstate_update_min_max_limit(struct cpufreq_policy *policy)
-> +{
-> +	u32 max_limit_perf, min_limit_perf;
-> +	struct amd_cpudata *cpudata = policy->driver_data;
-> +
-> +	max_limit_perf = div_u64(policy->max * cpudata->highest_perf, cpudata->max_freq);
-> +	min_limit_perf = div_u64(policy->min * cpudata->highest_perf, cpudata->max_freq);
-> +
-> +	WRITE_ONCE(cpudata->max_limit_perf, max_limit_perf);
-> +	WRITE_ONCE(cpudata->min_limit_perf, min_limit_perf);
-> +	WRITE_ONCE(cpudata->max_limit_freq, policy->max);
-> +	WRITE_ONCE(cpudata->min_limit_freq, policy->min);
-> +
-> +	return 0;
-> +}
-> +
->  static int amd_pstate_update_freq(struct cpufreq_policy *policy,
->  				  unsigned int target_freq, bool fast_switch)
->  {
-> @@ -480,6 +501,9 @@ static int amd_pstate_update_freq(struct cpufreq_policy *policy,
->  	if (!cpudata->max_freq)
->  		return -ENODEV;
->  
-> +	if (policy->min != cpudata->min_limit_freq || policy->max != cpudata->max_limit_freq)
-> +		amd_pstate_update_min_max_limit(policy);
-> +
->  	cap_perf = READ_ONCE(cpudata->highest_perf);
->  	min_perf = READ_ONCE(cpudata->lowest_perf);
->  	max_perf = cap_perf;
-> @@ -532,6 +556,10 @@ static void amd_pstate_adjust_perf(unsigned int cpu,
->  	struct amd_cpudata *cpudata = policy->driver_data;
->  	unsigned int target_freq;
->  
-> +	if (policy->min != cpudata->min_limit_freq || policy->max != cpudata->max_limit_freq)
-> +		amd_pstate_update_min_max_limit(policy);
-> +
-> +
->  	cap_perf = READ_ONCE(cpudata->highest_perf);
->  	lowest_nonlinear_perf = READ_ONCE(cpudata->lowest_nonlinear_perf);
->  	max_freq = READ_ONCE(cpudata->max_freq);
-> @@ -745,6 +773,8 @@ static int amd_pstate_cpu_init(struct cpufreq_policy *policy)
->  	/* Initial processor data capability frequencies */
->  	cpudata->max_freq = max_freq;
->  	cpudata->min_freq = min_freq;
-> +	cpudata->max_limit_freq = max_freq;
-> +	cpudata->min_limit_freq = min_freq;
->  	cpudata->nominal_freq = nominal_freq;
->  	cpudata->lowest_nonlinear_freq = lowest_nonlinear_freq;
->  
-> @@ -1183,16 +1213,25 @@ static int amd_pstate_epp_cpu_exit(struct cpufreq_policy *policy)
->  	return 0;
->  }
->  
-> -static void amd_pstate_epp_init(unsigned int cpu)
-> +static void amd_pstate_epp_update_limit(struct cpufreq_policy *policy)
->  {
-> -	struct cpufreq_policy *policy = cpufreq_cpu_get(cpu);
->  	struct amd_cpudata *cpudata = policy->driver_data;
-> -	u32 max_perf, min_perf;
-> +	u32 max_perf, min_perf, min_limit_perf, max_limit_perf;
->  	u64 value;
->  	s16 epp;
->  
->  	max_perf = READ_ONCE(cpudata->highest_perf);
->  	min_perf = READ_ONCE(cpudata->lowest_perf);
-> +	max_limit_perf = div_u64(policy->max * cpudata->highest_perf, cpudata->max_freq);
-> +	min_limit_perf = div_u64(policy->min * cpudata->highest_perf, cpudata->max_freq);
-> +
-> +	max_perf = clamp_t(unsigned long, max_perf, cpudata->min_limit_perf,
-> +			cpudata->max_limit_perf);
-> +	min_perf = clamp_t(unsigned long, min_perf, cpudata->min_limit_perf,
-> +			cpudata->max_limit_perf);
-> +
-> +	WRITE_ONCE(cpudata->max_limit_perf, max_limit_perf);
-> +	WRITE_ONCE(cpudata->min_limit_perf, min_limit_perf);
->  
->  	value = READ_ONCE(cpudata->cppc_req_cached);
->  
-> @@ -1210,9 +1249,6 @@ static void amd_pstate_epp_init(unsigned int cpu)
->  	value &= ~AMD_CPPC_DES_PERF(~0L);
->  	value |= AMD_CPPC_DES_PERF(0);
->  
-> -	if (cpudata->epp_policy == cpudata->policy)
-> -		goto skip_epp;
-> -
->  	cpudata->epp_policy = cpudata->policy;
->  
->  	/* Get BIOS pre-defined epp value */
-> @@ -1222,7 +1258,7 @@ static void amd_pstate_epp_init(unsigned int cpu)
->  		 * This return value can only be negative for shared_memory
->  		 * systems where EPP register read/write not supported.
->  		 */
-> -		goto skip_epp;
-> +		return;
->  	}
->  
->  	if (cpudata->policy == CPUFREQ_POLICY_PERFORMANCE)
-> @@ -1236,8 +1272,6 @@ static void amd_pstate_epp_init(unsigned int cpu)
->  
->  	WRITE_ONCE(cpudata->cppc_req_cached, value);
->  	amd_pstate_set_epp(cpudata, epp);
-> -skip_epp:
-> -	cpufreq_cpu_put(policy);
->  }
->  
->  static int amd_pstate_epp_set_policy(struct cpufreq_policy *policy)
-> @@ -1252,7 +1286,7 @@ static int amd_pstate_epp_set_policy(struct cpufreq_policy *policy)
->  
->  	cpudata->policy = policy->policy;
->  
-> -	amd_pstate_epp_init(policy->cpu);
-> +	amd_pstate_epp_update_limit(policy);
->  
->  	return 0;
->  }
-> diff --git a/include/linux/amd-pstate.h b/include/linux/amd-pstate.h
-> index 446394f84606..6ad02ad9c7b4 100644
-> --- a/include/linux/amd-pstate.h
-> +++ b/include/linux/amd-pstate.h
-> @@ -70,6 +70,10 @@ struct amd_cpudata {
->  	u32	nominal_perf;
->  	u32	lowest_nonlinear_perf;
->  	u32	lowest_perf;
-> +	u32     min_limit_perf;
-> +	u32     max_limit_perf;
-> +	u32     min_limit_freq;
-> +	u32     max_limit_freq;
->  
->  	u32	max_freq;
->  	u32	min_freq;
-> -- 
-> 2.34.1
-> 
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/162622d42235/disk-4652b8e4.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/62d46f58ffc9/vmlinux-4652b8e4.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/d1062e5866ab/bzImage-4652b8e4.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/2bc5f0cf2a6e/mount_0.gz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+e0b615318f8fcfc01ceb@syzkaller.appspotmail.com
+
+==================================================================
+BUG: KASAN: slab-use-after-free in __list_del_entry_valid_or_report+0x2f/0x130 lib/list_debug.c:49
+Read of size 8 at addr ffff888027e420b0 by task kworker/u4:3/48
+
+CPU: 1 PID: 48 Comm: kworker/u4:3 Not tainted 6.6.0-syzkaller-10396-g4652b8e4f3ff #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/09/2023
+Workqueue: btrfs-qgroup-rescan btrfs_work_helper
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x1e7/0x2d0 lib/dump_stack.c:106
+ print_address_description mm/kasan/report.c:364 [inline]
+ print_report+0x163/0x540 mm/kasan/report.c:475
+ kasan_report+0x175/0x1b0 mm/kasan/report.c:588
+ __list_del_entry_valid_or_report+0x2f/0x130 lib/list_debug.c:49
+ __list_del_entry_valid include/linux/list.h:124 [inline]
+ __list_del_entry include/linux/list.h:215 [inline]
+ list_del_init include/linux/list.h:287 [inline]
+ qgroup_iterator_nested_clean fs/btrfs/qgroup.c:2623 [inline]
+ btrfs_qgroup_account_extent+0x18b/0x1150 fs/btrfs/qgroup.c:2883
+ qgroup_rescan_leaf fs/btrfs/qgroup.c:3543 [inline]
+ btrfs_qgroup_rescan_worker+0x1078/0x1c60 fs/btrfs/qgroup.c:3604
+ btrfs_work_helper+0x37c/0xbd0 fs/btrfs/async-thread.c:315
+ process_one_work kernel/workqueue.c:2630 [inline]
+ process_scheduled_works+0x90f/0x1400 kernel/workqueue.c:2703
+ worker_thread+0xa5f/0xff0 kernel/workqueue.c:2784
+ kthread+0x2d3/0x370 kernel/kthread.c:388
+ ret_from_fork+0x48/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
+ </TASK>
+
+Allocated by task 6355:
+ kasan_save_stack mm/kasan/common.c:45 [inline]
+ kasan_set_track+0x4f/0x70 mm/kasan/common.c:52
+ ____kasan_kmalloc mm/kasan/common.c:374 [inline]
+ __kasan_kmalloc+0x98/0xb0 mm/kasan/common.c:383
+ kmalloc include/linux/slab.h:600 [inline]
+ kzalloc include/linux/slab.h:721 [inline]
+ btrfs_quota_enable+0xee9/0x2060 fs/btrfs/qgroup.c:1209
+ btrfs_ioctl_quota_ctl+0x143/0x190 fs/btrfs/ioctl.c:3705
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:871 [inline]
+ __se_sys_ioctl+0xf8/0x170 fs/ioctl.c:857
+ do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+ do_syscall_64+0x44/0x110 arch/x86/entry/common.c:82
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+
+Freed by task 6355:
+ kasan_save_stack mm/kasan/common.c:45 [inline]
+ kasan_set_track+0x4f/0x70 mm/kasan/common.c:52
+ kasan_save_free_info+0x28/0x40 mm/kasan/generic.c:522
+ ____kasan_slab_free+0xd6/0x120 mm/kasan/common.c:236
+ kasan_slab_free include/linux/kasan.h:164 [inline]
+ slab_free_hook mm/slub.c:1800 [inline]
+ slab_free_freelist_hook mm/slub.c:1826 [inline]
+ slab_free mm/slub.c:3809 [inline]
+ __kmem_cache_free+0x263/0x3a0 mm/slub.c:3822
+ btrfs_remove_qgroup+0x764/0x8c0 fs/btrfs/qgroup.c:1787
+ btrfs_ioctl_qgroup_create+0x185/0x1e0 fs/btrfs/ioctl.c:3811
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:871 [inline]
+ __se_sys_ioctl+0xf8/0x170 fs/ioctl.c:857
+ do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+ do_syscall_64+0x44/0x110 arch/x86/entry/common.c:82
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+
+Last potentially related work creation:
+ kasan_save_stack+0x3f/0x60 mm/kasan/common.c:45
+ __kasan_record_aux_stack+0xad/0xc0 mm/kasan/generic.c:492
+ __call_rcu_common kernel/rcu/tree.c:2667 [inline]
+ call_rcu+0x167/0xa70 kernel/rcu/tree.c:2781
+ kthread_worker_fn+0x4ba/0xa90 kernel/kthread.c:823
+ kthread+0x2d3/0x370 kernel/kthread.c:388
+ ret_from_fork+0x48/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
+
+Second to last potentially related work creation:
+ kasan_save_stack+0x3f/0x60 mm/kasan/common.c:45
+ __kasan_record_aux_stack+0xad/0xc0 mm/kasan/generic.c:492
+ __call_rcu_common kernel/rcu/tree.c:2667 [inline]
+ call_rcu+0x167/0xa70 kernel/rcu/tree.c:2781
+ kthread_worker_fn+0x4ba/0xa90 kernel/kthread.c:823
+ kthread+0x2d3/0x370 kernel/kthread.c:388
+ ret_from_fork+0x48/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
+
+The buggy address belongs to the object at ffff888027e42000
+ which belongs to the cache kmalloc-512 of size 512
+The buggy address is located 176 bytes inside of
+ freed 512-byte region [ffff888027e42000, ffff888027e42200)
+
+The buggy address belongs to the physical page:
+page:ffffea00009f9000 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x27e40
+head:ffffea00009f9000 order:2 entire_mapcount:0 nr_pages_mapped:0 pincount:0
+flags: 0xfff00000000840(slab|head|node=0|zone=1|lastcpupid=0x7ff)
+page_type: 0xffffffff()
+raw: 00fff00000000840 ffff888012c41c80 ffffea0000a5ba00 dead000000000002
+raw: 0000000000000000 0000000080100010 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+page_owner tracks the page as allocated
+page last allocated via order 2, migratetype Unmovable, gfp_mask 0xd20c0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC), pid 4514, tgid 4514 (udevadm), ts 24598439480, free_ts 23755696267
+ set_page_owner include/linux/page_owner.h:31 [inline]
+ post_alloc_hook+0x1e6/0x210 mm/page_alloc.c:1536
+ prep_new_page mm/page_alloc.c:1543 [inline]
+ get_page_from_freelist+0x31db/0x3360 mm/page_alloc.c:3170
+ __alloc_pages+0x255/0x670 mm/page_alloc.c:4426
+ alloc_slab_page+0x6a/0x160 mm/slub.c:1870
+ allocate_slab mm/slub.c:2017 [inline]
+ new_slab+0x84/0x2f0 mm/slub.c:2070
+ ___slab_alloc+0xc85/0x1310 mm/slub.c:3223
+ __slab_alloc mm/slub.c:3322 [inline]
+ __slab_alloc_node mm/slub.c:3375 [inline]
+ slab_alloc_node mm/slub.c:3468 [inline]
+ __kmem_cache_alloc_node+0x19d/0x270 mm/slub.c:3517
+ kmalloc_trace+0x2a/0xe0 mm/slab_common.c:1098
+ kmalloc include/linux/slab.h:600 [inline]
+ kzalloc include/linux/slab.h:721 [inline]
+ kernfs_fop_open+0x3e7/0xcc0 fs/kernfs/file.c:670
+ do_dentry_open+0x8fd/0x1590 fs/open.c:948
+ do_open fs/namei.c:3622 [inline]
+ path_openat+0x2845/0x3280 fs/namei.c:3779
+ do_filp_open+0x234/0x490 fs/namei.c:3809
+ do_sys_openat2+0x13e/0x1d0 fs/open.c:1440
+ do_sys_open fs/open.c:1455 [inline]
+ __do_sys_openat fs/open.c:1471 [inline]
+ __se_sys_openat fs/open.c:1466 [inline]
+ __x64_sys_openat+0x247/0x290 fs/open.c:1466
+ do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+ do_syscall_64+0x44/0x110 arch/x86/entry/common.c:82
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+page last free stack trace:
+ reset_page_owner include/linux/page_owner.h:24 [inline]
+ free_pages_prepare mm/page_alloc.c:1136 [inline]
+ free_unref_page_prepare+0x8c3/0x9f0 mm/page_alloc.c:2312
+ free_unref_page+0x37/0x3f0 mm/page_alloc.c:2405
+ discard_slab mm/slub.c:2116 [inline]
+ __unfreeze_partials+0x1dc/0x220 mm/slub.c:2655
+ put_cpu_partial+0x17b/0x250 mm/slub.c:2731
+ __slab_free+0x2b6/0x390 mm/slub.c:3679
+ qlink_free mm/kasan/quarantine.c:166 [inline]
+ qlist_free_all+0x75/0xe0 mm/kasan/quarantine.c:185
+ kasan_quarantine_reduce+0x14b/0x160 mm/kasan/quarantine.c:292
+ __kasan_slab_alloc+0x23/0x70 mm/kasan/common.c:305
+ kasan_slab_alloc include/linux/kasan.h:188 [inline]
+ slab_post_alloc_hook+0x67/0x3d0 mm/slab.h:762
+ slab_alloc_node mm/slub.c:3478 [inline]
+ slab_alloc mm/slub.c:3486 [inline]
+ __kmem_cache_alloc_lru mm/slub.c:3493 [inline]
+ kmem_cache_alloc+0x104/0x2c0 mm/slub.c:3502
+ getname_flags+0xbc/0x4f0 fs/namei.c:140
+ do_sys_openat2+0xd2/0x1d0 fs/open.c:1434
+ do_sys_open fs/open.c:1455 [inline]
+ __do_sys_openat fs/open.c:1471 [inline]
+ __se_sys_openat fs/open.c:1466 [inline]
+ __x64_sys_openat+0x247/0x290 fs/open.c:1466
+ do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+ do_syscall_64+0x44/0x110 arch/x86/entry/common.c:82
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+
+Memory state around the buggy address:
+ ffff888027e41f80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+ ffff888027e42000: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>ffff888027e42080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                                     ^
+ ffff888027e42100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff888027e42180: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
+
+
+---
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
