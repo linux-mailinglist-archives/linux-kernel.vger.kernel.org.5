@@ -2,60 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0DFB7DFE8A
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 05:25:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 096FA7DFE8B
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 05:28:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229526AbjKCESm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 00:18:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42962 "EHLO
+        id S229523AbjKCE2E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 00:28:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbjKCESj (ORCPT
+        with ESMTP id S229436AbjKCE2C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 00:18:39 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59949112
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 21:18:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698985113; x=1730521113;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=dX3xfEOVCaICj0UaSWc3WZRDgV4paeCfCFGLU2rsjMU=;
-  b=E8k1bl9k10CbBcpnjjZwwKbHjCfOpBtiuQpmpoPPBbDW2hfsaK3ZFAEO
-   boLEMXkDFD1j1UZzEa1ze+fkoLbv7hVxaPehpT65Y+xJwX7xcpcx2T+Xp
-   pO2ySGzBoBuzxuvRfyPiXnZlneiUQtMnl4PokPV3um9wD6cwPLenRiguX
-   q8HcBT/ZFsX5lS84AjkqxwCdnTuTlv2nRXccezzEhAlAKz5GpZOU6UOs9
-   NUYgDYf6ezvdmUzkRJUFUEhreVEHuRBIQMd/cs61gBNkGk1nj+BtQQUTb
-   1WwYLFgNrfW/o7gq5KBqA78DAUbV5SFLmoPgLp3HX19F9r5e76pQ4EQW2
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10882"; a="453171147"
-X-IronPort-AV: E=Sophos;i="6.03,273,1694761200"; 
-   d="scan'208";a="453171147"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2023 21:18:32 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10882"; a="885105189"
-X-IronPort-AV: E=Sophos;i="6.03,273,1694761200"; 
-   d="scan'208";a="885105189"
-Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by orsmga004.jf.intel.com with ESMTP; 02 Nov 2023 21:18:30 -0700
-Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qyldc-0002D8-1q;
-        Fri, 03 Nov 2023 04:18:28 +0000
-Date:   Fri, 3 Nov 2023 12:17:04 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Bart Van Assche <bvanassche@acm.org>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Subject: drivers/scsi/bfa/bfad_bsg.c:2553:50: sparse: sparse: incorrect type
- in initializer (different base types)
-Message-ID: <202311031255.lmSPisIk-lkp@intel.com>
+        Fri, 3 Nov 2023 00:28:02 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 304D018E
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 21:27:58 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id 38308e7fff4ca-2c503da4fd6so22530141fa.1
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 21:27:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1698985676; x=1699590476; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4NzF+QYdc4GZZ07M9FU4Y1CY8SWLRyCkROtQo9J/VZc=;
+        b=QUJbhFVNHX0XDBjQIU6dAsf9LQUvy2ePwKhuvncoieeZBRbq5gomq5f0Oibqeyct5s
+         ToBVWU1TdjvYpo6fcntafA3RTNpx5dg+bY12UeVL694tgEXipsN9gRYML0in3vhoOi6C
+         +f1xg8COcgsDbcbpxSxJZdOJX/PQJ0rfM7zPreKbQZ3XYFmYdHJil+N7abj4mFyiZGBt
+         Tl3o0a5RO6EXlz65tjLsjw+Gft1UN+fZ7KiJ59KZsQRcSOwkn+JDh3AyHJyCuvc2pwLZ
+         Hdm6q4QR+5qDrJVyhVOOSYSiLwchCr/NG7OItMkUhWrHs+d+L1hgVpJjR5TmT9R06gP3
+         OQwA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698985676; x=1699590476;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=4NzF+QYdc4GZZ07M9FU4Y1CY8SWLRyCkROtQo9J/VZc=;
+        b=QP8c7SldsylqYJ9skXW6EkK4b2qFYdndoNFZamM5Y7D6p/a/0cWNiz7kZvpxp3BLJc
+         iw6NtPTk1OXKynFGeRdW/sp/JHAcI98c9dSK/yC6qcGfPK4u9Swet9TTm41WmYlPy8LU
+         N5M7asyRBKwvkvX+g5poJty/1pMwEnYu3hTBRSvHcHP240hjhu/6ujSRjqT6DwETx2kM
+         j7dpQsgncS9gTGnunPIFyXf1hmn8Mx2Af/RXASNHBUQBN+iGMK14wmGjs6nqshdSG1dd
+         LVLcKvC1cycMIZorva7d/UpbsD3ePbOlhRDjOlncB5ySjdqXL83qVkw3FAldTB/QgyGn
+         wLIw==
+X-Gm-Message-State: AOJu0Yy6KCJmE17kbJdFsZ/4NPG0CHjPRKbkWBE5iRMsFV4HNo+h8WpD
+        oWV221nTJPjhedZMAhy+F90RjxHe9ydyhmS2vUDDOg==
+X-Google-Smtp-Source: AGHT+IFReT8Mv1qBMUJ//bwYq0iJ0clsZXXC+fAwz/7jI2PINOY0OkEECy3Mp0J7sCt//N6b2yAfY5MgtY1PyQD2IFM=
+X-Received: by 2002:a2e:97d1:0:b0:2c5:2eaa:5397 with SMTP id
+ m17-20020a2e97d1000000b002c52eaa5397mr14952675ljj.11.1698985676222; Thu, 02
+ Nov 2023 21:27:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+References: <20231101230816.1459373-1-souravpanda@google.com>
+ <20231101230816.1459373-2-souravpanda@google.com> <CAAPL-u_enAt7f9XUpwYNKkCOxz2uPbMrnE2RsoDFRcKwZdnRFQ@mail.gmail.com>
+ <CA+CK2bC3rSGOoT9p_VmWMT8PBWYbp7Jo7Tp2FffGrJp-hX9xCg@mail.gmail.com>
+ <CAAPL-u-4D5YKuVOsyfpDUR+PbaA3MOJmNtznS77bposQSNPjnA@mail.gmail.com>
+ <1e99ff39-b1cf-48b8-8b6d-ba5391e00db5@redhat.com> <CA+CK2bDo6an35R8Nu-d99pbNQMEAw_t0yUm0Q+mJNwOJ1EdqQg@mail.gmail.com>
+ <025ef794-91a9-4f0c-9eb6-b0a4856fa10a@redhat.com> <CA+CK2bDJDGaAK8ZmHtpr79JjJyNV5bM6TSyg84NLu2z+bCaEWg@mail.gmail.com>
+ <99113dee-6d4d-4494-9eda-62b1faafdbae@redhat.com> <CA+CK2bApoY+trxxNW8FBnwyKnX6RVkrMZG4AcLEC2Nj6yZ6HEw@mail.gmail.com>
+ <b71b28b9-1d41-4085-99f8-04d85892967e@redhat.com> <CA+CK2bCNRJXm2kEjsN=5a_M8twai4TJX3vpd72uOHFLGaDLg4g@mail.gmail.com>
+ <CAAPL-u_OWFLrrNxszm4D+mNiZY6cSb3=jez3XJHFtN6q05dU2g@mail.gmail.com>
+ <CA+CK2bBPBtAXFQAFUeF8nTxL_Sx926HgR3zLCj_6pKgbOGt8Wg@mail.gmail.com>
+ <CAAPL-u9HHgPDj_xTTx=GqPg49DcrpGP1FF8zhaog=9awwu0f_Q@mail.gmail.com> <CA+CK2bAv6okHVigjCyDODm5VELi7gtQHOUy9kH5J4jTBpnGPxw@mail.gmail.com>
+In-Reply-To: <CA+CK2bAv6okHVigjCyDODm5VELi7gtQHOUy9kH5J4jTBpnGPxw@mail.gmail.com>
+From:   Wei Xu <weixugc@google.com>
+Date:   Thu, 2 Nov 2023 21:27:44 -0700
+Message-ID: <CAAPL-u-nSLiObCC9Vbtdv1m8-87K-M6FcVcgnruGzRkAAucRTA@mail.gmail.com>
+Subject: Re: [PATCH v5 1/1] mm: report per-page metadata information
+To:     Pasha Tatashin <pasha.tatashin@soleen.com>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Sourav Panda <souravpanda@google.com>, corbet@lwn.net,
+        gregkh@linuxfoundation.org, rafael@kernel.org,
+        akpm@linux-foundation.org, mike.kravetz@oracle.com,
+        muchun.song@linux.dev, rppt@kernel.org, rdunlap@infradead.org,
+        chenlinxuan@uniontech.com, yang.yang29@zte.com.cn,
+        tomas.mudrunka@gmail.com, bhelgaas@google.com, ivan@cloudflare.com,
+        yosryahmed@google.com, hannes@cmpxchg.org, shakeelb@google.com,
+        kirill.shutemov@linux.intel.com, wangkefeng.wang@huawei.com,
+        adobriyan@gmail.com, vbabka@suse.cz, Liam.Howlett@oracle.com,
+        surenb@google.com, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-mm@kvack.org, willy@infradead.org,
+        Greg Thelen <gthelen@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -63,237 +92,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   431f1051884e38d2a5751e4731d69b2ff289ee56
-commit: 2e5a6c3baccd31476ed00c3fbc413b48ddd87993 scsi: bfa: Convert bfad_reset_sdev_bflags() from a macro into a function
-date:   12 months ago
-config: i386-randconfig-063-20231103 (https://download.01.org/0day-ci/archive/20231103/202311031255.lmSPisIk-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231103/202311031255.lmSPisIk-lkp@intel.com/reproduce)
+On Thu, Nov 2, 2023 at 6:07=E2=80=AFPM Pasha Tatashin <pasha.tatashin@solee=
+n.com> wrote:
+>
+> On Thu, Nov 2, 2023 at 4:22=E2=80=AFPM Wei Xu <weixugc@google.com> wrote:
+> >
+> > On Thu, Nov 2, 2023 at 11:34=E2=80=AFAM Pasha Tatashin
+> > <pasha.tatashin@soleen.com> wrote:
+> > >
+> > > > > > I could have sworn that I pointed that out in a previous versio=
+n and
+> > > > > > requested to document that special case in the patch descriptio=
+n. :)
+> > > > >
+> > > > > Sounds, good we will document that parts of per-page may not be p=
+art
+> > > > > of MemTotal.
+> > > >
+> > > > But this still doesn't answer how we can use the new PageMetadata
+> > > > field to help break down the runtime kernel overhead within MemUsed
+> > > > (MemTotal - MemFree).
+> > >
+> > > I am not sure it matters to the end users: they look at PageMetadata
+> > > with or without Page Owner, page_table_check, HugeTLB and it shows
+> > > exactly how much per-page overhead changed. Where the kernel allocate=
+d
+> > > that memory is not that important to the end user as long as that
+> > > memory became available to them.
+> > >
+> > > In addition, it is still possible to estimate the actual memblock par=
+t
+> > > of Per-page metadata by looking at /proc/zoneinfo:
+> > >
+> > > Memblock reserved per-page metadata: "present_pages - managed_pages"
+> >
+> > This assumes that all reserved memblocks are per-page metadata. As I
+>
+> Right after boot, when all Per-page metadata is still from memblocks,
+> we could determine what part of the zone reserved memory is not
+> per-page, and use it later in our calculations.
+>
+> > mentioned earlier, it is not a robust approach.
+> > > If there is something big that we will allocate in that range, we
+> > > should probably also export it in some form.
+> > >
+> > > If this field does not fit in /proc/meminfo due to not fully being
+> > > part of MemTotal, we could just keep it under nodeN/, as a separate
+> > > file, as suggested by Greg.
+> > >
+> > > However, I think it is useful enough to have an easy system wide view
+> > > for Per-page metadata.
+> >
+> > It is fine to have this as a separate, informational sysfs file under
+> > nodeN/, outside of meminfo. I just don't think as in the current
+> > implementation (where PageMetadata is a mixture of buddy and memblock
+> > allocations), it can help with the use case that motivates this
+> > change, i.e. to improve the breakdown of the kernel overhead.
+> > > > > > > are allocated), so what would be the best way to export page =
+metadata
+> > > > > > > without redefining MemTotal? Keep the new field in /proc/memi=
+nfo but
+> > > > > > > be ok that it is not part of MemTotal or do two counters? If =
+we do two
+> > > > > > > counters, we will still need to keep one that is a buddy allo=
+cator in
+> > > > > > > /proc/meminfo and the other one somewhere outside?
+> > > > > >
+> > > >
+> > > > I think the simplest thing to do now is to only report the buddy
+> > > > allocations of per-page metadata in meminfo.  The meaning of the ne=
+w
+> > >
+> > > This will cause PageMetadata to be 0 on 99% of the systems, and
+> > > essentially become useless to the vast majority of users.
+> >
+> > I don't think it is a major issue. There are other fields (e.g. Zswap)
+> > in meminfo that remain 0 when the feature is not used.
+>
+> Since we are going to use two independent interfaces
+> /proc/meminfo/PageMetadata and nodeN/page_metadata (in a separate file
+> as requested by Greg) How about if in /proc/meminfo we provide only
+> the buddy allocator part, and in nodeN/page_metadata we provide the
+> total per-page overhead in the given node that include memblock
+> reserves, and buddy allocator memory?
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311031255.lmSPisIk-lkp@intel.com/
+What we want is the system-wide breakdown of kernel memory usage. It
+works for this use case with the new PageMetadata counter in
+/proc/meminfo to report only buddy-allocated per-page metadata.
 
-sparse warnings: (new ones prefixed by >>)
-   drivers/scsi/bfa/bfad_bsg.c:2391:25: sparse: sparse: cast to restricted __be32
-   drivers/scsi/bfa/bfad_bsg.c:2414:38: sparse: sparse: cast to restricted __be16
-   drivers/scsi/bfa/bfad_bsg.c:2415:38: sparse: sparse: cast to restricted __be16
-   drivers/scsi/bfa/bfad_bsg.c:2417:33: sparse: sparse: cast to restricted __be32
->> drivers/scsi/bfa/bfad_bsg.c:2553:50: sparse: sparse: incorrect type in initializer (different base types) @@     expected unsigned int const [usertype] scan_flags @@     got restricted blist_flags_t @@
-   drivers/scsi/bfa/bfad_bsg.c:2553:50: sparse:     expected unsigned int const [usertype] scan_flags
-   drivers/scsi/bfa/bfad_bsg.c:2553:50: sparse:     got restricted blist_flags_t
-   drivers/scsi/bfa/bfad_bsg.c:2562:51: sparse: sparse: invalid assignment: |=
-   drivers/scsi/bfa/bfad_bsg.c:2562:51: sparse:    left side has type restricted blist_flags_t
-   drivers/scsi/bfa/bfad_bsg.c:2562:51: sparse:    right side has type unsigned int
-   drivers/scsi/bfa/bfad_bsg.c:2564:51: sparse: sparse: invalid assignment: &=
-   drivers/scsi/bfa/bfad_bsg.c:2564:51: sparse:    left side has type restricted blist_flags_t
-   drivers/scsi/bfa/bfad_bsg.c:2564:51: sparse:    right side has type unsigned int
-   drivers/scsi/bfa/bfad_bsg.c:3407:34: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void const [noderef] __user *from @@     got void * @@
-   drivers/scsi/bfa/bfad_bsg.c:3407:34: sparse:     expected void const [noderef] __user *from
-   drivers/scsi/bfa/bfad_bsg.c:3407:34: sparse:     got void *
-   drivers/scsi/bfa/bfad_bsg.c:3561:27: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void [noderef] __user *to @@     got void * @@
-   drivers/scsi/bfa/bfad_bsg.c:3561:27: sparse:     expected void [noderef] __user *to
-   drivers/scsi/bfa/bfad_bsg.c:3561:27: sparse:     got void *
-
-vim +2553 drivers/scsi/bfa/bfad_bsg.c
-
-  2376	
-  2377	static int
-  2378	bfad_iocmd_qos_get_attr(struct bfad_s *bfad, void *cmd)
-  2379	{
-  2380		struct bfa_bsg_qos_attr_s *iocmd = (struct bfa_bsg_qos_attr_s *)cmd;
-  2381		struct bfa_fcport_s *fcport = BFA_FCPORT_MOD(&bfad->bfa);
-  2382		unsigned long	flags;
-  2383	
-  2384		spin_lock_irqsave(&bfad->bfad_lock, flags);
-  2385		if ((fcport->cfg.topology == BFA_PORT_TOPOLOGY_LOOP) &&
-  2386			(fcport->topology == BFA_PORT_TOPOLOGY_LOOP))
-  2387			iocmd->status = BFA_STATUS_TOPOLOGY_LOOP;
-  2388		else {
-  2389			iocmd->attr.state = fcport->qos_attr.state;
-  2390			iocmd->attr.total_bb_cr =
-> 2391				be32_to_cpu(fcport->qos_attr.total_bb_cr);
-  2392			iocmd->attr.qos_bw.high = fcport->cfg.qos_bw.high;
-  2393			iocmd->attr.qos_bw.med = fcport->cfg.qos_bw.med;
-  2394			iocmd->attr.qos_bw.low = fcport->cfg.qos_bw.low;
-  2395			iocmd->attr.qos_bw_op = fcport->qos_attr.qos_bw_op;
-  2396			iocmd->status = BFA_STATUS_OK;
-  2397		}
-  2398		spin_unlock_irqrestore(&bfad->bfad_lock, flags);
-  2399	
-  2400		return 0;
-  2401	}
-  2402	
-  2403	static int
-  2404	bfad_iocmd_qos_get_vc_attr(struct bfad_s *bfad, void *cmd)
-  2405	{
-  2406		struct bfa_bsg_qos_vc_attr_s *iocmd =
-  2407					(struct bfa_bsg_qos_vc_attr_s *)cmd;
-  2408		struct bfa_fcport_s *fcport = BFA_FCPORT_MOD(&bfad->bfa);
-  2409		struct bfa_qos_vc_attr_s *bfa_vc_attr = &fcport->qos_vc_attr;
-  2410		unsigned long	flags;
-  2411		u32	i = 0;
-  2412	
-  2413		spin_lock_irqsave(&bfad->bfad_lock, flags);
-  2414		iocmd->attr.total_vc_count = be16_to_cpu(bfa_vc_attr->total_vc_count);
-  2415		iocmd->attr.shared_credit  = be16_to_cpu(bfa_vc_attr->shared_credit);
-  2416		iocmd->attr.elp_opmode_flags  =
-  2417					be32_to_cpu(bfa_vc_attr->elp_opmode_flags);
-  2418	
-  2419		/* Individual VC info */
-  2420		while (i < iocmd->attr.total_vc_count) {
-  2421			iocmd->attr.vc_info[i].vc_credit =
-  2422					bfa_vc_attr->vc_info[i].vc_credit;
-  2423			iocmd->attr.vc_info[i].borrow_credit =
-  2424					bfa_vc_attr->vc_info[i].borrow_credit;
-  2425			iocmd->attr.vc_info[i].priority =
-  2426					bfa_vc_attr->vc_info[i].priority;
-  2427			i++;
-  2428		}
-  2429		spin_unlock_irqrestore(&bfad->bfad_lock, flags);
-  2430	
-  2431		iocmd->status = BFA_STATUS_OK;
-  2432		return 0;
-  2433	}
-  2434	
-  2435	static int
-  2436	bfad_iocmd_qos_get_stats(struct bfad_s *bfad, void *cmd)
-  2437	{
-  2438		struct bfa_bsg_fcport_stats_s *iocmd =
-  2439					(struct bfa_bsg_fcport_stats_s *)cmd;
-  2440		struct bfad_hal_comp fcomp;
-  2441		unsigned long	flags;
-  2442		struct bfa_cb_pending_q_s cb_qe;
-  2443		struct bfa_fcport_s *fcport = BFA_FCPORT_MOD(&bfad->bfa);
-  2444	
-  2445		init_completion(&fcomp.comp);
-  2446		bfa_pending_q_init(&cb_qe, (bfa_cb_cbfn_t)bfad_hcb_comp,
-  2447				   &fcomp, &iocmd->stats);
-  2448	
-  2449		spin_lock_irqsave(&bfad->bfad_lock, flags);
-  2450		WARN_ON(!bfa_ioc_get_fcmode(&bfad->bfa.ioc));
-  2451		if ((fcport->cfg.topology == BFA_PORT_TOPOLOGY_LOOP) &&
-  2452			(fcport->topology == BFA_PORT_TOPOLOGY_LOOP))
-  2453			iocmd->status = BFA_STATUS_TOPOLOGY_LOOP;
-  2454		else
-  2455			iocmd->status = bfa_fcport_get_stats(&bfad->bfa, &cb_qe);
-  2456		spin_unlock_irqrestore(&bfad->bfad_lock, flags);
-  2457		if (iocmd->status != BFA_STATUS_OK) {
-  2458			bfa_trc(bfad, iocmd->status);
-  2459			goto out;
-  2460		}
-  2461		wait_for_completion(&fcomp.comp);
-  2462		iocmd->status = fcomp.status;
-  2463	out:
-  2464		return 0;
-  2465	}
-  2466	
-  2467	static int
-  2468	bfad_iocmd_qos_reset_stats(struct bfad_s *bfad, void *cmd)
-  2469	{
-  2470		struct bfa_bsg_gen_s *iocmd = (struct bfa_bsg_gen_s *)cmd;
-  2471		struct bfad_hal_comp fcomp;
-  2472		unsigned long	flags;
-  2473		struct bfa_cb_pending_q_s cb_qe;
-  2474		struct bfa_fcport_s *fcport = BFA_FCPORT_MOD(&bfad->bfa);
-  2475	
-  2476		init_completion(&fcomp.comp);
-  2477		bfa_pending_q_init(&cb_qe, (bfa_cb_cbfn_t)bfad_hcb_comp,
-  2478				   &fcomp, NULL);
-  2479	
-  2480		spin_lock_irqsave(&bfad->bfad_lock, flags);
-  2481		WARN_ON(!bfa_ioc_get_fcmode(&bfad->bfa.ioc));
-  2482		if ((fcport->cfg.topology == BFA_PORT_TOPOLOGY_LOOP) &&
-  2483			(fcport->topology == BFA_PORT_TOPOLOGY_LOOP))
-  2484			iocmd->status = BFA_STATUS_TOPOLOGY_LOOP;
-  2485		else
-  2486			iocmd->status = bfa_fcport_clear_stats(&bfad->bfa, &cb_qe);
-  2487		spin_unlock_irqrestore(&bfad->bfad_lock, flags);
-  2488		if (iocmd->status != BFA_STATUS_OK) {
-  2489			bfa_trc(bfad, iocmd->status);
-  2490			goto out;
-  2491		}
-  2492		wait_for_completion(&fcomp.comp);
-  2493		iocmd->status = fcomp.status;
-  2494	out:
-  2495		return 0;
-  2496	}
-  2497	
-  2498	static int
-  2499	bfad_iocmd_vf_get_stats(struct bfad_s *bfad, void *cmd)
-  2500	{
-  2501		struct bfa_bsg_vf_stats_s *iocmd =
-  2502				(struct bfa_bsg_vf_stats_s *)cmd;
-  2503		struct bfa_fcs_fabric_s	*fcs_vf;
-  2504		unsigned long	flags;
-  2505	
-  2506		spin_lock_irqsave(&bfad->bfad_lock, flags);
-  2507		fcs_vf = bfa_fcs_vf_lookup(&bfad->bfa_fcs, iocmd->vf_id);
-  2508		if (fcs_vf == NULL) {
-  2509			spin_unlock_irqrestore(&bfad->bfad_lock, flags);
-  2510			iocmd->status = BFA_STATUS_UNKNOWN_VFID;
-  2511			goto out;
-  2512		}
-  2513		memcpy((void *)&iocmd->stats, (void *)&fcs_vf->stats,
-  2514			sizeof(struct bfa_vf_stats_s));
-  2515		spin_unlock_irqrestore(&bfad->bfad_lock, flags);
-  2516		iocmd->status = BFA_STATUS_OK;
-  2517	out:
-  2518		return 0;
-  2519	}
-  2520	
-  2521	static int
-  2522	bfad_iocmd_vf_clr_stats(struct bfad_s *bfad, void *cmd)
-  2523	{
-  2524		struct bfa_bsg_vf_reset_stats_s *iocmd =
-  2525				(struct bfa_bsg_vf_reset_stats_s *)cmd;
-  2526		struct bfa_fcs_fabric_s	*fcs_vf;
-  2527		unsigned long	flags;
-  2528	
-  2529		spin_lock_irqsave(&bfad->bfad_lock, flags);
-  2530		fcs_vf = bfa_fcs_vf_lookup(&bfad->bfa_fcs, iocmd->vf_id);
-  2531		if (fcs_vf == NULL) {
-  2532			spin_unlock_irqrestore(&bfad->bfad_lock, flags);
-  2533			iocmd->status = BFA_STATUS_UNKNOWN_VFID;
-  2534			goto out;
-  2535		}
-  2536		memset((void *)&fcs_vf->stats, 0, sizeof(struct bfa_vf_stats_s));
-  2537		spin_unlock_irqrestore(&bfad->bfad_lock, flags);
-  2538		iocmd->status = BFA_STATUS_OK;
-  2539	out:
-  2540		return 0;
-  2541	}
-  2542	
-  2543	/*
-  2544	 * Set the SCSI device sdev_bflags - sdev_bflags are used by the
-  2545	 * SCSI mid-layer to choose LUN Scanning mode REPORT_LUNS vs. Sequential Scan
-  2546	 *
-  2547	 * Internally iterates over all the ITNIM's part of the im_port & sets the
-  2548	 * sdev_bflags for the scsi_device associated with LUN #0.
-  2549	 */
-  2550	static void bfad_reset_sdev_bflags(struct bfad_im_port_s *im_port,
-  2551					   int lunmask_cfg)
-  2552	{
-> 2553		const u32 scan_flags = BLIST_NOREPORTLUN | BLIST_SPARSELUN;
-  2554		struct bfad_itnim_s *itnim;
-  2555		struct scsi_device *sdev;
-  2556	
-  2557		list_for_each_entry(itnim, &im_port->itnim_mapped_list, list_entry) {
-  2558			sdev = scsi_device_lookup(im_port->shost, itnim->channel,
-  2559						  itnim->scsi_tgt_id, 0);
-  2560			if (sdev) {
-  2561				if (lunmask_cfg == BFA_TRUE)
-  2562					sdev->sdev_bflags |= scan_flags;
-  2563				else
-  2564					sdev->sdev_bflags &= ~scan_flags;
-  2565				scsi_device_put(sdev);
-  2566			}
-  2567		}
-  2568	}
-  2569	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> Pasha
