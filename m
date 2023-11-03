@@ -2,118 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 237C27E096B
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 20:21:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C1FE7E096A
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 20:21:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377584AbjKCTV3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 15:21:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41300 "EHLO
+        id S1345938AbjKCTVL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 15:21:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345958AbjKCTV1 (ORCPT
+        with ESMTP id S232839AbjKCTVJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 15:21:27 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CE14D6C
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 12:20:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1699039223;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=FbdNnm6glXxbCyQwbEBZPF6AJpykiqEuJJGlXI5aA50=;
-        b=hdxyfPm5MNgAcT3F7g/KU3bYIXdEvqhONrUnNGm+5U7vbfUXC247wPJaz3zQrpR23k2zcP
-        X8Say60nUclZNMstPSppJ3h0RK9KK0Q43YFxpeHL8FKeEuK7HiavgQJJELjZQihA/1rd7F
-        ZjOdoZmODHpOs4W4wjrxucbvavR4Rko=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-313-f-Wz3s8BMsOB2MhrNrLqag-1; Fri, 03 Nov 2023 15:20:21 -0400
-X-MC-Unique: f-Wz3s8BMsOB2MhrNrLqag-1
-Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-9dd58f58281so51545266b.0
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Nov 2023 12:20:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699039220; x=1699644020;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FbdNnm6glXxbCyQwbEBZPF6AJpykiqEuJJGlXI5aA50=;
-        b=QTxVAcxwhUtHE53TO/w0rRtwgcr4DTVU7okN7zLSt/auYOY/Tiks51PjV2yLtA7KWP
-         tCVT6Sde/Bk0/ZUOU9vi7cWyg+mApX440+x3t0jy7P1g3GPOOeEEQsa9h/u7ii630uEy
-         boblsQnJSr5P0pijEyQAsZ431muMbbMNZSpk78LFLEKbVRF4yFjQwzAGGboA7M+1yNkb
-         WYj8JU0wgHUG7srQTNttkJvP81ASGyeHG5YZ9WJaKgY3EWGUBTLPwKTvAi/h34yOzMQW
-         y5vthau6g1w1HD3yxwAgB2KOXYNv8ckH1GzrpU5HNmMS2DmT2PM8iDEgQSZiElOCV9vE
-         b4Qw==
-X-Gm-Message-State: AOJu0YwtrDc9Ref5RGBT8CHjrKqvNJg598bnXDjMpfWonZLXXN0CYHVy
-        afNOCV/7d8O09OJ3GfL6x6H4p5m1zKUvNZbk0gDX1QA+rAYNGdDsNcUgn9mOwalxzh0ps7AtogQ
-        arKKF18Nh9O3BVNKwiiBXlOnTZzcf7mBKmRRp49e0
-X-Received: by 2002:a17:906:c115:b0:9d2:63ab:6d4f with SMTP id do21-20020a170906c11500b009d263ab6d4fmr8437342ejc.55.1699039220549;
-        Fri, 03 Nov 2023 12:20:20 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHVIlIiqTO8tXZwIEKnjzqKfHT36dgMA9qvb6+IwjXIIIl9wGqAGV0UwCtlu6/BMDIefpRHV4mH736kQorZILo=
-X-Received: by 2002:a17:906:c115:b0:9d2:63ab:6d4f with SMTP id
- do21-20020a170906c11500b009d263ab6d4fmr8437329ejc.55.1699039220274; Fri, 03
- Nov 2023 12:20:20 -0700 (PDT)
+        Fri, 3 Nov 2023 15:21:09 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 990A4D73;
+        Fri,  3 Nov 2023 12:21:00 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E611AC433C8;
+        Fri,  3 Nov 2023 19:20:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699039260;
+        bh=7MN/U949LXBUJuxhHGoevzr7GxH9ANzavjzuKeHmEFI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=ATOS90CQjIPKFdQUNME1YOl/ZNO2l4vdA/tAPEX5FuZ7YB0AZw3Rg48H9VhtnnOA7
+         VtX7UDME19I2utp0+HF+lTQWr1D2hH09nX463+1I6RWUaNBEbWhgPk6cHDBxOANA2/
+         GbhdCLcNRwLIWfdX1Sj8XI23fCuZmPAunNQ+ynphpjxhJc317uikh3sxlMhff1fqtK
+         FCtukqW5Kj1gGpk6aAglpD5Efco/VWlsxThbznSAwnIfQu5rtd4/zabCMIAZ5h2wrN
+         d43JcoHYz09h5jLLSCD3wjOJ1MfFJa73nnUnofNlVsP2Q8bxmAm1uiL68bvht0+bEj
+         icfdgBagHldvQ==
+Date:   Fri, 3 Nov 2023 14:20:58 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Mario Limonciello <mario.limonciello@amd.com>
+Cc:     Karol Herbst <kherbst@redhat.com>, Lyude Paul <lyude@redhat.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Lukas Wunner <lukas@wunner.de>,
+        "open list:THUNDERBOLT DRIVER" <linux-usb@vger.kernel.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        "open list:PCI SUBSYSTEM" <linux-pci@vger.kernel.org>,
+        "open list:DRM DRIVER FOR NVIDIA GEFORCE/QUADRO GPUS" 
+        <dri-devel@lists.freedesktop.org>,
+        "open list:X86 PLATFORM DRIVERS" 
+        <platform-driver-x86@vger.kernel.org>,
+        Andreas Noever <andreas.noever@gmail.com>,
+        David Airlie <airlied@gmail.com>,
+        Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
+        "open list:RADEON and AMDGPU DRM DRIVERS" 
+        <amd-gfx@lists.freedesktop.org>,
+        "open list:ACPI" <linux-acpi@vger.kernel.org>,
+        Danilo Krummrich <dakr@redhat.com>,
+        "open list:DRM DRIVER FOR NVIDIA GEFORCE/QUADRO GPUS" 
+        <nouveau@lists.freedesktop.org>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Michael Jamet <michael.jamet@intel.com>,
+        Mark Gross <markgross@kernel.org>,
+        Xinhui Pan <Xinhui.Pan@amd.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Yehezkel Bernat <YehezkelShB@gmail.com>,
+        Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>,
+        "Maciej W . Rozycki" <macro@orcam.me.uk>
+Subject: Re: [PATCH v2 0/9] Improvements to pcie_bandwidth_available() for
+ eGPUs
+Message-ID: <20231103192058.GA164718@bhelgaas>
 MIME-Version: 1.0
-References: <20231103161635.1902667-1-aahringo@redhat.com> <20231103185414.GD8262@noisy.programming.kicks-ass.net>
-In-Reply-To: <20231103185414.GD8262@noisy.programming.kicks-ass.net>
-From:   Alexander Aring <aahringo@redhat.com>
-Date:   Fri, 3 Nov 2023 15:20:08 -0400
-Message-ID: <CAK-6q+hQnTgmO_2qfNDzyYW36T1aH+a5q285G+Rfo+sN4dfEfA@mail.gmail.com>
-Subject: Re: [RFC 1/2] refcount: introduce generic lockptr funcs
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     will@kernel.org, gfs2@lists.linux.dev, boqun.feng@gmail.com,
-        mark.rutland@arm.com, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231103190758.82911-1-mario.limonciello@amd.com>
 X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Fri, Nov 03, 2023 at 02:07:49PM -0500, Mario Limonciello wrote:
+> Downstream drivers are getting the wrong values from
+> pcie_bandwidth_available() which is causing problems for performance
+> of eGPUs.
+> 
+> This series overhauls Thunderbolt related device detection and uses
+> the changes to change the behavior of pcie_bandwidth_available().
+> 
+> NOTE: This series is currently based on top of v6.6 + this change that
+>       will be merged for 6.7:
+> Link: https://patchwork.freedesktop.org/patch/564738/
 
-On Fri, Nov 3, 2023 at 2:54=E2=80=AFPM Peter Zijlstra <peterz@infradead.org=
-> wrote:
->
-> On Fri, Nov 03, 2023 at 12:16:34PM -0400, Alexander Aring wrote:
->
-> > diff --git a/lib/refcount.c b/lib/refcount.c
-> > index a207a8f22b3c..e28678f0f473 100644
-> > --- a/lib/refcount.c
-> > +++ b/lib/refcount.c
-> > @@ -94,6 +94,34 @@ bool refcount_dec_not_one(refcount_t *r)
-> >  }
-> >  EXPORT_SYMBOL(refcount_dec_not_one);
-> >
-> > +bool refcount_dec_and_lockptr(refcount_t *r, void (*lock)(void *lockpt=
-r),
-> > +                           void (*unlock)(void *lockptr),  void *lockp=
-tr)
-> > +{
-> > +     if (refcount_dec_not_one(r))
-> > +             return false;
-> > +
-> > +     lock(lockptr);
-> > +     if (!refcount_dec_and_test(r)) {
-> > +             unlock(lockptr);
-> > +             return false;
-> > +     }
-> > +
-> > +     return true;
-> > +}
-> > +EXPORT_SYMBOL(refcount_dec_and_lockptr);
->
-> This is terrible, you're forcing indirect calls on everything.
->
+Thanks, Mario, I'll look at this soon after v6.7-rc1 (probably Nov
+12), so the amdgpu patch should be in mainline by then.
 
-Okay, I see. How about introducing a macro producing all the code at
-preprocessor time?
-
-- Alex
-
+> v1->v2:
+>  * Rename is_thunderbolt
+>  * Look for _DSD instead of link
+>  * Drop pci_is_thunderbolt_attached() from all drivers
+>  * Adjust links
+>  * Adjust commit messages
+>  * Add quirk for Tiger Lake
+> 
+> Mario Limonciello (9):
+>   drm/nouveau: Switch from pci_is_thunderbolt_attached() to
+>     dev_is_removable()
+>   drm/radeon: Switch from pci_is_thunderbolt_attached() to
+>     dev_is_removable()
+>   PCI: Drop pci_is_thunderbolt_attached()
+>   PCI: Move the `PCI_CLASS_SERIAL_USB_USB4` definition to common header
+>   PCI: pciehp: Move check for is_thunderbolt into a quirk
+>   PCI: Rename is_thunderbolt to is_tunneled
+>   PCI: ACPI: Detect PCIe root ports that are used for tunneling
+>   PCI: Exclude PCIe ports used for tunneling in
+>     pcie_bandwidth_available()
+>   PCI: Add a quirk to mark 0x8086 : 0x9a23 as supporting PCIe tunneling
+> 
+>  drivers/gpu/drm/nouveau/nouveau_vga.c  |  6 +-
+>  drivers/gpu/drm/radeon/radeon_device.c |  4 +-
+>  drivers/gpu/drm/radeon/radeon_kms.c    |  2 +-
+>  drivers/pci/hotplug/pciehp_hpc.c       |  6 +-
+>  drivers/pci/pci-acpi.c                 | 16 ++++++
+>  drivers/pci/pci.c                      | 76 +++++++++++++++++---------
+>  drivers/pci/probe.c                    |  2 +-
+>  drivers/pci/quirks.c                   | 31 +++++++++++
+>  drivers/platform/x86/apple-gmux.c      |  2 +-
+>  drivers/thunderbolt/nhi.h              |  2 -
+>  include/linux/pci.h                    | 25 +--------
+>  include/linux/pci_ids.h                |  1 +
+>  12 files changed, 109 insertions(+), 64 deletions(-)
+> 
+> -- 
+> 2.34.1
+> 
