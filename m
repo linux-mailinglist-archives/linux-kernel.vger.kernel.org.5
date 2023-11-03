@@ -2,119 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FE9C7E067A
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 17:26:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E0507E0681
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 17:27:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376387AbjKCQZn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 12:25:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37084 "EHLO
+        id S1345783AbjKCQ0y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 12:26:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345395AbjKCQZ0 (ORCPT
+        with ESMTP id S1345684AbjKCQ0s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 12:25:26 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D582D61
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 09:25:15 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id ffacd0b85a97d-32ded3eb835so1521049f8f.0
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Nov 2023 09:25:15 -0700 (PDT)
+        Fri, 3 Nov 2023 12:26:48 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDD3DD6B;
+        Fri,  3 Nov 2023 09:26:28 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1cc34c3420bso23675345ad.3;
+        Fri, 03 Nov 2023 09:26:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699028714; x=1699633514; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=6nsxT65QcBic5QpwyMNIvqdwRkRC1mARnt5d+1mQIn0=;
-        b=koVvCQPrLrSGuPV2Ef2SpA7bmvgvl9CfCUItewz0iPUS1oYk7dhEGRJWgr/CAI2U6A
-         73UjMJe1UihIkDtxBLftzgyjouoln5+llsVYOKnI0TozcvzA0HKUmV28SpNPW7ZrTmYw
-         gBuzG0DW72L5F2nXPoRkF2qGrYwVx1nWncr2gSFenc/N1pxwASbLdStNkhT3N2/8m9Q2
-         Pj+mY/OUzU1H5npSj7yG1rVipjIiy5joGykJj60grpnH06g9FC2rQed+PhrArDXyKaHC
-         xtw9y3o8AsU+hbCEriX7nzqb5djmlq1bEPHtt3aIrj6hCPSqlq+PH5lOVx+lYlSRl9OF
-         J3pA==
+        d=gmail.com; s=20230601; t=1699028788; x=1699633588; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=6RxeQm4cmA2JrbAVa8HTs83GsMijucDFIF/Igdee3yE=;
+        b=W7agCHmw8Wf8ksBG+oocMABlvXfmAtkin1FM2uDvC0/DWJzQYT5/CSJ8YToJorGPoD
+         pbK/6MIe60aD0nKfJPmgkmyOQH+GIsNZI9FKW4zYX/YOxVGBowL+eIMrBKRtEgfS1G5D
+         O3/QIWe8MzvHBnpC2MXu7FvnHF94+DtgunW9les5SDXRrj8V1I4EYQTW0FBuZqzmV3S0
+         Fib3DUmFjnHokYxQm3cgt+NyY2rG6JbpMWDXnelH+I/GV2PeFIV7wFnZcXEK6EAzyZc4
+         6/6TbYJbnwep3+1nU0PzVTG8PGcPYfcT0FkN97LmPU+RNmH8vMpnGQtWY0MszKGbs2Ao
+         0A5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699028714; x=1699633514;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6nsxT65QcBic5QpwyMNIvqdwRkRC1mARnt5d+1mQIn0=;
-        b=akunh8BNp0ObTop4QqVoiuEBEU6eAe4BVT8EUghYoRKhoklTpi5WAvV7+f2GCcwhHW
-         Z8PvbPzOZ+jaKoWmSYDlDC8FN77dZWW7xhukQCAGBpJRF6JMrxT2nTL4PJ/mAOmJf0a9
-         9t2GHBt1ytC8Xp5rToik+z+Q5I1Dpu68Lpg4RHnuG60psGIJF1bJ6gwQbA/SsKHo2t+q
-         YdFw3/naj6XSEvJPd/sy6eIoD6r3LUc1khd5dUMUWJSXm1D96eatpYpn2sZbgnMJHFMt
-         71TdE5qf1s957OusK+knqLc+Nz4xpfZc6awq1XgXpauunQK4Z2pkM2gL4LDoiTrx7BjQ
-         wN/Q==
-X-Gm-Message-State: AOJu0YwHCY+oXYYbgDqb4KhMOSA6YlNEINynDhei+YYUJy85Vw8uuFM1
-        zbjIjpHs3/8KkNeav9PrBrPPiw==
-X-Google-Smtp-Source: AGHT+IGo6lDoKqnaJdwkbAtYZA2R5l0+C8lHC4nqttrgc+u3GPlzNrionP9TVCm5xbBfEUWI/Wpucw==
-X-Received: by 2002:a05:6000:18a5:b0:32f:86e7:9beb with SMTP id b5-20020a05600018a500b0032f86e79bebmr16538359wri.14.1699028713819;
-        Fri, 03 Nov 2023 09:25:13 -0700 (PDT)
-Received: from [127.0.0.1] ([37.228.218.3])
-        by smtp.gmail.com with ESMTPSA id x13-20020a5d650d000000b003142e438e8csm2219972wru.26.2023.11.03.09.25.12
+        d=1e100.net; s=20230601; t=1699028788; x=1699633588;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6RxeQm4cmA2JrbAVa8HTs83GsMijucDFIF/Igdee3yE=;
+        b=G5tXNGIfFrhMj7Gs1tds4L8d7YH1FrWvSK26NDF84/evFVebXOr9E45XPKtZNBiM25
+         EzTnwzw9JLOlGKOxQ55WPdzN4JQvUx7LnTHjVux00J4fC/NK4yR/kAhh71jztMTB16/A
+         leJClUTNS7wUMdzsB+WGFYtvOV1/zalwrRchyRefmM3tIJ9WMIHhlZDBdpxvKvOd0fR5
+         y9qaQe3HojnGzm5cRuXOav4BEHVH5r71uA0NopcdnXP2jHsnpbDpaCfWSqCGAXUVddLq
+         aDtyfdGAABg6bOk1PI/+c5S6HJekLm1gVrmJfCQrGwMExNRVnkYUui45gTAfnWshFpYa
+         sRcQ==
+X-Gm-Message-State: AOJu0YxTS42aymXh3oUsy9wvgTxZfhAHZM3HR35hHjEInxW006h9zmmO
+        wq8ZrsUk3GPIQ6pGxui4ijc=
+X-Google-Smtp-Source: AGHT+IH+UfkDk1M09a11MgKdQ/HzVeEoAf8yilhUhOvIPnSu6kULsuDKgmMoS0l4cwRyk9qiS6Zxpw==
+X-Received: by 2002:a17:902:f551:b0:1cc:5b2a:2f33 with SMTP id h17-20020a170902f55100b001cc5b2a2f33mr14887406plf.43.1699028787560;
+        Fri, 03 Nov 2023 09:26:27 -0700 (PDT)
+Received: from debian (c-71-202-158-162.hsd1.ca.comcast.net. [71.202.158.162])
+        by smtp.gmail.com with ESMTPSA id p22-20020a170902b09600b001b8a3e2c241sm1609244plr.14.2023.11.03.09.26.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Nov 2023 09:25:13 -0700 (PDT)
-From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-Date:   Fri, 03 Nov 2023 16:25:09 +0000
-Subject: [PATCH v2 6/6] media: qcom: camss: vfe-17x: Rename camss-vfe-170
- to camss-vfe-17x
+        Fri, 03 Nov 2023 09:26:27 -0700 (PDT)
+From:   fan <nifan.cxl@gmail.com>
+X-Google-Original-From: fan <fan@debian>
+Date:   Fri, 3 Nov 2023 09:26:06 -0700
+To:     Vishal Verma <vishal.l.verma@intel.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        nvdimm@lists.linux.dev, linux-cxl@vger.kernel.org,
+        Huang Ying <ying.huang@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Jeff Moyer <jmoyer@redhat.com>
+Subject: Re: [PATCH v8 1/3] mm/memory_hotplug: replace an open-coded
+ kmemdup() in add_memory_resource()
+Message-ID: <ZUUfHqaGGxjYc0wH@debian>
+References: <20231101-vv-kmem_memmap-v8-0-5e4a83331388@intel.com>
+ <20231101-vv-kmem_memmap-v8-1-5e4a83331388@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231103-b4-camss-sc8280xp-v2-6-b7af4d253a20@linaro.org>
-References: <20231103-b4-camss-sc8280xp-v2-0-b7af4d253a20@linaro.org>
-In-Reply-To: <20231103-b4-camss-sc8280xp-v2-0-b7af4d253a20@linaro.org>
-To:     hverkuil-cisco@xs4all.nl, laurent.pinchart@ideasonboard.com,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Todor Tomov <todor.too@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, vincent.knecht@mailoo.org,
-        matti.lehtimaki@gmail.com, quic_grosikop@quicinc.com
-Cc:     linux-arm-msm@vger.kernel.org, linux-media@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-X-Mailer: b4 0.13-dev-26615
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231101-vv-kmem_memmap-v8-1-5e4a83331388@intel.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-vfe-170 and vfe-175 can be supported in the same file with some minimal
-indirection to differentiate between the silicon versions.
+On Wed, Nov 01, 2023 at 04:51:51PM -0600, Vishal Verma wrote:
+> A review of the memmap_on_memory modifications to add_memory_resource()
+> revealed an instance of an open-coded kmemdup(). Replace it with
+> kmemdup().
+> 
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: David Hildenbrand <david@redhat.com>
+> Cc: Michal Hocko <mhocko@suse.com>
+> Cc: Oscar Salvador <osalvador@suse.de>
+> Cc: Dan Williams <dan.j.williams@intel.com>
+> Reported-by: Dan Williams <dan.j.williams@intel.com>
+> Reviewed-by: David Hildenbrand <david@redhat.com>
+> Signed-off-by: Vishal Verma <vishal.l.verma@intel.com>
+> ---
 
-sdm845 uses vfe-170, sc8280xp uses vfe-175-200. Lets rename the file to
-capture its wider scope than vfe-170 only.
+Reviewed-by: Fan Ni <fan.ni@samsung.com>
 
-Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
----
- drivers/media/platform/qcom/camss/Makefile                             | 2 +-
- drivers/media/platform/qcom/camss/{camss-vfe-170.c => camss-vfe-17x.c} | 0
- 2 files changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/media/platform/qcom/camss/Makefile b/drivers/media/platform/qcom/camss/Makefile
-index 4e22223589739..0d4389ab312d1 100644
---- a/drivers/media/platform/qcom/camss/Makefile
-+++ b/drivers/media/platform/qcom/camss/Makefile
-@@ -14,7 +14,7 @@ qcom-camss-objs += \
- 		camss-vfe-4-1.o \
- 		camss-vfe-4-7.o \
- 		camss-vfe-4-8.o \
--		camss-vfe-170.o \
-+		camss-vfe-17x.o \
- 		camss-vfe-480.o \
- 		camss-vfe-gen1.o \
- 		camss-vfe.o \
-diff --git a/drivers/media/platform/qcom/camss/camss-vfe-170.c b/drivers/media/platform/qcom/camss/camss-vfe-17x.c
-similarity index 100%
-rename from drivers/media/platform/qcom/camss/camss-vfe-170.c
-rename to drivers/media/platform/qcom/camss/camss-vfe-17x.c
-
--- 
-2.42.0
-
+>  mm/memory_hotplug.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
+> index f8d3e7427e32..6be7de9efa55 100644
+> --- a/mm/memory_hotplug.c
+> +++ b/mm/memory_hotplug.c
+> @@ -1439,11 +1439,11 @@ int __ref add_memory_resource(int nid, struct resource *res, mhp_t mhp_flags)
+>  	if (mhp_flags & MHP_MEMMAP_ON_MEMORY) {
+>  		if (mhp_supports_memmap_on_memory(size)) {
+>  			mhp_altmap.free = memory_block_memmap_on_memory_pages();
+> -			params.altmap = kmalloc(sizeof(struct vmem_altmap), GFP_KERNEL);
+> +			params.altmap = kmemdup(&mhp_altmap,
+> +						sizeof(struct vmem_altmap),
+> +						GFP_KERNEL);
+>  			if (!params.altmap)
+>  				goto error;
+> -
+> -			memcpy(params.altmap, &mhp_altmap, sizeof(mhp_altmap));
+>  		}
+>  		/* fallback to not using altmap  */
+>  	}
+> 
+> -- 
+> 2.41.0
+> 
