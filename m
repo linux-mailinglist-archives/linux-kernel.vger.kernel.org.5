@@ -2,132 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 806137E017E
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 11:31:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C39167E00F2
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 11:30:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346243AbjKCHoU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 03:44:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48730 "EHLO
+        id S1346258AbjKCHr1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 03:47:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346169AbjKCHoS (ORCPT
+        with ESMTP id S233449AbjKCHr0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 03:44:18 -0400
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9D3083;
-        Fri,  3 Nov 2023 00:44:15 -0700 (PDT)
-Received: by mail-ot1-x335.google.com with SMTP id 46e09a7af769-6ce532451c7so966149a34.2;
-        Fri, 03 Nov 2023 00:44:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698997455; x=1699602255; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=H4O0vQt5/kYcmx8zMREu13SPTAgKxXvRq08jWfn9u1s=;
-        b=FPamwwx+ZB2YNLtREVHAKT/5zXwylv2Fnk/cK2tnFG53D6h+JhepeuvdJqX5a1Iw+/
-         4+7fUzvFONO5G+VsKbO9Oal3OQTxhQkkWSLEj4NCV9cego0SQCQTpPt2M8lNegMkc/YT
-         nDeUGCSV7XUdcN1/VLq1haD8+dU4Y4gpTWx2IRo/G21A2G8Y6nCowSmP2bu9zgsGuxJH
-         qSyX7lCS+uskdJNQW8RwkPcEV8Pq80emrWS3uKK5jFDHaw5fi5Kg+8OmN1FEP3XXAWbl
-         +LlZtYmfBm1xMZEfr4gxXErE7UnfanFD3FBxpMGMTSZX5Lxp6zN3l4eJMfu5a46DYII1
-         CkAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698997455; x=1699602255;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=H4O0vQt5/kYcmx8zMREu13SPTAgKxXvRq08jWfn9u1s=;
-        b=M410VLOo3kDkBE3N8qv1OUTnd+mJlI4AQAYFh1i+EcfFZk5mSB+kKjUln8zVu7NClE
-         JTgt1JinfeTMB9nUpQGl468HbE6rFuu/Jlz7pZH1vc+srBlGCowoHQPk60McsvCmRyfd
-         mFAhrt2LJegwwSNNO4WFYUDx1ZTSjZhz6vhEFpB1p5vazVLaqmZEcrHwh+BoIhQOGNx3
-         cT1Z1sYv7D57g3SjpUPEfnuSP+0S1XwCo/PG5eTGgz+z/xxYEsafpi/VDK9dEgYgQ4C8
-         CXwsjavGebeq3gmZ3LtnFT51N+kC49E+/b4P0cXLaomL2WBiyRw+jeSgpaJ84MwDPar/
-         b96Q==
-X-Gm-Message-State: AOJu0YxbW+wTdkh0QsjHx6VJxW4psy4F8xK9Pgb2WN4hYExUBs5RVZHW
-        4QiIDsxEcZDTSGQd17m3789ZXv9RkuY=
-X-Google-Smtp-Source: AGHT+IGj1KrzwjF6V/c5fVBJiNGIZf3ig7W5ge6lNsOltt5oL5Mpq+TUWMzMRdHhiilPtwaRNdEmdg==
-X-Received: by 2002:a05:6830:7190:b0:6b8:9932:b8ad with SMTP id el16-20020a056830719000b006b89932b8admr21333834otb.1.1698997455037;
-        Fri, 03 Nov 2023 00:44:15 -0700 (PDT)
-Received: from debian.me ([103.131.18.64])
-        by smtp.gmail.com with ESMTPSA id t20-20020aa79394000000b006c0fdc98c89sm861512pfe.85.2023.11.03.00.44.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Nov 2023 00:44:14 -0700 (PDT)
-Received: by debian.me (Postfix, from userid 1000)
-        id B767083A431C; Fri,  3 Nov 2023 14:44:10 +0700 (WIB)
-Date:   Fri, 3 Nov 2023 14:44:10 +0700
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Documentation <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Akira Yokosawa <akiyks@gmail.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        David Vernet <void@manifault.com>,
-        Miguel Ojeda <ojeda@kernel.org>, James Seo <james@equiv.tech>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Federico Vaga <federico.vaga@vaga.pv.it>,
-        Carlos Bilbao <carlos.bilbao@amd.com>,
-        linux-spdx@vger.kernel.org, Richard Fontana <rfontana@redhat.com>
-Subject: Re: [PATCH RFC RESEND 1/4] LICENSES: Add SIL Open Font License 1.1
-Message-ID: <ZUSkypGfDccEkKL6@debian.me>
-References: <20231102123225.32768-1-bagasdotme@gmail.com>
- <20231102123225.32768-2-bagasdotme@gmail.com>
- <2023110211-absolute-backfire-b6a0@gregkh>
+        Fri, 3 Nov 2023 03:47:26 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C69283;
+        Fri,  3 Nov 2023 00:47:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698997640; x=1730533640;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=rezhK3cP/BaT5BMnIYABwg8Q2dxJJQOxJ5jTfjavXtc=;
+  b=OL0p8vjiy3mxdGqiL+T1JYH3K7/re15pbHqasa9ZMaEx/J0fnO2xl/tw
+   kQWRVUAhXEMRNZ9UaS6FvM4Gh4HV/eyB0g5zQfSA7kti9QEfEUC5ZYMC0
+   gbi6WezKopXsypFk2VWCE/mltkbIktJtwUJe9eQj/uvwfnZhBIGzA0PfJ
+   RoswxILS8EbFMgAB02fYcKgYLYrRU63z37O51jbKPl5t87O5p7/dAxLZV
+   tuCG+zSQmLKPrCmhTV62RlYrJqFgKsTUCxElMh5FLd39NaLJBlrvYI1aC
+   E1EwFjesdvK94Uk1IPtUpTT/UmYrB3S08acV3MCuRT5GiuRcCXr5/ErJy
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10882"; a="10430963"
+X-IronPort-AV: E=Sophos;i="6.03,273,1694761200"; 
+   d="scan'208";a="10430963"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2023 00:47:20 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10882"; a="761535270"
+X-IronPort-AV: E=Sophos;i="6.03,273,1694761200"; 
+   d="scan'208";a="761535270"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2023 00:47:15 -0700
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Gregory Price <gregory.price@memverge.com>
+Cc:     Michal Hocko <mhocko@suse.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Gregory Price <gourry.memverge@gmail.com>,
+        <linux-kernel@vger.kernel.org>, <linux-cxl@vger.kernel.org>,
+        <linux-mm@kvack.org>, <akpm@linux-foundation.org>,
+        <aneesh.kumar@linux.ibm.com>, <weixugc@google.com>,
+        <apopple@nvidia.com>, <tim.c.chen@intel.com>,
+        <dave.hansen@intel.com>, <shy828301@gmail.com>,
+        <gregkh@linuxfoundation.org>, <rafael@kernel.org>
+Subject: Re: [RFC PATCH v3 0/4] Node Weights and Weighted Interleave
+In-Reply-To: <ZUMVI4YG7mB54u0D@memverge.com> (Gregory Price's message of "Wed,
+        1 Nov 2023 23:18:59 -0400")
+References: <20231031003810.4532-1-gregory.price@memverge.com>
+        <rm43wgtlvwowjolzcf6gj4un4qac4myngxqnd2jwt5yqxree62@t66scnrruttc>
+        <20231031152142.GA3029315@cmpxchg.org>
+        <jgh5b5bm73qe7m3qmnsjo3drazgfaix3ycqmom5u6tfp6hcerj@ij4vftrutvrt>
+        <ZUCCGJgrqqk87aGN@memverge.com>
+        <pmxrljwp4ayl3fcu7rxm6prbumgb5l3lwb75lqfipmxxxwnqfo@nb5qjcxw22gp>
+        <ZUKDz5NpMsoyzWtZ@memverge.com>
+        <a4f5das6ckw5lwj3qv2eaygx4nypb762b6mdnxivrjjndqlhjk@zpjao2ewfdoc>
+        <ZUMVI4YG7mB54u0D@memverge.com>
+Date:   Fri, 03 Nov 2023 15:45:13 +0800
+Message-ID: <87fs1nz3ee.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="mXzQ05Hs+7vZrDLe"
-Content-Disposition: inline
-In-Reply-To: <2023110211-absolute-backfire-b6a0@gregkh>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=ascii
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Gregory Price <gregory.price@memverge.com> writes:
 
---mXzQ05Hs+7vZrDLe
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> On Thu, Nov 02, 2023 at 10:47:33AM +0100, Michal Hocko wrote:
+>> On Wed 01-11-23 12:58:55, Gregory Price wrote:
+>> > Basically consider: `numactl --interleave=all ...`
+>> > 
+>> > If `--weights=...`: when a node hotplug event occurs, there is no
+>> > recourse for adding a weight for the new node (it will default to 1).
+>> 
+>> Correct and this is what I was asking about in an earlier email. How
+>> much do we really need to consider this setup. Is this something nice to
+>> have or does the nature of the technology requires to be fully dynamic
+>> and expect new nodes coming up at any moment?
+>>  
+>
+> Dynamic Capacity is expected to cause a numa node to change size (in
+> number of memory blocks) rather than cause numa nodes to come and go, so
+> maybe handling the full node hotplug is a bit of an overreach.
 
-On Thu, Nov 02, 2023 at 03:09:21PM +0100, Greg Kroah-Hartman wrote:
-> On Thu, Nov 02, 2023 at 07:32:19PM +0700, Bagas Sanjaya wrote:
-> > Add the license text along with appropriate tags for reference and
-> > tooling. The text is taken from the text as distributed in Google
-> > Fonts's zip files.
-> >=20
-> > As the license itself may or may note be compatible with GPLv2,
-> > let's take on the err side and require combining it with
-> > GPL-compatible licenses when using the license.
-> >=20
-> > Cc: linux-spdx@vger.kernel.org
-> > Cc: Richard Fontana <rfontana@redhat.com>
-> > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > Signed-off-by: Bagas Sanjaya <bagasdotme@gmail.com>
-> > ---
-> >  LICENSES/dual/OFL-1.1 | 107 ++++++++++++++++++++++++++++++++++++++++++
-> >  1 file changed, 107 insertions(+)
-> >  create mode 100644 LICENSES/dual/OFL-1.1
->=20
-> Same comment as made before here:
-> 	https://lore.kernel.org/all/2023110222-renewed-monologue-008e@gregkh/
+Will node max bandwidth change with the number of memory blocks?
 
-Thanks for the pointer to the OG thread!
+> Good call, I'll stop considering this problem for now.
+>
+>> > If the node is removed from the system, I believe (need to validate
+>> > this, but IIRC) the node will be removed from any registered cpusets.
+>> > As a result, that falls down to mempolicy, and the node is removed.
+>> 
+>> I do not think we do anything like that. Userspace might decide to
+>> change the numa mask when a node is offlined but I do not think we do
+>> anything like that automagically.
+>>
+>
+> mpol_rebind_policy called by update_tasks_nodemask
+> https://elixir.bootlin.com/linux/latest/source/mm/mempolicy.c#L319
+> https://elixir.bootlin.com/linux/latest/source/kernel/cgroup/cpuset.c#L2016
+>
+> falls down from cpuset_hotplug_workfn:
+> https://elixir.bootlin.com/linux/latest/source/kernel/cgroup/cpuset.c#L3771
+>
+> /*
+>  * Keep top_cpuset.mems_allowed tracking node_states[N_MEMORY].
+>  * Call this routine anytime after node_states[N_MEMORY] changes.
+>  * See cpuset_update_active_cpus() for CPU hotplug handling.
+>  */
+> static int cpuset_track_online_nodes(struct notifier_block *self,
+> 				unsigned long action, void *arg)
+> {
+> 	schedule_work(&cpuset_hotplug_work);
+> 	return NOTIFY_OK;
+> }
+>
+> void __init cpuset_init_smp(void)
+> {
+> ...
+> 	hotplug_memory_notifier(cpuset_track_online_nodes, CPUSET_CALLBACK_PRI);
+> }
+>
+>
+> Causes 1 of 3 situations:
+> MPOL_F_STATIC_NODES:   overwrite with (old & new)
+> MPOL_F_RELATIVE_NODES: overwrite with a "relative" nodemask (fold+onto?)
+> Default:               either does a remap or replaces old with new.
+>
+> My assumption based on this is that a hot-unplugged node would completely
+> be removed.  Doesn't look like hot-add is handled at all, so I can just
+> drop that entirely for now (except add default weight of 1 incase it is
+> ever added in the future).
+>
+> I've been pushing agianst the weights being in memory-tiers.c for this
+> reason, as a weight set per-tier is meaningless if a node disappears.
+>
+> Example: Tier has 2 nodes with some weight N split between them, such
+> that interleave gives each node N/2 pages.  If 1 node is removed, the
+> remaining node gets N pages, which is twice the allocation. Presumably
+> a node is an abstraction of 1 or more devices, therefore if the node is
+> removed, the weight should change.
 
---=20
-An old man doll... just what I always wanted! - Clara
+The per-tier weight can be defined as interleave weight of each node of
+the tier.  Tier just groups NUMA nodes with similar performance.  The
+performance (including bandwidth) is still per-node in the context of
+tier.
 
---mXzQ05Hs+7vZrDLe
-Content-Type: application/pgp-signature; name="signature.asc"
+If we have multiple nodes in one tier, this makes weight definition
+easier.
 
------BEGIN PGP SIGNATURE-----
+> You could handle hotplug in tiers, but if a node being hotplugged forcibly
+> removes the node from cpusets and mempolicy nodemasks, then it's
+> irrelevant since the node can never get selected for allocation anyway.
+>
+> It's looking more like cgroups is the right place to put this.
 
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZUSkxAAKCRD2uYlJVVFO
-o4/3AP9cll0+k64GMF2R1FBOVWrpYzG65Q8hYgATNGSeGOnz8gD/Xvd9t3d/Szg+
-9pTmX4ohHSK6w29kxoQFZxwzt9EZ2Qo=
-=+us9
------END PGP SIGNATURE-----
+Have a cgroup/task level interface doesn't prevent us to have a system
+level interface to provide default for cgroups/tasks.  Where performance
+information (e.g., from HMAT) can help define a reasonable default
+automatically.
 
---mXzQ05Hs+7vZrDLe--
+>> 
+>> Moving the global policy to cgroups would make the main cocern of
+>> different workloads looking for different policy less problamatic.
+>> I didn't have much time to think that through but the main question is
+>> how to sanely define hierarchical properties of those weights? This is
+>> more of a resource distribution than enforcement so maybe a simple
+>> inherit or overwrite (if you have a more specific needs) semantic makes
+>> sense and it is sufficient.
+>>
+>
+> As a user I would assume it would operate much the same way as other
+> nested cgroups, which is inherit by default (with subsets) or an
+> explicit overwrite that can't exceed the higher level settings.
+>
+> Weights could arguably allow different settings than capacity controls,
+> but that could be an extension.
+>
+>> This is not as much about the code as it is about the proper interface
+>> because that will get cast in stone once introduced. It would be really
+>> bad to realize that we have a global policy that doesn't fit well and
+>> have hard time to work it around without breaking anybody.
+>
+> o7 I concur now.  I'll take some time to rework this into a
+> cgroups+mempolicy proposal based on my earlier RFCs.
+
+--
+Best Regards,
+Huang, Ying
