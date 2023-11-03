@@ -2,97 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E92297E01CC
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 12:14:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63CE87E00CA
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 11:30:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346576AbjKCKb4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 06:31:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58134 "EHLO
+        id S1346318AbjKCK0E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 06:26:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346471AbjKCKbw (ORCPT
+        with ESMTP id S232511AbjKCKZ6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 06:31:52 -0400
-X-Greylist: delayed 358 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 03 Nov 2023 03:31:45 PDT
-Received: from smtp106.ord1d.emailsrvr.com (smtp106.ord1d.emailsrvr.com [184.106.54.106])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83E1A18B
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 03:31:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mev.co.uk;
-        s=20221208-6x11dpa4; t=1699007147;
-        bh=kNQ6Y9aJJpuP/XuTipt3CdSuES1rKcilf6zf4PyPWLw=;
-        h=Date:Subject:To:From:From;
-        b=t2ca9DYixF48bFpQZ4M3ABJWuhvOTwd+WMLlGhGa4fACFJqU4MDxMk2UOGoLj0Nyj
-         cBDVUn/ZAfuk2+EPVHHjcI5LLwxjDXTCkWip7eVnrihVl+G9uoL7zQsWJNH5R6FRLI
-         X6gxdVe2/1908cILqLKGoYF9uYcDLHzEBAepk0oY=
-X-Auth-ID: abbotti@mev.co.uk
-Received: by smtp6.relay.ord1d.emailsrvr.com (Authenticated sender: abbotti-AT-mev.co.uk) with ESMTPSA id 3B5EBE00DD;
-        Fri,  3 Nov 2023 06:25:46 -0400 (EDT)
-Message-ID: <51e495a4-98d7-402c-a1e6-5c24c43e3118@mev.co.uk>
-Date:   Fri, 3 Nov 2023 10:25:45 +0000
+        Fri, 3 Nov 2023 06:25:58 -0400
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:237:300::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9523D4E;
+        Fri,  3 Nov 2023 03:25:54 -0700 (PDT)
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+        (envelope-from <fw@strlen.de>)
+        id 1qyrN4-00055B-3O; Fri, 03 Nov 2023 11:25:46 +0100
+Date:   Fri, 3 Nov 2023 11:25:46 +0100
+From:   Florian Westphal <fw@strlen.de>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     Florian Westphal <fw@strlen.de>,
+        Dan Carpenter <dan.carpenter@linaro.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH net] netfilter: nf_tables: fix pointer math issue in
+ nft_byteorder_eval()
+Message-ID: <20231103102546.GB8035@breakpoint.cc>
+References: <15fdceb5-2de5-4453-98b3-cfa9d486e8da@moroto.mountain>
+ <20231103091801.GA8035@breakpoint.cc>
+ <ZUTBNcA7ApLu5DMA@calendula>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] drivers/comedi: copy userspace array safely
-Content-Language: en-GB
-To:     Philipp Stanner <pstanner@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     H Hartley Sweeten <hsweeten@visionengravers.com>,
-        Ivan Orlov <ivan.orlov0322@gmail.com>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-kernel@vger.kernel.org, Dave Airlie <airlied@redhat.com>
-References: <20231102190848.51376-2-pstanner@redhat.com>
- <2023110348-drained-tameness-b943@gregkh>
- <07a220351baa1e6851b90c961aade0ce6d26bcf6.camel@redhat.com>
-From:   Ian Abbott <abbotti@mev.co.uk>
-Organization: MEV Ltd.
-In-Reply-To: <07a220351baa1e6851b90c961aade0ce6d26bcf6.camel@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Classification-ID: 0e0161b1-9789-4e79-b36b-01e1a0233ef7-1-1
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZUTBNcA7ApLu5DMA@calendula>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-11-03 09:11, Philipp Stanner wrote:
-> On Fri, 2023-11-03 at 06:53 +0100, Greg Kroah-Hartman wrote:
->> On Thu, Nov 02, 2023 at 08:08:49PM +0100, Philipp Stanner wrote:
->>> comedi_fops.c utilizes memdup_user() to copy a userspace array. This
->>> does not check for an overflow.
->>
->> Is there potential for an overflow today?
+Pablo Neira Ayuso <pablo@netfilter.org> wrote:
+> On Fri, Nov 03, 2023 at 10:18:01AM +0100, Florian Westphal wrote:
+> > Dan Carpenter <dan.carpenter@linaro.org> wrote:
+> > > The problem is in nft_byteorder_eval() where we are iterating through a
+> > > loop and writing to dst[0], dst[1], dst[2] and so on...  On each
+> > > iteration we are writing 8 bytes.  But dst[] is an array of u32 so each
+> > > element only has space for 4 bytes.  That means that every iteration
+> > > overwrites part of the previous element.
+> > > 
+> > > I spotted this bug while reviewing commit caf3ef7468f7 ("netfilter:
+> > > nf_tables: prevent OOB access in nft_byteorder_eval") which is a related
+> > > issue.  I think that the reason we have not detected this bug in testing
+> > > is that most of time we only write one element.
+> > 
+> > LGTM, thanks Dan.  We will route this via nf.git.
 > 
-> None that I'm aware of, no. This is more about establishing the new
-> function as the standard for array-copying, thereby improving
-> readability and maybe robustness in case of future changes.
-
-I agree there is no potential for overflow.  The chanlist_len in the 
-command is bound checked against the len_chanlist in the comedi 
-subdevice in __comedi_get_user_cmd(), and the len_chanlist value is set 
-by driver code with no user input.  So it should be fine barring some 
-rogue comedi driver.
-
->>> Use the new wrapper memdup_array_user() to copy the array more safely.
->>
->> How about saying something like:
->>          "Use the new function memdup_array_user() in case things change
->>          in the future which would prevent overflows if something were to
->>          change in the size of the structures".
->>
->> Or something to the affect of "all is good today, but make it easy to be
->> correct in the future as well".
+> Thanks for your patch.
 > 
-> Yes, good idea. I'll send a better wording
+> One question, is this update really required?
 
-Feel free to add my reviewed by line:
-
-Reviewed-by: Ian Abbott <abbotti@mev.co.uk>
-
--- 
--=( Ian Abbott <abbotti@mev.co.uk> || MEV Ltd. is a company  )=-
--=( registered in England & Wales.  Regd. number: 02862268.  )=-
--=( Regd. addr.: S11 & 12 Building 67, Europa Business Park, )=-
--=( Bird Hall Lane, STOCKPORT, SK3 0XA, UK. || www.mev.co.uk )=-
+I think so, yes.  Part of this bug here is that this helper-niceness
+masks whats really happening in the caller (advancing in strides of
+'u32', rather than 'u64').
