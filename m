@@ -2,76 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D802F7E017F
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 11:31:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 942D47E0155
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 11:31:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235536AbjKCIs7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 04:48:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46198 "EHLO
+        id S1346078AbjKCIuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 04:50:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346130AbjKCIsr (ORCPT
+        with ESMTP id S234811AbjKCIuE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 04:48:47 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68241D4E;
-        Fri,  3 Nov 2023 01:48:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699001321; x=1730537321;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=QAFnkZjCEfVfLAK7KrRDYxSV98mreyDoOmktfPkz9T8=;
-  b=EAYuVz3f2lClSgtM2RSUPVYMj9S0Of5Gbsa/B4PXfWcNw3qZ1GMNhkOp
-   qDU2Mk0O1vFKxWUWZt/kYbAbHLeuDM47x55pn8btRglA80I0jNWoELfa0
-   E7/d7ergo2NekkcshsxT/xkfzLgjqjbFXhFhrL19Za7JLhGOQpGRDgMb5
-   JFCj6+ZuNxpji4jDXZH+Ujq6TBuPankpxMMYn8BBJ19WhvK8fhZCCTFNS
-   ZjDlQVmMHW66H8qnTOjVWGlOaL2MZspi7IdkFXvGVJW83e0VSXuwaocuQ
-   ErXnVK2aJLqg2nRlKT660u8hGy/3guR+jtcNqZBW9vMKL3cgpLCgPM+Ge
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10882"; a="391774620"
-X-IronPort-AV: E=Sophos;i="6.03,273,1694761200"; 
-   d="scan'208";a="391774620"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2023 01:48:40 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10882"; a="796556695"
-X-IronPort-AV: E=Sophos;i="6.03,273,1694761200"; 
-   d="scan'208";a="796556695"
-Received: from ahunter6-mobl1.ger.corp.intel.com (HELO ahunter-VirtualBox.home\044ger.corp.intel.com) ([10.252.51.133])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2023 01:48:35 -0700
-From:   Adrian Hunter <adrian.hunter@intel.com>
-To:     Ulf Hansson <ulf.hansson@linaro.org>,
-        =?UTF-8?q?Kornel=20Dul=C4=99ba?= <korneld@chromium.org>,
-        Radoslaw Biernacki <biernacki@google.com>,
-        Gwendal Grignou <gwendal@chromium.org>,
-        Asutosh Das <quic_asutoshd@quicinc.com>
-Cc:     Chaotian Jing <chaotian.jing@mediatek.com>,
-        Bhavya Kapoor <b-kapoor@ti.com>,
-        Kamal Dasu <kamal.dasu@broadcom.com>,
-        Al Cooper <alcooperx@gmail.com>,
-        Haibo Chen <haibo.chen@nxp.com>,
-        Shaik Sajida Bhanu <quic_c_sbhanu@quicinc.com>,
-        Sai Krishna Potthuri <sai.krishna.potthuri@amd.com>,
-        Victor Shih <victor.shih@genesyslogic.com.tw>,
-        Ben Chuang <ben.chuang@genesyslogic.com.tw>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Aniruddha Tvs Rao <anrao@nvidia.com>,
-        Chun-Hung Wu <chun-hung.wu@mediatek.com>,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH V2 6/6] mmc: cqhci: Fix task clearing in CQE error recovery
-Date:   Fri,  3 Nov 2023 10:47:20 +0200
-Message-Id: <20231103084720.6886-7-adrian.hunter@intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231103084720.6886-1-adrian.hunter@intel.com>
-References: <20231103084720.6886-1-adrian.hunter@intel.com>
+        Fri, 3 Nov 2023 04:50:04 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4D67CE;
+        Fri,  3 Nov 2023 01:49:57 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 071A1C433C8;
+        Fri,  3 Nov 2023 08:49:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1699001397;
+        bh=Ofczzi1jOkw0vNrrSnkW9v3BzVIAL4bIxgVuUOXMTqg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QwYJFGNqvz8Axixfu9jsq3mxC60EdJcXHwusEqN9sP2JpS+9xqL+Zng3IWiDJOkMK
+         UUC2BbOiQ/9G9cAd77y6lD5y1ddMOlGWIQjsj3pNLyj1uEDdf0G+MO1pnZ/0INaeF8
+         Ln2goZa+7rxe6xigUGWpluhfvPmkmNMYRwqgsGBw=
+Date:   Fri, 3 Nov 2023 09:49:54 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Bagas Sanjaya <bagasdotme@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Documentation <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Akira Yokosawa <akiyks@gmail.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        David Vernet <void@manifault.com>,
+        Miguel Ojeda <ojeda@kernel.org>, James Seo <james@equiv.tech>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Federico Vaga <federico.vaga@vaga.pv.it>,
+        Carlos Bilbao <carlos.bilbao@amd.com>,
+        linux-spdx@vger.kernel.org, Richard Fontana <rfontana@redhat.com>
+Subject: Re: [PATCH RFC 1/4] LICENSES: Add SIL Open Font License 1.1
+Message-ID: <2023110317-unhealthy-playable-d5d6@gregkh>
+References: <20231102120053.30630-1-bagasdotme@gmail.com>
+ <20231102120053.30630-2-bagasdotme@gmail.com>
+ <2023110222-renewed-monologue-008e@gregkh>
+ <ZUSrOKDuvcSL6gOH@debian.me>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki, Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZUSrOKDuvcSL6gOH@debian.me>
+X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,85 +59,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If a task completion notification (TCN) is received when there is no
-outstanding task, the cqhci driver issues a "spurious TCN" warning. This
-was observed to happen right after CQE error recovery.
+On Fri, Nov 03, 2023 at 03:11:36PM +0700, Bagas Sanjaya wrote:
+> On Thu, Nov 02, 2023 at 03:06:19PM +0100, Greg Kroah-Hartman wrote:
+> > On Thu, Nov 02, 2023 at 07:00:43PM +0700, Bagas Sanjaya wrote:
+> > > Add the license text along with appropriate tags for reference and
+> > > tooling. The text is taken from the text as distributed in Google
+> > > Fonts's zip files.
+> > > 
+> > > As the license itself may or may note be compatible with GPLv2,
+> > > let's take on the err side and require combining it with
+> > > GPL-compatible licenses when using the license.
+> > > 
+> > > Cc: linux-spdx@vger.kernel.org
+> > > Cc: Richard Fontana <rfontana@redhat.com>
+> > > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > > Signed-off-by: Bagas Sanjaya <bagasdotme@gmail.com>
+> > > ---
+> > >  LICENSES/dual/OFL-1.1 | 107 ++++++++++++++++++++++++++++++++++++++++++
+> > 
+> > You add this license, but then never actually reference it in the later
+> > changes, so it's going to be very confusing as to why it is here.  Any
+> > way to add it to the font files themselves so our checker tools can
+> > handle this properly?
+> 
+> There is TTF name string ID called "License". For example, on IBM Plex Sans,
+> the string value is:
+> 
+> ```
+> This Font Software is licensed under the SIL Open Font License, Version 1.1. This license is available with a FAQ at: http://scripts.sil.org/OFL
+> ```
+> 
+> Checking that string requires scripting fontforge, and since the string value
+> may differ (but has the same license) across different fonts, scripting it
+> can be non-trivial.
 
-When an error interrupt is received the driver runs recovery logic.
-It halts the controller, clears all pending tasks, and then re-enables
-it. On some platforms, like Intel Jasper Lake, a stale task completion
-event was observed, regardless of the CQHCI_CLEAR_ALL_TASKS bit being set.
+And is that in the files you added?  They are binary so it's hard to
+determine this :(
 
-This results in either:
-a) Spurious TC completion event for an empty slot.
-b) Corrupted data being passed up the stack, as a result of premature
-   completion for a newly added task.
+> > 
+> > And, it's not going to work as a dual-license, you can't just suddenly
+> > dual-license those font files, right?
+> 
+> I was thinking of putting OFL in LICENSES/exceptions instead due to this
+> nature.
 
-Rather than add a quirk for affected controllers, ensure tasks are cleared
-by toggling CQHCI_ENABLE, which would happen anyway if
-cqhci_clear_all_tasks() timed out. This is simpler and should be safe and
-effective for all controllers.
+Yes, it can not be a dual one.
 
-Fixes: a4080225f51d ("mmc: cqhci: support for command queue enabled host")
-Cc: stable@vger.kernel.org
-Reported-by: Kornel Dulęba <korneld@chromium.org>
-Tested-by: Kornel Dulęba <korneld@chromium.org>
-Co-developed-by: Kornel Dulęba <korneld@chromium.org>
-Signed-off-by: Kornel Dulęba <korneld@chromium.org>
-Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
----
- drivers/mmc/host/cqhci-core.c | 32 ++++++++++++++++----------------
- 1 file changed, 16 insertions(+), 16 deletions(-)
+> > >  1 file changed, 107 insertions(+)
+> > >  create mode 100644 LICENSES/dual/OFL-1.1
+> > > 
+> > > diff --git a/LICENSES/dual/OFL-1.1 b/LICENSES/dual/OFL-1.1
+> > > new file mode 100644
+> > > index 00000000000000..00b8db08bd0e54
+> > > --- /dev/null
+> > > +++ b/LICENSES/dual/OFL-1.1
+> > > @@ -0,0 +1,107 @@
+> > > +Valid-License-Identifier: OFL-1.1
+> > > +SPDX-URL: https://spdx.org/licenses/OFL-1.1
+> > > +Usage-Guide:
+> > > +  Do NOT use this license for code, but it's acceptable for fonts (where the
+> > > +  license is specifically written for them). It's best to use it together
+> > > +  with a GPL2 compatible license using "OR", as OFL-1.1 texts processed by
+> > > +  the kernel's build system might combine it with content taken from more
+> > > +  restrictive licenses.
+> > > +  To use the SIL Open Font License 1.1, put the following SPDX tag/value pair
+> > > +  into a comment according to the placement guidelines in the licensing rules
+> > > +  documentation:
+> > > +    SPDX-License-Identifier: OFL-1.1
+> > 
+> > Where did this Usage-Guide from?
+> 
+> Adapted from LICENSES/dual/CC-BY-4.0.
 
-diff --git a/drivers/mmc/host/cqhci-core.c b/drivers/mmc/host/cqhci-core.c
-index 948799a0980c..41e94cd14109 100644
---- a/drivers/mmc/host/cqhci-core.c
-+++ b/drivers/mmc/host/cqhci-core.c
-@@ -1075,28 +1075,28 @@ static void cqhci_recovery_finish(struct mmc_host *mmc)
- 
- 	ok = cqhci_halt(mmc, CQHCI_FINISH_HALT_TIMEOUT);
- 
--	if (!cqhci_clear_all_tasks(mmc, CQHCI_CLEAR_TIMEOUT))
--		ok = false;
--
- 	/*
- 	 * The specification contradicts itself, by saying that tasks cannot be
- 	 * cleared if CQHCI does not halt, but if CQHCI does not halt, it should
- 	 * be disabled/re-enabled, but not to disable before clearing tasks.
- 	 * Have a go anyway.
- 	 */
--	if (!ok) {
--		pr_debug("%s: cqhci: disable / re-enable\n", mmc_hostname(mmc));
--		cqcfg = cqhci_readl(cq_host, CQHCI_CFG);
--		cqcfg &= ~CQHCI_ENABLE;
--		cqhci_writel(cq_host, cqcfg, CQHCI_CFG);
--		cqcfg |= CQHCI_ENABLE;
--		cqhci_writel(cq_host, cqcfg, CQHCI_CFG);
--		/* Be sure that there are no tasks */
--		ok = cqhci_halt(mmc, CQHCI_FINISH_HALT_TIMEOUT);
--		if (!cqhci_clear_all_tasks(mmc, CQHCI_CLEAR_TIMEOUT))
--			ok = false;
--		WARN_ON(!ok);
--	}
-+	if (!cqhci_clear_all_tasks(mmc, CQHCI_CLEAR_TIMEOUT))
-+		ok = false;
-+
-+	/* Disable to make sure tasks really are cleared */
-+	cqcfg = cqhci_readl(cq_host, CQHCI_CFG);
-+	cqcfg &= ~CQHCI_ENABLE;
-+	cqhci_writel(cq_host, cqcfg, CQHCI_CFG);
-+
-+	cqcfg = cqhci_readl(cq_host, CQHCI_CFG);
-+	cqcfg |= CQHCI_ENABLE;
-+	cqhci_writel(cq_host, cqcfg, CQHCI_CFG);
-+
-+	cqhci_halt(mmc, CQHCI_FINISH_HALT_TIMEOUT);
-+
-+	if (!ok)
-+		cqhci_clear_all_tasks(mmc, CQHCI_CLEAR_TIMEOUT);
- 
- 	cqhci_recover_mrqs(cq_host);
- 
--- 
-2.34.1
+Which it shouldn't be :(
 
+Anyway, this is independent of the issue if we actually should take
+these fonts into the kernel tree, and mandate their use (my opinion is
+no, that's not for us to use, and especially for any action that might
+cause a web browser to look elsewhere outside of our documentation.)
+
+Also, for documentation, I'm pretty sure that serif fonts is proven to
+be "nicer" overall by many studies.
+
+thanks,
+
+greg k-h
