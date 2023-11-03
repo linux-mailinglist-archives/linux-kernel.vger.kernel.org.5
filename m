@@ -2,56 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA02C7E0AB0
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 22:26:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D13177E0AB2
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 22:27:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230407AbjKCV0i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 17:26:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41702 "EHLO
+        id S230239AbjKCV1k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 17:27:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230273AbjKCV0g (ORCPT
+        with ESMTP id S230273AbjKCV1j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 17:26:36 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E164D61;
-        Fri,  3 Nov 2023 14:26:29 -0700 (PDT)
-Date:   Fri, 03 Nov 2023 21:26:26 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1699046787;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=g6CNUoPwXm4wiAlTR94+rCe6WRiSTMI1vO3hJs6KyyU=;
-        b=wyTqukKZol0aXEwXD/KyO1obufUPbin4VoLvNQjsVoaFA5+DbiWPMTK5qnrhEKocYLxhbp
-        lMcop7Dp0PrgYZTITfftSlQtoYHEljazpfdfVnbXbQK3uGR0oeWvYiHihSA+3hKun3iPau
-        IVGfHypjK/QW2k6Xiwt0mvOXCj4Szdg01qQVWx2fjthe0GJkiEGU7DCLokNBUdP5P3Jo+r
-        ta/t4lSntO+R9g5fKHDu39r0xRuOUmA8hbOESHM5rT6yWYrtXHjVHMz1mM9Rs3O20v5XuJ
-        mKUpV0rUEEuMT198xGlW61SKUpWaTg7OL5hoAvTZ9QmCL+kmx8HmBzvZluPdYg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1699046787;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=g6CNUoPwXm4wiAlTR94+rCe6WRiSTMI1vO3hJs6KyyU=;
-        b=ZtuKSkX4equMbDNyzAHW9pJbr3+i3DpnmgtsIiea6RIVW3ph1RM5UrvJ+x3y6eDClJ1RWg
-        4EnTYZLzxqhZmPDw==
-From:   "tip-bot2 for Kirill A. Shutemov" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] MAINTAINERS: Add Intel TDX entry
-Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Kai Huang <kai.huang@intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
+        Fri, 3 Nov 2023 17:27:39 -0400
+Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [91.218.175.177])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CBDBD61
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 14:27:35 -0700 (PDT)
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1699046853;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=zpQnTcl7Ae4p19CvIz4jyFHYTSPPJ5pSlBVfY1JSDUg=;
+        b=BnwK0S60JRrsVWr+cmIREF7pb4JxrxbsQ+R4787GTvjcIJovfamM82hiVkYf/aGu7kNq5Z
+        Aj4GH4B0DwaQ/o+pZQHhB21xgoGyMW4cHfU/EDVJKkJ2yLXx7/4NOXE+5KCW/hnNzfGNrP
+        Id9WHUChlyFrX/7yZ5HFEmiahbxQjEk=
+From:   andrey.konovalov@linux.dev
+To:     Marco Elver <elver@google.com>,
+        Alexander Potapenko <glider@google.com>
+Cc:     Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>, kasan-dev@googlegroups.com,
+        Evgenii Stepanov <eugenis@google.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Andrey Konovalov <andreyknvl@google.com>
+Subject: [PATCH RFC] kasan: use stack_depot_put for Generic mode
+Date:   Fri,  3 Nov 2023 22:27:24 +0100
+Message-Id: <20231103212724.134597-1-andrey.konovalov@linux.dev>
 MIME-Version: 1.0
-Message-ID: <169904678660.3135.15311599992625128483.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -62,60 +52,161 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/urgent branch of tip:
+From: Andrey Konovalov <andreyknvl@google.com>
 
-Commit-ID:     a4b883806ffe5ae5e99459d64d760e205162c729
-Gitweb:        https://git.kernel.org/tip/a4b883806ffe5ae5e99459d64d760e205162c729
-Author:        Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-AuthorDate:    Thu, 02 Nov 2023 02:33:14 +03:00
-Committer:     Dave Hansen <dave.hansen@linux.intel.com>
-CommitterDate: Fri, 03 Nov 2023 14:20:37 -07:00
+Evict alloc/free stack traces from the stack depot for Generic KASAN
+once they are evicted from the quaratine.
 
-MAINTAINERS: Add Intel TDX entry
+For auxiliary stack traces, evict the oldest stack trace once a new one
+is saved (KASAN only keeps references to the last two).
 
-Add myself as Intel TDX maintainer.
+Also evict all save stack traces on krealloc.
 
-I drove upstreaming most of TDX code so far and I will continue
-working on TDX for foreseeable future.
+To avoid double-evicting and mis-evicting stack traces (in case KASAN's
+metadata was corrupted), reset KASAN's per-object metadata that stores
+stack depot handles when the object is initialized and when it's evicted
+from the quarantine.
 
-[ dhansen: * add myself as a reviewer too and change
-	   * Swap Maintained=>Supported.  I double
-	     checked Kirill is still being paid
-	   * add drivers/virt/coco/tdx-guest ]
+Note that stack_depot_put is no-op of the handle is 0.
 
-Suggested-by: Dave Hansen <dave.hansen@linux.intel.com>
-Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
-Acked-by: Dave Hansen <dave.hansen@linux.intel.com>
-Acked-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-Acked-by: Kai Huang <kai.huang@intel.com>
-Link: https://lore.kernel.org/all/20231101233314.2567-1-kirill.shutemov%40linux.intel.com
+Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+
 ---
- MAINTAINERS | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index dd5de54..b697020 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -23460,6 +23460,20 @@ F:	arch/x86/kernel/dumpstack.c
- F:	arch/x86/kernel/stacktrace.c
- F:	arch/x86/kernel/unwind_*.c
+This goes on top of the "stackdepot: allow evicting stack traces" series.
+I'll mail the patches all together after the merge window.
+---
+ mm/kasan/common.c     |  3 ++-
+ mm/kasan/generic.c    | 22 ++++++++++++++++++----
+ mm/kasan/quarantine.c | 26 ++++++++++++++++++++------
+ 3 files changed, 40 insertions(+), 11 deletions(-)
+
+diff --git a/mm/kasan/common.c b/mm/kasan/common.c
+index 825a0240ec02..b5d8bd26fced 100644
+--- a/mm/kasan/common.c
++++ b/mm/kasan/common.c
+@@ -50,7 +50,8 @@ depot_stack_handle_t kasan_save_stack(gfp_t flags, depot_flags_t depot_flags)
+ void kasan_set_track(struct kasan_track *track, gfp_t flags)
+ {
+ 	track->pid = current->pid;
+-	track->stack = kasan_save_stack(flags, STACK_DEPOT_FLAG_CAN_ALLOC);
++	track->stack = kasan_save_stack(flags,
++			STACK_DEPOT_FLAG_CAN_ALLOC | STACK_DEPOT_FLAG_GET);
+ }
  
-+X86 TRUST DOMAIN EXTENSIONS (TDX)
-+M:	Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-+R:	Dave Hansen <dave.hansen@linux.intel.com>
-+L:	x86@kernel.org
-+L:	linux-coco@lists.linux.dev
-+S:	Supported
-+T:	git git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/tdx
-+F:	arch/x86/boot/compressed/tdx*
-+F:	arch/x86/coco/tdx/
-+F:	arch/x86/include/asm/shared/tdx.h
-+F:	arch/x86/include/asm/tdx.h
-+F:	arch/x86/virt/vmx/tdx/
-+F:	drivers/virt/coco/tdx-guest
+ #if defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KASAN_SW_TAGS)
+diff --git a/mm/kasan/generic.c b/mm/kasan/generic.c
+index 5d168c9afb32..50cc519e23f4 100644
+--- a/mm/kasan/generic.c
++++ b/mm/kasan/generic.c
+@@ -449,10 +449,14 @@ struct kasan_free_meta *kasan_get_free_meta(struct kmem_cache *cache,
+ void kasan_init_object_meta(struct kmem_cache *cache, const void *object)
+ {
+ 	struct kasan_alloc_meta *alloc_meta;
++	struct kasan_free_meta *free_meta;
+ 
+ 	alloc_meta = kasan_get_alloc_meta(cache, object);
+ 	if (alloc_meta)
+ 		__memset(alloc_meta, 0, sizeof(*alloc_meta));
++	free_meta = kasan_get_free_meta(cache, object);
++	if (free_meta)
++		__memset(free_meta, 0, sizeof(*free_meta));
+ }
+ 
+ size_t kasan_metadata_size(struct kmem_cache *cache, bool in_object)
+@@ -489,18 +493,20 @@ static void __kasan_record_aux_stack(void *addr, depot_flags_t depot_flags)
+ 	if (!alloc_meta)
+ 		return;
+ 
++	stack_depot_put(alloc_meta->aux_stack[1]);
+ 	alloc_meta->aux_stack[1] = alloc_meta->aux_stack[0];
+ 	alloc_meta->aux_stack[0] = kasan_save_stack(0, depot_flags);
+ }
+ 
+ void kasan_record_aux_stack(void *addr)
+ {
+-	return __kasan_record_aux_stack(addr, STACK_DEPOT_FLAG_CAN_ALLOC);
++	return __kasan_record_aux_stack(addr,
++			STACK_DEPOT_FLAG_CAN_ALLOC | STACK_DEPOT_FLAG_GET);
+ }
+ 
+ void kasan_record_aux_stack_noalloc(void *addr)
+ {
+-	return __kasan_record_aux_stack(addr, 0);
++	return __kasan_record_aux_stack(addr, STACK_DEPOT_FLAG_GET);
+ }
+ 
+ void kasan_save_alloc_info(struct kmem_cache *cache, void *object, gfp_t flags)
+@@ -508,8 +514,16 @@ void kasan_save_alloc_info(struct kmem_cache *cache, void *object, gfp_t flags)
+ 	struct kasan_alloc_meta *alloc_meta;
+ 
+ 	alloc_meta = kasan_get_alloc_meta(cache, object);
+-	if (alloc_meta)
+-		kasan_set_track(&alloc_meta->alloc_track, flags);
++	if (!alloc_meta)
++		return;
 +
- X86 VDSO
- M:	Andy Lutomirski <luto@kernel.org>
- L:	linux-kernel@vger.kernel.org
++	/* Evict previous stack traces (might exist for krealloc). */
++	stack_depot_put(alloc_meta->alloc_track.stack);
++	stack_depot_put(alloc_meta->aux_stack[0]);
++	stack_depot_put(alloc_meta->aux_stack[1]);
++	__memset(alloc_meta, 0, sizeof(*alloc_meta));
++
++	kasan_set_track(&alloc_meta->alloc_track, flags);
+ }
+ 
+ void kasan_save_free_info(struct kmem_cache *cache, void *object)
+diff --git a/mm/kasan/quarantine.c b/mm/kasan/quarantine.c
+index 152dca73f398..37fb0e3f5876 100644
+--- a/mm/kasan/quarantine.c
++++ b/mm/kasan/quarantine.c
+@@ -141,11 +141,22 @@ static void *qlink_to_object(struct qlist_node *qlink, struct kmem_cache *cache)
+ static void qlink_free(struct qlist_node *qlink, struct kmem_cache *cache)
+ {
+ 	void *object = qlink_to_object(qlink, cache);
+-	struct kasan_free_meta *meta = kasan_get_free_meta(cache, object);
++	struct kasan_alloc_meta *alloc_meta = kasan_get_alloc_meta(cache, object);
++	struct kasan_free_meta *free_meta = kasan_get_free_meta(cache, object);
+ 	unsigned long flags;
+ 
+-	if (IS_ENABLED(CONFIG_SLAB))
+-		local_irq_save(flags);
++	if (alloc_meta) {
++		stack_depot_put(alloc_meta->alloc_track.stack);
++		stack_depot_put(alloc_meta->aux_stack[0]);
++		stack_depot_put(alloc_meta->aux_stack[1]);
++		__memset(alloc_meta, 0, sizeof(*alloc_meta));
++	}
++
++	if (free_meta &&
++	    *(u8 *)kasan_mem_to_shadow(object) == KASAN_SLAB_FREETRACK) {
++		stack_depot_put(free_meta->free_track.stack);
++		free_meta->free_track.stack = 0;
++	}
+ 
+ 	/*
+ 	 * If init_on_free is enabled and KASAN's free metadata is stored in
+@@ -155,14 +166,17 @@ static void qlink_free(struct qlist_node *qlink, struct kmem_cache *cache)
+ 	 */
+ 	if (slab_want_init_on_free(cache) &&
+ 	    cache->kasan_info.free_meta_offset == 0)
+-		memzero_explicit(meta, sizeof(*meta));
++		memzero_explicit(free_meta, sizeof(*free_meta));
+ 
+ 	/*
+-	 * As the object now gets freed from the quarantine, assume that its
+-	 * free track is no longer valid.
++	 * As the object now gets freed from the quarantine,
++	 * take note that its free track is no longer exists.
+ 	 */
+ 	*(u8 *)kasan_mem_to_shadow(object) = KASAN_SLAB_FREE;
+ 
++	if (IS_ENABLED(CONFIG_SLAB))
++		local_irq_save(flags);
++
+ 	___cache_free(cache, object, _THIS_IP_);
+ 
+ 	if (IS_ENABLED(CONFIG_SLAB))
+-- 
+2.25.1
+
