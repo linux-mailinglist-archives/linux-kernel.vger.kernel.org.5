@@ -2,233 +2,431 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B50D7E0218
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 12:20:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D62B7E0214
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 12:20:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346142AbjKCLSD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 07:18:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55792 "EHLO
+        id S231220AbjKCLTL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 07:19:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231698AbjKCLSA (ORCPT
+        with ESMTP id S1376466AbjKCLTK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 07:18:00 -0400
-Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on2051.outbound.protection.outlook.com [40.107.7.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62B501BD;
-        Fri,  3 Nov 2023 04:17:54 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Z9mYx/+HDn0fpZ6U18/gghJkij8fe8hJq4vMylYGC3LdWWX39nCDXOPfYSx0TIUvZN/CaBNvPDNwVH1m+QCbuUpfUhs7uDOYAAgKqA9h9uzWGlLwidr9wZ6UKM73JYQ/vLuzoDY0ZHSvAtakxkijL1n0NgiENZ9gTi2TH3gdA7PvzF8/+smvBtnHeUp8acAf39l0IX40blC1QvZHDLbgkzgWW1jDBzxZgInF/HCXvPtsfG1xo21Jlcg15V8sZzkp0Jeg66LzCCUZ4KcdorihGJb8EnigsMn15zGne8SJ+jDTZk4QaEOeWVFVHVJAZou4TC84m+VdsdgvTPv4wIpAYQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=GWHSp4L/QFa4imII+bNVx8ezcUOxRf49u+cMpi9IxF4=;
- b=RlZNgoGf1zwTohYVYwE1sfMmPiU/FGBEQhAzYqby62wbth4Qp2p+4Ij1n2jzll788IE8xCbnFxGftCFxRk2KuvAe43xFvYqrJz3itRjFydb0kSYFCInpmVUpUsQrHbRTilhLQeqB+PP9wJ3SEtIk39XfZ7JBYSesuu8IoFc81RMIT+X5EaE00roMz42qbS2Dp75Y0HaDOgUgeoVkPzTeiKmu0C+hfcPZgjhd6/g9ZlzB0kRJitd1X332fgRgBY+GnfaLWXPwTI8TXVLw6OogDr7K9zff7Zun2gFjjLCn8AO06QSeC9hHrZP+Nc85tiM4SHR6s7pAnI/5WMQmq2/VsA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=siemens.com; dmarc=pass action=none header.from=siemens.com;
- dkim=pass header.d=siemens.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=siemens.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GWHSp4L/QFa4imII+bNVx8ezcUOxRf49u+cMpi9IxF4=;
- b=SZO/53NqHz5khwthri2AdzrGlZIsYkSHUztlC57Or362E2SM8PMYTY+CmAC4n8zMy1ahC0aQn39b9wUbPwNL53NMC5+bBzGJVrroqCh/iosTNTdw5vuZubmOi+X2L2og5ZN/90c4Hs9zDo91BTY0haVYgSmhcNQG/1r6KTu3H9UeoIAlEAGFMPxRIkWJN/iJ6W+VzXdBjUouxfXfibZtgc2x28dvEvE47ULNWo/jbydMb7cTJBzIv86idFSgifN+k5ZqxbuhO1hi1EIqCM+5+FOPfdE0mjwBv2VnwPrS599L5Iyyiu0xsk/gIDxTKyUlySNYs0Xn1pjt/z4iDNreVA==
-Received: from AM9PR10MB4338.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:26f::16)
- by VI1PR10MB3343.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:803:13e::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.21; Fri, 3 Nov
- 2023 11:17:51 +0000
-Received: from AM9PR10MB4338.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::327c:78b1:7b3d:fbbe]) by AM9PR10MB4338.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::327c:78b1:7b3d:fbbe%5]) with mapi id 15.20.6954.021; Fri, 3 Nov 2023
- 11:17:51 +0000
-From:   "carsten.schmid@siemens.com" <carsten.schmid@siemens.com>
-To:     Aleksandr Nogikh <nogikh@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-CC:     syzbot <syzbot+b408cd9b40ec25380ee1@syzkaller.appspotmail.com>,
-        "adilger.kernel@dilger.ca" <adilger.kernel@dilger.ca>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "syzkaller-bugs@googlegroups.com" <syzkaller-bugs@googlegroups.com>,
-        "tytso@mit.edu" <tytso@mit.edu>
-Subject: AW: [syzbot] [ext4?] general protection fault in hrtimer_nanosleep
-Thread-Topic: [syzbot] [ext4?] general protection fault in hrtimer_nanosleep
-Thread-Index: AQHaDIZZW5UR1HqD5EWJAELZX43HQ7BlbUWAgAGEZQCAAYDX8Q==
-Date:   Fri, 3 Nov 2023 11:17:51 +0000
-Message-ID: <AM9PR10MB433861B49A1EBB837087742895A5A@AM9PR10MB4338.EURPRD10.PROD.OUTLOOK.COM>
-References: <000000000000cfd180060910a687@google.com> <875y2lmxys.ffs@tglx>
- <CANp29Y7EQ0cLf23coqFLLRHbA5rJjq0q1-6G7nnhxqBOUA7apw@mail.gmail.com>
-In-Reply-To: <CANp29Y7EQ0cLf23coqFLLRHbA5rJjq0q1-6G7nnhxqBOUA7apw@mail.gmail.com>
-Accept-Language: de-DE, en-US
-Content-Language: de-DE
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_9d258917-277f-42cd-a3cd-14c4e9ee58bc_Enabled=True;MSIP_Label_9d258917-277f-42cd-a3cd-14c4e9ee58bc_SiteId=38ae3bcd-9579-4fd4-adda-b42e1495d55a;MSIP_Label_9d258917-277f-42cd-a3cd-14c4e9ee58bc_SetDate=2023-11-03T11:17:49.741Z;MSIP_Label_9d258917-277f-42cd-a3cd-14c4e9ee58bc_Name=C1
- -
- Intern;MSIP_Label_9d258917-277f-42cd-a3cd-14c4e9ee58bc_ContentBits=0;MSIP_Label_9d258917-277f-42cd-a3cd-14c4e9ee58bc_Method=Standard;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=siemens.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: AM9PR10MB4338:EE_|VI1PR10MB3343:EE_
-x-ms-office365-filtering-correlation-id: 19e69caf-552b-492a-a4d5-08dbdc5e84a5
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 77xavg5EzcZbCiQCBQt2dU01h9VcXbOJRxV9u5IzNs8Yb6kyqQDDmnDjPtj7mugbSqMenftWUZ7VQrE8RMvnF5RGegOBJJiZjTKPv5IVMskk4OYqYyomdyRmsZQd/+RaYfSfBciQy5D3MyBWfxEzwLD767bjmx/DXwjDxk47Z93MobhT3kHATdXwXoxvrhnVPFplv6vNLEsEv3SdCQ0iOaiELqrXtfsZj1/bQw3dch9ZGB5X48J/NNyZwvXLWCyibmBHvf22+31DbjsSv+W+hnr1h1xARE33XNfwYaNCehB3kPbxjWi5knNXYIThOtk/h4IbRxdlSBwW4Xn7kMBMArhbaIsApthlEw1OtEwJhzi+M9rJAJbUlbpno4IyrW7Y3TnOLydfZykqjHBw8BjMWniLCKSaeLtD/sadl7IsPz6sBDZdc7Q0S/BckIhzngmQVbsBmxjJJE2hD1NhTNxrBKRPgnB2BVs8VUa1GdtaB7HdSdFXRGFEf2HfE+7xoUsJhhW5UzPWGqrel0NPyWRsoL1jop4nMQRwLUpZKQyrSo/v9uFvT1stNvBmkqJ0+13amom43kVzTfAoHn1GuTYsc2qhmLNad/Off/iL79v3DXsYwRCGGJOfnoP/KjzmCBzA
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM9PR10MB4338.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(366004)(346002)(136003)(396003)(376002)(230922051799003)(186009)(64100799003)(1800799009)(451199024)(38070700009)(52536014)(8676002)(4326008)(8936002)(5660300002)(41300700001)(2906002)(83380400001)(55016003)(45080400002)(33656002)(71200400001)(6506007)(55236004)(7696005)(9686003)(26005)(82960400001)(66446008)(122000001)(66476007)(54906003)(66946007)(316002)(91956017)(66556008)(110136005)(86362001)(76116006)(478600001)(64756008)(38100700002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?vyHyUveS+SzQx8XY7p8hqBV7TmyDWZrRve/DPr8j3J/JIcRAEBi1uhD7Gt?=
- =?iso-8859-1?Q?kJ7PV2gKwfhXIyMowhC+gC0o/8hCI+IX/lAuHoh66/w145ilbGbZJODq5C?=
- =?iso-8859-1?Q?PVWfsvDNuDtKPITbURNeyxQ8a20uB8v8a4ckuOIjvHNmN0ljSRGTMm2AAV?=
- =?iso-8859-1?Q?oiBYUJEukMylp8sPJamAwEpUUVh6urf1rAyJA/WTONSFRh/yw3au5Chn1+?=
- =?iso-8859-1?Q?WLyFVQ3rbYx6tIvjx9XW54qWUEE721QMNdN1ViU/UczxMk1Uywb/P8xfbc?=
- =?iso-8859-1?Q?VULJvnzePQEZy9sM9hT3zaYSB+6nQ3ZkavR4KYj1wI3kwXIwvvfV36n9qP?=
- =?iso-8859-1?Q?qmPaJlnA4L9vy39WMKagvcRlrIzT15gnuz3PdpF4g2xyEKx/X3MUplVAFi?=
- =?iso-8859-1?Q?KsDmgzeL+xdhxgDec0QbsULLMIhEC3jttlAh+vyHzxBzva0stNavFbzgZT?=
- =?iso-8859-1?Q?dxgV7RuEyLGEqi7ClOHz+S70gNg2zHT6rMa1f/aSwjw/u384r3RAFcDLC3?=
- =?iso-8859-1?Q?q7oguT572YLcpZMx9tCkyLUc0FNQwpfQiJSQg5e10Ka4IjdpDAf4I85D50?=
- =?iso-8859-1?Q?zk2eq1eglajZDtK42xRNeDajT111VeOtLDhK50iOYzOgdMBo9mDXFkUiAG?=
- =?iso-8859-1?Q?UYmeXw6l46zgpYeYnjWCQYXBuIpV6WasWxL0+iImBagxGIV7CPQZxF2C1V?=
- =?iso-8859-1?Q?n+CQQ9ZWXUoXVG58Ky11HC5URFRvbT/zMmQjPZg422utFfrsPjkkaRC2HP?=
- =?iso-8859-1?Q?nvUBSC+u8A2ZmE8zflYcqs1WqOQepieCKv0ArapX+uTfaaR65ZLSOhOJZO?=
- =?iso-8859-1?Q?dntjudGQDD1xlShPeMVuXoT4vBx3uNVtfQgkN1x1uxRl/kBPD0WGzrBvV3?=
- =?iso-8859-1?Q?A0tYZGtLPLIXg3MoqlRQ9eUsfpedBJXDduXBXjxTjiCDg7xgSfPGiO0tLe?=
- =?iso-8859-1?Q?mZQnhEStfm2n7xrn5JD7KShxwmwqi4CUampRS5gjTO2J3FytwS0MaUz/ii?=
- =?iso-8859-1?Q?8ry9n3wJBKtEHLa2U9Hvp7YMR/O/3WftSVsxCIglW6pdxijutAyAfvC13r?=
- =?iso-8859-1?Q?IQSVFg7SzAKp9PCW9Kvng8urM/eAPPsaGNv3qOwQ5XDVmQTQfO1nKqpCKF?=
- =?iso-8859-1?Q?JXs/HaHfcXHTEygnBSfOeBxlBTXnAv50+WqvtreJDBhaozvdyWTO+CGugS?=
- =?iso-8859-1?Q?49kjcuS1PdRCVzAryl+LrVZjX+hCPSE5WIGVn5KuXL904/Z1e6FdssGlBd?=
- =?iso-8859-1?Q?K6+JaQqi2x2VIpPTqBPavOuWCIc12ToHtZ8/udYDcnihb0awet2icFYcHs?=
- =?iso-8859-1?Q?AMIIF0cSHYMu3b/ZGdM7g8cHSkxWwu90zOUPgMr0sVLFcA8TOBoL3i6V/k?=
- =?iso-8859-1?Q?0JkMRXL6r84qyHMU2g16/Ljd3KmCnYDvjIo8xL4bIQm8nzKwD5o3HngozT?=
- =?iso-8859-1?Q?hKJ9WKhsoVrt8IQrK+tBkH1uRNi1x0y9XZbrkQKWu8EfPuCpNswG6SJJjR?=
- =?iso-8859-1?Q?Mp0hq15XcKXOAybVO52vyVXJghjzWBtv8HBLYnSIjriOxL8a1pIAgd8XZi?=
- =?iso-8859-1?Q?s3NS1hu1cTZv+MgN4kyGjN449mKqW6uyq0Uh2/sEB6z7jDWR0O/7i9dLPY?=
- =?iso-8859-1?Q?cxSqDN7Ba+pY2zMHlhEX6W6tiX+RoBggHC?=
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+        Fri, 3 Nov 2023 07:19:10 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A59EA134
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 04:19:03 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 553642F4;
+        Fri,  3 Nov 2023 04:19:45 -0700 (PDT)
+Received: from [10.57.1.190] (unknown [10.57.1.190])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A9C783F67D;
+        Fri,  3 Nov 2023 04:19:00 -0700 (PDT)
+Message-ID: <05e658b9-3b0f-4606-8d67-05d1c32e7fdd@arm.com>
+Date:   Fri, 3 Nov 2023 11:19:08 +0000
 MIME-Version: 1.0
-X-OriginatorOrg: siemens.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AM9PR10MB4338.EURPRD10.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: 19e69caf-552b-492a-a4d5-08dbdc5e84a5
-X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Nov 2023 11:17:51.3113
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 38ae3bcd-9579-4fd4-adda-b42e1495d55a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: mzaFyb7A7bcGNS6P9Sm/28NDo64x2ih1KHC0vAE7GATZTmGH26OA8Q1GFkxTnh+4e6ujVXnIkiMWIFty3gFKKhCdF0m5uyvnOz36tSBOAxk=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR10MB3343
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 0/6] sched: uclamp sum aggregation
+To:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Qais Yousef <qyousef@layalina.io>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Lukasz Luba <lukasz.luba@arm.com>,
+        Christian Loehle <christian.loehle@arm.com>,
+        linux-kernel@vger.kernel.org
+References: <cover.1696345700.git.Hongyan.Xia2@arm.com>
+ <59505904-fdc4-42ec-808e-e4af011b22e8@arm.com>
+Content-Language: en-US
+From:   Hongyan Xia <hongyan.xia2@arm.com>
+In-Reply-To: <59505904-fdc4-42ec-808e-e4af011b22e8@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,=0A=
-=0A=
-> [  125.919060][    C0] BUG: KASAN: stack-out-of-bounds in rb_next+0x10a/0=
-x130=0A=
-> [  125.921169][    C0] Read of size 8 at addr ffffc900048e7c60 by task kw=
-orker/0:1/9=0A=
-> [  125.923235][    C0]=0A=
-> [  125.923243][    C0] CPU: 0 PID: 9 Comm: kworker/0:1 Not tainted 6.6.0-=
-rc7-syzkaller-00142-g888cf78c29e2 #0=0A=
-> [  125.924546][    C0] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009)=
-, BIOS 1.16.2-debian-1.16.2-1 04/01/2014=0A=
-> [  125.926915][    C0] Workqueue: events nsim_dev_trap_report_work=0A=
-> [  125.929333][    C0]=0A=
-> [  125.929341][    C0] Call Trace:=0A=
-> [  125.929350][    C0]  <IRQ>=0A=
-> [  125.929356][    C0]  dump_stack_lvl+0xd9/0x1b0=0A=
-> [  125.931302][    C0]  print_report+0xc4/0x620=0A=
-> [  125.932115][    C0]  ? __virt_addr_valid+0x5e/0x2d0=0A=
-> [  125.933194][    C0]  kasan_report+0xda/0x110=0A=
-> [  125.934814][    C0]  ? rb_next+0x10a/0x130=0A=
-> [  125.936521][    C0]  ? rb_next+0x10a/0x130=0A=
-> [  125.936544][    C0]  rb_next+0x10a/0x130=0A=
-> [  125.936565][    C0]  timerqueue_del+0xd4/0x140=0A=
-> [  125.936590][    C0]  __remove_hrtimer+0x99/0x290=0A=
-> [  125.936613][    C0]  __hrtimer_run_queues+0x55b/0xc10=0A=
-> [  125.936638][    C0]  ? enqueue_hrtimer+0x310/0x310=0A=
-> [  125.936659][    C0]  ? ktime_get_update_offsets_now+0x3bc/0x610=0A=
-> [  125.936688][    C0]  hrtimer_interrupt+0x31b/0x800=0A=
-> [  125.936715][    C0]  __sysvec_apic_timer_interrupt+0x105/0x3f0=0A=
-> [  125.936737][    C0]  sysvec_apic_timer_interrupt+0x8e/0xc0=0A=
-> [  125.936755][    C0]  </IRQ>=0A=
-> [  125.936759][    C0]  <TASK>=0A=
-=0A=
-i had sporadic similar issues with 4.14 kernels (several maturities, .147  =
-.212  .247  .300) in the past 5 years where stack looked quite similar:=0A=
-=0A=
-[  432.041880] general protection fault: 0000 [#1] PREEMPT SMP NOPTI=0A=
-[  432.048697] Modules linked in: intel_tfm_governor ecryptfs coretemp i2c_=
-i801 sbi_apl snd_soc_skl sdw_cnl snd_soc_acpi_intel_match snd_soc_acpi snd_=
-soc_core snd_compress snd_soc_skl_ipc xhci_pci xhci_hcd sdw_bus crc8 ahci s=
-nd_soc_sst_ipc snd_soc_sst_dsp snd_hda_ext_core libahci snd_hda_core libata=
- snd_pcm usbcore mei_me snd_timer scsi_mod usb_common snd mei soundcore fus=
-e 8021q inap560t(O) i915 video backlight intel_gtt i2c_algo_bit drm_kms_hel=
-per drm firmware_class igb_avb(O) ptp hwmon spi_pxa2xx_platform pps_core=0A=
-[  432.099672] CPU: 3 PID: 5729 Comm: dlt_segmented Tainted: G     U     O =
-   4.14.244-apl #1=0A=
-[  432.108909] task: 00000000504d2561 task.stack: 000000007d0046fd=0A=
-[  432.115530] RIP: 0010:rb_erase_cached+0x31/0x3b0=0A=
-[  432.120683] RSP: 0018:ffffa31d84f77d40 EFLAGS: 00010006=0A=
-[  432.126517] RAX: 0000000000000001 RBX: ffffa31d84f77e30 RCX: 00000000000=
-00000=0A=
-[  432.134485] RDX: 0000000000000000 RSI: ffff9ed077c1bb10 RDI: ffffa31d84f=
-77e30=0A=
-[  432.142456] RBP: ffffa31d84f77d40 R08: ffffa31d84f77e30 R09: 0000a31d80a=
-77c90=0A=
-[  432.150426] R10: ffff9ed077c1bee0 R11: 0000000000000400 R12: ffff9ed077c=
-1bb10=0A=
-[  432.158394] R13: 0000000000000000 R14: ffff9ed077c1bac0 R15: 00000000000=
-00000=0A=
-[  432.166366] FS:  00007ff718cce700(0000) GS:ffff9ed077d80000(0000) knlGS:=
-0000000000000000=0A=
-[  432.175403] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033=0A=
-[  432.181819] CR2: 00007ff7182ca3e4 CR3: 000000026175c000 CR4: 00000000003=
-406a0=0A=
-[  432.189790] Call Trace:=0A=
-[  432.192526]  timerqueue_del+0x1d/0x40=0A=
-[  432.196617]  __remove_hrtimer+0x37/0x70=0A=
-[  432.200898]  hrtimer_try_to_cancel+0xa0/0x120=0A=
-[  432.205769]  do_nanosleep+0xa9/0x180=0A=
-[  432.209765]  ? kfree+0x169/0x180=0A=
-[  432.213370]  hrtimer_nanosleep+0xbb/0x150=0A=
-[  432.217849]  ? hrtimer_init+0x110/0x110=0A=
-[  432.222134]  SyS_nanosleep+0x6d/0xa0=0A=
-[  432.226126]  do_syscall_64+0x79/0x350=0A=
-[  432.230218]  entry_SYSCALL_64_after_hwframe+0x41/0xa6=0A=
-[  432.235861] RIP: 0033:0x7ff7199b7240=0A=
-[  432.239850] RSP: 002b:00007ff718ccddf0 EFLAGS: 00000293 ORIG_RAX: 000000=
-0000000023=0A=
-[  432.248309] RAX: ffffffffffffffda RBX: 00007ff718ccde20 RCX: 00007ff7199=
-b7240=0A=
-[  432.256282] RDX: 0000000000000000 RSI: 0000000000000000 RDI: 00007ff718c=
-cde20=0A=
-[  432.264252] RBP: 0000000000000000 R08: 0000000000000000 R09: 00000000000=
-00000=0A=
-[  432.272222] R10: 0000000000000000 R11: 0000000000000293 R12: 00007ffe333=
-ec72e=0A=
-[  432.280190] R13: 00007ffe333ec72f R14: 0000000000802000 R15: 00007ffe333=
-ec730=0A=
-[  432.288161] Code: 89 f8 4c 8b 4f 08 48 89 e5 4c 8b 57 10 74 0a 48 3b 7e =
-08 0f 84 a6 02 00 00 4d 85 d2 0f 84 28 02 00 00 4d 85 c9 0f 84 03 02 00 00 =
-<49> 8b 51 10 4c 89 cf 4c 89 c8 48 85 d2 75 0b e9 65 02 00 00 48 =0A=
-[  432.309346] RIP: rb_erase_cached+0x31/0x3b0 RSP: ffffa31d84f77d40=0A=
-=0A=
-Looks like it's worth to dig inside that.=0A=
-Unfortunately i wasn't able to reproduce this, and i'm still not. So i can'=
-t help digging but wanted to tell that this seems not to be related to a sp=
-ecific kernel ....=0A=
-=0A=
-Thanks=0A=
-Carsten=0A=
->>=0A=
->> Thanks,=0A=
->>=0A=
->>         tglx=0A=
->>=0A=
+On 30/10/2023 18:46, Dietmar Eggemann wrote:
+> On 04/10/2023 11:04, Hongyan Xia wrote:
+>> Current implementation of uclamp leaves many things to be desired.
+>> There are several problems:
+>>
+>> 1. Max aggregation is fragile. A single task with a high UCLAMP_MAX (or
+>>     with the default value, which is 1024) can ruin the previous
+>>     settings the moment it is enqueued, as shown in the uclamp frequency
+>>     spike problem in Section 5.2 of
+>>     Documentation/scheduler/sched-util-clamp.rst. Constantly running at
+>>     1024 utilization implies that the CPU is driven at its max capacity.
+>>     However, with UCLAMP_MAX, this assumption is no longer true. To
+>>     mitigate this, one idea is to filter out uclamp values for
+>>     short-running tasks. However, the effectiveness of this idea remains
+>>     to be seen.
+> 
+> The difference is that we don't have to lift the uclamp_max cap of
+> runnable p1's uclamp_max (< 1024) when a short running p2 with
+> uclamp_max = 1024 becomes runnable? Since now, when this happens, we
+> would just add p2's util_avg_uclamp to cfs_rq's util_avg_uclamp which is
+> tiny compared to its uclamp_max = 1024.
+
+Yes. That's a correct interpretation. I can add this version to the 
+cover letter to make things clearer.
+
+>> 2. No way to differentiate between UCLAMP_MAX throttled CPU or a CPU
+>>     running at its peak, as both show utilization of 1024. However, in
+>>     certain cases it's important to tell the difference, as we still want
+>>     to take the opportunity to enqueue tasks in the former case.
+> 
+> Is this related to the `best_fits/max_fits` logic in
+> find_energy_efficient_cpu() (feec()) and select_idle_capacity() (sic())
+> (commit e5ed0550c04c "sched/fair: unlink misfit task from cpu
+> overutilized")?
+> With your approach, having cfs_rq's `util_avg_uclamp` next to its
+> `util_avg` would allow to see those difference by comparing the two signals?
+
+Somewhat related. The usefulness is mostly around cpu_util(). Max 
+aggregation will see cpu_util() of 1024 (spare capacity of 0) even when 
+this is caused by UCLAMP_MAX, not by actually running the CPU at max 
+capacity, whereas this series will have a util < 1024 if capped by 
+UCLAMP_MAX.
+
+This means the patch to consider 0 spare capacities (because under max 
+aggregation 0 capacity doesn't mean the CPU is at max) is unnecessary:
+
+6b00a40147653c8ea748e8f4396510f252763364
+sched/uclamp: Set max_spare_cap_cpu even if max_spare_cap is 0
+
+>> It's also debatable whether uclamp should be a frequency hint. An
+>> example is a system with a mid CPU of capacity 500, and a little CPU
+>> with capacity 100. If we have 10 tasks with UCLAMP_MIN of 101, then
+>> util_fits_cpu() will schedule them on the mid CPU because feec()
+>> thinks they don't fit on the little, even though we should use the
+>> little core at some point instead of making the mid even more crowded.
+>> Of course, this in reality doesn't happen because of other mechanisms
+>> like load balancing, but it's also not good when other mechanisms can
+> 
+> CPU overutilization detection enables CFS load-balance & `sis()->sic()`
+> and disables feec().
+> 
+>> cancel the effect of uclamp in feec(). A CPU running at capacity 500 for
+>> 1ms or for 1000ms gives completely different performance levels, so
+>> trying to fit only the frequency does not give us any performance
+>> guarantees. If we then talk about not only running at some frequency but
+>> also for some amount of time, then what we really mean is a capacity
+>> hint, not a frequency hint.
+> 
+> Isn't CPU frequency and capacity going in the same direction?
+> 
+>   IPC * CPU frequency = Instruction per Second == Performance (Capacity).
+> 
+> And in the scheduler, utilization is the portion of the Capacity
+> currently used.
+> 
+> What sum aggregation does differently is that you can sum-up
+> individually clamped utilization contributions and compare them against
+> capacity rather then being forced to use the maximum value of a clamp
+> value of one (runnable) task to guide frequency. This avoids those
+> discontinuity-moments when a task with a high uclamp value switches
+> between runnable and sleeping state.
+
+I guess what I was describing was a new metric:
+
+	Work = Capacity * Time
+
+Max aggregation aims to fit capacity, but if a task can be run at a high 
+capacity but for only a very short period of time, then this scheduling 
+is not particularly useful. Like in the above example, moving a task 
+with UCLAMP_MIN of 101 to the mid CPU isn't helpful when there are 
+already 10 tasks on the mid CPU, because Time is reduced.
+
+>> It's even worse when the tasks scheduled on the mid CPU also have
+>> UCLAMP_MAX values. In the previous example, instead of running at 500, a
+>> single UCLAMP_MAX, assuming it's 110, can make the mid CPU run at a much
+>> lower frequency than 500, so it is then a really bad decision to honor
+>> the UCLAMP_MIN frequency hint and place it on the mid CPU, instead of
+>> running it on the little CPU which is less crowded, and has pretty much
+>> the same capacity (100 vs 110) anyway.
+>>
+>> This series attempts to solve these problems by tracking a
+>> util_avg_uclamp signal in tasks and cfs_rq. At task level,
+>> p->se.avg.util_avg_uclamp is basically tracking the normal util_avg, but
+>> clamped within its uclamp min and max. At cfs_rq level, util_avg_uclamp
+>> must always be the sum of all util_avg_uclamp of all the entities on
+>> this cfs_rq. As a result, cfs_rq->avg.util_avg_uclamp is the sum
+>> aggregation of all the clamped values, which indicates the frequency
+>> this rq should run at and what the utilization is.
+>>
+>> This idea solves Problem 1 by capping the utilization of an
+>> always-running task throttled by UCLAMP_MAX. Although the task (denoted
+>> by Task A) has no idle time, the util_avg_uclamp signal gives its
+>> UCLAMP_MAX value instead of 1024, so even if another task (Task B) with
+>> a UCLAMP_MAX value at 1024 joins the rq, the util_avg_uclamp is A's
+>> UCLAMP_MAX plus B's utilization, instead of 1024 plus B's utilization,
+>> which means we no longer have the frequency spike problem caused by B.
+>> This should mean that we might completely avoid the need for uclamp
+>> filtering.
+> 
+> That would be very nice since I remember that this filtering approach
+> hat to figure out the actual runtime of the task and the implemention
+> couldn't be just in the sched class code but had to be done in core code
+> as well.
+
+Yes. So far I don't see any need for filtering and runtime accounting in 
+uclamp sum aggregation.
+
+>>
+>> It also solves Problem 2 by tracking the capped utilization of a rq.
+>> Using util_avg_uclamp, we are able to differentiate between a CPU
+>> throttled by UCLAMP_MAX and one that is actually running at its peak
+>> capacity. An always-running rq with a task having UCLAMP_MAX at 300 will
+>> report a cfs_rq util_avg_uclamp at 300, not 1024, which means task
+>> placement sees spare capacity on this CPU and will allocate some tasks
+>> to it, instead of treating it the same way as a CPU actually running at
+>> the peak. This brings us closer to the benefits of Android's sum
+>> aggregation (see code related to CONFIG_USE_GROUP_THROTTLE at
+>> https://android.googlesource.com/kernel/gs/+/refs/heads/android-gs-raviole-5.10-android12-d1/drivers/soc/google/vh/kernel/sched/fair.c#510),
+> 
+> That's true although the latest Pixel phone does not seem to rely on
+> CONFIG_USE_GROUP_THROTTLE anymore but on customized PELT tracking for so
+> called Vendor CFS Util Groups and its sum aggregation on CPU (root
+> cfs_rq) level(CONFIG_USE_VENDOR_GROUP_UTIL).
+> 
+> CONFIG_USE_GROUP_THROTTLE was using the fact that Android only uses 1.
+> level taskgroups to map its different task types (e.g. foreground,
+> background etc.) into:
+> 
+>    for_each_leaf_cfs_rq_safe()
+>      calc subgroup_util_sum and throttled_subgroup_util_sum and skip root
+> 
+>    cpu_util = root_util - subgroup_util_sum + throttled_subgroup_util_sum
+> 
+> So summing up the (throttled (capped)) contritions of the 1. level
+> taskgroups plus the root taskgroup util.
+> 
+> With CONFIG_USE_VENDOR_GROUP_UTIL each tasks has a vendor pointer into
+> an CFS util array indexed by an Android task type ID to which the task
+> contributes its util. CPU util is then sum aggregated over this array.
+> 
+> We should recall that this is all done because the current uclamp-max
+> max aggression isn't working for Androids use-cases.
+> 
+> So to overcome this issue in mainline is key here.
+
+Thanks for pointing me to the latest Pixel code.
+
+The basic ideas of that and this series look very similar. Both sum up 
+CFS utilization instead of directly tracking the root CFS utilization. 
+This series so far has only implemented uclamp on tasks, but the same 
+code can also be implemented on group sched_entities. Once I implement 
+that, then it essentially does the same thing as GROUP_THROTTLE. I think 
+if the current Pixel code works, then it's likely this series works too.
+
+The big difference is that this series relies on 
+CONFIG_FAIR_GROUP_SCHED. There seems to be complaints about it and I may 
+need to know why it's not desirable for Android.
+
+>> which shows energy benefits because we are able to schedule tasks on
+>> smaller cores which are UCLAMP_MAX capped, instead of finding a fresh
+>> big CPU. However, a major difference is that this series has an
+>> amortized cost of O(1), instead of O(n) in cpu_util_next() in Android
+>> kernels.
+>>
+>> It avoids the shortcomings from uclamp-being-a-frequency-hint. Under sum
+>> aggregation, the scheduler sees the sum aggregated util_avg_uclamp and
+>> will avoid the problem of enqueueing too many tasks just to fit the
+>> frequency, and will place tasks on little CPUs in the previous example.
+>>
+>> Patch 2/6 tries to simulate PELT decay in the new util_avg_uclamp
+>> signal, as this gives us gradual decay of utilization which avoids
+>> premature CPU frequency drops. This is a major caveat of this series. We
+>> should explore if there's a better way to integrate uclamp directly into
+>> the util_avg signal, instead of introducing a new util_avg_uclamp and
+>> then simulate PELT on it.
+>>
+>> This new design significantly simplifies uclamp logic.
+>> Patch 4/6 removes the tri-state return value of util_fits_cpu().
+>> Patch 5/6 then completely removes uclamp buckets. Because the
+>> util_avg_uclamp is already a clamped value propagated from bottom to
+>> top, there's no need to clamp anything at the top level and we can just
+>> use this value for frequency selection and spare capacity search.
+>> Basically, the idea is that all uclamp logic happens inside
+>> util_avg_uclamp, and other code using this new signal can just use it
+>> like util_avg, without even knowing that uclamp exists. This drastically
+>> reduces the complexity of uclamp and makes the code considering all the
+>> uclamp corner cases unnecessary. At the end of the series, we remove 749
+>> lines of code while adding a bit more than 300 (although once we update
+>> Documentation.rst, it will be a bit more than that).
+>>
+>> Note that this series is still considered RFC status. TODO items are:
+>>
+>> 1. Implement sum aggregation for RT tasks.
+>> 2. Improve handling of cpu_util(boost).
+> 
+> What about the integration with util_est here?
+> 
+> In cpu_util(), &rq->cfs->avg.util_avg is replaced by
+> rq->root_cfs_util_uclamp
+> 
+> and in
+> 
+> task_util_est() (should be actually named task_util() to be in sync with
+> cpu_util(), i.e. returning max(util, util_est)), task_util(p) returns
+> p->se.avg.util_avg_uclamp.
+> 
+> Are there use cases for the original avg.util_avg still in place?
+
+We still need the original avg.util_avg for tasks because 
+util_avg_uclamp is clamped from it, but other than that, at the moment 
+there's no reason to use the normal util_avg.
+
+>> TESTING:
+>>
+>> Initial test and benchmark results suggest that sum aggregation not only
+>> is significantly simpler, but generally performs much better in
+>> achieving what uclamp is supposed to do. Two notebooks are shared at
+>>
+>> https://nbviewer.org/github/honxia02/sum_aggre_notebooks/blob/main/upstream.ipynb
+>> https://nbviewer.org/github/honxia02/sum_aggre_notebooks/blob/main/sum.ipynb
+>>
+>> The experiments done in notebooks are on Arm Juno r2 board. CPU0-3 are
+>> little cores with capacity of 383. CPU4-5 are big cores. The rt-app
+>> profiles used for these experiments are included in the notebooks.
+>>
+>> Scenario 1: Scheduling 4 always-running tasks with UCLAMP_MAX at 200.
+>>
+>> The scheduling decisions are plotted in Out[11] and Out[14]
+>> respectively. Max aggregation fails to recognize the opportunity to run
+>> all of them on the efficient little Power Domain (PD), whereas sum
+>> aggregation runs all 4 on the little PD, leaving the big PD completely
+>> powered off, satisfying uclamp requests while saving power.
+> 
+> Does `upstream` already contain the v6.7 fixes `Fix uclamp code corner
+> cases` ?
+> 
+> https://lkml.kernel.org/r/20230916232955.2099394-1-qyousef@layalina.io
+
+Unfortunately, no. These experiments were done before that patch. I 
+quickly did a test and that patch did fix this issue. Now the four 
+little tasks are scheduled on the small PD.
+
+But I remember that you have another test indicating that the patch may 
+expose some new issues?
+
+>> Scenario 2: Scheduling 4 tasks with UCLAMP_MIN and UCLAMP_MAX at a value
+>> slightly above the capacity of the little CPU.
+>>
+>> Results are in Out[17] and Out[82]. The purpose is to use UCLAMP_MIN to
+>> place tasks on the big core. Max aggregation is pretty much in an
+>> overutilized state the entire time. Sum aggregation sees that the big
+>> CPU can hold two such tasks (satisfying both UCLAMP_MIN and UCLAMP_MAX
+>> requests for all 4 tasks) on each big CPU and quickly settles down, and
+>> is still under EAS without overutilization.
+> 
+> thread0-[0-3] uclamp_max = 309. So p->se.avg.util_avg_uclamp is
+> constrained by this value for all 4 tasks, letting 2 tasks fit on each
+> of the big CPUs. You have to zoom in into Out[82] to actually see this.
+> 
+> And I guess for max aggregation cpu_overutilized() can't hold the clamp
+> continuously because of all the other short running uclamp_max = 1024
+> (default) tasks on the rq's.
+
+Actually I'm not 100% sure about the reason why max aggregation under 
+this experiment never stabilizes. I can investigate further.
+
+>> Scenario 3: Task A is a task with a small utilization pinned to CPU4.
+>> Task B is an always-running task pinned to CPU5, but UCLAMP_MAX capped
+>> at 200. After a while, task A is then pinned to CPU5, joining B.
+>>
+>> Results are in Out[23] and Out[95]. The blue util_avg signal is the
+>> original root CFS util_avg. The yellow line is the root CFS utilization
+>> after considering uclamp. Max aggregation sees a frequency
+>> spike at 579.1s. When zoomed in, one can see square-wave-like
+>> utilization values because of A periodically going to sleep. When A
+>> wakes up, its default UCLAMP_MAX of 1024 will uncap B and reach the
+>> highest CPU frequency. When A sleeps, B's UCLAMP_MAX will be in effect
+>> and will reduce rq utilization to 200. This happens repeatedly, hence
+>> the square wave. In contrast, sum aggregation sees a normal increase in
+>> utilization when A joins B, at around 2507s, without any square-wave
+>> behavior.
+> 
+> Makes sense. But there shouldn't be a root_cfs_util_uclamp in main?
+> Which signal does the yellow line represent in Out[23]?
+
+Ah, that can be confusing. For current upstream root_cfs_util_uclamp 
+comes from uclamp_rq_util_with(rq, cfs_rq->avg.util_avg).
+
+>> Scenario 4: 4 always-running tasks with UCLAMP_MAX of 120 pinned to the
+>> little PD (CPU0-3). 4 same tasks pinned to the big PD (CPU4-5).
+>> After a while, remove the CPU pinning of the 4 tasks on the big PD.
+>>
+>> Results are in Out[29] and Out[101]. Max aggregation fails to identify
+>> that all 8 tasks can be packed on the little PD, whereas sum
+>> aggregation immediately moves the 4 tasks pinned to big PD to the
+>> little PD the moment pinning is removed. Sum aggregation understands
+>> that even when the rq seems to have utilization of 1024, this is because
+>> of UCLAMP_MAX and there's still opportunity to pack 2 such tasks on each
+>> little CPU, leaving the big PD untouched, saving power.
+> 
+> Looks good to me.
+> 
+>>
+>> BENCHMARKS:
+>>
+>> One TODO item is to handle cpu_util(boost) better. The current handling
+>> of boost is far from ideal and is a known caveat. All below benchmarks
+>> numbers are done without any boosting in cpu_util(), in both max and sum
+>> aggregation.
+> 
+> Maybe to early for black-box tests at this stage but good to see that
+> nothing seems to go sideways with uclamp sum aggregation.
+> 
+> 
+>>
+>> Geekbench 6 (on Rock-5B board)
+>> +-----+-------------+------------+
+>> |     | Single-core | Multi-core |
+>> +-----+-------------+------------+
+>> | Max |      800.6  |     2977.0 |
+>> | Sum |      801.2  |     2981.4 |
+>> +-----+-------------+------------+
+>>
+>> No regression is seen after switching to sum aggregation.
+>>
+>> Jankbench (backporting sum aggregation to Android 5.18 mainline kernel)
+>>
+>> +------+-----------------+-------+-----------+
+>> |      |    variable     | value | perc_diff |
+>> +------+-----------------+-------+-----------+
+>> | main | jank_percentage |  1.1  |    0.00%  |
+>> |  sum | jank_percentage |  0.5  |  -53.92%  |
+>> +------+-----------------+-------+-----------+
+>>
+>> +------------+--------+------+-------+-----------+
+>> |            | metric |  tag | value | perc_diff |
+>> +------------+--------+------+-------+-----------+
+>> |    CPU     | gmean  | main | 166.1 |   0.00%   |
+>> |  CPU-Big   | gmean  | main | 55.1  |   0.00%   |
+>> | CPU-Little | gmean  | main | 91.7  |   0.00%   |
+>> |  CPU-Mid   | gmean  | main | 19.2  |   0.00%   |
+>> |    CPU     | gmean  |  sum | 161.3 |  -2.85%   |
+>> |  CPU-Big   | gmean  |  sum | 52.9  |  -3.97%   |
+>> | CPU-Little | gmean  |  sum | 86.7  |  -5.39%   |
+>> |  CPU-Mid   | gmean  |  sum | 21.6  |  12.63%   |
+>> +------------+--------+------+-------+-----------+
+>>
+>> The TL;DR of Jankbench is that sum aggregation reduces jank by 54% while
+>> with 2.85% less CPU power. Note that this benchmark on Pixel 6 by
+>> default has some sort of uclamp feedback applied to it. When jank is
+>> detected, certain display and benchmark threads are applied with a
+>> UCLAMP_MIN value of 512 (any help in identifying where these UCLAMP_MIN
+>> values come from in the mainline Android kernel is appreciated). In
+>> contrast, we constantly apply a UCLAMP_MIN value of 60 to these threads
+>> without any feedback loop. If a similar feedback loop is involved to
+>> only apply UCLAMP_MIN when needed, power consumption can be expected to
+>> be even lower.
+> 
+> [...]
