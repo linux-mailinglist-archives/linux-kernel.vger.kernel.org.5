@@ -2,468 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D35A7E0265
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 12:55:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D83AB7E0266
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 12:56:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343674AbjKCLzt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 07:55:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46614 "EHLO
+        id S1345379AbjKCL4K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 07:56:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbjKCLzr (ORCPT
+        with ESMTP id S1344094AbjKCL4I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 07:55:47 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 64E811A8
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 04:55:42 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D2CE42F4;
-        Fri,  3 Nov 2023 04:56:24 -0700 (PDT)
-Received: from [10.57.71.183] (unknown [10.57.71.183])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B8F6A3F703;
-        Fri,  3 Nov 2023 04:55:40 -0700 (PDT)
-Message-ID: <3d2ce7a4-44cc-49f8-ad20-b99f79e7e9f1@arm.com>
-Date:   Fri, 3 Nov 2023 11:55:39 +0000
+        Fri, 3 Nov 2023 07:56:08 -0400
+Received: from mail.marcansoft.com (marcansoft.com [212.63.210.85])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E25971BC
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 04:56:02 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: marcan@marcan.st)
+        by mail.marcansoft.com (Postfix) with ESMTPSA id 374E64206F;
+        Fri,  3 Nov 2023 11:55:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=marcan.st; s=default;
+        t=1699012560; bh=rBYpj2x0/z/rYy3b4TkErdBxLgTGpCyBqvT1ta/GVlc=;
+        h=Date:To:From:Subject:Cc;
+        b=MbdshQ2iGswPrLcTdej1OotLGp21FXpRAEtB60+dS8yLrVSTpQ6cC7UdZqZTuyz6j
+         E/rvq75ApXgt5v+klM8xUsCpte8lSZbR2xJf9iNRuYUNOKr24a/HEPWSn14KtgMqeq
+         5ZltarapwIVpfxwSbcRfYW1itcm59rH0MZrMnpDY4cTtjd3jXzTLVP4EQZV9WgmxoK
+         YNeDXf1UyqDu2YxrDRJ/9F8Q5OruPYG9IUJasPzRUjQ2otGDE2tKfBV55pN+n0VgAZ
+         dRd7NR+IFcz5K1AHU2fbVwEDD+ifbbstbF5ZHdsCXub5FYrUiyRZ/kNvtzkZc6bC/F
+         fnGP5HOwIA1kw==
+Message-ID: <a36ddb05-9e5f-dfae-81e2-0da5e4925743@marcan.st>
+Date:   Fri, 3 Nov 2023 20:55:55 +0900
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v1] mm: zswap: Store large folios without splitting
-Content-Language: en-GB
-To:     Nhat Pham <nphamcs@gmail.com>
-Cc:     Seth Jennings <sjenning@redhat.com>,
-        Dan Streetman <ddstreet@ieee.org>,
-        Vitaly Wool <vitaly.wool@konsulko.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Domenico Cerasuolo <cerasuolodomenico@gmail.com>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20231019110543.3284654-1-ryan.roberts@arm.com>
- <CAKEwX=PfAMZ2qJtwKwJsVx3TZWxV5z2ZaU1Epk1UD=DBdMsjFA@mail.gmail.com>
- <983c10ae-cb9a-4ae1-91ab-4112b836efb5@arm.com>
- <CAKEwX=NN7fxgM-_LDNNjxzncmyXieJS=sjRcMkXEUsz7H7KdmQ@mail.gmail.com>
-From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <CAKEwX=NN7fxgM-_LDNNjxzncmyXieJS=sjRcMkXEUsz7H7KdmQ@mail.gmail.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Content-Language: en-US
+To:     iommu@lists.linux.dev, Asahi Linux <asahi@lists.linux.dev>,
+        LKML <linux-kernel@vger.kernel.org>
+From:   Hector Martin <marcan@marcan.st>
+Subject: Race between of_iommu_configure() and iommu_probe_device()
+Cc:     Janne Grunau <j@jannau.net>, Rob Herring <robh+dt@kernel.org>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/11/2023 01:37, Nhat Pham wrote:
-> On Mon, Oct 30, 2023 at 4:57 AM Ryan Roberts <ryan.roberts@arm.com> wrote:
->>
->> Hi Nhat - thanks for the review!
->>
->>
->> On 27/10/2023 19:49, Nhat Pham wrote:
->>> On Thu, Oct 19, 2023 at 4:06 AM Ryan Roberts <ryan.roberts@arm.com> wrote:
->>>>
->>>> Previously zswap would refuse to store any folio bigger than order-0,
->>>> and therefore all of those folios would be sent directly to the swap
->>>> file. This is a minor inconvenience since swap can currently only
->>>> support order-0 and PMD-sized THP, but with the pending introduction of
->>>> "small-sized THP", and corresponding changes to swapfile to support any
->>>> order of folio, these large folios will become more prevalent and
->>>> without this zswap change, zswap will become unusable. Independently of
->>>> the "small-sized THP" feature, this change makes it possible to store
->>>> existing PMD-sized THPs in zswap.
->>>>
->>>> Modify zswap_store() to allow storing large folios. The function is
->>>> split into 2 parts; zswap_store() does all the per-folio operations
->>>> (i.e. checking there is enough space, etc). Then it calls a new helper,
->>>> zswap_store_page(), for each page in the folio, which are stored as
->>>> their own entries in the zswap pool. (These entries continue to be
->>>> loaded back individually as single pages). If a store fails for any
->>>> single page, then all previously successfully stored folio pages are
->>>> invalidated.
->>>>
->>>> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
->>>> ---
->>>> I've tested this on arm64 (m2) with zswap enabled, and running
->>>> vm-scalability's `usemem` across multiple cores from within a
->>>> memory-constrained memcg to force high volumes of swap. I've also run mm
->>>> selftests and observe no regressions (although there is nothing [z]swap
->>>> specific there) - does zswap have any specific tests I should run?
->>>
->>> There is a zswap kselftest in the cgroup suite:
->>> https://lore.kernel.org/all/20230621153548.428093-1-cerasuolodomenico@gmail.com/
->>
->> ahh great - I'll run that against future versions.
->>
->>>
->>> Regardless, I feel like this kind of change is probably better to be tested
->>> via stress tests anyway - allocating a bunch of anon memory with a certain
->>> pattern, making sure they're not corrupted after being zswapped out etc.
->>
->> Yes - that's exactly what the `usemem` test I described above is doing (and its
->> not reporting any corruption).
-> 
-> Nice, and I assume no regression (in runtime for e.g) in the usemem test
-> as well?
+I just hit a crash in of_iommu_xlate() -> apple_dart_of_xlate() because
+dev->iommu was NULL. of_iommu_xlate() first calls iommu_fwspec_init
+which calls dev_iommu_get(), which allocates that member if NULL. That
+means it got freed in between, but the only thing that can do that is
+dev_iommu_free(), which is called from __iommu_probe_device() in the
+error path. That is serialized via a static lock, but not against the
+xlate stuff.
 
-I was mainly focussing on correctness. I don't recall seeing any perf
-regression, but don't have the data to check right now. I'll post numbers with
-the next version (although I'm likely not going to have bandwidth until early
-December to pick this up again).
+I think the specific sequence of events was as follows:
 
-> 
->>
->>>
->>>
->>>>
->>>> This is based on mm-stable, since mm-unstable contains a zswap patch
->>>> known to be buggy [1]. I thought it would be best to get comments on the
->>>> shape, then do the rebase after that patch has been fixed.
->>>>
->>>> For context, small-sized THP is being discussed here [2], and I'm
->>>> working on changes to swapfile to support non-PMD-sized large folios
->>>> here [3].
->>>>
->>>> [1] https://lore.kernel.org/linux-mm/21606fe5-fb9b-4d37-98ab-38c96819893b@arm.com/
->>>> [2] https://lore.kernel.org/linux-mm/20230929114421.3761121-1-ryan.roberts@arm.com/
->>>> [3] https://lore.kernel.org/linux-mm/20231017161302.2518826-1-ryan.roberts@arm.com/
->>>>
->>>> Thanks,
->>>> Ryan
->>>>
->>>>
->>>>  mm/zswap.c | 155 +++++++++++++++++++++++++++++++++--------------------
->>>>  1 file changed, 98 insertions(+), 57 deletions(-)
->>>>
->>>> diff --git a/mm/zswap.c b/mm/zswap.c
->>>> index 37d2b1cb2ecb..51cbfc4e1ef8 100644
->>>> --- a/mm/zswap.c
->>>> +++ b/mm/zswap.c
->>>> @@ -1188,18 +1188,17 @@ static void zswap_fill_page(void *ptr, unsigned long value)
->>>>         memset_l(page, value, PAGE_SIZE / sizeof(unsigned long));
->>>>  }
->>>>
->>>> -bool zswap_store(struct folio *folio)
->>>> +static bool zswap_store_page(struct folio *folio, long index,
->>>> +                            struct obj_cgroup *objcg, struct zswap_pool *pool)
->>>>  {
->>>>         swp_entry_t swp = folio->swap;
->>>>         int type = swp_type(swp);
->>>> -       pgoff_t offset = swp_offset(swp);
->>>> -       struct page *page = &folio->page;
->>>> +       pgoff_t offset = swp_offset(swp) + index;
->>>> +       struct page *page = folio_page(folio, index);
->>>>         struct zswap_tree *tree = zswap_trees[type];
->>>>         struct zswap_entry *entry, *dupentry;
->>>>         struct scatterlist input, output;
->>>>         struct crypto_acomp_ctx *acomp_ctx;
->>>> -       struct obj_cgroup *objcg = NULL;
->>>> -       struct zswap_pool *pool;
->>>>         struct zpool *zpool;
->>>>         unsigned int dlen = PAGE_SIZE;
->>>>         unsigned long handle, value;
->>>> @@ -1208,51 +1207,11 @@ bool zswap_store(struct folio *folio)
->>>>         gfp_t gfp;
->>>>         int ret;
->>>>
->>>> -       VM_WARN_ON_ONCE(!folio_test_locked(folio));
->>>> -       VM_WARN_ON_ONCE(!folio_test_swapcache(folio));
->>>> -
->>>> -       /* Large folios aren't supported */
->>>> -       if (folio_test_large(folio))
->>>> -               return false;
->>>> -
->>>> -       if (!zswap_enabled || !tree)
->>>> +       /* entry keeps the references if successfully stored. */
->>>> +       if (!zswap_pool_get(pool))
->>>>                 return false;
->>>> -
->>>> -       /*
->>>> -        * If this is a duplicate, it must be removed before attempting to store
->>>> -        * it, otherwise, if the store fails the old page won't be removed from
->>>> -        * the tree, and it might be written back overriding the new data.
->>>> -        */
->>>> -       spin_lock(&tree->lock);
->>>> -       dupentry = zswap_rb_search(&tree->rbroot, offset);
->>>> -       if (dupentry) {
->>>> -               zswap_duplicate_entry++;
->>>> -               zswap_invalidate_entry(tree, dupentry);
->>>> -       }
->>>> -       spin_unlock(&tree->lock);
->>>> -
->>>> -       /*
->>>> -        * XXX: zswap reclaim does not work with cgroups yet. Without a
->>>> -        * cgroup-aware entry LRU, we will push out entries system-wide based on
->>>> -        * local cgroup limits.
->>>> -        */
->>>> -       objcg = get_obj_cgroup_from_folio(folio);
->>>> -       if (objcg && !obj_cgroup_may_zswap(objcg))
->>>> -               goto reject;
->>>> -
->>>> -       /* reclaim space if needed */
->>>> -       if (zswap_is_full()) {
->>>> -               zswap_pool_limit_hit++;
->>>> -               zswap_pool_reached_full = true;
->>>> -               goto shrink;
->>>> -       }
->>>> -
->>>> -       if (zswap_pool_reached_full) {
->>>> -              if (!zswap_can_accept())
->>>> -                       goto shrink;
->>>> -               else
->>>> -                       zswap_pool_reached_full = false;
->>>> -       }
->>>> +       if (objcg)
->>>> +               obj_cgroup_get(objcg);
->>>>
->>>>         /* allocate entry */
->>>>         entry = zswap_entry_cache_alloc(GFP_KERNEL);
->>>> @@ -1260,6 +1219,8 @@ bool zswap_store(struct folio *folio)
->>>>                 zswap_reject_kmemcache_fail++;
->>>>                 goto reject;
->>>>         }
->>>> +       entry->objcg = objcg;
->>>> +       entry->pool = pool;
->>>>
->>>>         if (zswap_same_filled_pages_enabled) {
->>>>                 src = kmap_atomic(page);
->>>> @@ -1277,11 +1238,6 @@ bool zswap_store(struct folio *folio)
->>>>         if (!zswap_non_same_filled_pages_enabled)
->>>>                 goto freepage;
->>>>
->>>> -       /* if entry is successfully added, it keeps the reference */
->>>> -       entry->pool = zswap_pool_current_get();
->>>> -       if (!entry->pool)
->>>> -               goto freepage;
->>>> -
->>>>         /* compress */
->>>>         acomp_ctx = raw_cpu_ptr(entry->pool->acomp_ctx);
->>>>
->>>> @@ -1337,7 +1293,6 @@ bool zswap_store(struct folio *folio)
->>>>         entry->length = dlen;
->>>>
->>>>  insert_entry:
->>>> -       entry->objcg = objcg;
->>>>         if (objcg) {
->>>>                 obj_cgroup_charge_zswap(objcg, entry->length);
->>>>                 /* Account before objcg ref is moved to tree */
->>>> @@ -1373,19 +1328,105 @@ bool zswap_store(struct folio *folio)
->>>>
->>>>  put_dstmem:
->>>>         mutex_unlock(acomp_ctx->mutex);
->>>> -       zswap_pool_put(entry->pool);
->>>>  freepage:
->>>>         zswap_entry_cache_free(entry);
->>>>  reject:
->>>>         if (objcg)
->>>>                 obj_cgroup_put(objcg);
->>>> +       zswap_pool_put(pool);
->>>>         return false;
->>>> +}
->>>>
->>>> +bool zswap_store(struct folio *folio)
->>>> +{
->>>> +       long nr_pages = folio_nr_pages(folio);
->>>> +       swp_entry_t swp = folio->swap;
->>>> +       int type = swp_type(swp);
->>>> +       pgoff_t offset = swp_offset(swp);
->>>> +       struct zswap_tree *tree = zswap_trees[type];
->>>> +       struct zswap_entry *entry;
->>>> +       struct obj_cgroup *objcg = NULL;
->>>> +       struct zswap_pool *pool;
->>>> +       bool ret = false;
->>>> +       long i;
->>>> +
->>>> +       VM_WARN_ON_ONCE(!folio_test_locked(folio));
->>>> +       VM_WARN_ON_ONCE(!folio_test_swapcache(folio));
->>>> +
->>>> +       if (!zswap_enabled || !tree)
->>>> +               return false;
->>>> +
->>>> +       /*
->>>> +        * If this is a duplicate, it must be removed before attempting to store
->>>> +        * it, otherwise, if the store fails the old page won't be removed from
->>>> +        * the tree, and it might be written back overriding the new data.
->>>> +        */
->>>> +       spin_lock(&tree->lock);
->>>> +       for (i = 0; i < nr_pages; i++) {
->>>> +               entry = zswap_rb_search(&tree->rbroot, offset + i);
->>>> +               if (entry) {
->>>> +                       zswap_duplicate_entry++;
->>>> +                       zswap_invalidate_entry(tree, entry);
->>>> +               }
->>>> +       }
->>>> +       spin_unlock(&tree->lock);
->>>> +
->>>> +       /*
->>>> +        * XXX: zswap reclaim does not work with cgroups yet. Without a
->>>> +        * cgroup-aware entry LRU, we will push out entries system-wide based on
->>>> +        * local cgroup limits.
->>>> +        */
->>>> +       objcg = get_obj_cgroup_from_folio(folio);
->>>> +       if (objcg && !obj_cgroup_may_zswap(objcg))
->>>> +               goto put_objcg;
->>>
->>> Hmm would this make more sense to check these limits
->>> at a higher order page level or at a backing page (4 KB)
->>> level?
->>>
->>> What if the cgroup still has some space before the new
->>> folio comes in, but the new folio would drive the pool size
->>> beyond the limit? Ditto for global zswap pool limit.
->>
->> I did consider this, but I thought I would keep it simple for the RFC and accept
->> that we may go over the limits by (HPAGE_PMD_NR - 1) pages. It sounds like you
->> don't think that will be acceptable.
-> 
-> Not necessarily unacceptable - I just wanted to point out a potential
-> change in our assumption with zswap that might go unnoticed.
-> 
-> I think there should be at least some sort of documentation or
-> comments spelling this out.
-> 
->>
->> I see 2 options:
->>
->>   - move this checking logic to be per-page in zswap_store_page()
->>   - pass a size (or nr_pages or order) to obj_cgroup_may_zswap(),
->>     zswap_is_full() and zswap_can_accept() so they know how much we are
->>     proposing to add and can make a correct decision.
->>
->> Personally I prefer the second option for efficiency.
-> 
-> Hmm if we go with the second option, how should this decision
-> be made? It's impossible to predict the post-compression size
-> of the huge page, even if we know its order.
+- IOMMU driver has not probed yet
+- Device driver tries to probe, and gets deferred via of_iommu_xlate()
+-> driver_deferred_probe_check_state() because there are no IOMMU ops yet
+- IOMMU driver probes
+- IOMMU driver registration triggers device probes
+- IOMMU device probe fails, because there is no fwnode/OF data yet (e.g.
+apple_dart_probe_device returns ENODEV if dev_iommu_priv_get() returns
+NULL, and that is set in apple_dart_of_xlate())
+- __iommu_probe_device is in the error exit path, and at this exact
+point a parallel device probe is running of_iommu_xlate()
+- of_iommu_xlate() calls iommu_fwspec_init(), which ensures dev->iommu
+is non-NULL, which at this point it is
+- immediately after that, __iommu_probe_device() calls dev_iommu_free()
+since it is in the process of erroring out. This frees and sets
+dev->iommu to NULL.
+- of_iommu_xlate() calls ops->of_xlate()
+- apple_dart_of_xlate() calls dev_iommu_priv_set(), which crashes
+because dev->iommu is now NULL.
 
-But we have a worst case size (the uncompressed size). So we could use that as a
-conservative estimate? It means we might under-utilize the quota a bit, but I
-guess that's better than going over?
+As far as I can tell it's not just the specific driver xlate call
+setting priv that's the problem here, but there is one big race between
+the entire fwspec codepath (accessing dev->iommu->fwspec) and
+__iommu_probe_device() (allocating and freeing dev->iommu).
 
-> 
-> I don't have a better suggestion than the first option, so if
-> anyone else has a better idea please chime in :)
-> 
-> Personally, I would not flat out NACK this patch because of this
-> limitation though, as long as it is at least spelled out somewhere.
+Thinking about this whole thing is making my brain hurt. Thoughts? How
+do we fix this?
 
-OK, that sounds like the easiest approach :). I'm happy to just add a comment
-for v2.
+Splat:
+apple-dart 228304000.iommu: DART [pagesize 4000, 16 streams, bypass
+support: 0, bypass forced: 0, locked: 0, AS 32 -> 36] initialized
+apple-dart 231304000.iommu: DART [pagesize 4000, 16 streams, bypass
+support: 1, bypass forced: 0, locked: 1, AS 32 -> 36] initialized
+apple-dart 23130c000.iommu: DART [pagesize 4000, 16 streams, bypass
+support: 1, bypass forced: 0, locked: 1, AS 32 -> 36] initialized
+Unable to handle kernel NULL pointer dereference at virtual address
+0000000000000040
+fbcon: Taking over console
+apple-dart 22c0e8000.iommu: DART [pagesize 4000, 16 streams, bypass
+support: 1, bypass forced: 0, locked: 0, AS 32 -> 36] initialized
+Mem abort info:
+  ESR = 0x0000000096000044
+  EC = 0x25: DABT (current EL), IL = 32 bits
+  SET = 0, FnV = 0
+  EA = 0, S1PTW = 0
+  FSC = 0x04: level 0 translation fault
+Data abort info:
+  ISV = 0, ISS = 0x00000044, ISS2 = 0x00000000
+  CM = 0, WnR = 1, TnD = 0, TagAccess = 0
+  GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
+user pgtable: 16k pages, 48-bit VAs, pgdp=000000081d900d50
+[0000000000000040] pgd=0000000000000000, p4d=0000000000000000
+Internal error: Oops: 0000000096000044 [#1] SMP
+Modules linked in: i2c_apple apple_dart(+) adpdrm drm_dma_helper sunrpc
+vfat fat nvme_apple apple_sart nvme_core nvme_common scsi_dh_rdac
+scsi_dh_emc scsi_dh_alua fuse dm_multipath
+CPU: 2 PID: 12 Comm: kworker/u16:1 Tainted: G S
+6.5.6-403.asahi.fc39.aarch64+16k #1
+Hardware name: Apple MacBook Pro (13-inch, M1, 2020) (DT)
+Workqueue: events_unbound deferred_probe_work_func
+pstate: 61400009 (nZCv daif +PAN -UAO -TCO +DIT -SSBS BTYPE=--)
+apple-dart 22c0f4000.iommu: DART [pagesize 4000, 16 streams, bypass
+support: 0, bypass forced: 0, locked: 0, AS 32 -> 36] initialized
+pc : apple_dart_of_xlate+0x54/0x1f8 [apple_dart]
+lr : apple_dart_of_xlate+0x154/0x1f8 [apple_dart]
+sp : ffff8000800e3a10
+x29: ffff8000800e3a10 x28: 0000000000000000 x27: 0000000000000000
+x26: ffffcfcf9c75d9c0 x25: 0000000000000000 x24: ffffcfcf9b54c798
+x23: ffffcfcf9b54d568 x22: ffff1aea0a88dc10 x21: ffff1aea22738080
+x20: 0000000000000000 x19: ffff1aea0af34000 x18: ffffffffffffffff
+x17: ffff4b1e41cac000 x16: ffffcfcf99eabeb0 x15: ffff8000800e3810
+x14: ffffffffffffffff x13: 0000000000000000 x12: 0000000000000003
+x11: 0101010101010101 x10: 000000000011cdb8 x9 : 0000000000000000
+x8 : ffff1aea0af34080 x7 : 0000000000000000 x6 : 000000000000003f
+x5 : 0000000000000040 x4 : ffff8000800e3960 x3 : 0000000000000000
+x2 : 0000000000000000 x1 : ffff1aea0a30ee00 x0 : 0000000000000000
+Call trace:
+ apple_dart_of_xlate+0x54/0x1f8 [apple_dart]
+ of_iommu_xlate+0xa4/0xe8
+ of_iommu_configure+0x190/0x1f8
+ of_dma_configure_id+0x13c/0x348
+ platform_dma_configure+0x38/0xd0
+ really_probe+0x7c/0x3d8
+ __driver_probe_device+0x84/0x180
+ driver_probe_device+0x44/0x120
+ __device_attach_driver+0xc4/0x168
+ bus_for_each_drv+0x90/0xf8
+ __device_attach+0xa8/0x1c8
+ device_initial_probe+0x1c/0x30
+ bus_probe_device+0xb4/0xc0
+ deferred_probe_work_func+0xbc/0x118
+ process_one_work+0x1f4/0x4a0
+ worker_thread+0x74/0x418
+ kthread+0xf4/0x108
+ ret_from_fork+0x10/0x20
+Code: 540003a1 b9400e94 b40007b3 f94172c0 (f9002013)
+---[ end trace 0000000000000000 ]---
 
-> 
->>
->>>
->>> Previously, the object size is capped by the size of
->>> a page (since we don't accept bigger size pages into
->>> zswap). If zswap limit is exceded, it will not be exceeded
->>> by more than 4 KB. No big deal. But I'm not sure
->>> this will be OK as we move to bigger and bigger
->>> sizes for the pages...
->>>
->>> If we do decide to check the cgroup's zswap limit for
->>> each backing page, I'm not sure how the reclaim logic
->>> (which will be introduced in the cgroup-aware zswap
->>> LRU patch) will interact with this though.
->>
->> Ok so this points us in the direction of my option 2 above as well?
->>
->>>
->>>> +
->>>> +       /* reclaim space if needed */
->>>> +       if (zswap_is_full()) {
->>>> +               zswap_pool_limit_hit++;
->>>> +               zswap_pool_reached_full = true;
->>>> +               goto shrink;
->>>> +       }
->>>> +
->>>> +       if (zswap_pool_reached_full) {
->>>> +               if (!zswap_can_accept())
->>>> +                       goto shrink;
->>>> +               else
->>>> +                       zswap_pool_reached_full = false;
->>>> +       }
->>>> +
->>>> +       pool = zswap_pool_current_get();
->>>> +       if (!pool)
->>>> +               goto put_objcg;
->>>> +
->>>> +       /*
->>>> +        * Store each page of the folio as a separate entry. If we fail to store
->>>> +        * a page, unwind by removing all the previous pages we stored.
->>>> +        */
->>>> +       for (i = 0; i < nr_pages; i++) {
->>>> +               if (!zswap_store_page(folio, i, objcg, pool)) {
->>>> +                       spin_lock(&tree->lock);
->>>> +                       for (i--; i >= 0; i--) {
->>>> +                               entry = zswap_rb_search(&tree->rbroot, offset + i);
->>>> +                               if (entry)
->>>> +                                       zswap_invalidate_entry(tree, entry);
->>>> +                       }
->>>> +                       spin_unlock(&tree->lock);
->>>> +                       goto put_pool;
->>>> +               }
->>>> +       }
->>>> +
->>>> +       ret = true;
->>>> +put_pool:
->>>> +       zswap_pool_put(pool);
->>>> +put_objcg:
->>>> +       if (objcg)
->>>> +               obj_cgroup_put(objcg);
->>>> +       return ret;
->>>>  shrink:
->>>>         pool = zswap_pool_last_get();
->>>>         if (pool && !queue_work(shrink_wq, &pool->shrink_work))
->>>>                 zswap_pool_put(pool);
->>>> -       goto reject;
->>>> +       goto put_objcg;
->>>>  }
->>>>
->>>>  bool zswap_load(struct folio *folio)
->>>>
->>>> base-commit: 158978945f3173b8c1a88f8c5684a629736a57ac
->>>> --
->>>> 2.25.1
->>>>
->>>>
->>>
->>> I don't see anything else that is obviously wrong with this.
->>> Seems straightforward to me.
->>>
->>> But I'm not too super familiar with THP swapping
->>> logic either :) So maybe someone with exposure to both
->>> should take a look too.
->>>
->>> And would it make sense to introduce a gate that guard
->>> this so that users can opt-in/opt-out of this new feature,
->>> at least as we experiment more with it to get more
->>> data?
->>
->> There is already a gate at a higher level; CONFIG_THP_SWAP. If that is not
->> enabled, then all large folios will be split to single pages before a swap entry
->> is even allocated.
-> 
-> Hmm is there a runtime option as well, or does it not make sense to have
-> it? But yeah, in principle I'm not against having a single knob controlling
-> this behavior for both swap and zswap (as opposed to a zswap-specific
-> knob).
-
-There is no runtime knob equivalent to CONFIG_THP_SWAP at the moment, so I guess
-that proves that it is not needed at the swap level. And I don't really see the
-benefit for explicitly disabling at the zswap level. So I would prefer to keep
-it simple and not add any new runtime knob.
-
-The closest existing knob is the runtime THP sysfs interface - if THP is
-disabled (from boot) then there are no THPs to swap. (of course if disabled
-after boot, there may still be some THPs that were created earlier).
-
-> 
-> I'll defer any further objections to this aspect to other zswap contributors
-> and maintainers :)
->>
->> I considered adding a separate gate for this, but given the above control, I
->> didn't think the zswap-specific control was really neccessary. What do you think?
->>
->> Thanks,
->> Ryan
->>
->>
-
+- Hector
