@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 751137E0219
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 12:20:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DC5E7E0224
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 12:20:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346591AbjKCLRF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 07:17:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58836 "EHLO
+        id S1346645AbjKCLRV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 07:17:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346172AbjKCLQ5 (ORCPT
+        with ESMTP id S1346673AbjKCLRQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 07:16:57 -0400
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A604AD53
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 04:16:53 -0700 (PDT)
-Received: by mail-yb1-xb34.google.com with SMTP id 3f1490d57ef6-da2b9234a9fso1908198276.3
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Nov 2023 04:16:53 -0700 (PDT)
+        Fri, 3 Nov 2023 07:17:16 -0400
+Received: from mail-yw1-x112a.google.com (mail-yw1-x112a.google.com [IPv6:2607:f8b0:4864:20::112a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF524D69
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 04:17:01 -0700 (PDT)
+Received: by mail-yw1-x112a.google.com with SMTP id 00721157ae682-5a82f176860so23427437b3.1
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Nov 2023 04:17:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699010212; x=1699615012; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1699010220; x=1699615020; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=/bnG70HwW3iO72CF0/4itOzvrNtdpkPDD7Xih6QQ8lo=;
-        b=Tu0xmNWsQ4yH2sbys9vS9BOvbtpYa3ssLU0ejfBcHC+v9MEZl8bMPYk6IMZdBySPUU
-         5/UUxpbJ52y53QcvamQZ+mnTSjn2jjVKSFPKUGkYJS8gXcEQNSD3aE4laBKNDQ87B2xc
-         ObG9Zyh2SE70S7FDsZ7F6qn0r6Z9199RMSBcKTLn7oKomaZpE3bsSnQsUPTf9E0t7AUU
-         /MfuL4QBsRF+wfyVIEIp9zx0jHWe4ioIJEHUs/Egv9ApIe7f2PkZZmGnPz0Mr610JJ/M
-         0wEnUHCz7HPyXSYK+9qg2fuZmSLFNuSKj8BywJPPjknF51Mi3zD0v5orrWqFgrIGgKct
-         508A==
+        bh=oWqvGHOpDjXeJF4gaG5FvSChunLowe+31JAI0Z5rk34=;
+        b=aTAeo++ufcpuOK6ygynGRX8GpEjrCX4iIsxGeSzbXaI/UKqI822QKIIZ7KYNfbZL6W
+         q7ZuC/BGDP7M7RxUi84roEW10U/GV3F1+ITWIErXRQD7d0j86xRq3eztwsU6C+B3NVki
+         SUgg4HVAQX2aBtJmbJosEktwRXGkmr4D/HuzOB5Sc7MOUXRz8HZRPnFfLfCbGlWsJysp
+         XZlmDIEfk4O228DHLlYe1dGixLQAYCmwmbvNEzQn+j6KRRaUUTEJwWxVJeR8agxVBhnS
+         dVbfe993pSvGL8axGrZTLwphROUuFWh/dULncYfyOZRy0xo/WE6tvlqIMpA0iG042yZ8
+         7K6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699010212; x=1699615012;
+        d=1e100.net; s=20230601; t=1699010220; x=1699615020;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=/bnG70HwW3iO72CF0/4itOzvrNtdpkPDD7Xih6QQ8lo=;
-        b=nQqR1KktSz2gs4+AR0oJ/GT5vaD8mmErL1IMrt84yuw6141Bq58OlhA8M0aDZNJ3JI
-         DTdrv5nNY1EuJGDAfA6bWPpBJr3ZZsrX9DiKBp4vBfCwUF83yRvKHZ12TKztLcwh4KUX
-         q57U+RfT5yRhLxuVxcs6XnLG/3HwF/qJkZH85Tc4r0Zef/BZcVMn6kZNoEMQofe7n+L6
-         LqeVmnMsqbhCp88eTbZoOeSdTHOGO+Ox/hms0yV6CEoUYlks4v3jtDr+PonqFhDuWWOu
-         +fgJbhHN5eWYKoVdurymOktf0/FUlCOApvXtLx1am39NBmkh3X1ZfAHjOCLZ7a/AqMlk
-         jc8A==
-X-Gm-Message-State: AOJu0YxWn7UI0zKLT8gZjryhLA+AyiJcptAyUc5cYSqhwQS/flj/QpHh
-        WAGuKYOTSf1oInYYfzffUTbhKsgZdT9e1xMePGyygw==
-X-Google-Smtp-Source: AGHT+IEXTzL2QO+gTiJqUA6q4a7gjIAAnUOgnpabV9KOAPQ6A0FsX2NCHedPda00oErtIg1w+Zm70o7SWllTKyODvIA=
-X-Received: by 2002:a25:da0d:0:b0:d85:eac0:c7d2 with SMTP id
- n13-20020a25da0d000000b00d85eac0c7d2mr19685721ybf.6.1699010212336; Fri, 03
- Nov 2023 04:16:52 -0700 (PDT)
+        bh=oWqvGHOpDjXeJF4gaG5FvSChunLowe+31JAI0Z5rk34=;
+        b=g2oPNO2a3E27RG5kr18tbybREzA9WAnCU4BTl3ExuCHQSK4iFlTccuCGLJfswSuLlg
+         7rac4swx/QnsfoYLeZr6qQY5EKFxd5IFl6uraM2XWZKq2OXjS3LEAHEydopaWT4V3S9O
+         iCsrTpfYxdrhW20UTBrcIkdgc00eMQs9+Rv1Hr7B3HTk9sUlfpZmlWph5n7hz+paE+IN
+         FToCm07WRiU8+HrGdge9m0n91TsPTgBE9qbvX8leQbUOzUMajBU+KStkKYJdZMxLAdBs
+         FR0vX0Zf85svbjLx/+BUr6TCXmDBWCGBDM3Gkp8cQscYHy5h8fjG7ApyZC92vJU8xM7Q
+         gIMw==
+X-Gm-Message-State: AOJu0YyC5tHBEHKllkJN/Vlb3a0lHqn8+GtQqGo2TC8BoiEUql339RZ2
+        x60kjzXPsL3VE1Yx5n5EYDx4ySawMkyPky/GrQeDXw==
+X-Google-Smtp-Source: AGHT+IFLVZi6pW8xuPrCXex8Mha8wM8l8BM1AAWvvxpzrUbGuBa0q1spsqLLCOnrl8AxOXZ62UTRQpiJM5P5rka57OE=
+X-Received: by 2002:a81:4f04:0:b0:5a7:e5b8:997a with SMTP id
+ d4-20020a814f04000000b005a7e5b8997amr2573913ywb.10.1699010220701; Fri, 03 Nov
+ 2023 04:17:00 -0700 (PDT)
 MIME-Version: 1.0
-References: <20231030224809.59245-1-beanhuo@iokpp.de>
-In-Reply-To: <20231030224809.59245-1-beanhuo@iokpp.de>
+References: <20231103004220.1666641-1-asmadeus@codewreck.org>
+In-Reply-To: <20231103004220.1666641-1-asmadeus@codewreck.org>
 From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Fri, 3 Nov 2023 12:16:16 +0100
-Message-ID: <CAPDyKFqXa_nVBTSXwUqecAAiDkFxdqHjq1QOWbe0Oa9kkvpEZA@mail.gmail.com>
-Subject: Re: [v5] mmc: Add quirk MMC_QUIRK_BROKEN_CACHE_FLUSH for Micron eMMC Q2J54A
-To:     Bean Huo <beanhuo@iokpp.de>
-Cc:     cLoehle@hyperstone.com, adrian.hunter@intel.com,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bean Huo <beanhuo@micron.com>,
-        Rafael Beims <rafael.beims@toradex.com>, stable@vger.kernel.org
+Date:   Fri, 3 Nov 2023 12:16:25 +0100
+Message-ID: <CAPDyKFrPaScaQE340g8cD_xR+KoX=JuSc9xtCW=B+HZKYjf1aQ@mail.gmail.com>
+Subject: Re: [PATCH] Revert "mmc: core: Capture correct oemid-bits for eMMC cards"
+To:     Dominique Martinet <asmadeus@codewreck.org>
+Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Dominique Martinet <dominique.martinet@atmark-techno.com>,
+        stable@vger.kernel.org, Avri Altman <avri.altman@wdc.com>,
+        Alex Fetters <Alex.Fetters@garmin.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
@@ -69,17 +69,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 30 Oct 2023 at 23:48, Bean Huo <beanhuo@iokpp.de> wrote:
+On Fri, 3 Nov 2023 at 01:42, Dominique Martinet <asmadeus@codewreck.org> wrote:
 >
-> From: Bean Huo <beanhuo@micron.com>
+> From: Dominique Martinet <dominique.martinet@atmark-techno.com>
 >
-> Micron MTFC4GACAJCN eMMC supports cache but requires that flush cache
-> operation be allowed only after a write has occurred. Otherwise, the
-> cache flush command or subsequent commands will time out.
+> This reverts commit 84ee19bffc9306128cd0f1c650e89767079efeff.
 >
-> Signed-off-by: Bean Huo <beanhuo@micron.com>
-> Signed-off-by: Rafael Beims <rafael.beims@toradex.com>
+> The commit above made quirks with an OEMID fail to be applied, as they
+> were checking card->cid.oemid for the full 16 bits defined in MMC_FIXUP
+> macros but the field would only contain the bottom 8 bits.
+>
+> eMMC v5.1A might have bogus values in OEMID's higher bits so another fix
+> will be made, but it has been decided to revert this until that is ready.
+>
+> Fixes: 84ee19bffc93 ("mmc: core: Capture correct oemid-bits for eMMC cards")
+> Link: https://lkml.kernel.org/r/ZToJsSLHr8RnuTHz@codewreck.org
+> Link: https://lkml.kernel.org/r/CAPDyKFqkKibcXnwjnhc3+W1iJBHLeqQ9BpcZrSwhW2u9K2oUtg@mail.gmail.com
+> Signed-off-by: Dominique Martinet <dominique.martinet@atmark-techno.com>
 > Cc: stable@vger.kernel.org
+> Cc: Avri Altman <avri.altman@wdc.com>
+> Cc: Ulf Hansson <ulf.hansson@linaro.org>
+> Cc: Alex Fetters <Alex.Fetters@garmin.com>
 
 Applied for fixes, thanks!
 
@@ -88,113 +98,27 @@ Uffe
 
 
 > ---
+> Here's the revert as discussed in "mmc: truncate quirks' oemid to 8
+> bits"' patch thread.
+> Feel free to ignore if you already have something, I just checked your
+> -next branch quickly and might have missed it.
 >
-> Changelog:
-> v4--v5:
->     1. In the case of a successful flush, set writing_flag in _mmc_flush_cache()
-> v3--v4:
->     1. Add helper function for this quirk in drivers/mmc/core/card.h.
->     2. Set card->written_flag only for REQ_OP_WRITE.
-> v2--v3:
->     1. Set card->written_flag in mmc_blk_mq_issue_rq().
-> v1--v2:
->     1. Add Rafael's test-tag, and Co-developed-by.
->     2. Check host->card whether NULL or not in __mmc_start_request() before asserting host->card->->quirks
-> ---
->  drivers/mmc/core/block.c  | 4 +++-
->  drivers/mmc/core/card.h   | 4 ++++
->  drivers/mmc/core/mmc.c    | 8 ++++++--
->  drivers/mmc/core/quirks.h | 7 ++++---
->  include/linux/mmc/card.h  | 2 ++
->  5 files changed, 19 insertions(+), 6 deletions(-)
+>  drivers/mmc/core/mmc.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
-> index 3a8f27c3e310..152dfe593c43 100644
-> --- a/drivers/mmc/core/block.c
-> +++ b/drivers/mmc/core/block.c
-> @@ -2381,8 +2381,10 @@ enum mmc_issued mmc_blk_mq_issue_rq(struct mmc_queue *mq, struct request *req)
->                         }
->                         ret = mmc_blk_cqe_issue_flush(mq, req);
->                         break;
-> -               case REQ_OP_READ:
->                 case REQ_OP_WRITE:
-> +                       card->written_flag = true;
-> +                       fallthrough;
-> +               case REQ_OP_READ:
->                         if (host->cqe_enabled)
->                                 ret = mmc_blk_cqe_issue_rw_rq(mq, req);
->                         else
-> diff --git a/drivers/mmc/core/card.h b/drivers/mmc/core/card.h
-> index 4edf9057fa79..b7754a1b8d97 100644
-> --- a/drivers/mmc/core/card.h
-> +++ b/drivers/mmc/core/card.h
-> @@ -280,4 +280,8 @@ static inline int mmc_card_broken_sd_cache(const struct mmc_card *c)
->         return c->quirks & MMC_QUIRK_BROKEN_SD_CACHE;
->  }
->
-> +static inline int mmc_card_broken_cache_flush(const struct mmc_card *c)
-> +{
-> +       return c->quirks & MMC_QUIRK_BROKEN_CACHE_FLUSH;
-> +}
->  #endif
 > diff --git a/drivers/mmc/core/mmc.c b/drivers/mmc/core/mmc.c
-> index 8180983bd402..11053f920ac4 100644
+> index 4a4bab9aa726..89cd48fcec79 100644
 > --- a/drivers/mmc/core/mmc.c
 > +++ b/drivers/mmc/core/mmc.c
-> @@ -2086,13 +2086,17 @@ static int _mmc_flush_cache(struct mmc_host *host)
->  {
->         int err = 0;
->
-> +       if (mmc_card_broken_cache_flush(host->card) && !host->card->written_flag)
-> +               return err;
-> +
->         if (_mmc_cache_enabled(host)) {
->                 err = mmc_switch(host->card, EXT_CSD_CMD_SET_NORMAL,
->                                  EXT_CSD_FLUSH_CACHE, 1,
->                                  CACHE_FLUSH_TIMEOUT_MS);
->                 if (err)
-> -                       pr_err("%s: cache flush error %d\n",
-> -                              mmc_hostname(host), err);
-> +                       pr_err("%s: cache flush error %d\n", mmc_hostname(host), err);
-> +               else
-> +                       host->card->written_flag = false;
->         }
->
->         return err;
-> diff --git a/drivers/mmc/core/quirks.h b/drivers/mmc/core/quirks.h
-> index 32b64b564fb1..5e68c8b4cdca 100644
-> --- a/drivers/mmc/core/quirks.h
-> +++ b/drivers/mmc/core/quirks.h
-> @@ -110,11 +110,12 @@ static const struct mmc_fixup __maybe_unused mmc_blk_fixups[] = {
->                   MMC_QUIRK_TRIM_BROKEN),
->
->         /*
-> -        * Micron MTFC4GACAJCN-1M advertises TRIM but it does not seems to
-> -        * support being used to offload WRITE_ZEROES.
-> +        * Micron MTFC4GACAJCN-1M supports TRIM but does not appear to suppor
-> +        * WRITE_ZEROES offloading. It also supports caching, but the cache can
-> +        * only be flushed after a write has occurred.
->          */
->         MMC_FIXUP("Q2J54A", CID_MANFID_MICRON, 0x014e, add_quirk_mmc,
-> -                 MMC_QUIRK_TRIM_BROKEN),
-> +                 MMC_QUIRK_TRIM_BROKEN | MMC_QUIRK_BROKEN_CACHE_FLUSH),
->
->         /*
->          * Kingston EMMC04G-M627 advertises TRIM but it does not seems to
-> diff --git a/include/linux/mmc/card.h b/include/linux/mmc/card.h
-> index daa2f40d9ce6..7b12eebc5586 100644
-> --- a/include/linux/mmc/card.h
-> +++ b/include/linux/mmc/card.h
-> @@ -295,7 +295,9 @@ struct mmc_card {
->  #define MMC_QUIRK_BROKEN_HPI   (1<<13)         /* Disable broken HPI support */
->  #define MMC_QUIRK_BROKEN_SD_DISCARD    (1<<14) /* Disable broken SD discard support */
->  #define MMC_QUIRK_BROKEN_SD_CACHE      (1<<15) /* Disable broken SD cache support */
-> +#define MMC_QUIRK_BROKEN_CACHE_FLUSH   (1<<16) /* Don't flush cache until the write has occurred */
->
-> +       bool                    written_flag;   /* Indicates eMMC has been written since power on */
->         bool                    reenable_cmdq;  /* Re-enable Command Queue */
->
->         unsigned int            erase_size;     /* erase size in sectors */
+> @@ -104,7 +104,7 @@ static int mmc_decode_cid(struct mmc_card *card)
+>         case 3: /* MMC v3.1 - v3.3 */
+>         case 4: /* MMC v4 */
+>                 card->cid.manfid        = UNSTUFF_BITS(resp, 120, 8);
+> -               card->cid.oemid         = UNSTUFF_BITS(resp, 104, 8);
+> +               card->cid.oemid         = UNSTUFF_BITS(resp, 104, 16);
+>                 card->cid.prod_name[0]  = UNSTUFF_BITS(resp, 96, 8);
+>                 card->cid.prod_name[1]  = UNSTUFF_BITS(resp, 88, 8);
+>                 card->cid.prod_name[2]  = UNSTUFF_BITS(resp, 80, 8);
 > --
-> 2.34.1
+> 2.41.0
 >
