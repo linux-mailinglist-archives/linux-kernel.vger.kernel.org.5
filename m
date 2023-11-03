@@ -2,56 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BC0457E0331
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 13:52:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DC707E0334
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 13:53:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346763AbjKCMwk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 08:52:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59744 "EHLO
+        id S1376310AbjKCMxS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 08:53:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229790AbjKCMwi (ORCPT
+        with ESMTP id S229790AbjKCMxQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 08:52:38 -0400
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E23FCE;
-        Fri,  3 Nov 2023 05:52:32 -0700 (PDT)
-Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.207])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4SMLGZ168Hz6K982;
-        Fri,  3 Nov 2023 20:51:34 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Fri, 3 Nov
- 2023 12:52:29 +0000
-Date:   Fri, 3 Nov 2023 12:52:28 +0000
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
-CC:     James Morse <james.morse@arm.com>, <linux-pm@vger.kernel.org>,
-        <loongarch@lists.linux.dev>, <linux-acpi@vger.kernel.org>,
-        <linux-arch@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-riscv@lists.infradead.org>, <kvmarm@lists.linux.dev>,
-        <x86@kernel.org>, Salil Mehta <salil.mehta@huawei.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        <jianyong.wu@arm.com>, <justin.he@arm.com>
-Subject: Re: [RFC PATCH v2 15/35] ACPI: processor: Add support for
- processors described as container packages
-Message-ID: <20231103125228.00005c94@Huawei.com>
-In-Reply-To: <ZUTOwuZVLvzptuuP@shell.armlinux.org.uk>
-References: <20230913163823.7880-1-james.morse@arm.com>
-        <20230913163823.7880-16-james.morse@arm.com>
-        <20230914145353.000072e2@Huawei.com>
-        <ZUTOwuZVLvzptuuP@shell.armlinux.org.uk>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+        Fri, 3 Nov 2023 08:53:16 -0400
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EB7F83
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 05:53:10 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1qytff-0007Wx-6h; Fri, 03 Nov 2023 13:53:07 +0100
+Received: from [2a0a:edc0:2:b01:1d::c0] (helo=ptx.whiteo.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <ore@pengutronix.de>)
+        id 1qytfe-006Jv8-9h; Fri, 03 Nov 2023 13:53:06 +0100
+Received: from ore by ptx.whiteo.stw.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1qytfe-000CD8-6q; Fri, 03 Nov 2023 13:53:06 +0100
+Date:   Fri, 3 Nov 2023 13:53:06 +0100
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     devicetree@vger.kernel.org, Fabio Estevam <festevam@gmail.com>,
+        kernel@pengutronix.de, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        =?utf-8?B?U8O4cmVu?= Andersen <san@skov.dk>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2 2/2] arm64: dts: freescale: Add SKOV IMX8MP CPU revB
+ board
+Message-ID: <20231103125306.GB40819@pengutronix.de>
+References: <20231103105305.2459143-1-o.rempel@pengutronix.de>
+ <20231103105305.2459143-2-o.rempel@pengutronix.de>
+ <1ee285d7-6bc9-43ad-9ec9-a8aaed4452b5@lunn.ch>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.202.227.76]
-X-ClientProxiedBy: lhrpeml100002.china.huawei.com (7.191.160.241) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1ee285d7-6bc9-43ad-9ec9-a8aaed4452b5@lunn.ch>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -60,89 +68,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 3 Nov 2023 10:43:14 +0000
-"Russell King (Oracle)" <linux@armlinux.org.uk> wrote:
+Hi Andrew,
 
-> On Thu, Sep 14, 2023 at 02:53:53PM +0100, Jonathan Cameron wrote:
-> > On Wed, 13 Sep 2023 16:38:03 +0000
-> > James Morse <james.morse@arm.com> wrote:
-> >   
-> > > ACPI has two ways of describing processors in the DSDT. Either as a device
-> > > object with HID ACPI0007, or as a type 'C' package inside a Processor
-> > > Container. The ACPI processor driver probes CPUs described as devices, but
-> > > not those described as packages.
-> > >   
-> > 
-> > Specification reference needed...
-> > 
-> > Terminology wise, I'd just refer to Processor() objects as I think they
-> > are named objects rather than data terms like a package (Which include
-> > a PkgLength etc)  
+On Fri, Nov 03, 2023 at 01:35:46PM +0100, Andrew Lunn wrote:
+> > +			port@2 {
+> > +				reg = <2>;
+> > +				label = "cpu";
+> > +				ethernet = <&eqos>;
+> > +				/* 2ns rgmii-rxid is implemented on PCB.
+> > +				 * Switch should add only rgmii-txid.
+> > +				 */
 > 
-> I'm not sure what kind of reference you want for the above. Looking in
-> ACPI 6.5, I've found in 5.2.12:
+> Its unusual to actually see that. Its even more unusual its only one
+> clock line. Can you actually see it on the PCB?
+
+Yes. I even made a delay calculation by measuring this trace on PCB,
+just to make sure I see it correctly.
+
+> > +				phy-mode = "rgmii-txid";
+> > +				tx-internal-delay-ps = <2000>;
 > 
-> "Starting with ACPI Specification 6.3, the use of the Processor() object
-> was deprecated. Only legacy systems should continue with this usage. On
-> the Itanium architecture only, a _UID is provided for the Processor()
-> that is a string object. This usage of _UID is also deprecated since it
-> can preclude an OSPM from being able to match a processor to a
-> non-enumerable device, such as those defined in the MADT. From ACPI
-> Specification 6.3 onward, all processor objects for all architectures
-> except Itanium must now use Device() objects with an _HID of ACPI0007,
-> and use only integer _UID values."
-> 
-> Also, there is:
-> 
-> https://uefi.org/specs/ACPI/6.5/08_Processor_Configuration_and_Control.html#declaring-processors
+> Is this actually needed? rgmii-txid should add 2ns delay. Since this
+> apparently works, i'm assuming setting tx-internal-delay-ps to 2ns
+> does nothing, otherwise you would have a 4ns delay.
 
-That pair of refs, just as 'where to look if you care' cross references, seem
-to cover it as well as possible.
+Without it the driver will complain:
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/net/dsa/microchip/ksz_common.c?h=v6.6#n3496
 
-> 
-> Unfortunately, using the search facility on that site to try and find
-> Processor() doesn't work - it appears to strip the "()" characters from
-> the search (which is completely dumb, why do search facilities do that?)
+but it works as expected.
 
-Yeah. Not great.
-
-> 
-> > > The missing probe for CPUs described as packages creates a problem for
-> > > moving the cpu_register() calls into the acpi_processor driver, as CPUs
-> > > described like this don't get registered, leading to errors from other
-> > > subsystems when they try to add new sysfs entries to the CPU node.
-> > > (e.g. topology_sysfs_init()'s use of topology_add_dev() via cpuhp)
-> > > 
-> > > To fix this, parse the processor container and call acpi_processor_add()
-> > > for each processor that is discovered like this. The processor container
-> > > handler is added with acpi_scan_add_handler(), so no detach call will
-> > > arrive.
-> > > 
-> > > Qemu TCG describes CPUs using packages in a processor container.  
-> > 
-> > processor terms in a processor container.   
-> 
-> Are you wanting this to be:
-> 
-> "Qemu TCG describes CPUs using processor terms in a processor
-> container."
-> 
-> ? Searching the ACPI spec for "processor terms" (with or without quotes)
-> only brings up results for "terms" - yet another reason to hate site-
-> provided search facilities, I don't know why sites bother. :(
-Yup. I just use the PDFs partly for that reason.
-
-Not possible to find in 6.5 because as it's deprecated they removed the information..
-Look at ACPI 6.3 and there is 19.6.108 Processor (Declare Processor)
-deep in the ASL operator reference
-
-Wording wise I'm not sure exactly what they should be other than they
-aren't packages (if my rough ASL understanding is right).
-Different byte encoding.
-
-Jonathan
-
-
-
-> 
-
+Regards,
+Oleksij
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
