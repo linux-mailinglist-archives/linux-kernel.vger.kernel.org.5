@@ -2,63 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A63A7E09F8
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 21:11:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B5DD7E0A08
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 21:17:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378155AbjKCULu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 16:11:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44560 "EHLO
+        id S1378162AbjKCURT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 16:17:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230379AbjKCULs (ORCPT
+        with ESMTP id S229605AbjKCURR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 16:11:48 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68B92D61;
-        Fri,  3 Nov 2023 13:11:45 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 40308C433C8;
-        Fri,  3 Nov 2023 20:11:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699042304;
-        bh=3LHRc8rww849/6wAkBU/sr464fjAyyToo/wNBBArVDM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mLV9uboIii2WaWOBW6KVPc7nBjq7UPg4F0/bfPRm2WrzM1B0UQCZAg7yrJ6mghEDJ
-         ka7eDHgGCSTM33dWvfWmE9yTtGNDbdvUX3DZLefVVoezOI+bbgEPGaGgh10oRg9oVl
-         M1w3CZzdoGJMD+z08Ws67bK9JNpxHj/FBcgGseI3a93Ofr44155ph8W3yHXKe16+ZI
-         RnF7d6VjSp9PIouVAxkCsgVLLQ5Rt1WG7v4iLJ0XSTDtH87Na4BZ4Ik5gxQ9g5Wfiy
-         SWk0xhEQwVFH0p7e7WX1X9I6+ahg2hQDLrFhRWp7TAqiTwx1SVBIfPdxftosbX0uow
-         dEZgmpsCtli+A==
-Date:   Fri, 3 Nov 2023 13:15:49 -0700
-From:   Bjorn Andersson <andersson@kernel.org>
-To:     Abel Vesa <abel.vesa@linaro.org>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Kevin Hilman <khilman@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andy Gross <agross@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
-        Vikash Garodia <quic_vgarodia@quicinc.com>,
-        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Taniya Das <tdas@qti.qualcomm.com>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-media@vger.kernel.org,
-        Jagadeesh Kona <quic_jkona@quicinc.com>
-Subject: Re: [PATCH RESEND v3 4/5] clk: qcom: Use HW_CTRL_TRIGGER flag to
- switch video GDSC to HW mode
-Message-ID: <v4dnsawo7s74spccrsvjwmal73tqfq4aptiny25tyyp6ungxha@jlbywvcssqtl>
-References: <20231101-gdsc-hwctrl-v3-0-0740ae6b2b04@linaro.org>
- <20231101-gdsc-hwctrl-v3-4-0740ae6b2b04@linaro.org>
+        Fri, 3 Nov 2023 16:17:17 -0400
+Received: from mx0a-002e3701.pphosted.com (mx0a-002e3701.pphosted.com [148.163.147.86])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53B38D53;
+        Fri,  3 Nov 2023 13:17:14 -0700 (PDT)
+Received: from pps.filterd (m0150241.ppops.net [127.0.0.1])
+        by mx0a-002e3701.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A3InJ4f001508;
+        Fri, 3 Nov 2023 20:16:51 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pps0720; bh=D51GjDb7/ozAJNlUYKNTwI4ApLuMChHWlUEbM3CJ6no=;
+ b=mEea6OpQ4GyhnF36+uGnR03Vx1ICKSCu6OxzE4yX+cbJ6lZDumNQVs6DbbTD0A9eauyy
+ g6s7jyvesL+yGSqFNIBsyeUJbdgqwdLPEY8MwMl8hF7MOl9/csH654p4dyiL76pXjgB8
+ vC+8zIVu1RbFbKK/ZBcfPojc9qgCiE/GS9pPEMGxRezsZQy60BECCIGxJ1gJu0bgdYK9
+ PbqRsZNXlnd+ZBL8vX6IhuGbHX8Lx5+2U9T+v9uxqxyBZrvHl9Cjr6P297DOTnBfeqxS
+ mJWs0TSX/DU4HShDVVjcAhARK9Uz3ucTScaxKKlyDeCErEBC8hqCaKVSoDmw2eNLmLIi Sw== 
+Received: from p1lg14878.it.hpe.com ([16.230.97.204])
+        by mx0a-002e3701.pphosted.com (PPS) with ESMTPS id 3u4twf02jx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 03 Nov 2023 20:16:51 +0000
+Received: from p1lg14885.dc01.its.hpecorp.net (unknown [10.119.18.236])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by p1lg14878.it.hpe.com (Postfix) with ESMTPS id 7C11E13197;
+        Fri,  3 Nov 2023 20:16:43 +0000 (UTC)
+Received: from swahl-home.5wahls.com (unknown [16.231.227.36])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by p1lg14885.dc01.its.hpecorp.net (Postfix) with ESMTPS id CD82A80045D;
+        Fri,  3 Nov 2023 20:16:39 +0000 (UTC)
+Date:   Fri, 3 Nov 2023 15:16:38 -0500
+From:   Steve Wahl <steve.wahl@hpe.com>
+To:     Andrew Cooper <andrew.cooper3@citrix.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, Steve Wahl <steve.wahl@hpe.com>,
+        Justin Ernst <justin.ernst@hpe.com>,
+        Kyle Meyer <kyle.meyer@hpe.com>,
+        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+        Russ Anderson <russ.anderson@hpe.com>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, linux-pci@vger.kernel.org
+Subject: Re: [PATCH 3/3] x86/apic: Drop struct local_apic
+Message-ID: <ZUVVJkpGg4hoF/Hs@swahl-home.5wahls.com>
+References: <20231102-x86-apic-v1-0-bf049a2a0ed6@citrix.com>
+ <20231102-x86-apic-v1-3-bf049a2a0ed6@citrix.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231101-gdsc-hwctrl-v3-4-0740ae6b2b04@linaro.org>
-X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+In-Reply-To: <20231102-x86-apic-v1-3-bf049a2a0ed6@citrix.com>
+X-Proofpoint-ORIG-GUID: kxI0VjgnmO0WDNPr5wrLa66Msn4A28Gw
+X-Proofpoint-GUID: kxI0VjgnmO0WDNPr5wrLa66Msn4A28Gw
+X-HPE-SCL: -1
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-03_19,2023-11-02_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 phishscore=0
+ mlxlogscore=999 lowpriorityscore=0 clxscore=1015 adultscore=0 spamscore=0
+ impostorscore=0 priorityscore=1501 suspectscore=0 mlxscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2310240000
+ definitions=main-2311030170
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,138 +94,308 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 01, 2023 at 11:04:10AM +0200, Abel Vesa wrote:
-> From: Jagadeesh Kona <quic_jkona@quicinc.com>
+On Thu, Nov 02, 2023 at 12:26:21PM +0000, Andrew Cooper wrote:
+> This type predates recorded history in tglx/history.git, making it older
+> than Feb 5th 2002.
 > 
-> The current HW_CTRL flag switches the video GDSC to HW control mode as
-> part of GDSC enable itself, instead of that use HW_CTRL_TRIGGER flag to
-> give consumer drivers more control and switch the GDSC mode as and when
-> required.
+> This structure is literally old enough to drink in most juristictions in
+> the world, and has not been used once in that time.
 > 
-> HW_CTRL_TRIGGER flag allows consumer drivers to switch the video GDSC to
-> HW/SW control modes at runtime using dev_pm_genpd_set_hwmode API.
+> Lay it to rest in /dev/null.
 > 
-
-This states what the code currently does, and what the new code will do.
-But I don't find that it adequately describes _why_ this is done.
-
-
-In the current implementation, the hardware is might collapse the GDSC
-anytime between gdsc_enable() and gdsc_disable(). By giving "drivers
-more control" the time spent in this state is reduced to some fraction
-of that span, which to me implies higher power consumption.
-
-Under the assumption that we don't want to consume more power without
-reason, I'm forced to guess that there might be some scenarios that we
-want this feature to keep the GDSC non-collapsed against the indication
-of the hardware - to avoid some instability somewhere, perhaps?
-
-Regards,
-Bjorn
-
-> Signed-off-by: Jagadeesh Kona <quic_jkona@quicinc.com>
-> Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+> Signed-off-by: Andrew Cooper <andrew.cooper3@citrix.com>
 > ---
->  drivers/clk/qcom/videocc-sc7180.c | 2 +-
->  drivers/clk/qcom/videocc-sc7280.c | 2 +-
->  drivers/clk/qcom/videocc-sdm845.c | 4 ++--
->  drivers/clk/qcom/videocc-sm8250.c | 4 ++--
->  drivers/clk/qcom/videocc-sm8550.c | 4 ++--
->  5 files changed, 8 insertions(+), 8 deletions(-)
+> There is perhaps something to be said for the longevity of the comment.
+> "Not terribly well tested" certainly hasn't bitrotted in all this time.
+
+   :-)  !!!
+
+Reveiewed-by: Steve Wahl <steve.wahl@hpe.com>
+
+
+> ---
+>  arch/x86/include/asm/apicdef.h | 260 -----------------------------------------
+>  1 file changed, 260 deletions(-)
 > 
-> diff --git a/drivers/clk/qcom/videocc-sc7180.c b/drivers/clk/qcom/videocc-sc7180.c
-> index 5b9b54f616b8..51439f7ba70c 100644
-> --- a/drivers/clk/qcom/videocc-sc7180.c
-> +++ b/drivers/clk/qcom/videocc-sc7180.c
-> @@ -166,7 +166,7 @@ static struct gdsc vcodec0_gdsc = {
->  	.pd = {
->  		.name = "vcodec0_gdsc",
->  	},
-> -	.flags = HW_CTRL,
-> +	.flags = HW_CTRL_TRIGGER,
->  	.pwrsts = PWRSTS_OFF_ON,
->  };
+> diff --git a/arch/x86/include/asm/apicdef.h b/arch/x86/include/asm/apicdef.h
+> index ddcbf00db19d..094106b6a538 100644
+> --- a/arch/x86/include/asm/apicdef.h
+> +++ b/arch/x86/include/asm/apicdef.h
+> @@ -172,270 +172,10 @@
+>  #define APIC_CPUID(apicid)	((apicid) & XAPIC_DEST_CPUS_MASK)
+>  #define NUM_APIC_CLUSTERS	((BAD_APICID + 1) >> XAPIC_DEST_CPUS_SHIFT)
 >  
-> diff --git a/drivers/clk/qcom/videocc-sc7280.c b/drivers/clk/qcom/videocc-sc7280.c
-> index 615695d82319..3d07b1e95986 100644
-> --- a/drivers/clk/qcom/videocc-sc7280.c
-> +++ b/drivers/clk/qcom/videocc-sc7280.c
-> @@ -236,7 +236,7 @@ static struct gdsc mvs0_gdsc = {
->  		.name = "mvs0_gdsc",
->  	},
->  	.pwrsts = PWRSTS_OFF_ON,
-> -	.flags = HW_CTRL | RETAIN_FF_ENABLE,
-> +	.flags = HW_CTRL_TRIGGER | RETAIN_FF_ENABLE,
->  };
+> -#ifndef __ASSEMBLY__
+> -/*
+> - * the local APIC register structure, memory mapped. Not terribly well
+> - * tested, but we might eventually use this one in the future - the
+> - * problem why we cannot use it right now is the P5 APIC, it has an
+> - * errata which cannot take 8-bit reads and writes, only 32-bit ones ...
+> - */
+> -#define u32 unsigned int
+> -
+> -struct local_apic {
+> -
+> -/*000*/	struct { u32 __reserved[4]; } __reserved_01;
+> -
+> -/*010*/	struct { u32 __reserved[4]; } __reserved_02;
+> -
+> -/*020*/	struct { /* APIC ID Register */
+> -		u32   __reserved_1	: 24,
+> -			phys_apic_id	:  4,
+> -			__reserved_2	:  4;
+> -		u32 __reserved[3];
+> -	} id;
+> -
+> -/*030*/	const
+> -	struct { /* APIC Version Register */
+> -		u32   version		:  8,
+> -			__reserved_1	:  8,
+> -			max_lvt		:  8,
+> -			__reserved_2	:  8;
+> -		u32 __reserved[3];
+> -	} version;
+> -
+> -/*040*/	struct { u32 __reserved[4]; } __reserved_03;
+> -
+> -/*050*/	struct { u32 __reserved[4]; } __reserved_04;
+> -
+> -/*060*/	struct { u32 __reserved[4]; } __reserved_05;
+> -
+> -/*070*/	struct { u32 __reserved[4]; } __reserved_06;
+> -
+> -/*080*/	struct { /* Task Priority Register */
+> -		u32   priority	:  8,
+> -			__reserved_1	: 24;
+> -		u32 __reserved_2[3];
+> -	} tpr;
+> -
+> -/*090*/	const
+> -	struct { /* Arbitration Priority Register */
+> -		u32   priority	:  8,
+> -			__reserved_1	: 24;
+> -		u32 __reserved_2[3];
+> -	} apr;
+> -
+> -/*0A0*/	const
+> -	struct { /* Processor Priority Register */
+> -		u32   priority	:  8,
+> -			__reserved_1	: 24;
+> -		u32 __reserved_2[3];
+> -	} ppr;
+> -
+> -/*0B0*/	struct { /* End Of Interrupt Register */
+> -		u32   eoi;
+> -		u32 __reserved[3];
+> -	} eoi;
+> -
+> -/*0C0*/	struct { u32 __reserved[4]; } __reserved_07;
+> -
+> -/*0D0*/	struct { /* Logical Destination Register */
+> -		u32   __reserved_1	: 24,
+> -			logical_dest	:  8;
+> -		u32 __reserved_2[3];
+> -	} ldr;
+> -
+> -/*0E0*/	struct { /* Destination Format Register */
+> -		u32   __reserved_1	: 28,
+> -			model		:  4;
+> -		u32 __reserved_2[3];
+> -	} dfr;
+> -
+> -/*0F0*/	struct { /* Spurious Interrupt Vector Register */
+> -		u32	spurious_vector	:  8,
+> -			apic_enabled	:  1,
+> -			focus_cpu	:  1,
+> -			__reserved_2	: 22;
+> -		u32 __reserved_3[3];
+> -	} svr;
+> -
+> -/*100*/	struct { /* In Service Register */
+> -/*170*/		u32 bitfield;
+> -		u32 __reserved[3];
+> -	} isr [8];
+> -
+> -/*180*/	struct { /* Trigger Mode Register */
+> -/*1F0*/		u32 bitfield;
+> -		u32 __reserved[3];
+> -	} tmr [8];
+> -
+> -/*200*/	struct { /* Interrupt Request Register */
+> -/*270*/		u32 bitfield;
+> -		u32 __reserved[3];
+> -	} irr [8];
+> -
+> -/*280*/	union { /* Error Status Register */
+> -		struct {
+> -			u32   send_cs_error			:  1,
+> -				receive_cs_error		:  1,
+> -				send_accept_error		:  1,
+> -				receive_accept_error		:  1,
+> -				__reserved_1			:  1,
+> -				send_illegal_vector		:  1,
+> -				receive_illegal_vector		:  1,
+> -				illegal_register_address	:  1,
+> -				__reserved_2			: 24;
+> -			u32 __reserved_3[3];
+> -		} error_bits;
+> -		struct {
+> -			u32 errors;
+> -			u32 __reserved_3[3];
+> -		} all_errors;
+> -	} esr;
+> -
+> -/*290*/	struct { u32 __reserved[4]; } __reserved_08;
+> -
+> -/*2A0*/	struct { u32 __reserved[4]; } __reserved_09;
+> -
+> -/*2B0*/	struct { u32 __reserved[4]; } __reserved_10;
+> -
+> -/*2C0*/	struct { u32 __reserved[4]; } __reserved_11;
+> -
+> -/*2D0*/	struct { u32 __reserved[4]; } __reserved_12;
+> -
+> -/*2E0*/	struct { u32 __reserved[4]; } __reserved_13;
+> -
+> -/*2F0*/	struct { u32 __reserved[4]; } __reserved_14;
+> -
+> -/*300*/	struct { /* Interrupt Command Register 1 */
+> -		u32   vector			:  8,
+> -			delivery_mode		:  3,
+> -			destination_mode	:  1,
+> -			delivery_status		:  1,
+> -			__reserved_1		:  1,
+> -			level			:  1,
+> -			trigger			:  1,
+> -			__reserved_2		:  2,
+> -			shorthand		:  2,
+> -			__reserved_3		:  12;
+> -		u32 __reserved_4[3];
+> -	} icr1;
+> -
+> -/*310*/	struct { /* Interrupt Command Register 2 */
+> -		union {
+> -			u32   __reserved_1	: 24,
+> -				phys_dest	:  4,
+> -				__reserved_2	:  4;
+> -			u32   __reserved_3	: 24,
+> -				logical_dest	:  8;
+> -		} dest;
+> -		u32 __reserved_4[3];
+> -	} icr2;
+> -
+> -/*320*/	struct { /* LVT - Timer */
+> -		u32   vector		:  8,
+> -			__reserved_1	:  4,
+> -			delivery_status	:  1,
+> -			__reserved_2	:  3,
+> -			mask		:  1,
+> -			timer_mode	:  1,
+> -			__reserved_3	: 14;
+> -		u32 __reserved_4[3];
+> -	} lvt_timer;
+> -
+> -/*330*/	struct { /* LVT - Thermal Sensor */
+> -		u32  vector		:  8,
+> -			delivery_mode	:  3,
+> -			__reserved_1	:  1,
+> -			delivery_status	:  1,
+> -			__reserved_2	:  3,
+> -			mask		:  1,
+> -			__reserved_3	: 15;
+> -		u32 __reserved_4[3];
+> -	} lvt_thermal;
+> -
+> -/*340*/	struct { /* LVT - Performance Counter */
+> -		u32   vector		:  8,
+> -			delivery_mode	:  3,
+> -			__reserved_1	:  1,
+> -			delivery_status	:  1,
+> -			__reserved_2	:  3,
+> -			mask		:  1,
+> -			__reserved_3	: 15;
+> -		u32 __reserved_4[3];
+> -	} lvt_pc;
+> -
+> -/*350*/	struct { /* LVT - LINT0 */
+> -		u32   vector		:  8,
+> -			delivery_mode	:  3,
+> -			__reserved_1	:  1,
+> -			delivery_status	:  1,
+> -			polarity	:  1,
+> -			remote_irr	:  1,
+> -			trigger		:  1,
+> -			mask		:  1,
+> -			__reserved_2	: 15;
+> -		u32 __reserved_3[3];
+> -	} lvt_lint0;
+> -
+> -/*360*/	struct { /* LVT - LINT1 */
+> -		u32   vector		:  8,
+> -			delivery_mode	:  3,
+> -			__reserved_1	:  1,
+> -			delivery_status	:  1,
+> -			polarity	:  1,
+> -			remote_irr	:  1,
+> -			trigger		:  1,
+> -			mask		:  1,
+> -			__reserved_2	: 15;
+> -		u32 __reserved_3[3];
+> -	} lvt_lint1;
+> -
+> -/*370*/	struct { /* LVT - Error */
+> -		u32   vector		:  8,
+> -			__reserved_1	:  4,
+> -			delivery_status	:  1,
+> -			__reserved_2	:  3,
+> -			mask		:  1,
+> -			__reserved_3	: 15;
+> -		u32 __reserved_4[3];
+> -	} lvt_error;
+> -
+> -/*380*/	struct { /* Timer Initial Count Register */
+> -		u32   initial_count;
+> -		u32 __reserved_2[3];
+> -	} timer_icr;
+> -
+> -/*390*/	const
+> -	struct { /* Timer Current Count Register */
+> -		u32   curr_count;
+> -		u32 __reserved_2[3];
+> -	} timer_ccr;
+> -
+> -/*3A0*/	struct { u32 __reserved[4]; } __reserved_16;
+> -
+> -/*3B0*/	struct { u32 __reserved[4]; } __reserved_17;
+> -
+> -/*3C0*/	struct { u32 __reserved[4]; } __reserved_18;
+> -
+> -/*3D0*/	struct { u32 __reserved[4]; } __reserved_19;
+> -
+> -/*3E0*/	struct { /* Timer Divide Configuration Register */
+> -		u32   divisor		:  4,
+> -			__reserved_1	: 28;
+> -		u32 __reserved_2[3];
+> -	} timer_dcr;
+> -
+> -/*3F0*/	struct { u32 __reserved[4]; } __reserved_20;
+> -
+> -} __attribute__ ((packed));
+> -
+> -#undef u32
+> -
+>  #ifdef CONFIG_X86_32
+>   #define BAD_APICID 0xFFu
+>  #else
+>   #define BAD_APICID 0xFFFFu
+>  #endif
 >  
->  static struct gdsc mvsc_gdsc = {
-> diff --git a/drivers/clk/qcom/videocc-sdm845.c b/drivers/clk/qcom/videocc-sdm845.c
-> index c77a4dd5d39c..dad011c48973 100644
-> --- a/drivers/clk/qcom/videocc-sdm845.c
-> +++ b/drivers/clk/qcom/videocc-sdm845.c
-> @@ -260,7 +260,7 @@ static struct gdsc vcodec0_gdsc = {
->  	},
->  	.cxcs = (unsigned int []){ 0x890, 0x930 },
->  	.cxc_count = 2,
-> -	.flags = HW_CTRL | POLL_CFG_GDSCR,
-> +	.flags = HW_CTRL_TRIGGER | POLL_CFG_GDSCR,
->  	.pwrsts = PWRSTS_OFF_ON,
->  };
->  
-> @@ -271,7 +271,7 @@ static struct gdsc vcodec1_gdsc = {
->  	},
->  	.cxcs = (unsigned int []){ 0x8d0, 0x950 },
->  	.cxc_count = 2,
-> -	.flags = HW_CTRL | POLL_CFG_GDSCR,
-> +	.flags = HW_CTRL_TRIGGER | POLL_CFG_GDSCR,
->  	.pwrsts = PWRSTS_OFF_ON,
->  };
->  
-> diff --git a/drivers/clk/qcom/videocc-sm8250.c b/drivers/clk/qcom/videocc-sm8250.c
-> index ad46c4014a40..c1b73d852f1c 100644
-> --- a/drivers/clk/qcom/videocc-sm8250.c
-> +++ b/drivers/clk/qcom/videocc-sm8250.c
-> @@ -293,7 +293,7 @@ static struct gdsc mvs0_gdsc = {
->  	.pd = {
->  		.name = "mvs0_gdsc",
->  	},
-> -	.flags = HW_CTRL,
-> +	.flags = HW_CTRL_TRIGGER,
->  	.pwrsts = PWRSTS_OFF_ON,
->  };
->  
-> @@ -302,7 +302,7 @@ static struct gdsc mvs1_gdsc = {
->  	.pd = {
->  		.name = "mvs1_gdsc",
->  	},
-> -	.flags = HW_CTRL,
-> +	.flags = HW_CTRL_TRIGGER,
->  	.pwrsts = PWRSTS_OFF_ON,
->  };
->  
-> diff --git a/drivers/clk/qcom/videocc-sm8550.c b/drivers/clk/qcom/videocc-sm8550.c
-> index f3c9dfaee968..404c6600edae 100644
-> --- a/drivers/clk/qcom/videocc-sm8550.c
-> +++ b/drivers/clk/qcom/videocc-sm8550.c
-> @@ -322,7 +322,7 @@ static struct gdsc video_cc_mvs0_gdsc = {
->  	},
->  	.pwrsts = PWRSTS_OFF_ON,
->  	.parent = &video_cc_mvs0c_gdsc.pd,
-> -	.flags = POLL_CFG_GDSCR | RETAIN_FF_ENABLE | HW_CTRL,
-> +	.flags = POLL_CFG_GDSCR | RETAIN_FF_ENABLE | HW_CTRL_TRIGGER,
->  };
->  
->  static struct gdsc video_cc_mvs1c_gdsc = {
-> @@ -347,7 +347,7 @@ static struct gdsc video_cc_mvs1_gdsc = {
->  	},
->  	.pwrsts = PWRSTS_OFF_ON,
->  	.parent = &video_cc_mvs1c_gdsc.pd,
-> -	.flags = POLL_CFG_GDSCR | RETAIN_FF_ENABLE | HW_CTRL,
-> +	.flags = POLL_CFG_GDSCR | RETAIN_FF_ENABLE | HW_CTRL_TRIGGER,
->  };
->  
->  static struct clk_regmap *video_cc_sm8550_clocks[] = {
+> -#endif /* !__ASSEMBLY__ */
+>  #endif /* _ASM_X86_APICDEF_H */
 > 
 > -- 
-> 2.34.1
+> 2.30.2
 > 
+
+-- 
+Steve Wahl, Hewlett Packard Enterprise
