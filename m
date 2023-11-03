@@ -2,131 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 13BA57E078E
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 18:37:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83ACA7E078B
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 18:37:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230313AbjKCRhV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 13:37:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36908 "EHLO
+        id S230185AbjKCRhR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 13:37:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230235AbjKCRhT (ORCPT
+        with ESMTP id S229450AbjKCRhQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 13:37:19 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D8D3136
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 10:37:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699033033; x=1730569033;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=7KJooKNsl5xSOp/w9r0lHX9FUUzG2PkGtQPfNPAX2J8=;
-  b=iWjS1FWVtO7/zL1Tq1z1FEMY4ndf8rF3fnwa01M9/8Fti7W8M6cw9JsU
-   CeVSdsK/xKJlA0+qA6k9N0wrSaZxJ6JKOH2MwQjYipjv4Wz9LvVi8tjiZ
-   ngf7v3a4e0N6W8sC3KTCmQyLcCqzsO7iyR1QCp7CYEEQb+y5BUa3x3UUl
-   IpE9cFRxJa2wZofVCBoFwLhR0scnVEKosid+o06dqtwVPzPDQjgbYAfVT
-   WJvhP15i4DgA6BWvuak6vaC39YyGM5S+4V4t4tEQcYn7IvpXmC4DSgs+Q
-   8fbzOFtT7iHx9kynLsdhV3rSeU4Df/nk/Zk2asrviBpnrq3ctELVpHcxp
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10883"; a="10524249"
-X-IronPort-AV: E=Sophos;i="6.03,273,1694761200"; 
-   d="scan'208";a="10524249"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2023 10:37:13 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.03,273,1694761200"; 
-   d="scan'208";a="9809121"
-Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by fmviesa001.fm.intel.com with ESMTP; 03 Nov 2023 10:37:11 -0700
-Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qyy6W-0002lx-2x;
-        Fri, 03 Nov 2023 17:37:08 +0000
-Date:   Sat, 4 Nov 2023 01:36:36 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Lyude Paul <lyude@redhat.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Karol Herbst <kherbst@redhat.com>,
-        Ben Skeggs <bskeggs@redhat.com>
-Subject: drivers/gpu/drm/nouveau/dispnv50/crcc57d.c:40:17: sparse: sparse:
- cast removes address space '__iomem' of expression
-Message-ID: <202311040149.o3KPXEV2-lkp@intel.com>
+        Fri, 3 Nov 2023 13:37:16 -0400
+Received: from mail-1.server.selfnet.de (mail-1.server.selfnet.de [141.70.126.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65116D4D;
+        Fri,  3 Nov 2023 10:37:08 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 7097742119;
+        Fri,  3 Nov 2023 18:37:01 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=selfnet.de; s=selfnet;
+        t=1699033023;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=DMSZVLxL4ogAD5wj1ttv7z4THeQR0MDtGmLU6KGKDuA=;
+        b=A34KeUSFMP/CwZ0SmwAAgeVyYDX9tSMB41HtasB+kX7eoQ4nkrOaGNjEiqRZACcGZwdX6s
+        HgyvS84YNP6Qqd+g33MqNrkknYC6utbyqtDdrQ5FoafB2RjN4xJF45PiQuoovZRcvbuBtQ
+        THOLXAG5sLNzqPTF0/dgY3zggJNaVp/yPypZUDKx7dIm9xrdyW6VTVTwaLbx2rluiM+EzC
+        cjgpRMCJ1+WMBbM9OjFdIczhmykagOa9SKnolCzhNz4DxE+YjXN1V30p9uSUgfLRc4UyaF
+        zWZFY1O3lkYFpbFkngWfjJLuiz2khWV53WQ0wxw2Z1RQnSZpU/ey/sOh5X2NEw==
+Authentication-Results: mail-1.server.selfnet.de;
+        auth=pass smtp.auth=marcovr smtp.mailfrom=marcovr@selfnet.de
+From:   Marco von Rosenberg <marcovr@selfnet.de>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>
+Cc:     Florian Fainelli <florian.fainelli@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Marco von Rosenberg <marcovr@selfnet.de>
+Subject: Re: [PATCH] net: phy: broadcom: Wire suspend/resume for BCM54612E
+Date:   Fri, 03 Nov 2023 18:37:00 +0100
+Message-ID: <2315175.ElGaqSPkdT@5cd116mnfx>
+In-Reply-To: <999020b2-692b-4582-8ca0-e19c7b45ee92@gmail.com>
+References: <20231030225446.17422-1-marcovr@selfnet.de> <4890615.31r3eYUQgx@5cd116mnfx>
+ <999020b2-692b-4582-8ca0-e19c7b45ee92@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   8f6f76a6a29f36d2f3e4510d0bde5046672f6924
-commit: 57cbdbe65e5f9ba9bfd67b66bc3ce24ef1c54643 drm/nouveau/kms/nv140-: Use hard-coded wndws or core channel for CRC channel
-date:   2 years ago
-config: x86_64-randconfig-123-20231101 (https://download.01.org/0day-ci/archive/20231104/202311040149.o3KPXEV2-lkp@intel.com/config)
-compiler: gcc-11 (Debian 11.3.0-12) 11.3.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231104/202311040149.o3KPXEV2-lkp@intel.com/reproduce)
+On Friday, November 3, 2023 4:39:55 AM CET Florian Fainelli wrote:
+> We have an unconditional call to __phy_resume() in phy_start() and we
+> should always have a call to phy_start() regardless of the path though
+> you have a point Andrew that we should ensure that by the time
+> phy_init_hw() is called we have taken the device out of IDDQ-SR.
+> 
+> > I agree with all of your points. This is just one way which happens to
+> > solve this specific problem. Of course it might be asymmetric to see the
+> > patch as a solution to my problem. However is there anything
+> > fundamentally wrong with adding suspend/resume callbacks? I see some
+> > other drivers having these callbacks defined and some not (it seems a bit
+> > inconsistent throughout the drivers in broadcom.c to be honest).
+> > 
+> > I'm wondering if I should just omit this whole "motivation" paragraph in
+> > the commit message and just use the commit message of commit 38b6a9073007
+> > ("net: phy: broadcom: Wire suspend/resume for BCM50610 and BCM50610M") as
+> > a template. I mean, regardless of my motivation, I would say it makes
+> > sense for this PHY to support suspend and resume.
+> 
+> I would remove the motivation aspect from the paragraph and we could
+> also improve the driver a bit to ensure that IDDQ-SR is disabled upon
+> config_init(). Other than that your patch is just fine with me. Can you
+> re-submit in a few days when net-next opens again?
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311040149.o3KPXEV2-lkp@intel.com/
+Ok, I'll re-submit the patch when net-next is open again with an updated 
+commit message. And I agree, disabling IDDQ-SR in config_init() would make 
+sense for a future patch since this would fix this potential issue also for 
+other PHYs.
 
-sparse warnings: (new ones prefixed by >>)
->> drivers/gpu/drm/nouveau/dispnv50/crcc57d.c:40:17: sparse: sparse: cast removes address space '__iomem' of expression
->> drivers/gpu/drm/nouveau/dispnv50/crcc57d.c:40:17: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/gpu/drm/nouveau/dispnv50/crcc57d.c:41:17: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/gpu/drm/nouveau/dispnv50/crcc57d.c:41:17: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/gpu/drm/nouveau/dispnv50/crcc57d.c:43:17: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/gpu/drm/nouveau/dispnv50/crcc57d.c:43:17: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/gpu/drm/nouveau/dispnv50/crcc57d.c:44:17: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/gpu/drm/nouveau/dispnv50/crcc57d.c:44:17: sparse: sparse: cast removes address space '__iomem' of expression
+	Marco
 
-vim +/__iomem +40 drivers/gpu/drm/nouveau/dispnv50/crcc57d.c
 
-    12	
-    13	static int crcc57d_set_src(struct nv50_head *head, int or, enum nv50_crc_source_type source,
-    14				   struct nv50_crc_notifier_ctx *ctx)
-    15	{
-    16		struct nvif_push *push = nv50_disp(head->base.base.dev)->core->chan.push;
-    17		const int i = head->base.index;
-    18		u32 crc_args = NVDEF(NVC57D, HEAD_SET_CRC_CONTROL, CONTROLLING_CHANNEL, CORE) |
-    19			       NVDEF(NVC57D, HEAD_SET_CRC_CONTROL, EXPECT_BUFFER_COLLAPSE, FALSE) |
-    20			       NVDEF(NVC57D, HEAD_SET_CRC_CONTROL, SECONDARY_CRC, NONE) |
-    21			       NVDEF(NVC57D, HEAD_SET_CRC_CONTROL, CRC_DURING_SNOOZE, DISABLE);
-    22		int ret;
-    23	
-    24		switch (source) {
-    25		case NV50_CRC_SOURCE_TYPE_SOR:
-    26			crc_args |= NVDEF(NVC57D, HEAD_SET_CRC_CONTROL, PRIMARY_CRC, SOR(or));
-    27			break;
-    28		case NV50_CRC_SOURCE_TYPE_SF:
-    29			crc_args |= NVDEF(NVC57D, HEAD_SET_CRC_CONTROL, PRIMARY_CRC, SF);
-    30			break;
-    31		default:
-    32			break;
-    33		}
-    34	
-    35		ret = PUSH_WAIT(push, 4);
-    36		if (ret)
-    37			return ret;
-    38	
-    39		if (source) {
-  > 40			PUSH_MTHD(push, NVC57D, HEAD_SET_CONTEXT_DMA_CRC(i), ctx->ntfy.handle);
-    41			PUSH_MTHD(push, NVC57D, HEAD_SET_CRC_CONTROL(i), crc_args);
-    42		} else {
-    43			PUSH_MTHD(push, NVC57D, HEAD_SET_CRC_CONTROL(i), 0);
-    44			PUSH_MTHD(push, NVC57D, HEAD_SET_CONTEXT_DMA_CRC(i), 0);
-    45		}
-    46	
-    47		return 0;
-    48	}
-    49	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
