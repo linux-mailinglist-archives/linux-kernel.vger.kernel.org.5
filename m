@@ -2,135 +2,393 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 324AE7DFD95
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 01:38:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4F047DFD9A
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 01:41:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233032AbjKCAdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 20:33:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53156 "EHLO
+        id S233747AbjKCAjG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 20:39:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232770AbjKCAdr (ORCPT
+        with ESMTP id S229605AbjKCAjE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 20:33:47 -0400
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2070.outbound.protection.outlook.com [40.107.244.70])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D59D2191;
-        Thu,  2 Nov 2023 17:33:40 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NPam4wERpoMx2XcTrJsCRLY7UfjTRD94cKkKzGCM+bNS2F32jbJXfHmYYXa09qD/GhazXwxNynDfIO/HFfX/jHjbYfd3c3MtO4N9SoTvgwsx8RIHz2xHYJyAkAgjCp3Q5PZG/MUoP+iEq+3ZSEFnyId6UkWy5VFAOeBK2P9njOChUzFUr/UPQ/RNatW+IYWnV/0O/NBq+7/vcRKAOnn1AvqFHaQRpeLvqcYSbtoBe9lsgblRYixoGG3cPyRvl4ACiWGV0bVhxCeXiflcdg7z6jBycQERvIlxocdhGRyaWmBNt+dL0Tbv3N9NB4Enchp9M6vkOwZiaMy5DUlSyGbC3g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=L8UQw029eRphTr5Gw2Yuj5J0LhL68gTNlDcdwEdNGD8=;
- b=QU1h1CnIeYj79/zQTuNnjF04qASOd7KG4OyxXWDRhytz1Wr/nMKhpUWG8Po2+82VP8FgmuZgAZek5V9pLRfUnQ6+2W0InMGN0NorC/ngpCtYg1QXFrCBnAdWI3YZ0FlaaXgqcSENE6w3P5EPbEewd3EYHtDSrPiH7JkC447S/Og3YMzODXfMBM7lyAy82li4E1qmL4UmLw8UlzzQVhwuD6rhV4UDbF9DKnmJAPfGq5XBXs+2dx/7+Zk8h9lQgP+Kcy7cmPGod9H6v4RqJplwwG07oFiiMt/9VeS+J9yHvq7QZ07NHkjS715Lnxzlsstz4MJdAXllLcZ1lOH+PlxJbg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=L8UQw029eRphTr5Gw2Yuj5J0LhL68gTNlDcdwEdNGD8=;
- b=cwBdL7vw5bhimcLylGjeeI2VeU2o/PbKBm+HFmOo8L/qkZSeb8WmfzCvgWYc6Tlf8fKEGvBMC/BnZjRGJdSdOsqZZE+f8/EpoDgm29jGKH/mdhQFGJXTQ9KfE0BPdl+3ClrycIzDPptaRx1bg+5cNJfOIIOTGQAom9TfznCo0wz0tjnEmgyI24th2I2Ul3XnZ+ea1ebnI9IjOtE2l76qeGK9mTRNNIsbDJsia0l8ol+sSdcxZSXm7zOlNqO3I3hHeOrifAMavnyT77OWlwSMMOjJ7HBsh16J5n9uvtcUuMWeCBZ4LEICVlT5X6lULyh/LtPeNfqTxGvk2j2Drtp03g==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by IA1PR12MB6282.namprd12.prod.outlook.com (2603:10b6:208:3e6::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.19; Fri, 3 Nov
- 2023 00:33:36 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::b53a:1092:9be2:cfb9]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::b53a:1092:9be2:cfb9%4]) with mapi id 15.20.6933.027; Fri, 3 Nov 2023
- 00:33:36 +0000
-Date:   Thu, 2 Nov 2023 21:33:35 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Joerg Roedel <joro@8bytes.org>,
-        Joao Martins <joao.m.martins@oracle.com>,
-        Joerg Roedel <jroedel@suse.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Nicolin Chen <nicolinc@nvidia.com>, Yi Liu <yi.l.liu@intel.com>
-Subject: Re: linux-next: manual merge of the iommufd tree with the iommu tree
-Message-ID: <20231103003335.GB4488@nvidia.com>
-References: <20231027155522.6b2863a4@canb.auug.org.au>
- <20231027171522.692a58ec@canb.auug.org.au>
- <20231030182621.GV3952@nvidia.com>
- <20231031161214.25560598@canb.auug.org.au>
- <20231103105312.58a99ef5@canb.auug.org.au>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231103105312.58a99ef5@canb.auug.org.au>
-X-ClientProxiedBy: BL6PEPF0001641B.NAMP222.PROD.OUTLOOK.COM
- (2603:10b6:22e:400:0:1004:0:10) To LV2PR12MB5869.namprd12.prod.outlook.com
- (2603:10b6:408:176::16)
+        Thu, 2 Nov 2023 20:39:04 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0EA28E;
+        Thu,  2 Nov 2023 17:38:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698971938; x=1730507938;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=/CeBh+tzmlQiByMF568iqGIaXM5KKPi8o5Pv8aTveOI=;
+  b=NUM+klhqeCNDhPSsPIfD+MSG5alfvm7Hpa8bkyg7elqvjg3yi5GJ9du1
+   i43nmnuFzYnKqrawkcA4LqpVBy9b03ttLjbNlNipQto0Kp9f3JxpgRuVz
+   AHsbQLtxa541owC+2CgUGIWO3gIF1wSZBz7O6/6PRZgrsLpkPXS2qt/YF
+   /x8enDF99Ny+Lg0aEEkg+QZTRW8NCL5Avyie/ONvg/GdVfxELh/ePHNeE
+   OP6KmI7q7fH9I+YorcWItwFn9ZbSFTLpSHM7zYkL2MkaFxv+r2le1kbGT
+   69EaC5PdCoejpW8uBV9pNVynigGzOv58K8p2bmyK2cHR+t1J7QXh6z/Sf
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10882"; a="419957275"
+X-IronPort-AV: E=Sophos;i="6.03,272,1694761200"; 
+   d="scan'208";a="419957275"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2023 17:38:58 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.03,272,1694761200"; 
+   d="scan'208";a="9193955"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2023 17:38:55 -0700
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Vishal Verma <vishal.l.verma@intel.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
+        <nvdimm@lists.linux.dev>, <linux-cxl@vger.kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
+        Jeff Moyer <jmoyer@redhat.com>
+Subject: Re: [PATCH v9 2/3] mm/memory_hotplug: split memmap_on_memory
+ requests across memblocks
+In-Reply-To: <20231102-vv-kmem_memmap-v9-2-973d6b3a8f1a@intel.com> (Vishal
+        Verma's message of "Thu, 2 Nov 2023 12:27:14 -0600")
+References: <20231102-vv-kmem_memmap-v9-0-973d6b3a8f1a@intel.com>
+        <20231102-vv-kmem_memmap-v9-2-973d6b3a8f1a@intel.com>
+Date:   Fri, 03 Nov 2023 08:36:52 +0800
+Message-ID: <87wmuzzn8b.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|IA1PR12MB6282:EE_
-X-MS-Office365-Filtering-Correlation-Id: dda0af61-8d25-4c5d-6093-08dbdc04846a
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: h393Q44WcfWeKIyDoLrnA2xGfVK2fT0VHWT+P9WOk8XU8wInS7TEHJq0Rnc7qOXacLdb1zRZZUcJtdkW/DBVAd6bJDTaVjs2/FXS3AYdrVYh2aRw+0TBxPG0SAX9DrCn7T2dFG/lUaX7RnAPCtr5CrW/mrdXJY+4TJOqo1Uv7KPZSWsYb7JXA/zksqI5CodaMWYk4bXV4fhIdiov5taDbEYIz0wKn6dNUvRgUIoiR/5WymBF/LoaxL6qc7jEDGmGIYDH1G3pb5hCZchEgGbNd/6b2wIXVFtOVOAutbe8J2rvBUc32jp2LDKbf83JUtU4F9jvJ5AP1cNi+SwTpGtUxhbkKblaWNh+suLJZUqwFzwNYxjcxcKv54+cTDf7/5UNm7Vg1cHJzuYoGQdkiMgP29QUBi0KbsXYJo22YD5XA3p2q5gRbaF0C0Lhg3Wo7b98I5f1Ci6mNGNQpUYrwWEUB913TlzVPRqHuOm5pfmCL9zlIffYhXBuq6OXaJc59E+WXRupGuQpVOb/6PmeQFiP4MYqAgEM9tF22Sffi+X8C3qtyJPa9JAVOibae5bdw03fvNOT6WdMFp7O7myyxIvgrJndHKGWymnQa4M0ITpI+rc=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(376002)(366004)(136003)(396003)(39860400002)(230922051799003)(451199024)(64100799003)(186009)(1800799009)(2616005)(26005)(6512007)(38100700002)(36756003)(86362001)(33656002)(2906002)(4744005)(5660300002)(4326008)(478600001)(966005)(8936002)(6916009)(66556008)(66946007)(1076003)(316002)(66476007)(54906003)(6486002)(41300700001)(6506007)(8676002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?K/rP/AVRB2sa0gCyAy03J1u3XfWJ2a3o0VTVxKwS6jcHNZM5GcCxacpnXKLu?=
- =?us-ascii?Q?rSiv5/PSh8TBy2ZpuXKCaBKrrBRQsGeDT4780F689YoUPh3PfZiUL4xhvVdV?=
- =?us-ascii?Q?klUhTwWpjJl5YZVH9ljSyGbN1c6PVL9A5uiM5edGvaq3PTRIEfoAFb+TD0KA?=
- =?us-ascii?Q?m2+PO45LIUpWxKcXKP/pSODBmGMfJispTzxVcJTPTC/Xf9VyyHNEt7/1U+rK?=
- =?us-ascii?Q?3Mcv/pK1N0ndSPSZM1o2gM3l4v82PRaJtujA7DkjcaFjidCEGaEcX+69yaAV?=
- =?us-ascii?Q?IA9hW7tQ9nxjr2cTucOrMnxNw4E36VIkAZvpQoACJkU6oMvaTMyWgsZYtmqB?=
- =?us-ascii?Q?xpUCnxNbtH7r9Pr3ha7/jGYMSBAGnXy1oQQHVbodKnu5DI76daT5QNUGFmaF?=
- =?us-ascii?Q?0zTQowTydvhbMA81eW9PXfedzbueOsrbZ7CzEKq8Zv33/2MbeHBJMHtKPqUc?=
- =?us-ascii?Q?Jj07nadByJT7bUccMSXRYoWcOA5L/BCVHDGPdAwqexFOnsBL6PEvMzykkDZo?=
- =?us-ascii?Q?+U+G5EW1VewohZJ3pgzSwQS+ezL3CvdX+VrLdGUL4e2qnMRIzv0Pz4gimJDn?=
- =?us-ascii?Q?1qogz+HT2RjiFnzDCa0W5B3F/NlRL0SkhZS2iWfsvy60dnu6A3FFR8vc9xka?=
- =?us-ascii?Q?BYEqtYjFGhcdosZ36M4+BOVeqBYM7KjKAYpt1kN2ix46OgalXaMyuw4WhUNC?=
- =?us-ascii?Q?HXylALovpwjP3xmVroJExOaCB8SMsUuKfmQr6DbgSxoYihAl1ibBztjySNzO?=
- =?us-ascii?Q?SiJTkdT73cJqBy443XY4pWAtT1Ru6zXU7ttGzfD0kaFFSQzq7Jok4sil5UK2?=
- =?us-ascii?Q?fm2MkG/GdPbH3gQSsIiJVJ+9Lx62TqYYO1KiUh+kbMuDgMFADCz90qKTOrqN?=
- =?us-ascii?Q?MohHZfV9UDcIP6RJ/Bz80k2nTMNU2wGzRxIiriC5zTnzNNV9ZzPmtOjmuT9i?=
- =?us-ascii?Q?QIx1WSR2Ob8/UI4SJqjbGZ1+6XaPNU7DIVMEc6vxzacXIk55mYuU5MdCMr3k?=
- =?us-ascii?Q?AsWqWiyXD+kLhMHGh7F8wieAYm1yjYoeIFMNl+VFlzfAIkxMftx6W5CDQKCb?=
- =?us-ascii?Q?BmRlDu7QvRDwzU9Js/xOHJt6xil0e6VxzYyRBIXv01xnLfeOo8bY0lM7ddJk?=
- =?us-ascii?Q?bKuFoqOYjhdjrJMla3xwP5xKaamNuYJ0hH/WLXhTpw6j2IE/YIqiJ9Ccm7jj?=
- =?us-ascii?Q?HujjhIosmeMf7v29pCTirsgoFD5fNiIlS6rPjVlVZ/aSrYylxyCI1gpGNhFK?=
- =?us-ascii?Q?7bLiwrDrqHAoa1A8wHgncEXLXYI1HsHCoIsH8VWsIA/yZDYyjZiS70YPZtAR?=
- =?us-ascii?Q?xoCBu44mRbK3BONxpsOwmhT5aJ12VSecwexcoi3eBs4M9k1sAdBQ6AhX8/oJ?=
- =?us-ascii?Q?7sQ/CRoyiems6qDbwCtQIZ1pXnd0Z2PGFJExeaSfJoKpr8ErOAJsW/lXILhr?=
- =?us-ascii?Q?2C1dhJ9/ySaFOgxRhDlGNYYqGEWmxmxBhmcrYgMFfosgDgjLCxB/EjBE4Ko1?=
- =?us-ascii?Q?mcbK9DsGiiC7vT2Qw8Heqtw1RbdAvfnNoSouDuN5bQVFfC7DyNh8wK0wa+R0?=
- =?us-ascii?Q?eTypM5aAGWCkhzErCZo=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: dda0af61-8d25-4c5d-6093-08dbdc04846a
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Nov 2023 00:33:36.3937
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: SluTw8eSkrtVv9MO27V5+wIPPHA8Kr8SDVywLcvpzvMkCKRcgwUey+RIJOgLD/Wc
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB6282
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=ascii
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 03, 2023 at 10:53:12AM +1100, Stephen Rothwell wrote:
-> > I have used the conflict resolution below now.
-> 
-> This is now a conflict between the iommu tree and Linus' tree.
+Vishal Verma <vishal.l.verma@intel.com> writes:
 
-My PR has instructions for the resolution to both:
+> The MHP_MEMMAP_ON_MEMORY flag for hotplugged memory is restricted to
+> 'memblock_size' chunks of memory being added. Adding a larger span of
+> memory precludes memmap_on_memory semantics.
+>
+> For users of hotplug such as kmem, large amounts of memory might get
+> added from the CXL subsystem. In some cases, this amount may exceed the
+> available 'main memory' to store the memmap for the memory being added.
+> In this case, it is useful to have a way to place the memmap on the
+> memory being added, even if it means splitting the addition into
+> memblock-sized chunks.
+>
+> Change add_memory_resource() to loop over memblock-sized chunks of
+> memory if caller requested memmap_on_memory, and if other conditions for
+> it are met. Teach try_remove_memory() to also expect that a memory
+> range being removed might have been split up into memblock sized chunks,
+> and to loop through those as needed.
+>
+> This does preclude being able to use PUD mappings in the direct map; a
+> proposal to how this could be optimized in the future is laid out
+> here[1].
+>
+> [1]: https://lore.kernel.org/linux-mm/b6753402-2de9-25b2-36e9-eacd49752b19@redhat.com/
+>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: David Hildenbrand <david@redhat.com>
+> Cc: Michal Hocko <mhocko@suse.com>
+> Cc: Oscar Salvador <osalvador@suse.de>
+> Cc: Dan Williams <dan.j.williams@intel.com>
+> Cc: Dave Jiang <dave.jiang@intel.com>
+> Cc: Dave Hansen <dave.hansen@linux.intel.com>
+> Cc: Huang Ying <ying.huang@intel.com>
+> Suggested-by: David Hildenbrand <david@redhat.com>
+> Reviewed-by: Dan Williams <dan.j.williams@intel.com>
+> Acked-by: David Hildenbrand <david@redhat.com>
+> Signed-off-by: Vishal Verma <vishal.l.verma@intel.com>
 
-https://lore.kernel.org/linux-iommu/20231031131417.GA1815719@nvidia.com/
+LGTM, Thanks!
 
-Thanks,
-Jason 
+Reviewed-by: "Huang, Ying" <ying.huang@intel.com>
 
-
+> ---
+>  mm/memory_hotplug.c | 210 ++++++++++++++++++++++++++++++++++------------------
+>  1 file changed, 136 insertions(+), 74 deletions(-)
+>
+> diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
+> index 6be7de9efa55..b380675ab932 100644
+> --- a/mm/memory_hotplug.c
+> +++ b/mm/memory_hotplug.c
+> @@ -1380,6 +1380,85 @@ static bool mhp_supports_memmap_on_memory(unsigned long size)
+>  	return arch_supports_memmap_on_memory(vmemmap_size);
+>  }
+>  
+> +static void __ref remove_memory_blocks_and_altmaps(u64 start, u64 size)
+> +{
+> +	unsigned long memblock_size = memory_block_size_bytes();
+> +	u64 cur_start;
+> +
+> +	/*
+> +	 * For memmap_on_memory, the altmaps were added on a per-memblock
+> +	 * basis; we have to process each individual memory block.
+> +	 */
+> +	for (cur_start = start; cur_start < start + size;
+> +	     cur_start += memblock_size) {
+> +		struct vmem_altmap *altmap = NULL;
+> +		struct memory_block *mem;
+> +
+> +		mem = find_memory_block(pfn_to_section_nr(PFN_DOWN(cur_start)));
+> +		if (WARN_ON_ONCE(!mem))
+> +			continue;
+> +
+> +		altmap = mem->altmap;
+> +		mem->altmap = NULL;
+> +
+> +		remove_memory_block_devices(cur_start, memblock_size);
+> +
+> +		arch_remove_memory(cur_start, memblock_size, altmap);
+> +
+> +		/* Verify that all vmemmap pages have actually been freed. */
+> +		WARN(altmap->alloc, "Altmap not fully unmapped");
+> +		kfree(altmap);
+> +	}
+> +}
+> +
+> +static int create_altmaps_and_memory_blocks(int nid, struct memory_group *group,
+> +					    u64 start, u64 size)
+> +{
+> +	unsigned long memblock_size = memory_block_size_bytes();
+> +	u64 cur_start;
+> +	int ret;
+> +
+> +	for (cur_start = start; cur_start < start + size;
+> +	     cur_start += memblock_size) {
+> +		struct mhp_params params = { .pgprot =
+> +						     pgprot_mhp(PAGE_KERNEL) };
+> +		struct vmem_altmap mhp_altmap = {
+> +			.base_pfn = PHYS_PFN(cur_start),
+> +			.end_pfn = PHYS_PFN(cur_start + memblock_size - 1),
+> +		};
+> +
+> +		mhp_altmap.free = memory_block_memmap_on_memory_pages();
+> +		params.altmap = kmemdup(&mhp_altmap, sizeof(struct vmem_altmap),
+> +					GFP_KERNEL);
+> +		if (!params.altmap) {
+> +			ret = -ENOMEM;
+> +			goto out;
+> +		}
+> +
+> +		/* call arch's memory hotadd */
+> +		ret = arch_add_memory(nid, cur_start, memblock_size, &params);
+> +		if (ret < 0) {
+> +			kfree(params.altmap);
+> +			goto out;
+> +		}
+> +
+> +		/* create memory block devices after memory was added */
+> +		ret = create_memory_block_devices(cur_start, memblock_size,
+> +						  params.altmap, group);
+> +		if (ret) {
+> +			arch_remove_memory(cur_start, memblock_size, NULL);
+> +			kfree(params.altmap);
+> +			goto out;
+> +		}
+> +	}
+> +
+> +	return 0;
+> +out:
+> +	if (ret && cur_start != start)
+> +		remove_memory_blocks_and_altmaps(start, cur_start - start);
+> +	return ret;
+> +}
+> +
+>  /*
+>   * NOTE: The caller must call lock_device_hotplug() to serialize hotplug
+>   * and online/offline operations (triggered e.g. by sysfs).
+> @@ -1390,10 +1469,6 @@ int __ref add_memory_resource(int nid, struct resource *res, mhp_t mhp_flags)
+>  {
+>  	struct mhp_params params = { .pgprot = pgprot_mhp(PAGE_KERNEL) };
+>  	enum memblock_flags memblock_flags = MEMBLOCK_NONE;
+> -	struct vmem_altmap mhp_altmap = {
+> -		.base_pfn =  PHYS_PFN(res->start),
+> -		.end_pfn  =  PHYS_PFN(res->end),
+> -	};
+>  	struct memory_group *group = NULL;
+>  	u64 start, size;
+>  	bool new_node = false;
+> @@ -1436,28 +1511,22 @@ int __ref add_memory_resource(int nid, struct resource *res, mhp_t mhp_flags)
+>  	/*
+>  	 * Self hosted memmap array
+>  	 */
+> -	if (mhp_flags & MHP_MEMMAP_ON_MEMORY) {
+> -		if (mhp_supports_memmap_on_memory(size)) {
+> -			mhp_altmap.free = memory_block_memmap_on_memory_pages();
+> -			params.altmap = kmemdup(&mhp_altmap,
+> -						sizeof(struct vmem_altmap),
+> -						GFP_KERNEL);
+> -			if (!params.altmap)
+> -				goto error;
+> +	if ((mhp_flags & MHP_MEMMAP_ON_MEMORY) &&
+> +	    mhp_supports_memmap_on_memory(memory_block_size_bytes())) {
+> +		ret = create_altmaps_and_memory_blocks(nid, group, start, size);
+> +		if (ret)
+> +			goto error;
+> +	} else {
+> +		ret = arch_add_memory(nid, start, size, &params);
+> +		if (ret < 0)
+> +			goto error;
+> +
+> +		/* create memory block devices after memory was added */
+> +		ret = create_memory_block_devices(start, size, NULL, group);
+> +		if (ret) {
+> +			arch_remove_memory(start, size, NULL);
+> +			goto error;
+>  		}
+> -		/* fallback to not using altmap  */
+> -	}
+> -
+> -	/* call arch's memory hotadd */
+> -	ret = arch_add_memory(nid, start, size, &params);
+> -	if (ret < 0)
+> -		goto error_free;
+> -
+> -	/* create memory block devices after memory was added */
+> -	ret = create_memory_block_devices(start, size, params.altmap, group);
+> -	if (ret) {
+> -		arch_remove_memory(start, size, NULL);
+> -		goto error_free;
+>  	}
+>  
+>  	if (new_node) {
+> @@ -1494,8 +1563,6 @@ int __ref add_memory_resource(int nid, struct resource *res, mhp_t mhp_flags)
+>  		walk_memory_blocks(start, size, NULL, online_memory_block);
+>  
+>  	return ret;
+> -error_free:
+> -	kfree(params.altmap);
+>  error:
+>  	if (IS_ENABLED(CONFIG_ARCH_KEEP_MEMBLOCK))
+>  		memblock_remove(start, size);
+> @@ -2062,17 +2129,13 @@ static int check_memblock_offlined_cb(struct memory_block *mem, void *arg)
+>  	return 0;
+>  }
+>  
+> -static int test_has_altmap_cb(struct memory_block *mem, void *arg)
+> +static int count_memory_range_altmaps_cb(struct memory_block *mem, void *arg)
+>  {
+> -	struct memory_block **mem_ptr = (struct memory_block **)arg;
+> -	/*
+> -	 * return the memblock if we have altmap
+> -	 * and break callback.
+> -	 */
+> -	if (mem->altmap) {
+> -		*mem_ptr = mem;
+> -		return 1;
+> -	}
+> +	u64 *num_altmaps = (u64 *)arg;
+> +
+> +	if (mem->altmap)
+> +		*num_altmaps += 1;
+> +
+>  	return 0;
+>  }
+>  
+> @@ -2146,11 +2209,29 @@ void try_offline_node(int nid)
+>  }
+>  EXPORT_SYMBOL(try_offline_node);
+>  
+> +static int memory_blocks_have_altmaps(u64 start, u64 size)
+> +{
+> +	u64 num_memblocks = size / memory_block_size_bytes();
+> +	u64 num_altmaps = 0;
+> +
+> +	if (!mhp_memmap_on_memory())
+> +		return 0;
+> +
+> +	walk_memory_blocks(start, size, &num_altmaps,
+> +			   count_memory_range_altmaps_cb);
+> +
+> +	if (num_altmaps == 0)
+> +		return 0;
+> +
+> +	if (WARN_ON_ONCE(num_memblocks != num_altmaps))
+> +		return -EINVAL;
+> +
+> +	return 1;
+> +}
+> +
+>  static int __ref try_remove_memory(u64 start, u64 size)
+>  {
+> -	struct memory_block *mem;
+> -	int rc = 0, nid = NUMA_NO_NODE;
+> -	struct vmem_altmap *altmap = NULL;
+> +	int rc, nid = NUMA_NO_NODE;
+>  
+>  	BUG_ON(check_hotplug_memory_range(start, size));
+>  
+> @@ -2167,45 +2248,26 @@ static int __ref try_remove_memory(u64 start, u64 size)
+>  	if (rc)
+>  		return rc;
+>  
+> -	/*
+> -	 * We only support removing memory added with MHP_MEMMAP_ON_MEMORY in
+> -	 * the same granularity it was added - a single memory block.
+> -	 */
+> -	if (mhp_memmap_on_memory()) {
+> -		rc = walk_memory_blocks(start, size, &mem, test_has_altmap_cb);
+> -		if (rc) {
+> -			if (size != memory_block_size_bytes()) {
+> -				pr_warn("Refuse to remove %#llx - %#llx,"
+> -					"wrong granularity\n",
+> -					start, start + size);
+> -				return -EINVAL;
+> -			}
+> -			altmap = mem->altmap;
+> -			/*
+> -			 * Mark altmap NULL so that we can add a debug
+> -			 * check on memblock free.
+> -			 */
+> -			mem->altmap = NULL;
+> -		}
+> -	}
+> -
+>  	/* remove memmap entry */
+>  	firmware_map_remove(start, start + size, "System RAM");
+>  
+> -	/*
+> -	 * Memory block device removal under the device_hotplug_lock is
+> -	 * a barrier against racing online attempts.
+> -	 */
+> -	remove_memory_block_devices(start, size);
+> -
+>  	mem_hotplug_begin();
+>  
+> -	arch_remove_memory(start, size, altmap);
+> -
+> -	/* Verify that all vmemmap pages have actually been freed. */
+> -	if (altmap) {
+> -		WARN(altmap->alloc, "Altmap not fully unmapped");
+> -		kfree(altmap);
+> +	rc = memory_blocks_have_altmaps(start, size);
+> +	if (rc < 0) {
+> +		mem_hotplug_done();
+> +		return rc;
+> +	} else if (!rc) {
+> +		/*
+> +		 * Memory block device removal under the device_hotplug_lock is
+> +		 * a barrier against racing online attempts.
+> +		 * No altmaps present, do the removal directly
+> +		 */
+> +		remove_memory_block_devices(start, size);
+> +		arch_remove_memory(start, size, NULL);
+> +	} else {
+> +		/* all memblocks in the range have altmaps */
+> +		remove_memory_blocks_and_altmaps(start, size);
+>  	}
+>  
+>  	if (IS_ENABLED(CONFIG_ARCH_KEEP_MEMBLOCK)) {
