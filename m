@@ -2,70 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 503E07E094F
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 20:12:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE3EC7E0953
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 20:17:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377009AbjKCTMT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 15:12:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52694 "EHLO
+        id S1345390AbjKCTRD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 15:17:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231204AbjKCTMQ (ORCPT
+        with ESMTP id S229605AbjKCTRB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 15:12:16 -0400
-Received: from mail-oa1-x2b.google.com (mail-oa1-x2b.google.com [IPv6:2001:4860:4864:20::2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E31DBD
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 12:12:10 -0700 (PDT)
-Received: by mail-oa1-x2b.google.com with SMTP id 586e51a60fabf-1f0820b7657so375386fac.2
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Nov 2023 12:12:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1699038729; x=1699643529; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YqSGG3PRTCl3pCDwU0Cdv8eHz8EUQW+Q1dGS28H6GdE=;
-        b=G3nVeqvpjVkqTwJDg1guutHHw3KlgCg2cH3ixjrckAbZI0xV53rjVAwkWH6SzICfGY
-         bFw+OGgcUECIVbBPCpDAYJvYKMA0iMWDkpjt/wvGg+1uji7K5DRTT0YcRwc2zw17V8zm
-         6Ccff6sygzedcOjAE6D2akFg5pqJLewXlyJBg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699038729; x=1699643529;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YqSGG3PRTCl3pCDwU0Cdv8eHz8EUQW+Q1dGS28H6GdE=;
-        b=nOf5jtgksxb4VXy/EvBwy/iYfOBAQmPMf4WRNsC0eSA+3IHgFQNi2p48JvygprtSKB
-         1lye/cxOVvYhxjDgi8KWPWMg3t9v+UYY2tYCzGzX9h0mMAv9sbe5A9TLtSBV7pmc+IKu
-         yjomq4RGuIp3e3OVVe5Dx5EaXjZukXqM39gCQrQq39fX+IZcP2nwGajY+SDYDTfnUKiJ
-         hcb7WuCfUX9frdMRE6O4v0uQgrOk7m4AV+hif4WuAPUt20mT1ZpN6mqqB0pCfRjsqbzr
-         5jKO3Or9L81hT9WaGRmJlLxmjpi3vNXAqsrqNflRxD3rA7a02BPPf/061iVVMOCHGXnc
-         kIwA==
-X-Gm-Message-State: AOJu0YwXWQWTHDfP98OGvAoi+GALhKifvDKre4llnV2x1hO91gxX4l0M
-        o0XQqSLqf4bmvCVSk88V4QCPUE6iXE3LH7Oc30YzyA==
-X-Google-Smtp-Source: AGHT+IGqbK/V1TFPWC+GZWHd8DsHefVvVcJBqIIffQ9V8MHnIqoMT1/bZZiL4fQUPgaB9pqcXAtmKZaWZU+GjbyLhGc=
-X-Received: by 2002:a05:6870:4202:b0:1ea:7bd1:c48d with SMTP id
- u2-20020a056870420200b001ea7bd1c48dmr28837428oac.49.1699038729662; Fri, 03
- Nov 2023 12:12:09 -0700 (PDT)
+        Fri, 3 Nov 2023 15:17:01 -0400
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BDADD47
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 12:16:55 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1qyzes-0006vn-Cx; Fri, 03 Nov 2023 20:16:42 +0100
+Received: from [2a0a:edc0:2:b01:1d::c0] (helo=ptx.whiteo.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <ore@pengutronix.de>)
+        id 1qyzer-006OQX-A0; Fri, 03 Nov 2023 20:16:41 +0100
+Received: from ore by ptx.whiteo.stw.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1qyzer-000FWp-7D; Fri, 03 Nov 2023 20:16:41 +0100
+Date:   Fri, 3 Nov 2023 20:16:41 +0100
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc:     Andrew Lunn <andrew@lunn.ch>, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        =?utf-8?B?U8O4cmVu?= Andersen <san@skov.dk>,
+        Sam Ravnborg <sam@ravnborg.org>, kernel@pengutronix.de,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Fabio Estevam <festevam@gmail.com>
+Subject: Re: [PATCH v2 2/2] arm64: dts: freescale: Add SKOV IMX8MP CPU revB
+ board
+Message-ID: <20231103191641.GD40819@pengutronix.de>
+References: <20231103105305.2459143-1-o.rempel@pengutronix.de>
+ <20231103105305.2459143-2-o.rempel@pengutronix.de>
+ <1ee285d7-6bc9-43ad-9ec9-a8aaed4452b5@lunn.ch>
+ <ZUTynJpOSZVowuJk@shell.armlinux.org.uk>
 MIME-Version: 1.0
-References: <20231102221309.1971910-1-hsinyi@chromium.org> <20231102221309.1971910-2-hsinyi@chromium.org>
- <CAD=FV=Unv+PtHd=QoFOgY_4tjxPGWeU7-hzp3YHfc2DjWu3wcQ@mail.gmail.com>
-In-Reply-To: <CAD=FV=Unv+PtHd=QoFOgY_4tjxPGWeU7-hzp3YHfc2DjWu3wcQ@mail.gmail.com>
-From:   Hsin-Yi Wang <hsinyi@chromium.org>
-Date:   Fri, 3 Nov 2023 12:11:43 -0700
-Message-ID: <CAJMQK-gpn+AWQQG9i=Oa2qvZ+9jJ1oVCFv7F7UpFFMco7C88Fw@mail.gmail.com>
-Subject: Re: [PATCH v2 1/4] drm/panel-edp: Add several AUO/BOE panels
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Neil Armstrong <neil.armstrong@linaro.org>,
-        Jessica Zhang <quic_jesszhan@quicinc.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <ZUTynJpOSZVowuJk@shell.armlinux.org.uk>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -74,38 +70,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 3, 2023 at 9:02=E2=80=AFAM Doug Anderson <dianders@chromium.org=
-> wrote:
->
-> Hi,
->
-> On Thu, Nov 2, 2023 at 3:13=E2=80=AFPM Hsin-Yi Wang <hsinyi@chromium.org>=
- wrote:
-> >
-> > Add a few generic edp panels used by mt8186 chromebooks.
-> > Besides, modify the following panel:
-> > - AUO 0x235c B116XTN02 renamed to B116XTN02.3.
-> > - AUO 0x405c B116XAK01 adjust the timing of auo_b116xak01. According
-> > to the datasheet: T3=3D200, T12=3D500, T7_max =3D 50.
-> >
-> > Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
-> > ---
-> > v1->v2: Address comments: update delay for auo_b116xak01, sort entries.
-> > ---
-> >  drivers/gpu/drm/panel/panel-edp.c | 57 +++++++++++++++++++++++++++++--
-> >  1 file changed, 55 insertions(+), 2 deletions(-)
->
-> This seems good to me now. I guess a tiny nit is that the ${SUBJECT}
-> mentions AUO/BOE panels but a few other model panels are also added,
-> but it's not a huge issue for me.
->
-Yeah, it should be "drm/panel-edp: Add several generic edp panels",
-the same as v1. If there are more comments that I need to send a v3,
-I'll fix that in v3.
+On Fri, Nov 03, 2023 at 01:16:12PM +0000, Russell King (Oracle) wrote:
+> On Fri, Nov 03, 2023 at 01:35:46PM +0100, Andrew Lunn wrote:
+> > > +			port@2 {
+> > > +				reg = <2>;
+> > > +				label = "cpu";
+> > > +				ethernet = <&eqos>;
+> > > +				/* 2ns rgmii-rxid is implemented on PCB.
+> > > +				 * Switch should add only rgmii-txid.
+> > > +				 */
+> > 
+> > Its unusual to actually see that. Its even more unusual its only one
+> > clock line. Can you actually see it on the PCB?
+> > 
+> > > +				phy-mode = "rgmii-txid";
+> > > +				tx-internal-delay-ps = <2000>;
+> > 
+> > Is this actually needed? rgmii-txid should add 2ns delay. Since this
+> > apparently works, i'm assuming setting tx-internal-delay-ps to 2ns
+> > does nothing, otherwise you would have a 4ns delay.
+> 
+> Umm... I think we're getting confused again.
+> 
+> Mode		Local end		Remote end
+> RGMII		No added delays		No added delays
+> RGMII-TXID	No added delays		2ns delay on TX
+> RGMII-RXID	No added delays		2ns delay on RX
+> RGMII-ID	No added delays		2ns delay on both TX and RX
+> 
+> In the case of a network interface with a PHY, "local end" is the
+> MAC and "remote end" is the PHY.
+> 
+> For a switch port connected to an external PHY, the switch port is
+> as the "MAC" as above.
+> 
+> For a switch port connected to an ethernet MAC:
+>  - for the MAC declaration, the local end is the MAC. There is no
+>    communication of the interface mode with the remote end under
+>    Linux, so this is irrelevant for Linux. However, this is an
+>    implementation, and it should be chosen according to the hardware.
+> 
+>  - for the switch port declaration, the local end is the switch port.
+>    There is no communication of the interface mode with the remote
+>    end under Linux. However, it should be chosen according to the
+>    hardware.
+> 
+> So, if the 2ns delay is implemented on the RX lines (from the switch
+> perspective) then shouldn't the MAC side be using "rgmii-txid" to
+> indicate that the delay is being applied by the remote end (switch).
+> The switch side should be using "rgmii" because no delays are required
+> from the remote end (MAC), and the delay on the TX lines should be
+> specified using "tx-internal-delay-ps"?
 
+Ack. It make sense. Will fix it.
 
-> Normally I apply patches to this table near-instantly, but since it's
-> Friday and this touches a lot of panels, I'll probably wait until
-> sometime next week.
->
-> Reviewed-by: Douglas Anderson <dianders@chromium.org>
+Regards,
+Oleksij
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
