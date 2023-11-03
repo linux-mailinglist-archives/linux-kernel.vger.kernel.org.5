@@ -2,71 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 543F37DFE1F
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 03:43:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 160617DFE0F
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 03:43:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230352AbjKCCYh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 22:24:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52926 "EHLO
+        id S231929AbjKCCZ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 22:25:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347139AbjKCCY3 (ORCPT
+        with ESMTP id S229503AbjKCCZY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 22:24:29 -0400
-X-Greylist: delayed 85232 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 02 Nov 2023 19:24:22 PDT
-Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [IPv6:2001:41d0:1004:224b::bd])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D8971A5
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 19:24:21 -0700 (PDT)
-Content-Type: text/plain;
-        charset=utf-8
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1698978259;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=B9/VPgyaLf8vtjFLzOdwo/aZIdvsY7+k8Vu6QF0xkFg=;
-        b=cAbl1kuhwQ72/mejanEc0Eetvs1/vE10XjHfiaO1Eif42+2aTNM6HDJDgh+z4qqZscDylk
-        yI2NWYKfft+8man5CWeC01QJcPGj9NQRRTPNNstOJuV4Z82risctzBPsLUqNhBL8S9JYSH
-        eUf3rdWki11RbrxOdFBW6cymUCxQjtc=
-Mime-Version: 1.0
-Subject: Re: [PATCH v4 1/1] mm: report per-page metadata information
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Muchun Song <muchun.song@linux.dev>
-In-Reply-To: <CANruzcTEOY76dmR=W9eN8d=Qk4rYH6rTsCuYSbF172sHVW2z1Q@mail.gmail.com>
-Date:   Fri, 3 Nov 2023 10:23:31 +0800
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Greg KH <gregkh@linuxfoundation.org>, rafael@kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        "Mike Rapoport (IBM)" <rppt@kernel.org>,
-        David Hildenbrand <david@redhat.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        chenlinxuan@uniontech.com, yang.yang29@zte.com.cn,
-        tomas.mudrunka@gmail.com, bhelgaas@google.com, ivan@cloudflare.com,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Yosry Ahmed <yosryahmed@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>, adobriyan@gmail.com,
-        Vlastimil Babka <vbabka@suse.cz>, Liam.Howlett@oracle.com,
-        surenb@google.com, LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Matthew Wilcox <willy@infradead.org>, weixugc@google.com
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <82F25A75-1A1C-4DAF-B754-EFDAF144C15E@linux.dev>
-References: <20231031223846.827173-1-souravpanda@google.com>
- <20231031223846.827173-2-souravpanda@google.com>
- <4a1de79e-a3e8-2544-e975-e17cad0d2f8a@linux.dev>
- <CANruzcTT=FmLJ+B=p8VbrbrVhogp867F2BhQTfHPp6hpCuO+1A@mail.gmail.com>
- <C9DFF65B-EACF-4D88-A175-DE9A10E8C1E9@linux.dev>
- <CANruzcTEOY76dmR=W9eN8d=Qk4rYH6rTsCuYSbF172sHVW2z1Q@mail.gmail.com>
-To:     Sourav Panda <souravpanda@google.com>
-X-Migadu-Flow: FLOW_OUT
+        Thu, 2 Nov 2023 22:25:24 -0400
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 940631A8
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 19:25:11 -0700 (PDT)
+Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A2NNv3Z029335;
+        Fri, 3 Nov 2023 02:24:39 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=corp-2023-03-30;
+ bh=udsKh8ncq+b0se1w2ttnGJLTdB+hpzYHq7O/Fl772zI=;
+ b=EfjjPMpdQXx+Sl7mkTly8rwEJjtiMe6iXgMHbnj1ysqT7FJb7LktMnAU+MzRGfYmLGpb
+ uKG5qrN53XkQATEnOlN4NIlcU3bOzjnokQ8PqO2o+ekBEyOe/G/5cog1zv2215WT4Tg7
+ sQvFgtY4Ehel/ePsFXDfiplYzjGLvgKelDTslYE04eB2Dexu66wcxkR6D8sxLEKF4Zpm
+ 34cBNWgm9QyykfbQPFSFVeqZtsuMRjPcs/Gey/KC6ylYQVhFyWvvQMwiOm0BjCjwNq3D
+ Z+z1YB5PkdBCArk/LwKN515hZpdUNV+ZxYft7qxcF1sx1JtfzggHp0Syiq2rumy3azDu 6g== 
+Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3u0swtu7ax-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 03 Nov 2023 02:24:39 +0000
+Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3A31Lc4Y009075;
+        Fri, 3 Nov 2023 02:24:38 GMT
+Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2100.outbound.protection.outlook.com [104.47.58.100])
+        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3u14x9a76u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 03 Nov 2023 02:24:38 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=af7401fFOlZgXQGvRwGkg0yWoIOWsr/pnuTZagkRz5iGBAejnvXhUQl+FW3KraZmAJr+yHfFWHIdH+RrtB6KgWfYNQCBlpMYqWkJCzSn8iKBCC3gc+2X2L/2gWbx4+KUHtZPaCkJUHDwEOCotftGpn4fBTCCqzZX92GgFg0ne+ulseFrcJH8O7+wdJoaiWTJb0Q7GGscKcPjq7B0LtL8OEZHuliabVJfsYGtKR/2j1+fDbaDyUyoySgeRW8PSRRiTW2MM0XnDDCfdgdf4RmtUP4xxN1NKSKB0v19RvvigJzI3alNBEGoliPNZ253xEUgPfYeP93i2mFnu/2B4K7Npg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=udsKh8ncq+b0se1w2ttnGJLTdB+hpzYHq7O/Fl772zI=;
+ b=ApClsNuSi0YnP4iWtqWGca4U5XQOCgZ100bygKa1dLTociKsnCfnP3t8Ic6bQfNVuv0b0iQQR9PUkNnPmJjsSSEGuBPenJmh9yqtdUeYzg7cC1XdqfLxIKAvWAwUvE4JLRRqxYw904cCVsQoDv4hE47ZJa9I+6YwYmSTlBELLY13Uf3s4MnPCF57xQqjrnv3yznTMZWl5Q3kuUQn9Q6kVmSvDNQrvF2EJC38fvHPTv1GEpmwOtDbRtqhSxcx2lkKRAccRy4Phv4Y8gbSr1Utq+WTXMlMWRAzB8uXYSM+DOwxc2GQm+Fvg+x1ySq6ewLKysenboshOww8mxPbQr86ww==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=udsKh8ncq+b0se1w2ttnGJLTdB+hpzYHq7O/Fl772zI=;
+ b=X7/HMIbJzWlQ0CODVKMxmbeT+ieScIZ3sWufwkCROTi815LSiGJy7q6aokD9mDYsjfR1ymzElngDogRK5fcTcBMODpXnsCdDq22PgRYQfAvXw2Vw1Lhb6OWDhT9hNg2h6ukqm7zTadwNdJ2+VYc2A5cG2lU3icHcQmJkoQ6sIsY=
+Received: from BY5PR10MB4196.namprd10.prod.outlook.com (2603:10b6:a03:20d::23)
+ by MW6PR10MB7590.namprd10.prod.outlook.com (2603:10b6:303:24c::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.24; Fri, 3 Nov
+ 2023 02:24:30 +0000
+Received: from BY5PR10MB4196.namprd10.prod.outlook.com
+ ([fe80::517b:c692:6b20:19c0]) by BY5PR10MB4196.namprd10.prod.outlook.com
+ ([fe80::517b:c692:6b20:19c0%6]) with mapi id 15.20.6954.021; Fri, 3 Nov 2023
+ 02:24:29 +0000
+Date:   Thu, 2 Nov 2023 19:24:26 -0700
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+To:     Edward Adam Davis <eadavis@qq.com>
+Cc:     riel@surriel.com, akpm@linux-foundation.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        llvm@lists.linux.dev, muchun.song@linux.dev, nathan@kernel.org,
+        ndesaulniers@google.com,
+        syzbot+6ada951e7c0f7bc8a71e@syzkaller.appspotmail.com,
+        syzkaller-bugs@googlegroups.com, trix@redhat.com
+Subject: Re: [PATCH] mm/hugetlb: fix null ptr defer in hugetlb_vma_lock_write
+Message-ID: <20231103022426.GA3531@monkey>
+References: <3382634358afa9b95dc4f6db8a53a136d4b9e9cb.camel@surriel.com>
+ <tencent_164A247533766D667C3D873798968236C409@qq.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <tencent_164A247533766D667C3D873798968236C409@qq.com>
+X-ClientProxiedBy: MW4PR03CA0014.namprd03.prod.outlook.com
+ (2603:10b6:303:8f::19) To BY5PR10MB4196.namprd10.prod.outlook.com
+ (2603:10b6:a03:20d::23)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BY5PR10MB4196:EE_|MW6PR10MB7590:EE_
+X-MS-Office365-Filtering-Correlation-Id: 484b65db-f231-4d61-e619-08dbdc1401d3
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: hN3vVUbEXt57pjwjY++tG+oO2ZOStwZ9wBQIIpgmuzwcfeBkGyApDaW7woVmSG6n7iWoajQh3vQGU16/VBcLF9suEzNCb4joyg+wQ/Z9zrQBXjYVTQv+aPQd0H77hHf8K5HSn35bkn9r90qMC95/YbWWVLRicSP9x4W9RJ94BzwZF9zC8QnFMCPMOs7ZlQfqhLZFbDZBChvhwI3RC5x4FEtgfe6E8eyxxf9HS7htgELZNwHRNu/0gAFDfO28vlKN72ijeQfvWw2iu/oHFwVJCroaEBJsxnr/PNOrwr/eIelAxqeL5+Q7avMTe7nlGgbNuyVZcG2bthhkSMRdml3Taw96z+LIk4InLowe89U9XoHkl4gR1kuv8NqPhbD/GS2MXeXnvZRLuAWPKP/soShnQrFV7t2njTsbx4apPrrGMTbhO4CVbS5yfFTtyOHAcZLOCFywQXewoKvmI59RfIMal5BRPXJKH8s/EdHiVKnQzuPgLRiLwmsviuvVadaWtmixqmsOudqF/qNn8u/CJ3aPG9ViBlAUpdV5T5b7ZHSHhbMsUKQP1WV+dlZyygYJVryk
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR10MB4196.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(136003)(376002)(396003)(346002)(39860400002)(366004)(230922051799003)(186009)(1800799009)(451199024)(64100799003)(53546011)(478600001)(6486002)(7416002)(86362001)(6506007)(6512007)(9686003)(6666004)(8936002)(33716001)(4326008)(41300700001)(8676002)(44832011)(5660300002)(66946007)(316002)(66476007)(66556008)(83380400001)(33656002)(6916009)(38100700002)(26005)(2906002)(1076003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?zhjmRSJ+Y0xaN01HQ0tDRvNKGJ03KyxJudTN/Dql8wjyz762legs0p8PVQ06?=
+ =?us-ascii?Q?zQP6PUuAncHIEhqCCLc6YF9exbVSe0+VXR/MhRZb2HYk0V3IJuxXy0zPm6tn?=
+ =?us-ascii?Q?SexbJYnHlyiF5BnIv0Wj2OrqFLLEuagLx0I7ylwJ7Kp5PXM28J6BseUa0Fyf?=
+ =?us-ascii?Q?fv7t+1C0zpiVCxzcx0MUCusJq1xkwEG1ntjnIumeAOKZA7PRl9+OWXVwUYzR?=
+ =?us-ascii?Q?CThLsoVj9iEZHp5ZJLmVa/lg68gZjZG4PzeSvSieTJ+9xan4ZOzicgTJ8sga?=
+ =?us-ascii?Q?Qg9WFkcYWRgL2y0j6hMDSxthaEEq4a82ZEiSTFLBuGRvUOl+5UfoZb3oKkgA?=
+ =?us-ascii?Q?TY1hfdPWIxiVSwJD2DqPzd95jLDazb0rfjh4KuCWbf4rnINGsY5xpNjt3VmW?=
+ =?us-ascii?Q?UejnGtzwhRcrAfXwbS97bshlul+IL52fDKBQWkVP5VbNIeA0TRLEZp4HRS/2?=
+ =?us-ascii?Q?j3s/7EsFnb8/rIGkscvgtk9AhNtJKBGXXDQ/Po3B/txdNECAAsTZxWmZvraN?=
+ =?us-ascii?Q?614J9NkI6hNSgin3QnVPTD+wDYGkKwDlod5EfSMObj+AjP5G2WAIE9OqWrBC?=
+ =?us-ascii?Q?Cewc+p845UX0NEzyr7jsl7xPoUYJIkqE+7lav+CHH9ik3LuULI/1Yvn4QNnc?=
+ =?us-ascii?Q?Xp+3eBhb1RnNXk3UQuImZevfAmxsSEblKfFGSEcmKobmk9ws7LGgN+LBwz06?=
+ =?us-ascii?Q?mBNKdqeIM5WZT+7EZRe+FDNXJtLDr5wsRKwkHQ70gj6c+IKEeol1pGfTr8U0?=
+ =?us-ascii?Q?2XCOQLQk8dVq3Wo3WhkIG7HDFP8rFjRKul5uZb0cXfjgoKL0EufIFsj48Nsl?=
+ =?us-ascii?Q?tMZHdfS3lKMm6nPG7jo3gTHY5MDqu23ZIDiYrmPCpZoqmuFeqWhCm4y8feDf?=
+ =?us-ascii?Q?yWOEHtNiYO/WER+XdEQCyLsv3Md6RHsVLdtHnCh5iSuQ7+cB5vTo2gY8rl0V?=
+ =?us-ascii?Q?tbNfJ1+XhQyItCB7cTr7SoQEOFHpdNwsOF/V2UwISHXU3bS0Yv2xo/kLk8Lt?=
+ =?us-ascii?Q?bjuYTcK5fBV0x1Z6bGJb9Zu59ByrlvGzI4wNXn4plY+rR2eOQRjOoHR4Kt62?=
+ =?us-ascii?Q?rUDhL2oYNLpAULoanC8hzjNMJz4FTKOPDQ3mV09d2gFFIeiEYOKKaAfeTBTj?=
+ =?us-ascii?Q?DjWxtqpZ3QOsxPSYIu2rvrZshjbBHlOfarC4UP5yLAkVEr4HJjWD2xLm/SX6?=
+ =?us-ascii?Q?xhHr1AJjW5FkGmm3lbS0f9o2TXwJDgM9Sv6NStju1F8grIJfy3xxIZjcnpFb?=
+ =?us-ascii?Q?YMR1YmdfYL+UHuOO5pV5GWUXXpYLjRUhQQrLuWSf2Xk5fOJ2/wsgIIKhuVS6?=
+ =?us-ascii?Q?JhiJE0KszRXeIRb5KL+3k4V+w5DkiVACXnpCjwYzq8zDQ1DxDfLHT7z0hlz8?=
+ =?us-ascii?Q?9PC3dDW8UPw8EHUt4yrvOliwkOmT3dW+/accipbh85WDPs1Y8Y4XRFQTNqwJ?=
+ =?us-ascii?Q?gH5iegw6fzWu/lN8yYfQlKd553b9waGcBlFXrSsuihZlnNFr7LNNtqp4vr4U?=
+ =?us-ascii?Q?rwFPrx77fDX6CbBKgQUbn0GCvb+W9tsDZIJeUnU7Ef4sehLzWZSzKYsMzKCr?=
+ =?us-ascii?Q?Qj/MK8Kl+yDzYsxmBU6VJQUc4UYD8tyUGB+i9tZ4?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?us-ascii?Q?gxAXzhRyISLJctNeSLVcie4RZEWC4kS9WvKw4V2MWL31jJ28GnrHUTIOJP6V?=
+ =?us-ascii?Q?UnIw0GzWhU5ZDg+X3uX2Z1xisBUTLfppP2EkwfjnfoUw13/BdY6OsgGXbSqK?=
+ =?us-ascii?Q?+sFyL2lyZGkhRy+ZLYmpKp7HJ0s4XnGevF8xJNILpsuhBN+8deNg+Y+5Xkcl?=
+ =?us-ascii?Q?tpOHfg5jxLFg9D2lUwBa/yOHtF+evtLL+mRyBORir+NpjrUscOe/uTTPvMS+?=
+ =?us-ascii?Q?+oRr+uNkuRytvo5vnYZ0+SKqzmGTYmhMolGo02BmTnvbbn1i1GQjKMFD2auc?=
+ =?us-ascii?Q?jDPi8BGMiu6pHkDi3Aa1xFrtVebvxgpQOhwtVSUSDeGYItI64PLjQsowbsv+?=
+ =?us-ascii?Q?iuqjcGGtJmLeRtYYPfo1N1FsfLxUfZGScvGtg95n4+aXG06+w78ZSL38IFIG?=
+ =?us-ascii?Q?1mNqF5AiMteTLfoZyllChGQ8Cq8xnpdJ2b5wvVf3Jm+UznB8mmSx5FyQ2CHY?=
+ =?us-ascii?Q?/Bj6Wb/1/k7k81W8jRLPvgVBuLCIULCI4KlGF2jQk+xsUxzIkGwU1rtMAzz+?=
+ =?us-ascii?Q?yUfbN7PlSF6QuYudf0VC/8B+OIZjfqJ8RVHCxdabsC3e+4e2VyWnu0gqtGed?=
+ =?us-ascii?Q?23DNM9aGpjm6mV2Ig/qNDKHGkrGRtreBAje0k85/ml9MQxGAYmAXRXo0H45Y?=
+ =?us-ascii?Q?vR+nSfX1If9pzWK7acCACU+mTN+lp6UqthgU3lzIJ2UZdp2Rk/fw0n/CmifL?=
+ =?us-ascii?Q?kueTlnLBikWQhDxOIdHZnw8J3Xaj1iMH+vug7E1wW72kHZAFapAKvha57a1k?=
+ =?us-ascii?Q?7GnclOBawtD7MZuAFVk3bENgz8iM/S1PaI4U+QPTOsv4D/MRcVItMdwqOV5z?=
+ =?us-ascii?Q?fXR0pVW1j8dGVJy/lFZrIJWBPGnuv0E+GjOAd71oDzz+e4lMuw8GiSThy2E4?=
+ =?us-ascii?Q?1mj7oLIhzK8HSfZQJRiP1YD3fOyWSFVmmJZAPVqY9UT2TJAfIY7IbjmF03vK?=
+ =?us-ascii?Q?1B+VQfwVIKWcFq3u6ci3L0AUM8oyGCe34VEVDO2sNKpD63wlbnG4HprWXLQf?=
+ =?us-ascii?Q?ogeU6jM36lnlLW1jU+eZfw67R9rAe04NXaP85FhQerf0+GEy3Jn/9tIhTG8J?=
+ =?us-ascii?Q?BAz0lDyAKdxEntPU5fT1qvM1qMU04L0h5tjYeH8e1oBduVdGsO7oFJ1Y6z2+?=
+ =?us-ascii?Q?Tv9z3aNmKzBXlyLpnrcmL0eTv7cSXYs2l3LZlVzj9invjhElXD3ldmo=3D?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 484b65db-f231-4d61-e619-08dbdc1401d3
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR10MB4196.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Nov 2023 02:24:29.3290
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: rTIjjP/wx5m8BxAxc0kwXOfCpvZMh6JAErJYwrQeyNXacCJjvZgOCm9Dd4Ylq0REcx/XI/NV/e4upiENZMHc5w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW6PR10MB7590
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-03_02,2023-11-02_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 adultscore=0 mlxscore=0
+ suspectscore=0 mlxlogscore=571 bulkscore=0 phishscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2310240000
+ definitions=main-2311030018
+X-Proofpoint-ORIG-GUID: 5MGceVOk39SXZNBf_euC3HNyGd9efpCo
+X-Proofpoint-GUID: 5MGceVOk39SXZNBf_euC3HNyGd9efpCo
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,581 +169,217 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 11/02/23 20:58, Edward Adam Davis wrote:
+> When obtaining resv_map from vma, it is necessary to simultaneously determine
+> the flag HPAGE_RESV_OWNER of vm_private_data.
+> Only when they are met simultaneously, resv_map is valid.
 
+Thanks for looking into this!
 
-> On Nov 3, 2023, at 01:37, Sourav Panda <souravpanda@google.com> wrote:
->=20
->=20
->=20
-> On Wed, Nov 1, 2023 at 7:43=E2=80=AFPM Muchun Song =
-<muchun.song@linux.dev> wrote:
->=20
->=20
-> > On Nov 2, 2023, at 06:58, Sourav Panda <souravpanda@google.com> =
-wrote:
-> >=20
-> >=20
-> >=20
-> > On Tue, Oct 31, 2023 at 8:38=E2=80=AFPM Muchun Song =
-<muchun.song@linux.dev> wrote:
-> >=20
-> >=20
-> > On 2023/11/1 06:38, Sourav Panda wrote:
-> > > Adds a new per-node PageMetadata field to
-> > > /sys/devices/system/node/nodeN/meminfo
-> > > and a global PageMetadata field to /proc/meminfo. This information =
-can
-> > > be used by users to see how much memory is being used by per-page
-> > > metadata, which can vary depending on build configuration, machine
-> > > architecture, and system use.
-> > >
-> > > Per-page metadata is the amount of memory that Linux needs in =
-order to
-> > > manage memory at the page granularity. The majority of such memory =
-is
-> > > used by "struct page" and "page_ext" data structures. In contrast =
-to
-> > > most other memory consumption statistics, per-page metadata might =
-not
-> > > be included in MemTotal. For example, MemTotal does not include =
-memblock
-> > > allocations but includes buddy allocations. While on the other =
-hand,
-> > > per-page metadata would include both memblock and buddy =
-allocations.
-> > >
-> > > This memory depends on build configurations, machine =
-architectures, and
-> > > the way system is used:
-> > >
-> > > Build configuration may include extra fields into "struct page",
-> > > and enable / disable "page_ext"
-> > > Machine architecture defines base page sizes. For example 4K x86,
-> > > 8K SPARC, 64K ARM64 (optionally), etc. The per-page metadata
-> > > overhead is smaller on machines with larger page sizes.
-> > > System use can change per-page overhead by using vmemmap
-> > > optimizations with hugetlb pages, and emulated pmem devdax pages.
-> > > Also, boot parameters can determine whether page_ext is needed
-> > > to be allocated. This memory can be part of MemTotal or be outside
-> > > MemTotal depending on whether the memory was hot-plugged, booted =
-with,
-> > > or hugetlb memory was returned back to the system.
-> > >
-> > > Suggested-by: Pasha Tatashin <pasha.tatashin@soleen.com>
-> > > Signed-off-by: Sourav Panda <souravpanda@google.com>
-> > > ---
-> > >   Documentation/filesystems/proc.rst |  3 +++
-> > >   drivers/base/node.c                |  2 ++
-> > >   fs/proc/meminfo.c                  |  7 +++++++
-> > >   include/linux/mmzone.h             |  3 +++
-> > >   include/linux/vmstat.h             |  4 ++++
-> > >   mm/hugetlb.c                       | 11 ++++++++--
-> > >   mm/hugetlb_vmemmap.c               |  8 ++++++--
-> > >   mm/mm_init.c                       |  3 +++
-> > >   mm/page_alloc.c                    |  1 +
-> > >   mm/page_ext.c                      | 32 =
-+++++++++++++++++++++---------
-> > >   mm/sparse-vmemmap.c                |  3 +++
-> > >   mm/sparse.c                        |  7 ++++++-
-> > >   mm/vmstat.c                        | 24 ++++++++++++++++++++++
-> > >   13 files changed, 94 insertions(+), 14 deletions(-)
-> > >
-> > > diff --git a/Documentation/filesystems/proc.rst =
-b/Documentation/filesystems/proc.rst
-> > > index 2b59cff8be17..c121f2ef9432 100644
-> > > --- a/Documentation/filesystems/proc.rst
-> > > +++ b/Documentation/filesystems/proc.rst
-> > > @@ -987,6 +987,7 @@ Example output. You may not have all of these =
-fields.
-> > >       AnonPages:       4654780 kB
-> > >       Mapped:           266244 kB
-> > >       Shmem:              9976 kB
-> > > +    PageMetadata:     513419 kB
-> > >       KReclaimable:     517708 kB
-> > >       Slab:             660044 kB
-> > >       SReclaimable:     517708 kB
-> > > @@ -1089,6 +1090,8 @@ Mapped
-> > >                 files which have been mmapped, such as libraries
-> > >   Shmem
-> > >                 Total memory used by shared memory (shmem) and =
-tmpfs
-> > > +PageMetadata
-> > > +              Memory used for per-page metadata
-> > >   KReclaimable
-> > >                 Kernel allocations that the kernel will attempt to =
-reclaim
-> > >                 under memory pressure. Includes SReclaimable =
-(below), and other
-> > > diff --git a/drivers/base/node.c b/drivers/base/node.c
-> > > index 493d533f8375..da728542265f 100644
-> > > --- a/drivers/base/node.c
-> > > +++ b/drivers/base/node.c
-> > > @@ -428,6 +428,7 @@ static ssize_t node_read_meminfo(struct device =
-*dev,
-> > >                            "Node %d Mapped:         %8lu kB\n"
-> > >                            "Node %d AnonPages:      %8lu kB\n"
-> > >                            "Node %d Shmem:          %8lu kB\n"
-> > > +                          "Node %d PageMetadata:   %8lu kB\n"
-> > >                            "Node %d KernelStack:    %8lu kB\n"
-> > >   #ifdef CONFIG_SHADOW_CALL_STACK
-> > >                            "Node %d ShadowCallStack:%8lu kB\n"
-> > > @@ -458,6 +459,7 @@ static ssize_t node_read_meminfo(struct device =
-*dev,
-> > >                            nid, K(node_page_state(pgdat, =
-NR_FILE_MAPPED)),
-> > >                            nid, K(node_page_state(pgdat, =
-NR_ANON_MAPPED)),
-> > >                            nid, K(i.sharedram),
-> > > +                          nid, K(node_page_state(pgdat, =
-NR_PAGE_METADATA)),
-> > >                            nid, node_page_state(pgdat, =
-NR_KERNEL_STACK_KB),
-> > >   #ifdef CONFIG_SHADOW_CALL_STACK
-> > >                            nid, node_page_state(pgdat, =
-NR_KERNEL_SCS_KB),
-> > > diff --git a/fs/proc/meminfo.c b/fs/proc/meminfo.c
-> > > index 45af9a989d40..f141bb2a550d 100644
-> > > --- a/fs/proc/meminfo.c
-> > > +++ b/fs/proc/meminfo.c
-> > > @@ -39,7 +39,9 @@ static int meminfo_proc_show(struct seq_file *m, =
-void *v)
-> > >       long available;
-> > >       unsigned long pages[NR_LRU_LISTS];
-> > >       unsigned long sreclaimable, sunreclaim;
-> > > +     unsigned long nr_page_metadata;
-> > >       int lru;
-> > > +     int nid;
-> > >  =20
-> > >       si_meminfo(&i);
-> > >       si_swapinfo(&i);
-> > > @@ -57,6 +59,10 @@ static int meminfo_proc_show(struct seq_file =
-*m, void *v)
-> > >       sreclaimable =3D =
-global_node_page_state_pages(NR_SLAB_RECLAIMABLE_B);
-> > >       sunreclaim =3D =
-global_node_page_state_pages(NR_SLAB_UNRECLAIMABLE_B);
-> > >  =20
-> > > +     nr_page_metadata =3D 0;
-> > > +     for_each_online_node(nid)
-> > > +             nr_page_metadata +=3D =
-node_page_state(NODE_DATA(nid), NR_PAGE_METADATA);
-> > > +
-> > >       show_val_kb(m, "MemTotal:       ", i.totalram);
-> > >       show_val_kb(m, "MemFree:        ", i.freeram);
-> > >       show_val_kb(m, "MemAvailable:   ", available);
-> > > @@ -104,6 +110,7 @@ static int meminfo_proc_show(struct seq_file =
-*m, void *v)
-> > >       show_val_kb(m, "Mapped:         ",
-> > >                   global_node_page_state(NR_FILE_MAPPED));
-> > >       show_val_kb(m, "Shmem:          ", i.sharedram);
-> > > +     show_val_kb(m, "PageMetadata:   ", nr_page_metadata);
-> > >       show_val_kb(m, "KReclaimable:   ", sreclaimable +
-> > >                   =
-global_node_page_state(NR_KERNEL_MISC_RECLAIMABLE));
-> > >       show_val_kb(m, "Slab:           ", sreclaimable + =
-sunreclaim);
-> > > diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-> > > index 4106fbc5b4b3..dda1ad522324 100644
-> > > --- a/include/linux/mmzone.h
-> > > +++ b/include/linux/mmzone.h
-> > > @@ -207,6 +207,9 @@ enum node_stat_item {
-> > >       PGPROMOTE_SUCCESS,      /* promote successfully */
-> > >       PGPROMOTE_CANDIDATE,    /* candidate pages to promote */
-> > >   #endif
-> > > +     NR_PAGE_METADATA,       /* Page metadata size (struct page =
-and page_ext)
-> > > +                              * in pages
-> > > +                              */
-> > >       NR_VM_NODE_STAT_ITEMS
-> > >   };
-> > >  =20
-> > > diff --git a/include/linux/vmstat.h b/include/linux/vmstat.h
-> > > index fed855bae6d8..af096a881f03 100644
-> > > --- a/include/linux/vmstat.h
-> > > +++ b/include/linux/vmstat.h
-> > > @@ -656,4 +656,8 @@ static inline void =
-lruvec_stat_sub_folio(struct folio *folio,
-> > >   {
-> > >       lruvec_stat_mod_folio(folio, idx, -folio_nr_pages(folio));
-> > >   }
-> > > +
-> > > +void __init mod_node_early_perpage_metadata(int nid, long delta);
-> > > +void __init store_early_perpage_metadata(void);
-> > > +
-> > >   #endif /* _LINUX_VMSTAT_H */
-> > > diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> > > index 1301ba7b2c9a..cd3158a9c7f3 100644
-> > > --- a/mm/hugetlb.c
-> > > +++ b/mm/hugetlb.c
-> > > @@ -1790,6 +1790,9 @@ static void =
-__update_and_free_hugetlb_folio(struct hstate *h,
-> > >               destroy_compound_gigantic_folio(folio, =
-huge_page_order(h));
-> > >               free_gigantic_folio(folio, huge_page_order(h));
-> > >       } else {
-> > > +#ifndef CONFIG_SPARSEMEM_VMEMMAP
-> > > +             __node_stat_sub_folio(folio, NR_PAGE_METADATA);
-> > > +#endif
-> > >               __free_pages(&folio->page, huge_page_order(h));
-> > >       }
-> > >   }
-> > > @@ -2125,6 +2128,7 @@ static struct folio =
-*alloc_buddy_hugetlb_folio(struct hstate *h,
-> > >       struct page *page;
-> > >       bool alloc_try_hard =3D true;
-> > >       bool retry =3D true;
-> > > +     struct folio *folio;
-> > >  =20
-> > >       /*
-> > >        * By default we always try hard to allocate the page with
-> > > @@ -2175,9 +2179,12 @@ static struct folio =
-*alloc_buddy_hugetlb_folio(struct hstate *h,
-> > >               __count_vm_event(HTLB_BUDDY_PGALLOC_FAIL);
-> > >               return NULL;
-> > >       }
-> > > -
-> > > +     folio =3D page_folio(page);
-> > > +#ifndef CONFIG_SPARSEMEM_VMEMMAP
-> > > +     __node_stat_add_folio(folio, NR_PAGE_METADATA)
-> >=20
-> > Seems you have not tested this patch with CONFIG_SPARSEMEM_VMEMMAP =
-disabled.
-> > You missed ";" in the end.
-> >=20
-> > Thanks for reviewing this patch. I will submit v5 by testing against =
-FLATMEM and
-> > SPARSEMEM (VMEMMAP disabled) memory model on ARM32. This error was =
-introduced
-> > in v4.
-> >=20
-> > =20
-> > > +#endif
-> >=20
-> > I am curious why we should account HugeTLB pages as metadata.
-> >=20
-> > When HugeTLB pages are reserved, memory pertaining to redundant =
-`struct page` are
-> > returned to the buddy allocator for other uses. This essentially =
-reflects the change in the
->=20
-> Why the `struct page` are returned to the buddy when =
-CONFIG_SPARSEMEM_VMEMMAP
-> is disabled? Why it is added with a PAGE_SIZE?
->=20
-> Thank you again!=20
->=20
-> I see both your points. I believe the solution is to remove updates to =
-NR_PAGE_METADATA
-> when CONFIG_SPARSEMEM_VMEMMAP is disabled. I shall do this in v6 if =
-you agree.
->=20
-> Why is it added with a PAGE_SIZE?
-> - You are correct. First of all we should not even update it when =
-CONFIG_SPARSEMEM_VMEMMAP
->    is disabled. Furthermore, even if we did, we should have done it by =
-a factor of=20
->    huge_page_order(h) instead of folio_nr_pages(folio).
+The check for HPAGE_RESV_OWNER does 'work'.  However, I believe root
+cause is this block of code in __unmap_hugepage_range().
 
-Actually, I think we should remove this counting from this path =
-regardless of
-whether CONFIG_SPARSEMEM_VMEMMAP is enabled or not. The metadata (aka =
-page structure)
-is not allocated from here, it is allocated from where the vmemmap areas =
-are
-initialized during boot time. You should count there.
+		/*
+		 * If a reference page is supplied, it is because a specific
+		 * page is being unmapped, not a range. Ensure the page we
+		 * are about to unmap is the actual page of interest.
+		 */
+		if (ref_page) {
+			if (page != ref_page) {
+				spin_unlock(ptl);
+				continue;
+			}
+			/*
+			 * Mark the VMA as having unmapped its page so that
+			 * future faults in this VMA will fail rather than
+			 * looking like data was lost
+			 */
+			set_vma_resv_flags(vma, HPAGE_RESV_UNMAPPED);
+		}
 
-> - This error was introduced in v4 as we switched from=20
->   __mod_node_page_state(pg_dat, NR_PAGE_METADATA, huge_page_order(h)) =
-to
->   __node_stat_sub_folio(folio, NR_PAGE_METADATA).
-> - huge_page_order(h) returns 9 for each 2 MB HugeTLB page allocation =
-while
->   folio_nr_pages(folio), which is called in __node_stat_sub_folio =
-returns 512.=20
-> - Removing updates to NR_PAGE_METADATA when CONFIG_SPARSEMEM_VMEMMAP =
-is
->   disabled shall fix this problem.
-> =20
->=20
-> > amount of `struct pages` when HugeTLB pages are reserved and free'd.
-> > =20
-> > >       __count_vm_event(HTLB_BUDDY_PGALLOC);
-> > > -     return page_folio(page);
-> > > +     return folio;
-> > >   }
-> > >  =20
-> > >   /*
-> > > diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
-> > > index 4b9734777f69..804a93d18cab 100644
-> > > --- a/mm/hugetlb_vmemmap.c
-> > > +++ b/mm/hugetlb_vmemmap.c
-> > > @@ -214,6 +214,7 @@ static inline void free_vmemmap_page(struct =
-page *page)
-> > >               free_bootmem_page(page);
-> > >       else
-> > >               __free_page(page);
-> > > +     __mod_node_page_state(page_pgdat(page), NR_PAGE_METADATA, =
--1);
-> > >   }
-> > >  =20
-> > >   /* Free a list of the vmemmap pages */
-> > > @@ -336,6 +337,7 @@ static int vmemmap_remap_free(unsigned long =
-start, unsigned long end,
-> > >                         (void *)walk.reuse_addr);
-> > >               list_add(&walk.reuse_page->lru, &vmemmap_pages);
-> > >       }
-> > > +     __mod_node_page_state(NODE_DATA(nid), NR_PAGE_METADATA, 1);
-> >=20
-> > What if allocation of walk.reuse_page fails?
-> >=20
-> > Thank you for pointing this out. I will move the NR_PAGE_METADATA =
-update within the=20
-> > if ( walk.reuse_page ) clause to cover the case where =
-walk.reuse_page fails.
-> > =20
-> > >  =20
-> > >       /*
-> > >        * In order to make remapping routine most efficient for the =
-huge pages,
-> > > @@ -381,14 +383,16 @@ static int alloc_vmemmap_page_list(unsigned =
-long start, unsigned long end,
-> > >                                  struct list_head *list)
-> > >   {
-> > >       gfp_t gfp_mask =3D GFP_KERNEL | __GFP_RETRY_MAYFAIL | =
-__GFP_THISNODE;
-> > > -     unsigned long nr_pages =3D (end - start) >> PAGE_SHIFT;
-> > > +     unsigned long nr_pages =3D DIV_ROUND_UP(end - start, =
-PAGE_SIZE);
-> >=20
-> > "end - start" is always multiple of PAGE_SIZE, why we need =
-DIV_ROUND_UP=20
-> > here?
-> >=20
-> > Thank you. I agree with this and will revert this change in v5.
-> > =20
-> > >       int nid =3D page_to_nid((struct page *)start);
-> > >       struct page *page, *next;
-> > > +     int i;
-> > >  =20
-> > > -     while (nr_pages--) {
-> > > +     for (i =3D 0; i < nr_pages; i++) {
-> > >               page =3D alloc_pages_node(nid, gfp_mask, 0);
-> > >               if (!page)
-> > >                       goto out;
-> > > +             __mod_node_page_state(page_pgdat(page), =
-NR_PAGE_METADATA, 1);
-> > >               list_add_tail(&page->lru, list);
-> > >       }
-> >=20
-> > Count one by ine is really inefficient. Can't we count *nr_pages* at
-> > one time?
-> >=20
-> > Thanks for suggesting this optimization. I will modify the =
-implementation to update the
-> > metadata once as opposed to every iteration.
-> > =20
-> > >  =20
-> > > diff --git a/mm/mm_init.c b/mm/mm_init.c
-> > > index 50f2f34745af..6997bf00945b 100644
-> > > --- a/mm/mm_init.c
-> > > +++ b/mm/mm_init.c
-> > > @@ -26,6 +26,7 @@
-> > >   #include <linux/pgtable.h>
-> > >   #include <linux/swap.h>
-> > >   #include <linux/cma.h>
-> > > +#include <linux/vmstat.h>
-> > >   #include "internal.h"
-> > >   #include "slab.h"
-> > >   #include "shuffle.h"
-> > > @@ -1656,6 +1657,8 @@ static void __init alloc_node_mem_map(struct =
-pglist_data *pgdat)
-> > >                       panic("Failed to allocate %ld bytes for node =
-%d memory map\n",
-> > >                             size, pgdat->node_id);
-> > >               pgdat->node_mem_map =3D map + offset;
-> > > +             mod_node_early_perpage_metadata(pgdat->node_id,
-> > > +                                             DIV_ROUND_UP(size, =
-PAGE_SIZE));
-> > >       }
-> > >       pr_debug("%s: node %d, pgdat %08lx, node_mem_map %08lx\n",
-> > >                               __func__, pgdat->node_id, (unsigned =
-long)pgdat,
-> > > diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> > > index 85741403948f..522dc0c52610 100644
-> > > --- a/mm/page_alloc.c
-> > > +++ b/mm/page_alloc.c
-> > > @@ -5443,6 +5443,7 @@ void __init setup_per_cpu_pageset(void)
-> > >       for_each_online_pgdat(pgdat)
-> > >               pgdat->per_cpu_nodestats =3D
-> > >                       alloc_percpu(struct per_cpu_nodestat);
-> > > +     store_early_perpage_metadata();
-> > >   }
-> > >  =20
-> > >   __meminit void zone_pcp_init(struct zone *zone)
-> > > diff --git a/mm/page_ext.c b/mm/page_ext.c
-> > > index 4548fcc66d74..d8d6db9c3d75 100644
-> > > --- a/mm/page_ext.c
-> > > +++ b/mm/page_ext.c
-> > > @@ -201,6 +201,8 @@ static int __init alloc_node_page_ext(int nid)
-> > >               return -ENOMEM;
-> > >       NODE_DATA(nid)->node_page_ext =3D base;
-> > >       total_usage +=3D table_size;
-> > > +     __mod_node_page_state(NODE_DATA(nid), NR_PAGE_METADATA,
-> > > +                           DIV_ROUND_UP(table_size, PAGE_SIZE));
-> > >       return 0;
-> > >   }
-> > >  =20
-> > > @@ -255,12 +257,15 @@ static void *__meminit alloc_page_ext(size_t =
-size, int nid)
-> > >       void *addr =3D NULL;
-> > >  =20
-> > >       addr =3D alloc_pages_exact_nid(nid, size, flags);
-> > > -     if (addr) {
-> > > +     if (addr)
-> > >               kmemleak_alloc(addr, size, 1, flags);
-> > > -             return addr;
-> > > -     }
-> > > +     else
-> > > +             addr =3D vzalloc_node(size, nid);
-> > >  =20
-> > > -     addr =3D vzalloc_node(size, nid);
-> > > +     if (addr) {
-> > > +             mod_node_page_state(NODE_DATA(nid), =
-NR_PAGE_METADATA,
-> > > +                                 DIV_ROUND_UP(size, PAGE_SIZE));
-> > > +     }
-> > >  =20
-> > >       return addr;
-> > >   }
-> > > @@ -303,18 +308,27 @@ static int __meminit =
-init_section_page_ext(unsigned long pfn, int nid)
-> > >  =20
-> > >   static void free_page_ext(void *addr)
-> > >   {
-> > > +     size_t table_size;
-> > > +     struct page *page;
-> > > +     struct pglist_data *pgdat;
-> > > +
-> > > +     table_size =3D page_ext_size * PAGES_PER_SECTION;
-> > > +
-> > >       if (is_vmalloc_addr(addr)) {
-> > > +             page =3D vmalloc_to_page(addr);
-> > > +             pgdat =3D page_pgdat(page);
-> > >               vfree(addr);
-> > >       } else {
-> > > -             struct page *page =3D virt_to_page(addr);
-> > > -             size_t table_size;
-> > > -
-> > > -             table_size =3D page_ext_size * PAGES_PER_SECTION;
-> > > -
-> > > +             page =3D virt_to_page(addr);
-> > > +             pgdat =3D page_pgdat(page);
-> > >               BUG_ON(PageReserved(page));
-> > >               kmemleak_free(addr);
-> > >               free_pages_exact(addr, table_size);
-> > >       }
-> > > +
-> > > +     __mod_node_page_state(pgdat, NR_PAGE_METADATA,
-> > > +                           -1L * (DIV_ROUND_UP(table_size, =
-PAGE_SIZE)));
-> > > +
-> > >   }
-> > >  =20
-> > >   static void __free_page_ext(unsigned long pfn)
-> > > diff --git a/mm/sparse-vmemmap.c b/mm/sparse-vmemmap.c
-> > > index a2cbe44c48e1..2bc67b2c2aa2 100644
-> > > --- a/mm/sparse-vmemmap.c
-> > > +++ b/mm/sparse-vmemmap.c
-> > > @@ -469,5 +469,8 @@ struct page * __meminit =
-__populate_section_memmap(unsigned long pfn,
-> > >       if (r < 0)
-> > >               return NULL;
-> > >  =20
-> > > +     __mod_node_page_state(NODE_DATA(nid), NR_PAGE_METADATA,
-> > > +                           DIV_ROUND_UP(end - start, PAGE_SIZE));
-> > > +
-> > >       return pfn_to_page(pfn);
-> > >   }
-> > > diff --git a/mm/sparse.c b/mm/sparse.c
-> > > index 77d91e565045..7f67b5486cd1 100644
-> > > --- a/mm/sparse.c
-> > > +++ b/mm/sparse.c
-> > > @@ -14,7 +14,7 @@
-> > >   #include <linux/swap.h>
-> > >   #include <linux/swapops.h>
-> > >   #include <linux/bootmem_info.h>
-> > > -
-> > > +#include <linux/vmstat.h>
-> > >   #include "internal.h"
-> > >   #include <asm/dma.h>
-> > >  =20
-> > > @@ -465,6 +465,9 @@ static void __init sparse_buffer_init(unsigned =
-long size, int nid)
-> > >        */
-> > >       sparsemap_buf =3D memmap_alloc(size, section_map_size(), =
-addr, nid, true);
-> > >       sparsemap_buf_end =3D sparsemap_buf + size;
-> > > +#ifndef CONFIG_SPARSEMEM_VMEMMAP
-> > > +     mod_node_early_perpage_metadata(nid, DIV_ROUND_UP(size, =
-PAGE_SIZE));
-> > > +#endif
-> > >   }
-> > >  =20
-> > >   static void __init sparse_buffer_fini(void)
-> > > @@ -641,6 +644,8 @@ static void depopulate_section_memmap(unsigned =
-long pfn, unsigned long nr_pages,
-> > >       unsigned long start =3D (unsigned long) pfn_to_page(pfn);
-> > >       unsigned long end =3D start + nr_pages * sizeof(struct =
-page);
-> > >  =20
-> > > +     __mod_node_page_state(page_pgdat(pfn_to_page(pfn)), =
-NR_PAGE_METADATA,
-> > > +                           -1L * (DIV_ROUND_UP(end - start, =
-PAGE_SIZE)));
-> > >       vmemmap_free(start, end, altmap);
-> > >   }
-> > >   static void free_map_bootmem(struct page *memmap)
-> > > diff --git a/mm/vmstat.c b/mm/vmstat.c
-> > > index 00e81e99c6ee..070d2b3d2bcc 100644
-> > > --- a/mm/vmstat.c
-> > > +++ b/mm/vmstat.c
-> > > @@ -1245,6 +1245,7 @@ const char * const vmstat_text[] =3D {
-> > >       "pgpromote_success",
-> > >       "pgpromote_candidate",
-> > >   #endif
-> > > +     "nr_page_metadata",
-> > >  =20
-> > >       /* enum writeback_stat_item counters */
-> > >       "nr_dirty_threshold",
-> > > @@ -2274,4 +2275,27 @@ static int __init extfrag_debug_init(void)
-> > >   }
-> > >  =20
-> > >   module_init(extfrag_debug_init);
-> > > +
-> > >   #endif
-> > > +
-> > > +/*
-> > > + * Page metadata size (struct page and page_ext) in pages
-> > > + */
-> > > +static unsigned long early_perpage_metadata[MAX_NUMNODES] =
-__initdata;
-> > > +
-> > > +void __init mod_node_early_perpage_metadata(int nid, long delta)
-> > > +{
-> > > +     early_perpage_metadata[nid] +=3D delta;
-> > > +}
-> > > +
-> > > +void __init store_early_perpage_metadata(void)
-> > > +{
-> > > +     int nid;
-> > > +     struct pglist_data *pgdat;
-> > > +
-> > > +     for_each_online_pgdat(pgdat) {
-> > > +             nid =3D pgdat->node_id;
-> > > +             __mod_node_page_state(NODE_DATA(nid), =
-NR_PAGE_METADATA,
-> > > +                                   early_perpage_metadata[nid]);
-> > > +     }
-> > > +}
+In the specific case causing the null-ptr-deref, the resv_map pointer
+(vm_private_data) is NULL.  So, set_vma_resv_flags() just sets the lower bit.
+Because of this, __vma_private_lock returns true.
 
+As mentioned, the check for HPAGE_RESV_OWNER in this patch 'works' because
+only the HPAGE_RESV_UNMAPPED bit is set in vm_private_data.
 
+I was thinking a more explicit check for this 'NULL pointer' with lower
+bits set could be made in __vma_private_lock.  Below is something I put
+together.  I just open coded the check for 'NULL pointer' instead of
+moving a bunch of code to the header file.  In addition, I changed the
+#defines from HPAGE_* to HUGETLB_* to avoid any confusion as the header
+file defines are in the global name space.  I thought about also adding
+an explicit check for the HPAGE_RESV_OWNER as done in this patch.  This
+would catch the case where the pointer is not NULL.  I do not believe
+that is possible in the code today, but might make the check more future
+proof.
+
+diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
+index 47d25a5e1933..7b472432708e 100644
+--- a/include/linux/hugetlb.h
++++ b/include/linux/hugetlb.h
+@@ -1260,6 +1260,15 @@ bool want_pmd_share(struct vm_area_struct *vma, unsigned long addr);
+ #define flush_hugetlb_tlb_range(vma, addr, end)	flush_tlb_range(vma, addr, end)
+ #endif
+ 
++/*
++ * Flags for MAP_PRIVATE reservations.  These are stored in the bottom
++ * bits of the reservation map pointer, which are always clear due to
++ * alignment.
++ */
++#define HUGETLB_RESV_OWNER    (1UL << 0)
++#define HUGETLB_RESV_UNMAPPED (1UL << 1)
++#define HUGETLB_RESV_MASK (HUGETLB_RESV_OWNER | HUGETLB_RESV_UNMAPPED)
++
+ static inline bool __vma_shareable_lock(struct vm_area_struct *vma)
+ {
+ 	return (vma->vm_flags & VM_MAYSHARE) && vma->vm_private_data;
+@@ -1267,7 +1276,9 @@ static inline bool __vma_shareable_lock(struct vm_area_struct *vma)
+ 
+ static inline bool __vma_private_lock(struct vm_area_struct *vma)
+ {
+-	return (!(vma->vm_flags & VM_MAYSHARE)) && vma->vm_private_data;
++	/* Careful - flags may be set in lower bits of pointer */
++	return (!(vma->vm_flags & VM_MAYSHARE)) &&
++		(unsigned long)vma->vm_private_data & ~HUGETLB_RESV_MASK;
+ }
+ 
+ /*
+diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+index 1301ba7b2c9a..d2215f7647b1 100644
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -1028,15 +1028,6 @@ __weak unsigned long vma_mmu_pagesize(struct vm_area_struct *vma)
+ 	return vma_kernel_pagesize(vma);
+ }
+ 
+-/*
+- * Flags for MAP_PRIVATE reservations.  These are stored in the bottom
+- * bits of the reservation map pointer, which are always clear due to
+- * alignment.
+- */
+-#define HPAGE_RESV_OWNER    (1UL << 0)
+-#define HPAGE_RESV_UNMAPPED (1UL << 1)
+-#define HPAGE_RESV_MASK (HPAGE_RESV_OWNER | HPAGE_RESV_UNMAPPED)
+-
+ /*
+  * These helpers are used to track how many pages are reserved for
+  * faults in a MAP_PRIVATE mapping. Only the process that called mmap()
+@@ -1162,7 +1153,7 @@ static struct resv_map *vma_resv_map(struct vm_area_struct *vma)
+ 
+ 	} else {
+ 		return (struct resv_map *)(get_vma_private_data(vma) &
+-							~HPAGE_RESV_MASK);
++							~HUGETLB_RESV_MASK);
+ 	}
+ }
+ 
+@@ -1236,7 +1227,7 @@ void clear_vma_resv_huge_pages(struct vm_area_struct *vma)
+ 	 */
+ 	struct resv_map *reservations = vma_resv_map(vma);
+ 
+-	if (reservations && is_vma_resv_set(vma, HPAGE_RESV_OWNER)) {
++	if (reservations && is_vma_resv_set(vma, HUGETLB_RESV_OWNER)) {
+ 		resv_map_put_hugetlb_cgroup_uncharge_info(reservations);
+ 		kref_put(&reservations->refs, resv_map_release);
+ 	}
+@@ -1282,7 +1273,7 @@ static bool vma_has_reserves(struct vm_area_struct *vma, long chg)
+ 	 * Only the process that called mmap() has reserves for
+ 	 * private mappings.
+ 	 */
+-	if (is_vma_resv_set(vma, HPAGE_RESV_OWNER)) {
++	if (is_vma_resv_set(vma, HUGETLB_RESV_OWNER)) {
+ 		/*
+ 		 * Like the shared case above, a hole punch or truncate
+ 		 * could have been performed on the private mapping.
+@@ -2763,7 +2754,7 @@ static long __vma_reservation_common(struct hstate *h,
+ 	if (vma->vm_flags & VM_MAYSHARE || mode == VMA_DEL_RESV)
+ 		return ret;
+ 	/*
+-	 * We know private mapping must have HPAGE_RESV_OWNER set.
++	 * We know private mapping must have HUGETLB_RESV_OWNER set.
+ 	 *
+ 	 * In most cases, reserves always exist for private mappings.
+ 	 * However, a file associated with mapping could have been
+@@ -4833,7 +4824,7 @@ static void hugetlb_vm_op_open(struct vm_area_struct *vma)
+ 	struct resv_map *resv = vma_resv_map(vma);
+ 
+ 	/*
+-	 * HPAGE_RESV_OWNER indicates a private mapping.
++	 * HUGETLB_RESV_OWNER indicates a private mapping.
+ 	 * This new VMA should share its siblings reservation map if present.
+ 	 * The VMA will only ever have a valid reservation map pointer where
+ 	 * it is being copied for another still existing VMA.  As that VMA
+@@ -4841,7 +4832,7 @@ static void hugetlb_vm_op_open(struct vm_area_struct *vma)
+ 	 * after this open call completes.  It is therefore safe to take a
+ 	 * new reference here without additional locking.
+ 	 */
+-	if (resv && is_vma_resv_set(vma, HPAGE_RESV_OWNER)) {
++	if (resv && is_vma_resv_set(vma, HUGETLB_RESV_OWNER)) {
+ 		resv_map_dup_hugetlb_cgroup_uncharge_info(resv);
+ 		kref_get(&resv->refs);
+ 	}
+@@ -4877,7 +4868,7 @@ static void hugetlb_vm_op_close(struct vm_area_struct *vma)
+ 	hugetlb_vma_lock_free(vma);
+ 
+ 	resv = vma_resv_map(vma);
+-	if (!resv || !is_vma_resv_set(vma, HPAGE_RESV_OWNER))
++	if (!resv || !is_vma_resv_set(vma, HUGETLB_RESV_OWNER))
+ 		return;
+ 
+ 	start = vma_hugecache_offset(h, vma, vma->vm_start);
+@@ -5394,7 +5385,7 @@ void __unmap_hugepage_range(struct mmu_gather *tlb, struct vm_area_struct *vma,
+ 			 * future faults in this VMA will fail rather than
+ 			 * looking like data was lost
+ 			 */
+-			set_vma_resv_flags(vma, HPAGE_RESV_UNMAPPED);
++			set_vma_resv_flags(vma, HUGETLB_RESV_UNMAPPED);
+ 		}
+ 
+ 		pte = huge_ptep_get_and_clear(mm, address, ptep);
+@@ -5544,7 +5535,7 @@ static void unmap_ref_private(struct mm_struct *mm, struct vm_area_struct *vma,
+ 		 * could insert a zeroed page instead of the data existing
+ 		 * from the time of fork. This would look like data corruption
+ 		 */
+-		if (!is_vma_resv_set(iter_vma, HPAGE_RESV_OWNER))
++		if (!is_vma_resv_set(iter_vma, HUGETLB_RESV_OWNER))
+ 			unmap_hugepage_range(iter_vma, address,
+ 					     address + huge_page_size(h), page, 0);
+ 	}
+@@ -5625,7 +5616,7 @@ static vm_fault_t hugetlb_wp(struct mm_struct *mm, struct vm_area_struct *vma,
+ 	 * at the time of fork() could consume its reserves on COW instead
+ 	 * of the full address range.
+ 	 */
+-	if (is_vma_resv_set(vma, HPAGE_RESV_OWNER) &&
++	if (is_vma_resv_set(vma, HUGETLB_RESV_OWNER) &&
+ 			old_folio != pagecache_folio)
+ 		outside_reserve = 1;
+ 
+@@ -5865,7 +5856,7 @@ static vm_fault_t hugetlb_no_page(struct mm_struct *mm,
+ 	 * COW/unsharing. Warn that such a situation has occurred as it may not
+ 	 * be obvious.
+ 	 */
+-	if (is_vma_resv_set(vma, HPAGE_RESV_UNMAPPED)) {
++	if (is_vma_resv_set(vma, HUGETLB_RESV_UNMAPPED)) {
+ 		pr_warn_ratelimited("PID %d killed due to inadequate hugepage pool\n",
+ 			   current->pid);
+ 		goto out;
+@@ -6756,7 +6747,7 @@ bool hugetlb_reserve_pages(struct inode *inode,
+ 		chg = to - from;
+ 
+ 		set_vma_resv_map(vma, resv_map);
+-		set_vma_resv_flags(vma, HPAGE_RESV_OWNER);
++		set_vma_resv_flags(vma, HUGETLB_RESV_OWNER);
+ 	}
+ 
+ 	if (chg < 0)
+@@ -6853,7 +6844,7 @@ bool hugetlb_reserve_pages(struct inode *inode,
+ 		 */
+ 		if (chg >= 0 && add < 0)
+ 			region_abort(resv_map, from, to, regions_needed);
+-	if (vma && is_vma_resv_set(vma, HPAGE_RESV_OWNER)) {
++	if (vma && is_vma_resv_set(vma, HUGETLB_RESV_OWNER)) {
+ 		kref_put(&resv_map->refs, resv_map_release);
+ 		set_vma_resv_map(vma, NULL);
+ 	}
