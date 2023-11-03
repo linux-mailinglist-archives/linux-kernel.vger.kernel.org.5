@@ -2,192 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 96EA77E0495
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 15:21:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31C637E049D
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 15:23:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377762AbjKCOVl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 10:21:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41040 "EHLO
+        id S1377776AbjKCOWS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 10:22:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230101AbjKCOVj (ORCPT
+        with ESMTP id S230101AbjKCOWR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 10:21:39 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED8371BC
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 07:21:33 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1cc37fb1310so17465135ad.1
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Nov 2023 07:21:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1699021293; x=1699626093; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=XIqurfFq1kf9lcUx0Yx/ZU30I1qIVRd4mCBlnVtaM7M=;
-        b=GKCJw8KBjyMratxKjUPgEDeP+nnQ4TwTeEQOPd+0+CaMM7OtyaQEazvgCOoXl2lPa8
-         TCBt6DtGNtGYJzjTccwhh6Yyi8hSrHSxRZQiex7xNFtFJy0XY87QFUmRyaf86UnKUWvA
-         oisbHrh4u8uJgpU5r/qGIrkY60OVeIZ+5gKgg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699021293; x=1699626093;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=XIqurfFq1kf9lcUx0Yx/ZU30I1qIVRd4mCBlnVtaM7M=;
-        b=v1+aAsKr4ZBUs3pL6sQEnelXRzTPRv6+Y82ZVeTX+Z8+RUzjfI2PuRRFwF+8Cbs3XX
-         Wb2Zkbdaiu5127OQAT07tdaNPW+eiLV+SWcT7GIv+STa9oZiy0oWKuLQxPIp2gZY3OID
-         kotydaVxzrf6u0B5fH+ZqDlaotl9pwieXAApWxw/T2TdJiCPsPKFahCCGA58wlih/diP
-         979pfck0aFf8z0Az8NgEQrR5dHGhDKx+Gt+MiniS+PW0JltpdiSaK2jKyH0uD28ML8gE
-         uEy6Q7e9FJI+Kz18SIZKhSGI5sZkNVPqi+gy1NTK9lHGIoZsRw3JqbizFVnXBo0WA5e6
-         yCSA==
-X-Gm-Message-State: AOJu0Yz+0vRqsAh8d1L2gNN1phT/twWb4WpV1GEYUUFtEXyu3ndzOUw2
-        umrRsbkX/0djTcbYK/Wxc+tkcw==
-X-Google-Smtp-Source: AGHT+IGPBKrd3C1Wtte1om1voImy+1yN7lEOe8ph1eP0JhyHKmsOkf/1XBkLvJjV6TCHBYVDkzmwRg==
-X-Received: by 2002:a17:903:2342:b0:1cc:4cf7:2f5 with SMTP id c2-20020a170903234200b001cc4cf702f5mr16496438plh.35.1699021293369;
-        Fri, 03 Nov 2023 07:21:33 -0700 (PDT)
-Received: from localhost (231.137.80.34.bc.googleusercontent.com. [34.80.137.231])
-        by smtp.gmail.com with UTF8SMTPSA id a6-20020a170902ee8600b001c0a4146961sm1470983pld.19.2023.11.03.07.21.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 03 Nov 2023 07:21:33 -0700 (PDT)
-From:   Ying Hsu <yinghsu@chromium.org>
-To:     linux-bluetooth@vger.kernel.org
-Cc:     luiz.dentz@gmail.com, linux-kernel@vger.kernel.org,
-        chromeos-bluetooth-upstreaming@chromium.org,
-        Ying Hsu <yinghsu@chromium.org>
-Subject: [PATCH] Bluetooth: Fix deadlock in vhci_send_frame
-Date:   Fri,  3 Nov 2023 14:21:26 +0000
-Message-ID: <20231103142126.3847457-1-yinghsu@chromium.org>
-X-Mailer: git-send-email 2.42.0.869.gea05f2083d-goog
+        Fri, 3 Nov 2023 10:22:17 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F917D42
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 07:22:14 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BED2CC433C7;
+        Fri,  3 Nov 2023 14:22:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699021334;
+        bh=i4n+Ca8lHKiU8bKf7X1drUsWnYBFo6sjVmEhJySGhLc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lBqtSDCsfrF7qq6D7S2hdg43EUXJkXtETu1ye6NCHLfGWUk5WFYCsZrUuYLqAsCG1
+         RFAFUs7K4GLdJK2NtMq9QdY9FWmbKwh1RcGWD6uf6w5GCk5YfS6pfJ7H6rO5/0O84X
+         WE1GGVz9XFPH42p9ClNiUBdTvuZG5JPovtUIPVNHyWJfcvARVmnRiLtNisMK+M6JYO
+         D1uAxNFEnuVvkamh3TYXPwYoS2xMnQL+NXtUFscHQrryhTKFX06y2oEfTKUd5JTp7Q
+         VEhFhuoYTTwYOfN0q4fzcAO16+d1NjbYo0dMXA6MeyfWwadRjGFOiZ56gR1cZSdtCF
+         770S+I+gJJoRA==
+Date:   Fri, 3 Nov 2023 08:22:11 -0600
+From:   Keith Busch <kbusch@kernel.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Daniel Wagner <dwagner@suse.de>, linux-nvme@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Niklas Cassel <Niklas.Cassel@wdc.com>,
+        Kenji Tomonaga <tkenbo@gmail.com>
+Subject: Re: [PATCH v3] nvme: update firmware version after commit
+Message-ID: <ZUUCE88vOi6Wj69a@kbusch-mbp.dhcp.thefacebook.com>
+References: <20231030160044.20355-1-dwagner@suse.de>
+ <ZUEmlRnBVr9LGDnF@kbusch-mbp.dhcp.thefacebook.com>
+ <y32ounthrv2uuedtriy73oir5m7k5ryupzytd2x5wn436bcrj7@7xalhdepjyk6>
+ <20231103135857.GA1871@lst.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231103135857.GA1871@lst.de>
 X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot found a potential circular dependency leading to a deadlock:
-    -> #3 (&hdev->req_lock){+.+.}-{3:3}:
-    __mutex_lock_common+0x1b6/0x1bc2 kernel/locking/mutex.c:599
-    __mutex_lock kernel/locking/mutex.c:732 [inline]
-    mutex_lock_nested+0x17/0x1c kernel/locking/mutex.c:784
-    hci_dev_do_close+0x3f/0x9f net/bluetooth/hci_core.c:551
-    hci_rfkill_set_block+0x130/0x1ac net/bluetooth/hci_core.c:935
-    rfkill_set_block+0x1e6/0x3b8 net/rfkill/core.c:345
-    rfkill_fop_write+0x2d8/0x672 net/rfkill/core.c:1274
-    vfs_write+0x277/0xcf5 fs/read_write.c:594
-    ksys_write+0x19b/0x2bd fs/read_write.c:650
-    do_syscall_x64 arch/x86/entry/common.c:55 [inline]
-    do_syscall_64+0x51/0xba arch/x86/entry/common.c:93
-    entry_SYSCALL_64_after_hwframe+0x61/0xcb
+On Fri, Nov 03, 2023 at 02:58:57PM +0100, Christoph Hellwig wrote:
+> On Fri, Nov 03, 2023 at 01:11:02PM +0100, Daniel Wagner wrote:
+> > This particular firmware seem to interpret afi one based, while
+> > the this patch assumes it is zero based
+> 
+> >   Active Firmware Info (AFI): Specifies information about the active
+> >                               firmware revision.
+> > 
+> >   Bit 7    is reserved.
+> >   Bits 6:4 indicates the firmware slot that is going to be activated
+> >            at the next Controller Level Reset. If this field is 0h,
+> >            then the controller does not indicate the firmware slot that
+> >            is going to be activated at the next Controller Level Reset.
+> >   Bit 3    is reserved.
+> >   Bits 2:0 indicates the firmware slot from which the actively running
+> >            firmware revision was loaded.
+> > 
+> > 
+> > It's not clear to me if afi bits 2:0 is zero or one based. Bits 6:4
+> > indicate to be 1 based.
+> 
+> All 0's based (what a stupid term..) fields in NVMe are explicitly
+> marked as such.  And even if that wasn't the case I'd very much
+> expect the same encoding for the two sub-fields.
 
-    -> #2 (rfkill_global_mutex){+.+.}-{3:3}:
-    __mutex_lock_common+0x1b6/0x1bc2 kernel/locking/mutex.c:599
-    __mutex_lock kernel/locking/mutex.c:732 [inline]
-    mutex_lock_nested+0x17/0x1c kernel/locking/mutex.c:784
-    rfkill_register+0x30/0x7e3 net/rfkill/core.c:1045
-    hci_register_dev+0x48f/0x96d net/bluetooth/hci_core.c:2622
-    __vhci_create_device drivers/bluetooth/hci_vhci.c:341 [inline]
-    vhci_create_device+0x3ad/0x68f drivers/bluetooth/hci_vhci.c:374
-    vhci_get_user drivers/bluetooth/hci_vhci.c:431 [inline]
-    vhci_write+0x37b/0x429 drivers/bluetooth/hci_vhci.c:511
-    call_write_iter include/linux/fs.h:2109 [inline]
-    new_sync_write fs/read_write.c:509 [inline]
-    vfs_write+0xaa8/0xcf5 fs/read_write.c:596
-    ksys_write+0x19b/0x2bd fs/read_write.c:650
-    do_syscall_x64 arch/x86/entry/common.c:55 [inline]
-    do_syscall_64+0x51/0xba arch/x86/entry/common.c:93
-    entry_SYSCALL_64_after_hwframe+0x61/0xcb
+Yeah, it's just the firmware slot number, taken literally. AFI = 1 means
+slot 1, AFI = 2 means slot 2, etc... Slot 0 either has special meaning
+(firmware commit SF field, or fw log AFI bits 6:4), or is reserved
+value, like in Identify Controller FRMW.NOFS, and has no place in the FW
+Slot Info log page.
 
-    -> #1 (&data->open_mutex){+.+.}-{3:3}:
-    __mutex_lock_common+0x1b6/0x1bc2 kernel/locking/mutex.c:599
-    __mutex_lock kernel/locking/mutex.c:732 [inline]
-    mutex_lock_nested+0x17/0x1c kernel/locking/mutex.c:784
-    vhci_send_frame+0x68/0x9c drivers/bluetooth/hci_vhci.c:75
-    hci_send_frame+0x1cc/0x2ff net/bluetooth/hci_core.c:2989
-    hci_sched_acl_pkt net/bluetooth/hci_core.c:3498 [inline]
-    hci_sched_acl net/bluetooth/hci_core.c:3583 [inline]
-    hci_tx_work+0xb94/0x1a60 net/bluetooth/hci_core.c:3654
-    process_one_work+0x901/0xfb8 kernel/workqueue.c:2310
-    worker_thread+0xa67/0x1003 kernel/workqueue.c:2457
-    kthread+0x36a/0x430 kernel/kthread.c:319
-    ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:298
-
-    -> #0 ((work_completion)(&hdev->tx_work)){+.+.}-{0:0}:
-    check_prev_add kernel/locking/lockdep.c:3053 [inline]
-    check_prevs_add kernel/locking/lockdep.c:3172 [inline]
-    validate_chain kernel/locking/lockdep.c:3787 [inline]
-    __lock_acquire+0x2d32/0x77fa kernel/locking/lockdep.c:5011
-    lock_acquire+0x273/0x4d5 kernel/locking/lockdep.c:5622
-    __flush_work+0xee/0x19f kernel/workqueue.c:3090
-    hci_dev_close_sync+0x32f/0x1113 net/bluetooth/hci_sync.c:4352
-    hci_dev_do_close+0x47/0x9f net/bluetooth/hci_core.c:553
-    hci_rfkill_set_block+0x130/0x1ac net/bluetooth/hci_core.c:935
-    rfkill_set_block+0x1e6/0x3b8 net/rfkill/core.c:345
-    rfkill_fop_write+0x2d8/0x672 net/rfkill/core.c:1274
-    vfs_write+0x277/0xcf5 fs/read_write.c:594
-    ksys_write+0x19b/0x2bd fs/read_write.c:650
-    do_syscall_x64 arch/x86/entry/common.c:55 [inline]
-    do_syscall_64+0x51/0xba arch/x86/entry/common.c:93
-    entry_SYSCALL_64_after_hwframe+0x61/0xcb
-
-This change removes the need for acquiring the open_mutex in
-vhci_send_frame, thus eliminating the potential deadlock while
-maintaining the required packet ordering.
-
-Fixes: 92d4abd66f70 ("Bluetooth: vhci: Fix race when opening vhci device")
-Signed-off-by: Ying Hsu <yinghsu@chromium.org>
----
-Tested this commit using a C reproducer on qemu-x86_64.
-
- drivers/bluetooth/hci_vhci.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/bluetooth/hci_vhci.c b/drivers/bluetooth/hci_vhci.c
-index f3892e9ce800..572d68d52965 100644
---- a/drivers/bluetooth/hci_vhci.c
-+++ b/drivers/bluetooth/hci_vhci.c
-@@ -11,6 +11,7 @@
- #include <linux/module.h>
- #include <asm/unaligned.h>
- 
-+#include <linux/atomic.h>
- #include <linux/kernel.h>
- #include <linux/init.h>
- #include <linux/slab.h>
-@@ -44,6 +45,7 @@ struct vhci_data {
- 	bool wakeup;
- 	__u16 msft_opcode;
- 	bool aosp_capable;
-+	atomic_t initialized;
- };
- 
- static int vhci_open_dev(struct hci_dev *hdev)
-@@ -75,11 +77,10 @@ static int vhci_send_frame(struct hci_dev *hdev, struct sk_buff *skb)
- 
- 	memcpy(skb_push(skb, 1), &hci_skb_pkt_type(skb), 1);
- 
--	mutex_lock(&data->open_mutex);
- 	skb_queue_tail(&data->readq, skb);
--	mutex_unlock(&data->open_mutex);
- 
--	wake_up_interruptible(&data->read_wait);
-+	if (atomic_read(&data->initialized))
-+		wake_up_interruptible(&data->read_wait);
- 	return 0;
- }
- 
-@@ -464,7 +465,8 @@ static int __vhci_create_device(struct vhci_data *data, __u8 opcode)
- 	skb_put_u8(skb, 0xff);
- 	skb_put_u8(skb, opcode);
- 	put_unaligned_le16(hdev->id, skb_put(skb, 2));
--	skb_queue_tail(&data->readq, skb);
-+	skb_queue_head(&data->readq, skb);
-+	atomic_inc(&data->initialized);
- 
- 	wake_up_interruptible(&data->read_wait);
- 	return 0;
--- 
-2.42.0.869.gea05f2083d-goog
-
+Our first slot in the log page is defined as slot one, so we have to
+subtract one from the AFI field to index into the slot array. I messed
+up for not catching that earlier, but thanks for pointing it out now.
