@@ -2,120 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 98E2C7E0591
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 16:30:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 765E67E0593
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 16:31:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234066AbjKCPaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 11:30:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51398 "EHLO
+        id S234146AbjKCPbU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 11:31:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230151AbjKCPaK (ORCPT
+        with ESMTP id S233679AbjKCPbR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 11:30:10 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59D50123;
-        Fri,  3 Nov 2023 08:30:04 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 90B151F45F;
-        Fri,  3 Nov 2023 15:30:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1699025402; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3ndJlZNeRg8eKoYiLSU2ZDnHkOEBvKilrv71pM5TEHQ=;
-        b=btC9ro5TApirS1T623+HZinf3RTH+Pr6sUlcv2WbzFkewFb2iP6H97tHserzzu7QeK3Qqk
-        kjuyzEBNJ6Kd+/ZdjatxwSSgy6wzdOkj+YIZDGPFx/QoQq/TSgi3GZ9CJilOOOtIFMEHqR
-        33UBZbma1qFK8dvb3xN3kDXMtdWhg/E=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1699025402;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3ndJlZNeRg8eKoYiLSU2ZDnHkOEBvKilrv71pM5TEHQ=;
-        b=kQYiL6DMJFovIRAOGp9iw+gax6ypZhYnLXxhAnWdaYZtYb+JBN32JmpfGaeO8H0T7+OiR6
-        IJsM0V9nmalFQSCQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 53EED1348C;
-        Fri,  3 Nov 2023 15:30:02 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id Dv9JE/oRRWU8LwAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Fri, 03 Nov 2023 15:30:02 +0000
-Message-ID: <30ff0335-3d9c-7d54-85d0-5898320f4e1f@suse.cz>
-Date:   Fri, 3 Nov 2023 16:30:01 +0100
+        Fri, 3 Nov 2023 11:31:17 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF8471B2;
+        Fri,  3 Nov 2023 08:31:09 -0700 (PDT)
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A3Dilt9022158;
+        Fri, 3 Nov 2023 15:30:37 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : from : to : cc : references : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=svLJkHBDhpcHCmfWFd867T+PC8YtdaaPIDojzVtcjkA=;
+ b=KBIofXZM52m/qKx6UA0JChYqs+p/xH1wMsGQKleFZ6HGpP2ULOXJGockNBAZTgtDM5SC
+ ck4lP8xOFHj3BfGDehT20ttK0dRI4OZTKW59zNa4DPKO1L8fzYT160CNizEHcpRWR1N9
+ dQ7BD7xj0ZaMQItq5PbVpZGGf2qptk7BgLCgLzsm1vMgMuYjsSqhsIlTtuSU+J81FFwp
+ ntaw+0af/DnMS8k7ghf1s9eYR8Ni5jbVLXqZngSosIxl7YEyqhScZSDyTkOpFXP7YQgF
+ VkGykmwvKqLuL12opXVH4ZKBGoSvviyzObVLsqv2Au7Ihbx5pTSN7RSM6w6W9cJeEPcm 1g== 
+Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u4ss99847-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 03 Nov 2023 15:30:37 +0000
+Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
+        by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3A3FUaEv003131
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 3 Nov 2023 15:30:36 GMT
+Received: from [10.216.59.4] (10.80.80.8) by nasanex01c.na.qualcomm.com
+ (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Fri, 3 Nov
+ 2023 08:30:33 -0700
+Message-ID: <9a1baddd-830d-364b-5106-c33bb64d516f@quicinc.com>
+Date:   Fri, 3 Nov 2023 21:00:30 +0530
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v2] efi/unaccepted: Fix off-by-one when checking for
- overlapping ranges
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] soc: qcom: llcc: Fix dis_cap_alloc and retain_on_pc
+ configuration
 Content-Language: en-US
-To:     Michael Roth <michael.roth@amd.com>, linux-efi@vger.kernel.org
-Cc:     x86@kernel.org, linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Nikolay Borisov <nik.borisov@suse.com>, stable@kernel.org,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-References: <20231103151354.110636-1-michael.roth@amd.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <20231103151354.110636-1-michael.roth@amd.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-8.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+From:   Mukesh Ojha <quic_mojha@quicinc.com>
+To:     Atul Dhudase <quic_adhudase@quicinc.com>, <agross@kernel.org>,
+        <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
+        <swboyd@chromium.org>, <isaacm@codeaurora.org>,
+        <dianders@chromium.org>
+CC:     <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20231103105712.1159213-1-quic_adhudase@quicinc.com>
+ <c5eb223b-b7b1-c85f-a0d5-ab3cc3e86efa@quicinc.com>
+In-Reply-To: <c5eb223b-b7b1-c85f-a0d5-ab3cc3e86efa@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01c.na.qualcomm.com (10.45.79.139)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: HTniq2loJZMfMlqSag-DKrtjDcOPUUl-
+X-Proofpoint-GUID: HTniq2loJZMfMlqSag-DKrtjDcOPUUl-
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-03_15,2023-11-02_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ bulkscore=0 malwarescore=0 phishscore=0 impostorscore=0 clxscore=1015
+ mlxscore=0 mlxlogscore=999 suspectscore=0 spamscore=0 adultscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2310240000 definitions=main-2311030131
+X-Spam-Status: No, score=-6.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/3/23 16:13, Michael Roth wrote:
-> When a task needs to accept memory it will scan the accepting_list
-> to see if any ranges already being processed by other tasks overlap
-> with its range. Due to an off-by-one in the range comparisons, a task
-> might falsely determine that an overlapping range is being accepted,
-> leading to an unnecessary delay before it begins processing the range.
+
+
+On 11/3/2023 4:47 PM, Mukesh Ojha wrote:
 > 
-> Fix the off-by-one in the range comparison to prevent this and slightly
-> improve performance.
 > 
-> Fixes: 50e782a86c98 ("efi/unaccepted: Fix soft lockups caused by parallel memory acceptance")
-> Link: https://lore.kernel.org/linux-mm/20231101004523.vseyi5bezgfaht5i@amd.com/T/#me2eceb9906fcae5fe958b3fe88e41f920f8335b6
-> Reviewed-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> Signed-off-by: Michael Roth <michael.roth@amd.com>
-
-More justification for introducing a common ranges_overlap() helper somewhere :)
-
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
-
-> ---
-> v2:
->  * Improve commit message terminology (Kirill)
-> ---
->  drivers/firmware/efi/unaccepted_memory.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> On 11/3/2023 4:27 PM, Atul Dhudase wrote:
+>> While programming dis_cap_alloc and retain_on_pc, set a bit
+>> corresponding to a specific SCID without disturbing the
+>> previously configured bits.
+>>
+>> Fixes: c14e64b46944 ("soc: qcom: llcc: Support chipsets that can write 
+>> to llcc")
+>> Signed-off-by: Atul Dhudase <quic_adhudase@quicinc.com>
+>> ---
+>>   drivers/soc/qcom/llcc-qcom.c | 8 ++++----
+>>   1 file changed, 4 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/drivers/soc/qcom/llcc-qcom.c b/drivers/soc/qcom/llcc-qcom.c
+>> index 674abd0d6700..509d972c1bd9 100644
+>> --- a/drivers/soc/qcom/llcc-qcom.c
+>> +++ b/drivers/soc/qcom/llcc-qcom.c
+>> @@ -941,15 +941,15 @@ static int _qcom_llcc_cfg_program(const struct 
+>> llcc_slice_config *config,
+>>           u32 disable_cap_alloc, retain_pc;
+>>
+>>           disable_cap_alloc = config->dis_cap_alloc << config->slice_id;
+>> -        ret = regmap_write(drv_data->bcast_regmap,
+>> -                LLCC_TRP_SCID_DIS_CAP_ALLOC, disable_cap_alloc);
+>> +        ret = regmap_update_bits(drv_data->bcast_regmap, 
+>> LLCC_TRP_SCID_DIS_CAP_ALLOC,
+>> +                BIT(config->slice_id), disable_cap_alloc);
+>>           if (ret)
+>>               return ret;
+>>
+>>           if (drv_data->version < LLCC_VERSION_4_1_0_0) {
+>>               retain_pc = config->retain_on_pc << config->slice_id;
+>> -            ret = regmap_write(drv_data->bcast_regmap,
+>> -                    LLCC_TRP_PCB_ACT, retain_pc);
+>> +            ret = regmap_update_bits(drv_data->bcast_regmap, 
+>> LLCC_TRP_PCB_ACT,
+>> +                    BIT(config->slice_id), retain_pc);
 > 
-> diff --git a/drivers/firmware/efi/unaccepted_memory.c b/drivers/firmware/efi/unaccepted_memory.c
-> index 135278ddaf62..79fb687bb90f 100644
-> --- a/drivers/firmware/efi/unaccepted_memory.c
-> +++ b/drivers/firmware/efi/unaccepted_memory.c
-> @@ -100,7 +100,7 @@ void accept_memory(phys_addr_t start, phys_addr_t end)
->  	 * overlap on physical address level.
->  	 */
->  	list_for_each_entry(entry, &accepting_list, list) {
-> -		if (entry->end < range.start)
-> +		if (entry->end <= range.start)
->  			continue;
->  		if (entry->start >= range.end)
->  			continue;
+> Good catch, LGTM
 
+Forgot to tell.,
+Please tag this to stable as well.
+
+Reviewed-by: Mukesh Ojha <quic_mojha@quicinc.com>
+
+-Mukesh
+
+> 
+>   Thanks
+> -Mukesh
+> 
+>>               if (ret)
+>>                   return ret;
+>>           }
+>> -- 
+>> 2.25.1
+>>
