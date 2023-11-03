@@ -2,285 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C4E437E017C
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 11:31:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0A5E7E00EF
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 11:30:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346813AbjKCJF3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 05:05:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43008 "EHLO
+        id S235891AbjKCJJL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 05:09:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235199AbjKCJF2 (ORCPT
+        with ESMTP id S235135AbjKCJJK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 05:05:28 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6533187;
-        Fri,  3 Nov 2023 02:05:24 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E3347C433C7;
-        Fri,  3 Nov 2023 09:05:20 +0000 (UTC)
-Message-ID: <806f2ad3-c80b-41e5-9388-f1af7bace8e3@xs4all.nl>
-Date:   Fri, 3 Nov 2023 10:05:18 +0100
+        Fri, 3 Nov 2023 05:09:10 -0400
+Received: from mail-vk1-xa33.google.com (mail-vk1-xa33.google.com [IPv6:2607:f8b0:4864:20::a33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5AC1D42
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 02:09:07 -0700 (PDT)
+Received: by mail-vk1-xa33.google.com with SMTP id 71dfb90a1353d-4a19dac27c4so756268e0c.1
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Nov 2023 02:09:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1699002547; x=1699607347; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=iZ+pK7HfT2/R2CHqNUxxdFop+H2f9lKl/kwZAHnUNCc=;
+        b=peVp3SkoAlh8W2pFsRjsxwAJByWm5XMxfy7q/k/feck+DaefKy9kjEQgxXMFprv0tn
+         aPeEdv9uhk4mbT/JkXcMPaO2xPtiPODHcj8B1zob+owyRosnx6QoOuxOBwu2GkpyZclo
+         RnHVGYroa5B7+TT4gEnevwgDQRjrB5ReR3EOme1ipJUtAKJ7FCN+SoD/ITiqYU4T+zbg
+         2C8XN4NzelAyBPOtj8OETwcfhLQZe6AJdGqUAuQ/Wt0gceAP1YraCPRr+1sx87rU8Rx4
+         knfvb1Uh8RqgEki9wOeVXO3wsZEaHdEPOkU94E1S5MW642dp+aS5bTPHikRd2AZzjFjF
+         UwJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699002547; x=1699607347;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=iZ+pK7HfT2/R2CHqNUxxdFop+H2f9lKl/kwZAHnUNCc=;
+        b=ALoxjJVzrd1Bkqe8DlzeVbepovDeks+RyS4TbAdBH/xHDt3G32ApMLrZLEoSPnKcTk
+         Et0jwmUaRGNpuyvyCvpiLPiaai+gn/CiF+ErSO/cE6CXjjApi1GUUBiakopwP/IBylpQ
+         S/VuOoBehZdh+4h4IN5Q6WbtTA+gZb1Elb4oaPYycCKQbsRB+3TeWkWomvfPEOQ2hv7Q
+         AblKTGjruvQw2X4yKkBSDTY27qvLoazpmmi6uzC29nbwhjXMD/G0fBvQ43PB++oGaght
+         PaKtvHzAU6FnFX4gNc023kXXrGmMN6Q+747Ty56mwGfGWvjZf/C83eS0DzuhvJcYt4Y5
+         4H8A==
+X-Gm-Message-State: AOJu0YxgxGsKx8J50ufFbuU69meO3RBNaKv2RFdKLbWV5lB6IFbJ66ld
+        fv3ADZ8b2WI+B6woszl9DiSRZUrd5qzZpAeF3npskA==
+X-Google-Smtp-Source: AGHT+IHMP14aNnuPk/M9auTqU14X1reP20Ndq5FFB6ZsM/lAvTNnyVHqTdzd4iYuirkmf+ceV4tLz2fWcV0BuqJs+S4=
+X-Received: by 2002:a1f:a6c9:0:b0:48f:8e3a:5b83 with SMTP id
+ p192-20020a1fa6c9000000b0048f8e3a5b83mr18714917vke.14.1699002546868; Fri, 03
+ Nov 2023 02:09:06 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC v3 12/37] drm/connector: hdmi: Create Infoframe
- DebugFS entries
-Content-Language: en-US, nl
-To:     Maxime Ripard <mripard@kernel.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>, Emma Anholt <emma@anholt.net>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Sandy Huang <hjc@rock-chips.com>,
-        =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>
-Cc:     dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, linux-sunxi@lists.linux.dev
-References: <20231031-kms-hdmi-connector-state-v3-0-328b0fae43a7@kernel.org>
- <20231031-kms-hdmi-connector-state-v3-12-328b0fae43a7@kernel.org>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-Autocrypt: addr=hverkuil@xs4all.nl; keydata=
- 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
-In-Reply-To: <20231031-kms-hdmi-connector-state-v3-12-328b0fae43a7@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20231025184259.250588-1-andriy.shevchenko@linux.intel.com>
+ <20231025184259.250588-2-andriy.shevchenko@linux.intel.com>
+ <2023102624-moonshine-duller-3043@gregkh> <ZTpbMVSdKlOgLbwv@smile.fi.intel.com>
+ <ZUPBVMdi3hcTyW2n@smile.fi.intel.com>
+In-Reply-To: <ZUPBVMdi3hcTyW2n@smile.fi.intel.com>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Fri, 3 Nov 2023 10:08:56 +0100
+Message-ID: <CAMRc=MeV9ZyOzuQFEE_duPTHYgfmr6UZU6bpjDPhrczZX4PHpg@mail.gmail.com>
+Subject: Re: [PATCH v1 1/3] device property: Implement device_is_big_endian()
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-acpi@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Daniel Scally <djrscally@gmail.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Maxime,
+On Thu, Nov 2, 2023 at 4:33=E2=80=AFPM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> On Thu, Oct 26, 2023 at 03:27:30PM +0300, Andy Shevchenko wrote:
+> > On Thu, Oct 26, 2023 at 07:25:35AM +0200, Greg Kroah-Hartman wrote:
+> > > On Wed, Oct 25, 2023 at 09:42:57PM +0300, Andy Shevchenko wrote:
+> > > > Some users want to use the struct device pointer to see if the
+> > > > device is big endian in terms of Open Firmware specifications,
+> > > > i.e. if it has a "big-endian" property, or if the kernel was
+> > > > compiled for BE *and* the device has a "native-endian" property.
+> > > >
+> > > > Provide inline helper for the users.
+> > >
+> > > Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> >
+> > Thank you, Greg.
+> >
+> > Bart, would it be still possible to take this into next?
+> > I would like to have at least this patch applied (with the first user)
+> > to allow conversion of others (I have some more users of new API).
+>
+> Okay, seems we missed v6.7 with this, can you then prepare an immutable
+> branch / tag with this, so other maintainers can pull in case it's needed=
+?
+> (I have something against tty already and perhaps something else, let's
+>  see.)
+>
 
-Thank you for posting v3, this time it runs fine on my RPi 4, thank you for
-fixing that.
+It arrived too late in the cycle, I needed to send my PR earlier this
+time as I was OoO this week.
 
-I'll start working on a conformity checker for this.
-
-I have a few remarks:
-
-On 31/10/2023 17:48, Maxime Ripard wrote:
-> There has been some discussions recently about the infoframes sent by
-> drivers and if they were properly generated.
-> 
-> In parallel, there's been some interest in creating an infoframe-decode
-> tool similar to edid-decode.
-> 
-> Both would be much easier if we were to expose the infoframes programmed
-> in the hardware. It won't be perfect since we have no guarantee that
-> it's actually what goes through the wire, but it's the best we can do.
-> 
-> Signed-off-by: Maxime Ripard <mripard@kernel.org>
-> ---
->  drivers/gpu/drm/drm_debugfs.c | 110 ++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 110 insertions(+)
-> 
-> diff --git a/drivers/gpu/drm/drm_debugfs.c b/drivers/gpu/drm/drm_debugfs.c
-> index 2de43ff3ce0a..3c65b1d3f926 100644
-> --- a/drivers/gpu/drm/drm_debugfs.c
-> +++ b/drivers/gpu/drm/drm_debugfs.c
-> @@ -538,6 +538,114 @@ static const struct file_operations drm_connector_fops = {
->  	.write = connector_write
->  };
->  
-> +struct debugfs_wrapper {
-> +	struct drm_connector *connector;
-> +	struct drm_connector_hdmi_infoframe *frame;
-> +};
-> +
-> +#define HDMI_MAX_INFOFRAME_SIZE		29
-> +
-> +static ssize_t
-> +infoframe_read(struct file *filp, char __user *ubuf, size_t count, loff_t *ppos)
-> +{
-> +	const struct debugfs_wrapper *wrapper = filp->private_data;
-> +	struct drm_connector *connector = wrapper->connector;
-> +	struct drm_connector_hdmi_infoframe *infoframe = wrapper->frame;
-> +	union hdmi_infoframe *frame = &infoframe->data;
-> +	u8 buf[HDMI_MAX_INFOFRAME_SIZE];
-> +	ssize_t len = 0;
-> +
-> +	mutex_lock(&connector->hdmi.infoframes.lock);
-> +
-> +	if (!infoframe->set)
-> +		goto out;
-> +
-> +	len = hdmi_infoframe_pack(frame, buf, sizeof(buf));
-> +	if (len < 0)
-> +		goto out;
-> +
-> +	len = simple_read_from_buffer(ubuf, count, ppos, buf, len);
-> +
-> +out:
-> +	mutex_unlock(&connector->hdmi.infoframes.lock);
-> +	return len;
-> +}
-> +
-> +static const struct file_operations infoframe_fops = {
-> +	.owner   = THIS_MODULE,
-> +	.open    = simple_open,
-> +	.read    = infoframe_read,
-> +};
-> +
-> +static int create_hdmi_infoframe_file(struct drm_connector *connector,
-> +				      struct dentry *parent,
-> +				      const char *filename,
-> +				      struct drm_connector_hdmi_infoframe *frame)
-> +{
-> +	struct drm_device *dev = connector->dev;
-> +	struct debugfs_wrapper *wrapper;
-> +	struct dentry *file;
-> +
-> +	wrapper = drmm_kzalloc(dev, sizeof(*wrapper), GFP_KERNEL);
-> +	if (!wrapper)
-> +		return -ENOMEM;
-> +
-> +	wrapper->connector = connector;
-> +	wrapper->frame = frame;
-> +
-> +	file = debugfs_create_file(filename, 0400, parent, wrapper, &infoframe_fops);
-> +	if (IS_ERR(file))
-> +		return PTR_ERR(file);
-> +
-> +	return 0;
-> +}
-> +
-> +#define CREATE_HDMI_INFOFRAME_FILE(c, p, i)		\
-> +	create_hdmi_infoframe_file(c, p, #i, &(c)->hdmi.infoframes.i)
-> +
-> +static int create_hdmi_infoframe_files(struct drm_connector *connector,
-> +				       struct dentry *parent)
-> +{
-> +	int ret;
-> +
-> +	ret = CREATE_HDMI_INFOFRAME_FILE(connector, parent, audio);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = CREATE_HDMI_INFOFRAME_FILE(connector, parent, avi);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = CREATE_HDMI_INFOFRAME_FILE(connector, parent, drm);
-
-Hmm, I had to look into the code to figure out that 'drm' stands for
-Dynamic Range and Mastering InfoFrame. While entirely correct, it is
-also very confusing in the context of the 'drm' subsystem.
-
-I am not quite certain what the best approach is here.
-
-Internally in the drm code it is talking about 'hdr' or 'hdr metadata',
-but that's a bit confusing as well since there is also an HDR Dynamic
-Metadata Extended InfoFrame defined in CTA-861, even though support for
-that is not (yet) implemented in drm.
-
-At minimum there should be a comment in the code explaining what drm
-stands for in this context.
-
-One option to consider is renaming this file to hdr_drm, thus indicating
-that this is HDR related.
-
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = CREATE_HDMI_INFOFRAME_FILE(connector, parent, spd);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = CREATE_HDMI_INFOFRAME_FILE(connector, parent, vendor);
-
-There may be multiple vendor specific InfoFrames in the future, so how
-would that be handled? Perhaps add a comment here that currently only one
-vendor specific InfoFrame is supported, but suggest how to handle multiple
-VSIFs in the future.
-
-What would actually be nice (although probably not that easy to fix) is if
-the name of the file would be "vendor-XXXXXX' where 'XXXXXX' is the IEEE OUI
-number.
-
-Regards,
-
-	Hans
-
-> +	if (ret)
-> +		return ret;
-> +
-> +	return 0;
-> +}
-> +
-> +static void hdmi_debugfs_add(struct drm_connector *connector)
-> +{
-> +	struct dentry *dir;
-> +
-> +	if (!(connector->connector_type == DRM_MODE_CONNECTOR_HDMIA ||
-> +	      connector->connector_type == DRM_MODE_CONNECTOR_HDMIB))
-> +		return;
-> +
-> +	dir = debugfs_create_dir("infoframes", connector->debugfs_entry);
-> +	if (IS_ERR(dir))
-> +		return;
-> +
-> +	create_hdmi_infoframe_files(connector, dir);
-> +}
-> +
->  void drm_debugfs_connector_add(struct drm_connector *connector)
->  {
->  	struct drm_minor *minor = connector->dev->primary;
-> @@ -565,6 +673,8 @@ void drm_debugfs_connector_add(struct drm_connector *connector)
->  	debugfs_create_file("output_bpc", 0444, root, connector,
->  			    &output_bpc_fops);
->  
-> +	hdmi_debugfs_add(connector);
-> +
->  	if (connector->funcs->debugfs_init)
->  		connector->funcs->debugfs_init(connector, root);
->  }
-> 
-
+Bart
