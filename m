@@ -2,72 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0355F7E0049
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 11:29:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09DBE7E00FB
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 11:30:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235137AbjKCIIM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 04:08:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50450 "EHLO
+        id S235447AbjKCILu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 04:11:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234700AbjKCIIL (ORCPT
+        with ESMTP id S235098AbjKCILr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 04:08:11 -0400
-Received: from mail-oo1-f70.google.com (mail-oo1-f70.google.com [209.85.161.70])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DE8E1A8
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 01:08:05 -0700 (PDT)
-Received: by mail-oo1-f70.google.com with SMTP id 006d021491bc7-581e2c9197bso2059791eaf.3
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Nov 2023 01:08:05 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698998884; x=1699603684;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1vzpiNs11OCFyo86okXzyCcFWMl5sk1XqF/aGmxiItI=;
-        b=haRwfpw081HcATtKAvLgl2K2v7o4P7AUnYPRCNYEt9t17BgwKnXSvJZoH9aGwMuJo4
-         yZvTsVxS9hhPxXl+KiCcBdtE250dwi5TxZn5mOE9U0B4J4Y/Zcyl/+FgCePyVKuNWJXn
-         IzUU7on/zn/X0fzAbhTQY3jOKAHLYXwAzBVTdB5A+vwzh2PiOzjGDkNoKIthqSX/nC+s
-         1Jv0C4yqAkQAyu34TQF+FxtI/SHBZwJP2h7p3hH5ys81MNY7l2zJiPbKZdU9+3Zm8lg+
-         WJEFIizzJyanPWmFkSRCg/LsLxRZM4P8SBTI95Z5/ecpd2GWCT675Im+bEKRxNx3CTv0
-         WvLQ==
-X-Gm-Message-State: AOJu0YwnAetZOPOGIvuT15a4tqOw86xJtRUwWCkPOmJL7NK/qpUU2snH
-        OYPwSlE2z8D5Y0E9Pmat8ZjoW6uIncTxfMqdE0YsQljkSzWuwr4=
-X-Google-Smtp-Source: AGHT+IHDoeC9Z4hr+t02tHEIkfzUhcpmMx69a/RKt6dd82yYqG/wTRGtVNwWcl8D/mkjZnEP5RY1JnN8OQWy0gTHsGzHn48BDB7L
+        Fri, 3 Nov 2023 04:11:47 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E29701A8;
+        Fri,  3 Nov 2023 01:11:41 -0700 (PDT)
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A359R76014714;
+        Fri, 3 Nov 2023 08:11:34 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=u3JwXlcRcYPnxvK4HEmxg7Tn23cs0JQWAl1lXbwAKV0=;
+ b=C2ssioIo2o3NeAxVbkPngBn48yRuC9fY5RUWjUHzkmB/RKMa1uv1MpH6/G9kCM9p3GSv
+ GVeMaHq9RuAUzlAFddNsBKDEXBELfYHdc34Kbtln/z+3xg8lAJ4FXxNYrP65j9C+Ujd8
+ KAR245B0IDRgbBLOe8yPmeshctzMT9e0omuMKrQwl2vEy5dZqHnkS7SEySHgziXPDDoZ
+ 90p8K+zM4Ld4NlJpNZA4YRrO1qdkwy1f028gIbKEb/aS8a+3uyh9umJslu7dsryXReeO
+ X5nb0yiNhL09p01FFDeNWWDWaa+zprCJTm5hOspS5kdyKYGVP7R3MqqqWGP+y//eN540 lA== 
+Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u477ptpat-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 03 Nov 2023 08:11:34 +0000
+Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
+        by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3A38BX1o006588
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 3 Nov 2023 08:11:33 GMT
+Received: from [10.216.16.147] (10.80.80.8) by nasanex01c.na.qualcomm.com
+ (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Fri, 3 Nov
+ 2023 01:11:27 -0700
+Message-ID: <b6a023e9-bb54-44d6-8a48-5f6204da5b95@quicinc.com>
+Date:   Fri, 3 Nov 2023 13:41:23 +0530
 MIME-Version: 1.0
-X-Received: by 2002:a05:6870:6193:b0:1e9:7407:b4cd with SMTP id
- a19-20020a056870619300b001e97407b4cdmr9737964oah.4.1698998884193; Fri, 03 Nov
- 2023 01:08:04 -0700 (PDT)
-Date:   Fri, 03 Nov 2023 01:08:04 -0700
-In-Reply-To: <20231103075800.3488232-1-lizhi.xu@windriver.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f75b0c06093b006d@google.com>
-Subject: Re: [syzbot] [iommu?] KASAN: slab-use-after-free Read in iommufd_vfio_ioas
-From:   syzbot <syzbot+d31adfb277377ef8fcba@syzkaller.appspotmail.com>
-To:     linux-kernel@vger.kernel.org, lizhi.xu@windriver.com,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.8.0
+Subject: Re: [PATCH V3 4/4] arm64: dts: qcom: ipq5018: Add tsens node
+Content-Language: en-US
+To:     Robert Marko <robimarko@gmail.com>
+CC:     Sricharan R <srichara@win-platform-upstream01.qualcomm.com>,
+        <krzysztof.kozlowski@linaro.org>, <agross@kernel.org>,
+        <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
+        <srinivas.kandagatla@linaro.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <thara.gopinath@gmail.com>, <rafael@kernel.org>,
+        <daniel.lezcano@linaro.org>, <linux-arm-msm@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-pm@vger.kernel.org>, <dmitry.baryshkov@linaro.org>
+References: <20230922115116.2748804-1-srichara@win-platform-upstream01.qualcomm.com>
+ <20230922115116.2748804-5-srichara@win-platform-upstream01.qualcomm.com>
+ <1c6ecc92-89d3-3b7e-c2d0-e2fded9b446d@gmail.com>
+ <f44b6e59-c26e-1026-49b7-e02ff02d7562@quicinc.com>
+ <CAOX2RU6j75+8tFMTu=fVKY=mBkv8OaZJzWYUfnqkwfJY01QqYw@mail.gmail.com>
+From:   Sricharan Ramabadhran <quic_srichara@quicinc.com>
+In-Reply-To: <CAOX2RU6j75+8tFMTu=fVKY=mBkv8OaZJzWYUfnqkwfJY01QqYw@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01c.na.qualcomm.com (10.45.79.139)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: dJiFYVTVgberLcXSF2KIYI7ivCo-g49y
+X-Proofpoint-ORIG-GUID: dJiFYVTVgberLcXSF2KIYI7ivCo-g49y
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-03_06,2023-11-02_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 malwarescore=0
+ phishscore=0 adultscore=0 clxscore=1011 priorityscore=1501 mlxscore=0
+ mlxlogscore=999 bulkscore=0 impostorscore=0 lowpriorityscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2310240000 definitions=main-2311030066
+X-Spam-Status: No, score=-6.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+<..>
 
-syzbot tried to test the proposed patch but the build/boot failed:
+>>> On 22. 09. 2023. 13:51, Sricharan R wrote:
+>>>> From: Sricharan Ramabadhran <quic_srichara@quicinc.com>
+>>>>
+>>>> IPQ5018 has tsens V1.0 IP with 4 sensors.
+>>>> There is no RPM, so tsens has to be manually enabled. Adding the tsens
+>>>> and nvmem node and IPQ5018 has 4 thermal sensors (zones). With the
+>>>> critical temperature being 120'C and action is to reboot. Adding all
+>>>> the 4 zones here.
+>>>>
+>>>> Signed-off-by: Sricharan Ramabadhran <quic_srichara@quicinc.com>
+>>>> ---
+>>>>    [v3] Ordered the qfprom device node properties as per
+>>>>         Krzysztof's comments
+>>>>
+>>>>    arch/arm64/boot/dts/qcom/ipq5018.dtsi | 169 ++++++++++++++++++++++++++
+>>>>    1 file changed, 169 insertions(+)
+>>>>
+>>>> diff --git a/arch/arm64/boot/dts/qcom/ipq5018.dtsi
+>>>> b/arch/arm64/boot/dts/qcom/ipq5018.dtsi
+>>>> index 9f13d2dcdfd5..9e28b54ebcbd 100644
+>>>> --- a/arch/arm64/boot/dts/qcom/ipq5018.dtsi
+>>>> +++ b/arch/arm64/boot/dts/qcom/ipq5018.dtsi
+>>>> @@ -93,6 +93,117 @@ soc: soc@0 {
+>>>>            #size-cells = <1>;
+>>>>            ranges = <0 0 0 0xffffffff>;
+>>>> +        qfprom: qfprom@a0000 {
+>>>> +            compatible = "qcom,ipq5018-qfprom", "qcom,qfprom";
+>>> Hi,
+>>>
+>>> "qcom,ipq5018-qfprom" needs to be documented in QFPROM bindings first.
+>>
+>>    Already posted here [1]. Initially had it in the same series, but kept
+>>    it separately based on review comments.
+>>
+>>    [1] https://www.spinics.net/lists/devicetree/msg633408.html
+> 
+> Well, if it's not part of the same series then this addition would
+> cause a warning as its
+> undocumented.
+> 
+> I also dont see where is it documented as part of the v2 series.
 
-./include/linux/stddef.h:8:14: error: incompatible types when assigning to type 'struct iommufd_object' from type 'void *'
+  Then in that case, will keep it in same series again in V4
 
-
-Tested on:
-
-commit:         2af9b20d Merge tag 'x86-urgent-2023-10-28' of git://gi..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-kernel config:  https://syzkaller.appspot.com/x/.config?x=cb98fe061049a6e4
-dashboard link: https://syzkaller.appspot.com/bug?extid=d31adfb277377ef8fcba
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=178165a0e80000
-
+Regards,
+  Sricharan
