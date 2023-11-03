@@ -2,119 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3712B7E01CA
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 12:14:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EBC917E01C1
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 12:14:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377690AbjKCKzA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 06:55:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49532 "EHLO
+        id S1377845AbjKCKzC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 06:55:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347241AbjKCKy6 (ORCPT
+        with ESMTP id S1377655AbjKCKy7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 06:54:58 -0400
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61559D7;
-        Fri,  3 Nov 2023 03:54:51 -0700 (PDT)
-X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 3A3AsRIl9092021, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36505.realtek.com.tw[172.21.6.25])
-        by rtits2.realtek.com.tw (8.15.2/2.95/5.92) with ESMTPS id 3A3AsRIl9092021
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 3 Nov 2023 18:54:27 +0800
-Received: from RTEXDAG01.realtek.com.tw (172.21.6.100) by
- RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.32; Fri, 3 Nov 2023 18:54:27 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXDAG01.realtek.com.tw (172.21.6.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.7; Fri, 3 Nov 2023 18:54:26 +0800
-Received: from RTEXMBS04.realtek.com.tw ([fe80::40c2:6c24:2df4:e6c7]) by
- RTEXMBS04.realtek.com.tw ([fe80::40c2:6c24:2df4:e6c7%5]) with mapi id
- 15.01.2375.007; Fri, 3 Nov 2023 18:54:26 +0800
-From:   =?utf-8?B?U3RhbmxleSBDaGFuZ1vmmIzogrLlvrdd?= 
-        <stanley_chang@realtek.com>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-CC:     "Thinh.Nguyen@synopsys.com" <Thinh.Nguyen@synopsys.com>,
-        "conor+dt@kernel.org" <conor+dt@kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "krzysztof.kozlowski+dt@linaro.org" 
-        <krzysztof.kozlowski+dt@linaro.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>
-Subject: RE: RE: [PATCH v6 1/2] usb: dwc3: add Realtek DHC RTD SoC dwc3 glue layer driver
-Thread-Topic: RE: [PATCH v6 1/2] usb: dwc3: add Realtek DHC RTD SoC dwc3 glue
- layer driver
-Thread-Index: AQHZ18re3VzH2NdIJ0+XVY2ifQSysbBh2g4AgAONr8D//5JCAIAD1jtg
-Date:   Fri, 3 Nov 2023 10:54:26 +0000
-Message-ID: <da4c75ba87c3476694361ee3bc333401@realtek.com>
-References: <20230826031028.1892-1-stanley_chang@realtek.com>
- <202310301424.39UEOShlC2187546@rtits1.realtek.com.tw>
- <bc33c01db5b048899dce5467e7efec74@realtek.com>
- <202311011453.3A1ErwKI3829148@rtits1.realtek.com.tw>
-In-Reply-To: <202311011453.3A1ErwKI3829148@rtits1.realtek.com.tw>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-x-originating-ip: [172.21.190.159]
-x-kse-serverinfo: RTEXDAG01.realtek.com.tw, 9
-x-kse-antivirus-attachment-filter-interceptor-info: license violation
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-X-KSE-ServerInfo: RTEXH36505.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-Antivirus-Interceptor-Info: fallback
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 3 Nov 2023 06:54:59 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC160123;
+        Fri,  3 Nov 2023 03:54:53 -0700 (PDT)
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A36uP1Q007216;
+        Fri, 3 Nov 2023 10:54:47 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id; s=qcppdkim1;
+ bh=zJIxMj8i903lRQualscB1Cxu9wrn8Os5GCB+f70+kf0=;
+ b=CqWTYuZRBWmqeuHoLNdxfoYDQcWN0f2MjAZW8sjmtSyK4qCjJggjlxebLear127vb2aJ
+ e1wTLAL0ltm56EXBhri7gsu692jgVEbV9Qoy1H3yMFWWTTL29Y+VSFm6b6zS75WHIZPa
+ +/0jIcvZThXQZjkmbbRL1kpA8+wZ9nJJgDGWHaLYyyImGEJIfOXMz1DIEeuvWAeBE71h
+ S/mOU9VF40+K+KBkqGn8vmeJfwKIWXExhUZPBUhrVVxO/bI4vqZz0aecAbjIEn1YMA9C
+ FWp020ul8a1BhIsdG8+du3C8zn4v1INKkRgzP+u4TdqtAlWp6oKFWPZohHBehbfz3Jd+ 5w== 
+Received: from apblrppmta02.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u4ss98p72-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 03 Nov 2023 10:54:46 +0000
+Received: from pps.filterd (APBLRPPMTA02.qualcomm.com [127.0.0.1])
+        by APBLRPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 3A3AshmT001914;
+        Fri, 3 Nov 2023 10:54:43 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 3u0ucmcqbp-1;
+        Fri, 03 Nov 2023 10:54:43 +0000
+Received: from APBLRPPMTA02.qualcomm.com (APBLRPPMTA02.qualcomm.com [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3A3Ashms001907;
+        Fri, 3 Nov 2023 10:54:43 GMT
+Received: from hu-maiyas-hyd.qualcomm.com (hu-anshar-hyd.qualcomm.com [10.213.110.5])
+        by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 3A3Asg6H001905;
+        Fri, 03 Nov 2023 10:54:43 +0000
+Received: by hu-maiyas-hyd.qualcomm.com (Postfix, from userid 4089000)
+        id 0DCC252A387; Fri,  3 Nov 2023 16:24:42 +0530 (+0530)
+From:   Ankit Sharma <quic_anshar@quicinc.com>
+To:     cros-qcom-dts-watchers@chromium.org, agross@kernel.org,
+        andersson@kernel.org, konrad.dybcio@linaro.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
+Cc:     Ankit Sharma <quic_anshar@quicinc.com>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, quic_ashayj@quicinc.com,
+        quic_atulpant@quicinc.com, quic_rgottimu@quicinc.com,
+        quic_shashim@quicinc.com, quic_pkondeti@quicinc.com
+Subject: [PATCH v2] arm64: dts: qcom: sc7280: Add capacity and DPC properties
+Date:   Fri,  3 Nov 2023 16:24:40 +0530
+Message-Id: <20231103105440.23904-1-quic_anshar@quicinc.com>
+X-Mailer: git-send-email 2.17.1
+X-QCInternal: smtphost
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: OOF7__Xzbn3Gk3pYcGFYgCsrv7wHsagb
+X-Proofpoint-GUID: OOF7__Xzbn3Gk3pYcGFYgCsrv7wHsagb
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-03_11,2023-11-02_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ bulkscore=0 malwarescore=0 phishscore=0 impostorscore=0 clxscore=1015
+ mlxscore=0 mlxlogscore=882 suspectscore=0 spamscore=0 adultscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2310240000 definitions=main-2311030090
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgQ2hyaXN0b3BoZSwNCg0KPiBMZSAwMS8xMS8yMDIzIMOgIDA3OjI3LCBTdGFubGV5IENoYW5n
-W+aYjOiCsuW+t10gYSDDqWNyaXQgOg0KPiA+IEhpIENKLA0KPiA+DQo+ID4gSSB0aGluayB0aGVz
-ZSBmdW5jdGlvbnMgYXJlIG5vdCBuZWVkZWQgaW4gcmVtb3ZlIGZ1bmN0aW9uLg0KPiA+DQo+ID4g
-SW4gZHdjM19ydGtfcHJvYmVfZHdjM19jb3JlLA0KPiA+IEkgaGF2ZSB1c2VkDQo+ID4gZHdjM19u
-b2RlID0gb2ZfZ2V0X2NvbXBhdGlibGVfY2hpbGQobm9kZSwgInNucHMsZHdjMyIpOyBhbmQgZHdj
-M19wZGV2DQo+ID4gPSBvZl9maW5kX2RldmljZV9ieV9ub2RlKGR3YzNfbm9kZSk7DQo+ID4NCj4g
-PiBTbywgSSBjYWxsIHRoZXNlIHB1dCBmdW5jdGlvbnMuDQo+ID4gcGxhdGZvcm1fZGV2aWNlX3B1
-dChkd2MzX3BkZXYpOw0KPiA+IG9mX25vZGVfcHV0KGR3YzNfbm9kZSk7DQo+IA0KPiBZZXMsIGJ1
-dCB5b3UgY2FsbCBpdCBvbmx5IGluIHRoZSBlcnJvciBoYW5kbGluZyBwYXRoIG9mIHRoZSBmdW5j
-dGlvbi4NCj4gDQo+IEkgd29uZGVyIGlmIHRoZXkgc2hvdWxkIGFsc28gYmUgY2FsbGVkIGluIHRo
-ZSByZW1vdmUgZnVuY3Rpb24gaW4gb3JkZXIgdG8NCj4gZGVjcmVtZW50IHRoZSByZWYtY291bnRl
-ZCByZWZlcmVuY2UuDQo+IA0KPiANCj4gU2FtZSBpbiBfX2dldF9kd2MzX21heGltdW1fc3BlZWQo
-KSwgdGhlIHJlZmVyZW5jZSB0YWtlbiBieToNCj4gICAgIGR3YzNfbnAgPSBvZl9nZXRfY29tcGF0
-aWJsZV9jaGlsZChucCwgInNucHMsZHdjMyIpOyBpcyBuZXZlciByZWxlYXNlZC4NCj4gDQo+IA0K
-PiBTZWUgdGhlIGNvbW1lbnQgYXQgWzFdIHRvIHNlZSB3aGF0IEkgbWVhbi4NCj4gDQo+IA0KPiBb
-MV06IGh0dHBzOi8vZWxpeGlyLmJvb3RsaW4uY29tL2xpbnV4L3Y2LjYvc291cmNlL2RyaXZlcnMv
-b2YvYmFzZS5jI0w2ODENCg0KWW91IGFyZSByaWdodCENCkZvciBkd2MzX3BkZXYsIGR3YzNfbnAg
-b3IgZHdjM19ub2RlLCBJIHNob3VsZCBhZGQgb2Zfbm9kZV9wdXQgdG8gcmVsZWFzZSB0aGVtIHdo
-ZW4gdGhlIGZ1bmN0aW9uIGV4aXRzLiANCmh0dHBzOi8vZWxpeGlyLmJvb3RsaW4uY29tL2xpbnV4
-L3Y2LjUuMTAvc291cmNlL2RyaXZlcnMvdXNiL2R3YzMvZHdjMy1tZXNvbi1nMTJhLmMjTDU2Nw0K
-DQpJIHdpbGwgYWRkIGEgcGF0Y2ggdG8gZml4IHRoaXMuDQoNCkZvciBleGFtcGxlLA0KZGlmZiAt
-LWdpdCBhL2RyaXZlcnMvdXNiL2R3YzMvZHdjMy1ydGsuYyBiL2RyaXZlcnMvdXNiL2R3YzMvZHdj
-My1ydGsuYw0KaW5kZXggNTkwMDI4ZThmZGNiLi45ZDZmMmE4YmQ2Y2UgMTAwNjQ0DQotLS0gYS9k
-cml2ZXJzL3VzYi9kd2MzL2R3YzMtcnRrLmMNCisrKyBiL2RyaXZlcnMvdXNiL2R3YzMvZHdjMy1y
-dGsuYw0KQEAgLTE4Nyw2ICsxODcsNyBAQCBzdGF0aWMgZW51bSB1c2JfZGV2aWNlX3NwZWVkIF9f
-Z2V0X2R3YzNfbWF4aW11bV9zcGVlZChzdHJ1Y3QgZGV2aWNlX25vZGUgKm5wKQ0KDQogICAgICAg
-IHJldCA9IG1hdGNoX3N0cmluZyhzcGVlZF9uYW1lcywgQVJSQVlfU0laRShzcGVlZF9uYW1lcyks
-IG1heGltdW1fc3BlZWQpOw0KDQorICAgICAgIG9mX25vZGVfcHV0KGR3YzNfbnApOw0KICAgICAg
-ICByZXR1cm4gKHJldCA8IDApID8gVVNCX1NQRUVEX1VOS05PV04gOiByZXQ7DQogfQ0KDQpAQCAt
-MzM5LDYgKzM0MCw4IEBAIHN0YXRpYyBpbnQgZHdjM19ydGtfcHJvYmVfZHdjM19jb3JlKHN0cnVj
-dCBkd2MzX3J0ayAqcnRrKQ0KDQogICAgICAgIHN3aXRjaF91c2IyX3JvbGUocnRrLCBydGstPmN1
-cl9yb2xlKTsNCg0KKyAgICAgICBwbGF0Zm9ybV9kZXZpY2VfcHV0KGR3YzNfcGRldik7DQorICAg
-ICAgIG9mX25vZGVfcHV0KGR3YzNfbm9kZSk7DQogICAgICAgIHJldHVybiAwOw0KDQogZXJyX3Bk
-ZXZfcHV0Og0KDQoNClRoYW5rcywNClN0YW5sZXkNCg0KPiBDSg0KPiA+DQo+ID4gVGhhbmtzLA0K
-PiA+IFN0YW5sZXkNCj4gPg0KPiA+PiBIaSwNCj4gPj4NCj4gPj4gSXMgc29tZXRoaW5nIGxpa2UN
-Cj4gPj4gICAgICAgICAgcGxhdGZvcm1fZGV2aWNlX3B1dChkd2MzX3BkZXYpOw0KPiA+PiAgICAg
-ICAgICBvZl9ub2RlX3B1dChkd2MzX25vZGUpOw0KPiA+PiBuZWVkZWQgaW4gdGhlIHJlbW92ZSBm
-dW5jdGlvbj8NCj4gPj4NCj4gPj4gKGFzIGRvbmUgaW4gdGhlIGVycm9yIGhhbmRsaW5nIHBhdGgg
-b2YgZHdjM19ydGtfcHJvYmVfZHdjM19jb3JlKCkpDQo+ID4+DQo+ID4+IE9yIHNob3VsZCBpdCBi
-ZSBhZGRlZCBhdCB0aGUgZW5kIG9mIGR3YzNfcnRrX3Byb2JlX2R3YzNfY29yZSgpIGlmIHRoZQ0K
-PiA+PiByZWZlcmVuY2UgYXJlIG5vciBuZWVkZWQgYW55bW9yZSB3aGVuIHdlIGxlYXZlIHRoZSBm
-dW5jdGlvbj8NCj4gPj4NCj4gPj4gQ0oNCj4gPj4NCj4gPj4+ICsgICAgIG9mX3BsYXRmb3JtX2Rl
-cG9wdWxhdGUocnRrLT5kZXYpOyB9DQo+ID4+PiArDQo+ID4+DQo+ID4+IC4uLg0KPiA+DQoNCg==
+The "capacity-dmips-mhz" and "dynamic-power-coefficient" are
+used to build Energy Model which in turn is used by EAS to take
+placement decisions. So add it to SC7280 soc.
+
+Signed-off-by: Ankit Sharma <quic_anshar@quicinc.com>
+---
+changes in v2: https://lore.kernel.org/all/20231103095358.29312-1-quic_anshar@quicinc.com/
+ - updated commit message and subject.
+
+ arch/arm64/boot/dts/qcom/sc7280.dtsi | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+index 8601253aec70..b1890824188c 100644
+--- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
++++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+@@ -176,6 +176,8 @@
+ 					   &CLUSTER_SLEEP_0>;
+ 			next-level-cache = <&L2_0>;
+ 			operating-points-v2 = <&cpu0_opp_table>;
++			capacity-dmips-mhz = <1024>;
++			dynamic-power-coefficient = <100>;
+ 			interconnects = <&gem_noc MASTER_APPSS_PROC 3 &mc_virt SLAVE_EBI1 3>,
+ 					<&epss_l3 MASTER_EPSS_L3_APPS &epss_l3 SLAVE_EPSS_L3_SHARED>;
+ 			qcom,freq-domain = <&cpufreq_hw 0>;
+@@ -204,6 +206,8 @@
+ 					   &CLUSTER_SLEEP_0>;
+ 			next-level-cache = <&L2_100>;
+ 			operating-points-v2 = <&cpu0_opp_table>;
++			capacity-dmips-mhz = <1024>;
++			dynamic-power-coefficient = <100>;
+ 			interconnects = <&gem_noc MASTER_APPSS_PROC 3 &mc_virt SLAVE_EBI1 3>,
+ 					<&epss_l3 MASTER_EPSS_L3_APPS &epss_l3 SLAVE_EPSS_L3_SHARED>;
+ 			qcom,freq-domain = <&cpufreq_hw 0>;
+@@ -227,6 +231,8 @@
+ 					   &CLUSTER_SLEEP_0>;
+ 			next-level-cache = <&L2_200>;
+ 			operating-points-v2 = <&cpu0_opp_table>;
++			capacity-dmips-mhz = <1024>;
++			dynamic-power-coefficient = <100>;
+ 			interconnects = <&gem_noc MASTER_APPSS_PROC 3 &mc_virt SLAVE_EBI1 3>,
+ 					<&epss_l3 MASTER_EPSS_L3_APPS &epss_l3 SLAVE_EPSS_L3_SHARED>;
+ 			qcom,freq-domain = <&cpufreq_hw 0>;
+@@ -250,6 +256,8 @@
+ 					   &CLUSTER_SLEEP_0>;
+ 			next-level-cache = <&L2_300>;
+ 			operating-points-v2 = <&cpu0_opp_table>;
++			capacity-dmips-mhz = <1024>;
++			dynamic-power-coefficient = <100>;
+ 			interconnects = <&gem_noc MASTER_APPSS_PROC 3 &mc_virt SLAVE_EBI1 3>,
+ 					<&epss_l3 MASTER_EPSS_L3_APPS &epss_l3 SLAVE_EPSS_L3_SHARED>;
+ 			qcom,freq-domain = <&cpufreq_hw 0>;
+@@ -273,6 +281,8 @@
+ 					   &CLUSTER_SLEEP_0>;
+ 			next-level-cache = <&L2_400>;
+ 			operating-points-v2 = <&cpu4_opp_table>;
++			capacity-dmips-mhz = <1946>;
++			dynamic-power-coefficient = <520>;
+ 			interconnects = <&gem_noc MASTER_APPSS_PROC 3 &mc_virt SLAVE_EBI1 3>,
+ 					<&epss_l3 MASTER_EPSS_L3_APPS &epss_l3 SLAVE_EPSS_L3_SHARED>;
+ 			qcom,freq-domain = <&cpufreq_hw 1>;
+@@ -296,6 +306,8 @@
+ 					   &CLUSTER_SLEEP_0>;
+ 			next-level-cache = <&L2_500>;
+ 			operating-points-v2 = <&cpu4_opp_table>;
++			capacity-dmips-mhz = <1946>;
++			dynamic-power-coefficient = <520>;
+ 			interconnects = <&gem_noc MASTER_APPSS_PROC 3 &mc_virt SLAVE_EBI1 3>,
+ 					<&epss_l3 MASTER_EPSS_L3_APPS &epss_l3 SLAVE_EPSS_L3_SHARED>;
+ 			qcom,freq-domain = <&cpufreq_hw 1>;
+@@ -319,6 +331,8 @@
+ 					   &CLUSTER_SLEEP_0>;
+ 			next-level-cache = <&L2_600>;
+ 			operating-points-v2 = <&cpu4_opp_table>;
++			capacity-dmips-mhz = <1946>;
++			dynamic-power-coefficient = <520>;
+ 			interconnects = <&gem_noc MASTER_APPSS_PROC 3 &mc_virt SLAVE_EBI1 3>,
+ 					<&epss_l3 MASTER_EPSS_L3_APPS &epss_l3 SLAVE_EPSS_L3_SHARED>;
+ 			qcom,freq-domain = <&cpufreq_hw 1>;
+@@ -342,6 +356,8 @@
+ 					   &CLUSTER_SLEEP_0>;
+ 			next-level-cache = <&L2_700>;
+ 			operating-points-v2 = <&cpu7_opp_table>;
++			capacity-dmips-mhz = <1985>;
++			dynamic-power-coefficient = <552>;
+ 			interconnects = <&gem_noc MASTER_APPSS_PROC 3 &mc_virt SLAVE_EBI1 3>,
+ 					<&epss_l3 MASTER_EPSS_L3_APPS &epss_l3 SLAVE_EPSS_L3_SHARED>;
+ 			qcom,freq-domain = <&cpufreq_hw 2>;
+-- 
+2.17.1
+
