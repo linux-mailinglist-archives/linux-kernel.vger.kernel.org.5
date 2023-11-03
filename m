@@ -2,104 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DDDF7E003A
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 11:29:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 733A57E0057
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 11:29:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346755AbjKCIyf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 04:54:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38018 "EHLO
+        id S1346744AbjKCIy2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 04:54:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346393AbjKCIya (ORCPT
+        with ESMTP id S1346734AbjKCIy0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 04:54:30 -0400
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE53AD47
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 01:54:23 -0700 (PDT)
-Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3A384Hde022531;
-        Fri, 3 Nov 2023 09:54:04 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-        from:to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding:content-type; s=selector1; bh=Pe2rrPs
-        Z3WZeByEaBg6ZSoHCMY4XSUsW3RCMBo/D3gk=; b=yQbctxYKCgajZJYC/h5uBxU
-        AHmF8kJgDO3EFBgmYqPXa/sGFA/Mc/awIdPf0eFOuxKhKZzEM2XlFak8DdZJY7xs
-        hvzATl/OTtavplhKUimZW56vXfdchCJy+cgKtBuF39Xexe4oTCAN32LsGX+hEltG
-        yE4DwsxMhYp0vHnMzpnpXQ7wwLObkdZjSsYhmCtvmq7qW7OAsKNs5F7NiFPTFgGB
-        Q1AGmaTdY9zL7ue8i1xwY/Z0y/pFWQXUF3YA2W5W10u3GatfPq9zho0VhnZwCLfV
-        /ryFr9j4p7DhnrFnguHUq5WDRR1/xBiOnpvwOGxJU8qmGsEgkgfqpi3UsixYWIQ=
-        =
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3u0tufs77e-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 03 Nov 2023 09:54:04 +0100 (CET)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 33A27100060;
-        Fri,  3 Nov 2023 09:54:03 +0100 (CET)
-Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 0295D20B60E;
-        Fri,  3 Nov 2023 09:54:03 +0100 (CET)
-Received: from localhost (10.201.20.20) by SHFDAG1NODE1.st.com (10.75.129.69)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 3 Nov
- 2023 09:54:02 +0100
-From:   Etienne Carriere <etienne.carriere@foss.st.com>
-To:     <linux-kernel@vger.kernel.org>
-CC:     Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        <soc@kernel.org>, <arm@kernel.org>,
-        Etienne Carriere <etienne.carriere@foss.st.com>
-Subject: [PATCH] ARM: multi_v7_defconfig: Add SCMI reset support
-Date:   Fri, 3 Nov 2023 09:54:00 +0100
-Message-ID: <20231103085400.2924282-1-etienne.carriere@foss.st.com>
-X-Mailer: git-send-email 2.25.1
+        Fri, 3 Nov 2023 04:54:26 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D80C1BC
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 01:54:19 -0700 (PDT)
+Received: from [100.107.97.3] (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 90A8B66073CE;
+        Fri,  3 Nov 2023 08:54:17 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1699001658;
+        bh=bIiKWuP829Qa1UK4A8HjpiQMVNdf/JCq87erVd3wTzA=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=HlupnHzJ6qcvUBVpLVE10cR1GLu/t+ijbJEZ4WKjWZsF7uSKTNy4lhx3cN4GvPwuK
+         sg7rd8BlPqBVzWYqTsqq5GNvDol3B7+KjIDmjpLPOXlnKTb2WpY8DKbC+H6XQXLDAf
+         O0Di681qTw5ZS+zas+wtaoC5bmhXCz6CErIoZHVOjVGXUArdwYkH7wGdGrlUwwM2Ck
+         vcrp70KVyscbZoiiBVh4fP7rz1tlCJbPVon6c6Tw5A9aJH4q0dmLNQ6L+cn6CYcHIs
+         KGGS6oafdp+yXE0gsda9viSY2tJp0F/NHyhjLKtTamNOJxP4GTJb2hAxE05Cfa7Lv0
+         OTF7kKriHB+4g==
+Message-ID: <71826cf2-460d-48d1-85d3-735646db1e2a@collabora.com>
+Date:   Fri, 3 Nov 2023 09:54:14 +0100
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 3/6] drm/panfrost: Implement ability to turn on/off GPU
+ clocks in suspend
+Content-Language: en-US
+To:     Chen-Yu Tsai <wenst@chromium.org>
+Cc:     boris.brezillon@collabora.com, robh@kernel.org,
+        steven.price@arm.com, maarten.lankhorst@linux.intel.com,
+        mripard@kernel.org, tzimmermann@suse.de, airlied@gmail.com,
+        daniel@ffwll.ch, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, kernel@collabora.com
+References: <20231102142643.75288-1-angelogioacchino.delregno@collabora.com>
+ <20231102142643.75288-4-angelogioacchino.delregno@collabora.com>
+ <CAGXv+5FHwhQuDf+JCSPg_q+eV1Qb37e6bN7djO5GUSbB5pBv_A@mail.gmail.com>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <CAGXv+5FHwhQuDf+JCSPg_q+eV1Qb37e6bN7djO5GUSbB5pBv_A@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.201.20.20]
-X-ClientProxiedBy: SHFCAS1NODE2.st.com (10.75.129.73) To SHFDAG1NODE1.st.com
- (10.75.129.69)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-03_09,2023-11-02_03,2023-05-22_02
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SCMI reset controllers are used in the ARMv7 STMicroelectronics stm32mp
-boards:
-- for STM32MP13: stm32mp135f-dk
-- for STM32MP15 boards with SCMI variant, introduced by commit 5b7e58313a77
-  ("ARM: dts: stm32: Add SCMI version of STM32 boards (DK1/DK2/ED1/EV1)")
-  * stm32mp157c-ev1-scmi
-  * stm32mp157c-ed1-scmi
-  * stm32mp157c-dk2-scmi
-  * stm32mp157a-dk1-scmi
+Il 03/11/23 06:12, Chen-Yu Tsai ha scritto:
+> On Thu, Nov 2, 2023 at 10:26 PM AngeloGioacchino Del Regno
+> <angelogioacchino.delregno@collabora.com> wrote:
+>>
+>> Currently, the GPU is being internally powered off for runtime suspend
+>> and turned back on for runtime resume through commands sent to it, but
+>> note that the GPU doesn't need to be clocked during the poweroff state,
+>> hence it is possible to save some power on selected platforms.
+>>
+>> Add suspend and resume handlers for full system sleep and then add
+>> a new panfrost_gpu_pm enumeration and a pm_features variable in the
+>> panfrost_compatible structure: BIT(GPU_PM_CLK_DIS) will be used to
+>> enable this power saving technique only on SoCs that are able to
+>> safely use it.
+>>
+>> Note that this was implemented only for the system sleep case and not
+>> for runtime PM because testing on one of my MediaTek platforms showed
+>> issues when turning on and off clocks aggressively (in PM runtime)
+>> resulting in a full system lockup.
+>>
+>> Doing this only for full system sleep never showed issues during my
+>> testing by suspending and resuming the system continuously for more
+>> than 100 cycles.
+>>
+>> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+>> ---
+>>
+>> Note: Even after fixing the panfrost_power_off() function, I'm still
+>> getting issues with turning off the clocks at .runtime_suspend() but
+>> this time, instead of getting a GPU lockup, the entire SoC will deadlock
+>> bringing down the entire system with it (so it's even worst!) :-)
+> 
+> IIRC the power domain controller also manages some bus isolation bits
+> that prevent SoC lockup when the clock is disabled. Would reversing
+> the runtime PM calls and the clock calls help?
+> 
 
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>
-Signed-off-by: Etienne Carriere <etienne.carriere@foss.st.com>
----
- arch/arm/configs/multi_v7_defconfig | 1 +
- 1 file changed, 1 insertion(+)
+Thanks for the reminder, but I tested that already... that doesn't work.
 
-diff --git a/arch/arm/configs/multi_v7_defconfig b/arch/arm/configs/multi_v7_defconfig
-index 23fc49f23d25..01b3797f9317 100644
---- a/arch/arm/configs/multi_v7_defconfig
-+++ b/arch/arm/configs/multi_v7_defconfig
-@@ -1189,6 +1189,7 @@ CONFIG_PWM_TEGRA=y
- CONFIG_PWM_VT8500=y
- CONFIG_KEYSTONE_IRQ=y
- CONFIG_RESET_MCHP_SPARX5=y
-+CONFIG_RESET_SCMI=y
- CONFIG_PHY_SUN4I_USB=y
- CONFIG_PHY_SUN9I_USB=y
- CONFIG_PHY_BRCM_USB=m
--- 
-2.25.1
+There's one more thing I tried: on the MFG iospace, there are debug registers
+that you can poll to check if all bus transactions are finished (so, if the bus
+is idle).
+During local testing, I even hacked in that, and even with the actual bus being
+completely idle, it still freezes... and also checked some more in downstream
+code (for Dimensity 9200, kernel 5.10) if there was any other "trick" that I
+could make use of, but to no avail.
+
+I'd propose to get at least this power saving upstreamed, then perhaps in the
+future we can somehow revisit this to implement some more aggressive power
+management code?
+We're still getting a generous power saving with this one, I'd say...
+
+Anyway, I expect us to be effectively able to be more aggressive here, but I
+also expect that to take quite a bit of time (and probably some help from
+MediaTek as well)...
+
+Angelo
+
+> ChenYu
+> 
+>>   drivers/gpu/drm/panfrost/panfrost_device.c | 61 ++++++++++++++++++++--
+>>   drivers/gpu/drm/panfrost/panfrost_device.h | 11 ++++
+>>   2 files changed, 68 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/panfrost/panfrost_device.c b/drivers/gpu/drm/panfrost/panfrost_device.c
+>> index 28f7046e1b1a..2022ed76a620 100644
+>> --- a/drivers/gpu/drm/panfrost/panfrost_device.c
+>> +++ b/drivers/gpu/drm/panfrost/panfrost_device.c
+>> @@ -403,7 +403,7 @@ void panfrost_device_reset(struct panfrost_device *pfdev)
+>>          panfrost_job_enable_interrupts(pfdev);
+>>   }
+>>
+>> -static int panfrost_device_resume(struct device *dev)
+>> +static int panfrost_device_runtime_resume(struct device *dev)
+>>   {
+>>          struct panfrost_device *pfdev = dev_get_drvdata(dev);
+>>
+>> @@ -413,7 +413,7 @@ static int panfrost_device_resume(struct device *dev)
+>>          return 0;
+>>   }
+>>
+>> -static int panfrost_device_suspend(struct device *dev)
+>> +static int panfrost_device_runtime_suspend(struct device *dev)
+>>   {
+>>          struct panfrost_device *pfdev = dev_get_drvdata(dev);
+>>
+>> @@ -426,5 +426,58 @@ static int panfrost_device_suspend(struct device *dev)
+>>          return 0;
+>>   }
+>>
+>> -EXPORT_GPL_RUNTIME_DEV_PM_OPS(panfrost_pm_ops, panfrost_device_suspend,
+>> -                             panfrost_device_resume, NULL);
+>> +static int panfrost_device_resume(struct device *dev)
+>> +{
+>> +       struct panfrost_device *pfdev = dev_get_drvdata(dev);
+>> +       int ret;
+>> +
+>> +       if (pfdev->comp->pm_features & BIT(GPU_PM_CLK_DIS)) {
+>> +               ret = clk_enable(pfdev->clock);
+>> +               if (ret)
+>> +                       return ret;
+>> +
+>> +               if (pfdev->bus_clock) {
+>> +                       ret = clk_enable(pfdev->bus_clock);
+>> +                       if (ret)
+>> +                               goto err_bus_clk;
+>> +               }
+>> +       }
+>> +
+>> +       ret = pm_runtime_force_resume(dev);
+>> +       if (ret)
+>> +               goto err_resume;
+>> +
+>> +       return 0;
+>> +
+>> +err_resume:
+>> +       if (pfdev->comp->pm_features & BIT(GPU_PM_CLK_DIS) && pfdev->bus_clock)
+>> +               clk_disable(pfdev->bus_clock);
+>> +err_bus_clk:
+>> +       if (pfdev->comp->pm_features & BIT(GPU_PM_CLK_DIS))
+>> +               clk_disable(pfdev->clock);
+>> +       return ret;
+>> +}
+>> +
+>> +static int panfrost_device_suspend(struct device *dev)
+>> +{
+>> +       struct panfrost_device *pfdev = dev_get_drvdata(dev);
+>> +       int ret;
+>> +
+>> +       ret = pm_runtime_force_suspend(dev);
+>> +       if (ret)
+>> +               return ret;
+>> +
+>> +       if (pfdev->comp->pm_features & BIT(GPU_PM_CLK_DIS)) {
+>> +               clk_disable(pfdev->clock);
+>> +
+>> +               if (pfdev->bus_clock)
+>> +                       clk_disable(pfdev->bus_clock);
+>> +       }
+>> +
+>> +       return 0;
+>> +}
+>> +
+>> +EXPORT_GPL_DEV_PM_OPS(panfrost_pm_ops) = {
+>> +       RUNTIME_PM_OPS(panfrost_device_runtime_suspend, panfrost_device_runtime_resume, NULL)
+>> +       SYSTEM_SLEEP_PM_OPS(panfrost_device_suspend, panfrost_device_resume)
+>> +};
+>> diff --git a/drivers/gpu/drm/panfrost/panfrost_device.h b/drivers/gpu/drm/panfrost/panfrost_device.h
+>> index 1ef38f60d5dc..d7f179eb8ea3 100644
+>> --- a/drivers/gpu/drm/panfrost/panfrost_device.h
+>> +++ b/drivers/gpu/drm/panfrost/panfrost_device.h
+>> @@ -25,6 +25,14 @@ struct panfrost_perfcnt;
+>>   #define NUM_JOB_SLOTS 3
+>>   #define MAX_PM_DOMAINS 5
+>>
+>> +/**
+>> + * enum panfrost_gpu_pm - Supported kernel power management features
+>> + * @GPU_PM_CLK_DIS:  Allow disabling clocks during system suspend
+>> + */
+>> +enum panfrost_gpu_pm {
+>> +       GPU_PM_CLK_DIS,
+>> +};
+>> +
+>>   struct panfrost_features {
+>>          u16 id;
+>>          u16 revision;
+>> @@ -75,6 +83,9 @@ struct panfrost_compatible {
+>>
+>>          /* Vendor implementation quirks callback */
+>>          void (*vendor_quirk)(struct panfrost_device *pfdev);
+>> +
+>> +       /* Allowed PM features */
+>> +       u8 pm_features;
+>>   };
+>>
+>>   struct panfrost_device {
+>> --
+>> 2.42.0
+>>
 
