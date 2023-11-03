@@ -2,240 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E7DCA7E0303
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 13:35:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CF237E030B
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 13:36:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376437AbjKCMf4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 08:35:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52368 "EHLO
+        id S1376757AbjKCMgW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 08:36:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376604AbjKCMfu (ORCPT
+        with ESMTP id S1376554AbjKCMgU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 08:35:50 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64190D44;
-        Fri,  3 Nov 2023 05:35:43 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-408382da7f0so14739555e9.0;
-        Fri, 03 Nov 2023 05:35:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699014942; x=1699619742; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=yjqMreabRsDRLtUlqL50Lj0Jf1Dc8tKq0A0FqOYk3vI=;
-        b=gkfeMiHJ8yfnGQviQlRNGcvJaN/7EpRFQls3Al3RD4ThxVEvn5KZL6O3jTTwrcMWGE
-         Tpzbk2jrRGH/pyFUV7wMKkHj5/dMIuw2PxnE5ghHEu3uDlFM2fyvypFguKZ06S69EVMD
-         +0wZiYO4A0H6Vjetmv66IMiNiT562nIH/jfUfvytVKVkPsnV96wxVpxdKbX4q7DuQ6s6
-         U8GjmF4bVJoNyS0vN5iZ7lUGgozGQl2w8ATSUCMfqppwrn6LFxGgnBI76N/sAyqca3OS
-         is0F6Kcc9X/N6qQ1GZByBADhceuwrFL3+4CG6vGHs3VciXSGGOOGAv+QKvwfJdlJjYJ1
-         CwrQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699014942; x=1699619742;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yjqMreabRsDRLtUlqL50Lj0Jf1Dc8tKq0A0FqOYk3vI=;
-        b=BGxWQ7NRqwLI+c4ZRRXlZL4WhdLQFBjD2lpOszO3boRgnshQcdnzImwGtsXG4/b4ef
-         g9KgijPhfN0wNHYub1Bog47ahgKrR8K8fuv42IRM90KIk8Ki2ZSTU1XQJ4ItSyCPQ7R4
-         fYzsw9neThhLyCdlWAlX9rvtrXd++gJ8JPzwzlJXLFCy9gMgPcCwb1Czwr3b3ZUFQdEZ
-         i4e3x4ckNvHyCkCTo5Fwqnl4sJNXnrl306jhvy77k4JP+DTwErFuGnsIx9xHLmMUNR9Q
-         8EDYjXx6NrU3jDxmfI9LUtKyw+xIYKe/wqI3ikkuJxYs/mS1aUKIass0TT9wXMf2wLIH
-         IVEg==
-X-Gm-Message-State: AOJu0YzCus+E+3p8pXrVt4VU5dPD+lfivFmG6yCRdlwyyobPoNEN4kwf
-        kspkE5g6XqE5m7IoOhCWbq8=
-X-Google-Smtp-Source: AGHT+IHGs4gji+g2U4kBjOtwTYkojeV3TRMvObEl7gxzwYVM4E0/HGnyxcP2O2jk9DZbaKULABrriQ==
-X-Received: by 2002:a05:600c:4e91:b0:408:4918:590e with SMTP id f17-20020a05600c4e9100b004084918590emr17031461wmq.39.1699014941674;
-        Fri, 03 Nov 2023 05:35:41 -0700 (PDT)
-Received: from localhost.localdomain (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
-        by smtp.googlemail.com with ESMTPSA id gy14-20020a05600c880e00b00403b63e87f2sm2277014wmb.32.2023.11.03.05.35.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Nov 2023 05:35:41 -0700 (PDT)
-From:   Christian Marangi <ansuelsmth@gmail.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Christian Marangi <ansuelsmth@gmail.com>,
-        Robert Marko <robimarko@gmail.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [net-next RFC PATCH v4 4/4] dt-bindings: Document bindings for Marvell Aquantia PHY
-Date:   Fri,  3 Nov 2023 13:35:32 +0100
-Message-Id: <20231103123532.687-4-ansuelsmth@gmail.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20231103123532.687-1-ansuelsmth@gmail.com>
-References: <20231103123532.687-1-ansuelsmth@gmail.com>
+        Fri, 3 Nov 2023 08:36:20 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AE94D4F;
+        Fri,  3 Nov 2023 05:36:14 -0700 (PDT)
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A3BP841009823;
+        Fri, 3 Nov 2023 12:35:54 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=qcppdkim1;
+ bh=xXusRQbm4m28+UlBOW+vODwkm5i55zyiI+PcrVbxQZg=;
+ b=GHGUFl7zHJMigAUKnF1oAjFDpFMWG4dfm3BG5G/3E/aKgbjzy+YOMbW0HHhFSJ6QWr4U
+ vYIuOIJFOc7NqRPCZj45+2FreV/ALnKLrWeR4u1TGARGjwF+EemDBP6xw99UvrUz3NLc
+ JC8xEx9t/n8MKejJ4nPWl18tRhQcrojzyI1jbmRFFHuTCy+OdqTw/Vyi/2Iz9yihmvPZ
+ kRJJw87KmmOuf+d3ewyjD5wcsBxHfrh2T2wq8rK2wrMpPYppL4x2czt2VZaZ3VFve3ZM
+ 0GeRdsq/9os0v5oV5j/nMNhILwh15lZc8IrgdbPAyA2MSQWitqfvPYcaKtPE957/yiro LA== 
+Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u4cw9tejh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 03 Nov 2023 12:35:54 +0000
+Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
+        by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3A3CZr3K015831
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 3 Nov 2023 12:35:53 GMT
+Received: from akronite-sh-dev02.qualcomm.com (10.80.80.8) by
+ nasanex01c.na.qualcomm.com (10.45.79.139) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.39; Fri, 3 Nov 2023 05:35:51 -0700
+From:   Luo Jie <quic_luoj@quicinc.com>
+To:     <andrew@lunn.ch>, <hkallweit1@gmail.com>, <linux@armlinux.org.uk>,
+        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+        <pabeni@redhat.com>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] net: phy: at803x: add QCA8084 ethernet phy support
+Date:   Fri, 3 Nov 2023 20:35:37 +0800
+Message-ID: <20231103123538.15735-1-quic_luoj@quicinc.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01c.na.qualcomm.com (10.45.79.139)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: ibQeycliF0kq73Jw_3m6JwQoSF2A8b9z
+X-Proofpoint-ORIG-GUID: ibQeycliF0kq73Jw_3m6JwQoSF2A8b9z
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-03_12,2023-11-02_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 spamscore=0
+ mlxscore=0 malwarescore=0 adultscore=0 suspectscore=0 lowpriorityscore=0
+ bulkscore=0 phishscore=0 clxscore=1011 priorityscore=1501 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2310240000
+ definitions=main-2311030106
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document bindings for Marvell Aquantia PHY.
+Add qca8084 PHY support, which is four-port PHY with maximum
+link capability 2.5G, the features of each port is almost same
+as QCA8081 and slave seed config is not needed.
 
-The Marvell Aquantia PHY require a firmware to work correctly and there
-at least 3 way to load this firmware.
+There are some initialization configurations needed.
+1. Configuring qca8084 related initializations including
+MSE detect threshold and ADC clock edge invert.
+2. Add the additional configurations for the CDT feature.
 
-Describe all the different way and document the binding "firmware-name"
-to load the PHY firmware from userspace.
-
-Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+Signed-off-by: Luo Jie <quic_luoj@quicinc.com>
 ---
-Changes v3:
-- Make DT description more OS agnostic
-- Use custom select to fix dtbs checks
-Changes v2:
-- Add DT patch
+ drivers/net/phy/at803x.c | 40 +++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 37 insertions(+), 3 deletions(-)
 
- .../bindings/net/marvell,aquantia.yaml        | 126 ++++++++++++++++++
- 1 file changed, 126 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/net/marvell,aquantia.yaml
-
-diff --git a/Documentation/devicetree/bindings/net/marvell,aquantia.yaml b/Documentation/devicetree/bindings/net/marvell,aquantia.yaml
-new file mode 100644
-index 000000000000..d43cf28a4d61
---- /dev/null
-+++ b/Documentation/devicetree/bindings/net/marvell,aquantia.yaml
-@@ -0,0 +1,126 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/net/marvell,aquantia.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+diff --git a/drivers/net/phy/at803x.c b/drivers/net/phy/at803x.c
+index 37fb033e1c29..4124eb76d835 100644
+--- a/drivers/net/phy/at803x.c
++++ b/drivers/net/phy/at803x.c
+@@ -176,6 +176,8 @@
+ #define AT8030_PHY_ID_MASK			0xffffffef
+ 
+ #define QCA8081_PHY_ID				0x004dd101
++#define QCA8081_PHY_MASK			0xffffff00
++#define QCA8084_PHY_ID				0x004dd180
+ 
+ #define QCA8327_A_PHY_ID			0x004dd033
+ #define QCA8327_B_PHY_ID			0x004dd034
+@@ -279,6 +281,15 @@
+ #define QCA8081_PHY_SERDES_MMD1_FIFO_CTRL	0x9072
+ #define QCA8081_PHY_FIFO_RSTN			BIT(11)
+ 
++/* QCA8084 ADC clock edge */
++#define QCA8084_ADC_CLK_SEL			0x8b80
++#define QCA8084_ADC_CLK_SEL_ACLK		GENMASK(7, 4)
++#define QCA8084_ADC_CLK_SEL_ACLK_FALL		0xf
++#define QCA8084_ADC_CLK_SEL_ACLK_RISE		0x0
 +
-+title: Marvell Aquantia Ethernet PHY
++#define QCA8084_MSE_THRESHOLD			0x800a
++#define QCA8084_MSE_THRESHOLD_2P5G_VAL		0x51c6
 +
-+maintainers:
-+  - Christian Marangi <ansuelsmth@gmail.com>
+ MODULE_DESCRIPTION("Qualcomm Atheros AR803x and QCA808X PHY driver");
+ MODULE_AUTHOR("Matus Ujhelyi");
+ MODULE_LICENSE("GPL");
+@@ -1760,6 +1771,9 @@ static bool qca808x_is_prefer_master(struct phy_device *phydev)
+ 
+ static bool qca808x_has_fast_retrain_or_slave_seed(struct phy_device *phydev)
+ {
++	if (phydev->phy_id == QCA8084_PHY_ID)
++		return false;
 +
-+description: |
-+  Marvell Aquantia Ethernet PHY require a firmware to be loaded to actually
-+  work.
+ 	return linkmode_test_bit(ETHTOOL_LINK_MODE_2500baseT_Full_BIT, phydev->supported);
+ }
+ 
+@@ -1767,6 +1781,20 @@ static int qca808x_config_init(struct phy_device *phydev)
+ {
+ 	int ret;
+ 
++	if (phydev->phy_id == QCA8084_PHY_ID) {
++		/* Invert ADC clock edge */
++		ret = at803x_debug_reg_mask(phydev, QCA8084_ADC_CLK_SEL,
++					    QCA8084_ADC_CLK_SEL_ACLK,
++					    FIELD_PREP(QCA8084_ADC_CLK_SEL_ACLK,
++						       QCA8084_ADC_CLK_SEL_ACLK_FALL));
++		if (ret < 0)
++			return ret;
 +
-+  This can be done and is implemented by OEM in 3 different way:
-+    - Attached SPI directly to the PHY with the firmware. The PHY will
-+      self load the firmware in the presence of this configuration.
-+    - Dedicated partition on system NAND with firmware in it. NVMEM
-+      subsystem will be used and the declared NVMEM cell will load
-+      the firmware to the PHY using the PHY mailbox interface.
-+    - Manually provided firmware loaded from a file in the filesystem.
++		/* Adjust MSE threshold value to avoid link issue with some link partner */
++		return phy_write_mmd(phydev, MDIO_MMD_PMAPMD,
++				QCA8084_MSE_THRESHOLD, QCA8084_MSE_THRESHOLD_2P5G_VAL);
++	}
 +
-+  If declared, NVMEM will always take priority over filesystem provided
-+  firmware.
+ 	/* Active adc&vga on 802.3az for the link 1000M and 100M */
+ 	ret = phy_modify_mmd(phydev, MDIO_MMD_PCS, QCA808X_PHY_MMD3_ADDR_CLD_CTRL7,
+ 			QCA808X_8023AZ_AFE_CTRL_MASK, QCA808X_8023AZ_AFE_EN);
+@@ -1958,6 +1986,11 @@ static int qca808x_cable_test_start(struct phy_device *phydev)
+ 	phy_write_mmd(phydev, MDIO_MMD_PCS, 0x807a, 0xc060);
+ 	phy_write_mmd(phydev, MDIO_MMD_PCS, 0x807e, 0xb060);
+ 
++	if (phydev->phy_id == QCA8084_PHY_ID) {
++		phy_write_mmd(phydev, MDIO_MMD_PCS, 0x8075, 0xa060);
++		phy_write_mmd(phydev, MDIO_MMD_PCS, 0x807f, 0x1eb0);
++	}
 +
-+allOf:
-+  - $ref: ethernet-phy.yaml#
-+
-+select:
-+  properties:
-+    compatible:
-+      contains:
-+        enum:
-+          - ethernet-phy-id03a1.b445
-+          - ethernet-phy-id03a1.b460
-+          - ethernet-phy-id03a1.b4a2
-+          - ethernet-phy-id03a1.b4d0
-+          - ethernet-phy-id03a1.b4e0
-+          - ethernet-phy-id03a1.b5c2
-+          - ethernet-phy-id03a1.b4b0
-+          - ethernet-phy-id03a1.b662
-+          - ethernet-phy-id03a1.b712
-+          - ethernet-phy-id31c3.1c12
-+  required:
-+    - compatible
-+
-+properties:
-+  reg:
-+    maxItems: 1
-+
-+  firmware-name:
-+    description: specify the name of PHY firmware to load
-+
-+  nvmem-cells:
-+    description: phandle to the firmware nvmem cell
-+    maxItems: 1
-+
-+  nvmem-cell-names:
-+    const: firmware
-+
-+required:
-+  - compatible
-+  - reg
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    mdio {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        ethernet-phy@0 {
-+            /*  Only needed to make DT lint tools work. Do not copy/paste
-+             *  into real DTS files.
-+             */
-+            compatible = "ethernet-phy-id31c3.1c12",
-+                         "ethernet-phy-ieee802.3-c45";
-+
-+            reg = <0>;
-+            firmware-name = "AQR-G4_v5.4.C-AQR_CIG_WF-1945_0x8_ID44776_VER1630.cld";
-+        };
-+
-+        ethernet-phy@1 {
-+            /*  Only needed to make DT lint tools work. Do not copy/paste
-+             *  into real DTS files.
-+             */
-+            compatible = "ethernet-phy-id31c3.1c12",
-+                         "ethernet-phy-ieee802.3-c45";
-+
-+            reg = <0>;
-+            nvmem-cells = <&aqr_fw>;
-+            nvmem-cell-names = "firmware";
-+        };
-+    };
-+
-+    flash {
-+        compatible = "jedec,spi-nor";
-+        #address-cells = <1>;
-+        #size-cells = <1>;
-+
-+        partitions {
-+            compatible = "fixed-partitions";
-+            #address-cells = <1>;
-+            #size-cells = <1>;
-+
-+            /* ... */
-+
-+            partition@650000 {
-+                compatible = "nvmem-cells";
-+                label = "0:ethphyfw";
-+                reg = <0x650000 0x80000>;
-+                read-only;
-+                #address-cells = <1>;
-+                #size-cells = <1>;
-+
-+                aqr_fw: aqr_fw@0 {
-+                    reg = <0x0 0x5f42a>;
-+                };
-+            };
-+
-+            /* ... */
-+
-+        };
-+    };
+ 	return 0;
+ }
+ 
+@@ -2207,8 +2240,9 @@ static struct phy_driver at803x_driver[] = {
+ 	.resume			= qca83xx_resume,
+ }, {
+ 	/* Qualcomm QCA8081 */
+-	PHY_ID_MATCH_EXACT(QCA8081_PHY_ID),
+-	.name			= "Qualcomm QCA8081",
++	.phy_id			= QCA8081_PHY_ID,
++	.phy_id_mask		= QCA8081_PHY_MASK,
++	.name			= "Qualcomm QCA808X",
+ 	.flags			= PHY_POLL_CABLE_TEST,
+ 	.probe			= at803x_probe,
+ 	.config_intr		= at803x_config_intr,
+@@ -2241,7 +2275,7 @@ static struct mdio_device_id __maybe_unused atheros_tbl[] = {
+ 	{ PHY_ID_MATCH_EXACT(QCA8327_A_PHY_ID) },
+ 	{ PHY_ID_MATCH_EXACT(QCA8327_B_PHY_ID) },
+ 	{ PHY_ID_MATCH_EXACT(QCA9561_PHY_ID) },
+-	{ PHY_ID_MATCH_EXACT(QCA8081_PHY_ID) },
++	{ QCA8081_PHY_ID, QCA8081_PHY_MASK},
+ 	{ }
+ };
+ 
 -- 
-2.40.1
+2.42.0
 
