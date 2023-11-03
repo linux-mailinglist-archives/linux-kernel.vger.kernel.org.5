@@ -2,160 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 059547E0318
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 13:44:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EBFC17E031F
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 13:46:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345058AbjKCMoj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 08:44:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49038 "EHLO
+        id S1346442AbjKCMq3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 08:46:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbjKCMoi (ORCPT
+        with ESMTP id S229379AbjKCMq1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 08:44:38 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D72BE83;
-        Fri,  3 Nov 2023 05:44:32 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1CC9BC433C9;
-        Fri,  3 Nov 2023 12:44:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699015472;
-        bh=RE8ZWD1hJwBqAK06hY3k7w9DMZ3q4+OUED5Exb0EUG8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rjtpyVabIPSERbple6CiOhglGKnqCOMJ7l4i78/QDlkMX5ZkCqm74VZJ52poeyZzE
-         rCeTax4Ssv2VAGYIUOLh4fR0TIP82CVlr1YqktEuAnam/3ACAqJpoH0RdECxBDAoAl
-         Tgpq+My6oTfXyHfSvLtCIgp5rYQdupXN4AFrVmfWhqdOF7H1hg+Sb55DbhU61RBVjX
-         IgOjEHt7Iy5AH4gUV3sBqz6CeGuNLX0TcsU1Kr8IwCXj9dpsqwiWW2PfRffwH3dm1c
-         tXSRUf8smwiMHgraaVnr4EJXWJctROiYDV1z8swYSFd+ELyPoRRAu2w/uGG5Kvy87j
-         y3izhzNr58ziw==
-Date:   Fri, 3 Nov 2023 12:44:27 +0000
-From:   Conor Dooley <conor@kernel.org>
-To:     Peter Yin <peteryin.openbmc@gmail.com>
-Cc:     patrick@stwcx.xyz, Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org
-Subject: Re: [PATCH v1 1/2] dt-bindings: hwmon: Add mps mp5990 driver bindings
-Message-ID: <20231103-outthink-happiest-35c968eb6187@spud>
-References: <20231103080128.1204218-1-peteryin.openbmc@gmail.com>
- <20231103080128.1204218-2-peteryin.openbmc@gmail.com>
+        Fri, 3 Nov 2023 08:46:27 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E385D123;
+        Fri,  3 Nov 2023 05:46:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=8TMcEyG3RiD7RECaqRdhYHspaIsImlZ9FwqzKP0l02s=; b=qk6oIoXEFgEVm8AON0Ukab/6vv
+        ShSen0t+/dOGOL0ERyspoiGDTmFT6inioEId0OvPa4RGxfEb+Lsw9Hyb/NgkKG5HHHuE3PK2V66nN
+        AplQjJvaElTsFMiIq+52qMkdpIdg/emYsRctcIUZncQ118bmb9RSA7DSmTLWrq5dq+5pKh894llEx
+        9kpKQo7UVJDoMRlm0OhvPuVkHsAfEGqpveBs2GNIGSrDuHZMhga9Cnf1wgVplDKJA2V1HL/hFAmTh
+        mdv74d3ddFOGo37LrlBPLsxDb1WW4H8zwDOCU4XQjiG7KepTotk67cIJrIl2UbZcRocs/N6JSHN6/
+        zosR8S4A==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qytYs-005R6w-AA; Fri, 03 Nov 2023 12:46:07 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id A2E9530027B; Fri,  3 Nov 2023 13:46:06 +0100 (CET)
+Date:   Fri, 3 Nov 2023 13:46:06 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     John Hubbard <jhubbard@nvidia.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Xu <peterx@redhat.com>, Shuah Khan <shuah@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Muhammad Usama Anjum <usama.anjum@collabora.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
+Subject: Re: [PATCH v3 11/11] selftests: error out if kernel header files are
+ not yet built
+Message-ID: <20231103124606.GB8262@noisy.programming.kicks-ass.net>
+References: <20230606071637.267103-1-jhubbard@nvidia.com>
+ <20230606071637.267103-12-jhubbard@nvidia.com>
+ <20231103121652.GA6217@noisy.programming.kicks-ass.net>
+ <a002f903-723f-40ae-8d7a-421ab2e082e2@redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="YP88GGzst4icFZC7"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231103080128.1204218-2-peteryin.openbmc@gmail.com>
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <a002f903-723f-40ae-8d7a-421ab2e082e2@redhat.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Nov 03, 2023 at 01:22:54PM +0100, David Hildenbrand wrote:
+> On 03.11.23 13:16, Peter Zijlstra wrote:
+> > On Tue, Jun 06, 2023 at 12:16:37AM -0700, John Hubbard wrote:
+> > > As per a discussion with Muhammad Usama Anjum [1], the following is how
+> > > one is supposed to build selftests:
+> > > 
+> > >      make headers && make -C tools/testing/selftests/mm
+> > > 
+> > > Change the selftest build system's lib.mk to fail out with a helpful
+> > > message if that prerequisite "make headers" has not been done yet.
+> > > 
+> > 
+> > NAK NAK NAK
+> > 
+> > This now means I can no longer run selftests, I thank you very much! :-/
+> > 
+> > root@spr:/usr/src/linux-2.6# make O=defconfig-build/ -j64
+> > make[1]: Entering directory '/usr/src/linux-2.6/defconfig-build'
+> > ***
+> > *** The source tree is not clean, please run 'make mrproper'
+> > *** in /usr/src/linux-2.6
+> > 
+> > 
+> > I've always done:
+> > 
+> >    cd tools/testing/selftests/x86; make
+> > 
+> > and that has always worked
+> > 
+> > Now I can't bloody well build *any* selftest or risk not being able to
+> > do builds.
+> 
+> This change landed in 6.5, no? And 6.6 was just released. Just curious why
+> you notice that now.
 
---YP88GGzst4icFZC7
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hey,
-
-On Fri, Nov 03, 2023 at 04:01:26PM +0800, Peter Yin wrote:
-> Add a device tree bindings for mp5990 device.
->=20
-> Signed-off-by: Peter Yin <peteryin.openbmc@gmail.com>
-> ---
->  .../devicetree/bindings/hwmon/mps,mp5990.yaml | 43 +++++++++++++++++++
->  1 file changed, 43 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/hwmon/mps,mp5990.ya=
-ml
->=20
-> diff --git a/Documentation/devicetree/bindings/hwmon/mps,mp5990.yaml b/Do=
-cumentation/devicetree/bindings/hwmon/mps,mp5990.yaml
-> new file mode 100644
-> index 000000000000..7533d69f1922
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/hwmon/mps,mp5990.yaml
-> @@ -0,0 +1,43 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/hwmon/mps,mp5990.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Analog Devices MP5990 HSC Controller
-
-Analog Devices? Also, could you write that out rather than using the
-"HSC" acronym?
-
-> +
-> +maintainers:
-> +  - Peter Yin <peteryin.openbmc@gmail.com>
-> +
-> +description: |
-> +  Analog Devices MP5990 HSC Controller
-
-Ditto here, Analog Devices?
-
-> +
-> +  Datasheets:
-> +  https://www.monolithicpower.com/en/mp5990.html
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - mps,mp5990
-
-Do you expect this list to grow? If not, just use const: instead of
-enum:
-
-> +
-> +  reg:
-
-> +    description: I2C address of slave device.
-
-Can drop this description.
-
-Cheers,
-Conor.
-
-> +    maxItems: 1
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    i2c {
-> +        #address-cells =3D <1>;
-> +        #size-cells =3D <0>;
-> +
-> +        power-sensor@20 {
-> +            reg =3D <0x20>;
-> +            compatible =3D "mps,mp5990";
-> +        };
-> +    };
-> --=20
-> 2.25.1
->=20
-
---YP88GGzst4icFZC7
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZUTrKwAKCRB4tDGHoIJi
-0iMgAQDKhAd8C7bms72XIMlSxUwJKZNpsCRINEa3roWUPehWFAD/RGZMiHjxOKiq
-xvVwJUDMqpldLSIYLM2v9as2Sw6YKg4=
-=Sgyr
------END PGP SIGNATURE-----
-
---YP88GGzst4icFZC7--
+Dunno, last time I edited the selftests and needed to recompile was a
+few weeks ago.
