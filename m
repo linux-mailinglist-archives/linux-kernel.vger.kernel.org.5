@@ -2,100 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9069C7DFEA7
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 06:12:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B6487DFEAD
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 06:13:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229791AbjKCFM7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 01:12:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51596 "EHLO
+        id S230071AbjKCFNP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 01:13:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbjKCFM5 (ORCPT
+        with ESMTP id S230004AbjKCFNN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 01:12:57 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C73521A7
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 22:12:50 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id 98e67ed59e1d1-28098ebd5aeso1620665a91.0
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 22:12:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698988370; x=1699593170; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=OixtEquTnHR2YZhEd0MDEhswdqqqsbVAp+5RHrt7SyY=;
-        b=olZcH8W9AllPK4gFcgNwx+AWhkczLaehkgn321GTYcJk/ckcLrAFRmjOD0YQFQYNF7
-         woOMIi00GXEyUCA/8BDlxiz6JI3anxj/zzYeXw16pmkL09/TT+GnVmynHnCX0UdEZFQf
-         n23QaP0dyooFNYC0ShlkzZoUxSxEeii/4J4JkENreIVAtigByG4cLC8UuEcWw88BD64B
-         hDZu2DFVjQltO7l/EWYrfpzpdzEs6Kt7Ym1RnVV5yh01C92KZqMUP73foEU7Ey5we70X
-         bRgVI0GnG5wnHZZJrzpJyPaQ0rqlg1uR5/a6SPpLxC7JWcchODi2oR7nphd3K5cX8vAB
-         jMPg==
+        Fri, 3 Nov 2023 01:13:13 -0400
+Received: from mail-ot1-f72.google.com (mail-ot1-f72.google.com [209.85.210.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C02601A8
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 22:13:10 -0700 (PDT)
+Received: by mail-ot1-f72.google.com with SMTP id 46e09a7af769-6ce26d7fd45so2241873a34.3
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 22:13:10 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698988370; x=1699593170;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OixtEquTnHR2YZhEd0MDEhswdqqqsbVAp+5RHrt7SyY=;
-        b=GUMYaDjP2n6MQMq7ceFX3V6hKXsNyB3jvJqac3EBq3REhsBISIp5QnjGZvVi1V0ZTy
-         RDrZiBwTLNjmDlfj76LoBbIbBIysBQWodfkaF5QjqTblbjllbaldHJ89OcxjlFxbCCf/
-         fn9cdo6ixCMEIAzdpOyB+WD/9XYMylhT+2xIYmyFG5zViewYexisrHbb1bfBVzCPZVcb
-         WSw9WY85KAp48/L3MMHK/2GX0sPsIpDnpiB9bo3wz7LqSjM+WF2rtXZhZLbMbsdpBMq2
-         orJwLJW3hOhnwJWTS8iDtoIlBqog/ThwNpgPeOiowWqlPeKaqfiB2JgLp3+UfXU89qm6
-         S1jw==
-X-Gm-Message-State: AOJu0YwJ5UEe5NlT4M8eX4dODzjVRsw6pqH5388sRHeIh4ejvxw4JH6G
-        7fDebhf9aXkc2vyWGznEg0QL1A==
-X-Google-Smtp-Source: AGHT+IFExr8ybCriMSgOLlaz6WAWaai4oOiYuReMXnpbJnZEcRwsDQDCfUwG4Y7Q7LrrQj7TnqqbKA==
-X-Received: by 2002:a17:90a:7e88:b0:280:c97:5968 with SMTP id j8-20020a17090a7e8800b002800c975968mr18934034pjl.5.1698988370217;
-        Thu, 02 Nov 2023 22:12:50 -0700 (PDT)
-Received: from localhost ([122.172.80.14])
-        by smtp.gmail.com with ESMTPSA id js4-20020a17090b148400b0027d15bd9fa2sm626409pjb.35.2023.11.02.22.12.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Nov 2023 22:12:49 -0700 (PDT)
-Date:   Fri, 3 Nov 2023 10:42:47 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Krishna chaitanya chundru <quic_krichai@quicinc.com>,
-        agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        vireshk@kernel.org, nm@ti.com, sboyd@kernel.org, mani@kernel.org,
-        lpieralisi@kernel.org, kw@linux.com, robh@kernel.org,
-        bhelgaas@google.com, rafael@kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, quic_vbadigan@quicinc.com,
-        quic_nitegupt@quicinc.com, quic_skananth@quicinc.com,
-        quic_ramkri@quicinc.com, quic_parass@quicinc.com
-Subject: Re: [PATCH v5 5/5] PCI: qcom: Add OPP support to scale performance
- state of power domain
-Message-ID: <20231103051247.u4cnckzstcvs4lf5@vireshk-i7>
-References: <20231102053013.7yt7pxin5awlu7w7@vireshk-i7>
- <20231102120950.GA115288@bhelgaas>
+        d=1e100.net; s=20230601; t=1698988390; x=1699593190;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Zugy3IDDgeRlb0v5bIoZfiAc9gsj8TR/I26tgiorg+4=;
+        b=K1wI9jlA4lcBPJZzzBpUiEtcgO2J+vAzN7U4swfv8QDjh6wlx9pblZqjjymvji01U/
+         pW3sTJT/HJT3gLfRap35YhB9DpFxrIUQGn2GANlxaI92k52VXC8Z3p7jnuN4Mr1vOe28
+         R2EoJppWhGlRH88CUUoz+lMbwDJacUzu9F6cVh2rQG/2hL52cNq33jfzrp4SOHFWV3bY
+         pV86bn8lXfytjNGqp95XlENhQvSGuhETiLklM6V29OFiS15siaDKmFv9aIRoVUe1QALK
+         b9kRcpzSowrGYqTZ1SVITZPnZmd3ZPqJeziTiWLXyVSmcDFiROBtlk+ONcWa/gqpMEtB
+         miKg==
+X-Gm-Message-State: AOJu0YxKJG2uvkf57wMFeIRD01agJPQpmY0NNeqxZB2T+PGa6pH0LiWX
+        z0GGNblkjpUswLcOTXkVvC0xhI2/E5Dhm7RG7kzB/mtdJaejWKE=
+X-Google-Smtp-Source: AGHT+IG4dTVEO6otlqdfeamhlMipdtwVAR2KeQKtgzUTjaVUqRuOq4O85fBhaqU8t+W3i1aAsZmy/0ltFCZ25YERIPDYTteuJ7Ul
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231102120950.GA115288@bhelgaas>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Received: by 2002:a9d:4717:0:b0:6be:ed66:5ab0 with SMTP id
+ a23-20020a9d4717000000b006beed665ab0mr5924885otf.6.1698988390243; Thu, 02 Nov
+ 2023 22:13:10 -0700 (PDT)
+Date:   Thu, 02 Nov 2023 22:13:10 -0700
+In-Reply-To: <000000000000e69b5a06093287ec@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000007a64240609388fe1@google.com>
+Subject: Re: [syzbot] test uaf in hci_conn_drop
+From:   syzbot <syzbot+1683f76f1b20b826de67@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02-11-23, 07:09, Bjorn Helgaas wrote:
-> On Thu, Nov 02, 2023 at 11:00:13AM +0530, Viresh Kumar wrote:
-> > On 01-11-23, 17:17, Bjorn Helgaas wrote:
-> > > Can you expand "OPP" somewhere so we know what it stands for?  I'm
-> > > sure everybody knows except me :)
-> > 
-> > It is "Operating Performance Points", defined here:
-> > 
-> > Documentation/power/opp.rst
-> 
-> Thanks; I meant in the subject or commit log of the next revision, of
-> course.
+For archival purposes, forwarding an incoming command email to
+linux-kernel@vger.kernel.org.
 
-Yeah, I understood that. Krishna shall do it in next version I believe.
+***
 
--- 
-viresh
+Subject: test uaf in hci_conn_drop
+Author: lizhi.xu@windriver.com
+
+#syz test git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git 8de1e7afcc1c
+
+diff --git a/net/bluetooth/hci_sysfs.c b/net/bluetooth/hci_sysfs.c
+index 15b33579007c..3237ad0d0645 100644
+--- a/net/bluetooth/hci_sysfs.c
++++ b/net/bluetooth/hci_sysfs.c
+@@ -6,6 +6,8 @@
+ #include <net/bluetooth/bluetooth.h>
+ #include <net/bluetooth/hci_core.h>
+ 
++static void sco_set_hci_cnn_null(struct hci_conn * conn);
++
+ static const struct class bt_class = {
+ 	.name = "bluetooth",
+ };
+@@ -13,6 +15,7 @@ static const struct class bt_class = {
+ static void bt_link_release(struct device *dev)
+ {
+ 	struct hci_conn *conn = to_hci_conn(dev);
++	sco_set_hci_cnn_null(conn);
+ 	kfree(conn);
+ }
+ 
+diff --git a/net/bluetooth/sco.c b/net/bluetooth/sco.c
+index c736186aba26..858de967ffd3 100644
+--- a/net/bluetooth/sco.c
++++ b/net/bluetooth/sco.c
+@@ -76,6 +76,12 @@ struct sco_pinfo {
+ #define SCO_CONN_TIMEOUT	(HZ * 40)
+ #define SCO_DISCONN_TIMEOUT	(HZ * 2)
+ 
++static void sco_set_hci_cnn_null(struct hci_conn * conn)
++{
++	struct sco_conn * scn = container_of(conn, struct sco_conn, hci_conn);
++	scn->hci_conn = NULL;
++}
++
+ static void sco_sock_timeout(struct work_struct *work)
+ {
+ 	struct sco_conn *conn = container_of(work, struct sco_conn,
