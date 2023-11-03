@@ -2,114 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B008A7E0620
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 17:03:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58A3B7E0625
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 17:04:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344951AbjKCQDZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 12:03:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55022 "EHLO
+        id S1345396AbjKCQDv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 12:03:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234328AbjKCQDR (ORCPT
+        with ESMTP id S234328AbjKCQDq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 12:03:17 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0923D64
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 09:03:11 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-507e85ebf50so2770297e87.1
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Nov 2023 09:03:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1699027389; x=1699632189; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ihGdFd0nqrzmFvEDZxhHQ2+8zpelaN2AcwyF1dKV48M=;
-        b=G2yBKHfC5I4VBNSL4OadPQ5Ywl6SpyEWzx6qSO8LNDoNgYLxm871fRKmtagehGxHDF
-         5gYdsrdb64kuAnO2tHRc7VjVewshryra9pQRgOTzTitfpNNNvCZJFKGdsTQF2yK3RZIk
-         vvBMWB86TNEbMAc426+6uaoLSLV21SvHff62Q=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699027389; x=1699632189;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ihGdFd0nqrzmFvEDZxhHQ2+8zpelaN2AcwyF1dKV48M=;
-        b=WuWnNqMXBHXOAcpLuBou0K8JXYjQK7cpV4hv+dlIIoGcuO6Nl+qytrH9oqv1p4Q7fd
-         iArHcxWgISRJcRXQ6WRnDnFsIS92FnpJe/tc2pBzfTl9xieDUfnny16VTO12c41tE9OI
-         eU2T3LFsAt6HjxVVucsUmUcpUpyeS9QFs7P9GqqnZvCM8vcUFAJqqbOjAslh4XE6YFjT
-         QhKQXAoUnCVxa0uVWOClqr00gwc8HFspEU+OyJFurDCH1NAa80efznfUP5wa5uQ0QWDv
-         1zAS2VNNj4tsKHFqbgSSNk4r0Ymf3rlYaf8hDI4MYPUwYO32PrmAFNCno7o053pXNjIA
-         P/mg==
-X-Gm-Message-State: AOJu0YzrvyQsosaDj6JdJmI5Bio9+xElk27SnPodQaJYr0cmpc3eZRuv
-        u3w3/6elVNV6BASlO9RUwiUD3X/5bsxdCZEUUXX5Ffft
-X-Google-Smtp-Source: AGHT+IH9xKMjl3Vqi9Msm5EtknWLMn7XXCwd6PLA9wPJfwnnst/G5Q/cKYe4ALPOHGg+Regm6vfgUw==
-X-Received: by 2002:a05:6512:60f:b0:507:a9ae:5c2 with SMTP id b15-20020a056512060f00b00507a9ae05c2mr16639801lfe.44.1699027388839;
-        Fri, 03 Nov 2023 09:03:08 -0700 (PDT)
-Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com. [209.85.208.47])
-        by smtp.gmail.com with ESMTPSA id c12-20020a056402120c00b005438ce5bf80sm1080981edw.20.2023.11.03.09.03.08
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 03 Nov 2023 09:03:08 -0700 (PDT)
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-51e24210395so15263a12.0
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Nov 2023 09:03:08 -0700 (PDT)
-X-Received: by 2002:a05:6402:254b:b0:543:faac:e135 with SMTP id
- l11-20020a056402254b00b00543faace135mr229008edb.3.1699027387964; Fri, 03 Nov
- 2023 09:03:07 -0700 (PDT)
+        Fri, 3 Nov 2023 12:03:46 -0400
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19781D60;
+        Fri,  3 Nov 2023 09:03:37 -0700 (PDT)
+X-QQ-mid: bizesmtp82t1699027400trjco16j
+Received: from main2-ubuntu.tail147f4.ts.net ( [202.201.15.117])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Sat, 04 Nov 2023 00:03:17 +0800 (CST)
+X-QQ-SSF: 01200000000000B06000000A0000000
+X-QQ-FEAT: 7jw2iSiCazpcnkkT53zBV9E5I5T5DJqx1+TFUtxUfN3lRCahCSRmfodfnKjxV
+        CZUVooP/s2ON1Xc7NqKw/750amPGn/HA/QmC3hjD503kq78AFBll7c+JW7zZRKRKgJ0dcBA
+        fXrP4Q/oKyJmpMBY1aZwrgZA1L/EGsKMQUoOR5PupOxOnqtERz2toMY1qeVlWz/p7KZxsIk
+        nY3oUd1ez40xtO3mx3yORZ0/HqylV4ibH6wp8aFM49EMpckQtLLAlVtwabPzzZ1qoI8noCY
+        kYqhHDaoRthiGZg8naGoZeJJbGLrnRX5aIuzhSSszoQ36q6A0qlPDzDhUQFX3EVfpuXiQec
+        mHMA3CCDPcDduASmtFWHo2AIgBomj0FnSbxAaz5DqO7Pmr8zO8=
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 5481933520797404592
+From:   Yuan Tan <tanyuan@tinylab.org>
+To:     falcon@tinylab.org, arnd@arndb.de, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-riscv@lists.infradead.org,
+        luc.vanoostenryck@gmail.com, linux-sparse@vger.kernel.org
+Cc:     linux@weissschuh.net, palmer@rivosinc.com,
+        paul.walmsley@sifive.com, paulburton@kernel.org,
+        paulmck@kernel.org, tim.bird@sony.com, tsbogend@alpha.franken.de,
+        w@1wt.eu, tanyuan@tinylab.org, i@maskray.me
+Subject: [PATCH v1 12/14] DCE/DSE: riscv: build reference for .pushsection in assembly
+Date:   Sat,  4 Nov 2023 00:03:15 +0800
+Message-Id: <26be8db18604f9a9e5eee9f03cc77ed034059d9a.1699025537.git.tanyuan@tinylab.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <cover.1699025537.git.tanyuan@tinylab.org>
+References: <cover.1699025537.git.tanyuan@tinylab.org>
 MIME-Version: 1.0
-References: <20231102221309.1971910-1-hsinyi@chromium.org> <20231102221309.1971910-5-hsinyi@chromium.org>
-In-Reply-To: <20231102221309.1971910-5-hsinyi@chromium.org>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Fri, 3 Nov 2023 09:02:55 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=XEnk1TuWsJB6W5PGisg3_0A3HZMGpxEUrtcDxXK=Z+Eg@mail.gmail.com>
-Message-ID: <CAD=FV=XEnk1TuWsJB6W5PGisg3_0A3HZMGpxEUrtcDxXK=Z+Eg@mail.gmail.com>
-Subject: Re: [PATCH v2 4/4] drm/panel-edp: Choose correct preferred mode
-To:     Hsin-Yi Wang <hsinyi@chromium.org>
-Cc:     Neil Armstrong <neil.armstrong@linaro.org>,
-        Jessica Zhang <quic_jesszhan@quicinc.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Add the SECTION_SHF_LINK_ORDER method and the SECTION_SHF_GROUP method
+to refactor __ASM_EXTABLE_RAW, so it won't produce orphan sections
+anymore.
 
-On Thu, Nov 2, 2023 at 3:13=E2=80=AFPM Hsin-Yi Wang <hsinyi@chromium.org> w=
-rote:
->
-> If a non generic edp-panel is under aux-bus, the mode read from edid woul=
-d
-> still be selected as preferred and results in multiple preferred modes,
-> which is ambiguous.
->
-> If a hard-coded mode is present, unset the preferred bit of the modes rea=
-d
-> from edid.
->
-> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
-> ---
-> v1->v2: split patches from drm_modes.
-> ---
->  drivers/gpu/drm/panel/panel-edp.c | 7 +++++--
->  1 file changed, 5 insertions(+), 2 deletions(-)
+Signed-off-by: Yuan Tan <tanyuan@tinylab.org>
+Signed-off-by: Zhangjin Wu <falcon@tinylab.org>
+---
+ arch/riscv/include/asm/asm-extable.h |  7 ++--
+ arch/riscv/lib/uaccess.S             | 60 ++++++++++++++--------------
+ 2 files changed, 32 insertions(+), 35 deletions(-)
 
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
+diff --git a/arch/riscv/include/asm/asm-extable.h b/arch/riscv/include/asm/asm-extable.h
+index 7164d871e038..99e472b7a1be 100644
+--- a/arch/riscv/include/asm/asm-extable.h
++++ b/arch/riscv/include/asm/asm-extable.h
+@@ -29,7 +29,7 @@
+ #endif
+ 
+ #define __ASM_EXTABLE_RAW(insn, fixup, type, data)	\
+-	.pushsection	__SECTION_NAME(__ex_table), "a";		\
++	__ASM_EXTABLE_PUSH_SECTION;			\
+ 	.balign		4;				\
+ 	.long		((insn) - .);			\
+ 	.long		((fixup) - .);			\
+@@ -37,9 +37,8 @@
+ 	.short		(data);				\
+ 	.popsection;
+ 
+-	.macro		_asm_extable, insn, fixup
+-	__ASM_EXTABLE_RAW(\insn, \fixup, EX_TYPE_FIXUP, 0)
+-	.endm
++#define _asm_extable(insn, fixup)			\
++	__ASM_EXTABLE_RAW(insn, fixup, EX_TYPE_FIXUP, 0)
+ 
+ #else /* __ASSEMBLY__ */
+ 
+diff --git a/arch/riscv/lib/uaccess.S b/arch/riscv/lib/uaccess.S
+index 09b47ebacf2e..91c76d3fbe2f 100644
+--- a/arch/riscv/lib/uaccess.S
++++ b/arch/riscv/lib/uaccess.S
+@@ -4,11 +4,9 @@
+ #include <asm/asm-extable.h>
+ #include <asm/csr.h>
+ 
+-	.macro fixup op reg addr lbl
+-100:
+-	\op \reg, \addr
+-	_asm_extable	100b, \lbl
+-	.endm
++#define fixup(op, reg, addr, lbl)	\
++	100: op reg, addr;		\
++	_asm_extable(100b, lbl)
+ 
+ ENTRY(__asm_copy_to_user)
+ ENTRY(__asm_copy_from_user)
+@@ -50,9 +48,9 @@ ENTRY(__asm_copy_from_user)
+ 	beq	a0, t1, .Lskip_align_dst
+ 1:
+ 	/* a5 - one byte for copying data */
+-	fixup lb      a5, 0(a1), 10f
++	fixup(lb, a5, 0(a1), 10f)
+ 	addi	a1, a1, 1	/* src */
+-	fixup sb      a5, 0(a0), 10f
++	fixup(sb, a5, 0(a0), 10f)
+ 	addi	a0, a0, 1	/* dst */
+ 	bltu	a0, t1, 1b	/* t1 - start of aligned dst */
+ 
+@@ -77,22 +75,22 @@ ENTRY(__asm_copy_from_user)
+ 	 */
+ 	addi	t0, t0, -(8*SZREG) /* not to over run */
+ 2:
+-	fixup REG_L   a4,        0(a1), 10f
+-	fixup REG_L   a5,    SZREG(a1), 10f
+-	fixup REG_L   a6,  2*SZREG(a1), 10f
+-	fixup REG_L   a7,  3*SZREG(a1), 10f
+-	fixup REG_L   t1,  4*SZREG(a1), 10f
+-	fixup REG_L   t2,  5*SZREG(a1), 10f
+-	fixup REG_L   t3,  6*SZREG(a1), 10f
+-	fixup REG_L   t4,  7*SZREG(a1), 10f
+-	fixup REG_S   a4,        0(a0), 10f
+-	fixup REG_S   a5,    SZREG(a0), 10f
+-	fixup REG_S   a6,  2*SZREG(a0), 10f
+-	fixup REG_S   a7,  3*SZREG(a0), 10f
+-	fixup REG_S   t1,  4*SZREG(a0), 10f
+-	fixup REG_S   t2,  5*SZREG(a0), 10f
+-	fixup REG_S   t3,  6*SZREG(a0), 10f
+-	fixup REG_S   t4,  7*SZREG(a0), 10f
++	fixup(REG_L, a4,        0(a1), 10f)
++	fixup(REG_L, a5,    SZREG(a1), 10f)
++	fixup(REG_L, a6,  2*SZREG(a1), 10f)
++	fixup(REG_L, a7,  3*SZREG(a1), 10f)
++	fixup(REG_L, t1,  4*SZREG(a1), 10f)
++	fixup(REG_L, t2,  5*SZREG(a1), 10f)
++	fixup(REG_L, t3,  6*SZREG(a1), 10f)
++	fixup(REG_L, t4,  7*SZREG(a1), 10f)
++	fixup(REG_S, a4,        0(a0), 10f)
++	fixup(REG_S, a5,    SZREG(a0), 10f)
++	fixup(REG_S, a6,  2*SZREG(a0), 10f)
++	fixup(REG_S, a7,  3*SZREG(a0), 10f)
++	fixup(REG_S, t1,  4*SZREG(a0), 10f)
++	fixup(REG_S, t2,  5*SZREG(a0), 10f)
++	fixup(REG_S, t3,  6*SZREG(a0), 10f)
++	fixup(REG_S, t4,  7*SZREG(a0), 10f)
+ 	addi	a0, a0, 8*SZREG
+ 	addi	a1, a1, 8*SZREG
+ 	bltu	a0, t0, 2b
+@@ -130,7 +128,7 @@ ENTRY(__asm_copy_from_user)
+ 	sub	t4, a5, t3
+ 
+ 	/* Load the first word to combine with second word */
+-	fixup REG_L   a5, 0(a1), 10f
++	fixup(REG_L, a5, 0(a1), 10f)
+ 
+ 3:
+ 	/* Main shifting copy
+@@ -142,11 +140,11 @@ ENTRY(__asm_copy_from_user)
+ 
+ 	/* At least one iteration will be executed */
+ 	srl	a4, a5, t3
+-	fixup REG_L   a5, SZREG(a1), 10f
++	fixup(REG_L, a5, SZREG(a1), 10f)
+ 	addi	a1, a1, SZREG
+ 	sll	a2, a5, t4
+ 	or	a2, a2, a4
+-	fixup REG_S   a2, 0(a0), 10f
++	fixup(REG_S, a2, 0(a0), 10f)
+ 	addi	a0, a0, SZREG
+ 	bltu	a0, t1, 3b
+ 
+@@ -163,9 +161,9 @@ ENTRY(__asm_copy_from_user)
+ 	 */
+ 	bgeu	a0, t0, .Lout_copy_user  /* check if end of copy */
+ 4:
+-	fixup lb      a5, 0(a1), 10f
++	fixup(lb, a5, 0(a1), 10f)
+ 	addi	a1, a1, 1	/* src */
+-	fixup sb      a5, 0(a0), 10f
++	fixup(sb, a5, 0(a0), 10f)
+ 	addi	a0, a0, 1	/* dst */
+ 	bltu	a0, t0, 4b	/* t0 - end of dst */
+ 
+@@ -205,7 +203,7 @@ ENTRY(__clear_user)
+ 	bgeu t0, t1, 2f
+ 	bltu a0, t0, 4f
+ 1:
+-	fixup REG_S, zero, (a0), 11f
++	fixup(REG_S, zero, (a0), 11f)
+ 	addi a0, a0, SZREG
+ 	bltu a0, t1, 1b
+ 2:
+@@ -217,12 +215,12 @@ ENTRY(__clear_user)
+ 	li a0, 0
+ 	ret
+ 4: /* Edge case: unalignment */
+-	fixup sb, zero, (a0), 11f
++	fixup(sb, zero, (a0), 11f)
+ 	addi a0, a0, 1
+ 	bltu a0, t0, 4b
+ 	j 1b
+ 5: /* Edge case: remainder */
+-	fixup sb, zero, (a0), 11f
++	fixup(sb, zero, (a0), 11f)
+ 	addi a0, a0, 1
+ 	bltu a0, a3, 5b
+ 	j 3b
+-- 
+2.34.1
 
-Do you think this should have a "Fixes?" As per discussion on V1 [1],
-this has probably been a bit broken from the beginning, though I guess
-it only became a big deal after the AUX bus made it so that the panel
-driver commonly had the EDID...
-
-[1] https://lore.kernel.org/r/CAD=3DFV=3DWHzCdiYumsxUm_am+ALqq9SOOrjf=3DJYH=
-qJuiKFB+Dnsw@mail.gmail.com
