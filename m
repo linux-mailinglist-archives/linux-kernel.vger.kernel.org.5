@@ -2,103 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AB6617DFE20
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 03:43:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44F337DFE1C
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 03:43:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234692AbjKCCms (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 22:42:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48400 "EHLO
+        id S1343859AbjKCCmv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 22:42:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229570AbjKCCmq (ORCPT
+        with ESMTP id S229570AbjKCCmt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 22:42:46 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 154C8125
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 19:41:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1698979316;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=ny2ZFzxeENDJSTZ9wCuQplKwvwWNLKdmgqeowZjx4K4=;
-        b=f715odRS+4t7+GIVV0Go+ZC3+jSo4cBcSAIId+4h8kuS4it7zgw0iIW9a+PRFwUf1f4Ch/
-        4FESHLoeqLeM6v3B/NNcu7KgytOzpl1r//xpVAtDLWO+apUAuVJSQtb0xrOQsKK7th9fff
-        CozPD34hKVKgy7S+8vmKegCLVU70D1g=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-595-kb0Gv_5xPZaJ1bsaMkudEg-1; Thu, 02 Nov 2023 22:41:54 -0400
-X-MC-Unique: kb0Gv_5xPZaJ1bsaMkudEg-1
-Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-9be601277c2so112419066b.2
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 19:41:54 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698979313; x=1699584113;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ny2ZFzxeENDJSTZ9wCuQplKwvwWNLKdmgqeowZjx4K4=;
-        b=RNjWQ8iyrAD/YH8NfIJuE7JX2YvFppyZcHGY0CjZVXCJVI1Gap4UGr5zANyzzGuvBQ
-         dF0WBipdrmbvwTotd56UrMRXMQGjCUcfLdFRmulFvO9u2VXEfoPpaI4hNcEunEU3T04C
-         wh5tsBnE5o6M1y1/k8DMfevx2e/Uv0RAah+K1QDGCpP40DSHq7EHLKFpE8a5zk2Eb/Pm
-         XVq/pfsvmGsF5aaWRjzThZXa1XqLNZ/9XhhSbckn6PH7m5oS7P7hLPvDYpVWaFXeqLAp
-         YGyBiUVqlnmHJi9dkhQ8CoYjv7V5QLVlVbDq3Opg5xy5MtvjaMlGN05DDyr41m+5mcs1
-         hTtQ==
-X-Gm-Message-State: AOJu0YwHFyRolUC8Td36kk5+9VTHKG8zyAX+Tqqc+eseMsJFn5bYPnvG
-        lta1uPtFiCaMCLf0FOy5pvIOvPF+XyEgYMi+FA8O+DzQTHBSSPD/zPpFaUBMJzEQxTTgjiYj91I
-        4AqaXCxLso/H0mbc6M7uayUec
-X-Received: by 2002:a17:907:2d28:b0:9bf:697b:8f44 with SMTP id gs40-20020a1709072d2800b009bf697b8f44mr6733369ejc.6.1698979313486;
-        Thu, 02 Nov 2023 19:41:53 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFj8ItR6ARgpxLWW8ZXsFRD1AjDYC8gptOiYDscDMcYxWPb9yjdvJ+NcwTXCgSU6cBODiLLHQ==
-X-Received: by 2002:a17:907:2d28:b0:9bf:697b:8f44 with SMTP id gs40-20020a1709072d2800b009bf697b8f44mr6733360ejc.6.1698979313220;
-        Thu, 02 Nov 2023 19:41:53 -0700 (PDT)
-Received: from cassiopeiae.. ([2a02:810d:4b3f:de9c:642:1aff:fe31:a19f])
-        by smtp.gmail.com with ESMTPSA id o18-20020a1709061b1200b009b8a4f9f20esm366691ejg.102.2023.11.02.19.41.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Nov 2023 19:41:52 -0700 (PDT)
-From:   Danilo Krummrich <dakr@redhat.com>
-To:     nouveau@lists.freedesktop.org, faith@gfxstrand.net
-Cc:     lyude@redhat.com, kherbst@redhat.com, airlied@gmail.com,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Danilo Krummrich <dakr@redhat.com>, stable@vger.kernel.org
-Subject: [PATCH] drm/nouveau/gr/gf100-: unlock mutex failing to create golden context
-Date:   Fri,  3 Nov 2023 03:41:06 +0100
-Message-ID: <20231103024119.15031-1-dakr@redhat.com>
-X-Mailer: git-send-email 2.41.0
+        Thu, 2 Nov 2023 22:42:49 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C205419D;
+        Thu,  2 Nov 2023 19:42:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1698979363; x=1730515363;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=A12jr/Fr5ti9ffyJx+eCxY4/gYdHcgsiea0V3zc8/9E=;
+  b=kr3W4i67wNKzzKZkKTj2eDN4k527oAN85BmP8XHbWgdntcqYZEardMi+
+   MyaVFtP7LFOVmvUIljMZ+xJ5Bts0TwxeJ2b88PdxWOc7HiF7HgkBxWIrZ
+   KQDlWE+Zl7MxbDwU7gEQhiK9PbJyyk2kzGfziMpemxC+HQlCPI22mI20I
+   J/8GL3SWp6Wvkes5N3j4nmPTJi5/vP9HcpH4RhhUEeFMa+NWQ6Eel4Yic
+   SvtK1zi8EPgbkbQpZ59rdSg/Wt4xRktjyhnyT57yHEaNhzEHeQgm7KyfK
+   zsMSB9ADVo3o9FVWGgj22gMIaciU8R8eySJTx4HXES9A7JF7dWzj368VG
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10882"; a="7501649"
+X-IronPort-AV: E=Sophos;i="6.03,272,1694761200"; 
+   d="scan'208";a="7501649"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2023 19:42:42 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10882"; a="852135977"
+X-IronPort-AV: E=Sophos;i="6.03,272,1694761200"; 
+   d="scan'208";a="852135977"
+Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
+  by FMSMGA003.fm.intel.com with ESMTP; 02 Nov 2023 19:42:40 -0700
+Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qyk8s-00027w-1N;
+        Fri, 03 Nov 2023 02:42:38 +0000
+Date:   Fri, 3 Nov 2023 10:41:43 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Kent Overstreet <kmo@daterainc.com>
+Cc:     oe-kbuild-all@lists.linux.dev,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Brian Foster <bfoster@redhat.com>,
+        linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [linux-next:master 15635/16110] fs/bcachefs/disk_groups.c:534:6:
+ sparse: sparse: symbol 'bch2_target_to_text_sb' was not declared. Should it
+ be static?
+Message-ID: <202311031030.xZT1XBXd-lkp@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Do not return from gf100_gr_chan_new() with fecs mutex held when failing
-to create the golden context image.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
+head:   ab57716449b3438c0136f6f412a2e59e0cf037a9
+commit: bf0d9e89de2e62fe9967ebb77b68d58d3812e4db [15635/16110] bcachefs: Split apart bch2_target_to_text(), bch2_target_to_text_sb()
+config: i386-randconfig-061-20231102 (https://download.01.org/0day-ci/archive/20231103/202311031030.xZT1XBXd-lkp@intel.com/config)
+compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231103/202311031030.xZT1XBXd-lkp@intel.com/reproduce)
 
-Cc: <stable@vger.kernel.org> # v6.2+
-Fixes: ca081fff6ecc ("drm/nouveau/gr/gf100-: generate golden context during first object alloc")
-Signed-off-by: Danilo Krummrich <dakr@redhat.com>
----
- drivers/gpu/drm/nouveau/nvkm/engine/gr/gf100.c | 1 +
- 1 file changed, 1 insertion(+)
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311031030.xZT1XBXd-lkp@intel.com/
 
-diff --git a/drivers/gpu/drm/nouveau/nvkm/engine/gr/gf100.c b/drivers/gpu/drm/nouveau/nvkm/engine/gr/gf100.c
-index c494a1ff2d57..f72d3aa33442 100644
---- a/drivers/gpu/drm/nouveau/nvkm/engine/gr/gf100.c
-+++ b/drivers/gpu/drm/nouveau/nvkm/engine/gr/gf100.c
-@@ -442,6 +442,7 @@ gf100_gr_chan_new(struct nvkm_gr *base, struct nvkm_chan *fifoch,
- 	if (gr->data == NULL) {
- 		ret = gf100_grctx_generate(gr, chan, fifoch->inst);
- 		if (ret) {
-+			mutex_unlock(&gr->fecs.mutex);
- 			nvkm_error(&base->engine.subdev, "failed to construct context\n");
- 			return ret;
- 		}
+sparse warnings: (new ones prefixed by >>)
+   fs/bcachefs/disk_groups.c: note: in included file:
+   fs/bcachefs/bcachefs.h:957:9: sparse: sparse: array of flexible structures
+>> fs/bcachefs/disk_groups.c:534:6: sparse: sparse: symbol 'bch2_target_to_text_sb' was not declared. Should it be static?
+
 -- 
-2.41.0
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
