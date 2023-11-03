@@ -2,66 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CD5E7DFF10
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 07:15:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 612027DFF19
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 07:22:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230035AbjKCGPK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 02:15:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44892 "EHLO
+        id S230212AbjKCGPr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 02:15:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbjKCGPI (ORCPT
+        with ESMTP id S229379AbjKCGPq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 02:15:08 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16C94CA
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 23:15:06 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id 98e67ed59e1d1-28098ebd5aeso1656441a91.0
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 23:15:06 -0700 (PDT)
+        Fri, 3 Nov 2023 02:15:46 -0400
+Received: from codeconstruct.com.au (pi.codeconstruct.com.au [203.29.241.158])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBCAB19D
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 23:15:38 -0700 (PDT)
+Received: from localhost.localdomain (ppp14-2-79-67.adl-apt-pir-bras31.tpg.internode.on.net [14.2.79.67])
+        by mail.codeconstruct.com.au (Postfix) with ESMTPSA id C19172012B;
+        Fri,  3 Nov 2023 14:15:32 +0800 (AWST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698992105; x=1699596905; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=L780/51HQsKf2bbe0SqnoEuuYH93sTzkhOgadEqARME=;
-        b=eaJcSuFdDjv63+8aQvRBP48FGq4CFRSArGJjgsgFEWXn4whJIAYFCr5ntmwPhLMjkt
-         Nm0YAN5rnIUmBcmn/krqn+MV3cs7swfVRspuu8vt+hpUCCPCFm0nLrnRRgVFHbkxcIHS
-         ejfrYaWkeakoOpqhbhio6hCJ+1fGLbH9FYC74kqjQUmzi2NqRChhonQwcZfbquWI24Ow
-         axLMRMYN8a2NWpeEPZQVdoqTGGBXIn5XfKv98g5qrpd9zcBFF4ZHcRWxqUzidK/73LN4
-         aiXARjN79VMURdx0Yx0gURZrID6/W62JlHp4kScKhHGHfRJWJr480DfWDfFW8zcl4e5b
-         wV1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698992105; x=1699596905;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=L780/51HQsKf2bbe0SqnoEuuYH93sTzkhOgadEqARME=;
-        b=kYydgXucSGkCl4zhRUQ73Yef6n4h4oNgBfcD/BOQZgvYMOCsg4U7ho7TdXfKT4S1VP
-         ocetkOBxAfPUIvmf6JFeIypNABZMuNitBItvJ03GfADncw6BH4XFn2BeMsFPoZFUuBtG
-         PJ+q6ffIIt/sXU9HMtQ7e0HSQWbP1busoWS+iCIYjcb5ZoAUvcdUabQDwDmnc91a9GCe
-         eB6dQ4E2sFLLwrx5hlGqiJr20eWh62kNCyxTmm3B2vMLRZo8YLKAGlzlqHE9Ww2sucfT
-         EjV5FqPRiuPFaSEIgLUr0BtpKHH1Ya4viXnabh5Wal3M8FDx8CANkY88v2U8SbKmK7vK
-         Ar9A==
-X-Gm-Message-State: AOJu0YwcrQ5RfcUWgKfIeo2M4n+LfZ/tBdX33wn7Opz+RjDx3iarRi9w
-        ytFUO7q3z98AHZ/M0v80iBPfA0roKZ3f7Q==
-X-Google-Smtp-Source: AGHT+IGnnoYc0Xsv6YVqSHY5z0JQx/hdxYOfLjTjihB+OuQuRD3s0q1EkSlevkodRaO3TrDXz70Atg==
-X-Received: by 2002:a17:90b:1885:b0:280:1b83:e45e with SMTP id mn5-20020a17090b188500b002801b83e45emr16633080pjb.39.1698992104599;
-        Thu, 02 Nov 2023 23:15:04 -0700 (PDT)
-Received: from localhost.localdomain ([211.251.170.145])
-        by smtp.gmail.com with ESMTPSA id v20-20020a17090abb9400b002807ec010e3sm716050pjr.48.2023.11.02.23.15.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Nov 2023 23:15:04 -0700 (PDT)
-From:   Dongmin Lee <ldmldm05@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Dongmin Lee <ldmldm05@gmail.com>
-Subject: [PATCH] kernel/reboot: Explicitly notify if halt occurred instead of power off
-Date:   Fri,  3 Nov 2023 15:14:48 +0900
-Message-Id: <20231103061448.68118-1-ldmldm05@gmail.com>
-X-Mailer: git-send-email 2.39.3 (Apple Git-145)
+        d=codeconstruct.com.au; s=2022a; t=1698992133;
+        bh=9uBDHUEXTjz3mCrbNalyoZITY3Ldzz/4xXHCv3UN9mU=;
+        h=From:To:Cc:Subject:Date;
+        b=K3v0iWVmX+gSRJXB26gV0dszp3ioYxD5gBAE+cy0+zwC19GLqz5VDol6j+LnRWD/n
+         YlbCEQrNWQN0SuaRaBwed6fHcStypW1bRb1J5pA4+cYL1rNc81JTR/TOdhXKCgV9cH
+         JCcmbNitu6A2AfDnryd/i7/T8L+yvIV9cGbS+pZ4huMCvTKQs6bQyEh46wLbkHJfKJ
+         LoPky8QxVqefzGZ6H1xvZDjkFphmhWY8lgBQB/EO2QrUj67tLxqv61zXVxebNbbd/+
+         3IzR6MAn0UL7VzICnVUuBls2Ad46YaJMPOzd7jeC7kVzBuuyWZhoDPp0Hvdzo/njEH
+         SjtXB2PUMmd9Q==
+From:   Andrew Jeffery <andrew@codeconstruct.com.au>
+To:     minyard@acm.org, openipmi-developer@lists.sourceforge.net
+Cc:     Andrew Jeffery <andrew@codeconstruct.com.au>,
+        linux-kernel@vger.kernel.org, Jonathan.Cameron@Huawei.com,
+        aladyshev22@gmail.com, jk@codeconstruct.com.au
+Subject: [PATCH 00/10] ipmi: kcs_bmc: Miscellaneous cleanups
+Date:   Fri,  3 Nov 2023 16:45:12 +1030
+Message-Id: <20231103061522.1268637-1-andrew@codeconstruct.com.au>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,HK_RANDOM_ENVFROM,HK_RANDOM_FROM,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,75 +49,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When kernel_can_power_off() returns false, and reboot has called with
-LINUX_REBOOT_CMD_POWER_OFF, kernel_halt() will be initiated instead of
-actual power off function.
+Hello,
 
-However, in this situation, Kernel never explicitly notifies user that
-system halted instead of requested power off.
+A cleanup of the KCS subsystem was prompted after some concerns raised
+by Jonathan on Konstantin's series implementing DSP0254[1] (the MCTP KCS
+Transport Binding Specification):
 
-Since halt and power off perform different behavior, and user initiated
-reboot call with power off command, not halt, This could be unintended
-behavior to user, like this:
+https://lore.kernel.org/all/20230929120835.0000108e@Huawei.com/
 
-~ # poweroff -f
-[    3.581482] reboot: System halted
+[1]: https://www.dmtf.org/sites/default/files/standards/documents/DSP0254_1.0.0.pdf
 
-Therefore, this explicitly notifies user that poweroff is not available,
-and halting has been occured as an alternative behavior instead:
+The MCTP KCS patches are currently at v5:
 
-~ # poweroff -f
-[    4.123668] reboot: Power off not available: System halted instead
+https://lore.kernel.org/all/20231010122321.823-1-aladyshev22@gmail.com/
 
-Signed-off-by: Dongmin Lee <ldmldm05@gmail.com>
----
- kernel/reboot.c | 16 ++++++++++++++--
- 1 file changed, 14 insertions(+), 2 deletions(-)
+A v6 will be necessary to rework them in terms of the cleanup done here.
+I've pushed a preview of that work here:
 
-diff --git a/kernel/reboot.c b/kernel/reboot.c
-index 395a0ea3c7a8..dd33b07cc2f1 100644
---- a/kernel/reboot.c
-+++ b/kernel/reboot.c
-@@ -58,6 +58,13 @@ struct sys_off_handler {
- 	struct device *dev;
- };
- 
-+/*
-+ * This variable is used to indicate if a halt initiated instead when
-+ * reboot call is invoked with LINUX_REBOOT_CMD_POWER_OFF, but system
-+ * cannot be powered off. This allowes kernel_halt() to notify that.
-+ */
-+int poweroff_fallback_to_halt = 0;
-+
- /*
-  * Temporary stub that prevents linkage failure while we're in process
-  * of removing all uses of legacy pm_power_off() around the kernel.
-@@ -297,7 +304,10 @@ void kernel_halt(void)
- 	kernel_shutdown_prepare(SYSTEM_HALT);
- 	migrate_to_reboot_cpu();
- 	syscore_shutdown();
--	pr_emerg("System halted\n");
-+	if(poweroff_fallback_to_halt)
-+		pr_emerg("Power off not available: System halted instead\n");
-+	else
-+		pr_emerg("System halted\n");
- 	kmsg_dump(KMSG_DUMP_SHUTDOWN);
- 	machine_halt();
- }
-@@ -732,8 +742,10 @@ SYSCALL_DEFINE4(reboot, int, magic1, int, magic2, unsigned int, cmd,
- 	/* Instead of trying to make the power_off code look like
- 	 * halt when pm_power_off is not set do it the easy way.
- 	 */
--	if ((cmd == LINUX_REBOOT_CMD_POWER_OFF) && !kernel_can_power_off())
-+	if ((cmd == LINUX_REBOOT_CMD_POWER_OFF) && !kernel_can_power_off()) {
-+		poweroff_fallback_to_halt = 1;
- 		cmd = LINUX_REBOOT_CMD_HALT;
-+	}
- 
- 	mutex_lock(&system_transition_mutex);
- 	switch (cmd) {
+https://github.com/amboar/linux/compare/d2cc82b50335c8fcf83e1d8f396c8f8cf4333ac4...mctp-kcs
 
-base-commit: bc3012f4e3a9765de81f454cb8f9bb16aafc6ff5
+In addition to addressing some of the resource lifetime concerns I've
+added kerneldoc for the subsystem in anticipation of Konstantin's series
+moving the headers to include/linux/.
+
+To get Konstantin's work merged I expect we'll have to either take these
+KCS patches through netdev or the MCTP patches through the IPMI tree. We
+should figure out which way we want to go, but netdev's not open right
+now and so that's not a pressing concern.
+
+Please review!
+
+Thanks,
+
+Andrew
+
+Andrew Jeffery (10):
+  ipmi: kcs_bmc: Update module description
+  ipmi: kcs_bmc: Include spinlock.h
+  ipmi: kcs_bmc: Make kcs_bmc_update_event_mask() static
+  ipmi: kcs_bmc: Make remove_device() callback return void
+  ipmi: kcs_bmc: Define client actions in terms of kcs_bmc_client
+  ipmi: kcs_bmc: Integrate buffers into driver struct
+  ipmi: kcs_bmc: Disassociate client from device lifetimes
+  ipmi: kcs_bmc: Track clients in core
+  ipmi: kcs_bmc: Add module_kcs_bmc_driver()
+  ipmi: kcs_bmc: Add subsystem kerneldoc
+
+ drivers/char/ipmi/kcs_bmc.c           | 160 +++++++++++---------
+ drivers/char/ipmi/kcs_bmc.h           |  41 +++++
+ drivers/char/ipmi/kcs_bmc_cdev_ipmi.c | 152 +++++++------------
+ drivers/char/ipmi/kcs_bmc_client.h    | 206 +++++++++++++++++++++++---
+ drivers/char/ipmi/kcs_bmc_device.h    |  44 +++++-
+ drivers/char/ipmi/kcs_bmc_serio.c     |  84 ++++-------
+ 6 files changed, 448 insertions(+), 239 deletions(-)
+
 -- 
-2.39.3 (Apple Git-145)
+2.39.2
 
