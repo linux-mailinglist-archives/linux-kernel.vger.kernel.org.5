@@ -2,107 +2,322 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ABAB17E013F
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 11:31:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 716397E0163
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 11:31:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230302AbjKCGdF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 02:33:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36408 "EHLO
+        id S231345AbjKCGhD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 02:37:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230163AbjKCGdC (ORCPT
+        with ESMTP id S229480AbjKCGhB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 02:33:02 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBB501B4
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 23:32:56 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-543456dbd7bso5465323a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 23:32:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1698993175; x=1699597975; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=VyO1Z+S61kc8i/PizQbBIUgo6r//ondY8h0vjsIi3rI=;
-        b=VW3j1xQ7TfWnVS5CQUvuXuRug9aMR4VjwGkaDd+ILQLGHJ49mF9aNafAQNZb9tb0pH
-         OakWaouChUX28UgHtDppKSH210ULPs3bVnTSSqMwFZiSSDN2bhGMKuYKlqYuWcfuUcQG
-         /Q11BJEzBhvWJwelbIkWVDjgcLLQx31zlMDak=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698993175; x=1699597975;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=VyO1Z+S61kc8i/PizQbBIUgo6r//ondY8h0vjsIi3rI=;
-        b=g058b4h3hdaeJMtG5lsqQ7rm05n9i6o0NeNsJUw98jPVNR7qZN91GY/WVitwherY/d
-         utt0bpagNTec70fxONAe+x0QqDUK9lqfd61WgI/6dY7KAM8buojoGO/BrJYLoTU4tDLX
-         awZtPm315/EcnQvMBw2zODazCSN1D04HvNYxqnAyIXibBIxa5Gn077t5tjobvoGQBMKr
-         /6QAvgOV8r4zl2eyJGbPUDyNanrTZ34+UY6SODONYJmRGJzmhqBE41U4e1OoLDsJYt+v
-         K51O66zdxeBvu1HWvHfp9jGLV7MmolrEiKnhKEtSlk1PDwA1PqDSy3v4s5nXJk6F0Okt
-         XBRA==
-X-Gm-Message-State: AOJu0YzTanNny//xOIU4wWhLXeVNj7t6/atRNOmP/zeDFUV2EeUtL0zV
-        MZTUCnH8ObtN+vRx/j7qLorpIJayc2kkL+LbqH5yjpHb
-X-Google-Smtp-Source: AGHT+IEXN4SpbKa9Q9SShUXxftKrufOPAYrxUbijp3EoCQbVEl5xL5RIgkG6i2Ny4Pvb7wqeKyBPzg==
-X-Received: by 2002:aa7:c75a:0:b0:533:5d3d:7efe with SMTP id c26-20020aa7c75a000000b005335d3d7efemr1544974eds.6.1698993174988;
-        Thu, 02 Nov 2023 23:32:54 -0700 (PDT)
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com. [209.85.218.44])
-        by smtp.gmail.com with ESMTPSA id v23-20020a50d597000000b0053dd8898f75sm600888edi.81.2023.11.02.23.32.54
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 Nov 2023 23:32:54 -0700 (PDT)
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-9c3aec5f326so558443866b.1
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 23:32:54 -0700 (PDT)
-X-Received: by 2002:a17:906:4fca:b0:9bd:a66a:a22 with SMTP id
- i10-20020a1709064fca00b009bda66a0a22mr2119584ejw.15.1698993173801; Thu, 02
- Nov 2023 23:32:53 -0700 (PDT)
+        Fri, 3 Nov 2023 02:37:01 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AE711B9
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 23:36:55 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F6DAC433C9
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 06:36:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698993415;
+        bh=uGFIe74ep8DudwxIo3EhJhTyvWFwIB7jua7bjSCIcVQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=bVqdP7wYxD/+mfgI8o4q2okqrApZzo/HhdONohcbEKuFqBaI2JGdFU3SsroSEZN5y
+         9IX3fFnZHtB1oSuFTlqyUjlxz1fszzH8IdN4HZaVpK8V01jOyJcCghR2OgAoibg+L3
+         opW3G36Ns30BcsFWgB97qVvacjoyivNZyAsrNhKhgFhalBWrcH00SGvDTIGWCwcqr+
+         6H1YjFFvb8zS7F/7XZe2AjN+lhRR3iJ+xEgXIMvpgMuUoa71NXj3Ta40hXWbnEEP/o
+         ut0MHCBSevuAC9NDFS7/adn6tSva6T2QwcjXnpReiEqXTy3xG2mTcjmzvb9I4TGuZv
+         y1DSfTEq/nilQ==
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-9adca291f99so254729566b.2
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 23:36:55 -0700 (PDT)
+X-Gm-Message-State: AOJu0Yylp56w0LRK206KAnyfSoxopVrP8jaoBFbsfyaL/OLMR0h4/3bv
+        b8O3zK3fyl7RINZv3Nnugec2u85Kdgfg2i2MeEU=
+X-Google-Smtp-Source: AGHT+IH2wBy6C2v47QiEh+/oIl5NyvvXKljpz9IZdiO0ck4H9/hLyqt4SMvbZndPDC38Xsxq6wwIJ7eYInuD9Wn0Y/U=
+X-Received: by 2002:a17:907:a08a:b0:9c7:db3:8b36 with SMTP id
+ hu10-20020a170907a08a00b009c70db38b36mr5915977ejc.74.1698993413600; Thu, 02
+ Nov 2023 23:36:53 -0700 (PDT)
 MIME-Version: 1.0
-References: <YpC1/rWeVgMoA5X1@gondor.apana.org.au> <Yui+kNeY+Qg4fKVl@gondor.apana.org.au>
- <Yzv0wXi4Uu2WND37@gondor.apana.org.au> <Y5mGGrBJaDL6mnQJ@gondor.apana.org.au>
- <Y/MDmL02XYfSz8XX@gondor.apana.org.au> <ZEYLC6QsKnqlEQzW@gondor.apana.org.au>
- <ZJ0RSuWLwzikFr9r@gondor.apana.org.au> <ZOxnTFhchkTvKpZV@gondor.apana.org.au>
- <ZUNIBcBJ0VeZRmT9@gondor.apana.org.au> <CAHk-=wj0-QNH5gMeYs3b+LU-isJyE4Eu9p8vVH9fb-vHHmUw0g@mail.gmail.com>
- <ZUSKk6Tb7+0n9X5s@gondor.apana.org.au>
-In-Reply-To: <ZUSKk6Tb7+0n9X5s@gondor.apana.org.au>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 2 Nov 2023 20:32:36 -1000
-X-Gmail-Original-Message-ID: <CAHk-=wh=xH7TNHeaYdsrVW6p1fCQEV5PZMpaFNsZyXYqzn8Stg@mail.gmail.com>
-Message-ID: <CAHk-=wh=xH7TNHeaYdsrVW6p1fCQEV5PZMpaFNsZyXYqzn8Stg@mail.gmail.com>
-Subject: Re: [GIT PULL] Crypto Update for 6.7
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     "David S. Miller" <davem@davemloft.net>,
+References: <ZTWoDSPxGO-ApR4r@P70.localdomain> <82f1b533-3bd8-4418-843a-718d9a6b5786@leemhuis.info>
+ <CAAhV-H5DH3Oj3ttSpa_k6jUdZ+0_pMwgoaqUTGGFr46j7DMXRw@mail.gmail.com>
+ <ba16ad66-4b35-4fb4-b4e6-1d785f260eea@ristioja.ee> <CAAhV-H64AKdGoHnVLLOYXznpr_aq1jC_TUYXFQRdOjoBxanxkw@mail.gmail.com>
+ <c3bb7983-86e4-424e-aadd-e82a0cb6ef37@ristioja.ee> <CAAhV-H7UTnTWQeT_qo7VgBczaZo37zjosREr16H8DsLi21XPqQ@mail.gmail.com>
+ <CAAhV-H7fJS3-3_hqA4BUdH+q5EG6wSmEoPpO-fUZn5h35O=6OA@mail.gmail.com>
+ <31ed0db1-9398-4c46-a391-fc644ec49268@ristioja.ee> <CAAhV-H4MekBgYZ1nJ-M7bnpo3bczOMcTanij18ACCALz2svjQQ@mail.gmail.com>
+ <ZUSJDG82vzbuyFEY@P70.localdomain>
+In-Reply-To: <ZUSJDG82vzbuyFEY@P70.localdomain>
+From:   Huacai Chen <chenhuacai@kernel.org>
+Date:   Fri, 3 Nov 2023 14:36:42 +0800
+X-Gmail-Original-Message-ID: <CAAhV-H6GyOnTOm6b8Xp=ySctyE-T905WKDUS2AZuqnEyzM7ZEg@mail.gmail.com>
+Message-ID: <CAAhV-H6GyOnTOm6b8Xp=ySctyE-T905WKDUS2AZuqnEyzM7ZEg@mail.gmail.com>
+Subject: Re: Blank screen on boot of Linux 6.5 and later on Lenovo ThinkPad L570
+To:     Evan Preston <x.arch@epreston.net>
+Cc:     Jaak Ristioja <jaak@ristioja.ee>,
+        Linux regressions mailing list <regressions@lists.linux.dev>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Steffen Klassert <steffen.klassert@secunet.com>
+        Linux DRI Development <dri-devel@lists.freedesktop.org>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        Thorsten Leemhuis <regressions@leemhuis.info>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Bagas Sanjaya <bagasdotme@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_PDS_OTHER_BAD_TLD,T_SCC_BODY_TEXT_LINE,
+        WEIRD_PORT autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2 Nov 2023 at 19:52, Herbert Xu <herbert@gondor.apana.org.au> wrote:
+Hi, Evan,
+
+On Fri, Nov 3, 2023 at 1:54=E2=80=AFPM Evan Preston <x.arch@epreston.net> w=
+rote:
 >
-> Fair enough.  How about adding an EXPERT dependency on this?
+> Hi Huacai,
+>
+> On 2023-11-02 Thu 08:38pm, Huacai Chen wrote:
+> > Hi, Jaak,
+> >
+> > On Wed, Nov 1, 2023 at 7:52=E2=80=AFPM Jaak Ristioja <jaak@ristioja.ee>=
+ wrote:
+> > >
+> > > On 31.10.23 14:17, Huacai Chen wrote:
+> > > > Hi, Jaak and Evan,
+> > > >
+> > > > On Sun, Oct 29, 2023 at 9:42=E2=80=AFAM Huacai Chen <chenhuacai@ker=
+nel.org> wrote:
+> > > >>
+> > > >> On Sat, Oct 28, 2023 at 7:06=E2=80=AFPM Jaak Ristioja <jaak@ristio=
+ja.ee> wrote:
+> > > >>>
+> > > >>> On 26.10.23 03:58, Huacai Chen wrote:
+> > > >>>> Hi, Jaak,
+> > > >>>>
+> > > >>>> On Thu, Oct 26, 2023 at 2:49=E2=80=AFAM Jaak Ristioja <jaak@rist=
+ioja.ee> wrote:
+> > > >>>>>
+> > > >>>>> On 25.10.23 16:23, Huacai Chen wrote:
+> > > >>>>>> On Wed, Oct 25, 2023 at 6:08=E2=80=AFPM Thorsten Leemhuis
+> > > >>>>>> <regressions@leemhuis.info> wrote:
+> > > >>>>>>>
+> > > >>>>>>> Javier, Dave, Sima,
+> > > >>>>>>>
+> > > >>>>>>> On 23.10.23 00:54, Evan Preston wrote:
+> > > >>>>>>>> On 2023-10-20 Fri 05:48pm, Huacai Chen wrote:
+> > > >>>>>>>>> On Fri, Oct 20, 2023 at 5:35=E2=80=AFPM Linux regression tr=
+acking (Thorsten
+> > > >>>>>>>>> Leemhuis) <regressions@leemhuis.info> wrote:
+> > > >>>>>>>>>> On 09.10.23 10:54, Huacai Chen wrote:
+> > > >>>>>>>>>>> On Mon, Oct 9, 2023 at 4:45=E2=80=AFPM Bagas Sanjaya <bag=
+asdotme@gmail.com> wrote:
+> > > >>>>>>>>>>>> On Mon, Oct 09, 2023 at 09:27:02AM +0800, Huacai Chen wr=
+ote:
+> > > >>>>>>>>>>>>> On Tue, Sep 26, 2023 at 10:31=E2=80=AFPM Huacai Chen <c=
+henhuacai@kernel.org> wrote:
+> > > >>>>>>>>>>>>>> On Tue, Sep 26, 2023 at 7:15=E2=80=AFPM Linux regressi=
+on tracking (Thorsten
+> > > >>>>>>>>>>>>>> Leemhuis) <regressions@leemhuis.info> wrote:
+> > > >>>>>>>>>>>>>>> On 13.09.23 14:02, Jaak Ristioja wrote:
+> > > >>>>>>>>>>>>>>>>
+> > > >>>>>>>>>>>>>>>> Upgrading to Linux 6.5 on a Lenovo ThinkPad L570 (In=
+tegrated Intel HD
+> > > >>>>>>>>>>>>>>>> Graphics 620 (rev 02), Intel(R) Core(TM) i7-7500U) r=
+esults in a blank
+> > > >>>>>>>>>>>>>>>> screen after boot until the display manager starts..=
+. if it does start
+> > > >>>>>>>>>>>>>>>> at all. Using the nomodeset kernel parameter seems t=
+o be a workaround.
+> > > >>>>>>>>>>>>>>>>
+> > > >>>>>>>>>>>>>>>> I've bisected this to commit 60aebc9559492cea6a9625f=
+514a8041717e3a2e4
+> > > >>>>>>>>>>>>>>>> ("drivers/firmware: Move sysfb_init() from device_in=
+itcall to
+> > > >>>>>>>>>>>>>>>> subsys_initcall_sync").
+> > > >>>>>>>>>>>>>>>
+> > > >>>>>>>>>>>>> As confirmed by Jaak, disabling DRM_SIMPLEDRM makes thi=
+ngs work fine
+> > > >>>>>>>>>>>>> again. So I guess the reason:
+> > > >>>>>>>>>>
+> > > >>>>>>>>>> Well, this to me still looks a lot (please correct me if I=
+'m wrong) like
+> > > >>>>>>>>>> regression that should be fixed, as DRM_SIMPLEDRM was enab=
+led beforehand
+> > > >>>>>>>>>> if I understood things correctly. Or is there a proper fix=
+ for this
+> > > >>>>>>>>>> already in the works and I just missed this? Or is there s=
+ome good
+> > > >>>>>>>>>> reason why this won't/can't be fixed?
+> > > >>>>>>>>>
+> > > >>>>>>>>> DRM_SIMPLEDRM was enabled but it didn't work at all because=
+ there was
+> > > >>>>>>>>> no corresponding platform device. Now DRM_SIMPLEDRM works b=
+ut it has a
+> > > >>>>>>>>> blank screen. Of course it is valuable to investigate furth=
+er about
+> > > >>>>>>>>> DRM_SIMPLEDRM on Jaak's machine, but that needs Jaak's effo=
+rt because
+> > > >>>>>>>>> I don't have a same machine.
+> > > >>>>>>>
+> > > >>>>>>> Side note: Huacai, have you tried working with Jaak to get do=
+wn to the
+> > > >>>>>>> real problem? Evan, might you be able to help out here?
+> > > >>>>>> No, Jaak has no response after he 'fixed' his problem by disab=
+ling SIMPLEDRM.
+> > > >>>>>>
+> > > >>>>>
+> > > >>>>> I'm sorry, what was it exactly you want me to do? Please be min=
+dful that
+> > > >>>>> I'm not familiar with the internals of the Linux kernel and DRI=
+, and it
+> > > >>>>> might sometimes take weeks before I have time to work and respo=
+nd on this.
+> > > >>>> It doesn't matter. I hope you can do some experiments to investi=
+gate
+> > > >>>> deeper. The first experiment you can do is enabling SIMPLEFB (i.=
+e.
+> > > >>>> CONFIG_FB_SIMPLE) instead of SIMPLEDRM (CONFIG_DRM_SIMPLEDRM) to=
+ see
+> > > >>>> whether there is also a blank screen. If no blank screen, that
+> > > >>>> probably means SIMPLEDRM has a bug, if still blank screen, that =
+means
+> > > >>>> the firmware may pass wrong screen information.
+> > > >>>
+> > > >>> Testing with 6.5.9 I get a blank screen with CONFIG_DRM_SIMPLEDRM=
+=3Dy and
+> > > >>> get no blank screen with CONFIG_FB_SIMPLE=3Dy and CONFIG_DRM_SIMP=
+LEDRM unset.
+> > > >> CONFIG_FB_SIMPLE and  CONFIG_DRM_SIMPLEDRM use the same device cre=
+ated
+> > > >> by sysfb_init(). Since FB_SIMPLE works fine, I think the real prob=
+lem
+> > > >> is that DRM_SIMPLEDRM has a bug. The next step is to enable
+> > > >> CONFIG_DRM_SIMPLEDRM and trace its initialization. In detail, addi=
+ng
+> > > >> some printk() in simpledrm_probe() and its sub-routines to see whe=
+re
+> > > >> the driver fails. The output of these printk() can be seen by the
+> > > >> 'dmesg' command after boot.
+> > > > I need your help. I tried with my laptop (ThinkPad E490, Intel Core
+> > > > i3-8145U, UHD Graphics 620) but I can't reproduce your problem. So
+> > > > please patch your 6.5.x kernel with this temporary patch [1], then
+> > > > build a "bad kernel" with SIMPLEDRM enabled. And after booting your
+> > > > machine with this "bad kernel", please give me the dmesg output. Th=
+ank
+> > > > you very much.
+> > > >
+> > > > [1] http://ddns.miaomiaomiao.top:9000/download/kernel/patch-6.5.9
+> > >
+> > > I'm unable to download it. Can you please send it by e-mail?
+> > I'm sorry, please download from attachment.
+>
+> When applying this patch the first hunk (drivers/firmware/sysfb.c) fails =
+for
+> me with 6.5.9.  Attempting to load the 6.5.9 kernel without this patch
+> produces no dmesg output on my machine.
+You copy-paste the patch? If you download it directly it can be
+applied successfully, I think.
 
-I think that would help the situation, but I assume the sizing for the
-jitter buffer is at least partly due to trying to account for cache
-sizing or similar issues?
+Huacai
 
-Which really means that I assume any static compile-time answer to
-that question is always wrong - whether you are an expert or not.
-Unless you are just building the thing for one particular machine.
-
-So I do think the problem is deeper than "this is a question only for
-experts". I definitely don't think you should ask a regular user (or
-even a distro kernel package manager). I suspect it's likely that the
-question is just wrong in general - because any particular one buffer
-size for any number of machines simply cannot be the right answer.
-
-I realize that the commit says "*allow* for configuration of memory
-size", but I really question the whole approach.
-
-But yes - hiding these questions from any reasonable normal user is at
-least a good first step.
-
-              Linus
+>
+> Evan
+>
+> >
+> > Huacai
+> >
+> > >
+> > > Jaak
+> > >
+> > > >
+> > > >
+> > > > Huacai
+> > > >
+> > > >>
+> > > >> Huacai
+> > > >>
+> > > >>>
+> > > >>> Jaak
+> > > >>>
+> > > >>>>
+> > > >>>> Huacai
+> > > >>>>
+> > > >>>>>
+> > > >>>>> Jaak
+> > > >>>>>
+> > > >>>>>>>
+> > > >>>>>>> But I write this mail for a different reason:
+> > > >>>>>>>
+> > > >>>>>>>> I am having the same issue on a Lenovo Thinkpad P70 (Intel
+> > > >>>>>>>> Corporation HD Graphics 530 (rev 06), Intel(R) Core(TM) i7-6=
+700HQ).
+> > > >>>>>>>> Upgrading from Linux 6.4.12 to 6.5 and later results in only=
+ a blank
+> > > >>>>>>>> screen after boot and a rapidly flashing device-access-statu=
+s
+> > > >>>>>>>> indicator.
+> > > >>>>>>>
+> > > >>>>>>> This additional report makes me wonder if we should revert th=
+e culprit
+> > > >>>>>>> (60aebc9559492c ("drivers/firmware: Move sysfb_init() from
+> > > >>>>>>> device_initcall to subsys_initcall_sync") [v6.5-rc1]). But I =
+guess that
+> > > >>>>>>> might lead to regressions for some users? But the patch descr=
+iption says
+> > > >>>>>>> that this is not a common configuration, so can we maybe get =
+away with that?
+> > > >>>>>>    From my point of view, this is not a regression, 60aebc9559=
+492c
+> > > >>>>>> doesn't cause a problem, but exposes a problem. So we need to =
+fix the
+> > > >>>>>> real problem (SIMPLEDRM has a blank screen on some conditions)=
+. This
+> > > >>>>>> needs Jaak or Evan's help.
+> > > >>>>>>
+> > > >>>>>> Huacai
+> > > >>>>>>>
+> > > >>>>>>> Ciao, Thorsten (wearing his 'the Linux kernel's regression tr=
+acker' hat)
+> > > >>>>>>> --
+> > > >>>>>>> Everything you wanna know about Linux kernel regression track=
+ing:
+> > > >>>>>>> https://linux-regtracking.leemhuis.info/about/#tldr
+> > > >>>>>>> If I did something stupid, please tell me, as explained on th=
+at page.
+> > > >>>>>>>
+> > > >>>>>>>>>>>>> When SIMPLEDRM takes over the framebuffer, the screen i=
+s blank (don't
+> > > >>>>>>>>>>>>> know why). And before 60aebc9559492cea6a9625f ("drivers=
+/firmware: Move
+> > > >>>>>>>>>>>>> sysfb_init() from device_initcall to subsys_initcall_sy=
+nc") there is
+> > > >>>>>>>>>>>>> no platform device created for SIMPLEDRM at early stage=
+, so it seems
+> > > >>>>>>>>>>>>> also "no problem".
+> > > >>>>>>>>>>>> I don't understand above. You mean that after that commi=
+t the platform
+> > > >>>>>>>>>>>> device is also none, right?
+> > > >>>>>>>>>>> No. The SIMPLEDRM driver needs a platform device to work,=
+ and that
+> > > >>>>>>>>>>> commit makes the platform device created earlier. So, bef=
+ore that
+> > > >>>>>>>>>>> commit, SIMPLEDRM doesn't work, but the screen isn't blan=
+k; after that
+> > > >>>>>>>>>>> commit, SIMPLEDRM works, but the screen is blank.
+> > > >>>>>>>>>>>
+> > > >>>>>>>>>>> Huacai
+> > > >>>>>>>>>>>>
+> > > >>>>>>>>>>>> Confused...
+> > > >>>>>>>>>>>>
+> > > >>>>>>>>>>>> --
+> > > >>>>>>>>>>>> An old man doll... just what I always wanted! - Clara
+> > > >>>>>>>>>>>
+> > > >>>>>>>>>>>
+> > > >>>>>>>>
+> > > >>>>>>>>
+> > > >>>>>
+> > > >>>
+> > >
+>
+>
