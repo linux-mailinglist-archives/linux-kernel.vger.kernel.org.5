@@ -2,62 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA3E57E0B20
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 23:30:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 443DF7E0B24
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 23:30:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344655AbjKCW0W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 18:26:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35596 "EHLO
+        id S1345087AbjKCW0w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 18:26:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233906AbjKCW0U (ORCPT
+        with ESMTP id S233720AbjKCW0t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 18:26:20 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6898CA
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 15:26:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699050376; x=1730586376;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=E9d/E1FmntHa339lrgY0TFfqYflwLZDuA8s/zmMa9U4=;
-  b=SckQFrbd7M1DgQaJgt8urzi8DKvVYOWFCraF0S3N8rt0fICi8U5Fap+P
-   FhYx4Er5J+a6ckXqT82S585t31ule3be8ZGdSgupltkPKcPSqHazRvg/r
-   ntTvO630BduaRS1Gc8k5dxYcoVG1pVswpcMzCrtLCCW3XATS/RujqcQ/P
-   RxTOtuwE0rT227V+F9d0fR4hbOeYDCXrrtGZz9czlyGyyPV73+7EESRAC
-   vEWiVBptevXS++bTq2aEYYKh8dYg9wfjvXKjBPzeingB6rRQR99002vqr
-   UhQJRJZnOwDncxzS8ZX3oBKZMKFOwgZS55QLmQY0caHdb89aM8cklRcdw
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10883"; a="475268602"
-X-IronPort-AV: E=Sophos;i="6.03,275,1694761200"; 
-   d="scan'208";a="475268602"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2023 15:26:14 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10883"; a="827632787"
-X-IronPort-AV: E=Sophos;i="6.03,275,1694761200"; 
-   d="scan'208";a="827632787"
-Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by fmsmga008.fm.intel.com with ESMTP; 03 Nov 2023 15:26:14 -0700
-Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qz2cG-00030M-0w;
-        Fri, 03 Nov 2023 22:26:12 +0000
-Date:   Sat, 4 Nov 2023 06:25:18 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Palmer Dabbelt <palmer@rivosinc.com>,
-        Conor Dooley <conor.dooley@microchip.com>
-Subject: drivers/scsi/lpfc/lpfc_init.c:14771:53: warning: '.grp' directive
- output may be truncated writing 4 bytes into a region of size between 1 and
- 80
-Message-ID: <202311040654.NBvWmrLg-lkp@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        Fri, 3 Nov 2023 18:26:49 -0400
+Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71023D4C
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 15:26:46 -0700 (PDT)
+Received: by mail-pl1-x64a.google.com with SMTP id d9443c01a7336-1cc3130ba31so20740065ad.0
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Nov 2023 15:26:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1699050406; x=1699655206; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=5qz3lxpTjwV7uKrVt1pa7AdPIpFhmvNL57r88OWBGAs=;
+        b=IQwxyHfCAuD/AEJWllqin+xq06mvClt7YSuq/rtrDGScuqZ/cRhZf/YNCrTxSxp/Cd
+         VRNhPgV/zK4OCWwX4WXXorxDGZ7g/wt+ggwKbEdUn+4VRXSnc7i+3BtRk20pmUzFKGQC
+         rvx4jcb3bJkmq/zfWner9cNaB0au79HMXmDDmDkpiQBTfs1eGElp6TqTdYpxET0nw/2c
+         pN+LrmSGPjK1BPXKhvrm4wMdxK7l/rqhk2GxTOVA3Dkv4gsbAcFoi0jOvuuaUXx2CcXf
+         6QkZklFSyA1OIRXbBU1EVCqqBY4D7kT1LMlKt3XOhe+HHQGTYxJYFnPmFEXaJhDOH6TL
+         a+Gg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699050406; x=1699655206;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=5qz3lxpTjwV7uKrVt1pa7AdPIpFhmvNL57r88OWBGAs=;
+        b=lQjoJXRBLDXY2mh3JLH3XPRxkV9/ApzQ+WC8nE6gZUe74es2nnb4h6LGxCEMyEPn5U
+         FOus4DhuSML9v/fhexpIMdsgTCQsx1XoYPoHb905zcTuDXsp5rLB0K3wVfizzuVgNerW
+         ROe4ZOgYSOhK3/1S4DcY5gwc3EoaFkvTVCNVlJ6GtAsDSApMbd4NaqO0TMk+L4DOCLA3
+         she+8HQcLt0and4eIhJWG+4VkyF907wj6RXhq1abSF9AMsGUhm3l5o4JOu38mPVe2Ond
+         SY3t73vCQ+tnQkmc599Km9qRSC4NPsqkT8+VsY4KTWsuo5uf/uh+6UIojOSY3BKrIgyf
+         jOOg==
+X-Gm-Message-State: AOJu0YxrpifDmKsqO7K40cU0PLV3M+VEVWc/iw2Y567gWXWGnbP17t42
+        o9t4wqr6r+D7z2Wb1Nfsnf6bJtMzkFk=
+X-Google-Smtp-Source: AGHT+IFeq7cdSJcWPrN+bNFUJYmnJmsZZZr44kVjASAIEmkPN7hPLrgXLlkfdFkrHpJgynav7YkKwmOhOvs=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:902:7293:b0:1ca:8e79:53b7 with SMTP id
+ d19-20020a170902729300b001ca8e7953b7mr386188pll.9.1699050405789; Fri, 03 Nov
+ 2023 15:26:45 -0700 (PDT)
+Date:   Fri, 3 Nov 2023 15:26:44 -0700
+In-Reply-To: <d1166177-c0ab-a8a5-94a6-e4e7ebdeb1c0@intel.com>
+Mime-Version: 1.0
+References: <20230914063325.85503-1-weijiang.yang@intel.com>
+ <20230914063325.85503-20-weijiang.yang@intel.com> <d67fe0ca19f7aef855aa376ada0fc96a66ca0d4f.camel@redhat.com>
+ <ZUJ9fDuQUNe9BLUA@google.com> <d1166177-c0ab-a8a5-94a6-e4e7ebdeb1c0@intel.com>
+Message-ID: <ZUVzpM465isag2bj@google.com>
+Subject: Re: [PATCH v6 19/25] KVM: VMX: Emulate read and write to CET MSRs
+From:   Sean Christopherson <seanjc@google.com>
+To:     Weijiang Yang <weijiang.yang@intel.com>
+Cc:     pbonzini@redhat.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dave.hansen@intel.com,
+        peterz@infradead.org, chao.gao@intel.com,
+        rick.p.edgecombe@intel.com, john.allen@amd.com,
+        Maxim Levitsky <mlevitsk@redhat.com>
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,82 +72,155 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lad,
+On Fri, Nov 03, 2023, Weijiang Yang wrote:
+> On 11/2/2023 12:31 AM, Sean Christopherson wrote:
+> > On Tue, Oct 31, 2023, Maxim Levitsky wrote:
+> > > On Thu, 2023-09-14 at 02:33 -0400, Yang Weijiang wrote:
+> > > > Add emulation interface for CET MSR access. The emulation code is split
+> > > > into common part and vendor specific part. The former does common check
+> > > > for MSRs and reads/writes directly from/to XSAVE-managed MSRs via the
+> > > > helpers while the latter accesses the MSRs linked to VMCS fields.
+> > > > 
+> > > > Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
+> > > > ---
+> > ...
+> > 
+> > > > +	case MSR_IA32_PL0_SSP ... MSR_IA32_PL3_SSP:
+> > > > +	case MSR_KVM_SSP:
+> > > > +		if (host_msr_reset && kvm_cpu_cap_has(X86_FEATURE_SHSTK))
+> > > > +			break;
+> > > > +		if (!guest_can_use(vcpu, X86_FEATURE_SHSTK))
+> > > > +			return 1;
+> > > > +		if (index == MSR_KVM_SSP && !host_initiated)
+> > > > +			return 1;
+> > > > +		if (is_noncanonical_address(data, vcpu))
+> > > > +			return 1;
+> > > > +		if (index != MSR_IA32_INT_SSP_TAB && !IS_ALIGNED(data, 4))
+> > > > +			return 1;
+> > > > +		break;
+> > > Once again I'll prefer to have an ioctl for setting/getting SSP, this will
+> > > make the above code simpler (e.g there will be no need to check that write
+> > > comes from the host/etc).
+> > I don't think an ioctl() would be simpler overall, especially when factoring in
+> > userspace.  With a synthetic MSR, we get the following quite cheaply:
+> > 
+> >   1. Enumerating support to userspace.
+> >   2. Save/restore of the value, e.g. for live migration.
+> >   3. Vendor hooks for propagating values to/from the VMCS/VMCB.
+> > 
+> > For an ioctl(), #1 would require a capability, #2 (and #1 to some extent) would
+> > require new userspace flows, and #3 would require new kvm_x86_ops hooks.
+> > 
+> > The synthetic MSR adds a small amount of messiness, as does bundling
+> > MSR_IA32_INT_SSP_TAB with the other shadow stack MSRs.  The bulk of the mess comes
+> > from the need to allow userspace to write '0' when KVM enumerated supported to
+> > userspace.
+> > 
+> > If we isolate MSR_IA32_INT_SSP_TAB, that'll help with the synthetic MSR and with
+> > MSR_IA32_INT_SSP_TAB.  For the unfortunate "host reset" behavior, the best idea I
+> > came up with is to add a helper.  It's still a bit ugly, but the ugliness is
+> > contained in a helper and IMO makes it much easier to follow the case statements.
+> 
+> Frankly speaking, existing code is not hard to understand to me :-), the
+> handling for MSR_KVM_SSP and MSR_IA32_INT_SSP_TAB is straightforward if
+> audiences read the related spec.
 
-FYI, the error/warning was bisected to this commit, please ignore it if it's irrelevant.
+I don't necessarily disagree, but I 100% agree with Maxim that host_msr_reset is
+a confusing name.  As Maxim pointed out, '0' isn't necessarily the RESET value.
+And host_msr_reset implies that userspace is emulating a RESET, which may not
+actually be true, e.g. a naive userspace could be restoring '0' as part of live
+migration.
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   e392ea4d4d00880bf94550151b1ace4f88a4b17a
-commit: effae0e3d9e1139d583e9b5d050f4f948825b8a3 riscv: Kconfig: Enable cpufreq kconfig menu
-date:   12 months ago
-config: riscv-allyesconfig (https://download.01.org/0day-ci/archive/20231104/202311040654.NBvWmrLg-lkp@intel.com/config)
-compiler: riscv64-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231104/202311040654.NBvWmrLg-lkp@intel.com/reproduce)
+> But I'll take your advice and enclose below changes. Thanks!
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311040654.NBvWmrLg-lkp@intel.com/
+Definitely feel free to propose an alternative.  My goal with the suggested change
+is eliminate host_msr_reset without creating creating unwieldy case statements.
+Isolating MSR_IA32_INT_SSP_TAB was (obviously) the best solution I came up with.
 
-All warnings (new ones prefixed by >>):
+> > get:
+> > 
+> > 	case MSR_IA32_INT_SSP_TAB:
+> > 		if (!guest_can_use(vcpu, X86_FEATURE_SHSTK) ||
+> > 		    !guest_cpuid_has(vcpu, X86_FEATURE_LM))
+> > 			return 1;
+> > 		break;
+> > 	case MSR_KVM_SSP:
+> > 		if (!host_initiated)
+> > 			return 1;
+> > 		fallthrough;
+> > 	case MSR_IA32_PL0_SSP ... MSR_IA32_PL3_SSP:
+> > 		if (!guest_can_use(vcpu, X86_FEATURE_SHSTK))
+> > 			return 1;
+> > 		break;
+> > 
+> > static bool is_set_cet_msr_allowed(struct kvm_vcpu *vcpu, u32 index, u64 data,
+> > 				   bool host_initiated)
+> > {
+> > 	bool any_cet = index == MSR_IA32_S_CET || index == MSR_IA32_U_CET;
+> > 
+> > 	if (guest_can_use(vcpu, X86_FEATURE_SHSTK))
+> > 		return true;
+> > 
+> > 	if (any_cet && guest_can_use(vcpu, X86_FEATURE_IBT))
+> > 		return true;
+> > 
+> > 	/*
+> > 	 * If KVM supports the MSR, i.e. has enumerated the MSR existence to
+> > 	 * userspace, then userspace is allowed to write '0' irrespective of
+> > 	 * whether or not the MSR is exposed to the guest.
+> > 	 */
+> > 	if (!host_initiated || data)
+> > 		return false;
+> > 	if (kvm_cpu_cap_has(X86_FEATURE_SHSTK))
+> > 		return true;
+> > 
+> > 	return any_cet && kvm_cpu_cap_has(X86_FEATURE_IBT);
+> > }
+> > 
+> > set:
+> > 	case MSR_IA32_U_CET:
+> > 	case MSR_IA32_S_CET:
+> > 		if (!is_set_cet_msr_allowed(vcpu, index, data, host_initiated))
+> > 			return 1;
+> > 		if (data & CET_US_RESERVED_BITS)
+> > 			return 1;
+> > 		if (!guest_can_use(vcpu, X86_FEATURE_SHSTK) &&
+> > 		    (data & CET_US_SHSTK_MASK_BITS))
+> > 			return 1;
+> > 		if (!guest_can_use(vcpu, X86_FEATURE_IBT) &&
+> > 		    (data & CET_US_IBT_MASK_BITS))
+> > 			return 1;
+> > 		if (!IS_ALIGNED(CET_US_LEGACY_BITMAP_BASE(data), 4))
+> > 			return 1;
+> > 
+> > 		/* IBT can be suppressed iff the TRACKER isn't WAIT_ENDBR. */
+> > 		if ((data & CET_SUPPRESS) && (data & CET_WAIT_ENDBR))
+> > 			return 1;
+> > 		break;
+> > 	case MSR_IA32_INT_SSP_TAB:
+> > 		if (!guest_cpuid_has(vcpu, X86_FEATURE_LM))
+> > 			return 1;
 
-   drivers/scsi/lpfc/lpfc_init.c: In function 'lpfc_sli4_request_firmware_update':
->> drivers/scsi/lpfc/lpfc_init.c:14771:53: warning: '.grp' directive output may be truncated writing 4 bytes into a region of size between 1 and 80 [-Wformat-truncation=]
-   14771 |         snprintf(file_name, ELX_MODEL_NAME_SIZE, "%s.grp", phba->ModelName);
-         |                                                     ^~~~
-   drivers/scsi/lpfc/lpfc_init.c:14771:9: note: 'snprintf' output between 5 and 84 bytes into a destination of size 80
-   14771 |         snprintf(file_name, ELX_MODEL_NAME_SIZE, "%s.grp", phba->ModelName);
-         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Doh, I think this should be:
 
-
-vim +14771 drivers/scsi/lpfc/lpfc_init.c
-
-52d5244096017b James Smart 2011-05-24  14750  
-c71ab8616d62d8 James Smart 2012-10-31  14751  /**
-c71ab8616d62d8 James Smart 2012-10-31  14752   * lpfc_sli4_request_firmware_update - Request linux generic firmware upgrade
-c71ab8616d62d8 James Smart 2012-10-31  14753   * @phba: pointer to lpfc hba data structure.
-fe614acd583f5e Lee Jones   2020-07-23  14754   * @fw_upgrade: which firmware to update.
-c71ab8616d62d8 James Smart 2012-10-31  14755   *
-c71ab8616d62d8 James Smart 2012-10-31  14756   * This routine is called to perform Linux generic firmware upgrade on device
-c71ab8616d62d8 James Smart 2012-10-31  14757   * that supports such feature.
-c71ab8616d62d8 James Smart 2012-10-31  14758   **/
-c71ab8616d62d8 James Smart 2012-10-31  14759  int
-c71ab8616d62d8 James Smart 2012-10-31  14760  lpfc_sli4_request_firmware_update(struct lpfc_hba *phba, uint8_t fw_upgrade)
-c71ab8616d62d8 James Smart 2012-10-31  14761  {
-c71ab8616d62d8 James Smart 2012-10-31  14762  	uint8_t file_name[ELX_MODEL_NAME_SIZE];
-c71ab8616d62d8 James Smart 2012-10-31  14763  	int ret;
-c71ab8616d62d8 James Smart 2012-10-31  14764  	const struct firmware *fw;
-c71ab8616d62d8 James Smart 2012-10-31  14765  
-c71ab8616d62d8 James Smart 2012-10-31  14766  	/* Only supported on SLI4 interface type 2 for now */
-27d6ac0a6e8300 James Smart 2018-02-22  14767  	if (bf_get(lpfc_sli_intf_if_type, &phba->sli4_hba.sli_intf) <
-c71ab8616d62d8 James Smart 2012-10-31  14768  	    LPFC_SLI_INTF_IF_TYPE_2)
-c71ab8616d62d8 James Smart 2012-10-31  14769  		return -EPERM;
-c71ab8616d62d8 James Smart 2012-10-31  14770  
-c71ab8616d62d8 James Smart 2012-10-31 @14771  	snprintf(file_name, ELX_MODEL_NAME_SIZE, "%s.grp", phba->ModelName);
-c71ab8616d62d8 James Smart 2012-10-31  14772  
-c71ab8616d62d8 James Smart 2012-10-31  14773  	if (fw_upgrade == INT_FW_UPGRADE) {
-0733d83905326b Shawn Guo   2021-04-25  14774  		ret = request_firmware_nowait(THIS_MODULE, FW_ACTION_UEVENT,
-c71ab8616d62d8 James Smart 2012-10-31  14775  					file_name, &phba->pcidev->dev,
-c71ab8616d62d8 James Smart 2012-10-31  14776  					GFP_KERNEL, (void *)phba,
-c71ab8616d62d8 James Smart 2012-10-31  14777  					lpfc_write_firmware);
-c71ab8616d62d8 James Smart 2012-10-31  14778  	} else if (fw_upgrade == RUN_FW_UPGRADE) {
-c71ab8616d62d8 James Smart 2012-10-31  14779  		ret = request_firmware(&fw, file_name, &phba->pcidev->dev);
-c71ab8616d62d8 James Smart 2012-10-31  14780  		if (!ret)
-c71ab8616d62d8 James Smart 2012-10-31  14781  			lpfc_write_firmware(fw, (void *)phba);
-c71ab8616d62d8 James Smart 2012-10-31  14782  	} else {
-c71ab8616d62d8 James Smart 2012-10-31  14783  		ret = -EINVAL;
-c71ab8616d62d8 James Smart 2012-10-31  14784  	}
-c71ab8616d62d8 James Smart 2012-10-31  14785  
-c71ab8616d62d8 James Smart 2012-10-31  14786  	return ret;
-c71ab8616d62d8 James Smart 2012-10-31  14787  }
-c71ab8616d62d8 James Smart 2012-10-31  14788  
-
-:::::: The code at line 14771 was first introduced by commit
-:::::: c71ab8616d62d8d857c438f058839d9a0282e64c [SCSI] lpfc 8.3.36: Fixed boot from san failure
-
-:::::: TO: James Smart <james.smart@emulex.com>
-:::::: CC: James Bottomley <JBottomley@Parallels.com>
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+		if (!is_set_cet_msr_allowed(vcpu, index, data, host_initiated) ||
+		    !guest_cpuid_has(vcpu, X86_FEATURE_LM))
+			return 1;
+> > 
+> > 		if (is_noncanonical_address(data, vcpu))
+> > 			return 1;
+> > 		break;
+> > 	case MSR_KVM_SSP:
+> > 		if (!host_initiated)
+> > 			return 1;
+> > 		fallthrough;
+> > 	case MSR_IA32_PL0_SSP ... MSR_IA32_PL3_SSP:
+> > 		if (!is_set_cet_msr_allowed(vcpu, index, data, host_initiated))
+> > 			return 1;
+> > 		if (is_noncanonical_address(data, vcpu))
+> > 			return 1;
+> > 		if (!IS_ALIGNED(data, 4))
+> > 			return 1;
+> > 		break;
+> > 	}
+> 
