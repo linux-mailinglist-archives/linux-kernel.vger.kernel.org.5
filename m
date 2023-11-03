@@ -2,65 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CEBDC7E0206
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 12:14:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D13147E01F9
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 12:14:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346792AbjKCKnb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 06:43:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51882 "EHLO
+        id S1347280AbjKCKob (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 06:44:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229941AbjKCKn3 (ORCPT
+        with ESMTP id S1377832AbjKCKo1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 06:43:29 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31692123;
-        Fri,  3 Nov 2023 03:43:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=qAFZIXflbodoDXB4lem1gRSjUMp78Vi8Q3DaxqkIfhU=; b=knJhz0h/4TAM6ag6xJdTXGbVEQ
-        jgaGe2cRFDXkZBUAzAUvwa++0RzEJhjwejiB9ms9fjYudo3W3AgTALd3sppJLSVskUZfJhr2dhoPv
-        KjY6HeswmZf3z1GTqmMzRr2u2Q10Un8ozUX8l1hVZs0HbtdRFL1pYzSqlalYpE+yys3H2YZLu1OhU
-        xcqVnpomu08Dq/lmzTRZQzzYNepazRsgwMoaW/dZ7rNvJfHkyrSKh00WiQB1GTUfBb7ctuTprn5xj
-        uB/Zj7lX7WxlcM3icqvf8dhXvDts6XMzbMioJ53frMbOmF/lp84VWErHzsr1//WEBRYjqdphC9Fy3
-        gA/7nWgA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:38622)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1qyrdz-0005RQ-1z;
-        Fri, 03 Nov 2023 10:43:15 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1qyrdz-0008KY-04; Fri, 03 Nov 2023 10:43:15 +0000
-Date:   Fri, 3 Nov 2023 10:43:14 +0000
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc:     James Morse <james.morse@arm.com>, linux-pm@vger.kernel.org,
-        loongarch@lists.linux.dev, linux-acpi@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev,
-        x86@kernel.org, Salil Mehta <salil.mehta@huawei.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        jianyong.wu@arm.com, justin.he@arm.com
-Subject: Re: [RFC PATCH v2 15/35] ACPI: processor: Add support for processors
- described as container packages
-Message-ID: <ZUTOwuZVLvzptuuP@shell.armlinux.org.uk>
-References: <20230913163823.7880-1-james.morse@arm.com>
- <20230913163823.7880-16-james.morse@arm.com>
- <20230914145353.000072e2@Huawei.com>
+        Fri, 3 Nov 2023 06:44:27 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15A73D57
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 03:44:19 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-5094cb3a036so1908681e87.2
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Nov 2023 03:44:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1699008257; x=1699613057; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=c5nLolPwuJpq0W0yvjQJguc5sT9X9KBoVJr/KRt6GGU=;
+        b=uqChyuT+DOS51LiRh9a/iv3r0te8urzMp7RKtCJhnVyGS5tbXaeisW1dFJss0KqNNj
+         gus+iv2Y5VRO36R6caxwLwT+r4xolyunvj298sRcTylpyd9AM8AJ3MZdv6a2O65oee8X
+         7ivWEAihTmKkMWiFpkwcwcBJPsQ1/ez01z+USF8PgjLr2mIQeFgmF0RGs+vDhOpD2Y9c
+         Dy4oIJpR9UTkt25cyQEpq0jJ2iSe+Q/MV2IGp5D/DRov5Sie2+9GowUMj+VqoQfGnwm+
+         6bUpIEPDxX7k0VqUpJrhMkmyZfygjRUwX5sSIMshZx6b6f7oSyCGaRwmO/QiWKH86e+B
+         5scw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699008257; x=1699613057;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=c5nLolPwuJpq0W0yvjQJguc5sT9X9KBoVJr/KRt6GGU=;
+        b=duSwljPWl0g0UY/mdFLjJBLDbFRba8a1Vgjr+JIkh/VgawO++SXGHqW+Z5r5iOOKj3
+         nckTJ8y1sNr7913Kgs/Fnmq3IqlDejKS8Ua1NiFbBjl3U3wUETGCD50WUlWLLLuRBo2O
+         iDfF8lYZgsuDpmvm6Mij23SjxMqXMcDhAelRBEGZGLt8BiN2+roj4xI8ClGyIoVV0n/Y
+         DcbyqI0pj7uw6LGtUuXDgfqpxX3oaTS6IdsJDB3uHVVbGvRp4+QtHZwTMIeIE4+ur9EV
+         4gN5FfuIW2A0KIOSDiWaUSsgQA4fbF9epAH2dK7XYlvnIpiu4+zPSMlnxxs4GGlXsELn
+         8ffA==
+X-Gm-Message-State: AOJu0YyKn7J+uQ8X9Am4J/X/DsE6fHNoDgbwl2sUqyr6jq36v2iuK1P4
+        bTTjCQMvtHbtBD8ru3vCRfHnBg==
+X-Google-Smtp-Source: AGHT+IGWyRsXFk6LHw2H/ZIpZhZ8RL6RZVkgocUX8w24VSIFhdIXzdR+tNgUainvl9TtQl7/CIm11Q==
+X-Received: by 2002:a19:2d0a:0:b0:507:c7cc:12d7 with SMTP id k10-20020a192d0a000000b00507c7cc12d7mr14426147lfj.4.1699008257167;
+        Fri, 03 Nov 2023 03:44:17 -0700 (PDT)
+Received: from [192.168.100.102] ([37.228.218.3])
+        by smtp.gmail.com with ESMTPSA id f6-20020a5d5686000000b0032f7eaa6e43sm1526650wrv.79.2023.11.03.03.44.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 03 Nov 2023 03:44:16 -0700 (PDT)
+Message-ID: <fe05a0f5-2f57-4f98-afe6-3b0acbaa96fe@linaro.org>
+Date:   Fri, 3 Nov 2023 10:44:14 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230914145353.000072e2@Huawei.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RESEND v3 5/5] venus: pm_helpers: Use
+ dev_pm_genpd_set_hwmode to switch GDSC mode
+Content-Language: en-US
+To:     Abel Vesa <abel.vesa@linaro.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Kevin Hilman <khilman@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
+        Vikash Garodia <quic_vgarodia@quicinc.com>,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     Taniya Das <tdas@qti.qualcomm.com>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-media@vger.kernel.org,
+        Jagadeesh Kona <quic_jkona@quicinc.com>
+References: <20231101-gdsc-hwctrl-v3-0-0740ae6b2b04@linaro.org>
+ <20231101-gdsc-hwctrl-v3-5-0740ae6b2b04@linaro.org>
+From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+In-Reply-To: <20231101-gdsc-hwctrl-v3-5-0740ae6b2b04@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,67 +92,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 14, 2023 at 02:53:53PM +0100, Jonathan Cameron wrote:
-> On Wed, 13 Sep 2023 16:38:03 +0000
-> James Morse <james.morse@arm.com> wrote:
+On 01/11/2023 09:04, Abel Vesa wrote:
+> From: Jagadeesh Kona <quic_jkona@quicinc.com>
 > 
-> > ACPI has two ways of describing processors in the DSDT. Either as a device
-> > object with HID ACPI0007, or as a type 'C' package inside a Processor
-> > Container. The ACPI processor driver probes CPUs described as devices, but
-> > not those described as packages.
-> > 
+> This change demonstrates the use of dev_pm_genpd_set_hwmode API from
+> video driver to switch the video mvs0 gdsc to SW/HW modes at runtime
+> based on requirement.
 > 
-> Specification reference needed...
+> This change adds a new boolean array member vcodec_pmdomains_hwctrl in
+> venus_resources structure to indicate if GDSC's have HW control support
+> or not. This data is used in vcodec_control_v4() to check if GDSC has
+> support to switch to HW control mode and then call dev_pm_genpd_set_hwmode
+> to switch the GDSC mode.
 > 
-> Terminology wise, I'd just refer to Processor() objects as I think they
-> are named objects rather than data terms like a package (Which include
-> a PkgLength etc)
-
-I'm not sure what kind of reference you want for the above. Looking in
-ACPI 6.5, I've found in 5.2.12:
-
-"Starting with ACPI Specification 6.3, the use of the Processor() object
-was deprecated. Only legacy systems should continue with this usage. On
-the Itanium architecture only, a _UID is provided for the Processor()
-that is a string object. This usage of _UID is also deprecated since it
-can preclude an OSPM from being able to match a processor to a
-non-enumerable device, such as those defined in the MADT. From ACPI
-Specification 6.3 onward, all processor objects for all architectures
-except Itanium must now use Device() objects with an _HID of ACPI0007,
-and use only integer _UID values."
-
-Also, there is:
-
-https://uefi.org/specs/ACPI/6.5/08_Processor_Configuration_and_Control.html#declaring-processors
-
-Unfortunately, using the search facility on that site to try and find
-Processor() doesn't work - it appears to strip the "()" characters from
-the search (which is completely dumb, why do search facilities do that?)
-
-> > The missing probe for CPUs described as packages creates a problem for
-> > moving the cpu_register() calls into the acpi_processor driver, as CPUs
-> > described like this don't get registered, leading to errors from other
-> > subsystems when they try to add new sysfs entries to the CPU node.
-> > (e.g. topology_sysfs_init()'s use of topology_add_dev() via cpuhp)
-> > 
-> > To fix this, parse the processor container and call acpi_processor_add()
-> > for each processor that is discovered like this. The processor container
-> > handler is added with acpi_scan_add_handler(), so no detach call will
-> > arrive.
-> > 
-> > Qemu TCG describes CPUs using packages in a processor container.
+> Before the GDSC HWCTL was available to the consumer, the venus driver
+> needed to somehow keep the power from collapsing while under the driver
+> control. The only way to do that was to clear the CORE_PWR_DISABLE bit
+> (in wrapper POWER_CONTROL register) and, respectively, set it back after
+> the driver control was completed.
 > 
-> processor terms in a processor container. 
+> Now, that there is a way to switch the GDSC HW/SW control back and
+> forth, the CORE_PWR_DISABLE toggling can be dropped.
+> 
+> Signed-off-by: Jagadeesh Kona <quic_jkona@quicinc.com>
+> Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
 
-Are you wanting this to be:
+So I plan to give this a test on rb5 and db410c
 
-"Qemu TCG describes CPUs using processor terms in a processor
-container."
+My q here though is - has anybody on the submission list tested this 
+through suspend/resume and vdd min ?
 
-? Searching the ACPI spec for "processor terms" (with or without quotes)
-only brings up results for "terms" - yet another reason to hate site-
-provided search facilities, I don't know why sites bother. :(
+---
+bod
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
