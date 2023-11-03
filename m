@@ -2,73 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A6A8D7E00E6
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 11:30:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E75647E0042
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 11:29:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232203AbjKCGqu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 02:46:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56996 "EHLO
+        id S230502AbjKCGtt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 02:49:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231712AbjKCGqs (ORCPT
+        with ESMTP id S230314AbjKCGts (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 02:46:48 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD052CA
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 23:46:42 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-6bd73395bceso1502837b3a.0
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 23:46:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1698994002; x=1699598802; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=SUd2UsTXD/DclMZGdmP0bxcAoC3bE5zE1SDWkgEvK8c=;
-        b=jchpm+lN+rmESh08NkIwY4EVBb+s7pizVx9MlfceN9PuOTqu67tJ14cfIsMnmNoQpM
-         lIZWK//XNu9GYIYutOr4MYy1qH/rTXx64ZYADfwCCqoDeolkpmaIEtpynTxbftkMZICb
-         XHWFNmMz0ySFBbiZW9/3JSiG+zSZdAkgaJtLpZw2GN8Bc1SEKNsTdInktAp/rrkQ3FF8
-         val5bMBceJvqmBwQB3/IpJ4EApktn1PobZeaaxU/TOu+fE36H4KRiSMDjS5Y37SRnkBi
-         X2RG5HtI/TUxXj1xkOToNBczowuQThh6jU4fO2NZxP40/Xyu3uR1w4yMCbb9svaOXcwW
-         bnug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698994002; x=1699598802;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=SUd2UsTXD/DclMZGdmP0bxcAoC3bE5zE1SDWkgEvK8c=;
-        b=JeigcmJZNw4xPyoOLFGXR65WuTfINDgtQVDnNmy72JK2c6urY9KdiuEgBhJZogv4g+
-         TPYf23tzaT8f2iFPwdZrOaSFzt9WQCp7arM3SSpWtESGRFcomE7A81PJ5C4GJF2OzTfH
-         XTxkSQ3tEYWmg1BhmwXPlbhFyR6y9gK9P+LcbnbF3PXRKxPkOLojtGtSNy5ZIoOtLdeu
-         9CVa0Fw8mG36wpQCV19lOTb01+W93TtvICDsLhtqYgTBX0mSc18HqVuRBz1W/bUfLr6p
-         Y/iGgFpsipXS/VltSExA8hXDz6son3mz6d43Bp1kgx+rcpxgd26imI1vHmoPLMvykGrr
-         bDKg==
-X-Gm-Message-State: AOJu0YzuPlUK2kXMKhg3DAIGuRy4FahHj9pOW9luI5miIX4LZUJ8QWxA
-        8JSsYZuCV3AUJ9Zta/DoCuABnw==
-X-Google-Smtp-Source: AGHT+IFzGVKA6RcX/+vOuyvJ5oAvcXdU+tV/6XG9AHXS1GZaDf+CwU/O6KMIP7r0EQ6yaf+4LX94Ow==
-X-Received: by 2002:a05:6a00:21cc:b0:6c3:415a:5c05 with SMTP id t12-20020a056a0021cc00b006c3415a5c05mr2441066pfj.14.1698994002160;
-        Thu, 02 Nov 2023 23:46:42 -0700 (PDT)
-Received: from [10.84.152.223] ([203.208.167.147])
-        by smtp.gmail.com with ESMTPSA id x184-20020a6363c1000000b0057412d84d25sm716962pgb.4.2023.11.02.23.46.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 Nov 2023 23:46:41 -0700 (PDT)
-Message-ID: <1f90d44f-e20c-445a-8bc5-8440c870176e@bytedance.com>
-Date:   Fri, 3 Nov 2023 14:45:21 +0800
+        Fri, 3 Nov 2023 02:49:48 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6327E1A8
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 23:49:42 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5992CC433C7;
+        Fri,  3 Nov 2023 06:49:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698994182;
+        bh=f8Fjl1dpCFio9g2xxBxyd7VZxsQwkICJSGds8XOdkcw=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=ac0qEv3eOK8G7fx/7fX4L+CXsK24dKqiZfmQRZf4Dj3zFVx0SQVP+x0F1ErI5sH9g
+         D4re6yTpIZKdkkmF7V6vOZLRs4kG5bCcK6w36Zs6PhoS5BChv/DaRhavWxmbD0z+lN
+         66mcnzZZC1FthJv8aAxZ2TDNEDivEWhmuIW5MfihZYdNk93KRyeb0X/RnO2H7u5wnv
+         U9LewktXOkommwZOfQK/MWpSMeCUycnuqXhGtlNW580scJr4fvrXG1WWUpenMUUBgT
+         S18/dlocha2xm+JACAvJ+ytFCVgWNBADL5setLqlIO8XtyRpInBZjvyfibxu2nMbbo
+         H0MfrcExMWS9Q==
+Message-ID: <72024444-da43-47e3-a76f-4107bda8e402@kernel.org>
+Date:   Fri, 3 Nov 2023 07:49:36 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/1] sched/fair: Track current se's EEVDF parameters
+Subject: Re: [PATCH 1/6] dt-bindings: interrupt-controller: Add support for
+ Realtek DHC SoCs
+To:     James Tai <james.tai@realtek.com>, linux-kernel@vger.kernel.org,
+        linux-realtek-soc@lists.infradead.org
+Cc:     Thomas Gleixner <tglx@linutronix.de>, Marc Zyngier <maz@kernel.org>
+References: <20231102142731.2087245-1-james.tai@realtek.com>
+ <20231102142731.2087245-2-james.tai@realtek.com>
 Content-Language: en-US
-To:     Yiwei Lin <s921975628@gmail.com>, mingo@redhat.com,
-        peterz@infradead.org
-Cc:     vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        linux-kernel@vger.kernel.org
-References: <20231102142022.19302-1-s921975628@gmail.com>
- <20231102142022.19302-2-s921975628@gmail.com>
-From:   Abel Wu <wuyun.abel@bytedance.com>
-In-Reply-To: <20231102142022.19302-2-s921975628@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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 fv0=
+In-Reply-To: <20231102142731.2087245-2-james.tai@realtek.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,158 +96,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/2/23 10:20 PM, Yiwei Lin Wrote:
-> After dequeuing the current-picked scheduling entity with
-> `__dequeue_entity`, its contribution to the EEVDF parameters
-> cfs_rq->avg_vruntime and cfs_rq->avg_load are also removed.
-> Because these should in fact be considered for the EEVDF algorithm,
-> we took curr as the special case and inserted back the contributions
-> when requests for cfs_rq->avg_vruntime and cfs_rq->avg_load.
+On 02/11/2023 15:27, James Tai wrote:
+> Add the YAML documentation for Realtek DHC SoCs.
 > 
-> Functions like `entity_eligible` which is called insied a loop may
-> therefore recalculate these statistics repeatly and require more effort.
-> Instead, we could just avoid to remove these statistics from
-> cfs_rq->avg_vruntime and cfs_rq->avg_load directly.
-> 
-> Signed-off-by: Yiwei Lin <s921975628@gmail.com>
+> Change-Id: Ia619582e34fef6b2dbd5f98ba3f5edf70cf11dbf
+
+Please run scripts/checkpatch.pl and fix reported warnings. Some
+warnings can be ignored, but the code here looks like it needs a fix.
+Feel free to get in touch if the warning is not clear.
+
+
+> Signed-off-by: James Tai <james.tai@realtek.com>
+
+Please use scripts/get_maintainers.pl to get a list of necessary people
+and lists to CC. It might happen, that command when run on an older
+kernel, gives you outdated entries. Therefore please be sure you base
+your patches on recent Linux kernel.
+
+You missed at least devicetree list (maybe more), so this won't be
+tested by automated tooling. Performing review on untested code might be
+a waste of time, thus I will skip this patch entirely till you follow
+the process allowing the patch to be tested.
+
+Please kindly resend and include all necessary To/Cc entries.
+
 > ---
->   kernel/sched/fair.c | 39 +++++++++++----------------------------
->   1 file changed, 11 insertions(+), 28 deletions(-)
+>  .../interrupt-controller/realtek,intc.yaml    | 146 ++++++++++++++++++
+>  1 file changed, 146 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/interrupt-controller/realtek,intc.yaml
 > 
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 876798824..a10a73603 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -655,17 +655,9 @@ void avg_vruntime_update(struct cfs_rq *cfs_rq, s64 delta)
->    */
->   u64 avg_vruntime(struct cfs_rq *cfs_rq)
->   {
-> -	struct sched_entity *curr = cfs_rq->curr;
->   	s64 avg = cfs_rq->avg_vruntime;
->   	long load = cfs_rq->avg_load;
->   
-> -	if (curr && curr->on_rq) {
-> -		unsigned long weight = scale_load_down(curr->load.weight);
-> -
-> -		avg += entity_key(cfs_rq, curr) * weight;
-> -		load += weight;
-> -	}
-> -
->   	if (load) {
->   		/* sign flips effective floor / ceil */
->   		if (avg < 0)
-> @@ -722,17 +714,9 @@ static void update_entity_lag(struct cfs_rq *cfs_rq, struct sched_entity *se)
->    */
->   int entity_eligible(struct cfs_rq *cfs_rq, struct sched_entity *se)
->   {
-> -	struct sched_entity *curr = cfs_rq->curr;
->   	s64 avg = cfs_rq->avg_vruntime;
->   	long load = cfs_rq->avg_load;
->   
-> -	if (curr && curr->on_rq) {
-> -		unsigned long weight = scale_load_down(curr->load.weight);
-> -
-> -		avg += entity_key(cfs_rq, curr) * weight;
-> -		load += weight;
-> -	}
-> -
->   	return avg >= entity_key(cfs_rq, se) * load;
->   }
->   
-> @@ -821,11 +805,12 @@ static void __enqueue_entity(struct cfs_rq *cfs_rq, struct sched_entity *se)
->   				__entity_less, &min_deadline_cb);
->   }
->   
-> -static void __dequeue_entity(struct cfs_rq *cfs_rq, struct sched_entity *se)
-> +static void __dequeue_entity(struct cfs_rq *cfs_rq, struct sched_entity *se, bool on_rq)
+> diff --git a/Documentation/devicetree/bindings/interrupt-controller/realtek,intc.yaml b/Documentation/devicetree/bindings/interrupt-controller/realtek,intc.yaml
+> new file mode 100644
+> index 000000000000..cf063dcdd0b4
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/interrupt-controller/realtek,intc.yaml
+> @@ -0,0 +1,146 @@
+> +# SPDX-License-Identifier: (GPL-2.0-or-later OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/interrupt-controller/realtek,intc.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Realtek DHC SoCs Interrupt Controller Device Tree Bindings
 
-Please don't add such complexity. Since avg_vruntime includes the whole
-cfs_rq after this change, you can simply avg_vruntime_add() when doing
-enqueue_entity() and avg_vruntime_sub() in dequeue_entity().
+It does not look like you tested the bindings, at least after quick
+look. Please run `make dt_binding_check` (see
+Documentation/devicetree/bindings/writing-schema.rst for instructions).
+Maybe you need to update your dtschema and yamllint.
 
->   {
->   	rb_erase_augmented_cached(&se->run_node, &cfs_rq->tasks_timeline,
->   				  &min_deadline_cb);
-> -	avg_vruntime_sub(cfs_rq, se);
-> +	if (!on_rq)
-> +		avg_vruntime_sub(cfs_rq, se);
->   }
->   
->   struct sched_entity *__pick_first_entity(struct cfs_rq *cfs_rq)
-> @@ -1137,6 +1122,7 @@ static void update_curr(struct cfs_rq *cfs_rq)
->   	struct sched_entity *curr = cfs_rq->curr;
->   	u64 now = rq_clock_task(rq_of(cfs_rq));
->   	u64 delta_exec;
-> +	u64 delta_fair;
->   
->   	if (unlikely(!curr))
->   		return;
-> @@ -1158,7 +1144,9 @@ static void update_curr(struct cfs_rq *cfs_rq)
->   	curr->sum_exec_runtime += delta_exec;
->   	schedstat_add(cfs_rq->exec_clock, delta_exec);
->   
-> -	curr->vruntime += calc_delta_fair(delta_exec, curr);
-> +	delta_fair = calc_delta_fair(delta_exec, curr);
-> +	curr->vruntime += delta_fair;
-> +	cfs_rq->avg_vruntime += delta_fair * scale_load_down(curr->load.weight);
 
-What if curr->load.weight changes in this time slice?
 
->   	update_deadline(cfs_rq, curr);
->   	update_min_vruntime(cfs_rq);
->   
-> @@ -3675,8 +3663,7 @@ static void reweight_entity(struct cfs_rq *cfs_rq, struct sched_entity *se,
->   		/* commit outstanding execution time */
->   		if (cfs_rq->curr == se)
->   			update_curr(cfs_rq);
-> -		else
-> -			avg_vruntime_sub(cfs_rq, se);
-> +		avg_vruntime_sub(cfs_rq, se);
->   		update_load_sub(&cfs_rq->load, se->load.weight);
->   	}
->   	dequeue_load_avg(cfs_rq, se);
-> @@ -3712,8 +3699,7 @@ static void reweight_entity(struct cfs_rq *cfs_rq, struct sched_entity *se,
->   	enqueue_load_avg(cfs_rq, se);
->   	if (se->on_rq) {
->   		update_load_add(&cfs_rq->load, se->load.weight);
-> -		if (cfs_rq->curr != se)
-> -			avg_vruntime_add(cfs_rq, se);
-> +		avg_vruntime_add(cfs_rq, se);
->   	}
->   }
->   
-> @@ -5023,7 +5009,6 @@ place_entity(struct cfs_rq *cfs_rq, struct sched_entity *se, int flags)
->   	 * EEVDF: placement strategy #1 / #2
->   	 */
->   	if (sched_feat(PLACE_LAG) && cfs_rq->nr_running) {
-> -		struct sched_entity *curr = cfs_rq->curr;
->   		unsigned long load;
->   
->   		lag = se->vlag;
-> @@ -5081,8 +5066,6 @@ place_entity(struct cfs_rq *cfs_rq, struct sched_entity *se, int flags)
->   		 *   vl_i = (W + w_i)*vl'_i / W
->   		 */
->   		load = cfs_rq->avg_load;
-> -		if (curr && curr->on_rq)
-> -			load += scale_load_down(curr->load.weight);
->   
->   		lag *= load + scale_load_down(se->load.weight);
->   		if (WARN_ON_ONCE(!load))
-> @@ -5229,7 +5212,7 @@ dequeue_entity(struct cfs_rq *cfs_rq, struct sched_entity *se, int flags)
->   
->   	update_entity_lag(cfs_rq, se);
->   	if (se != cfs_rq->curr)
-> -		__dequeue_entity(cfs_rq, se);
-> +		__dequeue_entity(cfs_rq, se, 0);
->   	se->on_rq = 0;
->   	account_entity_dequeue(cfs_rq, se);
->   
-> @@ -5264,7 +5247,7 @@ set_next_entity(struct cfs_rq *cfs_rq, struct sched_entity *se)
->   		 * runqueue.
->   		 */
->   		update_stats_wait_end_fair(cfs_rq, se);
-> -		__dequeue_entity(cfs_rq, se);
-> +		__dequeue_entity(cfs_rq, se, 1);
->   		update_load_avg(cfs_rq, se, UPDATE_TG);
->   		/*
->   		 * HACK, stash a copy of deadline at the point of pick in vlag,
+Best regards,
+Krzysztof
+
