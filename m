@@ -2,222 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA6537E0880
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 19:53:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD7FD7E0838
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 19:34:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344456AbjKCSxf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 14:53:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44856 "EHLO
+        id S1345333AbjKCSdv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 14:33:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230246AbjKCSxe (ORCPT
+        with ESMTP id S1345177AbjKCSds (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 14:53:34 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 911C5BD;
-        Fri,  3 Nov 2023 11:53:31 -0700 (PDT)
-Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A3IRPDa025490;
-        Fri, 3 Nov 2023 18:53:31 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=YF9MYguJwXRU4XWH9VeutjuL/m1o4JCo48rxpHFmiEM=;
- b=IUN9EqqgfEk2Z1bwS/uC5Slh+iOFT1NgWTt8UdLlX9yvgqGrXFs/MdDOEtR54SFTcbnh
- zvlnL91e8tHSShyiWyXs1JwxNL9bziHM/iW6SpO/uBhjp1QSv864jsdrSwqrCaeOlxm6
- yOyo+aXmGMZV+Qi70egCzjjYxwB+bLELjgERSoVaPwfZmjU+WRj1OWgbnE2sRtYj6qeI
- SCJrOcp9712YR+aGBKtBpFCCErsYPIFYBou5CkcXxScu5qPpJmRNsNXBe7pSe/po5jWr
- 86wb0f8KPSIxOu6bMOYbU4GS0wymdEYhJenj0Ru95k8Y9w9KKs2wkHirhU1ThJgQN/5p oQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u565f0qdn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 03 Nov 2023 18:53:31 +0000
-Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3A3Idna5026837;
-        Fri, 3 Nov 2023 18:53:30 GMT
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u565f0qcj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 03 Nov 2023 18:53:30 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3A3HTeUT007674;
-        Fri, 3 Nov 2023 18:53:29 GMT
-Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
-        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3u1dmp7yph-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 03 Nov 2023 18:53:28 +0000
-Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
-        by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3A3IrNEd10748572
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 3 Nov 2023 18:53:23 GMT
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EE0DD20043;
-        Fri,  3 Nov 2023 18:53:22 +0000 (GMT)
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A33B420040;
-        Fri,  3 Nov 2023 18:53:22 +0000 (GMT)
-Received: from p-imbrenda (unknown [9.152.224.66])
-        by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Fri,  3 Nov 2023 18:53:22 +0000 (GMT)
-Date:   Fri, 3 Nov 2023 19:32:54 +0100
-From:   Claudio Imbrenda <imbrenda@linux.ibm.com>
-To:     Nina Schoetterl-Glausch <nsg@linux.ibm.com>
-Cc:     Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-s390@vger.kernel.org,
-        Cornelia Huck <cornelia.huck@de.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Michael Mueller <mimu@linux.vnet.ibm.com>,
-        David Hildenbrand <dahi@linux.vnet.ibm.com>
-Subject: Re: [PATCH 4/4] KVM: s390: Minor refactor of base/ext facility
- lists
-Message-ID: <20231103193254.7deef2e5@p-imbrenda>
-In-Reply-To: <20231103173008.630217-5-nsg@linux.ibm.com>
-References: <20231103173008.630217-1-nsg@linux.ibm.com>
-        <20231103173008.630217-5-nsg@linux.ibm.com>
-Organization: IBM
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Fri, 3 Nov 2023 14:33:48 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64150D47
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 11:33:37 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E749C433CA;
+        Fri,  3 Nov 2023 18:33:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1699036417;
+        bh=GCcviAr0J+IVeM1/p5MQ4ex6AHZgCCmGit6AtH3K05k=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FyM320peA+QJM3iwPOVx6aexI+At1jmo+xGow9tXL1dH6z/biHMdoS+afNaGl1mSa
+         H559T8yRhyt/BtwSnyLPNC+nzAAPis18jy9AaJTiXUw12ij6GM5PApK80g7lY7mcT/
+         rxtzhYNEuT14oqiJl2oi5vH8irjBNVvM2kjqmum0=
+Date:   Fri, 3 Nov 2023 19:33:34 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Justin Chen <justin.chen@broadcom.com>
+Cc:     Yuran Pereira <yuran.pereira@hotmail.com>, davem@davemloft.net,
+        netdev@vger.kernel.org, florian.fainelli@broadcom.com,
+        linux-kernel@vger.kernel.org, edumazet@google.com,
+        bcm-kernel-feedback-list@broadcom.com, kuba@kernel.org,
+        pabeni@redhat.com, linux-kernel-mentees@lists.linuxfoundation.org
+Subject: Re: [PATCH] Prevent out-of-bounds read/write in bcmasp_netfilt_rd
+ and bcmasp_netfilt_wr
+Message-ID: <2023110318-utensil-figure-eb80@gregkh>
+References: <DB3PR10MB6835E073F668AD24F57AE64AE8A5A@DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM>
+ <2023110301-purist-reputable-fab7@gregkh>
+ <e3ac58b2-bb78-4364-94c0-f18c376ac132@broadcom.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: BMkJfee206Ia7hkgGk55NNtkOtVqheiN
-X-Proofpoint-ORIG-GUID: Xg3YtXlXCOnnVD3TPpju3Dsp2FbKukC9
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-03_18,2023-11-02_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 spamscore=0
- priorityscore=1501 lowpriorityscore=0 clxscore=1015 mlxscore=0
- mlxlogscore=999 bulkscore=0 impostorscore=0 phishscore=0 suspectscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2310240000 definitions=main-2311030159
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e3ac58b2-bb78-4364-94c0-f18c376ac132@broadcom.com>
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri,  3 Nov 2023 18:30:08 +0100
-Nina Schoetterl-Glausch <nsg@linux.ibm.com> wrote:
-
-> Directly use the size of the arrays instead of going through the
-> indirection of kvm_s390_fac_size().
-> Don't use magic number for the number of entries in the non hypervisor
-> managed facility bit mask list.
-> Make the constraint of that number on kvm_s390_fac_base obvious.
-> Get rid of implicit double anding of stfle_fac_list.
-> 
-> Signed-off-by: Nina Schoetterl-Glausch <nsg@linux.ibm.com>
-> ---
+On Fri, Nov 03, 2023 at 11:23:16AM -0700, Justin Chen wrote:
 > 
 > 
-> I found it confusing before and think it's nicer this way but
-> it might be needless churn.
-
-some things are probably overkill
-
+> On 11/3/23 5:57 AM, Greg KH wrote:
+> > On Fri, Nov 03, 2023 at 05:57:48PM +0530, Yuran Pereira wrote:
+> > > The functions `bcmasp_netfilt_rd` and `bcmasp_netfilt_wr` both call
+> > > `bcmasp_netfilt_get_reg_offset` which, when it fails, returns `-EINVAL`.
+> > > This could lead to an out-of-bounds read or write when `rx_filter_core_rl`
+> > > or `rx_filter_core_wl` is called.
+> > > 
+> > > This patch adds a check in both functions to return immediately if
+> > > `bcmasp_netfilt_get_reg_offset` fails. This prevents potential out-of-bounds read
+> > > or writes, and ensures that no undefined or buggy behavior would originate from
+> > > the failure of `bcmasp_netfilt_get_reg_offset`.
+> > > 
+> > > Addresses-Coverity-IDs: 1544536 ("Out-of-bounds access")
+> > > Signed-off-by: Yuran Pereira <yuran.pereira@hotmail.com>
+> > > ---
+> > >   drivers/net/ethernet/broadcom/asp2/bcmasp.c | 4 ++++
+> > >   1 file changed, 4 insertions(+)
+> > > 
+> > > diff --git a/drivers/net/ethernet/broadcom/asp2/bcmasp.c b/drivers/net/ethernet/broadcom/asp2/bcmasp.c
+> > > index 29b04a274d07..8b90b761bdec 100644
+> > > --- a/drivers/net/ethernet/broadcom/asp2/bcmasp.c
+> > > +++ b/drivers/net/ethernet/broadcom/asp2/bcmasp.c
+> > > @@ -227,6 +227,8 @@ static void bcmasp_netfilt_wr(struct bcmasp_priv *priv,
+> > >   	reg_offset = bcmasp_netfilt_get_reg_offset(priv, nfilt, reg_type,
+> > >   						   offset);
+> > > +	if (reg_offset < 0)
+> > > +		return;
+> > >   	rx_filter_core_wl(priv, val, reg_offset);
+> > >   }
+> > > @@ -244,6 +246,8 @@ static u32 bcmasp_netfilt_rd(struct bcmasp_priv *priv,
+> > >   	reg_offset = bcmasp_netfilt_get_reg_offset(priv, nfilt, reg_type,
+> > >   						   offset);
+> > > +	if (reg_offset < 0)
+> > > +		return 0;
+> > 
+> > Shouldn't you return an error here?
+> > 
+> > thanks
+> > 
+> > greg k-h
 > 
-> 
->  arch/s390/kvm/kvm-s390.c | 44 +++++++++++++++++-----------------------
->  1 file changed, 19 insertions(+), 25 deletions(-)
-> 
-> diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
-> index b3f17e014cab..e00ab2f38c89 100644
-> --- a/arch/s390/kvm/kvm-s390.c
-> +++ b/arch/s390/kvm/kvm-s390.c
-> @@ -217,33 +217,25 @@ static int async_destroy = 1;
->  module_param(async_destroy, int, 0444);
->  MODULE_PARM_DESC(async_destroy, "Asynchronous destroy for protected guests");
->  
-> -/*
-> - * For now we handle at most 16 double words as this is what the s390 base
-> - * kernel handles and stores in the prefix page. If we ever need to go beyond
-> - * this, this requires changes to code, but the external uapi can stay.
-> - */
-> -#define SIZE_INTERNAL 16
-> -
-> +#define HMFAI_DWORDS 16
->  /*
->   * Base feature mask that defines default mask for facilities. Consists of the
->   * defines in FACILITIES_KVM and the non-hypervisor managed bits.
->   */
-> -static unsigned long kvm_s390_fac_base[SIZE_INTERNAL] = { FACILITIES_KVM };
-> +static unsigned long kvm_s390_fac_base[HMFAI_DWORDS] = { FACILITIES_KVM };
-> +static_assert(ARRAY_SIZE(((long[]){ FACILITIES_KVM })) <= HMFAI_DWORDS);
-> +static_assert(ARRAY_SIZE(kvm_s390_fac_base) <= S390_ARCH_FAC_MASK_SIZE_U64);
-> +static_assert(ARRAY_SIZE(kvm_s390_fac_base) <= S390_ARCH_FAC_LIST_SIZE_U64);
-> +static_assert(ARRAY_SIZE(kvm_s390_fac_base) <= ARRAY_SIZE(stfle_fac_list));
-> +
->  /*
->   * Extended feature mask. Consists of the defines in FACILITIES_KVM_CPUMODEL
->   * and defines the facilities that can be enabled via a cpu model.
->   */
-> -static unsigned long kvm_s390_fac_ext[SIZE_INTERNAL] = { FACILITIES_KVM_CPUMODEL };
-> -
-> -static unsigned long kvm_s390_fac_size(void)
-> -{
-> -	BUILD_BUG_ON(SIZE_INTERNAL > S390_ARCH_FAC_MASK_SIZE_U64);
-> -	BUILD_BUG_ON(SIZE_INTERNAL > S390_ARCH_FAC_LIST_SIZE_U64);
-> -	BUILD_BUG_ON(SIZE_INTERNAL * sizeof(unsigned long) >
-> -		sizeof(stfle_fac_list));
-> -
-> -	return SIZE_INTERNAL;
-> -}
-> +static const unsigned long kvm_s390_fac_ext[] = { FACILITIES_KVM_CPUMODEL };
+> As long as offset is less than MAX_WAKE_FILTER_SIZE we don't need to worry
+> about error checking. This is already checked before we call
+> netfilt_get_reg_offset() in both cases. Instead of returning -EINVAL in
+> neffilt_get_reg_offset() lets return 0. This will silence the coverity
+> check. In practice we will never hit this logic.
 
-this was sized to [SIZE_INTERNAL], now it doesn't have a fixed size. is
-this intentional?
+Then don't change it, coverity is incorrect here.
 
-> +static_assert(ARRAY_SIZE(kvm_s390_fac_ext) <= S390_ARCH_FAC_MASK_SIZE_U64);
-> +static_assert(ARRAY_SIZE(kvm_s390_fac_ext) <= S390_ARCH_FAC_LIST_SIZE_U64);
-> +static_assert(ARRAY_SIZE(kvm_s390_fac_ext) <= ARRAY_SIZE(stfle_fac_list));
->  
->  /* available cpu features supported by kvm */
->  static DECLARE_BITMAP(kvm_s390_available_cpu_feat, KVM_S390_VM_CPU_FEAT_NR_BITS);
-> @@ -3341,13 +3333,16 @@ int kvm_arch_init_vm(struct kvm *kvm, unsigned long type)
->  	kvm->arch.sie_page2->kvm = kvm;
->  	kvm->arch.model.fac_list = kvm->arch.sie_page2->fac_list;
->  
-> -	for (i = 0; i < kvm_s390_fac_size(); i++) {
-> +	for (i = 0; i < ARRAY_SIZE(kvm_s390_fac_base); i++) {
->  		kvm->arch.model.fac_mask[i] = stfle_fac_list[i] &
-> -					      (kvm_s390_fac_base[i] |
-> -					       kvm_s390_fac_ext[i]);
-> +					      kvm_s390_fac_base[i];
->  		kvm->arch.model.fac_list[i] = stfle_fac_list[i] &
->  					      kvm_s390_fac_base[i];
->  	}
-> +	for (i = 0; i < ARRAY_SIZE(kvm_s390_fac_ext); i++) {
-> +		kvm->arch.model.fac_mask[i] |= stfle_fac_list[i] &
-> +					       kvm_s390_fac_ext[i];
-> +	}
-
-I like it better when it's all in one place, instead of having two loops
-
->  	kvm->arch.model.subfuncs = kvm_s390_available_subfunc;
->  
->  	/* we are always in czam mode - even on pre z14 machines */
-> @@ -5859,9 +5854,8 @@ static int __init kvm_s390_init(void)
->  		return -EINVAL;
->  	}
->  
-> -	for (i = 0; i < 16; i++)
-> -		kvm_s390_fac_base[i] |=
-> -			stfle_fac_list[i] & nonhyp_mask(i);
-> +	for (i = 0; i < HMFAI_DWORDS; i++)
-> +		kvm_s390_fac_base[i] |= nonhyp_mask(i);
-
-where did the stfle_fac_list[i] go?
-
->  
->  	r = __kvm_s390_init();
->  	if (r)
-
+greg k-h
