@@ -2,205 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DD047E076E
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 18:31:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 185387E0780
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 18:35:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376582AbjKCRbh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 13:31:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41728 "EHLO
+        id S229750AbjKCRfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 13:35:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230161AbjKCRbf (ORCPT
+        with ESMTP id S229729AbjKCRfo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 13:31:35 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C899013E;
-        Fri,  3 Nov 2023 10:31:32 -0700 (PDT)
-Received: from pps.filterd (m0353722.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A3H9OC2002669;
-        Fri, 3 Nov 2023 17:31:32 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=UsNIhSuDbtYP3OaMXs+2agd2J5yFl9Vo8sEz+w3vziQ=;
- b=SrVzf+ok+1PamAioLd/0etN4xnUuW1ewG7aPQF5paIDUwv2EMc+eMfBvwMeXuC8Q5y/c
- KGVoz2edANb4Gf4+6VA3lzR208P35ssHZsuSZZFsi7mNgiZiPu+GbVSUJXtJflXDPEuQ
- Y4Zu2OcShLugkD80eXG0fi2Q3uzK21eXgyzQnt1oYyIF8dTHcRRMgkmsvsPceZCPorJb
- 5w0keDFdDVYmHWjUBJ8nsWkCvtJjfCffWxfSPQ7fqv0uOJqyhPnWdw+QZSdN6oKTX/QT
- gNGll7kfzD034KpknHXSrVjgPjHtaHc73gsi53OdLmjcA4uvSYFgnVHqj397tq8DbmEX +w== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u550x0mby-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 03 Nov 2023 17:31:31 +0000
-Received: from m0353722.ppops.net (m0353722.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3A3H9lHV004743;
-        Fri, 3 Nov 2023 17:31:31 GMT
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u550x0mbn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 03 Nov 2023 17:31:31 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3A3HLu1K007685;
-        Fri, 3 Nov 2023 17:31:30 GMT
-Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
-        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3u1dmp7gs1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 03 Nov 2023 17:31:30 +0000
-Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
-        by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3A3HUBe138338974
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 3 Nov 2023 17:30:11 GMT
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 172C920040;
-        Fri,  3 Nov 2023 17:30:11 +0000 (GMT)
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D00962005A;
-        Fri,  3 Nov 2023 17:30:10 +0000 (GMT)
-Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
-        by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Fri,  3 Nov 2023 17:30:10 +0000 (GMT)
-From:   Nina Schoetterl-Glausch <nsg@linux.ibm.com>
-To:     Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>
-Cc:     Nina Schoetterl-Glausch <nsg@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-s390@vger.kernel.org,
-        Cornelia Huck <cornelia.huck@de.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Michael Mueller <mimu@linux.vnet.ibm.com>,
-        David Hildenbrand <dahi@linux.vnet.ibm.com>
-Subject: [PATCH 4/4] KVM: s390: Minor refactor of base/ext facility lists
-Date:   Fri,  3 Nov 2023 18:30:08 +0100
-Message-Id: <20231103173008.630217-5-nsg@linux.ibm.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231103173008.630217-1-nsg@linux.ibm.com>
-References: <20231103173008.630217-1-nsg@linux.ibm.com>
+        Fri, 3 Nov 2023 13:35:44 -0400
+Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1824136;
+        Fri,  3 Nov 2023 10:35:41 -0700 (PDT)
+Received: by mail-oi1-x22f.google.com with SMTP id 5614622812f47-3b3f55e1bbbso1440107b6e.2;
+        Fri, 03 Nov 2023 10:35:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699032940; x=1699637740; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lUwsWoeHAo55a1n3qauNOQy9fcQJhbfyl72sCPND1PU=;
+        b=PT1fgG7YsNpp9usDusCO4dgMc7yOJWHkU+MLzmWpRPV0alGf+j7x5yfwFOYdKWnPU+
+         DntaC8gWL8JOnPfYDf1x/Y1vYl6HBza11w28Aga+/BNgD53yiYvpfByYhpEsjrf9k5dM
+         j37nTCKEdFEyGmjPoCJF5c2bBKIA6WAgBmqA5nNT8bo7VAD6Ur5KI0sFe+PyW7S/zqng
+         3qBmXTSY55wo+rEbp/XjwC25oJTF8wTKRV9caJmwDYVY/kVop4/qqHpPpeJ99qp3WJw4
+         5KPNKCn4dXCdsdB4nw/LNTFyK8oZJT5SNi7mYZ/KnuWzq3dLNFvg6cfHb3wWw4l6cbYY
+         UE3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699032940; x=1699637740;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=lUwsWoeHAo55a1n3qauNOQy9fcQJhbfyl72sCPND1PU=;
+        b=QOKubI8d6FjSsLfPIDclt1e23PWquEqu4xVdOiObE5ah3fTHb5c6mu8ZYG4Tn5j+RZ
+         XpQ/QphjgkNhWD+6WbilmnZJiDc3tbxe4sWPAu65FMCDV620QZTdAYVNpxNY3LlYsgZR
+         f+iposx9SomGQjNchUDJqfAPwHXkGSk421+pb1hSDXZVvvWk4PJWPJ0ooMmiS+m2dWHA
+         Q7HmOY0T0SEpk91mcCcpPRe5FCPZoFlYdtdey0DGR9F/BjRg0H8MYtspAlKeRKjRn7ej
+         aTdC8ekcJvIEWOb2eYPAVHHDUmAsio+2PRd67rtCtBlt4OMvesNo59/o+eYcqSLwkWTm
+         LIww==
+X-Gm-Message-State: AOJu0YxelNrkbqSKRBxXvHLvOBYk/x1BW+8gTp6lrXDxtv8pEfFb7Fzh
+        zfDE810YIT0GGlLmPuLVOPw=
+X-Google-Smtp-Source: AGHT+IFQ2I3RmOkyhEiO+fRoT4DEDUqtaffOko/ziN69QCFscEtnwzTeK+l+PHxYKHP8i561szQpNw==
+X-Received: by 2002:a05:6808:68a:b0:3a8:ccf0:103f with SMTP id k10-20020a056808068a00b003a8ccf0103fmr21522378oig.3.1699032940475;
+        Fri, 03 Nov 2023 10:35:40 -0700 (PDT)
+Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
+        by smtp.gmail.com with ESMTPSA id 6-20020a05620a04c600b007749dc7881dsm908113qks.48.2023.11.03.10.35.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 Nov 2023 10:35:40 -0700 (PDT)
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 4EED127C005B;
+        Fri,  3 Nov 2023 13:35:39 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Fri, 03 Nov 2023 13:35:39 -0400
+X-ME-Sender: <xms:aS9FZfy2uIbk6232CNjeP_GDmV4uOXLt3iv9sinL9zkOAiNBwCHzqQ>
+    <xme:aS9FZXRtUtENb5myvkyVGrc4OYlxrDALibxmUms-QezAJPcdneoaRTSZ7UE2msjSv
+    QWKLU3wQjrjojoRsA>
+X-ME-Received: <xmr:aS9FZZUqv6RIw3QoQz1f5KLuL-77Ir3TdedB--zpQk27vW753jwdisza1IM>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedruddtkedguddtudcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhq
+    uhhnucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrf
+    grthhtvghrnhephedugfduffffteeutddvheeuveelvdfhleelieevtdeguefhgeeuveei
+    udffiedvnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    epsghoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqieelvdeghedt
+    ieegqddujeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghilhdrtghomhesfh
+    higihmvgdrnhgrmhgv
+X-ME-Proxy: <xmx:aS9FZZhr5qHY-_aQarg9fd-oieECbBHJXBxo3KCrPTVKXr1WZM9zZw>
+    <xmx:aS9FZRAkKjARQtqFDUX1CPl4AkJ2-FGM2oO0G7AGlUUZLskOUStwWw>
+    <xmx:aS9FZSJX_v10FVN3qbHDbTO2qBLwaOS4WBYBRgEUYuiG4P5pRTVzOQ>
+    <xmx:ay9FZQDYgbOTPKerpYwSyK-2M3Tk5IKh_x5C0r88FU7AztESd-cRng>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 3 Nov 2023 13:35:37 -0400 (EDT)
+Date:   Fri, 3 Nov 2023 10:34:27 -0700
+From:   Boqun Feng <boqun.feng@gmail.com>
+To:     Benno Lossin <benno.lossin@proton.me>
+Cc:     Alice Ryhl <aliceryhl@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
+        Todd Kjos <tkjos@android.com>,
+        Martijn Coenen <maco@android.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Christian Brauner <brauner@kernel.org>,
+        Carlos Llamas <cmllamas@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org,
+        Gary Guo <gary@garyguo.net>,
+        =?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Matt Gilbride <mattgilbride@google.com>,
+        Jeffrey Vander Stoep <jeffv@google.com>,
+        Matthew Maurer <mmaurer@google.com>
+Subject: Re: [PATCH RFC 02/20] rust_binder: add binderfs support to Rust
+ binder
+Message-ID: <ZUUvI0leuPfhCOfE@boqun-archlinux>
+References: <20231101-rust-binder-v1-0-08ba9197f637@google.com>
+ <20231101-rust-binder-v1-2-08ba9197f637@google.com>
+ <sRVdoCqLbxM1-EH0iKVlb9eOEU-wt410-WT5rFTQNNYgmiW6EEpKvCCJyVppOmFYhXBcCN3SsXUXULzpmmweYBGDVHW619pjsIZvorv8Fc8=@proton.me>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: YfRqRlpFGu1Yz6e7jED8TE4eMlxY3ZgT
-X-Proofpoint-GUID: T7TI_AAbL0-9oREfMC48cUjLy_6NNNn8
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-03_16,2023-11-02_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 bulkscore=0
- clxscore=1015 phishscore=0 spamscore=0 priorityscore=1501 malwarescore=0
- adultscore=0 suspectscore=0 impostorscore=0 mlxscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2310240000
- definitions=main-2311030146
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <sRVdoCqLbxM1-EH0iKVlb9eOEU-wt410-WT5rFTQNNYgmiW6EEpKvCCJyVppOmFYhXBcCN3SsXUXULzpmmweYBGDVHW619pjsIZvorv8Fc8=@proton.me>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Directly use the size of the arrays instead of going through the
-indirection of kvm_s390_fac_size().
-Don't use magic number for the number of entries in the non hypervisor
-managed facility bit mask list.
-Make the constraint of that number on kvm_s390_fac_base obvious.
-Get rid of implicit double anding of stfle_fac_list.
+On Fri, Nov 03, 2023 at 04:30:54PM +0000, Benno Lossin wrote:
+> On 01.11.23 19:01, Alice Ryhl wrote:
+> > +/// There is one context per binder file (/dev/binder, /dev/hwbinder, etc)
+> > +#[pin_data]
+> > +pub(crate) struct Context {
+> > +    #[pin]
+> > +    manager: Mutex<Manager>,
+> > +    pub(crate) name: CString,
+> > +    #[pin]
+> > +    links: ListLinks,
+> > +}
+> > +
+> > +kernel::list::impl_has_list_links! {
+> > +    impl HasListLinks<0> for Context { self.links }
+> > +}
+> > +kernel::list::impl_list_arc_safe! {
+> > +    impl ListArcSafe<0> for Context { untracked; }
+> > +}
+> > +kernel::list::impl_list_item! {
+> > +    impl ListItem<0> for Context {
+> > +        using ListLinks;
+> > +    }
+> > +}
+> 
+> I think at some point it would be worth introducing a derive macro that
+> does this for us. So for example:
 
-Signed-off-by: Nina Schoetterl-Glausch <nsg@linux.ibm.com>
----
+Agreed.
 
+> 
+>     #[pin_data]
+>     #[derive(HasListLinks)]
+>     pub(crate) struct Context {
+>         #[pin]
+>         manager: Mutex<Manager>,
+>         pub(crate) name: CString,
+>         #[pin]
+>         #[links]
+>         links: ListLinks,
+>     }
+> 
+> And if you need multiple links you could do:
+> 
+>     #[pin_data]
+>     #[derive(HasListLinks)]
+>     struct Foo {
+>         #[links = 0]
+>         a_list: ListLinks,
 
-I found it confusing before and think it's nicer this way but
-it might be needless churn.
+we will need more discussion on how the derive syntax would look like,
+but I'd expect we can reference the field with names instead of numbers
+if we use derive macros. In other words type numbering to distinguish
+different fields should be an implementation detail.
 
+Regards,
+Boqun
 
- arch/s390/kvm/kvm-s390.c | 44 +++++++++++++++++-----------------------
- 1 file changed, 19 insertions(+), 25 deletions(-)
-
-diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
-index b3f17e014cab..e00ab2f38c89 100644
---- a/arch/s390/kvm/kvm-s390.c
-+++ b/arch/s390/kvm/kvm-s390.c
-@@ -217,33 +217,25 @@ static int async_destroy = 1;
- module_param(async_destroy, int, 0444);
- MODULE_PARM_DESC(async_destroy, "Asynchronous destroy for protected guests");
- 
--/*
-- * For now we handle at most 16 double words as this is what the s390 base
-- * kernel handles and stores in the prefix page. If we ever need to go beyond
-- * this, this requires changes to code, but the external uapi can stay.
-- */
--#define SIZE_INTERNAL 16
--
-+#define HMFAI_DWORDS 16
- /*
-  * Base feature mask that defines default mask for facilities. Consists of the
-  * defines in FACILITIES_KVM and the non-hypervisor managed bits.
-  */
--static unsigned long kvm_s390_fac_base[SIZE_INTERNAL] = { FACILITIES_KVM };
-+static unsigned long kvm_s390_fac_base[HMFAI_DWORDS] = { FACILITIES_KVM };
-+static_assert(ARRAY_SIZE(((long[]){ FACILITIES_KVM })) <= HMFAI_DWORDS);
-+static_assert(ARRAY_SIZE(kvm_s390_fac_base) <= S390_ARCH_FAC_MASK_SIZE_U64);
-+static_assert(ARRAY_SIZE(kvm_s390_fac_base) <= S390_ARCH_FAC_LIST_SIZE_U64);
-+static_assert(ARRAY_SIZE(kvm_s390_fac_base) <= ARRAY_SIZE(stfle_fac_list));
-+
- /*
-  * Extended feature mask. Consists of the defines in FACILITIES_KVM_CPUMODEL
-  * and defines the facilities that can be enabled via a cpu model.
-  */
--static unsigned long kvm_s390_fac_ext[SIZE_INTERNAL] = { FACILITIES_KVM_CPUMODEL };
--
--static unsigned long kvm_s390_fac_size(void)
--{
--	BUILD_BUG_ON(SIZE_INTERNAL > S390_ARCH_FAC_MASK_SIZE_U64);
--	BUILD_BUG_ON(SIZE_INTERNAL > S390_ARCH_FAC_LIST_SIZE_U64);
--	BUILD_BUG_ON(SIZE_INTERNAL * sizeof(unsigned long) >
--		sizeof(stfle_fac_list));
--
--	return SIZE_INTERNAL;
--}
-+static const unsigned long kvm_s390_fac_ext[] = { FACILITIES_KVM_CPUMODEL };
-+static_assert(ARRAY_SIZE(kvm_s390_fac_ext) <= S390_ARCH_FAC_MASK_SIZE_U64);
-+static_assert(ARRAY_SIZE(kvm_s390_fac_ext) <= S390_ARCH_FAC_LIST_SIZE_U64);
-+static_assert(ARRAY_SIZE(kvm_s390_fac_ext) <= ARRAY_SIZE(stfle_fac_list));
- 
- /* available cpu features supported by kvm */
- static DECLARE_BITMAP(kvm_s390_available_cpu_feat, KVM_S390_VM_CPU_FEAT_NR_BITS);
-@@ -3341,13 +3333,16 @@ int kvm_arch_init_vm(struct kvm *kvm, unsigned long type)
- 	kvm->arch.sie_page2->kvm = kvm;
- 	kvm->arch.model.fac_list = kvm->arch.sie_page2->fac_list;
- 
--	for (i = 0; i < kvm_s390_fac_size(); i++) {
-+	for (i = 0; i < ARRAY_SIZE(kvm_s390_fac_base); i++) {
- 		kvm->arch.model.fac_mask[i] = stfle_fac_list[i] &
--					      (kvm_s390_fac_base[i] |
--					       kvm_s390_fac_ext[i]);
-+					      kvm_s390_fac_base[i];
- 		kvm->arch.model.fac_list[i] = stfle_fac_list[i] &
- 					      kvm_s390_fac_base[i];
- 	}
-+	for (i = 0; i < ARRAY_SIZE(kvm_s390_fac_ext); i++) {
-+		kvm->arch.model.fac_mask[i] |= stfle_fac_list[i] &
-+					       kvm_s390_fac_ext[i];
-+	}
- 	kvm->arch.model.subfuncs = kvm_s390_available_subfunc;
- 
- 	/* we are always in czam mode - even on pre z14 machines */
-@@ -5859,9 +5854,8 @@ static int __init kvm_s390_init(void)
- 		return -EINVAL;
- 	}
- 
--	for (i = 0; i < 16; i++)
--		kvm_s390_fac_base[i] |=
--			stfle_fac_list[i] & nonhyp_mask(i);
-+	for (i = 0; i < HMFAI_DWORDS; i++)
-+		kvm_s390_fac_base[i] |= nonhyp_mask(i);
- 
- 	r = __kvm_s390_init();
- 	if (r)
--- 
-2.39.2
-
+>         #[links = 1]
+>         b_list: ListLinks,
+>     }
+> 
+> Same for `ListItem` and `HasWork`. I have not yet taken a look at your
+> linked list implementation, so I don't know if this is possible (since
+> `ListItem` seems to have multiple "backends").
+> 
+> I think this improvement can wait though, just wanted to mention it.
+> 
+> -- 
+> Cheers,
+> Benno
+> 
