@@ -2,123 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F04527E0231
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 12:27:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FDDB7E0235
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 12:29:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230076AbjKCL0u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 07:26:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43630 "EHLO
+        id S232903AbjKCL31 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 07:29:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbjKCL0s (ORCPT
+        with ESMTP id S230090AbjKCL30 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 07:26:48 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA2C7134;
-        Fri,  3 Nov 2023 04:26:42 -0700 (PDT)
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A3BApAX021726;
-        Fri, 3 Nov 2023 11:26:27 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=lfQIATagDXr/IHl018bEVxuu1E+1OhBeQ1S0dtuTD7U=;
- b=Wkxl8puXjlYAzj4Ieivbx7VPVNi5cMv7U0Dz3OdlbtfIF8kIv0o1qaoZ8kRbYjRLFYGm
- m+B+W8vDhRMX8BTZtAghu/Z7DLNKpqzkXzLZ8UlPNwdnA5o4lsoJPxOtvumUWtUe5ovQ
- Nig6XYuhWkPR4lSKvEIVM/I2r9x5RvKnWNGgieXoR0bAI7LGLYZcj5/ekdNhAJ+vW9vu
- Mo4f2/fjUPdTvArWmm5yJyvmAyJxQTDqmxuHxk186F09m5h1Or9mWsaZwkUcV/TTJtu4
- Y8AH466xorSLTzurkd9bl6XkiZ9ZonYnrVH5SDkDzXLkFsAm7AG12YrEM2c4FH5xJjiU Sw== 
-Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u47dy31jf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 03 Nov 2023 11:26:27 +0000
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-        by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3A3BQQJg016440
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 3 Nov 2023 11:26:26 GMT
-Received: from [10.216.26.1] (10.80.80.8) by nasanex01a.na.qualcomm.com
- (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Fri, 3 Nov
- 2023 04:26:20 -0700
-Message-ID: <0140b8b9-0043-4cf4-0704-7727774dba0f@quicinc.com>
-Date:   Fri, 3 Nov 2023 16:56:17 +0530
+        Fri, 3 Nov 2023 07:29:26 -0400
+Received: from mail-ot1-f69.google.com (mail-ot1-f69.google.com [209.85.210.69])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7653134
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 04:29:23 -0700 (PDT)
+Received: by mail-ot1-f69.google.com with SMTP id 46e09a7af769-6d31f3feb10so2385142a34.2
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Nov 2023 04:29:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699010963; x=1699615763;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=lItswbdny8h31vPMeYBzVueiX+EguB1Z+mEFADrYg+I=;
+        b=ErmUxG38UTflHlQoL3EEhDCGuYcgnl9EVT15lF058wiP9L7bV8MzwO9X8QxeVT7C2D
+         Zv4LwLuz+RzFOoarePO1KcHD8Q249LyNoM5w37VsbA/qLW6XtFSkuOgLLD90BlyHQK88
+         Y/jHIFz845FjtlbzVPNLS7cKav5bkPwHdRNI0+f3bQ39U25McfwuTFeCK9XlND2wAuyg
+         zstGDiAR1ykPY2jJlxxPYZuJH6O8eMhe396IXHhmi6XEcWpmaMUvw1GJybaykhhz11/H
+         ooPqqBx0IkAiyi3irGmM3yBqzt/f2ijlFLSbIxWwiVrm7Wa9pyFWPiBWzpVNv+SK00TW
+         OGrQ==
+X-Gm-Message-State: AOJu0YylBahZnBWGOjAynNer/uaEaQGhVkzt1GgMiyqU9QRwAiJFk0/z
+        MVeD0bKZ/Kx/KwW3nJujKFUt5jIRjq8T4HIlN51lQLiCPQfjUWc=
+X-Google-Smtp-Source: AGHT+IGzz8Z0Zg4yE/8CYnZNqoSN5xNWQ2Jh6xRgVm/iMLvcvH0jkFsUNvSH48zHQFT1FXsPaepcvssNSemSX9ZtZTHtw6bxYLVn
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.1
-Subject: Re: [RFC PATCH 2/5] arm64: dts: qcom: ipq9574: Add ecc engine support
-Content-Language: en-US
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>, <agross@kernel.org>,
-        <andersson@kernel.org>, <robh+dt@kernel.org>,
-        <conor+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
-        <broonie@kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-mtd@lists.infradead.org>, <linux-spi@vger.kernel.org>,
-        <quic_srichara@quicinc.com>, <qpic_varada@quicinc.com>
-References: <20231031120307.1600689-1-quic_mdalam@quicinc.com>
- <20231031120307.1600689-3-quic_mdalam@quicinc.com>
- <873c1b14-5b7c-4fb1-8f09-6344a4bf901b@linaro.org>
-From:   Md Sadre Alam <quic_mdalam@quicinc.com>
-In-Reply-To: <873c1b14-5b7c-4fb1-8f09-6344a4bf901b@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: ZK53JGex603L5pTAe7eCzW7u4s1svBif
-X-Proofpoint-ORIG-GUID: ZK53JGex603L5pTAe7eCzW7u4s1svBif
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-03_11,2023-11-02_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 bulkscore=0 malwarescore=0 priorityscore=1501
- suspectscore=0 phishscore=0 impostorscore=0 mlxscore=0 mlxlogscore=798
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2310240000 definitions=main-2311030096
-X-Spam-Status: No, score=-6.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a9d:4043:0:b0:6bf:12:518b with SMTP id o3-20020a9d4043000000b006bf0012518bmr5766803oti.3.1699010963067;
+ Fri, 03 Nov 2023 04:29:23 -0700 (PDT)
+Date:   Fri, 03 Nov 2023 04:29:23 -0700
+In-Reply-To: <000000000000910ad106089f45eb@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000ec590706093dd043@google.com>
+Subject: Re: [syzbot] [PATCH] Test for 2030579113a1
+From:   syzbot <syzbot+df3f3ef31f60781fa911@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+For archival purposes, forwarding an incoming command email to
+linux-kernel@vger.kernel.org.
 
+***
 
-On 10/31/2023 8:53 PM, Konrad Dybcio wrote:
-> On 31.10.2023 13:03, Md Sadre Alam wrote:
->> Signed-off-by: Md Sadre Alam <quic_mdalam@quicinc.com>
->> Signed-off-by: Sricharan R <quic_srichara@quicinc.com>
->> ---
-> Hello,
-> 
-> you're missing:
-> 
-> - dt-bindings (make dtbs_check is unhappy)
-> - a commit message
-> - Co-developed-by for Sricharan
+Subject: [PATCH] Test for 2030579113a1
+Author: eadavis@qq.com
 
-> 
-> status should read "okay" instead, but in this case it's unnecessary
-> as you're defining the node and lack of the status property also means
-> that device is enabled
-> 
-> however
-> 
-> this ECC engine seems to be a part of the NAND controller, so it's
-> unlikely that the DT maintainers will agree for it to have a separate
-> node
-> 
+please test BUG: corrupted list in ptp_open
 
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git 2dac75696c6d
 
-Will drop this patch as this was NAK-ed
-QPIC controller has the ecc pipelined so will keep the ecc support
-inlined in both raw nand and serial nand driver.
-
-Regards
-Alam.
-
+diff --git a/drivers/ptp/ptp_chardev.c b/drivers/ptp/ptp_chardev.c
+index 282cd7d24077..6e9762a54b14 100644
+--- a/drivers/ptp/ptp_chardev.c
++++ b/drivers/ptp/ptp_chardev.c
+@@ -119,8 +119,13 @@ int ptp_open(struct posix_clock_context *pccontext, fmode_t fmode)
+ 	}
+ 	bitmap_set(queue->mask, 0, PTP_MAX_CHANNELS);
+ 	spin_lock_init(&queue->lock);
++	if (mutex_lock_interruptible(&ptp->tsevq_mux)) {
++		kfree(queue);
++		return -ERESTARTSYS;
++	}
+ 	list_add_tail(&queue->qlist, &ptp->tsevqs);
+ 	pccontext->private_clkdata = queue;
++	mutex_unlock(&ptp->tsevq_mux);
+ 
+ 	/* Debugfs contents */
+ 	sprintf(debugfsname, "0x%p", queue);
+@@ -138,14 +143,19 @@ int ptp_open(struct posix_clock_context *pccontext, fmode_t fmode)
+ int ptp_release(struct posix_clock_context *pccontext)
+ {
+ 	struct timestamp_event_queue *queue = pccontext->private_clkdata;
++	struct ptp_clock *ptp =
++		container_of(pccontext->clk, struct ptp_clock, clock);
+ 	unsigned long flags;
+ 
+ 	if (queue) {
++		if (mutex_lock_interruptible(&ptp->tsevq_mux)) 
++			return -ERESTARTSYS;
+ 		debugfs_remove(queue->debugfs_instance);
+ 		pccontext->private_clkdata = NULL;
+ 		spin_lock_irqsave(&queue->lock, flags);
+ 		list_del(&queue->qlist);
+ 		spin_unlock_irqrestore(&queue->lock, flags);
++		mutex_unlock(&ptp->tsevq_mux);
+ 		bitmap_free(queue->mask);
+ 		kfree(queue);
+ 	}
+@@ -585,7 +595,5 @@ ssize_t ptp_read(struct posix_clock_context *pccontext, uint rdflags,
+ free_event:
+ 	kfree(event);
+ exit:
+-	if (result < 0)
+-		ptp_release(pccontext);
+ 	return result;
+ }
+diff --git a/drivers/ptp/ptp_clock.c b/drivers/ptp/ptp_clock.c
+index 3d1b0a97301c..7930db6ec18d 100644
+--- a/drivers/ptp/ptp_clock.c
++++ b/drivers/ptp/ptp_clock.c
+@@ -176,6 +176,7 @@ static void ptp_clock_release(struct device *dev)
+ 
+ 	ptp_cleanup_pin_groups(ptp);
+ 	kfree(ptp->vclock_index);
++	mutex_destroy(&ptp->tsevq_mux);
+ 	mutex_destroy(&ptp->pincfg_mux);
+ 	mutex_destroy(&ptp->n_vclocks_mux);
+ 	/* Delete first entry */
+@@ -247,6 +248,7 @@ struct ptp_clock *ptp_clock_register(struct ptp_clock_info *info,
+ 	if (!queue)
+ 		goto no_memory_queue;
+ 	list_add_tail(&queue->qlist, &ptp->tsevqs);
++	mutex_init(&ptp->tsevq_mux);
+ 	queue->mask = bitmap_alloc(PTP_MAX_CHANNELS, GFP_KERNEL);
+ 	if (!queue->mask)
+ 		goto no_memory_bitmap;
+@@ -356,6 +358,7 @@ struct ptp_clock *ptp_clock_register(struct ptp_clock_info *info,
+ 	if (ptp->kworker)
+ 		kthread_destroy_worker(ptp->kworker);
+ kworker_err:
++	mutex_destroy(&ptp->tsevq_mux);
+ 	mutex_destroy(&ptp->pincfg_mux);
+ 	mutex_destroy(&ptp->n_vclocks_mux);
+ 	bitmap_free(queue->mask);
+diff --git a/drivers/ptp/ptp_private.h b/drivers/ptp/ptp_private.h
+index 52f87e394aa6..1525bd2059ba 100644
+--- a/drivers/ptp/ptp_private.h
++++ b/drivers/ptp/ptp_private.h
+@@ -44,6 +44,7 @@ struct ptp_clock {
+ 	struct pps_device *pps_source;
+ 	long dialed_frequency; /* remembers the frequency adjustment */
+ 	struct list_head tsevqs; /* timestamp fifo list */
++	struct mutex tsevq_mux; /* one process at a time reading the fifo */
+ 	struct mutex pincfg_mux; /* protect concurrent info->pin_config access */
+ 	wait_queue_head_t tsev_wq;
+ 	int defunct; /* tells readers to go away when clock is being removed */
+-- 
+2.25.1
 
