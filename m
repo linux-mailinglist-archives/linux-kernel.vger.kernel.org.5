@@ -2,52 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD1DB7E02FD
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 13:35:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D37617E0300
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 13:35:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376461AbjKCMfp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 08:35:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55878 "EHLO
+        id S1376497AbjKCMft (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 08:35:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376270AbjKCMfn (ORCPT
+        with ESMTP id S1376439AbjKCMfp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 08:35:43 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70F19184;
-        Fri,  3 Nov 2023 05:35:40 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id 38308e7fff4ca-2c50cf61f6dso28738091fa.2;
-        Fri, 03 Nov 2023 05:35:40 -0700 (PDT)
+        Fri, 3 Nov 2023 08:35:45 -0400
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68783CE;
+        Fri,  3 Nov 2023 05:35:41 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2c50ec238aeso28613361fa.0;
+        Fri, 03 Nov 2023 05:35:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699014938; x=1699619738; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=xOIjNHwDhIrchH75GqKOcAkPO2xPGvmXahK1witYqLQ=;
-        b=U81v6V1we5SdAULZOaY/D46Gl5cc1Ci3NwvkWMrg3rpPxsfQTeVLx6PjrKQkyLBfYM
-         V949jb3INmYDKvpJhvzRfdHzG+vTqBJN0fvGhSbvcSE5evXMAXcmqDfPdQ/fDqlipiMK
-         CLLPsvQ0G85dpKI0EdTV7RrwG1LbDHqt6I0VuCmkJMfEC5tf/SHEOF0ukJzU1FhfjIfs
-         bSeLRYadzOdp1ru7nXsKEpOH7VrTr1P0FN7TBrKUlTs6uqMuErALjRA8VxvwUMiGCm3o
-         jGeWQcOxdOqcUudkpd6s21zVfhEQgqRcU4BHxifVJZqk7j4X0LGU9b6/aECKcnJS5giM
-         tbvg==
+        d=gmail.com; s=20230601; t=1699014939; x=1699619739; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=3WlXoM+vnYwBwzeCJHulUjKX4ggXCw4tLhrFljW5lQc=;
+        b=Qg+ZBjfwGm+wPzW/n7JLnGYwP0UaeAjDAivB0ww6D09/S+oa7DpRWS+0F7uxFVsqAt
+         OqUrr+TH1KeHaPHCeu/MkZvdzHNYKXn9zaUT2GNKDVKTY8OQ4OBFdUZoQMWPoxxITO1L
+         4lwMA4lXsBpTsi5jyRuyeE5Q8FnrpYvo4iGF1pUQm348ecQDuYOWcskXSusR9tMbzo5w
+         mPYQp2GZCnWC2dHu3/7U9dCJRbfxBdcmLQ1wGMd3b/xa5maCw2vDwDenQ8ovtzBgBgag
+         SQ4aHUiTi0rH4ds7W46ht1qPRBUKZ8A/uT1FGzG7E1193XAyi8/vqXd7t91UEwXYI/zL
+         VTHQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699014938; x=1699619738;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xOIjNHwDhIrchH75GqKOcAkPO2xPGvmXahK1witYqLQ=;
-        b=CcavNxbnoJtc1vFGg6srN9wjCASCgPmWQkAx89rEcTTJFWuzu5Yl23+U5Ltr8lbDjr
-         J1EhINN98IIVxX43Mw27vuX6fYntekPJg7oBKskZSqJOrxk/+4a2mWDdQj07Tdlnj0HP
-         Q4O8Fjy2roxR5u+Pm6GUIFayWI3Gktnr3CzDCdttDlvb/L/XJ6R31IPPuTp1u29osM2S
-         QcC4bsVclWr+v7g4DibtrzRdu93Lj/eC/7snqkrYddMXo9RN5VuiR8Q37ylTBlX8smtB
-         5zOJbnGUaaIcJdXFjDfyNXkCO4F0MVFEO2Gkm3bHRJjG69kl0b6rcRbaq/O+KzE9/qHx
-         fRVQ==
-X-Gm-Message-State: AOJu0YzggPuTjTo7wXy/34FeJaPPrPpdCDeqZGNExon1IWDL0KjyBGLm
-        TktxeaECSbR0Qh68VP9QvYA=
-X-Google-Smtp-Source: AGHT+IFk5WiiMlt6WGzF/0f1ZkmkQo56aWCN5RHiPFzNlLjffmsD/L8x3215C5tzFNC/7zm7U+g+7w==
-X-Received: by 2002:a2e:be8b:0:b0:2c5:b3c4:7b17 with SMTP id a11-20020a2ebe8b000000b002c5b3c47b17mr22055378ljr.38.1699014937967;
-        Fri, 03 Nov 2023 05:35:37 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1699014939; x=1699619739;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3WlXoM+vnYwBwzeCJHulUjKX4ggXCw4tLhrFljW5lQc=;
+        b=XHhbwrDtTPSwi2ygMTvfn+UQLEFZaUgTrhZPAkSoGNJD1Zt5iPp0zq34Y3U6olfJob
+         C5U1vINd1jgEjo+yTKSZVcqkobQG6Kcxe9ZhhhEgLvQGiyrmeVA32utE2G+Uq8BV9uNJ
+         Yz3lSFu1GNPr99k4Wk8ERytanKod1zGxGrDcI0j1fD71C+9xkvVjImWoK9F2guwPAdgQ
+         3pgytX1maNHfhJvrZRD942iRkRjKAU1UaTaPtRWvCtk93JUAsR/7hryauGgRouyLzBaw
+         y0uIEOI3coVv4iLlvUymG4laLMS+04nZE0qSm0YMr6WOs2gcYZslBNtCAK8FS1yUTk2a
+         Ju7g==
+X-Gm-Message-State: AOJu0YxXkAPQhbV60pIt9itCGVbCNrOZ4JH4ufdOCCwHUYFDrYXViMW1
+        Wv09+yWzg/FSM5/i8P1jnUU=
+X-Google-Smtp-Source: AGHT+IHEvyVKhv1TZ3vs0oVgfhUtVf9TftSNKQCDLH7GQOcoREK0T4iNwF9Ru/j0aBOFC+zqydLTgw==
+X-Received: by 2002:a05:651c:155:b0:2c5:1042:b6e8 with SMTP id c21-20020a05651c015500b002c51042b6e8mr18005917ljd.12.1699014939300;
+        Fri, 03 Nov 2023 05:35:39 -0700 (PDT)
 Received: from localhost.localdomain (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
-        by smtp.googlemail.com with ESMTPSA id gy14-20020a05600c880e00b00403b63e87f2sm2277014wmb.32.2023.11.03.05.35.36
+        by smtp.googlemail.com with ESMTPSA id gy14-20020a05600c880e00b00403b63e87f2sm2277014wmb.32.2023.11.03.05.35.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Nov 2023 05:35:37 -0700 (PDT)
+        Fri, 03 Nov 2023 05:35:38 -0700 (PDT)
 From:   Christian Marangi <ansuelsmth@gmail.com>
 To:     "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
@@ -64,114 +66,212 @@ To:     "David S. Miller" <davem@davemloft.net>,
         Vladimir Oltean <vladimir.oltean@nxp.com>,
         netdev@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [net-next RFC PATCH v4 1/4] net: phy: aquantia: move to separate directory
-Date:   Fri,  3 Nov 2023 13:35:29 +0100
-Message-Id: <20231103123532.687-1-ansuelsmth@gmail.com>
+Subject: [net-next RFC PATCH v4 2/4] net: phy: aquantia: move MMD_VEND define to header
+Date:   Fri,  3 Nov 2023 13:35:30 +0100
+Message-Id: <20231103123532.687-2-ansuelsmth@gmail.com>
 X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20231103123532.687-1-ansuelsmth@gmail.com>
+References: <20231103123532.687-1-ansuelsmth@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        UPPERCASE_50_75 autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move aquantia PHY driver to separate driectory in preparation for
-firmware loading support to keep things tidy.
+Move MMD_VEND define to header to clean things up and in preparation for
+firmware loading support that require some define placed in
+aquantia_main.
 
 Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 ---
 Changes v4:
-- Keep order for kconfig config
+- Add Reviewed-by tag
 Changes v3:
 - Add this patch
 
- drivers/net/phy/Kconfig                         | 5 +----
- drivers/net/phy/Makefile                        | 6 +-----
- drivers/net/phy/aquantia/Kconfig                | 5 +++++
- drivers/net/phy/aquantia/Makefile               | 6 ++++++
- drivers/net/phy/{ => aquantia}/aquantia.h       | 0
- drivers/net/phy/{ => aquantia}/aquantia_hwmon.c | 0
- drivers/net/phy/{ => aquantia}/aquantia_main.c  | 0
- 7 files changed, 13 insertions(+), 9 deletions(-)
- create mode 100644 drivers/net/phy/aquantia/Kconfig
- create mode 100644 drivers/net/phy/aquantia/Makefile
- rename drivers/net/phy/{ => aquantia}/aquantia.h (100%)
- rename drivers/net/phy/{ => aquantia}/aquantia_hwmon.c (100%)
- rename drivers/net/phy/{ => aquantia}/aquantia_main.c (100%)
+ drivers/net/phy/aquantia/aquantia.h       | 69 +++++++++++++++++++++++
+ drivers/net/phy/aquantia/aquantia_hwmon.c | 14 -----
+ drivers/net/phy/aquantia/aquantia_main.c  | 55 ------------------
+ 3 files changed, 69 insertions(+), 69 deletions(-)
 
-diff --git a/drivers/net/phy/Kconfig b/drivers/net/phy/Kconfig
-index 421d2b62918f..25cfc5ded1da 100644
---- a/drivers/net/phy/Kconfig
-+++ b/drivers/net/phy/Kconfig
-@@ -96,10 +96,7 @@ config ADIN1100_PHY
- 	  Currently supports the:
- 	  - ADIN1100 - Robust,Industrial, Low Power 10BASE-T1L Ethernet PHY
+diff --git a/drivers/net/phy/aquantia/aquantia.h b/drivers/net/phy/aquantia/aquantia.h
+index c684b65c642c..f0c767c4fad1 100644
+--- a/drivers/net/phy/aquantia/aquantia.h
++++ b/drivers/net/phy/aquantia/aquantia.h
+@@ -9,6 +9,75 @@
+ #include <linux/device.h>
+ #include <linux/phy.h>
  
--config AQUANTIA_PHY
--	tristate "Aquantia PHYs"
--	help
--	  Currently supports the Aquantia AQ1202, AQ2104, AQR105, AQR405
-+source "drivers/net/phy/aquantia/Kconfig"
++/* Vendor specific 1, MDIO_MMD_VEND1 */
++#define VEND1_GLOBAL_FW_ID			0x0020
++#define VEND1_GLOBAL_FW_ID_MAJOR		GENMASK(15, 8)
++#define VEND1_GLOBAL_FW_ID_MINOR		GENMASK(7, 0)
++
++/* The following registers all have similar layouts; first the registers... */
++#define VEND1_GLOBAL_CFG_10M			0x0310
++#define VEND1_GLOBAL_CFG_100M			0x031b
++#define VEND1_GLOBAL_CFG_1G			0x031c
++#define VEND1_GLOBAL_CFG_2_5G			0x031d
++#define VEND1_GLOBAL_CFG_5G			0x031e
++#define VEND1_GLOBAL_CFG_10G			0x031f
++/* ...and now the fields */
++#define VEND1_GLOBAL_CFG_RATE_ADAPT		GENMASK(8, 7)
++#define VEND1_GLOBAL_CFG_RATE_ADAPT_NONE	0
++#define VEND1_GLOBAL_CFG_RATE_ADAPT_USX		1
++#define VEND1_GLOBAL_CFG_RATE_ADAPT_PAUSE	2
++
++/* Vendor specific 1, MDIO_MMD_VEND2 */
++#define VEND1_THERMAL_PROV_HIGH_TEMP_FAIL	0xc421
++#define VEND1_THERMAL_PROV_LOW_TEMP_FAIL	0xc422
++#define VEND1_THERMAL_PROV_HIGH_TEMP_WARN	0xc423
++#define VEND1_THERMAL_PROV_LOW_TEMP_WARN	0xc424
++#define VEND1_THERMAL_STAT1			0xc820
++#define VEND1_THERMAL_STAT2			0xc821
++#define VEND1_THERMAL_STAT2_VALID		BIT(0)
++#define VEND1_GENERAL_STAT1			0xc830
++#define VEND1_GENERAL_STAT1_HIGH_TEMP_FAIL	BIT(14)
++#define VEND1_GENERAL_STAT1_LOW_TEMP_FAIL	BIT(13)
++#define VEND1_GENERAL_STAT1_HIGH_TEMP_WARN	BIT(12)
++#define VEND1_GENERAL_STAT1_LOW_TEMP_WARN	BIT(11)
++
++#define VEND1_GLOBAL_GEN_STAT2			0xc831
++#define VEND1_GLOBAL_GEN_STAT2_OP_IN_PROG	BIT(15)
++
++#define VEND1_GLOBAL_RSVD_STAT1			0xc885
++#define VEND1_GLOBAL_RSVD_STAT1_FW_BUILD_ID	GENMASK(7, 4)
++#define VEND1_GLOBAL_RSVD_STAT1_PROV_ID		GENMASK(3, 0)
++
++#define VEND1_GLOBAL_RSVD_STAT9			0xc88d
++#define VEND1_GLOBAL_RSVD_STAT9_MODE		GENMASK(7, 0)
++#define VEND1_GLOBAL_RSVD_STAT9_1000BT2		0x23
++
++#define VEND1_GLOBAL_INT_STD_STATUS		0xfc00
++#define VEND1_GLOBAL_INT_VEND_STATUS		0xfc01
++
++#define VEND1_GLOBAL_INT_STD_MASK		0xff00
++#define VEND1_GLOBAL_INT_STD_MASK_PMA1		BIT(15)
++#define VEND1_GLOBAL_INT_STD_MASK_PMA2		BIT(14)
++#define VEND1_GLOBAL_INT_STD_MASK_PCS1		BIT(13)
++#define VEND1_GLOBAL_INT_STD_MASK_PCS2		BIT(12)
++#define VEND1_GLOBAL_INT_STD_MASK_PCS3		BIT(11)
++#define VEND1_GLOBAL_INT_STD_MASK_PHY_XS1	BIT(10)
++#define VEND1_GLOBAL_INT_STD_MASK_PHY_XS2	BIT(9)
++#define VEND1_GLOBAL_INT_STD_MASK_AN1		BIT(8)
++#define VEND1_GLOBAL_INT_STD_MASK_AN2		BIT(7)
++#define VEND1_GLOBAL_INT_STD_MASK_GBE		BIT(6)
++#define VEND1_GLOBAL_INT_STD_MASK_ALL		BIT(0)
++
++#define VEND1_GLOBAL_INT_VEND_MASK		0xff01
++#define VEND1_GLOBAL_INT_VEND_MASK_PMA		BIT(15)
++#define VEND1_GLOBAL_INT_VEND_MASK_PCS		BIT(14)
++#define VEND1_GLOBAL_INT_VEND_MASK_PHY_XS	BIT(13)
++#define VEND1_GLOBAL_INT_VEND_MASK_AN		BIT(12)
++#define VEND1_GLOBAL_INT_VEND_MASK_GBE		BIT(11)
++#define VEND1_GLOBAL_INT_VEND_MASK_GLOBAL1	BIT(2)
++#define VEND1_GLOBAL_INT_VEND_MASK_GLOBAL2	BIT(1)
++#define VEND1_GLOBAL_INT_VEND_MASK_GLOBAL3	BIT(0)
++
+ #if IS_REACHABLE(CONFIG_HWMON)
+ int aqr_hwmon_probe(struct phy_device *phydev);
+ #else
+diff --git a/drivers/net/phy/aquantia/aquantia_hwmon.c b/drivers/net/phy/aquantia/aquantia_hwmon.c
+index 0da451e46f69..7b3c49c3bf49 100644
+--- a/drivers/net/phy/aquantia/aquantia_hwmon.c
++++ b/drivers/net/phy/aquantia/aquantia_hwmon.c
+@@ -13,20 +13,6 @@
  
- config AX88796B_PHY
- 	tristate "Asix PHYs"
-diff --git a/drivers/net/phy/Makefile b/drivers/net/phy/Makefile
-index c945ed9bd14b..f65e85c91fc1 100644
---- a/drivers/net/phy/Makefile
-+++ b/drivers/net/phy/Makefile
-@@ -35,11 +35,7 @@ obj-y				+= $(sfp-obj-y) $(sfp-obj-m)
- obj-$(CONFIG_ADIN_PHY)		+= adin.o
- obj-$(CONFIG_ADIN1100_PHY)	+= adin1100.o
- obj-$(CONFIG_AMD_PHY)		+= amd.o
--aquantia-objs			+= aquantia_main.o
--ifdef CONFIG_HWMON
--aquantia-objs			+= aquantia_hwmon.o
--endif
--obj-$(CONFIG_AQUANTIA_PHY)	+= aquantia.o
-+obj-$(CONFIG_AQUANTIA_PHY)	+= aquantia/
- obj-$(CONFIG_AT803X_PHY)	+= at803x.o
- obj-$(CONFIG_AX88796B_PHY)	+= ax88796b.o
- obj-$(CONFIG_BCM54140_PHY)	+= bcm54140.o
-diff --git a/drivers/net/phy/aquantia/Kconfig b/drivers/net/phy/aquantia/Kconfig
-new file mode 100644
-index 000000000000..226146417a6a
---- /dev/null
-+++ b/drivers/net/phy/aquantia/Kconfig
-@@ -0,0 +1,5 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+config AQUANTIA_PHY
-+	tristate "Aquantia PHYs"
-+	help
-+	  Currently supports the Aquantia AQ1202, AQ2104, AQR105, AQR405
-diff --git a/drivers/net/phy/aquantia/Makefile b/drivers/net/phy/aquantia/Makefile
-new file mode 100644
-index 000000000000..346f350bc084
---- /dev/null
-+++ b/drivers/net/phy/aquantia/Makefile
-@@ -0,0 +1,6 @@
-+# SPDX-License-Identifier: GPL-2.0
-+aquantia-objs			+= aquantia_main.o
-+ifdef CONFIG_HWMON
-+aquantia-objs			+= aquantia_hwmon.o
-+endif
-+obj-$(CONFIG_AQUANTIA_PHY)	+= aquantia.o
-diff --git a/drivers/net/phy/aquantia.h b/drivers/net/phy/aquantia/aquantia.h
-similarity index 100%
-rename from drivers/net/phy/aquantia.h
-rename to drivers/net/phy/aquantia/aquantia.h
-diff --git a/drivers/net/phy/aquantia_hwmon.c b/drivers/net/phy/aquantia/aquantia_hwmon.c
-similarity index 100%
-rename from drivers/net/phy/aquantia_hwmon.c
-rename to drivers/net/phy/aquantia/aquantia_hwmon.c
-diff --git a/drivers/net/phy/aquantia_main.c b/drivers/net/phy/aquantia/aquantia_main.c
-similarity index 100%
-rename from drivers/net/phy/aquantia_main.c
-rename to drivers/net/phy/aquantia/aquantia_main.c
+ #include "aquantia.h"
+ 
+-/* Vendor specific 1, MDIO_MMD_VEND2 */
+-#define VEND1_THERMAL_PROV_HIGH_TEMP_FAIL	0xc421
+-#define VEND1_THERMAL_PROV_LOW_TEMP_FAIL	0xc422
+-#define VEND1_THERMAL_PROV_HIGH_TEMP_WARN	0xc423
+-#define VEND1_THERMAL_PROV_LOW_TEMP_WARN	0xc424
+-#define VEND1_THERMAL_STAT1			0xc820
+-#define VEND1_THERMAL_STAT2			0xc821
+-#define VEND1_THERMAL_STAT2_VALID		BIT(0)
+-#define VEND1_GENERAL_STAT1			0xc830
+-#define VEND1_GENERAL_STAT1_HIGH_TEMP_FAIL	BIT(14)
+-#define VEND1_GENERAL_STAT1_LOW_TEMP_FAIL	BIT(13)
+-#define VEND1_GENERAL_STAT1_HIGH_TEMP_WARN	BIT(12)
+-#define VEND1_GENERAL_STAT1_LOW_TEMP_WARN	BIT(11)
+-
+ #if IS_REACHABLE(CONFIG_HWMON)
+ 
+ static umode_t aqr_hwmon_is_visible(const void *data,
+diff --git a/drivers/net/phy/aquantia/aquantia_main.c b/drivers/net/phy/aquantia/aquantia_main.c
+index 334a6904ca5a..4498426e9a52 100644
+--- a/drivers/net/phy/aquantia/aquantia_main.c
++++ b/drivers/net/phy/aquantia/aquantia_main.c
+@@ -91,61 +91,6 @@
+ #define MDIO_C22EXT_STAT_SGMII_TX_FRAME_ALIGN_ERR	0xd31a
+ #define MDIO_C22EXT_STAT_SGMII_TX_RUNT_FRAMES		0xd31b
+ 
+-/* Vendor specific 1, MDIO_MMD_VEND1 */
+-#define VEND1_GLOBAL_FW_ID			0x0020
+-#define VEND1_GLOBAL_FW_ID_MAJOR		GENMASK(15, 8)
+-#define VEND1_GLOBAL_FW_ID_MINOR		GENMASK(7, 0)
+-
+-#define VEND1_GLOBAL_GEN_STAT2			0xc831
+-#define VEND1_GLOBAL_GEN_STAT2_OP_IN_PROG	BIT(15)
+-
+-/* The following registers all have similar layouts; first the registers... */
+-#define VEND1_GLOBAL_CFG_10M			0x0310
+-#define VEND1_GLOBAL_CFG_100M			0x031b
+-#define VEND1_GLOBAL_CFG_1G			0x031c
+-#define VEND1_GLOBAL_CFG_2_5G			0x031d
+-#define VEND1_GLOBAL_CFG_5G			0x031e
+-#define VEND1_GLOBAL_CFG_10G			0x031f
+-/* ...and now the fields */
+-#define VEND1_GLOBAL_CFG_RATE_ADAPT		GENMASK(8, 7)
+-#define VEND1_GLOBAL_CFG_RATE_ADAPT_NONE	0
+-#define VEND1_GLOBAL_CFG_RATE_ADAPT_USX		1
+-#define VEND1_GLOBAL_CFG_RATE_ADAPT_PAUSE	2
+-
+-#define VEND1_GLOBAL_RSVD_STAT1			0xc885
+-#define VEND1_GLOBAL_RSVD_STAT1_FW_BUILD_ID	GENMASK(7, 4)
+-#define VEND1_GLOBAL_RSVD_STAT1_PROV_ID		GENMASK(3, 0)
+-
+-#define VEND1_GLOBAL_RSVD_STAT9			0xc88d
+-#define VEND1_GLOBAL_RSVD_STAT9_MODE		GENMASK(7, 0)
+-#define VEND1_GLOBAL_RSVD_STAT9_1000BT2		0x23
+-
+-#define VEND1_GLOBAL_INT_STD_STATUS		0xfc00
+-#define VEND1_GLOBAL_INT_VEND_STATUS		0xfc01
+-
+-#define VEND1_GLOBAL_INT_STD_MASK		0xff00
+-#define VEND1_GLOBAL_INT_STD_MASK_PMA1		BIT(15)
+-#define VEND1_GLOBAL_INT_STD_MASK_PMA2		BIT(14)
+-#define VEND1_GLOBAL_INT_STD_MASK_PCS1		BIT(13)
+-#define VEND1_GLOBAL_INT_STD_MASK_PCS2		BIT(12)
+-#define VEND1_GLOBAL_INT_STD_MASK_PCS3		BIT(11)
+-#define VEND1_GLOBAL_INT_STD_MASK_PHY_XS1	BIT(10)
+-#define VEND1_GLOBAL_INT_STD_MASK_PHY_XS2	BIT(9)
+-#define VEND1_GLOBAL_INT_STD_MASK_AN1		BIT(8)
+-#define VEND1_GLOBAL_INT_STD_MASK_AN2		BIT(7)
+-#define VEND1_GLOBAL_INT_STD_MASK_GBE		BIT(6)
+-#define VEND1_GLOBAL_INT_STD_MASK_ALL		BIT(0)
+-
+-#define VEND1_GLOBAL_INT_VEND_MASK		0xff01
+-#define VEND1_GLOBAL_INT_VEND_MASK_PMA		BIT(15)
+-#define VEND1_GLOBAL_INT_VEND_MASK_PCS		BIT(14)
+-#define VEND1_GLOBAL_INT_VEND_MASK_PHY_XS	BIT(13)
+-#define VEND1_GLOBAL_INT_VEND_MASK_AN		BIT(12)
+-#define VEND1_GLOBAL_INT_VEND_MASK_GBE		BIT(11)
+-#define VEND1_GLOBAL_INT_VEND_MASK_GLOBAL1	BIT(2)
+-#define VEND1_GLOBAL_INT_VEND_MASK_GLOBAL2	BIT(1)
+-#define VEND1_GLOBAL_INT_VEND_MASK_GLOBAL3	BIT(0)
+-
+ /* Sleep and timeout for checking if the Processor-Intensive
+  * MDIO operation is finished
+  */
 -- 
 2.40.1
 
