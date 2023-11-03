@@ -2,275 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B87477E023C
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 12:31:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 890E27E0238
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 12:31:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229588AbjKCLbo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 07:31:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35980 "EHLO
+        id S229984AbjKCLbY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 07:31:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbjKCLbm (ORCPT
+        with ESMTP id S229379AbjKCLbX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 07:31:42 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB685D49;
-        Fri,  3 Nov 2023 04:31:36 -0700 (PDT)
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A39uAFA024909;
-        Fri, 3 Nov 2023 11:31:21 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=Y8JOeXpkaN/9qOWXaRwWuwLXex9oOmgIsk06K7x2svA=;
- b=dw+BTf+2CuPpJ+EcK3Ns0nrgKW+CsfGSq+YdPy5aS2sjS4DSal/T65ucBwYgpW0Nl8I6
- LxJO6bL1JZt5Uif8IJ1IlvEmfkGfLlhwDVN+X5kEmy7P/gXqIIBgz0YMlKE+f/3wHMHy
- z5ONcI27PyvuViIjpKaVVtxpbNyN8CNVkRgjnpufaxDevjbGx+3YdQmr1pL9E6bs36MC
- SBdohGfWOZEo5rF+1gPnwDkOGxnzB8/y3DqKDOaKlwcJqJ+Db6LfBj3RijOxpSRUQSrM
- E10hGCTs/EhsYj6YlixkaaeV5iNwml3EPFXvlf4mPni8yFiQZMgOvZLs11ACe5Dx/6ly Gg== 
-Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u4wmjgamr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 03 Nov 2023 11:31:20 +0000
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-        by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3A3BVJ1i001840
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 3 Nov 2023 11:31:19 GMT
-Received: from [10.216.26.1] (10.80.80.8) by nasanex01a.na.qualcomm.com
- (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Fri, 3 Nov
- 2023 04:31:14 -0700
-Message-ID: <fc8d57ad-d9c9-9db6-122e-00ca9cc915b9@quicinc.com>
-Date:   Fri, 3 Nov 2023 17:01:10 +0530
+        Fri, 3 Nov 2023 07:31:23 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E0CB9D4D
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 04:31:19 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4C77B2F4;
+        Fri,  3 Nov 2023 04:32:02 -0700 (PDT)
+Received: from [10.57.71.183] (unknown [10.57.71.183])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D77033F67D;
+        Fri,  3 Nov 2023 04:31:17 -0700 (PDT)
+Message-ID: <6641a14b-e3fb-4e9e-bb95-b0306827294b@arm.com>
+Date:   Fri, 3 Nov 2023 11:31:16 +0000
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.1
-Subject: Re: [RFC PATCH 5/5] arm64: dts: qcom: ipq9574: Add support for SPI
- nand
-Content-Language: en-US
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>, <agross@kernel.org>,
-        <andersson@kernel.org>, <robh+dt@kernel.org>,
-        <conor+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
-        <broonie@kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-mtd@lists.infradead.org>, <linux-spi@vger.kernel.org>,
-        <quic_srichara@quicinc.com>, <qpic_varada@quicinc.com>
-References: <20231031120307.1600689-1-quic_mdalam@quicinc.com>
- <20231031120307.1600689-6-quic_mdalam@quicinc.com>
- <8be3b4f4-f3d1-41c8-bd4a-90adf1a02ea6@linaro.org>
-From:   Md Sadre Alam <quic_mdalam@quicinc.com>
-In-Reply-To: <8be3b4f4-f3d1-41c8-bd4a-90adf1a02ea6@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 4/4] mm: swap: Swap-out small-sized THP without
+ splitting
+Content-Language: en-GB
+To:     Barry Song <21cnbao@gmail.com>
+Cc:     Steven.Price@arm.com, akpm@linux-foundation.org, david@redhat.com,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org, mhocko@suse.com,
+        shy828301@gmail.com, wangkefeng.wang@huawei.com,
+        willy@infradead.org, xiang@kernel.org, ying.huang@intel.com,
+        yuzhao@google.com
+References: <73aad98e-de4c-4021-af3c-db67e06cdb70@arm.com>
+ <20231102223643.7733-1-v-songbaohua@oppo.com>
+From:   Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <20231102223643.7733-1-v-songbaohua@oppo.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: BYboVtFXiK2hGQ90Qzd1aAcM57amnlk_
-X-Proofpoint-GUID: BYboVtFXiK2hGQ90Qzd1aAcM57amnlk_
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-03_11,2023-11-02_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 phishscore=0
- suspectscore=0 bulkscore=0 clxscore=1015 priorityscore=1501
- mlxlogscore=999 malwarescore=0 spamscore=0 adultscore=0 mlxscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2310240000 definitions=main-2311030096
-X-Spam-Status: No, score=-6.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 02/11/2023 22:36, Barry Song wrote:
+>> But, yes, it would be nice to fix that! And if I've understood the problem
+>> correctly, it doesn't sound like it should be too hard? Is this something you
+>> are volunteering for?? :)
+> 
+> Unfornately right now I haven't a real hardware with MTE which can run the latest
+> kernel. but i have written a RFC, it will be nice to get someone to test it. Let
+> me figure out if we can get someone :-)
 
-
-On 10/31/2023 8:57 PM, Konrad Dybcio wrote:
-> On 31.10.2023 13:03, Md Sadre Alam wrote:
->> Add support for QPIC SPI NAND for IPQ9574
->>
->> Signed-off-by: Md Sadre Alam <quic_mdalam@quicinc.com>
->> Signed-off-by: Sricharan R <quic_srichara@quicinc.com>
->> ---
->>   arch/arm64/boot/dts/qcom/ipq9574-rdp433.dts | 56 ++++++++++-----------
->>   arch/arm64/boot/dts/qcom/ipq9574.dtsi       | 30 ++++++++++-
->>   2 files changed, 57 insertions(+), 29 deletions(-)
->>
->> diff --git a/arch/arm64/boot/dts/qcom/ipq9574-rdp433.dts b/arch/arm64/boot/dts/qcom/ipq9574-rdp433.dts
->> index 1bb8d96c9a82..5e4200edb873 100644
->> --- a/arch/arm64/boot/dts/qcom/ipq9574-rdp433.dts
->> +++ b/arch/arm64/boot/dts/qcom/ipq9574-rdp433.dts
->> @@ -15,48 +15,48 @@ / {
->>   	compatible = "qcom,ipq9574-ap-al02-c7", "qcom,ipq9574";
->>   };
->>   
->> -&sdhc_1 {
->> -	pinctrl-0 = <&sdc_default_state>;
->> -	pinctrl-names = "default";
->> -	mmc-ddr-1_8v;
->> -	mmc-hs200-1_8v;
->> -	mmc-hs400-1_8v;
->> -	mmc-hs400-enhanced-strobe;
->> -	max-frequency = <384000000>;
->> -	bus-width = <8>;
->> -	status = "okay";
->> -};
-> How is removing SDHCI related to adding support for SPI NAND flash?
-> You must explain your changes in the commit message.
->
-
-
-its my mistake will fix in V1
-
->> -
->>   &tlmm {
->> -	sdc_default_state: sdc-default-state {
->> -		clk-pins {
->> +	qspi_nand_pins: qspi_nand_pins {
-> node names (between : and {) must not include underscores, use
-> hyphens instead
-
-ok
+OK, let me know if you find someone. Otherwise I can have a hunt around to see
+if I can test it.
 
 > 
->> +		spi_clock {
->>   			pins = "gpio5";
->> -			function = "sdc_clk";
->> +			function = "qspi_clk";
->>   			drive-strength = <8>;
->>   			bias-disable;
->>   		};
->>   
->> -		cmd-pins {
->> +		qspi_cs {
->>   			pins = "gpio4";
->> -			function = "sdc_cmd";
->> +			function = "qspi_cs";
->>   			drive-strength = <8>;
->>   			bias-pull-up;
->>   		};
->>   
->> -		data-pins {
->> -			pins = "gpio0", "gpio1", "gpio2",
->> -			       "gpio3", "gpio6", "gpio7",
->> -			       "gpio8", "gpio9";
->> -			function = "sdc_data";
->> +		qspi_data {
->> +			pins = "gpio0", "gpio1", "gpio2";
->> +			function = "qspi_data";
->>   			drive-strength = <8>;
->>   			bias-pull-up;
->>   		};
->>   
->> -		rclk-pins {
->> -			pins = "gpio10";
->> -			function = "sdc_rclk";
->> -			drive-strength = <8>;
->> -			bias-pull-down;
->> -		};
->> +	};
->> +};
->> +
->> +&qpic_bam {
->> +	status = "okay";
->> +};
->> +
->> +&qpic_nand {
->> +	status = "okay";
-> status should come last
->> +	pinctrl-0 = <&qspi_nand_pins>;
->> +	pinctrl-names = "default";
->> +	spi_nand: spi_nand@0 {
-> no underscores in node names
-> missing newline between properties and subnodes
-
-ok
-
+> [RFC PATCH] arm64: mm: swap: save and restore mte tags for large folios
 > 
->> +		compatible = "spi-nand";
->> +		nand-ecc-engine = <&qpic_nand>;
->> +		reg = <0>;
->> +		#address-cells = <1>;
->> +		#size-cells = <1>;
->> +		nand-ecc-strength = <4>;
->> +		nand-ecc-step-size = <512>;
->> +		spi-max-frequency = <8000000>;
->>   	};
->>   };
->> diff --git a/arch/arm64/boot/dts/qcom/ipq9574.dtsi b/arch/arm64/boot/dts/qcom/ipq9574.dtsi
->> index b44acb1fac74..f9c21373f5e6 100644
->> --- a/arch/arm64/boot/dts/qcom/ipq9574.dtsi
->> +++ b/arch/arm64/boot/dts/qcom/ipq9574.dtsi
->> @@ -336,10 +336,38 @@ sdhc_1: mmc@7804000 {
->>   			status = "disabled";
->>   		};
->>   
->> +		qpic_bam: dma@7984000 {
->> +			compatible = "qcom,bam-v1.7.0";
->> +			reg = <0x7984000 0x1c000>;
->> +			interrupts = <GIC_SPI 146 IRQ_TYPE_LEVEL_HIGH>;
->> +			clocks = <&gcc GCC_QPIC_AHB_CLK>;
->> +			clock-names = "bam_clk";
->> +			#dma-cells = <1>;
->> +			qcom,ee = <0>;
->> +			status = "disabled";
->> +		};
-> You're modifying the SoC and board devicetrees in one go, this won't fly
-
-Will fix in V1
-
+> This patch makes MTE tags saving and restoring support large folios,
+> then we don't need to split them into base pages for swapping on
+> ARM64 SoCs with MTE.
 > 
->> +
->> +		qpic_nand: spi@79b0000 {
->> +			compatible = "qcom,ipq9574-nand";
->> +			reg = <0x79b0000 0x10000>;
+> ---
+>  arch/arm64/include/asm/pgtable.h | 21 ++++-----------------
+>  arch/arm64/mm/mteswap.c          | 20 ++++++++++++++++++++
+>  2 files changed, 24 insertions(+), 17 deletions(-)
 > 
->> +			#address-cells = <1>;
->> +			#size-cells = <0>;
-> these two properties usually go below status, at the end
+> diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
+> index 7f7d9b1df4e5..b12783dca00a 100644
+> --- a/arch/arm64/include/asm/pgtable.h
+> +++ b/arch/arm64/include/asm/pgtable.h
+> @@ -45,12 +45,6 @@
+>  	__flush_tlb_range(vma, addr, end, PUD_SIZE, false, 1)
+>  #endif /* CONFIG_TRANSPARENT_HUGEPAGE */
+>  
+> -static inline bool arch_thp_swp_supported(void)
+> -{
+> -	return !system_supports_mte();
+> -}
+> -#define arch_thp_swp_supported arch_thp_swp_supported
 
-Ok
+IIRC, arm64 was the only arch implementing this, so perhaps it should be ripped
+out from the core code now?
 
-> 
->> +			clocks = <&gcc GCC_QPIC_CLK>,
->> +			<&gcc GCC_QPIC_AHB_CLK>,
->> +			<&gcc GCC_QPIC_IO_MACRO_CLK>;
-> Indentation here is messy
+> -
+>  /*
+>   * Outside of a few very special situations (e.g. hibernation), we always
+>   * use broadcast TLB invalidation instructions, therefore a spurious page
+> @@ -1028,12 +1022,8 @@ static inline pmd_t pmdp_establish(struct vm_area_struct *vma,
+>  #ifdef CONFIG_ARM64_MTE
+>  
+>  #define __HAVE_ARCH_PREPARE_TO_SWAP
+> -static inline int arch_prepare_to_swap(struct page *page)
+> -{
+> -	if (system_supports_mte())
+> -		return mte_save_tags(page);
+> -	return 0;
+> -}
+> +#define arch_prepare_to_swap arch_prepare_to_swap
+> +extern int arch_prepare_to_swap(struct page *page);
 
-Will fix in V1
+I think it would be better to modify this API to take a folio explicitly. The
+caller already has the folio.
 
-> 
->> +			clock-names = "core", "aon", "io_macro";
-> one per line, please
-Ok
-> 
->> +			dmas = <&qpic_bam 0>,
->> +				<&qpic_bam 1>,
->> +				<&qpic_bam 2>;
-> ditto
-Ok
-> 
->> +			dma-names = "tx", "rx", "cmd";
-> ditto
-Ok
-> 
->> +			nand-ecc-engine = <&bch>;
->> +			status = "disabled";
->> +		};
->> +
->>   		bch: qpic_ecc {
->>   			compatible = "qcom,ipq9574-ecc";
->>   			status = "ok";
->> -		}
->> +		};
-> This means the previous dt patch would not compile
+>  
+>  #define __HAVE_ARCH_SWAP_INVALIDATE
+>  static inline void arch_swap_invalidate_page(int type, pgoff_t offset)
+> @@ -1049,11 +1039,8 @@ static inline void arch_swap_invalidate_area(int type)
+>  }
+>  
+>  #define __HAVE_ARCH_SWAP_RESTORE
+> -static inline void arch_swap_restore(swp_entry_t entry, struct folio *folio)
+> -{
+> -	if (system_supports_mte())
+> -		mte_restore_tags(entry, &folio->page);
+> -}
+> +#define arch_swap_restore arch_swap_restore
+> +extern void arch_swap_restore(swp_entry_t entry, struct folio *folio);
+>  
+>  #endif /* CONFIG_ARM64_MTE */
+>  
+> diff --git a/arch/arm64/mm/mteswap.c b/arch/arm64/mm/mteswap.c
+> index a31833e3ddc5..e5637e931e4f 100644
+> --- a/arch/arm64/mm/mteswap.c
+> +++ b/arch/arm64/mm/mteswap.c
+> @@ -83,3 +83,23 @@ void mte_invalidate_tags_area(int type)
+>  	}
+>  	xa_unlock(&mte_pages);
+>  }
+> +
+> +int arch_prepare_to_swap(struct page *page)
+> +{
+> +	if (system_supports_mte()) {
+> +		struct folio *folio = page_folio(page);
+> +		long i, nr = folio_nr_pages(folio);
+> +		for (i = 0; i < nr; i++)
+> +			return mte_save_tags(folio_page(folio, i));
 
-Will fix in V1
+This will return after saving the first page of the folio! You will need to add
+each page in a loop, and if you get an error at any point, you will need to
+remove the pages that you already added successfully, by calling
+arch_swap_invalidate_page() as far as I can see. Steven can you confirm?
+
+> +	}
+> +	return 0;
+> +}
+> +
+> +void arch_swap_restore(swp_entry_t entry, struct folio *folio)
+> +{
+> +	if (system_supports_mte()) {
+> +		long i, nr = folio_nr_pages(folio);
+> +		for (i = 0; i < nr; i++)
+> +			mte_restore_tags(entry, folio_page(folio, i));
+
+swap-in currently doesn't support large folios - everything is a single page
+folio. So this isn't technically needed. But from the API POV, it seems
+reasonable to make this change - except your implementation is broken. You are
+currently setting every page in the folio to use the same tags as the first
+page. You need to increment the swap entry for each page.
+
+Thanks,
+Ryan
 
 
-Regards
-Alam.
+> +	}
+> +}
+
