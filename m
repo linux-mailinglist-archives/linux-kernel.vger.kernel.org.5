@@ -2,79 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A43F7DFDE4
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 03:11:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 355EB7DFDE7
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 03:11:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231713AbjKCB6D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 21:58:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55058 "EHLO
+        id S230458AbjKCCAX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 22:00:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229447AbjKCB6B (ORCPT
+        with ESMTP id S229484AbjKCCAV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 21:58:01 -0400
-Received: from mail-oi1-f200.google.com (mail-oi1-f200.google.com [209.85.167.200])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8730D187
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 18:57:59 -0700 (PDT)
-Received: by mail-oi1-f200.google.com with SMTP id 5614622812f47-3b56a1374afso2191337b6e.0
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Nov 2023 18:57:59 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698976679; x=1699581479;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0wzMcKPL4fPBrYqdbtb30IyU69l06HPG40miK5awj14=;
-        b=KHt9hF5Kq0rpCDKvhbAiUytePsKS1Ce4Zz0b8UYVYo5AktbxwxVGQocmoscEZduIpX
-         BDSNjJnxfNq1It+R9eyqSMxBHjfNwk+YmscnpGLUoFdfV/wlTuejFs3FMDY9veZ4OVMH
-         fA3J/dyNbqzq3goPlDPxkBFPleP1clMXYwF++YPfyKRdjaIlbCQdeQKyd0QZnkc2zsKC
-         R+c+SBc5mcfojXD5Y7TTJHXLBZk94BgTc9Rn7Zo5ALzFY70aEClpijBJd+ZtzRXIS3r4
-         TMNtyLtgZqlF3MFzjib9JwlpaWn83o5t0cI8fIG200O5V+5WAVi2AGgKJMxlkj2UcsBD
-         95bQ==
-X-Gm-Message-State: AOJu0YwyhFXOroMxfBXhgUB316tRuKnyGVfurDxWER8FhpGHtdZ7Tk8I
-        8Ysn2sU5LNZ5b7+hEZ7Pcg+EtbCxmgUW0AyJDtNgmpPv9Npggs0=
-X-Google-Smtp-Source: AGHT+IF11yoS9SloHF7IyknaQNRDHZi5Rt69+P6ZF4u7P9hpYPhkI2kkDwjTKg20vTPXTAt6D6EOZTfC06KIY/TKU7rm1v0ng5cM
+        Thu, 2 Nov 2023 22:00:21 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9B72318E;
+        Thu,  2 Nov 2023 19:00:14 -0700 (PDT)
+Received: from loongson.cn (unknown [112.20.110.17])
+        by gateway (Coremail) with SMTP id _____8AxZ+gqVERl9Z42AA--.5838S3;
+        Fri, 03 Nov 2023 10:00:10 +0800 (CST)
+Received: from [192.168.100.8] (unknown [112.20.110.17])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8DxiuQmVERl5ts4AA--.59351S3;
+        Fri, 03 Nov 2023 10:00:07 +0800 (CST)
+Message-ID: <ad26e107-e7cb-4680-9548-7b4d8e84d174@loongson.cn>
+Date:   Fri, 3 Nov 2023 10:00:06 +0800
 MIME-Version: 1.0
-X-Received: by 2002:a05:6808:3295:b0:3ad:eae0:3317 with SMTP id
- cg21-20020a056808329500b003adeae03317mr6216732oib.5.1698976678935; Thu, 02
- Nov 2023 18:57:58 -0700 (PDT)
-Date:   Thu, 02 Nov 2023 18:57:58 -0700
-In-Reply-To: <00000000000008b2940608ae3ce9@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000006e02eb060935d5e1@google.com>
-Subject: Re: [syzbot] Test for 0c8ce1da0ac31abbadcd
-From:   syzbot <syzbot+0c8ce1da0ac31abbadcd@syzkaller.appspotmail.com>
-To:     linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] docs: translations: add translations links when they
+ exist
+Content-Language: en-US
+To:     Vegard Nossum <vegard.nossum@oracle.com>,
+        Jonathan Corbet <corbet@lwn.net>
+Cc:     linux-doc@vger.kernel.org,
+        Federico Vaga <federico.vaga@vaga.pv.it>,
+        Akira Yokosawa <akiyks@gmail.com>,
+        Carlos Bilbao <carlos.bilbao@amd.com>,
+        Alex Shi <alexs@kernel.org>, Hu Haowen <src.res.211@gmail.com>,
+        linux-kernel@vger.kernel.org
+References: <20231028162931.261843-1-vegard.nossum@oracle.com>
+ <bc41e32e-e899-427c-9aea-eba411e5bcef@oracle.com>
+From:   Yanteng Si <siyanteng@loongson.cn>
+In-Reply-To: <bc41e32e-e899-427c-9aea-eba411e5bcef@oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf8DxiuQmVERl5ts4AA--.59351S3
+X-CM-SenderInfo: pvl1t0pwhqwqxorr0wxvrqhubq/
+X-Coremail-Antispam: 1Uk129KBj9xXoWrtFW8WrW5tw4xtw4DKry5Jrc_yoWkCFX_J3
+        yrZFs7X3Z3J39xtF45Gr17urZ7tay8Kw18trsYyay7uayUXFZ3Awn8Z3s3JF1xGw4xAFn0
+        grn3Ja13A3ZruosvyTuYvTs0mTUanT9S1TB71UUUUjUqnTZGkaVYY2UrUUUUj1kv1TuYvT
+        s0mT0YCTnIWjqI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUI
+        cSsGvfJTRUUUbVAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20x
+        vaj40_Wr0E3s1l1IIY67AEw4v_Jrv_JF1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
+        w2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
+        W8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
+        6r4UJVWxJr1ln4kS14v26r1Y6r17M2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12
+        xvs2x26I8E6xACxx1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r12
+        6r1DMcIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr4
+        1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l4IxYO2xFxVAFwI0_Jrv_
+        JF1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17
+        CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0
+        I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I
+        8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU
+        0xZFpf9x07j5xhLUUUUU=
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For archival purposes, forwarding an incoming command email to
-linux-kernel@vger.kernel.org.
 
-***
+在 2023/10/29 02:51, Vegard Nossum 写道:
+>
+> This went a bit fast... corrections below.
+>
+> On 28/10/2023 18:29, Vegard Nossum wrote:
+>> Add a new Sphinx extension that knows about the translations of kernel
+>> documentation and can insert links to the translations at the top of
+>> the document.
+>
+> [...]
+>
+>> Testing: make htmldocs with v7.3.0.
+>
+> *Sphinx v7.3.0.
+>
+>> +all_languages = {
+>> +    # English is always first
+>> +    None: 'English',
+>> +
+>> +    # Keep the rest sorted alphabetically
+>> +    'zh_CN': 'Chinese',
+>> +    'it_IT': 'Italian',
+>> +    'ja_JP': 'Japanese',
+>> +    'ko_KR': 'Korean',
+>> +    'sp_SP': 'Spanish',
+>> +    'zh_TW': 'Taiwanese',
+>> +}
+>
+> I went with my naive understanding of the language codes without double
+> checking but I think these might be better names:
+>
+> 'zh_CN': 'Chinese (simplified)'
+> 'zh_TW': 'Chinese (traditional)',
 
-Subject: Test for 0c8ce1da0ac31abbadcd
-Author: syoshida@redhat.com
+Yes, but we need to capitalize the first letter， just like:
 
-#syz test
+'zh_CN': 'Chinese (Simplified)'
+'zh_TW': 'Chinese (Traditional)',
 
-diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/virtio_transport_common.c
-index e22c81435ef7..dc65dd4d26df 100644
---- a/net/vmw_vsock/virtio_transport_common.c
-+++ b/net/vmw_vsock/virtio_transport_common.c
-@@ -130,6 +130,8 @@ static void virtio_transport_init_hdr(struct sk_buff *skb,
- 	hdr->dst_port	= cpu_to_le32(dst_port);
- 	hdr->flags	= cpu_to_le32(info->flags);
- 	hdr->len	= cpu_to_le32(payload_len);
-+	hdr->buf_alloc	= cpu_to_le32(0);
-+	hdr->fwd_cnt	= cpu_to_le32(0);
- }
- 
- static void virtio_transport_copy_nonlinear_skb(const struct sk_buff *skb,
+
+see <https://translations.launchpad.net/ubuntu>
+
+
+Thanks,
+
+Yanteng
+
+>
+> Thoughts?
+>
+>
+> Vegard
 
