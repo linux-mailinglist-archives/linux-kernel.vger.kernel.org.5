@@ -2,88 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C4D527E0985
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 20:37:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D40E7E098B
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 20:39:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377111AbjKCThQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 15:37:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37102 "EHLO
+        id S1377087AbjKCTjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 15:39:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377583AbjKCThO (ORCPT
+        with ESMTP id S230291AbjKCTjJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 15:37:14 -0400
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [IPv6:2a03:a000:7:0:5054:ff:fe1c:15ff])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94834D75;
-        Fri,  3 Nov 2023 12:37:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=i0KUcHlFUhWeXHp6OMFIQFv23yDUyIxA3jyyhwS5c0c=; b=Mdmg2DuKO+sc8DsT+tqPAJXmq3
-        DGYMePLeSY8IqQTg7Y00/p2bfXpiocx/8dk5Lf/+tMhZkxY4kRpor3gooJ+CmlBf8Hy7aGBCdjvCV
-        EsQE03OeyFni1UxoV4qf1SPAvb/5WbxovqTIBAJR8n4XazAncqur7TjKn4dd4EUiWEDJCc7CbI9ez
-        q9EKvDhvIv19qfdpJ/gq2zMCiFhEETfOna6G0WGMkNABMfsITmXF8wp2ue89Jk2uzSwcGSNHmiiRH
-        lCh6vx3C7Qd/SveFeapLfYW+rEXPgAeTI8NgtscyF3vJaQkV9Ijv/SbldkULGOiMM3TkUsyypMbog
-        qn8i7tzQ==;
-Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1qyzyX-00ATmK-22;
-        Fri, 03 Nov 2023 19:37:01 +0000
-Date:   Fri, 3 Nov 2023 19:37:01 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Vegard Nossum <vegard.nossum@oracle.com>
-Cc:     Christian Brauner <brauner@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Nick Piggin <npiggin@kernel.dk>,
-        Waiman Long <Waiman.Long@hp.com>, linux-doc@vger.kernel.org
-Subject: Re: [PATCH] dcache: remove unnecessary NULL check in dget_dlock()
-Message-ID: <20231103193701.GP1957730@ZenIV>
-References: <20231022164520.915013-1-vegard.nossum@oracle.com>
+        Fri, 3 Nov 2023 15:39:09 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D121D5F
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 12:38:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1699040307;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=18fxGFPyEfYX6zujRVQDCVGp1gVPnAg8xcOJqGUDNpU=;
+        b=WEkItedecRds0qOcBxKgV+BlXanqPNvIhVM5BPB+KWD42h5LD+wCXlA7+0afMHD2HRzct6
+        aw1oH+KuwFhmX5ToyHwMeCo/q/KLiUER6Ujmq6O+OslgxjzVLMGrjuMrAeY9wibNMVIyYB
+        tK+yddk4hNYtAkEd+AB9NeOH7Z9pGw8=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-245-bNRsA7GlPoSFKZa-v7tnVQ-1; Fri, 03 Nov 2023 15:38:26 -0400
+X-MC-Unique: bNRsA7GlPoSFKZa-v7tnVQ-1
+Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-9cd789f0284so173717766b.3
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Nov 2023 12:38:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699040305; x=1699645105;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=18fxGFPyEfYX6zujRVQDCVGp1gVPnAg8xcOJqGUDNpU=;
+        b=P6/DobYHG7A40Um7wKIq3m9XbXf/RsezWbacDA+ULrl0hJ0mj/qDVpgsLXKcZVLO6r
+         OA10XGXLO6l6sDD5CI38eRVBxH8yaKA7EXymaWCrqF4TuumnfmOv49umq/vzsz9ruljJ
+         xblcXTgNELj08gwKsxGCOqWkv9Ud8/a0wz/gpfkrgzzCIjPJbIw5L2Y0/hhYXhe5WR/2
+         4atNuVWmsy8qD1vS0/1KyajPlKT5czGYAkGzOlby5cznNfspEyQLS7SWXesA+4SyFamw
+         5bFiE7vxgr+iyBnLcCsvmzOpqzik5MlrFjuKDRrXUMnkFM6r+a5WuXNPy/bgMRhSa/l0
+         sKEw==
+X-Gm-Message-State: AOJu0Yy78HkzqaDLZv0KUVF+1X0Cc/yZhq6AkFeVaAe3xkEYuJwpI57S
+        7RQmcykxRrrfRak7SvZJVNQApK1+OddHGbdY4qzxLgZYTcXtuMzayMXzXsK6JCQBZQDS/hpM9iY
+        AbWulMwzdfL2DWWXFd2ev6CRF
+X-Received: by 2002:a17:907:3da1:b0:9b7:37de:6009 with SMTP id he33-20020a1709073da100b009b737de6009mr8119034ejc.3.1699040305104;
+        Fri, 03 Nov 2023 12:38:25 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IH2EgYFYkxhAFVhtUcYX07z+ZAHa6gRCnHShMvlzepM1PxNvaeqEAxxrCtaSa8ojD2/gCJsUw==
+X-Received: by 2002:a17:907:3da1:b0:9b7:37de:6009 with SMTP id he33-20020a1709073da100b009b737de6009mr8119007ejc.3.1699040304766;
+        Fri, 03 Nov 2023 12:38:24 -0700 (PDT)
+Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? ([2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
+        by smtp.gmail.com with ESMTPSA id lk22-20020a170906cb1600b0099d804da2e9sm1220533ejb.225.2023.11.03.12.38.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 03 Nov 2023 12:38:24 -0700 (PDT)
+Message-ID: <d6466210-fdb7-e9e2-68bb-551b263f439d@redhat.com>
+Date:   Fri, 3 Nov 2023 20:38:20 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231022164520.915013-1-vegard.nossum@oracle.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2 6/9] PCI: Rename is_thunderbolt to is_tunneled
+Content-Language: en-US, nl
+To:     Mario Limonciello <mario.limonciello@amd.com>,
+        Karol Herbst <kherbst@redhat.com>,
+        Lyude Paul <lyude@redhat.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        =?UTF-8?Q?Ilpo_J=c3=a4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Lukas Wunner <lukas@wunner.de>
+Cc:     Danilo Krummrich <dakr@redhat.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Xinhui Pan <Xinhui.Pan@amd.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Mark Gross <markgross@kernel.org>,
+        Andreas Noever <andreas.noever@gmail.com>,
+        Michael Jamet <michael.jamet@intel.com>,
+        Yehezkel Bernat <YehezkelShB@gmail.com>,
+        =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>,
+        =?UTF-8?Q?Marek_Beh=c3=ban?= <kabel@kernel.org>,
+        "Maciej W . Rozycki" <macro@orcam.me.uk>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        "open list:DRM DRIVER FOR NVIDIA GEFORCE/QUADRO GPUS" 
+        <dri-devel@lists.freedesktop.org>,
+        "open list:DRM DRIVER FOR NVIDIA GEFORCE/QUADRO GPUS" 
+        <nouveau@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:RADEON and AMDGPU DRM DRIVERS" 
+        <amd-gfx@lists.freedesktop.org>,
+        "open list:PCI SUBSYSTEM" <linux-pci@vger.kernel.org>,
+        "open list:ACPI" <linux-acpi@vger.kernel.org>,
+        "open list:X86 PLATFORM DRIVERS" 
+        <platform-driver-x86@vger.kernel.org>,
+        "open list:THUNDERBOLT DRIVER" <linux-usb@vger.kernel.org>
+References: <20231103190758.82911-1-mario.limonciello@amd.com>
+ <20231103190758.82911-7-mario.limonciello@amd.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <20231103190758.82911-7-mario.limonciello@amd.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-6.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 22, 2023 at 06:45:20PM +0200, Vegard Nossum wrote:
+Hi,
 
-> @@ -1707,7 +1701,7 @@ static enum d_walk_ret find_submount(void *_data, struct dentry *dentry)
+On 11/3/23 20:07, Mario Limonciello wrote:
+> The `is_thunderbolt` bit has been used to indicate that a PCIe device
+> contained the Intel VSEC which is used by various parts of the kernel
+> to change behavior. To later allow usage with USB4 controllers as well,
+> rename this to `is_tunneled`.
+> 
+> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
+
+Here is my ack for the trivial drivers/platform/x86/apple-gmux.c change:
+
+Acked-by: Hans de Goede <hdegoede@redhat.com>
+
+Bjorn, feel free to route this through the PCI tree.
+
+Regards,
+
+Hans
+
+
+
+
+> ---
+>  drivers/pci/pci.c                 | 2 +-
+>  drivers/pci/probe.c               | 2 +-
+>  drivers/platform/x86/apple-gmux.c | 2 +-
+>  include/linux/pci.h               | 2 +-
+>  4 files changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+> index 59c01d68c6d5..d9aa5a39f585 100644
+> --- a/drivers/pci/pci.c
+> +++ b/drivers/pci/pci.c
+> @@ -3032,7 +3032,7 @@ bool pci_bridge_d3_possible(struct pci_dev *bridge)
+>  			return true;
+>  
+>  		/* Even the oldest 2010 Thunderbolt controller supports D3. */
+> -		if (bridge->is_thunderbolt)
+> +		if (bridge->is_tunneled)
+>  			return true;
+>  
+>  		/* Platform might know better if the bridge supports D3 */
+> diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
+> index 795534589b98..518413d15402 100644
+> --- a/drivers/pci/probe.c
+> +++ b/drivers/pci/probe.c
+> @@ -1597,7 +1597,7 @@ static void set_pcie_thunderbolt(struct pci_dev *dev)
+>  	/* Is the device part of a Thunderbolt controller? */
+>  	vsec = pci_find_vsec_capability(dev, PCI_VENDOR_ID_INTEL, PCI_VSEC_ID_INTEL_TBT);
+>  	if (vsec)
+> -		dev->is_thunderbolt = 1;
+> +		dev->is_tunneled = 1;
+>  }
+>  
+>  static void set_pcie_untrusted(struct pci_dev *dev)
+> diff --git a/drivers/platform/x86/apple-gmux.c b/drivers/platform/x86/apple-gmux.c
+> index 1417e230edbd..20315aa4463a 100644
+> --- a/drivers/platform/x86/apple-gmux.c
+> +++ b/drivers/platform/x86/apple-gmux.c
+> @@ -774,7 +774,7 @@ static int gmux_resume(struct device *dev)
+>  
+>  static int is_thunderbolt(struct device *dev, void *data)
 >  {
->  	struct dentry **victim = _data;
->  	if (d_mountpoint(dentry)) {
-> -		__dget_dlock(dentry);
-> +		dget_dlock(dentry);
->  		*victim = dentry;
+> -	return to_pci_dev(dev)->is_thunderbolt;
+> +	return to_pci_dev(dev)->is_tunneled;
+>  }
+>  
+>  static int gmux_probe(struct pnp_dev *pnp, const struct pnp_device_id *id)
+> diff --git a/include/linux/pci.h b/include/linux/pci.h
+> index 439c2dac8a3e..b1724f25fb02 100644
+> --- a/include/linux/pci.h
+> +++ b/include/linux/pci.h
+> @@ -440,7 +440,7 @@ struct pci_dev {
+>  	unsigned int	is_virtfn:1;
+>  	unsigned int	is_hotplug_bridge:1;
+>  	unsigned int	shpc_managed:1;		/* SHPC owned by shpchp */
+> -	unsigned int	is_thunderbolt:1;	/* Thunderbolt controller */
+> +	unsigned int	is_tunneled:1;		/* Tunneled TBT or USB4 link */
+>  	unsigned int	no_command_complete:1;	/* No command completion */
+>  	/*
+>  	 * Devices marked being untrusted are the ones that can potentially
 
-		*victim = dget_dlock(dentry);
-
->  		return D_WALK_QUIT;
->  	}
-> @@ -1853,7 +1847,7 @@ struct dentry *d_alloc(struct dentry * parent, const struct qstr *name)
->  	 * don't need child lock because it is not subject
->  	 * to concurrency here
->  	 */
-> -	__dget_dlock(parent);
-> +	dget_dlock(parent);
->  	dentry->d_parent = parent;
-
-	dentry->d_parent = dget_dlock(parent);
-
-> - *	Given a dentry or %NULL pointer increment the reference count
-> - *	if appropriate and return the dentry. A dentry will not be 
-> - *	destroyed when it has references.
-> + *	Given a dentry, increment the reference count and return the
-> + *	dentry.
-> + *
-> + *	Context: @dentry->d_lock must be held.
-
-... and dentry must be alive.  There are many ways the caller could
-use to guarantee that - any of the "it's hashed", "it's positive",
-"its ->d_lockref.count is not negative" would suffice under ->d_lock.
