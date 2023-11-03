@@ -2,140 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D49FA7E0560
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 16:16:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC2B27E0558
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 16:15:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233465AbjKCPQE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 11:16:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41540 "EHLO
+        id S232958AbjKCPPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 11:15:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229491AbjKCPQB (ORCPT
+        with ESMTP id S229491AbjKCPO6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 11:16:01 -0400
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2045.outbound.protection.outlook.com [40.107.220.45])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CB14D48;
-        Fri,  3 Nov 2023 08:15:56 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=me0NeXvJTgOpzu+Rp6oPk5GLsSh3to1Yoj/r4ajJlxrMsR9GwjuPoiVlqerx1uCHxGKBisJSsA5SlwdRVqGURdDWPIXECCOj5x3y5xDnDk1jf4IN10hTp/EjYCtBpNBPEyNADHjpHewl2AXGiiTRasODC8gTdkyVe+FpJB0mX6aUYam4nVICPT2uLArrbcQ8gJ115K70Hgp6YtB8cC0vYyWzxmB6nxoZ9NNuCUUN3UPQHS3d5sQ2UFJouctHcaxc1/jB+lZSzL4ua0VCxvTg7OzA6jaiJLEnvD5+YsQGmdSPx5NzYY0e8PDNiFyOIniDixsEhloazbSoYMZ+0x339w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=NI6KHNAQhrYqC2gA5NOfCUoTg8lunEAMJBfDkENyfwo=;
- b=GyXVyKWFGadvLcR7kmjRbe+sxHw9vS5MgURCiuRJj0hsgkzC0MQ3diAjFmOseneKW7C/KHbXr+VkCJLlkiEmcvCEnsvwuy5PT4Czb38p6WZTg+kAGZrjT3ZcyqM5w0JAv4sUqemN4mv9jlRM/BRuX2mFXzlbaoNrQVldl3O7BVjhXSyLS9DvoIfQqJ2jvi1tLbGD1ZJv2/9UtxTlEULCWNB4ImS3It3toFs02BuKSN53kDErOShcj9z4z3YoHd8SvJwIeD7LusSP4Mc7Q1PKWOQN/+RyKX5vJuNvt4qQDHy14WJjk7yE6luZJin/SfsdivCnS5/N8xpiyAjlYaCDug==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NI6KHNAQhrYqC2gA5NOfCUoTg8lunEAMJBfDkENyfwo=;
- b=Az2TYXnkmU8Gv2RMRD68YZ46E/hti3INo8Z2U3XoSPFKCzqu++rIFGGVL6MrrmIDTIEDUOB/MExom1rM4ASDmmX/BY4xvdOZf6sIN9XsJGIWnZqQvUUjOE37vNhrC1J3SFlDpzU7IClQSn8xQuyyC/7/W6/s8TEep6YrKv0FlTM=
-Received: from MW3PR05CA0021.namprd05.prod.outlook.com (2603:10b6:303:2b::26)
- by PH0PR12MB8030.namprd12.prod.outlook.com (2603:10b6:510:28d::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.21; Fri, 3 Nov
- 2023 15:15:53 +0000
-Received: from MWH0EPF000989E9.namprd02.prod.outlook.com
- (2603:10b6:303:2b:cafe::32) by MW3PR05CA0021.outlook.office365.com
- (2603:10b6:303:2b::26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6977.10 via Frontend
- Transport; Fri, 3 Nov 2023 15:15:53 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- MWH0EPF000989E9.mail.protection.outlook.com (10.167.241.136) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6954.19 via Frontend Transport; Fri, 3 Nov 2023 15:15:52 +0000
-Received: from localhost (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.32; Fri, 3 Nov
- 2023 10:15:51 -0500
-From:   Michael Roth <michael.roth@amd.com>
-To:     <linux-efi@vger.kernel.org>
-CC:     <x86@kernel.org>, <linux-coco@lists.linux.dev>,
-        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Nikolay Borisov <nik.borisov@suse.com>, <stable@kernel.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH v2] efi/unaccepted: Fix off-by-one when checking for overlapping ranges
-Date:   Fri, 3 Nov 2023 10:13:54 -0500
-Message-ID: <20231103151354.110636-1-michael.roth@amd.com>
-X-Mailer: git-send-email 2.25.1
+        Fri, 3 Nov 2023 11:14:58 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EDBC1B2
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 08:14:52 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-32fb1d757f7so867719f8f.0
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Nov 2023 08:14:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1699024491; x=1699629291; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=JQmtajR/Lo5kWZGagJsWizBqcJuSRUlM8N3Px2Mnlzc=;
+        b=WLW0DLxhI6kNo/vp1JLsCwd5z2ctRoiSgmOMUmrtNkjrJS8ksnB6Lnr9KClsKfeR6s
+         zLs+7jabuSJYFFvMJVzKgEF9uj3trz0B868fvE33Ysywxoue0FB5HxzP4RQ5HoAC2tIJ
+         XATbApGnxbjk6HmtsQ58KIvR5Os8kzjii/IiExYsHHaot80spaquxlfVqiOrS/JU9SUb
+         U9VBacCBzWuuGy+0wt5kwf+qeHEkSJomzZUrLXU+dnwkxphzqm7EETBxDC+mVpzxr3hT
+         uZN1pW91Ys5b+etp8ISYEmrCUJCZseUxQbASPULys4blLcC2v3g05tV+OLy+9/FCJBN3
+         8vCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699024491; x=1699629291;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=JQmtajR/Lo5kWZGagJsWizBqcJuSRUlM8N3Px2Mnlzc=;
+        b=m4z79gTa/DbFicp9ECvrVhueZW+q+xJwNapREHk/e75a4IWuy7r4tIr4oh+Tayespt
+         fameojOKcmjWfioG7kaCoqj2TNGobyHuSW29/MN03o4Qzrjb1ix/QZ2OHJGPZFZC6Phl
+         rPGkTOKT6oYGVPmE2uYUeoFApNZOe6hR33UX3Zm23nftHNumYKJh3y1fqjwc/0Y84qDF
+         r3Q6fSFZxrGGD862fCEJe7rr2lfREn/K55vTDD1033P8u8rI+LRsWiM6Xu4xd60kC6Ub
+         //1XrguLt2OvglH/8J+uQs7T0ZT+4y0vPOVl2unTGPM9ZAhQMcfwoVIv5TI8N/TlvoUh
+         zKOQ==
+X-Gm-Message-State: AOJu0YxW+LMlSfeMJHKGw8iyWZZKUNnsrX+7QXGd42R82qBikLJMGvAb
+        eqQ5Rj8Bk0au9Z7K2Q6l37/VJQ==
+X-Google-Smtp-Source: AGHT+IGD/xeq7bY+n2+xagtvTANWbDHhn+sJbmaTPg5nPjbUi9qXD9HyIs80yHobXO3D3Wqg4buNJw==
+X-Received: by 2002:a5d:6f1a:0:b0:32d:b2cf:8ccd with SMTP id ay26-20020a5d6f1a000000b0032db2cf8ccdmr27222679wrb.47.1699024490887;
+        Fri, 03 Nov 2023 08:14:50 -0700 (PDT)
+Received: from [192.168.100.102] ([37.228.218.3])
+        by smtp.gmail.com with ESMTPSA id k12-20020adff28c000000b0032f99801273sm2065454wro.66.2023.11.03.08.14.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 03 Nov 2023 08:14:50 -0700 (PDT)
+Message-ID: <e700133b-58f7-4a4d-8e5c-0d04441b789b@linaro.org>
+Date:   Fri, 3 Nov 2023 15:14:49 +0000
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MWH0EPF000989E9:EE_|PH0PR12MB8030:EE_
-X-MS-Office365-Filtering-Correlation-Id: bac74ebb-2f42-430f-7705-08dbdc7fc527
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: MxYN3tr3BDCRYyTYxlTmV8HHcPeiw2BEZ+OWHINzsIVyTvClfELToyy/7Lwr5oDqLKBkpEPi93n4qzdrev7pDeICq4XoOrBVTF4y9I9x/c/fKYF4yORwpJ5FcP5aVqc10SvPE6aMRHy4TaQeONg6WebiNQgZt9uhtvBqY4j2/3PBmJqwEfpfs/Q6ZNcYXSIoqQgd4PcVJtv5f+kqbk8aPOh1+USECdOjbqgIty6UZpS1OidE4jQP9BClaREtqUseNXIdfT2DphrLmhG9EZRKYPAWUeft+CmdFGwRMNRFJhzQLs9ItFoif4IbcJBEtAkeGPOmJ5FNIe5I+Gt42fkF37xO5RxedYK7T+Q4g/M0wYwOVi28dNCM5PdadiII2NWEVgfFm5Wj1FOP+tDa1hTuZxuXmf9drOnCX3IKEfNcapI9ZCCj4gdcHe5SkmbBWO4QIsTCmeCMIOL1F9x4kjxLCFsE4wgCKDd67UyjRICWc3gsaQsWCJFapmRnya17gyikhZBmbZOrHOVuHN+PLIGITsGnBWfqyb8nfRgKhpG0jqpAwlnvsyxIqjwuLXymqg7dSgBIr+nGsm23jBF0pUk4LRZenqJP9OUcsNecRf/bxs/mL5DqnAV/vyRpjPHySYp7GilPh1UHDMbTn0qKLI5jysb9T/Fmnafe5+OiHI5R7W9zJD5Rk0vTTumJ6BvNFUWyy9dSHcCeHQDGdHNVww9+DkqXwx/tj4E692Kb1vD9qs22V79wru8ym+P5J/BXjT4VEMH9iIdyYefVWwStSkQCgA==
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(396003)(346002)(136003)(376002)(230922051799003)(1800799009)(82310400011)(64100799003)(186009)(451199024)(36840700001)(40470700004)(46966006)(40460700003)(40480700001)(70206006)(54906003)(70586007)(6916009)(316002)(36756003)(86362001)(82740400003)(356005)(81166007)(36860700001)(83380400001)(426003)(478600001)(336012)(16526019)(26005)(1076003)(2616005)(966005)(2906002)(41300700001)(44832011)(47076005)(5660300002)(4326008)(7416002)(8936002)(8676002)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Nov 2023 15:15:52.6118
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: bac74ebb-2f42-430f-7705-08dbdc7fc527
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: MWH0EPF000989E9.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR12MB8030
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC 2/8] usb: dwc3: core: Register vendor hooks for dwc3-qcom
+Content-Language: en-US
+To:     Krishna Kurapati <quic_kriskura@quicinc.com>,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, quic_wcheng@quicinc.com
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        quic_ppratap@quicinc.com, quic_jackp@quicinc.com
+References: <20231017131851.8299-1-quic_kriskura@quicinc.com>
+ <20231017131851.8299-3-quic_kriskura@quicinc.com>
+From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+In-Reply-To: <20231017131851.8299-3-quic_kriskura@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When a task needs to accept memory it will scan the accepting_list
-to see if any ranges already being processed by other tasks overlap
-with its range. Due to an off-by-one in the range comparisons, a task
-might falsely determine that an overlapping range is being accepted,
-leading to an unnecessary delay before it begins processing the range.
+On 17/10/2023 14:18, Krishna Kurapati wrote:
+> Currently on QC targets, the conndone/disconnect events in device mode are
+> generated by controller when software writes to QSCRATCH registers in qcom
+> glue layer rather than the vbus line being routed to dwc3 core IP for it
+> to recognize and generate these events.
+> 
+> We need to write '1' to  UTMI_OTG_VBUS_VALID bit of QSCRATCH_HS_PHY_CTRL
+> register to generate a connection done event and "0" if we need to
+> generate a disconnect event during cable removal or mode switch. Exactly
+> what is done by "dwc3_qcom_vbus_override_enable" call in dwc3-qcom.
+> 
+> When the disconnect is not generated upon cable removal, the connected
+> flag of dwc3 is left marked as "true" and it blocks runtime suspend.
+> 
+> The goal of these vendor hooks is to let the mode change and cable removal
+> notifications from core reach the  glue layers so that glue can take
+> necessary action.
+> 
+> Before flattening the device tree, glue driver is not sure when the core
+> probe was completed as core probe can be deferred. In this case, glue is
+> not sure when to register vendor hooks. So mandate enabling runtime only
+> for flattened device node platforms so that glue can know when to register
+> vendor hooks.
+> 
+> The following are the requirements aimed in this implementation:
+> 
+> 1. When enum in device mode, Glue/core must stay active.
+> 
+> 2. When cable is connected but UDC is not written yet, then glue/core
+> must be suspended.
+> 
+> 3. Upon removing cable in device mode, the disconnect event must be
+> generated and unblock runtime suspend for dwc3 core.
+> 
+> Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
 
-Fix the off-by-one in the range comparison to prevent this and slightly
-improve performance.
+What happens to this code if you
 
-Fixes: 50e782a86c98 ("efi/unaccepted: Fix soft lockups caused by parallel memory acceptance")
-Link: https://lore.kernel.org/linux-mm/20231101004523.vseyi5bezgfaht5i@amd.com/T/#me2eceb9906fcae5fe958b3fe88e41f920f8335b6
-Reviewed-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Signed-off-by: Michael Roth <michael.roth@amd.com>
+static int count;
+
+1. sleep in dwc3_probe for 10 milliseconds
+2. return -EPROBE_DEFER
+3. if count++ < 5 goto 1
+
+i.e. if we simulate say waiting on a PHY driver to probe in dwc3_probe()
+
+and what happens if we introduce a 100 millsecond sleep into 
+dwc3_qcom_probe() - and run a fake disconnect event from 
+dwc3_qcom_probe_core() directly ?
+
+In other words if make it that dwc3_probe() completes and struct 
+dwc3_glue_ops->notify_cable_disconnect() fires prior to 
+dwc3_qcom_probe_core() completing ?
+
+i.e. I don't immediately see how you've solved the probe() completion 
+race condition here.
+
 ---
-v2:
- * Improve commit message terminology (Kirill)
----
- drivers/firmware/efi/unaccepted_memory.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/firmware/efi/unaccepted_memory.c b/drivers/firmware/efi/unaccepted_memory.c
-index 135278ddaf62..79fb687bb90f 100644
---- a/drivers/firmware/efi/unaccepted_memory.c
-+++ b/drivers/firmware/efi/unaccepted_memory.c
-@@ -100,7 +100,7 @@ void accept_memory(phys_addr_t start, phys_addr_t end)
- 	 * overlap on physical address level.
- 	 */
- 	list_for_each_entry(entry, &accepting_list, list) {
--		if (entry->end < range.start)
-+		if (entry->end <= range.start)
- 			continue;
- 		if (entry->start >= range.end)
- 			continue;
--- 
-2.25.1
-
+bod
