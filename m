@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EE5E7E0364
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 14:10:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CC067E0367
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 14:10:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377641AbjKCNKm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 09:10:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48780 "EHLO
+        id S1377663AbjKCNK4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 09:10:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233088AbjKCNKb (ORCPT
+        with ESMTP id S233264AbjKCNKb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 3 Nov 2023 09:10:31 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C61B483
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 06:10:22 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-50943ccbbaeso2858580e87.2
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Nov 2023 06:10:22 -0700 (PDT)
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61596111
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 06:10:24 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-507bd19eac8so2575376e87.0
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Nov 2023 06:10:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=semihalf.com; s=google; t=1699017021; x=1699621821; darn=vger.kernel.org;
+        d=semihalf.com; s=google; t=1699017022; x=1699621822; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=362uKh5thKodTsSqUkKccYKgkHYaZgwTi2ojZA+0hQQ=;
-        b=pOdj9leRX+4Y4ZCb1PCbBEcNhqrce4XUb9lrYfHGNG1e5ATcokTjf82QqN8f6Mq/f8
-         xB8S6MX4RvvGCqkL3DfeyBA2j8DjdPJXM7PC7CRzV/3fCdE0eIzC2ZfRluh5TdaFfZ3K
-         CLXeR/BniTpls+Pkpcj45zV/qjfkPulTW9RaAuXh9qS6tL8wtnAuOPEkC6Qo2ZZT6UWx
-         5erm87jIHN17OHlJ1IbUJMx5cs0w1x/jHtYYNT4ItZ0HSEvcdXs4hl84O58moHluO3lK
-         H0bVi70TlW3YmR/QnWBiVYMeYM70BS1QEnO1GniXAyvB4FocUQaKIuo32KfcSD5sgn8g
-         yJBA==
+        bh=wc5ZJr+XZL17m3pVsUYEvFhpTqfft7OhKC8WZHCW6XE=;
+        b=RmwMeWxBocntJ4o8D4jsOmlsc464F2oBSCW/PHzreT0wdvWku1WmxNbt+5BcSvkNI0
+         fYuzQhXi7qeLZQW46f+nM6HW/AOZDnFKjqtDrCvCJ8vktNOpHwU1L9Xvh9itEL8JUd7g
+         As60TGBCJ/c7IWKHISJp1hUvkcBtks+k2K0XR0tahqD5AxcgvXbwWduHKcHsNGZ+hoI+
+         QvFUFGBrISrONI8QHClaWwK2H7S4mfXyEUNAGj6Ea/OmWMTgjdv1ddGh5fj43raBYcZB
+         GB/rb+VDtb75O4vVzB+CsAXd1EHIUwWRg5+efEOE+50t6FivN0yGtSU1R17pLpCuoxTm
+         U+uA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699017021; x=1699621821;
+        d=1e100.net; s=20230601; t=1699017022; x=1699621822;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=362uKh5thKodTsSqUkKccYKgkHYaZgwTi2ojZA+0hQQ=;
-        b=BLFEEind69VFje7ZVqP1QfZt0njj9x13d869SWEP/MkBw2520JpDfvir3SKqyAHuWr
-         x1/+vBGZpUD8UYSEohl5+t5A0yZABjLBZMA4PA0IYs+VHrG6MSXHzi2NzTPPQXIA/+hJ
-         zVWk5BmhsYJKXU8vDZ3iyF51TXeVJ7qaQVa3b5oUMCfsLzQMCMa3/92N4vu1tdo0ePUJ
-         IFlrwFW7zQj98yJaSCe6+oO9q7HvFSHgqS3Vd1dLU7x9Cvk6+6TcwnKgdsS68ffLPDXY
-         NGWJFuQM8MC1rtIXtoh0DXAz64kTooaJnCFPDkjUkg+L/uRJffRlcJGqZSh/GDIb1lU3
-         CZNw==
-X-Gm-Message-State: AOJu0YyH1jKQM2dAAt20kPJHSQjwaOJ6CrJeKIDP09SLZHDhpP6Hgp0+
-        pYUnpyfMn32sNxLDcciE6+nFESZINV2N4KtA5sJz
-X-Google-Smtp-Source: AGHT+IFT066k55t3iRFJhgHYAe3uu9kJzeoLRIL6+WxQNbNGd5ibZlkro5xxwEKreXLWfkhmTRa2OQ==
-X-Received: by 2002:a05:6512:3e12:b0:509:488b:4de4 with SMTP id i18-20020a0565123e1200b00509488b4de4mr5540331lfv.1.1699017021108;
-        Fri, 03 Nov 2023 06:10:21 -0700 (PDT)
+        bh=wc5ZJr+XZL17m3pVsUYEvFhpTqfft7OhKC8WZHCW6XE=;
+        b=KwPxsRS1IlEth/zfrVS0myPF3cndsCnayhxaiuXxjP9WjBrvQEWCiJ7dAx/Mvk7xZU
+         pa2+EMGb8f5mqHjlzL6MzQTTQktAFuCwQdk6bMJtwfjlxmObLyAAytxcqilqEAh3EW/c
+         8m8DbZhSx6UReolEhotH98IjUjMLB0MCWLAJboOMvJVnvHPmq7KL/svsZnXzAw+X8j1G
+         o4rOEJbys7j9vwYwWiOG4GVVY6YbHrtFjh/k0eGXwasmOx0tIs7vss3S7Of4/WkAvmOO
+         kT8K3bltSfRCCpcNEzDve2N/tYI5UV6UrYYotlerID+rUnu9c6PYjmZBWYb9Stj46PXT
+         dLgw==
+X-Gm-Message-State: AOJu0YyY/0NxCbEenw4JyuhDK42FYy1nJs0vYDGCO8XD7NGruvALsw3p
+        +2J7Nh6BEyGNDwhqih+nL/orepsYZJq6OyFw+QiF
+X-Google-Smtp-Source: AGHT+IElnpyQy29sPvTzg8mqakBpuZJ6Jr+S6YEN7aqgmQ+8cZ56ylKgHtdPCshxX8I//qWTsUBBoQ==
+X-Received: by 2002:ac2:446e:0:b0:4fe:2f8a:457e with SMTP id y14-20020ac2446e000000b004fe2f8a457emr16338981lfl.43.1699017022670;
+        Fri, 03 Nov 2023 06:10:22 -0700 (PDT)
 Received: from ukaszb-l.wifi.semihalf.net ([83.142.187.85])
-        by smtp.gmail.com with ESMTPSA id f21-20020ac25335000000b00507a69a4799sm216336lfh.270.2023.11.03.06.10.20
+        by smtp.gmail.com with ESMTPSA id f21-20020ac25335000000b00507a69a4799sm216336lfh.270.2023.11.03.06.10.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Nov 2023 06:10:20 -0700 (PDT)
+        Fri, 03 Nov 2023 06:10:21 -0700 (PDT)
 From:   =?UTF-8?q?=C5=81ukasz=20Bartosik?= <lb@semihalf.com>
 To:     Jason Baron <jbaron@akamai.com>, Jim Cromie <jim.cromie@gmail.com>,
         Andrew Morton <akpm@linux-foundation.org>,
@@ -64,9 +64,9 @@ Cc:     Guenter Roeck <groeck@google.com>,
         Sean Paul <seanpaul@chromium.org>,
         Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org,
         upstream@semihalf.com
-Subject: [PATCH v1 06/12] trace: use TP_printk_no_nl in dyndbg:prdbg,devdbg
-Date:   Fri,  3 Nov 2023 14:10:05 +0100
-Message-Id: <20231103131011.1316396-7-lb@semihalf.com>
+Subject: [PATCH v1 07/12] dyndbg: repack struct _ddebug
+Date:   Fri,  3 Nov 2023 14:10:06 +0100
+Message-Id: <20231103131011.1316396-8-lb@semihalf.com>
 X-Mailer: git-send-email 2.38.3
 In-Reply-To: <20231103131011.1316396-1-lb@semihalf.com>
 References: <20231103131011.1316396-1-lb@semihalf.com>
@@ -84,68 +84,45 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Jim Cromie <jim.cromie@gmail.com>
 
-Recently added dyndbg events: prdbg, devdbg have code to strip the
-trailing newline, if its there.  Drop that trimming (minimally), and
-use the new TP_printk_no_nl macro instead.  Also converting to a
-vstring is deferred for now.
-
-This use is slightly premature/overkill, since some pr_debugs do not
-have the expected trailing newline.  While those lacks are arguably
-bugs, this doesn't fix them.
+Move the JUMP_LABEL to the top of the struct, since theyre both
+align(8) and this closes a pahole (unfortunately trading for padding,
+but still).
 
 Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
 ---
- include/trace/events/dyndbg.h | 24 ++----------------------
- 1 file changed, 2 insertions(+), 22 deletions(-)
+ include/linux/dynamic_debug.h | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/include/trace/events/dyndbg.h b/include/trace/events/dyndbg.h
-index ccc5bcb070f9..91dcdbe059c0 100644
---- a/include/trace/events/dyndbg.h
-+++ b/include/trace/events/dyndbg.h
-@@ -20,20 +20,10 @@ TRACE_EVENT(prdbg,
+diff --git a/include/linux/dynamic_debug.h b/include/linux/dynamic_debug.h
+index 497130816e9c..b9237e4ecd1b 100644
+--- a/include/linux/dynamic_debug.h
++++ b/include/linux/dynamic_debug.h
+@@ -14,6 +14,12 @@
+  * the special section is treated as an array of these.
+  */
+ struct _ddebug {
++#ifdef CONFIG_JUMP_LABEL
++	union {
++		struct static_key_true dd_key_true;
++		struct static_key_false dd_key_false;
++	} key;
++#endif
+ 	/*
+ 	 * These fields are used to drive the user interface
+ 	 * for selecting and displaying debug callsites.
+@@ -53,12 +59,6 @@ struct _ddebug {
+ #define _DPRINTK_FLAGS_DEFAULT 0
+ #endif
+ 	unsigned int flags:8;
+-#ifdef CONFIG_JUMP_LABEL
+-	union {
+-		struct static_key_true dd_key_true;
+-		struct static_key_false dd_key_false;
+-	} key;
+-#endif
+ } __attribute__((aligned(8)));
  
- 	    TP_fast_assign(
- 			__entry->desc = desc;
--			/*
--			 * Each trace entry is printed in a new line.
--			 * If the msg finishes with '\n', cut it off
--			 * to avoid blank lines in the trace.
--			 */
--			if (len > 0 && (text[len - 1] == '\n'))
--				len -= 1;
--
- 			memcpy(__get_str(msg), text, len);
--			__get_str(msg)[len] = 0;
- 		    ),
- 
--	    TP_printk("%s.%s %s", __entry->desc->modname,
--		      __entry->desc->function, __get_str(msg))
-+	    TP_printk_no_nl("%s", __get_str(msg))
- );
- 
- /* capture dev_dbg() callsite descriptor, device, and message */
-@@ -52,20 +42,10 @@ TRACE_EVENT(devdbg,
- 	    TP_fast_assign(
- 			__entry->desc = desc;
- 			__entry->dev = (struct device *) dev;
--			/*
--			 * Each trace entry is printed in a new line.
--			 * If the msg finishes with '\n', cut it off
--			 * to avoid blank lines in the trace.
--			 */
--			if (len > 0 && (text[len - 1] == '\n'))
--				len -= 1;
--
- 			memcpy(__get_str(msg), text, len);
--			__get_str(msg)[len] = 0;
- 		    ),
- 
--	    TP_printk("%s.%s %s", __entry->desc->modname,
--		      __entry->desc->function, __get_str(msg))
-+	    TP_printk_no_nl("%s", __get_str(msg))
- );
- 
- #endif /* _TRACE_DYNDBG_H */
+ enum class_map_type {
 -- 
 2.42.0.869.gea05f2083d-goog
 
