@@ -2,513 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A8B97E0B5D
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 23:59:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D40697E0B64
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 23:59:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234181AbjKCWxk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 18:53:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56958 "EHLO
+        id S1377778AbjKCWyA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 18:54:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234218AbjKCWxj (ORCPT
+        with ESMTP id S1377760AbjKCWxy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 18:53:39 -0400
-Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62BD31A8;
-        Fri,  3 Nov 2023 15:53:34 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 3BD3D240005;
-        Fri,  3 Nov 2023 22:53:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1699052012;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=3A19yBNhWvDVog5YRP5PI3s4O5IQVxdjGWVhDoOmjjg=;
-        b=OxndNLBKn3DvQcbrS7mPO2gAdKwpjVcbR/cxzk0Y8aTo0kmWhelkWpErwjbKXB58VChCRK
-        5lMohUJ8m+oNnX739JqjTIHMaubhaKD+3Rd3vJKVzU88NW9SqksPG9pXGtr6Bw75++HZ06
-        I0XkOe5IOh1oOjdoGwxo+lunehJDzhlvGK6JDL18BGcyyuYr2t1SkmZavEf9Qgx/OBN39l
-        oVZxW52DRjca09stkrSgRhiUYlSiAEJqQFIb5/8xS55BwTEZuHNxb5L+h5G7mzR2f3sPtE
-        sFWF/459EHb+SMTU5YVJfDE+fAuB4xsenktUL15BE+yADdHCRXd8pdWxARo+YA==
-Date:   Fri, 3 Nov 2023 23:53:31 +0100
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Waqar Hameed <waqar.hameed@axis.com>
-Cc:     Alessandro Zummo <a.zummo@towertech.it>, kernel@axis.com,
-        linux-kernel@vger.kernel.org, linux-rtc@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] rtc: Add driver for Epson RX8111
-Message-ID: <20231103225331f0fee24a@mail.local>
-References: <cover.1692699931.git.waqar.hameed@axis.com>
- <7b856b74c4c0f8c6c539d7c692051c9203b103c0.1692699931.git.waqar.hameed@axis.com>
+        Fri, 3 Nov 2023 18:53:54 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DB72D65;
+        Fri,  3 Nov 2023 15:53:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699052031; x=1730588031;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=/JhAaR9IO457t2BSocK3AeyFQFpdJcFavDx6zb3/3kY=;
+  b=PLQ1NKFqDMkbG4oropp/ZG2leyjz5KJlG2Rl8MVLZsQzZybY7+sfq3U4
+   cufeVrz2J72M2Swlojs1T4123IJqZzWzvPuiFhkbE/NikDa4g5FBp7sI9
+   EfQVSOanzgcZ8W8fsN3nfcf2x527YwH9qzQEGqslr7dxc8rmXKn1xmxgJ
+   Nfyru4o2Ik/eyNHM/kzbCOhYBhi80DD3POGPSvOLh2eRnU12lRuJRUVi9
+   +oAhr/IB7AhHsK1uWlFOj9QQ1KXYPnKoMgvQrCaxkTPEqmgQf4CkaIwP+
+   LBHWYyWE/MUArG5FtIvItq1PxxpCAyWmI2/BxkIWEqpBVZcyzMrrGwqgU
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10883"; a="453339289"
+X-IronPort-AV: E=Sophos;i="6.03,275,1694761200"; 
+   d="scan'208";a="453339289"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2023 15:53:50 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10883"; a="885342224"
+X-IronPort-AV: E=Sophos;i="6.03,275,1694761200"; 
+   d="scan'208";a="885342224"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by orsmga004.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 03 Nov 2023 15:53:50 -0700
+Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Fri, 3 Nov 2023 15:53:50 -0700
+Received: from orsmsx601.amr.corp.intel.com (10.22.229.14) by
+ ORSMSX612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Fri, 3 Nov 2023 15:53:50 -0700
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34 via Frontend Transport; Fri, 3 Nov 2023 15:53:50 -0700
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.168)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.34; Fri, 3 Nov 2023 15:53:49 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fVkZjAjUQM6T9WoPLvl8T3uTzgNhqSfhyd9Uuds4/FzWI5HYp+Y4Sp+SWheQJoe0piKC3yaEDraWNcp5GOO5PFhP56M1tVSqQ9SGRzk1vxwcEFfoJgEijmCnzmbt7dDEewFisC9RPdxprl+xK3IhziuYQ1nf1WK9zvCLwtO5r3T7BkEqxFrQJ7Y9Pqf1P1vgiUz53CLXB5p1hnE4bwWScezSiLCi89StHX6OG/Hl/nFMHT4sm0GKGNcHLjQ4udGAxdGsWf0DZhFHQFKj+1hfYYhYg8Sm2Uzy3Cch0avPmREQGF9tjtKLZx+2LKABZuvOtYxXv31vIoP2aNEZRn+cSw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=pqZqEIgmFBpJlgDaZfANMc8q7fxdiLAdnFveguW+Urs=;
+ b=Zp/b8SujNDKivcLJjkKdRmUBBU/FPa094Q6yuPJoV00bnO50/oUSkdDxHzaVBDjRBdWRWnp2MacKYhgIj2V6I3ADX3rO1dYAjL44xJCB0mWxWaj0d9Bmjj61tFCeNL1WXb78wmwY4HIDjGdeTvj8tZ3mWmi7ixEf52ZOVrXS9mHRceXS2/OcXvSX2ASlJygyWPtq2yOUoonOs14/HQuFDfUtV8cpz8r/vi+bUBxY0xJZsUC8LyeEPl/i5vkLqpeG5Bv5hS+QpwBJRT3qrseBIfqBbPpJWy2cuJFLcsf3Ju3WT0CIq4QxKvtm356Z9uPn4ICDt+9mXnnJLJI4CcVStQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from SJ2PR11MB7573.namprd11.prod.outlook.com (2603:10b6:a03:4d2::10)
+ by LV8PR11MB8723.namprd11.prod.outlook.com (2603:10b6:408:1f8::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.24; Fri, 3 Nov
+ 2023 22:53:42 +0000
+Received: from SJ2PR11MB7573.namprd11.prod.outlook.com
+ ([fe80::6710:537d:b74:f1e5]) by SJ2PR11MB7573.namprd11.prod.outlook.com
+ ([fe80::6710:537d:b74:f1e5%5]) with mapi id 15.20.6954.024; Fri, 3 Nov 2023
+ 22:53:42 +0000
+Message-ID: <721c6735-dab9-49c7-bdb2-b34388144e21@intel.com>
+Date:   Fri, 3 Nov 2023 15:53:41 -0700
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 24/24] selftests/resctrl: Ignore failures from L2 CAT test
+ with <= 2 bits
+Content-Language: en-US
+To:     =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+CC:     <linux-kselftest@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
+        Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>,
+        =?UTF-8?Q?Maciej_Wiecz=C3=B3r-Retman?= 
+        <maciej.wieczor-retman@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <20231024092634.7122-1-ilpo.jarvinen@linux.intel.com>
+ <20231024092634.7122-25-ilpo.jarvinen@linux.intel.com>
+ <a5160a37-7778-49ff-8c25-92846d42e87e@intel.com>
+ <6426a6be-5e92-6c5d-7025-6308c1f3c24@linux.intel.com>
+From:   Reinette Chatre <reinette.chatre@intel.com>
+In-Reply-To: <6426a6be-5e92-6c5d-7025-6308c1f3c24@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: MW4PR03CA0208.namprd03.prod.outlook.com
+ (2603:10b6:303:b8::33) To SJ2PR11MB7573.namprd11.prod.outlook.com
+ (2603:10b6:a03:4d2::10)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7b856b74c4c0f8c6c539d7c692051c9203b103c0.1692699931.git.waqar.hameed@axis.com>
-X-GND-Sasl: alexandre.belloni@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ2PR11MB7573:EE_|LV8PR11MB8723:EE_
+X-MS-Office365-Filtering-Correlation-Id: e92b0024-d8d1-4680-ce1a-08dbdcbfb9db
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: GlV9c3BJg4In0mDLU24LKXO0sQPDjs2Qy9xfh83szG8Qdjvd5aJ4ggbCVK5b5P1Hxq//miGLKSeLPIWgGiVlHPUwXfH10wLxdHY2R8BEqriwiHDtK7zRIHHfGac0ln9mNdDzfFO8GO3sMcTbmoWgLxygoB4x2bHoVkbUb+Qar9dM2pi9sx6lYrlwnR9Sj7hNonmWgkyi4SD3z+2JkZmtx4Jm5AaqRVug8q3B/YaOO4MoeZ0rNjb9llOx2NqC7w/xqBtgBBnOO02P16JLtJuiwp15PN1TmIUb3Y3i6XfqSPz25wSH3ivVSe4GJnczjCBwD7RwVPN/mzGhLZ9KZPO2BmkXwn3wI4LmzvEfmKsnQETskuoa/KulJCC52aHqIh50Z0EjS7ZouJQcVyJZ0ZjQ/XsQDDctKONL/45VonQhogTJ3F41gKdxrzp8YfRzUBunkU4rB2CYrC9ekNLUtF7b6sD6VsL6Ro+HPrdzkFZuDwz3qB2kJfRJhuC6gXj1Xb6Lr0pyGgZ6geexDswJ9wIw857nYHoMsUsoUnelrA7FNPaFOKa7FTWmBiFE2RnYTGIJnZDgeGsxa3ZAj7Lcaf7P0EM1bXE94hMbfxNNb5+UnKbPxhQWKDzUbfN33m/F4TQ4kreRbdnNmCOLdM/R+jdP6Q==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR11MB7573.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(366004)(376002)(39860400002)(346002)(230922051799003)(186009)(451199024)(64100799003)(1800799009)(53546011)(6506007)(478600001)(54906003)(26005)(6486002)(31696002)(2906002)(66556008)(66946007)(66476007)(2616005)(31686004)(82960400001)(36756003)(6512007)(38100700002)(41300700001)(316002)(44832011)(5660300002)(6916009)(66899024)(83380400001)(86362001)(4326008)(8676002)(8936002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?UWlWWFdicGJZSWc3bThwUzIraDlXQ1JhMXJ3VGFJbXhzTlhKQWxMVVpEamVK?=
+ =?utf-8?B?TTRSd3d3aTVnV08xQ2cycmVxR2FlUVZGSFhGUWU3STduVTl3RVlMQmYwRUFT?=
+ =?utf-8?B?T2k1VTUvRlcrU2ppTks3eGI0U0E0cFJFSGx0RWhhTkRVSnVtdTBHcUJHZjJT?=
+ =?utf-8?B?c05ZNXFCOXB2dUtaOWxIb1hFNnE2RmhzamRDTzQxbEFsY1E2bXFocWNZaEJW?=
+ =?utf-8?B?bi9BRFBTYno2QnRrZS9MNnlnc3BDZUQrZVpHMkxYbjhpcXZUbGYzRGRhUkE0?=
+ =?utf-8?B?RE9oVm0zaGk2dnY1OG5CSElKYjV3MVRNWE9yUEFnVmlzTjhrQ3JBU2NTQUNB?=
+ =?utf-8?B?YUp3R2hZZ28ySUFldjZOTElaWEg1RmxFV3cwZnBJVDdBVDU5dnpjU1hKbERi?=
+ =?utf-8?B?Z01tVTc2U1UzZFU2VGRoWFBabTc1ZjZhTGRFeFpobmVrQldwOE13eDBFcFZG?=
+ =?utf-8?B?VFV3amwrdzM0WE5vbW5JcTcyQ1dtOE92V044SzFSVG5oc0Fsa2d3cVkxRENN?=
+ =?utf-8?B?czhBWUJQYWZIUFRWWTU5VDM2RHZkV0F3MGY2VDBUR2dvZmFDS3BHNGRSakpL?=
+ =?utf-8?B?TEduNGpGdGZ3ZG5kWDV5UjhEdEFBbHljaE1GWkZISXpLUmh2V0d3bHBRY2VG?=
+ =?utf-8?B?QThaYkEzRVo4bk9TNGFhcmxhOUF6cjd4MXlBVytxVlAySUZzS3Rvb3BJaVRu?=
+ =?utf-8?B?cUdvRUYwdGJUVGMrWUJHWHdFZFhmZzlMVUViUHNNOFpHYndqVE1XbHlSeTV4?=
+ =?utf-8?B?MGVBOFlrYWIwd2E5M2VudGJoY1c3T0hwamhReWp6TGV4RUpJY1Qrc0QzL0JL?=
+ =?utf-8?B?bXlPQk92VHQ1WnMwTGRFN3F5a0NhRVFoQTNRdlJFcTE5Q2IvdE5Fa0hRVDJs?=
+ =?utf-8?B?TnZJdnR1QlZncjRTcFlKcmoyK082anR0UkhPa3NhdENwTFFnVzE2U2pTRUR6?=
+ =?utf-8?B?VFlQakRrUGw0STNYVlJmVGkxQzJqUXl6dThUWTdWdnI3QjZ4MzBBS1I2dFU0?=
+ =?utf-8?B?c2lRUWhWRHdtd2lHL1NtdE80NWd6dk5ZSE5RRkJhRkhycCt3T2h1Y1NITkF0?=
+ =?utf-8?B?b25rQ2xFNkZPcWlsT3NMOXY1dDBwcnljaGhtNXY0OEI4cWxHRVNRWmRsa3pM?=
+ =?utf-8?B?bGUxc3VXWG1sRzMwUExWTzRXdVZwTEFZaDdlVWZiZHRuRjZoV3JkaE1lNUhU?=
+ =?utf-8?B?SE1qN20vL3hSK2ZrbHUydmtNOW5rRlAvZlJ0K2Z5OFJtZURDRTIzOEFlb0h3?=
+ =?utf-8?B?dUE1WCt4STdOblAzODlSZ2d2d0ptalRRdlR3UldSZVRWaWQ2VER4SzNtbHps?=
+ =?utf-8?B?Rm14cU83bENnYmdreEZiWVFDMFU3UkFkdnVGSWFxNko3MDhNUHBadmlNeE05?=
+ =?utf-8?B?THhMLzhBK0pyWHF4eTBMMVNLRk1HNjJ4Y3NxaW4vZFZ6Q2RlOVV3NHEzVDJT?=
+ =?utf-8?B?V05wK3V0NTdpeUxjV1Q3QVcyRlBZWE9HSGtWWG5kdEhQQjZ2QmxDTDhvb21p?=
+ =?utf-8?B?RUdWM0hBcDB3ZGE3SjJhTDV1MGpGZmpXUWNRTnUxWjd2WmhsQkdkQTljcXhs?=
+ =?utf-8?B?RnVHVFlGN3Ava09KY1hKQ3daRXFzOWJ4L2tsZVdFZGhoZUsyNnFIcFYydG9E?=
+ =?utf-8?B?dnVxMURDd0dwQXd0Z0cyYzNKanFSUTZ1OElMWVVzUC9nK2I0SGgwQVFQV0Vv?=
+ =?utf-8?B?UTU3SFRYMkEyYXowZXN3UnpXNFlhcllMWU1DSXpLcUgzQVNJa1QrMXBkc3Bh?=
+ =?utf-8?B?bWdEMzhRYVY0Q2tiVXlVVUorU3h4SDA0YVZTTUoyN3BDMXFUdGZnNnhOa1k0?=
+ =?utf-8?B?TWVHelQ3Ukk0YzVIcFB0MitSV3FvQmlJTjB1UnU4R3RNUU8yVW5NYzJWMEVG?=
+ =?utf-8?B?aHd6bnludTNndUdMZWtqN3lwVTRqNUZxbFQ1VHBwQVhRTkpyTXlEYjRlYlNO?=
+ =?utf-8?B?cVNRM0NmcTJTdlpjcllDNE4zZFNmaDhwdktjMVVzTDdLcklJZnRzWE55RVRz?=
+ =?utf-8?B?YW9nRTc5Tm1LNjRwMytNalBCRWtKTzB2VEp0dDF5M1pNemZxaFF0TkxlMGhI?=
+ =?utf-8?B?Z080S0xZRWhaTFJSOUdxa1JjaVdYODhSM3ZvZXZldjlhbVZvcHFuMW5LU29B?=
+ =?utf-8?B?L1J0b0NDSlBvWElyYlFTSitNK096dVpFZnFtU2NWUmMxdTNGczFwTzZWWjdy?=
+ =?utf-8?B?Q1E9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: e92b0024-d8d1-4680-ce1a-08dbdcbfb9db
+X-MS-Exchange-CrossTenant-AuthSource: SJ2PR11MB7573.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Nov 2023 22:53:41.9399
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: FDFFbaKA+E2oIIu9ql4DwqrD7d7lOyzigiqe3n1OBR9Ae3fl52KwXtbYvbwu0+CkxX8aBmUQPDmydGVfL5a9hPi1seT8T3ZG4GPz/Qb1hTQ=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV8PR11MB8723
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi Ilpo,
 
-I'm sorry for the very late review...
-
-On 22/08/2023 12:25:31+0200, Waqar Hameed wrote:
-> +#include <linux/bcd.h>
-> +#include <linux/i2c.h>
-> +#include <linux/module.h>
-> +#include <linux/regmap.h>
-> +
-> +#include <linux/rtc.h>
-> +
-> +#define RX8111_DRV_NAME "rtc-rx8111"
-
-This define is not necessary
-
-> +
-> +#define RX8111_REG_SEC			0x10	/* Second counter. */
-> +#define RX8111_REG_MIN			0x11	/* Minute counter */
-> +#define RX8111_REG_HOUR			0x12	/* Hour counter. */
-> +#define RX8111_REG_WEEK			0x13	/* Week day counter. */
-> +#define RX8111_REG_DAY			0x14	/* Month day counter. */
-> +#define RX8111_REG_MONTH		0x15	/* Month counter. */
-> +#define RX8111_REG_YEAR			0x16	/* Year counter. */
-> +
-> +#define RX8111_REG_ALARM_MIN		0x17	/* Alarm minute. */
-> +#define RX8111_REG_ALARM_HOUR		0x18	/* Alarm hour. */
-> +#define RX8111_REG_ALARM_WEEK_DAY	0x19	/* Alarm week or month day. */
-> +
-> +#define RX8111_REG_TIMER_COUNTER0	0x1a	/* Timer counter LSB. */
-> +#define RX8111_REG_TIMER_COUNTER1	0x1b	/* Timer counter. */
-> +#define RX8111_REG_TIMER_COUNTER2	0x1c	/* Timer counter MSB. */
-> +
-> +#define RX8111_REG_EXT			0x1d	/* Extension register. */
-> +#define RX8111_REG_FLAG			0x1e	/* Flag register. */
-> +#define RX8111_REG_CTRL			0x1f	/* Control register. */
-> +
-> +#define RX8111_REG_TS_1_1000_SEC	0x20	/* Timestamp 256 or 512 Hz . */
-> +#define RX8111_REG_TS_1_100_SEC		0x21	/* Timestamp 1 - 128 Hz. */
-> +#define RX8111_REG_TS_SEC		0x22	/* Timestamp second. */
-> +#define RX8111_REG_TS_MIN		0x23	/* Timestamp minute. */
-> +#define RX8111_REG_TS_HOUR		0x24	/* Timestamp hour. */
-> +#define RX8111_REG_TS_WEEK		0x25	/* Timestamp week day. */
-> +#define RX8111_REG_TS_DAY		0x26	/* Timestamp month day. */
-> +#define RX8111_REG_TS_MONTH		0x27	/* Timestamp month. */
-> +#define RX8111_REG_TS_YEAR		0x28	/* Timestamp year. */
-> +#define RX8111_REG_TS_STATUS		0x29	/* Timestamp status. */
-> +
-> +#define RX8111_REG_EVIN_SETTING		0x2b	/* Timestamp trigger setting. */
-> +#define RX8111_REG_ALARM_SEC		0x2c	/* Alarm second. */
-> +#define RX8111_REG_TIMER_CTRL		0x2d	/* Timer control. */
-> +#define RX8111_REG_TS_CTRL0		0x2e	/* Timestamp control 0. */
-> +#define RX8111_REG_CMD_TRIGGER		0x2f	/* Timestamp trigger. */
-> +#define RX8111_REG_PWR_SWITCH_CTRL	0x32	/* Power switch control. */
-> +#define RX8111_REG_STATUS_MON		0x33	/* Status monitor. */
-> +#define RX8111_REG_TS_CTRL1		0x34	/* Timestamp control 1. */
-> +#define RX8111_REG_TS_CTRL2		0x35	/* Timestamp control 2. */
-> +#define RX8111_REG_TS_CTRL3		0x36	/* Timestamp control 3. */
-> +
-> +#define RX8111_TIME_BUF_SZ (RX8111_REG_YEAR - RX8111_REG_SEC + 1)
-> +#define RX8111_TIME_BUF_IDX(reg)                                               \
-> +	({                                                                     \
-> +		BUILD_BUG_ON_MSG(reg < RX8111_REG_SEC || reg > RX8111_REG_YEAR,\
-> +				 "Invalid reg value");                         \
-> +		(reg - RX8111_REG_SEC);                                        \
-> +	})
-
-I don't feel like this is improving the legibility of the code. Also,
-the BUILD_BUG_ON_MSG is never going to happen and doesn't protect
-against a frequent issue.
-
-> +
-> +enum rx8111_regfield {
-> +	/* RX8111_REG_EXT. */
-> +	RX8111_REGF_TSEL0,
-> +	RX8111_REGF_TSEL1,
-> +	RX8111_REGF_ETS,
-> +	RX8111_REGF_WADA,
-> +	RX8111_REGF_TE,
-> +	RX8111_REGF_USEL,
-> +	RX8111_REGF_FSEL0,
-> +	RX8111_REGF_FSEL1,
-> +
-> +	/* RX8111_REG_FLAG. */
-> +	RX8111_REGF_XST,
-> +	RX8111_REGF_VLF,
-> +	RX8111_REGF_EVF,
-> +	RX8111_REGF_AF,
-> +	RX8111_REGF_TF,
-> +	RX8111_REGF_UF,
-> +	RX8111_REGF_POR,
-> +
-> +	/* RX8111_REG_CTRL. */
-> +	RX8111_REGF_STOP,
-> +	RX8111_REGF_EIE,
-> +	RX8111_REGF_AIE,
-> +	RX8111_REGF_TIE,
-> +	RX8111_REGF_UIE,
-> +
-> +	/* RX8111_REG_PWR_SWITCH_CTRL. */
-> +	RX8111_REGF_SMPT0,
-> +	RX8111_REGF_SMPT1,
-> +	RX8111_REGF_SWSEL0,
-> +	RX8111_REGF_SWSEL1,
-> +	RX8111_REGF_INIEN,
-> +	RX8111_REGF_CHGEN,
-> +
-> +	/* Sentinel value. */
-> +	RX8111_REGF_MAX
-> +};
-> +
-> +static const struct reg_field rx8111_regfields[] = {
-> +	[RX8111_REGF_TSEL0] = REG_FIELD(RX8111_REG_EXT, 0, 0),
-> +	[RX8111_REGF_TSEL1] = REG_FIELD(RX8111_REG_EXT, 1, 1),
-> +	[RX8111_REGF_ETS]   = REG_FIELD(RX8111_REG_EXT, 2, 2),
-> +	[RX8111_REGF_WADA]  = REG_FIELD(RX8111_REG_EXT, 3, 3),
-> +	[RX8111_REGF_TE]    = REG_FIELD(RX8111_REG_EXT, 4, 4),
-> +	[RX8111_REGF_USEL]  = REG_FIELD(RX8111_REG_EXT, 5, 5),
-> +	[RX8111_REGF_FSEL0] = REG_FIELD(RX8111_REG_EXT, 6, 6),
-> +	[RX8111_REGF_FSEL1] = REG_FIELD(RX8111_REG_EXT, 7, 7),
-> +
-> +	[RX8111_REGF_XST] = REG_FIELD(RX8111_REG_FLAG, 0, 0),
-> +	[RX8111_REGF_VLF] = REG_FIELD(RX8111_REG_FLAG, 1, 1),
-> +	[RX8111_REGF_EVF] = REG_FIELD(RX8111_REG_FLAG, 2, 2),
-> +	[RX8111_REGF_AF]  = REG_FIELD(RX8111_REG_FLAG, 3, 3),
-> +	[RX8111_REGF_TF]  = REG_FIELD(RX8111_REG_FLAG, 4, 4),
-> +	[RX8111_REGF_UF]  = REG_FIELD(RX8111_REG_FLAG, 5, 5),
-> +	[RX8111_REGF_POR] = REG_FIELD(RX8111_REG_FLAG, 7, 7),
-> +
-> +	[RX8111_REGF_STOP] = REG_FIELD(RX8111_REG_CTRL, 0, 0),
-> +	[RX8111_REGF_EIE]  = REG_FIELD(RX8111_REG_CTRL, 2, 2),
-> +	[RX8111_REGF_AIE]  = REG_FIELD(RX8111_REG_CTRL, 3, 3),
-> +	[RX8111_REGF_TIE]  = REG_FIELD(RX8111_REG_CTRL, 4, 4),
-> +	[RX8111_REGF_UIE]  = REG_FIELD(RX8111_REG_CTRL, 5, 5),
-> +
-> +	[RX8111_REGF_SMPT0]  = REG_FIELD(RX8111_REG_PWR_SWITCH_CTRL, 0, 0),
-> +	[RX8111_REGF_SMPT1]  = REG_FIELD(RX8111_REG_PWR_SWITCH_CTRL, 1, 1),
-> +	[RX8111_REGF_SWSEL0] = REG_FIELD(RX8111_REG_PWR_SWITCH_CTRL, 2, 2),
-> +	[RX8111_REGF_SWSEL1] = REG_FIELD(RX8111_REG_PWR_SWITCH_CTRL, 3, 3),
-> +	[RX8111_REGF_INIEN]  = REG_FIELD(RX8111_REG_PWR_SWITCH_CTRL, 6, 6),
-> +	[RX8111_REGF_CHGEN]  = REG_FIELD(RX8111_REG_PWR_SWITCH_CTRL, 7, 7),
-> +};
-
-I'm not quite sure using reg_field is actually an improvement. I don't
-have anything against it either, unless it adds bus reads/writes when
-reading or setting the time.
-
-> +
-> +static const struct regmap_config rx8111_regmap_config = {
-> +	.reg_bits = 8,
-> +	.val_bits = 8,
-> +	.max_register = RX8111_REG_TS_CTRL3,
-> +};
-> +
-> +struct rx8111_data {
-> +	struct regmap *regmap;
-> +	struct regmap_field *regfields[RX8111_REGF_MAX];
-> +	struct device *dev;
-> +	struct rtc_device *rtc;
-> +};
-> +
-> +static int rx8111_setup(struct rx8111_data *data)
-> +{
-> +	int ret;
-> +
-> +	/* Disable extended functionality (timer, events, timestamps etc.). */
-> +	ret = regmap_write(data->regmap, RX8111_REG_EXT, 0);
-
-This will lead to issues later on, you should leave the default values.
-
-> +	if (ret) {
-> +		dev_err(data->dev,
-> +			"Could not disable extended functionality (%d)\n", ret);
-
-You should cut down on the number of message, this would be a bus error
-and the user has no actual action after seeing the message.
-
-> +		return ret;
-> +	}
-> +
-> +	/* Disable all interrupts. */
-> +	ret = regmap_write(data->regmap, RX8111_REG_CTRL, 0);
-
-This will also lead to issues later on when adding alarm support.
-
-> +	if (ret) {
-> +		dev_err(data->dev, "Could not disable interrupts (%d)\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int rx8111_read_vl_flag(struct rx8111_data *data, unsigned int *vlval)
-> +{
-> +	int ret;
-> +
-> +	ret = regmap_field_read(data->regfields[RX8111_REGF_VLF], vlval);
-> +	if (ret)
-> +		dev_err(data->dev, "Could not read VL flag (%d)", ret);
-> +
-> +	return ret;
-> +}
-> +
-> +static int rx8111_clear_vl_flag(struct rx8111_data *data)
-> +{
-> +	int ret;
-> +
-> +	ret = regmap_field_write(data->regfields[RX8111_REGF_VLF], 0);
-> +	if (ret)
-> +		dev_err(data->dev, "Could not write VL flag (%d)", ret);
-> +
-> +	return ret;
-> +}
-> +
-> +static int rx8111_read_time(struct device *dev, struct rtc_time *tm)
-> +{
-> +	struct rx8111_data *data = dev_get_drvdata(dev);
-> +	u8 buf[RX8111_TIME_BUF_SZ];
-> +	unsigned int regval;
-> +	int ret;
-> +
-> +	/* Check status. */
-> +	ret = rx8111_read_vl_flag(data, &regval);
-> +	if (ret)
-> +		return ret;
-> +
-> +	if (regval) {
-> +		dev_warn(data->dev,
-> +			 "Low voltage detected, time is not reliable\n");
-> +		return -EINVAL;
-> +	}
-> +
-
-Should you check XST too? And with this, using reg_field is worse.
-
-> +	ret = regmap_field_read(data->regfields[RX8111_REGF_STOP], &regval);
-> +	if (ret) {
-> +		dev_err(data->dev, "Could not read clock status (%d)\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	if (regval) {
-> +		dev_warn(data->dev, "Clock stopped, time is not reliable\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	/* Read time. */
-> +	ret = regmap_bulk_read(data->regmap, RX8111_REG_SEC, buf,
-> +			       ARRAY_SIZE(buf));
-> +	if (ret) {
-> +		dev_err(data->dev, "Could not bulk read time (%d)\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	tm->tm_sec = bcd2bin(buf[RX8111_TIME_BUF_IDX(RX8111_REG_SEC)]);
-> +	tm->tm_min = bcd2bin(buf[RX8111_TIME_BUF_IDX(RX8111_REG_MIN)]);
-> +	tm->tm_hour = bcd2bin(buf[RX8111_TIME_BUF_IDX(RX8111_REG_HOUR)]);
-> +	tm->tm_mday = bcd2bin(buf[RX8111_TIME_BUF_IDX(RX8111_REG_DAY)]);
-> +
-> +	/* Our month range is [1, 12] and tm_mon has [0, 11]. */
-> +	tm->tm_mon = bcd2bin(buf[RX8111_TIME_BUF_IDX(RX8111_REG_MONTH)]) - 1;
-> +
-> +	/*
-> +	 * We begin at year 2000 (c.f. rtc->range_min) and tm_year starts at
-> +	 * year 1900.
-> +	 */
-
-Theses comments are not super useful because most of the RTC drivers are
-behaving this way and it is quite obvious why this is the case.
-
-> +	tm->tm_year = bcd2bin(buf[RX8111_TIME_BUF_IDX(RX8111_REG_YEAR)]) + 100;
-> +
-> +	/* A single bit specifies the week day [0, 6]. Note that ffs(1) = 1. */
-> +	tm->tm_wday = ffs(buf[RX8111_TIME_BUF_IDX(RX8111_REG_WEEK)]) - 1;
-> +
-> +	return 0;
-> +}
-> +
-> +static int rx8111_set_time(struct device *dev, struct rtc_time *tm)
-> +{
-> +	struct rx8111_data *data = dev_get_drvdata(dev);
-> +	u8 buf[RX8111_TIME_BUF_SZ];
-> +	int ret;
-> +
-> +	buf[RX8111_TIME_BUF_IDX(RX8111_REG_SEC)] = bin2bcd(tm->tm_sec);
-> +	buf[RX8111_TIME_BUF_IDX(RX8111_REG_MIN)] = bin2bcd(tm->tm_min);
-> +	buf[RX8111_TIME_BUF_IDX(RX8111_REG_HOUR)] = bin2bcd(tm->tm_hour);
-> +	buf[RX8111_TIME_BUF_IDX(RX8111_REG_DAY)] = bin2bcd(tm->tm_mday);
-> +
-> +	/* Our month range is [1, 12] and tm_mon has [0, 11]. */
-> +	buf[RX8111_TIME_BUF_IDX(RX8111_REG_MONTH)] = bin2bcd(tm->tm_mon + 1);
-> +
-> +	/*
-> +	 * We begin at year 2000 (c.f. rtc->range_min) and tm_year starts at
-> +	 * year 1900.
-> +	 */
-> +	buf[RX8111_TIME_BUF_IDX(RX8111_REG_YEAR)] = bin2bcd(tm->tm_year - 100);
-> +
-> +	/* A single bit specifies the week day [0, 6].*/
-> +	buf[RX8111_TIME_BUF_IDX(RX8111_REG_WEEK)] = BIT(tm->tm_wday);
-> +
-> +	ret = rx8111_clear_vl_flag(data);
-> +	if (ret)
-> +		return ret;A
-> +
-> +	/* Stop the clock. */
-> +	ret = regmap_field_write(data->regfields[RX8111_REGF_STOP], 1);
-> +	if (ret) {
-> +		dev_err(data->dev, "Could not stop the clock (%d)\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	/* Set the time. */
-> +	ret = regmap_bulk_write(data->regmap, RX8111_REG_SEC, buf,
-> +				ARRAY_SIZE(buf));
-> +	if (ret) {
-> +		dev_err(data->dev, "Could not bulk write time (%d)\n", ret);
-> +
-> +		/*
-> +		 * We don't bother with trying to start the clock again. We
-> +		 * check for this in rx8111_read_time() (and thus force user to
-> +		 * call rx8111_set_time() to try again).
-> +		 */
-> +		return ret;
-> +	}
-> +
-> +	/* Start the clock. */
-> +	ret = regmap_field_write(data->regfields[RX8111_REGF_STOP], 0);
-> +	if (ret) {
-> +		dev_err(data->dev, "Could not start the clock (%d)\n", ret);
-> +		return ret;
-> +	}
-> +
-
-You definitively need to handle XST here too.
-
-> +	return 0;
-> +}
-> +
-> +static int rx8111_ioctl(struct device *dev, unsigned int cmd, unsigned long arg)
-> +{
-> +	struct rx8111_data *data = dev_get_drvdata(dev);
-> +	unsigned int regval;
-> +	unsigned long vlval;
-> +	int ret;
-> +
-> +	switch (cmd) {
-> +	case RTC_VL_READ:
-> +		ret = rx8111_read_vl_flag(data, &regval);
-> +		if (ret)
-> +			return ret;
-> +
-> +		vlval = regval ? RTC_VL_DATA_INVALID : 0;
-> +
-> +		return put_user(vlval, (unsigned long __user *)arg);
-> +	case RTC_VL_CLR:
-> +		return rx8111_clear_vl_flag(data);
-
-Do not allow userspace to clear VLF without setting the time.
-
-> +	default:
-> +		return -ENOIOCTLCMD;
-> +	}
-> +}
-> +
-> +static const struct rtc_class_ops rx8111_rtc_ops = {
-> +	.read_time = rx8111_read_time,
-> +	.set_time = rx8111_set_time,
-> +	.ioctl = rx8111_ioctl,
-> +};
-> +
-> +static int rx8111_probe(struct i2c_client *client)
-> +{
-> +	struct rx8111_data *data;
-> +	struct rtc_device *rtc;
-> +	size_t i;
-> +	int ret;
-> +
-> +	data = devm_kmalloc(&client->dev, sizeof(*data), GFP_KERNEL);
-> +	if (!data)
-> +		return dev_err_probe(&client->dev, -ENOMEM,
-> +				     "Could not allocate device data\n");
-
-Please, less strings in probe or at least, use dev_dbg.
-
-> +
-> +	data->dev = &client->dev;
-> +	dev_set_drvdata(data->dev, data);
-> +
-> +	data->regmap = devm_regmap_init_i2c(client, &rx8111_regmap_config);
-> +	if (IS_ERR(data->regmap))
-> +		return dev_err_probe(data->dev, PTR_ERR(data->regmap),
-> +				     "Could not initialize regmap\n");
-> +
-> +	for (i = 0; i < RX8111_REGF_MAX; ++i) {
-> +		data->regfields[i] = devm_regmap_field_alloc(
-> +			data->dev, data->regmap, rx8111_regfields[i]);
-> +		if (IS_ERR(data->regfields[i]))
-> +			return dev_err_probe(
-> +				data->dev, PTR_ERR(data->regfields[i]),
-> +				"Could not allocate register field %zu\n", i);
-> +	}
-> +
-> +	ret = rx8111_setup(data);
-> +	if (ret)
-> +		return ret;
-> +
-> +	rtc = devm_rtc_allocate_device(data->dev);
-> +	if (IS_ERR(rtc))
-> +		return dev_err_probe(data->dev, PTR_ERR(rtc),
-> +				     "Could not allocate rtc device\n");
-> +
-> +	rtc->ops = &rx8111_rtc_ops;
-> +	rtc->range_min = RTC_TIMESTAMP_BEGIN_2000;
-> +	rtc->range_max = RTC_TIMESTAMP_END_2099;
-> +
-> +	clear_bit(RTC_FEATURE_ALARM, rtc->features);
-> +
-> +	ret = devm_rtc_register_device(rtc);
-> +	if (ret)
-> +		return dev_err_probe(data->dev, ret,
-> +				     "Could not register rtc device (%d)\n",
-> +				     ret);
-
-devm_rtc_register_device already has messages in all the error path,
-simply return here.
-
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct of_device_id rx8111_of_match[] = {
-> +	{
-> +		.compatible = "epson,rx8111",
-> +	},
-> +	{}
-> +};
-> +MODULE_DEVICE_TABLE(of, rx8111_of_match);
-> +
-> +static struct i2c_driver rx8111_driver = {
-> +	.driver = {
-> +		.name = RX8111_DRV_NAME,
-> +		.of_match_table = rx8111_of_match,
-> +	},
-> +	.probe = rx8111_probe,
-> +};
-> +module_i2c_driver(rx8111_driver);
-> +
-> +MODULE_AUTHOR("Waqar Hameed <waqar.hameed@axis.com>");
-> +MODULE_DESCRIPTION("Epson RX8111 RTC driver");
-> +MODULE_LICENSE("GPL");
-> -- 
-> 2.30.2
+On 11/3/2023 3:24 AM, Ilpo Järvinen wrote:
+> On Thu, 2 Nov 2023, Reinette Chatre wrote:
+>> On 10/24/2023 2:26 AM, Ilpo Järvinen wrote:
+>>> L2 CAT test with low number of bits tends to occasionally fail because
+>>> of what seems random variation. The margin is quite small to begin with
+>>> for <= 2 bits in CBM. At times, the result can even become negative.
+>>> While it would be possible to allow negative values for those cases, it
+>>> would be more confusing to user.
+>>>
+>>> Ignore failures from the tests where <= 2 were used to avoid false
+>>> negative results.
+>>>
+>>
+>> I think the core message is that 2 or fewer bits should not be used. Instead
+>> of running the test and ignoring the results the test should perhaps just not
+>> be run.
+> 
+> I considered that but it often does work so it felt shame to now present
+> them when they're successful. Then I just had to decide how to deal with
+> the cases where they failed.
+> 
+> Also, if I make it to not run down to 1 bit, those numbers will never ever 
+> be seen by anyone. It doesn't say 2 and 1 bit results don't contain any 
+> information to a human reader who is able to do more informed decisions 
+> whether something is truly working or not. We could, hypothetically, have 
+> a HW issue one day which makes 1-bit L2 mask to misbehave and if the 
+> number is never seen by anyone, it's extremely unlikely to be caught 
+> easily.
+> 
+> They are just reliable enough for simple automated threshold currently. 
+> Maybe something else than average value would be, it would need to be 
+> explored but I suspect also the memory address of the buffer might affect 
+> the value, with L3 it definitely should because of how the things work but 
+> I don't know if that holds for L2 too. I have earlier tried playing with 
+> the buffer addresses with L3 but as I didn't immediately yield positive 
+> outcome to guard against outliers, I postponed that investigation (e.g., 
+> my alloc pattern might have been too straightforward and didn't provide 
+> enough entropy into the buffer start address because I just alloc'ed n x 
+> buf_size buffers back-to-back).
+> 
+> But I don't have very strong opinion on this so if you prefer I just stop 
+> at 3 bits, I can change it?
 > 
 
--- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+We seem to have different users in mind when thinking about this. I was
+considering the users that just run the selftest to get a pass/fail. You
+seem to also consider folks using this for validation. I'm ok with keeping
+this change to accommodate both.
+
+Reinette
