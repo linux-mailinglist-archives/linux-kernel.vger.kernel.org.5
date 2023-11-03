@@ -2,116 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 42A217E0067
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 11:29:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB9487E0182
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 11:31:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234598AbjKCHMu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 03:12:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44954 "EHLO
+        id S233599AbjKCHLO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 03:11:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234512AbjKCHMs (ORCPT
+        with ESMTP id S232885AbjKCHLL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 03:12:48 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 740C9186;
-        Fri,  3 Nov 2023 00:12:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698995562; x=1730531562;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=jmqohwjW/b1Gj1tSFbJgVKBOkBp3iU7UqUowR8+rmss=;
-  b=EOiG2iHA6ysPWC2VFS/X0pIkxZO/DhpqII76iOWigBbejSUWoomh8tSF
-   I4DMmuDp0OhadX2RNr1RrMM+d0t7A85ODkSJQy2llwr+YzCLU89aCl6cm
-   Ak5+ELXc4YPIcvPcLG97nED+rqmuNNPze62YCk56lsjHHIGPJI2j5sphr
-   dhCEt4UqUBsVjuMRBpsZmX6hnDw5+QQdFT2SaHs0eVV+yI6qI9+v36m5L
-   O09oEJzR8/8uKM3Yj3fW2x3UV8PaKb7ikDA4hlY11LAGDr0KfWzBeOHLb
-   DGcYB2tNsaijCyF3twYecHYp6mtAZUAbxa1GS8jsShbIHnF/bBwoCI3GX
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10882"; a="386065255"
-X-IronPort-AV: E=Sophos;i="6.03,273,1694761200"; 
-   d="scan'208";a="386065255"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2023 00:12:42 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10882"; a="905256191"
-X-IronPort-AV: E=Sophos;i="6.03,273,1694761200"; 
-   d="scan'208";a="905256191"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2023 00:12:38 -0700
-From:   "Huang, Ying" <ying.huang@intel.com>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Gregory Price <gourry.memverge@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-cxl@vger.kernel.org,
-        linux-mm@kvack.org, akpm@linux-foundation.org,
-        aneesh.kumar@linux.ibm.com, weixugc@google.com, apopple@nvidia.com,
-        tim.c.chen@intel.com, dave.hansen@intel.com, shy828301@gmail.com,
-        gregkh@linuxfoundation.org, rafael@kernel.org,
-        Gregory Price <gregory.price@memverge.com>
-Subject: Re: [RFC PATCH v3 0/4] Node Weights and Weighted Interleave
-In-Reply-To: <fe7ns7dvrhwp6o7fnn53wt7tuidsncjctgav4bdirwfmjxarne@3oyfe22mxc35>
-        (Michal Hocko's message of "Thu, 2 Nov 2023 10:28:11 +0100")
-References: <20231031003810.4532-1-gregory.price@memverge.com>
-        <rm43wgtlvwowjolzcf6gj4un4qac4myngxqnd2jwt5yqxree62@t66scnrruttc>
-        <20231031152142.GA3029315@cmpxchg.org>
-        <jgh5b5bm73qe7m3qmnsjo3drazgfaix3ycqmom5u6tfp6hcerj@ij4vftrutvrt>
-        <87msvy6wn8.fsf@yhuang6-desk2.ccr.corp.intel.com>
-        <ivhxexthtfums73nkko6yoy635h3cpetv4sqaemrmqd5pbhpq6@6zrizaoxgdwi>
-        <87il6k1y82.fsf@yhuang6-desk2.ccr.corp.intel.com>
-        <fe7ns7dvrhwp6o7fnn53wt7tuidsncjctgav4bdirwfmjxarne@3oyfe22mxc35>
-Date:   Fri, 03 Nov 2023 15:10:37 +0800
-Message-ID: <87jzqzz502.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+        Fri, 3 Nov 2023 03:11:11 -0400
+Received: from mail-oa1-f70.google.com (mail-oa1-f70.google.com [209.85.160.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EBB6186
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 00:11:05 -0700 (PDT)
+Received: by mail-oa1-f70.google.com with SMTP id 586e51a60fabf-1ef4782ef93so2136348fac.1
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Nov 2023 00:11:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698995464; x=1699600264;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=9bBiTuQmzhIrhENOLLOz6/vc6vZ9QR5v4pDSsvtAk5Y=;
+        b=jO0hhXwysM5Neawuf8h3f1W2XBarTptlelWdaS8Qb4ugCfvJ3FxTl/XG2FOpWF9yei
+         Eymv/UUIGBtu7Q98cqXRcNAYy930etZ9YuPaRJxROnCjS1rFBT7jy4REHDwcVrq4OmNf
+         IoqSwSxi2rq3EOH24fKBoB5P4OFjeNPnx5F4C0TTe7A3+cPN2FMkdfyeBwsRWQozipH6
+         qAw4G8Wc9/L8YsIZp5/kENgGT9BUXTu6larV65p91gEwtBAFy8NvJKUnimEOAVpVauXn
+         Y3eDGDKvN+863K3Hs2QtSX1iJ7QfRzzqPfTOg/ISAjnmx79GLcWdD05lQIjLYj7cf392
+         U21A==
+X-Gm-Message-State: AOJu0YxETNEawTVUtpzX+h8MSt+E24JIcp/h0OTFxuKA3/A8RH9ANFgO
+        xBzswLidD7vclMeuMvccPT76IDLCzjmDnnNCKoGWl+bv16/q2BM=
+X-Google-Smtp-Source: AGHT+IER6fWsqtYpy/2KhQMl2rgnrVKhhl4jIu/vvItUCA3F6vemUhnRRBkQYAv8ckNqlY0cjM8tvPpvKOO23GmS+FCnWdEJrMXZ
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
-X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6870:a919:b0:1ef:afd3:813f with SMTP id
+ eq25-20020a056870a91900b001efafd3813fmr802244oab.5.1698995464580; Fri, 03 Nov
+ 2023 00:11:04 -0700 (PDT)
+Date:   Fri, 03 Nov 2023 00:11:04 -0700
+In-Reply-To: <20231103070111.2610655-1-lizhi.xu@windriver.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000024358306093a35be@google.com>
+Subject: Re: [syzbot] [bluetooth?] KASAN: slab-use-after-free Write in
+ hci_conn_drop (2)
+From:   syzbot <syzbot+1683f76f1b20b826de67@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org, lizhi.xu@windriver.com,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Michal Hocko <mhocko@suse.com> writes:
+Hello,
 
-> On Thu 02-11-23 14:11:09, Huang, Ying wrote:
->> Michal Hocko <mhocko@suse.com> writes:
->> 
->> > On Wed 01-11-23 10:21:47, Huang, Ying wrote:
->> >> Michal Hocko <mhocko@suse.com> writes:
->> > [...]
->> >> > Well, I am not convinced about that TBH. Sure it is probably a good fit
->> >> > for this specific CXL usecase but it just doesn't fit into many others I
->> >> > can think of - e.g. proportional use of those tiers based on the
->> >> > workload - you get what you pay for.
->> >> 
->> >> For "pay", per my understanding, we need some cgroup based
->> >> per-memory-tier (or per-node) usage limit.  The following patchset is
->> >> the first step for that.
->> >> 
->> >> https://lore.kernel.org/linux-mm/cover.1655242024.git.tim.c.chen@linux.intel.com/
->> >
->> > Why do we need a sysfs interface if there are plans for cgroup API?
->> 
->> They are for different target.  The cgroup API proposed here is to
->> constrain the DRAM usage in a system with DRAM and CXL memory.  The less
->> you pay, the less DRAM and more CXL memory you use.
->
-> Right, but why the usage distribution requires its own interface and
-> cannot be combined with the access control part of it?
+syzbot tried to test the proposed patch but the build/boot failed:
 
-Per my understanding, they are orthogonal.
+net/bluetooth/sco.c:81:26: error: static assertion failed due to requirement '__builtin_types_compatible_p(struct hci_conn, struct hci_conn *) || __builtin_types_compatible_p(struct hci_conn, void)': pointer type mismatch in container_of()
+net/bluetooth/sco.c:82:7: error: no member named 'hci_conn' in 'struct sco_conn'
 
-Weighted-interleave is a memory allocation policy, other memory
-allocation policies include local first, etc.
 
-Usage limit is to constrain the usage of specific memory types
-(e.g. DRAM) for a cgroup.  It can be used together with local first
-policy and some other memory allocation policy.
+Tested on:
 
---
-Best Regards,
-Huang, Ying
+commit:         8de1e7af Merge branch 'for-next/core' into for-kernelci
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git
+kernel config:  https://syzkaller.appspot.com/x/.config?x=3e6feaeda5dcbc27
+dashboard link: https://syzkaller.appspot.com/bug?extid=1683f76f1b20b826de67
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+userspace arch: arm64
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=155280d7680000
+
