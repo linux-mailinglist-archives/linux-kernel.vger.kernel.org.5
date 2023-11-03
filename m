@@ -2,89 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F6A37E011F
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 11:31:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6A2A7E0055
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 11:29:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346957AbjKCJXd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 05:23:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47036 "EHLO
+        id S1346996AbjKCJY3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 05:24:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346978AbjKCJXb (ORCPT
+        with ESMTP id S1347010AbjKCJY1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 05:23:31 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92EDDD46
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 02:23:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699003403; x=1730539403;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=UKF4yHvLsTDHBFzDY/OehueONcmx1m7S/EbTJbzOH/Y=;
-  b=MPWqThBMdafwPsOmUjHfgAbpmFsCeH177xdpAc+n7NWr3ET5BSuCK4zu
-   q5QsPDh4U9owEYT+Y6TYGUCEJ1PsDpOlR2S9y8IgHU+zWjsLeeZwCT4jk
-   qNxg50N4bAIQG+lDaOjA/NeGmV1lNApyGfSwJJDItWxCO3kz2toF1Z2y+
-   oHI7d2BSfCqYEhhmfkuZGwHn4eLhVNPbZUhKHloZJae0jHDfcSMUqIU6N
-   WZYmFTjD+m4+eKFSra9D449mrXXhlJcIVN07L9z2FSVRD5U7ggb1ZCcKG
-   27wb5gEIhUx8NzMjjOkVwCytYS5XGGZ80Breqn86ONKNwK5G0LSTphuN1
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10882"; a="369117562"
-X-IronPort-AV: E=Sophos;i="6.03,273,1694761200"; 
-   d="scan'208";a="369117562"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2023 02:23:23 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.03,273,1694761200"; 
-   d="scan'208";a="9671046"
-Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by fmviesa001.fm.intel.com with ESMTP; 03 Nov 2023 02:23:21 -0700
-Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qyqOd-0002PQ-0b;
-        Fri, 03 Nov 2023 09:23:19 +0000
-Date:   Fri, 3 Nov 2023 17:22:50 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Shanker Donthineni <sdonthineni@nvidia.com>
-Cc:     Paul Gazzillo <paul@pgazz.com>,
-        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
-        oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Marc Zyngier <maz@kernel.org>, Vikram Sethi <vsethi@nvidia.com>
-Subject: kismet: WARNING: unmet direct dependencies detected for
- HAVE_ARM_SMCCC_DISCOVERY when selected by ARM_GIC_V3
-Message-ID: <202311031706.irbBcT0N-lkp@intel.com>
+        Fri, 3 Nov 2023 05:24:27 -0400
+Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [81.169.146.167])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FE7ED50;
+        Fri,  3 Nov 2023 02:24:20 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1699003458; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=GKhEhc9fuAGxCPvn0OUpgiyGm/vrq/Wvqjmott3WRhZn0LkD4UJZVWTDCFe/9rIjx+
+    FzMZKFqBE6gVzyF+7sYF8IL8awZzgOUyLkojo0vXOvTWaDswdqDRtpP1X6s4UXZuduB3
+    2upqFv3fPhmwRmeZiCMWuNbEJvtfY8R3x4CXpbowgMnrsOTBokVcp6UTciNuUiFUSQeC
+    cxz0VV+y9iKEooICabbXw5fFKeOD7L8OoCFp187Yw27KKxAa62H97G/NbTmqF9/aUy+y
+    bygiJEGWn0RT0uUW81VgZ/xPLputMgY5csHjzNmn8BTrxo3cQn0qOnn2P/fDE5NgK47c
+    oukw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1699003458;
+    s=strato-dkim-0002; d=strato.com;
+    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
+    From:Subject:Sender;
+    bh=panjHvmhHlKR5Tkzdso//74lQRh4FS57QtoM0h4NJ6g=;
+    b=dD88eMl3NtdIdxGpPfYTqZv6QnH4JMx0s99tu+4u/mhO6+6tQ751hMJrSx/PzsoiCk
+    VgUdn1CDkMY+6ZGsm3KQZhP85hJvLr6rPvIAfG9JzkxaOeBxbZkuU+thea5nLgOlNhLQ
+    zigeDaF6ZEAr+ZeMjgIsQNjXrwTor1WrnAYokaF0Y1Y1MXDNG4cYUcoufEhVE6N03434
+    ePOmVDsimdGRP4NvbUUJvsb4mzOL4gkUBcDXoL6iddboC5zKV30k/s+HYXwDxzVYh9LE
+    YuBj8g/D5Sb6I24p+QJ/hx196Hn0KAGlQ+L5alpRUNtHspBLLazJDRorDs+bZOC4ZvDP
+    iMBg==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo01
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1699003458;
+    s=strato-dkim-0002; d=gerhold.net;
+    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
+    From:Subject:Sender;
+    bh=panjHvmhHlKR5Tkzdso//74lQRh4FS57QtoM0h4NJ6g=;
+    b=tfgak9uUOkO5QZpU6NQ+UIkZ/7aEbNTUIkgkmWFlEuo93wqHPzDfnqhfdbduNPq0Q+
+    1ltFt10095uUtXiKFQzeilQz3nwUw0hNNuNT6DkbiPK3g5fwtWrKkxRjligY6Crh1e9+
+    mbh47zTspT5U5QkCcrrNq3O+k7IWwtbAqPtf/6uf3lCm7hItFdrwcL3PBehKoH2xMqoZ
+    JU+H6WsyVO/PRJ3Ij3Gjd32Op2Y6s7zL4v1KzaobyRDh0durwDiBHwgHTNNp7fObmv+p
+    7NKgNMCxmJrfEgyMW+ceu/Oy4tqpq81neE6tPp/++NWLCWBpMvMx7OKZwlJGYwfx5k+2
+    MWJA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1699003458;
+    s=strato-dkim-0003; d=gerhold.net;
+    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
+    From:Subject:Sender;
+    bh=panjHvmhHlKR5Tkzdso//74lQRh4FS57QtoM0h4NJ6g=;
+    b=2zlNwS+eVl/msYpE8lBbocy7BxUccc0Cjp/JiiBPaDqMCT2Td3yVEsb6YHMcmSGTYn
+    z8p37FU/272Ji0wr0ZBw==
+X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u261EJF5OxJD4paA8Z2L1A=="
+Received: from gerhold.net
+    by smtp.strato.de (RZmta 49.9.1 DYNA|AUTH)
+    with ESMTPSA id Lbb8e2zA39OHOuj
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Fri, 3 Nov 2023 10:24:17 +0100 (CET)
+Date:   Fri, 3 Nov 2023 10:24:08 +0100
+From:   Stephan Gerhold <stephan@gerhold.net>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Nishanth Menon <nm@ti.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Stephan Gerhold <stephan.gerhold@kernkonzept.com>,
+        linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V2 0/3] OPP: Simplify required-opp handling
+Message-ID: <ZUS8OC6tY4sxS5RA@gerhold.net>
+References: <cover.1698661048.git.viresh.kumar@linaro.org>
+ <20231103052854.bc7jqaubc5uj6ncj@vireshk-i7>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231103052854.bc7jqaubc5uj6ncj@vireshk-i7>
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   8f6f76a6a29f36d2f3e4510d0bde5046672f6924
-commit: 35727af2b15d98a2dd2811d631d3a3886111312e irqchip/gicv3: Workaround for NVIDIA erratum T241-FABRIC-4
-date:   7 months ago
-config: arm-kismet-CONFIG_HAVE_ARM_SMCCC_DISCOVERY-CONFIG_ARM_GIC_V3-0-0 (https://download.01.org/0day-ci/archive/20231103/202311031706.irbBcT0N-lkp@intel.com/config)
-reproduce: (https://download.01.org/0day-ci/archive/20231103/202311031706.irbBcT0N-lkp@intel.com/reproduce)
+On Fri, Nov 03, 2023 at 10:58:54AM +0530, Viresh Kumar wrote:
+> On 30-10-23, 15:54, Viresh Kumar wrote:
+> > I wasn't able to test this locally (despite trying to hack it around) and need
+> > help from someone who is `virt_devs` field of `struct dev_pm_opp_config`.
+> > 
+> > Pushed here:
+> > 
+> > git://git.kernel.org/pub/scm/linux/kernel/git/vireshk/pm.git opp/required-opps
+> > 
+> > V1->V2:
+> > - Support opp-level 0, drop vote i.e..
+> > - Fix OPP pointer while calling dev_pm_opp_set_opp() recursively.
+> > - Minor checks and fixes.
+> > - Add Reviewed-by from Ulf.
+> 
+> Stephan, Ulf,
+> 
+> Any feedback on this before I merge it ?
+> 
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311031706.irbBcT0N-lkp@intel.com/
+Sorry for the delay. I tested this successfully on the MSM8909 board on
+Wednesday (with the single genpd, and without opp-level 0 there), but
+until now didn't find time to test it on the MSM8916 board with the
+multiple genpds and the opp-level 0.
 
-kismet warnings: (new ones prefixed by >>)
->> kismet: WARNING: unmet direct dependencies detected for HAVE_ARM_SMCCC_DISCOVERY when selected by ARM_GIC_V3
-   .config:7014:warning: symbol value 'ONFIG_ARCH_MMAP_RND_BITS_MI' invalid for ARCH_MMAP_RND_BITS
-   
-   WARNING: unmet direct dependencies detected for HAVE_ARM_SMCCC_DISCOVERY
-     Depends on [n]: ARM_PSCI_FW [=n]
-     Selected by [y]:
-     - ARM_GIC_V3 [=y]
+The opp-level 0 works fine now, thanks for fixing that!
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+The warning in _link_required_opps() when using the parent genpd setup
+[1] is still present though. Given that this setup is an existing
+feature in the genpd core I would appreciate if we try to find a
+solution before merging this patch set. It's kind of a regression
+otherwise since the warning isn't present without this patch set.
+Maybe someone else is already actively using such a setup.
+
+Thanks!
+Stephan
+
+[1]: https://lore.kernel.org/linux-pm/ZTkciw5AwufxQYnB@gerhold.net/
