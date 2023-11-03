@@ -2,135 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C0297E0AAD
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 22:25:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA02C7E0AB0
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 22:26:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229436AbjKCVZV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 17:25:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36516 "EHLO
+        id S230407AbjKCV0i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 17:26:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230239AbjKCVZT (ORCPT
+        with ESMTP id S230273AbjKCV0g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 17:25:19 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5AC7D70
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 14:25:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699046711; x=1730582711;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=+dunE/b12hH0LaKDT2PTmKwQoyHK2gQElWmhYwzc3ds=;
-  b=CvRipwLUr2m1nRXgWYqjeU9El6zd1OByfkKxHD8MRcTSp/dq6AsV4Rhe
-   kGVFxms7w3s9sJ7esSADEeiK9I/S8TvRqEN6E2zep/LBFk5OcAAhPK+4C
-   SE9GCxhO75OcOJxHBlICsGUr26Qlb0gB07s/C3NZWo/Fb5WkhIHpDZwYC
-   b9j/dqygDlBwmuk7aKuD/Snd+GKmByvRUAJj4RAtAM4fyIcCQ9saFTCHN
-   h9ubW46ooFKOSz6MRjPEv5xUbXCyVT6PY59uufece0Bzi7E9h17T3IMRI
-   7NRbr8w9nPbaGyFxxmLK9ClWZaG2m2l+jhpYFjKnveSgho1tCmxSRPNAr
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10883"; a="1977956"
-X-IronPort-AV: E=Sophos;i="6.03,275,1694761200"; 
-   d="scan'208";a="1977956"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2023 14:20:46 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10883"; a="755280590"
-X-IronPort-AV: E=Sophos;i="6.03,275,1694761200"; 
-   d="scan'208";a="755280590"
-Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by orsmga007.jf.intel.com with ESMTP; 03 Nov 2023 14:20:44 -0700
-Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qz1ar-0002xA-3B;
-        Fri, 03 Nov 2023 21:20:41 +0000
-Date:   Sat, 4 Nov 2023 05:20:28 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Andrzej Pietrasiewicz <andrzej.p@collabora.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        Nicolas Dufresne <nicolas.dufresne@collabora.com>
-Subject: include/linux/compiler_types.h:357:45: error: call to
- '__compiletime_assert_304' declared with attribute error: BUILD_BUG_ON
- failed: sizeof(priv_tbl->probs) % 16
-Message-ID: <202311040529.YYvYEwle-lkp@intel.com>
+        Fri, 3 Nov 2023 17:26:36 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E164D61;
+        Fri,  3 Nov 2023 14:26:29 -0700 (PDT)
+Date:   Fri, 03 Nov 2023 21:26:26 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1699046787;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=g6CNUoPwXm4wiAlTR94+rCe6WRiSTMI1vO3hJs6KyyU=;
+        b=wyTqukKZol0aXEwXD/KyO1obufUPbin4VoLvNQjsVoaFA5+DbiWPMTK5qnrhEKocYLxhbp
+        lMcop7Dp0PrgYZTITfftSlQtoYHEljazpfdfVnbXbQK3uGR0oeWvYiHihSA+3hKun3iPau
+        IVGfHypjK/QW2k6Xiwt0mvOXCj4Szdg01qQVWx2fjthe0GJkiEGU7DCLokNBUdP5P3Jo+r
+        ta/t4lSntO+R9g5fKHDu39r0xRuOUmA8hbOESHM5rT6yWYrtXHjVHMz1mM9Rs3O20v5XuJ
+        mKUpV0rUEEuMT198xGlW61SKUpWaTg7OL5hoAvTZ9QmCL+kmx8HmBzvZluPdYg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1699046787;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=g6CNUoPwXm4wiAlTR94+rCe6WRiSTMI1vO3hJs6KyyU=;
+        b=ZtuKSkX4equMbDNyzAHW9pJbr3+i3DpnmgtsIiea6RIVW3ph1RM5UrvJ+x3y6eDClJ1RWg
+        4EnTYZLzxqhZmPDw==
+From:   "tip-bot2 for Kirill A. Shutemov" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/urgent] MAINTAINERS: Add Intel TDX entry
+Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Kai Huang <kai.huang@intel.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Message-ID: <169904678660.3135.15311599992625128483.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andrzej,
+The following commit has been merged into the x86/urgent branch of tip:
 
-FYI, the error/warning still remains.
+Commit-ID:     a4b883806ffe5ae5e99459d64d760e205162c729
+Gitweb:        https://git.kernel.org/tip/a4b883806ffe5ae5e99459d64d760e205162c729
+Author:        Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+AuthorDate:    Thu, 02 Nov 2023 02:33:14 +03:00
+Committer:     Dave Hansen <dave.hansen@linux.intel.com>
+CommitterDate: Fri, 03 Nov 2023 14:20:37 -07:00
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   8f6f76a6a29f36d2f3e4510d0bde5046672f6924
-commit: 00c47aa85bb26450edc6059c3d245de062e60b5d media: rkvdec: Add required padding
-date:   12 months ago
-config: arm-randconfig-003-20231104 (https://download.01.org/0day-ci/archive/20231104/202311040529.YYvYEwle-lkp@intel.com/config)
-compiler: arm-linux-gnueabi-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231104/202311040529.YYvYEwle-lkp@intel.com/reproduce)
+MAINTAINERS: Add Intel TDX entry
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311040529.YYvYEwle-lkp@intel.com/
+Add myself as Intel TDX maintainer.
 
-All errors (new ones prefixed by >>):
+I drove upstreaming most of TDX code so far and I will continue
+working on TDX for foreseeable future.
 
-   In file included from <command-line>:
-   drivers/staging/media/rkvdec/rkvdec-vp9.c: In function 'rkvdec_vp9_start':
->> include/linux/compiler_types.h:357:45: error: call to '__compiletime_assert_304' declared with attribute error: BUILD_BUG_ON failed: sizeof(priv_tbl->probs) % 16
-     357 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-         |                                             ^
-   include/linux/compiler_types.h:338:25: note: in definition of macro '__compiletime_assert'
-     338 |                         prefix ## suffix();                             \
-         |                         ^~~~~~
-   include/linux/compiler_types.h:357:9: note: in expansion of macro '_compiletime_assert'
-     357 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-         |         ^~~~~~~~~~~~~~~~~~~
-   include/linux/build_bug.h:39:37: note: in expansion of macro 'compiletime_assert'
-      39 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
-         |                                     ^~~~~~~~~~~~~~~~~~
-   include/linux/build_bug.h:50:9: note: in expansion of macro 'BUILD_BUG_ON_MSG'
-      50 |         BUILD_BUG_ON_MSG(condition, "BUILD_BUG_ON failed: " #condition)
-         |         ^~~~~~~~~~~~~~~~
-   drivers/staging/media/rkvdec/rkvdec-vp9.c:1011:9: note: in expansion of macro 'BUILD_BUG_ON'
-    1011 |         BUILD_BUG_ON(sizeof(priv_tbl->probs) % 16); /* ensure probs size is 128-bit aligned */
-         |         ^~~~~~~~~~~~
+[ dhansen: * add myself as a reviewer too and change
+	   * Swap Maintained=>Supported.  I double
+	     checked Kirill is still being paid
+	   * add drivers/virt/coco/tdx-guest ]
 
+Suggested-by: Dave Hansen <dave.hansen@linux.intel.com>
+Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
+Acked-by: Dave Hansen <dave.hansen@linux.intel.com>
+Acked-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+Acked-by: Kai Huang <kai.huang@intel.com>
+Link: https://lore.kernel.org/all/20231101233314.2567-1-kirill.shutemov%40linux.intel.com
+---
+ MAINTAINERS | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
-vim +/__compiletime_assert_304 +357 include/linux/compiler_types.h
-
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  343  
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  344  #define _compiletime_assert(condition, msg, prefix, suffix) \
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  345  	__compiletime_assert(condition, msg, prefix, suffix)
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  346  
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  347  /**
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  348   * compiletime_assert - break build and emit msg if condition is false
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  349   * @condition: a compile-time constant condition to check
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  350   * @msg:       a message to emit if condition is false
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  351   *
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  352   * In tradition of POSIX assert, this macro will break the build if the
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  353   * supplied condition is *false*, emitting the supplied error message if the
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  354   * compiler has support to do so.
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  355   */
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  356  #define compiletime_assert(condition, msg) \
-eb5c2d4b45e3d2 Will Deacon 2020-07-21 @357  	_compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  358  
-
-:::::: The code at line 357 was first introduced by commit
-:::::: eb5c2d4b45e3d2d5d052ea6b8f1463976b1020d5 compiler.h: Move compiletime_assert() macros into compiler_types.h
-
-:::::: TO: Will Deacon <will@kernel.org>
-:::::: CC: Will Deacon <will@kernel.org>
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+diff --git a/MAINTAINERS b/MAINTAINERS
+index dd5de54..b697020 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -23460,6 +23460,20 @@ F:	arch/x86/kernel/dumpstack.c
+ F:	arch/x86/kernel/stacktrace.c
+ F:	arch/x86/kernel/unwind_*.c
+ 
++X86 TRUST DOMAIN EXTENSIONS (TDX)
++M:	Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
++R:	Dave Hansen <dave.hansen@linux.intel.com>
++L:	x86@kernel.org
++L:	linux-coco@lists.linux.dev
++S:	Supported
++T:	git git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/tdx
++F:	arch/x86/boot/compressed/tdx*
++F:	arch/x86/coco/tdx/
++F:	arch/x86/include/asm/shared/tdx.h
++F:	arch/x86/include/asm/tdx.h
++F:	arch/x86/virt/vmx/tdx/
++F:	drivers/virt/coco/tdx-guest
++
+ X86 VDSO
+ M:	Andy Lutomirski <luto@kernel.org>
+ L:	linux-kernel@vger.kernel.org
