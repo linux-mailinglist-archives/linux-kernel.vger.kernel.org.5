@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B48C7E013C
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 11:31:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A4597E0068
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 11:29:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232007AbjKCGxD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 02:53:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42456 "EHLO
+        id S232366AbjKCGyF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 02:54:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231905AbjKCGxC (ORCPT
+        with ESMTP id S231461AbjKCGyD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 02:53:02 -0400
+        Fri, 3 Nov 2023 02:54:03 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 250C9131
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 23:53:00 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BC548C433C7;
-        Fri,  3 Nov 2023 06:52:56 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11F1CE3;
+        Thu,  2 Nov 2023 23:54:00 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 125A1C433C8;
+        Fri,  3 Nov 2023 06:53:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698994379;
-        bh=zp7GrPGXdsStz32UXCzDWjHX1vrt915ND20H+YhMA7k=;
+        s=k20201202; t=1698994439;
+        bh=QWFKEsU9Ac1wwx/HwWT9oj6Ee5Vuf1uhms6rIYVW5VI=;
         h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=pNwHUexFiDJtQMpGT71dKooTxXYEOq8zqhpk4QcV7ocJsbx1bLRPXAr7fSaktu4On
-         49Ks9ok3Yw0+um88DFGiiVbE11WIJg+sU38+bOSD84/HCCnFHJp9PSUW8iyJ91iPV4
-         90zL7+8KphvfW7alDfED3xo0JM7QpjIzgzUUxupWC3VexLzNqt4iWQGPe/980nJlqq
-         c2+wCJ/3nf9Il5ZgR2K/ZcOu92rN2ehcTi9nO9226qjB66AixHP43RpapTXEUw4qT1
-         Wknbn+Fw0Gge0EFA0d6qLxjL/YEUfh9IzjMPqiTB7kvpFGbU0Ryz0FvnfzzwGdTrFe
-         W8aZH8oKKZuWQ==
-Message-ID: <d5a18d7f-f327-48bb-8b64-cd53e74b4f04@kernel.org>
-Date:   Fri, 3 Nov 2023 07:52:52 +0100
+        b=ilKpxSyrwm39CU0MLdqyY6Ur8+9nzaUJewJdsIUoJDQZ0m5l2ceP8AFPW3jcfjrx9
+         RcRRp/u8G99nvOpCZJ/R9VIM4ViDlXoHX/V7uqOvSfJT3c1p4oOBsHCCuHiPKkoGMw
+         mNwvCntMlgtCT7o43oZNs5JX+ov1FELTaOiZ4pZ4WbaSuECxGUVCWnVbrGVV1OJ9op
+         gV31q91OpGUi0rYrUZ+eiF8ZoeaJmIPntCdVcfcQ6DNCL8QLOvEPKSSYBIx68Wg0aE
+         m8NIo2j8GjgeXaPQRrOKls1rJ2lr2MprgzJvMW3c8gbJvG1FFOP1LLYIQPzTtUVpY0
+         b10sHPV+MDYFA==
+Message-ID: <8cefc3d6-5d7b-4695-b1db-143f7124f5fe@kernel.org>
+Date:   Fri, 3 Nov 2023 07:53:56 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v8] rtc: tps6594: Add driver for TPS6594 RTC
+Subject: Re: [PATCH v8] pinctrl: tps6594: Add driver for TPS6594 pinctrl and
+ GPIOs
 Content-Language: en-US
-To:     Esteban Blanc <eblanc@baylibre.com>, a.zummo@towertech.it,
-        alexandre.belloni@bootlin.com
+To:     Esteban Blanc <eblanc@baylibre.com>, linus.walleij@linaro.org
 Cc:     andy.shevchenko@gmail.com, linux-kernel@vger.kernel.org,
-        linux-rtc@vger.kernel.org, jpanis@baylibre.com,
+        linux-gpio@vger.kernel.org, jpanis@baylibre.com,
         jneanne@baylibre.com, u-kumar1@ti.com
-References: <20231102132616.1130960-1-eblanc@baylibre.com>
+References: <20231102101357.977886-1-eblanc@baylibre.com>
 From:   Krzysztof Kozlowski <krzk@kernel.org>
 Autocrypt: addr=krzk@kernel.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -83,7 +83,7 @@ Autocrypt: addr=krzk@kernel.org; keydata=
  uZwJCLykjad45hsWcOGk3OcaAGQS6NDlfhM6O9aYNwGL6tGt/6BkRikNOs7VDEa4/HlbaSJo
  7FgndGw1kWmkeL6oQh7wBvYll2buKod4qYntmNKEicoHGU+x91Gcan8mCoqhJkbqrL7+nXG2
  5Q/GS5M9RFWS+nYyJh+c3OcfKqVcZQNANItt7+ULzdNJuhvTRRdC3g9hmCEuNSr+CLMdnRBY fv0=
-In-Reply-To: <20231102132616.1130960-1-eblanc@baylibre.com>
+In-Reply-To: <20231102101357.977886-1-eblanc@baylibre.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -96,37 +96,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/11/2023 14:26, Esteban Blanc wrote:
-> TPS6594 PMIC is a MFD. This patch adds support for
-> the RTC found inside TPS6594 family of PMIC.
+On 02/11/2023 11:13, Esteban Blanc wrote:
+> TI TPS6594 PMIC has 11 GPIOs which can be used
+> for different functions.
 > 
-> Alarm is also supported.
+> This patch adds a pinctrl and GPIO drivers in
+> order to use those functions.
 > 
 > Signed-off-by: Esteban Blanc <eblanc@baylibre.com>
+> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 > Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-> ---
 
 ...
 
 > +
-> +static struct platform_driver tps6594_rtc_driver = {
-> +	.probe		= tps6594_rtc_probe,
-> +	.driver		= {
-> +		.name	= "tps6594-rtc",
+> +static struct platform_driver tps6594_pinctrl_driver = {
+> +	.probe = tps6594_pinctrl_probe,
+> +	.driver = {
+> +		.name = "tps6594-pinctrl",
 > +	},
 > +};
+> +module_platform_driver(tps6594_pinctrl_driver);
 > +
-> +module_platform_driver(tps6594_rtc_driver);
-> +MODULE_ALIAS("platform:tps6594-rtc");
+> +MODULE_ALIAS("platform:tps6594-pinctrl");
 
-You should not need MODULE_ALIAS() in normal cases. If you need it,
-usually it means your device ID table is wrong (e.g. misses either
-entries or MODULE_DEVICE_TABLE()). MODULE_ALIAS() is not a substitute
-for incomplete ID table.
-
-This applies also to your other driver: pinctrl. Maybe to all your
-drivers... Don't use MODULE_ALIAS() as substitute for missing tables.
+Since kbuild reports build error (which is surprise for v8...), drop
+also MODULE_ALIAS and use proper ID table.
 
 Best regards,
 Krzysztof
