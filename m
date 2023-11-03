@@ -2,69 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C88A7E05C1
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 16:50:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1FE47E05C5
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 16:52:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343818AbjKCPue (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 11:50:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44504 "EHLO
+        id S1343814AbjKCPwJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 11:52:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230110AbjKCPud (ORCPT
+        with ESMTP id S230110AbjKCPwH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 11:50:33 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A420111
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 08:50:29 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id 98e67ed59e1d1-2800db61af7so569616a91.0
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Nov 2023 08:50:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699026628; x=1699631428; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=UzPpHStW8fd1Sa/XvvRvmDs3ZUV3eU14pMhnuEaZyXo=;
-        b=cREISMtWJKHXHFQztpIJTiakUSN3wCAbVIa17Q75U0wFlsvwzmR2vqY3IJ3lZZ7ruz
-         Szw7J7+TH/3vcCn1wKK8f4TLBmUsqG+BB6RHSq74CTRv3yOcMRO2JH8RhH4GUxZka0WC
-         hNSo1WbE7P6FyEdJtq0EYeNasSQJokcqB8c3PDZuy5R90e0bAFGqpesDb71jaDvJLrCB
-         8glIzc/0yFwNF7G4+/zFAHKbAGwNNt0EEURqcrlcBrgbmnYo61JxQvykgm50mLPlnUE6
-         qcJhiMk4vkp/JjC1isij5nePOwFRw64UGhcth4vAPlNQjyIimZBvIBOWAHGrNcEfBcH1
-         Y86g==
+        Fri, 3 Nov 2023 11:52:07 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F0C2111
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 08:51:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1699026685;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=cQfUHragInpQXkGJlCrmUlsPxp9RJTqS4atEg6g9qME=;
+        b=JmlTba1pM1UX2NwooDLN+O05x451+XsMd8NwRFMzo0T3ChlwVSxpBEme0FNCyyZ3KEYc6x
+        gj/GLi4lTEH/DmZoAjOx1EGoIiAItGTItJkkIaANE6wS95YQilIN/O08mu5JGnzaZjis2I
+        qGT/u7/S1AJK5kLgxsSbdqfRauHyR6o=
+Received: from mail-il1-f200.google.com (mail-il1-f200.google.com
+ [209.85.166.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-139-89O-kuX3Nn-PH7pA5Lgygw-1; Fri, 03 Nov 2023 11:51:24 -0400
+X-MC-Unique: 89O-kuX3Nn-PH7pA5Lgygw-1
+Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-357a7a97128so20184525ab.2
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Nov 2023 08:51:23 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699026628; x=1699631428;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=UzPpHStW8fd1Sa/XvvRvmDs3ZUV3eU14pMhnuEaZyXo=;
-        b=WnYDVWIzstFIRKJAqhulhG3PvqYpk7YXqdCiNln6taFt5+dG8ahQH6LkQPVQoFYSzD
-         wEEPQxrRE17a1O+Bx5K6leV9l14g4Cro42IukIuaPp8q6C8JtriDUIAkWyd/HS53Hv4F
-         3viPzgyo82vqBq2DPPh7YoGTpgheTNvL4ClSt0ie+xDqbh0a2Iy1hexOI6C8m6VO7jfo
-         VdmrdT8AVSzRZ1OLfX2tIn7GRQ3mgYTq7YmepXCSAPG3yjdn+gekc53sxMENlDp7YgJ+
-         Rehk1RD2MIBGAhzbKWuXcm0eq6paQljEHIVhFyyIBFPKJzOFxpJ1dIFAVVcrN3FTx/hD
-         72Zg==
-X-Gm-Message-State: AOJu0YwhGo9dih1tAJqv29/RExXcpEur596WJ+/Ql7b4+mc65+VE9v/U
-        XMSyU4QZaOJOvdwWQqfgJjzygZfC0NZ8wGli
-X-Google-Smtp-Source: AGHT+IF1P3WyRtABQCc7gbOnKw/OsbBmL5Ob0nkdHmczkHloZMZMVQhl0Mb+oTGSIJdMVU+1lpfLXQ==
-X-Received: by 2002:a17:90a:7064:b0:27d:32d8:5f23 with SMTP id f91-20020a17090a706400b0027d32d85f23mr21154782pjk.2.1699026628449;
-        Fri, 03 Nov 2023 08:50:28 -0700 (PDT)
-Received: from abhinav.. ([103.75.161.210])
-        by smtp.gmail.com with ESMTPSA id v3-20020a17090ad58300b00274922d4b38sm1469858pju.27.2023.11.03.08.50.24
+        d=1e100.net; s=20230601; t=1699026683; x=1699631483;
+        h=content-transfer-encoding:mime-version:organization:references
+         :in-reply-to:message-id:subject:cc:to:from:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=cQfUHragInpQXkGJlCrmUlsPxp9RJTqS4atEg6g9qME=;
+        b=mw3mgFeC90a0HMfI1P1P82gQUdcAEzcmS5AlKXKEuKLMarWHk8PFsDo+YKqyvDpM0a
+         +nU7tbp4EFQz9QS87JuUrCBby+OIqvPpANBP3SymIGSyDhgEBrvNK/eRE4mHukon5Ihx
+         sfHtyJouX03Po6g39wXSkqA4j8OAVxZxjvsiXen1YMTfeJWOeL3M0fPlOswkWiWLZOzl
+         3BOjfMARQYcYNI8ceoHe2mQlI2B95pgVBRDeblAiHtqvBp5HyYlYnD2aF+EiVMr6+357
+         fQ5JeQEeK3ZdoCC21QnK/cMriwBLPCAFwJQ+59WOkqtizvaj2ZSQfcaNBHWfwI63YiOf
+         Af9Q==
+X-Gm-Message-State: AOJu0YxRjHP0M0ljL+jiCms2QFxk3eN9Z4My2ZtNTiIpBYQiOU2QksyE
+        QJStDvmxSXAbg0OlfZ0pp2lBEvpGFzzMah3949H8dKzoz/v5NSxKVPokHYnRr0ybAIvd4fW5YyQ
+        jIXQ1j7ZRDpxTeu1oXYUaua5W
+X-Received: by 2002:a05:6e02:1846:b0:357:8d71:347f with SMTP id b6-20020a056e02184600b003578d71347fmr34486478ilv.8.1699026683230;
+        Fri, 03 Nov 2023 08:51:23 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFGj8CHxufE7VHtH3JkFgjEN1b6NgZYdSnvw1WC8K1DBeYPqTQM5Psn/dldpSTv/MzEpAzisw==
+X-Received: by 2002:a05:6e02:1846:b0:357:8d71:347f with SMTP id b6-20020a056e02184600b003578d71347fmr34486459ilv.8.1699026683002;
+        Fri, 03 Nov 2023 08:51:23 -0700 (PDT)
+Received: from redhat.com ([38.15.60.12])
+        by smtp.gmail.com with ESMTPSA id b16-20020a92ce10000000b003596a440efasm281748ilo.19.2023.11.03.08.51.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Nov 2023 08:50:28 -0700 (PDT)
-From:   Abhinav Singh <singhabhinav9051571833@gmail.com>
-To:     alexander.deucher@amd.com, christian.koenig@amd.com,
-        Xinhui.Pan@amd.com, airlied@gmail.com, daniel@ffwll.ch
-Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Abhinav Singh <singhabhinav9051571833@gmail.com>
-Subject: [PATCH] drivers: gpu: Fix warning using plain integer as NULL
-Date:   Fri,  3 Nov 2023 21:20:13 +0530
-Message-Id: <20231103155013.332367-1-singhabhinav9051571833@gmail.com>
-X-Mailer: git-send-email 2.39.2
+        Fri, 03 Nov 2023 08:51:22 -0700 (PDT)
+Date:   Fri, 3 Nov 2023 09:51:19 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     "Tian, Kevin" <kevin.tian@intel.com>
+Cc:     "Chatre, Reinette" <reinette.chatre@intel.com>,
+        "jgg@nvidia.com" <jgg@nvidia.com>,
+        "yishaih@nvidia.com" <yishaih@nvidia.com>,
+        "shameerali.kolothum.thodi@huawei.com" 
+        <shameerali.kolothum.thodi@huawei.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        "Liu, Jing2" <jing2.liu@intel.com>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "Yu, Fenghua" <fenghua.yu@intel.com>,
+        "tom.zanussi@linux.intel.com" <tom.zanussi@linux.intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "patches@lists.linux.dev" <patches@lists.linux.dev>
+Subject: Re: [RFC PATCH V3 00/26] vfio/pci: Back guest interrupts from
+ Interrupt Message Store (IMS)
+Message-ID: <20231103095119.63aa796f.alex.williamson@redhat.com>
+In-Reply-To: <BN9PR11MB5276BCEA3275EC7203E06FDA8CA5A@BN9PR11MB5276.namprd11.prod.outlook.com>
+References: <cover.1698422237.git.reinette.chatre@intel.com>
+        <BL1PR11MB52710EAB683507AD7FAD6A5B8CA0A@BL1PR11MB5271.namprd11.prod.outlook.com>
+        <20231101120714.7763ed35.alex.williamson@redhat.com>
+        <BN9PR11MB52769292F138F69D8717BE8D8CA6A@BN9PR11MB5276.namprd11.prod.outlook.com>
+        <20231102151352.1731de78.alex.williamson@redhat.com>
+        <BN9PR11MB5276BCEA3275EC7203E06FDA8CA5A@BN9PR11MB5276.namprd11.prod.outlook.com>
+Organization: Red Hat
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,52 +96,94 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-sparse static analysis tools generate a warning with this message
-"Using plain integer as NULL pointer". In this case this warning is
-being shown because we are trying to intialize a pointer to NULL using
-integer value 0.
+On Fri, 3 Nov 2023 07:23:13 +0000
+"Tian, Kevin" <kevin.tian@intel.com> wrote:
 
-Signed-off-by: Abhinav Singh <singhabhinav9051571833@gmail.com>
----
- drivers/gpu/drm/radeon/clearstate_evergreen.h | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+> > From: Alex Williamson <alex.williamson@redhat.com>
+> > Sent: Friday, November 3, 2023 5:14 AM
+> > 
+> > On Thu, 2 Nov 2023 03:14:09 +0000
+> > "Tian, Kevin" <kevin.tian@intel.com> wrote:
+> >   
+> > > > From: Tian, Kevin
+> > > > Sent: Thursday, November 2, 2023 10:52 AM
+> > > >  
+> > > > >
+> > > > > Without an in-tree user of this code, we're just chopping up code for
+> > > > > no real purpose.  There's no reason that a variant driver requiring IMS
+> > > > > couldn't initially implement their own SET_IRQS ioctl.  Doing that  
+> > > >
+> > > > this is an interesting idea. We haven't seen a real usage which wants
+> > > > such MSI emulation on IMS for variant drivers. but if the code is
+> > > > simple enough to demonstrate the 1st user of IMS it might not be
+> > > > a bad choice. There are additional trap-emulation required in the
+> > > > device MMIO bar (mostly copying MSI permission entry which contains
+> > > > PASID info to the corresponding IMS entry). At a glance that area
+> > > > is 4k-aligned so should be doable.
+> > > >  
+> > >
+> > > misread the spec. the MSI-X permission table which provides
+> > > auxiliary data to MSI-X table is not 4k-aligned. It sits in the 1st
+> > > 4k page together with many other registers. emulation of them
+> > > could be simple with a native read/write handler but not sure
+> > > whether any of them may sit in a hot path to affect perf due to
+> > > trap...  
+> > 
+> > I'm not sure if you're referring to a specific device spec or the PCI
+> > spec, but the PCI spec has long included an implementation note
+> > suggesting alignment of the MSI-X vector table and pba and separation
+> > from CSRs, and I see this is now even more strongly worded in the 6.0
+> > spec.
+> > 
+> > Note though that for QEMU, these are emulated in the VMM and not
+> > written through to the device.  The result of writes to the vector
+> > table in the VMM are translated to vector use/unuse operations, which
+> > we see at the kernel level through SET_IRQS ioctl calls.  Are you
+> > expecting to get PASID information written by the guest through the
+> > emulated vector table?  That would entail something more than a simple
+> > IMS backend to MSI-X frontend.  Thanks,
+> >   
+> 
+> I was referring to IDXD device spec. Basically it allows a process to
+> submit a descriptor which contains a completion interrupt handle.
+> The handle is the index of a MSI-X entry or IMS entry allocated by
+> the idxd driver. To mark the association between application and
+> related handles the driver records the PASID of the application
+> in an auxiliary structure for MSI-X (called MSI-X permission table)
+> or directly in the IMS entry. This additional info includes whether
+> an MSI-X/IMS entry has PASID enabled and if yes what is the PASID
+> value to be checked against the descriptor.
+> 
+> As you said virtualizing MSI-X table itself is via SET_IRQS and it's
+> 4k aligned. Then we also need to capture guest updates to the MSI-X
+> permission table and copy the PASID information into the
+> corresponding IMS entry when using the IMS backend. It's MSI-X
+> permission table not 4k aligned then trapping it will affect adjacent
+> registers.
+> 
+> My quick check in idxd spec doesn't reveal an real impact in perf
+> critical path. Most registers are configuration/control registers
+> accessed at driver init time and a few interrupt registers related
+> to errors or administrative purpose.
 
-diff --git a/drivers/gpu/drm/radeon/clearstate_evergreen.h b/drivers/gpu/drm/radeon/clearstate_evergreen.h
-index 63a1ffbb3ced..3b645558f133 100644
---- a/drivers/gpu/drm/radeon/clearstate_evergreen.h
-+++ b/drivers/gpu/drm/radeon/clearstate_evergreen.h
-@@ -1049,7 +1049,7 @@ static const struct cs_extent_def SECT_CONTEXT_defs[] =
-     {SECT_CONTEXT_def_5, 0x0000a29e, 5 },
-     {SECT_CONTEXT_def_6, 0x0000a2a5, 56 },
-     {SECT_CONTEXT_def_7, 0x0000a2de, 290 },
--    { 0, 0, 0 }
-+    { NULL, 0, 0 }
- };
- static const u32 SECT_CLEAR_def_1[] =
- {
-@@ -1060,7 +1060,7 @@ static const u32 SECT_CLEAR_def_1[] =
- static const struct cs_extent_def SECT_CLEAR_defs[] =
- {
-     {SECT_CLEAR_def_1, 0x0000ffc0, 3 },
--    { 0, 0, 0 }
-+    { NULL, 0, 0 }
- };
- static const u32 SECT_CTRLCONST_def_1[] =
- {
-@@ -1070,11 +1070,11 @@ static const u32 SECT_CTRLCONST_def_1[] =
- static const struct cs_extent_def SECT_CTRLCONST_defs[] =
- {
-     {SECT_CTRLCONST_def_1, 0x0000f3fc, 2 },
--    { 0, 0, 0 }
-+    { NULL, 0, 0 }
- };
- static const struct cs_section_def evergreen_cs_data[] = {
-     { SECT_CONTEXT_defs, SECT_CONTEXT },
-     { SECT_CLEAR_defs, SECT_CLEAR },
-     { SECT_CTRLCONST_defs, SECT_CTRLCONST },
--    { 0, SECT_NONE }
-+    { NULL, SECT_NONE }
- };
---
-2.39.2
+Right, it looks like you'll need to trap writes to the MSI-X
+Permissions Table via a sparse mmap capability to avoid assumptions
+whether it lives on the same page as the MSI-X vector table or PBA.
+Ideally the hardware folks have considered this to avoid any conflict
+with latency sensitive registers.
+
+The variant driver would use this for collecting the meta data relative
+to the IMS interrupt, but this is all tangential to whether we
+preemptively slice up vfio-pci-core's SET_IRQS ioctl or the iDXD driver
+implements its own.
+
+And just to be clear, I don't expect the iDXD variant driver to go to
+extraordinary lengths to duplicate the core ioctl, we can certainly
+refactor and export things where it makes sense, but I think it likely
+makes more sense for the variant driver to implement the shell of the
+ioctl rather than trying to multiplex the entire core ioctl with an ops
+structure that's so intimately tied to the core implementation and
+focused only on the MSI-X code paths.  Thanks,
+
+Alex
 
