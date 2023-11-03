@@ -2,241 +2,369 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC24F7E01E8
+	by mail.lfdr.de (Postfix) with ESMTP id 839BC7E01E7
 	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 12:14:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347302AbjKCK5m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 06:57:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39144 "EHLO
+        id S233842AbjKCLEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 07:04:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233328AbjKCK5j (ORCPT
+        with ESMTP id S233352AbjKCLEv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 06:57:39 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BC85D43;
-        Fri,  3 Nov 2023 03:57:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699009050; x=1730545050;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=KIf1i8WL0NmxzYLeG98xi+BQwXJHUy3lMDQbLl4c0Bw=;
-  b=D9B1etdFkeZMWMyKmZ/OgnzLzomFvakGQUfivsRzjcZSPyuqiWrtSHrc
-   dSD8wuXrMzhzQxKIdRBd8x5tRKbdryUluew9oG4uhYXIp/SI66PMFaiGG
-   a8cHlPwGg1UN5g52/57DYx+vmVOOi/23HWG4rcXZa90HuvDN9n5krSOZ+
-   8RgNJZbsLFSwnuwM2i4SymsxmTm9p9siuoRh73aDYLy7ND6pegTYp8zwS
-   Trw9xqbS1f0kZDMQHj0wmvwweZYwY6cO65lUcIteCdNCZUSZUIQdhf0Bd
-   y2trXjcEbBSiFedcrU0bYNmq5sUmmB/iAi3OdsqEa0PV9p8EA1RFxKvVQ
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10882"; a="420034844"
-X-IronPort-AV: E=Sophos;i="6.03,273,1694761200"; 
-   d="scan'208";a="420034844"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2023 03:57:29 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10882"; a="755123616"
-X-IronPort-AV: E=Sophos;i="6.03,273,1694761200"; 
-   d="scan'208";a="755123616"
-Received: from pors-mobl3.ger.corp.intel.com ([10.252.35.38])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2023 03:57:26 -0700
-Date:   Fri, 3 Nov 2023 12:57:24 +0200 (EET)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Reinette Chatre <reinette.chatre@intel.com>
-cc:     linux-kselftest@vger.kernel.org, Shuah Khan <shuah@kernel.org>,
-        Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>,
-        =?ISO-8859-15?Q?Maciej_Wiecz=F3r-Retman?= 
-        <maciej.wieczor-retman@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 16/24] selftests/resctrl: Rewrite Cache Allocation
- Technology (CAT) test
-In-Reply-To: <fe5284f7-c27a-4ec3-b12f-f3556a9bb456@intel.com>
-Message-ID: <86c11925-8c3f-3974-7d5d-8df9e6cc1b2c@linux.intel.com>
-References: <20231024092634.7122-1-ilpo.jarvinen@linux.intel.com> <20231024092634.7122-17-ilpo.jarvinen@linux.intel.com> <fe5284f7-c27a-4ec3-b12f-f3556a9bb456@intel.com>
+        Fri, 3 Nov 2023 07:04:51 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F497184
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 04:04:45 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id 98e67ed59e1d1-2802d218242so1897823a91.1
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Nov 2023 04:04:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ventanamicro.com; s=google; t=1699009485; x=1699614285; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7NhqsXT32zvyxB1kmJRh7iPQS4yQRF5HVneufZU3p4I=;
+        b=gfB5C049uQFreHZpseKAOjAOgu/SDsPcsGD0L81ruUYBEp4SUXzjqmS7Sns3vvSrq5
+         KtqF4mes0PZgtHHRYUYbk948fywQKcj2TvbONnnKouRKDSlTu1Dv6ysXqS3uvogRv3rE
+         H9G4NGoXKz0kCR3DPJycjzc0S0Rdtb+FptLRCxuL2fLsXHRRNLfYYeM8FU2Iupd8+yvb
+         yqNQV+G5s18uoL45PzVBKpZMalx9eNJkjJBgJ67HUX1iRYGRIka2lB2Bq+Y7KmVRWkXD
+         dMrI0JFuTqlCLq5UxAfS+6nUuerPdXi4kHHjNb8BDB5EvHb1lEntIasflrS+isviUe8Q
+         Qwcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699009485; x=1699614285;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7NhqsXT32zvyxB1kmJRh7iPQS4yQRF5HVneufZU3p4I=;
+        b=xMm2ELC4lQIRl5VnvHZNFvJbHkFTitqTrJeVfqOwDRANX7rFuoxSqi3Y9UkYP4l6Cq
+         HZMRe/yVm9/tf6iNFhGJS8jdVg3Vu1PmPeTMOFtpaoGo/tSgNcKMD3E9zXqnxvPr8u90
+         ElChXE7vbEhaoxJS92bPWeKk/bvBO1qHdgnXqhwL4QrebypA/KHOebn4l0FkAxjg7gLK
+         CKgmPwlV0OKBgkaASbpstf4cCKUI3N5su5zKgmkVr0QihOee9VMIpeCtDS8xbH+7EgRi
+         kpWv1jc7pz84nvAn2rPyllbuJTvA5PhRCUbFNl5AjUarW7PwkjSeRI1+oULdCvAYJog2
+         Do9w==
+X-Gm-Message-State: AOJu0YyAtQZ36bTt5Q3DIenAZYQIF+mq6IX6MgzcoWQow159lFBkeDlF
+        C7HJdZE3w4GZiNRSqSiLFjNml4xYw2wUEn7CFyrnWA==
+X-Google-Smtp-Source: AGHT+IGSOr06M27lxx0IMgcdH0w4+aO2IwgEJZ0jtzNlKCwRzHlOJ3+MKTWbw1ZqW3p67rzA16QXvv7xjsLdEWawCLI=
+X-Received: by 2002:a17:90a:ca8e:b0:27d:222c:f5eb with SMTP id
+ y14-20020a17090aca8e00b0027d222cf5ebmr19538926pjt.11.1699009484425; Fri, 03
+ Nov 2023 04:04:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-1041348085-1699009049=:1725"
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20231023172800.315343-1-apatel@ventanamicro.com>
+ <20231023172800.315343-13-apatel@ventanamicro.com> <210e2757.3169.18b8eb4495c.Coremail.figure1802@126.com>
+ <CAK9=C2UsExEDz76dr=gF2nxyF_3p5OtWxC7L8vZuK5s1nbiSoQ@mail.gmail.com> <15813ba.5290.18b948db497.Coremail.figure1802@126.com>
+In-Reply-To: <15813ba.5290.18b948db497.Coremail.figure1802@126.com>
+From:   Anup Patel <apatel@ventanamicro.com>
+Date:   Fri, 3 Nov 2023 16:34:32 +0530
+Message-ID: <CAK9=C2Xe-ODWUgbeYs4TXySrKKZuA7LWGr-UUaLdZGTnLZ2-7g@mail.gmail.com>
+Subject: Re: Re: [PATCH v11 12/14] irqchip/riscv-aplic: Add support for MSI-mode
+To:     Ben <figure1802@126.com>
+Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
+        Saravana Kannan <saravanak@google.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Anup Patel <anup@brainfault.org>, linux-kernel@vger.kernel.org,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        linux-riscv@lists.infradead.org,
+        Andrew Jones <ajones@ventanamicro.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+On Fri, Nov 3, 2023 at 3:14=E2=80=AFPM Ben <figure1802@126.com> wrote:
+>
+>
+>
+> =E5=9C=A8 2023-11-02 20:37:42=EF=BC=8C"Anup Patel" <apatel@ventanamicro.c=
+om> =E5=86=99=E9=81=93=EF=BC=9A
+> >On Thu, Nov 2, 2023 at 11:55=E2=80=AFAM Ben <figure1802@126.com> wrote:
+> >>
+> >>
+> >> At 2023-10-24 01:27:58, "Anup Patel" <apatel@ventanamicro.com> wrote:
+> >> >The RISC-V advanced platform-level interrupt controller (APLIC) has
+> >> >two modes of operation: 1) Direct mode and 2) MSI mode.
+> >> >(For more details, refer https://github.com/riscv/riscv-aia)
+> >> >
+> >> >In APLIC MSI-mode, wired interrupts are forwared as message signaled
+> >> >interrupts (MSIs) to CPUs via IMSIC.
+> >> >
+> >> >We extend the existing APLIC irqchip driver to support MSI-mode for
+> >> >RISC-V platforms having both wired interrupts and MSIs.
+> >> >
+> >> >Signed-off-by: Anup Patel <apatel@ventanamicro.com>
+> >> >---
+> >> > drivers/irqchip/Kconfig                |   6 +
+> >> > drivers/irqchip/Makefile               |   1 +
+> >> > drivers/irqchip/irq-riscv-aplic-main.c |   2 +-
+> >> > drivers/irqchip/irq-riscv-aplic-main.h |   8 +
+> >> > drivers/irqchip/irq-riscv-aplic-msi.c  | 285 +++++++++++++++++++++++=
+++
+> >> > 5 files changed, 301 insertions(+), 1 deletion(-)
+> >> > create mode 100644 drivers/irqchip/irq-riscv-aplic-msi.c
+> >> >
+> >> >diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
+> >> >index 1996cc6f666a..7adc4dbe07ff 100644
+> >> >--- a/drivers/irqchip/Kconfig
+> >> >+++ b/drivers/irqchip/Kconfig
+> >> >@@ -551,6 +551,12 @@ config RISCV_APLIC
+> >> > depends on RISCV
+> >> > select IRQ_DOMAIN_HIERARCHY
+> >> >
+> >> >+config RISCV_APLIC_MSI
+> >> >+ bool
+> >> >+ depends on RISCV_APLIC
+> >> >+ select GENERIC_MSI_IRQ
+> >> >+ default RISCV_APLIC
+> >> >+
+> >> > config RISCV_IMSIC
+> >> > bool
+> >> > depends on RISCV
+> >> >diff --git a/drivers/irqchip/Makefile b/drivers/irqchip/Makefile
+> >> >index 7f8289790ed8..47995fdb2c60 100644
+> >> >--- a/drivers/irqchip/Makefile
+> >> >+++ b/drivers/irqchip/Makefile
+> >> >@@ -96,6 +96,7 @@ obj-$(CONFIG_CSKY_MPINTC) +=3D irq-csky-mpintc.o
+> >> > obj-$(CONFIG_CSKY_APB_INTC) +=3D irq-csky-apb-intc.o
+> >> > obj-$(CONFIG_RISCV_INTC) +=3D irq-riscv-intc.o
+> >> > obj-$(CONFIG_RISCV_APLIC) +=3D irq-riscv-aplic-main.o irq-riscv-apli=
+c-direct.o
+> >> >+obj-$(CONFIG_RISCV_APLIC_MSI) +=3D irq-riscv-aplic-msi.o
+> >> > obj-$(CONFIG_RISCV_IMSIC) +=3D irq-riscv-imsic-state.o irq-riscv-ims=
+ic-early.o irq-riscv-imsic-platform.o
+> >> > obj-$(CONFIG_SIFIVE_PLIC) +=3D irq-sifive-plic.o
+> >> > obj-$(CONFIG_IMX_IRQSTEER) +=3D irq-imx-irqsteer.o
+> >> >diff --git a/drivers/irqchip/irq-riscv-aplic-main.c b/drivers/irqchip=
+/irq-riscv-aplic-main.c
+> >> >index 87450708a733..d1b342b66551 100644
+> >> >--- a/drivers/irqchip/irq-riscv-aplic-main.c
+> >> >+++ b/drivers/irqchip/irq-riscv-aplic-main.c
+> >> >@@ -205,7 +205,7 @@ static int aplic_probe(struct platform_device *pd=
+ev)
+> >> > msi_mode =3D of_property_present(to_of_node(dev->fwnode),
+> >> > "msi-parent");
+> >> > if (msi_mode)
+> >> >- rc =3D -ENODEV;
+> >> >+ rc =3D aplic_msi_setup(dev, regs);
+> >> > else
+> >> > rc =3D aplic_direct_setup(dev, regs);
+> >> > if (rc) {
+> >> >diff --git a/drivers/irqchip/irq-riscv-aplic-main.h b/drivers/irqchip=
+/irq-riscv-aplic-main.h
+> >> >index 474a04229334..78267ec58098 100644
+> >> >--- a/drivers/irqchip/irq-riscv-aplic-main.h
+> >> >+++ b/drivers/irqchip/irq-riscv-aplic-main.h
+> >> >@@ -41,5 +41,13 @@ void aplic_init_hw_global(struct aplic_priv *priv,=
+ bool msi_mode);
+> >> > int aplic_setup_priv(struct aplic_priv *priv, struct device *dev,
+> >> >     void __iomem *regs);
+> >> > int aplic_direct_setup(struct device *dev, void __iomem *regs);
+> >> >+#ifdef CONFIG_RISCV_APLIC_MSI
+> >> >+int aplic_msi_setup(struct device *dev, void __iomem *regs);
+> >> >+#else
+> >> >+static inline int aplic_msi_setup(struct device *dev, void __iomem *=
+regs)
+> >> >+{
+> >> >+ return -ENODEV;
+> >> >+}
+> >> >+#endif
+> >> >
+> >> > #endif
+> >> >diff --git a/drivers/irqchip/irq-riscv-aplic-msi.c b/drivers/irqchip/=
+irq-riscv-aplic-msi.c
+> >> >new file mode 100644
+> >> >index 000000000000..086d00e0429e
+> >> >--- /dev/null
+> >> >+++ b/drivers/irqchip/irq-riscv-aplic-msi.c
+> >> >@@ -0,0 +1,285 @@
+> >> >+// SPDX-License-Identifier: GPL-2.0
+> >> >+/*
+> >> >+ * Copyright (C) 2021 Western Digital Corporation or its affiliates.
+> >> >+ * Copyright (C) 2022 Ventana Micro Systems Inc.
+> >> >+ */
+> >> >+
+> >> >+#include <linux/bitops.h>
+> >> >+#include <linux/cpu.h>
+> >> >+#include <linux/interrupt.h>
+> >> >+#include <linux/irqchip.h>
+> >> >+#include <linux/irqchip/riscv-aplic.h>
+> >> >+#include <linux/irqchip/riscv-imsic.h>
+> >> >+#include <linux/module.h>
+> >> >+#include <linux/msi.h>
+> >> >+#include <linux/of_irq.h>
+> >> >+#include <linux/platform_device.h>
+> >> >+#include <linux/printk.h>
+> >> >+#include <linux/smp.h>
+> >> >+
+> >> >+#include "irq-riscv-aplic-main.h"
+> >> >+
+> >> >+static void aplic_msi_irq_unmask(struct irq_data *d)
+> >> >+{
+> >> >+ aplic_irq_unmask(d);
+> >> >+ irq_chip_unmask_parent(d);
+> >> >+}
+> >> >+
+> >> >+static void aplic_msi_irq_mask(struct irq_data *d)
+> >> >+{
+> >> >+ aplic_irq_mask(d);
+> >> >+ irq_chip_mask_parent(d);
+> >> >+}
+> >> >+
+> >> >+static void aplic_msi_irq_eoi(struct irq_data *d)
+> >> >+{
+> >> >+ struct aplic_priv *priv =3D irq_data_get_irq_chip_data(d);
+> >> >+ u32 reg_off, reg_mask;
+> >> >+
+> >> >+ /*
+> >> >+ * EOI handling only required only for level-triggered
+> >> >+ * interrupts in APLIC MSI mode.
+> >> >+ */
+> >> >+
+> >> >+ reg_off =3D APLIC_CLRIP_BASE + ((d->hwirq / APLIC_IRQBITS_PER_REG) =
+* 4);
+> >> >+ reg_mask =3D BIT(d->hwirq % APLIC_IRQBITS_PER_REG);
+> >> >+ switch (irqd_get_trigger_type(d)) {
+> >> >+ case IRQ_TYPE_LEVEL_LOW:
+> >> >+ if (!(readl(priv->regs + reg_off) & reg_mask))
+> >> >+ writel(d->hwirq, priv->regs + APLIC_SETIPNUM_LE);
+> >> >+ break;
+> >> >+ case IRQ_TYPE_LEVEL_HIGH:
+> >> >+ if (readl(priv->regs + reg_off) & reg_mask)
+> >> >+ writel(d->hwirq, priv->regs + APLIC_SETIPNUM_LE);
+> >> >+ break;
+> >> >+ }
+> >> >+}
+> >> >+
+> >> >+static struct irq_chip aplic_msi_chip =3D {
+> >> >+ .name =3D "APLIC-MSI",
+> >> >+ .irq_mask =3D aplic_msi_irq_mask,
+> >> >+ .irq_unmask =3D aplic_msi_irq_unmask,
+> >> >+ .irq_set_type =3D aplic_irq_set_type,
+> >> >+ .irq_eoi =3D aplic_msi_irq_eoi,
+> >> >+#ifdef CONFIG_SMP
+> >> >+ .irq_set_affinity =3D irq_chip_set_affinity_parent,
+> >> >+#endif
+> >> >+ .flags =3D IRQCHIP_SET_TYPE_MASKED |
+> >> >+  IRQCHIP_SKIP_SET_WAKE |
+> >> >+  IRQCHIP_MASK_ON_SUSPEND,
+> >> >+};
+> >> >+
+> >> >+static int aplic_msi_irqdomain_translate(struct irq_domain *d,
+> >> >+ struct irq_fwspec *fwspec,
+> >> >+ unsigned long *hwirq,
+> >> >+ unsigned int *type)
+> >> >+{
+> >> >+ struct aplic_priv *priv =3D platform_msi_get_host_data(d);
+> >> >+
+> >> >+ return aplic_irqdomain_translate(fwspec, priv->gsi_base, hwirq, typ=
+e);
+> >> >+}
+> >> >+
+> >> >+static int aplic_msi_irqdomain_alloc(struct irq_domain *domain,
+> >> >+     unsigned int virq, unsigned int nr_irqs,
+> >> >+     void *arg)
+> >> >+{
+> >> >+ int i, ret;
+> >> >+ unsigned int type;
+> >> >+ irq_hw_number_t hwirq;
+> >> >+ struct irq_fwspec *fwspec =3D arg;
+> >> >+ struct aplic_priv *priv =3D platform_msi_get_host_data(domain);
+> >> >+
+> >> >+ ret =3D aplic_irqdomain_translate(fwspec, priv->gsi_base, &hwirq, &=
+type);
+> >> >+ if (ret)
+> >> >+ return ret;
+> >> >+
+> >> >+ ret =3D platform_msi_device_domain_alloc(domain, virq, nr_irqs);
+> >> >+ if (ret)
+> >> >+ return ret;
+> >> >+
+> >> >+ for (i =3D 0; i < nr_irqs; i++) {
+> >> >+ irq_domain_set_info(domain, virq + i, hwirq + i,
+> >> >+    &aplic_msi_chip, priv, handle_fasteoi_irq,
+> >> >+    NULL, NULL);
+> >> >+ /*
+> >> >+ * APLIC does not implement irq_disable() so Linux interrupt
+> >> >+ * subsystem will take a lazy approach for disabling an APLIC
+> >> >+ * interrupt. This means APLIC interrupts are left unmasked
+> >> >+ * upon system suspend and interrupts are not processed
+> >> >+ * immediately upon system wake up. To tackle this, we disable
+> >> >+ * the lazy approach for all APLIC interrupts.
+> >> >+ */
+> >> >+ irq_set_status_flags(virq + i, IRQ_DISABLE_UNLAZY);
+> >> >+ }
+> >>
+> >> For platfrom MSI irq, it will call irq_domain_set_info() and irq_set_s=
+tatus_flags() twice, the first one is here:
+> >> platform_msi_device_domain_alloc->msi_domain_populate_irqs->irq_domain=
+_alloc_irqs_hierarchy->imsic_irq_domain_alloc->irq_domain_set_info
+> >>
+> >> so  i think here this for(...) is not necessary, can be removed.
+> >
+> >If we remove then it breaks APLIC MSI-mode because we have
+> >hierarchical irq domains where the APLIC-MSI domain is a child
+> >of the IMSIC-PLAT domain.
+> >
+> >The irq_domain_set_info() called by IMSIC driver only sets irqchip
+> >for IMSIC irq whereas irq_domain_set_info() called by APLIC driver
+> >sets irqchip for APLIC irq. We use a different APLIC irqchip for the
+> >APLIC domain to mask, unmask, and eoi irqs in an APLIC specific
+> >way.
+> >
+>
+> As your said APLIC-MSI domain is a child of the IMSIC-PLAT domain, so all=
+ of platform IRQ or wired IRQ will go to APLIC-MSI domain firstly.
+> how about the pure MSI interrupt? for example the MSI of PCIe device or d=
+evice driver call platform_msi_domain_alloc_irqs() to allocate a MSI ?
 
---8323329-1041348085-1699009049=:1725
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+MSIs from PCIe device will directly go to IMSIC-PCI domain.
 
-On Thu, 2 Nov 2023, Reinette Chatre wrote:
-> On 10/24/2023 2:26 AM, Ilpo Järvinen wrote:
-> > CAT test spawns two processes into two different control groups with
-> > exclusive schemata. Both the processes alloc a buffer from memory
-> > matching their allocated LLC block size and flush the entire buffer out
-> > of caches. Since the processes are reading through the buffer only once
-> > during the measurement and initially all the buffer was flushed, the
-> > test isn't testing CAT.
-> > 
-> > Rewrite the CAT test to allocate a buffer sized to half of LLC. Then
-> > perform a sequence of tests with different LLC alloc sizes starting
-> > from half of the CBM bits down to 1-bit CBM. Flush the buffer before
-> > each test and read the buffer twice. Observe the LLC misses on the
-> > second read through the buffer. As the allocated LLC block gets smaller
-> > and smaller, the LLC misses will become larger and larger giving a
-> > strong signal on CAT working properly.
-> > 
-> > The new CAT test is using only a single process because it relies on
-> > measured effect against another run of itself rather than another
-> > process adding noise. The rest of the system is allocated the CBM bits
-> > not used by the CAT test to keep the test isolated.
-> > 
-> > Replace count_bits() with count_contiguous_bits() to get the first bit
-> > position in order to be able to calculate masks based on it.
-> > 
-> > This change has been tested with a number of systems from different
-> > generations.
-> 
-> Thank you very much for doing this.
-> 
-> > 
-> > Suggested-by: Reinette Chatre <reinette.chatre@intel.com>
-> > Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
-> > ---
-> >  tools/testing/selftests/resctrl/cat_test.c  | 286 +++++++++-----------
-> >  tools/testing/selftests/resctrl/fill_buf.c  |   6 +-
-> >  tools/testing/selftests/resctrl/resctrl.h   |   5 +-
-> >  tools/testing/selftests/resctrl/resctrlfs.c |  44 +--
-> >  4 files changed, 137 insertions(+), 204 deletions(-)
-> > 
-> > diff --git a/tools/testing/selftests/resctrl/cat_test.c b/tools/testing/selftests/resctrl/cat_test.c
-> > index e71690a9bbb3..7518c520c5cc 100644
-> > --- a/tools/testing/selftests/resctrl/cat_test.c
-> > +++ b/tools/testing/selftests/resctrl/cat_test.c
-> > @@ -11,65 +11,68 @@
-> >  #include "resctrl.h"
-> >  #include <unistd.h>
-> >  
-> > -#define RESULT_FILE_NAME1	"result_cat1"
-> > -#define RESULT_FILE_NAME2	"result_cat2"
-> > +#define RESULT_FILE_NAME	"result_cat"
-> >  #define NUM_OF_RUNS		5
-> > -#define MAX_DIFF_PERCENT	4
-> > -#define MAX_DIFF		1000000
-> >  
-> >  /*
-> > - * Change schemata. Write schemata to specified
-> > - * con_mon grp, mon_grp in resctrl FS.
-> > - * Run 5 times in order to get average values.
-> > + * Minimum difference in LLC misses between a test with n+1 bits CBM mask to
-> > + * the test with n bits. With e.g. 5 vs 4 bits in the CBM mask, the minimum
-> > + * difference must be at least MIN_DIFF_PERCENT_PER_BIT * (4 - 1) = 3 percent.
-> 
-> This formula is not clear to me. In the code the formula is always:
-> MIN_DIFF_PERCENT_PER_BIT * (bits - 1) ... is the "-1" because it always
-> decrements the number of bits tested by one?
+>  in this scenario, it also go into  APLIC-MSI domain firstly?
 
-No, -1 is not related to decrementing bits by one, but setting a boundary 
-which workds for 1 bit masks. In general,  the smaller the number of bits 
-in the allocation mask is, less change there will be between n+1 -> n bits
-results. When n is 1, the result with some platforms is close to zero so I 
-just had to make the min diff to allow it. Thus, n-1 to set the failure 
-threshold at 0%.
+No
 
-> So, for example, if testing
-> 5 then 3 bits it would be  MIN_DIFF_PERCENT_PER_BIT * (3 - 2)?
-> Would above example thus be:
-> MIN_DIFF_PERCENT_PER_BIT * (4 - (5 - 4)) = 3 ?
+>
+> would you like provide the steps how to test the PCI MSI for your patchse=
+t on QEMU? i run a QEMU system, but i cannot found any PCI devices using MS=
+I, especially the virtio devices which using the platform IRQ.
 
-I suspect you're overthinking it here. The CAT selftest currently doesn't 
-jump from 5 to 3 bits so I don't know what you're trying to calculate 
-here.
+Just add virtio-blk-pci OR some other PCI device in your QEMU
+command line but ensure that you have corresponding device
+driver enabled in your kernel.
 
-> > - * Return:	0 on success. non-zero on failure.
-> > + * Return:		0 on success. non-zero on failure.
-> 
-> Is non-zero specific enough? Does that mean that <0 and >0 are failure?
+>
+> ~# cat /proc/interrupts
+>            CPU0       CPU1       CPU2       CPU3
+>  10:      38972      38946      38882      38924  RISC-V INTC   5 Edge   =
+   riscv-timer
+>  11:          0       1149          0          0  APLIC-MSI   8 Level    =
+ virtio0
+>  12:          0          0         21          0  APLIC-MSI   7 Level    =
+ virtio1
+>  13:        149          0          0        218  APLIC-MSI  10 Level    =
+ ttyS0
+> IPI0:        40         53         43         50  Rescheduling interrupts
+> IPI1:      7518       8899       6679       7959  Function call interrupt=
+s
+> IPI2:         0          0          0          0  CPU stop interrupts
+> IPI3:         0          0          0          0  CPU stop (for crash dum=
+p) interrupts
+> IPI4:         0          0          0          0  IRQ work interrupts
+> IPI5:         0          0          0          0  Timer broadcast interru=
+pts
+>
+>
 
-I suspect it is, after all the cleanups and fixes that have been done.
-The wording is from the original though.
-
-> >   */
-> > -static int cat_test(struct resctrl_val_param *param, size_t span)
-> > +static int cat_test(struct resctrl_val_param *param, size_t span, unsigned long current_mask)
-> >  {
-> > -	int memflush = 1, operation = 0, ret = 0;
-> >  	char *resctrl_val = param->resctrl_val;
-> >  	static struct perf_event_read pe_read;
-> >  	struct perf_event_attr pea;
-> > +	unsigned char *buf;
-> > +	char schemata[64];
-> > +	int ret, i, pe_fd;
-> >  	pid_t bm_pid;
-> > -	int pe_fd;
-> >  
-> >  	if (strcmp(param->filename, "") == 0)
-> >  		sprintf(param->filename, "stdio");
-> > @@ -143,54 +168,64 @@ static int cat_test(struct resctrl_val_param *param, size_t span)
-> >  	if (ret)
-> >  		return ret;
-> >  
-> > +	buf = alloc_buffer(span, 1);
-> > +	if (buf == NULL)
-> > +		return -1;
-> > +
-> >  	perf_event_attr_initialize(&pea, PERF_COUNT_HW_CACHE_MISSES);
-> >  	perf_event_initialize_read_format(&pe_read);
-> >  
-> > -	/* Test runs until the callback setup() tells the test to stop. */
-> > -	while (1) {
-> > -		ret = param->setup(param);
-> > -		if (ret == END_OF_TESTS) {
-> > -			ret = 0;
-> > -			break;
-> > -		}
-> > -		if (ret < 0)
-> > -			break;
-> > -		pe_fd = perf_event_reset_enable(&pea, bm_pid, param->cpu_no);
-> > -		if (pe_fd < 0) {
-> > -			ret = -1;
-> > -			break;
-> > -		}
-> > +	while (current_mask) {
-> > +		snprintf(schemata, sizeof(schemata), "%lx", param->mask & ~current_mask);
-> > +		ret = write_schemata("", schemata, param->cpu_no, param->resctrl_val);
-> > +		if (ret)
-> > +			goto free_buf;
-> > +		snprintf(schemata, sizeof(schemata), "%lx", current_mask);
-> > +		ret = write_schemata(param->ctrlgrp, schemata, param->cpu_no, param->resctrl_val);
-> > +		if (ret)
-> > +			goto free_buf;
-> > +
-> > +		for (i = 0; i < NUM_OF_RUNS; i++) {
-> > +			mem_flush(buf, span);
-> > +			ret = fill_cache_read(buf, span, true);
-> > +			if (ret)
-> > +				goto free_buf;
-> > +
-> > +			pe_fd = perf_event_reset_enable(&pea, bm_pid, param->cpu_no);
-> > +			if (pe_fd < 0) {
-> > +				ret = -1;
-> > +				goto free_buf;
-> > +			}
-> 
-> It seems to me that the perf counters are reconfigured at every iteration.
-> Can it not just be configured once and then the counters just reset and
-> enabled at each iteration? I'd expect this additional work to impact
-> values measured.
-
-So you suggest I undo one of the changes made in 10/24 and just call the 
-function which does only the ioctl() calls? I don't know why it has been 
-done the way it has been, I can try to change it and see what happens.
-
-
--- 
- i.
-
---8323329-1041348085-1699009049=:1725--
+Regards,
+Anup
