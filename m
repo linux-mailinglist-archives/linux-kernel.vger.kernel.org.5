@@ -2,106 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EFEB7E0539
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 16:05:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0516B7E053B
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 16:05:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229807AbjKCPE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 11:04:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43900 "EHLO
+        id S232987AbjKCPEr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 11:04:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbjKCPEZ (ORCPT
+        with ESMTP id S232831AbjKCPEp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 11:04:25 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F9A91B2;
-        Fri,  3 Nov 2023 08:04:20 -0700 (PDT)
-Date:   Fri, 3 Nov 2023 16:04:16 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1699023857;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=zw3qdAaPAqZS90DNMKf7YEZVCL6zjF1E8Lua1o2VnB4=;
-        b=VEKbimh/tSJMSsyHMfmFvBox5+ECnWsOWM9p/r7dTTImfhTu11KUE0ET3Ij9oit6B8Zrpn
-        ydBabE/+QwbRpN8CWM1AH19/nxq6/VzF8YU8DSIYZUN5KLq0N2aUJft6b3eyR/nhU8ElA/
-        5aF784S9ddvQ7xf3Ja4UWtWpRvV3/yo0GW4dIjkA8bsTlWXMPLPzPYHPI1+H7MNu8L1/9s
-        1DJLyJJGg7/FegppOIYVF2Go8cRptu1aN92xWLmM68X1QX9EhSkvYME2ztJ1jfZD9XkCf+
-        SjNIrcQ3Svb6szFXKEKkzFaYxcYQYgNRXoWDuafqQG+M5dUQZLigY4Ssums9aA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1699023857;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=zw3qdAaPAqZS90DNMKf7YEZVCL6zjF1E8Lua1o2VnB4=;
-        b=JoPZsWTAQAJGoMBzJJgw7YwAiYbMIdR/C93IIpb9+4rYlPm7mKr+iBQEX1bD3xkSrZZMkn
-        zMj1CnK2fQZ0o4BQ==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: [ANNOUNCE] v6.6-rt12
-Message-ID: <20231103150416.n8dAWMix@linutronix.de>
+        Fri, 3 Nov 2023 11:04:45 -0400
+Received: from netrider.rowland.org (netrider.rowland.org [192.131.102.5])
+        by lindbergh.monkeyblade.net (Postfix) with SMTP id 63964D56
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 08:04:38 -0700 (PDT)
+Received: (qmail 850690 invoked by uid 1000); 3 Nov 2023 11:04:36 -0400
+Date:   Fri, 3 Nov 2023 11:04:36 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Muhammad Usama Anjum <usama.anjum@collabora.com>
+Cc:     syzbot <syzbot+b6f11035e572f08bc20f@syzkaller.appspotmail.com>,
+        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [usb?] INFO: task hung in hub_port_init (3)
+Message-ID: <ff0083c2-249e-4c1e-9546-0b81cf2c6e6f@rowland.harvard.edu>
+References: <000000000000704d6305fdb75642@google.com>
+ <88cc734c-2a88-4495-aa1e-f16294eb6cea@collabora.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <88cc734c-2a88-4495-aa1e-f16294eb6cea@collabora.com>
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear RT folks!
+On Fri, Nov 03, 2023 at 07:03:20PM +0500, Muhammad Usama Anjum wrote:
+> On 6/10/23 12:25 AM, syzbot wrote:
+> > syzbot has found a reproducer for the following issue on:
+> > 
+> > HEAD commit:    33f2b5785a2b Merge tag 'drm-fixes-2023-06-09' of git://ano..
+> > git tree:       upstream
+> > console+strace: https://syzkaller.appspot.com/x/log.txt?x=1206f143280000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=3c980bfe8b399968
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=b6f11035e572f08bc20f
+> > compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1676f51b280000
+> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=129632fd280000
+> > 
+> > Downloadable assets:
+> > disk image: https://storage.googleapis.com/syzbot-assets/a817d99af39d/disk-33f2b578.raw.xz
+> > vmlinux: https://storage.googleapis.com/syzbot-assets/8916e1d053fc/vmlinux-33f2b578.xz
+> > kernel image: https://storage.googleapis.com/syzbot-assets/e53956f3cfd4/bzImage-33f2b578.xz
+> > 
+> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > Reported-by: syzbot+b6f11035e572f08bc20f@syzkaller.appspotmail.com
+> > 
+> > INFO: task kworker/0:2:901 blocked for more than 143 seconds.
+> >       Not tainted 6.4.0-rc5-syzkaller-00178-g33f2b5785a2b #0
+> > "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+> > task:kworker/0:2     state:D stack:26800 pid:901   ppid:2      flags:0x00004000
+> > Workqueue: usb_hub_wq hub_event
+> > Call Trace:
+> >  <TASK>
+> >  context_switch kernel/sched/core.c:5343 [inline]
+> >  __schedule+0xc9a/0x5880 kernel/sched/core.c:6669
+> >  schedule+0xde/0x1a0 kernel/sched/core.c:6745
+> >  usb_kill_urb.part.0+0x19a/0x220 drivers/usb/core/urb.c:728
+> >  usb_kill_urb+0x83/0xa0 drivers/usb/core/urb.c:717
+> >  usb_start_wait_urb+0x24a/0x4b0 drivers/usb/core/message.c:64
+> >  usb_internal_control_msg drivers/usb/core/message.c:102 [inline]
+> >  usb_control_msg+0x320/0x4a0 drivers/usb/core/message.c:153
+> >  hub_port_init+0x14f3/0x3900 drivers/usb/core/hub.c:4874
+> >  hub_port_connect drivers/usb/core/hub.c:5336 [inline]
+> >  hub_port_connect_change drivers/usb/core/hub.c:5551 [inline]
+> >  port_event drivers/usb/core/hub.c:5711 [inline]
+> >  hub_event+0x2b89/0x4e40 drivers/usb/core/hub.c:5793
+> >  process_one_work+0x99a/0x15e0 kernel/workqueue.c:2405
+> >  worker_thread+0x67d/0x10c0 kernel/workqueue.c:2552
+> >  kthread+0x344/0x440 kernel/kthread.c:379
+> >  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:308
+> >  </TASK>
+> > INFO: task syz-executor104:5004 blocked for more than 143 seconds.
+> This is being reproduced on linux-next. The USB IP is being fuzzed. I'd
+> modified the reproducer to try to understand the issue. The execution of
+> application creates kworkers (can be found in hub->events). One of the usb
+> hub kworker gets stuck because of wrong use_count. I don't know USB side of
+> logic. But a worker shouldn't go to sleep indefinitely.
 
-I'm pleased to announce the v6.6-rt12 patch set. 
+I doubt that the problem is a wrong value for use_count.  More likely
+it's a bug in the usbip driver.
 
-Changes since v6.6-rt11:
+> My debug logs are as following which can help an expert USB developer to
+> pin point the problem:
+> 
+> [  118.904272][    T9] usb_submit_urb urb->use_count: 0
+> [  118.904942][    T9] usb_hcd_submit_urb urb->use_count: 1
+> [  118.905715][    T9] usb_submit_urb urb->use_count: 1
+> [  118.906428][    T9] usb_start_wait_urb urb->use_count: 1
+> [  123.938978][    T9] usb_kill_urb use_count: 1
 
-  - Add an export back which was accidentally removed with PREEMPT_AUTO
-    resulting in a compile failure of kcsan_test if compiled as a
-    module. 
+These don't mean much because they don't give the address of urb, so
+we don't know if the various lines all refer to the same URB or to
+different ones.
 
-Known issues
-     Pierre Gondois reported crashes on ARM64 together with "rtla timerlat
-     hist" as trigger. It is not yet understood. The report is at
-	https://lore.kernel.org/70c08728-3d4f-47a6-8a3e-114e4877d120@arm.com
+> At this point, wait is being done on usb_kill_urb_queue as use_count isn't
+> zero and no event on usb_kill_urb_queue is received.
 
-The delta patch against v6.6-rt11 is appended below and can be found here:
- 
-     https://cdn.kernel.org/pub/linux/kernel/projects/rt/6.6/incr/patch-6.6-rt11-rt12.patch.xz
+Right.  The usbip driver is supposed to terminate the URB in a timely
+fashion (because usb_kill_urb() calls usb_hcd_unlink_urb()), but it
+isn't doing so.  When the URB completes, the event will occur.
 
-You can get this release via the git tree at:
+> The comment for usb_kill_urb is:
+> > * This routine may not be used in an interrupt context (such as a bottom
+> > * half or a completion handler), or when holding a spinlock, or in other
+> > * situations where the caller can't schedule().
+> 
+> But several locks are held by this kworker and sleeps indefinitely.
 
-    https://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-rt-devel.git v6.6-rt12
+No spinlocks are held, only mutexes.  The difference is that a task is
+allowed to sleep while holding a mutex, but it's not allowed to sleep
+while holding a spinlock.
 
-The RT patch against v6.6 can be found here:
+If you want to fix this problem (and probably a bunch of other ones in
+syzbot's list of pending bugs), figure out what's wrong with the
+->urb_dequeue() callback routine in the usbip driver and fix it.
 
-    https://cdn.kernel.org/pub/linux/kernel/projects/rt/6.6/older/patch-6.6-rt12.patch.xz
-
-The split quilt queue is available at:
-
-    https://cdn.kernel.org/pub/linux/kernel/projects/rt/6.6/older/patches-6.6-rt12.tar.xz
-
-Sebastian
-
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 21b50e61d0014..0110026914efb 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -8930,6 +8930,7 @@ static void __init preempt_dynamic_init(void)
- 		WARN_ON_ONCE(preempt_dynamic_mode == preempt_dynamic_undefined); \
- 		return preempt_dynamic_mode == preempt_dynamic_##mode;		 \
- 	}									 \
-+	EXPORT_SYMBOL_GPL(preempt_model_##mode)
- 
- PREEMPT_MODEL_ACCESSOR(none);
- PREEMPT_MODEL_ACCESSOR(voluntary);
-diff --git a/localversion-rt b/localversion-rt
-index 05c35cb580779..6e44e540b927b 100644
---- a/localversion-rt
-+++ b/localversion-rt
-@@ -1 +1 @@
---rt11
-+-rt12
+Alan Stern
