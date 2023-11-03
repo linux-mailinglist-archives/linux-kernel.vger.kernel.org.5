@@ -2,97 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F5597E03AB
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 14:15:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55E687E03AD
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 14:15:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377696AbjKCNPs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 09:15:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50074 "EHLO
+        id S1377723AbjKCNPx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 09:15:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377680AbjKCNPq (ORCPT
+        with ESMTP id S1377707AbjKCNPu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 09:15:46 -0400
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A74E0111;
-        Fri,  3 Nov 2023 06:15:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=nwTWKoYVMjtqg+eD4pQ7/u3X9Unsi7vaWHDlXuxa8bQ=; b=OZupVKvFBP8yY5jXoQBkaxnAtd
-        zdbW4wnM7MZgcVIsR5wkmaYoND36VDf+I9mKTcCETsUlI6DlzhH8zVaid2OZVXpQ8bVCC46xFVNxR
-        Vd9nXkQa3APkuYXf0Ueqtef+ue3SFWfg/l8CsJS+mzby+e6r/v5ZSPHJ5x3APXBu4+Tk=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1qyu1F-000of2-It; Fri, 03 Nov 2023 14:15:25 +0100
-Date:   Fri, 3 Nov 2023 14:15:25 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     devicetree@vger.kernel.org, Fabio Estevam <festevam@gmail.com>,
-        kernel@pengutronix.de, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        NXP Linux Team <linux-imx@nxp.com>,
+        Fri, 3 Nov 2023 09:15:50 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52DCB19D
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 06:15:43 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94A5DC433C8;
+        Fri,  3 Nov 2023 13:15:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699017342;
+        bh=L+y3pCKIDHVDD+QAE6LGVWOwqVYmCViPL4AD52mv6b8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=loZ3AabEaf5V5IE23nMneEE9MrEnPsqnoa/FbrFykY2QlaPhnGk9JW/eIuRV0BPcj
+         6F2UizdxzUyBdorja5OX5dfXUaYkbHPZ7TyxO30vDTTy0nSACNydTVHinYMgNSTfia
+         gukQMPzsBZgmkcLIhRgcDrYSJ9abtaPBvynVIUkAaUIfXU4AA1Y8WMzuuYwPAO/sXR
+         80gYO6IRcXLBD77l/g7B1DwOfKk9LvSv2bFW4tu8SENp94rvW0KLlB8O3kLwiZM/iA
+         PNVJozJbfFGDUnSlY59x7EhxAI/cCdd2v4boVUfFep14QbuqU0HZge8kX1yygUSgg3
+         dca9dXSeIrs1Q==
+Date:   Fri, 3 Nov 2023 13:15:37 +0000
+From:   Conor Dooley <conor@kernel.org>
+To:     Christian Marangi <ansuelsmth@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        =?iso-8859-1?Q?S=F8ren?= Andersen <san@skov.dk>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2 2/2] arm64: dts: freescale: Add SKOV IMX8MP CPU revB
- board
-Message-ID: <3261c311-4881-41e7-875d-380f711e8ac0@lunn.ch>
-References: <20231103105305.2459143-1-o.rempel@pengutronix.de>
- <20231103105305.2459143-2-o.rempel@pengutronix.de>
- <1ee285d7-6bc9-43ad-9ec9-a8aaed4452b5@lunn.ch>
- <20231103125306.GB40819@pengutronix.de>
+        Conor Dooley <conor+dt@kernel.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Robert Marko <robimarko@gmail.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [net-next RFC PATCH v4 4/4] dt-bindings: Document bindings for
+ Marvell Aquantia PHY
+Message-ID: <20231103-pretense-caviar-eacbb7f2fe09@spud>
+References: <20231103123532.687-1-ansuelsmth@gmail.com>
+ <20231103123532.687-4-ansuelsmth@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="+7u5ZFTmWOdAn48p"
 Content-Disposition: inline
-In-Reply-To: <20231103125306.GB40819@pengutronix.de>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231103123532.687-4-ansuelsmth@gmail.com>
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 03, 2023 at 01:53:06PM +0100, Oleksij Rempel wrote:
-> Hi Andrew,
-> 
-> On Fri, Nov 03, 2023 at 01:35:46PM +0100, Andrew Lunn wrote:
-> > > +			port@2 {
-> > > +				reg = <2>;
-> > > +				label = "cpu";
-> > > +				ethernet = <&eqos>;
-> > > +				/* 2ns rgmii-rxid is implemented on PCB.
-> > > +				 * Switch should add only rgmii-txid.
-> > > +				 */
-> > 
-> > Its unusual to actually see that. Its even more unusual its only one
-> > clock line. Can you actually see it on the PCB?
-> 
-> Yes. I even made a delay calculation by measuring this trace on PCB,
-> just to make sure I see it correctly.
 
-Cool. I need to keep this board in mind, its about the only one i know
-of which actually does this.
+--+7u5ZFTmWOdAn48p
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> > > +				phy-mode = "rgmii-txid";
-> > > +				tx-internal-delay-ps = <2000>;
-> > 
-> > Is this actually needed? rgmii-txid should add 2ns delay. Since this
-> > apparently works, i'm assuming setting tx-internal-delay-ps to 2ns
-> > does nothing, otherwise you would have a 4ns delay.
-> 
-> Without it the driver will complain:
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/net/dsa/microchip/ksz_common.c?h=v6.6#n3496
+Hey,
 
-Ah! Humm. I forget how this all works. This is the port node, not the
-PHY. We are configuring the MAC delays with tx-internal-delay-ps.
-There is no PHY here, so phy-mode is not used by any PHY. All that
-might matter is that you indicate rgmii or some sort. Have you tried
-plain "rgmii". It then looks less like you have 4ns of delay.
+On Fri, Nov 03, 2023 at 01:35:32PM +0100, Christian Marangi wrote:
+> Document bindings for Marvell Aquantia PHY.
+>=20
+> The Marvell Aquantia PHY require a firmware to work correctly and there
+> at least 3 way to load this firmware.
+>=20
+> Describe all the different way and document the binding "firmware-name"
+> to load the PHY firmware from userspace.
+>=20
+> Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+> ---
+> Changes v3:
+> - Make DT description more OS agnostic
+> - Use custom select to fix dtbs checks
+> Changes v2:
+> - Add DT patch
 
-      Andrew
+
+Please, it's the merge window, there's even less reason than usual to
+spit out versions less than 24h apart. This is the third version in 48
+hours. As there are no changes to the binding in the v4 patch, please
+take a look at
+<https://lore.kernel.org/all/20231103-outboard-murkiness-e3256874c9a7@spud/>
+I left a review there a few moments ago.
+
+Thanks,
+Conor.
+
+>  .../bindings/net/marvell,aquantia.yaml        | 126 ++++++++++++++++++
+>  1 file changed, 126 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/net/marvell,aquanti=
+a.yaml
+>=20
+> diff --git a/Documentation/devicetree/bindings/net/marvell,aquantia.yaml =
+b/Documentation/devicetree/bindings/net/marvell,aquantia.yaml
+> new file mode 100644
+> index 000000000000..d43cf28a4d61
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/net/marvell,aquantia.yaml
+> @@ -0,0 +1,126 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/net/marvell,aquantia.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Marvell Aquantia Ethernet PHY
+> +
+> +maintainers:
+> +  - Christian Marangi <ansuelsmth@gmail.com>
+> +
+> +description: |
+> +  Marvell Aquantia Ethernet PHY require a firmware to be loaded to actua=
+lly
+> +  work.
+> +
+> +  This can be done and is implemented by OEM in 3 different way:
+> +    - Attached SPI directly to the PHY with the firmware. The PHY will
+> +      self load the firmware in the presence of this configuration.
+> +    - Dedicated partition on system NAND with firmware in it. NVMEM
+> +      subsystem will be used and the declared NVMEM cell will load
+> +      the firmware to the PHY using the PHY mailbox interface.
+> +    - Manually provided firmware loaded from a file in the filesystem.
+> +
+> +  If declared, NVMEM will always take priority over filesystem provided
+> +  firmware.
+> +
+> +allOf:
+> +  - $ref: ethernet-phy.yaml#
+> +
+> +select:
+> +  properties:
+> +    compatible:
+> +      contains:
+> +        enum:
+> +          - ethernet-phy-id03a1.b445
+> +          - ethernet-phy-id03a1.b460
+> +          - ethernet-phy-id03a1.b4a2
+> +          - ethernet-phy-id03a1.b4d0
+> +          - ethernet-phy-id03a1.b4e0
+> +          - ethernet-phy-id03a1.b5c2
+> +          - ethernet-phy-id03a1.b4b0
+> +          - ethernet-phy-id03a1.b662
+> +          - ethernet-phy-id03a1.b712
+> +          - ethernet-phy-id31c3.1c12
+> +  required:
+> +    - compatible
+> +
+> +properties:
+> +  reg:
+> +    maxItems: 1
+> +
+> +  firmware-name:
+> +    description: specify the name of PHY firmware to load
+> +
+> +  nvmem-cells:
+> +    description: phandle to the firmware nvmem cell
+> +    maxItems: 1
+> +
+> +  nvmem-cell-names:
+> +    const: firmware
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +
+> +unevaluatedProperties: false
+> +
+> +examples:
+> +  - |
+> +    mdio {
+> +        #address-cells =3D <1>;
+> +        #size-cells =3D <0>;
+> +
+> +        ethernet-phy@0 {
+> +            /*  Only needed to make DT lint tools work. Do not copy/paste
+> +             *  into real DTS files.
+> +             */
+> +            compatible =3D "ethernet-phy-id31c3.1c12",
+> +                         "ethernet-phy-ieee802.3-c45";
+> +
+> +            reg =3D <0>;
+> +            firmware-name =3D "AQR-G4_v5.4.C-AQR_CIG_WF-1945_0x8_ID44776=
+_VER1630.cld";
+> +        };
+> +
+> +        ethernet-phy@1 {
+> +            /*  Only needed to make DT lint tools work. Do not copy/paste
+> +             *  into real DTS files.
+> +             */
+> +            compatible =3D "ethernet-phy-id31c3.1c12",
+> +                         "ethernet-phy-ieee802.3-c45";
+> +
+> +            reg =3D <0>;
+> +            nvmem-cells =3D <&aqr_fw>;
+> +            nvmem-cell-names =3D "firmware";
+> +        };
+> +    };
+> +
+> +    flash {
+> +        compatible =3D "jedec,spi-nor";
+> +        #address-cells =3D <1>;
+> +        #size-cells =3D <1>;
+> +
+> +        partitions {
+> +            compatible =3D "fixed-partitions";
+> +            #address-cells =3D <1>;
+> +            #size-cells =3D <1>;
+> +
+> +            /* ... */
+> +
+> +            partition@650000 {
+> +                compatible =3D "nvmem-cells";
+> +                label =3D "0:ethphyfw";
+> +                reg =3D <0x650000 0x80000>;
+> +                read-only;
+> +                #address-cells =3D <1>;
+> +                #size-cells =3D <1>;
+> +
+> +                aqr_fw: aqr_fw@0 {
+> +                    reg =3D <0x0 0x5f42a>;
+> +                };
+> +            };
+> +
+> +            /* ... */
+> +
+> +        };
+> +    };
+> --=20
+> 2.40.1
+>=20
+
+--+7u5ZFTmWOdAn48p
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZUTyeQAKCRB4tDGHoIJi
+0gsKAP9d60hhn+nxIiDAkI0uSgvpGki4jTVDOSGmlKyqVCLa2gD9HRrea+1xVvT6
+R/DZL98It5zqyAZts8tmhjcTtlYFTg8=
+=b+LX
+-----END PGP SIGNATURE-----
+
+--+7u5ZFTmWOdAn48p--
