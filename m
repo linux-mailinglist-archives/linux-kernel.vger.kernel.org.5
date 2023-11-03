@@ -2,69 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B58C07DFD8A
+	by mail.lfdr.de (Postfix) with ESMTP id 0A2B17DFD88
 	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 01:31:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232056AbjKCAXG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 20:23:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51454 "EHLO
+        id S231907AbjKCA3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 20:29:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229615AbjKCAXF (ORCPT
+        with ESMTP id S229605AbjKCA3T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 20:23:05 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77B6D191;
-        Thu,  2 Nov 2023 17:22:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1698970979; x=1730506979;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=jRcO1ajPVbh/cusEJQxYTj2Fddx+LSNylJw5TDJVCgc=;
-  b=ZVz2EQip0QDYQyP7OY/hod05adiMbOtWgRL2Yw5aYE3z6cTik8FB56qZ
-   zfuHDk96pqM39jIHH4l0b53JNjL9W1uIqXAvM2vee7eEbEFVEQGgrklQK
-   C8NhMSmEbh7tnZNCfUzDtz8gs6KzEgvT+unlEhjysq1xSRHCG2FKkjpmo
-   UD86OxQiIVnQGgcVFEARpgBisVdJqi7tdIgbZq4xJkSWbbzYzIdjR0soX
-   O8/mrzf7TOjRNGvCaCytYPjwC1kiiXrFRPY9YD04D0xBmO8S/n+rBEOEY
-   vdf8AUjYrZiq7Cq0QHW0Hk0SMAYQj5DuiDE++dHwSU2u8M4ZvGTtApEGT
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10882"; a="391718695"
-X-IronPort-AV: E=Sophos;i="6.03,272,1694761200"; 
-   d="scan'208";a="391718695"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2023 17:22:59 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10882"; a="1008651143"
-X-IronPort-AV: E=Sophos;i="6.03,272,1694761200"; 
-   d="scan'208";a="1008651143"
-Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by fmsmga006.fm.intel.com with ESMTP; 02 Nov 2023 17:22:56 -0700
-Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qyhxe-000238-1P;
-        Fri, 03 Nov 2023 00:22:54 +0000
-Date:   Fri, 3 Nov 2023 08:22:49 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Viacheslav Bocharov <adeep@lexina.in>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev
-Subject: Re: [PATCH 4/4] firmware: meson_sm: use meson_gx_socinfo for
- compatibility
-Message-ID: <202311030839.2qiIuOUl-lkp@intel.com>
-References: <20231102074916.3280809-5-adeep@lexina.in>
+        Thu, 2 Nov 2023 20:29:19 -0400
+X-Greylist: delayed 167 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 02 Nov 2023 17:29:12 PDT
+Received: from dsmtpq3-prd-nl1-vmo.edge.unified.services (dsmtpq3-prd-nl1-vmo.edge.unified.services [84.116.6.99])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA00318B
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 17:29:12 -0700 (PDT)
+Received: from csmtpq3-prd-nl1-vmo.edge.unified.services ([84.116.50.34])
+        by dsmtpq3-prd-nl1-vmo.edge.unified.services with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <zarniwhoop@ntlworld.com>)
+        id 1qyi11-00DazV-JX
+        for linux-kernel@vger.kernel.org; Fri, 03 Nov 2023 01:26:23 +0100
+Received: from csmtp3-prd-nl1-vmo.nl1.unified.services ([100.107.82.133] helo=csmtp3-prd-nl1-vmo.edge.unified.services)
+        by csmtpq3-prd-nl1-vmo.edge.unified.services with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <zarniwhoop@ntlworld.com>)
+        id 1qyi0y-004aMt-Gc
+        for linux-kernel@vger.kernel.org; Fri, 03 Nov 2023 01:26:20 +0100
+Received: from llamedos.mydomain ([86.4.155.149])
+        by csmtp3-prd-nl1-vmo.edge.unified.services with ESMTPA
+        id yi0xqYtVvWDJgyi0xqOwM1; Fri, 03 Nov 2023 01:26:20 +0100
+X-SourceIP: 86.4.155.149
+X-Authenticated-Sender: zarniwhoop@ntlworld.com
+X-Spam: 0
+X-Authority: v=2.4 cv=CcvOppnl c=1 sm=1 tr=0 ts=65443e2c cx=a_exe
+ a=69rpv3kaMhdJyoIRs2s4pw==:117 a=69rpv3kaMhdJyoIRs2s4pw==:17
+ a=IkcTkHD0fZMA:10 a=BNY50KLci1gA:10 a=pGLkceISAAAA:8 a=OoZU6Ry8AAAA:8
+ a=25FfRqQPKazuXCWubbcA:9 a=QEXdDO2ut3YA:10 a=z0b38sRKn-l_H2hRgkIr:22
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ntlworld.com;
+        s=meg.feb2017; t=1698971180;
+        bh=L6fPRAV8EIFORYnBwRckCuhndsuTofii356INfB2anw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=end5Vl06AV5jYmBKUt9GP2gAjqsTijw47DqRM6+bsoAA/aldLirK2uvBp2R7VOiRc
+         CvkniJVM1XDGwOe+K4fAAquN4dWKzhZ5QMF0oPnY8V6ZaltVn7CzyH5IdcFfKx0/d2
+         vFq6fLJKbtdJ6TFWy3OCRWLxUpxFRwKziIcrRjwhQb97gg7+FhVvkSOmbZYtzhvXW3
+         FrQtTNYu5JhYQ555d30dZ/RXPseYgMuC6nolEGjuG3wbyX04ZUQzBWF3zDLg0hE+dd
+         dpq94yOjvUYCJGFHx+fEsTCzeo+/BgfjX3W7n4flfRamfbfHMV7I+Q6MiqqzH2Pz/U
+         Ph+D/hrWeGddw==
+Received: by llamedos.mydomain (Postfix, from userid 1000)
+        id 167C99D50; Fri,  3 Nov 2023 00:26:19 +0000 (GMT)
+Date:   Fri, 3 Nov 2023 00:26:19 +0000
+From:   Ken Moffat <zarniwhoop@ntlworld.com>
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Bagas Sanjaya <bagasdotme@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Documentation <linux-doc@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Akira Yokosawa <akiyks@gmail.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        David Vernet <void@manifault.com>,
+        Miguel Ojeda <ojeda@kernel.org>, James Seo <james@equiv.tech>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Federico Vaga <federico.vaga@vaga.pv.it>,
+        Carlos Bilbao <carlos.bilbao@amd.com>
+Subject: Re: [PATCH RFC RESEND 0/4] Documentation: Web fonts for kernel
+ documentation
+Message-ID: <ZUQ-K7MXzHZ_oyVK@llamedos.localdomain>
+References: <20231102123225.32768-1-bagasdotme@gmail.com>
+ <874ji48658.fsf@meer.lwn.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231102074916.3280809-5-adeep@lexina.in>
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Clacks-Overhead: GNU Terry Pratchett
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <874ji48658.fsf@meer.lwn.net>
+User-Agent: Mutt/2.2.12 (2023-09-09)
+X-CMAE-Envelope: MS4xfBt+HkC6XWi6CNM3jtC/N2UC1BZhvAJIOawbUJnp8i6tpoCt/zDGdfaRrKpCQn8f2Oej/7JHZ4cXPinEU5vqHYJlkzGRjhbDNHfhI8emDahREapB1BM4
+ V/ZuW4TREC+K3MM+PLpNdqxGXshsEMY5KnFyhLvAyO5hKc5oco/Blk98AZ7XKK9Jg2fkALCyfb65I2809kY+avH2KvRC+HxQwx43ZzAK9J9V6h8quVxTsrsx
+ LZJVZYipqvZl8w40sMue55BF9Drw9Y/3hjRq4YNy6Oozt1tPhr88oD+eDwTKhKDpK6l/dJASPyaG1OVU+8UXX1U9njXA8dhNqrKA+uE4PnWcrxP6xONH/mr9
+ ElqFZzgVBwHiiSo5dyz+xq7+6jqN0xtIJjovhunzfN2mrCaiAUEaYaFQxzwd5tK76awm9whZ7ajDedDATQLz8OR1Dcve4qq5FBLySrPXDrDvVtOvnDEc1I0G
+ nCd8ARtaFh6pOpEda1yx5jOLs4Jj+t9pzp248AsALela/wsmqwDvyXI7GmPysoHscAH9xcZgYEVy36lsxfe0NkbxSdsOYzvI7CqJyAbAVy3VW7pN9v0tuxw1
+ /hRN9OnXyioLvpsWDEtg8uxy
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,123 +93,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Viacheslav,
+On Thu, Nov 02, 2023 at 10:35:47AM -0600, Jonathan Corbet wrote:
 
-kernel test robot noticed the following build errors:
+Jon, some slight nit-picking below, after comments on the stated
+problem.
 
-[auto build test ERROR on soc/for-next]
-[also build test ERROR on linus/master v6.6 next-20231102]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+> Bagas Sanjaya <bagasdotme@gmail.com> writes:
+> 
+[...]
+> >
+> > The solution
+> > ============
+> >
+> > Uniform the font choices by leveraging web fonts. Most of people reading
+> > the kernel docs should already have modern browser that supports this
+> > feature (e.g. Chrome/Chromium and Firefox). The fonts are downloaded
+> > automatically when loading the page, but only if the reader don't
+> > already have ones installed locally. Subsequent docs page loading will
+> > use the browser cache to retrieve the fonts. If for some reasons the
+> > fonts fail to load, the browser will fall back to fallback fonts
+> > commonly seen on other sites.
+> 
+Bagas,
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Viacheslav-Bocharov/firmware-meson-sm-change-sprintf-to-scnprintf/20231102-172556
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/soc/soc.git for-next
-patch link:    https://lore.kernel.org/r/20231102074916.3280809-5-adeep%40lexina.in
-patch subject: [PATCH 4/4] firmware: meson_sm: use meson_gx_socinfo for compatibility
-config: arm64-randconfig-003-20231103 (https://download.01.org/0day-ci/archive/20231103/202311030839.2qiIuOUl-lkp@intel.com/config)
-compiler: aarch64-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231103/202311030839.2qiIuOUl-lkp@intel.com/reproduce)
+If loading the web font fails, you will get whichever fallback
+fonts are enabled by fontconfig and whichever fonts you, or your
+distro, have installed.  If those fonts are not generally adequate
+you should complain to your distro, or install different fonts in
+~/.local/share/fotns and perhaps change your fonts.conf entries.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311030839.2qiIuOUl-lkp@intel.com/
+> So my immediate response to this is pretty uniformly negative.
+> 
+> - If you don't like serif, tweaking conf.py is easy enough without
+>   pushing it on everybody else.
+> 
+> - I'm not thrilled about adding a bunch of binary font data to the
+>   kernel, and suspect a lot of people would not feel that the bloat is
+>   worth it.
+> 
 
-All errors (new ones prefixed by >>):
+Jon,
 
-   drivers/firmware/meson/meson_sm.c: In function 'chipid_show':
->> drivers/firmware/meson/meson_sm.c:328:19: error: 'uint32' undeclared (first use in this function); did you mean 'uint32_t'?
-     328 |                 ((uint32)t *)buff)[0] = 0;
-         |                   ^~~~~~
-         |                   uint32_t
-   drivers/firmware/meson/meson_sm.c:328:19: note: each undeclared identifier is reported only once for each function it appears in
->> drivers/firmware/meson/meson_sm.c:328:26: error: expected ')' before 't'
-     328 |                 ((uint32)t *)buff)[0] = 0;
-         |                 ~        ^
-         |                          )
->> drivers/firmware/meson/meson_sm.c:328:30: error: expected ';' before 'buff'
-     328 |                 ((uint32)t *)buff)[0] = 0;
-         |                              ^~~~
-         |                              ;
->> drivers/firmware/meson/meson_sm.c:328:34: error: expected statement before ')' token
-     328 |                 ((uint32)t *)buff)[0] = 0;
-         |                                  ^
->> drivers/firmware/meson/meson_sm.c:328:35: error: expected expression before '[' token
-     328 |                 ((uint32)t *)buff)[0] = 0;
-         |                                   ^
-   drivers/firmware/meson/meson_sm.c:331:17: error: 'ch' undeclared (first use in this function)
-     331 |                 ch = (uint8_t *)(id_buf + 4);
-         |                 ^~
-   drivers/firmware/meson/meson_sm.c:332:22: error: 'i' undeclared (first use in this function)
-     332 |                 for (i = 0; i < 12; i++)
-         |                      ^
+As I understand it the (woff) fonts would be downloaded on request
+by the browser if this went in.  So not a bunch of binary font data
+in the kernel, but a download from google (adding to the popularity
+of the font) and yet more font data in the browser cache.  I don't
+have any desire to see woff fonts referenced in the docs, just
+nit-picking about the details.
 
+However -
 
-vim +328 drivers/firmware/meson/meson_sm.c
+> - The licensing of the fonts is not fully free.
+> 
 
-   281	
-   282	static ssize_t chipid_show(struct device *dev, struct device_attribute *attr,
-   283				 char *buf)
-   284	{
-   285		struct platform_device *pdev = to_platform_device(dev);
-   286		struct meson_sm_firmware *fw;
-   287		uint8_t *id_buf;
-   288		int ret;
-   289	
-   290		fw = platform_get_drvdata(pdev);
-   291	
-   292		id_buf = kmalloc(SM_CHIP_ID_LENGTH, GFP_KERNEL);
-   293		if (!id_buf)
-   294			return -ENOMEM;
-   295	
-   296		ret = meson_sm_call_read(fw, id_buf, SM_CHIP_ID_LENGTH, SM_GET_CHIP_ID,
-   297					 2, 0, 0, 0, 0);
-   298		if (ret < 0) {
-   299			kfree(id_buf);
-   300			return ret;
-   301		}
-   302	
-   303		int version = *((unsigned int *)id_buf);
-   304	
-   305		if (version == 2)
-   306			ret = scnprintf(buf, PAGE_SIZE, "%16phN\n", &id_buf[SM_CHIP_ID_OFFSET]);
-   307		else {
-   308			/**
-   309			 * Legacy 12-byte chip ID read out, transform data
-   310			 * to expected order format.
-   311			 */
-   312			uint8_t *buff;
-   313	
-   314			buff = kmalloc(SM_CHIP_ID_LENGTH, GFP_KERNEL);
-   315			if (!buff)
-   316				return -ENOMEM;
-   317	#ifdef CONFIG_MESON_GX_SOCINFO
-   318			uint8_t *ch;
-   319			int i;
-   320	
-   321			((uint32_t *)buff)[0] =
-   322				((meson_gx_socinfo & 0xff000000)        |       // Family ID
-   323				((meson_gx_socinfo << 8) & 0xff0000)    |       // Chip Revision
-   324				((meson_gx_socinfo >> 8) & 0xff00));            // Package ID
-   325	
-   326			((uint32_t *)buff)[0] = htonl(((uint32_t *)buff)[0]);
-   327	#else
- > 328			((uint32)t *)buff)[0] = 0;
-   329	#endif
-   330			/* Transform into expected order for display */
-   331			ch = (uint8_t *)(id_buf + 4);
-   332			for (i = 0; i < 12; i++)
-   333				buff[i + 4] = ch[11 - i];
-   334			ret = scnprintf(buf, PAGE_SIZE, "%16phN\n", &buff);
-   335			kfree(buff);
-   336		}
-   337	
-   338		kfree(id_buf);
-   339		return ret;
-   340	}
-   341	
+AFAICS, the SIL OFL allows everything except changing the font name.
+If you have the right tools you can apparently fix things like "that
+specific glyph looks ugly" or "you put a latin breve on a cyrillic
+letter" (apparently they should differ) or "You mismapped this
+codepoint to the wrong glyph". What you cannot do, if those changes
+are not accepted by the font designer/maintainer, or if the font is
+no-longer maintained, is fork it and provide it under the same name.
 
+You can fork, but the font name has to be changed (e.g. LinLibertine
+-> Libertinus and then the serif forked to CommonSerif).
+
+Oh, and you cannot sell the fonts by themselves, but you can bundle
+them with a distro or embed them.
+https://www.tldrlegal.com/license/open-font-license-ofl-explained
+
+Question: is that not free enough, or is that site wrong ?  If not
+free enough, is there a better licence for fonts ?
+
+ĸen
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+This is magic for grown-ups; it has to be hard because we know there's
+no such thing as a free goblin.
+   -- Pratchett, Stewart & Cohen - The Science of Discworld II
