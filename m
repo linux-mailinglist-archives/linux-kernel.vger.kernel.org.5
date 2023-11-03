@@ -2,51 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CBA87DFDA6
+	by mail.lfdr.de (Postfix) with ESMTP id B542B7DFDA8
 	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 02:05:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348017AbjKCBAe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Nov 2023 21:00:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57446 "EHLO
+        id S1345173AbjKCBAm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Nov 2023 21:00:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348002AbjKCBA2 (ORCPT
+        with ESMTP id S1348014AbjKCBAa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Nov 2023 21:00:28 -0400
+        Thu, 2 Nov 2023 21:00:30 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07A6C19E
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 18:00:26 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id D5A7DC433CA;
-        Fri,  3 Nov 2023 01:00:25 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DBDA1A4
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 18:00:27 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 08829C43391;
+        Fri,  3 Nov 2023 01:00:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1698973225;
-        bh=AnWclLcQuKd/X1RFJGjWgdJKtRLPwF5P6gATuDT3Pj0=;
+        s=k20201202; t=1698973227;
+        bh=a9HOIt3ALfWy2JbzWe2Ug9+amBY2po8B6LGKYQhtZOk=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=UDxctzxIki0QhhFObwLxIw1J+iRXLbyvUlg2OY0FxHECvoBVoOE7ivQYb5o9zBEAs
-         Qz4/r3FQSjhCkJXu4No3IKGz+y2JkGKj0a4ersgiyRaBhNu0rU5rWyNEHgDI3GlwXT
-         eUv2xH1bceeeQMuWFX9htQ6FPpTQOk9ZV0JNnR9UVerAS/p5BrgS5grNAfkboWp1NA
-         +29RMf2sSv/C4qiRtMPM5VyA1M6OqlYyq38/eow6xRAF9jIwyY8ECUmWkLaWYBrp7J
-         EL5HCZZM/poib+pE/PeUB2TBXUMRW1yy2DDThPO+Bn55XmeL0K2128dTkaCUSimIfk
-         W1lYHPrVQTEag==
+        b=k00hD3qUyxyEywjPi6btWkgapIMIp8F2TeEnkXl6mrhPjLHsqB2IHETw64RtXA52X
+         F53R9dPJ/OURy6+OmBu+EQ8RZzDrruJrscmjGXHl+NoduW+xx0huBcDaR/U+MwabJw
+         lV/GF/kToENXnUxrX1YSXagRpA9Ms1/R6NTN+2T4rD8G+SgYOTkb6NCp6N+MKqszrU
+         07USbxJSnHOQlCV16Aq/+ZiY+k2mHMCKKgdZtIjdZM65EtuyBGqOIM98PRKXvKvzOl
+         cflC8FEhpN0avm8FAiuAPULrw9YCykhil1aKOJ6txxca1d2NMSsd5Tic6kuos5hXYd
+         qZXT342cZyg2w==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id C1705EAB08B;
-        Fri,  3 Nov 2023 01:00:25 +0000 (UTC)
-Subject: Re: [GIT PULL] HID for 6.7
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id E8D45C43168;
+        Fri,  3 Nov 2023 01:00:26 +0000 (UTC)
+Subject: Re: [GIT PULL] LEDs for v6.7
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <nycvar.YFH.7.76.2311010039000.3534@cbobk.fhfr.pm>
-References: <nycvar.YFH.7.76.2311010039000.3534@cbobk.fhfr.pm>
+In-Reply-To: <20231102143229.GZ8909@google.com>
+References: <20231102143229.GZ8909@google.com>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <nycvar.YFH.7.76.2311010039000.3534@cbobk.fhfr.pm>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/hid/hid.git tags/for-linus-2023110101
-X-PR-Tracked-Commit-Id: 1372e73a18139d4f74731cc900085a6bf3c59daf
+X-PR-Tracked-Message-Id: <20231102143229.GZ8909@google.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/lee/leds.git tags/leds-next-6.7
+X-PR-Tracked-Commit-Id: b9604be241587fb29c0f40450e53d0a37dc611b5
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 4ea4ed22b57846facd9cb4af5f67cb7bd2792cf3
-Message-Id: <169897322578.13409.15684410414503183053.pr-tracker-bot@kernel.org>
-Date:   Fri, 03 Nov 2023 01:00:25 +0000
-To:     Jiri Kosina <jikos@kernel.org>
+X-PR-Merge-Commit-Id: 431f1051884e38d2a5751e4731d69b2ff289ee56
+Message-Id: <169897322694.13409.16519652445839352717.pr-tracker-bot@kernel.org>
+Date:   Fri, 03 Nov 2023 01:00:26 +0000
+To:     Lee Jones <lee@kernel.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>
+        Lee Jones <lee@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Pavel Machek <pavel@ucw.cz>
 X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -57,12 +58,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Wed, 1 Nov 2023 00:43:29 +0100 (CET):
+The pull request you sent on Thu, 2 Nov 2023 14:32:29 +0000:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/hid/hid.git tags/for-linus-2023110101
+> git://git.kernel.org/pub/scm/linux/kernel/git/lee/leds.git tags/leds-next-6.7
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/4ea4ed22b57846facd9cb4af5f67cb7bd2792cf3
+https://git.kernel.org/torvalds/c/431f1051884e38d2a5751e4731d69b2ff289ee56
 
 Thank you!
 
