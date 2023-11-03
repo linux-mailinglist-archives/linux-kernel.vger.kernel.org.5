@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B6CC7E04E5
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 15:46:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 468AA7E04E7
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 15:46:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231538AbjKCOqE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 10:46:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37246 "EHLO
+        id S229572AbjKCOpz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 10:45:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377815AbjKCODz (ORCPT
+        with ESMTP id S1377812AbjKCODz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 3 Nov 2023 10:03:55 -0400
 Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46012D62;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45563D60;
         Fri,  3 Nov 2023 07:03:51 -0700 (PDT)
 Received: from dggpemm100001.china.huawei.com (unknown [172.30.72.54])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4SMMpP5g8Gz1P7nl;
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4SMMpP5yQNz1P7pR;
         Fri,  3 Nov 2023 22:00:45 +0800 (CST)
 Received: from localhost.localdomain (10.175.112.125) by
  dggpemm100001.china.huawei.com (7.185.36.93) with Microsoft SMTP Server
@@ -29,9 +29,9 @@ CC:     <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
         David Hildenbrand <david@redhat.com>,
         <linux-s390@vger.kernel.org>,
         Kefeng Wang <wangkefeng.wang@huawei.com>
-Subject: [PATCH 08/18] mm: khugepaged: use mm_counter_file_folio() in collapse_pte_mapped_thp()
-Date:   Fri, 3 Nov 2023 22:01:09 +0800
-Message-ID: <20231103140119.2306578-9-wangkefeng.wang@huawei.com>
+Subject: [PATCH 09/18] mm: memory: use a folio in do_set_pmd()
+Date:   Fri, 3 Nov 2023 22:01:10 +0800
+Message-ID: <20231103140119.2306578-10-wangkefeng.wang@huawei.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20231103140119.2306578-1-wangkefeng.wang@huawei.com>
 References: <20231103140119.2306578-1-wangkefeng.wang@huawei.com>
@@ -52,36 +52,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use mm_counter_file_folio() to save two compound_head() calls in
-mm_counter_file_folio().
+Use a folio in do_set_pmd(), which save one compound_head() call.
 
 Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
 ---
- mm/khugepaged.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ mm/memory.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/mm/khugepaged.c b/mm/khugepaged.c
-index 064654717843..a6805f4f6dea 100644
---- a/mm/khugepaged.c
-+++ b/mm/khugepaged.c
-@@ -1630,7 +1630,7 @@ int collapse_pte_mapped_thp(struct mm_struct *mm, unsigned long addr,
- 	/* step 3: set proper refcount and mm_counters. */
- 	if (nr_ptes) {
- 		folio_ref_sub(folio, nr_ptes);
--		add_mm_counter(mm, mm_counter_file(&folio->page), -nr_ptes);
-+		add_mm_counter(mm, mm_counter_file_folio(folio), -nr_ptes);
- 	}
+diff --git a/mm/memory.c b/mm/memory.c
+index 1f18ed4a5497..09009094a5f2 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -4313,12 +4313,13 @@ vm_fault_t do_set_pmd(struct vm_fault *vmf, struct page *page)
+ 	unsigned long haddr = vmf->address & HPAGE_PMD_MASK;
+ 	pmd_t entry;
+ 	vm_fault_t ret = VM_FAULT_FALLBACK;
++	struct folio *folio;
  
- 	/* step 4: remove empty page table */
-@@ -1661,7 +1661,7 @@ int collapse_pte_mapped_thp(struct mm_struct *mm, unsigned long addr,
- 	if (nr_ptes) {
- 		flush_tlb_mm(mm);
- 		folio_ref_sub(folio, nr_ptes);
--		add_mm_counter(mm, mm_counter_file(&folio->page), -nr_ptes);
-+		add_mm_counter(mm, mm_counter_file_folio(folio), -nr_ptes);
- 	}
- 	if (start_pte)
- 		pte_unmap_unlock(start_pte, ptl);
+ 	if (!transhuge_vma_suitable(vma, haddr))
+ 		return ret;
+ 
+-	page = compound_head(page);
+-	if (compound_order(page) != HPAGE_PMD_ORDER)
++	folio = page_folio(page);
++	if (folio_order(folio) != HPAGE_PMD_ORDER)
+ 		return ret;
+ 
+ 	/*
+@@ -4350,7 +4351,7 @@ vm_fault_t do_set_pmd(struct vm_fault *vmf, struct page *page)
+ 	if (write)
+ 		entry = maybe_pmd_mkwrite(pmd_mkdirty(entry), vma);
+ 
+-	add_mm_counter(vma->vm_mm, mm_counter_file(page), HPAGE_PMD_NR);
++	add_mm_counter(vma->vm_mm, mm_counter_file_folio(folio), HPAGE_PMD_NR);
+ 	page_add_file_rmap(page, vma, true);
+ 
+ 	/*
 -- 
 2.27.0
 
