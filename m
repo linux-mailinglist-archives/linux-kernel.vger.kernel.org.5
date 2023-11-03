@@ -2,164 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BEEBF7E0A4E
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 21:28:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 348EB7E0A55
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 21:32:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378305AbjKCU2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 16:28:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48628 "EHLO
+        id S1378338AbjKCUcC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 16:32:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229576AbjKCU2m (ORCPT
+        with ESMTP id S1377822AbjKCUcA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 16:28:42 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FDDD18B;
-        Fri,  3 Nov 2023 13:28:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699043320; x=1730579320;
-  h=message-id:date:subject:to:references:from:in-reply-to:
-   content-transfer-encoding:mime-version;
-  bh=ajw/secxOIwiz0sqaOqk6d2idiEvYVKK8HCv0Xpe70I=;
-  b=YjP7Q+RAfB0PdC7neq/uw8vNYSjmOY9aBtOrjCuSXQhJDw/MhXR/1gO6
-   dn1DR7pbkGySL6OdWbUEaA/PgW4ygoW18lJSsW4itlWaVGas1b+4oXkaa
-   1cN07Ch2p9Tc/kVof+HWPJ7c15agKt0NC0S0ieYObg3o2O6/9kOVVvytK
-   40+UKjVUfoTwM31KPIRRiD48oVjlAKogFf3d8gAwHloh5G80p0DVV2NMv
-   XTPiHreAMN18m3v6tHVDsacpCKl7vCuhyVDFP6LuQKgRemSLdVud6GKTN
-   xAqQYTb8/Bl0ptUmfjCvCN2D9fGrGcqSfn/rGuUtm/InF+xX4z7Ifmjed
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10883"; a="392905832"
-X-IronPort-AV: E=Sophos;i="6.03,275,1694761200"; 
-   d="scan'208";a="392905832"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2023 13:28:36 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10883"; a="755263427"
-X-IronPort-AV: E=Sophos;i="6.03,275,1694761200"; 
-   d="scan'208";a="755263427"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by orsmga007.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 03 Nov 2023 13:28:36 -0700
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Fri, 3 Nov 2023 13:28:35 -0700
-Received: from fmsmsx601.amr.corp.intel.com (10.18.126.81) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Fri, 3 Nov 2023 13:28:35 -0700
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34 via Frontend Transport; Fri, 3 Nov 2023 13:28:35 -0700
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.169)
- by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.34; Fri, 3 Nov 2023 13:28:35 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=f63h9s/YLTT3XEXBQxuIQ01KL2zKV+5R2Z7sL3o/qKtBbIJaun7LRxjTmctgRtjVb3FHbubHsLwvpb573mgZIX8bbKWZrh9q8Fisp8kPpk1R1Q9Uj4x0cazMEq89uz3Y5q/HPAi9NFU2AVLg3wZzHxqSiRfpqweNay9xZMUJvPGk0BU2n3OSOqF5zSlrY6LfbthH7t2ksms6768isAAV/txbdG1UqbNatX1vjG0cMgIfvCM/g9/f8K1WIk1bwv5hxBzNnkNvPRcuRs7FcY3S53Q4olijToZUFiI6OHN0wNRfatPviCvh8RaUP4dLxlSzcRWsNwXurky8Bb4NDHOEwg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=n8he2BKmqm1aw+gYnsHOt1hDNgNiyqeWnB+5Lnbpw9g=;
- b=gfZRpXEn3Pgh+mV244Ax2zzpyW31DJqC0mxwgfOphwpdA11kUmvzVZG1vMS+xDGIix7XOk0nRs1YH63UXKjjUXz+r8p4eQN/PSKEQh9N5aZWNw3fE8iTsvfL9Uqtlh+g3bKLRFxGjeflMmFlj+JVxdGzTbnau0Hud5Cir7D+aR2/DmUUamWk+VvRIfhaYMFFOrftZvgRAlP+Hlj7kiqyHiLquM0cVDa+iBrwH6jPi1G/Jta2IqyMgSyI1cVjOfm4cS6M4y0xn+S6oWs0VoVnvxAio453Op0LO7vkooSlcmTPfyFjvIMpp077YmQnrSIEBXnjbEhD9nvyU9Lb9pFQ/Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from PH7PR11MB5984.namprd11.prod.outlook.com (2603:10b6:510:1e3::15)
- by BN9PR11MB5228.namprd11.prod.outlook.com (2603:10b6:408:135::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.21; Fri, 3 Nov
- 2023 20:28:33 +0000
-Received: from PH7PR11MB5984.namprd11.prod.outlook.com
- ([fe80::28a6:ecda:4bb7:2f9e]) by PH7PR11MB5984.namprd11.prod.outlook.com
- ([fe80::28a6:ecda:4bb7:2f9e%6]) with mapi id 15.20.6954.021; Fri, 3 Nov 2023
- 20:28:33 +0000
-Message-ID: <ad8ba5fe-5078-41a5-921f-4de4c71703e7@intel.com>
-Date:   Fri, 3 Nov 2023 13:28:29 -0700
-User-Agent: Betterbird (Linux)
-Subject: Re: [PATCH] cxl/region: fix x9 interleave typo
-To:     Jim Harris <jim.harris@samsung.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        Alison Schofield <alison.schofield@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        "Ira Weiny" <ira.weiny@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Fan Ni <fan.ni@samsung.com>,
-        "linux-cxl@vger.kernel.org" <linux-cxl@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <CGME20231103201835uscas1p29ca7f76ed5e4c829bfb022a040202d73@uscas1p2.samsung.com>
- <169904271254.204936.8580772404462743630.stgit@ubuntu>
-Content-Language: en-US
-From:   Dave Jiang <dave.jiang@intel.com>
-In-Reply-To: <169904271254.204936.8580772404462743630.stgit@ubuntu>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SJ0PR03CA0228.namprd03.prod.outlook.com
- (2603:10b6:a03:39f::23) To PH7PR11MB5984.namprd11.prod.outlook.com
- (2603:10b6:510:1e3::15)
+        Fri, 3 Nov 2023 16:32:00 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0BA718B
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 13:31:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1699043466;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=sUVZCuDlw1vrRsBXp616LcFSx5iLjv4rRMsKc8gpbRU=;
+        b=cHvBcuFCXy4NA153MDL+JETakbCsPG7VQhmyPBMGiYYsSXrezcwU808cliuJ7nxtAyLdRc
+        51ADIuUvrDXEDuCA86NTuvLx7t8IYrVCjDOnVMH6REJQXUnf+iApEYxlMCVoKhDSqoBD5c
+        zKdM6yCRG3OJsDEjgToruo2WtOShJUw=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-486-qNXd-u9eOI2y6kIHUR-gaw-1; Fri, 03 Nov 2023 16:31:05 -0400
+X-MC-Unique: qNXd-u9eOI2y6kIHUR-gaw-1
+Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-9bea60bd1adso395875166b.0
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Nov 2023 13:31:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699043464; x=1699648264;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:from:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=sUVZCuDlw1vrRsBXp616LcFSx5iLjv4rRMsKc8gpbRU=;
+        b=PwGHsTF4IpRxTwJRycSkdtWX6CrTUpmkQ2H7djzQDtFIlcto0Cu+A8zA6ACKdKkrjl
+         hEXBOAjWuXO8C9140M5gk8EOhci0i6SRvP8mn0sdnpI2lU6FR84s4pvWJGww+EpRAWI1
+         XvQmr3pHVhlseSl++JihMQe6GimufQEB8lqYK0vW8ZHyaduSGUEcVqtdMlQU9cJfhZXs
+         Hl73ZjYx70VeovpWQgmQb2xdPTnVDuQ9vjxPrL4SGJZsAlYGGzP0nk3ZYJm7hvhnz2n6
+         U+xDOOoABTRAOgHkBQZ19Pq3HrDKyU4iOBsUvvVUVguly8GJSTQilacmQwtoPZdg2a2c
+         jolQ==
+X-Gm-Message-State: AOJu0YxReck0vOYXdjDDugapz+PerNLkagcktzHcaO20DK9UX9RLr2AP
+        mUXPuvv9F0U9KgT+nhrON+4lutkMhO6LxmrRdt3I363vtx8cvpDGrhHr7O6yL8ihAAFtWFMPFGB
+        XmbbsXwt2hZ5uSbfztK4dBZI=
+X-Received: by 2002:a17:906:259:b0:9dd:97aa:afcd with SMTP id 25-20020a170906025900b009dd97aaafcdmr1288471ejl.3.1699043464163;
+        Fri, 03 Nov 2023 13:31:04 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IESCr3u+/pSYYA4aGqwAoS8MR/r+TXJGwpgI5CLPVTeaK7VpdmtOCtaTjjMWwXW049xKLjE3g==
+X-Received: by 2002:a17:906:259:b0:9dd:97aa:afcd with SMTP id 25-20020a170906025900b009dd97aaafcdmr1288459ejl.3.1699043463754;
+        Fri, 03 Nov 2023 13:31:03 -0700 (PDT)
+Received: from [192.168.9.16] (net-2-34-31-107.cust.vodafonedsl.it. [2.34.31.107])
+        by smtp.gmail.com with ESMTPSA id i7-20020a1709061cc700b0098921e1b064sm1249608ejh.181.2023.11.03.13.31.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 03 Nov 2023 13:31:03 -0700 (PDT)
+Message-ID: <ae202b70-b106-4805-9ce0-ffbb2738bb04@redhat.com>
+Date:   Fri, 3 Nov 2023 21:31:02 +0100
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH7PR11MB5984:EE_|BN9PR11MB5228:EE_
-X-MS-Office365-Filtering-Correlation-Id: da0fef57-c206-4882-f962-08dbdcab730e
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: +arHuAJLMB4CHay08ri+5JHQbKGZIYCwUOkdj78Lfx1jPPrcBZlJecagRDlRBoC4ykA3m48E94UFGQU+6GZBaDyZE6oFKO3Jo0i0cCbM02NR+V9YfDWXsOrUMvYOqJwex0ulK73ivh1y6CSXCdQau9ye0hGzgin7LtUpb9995O8o8MkcGGSmK2+T7IkpDJZZKpOLwBKtmYDqcZS0cCDzaJNrBbOkTYdX36wOq7jNxI8F8m68rM/oEqUp8dpPW6yG4AEO9bYGa8Sji7G2eXWB7yqx5ASRKqAR7A2NM0V1/d5lOSsu+uz3dHTwkjmubm6S2QdqtNEluvPhbLqL1mtBm4cjLk08K5vMXWUv6Ym+bfktz392HLMuvYoXsC1CcZp9JKLVysLbYGPyjXwAbOl6OplMgaXTUV5siDJ7Am5fl3cBehV4TzXTJPXYjSHp76g9AbaN0BwaruRSG/q9AHILxUq72X/ZAni8pFiwFeYRfxkVmydMqbRpct1Lpg+2k0XwV3xLG8KnQ6YeHZ8peisAfSzSDmLptTlpbEAZ6XHqSp+OD0aJSHbskDQh7jE9KPImEMcbIo1JU3fovWvmdRTjPhEd2NqaAnC65kmCj+k2tyyQNx+wiAgNiUfP/et2YmmuAZ5mDOpP7jqQ98OEiGyy4g==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR11MB5984.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(39860400002)(376002)(396003)(136003)(346002)(230922051799003)(451199024)(1800799009)(186009)(64100799003)(41300700001)(31686004)(5660300002)(2906002)(44832011)(8676002)(8936002)(6506007)(66946007)(66476007)(6512007)(2616005)(316002)(110136005)(66556008)(6486002)(478600001)(6666004)(36756003)(26005)(921008)(83380400001)(86362001)(31696002)(82960400001)(38100700002)(53546011)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?dVoxSnNTMUN3LzlNM1lKblRlVGRRemh0djEzeXVsNGkxRHhMeElDRW90eCtq?=
- =?utf-8?B?QlYrT1c2NDBUcXkwWWFvUm9BaG5OR0pCcVFaTnJuWExEZ2NpOUlweEhTZ0tn?=
- =?utf-8?B?Ykptc0dRMXo2MXNJR3RLTUJ5MVpxSEhWMjFsZkVQakFKNnVvc0hwVml3aDVu?=
- =?utf-8?B?L3dwS3dqeHJpbCtTVEJkaWwxTE56aFRQNVRURFdhUzk1UVFkLy9lMm5YNkcw?=
- =?utf-8?B?d1RPM05kSUJEWENIK1I5aWpjeFBZYzRiR0cxaHNmVVFWUzVjaXFXWDNzelBV?=
- =?utf-8?B?c0N4cHVMK3ZmRjNrZk1rUXZkTXFhWE9UMVRWSVF4OVNyYmQ5eUx3Y1RjR0xl?=
- =?utf-8?B?SGtEVGN6M3EySFd4cVBRU0ZsZ3BlWk9panJzVlFmNlFxYWFUU2VkSFZWZUcr?=
- =?utf-8?B?VWk3bTVacVFwNkNsdmNaeUtjbHAvdGxCUWI4TEtzRkt2a3VvYlBieWluTFN3?=
- =?utf-8?B?ZjY3YlVxWGhIdDhDVDIwTG1xcDhkUEkwb1I4M2ZOeFU0UElQUjJ0WWJkVUNr?=
- =?utf-8?B?clMvYXB6TVJ6K1oxejRHcUNjZFBWSWxkNWJJcitvZkZrVXQrTFl1K1pGN3BD?=
- =?utf-8?B?Zk9teTVkeWE2QVBzRjlLT29rc28rTURwK0paa2pzT0ErSFI3TTlZWVA3NTZP?=
- =?utf-8?B?U2xrYXdDZWk4ZklFZysxRVlnK08rQkZleUUzdEgyamtUREsvbC91b2o1ZXlY?=
- =?utf-8?B?SU1Fbzgxell3MkJtVHMyaTFpS2I4azdKc09IZGhWN0RETTJqTzFzTERVbjFP?=
- =?utf-8?B?OWFNcTRBeWp3aS9MNDRaOXRFamsrUDl5Q3JQVU1MVTB6MFdNSXRJcmNhNEd6?=
- =?utf-8?B?TEZ3K05UYkdvQzFQV1dpeTNJODlPcGVMbVhEdFRYZ1BmZ1E0K3VHTEFxQWdB?=
- =?utf-8?B?VnNPRks2MUxlVHpQVm9YNlBDZ1dYTDdyM2dOQkhzVVBnUlJNUksvOFdXUEZX?=
- =?utf-8?B?RHEyUlk4M3d2b0I2eGZicjU4ODF5b01tV0RCd2ZDemZROWJqTlY2TUQxbzk3?=
- =?utf-8?B?b09GcW40ZGhNT2FwcmpsTkR6Ti8yRTNuWXg5S2VVdU1kS3FHWWJLZDltaS9a?=
- =?utf-8?B?Q25xTkQ0SnROM2tDelBUZDhiSVVoWnVOSTU1YXdhb1BhRmd4ZTg2Zk02YWFn?=
- =?utf-8?B?ZVNsbFhwc1lZbGs5L0dtSG9zZjN4dytRbmNjODZ6M1ordExUR0NUQnZWL000?=
- =?utf-8?B?M2doREN4ZU9LcXNXL3dRS1A3WXNodjZPRU82RVZRbm1uOEhrZ3g4Ulk4UjhK?=
- =?utf-8?B?SHZCMTN2L0FqNHQzNnpsYmxYOEVocWE2WENsa2I1QWozWlcrNGQzZWh3MFhZ?=
- =?utf-8?B?MGNIK3ZaeTA3U2taSW1YME5tYTcxYnZsbUdBZy9pWDM3d3g4YWorUi9qWHJj?=
- =?utf-8?B?UEh5ZkpnTWs4bXFsSVg3ejA2bUY3L3FhMmZaRHlBRmlyVUZDSmV1VUFKc3Ry?=
- =?utf-8?B?WWUzaG5MMXc3WGpNa3NGNjBrcy9zQ0t6cExjN1cxeTFPMkRlUGRrRkJZZHJ5?=
- =?utf-8?B?b0lTdzJuOTNBYUVOU2ZwNnlwWklJS1hzV3k4Y3BQSVJicm5zWUJ3ejB2bmJI?=
- =?utf-8?B?T3lmTVh6UDNOWUNsc3hwZy9Sdnk5L3hBbURmeHVxMFFmNjFaVWZCREVCNTI5?=
- =?utf-8?B?NmcraUU5S0JMTkhzb2FsdzFJTVpoMFZud0pTcUtEektXSHVOV3VlcTBpemx2?=
- =?utf-8?B?TTlSUm5LNG9yTC8rc1VoeitNNEUyU1RzYVYraFBQVUNQek04R1BwVldzWXlN?=
- =?utf-8?B?WE10L0JlbHJFNUFlcjJwK0cyNHRTQzdxRWpuU1dIZ1B6MExkaWFtcEdkeVVZ?=
- =?utf-8?B?b1dJSUFLQ1hSdVluUXdpdUZqQzJ0VTdwT3RkQkZBSDd2TDVUd0xvOEszb0dR?=
- =?utf-8?B?Unh3dFpPWDNwMUMybUREZzRhZXdVT3JScDlJZDlPelljeVV2TXpPbERWUWxo?=
- =?utf-8?B?d0Rwem5IcW44RnUxK0FrbEsxb3dIa1RwRjlXeUwrcU1kNUZidmZjWTRteUpD?=
- =?utf-8?B?SmsvTGlpZEo3cVpxMzJVbXdXUjJoS3ByRzJSNHljUUsrWU1OUjVRdzU1WEtl?=
- =?utf-8?B?WGlrLzgyb3dja2Q0SStrUlY3MVRYQUttNHU5SWhmYkFsQXVCcnlpc1MvaTBF?=
- =?utf-8?Q?SJGJyPaHpFQ01f1lVnpirmGaQ?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: da0fef57-c206-4882-f962-08dbdcab730e
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR11MB5984.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Nov 2023 20:28:33.3526
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: hn83WLJl2d4xjXNAx+ufqx0z5HE6EIx9K/NIY14Mf/0q2+QG7r034dQXu2Vh4gmrekaesYUxS+nL3gqym1zU4A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR11MB5228
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+User-Agent: Mozilla Thunderbird
+From:   Marco Pagani <marpagan@redhat.com>
+Subject: Re: [RFC PATCH] fpga: remove module reference counting from core
+ components
+To:     Xu Yilun <yilun.xu@linux.intel.com>
+Cc:     Moritz Fischer <mdf@kernel.org>, Wu Hao <hao.wu@intel.com>,
+        Xu Yilun <yilun.xu@intel.com>, Tom Rix <trix@redhat.com>,
+        Alan Tull <atull@opensource.altera.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231027152928.184012-1-marpagan@redhat.com>
+ <ZT9qENE9fE3Z0KCW@yilunxu-OptiPlex-7050>
+Content-Language: en-US
+In-Reply-To: <ZT9qENE9fE3Z0KCW@yilunxu-OptiPlex-7050>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -170,31 +88,233 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 11/3/23 13:18, Jim Harris wrote:
-> CXL supports x3, x6 and x12 - not x9.
+On 2023-10-30 09:32, Xu Yilun wrote:
+> On Fri, Oct 27, 2023 at 05:29:27PM +0200, Marco Pagani wrote:
+>> Remove unnecessary module reference counting from the core components
+>> of the subsystem. Low-level driver modules cannot be removed before
+>> core modules since they use their exported symbols.
 > 
-> Fixes: 80d10a6cee050 ("cxl/region: Add interleave geometry attributes")
-> Signed-off-by: Jim Harris <jim.harris@samsung.com>
-
-Reviewed-by: Dave Jiang <dave.jiang@intel.com>
-
-Given it's a fix to a comment, the fixes tag is probably not necessary since it's not a code bug to backport to stable. 
-
-> ---
->  drivers/cxl/core/region.c |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Could you help show the code for this conclusion?
 > 
-> diff --git a/drivers/cxl/core/region.c b/drivers/cxl/core/region.c
-> index 6d63b8798c29..d295b3488e4a 100644
-> --- a/drivers/cxl/core/region.c
-> +++ b/drivers/cxl/core/region.c
-> @@ -403,7 +403,7 @@ static ssize_t interleave_ways_store(struct device *dev,
->  		return rc;
->  
->  	/*
-> -	 * Even for x3, x9, and x12 interleaves the region interleave must be a
-> +	 * Even for x3, x6, and x12 interleaves the region interleave must be a
->  	 * power of 2 multiple of the host bridge interleave.
->  	 */
->  	if (!is_power_of_2(val / cxld->interleave_ways) ||
+> This is different from what I remember, a module cannot be removed when
+> its exported symbols are being used by other modules. IOW, the core
+> modules cannot be removed when there exist related low-level driver
+> modules. But the low-level driver modules could be removed freely
+> without other protecting mechanism.
+>
+
+My understanding was that we wanted to remove module reference counting
+from the fpga core and ease it from the responsibility of preventing
+low-level driver modules from being unloaded. 
+
+If we want to keep reference counting in the fpga core, we could add a
+struct module *owner field in the struct fpga_manager_ops (and others
+core *_ops) so that the low-level driver can set it to THIS_MODULE.
+In this way, we can later use it in fpga_mgr_register() to bump up the
+refcount of the low-level driver module by calling
+try_module_get(mgr->mops->owner) directly when it registers the manager.
+Finally, fpga_mgr_unregister() would call module_put(mgr->mops->owner)
+to allow unloading the low-level driver module.
+
+In this way, it would no longer be necessary to call try_module_get()
+in fpga_mrg_get() since we could use a kref (included in the struct
+fpga_manager) to do refcounting for the in-kernel API users. Only when
+the kref reaches zero fpga_mgr_unregister() would succeed and put the
+low-level driver module.
+
+I think this approach would be safer since it would avoid the crash
+that can currently happen if the low-level driver module is removed
+right when executing try_module_get() in fpga_mrg_get(). The possible
+caveat is that it would be required to call fpga_mgr_unregister()
+before being able to remove the low-level driver module.
+
+>>
+>> For more context, refer to this thread:
+>> https://lore.kernel.org/linux-fpga/ZS6hhlvjUcqyv8zL@yilunxu-OptiPlex-7050
+>>
+>> Other changes:
+>>
+>> In  __fpga_bridge_get(): do a (missing ?) get_device() and bind the
 > 
+> I think get_device() is in (of)_fpga_bridge_get() -> class_find_device()
+> and put_device() correspond to it.
+>
+
+You are right. I missed that one.
+ 
+> But the code style here is rather misleading, the put_device() should be
+> moved out to (of)_fpga_bridge_get().
+>
+
+Right, I'll improve the (of)_fpga_bridge_get() style for the next version.
+
+>> image to the bridge only after the mutex has been acquired.
+> 
+> This is good to me.
+> 
+>>
+>> In __fpga_mgr_get(): do a get_device(). Currently, get_device() is
+>> called when allocating an image in fpga_image_info_alloc().
+>> However, since there are still two (of_)fpga_mgr_get() functions
+>> exposed by the core, I think they should behave as expected.
+> 
+> Same as fpga bridge.
+> 
+>>
+>> In fpga_region_get() / fpga_region_put(): call get_device() before
+>> acquiring the mutex and put_device() after having released the mutex
+>> to avoid races.
+> 
+> Could you help elaborate more about the race?
+> 
+
+I accidentally misused the word race. My concern was that memory might
+be released after the last put_device(), causing mutex_unlock() to be
+called on a mutex that does not exist anymore. It should not happen
+for the moment since the region does not use devres, but I think it
+still makes the code more brittle.
+
+> Thanks,
+> Yilun
+> 
+>>
+>> Fixes: 654ba4cc0f3e ("fpga manager: ensure lifetime with of_fpga_mgr_get")
+>> Signed-off-by: Marco Pagani <marpagan@redhat.com>
+>> ---
+>>  drivers/fpga/fpga-bridge.c | 24 +++++++-----------------
+>>  drivers/fpga/fpga-mgr.c    |  8 +-------
+>>  drivers/fpga/fpga-region.c | 14 ++++----------
+>>  3 files changed, 12 insertions(+), 34 deletions(-)
+>>
+>> diff --git a/drivers/fpga/fpga-bridge.c b/drivers/fpga/fpga-bridge.c
+>> index a024be2b84e2..3bcc9c9849c5 100644
+>> --- a/drivers/fpga/fpga-bridge.c
+>> +++ b/drivers/fpga/fpga-bridge.c
+>> @@ -58,30 +58,21 @@ EXPORT_SYMBOL_GPL(fpga_bridge_disable);
+>>  static struct fpga_bridge *__fpga_bridge_get(struct device *dev,
+>>  					     struct fpga_image_info *info)
+>>  {
+>> -	struct fpga_bridge *bridge;
+>> -	int ret = -ENODEV;
+>> -
+>> -	bridge = to_fpga_bridge(dev);
+>> +	struct fpga_bridge *bridge = to_fpga_bridge(dev);
+>>  
+>> -	bridge->info = info;
+>> +	get_device(dev);
+>>  
+>>  	if (!mutex_trylock(&bridge->mutex)) {
+>> -		ret = -EBUSY;
+>> -		goto err_dev;
+>> +		dev_dbg(dev, "%s: FPGA Bridge already in use\n", __func__);
+>> +		put_device(dev);
+>> +		return ERR_PTR(-EBUSY);
+>>  	}
+>>  
+>> -	if (!try_module_get(dev->parent->driver->owner))
+>> -		goto err_ll_mod;
+>> +	bridge->info = info;
+>>  
+>>  	dev_dbg(&bridge->dev, "get\n");
+>>  
+>>  	return bridge;
+>> -
+>> -err_ll_mod:
+>> -	mutex_unlock(&bridge->mutex);
+>> -err_dev:
+>> -	put_device(dev);
+>> -	return ERR_PTR(ret);
+>>  }
+>>  
+>>  /**
+>> @@ -93,7 +84,7 @@ static struct fpga_bridge *__fpga_bridge_get(struct device *dev,
+>>   * Return:
+>>   * * fpga_bridge struct pointer if successful.
+>>   * * -EBUSY if someone already has a reference to the bridge.
+>> - * * -ENODEV if @np is not an FPGA Bridge or can't take parent driver refcount.
+>> + * * -ENODEV if @np is not an FPGA Bridge.
+>>   */
+>>  struct fpga_bridge *of_fpga_bridge_get(struct device_node *np,
+>>  				       struct fpga_image_info *info)
+>> @@ -146,7 +137,6 @@ void fpga_bridge_put(struct fpga_bridge *bridge)
+>>  	dev_dbg(&bridge->dev, "put\n");
+>>  
+>>  	bridge->info = NULL;
+>> -	module_put(bridge->dev.parent->driver->owner);
+>>  	mutex_unlock(&bridge->mutex);
+>>  	put_device(&bridge->dev);
+>>  }
+>> diff --git a/drivers/fpga/fpga-mgr.c b/drivers/fpga/fpga-mgr.c
+>> index 06651389c592..6c355eafd18f 100644
+>> --- a/drivers/fpga/fpga-mgr.c
+>> +++ b/drivers/fpga/fpga-mgr.c
+>> @@ -670,14 +670,9 @@ static struct fpga_manager *__fpga_mgr_get(struct device *dev)
+>>  
+>>  	mgr = to_fpga_manager(dev);
+>>  
+>> -	if (!try_module_get(dev->parent->driver->owner))
+>> -		goto err_dev;
+>> +	get_device(&mgr->dev);
+>>  
+>>  	return mgr;
+>> -
+>> -err_dev:
+>> -	put_device(dev);
+>> -	return ERR_PTR(-ENODEV);
+>>  }
+>>  
+>>  static int fpga_mgr_dev_match(struct device *dev, const void *data)
+>> @@ -727,7 +722,6 @@ EXPORT_SYMBOL_GPL(of_fpga_mgr_get);
+>>   */
+>>  void fpga_mgr_put(struct fpga_manager *mgr)
+>>  {
+>> -	module_put(mgr->dev.parent->driver->owner);
+>>  	put_device(&mgr->dev);
+>>  }
+>>  EXPORT_SYMBOL_GPL(fpga_mgr_put);
+>> diff --git a/drivers/fpga/fpga-region.c b/drivers/fpga/fpga-region.c
+>> index b364a929425c..c299956cafdc 100644
+>> --- a/drivers/fpga/fpga-region.c
+>> +++ b/drivers/fpga/fpga-region.c
+>> @@ -41,22 +41,17 @@ EXPORT_SYMBOL_GPL(fpga_region_class_find);
+>>   * Return:
+>>   * * fpga_region struct if successful.
+>>   * * -EBUSY if someone already has a reference to the region.
+>> - * * -ENODEV if can't take parent driver module refcount.
+>>   */
+>>  static struct fpga_region *fpga_region_get(struct fpga_region *region)
+>>  {
+>>  	struct device *dev = &region->dev;
+>>  
+>> +	get_device(dev);
+>> +
+>>  	if (!mutex_trylock(&region->mutex)) {
+>>  		dev_dbg(dev, "%s: FPGA Region already in use\n", __func__);
+>> -		return ERR_PTR(-EBUSY);
+>> -	}
+>> -
+>> -	get_device(dev);
+>> -	if (!try_module_get(dev->parent->driver->owner)) {
+>>  		put_device(dev);
+>> -		mutex_unlock(&region->mutex);
+>> -		return ERR_PTR(-ENODEV);
+>> +		return ERR_PTR(-EBUSY);
+>>  	}
+>>  
+>>  	dev_dbg(dev, "get\n");
+>> @@ -75,9 +70,8 @@ static void fpga_region_put(struct fpga_region *region)
+>>  
+>>  	dev_dbg(dev, "put\n");
+>>  
+>> -	module_put(dev->parent->driver->owner);
+>> -	put_device(dev);
+>>  	mutex_unlock(&region->mutex);
+>> +	put_device(dev);
+>>  }
+>>  
+>>  /**
+>> -- 
+>> 2.41.0
+>>
+> 
+
