@@ -2,74 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 005ED7E040A
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 14:54:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 697567E0419
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 14:58:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377666AbjKCNyj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 09:54:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58128 "EHLO
+        id S1377628AbjKCN6A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 09:58:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377661AbjKCNyi (ORCPT
+        with ESMTP id S229463AbjKCN55 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 09:54:38 -0400
-Received: from mail-yw1-x1130.google.com (mail-yw1-x1130.google.com [IPv6:2607:f8b0:4864:20::1130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE19D1A8
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 06:54:27 -0700 (PDT)
-Received: by mail-yw1-x1130.google.com with SMTP id 00721157ae682-5a7b3d33663so24958577b3.3
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Nov 2023 06:54:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699019667; x=1699624467; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=ATfkuRplpjvcZPadAGRPy0zHxih4OimRMmk8d3DvTRo=;
-        b=HsgaQPM/urZOrCeA/GhuChYiEl3fGn7LcsZffq0MGisDzk8PG3AeaJjS9zM7IxUs/x
-         7Bk1upc7zlwPhoUnQYWYHV72BnzzmwzvLpJvfZoY1NaddYzLA88HNfmiymWClF0DyuOE
-         oCYXAeldo175WBO4or5jtjz1H3O69tXfJ35BdiutHWI2mXtaUXIdIdW//yiIPLi32BlN
-         Ja+x+daN71ocXKNNdCFz8Fvgq3nif4vrQg0GYq35lQ2WYmFboK7jlMdgHEIysfZMmgPB
-         nqzkK28fJok+bak+EfkRIZBDdBQPnCbW5FXesAnPb6OEJAXI5HgjMpULsdfCdPHTYyH8
-         0BEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699019667; x=1699624467;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ATfkuRplpjvcZPadAGRPy0zHxih4OimRMmk8d3DvTRo=;
-        b=LQ/NGSV+6Y1sHaYsEbo5uzHm68SJDzb1C00PBBbW/w081TBgPCcSyfoW9DV6idC7Ot
-         jbHGIkRNSaQs5LhMgEqcBUthyKLUafLPNo0M8P0c0d7RKShgl7jnWpZLI6pCxMgNF/nx
-         XpTeGzP+MHdaiyyn3yThWZWFVCrrUr1RCuhbDAaWFdcvYnqg7fcihCkqxktAvjycPULf
-         3mw1B8LqjtpaU+iIY6/fgFcmMGLliVnXcCuSx+aVkKhgTcg57Z6K29g0ABP1V0j/WwFF
-         r5AE+DFXiS74xdpLB93PdGvBEUHwdFT3cuOywRK6vWIV+nyg5VPrCo32+izn7K4E8/BC
-         K2Ug==
-X-Gm-Message-State: AOJu0YxFOJxycyTDtR/ME+/bc0oMr2DhqyRu+l8ciFNR7gxlASWSB3qW
-        /ahKjolVwg5e8fIxHCFYVaMRe/YDolxTqi8t+kMC2g==
-X-Google-Smtp-Source: AGHT+IGJhi2HD1dMqgiPCYjBW7UEdwmlVZwkFEeH+M3ISG/Orbn/Hk+wHiAAb3Dh0JFHj3sIr8CsxN9AfX+vzx7+LpA=
-X-Received: by 2002:a05:690c:a:b0:59e:9a44:9db9 with SMTP id
- bc10-20020a05690c000a00b0059e9a449db9mr2829093ywb.26.1699019667155; Fri, 03
- Nov 2023 06:54:27 -0700 (PDT)
+        Fri, 3 Nov 2023 09:57:57 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 75F4A1A8
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 06:57:54 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E751A2F4;
+        Fri,  3 Nov 2023 06:58:36 -0700 (PDT)
+Received: from [10.1.28.19] (e122027.cambridge.arm.com [10.1.28.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4D8563F64C;
+        Fri,  3 Nov 2023 06:57:51 -0700 (PDT)
+Message-ID: <2fe5ce7e-9c5c-4df4-b4fc-9fd3d9b2dccb@arm.com>
+Date:   Fri, 3 Nov 2023 13:57:49 +0000
 MIME-Version: 1.0
-References: <20231031120307.1600689-1-quic_mdalam@quicinc.com>
- <20231031120307.1600689-2-quic_mdalam@quicinc.com> <b9af01d2-1a86-4b41-9bd6-3bf7a0dde1c0@linaro.org>
- <553c1373-c9a0-b2af-2286-058824e31bad@quicinc.com> <CAA8EJpp-xsP1x==a5DH8pKpy7XH75UF-L8ewKWmeL8ePtxUq-A@mail.gmail.com>
- <4b911907-44b9-c164-9648-3d399e557672@quicinc.com>
-In-Reply-To: <4b911907-44b9-c164-9648-3d399e557672@quicinc.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Fri, 3 Nov 2023 15:54:15 +0200
-Message-ID: <CAA8EJpqtKJYK92Zd0EEZFA0duDzWBp-JObh4Dv9uR_ezhgnWuQ@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/5] mtd: nand: ecc-qcom: Add support for ECC Engine Driver
-To:     Md Sadre Alam <quic_mdalam@quicinc.com>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-        robh+dt@kernel.org, conor+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, miquel.raynal@bootlin.com,
-        richard@nod.at, vigneshr@ti.com, broonie@kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-spi@vger.kernel.org, quic_srichara@quicinc.com,
-        qpic_varada@quicinc.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 4/4] mm: swap: Swap-out small-sized THP without
+ splitting
+To:     Ryan Roberts <ryan.roberts@arm.com>, Barry Song <21cnbao@gmail.com>
+Cc:     akpm@linux-foundation.org, david@redhat.com,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org, mhocko@suse.com,
+        shy828301@gmail.com, wangkefeng.wang@huawei.com,
+        willy@infradead.org, xiang@kernel.org, ying.huang@intel.com,
+        yuzhao@google.com
+References: <73aad98e-de4c-4021-af3c-db67e06cdb70@arm.com>
+ <20231102223643.7733-1-v-songbaohua@oppo.com>
+ <6641a14b-e3fb-4e9e-bb95-b0306827294b@arm.com>
+Content-Language: en-GB
+From:   Steven Price <steven.price@arm.com>
+In-Reply-To: <6641a14b-e3fb-4e9e-bb95-b0306827294b@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,141 +50,137 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 3 Nov 2023 at 15:24, Md Sadre Alam <quic_mdalam@quicinc.com> wrote:
->
->
->
-> On 11/3/2023 6:03 PM, Dmitry Baryshkov wrote:
-> > On Fri, 3 Nov 2023 at 14:25, Md Sadre Alam <quic_mdalam@quicinc.com> wrote:
-> >>
-> >>
-> >>
-> >> On 10/31/2023 10:41 PM, Krzysztof Kozlowski wrote:
-> >>> On 31/10/2023 13:03, Md Sadre Alam wrote:
-> >>>
-> >>> Eh? Empty?
-> >>
-> >> QPIC controller has the ecc pipelined so will keep the ecc support
-> >> inlined in both raw nand and serial nand driver.
-> >>
-> >> Droping this driver since device node was NAK-ed
-> >> https://www.spinics.net/lists/linux-arm-msm/msg177596.html
-> >
-> > It seems, we have to repeat the same thing again and again:
-> >
-> > It was not the device node that was NAKed. It was the patch that was
-> > NAKed. Please read the emails carefully.
-> >
-> > And next time please perform dtbs_check, dt_binding_check and
-> > checkpatch before sending the patch.
-> >
-> > It is perfectly fine to ask questions 'like we are getting we are
-> > getting this and that issues with the bindings, please advise'. It is
-> > not fine to skip that step completely.
->
-> Sorry in V1 will run all basic checks.
->
-> Based on below feedback [1] and NAK on the device node patch
-> got idea of having separate device node for ECC is not acceptable.
-> Could you please help to clarify that.
->
-> Since ECC block is inlined with QPIC controller so is the below
-> device node acceptable ?
+On 03/11/2023 11:31, Ryan Roberts wrote:
+> On 02/11/2023 22:36, Barry Song wrote:
+>>> But, yes, it would be nice to fix that! And if I've understood the problem
+>>> correctly, it doesn't sound like it should be too hard? Is this something you
+>>> are volunteering for?? :)
+>>
+>> Unfornately right now I haven't a real hardware with MTE which can run the latest
+>> kernel. but i have written a RFC, it will be nice to get someone to test it. Let
+>> me figure out if we can get someone :-)
+> 
+> OK, let me know if you find someone. Otherwise I can have a hunt around to see
+> if I can test it.
+> 
+>>
+>> [RFC PATCH] arm64: mm: swap: save and restore mte tags for large folios
+>>
+>> This patch makes MTE tags saving and restoring support large folios,
+>> then we don't need to split them into base pages for swapping on
+>> ARM64 SoCs with MTE.
+>>
+>> ---
+>>  arch/arm64/include/asm/pgtable.h | 21 ++++-----------------
+>>  arch/arm64/mm/mteswap.c          | 20 ++++++++++++++++++++
+>>  2 files changed, 24 insertions(+), 17 deletions(-)
+>>
+>> diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
+>> index 7f7d9b1df4e5..b12783dca00a 100644
+>> --- a/arch/arm64/include/asm/pgtable.h
+>> +++ b/arch/arm64/include/asm/pgtable.h
+>> @@ -45,12 +45,6 @@
+>>  	__flush_tlb_range(vma, addr, end, PUD_SIZE, false, 1)
+>>  #endif /* CONFIG_TRANSPARENT_HUGEPAGE */
+>>  
+>> -static inline bool arch_thp_swp_supported(void)
+>> -{
+>> -	return !system_supports_mte();
+>> -}
+>> -#define arch_thp_swp_supported arch_thp_swp_supported
+> 
+> IIRC, arm64 was the only arch implementing this, so perhaps it should be ripped
+> out from the core code now?
+> 
+>> -
+>>  /*
+>>   * Outside of a few very special situations (e.g. hibernation), we always
+>>   * use broadcast TLB invalidation instructions, therefore a spurious page
+>> @@ -1028,12 +1022,8 @@ static inline pmd_t pmdp_establish(struct vm_area_struct *vma,
+>>  #ifdef CONFIG_ARM64_MTE
+>>  
+>>  #define __HAVE_ARCH_PREPARE_TO_SWAP
+>> -static inline int arch_prepare_to_swap(struct page *page)
+>> -{
+>> -	if (system_supports_mte())
+>> -		return mte_save_tags(page);
+>> -	return 0;
+>> -}
+>> +#define arch_prepare_to_swap arch_prepare_to_swap
+>> +extern int arch_prepare_to_swap(struct page *page);
+> 
+> I think it would be better to modify this API to take a folio explicitly. The
+> caller already has the folio.
+> 
+>>  
+>>  #define __HAVE_ARCH_SWAP_INVALIDATE
+>>  static inline void arch_swap_invalidate_page(int type, pgoff_t offset)
+>> @@ -1049,11 +1039,8 @@ static inline void arch_swap_invalidate_area(int type)
+>>  }
+>>  
+>>  #define __HAVE_ARCH_SWAP_RESTORE
+>> -static inline void arch_swap_restore(swp_entry_t entry, struct folio *folio)
+>> -{
+>> -	if (system_supports_mte())
+>> -		mte_restore_tags(entry, &folio->page);
+>> -}
+>> +#define arch_swap_restore arch_swap_restore
+>> +extern void arch_swap_restore(swp_entry_t entry, struct folio *folio);
+>>  
+>>  #endif /* CONFIG_ARM64_MTE */
+>>  
+>> diff --git a/arch/arm64/mm/mteswap.c b/arch/arm64/mm/mteswap.c
+>> index a31833e3ddc5..e5637e931e4f 100644
+>> --- a/arch/arm64/mm/mteswap.c
+>> +++ b/arch/arm64/mm/mteswap.c
+>> @@ -83,3 +83,23 @@ void mte_invalidate_tags_area(int type)
+>>  	}
+>>  	xa_unlock(&mte_pages);
+>>  }
+>> +
+>> +int arch_prepare_to_swap(struct page *page)
+>> +{
+>> +	if (system_supports_mte()) {
+>> +		struct folio *folio = page_folio(page);
+>> +		long i, nr = folio_nr_pages(folio);
+>> +		for (i = 0; i < nr; i++)
+>> +			return mte_save_tags(folio_page(folio, i));
+> 
+> This will return after saving the first page of the folio! You will need to add
+> each page in a loop, and if you get an error at any point, you will need to
+> remove the pages that you already added successfully, by calling
+> arch_swap_invalidate_page() as far as I can see. Steven can you confirm?
 
-No, the node below is not acceptable. And you have already got two
-reasons for that. Let me repeat them for you:
+Yes that's right. mte_save_tags() needs to allocate memory so can fail
+and if failing then arch_prepare_to_swap() would need to put things back
+how they were with calls to mte_invalidate_tags() (although I think
+you'd actually want to refactor to create a function which takes a
+struct page *).
 
-- it is "okay" not "ok"
-- no underscores in node names.
+Steve
 
-If you want to have a more meaningful discussion, please provide full
-ECC + NAND + SPI DT bindings, only then we can discuss them.
+>> +	}
+>> +	return 0;
+>> +}
+>> +
+>> +void arch_swap_restore(swp_entry_t entry, struct folio *folio)
+>> +{
+>> +	if (system_supports_mte()) {
+>> +		long i, nr = folio_nr_pages(folio);
+>> +		for (i = 0; i < nr; i++)
+>> +			mte_restore_tags(entry, folio_page(folio, i));
+> 
+> swap-in currently doesn't support large folios - everything is a single page
+> folio. So this isn't technically needed. But from the API POV, it seems
+> reasonable to make this change - except your implementation is broken. You are
+> currently setting every page in the folio to use the same tags as the first
+> page. You need to increment the swap entry for each page.
+> 
+> Thanks,
+> Ryan
+> 
+> 
+>> +	}
+>> +}
+> 
 
->     bch: qpic_ecc {
->                            compatible = "qcom,ipq9574-ecc";
->                            status = "ok";
->                    };
->
->   [1] https://www.spinics.net/lists/linux-arm-msm/msg177525.html
->
-> >
-> >>>
-> >>>> Signed-off-by: Md Sadre Alam <quic_mdalam@quicinc.com>
-> >>>> Signed-off-by: Sricharan R <quic_srichara@quicinc.com>
-> >>>> ---
-> >>>>    drivers/mtd/nand/Kconfig    |   7 ++
-> >>>>    drivers/mtd/nand/Makefile   |   1 +
-> >>>>    drivers/mtd/nand/ecc-qcom.c | 198 ++++++++++++++++++++++++++++++++++++
-> >>>>    3 files changed, 206 insertions(+)
-> >>>>    create mode 100644 drivers/mtd/nand/ecc-qcom.c
-> >>>>
-> >>>
-> >>> ...
-> >>>
-> >>>> +
-> >>>> +    return 0;
-> >>>> +}
-> >>>> +EXPORT_SYMBOL(qcom_ecc_config);
-> >>>> +
-> >>>> +void qcom_ecc_enable(struct qcom_ecc *ecc)
-> >>>> +{
-> >>>> +    ecc->use_ecc = true;
-> >>>> +}
-> >>>> +EXPORT_SYMBOL(qcom_ecc_enable);
-> >>>
-> >>> Drop this and all other exports. Nothing here explains the need for them.
-> >>>
-> >>>> +
-> >>>> +void qcom_ecc_disable(struct qcom_ecc *ecc)
-> >>>> +{
-> >>>> +    ecc->use_ecc = false;
-> >>>> +}
-> >>>> +EXPORT_SYMBOL(qcom_ecc_disable);
-> >>>> +
-> >>>> +static const struct of_device_id qpic_ecc_dt_match[] = {
-> >>>> +    {
-> >>>> +            .compatible = "qcom,ipq9574-ecc",
-> >>>
-> >>> Please run scripts/checkpatch.pl and fix reported warnings. Some
-> >>> warnings can be ignored, but the code here looks like it needs a fix.
-> >>> Feel free to get in touch if the warning is not clear.
-> >>>
-> >>> Checkpatch is preerquisite. Don't send patches which have obvious issues
-> >>> pointed out by checkpatch. It's a waste of reviewers time.
-> >>>
-> >>>> +    },
-> >>>> +    {},
-> >>>> +};
-> >>>> +
-> >>>> +static int qpic_ecc_probe(struct platform_device *pdev)
-> >>>> +{
-> >>>> +    struct device *dev = &pdev->dev;
-> >>>> +    struct qpic_ecc *ecc;
-> >>>> +    u32 max_eccdata_size;
-> >>>> +
-> >>>> +    ecc = devm_kzalloc(dev, sizeof(*ecc), GFP_KERNEL);
-> >>>> +    if (!ecc)
-> >>>> +            return -ENOMEM;
-> >>>> +
-> >>>> +    ecc->caps = of_device_get_match_data(dev);
-> >>>> +
-> >>>> +    ecc->dev = dev;
-> >>>> +    platform_set_drvdata(pdev, ecc);
-> >>>> +    dev_info(dev, "probed\n");
-> >>>
-> >>> No, no such messages.
-> >>>
-> >>>
-> >>>
-> >>> Best regards,
-> >>> Krzysztof
-> >>>
-> >
-> >
-> >
-
-
-
--- 
-With best wishes
-Dmitry
