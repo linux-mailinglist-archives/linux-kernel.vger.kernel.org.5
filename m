@@ -2,77 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 66A3D7E024C
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 12:39:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D93297E0253
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 12:43:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346544AbjKCLja (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 07:39:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51210 "EHLO
+        id S1346272AbjKCLnJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 07:43:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233328AbjKCLj3 (ORCPT
+        with ESMTP id S229965AbjKCLnI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 07:39:29 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D96781BC
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 04:39:26 -0700 (PDT)
-Received: from kwepemm000013.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4SMJbm2LDjzrTXc;
-        Fri,  3 Nov 2023 19:36:20 +0800 (CST)
-Received: from [10.174.178.46] (10.174.178.46) by
- kwepemm000013.china.huawei.com (7.193.23.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Fri, 3 Nov 2023 19:39:24 +0800
-Subject: Re: [PATCH v4 5/5] mtd: Add several functions to the fail_function
- list
-To:     ZhaoLong Wang <wangzhaolong1@huawei.com>,
-        <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>
-CC:     <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <yi.zhang@huawei.com>, <yangerkun@huawei.com>
-References: <20231103065536.3778940-1-wangzhaolong1@huawei.com>
- <20231103065536.3778940-6-wangzhaolong1@huawei.com>
-From:   Zhihao Cheng <chengzhihao1@huawei.com>
-Message-ID: <3a358dd2-a923-a55f-5803-7e97c1178dad@huawei.com>
-Date:   Fri, 3 Nov 2023 19:39:23 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        Fri, 3 Nov 2023 07:43:08 -0400
+Received: from mx1.riseup.net (mx1.riseup.net [198.252.153.129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C79CC1BF;
+        Fri,  3 Nov 2023 04:43:02 -0700 (PDT)
+Received: from fews02-sea.riseup.net (fews02-sea-pn.riseup.net [10.0.1.112])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mx1.riseup.net (Postfix) with ESMTPS id 4SMJlF69LZzDqL8;
+        Fri,  3 Nov 2023 11:42:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
+        t=1699011781; bh=COzeTtt/oT3cTy/i7MUnUtz64XgOpYTzoGtZWhIvRJQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=GTWq6IRj6R8KgCWDxsuPaTHD+t0yLYfPLT/MdVPyQIZG7lE5TQa/alopSdJFNlN/k
+         PNAwbfiyjHBU7vwdLqhu+I0y+w/chac0BAYHN1vsD7t3dC0wL6moWtte8YTEEg0YDO
+         +UdYDzBIskw52OCud6TasNvmCocYW0DcapjxYgL0=
+X-Riseup-User-ID: E2464CBEDD2201B50682C719F6E9A98C05FC08E352D2C0FB6703F80CE7B93AEA
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+         by fews02-sea.riseup.net (Postfix) with ESMTPSA id 4SMJl10w64zFpsR;
+        Fri,  3 Nov 2023 11:42:36 +0000 (UTC)
+From:   Dang Huynh <danct12@riseup.net>
+To:     Dang Huynh <danct12@riseup.net>
+Cc:     Nikita Travkin <nikitos.tr@gmail.com>, Pavel Machek <pavel@ucw.cz>,
+        Lee Jones <lee@kernel.org>, linux-leds@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] leds: aw2013: Select REGMAP_I2C
+Date:   Fri,  3 Nov 2023 18:42:03 +0700
+Message-ID: <20231103114203.1108922-1-danct12@riseup.net>
 MIME-Version: 1.0
-In-Reply-To: <20231103065536.3778940-6-wangzhaolong1@huawei.com>
-Content-Type: text/plain; charset="gbk"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.178.46]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemm000013.china.huawei.com (7.193.23.81)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-5.8 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ÔÚ 2023/11/3 14:55, ZhaoLong Wang Ð´µÀ:
-> add mtd_read(), mtd_write(), mtd_erase(), mtd_block_markbad() to
-> fail_function list for testing purpose
-> 
-> - Specify the function to inject the fault
-> echo mtd_read > /sys/kernel/debug/fail_function/inject
-> 
-> - Specifies the return value of the function to inject the fault
-> printf %#x -12 > /sys/kernel/debug/fail_function/mtd_read/retval
-> 
-> - Specify other fault injection configuration parameters.
-> echo -1 > /sys/kernel/debug/fail_function/times
-> echo 100 > /sys/kernel/debug/fail_function/probability
-> echo 15 > /sys/kernel/debug/fail_function/space
-> 
-> Signed-off-by: ZhaoLong Wang <wangzhaolong1@huawei.com>
-> ---
->   drivers/mtd/mtdcore.c | 5 +++++
->   1 file changed, 5 insertions(+)
-> 
+The AW2013 driver uses devm_regmap_init_i2c, so REGMAP_I2C needs to
+be selected.
 
-Reviewed-by: Zhihao Cheng <chengzhihao1@huawei.com>
+Otherwise build process may fail with:
+ld: drivers/leds/leds-aw2013.o: in function `aw2013_probe':
+leds-aw2013.c:345: undefined reference to `__devm_regmap_init_i2c'
+
+Signed-off-by: Dang Huynh <danct12@riseup.net>
+---
+ drivers/leds/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/leds/Kconfig b/drivers/leds/Kconfig
+index b92208eccdea..3132439f99e0 100644
+--- a/drivers/leds/Kconfig
++++ b/drivers/leds/Kconfig
+@@ -110,6 +110,7 @@ config LEDS_AW200XX
+ config LEDS_AW2013
+ 	tristate "LED support for Awinic AW2013"
+ 	depends on LEDS_CLASS && I2C && OF
++	select REGMAP_I2C
+ 	help
+ 	  This option enables support for the AW2013 3-channel
+ 	  LED driver.
+-- 
+2.42.0
 
