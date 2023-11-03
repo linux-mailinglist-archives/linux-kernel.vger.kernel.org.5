@@ -2,156 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 389427E0424
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 15:01:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FEAB7E041F
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 15:00:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377725AbjKCOBB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 10:01:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45066 "EHLO
+        id S1377687AbjKCOAG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 10:00:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230132AbjKCOBA (ORCPT
+        with ESMTP id S230132AbjKCOAF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 10:01:00 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A93551A8;
-        Fri,  3 Nov 2023 07:00:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699020053; x=1730556053;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Rz6eCJm7BKehq5IHsWMYysRTu22nf253QJIHbXShJkA=;
-  b=P8m4ouBSa2Ierr8jXb/xdPcUPBpeFtR9e697xGd5M+DQlSV/Z9UJiw4E
-   hmUdHtQvDDsSczAhy5rcjkE6pOAe5FiBCkYnxqnoFoTWtd1I7ND3olz/2
-   5SI442U8mEUlpsPqsT/vpNHhemOQfVzHuJ4EG0r9LrpLViApIaERoa5uY
-   hzR6gUcaIJk/nIdcyy3r3ALZKTMDUcamnceRwppX8xM5cQSxHb9ifNBud
-   XHa1I58BKVn/gtJbWiNSMt2f5S7lPMlr1uQ4T9kYkc/z75gOymE2n8CTl
-   GcZyECgpCxKh3h0CmoGjJYBpTkAXYcGENQYGRgJ7snEgkUAMzFaDL1mVD
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10883"; a="453243547"
-X-IronPort-AV: E=Sophos;i="6.03,273,1694761200"; 
-   d="scan'208";a="453243547"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2023 07:00:52 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10883"; a="1093065345"
-X-IronPort-AV: E=Sophos;i="6.03,273,1694761200"; 
-   d="scan'208";a="1093065345"
-Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by fmsmga005.fm.intel.com with ESMTP; 03 Nov 2023 07:00:47 -0700
-Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qyuj7-0002Yu-1M;
-        Fri, 03 Nov 2023 14:00:45 +0000
-Date:   Fri, 3 Nov 2023 21:59:44 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Luo Jie <quic_luoj@quicinc.com>, andersson@kernel.org,
-        agross@kernel.org, konrad.dybcio@linaro.org,
-        mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        catalin.marinas@arm.com, will@kernel.org, p.zabel@pengutronix.de
-Cc:     oe-kbuild-all@lists.linux.dev, linux-arm-msm@vger.kernel.org,
-        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, quic_srichara@quicinc.com,
-        Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-Subject: Re: [PATCH v11 3/4] clk: qcom: common: commonize qcom_cc_really_probe
-Message-ID: <202311032153.n6opqP2e-lkp@intel.com>
-References: <20231103104846.30875-4-quic_luoj@quicinc.com>
+        Fri, 3 Nov 2023 10:00:05 -0400
+Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60871D45;
+        Fri,  3 Nov 2023 07:00:02 -0700 (PDT)
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-99357737980so312324666b.2;
+        Fri, 03 Nov 2023 07:00:02 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699020001; x=1699624801;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=AFh8Q4fxchaWQjUJ2QaKp0znqL3CQjIt+LE/Yj+j71I=;
+        b=IxRETYRQwDZ7AVE9tND6tIUuccyhN4c3Pr33ArjEEV4aF95wLdNl6/1PmYtWANJFAY
+         dqzkowZTxHqMJephErn7Mw0LMhwdVJo7qzWFHwc6nKk/II7sIFIcDNsoOpluuamBS0Rm
+         GoTYH3f1txP4Nfy2FwdFlPgbh5DeU50ar6Fa0/ivrpnmKDxGY8oX9FLYTlAa7lT4lq5c
+         o+rg2fIhMsgLo+dTEvawC2vFbm0vG8XEnXI1WIELL1B1N7R8hKJLDCCQpPMgvbT1M/9K
+         LG1zJ7ejixCad8rmGlRPj1A4u4DZ+4ZRkqyat3yig/gIIYFo8IS7/6vEBLZs6eINhm7R
+         S8aQ==
+X-Gm-Message-State: AOJu0YyWOPoRBjwtT0LLDUKUpVsb9gjemuC7TopajPo2QiOTvf1m4adC
+        WKbYfjw3WVvBl/JZitcnPUg=
+X-Google-Smtp-Source: AGHT+IFGzlc/IgTDRXqGlgmdeETcppuMNbPEekWOYCHmrv9sNtwVq7JDon3QkWRLVaGnsGyjUHRHhg==
+X-Received: by 2002:a17:907:745:b0:9dd:4811:7111 with SMTP id xc5-20020a170907074500b009dd48117111mr1171953ejb.4.1699020000550;
+        Fri, 03 Nov 2023 07:00:00 -0700 (PDT)
+Received: from gmail.com (fwdproxy-cln-008.fbsv.net. [2a03:2880:31ff:8::face:b00c])
+        by smtp.gmail.com with ESMTPSA id cf20-20020a170906b2d400b00977eec7b7e8sm943124ejb.68.2023.11.03.06.59.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 Nov 2023 07:00:00 -0700 (PDT)
+Date:   Fri, 3 Nov 2023 06:59:56 -0700
+From:   Breno Leitao <leitao@debian.org>
+To:     Ryan Roberts <ryan.roberts@arm.com>
+Cc:     mike.kravetz@oracle.com, muchun.song@linux.dev,
+        akpm@linux-foundation.org, Shuah Khan <shuah@kernel.org>,
+        linux-mm@kvack.org, riel@surriel.com,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>
+Subject: Re: [PATCH v2 2/2] selftests/mm: Add a new test for madv and hugetlb
+Message-ID: <ZUT83E+XvSr518Zm@gmail.com>
+References: <20231005163922.87568-1-leitao@debian.org>
+ <20231005163922.87568-3-leitao@debian.org>
+ <662df57e-47f1-4c15-9b84-f2f2d587fc5c@arm.com>
+ <84df3b17-6f3d-4e9b-94e0-88ba186207e2@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231103104846.30875-4-quic_luoj@quicinc.com>
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <84df3b17-6f3d-4e9b-94e0-88ba186207e2@arm.com>
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Luo,
+Hello Ryan,
 
-kernel test robot noticed the following build errors:
+On Thu, Nov 02, 2023 at 12:29:54PM +0000, Ryan Roberts wrote:
+> On 02/11/2023 12:24, Ryan Roberts wrote:
+> > On 05/10/2023 17:39, Breno Leitao wrote:
+> >> Create a selftest that exercises the race between page faults and
+> >> madvise(MADV_DONTNEED) in the same huge page. Do it by running two
+> >> threads that touches the huge page and madvise(MADV_DONTNEED) at the same
+> >> time.
+> >>
+> >> In case of a SIGBUS coming at pagefault, the test should fail, since we
+> >> hit the bug.
+> >>
+> >> The test doesn't have a signal handler, and if it fails, it fails like
+> >> the following
+> >>
+> >>   ----------------------------------
+> >>   running ./hugetlb_fault_after_madv
+> >>   ----------------------------------
+> >>   ./run_vmtests.sh: line 186: 595563 Bus error    (core dumped) "$@"
+> >>   [FAIL]
+> >>
+> >> This selftest goes together with the fix of the bug[1] itself.
+> >>
+> >> [1] https://lore.kernel.org/all/20231001005659.2185316-1-riel@surriel.com/#r
+> >>
+> >> Signed-off-by: Breno Leitao <leitao@debian.org>
+> >> ---
+> >>  tools/testing/selftests/mm/Makefile           |  1 +
+> >>  .../selftests/mm/hugetlb_fault_after_madv.c   | 73 +++++++++++++++++++
+> >>  tools/testing/selftests/mm/run_vmtests.sh     |  4 +
+> >>  3 files changed, 78 insertions(+)
+> >>  create mode 100644 tools/testing/selftests/mm/hugetlb_fault_after_madv.c
+> >>
+> >> diff --git a/tools/testing/selftests/mm/Makefile b/tools/testing/selftests/mm/Makefile
+> >> index 6a9fc5693145..e71ec9910c62 100644
+> >> --- a/tools/testing/selftests/mm/Makefile
+> >> +++ b/tools/testing/selftests/mm/Makefile
+> >> @@ -68,6 +68,7 @@ TEST_GEN_FILES += split_huge_page_test
+> >>  TEST_GEN_FILES += ksm_tests
+> >>  TEST_GEN_FILES += ksm_functional_tests
+> >>  TEST_GEN_FILES += mdwe_test
+> >> +TEST_GEN_FILES += hugetlb_fault_after_madv
+> >>  
+> >>  ifneq ($(ARCH),arm64)
+> >>  TEST_GEN_PROGS += soft-dirty
+> >> diff --git a/tools/testing/selftests/mm/hugetlb_fault_after_madv.c b/tools/testing/selftests/mm/hugetlb_fault_after_madv.c
+> >> new file mode 100644
+> >> index 000000000000..73b81c632366
+> >> --- /dev/null
+> >> +++ b/tools/testing/selftests/mm/hugetlb_fault_after_madv.c
+> >> @@ -0,0 +1,73 @@
+> >> +// SPDX-License-Identifier: GPL-2.0
+> >> +#include <pthread.h>
+> >> +#include <stdio.h>
+> >> +#include <stdlib.h>
+> >> +#include <sys/mman.h>
+> >> +#include <sys/types.h>
+> >> +#include <unistd.h>
+> >> +
+> >> +#include "vm_util.h"
+> >> +#include "../kselftest.h"
+> >> +
+> >> +#define MMAP_SIZE (1 << 21)
+> >> +#define INLOOP_ITER 100
+> >> +
+> >> +char *huge_ptr;
+> >> +
+> >> +/* Touch the memory while it is being madvised() */
+> >> +void *touch(void *unused)
+> >> +{
+> >> +	char *ptr = (char *)huge_ptr;
+> >> +
+> >> +	for (int i = 0; i < INLOOP_ITER; i++)
+> >> +		ptr[0] = '.';
+> >> +
+> >> +	return NULL;
+> >> +}
+> >> +
+> >> +void *madv(void *unused)
+> >> +{
+> >> +	usleep(rand() % 10);
+> >> +
+> >> +	for (int i = 0; i < INLOOP_ITER; i++)
+> >> +		madvise(huge_ptr, MMAP_SIZE, MADV_DONTNEED);
+> >> +
+> >> +	return NULL;
+> >> +}
+> >> +
+> >> +int main(void)
+> >> +{
+> >> +	unsigned long free_hugepages;
+> >> +	pthread_t thread1, thread2;
+> >> +	/*
+> >> +	 * On kernel 6.4, we are able to reproduce the problem with ~1000
+> >> +	 * interactions
+> >> +	 */
+> >> +	int max = 10000;
+> >> +
+> >> +	srand(getpid());
+> >> +
+> >> +	free_hugepages = get_free_hugepages();
+> >> +	if (free_hugepages != 1) {
+> >> +		ksft_exit_skip("This test needs one and only one page to execute. Got %lu\n",
+> >> +			       free_hugepages);
+> >> +	}
+> >> +
+> >> +	while (max--) {
+> >> +		huge_ptr = mmap(NULL, MMAP_SIZE, PROT_READ | PROT_WRITE,
+> >> +				MAP_PRIVATE | MAP_ANONYMOUS | MAP_HUGETLB,
+> >> +				-1, 0);
+> >> +
+> >> +		if ((unsigned long)huge_ptr == -1)
+> >> +			ksft_exit_skip("Failed to allocated huge page\n");
+> >> +
+> >> +		pthread_create(&thread1, NULL, madv, NULL);
+> >> +		pthread_create(&thread2, NULL, touch, NULL);
+> >> +
+> >> +		pthread_join(thread1, NULL);
+> >> +		pthread_join(thread2, NULL);
+> >> +		munmap(huge_ptr, MMAP_SIZE);
+> >> +	}
+> >> +
+> >> +	return KSFT_PASS;
+> >> +}
+> >> diff --git a/tools/testing/selftests/mm/run_vmtests.sh b/tools/testing/selftests/mm/run_vmtests.sh
+> >> index 3e2bc818d566..9f53f7318a38 100755
+> >> --- a/tools/testing/selftests/mm/run_vmtests.sh
+> >> +++ b/tools/testing/selftests/mm/run_vmtests.sh
+> >> @@ -221,6 +221,10 @@ CATEGORY="hugetlb" run_test ./hugepage-mremap
+> >>  CATEGORY="hugetlb" run_test ./hugepage-vmemmap
+> >>  CATEGORY="hugetlb" run_test ./hugetlb-madvise
+> >>  
+> >> +# For this test, we need one and just one huge page
+> >> +echo 1 > /proc/sys/vm/nr_hugepages
+> > 
+> > I've noticed that this change breaks some of the uffd-stress tests further down
+> > the file, because you have freed previously reserved hugepages that the test
+> > requires to run. I notice that the patch is already in mm-stable, so perhaps its
+> > possible to submit a patch that does a save and restore?
+> > 
+> > Although I'm not sure if that might be tricky because the previous reservation
+> > is per-size and per-node (our CI does this on the kernel command line), and I
+> > suspect if you want just 1 huge page in the entire system you won't be able to
+> > get back to the previous state by just restoring this value?
+> 
+> Actually on closer inspection, I don't think this will be a problem; simply
+> saving and restoring the value around the test will be sufficient.
 
-[auto build test ERROR on ff269e2cd5adce4ae14f883fc9c8803bc43ee1e9]
+Thanks for checking it, I will prepare a patch that will restore the number
+of huge pages allocated after the test.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Luo-Jie/clk-qcom-branch-Add-clk_branch2_prepare_ops/20231103-185251
-base:   ff269e2cd5adce4ae14f883fc9c8803bc43ee1e9
-patch link:    https://lore.kernel.org/r/20231103104846.30875-4-quic_luoj%40quicinc.com
-patch subject: [PATCH v11 3/4] clk: qcom: common: commonize qcom_cc_really_probe
-config: csky-randconfig-002-20231103 (https://download.01.org/0day-ci/archive/20231103/202311032153.n6opqP2e-lkp@intel.com/config)
-compiler: csky-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231103/202311032153.n6opqP2e-lkp@intel.com/reproduce)
+> I also notice that the binary for the new test is not added to the .gitignore,
+> which is a minor annoyance.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311032153.n6opqP2e-lkp@intel.com/
+I will add the file to .gitignore also.
 
-All errors (new ones prefixed by >>):
-
-   drivers/clk/qcom/gcc-sm4450.c: In function 'gcc_sm4450_probe':
->> drivers/clk/qcom/gcc-sm4450.c:2874:37: error: passing argument 1 of 'qcom_cc_really_probe' from incompatible pointer type [-Werror=incompatible-pointer-types]
-    2874 |         return qcom_cc_really_probe(pdev, &gcc_sm4450_desc, regmap);
-         |                                     ^~~~
-         |                                     |
-         |                                     struct platform_device *
-   In file included from drivers/clk/qcom/clk-regmap-mux.h:11,
-                    from drivers/clk/qcom/gcc-sm4450.c:19:
-   drivers/clk/qcom/common.h:61:48: note: expected 'struct device *' but argument is of type 'struct platform_device *'
-      61 | extern int qcom_cc_really_probe(struct device *dev,
-         |                                 ~~~~~~~~~~~~~~~^~~
-   cc1: some warnings being treated as errors
-
-
-vim +/qcom_cc_really_probe +2874 drivers/clk/qcom/gcc-sm4450.c
-
-c32c4ef98baca6d Ajit Pandey 2023-09-09  2834  
-c32c4ef98baca6d Ajit Pandey 2023-09-09  2835  static int gcc_sm4450_probe(struct platform_device *pdev)
-c32c4ef98baca6d Ajit Pandey 2023-09-09  2836  {
-c32c4ef98baca6d Ajit Pandey 2023-09-09  2837  	struct regmap *regmap;
-c32c4ef98baca6d Ajit Pandey 2023-09-09  2838  	int ret;
-c32c4ef98baca6d Ajit Pandey 2023-09-09  2839  
-c32c4ef98baca6d Ajit Pandey 2023-09-09  2840  	regmap = qcom_cc_map(pdev, &gcc_sm4450_desc);
-c32c4ef98baca6d Ajit Pandey 2023-09-09  2841  	if (IS_ERR(regmap))
-c32c4ef98baca6d Ajit Pandey 2023-09-09  2842  		return PTR_ERR(regmap);
-c32c4ef98baca6d Ajit Pandey 2023-09-09  2843  
-c32c4ef98baca6d Ajit Pandey 2023-09-09  2844  	clk_lucid_evo_pll_configure(&gcc_gpll3, regmap, &gcc_gpll3_config);
-c32c4ef98baca6d Ajit Pandey 2023-09-09  2845  	ret = qcom_cc_register_rcg_dfs(regmap, gcc_dfs_clocks,
-c32c4ef98baca6d Ajit Pandey 2023-09-09  2846  				       ARRAY_SIZE(gcc_dfs_clocks));
-c32c4ef98baca6d Ajit Pandey 2023-09-09  2847  	if (ret)
-c32c4ef98baca6d Ajit Pandey 2023-09-09  2848  		return ret;
-c32c4ef98baca6d Ajit Pandey 2023-09-09  2849  
-c32c4ef98baca6d Ajit Pandey 2023-09-09  2850  	qcom_branch_set_force_mem_core(regmap, gcc_ufs_phy_ice_core_clk, true);
-c32c4ef98baca6d Ajit Pandey 2023-09-09  2851  
-c32c4ef98baca6d Ajit Pandey 2023-09-09  2852  	/*
-c32c4ef98baca6d Ajit Pandey 2023-09-09  2853  	 * Keep clocks always enabled:
-c32c4ef98baca6d Ajit Pandey 2023-09-09  2854  	 * gcc_camera_ahb_clk
-c32c4ef98baca6d Ajit Pandey 2023-09-09  2855  	 * gcc_camera_sleep_clk
-c32c4ef98baca6d Ajit Pandey 2023-09-09  2856  	 * gcc_camera_xo_clk
-c32c4ef98baca6d Ajit Pandey 2023-09-09  2857  	 * gcc_disp_ahb_clk
-c32c4ef98baca6d Ajit Pandey 2023-09-09  2858  	 * gcc_disp_xo_clk
-c32c4ef98baca6d Ajit Pandey 2023-09-09  2859  	 * gcc_gpu_cfg_ahb_clk
-c32c4ef98baca6d Ajit Pandey 2023-09-09  2860  	 * gcc_video_ahb_clk
-c32c4ef98baca6d Ajit Pandey 2023-09-09  2861  	 * gcc_video_xo_clk
-c32c4ef98baca6d Ajit Pandey 2023-09-09  2862  	 */
-c32c4ef98baca6d Ajit Pandey 2023-09-09  2863  	regmap_update_bits(regmap, 0x36004, BIT(0), BIT(0));
-c32c4ef98baca6d Ajit Pandey 2023-09-09  2864  	regmap_update_bits(regmap, 0x36018, BIT(0), BIT(0));
-c32c4ef98baca6d Ajit Pandey 2023-09-09  2865  	regmap_update_bits(regmap, 0x3601c, BIT(0), BIT(0));
-c32c4ef98baca6d Ajit Pandey 2023-09-09  2866  	regmap_update_bits(regmap, 0x37004, BIT(0), BIT(0));
-c32c4ef98baca6d Ajit Pandey 2023-09-09  2867  	regmap_update_bits(regmap, 0x37014, BIT(0), BIT(0));
-c32c4ef98baca6d Ajit Pandey 2023-09-09  2868  	regmap_update_bits(regmap, 0x81004, BIT(0), BIT(0));
-c32c4ef98baca6d Ajit Pandey 2023-09-09  2869  	regmap_update_bits(regmap, 0x42004, BIT(0), BIT(0));
-c32c4ef98baca6d Ajit Pandey 2023-09-09  2870  	regmap_update_bits(regmap, 0x42018, BIT(0), BIT(0));
-c32c4ef98baca6d Ajit Pandey 2023-09-09  2871  
-c32c4ef98baca6d Ajit Pandey 2023-09-09  2872  	regmap_update_bits(regmap, 0x4201c, BIT(21), BIT(21));
-c32c4ef98baca6d Ajit Pandey 2023-09-09  2873  
-c32c4ef98baca6d Ajit Pandey 2023-09-09 @2874  	return qcom_cc_really_probe(pdev, &gcc_sm4450_desc, regmap);
-c32c4ef98baca6d Ajit Pandey 2023-09-09  2875  }
-c32c4ef98baca6d Ajit Pandey 2023-09-09  2876  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Thanks for the heads-up.
