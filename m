@@ -2,69 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CDE907E00EC
+	by mail.lfdr.de (Postfix) with ESMTP id 1D9E07E00EA
 	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 11:30:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229981AbjKCKV3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 06:21:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60330 "EHLO
+        id S229950AbjKCKWa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 06:22:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229805AbjKCKV1 (ORCPT
+        with ESMTP id S229463AbjKCKW1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 06:21:27 -0400
-Received: from mail-oi1-f176.google.com (mail-oi1-f176.google.com [209.85.167.176])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6416DD7;
-        Fri,  3 Nov 2023 03:21:21 -0700 (PDT)
-Received: by mail-oi1-f176.google.com with SMTP id 5614622812f47-3b2ea7cc821so1151539b6e.1;
-        Fri, 03 Nov 2023 03:21:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699006880; x=1699611680;
-        h=date:subject:message-id:references:in-reply-to:cc:to:from
-         :mime-version:content-transfer-encoding:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=LTK0kHcHXKMRZq1fvvgaafZQnou0Z3OBHj53xDl18ng=;
-        b=krDEccaDbi8+KyNYPJSB9o/DVnlanAGiJ+TMq3mKErSAx/8HKbtyFSRiswcCYOqm0w
-         twX2D4Je3U3fA+WnIldVeJta57lbsn8rd040pS3xxTj+dFJohTCfJYpYhVmJVmMOOsi8
-         xbOeGvdRnD/E4VHc9udSEmD30YeJ+zSC05WYwYibxtrN9Q+Xo3nEQz19R6UYM6XRLG/g
-         gRydDOL8CMBWEgt46H8rIyBLP+lb5sbq733M8YznjwNDyeiNBSB9JCVeqkw7lPE7d7mQ
-         V7y2DnBWT2mbzG3ngN/+UGdhuSIfpKBL07FGaxMBrEByXKiYOiJGRPUXQQlJipq3cR8p
-         UaIA==
-X-Gm-Message-State: AOJu0YyB1kTta9uVRqikz4tzKlFW8wclZzSl4mZOQdNpZbDvFgoiEgeX
-        ptTTPoQgbGeCU+FEILtcpQ==
-X-Google-Smtp-Source: AGHT+IHoi5Ah7YtWDdBl+iV5e4j5JCiHEOTBVVHtU82pAReNiVxK6n+DZFFTwx3DoOB3eowJfeBlBg==
-X-Received: by 2002:aca:1204:0:b0:3b2:ecab:900e with SMTP id 4-20020aca1204000000b003b2ecab900emr20799399ois.15.1699006880535;
-        Fri, 03 Nov 2023 03:21:20 -0700 (PDT)
-Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id u21-20020a056808115500b003af60f06629sm229573oiu.6.2023.11.03.03.21.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Nov 2023 03:21:19 -0700 (PDT)
-Received: (nullmailer pid 488800 invoked by uid 1000);
-        Fri, 03 Nov 2023 10:21:18 -0000
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+        Fri, 3 Nov 2023 06:22:27 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72C06D4E;
+        Fri,  3 Nov 2023 03:22:21 -0700 (PDT)
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A39DnDb005742;
+        Fri, 3 Nov 2023 10:22:07 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=nRY5lOltW/stmAHC4W+teHJxj9e8mY88qXIYFfyXbKQ=;
+ b=SGoL+g5yIAHb39M3LwtjWJTL466p+0iGEJ1goME3jjjA/A9ysHi26p3GwOjDzVOy21cF
+ nYTlQaKLN35KGtKDc0tXpyWsmesCKJ9AjPy76u4/bZxeobTv4xQi1cg+Ip+l3bViYmhQ
+ oMo8nSqLmAR/+V+EaRiMhrfCwiciydDnY/rXGIjQjE/ABEpikZ9YSYnC5YPmS0XAu579
+ qGHjGxQo/hPAR/h1jRmWxY6olFq3URwuOE6OWF2QteaAlXTSxg8lNh98ZzQyPoEkMs9g
+ gScmfAgc5fgNGZlh+wNgWY2t2eVDO7lANUBpA+y1xegSLflgkf93yLy+XYLMiZ85o8cD Fg== 
+Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u4r00gtmg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 03 Nov 2023 10:22:07 +0000
+Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
+        by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3A3AM6Cc020183
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 3 Nov 2023 10:22:06 GMT
+Received: from [10.214.16.225] (10.80.80.8) by nasanex01c.na.qualcomm.com
+ (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Fri, 3 Nov
+ 2023 03:22:00 -0700
+Message-ID: <9a2ff779-163c-415d-9e78-84756ad77c86@quicinc.com>
+Date:   Fri, 3 Nov 2023 15:51:56 +0530
 MIME-Version: 1.0
-From:   Rob Herring <robh@kernel.org>
-To:     Huangzheng Lai <Huangzheng.Lai@unisoc.com>
-Cc:     Baolin Wang <baolin.wang@linux.alibaba.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        huangzheng lai <laihuangzheng@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        devicetree@vger.kernel.org, Xiongpeng Wu <xiongpeng.wu@unisoc.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
-        Andi Shyti <andi.shyti@kernel.org>,
-        Orson Zhai <orsonzhai@gmail.com>
-In-Reply-To: <20231103091653.4591-1-Huangzheng.Lai@unisoc.com>
-References: <20231103091653.4591-1-Huangzheng.Lai@unisoc.com>
-Message-Id: <169900687819.488783.15775505208515245193.robh@kernel.org>
-Subject: Re: [PATCH] dt-bindings: i2c: Add yaml for Spreadtrum I2C
- controller
-Date:   Fri, 03 Nov 2023 05:21:18 -0500
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1] ARM: dts: msm: Add capacity and DPC properties for
+ sc7280 soc
+Content-Language: en-US
+To:     <cros-qcom-dts-watchers@chromium.org>, <agross@kernel.org>,
+        <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>
+CC:     <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <quic_ashayj@quicinc.com>,
+        <quic_atulpant@quicinc.com>, <quic_rgottimu@quicinc.com>,
+        <quic_shashim@quicinc.com>, <quic_pkondeti@quicinc.com>
+References: <20231103095358.29312-1-quic_anshar@quicinc.com>
+From:   Ankit Sharma <quic_anshar@quicinc.com>
+In-Reply-To: <20231103095358.29312-1-quic_anshar@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01c.na.qualcomm.com (10.45.79.139)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: aqXp8JEJkrk7SJ-V2BsLJslyR6rjFI1C
+X-Proofpoint-GUID: aqXp8JEJkrk7SJ-V2BsLJslyR6rjFI1C
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-03_10,2023-11-02_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxscore=0
+ mlxlogscore=999 clxscore=1015 impostorscore=0 spamscore=0 bulkscore=0
+ priorityscore=1501 suspectscore=0 malwarescore=0 lowpriorityscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2310240000 definitions=main-2311030086
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,56 +85,94 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On Fri, 03 Nov 2023 17:16:53 +0800, Huangzheng Lai wrote:
-> Add a yaml file to replace the txt file. Due to the recent addition
-> of the 'reset' framework to the Spreadtrum I2C driver to reset the
-> controller, information related to the 'reset' attribute has been
-> added to the bindings file.
-> 
-> Change in V2
-> -Rename 'i2c-sprd.txt' to 'sprd,sc9860-i2c.yaml'.
-> -Add ref to i2c-controller.
-> -Drop items in 'compatible'.
-> -Add describe for 'reg' items.
-> -Drop 'clocks' description and just maxItems: 3.
-> -Fix typo in 'clo-frequency': Contains.
-> -Add explanation in commit message explaining why 'resets' be added.
-> -Drop '#size-cells' and 'address-cells' in properties and required.
-> -Drop description of 'resets'.
-> -Add child node in examples.
-> 
-> Signed-off-by: Huangzheng Lai <Huangzheng.Lai@unisoc.com>
+On 11/3/2023 3:23 PM, Ankit Sharma wrote:
+> The "capacity-dmips-mhz" and "dynamic-power-coefficient" are
+> used to build Energy Model which in turn is used by EAS to take
+> placement decisions.
+>
+> Change-Id: I57aa4b99734dc349034f84bd16b02609b4ac6e55
+> Signed-off-by: Ankit Sharma <quic_anshar@quicinc.com>
 > ---
->  .../devicetree/bindings/i2c/i2c-sprd.txt      | 31 --------
->  .../bindings/i2c/sprd,sc9860-i2c.yaml         | 75 +++++++++++++++++++
->  2 files changed, 75 insertions(+), 31 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/i2c/i2c-sprd.txt
->  create mode 100644 Documentation/devicetree/bindings/i2c/sprd,sc9860-i2c.yaml
-> 
+Please ignore this, will resend again. Sorry for the spam.
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
-
-yamllint warnings/errors:
-
-dtschema/dtc warnings/errors:
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/i2c/sprd,sc9860-i2c.example.dtb: i2c@2240000: '#address-cells', '#size-cells', 'charger@63' do not match any of the regexes: 'pinctrl-[0-9]+'
-	from schema $id: http://devicetree.org/schemas/i2c/sprd,sc9860-i2c.yaml#
-
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20231103091653.4591-1-Huangzheng.Lai@unisoc.com
-
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
-
+Thanks,
+Ankit
+>   arch/arm64/boot/dts/qcom/sc7280.dtsi | 16 ++++++++++++++++
+>   1 file changed, 16 insertions(+)
+>
+> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> index 8601253aec70..b1890824188c 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> @@ -176,6 +176,8 @@
+>   					   &CLUSTER_SLEEP_0>;
+>   			next-level-cache = <&L2_0>;
+>   			operating-points-v2 = <&cpu0_opp_table>;
+> +			capacity-dmips-mhz = <1024>;
+> +			dynamic-power-coefficient = <100>;
+>   			interconnects = <&gem_noc MASTER_APPSS_PROC 3 &mc_virt SLAVE_EBI1 3>,
+>   					<&epss_l3 MASTER_EPSS_L3_APPS &epss_l3 SLAVE_EPSS_L3_SHARED>;
+>   			qcom,freq-domain = <&cpufreq_hw 0>;
+> @@ -204,6 +206,8 @@
+>   					   &CLUSTER_SLEEP_0>;
+>   			next-level-cache = <&L2_100>;
+>   			operating-points-v2 = <&cpu0_opp_table>;
+> +			capacity-dmips-mhz = <1024>;
+> +			dynamic-power-coefficient = <100>;
+>   			interconnects = <&gem_noc MASTER_APPSS_PROC 3 &mc_virt SLAVE_EBI1 3>,
+>   					<&epss_l3 MASTER_EPSS_L3_APPS &epss_l3 SLAVE_EPSS_L3_SHARED>;
+>   			qcom,freq-domain = <&cpufreq_hw 0>;
+> @@ -227,6 +231,8 @@
+>   					   &CLUSTER_SLEEP_0>;
+>   			next-level-cache = <&L2_200>;
+>   			operating-points-v2 = <&cpu0_opp_table>;
+> +			capacity-dmips-mhz = <1024>;
+> +			dynamic-power-coefficient = <100>;
+>   			interconnects = <&gem_noc MASTER_APPSS_PROC 3 &mc_virt SLAVE_EBI1 3>,
+>   					<&epss_l3 MASTER_EPSS_L3_APPS &epss_l3 SLAVE_EPSS_L3_SHARED>;
+>   			qcom,freq-domain = <&cpufreq_hw 0>;
+> @@ -250,6 +256,8 @@
+>   					   &CLUSTER_SLEEP_0>;
+>   			next-level-cache = <&L2_300>;
+>   			operating-points-v2 = <&cpu0_opp_table>;
+> +			capacity-dmips-mhz = <1024>;
+> +			dynamic-power-coefficient = <100>;
+>   			interconnects = <&gem_noc MASTER_APPSS_PROC 3 &mc_virt SLAVE_EBI1 3>,
+>   					<&epss_l3 MASTER_EPSS_L3_APPS &epss_l3 SLAVE_EPSS_L3_SHARED>;
+>   			qcom,freq-domain = <&cpufreq_hw 0>;
+> @@ -273,6 +281,8 @@
+>   					   &CLUSTER_SLEEP_0>;
+>   			next-level-cache = <&L2_400>;
+>   			operating-points-v2 = <&cpu4_opp_table>;
+> +			capacity-dmips-mhz = <1946>;
+> +			dynamic-power-coefficient = <520>;
+>   			interconnects = <&gem_noc MASTER_APPSS_PROC 3 &mc_virt SLAVE_EBI1 3>,
+>   					<&epss_l3 MASTER_EPSS_L3_APPS &epss_l3 SLAVE_EPSS_L3_SHARED>;
+>   			qcom,freq-domain = <&cpufreq_hw 1>;
+> @@ -296,6 +306,8 @@
+>   					   &CLUSTER_SLEEP_0>;
+>   			next-level-cache = <&L2_500>;
+>   			operating-points-v2 = <&cpu4_opp_table>;
+> +			capacity-dmips-mhz = <1946>;
+> +			dynamic-power-coefficient = <520>;
+>   			interconnects = <&gem_noc MASTER_APPSS_PROC 3 &mc_virt SLAVE_EBI1 3>,
+>   					<&epss_l3 MASTER_EPSS_L3_APPS &epss_l3 SLAVE_EPSS_L3_SHARED>;
+>   			qcom,freq-domain = <&cpufreq_hw 1>;
+> @@ -319,6 +331,8 @@
+>   					   &CLUSTER_SLEEP_0>;
+>   			next-level-cache = <&L2_600>;
+>   			operating-points-v2 = <&cpu4_opp_table>;
+> +			capacity-dmips-mhz = <1946>;
+> +			dynamic-power-coefficient = <520>;
+>   			interconnects = <&gem_noc MASTER_APPSS_PROC 3 &mc_virt SLAVE_EBI1 3>,
+>   					<&epss_l3 MASTER_EPSS_L3_APPS &epss_l3 SLAVE_EPSS_L3_SHARED>;
+>   			qcom,freq-domain = <&cpufreq_hw 1>;
+> @@ -342,6 +356,8 @@
+>   					   &CLUSTER_SLEEP_0>;
+>   			next-level-cache = <&L2_700>;
+>   			operating-points-v2 = <&cpu7_opp_table>;
+> +			capacity-dmips-mhz = <1985>;
+> +			dynamic-power-coefficient = <552>;
+>   			interconnects = <&gem_noc MASTER_APPSS_PROC 3 &mc_virt SLAVE_EBI1 3>,
+>   					<&epss_l3 MASTER_EPSS_L3_APPS &epss_l3 SLAVE_EPSS_L3_SHARED>;
+>   			qcom,freq-domain = <&cpufreq_hw 2>;
