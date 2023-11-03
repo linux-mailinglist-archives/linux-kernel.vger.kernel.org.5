@@ -2,191 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AACC7E0552
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 16:13:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 856F07E0555
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 16:13:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231797AbjKCPNK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 11:13:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34116 "EHLO
+        id S233151AbjKCPNp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 11:13:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231825AbjKCPNI (ORCPT
+        with ESMTP id S230180AbjKCPNn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 11:13:08 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20BFED52;
-        Fri,  3 Nov 2023 08:13:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699024380; x=1730560380;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=jjAzBvdNqU+zJFD678xcgoXGtuJCwhpDnpe6k8NVQRE=;
-  b=Lj+wE/kzKmjVdKopp6wEiopfZ8NG0/9tPXeEWjayPBuXAmkpflCPwC0P
-   PPE8n8h5WQE+LfAQHmZdG4xD+aKTaPlN2+afGCyLGJ8DFbKRS7LE4VfZL
-   e1NxnaB2U2nFv0t5f3974dVNRhtIFTx+S5l7KbL0jUVCm5uXrpE3kUr//
-   kEzgtZo+X3JBiwX91QEfwbpwuMR1tfyXgGFiSMxpq5PgPfGFWP0I+TR70
-   NOWSDYhgYRSZzaUuxcoNREeAhCNSXxNxi04ch26gJ4RHH4phIdJVV1uux
-   vVTmjVRqDT2cXahfF/di3oYAAT6DblQexkGPcPmPH4wh+RcusYFEAP4vQ
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10883"; a="373998421"
-X-IronPort-AV: E=Sophos;i="6.03,273,1694761200"; 
-   d="scan'208";a="373998421"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2023 08:12:59 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.03,273,1694761200"; 
-   d="scan'208";a="2918519"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmviesa002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2023 08:12:58 -0700
-Received: from [10.209.173.25] (kliang2-mobl1.ccr.corp.intel.com [10.209.173.25])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by linux.intel.com (Postfix) with ESMTPS id 54945580223;
-        Fri,  3 Nov 2023 08:12:56 -0700 (PDT)
-Message-ID: <2004baa6-b494-462c-a11f-8104ea152c6a@linux.intel.com>
-Date:   Fri, 3 Nov 2023 11:12:54 -0400
+        Fri, 3 Nov 2023 11:13:43 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CB80D4C;
+        Fri,  3 Nov 2023 08:13:40 -0700 (PDT)
+Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A3FDArR030442;
+        Fri, 3 Nov 2023 15:13:10 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : content-type : content-transfer-encoding :
+ mime-version; s=pp1; bh=2/xZnlZ+ucI9Waeln15/C3RKn69MzEa4w98I3fYs/hc=;
+ b=alE8dRvvymuJDYttfomP10HXtwoQvFK4yJt1K79Wl56uRckxeZcTirzfvN60mU3ek8tp
+ EzAMnF80b7jQSsNE+oQAHwoCk3JNYhcT/ZJenCXG9gDRfnXYIdiW8i8ZCsZy0eq6z1Cy
+ YDQ3V/VU8pjBhmd0o6CiBIBQi1ESW5a7+rl5AKKsZV2EtsxxzTMfYN0d+Nszz4TrUW/h
+ QW0w2LmG6TjukPWb6r/LspthLggBYYpbdlVDh0jAUrUOZe8jM4c5W3ty/1bHLE9slk4V
+ L2PaCtKlGeKPPZdvJ/JDMgcrXNtP1D6Kx4iYfxyGXTZ2Kkth82uFXH2UvEqQZeVmNhGI ng== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u52qk9nd0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 03 Nov 2023 15:13:10 +0000
+Received: from m0353726.ppops.net (m0353726.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3A3EpQNK024366;
+        Fri, 3 Nov 2023 15:13:09 GMT
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u52qk9nc7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 03 Nov 2023 15:13:09 +0000
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3A3CXctD011588;
+        Fri, 3 Nov 2023 15:13:08 GMT
+Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
+        by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3u1e4membs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 03 Nov 2023 15:13:08 +0000
+Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
+        by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3A3FD48D43319970
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 3 Nov 2023 15:13:05 GMT
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E1A622004B;
+        Fri,  3 Nov 2023 15:13:04 +0000 (GMT)
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 197E520040;
+        Fri,  3 Nov 2023 15:13:04 +0000 (GMT)
+Received: from [9.171.80.107] (unknown [9.171.80.107])
+        by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Fri,  3 Nov 2023 15:13:04 +0000 (GMT)
+Message-ID: <104a8c8fedffd1ff8a2890983e2ec1c26bff6810.camel@linux.ibm.com>
+Subject: Memory corruption with CONFIG_SWIOTLB_DYNAMIC=y
+From:   Niklas Schnelle <schnelle@linux.ibm.com>
+To:     Christoph Hellwig <hch@lst.de>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Petr Tesarik <petr.tesarik1@huawei-partners.com>,
+        Ross Lagerwall <ross.lagerwall@citrix.com>
+Cc:     linux-pci <linux-pci@vger.kernel.org>,
+        linux-kernel@vger.kernel.org, iommu@lists.linux.dev,
+        Matthew Rosato <mjrosato@linux.ibm.com>,
+        Halil Pasic <pasic@linux.ibm.com>
+Date:   Fri, 03 Nov 2023 16:13:03 +0100
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: PDrjGHDB-1y7uLi7HrHzWA5y2VJSOn9l
+X-Proofpoint-GUID: jZm5FHjZrqrJ7-_fuauJStM2EFLpdVLM
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [Patch 1/2] KVM: x86/pmu: Add Intel CPUID-hinted TopDown slots
- event
-To:     Jim Mattson <jmattson@google.com>,
-        "Mi, Dapeng" <dapeng1.mi@linux.intel.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Zhenyu Wang <zhenyuw@linux.intel.com>,
-        Zhang Xiong <xiong.y.zhang@intel.com>,
-        Mingwei Zhang <mizhang@google.com>,
-        Like Xu <like.xu.linux@gmail.com>,
-        Dapeng Mi <dapeng1.mi@intel.com>, Like Xu <likexu@tencent.com>
-References: <20231031090613.2872700-1-dapeng1.mi@linux.intel.com>
- <20231031090613.2872700-2-dapeng1.mi@linux.intel.com>
- <CALMp9eR_BFdNNTXhSpbuH66jXcRLVB8VvD8V+kY245NbusN2+g@mail.gmail.com>
- <c3f0e4ac-1790-40c1-a09e-209a09e3d230@linux.intel.com>
- <CALMp9eTDAiJ=Kuh7KkwdAY8x1BL2ZjdgFiPFRHXSSVCpcXp9rw@mail.gmail.com>
- <baa64cf4-11de-4581-89b6-3a86448e3a6e@linux.intel.com>
- <a14147e7-0b35-4fba-b785-ef568474c69b@linux.intel.com>
- <85706bd7-7df0-4d4b-932c-d807ddb14f9e@linux.intel.com>
- <CALMp9eS3NdTUnRrYPB+mMoGKj5NnsYXNUfUJX8Gv=wWCN4dkoQ@mail.gmail.com>
-Content-Language: en-US
-From:   "Liang, Kan" <kan.liang@linux.intel.com>
-In-Reply-To: <CALMp9eS3NdTUnRrYPB+mMoGKj5NnsYXNUfUJX8Gv=wWCN4dkoQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-03_14,2023-11-02_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxscore=0
+ mlxlogscore=999 spamscore=0 impostorscore=0 suspectscore=0
+ priorityscore=1501 malwarescore=0 lowpriorityscore=0 clxscore=1011
+ adultscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2310240000 definitions=main-2311030128
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Swiotlb Maintainers,
 
+With s390 slated to use dma-iommu.c I was experimenting with
+CONFIG_SWIOTLB_DYNAMIC but was getting errors all over the place.
+Debugging this I've managed to narrow things down to what I believe is
+a memory corruption issue caused by overrunning the entire transient
+memory pool allocated by swiotlb. In my test this happens on the
+iommu_dma_map_page(), swiotlb_tbl_map_single() path when handling
+untrusted PCI devices.
 
-On 2023-11-02 1:45 p.m., Jim Mattson wrote:
-> On Wed, Nov 1, 2023 at 7:07 PM Mi, Dapeng <dapeng1.mi@linux.intel.com> wrote:
->>
->>
->> On 11/1/2023 9:33 PM, Liang, Kan wrote:
->>>
->>> On 2023-10-31 11:31 p.m., Mi, Dapeng wrote:
->>>> On 11/1/2023 11:04 AM, Jim Mattson wrote:
->>>>> On Tue, Oct 31, 2023 at 6:59 PM Mi, Dapeng
->>>>> <dapeng1.mi@linux.intel.com> wrote:
->>>>>> On 11/1/2023 2:22 AM, Jim Mattson wrote:
->>>>>>> On Tue, Oct 31, 2023 at 1:58 AM Dapeng Mi
->>>>>>> <dapeng1.mi@linux.intel.com> wrote:
->>>>>>>> This patch adds support for the architectural topdown slots event
->>>>>>>> which
->>>>>>>> is hinted by CPUID.0AH.EBX.
->>>>>>> Can't a guest already program an event selector to count event select
->>>>>>> 0xa4, unit mask 1, unless the event is prohibited by
->>>>>>> KVM_SET_PMU_EVENT_FILTER?
->>>>>> Actually defining this new slots arch event is to do the sanity check
->>>>>> for supported arch-events which is enumerated by CPUID.0AH.EBX.
->>>>>> Currently vPMU would check if the arch event from guest is supported by
->>>>>> KVM. If not, it would be rejected just like intel_hw_event_available()
->>>>>> shows.
->>>>>>
->>>>>> If we don't add the slots event in the intel_arch_events[] array, guest
->>>>>> may program the slots event and pass the sanity check of KVM on a
->>>>>> platform which actually doesn't support slots event and program the
->>>>>> event on a real GP counter and got an invalid count. This is not
->>>>>> correct.
->>>>> On physical hardware, it is possible to program a GP counter with the
->>>>> event selector and unit mask of the slots event whether or not the
->>>>> platform supports it. Isn't KVM wrong to disallow something that a
->>>>> physical CPU allows?
->>>>
->>>> Yeah, I agree. But I'm not sure if this is a flaw on PMU driver. If an
->>>> event is not supported by the hardware,  we can't predict the PMU's
->>>> behavior and a meaningless count may be returned and this could mislead
->>>> the user.
->>> The user can program any events on the GP counter. The perf doesn't
->>> limit it. For the unsupported event, 0 should be returned. Please keep
->>> in mind, the event list keeps updating. If the kernel checks for each
->>> event, it could be a disaster. I don't think it's a flaw.
->>
->>
->> Thanks Kan, it would be ok as long as 0 is always returned for
->> unsupported events. IMO, it's a nice to have feature that KVM does this
->> sanity check for supported arch events, it won't break anything.
-> 
-> The hardware PMU most assuredly does not return 0 for unsupported events.
->
-> For example, if I use host perf to sample event selector 0xa4 unit
-> mask 1 on a Broadwell host (406f1), I get...
+I've seen this happen only for transient pools when:
+*  allocation size >=3DPAGE_SIZE and,
+*  the original address of the mapping is not page aligned.=20
 
-I think we have different understanding about the meaning of the
-"unsupported". There is no enumeration of the Architectural Topdown
-Slots, which only means the Topdown Slots/01a4 is not an architectural
-event on the platform. It doesn't mean that the event encoding is
-unsupported. It could be used by another event, especially on the
-previous platform.
+The overrun can be seen clearly by adding a simple "tlb_addr +
+alloc_size > pool->end' overrun check to swiotlb_tbl_map_single() and
+forcing PCI test devices to be untrusted. With that in place while an
+NVMe fio work load runs fine TCP/IP tests on a Mellanox ConnectX-4 VF
+reliably trigger the overrun check and with a debug print produce
+output like the following:
 
-Except for the architectural events, the event encoding of model
-specific event is not guaranteed to be the same among different
-generations. On BDW, the 01a4 is a model specific event with other
-meanings. That's why you can observe some values.
+software IO TLB:
+	transient:1
+	index:1
+	dma_get_min_align_mask(dev):0
+	orig_addr:ac0caebe
+	tlb_addr=3Da4d0f800
+	start:a4d0f000
+	end:a4d10000
+	pool_size:4096
+	alloc_size:4096
+	offset:0
 
-Please make sure to only test the event on an enumerated platform.
+The complete code used for this test is available on my
+git.kernel.org[0] repository but it's bascially v6.6 + iommu/next (for
+s390 DMA API) + 2 trivial debug commits.
+
+For further analysis I've worked closely with Halil Pasic.
+
+The reason why we think this is happening seems twofold. Under a
+certain set of circumstances in the function swiotlb_find_slots():
+1) the allocated transient pool can not fit the required bounce buffer,
+and
+2) the invocation of swiotlb_pool_find_slots() finds "a suitable
+slot" even though it should fail.
+
+The reason for 2), i.e. swiotlb_pool_find_slots() thinking there is a
+suitable bounce buffer in the pool is that for transient pools pool-
+>slots[i].list end up nonsensical, because swiotlb_init_io_tlb_pool(),
+among other places in swiotlb, assumes that the nslabs of the pool is a
+multiple of IO_TLB_SEGSIZE
+
+The reason for 1) is a bit more convoluted and not entirely understood
+by us. We are certain though that the function swiotlb_find_slots()
+allocates a pool with nr_slots(alloc_size), where this alloc_size is
+the alloc_size from swiotlb_tbl_map_single() + swiotlb_align_offset(),
+but for alignment reasons some slots may get "skipped over" in
+swiotlb_area_find_slots() causing the picked slots to overrun the
+allocation.
+
+Not sure how to properly fix this as the different alignment
+requirements get pretty complex quickly. So would appreciate your
+input.
 
 Thanks,
-Kan
-> 
-> # perf stat -e r01a4 sleep 10
-> 
->  Performance counter stats for 'sleep 10':
-> 
->            386,964      r01a4
-> 
->       10.000907211 seconds time elapsed
-> 
-> Broadwell does not advertise support for architectural event 7 in
-> CPUID.0AH:EBX, so KVM will refuse to measure this event inside a
-> guest. That seems broken to me.
-> 
->>
->>>
->>> Thanks,
->>> Kan
->>>> Add Kan to confirm this.
->>>>
->>>> Hi Kan,
->>>>
->>>> Have you any comments on this? Thanks.
->>>>
->>>>
->>>>>>> AFAICT, this change just enables event filtering based on
->>>>>>> CPUID.0AH:EBX[bit 7] (though it's not clear to me why two independent
->>>>>>> mechanisms are necessary for event filtering).
->>>>>> IMO, these are two different things. this change is just to enable the
->>>>>> supported arch events check for slot events, the event filtering is
->>>>>> another thing.
->>>>> How is clearing CPUID.0AH:EBX[bit 7] any different from putting {event
->>>>> select 0xa4, unit mask 1} in a deny list with the PMU event filter?
->>>> I think there is no difference in the conclusion but with two different
->>>> methods.
->>>>
->>>>
+Niklas
+
+[0] bounce-min branch of my git.kernel.org repository at
+    https://git.kernel.org/pub/scm/linux/kernel/git/niks/linux.git
+
+
