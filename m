@@ -2,60 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C0A587E0A8A
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 21:56:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E55E27E09C6
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 21:03:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230337AbjKCU4A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 16:56:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54376 "EHLO
+        id S230190AbjKCUDf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 16:03:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378183AbjKCTxT (ORCPT
+        with ESMTP id S229527AbjKCUDd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 15:53:19 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D0551BC;
-        Fri,  3 Nov 2023 12:53:17 -0700 (PDT)
+        Fri, 3 Nov 2023 16:03:33 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BB1AD53;
+        Fri,  3 Nov 2023 13:03:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699041197; x=1730577197;
+  t=1699041809; x=1730577809;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=M2LYr3uiwRiw2hfh8eZTwB7i1h0z6rfdmlPTebmD3d0=;
-  b=j7XwkUNJ9/9TsLf520/+Oq7tI0HVVk7sYI7K0eruNZwAHHTp5APL7stF
-   ZVXqMFPr5J9hxpl56MZqOTuz7X8rVz02qvb7q+JwGhbazGD8vjv9j0Tgm
-   BZkbTz6vSK1Q5goHNQWEjetBUCNSR147I8aNDCVlDiOsFgUYGSOZhDPTD
-   M3CO2M/HdpYagw0KrFQxAF+UPwueJuYHdDSWEzmEqTPyTYYbQ8GrO38Iq
-   bBPMNXOwGsfLszNJ195wjaFfGZqCewALS3ov//dt99aBXUDXqW2AJdZqT
-   cXizvIKbCfllAC9U5mKGTWNUVwu1Bc1FhAAwkGk8g0rCK6aW+JzUdtaEp
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10883"; a="1962964"
+  bh=IHEKAZwFkfBPaWXKiUvpj74KxQIC1qIeU1pZ07Sbhuk=;
+  b=ka5Ntg+C7w4STO2qIpzuQFROo4DFF88qtg3GH56S9UtrlFwmoQPoxKLQ
+   pzMD6vgeXBG7cbFntiBgtu2tOxS08LdLaEYXcu+G4NI0wUZdFmUdpCI44
+   MfkgsoqTGXCGEnyUVEVdUbzRj3chiMb3Gi4O/MaSIcuXIpCj2a65gMOH9
+   5s5NKgCxtkjnKzWdDGszJFlk+KHMhm85ftX0B6it+/hoIKYuuiDG4dq9s
+   YRr0pcAMa6/F3+FRDassWoPl2S8jbK/MJ4XbrdD84DABk5dBTVfjz9G4z
+   iRV6qlAkQg5X8tKfo4hUZWvuhNaiVUJggtHhtJi/fHXzJyAqmixmvFwWW
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10883"; a="420130012"
 X-IronPort-AV: E=Sophos;i="6.03,275,1694761200"; 
-   d="scan'208";a="1962964"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2023 12:53:17 -0700
+   d="scan'208";a="420130012"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2023 13:03:29 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10883"; a="761719316"
+X-IronPort-AV: E=McAfee;i="6600,9927,10883"; a="905446864"
 X-IronPort-AV: E=Sophos;i="6.03,275,1694761200"; 
-   d="scan'208";a="761719316"
+   d="scan'208";a="905446864"
 Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga002.jf.intel.com with ESMTP; 03 Nov 2023 12:53:14 -0700
+  by fmsmga001.fm.intel.com with ESMTP; 03 Nov 2023 13:03:27 -0700
 Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id D66EC5E8; Fri,  3 Nov 2023 21:53:13 +0200 (EET)
+        id E5BE05E5; Fri,  3 Nov 2023 21:53:13 +0200 (EET)
 From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Linus Walleij <linus.walleij@linaro.org>,
         linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc:     Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>
-Subject: [PATCH v1 3/4] leds: trigger: gpio: Use sysfs_emit() to instead of s*printf()
-Date:   Fri,  3 Nov 2023 21:53:09 +0200
-Message-Id: <20231103195310.948327-3-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 4/4] leds: trigger: gpio: Convert to DEVICE_ATTR_RW()
+Date:   Fri,  3 Nov 2023 21:53:10 +0200
+Message-Id: <20231103195310.948327-4-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
 In-Reply-To: <20231103195310.948327-1-andriy.shevchenko@linux.intel.com>
 References: <20231103195310.948327-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -63,28 +64,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Follow the advice of the Documentation/filesystems/sysfs.rst and show()
-should only use sysfs_emit() or sysfs_emit_at() when formatting the
-value to be returned to user space.
+Instead of custom wrapper, use DEVICE_ATTR_RW() directly.
 
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- drivers/leds/trigger/ledtrig-gpio.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/leds/trigger/ledtrig-gpio.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/leds/trigger/ledtrig-gpio.c b/drivers/leds/trigger/ledtrig-gpio.c
-index 8a30f9228186..8824be19881f 100644
+index 8824be19881f..7f6a2352b0ac 100644
 --- a/drivers/leds/trigger/ledtrig-gpio.c
 +++ b/drivers/leds/trigger/ledtrig-gpio.c
-@@ -46,7 +46,7 @@ static ssize_t gpio_trig_brightness_show(struct device *dev,
- {
- 	struct gpio_trig_data *gpio_data = led_trigger_get_drvdata(dev);
- 
--	return sprintf(buf, "%u\n", gpio_data->desired_brightness);
-+	return sysfs_emit(buf, "%u\n", gpio_data->desired_brightness);
+@@ -41,7 +41,7 @@ static irqreturn_t gpio_trig_irq(int irq, void *_led)
+ 	return IRQ_HANDLED;
  }
  
- static ssize_t gpio_trig_brightness_store(struct device *dev,
+-static ssize_t gpio_trig_brightness_show(struct device *dev,
++static ssize_t desired_brightness_show(struct device *dev,
+ 		struct device_attribute *attr, char *buf)
+ {
+ 	struct gpio_trig_data *gpio_data = led_trigger_get_drvdata(dev);
+@@ -49,7 +49,7 @@ static ssize_t gpio_trig_brightness_show(struct device *dev,
+ 	return sysfs_emit(buf, "%u\n", gpio_data->desired_brightness);
+ }
+ 
+-static ssize_t gpio_trig_brightness_store(struct device *dev,
++static ssize_t desired_brightness_store(struct device *dev,
+ 		struct device_attribute *attr, const char *buf, size_t n)
+ {
+ 	struct gpio_trig_data *gpio_data = led_trigger_get_drvdata(dev);
+@@ -64,8 +64,7 @@ static ssize_t gpio_trig_brightness_store(struct device *dev,
+ 
+ 	return n;
+ }
+-static DEVICE_ATTR(desired_brightness, 0644, gpio_trig_brightness_show,
+-		gpio_trig_brightness_store);
++static DEVICE_ATTR_RW(desired_brightness);
+ 
+ static struct attribute *gpio_trig_attrs[] = {
+ 	&dev_attr_desired_brightness.attr,
 -- 
 2.40.0.1.gaa8946217a0b
 
