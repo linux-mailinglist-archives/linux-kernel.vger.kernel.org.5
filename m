@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 768E67DFF16
+	by mail.lfdr.de (Postfix) with ESMTP id 1D9B57DFF15
 	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 07:22:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230464AbjKCGPv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 02:15:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35400 "EHLO
+        id S231258AbjKCGP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 02:15:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230307AbjKCGPs (ORCPT
+        with ESMTP id S230314AbjKCGPs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 3 Nov 2023 02:15:48 -0400
 Received: from codeconstruct.com.au (pi.codeconstruct.com.au [203.29.241.158])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D91D51B2
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E45B41B4
         for <linux-kernel@vger.kernel.org>; Thu,  2 Nov 2023 23:15:41 -0700 (PDT)
 Received: from localhost.localdomain (ppp14-2-79-67.adl-apt-pir-bras31.tpg.internode.on.net [14.2.79.67])
-        by mail.codeconstruct.com.au (Postfix) with ESMTPSA id E281B201BF;
-        Fri,  3 Nov 2023 14:15:38 +0800 (AWST)
+        by mail.codeconstruct.com.au (Postfix) with ESMTPSA id A4F7D201C3;
+        Fri,  3 Nov 2023 14:15:39 +0800 (AWST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=codeconstruct.com.au; s=2022a; t=1698992139;
-        bh=UrTbHIBuDGRrYkDPZsK7lRpnYMK3E56TRQ6kVp/EyZE=;
+        d=codeconstruct.com.au; s=2022a; t=1698992140;
+        bh=hYHyullC4OIb5ueKBUtHARoDjsv8sC0z5UpD23psbTg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=JMtdd0T0P2ikWmfihcJb7TZYWjGjos/oKFYsVKErP6oYr9ryUwZBj1FmAHMZvOg5K
-         /lLCvJwADNnbA6Qvi7Ml4lSiHyJqIHKVL8GjPW6qBdkmSyz7ws6OODms3Bugi9c9bd
-         EvUjv8nvKmBnxP8z6Jg7vqcdPkVsSUTF2di+420m3rCNJX4ycft1f7Yy0xqwDRfrII
-         EY//3q5nRw+uu3Hi36DTDKhmGKQ9gdwsA2jef7pJy159m02X8/tE+4W4C7cDcdrvb7
-         gcrVKBHGx4HYZULDZfTGT1BzFc3h5NKGyyvPwUm8v2o3ykpdtz2fehzJ1sKQ7Ri9rb
-         a/G36x83DzgPA==
+        b=lKLQuGemKmw5voq2rUsfzBHn00UX+Y/HnEtbLYNqvN9CseaRxwuOjIHs7hHv9nU17
+         1E7Egh94J5i3ygDC9uJZktBIr99HafQqZVBDpCnlta1lT6Pvp8sFgZSnkr2aFDP8za
+         zc7oTfZAGpYs9YOf6/q+NZPBnGwPPKhrBVPn+5ULR+8x0FHqFxWxAgD24g5SaHzGW3
+         zRjkqz+W+5VxcdrECFjyv/Ds8UsXttu2lfr3OKqezPbOCEV/rWM/I/3QPG9SE3b7Ku
+         tW3yISYZM6PmsEguqM8j2YhbfC2qvWaZAumTj9iY2XLk1MaPNvyZeMq2Ydf3+A7WuR
+         yyZQ9zdtGTn+Q==
 From:   Andrew Jeffery <andrew@codeconstruct.com.au>
 To:     minyard@acm.org, openipmi-developer@lists.sourceforge.net
 Cc:     Andrew Jeffery <andrew@codeconstruct.com.au>,
         linux-kernel@vger.kernel.org, Jonathan.Cameron@Huawei.com,
         aladyshev22@gmail.com, jk@codeconstruct.com.au
-Subject: [PATCH 02/10] ipmi: kcs_bmc: Include spinlock.h
-Date:   Fri,  3 Nov 2023 16:45:14 +1030
-Message-Id: <20231103061522.1268637-3-andrew@codeconstruct.com.au>
+Subject: [PATCH 03/10] ipmi: kcs_bmc: Make kcs_bmc_update_event_mask() static
+Date:   Fri,  3 Nov 2023 16:45:15 +1030
+Message-Id: <20231103061522.1268637-4-andrew@codeconstruct.com.au>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231103061522.1268637-1-andrew@codeconstruct.com.au>
 References: <20231103061522.1268637-1-andrew@codeconstruct.com.au>
@@ -51,27 +51,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-struct kcs_bmc_device defines a spinlock member but the header in which
-it is defined failed to include the spinlock header. In the spirit of
-include-what-you-use, do what's necessary.
+There were no users outside the subsystem core, so let's not expose it.
 
 Signed-off-by: Andrew Jeffery <andrew@codeconstruct.com.au>
 ---
- drivers/char/ipmi/kcs_bmc.h | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/char/ipmi/kcs_bmc.c        | 11 +++++------
+ drivers/char/ipmi/kcs_bmc_client.h |  2 --
+ 2 files changed, 5 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/char/ipmi/kcs_bmc.h b/drivers/char/ipmi/kcs_bmc.h
-index fa408b802c79..880d835fb90c 100644
---- a/drivers/char/ipmi/kcs_bmc.h
-+++ b/drivers/char/ipmi/kcs_bmc.h
-@@ -7,6 +7,7 @@
- #define __KCS_BMC_H__
+diff --git a/drivers/char/ipmi/kcs_bmc.c b/drivers/char/ipmi/kcs_bmc.c
+index a429d9f8a7bf..1a827db8a465 100644
+--- a/drivers/char/ipmi/kcs_bmc.c
++++ b/drivers/char/ipmi/kcs_bmc.c
+@@ -68,6 +68,11 @@ irqreturn_t kcs_bmc_handle_event(struct kcs_bmc_device *kcs_bmc)
+ }
+ EXPORT_SYMBOL(kcs_bmc_handle_event);
  
- #include <linux/list.h>
-+#include <linux/spinlock.h>
++static void kcs_bmc_update_event_mask(struct kcs_bmc_device *kcs_bmc, u8 mask, u8 events)
++{
++	kcs_bmc->ops->irq_mask_update(kcs_bmc, mask, events);
++}
++
+ int kcs_bmc_enable_device(struct kcs_bmc_device *kcs_bmc, struct kcs_bmc_client *client)
+ {
+ 	int rc;
+@@ -178,12 +183,6 @@ void kcs_bmc_unregister_driver(struct kcs_bmc_driver *drv)
+ }
+ EXPORT_SYMBOL(kcs_bmc_unregister_driver);
  
- #define KCS_BMC_EVENT_TYPE_OBE	BIT(0)
- #define KCS_BMC_EVENT_TYPE_IBF	BIT(1)
+-void kcs_bmc_update_event_mask(struct kcs_bmc_device *kcs_bmc, u8 mask, u8 events)
+-{
+-	kcs_bmc->ops->irq_mask_update(kcs_bmc, mask, events);
+-}
+-EXPORT_SYMBOL(kcs_bmc_update_event_mask);
+-
+ MODULE_LICENSE("GPL v2");
+ MODULE_AUTHOR("Haiyue Wang <haiyue.wang@linux.intel.com>");
+ MODULE_AUTHOR("Andrew Jeffery <andrew@aj.id.au>");
+diff --git a/drivers/char/ipmi/kcs_bmc_client.h b/drivers/char/ipmi/kcs_bmc_client.h
+index 6fdcde0a7169..814ad8e052ef 100644
+--- a/drivers/char/ipmi/kcs_bmc_client.h
++++ b/drivers/char/ipmi/kcs_bmc_client.h
+@@ -35,8 +35,6 @@ void kcs_bmc_unregister_driver(struct kcs_bmc_driver *drv);
+ int kcs_bmc_enable_device(struct kcs_bmc_device *kcs_bmc, struct kcs_bmc_client *client);
+ void kcs_bmc_disable_device(struct kcs_bmc_device *kcs_bmc, struct kcs_bmc_client *client);
+ 
+-void kcs_bmc_update_event_mask(struct kcs_bmc_device *kcs_bmc, u8 mask, u8 events);
+-
+ u8 kcs_bmc_read_data(struct kcs_bmc_device *kcs_bmc);
+ void kcs_bmc_write_data(struct kcs_bmc_device *kcs_bmc, u8 data);
+ u8 kcs_bmc_read_status(struct kcs_bmc_device *kcs_bmc);
 -- 
 2.39.2
 
