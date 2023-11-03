@@ -2,140 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AA6A7E025B
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 12:50:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1A687E025E
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 12:52:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230435AbjKCLua (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 07:50:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34968 "EHLO
+        id S229496AbjKCLwL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 07:52:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbjKCLuZ (ORCPT
+        with ESMTP id S229379AbjKCLwK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 07:50:25 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E04D1BC
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 04:50:19 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-53dd3f169d8so3182844a12.3
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Nov 2023 04:50:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699012218; x=1699617018; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=T184NhzJ3PQVeKZ79wyB4FMRZP18kdYnQHUIPVy3gTc=;
-        b=acZnqZHcB3OQcB9FD9pVVXN6ThoJxy4livzY8Zuezpize4L1z4iABIL4U3TBxqiPGZ
-         6xu90zR15v+8TsXgY20tj4HoPvG6ypzevDKklaiLb3ovNeXilKucnpPt8aNebbcwXgnN
-         H1Izquke8pwFa1jBEHV1wUah0OIY9dkZQGWoe928iAJEzsYO7Nh5Tqhpwt19nCGlf+Pa
-         FCkRli9/wA8Yf5TKTnYDQ7YHrFHSVcBsFzmytpYQtpSVqFySBN2nx2LW4XThDMiUBM4W
-         j+f3oagHKh+gSKaONFfb3qm++Q7Pwrclc1V1O31mPSW7ULXVTdiTrfo6d1NQh5/6bP/A
-         qmPA==
+        Fri, 3 Nov 2023 07:52:10 -0400
+Received: from mail-ot1-f71.google.com (mail-ot1-f71.google.com [209.85.210.71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 471951A8
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 04:52:04 -0700 (PDT)
+Received: by mail-ot1-f71.google.com with SMTP id 46e09a7af769-6ce322bbb63so2122903a34.0
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Nov 2023 04:52:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699012218; x=1699617018;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=T184NhzJ3PQVeKZ79wyB4FMRZP18kdYnQHUIPVy3gTc=;
-        b=jV2fbW0mrn2Bd1ZbQ4abs0pqYT3WlEOuI95oQQMXnRFvPNCV2A4W8fQ/C/pc9wqEUH
-         6b9UN8c09Bfv15fD4vT+1x/RINVc0GgifRSdRWgC3CfI4NJRuk6E3ENaQOW0s2KwONS6
-         ZVxl930ox1tu/1offAYOaO9cZsNHZjW65RUzCU9bsIDa2MhZ4j9Fmliu316dHfgbqKOQ
-         fqvTtcSdEctNLZcHTO3Na3nAa+m9Midxe10eviigR2Dhl8ZW/ep4HsYjQAqOxDZuqBzJ
-         LNHhNWmjQ+ggmydNXBfAsiTMI6yxP3/XHeGwHYrKkQYNGOfkTFEICaRihGrTO4fnJ9aw
-         v6NA==
-X-Gm-Message-State: AOJu0YxZU566p288bh/TyMWokQGyDm3pD7cGeqLnR9PNyunUUN9FSFBy
-        L5DacOS+v5g8Ruz6bPPvzwr5TA==
-X-Google-Smtp-Source: AGHT+IE7CtuAcX6Pg9hXWdBjZ0ZMwEzBobA91HbtqsJ8Rtq8Td8bDExGKH1DisXd32tmg+uPIaFMzA==
-X-Received: by 2002:aa7:d60a:0:b0:53e:6239:a04a with SMTP id c10-20020aa7d60a000000b0053e6239a04amr18153325edr.24.1699012217917;
-        Fri, 03 Nov 2023 04:50:17 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.218.126])
-        by smtp.gmail.com with ESMTPSA id l6-20020a50d6c6000000b00540f4715289sm887760edj.61.2023.11.03.04.50.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 03 Nov 2023 04:50:17 -0700 (PDT)
-Message-ID: <f6835acb-bcb9-4dd9-a039-1de11ca7c1d9@linaro.org>
-Date:   Fri, 3 Nov 2023 12:50:15 +0100
+        d=1e100.net; s=20230601; t=1699012323; x=1699617123;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=JzRVIsWAKsuZhEWu14wzGeGNAiK+7dXMuzIMtGAIt10=;
+        b=b6CYXauElVHXJ/k5MvB3X+UaOpLSEyp6xPMR8piuUxCcIc8fF2ivrJ2b1bAYX3G5OP
+         /Al2HnQg/5kh3AQeUCFKbriaExaPGl4l5P/s/fF1v0iMuAnSRQdB/3CiiiJUUhCovfzY
+         vvfn7BsbMqJ/oYfltuJt2FOJExI7WHkisCIoSbbVSRlTO+wCGBo1BNKVn5hIK+u49AbQ
+         nElVaP87HzZ2KrnpBFbsx6CtnNazIACFrV+5IOvqevBMp2HsGsdAM+c5P2tpWm+CScxR
+         yQxyJqDmVOZjp5BuRDhUZ1qj+KSLvJeOw8LBIXT36ArCmAp0XhWqRrq4o6hM8OU18znz
+         PKjQ==
+X-Gm-Message-State: AOJu0Yy9kr68G1lx9fLB0tS/hX0xq/XCffC3kJAs0Ocv0gJRDq37BZ3t
+        4OluRXwxhX/GZRKG3TwfVuCwM9dEcyiInfc71FqWLba2pJ6V
+X-Google-Smtp-Source: AGHT+IHdoTRljrJttUOnk6CzDgI+dlNh605W7FUQEb4OZmHunKtMYW2xMxvudu8iJTrsq+HbiAnST8eajmzkFKLLzVeIE8idexay
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/2] dt-bindings: arm: Add compatible for SKOV i.MX8MP
- RevB board
-To:     Oleksij Rempel <o.rempel@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        =?UTF-8?Q?S=C3=B8ren_Andersen?= <san@skov.dk>,
-        Sam Ravnborg <sam@ravnborg.org>
-Cc:     kernel@pengutronix.de, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Fabio Estevam <festevam@gmail.com>
-References: <20231103105305.2459143-1-o.rempel@pengutronix.de>
-Content-Language: en-US
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231103105305.2459143-1-o.rempel@pengutronix.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Received: by 2002:a9d:4c15:0:b0:6ce:262b:630a with SMTP id
+ l21-20020a9d4c15000000b006ce262b630amr6119416otf.6.1699012323592; Fri, 03 Nov
+ 2023 04:52:03 -0700 (PDT)
+Date:   Fri, 03 Nov 2023 04:52:03 -0700
+In-Reply-To: <tencent_E5C64B4991EEF2AEC68C80A7DF86E092CF06@qq.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000004515d06093e225d@google.com>
+Subject: Re: [syzbot] [mm?] general protection fault in __hugetlb_zap_begin
+From:   syzbot <syzbot+ec9435c038e451be48ff@syzkaller.appspotmail.com>
+To:     eadavis@qq.com, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/11/2023 11:53, Oleksij Rempel wrote:
-> Add DT compatible string for a SKOV i.MX8MP RevB climate controller board.
-> 
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> ---
+Hello,
 
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+general protection fault in __hugetlb_zap_begin
 
-Best regards,
-Krzysztof
+general protection fault, probably for non-canonical address 0xdffffc000000001d: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x00000000000000e8-0x00000000000000ef]
+CPU: 1 PID: 5726 Comm: syz-executor.3 Not tainted 6.6.0-rc6-next-20231018-syzkaller-dirty #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/09/2023
+RIP: 0010:__lock_acquire+0x10d/0x7f70 kernel/locking/lockdep.c:5004
+Code: 85 75 18 00 00 83 3d fd 68 4d 0d 00 48 89 9c 24 10 01 00 00 0f 84 f8 0f 00 00 83 3d 0c 61 d2 0b 00 74 34 48 89 d0 48 c1 e8 03 <42> 80 3c 00 00 74 1a 48 89 d7 e8 b4 76 7d 00 48 8b 94 24 80 00 00
+RSP: 0018:ffffc90005a37440 EFLAGS: 00010006
+RAX: 000000000000001d RBX: 1ffff92000b46eac RCX: 0000000000000000
+RDX: 00000000000000e8 RSI: 0000000000000000 RDI: 00000000000000e8
+RBP: ffffc90005a37708 R08: dffffc0000000000 R09: 0000000000000000
+R10: dffffc0000000000 R11: fffffbfff1d74f1e R12: 0000000000000000
+R13: 0000000000000001 R14: 0000000000000000 R15: ffff888028368000
+FS:  0000000000000000(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007ffe062f6d48 CR3: 00000000282bd000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ lock_acquire+0x1e3/0x520 kernel/locking/lockdep.c:5753
+ down_write+0x3a/0x50 kernel/locking/rwsem.c:1579
+ __hugetlb_zap_begin+0x2e0/0x380 mm/hugetlb.c:5707
+ hugetlb_zap_begin include/linux/hugetlb.h:258 [inline]
+ unmap_vmas+0x364/0x5c0 mm/memory.c:1742
+ exit_mmap+0x297/0xc50 mm/mmap.c:3308
+ __mmput+0x115/0x3c0 kernel/fork.c:1349
+ exit_mm+0x21f/0x300 kernel/exit.c:567
+ do_exit+0x9b7/0x2750 kernel/exit.c:858
+ __do_sys_exit kernel/exit.c:988 [inline]
+ __se_sys_exit kernel/exit.c:986 [inline]
+ __x64_sys_exit+0x40/0x40 kernel/exit.c:986
+ do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+ do_syscall_64+0x44/0x110 arch/x86/entry/common.c:82
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+RIP: 0033:0x7f67fe27cae9
+Code: Unable to access opcode bytes at 0x7f67fe27cabf.
+RSP: 002b:00007f67fef73078 EFLAGS: 00000246
+ ORIG_RAX: 000000000000003c
+RAX: ffffffffffffffda RBX: 00007f67fe39bf80 RCX: 00007f67fe27cae9
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 00007f67fe2c847a R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 000000000000000b R14: 00007f67fe39bf80 R15: 00007ffdf414ed58
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:__lock_acquire+0x10d/0x7f70 kernel/locking/lockdep.c:5004
+Code: 85 75 18 00 00 83 3d fd 68 4d 0d 00 48 89 9c 24 10 01 00 00 0f 84 f8 0f 00 00 83 3d 0c 61 d2 0b 00 74 34 48 89 d0 48 c1 e8 03 <42> 80 3c 00 00 74 1a 48 89 d7 e8 b4 76 7d 00 48 8b 94 24 80 00 00
+RSP: 0018:ffffc90005a37440 EFLAGS: 00010006
+
+RAX: 000000000000001d RBX: 1ffff92000b46eac RCX: 0000000000000000
+RDX: 00000000000000e8 RSI: 0000000000000000 RDI: 00000000000000e8
+RBP: ffffc90005a37708 R08: dffffc0000000000 R09: 0000000000000000
+R10: dffffc0000000000 R11: fffffbfff1d74f1e R12: 0000000000000000
+R13: 0000000000000001 R14: 0000000000000000 R15: ffff888028368000
+FS:  0000000000000000(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007ffe062f6d48 CR3: 00000000282bd000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+----------------
+Code disassembly (best guess):
+   0:	85 75 18             	test   %esi,0x18(%rbp)
+   3:	00 00                	add    %al,(%rax)
+   5:	83 3d fd 68 4d 0d 00 	cmpl   $0x0,0xd4d68fd(%rip)        # 0xd4d6909
+   c:	48 89 9c 24 10 01 00 	mov    %rbx,0x110(%rsp)
+  13:	00
+  14:	0f 84 f8 0f 00 00    	je     0x1012
+  1a:	83 3d 0c 61 d2 0b 00 	cmpl   $0x0,0xbd2610c(%rip)        # 0xbd2612d
+  21:	74 34                	je     0x57
+  23:	48 89 d0             	mov    %rdx,%rax
+  26:	48 c1 e8 03          	shr    $0x3,%rax
+* 2a:	42 80 3c 00 00       	cmpb   $0x0,(%rax,%r8,1) <-- trapping instruction
+  2f:	74 1a                	je     0x4b
+  31:	48 89 d7             	mov    %rdx,%rdi
+  34:	e8 b4 76 7d 00       	call   0x7d76ed
+  39:	48                   	rex.W
+  3a:	8b                   	.byte 0x8b
+  3b:	94                   	xchg   %eax,%esp
+  3c:	24 80                	and    $0x80,%al
+
+
+Tested on:
+
+commit:         2dac7569 Add linux-next specific files for 20231018
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+console output: https://syzkaller.appspot.com/x/log.txt?x=14bc60d7680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=29e8e23689e6210c
+dashboard link: https://syzkaller.appspot.com/bug?extid=ec9435c038e451be48ff
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=1088a55f680000
 
