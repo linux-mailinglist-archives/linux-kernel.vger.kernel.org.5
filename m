@@ -2,73 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A8C67E02A8
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 13:15:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DCCCA7E02AB
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 13:16:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346568AbjKCMPP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 08:15:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39848 "EHLO
+        id S1346709AbjKCMQZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 08:16:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233045AbjKCMPN (ORCPT
+        with ESMTP id S233093AbjKCMQX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 08:15:13 -0400
-Received: from mail-oo1-f70.google.com (mail-oo1-f70.google.com [209.85.161.70])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D67131A8
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 05:15:06 -0700 (PDT)
-Received: by mail-oo1-f70.google.com with SMTP id 006d021491bc7-581e1d59302so2189216eaf.0
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Nov 2023 05:15:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699013706; x=1699618506;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=EhYgZ43ZK1aJfYZQ5tVJC7yEO9pHCRBYSEpEHIZDHWo=;
-        b=CuTuiR8l85cUHfKaeo3W18/IG53Ahiox4gzgu3Vag2RCZ7jV3f2adC/JCQeampIKha
-         VDMz2Fci25aTaCibU5ABto7eQMz36r+piV3rDZDivjSh6z1v9q9FEU0WihJOhON8kB4g
-         69FWnMIbFHXyI/3OGOYztAgYEBMVUNDM9ByKl8caXCrPL1bENRzGAd2c//E1aSkZC4sr
-         LSyr67QYo8uHAQax7/iLCTyTVKTT8p8LwRhPrOqgbTjS0GdWkuQn3lPs1fel9F5dh64C
-         cbUdXDXP6Q9YU1M1L2rO3vWEs/u4CitVxZaB04d9h7ufumrP4mDg8+yXPmyyl07E1siw
-         1UIA==
-X-Gm-Message-State: AOJu0YyvsF+3rD00/Qz9Qats6U4G22whXnmFYPteEwjwmc4hbczJaDFT
-        tQHg+16iqWKTGHRkrvPqb0l0Q2nCFZkcqo42XtMtFtB3hi8h
-X-Google-Smtp-Source: AGHT+IHKNTrjIuB93IOddVxxkl9EB8OFOwxS7xaGeM2Zkz3mVE9KY915DTkgTELT2eLde0vAfqRosXB+T0DcTGVv8zRP4bDdmNGy
+        Fri, 3 Nov 2023 08:16:23 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 328151B2;
+        Fri,  3 Nov 2023 05:16:17 -0700 (PDT)
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A3BUCid021142;
+        Fri, 3 Nov 2023 12:16:01 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=46A8X1eP2WUVzUclJZb6kwAOpw9cdJyQ7xhfMFXTtpI=;
+ b=WlPXciNuWt/dEEvTMVgyZPvf2OxUxldoYap/oelGgWreQ8kzXwHv0Xskptdc882XjAEs
+ paNkCYLZSeul/UC/5+M/R2uZ/0ev26SObev1WR4o189sgjl6omUb0KduMKMnYgu4Bbx7
+ nPlul6d8RHHqvtXTwZiHeRj2h9iIOPNGpw86CJ8PZZFJWpR2G9+clCm+HIPLX13ANTYV
+ caNSazYxjCVvbh7naVNVWe4hoQ7fh7FD/LBeCCGQ5dYG69fvWmqUzA7aQaBYuOmtIyBf
+ dap1Jvxu78/Lx1aJK3torsodI7081OFd7iXnpgoVtGVkL7/dFA26YFt/nZ8zbA2otzN1 +A== 
+Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u4cw9tdcf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 03 Nov 2023 12:16:00 +0000
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+        by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3A3CFxDD022887
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 3 Nov 2023 12:15:59 GMT
+Received: from [10.216.26.1] (10.80.80.8) by nasanex01a.na.qualcomm.com
+ (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Fri, 3 Nov
+ 2023 05:15:53 -0700
+Message-ID: <e2830e29-e0ab-48d0-6aea-7959b9fccbbd@quicinc.com>
+Date:   Fri, 3 Nov 2023 17:45:41 +0530
 MIME-Version: 1.0
-X-Received: by 2002:a4a:ea4a:0:b0:57b:7849:1a4d with SMTP id
- j10-20020a4aea4a000000b0057b78491a4dmr8275172ooe.0.1699013706271; Fri, 03 Nov
- 2023 05:15:06 -0700 (PDT)
-Date:   Fri, 03 Nov 2023 05:15:06 -0700
-In-Reply-To: <20231103114509.1232-1-hdanton@sina.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000006e530806093e7487@google.com>
-Subject: Re: [syzbot] [iommu?] KASAN: slab-use-after-free Read in iommufd_vfio_ioas
-From:   syzbot <syzbot+d31adfb277377ef8fcba@syzkaller.appspotmail.com>
-To:     hdanton@sina.com, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.1
+Subject: Re: [RFC PATCH 4/5] spi: qpic: Add support for qpic spi nand driver
+Content-Language: en-US
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
+        <conor+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
+        <broonie@kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-mtd@lists.infradead.org>, <linux-spi@vger.kernel.org>,
+        <quic_srichara@quicinc.com>, <qpic_varada@quicinc.com>
+References: <20231031120307.1600689-1-quic_mdalam@quicinc.com>
+ <20231031120307.1600689-5-quic_mdalam@quicinc.com>
+ <691607ce-ed05-4fd8-9989-ebd58f2e1664@linaro.org>
+From:   Md Sadre Alam <quic_mdalam@quicinc.com>
+In-Reply-To: <691607ce-ed05-4fd8-9989-ebd58f2e1664@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: lbFkFDsIO1Sf6ur0ptLLS37NrVxENWDQ
+X-Proofpoint-ORIG-GUID: lbFkFDsIO1Sf6ur0ptLLS37NrVxENWDQ
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-03_12,2023-11-02_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=930 spamscore=0
+ mlxscore=0 malwarescore=0 adultscore=0 suspectscore=0 lowpriorityscore=0
+ bulkscore=0 phishscore=0 clxscore=1015 priorityscore=1501 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2310240000
+ definitions=main-2311030103
+X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-Reported-and-tested-by: syzbot+d31adfb277377ef8fcba@syzkaller.appspotmail.com
+On 10/31/2023 10:43 PM, Krzysztof Kozlowski wrote:
+> On 31/10/2023 13:03, Md Sadre Alam wrote:
+>> Add qpic spi nand driver support for qcom soc.
+> 
+> What is "qcom soc"? Did you mean Qualcomm and SoC?
 
-Tested on:
+Yes Qualcomm SoC
 
-commit:         8f6f76a6 Merge tag 'mm-nonmm-stable-2023-11-02-14-08' ..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-console output: https://syzkaller.appspot.com/x/log.txt?x=166db0eb680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=4c856b92a9ee7d89
-dashboard link: https://syzkaller.appspot.com/bug?extid=d31adfb277377ef8fcba
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=138b353d680000
+> 
+>>
+>> Signed-off-by: Md Sadre Alam <quic_mdalam@quicinc.com>
+>> Signed-off-by: Sricharan R <quic_srichara@quicinc.com>
+>> ---
+>>   drivers/spi/Kconfig          |   7 +
+>>   drivers/spi/Makefile         |   1 +
+>>   drivers/spi/spi-qpic-snand.c | 604 +++++++++++++++++++++++++++++++++++
+>>   3 files changed, 612 insertions(+)
+>>   create mode 100644 drivers/spi/spi-qpic-snand.c
+>>
+> 
+> ...
+> 
+>> +
+>> +static int qcom_snand_remove(struct platform_device *pdev)
+>> +{
+>> +	struct spi_controller *ctlr = platform_get_drvdata(pdev);
+>> +	spi_unregister_master(ctlr);
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static const struct qcom_nandc_props ipq9574_snandc_props = {
+>> +	.dev_cmd_reg_start = 0x7000,
+>> +	.is_bam = true,
+>> +	.qpic_v2 = true,
+>> +};
+>> +
+>> +static const struct of_device_id qcom_snandc_of_match[] = {
+>> +	{
+>> +		.compatible = "qcom,ipq9574-nand",
+> 
+> Please run scripts/checkpatch.pl and fix reported warnings. Some
+> warnings can be ignored, but the code here looks like it needs a fix.
+> Feel free to get in touch if the warning is not clear.
 
-Note: testing is done by a robot and is best-effort only.
+Ok
+> 
+> Best regards,
+> Krzysztof
+> 
