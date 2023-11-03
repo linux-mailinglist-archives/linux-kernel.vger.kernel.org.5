@@ -2,130 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 99BB27E0A70
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 21:43:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34D5D7E0A7E
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 21:48:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229605AbjKCUnU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 16:43:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52228 "EHLO
+        id S229879AbjKCUs2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 16:48:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbjKCUnS (ORCPT
+        with ESMTP id S229487AbjKCUs1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 16:43:18 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B11E5A2
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 13:42:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1699044145;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=pzoYxr3bqaj9J8o6w9KSItY5CaVEMiyYip8XBCOjU7A=;
-        b=iMlEO8XaJpMfnc1bmD+e8O3sx+zkL98H1ZBDofPDJAeQNVLtvaQuQUGGihy/5z7GlhQnXW
-        IzBcBtQ0kCwYI4tI4MoR548fvnS5Sk7MF+hwDo5zV1BhYJQ3c/3NbMFyMZJOA1ZnhdYU8c
-        0JSbGbTAb1tupU+7MqSMa1MtpIPsAsU=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-121-GCm0XO-jMfWFr0uynWPCMA-1; Fri, 03 Nov 2023 16:42:20 -0400
-X-MC-Unique: GCm0XO-jMfWFr0uynWPCMA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 22D5C101A529;
-        Fri,  3 Nov 2023 20:42:20 +0000 (UTC)
-Received: from p1.luc.cera.cz (unknown [10.45.224.31])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3E5D51121309;
-        Fri,  3 Nov 2023 20:42:17 +0000 (UTC)
-From:   Ivan Vecera <ivecera@redhat.com>
-To:     netdev@vger.kernel.org
-Cc:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        intel-wired-lan@lists.osuosl.org, linux-kernel@vger.kernel.org,
-        Jacob Keller <jacob.e.keller@intel.com>,
-        Wojciech Drewek <wojciech.drewek@intel.com>
-Subject: [PATCH net] i40e: Fix adding unsupported cloud filters
-Date:   Fri,  3 Nov 2023 21:42:16 +0100
-Message-ID: <20231103204216.1072251-1-ivecera@redhat.com>
+        Fri, 3 Nov 2023 16:48:27 -0400
+Received: from mail-ot1-f72.google.com (mail-ot1-f72.google.com [209.85.210.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4B80D53
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 13:48:24 -0700 (PDT)
+Received: by mail-ot1-f72.google.com with SMTP id 46e09a7af769-6ce37a2b2e9so3183341a34.0
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Nov 2023 13:48:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699044504; x=1699649304;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=JYI7n3mLYM40cy95YfSnPmk+FiWhPpVvFYPVeIDOOxo=;
+        b=hnH3FFGsYsJw3tEZtc/n05zYVS+S6QCoSbv+UYq3PZFkdOfkRs721uCAz1nF5ANtPN
+         B6JJZD4frQuTjWT0hwOqFnb0l9vAj5UC/KhUDZV0FJY0tGmLYW0NEmJks3hc42XrRqIK
+         dORPHANRXD6jOPXbj9bvLQqcZyohPgYHt67VgN6IRXODY0uOoKfywzfJYaZbl4XYzDv8
+         hXZl9yzXqxbBLdscEAXxj9a+VFb6AUdmgaeaAMzOXAsKa8F7OGmkeiLOq4sy/AUacDMN
+         6troybv7UgilySN0APfXkhZdbZxhJksrsawxF+7myRYGjfxtLZLxtmd7ViSMB+RiIXmB
+         riRw==
+X-Gm-Message-State: AOJu0YxTb45PKLS69Mx9BlNQPkIFNqPcUK1JdtjLfazw20RHIQBwjaV6
+        +JgqWx9h5AFM3AbgfuEXQczyJGx/NgMEiDFIr3StGuJkg5srQss=
+X-Google-Smtp-Source: AGHT+IGyIWMHQ/zphzXyDcZk+20Zoe4Op6VCSDwF0dOdH62NQphlgHA+dNlSlM98pmJm55H3wmWvGlyyDlkXcPcti/mf4ktGFXDF
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Received: by 2002:a9d:6c93:0:b0:6b8:6f61:5f61 with SMTP id
+ c19-20020a9d6c93000000b006b86f615f61mr6098580otr.6.1699044504280; Fri, 03 Nov
+ 2023 13:48:24 -0700 (PDT)
+Date:   Fri, 03 Nov 2023 13:48:24 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000022a5d8060945a0fd@google.com>
+Subject: [syzbot] Monthly usb report (Nov 2023)
+From:   syzbot <syzbot+listbdb465433a25244527e1@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If a VF tries to add unsupported cloud filter through virchnl
-then i40e_add_del_cloud_filter(_big_buf) returns -ENOTSUPP but
-this error code is stored in 'ret' instead of 'aq_ret' that
-is used as error code sent back to VF. In this scenario where
-one of the mentioned functions fails the value of 'aq_ret'
-is zero so the VF will incorrectly receive a 'success'.
+Hello usb maintainers/developers,
 
-Use 'aq_ret' to store return value and remove 'ret' local
-variable. Additionally fix the issue when filter allocation
-fails, in this case no notification is sent back to the VF.
+This is a 31-day syzbot report for the usb subsystem.
+All related reports/information can be found at:
+https://syzkaller.appspot.com/upstream/s/usb
 
-Signed-off-by: Ivan Vecera <ivecera@redhat.com>
+During the period, 2 new issues were detected and 3 were fixed.
+In total, 65 issues are still open and 331 have been fixed so far.
+
+Some of the still happening issues:
+
+Ref  Crashes Repro Title
+<1>  2721    Yes   KMSAN: uninit-value in dib3000mb_attach (2)
+                   https://syzkaller.appspot.com/bug?extid=c88fc0ebe0d5935c70da
+<2>  2144    Yes   KASAN: slab-use-after-free Read in pvr2_context_set_notify
+                   https://syzkaller.appspot.com/bug?extid=621409285c4156a009b3
+<3>  944     Yes   WARNING in implement
+                   https://syzkaller.appspot.com/bug?extid=38e7237add3712479d65
+<4>  819     Yes   general protection fault in ir_raw_event_store_with_filter
+                   https://syzkaller.appspot.com/bug?extid=34008406ee9a31b13c73
+<5>  368     Yes   INFO: task hung in r871xu_dev_remove
+                   https://syzkaller.appspot.com/bug?extid=f39c1dad0b7db49ca4a8
+<6>  364     Yes   INFO: task hung in usbdev_open (2)
+                   https://syzkaller.appspot.com/bug?extid=b73659f5bb96fac34820
+<7>  304     Yes   KASAN: use-after-free Read in v4l2_fh_init
+                   https://syzkaller.appspot.com/bug?extid=c025d34b8eaa54c571b8
+<8>  239     Yes   INFO: task hung in netdev_run_todo (2)
+                   https://syzkaller.appspot.com/bug?extid=9d77543f47951a63d5c1
+<9>  222     No    INFO: task hung in hub_event (3)
+                   https://syzkaller.appspot.com/bug?extid=a7edecbf389d11a369d4
+<10> 138     Yes   INFO: rcu detected stall in hub_event
+                   https://syzkaller.appspot.com/bug?extid=ec5f884c4a135aa0dbb9
+
 ---
- .../net/ethernet/intel/i40e/i40e_virtchnl_pf.c   | 16 +++++++++-------
- 1 file changed, 9 insertions(+), 7 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c b/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c
-index 08d7edccfb8ddb..3f99eb19824527 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c
-@@ -3844,7 +3844,7 @@ static int i40e_vc_add_cloud_filter(struct i40e_vf *vf, u8 *msg)
- 	struct i40e_pf *pf = vf->pf;
- 	struct i40e_vsi *vsi = NULL;
- 	int aq_ret = 0;
--	int i, ret;
-+	int i;
- 
- 	if (!i40e_sync_vf_state(vf, I40E_VF_STATE_ACTIVE)) {
- 		aq_ret = -EINVAL;
-@@ -3868,8 +3868,10 @@ static int i40e_vc_add_cloud_filter(struct i40e_vf *vf, u8 *msg)
- 	}
- 
- 	cfilter = kzalloc(sizeof(*cfilter), GFP_KERNEL);
--	if (!cfilter)
--		return -ENOMEM;
-+	if (!cfilter) {
-+		aq_ret = -ENOMEM;
-+		goto err_out;
-+	}
- 
- 	/* parse destination mac address */
- 	for (i = 0; i < ETH_ALEN; i++)
-@@ -3917,13 +3919,13 @@ static int i40e_vc_add_cloud_filter(struct i40e_vf *vf, u8 *msg)
- 
- 	/* Adding cloud filter programmed as TC filter */
- 	if (tcf.dst_port)
--		ret = i40e_add_del_cloud_filter_big_buf(vsi, cfilter, true);
-+		aq_ret = i40e_add_del_cloud_filter_big_buf(vsi, cfilter, true);
- 	else
--		ret = i40e_add_del_cloud_filter(vsi, cfilter, true);
--	if (ret) {
-+		aq_ret = i40e_add_del_cloud_filter(vsi, cfilter, true);
-+	if (aq_ret) {
- 		dev_err(&pf->pdev->dev,
- 			"VF %d: Failed to add cloud filter, err %pe aq_err %s\n",
--			vf->vf_id, ERR_PTR(ret),
-+			vf->vf_id, ERR_PTR(aq_ret),
- 			i40e_aq_str(&pf->hw, pf->hw.aq.asq_last_status));
- 		goto err_free;
- 	}
--- 
-2.41.0
+To disable reminders for individual bugs, reply with the following command:
+#syz set <Ref> no-reminders
 
+To change bug's subsystems, reply with:
+#syz set <Ref> subsystems: new-subsystem
+
+You may send multiple commands in a single email message.
