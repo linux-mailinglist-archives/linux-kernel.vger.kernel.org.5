@@ -2,268 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F36AB7E096D
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 20:24:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E00E37E0971
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 20:28:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231196AbjKCTYp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 15:24:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35706 "EHLO
+        id S1345897AbjKCT2W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 15:28:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230155AbjKCTYn (ORCPT
+        with ESMTP id S230155AbjKCT2U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 15:24:43 -0400
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A017D55;
-        Fri,  3 Nov 2023 12:24:40 -0700 (PDT)
-Received: by mail-io1-xd2c.google.com with SMTP id ca18e2360f4ac-79f82b26abfso81297139f.1;
-        Fri, 03 Nov 2023 12:24:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699039479; x=1699644279; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yZgFmOX3ULsBcBCYJS8Q2oH6cz5Ye/aK91vNIaxZApU=;
-        b=Ltwkd8gxZTnKeBzJyjdjh0DWmStdLbLEfIHOXu9QBL8Uf6tDhhnULHEhGJRd++ACJg
-         Uldd7miNdjrtG9vMRzalg09lE0xFwB4Tv+Fd9lbrfH937l9swNt7KP70xM+yFFL2QKde
-         ff6TffWH7E79CD/asdwCXh0TNfEv8a2NzOX3aijJYCSzDCnnoy8ropxsDbkqrMd/0BRw
-         f09d8sWrKIKoDSdmf1VqSISLanTfFeilEWUOusnYi4zkY5nJlObxmgV6dyM90cxHLUmt
-         q6m/qOxJZ6twD/Ql4JkmxDRW14iBwoSSVuwgk/no2CTHR31TRXs4o3I1tUEKYQ3k1uEp
-         jKbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699039479; x=1699644279;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yZgFmOX3ULsBcBCYJS8Q2oH6cz5Ye/aK91vNIaxZApU=;
-        b=q5VlDgDwfblimmCBwExHHHAZLw90Bevq7CCPaEMp6WJI6SeZCu+4QTJl+doT0DuXFV
-         +6I6BuFz4exrN66RQJcq02JtL1U814s3AU88RbB1gG4ZEKgbCYocmmHMwcUT3nKYqYcd
-         q7gKmVzhfRZIoqGl/I91dCfJMSuVaqOfgnZgj98VkV87+y/qHoIL1nzeZMuXS2rj4cNF
-         EOYjImdL05qoGoXljpA3BHnX0RuDT9YcOKsAtBQze9Y8KYBHELZCalt5wlwzKiyR9DjW
-         NpwwDzrbZZ0CQkW1dTHkiSujJooCQ8El9GlZyVbyzfq+fQnIZl1nlcP5O1PwKMX+Uezr
-         bhAg==
-X-Gm-Message-State: AOJu0YyAqlRdzb43zAxkg7eDN8wZK3puxAXFSrWthLXtPlCF0NIL422T
-        szrYciZOn/EeU7ynu9jP/kgRyeqVGS4CE+N9c/I=
-X-Google-Smtp-Source: AGHT+IFSnD4V/LX6mRlu0PCTUa5qHRWWBa4S7AVEVw8WDTLWp95ndc+LdBPX4HP7r7C+1b3tL92MStshFm3nZszw5PY=
-X-Received: by 2002:a05:6602:2cc5:b0:790:cb89:44eb with SMTP id
- j5-20020a0566022cc500b00790cb8944ebmr28825006iow.1.1699039479485; Fri, 03 Nov
- 2023 12:24:39 -0700 (PDT)
+        Fri, 3 Nov 2023 15:28:20 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2937C1BC
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 12:28:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699039694; x=1730575694;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=ThhEdvjT1+j0oUILnpjOIFzFwnHfbfJKfong+lTksrA=;
+  b=FcDAsNP2SGtWgFu7e2gp4MF0FE6n0CyvSR9WfBT8Rp2GW1Du42VW6qt7
+   TyHFs2lQKBD5tNPiNUPxPA484L/ai1bqmHr9QOGgy5XyXHEbHs4We/Gpz
+   NLX4yEoohJCx1xNXuYusB1xPMUJcHrtLNoV4xo48wTUrKnQVFscjXN2Ci
+   JGYLJA1bjbW6gQYYMSEJkva1pNq96bohEYfC70VqTkacw5afnNFQw1Hnk
+   YoKxBPA6llfgtqtEEXDshs38uGjnW9og07yet70P5g2anaQbzvxsuOLjI
+   DRBAo5SgWgCfTCHwJKV1IY3vOGmAgiCXyksSCgaY3T1OHQKpUm0MeXZjL
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10883"; a="453305922"
+X-IronPort-AV: E=Sophos;i="6.03,275,1694761200"; 
+   d="scan'208";a="453305922"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2023 12:28:13 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10883"; a="738169231"
+X-IronPort-AV: E=Sophos;i="6.03,275,1694761200"; 
+   d="scan'208";a="738169231"
+Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
+  by orsmga006.jf.intel.com with ESMTP; 03 Nov 2023 12:28:10 -0700
+Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qyzpw-0002sg-02;
+        Fri, 03 Nov 2023 19:28:08 +0000
+Date:   Sat, 4 Nov 2023 03:27:54 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Jani Nikula <jani.nikula@intel.com>,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Hans de Goede <hdegoede@redhat.com>
+Subject: Re: [PATCH v3 14/15] drm/i915/dsi: Replace poking of CHV GPIOs
+ behind the driver's back
+Message-ID: <202311040312.Tf6bTkw0-lkp@intel.com>
+References: <20231102151228.668842-15-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-References: <20231102234236.1784543-1-nphamcs@gmail.com> <CAJD7tkapfHVvF1KCm4iUDWGP0n5zV3GBcNAGDiYNHrpuODPPqQ@mail.gmail.com>
-In-Reply-To: <CAJD7tkapfHVvF1KCm4iUDWGP0n5zV3GBcNAGDiYNHrpuODPPqQ@mail.gmail.com>
-From:   Nhat Pham <nphamcs@gmail.com>
-Date:   Fri, 3 Nov 2023 12:24:27 -0700
-Message-ID: <CAKEwX=MunYMKQXsV58vBXROKnJFDhViCpQgC7RnrLExa_U=n2g@mail.gmail.com>
-Subject: Re: [RFC PATCH v3] zswap: memcontrol: implement zswap writeback disabling
-To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     akpm@linux-foundation.org, tj@kernel.org, lizefan.x@bytedance.com,
-        hannes@cmpxchg.org, cerasuolodomenico@gmail.com,
-        sjenning@redhat.com, ddstreet@ieee.org, vitaly.wool@konsulko.com,
-        mhocko@kernel.org, roman.gushchin@linux.dev, shakeelb@google.com,
-        muchun.song@linux.dev, hughd@google.com, corbet@lwn.net,
-        konrad.wilk@oracle.com, senozhatsky@chromium.org, rppt@kernel.org,
-        linux-mm@kvack.org, kernel-team@meta.com,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        david@ixit.cz
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231102151228.668842-15-andriy.shevchenko@linux.intel.com>
+X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 2, 2023 at 6:13=E2=80=AFPM Yosry Ahmed <yosryahmed@google.com> =
-wrote:
->
-> On Thu, Nov 2, 2023 at 4:42=E2=80=AFPM Nhat Pham <nphamcs@gmail.com> wrot=
-e:
-> >
-> > During our experiment with zswap, we sometimes observe swap IOs due to
-> > occasional zswap store failures and writebacks-to-swap. These swapping
-> > IOs prevent many users who cannot tolerate swapping from adopting zswap
-> > to save memory and improve performance where possible.
-> >
-> > This patch adds the option to disable this behavior entirely: do not
-> > writeback to backing swapping device when a zswap store attempt fail,
-> > and do not write pages in the zswap pool back to the backing swap
-> > device (both when the pool is full, and when the new zswap shrinker is
-> > called).
-> >
-> > This new behavior can be opted-in/out on a per-cgroup basis via a new
-> > cgroup file. By default, writebacks to swap device is enabled, which is
-> > the previous behavior.
-> >
-> > Note that this is subtly different from setting memory.swap.max to 0, a=
-s
-> > it still allows for pages to be stored in the zswap pool (which itself
-> > consumes swap space in its current form).
-> >
-> > Suggested-by: Johannes Weiner <hannes@cmpxchg.org>
-> > Signed-off-by: Nhat Pham <nphamcs@gmail.com>
-> > ---
-> >  Documentation/admin-guide/cgroup-v2.rst | 11 +++++++
-> >  Documentation/admin-guide/mm/zswap.rst  |  6 ++++
-> >  include/linux/memcontrol.h              | 12 ++++++++
-> >  include/linux/zswap.h                   |  6 ++++
-> >  mm/memcontrol.c                         | 38 +++++++++++++++++++++++++
-> >  mm/page_io.c                            |  6 ++++
-> >  mm/shmem.c                              |  3 +-
-> >  mm/zswap.c                              | 14 +++++++++
-> >  8 files changed, 94 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/ad=
-min-guide/cgroup-v2.rst
-> > index 606b2e0eac4b..18c4171392ea 100644
-> > --- a/Documentation/admin-guide/cgroup-v2.rst
-> > +++ b/Documentation/admin-guide/cgroup-v2.rst
-> > @@ -1672,6 +1672,17 @@ PAGE_SIZE multiple when read back.
-> >         limit, it will refuse to take any more stores before existing
-> >         entries fault back in or are written out to disk.
-> >
-> > +  memory.zswap.writeback
-> > +       A read-write single value file which exists on non-root
-> > +       cgroups.  The default value is "1".
-> > +
-> > +       When this is set to 0, all swapping attempts to swapping device=
-s
-> > +       are disabled. This included both zswap writebacks, and swapping=
- due
-> > +       to zswap store failure.
-> > +
-> > +       Note that this is subtly different from setting memory.swap.max=
- to
-> > +       0, as it still allows for pages to be written to the zswap pool=
-.
-> > +
-> >    memory.pressure
-> >         A read-only nested-keyed file.
-> >
-> > diff --git a/Documentation/admin-guide/mm/zswap.rst b/Documentation/adm=
-in-guide/mm/zswap.rst
-> > index 522ae22ccb84..b987e58edb70 100644
-> > --- a/Documentation/admin-guide/mm/zswap.rst
-> > +++ b/Documentation/admin-guide/mm/zswap.rst
-> > @@ -153,6 +153,12 @@ attribute, e. g.::
-> >
-> >  Setting this parameter to 100 will disable the hysteresis.
-> >
-> > +Some users cannot tolerate the swapping that comes with zswap store fa=
-ilures
-> > +and zswap writebacks. Swapping can be disabled entirely (without disab=
-ling
-> > +zswap itself) on a cgroup-basis as follows:
-> > +
-> > +       echo 0 > /sys/fs/cgroup/<cgroup-name>/memory.zswap.writeback
-> > +
-> >  When there is a sizable amount of cold memory residing in the zswap po=
-ol, it
-> >  can be advantageous to proactively write these cold pages to swap and =
-reclaim
-> >  the memory for other use cases. By default, the zswap shrinker is disa=
-bled.
-> > diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> > index 95f6c9e60ed1..e51eafdf2a15 100644
-> > --- a/include/linux/memcontrol.h
-> > +++ b/include/linux/memcontrol.h
-> > @@ -219,6 +219,12 @@ struct mem_cgroup {
-> >
-> >  #if defined(CONFIG_MEMCG_KMEM) && defined(CONFIG_ZSWAP)
-> >         unsigned long zswap_max;
-> > +
-> > +       /*
-> > +        * Prevent pages from this memcg from being written back from z=
-swap to
-> > +        * swap, and from being swapped out on zswap store failures.
-> > +        */
-> > +       bool zswap_writeback;
-> >  #endif
-> >
-> >         unsigned long soft_limit;
-> > @@ -1931,6 +1937,7 @@ static inline void count_objcg_event(struct obj_c=
-group *objcg,
-> >  bool obj_cgroup_may_zswap(struct obj_cgroup *objcg);
-> >  void obj_cgroup_charge_zswap(struct obj_cgroup *objcg, size_t size);
-> >  void obj_cgroup_uncharge_zswap(struct obj_cgroup *objcg, size_t size);
-> > +bool mem_cgroup_zswap_writeback_enabled(struct mem_cgroup *memcg);
-> >  #else
-> >  static inline bool obj_cgroup_may_zswap(struct obj_cgroup *objcg)
-> >  {
-> > @@ -1944,6 +1951,11 @@ static inline void obj_cgroup_uncharge_zswap(str=
-uct obj_cgroup *objcg,
-> >                                              size_t size)
-> >  {
-> >  }
-> > +static inline bool mem_cgroup_zswap_writeback_enabled(struct mem_cgrou=
-p *memcg)
-> > +{
-> > +       /* if zswap is disabled, do not block pages going to the swappi=
-ng device */
-> > +       return true;
-> > +}
-> >  #endif
-> >
-> >  #endif /* _LINUX_MEMCONTROL_H */
-> > diff --git a/include/linux/zswap.h b/include/linux/zswap.h
-> > index cbd373ba88d2..b4997e27a74b 100644
-> > --- a/include/linux/zswap.h
-> > +++ b/include/linux/zswap.h
-> > @@ -35,6 +35,7 @@ void zswap_swapoff(int type);
-> >  void zswap_memcg_offline_cleanup(struct mem_cgroup *memcg);
-> >  void zswap_lruvec_state_init(struct lruvec *lruvec);
-> >  void zswap_lruvec_swapin(struct page *page);
-> > +bool is_zswap_enabled(void);
-> >  #else
-> >
-> >  struct zswap_lruvec_state {};
-> > @@ -55,6 +56,11 @@ static inline void zswap_swapoff(int type) {}
-> >  static inline void zswap_memcg_offline_cleanup(struct mem_cgroup *memc=
-g) {}
-> >  static inline void zswap_lruvec_init(struct lruvec *lruvec) {}
-> >  static inline void zswap_lruvec_swapin(struct page *page) {}
-> > +
-> > +static inline bool is_zswap_enabled(void)
-> > +{
-> > +       return false;
-> > +}
-> >  #endif
-> >
-> >  #endif /* _LINUX_ZSWAP_H */
-> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> > index e43b5aba8efc..8a6aadcc103c 100644
-> > --- a/mm/memcontrol.c
-> > +++ b/mm/memcontrol.c
-> > @@ -5545,6 +5545,7 @@ mem_cgroup_css_alloc(struct cgroup_subsys_state *=
-parent_css)
-> >         WRITE_ONCE(memcg->soft_limit, PAGE_COUNTER_MAX);
-> >  #if defined(CONFIG_MEMCG_KMEM) && defined(CONFIG_ZSWAP)
-> >         memcg->zswap_max =3D PAGE_COUNTER_MAX;
-> > +       WRITE_ONCE(memcg->zswap_writeback, true);
->
-> Generally LGTM, just one question.
->
-> Would it be more convenient if the initial value is inherited from the
-> parent (the root starts with true)?
->
-> I can see this being useful if we want to set it to false on the
-> entire machine or one a parent cgroup, we can set it before creating
-> any children instead of setting it to 0 every time we create a new
-> cgroup.
+Hi Andy,
 
-I'm not 100% sure about the benefit or have a strong opinion one way
-or another, but this sounds like a nice-to-have detail to me, and a relativ=
-ely
-low cost one (both in effort and at runtime) at that too.
+kernel test robot noticed the following build errors:
 
-Propagating the change everytime we modify the memory.zswap.writeback
-value of the ancestor might be data race-prone (and costly, depending on
-how big the cgroup subtree is), but this is just a one-time-per-cgroup
-propagation (at the new cgroup creation time).
+[auto build test ERROR on drm-intel/for-linux-next]
+[also build test ERROR on drm-intel/for-linux-next-fixes linus/master v6.6 next-20231103]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Can anyone come up with a failure case for this change, or why it might be
-a bad idea?
+url:    https://github.com/intel-lab-lkp/linux/commits/Andy-Shevchenko/drm-i915-dsi-assume-BXT-gpio-works-for-non-native-GPIO/20231103-064642
+base:   git://anongit.freedesktop.org/drm-intel for-linux-next
+patch link:    https://lore.kernel.org/r/20231102151228.668842-15-andriy.shevchenko%40linux.intel.com
+patch subject: [PATCH v3 14/15] drm/i915/dsi: Replace poking of CHV GPIOs behind the driver's back
+config: x86_64-rhel-8.3-rust (https://download.01.org/0day-ci/archive/20231104/202311040312.Tf6bTkw0-lkp@intel.com/config)
+compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231104/202311040312.Tf6bTkw0-lkp@intel.com/reproduce)
 
-Thanks for the suggestion, Yosry!
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311040312.Tf6bTkw0-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+>> drivers/gpu/drm/i915/display/intel_dsi_vbt.c:272:4: error: call to undeclared function 'soc_exec_opaque_gpio'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+                           soc_exec_opaque_gpio(connector, gpio_index, "INT33FF:03", "Panel SE",
+                           ^
+   drivers/gpu/drm/i915/display/intel_dsi_vbt.c:275:4: error: call to undeclared function 'soc_exec_opaque_gpio'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+                           soc_exec_opaque_gpio(connector, gpio_index, "INT33FF:00", "Panel SW",
+                           ^
+   drivers/gpu/drm/i915/display/intel_dsi_vbt.c:278:4: error: call to undeclared function 'soc_exec_opaque_gpio'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+                           soc_exec_opaque_gpio(connector, gpio_index, "INT33FF:02", "Panel E",
+                           ^
+   drivers/gpu/drm/i915/display/intel_dsi_vbt.c:281:4: error: call to undeclared function 'soc_exec_opaque_gpio'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+                           soc_exec_opaque_gpio(connector, gpio_index, "INT33FF:01", "Panel N",
+                           ^
+   drivers/gpu/drm/i915/display/intel_dsi_vbt.c:299:3: error: call to undeclared function 'soc_exec_opaque_gpio'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+                   soc_exec_opaque_gpio(connector, gpio_index, "INT33FF:01", "Panel N",
+                   ^
+   5 errors generated.
+
+
+vim +/soc_exec_opaque_gpio +272 drivers/gpu/drm/i915/display/intel_dsi_vbt.c
+
+   263	
+   264	static void chv_gpio_set_value(struct intel_connector *connector,
+   265				       u8 gpio_source, u8 gpio_index, bool value)
+   266	{
+   267		struct drm_i915_private *dev_priv = to_i915(connector->base.dev);
+   268	
+   269		if (connector->panel.vbt.dsi.seq_version >= 3) {
+   270			if (gpio_index >= CHV_GPIO_IDX_START_SE) {
+   271				/* XXX: it's unclear whether 255->57 is part of SE. */
+ > 272				soc_exec_opaque_gpio(connector, gpio_index, "INT33FF:03", "Panel SE",
+   273						     gpio_index - CHV_GPIO_IDX_START_SW, value);
+   274			} else if (gpio_index >= CHV_GPIO_IDX_START_SW) {
+   275				soc_exec_opaque_gpio(connector, gpio_index, "INT33FF:00", "Panel SW",
+   276						     gpio_index - CHV_GPIO_IDX_START_SW, value);
+   277			} else if (gpio_index >= CHV_GPIO_IDX_START_E) {
+   278				soc_exec_opaque_gpio(connector, gpio_index, "INT33FF:02", "Panel E",
+   279						     gpio_index - CHV_GPIO_IDX_START_E, value);
+   280			} else {
+   281				soc_exec_opaque_gpio(connector, gpio_index, "INT33FF:01", "Panel N",
+   282						     gpio_index - CHV_GPIO_IDX_START_N, value);
+   283			}
+   284		} else {
+   285			/* XXX: The spec is unclear about CHV GPIO on seq v2 */
+   286			if (gpio_source != 0) {
+   287				drm_dbg_kms(&dev_priv->drm,
+   288					    "unknown gpio source %u\n", gpio_source);
+   289				return;
+   290			}
+   291	
+   292			if (gpio_index >= CHV_GPIO_IDX_START_E) {
+   293				drm_dbg_kms(&dev_priv->drm,
+   294					    "invalid gpio index %u for GPIO N\n",
+   295					    gpio_index);
+   296				return;
+   297			}
+   298	
+   299			soc_exec_opaque_gpio(connector, gpio_index, "INT33FF:01", "Panel N",
+   300					     gpio_index - CHV_GPIO_IDX_START_N, value);
+   301		}
+   302	}
+   303	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
