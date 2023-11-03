@@ -2,42 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 46A047E00CD
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 11:30:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ABA97E0159
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Nov 2023 11:31:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236014AbjKCIfJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 04:35:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36238 "EHLO
+        id S1346462AbjKCIfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 04:35:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235989AbjKCIfH (ORCPT
+        with ESMTP id S235989AbjKCIfm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 04:35:07 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 188EFD47
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 01:35:04 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 400A72F4;
-        Fri,  3 Nov 2023 01:35:46 -0700 (PDT)
-Received: from [192.168.4.21] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9D6693F64C;
-        Fri,  3 Nov 2023 01:35:02 -0700 (PDT)
-Message-ID: <9ef78d40-fcdd-4ff8-b5ee-58b7478534a9@arm.com>
-Date:   Fri, 3 Nov 2023 08:35:00 +0000
+        Fri, 3 Nov 2023 04:35:42 -0400
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A580D43;
+        Fri,  3 Nov 2023 01:35:40 -0700 (PDT)
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 6825F68AA6; Fri,  3 Nov 2023 09:35:35 +0100 (CET)
+Date:   Fri, 3 Nov 2023 09:35:35 +0100
+From:   Christoph Hellwig <hch@lst.de>
+To:     Petr Tesarik <petrtesarik@huaweicloud.com>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Petr Tesarik <petr.tesarik1@huawei-partners.com>,
+        "open list:DMA MAPPING HELPERS" <iommu@lists.linux.dev>,
+        open list <linux-kernel@vger.kernel.org>, patchwork@huawei.com,
+        Wangkefeng <wangkefeng.wang@huawei.com>,
+        Roberto Sassu <roberto.sassu@huaweicloud.com>,
+        petr@tesarici.cz, miaoxie@huawei.com, weiyongjun1@huawei.com,
+        guohanjun@huawei.com, huawei.libin@huawei.com,
+        yuehaibing@huawei.com, johnny.chenyi@huawei.com,
+        leijitang@huawei.com, ming.fu@huawei.com, zhujianwei7@huawei.com,
+        linuxarm@huawei.com, stable@vger.kernel.org,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>
+Subject: Re: [PATCH v2 1/1] swiotlb: do not free decrypted pages if dynamic
+Message-ID: <20231103083535.GA17432@lst.de>
+References: <20231102071821.431-1-petrtesarik@huaweicloud.com> <20231102071821.431-2-petrtesarik@huaweicloud.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] ARM: VDSO: remove cntvct_ok global variable
-To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Russell King <linux@armlinux.org.uk>
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20231103075800.3254680-1-linux@rasmusvillemoes.dk>
-Content-Language: en-US
-From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
-In-Reply-To: <20231103075800.3254680-1-linux@rasmusvillemoes.dk>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231102071821.431-2-petrtesarik@huaweicloud.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -45,75 +52,4 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/3/23 07:57, Rasmus Villemoes wrote:
-> The cntvct_ok variable has not had any external user since commit
-> c7a18100bdff ("lib/vdso: Avoid highres update if clocksource is not
-> VDSO capable").
-> 
-> It also only has one user in vdso.c, once during init, so rather than
-> having the caller of patch_vdso() initialize cntvct_ok, just call
-> cntvct_functional() directly and avoid the global variable entirely.
-> 
-> Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-
-Fine by me.
-
-Reviewed-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
-
-> ---
->  arch/arm/include/asm/vdso/vsyscall.h |  1 -
->  arch/arm/kernel/vdso.c               | 10 +++-------
->  2 files changed, 3 insertions(+), 8 deletions(-)
-> 
-> diff --git a/arch/arm/include/asm/vdso/vsyscall.h b/arch/arm/include/asm/vdso/vsyscall.h
-> index 47e41ae8ccd0..9a2cd2673a82 100644
-> --- a/arch/arm/include/asm/vdso/vsyscall.h
-> +++ b/arch/arm/include/asm/vdso/vsyscall.h
-> @@ -9,7 +9,6 @@
->  #include <asm/cacheflush.h>
->  
->  extern struct vdso_data *vdso_data;
-> -extern bool cntvct_ok;
->  
->  /*
->   * Update the vDSO data page to keep in sync with kernel timekeeping.
-> diff --git a/arch/arm/kernel/vdso.c b/arch/arm/kernel/vdso.c
-> index f297d66a8a76..ba87ffc6f194 100644
-> --- a/arch/arm/kernel/vdso.c
-> +++ b/arch/arm/kernel/vdso.c
-> @@ -67,11 +67,9 @@ struct elfinfo {
->  	char		*dynstr;	/* ptr to .dynstr section */
->  };
->  
-> -/* Cached result of boot-time check for whether the arch timer exists,
-> - * and if so, whether the virtual counter is useable.
-> +/* Boot-time check for whether the arch timer exists, and if so,
-> + * whether the virtual counter is useable.
->   */
-> -bool cntvct_ok __ro_after_init;
-> -
->  static bool __init cntvct_functional(void)
->  {
->  	struct device_node *np;
-> @@ -172,7 +170,7 @@ static void __init patch_vdso(void *ehdr)
->  	 * want programs to incur the slight additional overhead of
->  	 * dispatching through the VDSO only to fall back to syscalls.
->  	 */
-> -	if (!cntvct_ok) {
-> +	if (!cntvct_functional()) {
->  		vdso_nullpatch_one(&einfo, "__vdso_gettimeofday");
->  		vdso_nullpatch_one(&einfo, "__vdso_clock_gettime");
->  		vdso_nullpatch_one(&einfo, "__vdso_clock_gettime64");
-> @@ -213,8 +211,6 @@ static int __init vdso_init(void)
->  	vdso_total_pages = 1; /* for the data/vvar page */
->  	vdso_total_pages += text_pages;
->  
-> -	cntvct_ok = cntvct_functional();
-> -
->  	patch_vdso(vdso_start);
->  
->  	return 0;
-
--- 
-Regards,
-Vincenzo
+Thanks, applied.
