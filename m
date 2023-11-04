@@ -2,95 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BE9F7E107F
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 18:33:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E24B17E1094
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 19:21:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231533AbjKDRdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Nov 2023 13:33:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40982 "EHLO
+        id S229606AbjKDSVI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Nov 2023 14:21:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229514AbjKDRdD (ORCPT
+        with ESMTP id S229379AbjKDSVH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Nov 2023 13:33:03 -0400
-Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B157D1BF
-        for <linux-kernel@vger.kernel.org>; Sat,  4 Nov 2023 10:33:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
-        s=mail; t=1699119178;
-        bh=dfkf51YavrShtsViHN2it78NydaNomWdIeuQ4qET9dc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=K8rYY3UqyXk+A2iW11irbG84Pbfx1Y/2CtaLyRchBWeNql5vJHtCIxkGiym+2Et6E
-         9Nah0b643xH5JwEFpqhhqo3zQlu0m80nW4IBveLBfT2U2R0glaqa/u1wBks3iFyK+O
-         oTiQN75v9t04lpJ+t1ROSq0gx7KZq1M7q64/9FIo=
-Date:   Sat, 4 Nov 2023 18:32:57 +0100
-From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Willy Tarreau <w@1wt.eu>, Arnd Bergmann <arnd@arndb.de>,
-        linux-kernel@vger.kernel.org, Zhangjin Wu <falcon@tinylab.org>,
-        Yuan Tan <tanyuan@tinylab.org>
-Subject: Re: [PATCH RFC] misc/pvpanic: add support for normal shutdowns
-Message-ID: <fc373999-466d-4587-b049-9f90076b4bd0@t-8ch.de>
-References: <20231104-pvpanic-shutdown-v1-1-5ee7c9b3e301@weissschuh.net>
- <2023110407-unselect-uptight-b96d@gregkh>
- <365bbe1f-5ee8-40fe-bec0-53d9e7395c18@t-8ch.de>
- <2023110431-pacemaker-pruning-0e4c@gregkh>
- <59ed7f70-2953-443e-9fa5-d46c566e4a08@t-8ch.de>
- <ZUZNkpEiHHWsmZhT@1wt.eu>
- <2023110418-unreached-smith-5625@gregkh>
+        Sat, 4 Nov 2023 14:21:07 -0400
+Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C438D6;
+        Sat,  4 Nov 2023 11:21:03 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.18.147.229])
+        by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4SN5Ds5dncz9xyt4;
+        Sun,  5 Nov 2023 02:07:41 +0800 (CST)
+Received: from [10.45.148.63] (unknown [10.45.148.63])
+        by APP1 (Coremail) with SMTP id LxC2BwD35HRri0ZlgEUKAA--.9205S2;
+        Sat, 04 Nov 2023 19:20:41 +0100 (CET)
+Message-ID: <4f5228b6-839c-9e04-bf7c-34fb8e25fd13@huaweicloud.com>
+Date:   Sat, 4 Nov 2023 19:20:27 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [isocpp-parallel] OOTA fix (via fake branch-after-load)
+ discussion
+To:     "Alglave, Jade" <j.alglave@ucl.ac.uk>,
+        "will@kernel.org" <will@kernel.org>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
+        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
+        "npiggin@gmail.com" <npiggin@gmail.com>,
+        "palmer@dabbelt.com" <palmer@dabbelt.com>,
+        "parri.andrea@gmail.com" <parri.andrea@gmail.com>,
+        "paulmck@kernel.org" <paulmck@kernel.org>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-toolchains@vger.kernel.org" <linux-toolchains@vger.kernel.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "boqun.feng@gmail.com" <boqun.feng@gmail.com>,
+        "davidtgoldblatt@gmail.com" <davidtgoldblatt@gmail.com>,
+        viktor@mpi-sws.org
+References: <b1634b24-4541-49c5-867c-7f24292a27bb@paulmck-laptop>
+ <AS4PR01MB89662350CF351ADA124816B0ACA5A@AS4PR01MB8966.eurprd01.prod.exchangelabs.com>
+From:   Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>
+In-Reply-To: <AS4PR01MB89662350CF351ADA124816B0ACA5A@AS4PR01MB8966.eurprd01.prod.exchangelabs.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <2023110418-unreached-smith-5625@gregkh>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-CM-TRANSID: LxC2BwD35HRri0ZlgEUKAA--.9205S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxXF4fCrWxZw1kZw18WrW3Wrg_yoWrAw15pa
+        yfKr47Cw4DXrn3Jw1DKr4Uua4Yv3yktr43Krs8G348Ar90kr1IqF1fKa1FvFyDJryYkr4a
+        qF4jg3s2g3sxArJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUv2b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
+        AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS
+        07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
+        02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_
+        GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
+        CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAF
+        wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa
+        7IU1zuWJUUUUU==
+X-CM-SenderInfo: 5mrqt2oorev25kdx2v3u6k3tpzhluzxrxghudrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-11-04 18:07:21+0100, Greg Kroah-Hartman wrote:
-> On Sat, Nov 04, 2023 at 02:56:34PM +0100, Willy Tarreau wrote:
-> > On Sat, Nov 04, 2023 at 02:53:37PM +0100, Thomas Weißschuh wrote:
-> > > > > The real reason probably doesn't matter today as the header propably
-> > > > > can't be dropped from Linux anyways for compatibility reasons.
-> > > > > 
-> > > > > > And if they need to be here, why not use the proper BIT() macro for it?
-> > > > > 
-> > > > > This was for uniformity with the existing code.
-> > > > > I can send a (standalone?) patch to fix it up.
-> > > > 
-> > > > If we keep it, sure, that would be nice.  But let's try to drop it if
-> > > > possible :)
-> > > 
-> > > It will break the mentioned scripts/update-linux-headers.sh from qemu.
-> > > 
-> > > 
-> > > Note:
-> > > 
-> > > BIT() is part of include/vdso/bits.h which is not part of the
-> > > uapi. How is it supposed to work?
-> > > Some other uapi header also use BIT() but that seems to work by accident
-> > > as the users have the macro defined themselves.
-> > 
-> > Be careful here, we don't want to expose this kernel macro to userland,
-> > it would break programs that define their own (possibly different) BIT
-> > macro. BIT() is used in kernel headers but we should not presume that
-> > it is available from userland.
-> 
-> It's already there :(
-> 
-> I thought we had a uapi-safe version somewhere, but I can't seem to find
-> it anymore, so I don't remember what it is called.
+Thanks Jade.
 
-It seems to be _BITUL() and _BITULL() from include/uapi/linux/const.h.
+I agree with the position you linked to in that the move is... unwise.
 
-But first we'd need to figure out if we he can drop the pvpanic.h uapi
-header. I hoped you could give a definitive answer for that.
-Personally I'd hate to break stuff for qemu.
+IMO, for a high-level language like C, if you need to outrule OOTA, just 
+declare it impossible (Viktor, in CC, made this suggestion a while ago) 
+by a "no OOTA axiom".
+
+BTW, is there at least a proof that just making relaxed atomics ordered 
+in this way rules out OOTA in programs that contain non-atomics?
+Or can we have something like the LKMM OOTA example I sent around last year?
 
 
-Thomas
+best wishes,
+
+jonas
+
+
+Am 11/3/2023 um 6:02 PM schrieb Alglave, Jade:
+> Dear all, (resending because I accidentally sent it in html first, sorry)
+>
+> Arm’s official position on the topic can be found in this recent blog:
+> https://community.arm.com/arm-community-blogs/b/architectures-and-processors-blog/posts/arm-technical-view-on-relaxed-atomics
+>
+> Please do reach out to memory-model@arm.com if there are any questions.
+> Thanks,
+> Jade
+>
+>
+> From: Paul E. McKenney <paulmck@kernel.org>
+> Sent: 27 October 2023 22:08
+> To: Alglave, Jade <j.alglave@ucl.ac.uk>; will@kernel.org <will@kernel.org>; catalin.marinas@arm.com <catalin.marinas@arm.com>; linux@armlinux.org.uk <linux@armlinux.org.uk>; mpe@ellerman.id.au <mpe@ellerman.id.au>; npiggin@gmail.com <npiggin@gmail.com>; palmer@dabbelt.com <palmer@dabbelt.com>; parri.andrea@gmail.com <parri.andrea@gmail.com>
+> Cc: linux-kernel@vger.kernel.org <linux-kernel@vger.kernel.org>; linux-toolchains@vger.kernel.org <linux-toolchains@vger.kernel.org>; peterz@infradead.org <peterz@infradead.org>; boqun.feng@gmail.com <boqun.feng@gmail.com>; davidtgoldblatt@gmail.com <davidtgoldblatt@gmail.com>
+> Subject: Fw: [isocpp-parallel] OOTA fix (via fake branch-after-load) discussion
+>
+> ⚠ Caution: External sender
+>
+>
+> Hello!
+>
+> FYI, unless someone complains, it is quite likely that C++ (and thus
+> likely C) compilers and standards will enforce Hans Boehm's proposal
+> for ordering relaxed loads before relaxed stores.  The document [1]
+> cites "Bounding data races in space and time" by Dolan et al. [2], and
+> notes an "average a 2.x% slow down" for ARMv8 and PowerPC.  In the past,
+> this has been considered unacceptable, among other things, due to the
+> fact that this issue is strictly theoretical.
+>
+> This would not (repeat, not) affect the current Linux kernel, which
+> relies on volatile loads and stores rather than C/C++ atomics.
+>
+> To be clear, the initial proposal is not to change the standards, but
+> rather to add a command-line argument to enforce the stronger ordering.
+> However, given the long list of ARM-related folks in the Acknowledgments
+> section, the future direction is clear.
+>
+> So, do any ARMv8, PowerPC, or RISC-V people still care?  If so, I strongly
+> recommend speaking up.  ;-)
+>
+>                                                          Thanx, Paul
+>
+> [1] https://lukegeeson.com/blog/2023-10-17-A-Proposal-For-Relaxed-Atomics/
+> [2] https://dl.acm.org/doi/10.1145/3192366.3192421
+>
+> ----- Forwarded message from David Goldblatt via Parallel <parallel@lists.isocpp.org> -----
+>
+> Date: Fri, 27 Oct 2023 11:09:18 -0700
+> From: David Goldblatt via Parallel <parallel@lists.isocpp.org>
+> To: SG1 concurrency and parallelism <parallel@lists.isocpp.org>
+> Reply-To: parallel@lists.isocpp.org
+> Cc: David Goldblatt <davidtgoldblatt@gmail.com>
+> Subject: [isocpp-parallel] OOTA fix (via fake branch-after-load) discussion
+>
+> Those who read this list but not the LLVM discourse might be interested in:
+> - This discussion, proposing `-mstrict-rlx-atomics`:
+> https://discourse.llvm.org/t/rfc-strengthen-relaxed-atomics-implementation-behind-mstrict-rlx-atomics-flag/74473
+> to enforce load-store ordering
+> - The associated blog post here:
+> https://lukegeeson.com/blog/2023-10-17-A-Proposal-For-Relaxed-Atomics/
+>
+> - David
+>
+> _______________________________________________
+> Parallel mailing list
+> Parallel@lists.isocpp.org
+> Subscription: https://lists.isocpp.org/mailman/listinfo.cgi/parallel
+> Link to this post: http://lists.isocpp.org/parallel/2023/10/4151.php
+>
+>
+> ----- End forwarded message -----
+
