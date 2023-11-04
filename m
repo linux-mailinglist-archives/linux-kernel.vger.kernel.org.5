@@ -2,208 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C8E627E0E0D
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 07:23:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FB227E0E0F
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 07:23:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230104AbjKDGAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Nov 2023 02:00:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43156 "EHLO
+        id S231211AbjKDGJ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Nov 2023 02:09:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229509AbjKDGAJ (ORCPT
+        with ESMTP id S229509AbjKDGJ1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Nov 2023 02:00:09 -0400
-Received: from mail-oi1-f199.google.com (mail-oi1-f199.google.com [209.85.167.199])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F27AD45
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 23:00:06 -0700 (PDT)
-Received: by mail-oi1-f199.google.com with SMTP id 5614622812f47-3b2e7b41beaso4298853b6e.0
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Nov 2023 23:00:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699077605; x=1699682405;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=QGpgxvdGgjV3fD3btY0cWPiTe8dVTEcTtf7SgXkQz9Q=;
-        b=ly+M8qzm4nll6qIY4wl2f9GWIbJGfeyvsnDjxOICw2zXRyB9m++UDNCiBRLMJdpBv8
-         C8UwTCjZbNGHF2QhiLH4iMxcvF6eQFzH2FCrZhJ2OkYx44Dx2lE7rTTFUVp1s5cqkEQ0
-         1SErDrvSgGrDqXoCvy39DZpFtifYUPnRFrstC64NRTYByNEUMj/PLbVt0fkGGaaKyFAV
-         v1ZDqJftCSTL08mpnViOJ5zLxXLOT8wVuzwjEW1T+0SHcyx+Pz9prBZadu3uaF7RiCgL
-         WgC39j9Y0MoYUHNqlE1O3AAMXMTpzJI67j5x+zg1jKSaAXCulx0NWfFn4Ek4FNHrzT96
-         FY6w==
-X-Gm-Message-State: AOJu0YxP5adMh2Q7Z+8MO5VsUryMIpcso0lsAFLZ/cBjAhyzxsv1JPRl
-        yez5G7fXHJq3hepNq0dZYNHXPULdA/gSQ7esOHglVshe8nwVxTE=
-X-Google-Smtp-Source: AGHT+IFZbLuOi6aC4+6242nVmkjrAohuv5psZPA0sCjZsUMWwxge76J/MNFFL4OvsVjppbJs+/zAkOM5lJxdrN098BpD5+Dx+IhQ
+        Sat, 4 Nov 2023 02:09:27 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ADEBD4C
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 23:09:24 -0700 (PDT)
+Received: from [100.98.85.67] (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: usama.anjum)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 9E5826607413;
+        Sat,  4 Nov 2023 06:09:21 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1699078162;
+        bh=G/GaJjDya/fLTXGC5dp+Xj68bRYVj9L1edFwNi6kOkY=;
+        h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
+        b=YrWcctDwO9a7LcfrVPjqGYfnbSiD4y1R209aa9KUFRad6haouajJIZZS4LAFXi4pT
+         /7GqdOTSMy4Aag3mxmKaaAeHSDeHamNooVhp7j2adVql6frajEoWmsLBDkENz/KJ+U
+         yoPa4sIIKUbmcIZgLiR1jodKXCb123+tALjVJh3BffcJRWkniNfj+CrYIq6akKDUHF
+         e2gz9lsXSRJJBXAB3sfqG3KdGSQ+pm0ZkQGwBC2HppP/UUIDFD5dy1uyZ0ruUsdZI2
+         eBF6HIRiTI7DMrmjk2RjUIH0hJIk6aQEjDk7Q8xatCYiQwKAW3vdJIgEf0Bi6xvO8I
+         fsZbGfvVtaftQ==
+Message-ID: <102e7f6c-5c99-407f-8696-dd71efcc16f6@collabora.com>
+Date:   Sat, 4 Nov 2023 11:09:17 +0500
 MIME-Version: 1.0
-X-Received: by 2002:a05:6808:1998:b0:3b2:e7b3:5fc5 with SMTP id
- bj24-20020a056808199800b003b2e7b35fc5mr2034942oib.3.1699077605547; Fri, 03
- Nov 2023 23:00:05 -0700 (PDT)
-Date:   Fri, 03 Nov 2023 23:00:05 -0700
-In-Reply-To: <20231104054009.3030149-1-lizhi.xu@windriver.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000001fe42606094d5524@google.com>
-Subject: Re: [syzbot] [bluetooth?] KASAN: slab-use-after-free Write in
- hci_conn_drop (2)
-From:   syzbot <syzbot+1683f76f1b20b826de67@syzkaller.appspotmail.com>
-To:     linux-kernel@vger.kernel.org, lizhi.xu@windriver.com,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Cc:     Muhammad Usama Anjum <usama.anjum@collabora.com>,
+        linux-kernel@vger.kernel.org,
+        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
+Subject: Re: [PATCH] fs/proc/task_mmu: report SOFT_DIRTY bits through the
+ PAGEMAP_SCAN ioctl
+To:     Andrei Vagin <avagin@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+References: <20231102173357.446157-1-avagin@google.com>
+Content-Language: en-US
+From:   Muhammad Usama Anjum <usama.anjum@collabora.com>
+In-Reply-To: <20231102173357.446157-1-avagin@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 11/2/23 10:33 PM, Andrei Vagin wrote:
+> The PAGEMAP_SCAN ioctl returns information regarding page table entries.
+> It is more efficient compared to reading pagemap files. CRIU can start
+> to utilize this ioctl, but it needs info about soft-dirty bits to track
+> memory changes.
+> 
+> We are aware of a new method for tracking memory changes implemented in
+> the PAGEMAP_SCAN ioctl. For CRIU, the primary advantage of this method
+> is its usability by unprivileged users. However, it is not feasible to
+> transparently replace the soft-dirty tracker with the new one. The main
+> problem here is userfault descriptors that have to be preserved between
+> pre-dump iterations.  It means criu continues supporting the soft-dirty
+> method to avoid breakage for current users. The new method will be
+> implemented as a separate feature.
+> 
+> Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>
+> Cc: Michał Mirosław <mirq-linux@rere.qmqm.pl>
+> Signed-off-by: Andrei Vagin <avagin@google.com>
+> ---
+>  fs/proc/task_mmu.c      | 13 ++++++++++++-
+>  include/uapi/linux/fs.h |  1 +
+>  2 files changed, 13 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
+> index ef2eb12906da..cefa676bd33b 100644
+> --- a/fs/proc/task_mmu.c
+> +++ b/fs/proc/task_mmu.c
+> @@ -1761,7 +1761,7 @@ static int pagemap_release(struct inode *inode, struct file *file)
+>  #define PM_SCAN_CATEGORIES	(PAGE_IS_WPALLOWED | PAGE_IS_WRITTEN |	\
+>  				 PAGE_IS_FILE |	PAGE_IS_PRESENT |	\
+>  				 PAGE_IS_SWAPPED | PAGE_IS_PFNZERO |	\
+> -				 PAGE_IS_HUGE)
+> +				 PAGE_IS_HUGE | PAGE_IS_SOFT_DIRTY)
+>  #define PM_SCAN_FLAGS		(PM_SCAN_WP_MATCHING | PM_SCAN_CHECK_WPASYNC)
+>  
+>  struct pagemap_scan_private {
+> @@ -1853,12 +1853,16 @@ static unsigned long pagemap_thp_category(struct pagemap_scan_private *p,
+Probably missed the pagemap_page_category() for normal pages. Add
+PAGE_IS_SOFT_DIRTY support for normal pages in pagemap_page_category() just
+like pagemap_thp_category().
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-WARNING: ODEBUG bug in bt_link_release
+tools/testing/selftests/mm/soft-dirty.c can be updated to test if we are
+getting the exactly same data from the ioctl.
 
-------------[ cut here ]------------
-ODEBUG: free active (active state 0) object: 000000004ad6f07b object type: work_struct hint: hci_conn_timeout+0x0/0x1e8 net/bluetooth/hci_conn.c:928
-WARNING: CPU: 1 PID: 6612 at lib/debugobjects.c:517 debug_print_object lib/debugobjects.c:514 [inline]
-WARNING: CPU: 1 PID: 6612 at lib/debugobjects.c:517 __debug_check_no_obj_freed lib/debugobjects.c:1032 [inline]
-WARNING: CPU: 1 PID: 6612 at lib/debugobjects.c:517 debug_check_no_obj_freed+0x41c/0x534 lib/debugobjects.c:1063
-Modules linked in:
-CPU: 1 PID: 6612 Comm: syz-executor.0 Not tainted 6.6.0-rc7-syzkaller-00089-g8de1e7afcc1c-dirty #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/06/2023
-pstate: 60400005 (nZCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-pc : debug_print_object lib/debugobjects.c:514 [inline]
-pc : __debug_check_no_obj_freed lib/debugobjects.c:1032 [inline]
-pc : debug_check_no_obj_freed+0x41c/0x534 lib/debugobjects.c:1063
-lr : debug_print_object lib/debugobjects.c:514 [inline]
-lr : __debug_check_no_obj_freed lib/debugobjects.c:1032 [inline]
-lr : debug_check_no_obj_freed+0x41c/0x534 lib/debugobjects.c:1063
-sp : ffff800097057960
-x29: ffff8000970579b0 x28: ffff80008a8710a0 x27: dfff800000000000
-x26: ffff0000c6644348 x25: 0000000000000000 x24: ffff800092a17c98
-x23: ffff80008a8710a0 x22: ffff0000c6644348 x21: ffff800092a17c90
-x20: ffff80008ad65078 x19: ffff0000c6644000 x18: ffff800097056e60
-x17: 626f206237306636 x16: ffff80008a71b27c x15: 0000000000000001
-x14: 1fffe00036833432 x13: 0000000000000000 x12: 0000000000000000
-x11: 0000000000000001 x10: 0000000000000000 x9 : e8b2fd3c26f6bd00
-x8 : e8b2fd3c26f6bd00 x7 : 0000000000000001 x6 : 0000000000000001
-x5 : ffff800097057258 x4 : ffff80008e4210a0 x3 : ffff8000805a359c
-x2 : 0000000000000001 x1 : 0000000100000001 x0 : 0000000000000000
-Call trace:
- debug_print_object lib/debugobjects.c:514 [inline]
- __debug_check_no_obj_freed lib/debugobjects.c:1032 [inline]
- debug_check_no_obj_freed+0x41c/0x534 lib/debugobjects.c:1063
- slab_free_hook mm/slub.c:1775 [inline]
- slab_free_freelist_hook mm/slub.c:1826 [inline]
- slab_free mm/slub.c:3809 [inline]
- __kmem_cache_free+0x250/0x480 mm/slub.c:3822
- kfree+0xb8/0x19c mm/slab_common.c:1075
- bt_link_release+0x20/0x30 net/bluetooth/hci_sysfs.c:16
- device_release+0x8c/0x1ac
- kobject_cleanup lib/kobject.c:682 [inline]
- kobject_release lib/kobject.c:716 [inline]
- kref_put include/linux/kref.h:65 [inline]
- kobject_put+0x1c4/0x3c4 lib/kobject.c:733
- put_device+0x28/0x40 drivers/base/core.c:3732
- hci_conn_put include/net/bluetooth/hci_core.h:1506 [inline]
- __sco_sock_close+0x3dc/0x7e4 net/bluetooth/sco.c:445
- sco_sock_close net/bluetooth/sco.c:470 [inline]
- sco_sock_release+0xb4/0x2c0 net/bluetooth/sco.c:1247
- __sock_release net/socket.c:659 [inline]
- sock_close+0xa4/0x1e8 net/socket.c:1419
- __fput+0x324/0x7f8 fs/file_table.c:384
- __fput_sync+0x60/0x9c fs/file_table.c:465
- __do_sys_close fs/open.c:1572 [inline]
- __se_sys_close fs/open.c:1557 [inline]
- __arm64_sys_close+0x150/0x1e0 fs/open.c:1557
- __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
- invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:51
- el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:136
- do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:155
- el0_svc+0x54/0x158 arch/arm64/kernel/entry-common.c:678
- el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:696
- el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:595
-irq event stamp: 15314
-hardirqs last  enabled at (15313): [<ffff800080355dd4>] __up_console_sem kernel/printk/printk.c:347 [inline]
-hardirqs last  enabled at (15313): [<ffff800080355dd4>] __console_unlock kernel/printk/printk.c:2718 [inline]
-hardirqs last  enabled at (15313): [<ffff800080355dd4>] console_unlock+0x17c/0x3d4 kernel/printk/printk.c:3037
-hardirqs last disabled at (15314): [<ffff80008a716da0>] el1_dbg+0x24/0x80 arch/arm64/kernel/entry-common.c:436
-softirqs last  enabled at (15298): [<ffff800080021894>] softirq_handle_end kernel/softirq.c:399 [inline]
-softirqs last  enabled at (15298): [<ffff800080021894>] __do_softirq+0xac0/0xd54 kernel/softirq.c:582
-softirqs last disabled at (15287): [<ffff80008002aadc>] ____do_softirq+0x14/0x20 arch/arm64/kernel/irq.c:80
----[ end trace 0000000000000000 ]---
-BUG: sleeping function called from invalid context at kernel/workqueue.c:3344
-in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 6612, name: syz-executor.0
-preempt_count: 1, expected: 0
-RCU nest depth: 0, expected: 0
-3 locks held by syz-executor.0/6612:
- #0: ffff0000df81c410 (&sb->s_type->i_mutex_key#10){+.+.}-{3:3}, at: inode_lock include/linux/fs.h:802 [inline]
- #0: ffff0000df81c410 (&sb->s_type->i_mutex_key#10){+.+.}-{3:3}, at: __sock_release net/socket.c:658 [inline]
- #0: ffff0000df81c410 (&sb->s_type->i_mutex_key#10){+.+.}-{3:3}, at: sock_close+0x80/0x1e8 net/socket.c:1419
- #1: ffff0000c8dca130 (sk_lock-AF_BLUETOOTH-BTPROTO_SCO){+.+.}-{0:0}, at: lock_sock include/net/sock.h:1720 [inline]
- #1: ffff0000c8dca130 (sk_lock-AF_BLUETOOTH-BTPROTO_SCO){+.+.}-{0:0}, at: sco_sock_close net/bluetooth/sco.c:468 [inline]
- #1: ffff0000c8dca130 (sk_lock-AF_BLUETOOTH-BTPROTO_SCO){+.+.}-{0:0}, at: sco_sock_release+0x60/0x2c0 net/bluetooth/sco.c:1247
- #2: ffff0000c6413620 (&conn->lock#2){+.+.}-{2:2}, at: spin_lock include/linux/spinlock.h:351 [inline]
- #2: ffff0000c6413620 (&conn->lock#2){+.+.}-{2:2}, at: __sco_sock_close+0x378/0x7e4 net/bluetooth/sco.c:443
-Preemption disabled at:
-[<ffff800089996cf8>] spin_lock include/linux/spinlock.h:351 [inline]
-[<ffff800089996cf8>] __sco_sock_close+0x378/0x7e4 net/bluetooth/sco.c:443
-CPU: 1 PID: 6612 Comm: syz-executor.0 Tainted: G        W          6.6.0-rc7-syzkaller-00089-g8de1e7afcc1c-dirty #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/06/2023
-Call trace:
- dump_backtrace+0x1b8/0x1e4 arch/arm64/kernel/stacktrace.c:233
- show_stack+0x2c/0x44 arch/arm64/kernel/stacktrace.c:240
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xd0/0x124 lib/dump_stack.c:106
- dump_stack+0x1c/0x28 lib/dump_stack.c:113
- __might_resched+0x374/0x4d0 kernel/sched/core.c:10187
- __might_sleep+0x90/0xe4 kernel/sched/core.c:10116
- start_flush_work+0x44/0x7bc kernel/workqueue.c:3344
- __flush_work+0x11c/0x1c0 kernel/workqueue.c:3406
- __cancel_work_timer+0x3e4/0x540 kernel/workqueue.c:3494
- cancel_work_sync kernel/workqueue.c:3530 [inline]
- work_fixup_free+0x40/0x70 kernel/workqueue.c:554
- debug_object_fixup lib/debugobjects.c:530 [inline]
- __debug_check_no_obj_freed lib/debugobjects.c:1033 [inline]
- debug_check_no_obj_freed+0x464/0x534 lib/debugobjects.c:1063
- slab_free_hook mm/slub.c:1775 [inline]
- slab_free_freelist_hook mm/slub.c:1826 [inline]
- slab_free mm/slub.c:3809 [inline]
- __kmem_cache_free+0x250/0x480 mm/slub.c:3822
- kfree+0xb8/0x19c mm/slab_common.c:1075
- bt_link_release+0x20/0x30 net/bluetooth/hci_sysfs.c:16
- device_release+0x8c/0x1ac
- kobject_cleanup lib/kobject.c:682 [inline]
- kobject_release lib/kobject.c:716 [inline]
- kref_put include/linux/kref.h:65 [inline]
- kobject_put+0x1c4/0x3c4 lib/kobject.c:733
- put_device+0x28/0x40 drivers/base/core.c:3732
- hci_conn_put include/net/bluetooth/hci_core.h:1506 [inline]
- __sco_sock_close+0x3dc/0x7e4 net/bluetooth/sco.c:445
- sco_sock_close net/bluetooth/sco.c:470 [inline]
- sco_sock_release+0xb4/0x2c0 net/bluetooth/sco.c:1247
- __sock_release net/socket.c:659 [inline]
- sock_close+0xa4/0x1e8 net/socket.c:1419
- __fput+0x324/0x7f8 fs/file_table.c:384
- __fput_sync+0x60/0x9c fs/file_table.c:465
- __do_sys_close fs/open.c:1572 [inline]
- __se_sys_close fs/open.c:1557 [inline]
- __arm64_sys_close+0x150/0x1e0 fs/open.c:1557
- __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
- invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:51
- el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:136
- do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:155
- el0_svc+0x54/0x158 arch/arm64/kernel/entry-common.c:678
- el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:696
- el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:595
+>  
+>  		if (is_zero_pfn(pmd_pfn(pmd)))
+>  			categories |= PAGE_IS_PFNZERO;
+> +		if (pmd_soft_dirty(pmd))
+> +			categories |= PAGE_IS_SOFT_DIRTY;
+>  	} else if (is_swap_pmd(pmd)) {
+>  		swp_entry_t swp;
+>  
+>  		categories |= PAGE_IS_SWAPPED;
+>  		if (!pmd_swp_uffd_wp(pmd))
+>  			categories |= PAGE_IS_WRITTEN;
+> +		if (pmd_swp_soft_dirty(pmd))
+> +			categories |= PAGE_IS_SOFT_DIRTY;
+>  
+>  		if (p->masks_of_interest & PAGE_IS_FILE) {
+>  			swp = pmd_to_swp_entry(pmd);
+> @@ -1905,10 +1909,14 @@ static unsigned long pagemap_hugetlb_category(pte_t pte)
+>  			categories |= PAGE_IS_FILE;
+>  		if (is_zero_pfn(pte_pfn(pte)))
+>  			categories |= PAGE_IS_PFNZERO;
+> +		if (pte_soft_dirty(pte))
+> +			categories |= PAGE_IS_SOFT_DIRTY;
+>  	} else if (is_swap_pte(pte)) {
+>  		categories |= PAGE_IS_SWAPPED;
+>  		if (!pte_swp_uffd_wp_any(pte))
+>  			categories |= PAGE_IS_WRITTEN;
+> +		if (pte_swp_soft_dirty(pte))
+> +			categories |= PAGE_IS_SOFT_DIRTY;
+>  	}
+>  
+>  	return categories;
+> @@ -1991,6 +1999,9 @@ static int pagemap_scan_test_walk(unsigned long start, unsigned long end,
+>  	if (vma->vm_flags & VM_PFNMAP)
+>  		return 1;
+>  
+> +	if (vma->vm_flags & VM_SOFTDIRTY)
+> +		vma_category |= PAGE_IS_SOFT_DIRTY;
+> +
+>  	if (!pagemap_scan_is_interesting_vma(vma_category, p))
+>  		return 1;
+>  
+> diff --git a/include/uapi/linux/fs.h b/include/uapi/linux/fs.h
+> index da43810b7485..48ad69f7722e 100644
+> --- a/include/uapi/linux/fs.h
+> +++ b/include/uapi/linux/fs.h
+Add this identical change in tools/include/uapi/linux/fs.h as well.
 
+> @@ -316,6 +316,7 @@ typedef int __bitwise __kernel_rwf_t;
+>  #define PAGE_IS_SWAPPED		(1 << 4)
+>  #define PAGE_IS_PFNZERO		(1 << 5)
+>  #define PAGE_IS_HUGE		(1 << 6)
+> +#define PAGE_IS_SOFT_DIRTY	(1 << 7)
+Maybe one or couple of lines about it in the pagemap.rst.
 
-Tested on:
+>  
+>  /*
+>   * struct page_region - Page region with flags
 
-commit:         8de1e7af Merge branch 'for-next/core' into for-kernelci
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=17259c7b680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=3e6feaeda5dcbc27
-dashboard link: https://syzkaller.appspot.com/bug?extid=1683f76f1b20b826de67
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: arm64
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=15bfc4df680000
-
+-- 
+BR,
+Muhammad Usama Anjum
