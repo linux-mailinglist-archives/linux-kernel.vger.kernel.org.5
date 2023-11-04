@@ -2,49 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 262477E0F17
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 12:30:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88EF17E0F1B
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 12:30:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232132AbjKDL3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Nov 2023 07:29:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48084 "EHLO
+        id S232147AbjKDL3p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Nov 2023 07:29:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231741AbjKDL3n (ORCPT
+        with ESMTP id S231998AbjKDL3n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 4 Nov 2023 07:29:43 -0400
-Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 831891AA
-        for <linux-kernel@vger.kernel.org>; Sat,  4 Nov 2023 04:29:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
-        s=mail; t=1699097377;
-        bh=5CLEWlb/FZJQNq94xbAoxDHDCfPn4Oh7tFwFnTmNzCA=;
-        h=From:Date:Subject:To:Cc:From;
-        b=J22UjRvyVrsMWv1cyfJRtYIix0l/Q07ZPxnVR4jpGsIvaVjRAZ+Eqj9sKpjQrGkw2
-         rsjJElGmnnc9UozwXJm3bVY8vjiG/UGdUuqQNLCX6tdl0++AXIJM/5bhFWx3lh1S7C
-         yErA/DsDL1HWWRqjvhVbopjJy90ZLIJ0nHZP/BXU=
-From:   =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-Date:   Sat, 04 Nov 2023 12:29:30 +0100
-Subject: [PATCH RFC] misc/pvpanic: add support for normal shutdowns
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18E3E1BF
+        for <linux-kernel@vger.kernel.org>; Sat,  4 Nov 2023 04:29:41 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-9d0b4dfd60dso438358766b.1
+        for <linux-kernel@vger.kernel.org>; Sat, 04 Nov 2023 04:29:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1699097379; x=1699702179; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ZJy2KKsB0PbRWKDGIHkbpjHuAvHX1QTO5G0UNsgJYlE=;
+        b=kopawgnmyApzF0PvDeDoebgXv7h3knlw+hsq58KPya09RvlenbzpwlhXYxtvw4hAjM
+         x8Rju7AynnSJOui5M79J5qX3uCwCKDLRJR1bthx65tLXeU1Oc/8F6uSbeNbKzSZkAmqR
+         Hr6enkaH48SqYlzflsLCx6gbWw3h5soEQKQnj7+Sk/Vkt1Dg4IOc6Gs+Qoixy+a3J4h2
+         qRkZoR9Ba4MXLFIg/yF2bnuaUvSZmYg9gj5ggjd47rI998BPDa0uKkz7eLYvtq4J3E5/
+         AiJyP336rfvpfbwbAXzftte/OXYrfztGfGLdh5QEzo2927TX6yhCpPatGbZtJLtDO7Xy
+         JJlA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699097379; x=1699702179;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZJy2KKsB0PbRWKDGIHkbpjHuAvHX1QTO5G0UNsgJYlE=;
+        b=bYU/lIsjFdvLWDulGDRh0VykwtfVag4hNg7TJl/que7GRgUrrRY8OilKSg66Gihpu1
+         5ciMQaDJK9w7oWHgGATQ5A9gSa40Ba9N6rrG2rDLWT/Xw6T4igv5oxq97MA/9n5GxFko
+         P/hRwKPZpIJ0B1Iu1lplMTRkgdgQy8ZARx3Hbk3ixw1mgxPv459xrC/GPx6C45ELv+3a
+         ID7rRn6Gn7LBqHjCl66sdttGbyetHWlfW7ueHlAMCy72Fc5Lg1hAhejmFHljch0SjR+T
+         VzbBvZvrsLwHk9pIEfXkXN+J455m7YOWeUwpUe6wRHNRjBfs1UYWPOqSKoNryfEmv0hE
+         /FPQ==
+X-Gm-Message-State: AOJu0YxsmWcTcXDuXJIClyC04vSsL0eQzTqnNm+C+q8Xz1RJeib0z50o
+        BWbQ0+EXZn9T7206FrM+oRGoNg==
+X-Google-Smtp-Source: AGHT+IEuzZ1y3DjdgqAfYz2QBkwZeMYD0RlEFfRha4mPCbrG7WKwE7gDC2yS115Aw3rKUa0Nzo8mzg==
+X-Received: by 2002:a17:906:7955:b0:9dc:ee58:6604 with SMTP id l21-20020a170906795500b009dcee586604mr3980586ejo.21.1699097379512;
+        Sat, 04 Nov 2023 04:29:39 -0700 (PDT)
+Received: from [192.168.0.153] (178235177017.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.17])
+        by smtp.gmail.com with ESMTPSA id s5-20020a170906454500b009c7608eb499sm1878707ejq.94.2023.11.04.04.29.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 04 Nov 2023 04:29:39 -0700 (PDT)
+Message-ID: <27b4a561-a2af-47a4-912e-6ee6961f0f6b@linaro.org>
+Date:   Sat, 4 Nov 2023 12:29:37 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20231104-pvpanic-shutdown-v1-1-5ee7c9b3e301@weissschuh.net>
-X-B4-Tracking: v=1; b=H4sIABkrRmUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDI2NDQwMT3YKygsS8zGTd4ozSkpT88jxd07REY4tEC3PLxBRDJaC2gqLUtMw
- KsJHRSkFuzkqxtbUA2om/xmcAAAA=
-To:     Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, Zhangjin Wu <falcon@tinylab.org>,
-        Willy Tarreau <w@1wt.eu>, Yuan Tan <tanyuan@tinylab.org>,
-        =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1699097376; l=3120;
- i=linux@weissschuh.net; s=20221212; h=from:subject:message-id;
- bh=5CLEWlb/FZJQNq94xbAoxDHDCfPn4Oh7tFwFnTmNzCA=;
- b=Z9wMVem+r2d/PaEOBigYC8TqCp8MBn4xEDV9ZrtDPTaxeozFZP3MzKlUIPjqvbgeAUMUoNLXM
- V8XzLOrG74OCLqHvnXYOvBoSggaQYWan0soq1piXeGPD/IF8IiIoNME
-X-Developer-Key: i=linux@weissschuh.net; a=ed25519;
- pk=KcycQgFPX2wGR5azS7RhpBqedglOZVgRPfdFSPB1LNw=
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/3] iommu/arm-smmu: add ACTLR data and support for SM8550
+Content-Language: en-US
+To:     Bibek Kumar Patro <quic_bibekkum@quicinc.com>, will@kernel.org,
+        robin.murphy@arm.com, joro@8bytes.org, dmitry.baryshkov@linaro.org,
+        a39.skl@gmail.com, quic_saipraka@quicinc.com,
+        quic_pkondeti@quicinc.com, quic_molvera@quicinc.com
+Cc:     linux-arm-kernel@lists.infradead.org, iommu@lists.linux.dev,
+        linux-kernel@vger.kernel.org, qipl.kernel.upstream@quicinc.com
+References: <20231103215124.1095-1-quic_bibekkum@quicinc.com>
+ <20231103215124.1095-3-quic_bibekkum@quicinc.com>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <20231103215124.1095-3-quic_bibekkum@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
@@ -55,102 +78,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Shutdown requests are normally hardware dependent.
-By extending pvpanic to also handle shutdown requests, guests can
-submit such requests with an easily implementable and cross-platform
-mechanism.
 
-Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
----
-The corresponding patch to qemu has also been submitted[0].
-General discussions about the feature should happen on the other thread.
 
-[0] https://lore.kernel.org/qemu-devel/20231104-pvpanic-shutdown-v1-0-02353157891b@t-8ch.de/
----
- drivers/misc/pvpanic/pvpanic.c | 19 +++++++++++++++++--
- include/uapi/misc/pvpanic.h    |  1 +
- 2 files changed, 18 insertions(+), 2 deletions(-)
+On 11/3/23 22:51, Bibek Kumar Patro wrote:
+> Add ACTLR data table for SM8550 along with support for
+> same including SM8550 specific implementation operations.
+> 
+> Signed-off-by: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
+> ---
+>   drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 85 +++++++++++++++++++++-
+>   1 file changed, 81 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+> index 68c1f4908473..590b7c285299 100644
+> --- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+> @@ -25,6 +25,64 @@ struct actlr_data {
+>   	u32 actlr;
+>   };
+> 
+> +static const struct actlr_data sm8550_apps_actlr_data[] = {
+I assume this data will be different for each SoC.. perhaps
+moving this to a separate file (not sure if dt makes sense if
+it's hardcoded per platform) makes sense.
 
-diff --git a/drivers/misc/pvpanic/pvpanic.c b/drivers/misc/pvpanic/pvpanic.c
-index 305b367e0ce3..d7d807f5e47a 100644
---- a/drivers/misc/pvpanic/pvpanic.c
-+++ b/drivers/misc/pvpanic/pvpanic.c
-@@ -15,6 +15,7 @@
- #include <linux/module.h>
- #include <linux/platform_device.h>
- #include <linux/panic_notifier.h>
-+#include <linux/reboot.h>
- #include <linux/types.h>
- #include <linux/cdev.h>
- #include <linux/list.h>
-@@ -74,6 +75,13 @@ static struct notifier_block pvpanic_panic_nb = {
- 	.priority = INT_MAX,
- };
- 
-+static int pvpanic_sys_off(struct sys_off_data *data)
-+{
-+	pvpanic_send_event(PVPANIC_SHUTDOWN);
-+
-+	return NOTIFY_DONE;
-+}
-+
- static void pvpanic_remove(void *param)
- {
- 	struct pvpanic_instance *pi_cur, *pi_next;
-@@ -152,7 +160,7 @@ int devm_pvpanic_probe(struct device *dev, void __iomem *base)
- 		return -ENOMEM;
- 
- 	pi->base = base;
--	pi->capability = PVPANIC_PANICKED | PVPANIC_CRASH_LOADED;
-+	pi->capability = PVPANIC_PANICKED | PVPANIC_CRASH_LOADED | PVPANIC_SHUTDOWN;
- 
- 	/* initlize capability by RDPT */
- 	pi->capability &= ioread8(base);
-@@ -168,12 +176,18 @@ int devm_pvpanic_probe(struct device *dev, void __iomem *base)
- }
- EXPORT_SYMBOL_GPL(devm_pvpanic_probe);
- 
-+static struct sys_off_handler *sys_off_handler;
-+
- static int pvpanic_init(void)
- {
- 	INIT_LIST_HEAD(&pvpanic_list);
- 	spin_lock_init(&pvpanic_lock);
- 
- 	atomic_notifier_chain_register(&panic_notifier_list, &pvpanic_panic_nb);
-+	sys_off_handler = register_sys_off_handler(SYS_OFF_MODE_POWER_OFF, SYS_OFF_PRIO_DEFAULT,
-+						   pvpanic_sys_off, NULL);
-+	if (IS_ERR(sys_off_handler))
-+		sys_off_handler = NULL;
- 
- 	return 0;
- }
-@@ -182,6 +196,7 @@ module_init(pvpanic_init);
- static void pvpanic_exit(void)
- {
- 	atomic_notifier_chain_unregister(&panic_notifier_list, &pvpanic_panic_nb);
--
-+	if (sys_off_handler)
-+		unregister_sys_off_handler(sys_off_handler);
- }
- module_exit(pvpanic_exit);
-diff --git a/include/uapi/misc/pvpanic.h b/include/uapi/misc/pvpanic.h
-index 54b7485390d3..82fc618bfbcf 100644
---- a/include/uapi/misc/pvpanic.h
-+++ b/include/uapi/misc/pvpanic.h
-@@ -5,5 +5,6 @@
- 
- #define PVPANIC_PANICKED	(1 << 0)
- #define PVPANIC_CRASH_LOADED	(1 << 1)
-+#define PVPANIC_SHUTDOWN	(1 << 2)
- 
- #endif /* __PVPANIC_H__ */
+This will also assume that these can not differ between firmware
+versions.
 
----
-base-commit: 90b0c2b2edd1adff742c621e246562fbefa11b70
-change-id: 20231104-pvpanic-shutdown-5fa38a879ad1
-
-Best regards,
--- 
-Thomas Weißschuh <linux@weissschuh.net>
-
+Konrad
