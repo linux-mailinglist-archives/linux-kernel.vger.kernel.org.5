@@ -2,69 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 771A47E114A
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 23:17:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BC037E1158
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 23:24:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231134AbjKDWRZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Nov 2023 18:17:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46116 "EHLO
+        id S230268AbjKDWYi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Nov 2023 18:24:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230212AbjKDWRW (ORCPT
+        with ESMTP id S229577AbjKDWYg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Nov 2023 18:17:22 -0400
-Received: from mail-yw1-x1129.google.com (mail-yw1-x1129.google.com [IPv6:2607:f8b0:4864:20::1129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCA3DD6D
-        for <linux-kernel@vger.kernel.org>; Sat,  4 Nov 2023 15:17:19 -0700 (PDT)
-Received: by mail-yw1-x1129.google.com with SMTP id 00721157ae682-5ae143e08b1so37781037b3.1
-        for <linux-kernel@vger.kernel.org>; Sat, 04 Nov 2023 15:17:19 -0700 (PDT)
+        Sat, 4 Nov 2023 18:24:36 -0400
+Received: from mail-oa1-x30.google.com (mail-oa1-x30.google.com [IPv6:2001:4860:4864:20::30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45FE0D57
+        for <linux-kernel@vger.kernel.org>; Sat,  4 Nov 2023 15:24:34 -0700 (PDT)
+Received: by mail-oa1-x30.google.com with SMTP id 586e51a60fabf-1ef9f1640a5so1900087fac.3
+        for <linux-kernel@vger.kernel.org>; Sat, 04 Nov 2023 15:24:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699136239; x=1699741039; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1699136673; x=1699741473; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=qFj091NY484IatkiEQTNZzogLvWatap97+ZtL042cRs=;
-        b=bQtP0qUgqMze1LOQHt+4smSIw6fTeBhSAPACNoo5vbID0j+aCDrm4bmKvwg9lyqwHu
-         KwnbYcLcB9KR3W1xTctTJK2ifdyh6QJiohRzlfC3Go5fDuY3AfvgQ6ztMb6I59zcKTgg
-         /lIUAd8LPy12JJOPyaaSBLVulYlqToz6U9KHgEx8YImAHxUYXVMdhoTQmexbiZoZmszq
-         Cuh7oNuBtyvlm+vCmqMwZcxWNkddqPF1Z4n7AcGuNwwRBs55Ux3xFKlPD16vkuetoX/W
-         XRcs5A15oLFE/dbWIuhh8zqrYXqAoBdLrOUPE4ES9WNDt20rZSvqPkLC+LXr1pNbOnMi
-         bUBw==
+        bh=1xcs2HjG+fgSYQEQB0XJ0QSMbYKmU2xrcdBawACdXBo=;
+        b=F+H4peC47DpqQUoE1X7qjJ33NKUKOJPgxfTIRBV51YeTsEuTdihzIze1gnV/FqSzNf
+         XYopchOpoQXoksdQt/l33wZP6K8Mu1gxVnm9V0JISDw5o+LAFndwE5ArOpwEnF6/D6w1
+         iZY3+SeFe75d/5PEGGnKDEECozCtDpTqkqpmVTU8WFf38/F9k670rxU9xOtm42h3SWiN
+         NmZV7OrnGGPZ2ru3KZ2GXgNbtQTVVqmBI8Nj2E8qrLoi4fdpC35EG0FntrhGDPCgGlEa
+         tFCoyrwGOE186MiD736gShuyYi08xvced4XvvIsRns58ncQoStsoeWJGychDfLk4OVmS
+         E3Ow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699136239; x=1699741039;
+        d=1e100.net; s=20230601; t=1699136673; x=1699741473;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=qFj091NY484IatkiEQTNZzogLvWatap97+ZtL042cRs=;
-        b=N2r/yfy+G7DyZ5WfjIID11fS11+x5R0boAEYUACfqI/BGWrFRIOmB4JEkHn0iII4UX
-         tMJQrzMkB75bqnUFKbdGsIjFsA4KWIsuvlGdeBMjID4GSK2bDxqKXaVkqd6UhL0w9brf
-         tI+TfhIFQ4lXzdpvR54FTw6cFBFyv9bxOw4KMVawDZFrbxgDXi2/ok5j323ZPnNemQBd
-         2DmbTXOn5UYSmgYGkMYgT9ekERFTG3vsWNPK98IUpIVd00aWVDgq39zRGjucg/5dtUn3
-         gdyeFC5rj/NoW+gYMWjtU7zJQa+8TijP+ZYtRmGTfqsceFzYD3k/8/HM2m4P86cAsUOu
-         DPWQ==
-X-Gm-Message-State: AOJu0YxsNhjVZBlE1d/86zzY3NWdbRK6U6Oy2JRfRgdVA3aeLaq17SQC
-        4ferIo4+o1hbfBPKbgZ6aQN1DGwlRCSVDDS03CVeKQ==
-X-Google-Smtp-Source: AGHT+IHMsx/9Sr5/jGo9tNVECiMnGWjMcLR+eV9W9UNnHt+/Os+5LsdzN9IRgx87prnKDEtH0vwuQurH+Lp6UjR+Cj0=
-X-Received: by 2002:a0d:cac8:0:b0:5a7:d412:af32 with SMTP id
- m191-20020a0dcac8000000b005a7d412af32mr6677516ywd.10.1699136238995; Sat, 04
- Nov 2023 15:17:18 -0700 (PDT)
+        bh=1xcs2HjG+fgSYQEQB0XJ0QSMbYKmU2xrcdBawACdXBo=;
+        b=DuUlYEGGeDX9AgU0PbZ2AZ11cF6dYeG8/FFlf+fCX46XNV8KrelwLJOKurHzsYMOss
+         ijcGL3dZJWhBHBzYayuu7l9d7WGxVbunGq4ir20RX29eaaD6xcg9DWk7gCauR924Kc5q
+         2u3MuifuZnfzTVD8O9o9I9X3JJLoisX6UO2+0YkznMHjwGwWFkpkEDQk/VcdgtO+Ye9H
+         PNgTgNmO6PanSAAu5Lk2LD2nxzRqeCv+aQYemUXjEA9CORK5KY16SHIrBTARzaSbaJ6j
+         fpEEtou8E/OoqEHWFGauKWytEAULUI8ie5N3T+cDFV3oh4J+gRNTwsZLjOxNgOpCXUVl
+         v8iw==
+X-Gm-Message-State: AOJu0YwsmZARfPwyeIcWPNGHQnUOB33XEh4WuxLn+aWrTswT2BSow12s
+        ms2jAfg3RzaNQQIBl+0rrQsuV7L1DdXri+mzraHuWQ==
+X-Google-Smtp-Source: AGHT+IER/otpoIuFfvsxcXy2FWF3fIcGBep2r1GRdZPNRa7Qaor+BQNz/w5w/F7cynhoOnmkAQRZVQ2aDU8OmizXJPI=
+X-Received: by 2002:a05:6870:1607:b0:1e1:371:c3da with SMTP id
+ b7-20020a056870160700b001e10371c3damr28720679oae.20.1699136673317; Sat, 04
+ Nov 2023 15:24:33 -0700 (PDT)
 MIME-Version: 1.0
-References: <20231031-fix-rtl8366rb-v3-1-04dfc4e7d90e@linaro.org>
- <CACRpkdYiZHXMK1jmG2Ht5kU3bfi_Cor6jvKKRLKOX0KWX3AW9Q@mail.gmail.com> <20231104141031.GF891380@kernel.org>
-In-Reply-To: <20231104141031.GF891380@kernel.org>
+References: <20231103195310.948327-1-andriy.shevchenko@linux.intel.com> <20231103195310.948327-3-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20231103195310.948327-3-andriy.shevchenko@linux.intel.com>
 From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Sat, 4 Nov 2023 23:17:05 +0100
-Message-ID: <CACRpkdaxC5kAJ3BOG36t=6J273+r7-F7z7He2Y4ihwGT0ptAUA@mail.gmail.com>
-Subject: Re: [PATCH net v3] net: dsa: tag_rtl4_a: Bump min packet size
-To:     Simon Horman <horms@kernel.org>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Luiz Angelo Daros de Luca <luizluca@gmail.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Sat, 4 Nov 2023 23:24:22 +0100
+Message-ID: <CACRpkdZRAj6ZYtk8omN_UW7g=RP+tUXLcVp66Li5Wq4vLBqiFw@mail.gmail.com>
+Subject: Re: [PATCH v1 3/4] leds: trigger: gpio: Use sysfs_emit() to instead
+ of s*printf()
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -77,25 +70,16 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 4, 2023 at 3:10=E2=80=AFPM Simon Horman <horms@kernel.org> wrot=
-e:
+On Fri, Nov 3, 2023 at 8:53=E2=80=AFPM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
 
-> In this case it may not have activated the automation, but
-> I do see that the patch is now marked as "Changes Requested"
-> in patchwork, so all is well.
-
-Yeah, in this case it should even be
-
-pw-bot: reject
-
-because I found the real problem elsewhere.
-
-> FWIIW, pw-bot is (slightly) documented here:
+> Follow the advice of the Documentation/filesystems/sysfs.rst and show()
+> should only use sysfs_emit() or sysfs_emit_at() when formatting the
+> value to be returned to user space.
 >
->   https://docs.kernel.org/process/maintainer-netdev.html#updating-patch-s=
-tatus
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-Thanks, I'm getting better at it!
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
 Yours,
 Linus Walleij
