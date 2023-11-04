@@ -2,65 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A6287E0E0E
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 07:23:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A8E57E0E12
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 07:26:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230488AbjKDGVn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Nov 2023 02:21:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37386 "EHLO
+        id S231206AbjKDGZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Nov 2023 02:25:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229509AbjKDGVm (ORCPT
+        with ESMTP id S229509AbjKDGZx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Nov 2023 02:21:42 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3BA1184;
-        Fri,  3 Nov 2023 23:21:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699078899; x=1730614899;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=fWXfOWmYj+Ds8e7KIPLMXDjCzFoz16RM+HQare7RBnQ=;
-  b=OUF+WN3QJyOXjWcfgs7fKxz0sLTq8xeUw32yeB4N26G7U4Qjs1joQ547
-   7d0l1aMA739MeqCm7LBEUvxGrM8JwOCHgILku6e7nn17rFqb13gAJHk0x
-   SEKD/ujssn6+BXs77qffeXP1JlsySwQimhmZVaJKe5niIYofNe7iP9/4l
-   kfJ2mpM7chKJAQQNF8ouNXZVgMPdlTCQxyJacVaaFlL5WRh9QDsdnh2qr
-   RRgswJRsSHANtiFiFHP9l9oD/jLqeCfUT9XU7t84Bol6x6kUCg8GGi74C
-   sFrNlCGXzC57HGPB1rPh3+hd3FAaP/uZZdBag5WVNYUb93vUP9swBhdor
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10883"; a="369272430"
-X-IronPort-AV: E=Sophos;i="6.03,276,1694761200"; 
-   d="scan'208";a="369272430"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2023 23:21:39 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10883"; a="832230965"
-X-IronPort-AV: E=Sophos;i="6.03,276,1694761200"; 
-   d="scan'208";a="832230965"
-Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by fmsmga004.fm.intel.com with ESMTP; 03 Nov 2023 23:21:36 -0700
-Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qzA2J-0003Y0-0E;
-        Sat, 04 Nov 2023 06:21:35 +0000
-Date:   Sat, 4 Nov 2023 14:20:26 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Edward Adam Davis <eadavis@qq.com>, richardcochran@gmail.com
-Cc:     oe-kbuild-all@lists.linux.dev, davem@davemloft.net,
-        habetsm.xilinx@gmail.com, jeremy@jcline.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        reibax@gmail.com,
-        syzbot+df3f3ef31f60781fa911@syzkaller.appspotmail.com
-Subject: Re: [PATCH net-next V4] ptp: fix corrupted list in ptp_open
-Message-ID: <202311041344.zDyYh5Ty-lkp@intel.com>
-References: <tencent_8A38BBB333189E6E1B4A4B821BF82569BA08@qq.com>
+        Sat, 4 Nov 2023 02:25:53 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14DD4D4E;
+        Fri,  3 Nov 2023 23:25:49 -0700 (PDT)
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A46Mj2s003718;
+        Sat, 4 Nov 2023 06:25:30 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=FF+AubAxdBtQyqoK1rXHKIxkMnLgY9CQlvcYzJVd4tI=;
+ b=SHycbO/qK4paUUQn4nC+afmkMkO/OyRo+SpdGRCZccsYrrgAso/Xuy/FtXfF6EV4fCtr
+ 4uXCMO2ZE9KKyklkmCESMpzRLkbew/I559xMfcNIf2Eb+JcCRz1HFWTg+0vvB0p3XvHM
+ A7HMzTJuMWKZ5I4EXWFmkaTlvBlpZexvptML5eCpTJwXqFZgkpAXc07JLQ1QBz4Ug2qh
+ IQgj1b9MD1aEj55aoqH1VCuVkv31HYhnAv9u2uKA+BclJZOhnh7c3Iklx0hqPEPjsfCu
+ wFOt2Obnv5iPHJGQGdiwJ1aYtU7qJ4tPsyhw+GoQLX6IuRAKdPTErmokhZ2Ieb9qK4h+ cw== 
+Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u5eekg6rd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 04 Nov 2023 06:25:30 +0000
+Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
+        by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3A46PUGP002481
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 4 Nov 2023 06:25:30 GMT
+Received: from [10.253.39.47] (10.80.80.8) by nasanex01c.na.qualcomm.com
+ (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Fri, 3 Nov
+ 2023 23:25:27 -0700
+Message-ID: <7f0df23b-f00e-fef8-fa03-314fcfe136eb@quicinc.com>
+Date:   Sat, 4 Nov 2023 14:25:25 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <tencent_8A38BBB333189E6E1B4A4B821BF82569BA08@qq.com>
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH] net: phy: at803x: add QCA8084 ethernet phy support
+To:     Andrew Lunn <andrew@lunn.ch>
+CC:     <hkallweit1@gmail.com>, <linux@armlinux.org.uk>,
+        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+        <pabeni@redhat.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20231103123538.15735-1-quic_luoj@quicinc.com>
+ <806fb6b6-d9b6-457b-b079-48f8b958cc5a@lunn.ch>
+Content-Language: en-US
+From:   Jie Luo <quic_luoj@quicinc.com>
+In-Reply-To: <806fb6b6-d9b6-457b-b079-48f8b958cc5a@lunn.ch>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01c.na.qualcomm.com (10.45.79.139)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: b80QBcTX3QKOAy7HFz7Xuppm_qjj_JcN
+X-Proofpoint-GUID: b80QBcTX3QKOAy7HFz7Xuppm_qjj_JcN
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-04_04,2023-11-02_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 impostorscore=0
+ lowpriorityscore=0 clxscore=1015 priorityscore=1501 malwarescore=0
+ adultscore=0 phishscore=0 suspectscore=0 spamscore=0 mlxlogscore=815
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2310240000 definitions=main-2311040052
+X-Spam-Status: No, score=-6.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
         URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,56 +82,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Edward,
-
-kernel test robot noticed the following build warnings:
-
-[auto build test WARNING on net-next/main]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Edward-Adam-Davis/ptp-fix-corrupted-list-in-ptp_open/20231104-112916
-base:   net-next/main
-patch link:    https://lore.kernel.org/r/tencent_8A38BBB333189E6E1B4A4B821BF82569BA08%40qq.com
-patch subject: [PATCH net-next V4] ptp: fix corrupted list in ptp_open
-config: arc-randconfig-001-20231104 (https://download.01.org/0day-ci/archive/20231104/202311041344.zDyYh5Ty-lkp@intel.com/config)
-compiler: arc-elf-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231104/202311041344.zDyYh5Ty-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311041344.zDyYh5Ty-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   drivers/ptp/ptp_chardev.c: In function 'ptp_release':
->> drivers/ptp/ptp_chardev.c:148:23: warning: unused variable 'flags' [-Wunused-variable]
-     148 |         unsigned long flags;
-         |                       ^~~~~
 
 
-vim +/flags +148 drivers/ptp/ptp_chardev.c
+On 11/3/2023 9:01 PM, Andrew Lunn wrote:
+>>   #define QCA8081_PHY_ID				0x004dd101
+>> +#define QCA8081_PHY_MASK			0xffffff00
+> 
+> That is an unusual mask. Please check it is correct. All you should
+> need its PHY_ID_MATCH_EXACT, PHY_ID_MATCH_MODEL, PHY_ID_MATCH_VENDOR.
 
-8f5de6fb245326 Xabier Marquiegui 2023-10-12  142  
-8f5de6fb245326 Xabier Marquiegui 2023-10-12  143  int ptp_release(struct posix_clock_context *pccontext)
-8f5de6fb245326 Xabier Marquiegui 2023-10-12  144  {
-8f5de6fb245326 Xabier Marquiegui 2023-10-12  145  	struct timestamp_event_queue *queue = pccontext->private_clkdata;
-f0e5eaa3097d80 Edward Adam Davis 2023-11-04  146  	struct ptp_clock *ptp =
-f0e5eaa3097d80 Edward Adam Davis 2023-11-04  147  		container_of(pccontext->clk, struct ptp_clock, clock);
-8f5de6fb245326 Xabier Marquiegui 2023-10-12 @148  	unsigned long flags;
-8f5de6fb245326 Xabier Marquiegui 2023-10-12  149  
-8f5de6fb245326 Xabier Marquiegui 2023-10-12  150  	if (queue) {
-f0e5eaa3097d80 Edward Adam Davis 2023-11-04  151  		mutex_lock(&ptp->tsevq_mux);
-403376ddb4221b Xabier Marquiegui 2023-10-12  152  		debugfs_remove(queue->debugfs_instance);
-8f5de6fb245326 Xabier Marquiegui 2023-10-12  153  		pccontext->private_clkdata = NULL;
-8f5de6fb245326 Xabier Marquiegui 2023-10-12  154  		list_del(&queue->qlist);
-f0e5eaa3097d80 Edward Adam Davis 2023-11-04  155  		mutex_unlock(&ptp->tsevq_mux);
-c5a445b1e9347b Xabier Marquiegui 2023-10-12  156  		bitmap_free(queue->mask);
-8f5de6fb245326 Xabier Marquiegui 2023-10-12  157  		kfree(queue);
-8f5de6fb245326 Xabier Marquiegui 2023-10-12  158  	}
-d94ba80ebbea17 Richard Cochran   2011-04-22  159  	return 0;
-d94ba80ebbea17 Richard Cochran   2011-04-22  160  }
-d94ba80ebbea17 Richard Cochran   2011-04-22  161  
+Thanks Andrew for the review.
+The PHY ID of qca8084 is correct, i will update to use 
+PHY_ID_MATCH_EXACT in the new added entry for qca8084.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> 
+>> @@ -1767,6 +1781,20 @@ static int qca808x_config_init(struct phy_device *phydev)
+>>   {
+>>   	int ret;
+>>   
+>> +	if (phydev->phy_id == QCA8084_PHY_ID) {
+>> +		/* Invert ADC clock edge */
+>> +		ret = at803x_debug_reg_mask(phydev, QCA8084_ADC_CLK_SEL,
+>> +					    QCA8084_ADC_CLK_SEL_ACLK,
+>> +					    FIELD_PREP(QCA8084_ADC_CLK_SEL_ACLK,
+>> +						       QCA8084_ADC_CLK_SEL_ACLK_FALL));
+>> +		if (ret < 0)
+>> +			return ret;
+>> +
+>> +		/* Adjust MSE threshold value to avoid link issue with some link partner */
+>> +		return phy_write_mmd(phydev, MDIO_MMD_PMAPMD,
+>> +				QCA8084_MSE_THRESHOLD, QCA8084_MSE_THRESHOLD_2P5G_VAL);
+>> +	}
+>> +
+> 
+> Please add a qca8084_config_init() and use that from the phy_driver
+> structure.
+
+OK.
+
+> 
+>>   	/* Active adc&vga on 802.3az for the link 1000M and 100M */
+>>   	ret = phy_modify_mmd(phydev, MDIO_MMD_PCS, QCA808X_PHY_MMD3_ADDR_CLD_CTRL7,
+>>   			QCA808X_8023AZ_AFE_CTRL_MASK, QCA808X_8023AZ_AFE_EN);
+>> @@ -1958,6 +1986,11 @@ static int qca808x_cable_test_start(struct phy_device *phydev)
+>>   	phy_write_mmd(phydev, MDIO_MMD_PCS, 0x807a, 0xc060);
+>>   	phy_write_mmd(phydev, MDIO_MMD_PCS, 0x807e, 0xb060);
+>>   
+>> +	if (phydev->phy_id == QCA8084_PHY_ID) {
+>> +		phy_write_mmd(phydev, MDIO_MMD_PCS, 0x8075, 0xa060);
+>> +		phy_write_mmd(phydev, MDIO_MMD_PCS, 0x807f, 0x1eb0);
+>> +	}
+>> +
+> 
+> Please add a comment what this is doing.
+
+Ok, will add comments in the next patch.
+
+> 
+>>   }, {
+>>   	/* Qualcomm QCA8081 */
+>> -	PHY_ID_MATCH_EXACT(QCA8081_PHY_ID),
+>> -	.name			= "Qualcomm QCA8081",
+>> +	.phy_id			= QCA8081_PHY_ID,
+>> +	.phy_id_mask		= QCA8081_PHY_MASK,
+>> +	.name			= "Qualcomm QCA808X",
+> 
+> Please add a new entry for the 8084.
+> 
+>         Andrew
+
+Will add it in the next patch, thanks.
