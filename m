@@ -2,121 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 949BB7E0D84
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 04:40:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACFD27E0D97
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 04:56:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231335AbjKDDjd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 23:39:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54736 "EHLO
+        id S233372AbjKDDkr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 23:40:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229509AbjKDDjb (ORCPT
+        with ESMTP id S232346AbjKDDkn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 23:39:31 -0400
-Received: from nautica.notk.org (nautica.notk.org [91.121.71.147])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 374BFBF
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 20:39:28 -0700 (PDT)
-Received: by nautica.notk.org (Postfix, from userid 108)
-        id 8C2BFC009; Sat,  4 Nov 2023 04:39:25 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
-        t=1699069165; bh=bqVJARalMpuZfvwuVrtAyfyj2tFBWs+NtWZpQL9dz3E=;
-        h=Date:From:To:Cc:Subject:From;
-        b=uCDAV8L7JRxlQ6QZMMDq1yxnOPmLLcBsdVOtSzJG2HBE+9defjMQ/ixYCOMfALSOM
-         mKlp6/5gF7HblOhePDlCZPzm6D9yptHxzh5zmdiyg6XBKAa78dP08XUIFYK88QFW3o
-         qrv1jWcINzD7aFX6LfxHUgl1dUbFQEtWNGq1lKnmYLCYsuWHodQoMo2hvvmoTophyh
-         eWojZxuuxTRmcJNnmZUFvRbylc5vq3CrTd6KmJMNFLDEtoGvWXS0NuA5HjkT0q20Zj
-         /SIekEW+B0nvTmtENIsrwIVHp2wa9fXEAUcsITpp6WkvpAg2t1T3ED1R/n6QfhOYTF
-         JLgi/sTmiFOqQ==
+        Fri, 3 Nov 2023 23:40:43 -0400
+Received: from mail-ua1-x933.google.com (mail-ua1-x933.google.com [IPv6:2607:f8b0:4864:20::933])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D837E112
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 20:40:40 -0700 (PDT)
+Received: by mail-ua1-x933.google.com with SMTP id a1e0cc1a2514c-7ba962d534eso1183519241.3
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Nov 2023 20:40:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699069240; x=1699674040; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=X4P3bYh9Zwqy1aAjUWkGY6076o9yDPQdEiqxwE5TUIc=;
+        b=kYG++IzsUeuLJeUjiT6oS+DsGT8kGrGm4M3jxaG3rjYLJEp7HFMS2tMLvHx/xRMoi/
+         jm0y++rQTZlGcCq6da6FyoOKtzKz5m1rXJw31xA+Y4BbuJekLyY1zz/vctcN7ZRFDW4q
+         AkQ1TmUVgN45P1ErBlbhixvqDKusQ4IAyeY2h2nWjBLTyUHle1c2Ou5tyyuN+CLoe30U
+         kHTgdUNxbWgjW2XDJzC6M1EWeXqPbLX2dcNAVGl8+UcJV2+FekE2faNEhwgZ+ZoJYQ/Y
+         Rp/IGYENLmfS3PzrSCnHY8WYa68mlPBiyoTyddy4rRjYWH/jmD/bIu5rfKrwzz9Q0Ucb
+         fPsg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699069240; x=1699674040;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=X4P3bYh9Zwqy1aAjUWkGY6076o9yDPQdEiqxwE5TUIc=;
+        b=EJSsuF3hqc+jAOLKnsLxk6vK3gvEnKdqMwjsyx7mGusmxIqdo8F07KtNgXqsHTKq8Y
+         4TNnLJc7+uwrvx45XT3NyZ5aMfpNwLlsfyOLTSLnSl+j2HlzX0KxwGZlrrbd0t5PH8+O
+         iSp5aF5uNRMrZLYJ8h1y3i5arfbX82UfFL0OxDBVnWSNP9s+48jnus6ALN09YDoIsAo2
+         6ZZ6xJCXYhPQFehIFAmKUDK7DYYUwSihHG3suFXxA+LFq+JcYl7pLZk5FM3wZYLJOKgm
+         lBS2GA2sUVHUy7FKTeZdG4CMzxJOWVeNRc5KwxFKNma0Cl3wb9YCUZNUcY1z75eAIJg2
+         //Rg==
+X-Gm-Message-State: AOJu0YySdNbwibnMG6qAhQ2gKHakpoKghIxSN+5XXsVAGwCvLP/5WkRr
+        iY4h5Tt7Zvmm+8evf4XavFFMSkwLLV32ebfhzYI=
+X-Google-Smtp-Source: AGHT+IHz+zeClFbd08BRhD2Yin+mZl+xyvhJonkP9youZ6lLqNo8ot2P+riNI9lW1g0F3fXRRfwYY2NRqupQP5TTYWQ=
+X-Received: by 2002:a05:6102:205a:b0:45d:9d27:215e with SMTP id
+ q26-20020a056102205a00b0045d9d27215emr2936475vsr.20.1699069239954; Fri, 03
+ Nov 2023 20:40:39 -0700 (PDT)
+MIME-Version: 1.0
+References: <20231103131011.1316396-1-lb@semihalf.com> <20231103131011.1316396-6-lb@semihalf.com>
+In-Reply-To: <20231103131011.1316396-6-lb@semihalf.com>
+From:   jim.cromie@gmail.com
+Date:   Fri, 3 Nov 2023 21:40:13 -0600
+Message-ID: <CAJfuBxwKXRd1vVtpxCOh7_jWrO3CQU0H+3gOvNkYBt-m3V75pw@mail.gmail.com>
+Subject: Re: [PATCH v1 05/12] tracefs: add TP_printk_no_nl - RFC
+To:     =?UTF-8?Q?=C5=81ukasz_Bartosik?= <lb@semihalf.com>,
+        Steven Rostedt <rostedt@goodmis.org>
+Cc:     Jason Baron <jbaron@akamai.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Guenter Roeck <groeck@google.com>,
+        Yaniv Tzoreff <yanivt@google.com>,
+        Benson Leung <bleung@google.com>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        Pekka Paalanen <ppaalanen@gmail.com>,
+        Sean Paul <seanpaul@chromium.org>,
+        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org,
+        upstream@semihalf.com, pmladek@suse.com,
+        sergey.senozhatsky@gmail.com, john.ogness@linutronix.de,
+        Simon Ser <contact@emersion.fr>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
-Received: from gaia (localhost [127.0.0.1])
-        by nautica.notk.org (Postfix) with ESMTPS id 62FA8C009;
-        Sat,  4 Nov 2023 04:39:23 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
-        t=1699069164; bh=bqVJARalMpuZfvwuVrtAyfyj2tFBWs+NtWZpQL9dz3E=;
-        h=Date:From:To:Cc:Subject:From;
-        b=ziDvt2egvZRt8SrbNo0+N3AIYbLRfHkcqzpLNcVIicwn3aQ0eNuWeVfJLGLGNoHL8
-         0r0QjvcaG7RTnTTvIqA2Goui6npuzI9JohPmgylxkepZR+9XdlxRKNcTBTQCUlO003
-         hN1YfCl/V1vXJN2PycVNUW3nDMyUIHz5Kfp6QVfIxFvSIkqptrLaY34mB2yuvx4U2q
-         CMSkk1ejpOwB4Ry/RWE69OOb5QQ3jKq/h4/R5Wtq35b5XYSLVun9VFmWDSGM+FquQg
-         rdSHbZz6HUjZx6O3+HA1ckhasq88aJwMQQNoyIR4PIwfPsrijggcAeW284HAQBu0z4
-         Z7gVHfVm9fZMw==
-Received: from localhost (gaia [local])
-        by gaia (OpenSMTPD) with ESMTPA id 7c6e001d;
-        Sat, 4 Nov 2023 03:39:20 +0000 (UTC)
-Date:   Sat, 4 Nov 2023 12:39:05 +0900
-From:   Dominique Martinet <asmadeus@codewreck.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Christian Schoenebeck <linux_oss@crudebyte.com>,
-        Eric Van Hensbergen <ericvh@kernel.org>,
-        v9fs@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] 9p fixes for 6.7-rc1
-Message-ID: <ZUW82S8bGg2BAeNU@codewreck.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 05d3ef8bba77c1b5f98d941d8b2d4aeab8118ef1:
+On Fri, Nov 3, 2023 at 7:10=E2=80=AFAM =C5=81ukasz Bartosik <lb@semihalf.co=
+m> wrote:
+>
+> From: Jim Cromie <jim.cromie@gmail.com>
+>
+> This variant of TP_printk() does *not* add the trailing newline.  It
+> is for use by printk/debug-ish events which already have a trailing
+> newline.  Its here to support:
+>
+> https://lore.kernel.org/lkml/
+> 20200825153338.17061-1-vincent.whitchurch@axis.com/
+> which taught dyndbg to send pr_debug() msgs to tracefs, via -x/T flag.
+>
+> It "reused" the include/trace/events/printk.h console event,
+> which does the following:
+>
+>         TP_fast_assign(
+>                 /*
+>                  * Each trace entry is printed in a new line.
+>                  * If the msg finishes with '\n', cut it off
+>                  * to avoid blank lines in the trace.
+>                  */
+>                 if ((len > 0) && (text[len-1] =3D=3D '\n'))
+>                         len -=3D 1;
+>
+>                 memcpy(__get_str(msg), text, len);
+>                 __get_str(msg)[len] =3D 0;
+>         ),
+>
+> That trim work could be avoided, *iff* all pr_debug() callers are
+> known to have no '\n' to strip.  While thats not true for *all*
+> callsites, it is 99+% true for DRM.debug callsites, and can be made
+> true for some subsets of prdbg/dyndbg callsites.
 
-  Linux 6.6-rc7 (2023-10-22 12:11:21 -1000)
+some or all of DRM.debug messages (that I audited / caught)
+were merged by Maxime recently, I;ll go back (later) to see if I missed any=
+.
 
-are available in the Git repository at:
+>
+> WANTED: macros to validate that a literal format-str has or doesn't
+> have a trailing newline, or to provide or trim trailing newline(s?).
+> Should be usable in TP_printk* defns, for use in new event defns.
 
-  https://github.com/martinetd/linux tags/9p-for-6.7-rc1
+that might be over-optimizing
 
-for you to fetch changes up to ce07087964208eee2ca2f9ee4a98f8b5d9027fe6:
+Steve,
+IIRC you considered adding \n where needed.
+is there anything gained (conceivably) by not just adding the trailing
+\n when "needed" ?
+statistically, macros could get us to 99.99+ "compliance"
+IIRC - the "needed" seems correct.
 
-  9p/net: fix possible memory leak in p9_check_errors() (2023-10-27 12:44:13 +0900)
 
-----------------------------------------------------------------
-Bunch of small fixes:
-
-- three W=1 warning fixes: the NULL -> "" replacement isn't trivial
-but is serialized identically by the protocol layer and has been tested
-- one syzbot/KCSAN datarace annotation where we don't care about users
-messing with the fd they passed to mount -t 9p
-- removing a declaration without implementation
-- yet another race fix for trans_fd around connection close:
-the 'err' field is also used in potentially racy calls and this
-isn't complete, but it's better than what we have.
-- and finally a theorical memory leak fix on serialization failure
-
-----------------------------------------------------------------
-Dominique Martinet (3):
-      9p: v9fs_listxattr: fix %s null argument warning
-      9p/net: xen: fix false positive printf format overflow warning
-      9p/fs: add MODULE_DESCIPTION
-(^ I've just noticed DESCIPTION -> DESCRIPTION typo, but I guess it's
-understandable enough and I'd rather not rebase the branch just before
-sending the pull request (that last memory leak patch came in late
-enough) -- please say if you'd rather I fix it up and I'll resend this)
-
-Hangyu Hua (1):
-      9p/net: fix possible memory leak in p9_check_errors()
-
-Marco Elver (1):
-      9p/trans_fd: Annotate data-racy writes to file::f_flags
-
-Sishuai Gong (1):
-      9p/trans_fd: avoid sending req to a cancelled conn
-
-Yue Haibing (1):
-      fs/9p: Remove unused function declaration v9fs_inode2stat()
-
- fs/9p/v9fs.c       |  1 +
- fs/9p/v9fs_vfs.h   |  1 -
- fs/9p/xattr.c      |  5 +++--
- net/9p/client.c    |  8 +++++---
- net/9p/trans_fd.c  | 21 ++++++++++++++++-----
- net/9p/trans_xen.c | 15 +++++++--------
- 6 files changed, 32 insertions(+), 19 deletions(-)
-
--- 
-Dominique Martinet | Asmadeus
+>
+> Cc: <rostedt@goodmis.org>
+> Cc: Vincent Whitchurch <vincent.whitchurch@axis.com>
+> Cc: <daniel@ffwll.ch>
+> Cc: <pmladek@suse.com>
+> Cc: <sergey.senozhatsky@gmail.com>
+> Cc: <john.ogness@linutronix.de>
+> Cc: Simon Ser <contact@emersion.fr>
+> Cc: Sean Paul <seanpaul@chromium.org>
+> Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
+> ---
+>  include/trace/stages/stage3_trace_output.h | 3 +++
+>  include/trace/stages/stage7_class_define.h | 3 +++
+>  2 files changed, 6 insertions(+)
+>
+> diff --git a/include/trace/stages/stage3_trace_output.h b/include/trace/s=
+tages/stage3_trace_output.h
+> index c1fb1355d309..5f5c1374fa10 100644
+> --- a/include/trace/stages/stage3_trace_output.h
+> +++ b/include/trace/stages/stage3_trace_output.h
+> @@ -8,6 +8,9 @@
+>  #undef TP_printk
+>  #define TP_printk(fmt, args...) fmt "\n", args
+>
+> +#undef TP_printk_no_nl
+> +#define TP_printk_no_nl(fmt, args...) fmt, args
+> +
+>  #undef __get_dynamic_array
+>  #define __get_dynamic_array(field)     \
+>                 ((void *)__entry + (__entry->__data_loc_##field & 0xffff)=
+)
+> diff --git a/include/trace/stages/stage7_class_define.h b/include/trace/s=
+tages/stage7_class_define.h
+> index bcb960d16fc0..8247e4478f19 100644
+> --- a/include/trace/stages/stage7_class_define.h
+> +++ b/include/trace/stages/stage7_class_define.h
+> @@ -37,3 +37,6 @@
+>
+>  #undef TP_printk
+>  #define TP_printk(fmt, args...) "\"" fmt "\", "  __stringify(args)
+> +
+> +#undef TP_printk_no_nl
+> +#define TP_printk_no_nl(fmt, args...) "\"" fmt "\", "  __stringify(args)
+> --
+> 2.42.0.869.gea05f2083d-goog
+>
