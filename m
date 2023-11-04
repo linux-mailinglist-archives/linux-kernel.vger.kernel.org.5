@@ -2,54 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C7897E1053
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 17:17:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 877567E1066
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 18:00:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232281AbjKDQQ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Nov 2023 12:16:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45412 "EHLO
+        id S231197AbjKDQ2t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Nov 2023 12:28:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbjKDQQ5 (ORCPT
+        with ESMTP id S229453AbjKDQ2s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Nov 2023 12:16:57 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AB2AFB;
-        Sat,  4 Nov 2023 09:16:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-        bh=RT5Ut20jrhX/hrW/CDlt1qCBPlWYiI4JJZPBleWMyLY=; b=nyMtB7I00lmrkt77VjXaHJZ62O
-        guNRsSIyM2Myefi3Fxh8DhOUT1p6ByZfVmonAqzsxXUngTXeHV9BN3rs3ep7+31lVOFk9e+Mmqwy0
-        gYlc2k1PvqyQJfXTVLTdyg47U+xWBCWOfNcjNkXirRT9Fcd8qeWL0R+HC61Nfu430CdqN2WU++eA2
-        hiWC4ooOjbjytW7rihZ7ZJJ28dSL5ZCo77R280zL4l5bna/jeS5SMqu8OlalQDCfg0MZlErnqlSp1
-        dJYpedaM9QLcJ3i/1bs0/8wHgWvBEg10SrYXyCyosDXrKb8tSq7eYK0JeOY5086dkiPISdt5tEV0c
-        83EuIEFQ==;
-Received: from [50.53.46.231] (helo=[192.168.254.15])
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qzJK9-00DaSg-0e;
-        Sat, 04 Nov 2023 16:16:37 +0000
-Message-ID: <439e83e3-cf56-4437-ba20-1fcf90ce8089@infradead.org>
-Date:   Sat, 4 Nov 2023 09:16:34 -0700
+        Sat, 4 Nov 2023 12:28:48 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7963BD
+        for <linux-kernel@vger.kernel.org>; Sat,  4 Nov 2023 09:27:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1699115278;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=u2jDVzbLBh0kvfSZEJXD4LBDAg75vXnR88Q8IZiv90k=;
+        b=eOh+fd61lnOkiQORZWuxHsjr2W2Gnsb/Kz7g/ANC3P03UoyOUvxxXQLhQ4k4EDJnwPV34I
+        rSHCWgQZHX6zXW3cTohneHPjSr6LdGfNP2eW82R7cjRjAIpr50PArJl6GAdj2lAu753GR2
+        P0XWtwrS7Y2Zg/48T3hTz1ABGGouam4=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-654-9CFNkHJMO1SAUMVHEno9qA-1; Sat,
+ 04 Nov 2023 12:27:55 -0400
+X-MC-Unique: 9CFNkHJMO1SAUMVHEno9qA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 1460C3806287;
+        Sat,  4 Nov 2023 16:27:55 +0000 (UTC)
+Received: from redhat.com (unknown [10.2.20.25])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id DCC3AC12913;
+        Sat,  4 Nov 2023 16:27:54 +0000 (UTC)
+Received: from fche by redhat.com with local (Exim 4.94.2)
+        (envelope-from <fche@redhat.com>)
+        id 1qzJV3-0004Q4-T3; Sat, 04 Nov 2023 12:27:54 -0400
+Date:   Sat, 4 Nov 2023 12:27:53 -0400
+From:   "Frank Ch. Eigler" <fche@redhat.com>
+To:     systemtap@sourceware.org, linux-kernel@vger.kernel.org, lwn@lwn.net
+Subject: systemtap 5.0 release
+Message-ID: <20231104162753.GA16986@redhat.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] sparc: Use shared font data
-To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        "Dr. David Alan Gilbert" <linux@treblig.org>, davem@davemloft.net,
-        sam@ravnborg.org, benh@kernel.crashing.org,
-        akpm@linux-foundation.org
-Cc:     sparclinux@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mpe@ellerman.id.au
-References: <20230807010914.799713-1-linux@treblig.org>
- <ZUWch6-cSpcafPsF@gallifrey>
- <b09106ada4774c7860afc85a28cc564d220cdc7f.camel@physik.fu-berlin.de>
-Content-Language: en-US
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <b09106ada4774c7860afc85a28cc564d220cdc7f.camel@physik.fu-berlin.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+User-Agent: Mutt/1.12.0 (2019-05-25)
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -58,33 +63,137 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The SystemTap team announces release 5.0
+
+Faster & more reliable kernel-user transport; support for forthcoming
+debuginfod "metadata" searches to mass-probe potentially installed
+binaries; deprecated support for RHEL6 2.6.32 and earlier kernels;
+more DWARF5 debuginfo format support.
 
 
-On 11/4/23 01:53, John Paul Adrian Glaubitz wrote:
-> Hi Dave,
-> 
-> On Sat, 2023-11-04 at 01:21 +0000, Dr. David Alan Gilbert wrote:
->> The PowerPC version of this just got merged (0ebc7feae79ac, thanks
->> Michael!), but I've not had any interest from anyone to merge
->> this SPARC version; I'd be happy to rebase and text on current
->> head if someone has an idea how to get it merged.
-> 
-> Since both Debian and Gentoo are still maintaining their SPARC ports, we're
-> naturally interested in getting such improvements merged. However, the SPARC
-> maintainer, David Miller, has been inactive for some time and I currently don't
-> know what the state of his role as the maintainer is.
-> 
-> I will try to reach out to him to find out what the state of things is.
-> 
-> Thanks for your continued interest in getting this improvement in.
+= Where to get it
 
-Hi,
-I have a couple of SPARC patches that I would like to see merged also,
-if you have any success:
+  https://sourceware.org/systemtap/ - our project page
+  https://sourceware.org/systemtap/ftp/releases/
+  https://koji.fedoraproject.org/koji/packageinfo?packageID=615
+  git tag release-5.0 (commit cfc2c1d53924face11e3fab78ded61c359778eb9)
 
-https://lore.kernel.org/lkml/20230703230153.19421-1-rdunlap@infradead.org/
-https://lore.kernel.org/lkml/20230703230202.19844-1-rdunlap@infradead.org/
+  There have been over 110 commits since the last release.
+  There have been over 35 bugs fixed / features added since the last release.
 
-thanks.
--- 
-~Randy
+
+= SystemTap frontend (stap) changes
+
+- More probe point process details are printed in "-L" list mode with
+  more "-v".
+
+- For the case where newer kernels may break systemtap runtime APIs,
+  better pass-4 failure diagnostics are printed.
+
+- The target(s) of process probes may be specified by path name globs,
+  as located selected debuginfod servers.  This requires the
+  debuginfod servers to support "metadata" queries.  At the time of
+  this systematp release, this debuginfod capability is under review
+  in elfutils, so not yet merged into elfutils master/releases.
+  
+  # export DEBUGINFOD_URLS="URL1 URL2 ..."
+  # stap -e 'probe debuginfod.process("/usr/*/curl").begin { log("hi") }'
+
+
+= SystemTap backend changes
+
+- Performance improvements in uprobe registration and module startup.
+
+- The kernel-user message transport system added framing codes, making
+  the transport more reliable, but becoming incompatible across
+  pre-5.0 versions.  Use matching versions of stap and staprun.
+
+- RHEL6, kernel 2.6.32* as well as older releases have been deprecated
+  from the codebase.  RHEL7 and kernel version 3.10 are now the oldest
+  supported versions for Systemtap.
+
+- New runtime macro STP_TIMING_NSECS is now supported for reporting probe timing
+  stats in nsecs instead of cycles.  This may become default later.
+
+- Add new runtime macro STP_FORCE_STDOUT_TTY to override STP_STDOUT_NOT_ATTY.
+
+
+= SystemTap tapset changes
+
+- Tapset function print_ubacktrace_fileline() now understands DWARF5.
+
+- The testsuite Makefile has been simplified to remove concurrency,
+  so "parallel" and "resume" modes are gone.
+
+- Numerous kernel porting tweaks.
+
+
+= SystemTap sample scripts
+
+* All 190+ examples can be found at https://sourceware.org/systemtap/examples/
+
+
+= Examples of tested kernel versions
+
+  3.10.0 (RHEL7)
+  4.18.0 (RHEL8 + CentOS Stream 8 x86_64, aarch64, ppc64le, s390x)
+  5.14.0 (RHEL9 + CentOS Stream 9 x86_64, aarch64, ppc64le, s390x)
+  6.4.15 (Fedora 38 x86_64)
+  6.5.6 (Fedora 39 x86_64)  
+  6.6.0-rc (Fedora rawhide x86_64)
+
+
+= Known issues with this release
+
+None, it's practically perfect.
+
+
+= Contributors for this release
+
+Aaron Merey, Aliaksandr Valialkin*, Frank Ch. Eigler, Housam Alamour*,
+Martin Cermak, Ryan Goldberg, Serhei Makarov, William Cohen, Yaakov
+Selkowitz, Yichun Zhang (agentzh), lijunlong*
+
+Special thanks to new contributors, marked with '*' above.
+
+
+= Bugs fixed for this release <https://sourceware.org/PR#####>
+
+30396  kernel 6.3.* objtool/ibt warnings during pass 4
+30406  C symbol conflicts when using Fedora 36's 6.2 kernels and -DDEBUG_MEM
+20735  "soft lockup" bug on RHEL7 ppc64
+30405  Kernel errors in kallsyms_on_each_symbol() with Fedora 36's 6.2/6.1 debug kernels
+30395  Regex code has invalid memory reads caught by KASAN
+30408  Always fail to read userland memory (read faults) inside perf event probes with 6.2/6.1 kernels
+30454  The stap runtime does not call nmi_uaccess_okay() to protect data races against CR3 switching on X86
+29765  Convert NFS from readpages to readahead => tapset/linux/nfs.stp breakage
+30484  stap-report scrapes too much /sys /proc
+30415  conflicting types for ‘kallsyms_on_each_symbol’
+30459  Ko compilation failures with kernel 6.1/6.2 kernel headers
+30570  Type inference for elided try-catch block has unresolved error variable type
+30617  Systemtap unable to successfully build kernel modules for linux-6.5
+30634  sprintf_traceback* can flush content to stapio stream
+30442  optional statement probes still throw exceptions that kill pass-2
+29108  persistent intermittent bufhdr-corruption / transport-failures, even with large -s
+30749  stap --sign-module doesn't sign the module, as one would expect
+30456  Kernel 5.18+ retired set_fs() and replaced it with the user_access_begin/end() pair for userland memory accesses
+30777  Systemtap modules unable to run on systemtap supporting Intel CET IBT
+27410  rpm-set path based probes
+30858  improve diagnostics for kernel unsupported version
+30864  json-c required, but not during configure
+30831  Systemtap scripts fail to compile on newest linux 6.6 kernels
+30416  unable to find member 'request' for struct scsi_cmnd
+30434  deprecate rhel6 (2.6.32*) support
+27791  hw_breakpoint.exp fails to build
+26152  _struct_compat_timex_u() function doesn't work on rhel8
+13480  ARM missing syscall.sigaltstack
+30401  s390x specific: invalid application of ‘sizeof’ to incomplete type ‘struct stack_frame’
+30407  Tapset function print_ubacktrace_fileline() no longer works with DWARF5
+30987  Addition of strlcopy and strlcat to glibc prevents compilation of dyninst based systemtap instrumentation
+30803  Extend debuginfod.process probe to glob by package name too
+31011  Memory leaks happen when stap's -t option is specified and the stdout stream is not a tty
+31013  Use of sleeping _stp_stat_del() operations in atomic contexts when cleaning up for -t
+31012  Bug: kernel module loading might block a CPU more than 1.5ms on very fast machines
+31018  Map operations might get no lock protections due to "pushdown lock" bugs
+31028  Systemtap doesn't find probe points for process.function("*").callee("*")' in code with DWARF5 debuginfo
+
