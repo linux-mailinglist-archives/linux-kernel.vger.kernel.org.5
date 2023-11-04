@@ -2,140 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C6797E0D86
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 04:40:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 949BB7E0D84
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 04:40:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231346AbjKDDgn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 23:36:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40880 "EHLO
+        id S231335AbjKDDjd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 23:39:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229657AbjKDDgk (ORCPT
+        with ESMTP id S229509AbjKDDjb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 23:36:40 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B24B5BF;
-        Fri,  3 Nov 2023 20:36:37 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-50949b7d7ffso3454247e87.0;
-        Fri, 03 Nov 2023 20:36:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699068996; x=1699673796; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=P3LMWlZteBZ8e9t+RweWv1ZPxiNQ6enL1kC4d/f3OJw=;
-        b=g5zQpig2PbK1b3Yo9lNOqmgNbwhX8Zui2+2r3UZ33C+ClxdkgjFI1hhYQ/L+F5DKUP
-         Y/9vYkFwfEvegHfUAHX1j/NLYCNR71sFgCWW+GRympvFdstNLUaFLRh98b5ZUaqV+G9w
-         dM50iBtJMKXewLOs15YJxIJfyKSi+VePwaz1e21f4CFdRZFQQ9v9R+Gsyi5SncOGXWvZ
-         w+ac1Qrzk2cl0YuAf33Ky5CosiDAkPE2ss6yTDSAIxhHZ7BCTwh00BTTOreXHSyzZydT
-         wubZ8ftxIEvhX7OK5jL4B0D8eS6QGfK4duJBYdbNl0YS2EDsFAjeaxI+nqHiK5JWoNr/
-         2PPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699068996; x=1699673796;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=P3LMWlZteBZ8e9t+RweWv1ZPxiNQ6enL1kC4d/f3OJw=;
-        b=kpYBCHE8J4Dpf7ohgyxLRlR+cOfreCQeQ5vH/N/YGtPjR7q9lHXBKr4pP+aotOxi06
-         qkKjb7jEFwfhae6DJVzDyetvqBulLg5eabT6CZrRxD9Bp11YFV1kwQqY+MMXXcLcknQO
-         IXNd9aQkGmGrRcB2nlIIlLgxCgts4p4DO1P0+I0qvZoZ+VEfKCj/Zfg1eQhC+dUaSprP
-         A8fw9zSxyqRmCyob/Yv2n2igG8TZSv+kdTnrB/Ok4CyTsa1pD7XuO2MTNQMDNkw5DfDg
-         rz7PqkIdau1mhf2S+Nymjg7glP5/xDJe7tV9r6fO76sGGoKBQoek/V3/2yYlPTdg0DfG
-         mwxw==
-X-Gm-Message-State: AOJu0YyM5Y5/Cso8grsDchitYkToYUFhbcTqsbzBJSbzru5AxEDqj7SF
-        QGl96gFd1/5rjRDD1TXvjBNG9xywvO43eEMibrA82ISPlGmAow==
-X-Google-Smtp-Source: AGHT+IFt9+t3rJcPRpHLSnX1yYaoNV0KrNBpNrYFUUwZFHMEDt6uj45d0vAuyZRMjfx5xHt8mUK4EcF3GLEA/QT2siU=
-X-Received: by 2002:ac2:4c82:0:b0:507:9a33:f105 with SMTP id
- d2-20020ac24c82000000b005079a33f105mr15431898lfl.69.1699068995629; Fri, 03
- Nov 2023 20:36:35 -0700 (PDT)
-MIME-Version: 1.0
-From:   Steve French <smfrench@gmail.com>
-Date:   Fri, 3 Nov 2023 22:36:24 -0500
-Message-ID: <CAH2r5mvutKF1meVmfiRu46tpYRckRuNf5j-gY02b0P=KTV2mpQ@mail.gmail.com>
-Subject: [GIT PULL] smb client fixes part 1
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     CIFS <linux-cifs@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 3 Nov 2023 23:39:31 -0400
+Received: from nautica.notk.org (nautica.notk.org [91.121.71.147])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 374BFBF
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 20:39:28 -0700 (PDT)
+Received: by nautica.notk.org (Postfix, from userid 108)
+        id 8C2BFC009; Sat,  4 Nov 2023 04:39:25 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
+        t=1699069165; bh=bqVJARalMpuZfvwuVrtAyfyj2tFBWs+NtWZpQL9dz3E=;
+        h=Date:From:To:Cc:Subject:From;
+        b=uCDAV8L7JRxlQ6QZMMDq1yxnOPmLLcBsdVOtSzJG2HBE+9defjMQ/ixYCOMfALSOM
+         mKlp6/5gF7HblOhePDlCZPzm6D9yptHxzh5zmdiyg6XBKAa78dP08XUIFYK88QFW3o
+         qrv1jWcINzD7aFX6LfxHUgl1dUbFQEtWNGq1lKnmYLCYsuWHodQoMo2hvvmoTophyh
+         eWojZxuuxTRmcJNnmZUFvRbylc5vq3CrTd6KmJMNFLDEtoGvWXS0NuA5HjkT0q20Zj
+         /SIekEW+B0nvTmtENIsrwIVHp2wa9fXEAUcsITpp6WkvpAg2t1T3ED1R/n6QfhOYTF
+         JLgi/sTmiFOqQ==
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
+Received: from gaia (localhost [127.0.0.1])
+        by nautica.notk.org (Postfix) with ESMTPS id 62FA8C009;
+        Sat,  4 Nov 2023 04:39:23 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
+        t=1699069164; bh=bqVJARalMpuZfvwuVrtAyfyj2tFBWs+NtWZpQL9dz3E=;
+        h=Date:From:To:Cc:Subject:From;
+        b=ziDvt2egvZRt8SrbNo0+N3AIYbLRfHkcqzpLNcVIicwn3aQ0eNuWeVfJLGLGNoHL8
+         0r0QjvcaG7RTnTTvIqA2Goui6npuzI9JohPmgylxkepZR+9XdlxRKNcTBTQCUlO003
+         hN1YfCl/V1vXJN2PycVNUW3nDMyUIHz5Kfp6QVfIxFvSIkqptrLaY34mB2yuvx4U2q
+         CMSkk1ejpOwB4Ry/RWE69OOb5QQ3jKq/h4/R5Wtq35b5XYSLVun9VFmWDSGM+FquQg
+         rdSHbZz6HUjZx6O3+HA1ckhasq88aJwMQQNoyIR4PIwfPsrijggcAeW284HAQBu0z4
+         Z7gVHfVm9fZMw==
+Received: from localhost (gaia [local])
+        by gaia (OpenSMTPD) with ESMTPA id 7c6e001d;
+        Sat, 4 Nov 2023 03:39:20 +0000 (UTC)
+Date:   Sat, 4 Nov 2023 12:39:05 +0900
+From:   Dominique Martinet <asmadeus@codewreck.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Christian Schoenebeck <linux_oss@crudebyte.com>,
+        Eric Van Hensbergen <ericvh@kernel.org>,
+        v9fs@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] 9p fixes for 6.7-rc1
+Message-ID: <ZUW82S8bGg2BAeNU@codewreck.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Please pull the following changes since commit
-05d3ef8bba77c1b5f98d941d8b2d4aeab8118ef1:
+The following changes since commit 05d3ef8bba77c1b5f98d941d8b2d4aeab8118ef1:
 
   Linux 6.6-rc7 (2023-10-22 12:11:21 -1000)
 
 are available in the Git repository at:
 
-  git://git.samba.org/sfrench/cifs-2.6.git tags/6.7-rc-smb3-client-fixes-part1
+  https://github.com/martinetd/linux tags/9p-for-6.7-rc1
 
-for you to fetch changes up to d9a6d78096056a3cb5c5f07a730ab92f2f9ac4e6:
+for you to fetch changes up to ce07087964208eee2ca2f9ee4a98f8b5d9027fe6:
 
-  cifs: force interface update before a fresh session setup
-(2023-11-02 08:06:06 -0500)
+  9p/net: fix possible memory leak in p9_check_errors() (2023-10-27 12:44:13 +0900)
 
 ----------------------------------------------------------------
-15 cifs client fixes (eight also for stable)
-- two use after free fixes and deadlock fix
-- symlink timestamp fix
-- hashing perf improvement
-- four multichannel fixes
-- two minor debugging improvements
-- fix creating fifos when using "sfu" mounts
-- NTLMSSP authentication improvement
-- Minor fixes to include some missing create flags and structures from
-recently updated protocol documentation
+Bunch of small fixes:
 
-This does not include some additional multichannel and remount and
-perf improvements still being tested
+- three W=1 warning fixes: the NULL -> "" replacement isn't trivial
+but is serialized identically by the protocol layer and has been tested
+- one syzbot/KCSAN datarace annotation where we don't care about users
+messing with the fd they passed to mount -t 9p
+- removing a declaration without implementation
+- yet another race fix for trans_fd around connection close:
+the 'err' field is also used in potentially racy calls and this
+isn't complete, but it's better than what we have.
+- and finally a theorical memory leak fix on serialization failure
+
 ----------------------------------------------------------------
-Eric Biggers (1):
-      smb: use crypto_shash_digest() in symlink_hash()
+Dominique Martinet (3):
+      9p: v9fs_listxattr: fix %s null argument warning
+      9p/net: xen: fix false positive printf format overflow warning
+      9p/fs: add MODULE_DESCIPTION
+(^ I've just noticed DESCIPTION -> DESCRIPTION typo, but I guess it's
+understandable enough and I'd rather not rebase the branch just before
+sending the pull request (that last memory leak patch came in late
+enough) -- please say if you'd rather I fix it up and I'll resend this)
 
-Meetakshi Setiya (1):
-      cifs: Add client version details to NTLM authenticate message
+Hangyu Hua (1):
+      9p/net: fix possible memory leak in p9_check_errors()
 
-Paulo Alcantara (4):
-      smb: client: fix potential deadlock when releasing mids
-      smb: client: fix use-after-free bug in cifs_debug_data_proc_show()
-      smb: client: remove extra @chan_count check in __cifs_put_smb_ses()
-      smb: client: fix use-after-free in smb2_query_info_compound()
+Marco Elver (1):
+      9p/trans_fd: Annotate data-racy writes to file::f_flags
 
-Shyam Prasad N (5):
-      cifs: print server capabilities in DebugData
-      cifs: add xid to query server interface call
-      cifs: reconnect helper should set reconnect for the right channel
-      cifs: do not reset chan_max if multichannel is not supported at mount
-      cifs: force interface update before a fresh session setup
+Sishuai Gong (1):
+      9p/trans_fd: avoid sending req to a cancelled conn
 
-Steve French (4):
-      smb3: fix touch -h of symlink
-      SMB3: clarify some of the unused CreateOption flags
-      Add definition for new smb3.1.1 command type
-      smb3: fix creating FIFOs when mounting with "sfu" mount option
+Yue Haibing (1):
+      fs/9p: Remove unused function declaration v9fs_inode2stat()
 
- fs/smb/client/cached_dir.c | 84 +++++++++++++++++++++++++++-------------------
- fs/smb/client/cifs_debug.c |  8 +++++
- fs/smb/client/cifsfs.c     |  1 +
- fs/smb/client/cifspdu.h    |  2 +-
- fs/smb/client/cifsproto.h  |  7 +++-
- fs/smb/client/connect.c    | 44 +++++++++++++-----------
- fs/smb/client/inode.c      |  4 +++
- fs/smb/client/link.c       | 16 ++-------
- fs/smb/client/ntlmssp.h    |  4 +--
- fs/smb/client/sess.c       | 13 ++++---
- fs/smb/client/smb2misc.c   |  2 +-
- fs/smb/client/smb2ops.c    |  8 ++++-
- fs/smb/client/transport.c  | 11 +-----
- fs/smb/common/smb2pdu.h    | 24 ++++++++++++-
- 14 files changed, 138 insertions(+), 90 deletions(-)
-
+ fs/9p/v9fs.c       |  1 +
+ fs/9p/v9fs_vfs.h   |  1 -
+ fs/9p/xattr.c      |  5 +++--
+ net/9p/client.c    |  8 +++++---
+ net/9p/trans_fd.c  | 21 ++++++++++++++++-----
+ net/9p/trans_xen.c | 15 +++++++--------
+ 6 files changed, 32 insertions(+), 19 deletions(-)
 
 -- 
-Thanks,
-
-Steve
+Dominique Martinet | Asmadeus
