@@ -2,144 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CDF0C7E0FFF
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 15:58:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 220A87E1014
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 16:27:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232339AbjKDO6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Nov 2023 10:58:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35638 "EHLO
+        id S229546AbjKDPGd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Nov 2023 11:06:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232283AbjKDO6e (ORCPT
+        with ESMTP id S229453AbjKDPGb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Nov 2023 10:58:34 -0400
-Received: from mail-yw1-x112e.google.com (mail-yw1-x112e.google.com [IPv6:2607:f8b0:4864:20::112e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5CFDD42;
-        Sat,  4 Nov 2023 07:58:31 -0700 (PDT)
-Received: by mail-yw1-x112e.google.com with SMTP id 00721157ae682-5a86b6391e9so36167417b3.0;
-        Sat, 04 Nov 2023 07:58:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699109911; x=1699714711; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=8RCIFmDrTCEZ9fkuE9JYWgeYYH0SPqzgX2A8UTA7/q8=;
-        b=GMs9f+Mjx26zGHgiMd9WjEtmemY0ybPN0mu0Gn6jYKjPNh/SzHO5fOSpt6m3fE3C8O
-         cmnoWEhW6+uHfUX6A/78t0Bz9Xk/LyCrM0QuDpn9gw3HaQdTm9i5i0er+6PFcowFDl3L
-         lw3fdlVDPhxXHmjrCFMA1QFWXgizx2T2lwvP+THJt9y7oL2SVjj9OgT6FEK+5MP1I8nl
-         7HV3MJZDRMkjl/YHDJoGL5YWFOeCNRVzqEzoU6CyWZ3sFrspKxlTKnIXDhNmU9NUFvxk
-         eJxZ8X/idHVarPmMc00yX6+ShocJPjiRtbw6kuPw8LPLXdowjQU6Y9Q4fvVxd2OGvgoQ
-         Xrmg==
+        Sat, 4 Nov 2023 11:06:31 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 629671BF
+        for <linux-kernel@vger.kernel.org>; Sat,  4 Nov 2023 08:05:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1699110341;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=i9z4ksAJKoBaMot+I42cegftv20OKEb1WSe8JorPWis=;
+        b=LzRdBNgdwHzFiu4aFvzRj+HyKpTMQLvsPl8BrnxdzHAdLaI7D8LoGQ26oU3wDpQ2FLVRs/
+        3QNAOj+8xB9ZrHCejqOrL+OXgZng7oeykNSXOVKMVQS9q9E9HZ7uOFrQSQ15m4VSB2NShV
+        BHOxCqYZbuLJxGnWTfcZvCNbFmzxs0k=
+Received: from mail-pl1-f199.google.com (mail-pl1-f199.google.com
+ [209.85.214.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-352-w0JeEimTMs6biwJAgfJoQw-1; Sat, 04 Nov 2023 11:05:39 -0400
+X-MC-Unique: w0JeEimTMs6biwJAgfJoQw-1
+Received: by mail-pl1-f199.google.com with SMTP id d9443c01a7336-1cc2efd22ccso26037285ad.1
+        for <linux-kernel@vger.kernel.org>; Sat, 04 Nov 2023 08:05:39 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699109911; x=1699714711;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8RCIFmDrTCEZ9fkuE9JYWgeYYH0SPqzgX2A8UTA7/q8=;
-        b=cpNF8cNaG7J2J9VjB94xYHEqvwk4OV5GQXgtACmXn1ekBnocKiQNV3MS4HvKUdR59j
-         uwHfKUn2M7v20+8BsrmU5veUFwUuCrzQR07KeP/tuXK/6q+2MXfr6B3xFwTmRKCE0kq7
-         0BQOGT9I/h3UD8BMc649CpQRYrkEHGCTIT85yQ5cvFbQds0UzBDqV5cBPxedF5FKc68a
-         W3/UCtoQ6HWfsGAAIVWazy/f0HvwcUSpxT2vyt+MCz1j/YrVYfgb1rKVKh+25KwWaSNq
-         V+VhDc7QrVPEwyE2Zx8Ni1VVxsmFA6M5Y3dlcyTYvKI8cwBtyBZ9dX9pTLireQK2av1j
-         ZL1Q==
-X-Gm-Message-State: AOJu0YxUZGKLHeDz4b73041tZTHifQ2I/Kx3jaDfHfEQg3hmj1YBKf85
-        zTtva/L9xnKfGMCtu9liEhwz7t6PZgs=
-X-Google-Smtp-Source: AGHT+IHVHdzUi+Hexm77XHNlzP/CYLjuWUbXPXbgBFV+KzjKNlVr6IoIrK+hnwSpPYOfWEw2YMx4uA==
-X-Received: by 2002:a81:788b:0:b0:5a7:d86c:988 with SMTP id t133-20020a81788b000000b005a7d86c0988mr5387059ywc.28.1699109910748;
-        Sat, 04 Nov 2023 07:58:30 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id j8-20020a816e08000000b005a8c392f498sm2140238ywc.82.2023.11.04.07.58.29
+        d=1e100.net; s=20230601; t=1699110339; x=1699715139;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=i9z4ksAJKoBaMot+I42cegftv20OKEb1WSe8JorPWis=;
+        b=ZE3htOF8MnKUAvYgw0wNTMAAP5RvI+QCPVnJnJoXQYbRXaOG3TruJrrPYR4VBsexl+
+         7X1+rKc1edbrpudSePBN9iTs57VoXugG82FyjNMSwBmUIxhtS8BIut5P6kiXSmM2wD6X
+         fEscywTykZnNBAh1fA0ufgL2oo/pVr8aIqQtDLZcOpzTXunjc21YjUoXA/yXiwDfnjdh
+         V2tQsmO5/F6cp2bkMdC+dqW9jd8s4fVRUIWmHYmX2nnDOn8WkgGiU33YYvoDydOBm+Eo
+         3qSe2RaDwfqLChUjJSLWw84HnSK1pxOVB5vxvGLjuBVfHzd5UU0iuG27FxUyO3SjMNce
+         b3SA==
+X-Gm-Message-State: AOJu0YzAy6WmeFKRSA94epLaFFofPSGrN3IWVZNK9dBqVrR06Rls74n/
+        mPlxlMEEyADLFox7YB3qfR+kDMiRXMy7TD44ptXCYjZIkTOxwZ/eVE7tVUpNthhKsxIQ9ziwOeI
+        p0SI6WaCBaX4VV/R+6gqiyMk0
+X-Received: by 2002:a17:902:e811:b0:1cc:569b:1df4 with SMTP id u17-20020a170902e81100b001cc569b1df4mr20338642plg.1.1699110338876;
+        Sat, 04 Nov 2023 08:05:38 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHVdmZGqn+TlZ02ZFL16cTMGSicZ9LUGUPBMgKZ/dntpJav50rMK+vkrfXHS8Z6F1PWTban/w==
+X-Received: by 2002:a17:902:e811:b0:1cc:569b:1df4 with SMTP id u17-20020a170902e81100b001cc569b1df4mr20338619plg.1.1699110338500;
+        Sat, 04 Nov 2023 08:05:38 -0700 (PDT)
+Received: from kernel-devel.local ([240d:1a:c0d:9f00:245e:16ff:fe87:c960])
+        by smtp.gmail.com with ESMTPSA id jf7-20020a170903268700b001ca21c8abf7sm3101797plb.188.2023.11.04.08.05.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 04 Nov 2023 07:58:30 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Sat, 4 Nov 2023 07:58:29 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Armin Wolf <W_Armin@gmx.de>
-Cc:     pali@kernel.org, jdelvare@suse.com, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 8/9] hwmon: (dell-smm) Document the WMI SMM interface
-Message-ID: <1bfb887d-57ef-4e3b-9514-b9e402bb4f20@roeck-us.net>
-References: <20231103185716.11007-1-W_Armin@gmx.de>
- <20231103185716.11007-9-W_Armin@gmx.de>
+        Sat, 04 Nov 2023 08:05:38 -0700 (PDT)
+From:   Shigeru Yoshida <syoshida@redhat.com>
+To:     stefanha@redhat.com, sgarzare@redhat.com, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com
+Cc:     kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Shigeru Yoshida <syoshida@redhat.com>,
+        syzbot+0c8ce1da0ac31abbadcd@syzkaller.appspotmail.com
+Subject: [PATCH net v2] virtio/vsock: Fix uninit-value in virtio_transport_recv_pkt()
+Date:   Sun,  5 Nov 2023 00:05:31 +0900
+Message-ID: <20231104150531.257952-1-syoshida@redhat.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231103185716.11007-9-W_Armin@gmx.de>
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 03, 2023 at 07:57:15PM +0100, Armin Wolf wrote:
-> Document the WMI SMM interface so that future developers
-> can better understand how it works.
-> 
-> Signed-off-by: Armin Wolf <W_Armin@gmx.de>
-> ---
->  Documentation/hwmon/dell-smm-hwmon.rst | 33 +++++++++++++++++++++++---
->  1 file changed, 30 insertions(+), 3 deletions(-)
-> 
-> diff --git a/Documentation/hwmon/dell-smm-hwmon.rst b/Documentation/hwmon/dell-smm-hwmon.rst
-> index d8f1d6859b96..fea8cf76088e 100644
-> --- a/Documentation/hwmon/dell-smm-hwmon.rst
-> +++ b/Documentation/hwmon/dell-smm-hwmon.rst
-> @@ -186,8 +186,7 @@ SMM Interface
->  The driver uses the SMM interface to send commands to the system BIOS.
->  This interface is normally used by Dell's 32-bit diagnostic program or
->  on newer notebook models by the buildin BIOS diagnostics.
-> -The SMM is triggered by writing to the special ioports ``0xb2`` and ``0x84``,
-> -and may cause short hangs when the BIOS code is taking too long to
-> +The SMM may cause short hangs when the BIOS code is taking too long to
->  execute.
-> 
->  The SMM handler inside the system BIOS looks at the contents of the
-> @@ -210,7 +209,35 @@ The SMM handler can signal a failure by either:
-> 
->  - setting the lower sixteen bits of ``eax`` to ``0xffff``
->  - not modifying ``eax`` at all
-> -- setting the carry flag
-> +- setting the carry flag (legacy SMM interface only)
-> +
-> +Legacy SMM Interface
-> +--------------------
-> +
-> +When using the legacy SMM interface, a SMM is triggered by writing the least significant byte
-> +of the command code to the special ioports ``0xb2`` and ``0x84``. This interface is not
-> +described inside the ACPI tables and can thus only be detected by issuing a test SMM call.
-> +
-> +WMI SMM Interface
-> +-----------------
-> +
-> +On modern Dell machines, the SMM calls are done over ACPI WMI:
-> +
-> +::
-> +
-> + #pragma namespace("\\\\.\\root\\dcim\\sysman\\diagnostics")
-> + [WMI, Provider("Provider_DiagnosticsServices"), Dynamic, Locale("MS\\0x409"), Description("RunDellDiag"), guid("{F1DDEE52-063C-4784-A11E-8A06684B9B01}")]
-> + class LegacyDiags {
-> +  [key, read] string InstanceName;
-> +  [read] boolean Active;
-> +
-> +  [WmiMethodId(1), Implemented, read, write, Description("Legacy Method ")] void Execute([in, out] uint32 EaxLen, [in, out, WmiSizeIs("EaxLen") : ToInstance] uint8 EaxVal[], [in, out] uint32 EbxLen, [in, out, WmiSizeIs("EbxLen") : ToInstance] uint8 EbxVal[], [in, out] uint32 EcxLen, [in, out, WmiSizeIs("EcxLen") : ToInstance] uint8 EcxVal[], [in, out] uint32 EdxLen, [in, out, WmiSizeIs("EdxLen") : ToInstance] uint8 EdxVal[]);
+KMSAN reported the following uninit-value access issue:
 
-I don't think this has to violate formatting rules.
+=====================================================
+BUG: KMSAN: uninit-value in virtio_transport_recv_pkt+0x1dfb/0x26a0 net/vmw_vsock/virtio_transport_common.c:1421
+ virtio_transport_recv_pkt+0x1dfb/0x26a0 net/vmw_vsock/virtio_transport_common.c:1421
+ vsock_loopback_work+0x3bb/0x5a0 net/vmw_vsock/vsock_loopback.c:120
+ process_one_work kernel/workqueue.c:2630 [inline]
+ process_scheduled_works+0xff6/0x1e60 kernel/workqueue.c:2703
+ worker_thread+0xeca/0x14d0 kernel/workqueue.c:2784
+ kthread+0x3cc/0x520 kernel/kthread.c:388
+ ret_from_fork+0x66/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
 
-Guenter
+Uninit was stored to memory at:
+ virtio_transport_space_update net/vmw_vsock/virtio_transport_common.c:1274 [inline]
+ virtio_transport_recv_pkt+0x1ee8/0x26a0 net/vmw_vsock/virtio_transport_common.c:1415
+ vsock_loopback_work+0x3bb/0x5a0 net/vmw_vsock/vsock_loopback.c:120
+ process_one_work kernel/workqueue.c:2630 [inline]
+ process_scheduled_works+0xff6/0x1e60 kernel/workqueue.c:2703
+ worker_thread+0xeca/0x14d0 kernel/workqueue.c:2784
+ kthread+0x3cc/0x520 kernel/kthread.c:388
+ ret_from_fork+0x66/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
 
-> + };
-> +
-> +Some machines support only the WMI SMM interface, while some machines support both interfaces.
-> +The driver automatically detects which interfaces are present and will use the WMI SMM interface
-> +if the legacy SMM interface is not present. The WMI SMM interface is usually slower than the
-> +legacy SMM interface since ACPI methods need to be called in order to trigger a SMM.
-> 
->  SMM command codes
->  -----------------
-> --
-> 2.39.2
-> 
+Uninit was created at:
+ slab_post_alloc_hook+0x105/0xad0 mm/slab.h:767
+ slab_alloc_node mm/slub.c:3478 [inline]
+ kmem_cache_alloc_node+0x5a2/0xaf0 mm/slub.c:3523
+ kmalloc_reserve+0x13c/0x4a0 net/core/skbuff.c:559
+ __alloc_skb+0x2fd/0x770 net/core/skbuff.c:650
+ alloc_skb include/linux/skbuff.h:1286 [inline]
+ virtio_vsock_alloc_skb include/linux/virtio_vsock.h:66 [inline]
+ virtio_transport_alloc_skb+0x90/0x11e0 net/vmw_vsock/virtio_transport_common.c:58
+ virtio_transport_reset_no_sock net/vmw_vsock/virtio_transport_common.c:957 [inline]
+ virtio_transport_recv_pkt+0x1279/0x26a0 net/vmw_vsock/virtio_transport_common.c:1387
+ vsock_loopback_work+0x3bb/0x5a0 net/vmw_vsock/vsock_loopback.c:120
+ process_one_work kernel/workqueue.c:2630 [inline]
+ process_scheduled_works+0xff6/0x1e60 kernel/workqueue.c:2703
+ worker_thread+0xeca/0x14d0 kernel/workqueue.c:2784
+ kthread+0x3cc/0x520 kernel/kthread.c:388
+ ret_from_fork+0x66/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
+
+CPU: 1 PID: 10664 Comm: kworker/1:5 Not tainted 6.6.0-rc3-00146-g9f3ebbef746f #3
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.2-1.fc38 04/01/2014
+Workqueue: vsock-loopback vsock_loopback_work
+=====================================================
+
+The following simple reproducer can cause the issue described above:
+
+int main(void)
+{
+  int sock;
+  struct sockaddr_vm addr = {
+    .svm_family = AF_VSOCK,
+    .svm_cid = VMADDR_CID_ANY,
+    .svm_port = 1234,
+  };
+
+  sock = socket(AF_VSOCK, SOCK_STREAM, 0);
+  connect(sock, (struct sockaddr *)&addr, sizeof(addr));
+  return 0;
+}
+
+This issue occurs because the `buf_alloc` and `fwd_cnt` fields of the
+`struct virtio_vsock_hdr` are not initialized when a new skb is allocated
+in `virtio_transport_init_hdr()`. This patch resolves the issue by
+initializing these fields during allocation.
+
+Fixes: 71dc9ec9ac7d ("virtio/vsock: replace virtio_vsock_pkt with sk_buff")
+Reported-and-tested-by: syzbot+0c8ce1da0ac31abbadcd@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?extid=0c8ce1da0ac31abbadcd
+Signed-off-by: Shigeru Yoshida <syoshida@redhat.com>
+---
+v1->v2:
+- Rebase on the latest net tree
+https://lore.kernel.org/all/20231026150154.3536433-1-syoshida@redhat.com/
+---
+ net/vmw_vsock/virtio_transport_common.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/virtio_transport_common.c
+index e22c81435ef7..dc65dd4d26df 100644
+--- a/net/vmw_vsock/virtio_transport_common.c
++++ b/net/vmw_vsock/virtio_transport_common.c
+@@ -130,6 +130,8 @@ static void virtio_transport_init_hdr(struct sk_buff *skb,
+ 	hdr->dst_port	= cpu_to_le32(dst_port);
+ 	hdr->flags	= cpu_to_le32(info->flags);
+ 	hdr->len	= cpu_to_le32(payload_len);
++	hdr->buf_alloc	= cpu_to_le32(0);
++	hdr->fwd_cnt	= cpu_to_le32(0);
+ }
+ 
+ static void virtio_transport_copy_nonlinear_skb(const struct sk_buff *skb,
+-- 
+2.41.0
+
