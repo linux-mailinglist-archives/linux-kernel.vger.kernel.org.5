@@ -2,145 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B8BD7E11CF
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Nov 2023 00:28:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED9337E11D9
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Nov 2023 01:01:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229978AbjKDXPh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Nov 2023 19:15:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57998 "EHLO
+        id S229905AbjKDX63 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Nov 2023 19:58:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229577AbjKDXPg (ORCPT
+        with ESMTP id S229632AbjKDX62 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Nov 2023 19:15:36 -0400
-Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 449071BC
-        for <linux-kernel@vger.kernel.org>; Sat,  4 Nov 2023 16:15:30 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 539CFFF805;
-        Sat,  4 Nov 2023 23:15:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1699139728;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=xLB49XCT9UcobRhWosbEP65dkPvczyn1raATHvaoT30=;
-        b=aOpNhOe0i7PzzwapPBZILHkSTywT1N6thWUopC5pHani+GI39WtiZQENmW2t4shwXhsx7r
-        C3pRFe5boYOr0q2G2kEl1RhDb9I/MTIYAnBlDHvLArWHdT6OaMECQ/mmXhVN32Mcae9Tzt
-        MStYHkqdvncw4ltbHydezIqsG8G0YIofQ8M1LsSTqzdnCju4gjav5Oszr3P9IY5QYbuiey
-        xJ77JEHbSvwKSVzxNp7xkavUipBIXP3c0OBX0bdkzNuIXkLh+saBw8MkWLvGEOH5DbDVIM
-        7+hpj3BwEslfFi25TieggBZHo+Zc1S7tLYUJ5meANAyNAClUXVGCMosDg0VTnQ==
-Date:   Sun, 5 Nov 2023 00:15:28 +0100
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-i3c@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] I3C changes for 6.7
-Message-ID: <202311042315286247d3ae@mail.local>
+        Sat, 4 Nov 2023 19:58:28 -0400
+Received: from mail-oi1-f208.google.com (mail-oi1-f208.google.com [209.85.167.208])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE674D6F
+        for <linux-kernel@vger.kernel.org>; Sat,  4 Nov 2023 16:58:24 -0700 (PDT)
+Received: by mail-oi1-f208.google.com with SMTP id 5614622812f47-3b51e0bd5c0so5121404b6e.2
+        for <linux-kernel@vger.kernel.org>; Sat, 04 Nov 2023 16:58:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699142304; x=1699747104;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=UJcDmPdSGpB8slt2WoDpkuUtenpE1KuCjVriKZ4u9vQ=;
+        b=ByGQWE7BD9MqQ48IPaeLqNjzIVkEQS/YTJncoNjK7GsRu/a1+iHqalSUClZYbQHqFx
+         cCct5npItYKi+WMwk0TecI0hOwf77zQzxFbr0IGwcSmk7nKo2kgsUFdI0GCRWG/j9SlG
+         adVbEsCi2mE5+Uu6f5s8SfpdbzzkKMYKupfgnW6Y0GxYOAf9G+CRP4wm4/pDIKY22A66
+         RoLfVsQ2YHgOZfI/Q8Dgnr02ELWIEG/6UgtbtT921bb4AOudmwi4wCm8qEvz5S2NeXCp
+         VVgAH1lmis+J/L7PaLLKGGthhaK61AtYwN6HaxI/UdKNKioXSRnqXNU7hv3NjwkPUJ7/
+         oixA==
+X-Gm-Message-State: AOJu0Yz5FX+iu/MKxFx4MpLdZ0nsLZqhDyE3vqnh15oLe9wxSD4JbQtd
+        ejDAe3iJVr7Fb5qjyobBVmuSKPMbS7eISTEvCmFG0pbp5v+v
+X-Google-Smtp-Source: AGHT+IHBgY529NBiG2E+zwRJkXajwOzTjTdlwv4Z0a/euWkBcziDTp8wvQIFVrOVXNMS57IncmZM9dsDrHEKGltCsb2UZvYwuLzv
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-GND-Sasl: alexandre.belloni@bootlin.com
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Received: by 2002:a05:6808:19a8:b0:3a7:3737:60fd with SMTP id
+ bj40-20020a05680819a800b003a7373760fdmr9386750oib.7.1699142304046; Sat, 04
+ Nov 2023 16:58:24 -0700 (PDT)
+Date:   Sat, 04 Nov 2023 16:58:23 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000074a35e06095c6558@google.com>
+Subject: [syzbot] [btrfs?] kernel BUG in btrfs_try_granting_tickets
+From:   syzbot <syzbot+42e831f5d4d8616b0e8f@syzkaller.appspotmail.com>
+To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SORTED_RECIPS,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Linus,
+Hello,
 
-Here is the i3c subsytem pull request for 6.7. There are now more fixes
-because as stated in my previous pull request, people now have access to
-actual hardware.
+syzbot found the following issue on:
 
-The following changes since commit 0bb80ecc33a8fb5a682236443c1e740d5c917d1d:
+HEAD commit:    5a6a09e97199 Merge tag 'cgroup-for-6.7' of git://git.kerne..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=132ed3e3680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=414f578e7f8d77a7
+dashboard link: https://syzkaller.appspot.com/bug?extid=42e831f5d4d8616b0e8f
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
 
-  Linux 6.6-rc1 (2023-09-10 16:28:41 -0700)
+Unfortunately, I don't have any reproducer for this issue yet.
 
-are available in the Git repository at:
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/bd30039dd1a9/disk-5a6a09e9.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/7dac0c0db854/vmlinux-5a6a09e9.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/4d1318c50c57/bzImage-5a6a09e9.xz
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/i3c/linux.git tags/i3c/for-6.7
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+42e831f5d4d8616b0e8f@syzkaller.appspotmail.com
 
-for you to fetch changes up to 9fd00df05e81a2e1080ce6e9abc35533dca99d74:
+assertion failed: space_info->reclaim_size >= ticket->bytes, in fs/btrfs/space-info.c:436
+------------[ cut here ]------------
+kernel BUG at fs/btrfs/space-info.c:436!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+CPU: 0 PID: 25603 Comm: syz-executor.2 Not tainted 6.6.0-syzkaller-03860-g5a6a09e97199 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/09/2023
+RIP: 0010:remove_ticket fs/btrfs/space-info.c:436 [inline]
+RIP: 0010:btrfs_try_granting_tickets+0x59f/0x5d0 fs/btrfs/space-info.c:468
+Code: fe e9 ca fa ff ff e8 a0 ca d8 fd 48 c7 c7 e0 16 8d 8b 48 c7 c6 a0 1d 8d 8b 48 c7 c2 60 17 8d 8b b9 b4 01 00 00 e8 11 02 54 07 <0f> 0b e8 7a ca d8 fd 48 c7 c7 e0 16 8d 8b 48 c7 c6 40 17 8d 8b 48
+RSP: 0018:ffffc90015f07188 EFLAGS: 00010246
+RAX: 0000000000000059 RBX: ffffffffffff2000 RCX: 7562ac8ccb7a8d00
+RDX: ffffc9000bd65000 RSI: 000000000000a0ff RDI: 000000000000a100
+RBP: 0000000000060000 R08: ffffffff81716b8c R09: 1ffff92002be0dd0
+R10: dffffc0000000000 R11: fffff52002be0dd1 R12: ffff8880293b90f0
+R13: ffffc9000ac0f6e0 R14: dffffc0000000000 R15: 1ffff1100527721e
+FS:  00007fca38d826c0(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f27f6881000 CR3: 00000000365f7000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ btrfs_space_info_free_bytes_may_use fs/btrfs/space-info.h:232 [inline]
+ block_rsv_release_bytes fs/btrfs/block-rsv.c:154 [inline]
+ btrfs_block_rsv_release+0x506/0x5f0 fs/btrfs/block-rsv.c:295
+ btrfs_delayed_refs_rsv_release+0x9f/0x110 fs/btrfs/delayed-ref.c:75
+ btrfs_run_delayed_refs_for_head fs/btrfs/extent-tree.c:2038 [inline]
+ __btrfs_run_delayed_refs+0x1e34/0x4810 fs/btrfs/extent-tree.c:2106
+ btrfs_run_delayed_refs+0xe3/0x2c0 fs/btrfs/extent-tree.c:2218
+ btrfs_commit_transaction+0x4ba/0x3730 fs/btrfs/transaction.c:2237
+ sync_filesystem+0x1c0/0x220 fs/sync.c:66
+ btrfs_remount+0x231/0x14b0 fs/btrfs/super.c:1649
+ reconfigure_super+0x440/0x870 fs/super.c:1140
+ do_remount fs/namespace.c:2884 [inline]
+ path_mount+0xc24/0xfa0 fs/namespace.c:3656
+ do_mount fs/namespace.c:3677 [inline]
+ __do_sys_mount fs/namespace.c:3886 [inline]
+ __se_sys_mount+0x2d9/0x3c0 fs/namespace.c:3863
+ do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+ do_syscall_64+0x44/0x110 arch/x86/entry/common.c:82
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+RIP: 0033:0x7fca3807e1ea
+Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb a6 e8 de 09 00 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fca38d81ee8 EFLAGS: 00000202 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007fca38d81f80 RCX: 00007fca3807e1ea
+RDX: 0000000020000180 RSI: 0000000020000140 RDI: 0000000000000000
+RBP: 0000000020000180 R08: 00007fca38d81f80 R09: 00000000039600ac
+R10: 00000000039600ac R11: 0000000000000202 R12: 0000000020000140
+R13: 00007fca38d81f40 R14: 0000000000000000 R15: 0000000020000080
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:remove_ticket fs/btrfs/space-info.c:436 [inline]
+RIP: 0010:btrfs_try_granting_tickets+0x59f/0x5d0 fs/btrfs/space-info.c:468
+Code: fe e9 ca fa ff ff e8 a0 ca d8 fd 48 c7 c7 e0 16 8d 8b 48 c7 c6 a0 1d 8d 8b 48 c7 c2 60 17 8d 8b b9 b4 01 00 00 e8 11 02 54 07 <0f> 0b e8 7a ca d8 fd 48 c7 c7 e0 16 8d 8b 48 c7 c6 40 17 8d 8b 48
+RSP: 0018:ffffc90015f07188 EFLAGS: 00010246
+RAX: 0000000000000059 RBX: ffffffffffff2000 RCX: 7562ac8ccb7a8d00
+RDX: ffffc9000bd65000 RSI: 000000000000a0ff RDI: 000000000000a100
+RBP: 0000000000060000 R08: ffffffff81716b8c R09: 1ffff92002be0dd0
+R10: dffffc0000000000 R11: fffff52002be0dd1 R12: ffff8880293b90f0
+R13: ffffc9000ac0f6e0 R14: dffffc0000000000 R15: 1ffff1100527721e
+FS:  00007fca38d826c0(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f27f6881000 CR3: 00000000365f7000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
-  i3c: master: handle IBIs in order they came (2023-11-04 00:44:32 +0100)
 
-----------------------------------------------------------------
-I3C for 6.7
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-Core:
- - handle IBI in the proper order
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-Drivers:
- - cdns: fix status register access
- - mipi-i3c-hci: many fixes now that the driver has been actually tested
- - svc: many IBI fixes, correct compatible string, fix hot join corner cases
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
-----------------------------------------------------------------
-Billy Tsai (1):
-      i3c: master: mipi-i3c-hci: Fix a kernel panic for accessing DAT_data.
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
 
-Dinghao Liu (1):
-      i3c: Fix potential refcount leak in i3c_master_register_new_i3c_devs
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
 
-Frank Li (7):
-      i3c: master: svc: fix race condition in ibi work thread
-      i3c: master: svc: fix wrong data return when IBI happen during start frame
-      i3c: master: svc: fix ibi may not return mandatory data byte
-      i3c: master: svc: fix check wrong status register in irq handler
-      i3c: master: svc: fix SDA keep low when polling IBIWON timeout happen
-      i3c: master: svc: fix random hot join failure since timeout error
-      i3c: master: svc: fix compatibility string mismatch with binding doc
-
-Jarkko Nikula (12):
-      i3c: master: Inherit DMA masks and parameters from parent device
-      i3c: mipi-i3c-hci: Add MODULE_ALIAS
-      i3c: mipi-i3c-hci: Fix DAT/DCT entry sizes
-      i3c: mipi-i3c-hci: Fix out of bounds access in hci_dma_irq_handler
-      i3c: mipi-i3c-hci: Remove BUG() when Ring Abort request times out
-      i3c: mipi-i3c-hci: Set ring start request together with enable
-      i3c: mipi-i3c-hci: Fix race between bus cleanup and interrupt
-      i3c: mipi-i3c-hci: Set number of SW enabled Ring Bundles earlier
-      i3c: mipi-i3c-hci: Do not unmap region not mapped for transfer
-      i3c: mipi-i3c-hci: Fix missing xfer->completion in hci_cmd_v1_daa()
-      i3c: mipi-i3c-hci: Resume controller explicitly
-      i3c: mipi-i3c-hci: Resume controller after aborted transfer
-
-Joshua Yeong (1):
-      i3c: master: cdns: Fix reading status register
-
-Justin Stitt (1):
-      i3c: replace deprecated strncpy
-
-Kees Cook (4):
-      i3c: dw: Annotate struct dw_i3c_xfer with __counted_by
-      i3c: master: cdns: Annotate struct cdns_i3c_xfer with __counted_by
-      i3c/master/mipi-i3c-hci: Annotate struct hci_rings_data with __counted_by
-      i3c: svc: Annotate struct svc_i3c_xfer with __counted_by
-
-Matt Johnston (1):
-      i3c: Fix typo "Provisional ID" to "Provisioned ID"
-
-Zbigniew Lukwinski (1):
-      i3c: master: handle IBIs in order they came
-
- Documentation/ABI/testing/sysfs-bus-i3c        |  4 +-
- Documentation/devicetree/bindings/i3c/i3c.yaml |  4 +-
- Documentation/driver-api/i3c/protocol.rst      |  4 +-
- drivers/i3c/master.c                           | 24 +++++++++--
- drivers/i3c/master/dw-i3c-master.c             |  2 +-
- drivers/i3c/master/i3c-master-cdns.c           |  8 ++--
- drivers/i3c/master/mipi-i3c-hci/cmd_v1.c       |  1 +
- drivers/i3c/master/mipi-i3c-hci/core.c         | 14 +++---
- drivers/i3c/master/mipi-i3c-hci/dat_v1.c       | 27 ++++++++----
- drivers/i3c/master/mipi-i3c-hci/dma.c          | 21 +++++----
- drivers/i3c/master/svc-i3c-master.c            | 60 ++++++++++++++++++++++++--
- include/linux/i3c/device.h                     |  2 +-
- include/linux/i3c/master.h                     |  6 ++-
- 13 files changed, 133 insertions(+), 44 deletions(-)
-
--- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+If you want to undo deduplication, reply with:
+#syz undup
