@@ -2,258 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 653CE7E0E62
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 09:52:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 558DC7E0E66
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 09:53:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230093AbjKDIwe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Nov 2023 04:52:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44770 "EHLO
+        id S230124AbjKDIxa convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 4 Nov 2023 04:53:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229476AbjKDIw2 (ORCPT
+        with ESMTP id S229476AbjKDIx2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Nov 2023 04:52:28 -0400
-Received: from mta-64-227.siemens.flowmailer.net (mta-64-227.siemens.flowmailer.net [185.136.64.227])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94A49D51
-        for <linux-kernel@vger.kernel.org>; Sat,  4 Nov 2023 01:52:24 -0700 (PDT)
-Received: by mta-64-227.siemens.flowmailer.net with ESMTPSA id 2023110408522202c210bd1c6543127d
-        for <linux-kernel@vger.kernel.org>;
-        Sat, 04 Nov 2023 09:52:22 +0100
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; s=fm1;
- d=siemens.com; i=jan.kiszka@siemens.com;
- h=Date:From:Subject:To:Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding:Cc:References:In-Reply-To;
- bh=ywFwNboZZKYcNPO0K9ZuTF1g7+TmpkPYE9IXZevrQiw=;
- b=A2kDYOYqp3QkQekYaqwZ3n7pImD3cnIgFYxxC/Jua/2QVjCg+KgRtKtXGjGTG5bPsa4654
- fTaN6zCU4DI1EEVAowAdhBeacPybGg2lmjkLZhEc2sdDb+kJdUV456TFCSWyIjWHQGDW/HwJ
- FibktR3+/tRRgIzitGEuUdEaci0hE=;
-From:   Jan Kiszka <jan.kiszka@siemens.com>
-To:     Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, Bao Cheng Su <baocheng.su@siemens.com>,
-        Benedikt Niedermayr <benedikt.niedermayr@siemens.com>
-Subject: [PATCH v4 5/5] arm64: dts: ti: iot2050: Add icssg-prueth nodes for PG2 devices
-Date:   Sat,  4 Nov 2023 09:52:19 +0100
-Message-Id: <565d31a5fd29c4dd0cf28e347049a1247a6e446c.1699087938.git.jan.kiszka@siemens.com>
-In-Reply-To: <cover.1699087938.git.jan.kiszka@siemens.com>
-References: <cover.1699087938.git.jan.kiszka@siemens.com>
+        Sat, 4 Nov 2023 04:53:28 -0400
+Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47176D60;
+        Sat,  4 Nov 2023 01:53:19 -0700 (PDT)
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.95)
+          with esmtps (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1qzCOz-003aGp-3d; Sat, 04 Nov 2023 09:53:09 +0100
+Received: from p5dc55299.dip0.t-ipconnect.de ([93.197.82.153] helo=[192.168.178.81])
+          by inpost2.zedat.fu-berlin.de (Exim 4.95)
+          with esmtpsa (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1qzCOy-002JZS-Rj; Sat, 04 Nov 2023 09:53:09 +0100
+Message-ID: <b09106ada4774c7860afc85a28cc564d220cdc7f.camel@physik.fu-berlin.de>
+Subject: Re: [PATCH v3] sparc: Use shared font data
+From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+To:     "Dr. David Alan Gilbert" <linux@treblig.org>, davem@davemloft.net,
+        sam@ravnborg.org, benh@kernel.crashing.org,
+        akpm@linux-foundation.org, rdunlap@infradead.org
+Cc:     sparclinux@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mpe@ellerman.id.au
+Date:   Sat, 04 Nov 2023 09:53:08 +0100
+In-Reply-To: <ZUWch6-cSpcafPsF@gallifrey>
+References: <20230807010914.799713-1-linux@treblig.org>
+         <ZUWch6-cSpcafPsF@gallifrey>
+Autocrypt: addr=glaubitz@physik.fu-berlin.de; prefer-encrypt=mutual;
+ keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.50.1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Flowmailer-Platform: Siemens
-Feedback-ID: 519:519-294854:519-21489:flowmailer
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-Originating-IP: 93.197.82.153
+X-ZEDAT-Hint: PO
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jan Kiszka <jan.kiszka@siemens.com>
+Hi Dave,
 
-Add the required nodes to enable ICSSG SR2.0 based prueth networking.
+On Sat, 2023-11-04 at 01:21 +0000, Dr. David Alan Gilbert wrote:
+> The PowerPC version of this just got merged (0ebc7feae79ac, thanks
+> Michael!), but I've not had any interest from anyone to merge
+> this SPARC version; I'd be happy to rebase and text on current
+> head if someone has an idea how to get it merged.
 
-As the driver still needs to be extended for SR1.0 support, keep related
-nodes disabled on PG1 devices.
+Since both Debian and Gentoo are still maintaining their SPARC ports, we're
+naturally interested in getting such improvements merged. However, the SPARC
+maintainer, David Miller, has been inactive for some time and I currently don't
+know what the state of his role as the maintainer is.
 
-Signed-off-by: Jan Kiszka <jan.kiszka@siemens.com>
----
- .../dts/ti/k3-am65-iot2050-common-pg1.dtsi    |  10 +-
- .../boot/dts/ti/k3-am65-iot2050-common.dtsi   | 128 ++++++++++++++++++
- 2 files changed, 137 insertions(+), 1 deletion(-)
+I will try to reach out to him to find out what the state of things is.
 
-diff --git a/arch/arm64/boot/dts/ti/k3-am65-iot2050-common-pg1.dtsi b/arch/arm64/boot/dts/ti/k3-am65-iot2050-common-pg1.dtsi
-index 51f902fa35a7..1d1979859583 100644
---- a/arch/arm64/boot/dts/ti/k3-am65-iot2050-common-pg1.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-am65-iot2050-common-pg1.dtsi
-@@ -1,6 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0
- /*
-- * Copyright (c) Siemens AG, 2021
-+ * Copyright (c) Siemens AG, 2021-2023
-  *
-  * Authors:
-  *   Jan Kiszka <jan.kiszka@siemens.com>
-@@ -44,3 +44,11 @@ &tx_pru2_0 {
- &tx_pru2_1 {
- 	status = "disabled";
- };
-+
-+&icssg0_eth {
-+	status = "disabled";
-+};
-+
-+&icssg0_mdio {
-+	status = "disabled";
-+};
-diff --git a/arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi b/arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi
-index d2b6439cf496..ab1dffa5c1c6 100644
---- a/arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi
-@@ -11,6 +11,7 @@
- 
- #include "k3-am654.dtsi"
- #include <dt-bindings/phy/phy.h>
-+#include <dt-bindings/net/ti-dp83867.h>
- 
- / {
- 	aliases {
-@@ -27,6 +28,8 @@ aliases {
- 		spi0 = &mcu_spi0;
- 		mmc0 = &sdhci1;
- 		mmc1 = &sdhci0;
-+		ethernet1 = &icssg0_emac0;
-+		ethernet2 = &icssg0_emac1;
- 	};
- 
- 	chosen {
-@@ -111,6 +114,76 @@ dp_refclk: clock {
- 		#clock-cells = <0>;
- 		clock-frequency = <19200000>;
- 	};
-+
-+	/* Dual Ethernet application node on PRU-ICSSG0 */
-+	icssg0_eth: icssg0-eth {
-+		compatible = "ti,am654-icssg-prueth";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&icssg0_rgmii_pins_default>;
-+		sram = <&msmc_ram>;
-+
-+		ti,prus = <&pru0_0>, <&rtu0_0>, <&tx_pru0_0>,
-+			<&pru0_1>, <&rtu0_1>, <&tx_pru0_1>;
-+		firmware-name = "ti-pruss/am65x-sr2-pru0-prueth-fw.elf",
-+				"ti-pruss/am65x-sr2-rtu0-prueth-fw.elf",
-+				"ti-pruss/am65x-sr2-txpru0-prueth-fw.elf",
-+				"ti-pruss/am65x-sr2-pru1-prueth-fw.elf",
-+				"ti-pruss/am65x-sr2-rtu1-prueth-fw.elf",
-+				"ti-pruss/am65x-sr2-txpru1-prueth-fw.elf";
-+
-+		ti,pruss-gp-mux-sel = <2>,      /* MII mode */
-+				      <2>,
-+				      <2>,
-+				      <2>,	/* MII mode */
-+				      <2>,
-+				      <2>;
-+
-+		ti,mii-g-rt = <&icssg0_mii_g_rt>;
-+		ti,mii-rt = <&icssg0_mii_rt>;
-+		ti,iep = <&icssg0_iep0>,  <&icssg0_iep1>;
-+
-+		interrupt-parent = <&icssg0_intc>;
-+		interrupts = <24 0 2>, <25 1 3>;
-+		interrupt-names = "tx_ts0", "tx_ts1";
-+
-+		dmas = <&main_udmap 0xc100>, /* egress slice 0 */
-+		       <&main_udmap 0xc101>, /* egress slice 0 */
-+		       <&main_udmap 0xc102>, /* egress slice 0 */
-+		       <&main_udmap 0xc103>, /* egress slice 0 */
-+		       <&main_udmap 0xc104>, /* egress slice 1 */
-+		       <&main_udmap 0xc105>, /* egress slice 1 */
-+		       <&main_udmap 0xc106>, /* egress slice 1 */
-+		       <&main_udmap 0xc107>, /* egress slice 1 */
-+		       <&main_udmap 0x4100>, /* ingress slice 0 */
-+		       <&main_udmap 0x4101>; /* ingress slice 1 */
-+		dma-names = "tx0-0", "tx0-1", "tx0-2", "tx0-3",
-+			    "tx1-0", "tx1-1", "tx1-2", "tx1-3",
-+			    "rx0", "rx1";
-+
-+		ethernet-ports {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			icssg0_emac0: port@0 {
-+				reg = <0>;
-+				phy-handle = <&icssg0_eth0_phy>;
-+				phy-mode = "rgmii-id";
-+				ti,syscon-rgmii-delay = <&scm_conf 0x4100>;
-+				ti,half-duplex-capable;
-+				/* Filled in by bootloader */
-+				local-mac-address = [00 00 00 00 00 00];
-+			};
-+
-+			icssg0_emac1: port@1 {
-+				reg = <1>;
-+				phy-handle = <&icssg0_eth1_phy>;
-+				phy-mode = "rgmii-id";
-+				ti,syscon-rgmii-delay = <&scm_conf 0x4104>;
-+				ti,half-duplex-capable;
-+				/* Filled in by bootloader */
-+				local-mac-address = [00 00 00 00 00 00];
-+			};
-+		};
-+	};
- };
- 
- &wkup_pmx0 {
-@@ -944,6 +1017,43 @@ AM65X_IOPAD(0x0074, PIN_INPUT,  5)  /* (T27) I2C2_SCL */
- 			AM65X_IOPAD(0x0070, PIN_INPUT,  5)  /* (R25) I2C2_SDA */
- 		>;
- 	};
-+
-+	icssg0_mdio_pins_default: icssg0-mdio-default-pins {
-+		pinctrl-single,pins = <
-+			AM65X_IOPAD(0x0294, PIN_INPUT, 0) /* (AE26) PRG0_MDIO0_MDIO */
-+			AM65X_IOPAD(0x0298, PIN_OUTPUT, 0) /* (AE28) PRG0_MDIO0_MDC */
-+		>;
-+	};
-+
-+	icssg0_rgmii_pins_default: icssg0-rgmii-default-pins {
-+		pinctrl-single,pins = <
-+			AM65X_IOPAD(0x0244, PIN_INPUT, 2) /* (AB28) PRG0_PRU1_GPO0.PRG0_RGMII2_RD0 */
-+			AM65X_IOPAD(0x0248, PIN_INPUT, 2) /* (AC28) PRG0_PRU1_GPO1.PRG0_RGMII2_RD1 */
-+			AM65X_IOPAD(0x024c, PIN_INPUT, 2) /* (AC27) PRG0_PRU1_GPO2.PRG0_RGMII2_RD2 */
-+			AM65X_IOPAD(0x0250, PIN_INPUT, 2) /* (AB26) PRG0_PRU1_GPO3.PRG0_RGMII2_RD3 */
-+			AM65X_IOPAD(0x0274, PIN_OUTPUT, 2) /* (AC25) PRG0_PRU1_GPO12.PRG0_RGMII2_TD0 */
-+			AM65X_IOPAD(0x0278, PIN_OUTPUT, 2) /* (AD25) PRG0_PRU1_GPO13.PRG0_RGMII2_TD1 */
-+			AM65X_IOPAD(0x027c, PIN_OUTPUT, 2) /* (AD24) PRG0_PRU1_GPO14.PRG0_RGMII2_TD2 */
-+			AM65X_IOPAD(0x0280, PIN_OUTPUT, 2) /* (AE27) PRG0_PRU1_GPO15.PRG0_RGMII2_TD3 */
-+			AM65X_IOPAD(0x0284, PIN_INPUT, 2) /* (AC24) PRG0_PRU1_GPO16.PRG0_RGMII2_TXC */
-+			AM65X_IOPAD(0x0270, PIN_OUTPUT, 2) /* (AB24) PRG0_PRU1_GPO11.PRG0_RGMII2_TX_CTL */
-+			AM65X_IOPAD(0x025c, PIN_INPUT, 2) /* (AB27) PRG0_PRU1_GPO6.PRG0_RGMII2_RXC */
-+			AM65X_IOPAD(0x0254, PIN_INPUT, 2) /* (AA25) PRG0_PRU1_GPO4.PRG0_RGMII2_RX_CTL */
-+
-+			AM65X_IOPAD(0x01f4, PIN_INPUT, 2) /* (V24) PRG0_PRU0_GPO0.PRG0_RGMII1_RD0 */
-+			AM65X_IOPAD(0x01f8, PIN_INPUT, 2) /* (W25) PRG0_PRU0_GPO1.PRG0_RGMII1_RD1 */
-+			AM65X_IOPAD(0x01fc, PIN_INPUT, 2) /* (W24) PRG0_PRU0_GPO2.PRG0_RGMII1_RD2 */
-+			AM65X_IOPAD(0x0200, PIN_INPUT, 2) /* (AA27) PRG0_PRU0_GPO3.PRG0_RGMII1_RD3 */
-+			AM65X_IOPAD(0x0224, PIN_OUTPUT, 2) /* (AD27) PRG0_PRU0_GPO12.PRG0_RGMII1_TD0 */
-+			AM65X_IOPAD(0x0228, PIN_OUTPUT, 2) /* (AC26) PRG0_PRU0_GPO13.PRG0_RGMII1_TD1 */
-+			AM65X_IOPAD(0x022c, PIN_OUTPUT, 2) /* (AD26) PRG0_PRU0_GPO14.PRG0_RGMII1_TD2 */
-+			AM65X_IOPAD(0x0230, PIN_OUTPUT, 2) /* (AA24) PRG0_PRU0_GPO15.PRG0_RGMII1_TD3 */
-+			AM65X_IOPAD(0x0234, PIN_INPUT, 2) /* (AD28) PRG0_PRU0_GPO16.PRG0_RGMII1_TXC */
-+			AM65X_IOPAD(0x0220, PIN_OUTPUT, 2) /* (AB25) PRG0_PRU0_GPO11.PRG0_RGMII1_TX_CTL */
-+			AM65X_IOPAD(0x020c, PIN_INPUT, 2) /* (Y25) PRG0_PRU0_GPO6.PRG0_RGMII1_RXC */
-+			AM65X_IOPAD(0x0204, PIN_INPUT, 2) /* (Y24) PRG0_PRU0_GPO4.PRG0_RGMII1_RX_CTL */
-+		>;
-+	};
- };
- 
- &main_pmx1 {
-@@ -1316,3 +1426,21 @@ &mcu_r5fss0_core1 {
- 			<&mcu_r5fss0_core1_memory_region>;
- 	mboxes = <&mailbox0_cluster1>, <&mbox_mcu_r5fss0_core1>;
- };
-+
-+&icssg0_mdio {
-+	status = "okay";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&icssg0_mdio_pins_default>;
-+
-+	icssg0_eth0_phy: ethernet-phy@0 {
-+		reg = <0>;
-+		ti,rx-internal-delay = <DP83867_RGMIIDCTL_2_00_NS>;
-+		ti,fifo-depth = <DP83867_PHYCR_FIFO_DEPTH_4_B_NIB>;
-+	};
-+
-+	icssg0_eth1_phy: ethernet-phy@1 {
-+		reg = <1>;
-+		ti,rx-internal-delay = <DP83867_RGMIIDCTL_2_00_NS>;
-+		ti,fifo-depth = <DP83867_PHYCR_FIFO_DEPTH_4_B_NIB>;
-+	};
-+};
+Thanks for your continued interest in getting this improvement in.
+
+Adrian
+
 -- 
-2.35.3
-
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer
+`. `'   Physicist
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
