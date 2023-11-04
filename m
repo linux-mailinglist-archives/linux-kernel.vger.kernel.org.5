@@ -2,119 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A9F2E7E0F4C
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 13:10:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9F737E0F4D
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 13:14:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229781AbjKDMIf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Nov 2023 08:08:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55276 "EHLO
+        id S229573AbjKDMN0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Nov 2023 08:13:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjKDMId (ORCPT
+        with ESMTP id S229456AbjKDMNZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Nov 2023 08:08:33 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18445112
-        for <linux-kernel@vger.kernel.org>; Sat,  4 Nov 2023 05:08:31 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-51e24210395so6737a12.0
-        for <linux-kernel@vger.kernel.org>; Sat, 04 Nov 2023 05:08:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1699099709; x=1699704509; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vfHji7Ga58BYl+g/DnM6ZF6YFg3Y4ct5ZcRCVcclsa0=;
-        b=16bLiGuNtm2pLOltuMFhujZdhB12OuYSmsU+F5+gLrl5XuUEg2Ru76iCwe5bYCnxxu
-         j0BuAP9iU2JET7nboMABSfNschuolaHSioA0NJ6OhZfCGlS1dxV7pxFix8ukGfkaI8AQ
-         J6vwhxIWap0KFagS2YCyDKursmjunTkojCBks0aKcz044D6pgh/oRwwsRHkq9GwRgTre
-         inR3n/jTRsHaK2yMjg2dmwBmV4GPQoLFfaIRsysE91rWzjT0fmT7rJKStXrtW7fyuQSr
-         bG09aW4uawwnJAE4/dHED3aaWHLejdAedr8xtPRibhKojZIiBVVLi9evEXFIDgn64Nd2
-         r49A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699099709; x=1699704509;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vfHji7Ga58BYl+g/DnM6ZF6YFg3Y4ct5ZcRCVcclsa0=;
-        b=kRAIscq4GxyNqejt5Jqbbu9z+8VwesZfWSnRp2t/4RCDGsrAKavqeSm06hOesg774e
-         8ejKexRVgD2chIds4Pz1S5SzjbR/SR7U5B5yr+ims/G6slZMEk9hNHhEYXrOtaD9Tq9x
-         ctjcg6gbTjFkmpCnFY2IV7kqaOcETdC8WY0v1WsEonYGYOBGpyJDkIZZXjT3MDZ6eO07
-         InreswROQ/ewfNnCl/57wv1a28FwmRMkBIe07gSoR2+25Nd7RgPThKGxJ0QfTq5Kw+O1
-         aSyTCyxCDkcRHJAetm/xWGCnPPcww3dAAeJOdr3lp2TLpx9cU5gPvVZu64cVIAEFqa2h
-         LKww==
-X-Gm-Message-State: AOJu0YxqU6tuxDMcofJ+t9ai9CSE7XLsIhBGqRHYLBcaSoCMwTG8dJvO
-        APUc8mGWwnfAj8/crX8vmVxYGHlVHd9yiInyhrcXCA==
-X-Google-Smtp-Source: AGHT+IHPg5/XVMOqndhPMvOwkRuTH8dEV9/UWaHArRzbPx6nONEweJZJJocBsz4HHR2fp8EOzm7d+FMX1UPwYPi/1xk=
-X-Received: by 2002:a50:9ecc:0:b0:543:faac:e135 with SMTP id
- a70-20020a509ecc000000b00543faace135mr54281edf.3.1699099709343; Sat, 04 Nov
- 2023 05:08:29 -0700 (PDT)
-MIME-Version: 1.0
-References: <20231104000239.367005-1-seanjc@google.com> <20231104000239.367005-2-seanjc@google.com>
-In-Reply-To: <20231104000239.367005-2-seanjc@google.com>
-From:   Jim Mattson <jmattson@google.com>
-Date:   Sat, 4 Nov 2023 05:08:13 -0700
-Message-ID: <CALMp9eSgvq1zOZ4KFnsPHQWk62AGYj560SvVops-bmtpyLGPRQ@mail.gmail.com>
-Subject: Re: [PATCH v6 01/20] KVM: x86/pmu: Don't allow exposing unsupported
- architectural events
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+        Sat, 4 Nov 2023 08:13:25 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A9A69D
+        for <linux-kernel@vger.kernel.org>; Sat,  4 Nov 2023 05:13:22 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86801C433C7;
+        Sat,  4 Nov 2023 12:13:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699100001;
+        bh=6oVaN3BzvpsPu9dUUFCNp1qKEANCS1fIs6Vl23jVrqE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=jXeaRUe47YAHUXjzev5/Zhb1wcm5zk3IxuQvzkk9+6ZezK54J3j2VvBQ6C9SmTqaj
+         CIYfYlEjgXBC5kacT18ermBNHZh97I0W/A1FdRivlSE2cnIy6pDP7Fe1/DSRqXn5EU
+         Y/RAuUCX43at9eWn+Z7IOGRrfbT4BdG8SINXlAqfgThGOqVhT+0OAbQdg0kP9GIwBv
+         WMxz46XZVS1lqtWrHVDwByzk55XU0OaCSgYfMkt5r0zPKVFlIQYRjUXya4BT0wxElr
+         0QyBsC1cdHTJ8qONa0cXpjcsF8maRLgBIvSO1NKCLQnA9G4p7IrYpa+72+ffIfSA5m
+         QcEX37QeGufKA==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1qzFWg-00AIQB-O1;
+        Sat, 04 Nov 2023 12:13:18 +0000
+Date:   Sat, 04 Nov 2023 12:13:18 +0000
+Message-ID: <86il6h1ztt.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Jan Henrik Weinstock <jan@mwa.re>
+Cc:     oliver.upton@linux.dev, james.morse@arm.com,
+        suzuki.poulose@arm.com, yuzenghui@huawei.com,
+        catalin.marinas@arm.com, will@kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
         linux-kernel@vger.kernel.org,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Dapeng Mi <dapeng1.mi@linux.intel.com>,
-        Jinrong Liang <cloudliang@tencent.com>,
-        Like Xu <likexu@tencent.com>,
-        Aaron Lewis <aaronlewis@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Lukas =?UTF-8?B?SsO8bmdlcg==?= <lukas@mwa.re>
+Subject: Re: KVM exit to userspace on WFI
+In-Reply-To: <CANi1PHiXFKz6VqBys=Xw=rgR_gJKPO661iW-TMrF20j5yS4unQ@mail.gmail.com>
+References: <CANi1PHhzk80HvwQbBM46gpJ6_AA_P6+m5Jo0Nuy_MAdA4C2BhQ@mail.gmail.com>
+        <87ttql5aq7.wl-maz@kernel.org>
+        <CANi1PHieGooO0DK=6BPwq0UknHzsn9QM3rFQkh3HLMfWxDseUQ@mail.gmail.com>
+        <86cyx250w9.wl-maz@kernel.org>
+        <CANi1PHjAwLWAq9EW7r5Yh_xbvPiJMsq8342JwAGafz1d1NUhSA@mail.gmail.com>
+        <86msw01e4m.wl-maz@kernel.org>
+        <CANi1PHiXFKz6VqBys=Xw=rgR_gJKPO661iW-TMrF20j5yS4unQ@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: jan@mwa.re, oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com, catalin.marinas@arm.com, will@kernel.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, linux-kernel@vger.kernel.org, lukas@mwa.re
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 3, 2023 at 5:02=E2=80=AFPM Sean Christopherson <seanjc@google.c=
-om> wrote:
->
-> Hide architectural events that unsupported according to guest CPUID *or*
-> hardware, i.e. don't let userspace advertise and potentially program
-> unsupported architectural events.
+On Tue, 31 Oct 2023 19:21:16 +0000,
+Jan Henrik Weinstock <jan@mwa.re> wrote:
+>=20
+> Am Mo., 30. Okt. 2023 um 13:36 Uhr schrieb Marc Zyngier <maz@kernel.org>:
+> >
+> > [please make an effort not to top-post]
+> >
+> > On Fri, 27 Oct 2023 18:41:44 +0100,
+> > Jan Henrik Weinstock <jan@mwa.re> wrote:
+> > >
+> > > Hi Marc,
+> > >
+> > > the basic idea behind this is to have a (single-threaded) execution l=
+oop,
+> > > something like this:
+> > >
+> > > vcpu-thread:    vcpu-run | process-io-devices | vcpu-run | process-io=
+...
+> > >                          ^
+> > >                   WFX or timeout
+> > >
+> > > We switch to simulating IO devices whenever the vcpu is idle (wfi) or=
+ exceeds
+> > > a certain budget of instructions (counted via pmu). Our fallback curr=
+ently is
+> > > to kick the vcpu out of its execution using a signal (via a timeout/a=
+larm). But
+> > > of course, if the cpu is stuck at a wfi, we are wasting a lot of time.
+> > >
+> > > I understand that the proposed behavior is not desirable for most use=
+ cases,
+> > > which is why I suggest locking it behind a flag, e.g.
+> > > KVM_ARCH_FLAG_WFX_EXIT_TO_USER.
+> >
+> > But how do you reconcile the fact that exposing this to userspace
+> > breaks fundamental expectations that the guest has, such as getting
+> > its timer interrupts and directly injected LPIs? Implementing WFI in
+> > userspace breaks it. What about the case where we don't trap WFx and
+> > let the *guest* wait for an interrupt?
+>=20
+> Timer interrupts etc. will be injected into the vcpu during the
+> io-phases. When there are no interrupts present and the guest performs
+> a WFI, we can just skip forward to the next timer event.
 
-The bitmask, pmu->available_event_types, is only used in
-intel_hw_event_available(). As discussed
-(https://lore.kernel.org/kvm/ZUU12-TUR_1cj47u@google.com/),
-intel_hw_event_available() should go away.
+Skip forward? What does that mean? Compress time and move along?
 
-> Note, KVM already limits the length of the reverse polarity field, only
-> the mask itself is missing.
->
-> Fixes: f5132b01386b ("KVM: Expose a version 2 architectural PMU to a gues=
-ts")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->  arch/x86/kvm/vmx/pmu_intel.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/arch/x86/kvm/vmx/pmu_intel.c b/arch/x86/kvm/vmx/pmu_intel.c
-> index 820d3e1f6b4f..1b13a472e3f2 100644
-> --- a/arch/x86/kvm/vmx/pmu_intel.c
-> +++ b/arch/x86/kvm/vmx/pmu_intel.c
-> @@ -533,7 +533,7 @@ static void intel_pmu_refresh(struct kvm_vcpu *vcpu)
->         pmu->counter_bitmask[KVM_PMC_GP] =3D ((u64)1 << eax.split.bit_wid=
-th) - 1;
->         eax.split.mask_length =3D min_t(int, eax.split.mask_length,
->                                       kvm_pmu_cap.events_mask_len);
-> -       pmu->available_event_types =3D ~entry->ebx &
-> +       pmu->available_event_types =3D ~(entry->ebx | kvm_pmu_cap.events_=
-mask) &
->                                         ((1ull << eax.split.mask_length) =
-- 1);
->
->         if (pmu->version =3D=3D 1) {
-> --
-> 2.42.0.869.gea05f2083d-goog
->
+>=20
+> > Honestly, what you are describing seems to be a use model that doesn't
+> > fit KVM, which is a general purpose hypervisor, but more a simulation
+> > environment. Yes, the primitives are the same, but the plumbing is
+> > wildly different.
+>=20
+> Agreed.
+>=20
+> > *If* that's the stuff you're looking at, then I'm afraid you'll have
+> > to do it in different way, because what you are suggesting is
+> > fundamentally incompatible with the guarantees that KVM gives to guest
+> > and userspace. Because your KVM_ARCH_FLAG_WFX_EXIT_TO_USER is really a
+> > lie. It should really be named something more along the lines of
+> > KVM_ARCH_FLAG_WFX_EXIT_TO_USER_SOMETIME_AND_I_DONT_EVEN_KNOW_WHEN
+> > (probably with additional clauses related to breaking things).
+>=20
+> I have attached a reworked version of the patch as a reference (based
+> on my 5.15 kernel). It puts the modified behavior behind a new
+> capability so as to not interfere with the current expectations
+> towards handling WFI/WFE.
+> I think it should now trap all blocking calls to WFx on the vcpu and
+> reliably return to the userspace. If I have missed something that
+> would cause the vcpu to not trap on a WFI kindly let me know.
+
+Oh FFS. Please read my previous emails, the architecture spec, and
+understand that WFx is a *hint*. Given your line of work, I would hope
+you understand the implications of this.
+
+>=20
+> > Overall, you are still asking for something that is not guaranteed at
+> > the architecture level, even less in KVM, and I'm not going to add
+> > support for something that can only work "sometime".
+>=20
+> I am not quite sure what you mean with "sometime". Are you referring
+> to WFIs as NOPs? Or WFIs that do not yield because of pending
+> interrupts?
+
+NOP is a valid implementation of WFx. WFx doesn't have to trap. Its
+only requirements are not to lose state. Nothing else. Trapping is a
+'quality of implementation' feature, and doesn't affect correctness.
+And yes, there are machines out there that will absolutely ignore any
+request for trapping.
+
+=46rom the architecture spec (ARM DDI 0487J.a, D19.2.48, TWI):
+
+<quote>
+Since a WFI can complete at any time, even without a Wakeup event, the
+traps on WFI are not guaranteed to be taken, even if the WFI is
+executed when there is no Wakeup event. The only guarantee is that if
+the instruction does not complete in finite time in the absence of a
+Wakeup event, the trap will be taken.
+</quote>
+
+Similar verbiage exists for WFE. Do you now see why your proposal
+makes little sense?
+
+>=20
+> The point of my patch is not to accurately count every single WFI. The
+> point is to prevent the host cpu from sleeping just because my vcpu
+> executed a WFI somewhere in the guest software. If a WFI is executed
+> by the guest and that does not result in my vcpu thread to block (in
+> other words: the vcpu continues executing instructions beyond the WFI)
+> then it also should not exit to userspace. So instead of
+> "KVM_ARCH_FLAG_WFX_EXIT_TO_USER_SOMETIME_AND_I_DONT_EVEN_KNOW_WHEN" it
+> is really "KVM_ARCH_FLAG_WFX_EXIT_TO_USER_WHENEVER_YOU_WOULD_OTHERWISE_YI=
+ELD_AND_I_CANNOT_GET_MY_THREAD_BACK".
+
+You already must be able to handle a guest spinning in a loop without
+a WFI. So why would WFI be of interest more than anything else? You
+can always make an interrupt pending at any point, without having to
+wait for WFI to occur. Just make the interrupt pending (which, if you
+emulate everything in userspace, is just giving the vcpu thread a
+signal).
+
+My hunch is that your SW is trying to do the interrupt injection from
+the vcpu thread, which is a pretty broken model (it would badly model
+the concept of an interrupt being an asynchronous event).
+
+Honestly, if there was one thing I would add to the kernel, it would
+be an option to *prevent* any trap of WFx, because that at least is
+something we can universally enforce and guarantee to userspace.
+Anything else is only wishful thinking.
+
+	M.
+
+--=20
+Without deviation from the norm, progress is not possible.
