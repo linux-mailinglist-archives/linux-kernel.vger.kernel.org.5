@@ -2,68 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB50A7E0FBF
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 14:54:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C01687E0FB4
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 14:54:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232267AbjKDNrd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Nov 2023 09:47:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39340 "EHLO
+        id S231483AbjKDNxo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Nov 2023 09:53:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231483AbjKDNrc (ORCPT
+        with ESMTP id S229578AbjKDNxn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Nov 2023 09:47:32 -0400
-Received: from mail-yw1-x112e.google.com (mail-yw1-x112e.google.com [IPv6:2607:f8b0:4864:20::112e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B02E9125
-        for <linux-kernel@vger.kernel.org>; Sat,  4 Nov 2023 06:47:29 -0700 (PDT)
-Received: by mail-yw1-x112e.google.com with SMTP id 00721157ae682-5a86b6391e9so35720217b3.0
-        for <linux-kernel@vger.kernel.org>; Sat, 04 Nov 2023 06:47:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ncf.edu; s=google; t=1699105649; x=1699710449; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=QRyo4uayRcD1OGB0/F9hU4wPpRqY3YBFvShQiftusTQ=;
-        b=aDJFS3Pf3oowHLw6elukZyMOfBpXkaIhEgf3jyWGpUr/auFCGiSPrW2fwMEPzGOLgs
-         rgVUv5PAycNB7EpLsZU0dvmy2kww1t8h0jd/lZZC8L7aOK41TQ69yYG1I3Q1/bXfq2FH
-         wEEZIrSn8iuL7Ob6/u/Hfak1cRJ7RpcodusqZ9c9o7/yEm5B2c56zSyxLayo3LRt8tKI
-         0HJG6Ckz8UmWky7dpbI1IvdCN6jEdJjNjwLQf4E2ONG9BhOZkRmKE3NlVK+8ORsardHQ
-         Gej8eUfrM+8jvqwSj3hBhDkvf4O+Rf6/DA5jcAuwfEiY7myRMNqdJIK1ipI8ftLS/gw6
-         PSeA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699105649; x=1699710449;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=QRyo4uayRcD1OGB0/F9hU4wPpRqY3YBFvShQiftusTQ=;
-        b=mA4Dt9P3Vsk0szJ1eTvY/Ppsr5JdJ54zzoS0H0bd2WdyQ8KltBp+ClIP6EFQCm8MuD
-         sGffuBpufBbuBvwDll6xcN9LDVXa3yHj4X7aBming3zHwGScaxbgUWscrN9Z+PrCHqas
-         vEpQd0nifqRWd7p3u7AglURrcjzS2/YnSxwzds07I2otqaD9FTduufQ2ZN8qqOlnn072
-         CFcNCEIsHj1zGXaENe/auH6zsZ9WohMG0B287x4bm/IErMqebmC6abOBwqtPo/+VkkeD
-         8lkLXQZCG3sTIgjKrYaOxoBarJ3ZRMVxxmiNUgggg5HPQE9agw/SB+M4DCl1IH1+QjXK
-         hxNg==
-X-Gm-Message-State: AOJu0YzlmFKTJ50jck0BnfuaiclxzWqSQPlhOpaN9+p/tvu2krz4+OnK
-        aTXY50M5J+Srdt8LE9OvAvR4Qg==
-X-Google-Smtp-Source: AGHT+IExWjX7G6DBFF4kwLIBDEgMe2CCFTXHC3Hx30D8yPn2WKmrR6jLGq4sGRWw1jQ8lSDpAO2cAw==
-X-Received: by 2002:a05:690c:ecf:b0:5a7:bc78:81e7 with SMTP id cs15-20020a05690c0ecf00b005a7bc7881e7mr6540808ywb.30.1699105648902;
-        Sat, 04 Nov 2023 06:47:28 -0700 (PDT)
-Received: from localhost.localdomain ([2601:580:8201:d0::c6a9])
-        by smtp.gmail.com with ESMTPSA id p188-20020a815bc5000000b00559f1cb8444sm2088339ywb.70.2023.11.04.06.47.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 04 Nov 2023 06:47:28 -0700 (PDT)
-From:   Hunter Chasens <hunter.chasens18@ncf.edu>
-To:     corbet@lwn.net
-Cc:     airlied@gmail.com, daniel@ffwll.ch,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, dri-devel@lists.freedesktop.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Hunter Chasens <hunter.chasens18@ncf.edu>
-Subject: [PATCH v1] docs: gpu: rfc: i915_scheduler.rst remove unused directives for namespacing
-Date:   Sat,  4 Nov 2023 09:47:08 -0400
-Message-Id: <20231104134708.69432-1-hunter.chasens18@ncf.edu>
-X-Mailer: git-send-email 2.39.3
+        Sat, 4 Nov 2023 09:53:43 -0400
+Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32464134
+        for <linux-kernel@vger.kernel.org>; Sat,  4 Nov 2023 06:53:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
+        s=mail; t=1699106017;
+        bh=l5YIhhEsyNulzth2iXNgoY2WMDmvaFrvq7cXGxQrjyo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZQaa68pyY7ABmQAhd2GZwkCRvaGaz+5UBUL/AakPOWPUDjGsr8pd4ETZQGgz0reKi
+         WwcgRpLlsb3bYioSmv4SBwQW3Wik9GZE8xtUk45Vz27hG/dMavVmMsoiaXGVByCr+Y
+         kkUX95IKew215+eBXuI9lAazMNSLZ/63DHFKJVkY=
+Date:   Sat, 4 Nov 2023 14:53:37 +0100
+From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
+        Zhangjin Wu <falcon@tinylab.org>, Willy Tarreau <w@1wt.eu>,
+        Yuan Tan <tanyuan@tinylab.org>
+Subject: Re: [PATCH RFC] misc/pvpanic: add support for normal shutdowns
+Message-ID: <59ed7f70-2953-443e-9fa5-d46c566e4a08@t-8ch.de>
+References: <20231104-pvpanic-shutdown-v1-1-5ee7c9b3e301@weissschuh.net>
+ <2023110407-unselect-uptight-b96d@gregkh>
+ <365bbe1f-5ee8-40fe-bec0-53d9e7395c18@t-8ch.de>
+ <2023110431-pacemaker-pruning-0e4c@gregkh>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <2023110431-pacemaker-pruning-0e4c@gregkh>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -72,32 +49,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Removed unused directives for namespacing I believe to have been
-originally introduced as a workaround for a Sphinx warning.
+On 2023-11-04 14:28:37+0100, Greg Kroah-Hartman wrote:
+> On Sat, Nov 04, 2023 at 02:16:53PM +0100, Thomas Weißschuh wrote:
+> > On 2023-11-04 14:05:02+0100, Greg Kroah-Hartman wrote:
+> > > On Sat, Nov 04, 2023 at 12:29:30PM +0100, Thomas Weißschuh wrote:
+> > > > Shutdown requests are normally hardware dependent.
+> > > > By extending pvpanic to also handle shutdown requests, guests can
+> > > > submit such requests with an easily implementable and cross-platform
+> > > > mechanism.
+> > > > 
+> > > > Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+> > > > ---
+> > > > The corresponding patch to qemu has also been submitted[0].
+> > > > General discussions about the feature should happen on the other thread.
+> > > > 
+> > > > [0] https://lore.kernel.org/qemu-devel/20231104-pvpanic-shutdown-v1-0-02353157891b@t-8ch.de/
+> > > > ---
+> > > >  drivers/misc/pvpanic/pvpanic.c | 19 +++++++++++++++++--
+> > > >  include/uapi/misc/pvpanic.h    |  1 +
+> > > >  2 files changed, 18 insertions(+), 2 deletions(-)
+> > 
+> > [..]
+> > 
+> > > > diff --git a/include/uapi/misc/pvpanic.h b/include/uapi/misc/pvpanic.h
+> > > > index 54b7485390d3..82fc618bfbcf 100644
+> > > > --- a/include/uapi/misc/pvpanic.h
+> > > > +++ b/include/uapi/misc/pvpanic.h
+> > > > @@ -5,5 +5,6 @@
+> > > >  
+> > > >  #define PVPANIC_PANICKED	(1 << 0)
+> > > >  #define PVPANIC_CRASH_LOADED	(1 << 1)
+> > > > +#define PVPANIC_SHUTDOWN	(1 << 2)
+> > > 
+> > > Why are these in a uapi file?
+> > 
+> > They are ABI between qemu and its guest.
+> 
+> But there's no interaction between Linux and userspace for these values,
+> so I would just drop them from here.
 
-Signed-off-by: Hunter Chasens <hunter.chasens18@ncf.edu>
----
- Documentation/gpu/rfc/i915_scheduler.rst | 4 ----
- 1 file changed, 4 deletions(-)
+There is one point where they are used:
 
-diff --git a/Documentation/gpu/rfc/i915_scheduler.rst b/Documentation/gpu/rfc/i915_scheduler.rst
-index c237ebc024cd..23ba7006929b 100644
---- a/Documentation/gpu/rfc/i915_scheduler.rst
-+++ b/Documentation/gpu/rfc/i915_scheduler.rst
-@@ -135,13 +135,9 @@ Add I915_CONTEXT_ENGINES_EXT_PARALLEL_SUBMIT and
- drm_i915_context_engines_parallel_submit to the uAPI to implement this
- extension.
- 
--.. c:namespace-push:: rfc
--
- .. kernel-doc:: include/uapi/drm/i915_drm.h
-         :functions: i915_context_engines_parallel_submit
- 
--.. c:namespace-pop::
--
- Extend execbuf2 IOCTL to support submitting N BBs in a single IOCTL
- -------------------------------------------------------------------
- Contexts that have been configured with the 'set_parallel' extension can only
--- 
-2.39.3
+The pvpanic sysfs files 'events' and 'capability' contain numeric values
+which are using these constants.
 
+> 
+> > The specification for these values is part of qemu but for some reason
+> > the header is part of Linux which is then imported back into qemu.
+> > 
+> > I guess this has historical reasons, maybe because qemu doesn't really
+> > ship ABI headers and for Linux it's natural.
+> 
+> That feels odd, are there other in-kernel examples of the Linux uapi
+> files being abused like this?
+
+Looking at qemu scripts/update-linux-headers.sh at least 
+linux/qemu_fw_cfg.h and linux/pci_regs.h seem similar in that they are
+not directly related to Linux' own uapi.
+
+(Assuming you want *one* and not *all* examples)
+
+> > The real reason probably doesn't matter today as the header propably
+> > can't be dropped from Linux anyways for compatibility reasons.
+> > 
+> > > And if they need to be here, why not use the proper BIT() macro for it?
+> > 
+> > This was for uniformity with the existing code.
+> > I can send a (standalone?) patch to fix it up.
+> 
+> If we keep it, sure, that would be nice.  But let's try to drop it if
+> possible :)
+
+It will break the mentioned scripts/update-linux-headers.sh from qemu.
+
+
+Note:
+
+BIT() is part of include/vdso/bits.h which is not part of the
+uapi. How is it supposed to work?
+Some other uapi header also use BIT() but that seems to work by accident
+as the users have the macro defined themselves.
+
+
+Thomas
