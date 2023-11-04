@@ -2,177 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 220A87E1014
+	by mail.lfdr.de (Postfix) with ESMTP id D28A57E1016
 	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 16:27:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229546AbjKDPGd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Nov 2023 11:06:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45214 "EHLO
+        id S229791AbjKDPTs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Nov 2023 11:19:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbjKDPGb (ORCPT
+        with ESMTP id S229628AbjKDPTq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Nov 2023 11:06:31 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 629671BF
-        for <linux-kernel@vger.kernel.org>; Sat,  4 Nov 2023 08:05:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1699110341;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=i9z4ksAJKoBaMot+I42cegftv20OKEb1WSe8JorPWis=;
-        b=LzRdBNgdwHzFiu4aFvzRj+HyKpTMQLvsPl8BrnxdzHAdLaI7D8LoGQ26oU3wDpQ2FLVRs/
-        3QNAOj+8xB9ZrHCejqOrL+OXgZng7oeykNSXOVKMVQS9q9E9HZ7uOFrQSQ15m4VSB2NShV
-        BHOxCqYZbuLJxGnWTfcZvCNbFmzxs0k=
-Received: from mail-pl1-f199.google.com (mail-pl1-f199.google.com
- [209.85.214.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-352-w0JeEimTMs6biwJAgfJoQw-1; Sat, 04 Nov 2023 11:05:39 -0400
-X-MC-Unique: w0JeEimTMs6biwJAgfJoQw-1
-Received: by mail-pl1-f199.google.com with SMTP id d9443c01a7336-1cc2efd22ccso26037285ad.1
-        for <linux-kernel@vger.kernel.org>; Sat, 04 Nov 2023 08:05:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699110339; x=1699715139;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=i9z4ksAJKoBaMot+I42cegftv20OKEb1WSe8JorPWis=;
-        b=ZE3htOF8MnKUAvYgw0wNTMAAP5RvI+QCPVnJnJoXQYbRXaOG3TruJrrPYR4VBsexl+
-         7X1+rKc1edbrpudSePBN9iTs57VoXugG82FyjNMSwBmUIxhtS8BIut5P6kiXSmM2wD6X
-         fEscywTykZnNBAh1fA0ufgL2oo/pVr8aIqQtDLZcOpzTXunjc21YjUoXA/yXiwDfnjdh
-         V2tQsmO5/F6cp2bkMdC+dqW9jd8s4fVRUIWmHYmX2nnDOn8WkgGiU33YYvoDydOBm+Eo
-         3qSe2RaDwfqLChUjJSLWw84HnSK1pxOVB5vxvGLjuBVfHzd5UU0iuG27FxUyO3SjMNce
-         b3SA==
-X-Gm-Message-State: AOJu0YzAy6WmeFKRSA94epLaFFofPSGrN3IWVZNK9dBqVrR06Rls74n/
-        mPlxlMEEyADLFox7YB3qfR+kDMiRXMy7TD44ptXCYjZIkTOxwZ/eVE7tVUpNthhKsxIQ9ziwOeI
-        p0SI6WaCBaX4VV/R+6gqiyMk0
-X-Received: by 2002:a17:902:e811:b0:1cc:569b:1df4 with SMTP id u17-20020a170902e81100b001cc569b1df4mr20338642plg.1.1699110338876;
-        Sat, 04 Nov 2023 08:05:38 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHVdmZGqn+TlZ02ZFL16cTMGSicZ9LUGUPBMgKZ/dntpJav50rMK+vkrfXHS8Z6F1PWTban/w==
-X-Received: by 2002:a17:902:e811:b0:1cc:569b:1df4 with SMTP id u17-20020a170902e81100b001cc569b1df4mr20338619plg.1.1699110338500;
-        Sat, 04 Nov 2023 08:05:38 -0700 (PDT)
-Received: from kernel-devel.local ([240d:1a:c0d:9f00:245e:16ff:fe87:c960])
-        by smtp.gmail.com with ESMTPSA id jf7-20020a170903268700b001ca21c8abf7sm3101797plb.188.2023.11.04.08.05.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 04 Nov 2023 08:05:38 -0700 (PDT)
-From:   Shigeru Yoshida <syoshida@redhat.com>
-To:     stefanha@redhat.com, sgarzare@redhat.com, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com
-Cc:     kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Shigeru Yoshida <syoshida@redhat.com>,
-        syzbot+0c8ce1da0ac31abbadcd@syzkaller.appspotmail.com
-Subject: [PATCH net v2] virtio/vsock: Fix uninit-value in virtio_transport_recv_pkt()
-Date:   Sun,  5 Nov 2023 00:05:31 +0900
-Message-ID: <20231104150531.257952-1-syoshida@redhat.com>
-X-Mailer: git-send-email 2.41.0
+        Sat, 4 Nov 2023 11:19:46 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD9A7D42
+        for <linux-kernel@vger.kernel.org>; Sat,  4 Nov 2023 08:19:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699111184; x=1730647184;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=E4nONcAXaviUdfS4mzCeKC117uG33wBRWuTHxe4gC1U=;
+  b=DWbWJamr2tHreBunGGl7x7cVJIqaKDgXue6IYFjMJ71JmYMaG5StVaLA
+   yp3Gegd5zwSvLQHLS/B7tmwIAo06WfK8KcOi/Vf2zq0xbOER4F5o1epOn
+   jDBw5jDTpTEayCuPPrNWO2mzM0yJacu8tbx8LiNKt0F2++DxUGA0IXOuk
+   KMp+DO38Y7fmVpTjodamFBXq7KeKYBfw6ZbsoI+j8RHQoZgBe6XM3Mt4B
+   DNZOJeAIRX9z+9stDlCkmLlBJVupLkxSTb7Pq3Hw5AkMpa0e4i1rJdlFX
+   UukH+HwJd1HhqTb36fGMgtR1KD5Oi3dKuTFNEMvC48OpPopJIHkhm3vTo
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10884"; a="10628310"
+X-IronPort-AV: E=Sophos;i="6.03,277,1694761200"; 
+   d="scan'208";a="10628310"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2023 08:19:43 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10884"; a="905639119"
+X-IronPort-AV: E=Sophos;i="6.03,277,1694761200"; 
+   d="scan'208";a="905639119"
+Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
+  by fmsmga001.fm.intel.com with ESMTP; 04 Nov 2023 08:19:38 -0700
+Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qzIQy-0004Va-2f;
+        Sat, 04 Nov 2023 15:19:36 +0000
+Date:   Sat, 4 Nov 2023 23:18:39 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Daniel Bristot de Oliveira <bristot@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     oe-kbuild-all@lists.linux.dev,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        linux-kernel@vger.kernel.org,
+        Luca Abeni <luca.abeni@santannapisa.it>,
+        Tommaso Cucinotta <tommaso.cucinotta@santannapisa.it>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Vineeth Pillai <vineeth@bitbyteword.org>,
+        Shuah Khan <skhan@linuxfoundation.org>, bristot@kernel.org,
+        Phil Auld <pauld@redhat.com>
+Subject: Re: [PATCH v5 7/7] sched/fair: Fair server interface
+Message-ID: <202311042329.PB1gTIL4-lkp@intel.com>
+References: <26adad2378c8b15533e4f6216c2863341e587f57.1699095159.git.bristot@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <26adad2378c8b15533e4f6216c2863341e587f57.1699095159.git.bristot@kernel.org>
 X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-KMSAN reported the following uninit-value access issue:
+Hi Daniel,
 
-=====================================================
-BUG: KMSAN: uninit-value in virtio_transport_recv_pkt+0x1dfb/0x26a0 net/vmw_vsock/virtio_transport_common.c:1421
- virtio_transport_recv_pkt+0x1dfb/0x26a0 net/vmw_vsock/virtio_transport_common.c:1421
- vsock_loopback_work+0x3bb/0x5a0 net/vmw_vsock/vsock_loopback.c:120
- process_one_work kernel/workqueue.c:2630 [inline]
- process_scheduled_works+0xff6/0x1e60 kernel/workqueue.c:2703
- worker_thread+0xeca/0x14d0 kernel/workqueue.c:2784
- kthread+0x3cc/0x520 kernel/kthread.c:388
- ret_from_fork+0x66/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
+kernel test robot noticed the following build warnings:
 
-Uninit was stored to memory at:
- virtio_transport_space_update net/vmw_vsock/virtio_transport_common.c:1274 [inline]
- virtio_transport_recv_pkt+0x1ee8/0x26a0 net/vmw_vsock/virtio_transport_common.c:1415
- vsock_loopback_work+0x3bb/0x5a0 net/vmw_vsock/vsock_loopback.c:120
- process_one_work kernel/workqueue.c:2630 [inline]
- process_scheduled_works+0xff6/0x1e60 kernel/workqueue.c:2703
- worker_thread+0xeca/0x14d0 kernel/workqueue.c:2784
- kthread+0x3cc/0x520 kernel/kthread.c:388
- ret_from_fork+0x66/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
+[auto build test WARNING on tip/sched/core]
+[also build test WARNING on tip/master linus/master next-20231103]
+[cannot apply to tip/auto-latest v6.6]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Uninit was created at:
- slab_post_alloc_hook+0x105/0xad0 mm/slab.h:767
- slab_alloc_node mm/slub.c:3478 [inline]
- kmem_cache_alloc_node+0x5a2/0xaf0 mm/slub.c:3523
- kmalloc_reserve+0x13c/0x4a0 net/core/skbuff.c:559
- __alloc_skb+0x2fd/0x770 net/core/skbuff.c:650
- alloc_skb include/linux/skbuff.h:1286 [inline]
- virtio_vsock_alloc_skb include/linux/virtio_vsock.h:66 [inline]
- virtio_transport_alloc_skb+0x90/0x11e0 net/vmw_vsock/virtio_transport_common.c:58
- virtio_transport_reset_no_sock net/vmw_vsock/virtio_transport_common.c:957 [inline]
- virtio_transport_recv_pkt+0x1279/0x26a0 net/vmw_vsock/virtio_transport_common.c:1387
- vsock_loopback_work+0x3bb/0x5a0 net/vmw_vsock/vsock_loopback.c:120
- process_one_work kernel/workqueue.c:2630 [inline]
- process_scheduled_works+0xff6/0x1e60 kernel/workqueue.c:2703
- worker_thread+0xeca/0x14d0 kernel/workqueue.c:2784
- kthread+0x3cc/0x520 kernel/kthread.c:388
- ret_from_fork+0x66/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
+url:    https://github.com/intel-lab-lkp/linux/commits/Daniel-Bristot-de-Oliveira/sched-Unify-runtime-accounting-across-classes/20231104-201952
+base:   tip/sched/core
+patch link:    https://lore.kernel.org/r/26adad2378c8b15533e4f6216c2863341e587f57.1699095159.git.bristot%40kernel.org
+patch subject: [PATCH v5 7/7] sched/fair: Fair server interface
+config: i386-buildonly-randconfig-001-20231104 (https://download.01.org/0day-ci/archive/20231104/202311042329.PB1gTIL4-lkp@intel.com/config)
+compiler: gcc-11 (Debian 11.3.0-12) 11.3.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231104/202311042329.PB1gTIL4-lkp@intel.com/reproduce)
 
-CPU: 1 PID: 10664 Comm: kworker/1:5 Not tainted 6.6.0-rc3-00146-g9f3ebbef746f #3
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.2-1.fc38 04/01/2014
-Workqueue: vsock-loopback vsock_loopback_work
-=====================================================
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311042329.PB1gTIL4-lkp@intel.com/
 
-The following simple reproducer can cause the issue described above:
+All warnings (new ones prefixed by >>):
 
-int main(void)
-{
-  int sock;
-  struct sockaddr_vm addr = {
-    .svm_family = AF_VSOCK,
-    .svm_cid = VMADDR_CID_ANY,
-    .svm_port = 1234,
-  };
+   In file included from kernel/sched/build_utility.c:72:
+>> kernel/sched/debug.c:342:57: warning: integer overflow in expression of type 'long int' results in '-100663296' [-Woverflow]
+     342 | static unsigned long fair_server_period_max = (1 << 22) * NSEC_PER_USEC; /* ~4 seconds */
+         |                                                         ^
 
-  sock = socket(AF_VSOCK, SOCK_STREAM, 0);
-  connect(sock, (struct sockaddr *)&addr, sizeof(addr));
-  return 0;
-}
 
-This issue occurs because the `buf_alloc` and `fwd_cnt` fields of the
-`struct virtio_vsock_hdr` are not initialized when a new skb is allocated
-in `virtio_transport_init_hdr()`. This patch resolves the issue by
-initializing these fields during allocation.
+vim +342 kernel/sched/debug.c
 
-Fixes: 71dc9ec9ac7d ("virtio/vsock: replace virtio_vsock_pkt with sk_buff")
-Reported-and-tested-by: syzbot+0c8ce1da0ac31abbadcd@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=0c8ce1da0ac31abbadcd
-Signed-off-by: Shigeru Yoshida <syoshida@redhat.com>
----
-v1->v2:
-- Rebase on the latest net tree
-https://lore.kernel.org/all/20231026150154.3536433-1-syoshida@redhat.com/
----
- net/vmw_vsock/virtio_transport_common.c | 2 ++
- 1 file changed, 2 insertions(+)
+   341	
+ > 342	static unsigned long fair_server_period_max = (1 << 22) * NSEC_PER_USEC; /* ~4 seconds */
+   343	static unsigned long fair_server_period_min = (100) * NSEC_PER_USEC;     /* 100 us */
+   344	
 
-diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/virtio_transport_common.c
-index e22c81435ef7..dc65dd4d26df 100644
---- a/net/vmw_vsock/virtio_transport_common.c
-+++ b/net/vmw_vsock/virtio_transport_common.c
-@@ -130,6 +130,8 @@ static void virtio_transport_init_hdr(struct sk_buff *skb,
- 	hdr->dst_port	= cpu_to_le32(dst_port);
- 	hdr->flags	= cpu_to_le32(info->flags);
- 	hdr->len	= cpu_to_le32(payload_len);
-+	hdr->buf_alloc	= cpu_to_le32(0);
-+	hdr->fwd_cnt	= cpu_to_le32(0);
- }
- 
- static void virtio_transport_copy_nonlinear_skb(const struct sk_buff *skb,
 -- 
-2.41.0
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
