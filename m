@@ -2,117 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 51ED87E0D6E
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 04:14:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 185B17E0D78
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 04:25:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345861AbjKDDO0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 23:14:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55990 "EHLO
+        id S230421AbjKDDXc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 23:23:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235095AbjKDDOP (ORCPT
+        with ESMTP id S229585AbjKDDXa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 23:14:15 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00A73D6C
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 20:13:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1699067603;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=XmQVU6t74ex4eso68OgbidZVE99nykXUpQNQesplaTI=;
-        b=MfhWmoQEMiiewXFHr0+pWOsUiZ0JJq+sLGdg8DwztwkARIWC+gBwun3UiCf7X2moDRLkn7
-        fE1uRFrG9XqEq4mUevGEZFmfWEF1wTsq6yKW17OpbSNQuT1FCdNfKBDzRFfese57cUQ63o
-        HPBiI17VrYke9LyAwwLslHtuXD5gEAA=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-682-OUuOja0NPyqBrgMW7m7vhg-1; Fri,
- 03 Nov 2023 23:13:19 -0400
-X-MC-Unique: OUuOja0NPyqBrgMW7m7vhg-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 0D11B1C05148;
-        Sat,  4 Nov 2023 03:13:19 +0000 (UTC)
-Received: from llong.com (unknown [10.22.33.74])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 987BAC1290F;
-        Sat,  4 Nov 2023 03:13:18 +0000 (UTC)
-From:   Waiman Long <longman@redhat.com>
-To:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>
-Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Joe Mario <jmario@redhat.com>,
-        Sebastian Jug <sejug@redhat.com>,
-        Yosry Ahmed <yosryahmed@google.com>,
-        Waiman Long <longman@redhat.com>
-Subject: [PATCH v3 3/3] cgroup: Avoid false cacheline sharing of read mostly rstat_cpu
-Date:   Fri,  3 Nov 2023 23:13:03 -0400
-Message-Id: <20231104031303.592879-4-longman@redhat.com>
-In-Reply-To: <20231104031303.592879-1-longman@redhat.com>
-References: <20231104031303.592879-1-longman@redhat.com>
+        Fri, 3 Nov 2023 23:23:30 -0400
+Received: from mail-ot1-f72.google.com (mail-ot1-f72.google.com [209.85.210.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B687D50
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 20:23:28 -0700 (PDT)
+Received: by mail-ot1-f72.google.com with SMTP id 46e09a7af769-6d32824db9eso3046841a34.0
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Nov 2023 20:23:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699068207; x=1699673007;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=4m2flpIZjOlZWnRS65RMek7OuTVloj24wmR6QWeXUzA=;
+        b=IV8+2uOUfHYvRrsNte2zINX7Qli7AyUXjdxsgavRtcwe+Hsc/NoSSt4DP9QIPNh84j
+         uuYXn8J+5jA8Bv2bF76uKHBlE0MYWVwaRomc2Zi22hGI/TDkHeV31crSw3MXyeuwnyWA
+         7ecn/bidotUzpqVaYUxadyqgrtzGe6emFSlCjdJsdLiD9FBVy0gzz7NSXnMecthjt4gz
+         2ZznZPEgkOZjwB+Rrj1JRlrY83b3xZmH5AT0fHNC5JkGSwQX8BIReejxA4O5EC0amE4U
+         ZLf6vgjEd6CorrhmlVQcXVEeiM/0p+rs504YD3/sVYql46WkVglkTp2C82XBm2USH7Tx
+         2XlA==
+X-Gm-Message-State: AOJu0YyrIiuO01K21I4zxRaxqMthg9CuNSts9hxRTo1tz7a0MIYeHnk6
+        EieFKAbBbSznDwogVhcD13cZj/q1gqHgnntgCps5pYdmW0V59Os=
+X-Google-Smtp-Source: AGHT+IHmP6V6wWBK5wSy/lO+yGG2gbLSqDYoiztwF7vjA78DHjb5aq7EqKIWFgCL6wyhjnt8jaSzb1hh9z1omqbVBNTa94fv8AHa
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Received: by 2002:a9d:62d5:0:b0:6ba:8e4a:8e62 with SMTP id
+ z21-20020a9d62d5000000b006ba8e4a8e62mr7172155otk.7.1699068207796; Fri, 03 Nov
+ 2023 20:23:27 -0700 (PDT)
+Date:   Fri, 03 Nov 2023 20:23:27 -0700
+In-Reply-To: <000000000000e69b5a06093287ec@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000f99c4606094b240c@google.com>
+Subject: Re: [syzbot] test uaf in hci_conn_drop
+From:   syzbot <syzbot+1683f76f1b20b826de67@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The rstat_cpu and also rstat_css_list of the cgroup structure are read
-mostly variables. However, they may share the same cacheline as the
-subsequent rstat_flush_next and *bstat variables which can be updated
-frequently.  That will slow down the cgroup_rstat_cpu() call which is
-called pretty frequently in the rstat code. Add a CACHELINE_PADDING()
-line in between them to avoid false cacheline sharing.
+For archival purposes, forwarding an incoming command email to
+linux-kernel@vger.kernel.org.
 
-A parallel kernel build on a 2-socket x86-64 server is used as the
-benchmarking tool for measuring the lock hold time. Below were the lock
-hold time frequency distribution before and after the patch:
+***
 
-      Run time        Before patch       After patch
-      --------        ------------       -----------
-       0-01 us        14,594,545         15,484,707
-      01-05 us           439,926            207,382
-      05-10 us             5,960              3,174
-      10-15 us             3,543              3,006
-      15-20 us             1,397              1,066
-      20-25 us                25                 15
-      25-30 us                12                 10
+Subject: test uaf in hci_conn_drop
+Author: lizhi.xu@windriver.com
 
-It can be seen that the patch further pushes the lock hold time towards
-the lower end.
+#syz test git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git 8de1e7afcc1c
 
-Signed-off-by: Waiman Long <longman@redhat.com>
----
- include/linux/cgroup-defs.h | 7 +++++++
- 1 file changed, 7 insertions(+)
-
-diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h
-index ff4b4c590f32..a4adc0580135 100644
---- a/include/linux/cgroup-defs.h
-+++ b/include/linux/cgroup-defs.h
-@@ -491,6 +491,13 @@ struct cgroup {
- 	struct cgroup_rstat_cpu __percpu *rstat_cpu;
- 	struct list_head rstat_css_list;
+diff --git a/net/bluetooth/hci_sysfs.c b/net/bluetooth/hci_sysfs.c
+index 15b33579007c..f593a9f39aa9 100644
+--- a/net/bluetooth/hci_sysfs.c
++++ b/net/bluetooth/hci_sysfs.c
+@@ -6,6 +6,8 @@
+ #include <net/bluetooth/bluetooth.h>
+ #include <net/bluetooth/hci_core.h>
  
-+	/*
-+	 * Add padding to separate the read mostly rstat_cpu and
-+	 * rstat_css_list into a different cacheline from the following
-+	 * rstat_flush_next and *bstat fields which can have frequent updates.
-+	 */
-+	CACHELINE_PADDING(_pad_);
++static void sco_set_hci_cnn_null(struct hci_conn *conn);
 +
- 	/*
- 	 * A singly-linked list of cgroup structures to be rstat flushed.
- 	 * This is a scratch field to be used exclusively by
--- 
-2.39.3
-
+ static const struct class bt_class = {
+ 	.name = "bluetooth",
+ };
+@@ -13,6 +15,7 @@ static const struct class bt_class = {
+ static void bt_link_release(struct device *dev)
+ {
+ 	struct hci_conn *conn = to_hci_conn(dev);
++	sco_set_hci_cnn_null(conn);
+ 	kfree(conn);
+ }
+ 
+diff --git a/net/bluetooth/sco.c b/net/bluetooth/sco.c
+index c736186aba26..0a6404ba8e4b 100644
+--- a/net/bluetooth/sco.c
++++ b/net/bluetooth/sco.c
+@@ -76,6 +76,14 @@ struct sco_pinfo {
+ #define SCO_CONN_TIMEOUT	(HZ * 40)
+ #define SCO_DISCONN_TIMEOUT	(HZ * 2)
+ 
++static void sco_set_hci_cnn_null(struct hci_conn *conn)
++{
++	struct sco_conn *scn = container_of(conn, struct sco_conn, hcon);
++	sco_conn_lock(scn);
++	scn->hcon = NULL;
++	sco_conn_unlock(scn);
++}
++
+ static void sco_sock_timeout(struct work_struct *work)
+ {
+ 	struct sco_conn *conn = container_of(work, struct sco_conn,
