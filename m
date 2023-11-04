@@ -2,206 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E9F737E0F4D
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 13:14:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F5297E0F53
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 13:25:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229573AbjKDMN0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Nov 2023 08:13:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49868 "EHLO
+        id S229864AbjKDMZy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Nov 2023 08:25:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjKDMNZ (ORCPT
+        with ESMTP id S229456AbjKDMZw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Nov 2023 08:13:25 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A9A69D
-        for <linux-kernel@vger.kernel.org>; Sat,  4 Nov 2023 05:13:22 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86801C433C7;
-        Sat,  4 Nov 2023 12:13:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699100001;
-        bh=6oVaN3BzvpsPu9dUUFCNp1qKEANCS1fIs6Vl23jVrqE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=jXeaRUe47YAHUXjzev5/Zhb1wcm5zk3IxuQvzkk9+6ZezK54J3j2VvBQ6C9SmTqaj
-         CIYfYlEjgXBC5kacT18ermBNHZh97I0W/A1FdRivlSE2cnIy6pDP7Fe1/DSRqXn5EU
-         Y/RAuUCX43at9eWn+Z7IOGRrfbT4BdG8SINXlAqfgThGOqVhT+0OAbQdg0kP9GIwBv
-         WMxz46XZVS1lqtWrHVDwByzk55XU0OaCSgYfMkt5r0zPKVFlIQYRjUXya4BT0wxElr
-         0QyBsC1cdHTJ8qONa0cXpjcsF8maRLgBIvSO1NKCLQnA9G4p7IrYpa+72+ffIfSA5m
-         QcEX37QeGufKA==
-Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.95)
-        (envelope-from <maz@kernel.org>)
-        id 1qzFWg-00AIQB-O1;
-        Sat, 04 Nov 2023 12:13:18 +0000
-Date:   Sat, 04 Nov 2023 12:13:18 +0000
-Message-ID: <86il6h1ztt.wl-maz@kernel.org>
-From:   Marc Zyngier <maz@kernel.org>
-To:     Jan Henrik Weinstock <jan@mwa.re>
-Cc:     oliver.upton@linux.dev, james.morse@arm.com,
-        suzuki.poulose@arm.com, yuzenghui@huawei.com,
-        catalin.marinas@arm.com, will@kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        Sat, 4 Nov 2023 08:25:52 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73A0019D
+        for <linux-kernel@vger.kernel.org>; Sat,  4 Nov 2023 05:25:49 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-507a5edc2ebso1238e87.1
+        for <linux-kernel@vger.kernel.org>; Sat, 04 Nov 2023 05:25:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1699100748; x=1699705548; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=l5HDM/kMANYSHmWA+0ee6/FQ7sAYRigJq4+6ccpg/KU=;
+        b=TJM16SweCACKQVC1/4lHHgO4DsP9Z5w9SqilfukLgZXHvrefOlZgrcDKssFYsx/A9T
+         PJX0UE+FwBzgpMMT5NnasiTJFZm88gQEEiqGKW/DGPL+TAdVTtx2yhyF4p7CGlYq+moX
+         8bzJYZY1okldrP1WX4WcSwy5L1+hWZas8KW7wKsOCWhz0ZjWhQYd3ItnB+gh9Nzb7C//
+         58gN2K/Rg5stFioAdiAm9IMt5p4TIXlX05mrUro+xeUikG4Qxw1QDC9kk3jWmCRuLoKe
+         CayCWX0VWb0Vqm2Rjghx0xdX7D7RYxoiL+jucq1eA2fU+3DtTomR/7ydAMHbzFB0LYaC
+         +uFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699100748; x=1699705548;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=l5HDM/kMANYSHmWA+0ee6/FQ7sAYRigJq4+6ccpg/KU=;
+        b=db3X6eQyNRj2xqIzuOD3yq75ELoFOZfJaWVGnd/KjAjj5odjNp+UVg66RGKzVqArMg
+         IXNmdZbkwjX6E2GCSGPsSzNvQKuzZlRWChepOoqbd/bIKtN9du5buEV4ILfcndfHVBbW
+         IJY+pq8CyF1+255oTLTjCBtKkKuOOctkX7cUZFFN7/CrmJbF1tjSYKwvtNog+K68RaEa
+         NSIKq84huExJlxbAbm8nzCyLhLSa5wLKHSJaoLfc/0FSrQVv7gNXYpKbr3jQaoOSanbo
+         F8KiXnJTQM87Ze3OQXY4u2ra8mMHwnzttjbmxt8blquBsxFH0bAnALJks1F53LCjDkpx
+         Gf4A==
+X-Gm-Message-State: AOJu0YzRTSzS6KE1h9BeyNEmbzLulSUNYCg10tIzx/medEj8fXroZg3y
+        COjZQFhWwlWnz0BlxifV5yQ8yFcAQRxO68pIa+/Bng==
+X-Google-Smtp-Source: AGHT+IGo6RtvkSz4dTDqX99fEep2IQ+AJozEaQSBSdwjI1scwrWwPk5qZjMLajoFekJgVQOwAg2zFO9WL8dV9PoUl1Y=
+X-Received: by 2002:a05:6512:b89:b0:501:b029:1a47 with SMTP id
+ b9-20020a0565120b8900b00501b0291a47mr41070lfv.1.1699100747484; Sat, 04 Nov
+ 2023 05:25:47 -0700 (PDT)
+MIME-Version: 1.0
+References: <20231104000239.367005-1-seanjc@google.com> <20231104000239.367005-3-seanjc@google.com>
+In-Reply-To: <20231104000239.367005-3-seanjc@google.com>
+From:   Jim Mattson <jmattson@google.com>
+Date:   Sat, 4 Nov 2023 05:25:30 -0700
+Message-ID: <CALMp9eS+kNYYK_1Ufy5vc5PK25q-ny20woxbHz1onStkcfWNVw@mail.gmail.com>
+Subject: Re: [PATCH v6 02/20] KVM: x86/pmu: Don't enumerate support for fixed
+ counters KVM can't virtualize
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
         linux-kernel@vger.kernel.org,
-        Lukas =?UTF-8?B?SsO8bmdlcg==?= <lukas@mwa.re>
-Subject: Re: KVM exit to userspace on WFI
-In-Reply-To: <CANi1PHiXFKz6VqBys=Xw=rgR_gJKPO661iW-TMrF20j5yS4unQ@mail.gmail.com>
-References: <CANi1PHhzk80HvwQbBM46gpJ6_AA_P6+m5Jo0Nuy_MAdA4C2BhQ@mail.gmail.com>
-        <87ttql5aq7.wl-maz@kernel.org>
-        <CANi1PHieGooO0DK=6BPwq0UknHzsn9QM3rFQkh3HLMfWxDseUQ@mail.gmail.com>
-        <86cyx250w9.wl-maz@kernel.org>
-        <CANi1PHjAwLWAq9EW7r5Yh_xbvPiJMsq8342JwAGafz1d1NUhSA@mail.gmail.com>
-        <86msw01e4m.wl-maz@kernel.org>
-        <CANi1PHiXFKz6VqBys=Xw=rgR_gJKPO661iW-TMrF20j5yS4unQ@mail.gmail.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
- (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
+        Kan Liang <kan.liang@linux.intel.com>,
+        Dapeng Mi <dapeng1.mi@linux.intel.com>,
+        Jinrong Liang <cloudliang@tencent.com>,
+        Like Xu <likexu@tencent.com>,
+        Aaron Lewis <aaronlewis@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: jan@mwa.re, oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com, catalin.marinas@arm.com, will@kernel.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, linux-kernel@vger.kernel.org, lukas@mwa.re
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
-X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 31 Oct 2023 19:21:16 +0000,
-Jan Henrik Weinstock <jan@mwa.re> wrote:
->=20
-> Am Mo., 30. Okt. 2023 um 13:36 Uhr schrieb Marc Zyngier <maz@kernel.org>:
-> >
-> > [please make an effort not to top-post]
-> >
-> > On Fri, 27 Oct 2023 18:41:44 +0100,
-> > Jan Henrik Weinstock <jan@mwa.re> wrote:
-> > >
-> > > Hi Marc,
-> > >
-> > > the basic idea behind this is to have a (single-threaded) execution l=
-oop,
-> > > something like this:
-> > >
-> > > vcpu-thread:    vcpu-run | process-io-devices | vcpu-run | process-io=
-...
-> > >                          ^
-> > >                   WFX or timeout
-> > >
-> > > We switch to simulating IO devices whenever the vcpu is idle (wfi) or=
- exceeds
-> > > a certain budget of instructions (counted via pmu). Our fallback curr=
-ently is
-> > > to kick the vcpu out of its execution using a signal (via a timeout/a=
-larm). But
-> > > of course, if the cpu is stuck at a wfi, we are wasting a lot of time.
-> > >
-> > > I understand that the proposed behavior is not desirable for most use=
- cases,
-> > > which is why I suggest locking it behind a flag, e.g.
-> > > KVM_ARCH_FLAG_WFX_EXIT_TO_USER.
-> >
-> > But how do you reconcile the fact that exposing this to userspace
-> > breaks fundamental expectations that the guest has, such as getting
-> > its timer interrupts and directly injected LPIs? Implementing WFI in
-> > userspace breaks it. What about the case where we don't trap WFx and
-> > let the *guest* wait for an interrupt?
->=20
-> Timer interrupts etc. will be injected into the vcpu during the
-> io-phases. When there are no interrupts present and the guest performs
-> a WFI, we can just skip forward to the next timer event.
+On Fri, Nov 3, 2023 at 5:02=E2=80=AFPM Sean Christopherson <seanjc@google.c=
+om> wrote:
+>
+> Hide fixed counters for which perf is incapable of creating the associate=
+d
+> architectural event.  Except for the so called pseudo-architectural event
+> for counting TSC reference cycle, KVM virtualizes fixed counters by
+> creating a perf event for the associated general purpose architectural
+> event.  If the associated event isn't supported in hardware, KVM can't
+> actually virtualize the fixed counter because perf will likely not progra=
+m
+> up the correct event.
 
-Skip forward? What does that mean? Compress time and move along?
+Won't it? My understanding was that perf preferred to use a fixed
+counter when there was a choice of fixed or general purpose counter.
+Unless the fixed counter is already assigned to a perf_event, KVM's
+request should be satisfied by assigning the fixed counter.
 
->=20
-> > Honestly, what you are describing seems to be a use model that doesn't
-> > fit KVM, which is a general purpose hypervisor, but more a simulation
-> > environment. Yes, the primitives are the same, but the plumbing is
-> > wildly different.
->=20
-> Agreed.
->=20
-> > *If* that's the stuff you're looking at, then I'm afraid you'll have
-> > to do it in different way, because what you are suggesting is
-> > fundamentally incompatible with the guarantees that KVM gives to guest
-> > and userspace. Because your KVM_ARCH_FLAG_WFX_EXIT_TO_USER is really a
-> > lie. It should really be named something more along the lines of
-> > KVM_ARCH_FLAG_WFX_EXIT_TO_USER_SOMETIME_AND_I_DONT_EVEN_KNOW_WHEN
-> > (probably with additional clauses related to breaking things).
->=20
-> I have attached a reworked version of the patch as a reference (based
-> on my 5.15 kernel). It puts the modified behavior behind a new
-> capability so as to not interfere with the current expectations
-> towards handling WFI/WFE.
-> I think it should now trap all blocking calls to WFx on the vcpu and
-> reliably return to the userspace. If I have missed something that
-> would cause the vcpu to not trap on a WFI kindly let me know.
+> Note, this issue is almost certainly limited to running KVM on a funky
+> virtual CPU model, no known real hardware has an asymmetric PMU where a
+> fixed counter is supported but the associated architectural event is not.
 
-Oh FFS. Please read my previous emails, the architecture spec, and
-understand that WFx is a *hint*. Given your line of work, I would hope
-you understand the implications of this.
+This seems like a fix looking for a problem. Has the "problem"
+actually been encountered?
 
->=20
-> > Overall, you are still asking for something that is not guaranteed at
-> > the architecture level, even less in KVM, and I'm not going to add
-> > support for something that can only work "sometime".
->=20
-> I am not quite sure what you mean with "sometime". Are you referring
-> to WFIs as NOPs? Or WFIs that do not yield because of pending
-> interrupts?
-
-NOP is a valid implementation of WFx. WFx doesn't have to trap. Its
-only requirements are not to lose state. Nothing else. Trapping is a
-'quality of implementation' feature, and doesn't affect correctness.
-And yes, there are machines out there that will absolutely ignore any
-request for trapping.
-
-=46rom the architecture spec (ARM DDI 0487J.a, D19.2.48, TWI):
-
-<quote>
-Since a WFI can complete at any time, even without a Wakeup event, the
-traps on WFI are not guaranteed to be taken, even if the WFI is
-executed when there is no Wakeup event. The only guarantee is that if
-the instruction does not complete in finite time in the absence of a
-Wakeup event, the trap will be taken.
-</quote>
-
-Similar verbiage exists for WFE. Do you now see why your proposal
-makes little sense?
-
->=20
-> The point of my patch is not to accurately count every single WFI. The
-> point is to prevent the host cpu from sleeping just because my vcpu
-> executed a WFI somewhere in the guest software. If a WFI is executed
-> by the guest and that does not result in my vcpu thread to block (in
-> other words: the vcpu continues executing instructions beyond the WFI)
-> then it also should not exit to userspace. So instead of
-> "KVM_ARCH_FLAG_WFX_EXIT_TO_USER_SOMETIME_AND_I_DONT_EVEN_KNOW_WHEN" it
-> is really "KVM_ARCH_FLAG_WFX_EXIT_TO_USER_WHENEVER_YOU_WOULD_OTHERWISE_YI=
-ELD_AND_I_CANNOT_GET_MY_THREAD_BACK".
-
-You already must be able to handle a guest spinning in a loop without
-a WFI. So why would WFI be of interest more than anything else? You
-can always make an interrupt pending at any point, without having to
-wait for WFI to occur. Just make the interrupt pending (which, if you
-emulate everything in userspace, is just giving the vcpu thread a
-signal).
-
-My hunch is that your SW is trying to do the interrupt injection from
-the vcpu thread, which is a pretty broken model (it would badly model
-the concept of an interrupt being an asynchronous event).
-
-Honestly, if there was one thing I would add to the kernel, it would
-be an option to *prevent* any trap of WFx, because that at least is
-something we can universally enforce and guarantee to userspace.
-Anything else is only wishful thinking.
-
-	M.
-
---=20
-Without deviation from the norm, progress is not possible.
+> Fixes: f5132b01386b ("KVM: Expose a version 2 architectural PMU to a gues=
+ts")
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+>  arch/x86/kvm/pmu.h           |  4 ++++
+>  arch/x86/kvm/vmx/pmu_intel.c | 31 +++++++++++++++++++++++++++++++
+>  2 files changed, 35 insertions(+)
+>
+> diff --git a/arch/x86/kvm/pmu.h b/arch/x86/kvm/pmu.h
+> index 1d64113de488..5341e8f69a22 100644
+> --- a/arch/x86/kvm/pmu.h
+> +++ b/arch/x86/kvm/pmu.h
+> @@ -19,6 +19,7 @@
+>  #define VMWARE_BACKDOOR_PMC_APPARENT_TIME      0x10002
+>
+>  struct kvm_pmu_ops {
+> +       void (*init_pmu_capability)(void);
+>         bool (*hw_event_available)(struct kvm_pmc *pmc);
+>         struct kvm_pmc *(*pmc_idx_to_pmc)(struct kvm_pmu *pmu, int pmc_id=
+x);
+>         struct kvm_pmc *(*rdpmc_ecx_to_pmc)(struct kvm_vcpu *vcpu,
+> @@ -218,6 +219,9 @@ static inline void kvm_init_pmu_capability(const stru=
+ct kvm_pmu_ops *pmu_ops)
+>                                           pmu_ops->MAX_NR_GP_COUNTERS);
+>         kvm_pmu_cap.num_counters_fixed =3D min(kvm_pmu_cap.num_counters_f=
+ixed,
+>                                              KVM_PMC_MAX_FIXED);
+> +
+> +       if (pmu_ops->init_pmu_capability)
+> +               pmu_ops->init_pmu_capability();
+>  }
+>
+>  static inline void kvm_pmu_request_counter_reprogram(struct kvm_pmc *pmc=
+)
+> diff --git a/arch/x86/kvm/vmx/pmu_intel.c b/arch/x86/kvm/vmx/pmu_intel.c
+> index 1b13a472e3f2..3316fdea212a 100644
+> --- a/arch/x86/kvm/vmx/pmu_intel.c
+> +++ b/arch/x86/kvm/vmx/pmu_intel.c
+> @@ -68,6 +68,36 @@ static int fixed_pmc_events[] =3D {
+>         [2] =3D PSEUDO_ARCH_REFERENCE_CYCLES,
+>  };
+>
+> +static void intel_init_pmu_capability(void)
+> +{
+> +       int i;
+> +
+> +       /*
+> +        * Perf may (sadly) back a guest fixed counter with a general pur=
+pose
+> +        * counter, and so KVM must hide fixed counters whose associated
+> +        * architectural event are unsupported.  On real hardware, this s=
+hould
+> +        * never happen, but if KVM is running on a funky virtual CPU mod=
+el...
+> +        *
+> +        * TODO: Drop this horror if/when KVM stops using perf events for
+> +        * guest fixed counters, or can explicitly request fixed counters=
+.
+> +        */
+> +       for (i =3D 0; i < kvm_pmu_cap.num_counters_fixed; i++) {
+> +               int event =3D fixed_pmc_events[i];
+> +
+> +               /*
+> +                * Ignore pseudo-architectural events, they're a bizarre =
+way of
+> +                * requesting events from perf that _can't_ be backed wit=
+h a
+> +                * general purpose architectural event, i.e. they're guar=
+anteed
+> +                * to be backed by the real fixed counter.
+> +                */
+> +               if (event < NR_REAL_INTEL_ARCH_EVENTS &&
+> +                   (kvm_pmu_cap.events_mask & BIT(event)))
+> +                       break;
+> +       }
+> +
+> +       kvm_pmu_cap.num_counters_fixed =3D i;
+> +}
+> +
+>  static void reprogram_fixed_counters(struct kvm_pmu *pmu, u64 data)
+>  {
+>         struct kvm_pmc *pmc;
+> @@ -789,6 +819,7 @@ void intel_pmu_cross_mapped_check(struct kvm_pmu *pmu=
+)
+>  }
+>
+>  struct kvm_pmu_ops intel_pmu_ops __initdata =3D {
+> +       .init_pmu_capability =3D intel_init_pmu_capability,
+>         .hw_event_available =3D intel_hw_event_available,
+>         .pmc_idx_to_pmc =3D intel_pmc_idx_to_pmc,
+>         .rdpmc_ecx_to_pmc =3D intel_rdpmc_ecx_to_pmc,
+> --
+> 2.42.0.869.gea05f2083d-goog
+>
