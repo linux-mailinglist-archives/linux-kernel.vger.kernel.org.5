@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE0E47E0C91
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 01:06:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C30C57E0C94
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 01:06:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231454AbjKDAC6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 20:02:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52980 "EHLO
+        id S231578AbjKDADC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 20:03:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231147AbjKDACu (ORCPT
+        with ESMTP id S231183AbjKDACv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 20:02:50 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E5C8D5A
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 17:02:47 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d9a5a3f2d4fso3024044276.3
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Nov 2023 17:02:47 -0700 (PDT)
+        Fri, 3 Nov 2023 20:02:51 -0400
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D44F2D49
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 17:02:48 -0700 (PDT)
+Received: by mail-pl1-x649.google.com with SMTP id d9443c01a7336-1cc281f1214so20509305ad.2
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Nov 2023 17:02:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1699056166; x=1699660966; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1699056168; x=1699660968; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=D/rIH8GJk/IJPB5pqHHZ2EWC6jVCZLZPq4HYOnxUc90=;
-        b=Cf35BIGgAvlwQ+n1pQBl2TYlhFecQtLuiALXRejxKRxu8FSdNrEBVqY404/+ZunHwF
-         1/A3RdiT2KpfK2JDtTPWw6ZpVyqQ3yvWlSPj3KGXOQfokkhfhOQkS5uGWtQEy3LwIjSr
-         F0VFdPqlsxuMHhKoAywFRRhmaTFU9pV1ZZIS5Mf2VBzp78alsa1P+sWhkFVvaiNUDL1u
-         qCrziZX2Zcn/Od6TZfKIdGzumybkDniVdyWReh2/H0FxboEyC48+6GXzt11douvrP1Jk
-         HuzG5VDnhyjY5G6xP+9/ETJ02RqrHTzAO5kGuKlLoE7Wds9yQle/VRJTnRBta/vjNq53
-         LalA==
+        bh=qddZI5QlDYzkDDGMWXMNXP2vKdkDVMrPtOHGx6AbiEs=;
+        b=byDXblP4cNIdEpE/d9r52ueFTlhR93MmVW7ZYBxtIjeNwlSRrs/pWCiS6ZL0gXgZeC
+         3+WyIjyee77RjBGJ5ws1LLp5hjyUWc15DqrMbDOIa4RL04oCeUauUZy1Q3JdHzRVInca
+         jSlOJoygzuKi1+49VvB9fCCGjAKag1Y36mOSJqkz7njdd7U2P870wDCklI6pbd4KUjDN
+         gFTc7XvR5AhSJGEqIPzn/qrGpbl/ViKg+AQ2RGpQgApggXo//rtIm5UZQ+V3tX1RG0Hy
+         rldEN/EWdeJIMPtt2dUvZk86tjo8RNfqauEYpbm+yNS9l/Hdhsq3bz2MAcI6RM4MleIw
+         g8Qw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699056166; x=1699660966;
+        d=1e100.net; s=20230601; t=1699056168; x=1699660968;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=D/rIH8GJk/IJPB5pqHHZ2EWC6jVCZLZPq4HYOnxUc90=;
-        b=C3SwEPJGAkvug0c3bHDA/T77C+s7IUMezEPcRRURkgGAGudBoCWfTTA6jGBVz0Nstm
-         Q7m4obSVPhfDK2zl4hdKqmF4Zvs+fkkDXxJGKFKtOOdMlfMuy7XJuKutZxeDjdyzr5nw
-         fBf9RhbOLdR0D85sXsOmtSNGm2WOG6DLcyCgZC4Ivk+97j/ENC3aNNgI6l10yqI/HUXK
-         dCEjM3oINvdwn1/02lpxvkbXJsMrjZTQPGMChemHBJ9s8rIipNTgfv2VvsipYffisE3K
-         bcKLXG2a2l0fdTRXyLOxfsc39jrpkAvcSy2Bflhqu4tPv9SqegL0gu9vGBGQZ/61VFq6
-         dYhA==
-X-Gm-Message-State: AOJu0YwN71i3BcrKKJYL928PKdM3ZroUWwE9Nkss3Y8YsJZ7qsP3qaOn
-        0IoEPVTqUEc5JT5JskVGInADKkBXAYg=
-X-Google-Smtp-Source: AGHT+IG48HKOrJNtDtKClRR1cSurzfdJukbcmuWuNiNDq8LQjymDh0gNZfHiM6JwALmJySH4WydrLAOP3ds=
+        bh=qddZI5QlDYzkDDGMWXMNXP2vKdkDVMrPtOHGx6AbiEs=;
+        b=RtGM5sfw2i49Y8OSFUHl2qTa4vgFXI2g9D1L8F0Ywq0qd7FfTEhaT0wetvi1LqTTMF
+         XI8koKhxYo/f9oqYm372v4c32vWRYXhGJFQILFR4txtMzHvlnuFJ2LsK7VppQQloLEnG
+         4HCKWGeTUaUvp3VyiAPyjLGQHKd1HIDRRHM7c8+H5P2tHVw+dG2zqUxXUY7KBDcfCBjb
+         dgJ1IvIjSnGkfwb+NS3eQKwN7nLrq74Ji8YLcwOKIrdJS82z6EWTDemzYaZuXd/3ndpe
+         kQqyT/YXiMqw3dsdGUJXn6JeQu+ONwuAKAyduGYze09ty3lN/41M58s1rM5keQCyLKp+
+         iLSw==
+X-Gm-Message-State: AOJu0Yxso9NSV1l4lQwB4nQaypVfvZlTHQO1B2Vk9MZYjnjjPpPg5El/
+        6PpkS5dWJjqFBDDW/BH3GnYjbOJnG0k=
+X-Google-Smtp-Source: AGHT+IGx/PwxlYpOuRKdZYbE5Hej8a6OBTDWyR7ILfdU8v4Jzm6thIWMKr1A2kcm/hqxX7sahHWFkfGx6ug=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:1083:b0:d9a:c3b8:4274 with SMTP id
- v3-20020a056902108300b00d9ac3b84274mr544412ybu.7.1699056166538; Fri, 03 Nov
- 2023 17:02:46 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a17:902:ab84:b0:1c9:b045:5a8b with SMTP id
+ f4-20020a170902ab8400b001c9b0455a8bmr372275plr.6.1699056168312; Fri, 03 Nov
+ 2023 17:02:48 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Fri,  3 Nov 2023 17:02:21 -0700
+Date:   Fri,  3 Nov 2023 17:02:22 -0700
 In-Reply-To: <20231104000239.367005-1-seanjc@google.com>
 Mime-Version: 1.0
 References: <20231104000239.367005-1-seanjc@google.com>
 X-Mailer: git-send-email 2.42.0.869.gea05f2083d-goog
-Message-ID: <20231104000239.367005-4-seanjc@google.com>
-Subject: [PATCH v6 03/20] KVM: x86/pmu: Don't enumerate arch events KVM
- doesn't support
+Message-ID: <20231104000239.367005-5-seanjc@google.com>
+Subject: [PATCH v6 04/20] KVM: x86/pmu: Always treat Fixed counters as
+ available when supported
 From:   Sean Christopherson <seanjc@google.com>
 To:     Sean Christopherson <seanjc@google.com>,
         Paolo Bonzini <pbonzini@redhat.com>
@@ -77,42 +77,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Don't advertise support to userspace for architectural events that KVM
-doesn't support, i.e. for "real" events that aren't listed in
-intel_pmu_architectural_events.  On current hardware, this effectively
-means "don't advertise support for Top Down Slots".
+Now that KVM hides fixed counters that can't be virtualized, treat fixed
+counters as available when they are supported, i.e. don't silently ignore
+an enabled fixed counter just because guest CPUID says the associated
+general purpose architectural event is unavailable.
 
-Mask off the associated "unavailable" bits, as said bits for undefined
-events are reserved to zero.  Arguably the events _are_ defined, but from
-a KVM perspective they might as well not exist, and there's absolutely no
-reason to leave useless unavailable bits set.
+KVM originally treated fixed counters as always available, but that got
+changed as part of a fix to avoid confusing REF_CPU_CYCLES, which does NOT
+map to an architectural event, with the actual architectural event used
+associated with bit 7, TOPDOWN_SLOTS.
 
-Fixes: a6c06ed1a60a ("KVM: Expose the architectural performance monitoring CPUID leaf")
+The commit justified the change with:
+
+    If the event is marked as unavailable in the Intel guest CPUID
+    0AH.EBX leaf, we need to avoid any perf_event creation, whether
+    it's a gp or fixed counter.
+
+but that justification doesn't mesh with reality.  The Intel SDM uses
+"architectural events" to refer to both general purpose events (the ones
+with the reverse polarity mask in CPUID.0xA.EBX) and the events for fixed
+counters, e.g. the SDM makes statements like:
+
+  Each of the fixed-function PMC can count only one architectural
+  performance event.
+
+but the fact that fixed counter 2 (TSC reference cycles) doesn't have an
+associated general purpose architectural makes trying to apply the mask
+from CPUID.0xA.EBX impossible.  Furthermore, the SDM never explicitly
+says that an architectural events that's marked unavailable in EBX affects
+the fixed counters.
+
+Note, at the time of the change, KVM didn't enforce hardware support, i.e.
+didn't prevent userspace from enumerating support in guest CPUID.0xA.EBX
+for architectural events that aren't supported in hardware.  I.e. silently
+dropping the fixed counter didn't somehow protection against counting the
+wrong event, it just enforced guest CPUID.
+
+Arguably, userspace is creating a bogus vCPU model by advertising a fixed
+counter but saying the associated general purpose architectural event is
+unavailable.  But regardless of the validity of the vCPU model, letting
+the guest enable a fixed counter and then not actually having it count
+anything is completely nonsensical.  I.e. even if all of the above is
+wrong and it's illegal for a fixed counter to exist when the architectural
+event is unavailable, silently doing nothing is still the wrong behavior
+and KVM should instead disallow enabling the fixed counter in the first
+place.
+
+Fixes: a21864486f7e ("KVM: x86/pmu: Fix available_event_types check for REF_CPU_CYCLES event")
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kvm/vmx/pmu_intel.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ arch/x86/kvm/vmx/pmu_intel.c | 15 ++++++++++++++-
+ 1 file changed, 14 insertions(+), 1 deletion(-)
 
 diff --git a/arch/x86/kvm/vmx/pmu_intel.c b/arch/x86/kvm/vmx/pmu_intel.c
-index 3316fdea212a..8d545f84dc4a 100644
+index 8d545f84dc4a..b239e7dbdc9b 100644
 --- a/arch/x86/kvm/vmx/pmu_intel.c
 +++ b/arch/x86/kvm/vmx/pmu_intel.c
-@@ -73,6 +73,15 @@ static void intel_init_pmu_capability(void)
+@@ -147,11 +147,24 @@ static bool intel_hw_event_available(struct kvm_pmc *pmc)
+ 	u8 unit_mask = (pmc->eventsel & ARCH_PERFMON_EVENTSEL_UMASK) >> 8;
  	int i;
  
- 	/*
-+	 * Do not enumerate support for architectural events that KVM doesn't
-+	 * support.  Clear unsupported events "unavailable" bit as well, as
-+	 * architecturally such bits are reserved to zero.
++	/*
++	 * Fixed counters are always available if KVM reaches this point.  If a
++	 * fixed counter is unsupported in hardware or guest CPUID, KVM doesn't
++	 * allow the counter's corresponding MSR to be written.  KVM does use
++	 * architectural events to program fixed counters, as the interface to
++	 * perf doesn't allow requesting a specific fixed counter, e.g. perf
++	 * may (sadly) back a guest fixed PMC with a general purposed counter.
++	 * But if _hardware_ doesn't support the associated event, KVM simply
++	 * doesn't enumerate support for the fixed counter.
 +	 */
-+	kvm_pmu_cap.events_mask_len = min(kvm_pmu_cap.events_mask_len,
-+					  NR_REAL_INTEL_ARCH_EVENTS);
-+	kvm_pmu_cap.events_mask &= GENMASK(kvm_pmu_cap.events_mask_len - 1, 0);
++	if (pmc_is_fixed(pmc))
++		return true;
 +
-+	 /*
- 	 * Perf may (sadly) back a guest fixed counter with a general purpose
- 	 * counter, and so KVM must hide fixed counters whose associated
- 	 * architectural event are unsupported.  On real hardware, this should
+ 	BUILD_BUG_ON(ARRAY_SIZE(intel_arch_events) != NR_INTEL_ARCH_EVENTS);
+ 
+ 	/*
+ 	 * Disallow events reported as unavailable in guest CPUID.  Note, this
+-	 * doesn't apply to pseudo-architectural events.
++	 * doesn't apply to pseudo-architectural events (see above).
+ 	 */
+ 	for (i = 0; i < NR_REAL_INTEL_ARCH_EVENTS; i++) {
+ 		if (intel_arch_events[i].eventsel != event_select ||
 -- 
 2.42.0.869.gea05f2083d-goog
 
