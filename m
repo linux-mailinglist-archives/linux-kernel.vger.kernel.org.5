@@ -2,112 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BA767E0DFE
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 06:49:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A37D17E0DFF
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 06:50:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230250AbjKDFt3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Nov 2023 01:49:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50194 "EHLO
+        id S230438AbjKDFuI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Nov 2023 01:50:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229509AbjKDFt0 (ORCPT
+        with ESMTP id S229509AbjKDFuG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Nov 2023 01:49:26 -0400
-Received: from m15.mail.163.com (m15.mail.163.com [45.254.50.219])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 396D7D45;
-        Fri,  3 Nov 2023 22:49:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=DFi6A
-        Y3VrieYh4gF0CjCQ0nYAz1QmkjAeciIYlFEwvU=; b=JUPmOAaeRt2VZcrFp6bK4
-        iJhZBR3WJDLZ6VqCZ5N4Po3qpte3t4Eyct2hXFHqNw/hRj8LfPJT96wbML0ttE8u
-        UzGo2fHkGhyefuxmQ4OohFSrlnyDPyGzy+cuQ3RrQNqAyf9sc4OKXGo1bDkqjtQY
-        RRxjDeMN0xTbKByoQDY4oQ=
-Received: from leanderwang-LC4.localdomain (unknown [111.206.145.21])
-        by zwqz-smtp-mta-g1-3 (Coremail) with SMTP id _____wCn937u2kVlbNpXAw--.9138S2;
-        Sat, 04 Nov 2023 13:47:27 +0800 (CST)
-From:   Zheng Wang <zyytlz.wz@163.com>
-To:     aspriel@gmail.com
-Cc:     franky.lin@broadcom.com, hante.meuleman@broadcom.com,
-        kvalo@kernel.org, johannes.berg@intel.com, marcan@marcan.st,
-        linus.walleij@linaro.org, jisoo.jang@yonsei.ac.kr,
-        linuxlovemin@yonsei.ac.kr, wataru.gohda@cypress.com,
-        linux-wireless@vger.kernel.org,
-        brcm80211-dev-list.pdl@broadcom.com,
-        SHA-cyfmac-dev-list@infineon.com, linux-kernel@vger.kernel.org,
-        security@kernel.org, stable@vger.kernel.org,
-        Zheng Wang <zyytlz.wz@163.com>
-Subject: [PATCH] wifi: cfg80211: Fix use-after-free bug in brcmf_cfg80211_detach
-Date:   Sat,  4 Nov 2023 13:47:09 +0800
-Message-Id: <20231104054709.716585-1-zyytlz.wz@163.com>
-X-Mailer: git-send-email 2.25.1
+        Sat, 4 Nov 2023 01:50:06 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EAE5D45
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 22:50:03 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-6c115026985so2904620b3a.1
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Nov 2023 22:50:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699077003; x=1699681803; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kGamaTaWKR3LhrtF+DQPbS8E7DjUl3cEVZSu36pwK8g=;
+        b=nPd9TN5b7mPG0A+YNRa3pEMybX48mjKlbPMIaWMMH+QIhsbAPqkgMsWztkK5RigWkY
+         xHshWjcUdx5aAabRnQ4HRBloJuOr7jkFJviuob9f7ZbSoHw+/xlv8+QPuz8FprRWp+PW
+         kSuP+sjn/M8vk8iYHLbXsVltdeVk9QIB2NTFVKZchd8skOuNUa1m86I1tmiwsaXgcQrp
+         vwU3/3VaxPutAATUmtKUTpxDieaP2oFk1Qdg5r5ek8Abaohoi6e3imqUFYfG682J/EqV
+         9RhxrHRUzKmc/+zs95kg4tlt1aFvoovbFNtgcyfdNSdDefGfuZWLG021qHSQOegbxxMi
+         GIOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699077003; x=1699681803;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=kGamaTaWKR3LhrtF+DQPbS8E7DjUl3cEVZSu36pwK8g=;
+        b=H1JKQ4V17i9Tg2V677PtlDMRTA1JyqeH5gHWxLhZ6Q8M2X0fMLL0AOfdIqIHbaJLz5
+         4Hi8e7L5ZXdbRhbFlSSttiL7CjQp0c0nMkXL3DzRKhYuHpVqXVQDl+wjS3f87YYKUiHm
+         OdWLpwJ37kJBkclK4B21eFpyOWrvRat3WjNnz5QVwLia81ycKwBvMH2PD+L3fhI/jhWv
+         2/2cZGOHQrly6INrlqgHzZsvysNMNCkGUU+cW7Y6JzFqG1T+X64+SFsFztU6/Xp+OrHo
+         8Gi2kRLirKY5Dp8XAnOaQQzuCae3sj1LglbQvuS1egAQJ7uLZ3/TFAcaWO67sXD8dfE7
+         0Bzg==
+X-Gm-Message-State: AOJu0Ywts5IQmBcF+B5JTuvurmPa+KD6v3G9GKxovN2LvafxNxPQ3v/H
+        C5ax9VTJGVwwmy/2tRp5tp44AjEhtB9JNw==
+X-Google-Smtp-Source: AGHT+IGSsHQd6OPJXfEWVa0wuVqgmRAWAqLLnQcZbq4nJetfFsHgoauxpapaaxmuxugII6Ef0056Xw==
+X-Received: by 2002:a05:6a00:248b:b0:6be:130a:22a0 with SMTP id c11-20020a056a00248b00b006be130a22a0mr28381293pfv.14.1699077002624;
+        Fri, 03 Nov 2023 22:50:02 -0700 (PDT)
+Received: from barry-desktop.hub ([2407:7000:8942:5500:4e57:64bd:534a:1d8d])
+        by smtp.gmail.com with ESMTPSA id h7-20020a62b407000000b0069323619f69sm2296275pfn.143.2023.11.03.22.49.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 Nov 2023 22:50:02 -0700 (PDT)
+From:   Barry Song <21cnbao@gmail.com>
+X-Google-Original-From: Barry Song <v-songbaohua@oppo.com>
+To:     ryan.roberts@arm.com
+Cc:     21cnbao@gmail.com, Steven.Price@arm.com, akpm@linux-foundation.org,
+        david@redhat.com, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        mhocko@suse.com, shy828301@gmail.com, wangkefeng.wang@huawei.com,
+        willy@infradead.org, xiang@kernel.org, ying.huang@intel.com,
+        yuzhao@google.com
+Subject: Re: [PATCH v3 4/4] mm: swap: Swap-out small-sized THP without splitting
+Date:   Sat,  4 Nov 2023 18:49:40 +1300
+Message-Id: <20231104054940.8971-1-v-songbaohua@oppo.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <6641a14b-e3fb-4e9e-bb95-b0306827294b@arm.com>
+References: <6641a14b-e3fb-4e9e-bb95-b0306827294b@arm.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: _____wCn937u2kVlbNpXAw--.9138S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxJr45GryUGF4rGr4fXF4UCFg_yoW8AF47pF
-        WxXa4DAryUWrW3Kr4F9rnrXFyrta1DGwnYkr4UZF93uFn5ur1rJrWjgFya93WDGrs2y3y7
-        ZrsYqr17GrZ7Ga7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0zR1rWrUUUUU=
-X-Originating-IP: [111.206.145.21]
-X-CM-SenderInfo: h2113zf2oz6qqrwthudrp/xtbBzg8eU2I0bMRTiQAAso
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In brcm80211 driver,it starts with the following invoking chain
-to start init a timeout worker:
+>>  #define __HAVE_ARCH_PREPARE_TO_SWAP
+>> -static inline int arch_prepare_to_swap(struct page *page)
+>> -{
+>> -	if (system_supports_mte())
+>> -		return mte_save_tags(page);
+>> -	return 0;
+>> -}
+>> +#define arch_prepare_to_swap arch_prepare_to_swap
+>> +extern int arch_prepare_to_swap(struct page *page);
+> 
+> I think it would be better to modify this API to take a folio explicitly. The
+> caller already has the folio.
 
-->brcmf_usb_probe
-  ->brcmf_usb_probe_cb
-    ->brcmf_attach
-      ->brcmf_bus_started
-        ->brcmf_cfg80211_attach
-          ->wl_init_priv
-            ->brcmf_init_escan
-              ->INIT_WORK(&cfg->escan_timeout_work,
-		  brcmf_cfg80211_escan_timeout_worker);
+agree. that was actually what i thought I should change while making this rfc,
+though i didn't do it.
 
-If we disconnect the USB by hotplug, it will call
-brcmf_usb_disconnect to make cleanup. The invoking chain is :
+>> +int arch_prepare_to_swap(struct page *page)
+>> +{
+>> +	if (system_supports_mte()) {
+>> +		struct folio *folio = page_folio(page);
+>> +		long i, nr = folio_nr_pages(folio);
+>> +		for (i = 0; i < nr; i++)
+>> +			return mte_save_tags(folio_page(folio, i));
+>
+> This will return after saving the first page of the folio! You will need to add
+> each page in a loop, and if you get an error at any point, you will need to
+> remove the pages that you already added successfully, by calling
+> arch_swap_invalidate_page() as far as I can see. Steven can you confirm?
 
-brcmf_usb_disconnect
-  ->brcmf_usb_disconnect_cb
-    ->brcmf_detach
-      ->brcmf_cfg80211_detach
-        ->kfree(cfg);
+right. oops...
 
-While the timeout woker may still be running. This will cause
-a use-after-free bug on cfg in brcmf_cfg80211_escan_timeout_worker.
+> 
+>> +	}
+>> +	return 0;
+>> +}
+>> +
+>> +void arch_swap_restore(swp_entry_t entry, struct folio *folio)
+>> +{
+>> +	if (system_supports_mte()) {
+>> +		long i, nr = folio_nr_pages(folio);
+>> +		for (i = 0; i < nr; i++)
+>> +			mte_restore_tags(entry, folio_page(folio, i));
+>
+> swap-in currently doesn't support large folios - everything is a single page
+> folio. So this isn't technically needed. But from the API POV, it seems
+> reasonable to make this change - except your implementation is broken. You are
+> currently setting every page in the folio to use the same tags as the first
+> page. You need to increment the swap entry for each page.
 
-Fix it by deleting the timer and canceling the worker in
-brcmf_cfg80211_detach.
+one case is that we have a chance to "swapin" a folio which is still in swapcache
+and hasn't been dropped yet. i mean the process's ptes have been swap entry, but
+the large folio is still in swapcache. in this case, we will hit the swapcache
+while swapping in, thus we are handling a large folio. in this case, it seems
+we are restoring tags multiple times? i mean, if large folio has 16 basepages,
+for each page fault of each base page, we are restoring a large folio, then
+for 16 page faults, we are duplicating the restore.
+any thought to handle this situation? should we move arch_swap_restore() to take
+page rather than folio since swapin only supports basepage at this moment.
 
-Fixes: e756af5b30b0 ("brcmfmac: add e-scan support.")
-Signed-off-by: Zheng Wang <zyytlz.wz@163.com>
-Cc: stable@vger.kernel.org
----
- drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c | 3 +++
- 1 file changed, 3 insertions(+)
+> Thanks,
+> Ryan
 
-diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
-index 667462369a32..0224e377eb6e 100644
---- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
-+++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
-@@ -8431,6 +8431,9 @@ void brcmf_cfg80211_detach(struct brcmf_cfg80211_info *cfg)
- 	if (!cfg)
- 		return;
- 
-+	if (timer_pending(&cfg->escan_timeout))
-+		del_timer_sync(&cfg->escan_timeout);
-+	cancel_delayed_work_sync(&cfg->escan_timeout_work);
- 	brcmf_pno_detach(cfg);
- 	brcmf_btcoex_detach(cfg);
- 	wiphy_unregister(cfg->wiphy);
--- 
-2.25.1
+Thanks
+Barry
 
