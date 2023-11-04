@@ -2,175 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CFAD07E0CBC
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 01:38:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22CCD7E0CC3
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 01:42:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231384AbjKDAia (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 20:38:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34902 "EHLO
+        id S231262AbjKDAmT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 20:42:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231231AbjKDAi2 (ORCPT
+        with ESMTP id S229488AbjKDAmS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 20:38:28 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90A39D45;
-        Fri,  3 Nov 2023 17:38:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699058299; x=1730594299;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=lgdwiAyPRysKtnT+0nfDxaf8k2i2tuiMEm+OGHK/8NQ=;
-  b=dyKNqf0KjUWdxcLnEF6dEat40PVvphPZaY+pHG7iXbkNMzELgriU42o5
-   VJxc+wz6xKHCcYfwgRVVYKCeafktags6VSsQL7eRm96A2tdy3YQo4LytY
-   4iAA+9LaOnsSR6/t52umMuW9e0aHBv25GXolYMED3Ju23yGQvZ6VhxB1r
-   PvyRvjg9X5mhJlURTv7wP9/dW74NdpBdsMyrM/4ZPyrYbRPgS8xfMDsb5
-   te2qMkLOuMskSFPs/eEZBtF0SZfV4rNPjrSJd1i/cHnRNS3eIploRqxNu
-   BbY+aRBeThJ+QKJf5UD4RC+nDDPXSS+FAk7zDHwB+s801AcafBGTLV7Tz
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10883"; a="369252348"
-X-IronPort-AV: E=Sophos;i="6.03,275,1694761200"; 
-   d="scan'208";a="369252348"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2023 17:38:19 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10883"; a="755313891"
-X-IronPort-AV: E=Sophos;i="6.03,275,1694761200"; 
-   d="scan'208";a="755313891"
-Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by orsmga007.jf.intel.com with ESMTP; 03 Nov 2023 17:38:11 -0700
-Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qz4fx-00038N-1g;
-        Sat, 04 Nov 2023 00:38:09 +0000
-Date:   Sat, 4 Nov 2023 08:37:16 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Mario Limonciello <mario.limonciello@amd.com>,
-        Karol Herbst <kherbst@redhat.com>,
-        Lyude Paul <lyude@redhat.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Lukas Wunner <lukas@wunner.de>
-Cc:     oe-kbuild-all@lists.linux.dev, Danilo Krummrich <dakr@redhat.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Xinhui Pan <Xinhui.Pan@amd.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Mark Gross <markgross@kernel.org>,
-        Andreas Noever <andreas.noever@gmail.com>,
-        Michael Jamet <michael.jamet@intel.com>,
-        Yehezkel Bernat <YehezkelShB@gmail.com>,
-        Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>,
-        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
-        "Maciej W . Rozycki" <macro@orcam.me.uk>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        "open list:DRM DRIVER FOR NVIDIA GEFORCE/QUADRO GPUS" 
-        <dri-devel@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:RADEON and AMDGPU DRM DRIVERS" 
-        <amd-gfx@lists.freedesktop.org>,
-        "open list:PCI SUBSYSTEM" <linux-pci@vger.kernel.org>,
-        "open list:ACPI" <linux-acpi@vger.kernel.org>,
-        "open list:X86 PLATFORM DRIVERS" 
-        <platform-driver-x86@vger.kernel.org>,
-        "open list:THUNDERBOLT DRIVER" <linux-usb@vger.kernel.org>
-Subject: Re: [PATCH v2 3/9] PCI: Drop pci_is_thunderbolt_attached()
-Message-ID: <202311040800.zpVIwNrB-lkp@intel.com>
-References: <20231103190758.82911-4-mario.limonciello@amd.com>
+        Fri, 3 Nov 2023 20:42:18 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0EDCD45;
+        Fri,  3 Nov 2023 17:42:15 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id 98e67ed59e1d1-280260db156so2443288a91.2;
+        Fri, 03 Nov 2023 17:42:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699058535; x=1699663335; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Ct0KYE54peQamGMSAeRpW9X9OZ/g/Ez/2j1oyOsk0pY=;
+        b=MaEfabsU6NeuBbelGuYmZAkHeNxk0NbiUd2SqQZIMO0Z/sdeLhKuu5rb112fEEi8hr
+         Sv1Gv2zjc3q8BMqvbe4ULPNFyxdKtXplY8m25fS/Wh01rEbPLPq9RIV+5aaw/IaUlzso
+         qPkC8Ve1Q2Cs8MR/kekWXu9Qm/dJ1BQDR0Ny8wfQYiMV6PWt9Aw+3BRQyJxJc8tyiGK6
+         ZsGTY2osXP5GnjJ+XvxXtG+4iH/XnZF5sm47pkctPnPJmeWRiAdov/3veukF3NAdbsR1
+         Mg2iC81bbHqRstdE06W6t/YXokMkKr0W2rAiqAqY/IXv9q4JoDUNpLT/Dj/gpwqTi31W
+         4c5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699058535; x=1699663335;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Ct0KYE54peQamGMSAeRpW9X9OZ/g/Ez/2j1oyOsk0pY=;
+        b=DqfS8Yb0R/HmoFXtu+XxTum7N5OUgREodYE7J0D0sVGxWnXlSzORxX2pTbD/tiSXkH
+         5UAm+umqSxFDt37fFtX+0nKnx0Df6bnoErdBhGs5S/1Z7Hbt7CquAxz3zXK4Kk3hZ1Dy
+         0XyAK1lNb7hch06Ih+K4iReHgwlYBQHVm3GMVwuxGAPlqFLkJvOCGQq4b8XxBWNJRGEC
+         /MjsubHUMXIyxL1T+ZIxNarFnnsxHDV2N/dnXmqwS/aq5hEXweymLM61P1XfM3in0HVE
+         uepjna85FNP00DcLs7ZqA5XBJDJIMxE8JQP48GCmZRZhTO+6yiUWUf4XA+cT9j4Ks9ZG
+         5n9g==
+X-Gm-Message-State: AOJu0YxgU4yLs0BfMGB3pFFdA6BfOo4eTGM5/0FFce8tNsJjtPz7D7Cu
+        ++szhAgxpP/gUIzzVl1m6Jk=
+X-Google-Smtp-Source: AGHT+IGIHIG4nM1J8gqqmB4uqlcw7WJlytRrYOtcAwEng2xO3AvaLqH5pRHWj2TMv4l6XM22/HFytw==
+X-Received: by 2002:a17:90a:53c3:b0:274:4161:b9dc with SMTP id y61-20020a17090a53c300b002744161b9dcmr22303484pjh.31.1699058535314;
+        Fri, 03 Nov 2023 17:42:15 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id 13-20020a17090a004d00b0027782f611d1sm2139551pjb.36.2023.11.03.17.42.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 Nov 2023 17:42:14 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Fri, 3 Nov 2023 17:42:12 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Douglas Anderson <dianders@chromium.org>
+Cc:     Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-watchdog@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        swboyd@chromium.org, Andy Gross <agross@kernel.org>,
+        "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
+        Kees Cook <keescook@chromium.org>,
+        Sai Prakash Ranjan <quic_saipraka@quicinc.com>,
+        Tony Luck <tony.luck@intel.com>,
+        cros-qcom-dts-watchers@chromium.org, devicetree@vger.kernel.org,
+        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/9] arm64: dts: qcom: sc7180: Make watchdog bark
+ interrupt edge triggered
+Message-ID: <ae5f5cd1-504a-4ed9-9608-b448b83b23cd@roeck-us.net>
+References: <20231103163434.1.Ic7577567baff921347d423b722de8b857602efb1@changeid>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231103190758.82911-4-mario.limonciello@amd.com>
-X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231103163434.1.Ic7577567baff921347d423b722de8b857602efb1@changeid>
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mario,
+On Fri, Nov 03, 2023 at 04:34:27PM -0700, Douglas Anderson wrote:
+> On sc7180 when the watchdog timer fires your logs get filled with:
+>   watchdog0: pretimeout event
+>   watchdog0: pretimeout event
+>   watchdog0: pretimeout event
+>   ...
+>   watchdog0: pretimeout event
+> 
+> If you're using console-ramoops to debug crashes the above gets quite
+> annoying since it blows away any other log messages that might have
+> been there.
+> 
+> The issue is that the "bark" interrupt (AKA the "pretimeout"
+> interrupt) remains high until the watchdog is pet. Since we've got
+> things configured as "level" triggered we'll keep getting interrupted
+> over and over.
+> 
+> Let's switch to edge triggered. Now we'll get one interrupt when the
+> "bark" interrupt goes off we'll get one interrupt and won't get
+> another one until the "bark" interrupt is cleared and asserts again.
+> 
+> This matches how many older Qualcomm SoCs have things configured.
+> 
+> Fixes: 28cc13e4060c ("arm64: dts: qcom: sc7180: Add watchdog bark interrupt")
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
 
-kernel test robot noticed the following build errors:
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
 
-[auto build test ERROR on pci/for-linus]
-[also build test ERROR on drm-misc/drm-misc-next westeri-thunderbolt/next rafael-pm/linux-next rafael-pm/acpi-bus linus/master rafael-pm/devprop v6.6 next-20231103]
-[cannot apply to pci/next]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Mario-Limonciello/drm-nouveau-Switch-from-pci_is_thunderbolt_attached-to-dev_is_removable/20231104-030945
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/pci/pci.git for-linus
-patch link:    https://lore.kernel.org/r/20231103190758.82911-4-mario.limonciello%40amd.com
-patch subject: [PATCH v2 3/9] PCI: Drop pci_is_thunderbolt_attached()
-config: loongarch-randconfig-002-20231104 (https://download.01.org/0day-ci/archive/20231104/202311040800.zpVIwNrB-lkp@intel.com/config)
-compiler: loongarch64-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231104/202311040800.zpVIwNrB-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311040800.zpVIwNrB-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   drivers/gpu/drm/amd/amdgpu/nbio_v2_3.c: In function 'nbio_v2_3_enable_aspm':
->> drivers/gpu/drm/amd/amdgpu/nbio_v2_3.c:364:21: error: implicit declaration of function 'pci_is_thunderbolt_attached' [-Werror=implicit-function-declaration]
-     364 |                 if (pci_is_thunderbolt_attached(adev->pdev))
-         |                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~
-   cc1: some warnings being treated as errors
---
-   drivers/gpu/drm/amd/amdgpu/amdgpu_device.c: In function 'amdgpu_device_ip_early_init':
->> drivers/gpu/drm/amd/amdgpu/amdgpu_device.c:2118:14: error: implicit declaration of function 'pci_is_thunderbolt_attached' [-Werror=implicit-function-declaration]
-    2118 |             !pci_is_thunderbolt_attached(to_pci_dev(dev->dev)))
-         |              ^~~~~~~~~~~~~~~~~~~~~~~~~~~
-   cc1: some warnings being treated as errors
-
-
-vim +/pci_is_thunderbolt_attached +364 drivers/gpu/drm/amd/amdgpu/nbio_v2_3.c
-
-f1213b15976881d Evan Quan 2020-08-18  350  
-f1213b15976881d Evan Quan 2020-08-18  351  static void nbio_v2_3_enable_aspm(struct amdgpu_device *adev,
-f1213b15976881d Evan Quan 2020-08-18  352  				  bool enable)
-f1213b15976881d Evan Quan 2020-08-18  353  {
-f1213b15976881d Evan Quan 2020-08-18  354  	uint32_t def, data;
-f1213b15976881d Evan Quan 2020-08-18  355  
-f1213b15976881d Evan Quan 2020-08-18  356  	def = data = RREG32_PCIE(smnPCIE_LC_CNTL);
-f1213b15976881d Evan Quan 2020-08-18  357  
-f1213b15976881d Evan Quan 2020-08-18  358  	if (enable) {
-f1213b15976881d Evan Quan 2020-08-18  359  		/* Disable ASPM L0s/L1 first */
-f1213b15976881d Evan Quan 2020-08-18  360  		data &= ~(PCIE_LC_CNTL__LC_L0S_INACTIVITY_MASK | PCIE_LC_CNTL__LC_L1_INACTIVITY_MASK);
-f1213b15976881d Evan Quan 2020-08-18  361  
-f1213b15976881d Evan Quan 2020-08-18  362  		data |= NAVI10_PCIE__LC_L0S_INACTIVITY_DEFAULT << PCIE_LC_CNTL__LC_L0S_INACTIVITY__SHIFT;
-f1213b15976881d Evan Quan 2020-08-18  363  
-f1213b15976881d Evan Quan 2020-08-18 @364  		if (pci_is_thunderbolt_attached(adev->pdev))
-f1213b15976881d Evan Quan 2020-08-18  365  			data |= NAVI10_PCIE__LC_L1_INACTIVITY_TBT_DEFAULT  << PCIE_LC_CNTL__LC_L1_INACTIVITY__SHIFT;
-f1213b15976881d Evan Quan 2020-08-18  366  		else
-f1213b15976881d Evan Quan 2020-08-18  367  			data |= NAVI10_PCIE__LC_L1_INACTIVITY_DEFAULT << PCIE_LC_CNTL__LC_L1_INACTIVITY__SHIFT;
-f1213b15976881d Evan Quan 2020-08-18  368  
-f1213b15976881d Evan Quan 2020-08-18  369  		data &= ~PCIE_LC_CNTL__LC_PMI_TO_L1_DIS_MASK;
-f1213b15976881d Evan Quan 2020-08-18  370  	} else {
-f1213b15976881d Evan Quan 2020-08-18  371  		/* Disbale ASPM L1 */
-f1213b15976881d Evan Quan 2020-08-18  372  		data &= ~PCIE_LC_CNTL__LC_L1_INACTIVITY_MASK;
-f1213b15976881d Evan Quan 2020-08-18  373  		/* Disable ASPM TxL0s */
-f1213b15976881d Evan Quan 2020-08-18  374  		data &= ~PCIE_LC_CNTL__LC_L0S_INACTIVITY_MASK;
-f1213b15976881d Evan Quan 2020-08-18  375  		/* Disable ACPI L1 */
-f1213b15976881d Evan Quan 2020-08-18  376  		data |= PCIE_LC_CNTL__LC_PMI_TO_L1_DIS_MASK;
-f1213b15976881d Evan Quan 2020-08-18  377  	}
-f1213b15976881d Evan Quan 2020-08-18  378  
-f1213b15976881d Evan Quan 2020-08-18  379  	if (def != data)
-f1213b15976881d Evan Quan 2020-08-18  380  		WREG32_PCIE(smnPCIE_LC_CNTL, data);
-f1213b15976881d Evan Quan 2020-08-18  381  }
-f1213b15976881d Evan Quan 2020-08-18  382  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> ---
+> 
+>  arch/arm64/boot/dts/qcom/sc7180.dtsi | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+> index 11f353d416b4..c0365832c315 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+> @@ -3576,7 +3576,7 @@ watchdog@17c10000 {
+>  			compatible = "qcom,apss-wdt-sc7180", "qcom,kpss-wdt";
+>  			reg = <0 0x17c10000 0 0x1000>;
+>  			clocks = <&sleep_clk>;
+> -			interrupts = <GIC_SPI 0 IRQ_TYPE_LEVEL_HIGH>;
+> +			interrupts = <GIC_SPI 0 IRQ_TYPE_EDGE_RISING>;
+>  		};
+>  
+>  		timer@17c20000 {
+> -- 
+> 2.42.0.869.gea05f2083d-goog
+> 
