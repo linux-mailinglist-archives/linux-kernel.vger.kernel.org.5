@@ -2,70 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD0A27E10C5
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 20:39:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8685A7E10CB
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 20:42:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232364AbjKDTjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Nov 2023 15:39:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57488 "EHLO
+        id S231664AbjKDTm3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Nov 2023 15:42:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231678AbjKDTjS (ORCPT
+        with ESMTP id S231150AbjKDTm2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Nov 2023 15:39:18 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78875194;
-        Sat,  4 Nov 2023 12:39:16 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 22F9FC433C7;
-        Sat,  4 Nov 2023 19:39:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699126756;
-        bh=kl7OdQ66DpF8N2FGT3Ii0JOgx9GbRPC7XkqEO9EcJIE=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=ZImmqtnE3CAs6IykwcOWOESyVjzA0vlmprEkFwqyUFG+urOBA7hNbEFo705w6GG3F
-         OVfSZ0a649/xXxBuRZQZWaUiilyoBoXn2r7Kwxw3v7d76kS5lmAo0usClAhLCVHy6M
-         uSEddL4iO66C8Pv9t4ZWi4hF6P7fuzyTyJ8ws3SKB+H9obqrhJrFPLaZbN3vR83Dng
-         hfF8u04xymu+wt+4xhJLVdDYULLjB7EAksjEsM3OMK6HlGVwENzImcYoQ5C4JA/Hb6
-         VMskiyT3MRi22LYMsbiYt1wx3dmO+eLpprRTQH29wcdsMPtiuwPsn3IJce8dJBwHWZ
-         VdZlf955NzTeQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 10A19EAB08A;
-        Sat,  4 Nov 2023 19:39:16 +0000 (UTC)
-Subject: Re: [GIT PULL] smb client fixes part 1
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <CAH2r5mvutKF1meVmfiRu46tpYRckRuNf5j-gY02b0P=KTV2mpQ@mail.gmail.com>
-References: <CAH2r5mvutKF1meVmfiRu46tpYRckRuNf5j-gY02b0P=KTV2mpQ@mail.gmail.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <CAH2r5mvutKF1meVmfiRu46tpYRckRuNf5j-gY02b0P=KTV2mpQ@mail.gmail.com>
-X-PR-Tracked-Remote: git://git.samba.org/sfrench/cifs-2.6.git tags/6.7-rc-smb3-client-fixes-part1
-X-PR-Tracked-Commit-Id: d9a6d78096056a3cb5c5f07a730ab92f2f9ac4e6
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 766e9cf3bd64c45fcace3acc6f8b3df815448ea3
-Message-Id: <169912675605.21555.10000327327480138420.pr-tracker-bot@kernel.org>
-Date:   Sat, 04 Nov 2023 19:39:16 +0000
-To:     Steve French <smfrench@gmail.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        CIFS <linux-cifs@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        Sat, 4 Nov 2023 15:42:28 -0400
+Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCF45194
+        for <linux-kernel@vger.kernel.org>; Sat,  4 Nov 2023 12:42:25 -0700 (PDT)
+Received: by mail-io1-xd2d.google.com with SMTP id ca18e2360f4ac-7a93b7fedc8so133383639f.1
+        for <linux-kernel@vger.kernel.org>; Sat, 04 Nov 2023 12:42:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1699126945; x=1699731745; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=S2OX4Eo9v+rQhNr2FvX3vObjPM79OTe5nhhahXKdqeM=;
+        b=gIhvPfN612sqHt9n+BtGcBEKdgFNyiucLKuALO0Nhsxc0Dx4LQh5XnWLv8R6KM6+9A
+         c6MEU7cI14dPHrtejyVKjiNPsFoTZIDTwhd4oz/UqK3QIyH10ZnGK8hWVjeE2spc/sfq
+         XeDznr2gszvITrrnOeSTvQix6W4cZ60umurAU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699126945; x=1699731745;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=S2OX4Eo9v+rQhNr2FvX3vObjPM79OTe5nhhahXKdqeM=;
+        b=OZibqrNoR1T6klT3ulSh7phk57X68S6UYrs7QXfR36XCn2M9261wnSlVIsw1Aojltj
+         jfZkMKJaeIEJ0pgSHDvwgcQ/LurwMuNc6G8C6Vgb3Zy88vvgbjMzJ34HHKItjnyo6bXr
+         eFYgwD5XK/mCKXN145jHoFtdtcKFFCFrBXqz/+WkydBi7J1WWKrGEZjYjiKYle1sG8Bq
+         P5i2eI6Wwxve78/wQEpT/1z/7yr6SQz4Gzl4TIGXgmYOSfqJi8ju8owZY/JquWOXSNUj
+         +9GwMjv34GhHFBaZIEE+GSHdBrFvAawLRl2ySZwKRAZ67Hxj2olPn3q90IudXrZQGr2b
+         3FMA==
+X-Gm-Message-State: AOJu0YxKXr0Okvk9ZyuKY3v5QBl+dSBRa+lWsTsNoRLyZdzqfyrkjsmS
+        CkzTBSkMmBJZeSTOe8wZLGE03g==
+X-Google-Smtp-Source: AGHT+IEQmOlHpL29TdFXJFPMr5evJiymQwNEjalBxAKtB6JFDUpkecBI6UNYhrYY+8vXDuE77TuE4Q==
+X-Received: by 2002:a05:6602:3419:b0:7a9:4b18:4c89 with SMTP id n25-20020a056602341900b007a94b184c89mr31619795ioz.6.1699126945152;
+        Sat, 04 Nov 2023 12:42:25 -0700 (PDT)
+Received: from sjg1.united_club.lax.united.com (c-73-14-173-85.hsd1.co.comcast.net. [73.14.173.85])
+        by smtp.gmail.com with ESMTPSA id o4-20020a6b5a04000000b0079fbb834232sm1293318iob.19.2023.11.04.12.42.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 04 Nov 2023 12:42:24 -0700 (PDT)
+From:   Simon Glass <sjg@chromium.org>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     U-Boot Mailing List <u-boot@lists.denx.de>,
+        Tom Rini <trini@konsulko.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Simon Glass <sjg@chromium.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nick Terrell <terrelln@fb.com>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        Will Deacon <will@kernel.org>, linux-kbuild@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/3] arm64: Add a build target for Flat Image Tree
+Date:   Sat,  4 Nov 2023 13:42:01 -0600
+Message-ID: <20231104194207.3370542-1-sjg@chromium.org>
+X-Mailer: git-send-email 2.42.0.869.gea05f2083d-goog
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 3 Nov 2023 22:36:24 -0500:
+Flat Image Tree (FIT) is a widely used file format for packaging a
+kernel and associated devicetree files[1]. It is not specific to any
+one bootloader, as it is supported by U-Boot, coreboot, Linuxboot,
+Tianocore and Barebox.
 
-> git://git.samba.org/sfrench/cifs-2.6.git tags/6.7-rc-smb3-client-fixes-part1
+This series adds support for building a FIT as part of the kernel
+build. This makes it easy to try out the kernel - just load the FIT
+onto your tftp server and it will run automatically on any supported
+arm64 board.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/766e9cf3bd64c45fcace3acc6f8b3df815448ea3
+The script is written in Python, since it is easy to build a FIT using
+the Python libfdt bindings. For now, no attempt is made to compress
+files in parallel, so building the 900-odd files takes a while, about
+6 seconds with my testing.
 
-Thank you!
+The series also includes a few minor clean-up patches.
+
+[1] https://github.com/open-source-firmware/flat-image-tree
+
+Changes in v2:
+- Split double-quote change out into its own patch
+- Drop patch previously applied
+- Add .gitignore file
+- Move fit rule to Makefile.lib using an intermediate file
+- Drop dependency on CONFIG_EFI_ZBOOT
+- Pick up .dtb files separately from the kernel
+- Correct pylint to-many-args warning for write_kernel()
+- Include the kernel image in the file count
+- Add a pointer to the FIT spec and mention of its wide industry usage
+- Mention the kernel version in the FIT description
+
+Simon Glass (3):
+  kbuild: arm64: Add BOOT_TARGETS variable
+  arm: boot: Use double quotes for image name
+  arm64: boot: Support Flat Image Tree
+
+ MAINTAINERS                |   7 +
+ arch/arm64/Makefile        |   7 +-
+ arch/arm64/boot/.gitignore |   2 +
+ arch/arm64/boot/Makefile   |   9 +-
+ scripts/Makefile.lib       |  20 ++-
+ scripts/make_fit.py        | 288 +++++++++++++++++++++++++++++++++++++
+ 6 files changed, 329 insertions(+), 4 deletions(-)
+ create mode 100755 scripts/make_fit.py
 
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+2.42.0.869.gea05f2083d-goog
+
