@@ -2,134 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1160D7E0EA6
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 10:42:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 494C27E0EA9
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 10:44:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231614AbjKDJmy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Nov 2023 05:42:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34834 "EHLO
+        id S231682AbjKDJo5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Nov 2023 05:44:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbjKDJmw (ORCPT
+        with ESMTP id S229468AbjKDJo4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Nov 2023 05:42:52 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAAA01BD
-        for <linux-kernel@vger.kernel.org>; Sat,  4 Nov 2023 02:42:49 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-53db360294fso4739258a12.3
-        for <linux-kernel@vger.kernel.org>; Sat, 04 Nov 2023 02:42:49 -0700 (PDT)
+        Sat, 4 Nov 2023 05:44:56 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 940EFE5;
+        Sat,  4 Nov 2023 02:44:53 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-5437269a661so7735363a12.0;
+        Sat, 04 Nov 2023 02:44:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699090968; x=1699695768; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SbfL3NkpfKmXRCHooSUmBGmgS2c222w1KL1iym/+IkE=;
-        b=Rh2SZz8RJ0C1a+fxZtvSOC/eoaA7HqxREtfN67/IUy4spMiDkPVjnppj85In8wqNlH
-         6VyXTXDU508S0+N5je5CwlW/BtxJqKW4QQQBpW+D39r9UUozhEsW5Ei9i4LpxNG8AG23
-         ALgEisSXhcrybWCZk+3rZ0USYsPVwtpEVnEYfVFrKyNirZi+ACM5dzef6V5/N04wmOl/
-         eu9u/m4g2DVYHwWso4DQE9vkWEOZ+7Nv3pU91l6EpNTGfNo88M+jBLekif/GISNNKl7T
-         85fRIdwQB0+Mn7iEu3SdXlJRfaZD2sLS1HZKX4+1t2fLZIsg4u9G5zAYeK527tmcOpWA
-         pWdQ==
+        d=gmail.com; s=20230601; t=1699091092; x=1699695892; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=yl19HlNI8a/5syuIt55FrNMo/bRs5+2pNvxXrTqIZSs=;
+        b=LK4dz8LDMmBZmLQmZg7dr9Pl8oy8siJrowils4/Iu7LDQyk+0EE3XPjQoi0ed/JsQ4
+         bJc5Ha+/Jn4nnv67Xn419tfQr5QbnZfZTjSg2HdURGGRs2CADq/pS1CBqN9s+DSH4/9W
+         4zmYeFjJJXIQWXuE8K4D0iGycBvqynoM7LRdtvNf0mRgt/rlj4vV1nVe05LUB6JNX2gQ
+         GHnUzpgiLCDkOhHHjQ45oUBMC2zlv8AMIA8ck43MwcNo2utsrLvAu9WrSUHvcKF3bu2I
+         V9DYDnBs/r4Vsa7snyGP3U9IUdSd3qFofyUfXgltueemJ3oFTA7Q+wEFEWJJGzIRdcza
+         lCaQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699090968; x=1699695768;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SbfL3NkpfKmXRCHooSUmBGmgS2c222w1KL1iym/+IkE=;
-        b=oFN7naJmYT1hJ3D2BSKpvPaghut/UmOiQ3lvXdUphlqdgEeCtD52jkSWh1pFGFSjdy
-         RENArePrVGNr7tVNspkh1uLicO8AzIctSlwlkqxKQipXEzuGSqvuSqXn60rFggcRu6RA
-         05UIQFgBW9jRT/c0r9PFBsA6ZJYB3g7SjkDM3CDgVsJxkVBPerw/1MG2OPTEPbyftz+L
-         7xoPL2g97dzm/9mmgfNLiLrbzSZQjGelsauuqMESns5Z2GPfyZClV3RlLaU6p9FyC9sj
-         uL73XWbje6NX4frVe69Y5zW70r3p5n9OfmG/zDacWAJ1JXCw5eYppIRsTj+CKN3lUZEk
-         Kh/w==
-X-Gm-Message-State: AOJu0YxuozW2OBHS/pj3WbIXDSiBLNRlOImNtBAXyb3W0gFZISq1Kgru
-        WkflmW2NxOOcDdPzfkv1f0c9R6sqGYf8bja/Pu0=
-X-Google-Smtp-Source: AGHT+IFAHNDkINjU+Y5YPivroCWJYoBJBuwLvpBetinur2scmP7PDHWMEUo6pHc1DTONAZV4gYyQrLs4lzdWmyR0oUc=
-X-Received: by 2002:a17:907:1b02:b0:9ae:82b4:e309 with SMTP id
- mp2-20020a1709071b0200b009ae82b4e309mr9393758ejc.0.1699090967781; Sat, 04 Nov
- 2023 02:42:47 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1699091092; x=1699695892;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=yl19HlNI8a/5syuIt55FrNMo/bRs5+2pNvxXrTqIZSs=;
+        b=OSQ5x9lpu1VlOM9Ruj+8FTEZCGL7eWTPnUPct+E+XN6BSPp8IZ4vvj97E1n83DlZMu
+         iDjYa6mNEsii0dU9XUuaEtM7eyEODiiyue0mLnGplxlvloJ1i6533o9zIOXiCkQ/XJM/
+         3uc6pXYMj6B/J1wTenTZvZrMTrR1LY0ZjC7Pjm7vcr9Qt0cotCjQNLyxD6bMFhRxrbGq
+         FTknnaVKKgk7g5AtVQ3hcDk8IfNREYx8K1dcUVQdIMCPNLCFxpK24BDuf9y/W0mItSr5
+         HTEvW5ucpJGESYVxDL22qdr5e4olCa8o+cC1WaIJYnWvR+4JEUqTbwO0mYpf1VwPMiP4
+         vs8g==
+X-Gm-Message-State: AOJu0Yx/wpRvvx1+T4n+1AKUi6V5g4fXoyXIpiZUHXEaI8ZHdcBouwIb
+        A3sVHzbT5zHjcwIc9SMdbUz2dckVDrUB2JO2HaM=
+X-Google-Smtp-Source: AGHT+IHsHPR7tE7sQLbpjhqtOkStwWfFQF8OiLvGANkbQPw/3j9jiKa3OEWpHjBFWfyG76ePs87vM5V0UDCEKtvWZhc=
+X-Received: by 2002:a17:907:97c9:b0:9bd:a029:1a10 with SMTP id
+ js9-20020a17090797c900b009bda0291a10mr5201681ejc.32.1699091091665; Sat, 04
+ Nov 2023 02:44:51 -0700 (PDT)
 MIME-Version: 1.0
-References: <ZUNsmJGbYwgPaUpY@debian> <CADnq5_Minarw2D_TeRdkm6nJOP_4qHM+MxiMeLWMXqHxjq22Xw@mail.gmail.com>
- <CADVatmO9NCs=ryNg72HNzMDpqg862gpGnnFhQ4uwTpEkjOkCLw@mail.gmail.com> <CADnq5_Ou7Cq071DJZnq+3PDNqkd3ZJb+dCEvMjiked6_t=E6MA@mail.gmail.com>
-In-Reply-To: <CADnq5_Ou7Cq071DJZnq+3PDNqkd3ZJb+dCEvMjiked6_t=E6MA@mail.gmail.com>
+References: <AS4PR02MB790389C130410BD864C8DCC9C4A6A@AS4PR02MB7903.eurprd02.prod.outlook.com>
+In-Reply-To: <AS4PR02MB790389C130410BD864C8DCC9C4A6A@AS4PR02MB7903.eurprd02.prod.outlook.com>
 From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Date:   Sat, 4 Nov 2023 09:42:11 +0000
-Message-ID: <CADVatmN4njCTGxNPjtpX9gdaySUxW07petaRP1uOzHaQNxf7fQ@mail.gmail.com>
-Subject: Re: mainline build failure due to 7966f319c66d ("drm/amd/display:
- Introduce DML2")
-To:     Alex Deucher <alexdeucher@gmail.com>
-Cc:     Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-        Roman Li <roman.li@amd.com>,
-        Qingqing Zhuo <Qingqing.Zhuo@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        regressions@lists.linux.dev, Leo Li <sunpeng.li@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>, linux-kernel@vger.kernel.org,
-        amd-gfx@lists.freedesktop.org,
-        "linux-kernel@vger.kernel.orgLinus Torvalds" 
-        <torvalds@linux-foundation.org>, dri-devel@lists.freedesktop.org,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Date:   Sat, 4 Nov 2023 09:44:15 +0000
+Message-ID: <CADVatmMpB6ZZx5iO4iD0fxNsXFQzCv007bSY+V-MQOeAMRy=yw@mail.gmail.com>
+Subject: Re: [PATCH v2 RESEND] parport: Add support for Brainboxes IX/UC/PX
+ parallel cards
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     sudip.mukherjee@codethink.co.uk, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, Cameron Williams <cang1@live.co.uk>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2 Nov 2023 at 22:53, Alex Deucher <alexdeucher@gmail.com> wrote:
+On Thu, 2 Nov 2023 at 21:11, Cameron Williams <cang1@live.co.uk> wrote:
 >
-> On Thu, Nov 2, 2023 at 1:07=E2=80=AFPM Sudip Mukherjee
-> <sudipm.mukherjee@gmail.com> wrote:
-> >
-> > On Thu, 2 Nov 2023 at 16:52, Alex Deucher <alexdeucher@gmail.com> wrote=
-:
-> > >
-> > > On Thu, Nov 2, 2023 at 5:32=E2=80=AFAM Sudip Mukherjee (Codethink)
-> > > <sudipm.mukherjee@gmail.com> wrote:
-> > > >
-> > > > Hi All,
-> > > >
-> > > > The latest mainline kernel branch fails to build x86_64 allmodconfi=
-g
-> > > > with the error:
-> > > >
-> > > > drivers/gpu/drm/amd/amdgpu/../display/dc/dml2/display_mode_core.c: =
-In function 'dml_prefetch_check':
-> > > > drivers/gpu/drm/amd/amdgpu/../display/dc/dml2/display_mode_core.c:6=
-707:1: error: the frame size of 2056 bytes is larger than 2048 bytes [-Werr=
-or=3Dframe-larger-than=3D]
-> > > >  6707 | }
-> > > >       | ^
-> > > >
-> > > > git bisect pointed to 7966f319c66d ("drm/amd/display: Introduce DML=
-2")
-> > > >
-> > > > I will be happy to test any patch or provide any extra log if neede=
-d.
-> > >
-> > > This was reported earlier and fixed by:
-> > > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/co=
-mmit/?id=3D089dbf6a06f1dcaeed4f8b86d619e8d28b235207
-> > > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/co=
-mmit/?id=3Db141fa036c901303ca5659cc22e9c08f8b097892
-> > > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/co=
-mmit/?id=3D5b2c54e0d0ea09f7a3b500510731878326e1117e
-> > > but I guess maybe different compiler versions are still hitting this.
-> >
-> > Yes, I should have mentioned. gcc-11 and gcc-12 failed to build. but
-> > gcc-13 was ok.
+> Adds support for Intashield IX-500/IX-550, UC-146/UC-157, PX-146/PX-157,
+> PX-203 and PX-475 (LPT port)
 >
-> Should be fixed with Nathan's patch:
-> https://patchwork.freedesktop.org/patch/565675/
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Cameron Williams <cang1@live.co.uk>
 
-Yes, it does. Thanks.
+Acked-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
 
-Tested-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Greg, can you please take this after the merge window is over.
 
-
---=20
+-- 
 Regards
 Sudip
