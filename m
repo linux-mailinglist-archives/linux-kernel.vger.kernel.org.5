@@ -2,85 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B7C97E0EAD
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 10:46:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 991867E0EB0
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 10:52:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231747AbjKDJqz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Nov 2023 05:46:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43740 "EHLO
+        id S231733AbjKDJwO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Nov 2023 05:52:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbjKDJqy (ORCPT
+        with ESMTP id S229468AbjKDJwN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Nov 2023 05:46:54 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F1F3133;
-        Sat,  4 Nov 2023 02:46:51 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-53db360294fso4742978a12.3;
-        Sat, 04 Nov 2023 02:46:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699091210; x=1699696010; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=sMRXFZ9a5n0WAejGgMET0U+udxZ2/riYDgkqBlodOoA=;
-        b=dY6fku1f0QJBYjlsRbumjVG7JVYz4LdVqsNFKLfdJcrNC1rEW62dUb83GVAeWp8MB7
-         zLi4/yUBeNZsEm5FNvDyOrx3p+hnbeGclF6Pxb9K1CwSWPTMzLVLqFgEeYWlwSyC26CL
-         ZHmToN08OME7gJDV3e+nclVBTBlG56tn2AycSlZQ6Sx7r172pPDVopH2Odnmo4m09E3+
-         G2y2fs4TOscxi6s45tWWqA27EPsKFH/IugaFhBRpmgTZ9dBIr5AnH4tyHvH3hJ8s5LWd
-         Yd4SWf+P+S8bjAqqWNiwdHXIz2iEwS01CmTx0P2WqSIjJywOsh8P2J9Ho+pI1Z3LD8Jw
-         L1+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699091210; x=1699696010;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=sMRXFZ9a5n0WAejGgMET0U+udxZ2/riYDgkqBlodOoA=;
-        b=RNFumUa2QP+a5VS6hi6lZMnK/AklstITuZFAwBV/WzHUgqLVo/+2Y4qVMk9WUrdaoI
-         /SnoKfzPLaoIlWB+pVJZgmRL2HYS5UzeWunRtuIK8m7WezKUkq+S8dDcxp4eV7zdySpU
-         Uls75syyTWevWgVQdF7t8AuR3MCNt4NP5RjDj2hdjmlU+UWTlJC9v+ELg5S7O2usYV7d
-         iXRLseZ0qH0v+d51I+eBmnvUdbZc6kFveo1aym1bIEveWKakI3QnAlZEg08MET+plDHZ
-         Odd9VBq8nventvC4ZEC+pfQibW+zP/H7Q3yCRrS/6GfmDtOaViz6wCd8kG+0sZ5mOAUV
-         RBDQ==
-X-Gm-Message-State: AOJu0Yw4rgDlIw+po5ozSI8zEIf4ZpDA5jf1PijCWlypFBRoF4WFJAmL
-        9/VKQy24QyStNfare8gu4q+4eDXcHqiq2vOMaS8=
-X-Google-Smtp-Source: AGHT+IFgE0NQlGD0M4l7j719Pb8ZaEiQ+eqi8Pc4FAsy5C602YVUd7JuS86gAslF8m5Y+ntv29cy44nUniCJSPmUUx8=
-X-Received: by 2002:a17:906:7955:b0:9dc:ee58:6604 with SMTP id
- l21-20020a170906795500b009dcee586604mr3776894ejo.21.1699091209838; Sat, 04
- Nov 2023 02:46:49 -0700 (PDT)
+        Sat, 4 Nov 2023 05:52:13 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 384E91BC;
+        Sat,  4 Nov 2023 02:52:10 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 02272C433C8;
+        Sat,  4 Nov 2023 09:52:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1699091529;
+        bh=8COzUm5abIRtA3WEuZEqBqc5ZHnRoZ8wIZOh1TTWgDE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=PYaopbC0R0OGZ+0BmIKFy/B+BLUH3wvIlQnPKU13DJyXpPAKT7Sgi3QJ8K7iuohWq
+         fL3vXGwq3izWilZYznlCf0QJY1RshipxRdNwxVk22vMri8bJaaQ98trkV31v4vfvBA
+         munjei52lRY5M76ohYRB3HhKa7qP9jhMCbovbtZo=
+Date:   Sat, 4 Nov 2023 10:52:06 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Bagas Sanjaya <bagasdotme@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Documentation <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Akira Yokosawa <akiyks@gmail.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        David Vernet <void@manifault.com>,
+        Miguel Ojeda <ojeda@kernel.org>, James Seo <james@equiv.tech>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Federico Vaga <federico.vaga@vaga.pv.it>,
+        Carlos Bilbao <carlos.bilbao@amd.com>,
+        linux-spdx@vger.kernel.org, Richard Fontana <rfontana@redhat.com>
+Subject: Re: [PATCH RFC 1/4] LICENSES: Add SIL Open Font License 1.1
+Message-ID: <2023110450-overview-charbroil-5101@gregkh>
+References: <20231102120053.30630-1-bagasdotme@gmail.com>
+ <20231102120053.30630-2-bagasdotme@gmail.com>
+ <2023110222-renewed-monologue-008e@gregkh>
+ <ZUSrOKDuvcSL6gOH@debian.me>
+ <2023110317-unhealthy-playable-d5d6@gregkh>
+ <ZUWV88wRf9suUQfH@debian.me>
 MIME-Version: 1.0
-References: <20231102210745.1107-1-cang1@live.co.uk> <AS4PR02MB7903A4094564BE28F1F926A6C4A6A@AS4PR02MB7903.eurprd02.prod.outlook.com>
-In-Reply-To: <AS4PR02MB7903A4094564BE28F1F926A6C4A6A@AS4PR02MB7903.eurprd02.prod.outlook.com>
-From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Date:   Sat, 4 Nov 2023 09:46:13 +0000
-Message-ID: <CADVatmPEMnTJy-CTfkPBdG5OE9=eQqTu-v70_AUbpXc_oMax3w@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2 RESEND] parport: parport_serial: Add Brainboxes
- device IDs and geometry
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     sudip.mukherjee@codethink.co.uk, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, Cameron Williams <cang1@live.co.uk>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZUWV88wRf9suUQfH@debian.me>
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2 Nov 2023 at 21:08, Cameron Williams <cang1@live.co.uk> wrote:
->
-> Add device IDs for the Brainboxes UC-203, UC-257, UC-414, UC-475,
-> IS-300/IS-500 and PX-263/PX-295 and define the relevant "geometry"
-> for the cards.
-> This patch requires part 1 of this series.
->
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Cameron Williams <cang1@live.co.uk>
+On Sat, Nov 04, 2023 at 07:53:07AM +0700, Bagas Sanjaya wrote:
+> On Fri, Nov 03, 2023 at 09:49:54AM +0100, Greg Kroah-Hartman wrote:
+> > On Fri, Nov 03, 2023 at 03:11:36PM +0700, Bagas Sanjaya wrote:
+> > > On Thu, Nov 02, 2023 at 03:06:19PM +0100, Greg Kroah-Hartman wrote:
+> > > > On Thu, Nov 02, 2023 at 07:00:43PM +0700, Bagas Sanjaya wrote:
+> > > > >  LICENSES/dual/OFL-1.1 | 107 ++++++++++++++++++++++++++++++++++++++++++
+> > > > 
+> > > > You add this license, but then never actually reference it in the later
+> > > > changes, so it's going to be very confusing as to why it is here.  Any
+> > > > way to add it to the font files themselves so our checker tools can
+> > > > handle this properly?
+> > > 
+> > > There is TTF name string ID called "License". For example, on IBM Plex Sans,
+> > > the string value is:
+> > > 
+> > > ```
+> > > This Font Software is licensed under the SIL Open Font License, Version 1.1. This license is available with a FAQ at: http://scripts.sil.org/OFL
+> > > ```
+> > > 
+> > > Checking that string requires scripting fontforge, and since the string value
+> > > may differ (but has the same license) across different fonts, scripting it
+> > > can be non-trivial.
+> > 
+> > And is that in the files you added?  They are binary so it's hard to
+> > determine this :(
+> 
+> Yes.
+> 
+> > 
+> > > > 
+> > > > And, it's not going to work as a dual-license, you can't just suddenly
+> > > > dual-license those font files, right?
+> > > 
+> > > I was thinking of putting OFL in LICENSES/exceptions instead due to this
+> > > nature.
+> > 
+> > Yes, it can not be a dual one.
+> 
+> That's right!
+> 
+> What about just saying below in the CSS file that includes the fonts?
+> 
+> ```
+> ...
+> /* Some cool fonts are licensed under OFL 1.1, see
+>  * LICENSES/exceptions/OFL-1.1 for more information. */
+> ...
+> ```
 
-Acked-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+That's not in SPDX format :)
 
+Anyway, I think the meta-comment so far is "do we want to include fonts
+in the kernel source", right?  For that, I would argue "no, let's not
+deal with that mess for now".
 
--- 
-Regards
-Sudip
+thanks,
+
+greg k-h
