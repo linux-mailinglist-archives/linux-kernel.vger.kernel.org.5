@@ -2,132 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AA4D7E0EDF
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 12:04:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C2EF7E0EE6
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 12:04:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231939AbjKDK7N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Nov 2023 06:59:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50414 "EHLO
+        id S231953AbjKDK7S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Nov 2023 06:59:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231816AbjKDK7M (ORCPT
+        with ESMTP id S231945AbjKDK7Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Nov 2023 06:59:12 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC86ED48
-        for <linux-kernel@vger.kernel.org>; Sat,  4 Nov 2023 03:59:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699095549; x=1730631549;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=ChOOYR2lSL8EYWsTs2cWQB6gTCNDbVA2MbuMV8Ttu4Q=;
-  b=Kpoy6c6ISmmOToptmkiyXgZKQKKQPQ3w7FdkNpCLajJ4xRPwUSPfuTUc
-   RkrGcTQuJ7f6B5ZEqw0aBK0IyrOSsRqGCOq3XELY4TIqq97blG93KrN1v
-   ZCfdMRIvGzAkQ/cDMmPRfva9Wri+MOhnMZTihsWYMpYpZw13Ya2UmK1DH
-   MMMWtJ3S8e7iDcAPpJEvYFQsA+VT76DseQsJ2133tVUTJxjvsYYx3uibE
-   n3cEEEtHip3e4F7Y+yMEUMh+2kD5sQ6YMCsvKD2lO3ufi5bQ/ANb+fjSG
-   nZ4bRWETMRmaTbYSXmCpwD/EIlcIQYs3Ml0fOiGA3xJ2NMUgtvvBX2oSB
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10883"; a="388903151"
-X-IronPort-AV: E=Sophos;i="6.03,276,1694761200"; 
-   d="scan'208";a="388903151"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2023 03:59:09 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.03,276,1694761200"; 
-   d="scan'208";a="9637974"
-Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by orviesa001.jf.intel.com with ESMTP; 04 Nov 2023 03:59:07 -0700
-Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qzEMq-0003sG-1t;
-        Sat, 04 Nov 2023 10:59:04 +0000
-Date:   Sat, 4 Nov 2023 18:58:05 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: drivers/pci/controller/dwc/pcie-designware.c:898:50: error: '%d'
- directive output may be truncated writing between 1 and 11 bytes into a
- region of size 3
-Message-ID: <202311041813.mTp23LXm-lkp@intel.com>
+        Sat, 4 Nov 2023 06:59:16 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C26ADD48
+        for <linux-kernel@vger.kernel.org>; Sat,  4 Nov 2023 03:59:13 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-407da05f05aso20794945e9.3
+        for <linux-kernel@vger.kernel.org>; Sat, 04 Nov 2023 03:59:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1699095552; x=1699700352; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=NNExFK3YGciyQ9GJGSArLtOwz5E+OA3aCyO23C6vxdQ=;
+        b=x0D4Gomiwj75uXfAEQGEze26zaPXwl+UFCzW5PMgCfRR8Y3imYU42IbgBZFDeSVhI5
+         rXZwlt1J3NGUmZVAdMXyRZi5Ul43P94hIYeFklGmfey47+SGYvhfD9TO0c68e9JblaCv
+         mRfyRPrLlGU7DsDF7An5Ze86VW1buB2nWvEK2w1ppZrH5hjScLFWD2ln6wq/T8ImAPOd
+         xh6avVIOpUKxH97209JCzlNm/vn5ISxSixcHymvD1idHNeyVReIXgmHfBB2eiS9LrWSi
+         q9VYkJW/u/4sR+o/iPvEnS3JMQrJarmu8ApZRAG5PLBbD9A3UUzG4ZqU10tYwDMlQiU5
+         Seeg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699095552; x=1699700352;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=NNExFK3YGciyQ9GJGSArLtOwz5E+OA3aCyO23C6vxdQ=;
+        b=hWMc4PXJ3gtvdRiaWdr/h1xRwMOlp19dXOg9rFdylawRVsPLRPEiUF2sqfxNngF9+T
+         UzhAi3V00uenusz3CHlKU/YHcRX0pz88j9kMlwScqislxZ+WnUqtkgYIf4FJQOAtfccR
+         2jSxoL27wB1vyopHN9tKIRMfC735IqMRvpA+/cAfVfKJ+IXHbak92PXlo/Nvh4rtqu24
+         b/pg+iwzRRhVheEyhJ4BsDHHLg/yEMqkOFlAQimxsnuKWGlyNqdbVBMBNytoEFJgOfKG
+         PF+uZGiuSD2rTech5QuaOceFbrwCptOtOOJjncrU2/be1oURenuaoboskjv40rtv3lDd
+         g/dw==
+X-Gm-Message-State: AOJu0YwNjSXKT5OOGQzjeGUfxOWKbgwMZehnX8SYDSA5j1pKSSKtEXnM
+        dnPvc1Zgz6WVYlthOldGpNrBTg==
+X-Google-Smtp-Source: AGHT+IGp4uWcYlP4kHjc0lmFKbWKIFKggNnAnfbnbMYGOblrMi2XBzxq72tIY/+NQsPArSEgCst3GQ==
+X-Received: by 2002:a05:600c:1c90:b0:405:37bb:d942 with SMTP id k16-20020a05600c1c9000b0040537bbd942mr20094215wms.4.1699095551951;
+        Sat, 04 Nov 2023 03:59:11 -0700 (PDT)
+Received: from vingu-book.. ([2a01:e0a:f:6020:3172:eb13:5bac:126a])
+        by smtp.gmail.com with ESMTPSA id p6-20020a05600c358600b004053a6b8c41sm5315809wmq.12.2023.11.04.03.59.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 04 Nov 2023 03:59:11 -0700 (PDT)
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+To:     linux@armlinux.org.uk, catalin.marinas@arm.com, will@kernel.org,
+        paul.walmsley@sifive.com, palmer@dabbelt.com,
+        aou@eecs.berkeley.edu, sudeep.holla@arm.com,
+        gregkh@linuxfoundation.org, rafael@kernel.org, mingo@redhat.com,
+        peterz@infradead.org, juri.lelli@redhat.com,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
+        viresh.kumar@linaro.org, lenb@kernel.org, robert.moore@intel.com,
+        lukasz.luba@arm.com, ionela.voinescu@arm.com,
+        pierre.gondois@arm.com, beata.michalska@arm.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-pm@vger.kernel.org,
+        linux-acpi@vger.kernel.org
+Cc:     conor.dooley@microchip.com, suagrfillet@gmail.com,
+        ajones@ventanamicro.com, lftan@kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>
+Subject: [PATCH v5 0/7] consolidate and cleanup CPU capacity
+Date:   Sat,  4 Nov 2023 11:59:00 +0100
+Message-Id: <20231104105907.1365392-1-vincent.guittot@linaro.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   90b0c2b2edd1adff742c621e246562fbefa11b70
-commit: 939fbcd568fd294034c96edc92ff5b9de1a5fce8 PCI: dwc: Add Root Port and Endpoint controller eDMA engine support
-date:   9 months ago
-config: x86_64-sof-customedconfig-edison-defconfig (https://download.01.org/0day-ci/archive/20231104/202311041813.mTp23LXm-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231104/202311041813.mTp23LXm-lkp@intel.com/reproduce)
+This is the 1st part of consolidating how the max compute capacity is
+used in the scheduler and how we calculate the frequency for a level of
+utilization.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311041813.mTp23LXm-lkp@intel.com/
+Fix some unconsistancy when computing frequency for an utilization. There
+can be a mismatch between energy model and schedutil.
 
-All errors (new ones prefixed by >>):
+Next step will be to make a difference between the original
+max compute capacity of a CPU and what is currently available when
+there is a capping applying forever (i.e. seconds or more).
 
-   drivers/pci/controller/dwc/pcie-designware.c: In function 'dw_pcie_edma_detect':
->> drivers/pci/controller/dwc/pcie-designware.c:898:50: error: '%d' directive output may be truncated writing between 1 and 11 bytes into a region of size 3 [-Werror=format-truncation=]
-     898 |                 snprintf(name, sizeof(name), "dma%d", pci->edma.nr_irqs);
-         |                                                  ^~
-   In function 'dw_pcie_edma_irq_verify',
-       inlined from 'dw_pcie_edma_detect' at drivers/pci/controller/dwc/pcie-designware.c:949:8:
-   drivers/pci/controller/dwc/pcie-designware.c:898:46: note: directive argument in the range [-2147483648, 22]
-     898 |                 snprintf(name, sizeof(name), "dma%d", pci->edma.nr_irqs);
-         |                                              ^~~~~~~
-   drivers/pci/controller/dwc/pcie-designware.c:898:17: note: 'snprintf' output between 5 and 15 bytes into a destination of size 6
-     898 |                 snprintf(name, sizeof(name), "dma%d", pci->edma.nr_irqs);
-         |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   cc1: all warnings being treated as errors
+Changes since v4:
+- Capitalize the verb in subject
+- Remove usless parentheses in cppc_get_dmi_max_khz()
+- Use freq_ref pattern everywhere
+- Fix MHz / kHz units conversion for cppc_cpufreq
+- Move default definition of arch_scale_freq_ref() in
+  include/linux/sched/topology.h beside arch_scale_cpu_capacity
+  which faces similar default declaration behavior. This location covers
+  all cases with arch and CONFIG_* which was not the case with previous
+  attempts.
 
+Changes since v3:
+- Split patch 5 cpufreq/cppc
+- Fix topology_init_cpu_capacity_cppc() 
+- Fix init if AMU ratio
+- Added some tags
 
-vim +898 drivers/pci/controller/dwc/pcie-designware.c
+Changes since v2:
+- Remove the 1st patch which has been queued in tip
+- Rework how to initialize the reference frequency for cppc_cpufreq and
+  change topology_init_cpu_capacity_cppc() to also set capacity_ref_freq
+- Add a RFC to convert AMU to use arch_scale_freq_ref and move the config
+  of the AMU ratio to be done when intializing cpu capacity and
+  capacity_ref_freq
+- Added some tags
 
-   878	
-   879	static int dw_pcie_edma_irq_verify(struct dw_pcie *pci)
-   880	{
-   881		struct platform_device *pdev = to_platform_device(pci->dev);
-   882		u16 ch_cnt = pci->edma.ll_wr_cnt + pci->edma.ll_rd_cnt;
-   883		char name[6];
-   884		int ret;
-   885	
-   886		if (pci->edma.nr_irqs == 1)
-   887			return 0;
-   888		else if (pci->edma.nr_irqs > 1)
-   889			return pci->edma.nr_irqs != ch_cnt ? -EINVAL : 0;
-   890	
-   891		ret = platform_get_irq_byname_optional(pdev, "dma");
-   892		if (ret > 0) {
-   893			pci->edma.nr_irqs = 1;
-   894			return 0;
-   895		}
-   896	
-   897		for (; pci->edma.nr_irqs < ch_cnt; pci->edma.nr_irqs++) {
- > 898			snprintf(name, sizeof(name), "dma%d", pci->edma.nr_irqs);
-   899	
-   900			ret = platform_get_irq_byname_optional(pdev, name);
-   901			if (ret <= 0)
-   902				return -EINVAL;
-   903		}
-   904	
-   905		return 0;
-   906	}
-   907	
+Changes since v1:
+- Fix typos
+- Added changes in cpufreq to use arch_scale_freq_ref() when calling
+  arch_set_freq_scale (patch 3).
+- arch_scale_freq_ref() is always defined and returns 0 (as proposed
+  by Ionela) when not defined by the arch. This simplifies the code with
+  the addition of patch 3.
+- Simplify Energy Model which always uses arch_scale_freq_ref(). The
+  latter returns 0 when not defined by arch instead of last item of the 
+  perf domain. This is not a problem because the function is only defined
+  for compilation purpose in this case and we don't care about the
+  returned value. (patch 5)
+- Added changes in cppc cpufreq to set capacity_ref_freq (patch 6)
+- Added reviewed tag for patch 1 which got a minor change but not for
+  others as I did some changes which could make previous reviewed tag
+  no more relevant.
+
+Vincent Guittot (7):
+  topology: Add a new arch_scale_freq_reference
+  cpufreq: Use the fixed and coherent frequency for scaling capacity
+  cpufreq/schedutil: Use a fixed reference frequency
+  energy_model: Use a fixed reference frequency
+  cpufreq/cppc: Move and rename cppc_cpufreq_{perf_to_khz|khz_to_perf}
+  cpufreq/cppc: Set the frequency used for computing the capacity
+  arm64/amu: Use capacity_ref_freq to set AMU ratio
+
+ arch/arm/include/asm/topology.h   |   1 +
+ arch/arm64/include/asm/topology.h |   1 +
+ arch/arm64/kernel/topology.c      |  26 +++---
+ arch/riscv/include/asm/topology.h |   1 +
+ drivers/acpi/cppc_acpi.c          | 104 ++++++++++++++++++++++
+ drivers/base/arch_topology.c      |  56 ++++++++----
+ drivers/cpufreq/cppc_cpufreq.c    | 139 ++++--------------------------
+ drivers/cpufreq/cpufreq.c         |   4 +-
+ include/acpi/cppc_acpi.h          |   2 +
+ include/linux/arch_topology.h     |   8 ++
+ include/linux/cpufreq.h           |   1 +
+ include/linux/energy_model.h      |   6 +-
+ include/linux/sched/topology.h    |   8 ++
+ kernel/sched/cpufreq_schedutil.c  |  26 +++++-
+ 14 files changed, 225 insertions(+), 158 deletions(-)
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.34.1
+
