@@ -2,169 +2,343 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A5B17E0D99
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 04:56:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D29367E0DA4
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 04:56:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343614AbjKDDoS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 23:44:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47096 "EHLO
+        id S1343878AbjKDDos (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 23:44:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233666AbjKDDoQ (ORCPT
+        with ESMTP id S233766AbjKDDoq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 23:44:16 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29719112
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 20:44:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699069454; x=1730605454;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=qHGfTpzVJu5gEGybckTvVqRdk6b8e0Pm4EH3TTazn34=;
-  b=bqkqHdoTcnuW20wGsK7pabJBw6sQW+1jIvnV9EsOypsnR+LTeYnaUDbf
-   opxF0EmDqC4JM/iJxRCkhVdQpy53YYQhuoCwAXvvEZPU/JW1T7aCoYJGs
-   updauzCsszTv4lsyzo7EySHppaSaMS/A4qWR6T95CttnFa6tPxlcAHMGc
-   /qwD1JMlgtR74DNb0d8tbD1UgpqZzimCggFjg76oQ/YoiD7RChu1FVDLo
-   nVPI6vAfxkG7y451T3tpPNg5qJ6VlFYw3Ev+f5wxTfUVjlaG9sFw253Gw
-   d76x60bNYgumTHfDRyFDUoBuMGcXlYHJaVnNzb6YQPvKRI6JEpEe98TfU
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10883"; a="475293247"
-X-IronPort-AV: E=Sophos;i="6.03,276,1694761200"; 
-   d="scan'208";a="475293247"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2023 20:44:13 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10883"; a="1093263361"
-X-IronPort-AV: E=Sophos;i="6.03,276,1694761200"; 
-   d="scan'208";a="1093263361"
-Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by fmsmga005.fm.intel.com with ESMTP; 03 Nov 2023 20:44:12 -0700
-Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qz7Zy-0003Mn-0n;
-        Sat, 04 Nov 2023 03:44:10 +0000
-Date:   Sat, 4 Nov 2023 11:43:23 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Ingo Molnar <mingo@kernel.org>
-Subject: vmlinux.o: warning: objtool: enter_s2idle_proper+0xd5: call to
- lockdep_hardirqs_on_prepare() leaves .noinstr.text section
-Message-ID: <202311041100.vPZ8sSuW-lkp@intel.com>
+        Fri, 3 Nov 2023 23:44:46 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B012184
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 20:43:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1699069436;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=S1LrTjRfjBJLKAZKTPJ3e6IBQx9TBLxXp5gJn/UCemk=;
+        b=BmkXAep27o8yWmezOL5z8AUS8FH+EzDwa5Y7kyCGQQ8/CovFZtChW93AwEWI3RHCkTUM0J
+        IEjjOsRJx41+8Mfe8av3o/j9MF1oA/mmYArrQ45uqeoLvxnDmulMkMpPx0NxleFl1UKYKR
+        pttQnrhhaw4rq22GtFa+4ZfgvuDKhRE=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-679-uSNpMGNxPwW7gYHyU4CZ-g-1; Fri, 03 Nov 2023 23:43:51 -0400
+X-MC-Unique: uSNpMGNxPwW7gYHyU4CZ-g-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 9A8C282401E;
+        Sat,  4 Nov 2023 03:43:50 +0000 (UTC)
+Received: from fedora (unknown [10.72.120.13])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 59EFD2166B26;
+        Sat,  4 Nov 2023 03:43:40 +0000 (UTC)
+Date:   Sat, 4 Nov 2023 11:43:36 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Ed Tsai =?utf-8?B?KOiUoeWul+i7kik=?= <Ed.Tsai@mediatek.com>
+Cc:     Will Shiu =?utf-8?B?KOioseaBreeRnCk=?= <Will.Shiu@mediatek.com>,
+        Peter Wang =?utf-8?B?KOeOi+S/oeWPiyk=?= 
+        <peter.wang@mediatek.com>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Alice Chao =?utf-8?B?KOi2meePruWdhyk=?= 
+        <Alice.Chao@mediatek.com>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        wsd_upstream <wsd_upstream@mediatek.com>,
+        "axboe@kernel.dk" <axboe@kernel.dk>,
+        Casper Li =?utf-8?B?KOadjuS4reamrik=?= <casper.li@mediatek.com>,
+        Chun-Hung Wu =?utf-8?B?KOW3q+mnv+Wujyk=?= 
+        <Chun-hung.Wu@mediatek.com>,
+        Powen Kao =?utf-8?B?KOmrmOS8r+aWhyk=?= <Powen.Kao@mediatek.com>,
+        Naomi Chu =?utf-8?B?KOacseipoOeUsCk=?= <Naomi.Chu@mediatek.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Stanley Chu =?utf-8?B?KOacseWOn+mZnik=?= 
+        <stanley.chu@mediatek.com>,
+        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
+        "angelogioacchino.delregno@collabora.com" 
+        <angelogioacchino.delregno@collabora.com>, ming.lei@redhat.com
+Subject: Re: [PATCH 1/1] block: Check the queue limit before bio submitting
+Message-ID: <ZUW96Ha5GoJePD8Y@fedora>
+References: <20231025092255.27930-1-ed.tsai@mediatek.com>
+ <64db8f5406571c2f89b70f852eb411320201abe6.camel@mediatek.com>
+ <ZUUd48QF/TEGFzPy@fedora>
+ <cf09a768d0e116bfaf01a1592a7ae95a10b4c2cf.camel@mediatek.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <cf09a768d0e116bfaf01a1592a7ae95a10b4c2cf.camel@mediatek.com>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
 X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   e392ea4d4d00880bf94550151b1ace4f88a4b17a
-commit: 17cc2b5525856d7374f09b28ba1faf1fa61b2352 cpuidle: Ensure ct_cpuidle_enter() is always called from noinstr/__cpuidle
-date:   10 months ago
-config: x86_64-buildonly-randconfig-001-20231104 (https://download.01.org/0day-ci/archive/20231104/202311041100.vPZ8sSuW-lkp@intel.com/config)
-compiler: gcc-11 (Debian 11.3.0-12) 11.3.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231104/202311041100.vPZ8sSuW-lkp@intel.com/reproduce)
+On Sat, Nov 04, 2023 at 01:11:02AM +0000, Ed Tsai (蔡宗軒) wrote:
+> On Sat, 2023-11-04 at 00:20 +0800, Ming Lei wrote:
+> >  On Wed, Nov 01, 2023 at 02:23:26AM +0000, Ed Tsai (蔡宗軒) wrote:
+> > > On Wed, 2023-10-25 at 17:22 +0800, ed.tsai@mediatek.com wrote:
+> > > > From: Ed Tsai <ed.tsai@mediatek.com>
+> > > > 
+> > > > Referring to commit 07173c3ec276 ("block: enable multipage
+> > bvecs"),
+> > > > each bio_vec now holds more than one page, potentially exceeding
+> > > > 1MB in size and causing alignment issues with the queue limit.
+> > > > 
+> > > > In a sequential read/write scenario, the file system maximizes
+> > the
+> > > > bio's capacity before submitting. However, misalignment with the
+> > > > queue limit can result in the bio being split into smaller I/O
+> > > > operations.
+> > > > 
+> > > > For instance, assuming the maximum I/O size is set to 512KB and
+> > the
+> > > > memory is highly fragmented, resulting in each bio containing
+> > only
+> > > > one 2-pages bio_vec (i.e., bi_size = 1028KB). This would cause
+> > the
+> > > > bio to be split into two 512KB portions and one 4KB portion. As a
+> > > > result, the originally expected continuous large I/O operations
+> > are
+> > > > interspersed with many small I/O operations.
+> > > > 
+> > > > To address this issue, this patch adds a check for the
+> > max_sectors
+> > > > before submitting the bio. This allows the upper layers to
+> > > > proactively
+> > > > detect and handle alignment issues.
+> > > > 
+> > > > I performed the Antutu V10 Storage Test on a UFS 4.0 device,
+> > which
+> > > > resulted in a significant improvement in the Sequential test:
+> > > > 
+> > > > Sequential Read (average of 5 rounds):
+> > > > Original: 3033.7 MB/sec
+> > > > Patched: 3520.9 MB/sec
+> > > > 
+> > > > Sequential Write (average of 5 rounds):
+> > > > Original: 2225.4 MB/sec
+> > > > Patched: 2800.3 MB/sec
+> > > > 
+> > > > Signed-off-by: Ed Tsai <ed.tsai@mediatek.com>
+> > > > ---
+> > > >  block/bio.c | 6 ++++++
+> > > >  1 file changed, 6 insertions(+)
+> > > > 
+> > > > diff --git a/block/bio.c b/block/bio.c
+> > > > index 816d412c06e9..a4a1f775b9ea 100644
+> > > > --- a/block/bio.c
+> > > > +++ b/block/bio.c
+> > > > @@ -1227,6 +1227,7 @@ static int __bio_iov_iter_get_pages(struct
+> > bio
+> > > > *bio, struct iov_iter *iter)
+> > > >  iov_iter_extraction_t extraction_flags = 0;
+> > > >  unsigned short nr_pages = bio->bi_max_vecs - bio->bi_vcnt;
+> > > >  unsigned short entries_left = bio->bi_max_vecs - bio->bi_vcnt;
+> > > > +struct queue_limits *lim = &bdev_get_queue(bio->bi_bdev)-
+> > > > >limits;
+> > > >  struct bio_vec *bv = bio->bi_io_vec + bio->bi_vcnt;
+> > > >  struct page **pages = (struct page **)bv;
+> > > >  ssize_t size, left;
+> > > > @@ -1275,6 +1276,11 @@ static int __bio_iov_iter_get_pages(struct
+> > bio
+> > > > *bio, struct iov_iter *iter)
+> > > >  struct page *page = pages[i];
+> > > >  
+> > > >  len = min_t(size_t, PAGE_SIZE - offset, left);
+> > > > +if (bio->bi_iter.bi_size + len >
+> > > > +    lim->max_sectors << SECTOR_SHIFT) {
+> > > > +ret = left;
+> > > > +break;
+> > > > +}
+> > > >  if (bio_op(bio) == REQ_OP_ZONE_APPEND) {
+> > > >  ret = bio_iov_add_zone_append_page(bio, page,
+> > > > len,
+> > > >  offset);
+> > > > -- 
+> > > > 2.18.0
+> > > > 
+> > > 
+> > > 
+> > > Hi Jens,
+> > > 
+> > > Just to clarify any potential confusion, I would like to provide
+> > > further details based on the assumed scenario mentioned above.
+> > > 
+> > > When the upper layer continuously sends 1028KB full-sized bios for
+> > > sequential reads, the Block Layer sees the following sequence:
+> > > submit bio: size = 1028KB, start LBA = n
+> > > submit bio: size = 1028KB, start LBA = n + 1028KB 
+> > > submit bio: size = 1028KB, start LBA = n + 2056KB
+> > > ...
+> > > 
+> > > However, due to the queue limit restricting the I/O size to a
+> > maximum
+> > > of 512KB, the Block Layer splits into the following sequence:
+> > > submit bio: size = 512KB, start LBA = n
+> > > submit bio: size = 512KB, start LBA = n +  512KB
+> > > submit bio: size =   4KB, start LBA = n + 1024KB
+> > > submit bio: size = 512KB, start LBA = n + 1028KB
+> > > submit bio: size = 512KB, start LBA = n + 1540KB
+> > > submit bio: size =   4KB, start LBA = n + 2052KB
+> > > submit bio: size = 512KB, start LBA = n + 2056KB
+> > > submit bio: size = 512KB, start LBA = n + 2568KB
+> > > submit bio: size =   4KB, start LBA = n + 3080KB
+> > > ...
+> > > 
+> > > The original expectation was for the storage to receive large,
+> > > contiguous requests. However, due to non-alignment, many small I/O
+> > > requests are generated. This problem is easily visible because the
+> > > user pages passed in are often allocated by the buddy system as
+> > order 0
+> > > pages during page faults, resulting in highly non-contiguous
+> > memory.
+> > 
+> > If order 0 page is added to bio, the multipage bvec becomes nop
+> > basically(256bvec holds 256 pages), then how can it make a difference
+> > for you?
+> 
+> 
+> 
+> > 
+> > > 
+> > > As observed in the Antutu Sequential Read test below, it is similar
+> > to
+> > > the description above where the splitting caused by the queue limit
+> > > leaves small requests sandwiched in between:
+> > > 
+> > > block_bio_queue: 8,32 R 86925864 + 2144 [Thread-51]
+> > > block_split: 8,32 R 86925864 / 86926888 [Thread-51]
+> > > block_split: 8,32 R 86926888 / 86927912 [Thread-51]
+> > > block_rq_issue: 8,32 R 524288 () 86925864 + 1024 [Thread-51]
+> > > block_rq_issue: 8,32 R 524288 () 86926888 + 1024 [Thread-51]
+> > > block_bio_queue: 8,32 R 86928008 + 2144 [Thread-51]
+> > > block_split: 8,32 R 86928008 / 86929032 [Thread-51]
+> > > block_split: 8,32 R 86929032 / 86930056 [Thread-51]
+> > > block_rq_issue: 8,32 R 524288 () 86928008 + 1024 [Thread-51]
+> > > block_rq_issue: 8,32 R 49152 () 86927912 + 96 [Thread-51]
+> > > block_rq_issue: 8,32 R 524288 () 86929032 + 1024 [Thread-51]
+> > > block_bio_queue: 8,32 R 86930152 + 2112 [Thread-51]
+> > > block_split: 8,32 R 86930152 / 86931176 [Thread-51]
+> > > block_split: 8,32 R 86931176 / 86932200 [Thread-51]
+> > > block_rq_issue: 8,32 R 524288 () 86930152 + 1024 [Thread-51]
+> > > block_rq_issue: 8,32 R 49152 () 86930056 + 96 [Thread-51]
+> > > block_rq_issue: 8,32 R 524288 () 86931176 + 1024 [Thread-51]
+> > > block_bio_queue: 8,32 R 86932264 + 2096 [Thread-51]
+> > > block_split: 8,32 R 86932264 / 86933288 [Thread-51]
+> > > block_split: 8,32 R 86933288 / 86934312 [Thread-51]
+> > > block_rq_issue: 8,32 R 524288 () 86932264 + 1024 [Thread-51]
+> > > block_rq_issue: 8,32 R 32768 () 86932200 + 64 [Thread-51]
+> > > block_rq_issue: 8,32 R 524288 () 86933288 + 1024 [Thread-51]
+> > > 
+> > > I simply prevents non-aligned situations in bio_iov_iter_get_pages.
+> > 
+> > But there is still 4KB IO left if you limit max bio size is 512KB,
+> > then how does this 4KB IO finally go in case of 1028KB IO?
+> > 
+> > > Besides making the upper layer application aware of the queue
+> > limit, I
+> > > would appreciate any other directions or suggestions you may have.
+> > 
+> > The problem is related with IO size from application.
+> > 
+> > If you send unaligned IO, you can't avoid the last IO with small
+> > size, no
+> > matter if block layer bio split is involved or not. Your patch just
+> > lets
+> > __bio_iov_iter_get_pages split the bio, and you still have 4KB left
+> > finally when application submits 1028KB, right?
+> > 
+> > Then I don't understand why your patch improves sequential IO
+> > performance.
+> > 
+> > Thanks,
+> > Ming
+> > 
+> 
+> The application performs I/O with a sufficitenly large I/O size,
+> causing it to constantly fill up and submit full bios. However, in the
+> iomap direct I/O scenario, pages are added to the bio one by one from
+> the user buffer. This typically triggers page faults, resulting in the
+> allocation of order 0 pages from the buddy system.
+> 
+> The remaining amount of each order in the buddy system varies over
+> time. If there are not enough pages available in a particular order,
+> pages are split from higher orders. When pages are obtained from the
+> higher order, the user buffer may contain some small consecutive
+> patterns.
+> 
+> In summary, the physical layout of the user buffer is unpredictable,
+> and when it contains some small consecutive patterns, the size of the
+> bio becomes randomly unaligned during filling.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311041100.vPZ8sSuW-lkp@intel.com/
+Yes, multipage bvec depends on physical layout of user buffer, but it
+doesn't affect bio size, which is decided by userspace, and the bvec
+page layout doesn't affect IO pattern.
 
-All warnings (new ones prefixed by >>):
+If userspace submits 1028K IO, the IO is split into 512K, 512K and 4K,
+no matter if each bvec includes how many pages.
 
->> vmlinux.o: warning: objtool: enter_s2idle_proper+0xd5: call to lockdep_hardirqs_on_prepare() leaves .noinstr.text section
->> vmlinux.o: warning: objtool: cpuidle_enter_state+0x317: call to lockdep_hardirqs_on_prepare() leaves .noinstr.text section
-   vmlinux.o: warning: objtool: acpi_idle_enter_bm+0x40: call to lockdep_hardirqs_on_prepare() leaves .noinstr.text section
+If userspace submits very large IO, such as 512M, which will be split
+into 1K bios with 512K size.
+
+You patch doesn't makes any difference actually from block layer
+viewpoint, such as:
+
+1) dd if=/dev/ublkb0 of=/dev/null bs=1028k count=1 iflag=direct
+
+2) observe IO pattern by the following bpftrace:
+
+kprobe:blk_mq_start_request
+{
+	$rq = (struct request *)arg0;
+
+	printf("%lu %16s %d %d: %s %s bio %lx-%lu\n",
+		nsecs / 1000,  comm, pid, cpu, ksym(reg("ip")),
+		$rq->q->disk->disk_name, $rq->__sector, $rq->__data_len);
+}
+
+3) no matter if your patch is applied or not, the following pattern
+is always observed:
+
+117828811               dd 1475 0: blk_mq_start_request ublkb0 bio 0-524288
+117828823               dd 1475 0: blk_mq_start_request ublkb0 bio 400-524288
+117828825               dd 1475 0: blk_mq_start_request ublkb0 bio 800-4096
+
+Similar pattern can be observed when running dd inside FS(xfs).
+
+> 
+> This patch limits the bio to be filled up to the max_sectors. The
+> submission is an async operation, so once the bio is queued, it will
+> immediately return and continue filled and submit the next bio.
+
+bio split doesn't change this behavior too, the difference is just how
+many bios the upper layer(iomap) observed.
+
+Your patch just moves the split into upper layer, and iomap can see
+3 bios with your patch when `dd bs=1028K`, and in vanilla tree, iomap
+just submits single bio with 1028K, block layer splits it into
+512k, 512k, and 4k. So finally UFS driver observes same IO pattern.
+
+In short, please root cause why your patch improves performance, or
+please share your workloads, so we can observe the IO pattern and
+related mm/fs behavior and try to root cause it.
 
 
-objdump-func vmlinux.o enter_s2idle_proper:
-0000 00000000000022f0 <enter_s2idle_proper>:
-0000     22f0:	41 56                	push   %r14
-0002     22f2:	41 55                	push   %r13
-0004     22f4:	41 54                	push   %r12
-0006     22f6:	49 89 fc             	mov    %rdi,%r12
-0009     22f9:	55                   	push   %rbp
-000a     22fa:	48 89 f5             	mov    %rsi,%rbp
-000d     22fd:	53                   	push   %rbx
-000e     22fe:	48 63 da             	movslq %edx,%rbx
-0011     2301:	49 89 dd             	mov    %rbx,%r13
-0014     2304:	0f 1f 44 00 00       	nopl   0x0(%rax,%rax,1)	2305: R_X86_64_NONE	__sanitizer_cov_trace_pc-0x4
-0019     2309:	90                   	nop
-001a     230a:	e8 00 00 00 00       	call   230f <enter_s2idle_proper+0x1f>	230b: R_X86_64_PC32	.text+0x120b43c
-001f     230f:	48 89 c7             	mov    %rax,%rdi
-0022     2312:	e8 00 00 00 00       	call   2317 <enter_s2idle_proper+0x27>	2313: R_X86_64_PC32	.text+0x120b2cc
-0027     2317:	49 89 c6             	mov    %rax,%r14
-002a     231a:	e8 00 00 00 00       	call   231f <enter_s2idle_proper+0x2f>	231b: R_X86_64_PLT32	tick_freeze-0x4
-002f     231f:	48 8d 04 5b          	lea    (%rbx,%rbx,2),%rax
-0033     2323:	48 8d 04 83          	lea    (%rbx,%rax,4),%rax
-0037     2327:	41 f6 44 c4 58 40    	testb  $0x40,0x58(%r12,%rax,8)
-003d     232d:	0f 84 87 00 00 00    	je     23ba <enter_s2idle_proper+0xca>
-0043     2333:	0f 1f 44 00 00       	nopl   0x0(%rax,%rax,1)	2334: R_X86_64_NONE	__sanitizer_cov_trace_pc-0x4
-0048     2338:	48 8d 04 5b          	lea    (%rbx,%rbx,2),%rax
-004c     233c:	44 89 ea             	mov    %r13d,%edx
-004f     233f:	4c 89 e6             	mov    %r12,%rsi
-0052     2342:	48 8d 04 83          	lea    (%rbx,%rax,4),%rax
-0056     2346:	48 89 ef             	mov    %rbp,%rdi
-0059     2349:	41 ff 54 c4 78       	call   *0x78(%r12,%rax,8)
-005e     234e:	9c                   	pushf
-005f     234f:	58                   	pop    %rax
-0060     2350:	f6 c4 02             	test   $0x2,%ah
-0063     2353:	0f 85 8f 00 00 00    	jne    23e8 <enter_s2idle_proper+0xf8>
-0069     2359:	0f 1f 44 00 00       	nopl   0x0(%rax,%rax,1)	235a: R_X86_64_NONE	__sanitizer_cov_trace_pc-0x4
-006e     235e:	48 8d 04 5b          	lea    (%rbx,%rbx,2),%rax
-0072     2362:	48 8d 04 83          	lea    (%rbx,%rax,4),%rax
-0076     2366:	41 f6 44 c4 58 40    	testb  $0x40,0x58(%r12,%rax,8)
-007c     236c:	74 67                	je     23d5 <enter_s2idle_proper+0xe5>
-007e     236e:	0f 1f 44 00 00       	nopl   0x0(%rax,%rax,1)	236f: R_X86_64_NONE	__sanitizer_cov_trace_pc-0x4
-0083     2373:	48 c1 e3 06          	shl    $0x6,%rbx
-0087     2377:	e8 00 00 00 00       	call   237c <enter_s2idle_proper+0x8c>	2378: R_X86_64_PLT32	tick_unfreeze-0x4
-008c     237c:	e8 00 00 00 00       	call   2381 <enter_s2idle_proper+0x91>	237d: R_X86_64_PC32	.text+0x120b43c
-0091     2381:	48 89 c7             	mov    %rax,%rdi
-0094     2384:	e8 00 00 00 00       	call   2389 <enter_s2idle_proper+0x99>	2385: R_X86_64_PC32	.text+0x120b2cc
-0099     2389:	4c 89 f6             	mov    %r14,%rsi
-009c     238c:	48 89 c7             	mov    %rax,%rdi
-009f     238f:	e8 00 00 00 00       	call   2394 <enter_s2idle_proper+0xa4>	2390: R_X86_64_PC32	.text+0x120b27c
-00a4     2394:	49 89 c0             	mov    %rax,%r8
-00a7     2397:	48 8d 44 1d 00       	lea    0x0(%rbp,%rbx,1),%rax
-00ac     239c:	4c 01 40 68          	add    %r8,0x68(%rax)
-00b0     23a0:	48 83 40 60 01       	addq   $0x1,0x60(%rax)
-00b5     23a5:	90                   	nop
-00b6     23a6:	5b                   	pop    %rbx
-00b7     23a7:	5d                   	pop    %rbp
-00b8     23a8:	41 5c                	pop    %r12
-00ba     23aa:	41 5d                	pop    %r13
-00bc     23ac:	41 5e                	pop    %r14
-00be     23ae:	31 c0                	xor    %eax,%eax
-00c0     23b0:	31 d2                	xor    %edx,%edx
-00c2     23b2:	31 f6                	xor    %esi,%esi
-00c4     23b4:	31 ff                	xor    %edi,%edi
-00c6     23b6:	45 31 c0             	xor    %r8d,%r8d
-00c9     23b9:	c3                   	ret
-00ca     23ba:	0f 1f 44 00 00       	nopl   0x0(%rax,%rax,1)	23bb: R_X86_64_NONE	__sanitizer_cov_trace_pc-0x4
-00cf     23bf:	e8 00 00 00 00       	call   23c4 <enter_s2idle_proper+0xd4>	23c0: R_X86_64_PC32	.text+0x120b25c
-00d4     23c4:	90                   	nop
-00d5     23c5:	e8 00 00 00 00       	call   23ca <enter_s2idle_proper+0xda>	23c6: R_X86_64_PC32	.text+0x120b25c
-00da     23ca:	e8 00 00 00 00       	call   23cf <enter_s2idle_proper+0xdf>	23cb: R_X86_64_PC32	.text+0x120b65c
-00df     23cf:	90                   	nop
-00e0     23d0:	e9 5e ff ff ff       	jmp    2333 <enter_s2idle_proper+0x43>
-00e5     23d5:	0f 1f 44 00 00       	nopl   0x0(%rax,%rax,1)	23d6: R_X86_64_NONE	__sanitizer_cov_trace_pc-0x4
-00ea     23da:	90                   	nop
-00eb     23db:	e8 00 00 00 00       	call   23e0 <enter_s2idle_proper+0xf0>	23dc: R_X86_64_PC32	.text+0x120b65c
-00f0     23e0:	e8 00 00 00 00       	call   23e5 <enter_s2idle_proper+0xf5>	23e1: R_X86_64_PC32	.text+0x120b25c
-00f5     23e5:	90                   	nop
-00f6     23e6:	eb 86                	jmp    236e <enter_s2idle_proper+0x7e>
-00f8     23e8:	0f 1f 44 00 00       	nopl   0x0(%rax,%rax,1)	23e9: R_X86_64_NONE	__sanitizer_cov_trace_pc-0x4
-00fd     23ed:	fa                   	cli
-00fe     23ee:	e9 66 ff ff ff       	jmp    2359 <enter_s2idle_proper+0x69>
-0103     23f3:	66 66 2e 0f 1f 84 00 00 00 00 00 	data16 cs nopw 0x0(%rax,%rax,1)
-010e     23fe:	66 90                	xchg   %ax,%ax
+Thanks,
+Ming
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
