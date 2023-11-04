@@ -2,73 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 851B07E0FBE
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 14:54:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCE667E0FBC
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 14:54:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232010AbjKDNUi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Nov 2023 09:20:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54936 "EHLO
+        id S231764AbjKDNX6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Nov 2023 09:23:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjKDNUf (ORCPT
+        with ESMTP id S230151AbjKDNXz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Nov 2023 09:20:35 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 902B3E3
-        for <linux-kernel@vger.kernel.org>; Sat,  4 Nov 2023 06:20:32 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-40837124e1cso41815e9.0
-        for <linux-kernel@vger.kernel.org>; Sat, 04 Nov 2023 06:20:32 -0700 (PDT)
+        Sat, 4 Nov 2023 09:23:55 -0400
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35C4B194
+        for <linux-kernel@vger.kernel.org>; Sat,  4 Nov 2023 06:23:51 -0700 (PDT)
+Received: by mail-yb1-xb32.google.com with SMTP id 3f1490d57ef6-d9a3d737d66so2735765276.2
+        for <linux-kernel@vger.kernel.org>; Sat, 04 Nov 2023 06:23:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1699104031; x=1699708831; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7lf4Kdqg1Ix4JtjJRKgIfRp+X+syD3doJEppQgu2HHg=;
-        b=kxgaXtNc9U44tUHqWOfmr5fLkYLMQti0kVtTLCA+XcmE2wyQF2qLQAkg7QP8RsNHum
-         DZ++oKOZY+zR6i0JsPWUrAlYxTTSHEqzWX84moFXqzeJUDs4k4ewEn6kM6bhmTnVj5Yr
-         nBnNMrhDH1MimG/y/O1TE6NFm4NYDIVvCf2edpOdk+4H0b1U9UuO4/4JSIxrg8+6azvn
-         U3euqWgvj5iIDAR5rxxxkUT/ipYYnLGxGtACRfagvP358WUB7qK5Zo3rX3kenHSe6Eyo
-         gezTMfA21/n8bc7Fu011xuG6hs87CLZsxFbwV9MqxNcDzz+BoWZuhRgRSRZCRC/7c5P6
-         v0pA==
+        d=linaro.org; s=google; t=1699104230; x=1699709030; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=ihpTO3F03JzgacnLk5uBUsxe1t+WyOgXLtjj9fTyAZY=;
+        b=c/cnOsccQ/fIrrcu/GNkooemVtQ1f2i7DGtv8dQQV+NN9/XTL0G5H7Z/byj7AtAGTg
+         Nh5tNYpfeGxJl85qM9Ys5nybvZr7KA12IazlA2UDDOCvIVw/HMSskEQMDZXoQgy5JIUk
+         A/R+AMFDzknrYWqSJF10Pk5FomwgdopsorBLidqxKi/puBx5zAD7wmGqJniXHBgq3Tvg
+         XdoXng5jXbgwjWjd/0Uv7gHyXaRbTdhABSt6p/eyC2trhkHROlKBR4DydXN+YBdbBl+g
+         tvei06BmxZslptmqnhc3kBqvNuQ9qnJsOdbBo+009iefbA2KhfmYXOhAI38niKyqnOnP
+         MXWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699104031; x=1699708831;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7lf4Kdqg1Ix4JtjJRKgIfRp+X+syD3doJEppQgu2HHg=;
-        b=m5FHDHWxlgIw33j5K6DmMVfPTzFPWLG9FhNs6VTzPDRgJuA3JbYnqX5hArb1v3uV/n
-         PFRVBpqK2MWqnaDNSWr5FBRfAU+FLwCyTpawpp6ojGRctTuogLStAUaK086vdUApRTTv
-         2LWX7BMbPByEFMnbH8UFkkjPwbTfZ7XwW343SRmSmZ2RztaK+v7/vy0LUD0owpS0MLNh
-         tAoAfVAICYt0lezK8oLucsMir5M+7ONhY6kZeuBEQkKyEc8Br7rzlTMYxzxXdLmAPb0C
-         DGtz6EZCl1SI0loCc8KTsYANCo1ZdnrWgQ7vvjI52M4RpoU2T7bb0sPmzJE2IFe9p6kW
-         QeRw==
-X-Gm-Message-State: AOJu0YzhNyHbJQ5NHPKgz79JuNmRMkLVODQWLVTIkqnmAujTitM31dhI
-        9OGd5HVHoJl2B6hjTQOEcLLpzjQDI6gbJlc/MjfS9A==
-X-Google-Smtp-Source: AGHT+IFHQeaiA0q5Oi0jH7atYpTBU7yDbM97qCWjibSomtP+3/oIJAE5t0nmu1K2Svfn7cZ2csJbk8jEBDbbCBVOSh4=
-X-Received: by 2002:a05:600c:5406:b0:404:74f8:f47c with SMTP id
- he6-20020a05600c540600b0040474f8f47cmr40784wmb.5.1699104030677; Sat, 04 Nov
- 2023 06:20:30 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1699104230; x=1699709030;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ihpTO3F03JzgacnLk5uBUsxe1t+WyOgXLtjj9fTyAZY=;
+        b=Ib+QExubZsBT0+9R35w4PIMqbq4VXirO8ULSIqlqRqwNU9phiM1G44pGrAoajBYveB
+         QM0QZvVHthkF+tm234K+S3/YL/xqyHDTilCAH+dp5R3X8+FJgDiaguI73sDZtZNOZjyY
+         ca/2OsuW2HLBp2CAwDBmsqBiBQHOJERWdVM0vH+blZLOBaFQirmjBayPEk/z05I54/5x
+         WkXCbaEhlpI9iGKTh5MnPg9hXz91h5ors/kKIlyEWfWgkeJUsiIIcob3phD7o5sGV/If
+         pyqqjoTRJGWHe3IFL44CBALXvCDMcpC8QlofgoIceI5qZ2+d3PhOR2eobAuxYOEMpDVP
+         UMqA==
+X-Gm-Message-State: AOJu0Yy8/87L9WKyRjXzfuTGM/KvQtcp6pE3szExuuCq6JnzyRbcHWFU
+        A8tGJfJv0Z++SVqjs7BrsiuoyHud2q7Xe/RXK+KATw==
+X-Google-Smtp-Source: AGHT+IGVlWdeV8B/RVB/c5DH0WUIogCLxoudcchmyfPsPK9fAim8y9X901ML2K7hubgLTE5ct4OanZhXxd+HhodgcZg=
+X-Received: by 2002:a25:dfc7:0:b0:d0f:846c:ef7b with SMTP id
+ w190-20020a25dfc7000000b00d0f846cef7bmr21101785ybg.17.1699104230336; Sat, 04
+ Nov 2023 06:23:50 -0700 (PDT)
 MIME-Version: 1.0
-References: <20231104000239.367005-1-seanjc@google.com> <20231104000239.367005-10-seanjc@google.com>
-In-Reply-To: <20231104000239.367005-10-seanjc@google.com>
-From:   Jim Mattson <jmattson@google.com>
-Date:   Sat, 4 Nov 2023 06:20:19 -0700
-Message-ID: <CALMp9eT22j2Ob9ihva41p2JRufR5P+xnzsm99LEd1quxnfCyWA@mail.gmail.com>
-Subject: Re: [PATCH v6 09/20] KVM: selftests: Add pmu.h and lib/pmu.c for
- common PMU assets
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Dapeng Mi <dapeng1.mi@linux.intel.com>,
-        Jinrong Liang <cloudliang@tencent.com>,
-        Like Xu <likexu@tencent.com>,
-        Aaron Lewis <aaronlewis@google.com>
+References: <20231027-sc7280-remoteprocs-v1-0-05ce95d9315a@fairphone.com>
+ <20231027-sc7280-remoteprocs-v1-9-05ce95d9315a@fairphone.com>
+ <12ea48bd-5022-4820-815a-89ef23ec9385@linaro.org> <CWMK0AQRL87L.1F9MIDVQ4J439@fairphone.com>
+In-Reply-To: <CWMK0AQRL87L.1F9MIDVQ4J439@fairphone.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Sat, 4 Nov 2023 15:23:38 +0200
+Message-ID: <CAA8EJpqCeW8NVcrpwo6JVn0kE2W-QMELB1YH7i7pgOH6qiPbCQ@mail.gmail.com>
+Subject: Re: [PATCH 9/9] arm64: dts: qcom: qcm6490-fairphone-fp5: Enable WiFi
+To:     Luca Weiss <luca.weiss@fairphone.com>,
+        Kalle Valo <kvalo@kernel.org>
+Cc:     Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        cros-qcom-dts-watchers@chromium.org,
+        ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Rob Herring <robh@kernel.org>,
+        =?UTF-8?Q?Matti_Lehtim=C3=A4ki?= <matti.lehtimaki@gmail.com>,
+        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,302 +83,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 3, 2023 at 5:02=E2=80=AFPM Sean Christopherson <seanjc@google.c=
-om> wrote:
->
-> From: Jinrong Liang <cloudliang@tencent.com>
->
-> By defining the PMU performance events and masks relevant for x86 in
-> the new pmu.h and pmu.c, it becomes easier to reference them, minimizing
-> potential errors in code that handles these values.
->
-> Clean up pmu_event_filter_test.c by including pmu.h and removing
-> unnecessary macros.
->
-> Suggested-by: Sean Christopherson <seanjc@google.com>
-> Signed-off-by: Jinrong Liang <cloudliang@tencent.com>
-> [sean: drop PSEUDO_ARCH_REFERENCE_CYCLES]
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->  tools/testing/selftests/kvm/Makefile          |  1 +
->  tools/testing/selftests/kvm/include/pmu.h     | 84 +++++++++++++++++++
->  tools/testing/selftests/kvm/lib/pmu.c         | 28 +++++++
->  .../kvm/x86_64/pmu_event_filter_test.c        | 32 ++-----
->  4 files changed, 122 insertions(+), 23 deletions(-)
->  create mode 100644 tools/testing/selftests/kvm/include/pmu.h
->  create mode 100644 tools/testing/selftests/kvm/lib/pmu.c
->
-> diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftes=
-ts/kvm/Makefile
-> index a5963ab9215b..44d8d022b023 100644
-> --- a/tools/testing/selftests/kvm/Makefile
-> +++ b/tools/testing/selftests/kvm/Makefile
-> @@ -32,6 +32,7 @@ LIBKVM +=3D lib/guest_modes.c
->  LIBKVM +=3D lib/io.c
->  LIBKVM +=3D lib/kvm_util.c
->  LIBKVM +=3D lib/memstress.c
-> +LIBKVM +=3D lib/pmu.c
->  LIBKVM +=3D lib/guest_sprintf.c
->  LIBKVM +=3D lib/rbtree.c
->  LIBKVM +=3D lib/sparsebit.c
-> diff --git a/tools/testing/selftests/kvm/include/pmu.h b/tools/testing/se=
-lftests/kvm/include/pmu.h
-> new file mode 100644
-> index 000000000000..987602c62b51
-> --- /dev/null
-> +++ b/tools/testing/selftests/kvm/include/pmu.h
-> @@ -0,0 +1,84 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only */
-> +/*
-> + * Copyright (C) 2023, Tencent, Inc.
-> + */
-> +#ifndef SELFTEST_KVM_PMU_H
-> +#define SELFTEST_KVM_PMU_H
-> +
-> +#include <stdint.h>
-> +
-> +#define X86_PMC_IDX_MAX                                64
-> +#define INTEL_PMC_MAX_GENERIC                          32
+[Added Kalle to the CC list]
 
-I think this is actually 15. Note that IA32_PMC0 through IA32_PMC7
-have MSR indices from 0xc1 through 0xc8, and MSR 0xcf is
-IA32_CORE_CAPABILITIES. At the very least, we have to handle
-non-contiguous MSR indices if we ever go beyond IA32_PMC14.
+On Tue, 31 Oct 2023 at 12:31, Luca Weiss <luca.weiss@fairphone.com> wrote:
+>
+> On Mon Oct 30, 2023 at 8:26 PM CET, Konrad Dybcio wrote:
+> > On 27.10.2023 16:20, Luca Weiss wrote:
+> > > Now that the WPSS remoteproc is enabled, enable wifi so we can use it.
+> > >
+> > > Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
+> > > ---
+> > >  arch/arm64/boot/dts/qcom/qcm6490-fairphone-fp5.dts | 4 ++++
+> > >  1 file changed, 4 insertions(+)
+> > >
+> > > diff --git a/arch/arm64/boot/dts/qcom/qcm6490-fairphone-fp5.dts b/arch/arm64/boot/dts/qcom/qcm6490-fairphone-fp5.dts
+> > > index d65eef30091b..e7e20f73cbe6 100644
+> > > --- a/arch/arm64/boot/dts/qcom/qcm6490-fairphone-fp5.dts
+> > > +++ b/arch/arm64/boot/dts/qcom/qcm6490-fairphone-fp5.dts
+> > > @@ -713,3 +713,7 @@ &venus {
+> > >     firmware-name = "qcom/qcm6490/fairphone5/venus.mbn";
+> > >     status = "okay";
+> > >  };
+> > > +
+> > > +&wifi {
+> > > +   status = "okay";
+> > qcom,ath11k-calibration-variant?
+>
+> What value would I put there for my device? Based on existing usages
+> (mostly for ath10k) I'd say "Fairphone_5"?
 
-> +#define KVM_PMU_EVENT_FILTER_MAX_EVENTS                300
-> +
-> +#define GP_COUNTER_NR_OFS_BIT                          8
-> +#define EVENT_LENGTH_OFS_BIT                           24
-> +
-> +#define PMU_VERSION_MASK                               GENMASK_ULL(7, 0)
-> +#define EVENT_LENGTH_MASK                              GENMASK_ULL(31, E=
-VENT_LENGTH_OFS_BIT)
-> +#define GP_COUNTER_NR_MASK                             GENMASK_ULL(15, G=
-P_COUNTER_NR_OFS_BIT)
-> +#define FIXED_COUNTER_NR_MASK                          GENMASK_ULL(4, 0)
-> +
-> +#define ARCH_PERFMON_EVENTSEL_EVENT                    GENMASK_ULL(7, 0)
-> +#define ARCH_PERFMON_EVENTSEL_UMASK                    GENMASK_ULL(15, 8=
-)
-> +#define ARCH_PERFMON_EVENTSEL_USR                      BIT_ULL(16)
-> +#define ARCH_PERFMON_EVENTSEL_OS                       BIT_ULL(17)
-> +#define ARCH_PERFMON_EVENTSEL_EDGE                     BIT_ULL(18)
-> +#define ARCH_PERFMON_EVENTSEL_PIN_CONTROL              BIT_ULL(19)
-> +#define ARCH_PERFMON_EVENTSEL_INT                      BIT_ULL(20)
-> +#define ARCH_PERFMON_EVENTSEL_ANY                      BIT_ULL(21)
-> +#define ARCH_PERFMON_EVENTSEL_ENABLE                   BIT_ULL(22)
-> +#define ARCH_PERFMON_EVENTSEL_INV                      BIT_ULL(23)
-> +#define ARCH_PERFMON_EVENTSEL_CMASK                    GENMASK_ULL(31, 2=
-4)
-> +
-> +#define PMC_MAX_FIXED                                  16
-> +#define PMC_IDX_FIXED                                  32
-> +
-> +/* RDPMC offset for Fixed PMCs */
-> +#define PMC_FIXED_RDPMC_BASE                           BIT_ULL(30)
-> +#define PMC_FIXED_RDPMC_METRICS                        BIT_ULL(29)
-> +
-> +#define FIXED_BITS_MASK                                0xFULL
-> +#define FIXED_BITS_STRIDE                              4
-> +#define FIXED_0_KERNEL                                 BIT_ULL(0)
-> +#define FIXED_0_USER                                   BIT_ULL(1)
-> +#define FIXED_0_ANYTHREAD                              BIT_ULL(2)
-> +#define FIXED_0_ENABLE_PMI                             BIT_ULL(3)
-> +
-> +#define fixed_bits_by_idx(_idx, _bits)                 \
-> +       ((_bits) << ((_idx) * FIXED_BITS_STRIDE))
-> +
-> +#define AMD64_NR_COUNTERS                              4
-> +#define AMD64_NR_COUNTERS_CORE                         6
-> +
-> +#define PMU_CAP_FW_WRITES                              BIT_ULL(13)
-> +#define PMU_CAP_LBR_FMT                                0x3f
-> +
-> +enum intel_pmu_architectural_events {
-> +       /*
-> +        * The order of the architectural events matters as support for e=
-ach
-> +        * event is enumerated via CPUID using the index of the event.
-> +        */
-> +       INTEL_ARCH_CPU_CYCLES,
-> +       INTEL_ARCH_INSTRUCTIONS_RETIRED,
-> +       INTEL_ARCH_REFERENCE_CYCLES,
-> +       INTEL_ARCH_LLC_REFERENCES,
-> +       INTEL_ARCH_LLC_MISSES,
-> +       INTEL_ARCH_BRANCHES_RETIRED,
-> +       INTEL_ARCH_BRANCHES_MISPREDICTED,
-> +       NR_INTEL_ARCH_EVENTS,
-> +};
-> +
-> +enum amd_pmu_k7_events {
-> +       AMD_ZEN_CORE_CYCLES,
-> +       AMD_ZEN_INSTRUCTIONS,
-> +       AMD_ZEN_BRANCHES,
-> +       AMD_ZEN_BRANCH_MISSES,
-> +       NR_AMD_ARCH_EVENTS,
-> +};
-> +
-> +extern const uint64_t intel_pmu_arch_events[];
-> +extern const uint64_t amd_pmu_arch_events[];
+I think this is fine.
 
-AMD doesn't define *any* architectural events. Perhaps
-amd_pmu_zen_events[], though who knows what Zen5 and  beyond will
-bring?
+> And you mean I should add this property in dts before even looking into
+> the firmware/calibration side of it?
 
-> +extern const int intel_pmu_fixed_pmc_events[];
-> +
-> +#endif /* SELFTEST_KVM_PMU_H */
-> diff --git a/tools/testing/selftests/kvm/lib/pmu.c b/tools/testing/selfte=
-sts/kvm/lib/pmu.c
-> new file mode 100644
-> index 000000000000..27a6c35f98a1
-> --- /dev/null
-> +++ b/tools/testing/selftests/kvm/lib/pmu.c
-> @@ -0,0 +1,28 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Copyright (C) 2023, Tencent, Inc.
-> + */
-> +
-> +#include <stdint.h>
-> +
-> +#include "pmu.h"
-> +
-> +/* Definitions for Architectural Performance Events */
-> +#define ARCH_EVENT(select, umask) (((select) & 0xff) | ((umask) & 0xff) =
-<< 8)
+From my experience some (most?) of the device manufacturers do the
+wrong thing here. They do not program a sensible board_id, leaving it
+as 0xff or some other semi-random value. The calibration variant is
+the only way for the kernel to distinguish between such poor devices.
 
-There's nothing architectural about this. Perhaps RAW_EVENT() for
-consistency with perf?
+The kernel will do a smart thing though. If the device-specific
+calibration data is not present, it will try to fall back to the
+generic data.
 
-> +
-> +const uint64_t intel_pmu_arch_events[] =3D {
-> +       [INTEL_ARCH_CPU_CYCLES]                 =3D ARCH_EVENT(0x3c, 0x0)=
-,
-> +       [INTEL_ARCH_INSTRUCTIONS_RETIRED]       =3D ARCH_EVENT(0xc0, 0x0)=
-,
-> +       [INTEL_ARCH_REFERENCE_CYCLES]           =3D ARCH_EVENT(0x3c, 0x1)=
-,
-> +       [INTEL_ARCH_LLC_REFERENCES]             =3D ARCH_EVENT(0x2e, 0x4f=
-),
-> +       [INTEL_ARCH_LLC_MISSES]                 =3D ARCH_EVENT(0x2e, 0x41=
-),
-> +       [INTEL_ARCH_BRANCHES_RETIRED]           =3D ARCH_EVENT(0xc4, 0x0)=
-,
-> +       [INTEL_ARCH_BRANCHES_MISPREDICTED]      =3D ARCH_EVENT(0xc5, 0x0)=
-,
-
-[INTEL_ARCH_TOPDOWN_SLOTS] =3D ARCH_EVENT(0xa4, 1),
-
-> +};
-> +
-> +const uint64_t amd_pmu_arch_events[] =3D {
-> +       [AMD_ZEN_CORE_CYCLES]                   =3D ARCH_EVENT(0x76, 0x00=
-),
-> +       [AMD_ZEN_INSTRUCTIONS]                  =3D ARCH_EVENT(0xc0, 0x00=
-),
-> +       [AMD_ZEN_BRANCHES]                      =3D ARCH_EVENT(0xc2, 0x00=
-),
-> +       [AMD_ZEN_BRANCH_MISSES]                 =3D ARCH_EVENT(0xc3, 0x00=
-),
-> +};
-> diff --git a/tools/testing/selftests/kvm/x86_64/pmu_event_filter_test.c b=
-/tools/testing/selftests/kvm/x86_64/pmu_event_filter_test.c
-> index 283cc55597a4..b6e4f57a8651 100644
-> --- a/tools/testing/selftests/kvm/x86_64/pmu_event_filter_test.c
-> +++ b/tools/testing/selftests/kvm/x86_64/pmu_event_filter_test.c
-> @@ -11,31 +11,18 @@
->   */
->
->  #define _GNU_SOURCE /* for program_invocation_short_name */
-> -#include "test_util.h"
-> +
->  #include "kvm_util.h"
-> +#include "pmu.h"
->  #include "processor.h"
-> -
-> -/*
-> - * In lieu of copying perf_event.h into tools...
-> - */
-> -#define ARCH_PERFMON_EVENTSEL_OS                       (1ULL << 17)
-> -#define ARCH_PERFMON_EVENTSEL_ENABLE                   (1ULL << 22)
-> -
-> -/* End of stuff taken from perf_event.h. */
-> -
-> -/* Oddly, this isn't in perf_event.h. */
-> -#define ARCH_PERFMON_BRANCHES_RETIRED          5
-> +#include "test_util.h"
->
->  #define NUM_BRANCHES 42
-> -#define INTEL_PMC_IDX_FIXED            32
-> -
-> -/* Matches KVM_PMU_EVENT_FILTER_MAX_EVENTS in pmu.c */
-> -#define MAX_FILTER_EVENTS              300
->  #define MAX_TEST_EVENTS                10
->
->  #define PMU_EVENT_FILTER_INVALID_ACTION                (KVM_PMU_EVENT_DE=
-NY + 1)
->  #define PMU_EVENT_FILTER_INVALID_FLAGS                 (KVM_PMU_EVENT_FL=
-AGS_VALID_MASK << 1)
-> -#define PMU_EVENT_FILTER_INVALID_NEVENTS               (MAX_FILTER_EVENT=
-S + 1)
-> +#define PMU_EVENT_FILTER_INVALID_NEVENTS               (KVM_PMU_EVENT_FI=
-LTER_MAX_EVENTS + 1)
->
->  /*
->   * This is how the event selector and unit mask are stored in an AMD
-> @@ -63,7 +50,6 @@
->
->  #define AMD_ZEN_BR_RETIRED EVENT(0xc2, 0)
-
-Now AMD_ZEN_BRANCHES, above?
-
->
-> -
->  /*
->   * "Retired instructions", from Processor Programming Reference
->   * (PPR) for AMD Family 17h Model 01h, Revision B1 Processors,
-> @@ -84,7 +70,7 @@ struct __kvm_pmu_event_filter {
->         __u32 fixed_counter_bitmap;
->         __u32 flags;
->         __u32 pad[4];
-> -       __u64 events[MAX_FILTER_EVENTS];
-> +       __u64 events[KVM_PMU_EVENT_FILTER_MAX_EVENTS];
->  };
->
->  /*
-> @@ -729,14 +715,14 @@ static void add_dummy_events(uint64_t *events, int =
-nevents)
->
->  static void test_masked_events(struct kvm_vcpu *vcpu)
->  {
-> -       int nevents =3D MAX_FILTER_EVENTS - MAX_TEST_EVENTS;
-> -       uint64_t events[MAX_FILTER_EVENTS];
-> +       int nevents =3D KVM_PMU_EVENT_FILTER_MAX_EVENTS - MAX_TEST_EVENTS=
-;
-> +       uint64_t events[KVM_PMU_EVENT_FILTER_MAX_EVENTS];
->
->         /* Run the test cases against a sparse PMU event filter. */
->         run_masked_events_tests(vcpu, events, 0);
->
->         /* Run the test cases against a dense PMU event filter. */
-> -       add_dummy_events(events, MAX_FILTER_EVENTS);
-> +       add_dummy_events(events, KVM_PMU_EVENT_FILTER_MAX_EVENTS);
->         run_masked_events_tests(vcpu, events, nevents);
->  }
->
-> @@ -818,7 +804,7 @@ static void intel_run_fixed_counter_guest_code(uint8_=
-t fixed_ctr_idx)
->                 /* Only OS_EN bit is enabled for fixed counter[idx]. */
->                 wrmsr(MSR_CORE_PERF_FIXED_CTR_CTRL, BIT_ULL(4 * fixed_ctr=
-_idx));
->                 wrmsr(MSR_CORE_PERF_GLOBAL_CTRL,
-> -                     BIT_ULL(INTEL_PMC_IDX_FIXED + fixed_ctr_idx));
-> +                     BIT_ULL(PMC_IDX_FIXED + fixed_ctr_idx));
->                 __asm__ __volatile__("loop ." : "+c"((int){NUM_BRANCHES})=
-);
->                 wrmsr(MSR_CORE_PERF_GLOBAL_CTRL, 0);
->
-> --
-> 2.42.0.869.gea05f2083d-goog
->
+-- 
+With best wishes
+Dmitry
