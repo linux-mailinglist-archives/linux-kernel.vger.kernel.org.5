@@ -2,90 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CCAF67E0F48
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 13:02:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6DE47E0F4A
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 13:07:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229488AbjKDMBE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Nov 2023 08:01:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46886 "EHLO
+        id S229584AbjKDMHy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Nov 2023 08:07:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbjKDMBC (ORCPT
+        with ESMTP id S229468AbjKDMHw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Nov 2023 08:01:02 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56AA2D49
-        for <linux-kernel@vger.kernel.org>; Sat,  4 Nov 2023 05:00:58 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-9ae2cc4d17eso455310766b.1
-        for <linux-kernel@vger.kernel.org>; Sat, 04 Nov 2023 05:00:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699099256; x=1699704056; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=B5Yt0+TL7qwu2OzCEiBStN1gkCqYNrb0qxd9SfM0lAY=;
-        b=Dc/g4py5zMFuqTYWhkAY16G8xLtp8UYLqZx0vFWpSGc3zOo8MP4xVIv+Ah9rKDY3w1
-         EQoE7fZ/j7ZtiKkLrZNCj70ifdzDM0EJpYQJ9PIFrvQim1pcorVxYk63t7/Y5nRhX6Yx
-         91faJTa9tNwOCLvCMgb8D/MyVF2lLfnCwejsUk+PaQEtybxKSUoE0ARNDCwhLX7XYyc7
-         QDlUf4knDi6W2lx/e20JPgt8PwYg+kGoUsC+YaegvpOcVqvgFOuhXSimdJyh9dd4G2mk
-         AHkkjC/yiAyUKyGVAdyrG3mlnKMcB2oWiDeAosTTIMkcQqNw0pj1tD5xsvzMiBM4VRmq
-         OCSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699099256; x=1699704056;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=B5Yt0+TL7qwu2OzCEiBStN1gkCqYNrb0qxd9SfM0lAY=;
-        b=EPhWW1Lq+R5wWaVVCg9UrCGMGLb2SqFHNaxFnq2he7CM1w1zPCUamFl6ZgC4YaVGIV
-         91bwWQ+gIcCk/ZT9lTL0uapwMiXdkCNYC6bVMIXg3sxuMUYQNknYsPIrpL+zMbuZ8vs3
-         G2VEOLoZrQIlmjDsxdVgKz+ZBHP8n4sCEwpEphwjCQpVEmeYG5a62Q12dFBWHEPK759W
-         PEL/ukWR1z3IyCYrD/VfQB8M8flPN7B7BdqP6VTRpljlSnreg1OZlVQaU8LqunUDkOa4
-         Q2kViFL/sm8Pk1UkAnLn2GZmTajcj3zQrR6Bs90jygfwp9corCr68KGd/YXNOB0lozEs
-         +AiA==
-X-Gm-Message-State: AOJu0YxqZV3DZ3FGkT/olZ75gtkAosjD4LUXpQ5xri5kwA9ZiG2JeJjc
-        PqQdoNjXg3bW8ZaEAAYIXhFYTA==
-X-Google-Smtp-Source: AGHT+IEf2aG1zYzvkplVu8QxKBB5EH4uxsOMWiRATX+cU9J2QXHRp6TCbOa+4AdBleHq3fmacdjruQ==
-X-Received: by 2002:a17:907:6d24:b0:9c3:d356:ad0c with SMTP id sa36-20020a1709076d2400b009c3d356ad0cmr8602893ejc.24.1699099256471;
-        Sat, 04 Nov 2023 05:00:56 -0700 (PDT)
-Received: from [192.168.0.153] (178235177017.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.17])
-        by smtp.gmail.com with ESMTPSA id r1-20020a170906a20100b00997d76981e0sm1860925ejy.208.2023.11.04.05.00.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 04 Nov 2023 05:00:56 -0700 (PDT)
-Message-ID: <c1d2ce7b-7467-46b4-9587-cfe3d99a5b79@linaro.org>
-Date:   Sat, 4 Nov 2023 13:00:53 +0100
+        Sat, 4 Nov 2023 08:07:52 -0400
+X-Greylist: delayed 348 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 04 Nov 2023 05:07:48 PDT
+Received: from smtpout4.mo536.mail-out.ovh.net (smtpout4.mo536.mail-out.ovh.net [51.210.91.13])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0C59E3
+        for <linux-kernel@vger.kernel.org>; Sat,  4 Nov 2023 05:07:48 -0700 (PDT)
+Received: from director1.derp.mail-out.ovh.net (director1.derp.mail-out.ovh.net [51.68.80.175])
+        by mo536.mail-out.ovh.net (Postfix) with ESMTPS id 556C6200FD;
+        Sat,  4 Nov 2023 12:01:58 +0000 (UTC)
+Received: from director1.derp.mail-out.ovh.net (director1.derp.mail-out.ovh.net. [127.0.0.1])
+        by director1.derp.mail-out.ovh.net (inspect_sender_mail_agent) with SMTP
+        for <bagasdotme@gmail.com>; Sat,  4 Nov 2023 12:01:58 +0000 (UTC)
+Received: from pro2.mail.ovh.net (unknown [10.108.16.206])
+        by director1.derp.mail-out.ovh.net (Postfix) with ESMTPS id DF676201350;
+        Sat,  4 Nov 2023 12:01:57 +0000 (UTC)
+Received: from [192.168.1.41] (88.161.25.233) by DAG1EX1.emp2.local
+ (172.16.2.1) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Sat, 4 Nov
+ 2023 13:01:57 +0100
+Message-ID: <dc6264c4-d551-4913-a51b-72c22217f15a@traphandler.com>
+Date:   Sat, 4 Nov 2023 13:01:56 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RESEND v3 5/5] venus: pm_helpers: Use
- dev_pm_genpd_set_hwmode to switch GDSC mode
+Subject: Re: Fwd: sysfs: cannot create duplicate filename
+ .../system76_acpi::kbd_backlight/color
 Content-Language: en-US
-To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        Abel Vesa <abel.vesa@linaro.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Kevin Hilman <khilman@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
-        Vikash Garodia <quic_vgarodia@quicinc.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     Taniya Das <tdas@qti.qualcomm.com>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-media@vger.kernel.org,
-        Jagadeesh Kona <quic_jkona@quicinc.com>
-References: <20231101-gdsc-hwctrl-v3-0-0740ae6b2b04@linaro.org>
- <20231101-gdsc-hwctrl-v3-5-0740ae6b2b04@linaro.org>
- <fe05a0f5-2f57-4f98-afe6-3b0acbaa96fe@linaro.org>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <fe05a0f5-2f57-4f98-afe6-3b0acbaa96fe@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     Bagas Sanjaya <bagasdotme@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>,
+        Linux LEDs <linux-leds@vger.kernel.org>
+CC:     Tim Crawford <tcrawford@system76.com>,
+        Jeremy Soller <jeremy@system76.com>,
+        System76 Product Development <productdev@system76.com>,
+        Lee Jones <lee@kernel.org>, Pavel Machek <pavel@ucw.cz>,
+        =?UTF-8?Q?Johannes_Pen=C3=9Fel?= <johannes.penssel@gmail.com>
+References: <b5646db3-acff-45aa-baef-df3f660486fb@gmail.com>
+ <ZT25-gUmLl8MPk93@debian.me>
+From:   Jean-Jacques Hiblot <jjhiblot@traphandler.com>
+In-Reply-To: <ZT25-gUmLl8MPk93@debian.me>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Originating-IP: [88.161.25.233]
+X-ClientProxiedBy: DAG1EX1.emp2.local (172.16.2.1) To DAG1EX1.emp2.local
+ (172.16.2.1)
+X-Ovh-Tracer-Id: 3654108149721479547
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedruddutddgfeegucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepkfffgggfuffvvehfhfgjtgfgihesthejredttddvjeenucfhrhhomheplfgvrghnqdflrggtqhhuvghsucfjihgslhhothcuoehjjhhhihgslhhothesthhrrghphhgrnhgulhgvrhdrtghomheqnecuggftrfgrthhtvghrnheptdekfedttdejffekueeuffeiudetkeffuedttedvheffjeeuffeltdevleevveegnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucfkphepuddvjedrtddrtddruddpkeekrdduiedurddvhedrvdeffeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduvdejrddtrddtrddupdhmrghilhhfrhhomhepoehjjhhhihgslhhothesthhrrghphhgrnhgulhgvrhdrtghomheqpdhnsggprhgtphhtthhopedupdhrtghpthhtohepsggrghgrshguohhtmhgvsehgmhgrihhlrdgtohhmpdhjohhhrghnnhgvshdrphgvnhhsshgvlhesghhmrghilhdrtghomhdplhgvvgeskhgvrhhnvghlrdhorhhgpdhrvghgrhgvshhsihhonhhssehlihhsthhsrdhlihhnuhigrdguvghvpdhjvghrvghmhiesshihshhtvghmjeeirdgtohhmpdhprhhoughutghtuggvvhesshihshhtvghmjeeirdgtohhmpd
+ httghrrgiffhhorhgusehshihsthgvmhejiedrtghomhdpphgrvhgvlhesuhgtfidrtgiipdhlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdplhhinhhugidqlhgvughssehvghgvrhdrkhgvrhhnvghlrdhorhhgpdfovfetjfhoshhtpehmohehfeeipdhmohguvgepshhmthhpohhuth
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -94,36 +70,90 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 11/3/23 11:44, Bryan O'Donoghue wrote:
-> On 01/11/2023 09:04, Abel Vesa wrote:
->> From: Jagadeesh Kona <quic_jkona@quicinc.com>
+On 29/10/2023 02:48, Bagas Sanjaya wrote:
+> On Thu, Oct 26, 2023 at 02:55:06PM +0700, Bagas Sanjaya wrote:
+>> Hi,
 >>
->> This change demonstrates the use of dev_pm_genpd_set_hwmode API from
->> video driver to switch the video mvs0 gdsc to SW/HW modes at runtime
->> based on requirement.
+>> I notice a regression report on Bugzilla [1]. Quoting from it:
 >>
->> This change adds a new boolean array member vcodec_pmdomains_hwctrl in
->> venus_resources structure to indicate if GDSC's have HW control support
->> or not. This data is used in vcodec_control_v4() to check if GDSC has
->> support to switch to HW control mode and then call dev_pm_genpd_set_hwmode
->> to switch the GDSC mode.
+>>> Loading the system76-acpi kernel module fails on linux 6.6-rc7. This does not seem to be an issue with system76-acpi itself, because reverting commit #5d36931f0fe51665c04f56c027613d22e6a03411, which is the only change made to this driver across the 6.6 development cycle, does not fix the issue. On 6.5.8, everything works fine. My hardware is a Clevo-based Alder Lake laptop running coreboot, roughly similar to the System76 Darter Pro 8.
+>>>
+>>> backtrace:
+>>> [  266.399036] sysfs: cannot create duplicate filename '/devices/LNXSYSTM:00/LNXSYBUS:00/17761776:00/leds/system76_acpi::kbd_backlight/color'
+>>> [  266.399045] CPU: 1 PID: 2896 Comm: modprobe Not tainted 6.6.0-rc7 #1
+>>> [  266.399050] Hardware name: Notebook NS5x_NS7xPU/NS5x_NS7xPU, BIOS Dasharo (coreboot+UEFI) v1.6.0 03/30/2023
+>>> [  266.399053] Call Trace:
+>>> [  266.399057]  <TASK>
+>>> [  266.399063]  dump_stack_lvl+0x36/0x50
+>>> [  266.399080]  sysfs_warn_dup+0x5a/0x70
+>>> [  266.399088]  sysfs_add_file_mode_ns+0x11a/0x130
+>>> [  266.399094]  internal_create_group+0x125/0x3b0
+>>> [  266.399101]  internal_create_groups+0x42/0xa0
+>>> [  266.399107]  device_add+0x5b1/0x8a0
+>>> [  266.399113]  ? kstrdup+0x4c/0x70
+>>> [  266.399119]  device_create_groups_vargs+0xce/0xf0
+>>> [  266.399124]  device_create_with_groups+0x4b/0x70
+>>> [  266.399129]  led_classdev_register_ext+0x1d2/0x470 [led_class]
+>>> [  266.399149]  ? devm_led_classdev_register_ext+0x3a/0x90 [led_class]
+>>> [  266.399162]  devm_led_classdev_register_ext+0x50/0x90 [led_class]
+>>> [  266.399173]  system76_add+0x18b/0x460 [system76_acpi]
+>>> [  266.399186]  acpi_device_probe+0x47/0x130
+>>> [  266.399193]  really_probe+0x19b/0x3e0
+>>> [  266.399199]  ? __pfx___driver_attach+0x10/0x10
+>>> [  266.399205]  __driver_probe_device+0x78/0x160
+>>> [  266.399211]  driver_probe_device+0x1f/0x90
+>>> [  266.399217]  __driver_attach+0xd2/0x1c0
+>>> [  266.399222]  bus_for_each_dev+0x85/0xd0
+>>> [  266.399227]  bus_add_driver+0x116/0x220
+>>> [  266.399233]  driver_register+0x59/0x100
+>>> [  266.399242]  ? __pfx_system76_driver_init+0x10/0x10 [system76_acpi]
+>>> [  266.399252]  do_one_initcall+0x5a/0x300
+>>> [  266.399260]  do_init_module+0x60/0x240
+>>> [  266.399267]  init_module_from_file+0x86/0xc0
+>>> [  266.399275]  __x64_sys_finit_module+0x18a/0x350
+>>> [  266.399282]  do_syscall_64+0x5d/0x90
+>>> [  266.399289]  ? syscall_exit_to_user_mode+0x26/0x40
+>>> [  266.399295]  ? do_syscall_64+0x6c/0x90
+>>> [  266.399300]  ? do_syscall_64+0x6c/0x90
+>>> [  266.399305]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+>>> [  266.399314] RIP: 0033:0x7f5c11b38d7d
+>>> [  266.399360] Code: ff c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 7b d0 0b 00 f7 d8 64 89 01 48
+>>> [  266.399364] RSP: 002b:00007ffe30e15b88 EFLAGS: 00000246 ORIG_RAX: 0000000000000139
+>>> [  266.399370] RAX: ffffffffffffffda RBX: 000055a8d48d6c10 RCX: 00007f5c11b38d7d
+>>> [  266.399372] RDX: 0000000000000000 RSI: 000055a8d3077d8b RDI: 0000000000000003
+>>> [  266.399375] RBP: 000055a8d3077d8b R08: 00007f5c11bf6b00 R09: 00007ffe30e15bd0
+>>> [  266.399376] R10: 0000000000000050 R11: 0000000000000246 R12: 0000000000040000
+>>> [  266.399378] R13: 000055a8d48d6c90 R14: 000055a8d48d6390 R15: 000055a8d48d7090
+>>> [  266.399382]  </TASK>
+>>> [  266.399410] System76 ACPI Driver: probe of 17761776:00 failed with error -17
 >>
->> Before the GDSC HWCTL was available to the consumer, the venus driver
->> needed to somehow keep the power from collapsing while under the driver
->> control. The only way to do that was to clear the CORE_PWR_DISABLE bit
->> (in wrapper POWER_CONTROL register) and, respectively, set it back after
->> the driver control was completed.
+>> See Bugzilla for the full thread and attached dmesg output.
 >>
->> Now, that there is a way to switch the GDSC HW/SW control back and
->> forth, the CORE_PWR_DISABLE toggling can be dropped.
+>> Anyway, I'm adding this regression to regzbot:
 >>
->> Signed-off-by: Jagadeesh Kona <quic_jkona@quicinc.com>
->> Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+>> #regzbot introduced: v6.5..v6.6-rc7 https://bugzilla.kernel.org/show_bug.cgi?id=218045
+>>
 > 
-> So I plan to give this a test on rb5 and db410c
+> The reporter had narrowed down the culprit. He said on Bugzilla:
 > 
-> My q here though is - has anybody on the submission list tested this through suspend/resume and vdd min ?
-I think that only chromebooks (sc7[12]80) and sc7180-acer-aspire1.dts
-are able to hit vddmin upstream as of today
+>> The culprit seems to be commit c7d80059b086c4986cd994a1973ec7a5d75f8eea, which introduces a new 'color' attribute for led sysfs class devices. The problem is that the system76-acpi platform driver tries to create the exact same sysfs attribute itself for the system76_acpi::kbd_backlight device, leading to the conflict. For testing purposes, I've just rebuilt the kernel with the system76-apci color attribute renamed to kb_color, and that fixes the issue.
+> 
+> Jean-Jacques Hiblot, would you like to take a look on this regression,
+> since you authored the culprit?
+Hi,
 
-Konrad
+The offending commit stores the color in struct led_classdev and exposes 
+it via sysfs. It was part of a series that create a RGB leds from 
+multiple single-color LEDs. for this series, we need the color 
+information but we don't really need to expose it it via sysfs. In order 
+to fix the issue, we can remove the 'color' attribute from the sysfs.
+
+JJ
+
+> 
+> Anyway, telling regzbot:
+> 
+> #regzbot introduced: c7d80059b086c4
+> 
+> Thanks.
+> 
