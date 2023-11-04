@@ -2,67 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CCEE77E104B
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 17:09:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26D657E103E
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 17:09:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232254AbjKDP4n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Nov 2023 11:56:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51918 "EHLO
+        id S232413AbjKDP4x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Nov 2023 11:56:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229491AbjKDP4k (ORCPT
+        with ESMTP id S232265AbjKDP4n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Nov 2023 11:56:40 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43B4419D;
-        Sat,  4 Nov 2023 08:56:37 -0700 (PDT)
+        Sat, 4 Nov 2023 11:56:43 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E63CD4C;
+        Sat,  4 Nov 2023 08:56:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
-        t=1699113371; x=1699718171; i=w_armin@gmx.de;
-        bh=ifOYwAxjzP5mj81yd22nPAM7GrmUV1QGSVAX6g3Ytlk=;
+        t=1699113372; x=1699718172; i=w_armin@gmx.de;
+        bh=h1b+qI1DwuXjAP0XrrB6EkWVEvalXVcaQqX1+xZYP50=;
         h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:
          References;
-        b=aeNpnhMe7UEn0GC5HmgFu0ZvtJC9ulUuql3yJUbh5sMwt1nB8xDJbt8Dgzpjo2XS
-         F9yv4I3+ao486wgJbhXzfDQlUyeBe9ZEFWjgB7caQX9dFrQ9NNEc7xZTClPgUvvy9
-         9DusNKxgw7xihZhcP2VkkWyA5lPMbZFy9F/RBitOhUXvPU+GdmGyFsBxAa5m0YOw2
-         dTBokE/vV8FXxVzATESGNsQw96hYP6oKGnF4627IGIF94afHdezC+A0/cLYejO1ev
-         0hTZhyuuVJTp2Zg5oyzv/EgYj7LC1OIYWqMEcQ3Fd8AtQflZkGRdGy+b+3+ITtYxL
-         RcsMw/DeFTyllM6dsw==
+        b=BdEh+QAhm9CJdLAgX0bNBL1TtKOEOSX7X/KLaNARfjvj6/JQmr2Q2xkP39BN9upX
+         so4xBhrjLzyIY3c2fy9VB8uq0+MhetdDIzubo7TDzzLXdHeMpgwgWLu5LjOv3Yo0Q
+         trhNqV3vLQha7LTmoQhooCv2eiFb08jyYKFxOIH9pQvyOmQd1+8XtSdMXCh8aHsZP
+         inmCXOTx5+gG1QagIRH/Eubap0zNdHiHen4vH1MG4s31siOfMvmHUaXxf0PVWdQ8k
+         A38iqD2JrTVjZcm5+XYEXcrPvMzkygD+G5ZS+SFAfSvW1FjVQb+hjbNc/9pSuOaFb
+         cHzpws0OcCIewf9mCg==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from mx-amd-b650.users.agdsn.de ([141.30.226.129]) by mail.gmx.net
- (mrgmx105 [212.227.17.168]) with ESMTPSA (Nemesis) id
- 1N7QxB-1rVWZr3clR-017mVX; Sat, 04 Nov 2023 16:56:10 +0100
+ (mrgmx005 [212.227.17.190]) with ESMTPSA (Nemesis) id
+ 1MHGCo-1rCUI80wDY-00DIsy; Sat, 04 Nov 2023 16:56:12 +0100
 From:   Armin Wolf <W_Armin@gmx.de>
 To:     pali@kernel.org
 Cc:     hdegoede@redhat.com, markgross@kernel.org,
         ilpo.jarvinen@linux.intel.com, jdelvare@suse.com,
         linux@roeck-us.net, platform-driver-x86@vger.kernel.org,
         linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 3/9] hwmon: (dell-smm) Move whitelist handling to module init
-Date:   Sat,  4 Nov 2023 16:55:53 +0100
-Message-Id: <20231104155559.11842-4-W_Armin@gmx.de>
+Subject: [PATCH v2 4/9] hwmon: (dell-smm) Move DMI config handling to module init
+Date:   Sat,  4 Nov 2023 16:55:54 +0100
+Message-Id: <20231104155559.11842-5-W_Armin@gmx.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231104155559.11842-1-W_Armin@gmx.de>
 References: <20231104155559.11842-1-W_Armin@gmx.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:fhnBU4BVWsJWvd3qaltsAgfCTlgrwgdwK7Yf2Rw17jIEaLL7td5
- OSTF97H6a1ahaJjm18ySO8fVix7nGOS2l1Wft3E0nuzjZP3DholsFNnwfHwN8rgFBO0yrJc
- LDBhyHY+dC3nID0wZB3TIHl0+Gvac7UDAYxUWy9Yb1n2AhSvOn3Lo9zd9+dQ4NCgOgnaUq6
- QLBya7NdlB7J+yIquDb4g==
-UI-OutboundReport: notjunk:1;M01:P0:+GB79O5BKMA=;eht47skEnIL3mo9I9LYAA0vmFtU
- 4MqDLnLLRPsu4ogYQUR4zTagHWlnwmUTRscC8HoFLXOMP4WITHZEmVR6YuzKOndVFB6vD/Scv
- HZqhIyVXU8f6zQ/uAVc5LwsNqm8iR/yJqq7URzmSg4wPTYDEGgMP4zvHpv1v3vcHZD4hhpnQW
- y3iIb1jH+IZYHlC19QYGajvO5TFdluEFQKFRQaX8n9uehw7aPuw7YXH5HtvQg4vtq6oZi2/tl
- IYHLmyIe1RdK97uc5OmlD4uJoCOWJ1JBWKxSRjSqObZwYHUUz047hOqFotEK8sV+vcKz4d+VA
- m6XKfQU/sWfJj1xqnIy+OfJ21Q9EanDaKSkViVclmHLllrmP7yRDCOwIpUouG7aqkbwJqvZKs
- bf17x9E8ZlhjIbjV5a+LdekVw7uJOUZzuEUeCfJHOCSp1j6DyVTwtnCl0AX23qW/Lya58yOwi
- 4ApeuV+rVBk47ZjzyOJEnKwKFeCeT63x3PdiDp4BP+VV05Agf2cAmpsv5KLgxAkY9419sVHSz
- 9BjUq1g9DqL8EGaKAWgIz72l/tsAWkJIAARDCLJC5O+jZIQ8AyX6DmZF6H3YWVH+Zsqlpz5RH
- HgKupE+2CmZ30o4uFeQ0OhAv/aknjzhpXMi7sZhcDPU0R3hzrv95WUTAHMWVrUVOHAaUC/a9p
- McjNC0fy4Jf6TcsWKPSfUoN7Bq6hfNdpDwE59icfdoSxyq6jUJmltvJK6uy9aSVKloCGDKOvC
- l1DFgul4pLgUFvVKRyIEe54DD8AU43z8IeQtNvsKoKk7CboOxosLjy987UIh6KszAGKTjxsVJ
- 2n/JRpnkkXgHKkkrpeusXmM/Zau6DGFWsf+anULWklmfyTcJ6cvz/eDVsJ96vs17WoFNLmLhs
- p10TTEyMYO9EYafllwQwFCFtcLvh1hvUD7jk/rLSJnN3DWUr5RgiX09nn/7nvRjpzyLtmYKIc
- VTOB/IpVh2FclSx+Nq0yKOkcvnU=
+X-Provags-ID: V03:K1:bz7/ryikIYg2AiEcGrXV/jQkDU/cC7KLoivKsCXJ6hqnvRV/2w3
+ 0NR3L3BklSJPu/8JVZOshTQqGd+Vza/kzYEfOnkajc9g075SEuI9tE42sEss61cQcHOKHlK
+ cFZ7n4onJYnLiK7alWzeTqd819sTqMsH1u8WxYKnzYDfSSfgthx1tyIEkO9EUNrcdo/bVHJ
+ /JF14U1UjwyVkl7FrZf3Q==
+UI-OutboundReport: notjunk:1;M01:P0:EsyBWgDtB+c=;RxGT5+Hul98rdC8JxPhAeSvizIJ
+ vznHvf3ZUWj3lDgqOMEyqjCL7Ez1WIKOX+yJdFFdG7GGhEmV+np2WvYrpdtHDHphz1tTLqoyM
+ CbS2pwQld2sC7yUd2hCRFXVH6j68dCLLMpV1rxEmtZ2U0d8y9Nw7ayU4hxNcWaxJgLTNzdOgD
+ U3OHRpAaUGITjZ4iLJEu3NFWVezXqM9oR8khrYOaeTIuN1P8v8/tTzWWyjLB7oZx8pam+5+QZ
+ Ncx6LsPkHAIcSp3DS0Swu6MAvuJs8Eh/Wybs8ShCPGhrZu1VxdNmFUoxWAqxE5DfMIABHPmFc
+ dpQTncbWTwab7NnPTPmZKWR04Nr+eyncEUyUaTh1wKWo5LM8/cUFFBW0WzHm0QuwRxy2xsnYu
+ mFM8WI1klfVNhNCTn9DI/+SR4/4B0FnvW+57ftYByD79Sgh8KJ/5QDYZILwTsiN2yGJEaxse1
+ Sw2jgtc9sJ/8VKfiwnc3+69Lful/n+6e4cLrt9+Jh4ZXz0e6YEqAT417O3fkJHJDgQ3GiyENV
+ +Jl2rDETIFJVYj+qxSxUFW90q93AzTGTfJ/GQecX1s7ksglHfcxx3oQro9DtLXNjqhMx18xi9
+ UOt9WYkDfP1WFIyjoS0Kg23bG9xwtU0V7FcPkGBfc3prsDB0SD2YQ0ckUWtA9D35M84mwNtee
+ FqogdWFxPXhkvYJYXFIc/Jjp39wYEQ5jOUFmuz6nOSEFb1/wBLM421nGsc7PbPbEFIX/1CPoc
+ gtGmpEOhpFNyofDkd8gMz+gZjqRKRN3MnAvjTruG6p1bEqR2Tum6aXSl4rDVgZmY9PCh0/LhP
+ fjtqFiRuPNjZI/hr58YMxj+F1wm6niKRJAY9uDZMJCnZpj/pKWtTwMqZ/AToJ5y7LLlo+SGQX
+ 19FHNWNYa8VU8RhXanSuj+3f6D0oUQI5k1HSTHVESHbpmFxZXBSzP9ZHQTTefOZf0qAJ1MUm7
+ 2/mdU6/Q/icqKwaC9yeAwqtI4/4=
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
@@ -75,115 +75,82 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Future SMM calling backends will not be able to probe during
-module init, meaning the DMI tables used for whitelisting
-features would have to drop their __initconst attribute.
-Prevent this by moving the whitelist handling to module init.
+module init, meaning the DMI tables holding config data would
+have to drop their __initconst attribute.
+Prevent this by moving the config handling to module init.
 
 Signed-off-by: Armin Wolf <W_Armin@gmx.de>
 =2D--
- drivers/hwmon/dell-smm-hwmon.c | 31 +++++++++++++++++--------------
- 1 file changed, 17 insertions(+), 14 deletions(-)
+ drivers/hwmon/dell-smm-hwmon.c | 31 +++++++++++++++----------------
+ 1 file changed, 15 insertions(+), 16 deletions(-)
 
 diff --git a/drivers/hwmon/dell-smm-hwmon.c b/drivers/hwmon/dell-smm-hwmon=
 .c
-index ccb3fcff4f60..3a792faf2369 100644
+index 3a792faf2369..3d14a3baf8e4 100644
 =2D-- a/drivers/hwmon/dell-smm-hwmon.c
 +++ b/drivers/hwmon/dell-smm-hwmon.c
-@@ -90,8 +90,6 @@ struct dell_smm_data {
- 	uint i8k_fan_mult;
- 	uint i8k_pwm_mult;
- 	uint i8k_fan_max;
--	unsigned int manual_fan;
--	unsigned int auto_fan;
- 	int temp_type[DELL_SMM_NO_TEMP];
- 	bool fan[DELL_SMM_NO_FANS];
- 	int fan_type[DELL_SMM_NO_FANS];
-@@ -138,6 +136,8 @@ MODULE_PARM_DESC(fan_max, "Maximum configurable fan sp=
-eed (default: autodetect)"
-
- static bool disallow_fan_type_call, disallow_fan_support;
-
-+static unsigned int manual_fan, auto_fan;
-+
- static const char * const temp_labels[] =3D {
- 	"CPU",
- 	"GPU",
-@@ -329,7 +329,7 @@ static int i8k_enable_fan_auto_mode(const struct dell_=
-smm_data *data, bool enabl
- 	if (disallow_fan_support)
- 		return -EINVAL;
-
--	regs.eax =3D enable ? data->auto_fan : data->manual_fan;
-+	regs.eax =3D enable ? auto_fan : manual_fan;
- 	return dell_smm_call(data->ops, &regs);
- }
-
-@@ -741,7 +741,7 @@ static umode_t dell_smm_is_visible(const void *drvdata=
-, enum hwmon_sensor_types
-
- 			break;
- 		case hwmon_pwm_enable:
--			if (data->auto_fan)
-+			if (auto_fan)
- 				/*
- 				 * There is no command for retrieve the current status
- 				 * from BIOS, and userspace/firmware itself can change
-@@ -1370,7 +1370,7 @@ static const struct dmi_system_id i8k_whitelist_fan_=
+@@ -1370,7 +1370,6 @@ static const struct dmi_system_id i8k_whitelist_fan_=
 control[] __initconst =3D {
  static int __init dell_smm_probe(struct platform_device *pdev)
  {
  	struct dell_smm_data *data;
--	const struct dmi_system_id *id, *fan_control;
-+	const struct dmi_system_id *id;
+-	const struct dmi_system_id *id;
  	int ret;
 
  	data =3D devm_kzalloc(&pdev->dev, sizeof(struct dell_smm_data), GFP_KERN=
 EL);
-@@ -1406,15 +1406,6 @@ static int __init dell_smm_probe(struct platform_de=
+@@ -1386,21 +1385,6 @@ static int __init dell_smm_probe(struct platform_de=
 vice *pdev)
- 	data->i8k_fan_max =3D fan_max ? : I8K_FAN_HIGH;
- 	data->i8k_pwm_mult =3D DIV_ROUND_UP(255, data->i8k_fan_max);
+ 	strscpy(data->bios_machineid, i8k_get_dmi_data(DMI_PRODUCT_SERIAL),
+ 		sizeof(data->bios_machineid));
 
--	fan_control =3D dmi_first_match(i8k_whitelist_fan_control);
--	if (fan_control && fan_control->driver_data) {
--		const struct i8k_fan_control_data *control =3D fan_control->driver_data=
-;
+-	/*
+-	 * Set fan multiplier and maximal fan speed from dmi config
+-	 * Values specified in module parameters override values from dmi
+-	 */
+-	id =3D dmi_first_match(i8k_dmi_table);
+-	if (id && id->driver_data) {
+-		const struct i8k_config_data *conf =3D id->driver_data;
 -
--		data->manual_fan =3D control->manual_fan;
--		data->auto_fan =3D control->auto_fan;
--		dev_info(&pdev->dev, "enabling support for setting automatic/manual fan=
- control\n");
+-		if (!fan_mult && conf->fan_mult)
+-			fan_mult =3D conf->fan_mult;
+-
+-		if (!fan_max && conf->fan_max)
+-			fan_max =3D conf->fan_max;
 -	}
 -
- 	ret =3D dell_smm_init_hwmon(&pdev->dev);
- 	if (ret)
- 		return ret;
-@@ -1437,6 +1428,9 @@ static struct platform_device *dell_smm_device;
-  */
+ 	/* All options must not be 0 */
+ 	data->i8k_fan_mult =3D fan_mult ? : I8K_FAN_MULT;
+ 	data->i8k_fan_max =3D fan_max ? : I8K_FAN_HIGH;
+@@ -1429,6 +1413,7 @@ static struct platform_device *dell_smm_device;
  static void __init dell_smm_init_dmi(void)
  {
-+	struct i8k_fan_control_data *control;
-+	const struct dmi_system_id *id;
-+
+ 	struct i8k_fan_control_data *control;
++	struct i8k_config_data *config;
+ 	const struct dmi_system_id *id;
+
  	if (dmi_check_system(i8k_blacklist_fan_support_dmi_table)) {
- 		if (!force) {
- 			pr_notice("Disabling fan support due to BIOS bugs\n");
-@@ -1454,6 +1448,15 @@ static void __init dell_smm_init_dmi(void)
- 			pr_warn("Enabling fan type call despite BIOS bugs\n");
+@@ -1449,6 +1434,20 @@ static void __init dell_smm_init_dmi(void)
  		}
  	}
-+
-+	id =3D dmi_first_match(i8k_whitelist_fan_control);
-+	if (id && id->driver_data) {
-+		control =3D id->driver_data;
-+		manual_fan =3D control->manual_fan;
-+		auto_fan =3D control->auto_fan;
-+
-+		pr_info("Enabling support for setting automatic/manual fan control\n");
-+	}
- }
 
- static int __init i8k_init(void)
++	/*
++	 * Set fan multiplier and maximal fan speed from DMI config.
++	 * Values specified in module parameters override values from DMI.
++	 */
++	id =3D dmi_first_match(i8k_dmi_table);
++	if (id && id->driver_data) {
++		config =3D id->driver_data;
++		if (!fan_mult && config->fan_mult)
++			fan_mult =3D config->fan_mult;
++
++		if (!fan_max && config->fan_max)
++			fan_max =3D config->fan_max;
++	}
++
+ 	id =3D dmi_first_match(i8k_whitelist_fan_control);
+ 	if (id && id->driver_data) {
+ 		control =3D id->driver_data;
 =2D-
 2.39.2
 
