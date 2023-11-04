@@ -2,295 +2,308 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BED17E0E20
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 07:47:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35E3F7E0E26
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 07:57:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232039AbjKDGrk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Nov 2023 02:47:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52984 "EHLO
+        id S231264AbjKDG5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Nov 2023 02:57:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231270AbjKDGr2 (ORCPT
+        with ESMTP id S229509AbjKDG5r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Nov 2023 02:47:28 -0400
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82309D52;
-        Fri,  3 Nov 2023 23:47:24 -0700 (PDT)
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4SMp7q2HGdz4f3kJs;
-        Sat,  4 Nov 2023 14:47:19 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-        by mail.maildlp.com (Postfix) with ESMTP id 820631A0171;
-        Sat,  4 Nov 2023 14:47:21 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.101.107])
-        by APP4 (Coremail) with SMTP id gCh0CgDnfd3z6EVlglQtEw--.50758S9;
-        Sat, 04 Nov 2023 14:47:21 +0800 (CST)
-From:   Zhang Xiaoxu <zhangxiaoxu@huaweicloud.com>
-To:     zhangxiaoxu5@huawei.com, weiyongjun1@huawei.com,
-        broonie@kernel.org, rostedt@goodmis.org, mingo@redhat.com,
-        frowand.list@gmail.com, linux-spi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3 -next 5/5] spi: mockup: Add documentation
-Date:   Sat,  4 Nov 2023 14:46:50 +0800
-Message-Id: <20231104064650.972687-6-zhangxiaoxu@huaweicloud.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231104064650.972687-1-zhangxiaoxu@huaweicloud.com>
-References: <20231104064650.972687-1-zhangxiaoxu@huaweicloud.com>
+        Sat, 4 Nov 2023 02:57:47 -0400
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2077.outbound.protection.outlook.com [40.107.223.77])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C3F21B9;
+        Fri,  3 Nov 2023 23:57:42 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Awr5OqHnvV1hmC29geWUbSlec4qzr4u9TGgQvdheDfnWvRMW030gWPLnBkIT2mJb/oF0EOfbKz9KRee7ITZfrm1o2VwI/tbZW6x/OJ6YmjzJOrvhrYOHUoi2iOTUW1AUeUVV30NGJRtVOLjHX6MyVYekTb1oZQVHip6ubONq1pQEgJLgsD82DcSC85uOAeONj1pgZD9cPYRreS/+1dVt8TmPAtorrP7/WoaOfp9FWfCQ/2MIk68QZwNPXNrai7x9iCNw1rsLjD/dl5+kL1MNhDu9LQRRRXLzSE/5a7iy/f30SBw531FtegRCtSju47VLHGXndHnT29LABL4ERzzgSw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=dxiayzGVQs0Dlew/58DoZQz3IwGgGxDbtVfrFx/w480=;
+ b=Ucl+ltdX0TB//dxxVrmu2snnUD8/rwHoiOpLqoeoZzFbHBM1ZA+hnkChSOIswOuXVPNfnUZFN0DhIeh8vTjT808/1c4m3mdHyQgicGA/Lux/WcYrxtbOJWf7WtDTeBFPjX6Nh/EmOp5fR+p1j92psi67qd1JfDDzzz42lcKl2dx84IJXJdTFyznxvoKakfpg2QvOjEPYpcnprV2QRH2RHrzt52yggxwMMoacwXvca7Psj3Th2YMgB4wIhubbY3TaPqDB6W1YbodNk57cjGNgAAYut47l0nAxey8DpaUHkA/mnz6CQs4LArwJaxJ/9cy4kdmJ8v1q01je/0DAdNOI6Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=dxiayzGVQs0Dlew/58DoZQz3IwGgGxDbtVfrFx/w480=;
+ b=r+RoXsvLAvHMrU7CbpY91pgOCUTdR8Fd5GMIPiYhtbfLxoalBRcRPPRQg87Hx67KHHaUtu6yvSwsKwdW6iWyIC3we9jN88wCbgOUW7MsDVRgPaHjRD4Ud7kOFSZaPo3zWhdf7q7JxXQwJswMc4dSV8sIw84RP7ysnDuwXTtoyos=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from BYAPR12MB4614.namprd12.prod.outlook.com (2603:10b6:a03:a6::22)
+ by MW6PR12MB8899.namprd12.prod.outlook.com (2603:10b6:303:248::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.21; Sat, 4 Nov
+ 2023 06:57:38 +0000
+Received: from BYAPR12MB4614.namprd12.prod.outlook.com
+ ([fe80::ce36:81fc:9c50:c892]) by BYAPR12MB4614.namprd12.prod.outlook.com
+ ([fe80::ce36:81fc:9c50:c892%6]) with mapi id 15.20.6954.024; Sat, 4 Nov 2023
+ 06:57:38 +0000
+Message-ID: <b8097564-dcba-e4bc-2d65-5c6936373772@amd.com>
+Date:   Sat, 4 Nov 2023 12:27:22 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.13.1
+Subject: Re: [PATCH v2 8/9] PCI: Exclude PCIe ports used for tunneling in
+ pcie_bandwidth_available()
+Content-Language: en-US
+To:     Mario Limonciello <mario.limonciello@amd.com>,
+        Karol Herbst <kherbst@redhat.com>,
+        Lyude Paul <lyude@redhat.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        =?UTF-8?Q?Ilpo_J=c3=a4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Lukas Wunner <lukas@wunner.de>
+Cc:     "open list:THUNDERBOLT DRIVER" <linux-usb@vger.kernel.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        "open list:PCI SUBSYSTEM" <linux-pci@vger.kernel.org>,
+        "open list:DRM DRIVER FOR NVIDIA GEFORCE/QUADRO GPUS" 
+        <dri-devel@lists.freedesktop.org>,
+        "open list:X86 PLATFORM DRIVERS" 
+        <platform-driver-x86@vger.kernel.org>,
+        Andreas Noever <andreas.noever@gmail.com>,
+        David Airlie <airlied@gmail.com>,
+        =?UTF-8?Q?Marek_Beh=c3=ban?= <kabel@kernel.org>,
+        "open list:RADEON and AMDGPU DRM DRIVERS" 
+        <amd-gfx@lists.freedesktop.org>,
+        "open list:ACPI" <linux-acpi@vger.kernel.org>,
+        Danilo Krummrich <dakr@redhat.com>,
+        "open list:DRM DRIVER FOR NVIDIA GEFORCE/QUADRO GPUS" 
+        <nouveau@lists.freedesktop.org>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Michael Jamet <michael.jamet@intel.com>,
+        Mark Gross <markgross@kernel.org>,
+        Xinhui Pan <Xinhui.Pan@amd.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Yehezkel Bernat <YehezkelShB@gmail.com>,
+        =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>,
+        "Maciej W . Rozycki" <macro@orcam.me.uk>
+References: <20231103190758.82911-1-mario.limonciello@amd.com>
+ <20231103190758.82911-9-mario.limonciello@amd.com>
+From:   "Lazar, Lijo" <lijo.lazar@amd.com>
+In-Reply-To: <20231103190758.82911-9-mario.limonciello@amd.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BMXP287CA0009.INDP287.PROD.OUTLOOK.COM
+ (2603:1096:b00:2c::15) To BYAPR12MB4614.namprd12.prod.outlook.com
+ (2603:10b6:a03:a6::22)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgDnfd3z6EVlglQtEw--.50758S9
-X-Coremail-Antispam: 1UD129KBjvJXoW3JryxuF18tF43Ar1kArWrZrb_yoW7Aw4fpF
-        WUtry3K3y8Xr9rWF1fXa4kJFy3A3s7Zay7GFWvgF1Yyr1qvr95JF1xKryYq3Z8WF4kAFy0
-        vFW5AFW8Kr17ZaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUU9jb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAV
-        Cq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0
-        rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267
-        AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E
-        14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7
-        xfMcIj6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Y
-        z7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7
-        v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF
-        1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Gr0_Xr1lIx
-        AIcVC0I7IYx2IY6xkF7I0E14v26F4j6r4UJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4l
-        IxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvf
-        C2KfnxnUUI43ZEXa7IU1FfO7UUUUU==
-X-CM-SenderInfo: x2kd0wp0ld053x6k3tpzhluzxrxghudrp/
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BYAPR12MB4614:EE_|MW6PR12MB8899:EE_
+X-MS-Office365-Filtering-Correlation-Id: 770d3860-f64f-433a-68ba-08dbdd03548d
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 3W83KYT0vAGW0hDnzK57G8/eSxaTQ7d2aBtMbTbaoA/Bcqy+ljZL714yiuOBt2bMuJ3Zr86WN7mUNj3iBr/fpM2feKONYDg0jyMsNUjK6aS+7cEoe43C+Xx2wrzPJwqB+l0KCtAwRpmpNSbTjFi6+psufw9ePOix2sz8+3PApLvJI7qiyzEkfKZMRRBKq0knEsZP5kkIwhCgf5xFgCw2EBISIKhr7y5EykUG9Wv3our/9+bNhXDN4ikgpPWvkDzOAZfPl32MCR6f8ziMCmPENq725hP9qyuN5TFmnRhkyhMKziwFCirVKJb6WqnHzF47aWCNzUQRsyHQS2x4UsujmNpUPvWCytYuop68RXf+Zqz3r6ImIPhkLmY6v5Riey1/SjY5z9WURunZlpH7f/HF52FlWng/4t2/JTd8NIM+lwbTCt2FAFopMzd/DX1UmLHPQQNkXCYP00+u2OoWuI9SNSMuiHhJprFRJj5GpV5CJdx7RQce6dQ75P4/Cg/xm4mptkZjLeEfNQ6WK7z63WOm+mhUvWF9ub68lLzxPAGTb2xLPDFvKul2cdQm4Yq+AmQgGT7m+ggAmX7zAsqP7D2ZJVaxkGdToVRCwkd++pZ8Wtlv6gBj+FEK1ulUo1wGSwBnigQX7STs6XAtGgVAXu5a5w==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB4614.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(39860400002)(376002)(346002)(366004)(396003)(230922051799003)(1800799009)(186009)(451199024)(64100799003)(31686004)(26005)(53546011)(2616005)(6512007)(38100700002)(86362001)(36756003)(921008)(31696002)(2906002)(8676002)(7416002)(478600001)(6506007)(6666004)(4326008)(66476007)(6486002)(66556008)(316002)(54906003)(8936002)(41300700001)(5660300002)(110136005)(66946007)(83380400001)(966005)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VGhpZ1ZJLzJ2QWZlVjZHdkl5ZWduVmlMU2cvM1R5VkVTUURack84ZEZMc3dl?=
+ =?utf-8?B?Sk5wcGdWM0hBL2FJaTRMejVIQ3ZIaHFURUNkMWtkRVZ1cEdLMXdPams5d29m?=
+ =?utf-8?B?a2Y2TWxPUjZDU1ZBUCtIV21IUkZjcVdXRUwxYTdTV1RKY1Z1eDZjMTdXQVFi?=
+ =?utf-8?B?RmZ1OVJVMC81V1hwZUd4QXVIbVJjV2xkY3ozNklCV0p1TGFCQzNlNzVZQmN2?=
+ =?utf-8?B?MFY3L3VxbDdZK3pVRDU3ZEErSXJOcnZock5PM05YTFdZUGlWU202L1RIQ0xW?=
+ =?utf-8?B?WVpjLzdWSzNKTk5lM1ROaVRGclo5RzhoSmVIcVJLM1JNV3Nxa3JTN2xhWXpw?=
+ =?utf-8?B?SjNUNzg2SE9RUnExTk5VaDZ3bE5XczhOYzFRdWQxMUJsSERtWlJxTmhVeXcx?=
+ =?utf-8?B?TnlzVWZSNzNwVGIxa0JtMkpmUThIR0dnd21SZW5XSjUyNmdSVmdJcU1TRk14?=
+ =?utf-8?B?NWRGcVRpcHg3VlROZGlWOHc2aENEdCtvc3RuWm0ySXhQVXdTYkMrS0VpZEN5?=
+ =?utf-8?B?d2VsaFplRENrUVpZUXhNODVwRUN6Q3oyVGVTSnI5TUtoeWFxc3EzWlIxbnNl?=
+ =?utf-8?B?MHBqVjh3akRtL0QwN0N2TndqbW9KNnJXMGdpOWhRVG9aS2JhZld3NVIwMzE3?=
+ =?utf-8?B?MmlmR3d4VE9HS01NQVVqQSs3Z1J6dEtUVGJlU1B5M1NxMkFmQzN4ckREZURW?=
+ =?utf-8?B?RCs0R2JnZHlDbk5vU3JxUVpVZ05IZGpuUjFvRzJmNGNSS3lZQUozd0FOVVJk?=
+ =?utf-8?B?eXBKMnduYXVDbmplRnNLY3BpZEhwZm1LWlc0NXRiTkdzbWdSdk5EODFETEM2?=
+ =?utf-8?B?VHVOOXNZNER0ZlVyaUtwTVBqZTZENTdDZTVlUnBqMDBZSk93dkk4QjB5MlRn?=
+ =?utf-8?B?Y2dyZXg2MUx3cUlkejBuT05HTEVSQ1hXdlN0MStJQXJBTWVNWXhOTWNBenI2?=
+ =?utf-8?B?R1RCSEdSNlFRWmdKSHZBejVTVlAxTkhlRCtoa29qZ05ob0xkbnJuRG5ncXVo?=
+ =?utf-8?B?WUJ5UjRYcDBaNVczRkFncG16a0dIVUJtbWxZSWs2NmZFc0lzeTZNbHhyQVN6?=
+ =?utf-8?B?Mk9nSktxaFNjQkxMUWswaUZVNWhVVkUyRStpRHBaK0Z5VS80aDZuWmZSRXVV?=
+ =?utf-8?B?Z0h5YzRsdmw3aTI2UHpQd0h1M0t5N2JmZTA0dzhqY2N4elJIdWUrQm5pNDd6?=
+ =?utf-8?B?QWJCa1lIU1ZkV0JSdlRzT3I0OTFIaTdKUUsvaDF2Q0JXb3AvTTRGTFpuNk1y?=
+ =?utf-8?B?ekZENWFodFVQVUMvMDNYYnBLOHFvdEo3R2s3WEF3YjBtRFdxVDV0bDhOdU0r?=
+ =?utf-8?B?WkJac0NhVWtIV3J0cXFQRDh6ZU03QkJDREJEbm9NTHBLY21kZmdpUDhSM0dw?=
+ =?utf-8?B?Slpsd3pOSmphTlVOM3p3QzRTMkp1Q1Nyb3ZBSGtLakhodzNLcVhhQjhubXEv?=
+ =?utf-8?B?cjk5L09xS05jdGxsazlRdGFuVTB0aTJZdUNwKy9mSFZMaElpMjZ3RUpYc1Ur?=
+ =?utf-8?B?ZVRORnlxVk5lM1FuUHZ0RWc0S0RxL0MxWkFDZE5wODdhTFNwVmNhOEp2RWdB?=
+ =?utf-8?B?L1VmMHVjZ3UwaDR0U1dlL0QvK3MzaUFOY1owdmtmaloyT21qY094N2Jpcisv?=
+ =?utf-8?B?RzdUSUdhMGlzSHFjd0ZnVzNycmJic3pObU9UeWZKQldhUnJaaUs2dTZzWFNa?=
+ =?utf-8?B?UzF1ZS9pVHpKS1BWM0pFREU0K3N6OWpNMlg5MkR6dlRjSkRMTXBEMmtKVXlF?=
+ =?utf-8?B?WkZiMnBvLy9Fdk1Ock9hL1U5dzl5UU9pMk96WlA2YkFCTmViQkJQQ2QzQ1ZO?=
+ =?utf-8?B?cnFPeEN1dUt2OHUxZE8wdkpqSCtYQWZFdkJrU2VsWTAzSHJVSlJ1MUxxR3RK?=
+ =?utf-8?B?WXQzc1JXQ2tZWk83dlIzVHJUU05IbzRGQ0tkbklZYzJCK21BRmRWcGxuUFp2?=
+ =?utf-8?B?N0N3N2Jqa0h6Tm1KaCtUZ1BZQjVHYW9RUGQ5TXNHMXQzYit5VE1JNk1FT1dC?=
+ =?utf-8?B?SUZXd0txUUxBdjN0L0hySE9QL0IvRnJXM2dXd1ZTQVJDbjZWZU5OU1pwNnJh?=
+ =?utf-8?B?cE0rb3p1MkFGNW10dUdHdmlQckJ0eHdIemNjdE83UXZ1eE1CVW9LeXc4emdR?=
+ =?utf-8?Q?+K88K9LCO9Jyk3+gOE7Fbzh26?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 770d3860-f64f-433a-68ba-08dbdd03548d
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB4614.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Nov 2023 06:57:38.0334
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: PyJ0pRlwA/k8XKAkIoRBW6B0gkDQ2SwjiDarsWw3DTo71MWvnNMP05Br+ABeokQB
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW6PR12MB8899
+X-Spam-Status: No, score=-5.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Xiaoxu <zhangxiaoxu5@huawei.com>
 
-Add documentation for the SPI mockup controller driver.
-This include the tutorial for how to mockup a spi device.
 
-Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
-Signed-off-by: Zhang Xiaoxu <zhangxiaoxu5@huawei.com>
----
- Documentation/spi/index.rst      |   1 +
- Documentation/spi/spi-mockup.rst | 196 +++++++++++++++++++++++++++++++
- 2 files changed, 197 insertions(+)
- create mode 100644 Documentation/spi/spi-mockup.rst
+On 11/4/2023 12:37 AM, Mario Limonciello wrote:
+> The USB4 spec specifies that PCIe ports that are used for tunneling
+> PCIe traffic over USB4 fabric will be hardcoded to advertise 2.5GT/s and
+> behave as a PCIe Gen1 device. The actual performance of these ports is
+> controlled by the fabric implementation.
 
-diff --git a/Documentation/spi/index.rst b/Documentation/spi/index.rst
-index 06c34ea11bcf..a8f4f5cd0f09 100644
---- a/Documentation/spi/index.rst
-+++ b/Documentation/spi/index.rst
-@@ -13,6 +13,7 @@ Serial Peripheral Interface (SPI)
-    pxa2xx
-    spi-lm70llp
-    spi-sc18is602
-+   spi-mockup
- 
- .. only::  subproject and html
- 
-diff --git a/Documentation/spi/spi-mockup.rst b/Documentation/spi/spi-mockup.rst
-new file mode 100644
-index 000000000000..dd9feb81535e
---- /dev/null
-+++ b/Documentation/spi/spi-mockup.rst
-@@ -0,0 +1,196 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+==========
-+spi-mockup
-+==========
-+
-+Description
-+===========
-+
-+This module is a very simple fake SPI controller driver. It implements
-+a BPF based interface to mockup SPI device.
-+
-+No hardware is needed nor associated with this module. It will respond
-+spi message by BPF program attached to spi_transfer_writeable tracepoint
-+by reading from or writing BPF maps.
-+
-+The typical use-case is like this:
-+        1. load EBPF program as device's backend
-+        2. create target chip device
-+
-+Example
-+=======
-+
-+This example show how to mock a MTD device by using spi-mockup driver.
-+
-+Compile your copy of the kernel source. Make sure to configure the spi-mockup
-+and the target chip driver as a module.
-+
-+Register the spi mockup device.
-+
-+::
-+
-+  $ mkdir /sys/kernel/config/spi-mockup/spi0
-+
-+  # configure the spi mockup attribute
-+  $ echo 40000 > /sys/kernel/config/spi-mockup/spi0/min_speed
-+  $ echo 25000000 > /sys/kernel/config/spi-mockup/spi0/max_speed
-+  $ echo 0 > /sys/kernel/config/spi-mockup/spi0/flags
-+  $ echo 8 > /sys/kernel/config/spi-mockup/spi0/num_cs
-+
-+  # enable the spi mockup device
-+  $ echo 1 > /sys/kernel/config/spi-mockup/spi0/enable
-+
-+Write a BPF program as device's backup.
-+
-+::
-+
-+  #define MCHP23K256_CMD_WRITE_STATUS   0x01
-+  #define MCHP23K256_CMD_WRITE          0x02
-+  #define MCHP23K256_CMD_READ           0x03
-+
-+  #define CHIP_REGS_SIZE		0x20000
-+
-+  #define MAX_CMD_SIZE		        4
-+
-+  struct {
-+	__uint(type, BPF_MAP_TYPE_ARRAY);
-+	__uint(max_entries, CHIP_REGS_SIZE);
-+	__type(key, __u32);
-+	__type(value, __u8);
-+  } regs_mchp23k256 SEC(".maps");
-+
-+  static unsigned int chip_reg = 0;
-+
-+  static int spi_transfer_read(struct spi_msg_ctx *msg, unsigned int len)
-+  {
-+	int i, key;
-+	u8 *reg;
-+
-+	for (i = 0; i < len && i < sizeof(msg->data); i++) {
-+		key = i + chip_reg;
-+
-+		reg = bpf_map_lookup_elem(&regs_mchp23k256, &key);
-+		if (!reg) {
-+			bpf_printk("key %d not exists", key);
-+			return -EINVAL;
-+		}
-+
-+		msg->data[i] = *reg;
-+	}
-+
-+	return 0;
-+  }
-+
-+  static int spi_transfer_write(struct spi_msg_ctx *msg, unsigned int len)
-+  {
-+	u8 opcode = msg->data[0], value;
-+	int i, key;
-+
-+	switch (opcode) {
-+	case MCHP23K256_CMD_READ:
-+	case MCHP23K256_CMD_WRITE:
-+		if (len < 2)
-+			return -EINVAL;
-+
-+		chip_reg = 0;
-+		for (i = 0; i < MAX_CMD_SIZE && i < len - 1; i++)
-+			chip_reg = (chip_reg << 8) + msg->data[1 + i];
-+
-+		return 0;
-+	case MCHP23K256_CMD_WRITE_STATUS:
-+		// ignore write status
-+		return 0;
-+	default:
-+		break;
-+	}
-+
-+	for (i = 0; i < len && i < sizeof(msg->data); i++) {
-+		value = msg->data[i];
-+		key = chip_reg + i;
-+
-+		if (bpf_map_update_elem(&regs_mchp23k256, &key, &value,
-+					BPF_EXIST)) {
-+			bpf_printk("key %d not exists", key);
-+			return -EINVAL;
-+		}
-+	}
-+
-+	return 0;
-+  }
-+
-+  SEC("raw_tp.w/spi_transfer_writeable")
-+  int BPF_PROG(mtd_mchp23k256, struct spi_msg_ctx *msg, u8 chip, unsigned int len)
-+  {
-+	int ret = 0;
-+
-+	if (msg->tx_nbits)
-+		ret = spi_transfer_write(msg, len);
-+	else if (msg->rx_nbits)
-+		ret = spi_transfer_read(msg, len);
-+
-+	return ret;
-+  }
-+
-+  char LICENSE[] SEC("license") = "GPL";
-+
-+Use bpftool to load the BPF program.
-+
-+::
-+
-+  $ bpftool prog load mtd-mchp23k256.o /sys/fs/bpf/mtd_mchp23k256 autoattach
-+
-+
-+This is accomplished by executing the following command:
-+
-+::
-+
-+  $ echo mchp23k256 0 > /sys/class/spi_master/spi0/new_device
-+
-+
-+The name of the target driver and its chip select were used to instantiate
-+the device.
-+
-+Now, the mchp23k256 MTD device named /dev/mtd0 has been created successfully.
-+
-+::
-+
-+  $ ls /sys/bus/spi/devices/spi0.0/mtd/
-+  mtd0  mtd0ro
-+
-+  $ cat /sys/class/mtd/mtd0/name
-+  spi0.0
-+
-+  $ hexdump /dev/mtd0
-+  0000000 0000 0000 0000 0000 0000 0000 0000 0000
-+  *
-+  0008000
-+
-+  $echo aaaa > /dev/mtd0
-+
-+  $ hexdump /dev/mtd0
-+  0000000 6161 6161 000a 0000 0000 0000 0000 0000
-+  0000010 0000 0000 0000 0000 0000 0000 0000 0000
-+  *
-+  0008000
-+
-+  $ bpftool map update name regs_mchp23k256 key 0 0 0 0 value 0
-+
-+  $ hexdump /dev/mtd0
-+  0000000 6100 6161 000a 0000 0000 0000 0000 0000
-+  0000010 0000 0000 0000 0000 0000 0000 0000 0000
-+  *
-+  0008000
-+
-+Remove the mockup device by executing the following command:
-+
-+::
-+
-+  $ echo 0 > /sys/class/spi_master/spi0/delete_device
-+
-+Remove the spi mockup device by executing the following command:
-+
-+::
-+
-+  $ echo 0 > /sys/kernel/config/spi-mockup/spi0/disable
-+  $ rmdir /sys/kernel/config/spi-mockup/spi0
--- 
-2.34.1
+The code below ties a generic term 'tunneling' to USB4 spec. I think it 
+should be something like if (is_USB4 && is_tunneled), exclude from 
+bandwidth calculations - it should specifically identify usb4 based 
+tunneling rather than applying to all 'tunneled' cases.
 
+Thanks,
+Lijo
+
+> 
+> Downstream drivers such as amdgpu which utilize pcie_bandwidth_available()
+> to program the device will always find the PCIe ports used for
+> tunneling as a limiting factor potentially leading to incorrect
+> performance decisions.
+> 
+> To prevent problems in downstream drivers check explicitly for ports
+> being used for PCIe tunneling and skip them when looking for bandwidth
+> limitations of the hierarchy. If the only device connected is a root port
+> used for tunneling then report that device.
+> 
+> Downstream drivers could make this change on their own but then they
+> wouldn't be able to detect other potential speed bottlenecks from the
+> hierarchy without duplicating pcie_bandwidth_available() logic.
+> 
+> Link: https://gitlab.freedesktop.org/drm/amd/-/issues/2925#note_2145860
+> Link: https://www.usb.org/document-library/usb4r-specification-v20
+>        USB4 V2 with Errata and ECN through June 2023
+>        Section 11.2.1
+> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
+> ---
+>   drivers/pci/pci.c | 74 +++++++++++++++++++++++++++++++----------------
+>   1 file changed, 49 insertions(+), 25 deletions(-)
+> 
+> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+> index d9aa5a39f585..15e37164ce56 100644
+> --- a/drivers/pci/pci.c
+> +++ b/drivers/pci/pci.c
+> @@ -6223,6 +6223,35 @@ int pcie_set_mps(struct pci_dev *dev, int mps)
+>   }
+>   EXPORT_SYMBOL(pcie_set_mps);
+>   
+> +static u32 pcie_calc_bw_limits(struct pci_dev *dev, u32 bw,
+> +			       struct pci_dev **limiting_dev,
+> +			       enum pci_bus_speed *speed,
+> +			       enum pcie_link_width *width)
+> +{
+> +	enum pcie_link_width next_width;
+> +	enum pci_bus_speed next_speed;
+> +	u32 next_bw;
+> +	u16 lnksta;
+> +
+> +	pcie_capability_read_word(dev, PCI_EXP_LNKSTA, &lnksta);
+> +	next_speed = pcie_link_speed[lnksta & PCI_EXP_LNKSTA_CLS];
+> +	next_width = (lnksta & PCI_EXP_LNKSTA_NLW) >> PCI_EXP_LNKSTA_NLW_SHIFT;
+> +	next_bw = next_width * PCIE_SPEED2MBS_ENC(next_speed);
+> +
+> +	/* Check if current device limits the total bandwidth */
+> +	if (!bw || next_bw <= bw) {
+> +		bw = next_bw;
+> +		if (limiting_dev)
+> +			*limiting_dev = dev;
+> +		if (speed)
+> +			*speed = next_speed;
+> +		if (width)
+> +			*width = next_width;
+> +	}
+> +
+> +	return bw;
+> +}
+> +
+>   /**
+>    * pcie_bandwidth_available - determine minimum link settings of a PCIe
+>    *			      device and its bandwidth limitation
+> @@ -6236,47 +6265,42 @@ EXPORT_SYMBOL(pcie_set_mps);
+>    * limiting_dev, speed, and width pointers are supplied) information about
+>    * that point.  The bandwidth returned is in Mb/s, i.e., megabits/second of
+>    * raw bandwidth.
+> + *
+> + * This excludes the bandwidth calculation that has been returned from a
+> + * PCIe device used for transmitting tunneled PCIe traffic over a Thunderbolt
+> + * or USB4 link that is part of larger hierarchy. The calculation is excluded
+> + * because the USB4 specification specifies that the max speed returned from
+> + * PCIe configuration registers for the tunneling link is always PCI 1x 2.5 GT/s.
+> + * When only tunneled devices are present, the bandwidth returned is the
+> + * bandwidth available from the first tunneled device.
+>    */
+>   u32 pcie_bandwidth_available(struct pci_dev *dev, struct pci_dev **limiting_dev,
+>   			     enum pci_bus_speed *speed,
+>   			     enum pcie_link_width *width)
+>   {
+> -	u16 lnksta;
+> -	enum pci_bus_speed next_speed;
+> -	enum pcie_link_width next_width;
+> -	u32 bw, next_bw;
+> +	struct pci_dev *tdev = NULL;
+> +	u32 bw = 0;
+>   
+>   	if (speed)
+>   		*speed = PCI_SPEED_UNKNOWN;
+>   	if (width)
+>   		*width = PCIE_LNK_WIDTH_UNKNOWN;
+>   
+> -	bw = 0;
+> -
+>   	while (dev) {
+> -		pcie_capability_read_word(dev, PCI_EXP_LNKSTA, &lnksta);
+> -
+> -		next_speed = pcie_link_speed[lnksta & PCI_EXP_LNKSTA_CLS];
+> -		next_width = (lnksta & PCI_EXP_LNKSTA_NLW) >>
+> -			PCI_EXP_LNKSTA_NLW_SHIFT;
+> -
+> -		next_bw = next_width * PCIE_SPEED2MBS_ENC(next_speed);
+> -
+> -		/* Check if current device limits the total bandwidth */
+> -		if (!bw || next_bw <= bw) {
+> -			bw = next_bw;
+> -
+> -			if (limiting_dev)
+> -				*limiting_dev = dev;
+> -			if (speed)
+> -				*speed = next_speed;
+> -			if (width)
+> -				*width = next_width;
+> +		if (dev->is_tunneled) {
+> +			if (!tdev)
+> +				tdev = dev;
+> +			goto skip;
+>   		}
+> -
+> +		bw = pcie_calc_bw_limits(dev, bw, limiting_dev, speed, width);
+> +skip:
+>   		dev = pci_upstream_bridge(dev);
+>   	}
+>   
+> +	/* If nothing "faster" found on link, limit to first tunneled device */
+> +	if (tdev && !bw)
+> +		bw = pcie_calc_bw_limits(tdev, bw, limiting_dev, speed, width);
+> +
+>   	return bw;
+>   }
+>   EXPORT_SYMBOL(pcie_bandwidth_available);
