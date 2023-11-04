@@ -2,72 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7068B7E0DBB
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 05:16:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CFA0E7E0DC1
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 05:21:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345010AbjKDD7B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 23:59:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33870 "EHLO
+        id S231509AbjKDEUx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Nov 2023 00:20:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377973AbjKDD7A (ORCPT
+        with ESMTP id S229509AbjKDEUv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 23:59:00 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C06F21AA;
-        Fri,  3 Nov 2023 20:58:57 -0700 (PDT)
-Received: from dggpemm100001.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4SMkPQ15y9zVlM1;
-        Sat,  4 Nov 2023 11:58:50 +0800 (CST)
-Received: from [10.174.177.243] (10.174.177.243) by
- dggpemm100001.china.huawei.com (7.185.36.93) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Sat, 4 Nov 2023 11:58:55 +0800
-Message-ID: <61c0f155-1cdd-4865-b047-88fbdc661ac3@huawei.com>
-Date:   Sat, 4 Nov 2023 11:58:55 +0800
+        Sat, 4 Nov 2023 00:20:51 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11140D44;
+        Fri,  3 Nov 2023 21:20:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=4xGq+RomEZH3DZvdz2VHIN1h6fcnWJicNhvkTuIdRC8=; b=Nl4ZYr0LZCWCk5uL/pzbkcuRh8
+        vMVseyrI1XyoINQzkJo80DKS3TEeoIEftWLfbc/zbDibdcTNz4SoLTS8jUDkWw6lF7TtzjUzXrWG2
+        BnRqey/L3ADb6SAuOEEmP603GRQQqqcRTffawia+Zl8uG4Adz1G/yFkTtA77nT5qb7w59dJV6wRvh
+        X43i3PqvVGuBD4VJNBhdvUcKVTvFF/w9odc47tMlmpsVKZk6lICUmJLrAQD4a9Z/R8IQaCkeVSrzy
+        f+jwRaGr8TDod+ZW7Ni/UrELu4h/bGx4tvmtzZJBdP+YSnORlBZmgNNH48MQCcyTcf5BSvpf7lU3M
+        /a6tlwwQ==;
+Received: from [50.53.46.231] (helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qz89N-00Cbnr-1I;
+        Sat, 04 Nov 2023 04:20:47 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        linux-modules@vger.kernel.org
+Subject: [PATCH] lib/test_kmod: fix kernel-doc warnings
+Date:   Fri,  3 Nov 2023 21:20:44 -0700
+Message-ID: <20231104042044.17807-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH rfc 00/18] mm: convert to use folio mm counter
-Content-Language: en-US
-To:     Matthew Wilcox <willy@infradead.org>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
-        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-        David Hildenbrand <david@redhat.com>,
-        <linux-s390@vger.kernel.org>
-References: <20231103140119.2306578-1-wangkefeng.wang@huawei.com>
- <ZUUEAbs6/GlZmV+Q@casper.infradead.org>
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-In-Reply-To: <ZUUEAbs6/GlZmV+Q@casper.infradead.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.243]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpemm100001.china.huawei.com (7.185.36.93)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Fix all kernel-doc warnings in test_kmod.c:
+- Mark some enum values as private so that kernel-doc is not needed
+  for them
+- s/thread_mutex/thread_lock/ in a struct's kernel-doc comments
+- add kernel-doc info for @task_sync
 
+test_kmod.c:67: warning: Enum value '__TEST_KMOD_INVALID' not described in enum 'kmod_test_case'
+test_kmod.c:67: warning: Enum value '__TEST_KMOD_MAX' not described in enum 'kmod_test_case'
+test_kmod.c:100: warning: Function parameter or member 'task_sync' not described in 'kmod_test_device_info'
+test_kmod.c:134: warning: Function parameter or member 'thread_mutex' not described in 'kmod_test_device'
 
-On 2023/11/3 22:30, Matthew Wilcox wrote:
-> On Fri, Nov 03, 2023 at 10:01:01PM +0800, Kefeng Wang wrote:
->> Convert mm counter page functions to folio ones.
->>
->>    mm_counter()       ->	mm_counter_folio()
->>    mm_counter_file()  ->	mm_counter_file_folio()
->>
->> Maybe it's better to rename folio mm counter function back to mm_counter()
->> and mm_counter_file() after all conversion?
-> 
-> I deliberately didn't do this because it's mostly churn.
-> Once all callers of mm_counter() and mm_counter_file() have been
-> converted to use folios, we can do one big patch to convert all
-> callers to pass a folio instead of a page.
-> 
-I re-order the patches as you say, please help to check v2, thanks.
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Luis Chamberlain <mcgrof@kernel.org>
+Cc: linux-modules@vger.kernel.org
+---
+ lib/test_kmod.c |    6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff -- a/lib/test_kmod.c b/lib/test_kmod.c
+--- a/lib/test_kmod.c
++++ b/lib/test_kmod.c
+@@ -58,11 +58,14 @@ static int num_test_devs;
+  * @need_mod_put for your tests case.
+  */
+ enum kmod_test_case {
++	/* private: */
+ 	__TEST_KMOD_INVALID = 0,
++	/* public: */
+ 
+ 	TEST_KMOD_DRIVER,
+ 	TEST_KMOD_FS_TYPE,
+ 
++	/* private: */
+ 	__TEST_KMOD_MAX,
+ };
+ 
+@@ -82,6 +85,7 @@ struct kmod_test_device;
+  * @ret_sync: return value if request_module() is used, sync request for
+  * 	@TEST_KMOD_DRIVER
+  * @fs_sync: return value of get_fs_type() for @TEST_KMOD_FS_TYPE
++ * @task_sync: kthread's task_struct or %NULL if not running
+  * @thread_idx: thread ID
+  * @test_dev: test device test is being performed under
+  * @need_mod_put: Some tests (get_fs_type() is one) requires putting the module
+@@ -108,7 +112,7 @@ struct kmod_test_device_info {
+  * @dev: pointer to misc_dev's own struct device
+  * @config_mutex: protects configuration of test
+  * @trigger_mutex: the test trigger can only be fired once at a time
+- * @thread_lock: protects @done count, and the @info per each thread
++ * @thread_mutex: protects @done count, and the @info per each thread
+  * @done: number of threads which have completed or failed
+  * @test_is_oom: when we run out of memory, use this to halt moving forward
+  * @kthreads_done: completion used to signal when all work is done
