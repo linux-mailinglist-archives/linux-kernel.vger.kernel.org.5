@@ -2,62 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E716B7E10CD
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 20:42:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11AD77E10CE
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 20:42:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232448AbjKDTmf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Nov 2023 15:42:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42130 "EHLO
+        id S232473AbjKDTmh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Nov 2023 15:42:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231150AbjKDTmd (ORCPT
+        with ESMTP id S232244AbjKDTme (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Nov 2023 15:42:33 -0400
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0A5B1BC
-        for <linux-kernel@vger.kernel.org>; Sat,  4 Nov 2023 12:42:30 -0700 (PDT)
-Received: by mail-io1-xd2e.google.com with SMTP id ca18e2360f4ac-7aca968a063so116896939f.0
-        for <linux-kernel@vger.kernel.org>; Sat, 04 Nov 2023 12:42:30 -0700 (PDT)
+        Sat, 4 Nov 2023 15:42:34 -0400
+Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2546D45
+        for <linux-kernel@vger.kernel.org>; Sat,  4 Nov 2023 12:42:31 -0700 (PDT)
+Received: by mail-il1-x135.google.com with SMTP id e9e14a558f8ab-35961c61febso7335755ab.1
+        for <linux-kernel@vger.kernel.org>; Sat, 04 Nov 2023 12:42:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1699126950; x=1699731750; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1699126951; x=1699731751; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=mUczbla/3nICzQP9ZmDHPTBpFCCiTIH02+1QSP6Uf6s=;
-        b=JuuEgsV6qW+QChu9bexGZ7OLp+YfIShJ5hC9hzqyOTt9hyLodlODeL3TGk3ro8V/wG
-         cWgQbGArskn9UePiW87pjOcPZ8qrmGgeUHBsZKQIlL8Ft7ix3Dd2iWO8EeCtMSjZlZLJ
-         zR+/La44r9iodDfL6nt4LYsTeWrEC7yFNan0s=
+        bh=BDtk6Lut1ZOMIQsv1zjp0Y23IQKARp0A3/De87KmLgY=;
+        b=GT/y38S4KK1N3UIzHTx+VBrYwMYcqYpNqYG7BaLfSW+LXyPV0g1z9z9TkTaMRBm5xL
+         ZtA6Sf0SDfKWL/WOBPSQSpUQTlqJknXi30K1c/Al4J2mRav9HoWoROJLO8xFiWrFNpJx
+         O5Cd55WJmNnCWqPWEOWqOcklHTFqLcKZyKcHM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699126950; x=1699731750;
+        d=1e100.net; s=20230601; t=1699126951; x=1699731751;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=mUczbla/3nICzQP9ZmDHPTBpFCCiTIH02+1QSP6Uf6s=;
-        b=dH2C8qZmh6tVdmiSo/iYyr3TUAUhIjnBL+v3sS2vXNtM0Cb4+UrnscX/WjR3zBcoDm
-         aTR0UDmVxBByIz5Fgt+vLYKq90t06AZT3Ni4+3q3dGkaDHaKCn0jQGyKF2A2rRJ+B02I
-         9+GDYULvkZZ0vetdbXR2/cBuIJrAF5MsFtuZC2cEL/Ca4b+ZAlPqhFAHar/tTvuN9tta
-         icbSXjEtTdTS17wiA7xYTe0FPYoG7EZ+7+TTx8h3doiwjtYnZ+IBF3ZPcIU5gkr2GLz2
-         5IjRbH/2P+xtSaGs6PE6CVgqbl8EmenODCZsaZWtHhaUn1tdMgixxcu/hu/H98mZvqNg
-         jnEQ==
-X-Gm-Message-State: AOJu0YxjccLfy5H1XUWHLdLZTBglZADurG3pND4fVYmvudvwqYa4sEv4
-        fsY3s2O/fqZZZCjo7lDkM2QG/Q==
-X-Google-Smtp-Source: AGHT+IF/fXvPBrPumTSxUQEBjtRyCDMgeyWz6G5jCVwdriNrUNr0MdYxjACyDjlaZtmvTvcGBTB3Yw==
-X-Received: by 2002:a05:6602:1592:b0:790:a073:f122 with SMTP id e18-20020a056602159200b00790a073f122mr37121229iow.2.1699126950221;
-        Sat, 04 Nov 2023 12:42:30 -0700 (PDT)
+        bh=BDtk6Lut1ZOMIQsv1zjp0Y23IQKARp0A3/De87KmLgY=;
+        b=FZdXPt1n8riIUdt2ttbv8ghXOFWYRiELAqxCDo1PpVm5DnE1bnFWQt9xvIhZNVvKMD
+         UYhLxSjQdUS8SzgRVyES5O06TDc1FKQ4R0m3Keozby2BRp74bp+8XVVv/8D7q6tDfZLi
+         WvSv3yahJdcUJR7btCV92JyYPAShWF5umGnS1YR3dKsxyDLlyaGD3YQH/2mSaU9y9YB0
+         K7smYFGUbarhkCBz4bEAqMnUxXvX7S5Cm7XpH2Aeqhe2Us31xIa+1BMANbghktHDONC5
+         GkAnxuPkCR07aP3ujXQP3ZppndILKVauDA5EknBwD22dFp7NhlNVTciNkug6xo/3mBYm
+         hMMQ==
+X-Gm-Message-State: AOJu0YyXViqMYUvdhzkPsLKXAS1SbtM4A98UComyCPGSDovCJsgpFwxx
+        x7LMzKZeGDZF5enf4J3CTaXnbg==
+X-Google-Smtp-Source: AGHT+IEkiV/L+zZOUgXKbxHpPIMnh2+xClRjkIjMd/Rr13wzWxBt87VskJ6FsVRSe4kr9OGL6oYpkA==
+X-Received: by 2002:a05:6602:2d87:b0:783:4bc6:636e with SMTP id k7-20020a0566022d8700b007834bc6636emr31219991iow.21.1699126951160;
+        Sat, 04 Nov 2023 12:42:31 -0700 (PDT)
 Received: from sjg1.united_club.lax.united.com (c-73-14-173-85.hsd1.co.comcast.net. [73.14.173.85])
-        by smtp.gmail.com with ESMTPSA id o4-20020a6b5a04000000b0079fbb834232sm1293318iob.19.2023.11.04.12.42.29
+        by smtp.gmail.com with ESMTPSA id o4-20020a6b5a04000000b0079fbb834232sm1293318iob.19.2023.11.04.12.42.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 04 Nov 2023 12:42:29 -0700 (PDT)
+        Sat, 04 Nov 2023 12:42:30 -0700 (PDT)
 From:   Simon Glass <sjg@chromium.org>
 To:     linux-arm-kernel@lists.infradead.org
 Cc:     U-Boot Mailing List <u-boot@lists.denx.de>,
         Tom Rini <trini@konsulko.com>,
         Masahiro Yamada <masahiroy@kernel.org>,
         Simon Glass <sjg@chromium.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 1/3] kbuild: arm64: Add BOOT_TARGETS variable
-Date:   Sat,  4 Nov 2023 13:42:02 -0600
-Message-ID: <20231104194207.3370542-2-sjg@chromium.org>
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 2/3] arm: boot: Use double quotes for image name
+Date:   Sat,  4 Nov 2023 13:42:03 -0600
+Message-ID: <20231104194207.3370542-3-sjg@chromium.org>
 X-Mailer: git-send-email 2.42.0.869.gea05f2083d-goog
 In-Reply-To: <20231104194207.3370542-1-sjg@chromium.org>
 References: <20231104194207.3370542-1-sjg@chromium.org>
@@ -73,41 +75,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a new variable containing a list of possible targets. Mark them as
-phony. This matches the approach taken for arch/arm
+The use of single quotes in the image name causes them to appear in
+the image description when the uImage is created. Use double quotes, to
+avoid this.
 
 Signed-off-by: Simon Glass <sjg@chromium.org>
 ---
 
-(no changes since v1)
+Changes in v2:
+- Split double-quote change out into its own patch
 
- arch/arm64/Makefile | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ scripts/Makefile.lib | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/Makefile b/arch/arm64/Makefile
-index 4bd85cc0d32b..7b77b63e978f 100644
---- a/arch/arm64/Makefile
-+++ b/arch/arm64/Makefile
-@@ -150,6 +150,10 @@ libs-$(CONFIG_EFI_STUB) += $(objtree)/drivers/firmware/efi/libstub/lib.a
- # Default target when executing plain make
- boot		:= arch/arm64/boot
+diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
+index 68d0134bdbf9..03e79e319293 100644
+--- a/scripts/Makefile.lib
++++ b/scripts/Makefile.lib
+@@ -487,7 +487,7 @@ UIMAGE_OPTS-y ?=
+ UIMAGE_TYPE ?= kernel
+ UIMAGE_LOADADDR ?= arch_must_set_this
+ UIMAGE_ENTRYADDR ?= $(UIMAGE_LOADADDR)
+-UIMAGE_NAME ?= 'Linux-$(KERNELRELEASE)'
++UIMAGE_NAME ?= "Linux-$(KERNELRELEASE)"
  
-+BOOT_TARGETS	:= Image.gz vmlinuz.efi
-+
-+PHONY += $(BOOT_TARGETS)
-+
- ifeq ($(CONFIG_EFI_ZBOOT),)
- KBUILD_IMAGE	:= $(boot)/Image.gz
- else
-@@ -159,7 +163,7 @@ endif
- all:	$(notdir $(KBUILD_IMAGE))
- 
- 
--Image vmlinuz.efi: vmlinux
-+$(BOOT_TARGETS): vmlinux
- 	$(Q)$(MAKE) $(build)=$(boot) $(boot)/$@
- 
- Image.%: Image
+ quiet_cmd_uimage = UIMAGE  $@
+       cmd_uimage = $(BASH) $(MKIMAGE) -A $(UIMAGE_ARCH) -O linux \
 -- 
 2.42.0.869.gea05f2083d-goog
 
