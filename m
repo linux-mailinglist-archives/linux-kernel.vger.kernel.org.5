@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 380277E0E88
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 10:16:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BCA77E0E92
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 10:17:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231480AbjKDJQr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Nov 2023 05:16:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39706 "EHLO
+        id S231593AbjKDJQ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Nov 2023 05:16:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbjKDJQp (ORCPT
+        with ESMTP id S229468AbjKDJQv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Nov 2023 05:16:45 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2394D48
-        for <linux-kernel@vger.kernel.org>; Sat,  4 Nov 2023 02:16:41 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1cc3c51f830so22539795ad.1
-        for <linux-kernel@vger.kernel.org>; Sat, 04 Nov 2023 02:16:41 -0700 (PDT)
+        Sat, 4 Nov 2023 05:16:51 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E06E8D48
+        for <linux-kernel@vger.kernel.org>; Sat,  4 Nov 2023 02:16:48 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1cc3bb32b5dso25593865ad.3
+        for <linux-kernel@vger.kernel.org>; Sat, 04 Nov 2023 02:16:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1699089401; x=1699694201; darn=vger.kernel.org;
+        d=bytedance.com; s=google; t=1699089408; x=1699694208; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=NnHn4ZqYSv6UF9nJWzupxlkq5TCbHngLtT+ZAjUP9Mk=;
-        b=Q4/bGFeK6PryaX6xz0Umt5F6pdSwliT8DB/64Q2tnWd5rLp/QxHziczqlKUTgKcNUm
-         UuZzoLV/vDvCqARluWIpE57H6YOeqa6Q4t/+qsZLkNVRvAJlsgRRyPcfGlb1XMAkp137
-         qmXvPz2ns/+rII8VjusLg+cWGUj8FFrsaro1up07ivlfBofsQoxghAO4thhX3qRayPco
-         HQz1REuIfvw8PJRPsUqPxRP5XUt7OMt9SmEOOnFF6DIVEG8KdDexIKQ1mKPsUSISF2lc
-         3cPprdt7Kxv0B/NPAzMjvy9wqu8wtI3ZThTTW+1fMRMytDpvxj9a3Vh0ppFvPTgsYb14
-         kaZw==
+        bh=u81VqdenU6rFeGWkxk+k7NmV751uBEWgkJJ/j9Mn6BA=;
+        b=iXZFWWqpaH4lrEjLLgW4xKnBoKhtVmWVQ6o192cCZsu/A2WluT+/ABCn+FH76UY9wb
+         mFug182r1PZt5hqvYxYgHaDoWHWl+nZODIOs1iUxm4mFRK5Yw2fQlVPpesAool2Pb9oO
+         cHYSJnr1t8t05HRzYt5Z6Y6rHJ8L+clIozV5ooPGIvnqOUzCcwDMFR9iurKTHioFouyi
+         Hb2HDSwecBtNY705+VUJWX4n5NU3AvBuoZbHslPdjyJTs93/nMSwwvwjEAhPD2ldY2oE
+         gMrElQcY49bYFh8CoVy0aot1xFBZlMXzDoRAP5K0kLIwy5ryavHTJq6LmA2Fl2CW8NoT
+         nVPQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699089401; x=1699694201;
+        d=1e100.net; s=20230601; t=1699089408; x=1699694208;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=NnHn4ZqYSv6UF9nJWzupxlkq5TCbHngLtT+ZAjUP9Mk=;
-        b=Mbh3IQTNBCHrw1LGNn0KRTnhkHZwjn3Wguvkc0FKuZN/1af4ShL+N3Y6B3XHMzcRQv
-         nHNGeqmoKHgkZU8cH3ojq/McnlZkXXykFB/sESgNWyLpVailpQHvkljjHWLJFV+Qcx0A
-         5tfK4V1N/M6kNatQzbxwUIkRTKWQVaxZufa1nP0cF3NgddaL1jqOQa2aAl9hJT0uLW+P
-         WiDA4QDD/I8z0mT+6HTfwT1A8xx027bHB1hpqI9LZ+3gyxhfgv1dv1c2RcUsGDkMeiBW
-         wEyMbCss1xFMMYoiQKgzKUf/zexT/hpGsUGPJAzg1NRkf1858J3MuT72U61kmrvmdv8F
-         fffg==
-X-Gm-Message-State: AOJu0Yw4ePaEZWMprajh5gtRwROaMMrdNkL/y95uIM4pi4zWmlR0r7L0
-        oUxd72PDvDIW96t78VasNMUnQA==
-X-Google-Smtp-Source: AGHT+IE936bciD6jxw/aPE7Ri4Nchb1ZjhcSOeC+o89C0cd9w4WgJ6Zblfg0CycLSJlNDrYYtwFiUA==
-X-Received: by 2002:a17:902:d28b:b0:1cc:13d0:d515 with SMTP id t11-20020a170902d28b00b001cc13d0d515mr17598501plc.20.1699089401491;
-        Sat, 04 Nov 2023 02:16:41 -0700 (PDT)
+        bh=u81VqdenU6rFeGWkxk+k7NmV751uBEWgkJJ/j9Mn6BA=;
+        b=mpY5mk8cEiOSDq5P+QOa5ebb5gqml4ggydqW8DFJjLcWRHIMJdpjSt0j04PgLcDlFo
+         fij/lNzCB0jcOm3J7+FnFSqplafB6fiJUNrSdR1RZwUua+Oov8a+OpCQdVjXdvMxbXYf
+         WsiVEJjf3ydFt3tYgc+GPeytEyOCTonM9vSV4Za7UM8x+YJ9QQaM0Hsg4rNMKGFUINjL
+         Em1lfQ5jEl2D0THeNNs4G5WtdR3op44109yzbBWmhPCfxR3g4YSpoaCjphm97SW9aOtw
+         eXfJfEslwZ6TLK8Yb8BRxxtto39DOES0+zThqi+f5HWUP0oN/Wy/B8OgSsRAwd/5Kh8f
+         gRDA==
+X-Gm-Message-State: AOJu0Yw/fhTME8BrvgZi7nvqzo6qKSHBVTqcV1cJPT6kZAqFVFaP2fxH
+        WWEHdxR6I+DxGOVrI+y3ZY8IZA==
+X-Google-Smtp-Source: AGHT+IGyFGHSId75XF/2M3hYNYvMSIwS/0Bo7S7DMpr1Hxge/taB1vX6bB3CXc+D3ltngIbF+e1EcA==
+X-Received: by 2002:a17:902:ea0d:b0:1cc:4f55:db72 with SMTP id s13-20020a170902ea0d00b001cc4f55db72mr20756805plg.0.1699089408468;
+        Sat, 04 Nov 2023 02:16:48 -0700 (PDT)
 Received: from devz1.bytedance.net ([203.208.167.147])
-        by smtp.gmail.com with ESMTPSA id d4-20020a170903230400b001cc54202429sm2585127plh.288.2023.11.04.02.16.35
+        by smtp.gmail.com with ESMTPSA id d4-20020a170903230400b001cc54202429sm2585127plh.288.2023.11.04.02.16.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 04 Nov 2023 02:16:41 -0700 (PDT)
+        Sat, 04 Nov 2023 02:16:48 -0700 (PDT)
 From:   "wuqiang.matt" <wuqiang.matt@bytedance.com>
 To:     vgupta@kernel.org, bcain@quicinc.com, jonas@southpole.se,
         stefan.kristiansson@saunalahti.fi, shorne@gmail.com,
@@ -60,9 +60,9 @@ Cc:     linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-hexagon@vger.kernel.org, linux-openrisc@vger.kernel.org,
         linux-trace-kernel@vger.kernel.org, mattwu@163.com,
         linux@roeck-us.ne, "wuqiang.matt" <wuqiang.matt@bytedance.com>
-Subject: [PATCH v2 2/4] locking/atomic: arc: arch_cmpxchg[64]_local undefined
-Date:   Sat,  4 Nov 2023 17:16:13 +0800
-Message-Id: <20231104091615.4884-3-wuqiang.matt@bytedance.com>
+Subject: [PATCH v2 3/4] locking/atomic: openrisc: arch_cmpxchg[64]_local undefined
+Date:   Sat,  4 Nov 2023 17:16:14 +0800
+Message-Id: <20231104091615.4884-4-wuqiang.matt@bytedance.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231104091615.4884-1-wuqiang.matt@bytedance.com>
 References: <20231104091615.4884-1-wuqiang.matt@bytedance.com>
@@ -85,48 +85,26 @@ will be used.
 
 Signed-off-by: wuqiang.matt <wuqiang.matt@bytedance.com>
 ---
- arch/arc/include/asm/cmpxchg.h | 28 ++++++++++++++++++++++++++++
- 1 file changed, 28 insertions(+)
+ arch/openrisc/include/asm/cmpxchg.h | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/arch/arc/include/asm/cmpxchg.h b/arch/arc/include/asm/cmpxchg.h
-index bf46514f6f12..91429f2350df 100644
---- a/arch/arc/include/asm/cmpxchg.h
-+++ b/arch/arc/include/asm/cmpxchg.h
-@@ -80,6 +80,34 @@
- 
- #endif
- 
-+/*
-+ * always make arch_cmpxchg[64]_local available, native cmpxchg
-+ * will be used if available, then generic_cmpxchg[64]_local
-+ */
+diff --git a/arch/openrisc/include/asm/cmpxchg.h b/arch/openrisc/include/asm/cmpxchg.h
+index 8ee151c072e4..f1ffe8b6f5ef 100644
+--- a/arch/openrisc/include/asm/cmpxchg.h
++++ b/arch/openrisc/include/asm/cmpxchg.h
+@@ -139,6 +139,12 @@ static inline unsigned long __cmpxchg(volatile void *ptr, unsigned long old,
+ 					       (unsigned long)(n),	\
+ 					       sizeof(*(ptr)));		\
+ 	})
++#define arch_cmpxchg_local arch_cmpxchg
++
++/* always make arch_cmpxchg64_local available for openrisc */
 +#include <asm-generic/cmpxchg-local.h>
-+static inline unsigned long __cmpxchg_local(volatile void *ptr,
-+				      unsigned long old,
-+				      unsigned long new, int size)
-+{
-+	switch (size) {
-+#ifdef CONFIG_ARC_HAS_LLSC
-+	case 4:
-+		return __cmpxchg_32((int32_t *)ptr, old, new);
-+#endif
-+	default:
-+		return __generic_cmpxchg_local(ptr, old, new, size);
-+	}
 +
-+	return old;
-+}
-+#define arch_cmpxchg_local(ptr, o, n) ({				\
-+	(__typeof__(*ptr))__cmpxchg_local((ptr),			\
-+					(unsigned long)(o),		\
-+					(unsigned long)(n),		\
-+					sizeof(*(ptr)));		\
-+})
 +#define arch_cmpxchg64_local(ptr, o, n) __generic_cmpxchg64_local((ptr), (o), (n))
-+
+ 
  /*
-  * xchg
-  */
+  * This function doesn't exist, so you'll get a linker error if
 -- 
 2.40.1
 
