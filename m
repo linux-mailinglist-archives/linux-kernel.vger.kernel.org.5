@@ -2,169 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E24B17E1094
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 19:21:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 226DA7E109C
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 19:32:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229606AbjKDSVI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Nov 2023 14:21:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56882 "EHLO
+        id S230073AbjKDS2v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Nov 2023 14:28:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbjKDSVH (ORCPT
+        with ESMTP id S229619AbjKDS2s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Nov 2023 14:21:07 -0400
-Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C438D6;
-        Sat,  4 Nov 2023 11:21:03 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.18.147.229])
-        by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4SN5Ds5dncz9xyt4;
-        Sun,  5 Nov 2023 02:07:41 +0800 (CST)
-Received: from [10.45.148.63] (unknown [10.45.148.63])
-        by APP1 (Coremail) with SMTP id LxC2BwD35HRri0ZlgEUKAA--.9205S2;
-        Sat, 04 Nov 2023 19:20:41 +0100 (CET)
-Message-ID: <4f5228b6-839c-9e04-bf7c-34fb8e25fd13@huaweicloud.com>
-Date:   Sat, 4 Nov 2023 19:20:27 +0100
+        Sat, 4 Nov 2023 14:28:48 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EE9C1BC;
+        Sat,  4 Nov 2023 11:28:45 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-54366784377so5090481a12.3;
+        Sat, 04 Nov 2023 11:28:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699122523; x=1699727323; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=WdFHPaqOz+WT1YBXptEVmqeCWrPlYqYYh+DFTeXE4sE=;
+        b=GIXvjkisZXJBmtUxKktQstIEZcek0ACINCbXbfcJWvil+8nbqhDrVnsNQNN/rnSUKf
+         AV+cCfbxhuTTqgmluEGnUrT9Bfc2QKhxPr89fMWR0hqsW/l7Q0v4nCcPH8o7jB8F4GZe
+         KLoTmt0GsRWmVE+A/REQYAytRhZLqxd4h6R7B3rYgwuUCvC3mJsLp9eR9S0mCf0MJ0cf
+         hHgkdcJ1wUqm/QayYmGNxBjjC1lI6ulj1UxxwTZrXFkouvkTngOTrbeMi2J6ba+ewRU+
+         sNUd5LoKST/VLVB6IY/tYNW+vPl6f75QYc75tDWpUzlY2VbVUC1gKzBaWk3PLd/zow8p
+         zitQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699122523; x=1699727323;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=WdFHPaqOz+WT1YBXptEVmqeCWrPlYqYYh+DFTeXE4sE=;
+        b=g9BZSSDNOemjkQVRlVDyj3IJu600/HJwaZ2nhWuyN/pRGmwBQIfnhebugBdC4PcfBj
+         RCTPDt9PNy6lF3lTJemjQ6KDl74MbSFZJZpjlUhsrp6GZK1jOrrSUAYoQm99GJR1ZC8F
+         DQeVtu5Q8RLO27o3GIH2wtdExUP5SYQa7kZXimAAO8uvrCrJTlP4mQ+xapvA86k3pXJK
+         QQRxCE/6KZl27dauh1LRpXGVV/Atj+7DgNDmnBxHRgdUA5fl2mNFuIw5Wergpztv948i
+         HAhDnWvD4feQ3OMSnoutmGwYJpn/+F5y4DnOY7L8gbNV45qI8143r/VWgj6/Dg3KVazR
+         q5hA==
+X-Gm-Message-State: AOJu0YwMvcSsyRVqDSs4wBFIXPTVTguBfcoz1WUo6Ggha8bcfdVZsMt7
+        CbRcfuB7EtodVu15SrJf032sqNe/mAqDWw==
+X-Google-Smtp-Source: AGHT+IFKhlpSvHKpmz5r1GFRfKk14+C8AnYuparle3xIsqQTLkJu8rYtYJzqz8yzirV9W2xC9PperA==
+X-Received: by 2002:a50:8d1a:0:b0:543:6828:f129 with SMTP id s26-20020a508d1a000000b005436828f129mr13244148eds.23.1699122523314;
+        Sat, 04 Nov 2023 11:28:43 -0700 (PDT)
+Received: from localhost.localdomain ([2a02:8109:8c00:3664:8aeb:c98d:49fc:fefe])
+        by smtp.gmail.com with ESMTPSA id i23-20020a508717000000b0054353639161sm2099683edb.89.2023.11.04.11.28.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 04 Nov 2023 11:28:43 -0700 (PDT)
+From:   Nik Bune <n2h9z4@gmail.com>
+To:     wim@linux-watchdog.org, linux@roeck-us.net, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        skhan@linuxfoundation.org, stigge@antcom.de
+Cc:     Nik Bune <n2h9z4@gmail.com>, linux-watchdog@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] dt-bindings: watchdog: nxp,pnx4008-wdt: convert txt to yaml
+Date:   Sat,  4 Nov 2023 19:28:13 +0100
+Message-Id: <20231104182813.80055-1-n2h9z4@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [isocpp-parallel] OOTA fix (via fake branch-after-load)
- discussion
-To:     "Alglave, Jade" <j.alglave@ucl.ac.uk>,
-        "will@kernel.org" <will@kernel.org>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
-        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
-        "npiggin@gmail.com" <npiggin@gmail.com>,
-        "palmer@dabbelt.com" <palmer@dabbelt.com>,
-        "parri.andrea@gmail.com" <parri.andrea@gmail.com>,
-        "paulmck@kernel.org" <paulmck@kernel.org>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-toolchains@vger.kernel.org" <linux-toolchains@vger.kernel.org>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "boqun.feng@gmail.com" <boqun.feng@gmail.com>,
-        "davidtgoldblatt@gmail.com" <davidtgoldblatt@gmail.com>,
-        viktor@mpi-sws.org
-References: <b1634b24-4541-49c5-867c-7f24292a27bb@paulmck-laptop>
- <AS4PR01MB89662350CF351ADA124816B0ACA5A@AS4PR01MB8966.eurprd01.prod.exchangelabs.com>
-From:   Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>
-In-Reply-To: <AS4PR01MB89662350CF351ADA124816B0ACA5A@AS4PR01MB8966.eurprd01.prod.exchangelabs.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: LxC2BwD35HRri0ZlgEUKAA--.9205S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxXF4fCrWxZw1kZw18WrW3Wrg_yoWrAw15pa
-        yfKr47Cw4DXrn3Jw1DKr4Uua4Yv3yktr43Krs8G348Ar90kr1IqF1fKa1FvFyDJryYkr4a
-        qF4jg3s2g3sxArJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUv2b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
-        AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS
-        07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
-        02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_
-        GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
-        CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAF
-        wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa
-        7IU1zuWJUUUUU==
-X-CM-SenderInfo: 5mrqt2oorev25kdx2v3u6k3tpzhluzxrxghudrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks Jade.
+Convert txt file to yaml. Add maintainers from git blame. 
 
-I agree with the position you linked to in that the move is... unwise.
+Signed-off-by: Nik Bune <n2h9z4@gmail.com>
+---
+ .../bindings/watchdog/nxp,pnx4008-wdt.yaml    | 34 +++++++++++++++++++
+ .../bindings/watchdog/pnx4008-wdt.txt         | 17 ----------
+ 2 files changed, 34 insertions(+), 17 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/watchdog/nxp,pnx4008-wdt.yaml
+ delete mode 100644 Documentation/devicetree/bindings/watchdog/pnx4008-wdt.txt
 
-IMO, for a high-level language like C, if you need to outrule OOTA, just 
-declare it impossible (Viktor, in CC, made this suggestion a while ago) 
-by a "no OOTA axiom".
-
-BTW, is there at least a proof that just making relaxed atomics ordered 
-in this way rules out OOTA in programs that contain non-atomics?
-Or can we have something like the LKMM OOTA example I sent around last year?
-
-
-best wishes,
-
-jonas
-
-
-Am 11/3/2023 um 6:02 PM schrieb Alglave, Jade:
-> Dear all, (resending because I accidentally sent it in html first, sorry)
->
-> Arm’s official position on the topic can be found in this recent blog:
-> https://community.arm.com/arm-community-blogs/b/architectures-and-processors-blog/posts/arm-technical-view-on-relaxed-atomics
->
-> Please do reach out to memory-model@arm.com if there are any questions.
-> Thanks,
-> Jade
->
->
-> From: Paul E. McKenney <paulmck@kernel.org>
-> Sent: 27 October 2023 22:08
-> To: Alglave, Jade <j.alglave@ucl.ac.uk>; will@kernel.org <will@kernel.org>; catalin.marinas@arm.com <catalin.marinas@arm.com>; linux@armlinux.org.uk <linux@armlinux.org.uk>; mpe@ellerman.id.au <mpe@ellerman.id.au>; npiggin@gmail.com <npiggin@gmail.com>; palmer@dabbelt.com <palmer@dabbelt.com>; parri.andrea@gmail.com <parri.andrea@gmail.com>
-> Cc: linux-kernel@vger.kernel.org <linux-kernel@vger.kernel.org>; linux-toolchains@vger.kernel.org <linux-toolchains@vger.kernel.org>; peterz@infradead.org <peterz@infradead.org>; boqun.feng@gmail.com <boqun.feng@gmail.com>; davidtgoldblatt@gmail.com <davidtgoldblatt@gmail.com>
-> Subject: Fw: [isocpp-parallel] OOTA fix (via fake branch-after-load) discussion
->
-> ⚠ Caution: External sender
->
->
-> Hello!
->
-> FYI, unless someone complains, it is quite likely that C++ (and thus
-> likely C) compilers and standards will enforce Hans Boehm's proposal
-> for ordering relaxed loads before relaxed stores.  The document [1]
-> cites "Bounding data races in space and time" by Dolan et al. [2], and
-> notes an "average a 2.x% slow down" for ARMv8 and PowerPC.  In the past,
-> this has been considered unacceptable, among other things, due to the
-> fact that this issue is strictly theoretical.
->
-> This would not (repeat, not) affect the current Linux kernel, which
-> relies on volatile loads and stores rather than C/C++ atomics.
->
-> To be clear, the initial proposal is not to change the standards, but
-> rather to add a command-line argument to enforce the stronger ordering.
-> However, given the long list of ARM-related folks in the Acknowledgments
-> section, the future direction is clear.
->
-> So, do any ARMv8, PowerPC, or RISC-V people still care?  If so, I strongly
-> recommend speaking up.  ;-)
->
->                                                          Thanx, Paul
->
-> [1] https://lukegeeson.com/blog/2023-10-17-A-Proposal-For-Relaxed-Atomics/
-> [2] https://dl.acm.org/doi/10.1145/3192366.3192421
->
-> ----- Forwarded message from David Goldblatt via Parallel <parallel@lists.isocpp.org> -----
->
-> Date: Fri, 27 Oct 2023 11:09:18 -0700
-> From: David Goldblatt via Parallel <parallel@lists.isocpp.org>
-> To: SG1 concurrency and parallelism <parallel@lists.isocpp.org>
-> Reply-To: parallel@lists.isocpp.org
-> Cc: David Goldblatt <davidtgoldblatt@gmail.com>
-> Subject: [isocpp-parallel] OOTA fix (via fake branch-after-load) discussion
->
-> Those who read this list but not the LLVM discourse might be interested in:
-> - This discussion, proposing `-mstrict-rlx-atomics`:
-> https://discourse.llvm.org/t/rfc-strengthen-relaxed-atomics-implementation-behind-mstrict-rlx-atomics-flag/74473
-> to enforce load-store ordering
-> - The associated blog post here:
-> https://lukegeeson.com/blog/2023-10-17-A-Proposal-For-Relaxed-Atomics/
->
-> - David
->
-> _______________________________________________
-> Parallel mailing list
-> Parallel@lists.isocpp.org
-> Subscription: https://lists.isocpp.org/mailman/listinfo.cgi/parallel
-> Link to this post: http://lists.isocpp.org/parallel/2023/10/4151.php
->
->
-> ----- End forwarded message -----
+diff --git a/Documentation/devicetree/bindings/watchdog/nxp,pnx4008-wdt.yaml b/Documentation/devicetree/bindings/watchdog/nxp,pnx4008-wdt.yaml
+new file mode 100644
+index 000000000000..86b691a339b5
+--- /dev/null
++++ b/Documentation/devicetree/bindings/watchdog/nxp,pnx4008-wdt.yaml
+@@ -0,0 +1,34 @@
++# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/watchdog/nxp,pnx4008-wdt.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: NXP PNX watchdog timer
++
++allOf:
++  - $ref: watchdog.yaml#
++
++maintainers:
++  - Roland Stigge <stigge@antcom.de>
++
++properties:
++  compatible:
++    const: nxp,pnx4008-wdt
++
++  reg:
++    maxItems: 1
++
++unevaluatedProperties: false
++
++required:
++  - compatible
++  - reg
++
++examples:
++  - |
++    watchdog@4003c000 {
++        compatible = "nxp,pnx4008-wdt";
++        reg = <0x4003C000 0x1000>;
++        timeout-sec = <10>;
++    };
+diff --git a/Documentation/devicetree/bindings/watchdog/pnx4008-wdt.txt b/Documentation/devicetree/bindings/watchdog/pnx4008-wdt.txt
+deleted file mode 100644
+index 4b76bec62af9..000000000000
+--- a/Documentation/devicetree/bindings/watchdog/pnx4008-wdt.txt
++++ /dev/null
+@@ -1,17 +0,0 @@
+-* NXP PNX watchdog timer
+-
+-Required properties:
+-- compatible: must be "nxp,pnx4008-wdt"
+-- reg: physical base address of the controller and length of memory mapped
+-  region.
+-
+-Optional properties:
+-- timeout-sec: contains the watchdog timeout in seconds.
+-
+-Example:
+-
+-	watchdog@4003c000 {
+-		compatible = "nxp,pnx4008-wdt";
+-		reg = <0x4003C000 0x1000>;
+-		timeout-sec = <10>;
+-	};
+-- 
+2.34.1
 
