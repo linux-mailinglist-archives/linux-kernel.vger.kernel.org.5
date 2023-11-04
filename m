@@ -2,61 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C7EC87E0CB3
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 01:37:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CFAD07E0CBC
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 01:38:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231183AbjKDAhC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 20:37:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55300 "EHLO
+        id S231384AbjKDAia (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 20:38:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229476AbjKDAhB (ORCPT
+        with ESMTP id S231231AbjKDAi2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 20:37:01 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A726D4E;
-        Fri,  3 Nov 2023 17:36:58 -0700 (PDT)
+        Fri, 3 Nov 2023 20:38:28 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90A39D45;
+        Fri,  3 Nov 2023 17:38:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699058218; x=1730594218;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=1dW3SX46naPd0jQ9mrfv634xi6NUdGnHujinj6oth5c=;
-  b=OX8DL6Fia1h2JPJt5pZOSB6/3WvR3LmW6NUPDXagHLMMQNxvPYGB4Dyp
-   zNCw/ZTvEY1hHF1ACSO5PLKKMVc3KHCwyq+OKflY6qt3nRT6432UC6N2v
-   1GxgsqvyuMtH5IY4aJIz1NxcpREECR3XdRVbTHQ148+7tuHTVcXOo6dvR
-   8+v5wK5E6ZjzxQ/+4xsEDy+VWR8u7NaXKLKsXm3j7lekB97KNGs/yba2l
-   zWvl8l+zFBFGO27EjrHtWS61pAWV0XCBUZ1mziraOBc0rhqPaWM2KGWC3
-   s5Wf/V1v6xTKzh2qsejLVPma6p8MukAGNHmWy86vj5NpGO0NGDQMeAD16
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10883"; a="391916618"
+  t=1699058299; x=1730594299;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=lgdwiAyPRysKtnT+0nfDxaf8k2i2tuiMEm+OGHK/8NQ=;
+  b=dyKNqf0KjUWdxcLnEF6dEat40PVvphPZaY+pHG7iXbkNMzELgriU42o5
+   VJxc+wz6xKHCcYfwgRVVYKCeafktags6VSsQL7eRm96A2tdy3YQo4LytY
+   4iAA+9LaOnsSR6/t52umMuW9e0aHBv25GXolYMED3Ju23yGQvZ6VhxB1r
+   PvyRvjg9X5mhJlURTv7wP9/dW74NdpBdsMyrM/4ZPyrYbRPgS8xfMDsb5
+   te2qMkLOuMskSFPs/eEZBtF0SZfV4rNPjrSJd1i/cHnRNS3eIploRqxNu
+   BbY+aRBeThJ+QKJf5UD4RC+nDDPXSS+FAk7zDHwB+s801AcafBGTLV7Tz
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10883"; a="369252348"
 X-IronPort-AV: E=Sophos;i="6.03,275,1694761200"; 
-   d="scan'208";a="391916618"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2023 17:36:57 -0700
+   d="scan'208";a="369252348"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2023 17:38:19 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10883"; a="761778329"
+X-IronPort-AV: E=McAfee;i="6600,9927,10883"; a="755313891"
 X-IronPort-AV: E=Sophos;i="6.03,275,1694761200"; 
-   d="scan'208";a="761778329"
+   d="scan'208";a="755313891"
 Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by orsmga002.jf.intel.com with ESMTP; 03 Nov 2023 17:36:56 -0700
+  by orsmga007.jf.intel.com with ESMTP; 03 Nov 2023 17:38:11 -0700
 Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
         (envelope-from <lkp@intel.com>)
-        id 1qz4ej-00038C-2M;
-        Sat, 04 Nov 2023 00:36:53 +0000
-Date:   Sat, 4 Nov 2023 08:36:47 +0800
+        id 1qz4fx-00038N-1g;
+        Sat, 04 Nov 2023 00:38:09 +0000
+Date:   Sat, 4 Nov 2023 08:37:16 +0800
 From:   kernel test robot <lkp@intel.com>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org
-Subject: versioncheck:
- ./drivers/staging/media/atomisp/include/linux/atomisp.h: 25 linux/version.h
- not needed.
-Message-ID: <202311040817.mU9R4SSl-lkp@intel.com>
+To:     Mario Limonciello <mario.limonciello@amd.com>,
+        Karol Herbst <kherbst@redhat.com>,
+        Lyude Paul <lyude@redhat.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Lukas Wunner <lukas@wunner.de>
+Cc:     oe-kbuild-all@lists.linux.dev, Danilo Krummrich <dakr@redhat.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Xinhui Pan <Xinhui.Pan@amd.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Mark Gross <markgross@kernel.org>,
+        Andreas Noever <andreas.noever@gmail.com>,
+        Michael Jamet <michael.jamet@intel.com>,
+        Yehezkel Bernat <YehezkelShB@gmail.com>,
+        Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>,
+        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
+        "Maciej W . Rozycki" <macro@orcam.me.uk>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        "open list:DRM DRIVER FOR NVIDIA GEFORCE/QUADRO GPUS" 
+        <dri-devel@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:RADEON and AMDGPU DRM DRIVERS" 
+        <amd-gfx@lists.freedesktop.org>,
+        "open list:PCI SUBSYSTEM" <linux-pci@vger.kernel.org>,
+        "open list:ACPI" <linux-acpi@vger.kernel.org>,
+        "open list:X86 PLATFORM DRIVERS" 
+        <platform-driver-x86@vger.kernel.org>,
+        "open list:THUNDERBOLT DRIVER" <linux-usb@vger.kernel.org>
+Subject: Re: [PATCH v2 3/9] PCI: Drop pci_is_thunderbolt_attached()
+Message-ID: <202311040800.zpVIwNrB-lkp@intel.com>
+References: <20231103190758.82911-4-mario.limonciello@amd.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+In-Reply-To: <20231103190758.82911-4-mario.limonciello@amd.com>
+X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -65,91 +96,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   e392ea4d4d00880bf94550151b1ace4f88a4b17a
-commit: ad85094b293e40e7a2f831b0311a389d952ebd5e Revert "media: staging: atomisp: Remove driver"
-date:   3 years, 6 months ago
-reproduce: (https://download.01.org/0day-ci/archive/20231104/202311040817.mU9R4SSl-lkp@intel.com/reproduce)
+Hi Mario,
+
+kernel test robot noticed the following build errors:
+
+[auto build test ERROR on pci/for-linus]
+[also build test ERROR on drm-misc/drm-misc-next westeri-thunderbolt/next rafael-pm/linux-next rafael-pm/acpi-bus linus/master rafael-pm/devprop v6.6 next-20231103]
+[cannot apply to pci/next]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Mario-Limonciello/drm-nouveau-Switch-from-pci_is_thunderbolt_attached-to-dev_is_removable/20231104-030945
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/pci/pci.git for-linus
+patch link:    https://lore.kernel.org/r/20231103190758.82911-4-mario.limonciello%40amd.com
+patch subject: [PATCH v2 3/9] PCI: Drop pci_is_thunderbolt_attached()
+config: loongarch-randconfig-002-20231104 (https://download.01.org/0day-ci/archive/20231104/202311040800.zpVIwNrB-lkp@intel.com/config)
+compiler: loongarch64-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231104/202311040800.zpVIwNrB-lkp@intel.com/reproduce)
 
 If you fix the issue in a separate patch/commit (i.e. not just a new version of
 the same patch/commit), kindly add following tags
 | Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311040817.mU9R4SSl-lkp@intel.com/
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311040800.zpVIwNrB-lkp@intel.com/
 
-versioncheck warnings: (new ones prefixed by >>)
-   INFO PATH=/opt/cross/clang/bin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-   /usr/bin/timeout -k 100 3h /usr/bin/make KCFLAGS= -Wrestrict -Wformat-overflow -Wformat-truncation -Wstringop-overflow -Wundef -funsigned-char -Wenum-conversion -Wno-error=return-type -Wreturn-type -Wno-error=missing-prototypes W=1 --keep-going HOSTCC=gcc-12 CC=gcc-12 -j32 KBUILD_MODPOST_WARN=1 ARCH=x86_64 versioncheck
-   find ./* \( -name SCCS -o -name BitKeeper -o -name .svn -o -name CVS -o -name .pc -o -name .hg -o -name .git \) -prune -o \
-   	-name '*.[hcS]' -type f -print | sort \
-   	| xargs perl -w ./scripts/checkversion.pl
-   ./arch/arm64/kernel/hibernate.c: 24 linux/version.h not needed.
-   ./arch/csky/include/asm/atomic.h: 6 linux/version.h not needed.
-   ./arch/csky/include/asm/io.h: 9 linux/version.h not needed.
-   ./arch/csky/include/asm/thread_info.h: 9 linux/version.h not needed.
-   ./arch/csky/include/asm/uaccess.h: 15 linux/version.h not needed.
-   ./arch/csky/kernel/process.c: 5 linux/version.h not needed.
-   ./arch/csky/mm/dma-mapping.c: 14 linux/version.h not needed.
-   ./arch/csky/mm/fault.c: 16 linux/version.h not needed.
-   ./arch/s390/include/asm/setup.h: 182: need linux/version.h
-   ./arch/um/drivers/vector_kern.c: 11 linux/version.h not needed.
-   ./drivers/block/rsxx/rsxx_priv.h: 14 linux/version.h not needed.
-   ./drivers/block/skd_main.c: 28 linux/version.h not needed.
-   ./drivers/crypto/cavium/cpt/cptpf_main.c: 13 linux/version.h not needed.
-   ./drivers/crypto/cavium/zip/common.h: 59 linux/version.h not needed.
-   ./drivers/crypto/ccree/cc_driver.h: 25 linux/version.h not needed.
-   ./drivers/gpio/gpio-mlxbf2.c: 17 linux/version.h not needed.
-   ./drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c: 62 linux/version.h not needed.
-   ./drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_helpers.c: 28 linux/version.h not needed.
-   ./drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_mst_types.c: 26 linux/version.h not needed.
-   ./drivers/gpu/drm/pl111/pl111_display.c: 15 linux/version.h not needed.
-   ./drivers/gpu/drm/pl111/pl111_drv.c: 58 linux/version.h not needed.
-   ./drivers/gpu/drm/tve200/tve200_display.c: 14 linux/version.h not needed.
-   ./drivers/gpu/drm/tve200/tve200_drv.c: 38 linux/version.h not needed.
-   ./drivers/hv/hv.c: 16 linux/version.h not needed.
-   ./drivers/i2c/busses/i2c-brcmstb.c: 25 linux/version.h not needed.
-   ./drivers/i2c/busses/i2c-xgene-slimpro.c: 22 linux/version.h not needed.
-   ./drivers/media/dvb-frontends/mxl5xx.c: 30 linux/version.h not needed.
-   ./drivers/media/pci/cx25821/cx25821.h: 31 linux/version.h not needed.
-   ./drivers/media/platform/s3c-camif/camif-core.c: 26 linux/version.h not needed.
-   ./drivers/media/platform/sti/c8sectpfe/c8sectpfe-common.h: 16 linux/version.h not needed.
-   ./drivers/media/platform/sti/c8sectpfe/c8sectpfe-core.c: 31 linux/version.h not needed.
-   ./drivers/media/platform/sti/c8sectpfe/c8sectpfe-dvb.c: 14 linux/version.h not needed.
-   ./drivers/media/usb/uvc/uvc_driver.c: 18 linux/version.h not needed.
-   ./drivers/mtd/nand/raw/brcmnand/brcmnand.c: 7 linux/version.h not needed.
-   ./drivers/net/ethernet/broadcom/genet/bcmgenet_wol.c: 21 linux/version.h not needed.
-   ./drivers/net/ethernet/qlogic/qede/qede.h: 35 linux/version.h not needed.
-   ./drivers/net/ethernet/qlogic/qede/qede_ethtool.c: 32 linux/version.h not needed.
-   ./drivers/net/ethernet/qlogic/qede/qede_main.c: 34 linux/version.h not needed.
-   ./drivers/net/usb/lan78xx.c: 5 linux/version.h not needed.
-   ./drivers/net/wireless/rsi/rsi_91x_ps.c: 19 linux/version.h not needed.
-   ./drivers/scsi/cxgbi/libcxgbi.h: 27 linux/version.h not needed.
-   ./drivers/scsi/qedf/qedf.h: 15 linux/version.h not needed.
-   ./drivers/scsi/qedf/qedf_dbg.h: 13 linux/version.h not needed.
-   ./drivers/scsi/qedi/qedi_dbg.h: 14 linux/version.h not needed.
-   ./drivers/soc/tegra/powergate-bpmp.c: 10 linux/version.h not needed.
->> ./drivers/staging/media/atomisp/include/linux/atomisp.h: 25 linux/version.h not needed.
-   ./drivers/staging/rtl8723bs/include/drv_types.h: 17 linux/version.h not needed.
-   ./drivers/staging/rtl8723bs/include/ioctl_cfg80211.h: 10 linux/version.h not needed.
-   ./drivers/usb/early/xhci-dbc.c: 21 linux/version.h not needed.
-   ./drivers/watchdog/ziirave_wdt.c: 21 linux/version.h not needed.
-   ./fs/ext4/ext4.h: 30 linux/version.h not needed.
-   ./include/linux/qed/qed_ll2_if.h: 41 linux/version.h not needed.
-   ./kernel/bpf/syscall.c: 19 linux/version.h not needed.
-   ./samples/bpf/sampleip_kern.c: 7 linux/version.h not needed.
-   ./samples/bpf/trace_event_kern.c: 8 linux/version.h not needed.
-   ./samples/mic/mpssd/mpssd.c: 29 linux/version.h not needed.
-   ./sound/soc/codecs/cs35l35.c: 12 linux/version.h not needed.
-   ./sound/soc/codecs/cs42l42.c: 14 linux/version.h not needed.
-   ./tools/perf/include/bpf/bpf.h: 70: need linux/version.h
-   ./tools/perf/tests/bpf-script-example.c: 49: need linux/version.h
-   ./tools/perf/tests/bpf-script-test-kbuild.c: 21: need linux/version.h
-   ./tools/perf/tests/bpf-script-test-prologue.c: 47: need linux/version.h
-   ./tools/perf/tests/bpf-script-test-relocation.c: 51: need linux/version.h
-   ./tools/testing/selftests/bpf/progs/test_map_lock.c: 4 linux/version.h not needed.
-   ./tools/testing/selftests/bpf/progs/test_send_signal_kern.c: 4 linux/version.h not needed.
-   ./tools/testing/selftests/bpf/progs/test_spin_lock.c: 4 linux/version.h not needed.
-   ./tools/testing/selftests/bpf/progs/test_tcp_estats.c: 37 linux/version.h not needed.
-   ./tools/testing/selftests/wireguard/qemu/init.c: 25 linux/version.h not needed.
+All errors (new ones prefixed by >>):
+
+   drivers/gpu/drm/amd/amdgpu/nbio_v2_3.c: In function 'nbio_v2_3_enable_aspm':
+>> drivers/gpu/drm/amd/amdgpu/nbio_v2_3.c:364:21: error: implicit declaration of function 'pci_is_thunderbolt_attached' [-Werror=implicit-function-declaration]
+     364 |                 if (pci_is_thunderbolt_attached(adev->pdev))
+         |                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+   cc1: some warnings being treated as errors
+--
+   drivers/gpu/drm/amd/amdgpu/amdgpu_device.c: In function 'amdgpu_device_ip_early_init':
+>> drivers/gpu/drm/amd/amdgpu/amdgpu_device.c:2118:14: error: implicit declaration of function 'pci_is_thunderbolt_attached' [-Werror=implicit-function-declaration]
+    2118 |             !pci_is_thunderbolt_attached(to_pci_dev(dev->dev)))
+         |              ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+   cc1: some warnings being treated as errors
+
+
+vim +/pci_is_thunderbolt_attached +364 drivers/gpu/drm/amd/amdgpu/nbio_v2_3.c
+
+f1213b15976881d Evan Quan 2020-08-18  350  
+f1213b15976881d Evan Quan 2020-08-18  351  static void nbio_v2_3_enable_aspm(struct amdgpu_device *adev,
+f1213b15976881d Evan Quan 2020-08-18  352  				  bool enable)
+f1213b15976881d Evan Quan 2020-08-18  353  {
+f1213b15976881d Evan Quan 2020-08-18  354  	uint32_t def, data;
+f1213b15976881d Evan Quan 2020-08-18  355  
+f1213b15976881d Evan Quan 2020-08-18  356  	def = data = RREG32_PCIE(smnPCIE_LC_CNTL);
+f1213b15976881d Evan Quan 2020-08-18  357  
+f1213b15976881d Evan Quan 2020-08-18  358  	if (enable) {
+f1213b15976881d Evan Quan 2020-08-18  359  		/* Disable ASPM L0s/L1 first */
+f1213b15976881d Evan Quan 2020-08-18  360  		data &= ~(PCIE_LC_CNTL__LC_L0S_INACTIVITY_MASK | PCIE_LC_CNTL__LC_L1_INACTIVITY_MASK);
+f1213b15976881d Evan Quan 2020-08-18  361  
+f1213b15976881d Evan Quan 2020-08-18  362  		data |= NAVI10_PCIE__LC_L0S_INACTIVITY_DEFAULT << PCIE_LC_CNTL__LC_L0S_INACTIVITY__SHIFT;
+f1213b15976881d Evan Quan 2020-08-18  363  
+f1213b15976881d Evan Quan 2020-08-18 @364  		if (pci_is_thunderbolt_attached(adev->pdev))
+f1213b15976881d Evan Quan 2020-08-18  365  			data |= NAVI10_PCIE__LC_L1_INACTIVITY_TBT_DEFAULT  << PCIE_LC_CNTL__LC_L1_INACTIVITY__SHIFT;
+f1213b15976881d Evan Quan 2020-08-18  366  		else
+f1213b15976881d Evan Quan 2020-08-18  367  			data |= NAVI10_PCIE__LC_L1_INACTIVITY_DEFAULT << PCIE_LC_CNTL__LC_L1_INACTIVITY__SHIFT;
+f1213b15976881d Evan Quan 2020-08-18  368  
+f1213b15976881d Evan Quan 2020-08-18  369  		data &= ~PCIE_LC_CNTL__LC_PMI_TO_L1_DIS_MASK;
+f1213b15976881d Evan Quan 2020-08-18  370  	} else {
+f1213b15976881d Evan Quan 2020-08-18  371  		/* Disbale ASPM L1 */
+f1213b15976881d Evan Quan 2020-08-18  372  		data &= ~PCIE_LC_CNTL__LC_L1_INACTIVITY_MASK;
+f1213b15976881d Evan Quan 2020-08-18  373  		/* Disable ASPM TxL0s */
+f1213b15976881d Evan Quan 2020-08-18  374  		data &= ~PCIE_LC_CNTL__LC_L0S_INACTIVITY_MASK;
+f1213b15976881d Evan Quan 2020-08-18  375  		/* Disable ACPI L1 */
+f1213b15976881d Evan Quan 2020-08-18  376  		data |= PCIE_LC_CNTL__LC_PMI_TO_L1_DIS_MASK;
+f1213b15976881d Evan Quan 2020-08-18  377  	}
+f1213b15976881d Evan Quan 2020-08-18  378  
+f1213b15976881d Evan Quan 2020-08-18  379  	if (def != data)
+f1213b15976881d Evan Quan 2020-08-18  380  		WREG32_PCIE(smnPCIE_LC_CNTL, data);
+f1213b15976881d Evan Quan 2020-08-18  381  }
+f1213b15976881d Evan Quan 2020-08-18  382  
 
 -- 
 0-DAY CI Kernel Test Service
