@@ -2,52 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC60F7E0E4D
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 09:07:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B152C7E0E63
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 09:52:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231458AbjKDIHM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Nov 2023 04:07:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48980 "EHLO
+        id S231424AbjKDIfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Nov 2023 04:35:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229509AbjKDIHK (ORCPT
+        with ESMTP id S229509AbjKDIfT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Nov 2023 04:07:10 -0400
-Received: from mail-oi1-f198.google.com (mail-oi1-f198.google.com [209.85.167.198])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28AF7CA
-        for <linux-kernel@vger.kernel.org>; Sat,  4 Nov 2023 01:07:08 -0700 (PDT)
-Received: by mail-oi1-f198.google.com with SMTP id 5614622812f47-3b3f893e38aso4240845b6e.0
-        for <linux-kernel@vger.kernel.org>; Sat, 04 Nov 2023 01:07:08 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699085227; x=1699690027;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=om+HePaQbxZa4c+Z18eG9gMoz0Wfaw7HHyr6KUw+My4=;
-        b=RI4iOpbUnOxZLhbOlrLOSGtha1+cOgWPUlnhQhZZJpHPv6qIvhLi4rQTyLEkXW/kmR
-         5P8TOVsw0k3fKLAs+bsxKpeV/J2O0+v6Lf9LXlodWe3l1BIdVMd8UnLcwMH6IY1Jqnt+
-         D9hAoFA5Qbvpw0ga1dEeh9RjMZiYwVo9M4VdPBBqi9shT8qzXDSNcNU1bcaQ1YpvpOj8
-         nlXog+mDIGVzZKlgbVtkkC/8eNX1Y0uIyPv61j7fj2GJxSKZDg3pwMJL1uY+qOlufpJe
-         +SHUT8zG0s7rbUQFAeB/MmmYkLhzF3VixwGTtW5LAlWI6YawHLZ7tst+i+5hEU8INsnz
-         0NNw==
-X-Gm-Message-State: AOJu0YwDa6Uu5QUbO1QopRsm4nFxRmK2Y2aBJxpNJG51DcS6MVrGhFE3
-        8j1vRqutStuGMR0ciYBe6w9V9wUF5Ri8iWxCDo3Rzqmx96hJ
-X-Google-Smtp-Source: AGHT+IHcVkimi36kP6RLucTQpJvNwCn4d5Vw73QS/YlRbMjs7YuBtLH5aUsawko7sFW9H3sU8fWgA9DXx+Y/hsQ62p4gfewR542z
+        Sat, 4 Nov 2023 04:35:19 -0400
+Received: from smtp.smtpout.orange.fr (smtp-22.smtpout.orange.fr [80.12.242.22])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CCC61BD
+        for <linux-kernel@vger.kernel.org>; Sat,  4 Nov 2023 01:35:16 -0700 (PDT)
+Received: from [192.168.1.18] ([86.243.2.178])
+        by smtp.orange.fr with ESMTPA
+        id zC7cqEzJb8IN3zC7cqc9pn; Sat, 04 Nov 2023 09:35:14 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+        s=t20230301; t=1699086914;
+        bh=iizMqJ8oz7FLaa8uGRDiRCCs5ootGPJzd3jk97tV/1Q=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=IuiZ53PV05ZLqhqQxasa7wAPc1vFjl6sXrwjac8Zu1RQmHvjYfeme3h6hV6zzfY8O
+         aG8Zi2ghZyBltTnTL/GqYrgqfWXpm9KYlJVNZUqBjFpqwM1PvMYUnjZt2qu4L8zHl4
+         RLZjTNRS9tw+vZdAUGNBfmKpdF8YN6wy7G4jnf1Ja6767lg+FwN/hB4jqOmVqNznZj
+         IjS1XiiK2la9DHSeCqyRKWl8+KawTg9cyKWhBEcz/ejD0FCAt3s5yoZyVIJ5ZMiCI8
+         0ugQDb+TftQsdiWhV6LHNJrmSQz9djHMxZi5Fl+2u1BGd8N8ACilFwUqzWmBwNkkYR
+         I/jCGuqzdu/lw==
+X-ME-Helo: [192.168.1.18]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sat, 04 Nov 2023 09:35:14 +0100
+X-ME-IP: 86.243.2.178
+Message-ID: <7ad737c4-1f61-488a-a8f9-32e80ad8f817@wanadoo.fr>
+Date:   Sat, 4 Nov 2023 09:35:11 +0100
 MIME-Version: 1.0
-X-Received: by 2002:a05:6808:1898:b0:3ad:f6ad:b9c8 with SMTP id
- bi24-20020a056808189800b003adf6adb9c8mr8742299oib.9.1699085227522; Sat, 04
- Nov 2023 01:07:07 -0700 (PDT)
-Date:   Sat, 04 Nov 2023 01:07:07 -0700
-In-Reply-To: <20231104074445.1237-1-hdanton@sina.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000006e018d06094f1ba1@google.com>
-Subject: Re: [syzbot] [usb?] INFO: task hung in hub_port_init (3)
-From:   syzbot <syzbot+b6f11035e572f08bc20f@syzkaller.appspotmail.com>
-To:     hdanton@sina.com, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
+User-Agent: Mozilla Thunderbird
+Subject: Re: RE: RE: [PATCH v6 1/2] usb: dwc3: add Realtek DHC RTD SoC dwc3
+ glue layer driver
+To:     =?UTF-8?B?U3RhbmxleSBDaGFuZ1vmmIzogrLlvrdd?= 
+        <stanley_chang@realtek.com>
+Cc:     "Thinh.Nguyen@synopsys.com" <Thinh.Nguyen@synopsys.com>,
+        "conor+dt@kernel.org" <conor+dt@kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>
+References: <20230826031028.1892-1-stanley_chang@realtek.com>
+ <202310301424.39UEOShlC2187546@rtits1.realtek.com.tw>
+ <bc33c01db5b048899dce5467e7efec74@realtek.com>
+ <202311011453.3A1ErwKI3829148@rtits1.realtek.com.tw>
+ <da4c75ba87c3476694361ee3bc333401@realtek.com>
+Content-Language: fr
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+In-Reply-To: <da4c75ba87c3476694361ee3bc333401@realtek.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,51 +70,99 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Le 03/11/2023 à 11:54, Stanley Chang[昌育德] a écrit :
+> Hi Christophe,
+> 
+>> Le 01/11/2023 à 07:27, Stanley Chang[昌育德] a écrit :
+>>> Hi CJ,
+>>>
+>>> I think these functions are not needed in remove function.
+>>>
+>>> In dwc3_rtk_probe_dwc3_core,
+>>> I have used
+>>> dwc3_node = of_get_compatible_child(node, "snps,dwc3"); and dwc3_pdev
+>>> = of_find_device_by_node(dwc3_node);
+>>>
+>>> So, I call these put functions.
+>>> platform_device_put(dwc3_pdev);
+>>> of_node_put(dwc3_node);
+>>
+>> Yes, but you call it only in the error handling path of the function.
+>>
+>> I wonder if they should also be called in the remove function in order to
+>> decrement the ref-counted reference.
+>>
+>>
+>> Same in __get_dwc3_maximum_speed(), the reference taken by:
+>>      dwc3_np = of_get_compatible_child(np, "snps,dwc3"); is never released.
+>>
+>>
+>> See the comment at [1] to see what I mean.
+>>
+>>
+>> [1]: https://elixir.bootlin.com/linux/v6.6/source/drivers/of/base.c#L681
+> 
+> You are right!
+> For dwc3_pdev, dwc3_np or dwc3_node, I should add of_node_put to release them when the function exits.
+> https://elixir.bootlin.com/linux/v6.5.10/source/drivers/usb/dwc3/dwc3-meson-g12a.c#L567
+> 
+> I will add a patch to fix this.
+> 
+> For example,
+> diff --git a/drivers/usb/dwc3/dwc3-rtk.c b/drivers/usb/dwc3/dwc3-rtk.c
+> index 590028e8fdcb..9d6f2a8bd6ce 100644
+> --- a/drivers/usb/dwc3/dwc3-rtk.c
+> +++ b/drivers/usb/dwc3/dwc3-rtk.c
+> @@ -187,6 +187,7 @@ static enum usb_device_speed __get_dwc3_maximum_speed(struct device_node *np)
+> 
+>          ret = match_string(speed_names, ARRAY_SIZE(speed_names), maximum_speed);
+> 
+> +       of_node_put(dwc3_np);
+>          return (ret < 0) ? USB_SPEED_UNKNOWN : ret;
+>   }
+> 
+> @@ -339,6 +340,8 @@ static int dwc3_rtk_probe_dwc3_core(struct dwc3_rtk *rtk)
+> 
+>          switch_usb2_role(rtk, rtk->cur_role);
+> 
+> +       platform_device_put(dwc3_pdev);
+> +       of_node_put(dwc3_node);
+>          return 0;
+> 
+>   err_pdev_put:
+> 
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-kernel panic: KASAN: panic_on_warn set ...
+LGTM.
 
->ffff888020985500: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                                                    ^
- ffff888020985580: fb fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
- ffff888020985600: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-==================================================================
-Kernel panic - not syncing: KASAN: panic_on_warn set ...
-CPU: 0 PID: 2911 Comm: kworker/u4:13 Not tainted 6.6.0-syzkaller-14142-g90b0c2b2edd1-dirty #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/09/2023
-Workqueue: usbip_event event_handler
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x1e7/0x2d0 lib/dump_stack.c:106
- panic+0x349/0x850 kernel/panic.c:344
- check_panic_on_warn+0x82/0xa0 kernel/panic.c:237
- end_report+0x6e/0x130 mm/kasan/report.c:225
- kasan_report+0x153/0x170 mm/kasan/report.c:590
- pickup_urb_and_free_priv+0x282/0x370 drivers/usb/usbip/vhci_rx.c:24
- vhci_cleanup_unlink_list+0x12d/0x490 drivers/usb/usbip/vhci_hcd.c:966
- vhci_device_unlink_cleanup drivers/usb/usbip/vhci_hcd.c:1000 [inline]
- vhci_shutdown_connection+0x203/0x4a0 drivers/usb/usbip/vhci_hcd.c:1037
- event_handler+0x24e/0x4b0 drivers/usb/usbip/usbip_event.c:79
- process_one_work kernel/workqueue.c:2630 [inline]
- process_scheduled_works+0x90f/0x1400 kernel/workqueue.c:2703
- worker_thread+0xa5f/0xff0 kernel/workqueue.c:2784
- kthread+0x2d3/0x370 kernel/kthread.c:388
- ret_from_fork+0x48/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
- </TASK>
-Kernel Offset: disabled
-Rebooting in 86400 seconds..
+CJ
 
-
-Tested on:
-
-commit:         90b0c2b2 Merge tag 'pinctrl-v6.7-1' of git://git.kerne..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-console output: https://syzkaller.appspot.com/x/log.txt?x=11d567f3680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=93ac5233c138249e
-dashboard link: https://syzkaller.appspot.com/bug?extid=b6f11035e572f08bc20f
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=15c49eeb680000
+> 
+> Thanks,
+> Stanley
+> 
+>> CJ
+>>>
+>>> Thanks,
+>>> Stanley
+>>>
+>>>> Hi,
+>>>>
+>>>> Is something like
+>>>>           platform_device_put(dwc3_pdev);
+>>>>           of_node_put(dwc3_node);
+>>>> needed in the remove function?
+>>>>
+>>>> (as done in the error handling path of dwc3_rtk_probe_dwc3_core())
+>>>>
+>>>> Or should it be added at the end of dwc3_rtk_probe_dwc3_core() if the
+>>>> reference are nor needed anymore when we leave the function?
+>>>>
+>>>> CJ
+>>>>
+>>>>> +     of_platform_depopulate(rtk->dev); }
+>>>>> +
+>>>>
+>>>> ...
+>>>
+> 
 
