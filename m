@@ -2,53 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CF257E0D3A
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 03:10:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F2C37E0D3D
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 03:10:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235610AbjKDCKa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 22:10:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56784 "EHLO
+        id S1345545AbjKDCKh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 22:10:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345145AbjKDCK2 (ORCPT
+        with ESMTP id S233103AbjKDCK2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 3 Nov 2023 22:10:28 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40D87D60
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AD0ED62
         for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 19:10:26 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 1B05AC433CD;
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 5BF82C43391;
         Sat,  4 Nov 2023 02:10:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1699063826;
-        bh=zp0QQKoCv25uWPcKHfYtVfeRCAtdEKdh1INVkCito4o=;
+        bh=Ds+SV2iGNavCSdCZwv1k3Ou8fZ2Dzxb9V25vnu0I6JU=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=eEBSRE0e9NbCC2FCR921VVZWZ0qoK+QP53ZSeeWudWvQebM4L3mR/ND88WY6Usfso
-         U2oEzB3T9XwZ062JrTQe0pr7o2wRgI0+uohcqbN/b93NapCDuba/IdV/8XusdDNyP/
-         G9R3nmdpr1LCoiHXg9g9dKcT/ktjEGswwnO4bPRyEk3I8e5SI1PO3vxBdHRP3uY89t
-         22ex06oTFuhhVfxkUo1jA+ypTeYkxy4d6LrJfQlM1EV2ni+V4p3/BysIXwhgykw5bo
-         8LQzozeIyi1fjSfqLT3kziHnypg2FIhaATlTkQRF9TiO1XZbDdqpmorffGhoqpgSDB
-         nFQx5a3h36dew==
+        b=rhj4lHOZYit/ofkgRRAWKkco8KFNb7MYAFbO2vQVhMDQKFw030HGJAQVESWvviqKo
+         Zm4LFU+FAMAx8GkN9vQbA+Wp9KCWLpjqE1EOFCiMrWQ0W1sjBqkkowVSowE0P2g9b4
+         LEDlTgPLanAUZzSa5Idh1CCTlebacMXdsNf8w6t0iiw2fBAzFyGIXns7yRhxFq7haq
+         YkjD8DfV17baKSbMk4OBosFmiintxXZ84mL0ACumF8bXwp1B6w5sgeIHUSs5RiMRhA
+         i45GpLAoZPhxOdGOf9BpJVHYzkvhA6EVF24YEJ+6MHTUJRtBl6S6c5uLgOxYoNZ0my
+         gtJch5+5ek/Fw==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 09B7AC04DD9;
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 474C6C04DD9;
         Sat,  4 Nov 2023 02:10:26 +0000 (UTC)
-Subject: Re: [GIT PULL] Driver core changes for 6.7-rc1
+Subject: Re: [GIT PULL] Staging driver updates for 6.7-rc1
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <ZUTiFDLKDO4piYuZ@kroah.com>
-References: <ZUTiFDLKDO4piYuZ@kroah.com>
+In-Reply-To: <ZUTiKqLbWEPTVZCf@kroah.com>
+References: <ZUTiKqLbWEPTVZCf@kroah.com>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <ZUTiFDLKDO4piYuZ@kroah.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/driver-core.git tags/driver-core-6.7-rc1
-X-PR-Tracked-Commit-Id: effd7c70eaa0440688b60b9d419243695ede3c45
+X-PR-Tracked-Message-Id: <ZUTiKqLbWEPTVZCf@kroah.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging.git tags/staging-6.7-rc1
+X-PR-Tracked-Commit-Id: a4000df5300fdbe10d84e3b70e2d6a98686310a9
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: b06f58ad8e8c4154bc88d83b4fd70f74ede50193
-Message-Id: <169906382603.26291.8616047584099082272.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: 4c7a0c95adc3ed8cc5e4c2187521aea3e40ba1aa
+Message-Id: <169906382628.26291.3454184896525324299.pr-tracker-bot@kernel.org>
 Date:   Sat, 04 Nov 2023 02:10:26 +0000
 To:     Greg KH <gregkh@linuxfoundation.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org,
         Stephen Rothwell <sfr@canb.auug.org.au>,
-        Saravana Kannan <saravanak@google.com>
+        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
 X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -59,12 +58,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 3 Nov 2023 13:05:40 +0100:
+The pull request you sent on Fri, 3 Nov 2023 13:06:02 +0100:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/driver-core.git tags/driver-core-6.7-rc1
+> git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging.git tags/staging-6.7-rc1
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/b06f58ad8e8c4154bc88d83b4fd70f74ede50193
+https://git.kernel.org/torvalds/c/4c7a0c95adc3ed8cc5e4c2187521aea3e40ba1aa
 
 Thank you!
 
