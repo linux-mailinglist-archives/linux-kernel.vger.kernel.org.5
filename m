@@ -2,464 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C8F87E0DEB
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 06:13:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70C177E0DED
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 06:18:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344870AbjKDFMy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Nov 2023 01:12:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53422 "EHLO
+        id S233666AbjKDFRI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Nov 2023 01:17:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230454AbjKDFMw (ORCPT
+        with ESMTP id S229878AbjKDFRH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Nov 2023 01:12:52 -0400
-Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01on2050.outbound.protection.outlook.com [40.107.255.50])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85A5A187;
-        Fri,  3 Nov 2023 22:12:48 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BNq5Fpi62ZpZftDec2h2OK3W4aCrNLQoUO7qu+2n+FrGPDxMneQrvyFBRTkt5Ihv3POF+dNwx9xV5EIUpqkluc7xvjFzB1arD/zmz11LmB/vj2RcFaAAviUOXe+6ENfFLKwRVkXHgeT3ASTFnf1NoLYJfPkK+vDC5/++PIrILEWwPis/gEJ5yuspnuYi53dEECdEgvgOtHVabJ/qhxDkfjHrLGFlrKf+QHGOmJ1b3da9Vj52tk/dY0VuNywJ3c0ltIImzM5zxe4LMH4XRx8JTWW1a1TQZhGHN7t+madsgvzIg3PBGCQmTpeNUcbfv9FKJjUT3WsaRO2hCyiZNRN4cg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=T2Ftr2xwwYAw9GywVSN1FeSxgbZOYoaKPdNP95i7HSA=;
- b=Kmcr65uzV1RzbIL0pXoS/afp6b0q1Yb328TjlRGoGzTNPVlqQfA1Da3IoVLIIcy5ytJnHfaxdR+JW7gdyRKvZBu8xUliQi/LH/JUlwD0Azlv9xoE7eCKg1tXQoFxF8ob0eeWEVnR+xZjYjvYNbKhWtlkva8Ov6HLIXpTnXGR3NQ0TKHi2RVyQfaKzbjOA/snwqq0EINLVdw6y6wmz79JmT52sVgc1E/EdXciVWUtGbSjyxgw74eentQhk6YXFN4l1sDHoy9roasRn7dR7mQ2WBZKTMuG9wUrhJgvh4H7CjqFxlQ9aIcpO8CZX489/Laz9tRtKHauv501Fa6RLY173A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 58.252.5.68) smtp.rcpttodomain=samsung.com smtp.mailfrom=oppo.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=oppo.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oppo.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=T2Ftr2xwwYAw9GywVSN1FeSxgbZOYoaKPdNP95i7HSA=;
- b=PJhSUn5mP3ShZmMPiUz84EhXlF4rxuV1XIJCL4uGkCHHu9RPflWUZU1jrMEFSgowpe4moJpKQYaAw0ETQYesfDlipRJ9OOBvCszExC0b2vcajwAAmPkh/PdGd9Zo6XPpGK692HSbbLiFwKIOujKBE/icV82WL23b9y4bUT3ODBQ=
-Received: from PS2PR04CA0002.apcprd04.prod.outlook.com (2603:1096:300:55::14)
- by JH0PR02MB6778.apcprd02.prod.outlook.com (2603:1096:990:49::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.24; Sat, 4 Nov
- 2023 05:12:43 +0000
-Received: from HK3PEPF0000021F.apcprd03.prod.outlook.com
- (2603:1096:300:55:cafe::a9) by PS2PR04CA0002.outlook.office365.com
- (2603:1096:300:55::14) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.22 via Frontend
- Transport; Sat, 4 Nov 2023 05:12:42 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 58.252.5.68)
- smtp.mailfrom=oppo.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=oppo.com;
-Received-SPF: Pass (protection.outlook.com: domain of oppo.com designates
- 58.252.5.68 as permitted sender) receiver=protection.outlook.com;
- client-ip=58.252.5.68; helo=mail.oppo.com; pr=C
-Received: from mail.oppo.com (58.252.5.68) by
- HK3PEPF0000021F.mail.protection.outlook.com (10.167.8.41) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6907.20 via Frontend Transport; Sat, 4 Nov 2023 05:12:42 +0000
-Received: from PA80318969.adc.com (172.16.40.118) by mailappw30.adc.com
- (172.16.56.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Sat, 4 Nov
- 2023 13:12:41 +0800
-From:   huangzaiyang <huangzaiyang@oppo.com>
-To:     <myungjoo.ham@samsung.com>, <kyungmin.park@samsung.com>,
-        <cw00.choi@samsung.com>
-CC:     <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        huangzaiyang <joyyoung.wang@gmail.com>,
-        ZaiYang Huang <hzy0719@163.com>
-Subject: [PATCH] Performance: devfreq: avoid devfreq delay work re-init before queue, which will cause delayed work queue reentry.
-Date:   Sat, 4 Nov 2023 13:12:26 +0800
-Message-ID: <20231104051226.6249-1-huangzaiyang@oppo.com>
-X-Mailer: git-send-email 2.17.1
+        Sat, 4 Nov 2023 01:17:07 -0400
+Received: from mail-oi1-f198.google.com (mail-oi1-f198.google.com [209.85.167.198])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF59B18B
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 22:17:03 -0700 (PDT)
+Received: by mail-oi1-f198.google.com with SMTP id 5614622812f47-3b3e82429edso3831957b6e.2
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Nov 2023 22:17:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699075023; x=1699679823;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=N30kyK/tQm6qLAOseB+Wu/B8cFwZHT6A7EO+rKSE0oY=;
+        b=fPFJIK7lPb14JoGwMJVFAFpPkWthUBM+q0xXzh/XkjK7W0c/8t76mJc/J74VaucZh0
+         eSUo162vTLKIBF7sWCIVoS8EY76hhLlPXfzyO8IqyfiBtfbYej6sq98Qkyc4ODSHxL4r
+         7oQy+Kja6axLYJfo/n7opR8hxKJwixfTdsLDR0DeQLdA7ijo9qidGeCVgipLDtyDkkCr
+         fEUwkOyRATgchyTpM4IC60yfvhRQ19ptX8VR46ZjjnG2+gsCutSE056YLPw4ekc5qglX
+         E5DzVQhhYCiUejrVuxF963gQneqeWncZdeLdfHuV01rWMlVjX6nwZzyGW3J1PTDSBYbA
+         i+Qg==
+X-Gm-Message-State: AOJu0Yy2QfiY2/6SncJksO6TTd8JPyGm4H7HAZb0DDm4WJRsJpedqW2A
+        sp0u2YjMEZKsYaCTbN0Txe7tVyAQ/8ZBEqWNifDkcvEF1mwgVD8=
+X-Google-Smtp-Source: AGHT+IHW0GRTz6u3mf+Hm5hp78qtlWRXzaMCxkjDvyeZCpG591AKwLrQpGg9zZHZpc4Q/+KC1a6PjqZJnm2h01G6CbN3pzy/Px9v
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-X-Originating-IP: [172.16.40.118]
-X-ClientProxiedBy: mailappw31.adc.com (172.16.56.198) To mailappw30.adc.com
- (172.16.56.197)
-Content-Transfer-Encoding: quoted-printable
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: HK3PEPF0000021F:EE_|JH0PR02MB6778:EE_
-X-MS-Office365-Filtering-Correlation-Id: 33918595-5b10-4f34-b30f-08dbdcf4ac7e
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: cu8EsvYvPMWe2BZ/RvdKu6+BqbGFJ9cK8quh2Bt7Y0bZcW8rGo9sxdy5Cc4c3dU0TH0urupiZVTcilkxS46A8bEwR6lz+DpZMvO9bKhW7K7kMKb/2kCvmLG9gbkdc+HOBXhCA5pATJIX4gecnX7DJLH3pisstBuy6Ekcbr01CXKxdaCkiUi+IbGZrceq/BY3js+O4ogGDBX6euL6SU0KDyf3KsrTn9QqMzfdbLT0RTstN/k89qritDKTCTAOD1YZ3zKeVafSlKJj9cD5ATmS75n8xzNS8sjJhlXxss6B2WKwoGobioRjME0BDtS6MeyIyPEgV/5jroWNwOEqQQvBT2d0OhKa4K1MtjeL+UVOsop1kPzlZAtO3xRk2+sQlIy3IEDlcfWTWBKWALcTruD/CTYcqg4PHTWXdCBGKwx7WduyYijnLcGHplOPx8E4b9aSHHdd5os0C4xadMGRM3PJygY4WsiumJ9sY3lf4CRJSq7HIoZKhmzEPZKheWJnIgq7nsvRjWdumSWrSmv7y45f0Q2UP7D4VStl8lr2WuhMLya8jhrSh4YdO08S+AFkSd4shwibwAdQjV7+YA504QCB6CweO9+x1HGSff081oEtRezutURT1/dGxyptjaITrNQWv4dv/jtIJO4ZjRKyuS9B4njRlWPDYd25Ee9iENXAVUE1FSpIcxDggLIQe6eYhRKJNHgkjcs7wJM2IMnDh2I4PGM6miiDmmageaRhqjem6FcaRAeYhdjZFRJVFS+E/WrjmZgdjDxNdTpeg6OIMydsBw==
-X-Forefront-Antispam-Report: CIP:58.252.5.68;CTRY:CN;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.oppo.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(136003)(376002)(39860400002)(396003)(346002)(230922051799003)(82310400011)(451199024)(1800799009)(186009)(64100799003)(46966006)(36840700001)(40470700004)(2906002)(1076003)(86362001)(356005)(81166007)(110136005)(316002)(26005)(5660300002)(16526019)(36860700001)(41300700001)(6666004)(2616005)(30864003)(8936002)(478600001)(336012)(40460700003)(82740400003)(83380400001)(40480700001)(70586007)(70206006)(54906003)(36756003)(4326008)(8676002)(47076005)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: oppo.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Nov 2023 05:12:42.5610
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 33918595-5b10-4f34-b30f-08dbdcf4ac7e
-X-MS-Exchange-CrossTenant-Id: f1905eb1-c353-41c5-9516-62b4a54b5ee6
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=f1905eb1-c353-41c5-9516-62b4a54b5ee6;Ip=[58.252.5.68];Helo=[mail.oppo.com]
-X-MS-Exchange-CrossTenant-AuthSource: HK3PEPF0000021F.apcprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: JH0PR02MB6778
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6808:1801:b0:3b5:9545:cbbb with SMTP id
+ bh1-20020a056808180100b003b59545cbbbmr849973oib.5.1699075023353; Fri, 03 Nov
+ 2023 22:17:03 -0700 (PDT)
+Date:   Fri, 03 Nov 2023 22:17:03 -0700
+In-Reply-To: <20231104044729.2716748-1-lizhi.xu@windriver.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000036bf8706094cbb13@google.com>
+Subject: Re: [syzbot] [bluetooth?] KASAN: slab-use-after-free Write in
+ hci_conn_drop (2)
+From:   syzbot <syzbot+1683f76f1b20b826de67@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org, lizhi.xu@windriver.com,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: huangzaiyang <joyyoung.wang@gmail.com>
+Hello,
 
-There is a timer_list race condition when executing the following test shel=
-l script:
-'''
-#!/vendor/bin/sh
-while true
-do
-        echo "simple_ondemand" > /sys/class/devfreq/1d84000.ufshc/governor
-        echo "performance" > /sys/class/devfreq/1d84000.ufshc/governor
-done
-'''
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+WARNING: ODEBUG bug in bt_link_release
 
-[13511.214366][    C3] Unable to handle kernel paging request at virtual ad=
-dress dead00000000012a
-[13511.214393][    C3] Mem abort info:
-[13511.214398][    C3]   ESR =3D 0x96000044
-[13511.214404][    C3]   EC =3D 0x25: DABT (current EL), IL =3D 32 bits
-[13511.214409][    C3]   SET =3D 0, FnV =3D 0
-[13511.214414][    C3]   EA =3D 0, S1PTW =3D 0
-[13511.214417][    C3] Data abort info:
-[13511.214422][    C3]   ISV =3D 0, ISS =3D 0x00000044
-[13511.214427][    C3]   CM =3D 0, WnR =3D 1
-[13511.214432][    C3] [dead00000000012a] address between user and kernel a=
-ddress ranges
-[13511.214439][    C3] Internal error: Oops: 96000044 [#1] PREEMPT SMP
-[13511.215449][    C3] CPU: 3 PID: 0 Comm: swapper/3 Tainted: G S      W  O=
-      5.10.168-android12-9-o-g63cc297a7b34 #1
-[13511.215454][    C3] Hardware name: Qualcomm Technologies, Inc. Cape MTP,=
- Whiteswan (DT)
-[13511.215460][    C3] pstate: 82400085 (Nzcv daIf +PAN -UAO +TCO BTYPE=3D-=
--)
-[13511.215472][    C3] pc : expire_timers+0x9c/0x428
-[13511.215478][    C3] lr : __run_timers+0x1f0/0x328
-[13511.215483][    C3] sp : ffffffc00801bdd0
-[13511.215487][    C3] x29: ffffffc00801bdf0 x28: ffffffdb87b31698
-[13511.215493][    C3] x27: ffffffdb87999e58 x26: ffffffdb87966008
-[13511.215499][    C3] x25: 0000000000000001 x24: ffffff8001734a00
-[13511.215506][    C3] x23: 00000000000000e0 x22: dead000000000122
-[13511.215512][    C3] x21: 000000010032658e x20: ffffff89f7a9ae80
-[13511.215518][    C3] x19: ffffffc00801be50 x18: ffffffc00801d038
-[13511.215525][    C3] x17: 0000000000000240 x16: 0000000000000201
-[13511.215532][    C3] x15: ffffffffffffffff x14: ffffff89f7a9aef8
-[13511.215538][    C3] x13: 0000000000000240 x12: ffffff89f7a9aea8
-[13511.215544][    C3] x11: 0000000000000021 x10: 000000014032658e
-[13511.215550][    C3] x9 : ffffffc00801be50 x8 : dead000000000122
-[13511.215556][    C3] x7 : ffff71646c68735e x6 : ffffff89f7aaae58
-[13511.215563][    C3] x5 : 0000000000000000 x4 : 0000000000000101
-[13511.215569][    C3] x3 : ffffff89f7a9aef0 x2 : ffffff89f7a9aef0
-[13511.215575][    C3] x1 : ffffffc00801be50 x0 : ffffff8045804428
-[13511.215581][    C3] Call trace:
-[13511.215586][    C3]  expire_timers+0x9c/0x428
-[13511.215591][    C3]  __run_timers+0x1f0/0x328
-[13511.215596][    C3]  run_timer_softirq+0x28/0x58
-[13511.215602][    C3]  efi_header_end+0x168/0x5ec
-[13511.215610][    C3]  __irq_exit_rcu+0x108/0x124
-[13511.215617][    C3]  __handle_domain_irq+0x118/0x1e4
-[13511.215625][    C3]  gic_handle_irq.31230+0x6c/0x250
-[13511.215630][    C3]  el1_irq+0xe4/0x1c0
-[13511.215638][    C3]  cpuidle_enter_state+0x3a4/0xa04
-[13511.215644][    C3]  do_idle+0x308/0x574
-[13511.215649][    C3]  cpu_startup_entry+0x84/0x90
-[13511.215656][    C3]  secondary_start_kernel+0x204/0x274
-[13511.215664][    C3] Code: d503201f a9402408 f9000128 b4000048 (f9000509)
-[13511.215670][    C3] ---[ end trace 5100bad72a35d566 ]---
-[13511.215676][    C3] Kernel panic - not syncing: Oops: Fatal exception in=
- interrupt
+------------[ cut here ]------------
+ODEBUG: free active (active state 0) object: 00000000bd9772ee object type: work_struct hint: hci_conn_timeout+0x0/0x1e8 net/bluetooth/hci_conn.c:928
+WARNING: CPU: 0 PID: 6604 at lib/debugobjects.c:517 debug_print_object lib/debugobjects.c:514 [inline]
+WARNING: CPU: 0 PID: 6604 at lib/debugobjects.c:517 __debug_check_no_obj_freed lib/debugobjects.c:1032 [inline]
+WARNING: CPU: 0 PID: 6604 at lib/debugobjects.c:517 debug_check_no_obj_freed+0x41c/0x534 lib/debugobjects.c:1063
+Modules linked in:
+CPU: 0 PID: 6604 Comm: syz-executor.0 Not tainted 6.6.0-rc7-syzkaller-00089-g8de1e7afcc1c-dirty #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/06/2023
+pstate: 60400005 (nZCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+pc : debug_print_object lib/debugobjects.c:514 [inline]
+pc : __debug_check_no_obj_freed lib/debugobjects.c:1032 [inline]
+pc : debug_check_no_obj_freed+0x41c/0x534 lib/debugobjects.c:1063
+lr : debug_print_object lib/debugobjects.c:514 [inline]
+lr : __debug_check_no_obj_freed lib/debugobjects.c:1032 [inline]
+lr : debug_check_no_obj_freed+0x41c/0x534 lib/debugobjects.c:1063
+sp : ffff800097087960
+x29: ffff8000970879b0 x28: ffff80008a8710a0 x27: dfff800000000000
+x26: ffff0000dc530348 x25: 0000000000000000 x24: ffff800092a6dc78
+x23: ffff80008a8710a0 x22: ffff0000dc530348 x21: ffff800092a6dc70
+x20: ffff80008ad65078 x19: ffff0000dc530000 x18: ffff800097086e60
+x17: 626f206565323737 x16: ffff80008a71b27c x15: 0000000000000001
+x14: 1fffe0003682f032 x13: 0000000000000000 x12: 0000000000000000
+x11: 0000000000000001 x10: 0000000000000000 x9 : 267892341ff5f000
+x8 : 267892341ff5f000 x7 : 0000000000000001 x6 : 0000000000000001
+x5 : ffff800097087258 x4 : ffff80008e4210a0 x3 : ffff8000805a359c
+x2 : 0000000000000001 x1 : 0000000000000001 x0 : 0000000000000000
+Call trace:
+ debug_print_object lib/debugobjects.c:514 [inline]
+ __debug_check_no_obj_freed lib/debugobjects.c:1032 [inline]
+ debug_check_no_obj_freed+0x41c/0x534 lib/debugobjects.c:1063
+ slab_free_hook mm/slub.c:1775 [inline]
+ slab_free_freelist_hook mm/slub.c:1826 [inline]
+ slab_free mm/slub.c:3809 [inline]
+ __kmem_cache_free+0x250/0x480 mm/slub.c:3822
+ kfree+0xb8/0x19c mm/slab_common.c:1075
+ bt_link_release+0x20/0x30 net/bluetooth/hci_sysfs.c:16
+ device_release+0x8c/0x1ac
+ kobject_cleanup lib/kobject.c:682 [inline]
+ kobject_release lib/kobject.c:716 [inline]
+ kref_put include/linux/kref.h:65 [inline]
+ kobject_put+0x1c4/0x3c4 lib/kobject.c:733
+ put_device+0x28/0x40 drivers/base/core.c:3732
+ hci_conn_put include/net/bluetooth/hci_core.h:1506 [inline]
+ __sco_sock_close+0x3dc/0x7e4 net/bluetooth/sco.c:445
+ sco_sock_close net/bluetooth/sco.c:470 [inline]
+ sco_sock_release+0xb4/0x2c0 net/bluetooth/sco.c:1247
+ __sock_release net/socket.c:659 [inline]
+ sock_close+0xa4/0x1e8 net/socket.c:1419
+ __fput+0x324/0x7f8 fs/file_table.c:384
+ __fput_sync+0x60/0x9c fs/file_table.c:465
+ __do_sys_close fs/open.c:1572 [inline]
+ __se_sys_close fs/open.c:1557 [inline]
+ __arm64_sys_close+0x150/0x1e0 fs/open.c:1557
+ __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
+ invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:51
+ el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:136
+ do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:155
+ el0_svc+0x54/0x158 arch/arm64/kernel/entry-common.c:678
+ el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:696
+ el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:595
+irq event stamp: 16004
+hardirqs last  enabled at (16003): [<ffff800080355dd4>] __up_console_sem kernel/printk/printk.c:347 [inline]
+hardirqs last  enabled at (16003): [<ffff800080355dd4>] __console_unlock kernel/printk/printk.c:2718 [inline]
+hardirqs last  enabled at (16003): [<ffff800080355dd4>] console_unlock+0x17c/0x3d4 kernel/printk/printk.c:3037
+hardirqs last disabled at (16004): [<ffff80008a716da0>] el1_dbg+0x24/0x80 arch/arm64/kernel/entry-common.c:436
+softirqs last  enabled at (15988): [<ffff800080021894>] softirq_handle_end kernel/softirq.c:399 [inline]
+softirqs last  enabled at (15988): [<ffff800080021894>] __do_softirq+0xac0/0xd54 kernel/softirq.c:582
+softirqs last disabled at (15963): [<ffff80008002aadc>] ____do_softirq+0x14/0x20 arch/arm64/kernel/irq.c:80
+---[ end trace 0000000000000000 ]---
+BUG: sleeping function called from invalid context at kernel/workqueue.c:3344
+in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 6604, name: syz-executor.0
+preempt_count: 1, expected: 0
+RCU nest depth: 0, expected: 0
+3 locks held by syz-executor.0/6604:
+ #0: ffff0000dcb18810 (&sb->s_type->i_mutex_key#10){+.+.}-{3:3}, at: inode_lock include/linux/fs.h:802 [inline]
+ #0: ffff0000dcb18810 (&sb->s_type->i_mutex_key#10){+.+.}-{3:3}, at: __sock_release net/socket.c:658 [inline]
+ #0: ffff0000dcb18810 (&sb->s_type->i_mutex_key#10){+.+.}-{3:3}, at: sock_close+0x80/0x1e8 net/socket.c:1419
+ #1: ffff0000c1fbe130 (sk_lock-AF_BLUETOOTH-BTPROTO_SCO){+.+.}-{0:0}, at: lock_sock include/net/sock.h:1720 [inline]
+ #1: ffff0000c1fbe130 (sk_lock-AF_BLUETOOTH-BTPROTO_SCO){+.+.}-{0:0}, at: sco_sock_close net/bluetooth/sco.c:468 [inline]
+ #1: ffff0000c1fbe130 (sk_lock-AF_BLUETOOTH-BTPROTO_SCO){+.+.}-{0:0}, at: sco_sock_release+0x60/0x2c0 net/bluetooth/sco.c:1247
+ #2: ffff0000d9e40e20 (&conn->lock#2){+.+.}-{2:2}, at: spin_lock include/linux/spinlock.h:351 [inline]
+ #2: ffff0000d9e40e20 (&conn->lock#2){+.+.}-{2:2}, at: __sco_sock_close+0x378/0x7e4 net/bluetooth/sco.c:443
+Preemption disabled at:
+[<ffff800089996cf8>] spin_lock include/linux/spinlock.h:351 [inline]
+[<ffff800089996cf8>] __sco_sock_close+0x378/0x7e4 net/bluetooth/sco.c:443
+CPU: 0 PID: 6604 Comm: syz-executor.0 Tainted: G        W          6.6.0-rc7-syzkaller-00089-g8de1e7afcc1c-dirty #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/06/2023
+Call trace:
+ dump_backtrace+0x1b8/0x1e4 arch/arm64/kernel/stacktrace.c:233
+ show_stack+0x2c/0x44 arch/arm64/kernel/stacktrace.c:240
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xd0/0x124 lib/dump_stack.c:106
+ dump_stack+0x1c/0x28 lib/dump_stack.c:113
+ __might_resched+0x374/0x4d0 kernel/sched/core.c:10187
+ __might_sleep+0x90/0xe4 kernel/sched/core.c:10116
+ start_flush_work+0x44/0x7bc kernel/workqueue.c:3344
+ __flush_work+0x11c/0x1c0 kernel/workqueue.c:3406
+ __cancel_work_timer+0x3e4/0x540 kernel/workqueue.c:3494
+ cancel_work_sync kernel/workqueue.c:3530 [inline]
+ work_fixup_free+0x40/0x70 kernel/workqueue.c:554
+ debug_object_fixup lib/debugobjects.c:530 [inline]
+ __debug_check_no_obj_freed lib/debugobjects.c:1033 [inline]
+ debug_check_no_obj_freed+0x464/0x534 lib/debugobjects.c:1063
+ slab_free_hook mm/slub.c:1775 [inline]
+ slab_free_freelist_hook mm/slub.c:1826 [inline]
+ slab_free mm/slub.c:3809 [inline]
+ __kmem_cache_free+0x250/0x480 mm/slub.c:3822
+ kfree+0xb8/0x19c mm/slab_common.c:1075
+ bt_link_release+0x20/0x30 net/bluetooth/hci_sysfs.c:16
+ device_release+0x8c/0x1ac
+ kobject_cleanup lib/kobject.c:682 [inline]
+ kobject_release lib/kobject.c:716 [inline]
+ kref_put include/linux/kref.h:65 [inline]
+ kobject_put+0x1c4/0x3c4 lib/kobject.c:733
+ put_device+0x28/0x40 drivers/base/core.c:3732
+ hci_conn_put include/net/bluetooth/hci_core.h:1506 [inline]
+ __sco_sock_close+0x3dc/0x7e4 net/bluetooth/sco.c:445
+ sco_sock_close net/bluetooth/sco.c:470 [inline]
+ sco_sock_release+0xb4/0x2c0 net/bluetooth/sco.c:1247
+ __sock_release net/socket.c:659 [inline]
+ sock_close+0xa4/0x1e8 net/socket.c:1419
+ __fput+0x324/0x7f8 fs/file_table.c:384
+ __fput_sync+0x60/0x9c fs/file_table.c:465
+ __do_sys_close fs/open.c:1572 [inline]
+ __se_sys_close fs/open.c:1557 [inline]
+ __arm64_sys_close+0x150/0x1e0 fs/open.c:1557
+ __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
+ invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:51
+ el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:136
+ do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:155
+ el0_svc+0x54/0x158 arch/arm64/kernel/entry-common.c:678
+ el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:696
+ el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:595
 
-This is because when switching the governor through the sys node,
-the devfreq_monitor_start function will re-initialize the delayed work task=
-,
-which will cause the delay work pending flag to become invalid, and the tim=
-er pending judgment contained in the delayed work will also become invalid,
-and then the pending interception will be executed when the queue is execut=
-ed.
 
-So we remove the delay work'initialization work to the devfreq_add_device a=
-nd timer_store functions,
-and the delay work pending judgment is performed before the devfreq_monitor=
-_start function performs the queue operation.
+Tested on:
 
-Signed-off-by: ZaiYang Huang <hzy0719@163.com>
----
- drivers/devfreq/devfreq.c | 38 +++++++++++++++++++++++++-------------
- 1 file changed, 25 insertions(+), 13 deletions(-)
+commit:         8de1e7af Merge branch 'for-next/core' into for-kernelci
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git
+console output: https://syzkaller.appspot.com/x/log.txt?x=1314c787680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=3e6feaeda5dcbc27
+dashboard link: https://syzkaller.appspot.com/bug?extid=1683f76f1b20b826de67
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+userspace arch: arm64
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=17eaf6cf680000
 
-diff --git a/drivers/devfreq/devfreq.c b/drivers/devfreq/devfreq.c
-index b3a68d5833bd..ce4e1bbb6fea 100644
---- a/drivers/devfreq/devfreq.c
-+++ b/drivers/devfreq/devfreq.c
-@@ -480,21 +480,10 @@ static void devfreq_monitor(struct work_struct *work)
-  */
- void devfreq_monitor_start(struct devfreq *devfreq)
- {
--       if (IS_SUPPORTED_FLAG(devfreq->governor->flags, IRQ_DRIVEN))
-+       if (devfreq->governor->interrupt_driven)
-                return;
-
--       switch (devfreq->profile->timer) {
--       case DEVFREQ_TIMER_DEFERRABLE:
--               INIT_DEFERRABLE_WORK(&devfreq->work, devfreq_monitor);
--               break;
--       case DEVFREQ_TIMER_DELAYED:
--               INIT_DELAYED_WORK(&devfreq->work, devfreq_monitor);
--               break;
--       default:
--               return;
--       }
--
--       if (devfreq->profile->polling_ms)
-+       if (devfreq->profile->polling_ms && !delayed_work_pending(&devfreq-=
->work))
-                queue_delayed_work(devfreq_wq, &devfreq->work,
-                        msecs_to_jiffies(devfreq->profile->polling_ms));
- }
-@@ -830,6 +819,17 @@ struct devfreq *devfreq_add_device(struct device *dev,
-                goto err_dev;
-        }
-
-+       switch (devfreq->profile->timer) {
-+       case DEVFREQ_TIMER_DEFERRABLE:
-+               INIT_DEFERRABLE_WORK(&devfreq->work, devfreq_monitor);
-+               break;
-+       case DEVFREQ_TIMER_DELAYED:
-+               INIT_DELAYED_WORK(&devfreq->work, devfreq_monitor);
-+               break;
-+       default:
-+               dev_err(dev, "%s: Target devfreq(%s)'s profile timer has no=
- settings \n", devfreq->governor_name,
-+                       __func__);
-+       }
-        if (!devfreq->profile->max_state || !devfreq->profile->freq_table) =
-{
-                mutex_unlock(&devfreq->lock);
-                err =3D set_freq_table(devfreq);
-@@ -1860,6 +1860,18 @@ static ssize_t timer_store(struct device *dev, struc=
-t device_attribute *attr,
-        df->profile->timer =3D timer;
-        mutex_unlock(&df->lock);
-
-+       switch (df->profile->timer) {
-+       case DEVFREQ_TIMER_DEFERRABLE:
-+               INIT_DEFERRABLE_WORK(&df->work, devfreq_monitor);
-+               break;
-+       case DEVFREQ_TIMER_DELAYED:
-+               INIT_DELAYED_WORK(&df->work, devfreq_monitor);
-+               break;
-+       default:
-+               dev_err(dev, "%s: Target devfreq(%s)'s profile timer has no=
- settings \n", df->governor_name,
-+                       __func__);
-+       }
-+
-        ret =3D df->governor->event_handler(df, DEVFREQ_GOV_STOP, NULL);
-        if (ret) {
-                dev_warn(dev, "%s: Governor %s not stopped(%d)\n",
---
-2.17.1
-
-________________________________
-OPPO
-
-=C2=B1=C2=BE=C2=B5=C3=A7=C3=97=C3=93=C3=93=C3=8A=C2=BC=C3=BE=C2=BC=C2=B0=C3=
-=86=C3=A4=C2=B8=C2=BD=C2=BC=C3=BE=C2=BA=C2=AC=C3=93=C3=90OPPO=C2=B9=C2=AB=
-=C3=8B=C2=BE=C2=B5=C3=84=C2=B1=C2=A3=C3=83=C3=9C=C3=90=C3=85=C3=8F=C2=A2=C2=
-=A3=C2=AC=C2=BD=C3=B6=C3=8F=C3=9E=C3=93=C3=9A=C3=93=C3=8A=C2=BC=C3=BE=C3=96=
-=C2=B8=C3=83=C3=B7=C2=B5=C3=84=C3=8A=C3=95=C2=BC=C3=BE=C3=88=C3=8B=C2=A3=C2=
-=A8=C2=B0=C3=BC=C2=BA=C2=AC=C2=B8=C3=B6=C3=88=C3=8B=C2=BC=C2=B0=C3=88=C2=BA=
-=C3=97=C3=A9=C2=A3=C2=A9=C3=8A=C2=B9=C3=93=C3=83=C2=A1=C2=A3=C2=BD=C3=BB=C3=
-=96=C2=B9=C3=88=C3=8E=C2=BA=C3=8E=C3=88=C3=8B=C3=94=C3=9A=C3=8E=C2=B4=C2=BE=
-=C2=AD=C3=8A=C3=9A=C3=88=C2=A8=C2=B5=C3=84=C3=87=C3=A9=C2=BF=C3=B6=C3=8F=C3=
-=82=C3=92=C3=94=C3=88=C3=8E=C2=BA=C3=8E=C3=90=C3=8E=C3=8A=C2=BD=C3=8A=C2=B9=
-=C3=93=C3=83=C2=A1=C2=A3=C3=88=C3=A7=C2=B9=C3=BB=C3=84=C3=BA=C2=B4=C3=AD=C3=
-=8A=C3=95=C3=81=C3=8B=C2=B1=C2=BE=C3=93=C3=8A=C2=BC=C3=BE=C2=A3=C2=AC=C3=87=
-=C3=90=C3=8E=C3=B0=C2=B4=C2=AB=C2=B2=C2=A5=C2=A1=C2=A2=C2=B7=C3=96=C2=B7=C2=
-=A2=C2=A1=C2=A2=C2=B8=C2=B4=C3=96=C3=86=C2=A1=C2=A2=C3=93=C2=A1=C3=8B=C2=A2=
-=C2=BB=C3=B2=C3=8A=C2=B9=C3=93=C3=83=C2=B1=C2=BE=C3=93=C3=8A=C2=BC=C3=BE=C3=
-=96=C2=AE=C3=88=C3=8E=C2=BA=C3=8E=C2=B2=C2=BF=C2=B7=C3=96=C2=BB=C3=B2=C3=86=
-=C3=A4=C3=8B=C3=B9=C3=94=C3=98=C3=96=C2=AE=C3=88=C3=8E=C2=BA=C3=8E=C3=84=C3=
-=9A=C3=88=C3=9D=C2=A3=C2=AC=C2=B2=C2=A2=C3=87=C3=AB=C3=81=C2=A2=C2=BC=C2=B4=
-=C3=92=C3=94=C2=B5=C3=A7=C3=97=C3=93=C3=93=C3=8A=C2=BC=C3=BE=C3=8D=C2=A8=C3=
-=96=C2=AA=C2=B7=C2=A2=C2=BC=C3=BE=C3=88=C3=8B=C2=B2=C2=A2=C3=89=C2=BE=C2=B3=
-=C3=BD=C2=B1=C2=BE=C3=93=C3=8A=C2=BC=C3=BE=C2=BC=C2=B0=C3=86=C3=A4=C2=B8=C2=
-=BD=C2=BC=C3=BE=C2=A1=C2=A3
-=C3=8D=C3=B8=C3=82=C3=A7=C3=8D=C2=A8=C3=91=C2=B6=C2=B9=C3=8C=C3=93=C3=90=C3=
-=88=C2=B1=C3=8F=C3=9D=C2=BF=C3=89=C3=84=C3=9C=C2=B5=C2=BC=C3=96=C3=82=C3=93=
-=C3=8A=C2=BC=C3=BE=C2=B1=C2=BB=C2=BD=C3=98=C3=81=C3=B4=C2=A1=C2=A2=C3=90=C3=
-=9E=C2=B8=C3=84=C2=A1=C2=A2=C2=B6=C2=AA=C3=8A=C2=A7=C2=A1=C2=A2=C3=86=C3=86=
-=C2=BB=C2=B5=C2=BB=C3=B2=C2=B0=C3=BC=C2=BA=C2=AC=C2=BC=C3=86=C3=8B=C3=A3=C2=
-=BB=C3=BA=C2=B2=C2=A1=C2=B6=C2=BE=C2=B5=C3=88=C2=B2=C2=BB=C2=B0=C2=B2=C3=88=
-=C2=AB=C3=87=C3=A9=C2=BF=C3=B6=C2=A3=C2=ACOPPO=C2=B6=C3=94=C2=B4=C3=8B=C3=
-=80=C3=A0=C2=B4=C3=AD=C3=8E=C3=B3=C2=BB=C3=B2=C3=92=C3=85=C3=82=C2=A9=C2=B6=
-=C3=B8=C3=92=C3=BD=C3=96=C3=82=C3=96=C2=AE=C3=88=C3=8E=C2=BA=C3=8E=C3=8B=C3=
-=B0=C3=8A=C2=A7=C2=B8=C3=85=C2=B2=C2=BB=C2=B3=C3=90=C2=B5=C2=A3=C3=94=C3=B0=
-=C3=88=C3=8E=C2=B2=C2=A2=C2=B1=C2=A3=C3=81=C3=B4=C3=93=C3=AB=C2=B1=C2=BE=C3=
-=93=C3=8A=C2=BC=C3=BE=C3=8F=C3=A0=C2=B9=C3=98=C3=96=C2=AE=C3=92=C2=BB=C3=87=
-=C3=90=C3=88=C2=A8=C3=80=C3=BB=C2=A1=C2=A3
-=C2=B3=C3=BD=C2=B7=C3=87=C3=83=C3=B7=C3=88=C2=B7=C3=8B=C2=B5=C3=83=C3=B7=C2=
-=A3=C2=AC=C2=B1=C2=BE=C3=93=C3=8A=C2=BC=C3=BE=C2=BC=C2=B0=C3=86=C3=A4=C2=B8=
-=C2=BD=C2=BC=C3=BE=C3=8E=C3=9E=C3=92=C3=A2=C3=97=C3=B7=C3=8E=C2=AA=C3=94=C3=
-=9A=C3=88=C3=8E=C2=BA=C3=8E=C2=B9=C3=BA=C2=BC=C3=92=C2=BB=C3=B2=C2=B5=C3=98=
-=C3=87=C3=B8=C3=96=C2=AE=C3=92=C2=AA=C3=94=C2=BC=C2=A1=C2=A2=C3=95=C3=90=C3=
-=80=C2=BF=C2=BB=C3=B2=C2=B3=C3=90=C3=85=C2=B5=C2=A3=C2=AC=C3=92=C3=A0=C3=8E=
-=C3=9E=C3=92=C3=A2=C3=97=C3=B7=C3=8E=C2=AA=C3=88=C3=8E=C2=BA=C3=8E=C2=BD=C2=
-=BB=C3=92=C3=97=C2=BB=C3=B2=C2=BA=C3=8F=C3=8D=C2=AC=C3=96=C2=AE=C3=95=C3=BD=
-=C3=8A=C2=BD=C3=88=C2=B7=C3=88=C3=8F=C2=A1=C2=A3 =C2=B7=C2=A2=C2=BC=C3=BE=
-=C3=88=C3=8B=C2=A1=C2=A2=C3=86=C3=A4=C3=8B=C3=B9=C3=8A=C3=B4=C2=BB=C3=BA=C2=
-=B9=C2=B9=C2=BB=C3=B2=C3=8B=C3=B9=C3=8A=C3=B4=C2=BB=C3=BA=C2=B9=C2=B9=C3=96=
-=C2=AE=C2=B9=C3=98=C3=81=C2=AA=C2=BB=C3=BA=C2=B9=C2=B9=C2=BB=C3=B2=C3=88=C3=
-=8E=C2=BA=C3=8E=C3=89=C3=8F=C3=8A=C3=B6=C2=BB=C3=BA=C2=B9=C2=B9=C3=96=C2=AE=
-=C2=B9=C3=89=C2=B6=C2=AB=C2=A1=C2=A2=C2=B6=C2=AD=C3=8A=C3=82=C2=A1=C2=A2=C2=
-=B8=C3=9F=C2=BC=C2=B6=C2=B9=C3=9C=C3=80=C3=AD=C3=88=C3=8B=C3=94=C2=B1=C2=A1=
-=C2=A2=C3=94=C2=B1=C2=B9=C2=A4=C2=BB=C3=B2=C3=86=C3=A4=C3=8B=C3=BB=C3=88=C3=
-=8E=C2=BA=C3=8E=C3=88=C3=8B=C2=A3=C2=A8=C3=92=C3=94=C3=8F=C3=82=C2=B3=C3=86=
-=C2=A1=C2=B0=C2=B7=C2=A2=C2=BC=C3=BE=C3=88=C3=8B=C2=A1=C2=B1=C2=BB=C3=B2=C2=
-=A1=C2=B0OPPO=C2=A1=C2=B1=C2=A3=C2=A9=C2=B2=C2=BB=C3=92=C3=B2=C2=B1=C2=BE=
-=C3=93=C3=8A=C2=BC=C3=BE=C3=96=C2=AE=C3=8E=C3=B3=C3=8B=C3=8D=C2=B6=C3=B8=C2=
-=B7=C3=85=C3=86=C3=BA=C3=86=C3=A4=C3=8B=C3=B9=C3=8F=C3=AD=C3=96=C2=AE=C3=88=
-=C3=8E=C2=BA=C3=8E=C3=88=C2=A8=C3=80=C3=BB=C2=A3=C2=AC=C3=92=C3=A0=C2=B2=C2=
-=BB=C2=B6=C3=94=C3=92=C3=B2=C2=B9=C3=8A=C3=92=C3=A2=C2=BB=C3=B2=C2=B9=C3=BD=
-=C3=8A=C2=A7=C3=8A=C2=B9=C3=93=C3=83=C2=B8=C3=83=C2=B5=C3=88=C3=90=C3=85=C3=
-=8F=C2=A2=C2=B6=C3=B8=C3=92=C3=BD=C2=B7=C2=A2=C2=BB=C3=B2=C2=BF=C3=89=C3=84=
-=C3=9C=C3=92=C3=BD=C2=B7=C2=A2=C2=B5=C3=84=C3=8B=C3=B0=C3=8A=C2=A7=C2=B3=C3=
-=90=C2=B5=C2=A3=C3=88=C3=8E=C2=BA=C3=8E=C3=94=C3=B0=C3=88=C3=8E=C2=A1=C2=A3
-=C3=8E=C3=84=C2=BB=C2=AF=C2=B2=C3=AE=C3=92=C3=AC=C3=85=C3=BB=C3=82=C2=B6=C2=
-=A3=C2=BA=C3=92=C3=B2=C3=88=C2=AB=C3=87=C3=B2=C3=8E=C3=84=C2=BB=C2=AF=C2=B2=
-=C3=AE=C3=92=C3=AC=C3=93=C2=B0=C3=8F=C3=AC=C2=A3=C2=AC=C2=B5=C2=A5=C2=B4=C2=
-=BF=C3=92=C3=94YES\OK=C2=BB=C3=B2=C3=86=C3=A4=C3=8B=C3=BB=C2=BC=C3=B2=C2=B5=
-=C2=A5=C2=B4=C3=8A=C2=BB=C3=A3=C2=B5=C3=84=C2=BB=C3=98=C2=B8=C2=B4=C2=B2=C2=
-=A2=C2=B2=C2=BB=C2=B9=C2=B9=C2=B3=C3=89=C2=B7=C2=A2=C2=BC=C3=BE=C3=88=C3=8B=
-=C2=B6=C3=94=C3=88=C3=8E=C2=BA=C3=8E=C2=BD=C2=BB=C3=92=C3=97=C2=BB=C3=B2=C2=
-=BA=C3=8F=C3=8D=C2=AC=C3=96=C2=AE=C3=95=C3=BD=C3=8A=C2=BD=C3=88=C2=B7=C3=88=
-=C3=8F=C2=BB=C3=B2=C2=BD=C3=93=C3=8A=C3=9C=C2=A3=C2=AC=C3=87=C3=AB=C3=93=C3=
-=AB=C2=B7=C2=A2=C2=BC=C3=BE=C3=88=C3=8B=C3=94=C3=99=C2=B4=C3=8E=C3=88=C2=B7=
-=C3=88=C3=8F=C3=92=C3=94=C2=BB=C3=B1=C2=B5=C3=83=C3=83=C3=B7=C3=88=C2=B7=C3=
-=8A=C3=A9=C3=83=C3=A6=C3=92=C3=A2=C2=BC=C3=BB=C2=A1=C2=A3=C2=B7=C2=A2=C2=BC=
-=C3=BE=C3=88=C3=8B=C2=B2=C2=BB=C2=B6=C3=94=C3=88=C3=8E=C2=BA=C3=8E=C3=8A=C3=
-=9C=C3=8E=C3=84=C2=BB=C2=AF=C2=B2=C3=AE=C3=92=C3=AC=C3=93=C2=B0=C3=8F=C3=AC=
-=C2=B6=C3=B8=C2=B5=C2=BC=C3=96=C3=82=C2=B9=C3=8A=C3=92=C3=A2=C2=BB=C3=B2=C2=
-=B4=C3=AD=C3=8E=C3=B3=C3=8A=C2=B9=C3=93=C3=83=C2=B8=C3=83=C2=B5=C3=88=C3=90=
-=C3=85=C3=8F=C2=A2=C3=8B=C3=B9=C3=94=C3=AC=C2=B3=C3=89=C2=B5=C3=84=C3=88=C3=
-=8E=C2=BA=C3=8E=C3=96=C2=B1=C2=BD=C3=93=C2=BB=C3=B2=C2=BC=C3=A4=C2=BD=C3=93=
-=C3=8B=C3=B0=C2=BA=C2=A6=C2=B3=C3=90=C2=B5=C2=A3=C3=94=C3=B0=C3=88=C3=8E=C2=
-=A1=C2=A3
-This e-mail and its attachments contain confidential information from OPPO,=
- which is intended only for the person or entity whose address is listed ab=
-ove. Any use of the information contained herein in any way (including, but=
- not limited to, total or partial disclosure, reproduction, or disseminatio=
-n) by persons other than the intended recipient(s) is prohibited. If you ar=
-e not the intended recipient, please do not read, copy, distribute, or use =
-this information. If you have received this transmission in error, please n=
-otify the sender immediately by reply e-mail and then delete this message.
-Electronic communications may contain computer viruses or other defects inh=
-erently, may not be accurately and/or timely transmitted to other systems, =
-or may be intercepted, modified ,delayed, deleted or interfered. OPPO shall=
- not be liable for any damages that arise or may arise from such matter and=
- reserves all rights in connection with the email.
-Unless expressly stated, this e-mail and its attachments are provided witho=
-ut any warranty, acceptance or promise of any kind in any country or region=
-, nor constitute a formal confirmation or acceptance of any transaction or =
-contract. The sender, together with its affiliates or any shareholder, dire=
-ctor, officer, employee or any other person of any such institution (herein=
-after referred to as "sender" or "OPPO") does not waive any rights and shal=
-l not be liable for any damages that arise or may arise from the intentiona=
-l or negligent use of such information.
-Cultural Differences Disclosure: Due to global cultural differences, any re=
-ply with only YES\OK or other simple words does not constitute any confirma=
-tion or acceptance of any transaction or contract, please confirm with the =
-sender again to ensure clear opinion in written form. The sender shall not =
-be responsible for any direct or indirect damages resulting from the intent=
-ional or misuse of such information.
-________________________________
-OPPO
-
-=E6=9C=AC=E7=94=B5=E5=AD=90=E9=82=AE=E4=BB=B6=E5=8F=8A=E5=85=B6=E9=99=84=E4=
-=BB=B6=E5=90=AB=E6=9C=89OPPO=E5=85=AC=E5=8F=B8=E7=9A=84=E4=BF=9D=E5=AF=86=
-=E4=BF=A1=E6=81=AF=EF=BC=8C=E4=BB=85=E9=99=90=E4=BA=8E=E9=82=AE=E4=BB=B6=E6=
-=8C=87=E6=98=8E=E7=9A=84=E6=94=B6=E4=BB=B6=E4=BA=BA=EF=BC=88=E5=8C=85=E5=90=
-=AB=E4=B8=AA=E4=BA=BA=E5=8F=8A=E7=BE=A4=E7=BB=84=EF=BC=89=E4=BD=BF=E7=94=A8=
-=E3=80=82=E7=A6=81=E6=AD=A2=E4=BB=BB=E4=BD=95=E4=BA=BA=E5=9C=A8=E6=9C=AA=E7=
-=BB=8F=E6=8E=88=E6=9D=83=E7=9A=84=E6=83=85=E5=86=B5=E4=B8=8B=E4=BB=A5=E4=BB=
-=BB=E4=BD=95=E5=BD=A2=E5=BC=8F=E4=BD=BF=E7=94=A8=E3=80=82=E5=A6=82=E6=9E=9C=
-=E6=82=A8=E9=94=99=E6=94=B6=E4=BA=86=E6=9C=AC=E9=82=AE=E4=BB=B6=EF=BC=8C=E5=
-=88=87=E5=8B=BF=E4=BC=A0=E6=92=AD=E3=80=81=E5=88=86=E5=8F=91=E3=80=81=E5=A4=
-=8D=E5=88=B6=E3=80=81=E5=8D=B0=E5=88=B7=E6=88=96=E4=BD=BF=E7=94=A8=E6=9C=AC=
-=E9=82=AE=E4=BB=B6=E4=B9=8B=E4=BB=BB=E4=BD=95=E9=83=A8=E5=88=86=E6=88=96=E5=
-=85=B6=E6=89=80=E8=BD=BD=E4=B9=8B=E4=BB=BB=E4=BD=95=E5=86=85=E5=AE=B9=EF=BC=
-=8C=E5=B9=B6=E8=AF=B7=E7=AB=8B=E5=8D=B3=E4=BB=A5=E7=94=B5=E5=AD=90=E9=82=AE=
-=E4=BB=B6=E9=80=9A=E7=9F=A5=E5=8F=91=E4=BB=B6=E4=BA=BA=E5=B9=B6=E5=88=A0=E9=
-=99=A4=E6=9C=AC=E9=82=AE=E4=BB=B6=E5=8F=8A=E5=85=B6=E9=99=84=E4=BB=B6=E3=80=
-=82
-=E7=BD=91=E7=BB=9C=E9=80=9A=E8=AE=AF=E5=9B=BA=E6=9C=89=E7=BC=BA=E9=99=B7=E5=
-=8F=AF=E8=83=BD=E5=AF=BC=E8=87=B4=E9=82=AE=E4=BB=B6=E8=A2=AB=E6=88=AA=E7=95=
-=99=E3=80=81=E4=BF=AE=E6=94=B9=E3=80=81=E4=B8=A2=E5=A4=B1=E3=80=81=E7=A0=B4=
-=E5=9D=8F=E6=88=96=E5=8C=85=E5=90=AB=E8=AE=A1=E7=AE=97=E6=9C=BA=E7=97=85=E6=
-=AF=92=E7=AD=89=E4=B8=8D=E5=AE=89=E5=85=A8=E6=83=85=E5=86=B5=EF=BC=8COPPO=
-=E5=AF=B9=E6=AD=A4=E7=B1=BB=E9=94=99=E8=AF=AF=E6=88=96=E9=81=97=E6=BC=8F=E8=
-=80=8C=E5=BC=95=E8=87=B4=E4=B9=8B=E4=BB=BB=E4=BD=95=E6=8D=9F=E5=A4=B1=E6=A6=
-=82=E4=B8=8D=E6=89=BF=E6=8B=85=E8=B4=A3=E4=BB=BB=E5=B9=B6=E4=BF=9D=E7=95=99=
-=E4=B8=8E=E6=9C=AC=E9=82=AE=E4=BB=B6=E7=9B=B8=E5=85=B3=E4=B9=8B=E4=B8=80=E5=
-=88=87=E6=9D=83=E5=88=A9=E3=80=82
-=E9=99=A4=E9=9D=9E=E6=98=8E=E7=A1=AE=E8=AF=B4=E6=98=8E=EF=BC=8C=E6=9C=AC=E9=
-=82=AE=E4=BB=B6=E5=8F=8A=E5=85=B6=E9=99=84=E4=BB=B6=E6=97=A0=E6=84=8F=E4=BD=
-=9C=E4=B8=BA=E5=9C=A8=E4=BB=BB=E4=BD=95=E5=9B=BD=E5=AE=B6=E6=88=96=E5=9C=B0=
-=E5=8C=BA=E4=B9=8B=E8=A6=81=E7=BA=A6=E3=80=81=E6=8B=9B=E6=8F=BD=E6=88=96=E6=
-=89=BF=E8=AF=BA=EF=BC=8C=E4=BA=A6=E6=97=A0=E6=84=8F=E4=BD=9C=E4=B8=BA=E4=BB=
-=BB=E4=BD=95=E4=BA=A4=E6=98=93=E6=88=96=E5=90=88=E5=90=8C=E4=B9=8B=E6=AD=A3=
-=E5=BC=8F=E7=A1=AE=E8=AE=A4=E3=80=82 =E5=8F=91=E4=BB=B6=E4=BA=BA=E3=80=81=
-=E5=85=B6=E6=89=80=E5=B1=9E=E6=9C=BA=E6=9E=84=E6=88=96=E6=89=80=E5=B1=9E=E6=
-=9C=BA=E6=9E=84=E4=B9=8B=E5=85=B3=E8=81=94=E6=9C=BA=E6=9E=84=E6=88=96=E4=BB=
-=BB=E4=BD=95=E4=B8=8A=E8=BF=B0=E6=9C=BA=E6=9E=84=E4=B9=8B=E8=82=A1=E4=B8=9C=
-=E3=80=81=E8=91=A3=E4=BA=8B=E3=80=81=E9=AB=98=E7=BA=A7=E7=AE=A1=E7=90=86=E4=
-=BA=BA=E5=91=98=E3=80=81=E5=91=98=E5=B7=A5=E6=88=96=E5=85=B6=E4=BB=96=E4=BB=
-=BB=E4=BD=95=E4=BA=BA=EF=BC=88=E4=BB=A5=E4=B8=8B=E7=A7=B0=E2=80=9C=E5=8F=91=
-=E4=BB=B6=E4=BA=BA=E2=80=9D=E6=88=96=E2=80=9COPPO=E2=80=9D=EF=BC=89=E4=B8=
-=8D=E5=9B=A0=E6=9C=AC=E9=82=AE=E4=BB=B6=E4=B9=8B=E8=AF=AF=E9=80=81=E8=80=8C=
-=E6=94=BE=E5=BC=83=E5=85=B6=E6=89=80=E4=BA=AB=E4=B9=8B=E4=BB=BB=E4=BD=95=E6=
-=9D=83=E5=88=A9=EF=BC=8C=E4=BA=A6=E4=B8=8D=E5=AF=B9=E5=9B=A0=E6=95=85=E6=84=
-=8F=E6=88=96=E8=BF=87=E5=A4=B1=E4=BD=BF=E7=94=A8=E8=AF=A5=E7=AD=89=E4=BF=A1=
-=E6=81=AF=E8=80=8C=E5=BC=95=E5=8F=91=E6=88=96=E5=8F=AF=E8=83=BD=E5=BC=95=E5=
-=8F=91=E7=9A=84=E6=8D=9F=E5=A4=B1=E6=89=BF=E6=8B=85=E4=BB=BB=E4=BD=95=E8=B4=
-=A3=E4=BB=BB=E3=80=82
-=E6=96=87=E5=8C=96=E5=B7=AE=E5=BC=82=E6=8A=AB=E9=9C=B2=EF=BC=9A=E5=9B=A0=E5=
-=85=A8=E7=90=83=E6=96=87=E5=8C=96=E5=B7=AE=E5=BC=82=E5=BD=B1=E5=93=8D=EF=BC=
-=8C=E5=8D=95=E7=BA=AF=E4=BB=A5YES\OK=E6=88=96=E5=85=B6=E4=BB=96=E7=AE=80=E5=
-=8D=95=E8=AF=8D=E6=B1=87=E7=9A=84=E5=9B=9E=E5=A4=8D=E5=B9=B6=E4=B8=8D=E6=9E=
-=84=E6=88=90=E5=8F=91=E4=BB=B6=E4=BA=BA=E5=AF=B9=E4=BB=BB=E4=BD=95=E4=BA=A4=
-=E6=98=93=E6=88=96=E5=90=88=E5=90=8C=E4=B9=8B=E6=AD=A3=E5=BC=8F=E7=A1=AE=E8=
-=AE=A4=E6=88=96=E6=8E=A5=E5=8F=97=EF=BC=8C=E8=AF=B7=E4=B8=8E=E5=8F=91=E4=BB=
-=B6=E4=BA=BA=E5=86=8D=E6=AC=A1=E7=A1=AE=E8=AE=A4=E4=BB=A5=E8=8E=B7=E5=BE=97=
-=E6=98=8E=E7=A1=AE=E4=B9=A6=E9=9D=A2=E6=84=8F=E8=A7=81=E3=80=82=E5=8F=91=E4=
-=BB=B6=E4=BA=BA=E4=B8=8D=E5=AF=B9=E4=BB=BB=E4=BD=95=E5=8F=97=E6=96=87=E5=8C=
-=96=E5=B7=AE=E5=BC=82=E5=BD=B1=E5=93=8D=E8=80=8C=E5=AF=BC=E8=87=B4=E6=95=85=
-=E6=84=8F=E6=88=96=E9=94=99=E8=AF=AF=E4=BD=BF=E7=94=A8=E8=AF=A5=E7=AD=89=E4=
-=BF=A1=E6=81=AF=E6=89=80=E9=80=A0=E6=88=90=E7=9A=84=E4=BB=BB=E4=BD=95=E7=9B=
-=B4=E6=8E=A5=E6=88=96=E9=97=B4=E6=8E=A5=E6=8D=9F=E5=AE=B3=E6=89=BF=E6=8B=85=
-=E8=B4=A3=E4=BB=BB=E3=80=82
-This e-mail and its attachments contain confidential information from OPPO,=
- which is intended only for the person or entity whose address is listed ab=
-ove. Any use of the information contained herein in any way (including, but=
- not limited to, total or partial disclosure, reproduction, or disseminatio=
-n) by persons other than the intended recipient(s) is prohibited. If you ar=
-e not the intended recipient, please do not read, copy, distribute, or use =
-this information. If you have received this transmission in error, please n=
-otify the sender immediately by reply e-mail and then delete this message.
-Electronic communications may contain computer viruses or other defects inh=
-erently, may not be accurately and/or timely transmitted to other systems, =
-or may be intercepted, modified ,delayed, deleted or interfered. OPPO shall=
- not be liable for any damages that arise or may arise from such matter and=
- reserves all rights in connection with the email.
-Unless expressly stated, this e-mail and its attachments are provided witho=
-ut any warranty, acceptance or promise of any kind in any country or region=
-, nor constitute a formal confirmation or acceptance of any transaction or =
-contract. The sender, together with its affiliates or any shareholder, dire=
-ctor, officer, employee or any other person of any such institution (herein=
-after referred to as "sender" or "OPPO") does not waive any rights and shal=
-l not be liable for any damages that arise or may arise from the intentiona=
-l or negligent use of such information.
-Cultural Differences Disclosure: Due to global cultural differences, any re=
-ply with only YES\OK or other simple words does not constitute any confirma=
-tion or acceptance of any transaction or contract, please confirm with the =
-sender again to ensure clear opinion in written form. The sender shall not =
-be responsible for any direct or indirect damages resulting from the intent=
-ional or misuse of such information.
