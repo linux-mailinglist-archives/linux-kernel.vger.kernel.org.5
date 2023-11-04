@@ -2,255 +2,281 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 58F547E0D08
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 02:23:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 040F77E0D0C
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 02:26:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231767AbjKDBXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 21:23:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50144 "EHLO
+        id S231804AbjKDBZ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 21:25:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229557AbjKDBXH (ORCPT
+        with ESMTP id S229557AbjKDBZz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 21:23:07 -0400
-Received: from mail-oi1-f197.google.com (mail-oi1-f197.google.com [209.85.167.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16E29D5F
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 18:23:04 -0700 (PDT)
-Received: by mail-oi1-f197.google.com with SMTP id 5614622812f47-3b2e7a8fbbdso3551589b6e.1
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Nov 2023 18:23:04 -0700 (PDT)
+        Fri, 3 Nov 2023 21:25:55 -0400
+Received: from mail-vs1-xe30.google.com (mail-vs1-xe30.google.com [IPv6:2607:f8b0:4864:20::e30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1986DD5F
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 18:25:52 -0700 (PDT)
+Received: by mail-vs1-xe30.google.com with SMTP id ada2fe7eead31-45d88053c24so703935137.3
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Nov 2023 18:25:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699061151; x=1699665951; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LTpVchC8IhcwImXh4PD4GAA44MhkXQL49YQrqCPCcUg=;
+        b=KwaekXNxzXtOT1v/o9aDh+PZ2lxtITfpcq5zkvnpAFgxWMLMobCvliBsnn0vj01TLM
+         +hFBcNh1JkiuYST/XYZALHEuG6qsLl7Blcxhs3Afi54gSX72BI/95n9yHlEEZi8hwJdD
+         I5myd79U2KSo3VrJQKQqoXeDFa15UNj8gTFgTAD/XtTVO+tgdv9l3vyIrv1cZCLZjgCP
+         xbKY9UYxeMVe2/GR83nXyDHKnWpK4FQuHUHC1tffcVjkwjvGCgHRzcM51g3E452/BVMW
+         DduSCTqkzOJ1WEXt+008rz3dqwuZ2/wN4ULcDn1RkEVesZe6BmzHD7GFrCZ9Zlhw1edW
+         DbDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699060983; x=1699665783;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=h7qtiuDax89TJTi70i5r63SkkHu3i5+DWST7z9Os/as=;
-        b=l2RLl37KIk68n6OdDFidoPiPWYiYSMhW8tZBUWwM9yx/Oa3S0sTofa7jbtFPAPYEVV
-         1EA46nb09TCe3SKatkgfxiUGdCyD0wI9rxkpuox9Wb9u3EXbDKoQPCOeU2uoKNyqjYAQ
-         prIjeY4NXncCtJkG76UyU6Uy44fmiKeDS00LVN5B2zVw4mbhQIyUcImgmNCBL7VAJEx5
-         u1ZLUQO9EDes2lkTfwlHzn5BY92kxkjbEtF688DwjakPmdDn3hQrOTKBKU9vT6GHH3Li
-         gZ3cytNE6VP8HzrFlQQ42bvZ6CK/3l6eupdofbKdW/06eClyo0JgpJO47hqlAeHdV0HW
-         HlOg==
-X-Gm-Message-State: AOJu0YytUdrPFcHOV9UKa0vRf2cVLaBFviGPYnxO8xiB0iAZ8c+qaia4
-        +1Edrahr2S81nI+ZMAQuZ+fRBVat+kTI6n3DEXeImeSxY0tc
-X-Google-Smtp-Source: AGHT+IEKkJCwiu5Zq2mdv5a59IxO7mhmK80VZ8kuU+chXbrAwR2A4TucJUJuTkjsHO2Xin0Mu4xZtI0LtCz7H8B3R2usUbZQG4r6
+        d=1e100.net; s=20230601; t=1699061151; x=1699665951;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=LTpVchC8IhcwImXh4PD4GAA44MhkXQL49YQrqCPCcUg=;
+        b=PIOAJx8ApSMEKql856LNDN+9P16RXRj7Qk6c3KeLvzANW+Gt9vIKcJz+WbPph0TzGx
+         xqNVPPz/U8mOHxGwXGB/7NVdj+F28ldPVD7HpVc3SYZTfoFnwxZpL6nNJ3WOfz6bG5Zf
+         ler6htsLKbeRS+OxL0o4p1/BEu8goFISMm0bas7ZpNsK6d/x/AdChMR4o3iNig+T1W8h
+         LvCSPq7rcVFw3unYyuzRH/X09bZ7qQvZVzEe+0Fw7W40kOJvNxr30O2tZPcP98Fy9tR1
+         2y5yUeLQsuJkvLncQ+UwWfL9+F84nJsBfCOwMvMY3SoV9HCAuwz3cV3iuNtHH8mo0Z+4
+         3C2A==
+X-Gm-Message-State: AOJu0YzzhdNH1yZrNmLbyJ9Ud63K8TgmT3gOIU9keJqKG7NbviKhpuGB
+        2wJW4lvQhm8cTFXZ4exFu8siuQp8BLzVDi0Thuk=
+X-Google-Smtp-Source: AGHT+IGevyd6vIwPrCFoBtJfO4pyBgJX83WcK7yPj8A2ZgbqcHshXaDS5swQhu4hRbp/QB2LWqUfD65TpQhKqi9PEPQ=
+X-Received: by 2002:a05:6102:471e:b0:457:4645:a339 with SMTP id
+ ei30-20020a056102471e00b004574645a339mr22432790vsb.1.1699061151083; Fri, 03
+ Nov 2023 18:25:51 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6808:1523:b0:3b2:e46e:448c with SMTP id
- u35-20020a056808152300b003b2e46e448cmr8480416oiw.3.1699060983417; Fri, 03 Nov
- 2023 18:23:03 -0700 (PDT)
-Date:   Fri, 03 Nov 2023 18:23:03 -0700
-In-Reply-To: <20231104010547.1505-1-hdanton@sina.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000005e519f060949763f@google.com>
-Subject: Re: [syzbot] [usb?] INFO: task hung in hub_port_init (3)
-From:   syzbot <syzbot+b6f11035e572f08bc20f@syzkaller.appspotmail.com>
-To:     hdanton@sina.com, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
+References: <20231103131011.1316396-1-lb@semihalf.com>
+In-Reply-To: <20231103131011.1316396-1-lb@semihalf.com>
+From:   jim.cromie@gmail.com
+Date:   Fri, 3 Nov 2023 19:25:24 -0600
+Message-ID: <CAJfuBxz8mORgH9WaGVPsu7Z1cpgqWuJLxZNgFt1ocKa1sze5sw@mail.gmail.com>
+Subject: Re: [PATCH v1 00/12] dyndbg: add support for writing debug logs to trace
+To:     =?UTF-8?Q?=C5=81ukasz_Bartosik?= <lb@semihalf.com>
+Cc:     Jason Baron <jbaron@akamai.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Guenter Roeck <groeck@google.com>,
+        Yaniv Tzoreff <yanivt@google.com>,
+        Benson Leung <bleung@google.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        Pekka Paalanen <ppaalanen@gmail.com>,
+        Sean Paul <seanpaul@chromium.org>,
+        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org,
+        upstream@semihalf.com
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi =C5=81ukasz,
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-KASAN: slab-use-after-free Read in usb_hcd_flush_endpoint
+can I haz a git remote url ?
+no webmail antics that way.
 
-vhci_hcd: vhci_device speed not set
-usb 9-1: device descriptor read/64, error -110
-==================================================================
-BUG: KASAN: slab-use-after-free in usb_hcd_flush_endpoint+0x1ab/0x3e0 drivers/usb/core/hcd.c:1779
-Read of size 4 at addr ffff888019ecd204 by task kworker/1:0/23
+On Fri, Nov 3, 2023 at 7:10=E2=80=AFAM =C5=81ukasz Bartosik <lb@semihalf.co=
+m> wrote:
+>
+> Add support for writing debug logs to trace events and trace instances.
+> The rationale behing this feature is to be able to redirect debug logs
+> (per each callsite indivdually) to trace to aid in debugging. The debug
+> logs output to trace can be enabled with T flag. Additionally trace
+> destination can be provided to the T flag after ":". The trace destinatio=
+n
+> field is used to determine where debug logs will be written. Setting trac=
+e
+> destination value to 0 (default) enables output to prdbg and devdbg trace
 
-CPU: 1 PID: 23 Comm: kworker/1:0 Not tainted 6.6.0-syzkaller-12893-ge392ea4d4d00-dirty #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/09/2023
-Workqueue: usb_hub_wq hub_event
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x1e7/0x2d0 lib/dump_stack.c:106
- print_address_description mm/kasan/report.c:364 [inline]
- print_report+0x163/0x540 mm/kasan/report.c:475
- kasan_report+0x142/0x170 mm/kasan/report.c:588
- usb_hcd_flush_endpoint+0x1ab/0x3e0 drivers/usb/core/hcd.c:1779
- usb_disable_endpoint+0x123/0x180 drivers/usb/core/message.c:1300
- usb_ep0_reinit drivers/usb/core/hub.c:4636 [inline]
- hub_port_connect drivers/usb/core/hub.c:5485 [inline]
- hub_port_connect_change drivers/usb/core/hub.c:5599 [inline]
- port_event drivers/usb/core/hub.c:5759 [inline]
- hub_event+0x2ee5/0x50a0 drivers/usb/core/hub.c:5841
- process_one_work kernel/workqueue.c:2630 [inline]
- process_scheduled_works+0x90f/0x1400 kernel/workqueue.c:2703
- worker_thread+0xa5f/0xff0 kernel/workqueue.c:2784
- kthread+0x2d3/0x370 kernel/kthread.c:388
- ret_from_fork+0x48/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
- </TASK>
+isnt +p independent of dest var ?  its just "on" to syslog.
 
-Allocated by task 23:
- kasan_save_stack mm/kasan/common.c:45 [inline]
- kasan_set_track+0x4f/0x70 mm/kasan/common.c:52
- ____kasan_kmalloc mm/kasan/common.c:374 [inline]
- __kasan_kmalloc+0x98/0xb0 mm/kasan/common.c:383
- kasan_kmalloc include/linux/kasan.h:198 [inline]
- __do_kmalloc_node mm/slab_common.c:1007 [inline]
- __kmalloc+0xb9/0x230 mm/slab_common.c:1020
- kmalloc include/linux/slab.h:604 [inline]
- usb_alloc_urb+0x3a/0x130 drivers/usb/core/urb.c:75
- usb_internal_control_msg drivers/usb/core/message.c:96 [inline]
- usb_control_msg+0x189/0x4c0 drivers/usb/core/message.c:154
- get_bMaxPacketSize0 drivers/usb/core/hub.c:4744 [inline]
- hub_port_init+0xaa6/0x23a0 drivers/usb/core/hub.c:4940
- hub_port_connect drivers/usb/core/hub.c:5388 [inline]
- hub_port_connect_change drivers/usb/core/hub.c:5599 [inline]
- port_event drivers/usb/core/hub.c:5759 [inline]
- hub_event+0x2a3c/0x50a0 drivers/usb/core/hub.c:5841
- process_one_work kernel/workqueue.c:2630 [inline]
- process_scheduled_works+0x90f/0x1400 kernel/workqueue.c:2703
- worker_thread+0xa5f/0xff0 kernel/workqueue.c:2784
- kthread+0x2d3/0x370 kernel/kthread.c:388
- ret_from_fork+0x48/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
+> events. Setting trace destination value to a value in range of [1..255]
+> enables output to trace instance identified by trace destination value.
+> For example when trace destination value is 2 then debug logs will
+> be written to <debugfs>/tracing/instances/dyndbg_inst_2 instance.
+>
+> Usage examples:
+>
+> localhost ~ # echo "module thunderbolt =3DpT:7" >
+>                                 <debugfs>/dynamic_debug/control
+>
+> This will enable output of debug logs to trace instance
+> <debugfs>/tracing/instances/dyndbg_inst_7 and debug logs will
+> be written to the syslog also because p flag is set.
+>
+> localhost ~ # echo "module thunderbolt =3DpT:7,l" >
+>                                 <debugfs>/dynamic_debug/control
+>
+> When trace destination is followed by another flag then trace
+> destination has to be followed by ",".
+>
+> localhost ~ # echo "module thunderbolt =3DpTl" >
+>                                 <debugfs>/dynamic_debug/control
+>
+> When trace destination is not provided explicitly then its value
+> defaults to 0. In this case debug logs will be written to the prdbg
+> and devdbg trace events.
+>
+> localhost ~ # echo "module thunderbolt =3DT:25" >
+>                                 <debugfs>/dynamic_debug/control
+>
+> This will enable output of debug logs to trace instance
+> <debugfs>/tracing/instances/dyndbg_inst_25 with debug logs output
+> to syslog disabled.
+>
+> Given trace instance will not be initialized until debug logs are
+> requested to be written to it and afer init it will persist until
+> reboot.
+>
 
-Freed by task 23:
- kasan_save_stack mm/kasan/common.c:45 [inline]
- kasan_set_track+0x4f/0x70 mm/kasan/common.c:52
- kasan_save_free_info+0x28/0x40 mm/kasan/generic.c:522
- ____kasan_slab_free+0xd6/0x120 mm/kasan/common.c:236
- kasan_slab_free include/linux/kasan.h:164 [inline]
- slab_free_hook mm/slub.c:1800 [inline]
- slab_free_freelist_hook mm/slub.c:1826 [inline]
- slab_free mm/slub.c:3809 [inline]
- __kmem_cache_free+0x263/0x3a0 mm/slub.c:3822
- usb_start_wait_urb+0x24b/0x520 drivers/usb/core/message.c:81
- usb_internal_control_msg drivers/usb/core/message.c:103 [inline]
- usb_control_msg+0x2b1/0x4c0 drivers/usb/core/message.c:154
- get_bMaxPacketSize0 drivers/usb/core/hub.c:4744 [inline]
- hub_port_init+0xaa6/0x23a0 drivers/usb/core/hub.c:4940
- hub_port_connect drivers/usb/core/hub.c:5388 [inline]
- hub_port_connect_change drivers/usb/core/hub.c:5599 [inline]
- port_event drivers/usb/core/hub.c:5759 [inline]
- hub_event+0x2a3c/0x50a0 drivers/usb/core/hub.c:5841
- process_one_work kernel/workqueue.c:2630 [inline]
- process_scheduled_works+0x90f/0x1400 kernel/workqueue.c:2703
- worker_thread+0xa5f/0xff0 kernel/workqueue.c:2784
- kthread+0x2d3/0x370 kernel/kthread.c:388
- ret_from_fork+0x48/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
+that (delayed init) might be a problem,
+user side will have to look for the appearance of traces ?
 
-Last potentially related work creation:
- kasan_save_stack+0x3f/0x60 mm/kasan/common.c:45
- __kasan_record_aux_stack+0xad/0xc0 mm/kasan/generic.c:492
- __call_rcu_common kernel/rcu/tree.c:2667 [inline]
- call_rcu+0x167/0xa70 kernel/rcu/tree.c:2781
- addrconf_ifdown+0x18f1/0x1bb0 net/ipv6/addrconf.c:3958
- addrconf_notify+0x3ce/0x1020
- notifier_call_chain+0x18c/0x3a0 kernel/notifier.c:93
- call_netdevice_notifiers_extack net/core/dev.c:2003 [inline]
- call_netdevice_notifiers net/core/dev.c:2017 [inline]
- unregister_netdevice_many_notify+0xd87/0x1710 net/core/dev.c:10983
- ip6_tnl_exit_batch_net+0x5c8/0x610 net/ipv6/ip6_tunnel.c:2278
- ops_exit_list net/core/net_namespace.c:175 [inline]
- cleanup_net+0x767/0xb80 net/core/net_namespace.c:614
- process_one_work kernel/workqueue.c:2630 [inline]
- process_scheduled_works+0x90f/0x1400 kernel/workqueue.c:2703
- worker_thread+0xa5f/0xff0 kernel/workqueue.c:2784
- kthread+0x2d3/0x370 kernel/kthread.c:388
- ret_from_fork+0x48/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
+Also, I have some reservations about exposing numeric destinations -
+the user(space) must then decide/coordinate what dest-number
+is used for which instance/purpose.
 
-Second to last potentially related work creation:
- kasan_save_stack+0x3f/0x60 mm/kasan/common.c:45
- __kasan_record_aux_stack+0xad/0xc0 mm/kasan/generic.c:492
- insert_work+0x3e/0x320 kernel/workqueue.c:1647
- __queue_work+0xc06/0x1010 kernel/workqueue.c:1799
- queue_work_on+0x14f/0x250 kernel/workqueue.c:1834
- queue_work include/linux/workqueue.h:562 [inline]
- call_usermodehelper_exec+0x276/0x480 kernel/umh.c:434
- kobject_uevent_env+0x6a9/0x8e0 lib/kobject_uevent.c:618
- kset_register+0x1ab/0x200 lib/kobject.c:873
- class_register+0x1c3/0x2a0 drivers/base/class.c:205
- cpuid_init+0x49/0x100 arch/x86/kernel/cpuid.c:161
- do_one_initcall+0x234/0x800 init/main.c:1236
- do_initcall_level+0x157/0x210 init/main.c:1298
- do_initcalls+0x3f/0x80 init/main.c:1314
- kernel_init_freeable+0x429/0x5c0 init/main.c:1551
- kernel_init+0x1d/0x2a0 init/main.c:1441
- ret_from_fork+0x48/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
+It would be fine for 1 customer, but might be a little tedious for many,
+who now have to coordinate.  A bit like a shared/party line in the early
+days of rural telephone.
 
-The buggy address belongs to the object at ffff888019ecd200
- which belongs to the cache kmalloc-192 of size 192
-The buggy address is located 4 bytes inside of
- freed 192-byte region [ffff888019ecd200, ffff888019ecd2c0)
+As I recall, an early early version of classmaps used numeric classes,
+(taken straight from drm_debug_category).
+As Jason noted (more diplomatically than I assimilated)
+it was kind of arbitrary and obscure/obtuse/unhelpful numbering.
 
-The buggy address belongs to the physical page:
-page:ffffea000067b340 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x19ecd
-ksm flags: 0xfff00000000800(slab|node=0|zone=1|lastcpupid=0x7ff)
-page_type: 0xffffffff()
-raw: 00fff00000000800 ffff888012c41a00 ffffea00007faa00 dead000000000003
-raw: 0000000000000000 0000000000100010 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-page_owner tracks the page as allocated
-page last allocated via order 0, migratetype Unmovable, gfp_mask 0x12cc0(GFP_KERNEL|__GFP_NOWARN|__GFP_NORETRY), pid 1, tgid 1 (swapper/0), ts 3961051695, free_ts 3958343321
- set_page_owner include/linux/page_owner.h:31 [inline]
- post_alloc_hook+0x1e6/0x210 mm/page_alloc.c:1537
- prep_new_page mm/page_alloc.c:1544 [inline]
- get_page_from_freelist+0x339a/0x3530 mm/page_alloc.c:3312
- __alloc_pages+0x255/0x670 mm/page_alloc.c:4568
- alloc_pages_mpol+0x3de/0x640 mm/mempolicy.c:2133
- alloc_slab_page+0x6a/0x160 mm/slub.c:1870
- allocate_slab mm/slub.c:2017 [inline]
- new_slab+0x84/0x2f0 mm/slub.c:2070
- ___slab_alloc+0xc85/0x1310 mm/slub.c:3223
- __slab_alloc mm/slub.c:3322 [inline]
- __slab_alloc_node mm/slub.c:3375 [inline]
- slab_alloc_node mm/slub.c:3468 [inline]
- __kmem_cache_alloc_node+0x21d/0x300 mm/slub.c:3517
- kmalloc_trace+0x2a/0xe0 mm/slab_common.c:1098
- kmalloc include/linux/slab.h:600 [inline]
- kzalloc include/linux/slab.h:721 [inline]
- call_usermodehelper_setup+0x8e/0x260 kernel/umh.c:363
- kobject_uevent_env+0x68c/0x8e0 lib/kobject_uevent.c:614
- kset_register+0x1ab/0x200 lib/kobject.c:873
- class_register+0x1c3/0x2a0 drivers/base/class.c:205
- msr_init+0x49/0x100 arch/x86/kernel/msr.c:270
- do_one_initcall+0x234/0x800 init/main.c:1236
- do_initcall_level+0x157/0x210 init/main.c:1298
-page last free stack trace:
- reset_page_owner include/linux/page_owner.h:24 [inline]
- free_pages_prepare mm/page_alloc.c:1137 [inline]
- free_unref_page_prepare+0x92a/0xa50 mm/page_alloc.c:2347
- free_unref_page+0x37/0x3f0 mm/page_alloc.c:2487
- mm_free_pgd kernel/fork.c:803 [inline]
- __mmdrop+0xb8/0x3d0 kernel/fork.c:919
- free_bprm+0x144/0x330 fs/exec.c:1490
- kernel_execve+0x8f5/0xa10 fs/exec.c:2024
- call_usermodehelper_exec_async+0x233/0x370 kernel/umh.c:110
- ret_from_fork+0x48/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
+It is why I added classnames, with the bonus that
+the name->num mapping was also a validation step
+against known CLASSMAP_DEFINE-itions
+(if you knew DRM drivers knew "DRM_KMS_CORE",
+ you knew what you were asking for)
 
-Memory state around the buggy address:
- ffff888019ecd100: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
- ffff888019ecd180: 00 00 fc fc fc fc fc fc fc fc fc fc fc fc fc fc
->ffff888019ecd200: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                   ^
- ffff888019ecd280: fb fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
- ffff888019ecd300: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-==================================================================
+Your earlier version had a dest keyword which maybe fits better with this p=
+oint.
+that said, it was in a selector position, so it doesnt work grammatically.
+
+So, what do you think about a new command:
+
+echo <<EoCMDBlk
+open kms-stream
+class DRM_UT_CORE +T  # global
+class DRM_UT_KMS +T:kms-stream
+EoCMDBlk \
+> /proc/dynamic/debug
+
+this allows tracking names, assigning ids, erroring when all used,
+and validating names > control
+without exposing the numbers.
+
+the open/close changes are (would be) persistent
+
+the thing it doesnt allow is pre-selecting the destination,
+then arming it later with a +T
+
+so it doesnt (wouldnt) play super-nice with
+echo 0x1F > /sys/module/drm/parameters/debug_trace
+
+that said, we can preset the dst:
+
+echo <<EoCMDBlk
+open drm-kms-stream
+open drm-core-stream
+class DRM_UT_CORE -T:drm-core-stream
+class DRM_UT_KMS -T:drm-kms-stream
+EoCMDBlk \
+> /proc/dynamic/debug
+
+then enable whatever is preset selectively:
+
+echo $I_forgot_the_bit > /sys/module/drm/parameters/debug_trace
+OR
+echo class DRM_UT_KMS +T > /proc/dynamic/debug
 
 
-Tested on:
 
-commit:         e392ea4d Merge tag 's390-6.7-1' of git://git.kernel.or..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-console output: https://syzkaller.appspot.com/x/log.txt?x=15c491ef680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=94632a8e2ffd08bb
-dashboard link: https://syzkaller.appspot.com/bug?extid=b6f11035e572f08bc20f
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=17af6aeb680000
 
+
+
+
+> Please note that output of debug logs to syslog (p flag) and trace
+> (T flag) can be independently enabled/disabled for each callsite.
+>
+
+so its the specific wording I previously grumbled about, I think.
+
+>
+>
+> Jim I took the liberty and based my work on your patches you pointed me
+> to https://github.com/jimc/linux/tree/dd-kitchen-sink. I picked up
+> the commits relevant to trace from the dd-kitchen-sink branch.
+> The only changes I introduced in your commits were related to checkpatch
+> complains. There are two errors still left:
+
+Bah - macros !
+I'll look at your diffs in git :-)
+
+>
+> 1)
+> ERROR: need consistent spacing around '*' (ctx:WxV)
+> 140: FILE: lib/dynamic_debug.c:1070:
+> +                                 va_list *args)
+>
+> Which seems to be a false positive to me.
+>
+> 2)
+> ERROR: Macros with complex values should be enclosed in parentheses
+> 62: FILE: include/trace/stages/stage3_trace_output.h:12:
+> +#define TP_printk_no_nl(fmt, args...) fmt, args
+>
+> I have not figured out how to fix it.
+
+those 2  no_nl   patches were pretty exploratory,
+IIRC, Steve was inclined to add the \n  when not already in the format.
+It would be variation-proof
+
+
+>
+> Changes:
+> V1) Major rework after receiving feedback in
+> https://lore.kernel.org/all/20230915154856.1896062-1-lb@semihalf.com/
+>
+> Jim Cromie (7):
+>   dyndbg: add _DPRINTK_FLAGS_ENABLED
+>   dyndbg: add _DPRINTK_FLAGS_TRACE
+>   dyndbg: add write-events-to-tracefs code
+>   dyndbg: add 2 trace-events: pr_debug, dev_dbg
+>   tracefs: add TP_printk_no_nl - RFC
+>   trace: use TP_printk_no_nl in dyndbg:prdbg,devdbg
+>   dyndbg: repack struct _ddebug
+>
+> =C5=81ukasz Bartosik (5):
+>   dyndbg: move flags field to a new structure
+>   dyndbg: add trace destination field to _ddebug
+>   dyndbg: add processing of T(race) flag argument
+>   dyndbg: write debug logs to trace instance
+>   dyndbg: add trace support for hexdump
+>
+>  .../admin-guide/dynamic-debug-howto.rst       |   5 +-
+>  MAINTAINERS                                   |   1 +
+>  include/linux/dynamic_debug.h                 |  57 ++-
+>  include/trace/events/dyndbg.h                 |  54 +++
+>  include/trace/stages/stage3_trace_output.h    |   3 +
+>  include/trace/stages/stage7_class_define.h    |   3 +
+>  lib/Kconfig.debug                             |   1 +
+>  lib/dynamic_debug.c                           | 414 +++++++++++++++---
+>  8 files changed, 465 insertions(+), 73 deletions(-)
+>  create mode 100644 include/trace/events/dyndbg.h
+>
+> --
+> 2.42.0.869.gea05f2083d-goog
+>
