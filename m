@@ -2,105 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FDFD7E0E9A
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 10:28:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 200F17E0E9B
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 10:32:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229576AbjKDJZt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Nov 2023 05:25:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45594 "EHLO
+        id S231419AbjKDJb7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Nov 2023 05:31:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbjKDJZs (ORCPT
+        with ESMTP id S229808AbjKDJb5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Nov 2023 05:25:48 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 540E1B8
-        for <linux-kernel@vger.kernel.org>; Sat,  4 Nov 2023 02:25:45 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-409299277bbso20423755e9.2
-        for <linux-kernel@vger.kernel.org>; Sat, 04 Nov 2023 02:25:45 -0700 (PDT)
+        Sat, 4 Nov 2023 05:31:57 -0400
+Received: from mail-oo1-xc2e.google.com (mail-oo1-xc2e.google.com [IPv6:2607:f8b0:4864:20::c2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 857A41BC
+        for <linux-kernel@vger.kernel.org>; Sat,  4 Nov 2023 02:31:54 -0700 (PDT)
+Received: by mail-oo1-xc2e.google.com with SMTP id 006d021491bc7-586753b0ab0so1493615eaf.0
+        for <linux-kernel@vger.kernel.org>; Sat, 04 Nov 2023 02:31:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699089944; x=1699694744; darn=vger.kernel.org;
-        h=to:cc:date:message-id:subject:mime-version
-         :content-transfer-encoding:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=8n8ZiPmB4jr2dMWJOl0l5VVT7a0wTFVPtrw1M6Upy3M=;
-        b=eICqnRo64dmbmKHORgaaN4HPedpweDqV+dpmtTZwDITuycpn2xjvgjd5bOvRq/SqVl
-         eldIer0PTiA5+1Yo1KXKBMrnBRyyG1m5PfX1oCqI30b0A0e46v94mB8FykjLvD5ctCQH
-         b+wkMzon3Lr/n7tYoVl5BwnsBkfLClBP12nDqoVT+9zoZNXOlPJMTIBK+Q5hGMZz3fks
-         yWVQAZMRtPJEaOB3ipQ6rnIJjKOOPnc3Ca1PMti1etfxlxmwsdCVJIRHdduSMXMIDYAs
-         qGGyBwiJcue4z2REdy3UTgT6PDwoDtyyYbflqiy2LG3/NZ/poj/FxRS9N2MSCz3MSyqG
-         wwUw==
+        d=gmail.com; s=20230601; t=1699090314; x=1699695114; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YEOeKmfbASkra2W4jNK3PMNKAWiWNXvajiTJylEOdMA=;
+        b=gR3jDaKMKlUeEjt12P3DZmb0HLxkZN3c07NOg+uTExnZY7mPZU/zukoeaOmCMFza1E
+         MJx1h9w275XDTlVH9I69qv+vyXBMsWVZheDAqaTCPBNiO+hIxbFl0+8MDjpVoto75eNh
+         Bn2zxAHdnqp0gh/X+8vv6GsP30obSv5UF77IHQ/2pqAKSBPZatsS92r/uShpk5CVVkIE
+         xlHuuL5dqGIeccgPMxXTZqs2SFhE7xjCOauT010BYQvElVRmZg9otduOk0iHypOpg1Ne
+         QXHbVGjD5OVGYjg/3moFDbDtNWhJRuK5sf+JdLoUlqot8EJvoitN/A1UMWfHwo2/xRvS
+         nw3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699089944; x=1699694744;
-        h=to:cc:date:message-id:subject:mime-version
-         :content-transfer-encoding:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1699090314; x=1699695114;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=8n8ZiPmB4jr2dMWJOl0l5VVT7a0wTFVPtrw1M6Upy3M=;
-        b=sExYLXuPCv+9lmS3Yd5vtHjZXqJB2oHnLOt2BFz3Dx0K4kyJy1M+KiMDm2+ye1Wgf0
-         jUB3tziPZ3sJwAfQu+A7m9Dp4mE9dn99ZtC8K0nr7Zpw/YGLhq3qwGqDzoodBiRpE+N+
-         sML+yEKEoil/zwxZZjsAdvXAYXN2qQfmh0irEXDByTRafjoGdk2JjK9rFKYBr9K8jAIp
-         1D1tNr84DlTc2aI1xQD8KE8ATme7cwCH1QyJHdv++h8boeSRaUaetAFTfHVtzqjxDjtm
-         Q2F5we/FrdGogG6g8AY6tX//3TrxqpAjX/N+3QOln1BjoQzupm4IAAHIPHl20AOmWdNU
-         GLEw==
-X-Gm-Message-State: AOJu0YyWbvgOeGLPMI+tq0GTZ5jBlUOix/mBjojtwEYyrP3X5AE4hrn/
-        gEYGfioBuqb46Sapnjo5ygA=
-X-Google-Smtp-Source: AGHT+IGJsu2qJKTMPj7eKYmqfk0hAA4wVDY3dIZfG79rYGKOvhpMc409fuZYWkfA7PuZmgNg52Ndrw==
-X-Received: by 2002:a05:600c:4f92:b0:402:f55c:faee with SMTP id n18-20020a05600c4f9200b00402f55cfaeemr18964536wmq.26.1699089943307;
-        Sat, 04 Nov 2023 02:25:43 -0700 (PDT)
-Received: from smtpclient.apple ([77.137.74.70])
-        by smtp.gmail.com with ESMTPSA id du15-20020a05600c634f00b00405959bbf4fsm5009150wmb.19.2023.11.04.02.25.42
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 04 Nov 2023 02:25:42 -0700 (PDT)
-From:   Nadav Amit <nadav.amit@gmail.com>
-Content-Type: text/plain;
-        charset=utf-8
+        bh=YEOeKmfbASkra2W4jNK3PMNKAWiWNXvajiTJylEOdMA=;
+        b=lw/xU0ujwj/c7bIokAtITpTwTsVRxs+sxLggKJyXkkevcqeRHSWwysIzwnZhY6CdRx
+         +fj+QIl4CQRSfixn9PRdZoEu54rhBlSKkF7fy4K98vK37BBvsdXU9AT3AZoUt+ocVL2Q
+         l0mkIAdn1SEmb8ndjIGXXb/xUNgH3w4QCVn8SXozDj1DPy7n+bQxESJxUvwaTpsjPB84
+         vgg7EKfNZefMsCqyL1i2DK3lMQO03yFRwU2dgl5NiHbVo9c8czLT7Ug3Q/Db7OAlTVfV
+         f1eOhjhoxot4V9BioZa1d/FhyeV+T42IslB4Vqi+Ti34n2I2Z7y9orLNgX6rqe6kawqo
+         fj0w==
+X-Gm-Message-State: AOJu0YyKzss7j3U63DUOmU7B1Ep1N42+swy5tIgPvq+kAlmQqPASEVXY
+        Qvu+KNwW9SEYRlueKYAfXQ4wFide24t8LcNGFLs=
+X-Google-Smtp-Source: AGHT+IFYxuPz9CvSNapWXTCgRjgBZp9C8l/Pgsq9lqW/wK/OwhdS4iuOdc0Lc+52SEBTBj44i73lqeBCIU4endx0yXk=
+X-Received: by 2002:a05:6358:52c8:b0:169:a814:5ce6 with SMTP id
+ z8-20020a05635852c800b00169a8145ce6mr11597762rwz.14.1699090313688; Sat, 04
+ Nov 2023 02:31:53 -0700 (PDT)
+MIME-Version: 1.0
+References: <20231104090603.4253-1-wuqiang.matt@bytedance.com>
+In-Reply-To: <20231104090603.4253-1-wuqiang.matt@bytedance.com>
+From:   Max Filippov <jcmvbkbc@gmail.com>
+Date:   Sat, 4 Nov 2023 02:31:42 -0700
+Message-ID: <CAMo8BfK4zDfdh9-WLq+gg1B47ht5hxhvH_j5veEj6JG38meTuw@mail.gmail.com>
+Subject: Re: [PATCH v1] locking/atomic: xtensa: define arch_cmpxchg_local as __cmpxchg_local
+To:     "wuqiang.matt" <wuqiang.matt@bytedance.com>
+Cc:     chris@zankel.net, andi.shyti@linux.intel.com,
+        andrzej.hajda@intel.com, palmer@rivosinc.com, geert@linux-m68k.org,
+        linux-kernel@vger.kernel.org, mattwu@163.com
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3731.700.6\))
-Subject: Missing clobber on alternative use on Linux UM 32-bit
-Message-Id: <24BD0906-C6FE-499C-9A4A-00C56E6EE84A@gmail.com>
-Date:   Sat, 4 Nov 2023 11:25:31 +0200
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-To:     Richard Weinberger <richard@nod.at>, linux-um@lists.infradead.org
-X-Mailer: Apple Mail (2.3731.700.6)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        FROM_LOCAL_NOVOWEL,HK_RANDOM_ENVFROM,HK_RANDOM_FROM,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I was reading (again) the x86 C macro of =E2=80=9Calternative()=E2=80=9D =
-and I was a bit
-surprised it does clobber the flags (=E2=80=9Ccc=E2=80=9D) as a =
-precaution.
+On Sat, Nov 4, 2023 at 2:06=E2=80=AFAM wuqiang.matt <wuqiang.matt@bytedance=
+.com> wrote:
+>
+> The xtensa architecture already has __cmpxchg_local defined upon the
+> native __cmpxchg_u32 and __generic_cmpxchg_local
 
-  #define alternative(oldinstr, newinstr, ft_flags) \
-	asm_inline volatile (ALTERNATIVE(oldinstr, newinstr, ft_flags) : =
-: : "memory")
+This description does not make clear why this change is needed. Could you
+please expand it to cover the 'why' part?
 
-Actually there seems to be only one instance of problematic cases - in =
-um/32-bit:
+> Signed-off-by: wuqiang.matt <wuqiang.matt@bytedance.com>
+> ---
+>  arch/xtensa/include/asm/cmpxchg.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/arch/xtensa/include/asm/cmpxchg.h b/arch/xtensa/include/asm/=
+cmpxchg.h
+> index 675a11ea8de7..956c9925df1c 100644
+> --- a/arch/xtensa/include/asm/cmpxchg.h
+> +++ b/arch/xtensa/include/asm/cmpxchg.h
+> @@ -108,7 +108,7 @@ static inline unsigned long __cmpxchg_local(volatile =
+void *ptr,
+>   * them available.
+>   */
+>  #define arch_cmpxchg_local(ptr, o, n)                                   =
+      \
+> -       ((__typeof__(*(ptr)))__generic_cmpxchg_local((ptr), (unsigned lon=
+g)(o),\
+> +       ((__typeof__(*(ptr)))__cmpxchg_local((ptr), (unsigned long)(o),  =
+      \
+>                         (unsigned long)(n), sizeof(*(ptr))))
+>  #define arch_cmpxchg64_local(ptr, o, n) __generic_cmpxchg64_local((ptr),=
+ (o), (n))
+>  #define arch_cmpxchg64(ptr, o, n)    arch_cmpxchg64_local((ptr), (o), (n=
+))
+> --
+> 2.40.1
+>
 
-  #define mb() alternative("lock; addl $0,0(%%esp)", "mfence", =
-X86_FEATURE_XMM2)
-  #define rmb() alternative("lock; addl $0,0(%%esp)", "lfence", =
-X86_FEATURE_XMM2)
-  #define wmb() alternative("lock; addl $0,0(%%esp)", "sfence", =
-X86_FEATURE_XMM)
 
-Presumably, if XMM or XMM2 are not supported, there would be instances =
-where addl
-would be able to change eflags arithmetic flags without the compiler =
-being aware
-of it.
-
-As it only affects 32-bit Linux UM - I don=E2=80=99t easily have an =
-environment to test
-the fix. An alternative (word-pun unintended) is to add =E2=80=9Ccc=E2=80=9D=
- as a precaution
-to the alternative macro.
-
+--=20
+Thanks.
+-- Max
