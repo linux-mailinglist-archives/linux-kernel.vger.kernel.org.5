@@ -2,57 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 13D607E0FB2
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 14:54:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 851B07E0FBE
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 14:54:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232109AbjKDNTc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Nov 2023 09:19:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57402 "EHLO
+        id S232010AbjKDNUi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Nov 2023 09:20:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjKDNTb (ORCPT
+        with ESMTP id S229456AbjKDNUf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Nov 2023 09:19:31 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AE3FE3
-        for <linux-kernel@vger.kernel.org>; Sat,  4 Nov 2023 06:19:28 -0700 (PDT)
-Received: from [100.116.205.35] (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: koike)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id C3773660741E;
-        Sat,  4 Nov 2023 13:19:23 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1699103966;
-        bh=1dBKOCU2op7HA41h9kKU4lIb1sXgfhlNw7dDoYMGmGs=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=UQk4F+bsfvQ9WNm/y0l2nCk4XVq4T3jE2qV70rZH0vK5SRUM3mCxX+dlYOvnVWt7K
-         U0qVuJkbSARRj1XJE3/vv6epFmbMAJSp/ppb8n53GY95Eb17Kt51BqN1B3oGdB6YTn
-         R7320wWhxsDirvgRJtNm/2JlQvoAtrx9wCi4N8PgKJvjz64orYF+HVjE7C2Fs39nkq
-         FCeTjVnsDNEaxX7JlEUkNQtI7hx3rw1ASCIRTd0eaBBBNm3F782qBn9jMfkEFR6yx6
-         5tmhIrafeQSi0yCt3XaPvA4M++sY10X7p7YX85+mfKBq2lEsMDKZV12eBYZg3t+uQz
-         mIZWFaTAaNTRQ==
-Message-ID: <836c7166-0a42-4fdc-acf4-65e0a096c41f@collabora.com>
-Date:   Sat, 4 Nov 2023 10:19:17 -0300
+        Sat, 4 Nov 2023 09:20:35 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 902B3E3
+        for <linux-kernel@vger.kernel.org>; Sat,  4 Nov 2023 06:20:32 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-40837124e1cso41815e9.0
+        for <linux-kernel@vger.kernel.org>; Sat, 04 Nov 2023 06:20:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1699104031; x=1699708831; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7lf4Kdqg1Ix4JtjJRKgIfRp+X+syD3doJEppQgu2HHg=;
+        b=kxgaXtNc9U44tUHqWOfmr5fLkYLMQti0kVtTLCA+XcmE2wyQF2qLQAkg7QP8RsNHum
+         DZ++oKOZY+zR6i0JsPWUrAlYxTTSHEqzWX84moFXqzeJUDs4k4ewEn6kM6bhmTnVj5Yr
+         nBnNMrhDH1MimG/y/O1TE6NFm4NYDIVvCf2edpOdk+4H0b1U9UuO4/4JSIxrg8+6azvn
+         U3euqWgvj5iIDAR5rxxxkUT/ipYYnLGxGtACRfagvP358WUB7qK5Zo3rX3kenHSe6Eyo
+         gezTMfA21/n8bc7Fu011xuG6hs87CLZsxFbwV9MqxNcDzz+BoWZuhRgRSRZCRC/7c5P6
+         v0pA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699104031; x=1699708831;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7lf4Kdqg1Ix4JtjJRKgIfRp+X+syD3doJEppQgu2HHg=;
+        b=m5FHDHWxlgIw33j5K6DmMVfPTzFPWLG9FhNs6VTzPDRgJuA3JbYnqX5hArb1v3uV/n
+         PFRVBpqK2MWqnaDNSWr5FBRfAU+FLwCyTpawpp6ojGRctTuogLStAUaK086vdUApRTTv
+         2LWX7BMbPByEFMnbH8UFkkjPwbTfZ7XwW343SRmSmZ2RztaK+v7/vy0LUD0owpS0MLNh
+         tAoAfVAICYt0lezK8oLucsMir5M+7ONhY6kZeuBEQkKyEc8Br7rzlTMYxzxXdLmAPb0C
+         DGtz6EZCl1SI0loCc8KTsYANCo1ZdnrWgQ7vvjI52M4RpoU2T7bb0sPmzJE2IFe9p6kW
+         QeRw==
+X-Gm-Message-State: AOJu0YzhNyHbJQ5NHPKgz79JuNmRMkLVODQWLVTIkqnmAujTitM31dhI
+        9OGd5HVHoJl2B6hjTQOEcLLpzjQDI6gbJlc/MjfS9A==
+X-Google-Smtp-Source: AGHT+IFHQeaiA0q5Oi0jH7atYpTBU7yDbM97qCWjibSomtP+3/oIJAE5t0nmu1K2Svfn7cZ2csJbk8jEBDbbCBVOSh4=
+X-Received: by 2002:a05:600c:5406:b0:404:74f8:f47c with SMTP id
+ he6-20020a05600c540600b0040474f8f47cmr40784wmb.5.1699104030677; Sat, 04 Nov
+ 2023 06:20:30 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/3] drm/ci: Add skips, fails and flakes for SM8250
-Content-Language: en-US
-To:     Jessica Zhang <quic_jesszhan@quicinc.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     robdclark@chromium.org, quic_abhinavk@quicinc.com,
-        freedreno@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-References: <20231010-rb5-runner-v1-0-aba1fcc6e3aa@quicinc.com>
- <20231010-rb5-runner-v1-3-aba1fcc6e3aa@quicinc.com>
-From:   Helen Koike <helen.koike@collabora.com>
-In-Reply-To: <20231010-rb5-runner-v1-3-aba1fcc6e3aa@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+References: <20231104000239.367005-1-seanjc@google.com> <20231104000239.367005-10-seanjc@google.com>
+In-Reply-To: <20231104000239.367005-10-seanjc@google.com>
+From:   Jim Mattson <jmattson@google.com>
+Date:   Sat, 4 Nov 2023 06:20:19 -0700
+Message-ID: <CALMp9eT22j2Ob9ihva41p2JRufR5P+xnzsm99LEd1quxnfCyWA@mail.gmail.com>
+Subject: Re: [PATCH v6 09/20] KVM: selftests: Add pmu.h and lib/pmu.c for
+ common PMU assets
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Dapeng Mi <dapeng1.mi@linux.intel.com>,
+        Jinrong Liang <cloudliang@tencent.com>,
+        Like Xu <likexu@tencent.com>,
+        Aaron Lewis <aaronlewis@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,88 +76,302 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 10/10/2023 19:25, Jessica Zhang wrote:
-> Add skips, fails and flakes for the SM8250 test.
-> 
-> Generated using update-xfails.py [1]
-> 
-> [1] https://patchwork.freedesktop.org/patch/561453/?series=124793&rev=1
-> 
-> Signed-off-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
-> Signed-off-by: Jessica Zhang <quic_jesszhan@quicinc.com>
+On Fri, Nov 3, 2023 at 5:02=E2=80=AFPM Sean Christopherson <seanjc@google.c=
+om> wrote:
+>
+> From: Jinrong Liang <cloudliang@tencent.com>
+>
+> By defining the PMU performance events and masks relevant for x86 in
+> the new pmu.h and pmu.c, it becomes easier to reference them, minimizing
+> potential errors in code that handles these values.
+>
+> Clean up pmu_event_filter_test.c by including pmu.h and removing
+> unnecessary macros.
+>
+> Suggested-by: Sean Christopherson <seanjc@google.com>
+> Signed-off-by: Jinrong Liang <cloudliang@tencent.com>
+> [sean: drop PSEUDO_ARCH_REFERENCE_CYCLES]
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
 > ---
->   drivers/gpu/drm/ci/xfails/msm-sm8250-fails.txt  | 29 +++++++++++++++++++++++++
->   drivers/gpu/drm/ci/xfails/msm-sm8250-flakes.txt |  3 +++
->   drivers/gpu/drm/ci/xfails/msm-sm8250-skips.txt  |  8 +++++++
->   3 files changed, 40 insertions(+)
-> 
-> diff --git a/drivers/gpu/drm/ci/xfails/msm-sm8250-fails.txt b/drivers/gpu/drm/ci/xfails/msm-sm8250-fails.txt
+>  tools/testing/selftests/kvm/Makefile          |  1 +
+>  tools/testing/selftests/kvm/include/pmu.h     | 84 +++++++++++++++++++
+>  tools/testing/selftests/kvm/lib/pmu.c         | 28 +++++++
+>  .../kvm/x86_64/pmu_event_filter_test.c        | 32 ++-----
+>  4 files changed, 122 insertions(+), 23 deletions(-)
+>  create mode 100644 tools/testing/selftests/kvm/include/pmu.h
+>  create mode 100644 tools/testing/selftests/kvm/lib/pmu.c
+>
+> diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftes=
+ts/kvm/Makefile
+> index a5963ab9215b..44d8d022b023 100644
+> --- a/tools/testing/selftests/kvm/Makefile
+> +++ b/tools/testing/selftests/kvm/Makefile
+> @@ -32,6 +32,7 @@ LIBKVM +=3D lib/guest_modes.c
+>  LIBKVM +=3D lib/io.c
+>  LIBKVM +=3D lib/kvm_util.c
+>  LIBKVM +=3D lib/memstress.c
+> +LIBKVM +=3D lib/pmu.c
+>  LIBKVM +=3D lib/guest_sprintf.c
+>  LIBKVM +=3D lib/rbtree.c
+>  LIBKVM +=3D lib/sparsebit.c
+> diff --git a/tools/testing/selftests/kvm/include/pmu.h b/tools/testing/se=
+lftests/kvm/include/pmu.h
 > new file mode 100644
-> index 000000000000..cc8ae32e90e7
+> index 000000000000..987602c62b51
 > --- /dev/null
-> +++ b/drivers/gpu/drm/ci/xfails/msm-sm8250-fails.txt
-> @@ -0,0 +1,29 @@
-> +kms_3d,Fail
-> +kms_atomic_transition@plane-all-modeset-transition,Timeout
-> +kms_color@ctm-0-25,Fail
-> +kms_color@ctm-0-50,Fail
-> +kms_color@ctm-0-75,Fail
-> +kms_color@ctm-blue-to-red,Fail
-> +kms_color@ctm-negative,Fail
-> +kms_color@ctm-red-to-blue,Fail
-> +kms_color@ctm-signed,Fail
-> +kms_cursor_legacy@basic-flip-after-cursor-varying-size,Fail
-> +kms_cursor_legacy@basic-flip-before-cursor-varying-size,Fail
-> +kms_cursor_legacy@cursor-vs-flip-atomic-transitions-varying-size,Fail
-> +kms_cursor_legacy@cursor-vs-flip-toggle,Fail
-> +kms_cursor_legacy@cursor-vs-flip-varying-size,Fail
-> +kms_cursor_legacy@short-flip-after-cursor-atomic-transitions-varying-size,Fail
-> +kms_cursor_legacy@short-flip-before-cursor-atomic-transitions-varying-size,Fail
-> +kms_cursor_legacy@short-flip-before-cursor-toggle,Fail
-> +kms_hdmi_inject@inject-4k,Fail
-> +kms_pipe_crc_basic@compare-crc-sanitycheck-nv12,Fail
-> +kms_plane@pixel-format,Fail
-> +kms_plane@pixel-format-source-clamping,Fail
-> +kms_plane@plane-position-covered,Fail
-> +kms_plane@plane-position-hole,Fail
-> +kms_plane@plane-position-hole-dpms,Fail
-> +kms_plane_alpha_blend@alpha-7efc,Fail
-> +kms_plane_alpha_blend@coverage-7efc,Fail
-> +kms_plane_alpha_blend@coverage-vs-premult-vs-constant,Fail
-> +kms_plane_cursor@overlay,Fail
-> +kms_rmfb@close-fd,Fail
-> diff --git a/drivers/gpu/drm/ci/xfails/msm-sm8250-flakes.txt b/drivers/gpu/drm/ci/xfails/msm-sm8250-flakes.txt
-> new file mode 100644
-> index 000000000000..0b55665184c1
-> --- /dev/null
-> +++ b/drivers/gpu/drm/ci/xfails/msm-sm8250-flakes.txt
-> @@ -0,0 +1,3 @@
-> +kms_cursor_legacy@flip-vs-cursor-atomic-transitions-varying-size
-> +kms_cursor_legacy@flip-vs-cursor-varying-size
-> +kms_plane_cursor@viewport
-
-We are trying to add some docs, specially to the flakes, please check: 
-https://lists.freedesktop.org/archives/dri-devel/2023-October/427982.html
-
-Could you add it for those? (I'm glad to see there are just a few flakes).
-
-Thanks
-Helen
-
-> diff --git a/drivers/gpu/drm/ci/xfails/msm-sm8250-skips.txt b/drivers/gpu/drm/ci/xfails/msm-sm8250-skips.txt
-> new file mode 100644
-> index 000000000000..c20422c58e4d
-> --- /dev/null
-> +++ b/drivers/gpu/drm/ci/xfails/msm-sm8250-skips.txt
-> @@ -0,0 +1,8 @@
-> +# Suspend to RAM seems to be broken on this machine
-> +.*suspend.*
+> +++ b/tools/testing/selftests/kvm/include/pmu.h
+> @@ -0,0 +1,84 @@
+> +/* SPDX-License-Identifier: GPL-2.0-only */
+> +/*
+> + * Copyright (C) 2023, Tencent, Inc.
+> + */
+> +#ifndef SELFTEST_KVM_PMU_H
+> +#define SELFTEST_KVM_PMU_H
 > +
-> +# reboots device
-> +kms_plane_scaling.*
+> +#include <stdint.h>
 > +
-> +# long execution time
-> +kms_flip.*
-> 
+> +#define X86_PMC_IDX_MAX                                64
+> +#define INTEL_PMC_MAX_GENERIC                          32
+
+I think this is actually 15. Note that IA32_PMC0 through IA32_PMC7
+have MSR indices from 0xc1 through 0xc8, and MSR 0xcf is
+IA32_CORE_CAPABILITIES. At the very least, we have to handle
+non-contiguous MSR indices if we ever go beyond IA32_PMC14.
+
+> +#define KVM_PMU_EVENT_FILTER_MAX_EVENTS                300
+> +
+> +#define GP_COUNTER_NR_OFS_BIT                          8
+> +#define EVENT_LENGTH_OFS_BIT                           24
+> +
+> +#define PMU_VERSION_MASK                               GENMASK_ULL(7, 0)
+> +#define EVENT_LENGTH_MASK                              GENMASK_ULL(31, E=
+VENT_LENGTH_OFS_BIT)
+> +#define GP_COUNTER_NR_MASK                             GENMASK_ULL(15, G=
+P_COUNTER_NR_OFS_BIT)
+> +#define FIXED_COUNTER_NR_MASK                          GENMASK_ULL(4, 0)
+> +
+> +#define ARCH_PERFMON_EVENTSEL_EVENT                    GENMASK_ULL(7, 0)
+> +#define ARCH_PERFMON_EVENTSEL_UMASK                    GENMASK_ULL(15, 8=
+)
+> +#define ARCH_PERFMON_EVENTSEL_USR                      BIT_ULL(16)
+> +#define ARCH_PERFMON_EVENTSEL_OS                       BIT_ULL(17)
+> +#define ARCH_PERFMON_EVENTSEL_EDGE                     BIT_ULL(18)
+> +#define ARCH_PERFMON_EVENTSEL_PIN_CONTROL              BIT_ULL(19)
+> +#define ARCH_PERFMON_EVENTSEL_INT                      BIT_ULL(20)
+> +#define ARCH_PERFMON_EVENTSEL_ANY                      BIT_ULL(21)
+> +#define ARCH_PERFMON_EVENTSEL_ENABLE                   BIT_ULL(22)
+> +#define ARCH_PERFMON_EVENTSEL_INV                      BIT_ULL(23)
+> +#define ARCH_PERFMON_EVENTSEL_CMASK                    GENMASK_ULL(31, 2=
+4)
+> +
+> +#define PMC_MAX_FIXED                                  16
+> +#define PMC_IDX_FIXED                                  32
+> +
+> +/* RDPMC offset for Fixed PMCs */
+> +#define PMC_FIXED_RDPMC_BASE                           BIT_ULL(30)
+> +#define PMC_FIXED_RDPMC_METRICS                        BIT_ULL(29)
+> +
+> +#define FIXED_BITS_MASK                                0xFULL
+> +#define FIXED_BITS_STRIDE                              4
+> +#define FIXED_0_KERNEL                                 BIT_ULL(0)
+> +#define FIXED_0_USER                                   BIT_ULL(1)
+> +#define FIXED_0_ANYTHREAD                              BIT_ULL(2)
+> +#define FIXED_0_ENABLE_PMI                             BIT_ULL(3)
+> +
+> +#define fixed_bits_by_idx(_idx, _bits)                 \
+> +       ((_bits) << ((_idx) * FIXED_BITS_STRIDE))
+> +
+> +#define AMD64_NR_COUNTERS                              4
+> +#define AMD64_NR_COUNTERS_CORE                         6
+> +
+> +#define PMU_CAP_FW_WRITES                              BIT_ULL(13)
+> +#define PMU_CAP_LBR_FMT                                0x3f
+> +
+> +enum intel_pmu_architectural_events {
+> +       /*
+> +        * The order of the architectural events matters as support for e=
+ach
+> +        * event is enumerated via CPUID using the index of the event.
+> +        */
+> +       INTEL_ARCH_CPU_CYCLES,
+> +       INTEL_ARCH_INSTRUCTIONS_RETIRED,
+> +       INTEL_ARCH_REFERENCE_CYCLES,
+> +       INTEL_ARCH_LLC_REFERENCES,
+> +       INTEL_ARCH_LLC_MISSES,
+> +       INTEL_ARCH_BRANCHES_RETIRED,
+> +       INTEL_ARCH_BRANCHES_MISPREDICTED,
+> +       NR_INTEL_ARCH_EVENTS,
+> +};
+> +
+> +enum amd_pmu_k7_events {
+> +       AMD_ZEN_CORE_CYCLES,
+> +       AMD_ZEN_INSTRUCTIONS,
+> +       AMD_ZEN_BRANCHES,
+> +       AMD_ZEN_BRANCH_MISSES,
+> +       NR_AMD_ARCH_EVENTS,
+> +};
+> +
+> +extern const uint64_t intel_pmu_arch_events[];
+> +extern const uint64_t amd_pmu_arch_events[];
+
+AMD doesn't define *any* architectural events. Perhaps
+amd_pmu_zen_events[], though who knows what Zen5 and  beyond will
+bring?
+
+> +extern const int intel_pmu_fixed_pmc_events[];
+> +
+> +#endif /* SELFTEST_KVM_PMU_H */
+> diff --git a/tools/testing/selftests/kvm/lib/pmu.c b/tools/testing/selfte=
+sts/kvm/lib/pmu.c
+> new file mode 100644
+> index 000000000000..27a6c35f98a1
+> --- /dev/null
+> +++ b/tools/testing/selftests/kvm/lib/pmu.c
+> @@ -0,0 +1,28 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Copyright (C) 2023, Tencent, Inc.
+> + */
+> +
+> +#include <stdint.h>
+> +
+> +#include "pmu.h"
+> +
+> +/* Definitions for Architectural Performance Events */
+> +#define ARCH_EVENT(select, umask) (((select) & 0xff) | ((umask) & 0xff) =
+<< 8)
+
+There's nothing architectural about this. Perhaps RAW_EVENT() for
+consistency with perf?
+
+> +
+> +const uint64_t intel_pmu_arch_events[] =3D {
+> +       [INTEL_ARCH_CPU_CYCLES]                 =3D ARCH_EVENT(0x3c, 0x0)=
+,
+> +       [INTEL_ARCH_INSTRUCTIONS_RETIRED]       =3D ARCH_EVENT(0xc0, 0x0)=
+,
+> +       [INTEL_ARCH_REFERENCE_CYCLES]           =3D ARCH_EVENT(0x3c, 0x1)=
+,
+> +       [INTEL_ARCH_LLC_REFERENCES]             =3D ARCH_EVENT(0x2e, 0x4f=
+),
+> +       [INTEL_ARCH_LLC_MISSES]                 =3D ARCH_EVENT(0x2e, 0x41=
+),
+> +       [INTEL_ARCH_BRANCHES_RETIRED]           =3D ARCH_EVENT(0xc4, 0x0)=
+,
+> +       [INTEL_ARCH_BRANCHES_MISPREDICTED]      =3D ARCH_EVENT(0xc5, 0x0)=
+,
+
+[INTEL_ARCH_TOPDOWN_SLOTS] =3D ARCH_EVENT(0xa4, 1),
+
+> +};
+> +
+> +const uint64_t amd_pmu_arch_events[] =3D {
+> +       [AMD_ZEN_CORE_CYCLES]                   =3D ARCH_EVENT(0x76, 0x00=
+),
+> +       [AMD_ZEN_INSTRUCTIONS]                  =3D ARCH_EVENT(0xc0, 0x00=
+),
+> +       [AMD_ZEN_BRANCHES]                      =3D ARCH_EVENT(0xc2, 0x00=
+),
+> +       [AMD_ZEN_BRANCH_MISSES]                 =3D ARCH_EVENT(0xc3, 0x00=
+),
+> +};
+> diff --git a/tools/testing/selftests/kvm/x86_64/pmu_event_filter_test.c b=
+/tools/testing/selftests/kvm/x86_64/pmu_event_filter_test.c
+> index 283cc55597a4..b6e4f57a8651 100644
+> --- a/tools/testing/selftests/kvm/x86_64/pmu_event_filter_test.c
+> +++ b/tools/testing/selftests/kvm/x86_64/pmu_event_filter_test.c
+> @@ -11,31 +11,18 @@
+>   */
+>
+>  #define _GNU_SOURCE /* for program_invocation_short_name */
+> -#include "test_util.h"
+> +
+>  #include "kvm_util.h"
+> +#include "pmu.h"
+>  #include "processor.h"
+> -
+> -/*
+> - * In lieu of copying perf_event.h into tools...
+> - */
+> -#define ARCH_PERFMON_EVENTSEL_OS                       (1ULL << 17)
+> -#define ARCH_PERFMON_EVENTSEL_ENABLE                   (1ULL << 22)
+> -
+> -/* End of stuff taken from perf_event.h. */
+> -
+> -/* Oddly, this isn't in perf_event.h. */
+> -#define ARCH_PERFMON_BRANCHES_RETIRED          5
+> +#include "test_util.h"
+>
+>  #define NUM_BRANCHES 42
+> -#define INTEL_PMC_IDX_FIXED            32
+> -
+> -/* Matches KVM_PMU_EVENT_FILTER_MAX_EVENTS in pmu.c */
+> -#define MAX_FILTER_EVENTS              300
+>  #define MAX_TEST_EVENTS                10
+>
+>  #define PMU_EVENT_FILTER_INVALID_ACTION                (KVM_PMU_EVENT_DE=
+NY + 1)
+>  #define PMU_EVENT_FILTER_INVALID_FLAGS                 (KVM_PMU_EVENT_FL=
+AGS_VALID_MASK << 1)
+> -#define PMU_EVENT_FILTER_INVALID_NEVENTS               (MAX_FILTER_EVENT=
+S + 1)
+> +#define PMU_EVENT_FILTER_INVALID_NEVENTS               (KVM_PMU_EVENT_FI=
+LTER_MAX_EVENTS + 1)
+>
+>  /*
+>   * This is how the event selector and unit mask are stored in an AMD
+> @@ -63,7 +50,6 @@
+>
+>  #define AMD_ZEN_BR_RETIRED EVENT(0xc2, 0)
+
+Now AMD_ZEN_BRANCHES, above?
+
+>
+> -
+>  /*
+>   * "Retired instructions", from Processor Programming Reference
+>   * (PPR) for AMD Family 17h Model 01h, Revision B1 Processors,
+> @@ -84,7 +70,7 @@ struct __kvm_pmu_event_filter {
+>         __u32 fixed_counter_bitmap;
+>         __u32 flags;
+>         __u32 pad[4];
+> -       __u64 events[MAX_FILTER_EVENTS];
+> +       __u64 events[KVM_PMU_EVENT_FILTER_MAX_EVENTS];
+>  };
+>
+>  /*
+> @@ -729,14 +715,14 @@ static void add_dummy_events(uint64_t *events, int =
+nevents)
+>
+>  static void test_masked_events(struct kvm_vcpu *vcpu)
+>  {
+> -       int nevents =3D MAX_FILTER_EVENTS - MAX_TEST_EVENTS;
+> -       uint64_t events[MAX_FILTER_EVENTS];
+> +       int nevents =3D KVM_PMU_EVENT_FILTER_MAX_EVENTS - MAX_TEST_EVENTS=
+;
+> +       uint64_t events[KVM_PMU_EVENT_FILTER_MAX_EVENTS];
+>
+>         /* Run the test cases against a sparse PMU event filter. */
+>         run_masked_events_tests(vcpu, events, 0);
+>
+>         /* Run the test cases against a dense PMU event filter. */
+> -       add_dummy_events(events, MAX_FILTER_EVENTS);
+> +       add_dummy_events(events, KVM_PMU_EVENT_FILTER_MAX_EVENTS);
+>         run_masked_events_tests(vcpu, events, nevents);
+>  }
+>
+> @@ -818,7 +804,7 @@ static void intel_run_fixed_counter_guest_code(uint8_=
+t fixed_ctr_idx)
+>                 /* Only OS_EN bit is enabled for fixed counter[idx]. */
+>                 wrmsr(MSR_CORE_PERF_FIXED_CTR_CTRL, BIT_ULL(4 * fixed_ctr=
+_idx));
+>                 wrmsr(MSR_CORE_PERF_GLOBAL_CTRL,
+> -                     BIT_ULL(INTEL_PMC_IDX_FIXED + fixed_ctr_idx));
+> +                     BIT_ULL(PMC_IDX_FIXED + fixed_ctr_idx));
+>                 __asm__ __volatile__("loop ." : "+c"((int){NUM_BRANCHES})=
+);
+>                 wrmsr(MSR_CORE_PERF_GLOBAL_CTRL, 0);
+>
+> --
+> 2.42.0.869.gea05f2083d-goog
+>
