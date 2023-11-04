@@ -2,79 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 84FF17E0CB5
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 01:37:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7EC87E0CB3
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 01:37:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230512AbjKDA13 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 20:27:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51650 "EHLO
+        id S231183AbjKDAhC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 20:37:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229476AbjKDA12 (ORCPT
+        with ESMTP id S229476AbjKDAhB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 20:27:28 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31AC7D49;
-        Fri,  3 Nov 2023 17:27:24 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-6bb4abb8100so2492009b3a.2;
-        Fri, 03 Nov 2023 17:27:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699057643; x=1699662443; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ZSruXExCC7oyLfN8ZSYHDj8sJJzKMrm8E7odv0JQbpk=;
-        b=gODxd8mllFY9MoSKZLaHzS2WzPAF6NAZXWh7QPMqJYFmewa4xIn2S93MvkPSK+Lbf9
-         8Pt/twOL4q+V5ojhYyhbTe3/E/pUPw+4c1KHakMLMrrIofObWyVC/xJAMMC8kugTmmgw
-         n9lWjnA2Z839fRF5lTIaqdeR3RkawSvZrBJ34XQa1Z3FJbPODENPLwipx3/PPcI3ylGs
-         /sDVgKwsHKmRIKkc8yJvXXouOG6SH9BPZx0iGCglzJHXKAyRyTw7ELs0ao2yL5XjGVdA
-         xhwfJZxPo7BR9nBlbYdb3AQze2zl2EpXTP0LE3MUt2ZKMELHbI/XF7A6Yfvxrnp30TBM
-         iVbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699057643; x=1699662443;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZSruXExCC7oyLfN8ZSYHDj8sJJzKMrm8E7odv0JQbpk=;
-        b=B9NcTku8iOkIP2GkSy2weQJkAoVjnb0ie9BBD5dVU3BTWbo1BNWD+Aq5O+jkvzUA8U
-         hXhT4eETB6ekCSrkl5QbwtJ0AWyjgjN/aq3nQfJFaWKnW0ipVb3aKUENgZyil4wjIB+z
-         /bxDIQUu8LRNABR+5B/demKB3b57mEI8k3XXdyT7SIoZDvq8+U79ncDeXoT3dE6rhnOD
-         cn9Ul8lvE22iTEaVEwG8MxoGlqeExxtZpohYdubn3XPnzA49rxasGwIG3QC6ZQIk2+ym
-         pASwyDH8A/iS9f4r0lLlD6hmsyNdQAcQmNez+sX9yHaVK3iqYG1RnzBOGvFiUjnNTjuV
-         /F1g==
-X-Gm-Message-State: AOJu0YyoZfj0fzIAyYXJAXVep8uyrW6eXycDxpA2WDTHn61QXOvmIjs7
-        RthW/zeVHhj/RiX2enquKiY=
-X-Google-Smtp-Source: AGHT+IFfm/C4eEi089pE7HOXJTu6LK5uaY2KHPfzzcBQCM008GsYRPPDZ9ry9IpfM7Ka0d7L3TLDfw==
-X-Received: by 2002:a05:6a00:10d2:b0:693:3963:847a with SMTP id d18-20020a056a0010d200b006933963847amr22580602pfu.30.1699057643443;
-        Fri, 03 Nov 2023 17:27:23 -0700 (PDT)
-Received: from [192.168.0.106] ([103.131.18.64])
-        by smtp.gmail.com with ESMTPSA id it10-20020a056a00458a00b0068ffd4eb66dsm1952259pfb.35.2023.11.03.17.27.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 03 Nov 2023 17:27:22 -0700 (PDT)
-Message-ID: <e93d5996-e9fc-4c28-ad33-5fd62fbac92d@gmail.com>
-Date:   Sat, 4 Nov 2023 07:27:15 +0700
+        Fri, 3 Nov 2023 20:37:01 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A726D4E;
+        Fri,  3 Nov 2023 17:36:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699058218; x=1730594218;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=1dW3SX46naPd0jQ9mrfv634xi6NUdGnHujinj6oth5c=;
+  b=OX8DL6Fia1h2JPJt5pZOSB6/3WvR3LmW6NUPDXagHLMMQNxvPYGB4Dyp
+   zNCw/ZTvEY1hHF1ACSO5PLKKMVc3KHCwyq+OKflY6qt3nRT6432UC6N2v
+   1GxgsqvyuMtH5IY4aJIz1NxcpREECR3XdRVbTHQ148+7tuHTVcXOo6dvR
+   8+v5wK5E6ZjzxQ/+4xsEDy+VWR8u7NaXKLKsXm3j7lekB97KNGs/yba2l
+   zWvl8l+zFBFGO27EjrHtWS61pAWV0XCBUZ1mziraOBc0rhqPaWM2KGWC3
+   s5Wf/V1v6xTKzh2qsejLVPma6p8MukAGNHmWy86vj5NpGO0NGDQMeAD16
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10883"; a="391916618"
+X-IronPort-AV: E=Sophos;i="6.03,275,1694761200"; 
+   d="scan'208";a="391916618"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2023 17:36:57 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10883"; a="761778329"
+X-IronPort-AV: E=Sophos;i="6.03,275,1694761200"; 
+   d="scan'208";a="761778329"
+Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
+  by orsmga002.jf.intel.com with ESMTP; 03 Nov 2023 17:36:56 -0700
+Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qz4ej-00038C-2M;
+        Sat, 04 Nov 2023 00:36:53 +0000
+Date:   Sat, 4 Nov 2023 08:36:47 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org
+Subject: versioncheck:
+ ./drivers/staging/media/atomisp/include/linux/atomisp.h: 25 linux/version.h
+ not needed.
+Message-ID: <202311040817.mU9R4SSl-lkp@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: autofs mount/umount hangs with recent kernel?
-To:     Charles Hedrick <hedrick@rutgers.edu>,
-        Daire Byrne <daire@dneg.com>,
-        Linux NFS <linux-nfs@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>
-Cc:     Chuck Lever <chuck.lever@oracle.com>,
-        Jeff Layton <jlayton@kernel.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>
-References: <CAPt2mGNPSi-+3WdeMsOjkJ2vOqZcRE2S6i=eqi+UA2RmzywAyg@mail.gmail.com>
- <ZUT_W8yoJ5wqSvLv@debian.me>
- <PH0PR14MB5493BD73D14C0002DE32DAE3AAA5A@PH0PR14MB5493.namprd14.prod.outlook.com>
-Content-Language: en-US
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-In-Reply-To: <PH0PR14MB5493BD73D14C0002DE32DAE3AAA5A@PH0PR14MB5493.namprd14.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -82,22 +65,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/11/2023 03:07, Charles Hedrick wrote:
-> We've seen behavior like that throughout the lifetime of 4.10 and 5.15 as well. It may be a different issue, though. For us it happens only with NFS 4.2. NFS 3 is fine. And once it happens, rebooting the client doesn't help. We have to reboot the NFS server. We're trying setting automount to never unmount, as an attempt to figure out whether the problem is actually caused by the unmounts and mounts.
-> 
-> I'd be happy to help diagnose if someone could tell me what data would be useful.
-> 
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   e392ea4d4d00880bf94550151b1ace4f88a4b17a
+commit: ad85094b293e40e7a2f831b0311a389d952ebd5e Revert "media: staging: atomisp: Remove driver"
+date:   3 years, 6 months ago
+reproduce: (https://download.01.org/0day-ci/archive/20231104/202311040817.mU9R4SSl-lkp@intel.com/reproduce)
 
-Please don't top-post; reply inline with appropriate context instead.
-And don't send HTML emails either, since mailing lists reject them.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311040817.mU9R4SSl-lkp@intel.com/
 
-First, you may want to test the mainline (currently at v6.6) on both
-the server and the client. Then, please attach full system log
-(most likely journalctl) to see if you have the same one as Daire
-reported.
-
-Thanks.
+versioncheck warnings: (new ones prefixed by >>)
+   INFO PATH=/opt/cross/clang/bin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+   /usr/bin/timeout -k 100 3h /usr/bin/make KCFLAGS= -Wrestrict -Wformat-overflow -Wformat-truncation -Wstringop-overflow -Wundef -funsigned-char -Wenum-conversion -Wno-error=return-type -Wreturn-type -Wno-error=missing-prototypes W=1 --keep-going HOSTCC=gcc-12 CC=gcc-12 -j32 KBUILD_MODPOST_WARN=1 ARCH=x86_64 versioncheck
+   find ./* \( -name SCCS -o -name BitKeeper -o -name .svn -o -name CVS -o -name .pc -o -name .hg -o -name .git \) -prune -o \
+   	-name '*.[hcS]' -type f -print | sort \
+   	| xargs perl -w ./scripts/checkversion.pl
+   ./arch/arm64/kernel/hibernate.c: 24 linux/version.h not needed.
+   ./arch/csky/include/asm/atomic.h: 6 linux/version.h not needed.
+   ./arch/csky/include/asm/io.h: 9 linux/version.h not needed.
+   ./arch/csky/include/asm/thread_info.h: 9 linux/version.h not needed.
+   ./arch/csky/include/asm/uaccess.h: 15 linux/version.h not needed.
+   ./arch/csky/kernel/process.c: 5 linux/version.h not needed.
+   ./arch/csky/mm/dma-mapping.c: 14 linux/version.h not needed.
+   ./arch/csky/mm/fault.c: 16 linux/version.h not needed.
+   ./arch/s390/include/asm/setup.h: 182: need linux/version.h
+   ./arch/um/drivers/vector_kern.c: 11 linux/version.h not needed.
+   ./drivers/block/rsxx/rsxx_priv.h: 14 linux/version.h not needed.
+   ./drivers/block/skd_main.c: 28 linux/version.h not needed.
+   ./drivers/crypto/cavium/cpt/cptpf_main.c: 13 linux/version.h not needed.
+   ./drivers/crypto/cavium/zip/common.h: 59 linux/version.h not needed.
+   ./drivers/crypto/ccree/cc_driver.h: 25 linux/version.h not needed.
+   ./drivers/gpio/gpio-mlxbf2.c: 17 linux/version.h not needed.
+   ./drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c: 62 linux/version.h not needed.
+   ./drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_helpers.c: 28 linux/version.h not needed.
+   ./drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_mst_types.c: 26 linux/version.h not needed.
+   ./drivers/gpu/drm/pl111/pl111_display.c: 15 linux/version.h not needed.
+   ./drivers/gpu/drm/pl111/pl111_drv.c: 58 linux/version.h not needed.
+   ./drivers/gpu/drm/tve200/tve200_display.c: 14 linux/version.h not needed.
+   ./drivers/gpu/drm/tve200/tve200_drv.c: 38 linux/version.h not needed.
+   ./drivers/hv/hv.c: 16 linux/version.h not needed.
+   ./drivers/i2c/busses/i2c-brcmstb.c: 25 linux/version.h not needed.
+   ./drivers/i2c/busses/i2c-xgene-slimpro.c: 22 linux/version.h not needed.
+   ./drivers/media/dvb-frontends/mxl5xx.c: 30 linux/version.h not needed.
+   ./drivers/media/pci/cx25821/cx25821.h: 31 linux/version.h not needed.
+   ./drivers/media/platform/s3c-camif/camif-core.c: 26 linux/version.h not needed.
+   ./drivers/media/platform/sti/c8sectpfe/c8sectpfe-common.h: 16 linux/version.h not needed.
+   ./drivers/media/platform/sti/c8sectpfe/c8sectpfe-core.c: 31 linux/version.h not needed.
+   ./drivers/media/platform/sti/c8sectpfe/c8sectpfe-dvb.c: 14 linux/version.h not needed.
+   ./drivers/media/usb/uvc/uvc_driver.c: 18 linux/version.h not needed.
+   ./drivers/mtd/nand/raw/brcmnand/brcmnand.c: 7 linux/version.h not needed.
+   ./drivers/net/ethernet/broadcom/genet/bcmgenet_wol.c: 21 linux/version.h not needed.
+   ./drivers/net/ethernet/qlogic/qede/qede.h: 35 linux/version.h not needed.
+   ./drivers/net/ethernet/qlogic/qede/qede_ethtool.c: 32 linux/version.h not needed.
+   ./drivers/net/ethernet/qlogic/qede/qede_main.c: 34 linux/version.h not needed.
+   ./drivers/net/usb/lan78xx.c: 5 linux/version.h not needed.
+   ./drivers/net/wireless/rsi/rsi_91x_ps.c: 19 linux/version.h not needed.
+   ./drivers/scsi/cxgbi/libcxgbi.h: 27 linux/version.h not needed.
+   ./drivers/scsi/qedf/qedf.h: 15 linux/version.h not needed.
+   ./drivers/scsi/qedf/qedf_dbg.h: 13 linux/version.h not needed.
+   ./drivers/scsi/qedi/qedi_dbg.h: 14 linux/version.h not needed.
+   ./drivers/soc/tegra/powergate-bpmp.c: 10 linux/version.h not needed.
+>> ./drivers/staging/media/atomisp/include/linux/atomisp.h: 25 linux/version.h not needed.
+   ./drivers/staging/rtl8723bs/include/drv_types.h: 17 linux/version.h not needed.
+   ./drivers/staging/rtl8723bs/include/ioctl_cfg80211.h: 10 linux/version.h not needed.
+   ./drivers/usb/early/xhci-dbc.c: 21 linux/version.h not needed.
+   ./drivers/watchdog/ziirave_wdt.c: 21 linux/version.h not needed.
+   ./fs/ext4/ext4.h: 30 linux/version.h not needed.
+   ./include/linux/qed/qed_ll2_if.h: 41 linux/version.h not needed.
+   ./kernel/bpf/syscall.c: 19 linux/version.h not needed.
+   ./samples/bpf/sampleip_kern.c: 7 linux/version.h not needed.
+   ./samples/bpf/trace_event_kern.c: 8 linux/version.h not needed.
+   ./samples/mic/mpssd/mpssd.c: 29 linux/version.h not needed.
+   ./sound/soc/codecs/cs35l35.c: 12 linux/version.h not needed.
+   ./sound/soc/codecs/cs42l42.c: 14 linux/version.h not needed.
+   ./tools/perf/include/bpf/bpf.h: 70: need linux/version.h
+   ./tools/perf/tests/bpf-script-example.c: 49: need linux/version.h
+   ./tools/perf/tests/bpf-script-test-kbuild.c: 21: need linux/version.h
+   ./tools/perf/tests/bpf-script-test-prologue.c: 47: need linux/version.h
+   ./tools/perf/tests/bpf-script-test-relocation.c: 51: need linux/version.h
+   ./tools/testing/selftests/bpf/progs/test_map_lock.c: 4 linux/version.h not needed.
+   ./tools/testing/selftests/bpf/progs/test_send_signal_kern.c: 4 linux/version.h not needed.
+   ./tools/testing/selftests/bpf/progs/test_spin_lock.c: 4 linux/version.h not needed.
+   ./tools/testing/selftests/bpf/progs/test_tcp_estats.c: 37 linux/version.h not needed.
+   ./tools/testing/selftests/wireguard/qemu/init.c: 25 linux/version.h not needed.
 
 -- 
-An old man doll... just what I always wanted! - Clara
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
