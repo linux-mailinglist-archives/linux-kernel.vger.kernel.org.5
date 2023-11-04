@@ -2,65 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BB117E0D59
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 04:00:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 234F47E0D5E
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 04:06:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231197AbjKDCo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 22:44:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32794 "EHLO
+        id S234211AbjKDDGa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 23:06:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229661AbjKDCo5 (ORCPT
+        with ESMTP id S231281AbjKDDGZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 22:44:57 -0400
-Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D73D2D44;
-        Fri,  3 Nov 2023 19:44:54 -0700 (PDT)
-Received: by mail-oi1-x22e.google.com with SMTP id 5614622812f47-3b2b1af964dso1692614b6e.1;
-        Fri, 03 Nov 2023 19:44:54 -0700 (PDT)
+        Fri, 3 Nov 2023 23:06:25 -0400
+Received: from mail-vk1-xa2c.google.com (mail-vk1-xa2c.google.com [IPv6:2607:f8b0:4864:20::a2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61500D49
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 20:06:22 -0700 (PDT)
+Received: by mail-vk1-xa2c.google.com with SMTP id 71dfb90a1353d-4abf80eab14so542541e0c.2
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Nov 2023 20:06:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699065894; x=1699670694; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=WKGQz1joPLPha7R6fZ/AtC4HHorloARO2OZK7OLX04w=;
-        b=VL0+3GQixLlL7MRLUACL+gKsfjyuKguKa5QbZfplDOHdswMTSzP/YTZUxy7ffZKNTE
-         GGylS724BFTHYsWpx3mogAZOjwfew/bfJTjXGflawRnIAy+qrkYiggB8DAonbrN6J7ZN
-         zDIdkIMIhDqrI2nAwonYVL7yUZKZkqs7uOOeZmlQXd997s53HOJ5nw3h6LW0onqRARu+
-         nysfAScqQt6Os20TiT8SmeU145ep9TiwgatMhIS3vTA/QuEN9WjjtUc7aVwhO/T5+8jo
-         g4t1UFCvODzRQuB2u90d3eqeTfZeI9x04VZ2OYq6Tx5amsWZA9YQLrFfiS04NYOSgEQh
-         bIXQ==
+        d=gmail.com; s=20230601; t=1699067181; x=1699671981; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JZ25dqMfmLYeg2Fl8aZNdg/aSqPTkJPsImAT7P2Xhqo=;
+        b=a1Mw9g2VQFvIjnopXpw1PQAztY6LIBdbtVqupuE9dH45RYfrI2wk+992OpemS4G+sm
+         Oyw2ZwDgEEaV37bs45uTLhunjDiIM/kLWP03Xj9ZOWkKDzJYkAwbS5/m7azWQ9Bhl5Cv
+         IGwZ9gD/SMWESecLmwj/JNa9StbQRsZjdr9xhWGEUqdcckT/LLHAH8DCDvVFARFHxOWM
+         Q+PBnRiOtg+vQWZg8+GhdTrPwmF+L/7WQZMZv70IfPhSvqiuZ1SHXvM6ubunCdSNuD3N
+         +EE6fRnS6rLr9GzRfLH/ZmUaAffN3yUsgD/HGgtN1IgwF1iIQg2BzbnFl24Idn5egfBw
+         yGJQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699065894; x=1699670694;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=WKGQz1joPLPha7R6fZ/AtC4HHorloARO2OZK7OLX04w=;
-        b=ZH5vN4KCsG7SM6q770fe70jQUqE468sm0DGBGtbirLpAf9PAToVYctQUtnm6DVotRF
-         AsRTBCTwkvK8wSaCGFKZnzlMGlg7+hhGn6uMn85w3rqw1PuNw4yOQ/m7aGE6cDeAcVnI
-         OHufH2xqCO0PpJZkILfJHqBPfdP+IxjcUpHh8dcjsYYB9zylMb66zvIFz2748YNZOxPa
-         Q9av89ggodUj2zpLOP0TLi1ilqw1YKj5K9IDTxb6fdPPafNOYWiiTZi9aOwlPxkjgxQ9
-         +X+mWASFsGQyNgdI/+MzMY/MzjbKg11xcvldLoH+yuIlNLRyL6tUS6NFWyEGqxV7sjcw
-         mirA==
-X-Gm-Message-State: AOJu0Yz94tCEflEBy0xw/N5ibqL4jtsburo//xRHYZss7kwsfM7aFWHg
-        PH35zSEbX8DknzMpG4o9Kqc=
-X-Google-Smtp-Source: AGHT+IFD3iY1F2nxv95bN4MI4a5W1jNA8PhHNMDLlJAllZ1VhUXhVMAWTwyJ1l3pM8GZtT2Gs1Ql1g==
-X-Received: by 2002:a54:4492:0:b0:3a7:c13:c8d1 with SMTP id v18-20020a544492000000b003a70c13c8d1mr23004058oiv.17.1699065894105;
-        Fri, 03 Nov 2023 19:44:54 -0700 (PDT)
-Received: from localhost ([183.247.1.252])
-        by smtp.gmail.com with ESMTPSA id w19-20020aa78593000000b006b4ac8885b4sm2110862pfn.14.2023.11.03.19.44.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Nov 2023 19:44:53 -0700 (PDT)
-From:   Tao Chen <chen.dylane@gmail.com>
-To:     song@kernel.org, jolsa@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, yonghong.song@linux.dev,
-        martin.lau@linux.dev, john.fastabend@gmail.com, haoluo@google.com
-Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        chen.dylane@gmail.com
-Subject: [PATCH] bpf: Use E2BIG instead of ENOENT
-Date:   Sat,  4 Nov 2023 10:44:44 +0800
-Message-Id: <20231104024444.385484-1-chen.dylane@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        d=1e100.net; s=20230601; t=1699067181; x=1699671981;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=JZ25dqMfmLYeg2Fl8aZNdg/aSqPTkJPsImAT7P2Xhqo=;
+        b=MvopffiNuj9yuXAxdedw1EgyrO/X0NlbYAfAjr5DekjZHZT5ifJegoxDrJ8OSp2djl
+         Q7VnaNbzQslsvNizvNcNd04gnofUzkhXbpspEkNa5XOoVeg+zrVKF3bGUwhAO92hlNQ/
+         RWyDh7AAhfyAD6p35E5k2mIzlL9o22jdhJv7dBhU2xoOwKX5Bn4NrPTsDY4NvLCV1NLJ
+         tD26GwAW9q/OnNZ2kH4m8+dqj81ffDMza6jnDu461XSy56MBOamoNXvEITwHAYqgC/z6
+         RYlJ2s2WzhXV+1aqmwQLz/Uj9dITan8eulrNux1IvmOkXP+dd/FMZlJDAKFuaEqjDCHS
+         mPLg==
+X-Gm-Message-State: AOJu0YwX6v0gB5y85x+h/3YkERUzkrJDAkxWQg7aVkF7lf+eadycvYQ5
+        y62wKWzDgLwLJDDi1hyYAJDEAJV51eVc+GB94VU=
+X-Google-Smtp-Source: AGHT+IENifxKWcXUy7hWDZ6jYXbYA5CS7Kd+sNRq/6TwpmNBxaFm3k5pGLtv3YrfR6qS7jYOt5E3fiZhHTgFz0DCaTA=
+X-Received: by 2002:a1f:b695:0:b0:49c:b45:6cba with SMTP id
+ g143-20020a1fb695000000b0049c0b456cbamr21886032vkf.12.1699067181386; Fri, 03
+ Nov 2023 20:06:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20231103131011.1316396-1-lb@semihalf.com> <20231103131011.1316396-11-lb@semihalf.com>
+In-Reply-To: <20231103131011.1316396-11-lb@semihalf.com>
+From:   jim.cromie@gmail.com
+Date:   Fri, 3 Nov 2023 21:05:55 -0600
+Message-ID: <CAJfuBxxVGaqG4wVu-kM3ynA8ARTD6DFPBuz0a1GqunMqdvRBgQ@mail.gmail.com>
+Subject: Re: [PATCH v1 10/12] dyndbg: add processing of T(race) flag argument
+To:     =?UTF-8?Q?=C5=81ukasz_Bartosik?= <lb@semihalf.com>
+Cc:     Jason Baron <jbaron@akamai.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Guenter Roeck <groeck@google.com>,
+        Yaniv Tzoreff <yanivt@google.com>,
+        Benson Leung <bleung@google.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        Pekka Paalanen <ppaalanen@gmail.com>,
+        Sean Paul <seanpaul@chromium.org>,
+        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org,
+        upstream@semihalf.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -71,27 +80,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use E2BIG instead of ENOENT when the key size beyond the buckets size,
-it seems more meaningful.
+On Fri, Nov 3, 2023 at 7:10=E2=80=AFAM =C5=81ukasz Bartosik <lb@semihalf.co=
+m> wrote:
+>
+> Add processing of argument provided to T(race) flag.
+> The argument value determines destination of debug logs:
+>
+> 0 - debug logs will be written to prdbg and devdbg trace events
+> [1..255] - debug logs will be written to trace instance
+>
+> A user can provide trace destination by folowing T flag with
+> ":" and trace destination value in range [0..255], for example:
+>
+> echo "module thunderbolt =3DpT:7" > /sys/kernel/debug/dynamic_debug/contr=
+ol
+> echo "module thunderbolt =3DlT:7,p" > /sys/kernel/debug/dynamic_debug/con=
+trol
+>
+> When T flag with argument is followed by other flags then the next flag h=
+as
+> to be preceded with ",".
+>
 
-Signed-off-by: Tao Chen <chen.dylane@gmail.com>
----
- kernel/bpf/stackmap.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+the trailing , seems punctuation heavy.
+Could we just stipulate that any :string  (leading : trailing anything)
+be the last flag in the spec ?
+bare T flags are not constrained otherwise.
+seems fine as API-spec-by-error-codes.
 
-diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
-index 458bb80b14d5..b78369bdec8d 100644
---- a/kernel/bpf/stackmap.c
-+++ b/kernel/bpf/stackmap.c
-@@ -570,7 +570,7 @@ int bpf_stackmap_copy(struct bpf_map *map, void *key, void *value)
- 	u32 id = *(u32 *)key, trace_len;
- 
- 	if (unlikely(id >= smap->n_buckets))
--		return -ENOENT;
-+		return -E2BIG;
- 
- 	bucket = xchg(&smap->buckets[id], NULL);
- 	if (!bucket)
--- 
-2.34.1
 
+
+
+> When no value is provided trace destination defaults to 0, for example:
+>
+> echo "module thunderbolt =3DT" > /sys/kernel/debug/dynamic_debug/control
+> echo "module thunderbolt =3DlTp" > /sys/kernel/debug/dynamic_debug/contro=
+l
+
+no colon after T means p is a flag, not a destination name
