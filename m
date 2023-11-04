@@ -2,168 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D36F7E0FC6
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 14:59:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 412A47E0F8D
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 14:05:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232180AbjKDN71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Nov 2023 09:59:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40538 "EHLO
+        id S231771AbjKDNEs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Nov 2023 09:04:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229783AbjKDN7Z (ORCPT
+        with ESMTP id S231473AbjKDNEr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Nov 2023 09:59:25 -0400
-Received: from connect.vanmierlo.com (fieber.vanmierlo.com [84.243.197.177])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 880C2187;
-        Sat,  4 Nov 2023 06:59:21 -0700 (PDT)
-X-Footer: dmFubWllcmxvLmNvbQ==
-Received: from roundcube.vanmierlo.com ([192.168.37.37])
-        (authenticated user m.brock@vanmierlo.com)
-        by connect.vanmierlo.com (Kerio Connect 10.0.2 patch 1) with ESMTPA;
-        Sat, 4 Nov 2023 14:59:17 +0100
+        Sat, 4 Nov 2023 09:04:47 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E25AB1B2
+        for <linux-kernel@vger.kernel.org>; Sat,  4 Nov 2023 06:04:40 -0700 (PDT)
+Received: from dggpemd200004.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4SMyVj56QyzvQ1g;
+        Sat,  4 Nov 2023 21:04:13 +0800 (CST)
+Received: from huawei.com (10.175.113.32) by dggpemd200004.china.huawei.com
+ (7.185.36.141) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.2.1258.23; Sat, 4 Nov
+ 2023 21:04:17 +0800
+From:   Liu Shixin <liushixin2@huawei.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Yosry Ahmed <yosryahmed@google.com>,
+        Huang Ying <ying.huang@intel.com>,
+        Sachin Sant <sachinp@linux.ibm.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>
+CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        Liu Shixin <liushixin2@huawei.com>
+Subject: [PATCH v7] mm: vmscan: try to reclaim swapcache pages if no swap space
+Date:   Sat, 4 Nov 2023 22:03:13 +0800
+Message-ID: <20231104140313.3418001-1-liushixin2@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Date:   Sat, 04 Nov 2023 14:59:17 +0100
-From:   m.brock@vanmierlo.com
-To:     Florian Eckert <fe@dev.tdt.de>
-Cc:     Eckert.Florian@googlemail.com, gregkh@linuxfoundation.org,
-        jirislaby@kernel.org, pavel@ucw.cz, lee@kernel.org,
-        kabel@kernel.org, u.kleine-koenig@pengutronix.de,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-leds@vger.kernel.org
-Subject: Re: [PATCH v5 2/2] leds: ledtrig-tty: add new line mode evaluation
-In-Reply-To: <2951fd563fc6a364d8cddfb7ec17808b@dev.tdt.de>
-References: <20231023094205.2706812-1-fe@dev.tdt.de>
- <20231023094205.2706812-3-fe@dev.tdt.de>
- <ddf9439a092576cd18c6e025d0b61602@vanmierlo.com>
- <2951fd563fc6a364d8cddfb7ec17808b@dev.tdt.de>
-Message-ID: <ceec1d36f889eb82e724335d007334fd@vanmierlo.com>
-X-Sender: m.brock@vanmierlo.com
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.32]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpemd200004.china.huawei.com (7.185.36.141)
+X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Florian Eckert wrote on 2023-10-30 09:15:
->>> +	/* The rx/tx handling must come after the evaluation of TIOCM_*,
->>> +	 * since the display for rx/tx has priority
->>> +	 */
->>> +	if (test_bit(TRIGGER_TTY_RX, &trigger_data->ttytrigger) ||
->>> +	    test_bit(TRIGGER_TTY_TX, &trigger_data->ttytrigger)) {
->>> +		ret = tty_get_icount(trigger_data->tty, &icount);
->>> +		if (ret) {
->>> +			dev_info(trigger_data->tty->dev, "Failed to get icount, stopped 
->>> polling\n");
->>> +			mutex_unlock(&trigger_data->mutex);
->>> +			return;
->>> +		}
->>> +
->>> +		if (test_bit(TRIGGER_TTY_RX, &trigger_data->ttytrigger) &&
->>> +		    (icount.tx != trigger_data->tx)) {
->> 
->> You check for TRIGGER_TTY_RX and then compare icount.tx, is that 
->> correct?
-> 
-> I would say this is correct. At first I check if the tx path should be 
-> evaluated
-> and if this is correct I check if there was a tx transmission during
-> the last run.
+When spaces of swap devices are exhausted, only file pages can be
+reclaimed.  But there are still some swapcache pages in anon lru list.
+This can lead to a premature out-of-memory.
 
-No, you check if the *RX* path should be evaluated! On the bright side: 
-this is
-fixed in the new patch set.
+The problem is found with such step:
 
->>> +			trigger_data->tx = icount.tx;
->>> +			state = TTY_LED_BLINK;
->>> +		}
->>> +
->>> +		if (test_bit(TRIGGER_TTY_TX, &trigger_data->ttytrigger) &&
->>> +		    (icount.rx != trigger_data->rx)) {
->> 
->> You check for TRIGGER_TTY_TX and then compare icount.rx, is that 
->> correct?
-> 
-> I would say this is correct. At first I check if the rx path should be 
-> evaluated
-> and if this is correct I check if there was a rx transmission during
-> the last run.
+ Firstly, set a 9MB disk swap space, then create a cgroup with 10MB
+ memory limit, then runs an program to allocates about 15MB memory.
 
-Same difference.
+The problem occurs occasionally, which may need about 100 times [1].
 
->>> +			trigger_data->rx = icount.rx;
->>> +			state = TTY_LED_BLINK;
->>> +		}
->>>  	}
->>> 
->>> -	if (icount.rx != trigger_data->rx ||
->>> -	    icount.tx != trigger_data->tx) {
->>> -		unsigned long interval = LEDTRIG_TTY_INTERVAL;
->>> +	current_brightness = led_cdev->brightness;
->>> +	if (current_brightness)
->>> +		led_cdev->blink_brightness = current_brightness;
->>> 
->>> +	if (!led_cdev->blink_brightness)
->>> +		led_cdev->blink_brightness = led_cdev->max_brightness;
->> 
->> Is it OK to override the chosen brightness here?
-> 
-> In my setup my brightness in the sysfs path of the LED ist set to '0'.
-> Even though the tty trigger was configured correctly the LED was not
-> turned on. If I set max_brightness in this path the LED works 
-> correctly.
-> I would check this a gain if this is still needed.
+Fix it by checking number of swapcache pages in can_reclaim_anon_pages().
+If the number is not zero, return true and set swapcache_only to 1.
+When scan anon lru list in swapcache_only mode, non-swapcache pages will
+be skipped to isolate in order to accelerate reclaim efficiency.
 
-I see you've dropped this from the new patch set. Thank you.
+However, in swapcache_only mode, the scan count still increased when scan
+non-swapcache pages because there are large number of non-swapcache pages
+and rare swapcache pages in swapcache_only mode, and if the non-swapcache
+is skipped and do not count, the scan of pages in isolate_lru_folios() can
+eventually lead to hung task, just as Sachin reported [2].
 
->> Shouldn't the led return to the line controlled steady state?
-> 
-> Sorry I do not understand your question.
-> 
->> Set an invert variable to true if state was TTY_LED_ENABLE before it 
->> got set
->> to TTY_LED_BLINK
-> 
-> No matter whether the LED is on or off beforehand. I understand that 
-> the
-> LED is always on for the first half of the period and off for the rest 
-> of
-> the period. I think that is correct and I don't need to make a 
-> distinction
-> via invert here. I hope I have understood your comment correctly here.
-> 
->> How do interval and the frequency of ledtrig_tty_work() relate?
-> 
-> The work is twice as long as of the interval. So the variable
-> LEDTRIG_TTY_INTERVAL = 50 and the work is scheduled 
-> LEDTRIG_TTY_INTERVAL * 2.
-> But that was also before my change.
+By the way, since there are enough times of memory reclaim before OOM, it
+is not need to isolate too much swapcache pages in one times.
 
-This explains why you don't necessarily need to invert the blink.
-If E.g. both CTS and TX are configured I would expect to see the led 
-turn on
-once CTS actives and then blink off when something is transmitted. After 
-that
-I expect to see the led still on because CTS is still active.
+[1]. https://lore.kernel.org/lkml/CAJD7tkZAfgncV+KbKr36=eDzMnT=9dZOT0dpMWcurHLr6Do+GA@mail.gmail.com/
+[2]. https://lore.kernel.org/linux-mm/CAJD7tkafz_2XAuqE8tGLPEcpLngewhUo=5US14PAtSM9tLBUQg@mail.gmail.com/
 
-Now only because the work interval is 2*LEDTRIG_TTY_INTERVAL and the 
-blink
-uses an interval of LEDTRIG_TTY_INTERVAL for both on and off the user 
-doesn't
-notice any difference except maybe a bit of delay of the blink.
+Signed-off-by: Liu Shixin <liushixin2@huawei.com>
+Tested-by: Yosry Ahmed <yosryahmed@google.com>
+Reviewed-by: "Huang, Ying" <ying.huang@intel.com>
+Reviewed-by: Yosry Ahmed <yosryahmed@google.com>
+---
+v6->v7: Reset swapcache_only to zero after there are swap spaces.
+v5->v6: Fix NULL pointing derefence and hung task problem reported by Sachin.
 
-If either the work schedule was larger than 2*LEDTRIG_TTY_INTERVAL or 
-the on
-interval would differ from the off interval the behaviour would differ
-noticably.
+ include/linux/swap.h |  6 ++++++
+ mm/memcontrol.c      |  8 ++++++++
+ mm/vmscan.c          | 36 ++++++++++++++++++++++++++++++++++--
+ 3 files changed, 48 insertions(+), 2 deletions(-)
 
-This is why I recommend to use an invert variable that is set to true 
-when
-the previous state was TTY_LED_ENABLE.
-
-Maarten
+diff --git a/include/linux/swap.h b/include/linux/swap.h
+index f6dd6575b905..3ba146ae7cf5 100644
+--- a/include/linux/swap.h
++++ b/include/linux/swap.h
+@@ -659,6 +659,7 @@ static inline void mem_cgroup_uncharge_swap(swp_entry_t entry, unsigned int nr_p
+ }
+ 
+ extern long mem_cgroup_get_nr_swap_pages(struct mem_cgroup *memcg);
++extern long mem_cgroup_get_nr_swapcache_pages(struct mem_cgroup *memcg);
+ extern bool mem_cgroup_swap_full(struct folio *folio);
+ #else
+ static inline void mem_cgroup_swapout(struct folio *folio, swp_entry_t entry)
+@@ -681,6 +682,11 @@ static inline long mem_cgroup_get_nr_swap_pages(struct mem_cgroup *memcg)
+ 	return get_nr_swap_pages();
+ }
+ 
++static inline long mem_cgroup_get_nr_swapcache_pages(struct mem_cgroup *memcg)
++{
++	return total_swapcache_pages();
++}
++
+ static inline bool mem_cgroup_swap_full(struct folio *folio)
+ {
+ 	return vm_swap_full();
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 5b009b233ab8..29e34c06ca83 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -7584,6 +7584,14 @@ long mem_cgroup_get_nr_swap_pages(struct mem_cgroup *memcg)
+ 	return nr_swap_pages;
+ }
+ 
++long mem_cgroup_get_nr_swapcache_pages(struct mem_cgroup *memcg)
++{
++	if (mem_cgroup_disabled())
++		return total_swapcache_pages();
++
++	return memcg_page_state(memcg, NR_SWAPCACHE);
++}
++
+ bool mem_cgroup_swap_full(struct folio *folio)
+ {
+ 	struct mem_cgroup *memcg;
+diff --git a/mm/vmscan.c b/mm/vmscan.c
+index 6f13394b112e..a5e04291662f 100644
+--- a/mm/vmscan.c
++++ b/mm/vmscan.c
+@@ -137,6 +137,9 @@ struct scan_control {
+ 	/* Always discard instead of demoting to lower tier memory */
+ 	unsigned int no_demotion:1;
+ 
++	/* Swap space is exhausted, only reclaim swapcache for anon LRU */
++	unsigned int swapcache_only:1;
++
+ 	/* Allocation order */
+ 	s8 order;
+ 
+@@ -602,6 +605,12 @@ static bool can_demote(int nid, struct scan_control *sc)
+ 	return true;
+ }
+ 
++static void set_swapcache_mode(struct scan_control *sc, bool swapcache_only)
++{
++	if (sc)
++		sc->swapcache_only = swapcache_only;
++}
++
+ static inline bool can_reclaim_anon_pages(struct mem_cgroup *memcg,
+ 					  int nid,
+ 					  struct scan_control *sc)
+@@ -611,12 +620,26 @@ static inline bool can_reclaim_anon_pages(struct mem_cgroup *memcg,
+ 		 * For non-memcg reclaim, is there
+ 		 * space in any swap device?
+ 		 */
+-		if (get_nr_swap_pages() > 0)
++		if (get_nr_swap_pages() > 0) {
++			set_swapcache_mode(sc, false);
+ 			return true;
++		}
++		/* Is there any swapcache pages to reclaim? */
++		if (total_swapcache_pages() > 0) {
++			set_swapcache_mode(sc, true);
++			return true;
++		}
+ 	} else {
+ 		/* Is the memcg below its swap limit? */
+-		if (mem_cgroup_get_nr_swap_pages(memcg) > 0)
++		if (mem_cgroup_get_nr_swap_pages(memcg) > 0) {
++			set_swapcache_mode(sc, false);
+ 			return true;
++		}
++		/* Is there any swapcache pages in memcg to reclaim? */
++		if (mem_cgroup_get_nr_swapcache_pages(memcg) > 0) {
++			set_swapcache_mode(sc, true);
++			return true;
++		}
+ 	}
+ 
+ 	/*
+@@ -2342,6 +2365,15 @@ static unsigned long isolate_lru_folios(unsigned long nr_to_scan,
+ 		 */
+ 		scan += nr_pages;
+ 
++		/*
++		 * Count non-swapcache too because the swapcache pages may
++		 * be rare and it takes too much times here if not count
++		 * the non-swapcache pages.
++		 */
++		if (unlikely(sc->swapcache_only && !is_file_lru(lru) &&
++		    !folio_test_swapcache(folio)))
++			goto move;
++
+ 		if (!folio_test_lru(folio))
+ 			goto move;
+ 		if (!sc->may_unmap && folio_mapped(folio))
+-- 
+2.25.1
 
