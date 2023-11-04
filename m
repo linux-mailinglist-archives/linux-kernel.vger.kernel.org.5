@@ -2,102 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 14B4B7E0FF6
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 15:50:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0567D7E0FFB
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 15:57:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232254AbjKDOqX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Nov 2023 10:46:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51814 "EHLO
+        id S231598AbjKDO4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Nov 2023 10:56:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229620AbjKDOqV (ORCPT
+        with ESMTP id S229620AbjKDO4w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Nov 2023 10:46:21 -0400
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17E531BF;
-        Sat,  4 Nov 2023 07:46:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=Vglbr5OscBwmzXeDr7ryPvhrzWRRWsVXpMVy/3stZxs=; b=K2szq9Vaf0baMpHPaet72S7gAX
-        NY7TsMRGmHSDRdpMRbHdpzKIEMm4nvW4upJD6DHOvaCpqxKDD25G6CkzSIfaSE6E/MjpM8+6jv91S
-        WSW9qQpbvErgsQ9dBQ5vCNXnnRsLVQm0nsXJsXVtc/COKRYLrabAJ03zKJ4bqwE8pZ6g=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1qzHub-000sOR-PD; Sat, 04 Nov 2023 15:46:09 +0100
-Date:   Sat, 4 Nov 2023 15:46:09 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Hans Ulli Kroll <ulli.kroll@googlemail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org,
+        Sat, 4 Nov 2023 10:56:52 -0400
+Received: from mail-yw1-x112f.google.com (mail-yw1-x112f.google.com [IPv6:2607:f8b0:4864:20::112f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 657A91B2;
+        Sat,  4 Nov 2023 07:56:50 -0700 (PDT)
+Received: by mail-yw1-x112f.google.com with SMTP id 00721157ae682-5a8ada42c2aso34972577b3.3;
+        Sat, 04 Nov 2023 07:56:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699109809; x=1699714609; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=H0hrUGgZzYgQp76NmKrhuU8kV8DbyX9ea8P9JmtBgvE=;
+        b=gR0SUYGHNJKH8QGgB7Bh30cdcWECcLqNKByT3I382L6sh0p8kSFZiijZ2vY4elLEZ1
+         FIaOhVyHqSqNeAHA6ZNn5yU2pAgDfJJuJLbrZj4Rz/GmJ14bt50aWXjLHTv7OlFq7H/2
+         e1P800WJTzh4NzGEusaH7WC6U/pXT/8+GHJQ27DPHehOc1dEuFPDQpXeckl/fV/qCvLh
+         ybxvCKB3Y4NU2CdnAVrGPF+eW1qLfIXaDKNw400KV2CaRzViu3cRu/vbgsLIMCBll1cd
+         C9rn4yTkSrO/uDfMbhYdgWaxh8yRouttlD+gU/ARKlNI/E7Z7kr2wL4cra+g+L6VLaSh
+         +RdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699109809; x=1699714609;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=H0hrUGgZzYgQp76NmKrhuU8kV8DbyX9ea8P9JmtBgvE=;
+        b=QjiQEBhlWerkdLUVX2VRI2rsv0sKBWQMOWXu6RFavVM+Sz3Yx7yFvEpl8z3cleXM4S
+         nC2ij7KH1zt0paWE06vImuaBgcpNS2yAqDZbDnZ/KMzFr37AHFU/B9Z+uvZNXBXaofMw
+         hNN4XAqJRXLlnioo0BzjgTxeeBLjGk6DN2DG2DkF3IBFuQcoe6Y9JBYm6USewZqfnaMH
+         hi8rjeusQICTXVtYxhS5mSkUq8E/YH/PPTTZV+DrZ5d6/2cmJkw6fhHuV6dNTl2cT+98
+         X2irNYMGXGZMS8MgR0WBiehbXCpzlRGoltmqLP01KNMm+Kie4Jgj0uJSP6SpRjPo+Kad
+         hnvg==
+X-Gm-Message-State: AOJu0YxrO38m1kS9pX2KX0ERm+Z9uD1kCNYCt7aBhEKMEGB29qXvXURN
+        mhYNtNMz4frdnxTUek6NY6U=
+X-Google-Smtp-Source: AGHT+IG3DlQ2ys8YYCKek9u9alXx+xRcKJPuMFbnpSTCIHzhWHTU5a0l7hMtymZwgh2h7Lku0YeO8A==
+X-Received: by 2002:a0d:d5cd:0:b0:5a7:c8d4:c254 with SMTP id x196-20020a0dd5cd000000b005a7c8d4c254mr5399245ywd.0.1699109809473;
+        Sat, 04 Nov 2023 07:56:49 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id ci7-20020a05690c0a8700b005a7b8fddfedsm2114839ywb.41.2023.11.04.07.56.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 04 Nov 2023 07:56:48 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Sat, 4 Nov 2023 07:56:46 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Armin Wolf <W_Armin@gmx.de>
+Cc:     pali@kernel.org, jdelvare@suse.com, linux-hwmon@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net 3/4] net: ethernet: cortina: Protect against
- oversized frames
-Message-ID: <39debb25-bf30-4ede-99b1-d9f6091a039c@lunn.ch>
-References: <20231104-gemini-largeframe-fix-v1-0-9c5513f22f33@linaro.org>
- <20231104-gemini-largeframe-fix-v1-3-9c5513f22f33@linaro.org>
+Subject: Re: [PATCH 7/9] hwmon: (dell-smm) Add support for WMI SMM interface
+Message-ID: <efb7e4b9-487e-41a4-883f-4bfd29712bb8@roeck-us.net>
+References: <20231103185716.11007-1-W_Armin@gmx.de>
+ <20231103185716.11007-8-W_Armin@gmx.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231104-gemini-largeframe-fix-v1-3-9c5513f22f33@linaro.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231103185716.11007-8-W_Armin@gmx.de>
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 04, 2023 at 01:43:50PM +0100, Linus Walleij wrote:
-> The max size of a transfer no matter the MTU is 64KB-1 so immediately
-> bail out if the skb exceeds that.
+On Fri, Nov 03, 2023 at 07:57:14PM +0100, Armin Wolf wrote:
+> Some Dell machines like the Dell Optiplex 7000 do not support
+> the legacy SMM interface, but instead expect all SMM calls
+> to be issued over a special WMI interface.
+> Add support for this interface so users can control the fans
+> on those machines.
 > 
-> Fixes: 4d5ae32f5e1e ("net: ethernet: Add a driver for Gemini gigabit ethernet")
-> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+> Tested-by: <serverror@serverror.com>
+> Signed-off-by: Armin Wolf <W_Armin@gmx.de>
 > ---
->  drivers/net/ethernet/cortina/gemini.c | 6 ++++++
->  1 file changed, 6 insertions(+)
+[ ... ]
+
+> diff --git a/drivers/platform/x86/wmi.c b/drivers/platform/x86/wmi.c
+> index a78ddd83cda0..0b3e63c21d26 100644
+> --- a/drivers/platform/x86/wmi.c
+> +++ b/drivers/platform/x86/wmi.c
+> @@ -106,6 +106,7 @@ MODULE_DEVICE_TABLE(acpi, wmi_device_ids);
+>  static const char * const allow_duplicates[] = {
+>  	"05901221-D566-11D1-B2F0-00A0C9062910",	/* wmi-bmof */
+>  	"8A42EA14-4F2A-FD45-6422-0087F7A7E608",	/* dell-wmi-ddv */
+> +	"F1DDEE52-063C-4784-A11E-8A06684B9B01", /* dell-smm-hwmon */
+
+This would require an ack from its maintainer, which you did not Cc:.
+That means I won't be able to apply this patch.
+
+Guenter
+
+>  	NULL
+>  };
 > 
-> diff --git a/drivers/net/ethernet/cortina/gemini.c b/drivers/net/ethernet/cortina/gemini.c
-> index fd08f098850b..23723c9c0f93 100644
-> --- a/drivers/net/ethernet/cortina/gemini.c
-> +++ b/drivers/net/ethernet/cortina/gemini.c
-> @@ -1156,6 +1156,12 @@ static int gmac_map_tx_bufs(struct net_device *netdev, struct sk_buff *skb,
->  		mtu = MTU_SIZE_BIT_MASK;
->  	}
->  
-> +	if (skb->len > 65535) {
-> +		/* The field for length is only 16 bits */
-> +		netdev_err(netdev, "%s: frame too big, max size 65535 bytes\n", __func__);
-> +		return -EINVAL;
-> +	}
-> +
-
-The caller of gmac_map_tx_bufs() is a but funky:
-
-	if (gmac_map_tx_bufs(netdev, skb, txq, &w)) {
-		if (skb_linearize(skb))
-			goto out_drop;
-
-		u64_stats_update_begin(&port->tx_stats_syncp);
-		port->tx_frags_linearized++;
-		u64_stats_update_end(&port->tx_stats_syncp);
-
-		if (gmac_map_tx_bufs(netdev, skb, txq, &w))
-			goto out_drop_free;
-	}
-
-So return -EINVAL is going to cause the skb to be linearised, and then
-re-tried. Maybe you want to check the error code here, and go straight
-to out_drop?
-
-   Andrew
+> --
+> 2.39.2
+> 
