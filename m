@@ -2,55 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 36BBD7E0FED
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 15:35:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5EF47E0FEE
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 15:37:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232288AbjKDOfG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Nov 2023 10:35:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52564 "EHLO
+        id S232296AbjKDOhU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Nov 2023 10:37:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229620AbjKDOfF (ORCPT
+        with ESMTP id S232231AbjKDOhS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Nov 2023 10:35:05 -0400
-Received: from m15.mail.163.com (m15.mail.163.com [45.254.50.220])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 02847191;
-        Sat,  4 Nov 2023 07:34:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=3O/AC
-        UjY9iRPgXuqmvo563uZpZP1cuuJTllLXw0vPQQ=; b=cxKgrAKGisON755jtqDt0
-        gb6lWGxaNcnGRO9M/7iBrCYhZcegcjqcEf5hnE4/g5feglUiaYTYgHjRggpDqnAv
-        19flctvqUUl1WJnk/gDffzXiQ6iwCf/cY7O8Os7ftiofto1VApjqSnDJGy/Av/pN
-        H3bxbzN+cyAKr2+I0GTAvg=
-Received: from leanderwang-LC4.localdomain (unknown [111.206.145.21])
-        by zwqz-smtp-mta-g0-0 (Coremail) with SMTP id _____wCnL8r5VUZlfwsnCQ--.24372S2;
-        Sat, 04 Nov 2023 22:32:26 +0800 (CST)
-From:   Zheng Wang <zyytlz.wz@163.com>
-To:     aspriel@gmail.com
-Cc:     franky.lin@broadcom.com, hante.meuleman@broadcom.com,
-        kvalo@kernel.org, johannes.berg@intel.com, marcan@marcan.st,
-        linus.walleij@linaro.org, jisoo.jang@yonsei.ac.kr,
-        linuxlovemin@yonsei.ac.kr, wataru.gohda@cypress.com,
-        linux-wireless@vger.kernel.org,
-        brcm80211-dev-list.pdl@broadcom.com,
-        SHA-cyfmac-dev-list@infineon.com, linux-kernel@vger.kernel.org,
-        security@kernel.org, stable@vger.kernel.org,
-        hackerzheng666@gmail.com, Zheng Wang <zyytlz.wz@163.com>
-Subject: [PATCH v2] wifi: cfg80211: Fix use-after-free bug in  brcmf_cfg80211_detach
-Date:   Sat,  4 Nov 2023 22:32:09 +0800
-Message-Id: <20231104143209.734871-1-zyytlz.wz@163.com>
-X-Mailer: git-send-email 2.25.1
+        Sat, 4 Nov 2023 10:37:18 -0400
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D441194;
+        Sat,  4 Nov 2023 07:37:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=l8mmV4gmP9xOvUkDg9Vq1tdSD8CwyMqEbz/ZFux3m5o=; b=wPc6SAdOG5dS9SxpEOMlfCr/N5
+        Np/SfR6Fboau0RZv1mp9ROt1iM5GVkMARST2VMySjGDCzbREbbUsm/WGu1amA7b8DjJ27k+wjq5ZS
+        bhy96f5f72WlSDAgAfos33UPd2aSZ5SDUF8zW+ay7D8BYBS8aQ4ku9Yx58yhXoScCCqU=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1qzHli-000sL5-1L; Sat, 04 Nov 2023 15:36:58 +0100
+Date:   Sat, 4 Nov 2023 15:36:58 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Hans Ulli Kroll <ulli.kroll@googlemail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net 1/4] net: ethernet: cortina: Fix MTU max setting
+Message-ID: <11cf3d6f-91fc-41bb-b780-1d967f388981@lunn.ch>
+References: <20231104-gemini-largeframe-fix-v1-0-9c5513f22f33@linaro.org>
+ <20231104-gemini-largeframe-fix-v1-1-9c5513f22f33@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: _____wCnL8r5VUZlfwsnCQ--.24372S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxJr45GryUGF4rGr4fXF4UCFg_yoW8Aw1fpF
-        WfWa4DAryUWrW3Kr4F9rnrXFyrtw4DGwnYkr4UZ3Z3uFn8ur1rJrWjgFya93WDGrs2y3y7
-        Ar4vqr17GrZ7Ga7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0zR1rWrUUUUU=
-X-Originating-IP: [111.206.145.21]
-X-CM-SenderInfo: h2113zf2oz6qqrwthudrp/xtbBgxseU1d7gbdSHAAAsB
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231104-gemini-largeframe-fix-v1-1-9c5513f22f33@linaro.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -58,58 +56,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In brcm80211 driver,it starts with the following invoking chain
-to start init a timeout worker:
+> +	if (mtu > MTU_SIZE_BIT_MASK) {
+> +		netdev_err(netdev, "%s: MTU too big, max size 2047 bytes, capped\n", __func__);
+> +		mtu = MTU_SIZE_BIT_MASK;
+> +	}
 
-->brcmf_usb_probe
-  ->brcmf_usb_probe_cb
-    ->brcmf_attach
-      ->brcmf_bus_started
-        ->brcmf_cfg80211_attach
-          ->wl_init_priv
-            ->brcmf_init_escan
-              ->INIT_WORK(&cfg->escan_timeout_work,
-		  brcmf_cfg80211_escan_timeout_worker);
+So this should not actually happen. If it does, some protocol above is
+ignoring the MTU. And if that happens, you are going to spam the log
+at line rate.
 
-If we disconnect the USB by hotplug, it will call
-brcmf_usb_disconnect to make cleanup. The invoking chain is :
+Packets which are truncated are also pretty useless. They are likely
+to be dropped by the receiver when the CRC fails. So i would suggest
+drop them here, and increment a counter.
 
-brcmf_usb_disconnect
-  ->brcmf_usb_disconnect_cb
-    ->brcmf_detach
-      ->brcmf_cfg80211_detach
-        ->kfree(cfg);
+>  #define SOF_EOF_BIT_MASK	0x3fffffff
+> -#define SOF_BIT			0x80000000
+> -#define EOF_BIT			0x40000000
+> -#define EOFIE_BIT		BIT(29)
+> -#define MTU_SIZE_BIT_MASK	0x1fff
+> +#define SOF_BIT			BIT(31) /* Start of Frame */
+> +#define EOF_BIT			BIT(30) /* End of Frame */
+> +#define EOFIE_BIT		BIT(29) /* End of Frame Interrupt Enable */
+> +#define MTU_SIZE_BIT_MASK	0x7ff /* Max MTU 2047 bytes */
 
-While the timeout woker may still be running. This will cause
-a use-after-free bug on cfg in brcmf_cfg80211_escan_timeout_worker.
+Apart from the MTU_SIZE_BIT_MASK, this looks mostly unrelated.
 
-Fix it by deleting the timer and canceling the worker in
-brcmf_cfg80211_detach.
 
-Fixes: e756af5b30b0 ("brcmfmac: add e-scan support.")
-Signed-off-by: Zheng Wang <zyytlz.wz@163.com>
-Cc: stable@vger.kernel.org
+    Andrew
+
 ---
-v2:
-- fix the error of kernel test bot reported
----
- drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
-index 667462369a32..646ec8bdf512 100644
---- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
-+++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
-@@ -8431,6 +8431,9 @@ void brcmf_cfg80211_detach(struct brcmf_cfg80211_info *cfg)
- 	if (!cfg)
- 		return;
- 
-+	if (timer_pending(&cfg->escan_timeout))
-+		del_timer_sync(&cfg->escan_timeout);
-+	cancel_work_sync(&cfg->escan_timeout_work);
- 	brcmf_pno_detach(cfg);
- 	brcmf_btcoex_detach(cfg);
- 	wiphy_unregister(cfg->wiphy);
--- 
-2.25.1
-
+pw-bot: cr
