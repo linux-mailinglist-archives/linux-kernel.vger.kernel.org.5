@@ -2,53 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A66AD7E0E3F
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 08:54:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19B7C7E0E49
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 09:05:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231373AbjKDHyA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Nov 2023 03:54:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42122 "EHLO
+        id S231435AbjKDIFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Nov 2023 04:05:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231703AbjKDHpZ (ORCPT
+        with ESMTP id S229509AbjKDIFJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Nov 2023 03:45:25 -0400
-Received: from zg8tmtyylji0my4xnjqumte4.icoremail.net (zg8tmtyylji0my4xnjqumte4.icoremail.net [162.243.164.118])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D0DC7184
-        for <linux-kernel@vger.kernel.org>; Sat,  4 Nov 2023 00:45:18 -0700 (PDT)
-Received: from ubuntu.localdomain (unknown [39.144.210.68])
-        by app1 (Coremail) with SMTP id ygmowABHBXmA9kVlT7HWAA--.25601S2;
-        Sat, 04 Nov 2023 15:45:08 +0800 (CST)
-From:   dslab@lzu.edu.cn
-To:     jaegeuk@kernel.org, chao@kernel.org
-Cc:     linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, Yang Hubin <yanghb2019@lzu.edu.cn>,
-        Qian Haolai <qianhl2023@lzu.edu.cn>
-Subject: [PATCH] f2fs: the name of a struct is wrong in a comment.
-Date:   Sat,  4 Nov 2023 00:45:01 -0700
-Message-Id: <20231104074501.13998-1-dslab@lzu.edu.cn>
-X-Mailer: git-send-email 2.25.1
+        Sat, 4 Nov 2023 04:05:09 -0400
+Received: from smtp.domeneshop.no (smtp.domeneshop.no [IPv6:2a01:5b40:0:3006::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53B7A19D
+        for <linux-kernel@vger.kernel.org>; Sat,  4 Nov 2023 01:05:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=su-phil.net
+        ; s=ds202310; h=Content-Transfer-Encoding:Content-Type:Subject:From:To:
+        MIME-Version:Date:Message-ID:Sender:Reply-To:Cc:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=Kw7zpAhMUtD6SmOfpTf9EObCaoTUnPX1jK6ldlehBGs=; b=Ybbvht8d7C+8jQQpizlss4LBQn
+        aE1w8Wy4OsGTQMSLOvnr5t+0HngrqFYiKvltrQhcIQhUBcRAhg1rHtCgVPXQSzH952GIWengXUDJf
+        nMW8hVMslyA2cDiISGLe83jY4s3M9UGQZFerWW6cDX/X4dxfA+tc58Lu6PYdfP1oBa8wQ4WI6obx3
+        NZVxL58+2c0VjfLzkVJIFWFLnEhGJCIkFMZkHUHDOTAVLw3EuBE3u5LKXVBXvoBYUQpVYFN1VwnKj
+        fNwLYMEahHfEE2rGZwBSjcVO0Udywgi637eBaPfWtDkoaabwgeMGTPaPdzAyy6VqEUBtkLa9xyM9N
+        Qqw/XyPw==;
+Received: from [84.215.119.50] (port=49948 helo=[192.168.0.2])
+        by smtp.domeneshop.no with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <Ywe_C4rlyn@su-phil.net>)
+        id 1qzBeR-002KfY-EV
+        for linux-kernel@vger.kernel.org;
+        Sat, 04 Nov 2023 09:05:03 +0100
+Message-ID: <7e81fb3c-b76d-4b30-9486-267abb121e30@su-phil.net>
+Date:   Sat, 4 Nov 2023 09:05:00 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: ygmowABHBXmA9kVlT7HWAA--.25601S2
-X-Coremail-Antispam: 1UD129KBjvdXoW7JF43WFyUXw4kGr4rGry3Arb_yoWftwb_uF
-        y8uFsruw48AFyftan8GrnxtF4UWrWrtr18Wr1F9rnF934DJay5uw4fGa9rX3y3Wr12vF47
-        X3Z3W34fJ3W3CjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbcAYjsxI4VW7JwAYFVCjjxCrM7CY07I20VC2zVCF04k26cxKx2IY
-        s7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4
-        kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_
-        Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v26r
-        xl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
-        6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr
-        0_Gr1lF7xvr2IYc2Ij64vIr41lw4CEc2x0rVAKj4xxMxAIw28IcxkI7VAKI48JMxAIw28I
-        cVCjz48v1sIEY20_tr4UJr1UMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI
-        0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y
-        0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxV
-        WUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1l
-        IxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvj4R38nnUUUUU
-X-CM-SenderInfo: pgvotuo6o23hxhgxhubq/
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+User-Agent: Mozilla Thunderbird
+To:     linux-kernel@vger.kernel.org
+From:   =?UTF-8?Q?Ywe_C=C3=A6rlyn?= <Ywe_C4rlyn@su-phil.net>
+Subject: Was Fair Pay, L X, Unification: Z F X
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FROM_FMBLA_NEWDOM14,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,31 +53,16 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Hubin <yanghb2019@lzu.edu.cn>
+I have even perfected the translation of the kuranic initials now.
 
-The macro SUMMARY_SIZE represents the size of the struct f2fs_summary,
+So the resulting project, and cultural unification, with fair pay would be:
 
-instead of the size of the struct summary.
+Z F X.
 
-Signed-off-by: Yang Hubin <yanghb2019@lzu.edu.cn>
-Signed-off-by: Qian Haolai <qianhl2023@lzu.edu.cn>
----
- include/linux/f2fs_fs.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Z F representing Iah Xin, and can be tried, and evalued, for a complete 
+OS design, keeping compatibility with Xin based hardware designs.
 
-diff --git a/include/linux/f2fs_fs.h b/include/linux/f2fs_fs.h
-index a82a4bb6ce68..2ef6ad75edb6 100644
---- a/include/linux/f2fs_fs.h
-+++ b/include/linux/f2fs_fs.h
-@@ -430,7 +430,7 @@ struct f2fs_sit_block {
-  * ex) data_blkaddr = (block_t)(nodepage_start_address + ofs_in_node)
-  */
- #define ENTRIES_IN_SUM		512
--#define	SUMMARY_SIZE		(7)	/* sizeof(struct summary) */
-+#define	SUMMARY_SIZE		(7)	/* sizeof(struct f2fs_summary) */
- #define	SUM_FOOTER_SIZE		(5)	/* sizeof(struct summary_footer) */
- #define SUM_ENTRY_SIZE		(SUMMARY_SIZE * ENTRIES_IN_SUM)
- 
--- 
-2.25.1
+Ywe,
+Philosophy
+https://su-phil.net/
 
