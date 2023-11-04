@@ -2,62 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E17E77E0CFD
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 02:06:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BA7C7E0CFE
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 02:09:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231361AbjKDBG0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 21:06:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50640 "EHLO
+        id S231618AbjKDBIW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 21:08:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229557AbjKDBGY (ORCPT
+        with ESMTP id S229557AbjKDBIV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 21:06:24 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADFF5E3
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 18:06:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699059981; x=1730595981;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=2PMmp9SFs/xcnAA/URLeJz24639IQ3TUMm1QqQR+6aA=;
-  b=JfHSJMwL9+7uuT7YaRDmkao8STzETNxuIQcWQO0ktoqcXvmOzxPh7RHu
-   5jUPqc2RzY7hkMAipGRF+T3Yx1HZIGiRl8fPGwKwOck23BNPBNLcX6ZUn
-   OVNnC4doO3byKAmDp9UHL+jHfUoOpxoxtw8r2O7Q1R8OctsPNn3z7h6yN
-   pZd0MSXZZfJ4sE9vYkmXAeLcIqbdpILp9dfkqtjpaG3afnOs0q+ZcFo6z
-   cZJzEinuB1AunM3Y10754jzse14pu/9TmevBcHfOjzA8f6XPZm8gdbj5U
-   4kc/CxZntv/vmFIDYPSyVk8YCW6EB2G3Jaij4inUHguIuAt8xFjNd0smA
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10883"; a="379442799"
-X-IronPort-AV: E=Sophos;i="6.03,275,1694761200"; 
-   d="scan'208";a="379442799"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2023 18:06:21 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.03,275,1694761200"; 
-   d="scan'208";a="9907473"
-Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by fmviesa001.fm.intel.com with ESMTP; 03 Nov 2023 18:06:20 -0700
-Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qz57B-0003AB-31;
-        Sat, 04 Nov 2023 01:06:17 +0000
-Date:   Sat, 4 Nov 2023 09:05:44 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Dongmin Lee <ldmldm05@gmail.com>, linux-kernel@vger.kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev, Dongmin Lee <ldmldm05@gmail.com>
-Subject: Re: [PATCH] kernel/reboot: Explicitly notify if halt occurred
- instead of power off
-Message-ID: <202311040832.yiyrijgk-lkp@intel.com>
-References: <20231103061448.68118-1-ldmldm05@gmail.com>
+        Fri, 3 Nov 2023 21:08:21 -0400
+Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68CCBD61
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 18:08:18 -0700 (PDT)
+Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-6ba54c3ed97so2782788b3a.2
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Nov 2023 18:08:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699060098; x=1699664898;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=I/Y27XOKFlrNGzh4/FEG0aIQx/21ZYDrmaDfwYWuf7M=;
+        b=XLAP6dQ9evMeXCCuK+CtCMV8QaEWxtSFMcCxmRU4GvOsuROX8l395994j6wW/OHWNC
+         wSog7wn7G4X3snNGxkZqOhqd7Asr9X2THryA/AmCUTdY9yMWkqXiBBbUvy6IM4XkQTB9
+         LuAjSJr6gASzKb872zpRLEcDqQTMxe1MuR1BTtq4gazMp/+eIA8rkc87awxlpUkQghQY
+         rk7HJVKSGnxhCFDaO5NnxAqlaPQWsEn6HDVuh2khVgbeOm1k+VPjEF4sITprZ6qkilWB
+         8f/0jdzr0E628huwbVOxFhAb7TjSXMYnUzr0MAUlsFTxSV6L1stAtaxdwrRRIlOQnAsp
+         OBHw==
+X-Gm-Message-State: AOJu0YwAVKUK6dFmOxKHSbnV/Hh55/yRJW6PEBBeNIMDqNZ6AX2qB7Q1
+        HPm+r62JPW1G3HgPmsuiGk0bO8U36kTlM6Cf5pI=
+X-Google-Smtp-Source: AGHT+IENv2ugQ4SJf9eV147PuqiYIjycWu87B92lyMszSnstgO7l8D2sdMxUnTK16ybp8g0nv919hSSf8jLNFUu18A0=
+X-Received: by 2002:a05:6a21:66c4:b0:180:23d2:b5e5 with SMTP id
+ ze4-20020a056a2166c400b0018023d2b5e5mr24160448pzb.60.1699060097667; Fri, 03
+ Nov 2023 18:08:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231103061448.68118-1-ldmldm05@gmail.com>
-X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+References: <20231102150919.719936610@infradead.org> <20231102152018.499897182@infradead.org>
+In-Reply-To: <20231102152018.499897182@infradead.org>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Fri, 3 Nov 2023 18:08:06 -0700
+Message-ID: <CAM9d7cg9N9izyKu1D4u0g_pfjLWaeR8rucbRKMx23kj8gs7x4A@mail.gmail.com>
+Subject: Re: [PATCH 07/13] perf: Simplify: __perf_install_in_context()
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     mingo@kernel.org, linux-kernel@vger.kernel.org, acme@kernel.org,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        jolsa@kernel.org, irogers@google.com, adrian.hunter@intel.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,28 +58,8 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dongmin,
+You may want to remove ":" after Simplify in the subject line
+here and the next patch.
 
-kernel test robot noticed the following build warnings:
-
-[auto build test WARNING on bc3012f4e3a9765de81f454cb8f9bb16aafc6ff5]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Dongmin-Lee/kernel-reboot-Explicitly-notify-if-halt-occurred-instead-of-power-off/20231103-142501
-base:   bc3012f4e3a9765de81f454cb8f9bb16aafc6ff5
-patch link:    https://lore.kernel.org/r/20231103061448.68118-1-ldmldm05%40gmail.com
-patch subject: [PATCH] kernel/reboot: Explicitly notify if halt occurred instead of power off
-config: x86_64-randconfig-123-20231104 (https://download.01.org/0day-ci/archive/20231104/202311040832.yiyrijgk-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231104/202311040832.yiyrijgk-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311040832.yiyrijgk-lkp@intel.com/
-
-sparse warnings: (new ones prefixed by >>)
->> kernel/reboot.c:66:5: sparse: sparse: symbol 'poweroff_fallback_to_halt' was not declared. Should it be static?
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Thanks,
+Namhyung
