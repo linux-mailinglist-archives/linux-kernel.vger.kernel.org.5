@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E25117E0D92
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 04:56:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE51E7E0D9D
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 04:56:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346226AbjKDD4A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 23:56:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59648 "EHLO
+        id S1376827AbjKDD4I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 23:56:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234316AbjKDDzs (ORCPT
+        with ESMTP id S234297AbjKDDzs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 3 Nov 2023 23:55:48 -0400
 Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B5141AA;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B5CDD45;
         Fri,  3 Nov 2023 20:55:44 -0700 (PDT)
 Received: from dggpemm100001.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4SMkKh6BgFzvQ5W;
-        Sat,  4 Nov 2023 11:55:36 +0800 (CST)
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4SMkGD0WzxzrTQX;
+        Sat,  4 Nov 2023 11:52:36 +0800 (CST)
 Received: from localhost.localdomain (10.175.112.125) by
  dggpemm100001.china.huawei.com (7.185.36.93) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Sat, 4 Nov 2023 11:55:40 +0800
+ 15.1.2507.31; Sat, 4 Nov 2023 11:55:41 +0800
 From:   Kefeng Wang <wangkefeng.wang@huawei.com>
 To:     Andrew Morton <akpm@linux-foundation.org>
 CC:     <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
@@ -29,9 +29,9 @@ CC:     <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
         David Hildenbrand <david@redhat.com>,
         <linux-s390@vger.kernel.org>,
         Kefeng Wang <wangkefeng.wang@huawei.com>
-Subject: [PATCH v2 01/10] mm: swap: introduce pfn_swap_entry_to_folio()
-Date:   Sat, 4 Nov 2023 11:55:13 +0800
-Message-ID: <20231104035522.2418660-2-wangkefeng.wang@huawei.com>
+Subject: [PATCH v2 02/10] s390: pgtable: use a folio in ptep_zap_swap_entry()
+Date:   Sat, 4 Nov 2023 11:55:14 +0800
+Message-ID: <20231104035522.2418660-3-wangkefeng.wang@huawei.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20231104035522.2418660-1-wangkefeng.wang@huawei.com>
 References: <20231104035522.2418660-1-wangkefeng.wang@huawei.com>
@@ -52,40 +52,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introduce a new pfn_swap_entry_to_folio(), it is similar to
-pfn_swap_entry_to_page(), but return a folio, which allow us
-to completely replace the struct page variables with struct
-folio variables.
+Use a folio in ptep_zap_swap_entry(), which is preparetion for
+converting mm counter functions to take a folio.
 
 Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
 ---
- include/linux/swapops.h | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ arch/s390/mm/pgtable.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/swapops.h b/include/linux/swapops.h
-index bff1e8d97de0..85cb84e4be95 100644
---- a/include/linux/swapops.h
-+++ b/include/linux/swapops.h
-@@ -468,6 +468,19 @@ static inline struct page *pfn_swap_entry_to_page(swp_entry_t entry)
- 	return p;
- }
+diff --git a/arch/s390/mm/pgtable.c b/arch/s390/mm/pgtable.c
+index 3bd2ab2a9a34..2f946b493fff 100644
+--- a/arch/s390/mm/pgtable.c
++++ b/arch/s390/mm/pgtable.c
+@@ -730,9 +730,9 @@ static void ptep_zap_swap_entry(struct mm_struct *mm, swp_entry_t entry)
+ 	if (!non_swap_entry(entry))
+ 		dec_mm_counter(mm, MM_SWAPENTS);
+ 	else if (is_migration_entry(entry)) {
+-		struct page *page = pfn_swap_entry_to_page(entry);
++		struct folio *folio = pfn_swap_entry_to_folio(entry);
  
-+static inline struct folio *pfn_swap_entry_to_folio(swp_entry_t entry)
-+{
-+	struct folio *folio = pfn_folio(swp_offset_pfn(entry));
-+
-+	/*
-+	 * Any use of migration entries may only occur while the
-+	 * corresponding folio is locked
-+	 */
-+	BUG_ON(is_migration_entry(entry) && !folio_test_locked(folio));
-+
-+	return folio;
-+}
-+
- /*
-  * A pfn swap entry is a special type of swap entry that always has a pfn stored
-  * in the swap offset. They are used to represent unaddressable device memory
+-		dec_mm_counter(mm, mm_counter(page));
++		dec_mm_counter(mm, mm_counter(&folio->page));
+ 	}
+ 	free_swap_and_cache(entry);
+ }
 -- 
 2.27.0
 
