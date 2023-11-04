@@ -2,79 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A8E57E0E12
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 07:26:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92BAF7E0E13
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 07:33:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231206AbjKDGZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Nov 2023 02:25:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48272 "EHLO
+        id S231230AbjKDGcG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Nov 2023 02:32:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229509AbjKDGZx (ORCPT
+        with ESMTP id S229509AbjKDGcF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Nov 2023 02:25:53 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14DD4D4E;
-        Fri,  3 Nov 2023 23:25:49 -0700 (PDT)
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A46Mj2s003718;
-        Sat, 4 Nov 2023 06:25:30 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=FF+AubAxdBtQyqoK1rXHKIxkMnLgY9CQlvcYzJVd4tI=;
- b=SHycbO/qK4paUUQn4nC+afmkMkO/OyRo+SpdGRCZccsYrrgAso/Xuy/FtXfF6EV4fCtr
- 4uXCMO2ZE9KKyklkmCESMpzRLkbew/I559xMfcNIf2Eb+JcCRz1HFWTg+0vvB0p3XvHM
- A7HMzTJuMWKZ5I4EXWFmkaTlvBlpZexvptML5eCpTJwXqFZgkpAXc07JLQ1QBz4Ug2qh
- IQgj1b9MD1aEj55aoqH1VCuVkv31HYhnAv9u2uKA+BclJZOhnh7c3Iklx0hqPEPjsfCu
- wFOt2Obnv5iPHJGQGdiwJ1aYtU7qJ4tPsyhw+GoQLX6IuRAKdPTErmokhZ2Ieb9qK4h+ cw== 
-Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u5eekg6rd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 04 Nov 2023 06:25:30 +0000
-Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
-        by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3A46PUGP002481
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 4 Nov 2023 06:25:30 GMT
-Received: from [10.253.39.47] (10.80.80.8) by nasanex01c.na.qualcomm.com
- (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Fri, 3 Nov
- 2023 23:25:27 -0700
-Message-ID: <7f0df23b-f00e-fef8-fa03-314fcfe136eb@quicinc.com>
-Date:   Sat, 4 Nov 2023 14:25:25 +0800
+        Sat, 4 Nov 2023 02:32:05 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 741B5B7
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 23:32:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699079522; x=1730615522;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=0OBpPqw2VKBfE7X7sxYrD53ktSWX7nE3PfiA8iQbpaA=;
+  b=QVozS4dzyzjWcoNYoHTNxP8WyxRvqDnpk0vdHqW1ZY4tb6iPnAzeu9jO
+   nUzhK6FM51sBa6DQ6NVQFFg+Rz8SKTpaKzFrh4o9boYrmgg2Mrqts3eDZ
+   XVDFMByurYU24Dj5jKt9dAkhekKzDgagLnGeA8jvKhavzRn1zucP6v84A
+   lK5hsxYF+iDrgCK82sei7JXH/lPtA7X51kc39liofuzaxya690nyopK0d
+   ViQBpR0UUU8Mys9t5SqLdB0f7hoxE/pKSbOhsuLi3sOWp/6Sbj72MbUz8
+   /IzXs8Dy7TSQZDAaTVbV+P8UDLUdvd408/sPJS/tbpTTmXPEj0fXPkbty
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10883"; a="1952403"
+X-IronPort-AV: E=Sophos;i="6.03,276,1694761200"; 
+   d="scan'208";a="1952403"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2023 23:32:02 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10883"; a="1009030095"
+X-IronPort-AV: E=Sophos;i="6.03,276,1694761200"; 
+   d="scan'208";a="1009030095"
+Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
+  by fmsmga006.fm.intel.com with ESMTP; 03 Nov 2023 23:32:00 -0700
+Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qzACM-0003Yd-2o;
+        Sat, 04 Nov 2023 06:31:58 +0000
+Date:   Sat, 4 Nov 2023 14:31:20 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Luis Chamberlain <mcgrof@kernel.org>
+Subject: lib/test_kmod.c:134: warning: Function parameter or member
+ 'thread_mutex' not described in 'kmod_test_device'
+Message-ID: <202311041434.t4sfa6ou-lkp@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH] net: phy: at803x: add QCA8084 ethernet phy support
-To:     Andrew Lunn <andrew@lunn.ch>
-CC:     <hkallweit1@gmail.com>, <linux@armlinux.org.uk>,
-        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-        <pabeni@redhat.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20231103123538.15735-1-quic_luoj@quicinc.com>
- <806fb6b6-d9b6-457b-b079-48f8b958cc5a@lunn.ch>
-Content-Language: en-US
-From:   Jie Luo <quic_luoj@quicinc.com>
-In-Reply-To: <806fb6b6-d9b6-457b-b079-48f8b958cc5a@lunn.ch>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01c.na.qualcomm.com (10.45.79.139)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: b80QBcTX3QKOAy7HFz7Xuppm_qjj_JcN
-X-Proofpoint-GUID: b80QBcTX3QKOAy7HFz7Xuppm_qjj_JcN
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-04_04,2023-11-02_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 impostorscore=0
- lowpriorityscore=0 clxscore=1015 priorityscore=1501 malwarescore=0
- adultscore=0 phishscore=0 suspectscore=0 spamscore=0 mlxlogscore=815
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2310240000 definitions=main-2311040052
-X-Spam-Status: No, score=-6.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
         URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -82,73 +63,121 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   2c40c1c6adab90ee4660caf03722b3a3ec67767b
+commit: c093a74dac1c008daee92d6d613e9e3fe20b6585 test_kmod: stop kernel-doc warnings
+date:   9 months ago
+config: nios2-allyesconfig (https://download.01.org/0day-ci/archive/20231104/202311041434.t4sfa6ou-lkp@intel.com/config)
+compiler: nios2-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231104/202311041434.t4sfa6ou-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311041434.t4sfa6ou-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   lib/test_kmod.c:67: warning: Enum value '__TEST_KMOD_INVALID' not described in enum 'kmod_test_case'
+   lib/test_kmod.c:67: warning: Enum value '__TEST_KMOD_MAX' not described in enum 'kmod_test_case'
+   lib/test_kmod.c:100: warning: Function parameter or member 'task_sync' not described in 'kmod_test_device_info'
+>> lib/test_kmod.c:134: warning: Function parameter or member 'thread_mutex' not described in 'kmod_test_device'
 
 
-On 11/3/2023 9:01 PM, Andrew Lunn wrote:
->>   #define QCA8081_PHY_ID				0x004dd101
->> +#define QCA8081_PHY_MASK			0xffffff00
-> 
-> That is an unusual mask. Please check it is correct. All you should
-> need its PHY_ID_MATCH_EXACT, PHY_ID_MATCH_MODEL, PHY_ID_MATCH_VENDOR.
+vim +134 lib/test_kmod.c
 
-Thanks Andrew for the review.
-The PHY ID of qca8084 is correct, i will update to use 
-PHY_ID_MATCH_EXACT in the new added entry for qca8084.
+d9c6a72d6fa29d3 Luis R. Rodriguez 2017-07-14   51  
+d9c6a72d6fa29d3 Luis R. Rodriguez 2017-07-14   52  /**
+d9c6a72d6fa29d3 Luis R. Rodriguez 2017-07-14   53   * enum kmod_test_case - linker table test case
+d9c6a72d6fa29d3 Luis R. Rodriguez 2017-07-14   54   * @TEST_KMOD_DRIVER: stress tests request_module()
+d9c6a72d6fa29d3 Luis R. Rodriguez 2017-07-14   55   * @TEST_KMOD_FS_TYPE: stress tests get_fs_type()
+c093a74dac1c008 Randy Dunlap      2023-01-02   56   *
+c093a74dac1c008 Randy Dunlap      2023-01-02   57   * If you add a  test case, please be sure to review if you need to set
+c093a74dac1c008 Randy Dunlap      2023-01-02   58   * @need_mod_put for your tests case.
+d9c6a72d6fa29d3 Luis R. Rodriguez 2017-07-14   59   */
+d9c6a72d6fa29d3 Luis R. Rodriguez 2017-07-14   60  enum kmod_test_case {
+d9c6a72d6fa29d3 Luis R. Rodriguez 2017-07-14   61  	__TEST_KMOD_INVALID = 0,
+d9c6a72d6fa29d3 Luis R. Rodriguez 2017-07-14   62  
+d9c6a72d6fa29d3 Luis R. Rodriguez 2017-07-14   63  	TEST_KMOD_DRIVER,
+d9c6a72d6fa29d3 Luis R. Rodriguez 2017-07-14   64  	TEST_KMOD_FS_TYPE,
+d9c6a72d6fa29d3 Luis R. Rodriguez 2017-07-14   65  
+d9c6a72d6fa29d3 Luis R. Rodriguez 2017-07-14   66  	__TEST_KMOD_MAX,
+d9c6a72d6fa29d3 Luis R. Rodriguez 2017-07-14  @67  };
+d9c6a72d6fa29d3 Luis R. Rodriguez 2017-07-14   68  
+d9c6a72d6fa29d3 Luis R. Rodriguez 2017-07-14   69  struct test_config {
+d9c6a72d6fa29d3 Luis R. Rodriguez 2017-07-14   70  	char *test_driver;
+d9c6a72d6fa29d3 Luis R. Rodriguez 2017-07-14   71  	char *test_fs;
+d9c6a72d6fa29d3 Luis R. Rodriguez 2017-07-14   72  	unsigned int num_threads;
+d9c6a72d6fa29d3 Luis R. Rodriguez 2017-07-14   73  	enum kmod_test_case test_case;
+d9c6a72d6fa29d3 Luis R. Rodriguez 2017-07-14   74  	int test_result;
+d9c6a72d6fa29d3 Luis R. Rodriguez 2017-07-14   75  };
+d9c6a72d6fa29d3 Luis R. Rodriguez 2017-07-14   76  
+d9c6a72d6fa29d3 Luis R. Rodriguez 2017-07-14   77  struct kmod_test_device;
+d9c6a72d6fa29d3 Luis R. Rodriguez 2017-07-14   78  
+d9c6a72d6fa29d3 Luis R. Rodriguez 2017-07-14   79  /**
+c093a74dac1c008 Randy Dunlap      2023-01-02   80   * struct kmod_test_device_info - thread info
+d9c6a72d6fa29d3 Luis R. Rodriguez 2017-07-14   81   *
+d9c6a72d6fa29d3 Luis R. Rodriguez 2017-07-14   82   * @ret_sync: return value if request_module() is used, sync request for
+d9c6a72d6fa29d3 Luis R. Rodriguez 2017-07-14   83   * 	@TEST_KMOD_DRIVER
+d9c6a72d6fa29d3 Luis R. Rodriguez 2017-07-14   84   * @fs_sync: return value of get_fs_type() for @TEST_KMOD_FS_TYPE
+d9c6a72d6fa29d3 Luis R. Rodriguez 2017-07-14   85   * @thread_idx: thread ID
+d9c6a72d6fa29d3 Luis R. Rodriguez 2017-07-14   86   * @test_dev: test device test is being performed under
+d9c6a72d6fa29d3 Luis R. Rodriguez 2017-07-14   87   * @need_mod_put: Some tests (get_fs_type() is one) requires putting the module
+d9c6a72d6fa29d3 Luis R. Rodriguez 2017-07-14   88   *	(module_put(fs_sync->owner)) when done, otherwise you will not be able
+d9c6a72d6fa29d3 Luis R. Rodriguez 2017-07-14   89   *	to unload the respective modules and re-test. We use this to keep
+d9c6a72d6fa29d3 Luis R. Rodriguez 2017-07-14   90   *	accounting of when we need this and to help out in case we need to
+d9c6a72d6fa29d3 Luis R. Rodriguez 2017-07-14   91   *	error out and deal with module_put() on error.
+d9c6a72d6fa29d3 Luis R. Rodriguez 2017-07-14   92   */
+d9c6a72d6fa29d3 Luis R. Rodriguez 2017-07-14   93  struct kmod_test_device_info {
+d9c6a72d6fa29d3 Luis R. Rodriguez 2017-07-14   94  	int ret_sync;
+d9c6a72d6fa29d3 Luis R. Rodriguez 2017-07-14   95  	struct file_system_type *fs_sync;
+d9c6a72d6fa29d3 Luis R. Rodriguez 2017-07-14   96  	struct task_struct *task_sync;
+d9c6a72d6fa29d3 Luis R. Rodriguez 2017-07-14   97  	unsigned int thread_idx;
+d9c6a72d6fa29d3 Luis R. Rodriguez 2017-07-14   98  	struct kmod_test_device *test_dev;
+d9c6a72d6fa29d3 Luis R. Rodriguez 2017-07-14   99  	bool need_mod_put;
+d9c6a72d6fa29d3 Luis R. Rodriguez 2017-07-14  100  };
+d9c6a72d6fa29d3 Luis R. Rodriguez 2017-07-14  101  
+d9c6a72d6fa29d3 Luis R. Rodriguez 2017-07-14  102  /**
+c093a74dac1c008 Randy Dunlap      2023-01-02  103   * struct kmod_test_device - test device to help test kmod
+d9c6a72d6fa29d3 Luis R. Rodriguez 2017-07-14  104   *
+d9c6a72d6fa29d3 Luis R. Rodriguez 2017-07-14  105   * @dev_idx: unique ID for test device
+d9c6a72d6fa29d3 Luis R. Rodriguez 2017-07-14  106   * @config: configuration for the test
+d9c6a72d6fa29d3 Luis R. Rodriguez 2017-07-14  107   * @misc_dev: we use a misc device under the hood
+d9c6a72d6fa29d3 Luis R. Rodriguez 2017-07-14  108   * @dev: pointer to misc_dev's own struct device
+d9c6a72d6fa29d3 Luis R. Rodriguez 2017-07-14  109   * @config_mutex: protects configuration of test
+d9c6a72d6fa29d3 Luis R. Rodriguez 2017-07-14  110   * @trigger_mutex: the test trigger can only be fired once at a time
+d9c6a72d6fa29d3 Luis R. Rodriguez 2017-07-14  111   * @thread_lock: protects @done count, and the @info per each thread
+d9c6a72d6fa29d3 Luis R. Rodriguez 2017-07-14  112   * @done: number of threads which have completed or failed
+d9c6a72d6fa29d3 Luis R. Rodriguez 2017-07-14  113   * @test_is_oom: when we run out of memory, use this to halt moving forward
+d9c6a72d6fa29d3 Luis R. Rodriguez 2017-07-14  114   * @kthreads_done: completion used to signal when all work is done
+d9c6a72d6fa29d3 Luis R. Rodriguez 2017-07-14  115   * @list: needed to be part of the reg_test_devs
+d9c6a72d6fa29d3 Luis R. Rodriguez 2017-07-14  116   * @info: array of info for each thread
+d9c6a72d6fa29d3 Luis R. Rodriguez 2017-07-14  117   */
+d9c6a72d6fa29d3 Luis R. Rodriguez 2017-07-14  118  struct kmod_test_device {
+d9c6a72d6fa29d3 Luis R. Rodriguez 2017-07-14  119  	int dev_idx;
+d9c6a72d6fa29d3 Luis R. Rodriguez 2017-07-14  120  	struct test_config config;
+d9c6a72d6fa29d3 Luis R. Rodriguez 2017-07-14  121  	struct miscdevice misc_dev;
+d9c6a72d6fa29d3 Luis R. Rodriguez 2017-07-14  122  	struct device *dev;
+d9c6a72d6fa29d3 Luis R. Rodriguez 2017-07-14  123  	struct mutex config_mutex;
+d9c6a72d6fa29d3 Luis R. Rodriguez 2017-07-14  124  	struct mutex trigger_mutex;
+d9c6a72d6fa29d3 Luis R. Rodriguez 2017-07-14  125  	struct mutex thread_mutex;
+d9c6a72d6fa29d3 Luis R. Rodriguez 2017-07-14  126  
+d9c6a72d6fa29d3 Luis R. Rodriguez 2017-07-14  127  	unsigned int done;
+d9c6a72d6fa29d3 Luis R. Rodriguez 2017-07-14  128  
+d9c6a72d6fa29d3 Luis R. Rodriguez 2017-07-14  129  	bool test_is_oom;
+d9c6a72d6fa29d3 Luis R. Rodriguez 2017-07-14  130  	struct completion kthreads_done;
+d9c6a72d6fa29d3 Luis R. Rodriguez 2017-07-14  131  	struct list_head list;
+d9c6a72d6fa29d3 Luis R. Rodriguez 2017-07-14  132  
+d9c6a72d6fa29d3 Luis R. Rodriguez 2017-07-14  133  	struct kmod_test_device_info *info;
+d9c6a72d6fa29d3 Luis R. Rodriguez 2017-07-14 @134  };
+d9c6a72d6fa29d3 Luis R. Rodriguez 2017-07-14  135  
 
-> 
->> @@ -1767,6 +1781,20 @@ static int qca808x_config_init(struct phy_device *phydev)
->>   {
->>   	int ret;
->>   
->> +	if (phydev->phy_id == QCA8084_PHY_ID) {
->> +		/* Invert ADC clock edge */
->> +		ret = at803x_debug_reg_mask(phydev, QCA8084_ADC_CLK_SEL,
->> +					    QCA8084_ADC_CLK_SEL_ACLK,
->> +					    FIELD_PREP(QCA8084_ADC_CLK_SEL_ACLK,
->> +						       QCA8084_ADC_CLK_SEL_ACLK_FALL));
->> +		if (ret < 0)
->> +			return ret;
->> +
->> +		/* Adjust MSE threshold value to avoid link issue with some link partner */
->> +		return phy_write_mmd(phydev, MDIO_MMD_PMAPMD,
->> +				QCA8084_MSE_THRESHOLD, QCA8084_MSE_THRESHOLD_2P5G_VAL);
->> +	}
->> +
-> 
-> Please add a qca8084_config_init() and use that from the phy_driver
-> structure.
+:::::: The code at line 134 was first introduced by commit
+:::::: d9c6a72d6fa29d3a7999dda726577e5d1fccafa5 kmod: add test driver to stress test the module loader
 
-OK.
+:::::: TO: Luis R. Rodriguez <mcgrof@kernel.org>
+:::::: CC: Linus Torvalds <torvalds@linux-foundation.org>
 
-> 
->>   	/* Active adc&vga on 802.3az for the link 1000M and 100M */
->>   	ret = phy_modify_mmd(phydev, MDIO_MMD_PCS, QCA808X_PHY_MMD3_ADDR_CLD_CTRL7,
->>   			QCA808X_8023AZ_AFE_CTRL_MASK, QCA808X_8023AZ_AFE_EN);
->> @@ -1958,6 +1986,11 @@ static int qca808x_cable_test_start(struct phy_device *phydev)
->>   	phy_write_mmd(phydev, MDIO_MMD_PCS, 0x807a, 0xc060);
->>   	phy_write_mmd(phydev, MDIO_MMD_PCS, 0x807e, 0xb060);
->>   
->> +	if (phydev->phy_id == QCA8084_PHY_ID) {
->> +		phy_write_mmd(phydev, MDIO_MMD_PCS, 0x8075, 0xa060);
->> +		phy_write_mmd(phydev, MDIO_MMD_PCS, 0x807f, 0x1eb0);
->> +	}
->> +
-> 
-> Please add a comment what this is doing.
-
-Ok, will add comments in the next patch.
-
-> 
->>   }, {
->>   	/* Qualcomm QCA8081 */
->> -	PHY_ID_MATCH_EXACT(QCA8081_PHY_ID),
->> -	.name			= "Qualcomm QCA8081",
->> +	.phy_id			= QCA8081_PHY_ID,
->> +	.phy_id_mask		= QCA8081_PHY_MASK,
->> +	.name			= "Qualcomm QCA808X",
-> 
-> Please add a new entry for the 8084.
-> 
->         Andrew
-
-Will add it in the next patch, thanks.
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
