@@ -2,220 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A6A1C7E0EDE
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 12:04:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 733BB7E0EEE
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 12:04:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232314AbjKDK7r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Nov 2023 06:59:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39752 "EHLO
+        id S232215AbjKDK77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Nov 2023 06:59:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232096AbjKDK72 (ORCPT
+        with ESMTP id S232202AbjKDK7s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Nov 2023 06:59:28 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0A82D63
-        for <linux-kernel@vger.kernel.org>; Sat,  4 Nov 2023 03:59:24 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id 38308e7fff4ca-2c509d5ab43so41345781fa.0
-        for <linux-kernel@vger.kernel.org>; Sat, 04 Nov 2023 03:59:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699095562; x=1699700362; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=puBr9Yi+x/uGsFwHwq4a0yYN/Ns1a0YGcW8YSLOPxLY=;
-        b=rU6Sct9dQ3KOhotIAC5vJ9DeXMWPD7ytPGmb3vvlHTF09c4XEYF4+KnouTq+M58lWt
-         0iptqEdcOf8iA/m2pTU9Wkb8YMngQVIa88cfrg3StBiP4t3NY5PPmd+OPJ3K63+gXUTQ
-         zEzdbNBWeo1G8AE5Yh/nzp+N6nMrHlfmaw8Aa73sC4qRtJ/4KMi5eGuJndDNCPOIpL2K
-         d10PAkUQVdSHVpozsRG7JjC3R7AeHXN3E1X13OUHGvfUxpzbhknelY0+xWH9edCEbZSo
-         5PfluqzrRdQK9mBFlLnCZyLA+EXdmQ5H5Z5RdqRA0aU61vKQzgCSSRyncv+iho4kYckX
-         spew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699095562; x=1699700362;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=puBr9Yi+x/uGsFwHwq4a0yYN/Ns1a0YGcW8YSLOPxLY=;
-        b=oXCshlRcYG7N0lFiNKPwvo075QJ+2vW03RmlvDTjfbb2LJvAiT8NMOfMz3zDBI//Gv
-         PBo8lwkXfBzZqxspA5e9dXt7szLlYUf1yDKA6HXIW+3noTJtsS27oFqjhC7RA/aF7OQr
-         N1IOV+tbCqJqTen6he0+naSLPFYPH5qpWw09+xGiP3dbm1HZd+QcOqVW9zJUaoxS4KsM
-         8W1t0b9AU5n56EbiVht7kPy4xva6wzk2ohtUgUMAMqNJLShclHYiV/WHMADQ0iB4NexK
-         vH0r9Zd66JnTqYCJqL3bshC/kjBTCShZOynOHUU0erO/FCzjhDJaQ7xbhpz09Szby3mm
-         OHAA==
-X-Gm-Message-State: AOJu0Yw2Ue8V5030I4gZYKwfuh++YQT3M6jIifsisG8R8V1BcOY3VZZo
-        vlB3uU4AGX5ipv8LXKGnS2x8MQ==
-X-Google-Smtp-Source: AGHT+IEk3sTFfQuHQKw0m3Mw4hvWfZEgdZ+z4UdSyOUZS5HQSWjuNsjHdiJp1Ig/quZGDOQeGEFaig==
-X-Received: by 2002:a2e:8796:0:b0:2bc:f5a0:cc25 with SMTP id n22-20020a2e8796000000b002bcf5a0cc25mr18906281lji.2.1699095562622;
-        Sat, 04 Nov 2023 03:59:22 -0700 (PDT)
-Received: from vingu-book.. ([2a01:e0a:f:6020:3172:eb13:5bac:126a])
-        by smtp.gmail.com with ESMTPSA id p6-20020a05600c358600b004053a6b8c41sm5315809wmq.12.2023.11.04.03.59.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 04 Nov 2023 03:59:22 -0700 (PDT)
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-To:     linux@armlinux.org.uk, catalin.marinas@arm.com, will@kernel.org,
-        paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, sudeep.holla@arm.com,
-        gregkh@linuxfoundation.org, rafael@kernel.org, mingo@redhat.com,
-        peterz@infradead.org, juri.lelli@redhat.com,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
-        viresh.kumar@linaro.org, lenb@kernel.org, robert.moore@intel.com,
-        lukasz.luba@arm.com, ionela.voinescu@arm.com,
-        pierre.gondois@arm.com, beata.michalska@arm.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-pm@vger.kernel.org,
-        linux-acpi@vger.kernel.org
-Cc:     conor.dooley@microchip.com, suagrfillet@gmail.com,
-        ajones@ventanamicro.com, lftan@kernel.org,
+        Sat, 4 Nov 2023 06:59:48 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1D67D48
+        for <linux-kernel@vger.kernel.org>; Sat,  4 Nov 2023 03:59:33 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57929C433C7;
+        Sat,  4 Nov 2023 10:59:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699095573;
+        bh=Z44CJflOtr1aWOSpGdoxVEyhwROBxLY72GaO/vu6uHU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=N9sQaMODf/jDs6nHnKQ8YpazdBBlgL10frzc7yy8xtAURNdOu/NsXcDR5+CfJLdcj
+         ZFQtFfwbmpmjcSzsPVIiJaHfGri3kL6ffzKBV4VJJU0IPDmq+rHd8kp9lA13JG9MzV
+         C5nlqNDfI4U5Of5u02haWFO1T2yT+ECcEDzY6DP5QHVbqm5r4uYDPwSau1Jw2mHxFz
+         W17aZWgsPSKcaywLy0b4YY++gtzEAAx9p4zCrJthjFG4+hWEMfxmC8jt0tR10QJ/mm
+         wlrOgXsm1QIq+fLyXqHQL75H/ZMJNNehSSAcpqBF9NwwYNqUd7OAFlcyCAt7T91i7c
+         YEVEOeijtJoFA==
+From:   Daniel Bristot de Oliveira <bristot@kernel.org>
+To:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
         Vincent Guittot <vincent.guittot@linaro.org>
-Subject: [PATCH v5 7/7] arm64/amu: Use capacity_ref_freq to set AMU ratio
-Date:   Sat,  4 Nov 2023 11:59:07 +0100
-Message-Id: <20231104105907.1365392-8-vincent.guittot@linaro.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231104105907.1365392-1-vincent.guittot@linaro.org>
-References: <20231104105907.1365392-1-vincent.guittot@linaro.org>
+Cc:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        linux-kernel@vger.kernel.org,
+        Luca Abeni <luca.abeni@santannapisa.it>,
+        Tommaso Cucinotta <tommaso.cucinotta@santannapisa.it>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Vineeth Pillai <vineeth@bitbyteword.org>,
+        Shuah Khan <skhan@linuxfoundation.org>, bristot@kernel.org,
+        Phil Auld <pauld@redhat.com>
+Subject: [PATCH v5 0/7] SCHED_DEADLINE server infrastructure
+Date:   Sat,  4 Nov 2023 11:59:17 +0100
+Message-Id: <cover.1699095159.git.bristot@kernel.org>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the new capacity_ref_freq to set the ratio that is used by AMU for
-computing the arch_scale_freq_capacity().
-This helps to keep everything aligned using the same reference for
-computing CPUs capacity.
+This is v5 of Peter's SCHED_DEADLINE server infrastructure
+implementation [1].
 
-The default value of the ratio (stored in per_cpu(arch_max_freq_scale))
-ensures that arch_scale_freq_capacity() returns max capacity until it is
-set to its correct value with the cpu capacity and capacity_ref_freq.
+SCHED_DEADLINE servers can help fixing starvation issues of low priority
+tasks (e.g., SCHED_OTHER) when higher priority tasks monopolize CPU
+cycles. Today we have RT Throttling; DEADLINE servers should be able to
+replace and improve that.
 
-Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
----
- arch/arm64/kernel/topology.c  | 26 ++++++++++++++------------
- drivers/base/arch_topology.c  | 12 +++++++++++-
- include/linux/arch_topology.h |  1 +
- 3 files changed, 26 insertions(+), 13 deletions(-)
+In the v1 there was discussion raised about the consequence of using
+deadline based servers on the fixed-priority workloads. For a demonstration
+here is the baseline of timerlat scheduling latency as-is, with kernel
+build background workload:
 
-diff --git a/arch/arm64/kernel/topology.c b/arch/arm64/kernel/topology.c
-index 817d788cd866..615c1a20129f 100644
---- a/arch/arm64/kernel/topology.c
-+++ b/arch/arm64/kernel/topology.c
-@@ -82,7 +82,12 @@ int __init parse_acpi_topology(void)
- #undef pr_fmt
- #define pr_fmt(fmt) "AMU: " fmt
- 
--static DEFINE_PER_CPU_READ_MOSTLY(unsigned long, arch_max_freq_scale);
-+/*
-+ * Ensure that amu_scale_freq_tick() will return SCHED_CAPACITY_SCALE until
-+ * the CPU capacity and its associated frequency have been correctly
-+ * initialized.
-+ */
-+static DEFINE_PER_CPU_READ_MOSTLY(unsigned long, arch_max_freq_scale) =  1UL << (2 * SCHED_CAPACITY_SHIFT);
- static DEFINE_PER_CPU(u64, arch_const_cycles_prev);
- static DEFINE_PER_CPU(u64, arch_core_cycles_prev);
- static cpumask_var_t amu_fie_cpus;
-@@ -112,14 +117,14 @@ static inline bool freq_counters_valid(int cpu)
- 	return true;
- }
- 
--static int freq_inv_set_max_ratio(int cpu, u64 max_rate, u64 ref_rate)
-+void freq_inv_set_max_ratio(int cpu, u64 max_rate)
- {
--	u64 ratio;
-+	u64 ratio, ref_rate = arch_timer_get_rate();
- 
- 	if (unlikely(!max_rate || !ref_rate)) {
--		pr_debug("CPU%d: invalid maximum or reference frequency.\n",
-+		WARN_ONCE(1, "CPU%d: invalid maximum or reference frequency.\n",
- 			 cpu);
--		return -EINVAL;
-+		return;
- 	}
- 
- 	/*
-@@ -139,12 +144,12 @@ static int freq_inv_set_max_ratio(int cpu, u64 max_rate, u64 ref_rate)
- 	ratio = div64_u64(ratio, max_rate);
- 	if (!ratio) {
- 		WARN_ONCE(1, "Reference frequency too low.\n");
--		return -EINVAL;
-+		return;
- 	}
- 
--	per_cpu(arch_max_freq_scale, cpu) = (unsigned long)ratio;
-+	WRITE_ONCE(per_cpu(arch_max_freq_scale, cpu), (unsigned long)ratio);
- 
--	return 0;
-+	return;
- }
- 
- static void amu_scale_freq_tick(void)
-@@ -195,10 +200,7 @@ static void amu_fie_setup(const struct cpumask *cpus)
- 		return;
- 
- 	for_each_cpu(cpu, cpus) {
--		if (!freq_counters_valid(cpu) ||
--		    freq_inv_set_max_ratio(cpu,
--					   cpufreq_get_hw_max_freq(cpu) * 1000ULL,
--					   arch_timer_get_rate()))
-+		if (!freq_counters_valid(cpu))
- 			return;
- 	}
- 
-diff --git a/drivers/base/arch_topology.c b/drivers/base/arch_topology.c
-index 0a2e43728286..0906114963ff 100644
---- a/drivers/base/arch_topology.c
-+++ b/drivers/base/arch_topology.c
-@@ -344,6 +344,10 @@ bool __init topology_parse_cpu_capacity(struct device_node *cpu_node, int cpu)
- 	return !ret;
- }
- 
-+void __weak freq_inv_set_max_ratio(int cpu, u64 max_rate)
-+{
-+}
-+
- #ifdef CONFIG_ACPI_CPPC_LIB
- #include <acpi/cppc_acpi.h>
- 
-@@ -381,6 +385,9 @@ void topology_init_cpu_capacity_cppc(void)
- 	}
- 
- 	for_each_possible_cpu(cpu) {
-+		freq_inv_set_max_ratio(cpu,
-+				       per_cpu(capacity_freq_ref, cpu) * HZ_PER_KHZ);
-+
- 		capacity = raw_capacity[cpu];
- 		capacity = div64_u64(capacity << SCHED_CAPACITY_SHIFT,
- 				     capacity_scale);
-@@ -422,8 +429,11 @@ init_cpu_capacity_callback(struct notifier_block *nb,
- 
- 	cpumask_andnot(cpus_to_visit, cpus_to_visit, policy->related_cpus);
- 
--	for_each_cpu(cpu, policy->related_cpus)
-+	for_each_cpu(cpu, policy->related_cpus) {
- 		per_cpu(capacity_freq_ref, cpu) = policy->cpuinfo.max_freq;
-+		freq_inv_set_max_ratio(cpu,
-+				       per_cpu(capacity_freq_ref, cpu) * HZ_PER_KHZ);
-+	}
- 
- 	if (cpumask_empty(cpus_to_visit)) {
- 		topology_normalize_cpu_scale();
-diff --git a/include/linux/arch_topology.h b/include/linux/arch_topology.h
-index 32c24ff4f2a8..a63d61ca55af 100644
---- a/include/linux/arch_topology.h
-+++ b/include/linux/arch_topology.h
-@@ -99,6 +99,7 @@ void update_siblings_masks(unsigned int cpu);
- void remove_cpu_topology(unsigned int cpuid);
- void reset_cpu_topology(void);
- int parse_acpi_topology(void);
-+void freq_inv_set_max_ratio(int cpu, u64 max_rate);
- #endif
- 
- #endif /* _LINUX_ARCH_TOPOLOGY_H_ */
+ # rtla timerlat top -u -d 10m
+
+  --------------------- %< ------------------------
+                                     Timer Latency
+  0 01:42:24   |          IRQ Timer Latency (us)        |         Thread Timer Latency (us)      |    Ret user Timer Latency (us)
+CPU COUNT      |      cur       min       avg       max |      cur       min       avg       max |      cur       min       avg       max
+  0 #6143559   |        0         0         0        92 |        2         1         3        98 |        4         1         5       100
+  1 #6143559   |        1         0         0        97 |        7         1         5       101 |        9         1         7       103
+  2 #6143559   |        0         0         0        88 |        3         1         5        95 |        5         1         7        99
+  3 #6143559   |        0         0         0        90 |        6         1         5       103 |       10         1         7       126
+  4 #6143558   |        1         0         0        81 |        7         1         4        86 |        9         1         7        90
+  5 #6143558   |        0         0         0        74 |        3         1         5        79 |        4         1         7        83
+  6 #6143558   |        0         0         0        83 |        2         1         5        89 |        3         0         7       108
+  7 #6143558   |        0         0         0        85 |        3         1         4       126 |        5         1         6       137
+  --------------------- >% ------------------------
+
+And this is the same tests with DL server activating without any delay:
+  --------------------- %< ------------------------
+  0 00:10:01   |          IRQ Timer Latency (us)        |         Thread Timer Latency (us)      |    Ret user Timer Latency (us)
+CPU COUNT      |      cur       min       avg       max |      cur       min       avg       max |      cur       min       avg       max
+  0 #579147    |        0         0         0        54 |        2         1        52     61095 |        2         2        56     61102
+  1 #578766    |        0         0         0        83 |        2         1        49     55824 |        3         2        53     55831
+  2 #578559    |        0         0         1        59 |        2         1        50     55760 |        3         2        54     55770
+  3 #578318    |        0         0         0        76 |        2         1        49     55751 |        3         2        54     55760
+  4 #578611    |        0         0         0        64 |        2         1        49     55811 |        3         2        53     55820
+  5 #578347    |        0         0         1        40 |        2         1        50     56121 |        3         2        55     56133
+  6 #578938    |        0         0         1        75 |        2         1        49     55755 |        3         2        53     55764
+  7 #578631    |        0         0         1        36 |        3         1        51     55528 |        4         2        55     55541
+  --------------------- >% ------------------------
+
+The problem with DL server only implementation is that FIFO tasks might
+suffer preemption from NORMAL even when spare CPU cycles are available.
+In fact, fair deadline server is enqueued right away when NORMAL tasks
+wake up and they are first scheduled by the server, thus potentially
+preempting a well behaving FIFO task. This is of course not ideal.
+
+We had discussions about it, and one of the possibilities would be
+using a different scheduling algorithm for this. But IMHO that is
+an overkill.
+
+Juri and I discussed this and though about delaying the server
+activation for the 0-lag time, thus enabling the server only if the
+fair scheduler is about to starve.
+
+The patch 6/7 adds the possibility to defer the server start to the
+(absolute deadline - runtime) point in time. This is achieved by
+enqueuing the dl server throttled, with a next replenishing time
+set to activate the server at (absolute deadline - runtime).
+
+Differently from v4, now the server is enqueued with the runtime
+replenished. As the fair scheduler runs without boost, its runtime
+is consumed. If the fair server has its runtime before the 0-laxity
+time, the a new period is set, and the timer armed for the new
+(deadline - runtime).
+
+The patch 7/7 add a per_rq interface for the knobs:
+	fair_server_runtime (950 ms)
+	fair_server_period  (1s)
+	fair_server_defer   (enabled)
+
+With defer enabled on CPUs [0:3], the results get better, having a
+behavior similar to the one we have with the rt throttling.
+
+  --------------------- %< ------------------------
+                                     Timer Latency                                                                                       
+  0 00:10:01   |          IRQ Timer Latency (us)        |         Thread Timer Latency (us)      |    Ret user Timer Latency (us)
+CPU COUNT      |      cur       min       avg       max |      cur       min       avg       max |      cur       min       avg       max
+  0 #599979    |        0         0         0        64 |        4         1         4        67 |        6         1         5        69
+  1 #599979    |        0         0         1        17 |        6         1         5        50 |       10         2         7        71
+  2 #599984    |        1         0         1        22 |        4         1         5        78 |        5         2         7       107
+  3 #599986    |        0         0         1        72 |        7         1         5        79 |       10         2         7        82
+  4 #581580    |        1         0         1        37 |        6         1        38     52797 |       10         2        41     52805
+  5 #583270    |        1         0         1        41 |        9         1        36     52617 |       12         2        38     52623
+  6 #581240    |        0         0         1        25 |        7         1        39     52870 |       11         2        41     52876
+  7 #581208    |        0         0         1        69 |        6         1        39     52917 |        9         2        41     52923
+  --------------------- >% ------------------------
+
+Here are some osnoise measurement, with osnoise threads running as FIFO:1 with
+different setups (defer enabled):
+ - CPU 2 isolated
+ - CPU 3 isolated shared with a CFS busy loop task
+ - CPU 8 non-isolated
+ - CPU 9 non-isolated shared with a CFS busy loop task
+
+  --------------------- %< ------------------------
+ ~# pgrep ktimer | while read pid; do chrt -p -f 2 $pid; done # for RT kernel
+ ~# sysctl kernel.sched_rt_runtime_us=-1
+ ~# tuna  isolate -c 2
+ ~# tuna  isolate -c 3
+ ~# taskset -c 3 ./f &
+ ~# taskset -c 9 ./f &
+ ~# osnoise -P f:1 -c 2,3,8,9 -T 1 -d 10m -H 1
+                                          Operating System Noise
+duration:   0 00:10:00 | time is in us
+CPU Period       Runtime        Noise  % CPU Aval   Max Noise   Max Single          HW          NMI          IRQ      Softirq       Thread
+  2 #599       599000000          178    99.99997          18            2           0            0          270            0            0
+  3 #598       598054434     31351553    94.75774      104442       104442           0            0      2837523            0         1794
+  8 #599       599000001       567456    99.90526        3260         2375           2           89       620490            0        13539
+  9 #598       598021196     31742537    94.69207       71707        53357           0           90      3411023            0         1762
+   --------------------- >% ------------------------
+
+the system runs fine!
+	- no crashes (famous last words)
+	- FIFO property is kept
+	- per cpu interface because it is more flexible - and to detach this from
+	  the throttling concept.
+
+Global is broken, but it will > /dev/null.
+
+TODO:
+  - Move rt throttling code to RT_GROUP_SCHED for now (then send it to the same
+    place as global then).
+
+Changes from V4:
+  - Enable the server when nr fair tasks is > 0 (peter)
+  - Consume runtime if the zerolax server is not boosted (peterz)
+  - Adjust interface to deal with admission control (peterz)
+  - Rebased to 6.6
+Changes from V3:
+  - Add the defer server (Daniel)
+  - Add an per rq interface (Daniel with peter's feedback)
+  - Add an option not defer the server (for Joel)
+  - Typos and 1-liner fixes (Valentin, Luca, Peter)
+  - Fair scheduler running on dl server do not account as RT task (Daniel)
+  - Changed the condition to enable the server (RT & fair tasks) (Daniel)
+Changes from v2:
+  - Refactor/rephrase/typos changes
+  - Defferable server using throttling
+  - The server starts when RT && Fair tasks are enqueued
+  - Interface with runtime/period/defer option
+Changes from v1:
+  - rebased on 6.4-rc1 tip/sched/core
+
+Daniel Bristot de Oliveira (2):
+  sched/deadline: Deferrable dl server
+  sched/fair: Fair server interface
+
+Peter Zijlstra (5):
+  sched: Unify runtime accounting across classes
+  sched/deadline: Collect sched_dl_entity initialization
+  sched/deadline: Move bandwidth accounting into {en,de}queue_dl_entity
+  sched/deadline: Introduce deadline servers
+  sched/fair: Add trivial fair server
+
+ include/linux/sched.h    |  26 +-
+ kernel/sched/core.c      |  23 +-
+ kernel/sched/deadline.c  | 671 ++++++++++++++++++++++++++++-----------
+ kernel/sched/debug.c     | 202 ++++++++++++
+ kernel/sched/fair.c      |  87 ++++-
+ kernel/sched/rt.c        |  15 +-
+ kernel/sched/sched.h     |  56 +++-
+ kernel/sched/stop_task.c |  13 +-
+ 8 files changed, 847 insertions(+), 246 deletions(-)
+
 -- 
-2.34.1
+2.40.1
 
