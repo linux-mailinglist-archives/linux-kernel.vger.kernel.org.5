@@ -2,233 +2,284 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3233D7E111B
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 22:12:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49F837E113F
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 22:51:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229802AbjKDVMr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Nov 2023 17:12:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39172 "EHLO
+        id S229814AbjKDVt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Nov 2023 17:49:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229479AbjKDVMo (ORCPT
+        with ESMTP id S229488AbjKDVt1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Nov 2023 17:12:44 -0400
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96D4DD6F;
-        Sat,  4 Nov 2023 14:12:40 -0700 (PDT)
-Received: by mail-yb1-xb2a.google.com with SMTP id 3f1490d57ef6-d9fe0a598d8so3169852276.2;
-        Sat, 04 Nov 2023 14:12:40 -0700 (PDT)
+        Sat, 4 Nov 2023 17:49:27 -0400
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F06BBD69
+        for <linux-kernel@vger.kernel.org>; Sat,  4 Nov 2023 14:49:23 -0700 (PDT)
+Received: by mail-qk1-x72b.google.com with SMTP id af79cd13be357-77891c236fcso218572085a.3
+        for <linux-kernel@vger.kernel.org>; Sat, 04 Nov 2023 14:49:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699132359; x=1699737159; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1699134561; x=1699739361; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=NmmxzjjUwK3b8vn2y9x/jblHXMC3dRiI5YQuelEgEu4=;
-        b=Q+vCr0sO6IDgdSXv4wYYodmhCp7JkvqjikNWiahuPEZC/1eDVj49GmSs7wTxElEC04
-         cVLmGyeMnnu3iByPRRJmk/f4lkgdVRaZLAm+fp3eENvPCkKNMoAz0NnsAjszF6Ctzm6f
-         RpJMUTvKlxshI9gpknKtF+RAphwYq8Xmkj3KgSDD3RZVn0GTFlu9DkEOxSxCaGtJfkPC
-         POGZeL+jLpn6IZFxk/VGSI7z0B6FCHzFJnMWGWr8GEM7TFOLf7yAoZ0vYoRolcoHDXKq
-         uJyzh/WvbGFbLYXYWkvw+4+k49PNKTxxajEdsa7M5wPWbeUB6qbvCMvDEtpFU3MYThKK
-         ykJw==
+        bh=iZ3QfH8tdp9ZKwfs3qPFK2zrxsl4sOz4mzZ2VqGXnJI=;
+        b=G6Mcu0sALkOG+/++84fd7R9+ePTTZULibGNGfulbPL/yWvp8eu8LH1iTPQ7z5rYEOt
+         TYdiNEg8m9PMn/AAuKCcoPZnHJ82eE/2YB7gf6LuCEycdnBym7TBmfyhmFyVk5mTb1o1
+         lCkmvHveyz/+nHuCO8Ps2qdrOf5AjLuq7RgVePfWa/OxbC3LLOcJ8zt60hwA4eBN8nBd
+         XUTybeL7sXI/uhzaUmKTsI3Crl/9Nc034GQBhjQ7Q6B91JkBx6ITxnQgCoILVDRkj+7m
+         m2CN+UEwruj7hmAfa5dlW3le0Q0uQGpsb4tzAQ/VzFXNOqs67S1zQexPVdcBDS/R5Jv4
+         l9Ag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699132359; x=1699737159;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1699134561; x=1699739361;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=NmmxzjjUwK3b8vn2y9x/jblHXMC3dRiI5YQuelEgEu4=;
-        b=ojskqdPwEsM/iiUHyiGtQhPdHg5YZ8iSU63qcZJkCdbwfOqjL18ik0R6YeSBSD12jZ
-         a+4XNygX5EUx9TF01vN0qSPEGn3EAIfUuyDRz0Yg+nyDO55kZQDnprkiQM0ZxRVbJ9cC
-         DwIGPKn/L1vvzQo/jWpcWanO8pSt91Pon4dg9dmXZvKKrE5TCJ5ShLUttHVSB4yiShdr
-         JDhbY8BbDJG6Xu/AD9MpmrFwfHog1gtr/ltP7QZMRqTlr5e0GSxqviTZMyldHT5IL1Uk
-         acUBTOGIsD571vTQnG8TFlo9y/BegWfajl+/LGjxv7/9rJVNE9EkblhkIIQyuaCFGAkh
-         Kc9g==
-X-Gm-Message-State: AOJu0YwcNebG8QbCSITy6rPcsFiiM9StiElGodZRxpDc0UFhAstcfvt4
-        p3Z2zDyqdKsp8iOyyrg/CdA=
-X-Google-Smtp-Source: AGHT+IHp/sOSSBPGc9xRlPjZZ6gFxe6O8jR7w37AYO5PXaa4PLmh0wW/fqWzJ0TWrDwqXjz9SUudGg==
-X-Received: by 2002:a25:da48:0:b0:d84:e7a6:fc09 with SMTP id n69-20020a25da48000000b00d84e7a6fc09mr24125639ybf.17.1699132359603;
-        Sat, 04 Nov 2023 14:12:39 -0700 (PDT)
-Received: from tx3000mach.io (static.220.238.itcsa.net. [190.15.220.238])
-        by smtp.gmail.com with ESMTPSA id t14-20020a25838e000000b00d9cc49edae9sm2094731ybk.63.2023.11.04.14.12.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 04 Nov 2023 14:12:39 -0700 (PDT)
-From:   Martin Rodriguez Reboredo <yakoyoku@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?UTF-8?q?Bj=C3=B6rn=20Roy=20Baron?= <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        Alice Ryhl <aliceryhl@google.com>
-Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Wedson Almeida Filho <walmeida@microsoft.com>,
-        linux-usb@vger.kernel.org, rust-for-linux@vger.kernel.org
-Subject: [RFC PATCH v3 2/2] samples: rust: Add USB sample bindings
-Date:   Sat,  4 Nov 2023 18:11:59 -0300
-Message-ID: <20231104211213.225891-3-yakoyoku@gmail.com>
-X-Mailer: git-send-email 2.42.1
-In-Reply-To: <20231104211213.225891-1-yakoyoku@gmail.com>
-References: <20231104211213.225891-1-yakoyoku@gmail.com>
+        bh=iZ3QfH8tdp9ZKwfs3qPFK2zrxsl4sOz4mzZ2VqGXnJI=;
+        b=idFPMuy5pW0dsTUFS84wtDIb7yDimsRwbytYe+sFzL4bGR1dhsLpuPh4XnP0y725Yx
+         65JIfa+R01g3unryWI4cl+DWLusmpf7HxRCd2VgiyJ3ijo8D3J9rFmuoZMaKjID1EmFv
+         WPxvumZmiHxxRA4ZRQ/E1eyOdBleBQKWwz2ldMi+4NMBEEMJeCIQzlUFn4LnUMtWtTdK
+         U8tCc5SCyBq4BD9INiqgnZ3/cHs14tJKzPJIHWlXR+DvP5OFPcV5KVHYGbHH5gyXVZDv
+         dxfu4XMabofi0L3rCFmC99LXe19wdun/NxpMv6RZsDqHg5f7sQSC5HzdTTM5mVg8Zekw
+         V2Dw==
+X-Gm-Message-State: AOJu0YwMIvK+1NssGyV6kyBTYIt6NJqxVYv8la4jDPFDjRD8EtoENO59
+        1bq+CDFRIxSLbO0Wjji7CZrA3hR4wKaJUy0FTJY=
+X-Google-Smtp-Source: AGHT+IESw3mGNFjT1qh3+YqBfGbYPjKMVngR6ObxxNg41kO9c5+kZ1Q4L8evEEpilRGomPISEMrKfmyQIuQgbwPXrvs=
+X-Received: by 2002:ae9:f719:0:b0:76c:8d5f:5954 with SMTP id
+ s25-20020ae9f719000000b0076c8d5f5954mr24457359qkg.70.1699134561562; Sat, 04
+ Nov 2023 14:49:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20231103131011.1316396-1-lb@semihalf.com> <20231103131011.1316396-12-lb@semihalf.com>
+In-Reply-To: <20231103131011.1316396-12-lb@semihalf.com>
+From:   jim.cromie@gmail.com
+Date:   Sat, 4 Nov 2023 15:48:55 -0600
+Message-ID: <CAJfuBxzhz7pBYkfqfPomH4PUzqLPX1nxsev4yrQ2P6m5hyMT+Q@mail.gmail.com>
+Subject: Re: [PATCH v1 11/12] dyndbg: write debug logs to trace instance
+To:     =?UTF-8?Q?=C5=81ukasz_Bartosik?= <lb@semihalf.com>
+Cc:     Jason Baron <jbaron@akamai.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Guenter Roeck <groeck@google.com>,
+        Yaniv Tzoreff <yanivt@google.com>,
+        Benson Leung <bleung@google.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        Pekka Paalanen <ppaalanen@gmail.com>,
+        Sean Paul <seanpaul@chromium.org>,
+        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org,
+        upstream@semihalf.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a demonstration of the capabilities of doing bindings with
-subsystems that may or may not be statically linked.
+On Fri, Nov 3, 2023 at 7:10=E2=80=AFAM =C5=81ukasz Bartosik <lb@semihalf.co=
+m> wrote:
+>
+> When trace is enabled (T flag is set) and trace_dst field is set
+> to value greater than 0 (0 is reserved for trace events) then
+> debug logs will be written to trace instance pointed by trace_dst
+> value, for example when trace_dst value is 2 then debug logs will
+> be written to <debugfs>/tracing/instances/dyndbg_inst_2 instance.
+> Given trace instance will not be initialized until debug logs are
+> requested to be written to it and afer init will persist until
+> reboot.
+>
 
-Signed-off-by: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
----
-v2 -> v3:
-- Generate bindings for USB.
-v1 -> v2:
-- Added this patch.
+restating 00 comments -
 
- drivers/usb/core/Kconfig        |  7 +++++++
- drivers/usb/core/Makefile       |  3 +++
- drivers/usb/core/usb.rs         | 13 +++++++++++++
- rust/bindings/bindings_helper.h |  1 +
- samples/rust/Kconfig            | 10 ++++++++++
- samples/rust/Makefile           |  3 +++
- samples/rust/rust_usb_simple.rs | 22 ++++++++++++++++++++++
- 7 files changed, 59 insertions(+)
- create mode 100644 drivers/usb/core/usb.rs
- create mode 100644 samples/rust/rust_usb_simple.rs
+you can get rid of integer destination ids by adding a new command: open/cl=
+ose
 
-diff --git a/drivers/usb/core/Kconfig b/drivers/usb/core/Kconfig
-index 351ede4b5de2..4b5604282129 100644
---- a/drivers/usb/core/Kconfig
-+++ b/drivers/usb/core/Kconfig
-@@ -116,3 +116,10 @@ config USB_AUTOSUSPEND_DELAY
- 	  The default value Linux has always had is 2 seconds.  Change
- 	  this value if you want a different delay and cannot modify
- 	  the command line or module parameter.
-+
-+config USB_RUST
-+	bool "Rust USB bindings"
-+	depends on USB && RUST
-+	default n
-+	help
-+	  Enables Rust bindings for USB.
-diff --git a/drivers/usb/core/Makefile b/drivers/usb/core/Makefile
-index 7d338e9c0657..00e116913591 100644
---- a/drivers/usb/core/Makefile
-+++ b/drivers/usb/core/Makefile
-@@ -11,6 +11,7 @@ usbcore-y += phy.o port.o
- usbcore-$(CONFIG_OF)		+= of.o
- usbcore-$(CONFIG_USB_PCI)		+= hcd-pci.o
- usbcore-$(CONFIG_ACPI)		+= usb-acpi.o
-+usbcore-$(CONFIG_USB_RUST)		+= libusb.rlib
- 
- ifdef CONFIG_USB_ONBOARD_HUB
- usbcore-y			+= ../misc/onboard_usb_hub_pdevs.o
-@@ -18,4 +19,6 @@ endif
- 
- obj-$(CONFIG_USB)		+= usbcore.o
- 
-+rust-libs			:= ./usb
-+
- obj-$(CONFIG_USB_LEDS_TRIGGER_USBPORT)	+= ledtrig-usbport.o
-diff --git a/drivers/usb/core/usb.rs b/drivers/usb/core/usb.rs
-new file mode 100644
-index 000000000000..3f7ad02153f5
---- /dev/null
-+++ b/drivers/usb/core/usb.rs
-@@ -0,0 +1,13 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+//! USB devices and drivers.
-+//!
-+//! C header: [`include/linux/usb.h`](../../../../include/linux/usb.h)
-+
-+use kernel::bindings;
-+
-+/// Check if USB is disabled.
-+pub fn disabled() -> bool {
-+    // SAFETY: FFI call.
-+    unsafe { bindings::usb_disabled() != 0 }
-+}
-diff --git a/rust/bindings/bindings_helper.h b/rust/bindings/bindings_helper.h
-index c41eaab4ddb2..845cdd856981 100644
---- a/rust/bindings/bindings_helper.h
-+++ b/rust/bindings/bindings_helper.h
-@@ -10,6 +10,7 @@
- #include <linux/errname.h>
- #include <linux/slab.h>
- #include <linux/refcount.h>
-+#include <linux/usb.h>
- #include <linux/wait.h>
- #include <linux/sched.h>
- #include <linux/workqueue.h>
-diff --git a/samples/rust/Kconfig b/samples/rust/Kconfig
-index b0f74a81c8f9..12116f6fb526 100644
---- a/samples/rust/Kconfig
-+++ b/samples/rust/Kconfig
-@@ -30,6 +30,16 @@ config SAMPLE_RUST_PRINT
- 
- 	  If unsure, say N.
- 
-+config SAMPLE_RUST_USB_SIMPLE
-+	tristate "USB simple device driver"
-+	help
-+	  This option builds the Rust USB simple driver sample.
-+
-+	  To compile this as a module, choose M here:
-+	  the module will be called rust_usb_simple.
-+
-+	  If unsure, say N.
-+
- config SAMPLE_RUST_HOSTPROGS
- 	bool "Host programs"
- 	help
-diff --git a/samples/rust/Makefile b/samples/rust/Makefile
-index 03086dabbea4..f1ab58a9ecdd 100644
---- a/samples/rust/Makefile
-+++ b/samples/rust/Makefile
-@@ -2,5 +2,8 @@
- 
- obj-$(CONFIG_SAMPLE_RUST_MINIMAL)		+= rust_minimal.o
- obj-$(CONFIG_SAMPLE_RUST_PRINT)			+= rust_print.o
-+obj-$(CONFIG_SAMPLE_RUST_USB_SIMPLE)		+= rust_usb_simple.o
-+
-+rust-libs					:= ../../drivers/usb/core/usb
- 
- subdir-$(CONFIG_SAMPLE_RUST_HOSTPROGS)		+= hostprogs
-diff --git a/samples/rust/rust_usb_simple.rs b/samples/rust/rust_usb_simple.rs
-new file mode 100644
-index 000000000000..3523f81d5eb8
---- /dev/null
-+++ b/samples/rust/rust_usb_simple.rs
-@@ -0,0 +1,22 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+//! Rust USB sample.
-+
-+use kernel::prelude::*;
-+
-+module! {
-+    type: UsbSimple,
-+    name: "rust_usb_simple",
-+    author: "Martin Rodriguez Reboredo",
-+    description: "Rust USB sample",
-+    license: "GPL v2",
-+}
-+
-+struct UsbSimple;
-+
-+impl kernel::Module for UsbSimple {
-+    fn init(_module: &'static ThisModule) -> Result<Self> {
-+        pr_info!("usb enabled: {}", !usb::disabled());
-+        Ok(UsbSimple)
-+    }
-+}
--- 
-2.42.1
+$> echo  \
+ open kms-instance \;\
+ class DRM_UT_KMS -T:kms-instance  # preset-dests-disable-sites \;\
+> /proc/dynamic_debug/control
 
+echo "class DRM_UT_KMS +T # enable sites, with the preselected data" >
+/proc/dynamic_debug/control
+
+open - assign name to id, reserve it, hide it from user
++T:valid-name # fail command if name wasnt opened
+
+and +T  w/o dest means use existing setting, not just 0 (unless thats
+the existing setting)
+
+> Signed-off-by: =C5=81ukasz Bartosik <lb@semihalf.com>
+> ---
+>  lib/Kconfig.debug   |  1 +
+>  lib/dynamic_debug.c | 79 ++++++++++++++++++++++++++++++++++++++++++---
+>  2 files changed, 76 insertions(+), 4 deletions(-)
+>
+> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+> index fa307f93fa2e..9617e92c046d 100644
+> --- a/lib/Kconfig.debug
+> +++ b/lib/Kconfig.debug
+> @@ -181,6 +181,7 @@ config DYNAMIC_DEBUG_CORE
+>         bool "Enable core function of dynamic debug support"
+>         depends on PRINTK
+>         depends on (DEBUG_FS || PROC_FS)
+> +       depends on TRACING
+>         help
+>           Enable core functional support of dynamic debug. It is useful
+>           when you want to tie dynamic debug to your kernel modules with
+> diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
+> index c5cd28e74a02..541d9d522b3b 100644
+> --- a/lib/dynamic_debug.c
+> +++ b/lib/dynamic_debug.c
+> @@ -36,6 +36,7 @@
+>  #include <linux/sched.h>
+>  #include <linux/device.h>
+>  #include <linux/netdevice.h>
+> +#include <linux/trace.h>
+>
+>  #define CREATE_TRACE_POINTS
+>  #include <trace/events/dyndbg.h>
+> @@ -81,6 +82,18 @@ module_param(verbose, int, 0644);
+>  MODULE_PARM_DESC(verbose, " dynamic_debug/control processing "
+>                  "( 0 =3D off (default), 1 =3D module add/rm, 2 =3D >cont=
+rol summary, 3 =3D parsing, 4 =3D per-site changes)");
+>
+> +/*
+> + * When trace is enabled (T flag is set) and trace_dst field is set
+> + * to value greater than 0 (0 is reserved for trace events) then
+> + * debug logs will be written to trace instance pointed by trace_dst
+> + * value, for example when trace_dst value is 2 then debug logs will
+> + * be written to <debugfs>/tracing/instances/dyndbg_inst_2 instance.
+> + * Given trace instance will not be initialized until debug logs are
+> + * requested to be written to it and afer init will persist until
+> + * reboot.
+> + */
+> +static struct trace_array *trace_arr[TRACE_DST_MAX];
+> +
+>  static inline struct dd_ctrl *get_ctrl(struct _ddebug *desc)
+>  {
+>         return &desc->ctrl;
+> @@ -255,6 +268,45 @@ static struct ddebug_class_map *ddebug_find_valid_cl=
+ass(struct ddebug_table cons
+>         return NULL;
+>  }
+>
+> +static int handle_trace_dst(struct dd_ctrl *ctrl)
+> +{
+> +#define TRACE_INST_NAME_LEN 16
+> +       char instance_name[TRACE_INST_NAME_LEN];
+> +       struct trace_array *arr;
+> +       int ret =3D -EINVAL;
+> +
+> +       /* check if trace (T flag) is enabled */
+> +       if (!(ctrl->flags & _DPRINTK_FLAGS_TRACE))
+> +               return 0;
+> +
+> +       /* check if trace destination are trace events */
+> +       if (!ctrl->trace_dst)
+> +               return 0;
+> +
+> +       /* check if trace instance is already set up */
+> +       if (trace_arr[ctrl->trace_dst])
+> +               return 0;
+> +
+> +       snprintf(instance_name, TRACE_INST_NAME_LEN,
+> +                "dyndbg_inst_%u", ctrl->trace_dst);
+> +       arr =3D trace_array_get_by_name(instance_name);
+> +       if (!arr)
+> +               goto err;
+> +
+> +       ret =3D trace_array_init_printk(arr);
+> +       if (ret)
+> +               goto err_init;
+> +
+> +       trace_arr[ctrl->trace_dst] =3D arr;
+> +       return 0;
+> +
+> +err_init:
+> +       trace_array_put(arr);
+> +       trace_array_destroy(arr);
+> +err:
+> +       return ret;
+> +}
+> +
+>  #define __outvar /* filled by callee */
+>  /*
+>   * Search the tables for _ddebug's which match the given `query' and
+> @@ -338,6 +390,9 @@ static int ddebug_change(const struct ddebug_query *q=
+uery,
+>                         nctrl.trace_dst =3D modifiers->trace_dst;
+>                         if (!memcmp(&nctrl, get_ctrl(dp), sizeof(nctrl)))
+>                                 continue;
+> +
+> +                       if (handle_trace_dst(&nctrl))
+> +                               continue;
+>  #ifdef CONFIG_JUMP_LABEL
+>                         if (get_flags(dp) & _DPRINTK_FLAGS_ENABLED) {
+>                                 if (!(nctrl.flags & _DPRINTK_FLAGS_ENABLE=
+D))
+> @@ -977,8 +1032,8 @@ static DEFINE_PER_CPU(struct ddebug_trace_bufs, ddeb=
+ug_trace_bufs);
+>  static DEFINE_PER_CPU(int, ddebug_trace_reserve);
+>
+>  __printf(3, 0)
+> -static void ddebug_trace(struct _ddebug *desc, const struct device *dev,
+> -                        const char *fmt, va_list args)
+> +static void ddebug_trace_event(struct _ddebug *desc, const struct device=
+ *dev,
+> +                              const char *fmt, va_list args)
+>  {
+>         struct ddebug_trace_buf *buf;
+>         int bufidx;
+> @@ -1010,6 +1065,15 @@ static void ddebug_trace(struct _ddebug *desc, con=
+st struct device *dev,
+>         preempt_enable_notrace();
+>  }
+>
+> +__printf(2, 0)
+> +static void ddebug_trace_instance(struct _ddebug *desc, const char *fmt,
+> +                                 va_list *args)
+> +{
+> +       struct va_format vaf =3D { .fmt =3D fmt, .va =3D args};
+> +
+> +       trace_array_printk(trace_arr[get_trace_dst(desc)], _THIS_IP_, "%p=
+V", &vaf);
+> +}
+> +
+>  __printf(2, 3)
+>  static void ddebug_printk(struct _ddebug *desc, const char *fmt, ...)
+>  {
+> @@ -1022,7 +1086,11 @@ static void ddebug_printk(struct _ddebug *desc, co=
+nst char *fmt, ...)
+>                  * All callers include the KERN_DEBUG prefix to keep the
+>                  * vprintk case simple; strip it out for tracing.
+>                  */
+> -               ddebug_trace(desc, NULL, fmt + strlen(KERN_DEBUG), args);
+> +               if (get_trace_dst(desc))
+> +                       ddebug_trace_instance(desc, fmt, &args);
+> +               else
+> +                       ddebug_trace_event(desc, NULL,
+> +                                          fmt + strlen(KERN_DEBUG), args=
+);
+>                 va_end(args);
+>         }
+>
+> @@ -1044,7 +1112,10 @@ static void ddebug_dev_printk(struct _ddebug *desc=
+, const struct device *dev,
+>                 va_list args;
+>
+>                 va_start(args, fmt);
+> -               ddebug_trace(desc, dev, fmt, args);
+> +               if (get_trace_dst(desc))
+> +                       ddebug_trace_instance(desc, fmt, &args);
+> +               else
+> +                       ddebug_trace_event(desc, dev, fmt, args);
+>                 va_end(args);
+>         }
+>
+> --
+> 2.42.0.869.gea05f2083d-goog
+>
