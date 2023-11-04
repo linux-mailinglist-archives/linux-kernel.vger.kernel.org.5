@@ -2,216 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 800887E0DB9
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 04:56:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 977BF7E0DBC
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 05:16:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346495AbjKDD4d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 23:56:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59686 "EHLO
+        id S1344801AbjKDD5v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 23:57:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345405AbjKDDzu (ORCPT
+        with ESMTP id S235082AbjKDD5r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 23:55:50 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D72B5D47;
-        Fri,  3 Nov 2023 20:55:46 -0700 (PDT)
-Received: from dggpemm100001.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4SMkGH51DZzrTXs;
-        Sat,  4 Nov 2023 11:52:39 +0800 (CST)
-Received: from localhost.localdomain (10.175.112.125) by
- dggpemm100001.china.huawei.com (7.185.36.93) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Sat, 4 Nov 2023 11:55:44 +0800
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-CC:     <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Hildenbrand <david@redhat.com>,
-        <linux-s390@vger.kernel.org>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>
-Subject: [PATCH v2 10/10] mm: convert mm_counter_file() to take a folio
-Date:   Sat, 4 Nov 2023 11:55:22 +0800
-Message-ID: <20231104035522.2418660-11-wangkefeng.wang@huawei.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20231104035522.2418660-1-wangkefeng.wang@huawei.com>
-References: <20231104035522.2418660-1-wangkefeng.wang@huawei.com>
+        Fri, 3 Nov 2023 23:57:47 -0400
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9607D71;
+        Fri,  3 Nov 2023 20:57:41 -0700 (PDT)
+Received: by mail-qk1-x72f.google.com with SMTP id af79cd13be357-777719639adso164778185a.3;
+        Fri, 03 Nov 2023 20:57:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699070261; x=1699675061; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=pWhGUunWhxUTuSWanhab2prz9GQ9mAMBfZZdeTV0d7A=;
+        b=kUf9bz6d/iq6dHSRF5SFuX8ftL/4abrNh6TZRAO7/MiciaYjB5EwBglbGIIz4ptcx2
+         GLauZMZaU36OCTb4KSwBsyZFrPBh5Wzz3dkwAryGGF2CuVKq6qj0fzmCZxy+vL8q+E7D
+         n0RwR12bQHimUUfZKqG5+Zy2wHSYvVYu5IkIj5qq89WMmoroqNp/etMLhzyF7VxKQmjk
+         bn0xODDstmvA3xxPKKQNyzwjCosc41Ddoo2h3q3SWsLlXCwKldadttEUXW5i4GjZADRb
+         +PAJP7V2HkGcilBS9kkm0QT/hoGgmaxDCdPCZET1j7CVN2MX6Wg+4j/x8Crux4sY2VgP
+         UJJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699070261; x=1699675061;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=pWhGUunWhxUTuSWanhab2prz9GQ9mAMBfZZdeTV0d7A=;
+        b=qHZhKgMrh/oyaWafodrxdLxlRDW/Dfej9KeTyNxUIKPKGGUu1CU4Pk8LwXAQrGEQwQ
+         X03M5cQ4GgMH9mwOmxoalDrJXsqBeemv3aQQ3ZRrPbTmo9FEHZt7ij2MTiUuLOjHD7Cc
+         SmXU0Sua/IoCufAWiTRzUosFNZScaG4sz3ObVKYvAfZo/fb21XKW9QUuq+uxx3f+gCvk
+         8o3p9Tfju/+drqgp5WWKh49AtTG0E1+V/lg2ZEOdoYLto7CPt5NdCAEqD3VYCPOe9ACF
+         lHdeg+ICtLa6ULlpcRiNu7SasRR/MXFqSz1dH9o9ESVPJEqcmKGUPiX4YEC8kLnLJ4py
+         G5jQ==
+X-Gm-Message-State: AOJu0YwxeppJhyZq0v92b7xk0tH0XMNCxtApsy9CX5rMGDkSS8UPSobI
+        ppF4oDCmdPmRmjqooSUqN+iz0N+eFzbN7AOxE7/B4QwHnp4=
+X-Google-Smtp-Source: AGHT+IEJWbO5SCDFS/PmNlgjmH1yPMZE3KW5hdhtf9cMHoNaO6Oca6hJVwNtOOAtjenVe1f5dVO1DfH9bsLcbbY8I/Q=
+X-Received: by 2002:a05:620a:45a3:b0:774:3235:4e6d with SMTP id
+ bp35-20020a05620a45a300b0077432354e6dmr28193713qkb.21.1699070260685; Fri, 03
+ Nov 2023 20:57:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.112.125]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpemm100001.china.huawei.com (7.185.36.93)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231103184831.99406-2-pstanner@redhat.com>
+In-Reply-To: <20231103184831.99406-2-pstanner@redhat.com>
+From:   Ryusuke Konishi <konishi.ryusuke@gmail.com>
+Date:   Sat, 4 Nov 2023 12:57:24 +0900
+Message-ID: <CAKFNMona2dYnMpEoQMPatEJrPW2qkkdCnnsRzvNcwsxrakyPOQ@mail.gmail.com>
+Subject: Re: [PATCH v2] fs/nilfs2: use standard array-copy-function
+To:     Philipp Stanner <pstanner@redhat.com>
+Cc:     linux-nilfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Dave Airlie <airlied@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since all mm_counter_file() callers with a folio, let's convert
-mm_counter_file() to take a folio.
+On Sat, Nov 4, 2023 at 3:49=E2=80=AFAM Philipp Stanner wrote:
+>
+> ioctl.c utilizes memdup_user() to copy a userspace array. An overflow
+> check is performed manually before the function's invocation.
+>
+> The new function memdup_array_user() standardizes copying userspace
+> arrays, thus, improving readability by making it more clear that an
+> array is being copied. Additionally, it also performs an overflow check.
+>
+> Remove the (now redundant) manual overflow-check and replace
+> memdup_user() with memdup_array_user().
+>
+> In addition, improve the grammar of the comment above
+> memdup_array_user().
+>
+> Suggested-by: Dave Airlie <airlied@redhat.com>
+> Signed-off-by: Philipp Stanner <pstanner@redhat.com>
+> ---
+> Changes in v2:
+> - Rename + rephrase commit so that it's clear that this is a
+>   cleanup-patch.
+> - Mention the grammar improvement of the comment in the commit message.
+> - Remove the preceding manual overflow-check, since that is now
+>   redundant.
+> ---
+>  fs/nilfs2/ioctl.c | 10 ++++------
+>  1 file changed, 4 insertions(+), 6 deletions(-)
+>
+> diff --git a/fs/nilfs2/ioctl.c b/fs/nilfs2/ioctl.c
+> index 40ffade49f38..cfb6aca5ec38 100644
+> --- a/fs/nilfs2/ioctl.c
+> +++ b/fs/nilfs2/ioctl.c
+> @@ -872,16 +872,14 @@ static int nilfs_ioctl_clean_segments(struct inode =
+*inode, struct file *filp,
+>         nsegs =3D argv[4].v_nmembs;
+>         if (argv[4].v_size !=3D argsz[4])
+>                 goto out;
+> -       if (nsegs > UINT_MAX / sizeof(__u64))
+> -               goto out;
+>
+>         /*
+>          * argv[4] points to segment numbers this ioctl cleans.  We
+> -        * use kmalloc() for its buffer because memory used for the
+> -        * segment numbers is enough small.
+> +        * use kmalloc() for its buffer because the memory used for the
+> +        * segment numbers is small enough.
+>          */
+> -       kbufs[4] =3D memdup_user((void __user *)(unsigned long)argv[4].v_=
+base,
+> -                              nsegs * sizeof(__u64));
+> +       kbufs[4] =3D memdup_array_user((void __user *)(unsigned long)argv=
+[4].v_base,
+> +                                    nsegs, sizeof(__u64));
+>         if (IS_ERR(kbufs[4])) {
+>                 ret =3D PTR_ERR(kbufs[4]);
+>                 goto out;
+> --
+> 2.41.0
+>
 
-Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
----
- include/linux/mm.h      |  8 ++++----
- kernel/events/uprobes.c |  2 +-
- mm/huge_memory.c        |  5 +++--
- mm/khugepaged.c         |  4 ++--
- mm/memory.c             | 10 +++++-----
- mm/rmap.c               |  2 +-
- 6 files changed, 16 insertions(+), 15 deletions(-)
+Looks good.  Also, thank you for your detailed changelog.
+As mentioned earlier, I will handle this for the next cycle.
 
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index fea78900bf84..95573065a46b 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -2583,10 +2583,10 @@ static inline void dec_mm_counter(struct mm_struct *mm, int member)
- 	mm_trace_rss_stat(mm, member);
- }
- 
--/* Optimized variant when page is already known not to be PageAnon */
--static inline int mm_counter_file(struct page *page)
-+/* Optimized variant when folio is already known not to be anon */
-+static inline int mm_counter_file(struct folio *folio)
- {
--	if (PageSwapBacked(page))
-+	if (folio_test_swapbacked(folio))
- 		return MM_SHMEMPAGES;
- 	return MM_FILEPAGES;
- }
-@@ -2595,7 +2595,7 @@ static inline int mm_counter(struct folio *folio)
- {
- 	if (folio_test_anon(folio))
- 		return MM_ANONPAGES;
--	return mm_counter_file(&folio->page);
-+	return mm_counter_file(folio);
- }
- 
- static inline unsigned long get_mm_rss(struct mm_struct *mm)
-diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
-index 435aac1d8c27..ce251e3a4ae6 100644
---- a/kernel/events/uprobes.c
-+++ b/kernel/events/uprobes.c
-@@ -188,7 +188,7 @@ static int __replace_page(struct vm_area_struct *vma, unsigned long addr,
- 		dec_mm_counter(mm, MM_ANONPAGES);
- 
- 	if (!folio_test_anon(old_folio)) {
--		dec_mm_counter(mm, mm_counter_file(old_page));
-+		dec_mm_counter(mm, mm_counter_file(old_folio));
- 		inc_mm_counter(mm, MM_ANONPAGES);
- 	}
- 
-diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-index 78a00fe22c2d..88420d067477 100644
---- a/mm/huge_memory.c
-+++ b/mm/huge_memory.c
-@@ -1742,7 +1742,8 @@ int zap_huge_pmd(struct mmu_gather *tlb, struct vm_area_struct *vma,
- 		} else {
- 			if (arch_needs_pgtable_deposit())
- 				zap_deposited_table(tlb->mm, pmd);
--			add_mm_counter(tlb->mm, mm_counter_file(page), -HPAGE_PMD_NR);
-+			add_mm_counter(tlb->mm, mm_counter_file(folio),
-+				       -HPAGE_PMD_NR);
- 		}
- 
- 		spin_unlock(ptl);
-@@ -2143,7 +2144,7 @@ static void __split_huge_pmd_locked(struct vm_area_struct *vma, pmd_t *pmd,
- 			page_remove_rmap(&folio->page, vma, true);
- 			folio_put(folio);
- 		}
--		add_mm_counter(mm, mm_counter_file(&folio->page), -HPAGE_PMD_NR);
-+		add_mm_counter(mm, mm_counter_file(folio), -HPAGE_PMD_NR);
- 		return;
- 	}
- 
-diff --git a/mm/khugepaged.c b/mm/khugepaged.c
-index 064654717843..39393f4262b2 100644
---- a/mm/khugepaged.c
-+++ b/mm/khugepaged.c
-@@ -1630,7 +1630,7 @@ int collapse_pte_mapped_thp(struct mm_struct *mm, unsigned long addr,
- 	/* step 3: set proper refcount and mm_counters. */
- 	if (nr_ptes) {
- 		folio_ref_sub(folio, nr_ptes);
--		add_mm_counter(mm, mm_counter_file(&folio->page), -nr_ptes);
-+		add_mm_counter(mm, mm_counter_file(folio), -nr_ptes);
- 	}
- 
- 	/* step 4: remove empty page table */
-@@ -1661,7 +1661,7 @@ int collapse_pte_mapped_thp(struct mm_struct *mm, unsigned long addr,
- 	if (nr_ptes) {
- 		flush_tlb_mm(mm);
- 		folio_ref_sub(folio, nr_ptes);
--		add_mm_counter(mm, mm_counter_file(&folio->page), -nr_ptes);
-+		add_mm_counter(mm, mm_counter_file(folio), -nr_ptes);
- 	}
- 	if (start_pte)
- 		pte_unmap_unlock(start_pte, ptl);
-diff --git a/mm/memory.c b/mm/memory.c
-index ad30d4ad2223..3418ace5e0ad 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -960,7 +960,7 @@ copy_present_pte(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma,
- 	} else if (page) {
- 		folio_get(folio);
- 		page_dup_file_rmap(page, false);
--		rss[mm_counter_file(page)]++;
-+		rss[mm_counter_file(folio)]++;
- 	}
- 
- 	/*
-@@ -1857,7 +1857,7 @@ static int insert_page_into_pte_locked(struct vm_area_struct *vma, pte_t *pte,
- 	folio = page_folio(page);
- 	/* Ok, finally just insert the thing.. */
- 	folio_get(folio);
--	inc_mm_counter(vma->vm_mm, mm_counter_file(page));
-+	inc_mm_counter(vma->vm_mm, mm_counter_file(folio));
- 	page_add_file_rmap(page, vma, false);
- 	set_pte_at(vma->vm_mm, addr, pte, mk_pte(page, prot));
- 	return 0;
-@@ -3166,7 +3166,7 @@ static vm_fault_t wp_page_copy(struct vm_fault *vmf)
- 	if (likely(vmf->pte && pte_same(ptep_get(vmf->pte), vmf->orig_pte))) {
- 		if (old_folio) {
- 			if (!folio_test_anon(old_folio)) {
--				dec_mm_counter(mm, mm_counter_file(&old_folio->page));
-+				dec_mm_counter(mm, mm_counter_file(old_folio));
- 				inc_mm_counter(mm, MM_ANONPAGES);
- 			}
- 		} else {
-@@ -4359,7 +4359,7 @@ vm_fault_t do_set_pmd(struct vm_fault *vmf, struct page *page)
- 	if (write)
- 		entry = maybe_pmd_mkwrite(pmd_mkdirty(entry), vma);
- 
--	add_mm_counter(vma->vm_mm, mm_counter_file(page), HPAGE_PMD_NR);
-+	add_mm_counter(vma->vm_mm, mm_counter_file(folio), HPAGE_PMD_NR);
- 	page_add_file_rmap(page, vma, true);
- 
- 	/*
-@@ -4422,7 +4422,7 @@ void set_pte_range(struct vm_fault *vmf, struct folio *folio,
- 		folio_add_new_anon_rmap(folio, vma, addr);
- 		folio_add_lru_vma(folio, vma);
- 	} else {
--		add_mm_counter(vma->vm_mm, mm_counter_file(page), nr);
-+		add_mm_counter(vma->vm_mm, mm_counter_file(folio), nr);
- 		folio_add_file_rmap_range(folio, page, nr, vma, false);
- 	}
- 	set_ptes(vma->vm_mm, addr, vmf->pte, entry, nr);
-diff --git a/mm/rmap.c b/mm/rmap.c
-index 7a563490ce08..9e3d0eff8b05 100644
---- a/mm/rmap.c
-+++ b/mm/rmap.c
-@@ -1801,7 +1801,7 @@ static bool try_to_unmap_one(struct folio *folio, struct vm_area_struct *vma,
- 			 *
- 			 * See Documentation/mm/mmu_notifier.rst
- 			 */
--			dec_mm_counter(mm, mm_counter_file(&folio->page));
-+			dec_mm_counter(mm, mm_counter_file(folio));
- 		}
- discard:
- 		page_remove_rmap(subpage, vma, folio_test_hugetlb(folio));
--- 
-2.27.0
-
+Thanks,
+Ryusuke Konishi
