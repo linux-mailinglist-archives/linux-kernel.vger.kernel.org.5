@@ -2,193 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 227D87E0E7F
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 10:08:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 78FE87E0E85
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 10:13:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230333AbjKDJH5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Nov 2023 05:07:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46010 "EHLO
+        id S230154AbjKDJM4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Nov 2023 05:12:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbjKDJHz (ORCPT
+        with ESMTP id S229468AbjKDJMy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Nov 2023 05:07:55 -0400
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E02831BC;
-        Sat,  4 Nov 2023 02:07:51 -0700 (PDT)
-Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-40839652b97so21938795e9.3;
-        Sat, 04 Nov 2023 02:07:51 -0700 (PDT)
+        Sat, 4 Nov 2023 05:12:54 -0400
+Received: from mail-yw1-x1131.google.com (mail-yw1-x1131.google.com [IPv6:2607:f8b0:4864:20::1131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51C38194
+        for <linux-kernel@vger.kernel.org>; Sat,  4 Nov 2023 02:12:52 -0700 (PDT)
+Received: by mail-yw1-x1131.google.com with SMTP id 00721157ae682-5ae143e08b1so33497857b3.1
+        for <linux-kernel@vger.kernel.org>; Sat, 04 Nov 2023 02:12:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699089171; x=1699693971; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Jq1/qtMyQtDFm5+WYRR5U7fgUbb1lnE9Y7tTS1p4Dgk=;
+        b=CRCsAlBgLv1oG58jPzIvJegwGEMn6QZui7ySuMLPBE/Go3FHGBFBg8ADfaSBs1sOHp
+         d+703QcqCZwoBJ6vdid0ZvBQeY31pNwveQC/JFBlEBIZrzoRTRKRflUIbz3Qz0DfXIrh
+         OPwISElP/SMs/CvXmXZMxto1KzNKfvQfhcSC+Eupb5d6VjMSN2m85vayQUGa9FXvFab4
+         uyNmPer9LKnjXTxiWN5EJArCbzvCDJUzx+eKce0j7nG59p7nvmzK/zEVypOLecIvx7mo
+         Qx8t5NwJP0oiSrEsvL+eP0qh3Dgvb83Bh/TIZhhgptZDW0qNyvXN11u+NFjzMIK0Rmvy
+         5oiQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699088870; x=1699693670;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1uw0UbC01r2LumzFikFRhmVhT04eOp55KldTigg2GWk=;
-        b=fBDK1KtVV5Cm2aba1isqxF6XnpvtKcMP/XQcXbWPV7BkvD88b2LlLZ5E0ad6JdCvkK
-         xmkSKih5CnbK3dYYsXRRy8qpF1PhfErqXHmzfA3me1Rcqdf3mA9paDot8vyIcURjd8HH
-         r7IASh6GDaCqb74/huUNrgktR/7xIIfC66amYAf+J+7+n076xw2AJBGglm4oEIWLsAb+
-         MYFXJCagp8XO2kTMO5zyooZV19S+2WJrEcjZy1BB/M3WnGAz2/gdFPdAt7FSAC1i4f4c
-         mPmfQIaikqq+cTNnSLYIYEBAb49g3waxaPF8fIB0Z49yIi0BycZRMbBFDraORWsZJ7tx
-         nO3A==
-X-Gm-Message-State: AOJu0Yx8JmsEi8bQF0KNJgiu/drKKoaqfSwYlugL/SQ55siNiMl+LPfQ
-        6nwhnqqECnJHoogepyC28jo=
-X-Google-Smtp-Source: AGHT+IH60+TdGy0bAefkdrYqXr7vdxCXbFF+XT5PGZ2H9/HqIVNlhtQo7VMUqOcyKMeO7jkxQWeeBA==
-X-Received: by 2002:a05:600c:1d0e:b0:402:8896:bb7b with SMTP id l14-20020a05600c1d0e00b004028896bb7bmr18944996wms.6.1699088869944;
-        Sat, 04 Nov 2023 02:07:49 -0700 (PDT)
-Received: from [192.168.86.246] (cpc87451-finc19-2-0-cust61.4-2.cable.virginm.net. [82.11.51.62])
-        by smtp.gmail.com with ESMTPSA id h15-20020a05600c314f00b004094d4292aesm5053010wmo.18.2023.11.04.02.07.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 04 Nov 2023 02:07:49 -0700 (PDT)
-Message-ID: <db8f3d12-23d5-498b-ab09-61eede907575@linux.com>
-Date:   Sat, 4 Nov 2023 09:07:44 +0000
+        d=1e100.net; s=20230601; t=1699089171; x=1699693971;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Jq1/qtMyQtDFm5+WYRR5U7fgUbb1lnE9Y7tTS1p4Dgk=;
+        b=l3Sv721Gvnzd51JgWQbE0+xDKsYLMhv5IsRwa/sZIGRrgy9GIbOiqJdYALboL9EC7b
+         ZLhrylbieH+/9ggNdoB2iJYQtVrMEg/CdWf6ro2TcQ0ttfWCmVPcn/BN9v8RJvBX8dpo
+         T78mezd5w5uat5TWKyw6aBXiKNAvhq2BPkqL90MArQHvnMUrMJy2l69aZ6fHHspTjl04
+         YmID34OdjgjeK+QFK1KRsrn/00Ed4bulUoQ+m9wSS1MiyqFpfDGiQOrNodwn4zd98nJO
+         MqoQ/nV0xBrnBoC730CmyJGIqVPAkA1dTgQNO/DPAUVZMowRImCGEVSgl3Jgq5/Q/h2H
+         mMBQ==
+X-Gm-Message-State: AOJu0YydBasrENvk89HGhSqynJ+fP50kXCj85hv/COMQeNocaVPJmG5Z
+        KU67JfN8cSRSbEJqQe119c3J9KFScC8gTCQ0
+X-Google-Smtp-Source: AGHT+IFJc+x4eS8AiIUICxSb0+C40KD1OqsDHbh9ia4C1qLc9x+6uTqdbqfImy/DEBwpEpas0+wgYw==
+X-Received: by 2002:a25:d4e:0:b0:da3:b87b:5b75 with SMTP id 75-20020a250d4e000000b00da3b87b5b75mr8715085ybn.64.1699089171382;
+        Sat, 04 Nov 2023 02:12:51 -0700 (PDT)
+Received: from rin-ROG-STRIX-G10CES-G10CES.. (111-255-201-13.dynamic-ip.hinet.net. [111.255.201.13])
+        by smtp.gmail.com with ESMTPSA id k12-20020a63d10c000000b0059b2316be86sm2561625pgg.46.2023.11.04.02.12.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 04 Nov 2023 02:12:51 -0700 (PDT)
+From:   Yiwei Lin <s921975628@gmail.com>
+To:     mingo@redhat.com, peterz@infradead.org
+Cc:     vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        linux-kernel@vger.kernel.org, s921975628@gmail.com
+Subject: [PATCH] sched: Remove nr_spread_over for sched debug
+Date:   Sat,  4 Nov 2023 17:12:30 +0800
+Message-Id: <20231104091230.128516-1-s921975628@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [TREE] "Fast Kernel Headers" Tree -v3
-Content-Language: en-US
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     Kari Argillander <kari.argillander@stargateuniverse.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arch@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kari Argillander <kari.argillander@gmail.com>
-References: <Ydm7ReZWQPrbIugn@gmail.com> <YjBr10JXLGHfEFfi@gmail.com>
- <CAKBF=pvWzuPx0JB3XZ-v+i7KGbhMQTgH6xtii_Bed+qKRFx+ww@mail.gmail.com>
- <b8095bf8-961f-827c-2bd6-2ffa6298b730@infradead.org>
- <CAC=eVgQCs97N_jkB1LKOdxhd=Yvgf1SZfBWcDbG2dGhsihXLqw@mail.gmail.com>
- <CAC=eVgQeawN4Kr2DSePunCdLr_z9zbE=W72vVcLpHU63_3u4YA@mail.gmail.com>
-From:   Lucas Tanure <tanure@linux.com>
-In-Reply-To: <CAC=eVgQeawN4Kr2DSePunCdLr_z9zbE=W72vVcLpHU63_3u4YA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22-03-2022 19:03, Kari Argillander wrote:
-> 22.03.2022 18.22 Kari Argillander (kari.argillander@gmail.com) wrote:
->>
->> 22.03.2022 17.37 Randy Dunlap (rdunlap@infradead.org) wrote:
->>>
->>> Hi Kari,
->>>
->>> On 3/22/22 00:59, Kari Argillander wrote:
->>>> 15.3.2022 12.35 Ingo Molnar (mingo@kernel.org) wrote:
->>>>>
->>>>> This is -v3 of the "Fast Kernel Headers" tree, which is an ongoing rework
->>>>> of the Linux kernel's header hierarchy & header dependencies, with the dual
->>>>> goals of:
->>>>>
->>>>>   - speeding up the kernel build (both absolute and incremental build times)
->>>>>
->>>>>   - decoupling subsystem type & API definitions from each other
->>>>>
->>>>> The fast-headers tree consists of over 25 sub-trees internally, spanning
->>>>> over 2,300 commits, which can be found at:
->>>>>
->>>>>      git://git.kernel.org/pub/scm/linux/kernel/git/mingo/tip.git master
->>>>
->>>> I have had problems to build master branch (defconfig) with gcc9
->>>>      gcc (Ubuntu 9.4.0-1ubuntu1~20.04) 9.4.0
->>>>
->>>> I did also test v2 and problems where there too. I have no problem with gcc10 or
->>>> Clang11. Error I get is:
->>>>
->>>> In file included from ./include/linux/rcuwait_api.h:7,
->>>>                   from ./include/linux/rcuwait.h:6,
->>>>                   from ./include/linux/irq_work.h:7,
->>>>                   from ./include/linux/perf_event_types.h:44,
->>>>                   from ./include/linux/perf_event_api.h:17,
->>>>                   from arch/x86/kernel/kprobes/opt.c:8:
->>>> ./include/linux/rcuwait_api.h: In function ‘rcuwait_active’:
->>>> ./include/linux/rcupdate.h:328:9: error: dereferencing pointer to
->>>> incomplete type ‘struct task_struct’
->>>>    328 |  typeof(*p) *local = (typeof(*p) *__force)READ_ONCE(p); \
->>>>        |         ^
->>>> ./include/linux/rcupdate.h:439:31: note: in expansion of macro
->>>> ‘__rcu_access_pointer’
->>>>    439 | #define rcu_access_pointer(p) __rcu_access_pointer((p),
->>>> __UNIQUE_ID(rcu), __rcu)
->>>>        |                               ^~~~~~~~~~~~~~~~~~~~
->>>> ./include/linux/rcuwait_api.h:15:11: note: in expansion of macro
->>>> ‘rcu_access_pointer’
->>>>     15 |  return !!rcu_access_pointer(w->task);
->>>>
->>>>      Argillander
->>>
->>> You could try the patch here:
->>> https://lore.kernel.org/all/917e9ce0-c8cf-61b2-d1ba-ebf25bbd979d@infradead.org/
->>
->> I have to edit it to <linux/cgroup_types.h> as there is no <linux/cgroup-defs.h>
->> with fast headers. I also tried a couple other things but it didn't
->> seem to make a
->> difference.
->>
->>> although the build error that it fixes doesn't look exactly the same
->>> as yours.
->>
->> Quite close still. Maybe I should try to bisect this and I will also
->> see how bisectable
->> this branch is.
-> 
-> Ok. I have now bisect first bad to this commit.
-> c4ad6fcb67c4 ("sched/headers: Reorganize, clean up and optimize
-> kernel/sched/fair.c dependencies")
-> Note that this has been also bisect by others.
-> 
-> With this I get little bit different error:
-> 
-> In file included from ./arch/x86/include/generated/asm/rwonce.h:1,
->                   from ./include/linux/compiler.h:255,
->                   from ./include/linux/export.h:43,
->                   from ./include/linux/linkage.h:7,
->                   from ./include/linux/kernel.h:17,
->                   from ./include/linux/cpumask.h:10,
->                   from ./include/linux/energy_model.h:4,
->                   from kernel/sched/fair.c:23:
-> ./include/linux/psi.h: In function ‘cgroup_move_task’:
-> ./include/linux/rcupdate.h:414:36: error: dereferencing pointer to
-> incomplete type ‘struct css_set’
->    414 | #define RCU_INITIALIZER(v) (typeof(*(v)) __force __rcu *)(v)
->        |                                    ^~~~
-> 
-> Which is actually the same error that is in Randy's message. Patch of
-> Randy works
-> on top of this commit. But I cannot get this patch to work with HEAD,
-> but probably
-> I'm just missing something obvious. Still nice to see that probably a
-> solution is near.
-> 
->>>>> There's various changes in -v3, and it's now ported to the latest kernel
->>>>> (v5.17-rc8).
->>>>>
->>>>> Diffstat difference:
->>>>>
->>>>>   -v2: 25332 files changed, 178498 insertions(+), 74790 deletions(-)
->>>>>   -v3: 25513 files changed, 180947 insertions(+), 74572 deletions(-)
->>>
->>>
->>> --
->>> ~Randy
-> 
-Hi Ingo,
+As the statistic for nr_spread_over isn't tracked in scheduler
+anymore after the EEVDF changes, we should just remove it.
 
-What is the fate of this patch series? Are you going to push this?
-If not, can I? My approach would be take one by one, understand, test 
-and push.
-Would take years, but I have the time.
+Signed-off-by: Yiwei Lin <s921975628@gmail.com>
+---
+ kernel/sched/debug.c | 2 --
+ kernel/sched/sched.h | 4 ----
+ 2 files changed, 6 deletions(-)
 
-Thanks
-Lucas Tanure
+diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
+index 4580a4507..b5157db38 100644
+--- a/kernel/sched/debug.c
++++ b/kernel/sched/debug.c
+@@ -663,8 +663,6 @@ void print_cfs_rq(struct seq_file *m, int cpu, struct cfs_rq *cfs_rq)
+ 			SPLIT_NS(right_vruntime));
+ 	spread = right_vruntime - left_vruntime;
+ 	SEQ_printf(m, "  .%-30s: %Ld.%06ld\n", "spread", SPLIT_NS(spread));
+-	SEQ_printf(m, "  .%-30s: %d\n", "nr_spread_over",
+-			cfs_rq->nr_spread_over);
+ 	SEQ_printf(m, "  .%-30s: %d\n", "nr_running", cfs_rq->nr_running);
+ 	SEQ_printf(m, "  .%-30s: %d\n", "h_nr_running", cfs_rq->h_nr_running);
+ 	SEQ_printf(m, "  .%-30s: %d\n", "idle_nr_running",
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index 2e5a95486..5b5839c34 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -562,10 +562,6 @@ struct cfs_rq {
+ 	struct sched_entity	*curr;
+ 	struct sched_entity	*next;
+ 
+-#ifdef	CONFIG_SCHED_DEBUG
+-	unsigned int		nr_spread_over;
+-#endif
+-
+ #ifdef CONFIG_SMP
+ 	/*
+ 	 * CFS load tracking
+-- 
+2.34.1
+
