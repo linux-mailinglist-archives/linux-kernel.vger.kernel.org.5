@@ -2,165 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FB227E0E0F
+	by mail.lfdr.de (Postfix) with ESMTP id 2A6287E0E0E
 	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 07:23:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231211AbjKDGJ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Nov 2023 02:09:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53758 "EHLO
+        id S230488AbjKDGVn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Nov 2023 02:21:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229509AbjKDGJ1 (ORCPT
+        with ESMTP id S229509AbjKDGVm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Nov 2023 02:09:27 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ADEBD4C
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 23:09:24 -0700 (PDT)
-Received: from [100.98.85.67] (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: usama.anjum)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 9E5826607413;
-        Sat,  4 Nov 2023 06:09:21 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1699078162;
-        bh=G/GaJjDya/fLTXGC5dp+Xj68bRYVj9L1edFwNi6kOkY=;
-        h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
-        b=YrWcctDwO9a7LcfrVPjqGYfnbSiD4y1R209aa9KUFRad6haouajJIZZS4LAFXi4pT
-         /7GqdOTSMy4Aag3mxmKaaAeHSDeHamNooVhp7j2adVql6frajEoWmsLBDkENz/KJ+U
-         yoPa4sIIKUbmcIZgLiR1jodKXCb123+tALjVJh3BffcJRWkniNfj+CrYIq6akKDUHF
-         e2gz9lsXSRJJBXAB3sfqG3KdGSQ+pm0ZkQGwBC2HppP/UUIDFD5dy1uyZ0ruUsdZI2
-         eBF6HIRiTI7DMrmjk2RjUIH0hJIk6aQEjDk7Q8xatCYiQwKAW3vdJIgEf0Bi6xvO8I
-         fsZbGfvVtaftQ==
-Message-ID: <102e7f6c-5c99-407f-8696-dd71efcc16f6@collabora.com>
-Date:   Sat, 4 Nov 2023 11:09:17 +0500
+        Sat, 4 Nov 2023 02:21:42 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3BA1184;
+        Fri,  3 Nov 2023 23:21:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699078899; x=1730614899;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=fWXfOWmYj+Ds8e7KIPLMXDjCzFoz16RM+HQare7RBnQ=;
+  b=OUF+WN3QJyOXjWcfgs7fKxz0sLTq8xeUw32yeB4N26G7U4Qjs1joQ547
+   7d0l1aMA739MeqCm7LBEUvxGrM8JwOCHgILku6e7nn17rFqb13gAJHk0x
+   SEKD/ujssn6+BXs77qffeXP1JlsySwQimhmZVaJKe5niIYofNe7iP9/4l
+   kfJ2mpM7chKJAQQNF8ouNXZVgMPdlTCQxyJacVaaFlL5WRh9QDsdnh2qr
+   RRgswJRsSHANtiFiFHP9l9oD/jLqeCfUT9XU7t84Bol6x6kUCg8GGi74C
+   sFrNlCGXzC57HGPB1rPh3+hd3FAaP/uZZdBag5WVNYUb93vUP9swBhdor
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10883"; a="369272430"
+X-IronPort-AV: E=Sophos;i="6.03,276,1694761200"; 
+   d="scan'208";a="369272430"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2023 23:21:39 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10883"; a="832230965"
+X-IronPort-AV: E=Sophos;i="6.03,276,1694761200"; 
+   d="scan'208";a="832230965"
+Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
+  by fmsmga004.fm.intel.com with ESMTP; 03 Nov 2023 23:21:36 -0700
+Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qzA2J-0003Y0-0E;
+        Sat, 04 Nov 2023 06:21:35 +0000
+Date:   Sat, 4 Nov 2023 14:20:26 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Edward Adam Davis <eadavis@qq.com>, richardcochran@gmail.com
+Cc:     oe-kbuild-all@lists.linux.dev, davem@davemloft.net,
+        habetsm.xilinx@gmail.com, jeremy@jcline.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        reibax@gmail.com,
+        syzbot+df3f3ef31f60781fa911@syzkaller.appspotmail.com
+Subject: Re: [PATCH net-next V4] ptp: fix corrupted list in ptp_open
+Message-ID: <202311041344.zDyYh5Ty-lkp@intel.com>
+References: <tencent_8A38BBB333189E6E1B4A4B821BF82569BA08@qq.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc:     Muhammad Usama Anjum <usama.anjum@collabora.com>,
-        linux-kernel@vger.kernel.org,
-        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
-Subject: Re: [PATCH] fs/proc/task_mmu: report SOFT_DIRTY bits through the
- PAGEMAP_SCAN ioctl
-To:     Andrei Vagin <avagin@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-References: <20231102173357.446157-1-avagin@google.com>
-Content-Language: en-US
-From:   Muhammad Usama Anjum <usama.anjum@collabora.com>
-In-Reply-To: <20231102173357.446157-1-avagin@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <tencent_8A38BBB333189E6E1B4A4B821BF82569BA08@qq.com>
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/2/23 10:33 PM, Andrei Vagin wrote:
-> The PAGEMAP_SCAN ioctl returns information regarding page table entries.
-> It is more efficient compared to reading pagemap files. CRIU can start
-> to utilize this ioctl, but it needs info about soft-dirty bits to track
-> memory changes.
-> 
-> We are aware of a new method for tracking memory changes implemented in
-> the PAGEMAP_SCAN ioctl. For CRIU, the primary advantage of this method
-> is its usability by unprivileged users. However, it is not feasible to
-> transparently replace the soft-dirty tracker with the new one. The main
-> problem here is userfault descriptors that have to be preserved between
-> pre-dump iterations.  It means criu continues supporting the soft-dirty
-> method to avoid breakage for current users. The new method will be
-> implemented as a separate feature.
-> 
-> Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>
-> Cc: Michał Mirosław <mirq-linux@rere.qmqm.pl>
-> Signed-off-by: Andrei Vagin <avagin@google.com>
-> ---
->  fs/proc/task_mmu.c      | 13 ++++++++++++-
->  include/uapi/linux/fs.h |  1 +
->  2 files changed, 13 insertions(+), 1 deletion(-)
-> 
-> diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
-> index ef2eb12906da..cefa676bd33b 100644
-> --- a/fs/proc/task_mmu.c
-> +++ b/fs/proc/task_mmu.c
-> @@ -1761,7 +1761,7 @@ static int pagemap_release(struct inode *inode, struct file *file)
->  #define PM_SCAN_CATEGORIES	(PAGE_IS_WPALLOWED | PAGE_IS_WRITTEN |	\
->  				 PAGE_IS_FILE |	PAGE_IS_PRESENT |	\
->  				 PAGE_IS_SWAPPED | PAGE_IS_PFNZERO |	\
-> -				 PAGE_IS_HUGE)
-> +				 PAGE_IS_HUGE | PAGE_IS_SOFT_DIRTY)
->  #define PM_SCAN_FLAGS		(PM_SCAN_WP_MATCHING | PM_SCAN_CHECK_WPASYNC)
->  
->  struct pagemap_scan_private {
-> @@ -1853,12 +1853,16 @@ static unsigned long pagemap_thp_category(struct pagemap_scan_private *p,
-Probably missed the pagemap_page_category() for normal pages. Add
-PAGE_IS_SOFT_DIRTY support for normal pages in pagemap_page_category() just
-like pagemap_thp_category().
+Hi Edward,
 
-tools/testing/selftests/mm/soft-dirty.c can be updated to test if we are
-getting the exactly same data from the ioctl.
+kernel test robot noticed the following build warnings:
 
->  
->  		if (is_zero_pfn(pmd_pfn(pmd)))
->  			categories |= PAGE_IS_PFNZERO;
-> +		if (pmd_soft_dirty(pmd))
-> +			categories |= PAGE_IS_SOFT_DIRTY;
->  	} else if (is_swap_pmd(pmd)) {
->  		swp_entry_t swp;
->  
->  		categories |= PAGE_IS_SWAPPED;
->  		if (!pmd_swp_uffd_wp(pmd))
->  			categories |= PAGE_IS_WRITTEN;
-> +		if (pmd_swp_soft_dirty(pmd))
-> +			categories |= PAGE_IS_SOFT_DIRTY;
->  
->  		if (p->masks_of_interest & PAGE_IS_FILE) {
->  			swp = pmd_to_swp_entry(pmd);
-> @@ -1905,10 +1909,14 @@ static unsigned long pagemap_hugetlb_category(pte_t pte)
->  			categories |= PAGE_IS_FILE;
->  		if (is_zero_pfn(pte_pfn(pte)))
->  			categories |= PAGE_IS_PFNZERO;
-> +		if (pte_soft_dirty(pte))
-> +			categories |= PAGE_IS_SOFT_DIRTY;
->  	} else if (is_swap_pte(pte)) {
->  		categories |= PAGE_IS_SWAPPED;
->  		if (!pte_swp_uffd_wp_any(pte))
->  			categories |= PAGE_IS_WRITTEN;
-> +		if (pte_swp_soft_dirty(pte))
-> +			categories |= PAGE_IS_SOFT_DIRTY;
->  	}
->  
->  	return categories;
-> @@ -1991,6 +1999,9 @@ static int pagemap_scan_test_walk(unsigned long start, unsigned long end,
->  	if (vma->vm_flags & VM_PFNMAP)
->  		return 1;
->  
-> +	if (vma->vm_flags & VM_SOFTDIRTY)
-> +		vma_category |= PAGE_IS_SOFT_DIRTY;
-> +
->  	if (!pagemap_scan_is_interesting_vma(vma_category, p))
->  		return 1;
->  
-> diff --git a/include/uapi/linux/fs.h b/include/uapi/linux/fs.h
-> index da43810b7485..48ad69f7722e 100644
-> --- a/include/uapi/linux/fs.h
-> +++ b/include/uapi/linux/fs.h
-Add this identical change in tools/include/uapi/linux/fs.h as well.
+[auto build test WARNING on net-next/main]
 
-> @@ -316,6 +316,7 @@ typedef int __bitwise __kernel_rwf_t;
->  #define PAGE_IS_SWAPPED		(1 << 4)
->  #define PAGE_IS_PFNZERO		(1 << 5)
->  #define PAGE_IS_HUGE		(1 << 6)
-> +#define PAGE_IS_SOFT_DIRTY	(1 << 7)
-Maybe one or couple of lines about it in the pagemap.rst.
+url:    https://github.com/intel-lab-lkp/linux/commits/Edward-Adam-Davis/ptp-fix-corrupted-list-in-ptp_open/20231104-112916
+base:   net-next/main
+patch link:    https://lore.kernel.org/r/tencent_8A38BBB333189E6E1B4A4B821BF82569BA08%40qq.com
+patch subject: [PATCH net-next V4] ptp: fix corrupted list in ptp_open
+config: arc-randconfig-001-20231104 (https://download.01.org/0day-ci/archive/20231104/202311041344.zDyYh5Ty-lkp@intel.com/config)
+compiler: arc-elf-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231104/202311041344.zDyYh5Ty-lkp@intel.com/reproduce)
 
->  
->  /*
->   * struct page_region - Page region with flags
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311041344.zDyYh5Ty-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   drivers/ptp/ptp_chardev.c: In function 'ptp_release':
+>> drivers/ptp/ptp_chardev.c:148:23: warning: unused variable 'flags' [-Wunused-variable]
+     148 |         unsigned long flags;
+         |                       ^~~~~
+
+
+vim +/flags +148 drivers/ptp/ptp_chardev.c
+
+8f5de6fb245326 Xabier Marquiegui 2023-10-12  142  
+8f5de6fb245326 Xabier Marquiegui 2023-10-12  143  int ptp_release(struct posix_clock_context *pccontext)
+8f5de6fb245326 Xabier Marquiegui 2023-10-12  144  {
+8f5de6fb245326 Xabier Marquiegui 2023-10-12  145  	struct timestamp_event_queue *queue = pccontext->private_clkdata;
+f0e5eaa3097d80 Edward Adam Davis 2023-11-04  146  	struct ptp_clock *ptp =
+f0e5eaa3097d80 Edward Adam Davis 2023-11-04  147  		container_of(pccontext->clk, struct ptp_clock, clock);
+8f5de6fb245326 Xabier Marquiegui 2023-10-12 @148  	unsigned long flags;
+8f5de6fb245326 Xabier Marquiegui 2023-10-12  149  
+8f5de6fb245326 Xabier Marquiegui 2023-10-12  150  	if (queue) {
+f0e5eaa3097d80 Edward Adam Davis 2023-11-04  151  		mutex_lock(&ptp->tsevq_mux);
+403376ddb4221b Xabier Marquiegui 2023-10-12  152  		debugfs_remove(queue->debugfs_instance);
+8f5de6fb245326 Xabier Marquiegui 2023-10-12  153  		pccontext->private_clkdata = NULL;
+8f5de6fb245326 Xabier Marquiegui 2023-10-12  154  		list_del(&queue->qlist);
+f0e5eaa3097d80 Edward Adam Davis 2023-11-04  155  		mutex_unlock(&ptp->tsevq_mux);
+c5a445b1e9347b Xabier Marquiegui 2023-10-12  156  		bitmap_free(queue->mask);
+8f5de6fb245326 Xabier Marquiegui 2023-10-12  157  		kfree(queue);
+8f5de6fb245326 Xabier Marquiegui 2023-10-12  158  	}
+d94ba80ebbea17 Richard Cochran   2011-04-22  159  	return 0;
+d94ba80ebbea17 Richard Cochran   2011-04-22  160  }
+d94ba80ebbea17 Richard Cochran   2011-04-22  161  
 
 -- 
-BR,
-Muhammad Usama Anjum
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
