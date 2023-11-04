@@ -2,148 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CFC2E7E0D65
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 04:13:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A9297E0D6C
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 04:14:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234934AbjKDDMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 23:12:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51976 "EHLO
+        id S1343792AbjKDDOV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 23:14:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234725AbjKDDMe (ORCPT
+        with ESMTP id S235089AbjKDDOP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 23:12:34 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64D07D42;
-        Fri,  3 Nov 2023 20:12:32 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10FBCC433C9;
-        Sat,  4 Nov 2023 03:12:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699067552;
-        bh=oI0QedCsOnC8Jw7SXQdJ46me22RoBpkAwcj3jrvSNwE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=A3D92dsfYdiPd9aSrKm3J5sxnKBpbBkEsH8bXJVjXwIwQSGj42cdE1r92dHJgHdgx
-         bKzNhD17fmHLt+4Lqgc9qom4YMq5nBcK5IdJrxTFUBqA4KArdoMYBaBg1LdaErJEI3
-         DHB3JCS2XnRbCtDgKqGAYM4+0+aPjmZQ2mLEW81QjL7bqGO/BhsCMgAnQM/ODtwvu0
-         YVJm4DmVGNH23PQV7ou316W6YJjfVrE4mhAcCRa4soiD3eY789R4yihOLvMMJgLcS4
-         2tFcBqoIA6sqYZUbPn1ZyZRt2bB3CdgaSe2lly4760N32SwrlyCbPL68PQJUt5/N/r
-         VRjy6U1N0PYvg==
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-9db6cf8309cso373658066b.0;
-        Fri, 03 Nov 2023 20:12:32 -0700 (PDT)
-X-Gm-Message-State: AOJu0YzknupsSJawLgttBS4C2abNAceytrgV8fDPePs+YWVXy/Aqy0gF
-        X0ES6XSTug5BWXV9LrcXtTvA8X1wt59uT1bi/nw=
-X-Google-Smtp-Source: AGHT+IFEzA0jYVYe46njXNrOwelVMkm00a0rVzjZ0X18HAMZq/Uj9IcMTrJQaZ092NhSYg7o+LTvhC2J6JJwsLLdvIA=
-X-Received: by 2002:a17:907:97cd:b0:9b8:7746:f176 with SMTP id
- js13-20020a17090797cd00b009b87746f176mr8142759ejc.34.1699067550501; Fri, 03
- Nov 2023 20:12:30 -0700 (PDT)
+        Fri, 3 Nov 2023 23:14:15 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E232D60
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 20:13:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1699067601;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=N5kFWH7brXucsVBRzdMRgJtcTW19s76elB4wot7GI30=;
+        b=cqVGQ2doywZMX6vBYGWI28qjqfCaKCa+N4Jqgd7Y7w55DMixHXe75yZRnYLgW10TVQQkPh
+        5hVV4AK4OcU/tz1t5TEdrOYNTud8PKJohrSdf+FSc7E7J1dM3jZ/tQs44Kwufwci3ne6mE
+        8Q4RVaWNaWcLcKRQZ4gQHottsWyc8cI=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-114-FHsGKWLoMzyJ9-2FyZjS9A-1; Fri, 03 Nov 2023 23:13:17 -0400
+X-MC-Unique: FHsGKWLoMzyJ9-2FyZjS9A-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 71975811003;
+        Sat,  4 Nov 2023 03:13:17 +0000 (UTC)
+Received: from llong.com (unknown [10.22.33.74])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 8BE49C1290F;
+        Sat,  4 Nov 2023 03:13:16 +0000 (UTC)
+From:   Waiman Long <longman@redhat.com>
+To:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>
+Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Joe Mario <jmario@redhat.com>,
+        Sebastian Jug <sejug@redhat.com>,
+        Yosry Ahmed <yosryahmed@google.com>,
+        Waiman Long <longman@redhat.com>
+Subject: [PATCH v3 0/3] cgroup/rstat: Reduce cpu_lock hold time in cgroup_rstat_flush_locked()
+Date:   Fri,  3 Nov 2023 23:13:00 -0400
+Message-Id: <20231104031303.592879-1-longman@redhat.com>
 MIME-Version: 1.0
-References: <20231101114957.309902-1-jiaxun.yang@flygoat.com>
-In-Reply-To: <20231101114957.309902-1-jiaxun.yang@flygoat.com>
-From:   Huacai Chen <chenhuacai@kernel.org>
-Date:   Sat, 4 Nov 2023 11:12:18 +0800
-X-Gmail-Original-Message-ID: <CAAhV-H41Jwz2AuGxFJfq1f6nOkSJVASOjN8R6dxDqtDhGTs-Ug@mail.gmail.com>
-Message-ID: <CAAhV-H41Jwz2AuGxFJfq1f6nOkSJVASOjN8R6dxDqtDhGTs-Ug@mail.gmail.com>
-Subject: Re: [PATCH fixes v4] pci: loongson: Workaround MIPS firmware MRRS settings
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc:     linux-pci@vger.kernel.org, lpieralisi@kernel.org, kw@linux.com,
-        robh@kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
 X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 1, 2023 at 11:27=E2=80=AFPM Jiaxun Yang <jiaxun.yang@flygoat.co=
-m> wrote:
->
-> This is a partial revert of commit 8b3517f88ff2 ("PCI:
-> loongson: Prevent LS7A MRRS increases") for MIPS based Loongson.
->
-> There are many MIPS based Loongson systems in wild that
-> shipped with firmware which does not set maximum MRRS properly.
->
-> Limiting MRRS to 256 for all as MIPS Loongson comes with higher
-> MRRS support is considered rare.
->
-> It must be done at device enablement stage because hardware will
-> reset MRRS to inavlid value if a device got disabled.
->
-> Cc: stable@vger.kernel.org
-> Closes: https://bugzilla.kernel.org/show_bug.cgi?id=3D217680
-> Fixes: 8b3517f88ff2 ("PCI: loongson: Prevent LS7A MRRS increases")
-> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
-> ---
-> v4: Improve commit message
->
-> This is a partial revert of the origin quirk so there shouldn't
-> be any drama.
-> ---
->  drivers/pci/controller/pci-loongson.c | 38 +++++++++++++++++++++++++++
->  1 file changed, 38 insertions(+)
->
-> diff --git a/drivers/pci/controller/pci-loongson.c b/drivers/pci/controll=
-er/pci-loongson.c
-> index d45e7b8dc530..d184d7b97e54 100644
-> --- a/drivers/pci/controller/pci-loongson.c
-> +++ b/drivers/pci/controller/pci-loongson.c
-> @@ -108,6 +108,44 @@ DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_LOONGSON,
->  DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_LOONGSON,
->                         DEV_LS7A_PCIE_PORT6, loongson_mrrs_quirk);
->
-> +#ifdef CONFIG_MIPS
-> +static void loongson_old_mrrs_quirk(struct pci_dev *pdev)
-> +{
-> +       struct pci_bus *bus =3D pdev->bus;
-> +       struct pci_dev *bridge;
-> +       static const struct pci_device_id bridge_devids[] =3D {
-> +               { PCI_VDEVICE(LOONGSON, DEV_LS2K_PCIE_PORT0) },
-> +               { PCI_VDEVICE(LOONGSON, DEV_LS7A_PCIE_PORT0) },
-> +               { PCI_VDEVICE(LOONGSON, DEV_LS7A_PCIE_PORT1) },
-> +               { PCI_VDEVICE(LOONGSON, DEV_LS7A_PCIE_PORT2) },
-> +               { PCI_VDEVICE(LOONGSON, DEV_LS7A_PCIE_PORT3) },
-> +               { PCI_VDEVICE(LOONGSON, DEV_LS7A_PCIE_PORT4) },
-> +               { PCI_VDEVICE(LOONGSON, DEV_LS7A_PCIE_PORT5) },
-> +               { PCI_VDEVICE(LOONGSON, DEV_LS7A_PCIE_PORT6) },
-> +               { 0, },
-> +       };
-> +
-> +       /* look for the matching bridge */
-> +       while (!pci_is_root_bus(bus)) {
-> +               bridge =3D bus->self;
-> +               bus =3D bus->parent;
-> +               /*
-> +                * There are still some wild MIPS Loongson firmware won't
-> +                * set MRRS properly. Limiting MRRS to 256 as MIPS Loongs=
-on
-> +                * comes with higher MRRS support is considered rare.
-> +                */
-> +               if (pci_match_id(bridge_devids, bridge)) {
-> +                       if (pcie_get_readrq(pdev) > 256) {
-> +                               pci_info(pdev, "limiting MRRS to 256\n");
-> +                               pcie_set_readrq(pdev, 256);
-> +                       }
-> +                       break;
-> +               }
-> +       }
-> +}
-> +DECLARE_PCI_FIXUP_ENABLE(PCI_ANY_ID, PCI_ANY_ID, loongson_old_mrrs_quirk=
-);
-> +#endif
-Rename it to loongson_set_min_mrrs() and move it before
-loongson_mrrs_quirk() may be better.
+ v3:
+  - Minor comment twisting as suggested by Yosry.
+  - Add patches 2 and 3 to further reduce lock hold time
 
-Huacai
+The purpose of this patch series is to reduce of the cpu_lock hold time
+in cgroup_rstat_flush_locked() so as to reduce the latency impact when
+cgroup_rstat_updated() is called as they may contend with each other
+on the cpu_lock.
 
-> +
->  static void loongson_pci_pin_quirk(struct pci_dev *pdev)
->  {
->         pdev->pin =3D 1 + (PCI_FUNC(pdev->devfn) & 3);
-> --
-> 2.34.1
->
+A parallel kernel build on a 2-socket x86-64 server is used as the
+benchmarking tool for measuring the lock hold time. Below were the lock
+hold time frequency distribution before and after applying different
+number of patches:
+
+  Hold time   Before patch   Patch 1   Patches 1-2  Patches 1-3
+  ---------   ------------   -------   -----------  -----------
+    0-01 us      804,139   13,738,708   14,594,545   15,484,707
+   01-05 us    9,772,767    1,177,194      439,926      207,382
+   05-10 us    4,595,028        4,984        5,960        3,174
+   10-15 us      303,481        3,562        3,543        3,006
+   15-20 us       78,971        1,314        1,397        1,066
+   20-25 us       24,583           18           25           15
+   25-30 us        6,908           12           12           10
+   30-40 us        8,015
+   40-50 us        2,192
+   50-60 us          316
+   60-70 us           43
+   70-80 us            7
+   80-90 us            2
+     >90 us            3
+
+Waiman Long (3):
+  cgroup/rstat: Reduce cpu_lock hold time in cgroup_rstat_flush_locked()
+  cgroup/rstat: Optimize cgroup_rstat_updated_list()
+  cgroup: Avoid false cacheline sharing of read mostly rstat_cpu
+
+ include/linux/cgroup-defs.h |  14 ++++
+ kernel/cgroup/rstat.c       | 129 +++++++++++++++++++++---------------
+ 2 files changed, 89 insertions(+), 54 deletions(-)
+
+-- 
+2.39.3
+
