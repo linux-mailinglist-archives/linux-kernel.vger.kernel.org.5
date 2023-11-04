@@ -2,56 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C83F97E0C89
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 01:06:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4152C7E0C8D
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 01:06:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230326AbjKDACq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Nov 2023 20:02:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50754 "EHLO
+        id S230519AbjKDACs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Nov 2023 20:02:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229476AbjKDACo (ORCPT
+        with ESMTP id S230453AbjKDACq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Nov 2023 20:02:44 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C296CD4C
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 17:02:41 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5acac8b6575so29028047b3.1
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Nov 2023 17:02:41 -0700 (PDT)
+        Fri, 3 Nov 2023 20:02:46 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3A1FD52
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Nov 2023 17:02:43 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5a839b31a0dso53877677b3.0
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Nov 2023 17:02:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1699056161; x=1699660961; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:reply-to:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=n1vwaM2DB2ZPo75zwBjfZLUSbsGuidXuSs+KvMaedrA=;
-        b=U7k0fgSL0ChCzVSk+LY/nMNq+Fh1lR24W5eb04iaTSHxlCejo+5Re4lcDFMuCSU7iy
-         YsfLB1b3okhIqrpnTwfpF5qSqU8J5krWJVWkBfCpRZgY8lXUJ0kSXOktzY8IYO9wQzFG
-         ztEYUosZR7xCmzwUkLo4T6eCTXjfIhDQ1XB18mhmor4umc17CV4PcghDvADukSrKDm/g
-         PhTKj4Ah+0LfLMBoVOCFgVYX5hD6HCnINRBowQclx54OfqKPX1+bpvm4Ki8NGI9BsbGV
-         m+B4bHia+SVV2NY5Y/30nQnGXWmHpAqF8wQMurImoKYlm+H7vxprY+MMnsRmNVL9nFk7
-         /QUQ==
+        d=google.com; s=20230601; t=1699056162; x=1699660962; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
+        bh=nOzsUN1YNjo4mM3u1hilIKuxhzw1b/cPpyuR5vqvOEM=;
+        b=CFMT/kaORlS2yU0gvAAAxQ1jOYqJYKqa+q1KZd9Zwuc+usFP6yHgxaoOBKETtlFsHv
+         jHBAR8F7UnDz5/UBgKXgSZE84V7ckfz8L9jy+oCz+lPi+I36q8t/TEPLd4DfM78CMBED
+         p8cd016sLD1tRfZhMOPhlHcPA3NAIY53MEk1kpzXdHjCkDHUdw/p6zociJAplcCG0JL6
+         5St3VZgwKFNnCnP9LEg523MvY0ckM1/Df3ELVoBjagBf33fjUSNOIyRfiNBMCHK/UlhA
+         zqtzlxYHY6MY7US7zMVNGPip7G1VSzuMG90d9AqUq7d7kz1FF+fs1qTu9iFX6a3R49WZ
+         ZmYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699056161; x=1699660961;
-        h=cc:to:from:subject:message-id:mime-version:date:reply-to
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=n1vwaM2DB2ZPo75zwBjfZLUSbsGuidXuSs+KvMaedrA=;
-        b=ctd8WgPxZ8A9AF2IyPyMySmnVOmNLaYdCNfsHnS2i+H6COHoAp4XvjikauhyGDDMm6
-         3L/R8FHxL0oe7g3PQgmdbR7crAOUXhMbLN5jgL4eKdaHQUz5uo4IR6sHOd7BJuy78PWU
-         cin7eLjgwDaJ4OOwGfjofOlGKO2Iuxy5nUlOTjRHpdGAcHC58UTvYJ8/4mVVblwZa6y2
-         alsLVOSS09iLWu+CrcdVQXcSter4TjyDbeItUbmUga3NLyGUvNeCuArT0c6+V3K26LZE
-         AAiE10RWe49Pgraut4e6c2xGhne/UWtA+Rl4F5zHZeyGDobG9PfLNzlJ4jwQbODr37B2
-         AlUA==
-X-Gm-Message-State: AOJu0YzvVWU6/eseC/r+o6QTRRQWjcSMjZWdRb729BlFWPipwaz71sG+
-        Dv51+TYSMmiQ0mYVNIhTs5zccO5O8fY=
-X-Google-Smtp-Source: AGHT+IF5AxnhFRgiHUG2/4Rf88i9qr0QIptng+hsRGK9Hr4ht4+X+ShlIZ9uXoZYLxuZnBPC3J9BMD+v46U=
+        d=1e100.net; s=20230601; t=1699056162; x=1699660962;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=nOzsUN1YNjo4mM3u1hilIKuxhzw1b/cPpyuR5vqvOEM=;
+        b=EWUM0NTOFz2hWFtr4XFuy1F0X7uR7tH1ubnWbHfW/J+Oz9M6NYly+WkPOSwARVJYIT
+         YR+qhnPYLExOFXgIQhb9H5QH4TLut5izAFNdU0QXMgqvUO6Suk2aJ7P3T38D2ZGRU13t
+         F5L8ub5hzExGo7phDt6/VRIonP/UzI7rP1LopGkKQcWzwQ7sITBTf9IqhlB4+gxMat5t
+         ySr4+RybF88NsClZsNYnuah0hGXGvOon8m17ZQGtWP23yS8sf/SyIhubXMdEOzSDIb4a
+         ni50M3fVrNTLiAuInu3tmD5DrFP8pV1wriZvllmsXbqpOJIbm8wtkXwyOmOx3U7viMOz
+         bN/A==
+X-Gm-Message-State: AOJu0Yx3hlrl8wiWJmnRnTYTo9hFizAuC6sDVKpk3Ejxx52weQKf2Sm1
+        ZOY2cMW8xXTf4IfaMOnUGlZI5qTDPmg=
+X-Google-Smtp-Source: AGHT+IGAbN0m5ShzVxvluMl0W5kCIQjTup2IT2nxWsIkQodtNZB6+MZQkaVB8Sf70LHX1BZEnLV0C+dyiLg=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:690c:3209:b0:5b8:d09e:704d with SMTP id
- ff9-20020a05690c320900b005b8d09e704dmr6284ywb.1.1699056161023; Fri, 03 Nov
- 2023 17:02:41 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a0d:df52:0:b0:5a7:b9b0:d23f with SMTP id
+ i79-20020a0ddf52000000b005a7b9b0d23fmr83931ywe.6.1699056162701; Fri, 03 Nov
+ 2023 17:02:42 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Fri,  3 Nov 2023 17:02:18 -0700
+Date:   Fri,  3 Nov 2023 17:02:19 -0700
+In-Reply-To: <20231104000239.367005-1-seanjc@google.com>
 Mime-Version: 1.0
+References: <20231104000239.367005-1-seanjc@google.com>
 X-Mailer: git-send-email 2.42.0.869.gea05f2083d-goog
-Message-ID: <20231104000239.367005-1-seanjc@google.com>
-Subject: [PATCH v6 00/20] KVM: x86/pmu: selftests: Fixes and new tests
+Message-ID: <20231104000239.367005-2-seanjc@google.com>
+Subject: [PATCH v6 01/20] KVM: x86/pmu: Don't allow exposing unsupported
+ architectural events
 From:   Sean Christopherson <seanjc@google.com>
 To:     Sean Christopherson <seanjc@google.com>,
         Paolo Bonzini <pbonzini@redhat.com>
@@ -73,76 +77,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The series that just keeps on growing.  This started out as a smallish
-series from Jinrong to add PMU counters test, but has now ballooned to be
-fixes and tests (that to some extent do actually validate the fixes).
+Hide architectural events that unsupported according to guest CPUID *or*
+hardware, i.e. don't let userspace advertise and potentially program
+unsupported architectural events.
 
-Except for the first patch, the fixes aren't tagged for stable as I don't
-*think* there's anything particularly nasty, and it's not like KVM's vPMU
-is bulletproof even with the fixes.
+Note, KVM already limits the length of the reverse polarity field, only
+the mask itself is missing.
 
-v6:
- - Test LLC references/misses with CFLUSH{OPT}. [Jim]
- - Make the tests play nice without PERF_CAPABILITIES. [Mingwei]
- - Don't squash eventsels that happen to match an unsupported arch event. [Kan]
- - Test PMC counters with forced emulation (don't ask how long it took me to
-   figure out how to read integer module params).
+Fixes: f5132b01386b ("KVM: Expose a version 2 architectural PMU to a guests")
+Cc: stable@vger.kernel.org
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+---
+ arch/x86/kvm/vmx/pmu_intel.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-v5: https://lore.kernel.org/all/20231024002633.2540714-1-seanjc@google.com
-v4: https://lore.kernel.org/all/20230911114347.85882-1-cloudliang@tencent.com
-v3: https://lore.kernel.org/kvm/20230814115108.45741-1-cloudliang@tencent.com
-
-Jinrong Liang (7):
-  KVM: selftests: Add vcpu_set_cpuid_property() to set properties
-  KVM: selftests: Add pmu.h and lib/pmu.c for common PMU assets
-  KVM: selftests: Test Intel PMU architectural events on gp counters
-  KVM: selftests: Test Intel PMU architectural events on fixed counters
-  KVM: selftests: Test consistency of CPUID with num of gp counters
-  KVM: selftests: Test consistency of CPUID with num of fixed counters
-  KVM: selftests: Add functional test for Intel's fixed PMU counters
-
-Sean Christopherson (13):
-  KVM: x86/pmu: Don't allow exposing unsupported architectural events
-  KVM: x86/pmu: Don't enumerate support for fixed counters KVM can't
-    virtualize
-  KVM: x86/pmu: Don't enumerate arch events KVM doesn't support
-  KVM: x86/pmu: Always treat Fixed counters as available when supported
-  KVM: x86/pmu: Allow programming events that match unsupported arch
-    events
-  KVM: selftests: Drop the "name" param from KVM_X86_PMU_FEATURE()
-  KVM: selftests: Extend {kvm,this}_pmu_has() to support fixed counters
-  KVM: selftests: Expand PMU counters test to verify LLC events
-  KVM: selftests: Add a helper to query if the PMU module param is
-    enabled
-  KVM: selftests: Add helpers to read integer module params
-  KVM: selftests: Query module param to detect FEP in MSR filtering test
-  KVM: selftests: Move KVM_FEP macro into common library header
-  KVM: selftests: Test PMC virtualization with forced emulation
-
- arch/x86/include/asm/kvm-x86-pmu-ops.h        |   1 -
- arch/x86/kvm/pmu.c                            |   1 -
- arch/x86/kvm/pmu.h                            |   5 +-
- arch/x86/kvm/svm/pmu.c                        |   6 -
- arch/x86/kvm/vmx/pmu_intel.c                  |  67 ++-
- tools/testing/selftests/kvm/Makefile          |   2 +
- .../selftests/kvm/include/kvm_util_base.h     |   4 +
- tools/testing/selftests/kvm/include/pmu.h     |  84 +++
- .../selftests/kvm/include/x86_64/processor.h  |  80 ++-
- tools/testing/selftests/kvm/lib/kvm_util.c    |  62 +-
- tools/testing/selftests/kvm/lib/pmu.c         |  28 +
- .../selftests/kvm/lib/x86_64/processor.c      |  12 +-
- .../selftests/kvm/x86_64/pmu_counters_test.c  | 567 ++++++++++++++++++
- .../kvm/x86_64/pmu_event_filter_test.c        |  34 +-
- .../smaller_maxphyaddr_emulation_test.c       |   2 +-
- .../kvm/x86_64/userspace_msr_exit_test.c      |  29 +-
- .../selftests/kvm/x86_64/vmx_pmu_caps_test.c  |   2 +-
- 17 files changed, 877 insertions(+), 109 deletions(-)
- create mode 100644 tools/testing/selftests/kvm/include/pmu.h
- create mode 100644 tools/testing/selftests/kvm/lib/pmu.c
- create mode 100644 tools/testing/selftests/kvm/x86_64/pmu_counters_test.c
-
-
-base-commit: 45b890f7689eb0aba454fc5831d2d79763781677
+diff --git a/arch/x86/kvm/vmx/pmu_intel.c b/arch/x86/kvm/vmx/pmu_intel.c
+index 820d3e1f6b4f..1b13a472e3f2 100644
+--- a/arch/x86/kvm/vmx/pmu_intel.c
++++ b/arch/x86/kvm/vmx/pmu_intel.c
+@@ -533,7 +533,7 @@ static void intel_pmu_refresh(struct kvm_vcpu *vcpu)
+ 	pmu->counter_bitmask[KVM_PMC_GP] = ((u64)1 << eax.split.bit_width) - 1;
+ 	eax.split.mask_length = min_t(int, eax.split.mask_length,
+ 				      kvm_pmu_cap.events_mask_len);
+-	pmu->available_event_types = ~entry->ebx &
++	pmu->available_event_types = ~(entry->ebx | kvm_pmu_cap.events_mask) &
+ 					((1ull << eax.split.mask_length) - 1);
+ 
+ 	if (pmu->version == 1) {
 -- 
 2.42.0.869.gea05f2083d-goog
 
