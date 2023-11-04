@@ -2,117 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA3167E116F
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Nov 2023 23:54:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B8BD7E11CF
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Nov 2023 00:28:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230315AbjKDWys (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Nov 2023 18:54:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44268 "EHLO
+        id S229978AbjKDXPh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Nov 2023 19:15:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229578AbjKDWyr (ORCPT
+        with ESMTP id S229577AbjKDXPg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Nov 2023 18:54:47 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69501FB
-        for <linux-kernel@vger.kernel.org>; Sat,  4 Nov 2023 15:54:44 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-5079f6efd64so4053209e87.2
-        for <linux-kernel@vger.kernel.org>; Sat, 04 Nov 2023 15:54:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699138482; x=1699743282; darn=vger.kernel.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=peHB8fc0FpN3X8Q1SVuag/CxFROBwBEcNoz37/Mm90k=;
-        b=ZLWqBfYzAmE38SJpIxyif1VHRPaTcs5RlI6LdhYhATQP4/ciXKGZTffRCetlnmRUDj
-         mXF5QTf/Y58lqU4FjjKVuWqf+6skai1oJthpy77JBeiOCX8Exsj/0OItkvnwB1A2vYLO
-         a78YhFUlWVVG6OwJ6EjtbopmzDBi+/caDW+WslQSO0A3O2WbObVpuuWC+Qx3YKb/NQDy
-         XY19Slo/QPRySmH222w8AKqLGDrr0ZsFH07CG4xEpT89lh8MsA3geNLw2nztF7i2A6g9
-         2jU7JXZDXhgj5F6kf9Yi9Ef+5mIs0e2kQRFK2evj2tSbcYUTNR9tePMYg8+S9+3t/T6o
-         zx5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699138482; x=1699743282;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=peHB8fc0FpN3X8Q1SVuag/CxFROBwBEcNoz37/Mm90k=;
-        b=aMEtaHZr/g5CqS165Th3lpfj3f+BzDjE5hLEP2aQEW8Wcf8D0Vmr96l+ia1E1XM/V3
-         Xj8r9cSTC5+fOGYXRV5BBEsokgw8/lno8JBVmnW9MIp2oLdCEa/tIP4+4SgD0nYNJokG
-         r5i/Pkjo4dEio8zRJ75XeF6CpKxoetiTzAs1cJ8V9Zo+6z8kR5QbPvg7P/HKz/ed4blR
-         aqHiCVINRAxd//4RWMmzJurks2kA7Xi3hR/TzZ0Mq/BNmMYqqLdW13ilJkubYhpVpqcO
-         sQtaA2eZqTKfkUKuHeYnGt4ual5uTdfwMy2pkJKd5sHOvjk8pJYj2fPuAaWmzkv0KJra
-         S3PQ==
-X-Gm-Message-State: AOJu0YypLpH6CzaNh9ErRw1FJo7xmP9AHKVu81w6/2oRYnsvQBXd9RrJ
-        F7/+ls6LZpCUQKPhgJgAeHivVw==
-X-Google-Smtp-Source: AGHT+IGMyhDbi0MXWxg8Y2O739hVKH5rXBA+6sBAE+ljJ0M/r/SxM+jvKkFtWAgkaG1Okc0rIyzA6Q==
-X-Received: by 2002:a19:430e:0:b0:507:96c7:eb1a with SMTP id q14-20020a19430e000000b0050796c7eb1amr18075662lfa.54.1699138482336;
-        Sat, 04 Nov 2023 15:54:42 -0700 (PDT)
-Received: from [127.0.1.1] ([85.235.12.238])
-        by smtp.gmail.com with ESMTPSA id eo28-20020a056512481c00b005079a3c872esm636475lfb.240.2023.11.04.15.54.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 04 Nov 2023 15:54:41 -0700 (PDT)
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Sat, 04 Nov 2023 23:54:40 +0100
-Subject: [PATCH] RFC: Do not enable the v1 uAPI by default
+        Sat, 4 Nov 2023 19:15:36 -0400
+Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 449071BC
+        for <linux-kernel@vger.kernel.org>; Sat,  4 Nov 2023 16:15:30 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 539CFFF805;
+        Sat,  4 Nov 2023 23:15:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1699139728;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=xLB49XCT9UcobRhWosbEP65dkPvczyn1raATHvaoT30=;
+        b=aOpNhOe0i7PzzwapPBZILHkSTywT1N6thWUopC5pHani+GI39WtiZQENmW2t4shwXhsx7r
+        C3pRFe5boYOr0q2G2kEl1RhDb9I/MTIYAnBlDHvLArWHdT6OaMECQ/mmXhVN32Mcae9Tzt
+        MStYHkqdvncw4ltbHydezIqsG8G0YIofQ8M1LsSTqzdnCju4gjav5Oszr3P9IY5QYbuiey
+        xJ77JEHbSvwKSVzxNp7xkavUipBIXP3c0OBX0bdkzNuIXkLh+saBw8MkWLvGEOH5DbDVIM
+        7+hpj3BwEslfFi25TieggBZHo+Zc1S7tLYUJ5meANAyNAClUXVGCMosDg0VTnQ==
+Date:   Sun, 5 Nov 2023 00:15:28 +0100
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-i3c@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] I3C changes for 6.7
+Message-ID: <202311042315286247d3ae@mail.local>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231104-no-y-uapi1-default-v1-1-f60d318b6fbe@linaro.org>
-X-B4-Tracking: v=1; b=H4sIAK/LRmUC/x3MTQqAIBBA4avIrBvwj4iuEi1EpxoIE60oorsnL
- b/Few8UykwFevFAppMLb7FCNQL84uJMyKEatNRGKWkwbnjj4RIrDDS5Y93Rammpa720zkANU6a
- Jr386jO/7AZOZOZ1kAAAA
-To:     Bartosz Golaszewski <brgl@bgdev.pl>,
-        Andy Shevchenko <andy@kernel.org>,
-        Kent Gibson <warthog618@gmail.com>
-Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>
-X-Mailer: b4 0.12.4
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-GND-Sasl: alexandre.belloni@bootlin.com
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It's been two years since we introduced the v2 uAPI and
-the major consumer libgpiod is at v2.1.
+Hello Linus,
 
-What about discouraging the old uAPI?
+Here is the i3c subsytem pull request for 6.7. There are now more fixes
+because as stated in my previous pull request, people now have access to
+actual hardware.
 
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
----
- drivers/gpio/Kconfig | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+The following changes since commit 0bb80ecc33a8fb5a682236443c1e740d5c917d1d:
 
-diff --git a/drivers/gpio/Kconfig b/drivers/gpio/Kconfig
-index 913948876c93..65c9914ee3fa 100644
---- a/drivers/gpio/Kconfig
-+++ b/drivers/gpio/Kconfig
-@@ -85,7 +85,7 @@ config GPIO_CDEV
- 
- config GPIO_CDEV_V1
- 	bool "Support GPIO ABI Version 1"
--	default y
-+	default n
- 	depends on GPIO_CDEV
- 	help
- 	  Say Y here to support version 1 of the GPIO CDEV ABI.
-@@ -93,8 +93,6 @@ config GPIO_CDEV_V1
- 	  This ABI version is deprecated.
- 	  Please use the latest ABI for new developments.
- 
--	  If unsure, say Y.
--
- config GPIO_GENERIC
- 	depends on HAS_IOMEM # Only for IOMEM drivers
- 	tristate
+  Linux 6.6-rc1 (2023-09-10 16:28:41 -0700)
 
----
-base-commit: e392ea4d4d00880bf94550151b1ace4f88a4b17a
-change-id: 20231103-no-y-uapi1-default-4204e86c04a3
+are available in the Git repository at:
 
-Best regards,
+  git://git.kernel.org/pub/scm/linux/kernel/git/i3c/linux.git tags/i3c/for-6.7
+
+for you to fetch changes up to 9fd00df05e81a2e1080ce6e9abc35533dca99d74:
+
+  i3c: master: handle IBIs in order they came (2023-11-04 00:44:32 +0100)
+
+----------------------------------------------------------------
+I3C for 6.7
+
+Core:
+ - handle IBI in the proper order
+
+Drivers:
+ - cdns: fix status register access
+ - mipi-i3c-hci: many fixes now that the driver has been actually tested
+ - svc: many IBI fixes, correct compatible string, fix hot join corner cases
+
+----------------------------------------------------------------
+Billy Tsai (1):
+      i3c: master: mipi-i3c-hci: Fix a kernel panic for accessing DAT_data.
+
+Dinghao Liu (1):
+      i3c: Fix potential refcount leak in i3c_master_register_new_i3c_devs
+
+Frank Li (7):
+      i3c: master: svc: fix race condition in ibi work thread
+      i3c: master: svc: fix wrong data return when IBI happen during start frame
+      i3c: master: svc: fix ibi may not return mandatory data byte
+      i3c: master: svc: fix check wrong status register in irq handler
+      i3c: master: svc: fix SDA keep low when polling IBIWON timeout happen
+      i3c: master: svc: fix random hot join failure since timeout error
+      i3c: master: svc: fix compatibility string mismatch with binding doc
+
+Jarkko Nikula (12):
+      i3c: master: Inherit DMA masks and parameters from parent device
+      i3c: mipi-i3c-hci: Add MODULE_ALIAS
+      i3c: mipi-i3c-hci: Fix DAT/DCT entry sizes
+      i3c: mipi-i3c-hci: Fix out of bounds access in hci_dma_irq_handler
+      i3c: mipi-i3c-hci: Remove BUG() when Ring Abort request times out
+      i3c: mipi-i3c-hci: Set ring start request together with enable
+      i3c: mipi-i3c-hci: Fix race between bus cleanup and interrupt
+      i3c: mipi-i3c-hci: Set number of SW enabled Ring Bundles earlier
+      i3c: mipi-i3c-hci: Do not unmap region not mapped for transfer
+      i3c: mipi-i3c-hci: Fix missing xfer->completion in hci_cmd_v1_daa()
+      i3c: mipi-i3c-hci: Resume controller explicitly
+      i3c: mipi-i3c-hci: Resume controller after aborted transfer
+
+Joshua Yeong (1):
+      i3c: master: cdns: Fix reading status register
+
+Justin Stitt (1):
+      i3c: replace deprecated strncpy
+
+Kees Cook (4):
+      i3c: dw: Annotate struct dw_i3c_xfer with __counted_by
+      i3c: master: cdns: Annotate struct cdns_i3c_xfer with __counted_by
+      i3c/master/mipi-i3c-hci: Annotate struct hci_rings_data with __counted_by
+      i3c: svc: Annotate struct svc_i3c_xfer with __counted_by
+
+Matt Johnston (1):
+      i3c: Fix typo "Provisional ID" to "Provisioned ID"
+
+Zbigniew Lukwinski (1):
+      i3c: master: handle IBIs in order they came
+
+ Documentation/ABI/testing/sysfs-bus-i3c        |  4 +-
+ Documentation/devicetree/bindings/i3c/i3c.yaml |  4 +-
+ Documentation/driver-api/i3c/protocol.rst      |  4 +-
+ drivers/i3c/master.c                           | 24 +++++++++--
+ drivers/i3c/master/dw-i3c-master.c             |  2 +-
+ drivers/i3c/master/i3c-master-cdns.c           |  8 ++--
+ drivers/i3c/master/mipi-i3c-hci/cmd_v1.c       |  1 +
+ drivers/i3c/master/mipi-i3c-hci/core.c         | 14 +++---
+ drivers/i3c/master/mipi-i3c-hci/dat_v1.c       | 27 ++++++++----
+ drivers/i3c/master/mipi-i3c-hci/dma.c          | 21 +++++----
+ drivers/i3c/master/svc-i3c-master.c            | 60 ++++++++++++++++++++++++--
+ include/linux/i3c/device.h                     |  2 +-
+ include/linux/i3c/master.h                     |  6 ++-
+ 13 files changed, 133 insertions(+), 44 deletions(-)
+
 -- 
-Linus Walleij <linus.walleij@linaro.org>
-
+Alexandre Belloni, co-owner and COO, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
