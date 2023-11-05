@@ -2,238 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 621BE7E143C
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Nov 2023 17:01:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 083BC7E142E
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Nov 2023 16:59:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229639AbjKEQB4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Nov 2023 11:01:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46906 "EHLO
+        id S229475AbjKEP7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Nov 2023 10:59:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbjKEQBn (ORCPT
+        with ESMTP id S229379AbjKEP7J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Nov 2023 11:01:43 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFF85FF;
-        Sun,  5 Nov 2023 08:01:38 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F2DBC43391;
-        Sun,  5 Nov 2023 16:01:38 +0000 (UTC)
-Received: from rostedt by gandalf with local (Exim 4.97-RC3)
-        (envelope-from <rostedt@goodmis.org>)
-        id 1qzfZE-00000000Cig-0WIE;
-        Sun, 05 Nov 2023 11:01:40 -0500
-Message-ID: <20231105160139.983291500@goodmis.org>
-User-Agent: quilt/0.67
-Date:   Sun, 05 Nov 2023 10:56:35 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        <gregkh@linuxfoundation.org>
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Subject: [v6.6][PATCH 5/5] eventfs: Use simple_recursive_removal() to clean up dentries
-References: <20231105155630.925114107@goodmis.org>
+        Sun, 5 Nov 2023 10:59:09 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECAC9C5
+        for <linux-kernel@vger.kernel.org>; Sun,  5 Nov 2023 07:58:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1699199899;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=gm8P+4qqkq3fie/1BXBTuSMj+CMA8LATFFDY5rV8ORw=;
+        b=DYaYg2Hl89c9uQQF2Pumf8LLtozKK9szOQX4jBDTAgFzv/rw3Fw9OET6yDLUVDuspE+Vtb
+        FhPXJmrklZfWxXWbtniTPhFCUBk7oDX45910FuTFbxnSZJOf2GoO761aRpFSVeaVHZcGx1
+        0gFFUEhRmX7qhYhZxudA9EiBLHcVoBE=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-183-Pa1qcJw4O4eCELURS1EO3Q-1; Sun, 05 Nov 2023 10:58:18 -0500
+X-MC-Unique: Pa1qcJw4O4eCELURS1EO3Q-1
+Received: by mail-ed1-f69.google.com with SMTP id 4fb4d7f45d1cf-53da5262466so3045592a12.0
+        for <linux-kernel@vger.kernel.org>; Sun, 05 Nov 2023 07:58:18 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699199897; x=1699804697;
+        h=content-transfer-encoding:content-disposition:mime-version
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=gm8P+4qqkq3fie/1BXBTuSMj+CMA8LATFFDY5rV8ORw=;
+        b=mcX0FLnNS6r09zkATKxFnFnczqbeWSDKu60n1QT4NUKcWDsndi9OrAIW9EDDrO2t3C
+         w2LT0JC6fNsRiRVuXZDyiXxDtbd4OfoeDCNFWdBDzOTA1Gk3t3UTfabZymr1NpI83Koe
+         tkS64jyufnVs1HqBIcmcxj5lEofWz8zA+oKI2ClJAK4oZcv6yzZAee0pPu8I2FZTF9CF
+         Zx/txDu5jPh/EaYLMFsXcqfwSWIbm76Fiay+VRuVAlIeEuEqz77Kc4adNT9hCO3Awg4K
+         EH03bZj2QWXNzOmD8sWEKnW5qk4mEVsibHqBF/ZrMFLuz8mpfuCrdple4I7tt6WiiEC+
+         vs9Q==
+X-Gm-Message-State: AOJu0YxEU+Fqip5mkRYK/yaBtwnGVdyxDLmDFcKYtL67RoG/EpzRUmjE
+        cBInWUIK+zJAK0JBJJTkJCHP7czM5WZjyllnOp13WmcWKOtc9CeWjvBc7HnLu2vz98ZPmp+8zZb
+        SdC02vj/PGVqi+r345dBSOOzG
+X-Received: by 2002:a17:906:db08:b0:9dd:f5ba:856d with SMTP id xj8-20020a170906db0800b009ddf5ba856dmr3819995ejb.62.1699199897433;
+        Sun, 05 Nov 2023 07:58:17 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEybgJfekAZesQ+akyhDcdHp9NNqn1nBxIeCP8wqicCb5vXKmYeJbRaNub+H3s331kYxYmE9A==
+X-Received: by 2002:a17:906:db08:b0:9dd:f5ba:856d with SMTP id xj8-20020a170906db0800b009ddf5ba856dmr3819966ejb.62.1699199896993;
+        Sun, 05 Nov 2023 07:58:16 -0800 (PST)
+Received: from redhat.com ([2.55.35.234])
+        by smtp.gmail.com with ESMTPSA id qw23-20020a1709066a1700b009dd949b75c7sm2460591ejc.151.2023.11.05.07.58.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 05 Nov 2023 07:58:16 -0800 (PST)
+Date:   Sun, 5 Nov 2023 10:58:06 -0500
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dtatulea@nvidia.com, eperezma@redhat.com, geert+renesas@glider.be,
+        gregkh@linuxfoundation.org, jasowang@redhat.com,
+        leiyang@redhat.com, leon@kernel.org, mst@redhat.com,
+        pizhenwei@bytedance.com, sgarzare@redhat.com,
+        shannon.nelson@amd.com, shawn.shao@jaguarmicro.com,
+        simon.horman@corigine.com, si-wei.liu@oracle.com,
+        xieyongji@bytedance.com, xuanzhuo@linux.alibaba.com,
+        xueshi.hu@smartx.com
+Subject: [GIT PULL] vhost,virtio,vdpa: features, fixes, cleanups
+Message-ID: <20231105105806-mutt-send-email-mst@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+X-Mutt-Fcc: =sent
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+The following changes since commit ffc253263a1375a65fa6c9f62a893e9767fbebfa:
 
-commit 407c6726ca71b33330d2d6345d9ea7ebc02575e9 upstream
+  Linux 6.6 (2023-10-29 16:31:08 -1000)
 
-Looking at how dentry is removed via the tracefs system, I found that
-eventfs does not do everything that it did under tracefs. The tracefs
-removal of a dentry calls simple_recursive_removal() that does a lot more
-than a simple d_invalidate().
+are available in the Git repository at:
 
-As it should be a requirement that any eventfs_inode that has a dentry, so
-does its parent. When removing a eventfs_inode, if it has a dentry, a call
-to simple_recursive_removal() on that dentry should clean up all the
-dentries underneath it.
+  https://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost.git tags/for_linus
 
-Add WARN_ON_ONCE() to check for the parent having a dentry if any children
-do.
+for you to fetch changes up to 86f6c224c97911b4392cb7b402e6a4ed323a449e:
 
-Link: https://lore.kernel.org/all/20231101022553.GE1957730@ZenIV/
-Link: https://lkml.kernel.org/r/20231101172650.552471568@goodmis.org
+  vdpa_sim: implement .reset_map support (2023-11-01 09:20:00 -0400)
 
-Cc: stable@vger.kernel.org
-Cc: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Al Viro <viro@zeniv.linux.org.uk>
-Fixes: 5bdcd5f5331a2 ("eventfs: Implement removal of meta data from eventfs")
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
- fs/tracefs/event_inode.c | 71 +++++++++++++++++++---------------------
- 1 file changed, 33 insertions(+), 38 deletions(-)
+----------------------------------------------------------------
+vhost,virtio,vdpa: features, fixes, cleanups
 
-diff --git a/fs/tracefs/event_inode.c b/fs/tracefs/event_inode.c
-index 7aa92b8ebc51..5fcfb634fec2 100644
---- a/fs/tracefs/event_inode.c
-+++ b/fs/tracefs/event_inode.c
-@@ -54,12 +54,10 @@ struct eventfs_file {
- 	/*
- 	 * Union - used for deletion
- 	 * @llist:	for calling dput() if needed after RCU
--	 * @del_list:	list of eventfs_file to delete
- 	 * @rcu:	eventfs_file to delete in RCU
- 	 */
- 	union {
- 		struct llist_node	llist;
--		struct list_head	del_list;
- 		struct rcu_head		rcu;
- 	};
- 	void				*data;
-@@ -276,7 +274,6 @@ static void free_ef(struct eventfs_file *ef)
-  */
- void eventfs_set_ef_status_free(struct tracefs_inode *ti, struct dentry *dentry)
- {
--	struct tracefs_inode *ti_parent;
- 	struct eventfs_inode *ei;
- 	struct eventfs_file *ef;
- 
-@@ -297,10 +294,6 @@ void eventfs_set_ef_status_free(struct tracefs_inode *ti, struct dentry *dentry)
- 
- 	mutex_lock(&eventfs_mutex);
- 
--	ti_parent = get_tracefs(dentry->d_parent->d_inode);
--	if (!ti_parent || !(ti_parent->flags & TRACEFS_EVENT_INODE))
--		goto out;
--
- 	ef = dentry->d_fsdata;
- 	if (!ef)
- 		goto out;
-@@ -873,30 +866,29 @@ static void unhook_dentry(struct dentry *dentry)
- {
- 	if (!dentry)
- 		return;
--
--	/* Keep the dentry from being freed yet (see eventfs_workfn()) */
-+	/*
-+	 * Need to add a reference to the dentry that is expected by
-+	 * simple_recursive_removal(), which will include a dput().
-+	 */
- 	dget(dentry);
- 
--	dentry->d_fsdata = NULL;
--	d_invalidate(dentry);
--	mutex_lock(&eventfs_mutex);
--	/* dentry should now have at least a single reference */
--	WARN_ONCE((int)d_count(dentry) < 1,
--		  "dentry %px (%s) less than one reference (%d) after invalidate\n",
--		  dentry, dentry->d_name.name, d_count(dentry));
--	mutex_unlock(&eventfs_mutex);
-+	/*
-+	 * Also add a reference for the dput() in eventfs_workfn().
-+	 * That is required as that dput() will free the ei after
-+	 * the SRCU grace period is over.
-+	 */
-+	dget(dentry);
- }
- 
- /**
-  * eventfs_remove_rec - remove eventfs dir or file from list
-  * @ef: eventfs_file to be removed.
-- * @head: to create list of eventfs_file to be deleted
-  * @level: to check recursion depth
-  *
-  * The helper function eventfs_remove_rec() is used to clean up and free the
-  * associated data from eventfs for both of the added functions.
-  */
--static void eventfs_remove_rec(struct eventfs_file *ef, struct list_head *head, int level)
-+static void eventfs_remove_rec(struct eventfs_file *ef, int level)
- {
- 	struct eventfs_file *ef_child;
- 
-@@ -916,14 +908,16 @@ static void eventfs_remove_rec(struct eventfs_file *ef, struct list_head *head,
- 		/* search for nested folders or files */
- 		list_for_each_entry_srcu(ef_child, &ef->ei->e_top_files, list,
- 					 lockdep_is_held(&eventfs_mutex)) {
--			eventfs_remove_rec(ef_child, head, level + 1);
-+			eventfs_remove_rec(ef_child, level + 1);
- 		}
- 	}
- 
- 	ef->is_freed = 1;
- 
-+	unhook_dentry(ef->dentry);
-+
- 	list_del_rcu(&ef->list);
--	list_add_tail(&ef->del_list, head);
-+	call_srcu(&eventfs_srcu, &ef->rcu, free_rcu_ef);
- }
- 
- /**
-@@ -934,28 +928,22 @@ static void eventfs_remove_rec(struct eventfs_file *ef, struct list_head *head,
-  */
- void eventfs_remove(struct eventfs_file *ef)
- {
--	struct eventfs_file *tmp;
--	LIST_HEAD(ef_del_list);
-+	struct dentry *dentry;
- 
- 	if (!ef)
- 		return;
- 
--	/*
--	 * Move the deleted eventfs_inodes onto the ei_del_list
--	 * which will also set the is_freed value. Note, this has to be
--	 * done under the eventfs_mutex, but the deletions of
--	 * the dentries must be done outside the eventfs_mutex.
--	 * Hence moving them to this temporary list.
--	 */
- 	mutex_lock(&eventfs_mutex);
--	eventfs_remove_rec(ef, &ef_del_list, 0);
-+	dentry = ef->dentry;
-+	eventfs_remove_rec(ef, 0);
- 	mutex_unlock(&eventfs_mutex);
- 
--	list_for_each_entry_safe(ef, tmp, &ef_del_list, del_list) {
--		unhook_dentry(ef->dentry);
--		list_del(&ef->del_list);
--		call_srcu(&eventfs_srcu, &ef->rcu, free_rcu_ef);
--	}
-+	/*
-+	 * If any of the ei children has a dentry, then the ei itself
-+	 * must have a dentry.
-+	 */
-+	if (dentry)
-+		simple_recursive_removal(dentry, NULL);
- }
- 
- /**
-@@ -966,6 +954,8 @@ void eventfs_remove(struct eventfs_file *ef)
-  */
- void eventfs_remove_events_dir(struct dentry *dentry)
- {
-+	struct eventfs_file *ef_child;
-+	struct eventfs_inode *ei;
- 	struct tracefs_inode *ti;
- 
- 	if (!dentry || !dentry->d_inode)
-@@ -975,6 +965,11 @@ void eventfs_remove_events_dir(struct dentry *dentry)
- 	if (!ti || !(ti->flags & TRACEFS_EVENT_INODE))
- 		return;
- 
--	d_invalidate(dentry);
--	dput(dentry);
-+	mutex_lock(&eventfs_mutex);
-+	ei = ti->private;
-+	list_for_each_entry_srcu(ef_child, &ei->e_top_files, list,
-+				 lockdep_is_held(&eventfs_mutex)) {
-+		eventfs_remove_rec(ef_child, 0);
-+	}
-+	mutex_unlock(&eventfs_mutex);
- }
--- 
-2.42.0
+vdpa/mlx5:
+	VHOST_BACKEND_F_ENABLE_AFTER_DRIVER_OK
+	new maintainer
+vdpa:
+	support for vq descriptor mappings
+	decouple reset of iotlb mapping from device reset
 
+fixes, cleanups all over the place
+
+Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+
+----------------------------------------------------------------
+Dragos Tatulea (14):
+      vdpa/mlx5: Expose descriptor group mkey hw capability
+      vdpa/mlx5: Create helper function for dma mappings
+      vdpa/mlx5: Decouple cvq iotlb handling from hw mapping code
+      vdpa/mlx5: Take cvq iotlb lock during refresh
+      vdpa/mlx5: Collapse "dvq" mr add/delete functions
+      vdpa/mlx5: Rename mr destroy functions
+      vdpa/mlx5: Allow creation/deletion of any given mr struct
+      vdpa/mlx5: Move mr mutex out of mr struct
+      vdpa/mlx5: Improve mr update flow
+      vdpa/mlx5: Introduce mr for vq descriptor
+      vdpa/mlx5: Enable hw support for vq descriptor mapping
+      vdpa/mlx5: Make iotlb helper functions more generic
+      vdpa/mlx5: Update cvq iotlb mapping on ASID change
+      MAINTAINERS: Add myself as mlx5_vdpa driver
+
+Eugenio Pérez (1):
+      mlx5_vdpa: offer VHOST_BACKEND_F_ENABLE_AFTER_DRIVER_OK
+
+Geert Uytterhoeven (1):
+      vhost-scsi: Spelling s/preceeding/preceding/g
+
+Greg Kroah-Hartman (1):
+      vduse: make vduse_class constant
+
+Michael S. Tsirkin (1):
+      Merge branch 'mlx5-vhost' of https://git.kernel.org/pub/scm/linux/kernel/git/mellanox/linux.git
+
+Shannon Nelson (1):
+      virtio: kdoc for struct virtio_pci_modern_device
+
+Shawn.Shao (1):
+      vdpa: Update sysfs ABI documentation
+
+Si-Wei Liu (10):
+      vdpa: introduce dedicated descriptor group for virtqueue
+      vhost-vdpa: introduce descriptor group backend feature
+      vhost-vdpa: uAPI to get dedicated descriptor group id
+      vdpa: introduce .reset_map operation callback
+      vhost-vdpa: reset vendor specific mapping to initial state in .release
+      vhost-vdpa: introduce IOTLB_PERSIST backend feature bit
+      vdpa: introduce .compat_reset operation callback
+      vhost-vdpa: clean iotlb map during reset for older userspace
+      vdpa/mlx5: implement .reset_map driver op
+      vdpa_sim: implement .reset_map support
+
+Xuan Zhuo (3):
+      virtio: add definition of VIRTIO_F_NOTIF_CONFIG_DATA feature bit
+      virtio_pci: add build offset check for the new common cfg items
+      virtio_pci: add check for common cfg size
+
+Xueshi Hu (1):
+      virtio-balloon: correct the comment of virtballoon_migratepage()
+
+zhenwei pi (1):
+      virtio-blk: fix implicit overflow on virtio_max_dma_size
+
+ Documentation/ABI/testing/sysfs-bus-vdpa |   4 +-
+ MAINTAINERS                              |   6 +
+ drivers/block/virtio_blk.c               |   4 +-
+ drivers/vdpa/mlx5/core/mlx5_vdpa.h       |  32 +++--
+ drivers/vdpa/mlx5/core/mr.c              | 213 +++++++++++++++++++------------
+ drivers/vdpa/mlx5/core/resources.c       |   6 +-
+ drivers/vdpa/mlx5/net/mlx5_vnet.c        | 137 +++++++++++++++-----
+ drivers/vdpa/vdpa_sim/vdpa_sim.c         |  52 ++++++--
+ drivers/vdpa/vdpa_user/vduse_dev.c       |  40 +++---
+ drivers/vhost/scsi.c                     |   2 +-
+ drivers/vhost/vdpa.c                     |  79 +++++++++++-
+ drivers/virtio/virtio_balloon.c          |   2 +-
+ drivers/virtio/virtio_pci_modern.c       |  36 ++++++
+ drivers/virtio/virtio_pci_modern_dev.c   |   6 +-
+ drivers/virtio/virtio_vdpa.c             |   2 +-
+ include/linux/mlx5/mlx5_ifc.h            |   8 +-
+ include/linux/mlx5/mlx5_ifc_vdpa.h       |   7 +-
+ include/linux/vdpa.h                     |  41 +++++-
+ include/linux/virtio_pci_modern.h        |  35 +++--
+ include/uapi/linux/vhost.h               |   8 ++
+ include/uapi/linux/vhost_types.h         |   7 +
+ include/uapi/linux/virtio_config.h       |   5 +
+ 22 files changed, 546 insertions(+), 186 deletions(-)
 
