@@ -2,44 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A3207E134B
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Nov 2023 13:09:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7E407E1354
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Nov 2023 13:24:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230249AbjKEMJM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Nov 2023 07:09:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38676 "EHLO
+        id S229502AbjKEMWQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Nov 2023 07:22:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229447AbjKEMJL (ORCPT
+        with ESMTP id S229447AbjKEMWO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Nov 2023 07:09:11 -0500
-Received: from mx3.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF972BF;
-        Sun,  5 Nov 2023 04:09:06 -0800 (PST)
-Received: from [192.168.1.123] (ip5b4280bd.dynamic.kabel-deutschland.de [91.66.128.189])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: buczek)
-        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 9489C61E5FE03;
-        Sun,  5 Nov 2023 13:09:01 +0100 (CET)
-Message-ID: <57de3b6c-480d-487b-9e75-0566ffe6eb62@molgen.mpg.de>
-Date:   Sun, 5 Nov 2023 13:09:01 +0100
+        Sun, 5 Nov 2023 07:22:14 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DCA6CF
+        for <linux-kernel@vger.kernel.org>; Sun,  5 Nov 2023 04:22:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699186931; x=1730722931;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=AWnU4vhr/KVP+OCfvhfjr1Y91JzeoC/E++lb6aeHgJc=;
+  b=g+Obx0wfG5xblGl4tzIlAhSfo5qhrPzu86KvUOfuaFi7o5apBPyAK8JE
+   T0/vXobUc6wpqdEdzVxhMUPepMPFc/U1TZ9CUodoYSMdmAGUiT43FP31c
+   XJvvTimhn02TUb6S0eZRxx3oOYEIzZFAFIiMZjkk9yfM3iNNiyggBnFpr
+   fawipgM4wmFWsMJTcCEH+cTk8pQwGeDDGLeN71lyRI6ZZCdF7wKp+oeEF
+   xSuBWApKqCU2jNMT5PwbOmvZe2fKGXoZmHS6VrzKa9Xpn2/49e7yBVVeQ
+   rR/cnciAeL1kjuo4e26Edpk+YU5BE9MX7yfINtB25AixmVtuJWz8wLVO8
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10884"; a="392009506"
+X-IronPort-AV: E=Sophos;i="6.03,279,1694761200"; 
+   d="scan'208";a="392009506"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2023 04:22:11 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10884"; a="935551885"
+X-IronPort-AV: E=Sophos;i="6.03,279,1694761200"; 
+   d="scan'208";a="935551885"
+Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
+  by orsmga005.jf.intel.com with ESMTP; 05 Nov 2023 04:22:09 -0800
+Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qzc8l-0005Pt-0B;
+        Sun, 05 Nov 2023 12:22:07 +0000
+Date:   Sun, 5 Nov 2023 20:21:36 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Raghu Vatsavayi <rvatsavayi@caviumnetworks.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Derek Chickles <derek.chickles@caviumnetworks.com>,
+        Satanand Burla <satananda.burla@caviumnetworks.com>,
+        Felix Manlunas <felix.manlunas@caviumnetworks.com>
+Subject: drivers/net/ethernet/cavium/liquidio/cn23xx_pf_device.c:1069:13:
+ warning: variable 'max_possible_vfs' set but not used
+Message-ID: <202311052041.0lSUJmvT-lkp@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Heisenbug: I/O freeze can be resolved by cat $task/cmdline of
- unrelated process
-Content-Language: en-US
-To:     "Dr. David Alan Gilbert" <dave@treblig.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org
-References: <77184fcc-46ab-4d69-b163-368264fa49f7@molgen.mpg.de>
- <ZUeEPQy9v9BdOHar@gallifrey>
-From:   Donald Buczek <buczek@molgen.mpg.de>
-In-Reply-To: <ZUeEPQy9v9BdOHar@gallifrey>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -47,61 +66,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/5/23 13:02, Dr. David Alan Gilbert wrote:
-> * Donald Buczek (buczek@molgen.mpg.de) wrote:
->> Hello, experts,
->>
->> we have a strange new problem on a backup server (high metadata I/O 24/7, xfs -> mdraid). The system worked for years and with v5.15.86 for 8 month. Then we've updated to 6.1.52 and after a few hours it froze: No more I/O activity to one of its filesystems, processes trying to access it blocked until we reboot.
->>
->> Of course, at first we blamed the kernel as this happened after an upgrade. But after several experiments with different kernel versions, we've returned to the v5.15.86 kernel we used before, but still experienced the problem. Then we suspected, that a microcode update (for AMD EPYC 7261), which happened as a side effect of the first reboot, might be the culprit and removed it. That didn't fix it either. For all I can say, all software is back to the state which worked before.
-> 
-> I'm not sure; but did you check /proc/cpuinfo after that revert and
-> check the microcode version dropped back (or physically pwoer cycle);
-> I'm not sure if a reboot reverts the microcode version.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   1c41041124bd14dd6610da256a3da4e5b74ce6b1
+commit: d13520c7ca7761346d2787fff1b3b112f87da77a liquidio CN23XX: HW config for VF support
+date:   7 years ago
+config: x86_64-buildonly-randconfig-002-20231101 (https://download.01.org/0day-ci/archive/20231105/202311052041.0lSUJmvT-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231105/202311052041.0lSUJmvT-lkp@intel.com/reproduce)
 
-Yes, when not updated via init.d amd-ucode.img, /proc/cpuinfo and dmesg show the old microcode after reboot (through bios, not just kexec). We've power-cycled nonetheless once
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311052041.0lSUJmvT-lkp@intel.com/
 
->> Now the strange part: What we usually do, when we have a situation like this, is that we run a script which takes several procfs and sysfs information which happened to be useful in the past. It was soon discovered, that just running this script unblocks the system. I/O continues as if nothing ever happened. Then we singled-stepped the operations of the script to find out, what action exactly gets the system to resume. It is this part:
->>
->>      for task in /proc/*/task/*; do
->>          echo  "# # $task: $(cat $task/comm) : $(cat $task/cmdline | xargs -0 echo)"
->>          cmd cat $task/stack
->>      done
->>
->> which can further be reduced to
->>
->>      for task in /proc/*/task/*; do echo $task $(cat $task/cmdline | xargs -0 echo); done
->>
->> This is absolutely reproducible. Above line unblocks the system reliably.
->>
->> Another remarkable thing: We've modified above code to do the processes slowly one by one and checking after each step if I/O resumed. And each time we've tested that, it was one of the 64 nfsd processes (but not the very first one tried). While the systems exports filesystems, we have absolutely no reason to assume, that any client actually tries to access this nfs server. Additionally, when the full script is run, the stack traces show all nfsd tasks in their normal idle state ( [<0>] svc_recv+0x7bd/0x8d0 [sunrpc] ).
->>
->> Does anybody have an idea, how a `cat /proc/PID/cmdline` on a specific assumed-to-be-idle nfsd thread could have such an "healing" effect?
-> 
-> Not me; but had you tried something simpler like a sysrq-d or sysrq-w
-> for locks and blocked tasks.
+All warnings (new ones prefixed by >>):
 
-No, will do.
+   In file included from include/linux/kobject.h:21,
+                    from include/linux/pci.h:28,
+                    from drivers/net/ethernet/cavium/liquidio/cn23xx_pf_device.c:23:
+   include/linux/sysfs.h: In function 'sysfs_get_dirent':
+   include/linux/sysfs.h:517:44: warning: pointer targets in passing argument 2 of 'kernfs_find_and_get' differ in signedness [-Wpointer-sign]
+     517 |         return kernfs_find_and_get(parent, name);
+         |                                            ^~~~
+         |                                            |
+         |                                            const unsigned char *
+   In file included from include/linux/sysfs.h:15:
+   include/linux/kernfs.h:452:57: note: expected 'const char *' but argument is of type 'const unsigned char *'
+     452 | kernfs_find_and_get(struct kernfs_node *kn, const char *name)
+         |                                             ~~~~~~~~~~~~^~~~
+   drivers/net/ethernet/cavium/liquidio/cn23xx_pf_device.c: In function 'cn23xx_sriov_config':
+   drivers/net/ethernet/cavium/liquidio/cn23xx_pf_device.c:1117:24: error: 'struct octeon_sriov_info' has no member named 'sriov_enabled'
+    1117 |         oct->sriov_info.sriov_enabled = 0;
+         |                        ^
+>> drivers/net/ethernet/cavium/liquidio/cn23xx_pf_device.c:1069:13: warning: variable 'max_possible_vfs' set but not used [-Wunused-but-set-variable]
+    1069 |         u32 max_possible_vfs;
+         |             ^~~~~~~~~~~~~~~~
+   drivers/net/ethernet/cavium/liquidio/cn23xx_pf_device.c: At top level:
+   drivers/net/ethernet/cavium/liquidio/cn23xx_pf_device.c:1210:6: warning: no previous declaration for 'cn23xx_dump_iq_regs' [-Wmissing-declarations]
+    1210 | void cn23xx_dump_iq_regs(struct octeon_device *oct)
+         |      ^~~~~~~~~~~~~~~~~~~
 
-Thanks!
 
-   Donald
+vim +/max_possible_vfs +1069 drivers/net/ethernet/cavium/liquidio/cn23xx_pf_device.c
 
->> I'm well aware, that, for example, a hardware problem might result in just anything and that the question might not be answerable at all. If so: please excuse the noise.
-> 
-> Seems a weird hardware problem to have that specific
-> a way to unblock it.
-> 
-> Dave
-> 
->> Thanks
->> Donald
->> -- 
->> Donald Buczek
->> buczek@molgen.mpg.de
->> Tel: +49 30 8413 1433
+  1063	
+  1064	static int cn23xx_sriov_config(struct octeon_device *oct)
+  1065	{
+  1066		struct octeon_cn23xx_pf *cn23xx = (struct octeon_cn23xx_pf *)oct->chip;
+  1067		u32 max_rings, total_rings, max_vfs, rings_per_vf;
+  1068		u32 pf_srn, num_pf_rings;
+> 1069		u32 max_possible_vfs;
+  1070	
+  1071		cn23xx->conf =
+  1072			(struct octeon_config *)oct_get_config_info(oct, LIO_23XX);
+  1073		switch (oct->rev_id) {
+  1074		case OCTEON_CN23XX_REV_1_0:
+  1075			max_rings = CN23XX_MAX_RINGS_PER_PF_PASS_1_0;
+  1076			max_possible_vfs = CN23XX_MAX_VFS_PER_PF_PASS_1_0;
+  1077			break;
+  1078		case OCTEON_CN23XX_REV_1_1:
+  1079			max_rings = CN23XX_MAX_RINGS_PER_PF_PASS_1_1;
+  1080			max_possible_vfs = CN23XX_MAX_VFS_PER_PF_PASS_1_1;
+  1081			break;
+  1082		default:
+  1083			max_rings = CN23XX_MAX_RINGS_PER_PF;
+  1084			max_possible_vfs = CN23XX_MAX_VFS_PER_PF;
+  1085			break;
+  1086		}
+  1087	
+  1088		if (max_rings <= num_present_cpus())
+  1089			num_pf_rings = 1;
+  1090		else
+  1091			num_pf_rings = num_present_cpus();
+  1092	
 
 -- 
-Donald Buczek
-buczek@molgen.mpg.de
-Tel: +49 30 8413 1433
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
