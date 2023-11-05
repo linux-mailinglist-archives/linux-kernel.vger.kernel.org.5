@@ -2,246 +2,350 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CEC067E120A
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Nov 2023 03:45:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33B897E120B
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Nov 2023 03:45:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229592AbjKECSs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Nov 2023 22:18:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45428 "EHLO
+        id S229757AbjKECe1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Nov 2023 22:34:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229452AbjKECSr (ORCPT
+        with ESMTP id S229452AbjKECe0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Nov 2023 22:18:47 -0400
-Received: from domac.alu.hr (domac.alu.unizg.hr [161.53.235.3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3DC7D9;
-        Sat,  4 Nov 2023 19:18:39 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by domac.alu.hr (Postfix) with ESMTP id 0E44E60171;
-        Sun,  5 Nov 2023 03:18:37 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1699150717; bh=fYaMEKBQxJ0g6H5yjgzGnUoFYpoWiOWtlqqdR6WqekU=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=lc3SxlZQBQgiBsc37quMzDH5CEKIAA3iBIWm70pZYl7dMyHNEbliMdB+cggmqTgEh
-         DEB8NNMzumM13NSk2g+POKAudb3IPp6Nvso/l51AvjYNz3QOG8n/wmzl3Iqrggw51g
-         HneJPmfBY+GRMplb6kIg3pcHYVDbqYUBQorSVhfuIE1txsCAHnOFOZ03Hf+koWsiA4
-         suA6wx9uRZSQMi76073SoCXmJdLoe07buhWvwkCIrGqpHlE6fSikVkLe719DClwMnD
-         XYjFUDhx7R3NsINVX2Bq3JP5cw765YbsT6YIvGV51bWoFiYTDj9gVAf7c0nVOdodzB
-         7dbkmWlTv2GxA==
-X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
-Received: from domac.alu.hr ([127.0.0.1])
-        by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id m7dYu-niWWke; Sun,  5 Nov 2023 03:18:34 +0100 (CET)
-Received: from [192.168.1.6] (78-2-200-71.adsl.net.t-com.hr [78.2.200.71])
-        by domac.alu.hr (Postfix) with ESMTPSA id 22FE66016E;
-        Sun,  5 Nov 2023 03:18:33 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1699150714; bh=fYaMEKBQxJ0g6H5yjgzGnUoFYpoWiOWtlqqdR6WqekU=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=cGdW/9LcotJcSSC4jzDb96UCipjLSmnF8baXykkwR4yDLl//I03PlyGDWOz1QMUeV
-         JwaOUZ4ThybwMA7My7TzQJ8ntpVBjJfLQrd0d1PnBnJwiXotYz7ebI7rD4Ezgx3Mn2
-         7u+JxEphDBaCfpqdA5dQ7n8ECaFVDhG2X3nyVYu34q4ufAviKRyOv/d/rlsLAHaCMI
-         hzZxAWbh+NV+TlstT44PmmDNUmjLc9d6xV0rHsFJZYBWKF/IFk6iZkQTkeObT9T/WE
-         2EJGw8qYLfdr+TG+GGV8iEK7OFkicuapF24Gvimci7djWPGAtNa7yuEJvCpeaaQYo8
-         bHaAR7GFhpbRA==
-Message-ID: <ac19c886-9d71-4b4f-b5d4-42111dddb8ee@alu.unizg.hr>
-Date:   Sun, 5 Nov 2023 03:18:32 +0100
+        Sat, 4 Nov 2023 22:34:26 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70209A7
+        for <linux-kernel@vger.kernel.org>; Sat,  4 Nov 2023 19:34:23 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 081B8C433C9
+        for <linux-kernel@vger.kernel.org>; Sun,  5 Nov 2023 02:34:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699151663;
+        bh=SfI09hRWheDLYBHeMGajwLALAP1q/t+EQdiQqx9uGlg=;
+        h=In-Reply-To:References:From:Date:Subject:To:Cc:From;
+        b=o/fTpJlVpOIvwpQ8a5K7+sUuGYIZHNEa4QfeVtRY7YAAA0w5Qhn7W42oVu74M/ODW
+         Yg0uvgfAPC+/o9UYSpUDcLh6DQ5JD2TuF76E7APT/9kJsq0zCYBybO3Nsy5tePSCt3
+         fWJsQ5PEjUeFjASkkpAHYQq3ySXUFSehmHaHGXh4M36tP4jdOXSvmz2LrThai8KGLk
+         fVinQkDKnPkPg38j/Th1MRoOPCNik6Pirb5TDge2TQtdxTkOcx3LG0ZJ81EbmkJTpI
+         5yBjoKRR9FZqkN9lk9wprAQkbctJ7TBSxsPN8PiODPcQdRJfUbvEgGY0fhz7YsRKOb
+         goHeF84zx5uHQ==
+Received: by mail-ot1-f54.google.com with SMTP id 46e09a7af769-6ce2c5b2154so2151689a34.3
+        for <linux-kernel@vger.kernel.org>; Sat, 04 Nov 2023 19:34:22 -0700 (PDT)
+X-Gm-Message-State: AOJu0YwoipRy/EqLmZh+yq2U3L8hhNtu8akl1FL6wD76PXs85A5OTU57
+        cV9jAOf+GMhgdBxKmR2SFttlJTQKrbSE7PJY63M=
+X-Google-Smtp-Source: AGHT+IFCDINii8qbHOobowPhlgEUJdz7hw9YfBNiuRYZqgMDCtNbAPMaKj8YhG4z2nSXhKLLx63TAoVf70JWLQUVPAo=
+X-Received: by 2002:a05:6830:2b08:b0:6d3:1f91:22e8 with SMTP id
+ l8-20020a0568302b0800b006d31f9122e8mr14103194otv.2.1699151662230; Sat, 04 Nov
+ 2023 19:34:22 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v6 0/5] Coalesce mac ocp write/modify calls to
- reduce spinlock contention
-Content-Language: en-US
-To:     Heiner Kallweit <hkallweit1@gmail.com>,
-        linux-kernel@vger.kernel.org
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        nic_swsd@realtek.com
-References: <20231104221514.45821-1-mirsad.todorovac@alu.unizg.hr>
- <da4409f3-d509-413b-8433-f222acbbb1be@gmail.com>
-From:   Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
-In-Reply-To: <da4409f3-d509-413b-8433-f222acbbb1be@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=no autolearn_force=no version=3.4.6
+Received: by 2002:ac9:7459:0:b0:506:a3fc:1021 with HTTP; Sat, 4 Nov 2023
+ 19:34:21 -0700 (PDT)
+In-Reply-To: <202311042024.12w45Xsm-lkp@intel.com>
+References: <202311042024.12w45Xsm-lkp@intel.com>
+From:   Namjae Jeon <linkinjeon@kernel.org>
+Date:   Sun, 5 Nov 2023 11:34:21 +0900
+X-Gmail-Original-Message-ID: <CAKYAXd87xZCXthjnpDsrTVyxbB4z=2d9LY6UEx9_4ECaqWC-RA@mail.gmail.com>
+Message-ID: <CAKYAXd87xZCXthjnpDsrTVyxbB4z=2d9LY6UEx9_4ECaqWC-RA@mail.gmail.com>
+Subject: Re: fs/smb/server/vfs.c:1207: warning: Function parameter or member
+ 'parent_path' not described in 'ksmbd_vfs_kern_path_locked'
+To:     kernel test robot <lkp@intel.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Steve French <stfrench@microsoft.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+2023-11-04 21:36 GMT+09:00, kernel test robot <lkp@intel.com>:
+> Hi Namjae,
+Hi,
+>
+> FYI, the error/warning still remains.
+I have fixed it:). I will apply it soon.
 
-
-On 11/4/23 23:37, Heiner Kallweit wrote:
-> On 04.11.2023 23:15, Mirsad Goran Todorovac wrote:
->> The motivation for these helpers was the locking overhead of 130 consecutive
->> r8168_mac_ocp_write() calls in the RTL8411b reset after the NIC gets confused
->> if the PHY is powered-down.
->>
->> To quote Heiner:
->>
->>      On RTL8411b the RX unit gets confused if the PHY is powered-down.
->>      This was reported in [0] and confirmed by Realtek. Realtek provided
->>      a sequence to fix the RX unit after PHY wakeup.
->>
->> A series of about 130 r8168_mac_ocp_write() calls is performed to program the
->> RTL registers for recovery, each doing an expensive spin_lock_irqsave() and
->> spin_unlock_irqrestore().
->>
->> Each mac ocp write is made of:
->>
->>      static void __r8168_mac_ocp_write(struct rtl8169_private *tp, u32 reg,
->>                        u32 data)
->>      {
->>          if (rtl_ocp_reg_failure(reg))
->>              return;
->>
->>          RTL_W32(tp, OCPDR, OCPAR_FLAG | (reg << 15) | data);
->>      }
->>
->>      static void r8168_mac_ocp_write(struct rtl8169_private *tp, u32 reg,
->>                      u32 data)
->>      {
->>          unsigned long flags;
->>
->>          raw_spin_lock_irqsave(&tp->mac_ocp_lock, flags);
->>          __r8168_mac_ocp_write(tp, reg, data);
->>          raw_spin_unlock_irqrestore(&tp->mac_ocp_lock, flags);
->>      }
->>
->> Register programming is done through RTL_W32() macro which expands into
->>
->>      #define RTL_W32(tp, reg, val32) writel((val32), tp->mmio_addr + (reg))
->>
->> which is further (on Alpha):
->>
->>      extern inline void writel(u32 b, volatile void __iomem *addr)
->>      {
->>          mb();
->>          __raw_writel(b, addr);
->>      }
->>
->> or on i386/x86_64:
->>
->>      #define build_mmio_write(name, size, type, reg, barrier) \
->>      static inline void name(type val, volatile void __iomem *addr) \
->>      { asm volatile("mov" size " %0,%1": :reg (val), \
->>      "m" (*(volatile type __force *)addr) barrier); }
->>
->>      build_mmio_write(writel, "l", unsigned int, "r", :"memory")
->>
->> This obviously involves iat least a compiler barrier.
->>
->> mb() expands into something like this i.e. on x86_64:
->>
->>      #define mb()    asm volatile("lock; addl $0,0(%%esp)" ::: "memory")
->>
->> This means a whole lot of memory bus stalls: for spin_lock_irqsave(),
->> memory barrier, writel(), and spin_unlock_irqrestore().
->>
->> With about 130 of these sequential calls to r8168_mac_ocp_write() this looks like
->> a lock storm that will stall all of the cores and CPUs on the same memory controller
->> for certain time I/O takes to finish.
->>
->> In a sequential case of RTL register programming, the writes to RTL registers
->> can be coalesced under a same raw spinlock. This can dramatically decrease the
->> number of bus stalls in a multicore or multi-CPU system.
->>
->> Macro helpers r8168_mac_ocp_write_seq() and r8168_mac_ocp_modify_seq() are
->> provided to reduce lock contention:
->>
->>      static void rtl_hw_start_8411_2(struct rtl8169_private *tp)
->>      {
->>
->>          ...
->>
->>          /* The following Realtek-provided magic fixes an issue with the RX unit
->>           * getting confused after the PHY having been powered-down.
->>           */
->>
->>          static const struct recover_8411b_info init_zero_seq[] = {
->>              { 0xFC28, 0x0000 }, { 0xFC2A, 0x0000 }, { 0xFC2C, 0x0000 },
->>              ...
->>          };
->>
->>          ...
->>
->>          r8168_mac_ocp_write_seq(tp, init_zero_seq);
->>
->>          ...
->>
->>      }
->>
->> The hex data is preserved intact through s/r8168_mac_ocp_write[(]tp,/{ / and s/[)];/ },/
->> functions that only changed the function names and the ending of the line, so the actual
->> hex data is unchanged.
->>
->> To repeat, the reason for the introduction of the original commit
->> was to enable recovery of the RX unit on the RTL8411b which was confused by the
->> powered-down PHY. This sequence of r8168_mac_ocp_write() calls amplifies the problem
->> into a series of about 500+ memory bus locks, most waiting for the main memory read,
->> modify and write under a LOCK. The memory barrier in RTL_W32 should suffice for
->> the programming sequence to reach RTL NIC registers.
->>
->> [0] https://bugzilla.redhat.com/show_bug.cgi?id=1692075
->>
->> v6:
->>   proceeded according to Jacob Keller's suggestions by creating a cover page and reducing
->>   the text within the commits. Applying to the net-next tree as Heiner Kallweit requested.
->>
->> v5:
->>   attempted some new optimisations, which were rejected, but not all and not completely.
->>
->> v4:
->>   fixed complaints as advised by Heiner and checkpatch.pl.
->>   split the patch into five sections to be more easily manipulated and reviewed
->>   introduced r8168_mac_ocp_write_seq()
->>   applied coalescing of mac ocp writes/modifies for 8168H, 8125 and 8125B
->>
->> v3:
->>   removed register/mask pair array sentinels, so using ARRAY_SIZE().
->>   avoided duplication of RTL_W32() call code as advised by Heiner.
->>
->> Mirsad Goran Todorovac (5):
->>    r8169: Coalesce r8169_mac_ocp_write/modify calls to reduce spinlock
->>      stalls
->>    r8169: Coalesce RTL8411b PHY power-down recovery calls to reduce
->>      spinlock stalls
->>    r8169: Coalesce mac ocp write and modify for 8168H start to reduce
->>      spinlocks
->>    r8169: Coalesce mac ocp commands for 8125 and 8125B start to reduce
->>      spinlock contention
->>    r8169: Coalesce mac ocp commands for rtl_hw_init_8125 to reduce
->>      spinlocks
->>
->>   drivers/net/ethernet/realtek/r8169_main.c | 304 +++++++++++-----------
->>   1 file changed, 150 insertions(+), 154 deletions(-)
->>
-> 
-> You still write:
-> "a lock storm that will stall all of the cores and CPUs on the same memory controller"
-> even though you were informed that that's not the case.
-> There's no actual problem, therefore your Fixes tags are incorrect.
-> Also net-next is closed at the moment.
-> In patches 3-5 I see no benefit. And I have doubts whether the small benefit in
-> patch 2 is worth adding all the helpers in patch 1.
-
-After some thought, I would like to have a consensus on these patches, rather than someone
-feels defeated or outvoted.
-
-So I will try to reach some common ground, if you think the cause is worth it.
-
-Why is adding six lines of a helper a problem worse than removing 130 lines of callers?
-
-I would hate to think that the Linux kernel developer community became the place where
-Authority has higher weight than Reason and Logic.
-
-I have no personal gain from improving these drivers other than the Galactic credits.
-
-One thing I wouldn't like and do not like is the Windows drivers being better because
-their programmers are more innovative.
-
-Best regards,
-Mirsad Todorovac
+Thanks for your report!
+>
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.gi=
+t
+> master
+> head:   90b0c2b2edd1adff742c621e246562fbefa11b70
+> commit: 2b57a4322b1b14348940744fdc02f9a86cbbdbeb ksmbd: check if a mount
+> point is crossed during path lookup
+> date:   3 months ago
+> config: sh-allyesconfig
+> (https://download.01.org/0day-ci/archive/20231104/202311042024.12w45Xsm-l=
+kp@intel.com/config)
+> compiler: sh4-linux-gcc (GCC) 13.2.0
+> reproduce (this is a W=3D1 build):
+> (https://download.01.org/0day-ci/archive/20231104/202311042024.12w45Xsm-l=
+kp@intel.com/reproduce)
+>
+> If you fix the issue in a separate patch/commit (i.e. not just a new vers=
+ion
+> of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes:
+> https://lore.kernel.org/oe-kbuild-all/202311042024.12w45Xsm-lkp@intel.com=
+/
+>
+> All warnings (new ones prefixed by >>):
+>
+>    fs/smb/server/vfs.c:54: warning: Function parameter or member 'parent'
+> not described in 'ksmbd_vfs_lock_parent'
+>    fs/smb/server/vfs.c:54: warning: Function parameter or member 'child' =
+not
+> described in 'ksmbd_vfs_lock_parent'
+>    fs/smb/server/vfs.c:375: warning: Function parameter or member 'fp' no=
+t
+> described in 'ksmbd_vfs_read'
+>    fs/smb/server/vfs.c:375: warning: Excess function parameter 'fid'
+> description in 'ksmbd_vfs_read'
+>    fs/smb/server/vfs.c:492: warning: Function parameter or member 'fp' no=
+t
+> described in 'ksmbd_vfs_write'
+>    fs/smb/server/vfs.c:492: warning: Excess function parameter 'fid'
+> description in 'ksmbd_vfs_write'
+>    fs/smb/server/vfs.c:555: warning: Function parameter or member 'path' =
+not
+> described in 'ksmbd_vfs_getattr'
+>    fs/smb/server/vfs.c:555: warning: Function parameter or member 'stat' =
+not
+> described in 'ksmbd_vfs_getattr'
+>    fs/smb/server/vfs.c:555: warning: Excess function parameter 'work'
+> description in 'ksmbd_vfs_getattr'
+>    fs/smb/server/vfs.c:555: warning: Excess function parameter 'fid'
+> description in 'ksmbd_vfs_getattr'
+>    fs/smb/server/vfs.c:555: warning: Excess function parameter 'attrs'
+> description in 'ksmbd_vfs_getattr'
+>    fs/smb/server/vfs.c:572: warning: Function parameter or member 'p_id' =
+not
+> described in 'ksmbd_vfs_fsync'
+>    fs/smb/server/vfs.c:595: warning: Function parameter or member 'work' =
+not
+> described in 'ksmbd_vfs_remove_file'
+>    fs/smb/server/vfs.c:595: warning: Function parameter or member 'path' =
+not
+> described in 'ksmbd_vfs_remove_file'
+>    fs/smb/server/vfs.c:595: warning: Excess function parameter 'name'
+> description in 'ksmbd_vfs_remove_file'
+>    fs/smb/server/vfs.c:638: warning: Function parameter or member 'work' =
+not
+> described in 'ksmbd_vfs_link'
+>    fs/smb/server/vfs.c:815: warning: Function parameter or member 'fp' no=
+t
+> described in 'ksmbd_vfs_truncate'
+>    fs/smb/server/vfs.c:815: warning: Excess function parameter 'fid'
+> description in 'ksmbd_vfs_truncate'
+>    fs/smb/server/vfs.c:856: warning: Excess function parameter 'size'
+> description in 'ksmbd_vfs_listxattr'
+>    fs/smb/server/vfs.c:933: warning: Function parameter or member 'path' =
+not
+> described in 'ksmbd_vfs_setxattr'
+>    fs/smb/server/vfs.c:933: warning: Excess function parameter 'dentry'
+> description in 'ksmbd_vfs_setxattr'
+>    fs/smb/server/vfs.c:958: warning: Function parameter or member 'option=
+'
+> not described in 'ksmbd_vfs_set_fadvise'
+>    fs/smb/server/vfs.c:958: warning: Excess function parameter 'options'
+> description in 'ksmbd_vfs_set_fadvise'
+>    fs/smb/server/vfs.c:1172: warning: Function parameter or member 'um' n=
+ot
+> described in 'ksmbd_vfs_lookup_in_dir'
+>    fs/smb/server/vfs.c:1207: warning: Function parameter or member 'work'
+> not described in 'ksmbd_vfs_kern_path_locked'
+>>> fs/smb/server/vfs.c:1207: warning: Function parameter or member
+>>> 'parent_path' not described in 'ksmbd_vfs_kern_path_locked'
+>
+>
+> vim +1207 fs/smb/server/vfs.c
+>
+> f44158485826c0 fs/cifsd/vfs.c      Namjae Jeon   2021-03-16  1194
+> f44158485826c0 fs/cifsd/vfs.c      Namjae Jeon   2021-03-16  1195  /**
+> 74d7970febf7e9 fs/ksmbd/vfs.c      Namjae Jeon   2023-04-21  1196   *
+> ksmbd_vfs_kern_path_locked() - lookup a file and get path info
+> 265fd1991c1db8 fs/ksmbd/vfs.c      Hyunchul Lee  2021-09-25  1197   *
+> @name:	file path that is relative to share
+> f44158485826c0 fs/cifsd/vfs.c      Namjae Jeon   2021-03-16  1198   *
+> @flags:	lookup flags
+> f44158485826c0 fs/cifsd/vfs.c      Namjae Jeon   2021-03-16  1199   *
+> @path:	if lookup succeed, return path info
+> f44158485826c0 fs/cifsd/vfs.c      Namjae Jeon   2021-03-16  1200   *
+> @caseless:	caseless filename lookup
+> f44158485826c0 fs/cifsd/vfs.c      Namjae Jeon   2021-03-16  1201   *
+> f44158485826c0 fs/cifsd/vfs.c      Namjae Jeon   2021-03-16  1202   *
+> Return:	0 on success, otherwise error
+> f44158485826c0 fs/cifsd/vfs.c      Namjae Jeon   2021-03-16  1203   */
+> 74d7970febf7e9 fs/ksmbd/vfs.c      Namjae Jeon   2023-04-21  1204  int
+> ksmbd_vfs_kern_path_locked(struct ksmbd_work *work, char *name,
+> 2b57a4322b1b14 fs/smb/server/vfs.c Namjae Jeon   2023-07-17  1205  		=09
+> unsigned int flags, struct path *parent_path,
+> 2b57a4322b1b14 fs/smb/server/vfs.c Namjae Jeon   2023-07-17  1206  		=09
+> struct path *path, bool caseless)
+> f44158485826c0 fs/cifsd/vfs.c      Namjae Jeon   2021-03-16 @1207  {
+> 265fd1991c1db8 fs/ksmbd/vfs.c      Hyunchul Lee  2021-09-25  1208  	struc=
+t
+> ksmbd_share_config *share_conf =3D work->tcon->share_conf;
+> f44158485826c0 fs/cifsd/vfs.c      Namjae Jeon   2021-03-16  1209  	int
+> err;
+> f44158485826c0 fs/cifsd/vfs.c      Namjae Jeon   2021-03-16  1210
+> 2b57a4322b1b14 fs/smb/server/vfs.c Namjae Jeon   2023-07-17  1211  	err =
+=3D
+> ksmbd_vfs_path_lookup_locked(share_conf, name, flags, parent_path,
+> 2b57a4322b1b14 fs/smb/server/vfs.c Namjae Jeon   2023-07-17  1212  				=
+=09
+> path);
+> f44158485826c0 fs/cifsd/vfs.c      Namjae Jeon   2021-03-16  1213  	if
+> (!err)
+> cf5e7f734f4455 fs/smb/server/vfs.c Namjae Jeon   2023-05-30  1214  		retu=
+rn
+> 0;
+> f44158485826c0 fs/cifsd/vfs.c      Namjae Jeon   2021-03-16  1215
+> f44158485826c0 fs/cifsd/vfs.c      Namjae Jeon   2021-03-16  1216  	if
+> (caseless) {
+> 3c20378325c710 fs/cifsd/vfs.c      Hyunchul Lee  2021-04-13  1217  		char
+> *filepath;
+> 3c20378325c710 fs/cifsd/vfs.c      Hyunchul Lee  2021-04-13  1218  		size=
+_t
+> path_len, remain_len;
+> 3c20378325c710 fs/cifsd/vfs.c      Hyunchul Lee  2021-04-13  1219
+> 3c20378325c710 fs/cifsd/vfs.c      Hyunchul Lee  2021-04-13  1220
+> 		filepath =3D kstrdup(name, GFP_KERNEL);
+> 3c20378325c710 fs/cifsd/vfs.c      Hyunchul Lee  2021-04-13  1221  		if
+> (!filepath)
+> 3c20378325c710 fs/cifsd/vfs.c      Hyunchul Lee  2021-04-13  1222  			ret=
+urn
+> -ENOMEM;
+> 3c20378325c710 fs/cifsd/vfs.c      Hyunchul Lee  2021-04-13  1223
+> 3c20378325c710 fs/cifsd/vfs.c      Hyunchul Lee  2021-04-13  1224
+> 		path_len =3D strlen(filepath);
+> 265fd1991c1db8 fs/ksmbd/vfs.c      Hyunchul Lee  2021-09-25  1225
+> 		remain_len =3D path_len;
+> 3c20378325c710 fs/cifsd/vfs.c      Hyunchul Lee  2021-04-13  1226
+> 2b57a4322b1b14 fs/smb/server/vfs.c Namjae Jeon   2023-07-17  1227
+> 		*parent_path =3D share_conf->vfs_path;
+> 2b57a4322b1b14 fs/smb/server/vfs.c Namjae Jeon   2023-07-17  1228
+> 		path_get(parent_path);
+> f44158485826c0 fs/cifsd/vfs.c      Namjae Jeon   2021-03-16  1229
+> 2b57a4322b1b14 fs/smb/server/vfs.c Namjae Jeon   2023-07-17  1230  		whil=
+e
+> (d_can_lookup(parent_path->dentry)) {
+> 3c20378325c710 fs/cifsd/vfs.c      Hyunchul Lee  2021-04-13  1231  			cha=
+r
+> *filename =3D filepath + path_len - remain_len;
+> 3c20378325c710 fs/cifsd/vfs.c      Hyunchul Lee  2021-04-13  1232  			cha=
+r
+> *next =3D strchrnul(filename, '/');
+> 3c20378325c710 fs/cifsd/vfs.c      Hyunchul Lee  2021-04-13  1233  			siz=
+e_t
+> filename_len =3D next - filename;
+> 3c20378325c710 fs/cifsd/vfs.c      Hyunchul Lee  2021-04-13  1234  			boo=
+l
+> is_last =3D !next[0];
+> 3c20378325c710 fs/cifsd/vfs.c      Hyunchul Lee  2021-04-13  1235
+> 3c20378325c710 fs/cifsd/vfs.c      Hyunchul Lee  2021-04-13  1236  			if
+> (filename_len =3D=3D 0)
+> 3c20378325c710 fs/cifsd/vfs.c      Hyunchul Lee  2021-04-13  1237
+> 				break;
+> 3c20378325c710 fs/cifsd/vfs.c      Hyunchul Lee  2021-04-13  1238
+> 2b57a4322b1b14 fs/smb/server/vfs.c Namjae Jeon   2023-07-17  1239  			err=
+ =3D
+> ksmbd_vfs_lookup_in_dir(parent_path, filename,
+> dbab80e2071ad8 fs/ksmbd/vfs.c      Atte Heikkil=C3=A4 2022-09-28  1240  	=
+				=09
+>   filename_len,
+> dbab80e2071ad8 fs/ksmbd/vfs.c      Atte Heikkil=C3=A4 2022-09-28  1241  	=
+				=09
+>   work->conn->um);
+> 265fd1991c1db8 fs/ksmbd/vfs.c      Hyunchul Lee  2021-09-25  1242  			if
+> (err)
+> 74d7970febf7e9 fs/ksmbd/vfs.c      Namjae Jeon   2023-04-21  1243  				go=
+to
+> out2;
+> f44158485826c0 fs/cifsd/vfs.c      Namjae Jeon   2021-03-16  1244
+> 3c20378325c710 fs/cifsd/vfs.c      Hyunchul Lee  2021-04-13  1245
+> 			next[0] =3D '\0';
+> 3c20378325c710 fs/cifsd/vfs.c      Hyunchul Lee  2021-04-13  1246
+> 265fd1991c1db8 fs/ksmbd/vfs.c      Hyunchul Lee  2021-09-25  1247  			err=
+ =3D
+> vfs_path_lookup(share_conf->vfs_path.dentry,
+> 265fd1991c1db8 fs/ksmbd/vfs.c      Hyunchul Lee  2021-09-25  1248  				=
+=09
+>  share_conf->vfs_path.mnt,
+> 265fd1991c1db8 fs/ksmbd/vfs.c      Hyunchul Lee  2021-09-25  1249  				=
+=09
+>  filepath,
+> 265fd1991c1db8 fs/ksmbd/vfs.c      Hyunchul Lee  2021-09-25  1250  				=
+=09
+>  flags,
+> 74d7970febf7e9 fs/ksmbd/vfs.c      Namjae Jeon   2023-04-21  1251  				=
+=09
+>  path);
+> f44158485826c0 fs/cifsd/vfs.c      Namjae Jeon   2021-03-16  1252  			if
+> (err)
+> 74d7970febf7e9 fs/ksmbd/vfs.c      Namjae Jeon   2023-04-21  1253  				go=
+to
+> out2;
+> 74d7970febf7e9 fs/ksmbd/vfs.c      Namjae Jeon   2023-04-21  1254  			els=
+e
+> if (is_last)
+> 74d7970febf7e9 fs/ksmbd/vfs.c      Namjae Jeon   2023-04-21  1255  				go=
+to
+> out1;
+> 2b57a4322b1b14 fs/smb/server/vfs.c Namjae Jeon   2023-07-17  1256
+> 			path_put(parent_path);
+> 2b57a4322b1b14 fs/smb/server/vfs.c Namjae Jeon   2023-07-17  1257
+> 			*parent_path =3D *path;
+> f44158485826c0 fs/cifsd/vfs.c      Namjae Jeon   2021-03-16  1258
+> 3c20378325c710 fs/cifsd/vfs.c      Hyunchul Lee  2021-04-13  1259
+> 			next[0] =3D '/';
+> 3c20378325c710 fs/cifsd/vfs.c      Hyunchul Lee  2021-04-13  1260
+> 			remain_len -=3D filename_len + 1;
+> 3c20378325c710 fs/cifsd/vfs.c      Hyunchul Lee  2021-04-13  1261  		}
+> 3c20378325c710 fs/cifsd/vfs.c      Hyunchul Lee  2021-04-13  1262
+> 3c20378325c710 fs/cifsd/vfs.c      Hyunchul Lee  2021-04-13  1263  		err =
+=3D
+> -EINVAL;
+> 74d7970febf7e9 fs/ksmbd/vfs.c      Namjae Jeon   2023-04-21  1264  out2:
+> 2b57a4322b1b14 fs/smb/server/vfs.c Namjae Jeon   2023-07-17  1265
+> 		path_put(parent_path);
+> 74d7970febf7e9 fs/ksmbd/vfs.c      Namjae Jeon   2023-04-21  1266  out1:
+> 3c20378325c710 fs/cifsd/vfs.c      Hyunchul Lee  2021-04-13  1267
+> 		kfree(filepath);
+> 3c20378325c710 fs/cifsd/vfs.c      Hyunchul Lee  2021-04-13  1268  	}
+> 74d7970febf7e9 fs/ksmbd/vfs.c      Namjae Jeon   2023-04-21  1269
+> 74d7970febf7e9 fs/ksmbd/vfs.c      Namjae Jeon   2023-04-21  1270  	if
+> (!err) {
+> 2b57a4322b1b14 fs/smb/server/vfs.c Namjae Jeon   2023-07-17  1271  		err =
+=3D
+> ksmbd_vfs_lock_parent(parent_path->dentry, path->dentry);
+> 2b57a4322b1b14 fs/smb/server/vfs.c Namjae Jeon   2023-07-17  1272  		if
+> (err) {
+> 2b57a4322b1b14 fs/smb/server/vfs.c Namjae Jeon   2023-07-17  1273
+> 			path_put(path);
+> 2b57a4322b1b14 fs/smb/server/vfs.c Namjae Jeon   2023-07-17  1274
+> 			path_put(parent_path);
+> 2b57a4322b1b14 fs/smb/server/vfs.c Namjae Jeon   2023-07-17  1275  		}
+> 74d7970febf7e9 fs/ksmbd/vfs.c      Namjae Jeon   2023-04-21  1276  	}
+> f44158485826c0 fs/cifsd/vfs.c      Namjae Jeon   2021-03-16  1277  	retur=
+n
+> err;
+> f44158485826c0 fs/cifsd/vfs.c      Namjae Jeon   2021-03-16  1278  }
+> f44158485826c0 fs/cifsd/vfs.c      Namjae Jeon   2021-03-16  1279
+>
+> :::::: The code at line 1207 was first introduced by commit
+> :::::: f44158485826c076335d6860d35872271a83791d cifsd: add file operation=
+s
+>
+> :::::: TO: Namjae Jeon <namjae.jeon@samsung.com>
+> :::::: CC: Steve French <stfrench@microsoft.com>
+>
+> --
+> 0-DAY CI Kernel Test Service
+> https://github.com/intel/lkp-tests/wiki
+>
