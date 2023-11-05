@@ -2,165 +2,315 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED9337E11D9
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Nov 2023 01:01:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35CF47E11DA
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Nov 2023 01:15:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229905AbjKDX63 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Nov 2023 19:58:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44564 "EHLO
+        id S229552AbjKEAPV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Nov 2023 20:15:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229632AbjKDX62 (ORCPT
+        with ESMTP id S229452AbjKEAPU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Nov 2023 19:58:28 -0400
-Received: from mail-oi1-f208.google.com (mail-oi1-f208.google.com [209.85.167.208])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE674D6F
-        for <linux-kernel@vger.kernel.org>; Sat,  4 Nov 2023 16:58:24 -0700 (PDT)
-Received: by mail-oi1-f208.google.com with SMTP id 5614622812f47-3b51e0bd5c0so5121404b6e.2
-        for <linux-kernel@vger.kernel.org>; Sat, 04 Nov 2023 16:58:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699142304; x=1699747104;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=UJcDmPdSGpB8slt2WoDpkuUtenpE1KuCjVriKZ4u9vQ=;
-        b=ByGQWE7BD9MqQ48IPaeLqNjzIVkEQS/YTJncoNjK7GsRu/a1+iHqalSUClZYbQHqFx
-         cCct5npItYKi+WMwk0TecI0hOwf77zQzxFbr0IGwcSmk7nKo2kgsUFdI0GCRWG/j9SlG
-         adVbEsCi2mE5+Uu6f5s8SfpdbzzkKMYKupfgnW6Y0GxYOAf9G+CRP4wm4/pDIKY22A66
-         RoLfVsQ2YHgOZfI/Q8Dgnr02ELWIEG/6UgtbtT921bb4AOudmwi4wCm8qEvz5S2NeXCp
-         VVgAH1lmis+J/L7PaLLKGGthhaK61AtYwN6HaxI/UdKNKioXSRnqXNU7hv3NjwkPUJ7/
-         oixA==
-X-Gm-Message-State: AOJu0Yz5FX+iu/MKxFx4MpLdZ0nsLZqhDyE3vqnh15oLe9wxSD4JbQtd
-        ejDAe3iJVr7Fb5qjyobBVmuSKPMbS7eISTEvCmFG0pbp5v+v
-X-Google-Smtp-Source: AGHT+IHBgY529NBiG2E+zwRJkXajwOzTjTdlwv4Z0a/euWkBcziDTp8wvQIFVrOVXNMS57IncmZM9dsDrHEKGltCsb2UZvYwuLzv
+        Sat, 4 Nov 2023 20:15:20 -0400
+Received: from domac.alu.hr (domac.alu.unizg.hr [161.53.235.3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E928CD69;
+        Sat,  4 Nov 2023 17:15:15 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by domac.alu.hr (Postfix) with ESMTP id EAC4460171;
+        Sun,  5 Nov 2023 01:15:13 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+        t=1699143313; bh=L04GBGFbXfiUitBy8paHY4PApuV0QxW642Y9duF171w=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=RqmZk7CRKnQrhjn63yGo2deVwBVzI0h4gssUirPSOmCY4+T9C4rm0qgqhSun0EVNG
+         PIb+bO1wyer9fUw1ymexJq2fby4qkXEogHtG1J/ahYK4vHdSALHLOlT0qf4wL/na6b
+         Gb2z2xijS7paar0WE3oyhcEDwV3csJ6dIpU6obRTWbfIawWLk4vP+3K1y9VrCQHVat
+         7HyAZxZ8mXdIaeZ2odwzEoMtJ3YquIQy9VZTbPoer00zX/uLycje3S6GlLrZSVAkAf
+         9ggC2GCSwecDVr9L2BEKdjO8IUQbgr3LP7aPYj8zTH5WywLRPxVx0xaVu+Qvt1cGMF
+         3waRCP/AJB9dw==
+X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
+Received: from domac.alu.hr ([127.0.0.1])
+        by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id U9RKt5hGziWK; Sun,  5 Nov 2023 01:15:10 +0100 (CET)
+Received: from [192.168.1.6] (78-2-200-71.adsl.net.t-com.hr [78.2.200.71])
+        by domac.alu.hr (Postfix) with ESMTPSA id 003AD6016E;
+        Sun,  5 Nov 2023 01:15:09 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+        t=1699143310; bh=L04GBGFbXfiUitBy8paHY4PApuV0QxW642Y9duF171w=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=YDXzdZUGsuVbES67hREN5ZjCIOuQrWdn6bwmPuzIZaa1JasKd8XvmZgXdcwGiSlQM
+         IHHUnpeVqURUVn1NpgC1fW/W+6OZqShDXJFYh6Rmd6fZOL2byWiN+2v/oXNj/j3jPf
+         JajoQE4CJMVn/L9byqwJHKzLtC5jYvlh414CYKDd3fZoe+uSD6ylaKqvG/ZgquGzym
+         9LA3Ot9T4Z6E1xAwUI0IwPHUQihIx57qRrhBBgCueV3i6ilvksOf4Lvv9QwIVVBM87
+         12yMZD/D8Zd6iPYV4lQw/g+Jb1S3IM7aNiC+XwahPqAm6aQ0UTG1tKSk8H1IZHAzoH
+         ulZ1D9DpfI5bA==
+Message-ID: <edee64f4-442d-4670-a91b-e5b83117dd40@alu.unizg.hr>
+Date:   Sun, 5 Nov 2023 01:15:05 +0100
 MIME-Version: 1.0
-X-Received: by 2002:a05:6808:19a8:b0:3a7:3737:60fd with SMTP id
- bj40-20020a05680819a800b003a7373760fdmr9386750oib.7.1699142304046; Sat, 04
- Nov 2023 16:58:24 -0700 (PDT)
-Date:   Sat, 04 Nov 2023 16:58:23 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000074a35e06095c6558@google.com>
-Subject: [syzbot] [btrfs?] kernel BUG in btrfs_try_granting_tickets
-From:   syzbot <syzbot+42e831f5d4d8616b0e8f@syzkaller.appspotmail.com>
-To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SORTED_RECIPS,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v6 0/5] Coalesce mac ocp write/modify calls to
+ reduce spinlock contention
+To:     Heiner Kallweit <hkallweit1@gmail.com>,
+        linux-kernel@vger.kernel.org
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        nic_swsd@realtek.com
+References: <20231104221514.45821-1-mirsad.todorovac@alu.unizg.hr>
+ <da4409f3-d509-413b-8433-f222acbbb1be@gmail.com>
+Content-Language: en-US
+From:   Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
+In-Reply-To: <da4409f3-d509-413b-8433-f222acbbb1be@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    5a6a09e97199 Merge tag 'cgroup-for-6.7' of git://git.kerne..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=132ed3e3680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=414f578e7f8d77a7
-dashboard link: https://syzkaller.appspot.com/bug?extid=42e831f5d4d8616b0e8f
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/bd30039dd1a9/disk-5a6a09e9.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/7dac0c0db854/vmlinux-5a6a09e9.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/4d1318c50c57/bzImage-5a6a09e9.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+42e831f5d4d8616b0e8f@syzkaller.appspotmail.com
-
-assertion failed: space_info->reclaim_size >= ticket->bytes, in fs/btrfs/space-info.c:436
-------------[ cut here ]------------
-kernel BUG at fs/btrfs/space-info.c:436!
-invalid opcode: 0000 [#1] PREEMPT SMP KASAN
-CPU: 0 PID: 25603 Comm: syz-executor.2 Not tainted 6.6.0-syzkaller-03860-g5a6a09e97199 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/09/2023
-RIP: 0010:remove_ticket fs/btrfs/space-info.c:436 [inline]
-RIP: 0010:btrfs_try_granting_tickets+0x59f/0x5d0 fs/btrfs/space-info.c:468
-Code: fe e9 ca fa ff ff e8 a0 ca d8 fd 48 c7 c7 e0 16 8d 8b 48 c7 c6 a0 1d 8d 8b 48 c7 c2 60 17 8d 8b b9 b4 01 00 00 e8 11 02 54 07 <0f> 0b e8 7a ca d8 fd 48 c7 c7 e0 16 8d 8b 48 c7 c6 40 17 8d 8b 48
-RSP: 0018:ffffc90015f07188 EFLAGS: 00010246
-RAX: 0000000000000059 RBX: ffffffffffff2000 RCX: 7562ac8ccb7a8d00
-RDX: ffffc9000bd65000 RSI: 000000000000a0ff RDI: 000000000000a100
-RBP: 0000000000060000 R08: ffffffff81716b8c R09: 1ffff92002be0dd0
-R10: dffffc0000000000 R11: fffff52002be0dd1 R12: ffff8880293b90f0
-R13: ffffc9000ac0f6e0 R14: dffffc0000000000 R15: 1ffff1100527721e
-FS:  00007fca38d826c0(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f27f6881000 CR3: 00000000365f7000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- btrfs_space_info_free_bytes_may_use fs/btrfs/space-info.h:232 [inline]
- block_rsv_release_bytes fs/btrfs/block-rsv.c:154 [inline]
- btrfs_block_rsv_release+0x506/0x5f0 fs/btrfs/block-rsv.c:295
- btrfs_delayed_refs_rsv_release+0x9f/0x110 fs/btrfs/delayed-ref.c:75
- btrfs_run_delayed_refs_for_head fs/btrfs/extent-tree.c:2038 [inline]
- __btrfs_run_delayed_refs+0x1e34/0x4810 fs/btrfs/extent-tree.c:2106
- btrfs_run_delayed_refs+0xe3/0x2c0 fs/btrfs/extent-tree.c:2218
- btrfs_commit_transaction+0x4ba/0x3730 fs/btrfs/transaction.c:2237
- sync_filesystem+0x1c0/0x220 fs/sync.c:66
- btrfs_remount+0x231/0x14b0 fs/btrfs/super.c:1649
- reconfigure_super+0x440/0x870 fs/super.c:1140
- do_remount fs/namespace.c:2884 [inline]
- path_mount+0xc24/0xfa0 fs/namespace.c:3656
- do_mount fs/namespace.c:3677 [inline]
- __do_sys_mount fs/namespace.c:3886 [inline]
- __se_sys_mount+0x2d9/0x3c0 fs/namespace.c:3863
- do_syscall_x64 arch/x86/entry/common.c:51 [inline]
- do_syscall_64+0x44/0x110 arch/x86/entry/common.c:82
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-RIP: 0033:0x7fca3807e1ea
-Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb a6 e8 de 09 00 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fca38d81ee8 EFLAGS: 00000202 ORIG_RAX: 00000000000000a5
-RAX: ffffffffffffffda RBX: 00007fca38d81f80 RCX: 00007fca3807e1ea
-RDX: 0000000020000180 RSI: 0000000020000140 RDI: 0000000000000000
-RBP: 0000000020000180 R08: 00007fca38d81f80 R09: 00000000039600ac
-R10: 00000000039600ac R11: 0000000000000202 R12: 0000000020000140
-R13: 00007fca38d81f40 R14: 0000000000000000 R15: 0000000020000080
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:remove_ticket fs/btrfs/space-info.c:436 [inline]
-RIP: 0010:btrfs_try_granting_tickets+0x59f/0x5d0 fs/btrfs/space-info.c:468
-Code: fe e9 ca fa ff ff e8 a0 ca d8 fd 48 c7 c7 e0 16 8d 8b 48 c7 c6 a0 1d 8d 8b 48 c7 c2 60 17 8d 8b b9 b4 01 00 00 e8 11 02 54 07 <0f> 0b e8 7a ca d8 fd 48 c7 c7 e0 16 8d 8b 48 c7 c6 40 17 8d 8b 48
-RSP: 0018:ffffc90015f07188 EFLAGS: 00010246
-RAX: 0000000000000059 RBX: ffffffffffff2000 RCX: 7562ac8ccb7a8d00
-RDX: ffffc9000bd65000 RSI: 000000000000a0ff RDI: 000000000000a100
-RBP: 0000000000060000 R08: ffffffff81716b8c R09: 1ffff92002be0dd0
-R10: dffffc0000000000 R11: fffff52002be0dd1 R12: ffff8880293b90f0
-R13: ffffc9000ac0f6e0 R14: dffffc0000000000 R15: 1ffff1100527721e
-FS:  00007fca38d826c0(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f27f6881000 CR3: 00000000365f7000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+On 11/4/23 23:37, Heiner Kallweit wrote:
+> On 04.11.2023 23:15, Mirsad Goran Todorovac wrote:
+>> The motivation for these helpers was the locking overhead of 130 consecutive
+>> r8168_mac_ocp_write() calls in the RTL8411b reset after the NIC gets confused
+>> if the PHY is powered-down.
+>>
+>> To quote Heiner:
+>>
+>>      On RTL8411b the RX unit gets confused if the PHY is powered-down.
+>>      This was reported in [0] and confirmed by Realtek. Realtek provided
+>>      a sequence to fix the RX unit after PHY wakeup.
+>>
+>> A series of about 130 r8168_mac_ocp_write() calls is performed to program the
+>> RTL registers for recovery, each doing an expensive spin_lock_irqsave() and
+>> spin_unlock_irqrestore().
+>>
+>> Each mac ocp write is made of:
+>>
+>>      static void __r8168_mac_ocp_write(struct rtl8169_private *tp, u32 reg,
+>>                        u32 data)
+>>      {
+>>          if (rtl_ocp_reg_failure(reg))
+>>              return;
+>>
+>>          RTL_W32(tp, OCPDR, OCPAR_FLAG | (reg << 15) | data);
+>>      }
+>>
+>>      static void r8168_mac_ocp_write(struct rtl8169_private *tp, u32 reg,
+>>                      u32 data)
+>>      {
+>>          unsigned long flags;
+>>
+>>          raw_spin_lock_irqsave(&tp->mac_ocp_lock, flags);
+>>          __r8168_mac_ocp_write(tp, reg, data);
+>>          raw_spin_unlock_irqrestore(&tp->mac_ocp_lock, flags);
+>>      }
+>>
+>> Register programming is done through RTL_W32() macro which expands into
+>>
+>>      #define RTL_W32(tp, reg, val32) writel((val32), tp->mmio_addr + (reg))
+>>
+>> which is further (on Alpha):
+>>
+>>      extern inline void writel(u32 b, volatile void __iomem *addr)
+>>      {
+>>          mb();
+>>          __raw_writel(b, addr);
+>>      }
+>>
+>> or on i386/x86_64:
+>>
+>>      #define build_mmio_write(name, size, type, reg, barrier) \
+>>      static inline void name(type val, volatile void __iomem *addr) \
+>>      { asm volatile("mov" size " %0,%1": :reg (val), \
+>>      "m" (*(volatile type __force *)addr) barrier); }
+>>
+>>      build_mmio_write(writel, "l", unsigned int, "r", :"memory")
+>>
+>> This obviously involves iat least a compiler barrier.
+>>
+>> mb() expands into something like this i.e. on x86_64:
+>>
+>>      #define mb()    asm volatile("lock; addl $0,0(%%esp)" ::: "memory")
+>>
+>> This means a whole lot of memory bus stalls: for spin_lock_irqsave(),
+>> memory barrier, writel(), and spin_unlock_irqrestore().
+>>
+>> With about 130 of these sequential calls to r8168_mac_ocp_write() this looks like
+>> a lock storm that will stall all of the cores and CPUs on the same memory controller
+>> for certain time I/O takes to finish.
+>>
+>> In a sequential case of RTL register programming, the writes to RTL registers
+>> can be coalesced under a same raw spinlock. This can dramatically decrease the
+>> number of bus stalls in a multicore or multi-CPU system.
+>>
+>> Macro helpers r8168_mac_ocp_write_seq() and r8168_mac_ocp_modify_seq() are
+>> provided to reduce lock contention:
+>>
+>>      static void rtl_hw_start_8411_2(struct rtl8169_private *tp)
+>>      {
+>>
+>>          ...
+>>
+>>          /* The following Realtek-provided magic fixes an issue with the RX unit
+>>           * getting confused after the PHY having been powered-down.
+>>           */
+>>
+>>          static const struct recover_8411b_info init_zero_seq[] = {
+>>              { 0xFC28, 0x0000 }, { 0xFC2A, 0x0000 }, { 0xFC2C, 0x0000 },
+>>              ...
+>>          };
+>>
+>>          ...
+>>
+>>          r8168_mac_ocp_write_seq(tp, init_zero_seq);
+>>
+>>          ...
+>>
+>>      }
+>>
+>> The hex data is preserved intact through s/r8168_mac_ocp_write[(]tp,/{ / and s/[)];/ },/
+>> functions that only changed the function names and the ending of the line, so the actual
+>> hex data is unchanged.
+>>
+>> To repeat, the reason for the introduction of the original commit
+>> was to enable recovery of the RX unit on the RTL8411b which was confused by the
+>> powered-down PHY. This sequence of r8168_mac_ocp_write() calls amplifies the problem
+>> into a series of about 500+ memory bus locks, most waiting for the main memory read,
+>> modify and write under a LOCK. The memory barrier in RTL_W32 should suffice for
+>> the programming sequence to reach RTL NIC registers.
+>>
+>> [0] https://bugzilla.redhat.com/show_bug.cgi?id=1692075
+>>
+>> v6:
+>>   proceeded according to Jacob Keller's suggestions by creating a cover page and reducing
+>>   the text within the commits. Applying to the net-next tree as Heiner Kallweit requested.
+>>
+>> v5:
+>>   attempted some new optimisations, which were rejected, but not all and not completely.
+>>
+>> v4:
+>>   fixed complaints as advised by Heiner and checkpatch.pl.
+>>   split the patch into five sections to be more easily manipulated and reviewed
+>>   introduced r8168_mac_ocp_write_seq()
+>>   applied coalescing of mac ocp writes/modifies for 8168H, 8125 and 8125B
+>>
+>> v3:
+>>   removed register/mask pair array sentinels, so using ARRAY_SIZE().
+>>   avoided duplication of RTL_W32() call code as advised by Heiner.
+>>
+>> Mirsad Goran Todorovac (5):
+>>    r8169: Coalesce r8169_mac_ocp_write/modify calls to reduce spinlock
+>>      stalls
+>>    r8169: Coalesce RTL8411b PHY power-down recovery calls to reduce
+>>      spinlock stalls
+>>    r8169: Coalesce mac ocp write and modify for 8168H start to reduce
+>>      spinlocks
+>>    r8169: Coalesce mac ocp commands for 8125 and 8125B start to reduce
+>>      spinlock contention
+>>    r8169: Coalesce mac ocp commands for rtl_hw_init_8125 to reduce
+>>      spinlocks
+>>
+>>   drivers/net/ethernet/realtek/r8169_main.c | 304 +++++++++++-----------
+>>   1 file changed, 150 insertions(+), 154 deletions(-)
+>>
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Hi, Mr. Kallweit,
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+So good to hear so soon from you. I'm encouraged that you are positive about improving
+the speed and reducing the size of the Realtek drivers.
 
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
+> You still write:
+> "a lock storm that will stall all of the cores and CPUs on the same memory controller"
+> even though you were informed that that's not the case.
 
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
+I was not convinced. There is no such thing as a free lunch, and there is no locking
+without affecting other cores, or locking would not make sense.
 
-If you want to undo deduplication, reply with:
-#syz undup
+> There's no actual problem, therefore your Fixes tags are incorrect.
+
+Mea culpa - my mistake, I will fix that in the next version.
+
+> Also net-next is closed at the moment.
+
+There is no problem with that, as these are only optimisation fixes, not zero day
+exploits. I am a patient person.
+
+> In patches 3-5 I see no benefit. And I have doubts whether the small benefit in
+> patch 2 is worth adding all the helpers in patch 1.
+
+I merely followed and mimed driver style from the constructions like this one:
+
+         static const struct ephy_info e_info_8168e_1[] = {
+                 { 0x00, 0x0200, 0x0100 },
+                 { 0x00, 0x0000, 0x0004 },
+                 { 0x06, 0x0002, 0x0001 },
+                 { 0x06, 0x0000, 0x0030 },
+                 { 0x07, 0x0000, 0x2000 },
+                 { 0x00, 0x0000, 0x0020 },
+                 { 0x03, 0x5800, 0x2000 },
+                 { 0x03, 0x0000, 0x0001 },
+                 { 0x01, 0x0800, 0x1000 },
+                 { 0x07, 0x0000, 0x4000 },
+                 { 0x1e, 0x0000, 0x2000 },
+                 { 0x19, 0xffff, 0xfe6c },
+                 { 0x0a, 0x0000, 0x0040 }
+         };
+
+         rtl_set_def_aspm_entry_latency(tp);
+
+         rtl_ephy_init(tp, e_info_8168e_1);
+
+Here you did not think that introducing an array reduced code readability.
+
+My ideal is a lockless driver using RCU, and you seem to prefer lock/unlock
+on each RTL_W32() write. I am convinced that a driver with less
+raw_spin_lock_irqsave()/raw_spin_unlock_irqrestore() pairs would scale better
+with more NICs and more cores.
+
+You said nothing to convinced me otherwise.
+
+But I am merely defending my point, this by no means implies disrespect or overlooking
+your contribution to the source as a coder and a a maintainer.
+
+Realtek NICs are known as cheap NIC for motherboards, but they are becoming more ubiquitous,
+and it is logical to use less locking, as locking is expensive. "barrier" in writev()
+guarantees sequential orders of write, and locking and unlocking on each read/modify/write
+is unnecessary overhead, IMHO.
+
+As the conclusion, I would like to emphasise that improving lock contention for the code
+is by no means a personal attack on the maintainer or a breach of the Code of Conduct.
+
+If you are so much against the changes which Mr. Jacob Keller from Intel reviewed,
+maybe we can cool emotions and start thinking rationally.
+
+Additionally, I would like to "inline" many functions, as I think that call/return
+sequences with stack frame generation /destruction are more expensive than inlining the
+small one liners.
+
+But I will certainly respect your opinion on the matter as a maintainer.
+
+What I realise that I might be optimising the cold paths of the code, but from your emails
+it seems like nothing is worth optimising in this driver, and with all due respect Sir,
+I think that is dead wrong.
+
+Of course, I am tempted to comply to the authority as a kernel newbie, but I was reminded
+in the spirit that this is exactly what the guys in Chernobyl did while maintaining the
+reactor that malfunctioned: they did not dare to question the authority telling them that
+everything is alright.
+
+Have a nice evening, and please do not take these words as a breach of the Code or a
+personal attack. I believe we are on the same side, and that is making this driver better.
+
+The Linux kernel developer community was my last hope that this human race has a force
+to improve the mankind and make it worth surviving.
+
+But sometimes it is more honourable to go down with the ship and preserve the honour.
+
+Best regards,
+Mirsad Todorovac
