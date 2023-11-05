@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE6A67E1551
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Nov 2023 17:56:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21BAF7E1552
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Nov 2023 17:56:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229887AbjKEQzw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Nov 2023 11:55:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38594 "EHLO
+        id S229945AbjKEQ4A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Nov 2023 11:56:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229750AbjKEQzu (ORCPT
+        with ESMTP id S229750AbjKEQzy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Nov 2023 11:55:50 -0500
+        Sun, 5 Nov 2023 11:55:54 -0500
 Received: from smtp.forwardemail.net (smtp.forwardemail.net [149.28.215.223])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A35E83;
-        Sun,  5 Nov 2023 08:55:47 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F582D9;
+        Sun,  5 Nov 2023 08:55:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kwiboo.se;
  h=Content-Transfer-Encoding: MIME-Version: References: In-Reply-To:
  Message-ID: Date: Subject: Cc: To: From; q=dns/txt; s=fe-e1b5cab7be;
- t=1699203344; bh=9YYcLQUrnGdihBMIqGOq7h6o3o2vBA6zqeQq5WUvP+E=;
- b=eD1bLCz2tEhCI1tolmZ2Vjzp0MZ0gVT9Jvs1nWFjuFxp8N+NKZT7j0QlBDBaD1+w7cmQCFei8
- 4F5T0hyjf2cAB5Q8QrcBhKv4qTTY+WCbPYE/wfGku+1gS6asFDkGE+ws7ggy7WuAzRP80crHHYY
- aJ0wLjygKoFoM4JDmk8foW2RPtEpn+C5D3J8C6NM+BnYSqQ5I2Pt4edVa9o8Xou7VXSSLMo/d2P
- GFcatom08AiaB6WcjllBvOSR+Aey0GU3xrvkWT3QghBLDhLvb+UBMg8b/UoMU2r5gepuQrhduVU
- QEztP/n2G3V3Ne51W5539Y9gynfSfM1XXNkgJJAubGGg==
+ t=1699203347; bh=QFwovX5RPW7IMq4uUoTrIwvqoq7/7Q8z3p4frGKGekE=;
+ b=iogMt8BWbZ0IMRmVXbXItCv2PMI90AvIJerLiaBkLdr5Iz3gxsyeA+sJtYcyrGpEiAq4Cx4jh
+ CU6e08rrf0+3hAGVy+uUEWSLW1V9mgO3K0MhMjoD5j3sNnCLB/zlyIgQKEVPNEPMsJJsCjUPrSp
+ bkjdHkeuCSVnNC6wRPf9nVTntHFNca6abSevGZl1ivQkXbc4zjsKD0bby05TvBxzYGNDV4jJEvN
+ msaVQ7ak2pAhjvxTFBh/wR7hcGbvTNhHB8PrknCBLCMXttDHfgNPsOPd5mIGi3gHBL284C2+afM
+ /TMAOTHtW2vO7Dp0JJU8Pi7PNGYV/XciaErgvSuz78Hw==
 From:   Jonas Karlman <jonas@kwiboo.se>
 To:     Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
         Mauro Carvalho Chehab <mchehab@kernel.org>,
@@ -37,9 +37,9 @@ Cc:     Alex Bee <knaerzche@gmail.com>,
         linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
         linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
         Jonas Karlman <jonas@kwiboo.se>
-Subject: [PATCH v4 04/11] media: rkvdec: h264: Don't hardcode SPS/PPS parameters
-Date:   Sun,  5 Nov 2023 16:55:03 +0000
-Message-ID: <20231105165521.3592037-5-jonas@kwiboo.se>
+Subject: [PATCH v4 05/11] media: rkvdec: h264: Remove SPS validation at streaming start
+Date:   Sun,  5 Nov 2023 16:55:04 +0000
+Message-ID: <20231105165521.3592037-6-jonas@kwiboo.se>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231105165521.3592037-1-jonas@kwiboo.se>
 References: <20231105165521.3592037-1-jonas@kwiboo.se>
@@ -51,7 +51,7 @@ X-Complaints-To: abuse@forwardemail.net
 X-ForwardEmail-Version: 0.4.40
 X-ForwardEmail-Sender: rfc822; jonas@kwiboo.se, smtp.forwardemail.net,
  149.28.215.223
-X-ForwardEmail-ID: 6547c90f42ad2f8d1524690e
+X-ForwardEmail-ID: 6547c91342ad2f8d1524691b
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
@@ -62,15 +62,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alex Bee <knaerzche@gmail.com>
+SPS parameters is validated in try_ctrl() ops so there is no need to
+re-validate when streaming starts.
 
-Some SPS/PPS parameters are currently hardcoded in the driver even
-though they exist in the stable uapi controls.
+Remove the unnecessary call to validate sps at streaming start.
 
-Use values from SPS/PPS controls instead of hardcoding them.
-
-Signed-off-by: Alex Bee <knaerzche@gmail.com>
-[jonas@kwiboo.se: constraint_set_flags condition, commit message]
+Suggested-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
 Signed-off-by: Jonas Karlman <jonas@kwiboo.se>
 ---
 v4:
@@ -79,43 +76,53 @@ v4:
 v3:
 - New patch
 
- drivers/staging/media/rkvdec/rkvdec-h264.c | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
+ drivers/staging/media/rkvdec/rkvdec-h264.c | 19 ++-----------------
+ 1 file changed, 2 insertions(+), 17 deletions(-)
 
 diff --git a/drivers/staging/media/rkvdec/rkvdec-h264.c b/drivers/staging/media/rkvdec/rkvdec-h264.c
-index 7a1e76d423df..8bce8902b8dd 100644
+index 8bce8902b8dd..815d5359ddd5 100644
 --- a/drivers/staging/media/rkvdec/rkvdec-h264.c
 +++ b/drivers/staging/media/rkvdec/rkvdec-h264.c
-@@ -655,13 +655,14 @@ static void assemble_hw_pps(struct rkvdec_ctx *ctx,
+@@ -1070,17 +1070,6 @@ static int rkvdec_h264_start(struct rkvdec_ctx *ctx)
+ 	struct rkvdec_dev *rkvdec = ctx->dev;
+ 	struct rkvdec_h264_priv_tbl *priv_tbl;
+ 	struct rkvdec_h264_ctx *h264_ctx;
+-	struct v4l2_ctrl *ctrl;
+-	int ret;
+-
+-	ctrl = v4l2_ctrl_find(&ctx->ctrl_hdl,
+-			      V4L2_CID_STATELESS_H264_SPS);
+-	if (!ctrl)
+-		return -EINVAL;
+-
+-	ret = rkvdec_h264_validate_sps(ctx, ctrl->p_new.p_h264_sps);
+-	if (ret)
+-		return ret;
  
- #define WRITE_PPS(value, field) set_ps_field(hw_ps->info, field, value)
- 	/* write sps */
--	WRITE_PPS(0xf, SEQ_PARAMETER_SET_ID);
--	WRITE_PPS(0xff, PROFILE_IDC);
--	WRITE_PPS(1, CONSTRAINT_SET3_FLAG);
-+	WRITE_PPS(sps->seq_parameter_set_id, SEQ_PARAMETER_SET_ID);
-+	WRITE_PPS(sps->profile_idc, PROFILE_IDC);
-+	WRITE_PPS(!!(sps->constraint_set_flags & (1 << 3)), CONSTRAINT_SET3_FLAG);
- 	WRITE_PPS(sps->chroma_format_idc, CHROMA_FORMAT_IDC);
- 	WRITE_PPS(sps->bit_depth_luma_minus8, BIT_DEPTH_LUMA);
- 	WRITE_PPS(sps->bit_depth_chroma_minus8, BIT_DEPTH_CHROMA);
--	WRITE_PPS(0, QPPRIME_Y_ZERO_TRANSFORM_BYPASS_FLAG);
-+	WRITE_PPS(!!(sps->flags & V4L2_H264_SPS_FLAG_QPPRIME_Y_ZERO_TRANSFORM_BYPASS),
-+		  QPPRIME_Y_ZERO_TRANSFORM_BYPASS_FLAG);
- 	WRITE_PPS(sps->log2_max_frame_num_minus4, LOG2_MAX_FRAME_NUM_MINUS4);
- 	WRITE_PPS(sps->max_num_ref_frames, MAX_NUM_REF_FRAMES);
- 	WRITE_PPS(sps->pic_order_cnt_type, PIC_ORDER_CNT_TYPE);
-@@ -688,8 +689,8 @@ static void assemble_hw_pps(struct rkvdec_ctx *ctx,
- 		  DIRECT_8X8_INFERENCE_FLAG);
+ 	h264_ctx = kzalloc(sizeof(*h264_ctx), GFP_KERNEL);
+ 	if (!h264_ctx)
+@@ -1089,8 +1078,8 @@ static int rkvdec_h264_start(struct rkvdec_ctx *ctx)
+ 	priv_tbl = dma_alloc_coherent(rkvdec->dev, sizeof(*priv_tbl),
+ 				      &h264_ctx->priv_tbl.dma, GFP_KERNEL);
+ 	if (!priv_tbl) {
+-		ret = -ENOMEM;
+-		goto err_free_ctx;
++		kfree(h264_ctx);
++		return -ENOMEM;
+ 	}
  
- 	/* write pps */
--	WRITE_PPS(0xff, PIC_PARAMETER_SET_ID);
--	WRITE_PPS(0x1f, PPS_SEQ_PARAMETER_SET_ID);
-+	WRITE_PPS(pps->pic_parameter_set_id, PIC_PARAMETER_SET_ID);
-+	WRITE_PPS(pps->seq_parameter_set_id, PPS_SEQ_PARAMETER_SET_ID);
- 	WRITE_PPS(!!(pps->flags & V4L2_H264_PPS_FLAG_ENTROPY_CODING_MODE),
- 		  ENTROPY_CODING_MODE_FLAG);
- 	WRITE_PPS(!!(pps->flags & V4L2_H264_PPS_FLAG_BOTTOM_FIELD_PIC_ORDER_IN_FRAME_PRESENT),
+ 	h264_ctx->priv_tbl.size = sizeof(*priv_tbl);
+@@ -1100,10 +1089,6 @@ static int rkvdec_h264_start(struct rkvdec_ctx *ctx)
+ 
+ 	ctx->priv = h264_ctx;
+ 	return 0;
+-
+-err_free_ctx:
+-	kfree(h264_ctx);
+-	return ret;
+ }
+ 
+ static void rkvdec_h264_stop(struct rkvdec_ctx *ctx)
 -- 
 2.42.0
 
