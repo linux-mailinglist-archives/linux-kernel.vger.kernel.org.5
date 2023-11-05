@@ -2,67 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 600867E169A
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Nov 2023 21:49:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51A437E169C
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Nov 2023 21:49:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229689AbjKEUt4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Nov 2023 15:49:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48082 "EHLO
+        id S229749AbjKEUt6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Nov 2023 15:49:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229731AbjKEUsR (ORCPT
+        with ESMTP id S229750AbjKEUsS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Nov 2023 15:48:17 -0500
+        Sun, 5 Nov 2023 15:48:18 -0500
 Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0D02F2;
-        Sun,  5 Nov 2023 12:48:13 -0800 (PST)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.nyi.internal (Postfix) with ESMTP id 4F3485C00D8;
-        Sun,  5 Nov 2023 15:48:13 -0500 (EST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2C57E0;
+        Sun,  5 Nov 2023 12:48:15 -0800 (PST)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.nyi.internal (Postfix) with ESMTP id 2AA585C00B6;
+        Sun,  5 Nov 2023 15:48:15 -0500 (EST)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Sun, 05 Nov 2023 15:48:13 -0500
+  by compute1.internal (MEProxy); Sun, 05 Nov 2023 15:48:15 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mai.rs; h=cc
         :content-transfer-encoding:content-type:date:date:from:from
         :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to; s=fm2; t=1699217293; x=
-        1699303693; bh=O8fDzcjgQ7pbEFlZ3Prz4CvsbP5ODoTbqCZT7YXk//4=; b=P
-        VyRY3wR5akHcZyhS/AuMA4WJeXBJbynx4JlprkOQkRhnFExy52chkCQlkk3b8//Q
-        Ptb1jZyoAgCKmZkl4oiwycb10hwT7YvizP+dWUYL8mrXi3bi1K5x2Oxi2NUrHwGG
-        XnyT08YnwmvHdXGZdhp0klcGk+fWvqQuf1Ambmf2KJ5nDMgmubqeQWM47XDYc5qC
-        qvFtsS95FKyWe9Ta5UfGSDyuJdfO3pg6kRx9959jUzK8KthWYMctD9i2wiy50rSm
-        kCAUWaVX2A6r3m6lhXhaukm/iZ6NylcvJjM/NJfHrq5RcAPSk6fJhlNrMo8uMXgs
-        93JQ0cTBEsem71dCgaJng==
+        :reply-to:sender:subject:subject:to:to; s=fm2; t=1699217295; x=
+        1699303695; bh=D+GTzLQFmpfIZebnBHKmLneCEhVlPIP7ZLa4jOj3Qhk=; b=F
+        cgbn1EgO+ZN/Ku5AhJwVNvrRBZMAE2GVgtjAo5dWFmBoF2SK7OGspGM/IG9yTVBr
+        dyTAUQduSv7nRR0E+LhCm+SvGcFF4y9EWvigCgX8Ipou/bmIEW9+OGc9XKCcQVtl
+        TJ/0QXN0uSFVWYloHCrTnSN3QXcV7K8vlaoihxTcyE9VNntzOrc91ofBA9vJS+1q
+        WwkeiRetH/fJ2jyvh/xftE4Z5Y9UaAlZTCnMQ36mcy13e1Q9ZhBIzXlFITGnk24a
+        M+TP4d+Ub9ofYQ8zCSnMTe9vUQv3ieavgafceG70DxSbeLsLDjOoEKBXHcQlcM+O
+        OjOPbAr891frLjRq0e77w==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:content-type
         :date:date:feedback-id:feedback-id:from:from:in-reply-to
         :in-reply-to:message-id:mime-version:references:reply-to:sender
         :subject:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender
-        :x-me-sender:x-sasl-enc; s=fm3; t=1699217293; x=1699303693; bh=O
-        8fDzcjgQ7pbEFlZ3Prz4CvsbP5ODoTbqCZT7YXk//4=; b=eFcYhvQeQBcZ1rUaP
-        oJynt5vuKzT5NYNum4/RBiqcw40Hqy2GQ0Nxl/tQhvXhfssggD8U2eeEbG2JAs4V
-        Dv3cjbq39jon/gG87NO3yihjQgdy/VpyR2Jc5OczXoLYg/lM1PPmer58v7kSdzpB
-        MWzZCTW8tSTV9NzLuG+ipba9dBYZHvvYnMacn5Bf08/r1KazH6BAVwGdSAvQDbdr
-        DkPRkDPpaM4SGlgoUw53b3w9mUriz6RVbIyvf5wVGtZZCXo+RXicdpZlBbiaVx5Y
-        eyBlSMyKuKNzhSo21fU3nlliHRZK60uvSi3FlccH+P/AURgaS+owEQi/2QgBneEy
-        56eAw==
-X-ME-Sender: <xms:jf9HZbLgxDd46baBvm-j0ubXe29iat-JkgQXyc3Xb7qL7jpZO2Rv5Q>
-    <xme:jf9HZfKzwWjzvvlGeuacehtCIlJ9S7VbVl1ySWmNf6d7tAk0xXmdln0vLk5Enecul
-    KlRIL7YBOxfbNvc2A>
-X-ME-Received: <xmr:jf9HZTtinVjnwhWveNrlhQebxHlcl8jr9xrr_U8o1GxtgEUjDI_2wVBMMqTX80s>
+        :x-me-sender:x-sasl-enc; s=fm3; t=1699217295; x=1699303695; bh=D
+        +GTzLQFmpfIZebnBHKmLneCEhVlPIP7ZLa4jOj3Qhk=; b=Yi2kMvP44eqkWUEsb
+        pk/wBH9onTmESYr3nUT4MQNlvp3L3lcLl7Qs7o9wa7WJLKDhFLjZQEyfBLsjWcOd
+        DQqPodZSXkCh2VBTM/V5hchDFauiyj3GOiy4KSfkkc+4EbLVoihV/YRPoAozWqCu
+        xY1ak03vNOfI52UtYvFBQsyaIAiOlzF25msYgwZok76n5WpZg2i7yl8w43xIoghw
+        Dhhd0mGAdqBQ+Nw3ux0SMYCBtkTf+O8CKZgd7WpehVZjSSogIEiQYpZslKEjFUGM
+        cqoYFJxJoVyAkvh5ENva00Z7rdDuipue5NL7iHTN+SWN/2Q7MF+4xcVegxw0INZS
+        wA/tg==
+X-ME-Sender: <xms:jv9HZeJeO4iqRLHTk5ElgHXPVh_fHO-YmGkOJmJ596P2xXWFPojhJA>
+    <xme:jv9HZWKO1BQzH5XV2tRCZzpaEvHdciaxHzJB-d1z4JQJgDAXXAwMOSmPqW9Sag8Mj
+    GVf0rfDBpRi6IqKvg>
+X-ME-Received: <xmr:jv9HZesDJQz_MZggRgYZZa_ywcP6_onOqzHcYb8ZOEKU0AqRHM7CFpXLPYDrknc>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudduvddgudegudcutefuodetggdotefrod
     ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
     necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
     enucfjughrpefhvffufffkofgjfhgggfestdekredtredttdenucfhrhhomhepuehrhigr
     nhhtucforghirhhsuceosghrhigrnhhtsehmrghirdhrsheqnecuggftrfgrthhtvghrnh
     epvdegkeekkeehffehveeltdekvdfhffejuefgjeelfeefgffgleekheeffefggeefnecu
-    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghrhigrnh
+    vehluhhsthgvrhfuihiivgepudenucfrrghrrghmpehmrghilhhfrhhomhepsghrhigrnh
     htsehmrghirdhrsh
-X-ME-Proxy: <xmx:jf9HZUZBix7rpD-37qprrRGw-MdsqTV7pN33zdaxkBDROC_9IoaQeg>
-    <xmx:jf9HZSZzuzpsNF3iC8lcBUfQp9ys5pNSOPtbh_g84wkKVp2yTXTxiQ>
-    <xmx:jf9HZYDHMgcHPfepNu4aAiTAbGyohrxfTzpkHATsOYZ9B0O7QB8dpw>
-    <xmx:jf9HZfQaHV6HrJcOge9ZkquAcVkstyVlEgjl1Jjg0iDAWSK29eSjfQ>
+X-ME-Proxy: <xmx:j_9HZTY5zxjMPCpYG6ru11WhEF0ZarcplAjO_MZNerEpppWM4CvUaw>
+    <xmx:j_9HZVakrYtfiPszQtvl19j_xbXP8ElTRoIV-mg1vI-0yIhBRinbVA>
+    <xmx:j_9HZfDYwg5LfGzhLAxDs4NeB7E4W7xq441NXbOOpeFV8Xwvih6ozg>
+    <xmx:j_9HZST4vRnt-OqF1RqWOlA0wuPtTDjGO-Kys9B7ekwBBrSGcuUzpg>
 Feedback-ID: i891b436e:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
- 5 Nov 2023 15:48:11 -0500 (EST)
+ 5 Nov 2023 15:48:13 -0500 (EST)
 From:   Bryant Mairs <bryant@mai.rs>
 To:     Andy Gross <agross@kernel.org>,
         Bjorn Andersson <andersson@kernel.org>,
@@ -74,9 +74,9 @@ To:     Andy Gross <agross@kernel.org>,
         Linus Walleij <linus.walleij@linaro.org>,
         linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-input@vger.kernel.org
-Subject: [PATCH 5/7] ARM: dts: qcom: apq8026-samsung-milletwifi: Enable charger
-Date:   Sun,  5 Nov 2023 21:46:20 +0100
-Message-ID: <20231105204759.37107-6-bryant@mai.rs>
+Subject: [PATCH 6/7] ARM: dts: qcom: apq8026-samsung-milletwifi: Enable Wi-Fi and Bluetooth
+Date:   Sun,  5 Nov 2023 21:46:21 +0100
+Message-ID: <20231105204759.37107-7-bryant@mai.rs>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231105204759.37107-1-bryant@mai.rs>
 References: <20231105204759.37107-1-bryant@mai.rs>
@@ -93,66 +93,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable charging support.
+Enable Wi-Fi and Bluetooth support for milletwifi. This device
+uses the WCN3660A that is already supported, so it only needs to be
+enabled in the DTS.
 
 Signed-off-by: Bryant Mairs <bryant@mai.rs>
 ---
- .../qcom/qcom-apq8026-samsung-milletwifi.dts  | 28 +++++++++++++++++++
- 1 file changed, 28 insertions(+)
+ .../qcom/qcom-apq8026-samsung-milletwifi.dts  | 29 +++++++++++++++++++
+ 1 file changed, 29 insertions(+)
 
 diff --git a/arch/arm/boot/dts/qcom/qcom-apq8026-samsung-milletwifi.dts b/arch/arm/boot/dts/qcom/qcom-apq8026-samsung-milletwifi.dts
-index 545992091c6b..910e8d2f69b0 100644
+index 910e8d2f69b0..57f50af487c1 100644
 --- a/arch/arm/boot/dts/qcom/qcom-apq8026-samsung-milletwifi.dts
 +++ b/arch/arm/boot/dts/qcom/qcom-apq8026-samsung-milletwifi.dts
-@@ -7,6 +7,7 @@
- /dts-v1/;
- 
- #include <dt-bindings/input/input.h>
-+#include <dt-bindings/power/summit,smb347-charger.h>
- #include "qcom-msm8226.dtsi"
- #include "qcom-pm8226.dtsi"
- 
-@@ -258,6 +259,26 @@ accelerometer@1d {
+@@ -310,6 +310,28 @@ touchscreen@48 {
  	};
  };
  
-+&blsp1_i2c3 {
++&pronto {
++	vddmx-supply = <&pm8226_l3>;
++	vddpx-supply = <&pm8226_l6>;
++
++	pinctrl-0 = <&wcnss_pin_a>;
++	pinctrl-names = "default";
++
 +	status = "okay";
 +
-+	charger@6a {
-+		compatible = "summit,smb358";
-+		reg = <0x6a>;
++	iris {
++		vddxo-supply = <&pm8226_l10>;
++		vddrfa-supply = <&pm8226_l24>;
++		vddpa-supply = <&pm8226_l16>;
++		vdddig-supply = <&pm8226_l24>;
++	};
 +
-+		interrupts-extended = <&tlmm 115 IRQ_TYPE_EDGE_FALLING>;
-+
-+		pinctrl-0 = <&charger_int_default_state>;
-+		pinctrl-names = "default";
-+
-+		summit,enable-usb-charging;
-+		summit,enable-charge-control = <SMB3XX_CHG_ENABLE_SW>;
-+		summit,fast-voltage-threshold-microvolt = <3000000>;
-+		summit,chip-temperature-threshold-celsius = <130>;
-+		summit,usb-current-limit-microamp = <1500000>;
++	smd-edge {
++		wcnss {
++			status = "okay";
++		};
 +	};
 +};
-+
- &blsp1_i2c4 {
- 	status = "okay";
  
-@@ -495,6 +516,13 @@ backlight_vddio_default_state: backlight-vddio-default-state {
- 		bias-disable;
+ &rpm_requests {
+ 	regulators {
+@@ -557,6 +579,13 @@ tsp_int_rst_default_state: tsp-int-rst-default-state {
+ 		drive-strength = <10>;
+ 		bias-pull-up;
  	};
- 
-+	charger_int_default_state: charger-int-default-state {
-+		pins = "gpio115";
-+		function = "gpio";
-+		drive-strength = <2>;
-+		bias-disable;
-+	};
 +
- 	muic_int_default_state: muic-int-default-state {
- 		pins = "gpio67";
- 		function = "gpio";
++	wcnss_pin_a: wcnss-pin-active-state {
++		pins =  "gpio40", "gpio41", "gpio42", "gpio43", "gpio44";
++		function = "wlan";
++		drive-strength = <6>;
++		bias-pull-down;
++	};
+ };
+ 
+ &usb {
 -- 
 2.41.0
 
