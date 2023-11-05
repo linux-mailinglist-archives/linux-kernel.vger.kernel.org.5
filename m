@@ -2,75 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DAE157E12C2
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Nov 2023 10:27:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A1987E12C8
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Nov 2023 10:29:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229617AbjKEJ13 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Nov 2023 04:27:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46342 "EHLO
+        id S229451AbjKEJ3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Nov 2023 04:29:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229447AbjKEJ11 (ORCPT
+        with ESMTP id S229475AbjKEJ3U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Nov 2023 04:27:27 -0500
-Received: from 1wt.eu (ded1.1wt.eu [163.172.96.212])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8292AB7;
-        Sun,  5 Nov 2023 01:27:23 -0800 (PST)
-Received: (from willy@localhost)
-        by mail.home.local (8.17.1/8.17.1/Submit) id 3A59R0i9002306;
-        Sun, 5 Nov 2023 10:27:00 +0100
-Date:   Sun, 5 Nov 2023 10:27:00 +0100
-From:   Willy Tarreau <w@1wt.eu>
-To:     Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>
-Cc:     Shuah Khan <shuah@kernel.org>, Zhangjin Wu <falcon@tinylab.org>,
-        Yuan Tan <tanyuan@tinylab.org>, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH] selftests/nolibc: add script to run testsuite
-Message-ID: <ZUdf5J2kVZSxDaWd@1wt.eu>
-References: <20231105-nolibc-run-tests-v1-1-b59ff770a978@weissschuh.net>
+        Sun, 5 Nov 2023 04:29:20 -0500
+Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD7B9FB
+        for <linux-kernel@vger.kernel.org>; Sun,  5 Nov 2023 01:29:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        sang-engineering.com; h=from:to:cc:subject:date:message-id
+        :mime-version:content-transfer-encoding; s=k1; bh=4dwyhc7I5VMK+p
+        3joAdQ6muDlyj3lJuFlgGGOnOLLkM=; b=GOqsPTQgSakmrjtRYAs0RNIjZY7DM9
+        2mY6o3VlX4huWsGyJs2yTgEpgrICr2KSM3ToL1DPIfKkx6tYWIKMJGdwGypuUCyj
+        JGu28X97KaHSoMHnxURUf++gozdPrtWWNzgowUeKcOZkWWx/aLso0S76DxxCpBHE
+        OfXURWT2z2s1MC7VzTvkc3eFYpqaNcxREsjR9XEPBh0foJZsf2Y/DbehZkOQrd8c
+        U+D+Wd3f43E7LUkKb+QnGrmMPomHYyNTdRLB8ilOy3bjHNxi1OcivmPkNI7u0oQt
+        s8AEu4in1EaqkMA8BEgGp+70+Sb6se/le4XSAAc/bws5tChfeVytTy8Q==
+Received: (qmail 1670058 invoked from network); 5 Nov 2023 10:29:15 +0100
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 5 Nov 2023 10:29:15 +0100
+X-UD-Smtp-Session: l3s3148p1@um33XmQJZsQgAQnoAFPQANY41GnTzLIh
+From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
+To:     linux-renesas-soc@vger.kernel.org
+Cc:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org,
+        Marek Vasut <marek.vasut+renesas@gmail.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+Subject: [PATCH v5 RESEND 0/2] PCI: rcar: support regulators for PCIe
+Date:   Sun,  5 Nov 2023 10:29:06 +0100
+Message-Id: <20231105092908.3792-1-wsa+renesas@sang-engineering.com>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231105-nolibc-run-tests-v1-1-b59ff770a978@weissschuh.net>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 05, 2023 at 10:23:05AM +0100, Thomas Weiﬂschuh wrote:
-> The script can run the testsuite for multiple architectures and provides
-> an overall test report.
-> 
-> Furthermore it can automatically download crosstools from
-> mirrors.kernel.org if requested by the user.
-> 
-> Example execution:
-> 
-> $ ./run-tests.sh
-> i386:          162 test(s): 162 passed,   0 skipped,   0 failed => status: success
-> x86_64:        162 test(s): 162 passed,   0 skipped,   0 failed => status: success
-> arm64:         162 test(s): 162 passed,   0 skipped,   0 failed => status: success
-> arm:           162 test(s): 162 passed,   0 skipped,   0 failed => status: success
-> mips:          162 test(s): 161 passed,   1 skipped,   0 failed => status: warning
-> ppc:           162 test(s): 162 passed,   0 skipped,   0 failed => status: success
-> ppc64:         162 test(s): 162 passed,   0 skipped,   0 failed => status: success
-> ppc64le:       162 test(s): 162 passed,   0 skipped,   0 failed => status: success
-> riscv:         162 test(s): 162 passed,   0 skipped,   0 failed => status: success
-> s390:          162 test(s): 161 passed,   1 skipped,   0 failed => status: warning
-> loongarch:     162 test(s): 161 passed,   1 skipped,   0 failed => status: warning
-> 
-> Signed-off-by: Thomas Weiﬂschuh <linux@weissschuh.net>
-> ---
-(...)
+Here are the patches to make PCIe cards work in slot CN15 on a Renesas
+KingFisher board. Please apply.
 
+Changes since v4:
+* rebased to 6.6
+* added ack from Mani (Thanks!)
 
-Really nice, much cleaner than my old ugly scripts ;-)
-Thanks for this, Thomas!
+Wolfram Sang (2):
+  dt-bindings: PCI: rcar-pci-host: add optional regulators
+  PCI: rcar-host: add support for optional regulators
 
-Acked-by: Willy Tarreau <w@1wt.eu>
+ .../devicetree/bindings/pci/rcar-pci-host.yaml   | 11 +++++++++++
+ drivers/pci/controller/pcie-rcar-host.c          | 16 +++++++++++++++-
+ 2 files changed, 26 insertions(+), 1 deletion(-)
 
-Willy
+-- 
+2.35.1
+
