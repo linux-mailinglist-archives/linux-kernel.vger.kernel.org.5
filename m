@@ -2,53 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B64C07E141F
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Nov 2023 16:41:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56A967E1420
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Nov 2023 16:47:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229448AbjKEPlS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Nov 2023 10:41:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32998 "EHLO
+        id S229455AbjKEPr1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Nov 2023 10:47:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbjKEPlR (ORCPT
+        with ESMTP id S229379AbjKEPr1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Nov 2023 10:41:17 -0500
-Received: from mail-oi1-f198.google.com (mail-oi1-f198.google.com [209.85.167.198])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33EBDA7
-        for <linux-kernel@vger.kernel.org>; Sun,  5 Nov 2023 07:41:13 -0800 (PST)
-Received: by mail-oi1-f198.google.com with SMTP id 5614622812f47-3b3fb625e3bso5100195b6e.3
-        for <linux-kernel@vger.kernel.org>; Sun, 05 Nov 2023 07:41:13 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699198873; x=1699803673;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=gElMvZ90E9NrLp0DJcJVCcc9n231HGrU6vRzoKnEB/A=;
-        b=VPBtIg7V5Pd/le2lY9X1I095M7mVw8Plf7OpsNKyEnT5lTOYJYQRNozS5pN8x3WriO
-         h7757eUb0jNQavWBoBVRxi8cJTnOwFE/rLoETP48hIe7GQdfI0qPr7B5wpKFPhco6/e4
-         PDiCrEfo+tGOyXspADfi0FqOBKb2cnddD8mlopHAslYitf8F2ufHp2ectjXOpjoMLVQf
-         g0WgiPiUtiBQTgaBszlhYjvTkf8IMB7NBeZFP9HsN+7Irzo6jsIOALZtBNDY17vN9c6h
-         ickX4hP0Fd/WCg+6ZZW+dUJewUuIvCOTiMHkU0/o3c21MR0oWSvs/cbVnydjm3TgHFRx
-         QkCg==
-X-Gm-Message-State: AOJu0Yz+xf1Xn27LHcBFu+qUcnaRHlOYlArMyyKLj+1FYhDKu0k9b+eY
-        f1pXlFkpEUh0PFtWTJn9CQpZG7lUFWacR6dXtxOUIMk43iue39s=
-X-Google-Smtp-Source: AGHT+IGn66kd/YTMEJxsyJ3jUbynVvUNebw9b2Xd5uzL2exAy6ad+Zp/9Lygk9KdMOmOYglJDeTY8gFPV0I39s5rAAk2EuHBFZbX
+        Sun, 5 Nov 2023 10:47:27 -0500
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28678B8
+        for <linux-kernel@vger.kernel.org>; Sun,  5 Nov 2023 07:47:23 -0800 (PST)
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-311-k3HE-6c7MEyLMT7ytN7A-A-1; Sun, 05 Nov 2023 15:47:20 +0000
+X-MC-Unique: k3HE-6c7MEyLMT7ytN7A-A-1
+Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
+ (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Sun, 5 Nov
+ 2023 15:47:19 +0000
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Sun, 5 Nov 2023 15:47:19 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Nadav Amit' <nadav.amit@gmail.com>,
+        Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
+CC:     Richard Weinberger <richard@nod.at>,
+        "linux-um@lists.infradead.org" <linux-um@lists.infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: RE: Missing clobber on alternative use on Linux UM 32-bit
+Thread-Topic: Missing clobber on alternative use on Linux UM 32-bit
+Thread-Index: AQHaDwMKcQHyK5uteEWVVs9ePUP5ubBr4G4Q
+Date:   Sun, 5 Nov 2023 15:47:19 +0000
+Message-ID: <41cac2e7ad9341259f356e1b3cf5f418@AcuMS.aculab.com>
+References: <24BD0906-C6FE-499C-9A4A-00C56E6EE84A@gmail.com>
+ <a55f6941-ddf6-2355-271d-5ed0db5a2a62@kot-begemot.co.uk>
+ <1616BF59-5C18-46C7-86AB-92604B683652@gmail.com>
+In-Reply-To: <1616BF59-5C18-46C7-86AB-92604B683652@gmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-X-Received: by 2002:a05:6808:3609:b0:3b2:e15d:e560 with SMTP id
- ct9-20020a056808360900b003b2e15de560mr9159182oib.9.1699198873222; Sun, 05 Nov
- 2023 07:41:13 -0800 (PST)
-Date:   Sun, 05 Nov 2023 07:41:13 -0800
-In-Reply-To: <CAK6rUAP-bopjVvGxevFKHEgVhYPxQMD-b2TGsmf81QWSYsirvQ@mail.gmail.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000003dc45c06096991ca@google.com>
-Subject: Re: [syzbot] [gfs2?] BUG: unable to handle kernel NULL pointer
- dereference in gfs2_rgrp_dump
-From:   syzbot <syzbot+da0fc229cc1ff4bb2e6d@syzkaller.appspotmail.com>
-To:     linux-kernel@vger.kernel.org, osmtendev@gmail.com,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,21 +63,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+RnJvbTogTmFkYXYgQW1pdA0KPiBTZW50OiAwNCBOb3ZlbWJlciAyMDIzIDA5OjQxDQo+IA0KPiA+
+IE9uIE5vdiA0LCAyMDIzLCBhdCAxMTozNCBBTSwgQW50b24gSXZhbm92IDxhbnRvbi5pdmFub3ZA
+a290LWJlZ2Vtb3QuY28udWs+IHdyb3RlOg0KPiA+DQo+ID4gT24gMDQvMTEvMjAyMyAwOToyNSwg
+TmFkYXYgQW1pdCB3cm90ZToNCj4gPj4NCj4gPj4gSSB3YXMgcmVhZGluZyAoYWdhaW4pIHRoZSB4
+ODYgQyBtYWNybyBvZiDigJxhbHRlcm5hdGl2ZSgp4oCdIGFuZCBJIHdhcyBhIGJpdA0KPiA+PiBz
+dXJwcmlzZWQgaXQgZG9lcyBjbG9iYmVyIHRoZSBmbGFncyAo4oCcY2PigJ0pIGFzIGEgcHJlY2F1
+dGlvbi4NCj4gPj4NCj4gPj4gICNkZWZpbmUgYWx0ZXJuYXRpdmUob2xkaW5zdHIsIG5ld2luc3Ry
+LCBmdF9mbGFncykgXA0KPiA+PiAJYXNtX2lubGluZSB2b2xhdGlsZSAoQUxURVJOQVRJVkUob2xk
+aW5zdHIsIG5ld2luc3RyLCBmdF9mbGFncykgOiA6IDogIm1lbW9yeSIpDQo+ID4+DQo+ID4+IEFj
+dHVhbGx5IHRoZXJlIHNlZW1zIHRvIGJlIG9ubHkgb25lIGluc3RhbmNlIG9mIHByb2JsZW1hdGlj
+IGNhc2VzIC0gaW4gdW0vMzItYml0Og0KPiA+Pg0KPiA+PiAgI2RlZmluZSBtYigpIGFsdGVybmF0
+aXZlKCJsb2NrOyBhZGRsICQwLDAoJSVlc3ApIiwgIm1mZW5jZSIsIFg4Nl9GRUFUVVJFX1hNTTIp
+DQo+ID4+ICAjZGVmaW5lIHJtYigpIGFsdGVybmF0aXZlKCJsb2NrOyBhZGRsICQwLDAoJSVlc3Ap
+IiwgImxmZW5jZSIsIFg4Nl9GRUFUVVJFX1hNTTIpDQo+ID4+ICAjZGVmaW5lIHdtYigpIGFsdGVy
+bmF0aXZlKCJsb2NrOyBhZGRsICQwLDAoJSVlc3ApIiwgInNmZW5jZSIsIFg4Nl9GRUFUVVJFX1hN
+TSkNCj4gPj4NCj4gPj4gUHJlc3VtYWJseSwgaWYgWE1NIG9yIFhNTTIgYXJlIG5vdCBzdXBwb3J0
+ZWQsIHRoZXJlIHdvdWxkIGJlIGluc3RhbmNlcyB3aGVyZSBhZGRsDQo+ID4+IHdvdWxkIGJlIGFi
+bGUgdG8gY2hhbmdlIGVmbGFncyBhcml0aG1ldGljIGZsYWdzIHdpdGhvdXQgdGhlIGNvbXBpbGVy
+IGJlaW5nIGF3YXJlDQo+ID4+IG9mIGl0Lg0KPiA+Pg0KPiA+PiBBcyBpdCBvbmx5IGFmZmVjdHMg
+MzItYml0IExpbnV4IFVNIC0gSSBkb27igJl0IGVhc2lseSBoYXZlIGFuIGVudmlyb25tZW50IHRv
+IHRlc3QNCj4gPj4gdGhlIGZpeC4gQW4gYWx0ZXJuYXRpdmUgKHdvcmQtcHVuIHVuaW50ZW5kZWQp
+IGlzIHRvIGFkZCDigJxjY+KAnSBhcyBhIHByZWNhdXRpb24NCj4gPj4gdG8gdGhlIGFsdGVybmF0
+aXZlIG1hY3JvLg0KPiA+Pg0KPiA+IEFwcGxpY2F0aW9uIGFsdGVybmF0aXZlcyBpbiB1bSBpcyBw
+cmVzZW50bHkgYSBOT1AuIEl0IGFsd2F5cyB1c2VzIHRoZSAiYmx1bnQgYW5kIGhlYXZ5IGluc3Ry
+dW1lbnQiIC0NCj4gdGhlIG1vc3QgY29uc2VydmF0aXZlIG9wdGlvbi4NCj4gPg0KPiA+IEl0IGlz
+IG9uIHRoZSBUT0RPIGxpc3QuDQo+IA0KPiBUaGFua3MgZm9yIHRoZSBxdWljayByZXNwb25zZS4g
+QnV0IEkgZG9u4oCZdCBzZWUgaG93IGl0IHByZXZlbnRzIHRoZSBwcm9ibGVtDQo+IChpdCBhY3R1
+YWxseSBtYWtlcyBpdCB3b3JzZSAtIGFmZmVjdGluZyBYTU0vWE1NMiBDUFVzIGFzIHdlbGwpIHNp
+bmNlIHlvdQ0KPiBrZWVwIHRoZSDigJxsb2NrOyBhZGRsICQwLDAoJSVlc3Ap4oCdIGluIHRoZSBy
+dW5uaW5nIGNvZGUsIGFmZmVjdGluZyBlZmxhZ3MNCj4gd2l0aG91dCB0ZWxsaW5nIHRoZSBjb21w
+aWxlciB0aGF0IHlvdSBkbyBzbyB0aHJvdWdoIGEg4oCcY2PigJ0gY2xvYmJlci4NCg0KZ2NjIGFs
+d2F5cyBhc3N1bWVzIHRoYXQgaW5saW5lIGFzbSBjaGFuZ2VzICJjYyIgLSB0aGVyZSBpcyBubyBu
+ZWVkDQp0byBhZGQgYSAnY2xvYmJlcicgZm9yIGl0Lg0KDQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJl
+ZCBBZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXlu
+ZXMsIE1LMSAxUFQsIFVLDQpSZWdpc3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVzKQ0K
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
-
-Reported-and-tested-by: syzbot+da0fc229cc1ff4bb2e6d@syzkaller.appspotmail.com
-
-Tested on:
-
-commit:         8de1e7af Merge branch 'for-next/core' into for-kernelci
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
-console output: https://syzkaller.appspot.com/x/log.txt?x=176d137f680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=f3093f0327aee8b7
-dashboard link: https://syzkaller.appspot.com/bug?extid=da0fc229cc1ff4bb2e6d
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: arm64
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=10c10097680000
-
-Note: testing is done by a robot and is best-effort only.
