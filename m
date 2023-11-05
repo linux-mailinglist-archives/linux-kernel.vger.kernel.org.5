@@ -2,379 +2,306 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 61B587E13FC
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Nov 2023 16:01:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E77F7E1410
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Nov 2023 16:15:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230217AbjKEPBB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Nov 2023 10:01:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38560 "EHLO
+        id S229472AbjKEPPx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Nov 2023 10:15:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229608AbjKEPA7 (ORCPT
+        with ESMTP id S229447AbjKEPPw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Nov 2023 10:00:59 -0500
-Received: from domac.alu.hr (unknown [IPv6:2001:b68:2:2800::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A955BCC;
-        Sun,  5 Nov 2023 07:00:53 -0800 (PST)
-Received: from localhost (localhost [127.0.0.1])
-        by domac.alu.hr (Postfix) with ESMTP id 243D960171;
-        Sun,  5 Nov 2023 16:00:51 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1699196451; bh=qvKSHw3J6qeuAYrLlbIvC3dVidyWm6Vnzsr7vkATR+A=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=MtRtEqFGFyFMQkBVpSg5GWe+QlzfAMMx+FjCyoEi5uMrrFcYhoeB1qwKtNGh1rZS+
-         YMJNXLLSQU0cGlXVDJH9UUiy5TAlTCBle4ERk4z0C4Q3KYjeuxOseTlRrh4J3BsnJR
-         1xQY55Rs3/o1o8gYR+0npOKabbGg19O4U2PRbYo3jtCYGpQ1W9a7jKK+UsKWnNFlq3
-         ohdYQq8d5Vk7AX34MLSS7tm4p4e3XCblQ2IuwPhcglcbPLtnUj9349VQyt3mp72pD1
-         PAKj50SzUaLmpEYa3145H1EUQCQiPWT4YvWPE0t5hyheZAE9OL4okXJthHVaJgWZ10
-         c9s2L5Uc8gLug==
-X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
-Received: from domac.alu.hr ([127.0.0.1])
-        by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id j1eLVgwG0RiU; Sun,  5 Nov 2023 16:00:48 +0100 (CET)
-Received: from [192.168.1.6] (78-2-200-35.adsl.net.t-com.hr [78.2.200.35])
-        by domac.alu.hr (Postfix) with ESMTPSA id 3CE3E6016E;
-        Sun,  5 Nov 2023 16:00:47 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1699196448; bh=qvKSHw3J6qeuAYrLlbIvC3dVidyWm6Vnzsr7vkATR+A=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=n86Od7xMdYA+BHmtFvweKT25Xz3tW0zwgV3XPlYD4xWG4EiC307gZ5jsyYFY2p4uC
-         0dBFN9JjzjSFMD+MiRVRYJZsHSpMEpgZYYud2DD86aDqkkysE9/GS3+YjfsCGDEis0
-         C4OkANhgURzYuz5eevCsEHDLcL06ht+myuTD1iDrEZP+Rax1vmUGsAk8hWb6fqaKSs
-         aUBnbrRqUEdkzqjxNMgOaN3ylC0v/dhhW3Q6LdhgFoiRpvo9ssUoGsMca8avRqvAkc
-         zp1HbiooJasctY1TUhWUsqfQBRN+JmxDCDcrYOd1ChfOWwcmMFbx7ZaqoP3qBkSYkS
-         hV48oAJ57kPKA==
-Message-ID: <d63fc409-f662-4776-84ed-e4b8e7848ae5@alu.unizg.hr>
-Date:   Sun, 5 Nov 2023 16:00:46 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v6 0/5] Coalesce mac ocp write/modify calls to
- reduce spinlock contention
+        Sun, 5 Nov 2023 10:15:52 -0500
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10olkn2046.outbound.protection.outlook.com [40.92.42.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0435CD9;
+        Sun,  5 Nov 2023 07:15:49 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Xd+Eqjc2wq7XM4WtJex308nNgxSPmiNP5DW9DdXze+YrB3eQJ2FP3P/PFXfLJsfIfsmyf//J7T200TeCbMmwEui5pbb6NmGWkVVEwCkMsmXxz6X+kTSs4UCH1gsM52I+9p+xGx5sv6QapsRtFi+extrQZW0WAiWdUW8uhDkAV3fM7cRERxxpAngUPcZvWikrP0N0huZ3VGdCN6NPNtZxj9GEaykUCU8DJoi9KeNHN2CS+66xifFioH62BkFEldve9nSYJoaPQLV3rqcNoHU0MymrRg+X7yydo8sQCAkWD6J+P6U3S3Zeb2lFUFaPFM8k59+1AP8PGS6/A7QcNz5IaA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=VorxeaR0tPcsEj0IC7UDkAeMGJMwekz+Pv1hYawm2l0=;
+ b=RPVlvRbct/jzqdKTA6GMbamwxzaOITuleYfcRt21D/G8VU7oJMbClAX0R4PIn5P1KGeS9o3abadcgq54YtWZkX+0rExwn8jeH/+QSpB01xfzDr+zZnkq2IsISDMVNp788Cq7b2WAEgGK4ccTUXZCwpKRv7WzBH+TcSBxWO3a1TGO0am3oL7FBMJHLSCS5BFl0HWrA8n7ApnPYs50Tot31WWuEcW2G0I6OPSwxUHMDADg1s+IbpT0iYq/BW7oDVXKtnFnfhBzERPj7UNaE6adeLTHbla+1ONSkCaDs9WF/FSbLQ/tdbryCJKHoEY/HLN1biuVptZ0YP+wRaQB4yNJOw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=VorxeaR0tPcsEj0IC7UDkAeMGJMwekz+Pv1hYawm2l0=;
+ b=bY8gZPhuEV3O7Y91j6zOdyQfJR1p7nNF5ZtanPSbqkHS9+jj9q8elot26Znxs3LtPlXG+t/FO13Xz0jvxVKnpXgE/pm9R2Y3096wUwE7sTjgDjPx6XJ7ElGjyqCB7V/AHteoZZ253bssW0q4YRwndc3Og9lBox2/DyDp7qpgq3bfbfqhW8abfln3uglJsdl0r7MhTuFCkX2Q/WJhAm4BpRG+aBCSP8o88LmDj6S0+cMfTuA9jEA+sM930O5cnWQ4GDnwykPW6djxV/plND750jZmSYcAxI/yvMr/oMRFYLCyveJncIjvyeavvM6US5hEvAb2U1b9ckXN01e7CthxtQ==
+Received: from BY3PR18MB4692.namprd18.prod.outlook.com (2603:10b6:a03:3c7::12)
+ by PH7PR18MB5666.namprd18.prod.outlook.com (2603:10b6:510:2e7::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.27; Sun, 5 Nov
+ 2023 15:15:46 +0000
+Received: from BY3PR18MB4692.namprd18.prod.outlook.com
+ ([fe80::4fa4:77da:f114:612a]) by BY3PR18MB4692.namprd18.prod.outlook.com
+ ([fe80::4fa4:77da:f114:612a%6]) with mapi id 15.20.6954.027; Sun, 5 Nov 2023
+ 15:15:45 +0000
+From:   Michael Kelley <mhklinux@outlook.com>
+To:     Nischala Yelchuri <niyelchu@linux.microsoft.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>,
+        "kys@microsoft.com" <kys@microsoft.com>,
+        "haiyangz@microsoft.com" <haiyangz@microsoft.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        "decui@microsoft.com" <decui@microsoft.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
+        "drawat.floss@gmail.com" <drawat.floss@gmail.com>,
+        "maarten.lankhorst@linux.intel.com" 
+        <maarten.lankhorst@linux.intel.com>,
+        "mripard@kernel.org" <mripard@kernel.org>,
+        "tzimmermann@suse.de" <tzimmermann@suse.de>,
+        "airlied@gmail.com" <airlied@gmail.com>,
+        "daniel@ffwll.ch" <daniel@ffwll.ch>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "deller@gmx.de" <deller@gmx.de>
+CC:     "mhkelley@outlook.com" <mhkelley@outlook.com>,
+        "singhabhinav9051571833@gmail.com" <singhabhinav9051571833@gmail.com>,
+        "niyelchu@microsoft.com" <niyelchu@microsoft.com>
+Subject: RE: [PATCH] Replace ioremap_cache() with memremap()
+Thread-Topic: [PATCH] Replace ioremap_cache() with memremap()
+Thread-Index: AQHaDNzUez9nfYQyzk+2c7gpvJ79lbBr0PJg
+Date:   Sun, 5 Nov 2023 15:15:45 +0000
+Message-ID: <BY3PR18MB469219E1401B9E1A997EA51BD4ABA@BY3PR18MB4692.namprd18.prod.outlook.com>
+References: <1698854508-23036-1-git-send-email-niyelchu@linux.microsoft.com>
+In-Reply-To: <1698854508-23036-1-git-send-email-niyelchu@linux.microsoft.com>
+Accept-Language: en-US
 Content-Language: en-US
-To:     Heiner Kallweit <hkallweit1@gmail.com>,
-        linux-kernel@vger.kernel.org
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        nic_swsd@realtek.com
-References: <20231104221514.45821-1-mirsad.todorovac@alu.unizg.hr>
- <da4409f3-d509-413b-8433-f222acbbb1be@gmail.com>
- <edee64f4-442d-4670-a91b-e5b83117dd40@alu.unizg.hr>
- <716b3dc3-231e-4fd2-b892-707c0d636d00@gmail.com>
-From:   Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
-In-Reply-To: <716b3dc3-231e-4fd2-b892-707c0d636d00@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,MAY_BE_FORGED,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        T_SCC_BODY_TEXT_LINE,T_SPF_PERMERROR,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-tmn:  [K0H8C53o/bui+UHEXvpEJQHbJR9dIQAM]
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BY3PR18MB4692:EE_|PH7PR18MB5666:EE_
+x-ms-office365-filtering-correlation-id: 57a6393c-7f18-49d2-4c1c-08dbde1215bc
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: md/6IQYiwYcVGJm39PuQyVapNLYKd0v0Y07yZrfvKaGD0XYlDh+V9uMww1YD0rv03mKADTlX0SOm4RSJjYTWxL03gat0B3Bf8NzUE+g9vjQcrM4NzX0VLO/idL5I672Z6SS6un8VJWNHh9X6TLTHZVD7usjnRtaG0xdo5uqZDruiJ3Dg9uaVHaIHDSmYjXEiC6KEf3tGQGSFjAJ69LILIXJ0m9xEZsi3AHDLi/ln3QrMp1kwvcqBp7fR+w1SpVsjSIebRKDyRxFSSpkq+87X1D2a4bULVHRTKXQuqOYGeT9TMtrCo1a1VDMrFmUQuorkX+ubkrdN6ucmcq9IXvce379nI48kUCxcLRGt1yFPY/O7Fk0a2GMC7t0cNxK0lidimtKWmdwFSpp1usnQyJd9+G0YQa2Ff5oswp+0YIHfRAhRqFPSrQRQtDUODd9bOMx1QMT/s/p59GIF+Fi3vzDq2h37SWrSVhv1WmS/gQwtNo73Jw42+Rei4I30F00TVoWi04nPAkPo61XbmiOVDNBtrZWFE2mujQAj/l3GKRdmXV2FP7vGR1HsqWMDIOe2hFtQ
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?H+Qy2hNpOhV2F3RZHPNGmKOU5qJaECY07hBMiMBxJc/ycS/AtZbGqsWddYl8?=
+ =?us-ascii?Q?lbpjvw7I6nxnsdNMQE+l8upnQn5Z2peg6XLcZ51pIufWngFOKHC8bIFehW0D?=
+ =?us-ascii?Q?Klrph6ve4SNdadcFOqL6u+o9gehgjJ0H/dl4SkfRch4UCGuDtp55QZF65DG6?=
+ =?us-ascii?Q?dRCxfA2cWpmee4zA8Nc+nZw3432kgUGt5eJZSeltMkFqy5a/0lzrlHAVUGbh?=
+ =?us-ascii?Q?gfomJlNcl0xMcBQrHJ6PbZioSwddye/Iz/a0RiaBKgmFj7Vq2jk3icY/2SV9?=
+ =?us-ascii?Q?H9I4lM7Zb9qRE/e7kCtONRezH6dauYdVdzGD07rS+2NR9Q7c8gH/cXFmUtJA?=
+ =?us-ascii?Q?gpdGBcYu8n3wUqqpR85fdhLoNkaZtVKcdZ3jzt1QW2d5H8NROE8GbO+10ip9?=
+ =?us-ascii?Q?yPgtSWj1ggZf4kqnPUCeITEtKEBKWsAo9IluRAMLc45nAuf0CiY8CGZVY9aE?=
+ =?us-ascii?Q?RXL2t29zq1HID8ALi0V5mUk9MkRj4T/zTCK8WUM2p9XLEweYja+NH59Jt9tZ?=
+ =?us-ascii?Q?kBBgKCP6lwF+CE5wj9MF5oSTeKKBfbK42dbrbOFEn46JINL5gSWOuMgI1c4+?=
+ =?us-ascii?Q?eEn6D4xI4nCIlkwT/Vld6JLEfajy6AvBquZijYAvGx394pM/fWiZW9gMqQI4?=
+ =?us-ascii?Q?fqt+pjUFZgWXCSMWQlJWfA2BEDxnROydsodNxXNr2Q1S+05jPHIVb6kOupB3?=
+ =?us-ascii?Q?VJO9Y8LPKa+/fp6TmAphng37yqekogp8uegp66J+1wD8ZFJRQEcg66PMXt1g?=
+ =?us-ascii?Q?LisUPt0zs2fB3qqnlR9bYutQEN+Oq4rvHK3Moo9A96X0amdNAly4RXkLuKPN?=
+ =?us-ascii?Q?hJ+qrBV2nn4bSuOAdL+vTOCfMTpq50vwa3NZDrN9ANZGl29UXfndjOH9r2WV?=
+ =?us-ascii?Q?peGjGl9uC7HmE1gV48BmP+EWhj+HJcNmzZ+gmOSgUf/Wg2xhCBN0pEIMG6Lh?=
+ =?us-ascii?Q?LWmBeuTfpI8H0z4LwSzsdY6huwwwbQD9g19b5eIzfCEPDwsPk+m0rdN7T8zc?=
+ =?us-ascii?Q?0We0PwAfWGfszIfvBETkv30lqX1ztHBMjUxZyOlXjHPewAH31jE0jgWhVgUu?=
+ =?us-ascii?Q?Th6g9ieIc51nXbkF+jDw2B1uT/JAtVgJLgQ4GjE96lUo4yw2C3D+YPLioAzy?=
+ =?us-ascii?Q?F2xkJdqi9w/Ap/xGXXqaTRVrU+muULSa8cEevqbi+cVHDj7269WZhPRmXMCa?=
+ =?us-ascii?Q?Jnl33wpit8QdWkSwnphLukE1qdFUeE0rYdsojg=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BY3PR18MB4692.namprd18.prod.outlook.com
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-Network-Message-Id: 57a6393c-7f18-49d2-4c1c-08dbde1215bc
+X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Nov 2023 15:15:45.8443
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR18MB5666
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/5/23 10:20, Heiner Kallweit wrote:
-> On 05.11.2023 01:15, Mirsad Todorovac wrote:
->>
->>
->> On 11/4/23 23:37, Heiner Kallweit wrote:
->>> On 04.11.2023 23:15, Mirsad Goran Todorovac wrote:
->>>> The motivation for these helpers was the locking overhead of 130 consecutive
->>>> r8168_mac_ocp_write() calls in the RTL8411b reset after the NIC gets confused
->>>> if the PHY is powered-down.
->>>>
->>>> To quote Heiner:
->>>>
->>>>       On RTL8411b the RX unit gets confused if the PHY is powered-down.
->>>>       This was reported in [0] and confirmed by Realtek. Realtek provided
->>>>       a sequence to fix the RX unit after PHY wakeup.
->>>>
->>>> A series of about 130 r8168_mac_ocp_write() calls is performed to program the
->>>> RTL registers for recovery, each doing an expensive spin_lock_irqsave() and
->>>> spin_unlock_irqrestore().
->>>>
->>>> Each mac ocp write is made of:
->>>>
->>>>       static void __r8168_mac_ocp_write(struct rtl8169_private *tp, u32 reg,
->>>>                         u32 data)
->>>>       {
->>>>           if (rtl_ocp_reg_failure(reg))
->>>>               return;
->>>>
->>>>           RTL_W32(tp, OCPDR, OCPAR_FLAG | (reg << 15) | data);
->>>>       }
->>>>
->>>>       static void r8168_mac_ocp_write(struct rtl8169_private *tp, u32 reg,
->>>>                       u32 data)
->>>>       {
->>>>           unsigned long flags;
->>>>
->>>>           raw_spin_lock_irqsave(&tp->mac_ocp_lock, flags);
->>>>           __r8168_mac_ocp_write(tp, reg, data);
->>>>           raw_spin_unlock_irqrestore(&tp->mac_ocp_lock, flags);
->>>>       }
->>>>
->>>> Register programming is done through RTL_W32() macro which expands into
->>>>
->>>>       #define RTL_W32(tp, reg, val32) writel((val32), tp->mmio_addr + (reg))
->>>>
->>>> which is further (on Alpha):
->>>>
->>>>       extern inline void writel(u32 b, volatile void __iomem *addr)
->>>>       {
->>>>           mb();
->>>>           __raw_writel(b, addr);
->>>>       }
->>>>
->>>> or on i386/x86_64:
->>>>
->>>>       #define build_mmio_write(name, size, type, reg, barrier) \
->>>>       static inline void name(type val, volatile void __iomem *addr) \
->>>>       { asm volatile("mov" size " %0,%1": :reg (val), \
->>>>       "m" (*(volatile type __force *)addr) barrier); }
->>>>
->>>>       build_mmio_write(writel, "l", unsigned int, "r", :"memory")
->>>>
->>>> This obviously involves iat least a compiler barrier.
->>>>
->>>> mb() expands into something like this i.e. on x86_64:
->>>>
->>>>       #define mb()    asm volatile("lock; addl $0,0(%%esp)" ::: "memory")
->>>>
->>>> This means a whole lot of memory bus stalls: for spin_lock_irqsave(),
->>>> memory barrier, writel(), and spin_unlock_irqrestore().
->>>>
->>>> With about 130 of these sequential calls to r8168_mac_ocp_write() this looks like
->>>> a lock storm that will stall all of the cores and CPUs on the same memory controller
->>>> for certain time I/O takes to finish.
->>>>
->>>> In a sequential case of RTL register programming, the writes to RTL registers
->>>> can be coalesced under a same raw spinlock. This can dramatically decrease the
->>>> number of bus stalls in a multicore or multi-CPU system.
->>>>
->>>> Macro helpers r8168_mac_ocp_write_seq() and r8168_mac_ocp_modify_seq() are
->>>> provided to reduce lock contention:
->>>>
->>>>       static void rtl_hw_start_8411_2(struct rtl8169_private *tp)
->>>>       {
->>>>
->>>>           ...
->>>>
->>>>           /* The following Realtek-provided magic fixes an issue with the RX unit
->>>>            * getting confused after the PHY having been powered-down.
->>>>            */
->>>>
->>>>           static const struct recover_8411b_info init_zero_seq[] = {
->>>>               { 0xFC28, 0x0000 }, { 0xFC2A, 0x0000 }, { 0xFC2C, 0x0000 },
->>>>               ...
->>>>           };
->>>>
->>>>           ...
->>>>
->>>>           r8168_mac_ocp_write_seq(tp, init_zero_seq);
->>>>
->>>>           ...
->>>>
->>>>       }
->>>>
->>>> The hex data is preserved intact through s/r8168_mac_ocp_write[(]tp,/{ / and s/[)];/ },/
->>>> functions that only changed the function names and the ending of the line, so the actual
->>>> hex data is unchanged.
->>>>
->>>> To repeat, the reason for the introduction of the original commit
->>>> was to enable recovery of the RX unit on the RTL8411b which was confused by the
->>>> powered-down PHY. This sequence of r8168_mac_ocp_write() calls amplifies the problem
->>>> into a series of about 500+ memory bus locks, most waiting for the main memory read,
->>>> modify and write under a LOCK. The memory barrier in RTL_W32 should suffice for
->>>> the programming sequence to reach RTL NIC registers.
->>>>
->>>> [0] https://bugzilla.redhat.com/show_bug.cgi?id=1692075
->>>>
->>>> v6:
->>>>    proceeded according to Jacob Keller's suggestions by creating a cover page and reducing
->>>>    the text within the commits. Applying to the net-next tree as Heiner Kallweit requested.
->>>>
->>>> v5:
->>>>    attempted some new optimisations, which were rejected, but not all and not completely.
->>>>
->>>> v4:
->>>>    fixed complaints as advised by Heiner and checkpatch.pl.
->>>>    split the patch into five sections to be more easily manipulated and reviewed
->>>>    introduced r8168_mac_ocp_write_seq()
->>>>    applied coalescing of mac ocp writes/modifies for 8168H, 8125 and 8125B
->>>>
->>>> v3:
->>>>    removed register/mask pair array sentinels, so using ARRAY_SIZE().
->>>>    avoided duplication of RTL_W32() call code as advised by Heiner.
->>>>
->>>> Mirsad Goran Todorovac (5):
->>>>     r8169: Coalesce r8169_mac_ocp_write/modify calls to reduce spinlock
->>>>       stalls
->>>>     r8169: Coalesce RTL8411b PHY power-down recovery calls to reduce
->>>>       spinlock stalls
->>>>     r8169: Coalesce mac ocp write and modify for 8168H start to reduce
->>>>       spinlocks
->>>>     r8169: Coalesce mac ocp commands for 8125 and 8125B start to reduce
->>>>       spinlock contention
->>>>     r8169: Coalesce mac ocp commands for rtl_hw_init_8125 to reduce
->>>>       spinlocks
->>>>
->>>>    drivers/net/ethernet/realtek/r8169_main.c | 304 +++++++++++-----------
->>>>    1 file changed, 150 insertions(+), 154 deletions(-)
->>>>
->>
->> Hi, Mr. Kallweit,
->>
->> So good to hear so soon from you. I'm encouraged that you are positive about improving
->> the speed and reducing the size of the Realtek drivers.
->>
->>> You still write:
->>> "a lock storm that will stall all of the cores and CPUs on the same memory controller"
->>> even though you were informed that that's not the case.
->>
->> I was not convinced. There is no such thing as a free lunch, and there is no locking
->> without affecting other cores, or locking would not make sense.
->>
->>> There's no actual problem, therefore your Fixes tags are incorrect.
->>
->> Mea culpa - my mistake, I will fix that in the next version.
->>
->>> Also net-next is closed at the moment.
->>
->> There is no problem with that, as these are only optimisation fixes, not zero day
->> exploits. I am a patient person.
->>
->>> In patches 3-5 I see no benefit. And I have doubts whether the small benefit in
->>> patch 2 is worth adding all the helpers in patch 1.
->>
->> I merely followed and mimed driver style from the constructions like this one:
->>
->>          static const struct ephy_info e_info_8168e_1[] = {
->>                  { 0x00, 0x0200, 0x0100 },
->>                  { 0x00, 0x0000, 0x0004 },
->>                  { 0x06, 0x0002, 0x0001 },
->>                  { 0x06, 0x0000, 0x0030 },
->>                  { 0x07, 0x0000, 0x2000 },
->>                  { 0x00, 0x0000, 0x0020 },
->>                  { 0x03, 0x5800, 0x2000 },
->>                  { 0x03, 0x0000, 0x0001 },
->>                  { 0x01, 0x0800, 0x1000 },
->>                  { 0x07, 0x0000, 0x4000 },
->>                  { 0x1e, 0x0000, 0x2000 },
->>                  { 0x19, 0xffff, 0xfe6c },
->>                  { 0x0a, 0x0000, 0x0040 }
->>          };
->>
->>          rtl_set_def_aspm_entry_latency(tp);
->>
->>          rtl_ephy_init(tp, e_info_8168e_1);
->>
->> Here you did not think that introducing an array reduced code readability.
->>
->> My ideal is a lockless driver using RCU, and you seem to prefer lock/unlock
->> on each RTL_W32() write. I am convinced that a driver with less
->> raw_spin_lock_irqsave()/raw_spin_unlock_irqrestore() pairs would scale better
->> with more NICs and more cores.
->>
-> Then please focus on hot paths where it actually could make a difference,
-> and provide numbers instead of a purely theoretical discussion.
+From: Nischala Yelchuri <niyelchu@linux.microsoft.com> Sent: Wednesday, Nov=
+ember 1, 2023 9:02 AM
+>
 
-I will comply.
+It's customary for the patch "Subject:" line to have a prefix indicating th=
+e
+area of the code being modified.  This patch touches on multiple Hyper-V
+drivers, so there's not a clear choice for prefix.  I would suggest using
+"Drivers: hv:" as is commonly used for Hyper-V code, though other
+reviewers might have a different suggestion.
 
-RTL8411b losing PHY that requires this expensive reset probably doesn't happen
-anyway on the Linux servers. :-/
+ > Current Hyper-V code for CoCo VMs uses ioremap_cache() to map normal
+> memory as decrypted.
+> ioremap_cache() is ideally used to map I/O device memory when it has the =
+characteristics
+> of normal memory. It should not be used to map normal memory as the retur=
+ned pointer
+> has the __iomem attribute.
+>=20
+> Fix current code by replacing ioremap_cache() with memremap().
+>=20
+> No functional change intended.
+>=20
+> Signed-off-by: Nischala Yelchuri <niyelchu@linux.microsoft.com>
+> ---
+>  arch/x86/hyperv/hv_init.c               |  6 +++---
+>  drivers/gpu/drm/hyperv/hyperv_drm_drv.c |  2 +-
+>  drivers/hv/hv.c                         | 13 +++++++------
+>  drivers/video/fbdev/hyperv_fb.c         |  6 +++---
+>  4 files changed, 14 insertions(+), 13 deletions(-)
+>=20
+> diff --git a/arch/x86/hyperv/hv_init.c b/arch/x86/hyperv/hv_init.c
+> index 21556ad87..fae43c040 100644
+> --- a/arch/x86/hyperv/hv_init.c
+> +++ b/arch/x86/hyperv/hv_init.c
+> @@ -68,9 +68,9 @@ static int hyperv_init_ghcb(void)
+>  	 */
+>  	rdmsrl(MSR_AMD64_SEV_ES_GHCB, ghcb_gpa);
+>=20
+> -	/* Mask out vTOM bit. ioremap_cache() maps decrypted */
+> +	/* Mask out vTOM bit. memremap() maps decrypted with MEMREMAP_DEC */
+>  	ghcb_gpa &=3D ~ms_hyperv.shared_gpa_boundary;
+> -	ghcb_va =3D (void *)ioremap_cache(ghcb_gpa, HV_HYP_PAGE_SIZE);
+> +	ghcb_va =3D memremap(ghcb_gpa, HV_HYP_PAGE_SIZE, MEMREMAP_WB | MEMREMAP=
+_DEC);
+>  	if (!ghcb_va)
+>  		return -ENOMEM;
+>=20
+> @@ -238,7 +238,7 @@ static int hv_cpu_die(unsigned int cpu)
+>  	if (hv_ghcb_pg) {
+>  		ghcb_va =3D (void **)this_cpu_ptr(hv_ghcb_pg);
+>  		if (*ghcb_va)
+> -			iounmap(*ghcb_va);
+> +			memunmap(*ghcb_va);
+>  		*ghcb_va =3D NULL;
+>  	}
+>=20
+> diff --git a/drivers/gpu/drm/hyperv/hyperv_drm_drv.c
+> b/drivers/gpu/drm/hyperv/hyperv_drm_drv.c
+> index d511d17c5..d6fec9bd3 100644
+> --- a/drivers/gpu/drm/hyperv/hyperv_drm_drv.c
+> +++ b/drivers/gpu/drm/hyperv/hyperv_drm_drv.c
+> @@ -92,7 +92,7 @@ static int hyperv_setup_vram(struct hyperv_drm_device
+> *hv,
+>  	 * connect to display properly for ARM64 Linux VM, as the host also map=
+s
+>  	 * the VRAM cacheable.
+>  	 */
+> -	hv->vram =3D ioremap_cache(hv->mem->start, hv->fb_size);
+> +	hv->vram =3D memremap(hv->mem->start, hv->fb_size, MEMREMAP_WB | MEMREM=
+AP_DEC);
 
-I have done my homework and I see that you are also co-maintainer of the net PHYLIB,
-so your insight on this matter is undoubtedly greater after five years of experience
-in maintaining the driver.
+This change has some additional implications that must be
+accounted for.  The hv->vram field is declared as void __iomem *
+in hyperv_drm.h.   The __iomem attribute should be dropped.
+Then the use of IOSYS_MAP_INIT_VADDR_IOMEM() in
+hyperv_blit_to_vram_rect() should be changed to
+IOSYS_MAP_INIT_VADDR().  This has the desirable effect of=20
+allowing normal memcpy() functions to be used instead of
+the _toio()/_fromio() variants.
 
-Learning about the network stack and the PHY layer is however a formidable thought
-very interesting task. The whole area of making multimedia more responsive on Linux
-and Windows graphic interface is very challenging, and I could pass it with my day
-job as research.
+>  	if (!hv->vram) {
+>  		drm_err(dev, "Failed to map vram\n");
+>  		ret =3D -ENOMEM;
+> diff --git a/drivers/hv/hv.c b/drivers/hv/hv.c
+> index 51e5018ac..399bfa392 100644
+> --- a/drivers/hv/hv.c
+> +++ b/drivers/hv/hv.c
+> @@ -274,11 +274,12 @@ void hv_synic_enable_regs(unsigned int cpu)
+>  	simp.simp_enabled =3D 1;
+>=20
+>  	if (ms_hyperv.paravisor_present || hv_root_partition) {
+> -		/* Mask out vTOM bit. ioremap_cache() maps decrypted */
+> +		/* Mask out vTOM bit. memremap() maps decrypted with MEMREMAP_DEC */
+>  		u64 base =3D (simp.base_simp_gpa << HV_HYP_PAGE_SHIFT) &
+>  				~ms_hyperv.shared_gpa_boundary;
+>  		hv_cpu->synic_message_page
+> -			=3D (void *)ioremap_cache(base, HV_HYP_PAGE_SIZE);
+> +			=3D memremap(base,
+> +				   HV_HYP_PAGE_SIZE, MEMREMAP_WB | MEMREMAP_DEC);
+>  		if (!hv_cpu->synic_message_page)
+>  			pr_err("Fail to map synic message page.\n");
+>  	} else {
+> @@ -293,11 +294,11 @@ void hv_synic_enable_regs(unsigned int cpu)
+>  	siefp.siefp_enabled =3D 1;
+>=20
+>  	if (ms_hyperv.paravisor_present || hv_root_partition) {
+> -		/* Mask out vTOM bit. ioremap_cache() maps decrypted */
+> +		/* Mask out vTOM bit. memremap() maps decrypted with MEMREMAP_DEC */
+>  		u64 base =3D (siefp.base_siefp_gpa << HV_HYP_PAGE_SHIFT) &
+>  				~ms_hyperv.shared_gpa_boundary;
+>  		hv_cpu->synic_event_page
+> -			=3D (void *)ioremap_cache(base, HV_HYP_PAGE_SIZE);
+> +			=3D memremap(base, HV_HYP_PAGE_SIZE, MEMREMAP_WB | MEMREMAP_DEC);
+>  		if (!hv_cpu->synic_event_page)
+>  			pr_err("Fail to map synic event page.\n");
+>  	} else {
+> @@ -376,7 +377,7 @@ void hv_synic_disable_regs(unsigned int cpu)
+>  	 */
+>  	simp.simp_enabled =3D 0;
+>  	if (ms_hyperv.paravisor_present || hv_root_partition) {
+> -		iounmap(hv_cpu->synic_message_page);
+> +		memunmap(hv_cpu->synic_message_page);
+>  		hv_cpu->synic_message_page =3D NULL;
+>  	} else {
+>  		simp.base_simp_gpa =3D 0;
+> @@ -388,7 +389,7 @@ void hv_synic_disable_regs(unsigned int cpu)
+>  	siefp.siefp_enabled =3D 0;
+>=20
+>  	if (ms_hyperv.paravisor_present || hv_root_partition) {
+> -		iounmap(hv_cpu->synic_event_page);
+> +		memunmap(hv_cpu->synic_event_page);
+>  		hv_cpu->synic_event_page =3D NULL;
+>  	} else {
+>  		siefp.base_siefp_gpa =3D 0;
+> diff --git a/drivers/video/fbdev/hyperv_fb.c
+> b/drivers/video/fbdev/hyperv_fb.c
+> index bf59daf86..cd9ec1f6c 100644
+> --- a/drivers/video/fbdev/hyperv_fb.c
+> +++ b/drivers/video/fbdev/hyperv_fb.c
+> @@ -1034,7 +1034,7 @@ static int hvfb_getmem(struct hv_device *hdev, stru=
+ct fb_info *info)
+>  	 * VM Connect to display properly for ARM64 Linux VM, as the host also
+>  	 * maps the VRAM cacheable.
+>  	 */
+> -	fb_virt =3D ioremap_cache(par->mem->start, screen_fb_size);
+> +	fb_virt =3D memremap(par->mem->start, screen_fb_size, MEMREMAP_WB | MEM=
+REMAP_DEC);
 
-But as I said, I have to catch up with a lot of homework.
+There's a similar situation here:  the local variable fb_virt is
+declared as void __iomem *.  The __iomem attribute should
+be dropped.
 
->> You said nothing to convinced me otherwise.
->>
->> But I am merely defending my point, this by no means implies disrespect or overlooking
->> your contribution to the source as a coder and a a maintainer.
->>
->> Realtek NICs are known as cheap NIC for motherboards, but they are becoming more ubiquitous,
->> and it is logical to use less locking, as locking is expensive. "barrier" in writev()
->> guarantees sequential orders of write, and locking and unlocking on each read/modify/write
->> is unnecessary overhead, IMHO.
->>
->> As the conclusion, I would like to emphasise that improving lock contention for the code
->> is by no means a personal attack on the maintainer or a breach of the Code of Conduct.
->>
->> If you are so much against the changes which Mr. Jacob Keller from Intel reviewed,
->> maybe we can cool emotions and start thinking rationally.
->>
->> Additionally, I would like to "inline" many functions, as I think that call/return
->> sequences with stack frame generation /destruction are more expensive than inlining the
->> small one liners.
-
-> Mainline standard is to let the compiler decide on inlining.
-  
->> But I will certainly respect your opinion on the matter as a maintainer.
->>
->> What I realise that I might be optimising the cold paths of the code, but from your emails
->> it seems like nothing is worth optimising in this driver, and with all due respect Sir,
->> I think that is dead wrong.
-> 
-> Nobody ever said that, and if you look at the history of the driver you'll see a lot of
-> optimizations that have been added over time. Ideally an optimization improves both:
-> performance and code readability
-> Code readability is important for maintainability and weighs higher for me than a minor
-> performance optimization in a code path that is very rarely used.
-
-I see.
-
-However, you do use lookup tables for programming with fn rtl_ephy_init().
-
-If this would be more readable, I can unroll the table so it is one entry per line
-like e_info_8168e_1 was made?
-
-Then the actual function call adds nothing to readability and the ease of maintanance,
-as the principle { address, value } and { address, mask, value } would be preserved.
-
-In fact, some programming books advise separating data from code for readability and
-efficiency sake.
-
-I admit that the 8125 optimisation I proposed is minimal locking but hard to read and
-maintain. (It defies the KISS principle.)
-
-Thank you for your time and patience with me.
-
-I always like more that things are explained through Spock logic than by a call to authority
-(which is BTW the argumentum-ad-hominem logical fallacy).
-
-(This is of course not the case with the sacred texts, where I use quotes from the relevant
-authorities.)
-
-Have a nice day and I wish you a blessed Sunday.
-
-I should probably catch up with the documentation before using any more of your valuable time
-and energy. I hope to reciprocate.
-
-Best regards,
-Mirsad Todorovac
-  
->> Of course, I am tempted to comply to the authority as a kernel newbie, but I was reminded
->> in the spirit that this is exactly what the guys in Chernobyl did while maintaining the
->> reactor that malfunctioned: they did not dare to question the authority telling them that
->> everything is alright.
->>
->> Have a nice evening, and please do not take these words as a breach of the Code or a
->> personal attack. I believe we are on the same side, and that is making this driver better.
->>
->> The Linux kernel developer community was my last hope that this human race has a force
->> to improve the mankind and make it worth surviving.
->>
->> But sometimes it is more honourable to go down with the ship and preserve the honour.
->>
->> Best regards,
->> Mirsad Todorovac
+>  	if (!fb_virt)
+>  		goto err2;
+>=20
+> @@ -1068,7 +1068,7 @@ static int hvfb_getmem(struct hv_device *hdev, stru=
+ct fb_info *info)
+>  	return 0;
+>=20
+>  err3:
+> -	iounmap(fb_virt);
+> +	memunmap(fb_virt);
+>  err2:
+>  	vmbus_free_mmio(par->mem->start, screen_fb_size);
+>  	par->mem =3D NULL;
+> @@ -1086,7 +1086,7 @@ static void hvfb_putmem(struct hv_device *hdev, str=
+uct fb_info *info)
+>=20
+>  	if (par->need_docopy) {
+>  		vfree(par->dio_vp);
+> -		iounmap(info->screen_base);
+> +		memunmap(info->screen_base);
+>  		vmbus_free_mmio(par->mem->start, screen_fb_size);
+>  	} else {
+>  		hvfb_release_phymem(hdev, info->fix.smem_start,
+> --
+> 2.34.1
