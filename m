@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F0CF97E1690
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Nov 2023 21:48:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 600867E169A
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Nov 2023 21:49:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229888AbjKEUs0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Nov 2023 15:48:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48064 "EHLO
+        id S229689AbjKEUt4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Nov 2023 15:49:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbjKEUsO (ORCPT
+        with ESMTP id S229731AbjKEUsR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Nov 2023 15:48:14 -0500
+        Sun, 5 Nov 2023 15:48:17 -0500
 Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08F1CE0;
-        Sun,  5 Nov 2023 12:48:12 -0800 (PST)
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.nyi.internal (Postfix) with ESMTP id 730685C00D7;
-        Sun,  5 Nov 2023 15:48:11 -0500 (EST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0D02F2;
+        Sun,  5 Nov 2023 12:48:13 -0800 (PST)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.nyi.internal (Postfix) with ESMTP id 4F3485C00D8;
+        Sun,  5 Nov 2023 15:48:13 -0500 (EST)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Sun, 05 Nov 2023 15:48:11 -0500
+  by compute5.internal (MEProxy); Sun, 05 Nov 2023 15:48:13 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mai.rs; h=cc
         :content-transfer-encoding:content-type:date:date:from:from
         :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to; s=fm2; t=1699217291; x=
-        1699303691; bh=1K37D2+VOVrXb9yfYRMGapSEDdiKrRQuOAXt91kHDg8=; b=j
-        rI3xx3JT1kIXim8W1+amxDu5JVFauoxlr9elkqow970myyd5d4WAPDAnbxjAHGXU
-        xFNsVTxVV9FBni1DEAkNKesT+UpERpbJ+Dq8m5UZSkt1WgyP3rcLvkC/X+cOQEmb
-        3H8VOLwAmXitgjKC2K+iDRQ4/mLwpTunJbi0gDc/zFOZqk01s6HZLw0xq3F5ETBp
-        rUlsegSpbv/xGWvPklqCKN8aYItKXw+kkqQSQd7Gp/t3kz2Glb8505UmGu5RWDTN
-        fey3OdHBZZ7YjNqt2dSrmEGZQrC4Vp0PfwzUVZM01zB1w59pNAn4z357ElKi0IBI
-        d1Byy8YLHdxB61hjY97Eg==
+        :reply-to:sender:subject:subject:to:to; s=fm2; t=1699217293; x=
+        1699303693; bh=O8fDzcjgQ7pbEFlZ3Prz4CvsbP5ODoTbqCZT7YXk//4=; b=P
+        VyRY3wR5akHcZyhS/AuMA4WJeXBJbynx4JlprkOQkRhnFExy52chkCQlkk3b8//Q
+        Ptb1jZyoAgCKmZkl4oiwycb10hwT7YvizP+dWUYL8mrXi3bi1K5x2Oxi2NUrHwGG
+        XnyT08YnwmvHdXGZdhp0klcGk+fWvqQuf1Ambmf2KJ5nDMgmubqeQWM47XDYc5qC
+        qvFtsS95FKyWe9Ta5UfGSDyuJdfO3pg6kRx9959jUzK8KthWYMctD9i2wiy50rSm
+        kCAUWaVX2A6r3m6lhXhaukm/iZ6NylcvJjM/NJfHrq5RcAPSk6fJhlNrMo8uMXgs
+        93JQ0cTBEsem71dCgaJng==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:content-type
         :date:date:feedback-id:feedback-id:from:from:in-reply-to
         :in-reply-to:message-id:mime-version:references:reply-to:sender
         :subject:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender
-        :x-me-sender:x-sasl-enc; s=fm3; t=1699217291; x=1699303691; bh=1
-        K37D2+VOVrXb9yfYRMGapSEDdiKrRQuOAXt91kHDg8=; b=tD1JtOwfcooo1bV1Q
-        9chf50CU+lMly1VdKe8Yjd1ntETfu0ae9BhkXcU8TVM17ClfujLwaloePb6JRpcR
-        OLuIido1PbQLTqlrOytN39UW3kkEFGfmeLbi+qa++SjRp25zIuRJl0OSNkzmmhgS
-        Ya5EgNpERgz9eSjUgld4bL6kBLiD2UTwUuCPTruoBGDF6NmrFQm5/u9e1zYQEbvP
-        cMQhzFSRv7rXDwtpq1snrJY4Zgy00m8GI2KpxYVcjy8FDHNKHSAyGpEV3haix6rg
-        2PhnaO6k6nXTxzM/wqQeYN89EuzHcDhyFSJnUAh+iKDJPOPR5TlQ/F0B5FX5+tlt
-        b9NLw==
-X-ME-Sender: <xms:i_9HZb4lbiI3SaxCtGcWyrtTl3cfoY54A-YIHoNs3KQrtyKrQCIRPg>
-    <xme:i_9HZQ7i7HW5O8PXB82ZwbsvNerXNKAaosCMARfgCbwAo1ATW-rRg1PK2uYbo3Rc4
-    khsEv1kGgn2dF8woQ>
-X-ME-Received: <xmr:i_9HZScsPYnbhwgspUZi6w7FpeE53nc94nq-ce6OfRmrRjP1XskKl-Iez4rApNo>
+        :x-me-sender:x-sasl-enc; s=fm3; t=1699217293; x=1699303693; bh=O
+        8fDzcjgQ7pbEFlZ3Prz4CvsbP5ODoTbqCZT7YXk//4=; b=eFcYhvQeQBcZ1rUaP
+        oJynt5vuKzT5NYNum4/RBiqcw40Hqy2GQ0Nxl/tQhvXhfssggD8U2eeEbG2JAs4V
+        Dv3cjbq39jon/gG87NO3yihjQgdy/VpyR2Jc5OczXoLYg/lM1PPmer58v7kSdzpB
+        MWzZCTW8tSTV9NzLuG+ipba9dBYZHvvYnMacn5Bf08/r1KazH6BAVwGdSAvQDbdr
+        DkPRkDPpaM4SGlgoUw53b3w9mUriz6RVbIyvf5wVGtZZCXo+RXicdpZlBbiaVx5Y
+        eyBlSMyKuKNzhSo21fU3nlliHRZK60uvSi3FlccH+P/AURgaS+owEQi/2QgBneEy
+        56eAw==
+X-ME-Sender: <xms:jf9HZbLgxDd46baBvm-j0ubXe29iat-JkgQXyc3Xb7qL7jpZO2Rv5Q>
+    <xme:jf9HZfKzwWjzvvlGeuacehtCIlJ9S7VbVl1ySWmNf6d7tAk0xXmdln0vLk5Enecul
+    KlRIL7YBOxfbNvc2A>
+X-ME-Received: <xmr:jf9HZTtinVjnwhWveNrlhQebxHlcl8jr9xrr_U8o1GxtgEUjDI_2wVBMMqTX80s>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudduvddgudegudcutefuodetggdotefrod
     ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
     necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
@@ -56,13 +56,13 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudduvddgudegudcutefuodetgg
     epvdegkeekkeehffehveeltdekvdfhffejuefgjeelfeefgffgleekheeffefggeefnecu
     vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghrhigrnh
     htsehmrghirdhrsh
-X-ME-Proxy: <xmx:i_9HZcJCji8c2FriM5V2vAwjF-w8i_qWNgeqC2uBWhOIA6ppTpRdPA>
-    <xmx:i_9HZfJ8qBL97Ef_tqgq4poDvzYRBqsOkjGgceu4qVDV_q95ZGnOaw>
-    <xmx:i_9HZVw7_d3awGTq7jD2-sbVXTdRGxc8d0z1CEz0C2bHSLsfWImzPQ>
-    <xmx:i_9HZcAv0Pt6o1ML3sXZ5MuFkTbpljaE5EhHbLhxJ1vYW_QyNp7mOw>
+X-ME-Proxy: <xmx:jf9HZUZBix7rpD-37qprrRGw-MdsqTV7pN33zdaxkBDROC_9IoaQeg>
+    <xmx:jf9HZSZzuzpsNF3iC8lcBUfQp9ys5pNSOPtbh_g84wkKVp2yTXTxiQ>
+    <xmx:jf9HZYDHMgcHPfepNu4aAiTAbGyohrxfTzpkHATsOYZ9B0O7QB8dpw>
+    <xmx:jf9HZfQaHV6HrJcOge9ZkquAcVkstyVlEgjl1Jjg0iDAWSK29eSjfQ>
 Feedback-ID: i891b436e:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
- 5 Nov 2023 15:48:09 -0500 (EST)
+ 5 Nov 2023 15:48:11 -0500 (EST)
 From:   Bryant Mairs <bryant@mai.rs>
 To:     Andy Gross <agross@kernel.org>,
         Bjorn Andersson <andersson@kernel.org>,
@@ -74,9 +74,9 @@ To:     Andy Gross <agross@kernel.org>,
         Linus Walleij <linus.walleij@linaro.org>,
         linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-input@vger.kernel.org
-Subject: [PATCH 4/7] ARM: dts: qcom: Disable pm8941 & pm8226 smbb charger by default
-Date:   Sun,  5 Nov 2023 21:46:19 +0100
-Message-ID: <20231105204759.37107-5-bryant@mai.rs>
+Subject: [PATCH 5/7] ARM: dts: qcom: apq8026-samsung-milletwifi: Enable charger
+Date:   Sun,  5 Nov 2023 21:46:20 +0100
+Message-ID: <20231105204759.37107-6-bryant@mai.rs>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231105204759.37107-1-bryant@mai.rs>
 References: <20231105204759.37107-1-bryant@mai.rs>
@@ -93,145 +93,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some platforms don't use the built-in charging hardware (e.g. milletwifi).
-As this is an optional peripheral, default it to off.
-
-Keep it enabled for all other boards that use smbb.
+Enable charging support.
 
 Signed-off-by: Bryant Mairs <bryant@mai.rs>
 ---
- arch/arm/boot/dts/qcom/qcom-apq8026-asus-sparrow.dts          | 2 ++
- arch/arm/boot/dts/qcom/qcom-apq8026-huawei-sturgeon.dts       | 2 ++
- arch/arm/boot/dts/qcom/qcom-apq8026-lg-lenok.dts              | 2 ++
- arch/arm/boot/dts/qcom/qcom-apq8074-dragonboard.dts           | 4 ++++
- arch/arm/boot/dts/qcom/qcom-msm8974pro-fairphone-fp2.dts      | 2 ++
- arch/arm/boot/dts/qcom/qcom-msm8974pro-oneplus-bacon.dts      | 4 ++++
- .../dts/qcom/qcom-msm8974pro-sony-xperia-shinano-castor.dts   | 2 ++
- arch/arm/boot/dts/qcom/qcom-pm8226.dtsi                       | 2 ++
- arch/arm/boot/dts/qcom/qcom-pm8941.dtsi                       | 2 ++
- 9 files changed, 22 insertions(+)
+ .../qcom/qcom-apq8026-samsung-milletwifi.dts  | 28 +++++++++++++++++++
+ 1 file changed, 28 insertions(+)
 
-diff --git a/arch/arm/boot/dts/qcom/qcom-apq8026-asus-sparrow.dts b/arch/arm/boot/dts/qcom/qcom-apq8026-asus-sparrow.dts
-index aa0e0e8d2a97..e5293755cf88 100644
---- a/arch/arm/boot/dts/qcom/qcom-apq8026-asus-sparrow.dts
-+++ b/arch/arm/boot/dts/qcom/qcom-apq8026-asus-sparrow.dts
-@@ -253,6 +253,8 @@ &smbb {
- 	qcom,fast-charge-high-threshold-voltage = <4400000>;
- 	qcom,auto-recharge-threshold-voltage = <4300000>;
- 	qcom,minimum-input-voltage = <4400000>;
+diff --git a/arch/arm/boot/dts/qcom/qcom-apq8026-samsung-milletwifi.dts b/arch/arm/boot/dts/qcom/qcom-apq8026-samsung-milletwifi.dts
+index 545992091c6b..910e8d2f69b0 100644
+--- a/arch/arm/boot/dts/qcom/qcom-apq8026-samsung-milletwifi.dts
++++ b/arch/arm/boot/dts/qcom/qcom-apq8026-samsung-milletwifi.dts
+@@ -7,6 +7,7 @@
+ /dts-v1/;
+ 
+ #include <dt-bindings/input/input.h>
++#include <dt-bindings/power/summit,smb347-charger.h>
+ #include "qcom-msm8226.dtsi"
+ #include "qcom-pm8226.dtsi"
+ 
+@@ -258,6 +259,26 @@ accelerometer@1d {
+ 	};
+ };
+ 
++&blsp1_i2c3 {
++	status = "okay";
 +
-+	status = "okay";
- };
- 
- &tlmm {
-diff --git a/arch/arm/boot/dts/qcom/qcom-apq8026-huawei-sturgeon.dts b/arch/arm/boot/dts/qcom/qcom-apq8026-huawei-sturgeon.dts
-index de19640efe55..538309f153d3 100644
---- a/arch/arm/boot/dts/qcom/qcom-apq8026-huawei-sturgeon.dts
-+++ b/arch/arm/boot/dts/qcom/qcom-apq8026-huawei-sturgeon.dts
-@@ -335,6 +335,8 @@ &smbb {
- 	qcom,fast-charge-current-limit = <300000>;
- 	qcom,fast-charge-safe-current = <600000>;
- 	qcom,auto-recharge-threshold-voltage = <4240000>;
++	charger@6a {
++		compatible = "summit,smb358";
++		reg = <0x6a>;
 +
-+	status = "okay";
- };
- 
- &tlmm {
-diff --git a/arch/arm/boot/dts/qcom/qcom-apq8026-lg-lenok.dts b/arch/arm/boot/dts/qcom/qcom-apq8026-lg-lenok.dts
-index b887e5361ec3..b29c39cec2e0 100644
---- a/arch/arm/boot/dts/qcom/qcom-apq8026-lg-lenok.dts
-+++ b/arch/arm/boot/dts/qcom/qcom-apq8026-lg-lenok.dts
-@@ -292,6 +292,8 @@ &smbb {
- 	qcom,fast-charge-high-threshold-voltage = <4350000>;
- 	qcom,auto-recharge-threshold-voltage = <4240000>;
- 	qcom,minimum-input-voltage = <4450000>;
++		interrupts-extended = <&tlmm 115 IRQ_TYPE_EDGE_FALLING>;
 +
-+	status = "okay";
- };
- 
- &tlmm {
-diff --git a/arch/arm/boot/dts/qcom/qcom-apq8074-dragonboard.dts b/arch/arm/boot/dts/qcom/qcom-apq8074-dragonboard.dts
-index 6d1b2439ae3a..88093d6fae2b 100644
---- a/arch/arm/boot/dts/qcom/qcom-apq8074-dragonboard.dts
-+++ b/arch/arm/boot/dts/qcom/qcom-apq8074-dragonboard.dts
-@@ -403,6 +403,10 @@ &sdhc_2 {
- 	pinctrl-1 = <&sdc2_off>;
- };
- 
-+&smbb {
-+	status = "okay";
++		pinctrl-0 = <&charger_int_default_state>;
++		pinctrl-names = "default";
++
++		summit,enable-usb-charging;
++		summit,enable-charge-control = <SMB3XX_CHG_ENABLE_SW>;
++		summit,fast-voltage-threshold-microvolt = <3000000>;
++		summit,chip-temperature-threshold-celsius = <130>;
++		summit,usb-current-limit-microamp = <1500000>;
++	};
 +};
 +
- &tlmm {
- 	sdc1_on: sdc1-on-state {
- 		clk-pins {
-diff --git a/arch/arm/boot/dts/qcom/qcom-msm8974pro-fairphone-fp2.dts b/arch/arm/boot/dts/qcom/qcom-msm8974pro-fairphone-fp2.dts
-index 42d253b75dad..49912e311c31 100644
---- a/arch/arm/boot/dts/qcom/qcom-msm8974pro-fairphone-fp2.dts
-+++ b/arch/arm/boot/dts/qcom/qcom-msm8974pro-fairphone-fp2.dts
-@@ -381,6 +381,8 @@ &smbb {
- 	qcom,fast-charge-high-threshold-voltage = <4350000>;
- 	qcom,auto-recharge-threshold-voltage = <4240000>;
- 	qcom,minimum-input-voltage = <4450000>;
-+
-+	status = "okay";
- };
- 
- &tlmm {
-diff --git a/arch/arm/boot/dts/qcom/qcom-msm8974pro-oneplus-bacon.dts b/arch/arm/boot/dts/qcom/qcom-msm8974pro-oneplus-bacon.dts
-index 8230d0e1d95d..a189f5641853 100644
---- a/arch/arm/boot/dts/qcom/qcom-msm8974pro-oneplus-bacon.dts
-+++ b/arch/arm/boot/dts/qcom/qcom-msm8974pro-oneplus-bacon.dts
-@@ -433,6 +433,10 @@ &sdhc_1 {
+ &blsp1_i2c4 {
  	status = "okay";
- };
  
-+&smbb {
-+	status = "okay";
-+};
+@@ -495,6 +516,13 @@ backlight_vddio_default_state: backlight-vddio-default-state {
+ 		bias-disable;
+ 	};
+ 
++	charger_int_default_state: charger-int-default-state {
++		pins = "gpio115";
++		function = "gpio";
++		drive-strength = <2>;
++		bias-disable;
++	};
 +
- &tlmm {
- 	gpio_hall_sensor_default: gpio-hall-sensor-default-state {
- 		pins = "gpio68";
-diff --git a/arch/arm/boot/dts/qcom/qcom-msm8974pro-sony-xperia-shinano-castor.dts b/arch/arm/boot/dts/qcom/qcom-msm8974pro-sony-xperia-shinano-castor.dts
-index 11468d1409f7..df57041ae167 100644
---- a/arch/arm/boot/dts/qcom/qcom-msm8974pro-sony-xperia-shinano-castor.dts
-+++ b/arch/arm/boot/dts/qcom/qcom-msm8974pro-sony-xperia-shinano-castor.dts
-@@ -558,6 +558,8 @@ &smbb {
- 	qcom,fast-charge-low-threshold-voltage = <3400000>;
- 	qcom,auto-recharge-threshold-voltage = <4200000>;
- 	qcom,minimum-input-voltage = <4300000>;
-+
-+	status = "okay";
- };
- 
- &tlmm {
-diff --git a/arch/arm/boot/dts/qcom/qcom-pm8226.dtsi b/arch/arm/boot/dts/qcom/qcom-pm8226.dtsi
-index 2413778f3715..2fd4f135ed84 100644
---- a/arch/arm/boot/dts/qcom/qcom-pm8226.dtsi
-+++ b/arch/arm/boot/dts/qcom/qcom-pm8226.dtsi
-@@ -82,6 +82,8 @@ smbb: charger@1000 {
- 					  "usb-valid",
- 					  "dc-valid";
- 
-+			status = "disabled";
-+
- 			chg_otg: otg-vbus { };
- 		};
- 
-diff --git a/arch/arm/boot/dts/qcom/qcom-pm8941.dtsi b/arch/arm/boot/dts/qcom/qcom-pm8941.dtsi
-index ed0ba591c755..aca0052a02b7 100644
---- a/arch/arm/boot/dts/qcom/qcom-pm8941.dtsi
-+++ b/arch/arm/boot/dts/qcom/qcom-pm8941.dtsi
-@@ -99,6 +99,8 @@ smbb: charger@1000 {
- 
- 			usb-otg-in-supply = <&pm8941_5vs1>;
- 
-+			status = "disabled";
-+
- 			chg_otg: otg-vbus { };
- 		};
- 
+ 	muic_int_default_state: muic-int-default-state {
+ 		pins = "gpio67";
+ 		function = "gpio";
 -- 
 2.41.0
 
