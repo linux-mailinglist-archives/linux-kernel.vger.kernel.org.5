@@ -2,132 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C76507E174D
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Nov 2023 23:16:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DC757E1751
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Nov 2023 23:18:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229784AbjKEWPr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Nov 2023 17:15:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48144 "EHLO
+        id S229740AbjKEWS4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Nov 2023 17:18:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229447AbjKEWPq (ORCPT
+        with ESMTP id S229485AbjKEWSy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Nov 2023 17:15:46 -0500
-Received: from mail-yw1-x112c.google.com (mail-yw1-x112c.google.com [IPv6:2607:f8b0:4864:20::112c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2464FDD
-        for <linux-kernel@vger.kernel.org>; Sun,  5 Nov 2023 14:15:41 -0800 (PST)
-Received: by mail-yw1-x112c.google.com with SMTP id 00721157ae682-579de633419so46225047b3.3
-        for <linux-kernel@vger.kernel.org>; Sun, 05 Nov 2023 14:15:41 -0800 (PST)
+        Sun, 5 Nov 2023 17:18:54 -0500
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D6C9CF
+        for <linux-kernel@vger.kernel.org>; Sun,  5 Nov 2023 14:18:50 -0800 (PST)
+Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1cc2f17ab26so25805935ad.0
+        for <linux-kernel@vger.kernel.org>; Sun, 05 Nov 2023 14:18:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699222540; x=1699827340; darn=vger.kernel.org;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JrqCjnNBchrd9FLn5hEJeuZodiLvnKhusQVXvM/Nn54=;
-        b=E0Szbm7N7Iegktaa14GlXFTvfjQubA4PmaE8hKJny12mcr4+Fbd3rqnxL4cPnlfffA
-         WlAEowmBmAn6CztIn4QRiluhtM4CtIdzckwZqGj796ATzK0BQ6wzUILS+vU31FNt5waE
-         xRjhq8fxO6Fasgvv8Gv+9wrssDiT9YeQ1NOhqcbL6y2HFgp5La/TdlioGQcDHcdxq6/t
-         yClNkjk2SF43q3a5Sx6uLHgmJRB7x0b24Q5k1qFbt2kdm8HTYOGeLNsDdXMI9YsaDGr6
-         7rknbOyeMbjl3b3La9uJgg3nGk0F/Mv1p8uTomLKOzgzl3ZS45YyVKsGMZp+u4TFuMte
-         4KTA==
+        d=dabbelt-com.20230601.gappssmtp.com; s=20230601; t=1699222729; x=1699827529; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:to:from:cc
+         :in-reply-to:subject:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=bbIKR0SHK/6vze23TumOHoZN2zuFH7uTxuat+3SKTaw=;
+        b=hKOZM6NDUWN2yUUUb3ySoXLn3FVLRxt0i54tqVI4aAOwfiensTEtsjhPeOtxeG8+9d
+         VKwahDSU0MFlw4qcTKxqjJuhpEwdS7FK5CQUK+V+jAMIbu7ayr1N/DIGZUvvvFjQEBef
+         eKJUdvtiKaBdIs9neBmpOoD7r784Dbno31e2q0nhuenyMRTTXS5X3tOoYkcwqov7WIkh
+         QR4KxhHQVDzkZznYUiSa+y+bUXaDA5ZI4qsTFiwL4W0KRkMhQLzecyQ74aNGKTPf8JKr
+         2AcNRrVz9hX8hHPrhYXLf12nMIymYt56GSfMMi8KmhV2l09Yhp+/gbqdoqa8LBPYEHfL
+         WK0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699222540; x=1699827340;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JrqCjnNBchrd9FLn5hEJeuZodiLvnKhusQVXvM/Nn54=;
-        b=Gr9aVkEyMMt0EYMfRhLJP9nsF3lxCq1DhgJbjw/pfcWcBKHvcsnD+h+N/dk0Dkl+d+
-         yhHv9QDrCMiKhMKfaT9QkgP7tqhzeqEWWzaA2ltF+KNlKXYjrRR7PjPHPZZmbM/aWPIN
-         tB+wnbFcRSqFIHImxUhCk4s+PA05P+k1zyajm7ptcPDVUunJg/MZ+JSk2pyyj+BrZl6y
-         2vESS3emyWeFxoDcOFFDTCXyFMRRgAypxnf9oyxTG2iKYvfatdcSNfbOTi7gFQUwN6Zd
-         p/A6c9/8JWAwM6ikijztZNDiPoCKAPk0pTkGMxDdI01QIyCwzcQ6Aq70aDtdRxDQEXaR
-         ot9w==
-X-Gm-Message-State: AOJu0YxpZ+u0fb4+U1d/41vjz/HLAQK26wPb6wRs63WElp5bIAjnNNF4
-        UbkmQT/HTRGgUlCPlaRjhbv0QwMbm1SyOs2bHhWU+g==
-X-Google-Smtp-Source: AGHT+IH4yXKr5aMVYMhvGN4m10IZVbD2G5FmoNaU4DuDBb1msb3GO0RY10mUZGCROsJWs0eOoN711XTj7uTN22WCTwU=
-X-Received: by 2002:a0d:df4a:0:b0:5a8:1654:4b6f with SMTP id
- i71-20020a0ddf4a000000b005a816544b6fmr9302434ywe.17.1699222540310; Sun, 05
- Nov 2023 14:15:40 -0800 (PST)
-MIME-Version: 1.0
-References: <20231006132346.GA3426353-robh@kernel.org> <CACRpkdaLsfSBEG-h9ZNT2_Lm8tW8AZO7tedDVNeuZoQAqSkyjw@mail.gmail.com>
- <ZSTgTC4cFFpofYAk@octopus> <CACRpkdYD6pkccYoy90AfzV3KT7oYkBPD2_4ZW-AXzT1eUVpchA@mail.gmail.com>
- <ZS3yK/f12Mxw9rXe@octopus> <CACRpkdarDrVkPmyDawhZ+H94S4F=dtDSDVuKegi-eNfQNDY3rg@mail.gmail.com>
- <ZTduWx7CH1ifI5Uc@octopus> <CACRpkdba=echR=rZYKVbROfaOp4mzjTQ9RphHFyzqSNgE1jZqg@mail.gmail.com>
- <ZTemAK/jBtv9b5xP@octopus> <CACRpkdY-5uS9EeXfDFVOiRKiFmwwSn3jRVGhT-n4JMqesHEumw@mail.gmail.com>
- <ZTfJ4b7VdTkA0sxo@octopus>
-In-Reply-To: <ZTfJ4b7VdTkA0sxo@octopus>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Sun, 5 Nov 2023 23:15:29 +0100
-Message-ID: <CACRpkdY5R+Jg6c8dOopyyMMur0Vq76u2fgTVgdn-RB2NhHcWZw@mail.gmail.com>
-Subject: Re: [RFC v2 5/5] dt-bindings: gpio: Add bindings for pinctrl based
- generic gpio driver
-To:     AKASHI Takahiro <takahiro.akashi@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh@kernel.org>, sudeep.holla@arm.com,
-        cristian.marussi@arm.com, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, Oleksii_Moisieiev@epam.com,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1699222729; x=1699827529;
+        h=content-transfer-encoding:mime-version:message-id:to:from:cc
+         :in-reply-to:subject:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bbIKR0SHK/6vze23TumOHoZN2zuFH7uTxuat+3SKTaw=;
+        b=YUrlIL6JuMFrdMTqT7vM62ai25ekhC3cNK7zIjD5BT7zxdvAOcbBVpW38m6f8Mu6Gz
+         5NmkbK4RSRhVQCUJ7ugcQeQXo7iKhBaLph9DLwRcgTKtlowka9U+dU7DEJl8WZ5qYuUj
+         XyGPU/b4IsexI0kDDgtk3iqGhzZJw9Dpvg4Bc6WkAIM5jue+xZYrEShZPu5MRypSIEYp
+         k4Y6d4xYl5RE9MJsxyvf6X0mOls8eTWml68Rabh8nSfZHnBehDygWzaQKGyIaVpNbs1c
+         iVc5WIkSRgWYpC2P87bs9b/OPAdkGR1ELJneOUvCC/DLbw7OJHC9bX/N0yLWjIRaxb5y
+         W2cg==
+X-Gm-Message-State: AOJu0YwY9W3dURIcxxkbwN0/g/7WywdYJTNWIkjL6XhmoNqvIzwuSijF
+        xgyKKMyklFnievbxE/GPmwwxRA==
+X-Google-Smtp-Source: AGHT+IFNtEFNcFhbMv695ZTN84gvrl6e0WmhjMH71U8XWQV7/WJDEf+qpL0mtAFB6T+LMD1d0CzqcA==
+X-Received: by 2002:a17:902:ec82:b0:1cc:6acc:8fa4 with SMTP id x2-20020a170902ec8200b001cc6acc8fa4mr15274773plg.32.1699222729504;
+        Sun, 05 Nov 2023 14:18:49 -0800 (PST)
+Received: from localhost ([192.184.165.199])
+        by smtp.gmail.com with ESMTPSA id 12-20020a170902c20c00b001cc29ffcd96sm4597015pll.192.2023.11.05.14.18.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 05 Nov 2023 14:18:48 -0800 (PST)
+Date:   Sun, 05 Nov 2023 14:18:48 -0800 (PST)
+X-Google-Original-Date: Sun, 05 Nov 2023 14:18:19 PST (-0800)
+Subject:     Re: [PATCH v2] riscv: mm: update T-Head memory type definitions
+In-Reply-To: <ZR1Vh6kXay3uNvs0@xhacker>
+CC:     Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        guoren@kernel.org, dfustini@baylibre.com
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     jszhang@kernel.org
+Message-ID: <mhng-86aba837-61bd-4ab5-a52c-85ec9b77bc82@palmer-ri-x1c9>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Takahiro,
-
-On Tue, Oct 24, 2023 at 3:43=E2=80=AFPM AKASHI Takahiro
-<takahiro.akashi@linaro.org> wrote:
-
-> First of all, there is no pre-defined naming convention either for
-> pins, groups or functions. SCMI firmware can give them any names.
-
-OK maybe that should be added to the spec?
-
-[NB: I poked the pinctrl implementers in a separate mail, you
-are on CC.]
-
-Otherwise I think this is one of those cases where firmware
-authors will simply start to use a certain naming convention if
-the Linux driver requires it.
-
-> Secondly, What you said in the above is already implemented in
-> my RFC patch. Please remember the example that I gave:
+On Wed, 04 Oct 2023 05:07:35 PDT (-0700), jszhang@kernel.org wrote:
+> On Tue, Sep 12, 2023 at 03:25:10PM +0800, Jisheng Zhang wrote:
+>> Update T-Head memory type definitions according to C910 doc [1]
+>> For NC and IO, SH property isn't configurable, hardcoded as SH,
+>> so set SH for NOCACHE and IO.
+>>
+>> And also set bit[61](Bufferable) for NOCACHE according to the
+>> table 6.1 in the doc [1].
+>>
+>> Link: https://github.com/T-head-Semi/openc910 [1]
+>> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+>> Reviewed-by: Guo Ren <guoren@kernel.org>
+>> Tested-by: Drew Fustini <dfustini@baylibre.com>
 >
-> >     gpio-ranges =3D <&scmi_pinctrl 6 0 0>;
-> >     gpio-ranges-group-names =3D "pinmux_gpio";
-> >
-> > means that SCMI *group*, "pinmux_gpio", are mapped to this driver's
-> > gpio range which starts with 5. If "pinmux_gpio" indicates SCMI *pin*
-> > range [20..24],
-> >
-> >     baa-gpios =3D <&gpio0 7>;
-> > will refer to gpio pin#7 that is actually SCMI's 22 (=3D20 + (7-5)).
+> Hi Palmer,
+>
+> I believe this is a fix, could you please review and take it for 6.6
+> fix?
 
-Right! I am so unused to the gpio-ranges-group-names that
-I didn't parse that properly :(
+Sorry for being slow, I'm still pretty behind from getting COVID and such.
+This LGTM, it's queued up for testing and it'll show up on for-next assuming
+everything passes.
 
-> After all, I still believe we need "gpio-ranges" property in most of
-> all use cases (The only exception is, as I mentioned, to unconditionally
-> map all pinctrl's pins to GPIO (if possible) when SCMI firmware provides
-> only GPIO function for all pins. I think it is a simple and yet likely
-> use case.
-
-I suppose it is a bit of placement question.
-
-The device tree GPIO ranges will have to duplicate more information
-that the SCMI firmware already knows (what ranges are GPIOs, the
-name of the GPIO mux function), that is my main concern.
-And when we have information in two places that need to be matched,
-invariably we get mismatches.
-
-I'm trying to figure out what is the best way forward here but I think
-we need some feedback from the pinctrl driver authors.
-
-Yours,
-Linus Walleij
+>
+> Thanks
+>
+>> ---
+>>
+>> Since v1:
+>>  - collect Reviewed-by and Tested-by tag
+>>  - rebase on linux 6.6-rc1
+>>
+>>  arch/riscv/include/asm/pgtable-64.h | 14 +++++++++-----
+>>  1 file changed, 9 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/arch/riscv/include/asm/pgtable-64.h b/arch/riscv/include/asm/pgtable-64.h
+>> index 7a5097202e15..9a2c780a11e9 100644
+>> --- a/arch/riscv/include/asm/pgtable-64.h
+>> +++ b/arch/riscv/include/asm/pgtable-64.h
+>> @@ -126,14 +126,18 @@ enum napot_cont_order {
+>>
+>>  /*
+>>   * [63:59] T-Head Memory Type definitions:
+>> - *
+>> - * 00000 - NC   Weakly-ordered, Non-cacheable, Non-bufferable, Non-shareable, Non-trustable
+>> + * bit[63] SO - Strong Order
+>> + * bit[62] C - Cacheable
+>> + * bit[61] B - Bufferable
+>> + * bit[60] SH - Shareable
+>> + * bit[59] Sec - Trustable
+>> + * 00110 - NC   Weakly-ordered, Non-cacheable, Bufferable, Shareable, Non-trustable
+>>   * 01110 - PMA  Weakly-ordered, Cacheable, Bufferable, Shareable, Non-trustable
+>> - * 10000 - IO   Strongly-ordered, Non-cacheable, Non-bufferable, Non-shareable, Non-trustable
+>> + * 10010 - IO   Strongly-ordered, Non-cacheable, Non-bufferable, Shareable, Non-trustable
+>>   */
+>>  #define _PAGE_PMA_THEAD		((1UL << 62) | (1UL << 61) | (1UL << 60))
+>> -#define _PAGE_NOCACHE_THEAD	0UL
+>> -#define _PAGE_IO_THEAD		(1UL << 63)
+>> +#define _PAGE_NOCACHE_THEAD	((1UL < 61) | (1UL << 60))
+>> +#define _PAGE_IO_THEAD		((1UL << 63) | (1UL << 60))
+>>  #define _PAGE_MTMASK_THEAD	(_PAGE_PMA_THEAD | _PAGE_IO_THEAD | (1UL << 59))
+>>
+>>  static inline u64 riscv_page_mtmask(void)
+>> --
+>> 2.40.1
+>>
+>>
+>> _______________________________________________
+>> linux-riscv mailing list
+>> linux-riscv@lists.infradead.org
+>> http://lists.infradead.org/mailman/listinfo/linux-riscv
