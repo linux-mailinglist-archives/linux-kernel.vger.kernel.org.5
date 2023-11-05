@@ -2,60 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 037AC7E1589
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Nov 2023 18:41:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3391D7E158C
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Nov 2023 18:45:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229638AbjKERka (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Nov 2023 12:40:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38888 "EHLO
+        id S229584AbjKERpJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Nov 2023 12:45:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229573AbjKERk2 (ORCPT
+        with ESMTP id S229478AbjKERpH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Nov 2023 12:40:28 -0500
-Received: from dispatch1-us1.ppe-hosted.com (dispatch1-us1.ppe-hosted.com [148.163.129.49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B165ADE
-        for <linux-kernel@vger.kernel.org>; Sun,  5 Nov 2023 09:40:25 -0800 (PST)
-X-Virus-Scanned: Proofpoint Essentials engine
-Received: from mail3.candelatech.com (mail2.candelatech.com [208.74.158.173])
-        by mx1-us1.ppe-hosted.com (PPE Hosted ESMTP Server) with ESMTP id 97962A80074;
-        Sun,  5 Nov 2023 17:40:22 +0000 (UTC)
-Received: from [192.168.1.115] (unknown [98.97.34.142])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail3.candelatech.com (Postfix) with ESMTPSA id 224F913C2B0;
-        Sun,  5 Nov 2023 09:40:21 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail3.candelatech.com 224F913C2B0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=candelatech.com;
-        s=default; t=1699206021;
-        bh=yG3bOIDfNjr0j95daIG4pMwHZ9mKy4vCuzTqn1EsjjQ=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=sucLemUbJvDuSkte90i9AN99xDW228GqYrazjQ0/hTteVgLw9ZZbwfXvGHKE2zE07
-         mmNwxMLksATOX+rnwY+lhSlsMfjo2mVHe5yJ8Q+nXm0By3uEBf2vY0jU9QdQytJzzN
-         nyQXdmSyJG8mBcGnsh//tagxjaxcQAptwijePBro=
-Subject: Re: [PATCH/RFC] debugobjects/slub: Print slab info and backtrace.
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Cc:     Rodolfo Giometti <giometti@enneenne.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-References: <20231103013704.1232723-1-greearb@candelatech.com>
- <92a422d6-76c8-ce25-c331-0718b73dd274@candelatech.com> <875y2gi33n.ffs@tglx>
-From:   Ben Greear <greearb@candelatech.com>
-Organization: Candela Technologies
-Message-ID: <dc3a6aa1-bb46-666b-4cba-5345636164bc@candelatech.com>
-Date:   Sun, 5 Nov 2023 09:40:20 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        Sun, 5 Nov 2023 12:45:07 -0500
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F27ECF
+        for <linux-kernel@vger.kernel.org>; Sun,  5 Nov 2023 09:45:04 -0800 (PST)
+Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2c509f2c46cso52145071fa.1
+        for <linux-kernel@vger.kernel.org>; Sun, 05 Nov 2023 09:45:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1699206303; x=1699811103; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Vs2X2TC3aDgjhTmsm2pl3o3Tuf0i4SGLrwDNMlOpie8=;
+        b=AD5ufH6Y5YZWI/owFG2qHUAkLLckwuaifyHefPfBEIMfTi+YUw3WMXYCqtlls5nOk5
+         TDJ4JkeSSI+2X/doBmPMQjWyVgvPHL6YEw1GwjM5CF9oI9Bl/5jW4ZvGvTczfiT5/jt4
+         BIhy0mhN81ERBVurdRamDp8ofT7tP+9d+Z9YSZoDPTnyj3yrP1EqxZ7thXVP36VgL06o
+         TmWgpu4mlNie+Y/snbcMYN5RaPuz7lTMppmn16UC9rdjjJIO7hPMDppDV2WupPXOtP3Z
+         Y6pYQi21sgXJUYFRZznNPSaZ1XH2VqJjWHTLc5ZJlroKpFQ5g/mG2R1rmrC5e/cjT3r8
+         BpHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699206303; x=1699811103;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Vs2X2TC3aDgjhTmsm2pl3o3Tuf0i4SGLrwDNMlOpie8=;
+        b=UXmDAOcM7AIl+krr3NtcxJ98STSld0o/9tM3Pc6kod05/GWS74To2k1fsSsnigRgFS
+         ZRrHUNBlWEWb5pXA/O88cQ3qGCl+KfnVh+mIwZqyvnV1GV1M1dcoRGFEIjQKIdwLDioH
+         d23yCFAOINkJBu/2iNiwoSOv0JJKMVCOUIehmQ2XHNvYi1596zrgD9XYT7BvB1bC4s2Y
+         2xWsHicZAwcTSEYW/k7axm/EEH0soXHIShWrJ66D/AbxuwiGbd6qlAzENNHbnJcdYKIc
+         t5XN2uXmMlB1clV0Wemb5sYt7H5A8WK8EctVwCURssndKfm6t5QaKMGDgnjKY6ffq/DE
+         TBWQ==
+X-Gm-Message-State: AOJu0YzDZ2lzNj27St1bArUdDQeuYCdXChz9kup3rpRmuPr7rZB9ii8u
+        waTu4UQ4JuUHwHh26vgcMI69NQ==
+X-Google-Smtp-Source: AGHT+IGtdNn5u7/gsPQPsmxiIo3xFFeBvAYua2DHDn5mAefSlgnlXsioKcpVAsoPWOujMRB2NtMRaw==
+X-Received: by 2002:a2e:8090:0:b0:2c5:183d:42bf with SMTP id i16-20020a2e8090000000b002c5183d42bfmr19958196ljg.45.1699206302309;
+        Sun, 05 Nov 2023 09:45:02 -0800 (PST)
+Received: from [127.0.0.1] ([37.228.218.3])
+        by smtp.gmail.com with ESMTPSA id t10-20020a05600c198a00b004064ac107cfsm9553346wmq.39.2023.11.05.09.45.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 05 Nov 2023 09:45:01 -0800 (PST)
+From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+Subject: [PATCH v3 0/6] media: qcom: camss: Add sc8280xp support
+Date:   Sun, 05 Nov 2023 17:44:59 +0000
+Message-Id: <20231105-b4-camss-sc8280xp-v3-0-4b3c372ff0f4@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <875y2gi33n.ffs@tglx>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-MW
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-MDID: 1699206023-VJc4Nu14S7rw
-X-MDID-O: us5;ut7;1699206023;VJc4Nu14S7rw;<greearb@candelatech.com>;5668d583b30e73300b5449d2ade3070d
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+X-B4-Tracking: v=1; b=H4sIAJvUR2UC/23N0QrCIBTG8VcZXmd4jlZzV71HdKFON6Hm0JDF2
+ LvnBkHBLv8fnN+ZSbLR20SaaibRZp98GErwQ0VMr4bOUt+WJsiQAzCgWlCjninRZGqs2TRSZkF
+ LsBpBO1Luxmidnzbzdi/d+/QK8b29yLCuXw13tAyUUSnl2QltdO3E9eEHFcMxxI6sXMZfgu8RW
+ Ah9UU60eOIK2R+xLMsH19WlTvYAAAA=
+To:     hverkuil-cisco@xs4all.nl, laurent.pinchart@ideasonboard.com,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Todor Tomov <todor.too@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, vincent.knecht@mailoo.org,
+        matti.lehtimaki@gmail.com, quic_grosikop@quicinc.com
+Cc:     linux-arm-msm@vger.kernel.org, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+X-Mailer: b4 0.13-dev-26615
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -64,93 +86,100 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/5/23 8:20 AM, Thomas Gleixner wrote:
-> On Thu, Nov 02 2023 at 18:49, Ben Greear wrote:
->> And here is resulting splat from wireless-next tree I've been
->> debugging.
->>
->> Note the subsequent splats from slub are due to some memory poisoning, for
->> one reason or another.  Maybe slub changes should not be included in this patch, not
->> sure if it can provide useful info in other cases though.
->>
->> If I understand this correctly, then it appears the bug is related to
->> the pps driver.
->>
->> 16140 Nov 02 17:28:25 ct523c-2103 kernel: ODEBUG: debugobjects: debug_obj allocated at:
->> 16141 Nov 02 17:28:25 ct523c-2103 kernel:  init_timer_key+0x24/0x160
->> 16142 Nov 02 17:28:25 ct523c-2103 kernel:  kobject_put+0x14f/0x190
->> 16143 Nov 02 17:28:25 ct523c-2103 kernel:  pps_device_destruct+0x26/0xb0
->> 16144 Nov 02 17:28:25 ct523c-2103 kernel:  device_release+0x57/0x100
->> 16145 Nov 02 17:28:25 ct523c-2103 kernel:  kobject_delayed_cleanup+0xdf/0x140
->> 16146 Nov 02 17:28:25 ct523c-2103 kernel:  process_one_work+0x475/0x920
->> 16147 Nov 02 17:28:25 ct523c-2103 kernel:  worker_thread+0x38a/0x680
-> 
-> Can you please provide proper kernel dmesg output next time instead of
-> this mess?
+V3:
+- Strip pointer to dependencies from yaml patch
+  I was hoping the robot would understand the links but it doesn't -
+  Krzysztof
 
-You are complaining because there are a few extra tokens put in this
-by journalctl?
+Link to v2: https://lore.kernel.org/r/20231103-b4-camss-sc8280xp-v2-0-b7af4d253a20@linaro.org
 
-> 
->>   ODEBUG: free active (active state 0) object: ffff888181c029a0 object type: timer_list hint: kobject_delayed_cleanup+0x0/0x140
->>   WARNING: CPU: 1 PID: 104 at lib/debugobjects.c:549 debug_print_object+0xf0/0x170
->>   CPU: 1 PID: 104 Comm: kworker/1:10 Tainted: G        W          6.6.0-rc7+ #17
->>   Workqueue: events kobject_delayed_cleanup
->>   RIP: 0010:debug_print_object+0xf0/0x170
->>    debug_check_no_obj_freed+0x261/0x2b0
->>    __kmem_cache_free+0x185/0x200
->>    device_release+0x57/0x100
->>    kobject_delayed_cleanup+0xdf/0x140
->>    process_one_work+0x475/0x920
->>    worker_thread+0x38a/0x680
-> 
-> So what happens is:
-> 
-> pps_unregister_cdev()
->    device_destroy()
->      put_device()
->       device_unregister()
->         device_del()
->         put_device() <- Drops final reference to dev->kobj
->           schedule_delayed_work()
-> 
-> worker thread:
->    kobject_delayed_cleanup()
->      device_release()
->        pps_device_destruct()
->          cdev_del(&pps->cdev)
->            kobject_put(&cdev->kobj) <- Drops final reference
->              schedule_delayed_work()
->                init_timer(&cdev->kobj.release.timer);
->                start_timer();
->         ...
->         kfree(dev);
->         kfree(pps); <- Debug object detects the active timer to be freed
->                        because cdev and its kobject are embedded in
->                        struct pps_device.
-> 
-> pps_device_destruct() is unfortunately not on the call trace of the
-> debug objects splat anymore stack because kfree(pps) is a tail call.
+b4 base:
+https://git.codelinaro.org/bryan.odonoghue/kernel/-/tree/b4/camss-sc8280xp-v3
 
-So, is this a real bug, or just false positive?
+V2:
+- Rebase to capture is_lite flag from named power-domain series
+- Amends commit log of final patch to give more detail on rename - Konrad
+- Opted not to change switch() statements with returns. - bod/Konrad
 
-> 
-> So yes, that collected stacktrace is helpful.
+Requires CAMCC for sc8280xp which applies to qcom/clk-for-6.7:
+https://lore.kernel.org/linux-arm-msm/20231026105345.3376-1-bryan.odonoghue@linaro.org/
+b4 shazam 20231026105345.3376-1-bryan.odonoghue@linaro.org
 
-The one I added, or was the original code enough to find this?
+Requires the named power-domain patches which apply to media-tree/*:
+https://lore.kernel.org/linux-arm-msm/20231103-b4-camss-named-power-domains-v4-0-33a905359dbc@linaro.org/
+b4 shazam e700133b-58f7-4a4d-8e5c-0d04441b789b@linaro.org
 
-I don't really understand the debugobjects code well, never heard of pps driver
-before I started looking into this.  I hacked in the backtrace code by copying from
-existing code in the kernel.
+Link to v1:
+https://lore.kernel.org/r/20231102-b4-camss-sc8280xp-v1-0-9996f4bcb8f4@linaro.org
 
-If you are happy with current debug-objects and pps related warning splat is understood,
-happy to just drop my patch.  Once I hacked around another bug in wifi, my kernel
-has been stable, so whatever pps is doing, doesn't seem to be actively harmful
-on my system.
+b4 base:
+https://git.codelinaro.org/bryan.odonoghue/kernel/-/tree/b4/camss-sc8280xp-v2
 
-Thanks,
-Ben
+V1:
+sc8280xp is the SoC found in the Lenovo X13s. This series adds support to
+bring up the CSIPHY, CSID, VFE/RDI interfaces.
 
+A number of precursor patches make this series smaller overall than
+previous series.
+
+sc8280xp provides
+
+- 4 x VFE, 4 RDI per VFE
+- 4 x VFE Lite, 4 RDI per VFE
+- 4 x CSID
+- 4 x CSID Lite
+- 4 x CSI PHY
+
+I've taken the yaml from a dtsi series and included it here since 1) I sent
+the yaml to the wrong person and 2) it already has RB from Krzysztof.
+
+Requires CAMCC for sc8280xp which applies to qcom/clk-for-6.7:
+https://lore.kernel.org/linux-arm-msm/20231026105345.3376-1-bryan.odonoghue@linaro.org/
+b4 shazam 20231026105345.3376-1-bryan.odonoghue@linaro.org
+
+Requires the named power-domain patches which apply to media-tree/* :
+https://lore.kernel.org/linux-arm-msm/20231101-b4-camss-named-power-domains-v3-5-bbdf5f22462a@linaro.org/
+b4 shazam 20231101-b4-camss-named-power-domains-v3-5-bbdf5f22462a@linaro.org
+
+To use the camera on x13s with say Google Hangouts or Microsoft Teams you
+will need to
+
+1. Run Firefox
+2. Update about:config to enable pipewire
+3. Use this WIP version of libcamera
+   https://gitlab.freedesktop.org/camera/libcamera-softisp
+
+A working bootable tree can be found here:
+Link: https://git.codelinaro.org/bryan.odonoghue/kernel/-/tree/lenovo-x13s-linux-6.5.y
+
+b4 base:
+https://git.codelinaro.org/bryan.odonoghue/kernel/-/tree/b4/camss-sc8280xp
+
+Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+---
+Bryan O'Donoghue (6):
+      media: dt-bindings: media: camss: Add qcom,sc8280xp-camss binding
+      media: qcom: camss: Add CAMSS_SC8280XP enum
+      media: qcom: camss: csiphy-3ph: Add Gen2 v1.1 two-phase MIPI CSI-2 DPHY init
+      media: qcom: camss: Add sc8280xp resource details
+      media: qcom: camss: Add sc8280xp support
+      media: qcom: camss: vfe-17x: Rename camss-vfe-170 to camss-vfe-17x
+
+ .../bindings/media/qcom,sc8280xp-camss.yaml        | 581 +++++++++++++++++++++
+ drivers/media/platform/qcom/camss/Makefile         |   2 +-
+ .../platform/qcom/camss/camss-csiphy-3ph-1-0.c     | 108 +++-
+ drivers/media/platform/qcom/camss/camss-csiphy.c   |   1 +
+ .../camss/{camss-vfe-170.c => camss-vfe-17x.c}     |   0
+ drivers/media/platform/qcom/camss/camss-vfe.c      |  25 +-
+ drivers/media/platform/qcom/camss/camss-video.c    |   1 +
+ drivers/media/platform/qcom/camss/camss.c          | 383 ++++++++++++++
+ drivers/media/platform/qcom/camss/camss.h          |   1 +
+ 9 files changed, 1093 insertions(+), 9 deletions(-)
+---
+base-commit: 89e965e1a58f58cd359472b14c0cc25587bcf264
+change-id: 20231101-b4-camss-sc8280xp-0e1b91eb21bf
+
+Best regards,
 -- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
+Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+
