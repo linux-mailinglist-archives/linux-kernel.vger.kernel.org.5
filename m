@@ -2,64 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 88B017E13EB
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Nov 2023 15:34:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A6297E13ED
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Nov 2023 15:39:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229974AbjKEOel (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Nov 2023 09:34:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37344 "EHLO
+        id S230179AbjKEOjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Nov 2023 09:39:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjKEOej (ORCPT
+        with ESMTP id S229437AbjKEOjU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Nov 2023 09:34:39 -0500
-Received: from mail-oi1-f199.google.com (mail-oi1-f199.google.com [209.85.167.199])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B409E0
-        for <linux-kernel@vger.kernel.org>; Sun,  5 Nov 2023 06:34:37 -0800 (PST)
-Received: by mail-oi1-f199.google.com with SMTP id 5614622812f47-3b2e7b41beaso5398797b6e.0
-        for <linux-kernel@vger.kernel.org>; Sun, 05 Nov 2023 06:34:37 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699194876; x=1699799676;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=lovrfIQmQ8Nc+eRafnP/oql/XRfon5MgJIp11Am8EkQ=;
-        b=geEqWg5EkQTPdbtSWo9mxRVj505TksygPmUvTWBQOIgItFKRle/AGzgyb8vTJGhbpf
-         RXp35+l4nvUxy3iOWwI8Y6qKUDAMLnqzQAmj9IFN+oT8HJqetpqSlKKMlgMEG55VHHkD
-         K4bV8VVSOJiv88c/SxFogLC8o+Pejtnz+rbfE8zI2Udvob5aqD0wi2j7z/UyuwyuD3Ql
-         PGxFZFerCGFoYrqKl2/me5GEdt1DdWp2BdHtJyTd4EsTqBWcErl1yENdqu9Qy53wce05
-         s33Er8aD4m9c/z8xH2BeCAg6a/919aohZ8LKhzSuP6QVOrbDezQL1vlBHeO2UwjcRtGt
-         8mow==
-X-Gm-Message-State: AOJu0YxX2UBXDpd1eXeQn8XcfK/Coj9yWRd1DFsCqHrN6yzJFVywJb0V
-        TX3KYxZHDyeHKi2GTRq16HhzM/CHSDx5vVI8KnIHYxfGa+5J5O4=
-X-Google-Smtp-Source: AGHT+IGp3Tj2rHIrvBVAqzLbmOT+cNE1h6bTKNnTAKAO+P3/0rOgjmJPElnCyhN77vAWRqgxadQOMh7pcpP+6ajdaKr2iYzHcWCd
+        Sun, 5 Nov 2023 09:39:20 -0500
+Received: from todd.t-8ch.de (todd.t-8ch.de [IPv6:2a01:4f8:c010:41de::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76721C6;
+        Sun,  5 Nov 2023 06:39:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
+        s=mail; t=1699195155;
+        bh=R0jXfYp4LwDEeZESXXDnz3g4R1/06F61oTraqCtITWw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=R9uMlpfYTSVYWnja7uhOv6pC14bIs66ZyXYlDDqur8wBQLjBTiFFeFEoonsPkRduO
+         2aossGwakJXHlL1HBiNF5MUAoLJrP4XJOyT419szOvNmoffAiQeoukntIfu9KB/zZC
+         0MAVwUVrZ2rnHYMVRJLuJAEXV4RrXPNMhgmwmU7c=
+Date:   Sun, 5 Nov 2023 15:39:15 +0100
+From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
+To:     Willy Tarreau <w@1wt.eu>
+Cc:     Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] selftests/nolibc: fix testcase status alignment
+Message-ID: <56200e5a-b516-4ef8-9b0c-5b1dbbdd4ce9@t-8ch.de>
+References: <20231105-nolibc-align-v1-1-5bfc542cb6ee@weissschuh.net>
+ <20231105142659.GA21217@1wt.eu>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6808:3096:b0:3a8:45f0:b83a with SMTP id
- bl22-20020a056808309600b003a845f0b83amr3430408oib.5.1699194876329; Sun, 05
- Nov 2023 06:34:36 -0800 (PST)
-Date:   Sun, 05 Nov 2023 06:34:36 -0800
-In-Reply-To: <000000000000b37bea05f0c125be@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000000204af060968a366@google.com>
-Subject: Re: [syzbot] Null ptr deref
-From:   syzbot <syzbot+da0fc229cc1ff4bb2e6d@syzkaller.appspotmail.com>
-To:     linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231105142659.GA21217@1wt.eu>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For archival purposes, forwarding an incoming command email to
-linux-kernel@vger.kernel.org.
+On 2023-11-05 15:27:00+0100, Willy Tarreau wrote:
+> On Sun, Nov 05, 2023 at 03:22:30PM +0100, Thomas Weißschuh wrote:
+> > Center-align all possible status reports.
+> > Before OK and FAIL were center-aligned in relation to each other but
+> > SKIPPED and FAILED would be left-aligned.
+> > 
+> > Before:
+> > 
+> > 7 environ_addr = <0x7fffef3e7c50>                                [OK]
+> > 8 environ_envp = <0x7fffef3e7c58>                               [FAIL]
+> > 9 environ_auxv                                                  [SKIPPED]
+> > 10 environ_total                                                [SKIPPED]
+> > 11 environ_HOME = <0x7fffef3e99bd>                               [OK]
+> > 12 auxv_addr                                                    [SKIPPED]
+> > 13 auxv_AT_UID = 1000                                            [OK]
+> > 
+> > After:
+> > 
+> > 7 environ_addr = <0x7ffff13b00a0>                                 [OK]
+> > 8 environ_envp = <0x7ffff13b00a8>                                [FAIL]
+> > 9 environ_auxv                                                  [SKIPPED]
+> > 10 environ_total                                                [SKIPPED]
+> > 11 environ_HOME = <0x7ffff13b19bd>                                [OK]
+> > 12 auxv_addr                                                    [SKIPPED]
+> > 13 auxv_AT_UID = 1000                                             [OK]
+> > 
+> > Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+> 
+> Quite frankly for trivial cleanups like this you should not even bother
+> with sending a review, and could queue them directly!
 
-***
+Ok, will do!
 
-Subject: Null ptr deref
-Author: osmtendev@gmail.com
 
-#syz test
+Thomas
