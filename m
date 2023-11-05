@@ -2,124 +2,287 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 729827E17D5
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 00:14:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15C867E17D7
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 00:15:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229953AbjKEXOm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Nov 2023 18:14:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57014 "EHLO
+        id S229949AbjKEXPN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Nov 2023 18:15:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229447AbjKEXOl (ORCPT
+        with ESMTP id S229485AbjKEXPL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Nov 2023 18:14:41 -0500
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A9EBE0;
-        Sun,  5 Nov 2023 15:14:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1699226076;
-        bh=KNZfu7OjolZplMBWHK4KYrGyxje/IEIPmuS4nt+hcXA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=PkTUoPjS8C+kZTg2HC6IGXC2Rrya/zlyd5oe7zF2CvviO8Q5nwGYY4bOMps0a5k42
-         qcZeo2mIy5xW1uvWTjQawq5fxh3I4dii2Kqcz4rIitGtW2lFQpPWRZEgAclG4y4tBo
-         x2dJvSmADQjV5a0tVpYrcwD/1FqsoTMDYfk2WX99ADmOzOh6exVv1l+PsEwFeHzqSA
-         OK0TMydgjmA47PQB4cvgCbjHNu5TES2WjG+Wt2EN7b9xwQJgV5XurXDr25V6e4tKhF
-         qklMJbpsoN6NZmrh7ReI/Ecce/bmiwwFiUqkPUcAQs6Hrj1QRQls1rAvdXwf9eB9W6
-         HNBxeQ5wDfcag==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SNr0X2q4sz4xPL;
-        Mon,  6 Nov 2023 10:14:36 +1100 (AEDT)
-Date:   Mon, 6 Nov 2023 10:14:34 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Paul Moore <paul@paul-moore.com>
-Cc:     John Johansen <john.johansen@canonical.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        linux-security-module@vger.kernel.org
-Subject: Re: linux-next: manual merge of the apparmor tree with the security
- tree
-Message-ID: <20231106101434.70c62773@canb.auug.org.au>
-In-Reply-To: <CAHC9VhR=x7qB3gmQg+GPYLnXtGU88S3KCiZGjRYtDKSJHp4P1g@mail.gmail.com>
-References: <20231027130320.69469330@canb.auug.org.au>
-        <CAHC9VhQ+Nt7CrLxSZcOVNEtAypruOmM0ST0P0JJMrOq4XYmAkw@mail.gmail.com>
-        <4b4eb40c-b65a-46e2-9e23-5412a9cdcad0@canonical.com>
-        <CAHC9VhQbxJ4-z4Hp7CSmtcTNOWGFeQF2eEyct9=nHCMN_89YXw@mail.gmail.com>
-        <20231031074649.3bdbec45@canb.auug.org.au>
-        <CAHC9VhR=x7qB3gmQg+GPYLnXtGU88S3KCiZGjRYtDKSJHp4P1g@mail.gmail.com>
+        Sun, 5 Nov 2023 18:15:11 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBF89F2
+        for <linux-kernel@vger.kernel.org>; Sun,  5 Nov 2023 15:15:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699226107; x=1730762107;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=ySCtM2LaWOafMdUmj2H/o5P9TrLodaBMDYFdfnDterg=;
+  b=Z5Y/zhMXv9+J5HwUbA0TqqUZNMuYJFH8aLIM9urMqfL910HRV3kEkRMn
+   g41rkwVqQ69gppID8HCkkHyche7ZUYgYGX5JNPY9jz5Mato+2HPieWH0I
+   YFpe42Dkb2/oOE7PAe0OIakiax+xom6acbf6US6tI4mcoxTGFJUTkuPhl
+   oGFzXeyezGxRD1KBeIPMV650eWsnvs3QoA7DAPMz7Rj8CFkBIOi6vV1MY
+   EI3o2UYgfDvU203S6NY9F1Cb7NcY7N7fPKxHevsxcJDsBi+Bg1Vo/eUDO
+   yvw0uWErZJ4POiEOMp1EaPvAiB50iHtI5H60tnZtX5gSKBuXhb5bNvycv
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10885"; a="388999701"
+X-IronPort-AV: E=Sophos;i="6.03,279,1694761200"; 
+   d="scan'208";a="388999701"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2023 15:15:06 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10885"; a="738634499"
+X-IronPort-AV: E=Sophos;i="6.03,279,1694761200"; 
+   d="scan'208";a="738634499"
+Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
+  by orsmga006.jf.intel.com with ESMTP; 05 Nov 2023 15:15:04 -0800
+Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qzmKc-0005sU-0Q;
+        Sun, 05 Nov 2023 23:15:02 +0000
+Date:   Mon, 6 Nov 2023 07:14:54 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Petr Mladek <pmladek@suse.com>,
+        John Ogness <john.ogness@linutronix.de>
+Subject: ERROR: modpost: vmlinux: local symbol 'nbcon_can_proceed' was
+ exported
+Message-ID: <202311060709.kmj0T96l-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/_zu0BJwfrCMGY12QZZF2a/8";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/_zu0BJwfrCMGY12QZZF2a/8
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   77fa2fbe87fc605c4bfa87dff87be9bfded0e9a3
+commit: 9757acd0a700ba4a0d16dde4ba820eb052aba1a7 printk: nbcon: Allow drivers to mark unsafe regions and check state
+date:   7 weeks ago
+config: riscv-randconfig-r036-20230813 (https://download.01.org/0day-ci/archive/20231106/202311060709.kmj0T96l-lkp@intel.com/config)
+compiler: riscv32-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231106/202311060709.kmj0T96l-lkp@intel.com/reproduce)
 
-Hi Paul,
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311060709.kmj0T96l-lkp@intel.com/
 
-[Sorry for the slow reply]
+All errors (new ones prefixed by >>, old ones prefixed by <<):
 
-On Mon, 30 Oct 2023 17:04:01 -0400 Paul Moore <paul@paul-moore.com> wrote:
->
-> On Mon, Oct 30, 2023 at 4:46=E2=80=AFPM Stephen Rothwell <sfr@canb.auug.o=
-rg.au> wrote:
-> >
-> > On Mon, 30 Oct 2023 12:52:50 -0400 Paul Moore <paul@paul-moore.com> wro=
-te: =20
-> > >
-> > > On Sun, Oct 29, 2023 at 5:09=E2=80=AFPM John Johansen <john.johansen@=
-canonical.com> wrote: =20
-> > > >
-> > > > is part of the Three basic syscalls series, the plan is still to ha=
-ve that
-> > > > series bake in next for a full cycle? =20
-> > >
-> > > Yes, that's still the plan.  Once v6.7-rc1 is out I'll rebase the LSM
-> > > syscall patches and I expect the vast majority of these conflicts to
-> > > disappear, although I'm sure we'll pick up some new ones with the rest
-> > > of the v6.7-rcX cycle :) =20
-> >
-> > These patches should not be in linux-next until after v6.7-rc1. =20
->=20
-> What if we wanted additional testing beyond the typical?  Do you not
-> support that?
+ERROR: modpost: vmlinux: local symbol 'lock_pin_lock' was exported
+ERROR: modpost: vmlinux: local symbol 'lock_repin_lock' was exported
+ERROR: modpost: vmlinux: local symbol 'lock_unpin_lock' was exported
+ERROR: modpost: vmlinux: local symbol 'lockdep_unregister_key' was exported
+ERROR: modpost: vmlinux: local symbol 'debug_check_no_locks_freed' was exported
+ERROR: modpost: vmlinux: local symbol 'debug_check_no_locks_held' was exported
+ERROR: modpost: vmlinux: local symbol 'debug_show_all_locks' was exported
+ERROR: modpost: vmlinux: local symbol 'debug_show_held_locks' was exported
+ERROR: modpost: vmlinux: local symbol 'lockdep_rcu_suspicious' was exported
+ERROR: modpost: vmlinux: local symbol 'rt_mutex_base_init' was exported
+ERROR: modpost: vmlinux: local symbol 'rt_mutex_lock_nested' was exported
+ERROR: modpost: vmlinux: local symbol '_rt_mutex_lock_nest_lock' was exported
+ERROR: modpost: vmlinux: local symbol 'rt_mutex_lock_interruptible' was exported
+ERROR: modpost: vmlinux: local symbol 'rt_mutex_lock_killable' was exported
+ERROR: modpost: vmlinux: local symbol 'rt_mutex_trylock' was exported
+ERROR: modpost: vmlinux: local symbol 'rt_mutex_unlock' was exported
+ERROR: modpost: vmlinux: local symbol '__rt_mutex_init' was exported
+ERROR: modpost: vmlinux: local symbol '_raw_spin_trylock' was exported
+ERROR: modpost: vmlinux: local symbol '_raw_spin_trylock_bh' was exported
+ERROR: modpost: vmlinux: local symbol '_raw_spin_lock' was exported
+ERROR: modpost: vmlinux: local symbol '_raw_spin_lock_irqsave' was exported
+ERROR: modpost: vmlinux: local symbol '_raw_spin_lock_irq' was exported
+ERROR: modpost: vmlinux: local symbol '_raw_spin_lock_bh' was exported
+ERROR: modpost: vmlinux: local symbol '_raw_spin_unlock' was exported
+ERROR: modpost: vmlinux: local symbol '_raw_spin_unlock_irqrestore' was exported
+ERROR: modpost: vmlinux: local symbol '_raw_spin_unlock_irq' was exported
+ERROR: modpost: vmlinux: local symbol '_raw_spin_unlock_bh' was exported
+ERROR: modpost: vmlinux: local symbol '_raw_read_trylock' was exported
+ERROR: modpost: vmlinux: local symbol '_raw_read_lock' was exported
+ERROR: modpost: vmlinux: local symbol '_raw_read_lock_irqsave' was exported
+ERROR: modpost: vmlinux: local symbol '_raw_read_lock_irq' was exported
+ERROR: modpost: vmlinux: local symbol '_raw_read_lock_bh' was exported
+ERROR: modpost: vmlinux: local symbol '_raw_read_unlock' was exported
+ERROR: modpost: vmlinux: local symbol '_raw_read_unlock_irqrestore' was exported
+ERROR: modpost: vmlinux: local symbol '_raw_read_unlock_irq' was exported
+ERROR: modpost: vmlinux: local symbol '_raw_read_unlock_bh' was exported
+ERROR: modpost: vmlinux: local symbol '_raw_write_trylock' was exported
+ERROR: modpost: vmlinux: local symbol '_raw_write_lock' was exported
+ERROR: modpost: vmlinux: local symbol '_raw_write_lock_nested' was exported
+ERROR: modpost: vmlinux: local symbol '_raw_write_lock_irqsave' was exported
+ERROR: modpost: vmlinux: local symbol '_raw_write_lock_irq' was exported
+ERROR: modpost: vmlinux: local symbol '_raw_write_lock_bh' was exported
+ERROR: modpost: vmlinux: local symbol '_raw_write_unlock' was exported
+ERROR: modpost: vmlinux: local symbol '_raw_write_unlock_irqrestore' was exported
+ERROR: modpost: vmlinux: local symbol '_raw_write_unlock_irq' was exported
+ERROR: modpost: vmlinux: local symbol '_raw_write_unlock_bh' was exported
+ERROR: modpost: vmlinux: local symbol '_raw_spin_lock_nested' was exported
+ERROR: modpost: vmlinux: local symbol '_raw_spin_lock_irqsave_nested' was exported
+ERROR: modpost: vmlinux: local symbol '_raw_spin_lock_nest_lock' was exported
+ERROR: modpost: vmlinux: local symbol 'in_lock_functions' was exported
+ERROR: modpost: vmlinux: local symbol '__raw_spin_lock_init' was exported
+ERROR: modpost: vmlinux: local symbol '__rwlock_init' was exported
+ERROR: modpost: vmlinux: local symbol 'cpu_latency_qos_request_active' was exported
+ERROR: modpost: vmlinux: local symbol 'cpu_latency_qos_add_request' was exported
+ERROR: modpost: vmlinux: local symbol 'cpu_latency_qos_update_request' was exported
+ERROR: modpost: vmlinux: local symbol 'cpu_latency_qos_remove_request' was exported
+ERROR: modpost: vmlinux: local symbol 'freq_qos_add_request' was exported
+ERROR: modpost: vmlinux: local symbol 'freq_qos_update_request' was exported
+ERROR: modpost: vmlinux: local symbol 'freq_qos_remove_request' was exported
+ERROR: modpost: vmlinux: local symbol 'freq_qos_add_notifier' was exported
+ERROR: modpost: vmlinux: local symbol 'freq_qos_remove_notifier' was exported
+ERROR: modpost: vmlinux: local symbol 'pm_wq' was exported
+ERROR: modpost: vmlinux: local symbol 'console_printk' was exported
+ERROR: modpost: vmlinux: local symbol 'ignore_console_lock_warning' was exported
+ERROR: modpost: vmlinux: local symbol '__tracepoint_console' was exported
+ERROR: modpost: vmlinux: local symbol '__traceiter_console' was exported
+ERROR: modpost: vmlinux: local symbol '__SCK__tp_func_console' was exported
+ERROR: modpost: vmlinux: local symbol 'oops_in_progress' was exported
+ERROR: modpost: vmlinux: local symbol 'console_list' was exported
+ERROR: modpost: vmlinux: local symbol 'lockdep_assert_console_list_lock_held' was exported
+ERROR: modpost: vmlinux: local symbol 'console_srcu_read_lock_is_held' was exported
+ERROR: modpost: vmlinux: local symbol 'console_list_lock' was exported
+ERROR: modpost: vmlinux: local symbol 'console_list_unlock' was exported
+ERROR: modpost: vmlinux: local symbol 'console_srcu_read_lock' was exported
+ERROR: modpost: vmlinux: local symbol 'console_srcu_read_unlock' was exported
+ERROR: modpost: vmlinux: local symbol 'console_set_on_cmdline' was exported
+ERROR: modpost: vmlinux: local symbol 'vprintk_emit' was exported
+ERROR: modpost: vmlinux: local symbol 'vprintk_default' was exported
+ERROR: modpost: vmlinux: local symbol '_printk' was exported
+ERROR: modpost: vmlinux: local symbol 'console_suspend_enabled' was exported
+ERROR: modpost: vmlinux: local symbol 'console_verbose' was exported
+ERROR: modpost: vmlinux: local symbol 'console_lock' was exported
+ERROR: modpost: vmlinux: local symbol 'console_trylock' was exported
+ERROR: modpost: vmlinux: local symbol 'is_console_locked' was exported
+ERROR: modpost: vmlinux: local symbol 'console_unlock' was exported
+ERROR: modpost: vmlinux: local symbol 'console_conditional_schedule' was exported
+ERROR: modpost: vmlinux: local symbol 'console_stop' was exported
+ERROR: modpost: vmlinux: local symbol 'console_start' was exported
+ERROR: modpost: vmlinux: local symbol 'register_console' was exported
+ERROR: modpost: vmlinux: local symbol 'unregister_console' was exported
+ERROR: modpost: vmlinux: local symbol 'console_force_preferred_locked' was exported
+ERROR: modpost: vmlinux: local symbol '__printk_ratelimit' was exported
+ERROR: modpost: vmlinux: local symbol 'printk_timed_ratelimit' was exported
+ERROR: modpost: vmlinux: local symbol 'kmsg_dump_register' was exported
+ERROR: modpost: vmlinux: local symbol 'kmsg_dump_unregister' was exported
+ERROR: modpost: vmlinux: local symbol 'kmsg_dump_reason_str' was exported
+ERROR: modpost: vmlinux: local symbol 'kmsg_dump_get_line' was exported
+ERROR: modpost: vmlinux: local symbol 'kmsg_dump_get_buffer' was exported
+ERROR: modpost: vmlinux: local symbol 'kmsg_dump_rewind' was exported
+ERROR: modpost: vmlinux: local symbol 'vprintk' was exported
+>> ERROR: modpost: vmlinux: local symbol 'nbcon_can_proceed' was exported
+>> ERROR: modpost: vmlinux: local symbol 'nbcon_enter_unsafe' was exported
+>> ERROR: modpost: vmlinux: local symbol 'nbcon_exit_unsafe' was exported
+ERROR: modpost: vmlinux: local symbol 'nr_irqs' was exported
+ERROR: modpost: vmlinux: local symbol 'generic_handle_irq' was exported
+ERROR: modpost: vmlinux: local symbol 'generic_handle_irq_safe' was exported
+ERROR: modpost: vmlinux: local symbol 'generic_handle_domain_irq' was exported
+ERROR: modpost: vmlinux: local symbol 'generic_handle_domain_irq_safe' was exported
+ERROR: modpost: vmlinux: local symbol 'irq_free_descs' was exported
+ERROR: modpost: vmlinux: local symbol '__irq_alloc_descs' was exported
+ERROR: modpost: vmlinux: local symbol 'irq_get_percpu_devid_partition' was exported
+ERROR: modpost: vmlinux: local symbol '__irq_set_lockdep_class' was exported
+ERROR: modpost: vmlinux: local symbol 'handle_bad_irq' was exported
+ERROR: modpost: vmlinux: local symbol 'no_action' was exported
+ERROR: modpost: vmlinux: local symbol 'synchronize_hardirq' was exported
+ERROR: modpost: vmlinux: local symbol 'synchronize_irq' was exported
+ERROR: modpost: vmlinux: local symbol 'irq_set_vcpu_affinity' was exported
+ERROR: modpost: vmlinux: local symbol 'disable_irq_nosync' was exported
+ERROR: modpost: vmlinux: local symbol 'disable_irq' was exported
+ERROR: modpost: vmlinux: local symbol 'disable_hardirq' was exported
+ERROR: modpost: vmlinux: local symbol 'enable_irq' was exported
+ERROR: modpost: vmlinux: local symbol 'irq_set_irq_wake' was exported
+ERROR: modpost: vmlinux: local symbol 'irq_set_parent' was exported
+ERROR: modpost: vmlinux: local symbol 'irq_wake_thread' was exported
+ERROR: modpost: vmlinux: local symbol 'free_irq' was exported
+ERROR: modpost: vmlinux: local symbol 'request_threaded_irq' was exported
+ERROR: modpost: vmlinux: local symbol 'request_any_context_irq' was exported
+ERROR: modpost: vmlinux: local symbol 'enable_percpu_irq' was exported
+ERROR: modpost: vmlinux: local symbol 'irq_percpu_is_enabled' was exported
+ERROR: modpost: vmlinux: local symbol 'disable_percpu_irq' was exported
+ERROR: modpost: vmlinux: local symbol 'free_percpu_irq' was exported
+ERROR: modpost: vmlinux: local symbol '__request_percpu_irq' was exported
+ERROR: modpost: vmlinux: local symbol 'irq_get_irqchip_state' was exported
+ERROR: modpost: vmlinux: local symbol 'irq_set_irqchip_state' was exported
+ERROR: modpost: vmlinux: local symbol 'irq_has_action' was exported
+ERROR: modpost: vmlinux: local symbol 'irq_check_status_bit' was exported
+ERROR: modpost: vmlinux: local symbol 'irq_inject_interrupt' was exported
+ERROR: modpost: vmlinux: local symbol 'irq_set_chip' was exported
+ERROR: modpost: vmlinux: local symbol 'irq_set_irq_type' was exported
+ERROR: modpost: vmlinux: local symbol 'irq_set_handler_data' was exported
+ERROR: modpost: vmlinux: local symbol 'irq_set_chip_data' was exported
+ERROR: modpost: vmlinux: local symbol 'irq_get_irq_data' was exported
+ERROR: modpost: vmlinux: local symbol 'handle_nested_irq' was exported
+ERROR: modpost: vmlinux: local symbol 'handle_simple_irq' was exported
+ERROR: modpost: vmlinux: local symbol 'handle_untracked_irq' was exported
+ERROR: modpost: vmlinux: local symbol 'handle_level_irq' was exported
+ERROR: modpost: vmlinux: local symbol 'handle_fasteoi_irq' was exported
+ERROR: modpost: vmlinux: local symbol 'handle_fasteoi_nmi' was exported
+ERROR: modpost: vmlinux: local symbol 'handle_edge_irq' was exported
+ERROR: modpost: vmlinux: local symbol '__irq_set_handler' was exported
+ERROR: modpost: vmlinux: local symbol 'irq_set_chained_handler_and_data' was exported
+ERROR: modpost: vmlinux: local symbol 'irq_set_chip_and_handler_name' was exported
+ERROR: modpost: vmlinux: local symbol 'irq_modify_status' was exported
+ERROR: modpost: vmlinux: local symbol 'irq_chip_set_parent_state' was exported
+ERROR: modpost: vmlinux: local symbol 'irq_chip_get_parent_state' was exported
+ERROR: modpost: vmlinux: local symbol 'irq_chip_enable_parent' was exported
+ERROR: modpost: vmlinux: local symbol 'irq_chip_disable_parent' was exported
+ERROR: modpost: vmlinux: local symbol 'irq_chip_ack_parent' was exported
+ERROR: modpost: vmlinux: local symbol 'irq_chip_mask_parent' was exported
+ERROR: modpost: vmlinux: local symbol 'irq_chip_mask_ack_parent' was exported
+ERROR: modpost: vmlinux: local symbol 'irq_chip_unmask_parent' was exported
+ERROR: modpost: vmlinux: local symbol 'irq_chip_eoi_parent' was exported
+ERROR: modpost: vmlinux: local symbol 'irq_chip_set_affinity_parent' was exported
+ERROR: modpost: vmlinux: local symbol 'irq_chip_set_type_parent' was exported
+ERROR: modpost: vmlinux: local symbol 'irq_chip_retrigger_hierarchy' was exported
+ERROR: modpost: vmlinux: local symbol 'irq_chip_set_vcpu_affinity_parent' was exported
+ERROR: modpost: vmlinux: local symbol 'irq_chip_set_wake_parent' was exported
+ERROR: modpost: vmlinux: local symbol 'irq_chip_request_resources_parent' was exported
+ERROR: modpost: vmlinux: local symbol 'irq_chip_release_resources_parent' was exported
+ERROR: modpost: vmlinux: local symbol 'dummy_irq_chip' was exported
+ERROR: modpost: vmlinux: local symbol 'devm_request_threaded_irq' was exported
+ERROR: modpost: vmlinux: local symbol 'devm_request_any_context_irq' was exported
+ERROR: modpost: vmlinux: local symbol 'devm_free_irq' was exported
+ERROR: modpost: vmlinux: local symbol '__devm_irq_alloc_descs' was exported
+ERROR: modpost: vmlinux: local symbol 'devm_irq_alloc_generic_chip' was exported
+ERROR: modpost: vmlinux: local symbol 'devm_irq_setup_generic_chip' was exported
+ERROR: modpost: vmlinux: local symbol 'irq_gc_noop' was exported
+ERROR: modpost: vmlinux: local symbol 'irq_gc_mask_disable_reg' was exported
+ERROR: modpost: vmlinux: local symbol 'irq_gc_mask_set_bit' was exported
+ERROR: modpost: vmlinux: local symbol 'irq_gc_mask_clr_bit' was exported
+ERROR: modpost: vmlinux: local symbol 'irq_gc_unmask_enable_reg' was exported
+ERROR: modpost: vmlinux: local symbol 'irq_gc_ack_set_bit' was exported
+ERROR: modpost: vmlinux: local symbol 'irq_gc_set_wake' was exported
+ERROR: modpost: vmlinux: local symbol 'irq_alloc_generic_chip' was exported
+ERROR: modpost: vmlinux: local symbol '__irq_alloc_domain_generic_chips' was exported
+ERROR: modpost: vmlinux: local symbol 'irq_get_domain_generic_chip' was exported
+ERROR: modpost: vmlinux: local symbol 'irq_generic_chip_ops' was exported
+ERROR: modpost: vmlinux: local symbol 'irq_setup_generic_chip' was exported
+ERROR: modpost: vmlinux: local symbol 'irq_setup_alt_chip' was exported
+ERROR: modpost: vmlinux: local symbol 'irq_remove_generic_chip' was exported
+ERROR: modpost: vmlinux: local symbol 'irqchip_fwnode_ops' was exported
+ERROR: modpost: vmlinux: local symbol '__irq_domain_alloc_fwnode' was exported
+ERROR: modpost: vmlinux: local symbol 'irq_domain_free_fwnode' was exported
+ERROR: modpost: vmlinux: local symbol '__irq_domain_add' was exported
+ERROR: modpost: vmlinux: local symbol 'irq_domain_remove' was exported
+ERROR: modpost: vmlinux: local symbol 'irq_domain_update_bus_token' was exported
+ERROR: modpost: vmlinux: local symbol 'irq_domain_create_simple' was exported
+ERROR: modpost: vmlinux: local symbol 'irq_domain_add_legacy' was exported
+ERROR: modpost: vmlinux: local symbol 'irq_domain_create_legacy' was exported
+ERROR: modpost: vmlinux: local symbol 'irq_find_matching_fwspec' was exported
+ERROR: modpost: vmlinux: local symbol 'irq_set_default_host' was exported
+ERROR: modpost: vmlinux: local symbol 'irq_get_default_host' was exported
+ERROR: modpost: vmlinux: local symbol 'irq_domain_associate' was exported
 
-No, I try hard not to.  It just complicates things when I and others
-have to cope with conflicts and build problems caused by
-patches/features destined for next+1 while trying to stabilise the
-current/next release.
-
-Sometimes it happens that a feature slips after being added to -next,
-but please don't do it deliberately.
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/_zu0BJwfrCMGY12QZZF2a/8
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmVIIdoACgkQAVBC80lX
-0Gx1IAf9H6V82cvAQtkUP2Py/ZW41u9lLBGGfLJ/mePRq+auXqJ7G2Tl1wOqx+4t
-dzNmZq5f/VDFeXghE4jA6GHxst1C1/JPeIjew6g32BRSMQ0sHMIax8JFZg6kGrnf
-kE/jTG6YyW2lfK+DhfL2x7FU1d2vDK19oIwr8rR+oQjADKGAta91pGZWfCMpOpsK
-T9YMg4wqrb1iQ85g4H1aA1xnddA4+4NDqZpyyrxjeiRbdU3VtAb5IAnQAp/iFjVo
-fbtXRxW6hsk4dXxIPJG1rwttUNWBj9J23WtFyn/WdFfsFh4fsKpvpSF23AZkJ4a7
-pCQpF/51mND8VV4sBjJ67cOa3aq+sQ==
-=5v1Q
------END PGP SIGNATURE-----
-
---Sig_/_zu0BJwfrCMGY12QZZF2a/8--
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
