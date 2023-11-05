@@ -2,160 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 47B227E1484
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Nov 2023 17:13:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C3EA7E148A
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Nov 2023 17:20:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229944AbjKEQNU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Nov 2023 11:13:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42072 "EHLO
+        id S229594AbjKEQUo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Nov 2023 11:20:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229485AbjKEQNJ (ORCPT
+        with ESMTP id S229524AbjKEQUm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Nov 2023 11:13:09 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B31110E2
-        for <linux-kernel@vger.kernel.org>; Sun,  5 Nov 2023 08:13:06 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E42C5C433C7;
-        Sun,  5 Nov 2023 16:13:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699200786;
-        bh=0wwZpMxwKGIQyZo3TSMiWZ/Y22+/QBwUQ7If+R6veeM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZTesYE3HpdWVCNJcBHB8i8hTSur4IzVb2plFlfyVN1bO8in5i2u6e4dC5fVOpjRLI
-         EKf3NRwfGo7pIZ6ZdC4Ycn4M1iD9dS2yxq3ocdLZ2qWQbLtIGdUghfJpGhjWYHtmsP
-         aBhOm6RWEyJK6YouZzWAGLRpPwjtjNpyh5IldtDMLtFMCSiWrEXO9D57AQjqBqZ5ib
-         Lg0lU2UFXoDLxwQQkJl0HSupXNV3AjqIPCSu+aPb0c1c64x+QyJsiWXV5ILknpNLHz
-         CGICyD9yZbV0qTU6zotdjN0ZKlajrcGiaFhSxCHsQ2hHokVxRdKMIPhN+7F6GeqEtn
-         gYSUjmbuldTZA==
-From:   "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Florent Revest <revest@chromium.org>
-Cc:     linux-trace-kernel@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Guo Ren <guoren@kernel.org>
-Subject: [RFC PATCH 32/32] Documentation: probes: Update fprobe on function-graph tracer
-Date:   Mon,  6 Nov 2023 01:12:59 +0900
-Message-Id: <169920077887.482486.9572304320229899702.stgit@devnote2>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <169920038849.482486.15796387219966662967.stgit@devnote2>
-References: <169920038849.482486.15796387219966662967.stgit@devnote2>
-User-Agent: StGit/0.19
+        Sun, 5 Nov 2023 11:20:42 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E9B6DE
+        for <linux-kernel@vger.kernel.org>; Sun,  5 Nov 2023 08:19:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1699201191;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5S45DCFEET4FUlleAs+X25SSP8exRtkoxGaiIZR36AY=;
+        b=Qs3HRrP3qIhpoKM72TcYby7LjkynOYF2uGUiYgOpf4cM1NTdPhrht9wGz/KnO3gBjJxfUq
+        mza5kadjnoQ8KRXMz4halkRbOGmF7JZQRnmEXEipVlcbqxqYJs2bJ/KxI1kMpBJJetCEJF
+        dDxtT0VknqS2ie5C9oxIB6gY14EdZkk=
+Received: from mail-vk1-f198.google.com (mail-vk1-f198.google.com
+ [209.85.221.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-68-DV5Uv0HoPz6PrJx3jndauA-1; Sun, 05 Nov 2023 11:19:50 -0500
+X-MC-Unique: DV5Uv0HoPz6PrJx3jndauA-1
+Received: by mail-vk1-f198.google.com with SMTP id 71dfb90a1353d-4ac2ffa81f1so312122e0c.0
+        for <linux-kernel@vger.kernel.org>; Sun, 05 Nov 2023 08:19:50 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699201190; x=1699805990;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5S45DCFEET4FUlleAs+X25SSP8exRtkoxGaiIZR36AY=;
+        b=vyb61WUi6UEm+aPl9IAn8KUzOJQp7HW12/hIPvAL2+GI22ryMzYOqKe6z5KAhC7DU6
+         PSvBYX+Dswq4JQvMQXPMwRxVGRq0kVSIfT5r6KQebIbs/P33qY89Yi4qX6EwCd2QNqWA
+         EXEatdIx3vxz3WuxfWCAZf7vL+rywCDSygvvEeqT/iYbVlEigXnzMlnXslWbR/E6I+qE
+         pwkKuTiCy6p16TvF5k1eIpcf/GmnpjUPLivIlkKrzKkAXcNpCbHmFpbCxh56XY+ED3Qh
+         1rB+E3p//eLryKEQ/aVVK2IXd1SwhGPSJZbX1rV2dQXXLbAAaXotCGZhWO0tJTpo8kJA
+         DL/w==
+X-Gm-Message-State: AOJu0Ywm2JnWg05IJwpKhC3Cs0c72jMb5uEmt4f+sZPUmanF1w+j2Hlp
+        CaOESA+sLCW9yJ4lQJoUM/5Quy37w18V9AYWQPNJ7vaUU3HM+B0p8wXZxfb6BlWLUofY1z/w9p4
+        iPoDbKP0O+RyeuUOhwO+05gWQtDL73kPJ/Xj0dQn1
+X-Received: by 2002:a05:6102:4743:b0:45d:8f83:e10f with SMTP id ej3-20020a056102474300b0045d8f83e10fmr5351504vsb.4.1699201189803;
+        Sun, 05 Nov 2023 08:19:49 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IG9PY/ps/exIZhJtEiBPcrHL5I4MFvN3fWtoZJg4K/o1jMHEXmGlTLfpUZIUzDcxTZUf1dOb3c60KPU/ucxafo=
+X-Received: by 2002:a05:6102:4743:b0:45d:8f83:e10f with SMTP id
+ ej3-20020a056102474300b0045d8f83e10fmr5351461vsb.4.1699201189503; Sun, 05 Nov
+ 2023 08:19:49 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+References: <20231027182217.3615211-1-seanjc@google.com> <20231027182217.3615211-21-seanjc@google.com>
+ <ZUeSaAKRemlSRQpO@yilunxu-OptiPlex-7050>
+In-Reply-To: <ZUeSaAKRemlSRQpO@yilunxu-OptiPlex-7050>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Date:   Sun, 5 Nov 2023 17:19:36 +0100
+Message-ID: <CABgObfb1Wf2ptitGhJPM6VcmkCG9haMoQj2BsttjeoV=9F0O9Q@mail.gmail.com>
+Subject: Re: [PATCH v13 20/35] KVM: x86/mmu: Handle page fault for private memory
+To:     Xu Yilun <yilun.xu@linux.intel.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Anup Patel <anup@brainfault.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>, kvm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Xiaoyao Li <xiaoyao.li@intel.com>,
+        Xu Yilun <yilun.xu@intel.com>,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Fuad Tabba <tabba@google.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Anish Moorthy <amoorthy@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Isaku Yamahata <isaku.yamahata@intel.com>,
+        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Maciej Szmigiero <mail@maciej.szmigiero.name>,
+        David Hildenbrand <david@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Wang <wei.w.wang@intel.com>,
+        Liam Merwick <liam.merwick@oracle.com>,
+        Isaku Yamahata <isaku.yamahata@gmail.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+On Sun, Nov 5, 2023 at 2:04=E2=80=AFPM Xu Yilun <yilun.xu@linux.intel.com> =
+wrote:
+>
+> > +static void kvm_mmu_prepare_memory_fault_exit(struct kvm_vcpu *vcpu,
+> > +                                           struct kvm_page_fault *faul=
+t)
+> > +{
+> > +     kvm_prepare_memory_fault_exit(vcpu, fault->gfn << PAGE_SHIFT,
+> > +                                   PAGE_SIZE, fault->write, fault->exe=
+c,
+> > +                                   fault->is_private);
+> > +}
+> > +
+> > +static int kvm_faultin_pfn_private(struct kvm_vcpu *vcpu,
+> > +                                struct kvm_page_fault *fault)
+> > +{
+> > +     int max_order, r;
+> > +
+> > +     if (!kvm_slot_can_be_private(fault->slot)) {
+> > +             kvm_mmu_prepare_memory_fault_exit(vcpu, fault);
+> > +             return -EFAULT;
+> > +     }
+> > +
+> > +     r =3D kvm_gmem_get_pfn(vcpu->kvm, fault->slot, fault->gfn, &fault=
+->pfn,
+> > +                          &max_order);
+> > +     if (r) {
+> > +             kvm_mmu_prepare_memory_fault_exit(vcpu, fault);
+> > +             return r;
+>
+> Why report KVM_EXIT_MEMORY_FAULT here? even with a ret !=3D -EFAULT?
 
-Update fprobe documentation for the new fprobe on function-graph
-tracer. This includes some bahvior changes and pt_regs to
-ftrace_regs interface change.
+The cases are EFAULT, EHWPOISON (which can report
+KVM_EXIT_MEMORY_FAULT) and ENOMEM. I think it's fine
+that even -ENOMEM can return KVM_EXIT_MEMORY_FAULT,
+and it doesn't violate the documentation.  The docs tell you "what
+can you do if error if EFAULT or EHWPOISON?"; they don't
+exclude that other errnos result in KVM_EXIT_MEMORY_FAULT,
+it's just that you're not supposed to look at it
 
-Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
----
- Documentation/trace/fprobe.rst |   42 ++++++++++++++++++++++++++--------------
- 1 file changed, 27 insertions(+), 15 deletions(-)
-
-diff --git a/Documentation/trace/fprobe.rst b/Documentation/trace/fprobe.rst
-index 196f52386aaa..fb0446f68bcb 100644
---- a/Documentation/trace/fprobe.rst
-+++ b/Documentation/trace/fprobe.rst
-@@ -9,9 +9,10 @@ Fprobe - Function entry/exit probe
- Introduction
- ============
- 
--Fprobe is a function entry/exit probe mechanism based on ftrace.
--Instead of using ftrace full feature, if you only want to attach callbacks
--on function entry and exit, similar to the kprobes and kretprobes, you can
-+Fprobe is a function entry/exit probe mechanism based on the function-graph
-+tracer.
-+Instead of tracing all functions, if you want to attach callbacks on specific
-+function entry and exit, similar to the kprobes and kretprobes, you can
- use fprobe. Compared with kprobes and kretprobes, fprobe gives faster
- instrumentation for multiple functions with single handler. This document
- describes how to use fprobe.
-@@ -91,12 +92,14 @@ The prototype of the entry/exit callback function are as follows:
- 
- .. code-block:: c
- 
-- int entry_callback(struct fprobe *fp, unsigned long entry_ip, unsigned long ret_ip, struct pt_regs *regs, void *entry_data);
-+ int entry_callback(struct fprobe *fp, unsigned long entry_ip, unsigned long ret_ip, struct ftrace_regs *fregs, void *entry_data);
- 
-- void exit_callback(struct fprobe *fp, unsigned long entry_ip, unsigned long ret_ip, struct pt_regs *regs, void *entry_data);
-+ void exit_callback(struct fprobe *fp, unsigned long entry_ip, unsigned long ret_ip, struct ftrace_regs *fregs, void *entry_data);
- 
--Note that the @entry_ip is saved at function entry and passed to exit handler.
--If the entry callback function returns !0, the corresponding exit callback will be cancelled.
-+Note that the @entry_ip is saved at function entry and passed to exit
-+handler.
-+If the entry callback function returns !0, the corresponding exit callback
-+will be cancelled.
- 
- @fp
-         This is the address of `fprobe` data structure related to this handler.
-@@ -112,12 +115,10 @@ If the entry callback function returns !0, the corresponding exit callback will
-         This is the return address that the traced function will return to,
-         somewhere in the caller. This can be used at both entry and exit.
- 
--@regs
--        This is the `pt_regs` data structure at the entry and exit. Note that
--        the instruction pointer of @regs may be different from the @entry_ip
--        in the entry_handler. If you need traced instruction pointer, you need
--        to use @entry_ip. On the other hand, in the exit_handler, the instruction
--        pointer of @regs is set to the current return address.
-+@fregs
-+        This is the `ftrace_regs` data structure at the entry and exit. Note that
-+        the instruction pointer of @fregs may be incorrect in entry handler and
-+        exit handler, so you have to use @entry_ip and @ret_ip instead.
- 
- @entry_data
-         This is a local storage to share the data between entry and exit handlers.
-@@ -125,6 +126,17 @@ If the entry callback function returns !0, the corresponding exit callback will
-         and `entry_data_size` field when registering the fprobe, the storage is
-         allocated and passed to both `entry_handler` and `exit_handler`.
- 
-+Entry data size and exit handlers on the same function
-+======================================================
-+
-+Since the entry data is passed via per-task stack and it is has limited size,
-+the entry data size per probe is limited to `15 * sizeof(long)`. You also need
-+to take care that the different fprobes are probing on the same function, this
-+limit becomes smaller. The entry data size is aligned to `sizeof(long)` and
-+each fprobe which has exit handler uses a `sizeof(long)` space on the stack,
-+you should keep the number of fprobes on the same function as small as
-+possible.
-+
- Share the callbacks with kprobes
- ================================
- 
-@@ -165,8 +177,8 @@ This counter counts up when;
-  - fprobe fails to take ftrace_recursion lock. This usually means that a function
-    which is traced by other ftrace users is called from the entry_handler.
- 
-- - fprobe fails to setup the function exit because of the shortage of rethook
--   (the shadow stack for hooking the function return.)
-+ - fprobe fails to setup the function exit because of failing to allocate the
-+   data buffer from the per-task shadow stack.
- 
- The `fprobe::nmissed` field counts up in both cases. Therefore, the former
- skips both of entry and exit callback and the latter skips the exit
+Paolo
 
