@@ -2,115 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 809357E17D9
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 00:18:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8D017E17E0
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 00:22:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229952AbjKEXSL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Nov 2023 18:18:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50556 "EHLO
+        id S229893AbjKEXWS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Nov 2023 18:22:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229485AbjKEXSK (ORCPT
+        with ESMTP id S229485AbjKEXWP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Nov 2023 18:18:10 -0500
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D5CBE0;
-        Sun,  5 Nov 2023 15:18:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=WRzc8iSMZ3s/SPfYK8NAg2CySTvFUz9+wHH4x+bWOPw=; b=Cy8MGuHIuO5bucbrbZ3TAyLt+w
-        axueqeRAPshmKo4grkOnNYx5lB+Jvhv5wX5N5XaoLR4501TSBfdavpUcziXBbk0ued+vbemuiW6iw
-        IJvE/nYtylODJnYtZiJfWFATI5BUYHBkKiMfls38/AZaOFlrZo8Ipwn/RPsFC3mPk4BOliVFFEJ4c
-        a0ThgXD0bloEtab3XslA0aLkwUcqMw3tw8xkuyR7qXzGZf4SxyQ97ChKzULMqTcNdkmh/abn8jvjX
-        eny63U8vbdFJ8ckTqc7YiJ7uDB3LP3WEsks6jkdCYtcHdagwTMJhSMUfd7atjbO59UxoLTm+mEeY7
-        cfkmU3Rw==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qzmN5-009uqA-1K;
-        Sun, 05 Nov 2023 23:17:35 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 13E39300326; Mon,  6 Nov 2023 00:17:35 +0100 (CET)
-Date:   Mon, 6 Nov 2023 00:17:34 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Florent Revest <revest@chromium.org>,
-        linux-trace-kernel@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Guo Ren <guoren@kernel.org>
-Subject: Re: [RFC PATCH 24/32] x86/ftrace: Enable HAVE_FUNCTION_GRAPH_FREGS
-Message-ID: <20231105231734.GE3818@noisy.programming.kicks-ass.net>
-References: <169920038849.482486.15796387219966662967.stgit@devnote2>
- <169920068069.482486.6540417903833579700.stgit@devnote2>
- <20231105172536.GA7124@noisy.programming.kicks-ass.net>
- <20231105141130.6ef7d8bd@rorschach.local.home>
+        Sun, 5 Nov 2023 18:22:15 -0500
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06270CC;
+        Sun,  5 Nov 2023 15:22:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1699226531;
+        bh=lHq2yBVx2PRPUkReEuYgqvnzXGUDwT03Ph9QcnzcWv8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=EeqeRSvYpZqCRnmfBdE0l6CPQzKlidBtsWLsHia+dihBX1EupMHsGJCl/SpT2F5lN
+         LDPke2/tNchc12J8uApvhiJ2rJ6q6x/IRqGvwpYJ77DLi0o8ZRVJz915jv0kej1d3P
+         dvrqHOtcxn+rVG63QCDUiDFYim7SBp+7QEmp3K4A4e3QdWZYU/4EjfIs4GQ/2IC7KW
+         tDfr/vEOolDE0+7NLw4bEuMRQN8NYNu8llZGxWiqQl/N+Nm0xYwXmpAhrJkkKEJzNa
+         7rJVzbAAQbDvcEAqv+hfasH1u5T8I+nZ9No6RDPY+fsGtqj8uZdmaZdWFWvj963Lns
+         bSrWfKgjuU2Kg==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SNr9H0QQwz4x5m;
+        Mon,  6 Nov 2023 10:22:10 +1100 (AEDT)
+Date:   Mon, 6 Nov 2023 10:22:09 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>,
+        Paul Moore <paul@paul-moore.com>
+Cc:     Casey Schaufler <casey@schaufler-ca.com>,
+        Kees Cook <keescook@chromium.org>,
+        Konstantin Meskhidze <konstantin.meskhidze@huawei.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the landlock tree
+Message-ID: <20231106102209.4b07d7e7@canb.auug.org.au>
+In-Reply-To: <20231027163400.5764d549@canb.auug.org.au>
+References: <20231027163400.5764d549@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231105141130.6ef7d8bd@rorschach.local.home>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/L4WbjisVULi66lxp_lEZC4x";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 05, 2023 at 02:11:30PM -0500, Steven Rostedt wrote:
-> On Sun, 5 Nov 2023 18:25:36 +0100
-> Peter Zijlstra <peterz@infradead.org> wrote:
-> 
-> > On Mon, Nov 06, 2023 at 01:11:21AM +0900, Masami Hiramatsu (Google) wrote:
-> > > From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> > > 
-> > > Support HAVE_FUNCTION_GRAPH_FREGS on x86-64, which saves ftrace_regs
-> > > on the stack in ftrace_graph return trampoline so that the callbacks
-> > > can access registers via ftrace_regs APIs.  
-> > 
-> > What is ftrace_regs ? If I look at arch/x86/include/asm/ftrace.h it's a
-> > pointless wrapper around pt_regs.
-> > 
-> > Can we please remove the pointless wrappery and call it what it is?
-> 
-> A while back ago when I introduced FTRACE_WITH_ARGS, it would have all
-> ftrace callbacks get a pt_regs, but it would be partially filled for
-> those that did not specify the "REGS" flag when registering the
-> callback. You and Thomas complained that it would be a bug to return
-> pt_regs that was not full because something might read the non filled
-> registers and think they were valid.
-> 
-> To solve this, I came up with ftrace_regs to only hold the registers
-> that were required for function parameters (including the stack
-> pointer). You could then call arch_ftrace_get_regs(ftrace_regs) and if
-> this "wrapper" had all valid pt_regs registers, then it would return
-> the pt_regs, otherwise it would return NULL, and you would need to use
-> the ftrace_regs accessor calls to get the function registers. You and
-> Thomas agreed with this.
+--Sig_/L4WbjisVULi66lxp_lEZC4x
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Changelog nor code made it clear this was partial anything. So this is
-still the partial thing?
+Hi all,
 
-Can we then pretty clear clarify all that, and make it clear which regs
-are in there? Because when I do 'vim -t ftrace_regs' it just gets me a
-seemingly pointless wrapper struct, no elucidating comments nothingses.
-
-> You even Acked the patch:
+On Fri, 27 Oct 2023 16:34:00 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
 >
-> commit 02a474ca266a47ea8f4d5a11f4ffa120f83730ad
-> Author: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> Date:   Tue Oct 27 10:55:55 2020 -0400
+> After merging the landlock tree, today's linux-next build (powerpc
+> ppc64_defconfig) failed like this:
+>=20
+> In file included from security/landlock/net.c:14:
+> security/landlock/net.c: In function 'landlock_add_net_hooks':
+> security/landlock/common.h:12:23: error: passing argument 3 of 'security_=
+add_hooks' from incompatible pointer type [-Werror=3Dincompatible-pointer-t=
+ypes]
+>    12 | #define LANDLOCK_NAME "landlock"
+>       |                       ^~~~~~~~~~
+>       |                       |
+>       |                       char *
+> security/landlock/net.c:199:28: note: in expansion of macro 'LANDLOCK_NAM=
+E'
+>   199 |                            LANDLOCK_NAME);
+>       |                            ^~~~~~~~~~~~~
+> In file included from security/landlock/setup.h:12,
+>                  from security/landlock/cred.h:17,
+>                  from security/landlock/net.c:15:
+> include/linux/lsm_hooks.h:120:53: note: expected 'const struct lsm_id *' =
+but argument is of type 'char *'
+>   120 |                                const struct lsm_id *lsmid);
+>       |                                ~~~~~~~~~~~~~~~~~~~~~^~~~~
+>=20
+> Caused by commit
+>=20
+>   fff69fb03dde ("landlock: Support network rules with TCP bind and connec=
+t")
+>=20
+> interacting with commit
+>=20
+>   9b09f11320db ("LSM: Identify modules by more than name")
+>=20
+> from the security tree.
+>=20
+> I have applied the following merge resolution patch.
+>=20
+> From: Stephen Rothwell <sfr@canb.auug.org.au>
+> Date: Fri, 27 Oct 2023 16:13:32 +1100
+> Subject: [PATCH] fixup for "landlock: Support network rules with TCP bind=
+ and
+>  connect"
+>=20
+> interacting with "LSM: Identify modules by more than name"
+>=20
+> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> ---
+>  security/landlock/net.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/security/landlock/net.c b/security/landlock/net.c
+> index aaa92c2b1f08..efa1b644a4af 100644
+> --- a/security/landlock/net.c
+> +++ b/security/landlock/net.c
+> @@ -196,5 +196,5 @@ static struct security_hook_list landlock_hooks[] __r=
+o_after_init =3D {
+>  __init void landlock_add_net_hooks(void)
+>  {
+>  	security_add_hooks(landlock_hooks, ARRAY_SIZE(landlock_hooks),
+> -			   LANDLOCK_NAME);
+> +			   &landlock_lsmid);
+>  }
+> --=20
+> 2.40.1
 
-You expect me to remember things from 3 years ago?
+This is now a conflict between the security tree and Linus' tree.
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/L4WbjisVULi66lxp_lEZC4x
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmVII6EACgkQAVBC80lX
+0GxX6gf/Traap0Ho5WqkzDsT4PKC5irgj6MhkN1wWCxfABSHc8sqOlRNKIMD1Jpj
+3pk2irkl86l5AL9pUwmtSMPUZkSjhYMM7X87Bj8QCDy6mIa8xiQ1ExQ+WFzA9s9K
+O9Y3WM7OB2vGonkFV/MRAk5RIbOogSI88s8ygomu2rw6n4BEJJvr7qtsQIoS+mhD
+bmtxz3j3UhpZrjjciNJw9+76IAEVnyw0PrwgftAZjCHg5OkwtlsFY7CNschjprG3
+7erw3YZPR3X6tPsfRbs9FveAWrCBpTa6SDubFuRppkzQFEmHVcpDGX7AzKe5xL4y
+cUXj7Qt/4/GVrOvg2ZP/B8hxFiDY6Q==
+=0F30
+-----END PGP SIGNATURE-----
+
+--Sig_/L4WbjisVULi66lxp_lEZC4x--
