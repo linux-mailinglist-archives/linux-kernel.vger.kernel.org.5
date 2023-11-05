@@ -2,100 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 56A967E1420
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Nov 2023 16:47:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DEFFD7E142A
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Nov 2023 16:51:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229455AbjKEPr1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Nov 2023 10:47:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34642 "EHLO
+        id S229470AbjKEPvr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Nov 2023 10:51:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbjKEPr1 (ORCPT
+        with ESMTP id S229436AbjKEPvq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Nov 2023 10:47:27 -0500
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28678B8
-        for <linux-kernel@vger.kernel.org>; Sun,  5 Nov 2023 07:47:23 -0800 (PST)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-311-k3HE-6c7MEyLMT7ytN7A-A-1; Sun, 05 Nov 2023 15:47:20 +0000
-X-MC-Unique: k3HE-6c7MEyLMT7ytN7A-A-1
-Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
- (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Sun, 5 Nov
- 2023 15:47:19 +0000
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Sun, 5 Nov 2023 15:47:19 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Nadav Amit' <nadav.amit@gmail.com>,
-        Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
-CC:     Richard Weinberger <richard@nod.at>,
-        "linux-um@lists.infradead.org" <linux-um@lists.infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: RE: Missing clobber on alternative use on Linux UM 32-bit
-Thread-Topic: Missing clobber on alternative use on Linux UM 32-bit
-Thread-Index: AQHaDwMKcQHyK5uteEWVVs9ePUP5ubBr4G4Q
-Date:   Sun, 5 Nov 2023 15:47:19 +0000
-Message-ID: <41cac2e7ad9341259f356e1b3cf5f418@AcuMS.aculab.com>
-References: <24BD0906-C6FE-499C-9A4A-00C56E6EE84A@gmail.com>
- <a55f6941-ddf6-2355-271d-5ed0db5a2a62@kot-begemot.co.uk>
- <1616BF59-5C18-46C7-86AB-92604B683652@gmail.com>
-In-Reply-To: <1616BF59-5C18-46C7-86AB-92604B683652@gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Sun, 5 Nov 2023 10:51:46 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D98C3C0
+        for <linux-kernel@vger.kernel.org>; Sun,  5 Nov 2023 07:51:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699199504; x=1730735504;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=vsDGtTih5R1LxdZ6E1a/SlhkvP4UYilP3ZPq/ENW6C8=;
+  b=iSi5b2n7nkJ1YE4A1a84CGEOZLXGhVi3dIxETKX5ujuxIwyaYBcyr1F3
+   yQt1vJzPWNOQysTclIcARE22MahAjqke++8+FmYGDXeTyrvDJGfieJslg
+   xi+PXks1OcsKkGMdiRiS4ROBmLjM/jGX5tEwhwqYJ532gFW8Jzmhc6JBY
+   WHjbWxNV3ZqZta5l/AZJ83gKoexbBVzGdA8fIdnMtc15USQqapeQev9El
+   rGXSsNf0DTkuRXf82ToAUapGMc1jEHkhu0W7PnNBawmdqgeu5obfTiP4Y
+   C76rN8ZkfCZbuAKhbd4dCkyY5K1Bs12qvYLBu2U60spBzMTycNHAp22M1
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10885"; a="10696386"
+X-IronPort-AV: E=Sophos;i="6.03,279,1694761200"; 
+   d="scan'208";a="10696386"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2023 07:51:44 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10885"; a="827991588"
+X-IronPort-AV: E=Sophos;i="6.03,279,1694761200"; 
+   d="scan'208";a="827991588"
+Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
+  by fmsmga008.fm.intel.com with ESMTP; 05 Nov 2023 07:51:42 -0800
+Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qzfPY-0005Zf-0U;
+        Sun, 05 Nov 2023 15:51:40 +0000
+Date:   Sun, 5 Nov 2023 23:50:34 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Michael Shych <michaelsh@mellanox.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Subject: drivers/watchdog/mlx_wdt.c:53: warning: Function parameter or member
+ 'wdt_type' not described in 'mlxreg_wdt'
+Message-ID: <202311052354.IwChUoiA-lkp@intel.com>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogTmFkYXYgQW1pdA0KPiBTZW50OiAwNCBOb3ZlbWJlciAyMDIzIDA5OjQxDQo+IA0KPiA+
-IE9uIE5vdiA0LCAyMDIzLCBhdCAxMTozNCBBTSwgQW50b24gSXZhbm92IDxhbnRvbi5pdmFub3ZA
-a290LWJlZ2Vtb3QuY28udWs+IHdyb3RlOg0KPiA+DQo+ID4gT24gMDQvMTEvMjAyMyAwOToyNSwg
-TmFkYXYgQW1pdCB3cm90ZToNCj4gPj4NCj4gPj4gSSB3YXMgcmVhZGluZyAoYWdhaW4pIHRoZSB4
-ODYgQyBtYWNybyBvZiDigJxhbHRlcm5hdGl2ZSgp4oCdIGFuZCBJIHdhcyBhIGJpdA0KPiA+PiBz
-dXJwcmlzZWQgaXQgZG9lcyBjbG9iYmVyIHRoZSBmbGFncyAo4oCcY2PigJ0pIGFzIGEgcHJlY2F1
-dGlvbi4NCj4gPj4NCj4gPj4gICNkZWZpbmUgYWx0ZXJuYXRpdmUob2xkaW5zdHIsIG5ld2luc3Ry
-LCBmdF9mbGFncykgXA0KPiA+PiAJYXNtX2lubGluZSB2b2xhdGlsZSAoQUxURVJOQVRJVkUob2xk
-aW5zdHIsIG5ld2luc3RyLCBmdF9mbGFncykgOiA6IDogIm1lbW9yeSIpDQo+ID4+DQo+ID4+IEFj
-dHVhbGx5IHRoZXJlIHNlZW1zIHRvIGJlIG9ubHkgb25lIGluc3RhbmNlIG9mIHByb2JsZW1hdGlj
-IGNhc2VzIC0gaW4gdW0vMzItYml0Og0KPiA+Pg0KPiA+PiAgI2RlZmluZSBtYigpIGFsdGVybmF0
-aXZlKCJsb2NrOyBhZGRsICQwLDAoJSVlc3ApIiwgIm1mZW5jZSIsIFg4Nl9GRUFUVVJFX1hNTTIp
-DQo+ID4+ICAjZGVmaW5lIHJtYigpIGFsdGVybmF0aXZlKCJsb2NrOyBhZGRsICQwLDAoJSVlc3Ap
-IiwgImxmZW5jZSIsIFg4Nl9GRUFUVVJFX1hNTTIpDQo+ID4+ICAjZGVmaW5lIHdtYigpIGFsdGVy
-bmF0aXZlKCJsb2NrOyBhZGRsICQwLDAoJSVlc3ApIiwgInNmZW5jZSIsIFg4Nl9GRUFUVVJFX1hN
-TSkNCj4gPj4NCj4gPj4gUHJlc3VtYWJseSwgaWYgWE1NIG9yIFhNTTIgYXJlIG5vdCBzdXBwb3J0
-ZWQsIHRoZXJlIHdvdWxkIGJlIGluc3RhbmNlcyB3aGVyZSBhZGRsDQo+ID4+IHdvdWxkIGJlIGFi
-bGUgdG8gY2hhbmdlIGVmbGFncyBhcml0aG1ldGljIGZsYWdzIHdpdGhvdXQgdGhlIGNvbXBpbGVy
-IGJlaW5nIGF3YXJlDQo+ID4+IG9mIGl0Lg0KPiA+Pg0KPiA+PiBBcyBpdCBvbmx5IGFmZmVjdHMg
-MzItYml0IExpbnV4IFVNIC0gSSBkb27igJl0IGVhc2lseSBoYXZlIGFuIGVudmlyb25tZW50IHRv
-IHRlc3QNCj4gPj4gdGhlIGZpeC4gQW4gYWx0ZXJuYXRpdmUgKHdvcmQtcHVuIHVuaW50ZW5kZWQp
-IGlzIHRvIGFkZCDigJxjY+KAnSBhcyBhIHByZWNhdXRpb24NCj4gPj4gdG8gdGhlIGFsdGVybmF0
-aXZlIG1hY3JvLg0KPiA+Pg0KPiA+IEFwcGxpY2F0aW9uIGFsdGVybmF0aXZlcyBpbiB1bSBpcyBw
-cmVzZW50bHkgYSBOT1AuIEl0IGFsd2F5cyB1c2VzIHRoZSAiYmx1bnQgYW5kIGhlYXZ5IGluc3Ry
-dW1lbnQiIC0NCj4gdGhlIG1vc3QgY29uc2VydmF0aXZlIG9wdGlvbi4NCj4gPg0KPiA+IEl0IGlz
-IG9uIHRoZSBUT0RPIGxpc3QuDQo+IA0KPiBUaGFua3MgZm9yIHRoZSBxdWljayByZXNwb25zZS4g
-QnV0IEkgZG9u4oCZdCBzZWUgaG93IGl0IHByZXZlbnRzIHRoZSBwcm9ibGVtDQo+IChpdCBhY3R1
-YWxseSBtYWtlcyBpdCB3b3JzZSAtIGFmZmVjdGluZyBYTU0vWE1NMiBDUFVzIGFzIHdlbGwpIHNp
-bmNlIHlvdQ0KPiBrZWVwIHRoZSDigJxsb2NrOyBhZGRsICQwLDAoJSVlc3Ap4oCdIGluIHRoZSBy
-dW5uaW5nIGNvZGUsIGFmZmVjdGluZyBlZmxhZ3MNCj4gd2l0aG91dCB0ZWxsaW5nIHRoZSBjb21w
-aWxlciB0aGF0IHlvdSBkbyBzbyB0aHJvdWdoIGEg4oCcY2PigJ0gY2xvYmJlci4NCg0KZ2NjIGFs
-d2F5cyBhc3N1bWVzIHRoYXQgaW5saW5lIGFzbSBjaGFuZ2VzICJjYyIgLSB0aGVyZSBpcyBubyBu
-ZWVkDQp0byBhZGQgYSAnY2xvYmJlcicgZm9yIGl0Lg0KDQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJl
-ZCBBZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXlu
-ZXMsIE1LMSAxUFQsIFVLDQpSZWdpc3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVzKQ0K
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   1c41041124bd14dd6610da256a3da4e5b74ce6b1
+commit: c60923dd5feedc337b1450e3f4c6e19ffa305439 watchdog: mlx-wdt: introduce a watchdog driver for Mellanox systems.
+date:   4 years, 8 months ago
+config: i386-buildonly-randconfig-005-20231101 (https://download.01.org/0day-ci/archive/20231105/202311052354.IwChUoiA-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231105/202311052354.IwChUoiA-lkp@intel.com/reproduce)
 
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311052354.IwChUoiA-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> drivers/watchdog/mlx_wdt.c:53: warning: Function parameter or member 'wdt_type' not described in 'mlxreg_wdt'
+
+
+vim +53 drivers/watchdog/mlx_wdt.c
+
+    20	
+    21	#define MLXREG_WDT_CLOCK_SCALE		1000
+    22	#define MLXREG_WDT_MAX_TIMEOUT_TYPE1	32
+    23	#define MLXREG_WDT_MAX_TIMEOUT_TYPE2	255
+    24	#define MLXREG_WDT_MIN_TIMEOUT		1
+    25	#define MLXREG_WDT_OPTIONS_BASE (WDIOF_KEEPALIVEPING | WDIOF_MAGICCLOSE | \
+    26					 WDIOF_SETTIMEOUT)
+    27	
+    28	/**
+    29	 * struct mlxreg_wdt - wd private data:
+    30	 *
+    31	 * @wdd:	watchdog device;
+    32	 * @device:	basic device;
+    33	 * @pdata:	data received from platform driver;
+    34	 * @regmap:	register map of parent device;
+    35	 * @timeout:	defined timeout in sec.;
+    36	 * @action_idx:	index for direct access to action register;
+    37	 * @timeout_idx:index for direct access to TO register;
+    38	 * @tleft_idx:	index for direct access to time left register;
+    39	 * @ping_idx:	index for direct access to ping register;
+    40	 * @reset_idx:	index for direct access to reset cause register;
+    41	 * @wd_type:	watchdog HW type;
+    42	 */
+    43	struct mlxreg_wdt {
+    44		struct watchdog_device wdd;
+    45		struct mlxreg_core_platform_data *pdata;
+    46		void *regmap;
+    47		int action_idx;
+    48		int timeout_idx;
+    49		int tleft_idx;
+    50		int ping_idx;
+    51		int reset_idx;
+    52		enum mlxreg_wdt_type wdt_type;
+  > 53	};
+    54	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
