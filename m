@@ -2,191 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 733DA7E15B6
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Nov 2023 19:13:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC5987E15BE
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Nov 2023 19:17:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229519AbjKESM6 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 5 Nov 2023 13:12:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43398 "EHLO
+        id S229612AbjKESRw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Nov 2023 13:17:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229475AbjKESM6 (ORCPT
+        with ESMTP id S229475AbjKESRu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Nov 2023 13:12:58 -0500
-Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 987CFBB;
-        Sun,  5 Nov 2023 10:12:55 -0800 (PST)
-Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-6be0277c05bso3151117b3a.0;
-        Sun, 05 Nov 2023 10:12:55 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699207975; x=1699812775;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gE6CsEAM2XNQiggqUIgiyV/o4aLtXLLS/EW3cW4NJuE=;
-        b=mKigFjFsKfrEgw/vzLxYwNOAWtnusM9E2V5gKRnELE4qVhY/uY2anE5Qm639Z5QebJ
-         GbCtnnZrG9zqk60+vIFAPKEngU4FxyDZT50deuxlhfX7XZyExkA/6p1eWg5kRTW3a/hl
-         BfM0Awh1e0Fqy+wGQkDqKLaHx3FUzFW6/DKDOBFxGlsSVEzdjrw+7RpQY8QU+CkWYJxJ
-         CnhDjXTGzOZTj9ej6ox+q0nIlitkj6aMWvRlJRGOuyrgbQ8T/vAs0NLd/k2Tc6Flwnc+
-         oCDmsnVZp5zjhjaUS8hY7QYoARYDee2vnCrI+tqaLJQndaG2ZbxL+LwoBTnJF6X11BfI
-         J1Qw==
-X-Gm-Message-State: AOJu0Yx4TQFehD+Zl8hOJbT4RLzImZO3CyC7PoOacmRy1N0UtGOs/E0X
-        Gt7/tMdX3ozM53DS5dId2S+PrhNWvHaMotCOig0=
-X-Google-Smtp-Source: AGHT+IHympg3nfu1Mj3SQjxVcMt+svmGnNODRbXu9dsVrBzaVHbEV/oXBz5fZs6GNNWJlV1n+WJxKd2Gr7BKZRPXnzw=
-X-Received: by 2002:a05:6a21:66c5:b0:180:febc:8ed5 with SMTP id
- ze5-20020a056a2166c500b00180febc8ed5mr16760379pzb.52.1699207974972; Sun, 05
- Nov 2023 10:12:54 -0800 (PST)
+        Sun, 5 Nov 2023 13:17:50 -0500
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7745BB;
+        Sun,  5 Nov 2023 10:17:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
+        t=1699208261; x=1699813061; i=deller@gmx.de;
+        bh=3RbYanvi9UwzmdwGMMPwpJFtJjQ4PV9jI8gAKX94JkU=;
+        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+         In-Reply-To;
+        b=m5Js7DTvWU8jwR6I957DGgo/2lq3iYgN/VIQYxn6PbZtrBuKmBdtTZOdT1zvqt0S
+         5bqXK6BZWI1Z5dyxeJ6RmOyl5zG5I9NSzX0ogRDqxLQQlrkKXWgihDH50IirPe/Du
+         gtOr1UwfdZR63n8Xl3XNlz7wS4q0eW1JCDGUYSjGCkI6B4k6pBuxAEG71PmNSAdxT
+         lpiHVQA1sycnUiyOnpLuwQPuSMT2Pr6tKfQsqUUllh+GELMzl7s35iOS5FaMCQGN0
+         rRm7FLCWAFKWXpNTsGVs8z5kNrTNj0IGy8Q/iUW0eeru5iv6w+FwJfKgkwM2kjiv1
+         Gb3b4zkZvrRdS7iRKQ==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.20.60] ([94.134.149.195]) by mail.gmx.net (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1M4b1o-1qy3GN1LmQ-001k0U; Sun, 05
+ Nov 2023 19:17:41 +0100
+Message-ID: <e9ff2894-e04c-4772-ab5d-595e0df460ae@gmx.de>
+Date:   Sun, 5 Nov 2023 19:17:40 +0100
 MIME-Version: 1.0
-References: <20231102175735.2272696-1-irogers@google.com> <20231102175735.2272696-4-irogers@google.com>
- <ZUSwOlsOyJdDT1ls@gentoo.org> <CAP-5=fVm5rmOTvXi1LZzSEc3wHv68HszOfZmBb-RG=eUj2UVHg@mail.gmail.com>
-In-Reply-To: <CAP-5=fVm5rmOTvXi1LZzSEc3wHv68HszOfZmBb-RG=eUj2UVHg@mail.gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Sun, 5 Nov 2023 10:12:43 -0800
-Message-ID: <CAM9d7ciqPsR1DNnngZApwkyNd+6AQPtqxBvy=m_jsMnchHvr9w@mail.gmail.com>
-Subject: Re: [PATCH v4 03/53] libperf: Lazily allocate mmap event copy
-To:     Ian Rogers <irogers@google.com>
-Cc:     Guilherme Amadio <amadio@gentoo.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Nick Terrell <terrelln@fb.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        "Steinar H. Gunderson" <sesse@google.com>,
-        Liam Howlett <liam.howlett@oracle.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Colin Ian King <colin.i.king@gmail.com>,
-        Dmitrii Dolgov <9erthalion6@gmail.com>,
-        Yang Jihong <yangjihong1@huawei.com>,
-        Ming Wang <wangming01@loongson.cn>,
-        James Clark <james.clark@arm.com>,
-        K Prateek Nayak <kprateek.nayak@amd.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        German Gomez <german.gomez@arm.com>,
-        Changbin Du <changbin.du@huawei.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, Li Dong <lidong@vivo.com>,
-        Sandipan Das <sandipan.das@amd.com>,
-        liuwenyu <liuwenyu7@huawei.com>, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] drivers/video/fbdev: use new array-copying-wrapper
+Content-Language: en-US
+To:     Philipp Stanner <pstanner@redhat.com>,
+        Florian Tobias Schandinat <FlorianSchandinat@gmx.de>
+Cc:     linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, Dave Airlie <airlied@redhat.com>
+References: <20231102192402.53721-2-pstanner@redhat.com>
+From:   Helge Deller <deller@gmx.de>
+Autocrypt: addr=deller@gmx.de; keydata=
+ xsFNBF3Ia3MBEAD3nmWzMgQByYAWnb9cNqspnkb2GLVKzhoH2QD4eRpyDLA/3smlClbeKkWT
+ HLnjgkbPFDmcmCz5V0Wv1mKYRClAHPCIBIJgyICqqUZo2qGmKstUx3pFAiztlXBANpRECgwJ
+ r+8w6mkccOM9GhoPU0vMaD/UVJcJQzvrxVHO8EHS36aUkjKd6cOpdVbCt3qx8cEhCmaFEO6u
+ CL+k5AZQoABbFQEBocZE1/lSYzaHkcHrjn4cQjc3CffXnUVYwlo8EYOtAHgMDC39s9a7S90L
+ 69l6G73lYBD/Br5lnDPlG6dKfGFZZpQ1h8/x+Qz366Ojfq9MuuRJg7ZQpe6foiOtqwKym/zV
+ dVvSdOOc5sHSpfwu5+BVAAyBd6hw4NddlAQUjHSRs3zJ9OfrEx2d3mIfXZ7+pMhZ7qX0Axlq
+ Lq+B5cfLpzkPAgKn11tfXFxP+hcPHIts0bnDz4EEp+HraW+oRCH2m57Y9zhcJTOJaLw4YpTY
+ GRUlF076vZ2Hz/xMEvIJddRGId7UXZgH9a32NDf+BUjWEZvFt1wFSW1r7zb7oGCwZMy2LI/G
+ aHQv/N0NeFMd28z+deyxd0k1CGefHJuJcOJDVtcE1rGQ43aDhWSpXvXKDj42vFD2We6uIo9D
+ 1VNre2+uAxFzqqf026H6cH8hin9Vnx7p3uq3Dka/Y/qmRFnKVQARAQABzRxIZWxnZSBEZWxs
+ ZXIgPGRlbGxlckBnbXguZGU+wsGRBBMBCAA7AhsDBQsJCAcCBhUKCQgLAgQWAgMBAh4BAheA
+ FiEERUSCKCzZENvvPSX4Pl89BKeiRgMFAl3J1zsCGQEACgkQPl89BKeiRgNK7xAAg6kJTPje
+ uBm9PJTUxXaoaLJFXbYdSPfXhqX/BI9Xi2VzhwC2nSmizdFbeobQBTtRIz5LPhjk95t11q0s
+ uP5htzNISPpwxiYZGKrNnXfcPlziI2bUtlz4ke34cLK6MIl1kbS0/kJBxhiXyvyTWk2JmkMi
+ REjR84lCMAoJd1OM9XGFOg94BT5aLlEKFcld9qj7B4UFpma8RbRUpUWdo0omAEgrnhaKJwV8
+ qt0ULaF/kyP5qbI8iA2PAvIjq73dA4LNKdMFPG7Rw8yITQ1Vi0DlDgDT2RLvKxEQC0o3C6O4
+ iQq7qamsThLK0JSDRdLDnq6Phv+Yahd7sDMYuk3gIdoyczRkXzncWAYq7XTWl7nZYBVXG1D8
+ gkdclsnHzEKpTQIzn/rGyZshsjL4pxVUIpw/vdfx8oNRLKj7iduf11g2kFP71e9v2PP94ik3
+ Xi9oszP+fP770J0B8QM8w745BrcQm41SsILjArK+5mMHrYhM4ZFN7aipK3UXDNs3vjN+t0zi
+ qErzlrxXtsX4J6nqjs/mF9frVkpv7OTAzj7pjFHv0Bu8pRm4AyW6Y5/H6jOup6nkJdP/AFDu
+ 5ImdlA0jhr3iLk9s9WnjBUHyMYu+HD7qR3yhX6uWxg2oB2FWVMRLXbPEt2hRGq09rVQS7DBy
+ dbZgPwou7pD8MTfQhGmDJFKm2jvOwU0EXchrcwEQAOsDQjdtPeaRt8EP2pc8tG+g9eiiX9Sh
+ rX87SLSeKF6uHpEJ3VbhafIU6A7hy7RcIJnQz0hEUdXjH774B8YD3JKnAtfAyuIU2/rOGa/v
+ UN4BY6U6TVIOv9piVQByBthGQh4YHhePSKtPzK9Pv/6rd8H3IWnJK/dXiUDQllkedrENXrZp
+ eLUjhyp94ooo9XqRl44YqlsrSUh+BzW7wqwfmu26UjmAzIZYVCPCq5IjD96QrhLf6naY6En3
+ ++tqCAWPkqKvWfRdXPOz4GK08uhcBp3jZHTVkcbo5qahVpv8Y8mzOvSIAxnIjb+cklVxjyY9
+ dVlrhfKiK5L+zA2fWUreVBqLs1SjfHm5OGuQ2qqzVcMYJGH/uisJn22VXB1c48yYyGv2HUN5
+ lC1JHQUV9734I5cczA2Gfo27nTHy3zANj4hy+s/q1adzvn7hMokU7OehwKrNXafFfwWVK3OG
+ 1dSjWtgIv5KJi1XZk5TV6JlPZSqj4D8pUwIx3KSp0cD7xTEZATRfc47Yc+cyKcXG034tNEAc
+ xZNTR1kMi9njdxc1wzM9T6pspTtA0vuD3ee94Dg+nDrH1As24uwfFLguiILPzpl0kLaPYYgB
+ wumlL2nGcB6RVRRFMiAS5uOTEk+sJ/tRiQwO3K8vmaECaNJRfJC7weH+jww1Dzo0f1TP6rUa
+ fTBRABEBAAHCwXYEGAEIACAWIQRFRIIoLNkQ2+89Jfg+Xz0Ep6JGAwUCXchrcwIbDAAKCRA+
+ Xz0Ep6JGAxtdEAC54NQMBwjUNqBNCMsh6WrwQwbg9tkJw718QHPw43gKFSxFIYzdBzD/YMPH
+ l+2fFiefvmI4uNDjlyCITGSM+T6b8cA7YAKvZhzJyJSS7pRzsIKGjhk7zADL1+PJei9p9idy
+ RbmFKo0dAL+ac0t/EZULHGPuIiavWLgwYLVoUEBwz86ZtEtVmDmEsj8ryWw75ZIarNDhV74s
+ BdM2ffUJk3+vWe25BPcJiaZkTuFt+xt2CdbvpZv3IPrEkp9GAKof2hHdFCRKMtgxBo8Kao6p
+ Ws/Vv68FusAi94ySuZT3fp1xGWWf5+1jX4ylC//w0Rj85QihTpA2MylORUNFvH0MRJx4mlFk
+ XN6G+5jIIJhG46LUucQ28+VyEDNcGL3tarnkw8ngEhAbnvMJ2RTx8vGh7PssKaGzAUmNNZiG
+ MB4mPKqvDZ02j1wp7vthQcOEg08z1+XHXb8ZZKST7yTVa5P89JymGE8CBGdQaAXnqYK3/yWf
+ FwRDcGV6nxanxZGKEkSHHOm8jHwvQWvPP73pvuPBEPtKGLzbgd7OOcGZWtq2hNC6cRtsRdDx
+ 4TAGMCz4j238m+2mdbdhRh3iBnWT5yPFfnv/2IjFAk+sdix1Mrr+LIDF++kiekeq0yUpDdc4
+ ExBy2xf6dd+tuFFBp3/VDN4U0UfG4QJ2fg19zE5Z8dS4jGIbLg==
+In-Reply-To: <20231102192402.53721-2-pstanner@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:mjyxRPphkkeBnYzLrrmnxNd0Ntb7vbQiQyz9rLYbujT0Yg8+fhc
+ DDKqXZXKbZntwRaGqKc39wdXTWMcVFBLE67varukDtnajseJbi58doGSkEBHPAI4Pvav/b+
+ xWvC7iLArxdujuVHqskPUni09Ii+BkjkVGR33QwlaHfkAJzCeX/qs4BLP/OwuE4tGNaqSXl
+ GY01vGS6A5IgU01nPgV0Q==
+UI-OutboundReport: notjunk:1;M01:P0:Zw6MeNHaqfY=;qYVrKdIqOMYux+gD1/Ltf+QFY2Z
+ TbBmg13CUPOaWPFOkx63U1OL9jZzxkuHO4/TthNAoOZ26dFCrJaO6Cu0ZMte9EwJweqcOBy8g
+ r11bOFzj2NqeWZ9XRWBJ0qLOonPkb/BJpsoNS2KJ2y17kluKcWqvb/maGgkAoUbF7VJyVGXJL
+ vBg5pcKE73Vjn5Rk39zzJvOkTx8GS7VLnYTZ3CLBf+MVEgC1j6+bs0zyJxyNS5sMdP4nu2NIP
+ 04tUGIAuMNa16rL4a6+8qm+oHoZr8pjecvn77mWXVH4iz9Ag8QYzf3CdoRS62TBt/IyPIVCJJ
+ EAwY6wCGBxo3fJH5ly0iHe+fZv1geag4kaEgfkXCAChXq/Oe3gogpJc1Y7ZEtj+aDLxTwtRD8
+ HQmGBOlnaepE6H/EZV3kZG2maMObDNGwwhf4QV6cOcoLX6y6FwvaFTZmNW7lWjfynEc+dnHCi
+ N7iYWap3V84Wt5mr7Iz4rP0n0p3JngJk7Z9ij2eFeUivAX+QhMzZ4EdBOXBUkfOxLafHyCIty
+ qOJmZQLLnjmRarPwruLrmK6QV2LJ/1+8PgWlsIw7wFTLHoyifpHbMUN0jbQiTLbDc0akGIJ+P
+ vu7fHS5L+mrgqpVWhL9BQDacicoZwhJ5Ampd+k5DJ/QLPzjJuWBJPXjddx6DXf52jhuySacNO
+ 0VGmULE8rpEpxyjL+eyV1q9t0MzCwr+ahzQhgGe2JvpSlS6csbn7QxPNL+kVDj6jZUa6j+uPA
+ rLBZhEKS6xhqS9g3tU08wdwxgGoag+Aoz/peM59kTGqLUAw8BMN6MtxQXssm5uN1FyJAN6PQ3
+ ifmqByDiMOAlaW+U/HKGEM4iRos8yPH3f7wEt4YuEH90agFVb2ERiCLk7hB0yPu5Rw3RpCgvX
+ osBvY6S35pCa3zum4WG6lqquq34p2y+1eqhGKqykn1Rqz2EVwT2fUbyLFSqkORFSgu6DZglfV
+ m3srFw==
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 3, 2023 at 8:49 AM Ian Rogers <irogers@google.com> wrote:
+On 11/2/23 20:24, Philipp Stanner wrote:
+> viafbdev.c utilizes memdup_user() to copy an array from userspace.
 >
-> On Fri, Nov 3, 2023 at 1:33 AM Guilherme Amadio <amadio@gentoo.org> wrote:
-> >
-> > Hi,
-> >
-> > On Thu, Nov 02, 2023 at 10:56:45AM -0700, Ian Rogers wrote:
-> > > The event copy in the mmap is used to have storage to a read
-> > > event. Not all users of mmaps read the events, such as perf record, so
-> > > switch the allocation to being on first read rather than being
-> > > embedded within the perf_mmap.
-> > >
-> > > Signed-off-by: Ian Rogers <irogers@google.com>
-> > > ---
-> > >  tools/lib/perf/include/internal/mmap.h | 2 +-
-> > >  tools/lib/perf/mmap.c                  | 9 +++++++++
-> > >  2 files changed, 10 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/tools/lib/perf/include/internal/mmap.h b/tools/lib/perf/include/internal/mmap.h
-> > > index 5a062af8e9d8..b11aaf5ed645 100644
-> > > --- a/tools/lib/perf/include/internal/mmap.h
-> > > +++ b/tools/lib/perf/include/internal/mmap.h
-> > > @@ -33,7 +33,7 @@ struct perf_mmap {
-> > >       bool                     overwrite;
-> > >       u64                      flush;
-> > >       libperf_unmap_cb_t       unmap_cb;
-> > > -     char                     event_copy[PERF_SAMPLE_MAX_SIZE] __aligned(8);
-> > > +     void                    *event_copy;
-> > >       struct perf_mmap        *next;
-> > >  };
-> > >
-> > > diff --git a/tools/lib/perf/mmap.c b/tools/lib/perf/mmap.c
-> > > index 2184814b37dd..91ae46aac378 100644
-> > > --- a/tools/lib/perf/mmap.c
-> > > +++ b/tools/lib/perf/mmap.c
-> > > @@ -51,6 +51,8 @@ int perf_mmap__mmap(struct perf_mmap *map, struct perf_mmap_param *mp,
-> > >
-> > >  void perf_mmap__munmap(struct perf_mmap *map)
-> > >  {
-> > > +     free(map->event_copy);
-> > > +     map->event_copy = NULL;
-> > >       if (map && map->base != NULL) {
-> >
-> > If map can be NULL as the if statement above suggests, then there is a
-> > potential a null pointer dereference bug here. Suggestion:
-> >
-> >     if (!map)
-> >         return;
-> >
-> >     free(map->event_copy);
-> >     map->event_copy = NULL;
-> >     if (map->base != NULL) {
-> >
-> >     ...
+> There is a new wrapper, specifically designed for copying arrays. Use
+> this one instead.
 >
-> Makes sense, will fix in v5. Waiting to get additional feedback to
-> avoid too much email.
+> Suggested-by: Dave Airlie <airlied@redhat.com>
+> Signed-off-by: Philipp Stanner <pstanner@redhat.com>
 
-Acked-by: Namhyung Kim <namhyung@kernel.org>
+applied.
 
-
-But I have another concern (not related to this change).
-
-> >
-> > >               munmap(map->base, perf_mmap__mmap_len(map));
-> > >               map->base = NULL;
-> > > @@ -226,6 +228,13 @@ static union perf_event *perf_mmap__read(struct perf_mmap *map,
-> > >                       unsigned int len = min(sizeof(*event), size), cpy;
-
-I'm not sure if it's ok to read less than the actual size, IOW
-it seems to assume 'size' is smaller than sizeof(*event).
-I guess it's true for most cases as union perf_event has
-perf_record_mmap2 (among others) which contains a
-filename array of size PATH_MAX.
-
-But the SAMPLE record can be larger than that when it has
-PERF_SAMPLE_AUX IIRC.  It'd happen only if it crossed the mmap
-boundary and I'm afraid it'd corrupt the data.
-
-Thanks,
-Namhyung
+Thanks!
+Helge
 
 
-> > >                       void *dst = map->event_copy;
-> > >
-> > > +                     if (!dst) {
-> > > +                             dst = malloc(PERF_SAMPLE_MAX_SIZE);
-> > > +                             if (!dst)
-> > > +                                     return NULL;
-> > > +                             map->event_copy = dst;
-> > > +                     }
-> > > +
-> > >                       do {
-> > >                               cpy = min(map->mask + 1 - (offset & map->mask), len);
-> > >                               memcpy(dst, &data[offset & map->mask], cpy);
-> > > --
-> > > 2.42.0.869.gea05f2083d-goog
-> > >
-> > >
+> ---
+>   drivers/video/fbdev/via/viafbdev.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/video/fbdev/via/viafbdev.c b/drivers/video/fbdev/vi=
+a/viafbdev.c
+> index 58868f8880d6..a52b1ba43a48 100644
+> --- a/drivers/video/fbdev/via/viafbdev.c
+> +++ b/drivers/video/fbdev/via/viafbdev.c
+> @@ -574,7 +574,7 @@ static int viafb_ioctl(struct fb_info *info, u_int c=
+md, u_long arg)
+>   		break;
+>
+>   	case VIAFB_SET_GAMMA_LUT:
+> -		viafb_gamma_table =3D memdup_user(argp, 256 * sizeof(u32));
+> +		viafb_gamma_table =3D memdup_array_user(argp, 256, sizeof(u32));
+>   		if (IS_ERR(viafb_gamma_table))
+>   			return PTR_ERR(viafb_gamma_table);
+>   		viafb_set_gamma_table(viafb_bpp, viafb_gamma_table);
+
