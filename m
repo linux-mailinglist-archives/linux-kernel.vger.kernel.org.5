@@ -2,143 +2,271 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 925D47E11E8
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Nov 2023 02:48:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D8767E1208
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Nov 2023 03:45:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229618AbjKEBoO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Nov 2023 21:44:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36914 "EHLO
+        id S229679AbjKECFX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Nov 2023 22:05:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229452AbjKEBoN (ORCPT
+        with ESMTP id S229452AbjKECFW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Nov 2023 21:44:13 -0400
-Received: from mail-oa1-f71.google.com (mail-oa1-f71.google.com [209.85.160.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFA20136
-        for <linux-kernel@vger.kernel.org>; Sat,  4 Nov 2023 18:44:10 -0700 (PDT)
-Received: by mail-oa1-f71.google.com with SMTP id 586e51a60fabf-1ef4f8d294eso4385705fac.1
-        for <linux-kernel@vger.kernel.org>; Sat, 04 Nov 2023 18:44:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699148650; x=1699753450;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=sdpLV+fXp+ByW+6zM+A2ifiLfgNtDLP0g/LcyF+UEsk=;
-        b=U5Rm5NJfjetR+m7cIeoeIeyKvOoFmLg8PG5jFp7U7sTlOpOqMW7cT+2CgWW+jX2vc/
-         AagmhKtrD6WIxXg8ORWqDXgjWjLJAVdJ/bCQynuZlG/qYPYcH0Kqvc/QByyj8R2jkO+r
-         ABrLsa5DvSXsjcqJvReHGBgy+MppX+69UJvJsP8dx5qQA4HZ/3PqIOaRlsDR9UHCDECu
-         CZSKkLeyMsUAQcySNNg4LZ5sFfywl7wJKTc+nFFa0XMXcpqw/1KuMl4031Pr5PGC20fz
-         S1lUAaDSm2mGCQqSVcORQ4Hi5QVj2xDcEKdOkatKBjcYw3vPIIPodsEZs9GBePemnrvu
-         2f3A==
-X-Gm-Message-State: AOJu0YzHrShQIrFj/w03SlCWzzUPTwG94TZm0iYOWll2/Q4jnk94Yxr/
-        aZ4JyrdogUUEQMpXrm7jSHIvhkxTT3Taec/7bnm9QoZ6alW/Ehc=
-X-Google-Smtp-Source: AGHT+IHnGXNtr5S1yCXZYG+oCE1dowqOE5j8q5Q4KvB08oq/NnVO/q4F5TqBT7ZmGS+h1TnHXikNzdLzT015/1mU4NqGO6y5HA4B
-MIME-Version: 1.0
-X-Received: by 2002:a05:6870:9584:b0:1ef:bc4c:a0e6 with SMTP id
- k4-20020a056870958400b001efbc4ca0e6mr9453144oao.7.1699148650236; Sat, 04 Nov
- 2023 18:44:10 -0700 (PDT)
-Date:   Sat, 04 Nov 2023 18:44:10 -0700
-In-Reply-To: <000000000000910ad106089f45eb@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000b7d1e906095ddfea@google.com>
-Subject: Re: [syzbot] [PATCH] Test for 2030579113a1
-From:   syzbot <syzbot+df3f3ef31f60781fa911@syzkaller.appspotmail.com>
-To:     linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+        Sat, 4 Nov 2023 22:05:22 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DE46D9
+        for <linux-kernel@vger.kernel.org>; Sat,  4 Nov 2023 19:05:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699149919; x=1730685919;
+  h=date:from:to:cc:subject:message-id;
+  bh=BxqwiyViQ5KQyltzM2ZvYwvQKrmKqQ5Mmolb7BV9psc=;
+  b=LaiAi3+tTqBSk6CqGPkPTcgm3Z1gji2dUqAAK4kFrBJTox7HiqAJxGUD
+   Ot8Ada/yUvxI8axcdZL889LbZbAnN8KktfyTFLpYSsV/WQt3l5ma0Ucve
+   Xq9MUOOLhGwWrlVISaYjBFsN8X/c8wrplR0M1/bWYMy8V3j029BMoqwPd
+   eQtdTYTUMk2c92/HbmnZxHnBNJXv2FUcrjHKgn6n852Yrx2IUHkhrsXP3
+   09Ab0LR2gM80KICTaE4b0uDGq3Turx02xU1UjJZ+LBEckAtON+PO0aU8r
+   liWR/IPSfmV3MIWg/3Zb/1lNiuF7fnA4oYiiig2gjzbgV7DqUvwZpWwT+
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10884"; a="368455022"
+X-IronPort-AV: E=Sophos;i="6.03,278,1694761200"; 
+   d="scan'208";a="368455022"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2023 19:05:19 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.03,278,1694761200"; 
+   d="scan'208";a="3110826"
+Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
+  by orviesa002.jf.intel.com with ESMTP; 04 Nov 2023 19:05:18 -0700
+Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qzSVn-0004uO-1e;
+        Sun, 05 Nov 2023 02:05:15 +0000
+Date:   Sun, 05 Nov 2023 10:04:58 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/urgent] BUILD SUCCESS
+ c692800cb2ef7a4f4940c68d765cd4649aff3e46
+Message-ID: <202311051056.v4r6YLHZ-lkp@intel.com>
+User-Agent: s-nail v14.9.24
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For archival purposes, forwarding an incoming command email to
-linux-kernel@vger.kernel.org.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/urgent
+branch HEAD: c692800cb2ef7a4f4940c68d765cd4649aff3e46  MAINTAINERS: Add Intel TDX entry
 
-***
+elapsed time: 1711m
 
-Subject: [PATCH] Test for 2030579113a1
-Author: eadavis@qq.com
+configs tested: 195
+configs skipped: 3
 
-please test BUG: corrupted list in ptp_open
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git 2dac75696c6d
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                   randconfig-001-20231104   gcc  
+arc                   randconfig-002-20231104   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                                 defconfig   gcc  
+arm                          gemini_defconfig   gcc  
+arm                        mvebu_v7_defconfig   gcc  
+arm                   randconfig-001-20231104   gcc  
+arm                   randconfig-001-20231105   gcc  
+arm                   randconfig-002-20231104   gcc  
+arm                   randconfig-002-20231105   gcc  
+arm                   randconfig-003-20231104   gcc  
+arm                   randconfig-003-20231105   gcc  
+arm                   randconfig-004-20231104   gcc  
+arm                   randconfig-004-20231105   gcc  
+arm                             rpc_defconfig   gcc  
+arm                         s3c6400_defconfig   gcc  
+arm                           u8500_defconfig   gcc  
+arm                       versatile_defconfig   clang
+arm64                            allmodconfig   gcc  
+arm64                             allnoconfig   gcc  
+arm64                            allyesconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                 randconfig-001-20231104   gcc  
+arm64                 randconfig-001-20231105   gcc  
+arm64                 randconfig-002-20231104   gcc  
+arm64                 randconfig-002-20231105   gcc  
+arm64                 randconfig-003-20231104   gcc  
+arm64                 randconfig-003-20231105   gcc  
+arm64                 randconfig-004-20231104   gcc  
+arm64                 randconfig-004-20231105   gcc  
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+csky                  randconfig-001-20231104   gcc  
+csky                  randconfig-002-20231104   gcc  
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-001-20231104   gcc  
+i386         buildonly-randconfig-002-20231104   gcc  
+i386         buildonly-randconfig-003-20231104   gcc  
+i386         buildonly-randconfig-004-20231104   gcc  
+i386         buildonly-randconfig-005-20231104   gcc  
+i386         buildonly-randconfig-006-20231104   gcc  
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                  randconfig-001-20231105   gcc  
+i386                  randconfig-002-20231105   gcc  
+i386                  randconfig-003-20231105   gcc  
+i386                  randconfig-004-20231105   gcc  
+i386                  randconfig-005-20231105   gcc  
+i386                  randconfig-006-20231105   gcc  
+i386                  randconfig-011-20231104   gcc  
+i386                  randconfig-012-20231104   gcc  
+i386                  randconfig-013-20231104   gcc  
+i386                  randconfig-014-20231104   gcc  
+i386                  randconfig-015-20231104   gcc  
+i386                  randconfig-016-20231104   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                        allyesconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch                 loongson3_defconfig   gcc  
+loongarch             randconfig-001-20231104   gcc  
+loongarch             randconfig-002-20231104   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+m68k                       m5275evb_defconfig   gcc  
+m68k                            q40_defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                             allmodconfig   gcc  
+mips                              allnoconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                  decstation_64_defconfig   gcc  
+mips                          malta_defconfig   clang
+mips                    maltaup_xpa_defconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+nios2                 randconfig-001-20231104   gcc  
+nios2                 randconfig-002-20231104   gcc  
+openrisc                         allmodconfig   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+openrisc                  or1klitex_defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc                randconfig-001-20231104   gcc  
+parisc                randconfig-002-20231104   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   gcc  
+powerpc                      cm5200_defconfig   gcc  
+powerpc               randconfig-001-20231104   gcc  
+powerpc               randconfig-002-20231104   gcc  
+powerpc               randconfig-003-20231104   gcc  
+powerpc                     stx_gp3_defconfig   gcc  
+powerpc64             randconfig-001-20231104   gcc  
+powerpc64             randconfig-002-20231104   gcc  
+powerpc64             randconfig-003-20231104   gcc  
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                 randconfig-001-20231104   gcc  
+riscv                 randconfig-002-20231104   gcc  
+riscv                          rv32_defconfig   gcc  
+s390                             allmodconfig   gcc  
+s390                              allnoconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+s390                  randconfig-001-20231104   gcc  
+s390                  randconfig-002-20231104   gcc  
+sh                               alldefconfig   gcc  
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                                  defconfig   gcc  
+sh                    randconfig-001-20231104   gcc  
+sh                    randconfig-002-20231104   gcc  
+sparc                            allmodconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                            allyesconfig   gcc  
+sparc                               defconfig   gcc  
+sparc                 randconfig-001-20231104   gcc  
+sparc                 randconfig-002-20231104   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+sparc64               randconfig-001-20231104   gcc  
+sparc64               randconfig-002-20231104   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   clang
+um                                  defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                    randconfig-001-20231104   gcc  
+um                    randconfig-002-20231104   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                            allnoconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64       buildonly-randconfig-001-20231104   gcc  
+x86_64       buildonly-randconfig-002-20231104   gcc  
+x86_64       buildonly-randconfig-003-20231104   gcc  
+x86_64       buildonly-randconfig-004-20231104   gcc  
+x86_64       buildonly-randconfig-005-20231104   gcc  
+x86_64       buildonly-randconfig-006-20231104   gcc  
+x86_64                              defconfig   gcc  
+x86_64                randconfig-001-20231104   gcc  
+x86_64                randconfig-002-20231104   gcc  
+x86_64                randconfig-003-20231104   gcc  
+x86_64                randconfig-004-20231104   gcc  
+x86_64                randconfig-005-20231104   gcc  
+x86_64                randconfig-006-20231104   gcc  
+x86_64                randconfig-011-20231104   gcc  
+x86_64                randconfig-012-20231104   gcc  
+x86_64                randconfig-013-20231104   gcc  
+x86_64                randconfig-014-20231104   gcc  
+x86_64                randconfig-015-20231104   gcc  
+x86_64                randconfig-016-20231104   gcc  
+x86_64                randconfig-071-20231104   gcc  
+x86_64                randconfig-072-20231104   gcc  
+x86_64                randconfig-073-20231104   gcc  
+x86_64                randconfig-074-20231104   gcc  
+x86_64                randconfig-075-20231104   gcc  
+x86_64                randconfig-076-20231104   gcc  
+x86_64                          rhel-8.3-func   gcc  
+x86_64                    rhel-8.3-kselftests   gcc  
+x86_64                           rhel-8.3-ltp   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+xtensa                            allnoconfig   gcc  
+xtensa                           allyesconfig   gcc  
+xtensa                randconfig-001-20231104   gcc  
+xtensa                randconfig-002-20231104   gcc  
 
-diff --git a/drivers/ptp/ptp_chardev.c b/drivers/ptp/ptp_chardev.c
-index 282cd7d24077..31594f40a21e 100644
---- a/drivers/ptp/ptp_chardev.c
-+++ b/drivers/ptp/ptp_chardev.c
-@@ -108,6 +108,7 @@ int ptp_open(struct posix_clock_context *pccontext, fmode_t fmode)
- 		container_of(pccontext->clk, struct ptp_clock, clock);
- 	struct timestamp_event_queue *queue;
- 	char debugfsname[32];
-+	unsigned long flags;
- 
- 	queue = kzalloc(sizeof(*queue), GFP_KERNEL);
- 	if (!queue)
-@@ -119,8 +120,10 @@ int ptp_open(struct posix_clock_context *pccontext, fmode_t fmode)
- 	}
- 	bitmap_set(queue->mask, 0, PTP_MAX_CHANNELS);
- 	spin_lock_init(&queue->lock);
-+	spin_lock_irqsave(&ptp->tsevqs_lock, flags);
- 	list_add_tail(&queue->qlist, &ptp->tsevqs);
- 	pccontext->private_clkdata = queue;
-+	spin_unlock_irqrestore(&ptp->tsevqs_lock, flags);
- 
- 	/* Debugfs contents */
- 	sprintf(debugfsname, "0x%p", queue);
-@@ -139,13 +142,15 @@ int ptp_release(struct posix_clock_context *pccontext)
- {
- 	struct timestamp_event_queue *queue = pccontext->private_clkdata;
- 	unsigned long flags;
-+	struct ptp_clock *ptp =
-+		container_of(pccontext->clk, struct ptp_clock, clock);
- 
- 	if (queue) {
- 		debugfs_remove(queue->debugfs_instance);
-+		spin_lock_irqsave(&ptp->tsevqs_lock, flags);
- 		pccontext->private_clkdata = NULL;
--		spin_lock_irqsave(&queue->lock, flags);
- 		list_del(&queue->qlist);
--		spin_unlock_irqrestore(&queue->lock, flags);
-+		spin_unlock_irqrestore(&ptp->tsevqs_lock, flags);
- 		bitmap_free(queue->mask);
- 		kfree(queue);
- 	}
-@@ -585,7 +590,5 @@ ssize_t ptp_read(struct posix_clock_context *pccontext, uint rdflags,
- free_event:
- 	kfree(event);
- exit:
--	if (result < 0)
--		ptp_release(pccontext);
- 	return result;
- }
-diff --git a/drivers/ptp/ptp_clock.c b/drivers/ptp/ptp_clock.c
-index 3d1b0a97301c..ea82648ad557 100644
---- a/drivers/ptp/ptp_clock.c
-+++ b/drivers/ptp/ptp_clock.c
-@@ -247,6 +247,7 @@ struct ptp_clock *ptp_clock_register(struct ptp_clock_info *info,
- 	if (!queue)
- 		goto no_memory_queue;
- 	list_add_tail(&queue->qlist, &ptp->tsevqs);
-+	spin_lock_init(&ptp->tsevqs_lock);
- 	queue->mask = bitmap_alloc(PTP_MAX_CHANNELS, GFP_KERNEL);
- 	if (!queue->mask)
- 		goto no_memory_bitmap;
-diff --git a/drivers/ptp/ptp_private.h b/drivers/ptp/ptp_private.h
-index 52f87e394aa6..63af246f17eb 100644
---- a/drivers/ptp/ptp_private.h
-+++ b/drivers/ptp/ptp_private.h
-@@ -44,6 +44,7 @@ struct ptp_clock {
- 	struct pps_device *pps_source;
- 	long dialed_frequency; /* remembers the frequency adjustment */
- 	struct list_head tsevqs; /* timestamp fifo list */
-+	spinlock_t tsevqs_lock; /* one process at a time writing the timestamp fifo list*/
- 	struct mutex pincfg_mux; /* protect concurrent info->pin_config access */
- 	wait_queue_head_t tsev_wq;
- 	int defunct; /* tells readers to go away when clock is being removed */
 -- 
-2.25.1
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
