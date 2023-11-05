@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D2CA47E1476
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Nov 2023 17:11:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3F7C7E1478
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Nov 2023 17:12:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229901AbjKEQLw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Nov 2023 11:11:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52108 "EHLO
+        id S229819AbjKEQMH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Nov 2023 11:12:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229956AbjKEQLn (ORCPT
+        with ESMTP id S229943AbjKEQL4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Nov 2023 11:11:43 -0500
+        Sun, 5 Nov 2023 11:11:56 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77884D6F
-        for <linux-kernel@vger.kernel.org>; Sun,  5 Nov 2023 08:11:40 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 03256C433C7;
-        Sun,  5 Nov 2023 16:11:35 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C9D5D4D
+        for <linux-kernel@vger.kernel.org>; Sun,  5 Nov 2023 08:11:52 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5FA5EC433C7;
+        Sun,  5 Nov 2023 16:11:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699200700;
-        bh=8gPb8NMkwz/YkIjqBczF6oGA1ML3K/ChE49sxSPUXio=;
+        s=k20201202; t=1699200712;
+        bh=Cr9Oh59+ohU2jFV47Vs4H1il/Q3R6998uAfyDbnHEc0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PfEV0Me1rD04NbELo+EyxuF7j9Krjx7oCL22kfuNy+/30omHdeWkKd8zU6H0mI6Ll
-         4WKoiIWwlTjnpggGLeFgE3UTQ+KoVXAhkPWtWmDouUZ6MLobzpyl+bzzohxsDKxoHI
-         wvIIlyHNHvroklF94XNgKeRS9hLkSwqBL66vSIvyAyNPfNFlpzirEyAWd4LdfqGdti
-         hOloI9ABnZvSDu0X2t8sWBGSjg6lGkf52BVPeALNH8QKgAED5QRfnNlH2S1CnBzoE2
-         fugsMirufgv8GnygdftgalPt34ISkccS8pjcTeG4qsFGfB8NqumIKuVP1LTB8mxMnt
-         suug144olPy5Q==
+        b=rYo4Z7at845ASsIoynroABkmgczycN7RyqMbNfN6diE/z6PkrIHoWfxj4nceVVghT
+         3UGMTUJll68lNHwsMHhUko5yh+/S/XLbUra463xotZAgcy5W5v0SN5tKR4OzHRfyEq
+         B+RnmPSqyuG9x7nYKwbWht8LLObrV5wUEL8jojleMI4mma/yS5yEPXILt+Qvwl0I9h
+         maKmvDYEgN9KJ4eCLJ2knhyOVpHXaxl85VA9AFJf1G0Op/SCh/bkx0XoNLjdme9kC/
+         4TL/ldtNRobde3vF5wWlMrogY+tGBrTFiaRZZ8LWKD7dfc5/IzLXQeBnwN7sCoun3V
+         o9u01N4eV6xVA==
 From:   "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
 To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
         Steven Rostedt <rostedt@goodmis.org>,
@@ -44,9 +44,9 @@ Cc:     linux-trace-kernel@vger.kernel.org,
         Peter Zijlstra <peterz@infradead.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         Guo Ren <guoren@kernel.org>
-Subject: [RFC PATCH 25/32] fprobe: Use ftrace_regs in fprobe entry handler
-Date:   Mon,  6 Nov 2023 01:11:33 +0900
-Message-Id: <169920069297.482486.11530374089253107021.stgit@devnote2>
+Subject: [RFC PATCH 26/32] fprobe: Use ftrace_regs in fprobe exit handler
+Date:   Mon,  6 Nov 2023 01:11:45 +0900
+Message-Id: <169920070544.482486.4637821890687747577.stgit@devnote2>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <169920038849.482486.15796387219966662967.stgit@devnote2>
 References: <169920038849.482486.15796387219966662967.stgit@devnote2>
@@ -66,173 +66,216 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
-This allows fprobes to be available with CONFIG_DYNAMIC_FTRACE_WITH_ARGS
-instead of CONFIG_DYNAMIC_FTRACE_WITH_REGS, then we can enable fprobe
-on arm64.
+Change the fprobe exit handler to use ftrace_regs structure instead of
+pt_regs. This also introduce HAVE_PT_REGS_TO_FTRACE_REGS_CAST which means
+the ftrace_regs's memory layout is equal to the pt_regs so that those are
+able to cast. Fprobe introduces a new dependency with that.
 
 Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-Acked-by: Florent Revest <revest@chromium.org>
 ---
- Changes from previous series: NOTHING, just forward ported.
+  Changes from previous series: NOTHING, just forward ported.
 ---
+ arch/loongarch/Kconfig          |    1 +
+ arch/s390/Kconfig               |    1 +
+ arch/x86/Kconfig                |    1 +
  include/linux/fprobe.h          |    2 +-
- kernel/trace/Kconfig            |    3 ++-
- kernel/trace/bpf_trace.c        |   10 +++++++---
- kernel/trace/fprobe.c           |    4 ++--
+ include/linux/ftrace.h          |    5 +++++
+ kernel/trace/Kconfig            |    8 ++++++++
+ kernel/trace/bpf_trace.c        |    6 +++++-
+ kernel/trace/fprobe.c           |    3 ++-
  kernel/trace/trace_fprobe.c     |    6 +++++-
- lib/test_fprobe.c               |    4 ++--
+ lib/test_fprobe.c               |    6 +++---
  samples/fprobe/fprobe_example.c |    2 +-
- 7 files changed, 20 insertions(+), 11 deletions(-)
+ 11 files changed, 33 insertions(+), 8 deletions(-)
 
+diff --git a/arch/loongarch/Kconfig b/arch/loongarch/Kconfig
+index e14396a2ddcb..258e9bee1503 100644
+--- a/arch/loongarch/Kconfig
++++ b/arch/loongarch/Kconfig
+@@ -108,6 +108,7 @@ config LOONGARCH
+ 	select HAVE_DMA_CONTIGUOUS
+ 	select HAVE_DYNAMIC_FTRACE
+ 	select HAVE_DYNAMIC_FTRACE_WITH_ARGS
++	select HAVE_PT_REGS_TO_FTRACE_REGS_CAST
+ 	select HAVE_DYNAMIC_FTRACE_WITH_DIRECT_CALLS
+ 	select HAVE_DYNAMIC_FTRACE_WITH_REGS
+ 	select HAVE_EBPF_JIT
+diff --git a/arch/s390/Kconfig b/arch/s390/Kconfig
+index ae29e4392664..5aedb4320e7c 100644
+--- a/arch/s390/Kconfig
++++ b/arch/s390/Kconfig
+@@ -167,6 +167,7 @@ config S390
+ 	select HAVE_DMA_CONTIGUOUS
+ 	select HAVE_DYNAMIC_FTRACE
+ 	select HAVE_DYNAMIC_FTRACE_WITH_ARGS
++	select HAVE_PT_REGS_TO_FTRACE_REGS_CAST
+ 	select HAVE_DYNAMIC_FTRACE_WITH_DIRECT_CALLS
+ 	select HAVE_DYNAMIC_FTRACE_WITH_REGS
+ 	select HAVE_EBPF_JIT if HAVE_MARCH_Z196_FEATURES
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 4b4c2f9d67da..e11ba9a33afe 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -209,6 +209,7 @@ config X86
+ 	select HAVE_DYNAMIC_FTRACE
+ 	select HAVE_DYNAMIC_FTRACE_WITH_REGS
+ 	select HAVE_DYNAMIC_FTRACE_WITH_ARGS	if X86_64
++	select HAVE_PT_REGS_TO_FTRACE_REGS_CAST	if X86_64
+ 	select HAVE_DYNAMIC_FTRACE_WITH_DIRECT_CALLS
+ 	select HAVE_SAMPLE_FTRACE_DIRECT	if X86_64
+ 	select HAVE_SAMPLE_FTRACE_DIRECT_MULTI	if X86_64
 diff --git a/include/linux/fprobe.h b/include/linux/fprobe.h
-index 3e03758151f4..36c0595f7b93 100644
+index 36c0595f7b93..879a30956009 100644
 --- a/include/linux/fprobe.h
 +++ b/include/linux/fprobe.h
-@@ -35,7 +35,7 @@ struct fprobe {
- 	int			nr_maxactive;
- 
- 	int (*entry_handler)(struct fprobe *fp, unsigned long entry_ip,
--			     unsigned long ret_ip, struct pt_regs *regs,
-+			     unsigned long ret_ip, struct ftrace_regs *regs,
+@@ -38,7 +38,7 @@ struct fprobe {
+ 			     unsigned long ret_ip, struct ftrace_regs *regs,
  			     void *entry_data);
  	void (*exit_handler)(struct fprobe *fp, unsigned long entry_ip,
- 			     unsigned long ret_ip, struct pt_regs *regs,
+-			     unsigned long ret_ip, struct pt_regs *regs,
++			     unsigned long ret_ip, struct ftrace_regs *fregs,
+ 			     void *entry_data);
+ };
+ 
+diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
+index 0c036c5d7c12..894117e909dd 100644
+--- a/include/linux/ftrace.h
++++ b/include/linux/ftrace.h
+@@ -133,6 +133,11 @@ struct ftrace_regs {
+ #define ftrace_regs_set_instruction_pointer(fregs, ip) do { } while (0)
+ #endif /* CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS */
+ 
++#ifdef CONFIG_HAVE_PT_REGS_TO_FTRACE_REGS_CAST
++
++static_assert(sizeof(struct pt_regs) == sizeof(struct ftrace_regs));
++
++#endif /* CONFIG_HAVE_PT_REGS_TO_FTRACE_REGS_CAST */
+ 
+ static __always_inline struct pt_regs *ftrace_get_regs(struct ftrace_regs *fregs)
+ {
 diff --git a/kernel/trace/Kconfig b/kernel/trace/Kconfig
-index 308b3bec01b1..805d72ab77c6 100644
+index 805d72ab77c6..1a2544712690 100644
 --- a/kernel/trace/Kconfig
 +++ b/kernel/trace/Kconfig
-@@ -290,7 +290,7 @@ config DYNAMIC_FTRACE_WITH_ARGS
- config FPROBE
+@@ -60,6 +60,13 @@ config HAVE_DYNAMIC_FTRACE_WITH_ARGS
+ 	 This allows for use of ftrace_regs_get_argument() and
+ 	 ftrace_regs_get_stack_pointer().
+ 
++config HAVE_PT_REGS_TO_FTRACE_REGS_CAST
++	bool
++	help
++	 If this is set, the memory layout of the ftrace_regs data structure
++	 is the same as the pt_regs. So the pt_regs is possible to be casted
++	 to ftrace_regs.
++
+ config HAVE_DYNAMIC_FTRACE_NO_PATCHABLE
+ 	bool
+ 	help
+@@ -291,6 +298,7 @@ config FPROBE
  	bool "Kernel Function Probe (fprobe)"
  	depends on FUNCTION_TRACER
--	depends on DYNAMIC_FTRACE_WITH_REGS
-+	depends on DYNAMIC_FTRACE_WITH_REGS || DYNAMIC_FTRACE_WITH_ARGS
+ 	depends on DYNAMIC_FTRACE_WITH_REGS || DYNAMIC_FTRACE_WITH_ARGS
++	depends on HAVE_PT_REGS_TO_FTRACE_REGS_CAST || !HAVE_DYNAMIC_FTRACE_WITH_ARGS
  	depends on HAVE_RETHOOK
  	select RETHOOK
  	default n
-@@ -675,6 +675,7 @@ config FPROBE_EVENTS
- 	select TRACING
- 	select PROBE_EVENTS
- 	select DYNAMIC_EVENTS
-+	depends on DYNAMIC_FTRACE_WITH_REGS
- 	default y
- 	help
- 	  This allows user to add tracing events on the function entry and
 diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 868008f56fec..b0b98f0a0e52 100644
+index b0b98f0a0e52..a4b5e34b0419 100644
 --- a/kernel/trace/bpf_trace.c
 +++ b/kernel/trace/bpf_trace.c
-@@ -2501,7 +2501,7 @@ static int __init bpf_event_init(void)
- fs_initcall(bpf_event_init);
- #endif /* CONFIG_MODULES */
+@@ -2745,10 +2745,14 @@ kprobe_multi_link_handler(struct fprobe *fp, unsigned long fentry_ip,
  
--#ifdef CONFIG_FPROBE
-+#if defined(CONFIG_FPROBE) && defined(CONFIG_DYNAMIC_FTRACE_WITH_REGS)
- struct bpf_kprobe_multi_link {
- 	struct bpf_link link;
- 	struct fprobe fp;
-@@ -2729,10 +2729,14 @@ kprobe_multi_link_prog_run(struct bpf_kprobe_multi_link *link,
- 
- static int
- kprobe_multi_link_handler(struct fprobe *fp, unsigned long fentry_ip,
--			  unsigned long ret_ip, struct pt_regs *regs,
-+			  unsigned long ret_ip, struct ftrace_regs *fregs,
- 			  void *data)
+ static void
+ kprobe_multi_link_exit_handler(struct fprobe *fp, unsigned long fentry_ip,
+-			       unsigned long ret_ip, struct pt_regs *regs,
++			       unsigned long ret_ip, struct ftrace_regs *fregs,
+ 			       void *data)
  {
  	struct bpf_kprobe_multi_link *link;
 +	struct pt_regs *regs = ftrace_get_regs(fregs);
 +
 +	if (!regs)
-+		return 0;
++		return;
  
  	link = container_of(fp, struct bpf_kprobe_multi_link, fp);
  	kprobe_multi_link_prog_run(link, get_entry_ip(fentry_ip), regs);
-@@ -3004,7 +3008,7 @@ int bpf_kprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *pr
- 	kvfree(cookies);
- 	return err;
- }
--#else /* !CONFIG_FPROBE */
-+#else /* !CONFIG_FPROBE || !CONFIG_DYNAMIC_FTRACE_WITH_REGS */
- int bpf_kprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *prog)
- {
- 	return -EOPNOTSUPP;
 diff --git a/kernel/trace/fprobe.c b/kernel/trace/fprobe.c
-index 881f90f0cbcf..df323cb7bed1 100644
+index df323cb7bed1..38fe6a19450b 100644
 --- a/kernel/trace/fprobe.c
 +++ b/kernel/trace/fprobe.c
-@@ -46,7 +46,7 @@ static inline void __fprobe_handler(unsigned long ip, unsigned long parent_ip,
+@@ -124,6 +124,7 @@ static void fprobe_exit_handler(struct rethook_node *rh, void *data,
+ {
+ 	struct fprobe *fp = (struct fprobe *)data;
+ 	struct fprobe_rethook_node *fpr;
++	struct ftrace_regs *fregs = (struct ftrace_regs *)regs;
+ 	int bit;
+ 
+ 	if (!fp || fprobe_disabled(fp))
+@@ -141,7 +142,7 @@ static void fprobe_exit_handler(struct rethook_node *rh, void *data,
+ 		return;
  	}
  
- 	if (fp->entry_handler)
--		ret = fp->entry_handler(fp, ip, parent_ip, ftrace_get_regs(fregs), entry_data);
-+		ret = fp->entry_handler(fp, ip, parent_ip, fregs, entry_data);
- 
- 	/* If entry_handler returns !0, nmissed is not counted. */
- 	if (rh) {
-@@ -182,7 +182,7 @@ static void fprobe_init(struct fprobe *fp)
- 		fp->ops.func = fprobe_kprobe_handler;
- 	else
- 		fp->ops.func = fprobe_handler;
--	fp->ops.flags |= FTRACE_OPS_FL_SAVE_REGS;
-+	fp->ops.flags |= FTRACE_OPS_FL_SAVE_ARGS;
+-	fp->exit_handler(fp, fpr->entry_ip, ret_ip, regs,
++	fp->exit_handler(fp, fpr->entry_ip, ret_ip, fregs,
+ 			 fp->entry_data_size ? (void *)fpr->data : NULL);
+ 	ftrace_test_recursion_unlock(bit);
  }
- 
- static int fprobe_init_rethook(struct fprobe *fp, int num)
 diff --git a/kernel/trace/trace_fprobe.c b/kernel/trace/trace_fprobe.c
-index 8bfe23af9c73..71bf38d698f1 100644
+index 71bf38d698f1..c60d0d9f1a95 100644
 --- a/kernel/trace/trace_fprobe.c
 +++ b/kernel/trace/trace_fprobe.c
-@@ -320,12 +320,16 @@ NOKPROBE_SYMBOL(fexit_perf_func);
- #endif	/* CONFIG_PERF_EVENTS */
+@@ -341,10 +341,14 @@ static int fentry_dispatcher(struct fprobe *fp, unsigned long entry_ip,
+ NOKPROBE_SYMBOL(fentry_dispatcher);
  
- static int fentry_dispatcher(struct fprobe *fp, unsigned long entry_ip,
+ static void fexit_dispatcher(struct fprobe *fp, unsigned long entry_ip,
 -			     unsigned long ret_ip, struct pt_regs *regs,
 +			     unsigned long ret_ip, struct ftrace_regs *fregs,
  			     void *entry_data)
  {
  	struct trace_fprobe *tf = container_of(fp, struct trace_fprobe, fp);
 +	struct pt_regs *regs = ftrace_get_regs(fregs);
- 	int ret = 0;
- 
-+	if (!regs)
-+		return 0;
 +
++	if (!regs)
++		return;
+ 
  	if (trace_probe_test_flag(&tf->tp, TP_FLAG_TRACE))
- 		fentry_trace_func(tf, entry_ip, regs);
- #ifdef CONFIG_PERF_EVENTS
+ 		fexit_trace_func(tf, entry_ip, ret_ip, regs);
 diff --git a/lib/test_fprobe.c b/lib/test_fprobe.c
-index 24de0e5ff859..ff607babba18 100644
+index ff607babba18..d1e80653bf0c 100644
 --- a/lib/test_fprobe.c
 +++ b/lib/test_fprobe.c
-@@ -40,7 +40,7 @@ static noinline u32 fprobe_selftest_nest_target(u32 value, u32 (*nest)(u32))
+@@ -59,9 +59,9 @@ static notrace int fp_entry_handler(struct fprobe *fp, unsigned long ip,
  
- static notrace int fp_entry_handler(struct fprobe *fp, unsigned long ip,
+ static notrace void fp_exit_handler(struct fprobe *fp, unsigned long ip,
  				    unsigned long ret_ip,
 -				    struct pt_regs *regs, void *data)
 +				    struct ftrace_regs *fregs, void *data)
  {
- 	KUNIT_EXPECT_FALSE(current_test, preemptible());
- 	/* This can be called on the fprobe_selftest_target and the fprobe_selftest_target2 */
-@@ -81,7 +81,7 @@ static notrace void fp_exit_handler(struct fprobe *fp, unsigned long ip,
+-	unsigned long ret = regs_return_value(regs);
++	unsigned long ret = ftrace_regs_return_value(fregs);
  
- static notrace int nest_entry_handler(struct fprobe *fp, unsigned long ip,
+ 	KUNIT_EXPECT_FALSE(current_test, preemptible());
+ 	if (ip != target_ip) {
+@@ -89,7 +89,7 @@ static notrace int nest_entry_handler(struct fprobe *fp, unsigned long ip,
+ 
+ static notrace void nest_exit_handler(struct fprobe *fp, unsigned long ip,
  				      unsigned long ret_ip,
 -				      struct pt_regs *regs, void *data)
 +				      struct ftrace_regs *fregs, void *data)
  {
  	KUNIT_EXPECT_FALSE(current_test, preemptible());
- 	return 0;
+ 	KUNIT_EXPECT_EQ(current_test, ip, target_nest_ip);
 diff --git a/samples/fprobe/fprobe_example.c b/samples/fprobe/fprobe_example.c
-index 64e715e7ed11..1545a1aac616 100644
+index 1545a1aac616..d476d1f07538 100644
 --- a/samples/fprobe/fprobe_example.c
 +++ b/samples/fprobe/fprobe_example.c
-@@ -50,7 +50,7 @@ static void show_backtrace(void)
+@@ -67,7 +67,7 @@ static int sample_entry_handler(struct fprobe *fp, unsigned long ip,
+ }
  
- static int sample_entry_handler(struct fprobe *fp, unsigned long ip,
- 				unsigned long ret_ip,
--				struct pt_regs *regs, void *data)
-+				struct ftrace_regs *fregs, void *data)
+ static void sample_exit_handler(struct fprobe *fp, unsigned long ip,
+-				unsigned long ret_ip, struct pt_regs *regs,
++				unsigned long ret_ip, struct ftrace_regs *regs,
+ 				void *data)
  {
- 	if (use_trace)
- 		/*
+ 	unsigned long rip = ret_ip;
 
