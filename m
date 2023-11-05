@@ -2,47 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7133E7E126A
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Nov 2023 08:00:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5943B7E126F
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Nov 2023 08:20:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229749AbjKEG76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Nov 2023 01:59:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37720 "EHLO
+        id S229633AbjKEHQO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Nov 2023 02:16:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229455AbjKEG74 (ORCPT
+        with ESMTP id S229455AbjKEHQM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Nov 2023 01:59:56 -0500
-Received: from 1wt.eu (ded1.1wt.eu [163.172.96.212])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id AF532D3
-        for <linux-kernel@vger.kernel.org>; Sat,  4 Nov 2023 23:59:52 -0700 (PDT)
-Received: (from willy@localhost)
-        by pcw.home.local (8.15.2/8.15.2/Submit) id 3A56xgHk020716;
-        Sun, 5 Nov 2023 07:59:42 +0100
-Date:   Sun, 5 Nov 2023 07:59:42 +0100
-From:   Willy Tarreau <w@1wt.eu>
-To:     Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
-        Zhangjin Wu <falcon@tinylab.org>,
-        Yuan Tan <tanyuan@tinylab.org>
-Subject: Re: [PATCH RFC] misc/pvpanic: add support for normal shutdowns
-Message-ID: <20231105065942.GB20673@1wt.eu>
-References: <20231104-pvpanic-shutdown-v1-1-5ee7c9b3e301@weissschuh.net>
- <2023110407-unselect-uptight-b96d@gregkh>
- <365bbe1f-5ee8-40fe-bec0-53d9e7395c18@t-8ch.de>
- <2023110431-pacemaker-pruning-0e4c@gregkh>
- <59ed7f70-2953-443e-9fa5-d46c566e4a08@t-8ch.de>
- <ZUZNkpEiHHWsmZhT@1wt.eu>
- <2023110418-unreached-smith-5625@gregkh>
- <fc373999-466d-4587-b049-9f90076b4bd0@t-8ch.de>
+        Sun, 5 Nov 2023 02:16:12 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFD8AFB
+        for <linux-kernel@vger.kernel.org>; Sun,  5 Nov 2023 00:16:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699168569; x=1730704569;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=cLcLuelFCVYvO9mDkJF8DMB0xsKO5rcDEG6g1qqQ8n0=;
+  b=LpYfm3ws5Ki68rDJxoAERNWJ6mZg6eZ2cNLfXxp9rnF5DJrAZql+KAA+
+   J7c+xdmLf/Z/JvAtINnSrA4LaNwSFzAhDM780PwHgVlRciFP9FYBKshDr
+   6IKZGODt46yLHPw3db9x3IaCZ+DB4Om1QxIazmW+bFWqQASAXCwEy4VMA
+   9E66SFgsWbfOyh/Muxtv9bGapF0dSusCRvvJIgC/790jFy3VHdIQz/KsK
+   NnGP+7TsRFJEP0TpI5PEVefThrmLXL4+Yx0D7yT7YQQPnyfoySChq8dgF
+   wCq4S0EGI7E8lPPlAmsHy6VygBfYFFfSP76FV7XRiOiq1dasx2VbnsjLy
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10884"; a="368464975"
+X-IronPort-AV: E=Sophos;i="6.03,278,1694761200"; 
+   d="scan'208";a="368464975"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2023 00:16:09 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10884"; a="762013632"
+X-IronPort-AV: E=Sophos;i="6.03,278,1694761200"; 
+   d="scan'208";a="762013632"
+Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
+  by orsmga002.jf.intel.com with ESMTP; 05 Nov 2023 00:16:07 -0700
+Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qzXMb-00058m-0Y;
+        Sun, 05 Nov 2023 07:16:05 +0000
+Date:   Sun, 5 Nov 2023 15:15:43 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Thomas Bogendoerfer <tbogendoerfer@suse.de>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Paul Burton <paulburton@kernel.org>
+Subject: arch/mips/sgi-ip30/ip30-setup.c:122:13: warning: no previous
+ prototype for 'plat_mem_setup'
+Message-ID: <202311051519.Wm6XIMdt-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <fc373999-466d-4587-b049-9f90076b4bd0@t-8ch.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
         URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -50,49 +63,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 04, 2023 at 06:32:57PM +0100, Thomas Weißschuh wrote:
-> On 2023-11-04 18:07:21+0100, Greg Kroah-Hartman wrote:
-> > On Sat, Nov 04, 2023 at 02:56:34PM +0100, Willy Tarreau wrote:
-> > > On Sat, Nov 04, 2023 at 02:53:37PM +0100, Thomas Weißschuh wrote:
-> > > > > > The real reason probably doesn't matter today as the header propably
-> > > > > > can't be dropped from Linux anyways for compatibility reasons.
-> > > > > > 
-> > > > > > > And if they need to be here, why not use the proper BIT() macro for it?
-> > > > > > 
-> > > > > > This was for uniformity with the existing code.
-> > > > > > I can send a (standalone?) patch to fix it up.
-> > > > > 
-> > > > > If we keep it, sure, that would be nice.  But let's try to drop it if
-> > > > > possible :)
-> > > > 
-> > > > It will break the mentioned scripts/update-linux-headers.sh from qemu.
-> > > > 
-> > > > 
-> > > > Note:
-> > > > 
-> > > > BIT() is part of include/vdso/bits.h which is not part of the
-> > > > uapi. How is it supposed to work?
-> > > > Some other uapi header also use BIT() but that seems to work by accident
-> > > > as the users have the macro defined themselves.
-> > > 
-> > > Be careful here, we don't want to expose this kernel macro to userland,
-> > > it would break programs that define their own (possibly different) BIT
-> > > macro. BIT() is used in kernel headers but we should not presume that
-> > > it is available from userland.
-> > 
-> > It's already there :(
-> > 
-> > I thought we had a uapi-safe version somewhere, but I can't seem to find
-> > it anymore, so I don't remember what it is called.
-> 
-> It seems to be _BITUL() and _BITULL() from include/uapi/linux/const.h.
-> 
-> But first we'd need to figure out if we he can drop the pvpanic.h uapi
-> header. I hoped you could give a definitive answer for that.
-> Personally I'd hate to break stuff for qemu.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   aea6bf908d730b01bd264a8821159db9463c111c
+commit: 7505576d1c1ac0cfe85fdf90999433dd8b673012 MIPS: add support for SGI Octane (IP30)
+date:   4 years ago
+config: mips-randconfig-r016-20230221 (https://download.01.org/0day-ci/archive/20231105/202311051519.Wm6XIMdt-lkp@intel.com/config)
+compiler: mips64-linux-gcc (GCC) 11.3.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231105/202311051519.Wm6XIMdt-lkp@intel.com/reproduce)
 
-Agreed, and I tend as well to be careful not to change uapi stuff in
-ways that can break, as it can take time to flow to applications and
-cause subtle breakage much later :-/
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311051519.Wm6XIMdt-lkp@intel.com/
 
-Willy
+All warnings (new ones prefixed by >>):
+
+>> arch/mips/sgi-ip30/ip30-setup.c:122:13: warning: no previous prototype for 'plat_mem_setup' [-Wmissing-prototypes]
+     122 | void __init plat_mem_setup(void)
+         |             ^~~~~~~~~~~~~~
+
+
+vim +/plat_mem_setup +122 arch/mips/sgi-ip30/ip30-setup.c
+
+   118	
+   119	/**
+   120	 * plat_mem_setup - despite the name, misc setup happens here.
+   121	 */
+ > 122	void __init plat_mem_setup(void)
+   123	{
+   124		ip30_mem_init();
+   125	
+   126		/* XXX: Hard lock on /sbin/init if this flag isn't specified. */
+   127		prom_flags |= PROM_FLAG_DONT_FREE_TEMP;
+   128	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
