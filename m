@@ -2,143 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 651807E11E3
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Nov 2023 02:27:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39D2E7E11E4
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Nov 2023 02:37:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229598AbjKEB1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Nov 2023 21:27:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54250 "EHLO
+        id S229631AbjKEBfI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Nov 2023 21:35:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229452AbjKEB1w (ORCPT
+        with ESMTP id S229452AbjKEBfG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Nov 2023 21:27:52 -0400
+        Sat, 4 Nov 2023 21:35:06 -0400
 Received: from mail-oa1-f72.google.com (mail-oa1-f72.google.com [209.85.160.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E805E3
-        for <linux-kernel@vger.kernel.org>; Sat,  4 Nov 2023 18:27:50 -0700 (PDT)
-Received: by mail-oa1-f72.google.com with SMTP id 586e51a60fabf-1f08758b52cso2014111fac.3
-        for <linux-kernel@vger.kernel.org>; Sat, 04 Nov 2023 18:27:50 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1168413E
+        for <linux-kernel@vger.kernel.org>; Sat,  4 Nov 2023 18:35:04 -0700 (PDT)
+Received: by mail-oa1-f72.google.com with SMTP id 586e51a60fabf-1ef5310a497so4789468fac.1
+        for <linux-kernel@vger.kernel.org>; Sat, 04 Nov 2023 18:35:03 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699147669; x=1699752469;
+        d=1e100.net; s=20230601; t=1699148103; x=1699752903;
         h=to:from:subject:message-id:in-reply-to:date:mime-version
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1fLBwfuHSTS0huTJxi972Yu3ZpUahtwAKJsZuM7vbeU=;
-        b=qTNZttBXjLk885cR3Saxct2pY+tt0kTBd4U9Mg8M0eb3OGoMyDkx7Q2hH/aIjWUoXq
-         2LgGaM7Lx+y53Nkbobolj6emPoVixR/UKRAu71s/MGTrVPSetYOCBXb92r+orBmz666w
-         PcO6oWgC8Pr53cfcRmzbgAKY54btUDUJmVC0WATAN3KOhpCwEA2zdLMAo/sz8NXZgMSV
-         LnWFS/HiSUpoeuU2AHqiPeFwCiH77wPkvAnxPqPEHE5VjxHUga1Gro9btB00Bbmq7eFn
-         8QhKRsAyPQexRMnybKteITdakEpavLOSMK4hCqGy+mC/HFGD9TUH02tJ3YwX1vveM9Nh
-         do7A==
-X-Gm-Message-State: AOJu0Yy5v8dLol1xFBBl4/msZhRGk8Kg+MTmTEoD52wMdrWy7gau51mK
-        XVzeFSWmQ641zesopnDxUc9i+sRmJU59zV3s/1t6xeBUsaT0aJM=
-X-Google-Smtp-Source: AGHT+IGgV8usG9KZonGQGQlArc1TNxMThQc6Rj2XstsOE0BaqNGZ5xQx1myMrkZMt9eUkuRRfXRA4SbxjVR1qzfhRVI5Zy+aNaIl
+        bh=yQIdxx7h5V0fTWly2Vt/J1o7cnnsiinsY1vD9lUf3oU=;
+        b=GA01l7gEck4anTB2gg3dP0WRM/FrcIxQ38214pA90+4T/nXLbChdLxuEP6e4hHM8P0
+         hgwaxdDYY8h3xd55qAngChiUerxokTHAwbwCrCx29OP/0VQuvLiboRKlgL6fb0tZcxhI
+         +tuJb7phRyRyAKgBt7MF1WHrAdzTEREPsfZ5ahyKsvW/u3OBfz9vUN2YHR4TlJIiQG7A
+         B5qBv1a3drfht4LN6LJwbQpht/9b2e1J4bIAjANHKhK9IrO//EUNcd9qdY88ZTA9SCFU
+         ehrg59ZHuKeQyFKcMHqzqAm9vMWWp3jh5B9f6RQowzFvkBnUImp5gcg/zCn8sXGnBd8d
+         YsXQ==
+X-Gm-Message-State: AOJu0YynTgeTFJZKryyU/DXsFgz/P/BPBxb6GQTbTtryO+bS5D8dtjef
+        Pjf8ucrYRlEOxIPidPCw/gUmIcwvu67cX1QhtRFcGXkKIvBT
+X-Google-Smtp-Source: AGHT+IHFaTZxRCWG88VdtxSwpGUoQoDUAmbmLNmBYIjhOSy82PSeXT95gYEqAGYpfWoBoYUeKWgIAJhT8Z3puGgBB0zbWX/amwvX
 MIME-Version: 1.0
-X-Received: by 2002:a05:6871:711:b0:1e9:9b32:3e56 with SMTP id
- f17-20020a056871071100b001e99b323e56mr11800876oap.7.1699147669771; Sat, 04
- Nov 2023 18:27:49 -0700 (PDT)
-Date:   Sat, 04 Nov 2023 18:27:49 -0700
-In-Reply-To: <000000000000910ad106089f45eb@google.com>
+X-Received: by 2002:a05:6870:d627:b0:1f0:6087:3afa with SMTP id
+ a39-20020a056870d62700b001f060873afamr3452990oaq.7.1699148103329; Sat, 04 Nov
+ 2023 18:35:03 -0700 (PDT)
+Date:   Sat, 04 Nov 2023 18:35:03 -0700
+In-Reply-To: <tencent_C46D83B2044E376BB76286CF937A63682905@qq.com>
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000471df406095da542@google.com>
-Subject: Re: [syzbot] [PATCH] Test for 2030579113a1
+Message-ID: <0000000000001eae8506095dbfd4@google.com>
+Subject: Re: [syzbot] [net?] BUG: corrupted list in ptp_open
 From:   syzbot <syzbot+df3f3ef31f60781fa911@syzkaller.appspotmail.com>
-To:     linux-kernel@vger.kernel.org
+To:     eadavis@qq.com, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
         HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For archival purposes, forwarding an incoming command email to
-linux-kernel@vger.kernel.org.
+Hello,
 
-***
+syzbot tried to test the proposed patch but the build/boot failed:
 
-Subject: [PATCH] Test for 2030579113a1
-Author: eadavis@qq.com
+drivers/ptp/ptp_clock.c:250:23: error: no member named 'tsevq_lock' in 'struct ptp_clock'; did you mean 'tsevqs_lock'?
+drivers/ptp/ptp_chardev.c:123:26: error: no member named 'tsevq_lock' in 'struct ptp_clock'; did you mean 'tsevqs_lock'?
+drivers/ptp/ptp_chardev.c:126:31: error: no member named 'tsevq_lock' in 'struct ptp_clock'; did you mean 'tsevqs_lock'?
+drivers/ptp/ptp_chardev.c:150:27: error: no member named 'tsevq_lock' in 'struct ptp_clock'; did you mean 'tsevqs_lock'?
+drivers/ptp/ptp_chardev.c:153:32: error: no member named 'tsevq_lock' in 'struct ptp_clock'; did you mean 'tsevqs_lock'?
 
-please test BUG: corrupted list in ptp_open
 
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git 2dac75696c6d
+Tested on:
 
-diff --git a/drivers/ptp/ptp_chardev.c b/drivers/ptp/ptp_chardev.c
-index 282cd7d24077..eb4015ae93a2 100644
---- a/drivers/ptp/ptp_chardev.c
-+++ b/drivers/ptp/ptp_chardev.c
-@@ -108,6 +108,7 @@ int ptp_open(struct posix_clock_context *pccontext, fmode_t fmode)
- 		container_of(pccontext->clk, struct ptp_clock, clock);
- 	struct timestamp_event_queue *queue;
- 	char debugfsname[32];
-+	unsigned long flags;
- 
- 	queue = kzalloc(sizeof(*queue), GFP_KERNEL);
- 	if (!queue)
-@@ -119,8 +120,10 @@ int ptp_open(struct posix_clock_context *pccontext, fmode_t fmode)
- 	}
- 	bitmap_set(queue->mask, 0, PTP_MAX_CHANNELS);
- 	spin_lock_init(&queue->lock);
-+	spin_lock_irqsave(&ptp->tsevq_lock, flags);
- 	list_add_tail(&queue->qlist, &ptp->tsevqs);
- 	pccontext->private_clkdata = queue;
-+	spin_unlock_irqrestore(&ptp->tsevq_lock, flags);
- 
- 	/* Debugfs contents */
- 	sprintf(debugfsname, "0x%p", queue);
-@@ -139,13 +142,15 @@ int ptp_release(struct posix_clock_context *pccontext)
- {
- 	struct timestamp_event_queue *queue = pccontext->private_clkdata;
- 	unsigned long flags;
-+	struct ptp_clock *ptp =
-+		container_of(pccontext->clk, struct ptp_clock, clock);
- 
- 	if (queue) {
- 		debugfs_remove(queue->debugfs_instance);
-+		spin_lock_irqsave(&ptp->tsevq_lock, flags);
- 		pccontext->private_clkdata = NULL;
--		spin_lock_irqsave(&queue->lock, flags);
- 		list_del(&queue->qlist);
--		spin_unlock_irqrestore(&queue->lock, flags);
-+		spin_unlock_irqrestore(&ptp->tsevq_lock, flags);
- 		bitmap_free(queue->mask);
- 		kfree(queue);
- 	}
-@@ -585,7 +590,5 @@ ssize_t ptp_read(struct posix_clock_context *pccontext, uint rdflags,
- free_event:
- 	kfree(event);
- exit:
--	if (result < 0)
--		ptp_release(pccontext);
- 	return result;
- }
-diff --git a/drivers/ptp/ptp_clock.c b/drivers/ptp/ptp_clock.c
-index 3d1b0a97301c..d813bf25dffc 100644
---- a/drivers/ptp/ptp_clock.c
-+++ b/drivers/ptp/ptp_clock.c
-@@ -247,6 +247,7 @@ struct ptp_clock *ptp_clock_register(struct ptp_clock_info *info,
- 	if (!queue)
- 		goto no_memory_queue;
- 	list_add_tail(&queue->qlist, &ptp->tsevqs);
-+	spin_lock_init(&ptp->tsevq_lock);
- 	queue->mask = bitmap_alloc(PTP_MAX_CHANNELS, GFP_KERNEL);
- 	if (!queue->mask)
- 		goto no_memory_bitmap;
-diff --git a/drivers/ptp/ptp_private.h b/drivers/ptp/ptp_private.h
-index 52f87e394aa6..63af246f17eb 100644
---- a/drivers/ptp/ptp_private.h
-+++ b/drivers/ptp/ptp_private.h
-@@ -44,6 +44,7 @@ struct ptp_clock {
- 	struct pps_device *pps_source;
- 	long dialed_frequency; /* remembers the frequency adjustment */
- 	struct list_head tsevqs; /* timestamp fifo list */
-+	spinlock_t tsevqs_lock; /* one process at a time writing the timestamp fifo list*/
- 	struct mutex pincfg_mux; /* protect concurrent info->pin_config access */
- 	wait_queue_head_t tsev_wq;
- 	int defunct; /* tells readers to go away when clock is being removed */
--- 
-2.25.1
+commit:         2dac7569 Add linux-next specific files for 20231018
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+kernel config:  https://syzkaller.appspot.com/x/.config?x=d855e3560c4c99c4
+dashboard link: https://syzkaller.appspot.com/bug?extid=df3f3ef31f60781fa911
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=15743708e80000
 
