@@ -2,71 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C3DD7E16A6
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Nov 2023 21:56:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A84D47E16A9
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Nov 2023 21:57:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229597AbjKEU4l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Nov 2023 15:56:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45248 "EHLO
+        id S229638AbjKEU5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Nov 2023 15:57:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229447AbjKEU4j (ORCPT
+        with ESMTP id S229451AbjKEU5c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Nov 2023 15:56:39 -0500
-Received: from mail-yw1-x1130.google.com (mail-yw1-x1130.google.com [IPv6:2607:f8b0:4864:20::1130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD0E4E0
-        for <linux-kernel@vger.kernel.org>; Sun,  5 Nov 2023 12:56:36 -0800 (PST)
-Received: by mail-yw1-x1130.google.com with SMTP id 00721157ae682-5a7b3d33663so45468307b3.3
-        for <linux-kernel@vger.kernel.org>; Sun, 05 Nov 2023 12:56:36 -0800 (PST)
+        Sun, 5 Nov 2023 15:57:32 -0500
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D1C1DE
+        for <linux-kernel@vger.kernel.org>; Sun,  5 Nov 2023 12:57:29 -0800 (PST)
+Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-50970c2115eso445154e87.1
+        for <linux-kernel@vger.kernel.org>; Sun, 05 Nov 2023 12:57:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699217796; x=1699822596; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/6QEyl2SUHinJLODwuehCU3YQb03M8xY6TOhu/4Xq68=;
-        b=CDJJexQ7h/6F+C6pkgO0vRYt3HKgKk9/8ZbVT/xo0Lxp1uC40IP7On1djHawUiEJzO
-         c9uDlO5ATBKKhUchIQAle270lZrKmyqg9+FG+yZxzj5ADbWeCfgzQ2rbgsn1qC1FxEi6
-         B47k0NY7RZbuwrLvaFo/cytLtwvsfpHDW+r0CThA0DtErzveKf5fSGhZwA73pJ/JNqkI
-         nWzYpP7eUW9QB1BWT7YjAUNQsWYQumPQzIIFegFBR35RXCccy4vKLgzFZsaVs2GBk5Fj
-         vfAp5YnrdaRnHRn61Wg0qDzNihObHKmD9WUhrotRx+0Pz2i5dfWR6vB5L643rzu+18qL
-         OeEA==
+        d=linaro.org; s=google; t=1699217847; x=1699822647; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=WFkRCO5Gr31wYYObvH3M58yivJORulviaRB/LYrXXJQ=;
+        b=T71nTGc3Okg3dJ2uwL1PBI2yihVsH1WUU6wVIvBV6MsY1JdiYlECtNF4NDGUuM90C/
+         JaXDu8k4/NHYkMWT3+aa+ejrB1nwZ7pWusxsNO73UpxUc16lEoNfNoOdzeKLJ7q0Sci/
+         KYFIc/DlCNcNumSnbqPCPW9LuO4xLBXzPQ68uKDkAQ4/f3cUoGK25k+4kuvjlo9roDUj
+         83/LItQaChogLOazxOFYrTWGpQmhR5tGbfQl0apg2DABFlkMMQoT1lsHvm1xNoZp1R4W
+         0+Whe8mumr2gdnYVFUmBYp6JhsBlnqoe0NC78Ci6Zu1dbqYuTvmbrVAyLGLMZkLTUS6a
+         fZ5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699217796; x=1699822596;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/6QEyl2SUHinJLODwuehCU3YQb03M8xY6TOhu/4Xq68=;
-        b=RUKGm/zE9+W9Zni0u6wjSYGy3/Zf4qnT8EWhOXAayKoN2eitR/iD4PtsRwcJ9SVyJ4
-         BFV0HlSL5vYeBo0kknytPJjqx+DaUoVQyeM+AUlGhChYeZnuOofeHGT2ytC9TzVPT2fD
-         BZ4L6DtaA3IIo6iO4wUkQp7vK9v0kakzbzjMXt62yRvxyWFXpO8TSdsFf1tH2n56hBAN
-         hBdGyhaYH+B0RSDYDz6EEUO2VLFyTB/7kX5IIFiSpz6W696uD0+F+ljrNIY3JjV7hGLl
-         ZTVw7Zn3XLS32IS+vsFehnLedLMLyZeMt2JnvFyjIvP002VEVUSokBRYSazW0ERofEkQ
-         V8wQ==
-X-Gm-Message-State: AOJu0YzLrqFRkmDIj+l+96hferMUf32JCavck/Bqgi6V2kz/r+zhZP8K
-        bBHjxBmenk4EC1Wv78rhQK/X1UeeGVYEwqQV+SUYhQ==
-X-Google-Smtp-Source: AGHT+IGrBlLDBzl5QYMUEq8ZYbSLDgWpthp2RHHdVa+K8PvdjwCEDI/B3NFocFtHXGZ/fdZx5BrNzzTlf4Vzkt9zu6k=
-X-Received: by 2002:a05:690c:a:b0:59e:9a44:9db9 with SMTP id
- bc10-20020a05690c000a00b0059e9a449db9mr8923885ywb.26.1699217795923; Sun, 05
- Nov 2023 12:56:35 -0800 (PST)
-MIME-Version: 1.0
-References: <20231104-gemini-largeframe-fix-v1-0-9c5513f22f33@linaro.org>
- <20231104-gemini-largeframe-fix-v1-4-9c5513f22f33@linaro.org> <036b481e-ac5b-4e77-b93a-4badaf19e185@lunn.ch>
-In-Reply-To: <036b481e-ac5b-4e77-b93a-4badaf19e185@lunn.ch>
+        d=1e100.net; s=20230601; t=1699217847; x=1699822647;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=WFkRCO5Gr31wYYObvH3M58yivJORulviaRB/LYrXXJQ=;
+        b=PDnxaAarkRf2p8+I09mLGnbLBFf2iz4jhpsReaoJ0QD6iWJTHUmK5COYrHggWDUVBC
+         z2OjE/uO6ufAY+es6FpAqY7psHcDzj+bIDgxQPZTdj9+vW0RJh+n+qlhM3LuqO/8R+ph
+         wkHi+QXkhAWf6PoHd6i6aaoZO8/TPYj+H6msvtwaBHFO2C+M3pRd9Ea6od2wNUclcbDC
+         LIu4CJwoOHeoycXHqju1bM1NuH5IAA/lvM4MAA6W2zTOyYlneGFoaTtfZpSZcsestfae
+         +A4o9zVn+cW8B300/ShbNXeevBb/qXQnGk1uK2yRgw4ijI60MJVpemZpw78owRAxiKkQ
+         iyzg==
+X-Gm-Message-State: AOJu0YzGJSRDN6W6bT7DZOFb57Zlw44X9tg3FIMsbxqD3IoBH5DjH3rH
+        dUh4KZr27mxA6PUJYvpT/jcGXg==
+X-Google-Smtp-Source: AGHT+IGGCnq8W4xy+A703Avtfw1jtmjghCdQJdWIjjPpOpvf4AdSuEWf3pw2aCu+fr2p82NwWqsyhg==
+X-Received: by 2002:a05:6512:969:b0:509:377a:26d9 with SMTP id v9-20020a056512096900b00509377a26d9mr10364957lft.8.1699217846755;
+        Sun, 05 Nov 2023 12:57:26 -0800 (PST)
+Received: from [127.0.1.1] ([85.235.12.238])
+        by smtp.gmail.com with ESMTPSA id d12-20020ac24c8c000000b00507c72697d0sm931873lfl.303.2023.11.05.12.57.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 05 Nov 2023 12:57:26 -0800 (PST)
 From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Sun, 5 Nov 2023 21:56:23 +0100
-Message-ID: <CACRpkdYp1kiGY0K7kNF+qadPyq1hu3G=2oc1gXnCt3DjtiJxag@mail.gmail.com>
-Subject: Re: [PATCH net 4/4] net: ethernet: cortina: Handle large frames
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Hans Ulli Kroll <ulli.kroll@googlemail.com>,
+Subject: [PATCH net v2 0/4] Fix large frames in the Gemini ethernet driver
+Date:   Sun, 05 Nov 2023 21:57:22 +0100
+Message-Id: <20231105-gemini-largeframe-fix-v2-0-cd3a5aa6c496@linaro.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIALIBSGUC/4WNTQqDMBCFryKzboqTKP1Z9R7FRRoncUCTMhFpk
+ dy9wQt0+b7H+94OmYQpw73ZQWjjzCnWoE8NuMnGQIrHmkG32iC2nQq0cGQ1WwnkxS6kPH+Uw86
+ M2l2u+Oqhbt9CFR/eJ0RaYahw4rwm+R5fGx7VH+2GqlU31/dovNbemMfM0Uo6JwkwlFJ+9/O3g
+ sAAAAA=
+To:     Hans Ulli Kroll <ulli.kroll@googlemail.com>,
         "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
         Paolo Abeni <pabeni@redhat.com>,
-        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        =?utf-8?q?Micha=C5=82_Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
         Vladimir Oltean <olteanv@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Andrew Lunn <andrew@lunn.ch>
+Cc:     linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>
+X-Mailer: b4 0.12.4
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
@@ -77,35 +82,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 4, 2023 at 3:57=E2=80=AFPM Andrew Lunn <andrew@lunn.ch> wrote:
+This is the result of a bug hunt for a problem with the
+RTL8366RB DSA switch leading me wrong all over the place.
 
-> > +              * Just bypass on bigger frames.
-> > +              */
-> > +             word1 |=3D TSS_BYPASS_BIT;
-> > +     } else if (skb->ip_summed !=3D CHECKSUM_NONE) {
->
-> I've never looked at how the network stack does checksums. But looking
-> at this patch, it made me wounder, how do you tell the stack it needs
-> to do a software checksum because the hardware cannot?
+I am indebted to Vladimir Oltean who as usual pointed
+out where the real problem was, many thanks!
 
-I read up on it: the documentation is in
-Documentation/networking/checksum-offloads.rst
-and in the header for skbuff, include/linux/skbuff.h
+Tryig to actually use big ("jumbo") frames on this
+hardware uncovered the real bugs. Then I tested it on
+the DSA switch and it indeed fixes the issue.
 
-Actually we should check for =3D=3D CHECKSUM_PARTIAL which means
-we need to do the checksum (!=3D CHECKSUM_NONE is not inclusive)
-then I call a software fallback directly from the driver if I need to.
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+---
+Changes in v2:
+- Don't check for oversized MTU request: the framework makes sure it doesn't
+  happen.
+- Drop unrelated BIT() macro cleanups (I might send these later for net-next)
+- Use a special error code if the skbuff is too big and fail gracefully
+  is this happens.
+- Do proper checksum of the frame using a software fallback when the frame
+  is too long for hardware checksumming.
+- Link to v1: https://lore.kernel.org/r/20231104-gemini-largeframe-fix-v1-0-9c5513f22f33@linaro.org
 
-> Or for this
-> driver, is it always calculating a checksum, which is then ignored?
-> Maybe you can improve performance a little but disabling software
-> checksum when it is not needed?
+---
+Linus Walleij (4):
+      net: ethernet: cortina: Fix MTU max setting
+      net: ethernet: cortina: Fix max RX frame define
+      net: ethernet: cortina: Protect against oversized frames
+      net: ethernet: cortina: Handle large frames
 
-The ping was somehow working without proper checksum
-before, but I think I'm doing the right thing now, also tested with
-HTTP traffic, check out v2.
+ drivers/net/ethernet/cortina/gemini.c | 39 ++++++++++++++++++++++++++++-------
+ drivers/net/ethernet/cortina/gemini.h |  4 ++--
+ 2 files changed, 34 insertions(+), 9 deletions(-)
+---
+base-commit: e85fd73c7d9630d392f451fcf69a457c8e3f21dd
+change-id: 20231104-gemini-largeframe-fix-c143d2c781b5
 
-Thanks for pointing it out, the patch looks way better now.
+Best regards,
+-- 
+Linus Walleij <linus.walleij@linaro.org>
 
-Yours,
-Linus Walleij
