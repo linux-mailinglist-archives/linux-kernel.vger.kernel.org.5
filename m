@@ -2,63 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BDA917E165C
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Nov 2023 21:18:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BD457E166C
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Nov 2023 21:37:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229626AbjKEUSV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Nov 2023 15:18:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59836 "EHLO
+        id S229468AbjKEUge (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Nov 2023 15:36:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229451AbjKEUSU (ORCPT
+        with ESMTP id S229445AbjKEUgc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Nov 2023 15:18:20 -0500
-Received: from h7.fbrelay.privateemail.com (h7.fbrelay.privateemail.com [162.0.218.230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FF2790;
-        Sun,  5 Nov 2023 12:18:17 -0800 (PST)
-Received: from MTA-10-4.privateemail.com (mta-10.privateemail.com [198.54.118.218])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by h7.fbrelay.privateemail.com (Postfix) with ESMTPSA id E0B9B60562;
-        Sun,  5 Nov 2023 15:18:14 -0500 (EST)
-Received: from mta-10.privateemail.com (localhost [127.0.0.1])
-        by mta-10.privateemail.com (Postfix) with ESMTP id A621C1800043;
-        Sun,  5 Nov 2023 15:18:12 -0500 (EST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=carlosaurelio.net;
-        s=default; t=1699215492;
-        bh=nDKjE4aaqyE3xa9fbGG91EUJMOtqQ87wXRuhYIwaqPk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=m3SVEuje25C99xcE6LwEpwJUmcjT5JckDxNCzwm74K+F7t7jKSrZZU76pOXNE98MG
-         WMDowxHEefrhpfic+tEAwCmhMORQAqUYWtKeh9BNgvmuexKFIpcjjKutFatw0tUC3X
-         yTMCHQPKwujH7rjrD937q1kuhznqZcE9xXISXT4ZBt0pGn70SAkvUnRCxD/1DDXvDi
-         /COVldnIHAajR9H7YEagTbPdAGPiFQHKKu6QJaNUg58htBTzIYhu8O8cwwXDyZWMjd
-         NHDwgPadMhwHNyE29ApEfzA7vLg9Lo+pX3jbKHXmr4ZC5y1tV0f6gyeLLph7Zkn+28
-         TVKWCh+p347CQ==
-Received: from arch-bow (unknown [187.11.35.108])
-        by mta-10.privateemail.com (Postfix) with ESMTPA;
-        Sun,  5 Nov 2023 15:17:57 -0500 (EST)
-Date:   Sun, 5 Nov 2023 17:17:55 -0300
-From:   Carlos Menin <menin@carlosaurelio.net>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     linux-rtc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Sergio Prado <sergio.prado@e-labworks.com>,
-        menin@carlosaurelio.net
-Subject: Re: [PATCH v2 1/2] rtc: add pcf85053a
-Message-ID: <ZUf4czmwLEqKpM28@arch-bow>
-References: <20231103125106.78220-1-menin@carlosaurelio.net>
- <5451ac26-c498-4af5-b3fa-fe2265433ccc@roeck-us.net>
+        Sun, 5 Nov 2023 15:36:32 -0500
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3630B8;
+        Sun,  5 Nov 2023 12:36:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=qAfkqj3nY8C1kL+AlbMQMg/WrQw3CtDlJR2733wvnQk=; b=KOPrsX6T5E6qGe4iy0q6KjR6+z
+        bOQ+UJXz4wBFJ+fEiStHAx18JE7EhtQNAJWc+sltGs7nKihWm4esVAxHjHFo37cZF+K9qjCbXnnfU
+        TilJEPOytgdEvReq6qsesB+eBQXRNS1jgiq7TIq3RCR8ePCFjjEC61GIv+28xBUHUE7M=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1qzjqs-000wmI-Qv; Sun, 05 Nov 2023 21:36:10 +0100
+Date:   Sun, 5 Nov 2023 21:36:10 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
+Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        nic_swsd@realtek.com
+Subject: Re: [PATCH net-next v6 0/5] Coalesce mac ocp write/modify calls to
+ reduce spinlock contention
+Message-ID: <7f0e29b4-a34d-4e38-bba3-b179d0484942@lunn.ch>
+References: <20231104221514.45821-1-mirsad.todorovac@alu.unizg.hr>
+ <da4409f3-d509-413b-8433-f222acbbb1be@gmail.com>
+ <edee64f4-442d-4670-a91b-e5b83117dd40@alu.unizg.hr>
+ <344fc5c2-4447-4481-843f-9d7720e55a77@lunn.ch>
+ <b9573c0e-3cdb-4444-b8f2-579aa699b2e1@alu.unizg.hr>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <5451ac26-c498-4af5-b3fa-fe2265433ccc@roeck-us.net>
-X-Virus-Scanned: ClamAV using ClamSMTP
+In-Reply-To: <b9573c0e-3cdb-4444-b8f2-579aa699b2e1@alu.unizg.hr>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
@@ -69,56 +58,11 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 03, 2023 at 07:09:27AM -0700, Guenter Roeck wrote:
-> On 11/3/23 05:51, Carlos Menin wrote:
-> > Add support for NXP's PCF85053A RTC chip.
-> > 
-> > Signed-off-by: Carlos Menin <menin@carlosaurelio.net>
-> > Reviewed-by: Sergio Prado <sergio.prado@e-labworks.com>
-> > ---
-> 
-> [ ... ]
-> 
-> > +static int pcf85053a_bvl_to_mv(unsigned int bvl)
-> > +{
-> > +	long mv_table[] = {
-> > +		1700,
-> > +		1900,
-> > +		2100,
-> > +		2300,
-> > +		2500,
-> > +		2700,
-> > +		2900,
-> > +		3100,
-> 
-> How are those numbers determined ? The datasheet gives voltage ranges.
-> I'd have assumed that the center of those ranges is chosen, but for the
-> most part it is the maximum, except for 2900 which is a bit above center
-> and 3100 for "> 3.0V". Not that I care too much, but it seems to me that
-> using the center voltage for each range would be more consistent.
-> 
+> The command used for generating the assembly was taken from .o.cmd file and
+> added -save-temps as the only change:
 
-I just used numbers that would result in the same step between levels
-(200 mV) at the same time they would fit in the ranges, but I agree
-that using the center of the ranges makes sense. In this case which
-values would you suggest for <= 1.7 and > 3.0 ?
+make drivers/net/ethernet/realtek/r8169_main.lst
 
-> > +static int pcf85053a_hwmon_register(struct device *dev, const char *name)
-> > +{
-> > +	struct pcf85053a *pcf85053a = dev_get_drvdata(dev);
-> > +	struct device *hwmon_dev;
-> > +
-> > +	hwmon_dev = devm_hwmon_device_register_with_info(dev, name, pcf85053a,
-> > +							 &pcf85053a_hwmon_chip_info,
-> > +							 0);
-> 
-> This won't compile if CONFIG_HWMON=n or if CONFIG_RTC_DRV_PCF85053A=y and
-> CONFIG_HWMON=m.
-> 
-> Guenter
-> 
+is simpler. You get the C and the generated assembler listed together.
 
-I will add dependencies in the Kconfig file.
-
-Thanks for reviewing,
-Carlos
+   Andrew
