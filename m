@@ -2,131 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D885E7E1268
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Nov 2023 07:55:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7133E7E126A
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Nov 2023 08:00:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229544AbjKEGzV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Nov 2023 01:55:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59962 "EHLO
+        id S229749AbjKEG76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Nov 2023 01:59:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229455AbjKEGzT (ORCPT
+        with ESMTP id S229455AbjKEG74 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Nov 2023 01:55:19 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABF0BD3
-        for <linux-kernel@vger.kernel.org>; Sat,  4 Nov 2023 23:55:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699167316; x=1730703316;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=0N08MRP6zZZzPRQyVan2xj2g8PgOxLW3ji83injGmro=;
-  b=Xr2qdas3P3Zs6oLSLqtwbr4rti9i2bpgcAoDItKJurVecoAE3HYWWDOL
-   YG015rZbQLK9UGiGiIlgi0jUFYZJUul1mrgyOnOTacOS1N3EpMgRzX9Sh
-   0EcptMLJDZrAxtwcLbzSH9lLZe992UHYigsZsPA/KQmm89XIFSi+SR6ME
-   gid+Sqhn2AR8/4uCicbZGPpWOGiqdtJPVAw0eafQ2D56W4HwZIrm4TFEm
-   2DWx6ssSO4aMpLAOlyxV72gYYK95nv6lgc1v/1mLW//Sl7i1Wuy8WLIAu
-   drfAhFFna922JLw+PZT4K9f7lEKp+oV6PsZ8mR0XfsWkLTZ/GiuNdmli8
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10884"; a="386305066"
-X-IronPort-AV: E=Sophos;i="6.03,278,1694761200"; 
-   d="scan'208";a="386305066"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2023 23:55:16 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10884"; a="852667785"
-X-IronPort-AV: E=Sophos;i="6.03,278,1694761200"; 
-   d="scan'208";a="852667785"
-Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by FMSMGA003.fm.intel.com with ESMTP; 04 Nov 2023 23:55:14 -0700
-Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qzX2O-00058a-24;
-        Sun, 05 Nov 2023 06:55:12 +0000
-Date:   Sun, 5 Nov 2023 14:54:18 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Purna Chandra Mandal <purna.mandal@microchip.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Mark Brown <broonie@kernel.org>
-Subject: drivers/spi/spi-pic32.c:869:34: warning: 'pic32_spi_of_match'
- defined but not used
-Message-ID: <202311051454.MWgWyxBp-lkp@intel.com>
+        Sun, 5 Nov 2023 01:59:56 -0500
+Received: from 1wt.eu (ded1.1wt.eu [163.172.96.212])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id AF532D3
+        for <linux-kernel@vger.kernel.org>; Sat,  4 Nov 2023 23:59:52 -0700 (PDT)
+Received: (from willy@localhost)
+        by pcw.home.local (8.15.2/8.15.2/Submit) id 3A56xgHk020716;
+        Sun, 5 Nov 2023 07:59:42 +0100
+Date:   Sun, 5 Nov 2023 07:59:42 +0100
+From:   Willy Tarreau <w@1wt.eu>
+To:     Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
+        Zhangjin Wu <falcon@tinylab.org>,
+        Yuan Tan <tanyuan@tinylab.org>
+Subject: Re: [PATCH RFC] misc/pvpanic: add support for normal shutdowns
+Message-ID: <20231105065942.GB20673@1wt.eu>
+References: <20231104-pvpanic-shutdown-v1-1-5ee7c9b3e301@weissschuh.net>
+ <2023110407-unselect-uptight-b96d@gregkh>
+ <365bbe1f-5ee8-40fe-bec0-53d9e7395c18@t-8ch.de>
+ <2023110431-pacemaker-pruning-0e4c@gregkh>
+ <59ed7f70-2953-443e-9fa5-d46c566e4a08@t-8ch.de>
+ <ZUZNkpEiHHWsmZhT@1wt.eu>
+ <2023110418-unreached-smith-5625@gregkh>
+ <fc373999-466d-4587-b049-9f90076b4bd0@t-8ch.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <fc373999-466d-4587-b049-9f90076b4bd0@t-8ch.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   aea6bf908d730b01bd264a8821159db9463c111c
-commit: 1bcb9f8ceb67803960871ecf4ed2d365a2a919c8 spi: spi-pic32: Add PIC32 SPI master driver
-date:   8 years ago
-config: i386-buildonly-randconfig-005-20231101 (https://download.01.org/0day-ci/archive/20231105/202311051454.MWgWyxBp-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231105/202311051454.MWgWyxBp-lkp@intel.com/reproduce)
+On Sat, Nov 04, 2023 at 06:32:57PM +0100, Thomas Weißschuh wrote:
+> On 2023-11-04 18:07:21+0100, Greg Kroah-Hartman wrote:
+> > On Sat, Nov 04, 2023 at 02:56:34PM +0100, Willy Tarreau wrote:
+> > > On Sat, Nov 04, 2023 at 02:53:37PM +0100, Thomas Weißschuh wrote:
+> > > > > > The real reason probably doesn't matter today as the header propably
+> > > > > > can't be dropped from Linux anyways for compatibility reasons.
+> > > > > > 
+> > > > > > > And if they need to be here, why not use the proper BIT() macro for it?
+> > > > > > 
+> > > > > > This was for uniformity with the existing code.
+> > > > > > I can send a (standalone?) patch to fix it up.
+> > > > > 
+> > > > > If we keep it, sure, that would be nice.  But let's try to drop it if
+> > > > > possible :)
+> > > > 
+> > > > It will break the mentioned scripts/update-linux-headers.sh from qemu.
+> > > > 
+> > > > 
+> > > > Note:
+> > > > 
+> > > > BIT() is part of include/vdso/bits.h which is not part of the
+> > > > uapi. How is it supposed to work?
+> > > > Some other uapi header also use BIT() but that seems to work by accident
+> > > > as the users have the macro defined themselves.
+> > > 
+> > > Be careful here, we don't want to expose this kernel macro to userland,
+> > > it would break programs that define their own (possibly different) BIT
+> > > macro. BIT() is used in kernel headers but we should not presume that
+> > > it is available from userland.
+> > 
+> > It's already there :(
+> > 
+> > I thought we had a uapi-safe version somewhere, but I can't seem to find
+> > it anymore, so I don't remember what it is called.
+> 
+> It seems to be _BITUL() and _BITULL() from include/uapi/linux/const.h.
+> 
+> But first we'd need to figure out if we he can drop the pvpanic.h uapi
+> header. I hoped you could give a definitive answer for that.
+> Personally I'd hate to break stuff for qemu.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311051454.MWgWyxBp-lkp@intel.com/
+Agreed, and I tend as well to be careful not to change uapi stuff in
+ways that can break, as it can take time to flow to applications and
+cause subtle breakage much later :-/
 
-All warnings (new ones prefixed by >>):
-
-   drivers/spi/spi-pic32.c: In function 'pic32_spi_dma_transfer':
-   drivers/spi/spi-pic32.c:323:43: warning: implicit conversion from 'enum dma_data_direction' to 'enum dma_transfer_direction' [-Wenum-conversion]
-     323 |                                           DMA_FROM_DEVICE,
-         |                                           ^~~~~~~~~~~~~~~
-   drivers/spi/spi-pic32.c:333:43: warning: implicit conversion from 'enum dma_data_direction' to 'enum dma_transfer_direction' [-Wenum-conversion]
-     333 |                                           DMA_TO_DEVICE,
-         |                                           ^~~~~~~~~~~~~
-   drivers/spi/spi-pic32.c: At top level:
->> drivers/spi/spi-pic32.c:869:34: warning: 'pic32_spi_of_match' defined but not used [-Wunused-const-variable=]
-     869 | static const struct of_device_id pic32_spi_of_match[] = {
-         |                                  ^~~~~~~~~~~~~~~~~~
-   In file included from include/linux/bitops.h:36,
-                    from include/linux/kernel.h:10,
-                    from include/linux/clk.h:16,
-                    from drivers/spi/spi-pic32.c:17:
-   In function 'set_bit',
-       inlined from '__dma_cap_set' at include/linux/dmaengine.h:1167:2,
-       inlined from 'pic32_spi_dma_prep' at drivers/spi/spi-pic32.c:632:2,
-       inlined from 'pic32_spi_probe' at drivers/spi/spi-pic32.c:802:2:
-   arch/x86/include/asm/bitops.h:75:17: warning: array subscript 'long int[0]' is partly outside array bounds of 'dma_cap_mask_t[1]' [-Warray-bounds]
-      75 |                 asm volatile(LOCK_PREFIX "orb %1,%0"
-         |                 ^~~
-   drivers/spi/spi-pic32.c: In function 'pic32_spi_probe':
-   drivers/spi/spi-pic32.c:629:24: note: at offset 1 into object 'mask' of size 4
-     629 |         dma_cap_mask_t mask;
-         |                        ^~~~
-   In function 'set_bit',
-       inlined from '__dma_cap_set' at include/linux/dmaengine.h:1167:2,
-       inlined from 'pic32_spi_dma_prep' at drivers/spi/spi-pic32.c:632:2,
-       inlined from 'pic32_spi_probe' at drivers/spi/spi-pic32.c:802:2:
-   arch/x86/include/asm/bitops.h:75:17: warning: array subscript 'long int[0]' is partly outside array bounds of 'dma_cap_mask_t[1]' [-Warray-bounds]
-      75 |                 asm volatile(LOCK_PREFIX "orb %1,%0"
-         |                 ^~~
-   drivers/spi/spi-pic32.c: In function 'pic32_spi_probe':
-   drivers/spi/spi-pic32.c:629:24: note: at offset 1 into object 'mask' of size 4
-     629 |         dma_cap_mask_t mask;
-         |                        ^~~~
-
-
-vim +/pic32_spi_of_match +869 drivers/spi/spi-pic32.c
-
-   868	
- > 869	static const struct of_device_id pic32_spi_of_match[] = {
-   870		{.compatible = "microchip,pic32mzda-spi",},
-   871		{},
-   872	};
-   873	MODULE_DEVICE_TABLE(of, pic32_spi_of_match);
-   874	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Willy
