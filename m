@@ -2,118 +2,324 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 935097E1600
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Nov 2023 20:11:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6A5D7E1605
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Nov 2023 20:21:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229577AbjKETLk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Nov 2023 14:11:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53648 "EHLO
+        id S229546AbjKETVK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Nov 2023 14:21:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229639AbjKETLh (ORCPT
+        with ESMTP id S229451AbjKETVG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Nov 2023 14:11:37 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 810B3FF
-        for <linux-kernel@vger.kernel.org>; Sun,  5 Nov 2023 11:11:34 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1BF9BC433C8;
-        Sun,  5 Nov 2023 19:11:32 +0000 (UTC)
-Date:   Sun, 5 Nov 2023 14:11:30 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Florent Revest <revest@chromium.org>,
-        linux-trace-kernel@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Guo Ren <guoren@kernel.org>
-Subject: Re: [RFC PATCH 24/32] x86/ftrace: Enable HAVE_FUNCTION_GRAPH_FREGS
-Message-ID: <20231105141130.6ef7d8bd@rorschach.local.home>
-In-Reply-To: <20231105172536.GA7124@noisy.programming.kicks-ass.net>
-References: <169920038849.482486.15796387219966662967.stgit@devnote2>
-        <169920068069.482486.6540417903833579700.stgit@devnote2>
-        <20231105172536.GA7124@noisy.programming.kicks-ass.net>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Sun, 5 Nov 2023 14:21:06 -0500
+Received: from so254-32.mailgun.net (so254-32.mailgun.net [198.61.254.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4EC9DE
+        for <linux-kernel@vger.kernel.org>; Sun,  5 Nov 2023 11:21:01 -0800 (PST)
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=equiv.tech; q=dns/txt;
+ s=mx; t=1699212060; x=1699219260; h=Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Message-Id: Date: Subject: Subject: Cc: To: To: From: From:
+ Sender: Sender; bh=/trDQA+8NA4ZRs4lBCOdtNorHxRNEMzH76uA4CDpJ28=;
+ b=Em4dxzpk3BfHO+pz3tU+yVs0up6h+aGq9i4lASiNMgvoJmNWqYA4OA7kTnVlsxaeC85bLZ8gD1Qcgb9E+5YQ/I9bn1kYJlkViJ7RonuuuWl5H2ZMYEBOrks5U+shP5b31i9IhqTZMpfUTRL73i7oH1U17AccnFIzyx8rgssiIgyy9nmHy97kzAveZKvUJKhlcHFKkxvcdrgP5Kb/yjL2SVZz6Rct77xVLg0R41c2+QSKyZ/DXGRLVb4hlXbYzkHC+lspVf8Nz5veADbDCb/jpTXgOwvKetFSu9fiU8jZ9NF7x+awtB+tLXBiwl7byxcZqcW3KndJ7Y14pKdAMCpPCQ==
+X-Mailgun-Sending-Ip: 198.61.254.32
+X-Mailgun-Sid: WyI4ZWI3MiIsImxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmciLCI5M2Q1YWIiXQ==
+Received: from mail.equiv.tech (equiv.tech [142.93.28.83]) by 4880619ba52c with SMTP id
+ 6547eb1c03bc6bc9e30bdd8c (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sun, 05 Nov 2023 19:21:00 GMT
+Sender: james@equiv.tech
+From:   James Seo <james@equiv.tech>
+To:     Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>
+Cc:     James Seo <james@equiv.tech>,
+        Lukasz Stelmach <l.stelmach@samsung.com>,
+        Armin Wolf <W_Armin@gmx.de>, linux-hwmon@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [RFC v2] hwmon: (hp-wmi-sensors) Fix failure to load on EliteDesk 800 G6
+Date:   Sun,  5 Nov 2023 11:20:54 -0800
+Message-Id: <20231105192054.24833-1-james@equiv.tech>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED,URI_TRY_3LD autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 5 Nov 2023 18:25:36 +0100
-Peter Zijlstra <peterz@infradead.org> wrote:
+The EliteDesk 800 G6 stores a raw WMI string within the ACPI object in its
+BIOS corresponding to one instance of HPBIOS_PlatformEvents.Name. This is
+evidently a valid way of representing a WMI data item as far as the Microsoft
+ACPI-WMI mapper is concerned, but is preventing the driver from loading.
 
-> On Mon, Nov 06, 2023 at 01:11:21AM +0900, Masami Hiramatsu (Google) wrote:
-> > From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> > 
-> > Support HAVE_FUNCTION_GRAPH_FREGS on x86-64, which saves ftrace_regs
-> > on the stack in ftrace_graph return trampoline so that the callbacks
-> > can access registers via ftrace_regs APIs.  
-> 
-> What is ftrace_regs ? If I look at arch/x86/include/asm/ftrace.h it's a
-> pointless wrapper around pt_regs.
-> 
-> Can we please remove the pointless wrappery and call it what it is?
+This seems quite rare, but add support for such strings. Treating this as a
+quirk pretty much means adding that support anyway.
 
-A while back ago when I introduced FTRACE_WITH_ARGS, it would have all
-ftrace callbacks get a pt_regs, but it would be partially filled for
-those that did not specify the "REGS" flag when registering the
-callback. You and Thomas complained that it would be a bug to return
-pt_regs that was not full because something might read the non filled
-registers and think they were valid.
+Also clean up an oversight in update_numeric_sensor_from_wobj() in which the
+result of hp_wmi_strdup() was being used without error checking.
 
-To solve this, I came up with ftrace_regs to only hold the registers
-that were required for function parameters (including the stack
-pointer). You could then call arch_ftrace_get_regs(ftrace_regs) and if
-this "wrapper" had all valid pt_regs registers, then it would return
-the pt_regs, otherwise it would return NULL, and you would need to use
-the ftrace_regs accessor calls to get the function registers. You and
-Thomas agreed with this.
+Reported-by: Lukasz Stelmach <l.stelmach@samsung.com>
+Closes: https://lore.kernel.org/linux-hwmon/7850a0bd-60e7-88f8-1d6c-0bb0e3234fdc@roeck-us.net/
+Signed-off-by: James Seo <james@equiv.tech>
+---
 
-You even Acked the patch:
+Changes v1->v2:
+* Remove DMI-based workaround logic
+* Add full support for raw WMI strings
+  - Improve UTF-16 validation and conversion for the general case
+  - Support such strings if they occur in HPBIOS_BIOSEvent objects
+* Only use the result of hp_wmi_strdup() in update_numeric_sensor_from_wobj()
+  if the call succeeded
 
-commit 02a474ca266a47ea8f4d5a11f4ffa120f83730ad
-Author: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Date:   Tue Oct 27 10:55:55 2020 -0400
+History:
+v1: https://lore.kernel.org/linux-hwmon/20231103181931.677796-1-james@equiv.tech/
 
-    ftrace/x86: Allow for arguments to be passed in to ftrace_regs by default
-    
-    Currently, the only way to get access to the registers of a function via a
-    ftrace callback is to set the "FL_SAVE_REGS" bit in the ftrace_ops. But as this
-    saves all regs as if a breakpoint were to trigger (for use with kprobes), it
-    is expensive.
-    
-    The regs are already saved on the stack for the default ftrace callbacks, as
-    that is required otherwise a function being traced will get the wrong
-    arguments and possibly crash. And on x86, the arguments are already stored
-    where they would be on a pt_regs structure to use that code for both the
-    regs version of a callback, it makes sense to pass that information always
-    to all functions.
-    
-    If an architecture does this (as x86_64 now does), it is to set
-    HAVE_DYNAMIC_FTRACE_WITH_ARGS, and this will let the generic code that it
-    could have access to arguments without having to set the flags.
-    
-    This also includes having the stack pointer being saved, which could be used
-    for accessing arguments on the stack, as well as having the function graph
-    tracer not require its own trampoline!
-    
-    Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-    Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+---
 
+ drivers/hwmon/hp-wmi-sensors.c | 127 ++++++++++++++++++++++++++++-----
+ 1 file changed, 111 insertions(+), 16 deletions(-)
 
--- Steve
+diff --git a/drivers/hwmon/hp-wmi-sensors.c b/drivers/hwmon/hp-wmi-sensors.c
+index 17ae62f88bbf..bdd7ca163593 100644
+--- a/drivers/hwmon/hp-wmi-sensors.c
++++ b/drivers/hwmon/hp-wmi-sensors.c
+@@ -17,6 +17,8 @@
+  *     Available: https://github.com/linuxhw/ACPI
+  * [4] P. Rohár, "bmfdec - Decompile binary MOF file (BMF) from WMI buffer",
+  *     2017. [Online]. Available: https://github.com/pali/bmfdec
++ * [5] Microsoft Corporation, "Driver-Defined WMI Data Items", 2017. [Online].
++ *     Available: https://learn.microsoft.com/en-us/windows-hardware/drivers/kernel/driver-defined-wmi-data-items
+  */
+ 
+ #include <linux/acpi.h>
+@@ -24,6 +26,7 @@
+ #include <linux/hwmon.h>
+ #include <linux/jiffies.h>
+ #include <linux/mutex.h>
++#include <linux/nls.h>
+ #include <linux/units.h>
+ #include <linux/wmi.h>
+ 
+@@ -395,6 +398,50 @@ struct hp_wmi_sensors {
+ 	struct mutex lock;	/* Lock polling WMI and driver state changes. */
+ };
+ 
++static bool is_raw_wmi_string(const u8 *pointer, u32 length)
++{
++	const u16 *ptr;
++	u16 len;
++
++	/* WMI strings are length-prefixed UTF-16 [5]. */
++	if (length <= sizeof(*ptr))
++		return false;
++
++	length -= sizeof(*ptr);
++	ptr = (const u16 *)pointer;
++	len = *ptr;
++
++	return len <= length && !(len & 1);
++}
++
++static char *convert_raw_wmi_string(const u8 *buf)
++{
++	const wchar_t *src;
++	unsigned cps;
++	unsigned len;
++	char *dst;
++	int i;
++
++	src = (const wchar_t *)buf;
++
++	/* Count UTF-16 code points. Exclude trailing null padding. */
++	cps = *src / sizeof(*src);
++	while (cps && !src[cps])
++		cps--;
++
++	/* Each code point becomes up to 3 UTF-8 characters. */
++	len = min(cps * 3, HP_WMI_MAX_STR_SIZE - 1);
++
++	dst = kmalloc((len + 1) * sizeof(*dst), GFP_KERNEL);
++	if (!dst)
++		return NULL;
++
++	i = utf16s_to_utf8s(++src, cps, UTF16_LITTLE_ENDIAN, dst, len);
++	dst[i] = '\0';
++
++	return dst;
++}
++
+ /* hp_wmi_strdup - devm_kstrdup, but length-limited */
+ static char *hp_wmi_strdup(struct device *dev, const char *src)
+ {
+@@ -412,6 +459,23 @@ static char *hp_wmi_strdup(struct device *dev, const char *src)
+ 	return dst;
+ }
+ 
++/* hp_wmi_wstrdup - hp_wmi_strdup, but for a raw WMI string */
++static char *hp_wmi_wstrdup(struct device *dev, const u8 *buf)
++{
++	char *src;
++	char *dst;
++
++	src = convert_raw_wmi_string(buf);
++	if (!src)
++		return NULL;
++
++	dst = hp_wmi_strdup(dev, strim(src));	/* Note: Copy is trimmed. */
++
++	kfree(src);
++
++	return dst;
++}
++
+ /*
+  * hp_wmi_get_wobj - poll WMI for a WMI object instance
+  * @guid: WMI object GUID
+@@ -462,8 +526,14 @@ static int check_wobj(const union acpi_object *wobj,
+ 	for (prop = 0; prop <= last_prop; prop++) {
+ 		type = elements[prop].type;
+ 		valid_type = property_map[prop];
+-		if (type != valid_type)
++		if (type != valid_type) {
++			if (type == ACPI_TYPE_BUFFER &&
++			    valid_type == ACPI_TYPE_STRING &&
++			    is_raw_wmi_string(elements[prop].buffer.pointer,
++					      elements[prop].buffer.length))
++				continue;
+ 			return -EINVAL;
++		}
+ 	}
+ 
+ 	return 0;
+@@ -480,7 +550,9 @@ static int extract_acpi_value(struct device *dev,
+ 		break;
+ 
+ 	case ACPI_TYPE_STRING:
+-		*out_string = hp_wmi_strdup(dev, strim(element->string.pointer));
++		*out_string = element->type == ACPI_TYPE_BUFFER ?
++			hp_wmi_wstrdup(dev, element->buffer.pointer) :
++			hp_wmi_strdup(dev, strim(element->string.pointer));
+ 		if (!*out_string)
+ 			return -ENOMEM;
+ 		break;
+@@ -861,7 +933,9 @@ update_numeric_sensor_from_wobj(struct device *dev,
+ {
+ 	const union acpi_object *elements;
+ 	const union acpi_object *element;
+-	const char *string;
++	const char *new_string;
++	char *trimmed;
++	char *string;
+ 	bool is_new;
+ 	int offset;
+ 	u8 size;
+@@ -885,11 +959,21 @@ update_numeric_sensor_from_wobj(struct device *dev,
+ 	offset = is_new ? size - 1 : -2;
+ 
+ 	element = &elements[HP_WMI_PROPERTY_CURRENT_STATE + offset];
+-	string = strim(element->string.pointer);
+-
+-	if (strcmp(string, nsensor->current_state)) {
+-		devm_kfree(dev, nsensor->current_state);
+-		nsensor->current_state = hp_wmi_strdup(dev, string);
++	string = element->type == ACPI_TYPE_BUFFER ?
++		convert_raw_wmi_string(element->buffer.pointer) :
++		element->string.pointer;
++
++	if (string) {
++		trimmed = strim(string);
++		if (strcmp(trimmed, nsensor->current_state)) {
++			new_string = hp_wmi_strdup(dev, trimmed);
++			if (new_string) {
++				devm_kfree(dev, nsensor->current_state);
++				nsensor->current_state = new_string;
++			}
++		}
++		if (element->type == ACPI_TYPE_BUFFER)
++			kfree(string);
+ 	}
+ 
+ 	/* Old variant: -2 (not -1) because it lacks the Size property. */
+@@ -996,11 +1080,15 @@ static int check_event_wobj(const union acpi_object *wobj)
+ 			  HP_WMI_EVENT_PROPERTY_STATUS);
+ }
+ 
+-static int populate_event_from_wobj(struct hp_wmi_event *event,
++static int populate_event_from_wobj(struct device *dev,
++				    struct hp_wmi_event *event,
+ 				    union acpi_object *wobj)
+ {
+ 	int prop = HP_WMI_EVENT_PROPERTY_NAME;
+ 	union acpi_object *element;
++	acpi_object_type type;
++	char *string;
++	u32 value;
+ 	int err;
+ 
+ 	err = check_event_wobj(wobj);
+@@ -1009,20 +1097,24 @@ static int populate_event_from_wobj(struct hp_wmi_event *event,
+ 
+ 	element = wobj->package.elements;
+ 
+-	/* Extracted strings are NOT device-managed copies. */
+-
+ 	for (; prop <= HP_WMI_EVENT_PROPERTY_CATEGORY; prop++, element++) {
++		type = hp_wmi_event_property_map[prop];
++
++		err = extract_acpi_value(dev, element, type, &value, &string);
++		if (err)
++			return err;
++
+ 		switch (prop) {
+ 		case HP_WMI_EVENT_PROPERTY_NAME:
+-			event->name = strim(element->string.pointer);
++			event->name = string;
+ 			break;
+ 
+ 		case HP_WMI_EVENT_PROPERTY_DESCRIPTION:
+-			event->description = strim(element->string.pointer);
++			event->description = string;
+ 			break;
+ 
+ 		case HP_WMI_EVENT_PROPERTY_CATEGORY:
+-			event->category = element->integer.value;
++			event->category = value;
+ 			break;
+ 
+ 		default:
+@@ -1511,8 +1603,8 @@ static void hp_wmi_notify(u32 value, void *context)
+ 	struct acpi_buffer out = { ACPI_ALLOCATE_BUFFER, NULL };
+ 	struct hp_wmi_sensors *state = context;
+ 	struct device *dev = &state->wdev->dev;
++	struct hp_wmi_event event = {};
+ 	struct hp_wmi_info *fan_info;
+-	struct hp_wmi_event event;
+ 	union acpi_object *wobj;
+ 	acpi_status err;
+ 	int event_type;
+@@ -1546,7 +1638,7 @@ static void hp_wmi_notify(u32 value, void *context)
+ 
+ 	wobj = out.pointer;
+ 
+-	err = populate_event_from_wobj(&event, wobj);
++	err = populate_event_from_wobj(dev, &event, wobj);
+ 	if (err) {
+ 		dev_warn(dev, "Bad event data (ACPI type %d)\n", wobj->type);
+ 		goto out_free_wobj;
+@@ -1577,6 +1669,9 @@ static void hp_wmi_notify(u32 value, void *context)
+ out_free_wobj:
+ 	kfree(wobj);
+ 
++	devm_kfree(dev, event.name);
++	devm_kfree(dev, event.description);
++
+ out_unlock:
+ 	mutex_unlock(&state->lock);
+ }
+
+base-commit: 0f564130e5c76f1e5cf0008924f6a6cd138929d9
+-- 
+2.39.2
+
