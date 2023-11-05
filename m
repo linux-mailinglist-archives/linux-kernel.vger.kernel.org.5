@@ -2,182 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 57C747E16DA
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Nov 2023 22:36:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06EBB7E16F1
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Nov 2023 22:55:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229652AbjKEVgA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Nov 2023 16:36:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36024 "EHLO
+        id S229485AbjKEVzn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Nov 2023 16:55:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbjKEVf6 (ORCPT
+        with ESMTP id S229652AbjKEVzl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Nov 2023 16:35:58 -0500
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD55FCF
-        for <linux-kernel@vger.kernel.org>; Sun,  5 Nov 2023 13:35:55 -0800 (PST)
-Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-53eeb28e8e5so6067a12.1
-        for <linux-kernel@vger.kernel.org>; Sun, 05 Nov 2023 13:35:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1699220154; x=1699824954; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BGeltO/gzLsqyEX0SrHGG26aXCsJybxah3Ci9XWI5Ng=;
-        b=HavltlP+54SpgEywcwPZwidLHCpxRUk159YMAvMYoD44B33KDht8aIUFXdIjPL8eLx
-         r4ivEPxvi7HrR42Oe1bUcYV9Jz9k36mzJI4kgRHsfG/tg52WA2ZYPNTPOlo/b1Vvs3qT
-         e//lc88xj2n/bWHYtHha3hdUm9nTq0reYgbzAIC67wzXL5gD2DjR0XnfhIJ/2Pva4ByT
-         qox8msuG+2wCk9EGi81tjCN61auCW3mmUhf19nMUfkLq6pbpsK1Sgzw9Lpjl1urfs97u
-         RGjvqRIAtlMLKK1CH2c8zrBEWqKlygaeKyLqMnYPQ3yRpY6gKAOsPsGlFU9aDK4D3gcY
-         fISg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699220154; x=1699824954;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=BGeltO/gzLsqyEX0SrHGG26aXCsJybxah3Ci9XWI5Ng=;
-        b=Gt6+3GlWvx2Reqo+0ilumaAnt/Nt5BoziAd+2dJvLa3AvuQsqWyUWg+43f8X3Bgnc5
-         gV7UwMVT9elpnN5INiZMZ3R3i1G04SoCSOVjyrdy1NAjBXE9WFOe8tfBBcC8kI7b9sj3
-         Rmt2NqT4QL5N1qIpgZNiH3dvzyHyptlfC9DCYbRSlsWgrc5bVq9EBqF5ijTN7Bm9CVZu
-         uWEBOJtam/EAOZaohgcIaM5ildrfEnPl3T2V/IKS2nW6zPxS9oFityNh69w5WgWXWk+d
-         yzqNINGV6LbxH2LgjKH4HOYRQqQOxA3yKkfPxG+8DaN3vus/aMUUCd1Jbg+7d0C6onMN
-         rmFg==
-X-Gm-Message-State: AOJu0YxrBsTq+nUKq2KLj700kYqZpd6wlZApARzsH+VgsrtxNft0Z3B9
-        P/oA0lLZdKaWRXlHOJ5fb7NiPF5fOPQLloq9xYu5hA==
-X-Google-Smtp-Source: AGHT+IG/7gx55TgXKRl1alJpMlzyJHWNME5/yKDyws/fLbk/LshME2U8mbHgZocMf3511MtNYEG7MYVhRhMUlN7VfO8=
-X-Received: by 2002:a50:ccd5:0:b0:543:fb17:1a8 with SMTP id
- b21-20020a50ccd5000000b00543fb1701a8mr68243edj.3.1699220154063; Sun, 05 Nov
- 2023 13:35:54 -0800 (PST)
+        Sun, 5 Nov 2023 16:55:41 -0500
+X-Greylist: delayed 376 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 05 Nov 2023 13:55:37 PST
+Received: from s1.sapience.com (s1.sapience.com [72.84.236.66])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 528CBBF;
+        Sun,  5 Nov 2023 13:55:37 -0800 (PST)
+Authentication-Results: dkim-srvy7; dkim=pass (Good ed25519-sha256 
+   signature) header.d=sapience.com header.i=@sapience.com 
+   header.a=ed25519-sha256; dkim=pass (Good 2048 bit rsa-sha256 signature) 
+   header.d=sapience.com header.i=@sapience.com header.a=rsa-sha256
+Received: from srv8.prv.sapience.com (srv8.prv.sapience.com [x.x.x.x])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+        (No client certificate requested)
+        by s1.sapience.com (Postfix) with ESMTPS id 280C348025C;
+        Sun,  5 Nov 2023 16:49:20 -0500 (EST)
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=sapience.com;
+ i=@sapience.com; q=dns/txt; s=dk-ed25519-220413; t=1699220960;
+ h=message-id : date : mime-version : to : from : subject :
+ content-type : content-transfer-encoding : from;
+ bh=w846FgME/jEcSJRPkUT+ZucoFM06xqBTLPlRyUMyt8s=;
+ b=hn0HvWaq6dUgP+jUeAGCetMpGQoPmkBxxAEWWEgtpxD79Vfe0CxpavryroBU9zMGZuH8M
+ lJCs5aEsNn56GoKDQ==
+ARC-Seal: i=1; a=rsa-sha256; d=sapience.com; s=arc6-rsa-220412; t=1699220960;
+        cv=none; b=Ztn1KmpLgJwq3NohB8Rt0r2DUJ8I+AhHQZPZBMERcwUPFtai2R3sCrzye6mubAn6j45UI/XB+oM/4pzzKkEFhAfDYynb4yMSu8pEzMe8+MC2hy5fv0HYXehWU2fUyQX/tHLAn/xYueQkHZqedF8OQxqNzZiKUIeAYkmvQpf5Ba4yrpHoWmkkKodQxRn758cKIc0fQnUq7xqOjvwV7TrKoQiTK4g63ZdFn7Sf8iptzJGn10LyO/yXAE8L/G4O8bYY4KbzqTc3pJFJYtNkFTMuPJqkK3v3v3zK4qsvhiS/hEQ1r5PDZszn4ozCkuXQDGPUICyJ7B5r18+GayUSz0S56A==
+ARC-Message-Signature: i=1; a=rsa-sha256; d=sapience.com; s=arc6-rsa-220412;
+        t=1699220960; c=relaxed/simple;
+        bh=ea3jR6zDLYnVl7gOllMac0LjYLqs6vkRIFyTtg7L8Do=;
+        h=DKIM-Signature:DKIM-Signature:Message-ID:Date:MIME-Version:
+         User-Agent:Content-Language:To:From:Subject:Content-Type:
+         Content-Transfer-Encoding; b=WPM0QxcMzrziTFBmETOdXnEEfgm+CIBfRf9V4ydnGlUVygH8J5pmv6GHL1thmvpg5LWKnxhxtN+88PAVs/88+HUy+m+nOlLPbruNYnPDy1WB57d3MZm0fADeiOBK99CWqpgzp5zBSLxo9w+YOmzG0gsOX2fqqGdy4AbRENG0g+8AQ/zmMy5Ilfl2y7K0ApQhZkFEmrwvfTviEzWaynwV2bjH92QWWGdm5dY2JHvvaXTP2vXusPuRFklon1fKQVQv7+fRTP+2f4zRz+aMZP/aFPlIzYefwiziSSl+2QZkR87F1HFE9e1+5/Y37nXKbcIFfNrEmBjjS5i67PrekUZzsA==
+ARC-Authentication-Results: i=1; arc-srv8.sapience.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sapience.com;
+ i=@sapience.com; q=dns/txt; s=dk-rsa-220413; t=1699220960;
+ h=message-id : date : mime-version : to : from : subject :
+ content-type : content-transfer-encoding : from;
+ bh=w846FgME/jEcSJRPkUT+ZucoFM06xqBTLPlRyUMyt8s=;
+ b=A/BLgfPuXDptzdPMLpdKBWrtsFISvHhe1YDsTtPW7cNzzJu+hOb2wOeEFaiq4QrYR5emt
+ 59Fon2rspHZIAeevUE7kEcrCQxjOBg76pjQZ8Wse9lWTaQn57WliMnYrrLAPOJHc+LJFdgC
+ tmKk+9iHnVbCU6jqQIpe6q52KHm9c3xRBkQ+rxBml5LI5mAFLy5w0sRA+cojD6v5KSBJf7b
+ 7MyMGNrAbF+4nXJEcEayFspAnuFZ4zI3Gc+x1NGjCZFlcxFSFgmuTDCdFNe/h1NLsnw0LSY
+ GwRC067BT1yb0UeKagnT+4BR68MJ8j/MlaFqhdnQ+TbG1tFQCcuD47NSQpvQ==
+Message-ID: <be576842-6ad5-43f8-abcf-bd7fa84e235d@sapience.com>
+Date:   Sun, 5 Nov 2023 16:49:19 -0500
 MIME-Version: 1.0
-References: <20231102175735.2272696-1-irogers@google.com> <20231102175735.2272696-2-irogers@google.com>
- <CAM9d7cgbPGzgc=QG8dStvq1iX8snGyeKTJDrg2XBjX0pCX9Qtg@mail.gmail.com>
-In-Reply-To: <CAM9d7cgbPGzgc=QG8dStvq1iX8snGyeKTJDrg2XBjX0pCX9Qtg@mail.gmail.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Sun, 5 Nov 2023 13:35:42 -0800
-Message-ID: <CAP-5=fXgy95LsYLbbWN85prBs43jvGehOcwYFK-ZK2cOqCyPJA@mail.gmail.com>
-Subject: Re: [PATCH v4 01/53] perf comm: Use regular mutex
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Nick Terrell <terrelln@fb.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        "Steinar H. Gunderson" <sesse@google.com>,
-        Liam Howlett <liam.howlett@oracle.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Colin Ian King <colin.i.king@gmail.com>,
-        Dmitrii Dolgov <9erthalion6@gmail.com>,
-        Yang Jihong <yangjihong1@huawei.com>,
-        Ming Wang <wangming01@loongson.cn>,
-        James Clark <james.clark@arm.com>,
-        K Prateek Nayak <kprateek.nayak@amd.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        German Gomez <german.gomez@arm.com>,
-        Changbin Du <changbin.du@huawei.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, Li Dong <lidong@vivo.com>,
-        Sandipan Das <sandipan.das@amd.com>,
-        liuwenyu <liuwenyu7@huawei.com>, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To:     linux-kernel@vger.kernel.org, dhowells@redhat.com,
+        dwmw2@infradead.org, keyrings@vger.kernel.org
+From:   Genes Lists <lists@sapience.com>
+Subject: Hash sha3-512 vs scripts/sign-file vs openssl
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-0.7 required=5.0 tests=BAYES_05,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 5, 2023 at 9:32=E2=80=AFAM Namhyung Kim <namhyung@kernel.org> w=
-rote:
->
-> Hi Ian,
->
-> On Thu, Nov 2, 2023 at 10:58=E2=80=AFAM Ian Rogers <irogers@google.com> w=
-rote:
-> >
-> > The rwsem is only after used for writing so switch to a mutex that has
-> > better error checking.
->
-> Hmm.. ok.  It doesn't make sense to use rwsem without readers.
->
-> >
-> > Fixes: 7a8f349e9d14 ("perf rwsem: Add debug mode that uses a mutex")
->
-> But I'm not sure this is a fix.  Other than that,
+Mainline modules signing supports sha3-xxx.
 
-Thanks Namhyung, it fixes the case that you enable RWS_ERRORCHECK in
-rwsem.h as the rwsem static initialization is wrong for a mutex.
+However, unless I'm doing something wonky, signing fails and it appears 
+to come from scripts/sign-file failing in CMS_add1_signer() :
 
-Ian
+  At main.c:321:
+- SSL error:2EFFF06F:CMS routines:CRYPTO_internal:ctrl failure: 
+cms/cms_sd.c:269
 
-> > Signed-off-by: Ian Rogers <irogers@google.com>
->
-> Acked-by: Namhyung Kim <namhyung@kernel.org>
->
-> Thanks,
-> Namhyung
->
->
-> > ---
-> >  tools/perf/util/comm.c | 10 +++++-----
-> >  1 file changed, 5 insertions(+), 5 deletions(-)
-> >
-> > diff --git a/tools/perf/util/comm.c b/tools/perf/util/comm.c
-> > index afb8d4fd2644..4ae7bc2aa9a6 100644
-> > --- a/tools/perf/util/comm.c
-> > +++ b/tools/perf/util/comm.c
-> > @@ -17,7 +17,7 @@ struct comm_str {
-> >
-> >  /* Should perhaps be moved to struct machine */
-> >  static struct rb_root comm_str_root;
-> > -static struct rw_semaphore comm_str_lock =3D {.lock =3D PTHREAD_RWLOCK=
-_INITIALIZER,};
-> > +static struct mutex comm_str_lock =3D {.lock =3D PTHREAD_ERRORCHECK_MU=
-TEX_INITIALIZER_NP,};
-> >
-> >  static struct comm_str *comm_str__get(struct comm_str *cs)
-> >  {
-> > @@ -30,9 +30,9 @@ static struct comm_str *comm_str__get(struct comm_str=
- *cs)
-> >  static void comm_str__put(struct comm_str *cs)
-> >  {
-> >         if (cs && refcount_dec_and_test(&cs->refcnt)) {
-> > -               down_write(&comm_str_lock);
-> > +               mutex_lock(&comm_str_lock);
-> >                 rb_erase(&cs->rb_node, &comm_str_root);
-> > -               up_write(&comm_str_lock);
-> > +               mutex_unlock(&comm_str_lock);
-> >                 zfree(&cs->str);
-> >                 free(cs);
-> >         }
-> > @@ -98,9 +98,9 @@ static struct comm_str *comm_str__findnew(const char =
-*str, struct rb_root *root)
-> >  {
-> >         struct comm_str *cs;
-> >
-> > -       down_write(&comm_str_lock);
-> > +       mutex_lock(&comm_str_lock);
-> >         cs =3D __comm_str__findnew(str, root);
-> > -       up_write(&comm_str_lock);
-> > +       mutex_unlock(&comm_str_lock);
-> >
-> >         return cs;
-> >  }
-> > --
-> > 2.42.0.869.gea05f2083d-goog
-> >
+openssl version here on arch is 3.1.4 and this may quite possibly be 
+related to the following issue with sha3 and ecdsa, but not clear to me.
+
+   https://github.com/openssl/openssl/pull/22147
+
+regards,
+
+gene
+
