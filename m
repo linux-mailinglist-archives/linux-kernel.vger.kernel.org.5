@@ -2,46 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 109777E17C8
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 00:02:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 095C37E17CE
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 00:09:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229854AbjKEXC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Nov 2023 18:02:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43568 "EHLO
+        id S229932AbjKEXJ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Nov 2023 18:09:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229715AbjKEXCZ (ORCPT
+        with ESMTP id S229597AbjKEXJY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Nov 2023 18:02:25 -0500
-Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E625FFA;
-        Sun,  5 Nov 2023 15:02:20 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 2A2EFFF80D;
-        Sun,  5 Nov 2023 23:02:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1699225339;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=1JCMRwcjDpjDvwz9frVp0hofBEEnufrEJXSlfGmnyCc=;
-        b=kuC2NAnzsLipggxKgZnI3kNfAjCBcEwbdTiBfP8ILOS+oFJspo2SSKlvQH3+OVapXagdiA
-        oldpK01IgsFingWWiyUc38yuz3gsfj2lbMdRx/jUFLLnn+8jeoNweYM3mhrFDXbhczjmbk
-        WiyQWPqLm0hAqOABJ+AHUoAKrUckeRjhAJTDKA6Lbfdj4tQGzC1K02ZPGRCHvIY8I7N3Zr
-        B0puNxc4rClKRWYh/Zh8OcNJd0uh679ISVPc1xklu39UjCEDv4/G3UQp1BT999RmGWjuUV
-        rpGeRglOMDWp67+4NQyxNRLy1tWlwhISKtPTT10HNetgA7+UHQcSHh4KhLX4lA==
-Date:   Mon, 6 Nov 2023 00:02:18 +0100
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] RTC for 6.7
-Message-ID: <20231105230218a45aa668@mail.local>
+        Sun, 5 Nov 2023 18:09:24 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8FF1FA;
+        Sun,  5 Nov 2023 15:09:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=gJn9pUE4jhWZ42B4V7bBQeM4nDV7WZc44cKJDJP8pF8=; b=Ho3tin78mm2y9dGf/qp/e6vPp/
+        /Hkrc3mf2bo0+g6wjUOT/ubyfUcEer7iJxRcppI+XApGmjlhBEihaD/R5KZCqcbGjIDcqYxUQuNLv
+        hE25AOfLQ5QjWzyn/oLZP0u1fIT5Hsg3saig1v1q0EguP0KWPeY8VnBubAjbulTQMeVJitkfiEeiq
+        LeFHxvu6Tu+alpWg1zG83vuXxmzp3TT13fXZu65TYo16GmU1+H3lXlgy4pen9dR6JRUoFXt3hT/BR
+        91APnnt7sRwU2mHRr0PacA9RIxxvJyc3WNLOABbXoZtMWNpnA6vvP9YDLP/G0mzdFuqkOJswZkA3f
+        QFnQyX6g==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qzmEl-002S01-Cj; Sun, 05 Nov 2023 23:09:00 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id B9525300326; Mon,  6 Nov 2023 00:08:59 +0100 (CET)
+Date:   Mon, 6 Nov 2023 00:08:59 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     j.alglave@ucl.ac.uk, will@kernel.org, catalin.marinas@arm.com,
+        linux@armlinux.org.uk, mpe@ellerman.id.au, npiggin@gmail.com,
+        palmer@dabbelt.com, parri.andrea@gmail.com,
+        linux-kernel@vger.kernel.org, linux-toolchains@vger.kernel.org,
+        boqun.feng@gmail.com, davidtgoldblatt@gmail.com
+Subject: Re: Fw: [isocpp-parallel] OOTA fix (via fake branch-after-load)
+ discussion
+Message-ID: <20231105230859.GH8262@noisy.programming.kicks-ass.net>
+References: <b1634b24-4541-49c5-867c-7f24292a27bb@paulmck-laptop>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: alexandre.belloni@bootlin.com
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+In-Reply-To: <b1634b24-4541-49c5-867c-7f24292a27bb@paulmck-laptop>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -49,130 +56,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Linus,
+On Fri, Oct 27, 2023 at 02:08:13PM -0700, Paul E. McKenney wrote:
+> Hello!
+> 
+> FYI, unless someone complains, it is quite likely that C++ (and thus
+> likely C) compilers and standards will enforce Hans Boehm's proposal
+> for ordering relaxed loads before relaxed stores.  The document [1]
+> cites "Bounding data races in space and time" by Dolan et al. [2], and
+> notes an "average a 2.x% slow down" for ARMv8 and PowerPC.  In the past,
+> this has been considered unacceptable, among other things, due to the
+> fact that this issue is strictly theoretical.
+> 
+> This would not (repeat, not) affect the current Linux kernel, which
+> relies on volatile loads and stores rather than C/C++ atomics.
+> 
+> To be clear, the initial proposal is not to change the standards, but
+> rather to add a command-line argument to enforce the stronger ordering.
+> However, given the long list of ARM-related folks in the Acknowledgments
+> section, the future direction is clear.
+> 
+> So, do any ARMv8, PowerPC, or RISC-V people still care?  If so, I strongly
+> recommend speaking up.  ;-)
 
-Here is the RTC subsystem pull request for 6.7. There is a new driver
-for the RTC of the Mstar SSD202D SoC. The rtc7301 driver gains support
-for byte addresses to support the USRobotics USR8200. Then we have many
-non user visible changes and typo fixes.
+OK, I finally had some time to read up...
 
-The following changes since commit 0bb80ecc33a8fb5a682236443c1e740d5c917d1d:
+Colour me properly confused. To me this all reads like C people can't
+deal with relaxed atomics and are doing crazy things to try and 'fix'
+it.
 
-  Linux 6.6-rc1 (2023-09-10 16:28:41 -0700)
+And while I don't speak for ARM/Power, I do worry this all takes C/C++
+even further away from LKMM instead of closing the gap.
 
-are available in the Git repository at:
+Worse, things like:
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/abelloni/linux.git tags/rtc-6.7
+  https://lukegeeson.com/blog/2023-10-17-A-Proposal-For-Relaxed-Atomics/
 
-for you to fetch changes up to cfb67623ce281e045ec11e3eddb1b68b879b53a1:
+Which state:
 
-  dt-bindings: rtc: Add Mstar SSD202D RTC (2023-10-16 16:54:26 +0200)
+ "It would solve real issues in the Linux Kernel without costly fences
+ (the kernel does not use relaxed atomics or the ISO C/C++ model - the
+ load buffering issue affects the ISO C and linux memory models) ..."
 
-----------------------------------------------------------------
-RTC for 6.7
+Which is a contradiction if ever I saw one. It both claims this atrocity
+fixes our volatile_if() woes while at the same time saying we're
+unaffected because we don't use any of the C/C++ atomic batshit.
 
-Subsytem:
- - convert platform drivers to remove_new
- - prevent modpost warnings for unremovable platform drivers
+Anyway, I worry that all this faffing about will get in the way of our
+volatile_if() 'demands'. Compiler people will tell us, just use relaxed
+atomics, which that is very much not what we want. We know relaxed loads
+and stores behave 'funny', we've been doing that for a long long time.
+Don't impose that madness on us. And certainly don't use us as an excuse
+to peddle this nonsense.
 
-New driver:
- - Mstar SSD202D
+Bah, what a load of crazy.
 
-Drivers:
- - brcmstb-waketimer: support level alarm_irq
- - ep93xx: add DT support
- - rtc7301: support byte-addressed IO
-
-----------------------------------------------------------------
-Alexandre Belloni (2):
-      rtc: sh: silence warning
-      rtc: at91rm9200: annotate at91_rtc_remove with __exit again
-
-Doug Berger (1):
-      rtc: brcmstb-waketimer: support level alarm_irq
-
-Fabio Estevam (1):
-      dt-bindings: rtc: pcf8523: Convert to YAML
-
-Javier Carrasco (3):
-      rtc: pcf85363: fix wrong mask/val parameters in regmap_update_bits call
-      dt-bindings: rtc: pcf2123: convert to YAML
-      dt-bindings: rtc: mcp795: move to trivial-rtc
-
-Linus Walleij (2):
-      rtc: rtc7301: Rewrite bindings in schema
-      rtc: rtc7301: Support byte-addressed IO
-
-Marek Vasut (1):
-      dt-bindings: rtc: microcrystal,rv3032: Document wakeup-source property
-
-Maxim Korotkov (1):
-      rtc: efi: fixed typo in efi_procfs()
-
-Nikita Shubin (2):
-      dt-bindings: rtc: Add Cirrus EP93xx
-      rtc: ep93xx: add DT support for Cirrus EP93xx
-
-Rob Herring (1):
-      rtc: omap: Use device_get_match_data()
-
-Romain Perier (2):
-      rtc: Add support for the SSD202D RTC
-      dt-bindings: rtc: Add Mstar SSD202D RTC
-
-Uwe Kleine-König (12):
-      rtc: imxdi: Soften dependencies for improved compile coverage
-      rtc: at91rm9200: Mark driver struct with __refdata to prevent section mismatch warning
-      rtc: imxdi: Mark driver struct with __refdata to prevent section mismatch warning
-      rtc: mv: Mark driver struct with __refdata to prevent section mismatch warning
-      rtc: pxa: Mark driver struct with __refdata to prevent section mismatch warning
-      rtc: sh: Mark driver struct with __refdata to prevent section mismatch warning
-      rtc: pcap: Drop no-op remove function
-      rtc: at91rm9200: Convert to platform remove callback returning void
-      rtc: imxdi: Convert to platform remove callback returning void
-      rtc: mv: Convert to platform remove callback returning void
-      rtc: pxa: Convert to platform remove callback returning void
-      rtc: sh: Convert to platform remove callback returning void
-
- .../devicetree/bindings/rtc/cirrus,ep9301-rtc.yaml |  42 ++++
- .../devicetree/bindings/rtc/epson,rtc7301.txt      |  16 --
- .../devicetree/bindings/rtc/epson,rtc7301.yaml     |  51 +++++
- .../devicetree/bindings/rtc/maxim,mcp795.txt       |  11 -
- .../bindings/rtc/microcrystal,rv3032.yaml          |   2 +
- .../devicetree/bindings/rtc/mstar,ssd202d-rtc.yaml |  35 +++
- .../devicetree/bindings/rtc/nxp,pcf2123.yaml       |  47 ++++
- .../devicetree/bindings/rtc/nxp,pcf8523.txt        |  18 --
- .../devicetree/bindings/rtc/nxp,pcf8523.yaml       |  45 ++++
- .../devicetree/bindings/rtc/nxp,rtc-2123.txt       |  17 --
- .../devicetree/bindings/rtc/trivial-rtc.yaml       |   2 +
- drivers/rtc/Kconfig                                |  13 +-
- drivers/rtc/Makefile                               |   1 +
- drivers/rtc/rtc-at91rm9200.c                       |  14 +-
- drivers/rtc/rtc-brcmstb-waketimer.c                |  47 +++-
- drivers/rtc/rtc-efi.c                              |   2 +-
- drivers/rtc/rtc-ep93xx.c                           |   8 +
- drivers/rtc/rtc-imxdi.c                            |  14 +-
- drivers/rtc/rtc-mv.c                               |  14 +-
- drivers/rtc/rtc-omap.c                             |   8 +-
- drivers/rtc/rtc-pcap.c                             |   6 -
- drivers/rtc/rtc-pcf85363.c                         |   2 +-
- drivers/rtc/rtc-pxa.c                              |  13 +-
- drivers/rtc/rtc-r7301.c                            |  35 ++-
- drivers/rtc/rtc-sh.c                               |  16 +-
- drivers/rtc/rtc-ssd202d.c                          | 249 +++++++++++++++++++++
- 26 files changed, 620 insertions(+), 108 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/rtc/cirrus,ep9301-rtc.yaml
- delete mode 100644 Documentation/devicetree/bindings/rtc/epson,rtc7301.txt
- create mode 100644 Documentation/devicetree/bindings/rtc/epson,rtc7301.yaml
- delete mode 100644 Documentation/devicetree/bindings/rtc/maxim,mcp795.txt
- create mode 100644 Documentation/devicetree/bindings/rtc/mstar,ssd202d-rtc.yaml
- create mode 100644 Documentation/devicetree/bindings/rtc/nxp,pcf2123.yaml
- delete mode 100644 Documentation/devicetree/bindings/rtc/nxp,pcf8523.txt
- create mode 100644 Documentation/devicetree/bindings/rtc/nxp,pcf8523.yaml
- delete mode 100644 Documentation/devicetree/bindings/rtc/nxp,rtc-2123.txt
- create mode 100644 drivers/rtc/rtc-ssd202d.c
-
--- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+/me stomps off in disgust.
