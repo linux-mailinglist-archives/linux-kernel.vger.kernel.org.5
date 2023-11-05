@@ -2,402 +2,382 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 46D627E1490
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Nov 2023 17:29:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 005187E149B
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Nov 2023 17:31:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229592AbjKEQ3D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Nov 2023 11:29:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40854 "EHLO
+        id S229525AbjKEQbs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Nov 2023 11:31:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbjKEQ3B (ORCPT
+        with ESMTP id S229436AbjKEQbr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Nov 2023 11:29:01 -0500
-Received: from mx1.heh.ee (heh.ee [213.35.143.160])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAF35E0
-        for <linux-kernel@vger.kernel.org>; Sun,  5 Nov 2023 08:28:54 -0800 (PST)
-Received: from [10.0.0.254] (unknown [10.0.0.254])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        Sun, 5 Nov 2023 11:31:47 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFA77E1
+        for <linux-kernel@vger.kernel.org>; Sun,  5 Nov 2023 08:30:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1699201855;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=QuAi5VixDrrJevZUAF9+CbaiqH+M3FFVThMA5NaO0+Q=;
+        b=CLHXlwtKtAb/RDHlpkgOGI8HJN1Z63rWKVYWfyxsPryRoSbPvvxd9jscGF6CQBgt1t5UPo
+        oikcYS0kQIiyyt+wcZckLXQf33GtgJqoZNONViyYuTSxvCS+DSBHQasutrIPSr4US3EwGH
+        cpfFzsWOQjl2CUpB/Lnkj93NrT4AYqM=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-581-GbgR1JvbNyu7lb61RvuIjQ-1; Sun, 05 Nov 2023 11:30:51 -0500
+X-MC-Unique: GbgR1JvbNyu7lb61RvuIjQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by mx1.heh.ee (Hehee) with ESMTPSA id E9A05174EA5;
-        Sun,  5 Nov 2023 18:28:49 +0200 (EET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=ristioja.ee; s=mail;
-        t=1699201730; bh=AiaLIF5g7QTTrpxjUeuH4nQFZvh6PTy//pxt0nUuTho=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=ZTfZh2ihLkib2gmlxRm26jckCBi5G9Rv85B41UaPBSyqZC2RcFnEccCT5reag4f4u
-         1pjjh4bXeATYUhSzV9asr3KOQo96uICJJ21VFFbSqAhKSeOJ1uBbTlh5xw7VSZP12L
-         edXzawsSZ/aNJaDxdmifbJG8AFTTqKD0BLh8hHaM=
-Message-ID: <51add74a-1d1a-493d-bb50-fccdad11b22c@ristioja.ee>
-Date:   Sun, 5 Nov 2023 18:28:52 +0200
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id D2B9485A58A;
+        Sun,  5 Nov 2023 16:30:49 +0000 (UTC)
+Received: from avogadro.redhat.com (unknown [10.39.192.93])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 68F572166B26;
+        Sun,  5 Nov 2023 16:30:41 +0000 (UTC)
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Anup Patel <anup@brainfault.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Sean Christopherson <seanjc@google.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        kvmarm@lists.linux.dev, linux-mips@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Xiaoyao Li <xiaoyao.li@intel.com>,
+        Xu Yilun <yilun.xu@intel.com>,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Fuad Tabba <tabba@google.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Anish Moorthy <amoorthy@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Isaku Yamahata <isaku.yamahata@intel.com>,
+        =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Maciej Szmigiero <mail@maciej.szmigiero.name>,
+        David Hildenbrand <david@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Wang <wei.w.wang@intel.com>,
+        Liam Merwick <liam.merwick@oracle.com>,
+        Isaku Yamahata <isaku.yamahata@gmail.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Subject: [PATCH v14 00/34] KVM: guest_memfd() and per-page attributes
+Date:   Sun,  5 Nov 2023 17:30:03 +0100
+Message-ID: <20231105163040.14904-1-pbonzini@redhat.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Blank screen on boot of Linux 6.5 and later on Lenovo ThinkPad
- L570
-To:     Huacai Chen <chenhuacai@kernel.org>,
-        Evan Preston <x.arch@epreston.net>
-Cc:     Linux regressions mailing list <regressions@lists.linux.dev>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux DRI Development <dri-devel@lists.freedesktop.org>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        Thorsten Leemhuis <regressions@leemhuis.info>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Bagas Sanjaya <bagasdotme@gmail.com>
-References: <CAAhV-H5DH3Oj3ttSpa_k6jUdZ+0_pMwgoaqUTGGFr46j7DMXRw@mail.gmail.com>
- <ba16ad66-4b35-4fb4-b4e6-1d785f260eea@ristioja.ee>
- <CAAhV-H64AKdGoHnVLLOYXznpr_aq1jC_TUYXFQRdOjoBxanxkw@mail.gmail.com>
- <c3bb7983-86e4-424e-aadd-e82a0cb6ef37@ristioja.ee>
- <CAAhV-H7UTnTWQeT_qo7VgBczaZo37zjosREr16H8DsLi21XPqQ@mail.gmail.com>
- <CAAhV-H7fJS3-3_hqA4BUdH+q5EG6wSmEoPpO-fUZn5h35O=6OA@mail.gmail.com>
- <31ed0db1-9398-4c46-a391-fc644ec49268@ristioja.ee>
- <CAAhV-H4MekBgYZ1nJ-M7bnpo3bczOMcTanij18ACCALz2svjQQ@mail.gmail.com>
- <ZUSJDG82vzbuyFEY@P70.localdomain>
- <CAAhV-H6GyOnTOm6b8Xp=ySctyE-T905WKDUS2AZuqnEyzM7ZEg@mail.gmail.com>
- <ZUWtTuIcMwwCWg7z@P70.localdomain>
- <CAAhV-H7wnjac1Znr2yh8S2bGwuxF1RRGp=cn9oracrWm6y5VVQ@mail.gmail.com>
-Content-Language: et-EE
-From:   Jaak Ristioja <jaak@ristioja.ee>
-Autocrypt: addr=jaak@ristioja.ee; keydata=
- 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
-In-Reply-To: <CAAhV-H7wnjac1Znr2yh8S2bGwuxF1RRGp=cn9oracrWm6y5VVQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_PDS_OTHER_BAD_TLD,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,WEIRD_PORT
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05.11.23 14:40, Huacai Chen wrote:
-> Hi, Evan,
-> 
-> On Sat, Nov 4, 2023 at 10:50 AM Evan Preston <x.arch@epreston.net> wrote:
->>
->> Hi Huacai,
->>
->> On 2023-11-03 Fri 02:36pm, Huacai Chen wrote:
->>> Hi, Evan,
->>>
->>> On Fri, Nov 3, 2023 at 1:54 PM Evan Preston <x.arch@epreston.net> wrote:
->>>>
->>>> Hi Huacai,
->>>>
->>>> On 2023-11-02 Thu 08:38pm, Huacai Chen wrote:
->>>>> Hi, Jaak,
->>>>>
->>>>> On Wed, Nov 1, 2023 at 7:52 PM Jaak Ristioja <jaak@ristioja.ee> wrote:
->>>>>>
->>>>>> On 31.10.23 14:17, Huacai Chen wrote:
->>>>>>> Hi, Jaak and Evan,
->>>>>>>
->>>>>>> On Sun, Oct 29, 2023 at 9:42 AM Huacai Chen <chenhuacai@kernel.org> wrote:
->>>>>>>>
->>>>>>>> On Sat, Oct 28, 2023 at 7:06 PM Jaak Ristioja <jaak@ristioja.ee> wrote:
->>>>>>>>>
->>>>>>>>> On 26.10.23 03:58, Huacai Chen wrote:
->>>>>>>>>> Hi, Jaak,
->>>>>>>>>>
->>>>>>>>>> On Thu, Oct 26, 2023 at 2:49 AM Jaak Ristioja <jaak@ristioja.ee> wrote:
->>>>>>>>>>>
->>>>>>>>>>> On 25.10.23 16:23, Huacai Chen wrote:
->>>>>>>>>>>> On Wed, Oct 25, 2023 at 6:08 PM Thorsten Leemhuis
->>>>>>>>>>>> <regressions@leemhuis.info> wrote:
->>>>>>>>>>>>>
->>>>>>>>>>>>> Javier, Dave, Sima,
->>>>>>>>>>>>>
->>>>>>>>>>>>> On 23.10.23 00:54, Evan Preston wrote:
->>>>>>>>>>>>>> On 2023-10-20 Fri 05:48pm, Huacai Chen wrote:
->>>>>>>>>>>>>>> On Fri, Oct 20, 2023 at 5:35 PM Linux regression tracking (Thorsten
->>>>>>>>>>>>>>> Leemhuis) <regressions@leemhuis.info> wrote:
->>>>>>>>>>>>>>>> On 09.10.23 10:54, Huacai Chen wrote:
->>>>>>>>>>>>>>>>> On Mon, Oct 9, 2023 at 4:45 PM Bagas Sanjaya <bagasdotme@gmail.com> wrote:
->>>>>>>>>>>>>>>>>> On Mon, Oct 09, 2023 at 09:27:02AM +0800, Huacai Chen wrote:
->>>>>>>>>>>>>>>>>>> On Tue, Sep 26, 2023 at 10:31 PM Huacai Chen <chenhuacai@kernel.org> wrote:
->>>>>>>>>>>>>>>>>>>> On Tue, Sep 26, 2023 at 7:15 PM Linux regression tracking (Thorsten
->>>>>>>>>>>>>>>>>>>> Leemhuis) <regressions@leemhuis.info> wrote:
->>>>>>>>>>>>>>>>>>>>> On 13.09.23 14:02, Jaak Ristioja wrote:
->>>>>>>>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>>>>>>>> Upgrading to Linux 6.5 on a Lenovo ThinkPad L570 (Integrated Intel HD
->>>>>>>>>>>>>>>>>>>>>> Graphics 620 (rev 02), Intel(R) Core(TM) i7-7500U) results in a blank
->>>>>>>>>>>>>>>>>>>>>> screen after boot until the display manager starts... if it does start
->>>>>>>>>>>>>>>>>>>>>> at all. Using the nomodeset kernel parameter seems to be a workaround.
->>>>>>>>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>>>>>>>> I've bisected this to commit 60aebc9559492cea6a9625f514a8041717e3a2e4
->>>>>>>>>>>>>>>>>>>>>> ("drivers/firmware: Move sysfb_init() from device_initcall to
->>>>>>>>>>>>>>>>>>>>>> subsys_initcall_sync").
->>>>>>>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>>>>> As confirmed by Jaak, disabling DRM_SIMPLEDRM makes things work fine
->>>>>>>>>>>>>>>>>>> again. So I guess the reason:
->>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>> Well, this to me still looks a lot (please correct me if I'm wrong) like
->>>>>>>>>>>>>>>> regression that should be fixed, as DRM_SIMPLEDRM was enabled beforehand
->>>>>>>>>>>>>>>> if I understood things correctly. Or is there a proper fix for this
->>>>>>>>>>>>>>>> already in the works and I just missed this? Or is there some good
->>>>>>>>>>>>>>>> reason why this won't/can't be fixed?
->>>>>>>>>>>>>>>
->>>>>>>>>>>>>>> DRM_SIMPLEDRM was enabled but it didn't work at all because there was
->>>>>>>>>>>>>>> no corresponding platform device. Now DRM_SIMPLEDRM works but it has a
->>>>>>>>>>>>>>> blank screen. Of course it is valuable to investigate further about
->>>>>>>>>>>>>>> DRM_SIMPLEDRM on Jaak's machine, but that needs Jaak's effort because
->>>>>>>>>>>>>>> I don't have a same machine.
->>>>>>>>>>>>>
->>>>>>>>>>>>> Side note: Huacai, have you tried working with Jaak to get down to the
->>>>>>>>>>>>> real problem? Evan, might you be able to help out here?
->>>>>>>>>>>> No, Jaak has no response after he 'fixed' his problem by disabling SIMPLEDRM.
->>>>>>>>>>>>
->>>>>>>>>>>
->>>>>>>>>>> I'm sorry, what was it exactly you want me to do? Please be mindful that
->>>>>>>>>>> I'm not familiar with the internals of the Linux kernel and DRI, and it
->>>>>>>>>>> might sometimes take weeks before I have time to work and respond on this.
->>>>>>>>>> It doesn't matter. I hope you can do some experiments to investigate
->>>>>>>>>> deeper. The first experiment you can do is enabling SIMPLEFB (i.e.
->>>>>>>>>> CONFIG_FB_SIMPLE) instead of SIMPLEDRM (CONFIG_DRM_SIMPLEDRM) to see
->>>>>>>>>> whether there is also a blank screen. If no blank screen, that
->>>>>>>>>> probably means SIMPLEDRM has a bug, if still blank screen, that means
->>>>>>>>>> the firmware may pass wrong screen information.
->>>>>>>>>
->>>>>>>>> Testing with 6.5.9 I get a blank screen with CONFIG_DRM_SIMPLEDRM=y and
->>>>>>>>> get no blank screen with CONFIG_FB_SIMPLE=y and CONFIG_DRM_SIMPLEDRM unset.
->>>>>>>> CONFIG_FB_SIMPLE and  CONFIG_DRM_SIMPLEDRM use the same device created
->>>>>>>> by sysfb_init(). Since FB_SIMPLE works fine, I think the real problem
->>>>>>>> is that DRM_SIMPLEDRM has a bug. The next step is to enable
->>>>>>>> CONFIG_DRM_SIMPLEDRM and trace its initialization. In detail, adding
->>>>>>>> some printk() in simpledrm_probe() and its sub-routines to see where
->>>>>>>> the driver fails. The output of these printk() can be seen by the
->>>>>>>> 'dmesg' command after boot.
->>>>>>> I need your help. I tried with my laptop (ThinkPad E490, Intel Core
->>>>>>> i3-8145U, UHD Graphics 620) but I can't reproduce your problem. So
->>>>>>> please patch your 6.5.x kernel with this temporary patch [1], then
->>>>>>> build a "bad kernel" with SIMPLEDRM enabled. And after booting your
->>>>>>> machine with this "bad kernel", please give me the dmesg output. Thank
->>>>>>> you very much.
->>>>>>>
->>>>>>> [1] http://ddns.miaomiaomiao.top:9000/download/kernel/patch-6.5.9
->>>>>>
->>>>>> I'm unable to download it. Can you please send it by e-mail?
->>>>> I'm sorry, please download from attachment.
->>>>
->>>> When applying this patch the first hunk (drivers/firmware/sysfb.c) fails for
->>>> me with 6.5.9.  Attempting to load the 6.5.9 kernel without this patch
->>>> produces no dmesg output on my machine.
->>> You copy-paste the patch? If you download it directly it can be
->>> applied successfully, I think.
->>
->> The patch downloaded from your URL applies successfully.  However, I still
->> see no dmesg output using the patched 6.5.9 kernel.  'journalctl -k -b all'
->> shows no dmesg output from any 6.5.x boots, only from 6.4.12 boots.
-> Thank you for your testing. Since you cannot boot to GUI successfully
-> as Jaak, you may have some troubles with getting the dmesg output. But
-> you can try to use "systemd.unit=multi-user.target" boot parameters.
-> In this way you may boot to the login: prompt and then you can get
-> dmesg output. Or if you still fail, you may use 'jornalctl -k -b -1'
-> to get the previous dmesg output with 6.4.12.
-> 
-> Hi, Jaak,
-> 
-> Have you tested? I think you can successfully get a dmesg output with my patch.
+[If the introduction below is not enough, go read
+ https://lwn.net/SubscriberLink/949277/118520c1248ace63/ and subscribe to LWN]
 
-Yes, just tested it, here I think are the relevant parts from a dmesg 
-produced with CONFIG_DRM_SIMPLEDRM and the patch provided by Huacai:
+Introduce several new KVM uAPIs to ultimately create a guest-first memory
+subsystem within KVM, a.k.a. guest_memfd.  Guest-first memory allows KVM
+to provide features, enhancements, and optimizations that are kludgly
+or outright impossible to implement in a generic memory subsystem.
 
-...
-[    2.909625] sysfb 1
-[    2.909627] sysfb 2
-...
-[    2.951477] ACPI: bus type drm_connector registered
-[    2.952096] i915 0000:00:02.0: [drm] VT-d active for gfx access
-[    2.952105] resource: resource sanity check: requesting [mem 
-0x00000000e0000000-0x00000000efffffff], which spans more than BOOTFB 
-[mem 0xe0000000-0xe012bfff]
-[    2.952111] caller i915_ggtt_init_hw+0x88/0x120 mapping multiple BARs
-[    2.952138] i915 0000:00:02.0: [drm] Using Transparent Hugepages
-[    2.953204] Loading firmware: i915/kbl_dmc_ver1_04.bin
-[    2.953485] i915 0000:00:02.0: [drm] Finished loading DMC firmware 
-i915/kbl_dmc_ver1_04.bin (v1.4)
-...
-[    4.142075] [drm] Initialized i915 1.6.0 20201103 for 0000:00:02.0 on 
-minor 0
-[    4.144269] ACPI: video: Video Device [GFX0] (multi-head: yes  rom: 
-no  post: no)
-[    4.144414] input: Video Bus as 
-/devices/LNXSYSTM:00/LNXSYBUS:00/PNP0A08:00/LNXVIDEO:00/input/input4
-[    4.144580] [drm] Initialized vgem 1.0.0 20120112 for vgem on minor 1
-[    4.144590] usbcore: registered new interface driver udl
-[    4.144603] T: probe 1
-[    4.144605] T: create 1
-[    4.144610] T: create 2
-[    4.144611] T: create 3a-1
-[    4.144613] T: create 3a-2
-[    4.144614] T: create 3a-3
-[    4.144616] T: create 3a-4
-[    4.144618] T: create 4
-[    4.144619] T: create 5
-[    4.144621] simple-framebuffer simple-framebuffer.0: [drm] display 
-mode={"": 60 18432 640 640 640 640 480 480 480 480 0x40 0x0}
-[    4.144628] simple-framebuffer simple-framebuffer.0: [drm] 
-framebuffer format=XR24 little-endian (0x34325258), size=640x480, 
-stride=2560 byte
-[    4.144633] T: create 6b-1
-[    4.144635] T: create 6b-2
-[    4.144637] simple-framebuffer simple-framebuffer.0: [drm] using I/O 
-memory framebuffer at [mem 0xe0000000-0xe012bfff flags 0x200]
-[    4.144643] T: create 6b-3
-[    4.144660] T: create 6b-4
-[    4.144662] T: create 7
-[    4.144673] T: create 8
-[    4.144676] T: create 9
-[    4.144678] T: create 10
-[    4.144681] T: create 11
-[    4.144685] T: create 12
-[    4.144689] T: probe 2
-[    4.144728] [drm] Initialized simpledrm 1.0.0 20200625 for 
-simple-framebuffer.0 on minor 2
-[    4.144732] T: probe 3
-[    4.145905] Console: switching to colour frame buffer device 80x30
-[    4.150437] simple-framebuffer simple-framebuffer.0: [drm] fb0: 
-simpledrmdrmfb frame buffer device
-[    4.150766] T: probe 4
-[    4.151218] loop: module loaded
-[    4.154434] i915 0000:00:02.0: [drm] fb1: i915drmfb frame buffer device
-...
-[   44.630789] simple-framebuffer simple-framebuffer.0: swiotlb buffer 
-is full (sz: 1310720 bytes), total 32768 (slots), used 0 (slots)
-...
+The core KVM ioctl() for guest_memfd is KVM_CREATE_GUEST_MEMFD, which
+similar to the generic memfd_create(), creates an anonymous file and
+returns a file descriptor that refers to it.  Again like "regular"
+memfd files, guest_memfd files live in RAM, have volatile storage,
+and are automatically released when the last reference is dropped.
+The key differences between memfd files (and every other memory subystem)
+is that guest_memfd files are bound to their owning virtual machine,
+cannot be mapped, read, or written by userspace, and cannot be resized.
+guest_memfd files do however support PUNCH_HOLE, which can be used to
+convert a guest memory area between the shared and guest-private states.
 
-The last message might be due to the display manager starting up.
+A second KVM ioctl(), KVM_SET_MEMORY_ATTRIBUTES, allows userspace to
+specify attributes for a given page of guest memory.  In the long term,
+it will likely be extended to allow userspace to specify per-gfn RWX
+protections, including allowing memory to be writable in the guest
+without it also being writable in host userspace.
 
-Hope it helps.
+The immediate and driving use case for guest_memfd are Confidential
+(CoCo) VMs, specifically AMD's SEV-SNP, Intel's TDX, and KVM's own pKVM.
+For such use cases, being able to map memory into KVM guests without
+requiring said memory to be mapped into the host is a hard requirement.
+While SEV+ and TDX prevent untrusted software from reading guest private
+data by encrypting guest memory, pKVM provides confidentiality and
+integrity *without* relying on memory encryption.  In addition, with
+SEV-SNP and especially TDX, accessing guest private memory can be fatal
+to the host, i.e. KVM must be prevent host userspace from accessing
+guest memory irrespective of hardware behavior.
 
-J
+Long term, guest_memfd may be useful for use cases beyond CoCo VMs,
+for example hardening userspace against unintentional accesses to guest
+memory.  As mentioned earlier, KVM's ABI uses userspace VMA protections to
+define the allow guest protection (with an exception granted to mapping
+guest memory executable), and similarly KVM currently requires the guest
+mapping size to be a strict subset of the host userspace mapping size.
+Decoupling the mappings sizes would allow userspace to precisely map
+only what is needed and with the required permissions, without impacting
+guest performance.
 
-> 
->>
->> Evan
->>
->>>
->>> Huacai
->>>
->>>>
->>>> Evan
->>>>
->>>>>
->>>>> Huacai
->>>>>
->>>>>>
->>>>>> Jaak
->>>>>>
->>>>>>>
->>>>>>>
->>>>>>> Huacai
->>>>>>>
->>>>>>>>
->>>>>>>> Huacai
->>>>>>>>
->>>>>>>>>
->>>>>>>>> Jaak
->>>>>>>>>
->>>>>>>>>>
->>>>>>>>>> Huacai
->>>>>>>>>>
->>>>>>>>>>>
->>>>>>>>>>> Jaak
->>>>>>>>>>>
->>>>>>>>>>>>>
->>>>>>>>>>>>> But I write this mail for a different reason:
->>>>>>>>>>>>>
->>>>>>>>>>>>>> I am having the same issue on a Lenovo Thinkpad P70 (Intel
->>>>>>>>>>>>>> Corporation HD Graphics 530 (rev 06), Intel(R) Core(TM) i7-6700HQ).
->>>>>>>>>>>>>> Upgrading from Linux 6.4.12 to 6.5 and later results in only a blank
->>>>>>>>>>>>>> screen after boot and a rapidly flashing device-access-status
->>>>>>>>>>>>>> indicator.
->>>>>>>>>>>>>
->>>>>>>>>>>>> This additional report makes me wonder if we should revert the culprit
->>>>>>>>>>>>> (60aebc9559492c ("drivers/firmware: Move sysfb_init() from
->>>>>>>>>>>>> device_initcall to subsys_initcall_sync") [v6.5-rc1]). But I guess that
->>>>>>>>>>>>> might lead to regressions for some users? But the patch description says
->>>>>>>>>>>>> that this is not a common configuration, so can we maybe get away with that?
->>>>>>>>>>>>     From my point of view, this is not a regression, 60aebc9559492c
->>>>>>>>>>>> doesn't cause a problem, but exposes a problem. So we need to fix the
->>>>>>>>>>>> real problem (SIMPLEDRM has a blank screen on some conditions). This
->>>>>>>>>>>> needs Jaak or Evan's help.
->>>>>>>>>>>>
->>>>>>>>>>>> Huacai
->>>>>>>>>>>>>
->>>>>>>>>>>>> Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
->>>>>>>>>>>>> --
->>>>>>>>>>>>> Everything you wanna know about Linux kernel regression tracking:
->>>>>>>>>>>>> https://linux-regtracking.leemhuis.info/about/#tldr
->>>>>>>>>>>>> If I did something stupid, please tell me, as explained on that page.
->>>>>>>>>>>>>
->>>>>>>>>>>>>>>>>>> When SIMPLEDRM takes over the framebuffer, the screen is blank (don't
->>>>>>>>>>>>>>>>>>> know why). And before 60aebc9559492cea6a9625f ("drivers/firmware: Move
->>>>>>>>>>>>>>>>>>> sysfb_init() from device_initcall to subsys_initcall_sync") there is
->>>>>>>>>>>>>>>>>>> no platform device created for SIMPLEDRM at early stage, so it seems
->>>>>>>>>>>>>>>>>>> also "no problem".
->>>>>>>>>>>>>>>>>> I don't understand above. You mean that after that commit the platform
->>>>>>>>>>>>>>>>>> device is also none, right?
->>>>>>>>>>>>>>>>> No. The SIMPLEDRM driver needs a platform device to work, and that
->>>>>>>>>>>>>>>>> commit makes the platform device created earlier. So, before that
->>>>>>>>>>>>>>>>> commit, SIMPLEDRM doesn't work, but the screen isn't blank; after that
->>>>>>>>>>>>>>>>> commit, SIMPLEDRM works, but the screen is blank.
->>>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>>> Huacai
->>>>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>>>> Confused...
->>>>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>>>> --
->>>>>>>>>>>>>>>>>> An old man doll... just what I always wanted! - Clara
->>>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>>>>
->>>>>>>>>>>>>>
->>>>>>>>>>>>>>
->>>>>>>>>>>
->>>>>>>>>
->>>>>>
->>>>
->>>>
+A guest-first memory subsystem also provides clearer line of sight to
+things like a dedicated memory pool (for slice-of-hardware VMs) and
+elimination of "struct page" (for offload setups where userspace _never_
+needs to DMA from or into guest memory).
+
+guest_memfd is the result of 3+ years of development and exploration;
+taking on memory management responsibilities in KVM was not the first,
+second, or even third choice for supporting CoCo VMs.  But after many
+failed attempts to avoid KVM-specific backing memory, and looking at
+where things ended up, it is quite clear that of all approaches tried,
+guest_memfd is the simplest, most robust, and most extensible, and the
+right thing to do for KVM and the kernel at-large.
+
+The "development cycle" for this version is going to be very short;
+ideally, next week I will merge it as is in kvm/next, taking this through
+the KVM tree for 6.8 immediately after the end of the merge window.
+The series is still based on 6.6 (plus KVM changes for 6.7) so it
+will require a small fixup for changes to get_file_rcu() introduced in
+6.7 by commit 0ede61d8589c ("file: convert to SLAB_TYPESAFE_BY_RCU").
+The fixup will be done as part of the merge commit, and most of the text
+above will become the commit message for the merge.
+
+Because of this, the only two commits that had substantial remarks in v13
+(depending on your definition of substantial) are *not* officially part of
+this series and will not be merged:
+
+  KVM: Prepare for handling only shared mappings in mmu_notifier events
+  KVM: Add transparent hugepage support for dedicated guest memory
+
+Pending post-merge work includes:
+- looking into using the restrictedmem framework for guest memory
+- introducing a testing mechanism to poison memory, possibly using
+  the same memory attributes introduced here
+- SNP and TDX support
+
+Non-KVM people, you may want to explicitly ACK two patches buried in the
+middle of this series:
+
+  fs: Rename anon_inode_getfile_secure() and anon_inode_getfd_secure()
+  mm: Add AS_UNMOVABLE to mark mapping as completely unmovable
+
+The first is small and mostly suggested-by Christian Brauner; the second
+a bit less so but it was written by an mm person (Vlastimil Babka).
+Note, adding AS_UNMOVABLE isn't strictly required as it's "just" an
+optimization, but we'd prefer to have it in place straightaway.
+
+If you would like to see a range-diff, I suggest using Patchew; start
+from https://patchew.org/linux/20231027182217.3615211-1-seanjc@google.com/
+and click v14 on top.
+
+Thanks,
+
+Paolo
+
+Ackerley Tng (1):
+  KVM: selftests: Test KVM exit behavior for private memory/access
+
+Chao Peng (8):
+  KVM: Use gfn instead of hva for mmu_notifier_retry
+  KVM: Add KVM_EXIT_MEMORY_FAULT exit to report faults to userspace
+  KVM: Introduce per-page memory attributes
+  KVM: x86: Disallow hugepages when memory attributes are mixed
+  KVM: x86/mmu: Handle page fault for private memory
+  KVM: selftests: Add KVM_SET_USER_MEMORY_REGION2 helper
+  KVM: selftests: Expand set_memory_region_test to validate
+    guest_memfd()
+  KVM: selftests: Add basic selftest for guest_memfd()
+
+Paolo Bonzini (1):
+  fs: Rename anon_inode_getfile_secure() and anon_inode_getfd_secure()
+
+Sean Christopherson (23):
+  KVM: Tweak kvm_hva_range and hva_handler_t to allow reusing for gfn
+    ranges
+  KVM: Assert that mmu_invalidate_in_progress *never* goes negative
+  KVM: WARN if there are dangling MMU invalidations at VM destruction
+  KVM: PPC: Drop dead code related to KVM_ARCH_WANT_MMU_NOTIFIER
+  KVM: PPC: Return '1' unconditionally for KVM_CAP_SYNC_MMU
+  KVM: Convert KVM_ARCH_WANT_MMU_NOTIFIER to
+    CONFIG_KVM_GENERIC_MMU_NOTIFIER
+  KVM: Introduce KVM_SET_USER_MEMORY_REGION2
+  KVM: Add a dedicated mmu_notifier flag for reclaiming freed memory
+  KVM: Drop .on_unlock() mmu_notifier hook
+  mm: Add AS_UNMOVABLE to mark mapping as completely unmovable
+  KVM: Add KVM_CREATE_GUEST_MEMFD ioctl() for guest-specific backing
+    memory
+  KVM: x86: "Reset" vcpu->run->exit_reason early in KVM_RUN
+  KVM: Drop superfluous __KVM_VCPU_MULTIPLE_ADDRESS_SPACE macro
+  KVM: Allow arch code to track number of memslot address spaces per VM
+  KVM: x86: Add support for "protected VMs" that can utilize private
+    memory
+  KVM: selftests: Drop unused kvm_userspace_memory_region_find() helper
+  KVM: selftests: Convert lib's mem regions to
+    KVM_SET_USER_MEMORY_REGION2
+  KVM: selftests: Add support for creating private memslots
+  KVM: selftests: Introduce VM "shape" to allow tests to specify the VM
+    type
+  KVM: selftests: Add GUEST_SYNC[1-6] macros for synchronizing more data
+  KVM: selftests: Add a memory region subtest to validate invalid flags
+  KVM: Prepare for handling only shared mappings in mmu_notifier events
+  KVM: Add transparent hugepage support for dedicated guest memory
+
+Vishal Annapurve (3):
+  KVM: selftests: Add helpers to convert guest memory b/w private and
+    shared
+  KVM: selftests: Add helpers to do KVM_HC_MAP_GPA_RANGE hypercalls
+    (x86)
+  KVM: selftests: Add x86-only selftest for private memory conversions
+
+
+ Documentation/virt/kvm/api.rst                | 209 +++++++
+ arch/arm64/include/asm/kvm_host.h             |   2 -
+ arch/arm64/kvm/Kconfig                        |   2 +-
+ arch/loongarch/include/asm/kvm_host.h         |   1 -
+ arch/loongarch/kvm/Kconfig                    |   2 +-
+ arch/mips/include/asm/kvm_host.h              |   2 -
+ arch/mips/kvm/Kconfig                         |   2 +-
+ arch/powerpc/include/asm/kvm_host.h           |   2 -
+ arch/powerpc/kvm/Kconfig                      |   8 +-
+ arch/powerpc/kvm/book3s_hv.c                  |   2 +-
+ arch/powerpc/kvm/powerpc.c                    |   7 +-
+ arch/riscv/include/asm/kvm_host.h             |   2 -
+ arch/riscv/kvm/Kconfig                        |   2 +-
+ arch/x86/include/asm/kvm_host.h               |  17 +-
+ arch/x86/include/uapi/asm/kvm.h               |   3 +
+ arch/x86/kvm/Kconfig                          |  14 +-
+ arch/x86/kvm/debugfs.c                        |   2 +-
+ arch/x86/kvm/mmu/mmu.c                        | 271 +++++++-
+ arch/x86/kvm/mmu/mmu_internal.h               |   2 +
+ arch/x86/kvm/vmx/vmx.c                        |  11 +-
+ arch/x86/kvm/x86.c                            |  26 +-
+ fs/anon_inodes.c                              |  47 +-
+ fs/userfaultfd.c                              |   5 +-
+ include/linux/anon_inodes.h                   |   4 +-
+ include/linux/kvm_host.h                      | 144 ++++-
+ include/linux/kvm_types.h                     |   1 +
+ include/linux/pagemap.h                       |  19 +-
+ include/uapi/linux/kvm.h                      |  51 ++
+ io_uring/io_uring.c                           |   3 +-
+ mm/compaction.c                               |  43 +-
+ mm/migrate.c                                  |   2 +
+ tools/testing/selftests/kvm/Makefile          |   3 +
+ tools/testing/selftests/kvm/dirty_log_test.c  |   2 +-
+ .../testing/selftests/kvm/guest_memfd_test.c  | 221 +++++++
+ .../selftests/kvm/include/kvm_util_base.h     | 148 ++++-
+ .../testing/selftests/kvm/include/test_util.h |   5 +
+ .../selftests/kvm/include/ucall_common.h      |  11 +
+ .../selftests/kvm/include/x86_64/processor.h  |  15 +
+ .../selftests/kvm/kvm_page_table_test.c       |   2 +-
+ tools/testing/selftests/kvm/lib/kvm_util.c    | 233 ++++---
+ tools/testing/selftests/kvm/lib/memstress.c   |   3 +-
+ .../selftests/kvm/set_memory_region_test.c    | 149 +++++
+ .../kvm/x86_64/private_mem_conversions_test.c | 487 +++++++++++++++
+ .../kvm/x86_64/private_mem_kvm_exits_test.c   | 120 ++++
+ .../kvm/x86_64/ucna_injection_test.c          |   2 +-
+ virt/kvm/Kconfig                              |  17 +
+ virt/kvm/Makefile.kvm                         |   1 +
+ virt/kvm/dirty_ring.c                         |   2 +-
+ virt/kvm/guest_memfd.c                        | 591 ++++++++++++++++++
+ virt/kvm/kvm_main.c                           | 524 +++++++++++++---
+ virt/kvm/kvm_mm.h                             |  26 +
+ 51 files changed, 3174 insertions(+), 296 deletions(-)
+ create mode 100644 tools/testing/selftests/kvm/guest_memfd_test.c
+ create mode 100644 tools/testing/selftests/kvm/x86_64/private_mem_conversions_test.c
+ create mode 100644 tools/testing/selftests/kvm/x86_64/private_mem_kvm_exits_test.c
+ create mode 100644 virt/kvm/guest_memfd.c
+
+-- 
+2.39.1
+
+
+v13->v14:
+============================================================================
+KVM: Use gfn instead of hva for mmu_notifier_retry
+* add lockdep assertion to kvm_mmu_invalidate_end
+
+KVM: Convert KVM_ARCH_WANT_MMU_NOTIFIER to CONFIG_KVM_GENERIC_MMU_NOTIFIER
+* add loongarch hunks
+
+KVM: Introduce KVM_SET_USER_MEMORY_REGION2
+* renumber capability
+* define and test KVM_SET_USER_MEMORY_REGION_V1_FLAGS
+
+KVM: Add KVM_EXIT_MEMORY_FAULT exit to report faults to userspace
+* adjust field name in documentation from "memory" to "memory_fault"
+* renumber exit and capability
+
+KVM: Drop .on_unlock() mmu_notifier hook
+* lockdep assertion to kvm_mmu_invalidate_end moved earlier
+
+KVM: Introduce per-page memory attributes
+* remove mentions of KVM_GET_SUPPORTED_MEMORY_ATTRIBUTES
+* remove mentions of only_private/only_shared
+* document locking policy for mem_attr_array
+* renumber capability
+* fix typos
+* fix implementation of KVM_CHECK_EXTENSION for new capability
+
+fs: Rename anon_inode_getfile_secure() and anon_inode_getfd_secure()
+* new patch.
+
+KVM: Add KVM_CREATE_GUEST_MEMFD ioctl() for guest-specific backing memory
+* rename KVM_MEM_PRIVATE to KVM_MEM_GUEST_MEMFD
+* fix space/TAB mishap in documentation
+* fix typos
+* include EXPORT_SYMBOL_GPL for anon_inode_create_getfile
+* renumber capability
+* remove unnecessary TODO comments
+* fix size check to "<= 0"
+* fix missing fput() in kvm_gmem_bind()
+* fix to KVM_CHECK_EXTENSION(KVM_CAP_MEMORY_ATTRIBUTES) moved earlier
+
+KVM: x86: Add support for "protected VMs" that can utilize private memory
+* renumber capabilities
+
+KVM: selftests: Add support for creating private memslots
+KVM: selftests: Add helpers to convert guest memory b/w private and shared
+KVM: selftests: Add x86-only selftest for private memory conversions
+KVM: selftests: Expand set_memory_region_test to validate guest_memfd()
+KVM: selftests: Add basic selftest for guest_memfd()
+KVM: selftests: Test KVM exit behavior for private memory/access
+* rename KVM_MEM_PRIVATE to KVM_MEM_GUEST_MEMFD
+* remove KVM_GUEST_MEMFD_ALLOW_HUGEPAGE
+
+KVM: Prepare for handling only shared mappings in mmu_notifier events
+* reword comment
+* move only_private/only_shared hunk from earlier
+
+KVM: Add transparent hugepage support for dedicated guest memory
+* add back all KVM_GUEST_MEMFD_ALLOW_HUGEPAGE uses from tests
+* do not require CONFIG_TRANSPARENT_HUGEPAGE
+* more precise use of pgoff_t
+* pass order down to kvm_gmem_get_huge_folio
+============================================================================
+
+
+
+
 
