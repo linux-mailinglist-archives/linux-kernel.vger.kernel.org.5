@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 11B5C7E1466
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Nov 2023 17:10:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 075E17E1468
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Nov 2023 17:10:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229534AbjKEQKL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Nov 2023 11:10:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44506 "EHLO
+        id S229684AbjKEQK0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Nov 2023 11:10:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229791AbjKEQKH (ORCPT
+        with ESMTP id S229956AbjKEQKT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Nov 2023 11:10:07 -0500
+        Sun, 5 Nov 2023 11:10:19 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1E17184
-        for <linux-kernel@vger.kernel.org>; Sun,  5 Nov 2023 08:10:04 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D602C433C8;
-        Sun,  5 Nov 2023 16:10:00 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 118BD13E
+        for <linux-kernel@vger.kernel.org>; Sun,  5 Nov 2023 08:10:17 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C31C1C433C7;
+        Sun,  5 Nov 2023 16:10:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699200604;
-        bh=6QXlcdrE6Vd0uevCRAQA5jRWA9Z4WkVDk80uAUwbJ/E=;
+        s=k20201202; t=1699200616;
+        bh=/gBbJf7g1QrUiEN7ZPrz7W4ai3w02Yrm1jHvyS8561U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=c/CoB3R0PwHpStxpBdcBy486i6VbtYtAR1YYmvlMJgWlkvwAslfAM1MBCOHQznEuS
-         EKB3GpxYg2osZ0mbNEFlBtDFS7IVzI8nLjnyHdFfeaBzk/uPzEYKy3lm1Bh7rSay0R
-         qkBO9K4WnNjpxWMohFj5Bz6IizDWDIk+eYYnnzFX5DId19isCVydBj6Z1yGqVq2lxc
-         vsiYZsNeJERJi8N1ScBOr5UoHyCG75QN3HFIMfGa2X5DeJe5Y5ak8aag8MhZQpGBcn
-         kpy8+KCP3F7miOXW/IulJ9Y5Nh6snHUESFyYCkL2wO64KgRqRsaKfBZSyp+XcguuOu
-         wfUKgBO98l/PA==
+        b=ijq8qE6apP/3tEMc7xQNaT1ZgohMP5WaYkHJZJLjvfucgOnkq8r8tZKlMpnIaRzoG
+         iAgl0QVwW8FRbNaoPA/aBIVbNAp1IW7ANhQrFRRo6ITaqIvkVGnn7cnFDbwRuAtGX7
+         AGAMb81eNQdq7SI/g6khmRUvWkHaqrSTyUAkslVhM09Cqa/6UbPC35PM5SJQv8T0hm
+         2lD1u208cjdCKzkYrE75U/ZT1OpISl8GDOQuSp9HdwT171hfKZgk3GzG6+kDoNzaP6
+         b+v/jsTZnxYX4auQr1LcKkM0uowq0gHJyRNe/1l6yDnU1Ng7Z+kzrq1jNiLX6UcYx/
+         0BVdFt5sbwbJw==
 From:   "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
 To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
         Steven Rostedt <rostedt@goodmis.org>,
@@ -44,9 +44,9 @@ Cc:     linux-trace-kernel@vger.kernel.org,
         Peter Zijlstra <peterz@infradead.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         Guo Ren <guoren@kernel.org>
-Subject: [RFC PATCH 17/32] function_graph: Fix to update curr_ret_stack with ARRAY entry size
-Date:   Mon,  6 Nov 2023 01:09:57 +0900
-Message-Id: <169920059747.482486.11622923727523240888.stgit@devnote2>
+Subject: [RFC PATCH 18/32] function_graph: Fix to initalize ftrace_ops for fgraph with ftrace_graph_func
+Date:   Mon,  6 Nov 2023 01:10:10 +0900
+Message-Id: <169920060974.482486.15664806338999944098.stgit@devnote2>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <169920038849.482486.15796387219966662967.stgit@devnote2>
 References: <169920038849.482486.15796387219966662967.stgit@devnote2>
@@ -66,28 +66,34 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
-__ftrace_return_to_handler() missed to update the curr_ret_stack when it
-gets a FGRAPH_TYPE_ARRAY. Since that type entry will follows some data
-words, it must update curr_ret_stack by entry size value (__get_index(val))
-instead of 1.
+Fix to initialize the ftrace_ops of fgraph_ops with ftrace_graph_func
+instead of ftrace_stub.
 
 Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 ---
- kernel/trace/fgraph.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ kernel/trace/fgraph.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/kernel/trace/fgraph.c b/kernel/trace/fgraph.c
-index 0f8e9f22e9e0..597250bd30dc 100644
+index 597250bd30dc..858fb73440ec 100644
 --- a/kernel/trace/fgraph.c
 +++ b/kernel/trace/fgraph.c
-@@ -740,7 +740,8 @@ static unsigned long __ftrace_return_to_handler(struct fgraph_ret_regs *ret_regs
- 		case FGRAPH_TYPE_ARRAY:
- 			idx = __get_array(val);
- 			fgraph_array[idx]->retfunc(&trace, fgraph_array[idx]);
--			fallthrough;
-+			curr_ret_stack -= __get_index(val);
-+			break;
- 		case FGRAPH_TYPE_RESERVED:
- 			curr_ret_stack--;
- 			break;
+@@ -872,7 +872,7 @@ unsigned long ftrace_graph_ret_addr(struct task_struct *task, int *idx,
+ void fgraph_init_ops(struct ftrace_ops *dst_ops,
+ 		     struct ftrace_ops *src_ops)
+ {
+-	dst_ops->func = ftrace_stub;
++	dst_ops->func = ftrace_graph_func;
+ 	dst_ops->flags = FTRACE_OPS_FL_PID | FTRACE_OPS_FL_STUB;
+ 
+ #ifdef FTRACE_GRAPH_TRAMP_ADDR
+@@ -1120,7 +1120,7 @@ int register_ftrace_graph(struct fgraph_ops *gops)
+ 
+ 	if (!gops->ops.func) {
+ 		gops->ops.flags |= FTRACE_OPS_FL_STUB;
+-		gops->ops.func = ftrace_stub;
++		gops->ops.func = ftrace_graph_func;
+ #ifdef FTRACE_GRAPH_TRAMP_ADDR
+ 		gops->ops.trampoline = FTRACE_GRAPH_TRAMP_ADDR;
+ #endif
 
