@@ -2,55 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 847BF7E1488
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Nov 2023 17:20:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57E687E148D
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Nov 2023 17:27:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229496AbjKEQUg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Nov 2023 11:20:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46732 "EHLO
+        id S229608AbjKEQ1n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Nov 2023 11:27:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbjKEQUe (ORCPT
+        with ESMTP id S229445AbjKEQ1m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Nov 2023 11:20:34 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5035AB0
-        for <linux-kernel@vger.kernel.org>; Sun,  5 Nov 2023 08:20:31 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1699201229;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=z5eEBnZ6LYm33J79aFU74zLjTZnhFR3gFJP08bWpn8Y=;
-        b=xSOdyJWyVN7WPL5tfjWaqyK+9g0IpqvSn9syIFzh2WAPqVQjgiUeNDdi3VC6MWeM4ABQxr
-        Xaja8dZ3ySwZM4YVfzuNe2CQOprIvhVbuUJ2EagEu5JTwRCBCLDVehFAbdwrhVgAu3EtSv
-        zlRsdtZTvcyNfoDDdshyhk72mymUC0M3bOnP1Hr1KH7hecj1I4fMM4xB7GQLCo67eCCqMQ
-        Fr/jEVwzf3oNKUHRCG/QwV8U2I9XGHjQgWBLiagaKksYCZZdroORF3W4RKUCGQ9ONK7Tye
-        i1LXDWnAd3ccEr/EpdYKS4ofONCFNGFb1fOALDMMUqddWsAfSZXORczcDLhaVA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1699201229;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=z5eEBnZ6LYm33J79aFU74zLjTZnhFR3gFJP08bWpn8Y=;
-        b=vY8q1GI0MAqGQtRYNyKxeY7uC/J//hj7j5uHQJ2p1LFp1Eh+0SgmVX08/QDGFDiT979ml8
-        dUgZdSyBnqDAG8Bg==
-To:     Ben Greear <greearb@candelatech.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Cc:     Rodolfo Giometti <giometti@enneenne.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH/RFC] debugobjects/slub: Print slab info and backtrace.
-In-Reply-To: <92a422d6-76c8-ce25-c331-0718b73dd274@candelatech.com>
-References: <20231103013704.1232723-1-greearb@candelatech.com>
- <92a422d6-76c8-ce25-c331-0718b73dd274@candelatech.com>
-Date:   Sun, 05 Nov 2023 17:20:28 +0100
-Message-ID: <875y2gi33n.ffs@tglx>
+        Sun, 5 Nov 2023 11:27:42 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50586CC
+        for <linux-kernel@vger.kernel.org>; Sun,  5 Nov 2023 08:27:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699201658; x=1730737658;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=bv5XukW+wMPce5Rvom+MsvaQKUfmCFugnLCpCq3bUnw=;
+  b=XXLbOFTySqpZLaTP8SidEtTevorGC1b1ntggqLSRkncdV894M4Uc64kL
+   WgRjnvpaA1LXWZzu3ud3pjD4jjjISvd8a3R9EhECK8KcmfHUsAgBCxwy4
+   U8jPkax+2/kESI5FdwXVP9Ruofio/uFnT0k7JQU4uvAryFJEXWUsPKvt1
+   3Y2IsW/o2E93sYa0WRjtMKe3mAq6fsRWZsOP7wjGvpW6/VCEgYklfaZEK
+   wLlSIm747zAPF7C2nMSjjdNumneNJfPXmGpeYBNcRcTHsQGSokues267a
+   BuWiHeFM9X6AZBh1++y4wWaw2+IFAnqVJjMV85yvvINHCQ05X+Yymhf5f
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10885"; a="475395170"
+X-IronPort-AV: E=Sophos;i="6.03,279,1694761200"; 
+   d="scan'208";a="475395170"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2023 08:27:38 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.03,279,1694761200"; 
+   d="scan'208";a="9866441"
+Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
+  by orviesa001.jf.intel.com with ESMTP; 05 Nov 2023 08:27:37 -0800
+Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qzfyI-0005c0-1I;
+        Sun, 05 Nov 2023 16:27:34 +0000
+Date:   Mon, 6 Nov 2023 00:26:23 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Kees Cook <keescook@chromium.org>,
+        Laurent Vivier <laurent@vivier.eu>
+Subject: ERROR: modpost: vmlinux: local symbol 'init_binfmt_misc' was exported
+Message-ID: <202311060036.SZm0Y4Vs-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -58,78 +62,223 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 02 2023 at 18:49, Ben Greear wrote:
-> And here is resulting splat from wireless-next tree I've been
-> debugging.
->
-> Note the subsequent splats from slub are due to some memory poisoning, for
-> one reason or another.  Maybe slub changes should not be included in this patch, not
-> sure if it can provide useful info in other cases though.
->
-> If I understand this correctly, then it appears the bug is related to
-> the pps driver.
->
-> 16140 Nov 02 17:28:25 ct523c-2103 kernel: ODEBUG: debugobjects: debug_obj allocated at:
-> 16141 Nov 02 17:28:25 ct523c-2103 kernel:  init_timer_key+0x24/0x160
-> 16142 Nov 02 17:28:25 ct523c-2103 kernel:  kobject_put+0x14f/0x190
-> 16143 Nov 02 17:28:25 ct523c-2103 kernel:  pps_device_destruct+0x26/0xb0
-> 16144 Nov 02 17:28:25 ct523c-2103 kernel:  device_release+0x57/0x100
-> 16145 Nov 02 17:28:25 ct523c-2103 kernel:  kobject_delayed_cleanup+0xdf/0x140
-> 16146 Nov 02 17:28:25 ct523c-2103 kernel:  process_one_work+0x475/0x920
-> 16147 Nov 02 17:28:25 ct523c-2103 kernel:  worker_thread+0x38a/0x680
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   1c41041124bd14dd6610da256a3da4e5b74ce6b1
+commit: 21ca59b365c091d583f36ac753eaa8baf947be6f binfmt_misc: enable sandboxed mounts
+date:   4 weeks ago
+config: riscv-randconfig-r036-20230813 (https://download.01.org/0day-ci/archive/20231106/202311060036.SZm0Y4Vs-lkp@intel.com/config)
+compiler: riscv32-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231106/202311060036.SZm0Y4Vs-lkp@intel.com/reproduce)
 
-Can you please provide proper kernel dmesg output next time instead of
-this mess?
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311060036.SZm0Y4Vs-lkp@intel.com/
 
->  ODEBUG: free active (active state 0) object: ffff888181c029a0 object type: timer_list hint: kobject_delayed_cleanup+0x0/0x140
->  WARNING: CPU: 1 PID: 104 at lib/debugobjects.c:549 debug_print_object+0xf0/0x170
->  CPU: 1 PID: 104 Comm: kworker/1:10 Tainted: G        W          6.6.0-rc7+ #17
->  Workqueue: events kobject_delayed_cleanup
->  RIP: 0010:debug_print_object+0xf0/0x170
->   debug_check_no_obj_freed+0x261/0x2b0
->   __kmem_cache_free+0x185/0x200
->   device_release+0x57/0x100
->   kobject_delayed_cleanup+0xdf/0x140
->   process_one_work+0x475/0x920
->   worker_thread+0x38a/0x680
+All errors (new ones prefixed by >>, old ones prefixed by <<):
 
-So what happens is:
+ERROR: modpost: vmlinux: local symbol 'pgtable_l5_enabled' was exported
+ERROR: modpost: vmlinux: local symbol 'phys_ram_base' was exported
+ERROR: modpost: vmlinux: local symbol 'empty_zero_page' was exported
+ERROR: modpost: vmlinux: local symbol 'vm_get_page_prot' was exported
+ERROR: modpost: vmlinux: local symbol 'riscv_cbom_block_size' was exported
+ERROR: modpost: vmlinux: local symbol 'riscv_cboz_block_size' was exported
+ERROR: modpost: vmlinux: local symbol 'arch_wb_cache_pmem' was exported
+ERROR: modpost: vmlinux: local symbol 'arch_invalidate_pmem' was exported
+ERROR: modpost: vmlinux: local symbol 'dma_cache_alignment' was exported
+ERROR: modpost: vmlinux: local symbol 'riscv_noncoherent_register_cache_ops' was exported
+ERROR: modpost: vmlinux: local symbol 'free_task' was exported
+ERROR: modpost: vmlinux: local symbol '__mmdrop' was exported
+ERROR: modpost: vmlinux: local symbol '__put_task_struct' was exported
+ERROR: modpost: vmlinux: local symbol '__put_task_struct_rcu_cb' was exported
+ERROR: modpost: vmlinux: local symbol 'mmput' was exported
+ERROR: modpost: vmlinux: local symbol 'mmput_async' was exported
+ERROR: modpost: vmlinux: local symbol 'get_task_mm' was exported
+ERROR: modpost: vmlinux: local symbol 'panic_timeout' was exported
+ERROR: modpost: vmlinux: local symbol 'panic_notifier_list' was exported
+ERROR: modpost: vmlinux: local symbol 'panic_blink' was exported
+ERROR: modpost: vmlinux: local symbol 'nmi_panic' was exported
+ERROR: modpost: vmlinux: local symbol 'panic' was exported
+ERROR: modpost: vmlinux: local symbol 'test_taint' was exported
+ERROR: modpost: vmlinux: local symbol 'add_taint' was exported
+ERROR: modpost: vmlinux: local symbol '__warn_printk' was exported
+ERROR: modpost: vmlinux: local symbol '__stack_chk_fail' was exported
+ERROR: modpost: vmlinux: local symbol '__cpuhp_state_add_instance' was exported
+ERROR: modpost: vmlinux: local symbol '__cpuhp_setup_state_cpuslocked' was exported
+ERROR: modpost: vmlinux: local symbol '__cpuhp_setup_state' was exported
+ERROR: modpost: vmlinux: local symbol '__cpuhp_state_remove_instance' was exported
+ERROR: modpost: vmlinux: local symbol '__cpuhp_remove_state_cpuslocked' was exported
+ERROR: modpost: vmlinux: local symbol '__cpuhp_remove_state' was exported
+ERROR: modpost: vmlinux: local symbol 'cpu_bit_bitmap' was exported
+ERROR: modpost: vmlinux: local symbol 'cpu_all_bits' was exported
+ERROR: modpost: vmlinux: local symbol '__cpu_possible_mask' was exported
+ERROR: modpost: vmlinux: local symbol '__cpu_online_mask' was exported
+ERROR: modpost: vmlinux: local symbol '__cpu_present_mask' was exported
+ERROR: modpost: vmlinux: local symbol '__cpu_active_mask' was exported
+ERROR: modpost: vmlinux: local symbol '__cpu_dying_mask' was exported
+ERROR: modpost: vmlinux: local symbol '__num_online_cpus' was exported
+ERROR: modpost: vmlinux: local symbol 'cpu_mitigations_off' was exported
+ERROR: modpost: vmlinux: local symbol 'cpu_mitigations_auto_nosmt' was exported
+ERROR: modpost: vmlinux: local symbol 'rcuwait_wake_up' was exported
+ERROR: modpost: vmlinux: local symbol 'thread_group_exited' was exported
+ERROR: modpost: vmlinux: local symbol 'abort' was exported
+ERROR: modpost: vmlinux: local symbol 'irq_stat' was exported
+ERROR: modpost: vmlinux: local symbol 'hardirqs_enabled' was exported
+ERROR: modpost: vmlinux: local symbol 'hardirq_context' was exported
+ERROR: modpost: vmlinux: local symbol '__local_bh_disable_ip' was exported
+ERROR: modpost: vmlinux: local symbol '_local_bh_enable' was exported
+ERROR: modpost: vmlinux: local symbol '__local_bh_enable_ip' was exported
+ERROR: modpost: vmlinux: local symbol '__tasklet_schedule' was exported
+ERROR: modpost: vmlinux: local symbol '__tasklet_hi_schedule' was exported
+ERROR: modpost: vmlinux: local symbol 'tasklet_setup' was exported
+ERROR: modpost: vmlinux: local symbol 'tasklet_init' was exported
+ERROR: modpost: vmlinux: local symbol 'tasklet_kill' was exported
+ERROR: modpost: vmlinux: local symbol 'ioport_resource' was exported
+ERROR: modpost: vmlinux: local symbol 'iomem_resource' was exported
+ERROR: modpost: vmlinux: local symbol 'request_resource' was exported
+ERROR: modpost: vmlinux: local symbol 'release_resource' was exported
+ERROR: modpost: vmlinux: local symbol 'walk_iomem_res_desc' was exported
+ERROR: modpost: vmlinux: local symbol 'page_is_ram' was exported
+ERROR: modpost: vmlinux: local symbol 'region_intersects' was exported
+ERROR: modpost: vmlinux: local symbol 'allocate_resource' was exported
+ERROR: modpost: vmlinux: local symbol 'insert_resource' was exported
+ERROR: modpost: vmlinux: local symbol 'insert_resource_expand_to_fit' was exported
+ERROR: modpost: vmlinux: local symbol 'remove_resource' was exported
+ERROR: modpost: vmlinux: local symbol 'adjust_resource' was exported
+ERROR: modpost: vmlinux: local symbol '__request_region' was exported
+ERROR: modpost: vmlinux: local symbol '__release_region' was exported
+ERROR: modpost: vmlinux: local symbol 'devm_request_resource' was exported
+ERROR: modpost: vmlinux: local symbol 'devm_release_resource' was exported
+ERROR: modpost: vmlinux: local symbol '__devm_request_region' was exported
+ERROR: modpost: vmlinux: local symbol '__devm_release_region' was exported
+ERROR: modpost: vmlinux: local symbol 'resource_list_create_entry' was exported
+ERROR: modpost: vmlinux: local symbol 'resource_list_free' was exported
+ERROR: modpost: vmlinux: local symbol 'sysctl_vals' was exported
+ERROR: modpost: vmlinux: local symbol 'sysctl_long_vals' was exported
+ERROR: modpost: vmlinux: local symbol 'proc_dou8vec_minmax' was exported
+ERROR: modpost: vmlinux: local symbol 'proc_dobool' was exported
+ERROR: modpost: vmlinux: local symbol 'proc_dointvec' was exported
+ERROR: modpost: vmlinux: local symbol 'proc_douintvec' was exported
+ERROR: modpost: vmlinux: local symbol 'proc_dointvec_jiffies' was exported
+ERROR: modpost: vmlinux: local symbol 'proc_dointvec_minmax' was exported
+ERROR: modpost: vmlinux: local symbol 'proc_douintvec_minmax' was exported
+ERROR: modpost: vmlinux: local symbol 'proc_dointvec_userhz_jiffies' was exported
+ERROR: modpost: vmlinux: local symbol 'proc_dointvec_ms_jiffies' was exported
+ERROR: modpost: vmlinux: local symbol 'proc_dostring' was exported
+ERROR: modpost: vmlinux: local symbol 'proc_doulongvec_minmax' was exported
+ERROR: modpost: vmlinux: local symbol 'proc_doulongvec_ms_jiffies_minmax' was exported
+ERROR: modpost: vmlinux: local symbol 'proc_do_large_bitmap' was exported
+ERROR: modpost: vmlinux: local symbol 'has_capability' was exported
+ERROR: modpost: vmlinux: local symbol 'has_capability_noaudit' was exported
+ERROR: modpost: vmlinux: local symbol 'ns_capable' was exported
+ERROR: modpost: vmlinux: local symbol 'ns_capable_noaudit' was exported
+ERROR: modpost: vmlinux: local symbol 'ns_capable_setid' was exported
+ERROR: modpost: vmlinux: local symbol 'capable' was exported
+ERROR: modpost: vmlinux: local symbol 'file_ns_capable' was exported
+ERROR: modpost: vmlinux: local symbol 'capable_wrt_inode_uidgid' was exported
+ERROR: modpost: vmlinux: local symbol 'task_user_regset_view' was exported
+>> ERROR: modpost: vmlinux: local symbol 'init_binfmt_misc' was exported
+ERROR: modpost: vmlinux: local symbol 'init_user_ns' was exported
+ERROR: modpost: vmlinux: local symbol 'free_uid' was exported
+ERROR: modpost: vmlinux: local symbol 'recalc_sigpending' was exported
+ERROR: modpost: vmlinux: local symbol 'flush_signals' was exported
+ERROR: modpost: vmlinux: local symbol 'dequeue_signal' was exported
+ERROR: modpost: vmlinux: local symbol 'kill_pid_usb_asyncio' was exported
+ERROR: modpost: vmlinux: local symbol 'send_sig_info' was exported
+ERROR: modpost: vmlinux: local symbol 'send_sig' was exported
+ERROR: modpost: vmlinux: local symbol 'force_sig' was exported
+ERROR: modpost: vmlinux: local symbol 'send_sig_mceerr' was exported
+ERROR: modpost: vmlinux: local symbol 'kill_pgrp' was exported
+ERROR: modpost: vmlinux: local symbol 'kill_pid' was exported
+ERROR: modpost: vmlinux: local symbol 'sigprocmask' was exported
+ERROR: modpost: vmlinux: local symbol 'kernel_sigaction' was exported
+ERROR: modpost: vmlinux: local symbol 'overflowuid' was exported
+ERROR: modpost: vmlinux: local symbol 'overflowgid' was exported
+ERROR: modpost: vmlinux: local symbol 'fs_overflowuid' was exported
+ERROR: modpost: vmlinux: local symbol 'fs_overflowgid' was exported
+ERROR: modpost: vmlinux: local symbol 'usermodehelper_read_trylock' was exported
+ERROR: modpost: vmlinux: local symbol 'usermodehelper_read_lock_wait' was exported
+ERROR: modpost: vmlinux: local symbol 'usermodehelper_read_unlock' was exported
+ERROR: modpost: vmlinux: local symbol 'call_usermodehelper_setup' was exported
+ERROR: modpost: vmlinux: local symbol 'call_usermodehelper_exec' was exported
+ERROR: modpost: vmlinux: local symbol 'call_usermodehelper' was exported
+ERROR: modpost: vmlinux: local symbol 'system_wq' was exported
+ERROR: modpost: vmlinux: local symbol 'system_highpri_wq' was exported
+ERROR: modpost: vmlinux: local symbol 'system_long_wq' was exported
+ERROR: modpost: vmlinux: local symbol 'system_unbound_wq' was exported
+ERROR: modpost: vmlinux: local symbol 'system_freezable_wq' was exported
+ERROR: modpost: vmlinux: local symbol 'system_power_efficient_wq' was exported
+ERROR: modpost: vmlinux: local symbol 'system_freezable_power_efficient_wq' was exported
+ERROR: modpost: vmlinux: local symbol '__init_work' was exported
+ERROR: modpost: vmlinux: local symbol 'destroy_work_on_stack' was exported
+ERROR: modpost: vmlinux: local symbol 'destroy_delayed_work_on_stack' was exported
+ERROR: modpost: vmlinux: local symbol 'queue_work_on' was exported
+ERROR: modpost: vmlinux: local symbol 'queue_work_node' was exported
+ERROR: modpost: vmlinux: local symbol 'delayed_work_timer_fn' was exported
+ERROR: modpost: vmlinux: local symbol 'queue_delayed_work_on' was exported
+ERROR: modpost: vmlinux: local symbol 'mod_delayed_work_on' was exported
+ERROR: modpost: vmlinux: local symbol 'queue_rcu_work' was exported
+ERROR: modpost: vmlinux: local symbol '__flush_workqueue' was exported
+ERROR: modpost: vmlinux: local symbol 'drain_workqueue' was exported
+ERROR: modpost: vmlinux: local symbol 'flush_work' was exported
+ERROR: modpost: vmlinux: local symbol 'cancel_work_sync' was exported
+ERROR: modpost: vmlinux: local symbol 'flush_delayed_work' was exported
+ERROR: modpost: vmlinux: local symbol 'flush_rcu_work' was exported
+ERROR: modpost: vmlinux: local symbol 'cancel_work' was exported
+ERROR: modpost: vmlinux: local symbol 'cancel_delayed_work' was exported
+ERROR: modpost: vmlinux: local symbol 'cancel_delayed_work_sync' was exported
+ERROR: modpost: vmlinux: local symbol 'execute_in_process_context' was exported
+ERROR: modpost: vmlinux: local symbol 'alloc_workqueue' was exported
+ERROR: modpost: vmlinux: local symbol 'destroy_workqueue' was exported
+ERROR: modpost: vmlinux: local symbol 'workqueue_set_max_active' was exported
+ERROR: modpost: vmlinux: local symbol 'current_work' was exported
+ERROR: modpost: vmlinux: local symbol 'workqueue_congested' was exported
+ERROR: modpost: vmlinux: local symbol 'work_busy' was exported
+ERROR: modpost: vmlinux: local symbol 'set_worker_desc' was exported
+ERROR: modpost: vmlinux: local symbol '__warn_flushing_systemwide_wq' was exported
+ERROR: modpost: vmlinux: local symbol 'init_pid_ns' was exported
+ERROR: modpost: vmlinux: local symbol 'put_pid' was exported
+ERROR: modpost: vmlinux: local symbol 'find_pid_ns' was exported
+ERROR: modpost: vmlinux: local symbol 'find_vpid' was exported
+ERROR: modpost: vmlinux: local symbol 'pid_task' was exported
+ERROR: modpost: vmlinux: local symbol 'get_task_pid' was exported
+ERROR: modpost: vmlinux: local symbol 'get_pid_task' was exported
+ERROR: modpost: vmlinux: local symbol 'find_get_pid' was exported
+ERROR: modpost: vmlinux: local symbol 'pid_nr_ns' was exported
+ERROR: modpost: vmlinux: local symbol 'pid_vnr' was exported
+ERROR: modpost: vmlinux: local symbol '__task_pid_nr_ns' was exported
+ERROR: modpost: vmlinux: local symbol 'task_active_pid_ns' was exported
+ERROR: modpost: vmlinux: local symbol 'find_ge_pid' was exported
+ERROR: modpost: vmlinux: local symbol 'param_set_byte' was exported
+ERROR: modpost: vmlinux: local symbol 'param_get_byte' was exported
+ERROR: modpost: vmlinux: local symbol 'param_ops_byte' was exported
+ERROR: modpost: vmlinux: local symbol 'param_set_short' was exported
+ERROR: modpost: vmlinux: local symbol 'param_get_short' was exported
+ERROR: modpost: vmlinux: local symbol 'param_ops_short' was exported
+ERROR: modpost: vmlinux: local symbol 'param_set_ushort' was exported
+ERROR: modpost: vmlinux: local symbol 'param_get_ushort' was exported
+ERROR: modpost: vmlinux: local symbol 'param_ops_ushort' was exported
+ERROR: modpost: vmlinux: local symbol 'param_set_int' was exported
+ERROR: modpost: vmlinux: local symbol 'param_get_int' was exported
+ERROR: modpost: vmlinux: local symbol 'param_ops_int' was exported
+ERROR: modpost: vmlinux: local symbol 'param_set_uint' was exported
+ERROR: modpost: vmlinux: local symbol 'param_get_uint' was exported
+ERROR: modpost: vmlinux: local symbol 'param_ops_uint' was exported
+ERROR: modpost: vmlinux: local symbol 'param_set_long' was exported
+ERROR: modpost: vmlinux: local symbol 'param_get_long' was exported
+ERROR: modpost: vmlinux: local symbol 'param_ops_long' was exported
+ERROR: modpost: vmlinux: local symbol 'param_set_ulong' was exported
+ERROR: modpost: vmlinux: local symbol 'param_get_ulong' was exported
+ERROR: modpost: vmlinux: local symbol 'param_ops_ulong' was exported
+ERROR: modpost: vmlinux: local symbol 'param_set_ullong' was exported
+ERROR: modpost: vmlinux: local symbol 'param_get_ullong' was exported
+ERROR: modpost: vmlinux: local symbol 'param_ops_ullong' was exported
+ERROR: modpost: vmlinux: local symbol 'param_set_hexint' was exported
+ERROR: modpost: vmlinux: local symbol 'param_get_hexint' was exported
+ERROR: modpost: vmlinux: local symbol 'param_ops_hexint' was exported
+ERROR: modpost: vmlinux: local symbol 'param_set_uint_minmax' was exported
+ERROR: modpost: vmlinux: local symbol 'param_set_charp' was exported
 
-pps_unregister_cdev()
-  device_destroy()
-    put_device()
-     device_unregister()
-       device_del()
-       put_device() <- Drops final reference to dev->kobj
-         schedule_delayed_work()
-
-worker thread:
-  kobject_delayed_cleanup()
-    device_release()
-      pps_device_destruct()
-        cdev_del(&pps->cdev)
-          kobject_put(&cdev->kobj) <- Drops final reference
-            schedule_delayed_work()
-              init_timer(&cdev->kobj.release.timer);
-              start_timer();
-       ...
-       kfree(dev);
-       kfree(pps); <- Debug object detects the active timer to be freed
-                      because cdev and its kobject are embedded in
-                      struct pps_device.
-
-pps_device_destruct() is unfortunately not on the call trace of the
-debug objects splat anymore stack because kfree(pps) is a tail call.
-
-So yes, that collected stacktrace is helpful.
-
->> To try to improve this, store the backtrace of where the
->> debug_obj was created and print that out when problems
->> are found.
-<SNIP>
-
-Please trim your replies.
-
-Thanks,
-
-        tglx
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
