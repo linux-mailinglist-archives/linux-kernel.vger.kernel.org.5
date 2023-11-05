@@ -2,108 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DFE7A7E1342
+	by mail.lfdr.de (Postfix) with ESMTP id 891777E1341
 	for <lists+linux-kernel@lfdr.de>; Sun,  5 Nov 2023 13:03:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229638AbjKEMCM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Nov 2023 07:02:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43390 "EHLO
+        id S230243AbjKEMCv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Nov 2023 07:02:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229447AbjKEMCL (ORCPT
+        with ESMTP id S229447AbjKEMCt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Nov 2023 07:02:11 -0500
-Received: from mx.treblig.org (mx.treblig.org [IPv6:2a00:1098:5b::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E4BCB3;
-        Sun,  5 Nov 2023 04:02:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=treblig.org
-        ; s=bytemarkmx; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID
-        :Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID
-        :Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:
-        Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe
-        :List-Post:List-Owner:List-Archive;
-        bh=HKXNPHCNFdPxUogka4hm8V+2J/QunQMFn3t+L+Ja0qo=; b=rrxdtwlydDZtpPWdp4PyeluEdR
-        YCtNI9BNTwOd/NGU1Aie9jh4PYI8D7SJBc8MHKqgCKf4rU3dkxqKhdA6xAQ2TcvX1gWWM8BMFurtW
-        i4+L5rJdlnuqjN+crYn074KCNu4GTaGIulqcmXkW8Kvg5Wx0cy/SRnDiG4SUuiIm83gG+Q3j5brIX
-        Zp1WMwqxwZbS6KcmXhrWae0MnxClOycL5oy7s2fdECJH9MSylDW+Wif7bGJ7A0T3EoOHcGix+g7eQ
-        ekhiBsXhxGWGbNo74EP6mFtnp0oszox4X6jPHSg1qbILD/tNvMoO78nM0oI6X++GHdpm2BB24lqmn
-        +qqJSYGg==;
-Received: from dg by mx.treblig.org with local (Exim 4.96)
-        (envelope-from <dg@treblig.org>)
-        id 1qzbpN-007pAD-0H;
-        Sun, 05 Nov 2023 12:02:05 +0000
-Date:   Sun, 5 Nov 2023 12:02:05 +0000
-From:   "Dr. David Alan Gilbert" <dave@treblig.org>
-To:     Donald Buczek <buczek@molgen.mpg.de>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: Heisenbug: I/O freeze can be resolved by cat $task/cmdline of
- unrelated process
-Message-ID: <ZUeEPQy9v9BdOHar@gallifrey>
-References: <77184fcc-46ab-4d69-b163-368264fa49f7@molgen.mpg.de>
+        Sun, 5 Nov 2023 07:02:49 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12245B3
+        for <linux-kernel@vger.kernel.org>; Sun,  5 Nov 2023 04:02:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699185767; x=1730721767;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=J4JwgJa5GNdZjFKBIAPG8n7Mh06Yyk1yBkXjMYRLJd4=;
+  b=eyAtos5AEpCO2z6UKBrwixb+mmPmk6NFVSXpAUHWtSiRIfAqVx8mM8eA
+   qshhHRXHA2P73WBEwBdOFy2L7YfD7y+j/ZfuK1ODXfQo8Sld6/sCe5b+u
+   IDmrVIOLjWNJ2QbPXlU38ZsZe73TWsKONLmam64WOB9THhNmKp7PDSrPi
+   Egk8vOBTVSaLExMVKvTKEL8+jM72YZ8C08lJXfZe18D23NXb1x885kF2m
+   LLjWNb0Ms/aQj6qZsfZ+snPz2wbIQ5v5Q8LrkwogVQ1wwA/wVFJtMhLHe
+   NLWr2uYh16eS3lFCh3KMj/NfvQlFOd3+Kq+OO+4tiszEWPm2eMrC7zXOO
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10884"; a="420260463"
+X-IronPort-AV: E=Sophos;i="6.03,279,1694761200"; 
+   d="scan'208";a="420260463"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2023 04:02:46 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.03,279,1694761200"; 
+   d="scan'208";a="9831066"
+Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
+  by orviesa001.jf.intel.com with ESMTP; 05 Nov 2023 04:02:44 -0800
+Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qzbpx-0005Od-33;
+        Sun, 05 Nov 2023 12:02:41 +0000
+Date:   Sun, 5 Nov 2023 20:02:22 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Hannes Reinecke <hare@suse.de>
+Subject: drivers/scsi/FlashPoint.c:1712:12: warning: stack frame size (2544)
+ exceeds limit (2048) in 'FlashPoint_HandleInterrupt'
+Message-ID: <202311051924.sPxeVYCL-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <77184fcc-46ab-4d69-b163-368264fa49f7@molgen.mpg.de>
-X-Chocolate: 70 percent or better cocoa solids preferably
-X-Operating-System: Linux/6.1.0-12-amd64 (x86_64)
-X-Uptime: 11:59:39 up 50 days, 14:58,  1 user,  load average: 0.00, 0.00, 0.00
-User-Agent: Mutt/2.2.12 (2023-09-09)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Donald Buczek (buczek@molgen.mpg.de) wrote:
-> Hello, experts,
-> 
-> we have a strange new problem on a backup server (high metadata I/O 24/7, xfs -> mdraid). The system worked for years and with v5.15.86 for 8 month. Then we've updated to 6.1.52 and after a few hours it froze: No more I/O activity to one of its filesystems, processes trying to access it blocked until we reboot.
-> 
-> Of course, at first we blamed the kernel as this happened after an upgrade. But after several experiments with different kernel versions, we've returned to the v5.15.86 kernel we used before, but still experienced the problem. Then we suspected, that a microcode update (for AMD EPYC 7261), which happened as a side effect of the first reboot, might be the culprit and removed it. That didn't fix it either. For all I can say, all software is back to the state which worked before.
+Hi Arnd,
 
-I'm not sure; but did you check /proc/cpuinfo after that revert and
-check the microcode version dropped back (or physically pwoer cycle);
-I'm not sure if a reboot reverts the microcode version.
+First bad commit (maybe != root cause):
 
-> Now the strange part: What we usually do, when we have a situation like this, is that we run a script which takes several procfs and sysfs information which happened to be useful in the past. It was soon discovered, that just running this script unblocks the system. I/O continues as if nothing ever happened. Then we singled-stepped the operations of the script to find out, what action exactly gets the system to resume. It is this part:
-> 
->     for task in /proc/*/task/*; do
->         echo  "# # $task: $(cat $task/comm) : $(cat $task/cmdline | xargs -0 echo)"
->         cmd cat $task/stack
->     done
-> 
-> which can further be reduced to
-> 
->     for task in /proc/*/task/*; do echo $task $(cat $task/cmdline | xargs -0 echo); done
-> 
-> This is absolutely reproducible. Above line unblocks the system reliably.
-> 
-> Another remarkable thing: We've modified above code to do the processes slowly one by one and checking after each step if I/O resumed. And each time we've tested that, it was one of the 64 nfsd processes (but not the very first one tried). While the systems exports filesystems, we have absolutely no reason to assume, that any client actually tries to access this nfs server. Additionally, when the full script is run, the stack traces show all nfsd tasks in their normal idle state ( [<0>] svc_recv+0x7bd/0x8d0 [sunrpc] ).
-> 
-> Does anybody have an idea, how a `cat /proc/PID/cmdline` on a specific assumed-to-be-idle nfsd thread could have such an "healing" effect?
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   1c41041124bd14dd6610da256a3da4e5b74ce6b1
+commit: 9f7c2232e131b1de2ee4abadfce5d8f010e223c6 scsi: BusLogic: Remove bus_to_virt()
+date:   1 year, 4 months ago
+config: powerpc64-allyesconfig (https://download.01.org/0day-ci/archive/20231105/202311051924.sPxeVYCL-lkp@intel.com/config)
+compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231105/202311051924.sPxeVYCL-lkp@intel.com/reproduce)
 
-Not me; but had you tried something simpler like a sysrq-d or sysrq-w
-for locks and blocked tasks.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311051924.sPxeVYCL-lkp@intel.com/
 
-> I'm well aware, that, for example, a hardware problem might result in just anything and that the question might not be answerable at all. If so: please excuse the noise.
+All warnings (new ones prefixed by >>):
 
-Seems a weird hardware problem to have that specific
-a way to unblock it.
+   drivers/scsi/BusLogic.c:2201:6: warning: variable 'adapter_count' set but not used [-Wunused-but-set-variable]
+    2201 |         int adapter_count = 0, drvr_optindex = 0, probeindex;
+         |             ^
+   In file included from drivers/scsi/BusLogic.c:51:
+>> drivers/scsi/FlashPoint.c:1712:12: warning: stack frame size (2544) exceeds limit (2048) in 'FlashPoint_HandleInterrupt' [-Wframe-larger-than]
+    1712 | static int FlashPoint_HandleInterrupt(void *pcard)
+         |            ^
+   2 warnings generated.
 
-Dave
 
-> Thanks
-> Donald
-> -- 
-> Donald Buczek
-> buczek@molgen.mpg.de
-> Tel: +49 30 8413 1433
+vim +/FlashPoint_HandleInterrupt +1712 drivers/scsi/FlashPoint.c
+
+^1da177e4c3f41 Linus Torvalds  2005-04-16  1702  
+^1da177e4c3f41 Linus Torvalds  2005-04-16  1703  /*---------------------------------------------------------------------
+^1da177e4c3f41 Linus Torvalds  2005-04-16  1704   *
+d8b6b8bd8a99ee Alexey Dobriyan 2006-03-08  1705   * Function: FlashPoint_HandleInterrupt
+^1da177e4c3f41 Linus Torvalds  2005-04-16  1706   *
+^1da177e4c3f41 Linus Torvalds  2005-04-16  1707   * Description: This is our entry point when an interrupt is generated
+^1da177e4c3f41 Linus Torvalds  2005-04-16  1708   *              by the card and the upper level driver passes it on to
+^1da177e4c3f41 Linus Torvalds  2005-04-16  1709   *              us.
+^1da177e4c3f41 Linus Torvalds  2005-04-16  1710   *
+^1da177e4c3f41 Linus Torvalds  2005-04-16  1711   *---------------------------------------------------------------------*/
+391e2f25601e34 Khalid Aziz     2013-05-16 @1712  static int FlashPoint_HandleInterrupt(void *pcard)
+^1da177e4c3f41 Linus Torvalds  2005-04-16  1713  {
+69eb2ea4779336 Alexey Dobriyan 2006-03-08  1714  	struct sccb *currSCCB;
+db038cf86fc63d Alexey Dobriyan 2006-03-08  1715  	unsigned char thisCard, result, bm_status, bm_int_st;
+c823feeb33161c Alexey Dobriyan 2006-03-08  1716  	unsigned short hp_int;
+db038cf86fc63d Alexey Dobriyan 2006-03-08  1717  	unsigned char i, target;
+391e2f25601e34 Khalid Aziz     2013-05-16  1718  	struct sccb_card *pCurrCard = pcard;
+391e2f25601e34 Khalid Aziz     2013-05-16  1719  	u32 ioport;
+^1da177e4c3f41 Linus Torvalds  2005-04-16  1720  
+391e2f25601e34 Khalid Aziz     2013-05-16  1721  	thisCard = pCurrCard->cardIndex;
+391e2f25601e34 Khalid Aziz     2013-05-16  1722  	ioport = pCurrCard->ioPort;
+^1da177e4c3f41 Linus Torvalds  2005-04-16  1723  
+^1da177e4c3f41 Linus Torvalds  2005-04-16  1724  	MDISABLE_INT(ioport);
+^1da177e4c3f41 Linus Torvalds  2005-04-16  1725  
+^1da177e4c3f41 Linus Torvalds  2005-04-16  1726  	if ((bm_int_st = RD_HARPOON(ioport + hp_int_status)) & EXT_STATUS_ON)
+391e2f25601e34 Khalid Aziz     2013-05-16  1727  		bm_status = RD_HARPOON(ioport + hp_ext_status) &
+391e2f25601e34 Khalid Aziz     2013-05-16  1728  					(unsigned char)BAD_EXT_STATUS;
+^1da177e4c3f41 Linus Torvalds  2005-04-16  1729  	else
+^1da177e4c3f41 Linus Torvalds  2005-04-16  1730  		bm_status = 0;
+^1da177e4c3f41 Linus Torvalds  2005-04-16  1731  
+^1da177e4c3f41 Linus Torvalds  2005-04-16  1732  	WR_HARPOON(ioport + hp_int_mask, (INT_CMD_COMPL | SCSI_INTERRUPT));
+^1da177e4c3f41 Linus Torvalds  2005-04-16  1733  
+391e2f25601e34 Khalid Aziz     2013-05-16  1734  	while ((hp_int = RDW_HARPOON((ioport + hp_intstat)) &
+391e2f25601e34 Khalid Aziz     2013-05-16  1735  				FPT_default_intena) | bm_status) {
+^1da177e4c3f41 Linus Torvalds  2005-04-16  1736  
+391e2f25601e34 Khalid Aziz     2013-05-16  1737  		currSCCB = pCurrCard->currentSCCB;
+^1da177e4c3f41 Linus Torvalds  2005-04-16  1738  
+^1da177e4c3f41 Linus Torvalds  2005-04-16  1739  		if (hp_int & (FIFO | TIMEOUT | RESET | SCAM_SEL) || bm_status) {
+5c04a7b8981f28 Alexey Dobriyan 2006-03-08  1740  			result =
+391e2f25601e34 Khalid Aziz     2013-05-16  1741  			    FPT_SccbMgr_bad_isr(ioport, thisCard, pCurrCard,
+5c04a7b8981f28 Alexey Dobriyan 2006-03-08  1742  						hp_int);
+5c04a7b8981f28 Alexey Dobriyan 2006-03-08  1743  			WRW_HARPOON((ioport + hp_intstat),
+5c04a7b8981f28 Alexey Dobriyan 2006-03-08  1744  				    (FIFO | TIMEOUT | RESET | SCAM_SEL));
+^1da177e4c3f41 Linus Torvalds  2005-04-16  1745  			bm_status = 0;
+^1da177e4c3f41 Linus Torvalds  2005-04-16  1746  
+^1da177e4c3f41 Linus Torvalds  2005-04-16  1747  			if (result) {
+^1da177e4c3f41 Linus Torvalds  2005-04-16  1748  
+^1da177e4c3f41 Linus Torvalds  2005-04-16  1749  				MENABLE_INT(ioport);
+5c1b85e209af41 Alexey Dobriyan 2006-03-08  1750  				return result;
+^1da177e4c3f41 Linus Torvalds  2005-04-16  1751  			}
+^1da177e4c3f41 Linus Torvalds  2005-04-16  1752  		}
+^1da177e4c3f41 Linus Torvalds  2005-04-16  1753  
+^1da177e4c3f41 Linus Torvalds  2005-04-16  1754  		else if (hp_int & ICMD_COMP) {
+^1da177e4c3f41 Linus Torvalds  2005-04-16  1755  
+^1da177e4c3f41 Linus Torvalds  2005-04-16  1756  			if (!(hp_int & BUS_FREE)) {
+^1da177e4c3f41 Linus Torvalds  2005-04-16  1757  				/* Wait for the BusFree before starting a new command.  We
+^1da177e4c3f41 Linus Torvalds  2005-04-16  1758  				   must also check for being reselected since the BusFree
+^1da177e4c3f41 Linus Torvalds  2005-04-16  1759  				   may not show up if another device reselects us in 1.5us or
+^1da177e4c3f41 Linus Torvalds  2005-04-16  1760  				   less.  SRR Wednesday, 3/8/1995.
+^1da177e4c3f41 Linus Torvalds  2005-04-16  1761  				 */
+5c04a7b8981f28 Alexey Dobriyan 2006-03-08  1762  				while (!
+5c04a7b8981f28 Alexey Dobriyan 2006-03-08  1763  				       (RDW_HARPOON((ioport + hp_intstat)) &
+5c04a7b8981f28 Alexey Dobriyan 2006-03-08  1764  					(BUS_FREE | RSEL))) ;
+^1da177e4c3f41 Linus Torvalds  2005-04-16  1765  			}
+^1da177e4c3f41 Linus Torvalds  2005-04-16  1766  
+391e2f25601e34 Khalid Aziz     2013-05-16  1767  			if (pCurrCard->globalFlags & F_HOST_XFER_ACT)
+^1da177e4c3f41 Linus Torvalds  2005-04-16  1768  
+47b5d69c4aa753 James Bottomley 2005-04-24  1769  				FPT_phaseChkFifo(ioport, thisCard);
+^1da177e4c3f41 Linus Torvalds  2005-04-16  1770  
+
+:::::: The code at line 1712 was first introduced by commit
+:::::: 391e2f25601e34a7d7e5dc155e487bc58dffd8c6 [SCSI] BusLogic: Port driver to 64-bit.
+
+:::::: TO: Khalid Aziz <khalid.aziz@oracle.com>
+:::::: CC: James Bottomley <JBottomley@Parallels.com>
+
 -- 
- -----Open up your eyes, open up your mind, open up your code -------   
-/ Dr. David Alan Gilbert    |       Running GNU/Linux       | Happy  \ 
-\        dave @ treblig.org |                               | In Hex /
- \ _________________________|_____ http://www.treblig.org   |_______/
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
