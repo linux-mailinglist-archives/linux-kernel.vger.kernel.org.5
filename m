@@ -2,228 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B9E9F7E129A
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Nov 2023 09:36:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D0EC7E12A4
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Nov 2023 09:40:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230120AbjKEIg3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Nov 2023 03:36:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60122 "EHLO
+        id S230034AbjKEIkJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Nov 2023 03:40:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229455AbjKEIg1 (ORCPT
+        with ESMTP id S229455AbjKEIkH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Nov 2023 03:36:27 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BAC1DB;
-        Sun,  5 Nov 2023 01:36:24 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E6161C433C7;
-        Sun,  5 Nov 2023 08:36:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699173384;
-        bh=cq1uyWY//yo7TAcMVEgPAIfwQ/7UUGgpAXQ4/ztZPIs=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=lgdbL1ughmbn5SdYS5NIgJkGd+qRDZYZOzn5e9qsvTMSftldjyJfIbdv7XZSfB1sP
-         hOazaIlNu3WlZho88+1iQRAbdZaATP66mIlHR8fGOdVPho9yyq+teZCAvJQOju4bmD
-         h06LFkWCYRAJHzr4EGBaYfoPKs4NMzpGgZ6LahhFjLup4TPfkjbL1Bf1t4ooKdXhzL
-         budJSW4Q4gqzydby7ppFXZGRbFTiQ0peo4w6Zwo0HAWtjjU5oYlcFbpPsaLqtsQefC
-         XrC8TCmAe8x5lUitirZZ7cDk145QcshXEfvm0XZbOSc5o08UvdjSBcbuL/uQvrgwCf
-         CNKoNfupxJRHw==
-Date:   Sun, 5 Nov 2023 17:36:18 +0900
-From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Stephane Eranian <eranian@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        linux-toolchains@vger.kernel.org, linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH 09/48] perf dwarf-regs: Add get_dwarf_regnum()
-Message-Id: <20231105173618.c3e5d9faef347f27a6c4f049@kernel.org>
-In-Reply-To: <20231012035111.676789-10-namhyung@kernel.org>
-References: <20231012035111.676789-1-namhyung@kernel.org>
-        <20231012035111.676789-10-namhyung@kernel.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-8.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Sun, 5 Nov 2023 03:40:07 -0500
+Received: from mail-oi1-f197.google.com (mail-oi1-f197.google.com [209.85.167.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B51EED9
+        for <linux-kernel@vger.kernel.org>; Sun,  5 Nov 2023 01:40:04 -0700 (PDT)
+Received: by mail-oi1-f197.google.com with SMTP id 5614622812f47-3b2e7ae47d1so5333880b6e.0
+        for <linux-kernel@vger.kernel.org>; Sun, 05 Nov 2023 01:40:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699173604; x=1699778404;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ubi1y/nFwBKOxlg1T1iV5JNUkHex1InrNIEt964xeT4=;
+        b=hSEEGkYU/m4FgJ6V7xqL6yulaCBHe1XsyzKAHkeDHpncIPHhiqpQSR+jyr9XOHRic7
+         A0quexMLKJbymilAh2lj3zfPXLeTd9rdd1gZa/YC4sVYQnOemflgmKIZj73S7T/iGMsE
+         1AjBhJDr75o8dQgPtTNGirbD4VQpz1LpUddk9VitN7qO72knq2+zmHBG1qmtJ9rHsbZ0
+         Oe6Iu+eKEE3wwByEtv+0Akq/eeB1JDJsHmiI/72r/RbMg6jtDiKOjxPrWJ458S89u6Hp
+         zP4MeUUiuADlqn0Hin0ZxjLs9NWdmpXbjaeoZcn3tKr6Rc8Hg7wXFYkZ0hyJX3KzzndM
+         wgOw==
+X-Gm-Message-State: AOJu0YzS2vD2Ddh37GSUj0tJI/2/qHUazwjUHuJGDVgIQltXUTsopqvx
+        rekhebOSjyitxVFxqD3P6xtc1Ni9TfqtSc2L/4H2YHlcWM67
+X-Google-Smtp-Source: AGHT+IGqts477963RT4MDh/f/hOQ8Is3TL1ul5XZfsXe70UO+SdEY8Tj3eLHmIToYNzq6fUjwsfSMcQJugLkZMJ9xfcI14GwIpl/
+MIME-Version: 1.0
+X-Received: by 2002:a54:470b:0:b0:3b2:e214:9118 with SMTP id
+ k11-20020a54470b000000b003b2e2149118mr8543741oik.4.1699173603875; Sun, 05 Nov
+ 2023 01:40:03 -0700 (PDT)
+Date:   Sun, 05 Nov 2023 01:40:03 -0700
+In-Reply-To: <000000000000a6429e0609331930@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000001222c4060963af3a@google.com>
+Subject: Re: [syzbot] [btrfs?] KASAN: slab-use-after-free Read in btrfs_qgroup_account_extent
+From:   syzbot <syzbot+e0b615318f8fcfc01ceb@syzkaller.appspotmail.com>
+To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        wqu@suse.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=2.3 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        RCVD_IN_SORBS_WEB,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
+X-Spam-Level: **
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 11 Oct 2023 20:50:32 -0700
-Namhyung Kim <namhyung@kernel.org> wrote:
+syzbot has bisected this issue to:
 
-> The get_dwarf_regnum() returns a DWARF register number from a register
-> name string according to the psABI.  Also add two pseudo encodings of
-> DWARF_REG_PC which is a register that are used by PC-relative addressing
-> and DWARF_REG_FB which is a frame base register.  They need to be
-> handled in a special way.
-> 
+commit dce28769a33a95425b007f00842d6e12ffa28f83
+Author: Qu Wenruo <wqu@suse.com>
+Date:   Sat Sep 2 00:13:57 2023 +0000
 
-I have some comments below.
+    btrfs: qgroup: use qgroup_iterator_nested to in qgroup_update_refcnt()
 
-> Cc: Masami Hiramatsu <mhiramat@kernel.org>
-> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> ---
->  tools/perf/arch/x86/util/dwarf-regs.c | 38 +++++++++++++++++++++++++++
->  tools/perf/util/dwarf-regs.c          | 33 +++++++++++++++++++++++
->  tools/perf/util/include/dwarf-regs.h  | 11 ++++++++
->  3 files changed, 82 insertions(+)
-> 
-> diff --git a/tools/perf/arch/x86/util/dwarf-regs.c b/tools/perf/arch/x86/util/dwarf-regs.c
-> index 530934805710..79835b897cae 100644
-> --- a/tools/perf/arch/x86/util/dwarf-regs.c
-> +++ b/tools/perf/arch/x86/util/dwarf-regs.c
-> @@ -113,3 +113,41 @@ int regs_query_register_offset(const char *name)
->  			return roff->offset;
->  	return -EINVAL;
->  }
-> +
-> +struct dwarf_regs_idx {
-> +	const char *name;
-> +	int idx;
-> +};
-> +
-> +static const struct dwarf_regs_idx x86_regidx_table[] = {
-> +	{ "rax", 0 }, { "eax", 0 }, { "ax", 0 }, { "al", 0 },
-> +	{ "rdx", 1 }, { "edx", 1 }, { "dx", 1 }, { "dl", 1 },
-> +	{ "rcx", 2 }, { "ecx", 2 }, { "cx", 2 }, { "cl", 2 },
-> +	{ "rbx", 3 }, { "edx", 3 }, { "bx", 3 }, { "bl", 3 },
-> +	{ "rsi", 4 }, { "esi", 4 }, { "si", 4 }, { "sil", 4 },
-> +	{ "rdi", 5 }, { "edi", 5 }, { "di", 5 }, { "dil", 5 },
-> +	{ "rbp", 6 }, { "ebp", 6 }, { "bp", 6 }, { "bpl", 6 },
-> +	{ "rsp", 7 }, { "esp", 7 }, { "sp", 7 }, { "spl", 7 },
-> +	{ "r8", 8 }, { "r8d", 8 }, { "r8w", 8 }, { "r8b", 8 },
-> +	{ "r9", 9 }, { "r9d", 9 }, { "r9w", 9 }, { "r9b", 9 },
-> +	{ "r10", 10 }, { "r10d", 10 }, { "r10w", 10 }, { "r10b", 10 },
-> +	{ "r11", 11 }, { "r11d", 11 }, { "r11w", 11 }, { "r11b", 11 },
-> +	{ "r12", 12 }, { "r12d", 12 }, { "r12w", 12 }, { "r12b", 12 },
-> +	{ "r13", 13 }, { "r13d", 13 }, { "r13w", 13 }, { "r13b", 13 },
-> +	{ "r14", 14 }, { "r14d", 14 }, { "r14w", 14 }, { "r14b", 14 },
-> +	{ "r15", 15 }, { "r15d", 15 }, { "r15w", 15 }, { "r15b", 15 },
-> +	{ "rip", DWARF_REG_PC },
-> +};
-> +
-> +int get_arch_regnum(const char *name)
-> +{
-> +	unsigned int i;
-> +
-> +	if (*name != '%')
-> +		return -1;
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14f01717680000
+start commit:   90b0c2b2edd1 Merge tag 'pinctrl-v6.7-1' of git://git.kerne..
+git tree:       upstream
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=16f01717680000
+console output: https://syzkaller.appspot.com/x/log.txt?x=12f01717680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=4cc8c922092464e7
+dashboard link: https://syzkaller.appspot.com/bug?extid=e0b615318f8fcfc01ceb
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14cae708e80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1354647b680000
 
-Isn't it better to return an error code? e.g. -EINVAL.
+Reported-by: syzbot+e0b615318f8fcfc01ceb@syzkaller.appspotmail.com
+Fixes: dce28769a33a ("btrfs: qgroup: use qgroup_iterator_nested to in qgroup_update_refcnt()")
 
-> +
-> +	for (i = 0; i < ARRAY_SIZE(x86_regidx_table); i++)
-> +		if (!strcmp(x86_regidx_table[i].name, name + 1))
-> +			return x86_regidx_table[i].idx;
-> +	return -1;
-
-And -ENOENT.
-
-> +}
-> diff --git a/tools/perf/util/dwarf-regs.c b/tools/perf/util/dwarf-regs.c
-> index 69cfaa5953bf..28d786c7df55 100644
-> --- a/tools/perf/util/dwarf-regs.c
-> +++ b/tools/perf/util/dwarf-regs.c
-> @@ -5,6 +5,8 @@
->   * Written by: Masami Hiramatsu <mhiramat@kernel.org>
->   */
->  
-> +#include <stdlib.h>
-> +#include <string.h>
->  #include <debug.h>
->  #include <dwarf-regs.h>
->  #include <elf.h>
-> @@ -68,3 +70,34 @@ const char *get_dwarf_regstr(unsigned int n, unsigned int machine)
->  	}
->  	return NULL;
->  }
-> +
-> +__weak int get_arch_regnum(const char *name __maybe_unused)
-> +{
-> +	return -1;
-
-And -EOPNOTSUPP.
-
-> +}
-> +
-> +/* Return DWARF register number from architecture register name */
-> +int get_dwarf_regnum(const char *name, unsigned int machine)
-> +{
-> +	char *regname = strdup(name);
-> +	int reg = -1;
-> +	char *p;
-> +
-> +	if (regname == NULL)
-> +		return -1;
-
-Here, -EINVAL.
-
-> +
-> +	/* For convenience, remove trailing characters */
-> +	p = strpbrk(regname, " ,)");
-> +	if (p)
-> +		*p = '\0';
-> +
-> +	switch (machine) {
-> +	case EM_NONE:	/* Generic arch - use host arch */
-> +		reg = get_arch_regnum(regname);
-> +		break;
-> +	default:
-> +		pr_err("ELF MACHINE %x is not supported.\n", machine);
-> +	}
-> +	free(regname);
-> +	return reg;
-> +}
-> diff --git a/tools/perf/util/include/dwarf-regs.h b/tools/perf/util/include/dwarf-regs.h
-> index 7d99a084e82d..b515f694f55e 100644
-> --- a/tools/perf/util/include/dwarf-regs.h
-> +++ b/tools/perf/util/include/dwarf-regs.h
-> @@ -2,6 +2,9 @@
->  #ifndef _PERF_DWARF_REGS_H_
->  #define _PERF_DWARF_REGS_H_
->  
-> +#define DWARF_REG_PC  0xd3af9c /* random number */
-> +#define DWARF_REG_FB  0xd3affb /* random number */
-> +
-
-Is this for other patch in the series?
-
->  #ifdef HAVE_DWARF_SUPPORT
->  const char *get_arch_regstr(unsigned int n);
->  /*
-> @@ -10,6 +13,14 @@ const char *get_arch_regstr(unsigned int n);
->   * machine: ELF machine signature (EM_*)
->   */
->  const char *get_dwarf_regstr(unsigned int n, unsigned int machine);
-> +
-> +int get_arch_regnum(const char *name);
-> +/*
-> + * get_dwarf_regnum - Returns DWARF regnum from register name
-> + * name: architecture register name
-> + * machine: ELF machine signature (EM_*)
-> + */
-> +int get_dwarf_regnum(const char *name, unsigned int machine);
->  #endif
->  
->  #ifdef HAVE_ARCH_REGS_QUERY_REGISTER_OFFSET
-> -- 
-> 2.42.0.655.g421f12c284-goog
-> 
-
-Thank you,
-
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
