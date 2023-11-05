@@ -2,115 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D4B3E7E133A
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Nov 2023 12:52:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DFE7A7E1342
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Nov 2023 13:03:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230212AbjKELwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Nov 2023 06:52:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55774 "EHLO
+        id S229638AbjKEMCM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Nov 2023 07:02:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229527AbjKELwD (ORCPT
+        with ESMTP id S229447AbjKEMCL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Nov 2023 06:52:03 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E39CE9
-        for <linux-kernel@vger.kernel.org>; Sun,  5 Nov 2023 03:52:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699185120; x=1730721120;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=Qr3/tNpVCqupgwjaUG9/Q6gCVC8204wPmzWLT76y2+8=;
-  b=f4jSngC6Hzl9LoOxjZ4a9nepT4E+mNWX5Ikvs7fQr+IYH8ZBVhiG7fku
-   Xi1fs+Sea7tqX8whshIFj5/D1oCdF0i4q6gp9P2kU9oVxKoS3FHu1zQPn
-   IQlFSAwrPb+hyPx9q8643O6izJsTRVC5ayVK27EaiWbe3XUsllNaC6/h0
-   AgNMo3aEa/MXjFsKKX90YtqKq2enZA/FsHikIQMZ/ZeCZcVplW1MpcOqs
-   o8qFi1eUJjgERbC7VaIaFN6kGAzT3QGvcoD6OA03M/nBWMaJx+h8kV9sB
-   RbIRevAMvvek6tORMquVj/E0NAHxoYDxSPorvG7a7u1DYyV2Ce/trslD3
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10884"; a="420259642"
-X-IronPort-AV: E=Sophos;i="6.03,279,1694761200"; 
-   d="scan'208";a="420259642"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2023 03:52:00 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.03,279,1694761200"; 
-   d="scan'208";a="9829171"
-Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by orviesa001.jf.intel.com with ESMTP; 05 Nov 2023 03:51:58 -0800
-Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qzbfX-0005Ng-1f;
-        Sun, 05 Nov 2023 11:51:55 +0000
-Date:   Sun, 5 Nov 2023 19:51:54 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@linux.microsoft.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        James Morris <jamorris@linux.microsoft.com>,
-        Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>
-Subject: arch/x86/include/asm/string_32.h:182:25: warning: '__builtin_memcpy'
- specified bound 4294967295 exceeds maximum object size 2147483647
-Message-ID: <202311051904.8hqTj5mc-lkp@intel.com>
+        Sun, 5 Nov 2023 07:02:11 -0500
+Received: from mx.treblig.org (mx.treblig.org [IPv6:2a00:1098:5b::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E4BCB3;
+        Sun,  5 Nov 2023 04:02:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=treblig.org
+        ; s=bytemarkmx; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID
+        :Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID
+        :Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:
+        Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe
+        :List-Post:List-Owner:List-Archive;
+        bh=HKXNPHCNFdPxUogka4hm8V+2J/QunQMFn3t+L+Ja0qo=; b=rrxdtwlydDZtpPWdp4PyeluEdR
+        YCtNI9BNTwOd/NGU1Aie9jh4PYI8D7SJBc8MHKqgCKf4rU3dkxqKhdA6xAQ2TcvX1gWWM8BMFurtW
+        i4+L5rJdlnuqjN+crYn074KCNu4GTaGIulqcmXkW8Kvg5Wx0cy/SRnDiG4SUuiIm83gG+Q3j5brIX
+        Zp1WMwqxwZbS6KcmXhrWae0MnxClOycL5oy7s2fdECJH9MSylDW+Wif7bGJ7A0T3EoOHcGix+g7eQ
+        ekhiBsXhxGWGbNo74EP6mFtnp0oszox4X6jPHSg1qbILD/tNvMoO78nM0oI6X++GHdpm2BB24lqmn
+        +qqJSYGg==;
+Received: from dg by mx.treblig.org with local (Exim 4.96)
+        (envelope-from <dg@treblig.org>)
+        id 1qzbpN-007pAD-0H;
+        Sun, 05 Nov 2023 12:02:05 +0000
+Date:   Sun, 5 Nov 2023 12:02:05 +0000
+From:   "Dr. David Alan Gilbert" <dave@treblig.org>
+To:     Donald Buczek <buczek@molgen.mpg.de>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: Heisenbug: I/O freeze can be resolved by cat $task/cmdline of
+ unrelated process
+Message-ID: <ZUeEPQy9v9BdOHar@gallifrey>
+References: <77184fcc-46ab-4d69-b163-368264fa49f7@molgen.mpg.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <77184fcc-46ab-4d69-b163-368264fa49f7@molgen.mpg.de>
+X-Chocolate: 70 percent or better cocoa solids preferably
+X-Operating-System: Linux/6.1.0-12-amd64 (x86_64)
+X-Uptime: 11:59:39 up 50 days, 14:58,  1 user,  load average: 0.00, 0.00, 0.00
+User-Agent: Mutt/2.2.12 (2023-09-09)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   aea6bf908d730b01bd264a8821159db9463c111c
-commit: ae271c1b14de343b888e77f74f640e3dcbdeb4c9 landlock: Add ruleset and domain management
-date:   2 years, 6 months ago
-config: i386-buildonly-randconfig-r002-20220101 (https://download.01.org/0day-ci/archive/20231105/202311051904.8hqTj5mc-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231105/202311051904.8hqTj5mc-lkp@intel.com/reproduce)
+* Donald Buczek (buczek@molgen.mpg.de) wrote:
+> Hello, experts,
+> 
+> we have a strange new problem on a backup server (high metadata I/O 24/7, xfs -> mdraid). The system worked for years and with v5.15.86 for 8 month. Then we've updated to 6.1.52 and after a few hours it froze: No more I/O activity to one of its filesystems, processes trying to access it blocked until we reboot.
+> 
+> Of course, at first we blamed the kernel as this happened after an upgrade. But after several experiments with different kernel versions, we've returned to the v5.15.86 kernel we used before, but still experienced the problem. Then we suspected, that a microcode update (for AMD EPYC 7261), which happened as a side effect of the first reboot, might be the culprit and removed it. That didn't fix it either. For all I can say, all software is back to the state which worked before.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311051904.8hqTj5mc-lkp@intel.com/
+I'm not sure; but did you check /proc/cpuinfo after that revert and
+check the microcode version dropped back (or physically pwoer cycle);
+I'm not sure if a reboot reverts the microcode version.
 
-All warnings (new ones prefixed by >>):
+> Now the strange part: What we usually do, when we have a situation like this, is that we run a script which takes several procfs and sysfs information which happened to be useful in the past. It was soon discovered, that just running this script unblocks the system. I/O continues as if nothing ever happened. Then we singled-stepped the operations of the script to find out, what action exactly gets the system to resume. It is this part:
+> 
+>     for task in /proc/*/task/*; do
+>         echo  "# # $task: $(cat $task/comm) : $(cat $task/cmdline | xargs -0 echo)"
+>         cmd cat $task/stack
+>     done
+> 
+> which can further be reduced to
+> 
+>     for task in /proc/*/task/*; do echo $task $(cat $task/cmdline | xargs -0 echo); done
+> 
+> This is absolutely reproducible. Above line unblocks the system reliably.
+> 
+> Another remarkable thing: We've modified above code to do the processes slowly one by one and checking after each step if I/O resumed. And each time we've tested that, it was one of the 64 nfsd processes (but not the very first one tried). While the systems exports filesystems, we have absolutely no reason to assume, that any client actually tries to access this nfs server. Additionally, when the full script is run, the stack traces show all nfsd tasks in their normal idle state ( [<0>] svc_recv+0x7bd/0x8d0 [sunrpc] ).
+> 
+> Does anybody have an idea, how a `cat /proc/PID/cmdline` on a specific assumed-to-be-idle nfsd thread could have such an "healing" effect?
 
-   In file included from arch/x86/include/asm/string.h:3,
-                    from include/linux/string.h:21,
-                    from include/linux/bitmap.h:9,
-                    from include/linux/cpumask.h:12,
-                    from include/linux/smp.h:13,
-                    from include/linux/lockdep.h:14,
-                    from security/landlock/ruleset.c:15:
-   security/landlock/ruleset.c: In function 'create_rule':
->> arch/x86/include/asm/string_32.h:182:25: warning: '__builtin_memcpy' specified bound 4294967295 exceeds maximum object size 2147483647 [-Wstringop-overflow=]
-     182 | #define memcpy(t, f, n) __builtin_memcpy(t, f, n)
-         |                         ^~~~~~~~~~~~~~~~~~~~~~~~~
-   security/landlock/ruleset.c:96:9: note: in expansion of macro 'memcpy'
-      96 |         memcpy(new_rule->layers, layers,
-         |         ^~~~~~
+Not me; but had you tried something simpler like a sysrq-d or sysrq-w
+for locks and blocked tasks.
 
+> I'm well aware, that, for example, a hardware problem might result in just anything and that the question might not be answerable at all. If so: please excuse the noise.
 
-vim +/__builtin_memcpy +182 arch/x86/include/asm/string_32.h
+Seems a weird hardware problem to have that specific
+a way to unblock it.
 
-^1da177e4c3f41 include/asm-i386/string.h        Linus Torvalds   2005-04-16  177  
-^1da177e4c3f41 include/asm-i386/string.h        Linus Torvalds   2005-04-16  178  /*
-^1da177e4c3f41 include/asm-i386/string.h        Linus Torvalds   2005-04-16  179   *	No 3D Now!
-^1da177e4c3f41 include/asm-i386/string.h        Linus Torvalds   2005-04-16  180   */
-^1da177e4c3f41 include/asm-i386/string.h        Linus Torvalds   2005-04-16  181  
-ff60fab71bb3b4 arch/x86/include/asm/string_32.h Arjan van de Ven 2009-09-28 @182  #define memcpy(t, f, n) __builtin_memcpy(t, f, n)
-^1da177e4c3f41 include/asm-i386/string.h        Linus Torvalds   2005-04-16  183  
+Dave
 
-:::::: The code at line 182 was first introduced by commit
-:::::: ff60fab71bb3b4fdbf8caf57ff3739ffd0887396 x86: Use __builtin_memset and __builtin_memcpy for memset/memcpy
-
-:::::: TO: Arjan van de Ven <arjan@infradead.org>
-:::::: CC: H. Peter Anvin <hpa@zytor.com>
-
+> Thanks
+> Donald
+> -- 
+> Donald Buczek
+> buczek@molgen.mpg.de
+> Tel: +49 30 8413 1433
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+ -----Open up your eyes, open up your mind, open up your code -------   
+/ Dr. David Alan Gilbert    |       Running GNU/Linux       | Happy  \ 
+\        dave @ treblig.org |                               | In Hex /
+ \ _________________________|_____ http://www.treblig.org   |_______/
