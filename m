@@ -2,141 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 75DB97E1272
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Nov 2023 08:27:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 750977E1274
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Nov 2023 08:30:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229772AbjKEH0w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Nov 2023 02:26:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60798 "EHLO
+        id S229890AbjKEHab (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Nov 2023 02:30:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229500AbjKEH0u (ORCPT
+        with ESMTP id S229529AbjKEHa3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Nov 2023 02:26:50 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17661123;
-        Sun,  5 Nov 2023 00:26:46 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0D73C433C8;
-        Sun,  5 Nov 2023 07:26:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1699169206;
-        bh=6/RPGmtF74OYAOj5+K+VLy3tMMPqiKm7Xs8iyq0nqvA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GaXRtocQAc1Paqxsn6eJGYeevFhJZtamePoCHs5x+2VpxyAkji8CIWA4de+DG3GbZ
-         P6iV5WitOwk+I8IrczfC9K7cn7AvJ39ND41w9YoNCUz6NLnXKckY43H+09VQSEph4i
-         8z5FIUVv+RdRC8FoG1GOk0Drz7As2tylEbJgLTtE=
-Date:   Sun, 5 Nov 2023 08:26:43 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Martin Rodriguez Reboredo <yakoyoku@gmail.com>
-Cc:     Miguel Ojeda <ojeda@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        Alice Ryhl <aliceryhl@google.com>,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Wedson Almeida Filho <walmeida@microsoft.com>,
-        linux-usb@vger.kernel.org, rust-for-linux@vger.kernel.org
-Subject: Re: [RFC PATCH v3 2/2] samples: rust: Add USB sample bindings
-Message-ID: <2023110544-nimble-routing-98b6@gregkh>
-References: <20231104211213.225891-1-yakoyoku@gmail.com>
- <20231104211213.225891-3-yakoyoku@gmail.com>
+        Sun, 5 Nov 2023 02:30:29 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94C59FF
+        for <linux-kernel@vger.kernel.org>; Sun,  5 Nov 2023 00:30:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699169426; x=1730705426;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=qwBgqe25CLImrb0YEJGrafg6TBFTklaA3nukUOZl6BQ=;
+  b=T3HwvhMbDzF7cI9tJajKFXQxCM3gB71TBSuZ2lY6bHNheuVnSznL+QfN
+   W4TcKzVpMrFgzGp5nVRbQyvhXsVle0+pwe7pyyxmdvNdrX62fQ1nQx+fH
+   3t6Iaq7GtWPWKbbu4AALYtHn5OFgKBzXbMbrlhEqVGYANKxsPYhN3+9WX
+   cXDsO9EmADfbVeFfAzBXICC3sWUEkoFt6HFlVzo+o4CH6pwsKVxtf30la
+   RMKv7OIw6mK4D58G5csk5PrbkuueFh6SgXB7TwNAyVnKGsw3N/UWDXFMk
+   J4b5K4cGKCx9BomPHVRR5G+KI+1E68wrtKTgvUHxgspuQqEu9n5VKruUA
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10884"; a="374162755"
+X-IronPort-AV: E=Sophos;i="6.03,278,1694761200"; 
+   d="scan'208";a="374162755"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2023 00:30:24 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10884"; a="1009232419"
+X-IronPort-AV: E=Sophos;i="6.03,278,1694761200"; 
+   d="scan'208";a="1009232419"
+Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
+  by fmsmga006.fm.intel.com with ESMTP; 05 Nov 2023 00:30:23 -0700
+Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qzXaP-00059I-0o;
+        Sun, 05 Nov 2023 07:30:21 +0000
+Date:   Sun, 5 Nov 2023 15:29:21 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Tanmay Shah <tanmay.shah@amd.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Ben Levinsky <ben.levinsky@amd.com>
+Subject: drivers/remoteproc/xlnx_r5_remoteproc.c:209:20: sparse: sparse: cast
+ removes address space '__iomem' of expression
+Message-ID: <202311051552.fmM6xtjE-lkp@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231104211213.225891-3-yakoyoku@gmail.com>
-X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 04, 2023 at 06:11:59PM -0300, Martin Rodriguez Reboredo wrote:
-> This is a demonstration of the capabilities of doing bindings with
-> subsystems that may or may not be statically linked.
-> 
-> Signed-off-by: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
-> ---
-> v2 -> v3:
-> - Generate bindings for USB.
-> v1 -> v2:
-> - Added this patch.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   aea6bf908d730b01bd264a8821159db9463c111c
+commit: 6b291e8020a8bd90e94ee13d61f251040425c90d drivers: remoteproc: Add Xilinx r5 remoteproc driver
+date:   12 months ago
+config: arm64-randconfig-r122-20231102 (https://download.01.org/0day-ci/archive/20231105/202311051552.fmM6xtjE-lkp@intel.com/config)
+compiler: aarch64-linux-gcc (GCC) 13.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20231105/202311051552.fmM6xtjE-lkp@intel.com/reproduce)
 
-I know you are just using this for an example, but here's some
-USB-specific things that you might want to clean up for when you submit
-this as a "real" binding sometime in the future:
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311051552.fmM6xtjE-lkp@intel.com/
 
-> +config USB_RUST
-> +	bool "Rust USB bindings"
+sparse warnings: (new ones prefixed by >>)
+>> drivers/remoteproc/xlnx_r5_remoteproc.c:209:20: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/remoteproc/xlnx_r5_remoteproc.c:315:20: sparse: sparse: cast removes address space '__iomem' of expression
 
-This is a "USB Host" binding.  We have both USB host mode (when you plug
-a USB device into a system running Linux), and USB gadget mode (when
-Linux is running on the USB device you plug into any other USB system).
+vim +/__iomem +209 drivers/remoteproc/xlnx_r5_remoteproc.c
 
-So please be specific here, this should be "USB_HOST_RUST" and then
-later, "USB_GADGET_RUST".
+   190	
+   191	/*
+   192	 * zynqmp_r5_mem_region_map()
+   193	 * @rproc: single R5 core's corresponding rproc instance
+   194	 * @mem: mem descriptor to map reserved memory-regions
+   195	 *
+   196	 * Callback to map va for memory-region's carveout.
+   197	 *
+   198	 * return 0 on success, otherwise non-zero value on failure
+   199	 */
+   200	static int zynqmp_r5_mem_region_map(struct rproc *rproc,
+   201					    struct rproc_mem_entry *mem)
+   202	{
+   203		void __iomem *va;
+   204	
+   205		va = ioremap_wc(mem->dma, mem->len);
+   206		if (IS_ERR_OR_NULL(va))
+   207			return -ENOMEM;
+   208	
+ > 209		mem->va = (void *)va;
+   210	
+   211		return 0;
+   212	}
+   213	
 
-> +	depends on USB && RUST
-> +	default n
-
-Again, "default n" is the default, never list it again.
-
-
-> +	help
-> +	  Enables Rust bindings for USB.
-
-USB Host, not all of USB.
-
-> diff --git a/drivers/usb/core/Makefile b/drivers/usb/core/Makefile
-> index 7d338e9c0657..00e116913591 100644
-> --- a/drivers/usb/core/Makefile
-> +++ b/drivers/usb/core/Makefile
-> @@ -11,6 +11,7 @@ usbcore-y += phy.o port.o
->  usbcore-$(CONFIG_OF)		+= of.o
->  usbcore-$(CONFIG_USB_PCI)		+= hcd-pci.o
->  usbcore-$(CONFIG_ACPI)		+= usb-acpi.o
-> +usbcore-$(CONFIG_USB_RUST)		+= libusb.rlib
->  
->  ifdef CONFIG_USB_ONBOARD_HUB
->  usbcore-y			+= ../misc/onboard_usb_hub_pdevs.o
-> @@ -18,4 +19,6 @@ endif
->  
->  obj-$(CONFIG_USB)		+= usbcore.o
->  
-> +rust-libs			:= ./usb
-
-Why the "./", why not just ":= usb" ?
-
-> +config SAMPLE_RUST_USB_SIMPLE
-> +	tristate "USB simple device driver"
-> +	help
-> +	  This option builds the Rust USB simple driver sample.
-
-Rust USB simple host driver sample.
-
->  subdir-$(CONFIG_SAMPLE_RUST_HOSTPROGS)		+= hostprogs
-> diff --git a/samples/rust/rust_usb_simple.rs b/samples/rust/rust_usb_simple.rs
-> new file mode 100644
-> index 000000000000..3523f81d5eb8
-> --- /dev/null
-> +++ b/samples/rust/rust_usb_simple.rs
-> @@ -0,0 +1,22 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +
-> +//! Rust USB sample.
-> +
-> +use kernel::prelude::*;
-> +
-> +module! {
-> +    type: UsbSimple,
-
-"USBSimple" please.  I thought I said that before.
-
-thanks,
-
-greg k-h
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
