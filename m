@@ -2,140 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B00F97E1329
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Nov 2023 12:41:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8F8B7E132C
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Nov 2023 12:41:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230324AbjKELfY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Nov 2023 06:35:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58220 "EHLO
+        id S230226AbjKELh7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Nov 2023 06:37:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230259AbjKELfL (ORCPT
+        with ESMTP id S229614AbjKELh5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Nov 2023 06:35:11 -0500
-Received: from todd.t-8ch.de (todd.t-8ch.de [IPv6:2a01:4f8:c010:41de::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 396FEF2;
-        Sun,  5 Nov 2023 03:35:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
-        s=mail; t=1699184103;
-        bh=JMznj9mOW7CN1oWuJEQJDJv9JNNBt8ZPWdQQ6heUErg=;
-        h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-        b=TQXfTOvi4UfwXiDRBcFkg5309vTVzgWrz0rUXBX6i4cPRvLckKZI0XB9eTr2f9D2l
-         nXAPe+yHJCpCsuYsAgCMZtZ1+8SgfcSTX/nPhpGc3FotkMcPBEKYHq7EWBcNHV/6Z7
-         6/YmhWRrRVI+P39tlbTrthzvB5rt8REXNh6uxyl8=
-From:   =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-Date:   Sun, 05 Nov 2023 12:35:03 +0100
-Subject: [PATCH v2 6/6] selftests/nolibc: add configuration for mipso32be
+        Sun, 5 Nov 2023 06:37:57 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A494AF
+        for <linux-kernel@vger.kernel.org>; Sun,  5 Nov 2023 03:37:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699184275; x=1730720275;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=+9p3RZ+xspAXiRQaP6EEsFuNw3siqXsA3w4cBYt/4KY=;
+  b=ec7ecb+XLtE+YXwPH8Xm1gZP02ytC00ci00bKE1ZedjagtIRHVbgGkry
+   BtfdmWjqBJ9KmteZv8UhxJnGvg8hFwp8QYUuw2Q5WADf8K/qiOMUKsBSl
+   EG+Rwa/cpOvVdt3y24v1fDSgj/laCI52wsBKgyY3GzUXIEHc95Whe3eWt
+   yoncOKXAuXuDPG4IdWvQ7/zxHLnEV2PE+RqPWsTzvlTwNBOSDoP5Un8Pj
+   x6pOQtXfCdrPb3DD0bEmTUQ0RiRmoFEKvnEjqlOrP8QiW1c4g6+KaVjNB
+   XGSED9gM6c1uGn22yhJv/UYKspHBJJJuPkvX2Oa4GT7rcvMuGiO/czNOH
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10884"; a="10679295"
+X-IronPort-AV: E=Sophos;i="6.03,279,1694761200"; 
+   d="scan'208";a="10679295"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2023 03:37:55 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10884"; a="765698583"
+X-IronPort-AV: E=Sophos;i="6.03,279,1694761200"; 
+   d="scan'208";a="765698583"
+Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
+  by fmsmga007.fm.intel.com with ESMTP; 05 Nov 2023 03:37:53 -0800
+Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qzbRv-0005Mt-10;
+        Sun, 05 Nov 2023 11:37:51 +0000
+Date:   Sun, 5 Nov 2023 19:37:15 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Shanker Donthineni <sdonthineni@nvidia.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Marc Zyngier <maz@kernel.org>, Vikram Sethi <vsethi@nvidia.com>
+Subject: drivers/firmware/smccc/smccc.c:20:21: sparse: sparse: symbol
+ 'smccc_soc_id_version' was not declared. Should it be static?
+Message-ID: <202311051931.ytw4Vqta-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20231105-nolibc-mips-be-v2-6-4ec993cb5407@weissschuh.net>
-References: <20231105-nolibc-mips-be-v2-0-4ec993cb5407@weissschuh.net>
-In-Reply-To: <20231105-nolibc-mips-be-v2-0-4ec993cb5407@weissschuh.net>
-To:     Willy Tarreau <w@1wt.eu>, Shuah Khan <shuah@kernel.org>
-Cc:     Zhangjin Wu <falcon@tinylab.org>, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1699184102; l=3924;
- i=linux@weissschuh.net; s=20221212; h=from:subject:message-id;
- bh=JMznj9mOW7CN1oWuJEQJDJv9JNNBt8ZPWdQQ6heUErg=;
- b=e2lPYtGp8wPa8drS+Pws16dnNRxF+v35zT7XNC20bGKTaCuDR3t3uX4E6S541i328LKhkkazb
- FogZug63MYaB4tBz+mNy4sxa0BcZ7K1qiuLPXDEMkaHDFwZKjzbhqqh
-X-Developer-Key: i=linux@weissschuh.net; a=ed25519;
- pk=KcycQgFPX2wGR5azS7RhpBqedglOZVgRPfdFSPB1LNw=
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allow testing MIPS O32 big endian.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   1c41041124bd14dd6610da256a3da4e5b74ce6b1
+commit: 35727af2b15d98a2dd2811d631d3a3886111312e irqchip/gicv3: Workaround for NVIDIA erratum T241-FABRIC-4
+date:   7 months ago
+config: arm64-randconfig-r122-20231102 (https://download.01.org/0day-ci/archive/20231105/202311051931.ytw4Vqta-lkp@intel.com/config)
+compiler: aarch64-linux-gcc (GCC) 13.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20231105/202311051931.ytw4Vqta-lkp@intel.com/reproduce)
 
-Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
-Acked-by: Willy Tarreau <w@1wt.eu>
----
- tools/testing/selftests/nolibc/Makefile     | 7 +++++++
- tools/testing/selftests/nolibc/run-tests.sh | 2 +-
- 2 files changed, 8 insertions(+), 1 deletion(-)
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311051931.ytw4Vqta-lkp@intel.com/
 
-diff --git a/tools/testing/selftests/nolibc/Makefile b/tools/testing/selftests/nolibc/Makefile
-index 6a1f7f9edf91..508435b8ac2a 100644
---- a/tools/testing/selftests/nolibc/Makefile
-+++ b/tools/testing/selftests/nolibc/Makefile
-@@ -48,6 +48,7 @@ ARCH_ppc         = powerpc
- ARCH_ppc64       = powerpc
- ARCH_ppc64le     = powerpc
- ARCH_mips32le    = mips
-+ARCH_mips32be    = mips
- ARCH            := $(or $(ARCH_$(XARCH)),$(XARCH))
- 
- # kernel image names by architecture
-@@ -57,6 +58,7 @@ IMAGE_x86        = arch/x86/boot/bzImage
- IMAGE_arm64      = arch/arm64/boot/Image
- IMAGE_arm        = arch/arm/boot/zImage
- IMAGE_mips32le   = vmlinuz
-+IMAGE_mips32be   = vmlinuz
- IMAGE_ppc        = vmlinux
- IMAGE_ppc64      = vmlinux
- IMAGE_ppc64le    = arch/powerpc/boot/zImage
-@@ -73,6 +75,7 @@ DEFCONFIG_x86        = defconfig
- DEFCONFIG_arm64      = defconfig
- DEFCONFIG_arm        = multi_v7_defconfig
- DEFCONFIG_mips32le   = malta_defconfig
-+DEFCONFIG_mips32be   = malta_defconfig
- DEFCONFIG_ppc        = pmac32_defconfig
- DEFCONFIG_ppc64      = powernv_be_defconfig
- DEFCONFIG_ppc64le    = powernv_defconfig
-@@ -81,6 +84,7 @@ DEFCONFIG_s390       = defconfig
- DEFCONFIG_loongarch  = defconfig
- DEFCONFIG            = $(DEFCONFIG_$(XARCH))
- 
-+EXTRACONFIG_mips32be = -d CONFIG_CPU_LITTLE_ENDIAN -e CONFIG_CPU_BIG_ENDIAN
- EXTRACONFIG           = $(EXTRACONFIG_$(XARCH))
- 
- # optional tests to run (default = all)
-@@ -93,6 +97,7 @@ QEMU_ARCH_x86        = x86_64
- QEMU_ARCH_arm64      = aarch64
- QEMU_ARCH_arm        = arm
- QEMU_ARCH_mips32le   = mipsel  # works with malta_defconfig
-+QEMU_ARCH_mips32be  = mips
- QEMU_ARCH_ppc        = ppc
- QEMU_ARCH_ppc64      = ppc64
- QEMU_ARCH_ppc64le    = ppc64
-@@ -115,6 +120,7 @@ QEMU_ARGS_x86        = -M pc -append "console=ttyS0,9600 i8042.noaux panic=-1 $(
- QEMU_ARGS_arm64      = -M virt -cpu cortex-a53 -append "panic=-1 $(TEST:%=NOLIBC_TEST=%)"
- QEMU_ARGS_arm        = -M virt -append "panic=-1 $(TEST:%=NOLIBC_TEST=%)"
- QEMU_ARGS_mips32le   = -M malta -append "panic=-1 $(TEST:%=NOLIBC_TEST=%)"
-+QEMU_ARGS_mips32be   = -M malta -append "panic=-1 $(TEST:%=NOLIBC_TEST=%)"
- QEMU_ARGS_ppc        = -M g3beige -append "console=ttyS0 panic=-1 $(TEST:%=NOLIBC_TEST=%)"
- QEMU_ARGS_ppc64      = -M powernv -append "console=hvc0 panic=-1 $(TEST:%=NOLIBC_TEST=%)"
- QEMU_ARGS_ppc64le    = -M powernv -append "console=hvc0 panic=-1 $(TEST:%=NOLIBC_TEST=%)"
-@@ -139,6 +145,7 @@ CFLAGS_ppc64 = -m64 -mbig-endian -mno-vsx $(call cc-option,-mmultiple)
- CFLAGS_ppc64le = -m64 -mlittle-endian -mno-vsx $(call cc-option,-mabi=elfv2)
- CFLAGS_s390 = -m64
- CFLAGS_mips32le = -EL -mabi=32
-+CFLAGS_mips32be = -EB -mabi=32
- CFLAGS_STACKPROTECTOR ?= $(call cc-option,-mstack-protector-guard=global $(call cc-option,-fstack-protector-all))
- CFLAGS  ?= -Os -fno-ident -fno-asynchronous-unwind-tables -std=c89 -W -Wall -Wextra \
- 		$(call cc-option,-fno-stack-protector) \
-diff --git a/tools/testing/selftests/nolibc/run-tests.sh b/tools/testing/selftests/nolibc/run-tests.sh
-index 8f2c3bc572cb..3a1eaccfbd8d 100755
---- a/tools/testing/selftests/nolibc/run-tests.sh
-+++ b/tools/testing/selftests/nolibc/run-tests.sh
-@@ -14,7 +14,7 @@ cache_dir="${XDG_CACHE_HOME:-"$HOME"/.cache}"
- download_location="${cache_dir}/crosstools/"
- build_location="$(realpath "${cache_dir}"/nolibc-tests/)"
- perform_download=0
--archs="i386 x86_64 arm64 arm mips32le ppc ppc64 ppc64le riscv s390 loongarch"
-+archs="i386 x86_64 arm64 arm mips32le mips32be ppc ppc64 ppc64le riscv s390 loongarch"
- 
- TEMP=$(getopt -o 'j:d:c:b:a:ph' -n "$0" -- "$@")
- 
+sparse warnings: (new ones prefixed by >>)
+>> drivers/firmware/smccc/smccc.c:20:21: sparse: sparse: symbol 'smccc_soc_id_version' was not declared. Should it be static?
+>> drivers/firmware/smccc/smccc.c:21:21: sparse: sparse: symbol 'smccc_soc_id_revision' was not declared. Should it be static?
+
+vim +/smccc_soc_id_version +20 drivers/firmware/smccc/smccc.c
+
+    17	
+    18	bool __ro_after_init smccc_trng_available = false;
+    19	u64 __ro_after_init smccc_has_sve_hint = false;
+  > 20	s32 __ro_after_init smccc_soc_id_version = SMCCC_RET_NOT_SUPPORTED;
+  > 21	s32 __ro_after_init smccc_soc_id_revision = SMCCC_RET_NOT_SUPPORTED;
+    22	
 
 -- 
-2.42.1
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
