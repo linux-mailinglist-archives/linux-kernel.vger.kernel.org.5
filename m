@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E21237E1707
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Nov 2023 22:59:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E71C7E1749
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Nov 2023 23:01:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229819AbjKEV7k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Nov 2023 16:59:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58462 "EHLO
+        id S230010AbjKEWBj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Nov 2023 17:01:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229689AbjKEV7j (ORCPT
+        with ESMTP id S229974AbjKEWBh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Nov 2023 16:59:39 -0500
+        Sun, 5 Nov 2023 17:01:37 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24287BF;
-        Sun,  5 Nov 2023 13:59:36 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0E290C433C8;
-        Sun,  5 Nov 2023 21:59:32 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90256BF;
+        Sun,  5 Nov 2023 14:01:35 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7B355C433C7;
+        Sun,  5 Nov 2023 22:01:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699221575;
-        bh=+fQntMiPTShEdZDkX4ZTyKiQpFcFE2MgFsGVK1Zt3BU=;
+        s=k20201202; t=1699221695;
+        bh=a/Uth71jCEzTayYhCFi3bUwtVY5RF27O7dzCpUThzuE=;
         h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=PhmAnmpBd1TjDjAgEOv940jUoT08+DToVP0RwHaBjYk8E6FRMHsrWRG8u5T398p+5
-         58PMi6j/zKxtXVk5ma199nnTC5nD+Rko9Y3EwlhywAYUnF0oTrn9vXOfZlAnER6Nn+
-         1Rm7muMZU16Jx9F6h8fXTTm2q6jUY+72xO3YeIiG6dXtGcF5bkpcEurDob02EpkBZ5
-         XOHHSNM9/+LSr80W8KkkZyPJCCWUOKM/G9qrl7isK7Ij2M3EUUvNUy/U4a+Wk8xbQ/
-         r+IVYIe0Fhr7HtdeE0LE3YWxiPorHnqJDOGZFo02i7Ll5yu8azMVWWqO4E58f63IfS
-         x3GOUCb3VTxEw==
-Message-ID: <3e69c10c5d03ab2ccf7bda82b7ed9991dbced523.camel@kernel.org>
+        b=J//Bfgdlcc3z29PgLS69TZ0FG31UE2sWkjJqyClgZpFBjM8I1ic5c/1qpmbRcD9E1
+         9JKIUqN/vob85zr7f95uA9jcP3tSmLGOZe5cR1pQeqSgs0bEfxWFTSdo8W1NHAetwJ
+         f+RkZI1J9PVqkg0BpPC/J5b1XgpixWvHm+IEEMhGOyeXE4US9QsmIks3/+fdFjfQJf
+         6cbcYKOScU63yzbB6CYNiMOY2FvO3aLoDqp8ydQSIhqat3YhGfnJ+QVmSUk4gyqKyr
+         fAbLzo6Y9Ydiox60XHycBbnGQ1pIGnL1NS5SQeh3VaGT2mEyGNG+08psJCzK92MC+D
+         2BcfkajCuQo/w==
+Message-ID: <ac616f9f1eef89e9c202b43d2be5b3ccb6afd1dd.camel@kernel.org>
 Subject: Re: [PATCH v3 1/6] tpm: Move buffer handling from static inlines to
  real functions
 From:   Jarkko Sakkinen <jarkko@kernel.org>
@@ -43,14 +43,15 @@ Cc:     linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
         Mario Limonciello <mario.limonciello@amd.com>,
         Julien Gomes <julien@arista.com>,
         open list <linux-kernel@vger.kernel.org>
-Date:   Sun, 05 Nov 2023 23:59:31 +0200
-In-Reply-To: <d468a3f18e871f2af4db9c104d393866849ff2d0.camel@HansenPartnership.com>
+Date:   Mon, 06 Nov 2023 00:01:30 +0200
+In-Reply-To: <3e69c10c5d03ab2ccf7bda82b7ed9991dbced523.camel@kernel.org>
 References: <20231024011531.442587-1-jarkko@kernel.org>
          <20231024011531.442587-2-jarkko@kernel.org>
          <qktrbbbqrz3z4jh4h7pz42leikmyg2mdevzl2brapn32kst55e@s5thpstdtlxp>
          <CWHPA3T3YIJT.148L3L98EXBXD@suppilovahvero>
          <g6grxamrilogiy4vjrvwwn6iz2xm26oeq2y7redbskvcreil6w@seavf5djd4ph>
          <d468a3f18e871f2af4db9c104d393866849ff2d0.camel@HansenPartnership.com>
+         <3e69c10c5d03ab2ccf7bda82b7ed9991dbced523.camel@kernel.org>
 Autocrypt: addr=jarkko@kernel.org; prefer-encrypt=mutual;
  keydata=mQINBF0RXVoBEACq7dxNqGliHRIUjKeA0Ajj8R0JiNRbhayBAmCmjfDh6m/QTNfyCmFBv6ZPe4EbBEyCgcFxerS0qgkaRD0FApKgtrX842rkwDyyhTA222rkv5Q/U2SY1Hi55kekBcAgYHVQzhvHnRrckvE7YxDlH06mnUGlL63s9NI/xnhtJvn92rLNvWqAyn+48Ud/EcE9oBo6vvq10O0UAHN/PEsyqtThN9tlTEKH8IMXmy1FAC70Ov8Ap63ZJT2RE7H4wbIYrHOOxarfHaKHcKy+UjZBhuQ54sGxxch2kXQCfkXOY7Ab7KKNkb4u2jDc6lyz8TJlc8Twi5KQcWBzomnYy5R0OJ01g6byY7vCSwAfCSp87P50F5O2pmjqd82mdB3Noy+CWIlV1kjMjaJglTyFGym7CWkvx7+yP+Jjq643aIbveN/Tx5OYZIhtSMRtJDzT+nDIgD83NyHL6JHO3LzKZEw6yZJWWSXyK9P5H8RX7ipWf3o3NaUCcs1K8wyTcgBZ/GT9X9SprH1ySYAGJz+G1UyPMQT1V4OirkQaMfN0Ht7jl6gEXXOs0Ks1sOdaKZUFIGn9P1cNRixp34Bw3edL4ZjNljXZa12MqzbaArTCm+WzJqrvkToOx2bqU37Y1vNskOBdYkCvWhKsIf8Gj5LZiVjFnX27bXeLv6Gd3asJ4qcQAl06+wARAQABtChKYXJra28gU2Fra2luZW4gPGphcmtrby5zYWtraW5lbkBpa2kuZmk+iQJXBBMBCgBBAhsBBQsJCAcCBhUKCQgLAgQWAgMBAh4BAheAAhkBFiEEUQfmbTR4ipPjInyQOrBUhsd1L+EFAmSlnJMFCQl1crkACgkQOrBUhsd1L+EPKw/9EnoAjcbK+duuIN4JA6iXCfdWrYK8DhvaMgfNIbH4ZrtbMYwAPsHeZTv/C47pf48sp200OvdQoA2qoYdtX+I1JLhz7aaRtemBp1lwZEESeNG5j
         0EwCSLeR6ITQanlpnj8FQ0MnLi8yKf8crWR8QyKlE96zT1yBFxNsjveGHBpW9syHjSFUZOLVA9JVSv6eSGobvU265EPxekVH3+GreSzs/lXWOMvXdLONbUtRJSktq1/p8T5m+btNxRKRi16gQOK8gZL/VRXg0/GLhNgobOniAYKz/q9pM/6vQWDzVeg+ur1HHbln/C28DJNubV8+4VnmZGWDpb2AOrEVX8xXyPr6MZmsPdf0/X5nSHDjF8+NOwWfPcdIu+ZmPKX0kAzDtefDoXD54dm13WvPVxH1zS1hz66LKRmEhutXUpE05U+XBrpxlXGKEU3MF/XeaMN04s6JktjXyIyAeG7G7TrexHcDEmi7bbUhzPCHMHnL3ialXDH59hpzdYBMiFkMiQ1xv45ow5W3AsCkfgljEG4GAnLbvnFJgbcvdYhR5QEfS2/vBXLrmHsi+cNlGuD9maf22ymiUJEdAe9AtwapT6YLNSlHuOF4OhmBemYkmTAYB6Jo/2jD5sSDnQXglO/Ib1+qh9Adj/iCgjavijojl3kebWNcusZGspuQpYQKoKHFSZLyqe0I0phcmtrbyBTYWtraW5lbiA8amFya2tvQGtlcm5lbC5vcmc+iQJUBBMBCgA+AhsBBQsJCAcCBhUKCQgLAgQWAgMBAh4BAheAFiEEUQfmbTR4ipPjInyQOrBUhsd1L+EFAmSlnJ8FCQl1crkACgkQOrBUhsd1L+H4UxAAnw2J8ew6vDB+vAK2snuNKUaVsyZX2EPJJ9WZStGkCyEzbnG/a3dk4ktpGlNLpk9tJJKTpb88efDIkp/Xa1fIUuOP75QQO8lNePX8lsc1aVWwNr4QHqTWe1Jgr1rBE29qeZA1R/poAMezI3Rrn5YEchexdDqFICba6KL2Wzl/yFR2puXMZoscVen3+NjyXE2UZiLdH0F/zacr2sIiwzKwp3Ej3m+fXmvxp+EPvRlt9LzxiTnDNKAy3A+xBec2uNveAM
@@ -75,79 +76,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2023-10-26 at 13:55 -0400, James Bottomley wrote:
-> On Thu, 2023-10-26 at 10:10 -0700, Jerry Snitselaar wrote:
-> > On Wed, Oct 25, 2023 at 08:35:55PM +0300, Jarkko Sakkinen wrote:
-> > > On Wed Oct 25, 2023 at 12:03 PM EEST, Jerry Snitselaar wrote:
-> > > > Reviewed-by: Jerry Snitselaar <jsnitsel@redhat.com>
-> > >=20
-> > > On Wed, 2023-10-25 at 02:03 -0700, Jerry Snitselaar wrote:
-> > > > Reviewed-by: Jerry Snitselaar <jsnitsel@redhat.com>
+On Sun, 2023-11-05 at 23:59 +0200, Jarkko Sakkinen wrote:
+> On Thu, 2023-10-26 at 13:55 -0400, James Bottomley wrote:
+> > On Thu, 2023-10-26 at 10:10 -0700, Jerry Snitselaar wrote:
+> > > On Wed, Oct 25, 2023 at 08:35:55PM +0300, Jarkko Sakkinen wrote:
+> > > > On Wed Oct 25, 2023 at 12:03 PM EEST, Jerry Snitselaar wrote:
+> > > > > Reviewed-by: Jerry Snitselaar <jsnitsel@redhat.com>
+> > > >=20
+> > > > On Wed, 2023-10-25 at 02:03 -0700, Jerry Snitselaar wrote:
+> > > > > Reviewed-by: Jerry Snitselaar <jsnitsel@redhat.com>
+> > > > >=20
+> > > >=20
+> > > > Thanks I'll add it to the next round.
+> > > >=20
+> > > > For the tpm_buf_read(), I was thinking along the lines of:
+> > > >=20
+> > > > /**
+> > > > =C2=A0* tpm_buf_read() - Read from a TPM buffer
+> > > > =C2=A0* @buf:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0&tpm_b=
+uf instance
+> > > > =C2=A0* @pos:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0positi=
+on within the buffer
+> > > > =C2=A0* @count:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0the number of by=
+tes to read
+> > > > =C2=A0* @output:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0the output buffer
+> > > > =C2=A0*
+> > > > =C2=A0* Read bytes from a TPM buffer, and update the position. Retu=
+rns
+> > > > false when the
+> > > > =C2=A0* amount of bytes requested would overflow the buffer, which =
+is
+> > > > expected to
+> > > > =C2=A0* only happen in the case of hardware failure.
+> > > > =C2=A0*/
+> > > > static bool tpm_buf_read(const struct tpm_buf *buf, off_t *pos,
+> > > > size_t count, void *output)
+> > > > {
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0off_t next =3D *pos=
+ + count;
+> > > >=20
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (next >=3D buf->=
+length) {
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0pr_warn("%s: %lu >=3D %lu\n", __func__, next,
+> > > > *offset);
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return false;
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0}
+> > > >=20
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0memcpy(output, &buf=
+->data[*pos], count);
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0*offset =3D next;
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return true;
+> > > > }
+> > > >=20
+> > > > BR, Jarkko
 > > > >=20
 > > >=20
-> > > Thanks I'll add it to the next round.
-> > >=20
-> > > For the tpm_buf_read(), I was thinking along the lines of:
-> > >=20
-> > > /**
-> > > =C2=A0* tpm_buf_read() - Read from a TPM buffer
-> > > =C2=A0* @buf:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0&tpm_buf=
- instance
-> > > =C2=A0* @pos:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0position=
- within the buffer
-> > > =C2=A0* @count:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0the number of byte=
-s to read
-> > > =C2=A0* @output:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0the output buffer
-> > > =C2=A0*
-> > > =C2=A0* Read bytes from a TPM buffer, and update the position. Return=
-s
-> > > false when the
-> > > =C2=A0* amount of bytes requested would overflow the buffer, which is
-> > > expected to
-> > > =C2=A0* only happen in the case of hardware failure.
-> > > =C2=A0*/
-> > > static bool tpm_buf_read(const struct tpm_buf *buf, off_t *pos,
-> > > size_t count, void *output)
-> > > {
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0off_t next =3D *pos +=
- count;
-> > >=20
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (next >=3D buf->le=
-ngth) {
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0pr_warn("%s: %lu >=3D %lu\n", __func__, next,
-> > > *offset);
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0return false;
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0}
-> > >=20
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0memcpy(output, &buf->=
-data[*pos], count);
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0*offset =3D next;
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return true;
-> > > }
-> > >=20
-> > > BR, Jarkko
-> > >=20
+> > > Then the callers will check, and return -EIO?
 > >=20
-> > Then the callers will check, and return -EIO?
+> > Really, no, why would we do that?
+> >=20
+> > The initial buffer is a page and no TPM currently can have a command
+> > that big, so if the buffer overflows, it's likely a programming error
+> > (failure to terminate loop or something) rather than a runtime one (a
+> > user actually induced a command that big and wanted it to be sent to
+> > the TPM).=C2=A0 The only reason you might need to check is the no-alloc=
+ case
+> > and you passed in a much smaller buffer, but even there, I would guess
+> > it will come down to a coding fault not a possible runtime error.
 >=20
-> Really, no, why would we do that?
 >=20
-> The initial buffer is a page and no TPM currently can have a command
-> that big, so if the buffer overflows, it's likely a programming error
-> (failure to terminate loop or something) rather than a runtime one (a
-> user actually induced a command that big and wanted it to be sent to
-> the TPM).=C2=A0 The only reason you might need to check is the no-alloc c=
-ase
-> and you passed in a much smaller buffer, but even there, I would guess
-> it will come down to a coding fault not a possible runtime error.
+> Yeah, this was my thinking too. So in HMAC case you anyway would not
+> need to check it because crypto is destined to fail anyway.
+>=20
+> Returning boolean here does no harm so I thought that this is overally
+> good compromise.
 
-
-Yeah, this was my thinking too. So in HMAC case you anyway would not
-need to check it because crypto is destined to fail anyway.
-
-Returning boolean here does no harm so I thought that this is overally
-good compromise.
+Or actually maybe we should go just with void, as it does have even
+then "return value", as it emits to klog, right?
 
 BR, Jarkko
+
