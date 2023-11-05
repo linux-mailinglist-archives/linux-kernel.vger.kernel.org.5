@@ -2,34 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 623B27E1446
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Nov 2023 17:07:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ACB87E1444
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Nov 2023 17:07:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229652AbjKEQHO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Nov 2023 11:07:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53794 "EHLO
+        id S229569AbjKEQHH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Nov 2023 11:07:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229637AbjKEQHL (ORCPT
+        with ESMTP id S229612AbjKEQHE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Nov 2023 11:07:11 -0500
-Received: from smtp.gentoo.org (woodpecker.gentoo.org [140.211.166.183])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC0C2EB
-        for <linux-kernel@vger.kernel.org>; Sun,  5 Nov 2023 08:07:07 -0800 (PST)
-From:   Sam James <sam@gentoo.org>
-To:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
-Cc:     linux-kernel@vger.kernel.org, Sam James <sam@gentoo.org>
-Subject: [PATCH] amdgpu: Adjust kmalloc_array calls for new -Walloc-size
-Date:   Sun,  5 Nov 2023 16:06:50 +0000
-Message-ID: <20231105160652.374422-1-sam@gentoo.org>
-X-Mailer: git-send-email 2.42.1
-In-Reply-To: <87wmuwo7i3.fsf@gentoo.org>
-References: <87wmuwo7i3.fsf@gentoo.org>
+        Sun, 5 Nov 2023 11:07:04 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A410F2
+        for <linux-kernel@vger.kernel.org>; Sun,  5 Nov 2023 08:07:01 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA0A2C433C8;
+        Sun,  5 Nov 2023 16:06:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699200420;
+        bh=BaKMcq+s6VngWMd3ngPTESGkVeznx5ygK1pn7TSuURA=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=n9CtgMezbPeeK/nKmkxsceKVVBcgtUz1XiJduPsHNgG/931SKatSOvZn+99oVPNMX
+         jyYV8qeWtoNblkgoB/pa/QwSjois7amJOBGRfYBPGyktzeeRKvF+XOWiJ3N3hrvpFM
+         7JW2z2NB/9vUzbmeS+hUX9L1zpkqoqavle05fI5JDOHXQHrnCNSoC9kPTXLnzykRjx
+         2P4pqfO5jUaBknia1lT/9bTr7AJ8+1LMZy8xhBTQzkp9KEYhaETzTIhjCHUMnzWoiF
+         H2U13LMeCjk+oBNzA7mopz0XMmA6EO+jEz8bHQumEYXvFDUNmAd+DQ+z17za8tWQGo
+         2E6W0a6gAP1pg==
+From:   "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Florent Revest <revest@chromium.org>
+Cc:     linux-trace-kernel@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alan Maguire <alan.maguire@oracle.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Guo Ren <guoren@kernel.org>
+Subject: [RFC PATCH 02/32] function_graph: Convert ret_stack to a series of longs
+Date:   Mon,  6 Nov 2023 01:06:54 +0900
+Message-Id: <169920041390.482486.12438228411786624723.stgit@devnote2>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <169920038849.482486.15796387219966662967.stgit@devnote2>
+References: <169920038849.482486.15796387219966662967.stgit@devnote2>
+User-Agent: StGit/0.19
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -37,120 +64,364 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-GCC 14 introduces a new -Walloc-size included in -Wextra which errors out
-on various files in drivers/gpu/drm/amd/amdgpu like:
-```
-amdgpu_amdkfd_gfx_v8.c:241:15: error: allocation of insufficient size ‘4’ for type ‘uint32_t[2]’ {aka ‘unsigned int[2]'} with size ‘8’ [-Werror=alloc-size]
-```
+From: Steven Rostedt (VMware) <rostedt@goodmis.org>
 
-This is because each HQD_N_REGS is actually a uint32_t[2]. Move the * 2 to
-the size argument so GCC sees we're allocating enough.
+In order to make it possible to have multiple callbacks registered with the
+function_graph tracer, the retstack needs to be converted from an array of
+ftrace_ret_stack structures to an array of longs. This will allow to store
+the list of callbacks on the stack for the return side of the functions.
 
-Originally did 'sizeof(uint32_t) * 2' for the size but a friend suggested
-'sizeof(**dump)' better communicates the intent.
-
-Link: https://lore.kernel.org/all/87wmuwo7i3.fsf@gentoo.org/
-Signed-off-by: Sam James <sam@gentoo.org>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_arcturus.c | 2 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gc_9_4_3.c | 2 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gfx_v7.c   | 4 ++--
- drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gfx_v8.c   | 4 ++--
- drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gfx_v9.c   | 4 ++--
- 5 files changed, 8 insertions(+), 8 deletions(-)
+ include/linux/sched.h |    2 -
+ kernel/trace/fgraph.c |  124 ++++++++++++++++++++++++++++---------------------
+ 2 files changed, 71 insertions(+), 55 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_arcturus.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_arcturus.c
-index 625db444df1c..0ba15dcbe4e1 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_arcturus.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_arcturus.c
-@@ -200,7 +200,7 @@ int kgd_arcturus_hqd_sdma_dump(struct amdgpu_device *adev,
- #undef HQD_N_REGS
- #define HQD_N_REGS (19+6+7+10)
+diff --git a/include/linux/sched.h b/include/linux/sched.h
+index 77f01ac385f7..3af00d726847 100644
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -1386,7 +1386,7 @@ struct task_struct {
+ 	int				curr_ret_depth;
  
--	*dump = kmalloc_array(HQD_N_REGS * 2, sizeof(uint32_t), GFP_KERNEL);
-+	*dump = kmalloc_array(HQD_N_REGS, sizeof(**dump), GFP_KERNEL);
- 	if (*dump == NULL)
+ 	/* Stack of return addresses for return function tracing: */
+-	struct ftrace_ret_stack		*ret_stack;
++	unsigned long			*ret_stack;
+ 
+ 	/* Timestamp for last schedule: */
+ 	unsigned long long		ftrace_timestamp;
+diff --git a/kernel/trace/fgraph.c b/kernel/trace/fgraph.c
+index c83c005e654e..30edeb6d4aa9 100644
+--- a/kernel/trace/fgraph.c
++++ b/kernel/trace/fgraph.c
+@@ -25,6 +25,18 @@
+ #define ASSIGN_OPS_HASH(opsname, val)
+ #endif
+ 
++#define FGRAPH_RET_SIZE sizeof(struct ftrace_ret_stack)
++#define FGRAPH_RET_INDEX (ALIGN(FGRAPH_RET_SIZE, sizeof(long)) / sizeof(long))
++#define SHADOW_STACK_SIZE (PAGE_SIZE)
++#define SHADOW_STACK_INDEX			\
++	(ALIGN(SHADOW_STACK_SIZE, sizeof(long)) / sizeof(long))
++/* Leave on a buffer at the end */
++#define SHADOW_STACK_MAX_INDEX (SHADOW_STACK_INDEX - FGRAPH_RET_INDEX)
++
++#define RET_STACK(t, index) ((struct ftrace_ret_stack *)(&(t)->ret_stack[index]))
++#define RET_STACK_INC(c) ({ c += FGRAPH_RET_INDEX; })
++#define RET_STACK_DEC(c) ({ c -= FGRAPH_RET_INDEX; })
++
+ DEFINE_STATIC_KEY_FALSE(kill_ftrace_graph);
+ int ftrace_graph_active;
+ 
+@@ -69,6 +81,7 @@ static int
+ ftrace_push_return_trace(unsigned long ret, unsigned long func,
+ 			 unsigned long frame_pointer, unsigned long *retp)
+ {
++	struct ftrace_ret_stack *ret_stack;
+ 	unsigned long long calltime;
+ 	int index;
+ 
+@@ -85,23 +98,25 @@ ftrace_push_return_trace(unsigned long ret, unsigned long func,
+ 	smp_rmb();
+ 
+ 	/* The return trace stack is full */
+-	if (current->curr_ret_stack == FTRACE_RETFUNC_DEPTH - 1) {
++	if (current->curr_ret_stack >= SHADOW_STACK_MAX_INDEX) {
+ 		atomic_inc(&current->trace_overrun);
+ 		return -EBUSY;
+ 	}
+ 
+ 	calltime = trace_clock_local();
+ 
+-	index = ++current->curr_ret_stack;
++	index = current->curr_ret_stack;
++	RET_STACK_INC(current->curr_ret_stack);
++	ret_stack = RET_STACK(current, index);
+ 	barrier();
+-	current->ret_stack[index].ret = ret;
+-	current->ret_stack[index].func = func;
+-	current->ret_stack[index].calltime = calltime;
++	ret_stack->ret = ret;
++	ret_stack->func = func;
++	ret_stack->calltime = calltime;
+ #ifdef HAVE_FUNCTION_GRAPH_FP_TEST
+-	current->ret_stack[index].fp = frame_pointer;
++	ret_stack->fp = frame_pointer;
+ #endif
+ #ifdef HAVE_FUNCTION_GRAPH_RET_ADDR_PTR
+-	current->ret_stack[index].retp = retp;
++	ret_stack->retp = retp;
+ #endif
+ 	return 0;
+ }
+@@ -148,7 +163,7 @@ int function_graph_enter(unsigned long ret, unsigned long func,
+ 
+ 	return 0;
+  out_ret:
+-	current->curr_ret_stack--;
++	RET_STACK_DEC(current->curr_ret_stack);
+  out:
+ 	current->curr_ret_depth--;
+ 	return -EBUSY;
+@@ -159,11 +174,13 @@ static void
+ ftrace_pop_return_trace(struct ftrace_graph_ret *trace, unsigned long *ret,
+ 			unsigned long frame_pointer)
+ {
++	struct ftrace_ret_stack *ret_stack;
+ 	int index;
+ 
+ 	index = current->curr_ret_stack;
++	RET_STACK_DEC(index);
+ 
+-	if (unlikely(index < 0 || index >= FTRACE_RETFUNC_DEPTH)) {
++	if (unlikely(index < 0 || index > SHADOW_STACK_MAX_INDEX)) {
+ 		ftrace_graph_stop();
+ 		WARN_ON(1);
+ 		/* Might as well panic, otherwise we have no where to go */
+@@ -171,6 +188,7 @@ ftrace_pop_return_trace(struct ftrace_graph_ret *trace, unsigned long *ret,
+ 		return;
+ 	}
+ 
++	ret_stack = RET_STACK(current, index);
+ #ifdef HAVE_FUNCTION_GRAPH_FP_TEST
+ 	/*
+ 	 * The arch may choose to record the frame pointer used
+@@ -186,22 +204,22 @@ ftrace_pop_return_trace(struct ftrace_graph_ret *trace, unsigned long *ret,
+ 	 * Note, -mfentry does not use frame pointers, and this test
+ 	 *  is not needed if CC_USING_FENTRY is set.
+ 	 */
+-	if (unlikely(current->ret_stack[index].fp != frame_pointer)) {
++	if (unlikely(ret_stack->fp != frame_pointer)) {
+ 		ftrace_graph_stop();
+ 		WARN(1, "Bad frame pointer: expected %lx, received %lx\n"
+ 		     "  from func %ps return to %lx\n",
+ 		     current->ret_stack[index].fp,
+ 		     frame_pointer,
+-		     (void *)current->ret_stack[index].func,
+-		     current->ret_stack[index].ret);
++		     (void *)ret_stack->func,
++		     ret_stack->ret);
+ 		*ret = (unsigned long)panic;
+ 		return;
+ 	}
+ #endif
+ 
+-	*ret = current->ret_stack[index].ret;
+-	trace->func = current->ret_stack[index].func;
+-	trace->calltime = current->ret_stack[index].calltime;
++	*ret = ret_stack->ret;
++	trace->func = ret_stack->func;
++	trace->calltime = ret_stack->calltime;
+ 	trace->overrun = atomic_read(&current->trace_overrun);
+ 	trace->depth = current->curr_ret_depth--;
+ 	/*
+@@ -262,7 +280,7 @@ static unsigned long __ftrace_return_to_handler(struct fgraph_ret_regs *ret_regs
+ 	 * curr_ret_stack is after that.
+ 	 */
+ 	barrier();
+-	current->curr_ret_stack--;
++	RET_STACK_DEC(current->curr_ret_stack);
+ 
+ 	if (unlikely(!ret)) {
+ 		ftrace_graph_stop();
+@@ -305,12 +323,13 @@ unsigned long ftrace_return_to_handler(unsigned long frame_pointer)
+ struct ftrace_ret_stack *
+ ftrace_graph_get_ret_stack(struct task_struct *task, int idx)
+ {
+-	idx = task->curr_ret_stack - idx;
++	int index = task->curr_ret_stack;
+ 
+-	if (idx >= 0 && idx <= task->curr_ret_stack)
+-		return &task->ret_stack[idx];
++	index -= FGRAPH_RET_INDEX * (idx + 1);
++	if (index < 0)
++		return NULL;
+ 
+-	return NULL;
++	return RET_STACK(task, index);
+ }
+ 
+ /**
+@@ -332,18 +351,20 @@ ftrace_graph_get_ret_stack(struct task_struct *task, int idx)
+ unsigned long ftrace_graph_ret_addr(struct task_struct *task, int *idx,
+ 				    unsigned long ret, unsigned long *retp)
+ {
++	struct ftrace_ret_stack *ret_stack;
+ 	int index = task->curr_ret_stack;
+ 	int i;
+ 
+ 	if (ret != (unsigned long)dereference_kernel_function_descriptor(return_to_handler))
+ 		return ret;
+ 
+-	if (index < 0)
+-		return ret;
++	RET_STACK_DEC(index);
+ 
+-	for (i = 0; i <= index; i++)
+-		if (task->ret_stack[i].retp == retp)
+-			return task->ret_stack[i].ret;
++	for (i = index; i >= 0; RET_STACK_DEC(i)) {
++		ret_stack = RET_STACK(task, i);
++		if (ret_stack->retp == retp)
++			return ret_stack->ret;
++	}
+ 
+ 	return ret;
+ }
+@@ -357,14 +378,15 @@ unsigned long ftrace_graph_ret_addr(struct task_struct *task, int *idx,
+ 		return ret;
+ 
+ 	task_idx = task->curr_ret_stack;
++	RET_STACK_DEC(task_idx);
+ 
+ 	if (!task->ret_stack || task_idx < *idx)
+ 		return ret;
+ 
+ 	task_idx -= *idx;
+-	(*idx)++;
++	RET_STACK_INC(*idx);
+ 
+-	return task->ret_stack[task_idx].ret;
++	return RET_STACK(task, task_idx);
+ }
+ #endif /* HAVE_FUNCTION_GRAPH_RET_ADDR_PTR */
+ 
+@@ -402,7 +424,7 @@ trace_func_graph_ent_t ftrace_graph_entry = ftrace_graph_entry_stub;
+ static trace_func_graph_ent_t __ftrace_graph_entry = ftrace_graph_entry_stub;
+ 
+ /* Try to assign a return stack array on FTRACE_RETSTACK_ALLOC_SIZE tasks. */
+-static int alloc_retstack_tasklist(struct ftrace_ret_stack **ret_stack_list)
++static int alloc_retstack_tasklist(unsigned long **ret_stack_list)
+ {
+ 	int i;
+ 	int ret = 0;
+@@ -410,10 +432,7 @@ static int alloc_retstack_tasklist(struct ftrace_ret_stack **ret_stack_list)
+ 	struct task_struct *g, *t;
+ 
+ 	for (i = 0; i < FTRACE_RETSTACK_ALLOC_SIZE; i++) {
+-		ret_stack_list[i] =
+-			kmalloc_array(FTRACE_RETFUNC_DEPTH,
+-				      sizeof(struct ftrace_ret_stack),
+-				      GFP_KERNEL);
++		ret_stack_list[i] = kmalloc(SHADOW_STACK_SIZE, GFP_KERNEL);
+ 		if (!ret_stack_list[i]) {
+ 			start = 0;
+ 			end = i;
+@@ -431,9 +450,9 @@ static int alloc_retstack_tasklist(struct ftrace_ret_stack **ret_stack_list)
+ 
+ 		if (t->ret_stack == NULL) {
+ 			atomic_set(&t->trace_overrun, 0);
+-			t->curr_ret_stack = -1;
++			t->curr_ret_stack = 0;
+ 			t->curr_ret_depth = -1;
+-			/* Make sure the tasks see the -1 first: */
++			/* Make sure the tasks see the 0 first: */
+ 			smp_wmb();
+ 			t->ret_stack = ret_stack_list[start++];
+ 		}
+@@ -453,6 +472,7 @@ ftrace_graph_probe_sched_switch(void *ignore, bool preempt,
+ 				struct task_struct *next,
+ 				unsigned int prev_state)
+ {
++	struct ftrace_ret_stack *ret_stack;
+ 	unsigned long long timestamp;
+ 	int index;
+ 
+@@ -477,8 +497,11 @@ ftrace_graph_probe_sched_switch(void *ignore, bool preempt,
+ 	 */
+ 	timestamp -= next->ftrace_timestamp;
+ 
+-	for (index = next->curr_ret_stack; index >= 0; index--)
+-		next->ret_stack[index].calltime += timestamp;
++	for (index = next->curr_ret_stack - FGRAPH_RET_INDEX; index >= 0; ) {
++		ret_stack = RET_STACK(next, index);
++		ret_stack->calltime += timestamp;
++		index -= FGRAPH_RET_INDEX;
++	}
+ }
+ 
+ static int ftrace_graph_entry_test(struct ftrace_graph_ent *trace)
+@@ -521,10 +544,10 @@ void update_function_graph_func(void)
+ 		ftrace_graph_entry = __ftrace_graph_entry;
+ }
+ 
+-static DEFINE_PER_CPU(struct ftrace_ret_stack *, idle_ret_stack);
++static DEFINE_PER_CPU(unsigned long *, idle_ret_stack);
+ 
+ static void
+-graph_init_task(struct task_struct *t, struct ftrace_ret_stack *ret_stack)
++graph_init_task(struct task_struct *t, unsigned long *ret_stack)
+ {
+ 	atomic_set(&t->trace_overrun, 0);
+ 	t->ftrace_timestamp = 0;
+@@ -539,7 +562,7 @@ graph_init_task(struct task_struct *t, struct ftrace_ret_stack *ret_stack)
+  */
+ void ftrace_graph_init_idle_task(struct task_struct *t, int cpu)
+ {
+-	t->curr_ret_stack = -1;
++	t->curr_ret_stack = 0;
+ 	t->curr_ret_depth = -1;
+ 	/*
+ 	 * The idle task has no parent, it either has its own
+@@ -549,14 +572,11 @@ void ftrace_graph_init_idle_task(struct task_struct *t, int cpu)
+ 		WARN_ON(t->ret_stack != per_cpu(idle_ret_stack, cpu));
+ 
+ 	if (ftrace_graph_active) {
+-		struct ftrace_ret_stack *ret_stack;
++		unsigned long *ret_stack;
+ 
+ 		ret_stack = per_cpu(idle_ret_stack, cpu);
+ 		if (!ret_stack) {
+-			ret_stack =
+-				kmalloc_array(FTRACE_RETFUNC_DEPTH,
+-					      sizeof(struct ftrace_ret_stack),
+-					      GFP_KERNEL);
++			ret_stack = kmalloc(SHADOW_STACK_SIZE, GFP_KERNEL);
+ 			if (!ret_stack)
+ 				return;
+ 			per_cpu(idle_ret_stack, cpu) = ret_stack;
+@@ -570,15 +590,13 @@ void ftrace_graph_init_task(struct task_struct *t)
+ {
+ 	/* Make sure we do not use the parent ret_stack */
+ 	t->ret_stack = NULL;
+-	t->curr_ret_stack = -1;
++	t->curr_ret_stack = 0;
+ 	t->curr_ret_depth = -1;
+ 
+ 	if (ftrace_graph_active) {
+-		struct ftrace_ret_stack *ret_stack;
++		unsigned long *ret_stack;
+ 
+-		ret_stack = kmalloc_array(FTRACE_RETFUNC_DEPTH,
+-					  sizeof(struct ftrace_ret_stack),
+-					  GFP_KERNEL);
++		ret_stack = kmalloc(SHADOW_STACK_SIZE, GFP_KERNEL);
+ 		if (!ret_stack)
+ 			return;
+ 		graph_init_task(t, ret_stack);
+@@ -587,7 +605,7 @@ void ftrace_graph_init_task(struct task_struct *t)
+ 
+ void ftrace_graph_exit_task(struct task_struct *t)
+ {
+-	struct ftrace_ret_stack	*ret_stack = t->ret_stack;
++	unsigned long *ret_stack = t->ret_stack;
+ 
+ 	t->ret_stack = NULL;
+ 	/* NULL must become visible to IRQs before we free it: */
+@@ -599,12 +617,10 @@ void ftrace_graph_exit_task(struct task_struct *t)
+ /* Allocate a return stack for each task */
+ static int start_graph_tracing(void)
+ {
+-	struct ftrace_ret_stack **ret_stack_list;
++	unsigned long **ret_stack_list;
+ 	int ret, cpu;
+ 
+-	ret_stack_list = kmalloc_array(FTRACE_RETSTACK_ALLOC_SIZE,
+-				       sizeof(struct ftrace_ret_stack *),
+-				       GFP_KERNEL);
++	ret_stack_list = kmalloc(SHADOW_STACK_SIZE, GFP_KERNEL);
+ 
+ 	if (!ret_stack_list)
  		return -ENOMEM;
- 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gc_9_4_3.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gc_9_4_3.c
-index 490c8f5ddb60..ca7238b5535b 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gc_9_4_3.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gc_9_4_3.c
-@@ -141,7 +141,7 @@ static int kgd_gfx_v9_4_3_hqd_sdma_dump(struct amdgpu_device *adev,
- 		(*dump)[i++][1] = RREG32(addr);         \
- 	} while (0)
- 
--	*dump = kmalloc_array(HQD_N_REGS * 2, sizeof(uint32_t), GFP_KERNEL);
-+	*dump = kmalloc_array(HQD_N_REGS, sizeof(**dump), GFP_KERNEL);
- 	if (*dump == NULL)
- 		return -ENOMEM;
- 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gfx_v7.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gfx_v7.c
-index 6bf448ab3dff..ca4a6b82817f 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gfx_v7.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gfx_v7.c
-@@ -214,7 +214,7 @@ static int kgd_hqd_dump(struct amdgpu_device *adev,
- 		(*dump)[i++][1] = RREG32(addr);		\
- 	} while (0)
- 
--	*dump = kmalloc_array(HQD_N_REGS * 2, sizeof(uint32_t), GFP_KERNEL);
-+	*dump = kmalloc_array(HQD_N_REGS, sizeof(**dump), GFP_KERNEL);
- 	if (*dump == NULL)
- 		return -ENOMEM;
- 
-@@ -301,7 +301,7 @@ static int kgd_hqd_sdma_dump(struct amdgpu_device *adev,
- #undef HQD_N_REGS
- #define HQD_N_REGS (19+4)
- 
--	*dump = kmalloc_array(HQD_N_REGS * 2, sizeof(uint32_t), GFP_KERNEL);
-+	*dump = kmalloc_array(HQD_N_REGS, sizeof(**dump), GFP_KERNEL);
- 	if (*dump == NULL)
- 		return -ENOMEM;
- 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gfx_v8.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gfx_v8.c
-index cd06e4a6d1da..0f3e2944edd7 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gfx_v8.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gfx_v8.c
-@@ -238,7 +238,7 @@ static int kgd_hqd_dump(struct amdgpu_device *adev,
- 		(*dump)[i++][1] = RREG32(addr);		\
- 	} while (0)
- 
--	*dump = kmalloc_array(HQD_N_REGS * 2, sizeof(uint32_t), GFP_KERNEL);
-+	*dump = kmalloc_array(HQD_N_REGS, sizeof(**dump), GFP_KERNEL);
- 	if (*dump == NULL)
- 		return -ENOMEM;
- 
-@@ -324,7 +324,7 @@ static int kgd_hqd_sdma_dump(struct amdgpu_device *adev,
- #undef HQD_N_REGS
- #define HQD_N_REGS (19+4+2+3+7)
- 
--	*dump = kmalloc_array(HQD_N_REGS * 2, sizeof(uint32_t), GFP_KERNEL);
-+	*dump = kmalloc_array(HQD_N_REGS, sizeof(**dump), GFP_KERNEL);
- 	if (*dump == NULL)
- 		return -ENOMEM;
- 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gfx_v9.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gfx_v9.c
-index 51011e8ee90d..a3355b90aac5 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gfx_v9.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gfx_v9.c
-@@ -365,7 +365,7 @@ int kgd_gfx_v9_hqd_dump(struct amdgpu_device *adev,
- 		(*dump)[i++][1] = RREG32(addr);		\
- 	} while (0)
- 
--	*dump = kmalloc_array(HQD_N_REGS * 2, sizeof(uint32_t), GFP_KERNEL);
-+	*dump = kmalloc_array(HQD_N_REGS, sizeof(**dump), GFP_KERNEL);
- 	if (*dump == NULL)
- 		return -ENOMEM;
- 
-@@ -462,7 +462,7 @@ static int kgd_hqd_sdma_dump(struct amdgpu_device *adev,
- #undef HQD_N_REGS
- #define HQD_N_REGS (19+6+7+10)
- 
--	*dump = kmalloc_array(HQD_N_REGS * 2, sizeof(uint32_t), GFP_KERNEL);
-+	*dump = kmalloc_array(HQD_N_REGS, sizeof(**dump), GFP_KERNEL);
- 	if (*dump == NULL)
- 		return -ENOMEM;
- 
--- 
-2.42.1
 
