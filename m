@@ -2,66 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 04B1C7E126E
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Nov 2023 08:20:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75DB97E1272
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Nov 2023 08:27:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229774AbjKEHUJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Nov 2023 02:20:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48922 "EHLO
+        id S229772AbjKEH0w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Nov 2023 02:26:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229455AbjKEHUH (ORCPT
+        with ESMTP id S229500AbjKEH0u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Nov 2023 02:20:07 -0500
-Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25FCFFB
-        for <linux-kernel@vger.kernel.org>; Sun,  5 Nov 2023 00:20:05 -0700 (PDT)
-Received: by mail-oi1-x230.google.com with SMTP id 5614622812f47-3b2b1af964dso2284139b6e.1
-        for <linux-kernel@vger.kernel.org>; Sun, 05 Nov 2023 00:20:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699168804; x=1699773604; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=wkBJYB+0amHU7Uh6j8q6rO4qnVt0jhVk588GzDZ5r/s=;
-        b=AwhM0TiEfB3gZyfLA9NALxVHOVBGbmqGC8i7B9SjQihNbf+ItwSf29QUmkX/cuhPf4
-         wvLrhsMwHz6LE6uI44aYya6R36sixI936E2766mmfJHXaffgertgTnSLkNq7c2Me0qXP
-         dhZQ05/JODZg41CQce8TtTsdEaxwLqH7KKsGvR4WHe0XcMfb3zQCO+IJK+0tKuGPuEPR
-         s6+0M8Ytzk6c6ck5Bqc4sENM1tqhZXmLKJU7F8jJWGmin+m7lZbnNeig7D0ZFNYNUiyv
-         +9uvdSuglerKHqKLO2p0JOVt06erTZboQ+1FkyenVlVMxp6eLJdwl6pdWukqdB7vk6Vy
-         Z7tw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699168804; x=1699773604;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=wkBJYB+0amHU7Uh6j8q6rO4qnVt0jhVk588GzDZ5r/s=;
-        b=IozFF079Bv5g9DAVjxdbByOFMUXiXQFwxDcwsvl6DJPdf9ej7ez3TSe+YAjBrdaI/M
-         Qatz3a1HOAGo7tLEEpvzkMVfhz/P9qPc4hMziAAFJyxtcJrgJx128ufM2FMmnTZ43/zv
-         yB2QXlC78bDVdiSCI4EcY/6G3K7T/w/76hoS/sM+xoFHq23tUfECpDVATZNUI6KCaw0y
-         XQ2p9W/wiUfG/QAty3n+ogW5EgsMcz+m9gBj+3+5wOoNQ5cg0qIjgxXNQY8TCURnQw9B
-         2WYnDRnFJfzGcaXrZLpI2KNmX/oIP62odWpEUj51i6zBohgvWV3EBN9om42/LJHga+KY
-         V3ew==
-X-Gm-Message-State: AOJu0Yxfo6yz1vXFSqZVpUnx9C7LVhq5P6M1mJfli0XEtSCbqVgMgcDU
-        ejwu0fnAQNudWiEmG/ncuFSbD1KiWFmonw==
-X-Google-Smtp-Source: AGHT+IGeZs1dYM5jzBN7R9cDEt1OZ4CuAZXg8IqiD3aV4gOf9Rpc0yNTlTG8Cp9K4cRfEoZzsbPVRQ==
-X-Received: by 2002:a54:4883:0:b0:3b2:f2e0:1ecd with SMTP id r3-20020a544883000000b003b2f2e01ecdmr29246556oic.4.1699168804264;
-        Sun, 05 Nov 2023 00:20:04 -0700 (PDT)
-Received: from barry-desktop.hub ([2407:7000:8942:5500:d1f4:b6cb:ff09:d775])
-        by smtp.gmail.com with ESMTPSA id u8-20020aa78388000000b0068fe5a5a566sm3813324pfm.142.2023.11.05.00.20.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 05 Nov 2023 00:20:03 -0700 (PDT)
-From:   Barry Song <21cnbao@gmail.com>
-X-Google-Original-From: Barry Song <v-songbaohua@oppo.com>
-To:     akpm@linux-foundation.org, linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org, Barry Song <v-songbaohua@oppo.com>
-Subject: [PATCH] mm/page_owner: record and dump free_pid and free_tgid
-Date:   Sun,  5 Nov 2023 20:19:48 +1300
-Message-Id: <20231105071948.44079-1-v-songbaohua@oppo.com>
-X-Mailer: git-send-email 2.34.1
+        Sun, 5 Nov 2023 02:26:50 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17661123;
+        Sun,  5 Nov 2023 00:26:46 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0D73C433C8;
+        Sun,  5 Nov 2023 07:26:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1699169206;
+        bh=6/RPGmtF74OYAOj5+K+VLy3tMMPqiKm7Xs8iyq0nqvA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GaXRtocQAc1Paqxsn6eJGYeevFhJZtamePoCHs5x+2VpxyAkji8CIWA4de+DG3GbZ
+         P6iV5WitOwk+I8IrczfC9K7cn7AvJ39ND41w9YoNCUz6NLnXKckY43H+09VQSEph4i
+         8z5FIUVv+RdRC8FoG1GOk0Drz7As2tylEbJgLTtE=
+Date:   Sun, 5 Nov 2023 08:26:43 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Martin Rodriguez Reboredo <yakoyoku@gmail.com>
+Cc:     Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Alice Ryhl <aliceryhl@google.com>,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Wedson Almeida Filho <walmeida@microsoft.com>,
+        linux-usb@vger.kernel.org, rust-for-linux@vger.kernel.org
+Subject: Re: [RFC PATCH v3 2/2] samples: rust: Add USB sample bindings
+Message-ID: <2023110544-nimble-routing-98b6@gregkh>
+References: <20231104211213.225891-1-yakoyoku@gmail.com>
+ <20231104211213.225891-3-yakoyoku@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231104211213.225891-3-yakoyoku@gmail.com>
+X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,57 +56,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While investigating some complex memory allocation and free bugs
-especially in multi-processes and multi-threads cases, from time
-to time, I feel the free stack isn't sufficient as a page can be
-freed by processes or threads other than the one allocating it.
-And other processes and threads which free the page often have
-the exactly same free stack with the one allocating the page. We
-can't know who free the page only through the free stack though
-the current page_owner does tell us the pid and tgid of the one
-allocating the page. This makes the bug investigation often hard.
+On Sat, Nov 04, 2023 at 06:11:59PM -0300, Martin Rodriguez Reboredo wrote:
+> This is a demonstration of the capabilities of doing bindings with
+> subsystems that may or may not be statically linked.
+> 
+> Signed-off-by: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
+> ---
+> v2 -> v3:
+> - Generate bindings for USB.
+> v1 -> v2:
+> - Added this patch.
 
-Thus, This patch adds free pid and tgid in page_owner, so that we
-can easily figure out if the freeing is crossing processes or
-threads.
+I know you are just using this for an example, but here's some
+USB-specific things that you might want to clean up for when you submit
+this as a "real" binding sometime in the future:
 
-Signed-off-by: Barry Song <v-songbaohua@oppo.com>
----
- mm/page_owner.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+> +config USB_RUST
+> +	bool "Rust USB bindings"
 
-diff --git a/mm/page_owner.c b/mm/page_owner.c
-index 4f13ce7d2452..767ec15da8da 100644
---- a/mm/page_owner.c
-+++ b/mm/page_owner.c
-@@ -32,6 +32,8 @@ struct page_owner {
- 	char comm[TASK_COMM_LEN];
- 	pid_t pid;
- 	pid_t tgid;
-+	pid_t free_pid;
-+	pid_t free_tgid;
- };
- 
- static bool page_owner_enabled __initdata;
-@@ -152,6 +154,8 @@ void __reset_page_owner(struct page *page, unsigned short order)
- 		page_owner = get_page_owner(page_ext);
- 		page_owner->free_handle = handle;
- 		page_owner->free_ts_nsec = free_ts_nsec;
-+		page_owner->free_pid = current->pid;
-+		page_owner->free_tgid = current->tgid;
- 		page_ext = page_ext_next(page_ext);
- 	}
- 	page_ext_put(page_ext);
-@@ -495,7 +499,8 @@ void __dump_page_owner(const struct page *page)
- 	if (!handle) {
- 		pr_alert("page_owner free stack trace missing\n");
- 	} else {
--		pr_alert("page last free stack trace:\n");
-+		pr_alert("page last free pid %d tgid %d stack trace:\n",
-+			  page_owner->free_pid, page_owner->free_tgid);
- 		stack_depot_print(handle);
- 	}
- 
--- 
-2.34.1
+This is a "USB Host" binding.  We have both USB host mode (when you plug
+a USB device into a system running Linux), and USB gadget mode (when
+Linux is running on the USB device you plug into any other USB system).
 
+So please be specific here, this should be "USB_HOST_RUST" and then
+later, "USB_GADGET_RUST".
+
+> +	depends on USB && RUST
+> +	default n
+
+Again, "default n" is the default, never list it again.
+
+
+> +	help
+> +	  Enables Rust bindings for USB.
+
+USB Host, not all of USB.
+
+> diff --git a/drivers/usb/core/Makefile b/drivers/usb/core/Makefile
+> index 7d338e9c0657..00e116913591 100644
+> --- a/drivers/usb/core/Makefile
+> +++ b/drivers/usb/core/Makefile
+> @@ -11,6 +11,7 @@ usbcore-y += phy.o port.o
+>  usbcore-$(CONFIG_OF)		+= of.o
+>  usbcore-$(CONFIG_USB_PCI)		+= hcd-pci.o
+>  usbcore-$(CONFIG_ACPI)		+= usb-acpi.o
+> +usbcore-$(CONFIG_USB_RUST)		+= libusb.rlib
+>  
+>  ifdef CONFIG_USB_ONBOARD_HUB
+>  usbcore-y			+= ../misc/onboard_usb_hub_pdevs.o
+> @@ -18,4 +19,6 @@ endif
+>  
+>  obj-$(CONFIG_USB)		+= usbcore.o
+>  
+> +rust-libs			:= ./usb
+
+Why the "./", why not just ":= usb" ?
+
+> +config SAMPLE_RUST_USB_SIMPLE
+> +	tristate "USB simple device driver"
+> +	help
+> +	  This option builds the Rust USB simple driver sample.
+
+Rust USB simple host driver sample.
+
+>  subdir-$(CONFIG_SAMPLE_RUST_HOSTPROGS)		+= hostprogs
+> diff --git a/samples/rust/rust_usb_simple.rs b/samples/rust/rust_usb_simple.rs
+> new file mode 100644
+> index 000000000000..3523f81d5eb8
+> --- /dev/null
+> +++ b/samples/rust/rust_usb_simple.rs
+> @@ -0,0 +1,22 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +
+> +//! Rust USB sample.
+> +
+> +use kernel::prelude::*;
+> +
+> +module! {
+> +    type: UsbSimple,
+
+"USBSimple" please.  I thought I said that before.
+
+thanks,
+
+greg k-h
