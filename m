@@ -2,184 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 799C07E15F7
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Nov 2023 20:05:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF3C07E15FB
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Nov 2023 20:11:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229549AbjKETFO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Nov 2023 14:05:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58172 "EHLO
+        id S229489AbjKETKi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Nov 2023 14:10:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229475AbjKETFM (ORCPT
+        with ESMTP id S229451AbjKETKh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Nov 2023 14:05:12 -0500
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABA4BFB;
-        Sun,  5 Nov 2023 11:05:09 -0800 (PST)
-Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1cc9784dbc1so19085935ad.2;
-        Sun, 05 Nov 2023 11:05:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699211109; x=1699815909; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=c5aJnbwY/RGv4IwQ+W4JxKXW6o+bXcs3kEPisirKZZU=;
-        b=FsX1qqd+BmvCZehgX8joaDpEiGJCEQmSCo2aNNNM1lFpICplMsStR5+ch67qMCjoxI
-         hFTuGWvZFfyvWjv5ZXFN5B/F++no49EvWNmb2dUlta/66p/nrhHtbjwN7s4qSo62t0RM
-         iX958HToWPd2gAMDk6GREQPcRMhQTNfXZ6ZCuK4qaE/CTW+BTEbVq6D/I0Of5zN3fSFe
-         f6UGgg5siWTVrSbhOfBIF5uB5mRtAp8BAzTlnodHWL+gPcbQGjLGS7y90z9ylNZbGygQ
-         QkVJH50fOR2NSvFI3YrQjUrbxU8AJzp2S2eXETIgaPUHKv8RJ7CZpGNzTBv5/jgt+2hv
-         bz5Q==
+        Sun, 5 Nov 2023 14:10:37 -0500
+Received: from mail-oa1-f80.google.com (mail-oa1-f80.google.com [209.85.160.80])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F5DCDE
+        for <linux-kernel@vger.kernel.org>; Sun,  5 Nov 2023 11:10:34 -0800 (PST)
+Received: by mail-oa1-f80.google.com with SMTP id 586e51a60fabf-1e9b6561650so4788007fac.3
+        for <linux-kernel@vger.kernel.org>; Sun, 05 Nov 2023 11:10:34 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699211109; x=1699815909;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=c5aJnbwY/RGv4IwQ+W4JxKXW6o+bXcs3kEPisirKZZU=;
-        b=N8dKPdaSDy6wGdEKIdY0BbNZReGVC4Zk7ovLTAGeBDsa5KZfOGT84zaNLyCiLBjVTv
-         e/4jGpyd3LQONQfbho6WQ175EyDYW9/jZqtgvTk2AqwEX6n5IdMp22zJcIM8Ha8e3VAc
-         5oQHVJ6hvRV2G/LKgzgiJYNI/4K+DlIcAFB2Gj5wk9HrzcHv+zDQP1Hro3P5As76hflE
-         qRSGRFGhbGj9EVRS9fdyOny0+YjtGk1AaYwzeBZXzBah+AjN/8mugQoRJVPyqQDw7+cV
-         +vYWm8jwjApo9vFdAyd/30GcZeBs7t3RUvEJqoD3W5J6ed2G0xTe1C2Ae4VLLUktwNdE
-         qiKg==
-X-Gm-Message-State: AOJu0YwEWcTDSgjvVij2HinIoSoNhG1NJ260WzYr9l65mnTv6NbtC8cE
-        gbWFbYOoEo16FZsI4x8kFtw=
-X-Google-Smtp-Source: AGHT+IFjMnoD4qzJp9xw6sci48+8ezy6wjYLj5Xul69GJ2rxOXcCqRM0n9M6XG3tAaH65LT22t1sJw==
-X-Received: by 2002:a17:902:f64e:b0:1c9:e765:e14a with SMTP id m14-20020a170902f64e00b001c9e765e14amr28891113plg.1.1699211108997;
-        Sun, 05 Nov 2023 11:05:08 -0800 (PST)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id s4-20020a170902ea0400b001c61bde04a7sm4457615plg.276.2023.11.05.11.05.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 05 Nov 2023 11:05:08 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <d2111a1f-ae15-4270-9946-7e732fbd3fc8@roeck-us.net>
-Date:   Sun, 5 Nov 2023 11:05:07 -0800
+        d=1e100.net; s=20230601; t=1699211433; x=1699816233;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=SW4FutqOjQ1NorsIpGr01f/prHPC0R3lRpLUNI45Wcc=;
+        b=UxxXLnZr0th0HSguPuxAZLK+3+JzmjMZeTfcMXajCBbrstsSfRNYuK/fdTWopnVHiu
+         4o8/7syFpYb7dYcGY988KyuZ9ocSevDiBjlblKK6IXpM0112FsKSjPBL8Yjga2lI5kF1
+         NvlM7PGS8A/zYLIxqkrNTNSlv3WAJFeMLtZtAirnV/+DRlMSssf4YM1RleUFRpY7G+sc
+         mbqgQKKkrVowA271nGx5CdVM9vJYlxzjZU43iwEd4aix4HqM6xdPB+Es8JQyC2kueWAG
+         X6V2X3m5HoTVwUK0vMpmAAcjf/oPGM6kUQ29zm2usfxayjvaDZCZPspfGj0nEYETCbXE
+         WKjA==
+X-Gm-Message-State: AOJu0YzbRvvrP+5QsOOikW4Aa7ffGYixCp9XTOWdbLP6NkO0ucHKRAeY
+        SnCiD46h3K0sz4RDzSljEZ4fbtYO2k2MSfpyU5Ga5Q2u0SMY
+X-Google-Smtp-Source: AGHT+IEH1vv/1wun3TPKcx+mTQcCzmGiDfJDLi2qavac3QRemFx6ZeC7tns0eBFFGO9YGdH7ownGiNs2PWk6MlwPfSxPusaLskSK
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] dt-bindings: watchdog: intel,keembay: reference
- common watchdog schema
-Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Hector Martin <marcan@marcan.st>,
-        Sven Peter <sven@svenpeter.dev>,
-        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-        Julius Werner <jwerner@chromium.org>,
-        Evan Benn <evanbenn@chromium.org>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Oleksij Rempel <linux@rempel-privat.de>,
-        Justin Chen <justinpopo6@gmail.com>,
-        =?UTF-8?B?77+9ZWNraQ==?= <rafal@milecki.pl>,
-        Baruch Siach <baruch@tkos.co.il>,
-        Ahmad Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jamie Iles <jamie@jamieiles.com>,
-        linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        linux-kernel@vger.kernel.org, asahi@lists.linux.dev
-References: <20231105184154.43700-1-krzysztof.kozlowski@linaro.org>
- <20231105184154.43700-2-krzysztof.kozlowski@linaro.org>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-In-Reply-To: <20231105184154.43700-2-krzysztof.kozlowski@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6870:1cf:b0:1e9:bebf:3813 with SMTP id
+ n15-20020a05687001cf00b001e9bebf3813mr13014161oad.9.1699211433717; Sun, 05
+ Nov 2023 11:10:33 -0800 (PST)
+Date:   Sun, 05 Nov 2023 11:10:33 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000e7b62806096c7d67@google.com>
+Subject: [syzbot] [net?] general protection fault in ptp_ioctl
+From:   syzbot <syzbot+8a78ecea7ac1a2ea26e5@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, reibax@gmail.com, richardcochran@gmail.com,
+        rrameshbabu@nvidia.com, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/5/23 10:41, Krzysztof Kozlowski wrote:
-> Reference common watchdog.yaml schema to allow "timeout-sec" property
-> and enforce proper device node name.
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Hello,
 
-Acked-by: Guenter Roeck <linux@roeck-us.net>
+syzbot found the following issue on:
 
-> ---
->   .../devicetree/bindings/watchdog/intel,keembay-wdt.yaml      | 5 ++++-
->   1 file changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/watchdog/intel,keembay-wdt.yaml b/Documentation/devicetree/bindings/watchdog/intel,keembay-wdt.yaml
-> index 1437ff8a122f..8231dde2bfa6 100644
-> --- a/Documentation/devicetree/bindings/watchdog/intel,keembay-wdt.yaml
-> +++ b/Documentation/devicetree/bindings/watchdog/intel,keembay-wdt.yaml
-> @@ -9,6 +9,9 @@ title: Intel Keem Bay SoC non-secure Watchdog Timer
->   maintainers:
->     - Wan Ahmad Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>
->   
-> +allOf:
-> +  - $ref: watchdog.yaml#
-> +
->   properties:
->     compatible:
->       enum:
-> @@ -37,7 +40,7 @@ required:
->     - interrupt-names
->     - clocks
->   
-> -additionalProperties: false
-> +unevaluatedProperties: false
->   
->   examples:
->     - |
+HEAD commit:    4652b8e4f3ff Merge tag '6.7-rc-ksmbd-server-fixes' of git:..
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=11aa125f680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=423e70610024fd6b
+dashboard link: https://syzkaller.appspot.com/bug?extid=8a78ecea7ac1a2ea26e5
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16193ef7680000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17e035d7680000
 
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/a9cb6d5a8c4b/disk-4652b8e4.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/363795681962/vmlinux-4652b8e4.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/113d96b73fef/bzImage-4652b8e4.xz
+
+The issue was bisected to:
+
+commit c5a445b1e9347b14752b01f1a304bd7a2f260acc
+Author: Xabier Marquiegui <reibax@gmail.com>
+Date:   Wed Oct 11 22:39:56 2023 +0000
+
+    ptp: support event queue reader channel masks
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=122491ef680000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=112491ef680000
+console output: https://syzkaller.appspot.com/x/log.txt?x=162491ef680000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+8a78ecea7ac1a2ea26e5@syzkaller.appspotmail.com
+Fixes: c5a445b1e934 ("ptp: support event queue reader channel masks")
+
+general protection fault, probably for non-canonical address 0xdffffc000000020b: 0000 [#1] PREEMPT SMP KASAN
+KASAN: probably user-memory-access in range [0x0000000000001058-0x000000000000105f]
+CPU: 0 PID: 5053 Comm: syz-executor353 Not tainted 6.6.0-syzkaller-10396-g4652b8e4f3ff #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/09/2023
+RIP: 0010:ptp_ioctl+0xcb7/0x1d10 drivers/ptp/ptp_chardev.c:476
+Code: 81 fe 13 3d 00 00 0f 85 9c 02 00 00 e8 c2 83 23 fa 49 8d bc 24 58 10 00 00 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 dc 0e 00 00 49 8b bc 24 58 10 00 00 ba 00 01 00
+RSP: 0018:ffffc90003a37ba0 EFLAGS: 00010212
+RAX: dffffc0000000000 RBX: ffff88814a78a000 RCX: ffffffff8764f81f
+RDX: 000000000000020b RSI: ffffffff8765028e RDI: 0000000000001058
+RBP: ffffc90003a37ec0 R08: 0000000000000005 R09: ffffc90003a37c40
+R10: 0000000000003d13 R11: 0000000000000000 R12: 0000000000000000
+R13: ffffc90003a37c80 R14: 0000000000003d13 R15: ffffffff92ac78e8
+FS:  00005555569a9380(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000020000040 CR3: 0000000076e09000 CR4: 0000000000350ef0
+Call Trace:
+ <TASK>
+ posix_clock_ioctl+0xf8/0x160 kernel/time/posix-clock.c:86
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:871 [inline]
+ __se_sys_ioctl fs/ioctl.c:857 [inline]
+ __x64_sys_ioctl+0x18f/0x210 fs/ioctl.c:857
+ do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+ do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:82
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+RIP: 0033:0x7f710ac4a2a9
+Code: 48 83 c4 28 c3 e8 37 17 00 00 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffda288c4c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00007ffda288c698 RCX: 00007f710ac4a2a9
+RDX: 0000000000000000 RSI: 0000000000003d13 RDI: 0000000000000003
+RBP: 00007f710acbd610 R08: 00007ffda288c698 R09: 00007ffda288c698
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000001
+R13: 00007ffda288c688 R14: 0000000000000001 R15: 0000000000000001
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:ptp_ioctl+0xcb7/0x1d10 drivers/ptp/ptp_chardev.c:476
+Code: 81 fe 13 3d 00 00 0f 85 9c 02 00 00 e8 c2 83 23 fa 49 8d bc 24 58 10 00 00 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 dc 0e 00 00 49 8b bc 24 58 10 00 00 ba 00 01 00
+RSP: 0018:ffffc90003a37ba0 EFLAGS: 00010212
+RAX: dffffc0000000000 RBX: ffff88814a78a000 RCX: ffffffff8764f81f
+RDX: 000000000000020b RSI: ffffffff8765028e RDI: 0000000000001058
+RBP: ffffc90003a37ec0 R08: 0000000000000005 R09: ffffc90003a37c40
+R10: 0000000000003d13 R11: 0000000000000000 R12: 0000000000000000
+R13: ffffc90003a37c80 R14: 0000000000003d13 R15: ffffffff92ac78e8
+FS:  00005555569a9380(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00000000005fdeb8 CR3: 0000000076e09000 CR4: 0000000000350ef0
+----------------
+Code disassembly (best guess):
+   0:	81 fe 13 3d 00 00    	cmp    $0x3d13,%esi
+   6:	0f 85 9c 02 00 00    	jne    0x2a8
+   c:	e8 c2 83 23 fa       	call   0xfa2383d3
+  11:	49 8d bc 24 58 10 00 	lea    0x1058(%r12),%rdi
+  18:	00
+  19:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
+  20:	fc ff df
+  23:	48 89 fa             	mov    %rdi,%rdx
+  26:	48 c1 ea 03          	shr    $0x3,%rdx
+* 2a:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1) <-- trapping instruction
+  2e:	0f 85 dc 0e 00 00    	jne    0xf10
+  34:	49 8b bc 24 58 10 00 	mov    0x1058(%r12),%rdi
+  3b:	00
+  3c:	ba                   	.byte 0xba
+  3d:	00 01                	add    %al,(%rcx)
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
