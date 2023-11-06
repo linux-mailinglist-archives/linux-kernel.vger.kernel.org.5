@@ -2,88 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C71C47E2036
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 12:41:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79B257E2040
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 12:44:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231510AbjKFLlz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 06:41:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47834 "EHLO
+        id S231462AbjKFLo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 06:44:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230018AbjKFLlx (ORCPT
+        with ESMTP id S229583AbjKFLo4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 06:41:53 -0500
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48354BE;
-        Mon,  6 Nov 2023 03:41:50 -0800 (PST)
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A65pNTM022945;
-        Mon, 6 Nov 2023 11:41:46 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=gUDEE2dz5GLAemOBWyVoCMY+wl8Y9k+DBPKEwhf8QJY=;
- b=TuZUH62ib6Q847URwIBJF1gV5x8rzkFhfoR+vXOCSYd1lhDX0xiLMQeBM2GfQBi3BOxM
- 9CGryYjw8rlnDXoropjC59ucXYgwzRL9nGUnZcKsYeMY7RBIwYHHtiqTaVjy/avlvmKC
- 6fl6T26bhD/hC918vZbKaOMqZdlS3i+z2XAVQxKoLbZCoOzSOANeMNi+cqS4T8kYCJTt
- a78/zymUY8tT1HPkL3xWvY2hL3O9t1zmaJDUIxl/9zLmL2WDYlO5dpqXbZeGFblJtT+A
- bBTKhsO3AhrnhcBu+DyZSPXQiRgfGhFIUYuRvWmWzJQQzex7Bj9bknmW8Qcwy/Vk6f9S sw== 
-Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u5ernkyxm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 06 Nov 2023 11:41:46 +0000
-Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
-        by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3A6Bfjn4027388
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 6 Nov 2023 11:41:45 GMT
-Received: from [10.214.66.81] (10.80.80.8) by nasanex01c.na.qualcomm.com
- (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Mon, 6 Nov
- 2023 03:41:41 -0800
-Message-ID: <af05dbdb-21bf-34f0-e9b3-9f6b9a0c3115@quicinc.com>
-Date:   Mon, 6 Nov 2023 17:11:38 +0530
+        Mon, 6 Nov 2023 06:44:56 -0500
+Received: from mail-yw1-x1129.google.com (mail-yw1-x1129.google.com [IPv6:2607:f8b0:4864:20::1129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6850B90
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 03:44:53 -0800 (PST)
+Received: by mail-yw1-x1129.google.com with SMTP id 00721157ae682-5a822f96aedso52096927b3.2
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 03:44:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1699271092; x=1699875892; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DX7ek6JbnQBP3kmz+KR8GNUYI0kM1PtX+UUHfn3vax8=;
+        b=VNbdkXhidZPy2jyspbi+mWrdtQTAWbWJMGSXLu11+BoTws5mX97/h8fnfNA2YHtR5S
+         pnSp6VIcooBGySQ96XECwJsRn8RkrAcwbf3JvjIjxo64IBBjH/0Zu9xnHEBEONaYyOLj
+         vYNm4iuT6bI/bFTiOGU7PSeQbSxO6+teJD5HvjyRtsnE8XVrbM/dzsrEr3Wpj8dvrZJk
+         xFnBnhx+hcTEr4GABAKg8/+16QKYDcjnPmmWrFTXhEpt52YBY12duJbTG+Fve8R7qKlr
+         cLgqhf062bF0xiH5sfOKCGAkieIs5cLBUFyjGkEBC/yUPlx0auzSTpJa1FXbpwwTqgB9
+         pbyQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699271092; x=1699875892;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=DX7ek6JbnQBP3kmz+KR8GNUYI0kM1PtX+UUHfn3vax8=;
+        b=Lt2KLFrAZ62kLNuZlI0uqaHYr8ehC0aRPbeXlnh5Bxbtl1M8mwPixE9Am7uJAfOLGG
+         P7HPpoKjb35mFg6vKUfPbwMkOut9FlQSHn3SFhBAnH7u2y0d2E8WSdyoTDAia8PPT9jO
+         A+jaxUb0EUfZmLFYQKYBsQAYTCeVKw2njYu/8lUP0kHv5AVxv9iEuddte5NGNA7M5OHl
+         dYp8gEDAKB8WMvQnFsLJ6lAZ/aPiNRYrLNWJB7Z95ViVAaSySpf5GtUIwu2IPNXYgohi
+         u3/Wvfkrof3rstVhJyzb679ediJCySh9poE5OOCo0f92ze6db/lHVMNpOHFx+HJ2mvfD
+         Hm+A==
+X-Gm-Message-State: AOJu0YxAElcO56imleBUvkp7nb1CCwnMD8HqakFHLOlv0DH5RgXeX2B3
+        lWkKoPoZkFWmB87cwcYA9Om/HQJgYsuw7pX7Ax7N3g==
+X-Google-Smtp-Source: AGHT+IERnN25ZpQWhSoveHYhjH1bHINt0TuAVLiTz7wZcF5ueihZgXoSAZV3dV6i7b/f23cd983VPNMQFTyQCDpDsN0=
+X-Received: by 2002:a0d:ccc5:0:b0:5a7:e4fe:ea3 with SMTP id
+ o188-20020a0dccc5000000b005a7e4fe0ea3mr10768851ywd.22.1699271092440; Mon, 06
+ Nov 2023 03:44:52 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [RFC PATCH 2/2] arm64: dts: qcom: qcm6490: Add qcm6490 idp and
- rb3 board
-Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Komal Bajaj <quic_kbajaj@quicinc.com>
-CC:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <quic_nainmeht@quicinc.com>
-References: <20231103184655.23555-1-quic_kbajaj@quicinc.com>
- <20231103184655.23555-3-quic_kbajaj@quicinc.com>
- <CAA8EJprNyu0r_mV9hbKA1fSvoEvTHuk5umxU8H64Voj_cnZcFQ@mail.gmail.com>
- <1830fc44-7bac-4db5-af59-112410d73a64@linaro.org>
-From:   Mukesh Ojha <quic_mojha@quicinc.com>
-In-Reply-To: <1830fc44-7bac-4db5-af59-112410d73a64@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01c.na.qualcomm.com (10.45.79.139)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: 6JF5azQjTaONYIU5iqCi5xWindgHQpdS
-X-Proofpoint-GUID: 6JF5azQjTaONYIU5iqCi5xWindgHQpdS
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-06_09,2023-11-02_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 bulkscore=0
- phishscore=0 priorityscore=1501 mlxlogscore=999 malwarescore=0 spamscore=0
- mlxscore=0 suspectscore=0 clxscore=1015 adultscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2310240000
- definitions=main-2311060096
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+References: <20231105163040.14904-1-pbonzini@redhat.com> <20231105163040.14904-27-pbonzini@redhat.com>
+In-Reply-To: <20231105163040.14904-27-pbonzini@redhat.com>
+From:   Fuad Tabba <tabba@google.com>
+Date:   Mon, 6 Nov 2023 11:44:16 +0000
+Message-ID: <CA+EHjTymGLsfHvdP4fPOFWTtaRwbtbCOBZ0XOC3gsX+nYm-cZQ@mail.gmail.com>
+Subject: Re: [PATCH 26/34] KVM: selftests: Add helpers to do
+ KVM_HC_MAP_GPA_RANGE hypercalls (x86)
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Anup Patel <anup@brainfault.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Sean Christopherson <seanjc@google.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>, kvm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Xiaoyao Li <xiaoyao.li@intel.com>,
+        Xu Yilun <yilun.xu@intel.com>,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Anish Moorthy <amoorthy@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Isaku Yamahata <isaku.yamahata@intel.com>,
+        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Maciej Szmigiero <mail@maciej.szmigiero.name>,
+        David Hildenbrand <david@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Wang <wei.w.wang@intel.com>,
+        Liam Merwick <liam.merwick@oracle.com>,
+        Isaku Yamahata <isaku.yamahata@gmail.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -91,95 +106,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Nov 5, 2023 at 4:34=E2=80=AFPM Paolo Bonzini <pbonzini@redhat.com> =
+wrote:
+>
+> From: Vishal Annapurve <vannapurve@google.com>
+>
+> Add helpers for x86 guests to invoke the KVM_HC_MAP_GPA_RANGE hypercall,
+> which KVM will forward to userspace and thus can be used by tests to
+> coordinate private<=3D>shared conversions between host userspace code and
+> guest code.
+>
+> Signed-off-by: Vishal Annapurve <vannapurve@google.com>
+> [sean: drop shared/private helpers (let tests specify flags)]
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> Message-Id: <20231027182217.3615211-29-seanjc@google.com>
+> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+> ---
 
-On 11/5/2023 6:38 PM, Krzysztof Kozlowski wrote:
-> On 03/11/2023 23:22, Dmitry Baryshkov wrote:
->> On Fri, 3 Nov 2023 at 20:49, Komal Bajaj <quic_kbajaj@quicinc.com> wrote:
->>>
->>> Add qcm6490 devicetree file for QCM6490 IDP and QCM6490 RB3
->>> platform. QCM6490 is derived from SC7280 meant for various
->>> form factor including IoT.
->>>
->>> Supported features are, as of now:
->>> * Debug UART
->>> * eMMC (only in IDP)
->>> * USB
->>>
-> 
-> ...
-> 
->>> +
->>> diff --git a/arch/arm64/boot/dts/qcom/qcm6490-iot-common.dtsi b/arch/arm64/boot/dts/qcom/qcm6490-iot-common.dtsi
->>> new file mode 100644
->>> index 000000000000..01adc97789d0
->>> --- /dev/null
->>> +++ b/arch/arm64/boot/dts/qcom/qcm6490-iot-common.dtsi
->>
->> I have mixed feelings towards this file. Usually we add such 'common'
->> files only for the phone platforms where most of the devices are
->> common.
->> Do you expect that IDP and RB3 will have a lot of common code other
->> than these regulator settings?
-> 
-> I agree here. What exactly is common in the real hardware between IDP
-> and RB3? Commit msg does not explain it, so I do not see enough
-> justification for common file. Just because some DTS looks similar for
-> different hardware does not mean you should creat common file.
+Reviewed-by: Fuad Tabba <tabba@google.com>
+Tested-by: Fuad Tabba <tabba@google.com>
 
-@Dmitry/@Krzysztof,
+Cheers,
+/fuad
 
-Thank you for reviewing the RFC, we wanted to continue the
-suggestion/discussion given on [1] , where we discussed that this
-qcm6490 is going to be targeted for IOT segment and will have different
-memory map and it is going to use some of co-processors like adsp/cdsp 
-which chrome does not use.
-
-So to your question what is common between RB3 and IDP, mostly they will
-share common memory map(similar to [2]) and regulator settings and both 
-will use adsp/cdsp etc., we will be posting the memory map changes as 
-well in coming weeks once this RFC is acked.
-
-
-Thanks,
-Mukesh
-
-[1]
-https://lore.kernel.org/linux-arm-msm/d97ebf74-ad03-86d6-b826-b57be209b9e2@quicinc.com/
-
-[2]
-commit 90c856602e0346ce9ff234062e86a198d71fa723
-Author: Douglas Anderson <dianders@chromium.org>
-Date:   Tue Jan 25 14:44:20 2022 -0800
-
-     arm64: dts: qcom: sc7280: Factor out Chrome common fragment
-
-     This factors out a device tree fragment from some sc7280 device
-     trees. It represents the device tree bits that should be included for
-     "Chrome" based sc7280 boards. On these boards the bootloader (Coreboot
-     + Depthcharge) configures things slightly different than the
-     bootloader that Qualcomm provides. The modem firmware on these boards
-     also works differently than on other Qulacomm products and thus the
-     reserved memory map needs to be adjusted.
-
-     NOTES:
-     - This is _not_ quite a no-op change. The "herobrine" and "idp"
-       fragments here were different and it looks like someone simply
-       forgot to update the herobrine version. This updates a few numbers
-       to match IDP. This will also cause the `pmk8350_pon` to be disabled
-       on idp/crd, which I belive is a correct change.
-     - At the moment this assumes LTE skus. Once it's clearer how WiFi SKUs
-       will work (how much of the memory map they can reclaim) we may add
-       an extra fragment that will rejigger one way or the other.
-
-     Signed-off-by: Douglas Anderson <dianders@chromium.org>
-     Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-     Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
-     Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-     Link: 
-https://lore.kernel.org/r/20220125144316.v2.3.Iac012fa8d727be46448d47027a1813ea716423ce@changeid
-
-
-> 
-> Best regards,
-> Krzysztof
-> 
+>  .../selftests/kvm/include/x86_64/processor.h      | 15 +++++++++++++++
+>  1 file changed, 15 insertions(+)
+>
+> diff --git a/tools/testing/selftests/kvm/include/x86_64/processor.h b/too=
+ls/testing/selftests/kvm/include/x86_64/processor.h
+> index 25bc61dac5fb..a84863503fcb 100644
+> --- a/tools/testing/selftests/kvm/include/x86_64/processor.h
+> +++ b/tools/testing/selftests/kvm/include/x86_64/processor.h
+> @@ -15,6 +15,7 @@
+>  #include <asm/msr-index.h>
+>  #include <asm/prctl.h>
+>
+> +#include <linux/kvm_para.h>
+>  #include <linux/stringify.h>
+>
+>  #include "../kvm_util.h"
+> @@ -1194,6 +1195,20 @@ uint64_t kvm_hypercall(uint64_t nr, uint64_t a0, u=
+int64_t a1, uint64_t a2,
+>  uint64_t __xen_hypercall(uint64_t nr, uint64_t a0, void *a1);
+>  void xen_hypercall(uint64_t nr, uint64_t a0, void *a1);
+>
+> +static inline uint64_t __kvm_hypercall_map_gpa_range(uint64_t gpa,
+> +                                                    uint64_t size, uint6=
+4_t flags)
+> +{
+> +       return kvm_hypercall(KVM_HC_MAP_GPA_RANGE, gpa, size >> PAGE_SHIF=
+T, flags, 0);
+> +}
+> +
+> +static inline void kvm_hypercall_map_gpa_range(uint64_t gpa, uint64_t si=
+ze,
+> +                                              uint64_t flags)
+> +{
+> +       uint64_t ret =3D __kvm_hypercall_map_gpa_range(gpa, size, flags);
+> +
+> +       GUEST_ASSERT(!ret);
+> +}
+> +
+>  void __vm_xsave_require_permission(uint64_t xfeature, const char *name);
+>
+>  #define vm_xsave_require_permission(xfeature)  \
+> --
+> 2.39.1
+>
+>
