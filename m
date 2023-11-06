@@ -2,98 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 491447E276A
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 15:45:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43D697E2773
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 15:46:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231846AbjKFOpG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 09:45:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46912 "EHLO
+        id S231611AbjKFOqS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 09:46:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231855AbjKFOpD (ORCPT
+        with ESMTP id S229705AbjKFOqQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 09:45:03 -0500
-Received: from mail-ot1-f44.google.com (mail-ot1-f44.google.com [209.85.210.44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50702D47;
-        Mon,  6 Nov 2023 06:44:59 -0800 (PST)
-Received: by mail-ot1-f44.google.com with SMTP id 46e09a7af769-6ce29d1db6eso2637789a34.1;
-        Mon, 06 Nov 2023 06:44:59 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699281898; x=1699886698;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GzTeypYavg43CGGqc/gvMHs0xlS4mmNzFQv4Nkw8p9U=;
-        b=xGJAYEr4+93MJzvoyXLOxKjlKW60Rpw0qeyOewGTTRUFbmTGPO+OkTce/92jLLMVub
-         v07E+c5Cb7JfjokUxOeDNL2BwmjCNaozjvvzDa1UiKojsDAaU6kCnbj6t7iaIxhhKEnx
-         a7qE3tIM9m8ub8a84YdvOmSkEP6Ogrgg38Gm4tzKzLBDC1qxior2V0qgQSkaj4OiXLT4
-         vyABCUih9YEeuYLqqh+T1feRd/sGYnsyjM4LO54OX3nKy7/Yt4UOcg4yLqJpHTyasXch
-         ZSgmgRxG3/C98zT+3VKyST1XS4O9RXlCGzsb1aTEt7i6Od2doqDsHzVIFle6ydm6okh2
-         vuEQ==
-X-Gm-Message-State: AOJu0Yyo1I9NxTr3C6jRYdsj3zMla2sQDfb32bgiz/rEYP9hpWLCJXLZ
-        qM2guu9QD7fd1C521PdLDA==
-X-Google-Smtp-Source: AGHT+IE7RvtxWIISIJToFQ9Z9MXswEDAfriM8yXPO4Qhgdi8XwAPJJQ49Eh7JOWDsy32b9kuz6ye3A==
-X-Received: by 2002:a9d:6e81:0:b0:6cd:a4a:181f with SMTP id a1-20020a9d6e81000000b006cd0a4a181fmr5663889otr.17.1699281898505;
-        Mon, 06 Nov 2023 06:44:58 -0800 (PST)
-Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id bo7-20020a0568300c0700b006ce28044207sm1295906otb.58.2023.11.06.06.44.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Nov 2023 06:44:57 -0800 (PST)
-Received: (nullmailer pid 317716 invoked by uid 1000);
-        Mon, 06 Nov 2023 14:44:56 -0000
-Date:   Mon, 6 Nov 2023 08:44:56 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Naveen Kumar <mnkumar@google.com>
-Cc:     Mathias Nyman <mathias.nyman@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, royluo@google.com,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH RESEND 2/2] dt-bindings: usb: add no-64-bit-support
- property
-Message-ID: <20231106144456.GA315331-robh@kernel.org>
-References: <20231101101625.4151442-1-mnkumar@google.com>
- <20231101101625.4151442-3-mnkumar@google.com>
+        Mon, 6 Nov 2023 09:46:16 -0500
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 893EBB6;
+        Mon,  6 Nov 2023 06:46:13 -0800 (PST)
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A6BZIbI020924;
+        Mon, 6 Nov 2023 14:46:08 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=ydjxTFNwpKunzUce5gcokdWKhm0TytBkiLo5Z++aS5c=;
+ b=YrTeQT8o0VsprgQmvqG6ELMC6txmIaqt4Eb9tVXb/C9JQHH8GUxX/SjpfZUb43OzJ4eP
+ tJeoouX2+84SJc48KIWdfwmP5qZXpxOEyV4sUgEXzLuo29CehB8YgeY1HrK8yk97OTK6
+ WSTGOnnXEE+e2vLgPCmtUdNbrVwxB0wXm+I4VKMnUa+yDLFIV/vh1+hCy5d5amsJoZ3s
+ vO7Dy3/hQ7l2N95qWcFFQuQLR5ZiQUs78YK5o5Nrh3uYEjpEZ8Re7pBK8fI1sEk7h2bM
+ u9LcuDHeZW3rBHQlP0wKvQcrO861+HKG83L8ZVLkpT/nybBDyfdI0xioR+tjKdcyIg5E 1Q== 
+Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u5ernmfht-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 06 Nov 2023 14:46:08 +0000
+Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
+        by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3A6Ek7Sb020186
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 6 Nov 2023 14:46:07 GMT
+Received: from [10.216.42.224] (10.80.80.8) by nasanex01c.na.qualcomm.com
+ (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Mon, 6 Nov
+ 2023 06:46:02 -0800
+Message-ID: <d5492e4d-6c70-7d6c-3f5b-a0b5d9266ab0@quicinc.com>
+Date:   Mon, 6 Nov 2023 20:15:57 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231101101625.4151442-3-mnkumar@google.com>
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [RFC PATCH 2/2] arm64: dts: qcom: qcm6490: Add qcm6490 idp and
+ rb3 board
+Content-Language: en-US
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+CC:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Komal Bajaj <quic_kbajaj@quicinc.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <quic_nainmeht@quicinc.com>
+References: <20231103184655.23555-1-quic_kbajaj@quicinc.com>
+ <20231103184655.23555-3-quic_kbajaj@quicinc.com>
+ <CAA8EJprNyu0r_mV9hbKA1fSvoEvTHuk5umxU8H64Voj_cnZcFQ@mail.gmail.com>
+ <1830fc44-7bac-4db5-af59-112410d73a64@linaro.org>
+ <af05dbdb-21bf-34f0-e9b3-9f6b9a0c3115@quicinc.com>
+ <CAA8EJpq89g9EeyKcogU+Mt9ie6Bk-rmgi=GqyycYBm_291i1Bw@mail.gmail.com>
+From:   Mukesh Ojha <quic_mojha@quicinc.com>
+In-Reply-To: <CAA8EJpq89g9EeyKcogU+Mt9ie6Bk-rmgi=GqyycYBm_291i1Bw@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01c.na.qualcomm.com (10.45.79.139)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: JsUyb1WmZZxhiA6GnZVj-BCPxvroWDtY
+X-Proofpoint-GUID: JsUyb1WmZZxhiA6GnZVj-BCPxvroWDtY
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-06_12,2023-11-02_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 bulkscore=0
+ phishscore=0 priorityscore=1501 mlxlogscore=999 malwarescore=0 spamscore=0
+ mlxscore=0 suspectscore=0 clxscore=1015 adultscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2310240000
+ definitions=main-2311060118
+X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 01, 2023 at 10:16:25AM +0000, Naveen Kumar wrote:
-> From: Naveen Kumar M <mnkumar@google.com>
-> 
-> Add a new DT option to specify whether a host controller is able to
-> support 64-bit DMA memory pointers
-> 
-> Signed-off-by: Naveen Kumar M <mnkumar@google.com>
-> ---
->  Documentation/devicetree/bindings/usb/usb-xhci.yaml | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/usb/usb-xhci.yaml b/Documentation/devicetree/bindings/usb/usb-xhci.yaml
-> index 180a261c3e8f..20dc134004f3 100644
-> --- a/Documentation/devicetree/bindings/usb/usb-xhci.yaml
-> +++ b/Documentation/devicetree/bindings/usb/usb-xhci.yaml
-> @@ -25,6 +25,10 @@ properties:
->      description: Set if the controller has broken port disable mechanism
->      type: boolean
->  
-> +  quirk-no-64-bit-support:
-> +    description: Set if the xHC doesn't support 64-bit DMA memory pointers
-> +    type: boolean
 
-To add on to this, you can handle this with dma-ranges if you need to 
-limit DMA addresses to less than 32-bits.
 
-Rob
+On 11/6/2023 5:24 PM, Dmitry Baryshkov wrote:
+> On Mon, 6 Nov 2023 at 13:41, Mukesh Ojha <quic_mojha@quicinc.com> wrote:
+>>
+>>
+>> On 11/5/2023 6:38 PM, Krzysztof Kozlowski wrote:
+>>> On 03/11/2023 23:22, Dmitry Baryshkov wrote:
+>>>> On Fri, 3 Nov 2023 at 20:49, Komal Bajaj <quic_kbajaj@quicinc.com> wrote:
+>>>>>
+>>>>> Add qcm6490 devicetree file for QCM6490 IDP and QCM6490 RB3
+>>>>> platform. QCM6490 is derived from SC7280 meant for various
+>>>>> form factor including IoT.
+>>>>>
+>>>>> Supported features are, as of now:
+>>>>> * Debug UART
+>>>>> * eMMC (only in IDP)
+>>>>> * USB
+>>>>>
+>>>
+>>> ...
+>>>
+>>>>> +
+>>>>> diff --git a/arch/arm64/boot/dts/qcom/qcm6490-iot-common.dtsi b/arch/arm64/boot/dts/qcom/qcm6490-iot-common.dtsi
+>>>>> new file mode 100644
+>>>>> index 000000000000..01adc97789d0
+>>>>> --- /dev/null
+>>>>> +++ b/arch/arm64/boot/dts/qcom/qcm6490-iot-common.dtsi
+>>>>
+>>>> I have mixed feelings towards this file. Usually we add such 'common'
+>>>> files only for the phone platforms where most of the devices are
+>>>> common.
+>>>> Do you expect that IDP and RB3 will have a lot of common code other
+>>>> than these regulator settings?
+>>>
+>>> I agree here. What exactly is common in the real hardware between IDP
+>>> and RB3? Commit msg does not explain it, so I do not see enough
+>>> justification for common file. Just because some DTS looks similar for
+>>> different hardware does not mean you should creat common file.
+>>
+>> @Dmitry/@Krzysztof,
+>>
+>> Thank you for reviewing the RFC, we wanted to continue the
+>> suggestion/discussion given on [1] , where we discussed that this
+>> qcm6490 is going to be targeted for IOT segment and will have different
+>> memory map and it is going to use some of co-processors like adsp/cdsp
+>> which chrome does not use.
+>>
+>> So to your question what is common between RB3 and IDP, mostly they will
+>> share common memory map(similar to [2]) and regulator settings and both
+>> will use adsp/cdsp etc., we will be posting the memory map changes as
+>> well in coming weeks once this RFC is acked.
+> 
+> Is the memory map going to be the same as the one used on Fairphone5?
 
+No, Fairphone5 looks to be using chrome memory map and i suggested
+here to move them into sc7280.dtsi
+
+https://lore.kernel.org/lkml/d5d53346-ca3b-986a-e104-d87c37115b62@quicinc.com/
+
+> 
+> Are ADSP and CDSP physically present on sc7280?
+
+Yes, they are present but not used.
+
+> 
+> I think that your goal should be to:
+> - populate missing device in sc7280.dtsi
+> - maybe add qcm6490.dtsi which defines SoC-level common data (e.g. memory map)
+> - push the rest to board files.
+
+Agree to all of the point.
+We started with the same thought at[3] but it got lost in discussion
+due to its differentiation with mobile counter part(fairphone) which
+follow chrome memory map and hence we came up with qcm6490-iot-common.
+Do you think, qcm6490-iot.dtsi should be good ?
+
+[3]
+https://lore.kernel.org/linux-arm-msm/20231003175456.14774-3-quic_kbajaj@quicinc.com/
+
+-Mukesh
+> 
+> I don't think that putting regulators to the common file is a good
+> idea. Platforms will further change and limit voltage limits and
+> modes, so they usually go to the board file.
+> 
+>>
+>>
+>> Thanks,
+>> Mukesh
+>>
+>> [1]
+>> https://lore.kernel.org/linux-arm-msm/d97ebf74-ad03-86d6-b826-b57be209b9e2@quicinc.com/
+>>
+>> [2]
+>> commit 90c856602e0346ce9ff234062e86a198d71fa723
+>> Author: Douglas Anderson <dianders@chromium.org>
+>> Date:   Tue Jan 25 14:44:20 2022 -0800
+>>
+>>       arm64: dts: qcom: sc7280: Factor out Chrome common fragment
+>>
+>>       This factors out a device tree fragment from some sc7280 device
+>>       trees. It represents the device tree bits that should be included for
+>>       "Chrome" based sc7280 boards. On these boards the bootloader (Coreboot
+>>       + Depthcharge) configures things slightly different than the
+>>       bootloader that Qualcomm provides. The modem firmware on these boards
+>>       also works differently than on other Qulacomm products and thus the
+>>       reserved memory map needs to be adjusted.
+>>
+>>       NOTES:
+>>       - This is _not_ quite a no-op change. The "herobrine" and "idp"
+>>         fragments here were different and it looks like someone simply
+>>         forgot to update the herobrine version. This updates a few numbers
+>>         to match IDP. This will also cause the `pmk8350_pon` to be disabled
+>>         on idp/crd, which I belive is a correct change.
+>>       - At the moment this assumes LTE skus. Once it's clearer how WiFi SKUs
+>>         will work (how much of the memory map they can reclaim) we may add
+>>         an extra fragment that will rejigger one way or the other.
+>>
+>>       Signed-off-by: Douglas Anderson <dianders@chromium.org>
+>>       Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+>>       Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
+>>       Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+>>       Link:
+>> https://lore.kernel.org/r/20220125144316.v2.3.Iac012fa8d727be46448d47027a1813ea716423ce@changeid
+>>
+>>
+>>>
+>>> Best regards,
+>>> Krzysztof
+>>>
+> 
+> 
+> 
