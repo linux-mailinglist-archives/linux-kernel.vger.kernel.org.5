@@ -2,63 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 72DE17E1943
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 04:50:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CE217E1945
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 04:51:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230151AbjKFDuW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Nov 2023 22:50:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57270 "EHLO
+        id S230228AbjKFDvy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Nov 2023 22:51:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229485AbjKFDuU (ORCPT
+        with ESMTP id S229485AbjKFDvx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Nov 2023 22:50:20 -0500
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B47FDF9
-        for <linux-kernel@vger.kernel.org>; Sun,  5 Nov 2023 19:50:15 -0800 (PST)
-Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-507be298d2aso5126758e87.1
-        for <linux-kernel@vger.kernel.org>; Sun, 05 Nov 2023 19:50:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1699242614; x=1699847414; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=FP8SvezoMO2M+ZTPW421BIEX+6IENKm6ADnT3OyuFFA=;
-        b=NdgDmm65lBGVcpIriSAmPYWp3Ll23VrU5noMLE2LfLZyOo9Q7o6zpLPaNowewp5H9m
-         Hv2PHdE4WE2Z6aNxkxBRzQjnP3eKFvh6ijnGD/ifbCidqAK2rvaq5n4Z1SCCNvbOc43w
-         V8LaiBoSmudhBt5hg4dTZ7C7oGhC0e4uGOr2c=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699242614; x=1699847414;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=FP8SvezoMO2M+ZTPW421BIEX+6IENKm6ADnT3OyuFFA=;
-        b=pXmDM+N/Wyc5XHhlXWabnPfrhJbF/FLz+MuBalVqtMiCjf1DZ6hKdo1+NTBNQTeb2O
-         tUWsROZhFuXBzeqQab2w7Y8gV3dBUdiqFM9q5lsLNAy79Nq2/SYRUoP7eHTJ5B2qwZxd
-         YIgyx3004gSqjXYIA6nTVxhLsGnak7P6dH4MmnudY4BrqmztWQ11VPuM/OEh67lbHPl0
-         CKieqIbnDqHz8E5JcSnK3LBHAAKXOX8oR54IA//2hhHfWuceHngRo37JJEkH80Mdyvmn
-         IzrrauCIdJVCzs4AHa55TR7OU80acpfzfnp0qKXINt9zEIGKbpFj9hxKdwge8Vts5lRT
-         pjcA==
-X-Gm-Message-State: AOJu0YwHFcDnwBFQufHYzsmkUjVlo6wYW+1f4fwXTIwXiSOHeozHzS12
-        Rv1jLr8eu8C1O2BZPD2j6RJ6l2X8m+jctXHt1BXlIQ==
-X-Google-Smtp-Source: AGHT+IEeHFiFkJ02s24JiKTQ50Sv6sCN2Sh6A/yN+4UfB80ZixwWngyP9tyzhUD9jdB2ZudmqFuK26hrl200nNua7sM=
-X-Received: by 2002:a05:6512:3c98:b0:509:493a:7d64 with SMTP id
- h24-20020a0565123c9800b00509493a7d64mr10530401lfv.41.1699242613482; Sun, 05
- Nov 2023 19:50:13 -0800 (PST)
+        Sun, 5 Nov 2023 22:51:53 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22E5DB8;
+        Sun,  5 Nov 2023 19:51:50 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B8B44C433C7;
+        Mon,  6 Nov 2023 03:51:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699242709;
+        bh=p/6rdTgcnmPyf/XIA2wa9x+F/17gU25Jm/S8oBO6vT4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=AWq/lRP/WA+uswf/g9so48tierdTuIyxSbKjhaD8RF/pCLp3xCFYl4NUzx8y/0RrI
+         FSkG46ZGn0hJ2DIqDnVmy8CXQKsTWPFjZ5mych1xeAjn8Hrp0isVZIj9TT01D3QANH
+         B6a83kFbbnB00xILRnz1fHKuOjEPN6YKqSDwG4rXiQ1dozHaFrxFc9zo/Qv5jQPyhE
+         vJq1vs7rKSuTe0X1JhXoIEAIjCXp+iVjvWdq86UoUfquhEHOG6k9OPKJ2e9EbeQ6tG
+         /5ScK6XSNH3Gfz4qO3aACyCWNWVHHaoepMIemqlKjPnfwXefntDvuh/Gccs6LnA26X
+         OlT89TXlwjUGg==
+Received: by mail-oo1-f49.google.com with SMTP id 006d021491bc7-581ed744114so1845195eaf.0;
+        Sun, 05 Nov 2023 19:51:49 -0800 (PST)
+X-Gm-Message-State: AOJu0Yy8s2xJH3k+8nb1LDq9ADcEzur6dpBR3iZt0fp/CY+8A0mn/INZ
+        d/ye4uQKg4ss2dBHTtDAGAero4gNasR7nP3G5Ws=
+X-Google-Smtp-Source: AGHT+IGuZlBfZvF090gNi2fS9r0XqKdmDIfH0zE5MbrDrqNh4lxHFCn0DRpcFaCOAWQlckBIxv1TfmPDbEim0T4hRKk=
+X-Received: by 2002:a05:6870:1382:b0:1f0:630b:c84e with SMTP id
+ 2-20020a056870138200b001f0630bc84emr7707493oas.57.1699242709042; Sun, 05 Nov
+ 2023 19:51:49 -0800 (PST)
 MIME-Version: 1.0
-References: <20231105185828.287004-1-alexey.pakhunov@spacex.com>
-In-Reply-To: <20231105185828.287004-1-alexey.pakhunov@spacex.com>
-From:   Michael Chan <michael.chan@broadcom.com>
-Date:   Sun, 5 Nov 2023 19:50:01 -0800
-Message-ID: <CACKFLikZgXQLnSN95vQgzZqmFisrxUvKiqF78RYcMAA2BE+6Zg@mail.gmail.com>
-Subject: Re: [PATCH v3] tg3: Fix the TX ring stall
-To:     alexey.pakhunov@spacex.com
-Cc:     mchan@broadcom.com, vincent.wong2@spacex.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        siva.kallam@broadcom.com, prashant@broadcom.com
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="00000000000065e776060973c0d1"
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+References: <20230905094313.11609-1-sunying@nj.iscas.ac.cn> <4c1a77f.2190e.18b8df041d0.Coremail.guosy@buaa.edu.cn>
+In-Reply-To: <4c1a77f.2190e.18b8df041d0.Coremail.guosy@buaa.edu.cn>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Mon, 6 Nov 2023 05:51:11 +0200
+X-Gmail-Original-Message-ID: <CAK7LNARZPSEB2ZiZ9YjBUWhi8gNvq0s3TTLjXAs53BVG3YYf9w@mail.gmail.com>
+Message-ID: <CAK7LNARZPSEB2ZiZ9YjBUWhi8gNvq0s3TTLjXAs53BVG3YYf9w@mail.gmail.com>
+Subject: Re: [PATCHv2 -next] kconfig: add dependency warning print about
+ invalid values in verbose mode
+To:     =?UTF-8?B?6YOt5oCd6L+c?= <guosy@buaa.edu.cn>
+Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        senozhatsky@chromium.org, mr.bossman075@gmail.com,
+        pengpeng@iscas.ac.cn, sunying@isrc.iscas.ac.cn
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,150 +60,387 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---00000000000065e776060973c0d1
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+On Thu, Nov 2, 2023 at 4:51=E2=80=AFAM =E9=83=AD=E6=80=9D=E8=BF=9C <guosy@b=
+uaa.edu.cn> wrote:
+>
+> I am writing to inquire about the status of my patch submission.
+>
+> Are there any issues with this patch that we need to modify?
 
-On Sun, Nov 5, 2023 at 10:58=E2=80=AFAM <alexey.pakhunov@spacex.com> wrote:
->
-> From: Alex Pakhunov <alexey.pakhunov@spacex.com>
->
-> The TX ring maintained by the tg3 driver can end up in the state, when it
-> has packets queued for sending but the NIC hardware is not informed, so n=
-o
-> progress is made. This leads to a multi-second interruption in network
-> traffic followed by dev_watchdog() firing and resetting the queue.
->
-> The specific sequence of steps is:
->
-> 1. tg3_start_xmit() is called at least once and queues packet(s) without
->    updating tnapi->prodmbox (netdev_xmit_more() returns true)
-> 2. tg3_start_xmit() is called with an SKB which causes tg3_tso_bug() to b=
-e
->    called.
-> 3. tg3_tso_bug() determines that the SKB is too large, ...
->
->         if (unlikely(tg3_tx_avail(tnapi) <=3D frag_cnt_est)) {
->
->    ... stops the queue, and returns NETDEV_TX_BUSY:
->
->         netif_tx_stop_queue(txq);
->         ...
->         if (tg3_tx_avail(tnapi) <=3D frag_cnt_est)
->                 return NETDEV_TX_BUSY;
->
-> 4. Since all tg3_tso_bug() call sites directly return, the code updating
->    tnapi->prodmbox is skipped.
->
-> 5. The queue is stuck now. tg3_start_xmit() is not called while the queue
->    is stopped. The NIC is not processing new packets because
->    tnapi->prodmbox wasn't updated. tg3_tx() is not called by
->    tg3_poll_work() because the all TX descriptions that could be freed ha=
-s
->    been freed:
->
->         /* run TX completion thread */
->         if (tnapi->hw_status->idx[0].tx_consumer !=3D tnapi->tx_cons) {
->                 tg3_tx(tnapi);
->
-> 6. Eventually, dev_watchdog() fires triggering a reset of the queue.
->
-> This fix makes sure that the tnapi->prodmbox update happens regardless of
-> the reason tg3_start_xmit() returned.
->
-> Signed-off-by: Alex Pakhunov <alexey.pakhunov@spacex.com>
-> Signed-off-by: Vincent Wong <vincent.wong2@spacex.com>
-> ---
-> v3: Split "Fix the TX ring stall" into a standalone patch. No code change=
-s from v2.
-> v2: https://lore.kernel.org/netdev/CACKFLi=3DZLAb1Y92LwvqjOGPCuinka7qbHwD=
-P2pkG4-_a7DMorQ@mail.gmail.com/T/#t
->     - Sort the local variables in tg3_start_xmit() in the RCS order
-> v1: https://lore.kernel.org/netdev/20231101191858.2611154-1-alexey.pakhun=
-ov@spacex.com/T/#t
-> ---
 
-Thanks.
-Reviewed-by: Michael Chan <michael.chan@broadcom.com>
 
---00000000000065e776060973c0d1
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
 
-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
-OnaLEot1MoQO7BIe5S9H4AcCEXXcrJJiAtMCl47ARpyHmvQFQFFTrHgUYEd9V+9bOzY7MBIGSV1N
-/JfsT1sZw6HT0lJkSQefhPGpBniAob62DJP3qr11tu8CAwEAAaOCAdowggHWMA4GA1UdDwEB/wQE
-AwIFoDCBowYIKwYBBQUHAQEEgZYwgZMwTgYIKwYBBQUHMAKGQmh0dHA6Ly9zZWN1cmUuZ2xvYmFs
-c2lnbi5jb20vY2FjZXJ0L2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNydDBBBggrBgEFBQcw
-AYY1aHR0cDovL29jc3AuZ2xvYmFsc2lnbi5jb20vZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAw
-TQYDVR0gBEYwRDBCBgorBgEEAaAyASgKMDQwMgYIKwYBBQUHAgEWJmh0dHBzOi8vd3d3Lmdsb2Jh
-bHNpZ24uY29tL3JlcG9zaXRvcnkvMAkGA1UdEwQCMAAwSQYDVR0fBEIwQDA+oDygOoY4aHR0cDov
-L2NybC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAyMC5jcmwwJAYDVR0R
-BB0wG4EZbWljaGFlbC5jaGFuQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAfBgNV
-HSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQU31rAyTdZweIF0tJTFYwfOv2w
-L4QwDQYJKoZIhvcNAQELBQADggEBACcuyaGmk0NSZ7Kio7O7WSZ0j0f9xXcBnLbJvQXFYM7JI5uS
-kw5ozATEN5gfmNIe0AHzqwoYjAf3x8Dv2w7HgyrxWdpjTKQFv5jojxa3A5LVuM8mhPGZfR/L5jSk
-5xc3llsKqrWI4ov4JyW79p0E99gfPA6Waixoavxvv1CZBQ4Stu7N660kTu9sJrACf20E+hdKLoiU
-hd5wiQXo9B2ncm5P3jFLYLBmPltIn/uzdiYpFj+E9kS9XYDd+boBZhN1Vh0296zLQZobLfKFzClo
-E6IFyTTANonrXvCRgodKS+QJEH8Syu2jSKe023aVemkuZjzvPK7o9iU7BKkPG2pzLPgxggJtMIIC
-aQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYDVQQD
-EyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgxeQGjDntHGb2iaQkIw
-DQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIIeR4IkblsdCXwkOaMnP5mADZRG0IHuq
-TO/MtJHixfnkMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIzMTEw
-NjAzNTAxNFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCG
-SAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQC
-ATANBgkqhkiG9w0BAQEFAASCAQBdN5ihyNk58Vmzdw+aHkcfOutGtV7iNCT1oj9l8L+PYRKPgW+n
-wOtAhmrdaeY3vOGYzpKISDdtEsxIkcnVz8C+DvsbFWPC9ImDe5FlRlfimyT0xmQKk0VxGHz4oZ3D
-rV3UV1FuLPPdTD2ylNtF8oCTKQTfQ3K5jL7KYqL2lnmmSn1oWZ51Qn9ht54sC+9YlKfAGTtZC8iv
-fFduJ37oW2urJG4UwDY8+94v0vK0h+pHU4SpqIUn5t4lyrjOFmIIH6vX78NY2mYqLGGTz/nJeVOW
-7QdEx0SLjOlsubVepxNUdtr8UBp06YkgxuxxGgEGoPFbYhk5jZdqD59XTAPYoBH8
---00000000000065e776060973c0d1--
+Yes, many issues.
+
+
+
+
+
+This patch will break the user interface
+because printing messages to stderr
+is not always allowed.
+
+
+
+
+For example,
+
+
+$ make nconfig KCONFIG_VERBOSE=3D1
+
+Go to
+
+ Kernel hacking --->
+   printk and dmesg options --->
+     Default console loglevel (1-15) -->
+
+
+Input 20
+
+
+The error message will mess up the ncurses display.
+
+
+You need to use conf_warning().
+
+
+
+
+You introduced memory leak because you called
+str_new(), but did not call str_free().
+
+
+
+
+For the environment variable, please use
+something specific and descriptive.
+For example, KCONFIG_WARN_CHANGED_INPUT
+
+
+
+
+Lastly, please do not scatter the code everywhere.
+
+
+I guess the right place to inject the checker is
+conf_write() (and conf_write_defconfig() as well).
+
+
+
+        } else if (!(sym->flags & SYMBOL_CHOICE) &&
+                   !(sym->flags & SYMBOL_WRITTEN)) {
+                sym_calc_value(sym);
+
+                if (warn_changed_input)                 <--
+                         warn_changed_user_input(sym);  <--
+
+                if (!(sym->flags & SYMBOL_WRITE))
+                         goto next;
+
+
+
+
+
+
+
+
+
+
+
+
+
+>
+> > On Fri, Sep 5, 2023 at 5:45PM Ying Sun <sunying@nj.iscas.ac.cn>wrote:
+> >
+> > Add warning about the configuration option's invalid value in verbose m=
+ode,
+> >  including error causes, mismatch dependency, old and new values,
+> >  to help users correct them.
+> >
+> > Detailed error messages are printed only when the environment variable
+> >  is set like "KCONFIG_VERBOSE=3D1".
+> > By default, the current behavior is not changed.
+> >
+> > Signed-off-by: Siyuan Guo <zy21df106@buaa.edu.cn>
+> > Signed-off-by: Ying Sun <sunying@nj.iscas.ac.cn>
+> > ---
+> > v1 -> v2:
+> > * Reduced the number of code lines by refactoring and simplifying the l=
+ogic.
+> > * Changed the print "ERROR" to "WARNING".
+> > * Focused on handling dependency errors: dir_dep and rev_dep, and range=
+ error.
+> >   - A downgrade from 'y' to 'm' has be warned.
+> >   - A new CONFIG option should not be warned.
+> >   - Overwriting caused by default value is not an error and is no longe=
+r printed.
+> > * Fixed style issues.
+> > ---
+> >  scripts/kconfig/confdata.c | 100 +++++++++++++++++++++++++++++++++++--
+> >  scripts/kconfig/lkc.h      |   7 +++
+> >  scripts/kconfig/symbol.c   |  24 +++++++--
+> >  3 files changed, 121 insertions(+), 10 deletions(-)
+> >
+> > diff --git a/scripts/kconfig/confdata.c b/scripts/kconfig/confdata.c
+> > index 4a6811d77d18..86794ab39d7d 100644
+> > --- a/scripts/kconfig/confdata.c
+> > +++ b/scripts/kconfig/confdata.c
+> > @@ -154,6 +154,56 @@ static void conf_message(const char *fmt, ...)
+> >
+> >  static const char *conf_filename;
+> >  static int conf_lineno, conf_warnings;
+> > +const char *verbose;
+> > +
+> > +void conf_error_log(enum error_type type, struct symbol *sym, char *lo=
+g, ...)
+> > +{
+> > +     static char *const tristate2str[3] =3D {"n", "m", "y"};
+> > +     struct gstr gs =3D str_new();
+> > +     char s[100];
+> > +     char *oldval =3D NULL;
+> > +     va_list args;
+> > +
+> > +     va_start(args, log);
+> > +     vsnprintf(s, sizeof(s), log, args);
+> > +     va_end(args);
+> > +
+> > +     switch (sym->type) {
+> > +     case S_BOOLEAN:
+> > +     case S_TRISTATE:
+> > +             oldval =3D tristate2str[sym->def[S_DEF_USER].tri];
+> > +             break;
+> > +     case S_INT:
+> > +     case S_HEX:
+> > +     case S_STRING:
+> > +             oldval =3D sym->def[S_DEF_USER].val;
+> > +     default:
+> > +             break;
+> > +     }
+> > +
+> > +     str_printf(&gs,
+> > +             "\nWARNING : %s [%s] value is invalid\n",
+> > +             sym->name, oldval);
+> > +     str_printf(&gs, s);
+> > +     switch (type) {
+> > +     case DIR_DEP:
+> > +             str_printf(&gs,
+> > +                     "  Depends on [%c]: ",
+> > +                     sym->dir_dep.tri =3D=3D mod ? 'm' : 'n');
+> > +             expr_gstr_print(sym->dir_dep.expr, &gs);
+> > +             str_printf(&gs, "\n");
+> > +             break;
+> > +     case REV_DEP:
+> > +             expr_gstr_print_revdep(sym->rev_dep.expr, &gs, yes,
+> > +                                     "  Selected by [y]:\n");
+> > +             expr_gstr_print_revdep(sym->rev_dep.expr, &gs, mod,
+> > +                                     "  Selected by [m]:\n");
+> > +             break;
+> > +     default:
+> > +             break;
+> > +     }
+> > +     fputs(str_get(&gs), stderr);
+> > +}
+> >
+> >  static void conf_warning(const char *fmt, ...)
+> >  {
+> > @@ -226,11 +276,14 @@ static const char *conf_get_rustccfg_name(void)
+> >  static int conf_set_sym_val(struct symbol *sym, int def, int def_flags=
+, char *p)
+> >  {
+> >       char *p2;
+> > +     static const char * const type[] =3D {"unknown", "bool", "tristat=
+e", "int", "hex", "string"};
+> >
+> >       switch (sym->type) {
+> >       case S_TRISTATE:
+> >               if (p[0] =3D=3D 'm') {
+> >                       sym->def[def].tri =3D mod;
+> > +
+> > +
+> >                       sym->flags |=3D def_flags;
+> >                       break;
+> >               }
+> > @@ -246,9 +299,14 @@ static int conf_set_sym_val(struct symbol *sym, in=
+t def, int def_flags, char *p)
+> >                       sym->flags |=3D def_flags;
+> >                       break;
+> >               }
+> > -             if (def !=3D S_DEF_AUTO)
+> > -                     conf_warning("symbol value '%s' invalid for %s",
+> > +             if (def !=3D S_DEF_AUTO) {
+> > +                     if (verbose)
+> > +                             conf_warning("symbol value '%s' invalid f=
+or %s\n due to its type is %s",
+> > +                                  p, sym->name, type[sym->type]);
+> > +                     else
+> > +                             conf_warning("symbol value '%s' invalid f=
+or %s",
+> >                                    p, sym->name);
+> > +             }
+> >               return 1;
+> >       case S_STRING:
+> >               /* No escaping for S_DEF_AUTO (include/config/auto.conf) =
+*/
+> > @@ -274,9 +332,14 @@ static int conf_set_sym_val(struct symbol *sym, in=
+t def, int def_flags, char *p)
+> >                       sym->def[def].val =3D xstrdup(p);
+> >                       sym->flags |=3D def_flags;
+> >               } else {
+> > -                     if (def !=3D S_DEF_AUTO)
+> > -                             conf_warning("symbol value '%s' invalid f=
+or %s",
+> > -                                          p, sym->name);
+> > +                     if (def !=3D S_DEF_AUTO) {
+> > +                             if (verbose)
+> > +                                     conf_warning("symbol value '%s' i=
+nvalid for %s\n due to its type is %s",
+> > +                                             p, sym->name, type[sym->t=
+ype]);
+> > +                             else
+> > +                                     conf_warning("symbol value '%s' i=
+nvalid for %s",
+> > +                                             p, sym->name);
+> > +                     }
+> >                       return 1;
+> >               }
+> >               break;
+> > @@ -545,6 +608,7 @@ int conf_read(const char *name)
+> >       int conf_unsaved =3D 0;
+> >       int i;
+> >
+> > +     verbose =3D getenv("KCONFIG_VERBOSE");
+> >       conf_set_changed(false);
+> >
+> >       if (conf_read_simple(name, S_DEF_USER)) {
+> > @@ -576,6 +640,32 @@ int conf_read(const char *name)
+> >                       continue;
+> >               conf_unsaved++;
+> >               /* maybe print value in verbose mode... */
+> > +             if (verbose) {
+> > +                     switch (sym->type) {
+> > +                     case S_BOOLEAN:
+> > +                     case S_TRISTATE:
+> > +                             if (sym->def[S_DEF_USER].tri !=3D sym->cu=
+rr.tri) {
+> > +                                     if (sym->dir_dep.tri < sym->def[S=
+_DEF_USER].tri)
+> > +                                             conf_error_log(DIR_DEP, s=
+ym,
+> > +                                                     "  due to unmet d=
+irect dependencies\n",
+> > +                                                     NULL);
+> > +                                     if (sym->rev_dep.tri > sym->def[S=
+_DEF_USER].tri)
+> > +                                             conf_error_log(REV_DEP, s=
+ym,
+> > +                                                     "  due to it is s=
+elected\n", NULL);
+> > +                             }
+> > +                             break;
+> > +                     case S_INT:
+> > +                     case S_HEX:
+> > +                     case S_STRING:
+> > +                             if (sym->dir_dep.tri =3D=3D no &&
+> > +                                     strcmp((char *)(sym->def[S_DEF_US=
+ER].val), "") !=3D 0)
+> > +                                     conf_error_log(DIR_DEP, sym,
+> > +                                             "  due to unmet direct de=
+pendencies\n", NULL);
+> > +                             break;
+> > +                     default:
+> > +                             break;
+> > +                     }
+> > +             }
+> >       }
+> >
+> >       for_all_symbols(i, sym) {
+> > diff --git a/scripts/kconfig/lkc.h b/scripts/kconfig/lkc.h
+> > index 471a59acecec..242b24650f47 100644
+> > --- a/scripts/kconfig/lkc.h
+> > +++ b/scripts/kconfig/lkc.h
+> > @@ -38,10 +38,17 @@ void zconf_initscan(const char *name);
+> >  void zconf_nextfile(const char *name);
+> >  int zconf_lineno(void);
+> >  const char *zconf_curname(void);
+> > +extern const char *verbose;
+> > +enum error_type {
+> > +     DIR_DEP,
+> > +     REV_DEP,
+> > +     RANGE
+> > +};
+> >
+> >  /* confdata.c */
+> >  const char *conf_get_configname(void);
+> >  void set_all_choice_values(struct symbol *csym);
+> > +void conf_error_log(enum error_type type, struct symbol *sym, char *lo=
+g, ...);
+> >
+> >  /* confdata.c and expr.c */
+> >  static inline void xfwrite(const void *str, size_t len, size_t count, =
+FILE *out)
+> > diff --git a/scripts/kconfig/symbol.c b/scripts/kconfig/symbol.c
+> > index 0572330bf8a7..a78f7eb64f40 100644
+> > --- a/scripts/kconfig/symbol.c
+> > +++ b/scripts/kconfig/symbol.c
+> > @@ -600,7 +600,7 @@ bool sym_string_valid(struct symbol *sym, const cha=
+r *str)
+> >  bool sym_string_within_range(struct symbol *sym, const char *str)
+> >  {
+> >       struct property *prop;
+> > -     long long val;
+> > +     long long val, left, right;
+> >
+> >       switch (sym->type) {
+> >       case S_STRING:
+> > @@ -612,8 +612,15 @@ bool sym_string_within_range(struct symbol *sym, c=
+onst char *str)
+> >               if (!prop)
+> >                       return true;
+> >               val =3D strtoll(str, NULL, 10);
+> > -             return val >=3D sym_get_range_val(prop->expr->left.sym, 1=
+0) &&
+> > -                    val <=3D sym_get_range_val(prop->expr->right.sym, =
+10);
+> > +             left =3D sym_get_range_val(prop->expr->left.sym, 10);
+> > +             right =3D sym_get_range_val(prop->expr->right.sym, 10);
+> > +             if (val >=3D left && val <=3D right)
+> > +                     return true;
+> > +             if (verbose)
+> > +                     conf_error_log(RANGE, sym,
+> > +                             "  symbol value is %lld, the range is (%l=
+ld %lld)\n",
+> > +                             val, left, right);
+> > +             return false;
+> >       case S_HEX:
+> >               if (!sym_string_valid(sym, str))
+> >                       return false;
+> > @@ -621,8 +628,15 @@ bool sym_string_within_range(struct symbol *sym, c=
+onst char *str)
+> >               if (!prop)
+> >                       return true;
+> >               val =3D strtoll(str, NULL, 16);
+> > -             return val >=3D sym_get_range_val(prop->expr->left.sym, 1=
+6) &&
+> > -                    val <=3D sym_get_range_val(prop->expr->right.sym, =
+16);
+> > +             left =3D sym_get_range_val(prop->expr->left.sym, 16);
+> > +             right =3D sym_get_range_val(prop->expr->right.sym, 16);
+> > +             if (val >=3D left && val <=3D right)
+> > +                     return true;
+> > +             if (verbose)
+> > +                     conf_error_log(RANGE, sym,
+> > +                             "  symbol value is 0x%llx, the range is (=
+0x%llx 0x%llx)\n",
+> > +                             val, left, right);
+> > +             return false;
+> >       case S_BOOLEAN:
+> >       case S_TRISTATE:
+> >               switch (str[0]) {
+> > --
+> > 2.17.1
+
+
+
+--=20
+Best Regards
+Masahiro Yamada
