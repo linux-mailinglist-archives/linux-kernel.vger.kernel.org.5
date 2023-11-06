@@ -2,47 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 494857E2E9F
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 22:07:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CFB47E2EA2
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 22:07:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232927AbjKFVHj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 16:07:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57694 "EHLO
+        id S233112AbjKFVHl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 16:07:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229755AbjKFVHi (ORCPT
+        with ESMTP id S233014AbjKFVHi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 6 Nov 2023 16:07:38 -0500
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED2A3A3
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE242D51
         for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 13:07:34 -0800 (PST)
 From:   John Ogness <john.ogness@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1699304852;
+        s=2020; t=1699304853;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=CxVp08tt1OIa0s48HQ/tV2mA7uFrK13yA3t6gp6F8Fc=;
-        b=jX771zxVFdlvVT+BMuix58PggzwWZyGU9AIk+3z4/LqF/wPMLqLYEbiU1DOrt9xuBXxC6f
-        z8fYDP2sz69xCP4lJqziAhnOMwByPKVqGAjWRXER2jgvP+KtRtr7v6zC+j1e6+mbphvnUC
-        D7JWChOti4SIsRSGa2sRt7v+2EZ0eAHPLDM04PRpRqxCHFBs4cAnKwcj8f06/1Zrj7aZG8
-        uV0qZ+Z+VjiB4fx09ReeigXF58dQ34aAQyyCeELWWvI6iWx4k5kOjwQ+Ack+UMJycWBgs/
-        wG4k657yyHeJEj+yKzlzwq6MESIPjgY2RlIeBxcFcFssqRq3ltuvE5VilkfvCQ==
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=z3f4HQf7ma/ip4YULZcgH7RuMtHihS3FcdUbZrma7Uk=;
+        b=Ka1zOgQRVwOC98UHvxmZ5RPErohmKs1H9jqjbO7+JzTjJeJqk7Md97RUUPigivGsEB481W
+        oPlaHboW50PHEI3jAd8tARikwPbeXPSg12R2JjR0lJdqwr6PioNEHgRO37S3g8d4ElHquM
+        fq+4TvhRAA2TDg7hrK8mYHFYMZkr1we6FfOsh+CnyL0VMD5FBSX3+ed9qjPQj8uBE04fnl
+        e4VMyeBG4M0Afa5PwMJRi3tUVEavK73KAoWvrZQ7x1xfRAqG5yjoWt+MiOVjqZvihlsoFl
+        mK4jH2PofoWJeOTPZ8EafGy75YOfZQblvEaaWbnTlvCQbwx6JP2NJvekIq0a3A==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1699304852;
+        s=2020e; t=1699304853;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=CxVp08tt1OIa0s48HQ/tV2mA7uFrK13yA3t6gp6F8Fc=;
-        b=E4vluTwmVBlSkyUSiU/AeV5YY09slGF2UYdYAxjL6d3xdgCqg03VFul74xmexa+Q/G7mfs
-        VRdeJvuxHmY9nECg==
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=z3f4HQf7ma/ip4YULZcgH7RuMtHihS3FcdUbZrma7Uk=;
+        b=1c9aXZumpnPAe5mtBK859fA03kvAfrkbOsMQkwd4RKKpZDEGwC4iFIy27xrg6l01nOCBp6
+        s6F2tGPdLd3fHXCA==
 To:     Petr Mladek <pmladek@suse.com>
 Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         linux-kernel@vger.kernel.org, Mukesh Ojha <quic_mojha@quicinc.com>
-Subject: [PATCH printk v2 0/9] fix console flushing
-Date:   Mon,  6 Nov 2023 22:13:21 +0106
-Message-Id: <20231106210730.115192-1-john.ogness@linutronix.de>
+Subject: [PATCH printk v2 1/9] printk: ringbuffer: Do not skip non-finalized records with prb_next_seq()
+Date:   Mon,  6 Nov 2023 22:13:22 +0106
+Message-Id: <20231106210730.115192-2-john.ogness@linutronix.de>
+In-Reply-To: <20231106210730.115192-1-john.ogness@linutronix.de>
+References: <20231106210730.115192-1-john.ogness@linutronix.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -55,101 +59,333 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Commit f244b4dc53e5 ("printk: ringbuffer: Improve
+prb_next_seq() performance") introduced an optimization for
+prb_next_seq() by using best-effort to track recently finalized
+records. However, the order of finalization does not
+necessarily match the order of the records. The optimization
+changed prb_next_seq() to return inconsistent results, possibly
+yielding sequence numbers that are not available to readers
+because they are preceded by non-finalized records or they are
+not yet visible to the reader CPU.
 
-While testing various flushing scenarios, I stumbled on a
-couple issues that cause console flushing to fail. While
-discussing the v1 [0] series, a couple more issues arose.
-This series addresses all the issues:
+Rather than simply best-effort tracking recently finalized
+records, force the committing writer to read records and
+increment the last "contiguous block" of finalized records. In
+order to do this, the sequence number instead of ID must be
+stored because ID's cannot be directly compared.
 
-1. The prb_next_seq() optimization caused inconsistent return
-   values. Fix prb_next_seq() to the originally intended
-   behavior but keep an optimization.
+A new memory barrier pair is introduced to guarantee that a
+reader can always read the records up until the sequence number
+returned by prb_next_seq() (unless the records have since
+been overwritten in the ringbuffer).
 
-2. pr_flush() might not wait until the most recently stored
-   printk() message if non-finalized records precede it. Fix
-   pr_flush() to wait for all records to print that are at
-   least reserved at the time of the call.
+This restores the original functionality of prb_next_seq()
+while also keeping the optimization.
 
-3. In panic, the panic messages will not print if non-finalized
-   records precede them. Add a special condition so that
-   readers on the panic CPU can drop non-finalized records.
+For 32bit systems, only the lower 32 bits of the sequence
+number are stored. When reading the value, it is expanded to
+the full 64bit sequence number by folding in the value
+returned by prb_first_seq().
 
-4. It is possible (and easy to reproduce) a scenario where the
-   console on the panic CPU hands over to a waiter of a stopped
-   CPU. Do not use the handover feature in panic.
+Fixes: f244b4dc53e5 ("printk: ringbuffer: Improve prb_next_seq() performance")
+Signed-off-by: John Ogness <john.ogness@linutronix.de>
+---
+ kernel/printk/printk_ringbuffer.c | 189 ++++++++++++++++++++++++------
+ kernel/printk/printk_ringbuffer.h |   4 +-
+ 2 files changed, 153 insertions(+), 40 deletions(-)
 
-5. If messages are being dropped during panic, non-panic CPUs
-   are silenced. But by then it is already too late and most
-   likely the panic messages have been dropped. Change the
-   non-panic CPU silencing logic to restrict non-panic CPUs
-   from flooding the ringbuffer.
-
-This series also performing some minor cleanups to remove open
-coded checks about the panic context and improve documentation
-language regarding data-less records.
-
-Because of multiple refactoring done in recent history, it
-would be helpful to provide the LTS maintainers with the proper
-backported patches. I am happy to do this.
-
-The changes since v1:
-
-- Rename NO_LPOS to EMPTY_LINE_LPOS.
-
-- Add and cleanup documentation to clarify language regarding
-  data-less records and special lpos values.
-
-- Implement a new prb_next_seq() optimization to preserve the
-  intended behavior. This is essentially my rfc [1] with
-  memory barriers added and based on an alternate implemenation
-  suggested by pmladek [2].
-
-- Introduce new prb_next_reserve_seq() function to return the
-  sequence number after @head_id.
-
-- Use prb_next_reserve_seq() instead of prb_next_seq() for
-  pr_flush().
-
-- Implement dropping non-finalized records in panic within
-  _prb_read_valid() instead of printk_get_next_message(). This
-  also makes use of the new prb_next_reserve_seq().
-
-- Use the alternate implementation from pmladek [3] to avoid
-  the handover feature in panic.
-
-- Implement a new strategy to avoid dropping panic messages
-  when non-panic CPUs are flooding the ringbuffer.
-
-John Ogness
-
-[0] https://lore.kernel.org/lkml/20231013204340.1112036-1-john.ogness@linutronix.de
-[1] https://lore.kernel.org/lkml/20231019132545.1190490-1-john.ogness@linutronix.de
-[2] https://lore.kernel.org/lkml/ZTkxOJbDLPy12n41@alley
-[3] https://lore.kernel.org/lkml/ZS-r3QnpKzm7UVip@alley
-
-John Ogness (8):
-  printk: ringbuffer: Do not skip non-finalized records with
-    prb_next_seq()
-  printk: ringbuffer: Clarify special lpos values
-  printk: For @suppress_panic_printk check for other CPU in panic
-  printk: Add this_cpu_in_panic()
-  printk: ringbuffer: Cleanup reader terminology
-  printk: Wait for all reserved records with pr_flush()
-  printk: Skip non-finalized records in panic
-  printk: Avoid non-panic CPUs flooding ringbuffer
-
-Petr Mladek (1):
-  printk: Disable passing console lock owner completely during panic()
-
- kernel/printk/internal.h          |   1 +
- kernel/printk/printk.c            | 108 ++++++----
- kernel/printk/printk_ringbuffer.c | 343 +++++++++++++++++++++++++-----
- kernel/printk/printk_ringbuffer.h |  21 +-
- 4 files changed, 382 insertions(+), 91 deletions(-)
-
-
-base-commit: b4908d68609b57ad1ba4b80bd72c4d2260387e31
+diff --git a/kernel/printk/printk_ringbuffer.c b/kernel/printk/printk_ringbuffer.c
+index fde338606ce8..94eede5356ac 100644
+--- a/kernel/printk/printk_ringbuffer.c
++++ b/kernel/printk/printk_ringbuffer.c
+@@ -6,6 +6,7 @@
+ #include <linux/errno.h>
+ #include <linux/bug.h>
+ #include "printk_ringbuffer.h"
++#include "internal.h"
+ 
+ /**
+  * DOC: printk_ringbuffer overview
+@@ -303,6 +304,9 @@
+  *
+  *   desc_push_tail:B / desc_reserve:D
+  *     set descriptor reusable (state), then push descriptor tail (id)
++ *
++ *   desc_update_last_finalized:A / desc_last_finalized_seq:A
++ *     store finalized record, then set new highest finalized sequence number
+  */
+ 
+ #define DATA_SIZE(data_ring)		_DATA_SIZE((data_ring)->size_bits)
+@@ -1441,20 +1445,144 @@ bool prb_reserve_in_last(struct prb_reserved_entry *e, struct printk_ringbuffer
+ 	return false;
+ }
+ 
++#ifdef CONFIG_64BIT
++
++#define __u64seq_to_ulseq(u64seq) (u64seq)
++#define __ulseq_to_u64seq(ulseq) (ulseq)
++
++#else /* CONFIG_64BIT */
++
++static u64 prb_first_seq(struct printk_ringbuffer *rb);
++
++#define __u64seq_to_ulseq(u64seq) ((u32)u64seq)
++static inline u64 __ulseq_to_u64seq(u32 ulseq)
++{
++	u64 rb_first_seq = prb_first_seq(prb);
++	u64 seq;
++
++	/*
++	 * The provided sequence is only the lower 32 bits of the ringbuffer
++	 * sequence. It needs to be expanded to 64bit. Get the first sequence
++	 * number from the ringbuffer and fold it.
++	 */
++	seq = rb_first_seq - ((u32)rb_first_seq - ulseq);
++
++	return seq;
++}
++
++#endif /* CONFIG_64BIT */
++
++/*
++ * @last_finalized_seq value guarantees that all records up to and including
++ * this sequence number are finalized and can be read. The only exception are
++ * too old records which have already been overwritten.
++ *
++ * It is also guaranteed that @last_finalized_seq only increases.
++ *
++ * Be aware that finalized records following non-finalized records are not
++ * reported because they are not yet available to the reader. For example,
++ * a new record stored via printk() will not be available to a printer if
++ * it follows a record that has not been finalized yet. However, once that
++ * non-finalized record becomes finalized, @last_finalized_seq will be
++ * appropriately updated and the full set of finalized records will be
++ * available to the printer. And since each printk() caller will either
++ * directly print or trigger deferred printing of all available unprinted
++ * records, all printk() messages will get printed.
++ */
++static u64 desc_last_finalized_seq(struct prb_desc_ring *desc_ring)
++{
++	unsigned long ulseq;
++
++	/*
++	 * Guarantee the sequence number is loaded before loading the
++	 * associated record in order to guarantee that the record can be
++	 * seen by this CPU. This pairs with desc_update_last_finalized:A.
++	 */
++	ulseq = atomic_long_read_acquire(&desc_ring->last_finalized_seq
++					); /* LMM(desc_last_finalized_seq:A) */
++
++	return __ulseq_to_u64seq(ulseq);
++}
++
++static bool _prb_read_valid(struct printk_ringbuffer *rb, u64 *seq,
++			    struct printk_record *r, unsigned int *line_count);
++
++/*
++ * Check if there are records directly following @last_finalized_seq that are
++ * finalized. If so, update @last_finalized_seq to the latest of these
++ * records. It is not allowed to skip over records that are not yet finalized.
++ */
++static void desc_update_last_finalized(struct printk_ringbuffer *rb)
++{
++	struct prb_desc_ring *desc_ring = &rb->desc_ring;
++	u64 old_seq = desc_last_finalized_seq(desc_ring);
++	unsigned long oldval;
++	unsigned long newval;
++	u64 finalized_seq;
++	u64 try_seq;
++
++try_again:
++	finalized_seq = old_seq;
++	try_seq = finalized_seq + 1;
++
++	/* Try to find later finalized records. */
++	while (_prb_read_valid(rb, &try_seq, NULL, NULL)) {
++		finalized_seq = try_seq;
++		try_seq++;
++	}
++
++	/* No update needed if no later finalized record was found. */
++	if (finalized_seq == old_seq)
++		return;
++
++	oldval = __u64seq_to_ulseq(old_seq);
++	newval = __u64seq_to_ulseq(finalized_seq);
++
++	/*
++	 * Set the sequence number of a later finalized record that has been
++	 * seen.
++	 *
++	 * Guarantee the record data is visible to other CPUs before storing
++	 * its sequence number. This pairs with desc_last_finalized_seq:A.
++	 *
++	 * Memory barrier involvement:
++	 *
++	 * If desc_last_finalized_seq:A reads from
++	 * desc_update_last_finalized:A, then desc_read:A reads from
++	 * _prb_commit:B.
++	 *
++	 * Relies on:
++	 *
++	 * RELEASE from _prb_commit:B to desc_update_last_finalized:A
++	 *    matching
++	 * ACQUIRE from desc_last_finalized_seq:A to desc_read:A
++	 *
++	 * Note: _prb_commit:B and desc_update_last_finalized:A can be
++	 *       different CPUs. However, the desc_update_last_finalized:A
++	 *       CPU (which performs the release) must have previously seen
++	 *       _prb_commit:B.
++	 */
++	if (!atomic_long_try_cmpxchg_release(&desc_ring->last_finalized_seq,
++				&oldval, newval)) { /* LMM(desc_update_last_finalized:A) */
++		old_seq = __ulseq_to_u64seq(oldval);
++		goto try_again;
++	}
++}
++
+ /*
+  * Attempt to finalize a specified descriptor. If this fails, the descriptor
+  * is either already final or it will finalize itself when the writer commits.
+  */
+-static void desc_make_final(struct prb_desc_ring *desc_ring, unsigned long id)
++static void desc_make_final(struct printk_ringbuffer *rb, unsigned long id)
+ {
++	struct prb_desc_ring *desc_ring = &rb->desc_ring;
+ 	unsigned long prev_state_val = DESC_SV(id, desc_committed);
+ 	struct prb_desc *d = to_desc(desc_ring, id);
+ 
+-	atomic_long_cmpxchg_relaxed(&d->state_var, prev_state_val,
+-			DESC_SV(id, desc_finalized)); /* LMM(desc_make_final:A) */
+-
+-	/* Best effort to remember the last finalized @id. */
+-	atomic_long_set(&desc_ring->last_finalized_id, id);
++	if (atomic_long_try_cmpxchg_relaxed(&d->state_var, &prev_state_val,
++			DESC_SV(id, desc_finalized))) { /* LMM(desc_make_final:A) */
++		desc_update_last_finalized(rb);
++	}
+ }
+ 
+ /**
+@@ -1550,7 +1678,7 @@ bool prb_reserve(struct prb_reserved_entry *e, struct printk_ringbuffer *rb,
+ 	 * readers. (For seq==0 there is no previous descriptor.)
+ 	 */
+ 	if (info->seq > 0)
+-		desc_make_final(desc_ring, DESC_ID(id - 1));
++		desc_make_final(rb, DESC_ID(id - 1));
+ 
+ 	r->text_buf = data_alloc(rb, r->text_buf_size, &d->text_blk_lpos, id);
+ 	/* If text data allocation fails, a data-less record is committed. */
+@@ -1643,7 +1771,7 @@ void prb_commit(struct prb_reserved_entry *e)
+ 	 */
+ 	head_id = atomic_long_read(&desc_ring->head_id); /* LMM(prb_commit:A) */
+ 	if (head_id != e->id)
+-		desc_make_final(desc_ring, e->id);
++		desc_make_final(e->rb, e->id);
+ }
+ 
+ /**
+@@ -1663,12 +1791,9 @@ void prb_commit(struct prb_reserved_entry *e)
+  */
+ void prb_final_commit(struct prb_reserved_entry *e)
+ {
+-	struct prb_desc_ring *desc_ring = &e->rb->desc_ring;
+-
+ 	_prb_commit(e, desc_finalized);
+ 
+-	/* Best effort to remember the last finalized @id. */
+-	atomic_long_set(&desc_ring->last_finalized_id, e->id);
++	desc_update_last_finalized(e->rb);
+ }
+ 
+ /*
+@@ -2008,7 +2133,9 @@ u64 prb_first_valid_seq(struct printk_ringbuffer *rb)
+  * newest sequence number available to readers will be.
+  *
+  * This provides readers a sequence number to jump to if all currently
+- * available records should be skipped.
++ * available records should be skipped. It is guaranteed that all records
++ * previous to the returned value have been finalized and are (or were)
++ * available to the reader.
+  *
+  * Context: Any context.
+  * Return: The sequence number of the next newest (not yet available) record
+@@ -2017,33 +2144,19 @@ u64 prb_first_valid_seq(struct printk_ringbuffer *rb)
+ u64 prb_next_seq(struct printk_ringbuffer *rb)
+ {
+ 	struct prb_desc_ring *desc_ring = &rb->desc_ring;
+-	enum desc_state d_state;
+-	unsigned long id;
+ 	u64 seq;
+ 
+-	/* Check if the cached @id still points to a valid @seq. */
+-	id = atomic_long_read(&desc_ring->last_finalized_id);
+-	d_state = desc_read(desc_ring, id, NULL, &seq, NULL);
++	seq = desc_last_finalized_seq(desc_ring);
+ 
+-	if (d_state == desc_finalized || d_state == desc_reusable) {
+-		/*
+-		 * Begin searching after the last finalized record.
+-		 *
+-		 * On 0, the search must begin at 0 because of hack#2
+-		 * of the bootstrapping phase it is not known if a
+-		 * record at index 0 exists.
+-		 */
+-		if (seq != 0)
+-			seq++;
+-	} else {
+-		/*
+-		 * The information about the last finalized sequence number
+-		 * has gone. It should happen only when there is a flood of
+-		 * new messages and the ringbuffer is rapidly recycled.
+-		 * Give up and start from the beginning.
+-		 */
+-		seq = 0;
+-	}
++	/*
++	 * Begin searching after the last finalized record.
++	 *
++	 * On 0, the search must begin at 0 because of hack#2
++	 * of the bootstrapping phase it is not known if a
++	 * record at index 0 exists.
++	 */
++	if (seq != 0)
++		seq++;
+ 
+ 	/*
+ 	 * The information about the last finalized @seq might be inaccurate.
+@@ -2085,7 +2198,7 @@ void prb_init(struct printk_ringbuffer *rb,
+ 	rb->desc_ring.infos = infos;
+ 	atomic_long_set(&rb->desc_ring.head_id, DESC0_ID(descbits));
+ 	atomic_long_set(&rb->desc_ring.tail_id, DESC0_ID(descbits));
+-	atomic_long_set(&rb->desc_ring.last_finalized_id, DESC0_ID(descbits));
++	atomic_long_set(&rb->desc_ring.last_finalized_seq, 0);
+ 
+ 	rb->text_data_ring.size_bits = textbits;
+ 	rb->text_data_ring.data = text_buf;
+diff --git a/kernel/printk/printk_ringbuffer.h b/kernel/printk/printk_ringbuffer.h
+index 18cd25e489b8..3374a5a3303e 100644
+--- a/kernel/printk/printk_ringbuffer.h
++++ b/kernel/printk/printk_ringbuffer.h
+@@ -75,7 +75,7 @@ struct prb_desc_ring {
+ 	struct printk_info	*infos;
+ 	atomic_long_t		head_id;
+ 	atomic_long_t		tail_id;
+-	atomic_long_t		last_finalized_id;
++	atomic_long_t		last_finalized_seq;
+ };
+ 
+ /*
+@@ -259,7 +259,7 @@ static struct printk_ringbuffer name = {							\
+ 		.infos		= &_##name##_infos[0],						\
+ 		.head_id	= ATOMIC_INIT(DESC0_ID(descbits)),				\
+ 		.tail_id	= ATOMIC_INIT(DESC0_ID(descbits)),				\
+-		.last_finalized_id = ATOMIC_INIT(DESC0_ID(descbits)),				\
++		.last_finalized_seq = ATOMIC_INIT(0),						\
+ 	},											\
+ 	.text_data_ring = {									\
+ 		.size_bits	= (avgtextbits) + (descbits),					\
 -- 
 2.39.2
 
