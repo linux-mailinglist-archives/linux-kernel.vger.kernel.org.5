@@ -2,122 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CC5E7E2A15
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 17:40:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4C577E2A1F
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 17:41:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231830AbjKFQkq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 11:40:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34680 "EHLO
+        id S231277AbjKFQlJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 11:41:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232837AbjKFQkn (ORCPT
+        with ESMTP id S232912AbjKFQlD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 11:40:43 -0500
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04E7DD6E
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 08:40:41 -0800 (PST)
-Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-9ae2cc4d17eso726272966b.1
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 08:40:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1699288837; x=1699893637; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QHfisBbuFpYRYY9jvfglgsuHpwuxgJMa/knm4CemjiE=;
-        b=M4SnlxdMDJM5PgLO2Jw+Y5DLduQ5RAIZhEg6nkeDfPWviWBurzLjnZbm8yKW5RamE/
-         aVfy+Z4KghsabXxf53RfO7Tr5RUQbuMmr5wURHrQQqPdGtzzeQwRYckUg1tAQoXicQrz
-         5ctUE8fUnT93zMhmAczvziEdx9HXNMAnbulNA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699288837; x=1699893637;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QHfisBbuFpYRYY9jvfglgsuHpwuxgJMa/knm4CemjiE=;
-        b=ixZPk+7R+g0aVxMnPH8hBFjJHWT/DeJLFe9nze/6Rpa3JCfATLyrf0InyLWNY2PjCu
-         5TFQ3oEJG1wbg4MR24LpCQ6tgObtOGNqPmEg1Z3Wm41Lu0Pk1M4qrzFODljicczY37cm
-         RuHu5Ta2w73sKiu5roHq5DSDrXs0xb7fZ9CwC2RcoixkX7IZjQlE/+C1TBzZQqeIk18R
-         sLNotQHoZzVCuciGLe9AhbgTRVtx2vHbldhGNFoAYAB30eeXjhjRyTAntBGX+4UnIiPJ
-         PHeT+NC6FL6jbHqdsLDtyKX9X1qlxCzBgIGDZHO8NiVyEgX6dmelJpVYTCze6GZ6DpBg
-         HBfg==
-X-Gm-Message-State: AOJu0YxbPnCz03L2efHm71GwAArtuk7mD9rgBHqZ0y4Q38C/9PRe6DIN
-        sjD05n+70iksZ42zIXqdiL8+6P810B33e7URYhKGJQ==
-X-Google-Smtp-Source: AGHT+IG2lFrHURrf0nMHSXzXZcOO3+29lPs2zEO4tIy06S2ijH360xhtu7BRSp4uNrwAWd5FRhy89Q==
-X-Received: by 2002:a17:907:2ce2:b0:9be:21dc:8a9a with SMTP id hz2-20020a1709072ce200b009be21dc8a9amr13183694ejc.39.1699288837277;
-        Mon, 06 Nov 2023 08:40:37 -0800 (PST)
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com. [209.85.128.51])
-        by smtp.gmail.com with ESMTPSA id xa25-20020a170907b9d900b0098921e1b064sm15891ejc.181.2023.11.06.08.40.36
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 06 Nov 2023 08:40:37 -0800 (PST)
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-4078fe6a063so107015e9.1
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 08:40:36 -0800 (PST)
-X-Received: by 2002:a05:600c:a01a:b0:404:7462:1f87 with SMTP id
- jg26-20020a05600ca01a00b0040474621f87mr166311wmb.6.1699288836339; Mon, 06 Nov
- 2023 08:40:36 -0800 (PST)
+        Mon, 6 Nov 2023 11:41:03 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C012C10FD
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 08:40:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699288855; x=1730824855;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=W6TBX3wq5n6LG78ZXRmLyTkh51LstlH+EyHwK5EG/UU=;
+  b=IPRVuF4lSBU/EodqejFw1cIt6lALlEgmAdvdm+ab9HhXklQuWqHBpF3R
+   L12kgTJW9lfaXAc9XJOU8OruD9HCPyddxCU2Tc03M8rWAG7TCwBMsxyCH
+   WQ6qGa937/HCkFEfQQ7hJCalxcc45HJausSGgkN3ylLhVOrJtRKQHSU1y
+   yxNWIu4LEb6cnGHOQxxPoY2JM0CA0PiguVdMGQA3c7x2iALS7UKeDoA4b
+   rS8i/PJ9yagkwCjECbnhkLTmtvCqr+EPNtM3kJJg6h9kFj4yZ3dVmK82K
+   4S+u157SqLWH5rtfswGWjkdpO2+eoCMirD8SKdVHqTE+EWtWHyvOS2i8g
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10886"; a="453620461"
+X-IronPort-AV: E=Sophos;i="6.03,282,1694761200"; 
+   d="scan'208";a="453620461"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Nov 2023 08:40:46 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.03,282,1694761200"; 
+   d="scan'208";a="10502671"
+Received: from lpilolli-mobl.ger.corp.intel.com (HELO localhost) ([10.252.36.222])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Nov 2023 08:40:43 -0800
+From:   Jani Nikula <jani.nikula@linux.intel.com>
+To:     Abhinav Singh <singhabhinav9051571833@gmail.com>,
+        alexander.deucher@amd.com, christian.koenig@amd.com,
+        Xinhui.Pan@amd.com, airlied@gmail.com, daniel@ffwll.ch
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drivers: gpu: Fix warning using plain integer as NULL
+In-Reply-To: <a2310260-ba15-428e-9fd1-08abb9565b18@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20231103155013.332367-1-singhabhinav9051571833@gmail.com>
+ <87sf5jyvkt.fsf@intel.com>
+ <a2310260-ba15-428e-9fd1-08abb9565b18@gmail.com>
+Date:   Mon, 06 Nov 2023 18:40:39 +0200
+Message-ID: <87h6lyzvg8.fsf@intel.com>
 MIME-Version: 1.0
-References: <20231105063602.10737-1-xiazhengqiao@huaqin.corp-partner.google.com>
-In-Reply-To: <20231105063602.10737-1-xiazhengqiao@huaqin.corp-partner.google.com>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Mon, 6 Nov 2023 08:40:18 -0800
-X-Gmail-Original-Message-ID: <CAD=FV=UKA1sRMppdzmdX-48Hu7OKL=nWURS79kxTAJpu3Dq5PQ@mail.gmail.com>
-Message-ID: <CAD=FV=UKA1sRMppdzmdX-48Hu7OKL=nWURS79kxTAJpu3Dq5PQ@mail.gmail.com>
-Subject: Re: [PATCH] HID:i2c-hid:goodix:Modify post_power_delay_ms to avoid
- touchscreen not working
-To:     xiazhengqiao <xiazhengqiao@huaqin.corp-partner.google.com>
-Cc:     jikos@kernel.org, benjamin.tissoires@redhat.com, mka@chromium.org,
-        fshao@chromium.org, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        xuxinxiong@huaqin.corp-partner.google.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Mon, 06 Nov 2023, Abhinav Singh <singhabhinav9051571833@gmail.com> wrote:
+> On 11/6/23 16:53, Jani Nikula wrote:
+>> On Fri, 03 Nov 2023, Abhinav Singh <singhabhinav9051571833@gmail.com> wrote:
+>>> sparse static analysis tools generate a warning with this message
+>>> "Using plain integer as NULL pointer". In this case this warning is
+>>> being shown because we are trying to intialize a pointer to NULL using
+>>> integer value 0.
+>>>
+>>> Signed-off-by: Abhinav Singh <singhabhinav9051571833@gmail.com>
+>>> ---
+>>>   drivers/gpu/drm/radeon/clearstate_evergreen.h | 8 ++++----
+>>>   1 file changed, 4 insertions(+), 4 deletions(-)
+>>>
+>>> diff --git a/drivers/gpu/drm/radeon/clearstate_evergreen.h b/drivers/gpu/drm/radeon/clearstate_evergreen.h
+>>> index 63a1ffbb3ced..3b645558f133 100644
+>>> --- a/drivers/gpu/drm/radeon/clearstate_evergreen.h
+>>> +++ b/drivers/gpu/drm/radeon/clearstate_evergreen.h
+>>> @@ -1049,7 +1049,7 @@ static const struct cs_extent_def SECT_CONTEXT_defs[] =
+>>>       {SECT_CONTEXT_def_5, 0x0000a29e, 5 },
+>>>       {SECT_CONTEXT_def_6, 0x0000a2a5, 56 },
+>>>       {SECT_CONTEXT_def_7, 0x0000a2de, 290 },
+>>> -    { 0, 0, 0 }
+>>> +    { NULL, 0, 0 }
+>> 
+>> Random drive-by comment:
+>> 
+>> I'd just use {} as the sentinel.
+>> 
+>> BR,
+>> Jani.
+>> 
+>>>   };
+>>>   static const u32 SECT_CLEAR_def_1[] =
+>>>   {
+>>> @@ -1060,7 +1060,7 @@ static const u32 SECT_CLEAR_def_1[] =
+>>>   static const struct cs_extent_def SECT_CLEAR_defs[] =
+>>>   {
+>>>       {SECT_CLEAR_def_1, 0x0000ffc0, 3 },
+>>> -    { 0, 0, 0 }
+>>> +    { NULL, 0, 0 }
+>>>   };
+>>>   static const u32 SECT_CTRLCONST_def_1[] =
+>>>   {
+>>> @@ -1070,11 +1070,11 @@ static const u32 SECT_CTRLCONST_def_1[] =
+>>>   static const struct cs_extent_def SECT_CTRLCONST_defs[] =
+>>>   {
+>>>       {SECT_CTRLCONST_def_1, 0x0000f3fc, 2 },
+>>> -    { 0, 0, 0 }
+>>> +    { NULL, 0, 0 }
+>>>   };
+>>>   static const struct cs_section_def evergreen_cs_data[] = {
+>>>       { SECT_CONTEXT_defs, SECT_CONTEXT },
+>>>       { SECT_CLEAR_defs, SECT_CLEAR },
+>>>       { SECT_CTRLCONST_defs, SECT_CTRLCONST },
+>>> -    { 0, SECT_NONE }
+>>> +    { NULL, SECT_NONE }
+>>>   };
+>>> --
+>>> 2.39.2
+>>>
+>> 
+> Hi, Thanks for dropping by and the suggestion. I thought of using NULL 
+> instead of {} is because, first the warning itself says that 0 is used 
+> to intialize pointers with NULL, and second due this link 
+> https://www.spinics.net/lists/linux-sparse/msg10066.html where linus is 
+> talking about not using 0 NULL intialization of pointer variable and he 
+> thinks this is a legitimate issue and not some false positive
 
-On Sat, Nov 4, 2023 at 11:36=E2=80=AFPM xiazhengqiao
-<xiazhengqiao@huaqin.corp-partner.google.com> wrote:
->
-> For "goodix,gt7375p" touchscreen, When the device restarts,
-> the reset pin of the touchscreen will be pulled down by 10ms,
-> but this time will make the touchscreen have a probability of
-> not working properly. Increase post_power_delay_ms to 20ms,
-> so that the reset pin is pulled down 20ms, and toucsreen works fine.
+But... {} is neither of those things. It's empty initialization instead
+of 0. It's valid in GCC and C23, and used all over the place in the
+kernel.
 
-s/toucsreen/touchscreen
+BR,
+Jani.
 
 
-> Signed-off-by: xiazhengqiao <xiazhengqiao@huaqin.corp-partner.google.com>
-> ---
->  drivers/hid/i2c-hid/i2c-hid-of-goodix.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/hid/i2c-hid/i2c-hid-of-goodix.c b/drivers/hid/i2c-hi=
-d/i2c-hid-of-goodix.c
-> index f1597ad67e7c..caabf7a62cde 100644
-> --- a/drivers/hid/i2c-hid/i2c-hid-of-goodix.c
-> +++ b/drivers/hid/i2c-hid/i2c-hid-of-goodix.c
-> @@ -111,7 +111,7 @@ static int i2c_hid_of_goodix_probe(struct i2c_client =
-*client)
->  }
->
->  static const struct goodix_i2c_hid_timing_data goodix_gt7375p_timing_dat=
-a =3D {
-> -       .post_power_delay_ms =3D 10,
-> +       .post_power_delay_ms =3D 20,
 
-Do you actually have a Goodix "GT7375P" touchscreen, or do you have
-some other touchscreen that is using the Goodix GT7375P compatible
-string? As far as I know the 10 ms here came from the Goodix GT7375P
-datasheet and has been working fine with devices that have Goodix
-GT7373P. Has this always been wrong for the Goodix GT7373P, or (as I
-suspect) do you actually have a different touchscreen and for that
-different touchscreen you need a longer delay?
-
--Doug
+-- 
+Jani Nikula, Intel
