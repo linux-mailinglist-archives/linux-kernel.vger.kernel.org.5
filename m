@@ -2,166 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 03B9F7E1EC3
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 11:46:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A622F7E1ECA
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 11:46:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231260AbjKFKqY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 05:46:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58030 "EHLO
+        id S230308AbjKFKq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 05:46:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbjKFKqW (ORCPT
+        with ESMTP id S230021AbjKFKq5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 05:46:22 -0500
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2069.outbound.protection.outlook.com [40.107.237.69])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3CBDBD;
-        Mon,  6 Nov 2023 02:46:18 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hDHbmricIHQcJUfe8GngZ0yeCY+h3FjmehE8jpKCCAnkE20HYlru0g8EDuYfU2I6qBTcucpDzAKZXtcs0WXlRLckvSYvNg8/c8hMFfRC/AIBNvDSGJNAhp1/NG9MK4kCrFMknNSkqpLZiwC9RIyHg3lZQ0PHsbZK3F6IDf9hh/mCeQKbIJo4tSrWArHXsaMMXpXpaLoqexwyvteh0zQt+vS3f4v1GU6VHNkhc02NoDEH4UIimI2hwqETmwgsG6lhj2FmCTyNGdPXYwx04ks7t1vJwxgzH54iZaaWDf7OlQi9Bz3/q3TljAXKHT2LP8sJ4rM7NIy1jZadco91JK5YHQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=uULAWIoFdKd4fHFLheJLLul05NZqoVH4DUVdnTsRU5Y=;
- b=H3k7sle6w7//DKC+YFHxvkGj6JL1Zyhx4HJYFdEbTZ7+JrZaryFL4Pr6+QJziYOgkqlNwp7Bz9az618voEsdfuKtdlPHSO9i2RRwI2wPnXlKV99vNf/IIwSXGU9cAZXtWLE7vmZMfeHizgN/xjq+26Z+hrTdFrLclVCKYYzqjoK84qPYv+3VlFXuVPe+7kb2+vdZJAP5O4EHNUKiyHAb9N0maR32j0ALQGaROhcivyghMK6od/KCUKK31u4Nv6fVP/vwjAkDZqSlDd+CoLbjO39LQWHc6nRw1KWKzwg/91kOMFGosVWKpTJceFJ1WB2nkpbxJhj4gSr38fBMKqT9zQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=uULAWIoFdKd4fHFLheJLLul05NZqoVH4DUVdnTsRU5Y=;
- b=v7s14S2hmEXCxJlFgpyx+1nobMyIayg/WtGyvF+xZVQ2sAiEBtucArZ8IqA1VA9tzOMs0OYn4C489Ym6CZyHjBNGvxsogf5BJYXxneCnENiptHXpBHNwozOk/9p2WT+8u2m1u/mAzH7VetaULncpsDowjgzKPcbkswsvmO2rgNw=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from DS7PR12MB6309.namprd12.prod.outlook.com (2603:10b6:8:96::19) by
- SJ1PR12MB6292.namprd12.prod.outlook.com (2603:10b6:a03:455::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.28; Mon, 6 Nov
- 2023 10:46:16 +0000
-Received: from DS7PR12MB6309.namprd12.prod.outlook.com
- ([fe80::93cc:c27:4af6:b78c]) by DS7PR12MB6309.namprd12.prod.outlook.com
- ([fe80::93cc:c27:4af6:b78c%2]) with mapi id 15.20.6954.028; Mon, 6 Nov 2023
- 10:46:16 +0000
-Message-ID: <d419893f-3167-4a8f-aa4e-06e8ecd390d1@amd.com>
-Date:   Mon, 6 Nov 2023 16:15:59 +0530
-User-Agent: Mozilla Thunderbird
-Reply-To: nikunj@amd.com
-Subject: Re: [PATCH v5 09/14] x86/sev: Add Secure TSC support for SNP guests
-To:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Cc:     Tom Lendacky <thomas.lendacky@amd.com>,
-        linux-kernel@vger.kernel.org, x86@kernel.org, kvm@vger.kernel.org,
-        bp@alien8.de, mingo@redhat.com, tglx@linutronix.de,
-        dave.hansen@linux.intel.com, dionnaglaze@google.com,
-        pgonda@google.com, seanjc@google.com, pbonzini@redhat.com
-References: <20231030063652.68675-1-nikunj@amd.com>
- <20231030063652.68675-10-nikunj@amd.com>
- <b5e71977-abf6-aa27-3a7b-37230b014724@amd.com>
- <55de810b-66f9-49e3-8459-b7cac1532a0c@amd.com>
- <20231102103649.3lsl25vqdquwequd@box.shutemov.name>
-Content-Language: en-US
-From:   "Nikunj A. Dadhania" <nikunj@amd.com>
-In-Reply-To: <20231102103649.3lsl25vqdquwequd@box.shutemov.name>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: BMXPR01CA0081.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:b00:54::21) To DS7PR12MB6309.namprd12.prod.outlook.com
- (2603:10b6:8:96::19)
+        Mon, 6 Nov 2023 05:46:57 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FF3DA4
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 02:46:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1699267573;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=UBBHGlGug2sDaMRAASVGz4oXj62d4vp0Qb3y5VCW+Oc=;
+        b=JEc9CMsu7FO+jO6sLV1NHKm/jeyD4R6uvFgVt1c8Pq6Gos1TmzTI8X7xbMkcIC3l12SNw4
+        LURjjCS6vw4bGlAVX1Io3HUqzylHTlkKXLoYUtMkeF/E2XIhjhsBQJNz3zXHx44xElkOj4
+        XwypiwCIbKhMMG17YTNwe7nyjNPrIPc=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-500-h8cSF4KdOkiTBYXSf3a6UA-1; Mon, 06 Nov 2023 05:46:12 -0500
+X-MC-Unique: h8cSF4KdOkiTBYXSf3a6UA-1
+Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-32da8de4833so2228427f8f.3
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 02:46:11 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699267570; x=1699872370;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:from:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=UBBHGlGug2sDaMRAASVGz4oXj62d4vp0Qb3y5VCW+Oc=;
+        b=s1W1YwvtkcuWiUbtFXIzTSY3iteTe5nwF4aKdXlwWsGLymD3K/u9PCCWObFZHpW48a
+         Cukz4Zi1dKmtxE1934d2reEZqrIoaFzcDOK53YsFJh7tlNDU41lAUvsZfoLJJHzLEgO9
+         RZtVx6+p91CW46o5imemdHKYKtSWSyUEYsmCD+MZcaTDfm8+bSqR8Q34draRa8tld5dc
+         hWqq6zvp42kU3viYm5rJR3HxnKjAZu8zk6ByYUplUxuI+wjRouXfkD66+9Q3ZfR+87FW
+         LPAT9kDd533jMeTCX3D6ixQMy4FVkDhBSiEAyEimDBJfftAEw/JoPX3m0rtFwuJK+oHy
+         FETw==
+X-Gm-Message-State: AOJu0YycEAykrv9v94W6fBoXlPZ5lVZbxyV60LLP+avgPp4Xg3sUWbvY
+        pT1nLgnh0f7YZxXxoj4Nj+3d99lK8T+5vOkrwWho9al6MJD3J2vm7koQgNVmpaoyMzmbVIGl4TI
+        h8fOGJsEiIwNEL10Oejss04Nc0aGuSDAg
+X-Received: by 2002:a5d:6d87:0:b0:32f:908e:c7e0 with SMTP id l7-20020a5d6d87000000b0032f908ec7e0mr17559316wrs.28.1699267570468;
+        Mon, 06 Nov 2023 02:46:10 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEw0KbgCDEwB5tVpLvVGERVzNbBBFGIocZLxK974H+Lu925obU4SRUVDW8ECTLCXhMFU5ORqw==
+X-Received: by 2002:a5d:6d87:0:b0:32f:908e:c7e0 with SMTP id l7-20020a5d6d87000000b0032f908ec7e0mr17559295wrs.28.1699267570128;
+        Mon, 06 Nov 2023 02:46:10 -0800 (PST)
+Received: from ?IPV6:2a01:e0a:c:37e0:ced3:55bd:f454:e722? ([2a01:e0a:c:37e0:ced3:55bd:f454:e722])
+        by smtp.gmail.com with ESMTPSA id o17-20020adfcf11000000b0032da319a27asm9148638wrj.9.2023.11.06.02.46.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 06 Nov 2023 02:46:09 -0800 (PST)
+Message-ID: <f19a2cb4-57b6-427c-b69c-47a848420530@redhat.com>
+Date:   Mon, 6 Nov 2023 11:46:08 +0100
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS7PR12MB6309:EE_|SJ1PR12MB6292:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0e0de175-d46e-4c87-e4a1-08dbdeb599db
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: kO3sn8+Aixvvk8G2/Bex5uIK77DTlGHqj/sKKj/uvG/0CNAAkRJibA9KSkV8mEhUKo/L+qw7+sRYDp3ZtOv8kzkdqytLaJVcEQTpH2tksNPw0vgqqc7tWL8GJHe9KN1hSCCsS4UR7SO+17EJyAwMhODEO+iIlMBtb5cIRDZQN4X/YW7b5tDD731Q+paY8xVLIzT+FsDzHM+9LlTYeqD1MXuxvx6CTsFPYWtGYniGp+s09wvlKAjLrEj98cJwz7ooyTauLyd28G0qXg7yXflUntrCoJqi6+UodY4ifTZu+BmrERtGvqfO8jh5+riLcl97V/JmpwULf4vKOzNTzVnsA9uoW3rKnFB6bTlH+UkJuNfe9h6rhL9Tbd50Xt4UdtJ9B3NtCyJV+SMo0yIzT6aDefYiuW0mv8EoW8lg6++Jz60Z9vf98vbROTsGsNCJgRDSl/zJsoEDZc9iUWMOxnZvPjE7DQsDJ6qpEWUpHEc/kJDIxurNTbXYo8OUqqIGtpjsmNEz5UyNTue2c7XH2/oJzc/AwsKg72R7GcDqcbKcskS1oIlVTwfeIkSqzPwzyUDYRNSfdTYtq0HPOmWQGGJj7eKIKLMbrk8EQ+hkZUKq2ItWfkAyq+Q38zmhctjEaEeAIMIhvY+GMKHOpuABMRYgjQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR12MB6309.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(346002)(136003)(39860400002)(366004)(396003)(230922051799003)(64100799003)(451199024)(186009)(1800799009)(31686004)(6506007)(478600001)(53546011)(2616005)(6512007)(6486002)(6666004)(36756003)(38100700002)(31696002)(5660300002)(66946007)(66556008)(66476007)(316002)(7416002)(41300700001)(83380400001)(2906002)(3450700001)(26005)(8676002)(4326008)(8936002)(6916009)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?N0EycTVuZlN0RVFKN2pFSUhQS0YxcW9uSW5rMERBT2ZlVm5DRS96ZnZiVTE2?=
- =?utf-8?B?N01mekdoRWlMLzVrdWRvbmdKSG5DM0IzR3J1MDdCc2I2ZnNTaElLQ1l6MEVG?=
- =?utf-8?B?T1ozcDFleHEyU3VKWldtU3MrUXZBcEd6SDkvYjRRa0RBUzdralFxVU1ENVd4?=
- =?utf-8?B?T3hyT29rdFBISkdrM3lXbCt1RmFiVjdXR2tjaVd1ODJJYW1iVFhmTmI0L1Jj?=
- =?utf-8?B?MzFXOGdyNXQrMTlVYUZEWHEwUjlXSE1yMW9qZFFqZVFVUHpsS2tBKytmQmFv?=
- =?utf-8?B?MzNFZ09YdENYQWg3c1QvbUVRRTVxeXhPTWdSbjdlZVJ5MktMWXVjNUJOSTZ0?=
- =?utf-8?B?RHZXaUR5djJ0aXZNcVFLQUV0VFE3NTlUbDVQN2U2ZTUrMVM4NWVtSkNmWEls?=
- =?utf-8?B?V1BQaTVZWGUxWU1INnptLzZ2bkplanBRWXdBMVhDS0NYUmg0V3Jnd1l4RWxq?=
- =?utf-8?B?WHBXeEJUc2JKMDFyd2NJT3UvYzU4c0grR2RQWmw4cHBiVDU0b01CdWtEYUdN?=
- =?utf-8?B?bjBoU0dDbDVjcW50YVRCWTZyT2VON2N6bG1DL29tOXd0amdDUFZHdmJjWEVO?=
- =?utf-8?B?d3d3L09lYUo0K1JiU3FsVUk4cy85WHV3YnE1d0pGUEZPODNZaDMra3NYTnFN?=
- =?utf-8?B?bk9VbENJV1gySGtzZW9zTUZnajlqSDFRWkhGWEZzbUhLTDVuRFlKSTVBSG5k?=
- =?utf-8?B?Yit0Z3kzeGNYQWRUYkN5QUFGWGRjT0dkUWw5NDdqOGgrcWRpU01QQmk2b1Ru?=
- =?utf-8?B?NVIxR0xEVGZCOU9JdERSeFRHZm9qSUdzT21ndXJncFpDa3Nnc0pDdmRuS0hl?=
- =?utf-8?B?ZnllUjhwTHhRa2cyZndPR0xOSU41Vzl4cW5zdnpTTm50SDkxdnF5QzlpRFZK?=
- =?utf-8?B?MGFDd216TGJvNGJhTDFUNWV6UnZYR2l6dlFIeldUeVdpaGRaQXpJcW5MdXhF?=
- =?utf-8?B?eG5KekxxVXpWZjZVOWpBMnZmclA5LzRoUHdFb0x1c2xVNkZLN2FMQWFjUnFa?=
- =?utf-8?B?UGRVUEs4ZXMyWVluMjZzN0p2Rm9jTmtuZEJiSGtnUVFwNWprbk05VUVYSkFU?=
- =?utf-8?B?S0NoQXlCaC9icms0K1RxU2JSKzdwbWp6c0QrbVBlejlRZjNHYk1UTlA1MndR?=
- =?utf-8?B?eDVwTVBxUFpUSSszK3B6YkZYenNmZmQ2c3E1NkljcVYrNWpSVytPREtMamxv?=
- =?utf-8?B?UHU1RzBLY0MyTlZZM2NNR3B0M1lPWVpZY3FnS1Yvc20zbUNXWFpYNzlNS3hR?=
- =?utf-8?B?bHlCNmlYT1ptc0xmN0lZMmpkdVI4REdWelI5TjY1Zno2UzkzWEFHREhrMUlY?=
- =?utf-8?B?R014YWwyZzBBS3hhSHliQTZMalQ1R1dpRVh0aUZubGJXclFrMW9RTFQ1dHlS?=
- =?utf-8?B?T1pYVGprQlJjVFNhYWQrTTY0UUo1cW5pbGE2VFBQandQVnY1MVJadnJxWW92?=
- =?utf-8?B?YXZyak5SVXlFRUtHQUdpUE5HbVlVUnR5MVZhOGp5cy95ejBUdlV0Znp2Y2RD?=
- =?utf-8?B?QVN6VjUrdzBjSkRrYnFDck5FY3VLOG1yMU5PVk45Y3dJWGhoZCtYT3d1bHVD?=
- =?utf-8?B?YTMrQVlqSU5GK01oeHdHZ0ZqenY4aWJTY2h0alR2VmRJTWJpREJ2WVlQOEoy?=
- =?utf-8?B?bmUxV3dsR2loQUg2dFFJeE04U2Y1YmRXQm9Ic2tWc0VXcGs1Q28rN2swV3E5?=
- =?utf-8?B?NlJtcUo5algwcHpNM1ZjVitYM2NxYTZNdGVuck1TS3hDcmJaams3LzJvUjF6?=
- =?utf-8?B?a09qdkhIM3JEMzdXYi9wZDc2eHdyYjYyUUs4TXAzYjlEV0pFTUlvRXl5M3ll?=
- =?utf-8?B?bXBpNnlWWVFRWE9hL2VVc2NPV0JtL09yTDgweFI3U1JucHB2dXlIZTdENFRU?=
- =?utf-8?B?VHdLbStQWWR5eWhzY2xQbkMycEFvM3ZOQ3RpTjNUeTc4QWV2VWNBZkhSVmt4?=
- =?utf-8?B?VHNqejZveW9nVUcvc2s0cjhQRWhtRGsxU1VMRER4d1Z2SnJET3c5cytpZlQv?=
- =?utf-8?B?Z0hudzRacHRUT0hpa2lMUkh6WjlKTHhTWkMxOVN6K3VEZWxjUTVkdm9samsz?=
- =?utf-8?B?WURXV1I5bUpyRWx2S2lYNWZNSWZBVFJrVVQ2N0NBZEtEUnRkV2oyeU9HL3Yz?=
- =?utf-8?Q?f3B7WLFMHWYEDJ5Ep3qNPK/iI?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0e0de175-d46e-4c87-e4a1-08dbdeb599db
-X-MS-Exchange-CrossTenant-AuthSource: DS7PR12MB6309.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Nov 2023 10:46:15.8936
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: aIDCl8JVSeRg1ke9sau94iIF/o0jZmImS0+0KBIZT6eZKzwjvCmj5rjkOwoGjMocEfzG0KIHjV2BzMJWdKfG+A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ1PR12MB6292
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] drm/mgag200: Flush the cache to improve latency
+From:   Jocelyn Falempe <jfalempe@redhat.com>
+To:     Thomas Zimmermann <tzimmermann@suse.de>,
+        dri-devel@lists.freedesktop.org, airlied@redhat.com,
+        daniel@ffwll.ch
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20231019135655.313759-1-jfalempe@redhat.com>
+ <660c0260-0e22-4e9c-ab13-157adaa0b14d@suse.de>
+ <74b367bd-ac80-478b-8f82-e98cb6e40475@redhat.com>
+Content-Language: en-US
+In-Reply-To: <74b367bd-ac80-478b-8f82-e98cb6e40475@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/2/2023 4:06 PM, Kirill A. Shutemov wrote:
-> On Thu, Nov 02, 2023 at 11:11:52AM +0530, Nikunj A. Dadhania wrote:
->> On 10/31/2023 1:56 AM, Tom Lendacky wrote:
->>>> diff --git a/include/linux/cc_platform.h b/include/linux/cc_platform.h
->>>> index cb0d6cd1c12f..e081ca4d5da2 100644
->>>> --- a/include/linux/cc_platform.h
->>>> +++ b/include/linux/cc_platform.h
->>>> @@ -90,6 +90,14 @@ enum cc_attr {
->>>>        * Examples include TDX Guest.
->>>>        */
->>>>       CC_ATTR_HOTPLUG_DISABLED,
->>>> +
->>>> +    /**
->>>> +     * @CC_ATTR_GUEST_SECURE_TSC: Secure TSC is active.
->>>> +     *
->>>> +     * The platform/OS is running as a guest/virtual machine and actively
->>>> +     * using AMD SEV-SNP Secure TSC feature.
->>>
->>> I think TDX also has a secure TSC like feature, so can this be generic?
+On 23/10/2023 10:30, Jocelyn Falempe wrote:
+> On 20/10/2023 14:06, Thomas Zimmermann wrote:
+>> (cc'ing lkml for feedback)
 >>
->> Yes, we can do that. In SNP case SecureTSC is an optional feature, not sure if that is the case for TDX as well.
+>> Hi Jocelyn
 >>
->> Kirill any inputs ?
+>> Am 19.10.23 um 15:55 schrieb Jocelyn Falempe:
+>>> We found a regression in v5.10 on real-time server, using the
+>>> rt-kernel and the mgag200 driver. It's some really specialized
+>>> workload, with <10us latency expectation on isolated core.
+>>> After the v5.10, the real time tasks missed their <10us latency
+>>> when something prints on the screen (fbcon or printk)
+>>
+>> I'd like to hear the opinion of the RT-devs on this patch. Because 
+>> AFAIK we never did such a workaround in other drivers. And AFAIK 
+>> printk is a PITA anyway.
 > 
-> We have several X86_FEATURE_ flags to indicate quality of TSC. Do we
-> really need a CC_ATTR on top of that? Maybe SEV code could just set
-> X86_FEATURE_ according to what its TSC can do?
+> Most other drivers uses DMA, which means this workaround can't apply to 
+> them.
+> 
+>>
+>> IMHO if that RT system cannot handle differences in framebuffer 
+>> caching, it's under-powered. It's just a matter of time until 
+>> something else changes and the problem returns. And (honest question) 
+>> as it's an x86-64, how do they handle System Management Mode?
+> 
+> I think it's not a big news, that the Matrox G200 from 1999 is 
+> under-powered.
+> I was also a bit surprised that flushing the cache would have such 
+> effect on latency. The tests we are doing can run 24h with the 
+> workaround, without any interrupt taking more than 10us. Without the 
+> workaround, every ~30s the interrupt failed its 10us target.
+> 
+>>
+>>>
+>>> The regression has been bisected to 2 commits:
+>>> 0b34d58b6c32 ("drm/mgag200: Enable caching for SHMEM pages")
+>>> 4862ffaec523 ("drm/mgag200: Move vmap out of commit tail")
+>>>
+>>> The first one changed the system memory framebuffer from Write-Combine
+>>> to the default caching.
+>>> Before the second commit, the mgag200 driver used to unmap the
+>>> framebuffer after each frame, which implicitly does a cache flush.
+>>> Both regressions are fixed by the following patch, which forces a
+>>> cache flush after each frame, reverting to almost v5.9 behavior.
+>>
+>> With that second commit, we essentially never unmap an active 
+>> framebuffer console. But with commit
+>>
+>> 359c6649cd9a ("drm/gem: Implement shadow-plane {begin, end}_fb_access 
+>> with vmap")
+>>
+>> we now again unmap the console framebuffer after the pageflip happened.
+>>
+>> So how does the latest kernel behave wrt to the problem?
+> 
+> The regression was found when upgrading the server from v5.4 to v5.14, 
+> so we didn't test with later kernels.
+> We will test with v6.3 (which should have 359c6649cd9a ) and see what it 
+> gives.
 
-For SEV-SNP, SEV_STATUS MSR has the information of various features
-that have been enabled by the hypervisor. We will need a CC_ATTR for
-these optional features.
+I don't have a clear explanation, but testing with v6.3, and forcing the 
+Write Combine, doesn't fix the latency issue. So forcing the cache flush 
+is still needed.
 
-Regards
-Nikunj
+Also, on some systems, they use "isolated cpu" to handle RT task, but 
+with a standard kernel (so without the CONFIG_PREEMPT_RT).
+So I'm wondering if we can use a kernel module parameter for this,
+so that users that wants to achieve low latency, can opt-in ?
+
+something like mgag200.force_cache_flush=1 or mgag200.low_latency=1 ?
+
+Best regards,
+
+-- 
+
+Jocelyn
+
+>>
+>>> This is necessary only if you have strong realtime constraints, so I
+>>> put the cache flush under the CONFIG_PREEMPT_RT config flag.
+>>> Also clflush is only availabe on x86, (and this issue has only been
+>>> reproduced on x86_64) so it's also under the CONFIG_X86 config flag.
+>>>
+>>> Fixes: 0b34d58b6c32 ("drm/mgag200: Enable caching for SHMEM pages")
+>>> Fixes: 4862ffaec523 ("drm/mgag200: Move vmap out of commit tail")
+>>> Signed-off-by: Jocelyn Falempe <jfalempe@redhat.com>
+>>> ---
+>>>   drivers/gpu/drm/mgag200/mgag200_mode.c | 5 +++++
+>>>   1 file changed, 5 insertions(+)
+>>>
+>>> diff --git a/drivers/gpu/drm/mgag200/mgag200_mode.c 
+>>> b/drivers/gpu/drm/mgag200/mgag200_mode.c
+>>> index af3ce5a6a636..11660cd29cea 100644
+>>> --- a/drivers/gpu/drm/mgag200/mgag200_mode.c
+>>> +++ b/drivers/gpu/drm/mgag200/mgag200_mode.c
+>>> @@ -13,6 +13,7 @@
+>>>   #include <drm/drm_atomic.h>
+>>>   #include <drm/drm_atomic_helper.h>
+>>> +#include <drm/drm_cache.h>
+>>>   #include <drm/drm_damage_helper.h>
+>>>   #include <drm/drm_format_helper.h>
+>>>   #include <drm/drm_fourcc.h>
+>>> @@ -436,6 +437,10 @@ static void mgag200_handle_damage(struct 
+>>> mga_device *mdev, const struct iosys_ma
+>>>       iosys_map_incr(&dst, drm_fb_clip_offset(fb->pitches[0], 
+>>> fb->format, clip));
+>>>       drm_fb_memcpy(&dst, fb->pitches, vmap, fb, clip);
+>>> +    /* On RT systems, flushing the cache reduces the latency for 
+>>> other RT tasks */
+>>> +#if defined(CONFIG_X86) && defined(CONFIG_PREEMPT_RT)
+>>> +    drm_clflush_virt_range(vmap, fb->height * fb->pitches[0]);
+>>> +#endif
+>>
+>> Your second commit is part of a larger patchset that updates several 
+>> drivers. They might all be affected. So if anything, the patch should 
+>> go here before the unmap call:
+>>
+>> https://elixir.bootlin.com/linux/v6.5/source/drivers/gpu/drm/drm_gem_atomic_helper.c#L377
+>>
+> The regression was found only with G200 currently, so I don't want to 
+> apply it blindly on other drivers.
+> 
+> Thanks for your help,
+> 
+> Best regards,
+> 
+
