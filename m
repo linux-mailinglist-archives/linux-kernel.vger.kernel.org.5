@@ -2,204 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F27B37E229E
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 14:00:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F8E17E22A0
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 14:00:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231641AbjKFNAl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 08:00:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58050 "EHLO
+        id S231755AbjKFNAx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 08:00:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231630AbjKFNAi (ORCPT
+        with ESMTP id S231738AbjKFNAu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 08:00:38 -0500
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E95EBD
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 05:00:35 -0800 (PST)
-Received: by mail-yb1-xb36.google.com with SMTP id 3f1490d57ef6-d9a3d737d66so3706676276.2
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 05:00:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699275634; x=1699880434; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=GsPAHuuacaXRxIMIbqeYFW832Idaj5Z8NonFcgzOGQQ=;
-        b=GjaU3l4kia/urkfICgVHVWjT+p9YlH/qqqDFw37gEX1L1V/x4qDAjH64Gd7xf5jzyf
-         7OWi5dB1JwWhPmmrwhfxXZFp+v2CBRhezsaeM6ZBwIdvKm+W1p/Rc6B+aaIuOx4MpgB8
-         jgPW5wHgzxxrH1e9yQITzkPJBBUrlc3UQCMeYvT5l0O9ZxhH8taMyCEwWL4p8CGoGfGv
-         Y3mxeEt3QVAYZrxViNVmi5EOqJOF5doYCaHKKsUF4e2YqjVveFp3oMWgCWKh/0mXEGvf
-         0so/rckVg2zownx+OZw3J9bgs029mrhUS0+irYpdJvY7ghTpME/RWSoCOC6Kg6fpVOu0
-         JUCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699275634; x=1699880434;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=GsPAHuuacaXRxIMIbqeYFW832Idaj5Z8NonFcgzOGQQ=;
-        b=TrS2qkVPU6JgWySqZ4jZnN6wIEA1vorzTheT51KmyImZcSqHevQXdVIQ/4ecsXySsF
-         jxmGZWaWOiulMv7c6oo9R5dSy2NESX+IuMSBBJlCYo+En6YyRyo/l2CDbgbCxc0knYZT
-         IzcYfhYHRAJJiO+VbyCiWFsvnjD23qNTe+1PXOyHeUxIe3dW5oKv15ho/htxmva8Jkiw
-         9LhlfhNt/cJHJuNCDGpZlv/hvzgjmMZnC7CHOzkz1VcR5Zd8UVBAQF2lI+SrvLCfjKbS
-         v9gXl+pcESgpocLq6dh/6anWEIe3ZmsYbh1sQc0HBeZ5Jl7YEeLFT2RDknPcmLZODpMT
-         msyw==
-X-Gm-Message-State: AOJu0YxGlEQ4ddr9ZuqklcOCPVST11eVAosDmPjQpSWS58z9WNLVfTRt
-        +X5TUNFCH+HJVjKCTIoolZ+lzeiUg2Nzp8X39DupNQ==
-X-Google-Smtp-Source: AGHT+IGGAQ0SPeS9k4vThxvaIdIq5zE1xB8+xmEuSjhUvM+qfy1Ks2t7vu34m9fYxaX8ybZo779u9UEx0SnF2U0/H4U=
-X-Received: by 2002:a25:d047:0:b0:da0:3b6c:fc22 with SMTP id
- h68-20020a25d047000000b00da03b6cfc22mr24752762ybg.31.1699275634492; Mon, 06
- Nov 2023 05:00:34 -0800 (PST)
+        Mon, 6 Nov 2023 08:00:50 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 089B4BD;
+        Mon,  6 Nov 2023 05:00:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699275648; x=1730811648;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=2SqN7za7Sfgm+xJRQJPZcebSUPWSYEo/BnT5IvaXfGs=;
+  b=TcDXzURH1pFckFAB0dtpE11LtnL1qE552oaq5zQvDF8/2p3FY40Papjk
+   Y6SqU6mU1PodYW7qurQoEae5EIr11Tgq5ECSotqRGtNk/EpY7StJXlx9t
+   FSQ8RahVTdLskTfA0KDmuLBr7LWQABpPDo5UgOdMM0Sd5fEVgzhyWv4Nr
+   cw0epLHER1bE1dtGey0rXM51doE/b/KFMzvNM7+NYhhD+YP0spy65Pjre
+   k9u9aydQbR60M+qTv7MqSYRYKXknKgFUkF26YgG/4VHXDCSnDe4B2Hn8U
+   lPZUrPnoTlgfZvEauAcLoXUmoiCZsbmpAmH3Hx0w9glP+2FFEP8cNo//W
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10885"; a="392135659"
+X-IronPort-AV: E=Sophos;i="6.03,281,1694761200"; 
+   d="scan'208";a="392135659"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Nov 2023 05:00:47 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10885"; a="791459993"
+X-IronPort-AV: E=Sophos;i="6.03,281,1694761200"; 
+   d="scan'208";a="791459993"
+Received: from jgulati-mobl.ger.corp.intel.com (HELO box.shutemov.name) ([10.249.42.157])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Nov 2023 05:00:44 -0800
+Received: by box.shutemov.name (Postfix, from userid 1000)
+        id 49FCA104790; Mon,  6 Nov 2023 16:00:41 +0300 (+03)
+Date:   Mon, 6 Nov 2023 16:00:41 +0300
+From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+To:     "Nikunj A. Dadhania" <nikunj@amd.com>
+Cc:     Tom Lendacky <thomas.lendacky@amd.com>,
+        linux-kernel@vger.kernel.org, x86@kernel.org, kvm@vger.kernel.org,
+        bp@alien8.de, mingo@redhat.com, tglx@linutronix.de,
+        dave.hansen@linux.intel.com, dionnaglaze@google.com,
+        pgonda@google.com, seanjc@google.com, pbonzini@redhat.com
+Subject: Re: [PATCH v5 09/14] x86/sev: Add Secure TSC support for SNP guests
+Message-ID: <20231106130041.gqoqszdxrmdomsxl@box.shutemov.name>
+References: <20231030063652.68675-1-nikunj@amd.com>
+ <20231030063652.68675-10-nikunj@amd.com>
+ <b5e71977-abf6-aa27-3a7b-37230b014724@amd.com>
+ <55de810b-66f9-49e3-8459-b7cac1532a0c@amd.com>
+ <20231102103649.3lsl25vqdquwequd@box.shutemov.name>
+ <d419893f-3167-4a8f-aa4e-06e8ecd390d1@amd.com>
 MIME-Version: 1.0
-References: <20231106103027.3988871-1-quic_imrashai@quicinc.com> <20231106103027.3988871-3-quic_imrashai@quicinc.com>
-In-Reply-To: <20231106103027.3988871-3-quic_imrashai@quicinc.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Mon, 6 Nov 2023 15:00:23 +0200
-Message-ID: <CAA8EJpqcyh1YrfHkdYaZfjyEDjKiV+HixrhcfPzsuTPwA5pzTQ@mail.gmail.com>
-Subject: Re: [PATCH V3 2/4] clk: qcom: branch: Add mem ops support for branch2 clocks
-To:     Imran Shaik <quic_imrashai@quicinc.com>
-Cc:     Andy Gross <agross@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Taniya Das <quic_tdas@quicinc.com>,
-        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ajit Pandey <quic_ajipan@quicinc.com>,
-        Jagadeesh Kona <quic_jkona@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <d419893f-3167-4a8f-aa4e-06e8ecd390d1@amd.com>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 6 Nov 2023 at 12:31, Imran Shaik <quic_imrashai@quicinc.com> wrote:
->
-> From: Taniya Das <quic_tdas@quicinc.com>
->
-> Clock CBCRs with memories need an update for memory before enable/disable
-> of the clock, which helps retain the respective block's register contents.
-> Add support for the mem ops to handle this sequence.
->
-> Signed-off-by: Taniya Das <quic_tdas@quicinc.com>
-> Signed-off-by: Imran Shaik <quic_imrashai@quicinc.com>
+On Mon, Nov 06, 2023 at 04:15:59PM +0530, Nikunj A. Dadhania wrote:
+> On 11/2/2023 4:06 PM, Kirill A. Shutemov wrote:
+> > On Thu, Nov 02, 2023 at 11:11:52AM +0530, Nikunj A. Dadhania wrote:
+> >> On 10/31/2023 1:56 AM, Tom Lendacky wrote:
+> >>>> diff --git a/include/linux/cc_platform.h b/include/linux/cc_platform.h
+> >>>> index cb0d6cd1c12f..e081ca4d5da2 100644
+> >>>> --- a/include/linux/cc_platform.h
+> >>>> +++ b/include/linux/cc_platform.h
+> >>>> @@ -90,6 +90,14 @@ enum cc_attr {
+> >>>>        * Examples include TDX Guest.
+> >>>>        */
+> >>>>       CC_ATTR_HOTPLUG_DISABLED,
+> >>>> +
+> >>>> +    /**
+> >>>> +     * @CC_ATTR_GUEST_SECURE_TSC: Secure TSC is active.
+> >>>> +     *
+> >>>> +     * The platform/OS is running as a guest/virtual machine and actively
+> >>>> +     * using AMD SEV-SNP Secure TSC feature.
+> >>>
+> >>> I think TDX also has a secure TSC like feature, so can this be generic?
+> >>
+> >> Yes, we can do that. In SNP case SecureTSC is an optional feature, not sure if that is the case for TDX as well.
+> >>
+> >> Kirill any inputs ?
+> > 
+> > We have several X86_FEATURE_ flags to indicate quality of TSC. Do we
+> > really need a CC_ATTR on top of that? Maybe SEV code could just set
+> > X86_FEATURE_ according to what its TSC can do?
+> 
+> For SEV-SNP, SEV_STATUS MSR has the information of various features
+> that have been enabled by the hypervisor. We will need a CC_ATTR for
+> these optional features.
 
-It would be nice to have a description of what is 'CBCR with memories'
-and how does it differ from CBCR_FORCE_MEM_CORE_ON?
-
-> ---
->  drivers/clk/qcom/clk-branch.c | 39 +++++++++++++++++++++++++++++++++++
->  drivers/clk/qcom/clk-branch.h | 21 +++++++++++++++++++
->  2 files changed, 60 insertions(+)
->
-> diff --git a/drivers/clk/qcom/clk-branch.c b/drivers/clk/qcom/clk-branch.c
-> index fc4735f74f0f..61bdd2147bed 100644
-> --- a/drivers/clk/qcom/clk-branch.c
-> +++ b/drivers/clk/qcom/clk-branch.c
-> @@ -1,6 +1,7 @@
->  // SPDX-License-Identifier: GPL-2.0
->  /*
->   * Copyright (c) 2013, The Linux Foundation. All rights reserved.
-> + * Copyright (c) 2023, Qualcomm Innovation Center, Inc. All rights reserved.
->   */
->
->  #include <linux/kernel.h>
-> @@ -134,6 +135,44 @@ static void clk_branch2_disable(struct clk_hw *hw)
->         clk_branch_toggle(hw, false, clk_branch2_check_halt);
->  }
->
-> +static int clk_branch2_mem_enable(struct clk_hw *hw)
-> +{
-> +       struct clk_mem_branch *mem_br = to_clk_mem_branch(hw);
-> +       struct clk_branch branch = mem_br->branch;
-> +       const char *name = clk_hw_get_name(&branch.clkr.hw);
-> +       u32 val;
-> +       int ret;
-> +
-> +       regmap_update_bits(branch.clkr.regmap, mem_br->mem_enable_reg,
-> +                       mem_br->mem_enable_ack_mask, mem_br->mem_enable_ack_mask);
-> +
-> +       ret = regmap_read_poll_timeout(branch.clkr.regmap, mem_br->mem_ack_reg,
-> +                       val, val & mem_br->mem_enable_ack_mask, 0, 200);
-> +       if (ret) {
-> +               WARN(1, "%s mem enable failed\n", name);
-> +               return ret;
-> +       }
-> +
-> +       return clk_branch2_enable(hw);
-> +}
-> +
-> +static void clk_branch2_mem_disable(struct clk_hw *hw)
-> +{
-> +       struct clk_mem_branch *mem_br = to_clk_mem_branch(hw);
-> +
-> +       regmap_update_bits(mem_br->branch.clkr.regmap, mem_br->mem_enable_reg,
-> +                                               mem_br->mem_enable_ack_mask, 0);
-> +
-> +       return clk_branch2_disable(hw);
-> +}
-> +
-> +const struct clk_ops clk_branch2_mem_ops = {
-> +       .enable = clk_branch2_mem_enable,
-> +       .disable = clk_branch2_mem_disable,
-> +       .is_enabled = clk_is_enabled_regmap,
-> +};
-> +EXPORT_SYMBOL_GPL(clk_branch2_mem_ops);
-> +
->  const struct clk_ops clk_branch2_ops = {
->         .enable = clk_branch2_enable,
->         .disable = clk_branch2_disable,
-> diff --git a/drivers/clk/qcom/clk-branch.h b/drivers/clk/qcom/clk-branch.h
-> index 0cf800b9d08d..8ffed603c050 100644
-> --- a/drivers/clk/qcom/clk-branch.h
-> +++ b/drivers/clk/qcom/clk-branch.h
-> @@ -38,6 +38,23 @@ struct clk_branch {
->         struct clk_regmap clkr;
->  };
->
-> +/**
-> + * struct clk_mem_branch - gating clock which are associated with memories
-> + *
-> + * @mem_enable_reg: branch clock memory gating register
-> + * @mem_ack_reg: branch clock memory ack register
-> + * @mem_enable_ack_mask: branch clock memory enable and ack field in @mem_ack_reg
-> + * @branch: branch clock gating handle
-> + *
-> + * Clock which can gate its memories.
-> + */
-> +struct clk_mem_branch {
-> +       u32     mem_enable_reg;
-> +       u32     mem_ack_reg;
-> +       u32     mem_enable_ack_mask;
-> +       struct clk_branch branch;
-> +};
-> +
->  /* Branch clock common bits for HLOS-owned clocks */
->  #define CBCR_CLK_OFF                   BIT(31)
->  #define CBCR_NOC_FSM_STATUS            GENMASK(30, 28)
-> @@ -85,8 +102,12 @@ extern const struct clk_ops clk_branch_ops;
->  extern const struct clk_ops clk_branch2_ops;
->  extern const struct clk_ops clk_branch_simple_ops;
->  extern const struct clk_ops clk_branch2_aon_ops;
-> +extern const struct clk_ops clk_branch2_mem_ops;
->
->  #define to_clk_branch(_hw) \
->         container_of(to_clk_regmap(_hw), struct clk_branch, clkr)
->
-> +#define to_clk_mem_branch(_hw) \
-> +       container_of(to_clk_branch(_hw), struct clk_mem_branch, branch)
-> +
->  #endif
-> --
-> 2.25.1
->
-
+If all users of the attribute is withing x86, I would rather add synthetic
+X86_FEATURE_ flags than CC_ATTR_. We have better instrumentation around
+features.
 
 -- 
-With best wishes
-Dmitry
+  Kiryl Shutsemau / Kirill A. Shutemov
