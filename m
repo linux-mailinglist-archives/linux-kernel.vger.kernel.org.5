@@ -2,268 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD4A87E29EE
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 17:37:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E39F7E2A0D
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 17:39:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232873AbjKFQhk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 11:37:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60756 "EHLO
+        id S231906AbjKFQjm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 11:39:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232851AbjKFQhh (ORCPT
+        with ESMTP id S229485AbjKFQjk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 11:37:37 -0500
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2056.outbound.protection.outlook.com [40.107.94.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE9BFD6A;
-        Mon,  6 Nov 2023 08:37:34 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=l3lWmco1O+CfiI+t6MepimcroJHT8s/Rdhykx0isuoAI6afnbjw2IaupZRYJ9BN/7DBVM476KNygFlxuBNFDbC2KnMOZy7xDd+3qoHBEITbe6zswn7lt4Zmzk2Mptl7Felqf3jee/zmnDMwU7OsjuGzh0e0cOYZTEtIbT1up2wqT99gv6bi3xurn8qUPUMM4LNXFhJb9z5VNzzDmYEeemU2Mr0om5tGeHGgHsY/KqoRgHBEWW/l1dEeEzF4KMe5LrgWT8JiB2qFm2lv6OezzWLz7rRqNO5SoakLkVageivyc17dyXcky1v9InaaO6YtINx7JLI5383PPigye67mkgw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=1vLEUvAbNM1dFqC6tMCqz845gPFzVr1V0idMsDN2tqM=;
- b=S3MZrKClxAmbr71vIcj0JhDHOvJUP6NhW0HI/tLDiDhoaJQVknBynqNfSr6t5lq7q9gs0AjUc4jQGN8Wu54KCHehm8mrcyuCupw98Zc0KkUedjruP45JvntHIE/XMDNmMNbAYrf8/yaB5CTZXQNsExtQzNDM9c9wtBYYnbwfpxkMW4pzCyh6T8ZMHHYhcvnYL8DBA2VTLgg8sBG0AgCqymsqPsuixYYc15vmQgs79dHbHUkY+X4gEYrKrS2Fz+QVwxWYVlaboFauQTuTMei0FJzXW21ebzPUKqEjBa/vvQy4ytWBatx4yKqxQmCo64WUS+ynuXw6oCdvWX83Ke8uLA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1vLEUvAbNM1dFqC6tMCqz845gPFzVr1V0idMsDN2tqM=;
- b=nPuA3uxmeZLufFUXewO4KkEPrvi6YuWPYie5MkHZ/9eZRLIH4h592zbvU1taxk5riyV5lG2z9mkwqkBx4Xabbwx6NR6smijbSW6gkJb/xci7+t1+cOLMJ7n9HwdlCDfnw/qiNDIzK2vkcFKck/s+dgCSvjj/f9bzcZ0rJqItYio=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from CH3PR12MB8403.namprd12.prod.outlook.com (2603:10b6:610:133::14)
- by SJ2PR12MB8784.namprd12.prod.outlook.com (2603:10b6:a03:4d0::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.28; Mon, 6 Nov
- 2023 16:37:31 +0000
-Received: from CH3PR12MB8403.namprd12.prod.outlook.com
- ([fe80::51d7:e9ef:b57b:f4f2]) by CH3PR12MB8403.namprd12.prod.outlook.com
- ([fe80::51d7:e9ef:b57b:f4f2%3]) with mapi id 15.20.6954.028; Mon, 6 Nov 2023
- 16:37:30 +0000
-Message-ID: <23f0b99b-9f14-4da8-954e-5d175aca1ab8@amd.com>
-Date:   Mon, 6 Nov 2023 10:37:29 -0600
-User-Agent: Mozilla Thunderbird
-Subject: [PATCH v2] ACPI: APEI: Skip initialization of GHES_ASSIST structures
- for Machine Check Architecture
-Content-Language: en-US
-To:     rafael@kernel.org, lenb@kernel.org, linux-acpi@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, yazen.ghannam@amd.com,
-        Avadhut Naik <avadhut.naik@amd.com>
-References: <20231002195932.2501674-1-avadhut.naik@amd.com>
-From:   Avadhut Naik <avadnaik@amd.com>
-In-Reply-To: <20231002195932.2501674-1-avadhut.naik@amd.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SA9PR10CA0009.namprd10.prod.outlook.com
- (2603:10b6:806:a7::14) To CH3PR12MB8403.namprd12.prod.outlook.com
- (2603:10b6:610:133::14)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH3PR12MB8403:EE_|SJ2PR12MB8784:EE_
-X-MS-Office365-Filtering-Correlation-Id: 65bc30ce-e79c-46f5-6242-08dbdee6ab95
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 8rXOOo5WC+7Jb3uArZf8gzx4YbMQLeYai96D9lLStsohYVJWPtb0HgWIQmmuL+twkIJjKjyvqg1Y8bFLQ4Xq+/DkwAf3T/SBYgsllYthEuoydBeeq74PmUZvcmxggc9gXXkqa6H0U23YRsPTKuRxNamN2BytP6AOV0PSgGtIcrOdQ8DPCPwGhfEW39+z/I4EjhFvzAEAPgVvS2GFyRajp0mEl1tZXPyzlxOTE2MniTDy/066UGFH4Nv+fIvXM3Iklu34LYfqzOuZlLTqrHoQbRFu/MpYWkzawG1bm0pR/8G9plpNSvIwDGns2liObo2UMyMFe7+H4bbmMEr/YC92pQwwt+TeaE64HFqjeM5oQH/6MpAQgY/h51ms8LOITnSAGBz04H53wjJrOBtXxmBZi7fkQs8DpcsvfF+NAtZtTVnq9OLL3eLpLb18OplBXzBFd797vjFwFCE5QbrxOsYDGPANxp8l91jkhAkOpYk1+mv0VOKngQj5Icfld6gmt8HNesMTA96VX62enEUIU/pbg40yM0RLkT5xE6hBSwaMVC4BDo+qa/TyRr+IHjJWTIL4CMuIwTCC+K5WISGLAc+tW14/Tyjg3Q4haRM3QNahdGpR6e/vTGPhuBu4/wnqZFirVPznRvyatXolfrJEQTLa6Q==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR12MB8403.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(39860400002)(346002)(136003)(376002)(396003)(230922051799003)(186009)(1800799009)(64100799003)(451199024)(53546011)(478600001)(6506007)(6512007)(2616005)(6486002)(83380400001)(26005)(2906002)(66556008)(316002)(41300700001)(66946007)(5660300002)(66476007)(8676002)(4326008)(8936002)(38100700002)(36756003)(31696002)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?dVNOYlFZamhnS0hlR0QvTFRCNzllZmhwdXZjdHh3QXBCMzVnUitBNUluajhY?=
- =?utf-8?B?K0ErVC9jVVowRHFOaGxrQVIxSW8rTnhDVGNydTVMdUxSUlN4cmNPTHFtTG01?=
- =?utf-8?B?cDVvQzU0cGI5U3hkVnpwa1V6bEMraGVWK1VVTlM2dHNCWnR3ZndOVXdLK1V6?=
- =?utf-8?B?MUNOZ1ZZZ21RL0dHcld2cUtpTVZNTE02NjRXUWZybXErd3lTcFF3ZGJGWjNz?=
- =?utf-8?B?NUd1U1N0SjVhdlMzTUc5Z1FGaFc4N3ROS1VZTXhJTUk3ODlDbGVaSGVTMS9M?=
- =?utf-8?B?Tjd2YWxCS3pMcU5qb0kwaHFkZXBQc3RxOGVsaTJNT3RJWW1IcFk1YmVsY0xn?=
- =?utf-8?B?Z2Y5eUJXaWV5MDMxYkljZzdGK0NKK3p5VUJNaWhWaVVyRHkya0x0M3FBYUhE?=
- =?utf-8?B?YnhvRHhweU1ySitiZlkyRzdieTRteHA0ZDhRTSt4aHlVdU5LM1VoMkVQdms1?=
- =?utf-8?B?SUtuVjUxUHFHVVhoS1dSL0NLTndObCsrV09hN0VaMW9VUUpKVmhTaW1pdzFZ?=
- =?utf-8?B?ZmVFRU1oMVp2V3llekcrMUlseDhuRUJZRk5jZEk5bFVsOHEvaUtxZzZDNzBq?=
- =?utf-8?B?aVBqVDRDQUdTbHI2MnVJWjJMeHRPWXNhaVhET09kYUcxekEvYzZDVGY2b1dI?=
- =?utf-8?B?ZkttUE93RXo0bzV5c0JTNGZRaXNiTmZ5ZG9RSUF0SHBpK0xaRnl6UHdYdWxo?=
- =?utf-8?B?VGtmQ3JpY3BoWmNlNHhUdzhBeEJaMFJnOWsxR3VSQlQ3dFI3S1lDRTNKTzdj?=
- =?utf-8?B?amE5YTJnSEx3VmRCUFI0eThRdUFCTXVDbmhGUGN1NUR1T2c0dEl0MWxqbTdG?=
- =?utf-8?B?Rk5keUgrKzFSSXdweUhMOEsrL0hjM1o1dm5iQW80WmFlMVhzejI0cUhBaTZv?=
- =?utf-8?B?YmlMVmhwVFJDSStHV0p2Wkd2SzNQUzh1Y0Q2RTJzdjdXYkFXcUEvdDNOaSs5?=
- =?utf-8?B?em84VUVFejZMT1FROEJjclMwZDk3Q1BJYWtJYnkzNk9Ib2p4a2tSYlV6Wm9U?=
- =?utf-8?B?MEE5b2JZL2FkakF5OWRvNXlEQnAzSGp4MnhQak8wZmNienFGaXhkMVZGWHpi?=
- =?utf-8?B?V2tweitNbzZZczk3T1pkZVgydkRUNFpjS0cydFNHVUYrZWs2UTNHdDV3RVZV?=
- =?utf-8?B?VlJGRTQza0RDSDl5YXVQWTFEa1JKS1FnWVpsSGpudFNJMVg1dGp2QlhqVzVJ?=
- =?utf-8?B?TDQ5alVUYVlDZlgzcmlLM0w1UzgyZVV4cHJpeDE1elZsT2liVytEUHd4TzJh?=
- =?utf-8?B?ZFYvTjZXUmJJVTl6WC9JaXhXYW1hb2pJNCt5M0NETkFxZW5oZno3ZFhyaGJO?=
- =?utf-8?B?UEhqREhiN05uN1hpSmMrMTU0TkhwTm9HQUVYNmg1eDRPNUNsTVcyNmUzY3Yw?=
- =?utf-8?B?UWhEZXBaWlczZCthTEovT3FYd1RNUDNjNDljSE9VTzBIRW4yRjZnTVhBcitz?=
- =?utf-8?B?eTQ4a3NqQU5KSjVETGt2cTdrZkJWU3pyZ0Rrd0hUdGkwMjU0RWhVZVNZd1JO?=
- =?utf-8?B?cjF1RHJObVp1STZsZWhCY1VBS2xlRDhtUjFzb29uMGN3QTE1ZGU4ZEdBU2ZY?=
- =?utf-8?B?MWMyaEd3bXBQd1g0UEhtdUFaRjJSYS9EYk1YMDlRbkpXdjhmZi9lOG5jUDRu?=
- =?utf-8?B?Ris3R3l2ZzIzSUFJWHhmUnc1c0JhYmhJZThXeUU5Q3ZYd3d5bVVnQjFUQWhp?=
- =?utf-8?B?MXl6VzEvM0pkSEpNT0FnRGU0UjNEWWtJMC9hRlJGYVJaUTJXUG5PRUZDcnJz?=
- =?utf-8?B?dGJ4TlBwcXN5cDVQZ3NIQ0dnRXNoMUJ1N1h0Nk42czVham9RcHEyM040TEJp?=
- =?utf-8?B?SEIrOEFaM21FUkhXY0huTXNKWGJYdlpYUzJZOGpnczhQSkFyVkRhazdHOE1i?=
- =?utf-8?B?dnIxRkNUNUdGWHplVmh0VU1WSmpFVndKUFozbjZkT2lDUnc5eFlNa0RCODFV?=
- =?utf-8?B?UVZrZTZYekFlMUx3aTF2b2tNOENRZUZldFBnSmFkejBhOFMycWtMNnNHZnFD?=
- =?utf-8?B?MGEyNWhpLzBiMHpCK2thK0Q5bjF4WFFnb1BleW5kWFFCV2luby9nMmZEYzU4?=
- =?utf-8?B?OUIzamIwZWtOWHREM2FBUmVIQjlBTDQvSmsvTzAzUjlWR1NGU2dzRmVrRXcr?=
- =?utf-8?Q?pZ70SBuBLXLoDXQ0OgkYc0+er?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 65bc30ce-e79c-46f5-6242-08dbdee6ab95
-X-MS-Exchange-CrossTenant-AuthSource: CH3PR12MB8403.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Nov 2023 16:37:30.7451
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ehwCR3sXcDA1xUqThztP2cUOPKIjFp9IvRH8IbkMC/D0Vcks4gpALQYNjtorifgDtTQ5IFLi1Oq8HsFE0TFYkA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB8784
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+        Mon, 6 Nov 2023 11:39:40 -0500
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 640FE1BF
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 08:39:38 -0800 (PST)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5b0c27d504fso32457537b3.1
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 08:39:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1699288777; x=1699893577; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=s6GJqjPyHEWJBt2NqwShpg4qNSCTYad7QEEr5EefJZo=;
+        b=JX7NAUCpiEM67qqL3gJDF7pnWLvohEjUq8tKurjUCCzjqmcjLSGWr95PQ3sY7zinEs
+         F0UoHKaje/uy8AvKQGe0h8I0uB/I22CfoQkqTprQXXpBaN9YR1ulmi+ZWly75TtFCgpx
+         RJak0HR94aZeY03pkGTbzwBUkTC7SICthPSi2JgzTrdXbjo4A6DpuDMwDwhepTgP1Fvp
+         OKJ9MmNKuCN7nqyQYfP4wG7uiQfBQ+Ui8XfQXf+U/mk6qyfTuuwjwRTzd12laGVgiXuX
+         Ainr92BlkiCmWil3bdlnn9C2eWVaBKjozR63WzZgMIJ3iRNgvaWcydhn6/0uKDp1OQsb
+         blqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699288777; x=1699893577;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=s6GJqjPyHEWJBt2NqwShpg4qNSCTYad7QEEr5EefJZo=;
+        b=qd/v4tsswEa4cf7khYLzNbZsZf1ioBR8T04SOGZMDvzNv/tvnGnFssFD5XUuhlyhM9
+         xVgH1gHSlmEGylS7MhK9Y7Ef9jP39FsIUMZa9d/OHUB2sLEvOuxsuiJm+nmutwVS6CtO
+         KJh8Lab4YeP5lFK5OTczXwNdAeyD9/Fvq9mrdmFiGxRVaRhb0oy2hRpYC2JWOnTobz4j
+         XFwZpXLUo/iTNA0G07/iKEjcVHnKzvU1/ahsqsSb2gwL9bxeo2T7vZaEm8AA19goOKVL
+         VuCnSL1snLVQrlRZaHlzoic2j6qYPD/RSt8msz3fLzu7d4bHDWdignRCwPNHGIy/t3IZ
+         ES1Q==
+X-Gm-Message-State: AOJu0Yx+RfjBDI9JEvuaymWpuKkjgoT/JuicUFldeH2jXtpUDnSYoLlx
+        phQm7M4/hkv0APUncy3FuBl10b/OiZo=
+X-Google-Smtp-Source: AGHT+IHRkognXfPOdvQjyBzJ2BOeuuKhNfK1lGzPPKxyDcA2UY/godTNSWjPuOih8XOxcrUfx8DLuuZjasg=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a81:b64a:0:b0:5a7:d45d:1223 with SMTP id
+ h10-20020a81b64a000000b005a7d45d1223mr243215ywk.3.1699288777668; Mon, 06 Nov
+ 2023 08:39:37 -0800 (PST)
+Date:   Mon, 6 Nov 2023 08:39:36 -0800
+In-Reply-To: <CALMp9eRzvj_Ach=QySHgpkKO6z=42OJmC4DPU=tCTxcioFvZEw@mail.gmail.com>
+Mime-Version: 1.0
+References: <20231104000239.367005-1-seanjc@google.com> <20231104000239.367005-12-seanjc@google.com>
+ <CALMp9eRzvj_Ach=QySHgpkKO6z=42OJmC4DPU=tCTxcioFvZEw@mail.gmail.com>
+Message-ID: <ZUkWyNBeaKiQrhiw@google.com>
+Subject: Re: [PATCH v6 11/20] KVM: selftests: Test Intel PMU architectural
+ events on fixed counters
+From:   Sean Christopherson <seanjc@google.com>
+To:     Jim Mattson <jmattson@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Dapeng Mi <dapeng1.mi@linux.intel.com>,
+        Jinrong Liang <cloudliang@tencent.com>,
+        Like Xu <likexu@tencent.com>,
+        Aaron Lewis <aaronlewis@google.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Sat, Nov 04, 2023, Jim Mattson wrote:
+> On Fri, Nov 3, 2023 at 5:03=E2=80=AFPM Sean Christopherson <seanjc@google=
+.com> wrote:
+> >  static void guest_test_arch_event(uint8_t idx)
+> >  {
+> >         const struct {
+> >                 struct kvm_x86_pmu_feature gp_event;
+> > +               struct kvm_x86_pmu_feature fixed_event;
+> >         } intel_event_to_feature[] =3D {
+> > -               [INTEL_ARCH_CPU_CYCLES]            =3D { X86_PMU_FEATUR=
+E_CPU_CYCLES },
+> > -               [INTEL_ARCH_INSTRUCTIONS_RETIRED]  =3D { X86_PMU_FEATUR=
+E_INSNS_RETIRED },
+> > -               [INTEL_ARCH_REFERENCE_CYCLES]      =3D { X86_PMU_FEATUR=
+E_REFERENCE_CYCLES },
+> > -               [INTEL_ARCH_LLC_REFERENCES]        =3D { X86_PMU_FEATUR=
+E_LLC_REFERENCES },
+> > -               [INTEL_ARCH_LLC_MISSES]            =3D { X86_PMU_FEATUR=
+E_LLC_MISSES },
+> > -               [INTEL_ARCH_BRANCHES_RETIRED]      =3D { X86_PMU_FEATUR=
+E_BRANCH_INSNS_RETIRED },
+> > -               [INTEL_ARCH_BRANCHES_MISPREDICTED] =3D { X86_PMU_FEATUR=
+E_BRANCHES_MISPREDICTED },
+> > +               [INTEL_ARCH_CPU_CYCLES]            =3D { X86_PMU_FEATUR=
+E_CPU_CYCLES, X86_PMU_FEATURE_CPU_CYCLES_FIXED },
+> > +               [INTEL_ARCH_INSTRUCTIONS_RETIRED]  =3D { X86_PMU_FEATUR=
+E_INSNS_RETIRED, X86_PMU_FEATURE_INSNS_RETIRED_FIXED },
+> > +               /*
+> > +                * Note, the fixed counter for reference cycles is NOT =
+the same
+> > +                * as the general purpose architectural event (because =
+the GP
+> > +                * event is garbage).  The fixed counter explicitly cou=
+nts at
+> > +                * the same frequency as the TSC, whereas the GP event =
+counts
+> > +                * at a fixed, but uarch specific, frequency.  Bundle t=
+hem here
+> > +                * for simplicity.
+> > +                */
+>=20
+> Implementation-specific is not necessarily garbage, though it would be
+> nice if there was a way to query the frequency rather than calibrating
+> against another clock.
 
-Any comments on this patch?
-
-On 10/2/2023 14:59, Avadhut Naik wrote:
-> To support GHES_ASSIST on Machine Check Architecture (MCA) error sources,
-> a set of GHES structures is provided by the system firmware for each MCA
-> error source. Each of these sets consists of a GHES structure for each MCA
-> bank on each logical CPU, with all structures of a set sharing a common
-> Related Source ID, equal to the Source ID of one of the MCA error source
-> structures.[1] On SOCs with large core counts, this typically equates to
-> tens of thousands of GHES_ASSIST structures for MCA under
-> "/sys/bus/platform/drivers/GHES".
-> 
-> Support for GHES_ASSIST however, hasn't been implemented in the kernel. As
-> such, the information provided through these structures is not consumed by
-> Linux. Moreover, these GHES_ASSIST structures for MCA, which are supposed
-> to provide supplemental information in context of an error reported by
-> hardware, are setup as independent error sources by the kernel during HEST
-> initialization.
-> 
-> Additionally, if the Type field of the Notification structure, associated
-> with these GHES_ASSIST structures for MCA, is set to Polled, the kernel
-> sets up a timer for each individual structure. The duration of the timer
-> is derived from the Poll Interval field of the Notification structure. On
-> SOCs with high core counts, this will result in tens of thousands of
-> timers expiring periodically causing unnecessary preemptions and wastage
-> of CPU cycles. The problem will particularly intensify if Poll Interval
-> duration is not sufficiently high.
-> 
-> Since GHES_ASSIST support is not present in kernel, skip initialization
-> of GHES_ASSIST structures for MCA to eliminate their performance impact.
-> 
-> [1] ACPI specification 6.5, section 18.7
-> 
-> Signed-off-by: Avadhut Naik <avadhut.naik@amd.com>
-> Reviewed-by: Yazen Ghannam <yazen.ghannam@amd.com>
-> ---
-> Changes in v2:
-> 1.	Since is_ghes_assist_struct() returns if any of the conditions is hit
-> if-else-if chain is redundant. Replace it with just if statements.
-> 2.	Fix formatting errors.
-> 3.	Add Reviewed-by: Yazen Ghannam <yazen.ghannam@amd.com>
-> ---
->  drivers/acpi/apei/hest.c | 51 ++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 51 insertions(+)
-> 
-> diff --git a/drivers/acpi/apei/hest.c b/drivers/acpi/apei/hest.c
-> index 6aef1ee5e1bd..99db7621adb7 100644
-> --- a/drivers/acpi/apei/hest.c
-> +++ b/drivers/acpi/apei/hest.c
-> @@ -37,6 +37,20 @@ EXPORT_SYMBOL_GPL(hest_disable);
->  
->  static struct acpi_table_hest *__read_mostly hest_tab;
->  
-> +/*
-> + * Since GHES_ASSIST is not supported, skip initialization
-> + * of GHES_ASSIST structures for MCA.
-> + * During HEST parsing, detected MCA error sources are cached.
-> + * Flags and Source Id fields from these cached values are
-> + * then referred to determine if the encountered GHES_ASSIST
-> + * structure should be initialized.
-> + */
-> +static struct {
-> +	struct acpi_hest_ia_corrected *cmc;
-> +	struct acpi_hest_ia_machine_check *mc;
-> +	struct acpi_hest_ia_deferred_check *dmc;
-> +} mces;
-> +
->  static const int hest_esrc_len_tab[ACPI_HEST_TYPE_RESERVED] = {
->  	[ACPI_HEST_TYPE_IA32_CHECK] = -1,	/* need further calculation */
->  	[ACPI_HEST_TYPE_IA32_CORRECTED_CHECK] = -1,
-> @@ -70,22 +84,54 @@ static int hest_esrc_len(struct acpi_hest_header *hest_hdr)
->  		cmc = (struct acpi_hest_ia_corrected *)hest_hdr;
->  		len = sizeof(*cmc) + cmc->num_hardware_banks *
->  			sizeof(struct acpi_hest_ia_error_bank);
-> +		mces.cmc = cmc;
->  	} else if (hest_type == ACPI_HEST_TYPE_IA32_CHECK) {
->  		struct acpi_hest_ia_machine_check *mc;
->  		mc = (struct acpi_hest_ia_machine_check *)hest_hdr;
->  		len = sizeof(*mc) + mc->num_hardware_banks *
->  			sizeof(struct acpi_hest_ia_error_bank);
-> +		mces.mc = mc;
->  	} else if (hest_type == ACPI_HEST_TYPE_IA32_DEFERRED_CHECK) {
->  		struct acpi_hest_ia_deferred_check *mc;
->  		mc = (struct acpi_hest_ia_deferred_check *)hest_hdr;
->  		len = sizeof(*mc) + mc->num_hardware_banks *
->  			sizeof(struct acpi_hest_ia_error_bank);
-> +		mces.dmc = mc;
->  	}
->  	BUG_ON(len == -1);
->  
->  	return len;
->  };
->  
-> +/*
-> + * GHES and GHESv2 structures share the same format, starting from
-> + * Source Id and ending in Error Status Block Length (inclusive).
-> + */
-> +static bool is_ghes_assist_struct(struct acpi_hest_header *hest_hdr)
-> +{
-> +	struct acpi_hest_generic *ghes;
-> +	u16 related_source_id;
-> +
-> +	if (hest_hdr->type != ACPI_HEST_TYPE_GENERIC_ERROR &&
-> +	    hest_hdr->type != ACPI_HEST_TYPE_GENERIC_ERROR_V2)
-> +		return false;
-> +
-> +	ghes = (struct acpi_hest_generic *)hest_hdr;
-> +	related_source_id = ghes->related_source_id;
-> +
-> +	if (mces.cmc && mces.cmc->flags & ACPI_HEST_GHES_ASSIST &&
-> +	    related_source_id == mces.cmc->header.source_id)
-> +		return true;
-> +	if (mces.mc && mces.mc->flags & ACPI_HEST_GHES_ASSIST &&
-> +	    related_source_id == mces.mc->header.source_id)
-> +		return true;
-> +	if (mces.dmc && mces.dmc->flags & ACPI_HEST_GHES_ASSIST &&
-> +	    related_source_id == mces.dmc->header.source_id)
-> +		return true;
-> +
-> +	return false;
-> +}
-> +
->  typedef int (*apei_hest_func_t)(struct acpi_hest_header *hest_hdr, void *data);
->  
->  static int apei_hest_parse(apei_hest_func_t func, void *data)
-> @@ -114,6 +160,11 @@ static int apei_hest_parse(apei_hest_func_t func, void *data)
->  			return -EINVAL;
->  		}
->  
-> +		if (is_ghes_assist_struct(hest_hdr)) {
-> +			hest_hdr = (void *)hest_hdr + len;
-> +			continue;
-> +		}
-> +
->  		rc = func(hest_hdr, data);
->  		if (rc)
->  			return rc;
-
--- 
-Thanks,
-Avadhut Naik
+Heh, I'll drop the editorial commentry, though I still think an architectur=
+al event
+with implementation-specific behavior is garbage :-)
