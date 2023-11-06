@@ -2,201 +2,504 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 747267E2686
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 15:21:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BB9C7E268A
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 15:22:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231559AbjKFOVr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 09:21:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53142 "EHLO
+        id S231358AbjKFOW4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 09:22:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230155AbjKFOVp (ORCPT
+        with ESMTP id S229485AbjKFOWy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 09:21:45 -0500
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAB67B8;
-        Mon,  6 Nov 2023 06:21:42 -0800 (PST)
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A6CIQsB016441;
-        Mon, 6 Nov 2023 14:21:36 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=sfQu0EihO7InF9XjKQ/DwguvwSmRl6Q79sCZ6g91iio=;
- b=a5FycRqKL73bJ4Nr0VjfGEgb2BISfb3fSgol74N2VDFPSIvCs8OunNosR2iMsuNo5/cz
- vIhWDiYyFTf+LCR3KETljY/drkII7I26rXGFx4nYZyN2JVp6/z7Ra43NBsmVjQJm1qgZ
- lXsKfaHWQy99c0N0AIidv8VmRu+szLeB69lWMNOFTO3ltqj+COxZUEdHgbqCjl8Dm1Zi
- t9+1/iWwWDHtGbWa2bVvoPwlnDnUDCHoy32hWuc8FVC8dUV0VpHOJ4D+NyEqLT5fO1Km
- 4oNByJgqXTmST/wSi6Boq4WFMcj/FoW9ILCywJhIp8dhIxw4c00CXkeeUvsnT7241oXq 1g== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u5efymfua-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 06 Nov 2023 14:21:36 +0000
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3A6ELY6R017355
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 6 Nov 2023 14:21:34 GMT
-Received: from [10.216.12.16] (10.80.80.8) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Mon, 6 Nov
- 2023 06:21:27 -0800
-Message-ID: <eb4f49da-ecc4-54d7-1c40-efc48306308b@quicinc.com>
-Date:   Mon, 6 Nov 2023 19:51:24 +0530
+        Mon, 6 Nov 2023 09:22:54 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6B27B8
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 06:22:50 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70215C433CB
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 14:22:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699280570;
+        bh=JQ/VtcQCZpIs/m/rDjVwOeDOg5wP1G6qjhklyEFGW74=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=lNpcmV8IHmYM01rIPzQpls6GP/HHtw7abaBQwpFcAEfy3Dbii469bi78087pPL9rt
+         vLi0Wqa8ElCxtkJDlfLTe03zRE5mVoqqMWFKDzuGHGZWp1tVpNqRVEK7HhJpCIEmmc
+         +kAaGpd9jc7yFLM+JnPv1jSkFPRmiy9k3B43i2iWgbQZJpR/4G/ZxBV6qLBa36ER33
+         qg5IbjieFwwNvfCogz+yxJH0dw2adBqS57+YeIjGp42K5PJyMOqgpUSaNyjSnIRZpU
+         iXH4fS3UTVlP3n4f2KWWHxka7U7E70FbIX3xuyETR2t+8AGppqkfXbc2uXu5ExkhaP
+         DzkFsJ+awgyNw==
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-9c2a0725825so662321766b.2
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 06:22:50 -0800 (PST)
+X-Gm-Message-State: AOJu0Yy4G5ryMfR/28Pa6pIa8ryBEmHfdDpVfSsA38GmUFjUIumZcxLP
+        syHm92RI4Kv7RxxQFtrZc+7d81TqRfQgbpI/6sw=
+X-Google-Smtp-Source: AGHT+IGOMoAZpg2/Mr3frwN5yirgk3mQYj6iH7iSSUxyO28aS5og3g0yugYx32Xyq3z8yFniMe41xBRqpfXWImy1L4c=
+X-Received: by 2002:a17:906:80c8:b0:9c5:cfa3:d04d with SMTP id
+ a8-20020a17090680c800b009c5cfa3d04dmr11022632ejx.52.1699280568760; Mon, 06
+ Nov 2023 06:22:48 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.13.1
-Subject: Re: [PATCH 2/2] phy: qcom-qmp-pcie: Add support for keeping refclk
- always on
-Content-Language: en-US
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-CC:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-phy@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <quic_vbadigan@quicinc.com>, <quic_ramkri@quicinc.com>,
-        <quic_nitegupt@quicinc.com>, <quic_skananth@quicinc.com>,
-        <quic_vpernami@quicinc.com>, <quic_parass@quicinc.com>
-References: <20231106-refclk_always_on-v1-0-17a7fd8b532b@quicinc.com>
- <20231106-refclk_always_on-v1-2-17a7fd8b532b@quicinc.com>
- <CAA8EJpq9azRC5msZfS1V8NK4EmPN+jxh+99yGEyQ+EWkk1gROQ@mail.gmail.com>
-From:   Krishna Chaitanya Chundru <quic_krichai@quicinc.com>
-In-Reply-To: <CAA8EJpq9azRC5msZfS1V8NK4EmPN+jxh+99yGEyQ+EWkk1gROQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: Vfh6WjbSCuhmY7NFxv9Ke-XtWw49Sl9s
-X-Proofpoint-ORIG-GUID: Vfh6WjbSCuhmY7NFxv9Ke-XtWw49Sl9s
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-06_12,2023-11-02_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- mlxlogscore=999 priorityscore=1501 malwarescore=0 mlxscore=0 clxscore=1015
- phishscore=0 adultscore=0 suspectscore=0 lowpriorityscore=0 spamscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2310240000 definitions=main-2311060116
-X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <CAAhV-H5DH3Oj3ttSpa_k6jUdZ+0_pMwgoaqUTGGFr46j7DMXRw@mail.gmail.com>
+ <ba16ad66-4b35-4fb4-b4e6-1d785f260eea@ristioja.ee> <CAAhV-H64AKdGoHnVLLOYXznpr_aq1jC_TUYXFQRdOjoBxanxkw@mail.gmail.com>
+ <c3bb7983-86e4-424e-aadd-e82a0cb6ef37@ristioja.ee> <CAAhV-H7UTnTWQeT_qo7VgBczaZo37zjosREr16H8DsLi21XPqQ@mail.gmail.com>
+ <CAAhV-H7fJS3-3_hqA4BUdH+q5EG6wSmEoPpO-fUZn5h35O=6OA@mail.gmail.com>
+ <31ed0db1-9398-4c46-a391-fc644ec49268@ristioja.ee> <CAAhV-H4MekBgYZ1nJ-M7bnpo3bczOMcTanij18ACCALz2svjQQ@mail.gmail.com>
+ <ZUSJDG82vzbuyFEY@P70.localdomain> <CAAhV-H6GyOnTOm6b8Xp=ySctyE-T905WKDUS2AZuqnEyzM7ZEg@mail.gmail.com>
+ <ZUWtTuIcMwwCWg7z@P70.localdomain> <CAAhV-H7wnjac1Znr2yh8S2bGwuxF1RRGp=cn9oracrWm6y5VVQ@mail.gmail.com>
+ <51add74a-1d1a-493d-bb50-fccdad11b22c@ristioja.ee> <CAAhV-H7nhkvLoDMwQDwNEhykZANGMq-Qrzip48qYzgQs1fNUgA@mail.gmail.com>
+ <be82874b-d41b-4547-9ab5-dac9a5ddfeaf@ristioja.ee>
+In-Reply-To: <be82874b-d41b-4547-9ab5-dac9a5ddfeaf@ristioja.ee>
+From:   Huacai Chen <chenhuacai@kernel.org>
+Date:   Mon, 6 Nov 2023 22:22:36 +0800
+X-Gmail-Original-Message-ID: <CAAhV-H6zjW3XzDWP1_Hu-owBPLyJVB-_V3z9bMtOgubp1p5kZA@mail.gmail.com>
+Message-ID: <CAAhV-H6zjW3XzDWP1_Hu-owBPLyJVB-_V3z9bMtOgubp1p5kZA@mail.gmail.com>
+Subject: Re: Blank screen on boot of Linux 6.5 and later on Lenovo ThinkPad L570
+To:     Jaak Ristioja <jaak@ristioja.ee>
+Cc:     Linux regressions mailing list <regressions@lists.linux.dev>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux DRI Development <dri-devel@lists.freedesktop.org>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        Thorsten Leemhuis <regressions@leemhuis.info>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Bagas Sanjaya <bagasdotme@gmail.com>,
+        Evan Preston <x.arch@epreston.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_PDS_OTHER_BAD_TLD,
+        T_SCC_BODY_TEXT_LINE,WEIRD_PORT autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 11/6/2023 5:43 PM, Dmitry Baryshkov wrote:
-> On Mon, 6 Nov 2023 at 13:53, Krishna chaitanya chundru
-> <quic_krichai@quicinc.com> wrote:
->> In PCIe low power states like L1.1 or L1.2 the phy will stop
->> supplying refclk to endpoint. If endpoint asserts clkreq to bring
->> back link L0, then RC needs to provide refclk to endpoint.
->>
->> If there is some issues in platform with clkreq signal propagation
->> to host and due to that host will not send refclk which results PCIe link
->> down. For those platforms  phy needs to provide refclk even in low power
->> states.
->>
->> Add a flag which indicates refclk is always supplied to endpoint.
->>
->> Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
->> ---
->>   drivers/phy/qualcomm/phy-qcom-qmp-pcie.c | 21 +++++++++++++++++----
->>   1 file changed, 17 insertions(+), 4 deletions(-)
->>
->> diff --git a/drivers/phy/qualcomm/phy-qcom-qmp-pcie.c b/drivers/phy/qualcomm/phy-qcom-qmp-pcie.c
->> index a63ca7424974..d7e377a7d96e 100644
->> --- a/drivers/phy/qualcomm/phy-qcom-qmp-pcie.c
->> +++ b/drivers/phy/qualcomm/phy-qcom-qmp-pcie.c
->> @@ -43,6 +43,8 @@
->>   /* QPHY_PCS_STATUS bit */
->>   #define PHYSTATUS                              BIT(6)
->>   #define PHYSTATUS_4_20                         BIT(7)
->> +/* PCS_PCIE_ENDPOINT_REFCLK_CNTRL */
->> +#define EPCLK_ALWAYS_ON_EN                     BIT(6)
+On Mon, Nov 6, 2023 at 9:49=E2=80=AFPM Jaak Ristioja <jaak@ristioja.ee> wro=
+te:
 >
->>   #define PHY_INIT_COMPLETE_TIMEOUT              10000
->>
->> @@ -77,6 +79,7 @@ enum qphy_reg_layout {
->>          QPHY_START_CTRL,
->>          QPHY_PCS_STATUS,
->>          QPHY_PCS_POWER_DOWN_CONTROL,
->> +       QPHY_PCS_ENDPOINT_REFCLK_CNTRL,
->>          /* Keep last to ensure regs_layout arrays are properly initialized */
->>          QPHY_LAYOUT_SIZE
->>   };
->> @@ -103,10 +106,11 @@ static const unsigned int sdm845_qhp_pciephy_regs_layout[QPHY_LAYOUT_SIZE] = {
->>   };
->>
->>   static const unsigned int pciephy_v4_regs_layout[QPHY_LAYOUT_SIZE] = {
->> -       [QPHY_SW_RESET]                 = QPHY_V4_PCS_SW_RESET,
->> -       [QPHY_START_CTRL]               = QPHY_V4_PCS_START_CONTROL,
->> -       [QPHY_PCS_STATUS]               = QPHY_V4_PCS_PCS_STATUS1,
->> -       [QPHY_PCS_POWER_DOWN_CONTROL]   = QPHY_V4_PCS_POWER_DOWN_CONTROL,
->> +       [QPHY_SW_RESET]                         = QPHY_V4_PCS_SW_RESET,
->> +       [QPHY_START_CTRL]                       = QPHY_V4_PCS_START_CONTROL,
->> +       [QPHY_PCS_STATUS]                       = QPHY_V4_PCS_PCS_STATUS1,
->> +       [QPHY_PCS_POWER_DOWN_CONTROL]           = QPHY_V4_PCS_POWER_DOWN_CONTROL,
-> No unnecessary whitespace changes, please.
-I will remove above white space and keep below change as it is as it is 
-throwing error as white space required there
+> On 06.11.23 04:15, Huacai Chen wrote:
+> > Hi, Jaak and Evan,
+> >
+> > On Mon, Nov 6, 2023 at 12:28=E2=80=AFAM Jaak Ristioja <jaak@ristioja.ee=
+> wrote:
+> >>
+> >> On 05.11.23 14:40, Huacai Chen wrote:
+> >>> Hi, Evan,
+> >>>
+> >>> On Sat, Nov 4, 2023 at 10:50=E2=80=AFAM Evan Preston <x.arch@epreston=
+.net> wrote:
+> >>>>
+> >>>> Hi Huacai,
+> >>>>
+> >>>> On 2023-11-03 Fri 02:36pm, Huacai Chen wrote:
+> >>>>> Hi, Evan,
+> >>>>>
+> >>>>> On Fri, Nov 3, 2023 at 1:54=E2=80=AFPM Evan Preston <x.arch@epresto=
+n.net> wrote:
+> >>>>>>
+> >>>>>> Hi Huacai,
+> >>>>>>
+> >>>>>> On 2023-11-02 Thu 08:38pm, Huacai Chen wrote:
+> >>>>>>> Hi, Jaak,
+> >>>>>>>
+> >>>>>>> On Wed, Nov 1, 2023 at 7:52=E2=80=AFPM Jaak Ristioja <jaak@ristio=
+ja.ee> wrote:
+> >>>>>>>>
+> >>>>>>>> On 31.10.23 14:17, Huacai Chen wrote:
+> >>>>>>>>> Hi, Jaak and Evan,
+> >>>>>>>>>
+> >>>>>>>>> On Sun, Oct 29, 2023 at 9:42=E2=80=AFAM Huacai Chen <chenhuacai=
+@kernel.org> wrote:
+> >>>>>>>>>>
+> >>>>>>>>>> On Sat, Oct 28, 2023 at 7:06=E2=80=AFPM Jaak Ristioja <jaak@ri=
+stioja.ee> wrote:
+> >>>>>>>>>>>
+> >>>>>>>>>>> On 26.10.23 03:58, Huacai Chen wrote:
+> >>>>>>>>>>>> Hi, Jaak,
+> >>>>>>>>>>>>
+> >>>>>>>>>>>> On Thu, Oct 26, 2023 at 2:49=E2=80=AFAM Jaak Ristioja <jaak@=
+ristioja.ee> wrote:
+> >>>>>>>>>>>>>
+> >>>>>>>>>>>>> On 25.10.23 16:23, Huacai Chen wrote:
+> >>>>>>>>>>>>>> On Wed, Oct 25, 2023 at 6:08=E2=80=AFPM Thorsten Leemhuis
+> >>>>>>>>>>>>>> <regressions@leemhuis.info> wrote:
+> >>>>>>>>>>>>>>>
+> >>>>>>>>>>>>>>> Javier, Dave, Sima,
+> >>>>>>>>>>>>>>>
+> >>>>>>>>>>>>>>> On 23.10.23 00:54, Evan Preston wrote:
+> >>>>>>>>>>>>>>>> On 2023-10-20 Fri 05:48pm, Huacai Chen wrote:
+> >>>>>>>>>>>>>>>>> On Fri, Oct 20, 2023 at 5:35=E2=80=AFPM Linux regressio=
+n tracking (Thorsten
+> >>>>>>>>>>>>>>>>> Leemhuis) <regressions@leemhuis.info> wrote:
+> >>>>>>>>>>>>>>>>>> On 09.10.23 10:54, Huacai Chen wrote:
+> >>>>>>>>>>>>>>>>>>> On Mon, Oct 9, 2023 at 4:45=E2=80=AFPM Bagas Sanjaya =
+<bagasdotme@gmail.com> wrote:
+> >>>>>>>>>>>>>>>>>>>> On Mon, Oct 09, 2023 at 09:27:02AM +0800, Huacai Che=
+n wrote:
+> >>>>>>>>>>>>>>>>>>>>> On Tue, Sep 26, 2023 at 10:31=E2=80=AFPM Huacai Che=
+n <chenhuacai@kernel.org> wrote:
+> >>>>>>>>>>>>>>>>>>>>>> On Tue, Sep 26, 2023 at 7:15=E2=80=AFPM Linux regr=
+ession tracking (Thorsten
+> >>>>>>>>>>>>>>>>>>>>>> Leemhuis) <regressions@leemhuis.info> wrote:
+> >>>>>>>>>>>>>>>>>>>>>>> On 13.09.23 14:02, Jaak Ristioja wrote:
+> >>>>>>>>>>>>>>>>>>>>>>>>
+> >>>>>>>>>>>>>>>>>>>>>>>> Upgrading to Linux 6.5 on a Lenovo ThinkPad L570=
+ (Integrated Intel HD
+> >>>>>>>>>>>>>>>>>>>>>>>> Graphics 620 (rev 02), Intel(R) Core(TM) i7-7500=
+U) results in a blank
+> >>>>>>>>>>>>>>>>>>>>>>>> screen after boot until the display manager star=
+ts... if it does start
+> >>>>>>>>>>>>>>>>>>>>>>>> at all. Using the nomodeset kernel parameter see=
+ms to be a workaround.
+> >>>>>>>>>>>>>>>>>>>>>>>>
+> >>>>>>>>>>>>>>>>>>>>>>>> I've bisected this to commit 60aebc9559492cea6a9=
+625f514a8041717e3a2e4
+> >>>>>>>>>>>>>>>>>>>>>>>> ("drivers/firmware: Move sysfb_init() from devic=
+e_initcall to
+> >>>>>>>>>>>>>>>>>>>>>>>> subsys_initcall_sync").
+> >>>>>>>>>>>>>>>>>>>>>>>
+> >>>>>>>>>>>>>>>>>>>>> As confirmed by Jaak, disabling DRM_SIMPLEDRM makes=
+ things work fine
+> >>>>>>>>>>>>>>>>>>>>> again. So I guess the reason:
+> >>>>>>>>>>>>>>>>>>
+> >>>>>>>>>>>>>>>>>> Well, this to me still looks a lot (please correct me =
+if I'm wrong) like
+> >>>>>>>>>>>>>>>>>> regression that should be fixed, as DRM_SIMPLEDRM was =
+enabled beforehand
+> >>>>>>>>>>>>>>>>>> if I understood things correctly. Or is there a proper=
+ fix for this
+> >>>>>>>>>>>>>>>>>> already in the works and I just missed this? Or is the=
+re some good
+> >>>>>>>>>>>>>>>>>> reason why this won't/can't be fixed?
+> >>>>>>>>>>>>>>>>>
+> >>>>>>>>>>>>>>>>> DRM_SIMPLEDRM was enabled but it didn't work at all bec=
+ause there was
+> >>>>>>>>>>>>>>>>> no corresponding platform device. Now DRM_SIMPLEDRM wor=
+ks but it has a
+> >>>>>>>>>>>>>>>>> blank screen. Of course it is valuable to investigate f=
+urther about
+> >>>>>>>>>>>>>>>>> DRM_SIMPLEDRM on Jaak's machine, but that needs Jaak's =
+effort because
+> >>>>>>>>>>>>>>>>> I don't have a same machine.
+> >>>>>>>>>>>>>>>
+> >>>>>>>>>>>>>>> Side note: Huacai, have you tried working with Jaak to ge=
+t down to the
+> >>>>>>>>>>>>>>> real problem? Evan, might you be able to help out here?
+> >>>>>>>>>>>>>> No, Jaak has no response after he 'fixed' his problem by d=
+isabling SIMPLEDRM.
+> >>>>>>>>>>>>>>
+> >>>>>>>>>>>>>
+> >>>>>>>>>>>>> I'm sorry, what was it exactly you want me to do? Please be=
+ mindful that
+> >>>>>>>>>>>>> I'm not familiar with the internals of the Linux kernel and=
+ DRI, and it
+> >>>>>>>>>>>>> might sometimes take weeks before I have time to work and r=
+espond on this.
+> >>>>>>>>>>>> It doesn't matter. I hope you can do some experiments to inv=
+estigate
+> >>>>>>>>>>>> deeper. The first experiment you can do is enabling SIMPLEFB=
+ (i.e.
+> >>>>>>>>>>>> CONFIG_FB_SIMPLE) instead of SIMPLEDRM (CONFIG_DRM_SIMPLEDRM=
+) to see
+> >>>>>>>>>>>> whether there is also a blank screen. If no blank screen, th=
+at
+> >>>>>>>>>>>> probably means SIMPLEDRM has a bug, if still blank screen, t=
+hat means
+> >>>>>>>>>>>> the firmware may pass wrong screen information.
+> >>>>>>>>>>>
+> >>>>>>>>>>> Testing with 6.5.9 I get a blank screen with CONFIG_DRM_SIMPL=
+EDRM=3Dy and
+> >>>>>>>>>>> get no blank screen with CONFIG_FB_SIMPLE=3Dy and CONFIG_DRM_=
+SIMPLEDRM unset.
+> >>>>>>>>>> CONFIG_FB_SIMPLE and  CONFIG_DRM_SIMPLEDRM use the same device=
+ created
+> >>>>>>>>>> by sysfb_init(). Since FB_SIMPLE works fine, I think the real =
+problem
+> >>>>>>>>>> is that DRM_SIMPLEDRM has a bug. The next step is to enable
+> >>>>>>>>>> CONFIG_DRM_SIMPLEDRM and trace its initialization. In detail, =
+adding
+> >>>>>>>>>> some printk() in simpledrm_probe() and its sub-routines to see=
+ where
+> >>>>>>>>>> the driver fails. The output of these printk() can be seen by =
+the
+> >>>>>>>>>> 'dmesg' command after boot.
+> >>>>>>>>> I need your help. I tried with my laptop (ThinkPad E490, Intel =
+Core
+> >>>>>>>>> i3-8145U, UHD Graphics 620) but I can't reproduce your problem.=
+ So
+> >>>>>>>>> please patch your 6.5.x kernel with this temporary patch [1], t=
+hen
+> >>>>>>>>> build a "bad kernel" with SIMPLEDRM enabled. And after booting =
+your
+> >>>>>>>>> machine with this "bad kernel", please give me the dmesg output=
+. Thank
+> >>>>>>>>> you very much.
+> >>>>>>>>>
+> >>>>>>>>> [1] http://ddns.miaomiaomiao.top:9000/download/kernel/patch-6.5=
+.9
+> >>>>>>>>
+> >>>>>>>> I'm unable to download it. Can you please send it by e-mail?
+> >>>>>>> I'm sorry, please download from attachment.
+> >>>>>>
+> >>>>>> When applying this patch the first hunk (drivers/firmware/sysfb.c)=
+ fails for
+> >>>>>> me with 6.5.9.  Attempting to load the 6.5.9 kernel without this p=
+atch
+> >>>>>> produces no dmesg output on my machine.
+> >>>>> You copy-paste the patch? If you download it directly it can be
+> >>>>> applied successfully, I think.
+> >>>>
+> >>>> The patch downloaded from your URL applies successfully.  However, I=
+ still
+> >>>> see no dmesg output using the patched 6.5.9 kernel.  'journalctl -k =
+-b all'
+> >>>> shows no dmesg output from any 6.5.x boots, only from 6.4.12 boots.
+> >>> Thank you for your testing. Since you cannot boot to GUI successfully
+> >>> as Jaak, you may have some troubles with getting the dmesg output. Bu=
+t
+> >>> you can try to use "systemd.unit=3Dmulti-user.target" boot parameters=
+.
+> >>> In this way you may boot to the login: prompt and then you can get
+> >>> dmesg output. Or if you still fail, you may use 'jornalctl -k -b -1'
+> >>> to get the previous dmesg output with 6.4.12.
+> >>>
+> >>> Hi, Jaak,
+> >>>
+> >>> Have you tested? I think you can successfully get a dmesg output with=
+ my patch.
+> >>
+> >> Yes, just tested it, here I think are the relevant parts from a dmesg
+> >> produced with CONFIG_DRM_SIMPLEDRM and the patch provided by Huacai:
+> >>
+> >> ...
+> >> [    2.909625] sysfb 1
+> >> [    2.909627] sysfb 2
+> >> ...
+> >> [    2.951477] ACPI: bus type drm_connector registered
+> >> [    2.952096] i915 0000:00:02.0: [drm] VT-d active for gfx access
+> >> [    2.952105] resource: resource sanity check: requesting [mem
+> >> 0x00000000e0000000-0x00000000efffffff], which spans more than BOOTFB
+> >> [mem 0xe0000000-0xe012bfff]
+> >> [    2.952111] caller i915_ggtt_init_hw+0x88/0x120 mapping multiple BA=
+Rs
+> >> [    2.952138] i915 0000:00:02.0: [drm] Using Transparent Hugepages
+> >> [    2.953204] Loading firmware: i915/kbl_dmc_ver1_04.bin
+> >> [    2.953485] i915 0000:00:02.0: [drm] Finished loading DMC firmware
+> >> i915/kbl_dmc_ver1_04.bin (v1.4)
+> >> ...
+> >> [    4.142075] [drm] Initialized i915 1.6.0 20201103 for 0000:00:02.0 =
+on
+> >> minor 0
+> >> [    4.144269] ACPI: video: Video Device [GFX0] (multi-head: yes  rom:
+> >> no  post: no)
+> >> [    4.144414] input: Video Bus as
+> >> /devices/LNXSYSTM:00/LNXSYBUS:00/PNP0A08:00/LNXVIDEO:00/input/input4
+> >> [    4.144580] [drm] Initialized vgem 1.0.0 20120112 for vgem on minor=
+ 1
+> >> [    4.144590] usbcore: registered new interface driver udl
+> >> [    4.144603] T: probe 1
+> >> [    4.144605] T: create 1
+> >> [    4.144610] T: create 2
+> >> [    4.144611] T: create 3a-1
+> >> [    4.144613] T: create 3a-2
+> >> [    4.144614] T: create 3a-3
+> >> [    4.144616] T: create 3a-4
+> >> [    4.144618] T: create 4
+> >> [    4.144619] T: create 5
+> >> [    4.144621] simple-framebuffer simple-framebuffer.0: [drm] display
+> >> mode=3D{"": 60 18432 640 640 640 640 480 480 480 480 0x40 0x0}
+> >> [    4.144628] simple-framebuffer simple-framebuffer.0: [drm]
+> >> framebuffer format=3DXR24 little-endian (0x34325258), size=3D640x480,
+> >> stride=3D2560 byte
+> >> [    4.144633] T: create 6b-1
+> >> [    4.144635] T: create 6b-2
+> >> [    4.144637] simple-framebuffer simple-framebuffer.0: [drm] using I/=
+O
+> >> memory framebuffer at [mem 0xe0000000-0xe012bfff flags 0x200]
+> >> [    4.144643] T: create 6b-3
+> >> [    4.144660] T: create 6b-4
+> >> [    4.144662] T: create 7
+> >> [    4.144673] T: create 8
+> >> [    4.144676] T: create 9
+> >> [    4.144678] T: create 10
+> >> [    4.144681] T: create 11
+> >> [    4.144685] T: create 12
+> >> [    4.144689] T: probe 2
+> >> [    4.144728] [drm] Initialized simpledrm 1.0.0 20200625 for
+> >> simple-framebuffer.0 on minor 2
+> >> [    4.144732] T: probe 3
+> >> [    4.145905] Console: switching to colour frame buffer device 80x30
+> >> [    4.150437] simple-framebuffer simple-framebuffer.0: [drm] fb0:
+> >> simpledrmdrmfb frame buffer device
+> >> [    4.150766] T: probe 4
+> >> [    4.151218] loop: module loaded
+> >> [    4.154434] i915 0000:00:02.0: [drm] fb1: i915drmfb frame buffer de=
+vice
+> >> ...
+> >> [   44.630789] simple-framebuffer simple-framebuffer.0: swiotlb buffer
+> >> is full (sz: 1310720 bytes), total 32768 (slots), used 0 (slots)
+> >> ...
+> >>
+> >> The last message might be due to the display manager starting up.
+> >>
+> >> Hope it helps.
+> > Thank you for your testing. Jaak's problem seems related to the
+> > initialization order, you can try to modify drivers/gpu/drm/Makefile,
+> > move
+> >
+> > obj-y                  +=3D tiny/
+> >
+> > to between these two lines
+> >
+> > obj-$(CONFIG_DRM_SCHED) +=3D scheduler/
+> > obj-$(CONFIG_DRM_RADEON)+=3D radeon/
+> >
+> > then build a new 6.5.x kernel to see whether your problem is resolved.
 >
->> +       [QPHY_PCS_ENDPOINT_REFCLK_CNTRL]        = QPHY_V4_PCS_PCIE_ENDPOINT_REFCLK_CNTRL,
-> Any other platform having this register?
-we have this register for other platforms also I will add that register 
-in which ever versions it exits in next patch
+> Yes, this seems to have resolved it.
+Hi, Jaak,
+
+Thank you very much, and I hope this also solves Evan's problem.
+
+Hi, Javier,
+
+I think I have mostly found the root cause. DRM_SIMPLEDRM has no bugs,
+Jaak's problem is due to the initialization order of drivers, and this
+order depends on the Makefile.
+
+FB_SIMPLE is before native DRM drivers (e.g. i915, radeon, amdgpu, and
+so on), but DRM_SIMPLEDRM is after them. Thus, if Jaak uses FB_SIMPLE,
+I915 will takeover FB_SIMPLE, then no problem; and if Jaak uses
+DRM_SIMPLEDRM, DRM_SIMPLEDRM will try to takeover I915, but fails to
+work.
+
+So, when I move the "tiny" directory before i915, the problem is
+solved. But the new problem is: is it acceptable to solve this problem
+by adjusting Makefile?
+
+Huacai
+
 >
->>   };
->>
->>   static const unsigned int pciephy_v5_regs_layout[QPHY_LAYOUT_SIZE] = {
->> @@ -2244,6 +2248,8 @@ struct qmp_pcie {
->>          struct phy *phy;
->>          int mode;
->>
->> +       bool refclk_always_on;
->> +
->>          struct clk_fixed_rate pipe_clk_fixed;
->>   };
->>
->> @@ -3159,6 +3165,10 @@ static void qmp_pcie_init_registers(struct qmp_pcie *qmp, const struct qmp_phy_c
->>          qmp_pcie_configure(pcs, tbls->pcs, tbls->pcs_num);
->>          qmp_pcie_configure(pcs_misc, tbls->pcs_misc, tbls->pcs_misc_num);
->>
->> +       if (qmp->refclk_always_on && cfg->regs[QPHY_PCS_ENDPOINT_REFCLK_CNTRL])
->> +               qphy_setbits(pcs_misc, cfg->regs[QPHY_PCS_ENDPOINT_REFCLK_CNTRL],
->> +                            EPCLK_ALWAYS_ON_EN);
->> +
->>          if (cfg->lanes >= 4 && qmp->tcsr_4ln_config) {
->>                  qmp_pcie_configure(serdes, cfg->serdes_4ln_tbl, cfg->serdes_4ln_num);
->>                  qmp_pcie_init_port_b(qmp, tbls);
->> @@ -3681,6 +3691,9 @@ static int qmp_pcie_probe(struct platform_device *pdev)
->>          if (ret)
->>                  goto err_node_put;
->>
->> +       qmp->refclk_always_on = of_property_read_bool(dev->of_node,
->> +                                                     "qcom,refclk-always-on");
-> Error out if !cfg->regs[QPHY_PCS_ENDPOINT_REFCLK_CNTRL]).
-> Otherwise your DT value can be silently ignored.
-
-sure I will add this in next patch series.
-
-- Krishna Chaitanya.
-
->> +
->>          ret = phy_pipe_clk_register(qmp, np);
->>          if (ret)
->>                  goto err_node_put;
->>
->> --
->> 2.42.0
->>
+> Jaak
+>
+> >
+> > Evan's problem seems a little strange, could you please give me your
+> > config files of both 6.4.12 and 6.5.x? And you can also try the above
+> > method to see if anything changes.
+> >
+> > Huacai
+> >
+> >>
+> >> J
+> >>
+> >>>
+> >>>>
+> >>>> Evan
+> >>>>
+> >>>>>
+> >>>>> Huacai
+> >>>>>
+> >>>>>>
+> >>>>>> Evan
+> >>>>>>
+> >>>>>>>
+> >>>>>>> Huacai
+> >>>>>>>
+> >>>>>>>>
+> >>>>>>>> Jaak
+> >>>>>>>>
+> >>>>>>>>>
+> >>>>>>>>>
+> >>>>>>>>> Huacai
+> >>>>>>>>>
+> >>>>>>>>>>
+> >>>>>>>>>> Huacai
+> >>>>>>>>>>
+> >>>>>>>>>>>
+> >>>>>>>>>>> Jaak
+> >>>>>>>>>>>
+> >>>>>>>>>>>>
+> >>>>>>>>>>>> Huacai
+> >>>>>>>>>>>>
+> >>>>>>>>>>>>>
+> >>>>>>>>>>>>> Jaak
+> >>>>>>>>>>>>>
+> >>>>>>>>>>>>>>>
+> >>>>>>>>>>>>>>> But I write this mail for a different reason:
+> >>>>>>>>>>>>>>>
+> >>>>>>>>>>>>>>>> I am having the same issue on a Lenovo Thinkpad P70 (Int=
+el
+> >>>>>>>>>>>>>>>> Corporation HD Graphics 530 (rev 06), Intel(R) Core(TM) =
+i7-6700HQ).
+> >>>>>>>>>>>>>>>> Upgrading from Linux 6.4.12 to 6.5 and later results in =
+only a blank
+> >>>>>>>>>>>>>>>> screen after boot and a rapidly flashing device-access-s=
+tatus
+> >>>>>>>>>>>>>>>> indicator.
+> >>>>>>>>>>>>>>>
+> >>>>>>>>>>>>>>> This additional report makes me wonder if we should rever=
+t the culprit
+> >>>>>>>>>>>>>>> (60aebc9559492c ("drivers/firmware: Move sysfb_init() fro=
+m
+> >>>>>>>>>>>>>>> device_initcall to subsys_initcall_sync") [v6.5-rc1]). Bu=
+t I guess that
+> >>>>>>>>>>>>>>> might lead to regressions for some users? But the patch d=
+escription says
+> >>>>>>>>>>>>>>> that this is not a common configuration, so can we maybe =
+get away with that?
+> >>>>>>>>>>>>>>      From my point of view, this is not a regression, 60ae=
+bc9559492c
+> >>>>>>>>>>>>>> doesn't cause a problem, but exposes a problem. So we need=
+ to fix the
+> >>>>>>>>>>>>>> real problem (SIMPLEDRM has a blank screen on some conditi=
+ons). This
+> >>>>>>>>>>>>>> needs Jaak or Evan's help.
+> >>>>>>>>>>>>>>
+> >>>>>>>>>>>>>> Huacai
+> >>>>>>>>>>>>>>>
+> >>>>>>>>>>>>>>> Ciao, Thorsten (wearing his 'the Linux kernel's regressio=
+n tracker' hat)
+> >>>>>>>>>>>>>>> --
+> >>>>>>>>>>>>>>> Everything you wanna know about Linux kernel regression t=
+racking:
+> >>>>>>>>>>>>>>> https://linux-regtracking.leemhuis.info/about/#tldr
+> >>>>>>>>>>>>>>> If I did something stupid, please tell me, as explained o=
+n that page.
+> >>>>>>>>>>>>>>>
+> >>>>>>>>>>>>>>>>>>>>> When SIMPLEDRM takes over the framebuffer, the scre=
+en is blank (don't
+> >>>>>>>>>>>>>>>>>>>>> know why). And before 60aebc9559492cea6a9625f ("dri=
+vers/firmware: Move
+> >>>>>>>>>>>>>>>>>>>>> sysfb_init() from device_initcall to subsys_initcal=
+l_sync") there is
+> >>>>>>>>>>>>>>>>>>>>> no platform device created for SIMPLEDRM at early s=
+tage, so it seems
+> >>>>>>>>>>>>>>>>>>>>> also "no problem".
+> >>>>>>>>>>>>>>>>>>>> I don't understand above. You mean that after that c=
+ommit the platform
+> >>>>>>>>>>>>>>>>>>>> device is also none, right?
+> >>>>>>>>>>>>>>>>>>> No. The SIMPLEDRM driver needs a platform device to w=
+ork, and that
+> >>>>>>>>>>>>>>>>>>> commit makes the platform device created earlier. So,=
+ before that
+> >>>>>>>>>>>>>>>>>>> commit, SIMPLEDRM doesn't work, but the screen isn't =
+blank; after that
+> >>>>>>>>>>>>>>>>>>> commit, SIMPLEDRM works, but the screen is blank.
+> >>>>>>>>>>>>>>>>>>>
+> >>>>>>>>>>>>>>>>>>> Huacai
+> >>>>>>>>>>>>>>>>>>>>
+> >>>>>>>>>>>>>>>>>>>> Confused...
+> >>>>>>>>>>>>>>>>>>>>
+> >>>>>>>>>>>>>>>>>>>> --
+> >>>>>>>>>>>>>>>>>>>> An old man doll... just what I always wanted! - Clar=
+a
+> >>>>>>>>>>>>>>>>>>>
+> >>>>>>>>>>>>>>>>>>>
+> >>>>>>>>>>>>>>>>
+> >>>>>>>>>>>>>>>>
+> >>>>>>>>>>>>>
+> >>>>>>>>>>>
+> >>>>>>>>
+> >>>>>>
+> >>>>>>
+> >>
 >
