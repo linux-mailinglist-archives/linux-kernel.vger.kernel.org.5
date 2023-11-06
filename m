@@ -2,166 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D0E37E3164
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 00:28:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C299B7E3166
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 00:28:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234147AbjKFX2W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 18:28:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54882 "EHLO
+        id S234024AbjKFX20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 18:28:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234141AbjKFX2H (ORCPT
+        with ESMTP id S233957AbjKFX2L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 18:28:07 -0500
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09A54468D;
-        Mon,  6 Nov 2023 15:25:16 -0800 (PST)
-Received: by mail-io1-xd2c.google.com with SMTP id ca18e2360f4ac-7ad501764f4so65940939f.3;
-        Mon, 06 Nov 2023 15:25:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699313116; x=1699917916; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pFohItga9X0xPgYLEfr2XqF9MUnkolAn3ELAIha/bdg=;
-        b=nX5c+gTlHMYV21PjHlvnvYaZFgZYyzDBFJIqd4monilmsST+GssoWBQVzdj/pF9DH7
-         YTxxMbUmLQ8XiJg3D9EhKkq1uvFtYzcfNZlYeepw3yKW+laVZh71fX4OmS7ttY4K9UIc
-         l/0fOQPcSJYFs2A7d27k9wEOkHhVYQ7vdvxJN/uOj4tmbWzq2oCQoNxNCIGeXaDiZTjU
-         uN3XrxPXaMgi1hpKZ2dbkeuTKZZYc7Q1ar06JMt7l1H2sQPFQGQQX5X/ZweowuVLMjD0
-         fNt3C2WaK/ElpG/+HCvZHdt9Lu94RfAv/TPUgn04dbPIOw4rOVMaY5a0iNn/UzfRXtp4
-         6Gaw==
+        Mon, 6 Nov 2023 18:28:11 -0500
+Received: from mail-oa1-f77.google.com (mail-oa1-f77.google.com [209.85.160.77])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A79747BC
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 15:25:23 -0800 (PST)
+Received: by mail-oa1-f77.google.com with SMTP id 586e51a60fabf-1e9a324c12fso7049373fac.2
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 15:25:22 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699313116; x=1699917916;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=pFohItga9X0xPgYLEfr2XqF9MUnkolAn3ELAIha/bdg=;
-        b=KcX4VSuIgr0wrkLccqMrymRLpFnwjJVxfuUD5tG3lHcn3bZ2g+dhfUAHrrW7uqndAE
-         bWCHhpwGC53+5WJEY+oiitHoZMJOWZXSfzUtoZda1C7V0LulfmEa4gMzfLIz5bM2rE9j
-         BqaKcozJQnryN62rovO9MvI27XwAtODffkjHuJ8uZK7lfc9be4ykSjqIyuD/xXP063Ih
-         YcJd+mBYeuc1frYtoMudGbT5/SuPLqQahA5Sch0GJ6QsNF8eZLw++G/SUEdJSWx6IIzt
-         fMYNK9nwDC2sW6YPcjfyan80CdmTS3JlByQldTja/XzbDKLq5g1PiTQp1LVlz+01LYlB
-         w1Lw==
-X-Gm-Message-State: AOJu0Yx66tM6fQyUvTYWlYq5PAwYu4/WmWek4UVzpsXpCxGArKbKgSDi
-        TAyISlrlK/cBCVeaKjVDV+z8M9VkDz71p2aosVM=
-X-Google-Smtp-Source: AGHT+IGV4V0e5c01c8hD3mfdr+jQQ1UjrMZTmWDKErBTA6rVC/kSi+zmq1aFfKbKyQjXxH2oaq8dispeOxZwGbnP91E=
-X-Received: by 2002:a05:6602:2b91:b0:79f:d4e6:5175 with SMTP id
- r17-20020a0566022b9100b0079fd4e65175mr41047243iov.16.1699313116030; Mon, 06
- Nov 2023 15:25:16 -0800 (PST)
+        d=1e100.net; s=20230601; t=1699313122; x=1699917922;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=4tIuCoytmVadRySr33DQZ5/TwXBcyTI+qOt/uxCcdew=;
+        b=Htjymna6mDkQQGMjvGLPdFxJTE+eLAADl+NZCp8y9N3NSkM7Gtvn70OWvs/z1OQl+V
+         2G2Scn8sANFHyfcG2qTk0nj6EVb+8+7xSijjzHtbVdv0u+CvC56kdbkEib5dhM8Pw4J1
+         CL+ElxWxt+uu2HphzvplAbx69+0iBOywAwLKGcxEh7lWrqS0lE92I3hwLru1Amb4Yxju
+         U7Vcx9gb8+3J/rtft8ITQrwW7m1N5x9CEQzMBG52h23A7+VyarlX63eGoP9k1QlbC+xy
+         iXIJymNSncENHz9ci2hfVEjdoeBn2LL8iW8jaMPsFSh+gMGjyJXdbV1uWds36faKCPXb
+         k9MQ==
+X-Gm-Message-State: AOJu0YyOdKyEKh7E51DsHQRwZGbQjBAA6L/A/2bA6FSqDf4kvVvymwZH
+        Q3wNhVeZbH0rcTbfLAMW2a2BKMFMqkJLaAyEGGlyBxYRpotk
+X-Google-Smtp-Source: AGHT+IGZnbMG2wIjxKhbru5Ov2b3CCz3h1LseB0sEh5MBxu3ykMqYgKg6klDliWZX6650SH3AnLqNCoNgwsFj+QnIVQ6y8i/RZKz
 MIME-Version: 1.0
-References: <20231106183159.3562879-1-nphamcs@gmail.com> <20231106183159.3562879-4-nphamcs@gmail.com>
- <CAJD7tkYcEc03d+6kwkXu8M_fd9ZDzh6B5G+VjmFXx+H09mhfmg@mail.gmail.com>
- <CAKEwX=PU3z7CseAZHE6v-q_yKQn0PtZqtfsfyKy5KOJpnNiE9Q@mail.gmail.com> <CAJD7tkY+qdYytVKUjdgPypZthWA57gVKuEtjowuVPMpcOmpdLQ@mail.gmail.com>
-In-Reply-To: <CAJD7tkY+qdYytVKUjdgPypZthWA57gVKuEtjowuVPMpcOmpdLQ@mail.gmail.com>
-From:   Nhat Pham <nphamcs@gmail.com>
-Date:   Mon, 6 Nov 2023 15:25:05 -0800
-Message-ID: <CAKEwX=Outf_hz_4UrzqKTbxxQD7y-Wm1cv9tOWC5J3V1ZmSiaA@mail.gmail.com>
-Subject: Re: [PATCH v5 3/6] zswap: make shrinking memcg-aware
-To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     akpm@linux-foundation.org, hannes@cmpxchg.org,
-        cerasuolodomenico@gmail.com, sjenning@redhat.com,
-        ddstreet@ieee.org, vitaly.wool@konsulko.com, mhocko@kernel.org,
-        roman.gushchin@linux.dev, shakeelb@google.com,
-        muchun.song@linux.dev, chrisl@kernel.org, linux-mm@kvack.org,
-        kernel-team@meta.com, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, shuah@kernel.org
+X-Received: by 2002:a05:6871:5d4:b0:1e9:9dda:12d with SMTP id
+ v20-20020a05687105d400b001e99dda012dmr519982oan.2.1699313122401; Mon, 06 Nov
+ 2023 15:25:22 -0800 (PST)
+Date:   Mon, 06 Nov 2023 15:25:22 -0800
+In-Reply-To: <0000000000002a4da90603a5cbbf@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000005e40d0609842b6d@google.com>
+Subject: Re: [syzbot] [dri?] kernel BUG in vmf_insert_pfn_prot (2)
+From:   syzbot <syzbot+398e17b61dab22cc56bc@syzkaller.appspotmail.com>
+To:     airlied@gmail.com, christian.koenig@amd.com, daniel@ffwll.ch,
+        dri-devel@lists.freedesktop.org, hdanton@sina.com,
+        linaro-mm-sig-bounces@lists.linaro.org,
+        linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, maarten.lankhorst@linux.intel.com,
+        mripard@kernel.org, sumit.semwal@linaro.org,
+        syzkaller-bugs@googlegroups.com, tzimmermann@suse.de
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 6, 2023 at 12:58=E2=80=AFPM Yosry Ahmed <yosryahmed@google.com>=
- wrote:
->
-> > >
-> > > This lock is only needed to synchronize updating pool->next_shrink,
-> > > right? Can we just use atomic operations instead? (e.g. cmpxchg()).
-> >
-> > I'm not entirely sure. I think in the pool destroy path, we have to als=
-o
-> > put the next_shrink memcg, so there's that.
->
-> We can use xchg() to replace it with NULL, then put the memcg ref, no?
->
-> We can also just hold zswap_pools_lock while shrinking the memcg
-> perhaps? It's not a contended lock anyway. It just feels weird to add
-> a spinlock to protect one pointer.
+syzbot has found a reproducer for the following issue on:
 
-Ah this sounds good to me I guess. I'm not opposed to this simplification
-of the concurrency scheme.
+HEAD commit:    d2f51b3516da Merge tag 'rtc-6.7' of git://git.kernel.org/p..
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=1422ebef680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=1ffa1cec3b40f3ce
+dashboard link: https://syzkaller.appspot.com/bug?extid=398e17b61dab22cc56bc
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16344918e80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=156bb2c0e80000
 
->
-> >
-> > >
-> > > > +               if (pool->next_shrink =3D=3D memcg)
-> > > > +                       pool->next_shrink =3D
-> > > > +                               mem_cgroup_iter(NULL, pool->next_sh=
-rink, NULL, true);
-> > > > +               spin_unlock(&pool->next_shrink_lock);
-> > > > +       }
-> > > > +       spin_unlock(&zswap_pools_lock);
-> > > > +}
-> > > > +
-> > > >  /*********************************
-> > > >  * zswap entry functions
-> > > >  **********************************/
-> > > >  static struct kmem_cache *zswap_entry_cache;
-> > > >
-> > > > -static struct zswap_entry *zswap_entry_cache_alloc(gfp_t gfp)
-> > > > +static struct zswap_entry *zswap_entry_cache_alloc(gfp_t gfp, int =
-nid)
-> > > >  {
-> > > >         struct zswap_entry *entry;
-> > > > -       entry =3D kmem_cache_alloc(zswap_entry_cache, gfp);
-> > > > +       entry =3D kmem_cache_alloc_node(zswap_entry_cache, gfp, nid=
-);
-> > > >         if (!entry)
-> > > >                 return NULL;
-> > > >         entry->refcount =3D 1;
-> > > [..]
-> > > > @@ -1233,15 +1369,15 @@ bool zswap_store(struct folio *folio)
-> > > >                 zswap_invalidate_entry(tree, dupentry);
-> > > >         }
-> > > >         spin_unlock(&tree->lock);
-> > > > -
-> > > > -       /*
-> > > > -        * XXX: zswap reclaim does not work with cgroups yet. Witho=
-ut a
-> > > > -        * cgroup-aware entry LRU, we will push out entries system-=
-wide based on
-> > > > -        * local cgroup limits.
-> > > > -        */
-> > > >         objcg =3D get_obj_cgroup_from_folio(folio);
-> > > > -       if (objcg && !obj_cgroup_may_zswap(objcg))
-> > > > -               goto reject;
-> > > > +       if (objcg && !obj_cgroup_may_zswap(objcg)) {
-> > > > +               memcg =3D get_mem_cgroup_from_objcg(objcg);
-> > > > +               if (shrink_memcg(memcg)) {
-> > > > +                       mem_cgroup_put(memcg);
-> > > > +                       goto reject;
-> > > > +               }
-> > > > +               mem_cgroup_put(memcg);
-> > >
-> > > Can we just use RCU here as well? (same around memcg_list_lru_alloc()
-> > > call below).
-> >
-> > For memcg_list_lru_alloc(): there's potentially sleeping in that piece =
-of
-> > code I believe? I believe at the very least we'll have to use this gfp_=
-t
-> > flag for it to be rcu-safe:
-> >
-> > GFP_KERNEL | __GFP_NORETRY | __GFP_NOMEMALLOC | __GFP_NOWARN
-> > not sure the
-> >
-> > Same go for this particular place IIRC - there's some sleeping done
-> > in zswap_writeback_entry(), correct?
->
-> Ah right, I missed this. My bad.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/01a7f380fc8d/disk-d2f51b35.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/c2fe46c74542/vmlinux-d2f51b35.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/247d6a0567c5/bzImage-d2f51b35.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+398e17b61dab22cc56bc@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+kernel BUG at mm/memory.c:2216!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+CPU: 1 PID: 5067 Comm: syz-executor340 Not tainted 6.6.0-syzkaller-14651-gd2f51b3516da #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/09/2023
+RIP: 0010:vmf_insert_pfn_prot+0x247/0x430 mm/memory.c:2216
+Code: 0f 0b e8 7c e6 bd ff 49 89 ef bf 20 00 00 00 41 83 e7 28 4c 89 fe e8 f8 e1 bd ff 49 83 ff 20 0f 85 aa fe ff ff e8 59 e6 bd ff <0f> 0b 48 bd ff ff ff ff ff ff 0f 00 e8 48 e6 bd ff 4c 89 f6 48 89
+RSP: 0018:ffffc90003bbf758 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffff88802847ec00 RCX: ffffffff81cab618
+RDX: ffff888015bd1dc0 RSI: ffffffff81cab627 RDI: 0000000000000007
+RBP: 000000000c040474 R08: 0000000000000007 R09: 0000000000000020
+R10: 0000000000000020 R11: 0000000000000009 R12: 0000000020ffd000
+R13: 1ffff92000777eec R14: 000000000001e529 R15: 0000000000000020
+FS:  0000555555e2a480(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000020ffd000 CR3: 000000002aae7000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ drm_gem_shmem_fault+0x207/0x400 drivers/gpu/drm/drm_gem_shmem_helper.c:531
+ __do_fault+0x107/0x5f0 mm/memory.c:4265
+ do_read_fault mm/memory.c:4628 [inline]
+ do_fault mm/memory.c:4762 [inline]
+ do_pte_missing mm/memory.c:3730 [inline]
+ handle_pte_fault mm/memory.c:5038 [inline]
+ __handle_mm_fault+0x2682/0x3d60 mm/memory.c:5179
+ handle_mm_fault+0x478/0xa00 mm/memory.c:5344
+ do_user_addr_fault+0x3d1/0x1000 arch/x86/mm/fault.c:1413
+ handle_page_fault arch/x86/mm/fault.c:1505 [inline]
+ exc_page_fault+0x5c/0xd0 arch/x86/mm/fault.c:1561
+ asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:570
+RIP: 0010:rep_movs_alternative+0x4a/0x70 arch/x86/lib/copy_user_64.S:71
+Code: 75 f1 c3 66 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 8b 06 48 89 07 48 83 c6 08 48 83 c7 08 83 e9 08 74 df 83 f9 08 73 e8 eb c9 <f3> a4 c3 48 89 c8 48 c1 e9 03 83 e0 07 f3 48 a5 89 c1 85 c9 75 b3
+RSP: 0018:ffffc90003bbfb50 EFLAGS: 00050206
+RAX: 0000000000000001 RBX: 0000000020ffd000 RCX: 0000000000001000
+RDX: 0000000000000000 RSI: 0000000020ffd000 RDI: ffff888018796000
+RBP: 0000000000001000 R08: 0000000000000001 R09: ffffed10030f2dff
+R10: ffff888018796fff R11: 0000000000000000 R12: 0000000020ffe000
+R13: ffff888018796000 R14: 0000000000000000 R15: 0000000020ffd000
+ copy_user_generic arch/x86/include/asm/uaccess_64.h:112 [inline]
+ raw_copy_from_user arch/x86/include/asm/uaccess_64.h:127 [inline]
+ _copy_from_user+0xc2/0xf0 lib/usercopy.c:23
+ copy_from_user include/linux/uaccess.h:183 [inline]
+ snd_rawmidi_kernel_write1+0x360/0x860 sound/core/rawmidi.c:1618
+ snd_rawmidi_write+0x26e/0xc00 sound/core/rawmidi.c:1687
+ vfs_write+0x2a4/0xdf0 fs/read_write.c:582
+ ksys_write+0x1f0/0x250 fs/read_write.c:637
+ do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+ do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:82
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+RIP: 0033:0x7f31add88d69
+Code: 48 83 c4 28 c3 e8 37 17 00 00 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffdd9a49ee8 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 00007ffdd9a49f00 RCX: 00007f31add88d69
+RDX: 00000000fffffd2c RSI: 0000000020000000 RDI: 0000000000000004
+RBP: 00007ffdd9a49f08 R08: 0000000000000000 R09: 0000000000000000
+R10: 00007ffdd9a49f08 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007ffdd9a4a168 R14: 0000000000000001 R15: 0000000000000001
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:vmf_insert_pfn_prot+0x247/0x430 mm/memory.c:2216
+Code: 0f 0b e8 7c e6 bd ff 49 89 ef bf 20 00 00 00 41 83 e7 28 4c 89 fe e8 f8 e1 bd ff 49 83 ff 20 0f 85 aa fe ff ff e8 59 e6 bd ff <0f> 0b 48 bd ff ff ff ff ff ff 0f 00 e8 48 e6 bd ff 4c 89 f6 48 89
+RSP: 0018:ffffc90003bbf758 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffff88802847ec00 RCX: ffffffff81cab618
+RDX: ffff888015bd1dc0 RSI: ffffffff81cab627 RDI: 0000000000000007
+RBP: 000000000c040474 R08: 0000000000000007 R09: 0000000000000020
+R10: 0000000000000020 R11: 0000000000000009 R12: 0000000020ffd000
+R13: 1ffff92000777eec R14: 000000000001e529 R15: 0000000000000020
+FS:  0000555555e2a480(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000020acb000 CR3: 000000002aae7000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+----------------
+Code disassembly (best guess):
+   0:	75 f1                	jne    0xfffffff3
+   2:	c3                   	ret
+   3:	66 66 2e 0f 1f 84 00 	data16 cs nopw 0x0(%rax,%rax,1)
+   a:	00 00 00 00
+   e:	66 90                	xchg   %ax,%ax
+  10:	48 8b 06             	mov    (%rsi),%rax
+  13:	48 89 07             	mov    %rax,(%rdi)
+  16:	48 83 c6 08          	add    $0x8,%rsi
+  1a:	48 83 c7 08          	add    $0x8,%rdi
+  1e:	83 e9 08             	sub    $0x8,%ecx
+  21:	74 df                	je     0x2
+  23:	83 f9 08             	cmp    $0x8,%ecx
+  26:	73 e8                	jae    0x10
+  28:	eb c9                	jmp    0xfffffff3
+* 2a:	f3 a4                	rep movsb %ds:(%rsi),%es:(%rdi) <-- trapping instruction
+  2c:	c3                   	ret
+  2d:	48 89 c8             	mov    %rcx,%rax
+  30:	48 c1 e9 03          	shr    $0x3,%rcx
+  34:	83 e0 07             	and    $0x7,%eax
+  37:	f3 48 a5             	rep movsq %ds:(%rsi),%es:(%rdi)
+  3a:	89 c1                	mov    %eax,%ecx
+  3c:	85 c9                	test   %ecx,%ecx
+  3e:	75 b3                	jne    0xfffffff3
+
+
+---
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
