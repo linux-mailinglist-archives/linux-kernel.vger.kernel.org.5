@@ -2,211 +2,1642 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA4F47E2F69
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 23:05:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EBBE57E2F6E
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 23:07:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233201AbjKFWFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 17:05:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44252 "EHLO
+        id S233220AbjKFWHW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 17:07:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232005AbjKFWFv (ORCPT
+        with ESMTP id S232005AbjKFWHT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 17:05:51 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B1B910A;
-        Mon,  6 Nov 2023 14:05:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699308349; x=1730844349;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=EH9dxnM8vExteJGS8svXYpkbuBOu+VPA6oN9NTkBqvU=;
-  b=McM4JN/cV1zv7xYAD5cRx+fRkMGFk+/5qQUqxIBiuO/DR68+o+AOJg7B
-   emAo7pIF7FqM3vWPb7KxY+Gr2iX0QcZC5TIglY+5RofNpEp8KcNJBlbAr
-   UG33o+Aq4ecRa/uPXXCcpEE9wONYdzceoiRa1ZRJVoxbILhQWspYn7ELm
-   QnRsjkk6bGW6WFDtjSNzRpKoSskczx2NdqHTB1CU+xHRoD9cBcFigJkLp
-   zar9aF7WgOzuMrvSuGTLh2ZqVU84+ICJi/Hwbtcr9dweT7l/45p19//NI
-   75GkLPYSollQA4BOtIJe74twdYt/EJNwzMOPiqIOAcPirtF7SyUHOrADV
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10886"; a="393271548"
-X-IronPort-AV: E=Sophos;i="6.03,282,1694761200"; 
-   d="scan'208";a="393271548"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Nov 2023 14:05:48 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10886"; a="828360667"
-X-IronPort-AV: E=Sophos;i="6.03,282,1694761200"; 
-   d="scan'208";a="828360667"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by fmsmga008.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 06 Nov 2023 14:05:47 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Mon, 6 Nov 2023 14:05:47 -0800
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34 via Frontend Transport; Mon, 6 Nov 2023 14:05:47 -0800
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.169)
- by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.34; Mon, 6 Nov 2023 14:05:47 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hrmTmF1EPAFnhmpigEamv/FCh55o3VUL+LcGVBJIESB83swBu7DgZdh9aXLR0vGIbm8+HJLnQebujD/IR/DjIhzi0T9A0KiRJgHYuW02/tOyjR5YVB4dDfjuaBv6Ct1QCpbZSxniEJZ7dZ9BVt7OIeLZPODViiGW7EYyHq3qKKTypx57sZEEoHN7ddJXlr9O4R6t2G1Yp0/oT4f4z3EdmHJNPcDMK2DT093ZAUajSSbtmyjmqr4Stco3S0ml72WOVEN1aTiIYxyXwAEuB1F5MiAs6VjR74DgGyMnksJDsO2E8AJ4hYjplg2OqgH+KESz6c8FGOv4h++pX57JVrB1zA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=fmCUU4JQILi56vL6ZF+lIU+O1SEyL/Vb93HZLTvgFbc=;
- b=hlnzhJEF3l0XrlfBpHxqtBSLheO8KseFLZpl4y0vi0MQrbB6s3DrvJ1tlWSv2MDWIttY4qJMIwJllcdVILHjvnsdKy8XAEVZQdjwKOqjmFKIqCMxIa0RocHRYvNDptviUUMBiKYhYlr1YrzL/YF7DO1XSBdtNiLA2rY3MpyxtaNYHMDM703kPc7dyWKkSK3mLbotrkbZ8l6gSJV9ECkNKz+EiJy+iU816GV0gS+ODe9Nx0CmeGohb1kjOH2HatApE7moN0Q/Vf2I14y9QElEhdbLbz6/Yo8aFfynM0cS20IAPDXI/MesoQsoJI/+OkdWsKBQRK56pihrCG3YLNYV0w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from SA1PR11MB6733.namprd11.prod.outlook.com (2603:10b6:806:25c::17)
- by CH0PR11MB5250.namprd11.prod.outlook.com (2603:10b6:610:e1::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.28; Mon, 6 Nov
- 2023 22:05:45 +0000
-Received: from SA1PR11MB6733.namprd11.prod.outlook.com
- ([fe80::d3b2:2f2:701e:e8c7]) by SA1PR11MB6733.namprd11.prod.outlook.com
- ([fe80::d3b2:2f2:701e:e8c7%4]) with mapi id 15.20.6954.028; Mon, 6 Nov 2023
- 22:05:44 +0000
-Date:   Mon, 6 Nov 2023 14:05:39 -0800
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Shiju Jose <shiju.jose@huawei.com>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        Ira Weiny <ira.weiny@intel.com>
-CC:     Dan Williams <dan.j.williams@intel.com>,
-        Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>,
-        Yazen Ghannam <yazen.ghannam@amd.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Alison Schofield <alison.schofield@intel.com>,
-        "Vishal Verma" <vishal.l.verma@intel.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        "linux-efi@vger.kernel.org" <linux-efi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-cxl@vger.kernel.org" <linux-cxl@vger.kernel.org>
-Subject: RE: [PATCH RFC v3 1/6] cxl/trace: Remove uuid from event trace known
- events
-Message-ID: <65496333c1dc9_90fed29479@iweiny-mobl.notmuch>
-References: <20230601-cxl-cper-v3-0-0189d61f7956@intel.com>
- <20230601-cxl-cper-v3-1-0189d61f7956@intel.com>
- <20231103142756.00000e20@Huawei.com>
- <547d055eb85d4cee9c636c69e89a82ed@huawei.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <547d055eb85d4cee9c636c69e89a82ed@huawei.com>
-X-ClientProxiedBy: SJ0PR03CA0148.namprd03.prod.outlook.com
- (2603:10b6:a03:33c::33) To SA1PR11MB6733.namprd11.prod.outlook.com
- (2603:10b6:806:25c::17)
+        Mon, 6 Nov 2023 17:07:19 -0500
+Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B06910A;
+        Mon,  6 Nov 2023 14:07:14 -0800 (PST)
+Received: by mail-qt1-x830.google.com with SMTP id d75a77b69052e-41cc75c55f0so49315181cf.1;
+        Mon, 06 Nov 2023 14:07:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699308433; x=1699913233; darn=vger.kernel.org;
+        h=content-transfer-encoding:organization:mime-version:message-id:date
+         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=1rYhI9seOrxKVzUbl9MdPXA0RTuxjY4JrrAVPHPz/1U=;
+        b=e0nMrkrd87DFvSGqU5ySgEhuXLBeyVNoN+/vleYPDuJDXCL93Dsv/V43pd2Yo9dLhw
+         GNx7vsOdExD8soQid+6ZTWVoUu+u3lFSRPqCHMlWTL6Gt50BcM1J8p+KOjUB2r+QYUSy
+         vyv1kN39svrHSnxMQRiNJy8HttGARFlPwxr4fDtzwUASoaZJWs5eLOAT6t5z7NNPz8IH
+         dOyKlSjRZiZrjutjnstUL9iwcW1lhS9DfBIEgT+0OXJTSwsKbtqbRE3Lg66cICOlX0A/
+         5h1VNxc9LrGnQezU75TKs8af/KfSEITPtJri/aYINfH892bjvUH1D8Aboz0uq6l22xIX
+         Cvgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699308433; x=1699913233;
+        h=content-transfer-encoding:organization:mime-version:message-id:date
+         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1rYhI9seOrxKVzUbl9MdPXA0RTuxjY4JrrAVPHPz/1U=;
+        b=l/tUwiqn/KXhFcMX3GfHESDG74IfVYVUO1YNZ9WuQAYd2prHKNn4XBX55QJOXqAMGK
+         NhsImHJQky49Ma0kJntoPBUYnNBLU9Zy+oJ+3YMxd9B3C7pwSd0221u5bvCgSjCvr+YG
+         zMgb3JLsG5yJoYWif886RrRjuiSuGEcT5eOeVwNSz3PWKTwP5CQECKIntRsl8AQkgT8L
+         1u3GPFVu5sk1wmwep/VCNI0/ZkrB1S2KIdBXIidKsz4UrvAAH7gynSBOTDcKPf5iwDbP
+         UupyYbRnIw1G9pBlTLxlmC695jzg3WYF6JLuARKhEOGiDfzVg5LauABUXUrzKmMTQ/jz
+         ibPQ==
+X-Gm-Message-State: AOJu0YxVUHuaF37A1H5perxRpENrdXcQlSiFAPFqfA7gvQ+sMdvN8wTb
+        vnsoUFL6UyCGrQ0S4+ClHd4=
+X-Google-Smtp-Source: AGHT+IHcHN7R8mB0ScMY73/Q0oVr5XQV+U58RIC6/K+BYFrHQlrbfiB/+Kd/mCyvEbdue3csCZEVbw==
+X-Received: by 2002:a05:622a:19a2:b0:41e:322c:aa66 with SMTP id u34-20020a05622a19a200b0041e322caa66mr1227774qtc.7.1699308432870;
+        Mon, 06 Nov 2023 14:07:12 -0800 (PST)
+Received: from build.adi.eng (173-14-114-226-richmond.hfc.comcastbusiness.net. [173.14.114.226])
+        by smtp.googlemail.com with ESMTPSA id l9-20020ac84a89000000b0040399fb5ef3sm3778248qtq.0.2023.11.06.14.07.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 Nov 2023 14:07:12 -0800 (PST)
+From:   Henry Shi <henryshi2018@gmail.com>
+To:     hbshi69@hotmail.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
+        hpa@zytor.com, hdegoede@redhat.com, markgross@kernel.org,
+        jdelvare@suse.com, linux@roeck-us.net,
+        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-hwmon@vger.kernel.org
+Cc:     hb_shi2003@yahoo.com, henrys@silicom-usa.com, wenw@silicom-usa.com
+Subject: [PATCH v11] platform/x86: Add Silicom Platform Driver
+Date:   Mon,  6 Nov 2023 17:07:09 -0500
+Message-Id: <20231106220709.25229-1-henryshi2018@gmail.com>
+X-Mailer: git-send-email 2.21.3
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SA1PR11MB6733:EE_|CH0PR11MB5250:EE_
-X-MS-Office365-Filtering-Correlation-Id: d8514910-d04f-4c73-4c39-08dbdf1485d7
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: tMzZMte1LJjFK/lbqZloSLqdh3QRWTyJKU6klaQfbo6L3BOpyc+J1j8HO29cdQ3vVDWp/9YSGqKyMxUh72fI7mSrxyrVU94AMVgrb7EqxtywHeC10mjEeTVV6ViIMC4hHTnj6SWjF7D7LB9GZHeEt0ojDBnjl5ISCF1x6NDcYG1+59HhBx/PWdUCpi/52lYXBhQH/1K5NDOklik5/dwWVsMW+WLa+5YmxdkHPmGostJIAluRUeqjlDEReEQ9omE7ZWYrs0wlUNfgskdNQP1mNAQl+WqOAmKMkCIEa5h4DvqU6BATG6u02ZOIhWE+bQDrkgixJdO7KI3tVqXkjgC+9XNpPuMMcluf7AfTmGnbzcrHHGnUw29mT1rRTVq4DyVzSln0l4D96JcviMOWw915nXMxboE6Oz6qsQ5sDZKI1IKT9g8gu5R2aSY/C4wJVko/V2JVfxvsc+n/vgpBIRDZ/jeWtUxhWjIqclqo5dSpQHMdiBI1J4L3n31/fVkYpdRbHC4p9hQNRKUtg+797fRKmNDTrfrSEIPgeq2TTxI4xCmivE46IEP2qVgcyHAmqTTu
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR11MB6733.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(366004)(136003)(346002)(376002)(396003)(230922051799003)(186009)(64100799003)(1800799009)(451199024)(83380400001)(316002)(38100700002)(82960400001)(478600001)(6666004)(6506007)(6486002)(110136005)(66556008)(66476007)(54906003)(9686003)(6512007)(66946007)(26005)(5660300002)(2906002)(8676002)(4326008)(86362001)(8936002)(41300700001)(44832011);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?zSoRDJ5ppo5BrQoYWP7kBNJxdgfBgK48EWh3cfLYidzIqoSDYfEYNKjP46hS?=
- =?us-ascii?Q?qcm1MevV44KPPmF3Bqk/pk29KQ3+XLMWHIsGmuOnVrSi9rmQrBRapEg59XGD?=
- =?us-ascii?Q?ntcrgMks7KIDGhkg5BPd+kzndN+QMRo/DFak0AhKBJPwbrU1TWpN3rtiP6yo?=
- =?us-ascii?Q?Rn7G3os6PE5SAlYqdLqRLmWgqoZHqKqxbrrhyFmoSl77LLGFaCeFXYyXgHHH?=
- =?us-ascii?Q?WkyiiRG0KptQXbMpGJFRkunAiVvmkZxj1MXGInYSFME0zEzh4DgHUIU2MLGF?=
- =?us-ascii?Q?ASC+uiBOwbzZjaFlt7DvMNmv63g0ga3bjGTSHjNjfAi+qBrbghthQJ7R0MZZ?=
- =?us-ascii?Q?TZzaj7/Y1FrYl//Gl84ldUfAppvzAoO5Je8DrCtLoz8BbwohCAI4gKQNPKrt?=
- =?us-ascii?Q?keBe3tizPOWO+KUJGp/T8uTjhvwhTAKM6PJk4EMCjke0vh6ol32yNc7JAbRM?=
- =?us-ascii?Q?ZB968DUeHeAJTrz7PWJ6jME1lIC8SdQFSjJLrb7R0Ui7LLnK09eeAVcVvtk8?=
- =?us-ascii?Q?LI7pLRA4aRw0wFuxjDdlt9LRcxlhcEO2w8dtYX2Y2EJPWWexGZ8b+807+e59?=
- =?us-ascii?Q?ERQOoWd5Lfi8+TqivpTU+ZWGzvVj1S+qyvAt2N6szZqMRgqqvoT/tQsLQQZO?=
- =?us-ascii?Q?WfkKwtH96ZmPiuoKnawImQbq1LiWZAUCAbPjktmv8fsBMsVi7WEcGr+bMDZi?=
- =?us-ascii?Q?nifEsCj+z+ni7rZlgrlILg3c16BN+bmtiVRfoGT7NsjDR8iFBuAkah6Vu5JZ?=
- =?us-ascii?Q?t4kwGbmgtwMMjYdZrx7MyeABlkKfkZCyuB1QwGfOGsCjC+b3wO85ZRYvf1bS?=
- =?us-ascii?Q?NCfqGWWDkst/Wvx25UYKht4b774NBT/CS/OwSmPJuxyN/eJHJlPmmN+KEIMU?=
- =?us-ascii?Q?eLd5BU3dgUIFnIXWKLRovflOnZB3sEYu1W+1nwvL7osRUm0N4D6ifZPVgwVM?=
- =?us-ascii?Q?Q5lMzhIuLuHI6tA4Ta4sAtYaIJyMWn2M3gpKZ4gnCV1KULwnrkHXveLAomXp?=
- =?us-ascii?Q?lOew2FPIzoQQ8ivswR2MUmh0gO8lzDmcgnledf9V457Mnc8mAp47Q8RfbZmG?=
- =?us-ascii?Q?S53dNh+NZObr7/Y6dgWTW3xn5LaheTpiKhJNND6M+Qj9lJgy7MvThGz9Tuyt?=
- =?us-ascii?Q?azTtFvqEBVr++oUlGu1q6lTRtjzwm+xjWw1cP5/QVpbhYcyMz3lddSMCpYQ3?=
- =?us-ascii?Q?OIwr6jEDmy8PKqdfsVUhi5NwglOeAVjmFgVy7yHxxah5V0IrG51CsWd2NL2z?=
- =?us-ascii?Q?8xJ6BAkOxfv7jR9MoAgqwrOXGuNBMXz/i340su/YwI4XjuYSjjOjHp3gjIL7?=
- =?us-ascii?Q?2xocncaCXwIrb7fZ0AiOqY03hk3sjxqqAe5T9ydYrsr2GcsCEHj0PMsDDYb3?=
- =?us-ascii?Q?CnCuCXYMVjYrpR5GtoCmbTOJrBLz2tRmZEhVWaGHOSDGwzPBo7qA2wfd4L4Y?=
- =?us-ascii?Q?a1yeJNGPOK/gCqPBI3XAvWMufwlZnv55fkWE5w1zWFNP2MhxZAY6bcFgui45?=
- =?us-ascii?Q?7OpWmMjSx9RejnKhxgo/dfGXHLretPAo/UiAqD80avj9VYDXp4tYU5HW9d8X?=
- =?us-ascii?Q?p6o44lriMej77faPvEj720qpttyFLrncrds/dciu?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: d8514910-d04f-4c73-4c39-08dbdf1485d7
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR11MB6733.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Nov 2023 22:05:44.8059
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: nyrR8RM/m/sAJA/NP0ZrD4if3woxakP1mOyKQ11Ov6IR97clTXBVte0NeqEF7JVYuKanhTIwYm87AiX8/1lLiw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR11MB5250
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Organization: Silicom LTD
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Shiju Jose wrote:
-> 
-> 
-> >-----Original Message-----
-> >From: Jonathan Cameron <jonathan.cameron@huawei.com>
-> >Sent: 03 November 2023 14:28
-> >To: Ira Weiny <ira.weiny@intel.com>
-> >Cc: Dan Williams <dan.j.williams@intel.com>; Smita Koralahalli
-> ><Smita.KoralahalliChannabasappa@amd.com>; Yazen Ghannam
-> ><yazen.ghannam@amd.com>; Davidlohr Bueso <dave@stgolabs.net>; Dave
-> >Jiang <dave.jiang@intel.com>; Alison Schofield <alison.schofield@intel.com>;
-> >Vishal Verma <vishal.l.verma@intel.com>; Ard Biesheuvel <ardb@kernel.org>;
-> >linux-efi@vger.kernel.org; linux-kernel@vger.kernel.org; linux-
-> >cxl@vger.kernel.org; Shiju Jose <shiju.jose@huawei.com>
-> >Subject: Re: [PATCH RFC v3 1/6] cxl/trace: Remove uuid from event trace known
-> >events
-> >
-> >On Wed, 01 Nov 2023 14:11:18 -0700
-> >Ira Weiny <ira.weiny@intel.com> wrote:
-> >
-> >> The uuid printed in the well known events is redundant.  The uuid
-> >> defines what the event was.
-> >>
-> >> Remove the uuid from the known events and only report it in the
-> >> generic event as it remains informative there.
-> >>
-> >> Reviewed-by: Davidlohr Bueso <dave@stgolabs.net>
-> >> Reviewed-by: Dan Williams <dan.j.williams@intel.com>
-> >> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> >
-> >Removing the print is fine, but look like this also removes the actual trace point
-> >field.  That's userspace ABI.  Expanding it is fine, but taking fields away is more
-> >problematic.
-> >
-> >Are we sure we don't break anyone?  Shiju, will rasdaemon be fine with this
-> >change?
-> 
-> The field hdr_uuid is removed from the common CXL_EVT_TP_entry shared by the
-> trace events cxl_generic_event, cxl_general_media, cxl_dram and cxl_memory_module .
-> rasdaemon will break because of this while processing these trace events
-> and also affects the corresponding error records in the SQLite data base. 
-> Rasdaemon needs update to avoid this.
->  
+platform/x86: Add Silicom Platform Driver
 
-Ok we can leave the uuid field in easy enough.
+Add Silicom platform (silicom-platform) Linux driver for Swisscom
+Business Box (Swisscom BB) as well as Cordoba family products.
 
-But does rasdaemon use the value of the field for anything?  In other
-words does CPER record processing need to generate a proper UUID value?
+This platform driver provides support for various functions via
+the Linux LED framework, GPIO framework, Hardware Monitoring (HWMON)
+and device attributes.
 
-Ira
+Signed-off-by: Henry Shi <henryshi2018@gmail.com>
+---
+
+Changes from v1 to v2:
+===========================
+
+Suggested by Hans de Goede <hdegoede@redhat.com>
+.Use git send-email to submit patch.
+.patch contents should be in message body.
+.Kconfig bit for the driver should be in drivers/platform/x86/Kconfig.
+
+changes from patch v2 to v3
+===========================
+
+changes suggested by Guenter Roeck <groeck7@gmail.com>
+.Removed unnecessary include file linux/thermal.h.
+.Removed EXPORT_SYMBOL for mutex lock/unlock function.
+
+Changes suggested by Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+.Remove extra new line in code on multiple position.
+.Use table instead of space in code.
+.Uss Linux defined bit operation MACRO define.
+.Removed local variable in rpm_get().
+.Corrected typo in comments.
+.Corrected incorrect indentation.
+.Removed unnecessary comments in silicom_mc_leds_register().
+.Rewrite efuse_status_show() to used defined variable and removed 
+uncessary local variables.
+.Rewrite uc_version_show() to used defined variable and removed 
+uncessary local variables.
+.Removed unused MACRO define: #define CHANNEL_TO_BIT(chan) ((chan) & 0x07).
+.Rewrite powercycle_uc() to used defined variable and removed uncessary 
+local variables.
+.use GENMASK() and use FIELD_GET() instead of bit shift.
+.Added define for constant 0x28 used in  efuse_status_show().
+.Added define for constant 0x0 used in  uc_version_show().
+.Added define for constant 0x0 used in  powercycle_uc().
+.Rearrange functions to avoid uncessary pre-define.
+.Rewrite rpm_get() to used defined variable and removed uncessary 
+local variables.
+.Rewrite temp_get() to used defined variable and removed uncessary 
+local variables.
+.Use FIELD_GET instead of bit shift in temp_get().
+.Used #define for constant variable 0/1.
+
+Changes suggested by Christophe JAILLET <christophe.jaillet@wanadoo.fr>:
+.use "if (!led->subled_info)" instead of
+"if (IS_ERR_OR_NULL(led->subled_info))
+"in silicom_mc_leds_register
+
+changes from patch v3 to v4
+===========================
+
+changes suggested by Guenter Roeck <groeck7@gmail.com>
+
+Changes suggested by Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>:
+.Rewrite silicom_mec_led/gpip_set/get() functions to use two newly created
+silicom_mec_port_get()/silicom_mec_port_set() which have common code.
+.Remove duplicate code in silicom_mec_port_get()
+.Rewrite uc_version_show() to use Linux bit operation MACRO, and add
+logic to check un-supported register value.
+.Added "#define MEC_EFUSE_LSB_ADDR 0x28" and "#define
+MEC_POWER_CYCLE_ADDR 0x24"
+.Added "#define MEC_VERSION_MAJOR GENMASK(15, 14)" and "#define
+MEC_VERSION_MINOR GENMASK(13, 8)".
+
+Changes suggested by Christophe JAILLET <christophe.jaillet@wanadoo.fr>:
+.Used a local variable to store "sizeof(struct mc_subled)" in function
+silicom_mc_leds_register().
+
+change from patch v4 to v5
+===========================================
+
+changes suggested by Guenter Roeck <groeck7@gmail.com>:
+.Corrected return value in temp_get() to return 1/10000th degree.
+.Removed local variable struct silicom_fan_control_data *ctl in
+silicom_fan_control_read_fan(),
+removed storing rpm value to ctl variable.
+.Removed local variable struct silicom_fan_control_data *ctl in 
+silicom_fan_control_read_temp(),
+.removed storing rpm value to ctl variable.
+.Changed return string in silicom_fan_control_read_labels() to 
+specific string for Silicom platform driver.
+.Removed silicom_fan_control_data structure.
+.Removed static variable mec_io_base and mec_io_len, and added
+"#define MEC_IO_BASE 0x0800 and #define MEC_IO_LEN 0x8".
+.Removed ".write = NULL" in silicom_fan_control_hwmon_ops
+structure defination.
+.Removed unnecessary function silicom_fan_control_write().
+.Removed unnecessary check for silicom_led_info in function
+silicom_platform_probe.
+.Removed unnecessary local variable "silicom_fan_control_data *ctl"
+in silicom_platform_probe().
+.Clean out driver initialization error handling in
+silicom_platform_init();
+.Add patch version and changelog for patch submission.
+
+Changes suggested by Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>:
+.Rename "#define MEC_DATA(offset) to "#define MEC_DATA_OFFSET(offset).
+.Use constant defined in include/linux/units.h instead of a literal.
+.return directly instead of go to err condition when
+platform_device_register_simple() failed.
+.Remove unnecessary check for silicom_led_info and silicom_gpiochip.
+.Use a local variable to how multiple use of array size.
+.Align the arguments to the same column in
+silicom_mec_led_mc_brightness_set.
+.Add patch version and changelog that shows version to version changes
+for patch submission.
+
+Changes suggested by Christophe JAILLET <christophe.jaillet@wanadoo.fr>:
+.Use "sizeof(*led)" instead of "sizeof(struct led_classdev_mc)"
+.Use "if (!led)" instead of "if (IS_ERR_OR_NULL(led))" 
+.Removed unnecessary error message:
+"dev_err(dev, "Failed to alloc led_classdev_mc[%d]:
+%ld\n", i, PTR_ERR(led)).
+
+change from patch vv5 to v6
+===========================================
+
+changes suggested by Guenter Roeck <groeck7@gmail.com>:
+.Removed checkpath warnings. 
+.Resoved dependencies between CONFIG_HWMON and CONFIG_SILICOM_PLATFORM.
+
+change from patch v6 to v7
+===========================================
+
+changes suggested by Hans de Goede <hdegoede@redhat.com>:
+.Usa a proper subsystem prefix for this patch subject:
+Subject: platform/x86: Add Silicom Platform Driver.
+
+change from patch v7 to v8
+===========================================
+
+changes suggested by Hans de Goede <hdegoede@redhat.com>:
+.Chnage commit message of this driver.
+.Adjust location of change log and signed-off-by.
+.Change "config SILICOM_PLATFORM" and help contents location,
+and put it to source "drivers/platform/x86/siemens/Kconfig".
+.Set editor tab to 8 and align the start of extra function
+parameters to directly after (. This should be applied for
+all function.
+.Do not manually create a sysfs dir and register sysfs attribute,
+instead define a platform_driver structure.
+.Move MODULE_DEVICE_TABLE(dmi, silicom_dmi_ids) directly after
+table declaration.
+.Using pr_info() instead of dev_info() in function
+silicom_platform_info_init().
+.Made dmi_check_system() check the first thing to do in
+silicom_platform_init().
+.Instead of separate platform_device creation + driver registration,
+switched to using platform_create_bundle().
+.Removed mutex_destroy(&mec_io_mutex).
+
+
+Changes suggested by Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>:
+.Too many GENMASK() within to code itself, need put them to
+#define. Removed all GENMASK() in c functions.
+
+change from patch v8 to v9
+===========================================
+
+Changes suggested by Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>:
+.Just do the same (like MEC_VERSION_MAJOR) with all places in the where
+you previously had GENMASK() in the code (currently MEC_GET_BITS()
+is there, obviously, but it should go away and be replaced with
+FIELD_GET(GOODPREFIX_GOODNAME, ...))).
+.This is sysfs so it's odd to print pr_err() like that here. If the driver
+does not support those versions at all, the probe should fail. If driver is
+fine but just doesn't know how to interpret such a version, you should
+return -Esomething here. Driver returns -EINVAL here.
+.Replace CENTI with 100
+.Align FIELD_GET()s to the same column for line 661.
+.Change variables efuse_status, mec_uc_version, power_cycle to unsigned
+int from int.
+
+changes suggested by Hans de Goede <hdegoede@redhat.com>:
+.Please add a Documentation/ABI/testing/sysfs-platform-silicom
+file to document driver specific the sysfs attributes of this driver.
+.Like with the Kconfig part, group this together with the other industrial
+PC drivers we have at the end of the Makefile after Siemens
+Simatic Industrial PCs.
+
+change from patch v9 to v10
+===========================================
+
+Changes suggested by Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>:
+.Added missing newline in kernel document file.
+.Changed the order #define to make sure they are in increasing order.
+.Removed printing in init function silicom_platform_info_init();
+.Changed #define name MEC_PREFIX_HIGH_BYTES to MEC_TEMPERATURE.
+.Removed dev_err(dev, "Failed to register[%d]: %d\n", i, err)
+in function silicom_mc_leds_register() before ruturn err.
+.Changed %du to %u in function power_cycle_store(...).
+.Chnaged sprintf() to sysfs_emit().
+.Changed start point for multi-line comments.
+.Added empty line to seperate #define.
+.Remove parenthesis around MEC_IO_BASE.
+.Changed #define EC_ADDR_MSB (MEC_IO_BASE + 0x3), use
+a constant value instead of MEC_DATA_OFFSET_MASK.
+.Changed define name MEC_PREFIX_NAME to MEC_PORT_LOC.
+.Changed define MEC_PREFIX_HIGH_BYTES to MEC_TEMP_LOC.
+.Removed "PREFIX" from define name, changed
+MEC_PREFIX_SEC_BYTE to MEC_VERSION_LOC.
+
+change from patch v10 to v11 (current patch)
+===========================================
+
+Changes suggested by Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>:
+.Don't print anything when userspace gives an invalid value,
+just return -EINVAL in function power_cycle_store().
+.The includes should be in alphabethical order.
+.Just make the calculation once and store into a local variable
+in function silicom_mec_port_set().
+.Use GENMASK for MEC_PORT_OFFSET_MASK, MEC_PORT_CHANNEL_MASK,
+MEC_DATA_OFFSET_MASK.
+.Rename MEC_PORT_LOC to MEC_PORT_DWORD_OFFSET.
+.Add local variable to function silicom_mec_port_set() and
+silicom_mec_port_get() to make the code less heavy to read.
+.Allgned defines start from same column mostly.
+.Kernel test robot WARNING sys/devices/platform/silicom-platform/hwmon/hwmon1/
+is defined 4 times.
+
+ .../ABI/testing/sysfs-platform-silicom        |  262 +++++
+ drivers/platform/x86/Kconfig                  |   14 +
+ drivers/platform/x86/Makefile                 |    3 +
+ drivers/platform/x86/silicom-platform.c       | 1011 +++++++++++++++++
+ 4 files changed, 1290 insertions(+)
+ create mode 100644 Documentation/ABI/testing/sysfs-platform-silicom
+ create mode 100644 drivers/platform/x86/silicom-platform.c
+
+diff --git a/Documentation/ABI/testing/sysfs-platform-silicom b/Documentation/ABI/testing/sysfs-platform-silicom
+new file mode 100644
+index 000000000000..90d69f0f14c1
+--- /dev/null
++++ b/Documentation/ABI/testing/sysfs-platform-silicom
+@@ -0,0 +1,262 @@
++What:		/sys/devices/platform/silicom-platform/uc_version
++Date:		October 2023
++KernelVersion:	6.6
++Contact:	Henry Shi <henrys@silicom-usa.com>
++Description:
++		This file allows to read microcontroller firmware
++		version of current platform.
++
++What:		/sys/devices/platform/silicom-platform/power_cycle
++Date:		October 2023
++KernelVersion:	6.6
++Contact:	Henry Shi <henrys@silicom-usa.com>
++		This file allow user to power cycle the platform.
++		default value is 0; when set to 1, it powers down
++		the platform, wait 5 seconds, then power on the
++		device.
++
++What:		/sys/devices/platform/silicom-platform/efuse_status
++Date:		October 2023
++KernelVersion:	6.6
++Contact:	Henry Shi <henrys@silicom-usa.com>
++Description:
++		This file is read only. It returns the current
++		OTP status:
++
++		0 - not programmed.
++		1 - programmed.
++
++What:		/sys/devices/platform/silicom-platform/hwmon/hwmon1/temp1_input
++Date:		October 2023
++KernelVersion:	6.6
++Contact:	Henry Shi <henrys@silicom-usa.com>
++Description:
++		This file is read only. It returns the temperature
++		of device.
++
++What:		/sys/devices/platform/silicom-platform/hwmon/hwmon1/temp1_label
++Date:		October 2023
++KernelVersion:	6.6
++Contact:	Henry Shi <henrys@silicom-usa.com>
++Description:
++		This file is read only. It returns "Silicom_platform:
++		Thermostat Sensor".
++
++What:		/sys/devices/platform/silicom-platform/hwmon/hwmon1/fan1_input
++Date:		October 2023
++KernelVersion:	6.6
++Contact:	Henry Shi <henrys@silicom-usa.com>
++Description:
++		This file is read only. It returns current fan
++		speed (RPM).
++
++What:		/sys/devices/platform/silicom-platform/hwmon/hwmon1/fan1_label
++Date:		October 2023
++KernelVersion:	6.6
++Contact:	Henry Shi <henrys@silicom-usa.com>
++Description:
++		This file is read only. It returns "Silicom_platform:
++		Fan Speed".
++
++What:		/sys/class/leds/multicolor:sys/brightness
++Date:		October 2023
++KernelVersion:	6.6
++Contact:	Henry Shi <henrys@silicom-usa.com>
++Description:
++		This is a read/write file. It is used to read/set current
++		status of system LED brightness:
++
++		0 - to turn off the LED
++		1 - to turn on the LED
++
++What:		/sys/class/leds/multicolor:sys/multi_index
++Date:		October 2023
++KernelVersion:	6.6
++Contact:	Henry Shi <henrys@silicom-usa.com>
++Description:
++		This is a read only  file. It returns:
++
++		white amber red
++
++What:		/sys/class/leds/multicolor:sys/multi_intensity
++Date:		October 2023
++KernelVersion:	6.6
++Contact:	Henry Shi <henrys@silicom-usa.com>
++Description:
++		This is a read/write file. It is used to read/set current
++		multi-color intensity of system LED: First value for
++		color white; Second value for color amber and third value
++		for color red:
++
++		0 - The color is turned off.
++		1 - the color is turned on.
++
++What:		/sys/class/leds/multicolor:wan/brightness
++Date:		October 2023
++KernelVersion:	6.6
++Contact:	Henry Shi <henrys@silicom-usa.com>
++Description:
++		This is a read/write file. It is used to read/set current
++		status of WAN LED brightness:
++
++		0 - to turn off the LED
++		1 - to turn on the LED
++
++What:		/sys/class/leds/multicolor:wan/multi_index
++Date:		October 2023
++KernelVersion:	6.6
++Contact:	Henry Shi <henrys@silicom-usa.com>
++Description:
++		This is a read only file. It returns:
++
++		white yellow red
++
++What:		/sys/class/leds/multicolor:wan/multi_intensity
++Date:		October 2023
++KernelVersion:	6.6
++Contact:	Henry Shi <henrys@silicom-usa.com>
++Description:
++		This is a read/write file. It is used to read/set current
++		multi-color intensity of WAN LED: First value for
++		color white; Second value for color yellow and third value
++		for color red:
++
++		0 - The color is turned off.
++		1 - the color is turned on.
++
++What:		/sys/class/leds/multicolor:stat%d/brightness
++Date:		October 2023
++KernelVersion:	6.6
++Contact:	Henry Shi <henrys@silicom-usa.com>
++Description:
++		This is a read/write file. It is used to read/set current
++		status of device status LED (number %d) brightness:
++
++		0 - to turn off the LED
++		1 - to turn on the LED
++
++What:		/sys/class/leds/multicolor:stat%d/multi_index
++Date:		October 2023
++KernelVersion:	6.6
++Contact:	Henry Shi <henrys@silicom-usa.com>
++Description:
++		This is a read only file. It returns:
++
++		red green blue yellow
++
++What:		/sys/class/leds/multicolor:stat%d/multi_intensity
++Date:		October 2023
++KernelVersion:	6.6
++Contact:	Henry Shi <henrys@silicom-usa.com>
++Description:
++		This is a read/write file. It is used to read/set current
++		multi-color intensity of device status LED (number %d):
++		First value for color red; Second value for color green;
++		Third value for color blue and fourth value for color
++		yellow.
++
++		0 - The color is turned off.
++		1 - the color is turned on.
++
++What:		/sys/class/leds/multicolor:fp_left/brightness
++Date:		October 2023
++KernelVersion:	6.6
++Contact:	Henry Shi <henrys@silicom-usa.com>
++Description:
++		This is a read/write file. It is used to read/set current
++		status of left LED brightness:
++
++		0 - to turn off the LED
++		1 - to turn on the LED
++
++What:		/sys/class/leds/multicolor:fp_left/multi_index
++Date:		October 2023
++KernelVersion:	6.6
++Contact:	Henry Shi <henrys@silicom-usa.com>
++Description:
++		This is a read only  file. It returns:
++
++		red green blue amber
++
++What:		/sys/class/leds/multicolor:fp_left/multi_intensity
++Date:		October 2023
++KernelVersion:	6.6
++Contact:	Henry Shi <henrys@silicom-usa.com>
++Description:
++		This is a read/write file. It is used to read/set current
++		multi-color intensity of left LED: First value for
++		color red; Second value for color green; Third value for
++		color blue and fourth value for color amber.
++		for color red:
++
++		0 - The color is turned off.
++		1 - the color is turned on.
++
++What:		/sys/class/leds/multicolor:fp_center/brightness
++Date:		October 2023
++KernelVersion:	6.6
++Contact:	Henry Shi <henrys@silicom-usa.com>
++Description:
++		This is a read/write file. It is used to read/set current
++		status of left LED brightness:
++
++		0 - to turn off the LED
++		1 - to turn on the LED
++
++What:		/sys/class/leds/multicolor:fp_center/multi_index
++Date:		October 2023
++KernelVersion:	6.6
++Contact:	Henry Shi <henrys@silicom-usa.com>
++Description:
++		This is a read only  file. It returns:
++
++		red green blue amber
++
++What:		/sys/class/leds/multicolor:fp_center/multi_intensity
++Date:		October 2023
++KernelVersion:	6.6
++Contact:	Henry Shi <henrys@silicom-usa.com>
++Description:
++		This is a read/write file. It is used to read/set current
++		multi-color intensity of left LED: First value for
++		color red; Second value for color green; Third value for
++		color blue and fourth value for color amber.
++		for color red:
++
++		0 - The color is turned off.
++		1 - the color is turned on.
++
++What:		/sys/class/leds/multicolor:fp_right/brightness
++Date:		October 2023
++KernelVersion:	6.6
++Contact:	Henry Shi <henrys@silicom-usa.com>
++Description:
++		This is a read/write file. It is used to read/set current
++		status of left LED brightness:
++
++		0 - to turn off the LED
++		1 - to turn on the LED
++
++What:		/sys/class/leds/multicolor:fp_right/multi_index
++Date:		October 2023
++KernelVersion:	6.6
++Contact:	Henry Shi <henrys@silicom-usa.com>
++Description:
++		This is a read only  file. It returns:
++
++		red green blue amber
++
++What:		/sys/class/leds/multicolor:fp_right/multi_intensity
++Date:		October 2023
++KernelVersion:	6.6
++Contact:	Henry Shi <henrys@silicom-usa.com>
++Description:
++		This is a read/write file. It is used to read/set current
++		multi-color intensity of left LED: First value for
++		color red; Second value for color green; Third value for
++		color blue and fourth value for color amber.
++		for color red:
++
++		0 - The color is turned off.
++		1 - the color is turned on.
++
+diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
+index 2a1070543391..f38fbd97f33d 100644
+--- a/drivers/platform/x86/Kconfig
++++ b/drivers/platform/x86/Kconfig
+@@ -1076,6 +1076,20 @@ config INTEL_SCU_IPC_UTIL
+ 
+ source "drivers/platform/x86/siemens/Kconfig"
+ 
++config SILICOM_PLATFORM
++	tristate "Silicom Edge Networking device support"
++	depends on HWMON
++	select LEDS_CLASS_MULTICOLOR
++	help
++	  This option enables support for the LEDs/GPIO/etc downstream of the
++	  embedded controller on Silicom "Cordoba" hardware and derivatives.
++
++	  This platform driver provides support for various functions via
++	  the Linux LED framework, GPIO framework, Hardware Monitoring (HWMON)
++	  and device attributes.
++
++	  If you have a Silicom network appliance, say Y or M here.
++
+ config WINMATE_FM07_KEYS
+ 	tristate "Winmate FM07/FM07P front-panel keys driver"
+ 	depends on INPUT
+diff --git a/drivers/platform/x86/Makefile b/drivers/platform/x86/Makefile
+index b457de5abf7d..8fdb0c7d8ca1 100644
+--- a/drivers/platform/x86/Makefile
++++ b/drivers/platform/x86/Makefile
+@@ -133,6 +133,9 @@ obj-$(CONFIG_X86_INTEL_LPSS)		+= pmc_atom.o
+ # Siemens Simatic Industrial PCs
+ obj-$(CONFIG_SIEMENS_SIMATIC_IPC)	+= siemens/
+ 
++# Silicom
++obj-$(CONFIG_SILICOM_PLATFORM)		+= silicom-platform.o
++
+ # Winmate
+ obj-$(CONFIG_WINMATE_FM07_KEYS)		+= winmate-fm07-keys.o
+ 
+diff --git a/drivers/platform/x86/silicom-platform.c b/drivers/platform/x86/silicom-platform.c
+new file mode 100644
+index 000000000000..549b84c7a872
+--- /dev/null
++++ b/drivers/platform/x86/silicom-platform.c
+@@ -0,0 +1,1011 @@
++// SPDX-License-Identifier: GPL-2.0+
++//
++// silicom-platform.c - Silicom MEC170x platform driver
++//
++// Copyright (C) 2023 Henry Shi <henrys@silicom-usa.com>
++#include <linux/bitfield.h>
++#include <linux/bits.h>
++#include <linux/dmi.h>
++#include <linux/gpio/driver.h>
++#include <linux/hwmon.h>
++#include <linux/init.h>
++#include <linux/ioport.h>
++#include <linux/io.h>
++#include <linux/kernel.h>
++#include <linux/kobject.h>
++#include <linux/led-class-multicolor.h>
++#include <linux/module.h>
++#include <linux/mutex.h>
++#include <linux/platform_device.h>
++#include <linux/string.h>
++#include <linux/sysfs.h>
++#include <linux/units.h>
++
++#define MEC_POWER_CYCLE_ADDR 0x24
++#define MEC_EFUSE_LSB_ADDR   0x28
++#define MEC_GPIO_IN_POS      0x08
++#define MEC_IO_BASE          0x0800
++#define MEC_IO_LEN           0x8
++#define IO_REG_BANK          0x0
++#define DEFAULT_CHAN_LO      0
++#define DEFAULT_CHAN_HI      0
++#define DEFAULT_CHAN_LO_T    0xc
++#define MEC_ADDR             (MEC_IO_BASE + 0x02)
++#define EC_ADDR_LSB          MEC_ADDR
++#define SILICOM_MEC_MAGIC    0x5a
++
++#define MEC_PORT_CHANNEL_MASK GENMASK(2, 0)
++#define MEC_PORT_DWORD_OFFSET GENMASK(31, 3)
++#define MEC_DATA_OFFSET_MASK  GENMASK(1, 0)
++#define MEC_PORT_OFFSET_MASK  GENMASK(7, 2)
++#define MEC_TEMP_LOC          GENMASK(31, 16)
++#define MEC_VERSION_LOC       GENMASK(15, 8)
++#define MEC_VERSION_MAJOR     GENMASK(15, 14)
++#define MEC_VERSION_MINOR     GENMASK(13, 8)
++#define EC_ADDR_MSB           (MEC_IO_BASE + 0x3)
++#define MEC_DATA_OFFSET(offset) (MEC_IO_BASE + 0x04 + offset)
++#define OFFSET_BIT_TO_CHANNEL(off, bit) (((off + 0x014) << 3) | bit)
++#define CHANNEL_TO_OFFSET(chan) ((chan >> 3) - 0x14)
++
++static DEFINE_MUTEX(mec_io_mutex);
++static unsigned int efuse_status;
++static unsigned int mec_uc_version;
++static unsigned int power_cycle;
++
++static const struct hwmon_channel_info *silicom_fan_control_info[] = {
++	HWMON_CHANNEL_INFO(fan, HWMON_F_INPUT | HWMON_F_LABEL),
++	HWMON_CHANNEL_INFO(temp, HWMON_T_INPUT | HWMON_T_LABEL),
++	NULL
++};
++
++struct silicom_platform_info {
++	int io_base;
++	int io_len;
++	struct led_classdev_mc *led_info;
++	struct gpio_chip *gpiochip;
++	u8 *gpio_channels;
++	u16 ngpio;
++};
++
++static const char * const plat_0222_gpio_names[] = {
++	"AUTOM0_SFP_TX_FAULT",
++	"SLOT2_LED_OUT",
++	"SIM_M2_SLOT2_B_DET",
++	"SIM_M2_SLOT2_A_DET",
++	"SLOT1_LED_OUT",
++	"SIM_M2_SLOT1_B_DET",
++	"SIM_M2_SLOT1_A_DET",
++	"SLOT0_LED_OUT",
++	"WAN_SFP0_RX_LOS",
++	"WAN_SFP0_PRSNT_N",
++	"WAN_SFP0_TX_FAULT",
++	"AUTOM1_SFP_RX_LOS",
++	"AUTOM1_SFP_PRSNT_N",
++	"AUTOM1_SFP_TX_FAULT",
++	"AUTOM0_SFP_RX_LOS",
++	"AUTOM0_SFP_PRSNT_N",
++	"WAN_SFP1_RX_LOS",
++	"WAN_SFP1_PRSNT_N",
++	"WAN_SFP1_TX_FAULT",
++	"SIM_M2_SLOT1_MUX_SEL",
++	"W_DISABLE_M2_SLOT1_N",
++	"W_DISABLE_MPCIE_SLOT0_N",
++	"W_DISABLE_M2_SLOT0_N",
++	"BT_COMMAND_MODE",
++	"WAN_SFP1_TX_DISABLE",
++	"WAN_SFP0_TX_DISABLE",
++	"AUTOM1_SFP_TX_DISABLE",
++	"AUTOM0_SFP_TX_DISABLE",
++	"SIM_M2_SLOT2_MUX_SEL",
++	"W_DISABLE_M2_SLOT2_N",
++	"RST_CTL_M2_SLOT_1_N",
++	"RST_CTL_M2_SLOT_2_N",
++	"PM_USB_PWR_EN_BOT",
++	"PM_USB_PWR_EN_TOP",
++};
++
++static u8 plat_0222_gpio_channels[] = {
++	OFFSET_BIT_TO_CHANNEL(0x00, 0),
++	OFFSET_BIT_TO_CHANNEL(0x00, 1),
++	OFFSET_BIT_TO_CHANNEL(0x00, 2),
++	OFFSET_BIT_TO_CHANNEL(0x00, 3),
++	OFFSET_BIT_TO_CHANNEL(0x00, 4),
++	OFFSET_BIT_TO_CHANNEL(0x00, 5),
++	OFFSET_BIT_TO_CHANNEL(0x00, 6),
++	OFFSET_BIT_TO_CHANNEL(0x00, 7),
++	OFFSET_BIT_TO_CHANNEL(0x01, 0),
++	OFFSET_BIT_TO_CHANNEL(0x01, 1),
++	OFFSET_BIT_TO_CHANNEL(0x01, 2),
++	OFFSET_BIT_TO_CHANNEL(0x01, 3),
++	OFFSET_BIT_TO_CHANNEL(0x01, 4),
++	OFFSET_BIT_TO_CHANNEL(0x01, 5),
++	OFFSET_BIT_TO_CHANNEL(0x01, 6),
++	OFFSET_BIT_TO_CHANNEL(0x01, 7),
++	OFFSET_BIT_TO_CHANNEL(0x02, 0),
++	OFFSET_BIT_TO_CHANNEL(0x02, 1),
++	OFFSET_BIT_TO_CHANNEL(0x02, 2),
++	OFFSET_BIT_TO_CHANNEL(0x09, 0),
++	OFFSET_BIT_TO_CHANNEL(0x09, 1),
++	OFFSET_BIT_TO_CHANNEL(0x09, 2),
++	OFFSET_BIT_TO_CHANNEL(0x09, 3),
++	OFFSET_BIT_TO_CHANNEL(0x0a, 0),
++	OFFSET_BIT_TO_CHANNEL(0x0a, 1),
++	OFFSET_BIT_TO_CHANNEL(0x0a, 2),
++	OFFSET_BIT_TO_CHANNEL(0x0a, 3),
++	OFFSET_BIT_TO_CHANNEL(0x0a, 4),
++	OFFSET_BIT_TO_CHANNEL(0x0a, 5),
++	OFFSET_BIT_TO_CHANNEL(0x0a, 6),
++	OFFSET_BIT_TO_CHANNEL(0x0b, 0),
++	OFFSET_BIT_TO_CHANNEL(0x0b, 1),
++	OFFSET_BIT_TO_CHANNEL(0x0b, 2),
++	OFFSET_BIT_TO_CHANNEL(0x0b, 3),
++};
++
++static struct platform_device *silicom_platform_dev;
++static struct led_classdev_mc *silicom_led_info __initdata;
++static struct gpio_chip *silicom_gpiochip __initdata;
++static u8 *silicom_gpio_channels __initdata;
++
++static int silicom_mec_port_get(unsigned int offset)
++{
++	u8 reg;
++	unsigned short mec_data_addr;
++	unsigned short mec_port_addr;
++
++	mec_data_addr = FIELD_GET(MEC_PORT_DWORD_OFFSET, offset) & MEC_DATA_OFFSET_MASK;
++	mec_port_addr = FIELD_GET(MEC_PORT_DWORD_OFFSET, offset) & MEC_PORT_OFFSET_MASK;
++	mutex_lock(&mec_io_mutex);
++	/* Get the dword offset from the channel */
++	outb(mec_port_addr, MEC_ADDR);
++	/* Get the current register */
++	reg = inb(MEC_DATA_OFFSET(mec_data_addr));
++	mutex_unlock(&mec_io_mutex);
++
++	return (reg >> (offset & MEC_PORT_CHANNEL_MASK)) & 0x01;
++}
++
++static enum led_brightness silicom_mec_led_get(int channel)
++{
++	/* Outputs are active low */
++	return silicom_mec_port_get(channel) ? LED_OFF : LED_ON;
++}
++
++static void silicom_mec_port_set(int channel, int on)
++{
++	u8 reg;
++	unsigned short mec_data_addr;
++	unsigned short mec_port_addr;
++
++	mec_data_addr = FIELD_GET(MEC_PORT_DWORD_OFFSET, channel) & MEC_DATA_OFFSET_MASK;
++	mec_port_addr = FIELD_GET(MEC_PORT_DWORD_OFFSET, channel) & MEC_PORT_OFFSET_MASK;
++	mutex_lock(&mec_io_mutex);
++	/* Get the dword offset from the channel */
++	outb(mec_port_addr, MEC_ADDR);
++	/* Get the current port settings */
++	reg = inb(MEC_DATA_OFFSET(mec_data_addr));
++	/* Outputs are active low, so clear the bit for on, or set it for off */
++	if (on)
++		reg &= ~(1 << (channel & MEC_PORT_CHANNEL_MASK));
++	else
++		reg |= 1 << (channel & MEC_PORT_CHANNEL_MASK);
++	/* Write back the updated register */
++	outb(reg, MEC_DATA_OFFSET(mec_data_addr));
++	mutex_unlock(&mec_io_mutex);
++}
++
++static enum led_brightness silicom_mec_led_mc_brightness_get(struct led_classdev *led_cdev)
++{
++	struct led_classdev_mc *mc_cdev = lcdev_to_mccdev(led_cdev);
++	enum led_brightness brightness = LED_OFF;
++	int i;
++
++	for (i = 0; i < mc_cdev->num_colors; i++) {
++		mc_cdev->subled_info[i].brightness =
++			silicom_mec_led_get(mc_cdev->subled_info[i].channel);
++		/* Mark the overall brightness as LED_ON if any of the subleds are on */
++		if (mc_cdev->subled_info[i].brightness != LED_OFF)
++			brightness = LED_ON;
++	}
++
++	return brightness;
++}
++
++static void silicom_mec_led_mc_brightness_set(struct led_classdev *led_cdev,
++					      enum led_brightness brightness)
++{
++	struct led_classdev_mc *mc_cdev = lcdev_to_mccdev(led_cdev);
++	int i;
++
++	led_mc_calc_color_components(mc_cdev, brightness);
++	for (i = 0; i < mc_cdev->num_colors; i++) {
++		silicom_mec_port_set(mc_cdev->subled_info[i].channel,
++		mc_cdev->subled_info[i].brightness);
++	}
++}
++
++static int silicom_gpio_get_direction(struct gpio_chip *gc,
++				      unsigned int offset)
++{
++	u8 *channels = gpiochip_get_data(gc);
++
++	/* Input registers have offsets between [0x00, 0x07] */
++	if (CHANNEL_TO_OFFSET(channels[offset]) < MEC_GPIO_IN_POS)
++		return GPIO_LINE_DIRECTION_IN;
++
++	return GPIO_LINE_DIRECTION_OUT;
++}
++
++static int silicom_gpio_direction_input(struct gpio_chip *gc,
++					unsigned int offset)
++{
++	int direction = silicom_gpio_get_direction(gc, offset);
++
++	return direction == GPIO_LINE_DIRECTION_IN ? 0 : -EINVAL;
++}
++
++static void silicom_gpio_set(struct gpio_chip *gc,
++			     unsigned int offset,
++			     int value)
++{
++	u8 *channels = gpiochip_get_data(gc);
++	int direction = silicom_gpio_get_direction(gc, offset);
++	int channel = channels[offset];
++
++	if (direction == GPIO_LINE_DIRECTION_IN)
++		return;
++
++	if (value)
++		silicom_mec_port_set(channel, 0);
++	else if (value == 0)
++		silicom_mec_port_set(channel, 1);
++	else
++		pr_err("Wrong argument value: %d\n", value);
++}
++
++static int silicom_gpio_direction_output(struct gpio_chip *gc,
++					 unsigned int offset,
++					 int value)
++{
++	int direction = silicom_gpio_get_direction(gc, offset);
++
++	if (direction == GPIO_LINE_DIRECTION_IN)
++		return -EINVAL;
++
++	silicom_gpio_set(gc, offset, value);
++
++	return 0;
++}
++
++static int silicom_gpio_get(struct gpio_chip *gc, unsigned int offset)
++{
++	u8 *channels = gpiochip_get_data(gc);
++	int channel = channels[offset];
++
++	return silicom_mec_port_get(channel);
++}
++
++static struct mc_subled plat_0222_wan_mc_subled_info[] __initdata = {
++	{
++		.color_index = LED_COLOR_ID_WHITE,
++		.brightness = 1,
++		.intensity = 0,
++		.channel = OFFSET_BIT_TO_CHANNEL(0x0c, 7),
++	},
++	{
++		.color_index = LED_COLOR_ID_YELLOW,
++		.brightness = 1,
++		.intensity = 0,
++		.channel = OFFSET_BIT_TO_CHANNEL(0x0c, 6),
++	},
++	{
++		.color_index = LED_COLOR_ID_RED,
++		.brightness = 1,
++		.intensity = 0,
++		.channel = OFFSET_BIT_TO_CHANNEL(0x0c, 5),
++	},
++};
++
++static struct mc_subled plat_0222_sys_mc_subled_info[] __initdata = {
++	{
++		.color_index = LED_COLOR_ID_WHITE,
++		.brightness = 1,
++		.intensity = 0,
++		.channel = OFFSET_BIT_TO_CHANNEL(0x0c, 4),
++	},
++	{
++		.color_index = LED_COLOR_ID_AMBER,
++		.brightness = 1,
++		.intensity = 0,
++		.channel = OFFSET_BIT_TO_CHANNEL(0x0c, 3),
++	},
++	{
++		.color_index = LED_COLOR_ID_RED,
++		.brightness = 1,
++		.intensity = 0,
++		.channel = OFFSET_BIT_TO_CHANNEL(0x0c, 2),
++	},
++};
++
++static struct mc_subled plat_0222_stat1_mc_subled_info[] __initdata = {
++	{
++		.color_index = LED_COLOR_ID_RED,
++		.brightness = 1,
++		.intensity = 0,
++		.channel = OFFSET_BIT_TO_CHANNEL(0x0c, 1),
++	},
++	{
++		.color_index = LED_COLOR_ID_GREEN,
++		.brightness = 1,
++		.intensity = 0,
++		.channel = OFFSET_BIT_TO_CHANNEL(0x0c, 0),
++	},
++	{
++		.color_index = LED_COLOR_ID_BLUE,
++		.brightness = 1,
++		.intensity = 0,
++		.channel = OFFSET_BIT_TO_CHANNEL(0x0d, 7),
++	},
++	{
++		.color_index = LED_COLOR_ID_YELLOW,
++		.brightness = 1,
++		.intensity = 0,
++		.channel = OFFSET_BIT_TO_CHANNEL(0x0d, 6),
++	},
++};
++
++static struct mc_subled plat_0222_stat2_mc_subled_info[] __initdata = {
++	{
++		.color_index = LED_COLOR_ID_RED,
++		.brightness = 1,
++		.intensity = 0,
++		.channel = OFFSET_BIT_TO_CHANNEL(0x0d, 5),
++	},
++	{
++		.color_index = LED_COLOR_ID_GREEN,
++		.brightness = 1,
++		.intensity = 0,
++		.channel = OFFSET_BIT_TO_CHANNEL(0x0d, 4),
++	},
++	{
++		.color_index = LED_COLOR_ID_BLUE,
++		.brightness = 1,
++		.intensity = 0,
++		.channel = OFFSET_BIT_TO_CHANNEL(0x0d, 3),
++	},
++	{
++		.color_index = LED_COLOR_ID_YELLOW,
++		.brightness = 1,
++		.intensity = 0,
++		.channel = OFFSET_BIT_TO_CHANNEL(0x0d, 2),
++	},
++};
++
++static struct mc_subled plat_0222_stat3_mc_subled_info[] __initdata = {
++	{
++		.color_index = LED_COLOR_ID_RED,
++		.brightness = 1,
++		.intensity = 0,
++		.channel = OFFSET_BIT_TO_CHANNEL(0x0d, 1),
++	},
++	{
++		.color_index = LED_COLOR_ID_GREEN,
++		.brightness = 1,
++		.intensity = 0,
++		.channel = OFFSET_BIT_TO_CHANNEL(0x0d, 0),
++	},
++	{
++		.color_index = LED_COLOR_ID_BLUE,
++		.brightness = 1,
++		.intensity = 0,
++		.channel = OFFSET_BIT_TO_CHANNEL(0x0e, 1),
++	},
++	{
++		.color_index = LED_COLOR_ID_YELLOW,
++		.brightness = 1,
++		.intensity = 0,
++		.channel = OFFSET_BIT_TO_CHANNEL(0x0e, 0),
++	},
++};
++
++static struct led_classdev_mc plat_0222_mc_led_info[] __initdata = {
++	{
++		.led_cdev = {
++			.name = "multicolor:wan",
++			.brightness = 0,
++			.max_brightness = 1,
++			.brightness_set = silicom_mec_led_mc_brightness_set,
++			.brightness_get = silicom_mec_led_mc_brightness_get,
++		},
++		.num_colors = ARRAY_SIZE(plat_0222_wan_mc_subled_info),
++		.subled_info = plat_0222_wan_mc_subled_info,
++	},
++	{
++		.led_cdev = {
++			.name = "multicolor:sys",
++			.brightness = 0,
++			.max_brightness = 1,
++			.brightness_set = silicom_mec_led_mc_brightness_set,
++			.brightness_get = silicom_mec_led_mc_brightness_get,
++		},
++		.num_colors = ARRAY_SIZE(plat_0222_sys_mc_subled_info),
++		.subled_info = plat_0222_sys_mc_subled_info,
++	},
++	{
++		.led_cdev = {
++			.name = "multicolor:stat1",
++			.brightness = 0,
++			.max_brightness = 1,
++			.brightness_set = silicom_mec_led_mc_brightness_set,
++			.brightness_get = silicom_mec_led_mc_brightness_get,
++		},
++		.num_colors = ARRAY_SIZE(plat_0222_stat1_mc_subled_info),
++		.subled_info = plat_0222_stat1_mc_subled_info,
++	},
++	{
++		.led_cdev = {
++			.name = "multicolor:stat2",
++			.brightness = 0,
++			.max_brightness = 1,
++			.brightness_set = silicom_mec_led_mc_brightness_set,
++			.brightness_get = silicom_mec_led_mc_brightness_get,
++		},
++		.num_colors = ARRAY_SIZE(plat_0222_stat2_mc_subled_info),
++		.subled_info = plat_0222_stat2_mc_subled_info,
++	},
++	{
++		.led_cdev = {
++			.name = "multicolor:stat3",
++			.brightness = 0,
++			.max_brightness = 1,
++			.brightness_set = silicom_mec_led_mc_brightness_set,
++			.brightness_get = silicom_mec_led_mc_brightness_get,
++		},
++		.num_colors = ARRAY_SIZE(plat_0222_stat3_mc_subled_info),
++		.subled_info = plat_0222_stat3_mc_subled_info,
++	},
++	{ },
++};
++
++static struct gpio_chip silicom_gpio_chip = {
++	.label = "silicom-gpio",
++	.get_direction = silicom_gpio_get_direction,
++	.direction_input = silicom_gpio_direction_input,
++	.direction_output = silicom_gpio_direction_output,
++	.get = silicom_gpio_get,
++	.set = silicom_gpio_set,
++	.base = -1,
++	.ngpio = ARRAY_SIZE(plat_0222_gpio_channels),
++	.names = plat_0222_gpio_names,
++	/*
++	 * We're using a mutex to protect the indirect access, so we can sleep
++	 * if the lock blocks
++	 */
++	.can_sleep = true,
++};
++
++static struct silicom_platform_info silicom_plat_0222_cordoba_info __initdata = {
++	.io_base = MEC_IO_BASE,
++	.io_len = MEC_IO_LEN,
++	.led_info = plat_0222_mc_led_info,
++	.gpiochip = &silicom_gpio_chip,
++	.gpio_channels = plat_0222_gpio_channels,
++	/*
++	 * The original generic cordoba does not have the last 4 outputs of the
++	 * plat_0222 variant, the rest are the same, so use the same longer list,
++	 * but ignore the last entries here
++	 */
++	.ngpio = ARRAY_SIZE(plat_0222_gpio_channels),
++
++};
++
++static struct mc_subled cordoba_fp_left_mc_subled_info[] __initdata = {
++	{
++		.color_index = LED_COLOR_ID_RED,
++		.brightness = 1,
++		.intensity = 0,
++		.channel = OFFSET_BIT_TO_CHANNEL(0x08, 6),
++	},
++	{
++		.color_index = LED_COLOR_ID_GREEN,
++		.brightness = 1,
++		.intensity = 0,
++		.channel = OFFSET_BIT_TO_CHANNEL(0x08, 5),
++	},
++	{
++		.color_index = LED_COLOR_ID_BLUE,
++		.brightness = 1,
++		.intensity = 0,
++		.channel = OFFSET_BIT_TO_CHANNEL(0x09, 7),
++	},
++	{
++		.color_index = LED_COLOR_ID_AMBER,
++		.brightness = 1,
++		.intensity = 0,
++		.channel = OFFSET_BIT_TO_CHANNEL(0x09, 4),
++	},
++};
++
++static struct mc_subled cordoba_fp_center_mc_subled_info[] __initdata = {
++	{
++		.color_index = LED_COLOR_ID_RED,
++		.brightness = 1,
++		.intensity = 0,
++		.channel = OFFSET_BIT_TO_CHANNEL(0x08, 7),
++	},
++	{
++		.color_index = LED_COLOR_ID_GREEN,
++		.brightness = 1,
++		.intensity = 0,
++		.channel = OFFSET_BIT_TO_CHANNEL(0x08, 4),
++	},
++	{
++		.color_index = LED_COLOR_ID_BLUE,
++		.brightness = 1,
++		.intensity = 0,
++		.channel = OFFSET_BIT_TO_CHANNEL(0x08, 3),
++	},
++	{
++		.color_index = LED_COLOR_ID_AMBER,
++		.brightness = 1,
++		.intensity = 0,
++		.channel = OFFSET_BIT_TO_CHANNEL(0x09, 6),
++	},
++};
++
++static struct mc_subled cordoba_fp_right_mc_subled_info[] __initdata = {
++	{
++		.color_index = LED_COLOR_ID_RED,
++		.brightness = 1,
++		.intensity = 0,
++		.channel = OFFSET_BIT_TO_CHANNEL(0x08, 2),
++	},
++	{
++		.color_index = LED_COLOR_ID_GREEN,
++		.brightness = 1,
++		.intensity = 0,
++		.channel = OFFSET_BIT_TO_CHANNEL(0x08, 1),
++	},
++	{
++		.color_index = LED_COLOR_ID_BLUE,
++		.brightness = 1,
++		.intensity = 0,
++		.channel = OFFSET_BIT_TO_CHANNEL(0x08, 0),
++	},
++	{
++		.color_index = LED_COLOR_ID_AMBER,
++		.brightness = 1,
++		.intensity = 0,
++		.channel = OFFSET_BIT_TO_CHANNEL(0x09, 5),
++	},
++};
++
++static struct led_classdev_mc cordoba_mc_led_info[] __initdata = {
++	{
++		.led_cdev = {
++			.name = "multicolor:fp_left",
++			.brightness = 0,
++			.max_brightness = 1,
++			.brightness_set = silicom_mec_led_mc_brightness_set,
++			.brightness_get = silicom_mec_led_mc_brightness_get,
++		},
++		.num_colors = ARRAY_SIZE(cordoba_fp_left_mc_subled_info),
++		.subled_info = cordoba_fp_left_mc_subled_info,
++	},
++	{
++		.led_cdev = {
++			.name = "multicolor:fp_center",
++			.brightness = 0,
++			.max_brightness = 1,
++			.brightness_set = silicom_mec_led_mc_brightness_set,
++			.brightness_get = silicom_mec_led_mc_brightness_get,
++		},
++		.num_colors = ARRAY_SIZE(cordoba_fp_center_mc_subled_info),
++		.subled_info = cordoba_fp_center_mc_subled_info,
++	},
++	{
++		.led_cdev = {
++			.name = "multicolor:fp_right",
++			.brightness = 0,
++			.max_brightness = 1,
++			.brightness_set = silicom_mec_led_mc_brightness_set,
++			.brightness_get = silicom_mec_led_mc_brightness_get,
++		},
++		.num_colors = ARRAY_SIZE(cordoba_fp_right_mc_subled_info),
++		.subled_info = cordoba_fp_right_mc_subled_info,
++	},
++	{ },
++};
++
++static struct silicom_platform_info silicom_generic_cordoba_info __initdata = {
++	.io_base = MEC_IO_BASE,
++	.io_len = MEC_IO_LEN,
++	.led_info = cordoba_mc_led_info,
++	.gpiochip = &silicom_gpio_chip,
++	.gpio_channels = plat_0222_gpio_channels,
++	.ngpio = ARRAY_SIZE(plat_0222_gpio_channels),
++};
++
++/*
++ * sysfs interface
++ */
++static ssize_t efuse_status_show(struct device *dev,
++				 struct device_attribute *attr,
++				 char *buf)
++{
++	u32 reg;
++
++	mutex_lock(&mec_io_mutex);
++	/* Select memory region */
++	outb(IO_REG_BANK, EC_ADDR_MSB);
++	outb(MEC_EFUSE_LSB_ADDR, EC_ADDR_LSB);
++
++	/* Get current data from the address */
++	reg = inl(MEC_DATA_OFFSET(DEFAULT_CHAN_LO));
++	mutex_unlock(&mec_io_mutex);
++
++	efuse_status = reg & 0x1;
++
++	return sysfs_emit(buf, "%u\n", efuse_status);
++}
++static DEVICE_ATTR_RO(efuse_status);
++
++static ssize_t uc_version_show(struct device *dev,
++			       struct device_attribute *attr,
++			       char *buf)
++{
++	u32 reg;
++	int uc_version;
++
++	mutex_lock(&mec_io_mutex);
++	outb(IO_REG_BANK, EC_ADDR_MSB);
++	outb(DEFAULT_CHAN_LO, EC_ADDR_LSB);
++
++	reg = inl(MEC_DATA_OFFSET(DEFAULT_CHAN_LO));
++	mutex_unlock(&mec_io_mutex);
++	uc_version = FIELD_GET(MEC_VERSION_LOC, reg);
++	if (uc_version >= 192)
++		return -EINVAL;
++
++	uc_version = FIELD_GET(MEC_VERSION_MAJOR, reg) * 100 +
++		     FIELD_GET(MEC_VERSION_MINOR, reg);
++
++	mec_uc_version = uc_version;
++
++	return sysfs_emit(buf, "%u\n", mec_uc_version);
++}
++static DEVICE_ATTR_RO(uc_version);
++
++static ssize_t power_cycle_show(struct device *dev,
++				struct device_attribute *attr,
++				char *buf)
++{
++	return sysfs_emit(buf, "%u\n", power_cycle);
++}
++
++static void powercycle_uc(void)
++{
++	mutex_lock(&mec_io_mutex);
++	/* Select memory region */
++	outb(IO_REG_BANK, EC_ADDR_MSB);
++	outb(MEC_POWER_CYCLE_ADDR, EC_ADDR_LSB);
++
++	/* Set to 1 for current data from the address */
++	outb(1, MEC_DATA_OFFSET(DEFAULT_CHAN_LO));
++	mutex_unlock(&mec_io_mutex);
++}
++
++static ssize_t power_cycle_store(struct device *dev,
++				 struct device_attribute *attr,
++				 const char *buf, size_t count)
++{
++	int rc;
++
++	rc = kstrtou32(buf, 0, &power_cycle);
++	if (rc)
++		return -EINVAL;
++
++	if (power_cycle > 0)
++		powercycle_uc();
++
++	return count;
++}
++static DEVICE_ATTR_RW(power_cycle);
++
++static struct attribute *silicom_attrs[] = {
++	&dev_attr_efuse_status.attr,
++	&dev_attr_uc_version.attr,
++	&dev_attr_power_cycle.attr,
++	NULL,
++};
++ATTRIBUTE_GROUPS(silicom);
++
++static struct platform_driver silicom_platform_driver = {
++	.driver = {
++		.name = "silicom-platform",
++		.dev_groups = silicom_groups,
++	},
++};
++
++static int __init silicom_mc_leds_register(struct device *dev,
++					   const struct led_classdev_mc *mc_leds)
++{
++	struct led_classdev_mc *led;
++	int i, err;
++	int size = sizeof(struct mc_subled);
++
++	for (i = 0; mc_leds[i].led_cdev.name; i++) {
++
++		led = devm_kzalloc(dev, sizeof(*led), GFP_KERNEL);
++		if (!led)
++			return -ENOMEM;
++		memcpy(led, &mc_leds[i], sizeof(*led));
++
++		led->subled_info = devm_kzalloc(dev, led->num_colors * size, GFP_KERNEL);
++		if (!led->subled_info)
++			return -ENOMEM;
++		memcpy(led->subled_info, mc_leds[i].subled_info, led->num_colors * size);
++
++		err = devm_led_classdev_multicolor_register(dev, led);
++		if (err)
++			return err;
++	}
++
++	return 0;
++}
++
++static u32 rpm_get(void)
++{
++	u32 reg;
++
++	mutex_lock(&mec_io_mutex);
++	/* Select memory region */
++	outb(IO_REG_BANK, EC_ADDR_MSB);
++	outb(DEFAULT_CHAN_LO_T, EC_ADDR_LSB);
++	/* Get current data from the address */
++	reg = inw(MEC_DATA_OFFSET(DEFAULT_CHAN_LO));
++	mutex_unlock(&mec_io_mutex);
++
++	return reg;
++}
++
++static u32 temp_get(void)
++{
++	u32 reg;
++
++	mutex_lock(&mec_io_mutex);
++	/* Select memory region */
++	outb(IO_REG_BANK, EC_ADDR_MSB);
++	outb(DEFAULT_CHAN_LO_T, EC_ADDR_LSB);
++	/* Get current data from the address */
++	reg = inl(MEC_DATA_OFFSET(DEFAULT_CHAN_LO));
++	mutex_unlock(&mec_io_mutex);
++
++	return FIELD_GET(MEC_TEMP_LOC, reg) * 100;
++}
++
++static umode_t silicom_fan_control_fan_is_visible(const u32 attr)
++{
++	switch (attr) {
++	case hwmon_fan_input:
++	case hwmon_fan_label:
++		return 0444;
++	default:
++		return 0;
++	}
++}
++
++static umode_t silicom_fan_control_temp_is_visible(const u32 attr)
++{
++	switch (attr) {
++	case hwmon_temp_input:
++	case hwmon_temp_label:
++		return 0444;
++	default:
++		return 0;
++	}
++}
++
++static int silicom_fan_control_read_fan(struct device *dev, u32 attr, long *val)
++{
++	switch (attr) {
++	case hwmon_fan_input:
++		*val = rpm_get();
++		return 0;
++	default:
++		return -EOPNOTSUPP;
++	}
++}
++
++static int silicom_fan_control_read_temp(struct device *dev, u32 attr, long *val)
++{
++	switch (attr) {
++	case hwmon_temp_input:
++		*val = temp_get();
++		return 0;
++	default:
++		return -EOPNOTSUPP;
++	}
++}
++
++static umode_t silicom_fan_control_is_visible(const void *data,
++					      enum hwmon_sensor_types type,
++					      u32 attr, int channel)
++{
++	switch (type) {
++	case hwmon_fan:
++		return silicom_fan_control_fan_is_visible(attr);
++	case hwmon_temp:
++		return silicom_fan_control_temp_is_visible(attr);
++	default:
++		return 0;
++	}
++}
++
++static int silicom_fan_control_read(struct device *dev,
++				    enum hwmon_sensor_types type,
++				    u32 attr, int channel,
++				    long *val)
++{
++	switch (type) {
++	case hwmon_fan:
++		return silicom_fan_control_read_fan(dev, attr, val);
++	case hwmon_temp:
++		return silicom_fan_control_read_temp(dev, attr, val);
++	default:
++		return -EOPNOTSUPP;
++	}
++}
++
++static int silicom_fan_control_read_labels(struct device *dev,
++					   enum hwmon_sensor_types type,
++					   u32 attr, int channel,
++					   const char **str)
++{
++	switch (type) {
++	case hwmon_fan:
++		*str = "Silicom_platfomr: Fan Speed";
++		return 0;
++	case hwmon_temp:
++		*str = "Silicom_platform: Thermostat Sensor";
++		return 0;
++	default:
++		return -EOPNOTSUPP;
++	}
++}
++
++static const struct hwmon_ops silicom_fan_control_hwmon_ops = {
++	.is_visible = silicom_fan_control_is_visible,
++	.read = silicom_fan_control_read,
++	.read_string = silicom_fan_control_read_labels,
++};
++
++static const struct hwmon_chip_info silicom_chip_info = {
++	.ops = &silicom_fan_control_hwmon_ops,
++	.info = silicom_fan_control_info,
++};
++
++static int __init silicom_platform_probe(struct platform_device *device)
++{
++	int err;
++	u8 magic, ver;
++	struct device *hwmon_dev;
++	const char *name = "Silocom_Fan_Monitor";
++
++	if (!devm_request_region(&device->dev, MEC_IO_BASE, MEC_IO_LEN, "mec")) {
++		dev_err(&device->dev, "couldn't reserve MEC io ports\n");
++		return -EBUSY;
++	}
++
++	/* Sanity check magic number read for EC */
++	outb(IO_REG_BANK, MEC_ADDR);
++	magic = inb(MEC_DATA_OFFSET(DEFAULT_CHAN_LO));
++	ver = inb(MEC_DATA_OFFSET(DEFAULT_CHAN_HI));
++	dev_dbg(&device->dev, "EC magic 0x%02x, version 0x%02x\n", magic, ver);
++
++	if (magic != SILICOM_MEC_MAGIC) {
++		dev_err(&device->dev, "Bad EC magic 0x%02x!\n", magic);
++		return -ENODEV;
++	}
++
++	err = silicom_mc_leds_register(&device->dev, silicom_led_info);
++	if (err) {
++		dev_err(&device->dev, "Failed to register LEDs\n");
++		return err;
++	}
++
++	err = devm_gpiochip_add_data(&device->dev, silicom_gpiochip,
++				     silicom_gpio_channels);
++	if (err) {
++		dev_err(&device->dev, "Failed to register gpiochip: %d\n", err);
++		return err;
++	}
++
++	hwmon_dev = devm_hwmon_device_register_with_info(&device->dev, name, NULL,
++							 &silicom_chip_info, NULL);
++	err = PTR_ERR_OR_ZERO(hwmon_dev);
++	if (err) {
++		dev_err(&device->dev, "Failed to register hwmon_dev: %d\n", err);
++		return err;
++	}
++
++	return err;
++}
++
++static int __init silicom_platform_info_init(const struct dmi_system_id *id)
++{
++	struct silicom_platform_info *info = id->driver_data;
++
++	silicom_led_info = info->led_info;
++	silicom_gpio_channels = info->gpio_channels;
++	silicom_gpiochip = info->gpiochip;
++	silicom_gpiochip->ngpio = info->ngpio;
++
++	return 1;
++}
++
++static const struct dmi_system_id silicom_dmi_ids[] __initconst = {
++	{
++		.callback = silicom_platform_info_init,
++		.ident = "Silicom Cordoba (Generic)",
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "Silicom"),
++			DMI_MATCH(DMI_BOARD_NAME, "80300-0214-G"),
++		},
++		.driver_data = &silicom_generic_cordoba_info,
++	},
++	{
++		.callback = silicom_platform_info_init,
++		.ident = "Silicom Cordoba (Generic)",
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "Silicom"),
++			DMI_MATCH(DMI_BOARD_NAME, "80500-0214-G"),
++		},
++		.driver_data = &silicom_generic_cordoba_info,
++	},
++	{
++		 .callback = silicom_platform_info_init,
++		 .ident = "Silicom Cordoba (plat_0222)",
++		 .matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "Silicom"),
++			DMI_MATCH(DMI_BOARD_NAME, "80300-0222-G"),
++		 },
++		.driver_data = &silicom_plat_0222_cordoba_info,
++	},
++	{ },
++};
++MODULE_DEVICE_TABLE(dmi, silicom_dmi_ids);
++
++static int __init silicom_platform_init(void)
++{
++	if (!dmi_check_system(silicom_dmi_ids)) {
++		pr_err("No DMI match for this platform\n");
++		return -ENODEV;
++	}
++
++	/*
++	 * Create and register a platform device.
++	 * Directly probe the platform driver in init since this isn't a
++	 * hotpluggable device.  That means we don't need to register a driver
++	 * that needs to wait around in memory on the chance a matching device
++	 * would get added.  Instead run once in __init so that we can free all
++	 * those resources when the __init region is wiped
++	 */
++	silicom_platform_dev = platform_create_bundle(&silicom_platform_driver,
++						      silicom_platform_probe,
++						      NULL, 0, NULL, 0);
++
++	return PTR_ERR_OR_ZERO(silicom_platform_dev);
++}
++
++static void __exit silicom_platform_exit(void)
++{
++	platform_device_unregister(silicom_platform_dev);
++	platform_driver_unregister(&silicom_platform_driver);
++}
++
++module_init(silicom_platform_init);
++module_exit(silicom_platform_exit);
++
++MODULE_LICENSE("GPL");
++MODULE_AUTHOR("Henry Shi <henrys@silicom-usa.com>");
++MODULE_DESCRIPTION("Platform driver for Silicom network appliances");
+-- 
+2.21.3
+
