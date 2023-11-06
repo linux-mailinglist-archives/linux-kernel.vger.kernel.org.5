@@ -2,55 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DDEC7E1DFD
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 11:12:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60D357E1E01
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 11:12:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229922AbjKFKMU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 05:12:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35126 "EHLO
+        id S230325AbjKFKMY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 05:12:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229642AbjKFKMT (ORCPT
+        with ESMTP id S229875AbjKFKMU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 05:12:19 -0500
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFBD1A9;
-        Mon,  6 Nov 2023 02:12:16 -0800 (PST)
-Received: by mail-pj1-x1029.google.com with SMTP id 98e67ed59e1d1-27d0e3d823fso3076904a91.1;
-        Mon, 06 Nov 2023 02:12:16 -0800 (PST)
+        Mon, 6 Nov 2023 05:12:20 -0500
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0541DB;
+        Mon,  6 Nov 2023 02:12:17 -0800 (PST)
+Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-6bf03b98b9bso4035346b3a.1;
+        Mon, 06 Nov 2023 02:12:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699265536; x=1699870336; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=x1Eb4CFcG9LyCXZVja0bLT9/YYKGtme9c2NcHNtTLNM=;
-        b=eKKInpNXxLwSyptDiXeoA/d8lG8Azlbe5DrFpoZ9K6zxOfqW3UHYicAdaOxyJ/0aHF
-         447coNvlRk9WIm2fPdAHOj+cud5ta55uV01yrVbdk/t/KErJd21xBtyU2OPyY10ozEDl
-         4kXorvhYiWtwqBda6rZ6n10DL8yiMeS/YJxrwAPkfemJTlhzVOszLylV37fZgXjjj+uf
-         jTxj9B1kNiRxe/ds7k86yBluq653cinkSSFOcGlbufZ30GMu48XJzoNgBrfNR8Ex/oLx
-         4qQMBGl7hwbMCGlV/mw7SiD5UF4KOzcNDdG77mLPQbnn2FGlgs+BSXp6E9pNw/JOc3gx
-         aodQ==
+        d=gmail.com; s=20230601; t=1699265537; x=1699870337; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xum/W7MJuOqob9sUjPMH2NvW74OGFL5uRCJzlfRnFqQ=;
+        b=LW03H6sgHkyfpHjAcahw2n3R9t66SsDMV775Kq5wJeNvccD7zee71za9UI47VE6mvD
+         orl0slm6CrCeslY+qy2AiNWyQDLwa6HWOqK6G0oDTbANWqRtqro224hELfVjZhVlPpLx
+         LOvZ7os9K9TxALmvkHH7PJBzpEkbs3wJF5u4q3xV3cQq2ix2+jS8AqMxULZVOZJ0sBku
+         wSMeo7Pe5Cgb3migCRuwbEZi8G3mi5Rpo4sqSVSKm8sBzHUdI434AjAZ0Gje17UGZ9XE
+         wdUDAqTdOUkfsfcz4PXY6FSyqUY5BGHLbtuymmK1SBF34ou1vckp1oZ1pm5fF5k/xoHC
+         9j3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699265536; x=1699870336;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=x1Eb4CFcG9LyCXZVja0bLT9/YYKGtme9c2NcHNtTLNM=;
-        b=uMbIy6qy4hBtpYf/AhjjH42WqsYk12zPMbAxcPR6qqdYG1HfuklvEqQbIZo6P+da/O
-         +jotlmPAjlV2Wr3IKnrb0g5lFxfE8PEBCXKRyK0qUla7R1GOWCWubEJa5heULgm87DB1
-         +Rf1xrGJTVO/1ujWr1o2Yal28n5thxkMFEyxdT6lUDN0viINU1yHiIFcB8xIRAuJa5oo
-         4YnDNGb/IeW2I5Teu5eRVoGv0Y261BuESxZ/HzS/moKUD+/G7LQKZFu0HRE/gIv32w+P
-         NQlW0Oiq1ELdGtQlq487V0iQAy3Id7MUrN+jTH+LrqTT5AZPUWAx0rJ8bV6XABWcTNYy
-         F4Rw==
-X-Gm-Message-State: AOJu0Yx5TtPkZLbFE5teZ1n4BFtau7ZtFAmGW3ebmMXbp842sXl1qOuX
-        qSIafP2WrViAHmeawVBqohY=
-X-Google-Smtp-Source: AGHT+IGQNoiUnCfGjwXdUlWxqAYwmat1U+sqsjF+Nc2gZDze+QwGS+PwdOrP16gUFZmz3dxfk1wK4w==
-X-Received: by 2002:a17:90a:357:b0:27c:f9e7:30fd with SMTP id 23-20020a17090a035700b0027cf9e730fdmr21616849pjf.7.1699265536275;
-        Mon, 06 Nov 2023 02:12:16 -0800 (PST)
+        d=1e100.net; s=20230601; t=1699265537; x=1699870337;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xum/W7MJuOqob9sUjPMH2NvW74OGFL5uRCJzlfRnFqQ=;
+        b=bU2nwtLvjukhLgOseHhjHLAjWVCEnqPGGnkENSarbFCfYzjmiayRV67GKH5WpW+0aZ
+         25G0vlG1jMSBks5hVoOwA+tWHLlvSFmU3HKxGyi+LIMW8ePTpPTDagi1Sj8eX6iBXuzI
+         HHbloofTOhLLL1jgXMCeo8oX/MD5Uwe54lQQPsfb6nCx5diGxf8OP/yiDfOoq9b2do8S
+         +hfhvaFczpLvuhatUDVBIIWgPq5UGoYZ1V5I1bilC6jkHrrr+kxMvzsq7WAj5G0be2jg
+         NuAlGqu9oXAFWnVnHTrxW17TYlngTXn498A5JCeiLmtc/wvr3tMXbp1MqxlEHLt/2hdd
+         C0xQ==
+X-Gm-Message-State: AOJu0YwQhE272Qv+PHowKdTOILpB4Aufsdp1fNuiul+wmLH8A01qSdhW
+        6UXVt/yEscgXRrE/TiCjVRE=
+X-Google-Smtp-Source: AGHT+IELufpf/afAfT2Z7Touti4YQrWwKv1deBMsWqtCBLnXQXbzuPzjEsbciqxS97VmWcBRlb27pA==
+X-Received: by 2002:a05:6a20:9390:b0:159:e4ab:15ce with SMTP id x16-20020a056a20939000b00159e4ab15cemr15313432pzh.15.1699265537393;
+        Mon, 06 Nov 2023 02:12:17 -0800 (PST)
 Received: from debian.me ([103.131.18.64])
-        by smtp.gmail.com with ESMTPSA id 15-20020a17090a190f00b002802d9d4e96sm5759055pjg.54.2023.11.06.02.12.15
+        by smtp.gmail.com with ESMTPSA id q4-20020a056a0002a400b006be4bb0d2dcsm5529216pfs.149.2023.11.06.02.12.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Nov 2023 02:12:15 -0800 (PST)
+        Mon, 06 Nov 2023 02:12:16 -0800 (PST)
 Received: by debian.me (Postfix, from userid 1000)
-        id 5F6A0804FE06; Mon,  6 Nov 2023 17:12:09 +0700 (WIB)
+        id 8B301803540B; Mon,  6 Nov 2023 17:12:10 +0700 (WIB)
 From:   Bagas Sanjaya <bagasdotme@gmail.com>
 To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         Linux Documentation <linux-doc@vger.kernel.org>
@@ -63,12 +64,14 @@ Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
         Ard Biesheuvel <ardb@kernel.org>,
         Bagas Sanjaya <bagasdotme@gmail.com>
-Subject: [PATCH 0/2] Documentation: x86: Note fixes for boot protocol doc
-Date:   Mon,  6 Nov 2023 17:12:03 +0700
-Message-ID: <20231106101206.76487-1-bagasdotme@gmail.com>
+Subject: [PATCH 1/2] Documentation: x86: Indent note directive for protocol version number note
+Date:   Mon,  6 Nov 2023 17:12:04 +0700
+Message-ID: <20231106101206.76487-2-bagasdotme@gmail.com>
 X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20231106101206.76487-1-bagasdotme@gmail.com>
+References: <20231106101206.76487-1-bagasdotme@gmail.com>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=772; i=bagasdotme@gmail.com; h=from:subject; bh=rnVwujkPbkHdRjBXslxesHNo1pmoL6QtY0YCVjOyzbQ=; b=owGbwMvMwCX2bWenZ2ig32LG02pJDKkeu1sfLTi+fIFS6M9Vy56dKO3+ErZe47DJ5b0K6n37V 97f0GMf0FHKwiDGxSArpsgyKZGv6fQuI5EL7WsdYeawMoEMYeDiFICJ9Acy/OG+85lfa9bTiI2L HG6vYOrelsPYyHhv/sJFLpu7Wa+z/yhn+J8wvz/wK9fbGe92f03cvJLLpSnnu+Jt9+oUM0GBe// LI9gA
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1245; i=bagasdotme@gmail.com; h=from:subject; bh=0AsYoOImK8yW9QMJSvMT7LCOsE3kSASqZ9Au0ZMrQ+I=; b=owGbwMvMwCX2bWenZ2ig32LG02pJDKkeu/tMQgvmiRbX31xtvJnR69a8J8wL+p2d772ZJldqJ xI55cPNjlIWBjEuBlkxRZZJiXxNp3cZiVxoX+sIM4eVCWQIAxenAEzk1k5GhgkWZya78SyT2Tth xs4iN+3gJd7xlk45q8Mrpvud3hq9KJWRYcN78dxVl7LvnZS7EC2v6mQZwXtQz8tz0wOpTfMZLzl N5wAA
 X-Developer-Key: i=bagasdotme@gmail.com; a=openpgp; fpr=701B806FDCA5D3A58FFB8F7D7C276C64A5E44A1D
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -81,25 +84,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When I was reviewing generated html output of my web font series [1]
-by viewing boot protocol doc (Documentation/output/arch/x86/boot.html),
-I noticed that notes there wasn't right: the first note extended to
-the end of doc; and the last one wasn't marked up as note either.
+The protocol version number note is between protocol version table and
+memory layout section. As such, Sphinx renders the note directive not
+only on the actual note, but until the end of doc.
 
-Let's fix them up.
+Indent the directive so that only the actual protocol version number
+note is rendered as such.
 
-[1]: https://lore.kernel.org/lkml/20231102120053.30630-1-bagasdotme@gmail.com/
+Fixes: 2c33c27fd603 ("x86/boot: Introduce kernel_info")
+Signed-off-by: Bagas Sanjaya <bagasdotme@gmail.com>
+---
+ Documentation/arch/x86/boot.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Bagas Sanjaya (2):
-  Documentation: x86: Indent note directive for protocol version number
-    note
-  Documentation: x86: Wrap EFI handover deprecation in note block
-
- Documentation/arch/x86/boot.rst | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
-
-
-base-commit: 77fa2fbe87fc605c4bfa87dff87be9bfded0e9a3
+diff --git a/Documentation/arch/x86/boot.rst b/Documentation/arch/x86/boot.rst
+index f5d2f2414de8b6..22cc7a040dae05 100644
+--- a/Documentation/arch/x86/boot.rst
++++ b/Documentation/arch/x86/boot.rst
+@@ -77,7 +77,7 @@ Protocol 2.14	BURNT BY INCORRECT COMMIT
+ Protocol 2.15	(Kernel 5.5) Added the kernel_info and kernel_info.setup_type_max.
+ =============	============================================================
+ 
+-.. note::
++  .. note::
+      The protocol version number should be changed only if the setup header
+      is changed. There is no need to update the version number if boot_params
+      or kernel_info are changed. Additionally, it is recommended to use
 -- 
 An old man doll... just what I always wanted! - Clara
 
