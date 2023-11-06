@@ -2,44 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E7EB37E317F
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 00:34:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 219DC7E3188
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 00:37:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233470AbjKFXeU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 18:34:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57346 "EHLO
+        id S233390AbjKFXhM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 18:37:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233321AbjKFXeQ (ORCPT
+        with ESMTP id S233143AbjKFXhL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 18:34:16 -0500
+        Mon, 6 Nov 2023 18:37:11 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17C6983;
-        Mon,  6 Nov 2023 15:34:14 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55F12C433CA;
-        Mon,  6 Nov 2023 23:34:13 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC6788F;
+        Mon,  6 Nov 2023 15:37:08 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C7A0C433C7;
+        Mon,  6 Nov 2023 23:37:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699313653;
-        bh=19smz8vjkknnlftKxQDFJP/XhxeknF20W/DyGkIS8Os=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=D1wTspPUeGLo6x8Q/O1NGf9r8R7Y77Rea13Em+t/uPG+M8MB1RkYbqzvbkzEFu/2o
-         +EbJZr5EpmuJNr37DT7pK4w7FQz0S3gGCgTdLEjwu0j0llYH7NAk8oU5KIZyMrGTDa
-         xU8ou+PE7Hw8IjLv9dyB+hxXwQngY+1i+Ioz1CMmAr4QR9KqCjMOtErZW426EoDG0n
-         ZWwH3Jx6nAAnd11/pOFJY9vSHUNoDTRFu1AngsTYsvE2korQlJDZmaQT6CsbPoIwr5
-         yzi1Mp+MivvdfbKoUGQsKHXEJT583q7JL2Znk9lwUlXiHrruB3lltIK3NLWFk4pDhE
-         SzPy2Mk286CAw==
-From:   SeongJae Park <sj@kernel.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     SeongJae Park <sj@kernel.org>, damon@lists.linux.dev,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: [PATCH 3/3] mm/damon/sysfs-schemes: handle tried region directory allocation failure
-Date:   Mon,  6 Nov 2023 23:34:08 +0000
-Message-Id: <20231106233408.51159-4-sj@kernel.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231106233408.51159-1-sj@kernel.org>
-References: <20231106233408.51159-1-sj@kernel.org>
+        s=k20201202; t=1699313828;
+        bh=h0S79LVjAan/iH3IkQASAF7+37BYiP+aZRxXCZvJPsg=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=LeNrbB8z4RQxY05FYKNoTzKmbq+g4U4chZEqsB8U7wMLOQG5bQ00zLdcyG4zk2FSG
+         sirRWy1WHKJhDp/lGJ0F8oiw6DOkHpLvYDGVEKW9C5q4nj0/qBG6zXeKaQkvDK8aUM
+         bIFoenc6lxo6qZ+gEpxnFBLEyj0YCdplMxiItzB0OGgld+kfO6gcCZakR1w3AKA1n/
+         n08qdlKTcDb7Bq7Gf/jUXn/bc+NR6WHwi5vJfJpTSFNxYJNiHRT29kU9u3xFsSMMve
+         JKSRGtgbD1cdZ/3+1ROyEWy5Jo2sgtaWruuPCseAAQcb+VhSeNfdbNIIH+UuAv/Xd7
+         3UtKrn82JB/Jw==
+Message-ID: <00883386-0c4b-4ba7-84c6-553f468304e6@kernel.org>
+Date:   Mon, 6 Nov 2023 16:37:06 -0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH v3 09/12] net: add support for skbs with unreadable
+ frags
+Content-Language: en-US
+To:     Mina Almasry <almasrymina@google.com>,
+        Stanislav Fomichev <sdf@google.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linaro-mm-sig@lists.linaro.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Jeroen de Borst <jeroendb@google.com>,
+        Praveen Kaligineedi <pkaligineedi@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Kaiyuan Zhang <kaiyuanz@google.com>
+References: <20231106024413.2801438-1-almasrymina@google.com>
+ <20231106024413.2801438-10-almasrymina@google.com>
+ <ZUk03DhWxV-bOFJL@google.com>
+ <19129763-6f74-4b04-8a5f-441255b76d34@kernel.org>
+ <CAHS8izMrnVUfbbS=OcJ6JT9SZRRfZ2MC7UnggthpZT=zf2BGLA@mail.gmail.com>
+ <ZUlhu4hlTaqR3CTh@google.com>
+ <CAHS8izMaAhoae5ChnzO4gny1cYYnqV1cB8MC2cAF3eoyt+Sf4A@mail.gmail.com>
+From:   David Ahern <dsahern@kernel.org>
+In-Reply-To: <CAHS8izMaAhoae5ChnzO4gny1cYYnqV1cB8MC2cAF3eoyt+Sf4A@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -50,32 +77,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DAMON sysfs interface's before_damos_apply callback
-(damon_sysfs_before_damos_apply()), which creates the DAMOS tried
-regions for each DAMOS action applied region, is not handling the
-allocation failure for the sysfs directory data.  As a result, NULL
-pointer derefeence is possible.  Fix it by handling the case.
+On 11/6/23 3:18 PM, Mina Almasry wrote:
+>>>>>> @@ -991,7 +993,7 @@ struct sk_buff {
+>>>>>>  #if IS_ENABLED(CONFIG_IP_SCTP)
+>>>>>>      __u8                    csum_not_inet:1;
+>>>>>>  #endif
+>>>>>> -
+>>>>>> +    __u8                    devmem:1;
+>>>>>>  #if defined(CONFIG_NET_SCHED) || defined(CONFIG_NET_XGRESS)
+>>>>>>      __u16                   tc_index;       /* traffic control index */
+>>>>>>  #endif
+>>>>>> @@ -1766,6 +1768,12 @@ static inline void skb_zcopy_downgrade_managed(struct sk_buff *skb)
+>>>>>>              __skb_zcopy_downgrade_managed(skb);
+>>>>>>  }
+>>>>>>
+>>>>>> +/* Return true if frags in this skb are not readable by the host. */
+>>>>>> +static inline bool skb_frags_not_readable(const struct sk_buff *skb)
+>>>>>> +{
+>>>>>> +    return skb->devmem;
+>>>>>
+>>>>> bikeshedding: should we also rename 'devmem' sk_buff flag to 'not_readable'?
+>>>>> It better communicates the fact that the stack shouldn't dereference the
+>>>>> frags (because it has 'devmem' fragments or for some other potential
+>>>>> future reason).
+>>>>
+>>>> +1.
+>>>>
+>>>> Also, the flag on the skb is an optimization - a high level signal that
+>>>> one or more frags is in unreadable memory. There is no requirement that
+>>>> all of the frags are in the same memory type.
+>>
+>> David: maybe there should be such a requirement (that they all are
+>> unreadable)? Might be easier to support initially; we can relax later
+>> on.
+>>
+> 
+> Currently devmem == not_readable, and the restriction is that all the
+> frags in the same skb must be either all readable or all unreadable
+> (all devmem or all non-devmem).
 
-Fixes: f1d13cacabe1 ("mm/damon/sysfs: implement DAMOS tried regions update command")
-Cc: <stable@vger.kernel.org> # 6.2.x
-Signed-off-by: SeongJae Park <sj@kernel.org>
----
- mm/damon/sysfs-schemes.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/mm/damon/sysfs-schemes.c b/mm/damon/sysfs-schemes.c
-index 7413cb35c5a9..be667236b8e6 100644
---- a/mm/damon/sysfs-schemes.c
-+++ b/mm/damon/sysfs-schemes.c
-@@ -1826,6 +1826,8 @@ static int damon_sysfs_before_damos_apply(struct damon_ctx *ctx,
- 		return 0;
- 
- 	region = damon_sysfs_scheme_region_alloc(r);
-+	if (!region)
-+		return 0;
- 	list_add_tail(&region->list, &sysfs_regions->regions_list);
- 	sysfs_regions->nr_regions++;
- 	if (kobject_init_and_add(&region->kobj,
--- 
-2.34.1
+What requires that restriction? In all of the uses of skb->devmem and
+skb_frags_not_readable() what matters is if any frag is not readable,
+then frag list walk or collapse is avoided.
 
