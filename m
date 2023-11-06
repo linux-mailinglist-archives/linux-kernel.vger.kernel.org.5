@@ -2,303 +2,272 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A0077E303C
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 23:59:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A3787E3041
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 23:59:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233217AbjKFW7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 17:59:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35428 "EHLO
+        id S233166AbjKFW7d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 17:59:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232565AbjKFW7H (ORCPT
+        with ESMTP id S233238AbjKFW7c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 17:59:07 -0500
-Received: from mail-oo1-xc2e.google.com (mail-oo1-xc2e.google.com [IPv6:2607:f8b0:4864:20::c2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD69510D
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 14:59:03 -0800 (PST)
-Received: by mail-oo1-xc2e.google.com with SMTP id 006d021491bc7-581f78a0206so2717688eaf.2
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 14:59:03 -0800 (PST)
+        Mon, 6 Nov 2023 17:59:32 -0500
+Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61F42D6E
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 14:59:28 -0800 (PST)
+Received: by mail-pl1-x64a.google.com with SMTP id d9443c01a7336-1cc323b2aa3so30681815ad.3
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 14:59:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1699311543; x=1699916343; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=JjTrbVO5DQDFfCNQXlxC4Kehdfa5zqUUgQgAbIyQh7E=;
-        b=j5DHn6vieo1kgHTc9hy5l4CvwvqcHXVRGmzHqvjHCXnxU8tif1KNszvLBzdPThftpJ
-         DEfIdodPnFfMszJm8DoABMO0tuVEvfKtBZxOJrgbLKOeWPdMV1UlNYECNivAkGU/JCgR
-         pHLvX6zjLId6Apob0esNSFwFsbO34fAHtJYl5VI6JWbe/OKzhegt+TdtGv67eWxD0rGk
-         DPPAsoSqIGAaHnXK13YGPPJMnBZk5hXLU1R1fu6v3NEqPlGDZIZvXl8Vq+leZQbpaRoY
-         kz3TxpCzwfdBWri/FpWJQ2XTiASqM7YJXE3CFwaviVX7BxerNvrbTE3PL2IhAZ9zfTgi
-         283g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699311543; x=1699916343;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=google.com; s=20230601; t=1699311568; x=1699916368; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=JjTrbVO5DQDFfCNQXlxC4Kehdfa5zqUUgQgAbIyQh7E=;
-        b=jSntUl3AHUyh0dnEYcy7hWDhqTr3mLWMa19o1/8SkDrfLP86HFTl0DNm599IDUaDwY
-         f5ucUOxAaDtSxkDVdBYNIPrPVjOQTL8wzVIZf3nTx1YGEL9RV9n03mTY5FCW2vGikTvG
-         MMrep834eGet3xACHpwD7DegaPMncKoCs7scdaXzeogiY9IMFhoNQEv1VZOytkWFHu2H
-         0sp36BttV+DJbFlIKteZFmL0k7LO0pYv6GqUCqRUSagcJq5BQoj1jsP1C/5kPJaqxwoa
-         O5lIeDVbdfb84IGlYR6SMdSo9wN/rIgBvR9tqiVBoP2giDF/PdyT52OYGv03BAYN51fc
-         kQuQ==
-X-Gm-Message-State: AOJu0YzyUUCKdBK1peLd1HDxls7cimLCGwNdJizfVuiMGX3F6t+X4CiM
-        +0QHcvSipv/3UW93iqTpezBdJ/sWRL6i/dz9VkatHA==
-X-Google-Smtp-Source: AGHT+IGJGoME8X8LqT0dQqrq8zLlt5O/Rz53cZhJIyjZHL5dZRVWcXb3vddhFyqP5x1o6XfoLkHSig==
-X-Received: by 2002:a4a:c919:0:b0:582:1477:8362 with SMTP id v25-20020a4ac919000000b0058214778362mr28266888ooq.4.1699311543185;
-        Mon, 06 Nov 2023 14:59:03 -0800 (PST)
-Received: from evan.ba.rivosinc.com ([64.71.180.162])
-        by smtp.gmail.com with ESMTPSA id w15-20020a4aa98f000000b00586a945615csm1737346oom.6.2023.11.06.14.59.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Nov 2023 14:59:02 -0800 (PST)
-From:   Evan Green <evan@rivosinc.com>
-To:     Palmer Dabbelt <palmer@rivosinc.com>
-Cc:     Jisheng Zhang <jszhang@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        David Laight <David.Laight@aculab.com>,
-        Evan Green <evan@rivosinc.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Andrew Jones <ajones@ventanamicro.com>,
-        Anup Patel <apatel@ventanamicro.com>,
-        =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Greentime Hu <greentime.hu@sifive.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Ley Foon Tan <leyfoon.tan@starfivetech.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Sunil V L <sunilvl@ventanamicro.com>,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
-Subject: [PATCH v3] RISC-V: Probe misaligned access speed in parallel
-Date:   Mon,  6 Nov 2023 14:58:55 -0800
-Message-Id: <20231106225855.3121724-1-evan@rivosinc.com>
-X-Mailer: git-send-email 2.34.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        bh=ty0cyfe+Vdfqcpj6+34AODX2kjBa+Pq2AOWiLNF5fCk=;
+        b=WMybHmxyqcdSlX+KGYCMv2eSnUJP7D7cNwKBcMwz6fcSKiz9UnBfXECsEQYgjpBfBf
+         msskmePJbkQjjXAfUmVTAG7pIvLaNZi2r2Nr4RuKPxsfX6bvoE3dWNLXU6RxSf+WRYNm
+         viI3OiC1uvDDvOGSI1DxkKZh08E0aLJSyYorxzFdb9Cz3pkK2PJrAawleuHSRmbX7SEr
+         eBxg9vo9RGpPoHWKbDKfApLmCCuCzSKiQ3JnogHYgHrOpZqmPL4yQLWx5PjRfd8qDZNa
+         NTmu8TxoKRWu5nsm4ZNdsQLNfh7cXJM5b0Aq9w20gu9PldczqXHBB3YLFwPPUWzoCwIW
+         cvsA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699311568; x=1699916368;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=ty0cyfe+Vdfqcpj6+34AODX2kjBa+Pq2AOWiLNF5fCk=;
+        b=unpMgu/Fbm4wVbmqU2dfYSZHzDfuEVjqqPOGsQqrrhib6fMa7y44sM/t6Etmygy8y0
+         uN6qbazc9KxfpiBcxmAe2P2IQ74nGgAuIgRMG6vAMUauGoi5xt4djTiUwICHs4mvvV8F
+         us3b4f5RG32TI1wJd9RTAPwo4jpX7LvnGoKLGjbp1oIAwb4bON7OhJP7KMV0y34pdxpc
+         Pj9VkD/4tqAUySvaSVt4wfL5yogg7vunPykospM+XfD9kP6/x+82Ga8v2rZetrdwbyfK
+         VeVMfK4ltAGkv4Y+tLqAiI8HkhF/w+5ycoU3LJ9M6apAFfaP65+BCnr1sbPchfED/Ddr
+         uzRQ==
+X-Gm-Message-State: AOJu0YzTwo1him5BvXKI+MmhQQtoNag4amE0c5bO1pM36acN0zXPm/23
+        gKgWrgq4mmdBJ2gXDNvPM8IN098=
+X-Google-Smtp-Source: AGHT+IHI7VpzkR1zbFlqsvGksOW2FuNvrPzGHxxYeLg5/v7KL44Nh11FYoBtcp/75evNVWcmQtSD4pU=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a17:903:3303:b0:1cc:38e0:dbab with SMTP id
+ jk3-20020a170903330300b001cc38e0dbabmr475809plb.3.1699311567832; Mon, 06 Nov
+ 2023 14:59:27 -0800 (PST)
+Date:   Mon, 6 Nov 2023 14:59:26 -0800
+In-Reply-To: <CAHS8izMaAhoae5ChnzO4gny1cYYnqV1cB8MC2cAF3eoyt+Sf4A@mail.gmail.com>
+Mime-Version: 1.0
+References: <20231106024413.2801438-1-almasrymina@google.com>
+ <20231106024413.2801438-10-almasrymina@google.com> <ZUk03DhWxV-bOFJL@google.com>
+ <19129763-6f74-4b04-8a5f-441255b76d34@kernel.org> <CAHS8izMrnVUfbbS=OcJ6JT9SZRRfZ2MC7UnggthpZT=zf2BGLA@mail.gmail.com>
+ <ZUlhu4hlTaqR3CTh@google.com> <CAHS8izMaAhoae5ChnzO4gny1cYYnqV1cB8MC2cAF3eoyt+Sf4A@mail.gmail.com>
+Message-ID: <ZUlvzm24SA3YjirV@google.com>
+Subject: Re: [RFC PATCH v3 09/12] net: add support for skbs with unreadable frags
+From:   Stanislav Fomichev <sdf@google.com>
+To:     Mina Almasry <almasrymina@google.com>
+Cc:     David Ahern <dsahern@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        "Christian =?utf-8?B?S8O2bmln?=" <christian.koenig@amd.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Jeroen de Borst <jeroendb@google.com>,
+        Praveen Kaligineedi <pkaligineedi@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Kaiyuan Zhang <kaiyuanz@google.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Probing for misaligned access speed takes about 0.06 seconds. On a
-system with 64 cores, doing this in smp_callin() means it's done
-serially, extending boot time by 3.8 seconds. That's a lot of boot time.
+On 11/06, Mina Almasry wrote:
+> On Mon, Nov 6, 2023 at 1:59=E2=80=AFPM Stanislav Fomichev <sdf@google.com=
+> wrote:
+> >
+> > On 11/06, Mina Almasry wrote:
+> > > On Mon, Nov 6, 2023 at 11:34=E2=80=AFAM David Ahern <dsahern@kernel.o=
+rg> wrote:
+> > > >
+> > > > On 11/6/23 11:47 AM, Stanislav Fomichev wrote:
+> > > > > On 11/05, Mina Almasry wrote:
+> > > > >> For device memory TCP, we expect the skb headers to be available=
+ in host
+> > > > >> memory for access, and we expect the skb frags to be in device m=
+emory
+> > > > >> and unaccessible to the host. We expect there to be no mixing an=
+d
+> > > > >> matching of device memory frags (unaccessible) with host memory =
+frags
+> > > > >> (accessible) in the same skb.
+> > > > >>
+> > > > >> Add a skb->devmem flag which indicates whether the frags in this=
+ skb
+> > > > >> are device memory frags or not.
+> > > > >>
+> > > > >> __skb_fill_page_desc() now checks frags added to skbs for page_p=
+ool_iovs,
+> > > > >> and marks the skb as skb->devmem accordingly.
+> > > > >>
+> > > > >> Add checks through the network stack to avoid accessing the frag=
+s of
+> > > > >> devmem skbs and avoid coalescing devmem skbs with non devmem skb=
+s.
+> > > > >>
+> > > > >> Signed-off-by: Willem de Bruijn <willemb@google.com>
+> > > > >> Signed-off-by: Kaiyuan Zhang <kaiyuanz@google.com>
+> > > > >> Signed-off-by: Mina Almasry <almasrymina@google.com>
+> > > > >>
+> > > > >> ---
+> > > > >>  include/linux/skbuff.h | 14 +++++++-
+> > > > >>  include/net/tcp.h      |  5 +--
+> > > > >>  net/core/datagram.c    |  6 ++++
+> > > > >>  net/core/gro.c         |  5 ++-
+> > > > >>  net/core/skbuff.c      | 77 +++++++++++++++++++++++++++++++++++=
++------
+> > > > >>  net/ipv4/tcp.c         |  6 ++++
+> > > > >>  net/ipv4/tcp_input.c   | 13 +++++--
+> > > > >>  net/ipv4/tcp_output.c  |  5 ++-
+> > > > >>  net/packet/af_packet.c |  4 +--
+> > > > >>  9 files changed, 115 insertions(+), 20 deletions(-)
+> > > > >>
+> > > > >> diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
+> > > > >> index 1fae276c1353..8fb468ff8115 100644
+> > > > >> --- a/include/linux/skbuff.h
+> > > > >> +++ b/include/linux/skbuff.h
+> > > > >> @@ -805,6 +805,8 @@ typedef unsigned char *sk_buff_data_t;
+> > > > >>   *  @csum_level: indicates the number of consecutive checksums =
+found in
+> > > > >>   *          the packet minus one that have been verified as
+> > > > >>   *          CHECKSUM_UNNECESSARY (max 3)
+> > > > >> + *  @devmem: indicates that all the fragments in this skb are b=
+acked by
+> > > > >> + *          device memory.
+> > > > >>   *  @dst_pending_confirm: need to confirm neighbour
+> > > > >>   *  @decrypted: Decrypted SKB
+> > > > >>   *  @slow_gro: state present at GRO time, slower prepare step r=
+equired
+> > > > >> @@ -991,7 +993,7 @@ struct sk_buff {
+> > > > >>  #if IS_ENABLED(CONFIG_IP_SCTP)
+> > > > >>      __u8                    csum_not_inet:1;
+> > > > >>  #endif
+> > > > >> -
+> > > > >> +    __u8                    devmem:1;
+> > > > >>  #if defined(CONFIG_NET_SCHED) || defined(CONFIG_NET_XGRESS)
+> > > > >>      __u16                   tc_index;       /* traffic control =
+index */
+> > > > >>  #endif
+> > > > >> @@ -1766,6 +1768,12 @@ static inline void skb_zcopy_downgrade_ma=
+naged(struct sk_buff *skb)
+> > > > >>              __skb_zcopy_downgrade_managed(skb);
+> > > > >>  }
+> > > > >>
+> > > > >> +/* Return true if frags in this skb are not readable by the hos=
+t. */
+> > > > >> +static inline bool skb_frags_not_readable(const struct sk_buff =
+*skb)
+> > > > >> +{
+> > > > >> +    return skb->devmem;
+> > > > >
+> > > > > bikeshedding: should we also rename 'devmem' sk_buff flag to 'not=
+_readable'?
+> > > > > It better communicates the fact that the stack shouldn't derefere=
+nce the
+> > > > > frags (because it has 'devmem' fragments or for some other potent=
+ial
+> > > > > future reason).
+> > > >
+> > > > +1.
+> > > >
+> > > > Also, the flag on the skb is an optimization - a high level signal =
+that
+> > > > one or more frags is in unreadable memory. There is no requirement =
+that
+> > > > all of the frags are in the same memory type.
+> >
+> > David: maybe there should be such a requirement (that they all are
+> > unreadable)? Might be easier to support initially; we can relax later
+> > on.
+> >
+>=20
+> Currently devmem =3D=3D not_readable, and the restriction is that all the
+> frags in the same skb must be either all readable or all unreadable
+> (all devmem or all non-devmem).
+>=20
+> > > The flag indicates that the skb contains all devmem dma-buf memory
+> > > specifically, not generic 'not_readable' frags as the comment says:
+> > >
+> > > + *     @devmem: indicates that all the fragments in this skb are bac=
+ked by
+> > > + *             device memory.
+> > >
+> > > The reason it's not a generic 'not_readable' flag is because handing
+> > > off a generic not_readable skb to the userspace is semantically not
+> > > what we're doing. recvmsg() is augmented in this patch series to
+> > > return a devmem skb to the user via a cmsg_devmem struct which refers
+> > > specifically to the memory in the dma-buf. recvmsg() in this patch
+> > > series is not augmented to give any 'not_readable' skb to the
+> > > userspace.
+> > >
+> > > IMHO skb->devmem + an skb_frags_not_readable() as implemented is
+> > > correct. If a new type of unreadable skbs are introduced to the stack=
+,
+> > > I imagine the stack would implement:
+> > >
+> > > 1. new header flag: skb->newmem
+> > > 2.
+> > >
+> > > static inline bool skb_frags_not_readable(const struct skb_buff *skb)
+> > > {
+> > >     return skb->devmem || skb->newmem;
+> > > }
+> > >
+> > > 3. tcp_recvmsg_devmem() would handle skb->devmem skbs is in this patc=
+h
+> > > series, but tcp_recvmsg_newmem() would handle skb->newmem skbs.
+> >
+> > You copy it to the userspace in a special way because your frags
+> > are page_is_page_pool_iov(). I agree with David, the skb bit is
+> > just and optimization.
+> >
+> > For most of the core stack, it doesn't matter why your skb is not
+> > readable. For a few places where it matters (recvmsg?), you can
+> > double-check your frags (all or some) with page_is_page_pool_iov.
+> >
+>=20
+> I see, we can do that then. I.e. make the header flag 'not_readable'
+> and check the frags to decide to delegate to tcp_recvmsg_devmem() or
+> something else. We can even assume not_readable =3D=3D devmem because
+> currently devmem is the only type of unreadable frag currently.
+>=20
+> > Unrelated: we probably need socket to dmabuf association as well (via
+> > netlink or something).
+>=20
+> Not sure this is possible. The dma-buf is bound to the rx-queue, and
+> any packets that land on that rx-queue are bound to that dma-buf,
+> regardless of which socket that packet belongs to. So the association
+> IMO must be rx-queue to dma-buf, not socket to dma-buf.
 
-Instead of measuring each CPU serially, let's do the measurements on
-all CPUs in parallel. If we disable preemption on all CPUs, the
-jiffies stop ticking, so we can do this in stages of 1) everybody
-except core 0, then 2) core 0. The allocations are all done outside of
-on_each_cpu() to avoid calling alloc_pages() with interrupts disabled.
+But there is still always 1 dmabuf to 1 socket association (on rx), right?
+Because otherwise, there is no way currently to tell, at recvmsg, which
+dmabuf the received token belongs to.
 
-For hotplugged CPUs that come in after the boot time measurement,
-register CPU hotplug callbacks, and do the measurement there. Interrupts
-are enabled in those callbacks, so they're fine to do alloc_pages() in.
+So why not have a separate control channel action to say: this socket fd
+is supposed to receive into this dmabuf fd? This action would put
+the socket into permanent 'MSG_SOCK_DEVMEM' mode. Maybe you can also
+put some checks at the lower level to to enforce this dmabuf
+association. (to avoid any potential issues with flow steering)
 
-Reported-by: Jisheng Zhang <jszhang@kernel.org>
-Closes: https://lore.kernel.org/all/mhng-9359993d-6872-4134-83ce-c97debe1cf9a@palmer-ri-x1c9/T/#mae9b8f40016f9df428829d33360144dc5026bcbf
-Fixes: 584ea6564bca ("RISC-V: Probe for unaligned access speed")
-Signed-off-by: Evan Green <evan@rivosinc.com>
-
----
-
-Changes in v3:
- - Avoid alloc_pages() with interrupts disabled (Sebastien)
- - Use cpuhp callbacks instead of hooking into smp_callin() (Sebastien).
- - Move cached answer check in check_unaligned_access() out to the
-   hotplug callback, both to save the work of a useless allocation, and
-   since check_unaligned_access_emulated() resets the answer to unknown.
-
-Changes in v2:
- - Removed new global, used system_state == SYSTEM_RUNNING instead
-   (Jisheng)
- - Added tags
-
- arch/riscv/include/asm/cpufeature.h |  1 -
- arch/riscv/kernel/cpufeature.c      | 96 +++++++++++++++++++++++------
- arch/riscv/kernel/smpboot.c         |  1 -
- 3 files changed, 77 insertions(+), 21 deletions(-)
-
-diff --git a/arch/riscv/include/asm/cpufeature.h b/arch/riscv/include/asm/cpufeature.h
-index 7f1e46a9d445..69f2cae96f0b 100644
---- a/arch/riscv/include/asm/cpufeature.h
-+++ b/arch/riscv/include/asm/cpufeature.h
-@@ -30,7 +30,6 @@ DECLARE_PER_CPU(long, misaligned_access_speed);
- /* Per-cpu ISA extensions. */
- extern struct riscv_isainfo hart_isa[NR_CPUS];
- 
--void check_unaligned_access(int cpu);
- void riscv_user_isa_enable(void);
- 
- #ifdef CONFIG_RISCV_MISALIGNED
-diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.c
-index 6a01ded615cd..fe59e18dbd5b 100644
---- a/arch/riscv/kernel/cpufeature.c
-+++ b/arch/riscv/kernel/cpufeature.c
-@@ -8,6 +8,7 @@
- 
- #include <linux/acpi.h>
- #include <linux/bitmap.h>
-+#include <linux/cpuhotplug.h>
- #include <linux/ctype.h>
- #include <linux/log2.h>
- #include <linux/memory.h>
-@@ -29,6 +30,7 @@
- 
- #define MISALIGNED_ACCESS_JIFFIES_LG2 1
- #define MISALIGNED_BUFFER_SIZE 0x4000
-+#define MISALIGNED_BUFFER_ORDER get_order(MISALIGNED_BUFFER_SIZE)
- #define MISALIGNED_COPY_SIZE ((MISALIGNED_BUFFER_SIZE / 2) - 0x80)
- 
- unsigned long elf_hwcap __read_mostly;
-@@ -557,30 +559,21 @@ unsigned long riscv_get_elf_hwcap(void)
- 	return hwcap;
- }
- 
--void check_unaligned_access(int cpu)
-+static int check_unaligned_access(void *param)
- {
-+	int cpu = smp_processor_id();
- 	u64 start_cycles, end_cycles;
- 	u64 word_cycles;
- 	u64 byte_cycles;
- 	int ratio;
- 	unsigned long start_jiffies, now;
--	struct page *page;
-+	struct page *page = param;
- 	void *dst;
- 	void *src;
- 	long speed = RISCV_HWPROBE_MISALIGNED_SLOW;
- 
- 	if (check_unaligned_access_emulated(cpu))
--		return;
--
--	/* We are already set since the last check */
--	if (per_cpu(misaligned_access_speed, cpu) != RISCV_HWPROBE_MISALIGNED_UNKNOWN)
--		return;
--
--	page = alloc_pages(GFP_NOWAIT, get_order(MISALIGNED_BUFFER_SIZE));
--	if (!page) {
--		pr_warn("Can't alloc pages to measure memcpy performance");
--		return;
--	}
-+		return 0;
- 
- 	/* Make an unaligned destination buffer. */
- 	dst = (void *)((unsigned long)page_address(page) | 0x1);
-@@ -634,7 +627,7 @@ void check_unaligned_access(int cpu)
- 		pr_warn("cpu%d: rdtime lacks granularity needed to measure unaligned access speed\n",
- 			cpu);
- 
--		goto out;
-+		return 0;
- 	}
- 
- 	if (word_cycles < byte_cycles)
-@@ -648,19 +641,84 @@ void check_unaligned_access(int cpu)
- 		(speed == RISCV_HWPROBE_MISALIGNED_FAST) ? "fast" : "slow");
- 
- 	per_cpu(misaligned_access_speed, cpu) = speed;
-+	return 0;
-+}
- 
--out:
--	__free_pages(page, get_order(MISALIGNED_BUFFER_SIZE));
-+static void check_unaligned_access_nonboot_cpu(void *param)
-+{
-+	unsigned int cpu = smp_processor_id();
-+	struct page **pages = param;
-+
-+	if (smp_processor_id() != 0)
-+		check_unaligned_access(pages[cpu]);
-+}
-+
-+static int riscv_online_cpu(unsigned int cpu)
-+{
-+	static struct page *buf;
-+
-+	/* We are already set since the last check */
-+	if (per_cpu(misaligned_access_speed, cpu) != RISCV_HWPROBE_MISALIGNED_UNKNOWN)
-+		return 0;
-+
-+	buf = alloc_pages(GFP_KERNEL, MISALIGNED_BUFFER_ORDER);
-+	if (!buf) {
-+		pr_warn("Allocation failure, not measuring misaligned performance\n");
-+		return -ENOMEM;
-+	}
-+
-+	check_unaligned_access(buf);
-+	__free_pages(buf, MISALIGNED_BUFFER_ORDER);
-+	return 0;
- }
- 
--static int __init check_unaligned_access_boot_cpu(void)
-+/* Measure unaligned access on all CPUs present at boot in parallel. */
-+static int check_unaligned_access_all_cpus(void)
- {
--	check_unaligned_access(0);
-+	unsigned int cpu;
-+	unsigned int cpu_count = num_possible_cpus();
-+	struct page **bufs = kzalloc(cpu_count * sizeof(struct page *),
-+				     GFP_KERNEL);
-+
-+	if (!bufs) {
-+		pr_warn("Allocation failure, not measuring misaligned performance\n");
-+		return 0;
-+	}
-+
-+	/*
-+	 * Allocate separate buffers for each CPU so there's no fighting over
-+	 * cache lines.
-+	 */
-+	for_each_cpu(cpu, cpu_online_mask) {
-+		bufs[cpu] = alloc_pages(GFP_KERNEL, MISALIGNED_BUFFER_ORDER);
-+		if (!bufs[cpu]) {
-+			pr_warn("Allocation failure, not measuring misaligned performance\n");
-+			goto out;
-+		}
-+	}
-+
-+	/* Check everybody except 0, who stays behind to tend jiffies. */
-+	on_each_cpu(check_unaligned_access_nonboot_cpu, bufs, 1);
-+
-+	/* Check core 0. */
-+	smp_call_on_cpu(0, check_unaligned_access, bufs[0], true);
-+
-+	/* Setup hotplug callback for any new CPUs that come online. */
-+	cpuhp_setup_state_nocalls(CPUHP_AP_ONLINE_DYN, "riscv:online",
-+				  riscv_online_cpu, NULL);
-+
-+out:
- 	unaligned_emulation_finish();
-+	for_each_cpu(cpu, cpu_online_mask) {
-+		if (bufs[cpu])
-+			__free_pages(bufs[cpu], MISALIGNED_BUFFER_ORDER);
-+	}
-+
-+	kfree(bufs);
- 	return 0;
- }
- 
--arch_initcall(check_unaligned_access_boot_cpu);
-+arch_initcall(check_unaligned_access_all_cpus);
- 
- void riscv_user_isa_enable(void)
- {
-diff --git a/arch/riscv/kernel/smpboot.c b/arch/riscv/kernel/smpboot.c
-index d69c628c24f4..d162bf339beb 100644
---- a/arch/riscv/kernel/smpboot.c
-+++ b/arch/riscv/kernel/smpboot.c
-@@ -247,7 +247,6 @@ asmlinkage __visible void smp_callin(void)
- 	riscv_ipi_enable();
- 
- 	numa_add_cpu(curr_cpuid);
--	check_unaligned_access(curr_cpuid);
- 	set_cpu_online(curr_cpuid, 1);
- 
- 	if (has_vector()) {
--- 
-2.34.1
-
+We'll still have dmabuf to rx-queue association because of various reasons.=
+.
