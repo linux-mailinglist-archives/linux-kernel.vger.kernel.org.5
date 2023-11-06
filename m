@@ -2,95 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5795D7E2FC1
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 23:21:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CB8E7E2FC5
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 23:22:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233225AbjKFWVR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 17:21:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56758 "EHLO
+        id S233132AbjKFWWQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 17:22:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233166AbjKFWVL (ORCPT
+        with ESMTP id S232005AbjKFWWO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 17:21:11 -0500
-Received: from mail-oa1-x2a.google.com (mail-oa1-x2a.google.com [IPv6:2001:4860:4864:20::2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C4E0D6E;
-        Mon,  6 Nov 2023 14:21:09 -0800 (PST)
-Received: by mail-oa1-x2a.google.com with SMTP id 586e51a60fabf-1e9e4636ce6so476546fac.0;
-        Mon, 06 Nov 2023 14:21:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699309268; x=1699914068; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Bk1iGqzSFhqcLXMUJQBLSwculIJFSVmZJKxDlYOyfpY=;
-        b=WOVjzewsq3/y9eXUAdiAZ2CFK4bHu9BPXC3HKVx/MRSZuJ/r47AtXuos6EbFQLn1ZY
-         t5QxcNLL1q80pL5Zvv6ivZjRpihdkmVGn5tRGDJoaOwLOvQ7oQi4w8MYsGSNnM/hbFaQ
-         bG8kUriiJEX2tuHZMRezDi/v0Oqj1I9+0RyhiDehAhfaFWkRYHmG8PxHbZMSQ3CYpvZB
-         1WFfvgMqH1+xslmtOsjekiDQ8edUfBvvWvgU15kCbYnd7HbatPNI19S6f8lwaqMNKRjX
-         HObUXR+y2snam51owS1ZRGVzoQ5J/5vwrk76FIqkSlLgB4lPzJu9h9DWQs+miQN1RXq6
-         famw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699309268; x=1699914068;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Bk1iGqzSFhqcLXMUJQBLSwculIJFSVmZJKxDlYOyfpY=;
-        b=TfI0ZDaQJL5pLsIqCFLJ3HuuYjO1x/S3i6IOAZBPq0zDmfEDC3CX2vRh35GuLk8ioW
-         TjwFpDnC3V/Gz1HY0L2WS+dU5sQVUxHV34FKmzihhOCrXzFin2kxVxSKf0EGGc5DDxVs
-         pO4EvAHRg6LoBVp+kPkKKyjK02s11paAJpbESMkJS4Ilz/AmgUxKrEAJTp/XyqjxkmWI
-         xRJdIduRzqeGNEtZzPQwbVfVoXIyiFRIQkeWwkB0diH8BRIpZpHhlcrfQEsWcJ+14TLK
-         0jFu4wyGaGtUtdmukumoqHLlploAiQR6PPiF0ZQvj3QkHi/O6sf2lev46beF6LtJ9NaG
-         rGXg==
-X-Gm-Message-State: AOJu0Yy+/mrigYS+NWSq0l0H2T0scxYp7Dpc4Hceo2KJwoOfxvqCCpBT
-        fLhFpW12ylqKlfYGEHfC57A=
-X-Google-Smtp-Source: AGHT+IFrQVI3UuOVAMqIkpO31ev7YOIxC0kgQ+xbMLCn9eC76+pRj/jd6eEkJJQYjVE7MHOWeg1B+g==
-X-Received: by 2002:a05:6358:6f0e:b0:16b:6e91:f7f8 with SMTP id r14-20020a0563586f0e00b0016b6e91f7f8mr2559604rwn.0.1699309268298;
-        Mon, 06 Nov 2023 14:21:08 -0800 (PST)
-Received: from localhost.localdomain ([140.116.154.65])
-        by smtp.gmail.com with ESMTPSA id b7-20020a63cf47000000b00588e8421fa8sm217869pgj.84.2023.11.06.14.21.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Nov 2023 14:21:07 -0800 (PST)
-From:   Kuan-Wei Chiu <visitorckw@gmail.com>
-To:     wintera@linux.ibm.com, wenjia@linux.ibm.com, hca@linux.ibm.com,
-        gor@linux.ibm.com, agordeev@linux.ibm.com
-Cc:     borntraeger@linux.ibm.com, svens@linux.ibm.com,
-        linux-s390@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Kuan-Wei Chiu <visitorckw@gmail.com>
-Subject: [PATCH] s390/qeth: Fix typo 'weed' in comment
-Date:   Tue,  7 Nov 2023 06:20:59 +0800
-Message-Id: <20231106222059.1475375-1-visitorckw@gmail.com>
+        Mon, 6 Nov 2023 17:22:14 -0500
+Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05olkn2092.outbound.protection.outlook.com [40.92.90.92])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D214ED57;
+        Mon,  6 Nov 2023 14:22:11 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VQwQen2eWBXacKp2g9IS6sLAtePUl34sFuXyQkGzESejwDQwbILrflCXjoQ2e6y5HmaGl21PAVQg280oLexewbA+qowYQKuzNr8y5xutW3ZOvbXR5x5ZssMiWTh1NdehH5c6mS8D3uiKnGc9WlEU4VPZ779sfu0UbbzhMik/UK6p+HGHsUTrJmRkrRTtBBRVdKMZ+4pa0Ppipx69WMeeEkoEm81XNtBnWckHaOOwwhv+jeJwBggK1GQLcrTD9FfThIcPa3/AEU7UPAc5+SefECrutPp+6utE93/Me2ZX14nYqxUiyrWSxeYEchz2gz03LFF6Aim3e106loQFVnY2qQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=KYgAhFYQrRNovxRm5bsWSiueE9LZzAsAZj+6d0TdFp8=;
+ b=csDwMw8Q5QpKI82LXofFoC0CchNwm9cvr4K3H5pQR8W1Ph726IDPT0VRwUov5QXDAco/kzve8i0VhDuUYiqplEA6XpZBJZFLJNbcF00JQRAJMQfYRa1ceWRZhPTuq7TN4wUpKw7LRjlSeMW7Z389hVEWSypO7Ao2omDl7zXFqKJij4Q054xJZ/4mKAdBN+bmWoa4siHngjbxeA75Tu4FuurXODOL0RSQRuyy78KzvklRbimvG2LmqMGbzrU1JCLe8D4f4leTFBMaEYZVK3RZR6KdNRv5wagFRIi1nA6MtKns2NeF3AqH+t2WxFKMhpCKv/doXo/jVtNIaUIS7rY5/Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=KYgAhFYQrRNovxRm5bsWSiueE9LZzAsAZj+6d0TdFp8=;
+ b=t/k/8aZ0GwkJ+Uc+mwOmas7L7GSDd8A7DXKMTepTc7SxQhRK7iPjnDJgzY0HXr/fAa7sjC8oA9+zjg9uG955sbmc/2EcV4wYPuAAkuhD/yP5xXWB4UN5skPTh95rzNZJ/jppeTD2B/KLZ57CUAKk115fSsHWD8jOVRYKUwncpdl+rm8pMCZWU1xyqnPL6rAexAaZGlpOA/eB1OfxdbYriojor93Bpn0RxM8F9EYC4ezBYtGUr4ucshSSAzWHAeoa5LNDzL0WRaxa+jOAS6emIpnx+MLU3BZukbDf0+0/QEHarevoBVmJv5/lQPZriWs4CUVhxEqzk+9P5QUUR/P/mQ==
+Received: from DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:42a::7)
+ by AS8PR10MB6993.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:5a4::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.28; Mon, 6 Nov
+ 2023 22:22:09 +0000
+Received: from DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::e2b0:8d7e:e293:bd97]) by DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::e2b0:8d7e:e293:bd97%7]) with mapi id 15.20.6954.028; Mon, 6 Nov 2023
+ 22:22:09 +0000
+From:   Yuran Pereira <yuran.pereira@hotmail.com>
+To:     linux-bluetooth@vger.kernel.org
+Cc:     Yuran Pereira <yuran.pereira@hotmail.com>, marcel@holtmann.org,
+        johan.hedberg@gmail.com, luiz.dentz@gmail.com,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: [PATCH 0/2] Bluetooth: Add documentation and replace printk calls
+Date:   Tue,  7 Nov 2023 03:51:47 +0530
+Message-ID: <DB3PR10MB6835C002EB4C5A05AD17610BE8AAA@DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM>
 X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TMN:  [MAvBBO600D5xPui3UmRVquZ0wutlUJDq]
+X-ClientProxiedBy: JN2P275CA0018.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:3::30)
+ To DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:42a::7)
+X-Microsoft-Original-Message-ID: <20231106222147.1793535-1-yuran.pereira@hotmail.com>
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DB3PR10MB6835:EE_|AS8PR10MB6993:EE_
+X-MS-Office365-Filtering-Correlation-Id: f8194ab6-2933-4c55-32e5-08dbdf16d0df
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: kwRtveDDQb1w6KYZ45UYKRks5m5R3vJFWo3uFRR1n+wEZG5im/1GG3B3dZyXxV8/k5sCTJbUQzqvvLVuZURJHfxZPZQI4eoRB94oLmDeyydPfWoXcvSzcP7YveFgPIWzuJ9OCt8Dd66KdBLkBScuhOvfnQoBnsxB/j6KBr+QoUQH2+17Y41E+QBpXPhhyZjd8WMA45IH5J23TtCwEs/yQnR6eFZhq8AvB7GrFZjiTZm7m4ly12PTHYLp87uuNCPK9XwsLmGZrbIWef10lsJiH7cZKR/MOVzjcWb1Eycdbww42W0HRGoUaz2n/tFNbPXfuZvbDykNPv6NKUXQe1PVW6Nr7vdPQ+1ouDCZLdx25FesLpaR+D4eMZVRlvPpL4s4VnAheXr2Mcjq0Saw8UAHj8fRitf+BcbjA2jPiiEBuC5wkdCHkzZ6VydyuDs7L51j5KRwcmNi6GoCWUJpGjS3WEkhOS50K7m1jaMBWwgdqRe57HTqVx0igdkfringCA/+YAs5EHZ0b4q72L31JRuyuzzYTS6iXSDR4mgUk69fpwcGJyRQuh9/psfWGhKfzC2et/9OR3o/+9bQ6tbB8mWbGkFKH3rOlpQNkBqC0WKKQAo=
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?mW2HlB7/N3Ly1f3Hs4K+t4tA+VjMa5P76Sz6xGLFRQdsNHlQKaVF9Mkv/psW?=
+ =?us-ascii?Q?mJ1K+jLntYjv+GewSgU7upqJvYxQq/NzThaNPTCwmiiHCEJ3N4wBgIARdawV?=
+ =?us-ascii?Q?FpPZ1I2oU9mdCk3vUA+Ysk3zkq6FoyDb1zJ8RpdiNZ3M7J/9ujOwTSR1G9ac?=
+ =?us-ascii?Q?TOovAb8PJhAyrekUvlB327hCcbPb6CAJjZmGkE3WWXBF/mYPVEEV7F+OJQZD?=
+ =?us-ascii?Q?77uNBY4jEDpXythwNKWFwSZWS1JxBsk0GSW8U3aDQ15H9bR1qUhuyP8eFSXd?=
+ =?us-ascii?Q?uE7FfGtIrS/BTsCZp+Q5zleKpDnL/Qxgm1lCUwgUAR77U74Y25CLpDLFlWy/?=
+ =?us-ascii?Q?d1IsZAJMFYDmLCv0gJIr6z1ybL64nC7A/lGtfOj57oi+40SmtbqzVxb9l2zs?=
+ =?us-ascii?Q?C2ylhs1PkDfcS7gbTfbUD/7+ES/RjFDb5NugfPzkpo1mmGb2Jc++RA9RitAg?=
+ =?us-ascii?Q?ktIwUXFlsZkQFBvAAQiv6NK63bxxLYKPrR1WUmRMZ0ouqcxCuWB6qTqaMD5K?=
+ =?us-ascii?Q?p61iMh6+uCm/R6pj6bPcof9DMGvfZJWz6u0QeBJHOWvtX/YcyojWj8TPRG9E?=
+ =?us-ascii?Q?i7bSFfZS8vR4kGBOk6B1o4odRmVvpjweAh26/5RmiJUVYazf24mgzGOQh+CW?=
+ =?us-ascii?Q?vdKdImpBdKOWXhgZTRLeLXWwzW5Yg/5bXsoS3X7bMDOks4UUh8JnkUPQwpiI?=
+ =?us-ascii?Q?ZK36wgEkolEEzGUTWhu6SUnSrDAMoShGGaWKJz2/UC66SDyxq6WL9MXdFqR/?=
+ =?us-ascii?Q?geLzvkWq++sEtE+jYKfEJNeTWpw8wfzj+229+LH+ymfi4zHrnDFDDaRtR/pz?=
+ =?us-ascii?Q?eqqU4Fx+FKMVtdvIAGYRhnt2HMm/3JJNpxm7pqPaoCBTUW9g+MWaG/ZYstAZ?=
+ =?us-ascii?Q?vgXTabY2rVbfLuJFPxxAwJXdTKhI4SgD69OvGTbulkOAHnjQYGesqN1tiNlR?=
+ =?us-ascii?Q?uvUIE4IcU5B1ho/c1wZfrjurbLsCP5am2jcyhM3Ox0TwN0Lr8uiy4dp5h5xw?=
+ =?us-ascii?Q?jpJKQl9HbLQvfhWIbHImpOirVQGKn2+l2M7gJi4JXcw+VL4zrMzpNWclUkIh?=
+ =?us-ascii?Q?3ldAwoaehx5gSRV9J6r4gwHm7FSol+2V2H9E8Nk4afi4X773aj/cHtlbRB18?=
+ =?us-ascii?Q?dx3QkDXJuuvQ6YJellmNXMOD6+WH1ZBwHRpSmKfE/bN1colfjrWpvsSauuM2?=
+ =?us-ascii?Q?xrt191JlAmLTLiu4az7J6CbrKp5Xwi520/W1gnx0H+Bk7BbrFofvsnH3yqI?=
+ =?us-ascii?Q?=3D?=
+X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-6b909.templateTenant
+X-MS-Exchange-CrossTenant-Network-Message-Id: f8194ab6-2933-4c55-32e5-08dbdf16d0df
+X-MS-Exchange-CrossTenant-AuthSource: DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Nov 2023 22:22:09.5928
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR10MB6993
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace 'weed' with 'we' in the comment.
+The following patchset adds documentation to exported functions in
+`net/bluetooth/lib.c` and ensures that `bt_*` logging functions are
+calling the correct pr_* function as opposed to `printk(KERN_*`.
 
-Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
----
- drivers/s390/net/qeth_core_main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Yuran Pereira (2):
+  Bluetooth: Add documentation to exported functions in lib
+  Bluetooth: Replaces printk with pr_debug in bt_dbg
 
-diff --git a/drivers/s390/net/qeth_core_main.c b/drivers/s390/net/qeth_core_main.c
-index 6af2511e070c..cf8506d0f185 100644
---- a/drivers/s390/net/qeth_core_main.c
-+++ b/drivers/s390/net/qeth_core_main.c
-@@ -3675,7 +3675,7 @@ static void qeth_flush_queue(struct qeth_qdio_out_q *queue)
- static void qeth_check_outbound_queue(struct qeth_qdio_out_q *queue)
- {
- 	/*
--	 * check if weed have to switch to non-packing mode or if
-+	 * check if we have to switch to non-packing mode or if
- 	 * we have to get a pci flag out on the queue
- 	 */
- 	if ((atomic_read(&queue->used_buffers) <= QETH_LOW_WATERMARK_PACK) ||
+ net/bluetooth/lib.c | 71 ++++++++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 67 insertions(+), 4 deletions(-)
+
 -- 
 2.25.1
 
