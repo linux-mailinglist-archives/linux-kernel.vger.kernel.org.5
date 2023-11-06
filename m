@@ -2,119 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2507F7E1D84
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 10:52:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AD827E1D93
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 10:54:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230231AbjKFJwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 04:52:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59942 "EHLO
+        id S230421AbjKFJyJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 04:54:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbjKFJw2 (ORCPT
+        with ESMTP id S229478AbjKFJyG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 04:52:28 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D601DB;
-        Mon,  6 Nov 2023 01:52:26 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A9165C433C8;
-        Mon,  6 Nov 2023 09:52:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699264345;
-        bh=E4/L+LlFjPb2WwOsFdRog7Iics6lqBe9DHzObFZjQaQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=T1m8kRbWZJn7jsk5RLHokR9jTw6xjTC7WAG3HzgnbzkI4rIjkbPbBe1xbsxTjC9ZG
-         bQD/OVdd2XWQfDScwPip752ciLnUAU9sTG4Nag+Il9hHmCU9wx92SirzX93CcAldqe
-         Q19vK4kZHziaINx+dpu1dRcaB6bAsL0Wdf4KQjiwM5zUMYDkShQatGQ5LnsMqpHI7E
-         666nsBMFCYw/naCOjZzJQbS2kPc6WDZs+la98bV6LFiUl6gf63uKDyxU8LB7HPsm8C
-         sG78jW0v8g6Kqw8NETlTVsiq0OCadkK47lKKpiQX3RgqkfhO4TpWxYkYUsiKenry3/
-         M0sR8hlOWTbGA==
-Received: from johan by xi.lan with local (Exim 4.96)
-        (envelope-from <johan@kernel.org>)
-        id 1qzwIA-0007JB-2C;
-        Mon, 06 Nov 2023 10:53:10 +0100
-Date:   Mon, 6 Nov 2023 10:53:10 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     Stanley =?utf-8?B?Q2hhbmdb5piM6IKy5b63XQ==?= 
-        <stanley_chang@realtek.com>
-Cc:     Stefan Eichenberger <eichest@gmail.com>,
-        Johan Hovold <johan+linaro@kernel.org>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        Maxime Ripard <mripard@kernel.org>
-Subject: Re: [PATCH] USB: xhci-plat: fix legacy PHY double inity
-Message-ID: <ZUi3hrDbseJbIsWZ@hovoldconsulting.com>
-References: <20231103164323.14294-1-johan+linaro@kernel.org>
- <ZUY8cGrofUtPOMV8@eichest-laptop>
- <5a493e6fedb449bc93f83f31a682e5b9@realtek.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <5a493e6fedb449bc93f83f31a682e5b9@realtek.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Mon, 6 Nov 2023 04:54:06 -0500
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53CF5B6;
+        Mon,  6 Nov 2023 01:54:03 -0800 (PST)
+Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-9d267605ceeso620158166b.2;
+        Mon, 06 Nov 2023 01:54:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699264442; x=1699869242; darn=vger.kernel.org;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=otIX8+idMS2A1yjtMOT40Sxj9HPBhYuyJPN9t9t9cSU=;
+        b=EHcUx1ukOxbDPHnTrT//Ek7SZ/fyDELBgRjzV41dFnXLrmpgcbf0p5ZuJGixtQ+gwt
+         jvXh4dpkB1FROOUo3JSP5Y7KKl7h5P520nnyrKp5dLqUtIxa1KbLvBH2NwXaM6WysXtU
+         qB8k+w499eDbMCVHiMNM+NknZGCJg2A/39nWYBAI/mIhSA88EVoEOtPanevZmaFH7ELi
+         6t4Sx5Y4BqMg5pV0NS4AuCTEL1D0Tbaeo5/FEN6zx6nOGyNXFA6ZevSH2WcSqih9n7FM
+         cXQDGYhCbpSvI8WAuueTk0TQt8FKU8LGMsBGq3prhPMXZeA92i+DbhMifYDQ9R6scAXi
+         aTCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699264442; x=1699869242;
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=otIX8+idMS2A1yjtMOT40Sxj9HPBhYuyJPN9t9t9cSU=;
+        b=cEs2h+kREJcgEZodifaTVXUwcWp8pXwnSbd57YNK2SOIJ3PrUzOpxnH3A8p2nJSqNy
+         NOuWWhg3jJTVDcoK9mkGg1ydyVO2pft0lL30paWfREUf3Qp7Kyoe0qNIrqCI5ACIHd1q
+         KmSklb8RfJ+j7eWVxN0q/V/m17CMwkVdWqpgbx3f58NFVMqNpU7tJufCoIHxAvBFPAZX
+         ASqn1eMgu+8nHIZAXgeOWaV7i8hli8WsJBYcXJCTM+P9HMYXWtFtc6mag+Xj4yuwzZ5L
+         Ucae6tIZyucYr/aiCmiRc9v4KadbYYbGyjM1Kwz1wIgeSndz5DSWGbZw0D7b07EQErZd
+         epfQ==
+X-Gm-Message-State: AOJu0YwMbdmRYLNS+8GIUPjSTLGvLz/RfwRNrSafnjFZOeAC+8N0hg1I
+        VSIujTFFPxsfKJPMqsbfzWU=
+X-Google-Smtp-Source: AGHT+IEa/iGSQXVfW4lCHwK5pPS3XxlZeD5ZwgxpdBfFYaqagOnnjZDZjh8ZU9LX+MWw6I95hlcrpQ==
+X-Received: by 2002:a17:907:72d6:b0:9b8:e670:657b with SMTP id du22-20020a17090772d600b009b8e670657bmr12498126ejc.64.1699264441587;
+        Mon, 06 Nov 2023 01:54:01 -0800 (PST)
+Received: from felia.fritz.box ([2a02:810d:7e40:14b0:c1b6:41cb:bf88:2048])
+        by smtp.gmail.com with ESMTPSA id h26-20020a1709063c1a00b009b97aa5a3aesm3895568ejg.34.2023.11.06.01.54.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 Nov 2023 01:54:01 -0800 (PST)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To:     Nik Bune <n2h9z4@gmail.com>,
+        Support Opensource <support.opensource@diasemi.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH] MAINTAINERS: rectify entry for DIALOG SEMICONDUCTOR DRIVERS
+Date:   Mon,  6 Nov 2023 10:53:49 +0100
+Message-Id: <20231106095349.9564-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.17.1
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 06, 2023 at 06:53:23AM +0000, Stanley Chang[昌育德] wrote:
-> > > On Fri, Nov 03, 2023 at 05:43:23PM +0100, Johan Hovold wrote:
-> > > > Commits 7b8ef22ea547 ("usb: xhci: plat: Add USB phy support") and
-> > > > 9134c1fd0503 ("usb: xhci: plat: Add USB 3.0 phy support") added
-> > > > support for looking up legacy PHYs from the sysdev devicetree node
-> > > > and initialising them.
-> > > >
-> > > > This broke drivers such as dwc3 which manages PHYs themself as the
-> > > > PHYs would now be initialised twice, something which specifically
-> > > > can lead to resources being left enabled during suspend (e.g. with
-> > > > the usb_phy_generic PHY driver).
-> > > >
-> > > > As the dwc3 driver uses driver-name matching for the xhci platform
-> > > > device, fix this by only looking up and initialising PHYs for
-> > > > devices that have been matched using OF.
+Commit bd888a4377ae ("dt-bindings: watchdog: da9062-wdt: convert txt to
+yaml") converts da9062-wdt.txt to dlg,da9062-watchdog.yaml, but misses to
+adjust its reference in MAINTAINERS.
 
-> > Tested-by: Stanley Chang <stanley_chang@realtek.com>
+Hence, ./scripts/get_maintainer.pl --self-test=patterns complains about a
+broken reference.
 
-> I am sorry to notify you this patch is tested fail.
+Repair this file pattern in DIALOG SEMICONDUCTOR DRIVERS.
 
-Hmm. Thanks for testing.
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+---
+ MAINTAINERS | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> I test the Realtek phy driver at drivers/phy/Realtek/phy-rtk-usb2.c again.
-> But I can't get the phy in xhci.
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 0410322b740a..bd9077b1fd41 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -6123,7 +6123,7 @@ F:	Documentation/devicetree/bindings/regulator/dlg,da9*.yaml
+ F:	Documentation/devicetree/bindings/regulator/dlg,slg51000.yaml
+ F:	Documentation/devicetree/bindings/sound/da[79]*.txt
+ F:	Documentation/devicetree/bindings/thermal/da90??-thermal.txt
+-F:	Documentation/devicetree/bindings/watchdog/da90??-wdt.txt
++F:	Documentation/devicetree/bindings/watchdog/dlg,da90??-watchdog.yaml
+ F:	Documentation/hwmon/da90??.rst
+ F:	drivers/gpio/gpio-da90??.c
+ F:	drivers/hwmon/da90??-hwmon.c
+-- 
+2.17.1
 
-> It is a dwc3 generic phy driver, and it is also a usb phy driver. 
-
-That sounds broken (i.e. to be relying on both frameworks), but indeed
-that seems to be the current state of the generic and legacy USB PHY
-implementations.
-
-What a mess.
-
-> Base on you modified, I can't run on callback 
-> rtk_phy->phy.notify_port_status = rtk_phy_notify_port_status;
-
-Which dwc3 driver are you using? Unless I'm missing something this would
-not be an issue unless you are doing something crazy like describing the
-same PHY twice in the devicetree (i.e. both as a generic and legacy
-PHY).
-
-Apparently, there are no in-tree users of this particular realtek PHY so
-I can't check the devicetree, but we do have other instances of such
-abuse since at least a decade:
-
-	6747caa76cab ("usb: phy: twl4030: use the new generic PHY framework")
-
-And, yes, then this is sort of expected. The dwc3 driver has always
-managed its own PHYs, but functionality has now been bolted on top so
-that people may have started relying on it being managed *also* by xhci,
-well at least for notifications like the one you just added:
-
-	a08799cf17c2 ("usb: phy: add usb phy notify port status API")
-
-Johan
