@@ -2,232 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6150B7E1F2F
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 12:03:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AA577E1F46
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 12:05:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230308AbjKFLDz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 06:03:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54940 "EHLO
+        id S230284AbjKFLFU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 06:05:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231230AbjKFLDw (ORCPT
+        with ESMTP id S229478AbjKFLFT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 06:03:52 -0500
-Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B699DB
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 03:03:49 -0800 (PST)
-Received: by mail-qv1-xf29.google.com with SMTP id 6a1803df08f44-66d134a019cso30970516d6.3
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 03:03:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1699268628; x=1699873428; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MQ8TONDIpPhmTy6Gjm0dgeV6egeVVxfnh06xkrQleLY=;
-        b=TonV0kcqKq1XY1Ybr3NXfEZUxfWiPs619VEWGjQyvxDcke1wV+eXBbxsGimGZt5nrT
-         Bh+NlZWUA+4UZzYVihMFMDzLd1uW9iuuvsDON9B3VlGmg1AsnYauXfFrxr7rc0MeLAd0
-         WbDSvbaxbi8sxaVirHWVy19hlezi6XqgnuoUxH+ofN5STYZi7InmsMWNlUt6EChdCDJ9
-         MeyNLF5DVIpi4uLkxN52z83Zasid1RCGNmI680HjJ+YK3GbnUjCSdRECrmaaWw5L+fGL
-         2RRWgINqlNPQ7BC7k1RyScqYG4RVaa6U+iitbOKUoi5UubBS571J3wl8+TIYOOHP7WhA
-         tjOw==
+        Mon, 6 Nov 2023 06:05:19 -0500
+Received: from mail-oi1-f198.google.com (mail-oi1-f198.google.com [209.85.167.198])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77F0698
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 03:05:16 -0800 (PST)
+Received: by mail-oi1-f198.google.com with SMTP id 5614622812f47-3b2e7b41beaso6296731b6e.0
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 03:05:16 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699268628; x=1699873428;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MQ8TONDIpPhmTy6Gjm0dgeV6egeVVxfnh06xkrQleLY=;
-        b=hP7UccMe6x/nFjfA9CuGTuXBpzWf1o3f8KPHHnTFuv0qtuKIRcu2qnLkv0M0kTTo8y
-         xHK0tps6tDNV4G04T6331EM/Q+h7/68sI3A5rc+8kbVhdKwQqirxc5FeBmr9zW0lgZcd
-         AlCGfwol9WojIjsmWGe+7sLpxCEakxwv2N9x2Z79hngRWZi5Lcnz91O++OioUM9LfoZC
-         FSamIddB8FaD6Frzp0xMtWzQeDOSamKaRN9y74/2k1YnRxXFInIdkdxnug0DfwStg5AX
-         MMtOrHeFu8wK3Zojz/dK2vLN9VzHs/Y52wQHBCFzgkVOAcVSf5WzMaxtiAB2RJ3+Xg/i
-         XT/w==
-X-Gm-Message-State: AOJu0YxTasstb7gjjyKRUe97mP3ZMmkvA5Fs7wr92dLWgxqYZ27yJjcL
-        QzXbkYr5S+8ffJCIRWXR4aydkuLEvQ1MfTHukZsIUg==
-X-Google-Smtp-Source: AGHT+IHHh4fCnCxDMnJOn7/R0pkHJKwXr6C+d2r8s0u73YKLv4MHtUig5I9yHuaqDmXCQ/Y0QVlMeO42z9uduKCvqDI=
-X-Received: by 2002:a0c:f1ca:0:b0:66d:28a5:d153 with SMTP id
- u10-20020a0cf1ca000000b0066d28a5d153mr26974988qvl.47.1699268628158; Mon, 06
- Nov 2023 03:03:48 -0800 (PST)
+        d=1e100.net; s=20230601; t=1699268716; x=1699873516;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=B4WrInhgn1slSzPkxe5Hf57cTocmvPMzjXvDetJR8Dc=;
+        b=T6wnSpbAgnI4qSVYcKX1FQEGZotunOilL4imEbmQTpbvIpCgSCvqBY/K0Ge8HuRRj6
+         mIoAlIt1K1FpFtYNJyz4bdgIqJ3GLLrplkFRbaT90ZbhSV9Al00t+o1JuvbGjiQ1B9fm
+         1M6DY9XbEhwe+y003NuJ4iL1Byo36m4mkhB0fX/rF3sARZ8wm/4YpFUsehnWS3pZQRTk
+         0jPToxmBA1ggp0N0slDWZAQs5CoiwrW9t+f+ajlYtKz2lDOuTs6WGVLfX1cmVmhqOsVc
+         UJhWF9OXL3jU9o1nHq+RBIQm35uIYk7z68thGf9FCmF+HQ8RXBZc0SxQsoxPe8QDoins
+         LQ7A==
+X-Gm-Message-State: AOJu0YxGVtz6h1/TemLQSUA3paHgOUNtUbRFB65Tjg8HYMw2/Jq3sSYd
+        fXpjUINdv7ilLrpROWzNcvGiC9K+oxlsQayjzZS3Hx320lm09xk=
+X-Google-Smtp-Source: AGHT+IH220mff9/nUmWtiiwPvvpOTsem5XSXlBiK+utk5EXA4JLSYf6D5RnVk4OVWWuS5CLF6JhBQt2RO4zpv0voE5ludTVkBTY1
 MIME-Version: 1.0
-References: <20231105163040.14904-1-pbonzini@redhat.com> <20231105163040.14904-24-pbonzini@redhat.com>
-In-Reply-To: <20231105163040.14904-24-pbonzini@redhat.com>
-From:   Fuad Tabba <tabba@google.com>
-Date:   Mon, 6 Nov 2023 11:03:12 +0000
-Message-ID: <CA+EHjTw1RGEKD6Zv_QEtzTLLA4STTQrS4WYCY-HUdScAKXfBGg@mail.gmail.com>
-Subject: Re: [PATCH 23/34] KVM: selftests: Convert lib's mem regions to KVM_SET_USER_MEMORY_REGION2
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Anup Patel <anup@brainfault.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Sean Christopherson <seanjc@google.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>, kvm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Xiaoyao Li <xiaoyao.li@intel.com>,
-        Xu Yilun <yilun.xu@intel.com>,
-        Chao Peng <chao.p.peng@linux.intel.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Anish Moorthy <amoorthy@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Isaku Yamahata <isaku.yamahata@intel.com>,
-        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Maciej Szmigiero <mail@maciej.szmigiero.name>,
-        David Hildenbrand <david@redhat.com>,
-        Quentin Perret <qperret@google.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Wang <wei.w.wang@intel.com>,
-        Liam Merwick <liam.merwick@oracle.com>,
-        Isaku Yamahata <isaku.yamahata@gmail.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+X-Received: by 2002:a05:6808:20a6:b0:3a9:b9eb:9990 with SMTP id
+ s38-20020a05680820a600b003a9b9eb9990mr3816830oiw.0.1699268715895; Mon, 06 Nov
+ 2023 03:05:15 -0800 (PST)
+Date:   Mon, 06 Nov 2023 03:05:15 -0800
+In-Reply-To: <000000000000910ad106089f45eb@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000306327060979d4bc@google.com>
+Subject: Re: [syzbot] [PATCH] Test for 2030579113a1
+From:   syzbot <syzbot+df3f3ef31f60781fa911@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 5, 2023 at 4:33=E2=80=AFPM Paolo Bonzini <pbonzini@redhat.com> =
-wrote:
->
-> From: Sean Christopherson <seanjc@google.com>
->
-> Use KVM_SET_USER_MEMORY_REGION2 throughout KVM's selftests library so tha=
-t
-> support for guest private memory can be added without needing an entirely
-> separate set of helpers.
->
-> Note, this obviously makes selftests backwards-incompatible with older KV=
-M
-> versions from this point forward.
->
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> Message-Id: <20231027182217.3615211-26-seanjc@google.com>
-> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-> ---
+For archival purposes, forwarding an incoming command email to
+linux-kernel@vger.kernel.org.
 
-Reviewed-by: Fuad Tabba <tabba@google.com>
-Tested-by: Fuad Tabba <tabba@google.com>
+***
 
-Cheers,
-/fuad
+Subject: [PATCH] Test for 2030579113a1
+Author: eadavis@qq.com
 
->  .../selftests/kvm/include/kvm_util_base.h     |  2 +-
->  tools/testing/selftests/kvm/lib/kvm_util.c    | 19 ++++++++++---------
->  2 files changed, 11 insertions(+), 10 deletions(-)
->
-> diff --git a/tools/testing/selftests/kvm/include/kvm_util_base.h b/tools/=
-testing/selftests/kvm/include/kvm_util_base.h
-> index 967eaaeacd75..9f144841c2ee 100644
-> --- a/tools/testing/selftests/kvm/include/kvm_util_base.h
-> +++ b/tools/testing/selftests/kvm/include/kvm_util_base.h
-> @@ -44,7 +44,7 @@ typedef uint64_t vm_paddr_t; /* Virtual Machine (Guest)=
- physical address */
->  typedef uint64_t vm_vaddr_t; /* Virtual Machine (Guest) virtual address =
-*/
->
->  struct userspace_mem_region {
-> -       struct kvm_userspace_memory_region region;
-> +       struct kvm_userspace_memory_region2 region;
->         struct sparsebit *unused_phy_pages;
->         int fd;
->         off_t offset;
-> diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c b/tools/testing/s=
-elftests/kvm/lib/kvm_util.c
-> index f09295d56c23..3676b37bea38 100644
-> --- a/tools/testing/selftests/kvm/lib/kvm_util.c
-> +++ b/tools/testing/selftests/kvm/lib/kvm_util.c
-> @@ -453,8 +453,9 @@ void kvm_vm_restart(struct kvm_vm *vmp)
->                 vm_create_irqchip(vmp);
->
->         hash_for_each(vmp->regions.slot_hash, ctr, region, slot_node) {
-> -               int ret =3D ioctl(vmp->fd, KVM_SET_USER_MEMORY_REGION, &r=
-egion->region);
-> -               TEST_ASSERT(ret =3D=3D 0, "KVM_SET_USER_MEMORY_REGION IOC=
-TL failed,\n"
-> +               int ret =3D ioctl(vmp->fd, KVM_SET_USER_MEMORY_REGION2, &=
-region->region);
-> +
-> +               TEST_ASSERT(ret =3D=3D 0, "KVM_SET_USER_MEMORY_REGION2 IO=
-CTL failed,\n"
->                             "  rc: %i errno: %i\n"
->                             "  slot: %u flags: 0x%x\n"
->                             "  guest_phys_addr: 0x%llx size: 0x%llx",
-> @@ -657,7 +658,7 @@ static void __vm_mem_region_delete(struct kvm_vm *vm,
->         }
->
->         region->region.memory_size =3D 0;
-> -       vm_ioctl(vm, KVM_SET_USER_MEMORY_REGION, &region->region);
-> +       vm_ioctl(vm, KVM_SET_USER_MEMORY_REGION2, &region->region);
->
->         sparsebit_free(&region->unused_phy_pages);
->         ret =3D munmap(region->mmap_start, region->mmap_size);
-> @@ -1014,8 +1015,8 @@ void vm_userspace_mem_region_add(struct kvm_vm *vm,
->         region->region.guest_phys_addr =3D guest_paddr;
->         region->region.memory_size =3D npages * vm->page_size;
->         region->region.userspace_addr =3D (uintptr_t) region->host_mem;
-> -       ret =3D __vm_ioctl(vm, KVM_SET_USER_MEMORY_REGION, &region->regio=
-n);
-> -       TEST_ASSERT(ret =3D=3D 0, "KVM_SET_USER_MEMORY_REGION IOCTL faile=
-d,\n"
-> +       ret =3D __vm_ioctl(vm, KVM_SET_USER_MEMORY_REGION2, &region->regi=
-on);
-> +       TEST_ASSERT(ret =3D=3D 0, "KVM_SET_USER_MEMORY_REGION2 IOCTL fail=
-ed,\n"
->                 "  rc: %i errno: %i\n"
->                 "  slot: %u flags: 0x%x\n"
->                 "  guest_phys_addr: 0x%lx size: 0x%lx",
-> @@ -1097,9 +1098,9 @@ void vm_mem_region_set_flags(struct kvm_vm *vm, uin=
-t32_t slot, uint32_t flags)
->
->         region->region.flags =3D flags;
->
-> -       ret =3D __vm_ioctl(vm, KVM_SET_USER_MEMORY_REGION, &region->regio=
-n);
-> +       ret =3D __vm_ioctl(vm, KVM_SET_USER_MEMORY_REGION2, &region->regi=
-on);
->
-> -       TEST_ASSERT(ret =3D=3D 0, "KVM_SET_USER_MEMORY_REGION IOCTL faile=
-d,\n"
-> +       TEST_ASSERT(ret =3D=3D 0, "KVM_SET_USER_MEMORY_REGION2 IOCTL fail=
-ed,\n"
->                 "  rc: %i errno: %i slot: %u flags: 0x%x",
->                 ret, errno, slot, flags);
->  }
-> @@ -1127,9 +1128,9 @@ void vm_mem_region_move(struct kvm_vm *vm, uint32_t=
- slot, uint64_t new_gpa)
->
->         region->region.guest_phys_addr =3D new_gpa;
->
-> -       ret =3D __vm_ioctl(vm, KVM_SET_USER_MEMORY_REGION, &region->regio=
-n);
-> +       ret =3D __vm_ioctl(vm, KVM_SET_USER_MEMORY_REGION2, &region->regi=
-on);
->
-> -       TEST_ASSERT(!ret, "KVM_SET_USER_MEMORY_REGION failed\n"
-> +       TEST_ASSERT(!ret, "KVM_SET_USER_MEMORY_REGION2 failed\n"
->                     "ret: %i errno: %i slot: %u new_gpa: 0x%lx",
->                     ret, errno, slot, new_gpa);
->  }
-> --
-> 2.39.1
->
->
+please test BUG: corrupted list in ptp_open
+
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git 2dac75696c6d
+
+diff --git a/drivers/ptp/ptp_chardev.c b/drivers/ptp/ptp_chardev.c
+index 282cd7d24077..3f7a74788802 100644
+--- a/drivers/ptp/ptp_chardev.c
++++ b/drivers/ptp/ptp_chardev.c
+@@ -108,6 +108,7 @@ int ptp_open(struct posix_clock_context *pccontext, fmode_t fmode)
+ 		container_of(pccontext->clk, struct ptp_clock, clock);
+ 	struct timestamp_event_queue *queue;
+ 	char debugfsname[32];
++	unsigned long flags;
+ 
+ 	queue = kzalloc(sizeof(*queue), GFP_KERNEL);
+ 	if (!queue)
+@@ -119,7 +120,9 @@ int ptp_open(struct posix_clock_context *pccontext, fmode_t fmode)
+ 	}
+ 	bitmap_set(queue->mask, 0, PTP_MAX_CHANNELS);
+ 	spin_lock_init(&queue->lock);
++	spin_lock_irqsave(&ptp->tsevqs_lock, flags);
+ 	list_add_tail(&queue->qlist, &ptp->tsevqs);
++	spin_unlock_irqrestore(&ptp->tsevqs_lock, flags);
+ 	pccontext->private_clkdata = queue;
+ 
+ 	/* Debugfs contents */
+@@ -139,16 +142,16 @@ int ptp_release(struct posix_clock_context *pccontext)
+ {
+ 	struct timestamp_event_queue *queue = pccontext->private_clkdata;
+ 	unsigned long flags;
++	struct ptp_clock *ptp =
++		container_of(pccontext->clk, struct ptp_clock, clock);
+ 
+-	if (queue) {
+-		debugfs_remove(queue->debugfs_instance);
+-		pccontext->private_clkdata = NULL;
+-		spin_lock_irqsave(&queue->lock, flags);
+-		list_del(&queue->qlist);
+-		spin_unlock_irqrestore(&queue->lock, flags);
+-		bitmap_free(queue->mask);
+-		kfree(queue);
+-	}
++	debugfs_remove(queue->debugfs_instance);
++	pccontext->private_clkdata = NULL;
++	spin_lock_irqsave(&ptp->tsevqs_lock, flags);
++	list_del(&queue->qlist);
++	spin_unlock_irqrestore(&ptp->tsevqs_lock, flags);
++	bitmap_free(queue->mask);
++	kfree(queue);
+ 	return 0;
+ }
+ 
+@@ -585,7 +588,5 @@ ssize_t ptp_read(struct posix_clock_context *pccontext, uint rdflags,
+ free_event:
+ 	kfree(event);
+ exit:
+-	if (result < 0)
+-		ptp_release(pccontext);
+ 	return result;
+ }
+diff --git a/drivers/ptp/ptp_clock.c b/drivers/ptp/ptp_clock.c
+index 3d1b0a97301c..41b68568811a 100644
+--- a/drivers/ptp/ptp_clock.c
++++ b/drivers/ptp/ptp_clock.c
+@@ -247,6 +247,7 @@ struct ptp_clock *ptp_clock_register(struct ptp_clock_info *info,
+ 	if (!queue)
+ 		goto no_memory_queue;
+ 	list_add_tail(&queue->qlist, &ptp->tsevqs);
++	spin_lock_init(&ptp->tsevqs_lock);
+ 	queue->mask = bitmap_alloc(PTP_MAX_CHANNELS, GFP_KERNEL);
+ 	if (!queue->mask)
+ 		goto no_memory_bitmap;
+@@ -407,6 +408,7 @@ void ptp_clock_event(struct ptp_clock *ptp, struct ptp_clock_event *event)
+ {
+ 	struct timestamp_event_queue *tsevq;
+ 	struct pps_event_time evt;
++	unsigned long flags;
+ 
+ 	switch (event->type) {
+ 
+@@ -415,10 +417,12 @@ void ptp_clock_event(struct ptp_clock *ptp, struct ptp_clock_event *event)
+ 
+ 	case PTP_CLOCK_EXTTS:
+ 		/* Enqueue timestamp on selected queues */
++		spin_lock_irqsave(&ptp->tsevqs_lock, flags);
+ 		list_for_each_entry(tsevq, &ptp->tsevqs, qlist) {
+ 			if (test_bit((unsigned int)event->index, tsevq->mask))
+ 				enqueue_external_timestamp(tsevq, event);
+ 		}
++		spin_unlock_irqrestore(&ptp->tsevqs_lock, flags);
+ 		wake_up_interruptible(&ptp->tsev_wq);
+ 		break;
+ 
+diff --git a/drivers/ptp/ptp_private.h b/drivers/ptp/ptp_private.h
+index 52f87e394aa6..35fde0a05746 100644
+--- a/drivers/ptp/ptp_private.h
++++ b/drivers/ptp/ptp_private.h
+@@ -44,6 +44,7 @@ struct ptp_clock {
+ 	struct pps_device *pps_source;
+ 	long dialed_frequency; /* remembers the frequency adjustment */
+ 	struct list_head tsevqs; /* timestamp fifo list */
++	spinlock_t tsevqs_lock; /* protects tsevqs from concurrent access */
+ 	struct mutex pincfg_mux; /* protect concurrent info->pin_config access */
+ 	wait_queue_head_t tsev_wq;
+ 	int defunct; /* tells readers to go away when clock is being removed */
+-- 
+2.25.1
+
