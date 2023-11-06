@@ -2,73 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A64A7E24E1
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 14:26:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B45B7E24EF
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 14:26:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232560AbjKFN0R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 08:26:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42218 "EHLO
+        id S232593AbjKFN0o convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 6 Nov 2023 08:26:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232557AbjKFN0N (ORCPT
+        with ESMTP id S232565AbjKFN0j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 08:26:13 -0500
-Received: from mail-oa1-f72.google.com (mail-oa1-f72.google.com [209.85.160.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 624B010C3
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 05:26:04 -0800 (PST)
-Received: by mail-oa1-f72.google.com with SMTP id 586e51a60fabf-1f057511202so5692128fac.0
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 05:26:04 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699277163; x=1699881963;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=hpNXsDaVFHWmSCR1Klz1JrKiKF9Vln8yknbntuKibpg=;
-        b=oyYFHSNEtwwL6yWfvL0mF7tb2T0GEgEGus044lrA0FB6KjJnfTlhIRCZ3wWA4jq14y
-         51GnOmnQcWjt4w1nrEjzkEb67ZQ+JGuqsLeTGb3hAeIjmPFB1AQgmjcopVyfZ/WE2APb
-         29FjKK/jbV47cLIvDlFtT7P/J6E2+AGbOX6cQ2/hwmzZ0N86mKLP8qI3IWXnxXuV1L8p
-         1eZnIgm9cIQ+v0pXDpg5ilPKOK86pua+Nouqzjc/eVT9zJZBj62ke9yn9s3HTrFNQTnw
-         8ib1eQ8tYsIXSVr7SsrsLyeboKPw8nWJ7FUOHBnCNZU8a2kWFlJTh7H/mCwJPo0Obv0p
-         T/2Q==
-X-Gm-Message-State: AOJu0YyzvpCP289QGunpJl00EDK+NJmdYQXL/feFSyocGzKHA3KIWlXF
-        24ApTOnOpX5Kv92TncGMCn+e+SJDUdeKlXh/fweJL09aILpb
-X-Google-Smtp-Source: AGHT+IFiq+lVzBihK/+U9oZnMhBjUxB5KRXYqxSSpRqqUcvM3Gm8RitFG3mf7uR10wjml1t1OSIovdRsPcD4niIp9vLIzWcD5Aiq
+        Mon, 6 Nov 2023 08:26:39 -0500
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 415C9112
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 05:26:33 -0800 (PST)
+X-UUID: 68c1e78aac2d4c9eae9324cf631b5914-20231106
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.32,REQID:3237dc1b-63d0-413f-8adf-db743d8e797b,IP:10,
+        URL:0,TC:0,Content:10,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTI
+        ON:release,TS:15
+X-CID-INFO: VERSION:1.1.32,REQID:3237dc1b-63d0-413f-8adf-db743d8e797b,IP:10,UR
+        L:0,TC:0,Content:10,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+        :release,TS:15
+X-CID-META: VersionHash:5f78ec9,CLOUDID:179d35fc-4a48-46e2-b946-12f04f20af8c,B
+        ulkID:231106212621OQUAH2A4,BulkQuantity:0,Recheck:0,SF:66|23|17|19|43|64|1
+        02,TC:nil,Content:4,EDM:-3,IP:-2,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,CO
+        L:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD
+X-UUID: 68c1e78aac2d4c9eae9324cf631b5914-20231106
+X-User: oushixiong@kylinos.cn
+Received: from laptopjrnhc6sg [(222.247.111.235)] by mailgw
+        (envelope-from <oushixiong@kylinos.cn>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 288226259; Mon, 06 Nov 2023 21:26:20 +0800
+From:   <oushixiong@kylinos.cn>
+To:     "'Maxime Ripard'" <mripard@kernel.org>
+Cc:     "'Maarten Lankhorst'" <maarten.lankhorst@linux.intel.com>,
+        "'Thomas Zimmermann'" <tzimmermann@suse.de>,
+        "'David Airlie'" <airlied@gmail.com>,
+        "'Daniel Vetter'" <daniel@ffwll.ch>,
+        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
+References: <20231106073742.158905-1-oushixiong@kylinos.cn> <6yqalig6nvnlpt7loetugjdgp5z4w3qwhpqpzzsygffp5w32d6@guq6v3g2z7tq>
+In-Reply-To: <6yqalig6nvnlpt7loetugjdgp5z4w3qwhpqpzzsygffp5w32d6@guq6v3g2z7tq>
+Subject: =?gb2312?B?u9i4tDogW1BBVENIXSBkcm0vYXRvbWljLWhlbHBlcjogQ2FsbCBzdA==?=
+        =?gb2312?B?YWxsX2NoZWNrcygpIGJlZm9yZSBhbGxvY2F0ZSBkcm1fY3J0Y19jb21taXQ=?=
+Date:   Mon, 6 Nov 2023 21:26:15 +0800
+Message-ID: <000301da10b4$d4e90690$7ebb13b0$@kylinos.cn>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6870:8911:b0:1e9:af97:9fa3 with SMTP id
- i17-20020a056870891100b001e9af979fa3mr14041602oao.5.1699277163688; Mon, 06
- Nov 2023 05:26:03 -0800 (PST)
-Date:   Mon, 06 Nov 2023 05:26:03 -0800
-In-Reply-To: <tencent_564ACA75C777AD66F83C0D370896CA360E09@qq.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000b77d1d06097bcb66@google.com>
-Subject: Re: [syzbot] [net?] BUG: corrupted list in ptp_open
-From:   syzbot <syzbot+df3f3ef31f60781fa911@syzkaller.appspotmail.com>
-To:     eadavis@qq.com, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain;
+        charset="gb2312"
+Content-Transfer-Encoding: 8BIT
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQFcR3YQO3CUUdc1Zt+jjVoM53ycrQINT5JbsVhur6A=
+Content-Language: zh-cn
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        UNPARSEABLE_RELAY autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi,  
+I think it will cause memory leaks if too many nonblock commit works return
+-EBUSY.
+You can try to send large number of nonblock commits by
+drmModeAtomicCommit().
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+-----邮件原件-----
+发件人: Maxime Ripard <mripard@kernel.org> 
+发送时间: 2023年11月6日 18:33
+收件人: oushixiong <oushixiong@kylinos.cn>
+抄送: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>; Thomas
+Zimmermann <tzimmermann@suse.de>; David Airlie <airlied@gmail.com>; Daniel
+Vetter <daniel@ffwll.ch>; dri-devel@lists.freedesktop.org;
+linux-kernel@vger.kernel.org
+主题: Re: [PATCH] drm/atomic-helper: Call stall_checks() before allocate
+drm_crtc_commit
 
-Reported-and-tested-by: syzbot+df3f3ef31f60781fa911@syzkaller.appspotmail.com
+Hi,
 
-Tested on:
+On Mon, Nov 06, 2023 at 03:37:42PM +0800, oushixiong wrote:
+> From: Shixiong Ou <oushixiong@kylinos.cn>
+> 
+> Calling stall_checks() before allocating drm_crtc_commit not after that.
+> 
+> Signed-off-by: Shixiong Ou <oushixiong@kylinos.cn>
 
-commit:         2dac7569 Add linux-next specific files for 20231018
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=149170c0e80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=e86de086e9dddbc6
-dashboard link: https://syzkaller.appspot.com/bug?extid=df3f3ef31f60781fa911
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=17e6a047680000
+Generally speaking, we need much more context than that.
 
-Note: testing is done by a robot and is best-effort only.
+What bug did you encounter that makes you say that it should be moved?
+How can we reproduce it? How long has that issue been in the code? What
+makes you say that this is the right solution?
+
+Maxime
+
