@@ -2,45 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 47F797E311C
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 00:18:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59C517E311D
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 00:18:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233593AbjKFXSG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 18:18:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35924 "EHLO
+        id S233684AbjKFXSL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 18:18:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233143AbjKFXRj (ORCPT
+        with ESMTP id S233604AbjKFXRn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 18:17:39 -0500
+        Mon, 6 Nov 2023 18:17:43 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B98626BF;
-        Mon,  6 Nov 2023 15:16:02 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE9AFC433D9;
-        Mon,  6 Nov 2023 23:16:00 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E070E10E6;
+        Mon,  6 Nov 2023 15:16:03 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1837CC433C8;
+        Mon,  6 Nov 2023 23:16:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699312561;
-        bh=O7HSFgEhnx5j7BpbVRWe3VcvdK1akaOH6gwOipqU6eE=;
+        s=k20201202; t=1699312563;
+        bh=0arbaNvnIAxlUW81YmPdpGIiJDwasLYkkL9kpZGsC8g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=I4lM8voy8CHQBSzCWEvm9EpHbNXiIq3vKXjUDl6jXeH/KXTbG6Kl3Q9ZapzoqP5HT
-         m458aPShdOLW3fC6PLU/PJVgT+dPclAG3NuT1o48WlL82b6WgTE5uIdaKsY7fKGPZ/
-         rNIzOnuJwxSsv1ulbjbZT5MVm2pRVtdilgMgBK2Of9EnIvcSnWavWjgFDPBHZ9ZNLN
-         bdGARym8i9UnhDpy/BMlLawHlPPchWFUKB+1yM9D/ub7HsMQiRxNZOjfzVjm07zPoq
-         BR8fQPhPxYlBxrfKbR+4Ga9aFUvm7svpifIr6+Mpz3LHH16W0+CkJg6R/b/Hhz+V8P
-         VRIphjj/rZ/PA==
+        b=Qrc49tS4yBnBWPKAJws41lHsyFKv6xOrqTcvuAT5L3btYhxb+0Gyjgnpte8n7I8St
+         Tt2KOw4bsSnOwGHQMWkRp7KYahj1yB8kqe+UM9lo706dWLozQ0TSlSBosh5J8RzMir
+         GrHEi9L5UqJ0FX7/If7tr2D0CKW8jJxDh0DFoprPwp8DgIsX7ZEWxay8mk0KMW5Hxs
+         DfjPDUa3sy3xlgZ1Km10kU5J2iDsrGjQmwOp89DbIKCEL1jvUPbJsoF29889pS/8SV
+         aGK/0sQv/pLedqgHUV4pM3gbRuV2YGE9GzYMFKf0hL7LuZpGhWKbNK8uTvCOSdkMcH
+         lexHL1uCFBb1w==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     =?UTF-8?q?Ricardo=20Ca=C3=B1uelo?= <ricardo.canuelo@collabora.com>,
-        Kees Cook <keescook@chromium.org>,
-        Sasha Levin <sashal@kernel.org>, shuah@kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 04/11] selftests/lkdtm: Disable CONFIG_UBSAN_TRAP in test config
-Date:   Mon,  6 Nov 2023 18:15:38 -0500
-Message-ID: <20231106231553.3735366-4-sashal@kernel.org>
+Cc:     Jacky Bai <ping.bai@nxp.com>, Peng Fan <peng.fan@nxp.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Sasha Levin <sashal@kernel.org>, tglx@linutronix.de,
+        shawnguo@kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: [PATCH AUTOSEL 6.1 05/11] clocksource/drivers/timer-imx-gpt: Fix potential memory leak
+Date:   Mon,  6 Nov 2023 18:15:39 -0500
+Message-ID: <20231106231553.3735366-5-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231106231553.3735366-1-sashal@kernel.org>
 References: <20231106231553.3735366-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.1.61
@@ -55,63 +54,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ricardo Cañuelo <ricardo.canuelo@collabora.com>
+From: Jacky Bai <ping.bai@nxp.com>
 
-[ Upstream commit cf77bf698887c3b9ebed76dea492b07a3c2c7632 ]
+[ Upstream commit 8051a993ce222a5158bccc6ac22ace9253dd71cb ]
 
-The lkdtm selftest config fragment enables CONFIG_UBSAN_TRAP to make the
-ARRAY_BOUNDS test kill the calling process when an out-of-bound access
-is detected by UBSAN. However, after this [1] commit, UBSAN is triggered
-under many new scenarios that weren't detected before, such as in struct
-definitions with fixed-size trailing arrays used as flexible arrays. As
-a result, CONFIG_UBSAN_TRAP=y has become a very aggressive option to
-enable except for specific situations.
+Fix coverity Issue CID 250382:  Resource leak (RESOURCE_LEAK).
+Add kfree when error return.
 
-`make kselftest-merge` applies CONFIG_UBSAN_TRAP=y to the kernel config
-for all selftests, which makes many of them fail because of system hangs
-during boot.
-
-This change removes the config option from the lkdtm kselftest and
-configures the ARRAY_BOUNDS test to look for UBSAN reports rather than
-relying on the calling process being killed.
-
-[1] commit 2d47c6956ab3 ("ubsan: Tighten UBSAN_BOUNDS on GCC")'
-
-Signed-off-by: Ricardo Cañuelo <ricardo.canuelo@collabora.com>
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Link: https://lore.kernel.org/r/20230802063252.1917997-1-ricardo.canuelo@collabora.com
-Signed-off-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Jacky Bai <ping.bai@nxp.com>
+Reviewed-by: Peng Fan <peng.fan@nxp.com>
+Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+Link: https://lore.kernel.org/r/20231009083922.1942971-1-ping.bai@nxp.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/lkdtm/config    | 1 -
- tools/testing/selftests/lkdtm/tests.txt | 2 +-
- 2 files changed, 1 insertion(+), 2 deletions(-)
+ drivers/clocksource/timer-imx-gpt.c | 18 +++++++++++++-----
+ 1 file changed, 13 insertions(+), 5 deletions(-)
 
-diff --git a/tools/testing/selftests/lkdtm/config b/tools/testing/selftests/lkdtm/config
-index 5d52f64dfb430..7afe05e8c4d79 100644
---- a/tools/testing/selftests/lkdtm/config
-+++ b/tools/testing/selftests/lkdtm/config
-@@ -9,7 +9,6 @@ CONFIG_INIT_ON_FREE_DEFAULT_ON=y
- CONFIG_INIT_ON_ALLOC_DEFAULT_ON=y
- CONFIG_UBSAN=y
- CONFIG_UBSAN_BOUNDS=y
--CONFIG_UBSAN_TRAP=y
- CONFIG_STACKPROTECTOR_STRONG=y
- CONFIG_SLUB_DEBUG=y
- CONFIG_SLUB_DEBUG_ON=y
-diff --git a/tools/testing/selftests/lkdtm/tests.txt b/tools/testing/selftests/lkdtm/tests.txt
-index 607b8d7e3ea34..2f3a1b96da6e3 100644
---- a/tools/testing/selftests/lkdtm/tests.txt
-+++ b/tools/testing/selftests/lkdtm/tests.txt
-@@ -7,7 +7,7 @@ EXCEPTION
- #EXHAUST_STACK Corrupts memory on failure
- #CORRUPT_STACK Crashes entire system on success
- #CORRUPT_STACK_STRONG Crashes entire system on success
--ARRAY_BOUNDS
-+ARRAY_BOUNDS call trace:|UBSAN: array-index-out-of-bounds
- CORRUPT_LIST_ADD list_add corruption
- CORRUPT_LIST_DEL list_del corruption
- STACK_GUARD_PAGE_LEADING
+diff --git a/drivers/clocksource/timer-imx-gpt.c b/drivers/clocksource/timer-imx-gpt.c
+index 7b2c70f2f353b..fabff69e52e58 100644
+--- a/drivers/clocksource/timer-imx-gpt.c
++++ b/drivers/clocksource/timer-imx-gpt.c
+@@ -454,12 +454,16 @@ static int __init mxc_timer_init_dt(struct device_node *np,  enum imx_gpt_type t
+ 		return -ENOMEM;
+ 
+ 	imxtm->base = of_iomap(np, 0);
+-	if (!imxtm->base)
+-		return -ENXIO;
++	if (!imxtm->base) {
++		ret = -ENXIO;
++		goto err_kfree;
++	}
+ 
+ 	imxtm->irq = irq_of_parse_and_map(np, 0);
+-	if (imxtm->irq <= 0)
+-		return -EINVAL;
++	if (imxtm->irq <= 0) {
++		ret = -EINVAL;
++		goto err_kfree;
++	}
+ 
+ 	imxtm->clk_ipg = of_clk_get_by_name(np, "ipg");
+ 
+@@ -472,11 +476,15 @@ static int __init mxc_timer_init_dt(struct device_node *np,  enum imx_gpt_type t
+ 
+ 	ret = _mxc_timer_init(imxtm);
+ 	if (ret)
+-		return ret;
++		goto err_kfree;
+ 
+ 	initialized = 1;
+ 
+ 	return 0;
++
++err_kfree:
++	kfree(imxtm);
++	return ret;
+ }
+ 
+ static int __init imx1_timer_init_dt(struct device_node *np)
 -- 
 2.42.0
 
