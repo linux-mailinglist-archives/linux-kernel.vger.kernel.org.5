@@ -2,237 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A85957E1A73
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 07:45:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D59C7E1A67
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 07:44:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230509AbjKFGpf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 01:45:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34672 "EHLO
+        id S230477AbjKFGoc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 01:44:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231308AbjKFGpO (ORCPT
+        with ESMTP id S230442AbjKFGo1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 01:45:14 -0500
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ED631B2
-        for <linux-kernel@vger.kernel.org>; Sun,  5 Nov 2023 22:44:45 -0800 (PST)
-Received: from dggpemd200004.china.huawei.com (unknown [172.30.72.53])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4SP1wH3mPFz1P7xl;
-        Mon,  6 Nov 2023 14:41:35 +0800 (CST)
-Received: from [10.174.179.24] (10.174.179.24) by
- dggpemd200004.china.huawei.com (7.185.36.141) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.2.1258.23; Mon, 6 Nov 2023 14:43:39 +0800
-Subject: Re: [PATCH v7] mm: vmscan: try to reclaim swapcache pages if no swap
- space
-To:     "Huang, Ying" <ying.huang@intel.com>
-References: <20231104140313.3418001-1-liushixin2@huawei.com>
- <87h6lzy68z.fsf@yhuang6-desk2.ccr.corp.intel.com>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
-        Yosry Ahmed <yosryahmed@google.com>,
-        Sachin Sant <sachinp@linux.ibm.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>
-From:   Liu Shixin <liushixin2@huawei.com>
-Message-ID: <b00b1425-3942-f7f2-db9b-a45941e4fb44@huawei.com>
-Date:   Mon, 6 Nov 2023 14:43:39 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        Mon, 6 Nov 2023 01:44:27 -0500
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9191B100;
+        Sun,  5 Nov 2023 22:44:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
+        t=1699253034; x=1699857834; i=w_armin@gmx.de;
+        bh=GJm6EGWgF7nplKUEamq2/TnBRYeNAl2+Z6eHcmlB6Ew=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=kZUzptcF33Xi0SLRAfK/YpUBUKLrkGHob+Sy6B19MFf1iXW9N8yMqG3CNVjj4yBE
+         doZ3BSYhHCFAetzfcFpCUM08e7DiEmD6Tc+FVDRW69dm7sDL0nYrnc3xcRPU941Dt
+         jG5W44LFzvGsUQYs+n5tiZLFnCTEhJNxgDW+HJQqHHHlzy5iLR6X9NRr39JiPovIT
+         t5b7/nqA//TKBTcpaT2RDFowI5IOlprmaxVIBPRAxRtf6Vs7sxmeitIBxHg52RHCM
+         XHbHwZpoeltZXLk3wepVXRTKhjpk+w74m0LK10a25nvpFkPb3hv6ZtZNDNUlRqeV1
+         y52cH1EAzGjmRWTPIQ==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from mx-amd-b650.users.agdsn.de ([141.30.226.129]) by mail.gmx.net
+ (mrgmx004 [212.227.17.190]) with ESMTPSA (Nemesis) id
+ 1MOA3P-1qkqOZ0dNh-00OVUE; Mon, 06 Nov 2023 07:43:54 +0100
+From:   Armin Wolf <W_Armin@gmx.de>
+To:     pali@kernel.org
+Cc:     hdegoede@redhat.com, markgross@kernel.org,
+        ilpo.jarvinen@linux.intel.com, jdelvare@suse.com,
+        linux@roeck-us.net, platform-driver-x86@vger.kernel.org,
+        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 0/9] hwmon: (dell-smm) Add support for WMI SMM interface
+Date:   Mon,  6 Nov 2023 07:43:42 +0100
+Message-Id: <20231106064351.42347-1-W_Armin@gmx.de>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-In-Reply-To: <87h6lzy68z.fsf@yhuang6-desk2.ccr.corp.intel.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.179.24]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpemd200004.china.huawei.com (7.185.36.141)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:oNrrf78V2MqRmvGMF40W72gkDjNB8P7x1bRxTZXNEZKX5n6XZcm
+ CXAga+4uPEaGX91pCBbP/0HLc3OLbgyAfXXk3g+PjdSSGNWVGTvFzw1KjKfxxnU/1U/SRWT
+ /GmJZ0LsrHEb9kSiR/Wi0inylFr6cvW5gvtWwGHXEhwrGngS8FaivN0FuNugu1aLMzz2x9x
+ yOBOkvUsHl00iSWrpW4AA==
+UI-OutboundReport: notjunk:1;M01:P0:v6UDOQkmiLk=;JSaCrS0Cc6s5z4yOiQB3628dqh3
+ GOrQpefCiaLVVatuUIEhYjaPa3m2CpQjp+++XqFh9u2yRBuUwjpTu2gjenvQqdHr5expaWjSn
+ O9NGFjmQ/AYFU/q6roTTGLdzN/CAU/QEfm65Hx2c0PHMCNXONLUOxhqUXWorqxZzolfZXLOKF
+ ddswLCSIk7DSgJ+CzdszzDLhd56YQ2TRQpd/stD4VPqd5NEp4Tyj8K7MUu3vBr9vQfxzC2rcp
+ 0DWo3kOE4t6AkJy5K2uYdAYBqhtvyPw8913ocgSfJ1fkOkbV0pK2pSyaDBbSJ8RZ7IWNeFPdd
+ az6EeZjv/COthumUWLdcmy31kumqlJp5If80o+tYrzrj09t+6GR2RYWemasHZnYVQQVUee+Fg
+ edlGUBzmkzM2IUSSOq3iRsFY3mSYzT5h9rUNidAIgPY4D3IpV8vIlvUffonkhOvKzeWjeWiDv
+ l1o70TGv60w/BJHvHd6yW4ubITfq9I8vz9/sZabkNDyfV9G5Q2hyKmWsfWQajrDNAvQYeUcyd
+ SS5+4H3dePZdQJ75/vPBEajtrVvLiPxzbyPvfKxtp24acv/JWGFZYUSxycEIkILIO+r8QP7qm
+ PVFAtks3dgW87j+BVkTWIiO3PtZBy4QKmryIyFDKwq+/eyifx/qbV0O48IrTbbcvNOTlzqyfP
+ NMI++BhXu8lfmSmDIElAVErf2cDArDKuSAKW1MU/QM0ytvFGXvUREWslP8+26vs0ArqJMBRrp
+ Qa50gMtFK8fDBDFXCbllDe1nQIWdu/S9galK2JshdYNQ9raNAF927AE3lcjVtjMePCE7Eotlv
+ lLa5VIGUTFwZ4lrUw6xVMGSLzMV2PbYxXujiTWzsw+pGcGWdaaNrHpLbIumRMNXeQ7LcFrmvq
+ TcSxYZ6wLzqNqQnm7hPgwePW0b2i4Z709jdCM9qFodjuPc16AljHjf4iFqTuGHcZ9MEi63GTE
+ QXvyrWY5Yz31xhepYi+ZSf4ctnY=
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This patch series adds support for an alternative SMM calling
+backend to the dell-smm-hwmon driver. The reason for this is
+that on some modern machines, the legacy SMM calling interface
+does not work anymore and the SMM handler can be called over
+ACPI WMI instead.
 
+The first four patches prepare the driver by allowing to
+specify different SMM calling backends, and by moving most of
+the DMI handling into i8k_init() so that the DMI tables can
+keep their __initconst attributes (the WMI SMM backend driver
+does not probe at module init time). The fifth patch does some
+minor cleanup, while the next three patches implement the new
+WMI SMM calling backend. The last patch adds the machine of
+the user who requested and tested the changes to the fan control
+whitelist.
 
-On 2023/11/6 10:18, Huang, Ying wrote:
-> Liu Shixin <liushixin2@huawei.com> writes:
->
->> When spaces of swap devices are exhausted, only file pages can be
->> reclaimed.  But there are still some swapcache pages in anon lru list.
->> This can lead to a premature out-of-memory.
->>
->> The problem is found with such step:
->>
->>  Firstly, set a 9MB disk swap space, then create a cgroup with 10MB
->>  memory limit, then runs an program to allocates about 15MB memory.
->>
->> The problem occurs occasionally, which may need about 100 times [1].
->>
->> Fix it by checking number of swapcache pages in can_reclaim_anon_pages().
->> If the number is not zero, return true and set swapcache_only to 1.
->> When scan anon lru list in swapcache_only mode, non-swapcache pages will
->> be skipped to isolate in order to accelerate reclaim efficiency.
->>
->> However, in swapcache_only mode, the scan count still increased when scan
->> non-swapcache pages because there are large number of non-swapcache pages
->> and rare swapcache pages in swapcache_only mode, and if the non-swapcache
->> is skipped and do not count, the scan of pages in isolate_lru_folios() can
->> eventually lead to hung task, just as Sachin reported [2].
->>
->> By the way, since there are enough times of memory reclaim before OOM, it
->> is not need to isolate too much swapcache pages in one times.
->>
->> [1]. https://lore.kernel.org/lkml/CAJD7tkZAfgncV+KbKr36=eDzMnT=9dZOT0dpMWcurHLr6Do+GA@mail.gmail.com/
->> [2]. https://lore.kernel.org/linux-mm/CAJD7tkafz_2XAuqE8tGLPEcpLngewhUo=5US14PAtSM9tLBUQg@mail.gmail.com/
->>
->> Signed-off-by: Liu Shixin <liushixin2@huawei.com>
->> Tested-by: Yosry Ahmed <yosryahmed@google.com>
->> Reviewed-by: "Huang, Ying" <ying.huang@intel.com>
->> Reviewed-by: Yosry Ahmed <yosryahmed@google.com>
->> ---
->> v6->v7: Reset swapcache_only to zero after there are swap spaces.
->> v5->v6: Fix NULL pointing derefence and hung task problem reported by Sachin.
->>
->>  include/linux/swap.h |  6 ++++++
->>  mm/memcontrol.c      |  8 ++++++++
->>  mm/vmscan.c          | 36 ++++++++++++++++++++++++++++++++++--
->>  3 files changed, 48 insertions(+), 2 deletions(-)
->>
->> diff --git a/include/linux/swap.h b/include/linux/swap.h
->> index f6dd6575b905..3ba146ae7cf5 100644
->> --- a/include/linux/swap.h
->> +++ b/include/linux/swap.h
->> @@ -659,6 +659,7 @@ static inline void mem_cgroup_uncharge_swap(swp_entry_t entry, unsigned int nr_p
->>  }
->>  
->>  extern long mem_cgroup_get_nr_swap_pages(struct mem_cgroup *memcg);
->> +extern long mem_cgroup_get_nr_swapcache_pages(struct mem_cgroup *memcg);
->>  extern bool mem_cgroup_swap_full(struct folio *folio);
->>  #else
->>  static inline void mem_cgroup_swapout(struct folio *folio, swp_entry_t entry)
->> @@ -681,6 +682,11 @@ static inline long mem_cgroup_get_nr_swap_pages(struct mem_cgroup *memcg)
->>  	return get_nr_swap_pages();
->>  }
->>  
->> +static inline long mem_cgroup_get_nr_swapcache_pages(struct mem_cgroup *memcg)
->> +{
->> +	return total_swapcache_pages();
->> +}
->> +
->>  static inline bool mem_cgroup_swap_full(struct folio *folio)
->>  {
->>  	return vm_swap_full();
->> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
->> index 5b009b233ab8..29e34c06ca83 100644
->> --- a/mm/memcontrol.c
->> +++ b/mm/memcontrol.c
->> @@ -7584,6 +7584,14 @@ long mem_cgroup_get_nr_swap_pages(struct mem_cgroup *memcg)
->>  	return nr_swap_pages;
->>  }
->>  
->> +long mem_cgroup_get_nr_swapcache_pages(struct mem_cgroup *memcg)
->> +{
->> +	if (mem_cgroup_disabled())
->> +		return total_swapcache_pages();
->> +
->> +	return memcg_page_state(memcg, NR_SWAPCACHE);
->> +}
->> +
->>  bool mem_cgroup_swap_full(struct folio *folio)
->>  {
->>  	struct mem_cgroup *memcg;
->> diff --git a/mm/vmscan.c b/mm/vmscan.c
->> index 6f13394b112e..a5e04291662f 100644
->> --- a/mm/vmscan.c
->> +++ b/mm/vmscan.c
->> @@ -137,6 +137,9 @@ struct scan_control {
->>  	/* Always discard instead of demoting to lower tier memory */
->>  	unsigned int no_demotion:1;
->>  
->> +	/* Swap space is exhausted, only reclaim swapcache for anon LRU */
->> +	unsigned int swapcache_only:1;
->> +
->>  	/* Allocation order */
->>  	s8 order;
->>  
->> @@ -602,6 +605,12 @@ static bool can_demote(int nid, struct scan_control *sc)
->>  	return true;
->>  }
->>  
->> +static void set_swapcache_mode(struct scan_control *sc, bool swapcache_only)
->> +{
->> +	if (sc)
->> +		sc->swapcache_only = swapcache_only;
->> +}
->> +
-> I think that it's unnecessary to introduce a new function.  I understand
-> that you want to reduce the code duplication.  We can add
->
->         sc->swapcache_only = false;
->
-> at the beginning of can_reclaim_anon_pages() to reduce code duplication.
-> That can cover even more cases IIUC.
-OK, it‘s more appropriate, I will resend v8, thank you.
+If the driver does not detect the legacy SMM interface, either
+because the machine is not whitelisted or because the SMM handler
+does not react, it registers an WMI driver which will then bound
+to the WMI SMM interface and do the remaining initialization.
 
+The deprecated procfs interface is not supported when using the
+WMI SMM calling backend for the following reason: the WMI driver
+can potentially be instantiated multiple times while the deprectated
+procfs interface cannot. This should not cause any regressions
+because on machines supporting only the WMI SMM interface, the
+driver would, until now, not load anyway.
 
->>  static inline bool can_reclaim_anon_pages(struct mem_cgroup *memcg,
->>  					  int nid,
->>  					  struct scan_control *sc)
->> @@ -611,12 +620,26 @@ static inline bool can_reclaim_anon_pages(struct mem_cgroup *memcg,
->>  		 * For non-memcg reclaim, is there
->>  		 * space in any swap device?
->>  		 */
->> -		if (get_nr_swap_pages() > 0)
->> +		if (get_nr_swap_pages() > 0) {
->> +			set_swapcache_mode(sc, false);
->>  			return true;
->> +		}
->> +		/* Is there any swapcache pages to reclaim? */
->> +		if (total_swapcache_pages() > 0) {
->> +			set_swapcache_mode(sc, true);
->> +			return true;
->> +		}
->>  	} else {
->>  		/* Is the memcg below its swap limit? */
->> -		if (mem_cgroup_get_nr_swap_pages(memcg) > 0)
->> +		if (mem_cgroup_get_nr_swap_pages(memcg) > 0) {
->> +			set_swapcache_mode(sc, false);
->>  			return true;
->> +		}
->> +		/* Is there any swapcache pages in memcg to reclaim? */
->> +		if (mem_cgroup_get_nr_swapcache_pages(memcg) > 0) {
->> +			set_swapcache_mode(sc, true);
->> +			return true;
->> +		}
->>  	}
-> If can_demote() returns true, we shouldn't scan swapcache only.
->
-> --
-> Best Regards,
-> Huang, Ying
->
->>  	/*
->> @@ -2342,6 +2365,15 @@ static unsigned long isolate_lru_folios(unsigned long nr_to_scan,
->>  		 */
->>  		scan += nr_pages;
->>  
->> +		/*
->> +		 * Count non-swapcache too because the swapcache pages may
->> +		 * be rare and it takes too much times here if not count
->> +		 * the non-swapcache pages.
->> +		 */
->> +		if (unlikely(sc->swapcache_only && !is_file_lru(lru) &&
->> +		    !folio_test_swapcache(folio)))
->> +			goto move;
->> +
->>  		if (!folio_test_lru(folio))
->>  			goto move;
->>  		if (!sc->may_unmap && folio_mapped(folio))
-> .
->
+All patches where tested on a Dell Inspiron 3505 and a Dell
+OptiPlex 7000.
+
+Changes since v2:
+- Rework WMI response parsing
+- Use #define for method number
+
+Changes since v1:
+- Cc platform driver maintainers
+- Fix formating inside documentation
+
+Armin Wolf (9):
+  hwmon: (dell-smm) Prepare for multiple SMM calling backends
+  hwmon: (dell-smm) Move blacklist handling to module init
+  hwmon: (dell-smm) Move whitelist handling to module init
+  hwmon: (dell-smm) Move DMI config handling to module init
+  hwmon: (dell-smm) Move config entries out of i8k_dmi_table
+  hwmon: (dell-smm) Introduce helper function for data init
+  hwmon: (dell-smm) Add support for WMI SMM interface
+  hwmon: (dell-smm) Document the WMI SMM interface
+  hwmon: (dell-smm) Add Optiplex 7000 to fan control whitelist
+
+ Documentation/hwmon/dell-smm-hwmon.rst |  38 +-
+ drivers/hwmon/Kconfig                  |   1 +
+ drivers/hwmon/dell-smm-hwmon.c         | 603 +++++++++++++++++--------
+ drivers/platform/x86/wmi.c             |   1 +
+ 4 files changed, 453 insertions(+), 190 deletions(-)
+
+=2D-
+2.39.2
 
