@@ -2,107 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C9E77E1B8A
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 08:54:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01C1F7E1B8C
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 08:54:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230312AbjKFHyB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 02:54:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42794 "EHLO
+        id S230408AbjKFHyd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 02:54:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229486AbjKFHyA (ORCPT
+        with ESMTP id S229803AbjKFHyb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 02:54:00 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 301F7B3;
-        Sun,  5 Nov 2023 23:53:57 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E34C7C433C9;
-        Mon,  6 Nov 2023 07:53:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699257236;
-        bh=1lvQWl4CfXhED/r0/C0UpDtEwhQ6AYy9bJQipe3ejXU=;
+        Mon, 6 Nov 2023 02:54:31 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22987B3
+        for <linux-kernel@vger.kernel.org>; Sun,  5 Nov 2023 23:54:27 -0800 (PST)
+Received: from [192.168.88.20] (91-158-149-209.elisa-laajakaista.fi [91.158.149.209])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 67CC3583;
+        Mon,  6 Nov 2023 08:54:04 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1699257245;
+        bh=AWiS/+jyJMw7C0hLOtwr+kKJPUeb1haOClFxpULuZmQ=;
         h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=ofG0kCc5SbUIgrx/dTCQm9AwEADHP45pCfaAeoAHH8SrbN+CBJTvbWqPm4ngtiuHI
-         7LunnXGceG5/cVHyyBElA3a9+DvIBu2VAnpBLCeUHDI4q60GtoaXcl+qkNlq4dpxi+
-         xsnjr/+xs9e67yR5AFhyaoXKOdQkbJQDs+CMzlmNzjFauP2dKjfi1UdAkwOkzDFoRg
-         vdp5qz6hX8ceGdOilo8IS1krv0YiChtOdIUeJAVLoG98vxmWMqIAMXN5Tvl6ywyzOo
-         HDWC9R3B0RevLw7TGbT0hPuqz8HDE8+f+lw4o/+N7fVsoq72EVqzmMEfcRfZesJuFD
-         F+3kE6/iTAUfg==
-Message-ID: <ce2c96f9-7895-41fc-a5f9-617b79f64f96@kernel.org>
-Date:   Mon, 6 Nov 2023 08:53:44 +0100
+        b=bRNag+XLKR94Pj/WFtofhAXLUJHlB2O/+yrJ6QbX7x5cwiseopn8n2tGmpv3VwOZm
+         x/UFvnQ6lhi6XmhAGoiNgKYCU3yUT3P0xQX5TaLVmKQhcF+rn2qEdVRPiZ23c1Pagr
+         jFgEfyEYQxD84TboUBKY+Mvsqg1wXCge3Xa//rag=
+Message-ID: <c0c735f7-e00a-4574-9edc-07bc83012070@ideasonboard.com>
+Date:   Mon, 6 Nov 2023 09:54:20 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 2/2] PCI: mediatek-gen3: Add power and reset control
- feature for downstream component
+Subject: Re: [PATCH 02/10] drm/tidss: Use PM autosuspend
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Aradhya Bhatia <a-bhatia1@ti.com>,
+        Devarsh Thakkar <devarsht@ti.com>,
+        Jyri Sarha <jyri.sarha@iki.fi>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Sakari Ailus <sakari.ailus@iki.fi>
+References: <20231101-tidss-probe-v1-0-45149e0f9415@ideasonboard.com>
+ <20231101-tidss-probe-v1-2-45149e0f9415@ideasonboard.com>
+ <20231101135406.GR12764@pendragon.ideasonboard.com>
+ <7395880d-36ba-471c-ba7c-745a0ec8e5de@ideasonboard.com>
+ <20231105225330.GA15635@pendragon.ideasonboard.com>
 Content-Language: en-US
-To:     Jian Yang <jian.yang@mediatek.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Herring <robh@kernel.org>,
-        Jianjun Wang <jianjun.wang@mediatek.com>
-Cc:     linux-pci@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Project_Global_Chrome_Upstream_Group@mediatek.com,
-        Chuanjia.Liu@mediatek.com, Jieyy.Yang@mediatek.com,
-        Qizhong.Cheng@mediatek.com, Jianguo.Zhang@mediatek.com,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-        Abel Vesa <abel.vesa@linaro.org>
-References: <20231106061220.21485-1-jian.yang@mediatek.com>
- <20231106061220.21485-3-jian.yang@mediatek.com>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Autocrypt: addr=krzk@kernel.org; keydata=
- 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 fv0=
-In-Reply-To: <20231106061220.21485-3-jian.yang@mediatek.com>
-Content-Type: text/plain; charset=UTF-8
+From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Autocrypt: addr=tomi.valkeinen@ideasonboard.com; keydata=
+ xsFNBE6ms0cBEACyizowecZqXfMZtnBniOieTuFdErHAUyxVgtmr0f5ZfIi9Z4l+uUN4Zdw2
+ wCEZjx3o0Z34diXBaMRJ3rAk9yB90UJAnLtb8A97Oq64DskLF81GCYB2P1i0qrG7UjpASgCA
+ Ru0lVvxsWyIwSfoYoLrazbT1wkWRs8YBkkXQFfL7Mn3ZMoGPcpfwYH9O7bV1NslbmyJzRCMO
+ eYV258gjCcwYlrkyIratlHCek4GrwV8Z9NQcjD5iLzrONjfafrWPwj6yn2RlL0mQEwt1lOvn
+ LnI7QRtB3zxA3yB+FLsT1hx0va6xCHpX3QO2gBsyHCyVafFMrg3c/7IIWkDLngJxFgz6DLiA
+ G4ld1QK/jsYqfP2GIMH1mFdjY+iagG4DqOsjip479HCWAptpNxSOCL6z3qxCU8MCz8iNOtZk
+ DYXQWVscM5qgYSn+fmMM2qN+eoWlnCGVURZZLDjg387S2E1jT/dNTOsM/IqQj+ZROUZuRcF7
+ 0RTtuU5q1HnbRNwy+23xeoSGuwmLQ2UsUk7Q5CnrjYfiPo3wHze8avK95JBoSd+WIRmV3uoO
+ rXCoYOIRlDhg9XJTrbnQ3Ot5zOa0Y9c4IpyAlut6mDtxtKXr4+8OzjSVFww7tIwadTK3wDQv
+ Bus4jxHjS6dz1g2ypT65qnHen6mUUH63lhzewqO9peAHJ0SLrQARAQABzTBUb21pIFZhbGtl
+ aW5lbiA8dG9taS52YWxrZWluZW5AaWRlYXNvbmJvYXJkLmNvbT7CwY4EEwEIADgWIQTEOAw+
+ ll79gQef86f6PaqMvJYe9QUCX/HruAIbAwULCQgHAgYVCgkICwIEFgIDAQIeAQIXgAAKCRD6
+ PaqMvJYe9WmFD/99NGoD5lBJhlFDHMZvO+Op8vCwnIRZdTsyrtGl72rVh9xRfcSgYPZUvBuT
+ VDxE53mY9HaZyu1eGMccYRBaTLJSfCXl/g317CrMNdY0k40b9YeIX10feiRYEWoDIPQ3tMmA
+ 0nHDygzcnuPiPT68JYZ6tUOvAt7r6OX/litM+m2/E9mtp8xCoWOo/kYO4mOAIoMNvLB8vufi
+ uBB4e/AvAjtny4ScuNV5c5q8MkfNIiOyag9QCiQ/JfoAqzXRjVb4VZG72AKaElwipiKCWEcU
+ R4+Bu5Qbaxj7Cd36M/bI54OrbWWETJkVVSV1i0tghCd6HHyquTdFl7wYcz6cL1hn/6byVnD+
+ sR3BLvSBHYp8WSwv0TCuf6tLiNgHAO1hWiQ1pOoXyMEsxZlgPXT+wb4dbNVunckwqFjGxRbl
+ Rz7apFT/ZRwbazEzEzNyrBOfB55xdipG/2+SmFn0oMFqFOBEszXLQVslh64lI0CMJm2OYYe3
+ PxHqYaztyeXsx13Bfnq9+bUynAQ4uW1P5DJ3OIRZWKmbQd/Me3Fq6TU57LsvwRgE0Le9PFQs
+ dcP2071rMTpqTUteEgODJS4VDf4lXJfY91u32BJkiqM7/62Cqatcz5UWWHq5xeF03MIUTqdE
+ qHWk3RJEoWHWQRzQfcx6Fn2fDAUKhAddvoopfcjAHfpAWJ+ENc7BTQROprNHARAAx0aat8GU
+ hsusCLc4MIxOQwidecCTRc9Dz/7U2goUwhw2O5j9TPqLtp57VITmHILnvZf6q3QAho2QMQyE
+ DDvHubrdtEoqaaSKxKkFie1uhWNNvXPhwkKLYieyL9m2JdU+b88HaDnpzdyTTR4uH7wk0bBa
+ KbTSgIFDDe5lXInypewPO30TmYNkFSexnnM3n1PBCqiJXsJahE4ZQ+WnV5FbPUj8T2zXS2xk
+ 0LZ0+DwKmZ0ZDovvdEWRWrz3UzJ8DLHb7blPpGhmqj3ANXQXC7mb9qJ6J/VSl61GbxIO2Dwb
+ xPNkHk8fwnxlUBCOyBti/uD2uSTgKHNdabhVm2dgFNVuS1y3bBHbI/qjC3J7rWE0WiaHWEqy
+ UVPk8rsph4rqITsj2RiY70vEW0SKePrChvET7D8P1UPqmveBNNtSS7In+DdZ5kUqLV7rJnM9
+ /4cwy+uZUt8cuCZlcA5u8IsBCNJudxEqBG10GHg1B6h1RZIz9Q9XfiBdaqa5+CjyFs8ua01c
+ 9HmyfkuhXG2OLjfQuK+Ygd56mV3lq0aFdwbaX16DG22c6flkkBSjyWXYepFtHz9KsBS0DaZb
+ 4IkLmZwEXpZcIOQjQ71fqlpiXkXSIaQ6YMEs8WjBbpP81h7QxWIfWtp+VnwNGc6nq5IQDESH
+ mvQcsFS7d3eGVI6eyjCFdcAO8eMAEQEAAcLBXwQYAQIACQUCTqazRwIbDAAKCRD6PaqMvJYe
+ 9fA7EACS6exUedsBKmt4pT7nqXBcRsqm6YzT6DeCM8PWMTeaVGHiR4TnNFiT3otD5UpYQI7S
+ suYxoTdHrrrBzdlKe5rUWpzoZkVK6p0s9OIvGzLT0lrb0HC9iNDWT3JgpYDnk4Z2mFi6tTbq
+ xKMtpVFRA6FjviGDRsfkfoURZI51nf2RSAk/A8BEDDZ7lgJHskYoklSpwyrXhkp9FHGMaYII
+ m9EKuUTX9JPDG2FTthCBrdsgWYPdJQvM+zscq09vFMQ9Fykbx5N8z/oFEUy3ACyPqW2oyfvU
+ CH5WDpWBG0s5BALp1gBJPytIAd/pY/5ZdNoi0Cx3+Z7jaBFEyYJdWy1hGddpkgnMjyOfLI7B
+ CFrdecTZbR5upjNSDvQ7RG85SnpYJTIin+SAUazAeA2nS6gTZzumgtdw8XmVXZwdBfF+ICof
+ 92UkbYcYNbzWO/GHgsNT1WnM4sa9lwCSWH8Fw1o/3bX1VVPEsnESOfxkNdu+gAF5S6+I6n3a
+ ueeIlwJl5CpT5l8RpoZXEOVtXYn8zzOJ7oGZYINRV9Pf8qKGLf3Dft7zKBP832I3PQjeok7F
+ yjt+9S+KgSFSHP3Pa4E7lsSdWhSlHYNdG/czhoUkSCN09C0rEK93wxACx3vtxPLjXu6RptBw
+ 3dRq7n+mQChEB1am0BueV1JZaBboIL0AGlSJkm23kw==
+In-Reply-To: <20231105225330.GA15635@pendragon.ideasonboard.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -110,28 +104,114 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/11/2023 07:12, Jian Yang wrote:
-> From: "jian.yang" <jian.yang@mediatek.com>
+On 06/11/2023 00:53, Laurent Pinchart wrote:
+> Hi Tomi,
 > 
-> Make MediaTek's controller driver capable of controlling power
-> supplies and reset pin of a downstream component in power-on and
-> power-off process.
+> CC'ing Sakari for his expertise on runtime PM (I think he will soon
+> start wishing he would be ignorant in this area).
 > 
-> Some downstream components (e.g., a WIFI chip) may need an extra
-> reset other than PERST# and their power supplies, depending on
-> the requirements of platform, may need to controlled by their
-> parent's driver. To meet the requirements described above, I add this
-> feature to MediaTek's PCIe controller driver as an optional feature.
+> On Thu, Nov 02, 2023 at 08:34:45AM +0200, Tomi Valkeinen wrote:
+>> On 01/11/2023 15:54, Laurent Pinchart wrote:
+>>> On Wed, Nov 01, 2023 at 11:17:39AM +0200, Tomi Valkeinen wrote:
+>>>> Use runtime PM autosuspend feature, with 1s timeout, to avoid
+>>>> unnecessary suspend-resume cycles when, e.g. the userspace temporarily
+>>>> turns off the crtcs when configuring the outputs.
+>>>>
+>>>> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+>>>> ---
+>>>>    drivers/gpu/drm/tidss/tidss_drv.c | 8 +++++++-
+>>>>    1 file changed, 7 insertions(+), 1 deletion(-)
+>>>>
+>>>> diff --git a/drivers/gpu/drm/tidss/tidss_drv.c b/drivers/gpu/drm/tidss/tidss_drv.c
+>>>> index f403db11b846..64914331715a 100644
+>>>> --- a/drivers/gpu/drm/tidss/tidss_drv.c
+>>>> +++ b/drivers/gpu/drm/tidss/tidss_drv.c
+>>>> @@ -43,7 +43,9 @@ void tidss_runtime_put(struct tidss_device *tidss)
+>>>>    
+>>>>    	dev_dbg(tidss->dev, "%s\n", __func__);
+>>>>    
+>>>> -	r = pm_runtime_put_sync(tidss->dev);
+>>>> +	pm_runtime_mark_last_busy(tidss->dev);
+>>>> +
+>>>> +	r = pm_runtime_put_autosuspend(tidss->dev);
+>>>>    	WARN_ON(r < 0);
+>>>>    }
+>>>>    
+>>>> @@ -144,6 +146,9 @@ static int tidss_probe(struct platform_device *pdev)
+>>>>    
+>>>>    	pm_runtime_enable(dev);
+>>>>    
+>>>> +	pm_runtime_set_autosuspend_delay(dev, 1000);
+>>>> +	pm_runtime_use_autosuspend(dev);
+>>>> +
+>>>>    #ifndef CONFIG_PM
+>>>>    	/* If we don't have PM, we need to call resume manually */
+>>>>    	dispc_runtime_resume(tidss->dispc);
+>>>
+>>> By the way, there's a way to handle this without any ifdef:
+>>>
+>>> 	dispc_runtime_resume(tidss->dispc);
+>>>
+>>> 	pm_runtime_set_active(dev);
+>>> 	pm_runtime_get_noresume(dev);
+>>> 	pm_runtime_enable(dev);
+>>> 	pm_runtime_set_autosuspend_delay(dev, 1000);
+>>> 	pm_runtime_use_autosuspend(dev);
+>>
+>> I'm not sure I follow what you are trying to do here. The call to
+>> dispc_runtime_resume() would crash if we have PM, as the HW would not be
+>> enabled at that point.
+> 
+> Isn't dispc_runtime_resume() meant to enable the hardware ?
+> 
+> The idea is to enable the hardware, then enable runtime PM, and tell the
+> runtime PM framework that the device is enabled. If CONFIG_PM is not
+> set, the RPM calls will be no-ops, and the device will stay enable. If
+> CONFIG_PM is set, the device will be enabled, and will get disabled at
+> end of probe by a call to pm_runtime_put_autosuspend().
 
-NAK, strong NAK. This should be done in a generic way because nothing
-here is specific to Mediatek.
+(The text below is more about the end result of this series, rather than 
+this specific patch):
 
-You just implement power sequencing of devices through quirks specific
-to one controller.
+Hmm, no, I don't think that's how it works. My understanding is this:
 
-Work with others to provide common solution.
-https://lpc.events/event/17/contributions/1507/
+There are multiple parts "enabling the hardware", and I think they 
+usually need to be done in this order: 1) enabling the parent devices, 
+2) system level HW module enable (this is possibly really part of the 
+1), 3) clk/regulator/register setup.
 
-Best regards,
-Krzysztof
+3) is handled by the driver, but 1) and 2) are handled via the runtime 
+PM framework. Calling dispc_runtime_resume() as the first thing could 
+mean that DSS's parents are not enabled or that the DSS HW module is not 
+enabled at the system control level.
+
+That's why I first call pm_runtime_set_active(), which should handle 1) 
+and 2).
+
+The only thing dispc_runtime_resume() does wrt. enabling the hardware is 
+enabling the fclk. It does a lot more, but all the rest is just 
+configuring the hardware to settings that we always want to use (e.g. 
+fifo management).
+
+Now, if the bootloader had enabled the display, and the driver did:
+
+- pm_runtime_enable()
+- pm_runtime_get()
+- dispc_reset()
+
+it would cause dispc_runtime_resume() to be called before the reset. 
+This would mean that the dispc_runtime_resume() would be changing 
+settings that must not be changed while streaming is enabled.
+
+We could do a DSS reset always as the first thing in 
+dispc_runtime_resume() (after enabling the fclk), but that feels a bit 
+pointless as after the first reset the DSS is in a known state.
+
+Also, if we don't do a reset at probe time, there are things we need to 
+take care of: at least we need to mask the IRQs (presuming we register 
+the DSS interrupt at probe time). But generally speaking, I feel a bit 
+uncomfortable leaving an IP possibly running in an unknown state after 
+probe. I'd much rather just reset it at probe.
+
+  Tomi
 
