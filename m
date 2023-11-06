@@ -2,81 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ABF5A7E1C63
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 09:34:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23E537E1C65
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 09:36:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231375AbjKFIec (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 03:34:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34478 "EHLO
+        id S231202AbjKFIg3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 03:36:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231362AbjKFIeX (ORCPT
+        with ESMTP id S229834AbjKFIg1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 03:34:23 -0500
-Received: from mail-oi1-f197.google.com (mail-oi1-f197.google.com [209.85.167.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 525AB184
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 00:34:08 -0800 (PST)
-Received: by mail-oi1-f197.google.com with SMTP id 5614622812f47-3b2e7b41beaso6190712b6e.0
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 00:34:08 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699259647; x=1699864447;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=R//xFC6MCX07YnTjEGgkyVytVcMHK0VcX9I6eFXmSn0=;
-        b=MaX1gcimdpFlLxYsX7H2qI90rWZWq9UyKGWRxSBh1XGnc1AySSgxRNQQXnMXPgYbqr
-         eBWr6EyONLYhjBQv/9JO0W+tZ/80YRCYxGVtQsqXacIB8rR1vXRRXc67dPlIISvp7Mwq
-         cUO4bAVLyBLBTybok584eACFgSOjQiRH8EN3+fXZtW3eCIEDcFQ1qnHddmo69y4DFERk
-         UpoPCNRCDd5s8BzaYObUX930Lbi+k0fcLEW8PE0ihVyZP5GJx0BxkEaAZ2rJjWyyp7Dg
-         wunaltRMhmZweAqr/LZtvMdjrFLZejq+ieG3cS15wLi7UaVqUvvzEYWbaBlJLHr7tx2G
-         yZcg==
-X-Gm-Message-State: AOJu0Yz4vcxMYSC5rdUN9n06MDJKb0VO1l3en0vt7xotH01xMOypcsFj
-        /Ms8VXqg3PCRluLzjEN9g7/qbUYL6qM71xMiOLgVvVvGdi6o
-X-Google-Smtp-Source: AGHT+IGPvdUMp7cFbFWrKJV9OVBnXNdZFxJ2Ar/n96qlK/oegdaqwZk7Cnt4qpgL2n4nuLJ0ela54eQb73j/dM3UYdnpHggAwsHn
+        Mon, 6 Nov 2023 03:36:27 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90472B0;
+        Mon,  6 Nov 2023 00:36:24 -0800 (PST)
+Received: from [100.107.97.3] (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 1CE706602023;
+        Mon,  6 Nov 2023 08:36:22 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1699259783;
+        bh=yhrYWrO64Humr9tDTRaT+au5y0p7PisxvedT+I6fH8I=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=auPm4ffsj3/zRhW7qWUzPp/9Xsb1OWvcfx5I6O9asz4fBYa4Xh0EXC5N6p5Ncfxlx
+         nJ1AXSEmjE1VZIakvP+ed+Cpklz0ZlYM+HBVr/LrINeH1NrIDDCNHlMsTu8usIrq2B
+         kcc0Xc0EflrEhTeuMYBVnzsBT8eoCAOMetHELUiKSelV1xaLFKAQ7UNbbbBaSwyZQU
+         zU6YOOna6NqVcy0cerpBq8UePvkcI4P0a0EKlHYKAXdegj0+7CwINKDH1B8+BM603X
+         yYe1ZJwb0jmMeiC6QVhl8bkEKvS52rQ8r/aN2SdduJxasi4g51LuzytdmmyB/LDaHQ
+         Kx+Vpsc8w0Rwg==
+Message-ID: <74e491ce-24c6-4d7a-a1b3-708857f03887@collabora.com>
+Date:   Mon, 6 Nov 2023 09:36:19 +0100
 MIME-Version: 1.0
-X-Received: by 2002:aca:1113:0:b0:3a3:c492:9be6 with SMTP id
- 19-20020aca1113000000b003a3c4929be6mr3745348oir.2.1699259647315; Mon, 06 Nov
- 2023 00:34:07 -0800 (PST)
-Date:   Mon, 06 Nov 2023 00:34:07 -0800
-In-Reply-To: <000000000000cfe6f305ee84ff1f@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000a8d8e7060977b741@google.com>
-Subject: Re: [syzbot] [reiserfs?] possible deadlock in reiserfs_dirty_inode
-From:   syzbot <syzbot+c319bb5b1014113a92cf@syzkaller.appspotmail.com>
-To:     hdanton@sina.com, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, paul@paul-moore.com,
-        reiserfs-devel@vger.kernel.org, roberto.sassu@huawei.com,
-        syzkaller-bugs@googlegroups.com, syzkaller@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=2.3 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        RCVD_IN_SORBS_WEB,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: **
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 2/2] PCI: mediatek-gen3: Add power and reset control
+ feature for downstream component
+Content-Language: en-US
+To:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Jian Yang <jian.yang@mediatek.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Herring <robh@kernel.org>,
+        Jianjun Wang <jianjun.wang@mediatek.com>
+Cc:     linux-pci@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Project_Global_Chrome_Upstream_Group@mediatek.com,
+        Chuanjia.Liu@mediatek.com, Jieyy.Yang@mediatek.com,
+        Qizhong.Cheng@mediatek.com, Jianguo.Zhang@mediatek.com,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        Abel Vesa <abel.vesa@linaro.org>
+References: <20231106061220.21485-1-jian.yang@mediatek.com>
+ <20231106061220.21485-3-jian.yang@mediatek.com>
+ <ce2c96f9-7895-41fc-a5f9-617b79f64f96@kernel.org>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <ce2c96f9-7895-41fc-a5f9-617b79f64f96@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has bisected this issue to:
+Il 06/11/23 08:53, Krzysztof Kozlowski ha scritto:
+> On 06/11/2023 07:12, Jian Yang wrote:
+>> From: "jian.yang" <jian.yang@mediatek.com>
+>>
+>> Make MediaTek's controller driver capable of controlling power
+>> supplies and reset pin of a downstream component in power-on and
+>> power-off process.
+>>
+>> Some downstream components (e.g., a WIFI chip) may need an extra
+>> reset other than PERST# and their power supplies, depending on
+>> the requirements of platform, may need to controlled by their
+>> parent's driver. To meet the requirements described above, I add this
+>> feature to MediaTek's PCIe controller driver as an optional feature.
+> 
+> NAK, strong NAK. This should be done in a generic way because nothing
+> here is specific to Mediatek.
+> 
+> You just implement power sequencing of devices through quirks specific
+> to one controller.
+> 
+> Work with others to provide common solution.
+> https://lpc.events/event/17/contributions/1507/
+> 
 
-commit d82dcd9e21b77d338dc4875f3d4111f0db314a7c
-Author: Roberto Sassu <roberto.sassu@huawei.com>
-Date:   Fri Mar 31 12:32:18 2023 +0000
+I agree that working with everyone else by adding pwrseq is a must, but other
+other PCIe controllers are doing the exact same as this patch: if the supply
+and gpio names are aligned with the others, why shouldn't we let this in and
+then convert this driver, along with the others, to the new pwrseq subsystem
+when it's ready?
 
-    reiserfs: Add security prefix to xattr name in reiserfs_security_write()
+That, because I expect the pwrseq to require a bit more time before being
+ready to get upstream.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14d0b787680000
-start commit:   90b0c2b2edd1 Merge tag 'pinctrl-v6.7-1' of git://git.kerne..
-git tree:       upstream
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=16d0b787680000
-console output: https://syzkaller.appspot.com/x/log.txt?x=12d0b787680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=93ac5233c138249e
-dashboard link: https://syzkaller.appspot.com/bug?extid=c319bb5b1014113a92cf
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=113f3717680000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=154985ef680000
+P.S.: Check Tegra, Broadcom, RockChip DW, IMX6Q-pcie.
 
-Reported-by: syzbot+c319bb5b1014113a92cf@syzkaller.appspotmail.com
-Fixes: d82dcd9e21b7 ("reiserfs: Add security prefix to xattr name in reiserfs_security_write()")
+Cheers,
+Angelo
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
