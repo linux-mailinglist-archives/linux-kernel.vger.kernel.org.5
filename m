@@ -2,122 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ECE907E211A
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 13:16:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A5A27E212E
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 13:18:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231558AbjKFMQz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 07:16:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52118 "EHLO
+        id S231913AbjKFMSo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 07:18:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229922AbjKFMQy (ORCPT
+        with ESMTP id S231887AbjKFMSS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 07:16:54 -0500
-Received: from mail-yw1-x112f.google.com (mail-yw1-x112f.google.com [IPv6:2607:f8b0:4864:20::112f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3356D134
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 04:16:51 -0800 (PST)
-Received: by mail-yw1-x112f.google.com with SMTP id 00721157ae682-5a7af52ee31so51102227b3.2
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 04:16:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699273010; x=1699877810; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=EG5hPBkq6PdY2a7ADFXt5X7TvO05wy+79EbofVcknJU=;
-        b=iVKi3UrYIKExlErMrrMt/p6fGWPgVTndPYFq5Ijsg1jAJorYt9P9uw9z5fZfhvH4h+
-         eyhJ4IcBtyl3O2gVQJvDBKY/fX4mzoW978nG0isdTejvt2DUixctMT4ty4zPJn/w9cVF
-         M92Vm+bgc62Nx+dQ/f87myQBMY+foYyBVxvjIFvciYmsfuEphpqapFyWSqgloISMJS/i
-         SeGJHw0QpzDNQJ0vF9UwKDWmGjun24v6iVPdCfjQR3DSkYdDrBFXDqZ4GzeKhHvVE99x
-         W+Jsx8jl1A0fnTEwIANY6kUWb5N7GoA+tgdT4vc8c9t661Lf2ob/uiVmdE5cFxh4ka9l
-         Emdg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699273010; x=1699877810;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=EG5hPBkq6PdY2a7ADFXt5X7TvO05wy+79EbofVcknJU=;
-        b=vEs9ZWdcMlvXb1Yro1025cu7scBhgY8krXLMWc6ua8Fj9j4dEGZbu4fErDAUdOZkdq
-         zOp3OQDA3GV13+Ct7xx0j3e/5xO921FIdCHJW6L6ZlsP8uo8kTxbuI4wBFaxc7cudUgN
-         8QAYTIqbldS6Hx7ddrTU56rkiLYzShXPkk0bQgmlNmINl3Qwif2RsCEkqi97G5Cg6VJi
-         vkJXBVtkvGIix9jjWtye0uigoq7X4IcGoTTs7kO9L6rxATKFNqyd2Ylvx+tY1IaKtAzh
-         d2CG6rO3TYl/j+9HU7J/o9HFZGi4sHkyDBhhxzYlbZ9y0GWJBD8+1lBEMNeaN33cfUZn
-         eb5Q==
-X-Gm-Message-State: AOJu0YxID5+gVtYgQ3XQlKUQET83nKfj3GmIR9Ls5HIEQrrT54LJpqv1
-        evVbfogWRKl0Z4t8zsOF5ezfk/HRDO9q1WaQR78ByQ==
-X-Google-Smtp-Source: AGHT+IG7dtNNGP1ku33ub7+LjOzGjTE/fFbQpbNgMJ2o1/7LKgwSis/m8AWYoCjq4YmlJ9tbh+mHzEnAH0AONcOeeAU=
-X-Received: by 2002:a81:6cc8:0:b0:5b3:f5f8:c5bf with SMTP id
- h191-20020a816cc8000000b005b3f5f8c5bfmr11384244ywc.9.1699273010303; Mon, 06
- Nov 2023 04:16:50 -0800 (PST)
+        Mon, 6 Nov 2023 07:18:18 -0500
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3112710DD;
+        Mon,  6 Nov 2023 04:18:14 -0800 (PST)
+Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A6Bkw2U008679;
+        Mon, 6 Nov 2023 12:18:13 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=n1HCNS2C1DIwKMuK9T+3ZhC1Zs59rbEWAeWHmBM+lqw=;
+ b=i5AHHhBnIONfmYlm0w/zpnikchMh3ADiH7/S4H+lS3sZrDzcNiJSkFoJuw/Oz8eb9WxL
+ 53MrMnOPDOVChRktJtMhh6O0EGh/6tEQTMWNt6LhjdzygTeWF/SX+LDNvg3Hs/sf4Fz7
+ Q6WT+4Fl+VzABax5a3VhL55Oi4EmdJMWeYcjYYatPzRVT8Ngkzj7MEhjcew5alX2ZUOt
+ VLhFHczCFOZ4ZmUNSywxM662PVtD8FwYgNhLBhLW1MNvGdVsfluIjfeHl00iNjtNLQrD
+ vX23YBmWaohAPPfAzmbpYvn2YDz3i2ovWuwygV9omZurByskW9QQu4edo8iDXj+SGj1U 9Q== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u6yjtrwn3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 06 Nov 2023 12:18:13 +0000
+Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3A6BlZ8a011477;
+        Mon, 6 Nov 2023 12:18:12 GMT
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u6yjtrwmt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 06 Nov 2023 12:18:12 +0000
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3A6AbsxW007958;
+        Mon, 6 Nov 2023 12:18:12 GMT
+Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
+        by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3u60ny996j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 06 Nov 2023 12:18:11 +0000
+Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
+        by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3A6CI5P614090842
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 6 Nov 2023 12:18:05 GMT
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BBD492004B;
+        Mon,  6 Nov 2023 12:18:05 +0000 (GMT)
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 620C620040;
+        Mon,  6 Nov 2023 12:18:05 +0000 (GMT)
+Received: from p-imbrenda (unknown [9.152.224.66])
+        by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Mon,  6 Nov 2023 12:18:05 +0000 (GMT)
+Date:   Mon, 6 Nov 2023 13:18:03 +0100
+From:   Claudio Imbrenda <imbrenda@linux.ibm.com>
+To:     Nina Schoetterl-Glausch <nsg@linux.ibm.com>
+Cc:     Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-s390@vger.kernel.org,
+        Cornelia Huck <cornelia.huck@de.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Michael Mueller <mimu@linux.vnet.ibm.com>,
+        David Hildenbrand <dahi@linux.vnet.ibm.com>
+Subject: Re: [PATCH 4/4] KVM: s390: Minor refactor of base/ext facility
+ lists
+Message-ID: <20231106131803.15985f2e@p-imbrenda>
+In-Reply-To: <44148ab315f28a6d77627675cbde26977418c5df.camel@linux.ibm.com>
+References: <20231103173008.630217-1-nsg@linux.ibm.com>
+        <20231103173008.630217-5-nsg@linux.ibm.com>
+        <20231103193254.7deef2e5@p-imbrenda>
+        <44148ab315f28a6d77627675cbde26977418c5df.camel@linux.ibm.com>
+Organization: IBM
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-References: <20231106-pm8937-v1-0-ec51d9eeec53@riseup.net>
-In-Reply-To: <20231106-pm8937-v1-0-ec51d9eeec53@riseup.net>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Mon, 6 Nov 2023 14:16:38 +0200
-Message-ID: <CAA8EJpoSCVX=Pv1unN+oKzfT3RkwHkcEb5smEYufDP3TMBcDhQ@mail.gmail.com>
-Subject: Re: [PATCH 0/8] Add PM8937 PMIC support
-To:     Dang Huynh <danct12@riseup.net>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Robert Marko <robimarko@gmail.com>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: zCB3qCG0MBJbK2Og1pgD2i0QNMNE7wAS
+X-Proofpoint-ORIG-GUID: VNPB-bMD6Dt-6lDqQztXxZ7bqmVTtsQx
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-06_10,2023-11-02_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ lowpriorityscore=0 priorityscore=1501 mlxscore=0 malwarescore=0
+ adultscore=0 spamscore=0 bulkscore=0 mlxlogscore=773 clxscore=1015
+ suspectscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2310240000 definitions=main-2311060100
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 6 Nov 2023 at 14:11, Dang Huynh <danct12@riseup.net> wrote:
->
-> PM8937 is a power management IC. It is used in various boards with
-> MSM8917, MSM8937, MSM8940 and APQ variants.
->
-> Signed-off-by: Dang Huynh <danct12@riseup.net>
-> ---
-> Dang Huynh (8):
->       mfd: qcom-spmi-pmic: Add support for PM8937
->       dt-bindings: mfd: qcom-spmi-pmic: Document PM8937 PMIC
->       regulator: qcom_spmi: Add PM8937 SPMI regulator
->       dt-bindings: regulator: qcom,spmi-regulator: Document PM8937 PMIC
->       regulator: qcom_smd: Add PM8937 regulators
->       dt-bindings: regulator: qcom,smd-rpm-regulator: Document PM8937 IC
->       arm64: dts: qcom: Add PM8937 PMIC
->       soc: qcom: socinfo: Add PM8937 Power IC
+On Mon, 06 Nov 2023 12:38:55 +0100
+Nina Schoetterl-Glausch <nsg@linux.ibm.com> wrote:
 
-It seems that some of the patches didn't get it to linux-arm-msm@.
-Could you please check, what was wrong and resend your patchset?
+[...]
 
->
->  .../devicetree/bindings/mfd/qcom,spmi-pmic.yaml    |   1 +
->  .../bindings/regulator/qcom,smd-rpm-regulator.yaml |   4 +
->  .../bindings/regulator/qcom,spmi-regulator.yaml    |  19 ++
->  arch/arm64/boot/dts/qcom/pm8937.dtsi               | 202 +++++++++++++++++++++
->  drivers/mfd/qcom-spmi-pmic.c                       |   1 +
->  drivers/regulator/qcom_smd-regulator.c             |  34 ++++
->  drivers/regulator/qcom_spmi-regulator.c            |  34 ++++
->  drivers/soc/qcom/socinfo.c                         |   2 +-
->  include/soc/qcom/qcom-spmi-pmic.h                  |   1 +
->  9 files changed, 297 insertions(+), 1 deletion(-)
-> ---
-> base-commit: 12c9e8890929813dc852d9739f8d900ff51d9814
-> change-id: 20231106-pm8937-000e423a75fb
->
-> Best regards,
-> --
-> Dang Huynh <danct12@riseup.net>
->
+> > this was sized to [SIZE_INTERNAL], now it doesn't have a fixed size. is
+> > this intentional?  
+> 
+> Yes, it's as big as it needs to be, that way it cannot be too small, so one
+> less thing to consider.
 
+fair enough
+ 
+> [...]
+> > >  /* available cpu features supported by kvm */
+> > >  static DECLARE_BITMAP(kvm_s390_available_cpu_feat, KVM_S390_VM_CPU_FEAT_NR_BITS);
+> > > @@ -3341,13 +3333,16 @@ int kvm_arch_init_vm(struct kvm *kvm, unsigned long type)
+> > >  	kvm->arch.sie_page2->kvm = kvm;
+> > >  	kvm->arch.model.fac_list = kvm->arch.sie_page2->fac_list;
+> > >  
+> > > -	for (i = 0; i < kvm_s390_fac_size(); i++) {
+> > > +	for (i = 0; i < ARRAY_SIZE(kvm_s390_fac_base); i++) {
+> > >  		kvm->arch.model.fac_mask[i] = stfle_fac_list[i] &
+> > > -					      (kvm_s390_fac_base[i] |
+> > > -					       kvm_s390_fac_ext[i]);
+> > > +					      kvm_s390_fac_base[i];
+> > >  		kvm->arch.model.fac_list[i] = stfle_fac_list[i] &
+> > >  					      kvm_s390_fac_base[i];
+> > >  	}
+> > > +	for (i = 0; i < ARRAY_SIZE(kvm_s390_fac_ext); i++) {
+> > > +		kvm->arch.model.fac_mask[i] |= stfle_fac_list[i] &
+> > > +					       kvm_s390_fac_ext[i];
+> > > +	}  
+> > 
+> > I like it better when it's all in one place, instead of having two loops  
+> 
+> Hmm, it's the result of the arrays being different lengths now.
 
--- 
-With best wishes
-Dmitry
+ah, I had missed that, the names are very similar.
+
+> 
+> [...]
+> 
+> > > -	for (i = 0; i < 16; i++)
+> > > -		kvm_s390_fac_base[i] |=
+> > > -			stfle_fac_list[i] & nonhyp_mask(i);
+> > > +	for (i = 0; i < HMFAI_DWORDS; i++)
+> > > +		kvm_s390_fac_base[i] |= nonhyp_mask(i);  
+> > 
+> > where did the stfle_fac_list[i] go?  
+> 
+> I deleted it. That's what I meant by "Get rid of implicit double
+> anding of stfle_fac_list".
+> Besides it being redundant I didn't like it conceptually.
+> kvm_s390_fac_base specifies the facilities we support, regardless
+> if they're installed in the configuration. The hypervisor managed
+> ones are unconditionally declared via FACILITIES_KVM and we can add
+> the non hypervisor managed ones unconditionally, too.
+
+makes sense
+
+> 
+> > >  	r = __kvm_s390_init();
+> > >  	if (r)  
+> >   
+> 
+
