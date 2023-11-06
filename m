@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E02587E30B8
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 00:07:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AD477E30BB
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 00:08:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233608AbjKFXHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 18:07:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55488 "EHLO
+        id S233466AbjKFXID (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 18:08:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233495AbjKFXH2 (ORCPT
+        with ESMTP id S233512AbjKFXHc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 18:07:28 -0500
+        Mon, 6 Nov 2023 18:07:32 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A08CF10D4;
-        Mon,  6 Nov 2023 15:07:25 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51116C433C7;
-        Mon,  6 Nov 2023 23:07:24 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4342210F3;
+        Mon,  6 Nov 2023 15:07:29 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EADB8C433C7;
+        Mon,  6 Nov 2023 23:07:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699312045;
-        bh=0tTwBJJ7kefbYFnhairBCVSSDGf51FT5fjnUlbazo34=;
+        s=k20201202; t=1699312048;
+        bh=N6GHA1pxyKC1p46ueFgQb+Ovp4j2adx/8SQF407SWt0=;
         h=From:To:Cc:Subject:Date:From;
-        b=R4Zse7oSM8Kqo7eR1dKoWDVZ1dx013RDVBs9pUnPOi0klDI5ox8w+bes48WDlQACb
-         RPR4tDH3yTnFKSajp3cB+ke8eNrQpRgvtbFhhPGGnUKtgM7iZ4BoVMMV4xJr2U3jhU
-         /1tmx112F2NEVhHmAjnsfIVARisDR6btNFdSarqXhdJKO0QJm3lMkjmbse8NiE+DDJ
-         xPiPho8wIoOoJ84hVMKHaLKLB5eHfsi8RXaJ2lSoKwZEyOHuZa2Me8rOQvM7bj61/d
-         ivh/+W17eNVHGYm72elDR1M1T4AVz6AFYoitBhNjruNvdZsbdmCVxNw1BeLjRiIn2u
-         GHrR2uFdKdU+A==
+        b=l/4YXCVUV5BSaA5Wa7s+89WtCB8L9nUbR996FBU3iZQIEeUfkVqDIsj+7auI9oXGF
+         BfGZXxE/wVO0DeGBupiaDm82n4BCLHTYIfLFTuEzJ8K9Sbzd4Q/ZsK3s96b2WdCMpl
+         apmdYmkqRmko8iHO20/88BXj6nN7LYFHCj7lWxXB/7TGp/w/bZjHnlHbCeoWfk33iU
+         LdxJ11n/7YRMmb8uSdvy5mofxfpxQ4c7hr4ZlUm5MsUj0Aq/RWCgQxWnKy4erZgQHr
+         k86D3IR6YJXnKQuTKs5pUEJR8+dLwXeDf3FVVX6LTs/78rM3kgpL40EuSi0Hl37ipN
+         07PYEI4a2TL6Q==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     John Stultz <jstultz@google.com>, Ingo Molnar <mingo@kernel.org>,
         Sasha Levin <sashal@kernel.org>, peterz@infradead.org,
         mingo@redhat.com, will@kernel.org
-Subject: [PATCH AUTOSEL 5.4] locking/ww_mutex/test: Fix potential workqueue corruption
-Date:   Mon,  6 Nov 2023 18:07:22 -0500
-Message-ID: <20231106230722.3734615-1-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19] locking/ww_mutex/test: Fix potential workqueue corruption
+Date:   Mon,  6 Nov 2023 18:07:25 -0500
+Message-ID: <20231106230726.3734650-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.4.259
+X-stable-base: Linux 4.19.297
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
@@ -89,10 +89,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 12 insertions(+), 8 deletions(-)
 
 diff --git a/kernel/locking/test-ww_mutex.c b/kernel/locking/test-ww_mutex.c
-index 3e82f449b4ff7..da36997d8742c 100644
+index 65a3b7e55b9fc..4fd05d9d5d6d1 100644
 --- a/kernel/locking/test-ww_mutex.c
 +++ b/kernel/locking/test-ww_mutex.c
-@@ -426,7 +426,6 @@ static void stress_inorder_work(struct work_struct *work)
+@@ -439,7 +439,6 @@ static void stress_inorder_work(struct work_struct *work)
  	} while (!time_after(jiffies, stress->timeout));
  
  	kfree(order);
@@ -100,7 +100,7 @@ index 3e82f449b4ff7..da36997d8742c 100644
  }
  
  struct reorder_lock {
-@@ -491,7 +490,6 @@ static void stress_reorder_work(struct work_struct *work)
+@@ -504,7 +503,6 @@ static void stress_reorder_work(struct work_struct *work)
  	list_for_each_entry_safe(ll, ln, &locks, link)
  		kfree(ll);
  	kfree(order);
@@ -108,7 +108,7 @@ index 3e82f449b4ff7..da36997d8742c 100644
  }
  
  static void stress_one_work(struct work_struct *work)
-@@ -512,8 +510,6 @@ static void stress_one_work(struct work_struct *work)
+@@ -525,8 +523,6 @@ static void stress_one_work(struct work_struct *work)
  			break;
  		}
  	} while (!time_after(jiffies, stress->timeout));
@@ -117,7 +117,7 @@ index 3e82f449b4ff7..da36997d8742c 100644
  }
  
  #define STRESS_INORDER BIT(0)
-@@ -524,15 +520,24 @@ static void stress_one_work(struct work_struct *work)
+@@ -537,15 +533,24 @@ static void stress_one_work(struct work_struct *work)
  static int stress(int nlocks, int nthreads, unsigned int flags)
  {
  	struct ww_mutex *locks;
@@ -143,7 +143,7 @@ index 3e82f449b4ff7..da36997d8742c 100644
  	for (n = 0; nthreads; n++) {
  		struct stress *stress;
  		void (*fn)(struct work_struct *work);
-@@ -556,9 +561,7 @@ static int stress(int nlocks, int nthreads, unsigned int flags)
+@@ -569,9 +574,7 @@ static int stress(int nlocks, int nthreads, unsigned int flags)
  		if (!fn)
  			continue;
  
@@ -154,7 +154,7 @@ index 3e82f449b4ff7..da36997d8742c 100644
  
  		INIT_WORK(&stress->work, fn);
  		stress->locks = locks;
-@@ -573,6 +576,7 @@ static int stress(int nlocks, int nthreads, unsigned int flags)
+@@ -586,6 +589,7 @@ static int stress(int nlocks, int nthreads, unsigned int flags)
  
  	for (n = 0; n < nlocks; n++)
  		ww_mutex_destroy(&locks[n]);
