@@ -2,54 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 657BB7E314A
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 00:23:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 78D477E313B
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 00:20:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233592AbjKFXXC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 18:23:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34204 "EHLO
+        id S233899AbjKFXUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 18:20:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233914AbjKFXWj (ORCPT
+        with ESMTP id S233874AbjKFXUf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 18:22:39 -0500
+        Mon, 6 Nov 2023 18:20:35 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E91A4499;
-        Mon,  6 Nov 2023 15:17:25 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EEAC5C4AF5C;
-        Mon,  6 Nov 2023 23:17:22 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C33A81985;
+        Mon,  6 Nov 2023 15:17:31 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 701DCC32785;
+        Mon,  6 Nov 2023 23:17:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699312644;
-        bh=IcCuHwYGu0xSGDXSucSucfaLNGdSJ3JgMbf3g7Mhnbs=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rP7C/96ij0PnM1ybGS1tmsD/NzHtiRv+etk7jTwpRuk48pwwNG8wJ/YSDm8inQMRv
-         ElL2aNjpmLAcIHNbBe1d6hBLUi8XPtLz+p8s3up0oAzabfwltZBERunsFdAiDkbjqG
-         9yFxGRaA4YHhFNxUzzcXojFoZbbXGk7A78K7PScSE0eUQbsGQSmr8ZwyOVcJfdU/+7
-         qnTOxp54iPsmLg6xuby1H89EDI3sXy1IYP8sBoUcxI4KO31SYDr3xPBDqChnt2tyBY
-         UMOf3Ycn7xi3rcOVyFzmIfk04wJIvb94SYkDObME1OnZlhWAXcJSOY6P/GlceDv91y
-         FSHH8wlKTwuXw==
+        s=k20201202; t=1699312651;
+        bh=PZu2j41JmVNWupmmVeQTFZmFnIl0LxgGYcP6TDFQRV0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Z5CKYHb2nxpattVcXyMdb23JHlgHhJjaDOLB0pz5e1gv0CJywVThIZRLtNKIzhN29
+         nSFtL2cD3mn2YwHWH9haau1xNTWwNSC/9a/tzDEHIHXfyyJV1g1aOn/swzB1WFzWIh
+         m5+5nLV3fu190GbRusT6Crk6odVvPnxDe4s39U3iJnrZey27NbION4WEXvqjGFSzUZ
+         XByOy39Cnb8mYngooBMoR8LxscM0El8fSZdvmIbQ7N+Gh94aQmrbVVgvdUEfG+VxKG
+         +VEcu3osWOzQfvNVcoQHATPRKbQXpujCoUzZPU3Awk8zYNMxeihB4chr43/YIp4adb
+         z+uLaTjAC53ng==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     "Mike Rapoport (IBM)" <rppt@kernel.org>,
-        Qi Zheng <zhengqi.arch@bytedance.com>,
-        Mario Casquero <mcasquer@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        David Hildenbrand <david@redhat.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Rik van Riel <riel@surriel.com>,
+Cc:     Jacky Bai <ping.bai@nxp.com>, Peng Fan <peng.fan@nxp.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
         Sasha Levin <sashal@kernel.org>, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, luto@kernel.org,
-        peterz@infradead.org
-Subject: [PATCH AUTOSEL 4.19 5/5] x86/mm: Drop the 4 MB restriction on minimal NUMA node memory size
-Date:   Mon,  6 Nov 2023 18:17:08 -0500
-Message-ID: <20231106231711.3735997-5-sashal@kernel.org>
+        shawnguo@kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: [PATCH AUTOSEL 4.14 1/4] clocksource/drivers/timer-imx-gpt: Fix potential memory leak
+Date:   Mon,  6 Nov 2023 18:17:22 -0500
+Message-ID: <20231106231728.3736117-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231106231711.3735997-1-sashal@kernel.org>
-References: <20231106231711.3735997-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 4.19.297
+X-stable-base: Linux 4.14.328
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
@@ -61,110 +52,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Mike Rapoport (IBM)" <rppt@kernel.org>
+From: Jacky Bai <ping.bai@nxp.com>
 
-[ Upstream commit a1e2b8b36820d8c91275f207e77e91645b7c6836 ]
+[ Upstream commit 8051a993ce222a5158bccc6ac22ace9253dd71cb ]
 
-Qi Zheng reported crashes in a production environment and provided a
-simplified example as a reproducer:
+Fix coverity Issue CID 250382:  Resource leak (RESOURCE_LEAK).
+Add kfree when error return.
 
- |  For example, if we use Qemu to start a two NUMA node kernel,
- |  one of the nodes has 2M memory (less than NODE_MIN_SIZE),
- |  and the other node has 2G, then we will encounter the
- |  following panic:
- |
- |    BUG: kernel NULL pointer dereference, address: 0000000000000000
- |    <...>
- |    RIP: 0010:_raw_spin_lock_irqsave+0x22/0x40
- |    <...>
- |    Call Trace:
- |      <TASK>
- |      deactivate_slab()
- |      bootstrap()
- |      kmem_cache_init()
- |      start_kernel()
- |      secondary_startup_64_no_verify()
-
-The crashes happen because of inconsistency between the nodemask that
-has nodes with less than 4MB as memoryless, and the actual memory fed
-into the core mm.
-
-The commit:
-
-  9391a3f9c7f1 ("[PATCH] x86_64: Clear more state when ignoring empty node in SRAT parsing")
-
-... that introduced minimal size of a NUMA node does not explain why
-a node size cannot be less than 4MB and what boot failures this
-restriction might fix.
-
-Fixes have been submitted to the core MM code to tighten up the
-memory topologies it accepts and to not crash on weird input:
-
-  mm: page_alloc: skip memoryless nodes entirely
-  mm: memory_hotplug: drop memoryless node from fallback lists
-
-Andrew has accepted them into the -mm tree, but there are no
-stable SHA1's yet.
-
-This patch drops the limitation for minimal node size on x86:
-
-  - which works around the crash without the fixes to the core MM.
-  - makes x86 topologies less weird,
-  - removes an arbitrary and undocumented limitation on NUMA topologies.
-
-[ mingo: Improved changelog clarity. ]
-
-Reported-by: Qi Zheng <zhengqi.arch@bytedance.com>
-Tested-by: Mario Casquero <mcasquer@redhat.com>
-Signed-off-by: Mike Rapoport (IBM) <rppt@kernel.org>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Acked-by: David Hildenbrand <david@redhat.com>
-Acked-by: Michal Hocko <mhocko@suse.com>
-Cc: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: Rik van Riel <riel@surriel.com>
-Link: https://lore.kernel.org/r/ZS+2qqjEO5/867br@gmail.com
+Signed-off-by: Jacky Bai <ping.bai@nxp.com>
+Reviewed-by: Peng Fan <peng.fan@nxp.com>
+Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+Link: https://lore.kernel.org/r/20231009083922.1942971-1-ping.bai@nxp.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/include/asm/numa.h | 7 -------
- arch/x86/mm/numa.c          | 7 -------
- 2 files changed, 14 deletions(-)
+ drivers/clocksource/timer-imx-gpt.c | 18 +++++++++++++-----
+ 1 file changed, 13 insertions(+), 5 deletions(-)
 
-diff --git a/arch/x86/include/asm/numa.h b/arch/x86/include/asm/numa.h
-index bbfde3d2662f4..4bcd9d0c7bee7 100644
---- a/arch/x86/include/asm/numa.h
-+++ b/arch/x86/include/asm/numa.h
-@@ -11,13 +11,6 @@
+diff --git a/drivers/clocksource/timer-imx-gpt.c b/drivers/clocksource/timer-imx-gpt.c
+index 6ec6d79b237ce..fcc12f72e907f 100644
+--- a/drivers/clocksource/timer-imx-gpt.c
++++ b/drivers/clocksource/timer-imx-gpt.c
+@@ -489,12 +489,16 @@ static int __init mxc_timer_init_dt(struct device_node *np,  enum imx_gpt_type t
+ 		return -ENOMEM;
  
- #define NR_NODE_MEMBLKS		(MAX_NUMNODES*2)
+ 	imxtm->base = of_iomap(np, 0);
+-	if (!imxtm->base)
+-		return -ENXIO;
++	if (!imxtm->base) {
++		ret = -ENXIO;
++		goto err_kfree;
++	}
  
--/*
-- * Too small node sizes may confuse the VM badly. Usually they
-- * result from BIOS bugs. So dont recognize nodes as standalone
-- * NUMA entities that have less than this amount of RAM listed:
-- */
--#define NODE_MIN_SIZE (4*1024*1024)
--
- extern int numa_off;
+ 	imxtm->irq = irq_of_parse_and_map(np, 0);
+-	if (imxtm->irq <= 0)
+-		return -EINVAL;
++	if (imxtm->irq <= 0) {
++		ret = -EINVAL;
++		goto err_kfree;
++	}
  
- /*
-diff --git a/arch/x86/mm/numa.c b/arch/x86/mm/numa.c
-index b4ff063a43712..a830d49341ecc 100644
---- a/arch/x86/mm/numa.c
-+++ b/arch/x86/mm/numa.c
-@@ -585,13 +585,6 @@ static int __init numa_register_memblks(struct numa_meminfo *mi)
- 		if (start >= end)
- 			continue;
+ 	imxtm->clk_ipg = of_clk_get_by_name(np, "ipg");
  
--		/*
--		 * Don't confuse VM with a node that doesn't have the
--		 * minimum amount of memory:
--		 */
--		if (end && (end - start) < NODE_MIN_SIZE)
--			continue;
--
- 		alloc_node_data(nid);
- 	}
+@@ -507,11 +511,15 @@ static int __init mxc_timer_init_dt(struct device_node *np,  enum imx_gpt_type t
  
+ 	ret = _mxc_timer_init(imxtm);
+ 	if (ret)
+-		return ret;
++		goto err_kfree;
+ 
+ 	initialized = 1;
+ 
+ 	return 0;
++
++err_kfree:
++	kfree(imxtm);
++	return ret;
+ }
+ 
+ static int __init imx1_timer_init_dt(struct device_node *np)
 -- 
 2.42.0
 
