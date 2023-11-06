@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A4F97E2847
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 16:11:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B5E67E2848
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 16:11:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232077AbjKFPL1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 10:11:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44074 "EHLO
+        id S232083AbjKFPLd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 10:11:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229839AbjKFPLZ (ORCPT
+        with ESMTP id S232047AbjKFPLb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 10:11:25 -0500
+        Mon, 6 Nov 2023 10:11:31 -0500
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 883ECD8;
-        Mon,  6 Nov 2023 07:11:22 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 385161B2;
+        Mon,  6 Nov 2023 07:11:28 -0800 (PST)
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 81D2DC15;
-        Mon,  6 Nov 2023 07:12:06 -0800 (PST)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3C6C0DA7;
+        Mon,  6 Nov 2023 07:12:12 -0800 (PST)
 Received: from e127643.broadband (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 7F23C3F6C4;
-        Mon,  6 Nov 2023 07:11:19 -0800 (PST)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 393BD3F6C4;
+        Mon,  6 Nov 2023 07:11:25 -0800 (PST)
 From:   James Clark <james.clark@arm.com>
 To:     linux-perf-users@vger.kernel.org, irogers@google.com
 Cc:     James Clark <james.clark@arm.com>,
@@ -34,16 +34,16 @@ Cc:     James Clark <james.clark@arm.com>,
         Adrian Hunter <adrian.hunter@intel.com>,
         Nathan Chancellor <nathan@kernel.org>,
         Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, Fangrui Song <maskray@google.com>,
+        Tom Rix <trix@redhat.com>, Yonghong Song <yhs@fb.com>,
+        Fangrui Song <maskray@google.com>,
         Kan Liang <kan.liang@linux.intel.com>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
         Yang Jihong <yangjihong1@huawei.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
         Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
         linux-kernel@vger.kernel.org, llvm@lists.linux.dev
-Subject: [PATCH v2 1/2] perf test: Add option to change objdump binary
-Date:   Mon,  6 Nov 2023 15:10:48 +0000
-Message-Id: <20231106151051.129440-2-james.clark@arm.com>
+Subject: [PATCH v2 2/2] perf test: Add support for setting objdump binary via perf config
+Date:   Mon,  6 Nov 2023 15:10:49 +0000
+Message-Id: <20231106151051.129440-3-james.clark@arm.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231106151051.129440-1-james.clark@arm.com>
 References: <20231106151051.129440-1-james.clark@arm.com>
@@ -58,70 +58,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-All of the other Perf subcommands that use objdump have an option to
-specify the binary, so add the same option to perf test.
+Add a perf config variable that does the same thing as "perf test
+--objdump <x>".
 
-This is useful if you have built the kernel with a different toolchain
-to the system one, where the system objdump may fail to disassemble
-vmlinux.
+Also update the man page.
 
-Now this can be fixed with something like this:
-
-  $ perf test --objdump llvm-objdump "object code reading"
-
-Reviewed-by: Ian Rogers <irogers@google.com>
 Signed-off-by: James Clark <james.clark@arm.com>
 ---
- tools/perf/tests/builtin-test.c | 3 +++
- tools/perf/tests/code-reading.c | 2 +-
- tools/perf/tests/tests.h        | 1 +
- 3 files changed, 5 insertions(+), 1 deletion(-)
+ tools/perf/Documentation/perf-config.txt |  4 ++++
+ tools/perf/tests/builtin-test.c          | 12 ++++++++++++
+ 2 files changed, 16 insertions(+)
 
+diff --git a/tools/perf/Documentation/perf-config.txt b/tools/perf/Documentation/perf-config.txt
+index 0b4e79dbd3f6..16398babd1ef 100644
+--- a/tools/perf/Documentation/perf-config.txt
++++ b/tools/perf/Documentation/perf-config.txt
+@@ -722,6 +722,10 @@ session-<NAME>.*::
+ 		Defines new record session for daemon. The value is record's
+ 		command line without the 'record' keyword.
+ 
++test.*::
++
++	test.objdump::
++		objdump binary to use for disassembly and annotations.
+ 
+ SEE ALSO
+ --------
 diff --git a/tools/perf/tests/builtin-test.c b/tools/perf/tests/builtin-test.c
-index cb6f1dd00dc4..a8d17dd50588 100644
+index a8d17dd50588..113e92119e1d 100644
 --- a/tools/perf/tests/builtin-test.c
 +++ b/tools/perf/tests/builtin-test.c
-@@ -32,6 +32,7 @@
+@@ -14,6 +14,7 @@
+ #include <sys/wait.h>
+ #include <sys/stat.h>
+ #include "builtin.h"
++#include "config.h"
+ #include "hist.h"
+ #include "intlist.h"
+ #include "tests.h"
+@@ -514,6 +515,15 @@ static int run_workload(const char *work, int argc, const char **argv)
+ 	return -1;
+ }
  
- static bool dont_fork;
- const char *dso_to_test;
-+const char *test_objdump_path = "objdump";
++static int perf_test__config(const char *var, const char *value,
++			     void *data __maybe_unused)
++{
++	if (!strcmp(var, "test.objdump"))
++		test_objdump_path = value;
++
++	return 0;
++}
++
+ int cmd_test(int argc, const char **argv)
+ {
+ 	const char *test_usage[] = {
+@@ -541,6 +551,8 @@ int cmd_test(int argc, const char **argv)
+         if (ret < 0)
+                 return ret;
  
- /*
-  * List of architecture specific tests. Not a weak symbol as the array length is
-@@ -529,6 +530,8 @@ int cmd_test(int argc, const char **argv)
- 		    "Do not fork for testcase"),
- 	OPT_STRING('w', "workload", &workload, "work", "workload to run for testing"),
- 	OPT_STRING(0, "dso", &dso_to_test, "dso", "dso to test"),
-+	OPT_STRING(0, "objdump", &test_objdump_path, "path",
-+		   "objdump binary to use for disassembly and annotations"),
- 	OPT_END()
- 	};
- 	const char * const test_subcommands[] = { "list", NULL };
-diff --git a/tools/perf/tests/code-reading.c b/tools/perf/tests/code-reading.c
-index 3af81012014e..b353358acc3a 100644
---- a/tools/perf/tests/code-reading.c
-+++ b/tools/perf/tests/code-reading.c
-@@ -185,7 +185,7 @@ static int read_via_objdump(const char *filename, u64 addr, void *buf,
- 	int ret;
++	perf_config(perf_test__config, NULL);
++
+ 	/* Unbuffered output */
+ 	setvbuf(stdout, NULL, _IONBF, 0);
  
- 	fmt = "%s -z -d --start-address=0x%"PRIx64" --stop-address=0x%"PRIx64" %s";
--	ret = snprintf(cmd, sizeof(cmd), fmt, "objdump", addr, addr + len,
-+	ret = snprintf(cmd, sizeof(cmd), fmt, test_objdump_path, addr, addr + len,
- 		       filename);
- 	if (ret <= 0 || (size_t)ret >= sizeof(cmd))
- 		return -1;
-diff --git a/tools/perf/tests/tests.h b/tools/perf/tests/tests.h
-index b394f3ac2d66..dad3d7414142 100644
---- a/tools/perf/tests/tests.h
-+++ b/tools/perf/tests/tests.h
-@@ -207,5 +207,6 @@ DECLARE_WORKLOAD(brstack);
- DECLARE_WORKLOAD(datasym);
- 
- extern const char *dso_to_test;
-+extern const char *test_objdump_path;
- 
- #endif /* TESTS_H */
 -- 
 2.34.1
 
