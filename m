@@ -2,135 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B3F387E214E
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 13:25:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D313D7E2179
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 13:27:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231684AbjKFMZk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 07:25:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56828 "EHLO
+        id S231817AbjKFM1B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 07:27:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230284AbjKFMZi (ORCPT
+        with ESMTP id S229583AbjKFM05 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 07:25:38 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6308A97;
-        Mon,  6 Nov 2023 04:25:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699273536; x=1730809536;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=2pR8X4BMVcOGKWPNkgcioekUqSx5/pk8Jhwvb4ict+4=;
-  b=i1ILJryameQME2wCRiiRbVH+TQb/wd1dauLPCNARzBp00uPXWi8Scw5z
-   1PKdTA9jabyoy9/DLJWxDsU7i/1t6mIraTua7+YHkF1YFmd08tQG/YkQV
-   6kFQqMUsV1QpBQWl/sZQgBvOhG9I/lKWHAE7A9q3mHG+T2H5qxzphMs9n
-   oh6mFO4jU8hLWO/cUJbHw+mKEi5KH1u9gGVexCfS6s5eh05rAz9nATEK5
-   XY4U9JB6/7PRs+pryVjUn0EXe3hOFhEAAgMNFLY2XjPWxuDS4s+2QGZyn
-   voVw4s1RDMdkqSQd8ObwX6ioj8qAPohuGbclSgHI6FrqzVTsVcTLA1e58
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10885"; a="420376184"
-X-IronPort-AV: E=Sophos;i="6.03,281,1694761200"; 
-   d="scan'208";a="420376184"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Nov 2023 04:25:36 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10885"; a="828193825"
-X-IronPort-AV: E=Sophos;i="6.03,281,1694761200"; 
-   d="scan'208";a="828193825"
-Received: from rmstoi-mobl.ger.corp.intel.com ([10.251.216.76])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Nov 2023 04:25:27 -0800
-Date:   Mon, 6 Nov 2023 14:25:24 +0200 (EET)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Mario Limonciello <mario.limonciello@amd.com>
-cc:     Karol Herbst <kherbst@redhat.com>, Lyude Paul <lyude@redhat.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?ISO-8859-15?Q?Christian_K=F6nig?= <christian.koenig@amd.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Lukas Wunner <lukas@wunner.de>,
-        Danilo Krummrich <dakr@redhat.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Xinhui Pan <Xinhui.Pan@amd.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Mark Gross <markgross@kernel.org>,
-        Andreas Noever <andreas.noever@gmail.com>,
-        Michael Jamet <michael.jamet@intel.com>,
-        Yehezkel Bernat <YehezkelShB@gmail.com>,
-        =?ISO-8859-15?Q?Pali_Roh=E1r?= <pali@kernel.org>,
-        =?ISO-8859-15?Q?Marek_Beh=FAn?= <kabel@kernel.org>,
-        "Maciej W . Rozycki" <macro@orcam.me.uk>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        "open list:DRM DRIVER FOR NVIDIA GEFORCE/QUADRO GPUS" 
-        <dri-devel@lists.freedesktop.org>,
-        "open list:DRM DRIVER FOR NVIDIA GEFORCE/QUADRO GPUS" 
-        <nouveau@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:RADEON and AMDGPU DRM DRIVERS" 
-        <amd-gfx@lists.freedesktop.org>,
-        "open list:PCI SUBSYSTEM" <linux-pci@vger.kernel.org>,
-        "open list:ACPI" <linux-acpi@vger.kernel.org>,
-        "open list:X86 PLATFORM DRIVERS" 
-        <platform-driver-x86@vger.kernel.org>,
-        "open list:THUNDERBOLT DRIVER" <linux-usb@vger.kernel.org>
-Subject: Re: [PATCH v2 1/9] drm/nouveau: Switch from pci_is_thunderbolt_attached()
- to dev_is_removable()
-In-Reply-To: <20231103190758.82911-2-mario.limonciello@amd.com>
-Message-ID: <55563d57-60c3-1789-1e7c-5e618fbd6253@linux.intel.com>
-References: <20231103190758.82911-1-mario.limonciello@amd.com> <20231103190758.82911-2-mario.limonciello@amd.com>
+        Mon, 6 Nov 2023 07:26:57 -0500
+Received: from out28-2.mail.aliyun.com (out28-2.mail.aliyun.com [115.124.28.2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E750BBB;
+        Mon,  6 Nov 2023 04:26:52 -0800 (PST)
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07470094|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.0336601-0.000693695-0.965646;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047211;MF=michael@allwinnertech.com;NM=1;PH=DS;RN=12;RT=12;SR=0;TI=SMTPD_---.VGP97NC_1699273606;
+Received: from 192.168.220.129(mailfrom:michael@allwinnertech.com fp:SMTPD_---.VGP97NC_1699273606)
+          by smtp.aliyun-inc.com;
+          Mon, 06 Nov 2023 20:26:48 +0800
+Message-ID: <aa657a1d-a25d-21a8-4093-ec8fbe298ca2@allwinnertech.com>
+Date:   Mon, 6 Nov 2023 20:26:45 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.0
+Subject: Re: [PATCH] mmc: core: Add new flag to force hardware reset
+Content-Language: en-US
+To:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Wenchao Chen <wenchao.chen666@gmail.com>
+Cc:     adrian.hunter@intel.com, jinpu.wang@ionos.com,
+        victor.shih@genesyslogic.com.tw, avri.altman@wdc.com,
+        asuk4.q@gmail.com, f.fainelli@gmail.com, beanhuo@micron.com,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sarthak Garg <quic_sartgarg@quicinc.com>
+References: <20230914000348.25790-1-michael@allwinnertech.com>
+ <CA+Da2qzr0SBu-kUtFTnBqT+OObFOSTFgmU30L3B-Rjv3rYbGKw@mail.gmail.com>
+ <CAPDyKFpHw+6vovHRWbhsDwre81U4Uu_X-Wy_viQCZp6nj=5Jkw@mail.gmail.com>
+From:   Michael Wu <michael@allwinnertech.com>
+In-Reply-To: <CAPDyKFpHw+6vovHRWbhsDwre81U4Uu_X-Wy_viQCZp6nj=5Jkw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 3 Nov 2023, Mario Limonciello wrote:
-
-> pci_is_thunderbolt_attached() only works for Intel TBT devices. Switch to
-> using dev_is_removable() to be able to detect USB4 devices as well.
-
-Please extend this with more details. I had to lookup the TBT change to 
-be able to make any guess why you're doing this (and it's still a guess 
-at best).
+On 9/25/2023 9:59 PM, Ulf Hansson wrote:
+> - trimmed cc-list, + Sartak Garg
+> 
+> On Thu, 14 Sept 2023 at 10:00, Wenchao Chen <wenchao.chen666@gmail.com> wrote:
+>>
+>> On Thu, 14 Sept 2023 at 08:04, Michael Wu <michael@allwinnertech.com> wrote:
+>>>
+>>> Entering the recovery system itself indicates a transmission error.
+>>> In this situation, we intend to execute the mmc_blk_reset function
+>>> to clear any anomalies that may be caused by errors. We have previously
+>>> discussed with several MMC device manufacturers, and they expressed
+>>> their desire for us to reset the device when errors occur to ensure
+>>> stable operation. We aim to make this code compatible with all devices
+>>> and ensure its stable performance, so we would like to add this patch
+>>>
+>>> Signed-off-by: Michael Wu <michael@allwinnertech.com>
+>>
+>> like: https://lore.kernel.org/linux-mmc/20220603051534.22672-1-quic_sartgarg@quicinc.com/
+> 
+> Looks like this series didn't make it. I was awaiting a rebase from
+> Sartak to apply it, but apparently something got in his way for a new
+> submission.
+> 
+>>
+>> You should enable it in the vendor host.
+> 
+> Yes! We don't want unused code in the core. We need a user of it too.
+> 
+> May I suggest that you pick up Sartak's patch for the core and thus
+> add another patch for the host driver you care about and then
+> re-submit it as a small series.
+> 
+> Kind regards
+> Uffe
+> 
+>>
+>>> ---
+>>>   drivers/mmc/core/block.c | 2 +-
+>>>   include/linux/mmc/host.h | 1 +
+>>>   2 files changed, 2 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
+>>> index b5b414a71e0b..29fbe0ddeadb 100644
+>>> --- a/drivers/mmc/core/block.c
+>>> +++ b/drivers/mmc/core/block.c
+>>> @@ -1503,7 +1503,7 @@ void mmc_blk_cqe_recovery(struct mmc_queue *mq)
+>>>          pr_debug("%s: CQE recovery start\n", mmc_hostname(host));
+>>>
+>>>          err = mmc_cqe_recovery(host);
+>>> -       if (err)
+>>> +       if (err || host->cqe_recovery_reset_always)
+>>>                  mmc_blk_reset(mq->blkdata, host, MMC_BLK_CQE_RECOVERY);
+>>>          mmc_blk_reset_success(mq->blkdata, MMC_BLK_CQE_RECOVERY);
+>>>
+>>> diff --git a/include/linux/mmc/host.h b/include/linux/mmc/host.h
+>>> index 62a6847a3b6f..f578541a06b5 100644
+>>> --- a/include/linux/mmc/host.h
+>>> +++ b/include/linux/mmc/host.h
+>>> @@ -518,6 +518,7 @@ struct mmc_host {
+>>>          int                     cqe_qdepth;
+>>>          bool                    cqe_enabled;
+>>>          bool                    cqe_on;
+>>> +       bool                    cqe_recovery_reset_always;
+>>>
+>>>          /* Inline encryption support */
+>>>   #ifdef CONFIG_MMC_CRYPTO
+>>> --
+>>> 2.29.0
+>>>
+Dear Ulf,
+I have tested Sartak's patch and it is also able to resolve the issue we 
+are currently facing. Therefore, I would like to inquire about the 
+expected timeline for merging Sartak's patch.
 
 -- 
- i.
-
-
-> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
-> ---
->  drivers/gpu/drm/nouveau/nouveau_vga.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/nouveau/nouveau_vga.c b/drivers/gpu/drm/nouveau/nouveau_vga.c
-> index f8bf0ec26844..14215b7ca187 100644
-> --- a/drivers/gpu/drm/nouveau/nouveau_vga.c
-> +++ b/drivers/gpu/drm/nouveau/nouveau_vga.c
-> @@ -94,8 +94,8 @@ nouveau_vga_init(struct nouveau_drm *drm)
->  
->  	vga_client_register(pdev, nouveau_vga_set_decode);
->  
-> -	/* don't register Thunderbolt eGPU with vga_switcheroo */
-> -	if (pci_is_thunderbolt_attached(pdev))
-> +	/* don't register USB4/Thunderbolt eGPU with vga_switcheroo */
-> +	if (dev_is_removable(&pdev->dev))
->  		return;
->  
->  	vga_switcheroo_register_client(pdev, &nouveau_switcheroo_ops, runtime);
-> @@ -118,7 +118,7 @@ nouveau_vga_fini(struct nouveau_drm *drm)
->  
->  	vga_client_unregister(pdev);
->  
-> -	if (pci_is_thunderbolt_attached(pdev))
-> +	if (dev_is_removable(&pdev->dev))
->  		return;
->  
->  	vga_switcheroo_unregister_client(pdev);
-> 
+Regards,
+Michael Wu
