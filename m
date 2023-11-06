@@ -2,78 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 68BE87E19EE
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 07:07:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 144607E19F3
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 07:08:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230378AbjKFGHv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 01:07:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36572 "EHLO
+        id S230392AbjKFGIf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 01:08:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230030AbjKFGHt (ORCPT
+        with ESMTP id S230030AbjKFGId (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 01:07:49 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2283100
-        for <linux-kernel@vger.kernel.org>; Sun,  5 Nov 2023 22:07:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=f4oEJcN7tu7cszr0XCp5uXw/+bxFXjFvZY5/3ntOFSI=; b=HV03tB2NPM/4Ou1NgJkJ9Q2mza
-        r/frmObyK8sMoyBba+Fq+8w2rZjNidyRfxwuhbxTzhMDRpsx2Wbj/5gX2CDGr80NaieTK0+v59zT/
-        wNEKKOQNEHC6NWDyCiQs3n50NU1wbbJfrJTf4hPTRi1uamJkSXTTqWKG3VRzfa/3qFLMC6EGNSytk
-        zLtvcj51w8jCdTjQSQR/WXCs8X2RG0LD+GXFZQFHMDpfdqusSidVQuC1Qtpr3zvUsdUzQ+MDD2cvi
-        rKxWivsWUe1QzLCs89uSZurFqOZhSpJnIotVGNIwOTqZrKrTpt3Xs3MkHcXVOSMgp1BgToFm8C5a5
-        55+Xd5dQ==;
-Received: from [50.53.46.231] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qzsm1-00FvQq-1O;
-        Mon, 06 Nov 2023 06:07:45 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        kernel test robot <lkp@intel.com>,
-        Richard Weinberger <richard@nod.at>,
-        linux-mtd@lists.infradead.org
-Subject: [PATCH] ubifs: auth.c: fix kernel-doc function prototype warning
-Date:   Sun,  5 Nov 2023 22:07:44 -0800
-Message-ID: <20231106060744.10847-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.42.0
+        Mon, 6 Nov 2023 01:08:33 -0500
+Received: from mail.nfschina.com (unknown [42.101.60.195])
+        by lindbergh.monkeyblade.net (Postfix) with SMTP id 45D38B6;
+        Sun,  5 Nov 2023 22:08:30 -0800 (PST)
+Received: from localhost.localdomain (unknown [180.167.10.98])
+        by mail.nfschina.com (Maildata Gateway V2.8.8) with ESMTPA id A1A70602AB5FF;
+        Mon,  6 Nov 2023 14:08:27 +0800 (CST)
+X-MD-Sfrom: suhui@nfschina.com
+X-MD-SrcIP: 180.167.10.98
+From:   Su Hui <suhui@nfschina.com>
+To:     sergeantsagara@protonmail.com, ping.cheng@wacom.com,
+        jason.gerecke@wacom.com, jikos@kernel.org,
+        benjamin.tissoires@redhat.com
+Cc:     Su Hui <suhui@nfschina.com>, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: [PATCH v2] HID: wacom_sys: add error code check in wacom_feature_mapping
+Date:   Mon,  6 Nov 2023 14:08:16 +0800
+Message-Id: <20231106060815.104971-1-suhui@nfschina.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,RDNS_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the correct function name in the kernel-doc comment to prevent
-a kernel-doc warning:
+hid_report_raw_event() can return error code like '-ENOMEM' if
+failed, so check 'ret' to make sure all things work fine.
 
-auth.c:30: warning: expecting prototype for ubifs_node_calc_hash(). Prototype was for __ubifs_node_calc_hash() instead
-
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: lore.kernel.org/r/202311052125.gE1Rylox-lkp@intel.com
-Cc: Richard Weinberger <richard@nod.at>
-Cc: linux-mtd@lists.infradead.org
+Signed-off-by: Su Hui <suhui@nfschina.com>
 ---
- fs/ubifs/auth.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+v2:
+ - report the returned error (Rahul Rameshbabu) and __func__.
 
-diff -- a/fs/ubifs/auth.c b/fs/ubifs/auth.c
---- a/fs/ubifs/auth.c
-+++ b/fs/ubifs/auth.c
-@@ -18,7 +18,7 @@
- #include "ubifs.h"
- 
- /**
-- * ubifs_node_calc_hash - calculate the hash of a UBIFS node
-+ * __ubifs_node_calc_hash - calculate the hash of a UBIFS node
-  * @c: UBIFS file-system description object
-  * @node: the node to calculate a hash for
-  * @hash: the returned hash
+ drivers/hid/wacom_sys.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/drivers/hid/wacom_sys.c b/drivers/hid/wacom_sys.c
+index 3f704b8072e8..899579c6db9d 100644
+--- a/drivers/hid/wacom_sys.c
++++ b/drivers/hid/wacom_sys.c
+@@ -320,6 +320,9 @@ static void wacom_feature_mapping(struct hid_device *hdev,
+ 			if (ret == n && features->type == HID_GENERIC) {
+ 				ret = hid_report_raw_event(hdev,
+ 					HID_FEATURE_REPORT, data, n, 0);
++				if (ret)
++					hid_warn(hdev, "%s: failed to report feature: %pe\n",
++						 __func__, ERR_PTR(ret));
+ 			} else if (ret == 2 && features->type != HID_GENERIC) {
+ 				features->touch_max = data[1];
+ 			} else {
+@@ -381,6 +384,9 @@ static void wacom_feature_mapping(struct hid_device *hdev,
+ 		if (ret == n) {
+ 			ret = hid_report_raw_event(hdev, HID_FEATURE_REPORT,
+ 						   data, n, 0);
++			if (ret)
++				hid_warn(hdev, "%s: failed to report feature: %pe\n",
++					 __func__, ERR_PTR(ret));
+ 		} else {
+ 			hid_warn(hdev, "%s: could not retrieve sensor offsets\n",
+ 				 __func__);
+-- 
+2.30.2
+
