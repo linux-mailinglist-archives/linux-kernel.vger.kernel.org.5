@@ -2,38 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 144607E19F3
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 07:08:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44C5E7E1A04
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 07:10:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230392AbjKFGIf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 01:08:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60342 "EHLO
+        id S230371AbjKFGK1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 01:10:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230030AbjKFGId (ORCPT
+        with ESMTP id S229485AbjKFGKY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 01:08:33 -0500
-Received: from mail.nfschina.com (unknown [42.101.60.195])
-        by lindbergh.monkeyblade.net (Postfix) with SMTP id 45D38B6;
-        Sun,  5 Nov 2023 22:08:30 -0800 (PST)
-Received: from localhost.localdomain (unknown [180.167.10.98])
-        by mail.nfschina.com (Maildata Gateway V2.8.8) with ESMTPA id A1A70602AB5FF;
-        Mon,  6 Nov 2023 14:08:27 +0800 (CST)
-X-MD-Sfrom: suhui@nfschina.com
-X-MD-SrcIP: 180.167.10.98
-From:   Su Hui <suhui@nfschina.com>
-To:     sergeantsagara@protonmail.com, ping.cheng@wacom.com,
-        jason.gerecke@wacom.com, jikos@kernel.org,
-        benjamin.tissoires@redhat.com
-Cc:     Su Hui <suhui@nfschina.com>, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: [PATCH v2] HID: wacom_sys: add error code check in wacom_feature_mapping
-Date:   Mon,  6 Nov 2023 14:08:16 +0800
-Message-Id: <20231106060815.104971-1-suhui@nfschina.com>
-X-Mailer: git-send-email 2.30.2
+        Mon, 6 Nov 2023 01:10:24 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 162DCFA
+        for <linux-kernel@vger.kernel.org>; Sun,  5 Nov 2023 22:10:21 -0800 (PST)
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A664NBO020200;
+        Mon, 6 Nov 2023 06:09:45 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=QrZlxNMvJivigefguk9laFaTFc3zs+PbCWA5YdF7RUw=;
+ b=Fm79f/yfQnqofrmocAvIL10TgksopunWPGA+Vo0yU/00liCoNlJhxBB8Sf+X2et2dH9p
+ 2LZJSQfSxDWP7q0GWYeGc6OqpCa7KZ8FwqeCmjTuBgZFu34jA8xRxuTsnvysN7xrsKmb
+ HxxUEjSBdgt30sEl4/njJ/Q3+aCGnl26NAtYgfcBJkrJoumN4tYHsryZztCQ1zfcd+YA
+ Go0Ndo8Iq3PRhC4wkTMi0a+o4d2hWSKCGbyu0cSMt2f7LR50gcgcj0n/eTqTvFRULAM4
+ VTFjdFufW4sNhnIfEazROmEc2Zl9b83XAs8yB7LHcWYXGIo2bV0OJQVunA9psAJpOVJY gQ== 
+Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u5eg3u7cm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 06 Nov 2023 06:09:45 +0000
+Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
+        by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3A669iTk003029
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 6 Nov 2023 06:09:44 GMT
+Received: from [10.214.227.50] (10.80.80.8) by nasanex01c.na.qualcomm.com
+ (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Sun, 5 Nov
+ 2023 22:09:39 -0800
+Message-ID: <e3d96ed5-af32-4087-b7df-d960eaf39797@quicinc.com>
+Date:   Mon, 6 Nov 2023 11:39:30 +0530
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,RDNS_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/3] iommu/arm-smmu: add ACTLR data and support for SM8550
+Content-Language: en-US
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+CC:     <will@kernel.org>, <robin.murphy@arm.com>, <joro@8bytes.org>,
+        <a39.skl@gmail.com>, <konrad.dybcio@linaro.org>,
+        <quic_saipraka@quicinc.com>, <quic_pkondeti@quicinc.com>,
+        <quic_molvera@quicinc.com>, <linux-arm-kernel@lists.infradead.org>,
+        <iommu@lists.linux.dev>, <linux-kernel@vger.kernel.org>,
+        <qipl.kernel.upstream@quicinc.com>
+References: <20231103215124.1095-1-quic_bibekkum@quicinc.com>
+ <20231103215124.1095-3-quic_bibekkum@quicinc.com>
+ <CAA8EJpqWdHwF_mZoXt8wpYeKLWQEFs3H83c-OsLVYVGYmi5mkQ@mail.gmail.com>
+ <fff5184b-3bf6-4f40-b99f-e77c01342fcc@quicinc.com>
+ <CAA8EJprkO=XZ=4na-JAKDsoKOxLt_AG42HQ4JTVNTZ2BSu8YdQ@mail.gmail.com>
+From:   Bibek Kumar Patro <quic_bibekkum@quicinc.com>
+In-Reply-To: <CAA8EJprkO=XZ=4na-JAKDsoKOxLt_AG42HQ4JTVNTZ2BSu8YdQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01c.na.qualcomm.com (10.45.79.139)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: bWOvCrW3oVQScZfhx7HGfeNothsEjjt3
+X-Proofpoint-ORIG-GUID: bWOvCrW3oVQScZfhx7HGfeNothsEjjt3
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-06_03,2023-11-02_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 phishscore=0
+ adultscore=0 malwarescore=0 suspectscore=0 mlxlogscore=999 clxscore=1015
+ bulkscore=0 lowpriorityscore=0 priorityscore=1501 spamscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2310240000 definitions=main-2311060052
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -41,41 +86,207 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-hid_report_raw_event() can return error code like '-ENOMEM' if
-failed, so check 'ret' to make sure all things work fine.
 
-Signed-off-by: Su Hui <suhui@nfschina.com>
----
-v2:
- - report the returned error (Rahul Rameshbabu) and __func__.
 
- drivers/hid/wacom_sys.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+On 11/4/2023 4:11 AM, Dmitry Baryshkov wrote:
+> On Sat, 4 Nov 2023 at 00:38, Bibek Kumar Patro
+> <quic_bibekkum@quicinc.com> wrote:
+>>
+>>
+>>
+>> On 11/4/2023 3:31 AM, Dmitry Baryshkov wrote:
+>>> On Fri, 3 Nov 2023 at 23:53, Bibek Kumar Patro
+>>> <quic_bibekkum@quicinc.com> wrote:
+>>>>
+>>>> Add ACTLR data table for SM8550 along with support for
+>>>> same including SM8550 specific implementation operations.
+>>>>
+>>>> Signed-off-by: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
+>>>> ---
+>>>>    drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 85 +++++++++++++++++++++-
+>>>>    1 file changed, 81 insertions(+), 4 deletions(-)
+>>>>
+>>>> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+>>>> index 68c1f4908473..590b7c285299 100644
+>>>> --- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+>>>> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+>>>> @@ -25,6 +25,64 @@ struct actlr_data {
+>>>>           u32 actlr;
+>>>>    };
+>>>>
+>>>> +static const struct actlr_data sm8550_apps_actlr_data[] = {
+>>>> +       { 0x18a0, 0x0000, 0x00000103 },
+>>>> +       { 0x18e0, 0x0000, 0x00000103 },
+>>>> +       { 0x0800, 0x0020, 0x00000001 },
+>>>> +       { 0x1800, 0x00c0, 0x00000001 },
+>>>> +       { 0x1820, 0x0000, 0x00000001 },
+>>>> +       { 0x1860, 0x0000, 0x00000001 },
+>>>> +       { 0x0c01, 0x0020, 0x00000303 },
+>>>> +       { 0x0c02, 0x0020, 0x00000303 },
+>>>> +       { 0x0c03, 0x0020, 0x00000303 },
+>>>> +       { 0x0c04, 0x0020, 0x00000303 },
+>>>> +       { 0x0c05, 0x0020, 0x00000303 },
+>>>> +       { 0x0c06, 0x0020, 0x00000303 },
+>>>> +       { 0x0c07, 0x0020, 0x00000303 },
+>>>> +       { 0x0c08, 0x0020, 0x00000303 },
+>>>> +       { 0x0c09, 0x0020, 0x00000303 },
+>>>> +       { 0x0c0c, 0x0020, 0x00000303 },
+>>>> +       { 0x0c0d, 0x0020, 0x00000303 },
+>>>> +       { 0x0c0e, 0x0020, 0x00000303 },
+>>>> +       { 0x0c0f, 0x0020, 0x00000303 },
+>>>> +       { 0x1961, 0x0000, 0x00000303 },
+>>>> +       { 0x1962, 0x0000, 0x00000303 },
+>>>> +       { 0x1963, 0x0000, 0x00000303 },
+>>>> +       { 0x1964, 0x0000, 0x00000303 },
+>>>> +       { 0x1965, 0x0000, 0x00000303 },
+>>>> +       { 0x1966, 0x0000, 0x00000303 },
+>>>> +       { 0x1967, 0x0000, 0x00000303 },
+>>>> +       { 0x1968, 0x0000, 0x00000303 },
+>>>> +       { 0x1969, 0x0000, 0x00000303 },
+>>>> +       { 0x196c, 0x0000, 0x00000303 },
+>>>> +       { 0x196d, 0x0000, 0x00000303 },
+>>>> +       { 0x196e, 0x0000, 0x00000303 },
+>>>> +       { 0x196f, 0x0000, 0x00000303 },
+>>>> +       { 0x19c1, 0x0010, 0x00000303 },
+>>>> +       { 0x19c2, 0x0010, 0x00000303 },
+>>>> +       { 0x19c3, 0x0010, 0x00000303 },
+>>>> +       { 0x19c4, 0x0010, 0x00000303 },
+>>>> +       { 0x19c5, 0x0010, 0x00000303 },
+>>>> +       { 0x19c6, 0x0010, 0x00000303 },
+>>>> +       { 0x19c7, 0x0010, 0x00000303 },
+>>>> +       { 0x19c8, 0x0010, 0x00000303 },
+>>>> +       { 0x19c9, 0x0010, 0x00000303 },
+>>>> +       { 0x19cc, 0x0010, 0x00000303 },
+>>>> +       { 0x19cd, 0x0010, 0x00000303 },
+>>>> +       { 0x19ce, 0x0010, 0x00000303 },
+>>>> +       { 0x19cf, 0x0010, 0x00000303 },
+>>>> +       { 0x1c00, 0x0002, 0x00000103 },
+>>>> +       { 0x1c01, 0x0000, 0x00000001 },
+>>>> +       { 0x1920, 0x0000, 0x00000103 },
+>>>> +       { 0x1923, 0x0000, 0x00000103 },
+>>>> +       { 0x1924, 0x0000, 0x00000103 },
+>>>> +       { 0x1940, 0x0000, 0x00000103 },
+>>>> +       { 0x1941, 0x0004, 0x00000103 },
+>>>> +       { 0x1943, 0x0000, 0x00000103 },
+>>>> +       { 0x1944, 0x0000, 0x00000103 },
+>>>> +       { 0x1947, 0x0000, 0x00000103 },
+>>>> +};
+>>>
+>>> This is nearly impossible to handle.
+>>> Please add defines for 0x1, 0x103 and 0x303. Also please consider
+>>> adding comments for the devices.
+>>>
+>>
+>> Ack, Initially added the comments for devices, but since only driver is
+>> handling this data, and clients won't refer this so removed it. Will
+>> consider adding it back.
+> 
+> It will help developers / porters who will try matching the SID and the device.
+> 
 
-diff --git a/drivers/hid/wacom_sys.c b/drivers/hid/wacom_sys.c
-index 3f704b8072e8..899579c6db9d 100644
---- a/drivers/hid/wacom_sys.c
-+++ b/drivers/hid/wacom_sys.c
-@@ -320,6 +320,9 @@ static void wacom_feature_mapping(struct hid_device *hdev,
- 			if (ret == n && features->type == HID_GENERIC) {
- 				ret = hid_report_raw_event(hdev,
- 					HID_FEATURE_REPORT, data, n, 0);
-+				if (ret)
-+					hid_warn(hdev, "%s: failed to report feature: %pe\n",
-+						 __func__, ERR_PTR(ret));
- 			} else if (ret == 2 && features->type != HID_GENERIC) {
- 				features->touch_max = data[1];
- 			} else {
-@@ -381,6 +384,9 @@ static void wacom_feature_mapping(struct hid_device *hdev,
- 		if (ret == n) {
- 			ret = hid_report_raw_event(hdev, HID_FEATURE_REPORT,
- 						   data, n, 0);
-+			if (ret)
-+				hid_warn(hdev, "%s: failed to report feature: %pe\n",
-+					 __func__, ERR_PTR(ret));
- 		} else {
- 			hid_warn(hdev, "%s: could not retrieve sensor offsets\n",
- 				 __func__);
--- 
-2.30.2
+Agree on the same, I'll add those comments for devices back.
 
+>>   This actlr field value might different (other
+>> than 0x1,0x103,0x303) in other platforms as per my anticipation,
+>> depending on the bit settings, so won't the defines change with
+>> different platforms? Hence this register setting value might be apt?
+> 
+> It is simple. 0x1, 0x103 and 0x303 are pure magic values. Please
+> provide sensible defines so that we can understand and review them.
+>
+
+Understandable, In next patch I'll populate the actlr_data in
+following format { SID, MASK, PRE_FETCH_n | CPRE | CMTLB }.
+where " PRE_FETCH_n | CPRE | CMTLB " will be defines for
+the actlr values (0x1,0x103,0x303).
+This would help in understanding these values. Hope this
+proposed format will be okay?
+
+
+> Other platforms might use new defines.
+> 
+>>
+>>>> +
+>>>>    static struct qcom_smmu *to_qcom_smmu(struct arm_smmu_device *smmu)
+>>>>    {
+>>>>           return container_of(smmu, struct qcom_smmu, smmu);
+>>>> @@ -444,6 +502,16 @@ static const struct arm_smmu_impl sdm845_smmu_500_impl = {
+>>>>           .tlb_sync = qcom_smmu_tlb_sync,
+>>>>    };
+>>>>
+>>>> +
+>>>> +static const struct arm_smmu_impl sm8550_smmu_500_impl = {
+>>>> +       .init_context = qcom_smmu_init_context,
+>>>> +       .cfg_probe = qcom_smmu_cfg_probe,
+>>>> +       .def_domain_type = qcom_smmu_def_domain_type,
+>>>> +       .reset = arm_mmu500_reset,
+>>>> +       .write_s2cr = qcom_smmu_write_s2cr,
+>>>> +       .tlb_sync = qcom_smmu_tlb_sync,
+>>>> +};
+>>>> +
+>>>>    static const struct arm_smmu_impl qcom_adreno_smmu_v2_impl = {
+>>>>           .init_context = qcom_adreno_smmu_init_context,
+>>>>           .def_domain_type = qcom_smmu_def_domain_type,
+>>>> @@ -507,6 +575,11 @@ static const struct qcom_smmu_config qcom_smmu_impl0_cfg = {
+>>>>           .reg_offset = qcom_smmu_impl0_reg_offset,
+>>>>    };
+>>>>
+>>>> +static const struct actlr_config sm8550_actlrcfg = {
+>>>> +       .adata = sm8550_apps_actlr_data,
+>>>> +       .size = ARRAY_SIZE(sm8550_apps_actlr_data),
+>>>> +};
+>>>> +
+>>>>    /*
+>>>>     * It is not yet possible to use MDP SMMU with the bypass quirk on the msm8996,
+>>>>     * there are not enough context banks.
+>>>> @@ -530,16 +603,20 @@ static const struct qcom_smmu_match_data sdm845_smmu_500_data = {
+>>>>           /* Also no debug configuration. */
+>>>>    };
+>>>>
+>>>> +
+>>>> +static const struct qcom_smmu_match_data sm8550_smmu_500_impl0_data = {
+>>>> +       .impl = &sm8550_smmu_500_impl,
+>>>> +       .adreno_impl = &qcom_adreno_smmu_500_impl,
+>>>> +       .cfg = &qcom_smmu_impl0_cfg,
+>>>> +       .actlrcfg = &sm8550_actlrcfg,
+>>>> +};
+>>>
+>>> This structure doesn't seem to be linked. Did you test your patches?
+>>>
+>>
+>> Apologies Dmitry, just checked back my patches, I tested it but while
+>> refining the patches I somehow missed this link
+>> { .compatible = "qcom,sm8550-smmu-500", .data =
+>> &sm8550_smmu_500_impl0_data };
+>> in below qcom_smmu_500_impl0_data structure.
+>> I will take care of this in next version.
+>>
+>>>> +
+>>>>    static const struct qcom_smmu_match_data qcom_smmu_500_impl0_data = {
+>>>>           .impl = &qcom_smmu_500_impl,
+>>>>           .adreno_impl = &qcom_adreno_smmu_500_impl,
+>>>>           .cfg = &qcom_smmu_impl0_cfg,
+>>>>    };
+>>>>
+>>>> -/*
+>>>> - * Do not add any more qcom,SOC-smmu-500 entries to this list, unless they need
+>>>> - * special handling and can not be covered by the qcom,smmu-500 entry.
+>>>> - */
+>>>
+>>> Leave the comment in place.
+>>>
+>>
+>> Thanks for this comment which helped me to note the above mentioned
+>> mistake.
+>>
+>>>>    static const struct of_device_id __maybe_unused qcom_smmu_impl_of_match[] = {
+>>>>           { .compatible = "qcom,msm8996-smmu-v2", .data = &msm8996_smmu_data },
+>>>>           { .compatible = "qcom,msm8998-smmu-v2", .data = &qcom_smmu_v2_data },
+>>>> --
+>>>> 2.17.1
+>>>>
+>>>
+>>>
+> 
+> 
+> 
