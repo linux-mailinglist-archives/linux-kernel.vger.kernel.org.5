@@ -2,99 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D13717E26DD
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 15:33:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D512C7E26EF
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 15:35:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231636AbjKFOdH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 09:33:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52600 "EHLO
+        id S231559AbjKFOfX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 09:35:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230146AbjKFOdF (ORCPT
+        with ESMTP id S229799AbjKFOfV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 09:33:05 -0500
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B3D2BB
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 06:33:03 -0800 (PST)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1r00er-0003aN-Kk; Mon, 06 Nov 2023 15:32:53 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1r00eq-00743T-Hx; Mon, 06 Nov 2023 15:32:52 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1r00eq-00DjcM-8S; Mon, 06 Nov 2023 15:32:52 +0100
-Date:   Mon, 6 Nov 2023 15:32:40 +0100
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Florian Eckert <fe@dev.tdt.de>
-Cc:     Eckert.Florian@googlemail.com, pavel@ucw.cz, lee@kernel.org,
-        kabel@kernel.org, gregkh@linuxfoundation.org,
-        linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] leds: ledtrig-tty: free allocated ttyname buffer on
- deactivate
-Message-ID: <20231106143240.s72altpdjxervm5v@pengutronix.de>
-References: <20231106132246.3369826-1-fe@dev.tdt.de>
+        Mon, 6 Nov 2023 09:35:21 -0500
+Received: from mail-oi1-f197.google.com (mail-oi1-f197.google.com [209.85.167.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64E90BB
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 06:35:14 -0800 (PST)
+Received: by mail-oi1-f197.google.com with SMTP id 5614622812f47-3b581f1bd7bso6145245b6e.2
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 06:35:14 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699281313; x=1699886113;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=l7LnU8RknCJWsPsqm7RXDpRlRmyk9PFdTymemdD1BB0=;
+        b=TEeFzb9n/dy/Jw4/iydxvVFsifJZOmq/uvKTYmZxQAiVtpqgfa0hMbc63SzcF9qGfN
+         +0jprMVtlajjgvEW//gNSvz8ZYki9ptzcXc0Lv+4z2o87Mvp5fz+oM53lmIWaUOzb+dt
+         wBnDhX2oM5CxjUpJEqYPTcZIl1xXTtlU+Xwp0w7Wmdw9ka8L2cQ65+oGf70/PVxyVBmU
+         ayC7tLI//uHf3RR3srQUwdIZ4wE0TXIuxCReFC5RFUsFbSJEqND9aUeDqQoFUltwt2bA
+         La9mGhg8DzBSHwG3NiVGZnIO2TPU5WFMkh8nhR3Y8HbOXrmZEe4bzJt22dhNu0oqeP1v
+         yfvA==
+X-Gm-Message-State: AOJu0YzHghEEC8U9BPLaYl71kmfXjY+hWnvnvzOtBdkC7qpr2hKjxcW7
+        tlkv3tQwhuSYT2E2CgvmZ8+zW4pxPe1Hn3HxN17tIhT94ohH
+X-Google-Smtp-Source: AGHT+IG/iI7FGWxO+tIpvDf57ygCjJyDFzHjpMxa+/pfuXhy/dTLktmDyG1XISzkLZn+1eHOTDmwVx+MQOuQC26hlSzHq7GEN+jT
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="gvtfm3rhzkiulu4n"
-Content-Disposition: inline
-In-Reply-To: <20231106132246.3369826-1-fe@dev.tdt.de>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6808:23c1:b0:3a9:d030:5023 with SMTP id
+ bq1-20020a05680823c100b003a9d0305023mr12427060oib.3.1699281313820; Mon, 06
+ Nov 2023 06:35:13 -0800 (PST)
+Date:   Mon, 06 Nov 2023 06:35:13 -0800
+In-Reply-To: <0000000000009393ba059691c6a3@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000001579a706097cc3c9@google.com>
+Subject: Re: [syzbot] KASAN: use-after-free Read in j1939_session_get_by_addr
+From:   syzbot <syzbot+d9536adc269404a984f8@syzkaller.appspotmail.com>
+To:     Jose.Abreu@synopsys.com, arvid.brodin@alten.se,
+        davem@davemloft.net, dvyukov@google.com,
+        ilias.apalodimas@linaro.org, joabreu@synopsys.com,
+        jose.abreu@synopsys.com, kernel@pengutronix.de,
+        linux-can@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux@rempel-privat.de, mkl@pengutronix.de, netdev@vger.kernel.org,
+        nogikh@google.com, robin@protonic.nl, socketcan@hartkopp.net,
+        syzkaller-bugs@googlegroups.com, tonymarislogistics@yandex.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=2.3 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        RCVD_IN_SORBS_WEB,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: **
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This bug is marked as fixed by commit:
+can: j1939: transport: make sure the aborted session will be deactivated only once
 
---gvtfm3rhzkiulu4n
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+But I can't find it in the tested trees[1] for more than 90 days.
+Is it a correct commit? Please update it by replying:
 
-On Mon, Nov 06, 2023 at 02:22:46PM +0100, Florian Eckert wrote:
-> The ttyname buffer for the ledtrig_tty_data struct is allocated in the
-> sysfs ttyname_store() function. This buffer must be released on trigger
-> deactivation. This was missing and is thus a memory leak.
->=20
-> While we are at it, the tty handler in the ledtrig_tty_data struct should
-> also be returned in case of the trigger deactivation call.
->=20
-> Fixes: fd4a641ac88f ("leds: trigger: implement a tty trigger")
-> Signed-off-by: Florian Eckert <fe@dev.tdt.de>
+#syz fix: exact-commit-title
 
-Reviewed-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
+Until then the bug is still considered open and new crashes with
+the same signature are ignored.
 
-Thanks
-Uwe
+Kernel: Linux
+Dashboard link: https://syzkaller.appspot.com/bug?extid=d9536adc269404a984f8
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+---
+[1] I expect the commit to be present in:
 
---gvtfm3rhzkiulu4n
-Content-Type: application/pgp-signature; name="signature.asc"
+1. for-kernelci branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git
 
------BEGIN PGP SIGNATURE-----
+2. master branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
 
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmVI+QQACgkQj4D7WH0S
-/k5eDQgAnpa1EgN0zT4RmtN62CkWHTNfUjMiw5I3yiEwNlTHtU3SA8qdj7gvcsu0
-bsoAWURpSxLGkL3yNXirUvprBmTPp2HMflpUqSdVcdwJWd2TSDyR16nB8fqyw8x7
-8YjqSy+HQOR8SySB1E0r0Sxz5GoofobfPc03xhoQforQ0wjmhGR6eSxwKAsczFiQ
-fk1Or/QsX3yQJt3eDYovKLXNiLxE7O+RcZyi6ZIH2OrX9FbN8sGAKQohk2c0BRa0
-wuuelMqSjxn7ImAKqF1n60Zhws+HoiwzK7xFtKUqssgac1oPs4a5q/7C4/5QN31k
-7p7rPz2pWk1PhgQhdpnkiRNYlL+SfA==
-=wTOP
------END PGP SIGNATURE-----
+3. master branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
 
---gvtfm3rhzkiulu4n--
+4. main branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next.git
+
+The full list of 9 trees can be found at
+https://syzkaller.appspot.com/upstream/repos
