@@ -2,168 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 11FCE7E2224
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 13:46:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D879F7E2231
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 13:47:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232055AbjKFMqU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 07:46:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34232 "EHLO
+        id S231590AbjKFMrT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 07:47:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231927AbjKFMqE (ORCPT
+        with ESMTP id S231958AbjKFMq6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 07:46:04 -0500
-Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB79410F7
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 04:45:36 -0800 (PST)
-Received: from mail-pg1-f197.google.com (mail-pg1-f197.google.com [209.85.215.197])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 95EBA40622
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 12:45:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1699274734;
-        bh=Kv5qXMtHe1RqB/IAdF3q285FqfuFYmP+L0xdtku424s=;
-        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-         To:Cc:Content-Type;
-        b=ohC+2P6eIz9UEIwqG6CI5nbi37GUpZWibYGKuK0mqBUXK9lqBp5dMM9a7qEAOh0WC
-         bVy4uj2NJkOQ6aapoLUAQ8Y2RP9Eh+r8C39Hx/FHc6lBodK7R+0I9/EO3sccLQ8Z8d
-         A6s8N/K5l1JZQb6ZBGDQpoMn3fvGvoZhgHRlKlZPFd8bEE8savuzluty0VK01QCcUx
-         iABS0tlFpFUwOSPuPcZ+n+hoMJOCk92KxqdOGQKMgm0n94ojIVHrxaqGG/KWsLA4ty
-         //OJNFdsOKy0vUjOfFxB+QBTVXEKChzZdQ+0AbRjUQdFTDl1xF8t81t2Sq96c+WCFJ
-         /cZlw4R1v5k+Q==
-Received: by mail-pg1-f197.google.com with SMTP id 41be03b00d2f7-5b95ee4ae94so2442926a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 04:45:34 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699274732; x=1699879532;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Kv5qXMtHe1RqB/IAdF3q285FqfuFYmP+L0xdtku424s=;
-        b=nPP1KTTxxAK7RAbEDWdlr9aAph/ZDVm8G96WxezZMnLVMnbk2/93UxXfZlBSr3OrOr
-         FJoX8l54RRUfzHNephqgxVmPaOJuoMkh4B/QbLyDF3ngEHWrirXWAA+0237Md7+ulMIm
-         l62380IHmgu8xx9KBlI5wCkVQKIOpd+wj2oR1mAaqTUiHsqR9zxR+yzZnrTLmgyLLuiR
-         QkGcRVi6cg7Ib8m+WSsHO/Ax4jOvabqBdJTthuAqBVP1Hw3hPHNVXe+yvuzTb/AZlJk2
-         TXdQy8D5XvUWI4tjg5QUl84vZLNfhzchFFiGtM3cLOn+QaaEDg+OV3qSkxRQCm3uAyEr
-         8VJw==
-X-Gm-Message-State: AOJu0YwYPY1dnzgrtWtmYZu5x6km+P6FqzQhsRhIe/TlW2xvHb5RQUvY
-        vWBB+A4bx3n8pC9CS5+tNnCO1W83Pmd9b45YmzFBXL7z6PNqdTHEz9PdJVDFO4Nzgxd+0000wln
-        wuwYwpxpvxjN3xPcRArKZ2W3sADGXV6gJ/woonWODiyz8SW6csVYtsjpkurFVPNbzv6fqq/4=
-X-Received: by 2002:a17:90a:319:b0:280:c7c:3069 with SMTP id 25-20020a17090a031900b002800c7c3069mr20802005pje.7.1699274732420;
-        Mon, 06 Nov 2023 04:45:32 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEh2XiLPI3ndF2x/X6bn2IJNKH5McXJDdk/jTsZOxEv6ay1/WonhiHxfGBgkouzA8kJ3g5is6gUmNd6KZOSgt4=
-X-Received: by 2002:a17:90a:319:b0:280:c7c:3069 with SMTP id
- 25-20020a17090a031900b002800c7c3069mr20801988pje.7.1699274732095; Mon, 06 Nov
- 2023 04:45:32 -0800 (PST)
-MIME-Version: 1.0
-References: <20231018103337.34622-1-victorshihgli@gmail.com> <d18a2569-ebc3-484f-927a-5e3682457469@intel.com>
-In-Reply-To: <d18a2569-ebc3-484f-927a-5e3682457469@intel.com>
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-Date:   Mon, 6 Nov 2023 14:45:18 +0200
-Message-ID: <CAAd53p5Q5-RVHWytst7=tCNW+A+Sc_swAgUQemQLF27CLbH7+A@mail.gmail.com>
-Subject: Re: [PATCH V2] mmc: sdhci-pci-gli: GL975[05]: Mask the replay timer
- timeout of AER
-To:     Adrian Hunter <adrian.hunter@intel.com>
-Cc:     Victor Shih <victorshihgli@gmail.com>, ulf.hansson@linaro.org,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        benchuanggli@gmail.com, HL.Liu@genesyslogic.com.tw,
-        Greg.tu@genesyslogic.com.tw, SeanHY.Chen@genesyslogic.com.tw,
-        Victor Shih <victor.shih@genesyslogic.com.tw>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+        Mon, 6 Nov 2023 07:46:58 -0500
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 870A8173C;
+        Mon,  6 Nov 2023 04:46:39 -0800 (PST)
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A6CH7k4009941;
+        Mon, 6 Nov 2023 12:46:32 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=from : to : cc :
+ subject : date : message-id; s=qcppdkim1;
+ bh=C3xkQi5q/kEQqhxxlucjmT4L0pKf6dt9+vEbs473S3M=;
+ b=DOfj7LspQdvNrDEypdQ8v0xRLvBxvH5XdQZE6FF6cH2ACPYPMso8x3cDQf5evvyyC6Ee
+ 14SKjVAN/OtadRdF4SLOpMw9iS8Ekrki8GjkkNRUPizBpgBAaTnnD1CJSZWhlq2CBBIL
+ Db5c7EItrHa8CVqekkQIzBkHLsqs5CaPEeW43wxknIigrAT0oNLqDKB58JLPYCP3n74o
+ MX5fmW1x4K1XAh99owqUGLcm+FxmxcDWAGj6UJY3f5dLUOpga79A73d4u1dk+7MnCqTi
+ 5mYGMmlOaa0yKgCrJKTqj2BgI0DpSunVreVn+70Kl5LgC2sNi6e2tIbibFeeXF5Jk+h6 fg== 
+Received: from aptaippmta01.qualcomm.com (tpe-colo-wan-fw-bordernet.qualcomm.com [103.229.16.4])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u5ernm54u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 06 Nov 2023 12:46:32 +0000
+Received: from pps.filterd (APTAIPPMTA01.qualcomm.com [127.0.0.1])
+        by APTAIPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 3A6CkTNo027835;
+        Mon, 6 Nov 2023 12:46:29 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by APTAIPPMTA01.qualcomm.com (PPS) with ESMTP id 3u5f1m2j4a-1;
+        Mon, 06 Nov 2023 12:46:29 +0000
+Received: from APTAIPPMTA01.qualcomm.com (APTAIPPMTA01.qualcomm.com [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3A6CkTxi027825;
+        Mon, 6 Nov 2023 12:46:29 GMT
+Received: from cbsp-sh-gv.qualcomm.com (CBSP-SH-gv.ap.qualcomm.com [10.231.249.68])
+        by APTAIPPMTA01.qualcomm.com (PPS) with ESMTP id 3A6CkTa3027823;
+        Mon, 06 Nov 2023 12:46:29 +0000
+Received: by cbsp-sh-gv.qualcomm.com (Postfix, from userid 4098150)
+        id 1B8835338; Mon,  6 Nov 2023 20:46:28 +0800 (CST)
+From:   Qiang Yu <qianyu@qti.qualcomm.com>
+To:     mani@kernel.org, quic_jhugo@quicinc.com
+Cc:     mhi@lists.linux.dev, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, quic_cang@quicinc.com,
+        quic_mrana@quicinc.com, Qiang Yu <qianyu@qti.qualcomm.com>
+Subject: [PATCH v2 0/2] bus: mhi: host: Add SDX75 support and its dependency
+Date:   Mon,  6 Nov 2023 20:46:24 +0800
+Message-Id: <1699274786-73881-1-git-send-email-qianyu@qti.qualcomm.com>
+X-Mailer: git-send-email 2.7.4
+X-QCInternal: smtphost
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: nEHGBbJieunuJUwmPxIEMVAu46-Z4vxA
+X-Proofpoint-GUID: nEHGBbJieunuJUwmPxIEMVAu46-Z4vxA
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-06_11,2023-11-02_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 bulkscore=0
+ phishscore=0 priorityscore=1501 mlxlogscore=694 malwarescore=0 spamscore=0
+ mlxscore=0 suspectscore=0 clxscore=1015 adultscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2310240000
+ definitions=main-2311060103
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 6, 2023 at 11:29=E2=80=AFAM Adrian Hunter <adrian.hunter@intel.=
-com> wrote:
->
-> On 18/10/23 13:33, Victor Shih wrote:
-> > From: Victor Shih <victor.shih@genesyslogic.com.tw>
-> >
-> > Due to a flaw in the hardware design, the GL975x replay timer frequentl=
-y
-> > times out when ASPM is enabled. As a result, the warning messages that =
-will
-> > often appear in the system log when the system accesses the GL975x
-> > PCI config. Therefore, the replay timer timeout must be masked.
-> >
-> > Signed-off-by: Victor Shih <victor.shih@genesyslogic.com.tw>
->
-> Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+This series add new configuration for SDX75 and new parameter
+ready_timeout_ms for waiting ready state. 
 
-Acked-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+v1->v2: Start with "bus: mhi: host:" for the cover letter subjects
 
-I'll send another patch to address the issue I am seeing.
+Qiang Yu (2):
+  bus: mhi: host: Add a separate timeout parameter for waiting ready
+  bus: mhi: host: pci_generic: Add SDX75 based modem support
 
-Kai-Heng
+ drivers/bus/mhi/host/init.c        |  1 +
+ drivers/bus/mhi/host/internal.h    |  2 +-
+ drivers/bus/mhi/host/main.c        |  5 +++--
+ drivers/bus/mhi/host/pci_generic.c | 22 ++++++++++++++++++++++
+ drivers/bus/mhi/host/pm.c          | 24 +++++++++++++++++-------
+ include/linux/mhi.h                |  4 ++++
+ 6 files changed, 48 insertions(+), 10 deletions(-)
 
->
-> > ---
-> >
-> > Updates in V2:
-> >  - Modify the commit message.
-> >
-> > ---
-> >
-> >  drivers/mmc/host/sdhci-pci-gli.c | 16 ++++++++++++++++
-> >  1 file changed, 16 insertions(+)
-> >
-> > diff --git a/drivers/mmc/host/sdhci-pci-gli.c b/drivers/mmc/host/sdhci-=
-pci-gli.c
-> > index d83261e857a5..d8a991b349a8 100644
-> > --- a/drivers/mmc/host/sdhci-pci-gli.c
-> > +++ b/drivers/mmc/host/sdhci-pci-gli.c
-> > @@ -28,6 +28,9 @@
-> >  #define PCI_GLI_9750_PM_CTRL 0xFC
-> >  #define   PCI_GLI_9750_PM_STATE        GENMASK(1, 0)
-> >
-> > +#define PCI_GLI_9750_CORRERR_MASK                            0x214
-> > +#define   PCI_GLI_9750_CORRERR_MASK_REPLAY_TIMER_TIMEOUT       BIT(12)
-> > +
-> >  #define SDHCI_GLI_9750_CFG2          0x848
-> >  #define   SDHCI_GLI_9750_CFG2_L1DLY    GENMASK(28, 24)
-> >  #define   GLI_9750_CFG2_L1DLY_VALUE    0x1F
-> > @@ -152,6 +155,9 @@
-> >  #define PCI_GLI_9755_PM_CTRL     0xFC
-> >  #define   PCI_GLI_9755_PM_STATE    GENMASK(1, 0)
-> >
-> > +#define PCI_GLI_9755_CORRERR_MASK                            0x214
-> > +#define   PCI_GLI_9755_CORRERR_MASK_REPLAY_TIMER_TIMEOUT       BIT(12)
-> > +
-> >  #define SDHCI_GLI_9767_GM_BURST_SIZE                 0x510
-> >  #define   SDHCI_GLI_9767_GM_BURST_SIZE_AXI_ALWAYS_SET          BIT(8)
-> >
-> > @@ -561,6 +567,11 @@ static void gl9750_hw_setting(struct sdhci_host *h=
-ost)
-> >       value &=3D ~PCI_GLI_9750_PM_STATE;
-> >       pci_write_config_dword(pdev, PCI_GLI_9750_PM_CTRL, value);
-> >
-> > +     /* mask the replay timer timeout of AER */
-> > +     pci_read_config_dword(pdev, PCI_GLI_9750_CORRERR_MASK, &value);
-> > +     value |=3D PCI_GLI_9750_CORRERR_MASK_REPLAY_TIMER_TIMEOUT;
-> > +     pci_write_config_dword(pdev, PCI_GLI_9750_CORRERR_MASK, value);
-> > +
-> >       gl9750_wt_off(host);
-> >  }
-> >
-> > @@ -770,6 +781,11 @@ static void gl9755_hw_setting(struct sdhci_pci_slo=
-t *slot)
-> >       value &=3D ~PCI_GLI_9755_PM_STATE;
-> >       pci_write_config_dword(pdev, PCI_GLI_9755_PM_CTRL, value);
-> >
-> > +     /* mask the replay timer timeout of AER */
-> > +     pci_read_config_dword(pdev, PCI_GLI_9755_CORRERR_MASK, &value);
-> > +     value |=3D PCI_GLI_9755_CORRERR_MASK_REPLAY_TIMER_TIMEOUT;
-> > +     pci_write_config_dword(pdev, PCI_GLI_9755_CORRERR_MASK, value);
-> > +
-> >       gl9755_wt_off(pdev);
-> >  }
-> >
->
+-- 
+2.7.4
+
