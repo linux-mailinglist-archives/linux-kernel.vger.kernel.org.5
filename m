@@ -2,175 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 266917E2B04
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 18:36:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64CC37E2B0B
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 18:38:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231699AbjKFRgG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 12:36:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44014 "EHLO
+        id S231812AbjKFRiE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 12:38:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229567AbjKFRgF (ORCPT
+        with ESMTP id S229567AbjKFRiC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 12:36:05 -0500
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E438BD45
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 09:36:01 -0800 (PST)
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A6GdBP5022997;
-        Mon, 6 Nov 2023 17:35:57 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=FrfXeWtjU0Ruex8wMO6jSQzaCluEQ3NY8dv9N4305wc=;
- b=Uac931rR+5ooJz4n5ak651QTsQM9wUunEY0Crd0orpfBOP7xX9znq4smui4mSlHrBoLc
- XMvx2hFLvEpd6IPGxdaCieZUJys9Z6EC+VXSDqw2e3Qy/cDak+SIbUhn4hiGxsK9/gtB
- ZvCEhGod9fzcqErd435y0Ruvrl+4xMLbBsn2GLKqqo0An2tZ1OQ9vDwnNqzoZfr6wz+Y
- Yj7mxrR/6fp3T31HBqQAqY7sJry3jfq0Mk3OAN+FoMTdb22eX8wyNAQumVEgUMbjHt14
- thjTIGWkCvkSSZna7JKOUSeimbLad5DYdz6QlK3dyCFPCzPcAX8iOJY7JoIimjdrBoy8 jA== 
-Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u5f8dvx6u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 06 Nov 2023 17:35:56 +0000
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-        by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3A6HZuQO003465
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 6 Nov 2023 17:35:56 GMT
-Received: from [10.71.110.254] (10.80.80.8) by nasanex01b.na.qualcomm.com
- (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Mon, 6 Nov
- 2023 09:35:56 -0800
-Message-ID: <f97c86a6-34d3-45e1-8673-8a3f02f88392@quicinc.com>
-Date:   Mon, 6 Nov 2023 09:35:55 -0800
+        Mon, 6 Nov 2023 12:38:02 -0500
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2338FB7;
+        Mon,  6 Nov 2023 09:38:00 -0800 (PST)
+Received: by mail-pj1-x1034.google.com with SMTP id 98e67ed59e1d1-2800f7c8125so4557738a91.1;
+        Mon, 06 Nov 2023 09:38:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699292279; x=1699897079; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=JXl+Hk7DG0xQnZU4tGVI8tvUE8tmSEux9caPBMuGXfY=;
+        b=AGIwb2XX6oF84pxTy7lZVJVM/Ea6h0y6ti6LCb8ktD1pNWKShjy5KCJRs9LyiBeGz/
+         IvmJvV3PgmbW2s3oQuGneRDsj8lPVMALccaiCe8Jf+Dr8IOEyi+BmvQV531KkTodwaAt
+         ImsTHNlsFjcBdgNlaon4n6Xjyd/x9MkvxD8P05ZflmLtXHcDaElmZyRYbo0G0yNwASQ7
+         iP4dxcz4wHnhKnoUFToZSwfVGioQSFyg5B2djZbqo2PvSf3BfC/pztjuEAxAvL7gE0jw
+         nd7rx2+hIzS1Hk8V16pfPCFrFoakCn+4ulejmzUZmLrspqMw8JTaf9hJuXDsYQ4fatxz
+         PPnA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699292279; x=1699897079;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=JXl+Hk7DG0xQnZU4tGVI8tvUE8tmSEux9caPBMuGXfY=;
+        b=SwDvbFVLUZ+Zzj7u1N2yk2pWRgS6F0LQQCgWs6K2Ov0cKxsetHErMnvj44wUuSB7w1
+         DI4eRwMSa9u4YlOgNoYHXm3W9+W+E7UKpB3SlyOtZQLKm0DbhPMMeqCdYYCoNXBEGMP0
+         3Oo55kRrN78C46KfsS99V8BdxogVvKbvsR19ddpFgXKLdTiV7uBVbBzXOQ9jRg+LM76P
+         XtPlSAz77cxuvzFUpUFEUiZpKWrGV7l6mvnsveCM5Sw89M0Q+D6HN8iCfhbnBN5GglCf
+         GXwdTGg28dGAw0tOnpddqQmF/pvrcARqJYBiFKspIWswTTZliohkQqnyebjI729rWjA+
+         WtYA==
+X-Gm-Message-State: AOJu0Ywv1kaulThvEX1ZVCCR8ZsXqckTci+SrI765ReAzgo+IG4B2jqZ
+        MSMP5IwicTZbRMjZx4A9SNQ=
+X-Google-Smtp-Source: AGHT+IENG/NaqDAdFCQ9VnTFpP4G2Tf2g017TUG53McEQO60wF6u3aF8m5z8YVdFn8j4VyH1bHKp4g==
+X-Received: by 2002:a17:90b:4c92:b0:277:68c3:64b9 with SMTP id my18-20020a17090b4c9200b0027768c364b9mr267730pjb.5.1699292279446;
+        Mon, 06 Nov 2023 09:37:59 -0800 (PST)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id d11-20020a63fd0b000000b005b82611378bsm60018pgh.52.2023.11.06.09.37.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 06 Nov 2023 09:37:58 -0800 (PST)
+Message-ID: <f643650a-d520-4789-b67c-4f8da46fee73@gmail.com>
+Date:   Mon, 6 Nov 2023 09:37:56 -0800
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/3] drm/ci: Add support for SM8250 Gitlab Runner
+Subject: Re: [PATCH 5.10 00/95] 5.10.200-rc1 review
 Content-Language: en-US
-To:     Helen Koike <helen.koike@collabora.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-CC:     <robdclark@chromium.org>, <quic_abhinavk@quicinc.com>,
-        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
-        <freedreno@lists.freedesktop.org>
-References: <20231010-rb5-runner-v1-0-aba1fcc6e3aa@quicinc.com>
- <0b0b1065-06e8-44ea-a4a1-395980afac5a@collabora.com>
-From:   Jessica Zhang <quic_jesszhan@quicinc.com>
-In-Reply-To: <0b0b1065-06e8-44ea-a4a1-395980afac5a@collabora.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: oidrzqcyGQaChlGbzrGUmlmHaPwU8_VC
-X-Proofpoint-GUID: oidrzqcyGQaChlGbzrGUmlmHaPwU8_VC
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-06_13,2023-11-02_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 clxscore=1015
- priorityscore=1501 lowpriorityscore=0 malwarescore=0 adultscore=0
- mlxscore=0 suspectscore=0 phishscore=0 mlxlogscore=999 spamscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2310240000 definitions=main-2311060143
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org
+References: <20231106130304.678610325@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <20231106130304.678610325@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 11/6/23 05:03, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.200 release.
+> There are 95 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 08 Nov 2023 13:02:46 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.200-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
+perf fails to build with:
 
-On 11/4/2023 6:02 AM, Helen Koike wrote:
-> Hi Jessica,
-> 
-> On 10/10/2023 19:25, Jessica Zhang wrote:
->> Recently, we've registered a Gitlab runner for a Qualcomm RB5 device 
->> that will be
->> hosted and maintained in Qualcomm labs.
->>
->> This series will add a corresponding CI job for testing SM8250 devices 
->> and add the
->> skip/fails/flakes list. We were able to complete a successful run [1] 
->> with these
->> changes.
->>
->> For now, we will keep the job as manual trigger only and drop that 
->> rule later
->> after we stabilize the tests.
->>
->> [1] https://gitlab.freedesktop.org/drm/msm/-/jobs/50092719
->>
->> ---
-> 
-> Thank you for you patchset.
-> 
-> I'm getting the following error:
-> 
-> "serial.serialutil.SerialException: [Errno 2] could not open port 
-> /dev/ttyUSB0: [Errno 2] No such file or directory: '/dev/ttyUSB0'"
-> 
-> https://gitlab.freedesktop.org/helen.fornazier/linux/-/jobs/51193215#L146
-> 
-> I'm wondering if I'm missing some configuration.
-> 
-> I tested on top of drm-misc-next.
+util/evlist.c: In function 'evlist__add_aux_dummy':
+util/evlist.c:269:31: warning: implicit declaration of function 
+'evlist__dummy_event'; did you mean 'evsel__is_dummy_event'? 
+[-Wimplicit-function-declaration]
+   269 |         struct evsel *evsel = evlist__dummy_event(evlist);
+       |                               ^~~~~~~~~~~~~~~~~~~
+       |                               evsel__is_dummy_event
+util/evlist.c:269:31: warning: initialization of 'struct evsel *' from 
+'int' makes pointer from integer without a cast [-Wint-conversion]
 
-Hi Helen,
+...
 
-Sorry for the inconvenience, but I had to temporarily take down the 
-runner last Friday to physically move the setup (as part of a 
-reorganization of our lab here).
+   LINK 
+/local/users/fainelli/buildroot/output/arm64/build/linux-custom/tools/perf/perf
+/local/stbopt_p/toolchains_303/stbgcc-12.3-0.2/bin/../lib/gcc/aarch64-unknown-linux-musl/12.3.0/../../../../aarch64-unknown-linux-musl/bin/ld: 
+/local/users/fainelli/buildroot/output/arm64/build/linux-custom/tools/perf/perf-in.o: 
+in function `evlist__add_aux_dummy':
+/local/users/fainelli/buildroot/output/arm64/build/linux-custom/tools/perf/util/evlist.c:269: 
+undefined reference to `evlist__dummy_event'
+collect2: error: ld returned 1 exit status
 
-I'll update this thread as soon as the runner is back up -- the move 
-will be complete by the end of this week.
+-- 
+Florian
 
-> 
-> Also, I'd like to add in the docs an entry about the devices we have, 
-> which tag they need, which dts they correspond to, which farm they are 
-> located, who to contact if there is any problem and maybe some comment 
-> about the device (how it is hooked up, the logs comes from uart or ssh, 
-> does it use fastboot, etc) if you find it useful.
-> Would you mind adding an entry in the docs with this information for the 
-> sm8250? (Than I'll add the info of the other devices after yours).
-
-Sure, sounds good.
-
-> 
-> 
->> Jessica Zhang (3):
->>        drm/ci: Add SM8250 job to CI
-> 
-> I would also move this patch to last, so we don't have a commit where 
-> things shouldn't work properly.
-> Or maybe squash them all.
-
-Acked -- I'll move this patch to the end.
-
-Thanks,
-
-Jessica Zhang
-
-> 
-> Regards,
-> Helen
-> 
->>        drm/ci: enable CONFIG_INTERCONNECT_QCOM_SM8250 for arm64 config
->>        drm/ci: Add skips, fails and flakes for SM8250
->>
->>   drivers/gpu/drm/ci/arm64.config                 |  1 +
->>   drivers/gpu/drm/ci/build.sh                     |  1 +
->>   drivers/gpu/drm/ci/test.yml                     | 15 +++++++++++++
->>   drivers/gpu/drm/ci/xfails/msm-sm8250-fails.txt  | 29 
->> +++++++++++++++++++++++++
->>   drivers/gpu/drm/ci/xfails/msm-sm8250-flakes.txt |  3 +++
->>   drivers/gpu/drm/ci/xfails/msm-sm8250-skips.txt  |  8 +++++++
->>   6 files changed, 57 insertions(+)
->> ---
->> base-commit: dcd88f8c63341ed11a8c5019408f62202cd9d1f2
->> change-id: 20230919-rb5-runner-77ec32bd61e7
->>
->> Best regards,
