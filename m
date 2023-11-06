@@ -2,120 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8610B7E29D3
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 17:33:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F2467E29DC
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 17:34:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232851AbjKFQd6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 11:33:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51904 "EHLO
+        id S232791AbjKFQep (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 11:34:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231792AbjKFQdx (ORCPT
+        with ESMTP id S229974AbjKFQen (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 11:33:53 -0500
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93A93A4;
-        Mon,  6 Nov 2023 08:33:50 -0800 (PST)
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A6G1jXO017862;
-        Mon, 6 Nov 2023 16:33:42 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=STkmTe5rIC/2ejeHvl/1lIfOskilFGYF5p+NP1HVvk8=;
- b=Ye0cUa6tBdk1xd4P3WvwaghSDGIOHqIPxbwbEZlxtI7lpKcv/YuXRRl+MNJqUTJz6dQg
- neaha6GN8ZFxNa1JOprSbuiZayEYK+zMOtk+JHPaOSVnzKzfyOg2ANKrYqsMznMbb6zH
- mfuLrnJC8UKBbVfMXWinGAZzMLBNNre9ZdKjtQ4tB8fIJTFu0Hu/w3ychWTq4uXeKyUU
- 06Quo6FN9M8B6WfjiVUNTyHIP1fQxUsGJdj20DqPbF5FpTRtvOi9HWMvjxAN14jiFWln
- DGaItIl29tWQH28JebcPtxW1JjNGbNBS3mu8ztHFVfsoo4+dBKhpJZ6Z1F8kpNpp8cb2 +Q== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u73a702hm-1
+        Mon, 6 Nov 2023 11:34:43 -0500
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6282F3;
+        Mon,  6 Nov 2023 08:34:40 -0800 (PST)
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A6GFXWL031665;
+        Mon, 6 Nov 2023 16:33:51 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=pZJyqFbl59bkZ161bZWrxQkthrJNgakp9QGEaCBeqX8=;
+ b=Sz7FUgtcN3kRvlUygKYVDJIrYSgBaFBt7wvpkzv85Vy0w1N+rNLhS74XySDfmtIf0ckb
+ u/XNhPJGRszF4wjqpeDjCRJms84NqR8qYaKIeIwm5TRB+yJYzCRIDiB7nDl8WTOlSuOU
+ jD4R36YGZLZLz6K2gMYCYAC48a6TAIRZHtgKbBDYgvKS6gwhp+AdEUavH9lFwyRJVuID
+ 83CgnEf8Gb436E8r7NhEdCxvduVM3ECKpyawJp1dxj9PbAWqRUp59MHdTcgCPgXQ9DAp
+ hkwI+tAtcLmYD/Ow1mdrD57NGxlQ6etTu/WjWKD7MqqCdZHWA7xjbkmC3NhJaffjmHmH NA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u73gh8nbh-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 06 Nov 2023 16:33:41 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3A6GXeG1009410
+        Mon, 06 Nov 2023 16:33:51 +0000
+Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3A6GI1Ta009967;
+        Mon, 6 Nov 2023 16:33:50 GMT
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u73gh8nb2-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 6 Nov 2023 16:33:40 GMT
-Received: from [10.110.1.228] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Mon, 6 Nov
- 2023 08:33:40 -0800
-Message-ID: <ec7d829b-28c3-400b-97f9-e6d2f5a4d4aa@quicinc.com>
-Date:   Mon, 6 Nov 2023 08:33:39 -0800
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 0/3] wifi: rt2x00: improve watchdog support
-Content-Language: en-US
-To:     Shiji Yang <yangshiji66@outlook.com>,
-        <linux-wireless@vger.kernel.org>
-CC:     Stanislaw Gruszka <stf_xl@wp.pl>, Kalle Valo <kvalo@kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <TYAP286MB0315D63EBE1DE458D6B9D42ABCA4A@TYAP286MB0315.JPNP286.PROD.OUTLOOK.COM>
-From:   Jeff Johnson <quic_jjohnson@quicinc.com>
-In-Reply-To: <TYAP286MB0315D63EBE1DE458D6B9D42ABCA4A@TYAP286MB0315.JPNP286.PROD.OUTLOOK.COM>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: jt2Tg85W3KmuZCTcQe6xPOj0NYkz9ARs
-X-Proofpoint-GUID: jt2Tg85W3KmuZCTcQe6xPOj0NYkz9ARs
+        Mon, 06 Nov 2023 16:33:50 +0000
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3A6Fw4Jj007918;
+        Mon, 6 Nov 2023 16:33:49 GMT
+Received: from smtprelay03.wdc07v.mail.ibm.com ([172.16.1.70])
+        by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3u60nyark9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 06 Nov 2023 16:33:49 +0000
+Received: from smtpav03.wdc07v.mail.ibm.com (smtpav03.wdc07v.mail.ibm.com [10.39.53.230])
+        by smtprelay03.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3A6GXn5e9831006
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 6 Nov 2023 16:33:49 GMT
+Received: from smtpav03.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 646B15805A;
+        Mon,  6 Nov 2023 16:33:49 +0000 (GMT)
+Received: from smtpav03.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 87C2C5805F;
+        Mon,  6 Nov 2023 16:33:46 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.61.58.168])
+        by smtpav03.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+        Mon,  6 Nov 2023 16:33:46 +0000 (GMT)
+Message-ID: <d64394f62a4453cd9be96a69ca46286489148365.camel@linux.ibm.com>
+Subject: Re: [PATCH v4 20/23] ima: Move IMA-Appraisal to LSM infrastructure
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Roberto Sassu <roberto.sassu@huaweicloud.com>,
+        viro@zeniv.linux.org.uk, brauner@kernel.org,
+        chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
+        kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
+        paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
+        dmitry.kasatkin@gmail.com, dhowells@redhat.com, jarkko@kernel.org,
+        stephen.smalley.work@gmail.com, eparis@parisplace.org,
+        casey@schaufler-ca.com, mic@digikod.net
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
+        selinux@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>,
+        Stefan Berger <stefanb@linux.ibm.com>
+Date:   Mon, 06 Nov 2023 11:33:45 -0500
+In-Reply-To: <20231027084234.485243-1-roberto.sassu@huaweicloud.com>
+References: <20231027083558.484911-1-roberto.sassu@huaweicloud.com>
+         <20231027084234.485243-1-roberto.sassu@huaweicloud.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-22.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: 07Is1uPsVwvO7ug3J8NGrMQbHoFfeH5y
+X-Proofpoint-GUID: Oa1kOHQLNNefYUsVOYHe4V_BcB24nS7w
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-11-06_12,2023-11-02_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- lowpriorityscore=0 clxscore=1011 bulkscore=0 spamscore=0 suspectscore=0
- priorityscore=1501 mlxscore=0 mlxlogscore=392 adultscore=0 malwarescore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 spamscore=0
+ impostorscore=0 malwarescore=0 mlxlogscore=999 bulkscore=0 adultscore=0
+ clxscore=1011 lowpriorityscore=0 phishscore=0 mlxscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2310240000 definitions=main-2311060133
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/4/2023 1:57 AM, Shiji Yang wrote:
-> P.S. It seems that this cover letter won't be included in the patch
-> series in https://lore.kernel.org/. It's an issue with the Outlook
-> email or I missed something?
+On Fri, 2023-10-27 at 10:42 +0200, Roberto Sassu wrote:
+> Do the registration of IMA-Appraisal functions separately from the rest of
+> IMA functions, as appraisal is a separate feature not necessarily enabled
+> in the kernel configuration.
 
-Outlook e-mail is apparently rewriting your e-mail headers:
+Add "only" -> of IMA-Apparaisal only functions ...
 
-Subject: [PATCH v2 0/3] wifi: rt2x00: improve watchdog support
-Message-ID: 
-<TYAP286MB0315D63EBE1DE458D6B9D42ABCA4A@TYAP286MB0315.JPNP286.PROD.OUTLOOK.COM>
-X-Microsoft-Original-Message-ID: 
-<20231104085800.17576-1-yangshiji66@outlook.com>
+> Reuse the same approach as for other IMA functions, move hardcoded calls
+> from various places in the kernel to the LSM infrastructure. Declare the
+> functions as static and register them as hook implementations in
+> init_ima_appraise_lsm(), called by init_ima_lsm().
+> 
+> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> Reviewed-by: Stefan Berger <stefanb@linux.ibm.com>
 
-Subject: [PATCH v2 1/3] wifi: rt2x00: introduce DMA busy check watchdog 
-for rt2800
-Message-ID: 
-<TYAP286MB0315D7462CE08A119A99DE34BCA4A@TYAP286MB0315.JPNP286.PROD.OUTLOOK.COM>
-In-Reply-To: <20231104085800.17576-1-yangshiji66@outlook.com>
-References: <20231104085800.17576-1-yangshiji66@outlook.com>
+Reviewed-by: Mimi Zohar <zohar@linux.ibm.com>
 
-Subject: [PATCH v2 2/3] wifi: rt2x00: disable RTS threshold for rt2800 
-by default
-Message-ID: 
-<TYAP286MB03155DDB953155B7A2DE849ABCA4A@TYAP286MB0315.JPNP286.PROD.OUTLOOK.COM>
-In-Reply-To: <20231104085800.17576-1-yangshiji66@outlook.com>
-References: <20231104085800.17576-1-yangshiji66@outlook.com>
-
-Your actual patches are being threaded since they all reference the same 
-Message ID, but the cover letter no longer has that Message ID.
-
-You might want to look at using b4 
-(<https://b4.docs.kernel.org/en/latest/contributor/overview.html>) 
-instead of git send-email.
-
- From the linked page:
-The main benefit of b4 send is that you no longer have to really care if 
-your mail server performs some kind of content mangling that causes 
-patches to become corrupted, or if it doesn’t provide a way to send mail 
-via SMTP.
 
