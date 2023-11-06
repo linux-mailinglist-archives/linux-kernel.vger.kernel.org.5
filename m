@@ -2,63 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B01C7E2C47
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 19:48:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BBA4F7E2C4E
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 19:50:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232838AbjKFSsy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 13:48:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56698 "EHLO
+        id S232601AbjKFSug (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 13:50:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232006AbjKFSsx (ORCPT
+        with ESMTP id S232006AbjKFSue (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 13:48:53 -0500
-Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95CB1B0
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 10:48:50 -0800 (PST)
-Received: by mail-oi1-x22b.google.com with SMTP id 5614622812f47-3b5aee410f2so436061b6e.1
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 10:48:50 -0800 (PST)
+        Mon, 6 Nov 2023 13:50:34 -0500
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59206A2;
+        Mon,  6 Nov 2023 10:50:32 -0800 (PST)
+Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-6c320a821c4so4305638b3a.2;
+        Mon, 06 Nov 2023 10:50:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699296530; x=1699901330; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GEU/T0YzjOtkbVZizp15U02rtKoeqg1sHvW0/B5DtdA=;
-        b=haS10GIXKagjWC3mP4TQsvo2NwWqKSR1Cch2O9FynS4wdSk2Xy87l2n6AifRCIGHWF
-         ZSullsyx3DQnSjgn+d/+9E0Ux2od9RK2rtR9Aq3ubZ+oPcIYqC06UM7q2JWf+OPr2YJC
-         GEwGZ+p0lGWSYHxfOMYi7hSDz6aEELicO0tsL62HRVswic5hap8xZJmmNH2kJ0mhBoUA
-         Md6j31fSQXoc3wNyH6D+r6G+wYqzciHsK4WmwRoQOfXMoq4MHW8bd6YrdD3AzwHoq/K7
-         i9PMyWKx0DpF7Ot4iTAaIeVpGEEF86NflzH5U+gaTIJ9CD/kulENeT9w5W3oZcV6nYyz
-         zE6A==
+        d=gmail.com; s=20230601; t=1699296632; x=1699901432; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=6cU21C5fA+9HfxPv3J8m9Wghhy7CjkmSAa3XrNBXmko=;
+        b=Ie/KIEDqymP0Gju2ZdFvwyIo5XD+M32NgariZ/2qo1NwxvS9C0k9jGkIEtrAn6hKLk
+         LSmQWUizswlwJQJwg3gWLfTH2YQKvy7Bd+Evi2K7BHgEkpQB4ytwquJJApCfMp/RsNkH
+         B4nArmz1g7DYtj5NteBv/WNZlTNNA13pE+/FiktY/mm8oNNr4h1cBwluctMxq4yqJO3A
+         AZdu3sfbKFA2JDEQte2SDEj2j1CEe/JwNbizOGUkEAAeQxJ47nS8IKRB4TA8DYOH2oTX
+         WFveUBYe8QR9VETiT/v18TY1gGAPA4612zXaL/jx7w184sW/OhCMnM4qYB95uK5eF5sw
+         P/sA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699296530; x=1699901330;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=GEU/T0YzjOtkbVZizp15U02rtKoeqg1sHvW0/B5DtdA=;
-        b=oWhpbgYjPLS5BhZUpkM3DbcaYN9DGf+VBwLMVB9bQ8pF1idsqlZO61b1yab8dTzjyR
-         HCdo9vFQMyrouznuxyA0Nrtn3bZ6liilitzRsR28QZu3j4W1o3Opq9yyaPLzTsUbznfr
-         JJkpwSUW4atv1dbPMoz7IJABvMNplsxOpmH51TZb2B8wmC/EW9WVhEi+Mt16rFRFL+Mr
-         t/OQkFgJ7QOST1VM6FuIddUvjey+yAROdBac+7tYeOjp3Dgc8bJac9xaRKysZuM6Ke+D
-         vk93iuUkQQUkVbx3cWl/6mfpW5cnDU3NGNAyqVHREkuN03D+Vr/0H1Eq5YZHWgFL+E2u
-         ksgQ==
-X-Gm-Message-State: AOJu0YxOh6hFA1DGA3HIosxlvqIP5krqj9i6IPfEju1UC8MODmlUYx/V
-        2nzLYGCrtm764vfw9XOv9GzM5KjvsZ20OFowOjSIKi3s
-X-Google-Smtp-Source: AGHT+IGx9i2xhfecbXKM+Crwv24haeMNbJhw1G26AUXpr7Jj7oVxHkIyehbuuwd/4M7eEpgYPDo+SlUNw03C3ipL72c=
-X-Received: by 2002:a05:6870:ff84:b0:1e9:b537:51ef with SMTP id
- qp4-20020a056870ff8400b001e9b53751efmr554623oab.31.1699296529538; Mon, 06 Nov
- 2023 10:48:49 -0800 (PST)
+        d=1e100.net; s=20230601; t=1699296632; x=1699901432;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=6cU21C5fA+9HfxPv3J8m9Wghhy7CjkmSAa3XrNBXmko=;
+        b=RGnuYNs26jRsf4oJyxHhqKt0x/PnyV1eEeaLEnbCEU1OGnL5ZQbl0CYwE2jov0nu+K
+         S8hr4X8tZFlO5oc+rwQbge+3xdAL+NEatGAUjiK1hvjKELGTXw3s6JHqDdn13DsbsySf
+         joa/TmVUOf0ewjRrrF5JsKcS3a1fryRy4huNnLd47bPb8JP6Bg9g16wyqGYltOwvmEPN
+         N9zpbtV0KmJh7uBY+A4cXwc+nDoNgKzebh76GRsi2X8YBL406Basy4Pe1vuWK5riQXxc
+         uKaaJ3jFovfs4PLqEIjad6Ju4qq1TiwboApnAP7kQ2NWLd7IEDcu46r7dRD9CB9BT26J
+         krbg==
+X-Gm-Message-State: AOJu0YxMLw7p9RhmW2kf2BVhYhZ1RKiBNLlyI4YEbFoBzFPL2xzauo3r
+        YW/Fe0HJsEo+zrc7INNDveg=
+X-Google-Smtp-Source: AGHT+IErzhlvo3uGRZ8ikMypK9vCw5+kSuhekjr2LhVNm7lhbCURZcq8B5VN8mniHRSxNPPNfQAchw==
+X-Received: by 2002:a05:6a00:330a:b0:6c3:3bf9:217e with SMTP id cq10-20020a056a00330a00b006c33bf9217emr11111970pfb.19.1699296631673;
+        Mon, 06 Nov 2023 10:50:31 -0800 (PST)
+Received: from localhost ([2a00:79e1:abd:4a00:6c80:7c10:75a0:44f4])
+        by smtp.gmail.com with ESMTPSA id n35-20020a056a000d6300b006b90f1706f1sm5941925pfv.134.2023.11.06.10.50.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 Nov 2023 10:50:30 -0800 (PST)
+From:   Rob Clark <robdclark@gmail.com>
+To:     dri-devel@lists.freedesktop.org
+Cc:     freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Daniel Stone <daniels@collabora.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Rob Clark <robdclark@chromium.org>,
+        linux-kernel@vger.kernel.org (open list),
+        linux-pm@vger.kernel.org (open list:POWER MANAGEMENT CORE),
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Sean Paul <sean@poorly.run>
+Subject: [PATCH v3 0/2] drm/msm/gem: Add metadata uapi
+Date:   Mon,  6 Nov 2023 10:50:24 -0800
+Message-ID: <20231106185028.209462-1-robdclark@gmail.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-References: <87wmuwo7i3.fsf@gentoo.org> <20231105160652.374422-1-sam@gentoo.org>
-In-Reply-To: <20231105160652.374422-1-sam@gentoo.org>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 6 Nov 2023 13:48:38 -0500
-Message-ID: <CADnq5_OvEsUD5wcvk8YtvHO+=89WJra4YFRoKe8JANvM_R9AKg@mail.gmail.com>
-Subject: Re: [PATCH] amdgpu: Adjust kmalloc_array calls for new -Walloc-size
-To:     Sam James <sam@gentoo.org>
-Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -69,147 +77,23 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied.  Thanks!
+From: Rob Clark <robdclark@chromium.org>
 
-Alex
+Add metadata mechanism to provide a back-channel to communicate image
+layout information between vk and gl, because EXT_external_objects
+doesn't support explicit modifiers and "OPTIMAL_TILING_EXT" is not
+enough information for the importer to deduce the layout.
 
-On Sun, Nov 5, 2023 at 11:07=E2=80=AFAM Sam James <sam@gentoo.org> wrote:
->
-> GCC 14 introduces a new -Walloc-size included in -Wextra which errors out
-> on various files in drivers/gpu/drm/amd/amdgpu like:
-> ```
-> amdgpu_amdkfd_gfx_v8.c:241:15: error: allocation of insufficient size =E2=
-=80=984=E2=80=99 for type =E2=80=98uint32_t[2]=E2=80=99 {aka =E2=80=98unsig=
-ned int[2]'} with size =E2=80=988=E2=80=99 [-Werror=3Dalloc-size]
-> ```
->
-> This is because each HQD_N_REGS is actually a uint32_t[2]. Move the * 2 t=
-o
-> the size argument so GCC sees we're allocating enough.
->
-> Originally did 'sizeof(uint32_t) * 2' for the size but a friend suggested
-> 'sizeof(**dump)' better communicates the intent.
->
-> Link: https://lore.kernel.org/all/87wmuwo7i3.fsf@gentoo.org/
-> Signed-off-by: Sam James <sam@gentoo.org>
-> ---
->  drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_arcturus.c | 2 +-
->  drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gc_9_4_3.c | 2 +-
->  drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gfx_v7.c   | 4 ++--
->  drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gfx_v8.c   | 4 ++--
->  drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gfx_v9.c   | 4 ++--
->  5 files changed, 8 insertions(+), 8 deletions(-)
->
-> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_arcturus.c b/driver=
-s/gpu/drm/amd/amdgpu/amdgpu_amdkfd_arcturus.c
-> index 625db444df1c..0ba15dcbe4e1 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_arcturus.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_arcturus.c
-> @@ -200,7 +200,7 @@ int kgd_arcturus_hqd_sdma_dump(struct amdgpu_device *=
-adev,
->  #undef HQD_N_REGS
->  #define HQD_N_REGS (19+6+7+10)
->
-> -       *dump =3D kmalloc_array(HQD_N_REGS * 2, sizeof(uint32_t), GFP_KER=
-NEL);
-> +       *dump =3D kmalloc_array(HQD_N_REGS, sizeof(**dump), GFP_KERNEL);
->         if (*dump =3D=3D NULL)
->                 return -ENOMEM;
->
-> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gc_9_4_3.c b/driver=
-s/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gc_9_4_3.c
-> index 490c8f5ddb60..ca7238b5535b 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gc_9_4_3.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gc_9_4_3.c
-> @@ -141,7 +141,7 @@ static int kgd_gfx_v9_4_3_hqd_sdma_dump(struct amdgpu=
-_device *adev,
->                 (*dump)[i++][1] =3D RREG32(addr);         \
->         } while (0)
->
-> -       *dump =3D kmalloc_array(HQD_N_REGS * 2, sizeof(uint32_t), GFP_KER=
-NEL);
-> +       *dump =3D kmalloc_array(HQD_N_REGS, sizeof(**dump), GFP_KERNEL);
->         if (*dump =3D=3D NULL)
->                 return -ENOMEM;
->
-> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gfx_v7.c b/drivers/=
-gpu/drm/amd/amdgpu/amdgpu_amdkfd_gfx_v7.c
-> index 6bf448ab3dff..ca4a6b82817f 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gfx_v7.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gfx_v7.c
-> @@ -214,7 +214,7 @@ static int kgd_hqd_dump(struct amdgpu_device *adev,
->                 (*dump)[i++][1] =3D RREG32(addr);         \
->         } while (0)
->
-> -       *dump =3D kmalloc_array(HQD_N_REGS * 2, sizeof(uint32_t), GFP_KER=
-NEL);
-> +       *dump =3D kmalloc_array(HQD_N_REGS, sizeof(**dump), GFP_KERNEL);
->         if (*dump =3D=3D NULL)
->                 return -ENOMEM;
->
-> @@ -301,7 +301,7 @@ static int kgd_hqd_sdma_dump(struct amdgpu_device *ad=
-ev,
->  #undef HQD_N_REGS
->  #define HQD_N_REGS (19+4)
->
-> -       *dump =3D kmalloc_array(HQD_N_REGS * 2, sizeof(uint32_t), GFP_KER=
-NEL);
-> +       *dump =3D kmalloc_array(HQD_N_REGS, sizeof(**dump), GFP_KERNEL);
->         if (*dump =3D=3D NULL)
->                 return -ENOMEM;
->
-> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gfx_v8.c b/drivers/=
-gpu/drm/amd/amdgpu/amdgpu_amdkfd_gfx_v8.c
-> index cd06e4a6d1da..0f3e2944edd7 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gfx_v8.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gfx_v8.c
-> @@ -238,7 +238,7 @@ static int kgd_hqd_dump(struct amdgpu_device *adev,
->                 (*dump)[i++][1] =3D RREG32(addr);         \
->         } while (0)
->
-> -       *dump =3D kmalloc_array(HQD_N_REGS * 2, sizeof(uint32_t), GFP_KER=
-NEL);
-> +       *dump =3D kmalloc_array(HQD_N_REGS, sizeof(**dump), GFP_KERNEL);
->         if (*dump =3D=3D NULL)
->                 return -ENOMEM;
->
-> @@ -324,7 +324,7 @@ static int kgd_hqd_sdma_dump(struct amdgpu_device *ad=
-ev,
->  #undef HQD_N_REGS
->  #define HQD_N_REGS (19+4+2+3+7)
->
-> -       *dump =3D kmalloc_array(HQD_N_REGS * 2, sizeof(uint32_t), GFP_KER=
-NEL);
-> +       *dump =3D kmalloc_array(HQD_N_REGS, sizeof(**dump), GFP_KERNEL);
->         if (*dump =3D=3D NULL)
->                 return -ENOMEM;
->
-> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gfx_v9.c b/drivers/=
-gpu/drm/amd/amdgpu/amdgpu_amdkfd_gfx_v9.c
-> index 51011e8ee90d..a3355b90aac5 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gfx_v9.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gfx_v9.c
-> @@ -365,7 +365,7 @@ int kgd_gfx_v9_hqd_dump(struct amdgpu_device *adev,
->                 (*dump)[i++][1] =3D RREG32(addr);         \
->         } while (0)
->
-> -       *dump =3D kmalloc_array(HQD_N_REGS * 2, sizeof(uint32_t), GFP_KER=
-NEL);
-> +       *dump =3D kmalloc_array(HQD_N_REGS, sizeof(**dump), GFP_KERNEL);
->         if (*dump =3D=3D NULL)
->                 return -ENOMEM;
->
-> @@ -462,7 +462,7 @@ static int kgd_hqd_sdma_dump(struct amdgpu_device *ad=
-ev,
->  #undef HQD_N_REGS
->  #define HQD_N_REGS (19+6+7+10)
->
-> -       *dump =3D kmalloc_array(HQD_N_REGS * 2, sizeof(uint32_t), GFP_KER=
-NEL);
-> +       *dump =3D kmalloc_array(HQD_N_REGS, sizeof(**dump), GFP_KERNEL);
->         if (*dump =3D=3D NULL)
->                 return -ENOMEM;
->
-> --
-> 2.42.1
->
+Rob Clark (2):
+  drm/msm: Small uabi fixes
+  drm/msm/gem: Add metadata
+
+ drivers/gpu/drm/msm/msm_drv.c | 94 ++++++++++++++++++++++++++++++++++-
+ drivers/gpu/drm/msm/msm_gem.c |  1 +
+ drivers/gpu/drm/msm/msm_gem.h |  4 ++
+ include/uapi/drm/msm_drm.h    |  2 +
+ 4 files changed, 99 insertions(+), 2 deletions(-)
+
+-- 
+2.41.0
+
