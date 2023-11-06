@@ -2,18 +2,18 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D71D7E2EA8
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 22:08:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A95FA7E2EA7
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 22:07:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233121AbjKFVH6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 16:07:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57782 "EHLO
+        id S233014AbjKFVHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 16:07:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233110AbjKFVHk (ORCPT
+        with ESMTP id S233111AbjKFVHk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 6 Nov 2023 16:07:40 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DAFAD75
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36C09D51
         for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 13:07:38 -0800 (PST)
 From:   John Ogness <john.ogness@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
@@ -22,29 +22,29 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=gPyZTcWZWhXXvYtKbCYSzlUC2oh3LgQ1z4Pk6pXNprY=;
-        b=JiSkeIhKiFvecS2FXzSEnPYPxGF/LN+OykA0vVJaX1Q93NZlyyXg/o98rXaFU+8hcdtPZM
-        7EonEjJzEiMLX+gD9ZBIB+cNXvR0yRgSTc4ctPifNmogqolc8y7pyMW/WxCrXAJt/1JT/B
-        EDS8mYvTBp6DoBgri33uPStc3KKUaSjqvXFWValpM9Vcs/SK79Yg4W1XN10UE2ALuE6zwV
-        upeHCakfbHiKt2rF4V1c/tuxH83VzGSX/Z2hRy3mdfCzBl47TMpAKdSjX3mQqI8ORYXLhg
-        ERVNPeJDQk1R2ORZcaqyFdVWl+hE7D4StmRdsSmksY1BBjnXvKlp85R2JSoM8g==
+        bh=W3IXvUuXJ9pnznvJZ8clgdIjVGMNk75/C1eUuuTRsrs=;
+        b=hudJ+tTqn5YPwaMErxVwIfT/yrE7Dn2MSwLeYnJsOMmetVf6LDrr8WCcqaxk6UkKagtcbe
+        aCMNzerz9ohd70fVZAY4jftufPp+4B5fwQllqUxfmMPPVwBCuKwwRpm/57s7uCevGCX5T9
+        K+y4KZQvcbucKwB6WSgmwI5GNnSngkSVAbkBlRTNZnVQ8swSLVEYYLnzNZUHHq3NhBbRVO
+        1918m9QZsvgZg9F8l/S9DUnpx9nMBVdaD0h/ORFw6WIKqyxpG0qZ+4x5SgqSjGDpxe1kD3
+        UEOQeXkEhefuiuyRLtZiRdPplRdp+EXQzGO7XPoRfWt3LRMAhygWL9hqkcM7cA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1699304855;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=gPyZTcWZWhXXvYtKbCYSzlUC2oh3LgQ1z4Pk6pXNprY=;
-        b=yFI+fvbcrINRbTXEB4WeODLJn6Vn4DYrIh3V7Z7kHof5vRGsQCN1/t6qrayYoKMVVkGGzv
-        6OwczLGJ8aIDuqCg==
+        bh=W3IXvUuXJ9pnznvJZ8clgdIjVGMNk75/C1eUuuTRsrs=;
+        b=LXqdXzlKnXhpsVg5KAQF+V3ELg6J3Er0v/dgs1pFYn6MvYNwFoi5VvAh/p2ZD8+mm1jBgA
+        hN8+QAI+pn1msFBA==
 To:     Petr Mladek <pmladek@suse.com>
 Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH printk v2 7/9] printk: Skip non-finalized records in panic
-Date:   Mon,  6 Nov 2023 22:13:28 +0106
-Message-Id: <20231106210730.115192-8-john.ogness@linutronix.de>
+Subject: [PATCH printk v2 8/9] printk: Disable passing console lock owner completely during panic()
+Date:   Mon,  6 Nov 2023 22:13:29 +0106
+Message-Id: <20231106210730.115192-9-john.ogness@linutronix.de>
 In-Reply-To: <20231106210730.115192-1-john.ogness@linutronix.de>
 References: <20231106210730.115192-1-john.ogness@linutronix.de>
 MIME-Version: 1.0
@@ -59,63 +59,110 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Normally a reader will stop once reaching a non-finalized
-record. However, when a panic happens, writers from other CPUs
-(or an interrupted context on the panic CPU) may have been
-writing a record and were unable to finalize it. The panic CPU
-will reserve/commit/finalize its panic records, but these will
-be located after the non-finalized records. This results in
-panic() not flushing the panic messages.
+From: Petr Mladek <pmladek@suse.com>
 
-Extend _prb_read_valid() to skip over non-finalized records if
-on the panic CPU.
+The commit d51507098ff91 ("printk: disable optimistic spin
+during panic") added checks to avoid becoming a console waiter
+if a panic is in progress.
 
-Fixes: 896fbe20b4e2 ("printk: use the lockless ringbuffer")
-Signed-off-by: John Ogness <john.ogness@linutronix.de>
+However, the transition to panic can occur while there is
+already a waiter. The current owner should not pass the lock to
+the waiter because it might get stopped or blocked anytime.
+
+Also the panic context might pass the console lock owner to an
+already stopped waiter by mistake. It might happen when
+console_flush_on_panic() ignores the current lock owner, for
+example:
+
+CPU0                                CPU1
+----                                ----
+console_lock_spinning_enable()
+                                    console_trylock_spinning()
+                                      [CPU1 now console waiter]
+NMI: panic()
+  panic_other_cpus_shutdown()
+                                    [stopped as console waiter]
+  console_flush_on_panic()
+    console_lock_spinning_enable()
+    [print 1 record]
+    console_lock_spinning_disable_and_check()
+      [handover to stopped CPU1]
+
+This results in panic() not flushing the panic messages.
+
+Fix these problems by disabling all spinning operations
+completely during panic().
+
+Another advantage is that it prevents possible deadlocks caused
+by "console_owner_lock". The panic() context does not need to
+take it any longer. The lockless checks are safe because the
+functions become NOPs when they see the panic in progress. All
+operations manipulating the state are still synchronized by the
+lock even when non-panic CPUs would notice the panic
+synchronously.
+
+The current owner might stay spinning. But non-panic() CPUs
+would get stopped anyway and the panic context will never start
+spinning.
+
+Fixes: dbdda842fe96 ("printk: Add console owner and waiter logic to load balance console writes")
+Signed-off-by: Petr Mladek <pmladek@suse.com>
+Reviewed-by: John Ogness <john.ogness@linutronix.de>
 ---
- kernel/printk/printk_ringbuffer.c | 22 ++++++++++++++++++++--
- 1 file changed, 20 insertions(+), 2 deletions(-)
+ kernel/printk/printk.c | 29 +++++++++++++++++++++++++++++
+ 1 file changed, 29 insertions(+)
 
-diff --git a/kernel/printk/printk_ringbuffer.c b/kernel/printk/printk_ringbuffer.c
-index dc83569d3a3a..584d2b213876 100644
---- a/kernel/printk/printk_ringbuffer.c
-+++ b/kernel/printk/printk_ringbuffer.c
-@@ -2116,6 +2116,10 @@ u64 prb_next_reserve_seq(struct printk_ringbuffer *rb)
-  *
-  * On failure @seq is updated to a record that is not yet available to the
-  * reader, but it will be the next record available to the reader.
-+ *
-+ * Note: When the current CPU is in panic, this function will skip over any
-+ *       non-existent/non-finalized records in order to allow the panic CPU
-+ *       to print any and all records that have been finalized.
+diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+index f3a7f5a6f6f8..cb99c854a648 100644
+--- a/kernel/printk/printk.c
++++ b/kernel/printk/printk.c
+@@ -1869,10 +1869,23 @@ static bool console_waiter;
   */
- static bool _prb_read_valid(struct printk_ringbuffer *rb, u64 *seq,
- 			    struct printk_record *r, unsigned int *line_count)
-@@ -2138,8 +2142,22 @@ static bool _prb_read_valid(struct printk_ringbuffer *rb, u64 *seq,
- 			(*seq)++;
+ static void console_lock_spinning_enable(void)
+ {
++	/*
++	 * Do not use spinning in panic(). The panic CPU wants to keep the lock.
++	 * Non-panic CPUs abandon the flush anyway.
++	 *
++	 * Just keep the lockdep annotation. The panic-CPU should avoid
++	 * taking console_owner_lock because it might cause a deadlock.
++	 * This looks like the easiest way how to prevent false lockdep
++	 * reports without handling races a lockless way.
++	 */
++	if (panic_in_progress())
++		goto lockdep;
++
+ 	raw_spin_lock(&console_owner_lock);
+ 	console_owner = current;
+ 	raw_spin_unlock(&console_owner_lock);
  
- 		} else {
--			/* Non-existent/non-finalized record. Must stop. */
--			return false;
-+			/*
-+			 * Non-existent/non-finalized record. Must stop.
-+			 *
-+			 * For panic situations it cannot be expected that
-+			 * non-finalized records will become finalized. But
-+			 * there may be other finalized records beyond that
-+			 * need to be printed for a panic situation. If this
-+			 * is the panic CPU, skip this
-+			 * non-existent/non-finalized record unless it is
-+			 * at or beyond the head, in which case it is not
-+			 * possible to continue.
-+			 */
-+			if (this_cpu_in_panic() && ((*seq + 1) < prb_next_reserve_seq(rb)))
-+				(*seq)++;
-+			else
-+				return false;
- 		}
- 	}
++lockdep:
+ 	/* The waiter may spin on us after setting console_owner */
+ 	spin_acquire(&console_owner_dep_map, 0, 0, _THIS_IP_);
+ }
+@@ -1897,6 +1910,22 @@ static int console_lock_spinning_disable_and_check(int cookie)
+ {
+ 	int waiter;
  
++	/*
++	 * Ignore spinning waiters during panic() because they might get stopped
++	 * or blocked at any time,
++	 *
++	 * It is safe because nobody is allowed to start spinning during panic
++	 * in the first place. If there has been a waiter then non panic CPUs
++	 * might stay spinning. They would get stopped anyway. The panic context
++	 * will never start spinning and an interrupted spin on panic CPU will
++	 * never continue.
++	 */
++	if (panic_in_progress()) {
++		/* Keep lockdep happy. */
++		spin_release(&console_owner_dep_map, _THIS_IP_);
++		return 0;
++	}
++
+ 	raw_spin_lock(&console_owner_lock);
+ 	waiter = READ_ONCE(console_waiter);
+ 	console_owner = NULL;
 -- 
 2.39.2
 
