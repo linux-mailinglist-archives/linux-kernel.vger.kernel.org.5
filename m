@@ -2,117 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E8BB7E28B7
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 16:31:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70C347E28D3
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 16:35:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232073AbjKFPbZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 10:31:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50772 "EHLO
+        id S232151AbjKFPfn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 10:35:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229839AbjKFPbX (ORCPT
+        with ESMTP id S232115AbjKFPfk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 10:31:23 -0500
-Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0065C107
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 07:31:20 -0800 (PST)
-Received: by mail-pl1-x64a.google.com with SMTP id d9443c01a7336-1cc23f2226bso30613375ad.2
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 07:31:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1699284680; x=1699889480; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=W4pgWCBKNlAdji/TNyedAYk8usKNcfQXaSq+BvgKk6s=;
-        b=VS2mrP9JMObCyBc3U1bEWv/lJ3A/ztpYHfW2X8kYcyH8DlefIF2Q68JIoPHsE1HWZj
-         XzIetZ3Uj9A9aIk7gTGVUofPTSKOYlXfhZj2V7f1yb2bSWgRhrkSv+j/fK7AyzBH+6nP
-         htCiW4OTQTAoxnoq7XGc3bNae+4kwFWvOXgAfteefJCKcAqkGMK+yH8i0tN5kHCpH+p4
-         iilEXbElOIQOoAUbiEhzSLs4nKdK0ICIORxhIh+R2lUVmD5tAi7vQMcsRvKQt3QgHI2h
-         H+/8i8PQ8gp9nGbXs8hZCTU8ZWVs0+7S4y6vKRNKP1vTxRQPKYSRqXXWiw/o7RvS+exH
-         9PTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699284680; x=1699889480;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=W4pgWCBKNlAdji/TNyedAYk8usKNcfQXaSq+BvgKk6s=;
-        b=tmc9aF8HCOX40fZAnh4irjG6Y4/IQrJ4dS/+R52ztxmESYWSTZY+GdOxNW3b4lDunQ
-         vI5QRYemN6nEDJxpG6DXHaOXDdWBV7HvXSXDMXUmvLIR5mdtKr0EX08RBQS00hz4zU0F
-         qH+nz5+230qTMraWcUw3rNs2Bq1sSjJhGGa2QoRfyrEFQQnXPozafHf2Inyfq8ExMJGK
-         tqA+s9M/kHa4C8VnoeNd+WI27kQnW+Br3EXV3SibGHFXvYNbUD2bHqbKiW6tMjocm9Ky
-         JFf8S7/UZ2hO5vgMLMtUPe7QMGHfqTxDT3X6oz1MjXrx4dk84wmYEifzGpbggkdKasR3
-         AFEg==
-X-Gm-Message-State: AOJu0Yz+dhJjYlCXw2KpNjdjEo1QfunaW0BaYNXJltI1Iep+TAERKze+
-        WvuaD/1JWRFzhvxB4t5hR2USdgcd3xo=
-X-Google-Smtp-Source: AGHT+IE+rwwSZOnNIm1oVLkjORXDZFsy09Wm5zk955j3nfIYxz7wPLisHgR0CkAQkaQqXTvi+0e32bs4FSs=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:902:ac8e:b0:1cc:30cf:eae6 with SMTP id
- h14-20020a170902ac8e00b001cc30cfeae6mr498273plr.10.1699284680259; Mon, 06 Nov
- 2023 07:31:20 -0800 (PST)
-Date:   Mon, 6 Nov 2023 07:31:18 -0800
-In-Reply-To: <CALMp9eS+kNYYK_1Ufy5vc5PK25q-ny20woxbHz1onStkcfWNVw@mail.gmail.com>
-Mime-Version: 1.0
-References: <20231104000239.367005-1-seanjc@google.com> <20231104000239.367005-3-seanjc@google.com>
- <CALMp9eS+kNYYK_1Ufy5vc5PK25q-ny20woxbHz1onStkcfWNVw@mail.gmail.com>
-Message-ID: <ZUkGxqX8mJPPtxHD@google.com>
-Subject: Re: [PATCH v6 02/20] KVM: x86/pmu: Don't enumerate support for fixed
- counters KVM can't virtualize
-From:   Sean Christopherson <seanjc@google.com>
-To:     Jim Mattson <jmattson@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Dapeng Mi <dapeng1.mi@linux.intel.com>,
-        Jinrong Liang <cloudliang@tencent.com>,
-        Like Xu <likexu@tencent.com>,
-        Aaron Lewis <aaronlewis@google.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 6 Nov 2023 10:35:40 -0500
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01FBB100
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 07:35:35 -0800 (PST)
+Received: from kwepemm000007.china.huawei.com (unknown [172.30.72.55])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4SPFgG6CmhzMmW3;
+        Mon,  6 Nov 2023 23:31:06 +0800 (CST)
+Received: from [10.174.185.210] (10.174.185.210) by
+ kwepemm000007.china.huawei.com (7.193.23.189) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Mon, 6 Nov 2023 23:35:32 +0800
+Subject: Re: [RFC PATCH] KVM: arm/arm64: GICv4: Support shared VLPI
+To:     Marc Zyngier <maz@kernel.org>
+CC:     Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Gavin Shan <gshan@redhat.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        "open list:IRQCHIP DRIVERS" <linux-kernel@vger.kernel.org>,
+        <kvmarm@lists.linux.dev>, <wanghaibin.wang@huawei.com>
+References: <20231102143507.840-1-jiangkunkun@huawei.com>
+ <87msvt6cc7.wl-maz@kernel.org>
+From:   Kunkun Jiang <jiangkunkun@huawei.com>
+Message-ID: <12266a84-1148-954c-c6d6-67c8f9cc80b7@huawei.com>
+Date:   Mon, 6 Nov 2023 23:33:13 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
+MIME-Version: 1.0
+In-Reply-To: <87msvt6cc7.wl-maz@kernel.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [10.174.185.210]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ kwepemm000007.china.huawei.com (7.193.23.189)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 04, 2023, Jim Mattson wrote:
-> On Fri, Nov 3, 2023 at 5:02=E2=80=AFPM Sean Christopherson <seanjc@google=
-.com> wrote:
-> >
-> > Hide fixed counters for which perf is incapable of creating the associa=
-ted
-> > architectural event.  Except for the so called pseudo-architectural eve=
-nt
-> > for counting TSC reference cycle, KVM virtualizes fixed counters by
-> > creating a perf event for the associated general purpose architectural
-> > event.  If the associated event isn't supported in hardware, KVM can't
-> > actually virtualize the fixed counter because perf will likely not prog=
-ram
-> > up the correct event.
->=20
-> Won't it? My understanding was that perf preferred to use a fixed
-> counter when there was a choice of fixed or general purpose counter.
-> Unless the fixed counter is already assigned to a perf_event, KVM's
-> request should be satisfied by assigning the fixed counter.
->=20
-> > Note, this issue is almost certainly limited to running KVM on a funky
-> > virtual CPU model, no known real hardware has an asymmetric PMU where a
-> > fixed counter is supported but the associated architectural event is no=
-t.
->=20
-> This seems like a fix looking for a problem. Has the "problem"
-> actually been encountered?
+Hi Marc,
 
-Heh, yes, I "encountered" the problem in a curated VM I created.  But I com=
-pletely
-agree that this is unnecessary, especially since odds are very, very good t=
-hat
-requesting the architectural general purpose encoding will still work.  E.g=
-. in
-my goofy setup, the underlying hardware does support the architectural even=
-t and
-so even if perf doesn't use the fixed counter for whatever reason, the GP c=
-ounter
-will still count the right event.
+On 2023/11/4 18:29, Marc Zyngier wrote:
+> On Thu, 02 Nov 2023 14:35:07 +0000,
+> Kunkun Jiang <jiangkunkun@huawei.com> wrote:
+>> In some scenarios, the guest virtio-pci driver will request two MSI-X,
+>> one vector for config, one shared for queues. However, the host driver
+>> (vDPA or VFIO) will request a vector for each queue.
+> Well, VFIO will request *all* available MSI-X. It doesn't know what a
+> queue is.
+>
+>> In the current implementation of GICv4/4.1 direct injection of vLPI,
+>> pINTID and vINTID have one-to-one correspondence. Therefore, the
+> This matching is a hard requirement that matches the architecture. You
+> cannot change it.
+>
+>> above scenario cannot be handled correctly. The host kernel will
+>> execute its_map_vlpi multiple times but only execute its_unmap_vlpi
+>> once. This may cause guest hang[1].
+> Why does it hang? As far as it is concerned, it has unmapped the
+> interrupts it cares about. Where are the calls to its_map_vlpi()
+> coming from? It should only occur if the guest actively programs the
+> MSI-X registers. What is your VMM? How can I reproduce this issue?
+>
+>> |	WARN_ON(!(irq->hw && irq->host_irq == virq));
+>> |	if (irq->hw) {
+>> |		atomic_dec(&irq->target_vcpu->arch.vgic_cpu.vgic_v3.its_vpe.vlpi_count);
+>> |		irq->hw = false;
+>> |		ret = its_unmap_vlpi(virq);
+>> |	}
+>>
+>> Add a list to struct vgic_irq to record all host irqs mapped to the vlpi.
+>> When performing an action on the vlpi, traverse the list and perform this
+>> action on all host irqs.
+> This makes no sense. You are blindly associating multiple host
+> interrupts with a single guest interrupt. This is a blatant violation
+> of the architecture. When unmapping a VLPI from a guest, only this one
+> should be turned again into an LPI. Not two, not all, just this one.
+>
+> Maybe you have found an actual issue, but this patch is absolutely
+> unacceptable. Please fully describe the problem, provide traces, and
+> if possible a reproducer.
+>
+>> Link: https://lore.kernel.org/all/0d9fdf42-76b1-afc6-85a9-159c5490bbd4@huawei.com/#t
+> I tried to parse this, but it hardly makes sense either. You seem to
+> imply that the host driver pre-configures the device, which is
+> completely wrong. The host driver (VFIO) should simply request all
+> possible physical LPIs, and that's all. It is expected that this
+> requesting has no other effect on the HW. Also, since your guest
+> driver only configures a single vLPI, there should be only a single
+> its_map_vlpi() call.
+Sorry to replay so late.
+
+The virtio-scsi device has seven vectors (entry0-6): one for config,
+six for queues. In Guest, e.g. centos 7.6 4.19, virtio-pci driver
+will request only one vLPI, which is shared for queues.
+The entry 0 is used for config. It's not relevant to this issue, so
+we're not going to discuss it. The virtio-pci driver write entry1-6
+massage.data in the msix-table and trap to QEMU for processing. The
+massage.data is as follow:
+> entry-0 0
+> entry-1 1
+> entry-2 1
+> entry-3 1
+> entry-4 1
+> entry-5 1
+> entry-6 1 
+
+The calling process of kvm is as follows. its_map_vlpi_will be
+executed 6 times. Six host irqs are mapped to one vLPI.
+> kvm_irqfd_assign
+>     irq_bypass_register_consumer
+>         ...
+>         kvm_arch_irq_bypass_add_producer
+>             kvm_vgic_v4_set_forwarding
+>                 its_map_vlpi 
+
+When executing the reboot command inside the Guest,
+kvm_vgic_v4_unset_forwarding will be execute 6 times. WARN_ON
+will also be triggered 6 times. But its_unmap_vlpi will only
+be executed the first time.
+> kvm_arch_irq_bypass_del_producer
+>     kvm_vgic_v4_unset_forwarding
+>         WARN_ON(!(irq->hw && irq->host_irq == virq));
+>         if (irq->hw) {
+>             irq->hw = false;
+> its_unmap_vlpi
+>         } 
+
+Therefore, only the mapping between the first host irq and
+vLPI is unmapped. When the guest reboots into the BIOS phase,
+the remaining 5 host irqs may still send interrupts. This
+causes the guest to hang.
+
+Looking forward to your reply.
+
+Thanks,
+Kunkun Jiang
+> So it seems to me that your HW and SW are doing things that are not
+> expected at all.
+>
+> 	M.
+>
