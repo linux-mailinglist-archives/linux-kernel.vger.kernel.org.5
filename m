@@ -2,127 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA15C7E2E95
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 22:03:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 173097E2E8A
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 22:02:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233100AbjKFVDw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 16:03:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57192 "EHLO
+        id S233040AbjKFVCq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 16:02:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233080AbjKFVDq (ORCPT
+        with ESMTP id S232954AbjKFVCo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 16:03:46 -0500
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53D33A3
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 13:03:44 -0800 (PST)
-Received: by mail-pg1-x532.google.com with SMTP id 41be03b00d2f7-5bd6ac9833fso1074634a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 13:03:44 -0800 (PST)
+        Mon, 6 Nov 2023 16:02:44 -0500
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32DB9D77
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 13:02:41 -0800 (PST)
+Received: by mail-pl1-x649.google.com with SMTP id d9443c01a7336-1cc591d8177so32124985ad.3
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 13:02:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1699304624; x=1699909424; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7kMz5bDbNmGy2pUD82uFFbL5daLBA/vsaP69IFKgup4=;
-        b=AaHMfj+BWvqcdReQPy/WjbaWZvLbFCJkY45D4gnNR5PuDePP6Szlw3lZ/EAdz46L1I
-         brRUdp5ZJFo99OndPLmhZdIyEyRIiaBXYNZiRbPl6NUPuC13OKZ8/emwrAC1MdaDSIa2
-         6pe8yChjPHr0FF0DCQ3fqypuUHoL9JyHSeP1c=
+        d=google.com; s=20230601; t=1699304560; x=1699909360; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=3YVT/6GQJuQ7TjvhzDWajYThozSBRZLd2V3VGmhBHao=;
+        b=Vv8kFQiunIrTYiM6C/oHgHrTapbPb7JHDyQy8sV+NGrJVj1vpNrYPabj6l1M/3k/pe
+         0KSaaQUhg/ZcT1F6kyHn9rRU9tsCGw6mAcPy1W2Muj+zT0GcbkKhL4D8SwhyL48Uj4UZ
+         rFF1SSEqPu+xI1Kekzu58oyXrQ4wUJNx/0fMnKc1m487QZyiAIBOoj05pUveCBtBrMxk
+         eFetU/y0BG/3cbcuiXHfrCIGHvvDBx7MW7aUUulBj/sRFKx8ycriSAw+tMYWERMHyG1E
+         N4TWBgSpWVRrFhtU7AKB35RgNVw2OAXLY9vuE+BX0uGx/b73D3X4to8/XWfcxOmD2Pvf
+         dqeQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699304624; x=1699909424;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7kMz5bDbNmGy2pUD82uFFbL5daLBA/vsaP69IFKgup4=;
-        b=wUb1DrD/SncaSCpHpBPwur2FR2UiukND5SKvmvQf1GTlsu12Y9LF3AKpST1zSEudIz
-         /U9pANYxIRmkbq8nrs+H0QWwikWnxznujZmtNyTXDZ7maOghTziEBa/1FwnDuwMEEMFS
-         YY/T9rODy7sehDlFnTnpQcrdrRehuiN8TCajpR23mZvHT/P6OAosMfDPVwqlwYKy2iVl
-         GoePRVScpN8WE1ZPLEigJLwdG2CjF0PxlgToALgotr6t4ty6XGRsoA+77h/GmNZ1UcnD
-         jUUSNcOjD21qLh6FhYnOCKTKRvM5wez4T+kzM1BcvjPO5pBIoYCOLAMRe6MsthclLKOm
-         bMcQ==
-X-Gm-Message-State: AOJu0YwNokRsfZHGEY8/5EdWgERhjed6vWaqSII7Ia5ui+/ghEZsCQfG
-        AbeccwslBmXwao38vtvPZSPvVg==
-X-Google-Smtp-Source: AGHT+IEkWl9k5SAj8xLAUFrAxgucK+63CpEdIfXgMDfEcYRDMLt8uvfDT+d+MntyPAZQDi9dGqzUsQ==
-X-Received: by 2002:a17:90a:1a03:b0:280:f4a:86b4 with SMTP id 3-20020a17090a1a0300b002800f4a86b4mr23561724pjk.17.1699304623756;
-        Mon, 06 Nov 2023 13:03:43 -0800 (PST)
-Received: from hsinyi.sjc.corp.google.com ([2620:15c:9d:2:3374:ff6c:474e:a78])
-        by smtp.gmail.com with ESMTPSA id 11-20020a170902c14b00b001c75a07f62esm6291220plj.34.2023.11.06.13.03.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Nov 2023 13:03:43 -0800 (PST)
-From:   Hsin-Yi Wang <hsinyi@chromium.org>
-To:     Douglas Anderson <dianders@chromium.org>
-Cc:     Neil Armstrong <neil.armstrong@linaro.org>,
-        Jessica Zhang <quic_jesszhan@quicinc.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v4 3/3] drm/panel-edp: Avoid adding multiple preferred modes
-Date:   Mon,  6 Nov 2023 13:00:52 -0800
-Message-ID: <20231106210337.2900034-4-hsinyi@chromium.org>
-X-Mailer: git-send-email 2.42.0.869.gea05f2083d-goog
-In-Reply-To: <20231106210337.2900034-1-hsinyi@chromium.org>
-References: <20231106210337.2900034-1-hsinyi@chromium.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        d=1e100.net; s=20230601; t=1699304560; x=1699909360;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=3YVT/6GQJuQ7TjvhzDWajYThozSBRZLd2V3VGmhBHao=;
+        b=fiVO6PPQvNtAJqzSOjvLQLOpyH9vbLaIjwZwzAUNHMpu7H/pEL+9f5OJb8YCRbKTd4
+         k0YNOc2O49MnO8nadIsq9Xec9l++/prgGhyBi/kS7JEKsMIAyxgI+OSrkICPO76e9sca
+         d/sHOrJbouCJugwk2JA5WwpuVSI3nMo1CckozaBEtX/jgvdLbr5kZd8KBNEaf+4xod12
+         wZaF0AT+ef+blpRx7U/JFiLDeJOzPg9md4wX2aGjRM3K5taGg0yn3mNs+VrsP738LvJT
+         n204bOxH9hUMu0xGxRzkev9X8i5iblFiNfVFheMqo1YM4+mPT8Pu5wM+qHYojCu8H+KB
+         LGkg==
+X-Gm-Message-State: AOJu0YyFxwgjNjGIhgvM1YYhxwd8l3/KBZB4Ew+BGlfiNh/3MQ7EIWM/
+        UsRrgJBc3v3AVH9aA1OsJJWBe8k=
+X-Google-Smtp-Source: AGHT+IFMk9K2QPc1yRl8QNToni4u3wTj7lMIW1WMnLhrEu9KTQ1j0Kkg7CJFxK+wf+6qBsS5/cJoFOo=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a17:902:ee14:b0:1ca:b952:f5fa with SMTP id
+ z20-20020a170902ee1400b001cab952f5famr509511plb.5.1699304560650; Mon, 06 Nov
+ 2023 13:02:40 -0800 (PST)
+Date:   Mon, 6 Nov 2023 13:02:39 -0800
+In-Reply-To: <20231106024413.2801438-7-almasrymina@google.com>
+Mime-Version: 1.0
+References: <20231106024413.2801438-1-almasrymina@google.com> <20231106024413.2801438-7-almasrymina@google.com>
+Message-ID: <ZUlUb93BFbPBRJFm@google.com>
+Subject: Re: [RFC PATCH v3 06/12] memory-provider: dmabuf devmem memory provider
+From:   Stanislav Fomichev <sdf@google.com>
+To:     Mina Almasry <almasrymina@google.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linaro-mm-sig@lists.linaro.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        David Ahern <dsahern@kernel.org>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        "Christian =?utf-8?B?S8O2bmln?=" <christian.koenig@amd.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Jeroen de Borst <jeroendb@google.com>,
+        Praveen Kaligineedi <pkaligineedi@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Kaiyuan Zhang <kaiyuanz@google.com>
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If a non generic edp-panel is under aux-bus, the mode read from edid would
-still be selected as preferred and results in multiple preferred modes,
-which is ambiguous.
+On 11/05, Mina Almasry wrote:
+> Implement a memory provider that allocates dmabuf devmem page_pool_iovs.
+> 
+> Support of PP_FLAG_DMA_MAP and PP_FLAG_DMA_SYNC_DEV is omitted for
+> simplicity.
+> 
+> The provider receives a reference to the struct netdev_dmabuf_binding
+> via the pool->mp_priv pointer. The driver needs to set this pointer for
+> the provider in the page_pool_params.
+> 
+> The provider obtains a reference on the netdev_dmabuf_binding which
+> guarantees the binding and the underlying mapping remains alive until
+> the provider is destroyed.
+> 
+> Signed-off-by: Willem de Bruijn <willemb@google.com>
+> Signed-off-by: Kaiyuan Zhang <kaiyuanz@google.com>
+> Signed-off-by: Mina Almasry <almasrymina@google.com>
+> 
+> ---
+>  include/net/page_pool/helpers.h | 40 +++++++++++++++++
+>  include/net/page_pool/types.h   | 10 +++++
+>  net/core/page_pool.c            | 76 +++++++++++++++++++++++++++++++++
+>  3 files changed, 126 insertions(+)
+> 
+> diff --git a/include/net/page_pool/helpers.h b/include/net/page_pool/helpers.h
+> index 78cbb040af94..b93243c2a640 100644
+> --- a/include/net/page_pool/helpers.h
+> +++ b/include/net/page_pool/helpers.h
+> @@ -53,6 +53,7 @@
+>  #define _NET_PAGE_POOL_HELPERS_H
+>  
+>  #include <net/page_pool/types.h>
+> +#include <net/net_debug.h>
+>  
+>  #ifdef CONFIG_PAGE_POOL_STATS
+>  int page_pool_ethtool_stats_get_count(void);
+> @@ -111,6 +112,45 @@ page_pool_iov_binding(const struct page_pool_iov *ppiov)
+>  	return page_pool_iov_owner(ppiov)->binding;
+>  }
+>  
+> +static inline int page_pool_iov_refcount(const struct page_pool_iov *ppiov)
+> +{
+> +	return refcount_read(&ppiov->refcount);
+> +}
+> +
+> +static inline void page_pool_iov_get_many(struct page_pool_iov *ppiov,
+> +					  unsigned int count)
+> +{
+> +	refcount_add(count, &ppiov->refcount);
+> +}
+> +
+> +void __page_pool_iov_free(struct page_pool_iov *ppiov);
+> +
+> +static inline void page_pool_iov_put_many(struct page_pool_iov *ppiov,
+> +					  unsigned int count)
+> +{
+> +	if (!refcount_sub_and_test(count, &ppiov->refcount))
+> +		return;
+> +
+> +	__page_pool_iov_free(ppiov);
+> +}
+> +
+> +/* page pool mm helpers */
+> +
+> +static inline bool page_is_page_pool_iov(const struct page *page)
+> +{
+> +	return (unsigned long)page & PP_DEVMEM;
+> +}
 
-If both hard-coded mode and edid exists, only add mode from hard-coded.
-
-Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
----
-v3->v4: don't skip read edid. only skip add modes.
----
- drivers/gpu/drm/panel/panel-edp.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/gpu/drm/panel/panel-edp.c b/drivers/gpu/drm/panel/panel-edp.c
-index 0fb439b5efb1..c8bb4baf1d45 100644
---- a/drivers/gpu/drm/panel/panel-edp.c
-+++ b/drivers/gpu/drm/panel/panel-edp.c
-@@ -590,6 +590,7 @@ static int panel_edp_get_modes(struct drm_panel *panel,
- {
- 	struct panel_edp *p = to_panel_edp(panel);
- 	int num = 0;
-+	bool has_hard_coded_modes = p->desc->num_timings || p->desc->num_modes;
- 	bool has_override_edid_mode = p->detected_panel &&
- 				      p->detected_panel != ERR_PTR(-EINVAL) &&
- 				      p->detected_panel->override_edid_mode;
-@@ -600,7 +601,11 @@ static int panel_edp_get_modes(struct drm_panel *panel,
- 
- 		if (!p->edid)
- 			p->edid = drm_get_edid(connector, p->ddc);
--		if (p->edid) {
-+		/*
-+		 * If both edid and hard-coded modes exists, skip edid modes to
-+		 * avoid multiple preferred modes.
-+		 */
-+		if (p->edid && !has_hard_coded_modes) {
- 			if (has_override_edid_mode) {
- 				/*
- 				 * override_edid_mode is specified. Use
-@@ -622,7 +627,7 @@ static int panel_edp_get_modes(struct drm_panel *panel,
- 	 * and no modes (the generic edp-panel case) because it will clobber
- 	 * the display_info that was already set by drm_add_edid_modes().
- 	 */
--	if (p->desc->num_timings || p->desc->num_modes)
-+	if (has_hard_coded_modes)
- 		num += panel_edp_get_non_edid_modes(p, connector);
- 	else if (!num)
- 		dev_warn(p->base.dev, "No display modes\n");
--- 
-2.42.0.869.gea05f2083d-goog
-
+Speaking of bpf: one thing that might be problematic with this PP_DEVMEM
+bit is that it will make debugging with bpftrace a bit (more)
+complicated. If somebody were trying to get to that page_pool_iov from
+the frags, they will have to do the equivalent of page_is_page_pool_iov,
+but probably not a big deal? (thinking out loud)
