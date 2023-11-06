@@ -2,53 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF7CB7E2EAE
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 22:09:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C39407E2EBA
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 22:13:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233206AbjKFVJH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 16:09:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57998 "EHLO
+        id S233085AbjKFVN6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 16:13:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233106AbjKFVIw (ORCPT
+        with ESMTP id S233084AbjKFVNw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 16:08:52 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2F2B198B;
-        Mon,  6 Nov 2023 13:08:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-        bh=WcTGKRC8aIgIPpHyxt4LGmD5l1aKIH7ouZAiNt82fgg=; b=sKhhISRqy1vGsTBa4cQkabNGwK
-        Y80kTBPUORC6EOmzuclu5twI3w3XcUEWwHMohljLxE2+7JhgtQ8o9m2vAYgUCGK6NHR5niwvmST52
-        nSj634WUPTTp89u40iIyu3dIUDdKwFHmQJiBeut3uhCoiYEczGA51DKix2AFnRmMRIJsAbwDQwn0Z
-        Aq9VxikIu0Gbef2njHB/Fjc0In45vDqJYFzTy5dQQkyvRvkaImhOsLod4iM0wWGjxGIqSLfhhkDtO
-        hJ3LoY07io4PiRJcq9lQMo1HRc4BG6/2P0EqRn9gW9eN2liJNTwR3ylCzASH6Cm5MECpygt0eqVy8
-        EcAohGXg==;
-Received: from [50.53.46.231] (helo=[192.168.254.15])
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1r06pj-00HZGK-1n;
-        Mon, 06 Nov 2023 21:08:31 +0000
-Message-ID: <aa6b416d-08a4-4f8e-8ab6-f8bf489876d0@infradead.org>
-Date:   Mon, 6 Nov 2023 13:08:31 -0800
+        Mon, 6 Nov 2023 16:13:52 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4E42AF;
+        Mon,  6 Nov 2023 13:13:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699305228; x=1730841228;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=tbKByqfuyURCHPp+0iRLoLExVfyExuPe8MltNNHCMcM=;
+  b=J9LQuialDNAbHlh7EZHijuXmdiycygxnxCXUs00bYCE6tNWMGSJWwvYA
+   wavO4KWr49lQiuT6t9s2Vb/i271TkGWGeVWnh3c3Uq0p1YmSal4JkPDFB
+   rCtPBS8kJJfQ4O76efyIDxecRWRYMvJ5sDomlpyr1STb57wRFCpZNe+eT
+   9W7b4ui9q+A5a85K/KTnH2GpL+uQKX9DZPeSVj/NbwTa8nBlqTg5426aH
+   zxte/U9voYhUosX5cNnd1AE2/IagR+bfZR4TC741vBAu9DLBFa761+jTw
+   K8nsan69vNATKy7koVUN4stFvyQ+XD5AWDcrSQDh9RhZ8VQ18OwfIYX06
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10886"; a="379763323"
+X-IronPort-AV: E=Sophos;i="6.03,282,1694761200"; 
+   d="scan'208";a="379763323"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Nov 2023 13:13:23 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10886"; a="712327288"
+X-IronPort-AV: E=Sophos;i="6.03,282,1694761200"; 
+   d="scan'208";a="712327288"
+Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
+  by orsmga003.jf.intel.com with ESMTP; 06 Nov 2023 13:13:16 -0800
+Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r06uH-0006jY-2v;
+        Mon, 06 Nov 2023 21:13:13 +0000
+Date:   Tue, 7 Nov 2023 05:11:39 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Nitesh Shetty <nj.shetty@samsung.com>,
+        Jens Axboe <axboe@kernel.dk>, Jonathan Corbet <corbet@lwn.net>,
+        Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@kernel.org>, dm-devel@lists.linux.dev,
+        Keith Busch <kbusch@kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Chaitanya Kulkarni <kch@nvidia.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        nitheshshetty@gmail.com, anuj1072538@gmail.com,
+        gost.dev@samsung.com, mcgrof@kernel.org,
+        Nitesh Shetty <nj.shetty@samsung.com>,
+        Hannes Reinecke <hare@suse.de>,
+        Damien Le Moal <damien.lemoal@opensource.wdc.com>,
+        Anuj Gupta <anuj20.g@samsung.com>,
+        Vincent Fu <vincent.fu@samsung.com>,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v17 12/12] null_blk: add support for copy offload
+Message-ID: <202311070508.mIPbaEHa-lkp@intel.com>
+References: <20231019110147.31672-13-nj.shetty@samsung.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] drm: amd: Resolve Sphinx unexpected indentation
- warning
-Content-Language: en-US
-To:     Hunter Chasens <hunter.chasens18@ncf.edu>,
-        linux-kernel@vger.kernel.org
-Cc:     linux-doc@vger.kernel.org, alexander.deucher@amd.com,
-        christian.koenig@amd.com, Xinhui.Pan@amd.com, airlied@gmail.com,
-        daniel@ffwll.ch, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org
-References: <20231106201739.29507-1-hunter.chasens18@ncf.edu>
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20231106201739.29507-1-hunter.chasens18@ncf.edu>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231019110147.31672-13-nj.shetty@samsung.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -57,48 +85,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Nitesh,
+
+kernel test robot noticed the following build warnings:
+
+[auto build test WARNING on 213f891525c222e8ed145ce1ce7ae1f47921cb9c]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Nitesh-Shetty/block-Introduce-queue-limits-and-sysfs-for-copy-offload-support/20231019-200658
+base:   213f891525c222e8ed145ce1ce7ae1f47921cb9c
+patch link:    https://lore.kernel.org/r/20231019110147.31672-13-nj.shetty%40samsung.com
+patch subject: [PATCH v17 12/12] null_blk: add support for copy offload
+config: i386-allmodconfig (https://download.01.org/0day-ci/archive/20231107/202311070508.mIPbaEHa-lkp@intel.com/config)
+compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231107/202311070508.mIPbaEHa-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311070508.mIPbaEHa-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   In file included from drivers/block/null_blk/main.c:15:
+   In file included from drivers/block/null_blk/trace.h:104:
+   In file included from include/trace/define_trace.h:102:
+   In file included from include/trace/trace_events.h:237:
+>> drivers/block/null_blk/trace.h:94:34: warning: format specifies type 'unsigned long' but the argument has type 'size_t' (aka 'unsigned int') [-Wformat]
+                             __entry->dst, __entry->src, __entry->len)
+                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~
+   include/trace/stages/stage3_trace_output.h:6:17: note: expanded from macro '__entry'
+   #define __entry field
+                   ^
+   include/trace/stages/stage3_trace_output.h:9:43: note: expanded from macro 'TP_printk'
+   #define TP_printk(fmt, args...) fmt "\n", args
+                                   ~~~       ^
+   include/trace/trace_events.h:45:16: note: expanded from macro 'TRACE_EVENT'
+                                PARAMS(print));                   \
+                                ~~~~~~~^~~~~~~
+   include/linux/tracepoint.h:107:25: note: expanded from macro 'PARAMS'
+   #define PARAMS(args...) args
+                           ^~~~
+   include/trace/trace_events.h:203:27: note: expanded from macro 'DECLARE_EVENT_CLASS'
+           trace_event_printf(iter, print);                                \
+                                    ^~~~~
+   1 warning generated.
 
 
-On 11/6/23 12:17, Hunter Chasens wrote:
-> Resolves Sphinx unexpected indentation warning when compiling
-> documentation (e.g. `make htmldocs`). Replaces tabs with spaces and adds
-> a literal block to keep vertical formatting of the
-> example power state list.
-> 
-> Signed-off-by: Hunter Chasens <hunter.chasens18@ncf.edu>
+vim +94 drivers/block/null_blk/trace.h
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
-
-Thanks.
-
-> ---
->  drivers/gpu/drm/amd/pm/amdgpu_pm.c | 13 +++++++------
->  1 file changed, 7 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/amd/pm/amdgpu_pm.c b/drivers/gpu/drm/amd/pm/amdgpu_pm.c
-> index 517b9fb4624c..81b8ceb26890 100644
-> --- a/drivers/gpu/drm/amd/pm/amdgpu_pm.c
-> +++ b/drivers/gpu/drm/amd/pm/amdgpu_pm.c
-> @@ -989,12 +989,13 @@ static ssize_t amdgpu_get_pp_features(struct device *dev,
->   * Reading back the files will show you the available power levels within
->   * the power state and the clock information for those levels. If deep sleep is
->   * applied to a clock, the level will be denoted by a special level 'S:'
-> - * E.g.,
-> - *	S: 19Mhz *
-> - *	0: 615Mhz
-> - *	1: 800Mhz
-> - *	2: 888Mhz
-> - *	3: 1000Mhz
-> + * E.g.::
-> + *
-> + *  S: 19Mhz *
-> + *  0: 615Mhz
-> + *  1: 800Mhz
-> + *  2: 888Mhz
-> + *  3: 1000Mhz
->   *
->   *
->   * To manually adjust these states, first select manual using
+    72	
+    73	TRACE_EVENT(nullb_copy_op,
+    74			TP_PROTO(struct request *req,
+    75				 sector_t dst, sector_t src, size_t len),
+    76			TP_ARGS(req, dst, src, len),
+    77			TP_STRUCT__entry(
+    78					 __array(char, disk, DISK_NAME_LEN)
+    79					 __field(enum req_op, op)
+    80					 __field(sector_t, dst)
+    81					 __field(sector_t, src)
+    82					 __field(size_t, len)
+    83			),
+    84			TP_fast_assign(
+    85				       __entry->op = req_op(req);
+    86				       __assign_disk_name(__entry->disk, req->q->disk);
+    87				       __entry->dst = dst;
+    88				       __entry->src = src;
+    89				       __entry->len = len;
+    90			),
+    91			TP_printk("%s req=%-15s: dst=%llu, src=%llu, len=%lu",
+    92				  __print_disk_name(__entry->disk),
+    93				  blk_op_str(__entry->op),
+  > 94				  __entry->dst, __entry->src, __entry->len)
+    95	);
+    96	#endif /* _TRACE_NULLB_H */
+    97	
 
 -- 
-~Randy
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
