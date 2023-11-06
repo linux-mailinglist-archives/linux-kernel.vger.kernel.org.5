@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 657AA7E31D1
+	by mail.lfdr.de (Postfix) with ESMTP id BF9097E31D2
 	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 01:00:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233412AbjKGAAk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 19:00:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56026 "EHLO
+        id S233463AbjKGAAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 19:00:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232702AbjKGAAe (ORCPT
+        with ESMTP id S233324AbjKGAAf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 19:00:34 -0500
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59898BB
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 16:00:31 -0800 (PST)
-Received: by mail-pg1-x529.google.com with SMTP id 41be03b00d2f7-5bd6ac9833fso1170461a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 16:00:31 -0800 (PST)
+        Mon, 6 Nov 2023 19:00:35 -0500
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86D40125
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 16:00:32 -0800 (PST)
+Received: by mail-pg1-x52b.google.com with SMTP id 41be03b00d2f7-5bd099e3d3cso3203088a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 16:00:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1699315231; x=1699920031; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1699315232; x=1699920032; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=megi+idfKyZxANurxPNtnWd6V7EyY7HllNmpRhBdpws=;
-        b=Q+itk1AD7Pm7aEBCAnMDB8pgBZt1zrKPoygh3MsIPlcAC6twFZ3i5wDGy6cj6aZwVg
-         Zjb7dlmKJrpQ/qhyD0TA/Ynf5kVXlZiexhrClSYTyzlG12Dry5HC/1wgSj70lc5HlX6R
-         7+dds4kALQeQv2+ndRrS/7pF1oMVm3re06VBc=
+        bh=nExiIqIE5poHUcHshO31rcWQ0P0GIrJm7ZyDGwrfXOM=;
+        b=di7VKaUxngbg8IQhlM8x2RHuBEEsryoe0ZvybcK2NlieybH6aIAjnllIA6lHNZ386s
+         KP1AvoOrPrDe/A2UuThOMDr5JBF3+nnmxiR0sOObW0IVYaliNPQ7Kncb2FTeHkIJ0pAU
+         y4HsMW4qPYVMC/HnrkglFei1MI+fFSJXKx7Oo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699315231; x=1699920031;
+        d=1e100.net; s=20230601; t=1699315232; x=1699920032;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=megi+idfKyZxANurxPNtnWd6V7EyY7HllNmpRhBdpws=;
-        b=aFyalITV5noUtad05Gh11JKcWEshmbzZJ/UotGfcy40wSj3yPpxEysYKqdexLbQTuW
-         li3lTwJIyyFOJlsWxaul5khPpaeX3qyE4/c1xG28UonIp4Urjf2V3rGWlNDHaeEEDp76
-         UiDQMKQJseVAT4i46mRfi/RUwLCioWWdZcjqF1ChwKfw0m4SrQZ1znk0HBOcKEeylitf
-         G8TfNyaohQFNUkf28MaBRn08X0qR+u3YMR521q31Sg/Wk7uQMyVEo08s133gE05BlcW+
-         IeDS59AoHklEy4dbnlaVH1pekHjhdFwKwQtd+mduEXc/aPMVskFWbueCMjLrYqWi6O3t
-         T4bw==
-X-Gm-Message-State: AOJu0YxpRK/thyd70LF/gJ1eftVk0nXocpyF8p94GYDYsTPzHjyR2rSn
-        skFN+6POHXbFl3zOO1213zNyuA==
-X-Google-Smtp-Source: AGHT+IFjb8/kfNBWIgLvFxzHdKaj6HZ7P+zFauUuPVN1+9PJLIAa42QVHofPgEoB21n8GkYO8kHkxg==
-X-Received: by 2002:a05:6a21:4847:b0:181:ed8b:4823 with SMTP id au7-20020a056a21484700b00181ed8b4823mr9649364pzc.43.1699315230786;
-        Mon, 06 Nov 2023 16:00:30 -0800 (PST)
+        bh=nExiIqIE5poHUcHshO31rcWQ0P0GIrJm7ZyDGwrfXOM=;
+        b=pB8sgpokWEmoOpEXmA4k3bonl8nRGpzpL/iScXvvEiPsR4a8jtEtBnayikvDdYzRAK
+         qC0aCgzIvF+KA8P5mWzPQ0pdmHmMUxBRmUoNITnt4Sa1PhhIX+1F+RluAIbgHgbJT3+T
+         2by+XgP8EgFh6yShMFL7wwwmtX2BlTLHrbqAQhDvXDkqfaAsO1XGa6o/HOtaPbL4Su/U
+         ShXm0LEWRn0ZCOW8+sgUlY5+ThHUqjIfM9gMe1vGXXBL5RzVRtuxPTSimINTeNW6KJoo
+         uznx2kZOSXdWmTI2nahqbblNuq+7OkphbE3IcLInQAlOvxFjqCyXX+baSwfJu3kKRALw
+         3BAQ==
+X-Gm-Message-State: AOJu0YxxWfV3ZyvjNsPRY5hcxUAHTdIvcPcXH1HjlNRuY41ZvtDGj667
+        HQOloENw5H+6+xfxEu3UXxyOfQ==
+X-Google-Smtp-Source: AGHT+IEDI+F4nv8LumUbWgaMnQtyBRlapepeoM16qlRRchoskm3ATy8J93QF+XpsyblF3SlYraToXA==
+X-Received: by 2002:a17:90b:3746:b0:280:c85d:450 with SMTP id ne6-20020a17090b374600b00280c85d0450mr11795381pjb.44.1699315231923;
+        Mon, 06 Nov 2023 16:00:31 -0800 (PST)
 Received: from hsinyi.sjc.corp.google.com ([2620:15c:9d:2:586c:80a1:e007:beb9])
-        by smtp.gmail.com with ESMTPSA id fw11-20020a17090b128b00b00268b439a0cbsm5852866pjb.23.2023.11.06.16.00.29
+        by smtp.gmail.com with ESMTPSA id fw11-20020a17090b128b00b00268b439a0cbsm5852866pjb.23.2023.11.06.16.00.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Nov 2023 16:00:30 -0800 (PST)
+        Mon, 06 Nov 2023 16:00:31 -0800 (PST)
 From:   Hsin-Yi Wang <hsinyi@chromium.org>
 To:     Douglas Anderson <dianders@chromium.org>
 Cc:     Neil Armstrong <neil.armstrong@linaro.org>,
@@ -59,9 +59,9 @@ Cc:     Neil Armstrong <neil.armstrong@linaro.org>,
         Daniel Vetter <daniel@ffwll.ch>,
         dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
         stable@vger.kernel.org
-Subject: [PATCH v5 2/4] drm/panel-edp: drm/panel-edp: Add several generic edp panels
-Date:   Mon,  6 Nov 2023 15:51:33 -0800
-Message-ID: <20231107000023.2928195-3-hsinyi@chromium.org>
+Subject: [PATCH v5 3/4] drm/panel-edp: Add override_edid_mode quirk for generic edp
+Date:   Mon,  6 Nov 2023 15:51:34 -0800
+Message-ID: <20231107000023.2928195-4-hsinyi@chromium.org>
 X-Mailer: git-send-email 2.42.0.869.gea05f2083d-goog
 In-Reply-To: <20231107000023.2928195-1-hsinyi@chromium.org>
 References: <20231107000023.2928195-1-hsinyi@chromium.org>
@@ -77,123 +77,139 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a few generic edp panels used by mt8186 chromebooks.
+Generic edp gets mode from edid. However, some panels report incorrect
+mode in this way, resulting in glitches on panel. Introduce a new quirk
+additional_mode to the generic edid to pick a correct hardcoded mode.
 
 Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
 Reviewed-by: Douglas Anderson <dianders@chromium.org>
 ---
-v4->v5: seperate fixes patch
+v4->v5: fix coding style comments from v4.
 ---
- drivers/gpu/drm/panel/panel-edp.c | 51 +++++++++++++++++++++++++++++++
- 1 file changed, 51 insertions(+)
+ drivers/gpu/drm/panel/panel-edp.c | 67 ++++++++++++++++++++++++++++---
+ 1 file changed, 62 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/gpu/drm/panel/panel-edp.c b/drivers/gpu/drm/panel/panel-edp.c
-index d41d205f7f5b..599a949d74d1 100644
+index 599a949d74d1..c0c24d94c3a0 100644
 --- a/drivers/gpu/drm/panel/panel-edp.c
 +++ b/drivers/gpu/drm/panel/panel-edp.c
-@@ -1832,6 +1832,12 @@ static const struct panel_delay delay_200_500_e50 = {
- 	.enable = 50,
+@@ -203,6 +203,9 @@ struct edp_panel_entry {
+ 
+ 	/** @name: Name of this panel (for printing to logs). */
+ 	const char *name;
++
++	/** @override_edid_mode: Override the mode obtained by edid. */
++	const struct drm_display_mode *override_edid_mode;
  };
  
-+static const struct panel_delay delay_200_500_e80 = {
-+	.hpd_absent = 200,
-+	.unprepare = 500,
-+	.enable = 80,
-+};
+ struct panel_edp {
+@@ -301,6 +304,24 @@ static unsigned int panel_edp_get_display_modes(struct panel_edp *panel,
+ 	return num;
+ }
+ 
++static int panel_edp_override_edid_mode(struct panel_edp *panel,
++					struct drm_connector *connector,
++					const struct drm_display_mode *override_mode)
++{
++	struct drm_display_mode *mode;
 +
- static const struct panel_delay delay_200_500_e80_d50 = {
- 	.hpd_absent = 200,
- 	.unprepare = 500,
-@@ -1851,6 +1857,19 @@ static const struct panel_delay delay_200_500_e200 = {
- 	.enable = 200,
++	mode = drm_mode_duplicate(connector->dev, override_mode);
++	if (!mode) {
++		dev_err(panel->base.dev, "failed to add additional mode\n");
++		return 0;
++	}
++
++	mode->type |= DRM_MODE_TYPE_DRIVER | DRM_MODE_TYPE_PREFERRED;
++	drm_mode_set_name(mode);
++	drm_mode_probed_add(connector, mode);
++	return 1;
++}
++
+ static int panel_edp_get_non_edid_modes(struct panel_edp *panel,
+ 					struct drm_connector *connector)
+ {
+@@ -568,6 +589,9 @@ static int panel_edp_get_modes(struct drm_panel *panel,
+ {
+ 	struct panel_edp *p = to_panel_edp(panel);
+ 	int num = 0;
++	bool has_override_edid_mode = p->detected_panel &&
++				      p->detected_panel != ERR_PTR(-EINVAL) &&
++				      p->detected_panel->override_edid_mode;
+ 
+ 	/* probe EDID if a DDC bus is available */
+ 	if (p->ddc) {
+@@ -575,9 +599,18 @@ static int panel_edp_get_modes(struct drm_panel *panel,
+ 
+ 		if (!p->edid)
+ 			p->edid = drm_get_edid(connector, p->ddc);
+-
+-		if (p->edid)
+-			num += drm_add_edid_modes(connector, p->edid);
++		if (p->edid) {
++			if (has_override_edid_mode) {
++				/*
++				 * override_edid_mode is specified. Use
++				 * override_edid_mode instead of from edid.
++				 */
++				num += panel_edp_override_edid_mode(p, connector,
++						p->detected_panel->override_edid_mode);
++			} else {
++				num += drm_add_edid_modes(connector, p->edid);
++			}
++		}
+ 
+ 		pm_runtime_mark_last_busy(panel->dev);
+ 		pm_runtime_put_autosuspend(panel->dev);
+@@ -950,6 +983,19 @@ static const struct panel_desc auo_b101ean01 = {
+ 	},
  };
  
-+static const struct panel_delay delay_200_500_e200_d10 = {
-+	.hpd_absent = 200,
-+	.unprepare = 500,
-+	.enable = 200,
-+	.disable = 10,
++static const struct drm_display_mode auo_b116xa3_mode = {
++	.clock = 70589,
++	.hdisplay = 1366,
++	.hsync_start = 1366 + 40,
++	.hsync_end = 1366 + 40 + 40,
++	.htotal = 1366 + 40 + 40 + 32,
++	.vdisplay = 768,
++	.vsync_start = 768 + 10,
++	.vsync_end = 768 + 10 + 12,
++	.vtotal = 768 + 10 + 12 + 6,
++	.flags = DRM_MODE_FLAG_NVSYNC | DRM_MODE_FLAG_NHSYNC,
 +};
 +
-+static const struct panel_delay delay_200_150_e200 = {
-+	.hpd_absent = 200,
-+	.unprepare = 150,
-+	.enable = 200,
-+};
+ static const struct drm_display_mode auo_b116xak01_mode = {
+ 	.clock = 69300,
+ 	.hdisplay = 1366,
+@@ -1878,6 +1924,15 @@ static const struct panel_delay delay_200_150_e200 = {
+ 	.delay = _delay \
+ }
+ 
++#define EDP_PANEL_ENTRY2(vend_chr_0, vend_chr_1, vend_chr_2, product_id, _delay, _name, _mode) \
++{ \
++	.name = _name, \
++	.panel_id = drm_edid_encode_panel_id(vend_chr_0, vend_chr_1, vend_chr_2, \
++					     product_id), \
++	.delay = _delay, \
++	.override_edid_mode = _mode \
++}
 +
- #define EDP_PANEL_ENTRY(vend_chr_0, vend_chr_1, vend_chr_2, product_id, _delay, _name) \
- { \
- 	.name = _name, \
-@@ -1871,37 +1890,69 @@ static const struct edp_panel_entry edp_panels[] = {
- 	EDP_PANEL_ENTRY('A', 'U', 'O', 0x145c, &delay_200_500_e50, "B116XAB01.4"),
- 	EDP_PANEL_ENTRY('A', 'U', 'O', 0x1e9b, &delay_200_500_e50, "B133UAN02.1"),
- 	EDP_PANEL_ENTRY('A', 'U', 'O', 0x1ea5, &delay_200_500_e50, "B116XAK01.6"),
-+	EDP_PANEL_ENTRY('A', 'U', 'O', 0x208d, &delay_200_500_e50, "B140HTN02.1"),
- 	EDP_PANEL_ENTRY('A', 'U', 'O', 0x235c, &delay_200_500_e50, "B116XTN02.3"),
-+	EDP_PANEL_ENTRY('A', 'U', 'O', 0x239b, &delay_200_500_e50, "B116XAN06.1"),
-+	EDP_PANEL_ENTRY('A', 'U', 'O', 0x255c, &delay_200_500_e50, "B116XTN02.5"),
-+	EDP_PANEL_ENTRY('A', 'U', 'O', 0x403d, &delay_200_500_e50, "B140HAN04.0"),
- 	EDP_PANEL_ENTRY('A', 'U', 'O', 0x405c, &auo_b116xak01.delay, "B116XAK01.0"),
+ /*
+  * This table is used to figure out power sequencing delays for panels that
+  * are detected by EDID. Entries here may point to entries in the
+@@ -1895,9 +1950,11 @@ static const struct edp_panel_entry edp_panels[] = {
+ 	EDP_PANEL_ENTRY('A', 'U', 'O', 0x239b, &delay_200_500_e50, "B116XAN06.1"),
+ 	EDP_PANEL_ENTRY('A', 'U', 'O', 0x255c, &delay_200_500_e50, "B116XTN02.5"),
+ 	EDP_PANEL_ENTRY('A', 'U', 'O', 0x403d, &delay_200_500_e50, "B140HAN04.0"),
+-	EDP_PANEL_ENTRY('A', 'U', 'O', 0x405c, &auo_b116xak01.delay, "B116XAK01.0"),
++	EDP_PANEL_ENTRY2('A', 'U', 'O', 0x405c, &auo_b116xak01.delay, "B116XAK01.0",
++			 &auo_b116xa3_mode),
  	EDP_PANEL_ENTRY('A', 'U', 'O', 0x582d, &delay_200_500_e50, "B133UAN01.0"),
- 	EDP_PANEL_ENTRY('A', 'U', 'O', 0x615c, &delay_200_500_e50, "B116XAN06.1"),
-+	EDP_PANEL_ENTRY('A', 'U', 'O', 0x635c, &delay_200_500_e50, "B116XAN06.3"),
-+	EDP_PANEL_ENTRY('A', 'U', 'O', 0x639c, &delay_200_500_e50, "B140HAK02.7"),
+-	EDP_PANEL_ENTRY('A', 'U', 'O', 0x615c, &delay_200_500_e50, "B116XAN06.1"),
++	EDP_PANEL_ENTRY2('A', 'U', 'O', 0x615c, &delay_200_500_e50, "B116XAN06.1",
++			 &auo_b116xa3_mode),
+ 	EDP_PANEL_ENTRY('A', 'U', 'O', 0x635c, &delay_200_500_e50, "B116XAN06.3"),
+ 	EDP_PANEL_ENTRY('A', 'U', 'O', 0x639c, &delay_200_500_e50, "B140HAK02.7"),
  	EDP_PANEL_ENTRY('A', 'U', 'O', 0x8594, &delay_200_500_e50, "B133UAN01.0"),
-+	EDP_PANEL_ENTRY('A', 'U', 'O', 0xf390, &delay_200_500_e50, "B140XTN07.7"),
- 
-+	EDP_PANEL_ENTRY('B', 'O', 'E', 0x0715, &delay_200_150_e200, "NT116WHM-N21"),
-+	EDP_PANEL_ENTRY('B', 'O', 'E', 0x0731, &delay_200_500_e80, "NT116WHM-N42"),
-+	EDP_PANEL_ENTRY('B', 'O', 'E', 0x0741, &delay_200_500_e200, "NT116WHM-N44"),
- 	EDP_PANEL_ENTRY('B', 'O', 'E', 0x0786, &delay_200_500_p2e80, "NV116WHM-T01"),
- 	EDP_PANEL_ENTRY('B', 'O', 'E', 0x07d1, &boe_nv133fhm_n61.delay, "NV133FHM-N61"),
-+	EDP_PANEL_ENTRY('B', 'O', 'E', 0x07f6, &delay_200_500_e200, "NT140FHM-N44"),
- 	EDP_PANEL_ENTRY('B', 'O', 'E', 0x082d, &boe_nv133fhm_n61.delay, "NV133FHM-N62"),
-+	EDP_PANEL_ENTRY('B', 'O', 'E', 0x08b2, &delay_200_500_e200, "NT140WHM-N49"),
- 	EDP_PANEL_ENTRY('B', 'O', 'E', 0x09c3, &delay_200_500_e50, "NT116WHM-N21,836X2"),
- 	EDP_PANEL_ENTRY('B', 'O', 'E', 0x094b, &delay_200_500_e50, "NT116WHM-N21"),
-+	EDP_PANEL_ENTRY('B', 'O', 'E', 0x0951, &delay_200_500_e80, "NV116WHM-N47"),
- 	EDP_PANEL_ENTRY('B', 'O', 'E', 0x095f, &delay_200_500_e50, "NE135FBM-N41 v8.1"),
- 	EDP_PANEL_ENTRY('B', 'O', 'E', 0x0979, &delay_200_500_e50, "NV116WHM-N49 V8.0"),
- 	EDP_PANEL_ENTRY('B', 'O', 'E', 0x098d, &boe_nv110wtm_n61.delay, "NV110WTM-N61"),
-+	EDP_PANEL_ENTRY('B', 'O', 'E', 0x09ae, &delay_200_500_e200, "NT140FHM-N45"),
- 	EDP_PANEL_ENTRY('B', 'O', 'E', 0x09dd, &delay_200_500_e50, "NT116WHM-N21"),
- 	EDP_PANEL_ENTRY('B', 'O', 'E', 0x0a5d, &delay_200_500_e50, "NV116WHM-N45"),
- 	EDP_PANEL_ENTRY('B', 'O', 'E', 0x0ac5, &delay_200_500_e50, "NV116WHM-N4C"),
-+	EDP_PANEL_ENTRY('B', 'O', 'E', 0x0b43, &delay_200_500_e200, "NV140FHM-T09"),
-+	EDP_PANEL_ENTRY('B', 'O', 'E', 0x0b56, &delay_200_500_e80, "NT140FHM-N47"),
-+	EDP_PANEL_ENTRY('B', 'O', 'E', 0x0c20, &delay_200_500_e80, "NT140FHM-N47"),
- 
-+	EDP_PANEL_ENTRY('C', 'M', 'N', 0x1132, &delay_200_500_e80_d50, "N116BGE-EA2"),
-+	EDP_PANEL_ENTRY('C', 'M', 'N', 0x1138, &innolux_n116bca_ea1.delay, "N116BCA-EA1-RC4"),
- 	EDP_PANEL_ENTRY('C', 'M', 'N', 0x1139, &delay_200_500_e80_d50, "N116BGE-EA2"),
-+	EDP_PANEL_ENTRY('C', 'M', 'N', 0x1145, &delay_200_500_e80_d50, "N116BCN-EB1"),
- 	EDP_PANEL_ENTRY('C', 'M', 'N', 0x114c, &innolux_n116bca_ea1.delay, "N116BCA-EA1"),
- 	EDP_PANEL_ENTRY('C', 'M', 'N', 0x1152, &delay_200_500_e80_d50, "N116BCN-EA1"),
- 	EDP_PANEL_ENTRY('C', 'M', 'N', 0x1153, &delay_200_500_e80_d50, "N116BGE-EA2"),
- 	EDP_PANEL_ENTRY('C', 'M', 'N', 0x1154, &delay_200_500_e80_d50, "N116BCA-EA2"),
-+	EDP_PANEL_ENTRY('C', 'M', 'N', 0x1157, &delay_200_500_e80_d50, "N116BGE-EA2"),
-+	EDP_PANEL_ENTRY('C', 'M', 'N', 0x115b, &delay_200_500_e80_d50, "N116BCN-EB1"),
- 	EDP_PANEL_ENTRY('C', 'M', 'N', 0x1247, &delay_200_500_e80_d50, "N120ACA-EA1"),
-+	EDP_PANEL_ENTRY('C', 'M', 'N', 0x142b, &delay_200_500_e80_d50, "N140HCA-EAC"),
-+	EDP_PANEL_ENTRY('C', 'M', 'N', 0x144f, &delay_200_500_e80_d50, "N140HGA-EA1"),
-+	EDP_PANEL_ENTRY('C', 'M', 'N', 0x1468, &delay_200_500_e80, "N140HGA-EA1"),
-+	EDP_PANEL_ENTRY('C', 'M', 'N', 0x14e5, &delay_200_500_e80_d50, "N140HGA-EA1"),
- 	EDP_PANEL_ENTRY('C', 'M', 'N', 0x14d4, &delay_200_500_e80_d50, "N140HCA-EAC"),
-+	EDP_PANEL_ENTRY('C', 'M', 'N', 0x14d6, &delay_200_500_e80_d50, "N140BGA-EA4"),
-+
-+	EDP_PANEL_ENTRY('H', 'K', 'C', 0x2d5c, &delay_200_500_e200, "MB116AN01-2"),
- 
-+	EDP_PANEL_ENTRY('I', 'V', 'O', 0x048e, &delay_200_500_e200_d10, "M116NWR6 R5"),
- 	EDP_PANEL_ENTRY('I', 'V', 'O', 0x057d, &delay_200_500_e200, "R140NWF5 RH"),
- 	EDP_PANEL_ENTRY('I', 'V', 'O', 0x854a, &delay_200_500_p2e100, "M133NW4J"),
- 	EDP_PANEL_ENTRY('I', 'V', 'O', 0x854b, &delay_200_500_p2e100, "R133NW4K-R0"),
-+	EDP_PANEL_ENTRY('I', 'V', 'O', 0x8c4d, &delay_200_150_e200, "R140NWFM R1"),
- 
- 	EDP_PANEL_ENTRY('K', 'D', 'B', 0x0624, &kingdisplay_kd116n21_30nv_a010.delay, "116N21-30NV-A010"),
-+	EDP_PANEL_ENTRY('K', 'D', 'C', 0x0809, &delay_200_500_e50, "KD116N2930A15"),
- 	EDP_PANEL_ENTRY('K', 'D', 'B', 0x1120, &delay_200_500_e80_d50, "116N29-30NK-C007"),
- 
- 	EDP_PANEL_ENTRY('S', 'H', 'P', 0x1511, &delay_200_500_e50, "LQ140M1JW48"),
 -- 
 2.42.0.869.gea05f2083d-goog
 
