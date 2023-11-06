@@ -2,138 +2,291 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 026E77E1C9B
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 09:47:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4426A7E1C9C
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 09:47:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231273AbjKFIrl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 03:47:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60742 "EHLO
+        id S231299AbjKFIry (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 03:47:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231220AbjKFIrj (ORCPT
+        with ESMTP id S231285AbjKFIrw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 03:47:39 -0500
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1C00C9
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 00:47:36 -0800 (PST)
-Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-40837124e1cso83655e9.0
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 00:47:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1699260455; x=1699865255; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nSdh9aVbvYJU/GlJs9OpXtR3as1eL/wmBH+XlHFyTXE=;
-        b=dy62QEtqpJVO2ztNFZX4EAFPPHWQa3/P+9cwiDUdhDyPizttWHGQ9MzRD67V/NMhv8
-         0g/AQda9YUva8f3WXjwS3Smd3sbWSeOHADxIo1QbFP4Kaq+hb76lLdl8LYiM6r4vaeWe
-         Xiig033d2KC8h/sz+t9fUmudF3bsLEy8rTny8k1iscauI8zyUa3T64nEVMHv8VtUcwsQ
-         Z9kHOgafbq60CQvbBBigMaploeWsBrg8fp4YBeov1+5g13q+RqTnlmxtFiTSrQ5JpklS
-         hCpj4C2tqhwGbH9JYM+GJnN6Y8cEoRqTNtbvI/QZcmEqbGreguQVJ9GFLmPOLBD9ZKea
-         RwMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699260455; x=1699865255;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nSdh9aVbvYJU/GlJs9OpXtR3as1eL/wmBH+XlHFyTXE=;
-        b=ZVmJNhU6nlCgkcZZIsLGHrAhGeliXiGiUS/Vx+gbRI4zUJ+b2wTeHWjpRr3U0koKkZ
-         HhXdMIlXO/CBgO0O5/clfq97l7KY/FoyNSqegdH7RWqyVwd8UkvtNSBaRTOsabn1qDCE
-         gPmlSMpGz6ZLauyW0W/F5I2QPgFiToruAdh03J0JKZemyuWIbjOSvO5D1d/yLAmLbJ4J
-         jTd15Miyrqa5h8YzWYNKgSpO4mbORpmoq3IdFISOzD66zt+nFo0qqGDo2mRFFx4rlx3y
-         KUH2fYFWjlqbZGJL/IOjGX7ypf4qjz3e+oxIkfLcaTfQpa467pPt8pk4PYSnjHOMT3WT
-         SelA==
-X-Gm-Message-State: AOJu0YxsToAOH74/uT4ZKlyOqq5jHSOTMiU/GHVO3ddvrwiWTLZVrd79
-        cRUx1W743C4GI4fyOFRsrkmxiFizEWKzA4U+6Eyu
-X-Google-Smtp-Source: AGHT+IFjXQo0PLW9gw8Q2YKPL+L1TqM4JvXj1Ok6lDJPEm3xegSNCTzZfYeZeWcdkpno4hNdNMtanwweUdv6h/AUNC8=
-X-Received: by 2002:a05:600c:3b06:b0:400:c6de:6a20 with SMTP id
- m6-20020a05600c3b0600b00400c6de6a20mr94311wms.3.1699260455014; Mon, 06 Nov
- 2023 00:47:35 -0800 (PST)
+        Mon, 6 Nov 2023 03:47:52 -0500
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 14E74EA
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 00:47:47 -0800 (PST)
+Received: from loongson.cn (unknown [112.22.233.25])
+        by gateway (Coremail) with SMTP id _____8DxBfEyqEhlmEQ3AA--.43271S3;
+        Mon, 06 Nov 2023 16:47:46 +0800 (CST)
+Received: from localhost.localdomain (unknown [112.22.233.25])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8BxE+QtqEhl0y86AA--.62988S2;
+        Mon, 06 Nov 2023 16:47:44 +0800 (CST)
+From:   WANG Rui <wangrui@loongson.cn>
+To:     Huacai Chen <chenhuacai@kernel.org>, Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     WANG Xuerui <kernel@xen0n.name>, Boqun Feng <boqun.feng@gmail.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        linux-kernel@vger.kernel.org, loongarch@lists.linux.dev,
+        loongson-kernel@lists.loongnix.cn, WANG Rui <wangrui@loongson.cn>
+Subject: [PATCH] LoongArch: Relax memory ordering for atomic operations
+Date:   Mon,  6 Nov 2023 16:47:34 +0800
+Message-ID: <20231106084734.203243-1-wangrui@loongson.cn>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-References: <20231104204334.work.160-kees@kernel.org>
-In-Reply-To: <20231104204334.work.160-kees@kernel.org>
-From:   Bill Wendling <morbo@google.com>
-Date:   Mon, 6 Nov 2023 00:47:16 -0800
-Message-ID: <CAGG=3QWX0Koj3xNHiRHdiYupy4bFsJ6nNWWcCJkqbu8-GnmfZA@mail.gmail.com>
-Subject: Re: [PATCH] gcc-plugins: randstruct: Only warn about true flexible arrays
-To:     Kees Cook <keescook@chromium.org>
-Cc:     KP Singh <kpsingh@kernel.org>, linux-hardening@vger.kernel.org,
-        kernel test robot <lkp@intel.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf8BxE+QtqEhl0y86AA--.62988S2
+X-CM-SenderInfo: pzdqw2txl6z05rqj20fqof0/
+X-Coremail-Antispam: 1Uk129KBj93XoW3Xry8XrW3Cr1xZF4UWr1fZrc_yoWDJFWfp3
+        y09F98tF45Xay5G3yvyan8W345Jr1YvryqqryYyr9ruFy2kwnxJ3W8XF1vvr1Utw48Ka1r
+        Gr4jkayUWFn2vwcCm3ZEXasCq-sJn29KB7ZKAUJUUUUr529EdanIXcx71UUUUU7KY7ZEXa
+        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+        0xBIdaVrnRJUUU9Yb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+        IYs7xG6rWj6s0DM7CIcVAFz4kK6r106r15M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+        0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
+        xVW8Jr0_Cr1UM2kKe7AKxVWUXVWUAwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07
+        AIYIkI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWU
+        XVWUAwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7V
+        AKI48JMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMxCIbckI1I0E14v2
+        6r1Y6r17MI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17
+        CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF
+        0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIx
+        AIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIev
+        Ja73UjIFyTuYvjxU2G-eUUUUU
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 4, 2023 at 1:43=E2=80=AFPM Kees Cook <keescook@chromium.org> wr=
-ote:
->
-> The randstruct GCC plugin tried to discover "fake" flexible arrays
-> to issue warnings about them in randomized structs. In the future
-> LSM overhead reduction series, it would be legal to have a randomized
-> struct with a 1-element array, and this should _not_ be treated as a
-> flexible array, especially since commit df8fc4e934c1 ("kbuild: Enable
-> -fstrict-flex-arrays=3D3"). Disable the 0-sized and 1-element array
-> discovery logic in the plugin, but keep the "true" flexible array check.
->
-> Cc: KP Singh <kpsingh@kernel.org>
-> Cc: linux-hardening@vger.kernel.org
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202311021532.iBwuZUZ0-lkp@i=
-ntel.com/
-> Fixes: df8fc4e934c1 ("kbuild: Enable -fstrict-flex-arrays=3D3")
-> Signed-off-by: Kees Cook <keescook@chromium.org>
+This patch relaxes the implementation while satisfying the memory ordering
+requirements for atomic operations, which will help improve performance on
+LA664+.
 
-Reviewed-by: Bill Wendling <morbo@google.com>
+Unixbench with full threads (8)
+                                           before       after
+  Dhrystone 2 using register variables   203910714.2  203909539.8   0.00%
+  Double-Precision Whetstone                 37930.9        37931   0.00%
+  Execl Throughput                           29431.5      29545.8   0.39%
+  File Copy 1024 bufsize 2000 maxblocks    6645759.5      6676320   0.46%
+  File Copy 256 bufsize 500 maxblocks      2138772.4    2144182.4   0.25%
+  File Copy 4096 bufsize 8000 maxblocks   11640698.4     11602703  -0.33%
+  Pipe Throughput                          8849077.7    8917009.4   0.77%
+  Pipe-based Context Switching             1255108.5    1287277.3   2.56%
+  Process Creation                           50825.9      50442.1  -0.76%
+  Shell Scripts (1 concurrent)               25795.8      25942.3   0.57%
+  Shell Scripts (8 concurrent)                3812.6       3835.2   0.59%
+  System Call Overhead                     9248212.6    9353348.6   1.14%
+                                                                  =======
+  System Benchmarks Index Score               8076.6       8114.4   0.47%
 
-> ---
->  scripts/gcc-plugins/randomize_layout_plugin.c | 10 ----------
->  1 file changed, 10 deletions(-)
->
-> diff --git a/scripts/gcc-plugins/randomize_layout_plugin.c b/scripts/gcc-=
-plugins/randomize_layout_plugin.c
-> index 366395cab490..910bd21d08f4 100644
-> --- a/scripts/gcc-plugins/randomize_layout_plugin.c
-> +++ b/scripts/gcc-plugins/randomize_layout_plugin.c
-> @@ -278,8 +278,6 @@ static bool is_flexible_array(const_tree field)
->  {
->         const_tree fieldtype;
->         const_tree typesize;
-> -       const_tree elemtype;
-> -       const_tree elemsize;
->
->         fieldtype =3D TREE_TYPE(field);
->         typesize =3D TYPE_SIZE(fieldtype);
-> @@ -287,20 +285,12 @@ static bool is_flexible_array(const_tree field)
->         if (TREE_CODE(fieldtype) !=3D ARRAY_TYPE)
->                 return false;
->
-> -       elemtype =3D TREE_TYPE(fieldtype);
-> -       elemsize =3D TYPE_SIZE(elemtype);
-> -
->         /* size of type is represented in bits */
->
->         if (typesize =3D=3D NULL_TREE && TYPE_DOMAIN(fieldtype) !=3D NULL=
-_TREE &&
->             TYPE_MAX_VALUE(TYPE_DOMAIN(fieldtype)) =3D=3D NULL_TREE)
->                 return true;
->
-> -       if (typesize !=3D NULL_TREE &&
-> -           (TREE_CONSTANT(typesize) && (!tree_to_uhwi(typesize) ||
-> -            tree_to_uhwi(typesize) =3D=3D tree_to_uhwi(elemsize))))
-> -               return true;
-> -
->         return false;
->  }
->
-> --
-> 2.34.1
->
->
+Signed-off-by: WANG Rui <wangrui@loongson.cn>
+---
+ arch/loongarch/include/asm/atomic.h | 88 ++++++++++++++++++++++-------
+ 1 file changed, 68 insertions(+), 20 deletions(-)
+
+diff --git a/arch/loongarch/include/asm/atomic.h b/arch/loongarch/include/asm/atomic.h
+index e27f0c72d324..99af8b3160a8 100644
+--- a/arch/loongarch/include/asm/atomic.h
++++ b/arch/loongarch/include/asm/atomic.h
+@@ -36,19 +36,19 @@
+ static inline void arch_atomic_##op(int i, atomic_t *v)			\
+ {									\
+ 	__asm__ __volatile__(						\
+-	"am"#asm_op"_db.w" " $zero, %1, %0	\n"			\
++	"am"#asm_op".w" " $zero, %1, %0	\n"				\
+ 	: "+ZB" (v->counter)						\
+ 	: "r" (I)							\
+ 	: "memory");							\
+ }
+ 
+-#define ATOMIC_OP_RETURN(op, I, asm_op, c_op)				\
+-static inline int arch_atomic_##op##_return_relaxed(int i, atomic_t *v)	\
++#define ATOMIC_OP_RETURN(op, I, asm_op, c_op, mb, suffix)		\
++static inline int arch_atomic_##op##_return##suffix(int i, atomic_t *v)	\
+ {									\
+ 	int result;							\
+ 									\
+ 	__asm__ __volatile__(						\
+-	"am"#asm_op"_db.w" " %1, %2, %0		\n"			\
++	"am"#asm_op#mb".w" " %1, %2, %0		\n"			\
+ 	: "+ZB" (v->counter), "=&r" (result)				\
+ 	: "r" (I)							\
+ 	: "memory");							\
+@@ -56,13 +56,13 @@ static inline int arch_atomic_##op##_return_relaxed(int i, atomic_t *v)	\
+ 	return result c_op I;						\
+ }
+ 
+-#define ATOMIC_FETCH_OP(op, I, asm_op)					\
+-static inline int arch_atomic_fetch_##op##_relaxed(int i, atomic_t *v)	\
++#define ATOMIC_FETCH_OP(op, I, asm_op, mb, suffix)			\
++static inline int arch_atomic_fetch_##op##suffix(int i, atomic_t *v)	\
+ {									\
+ 	int result;							\
+ 									\
+ 	__asm__ __volatile__(						\
+-	"am"#asm_op"_db.w" " %1, %2, %0		\n"			\
++	"am"#asm_op#mb".w" " %1, %2, %0		\n"			\
+ 	: "+ZB" (v->counter), "=&r" (result)				\
+ 	: "r" (I)							\
+ 	: "memory");							\
+@@ -72,29 +72,53 @@ static inline int arch_atomic_fetch_##op##_relaxed(int i, atomic_t *v)	\
+ 
+ #define ATOMIC_OPS(op, I, asm_op, c_op)					\
+ 	ATOMIC_OP(op, I, asm_op)					\
+-	ATOMIC_OP_RETURN(op, I, asm_op, c_op)				\
+-	ATOMIC_FETCH_OP(op, I, asm_op)
++	ATOMIC_OP_RETURN(op, I, asm_op, c_op, _db,         )		\
++	ATOMIC_OP_RETURN(op, I, asm_op, c_op,    , _relaxed)		\
++	ATOMIC_FETCH_OP(op, I, asm_op, _db,         )			\
++	ATOMIC_FETCH_OP(op, I, asm_op,    , _relaxed)
+ 
+ ATOMIC_OPS(add, i, add, +)
+ ATOMIC_OPS(sub, -i, add, +)
+ 
++#define arch_atomic_add_return		arch_atomic_add_return
++#define arch_atomic_add_return_acquire	arch_atomic_add_return
++#define arch_atomic_add_return_release	arch_atomic_add_return
+ #define arch_atomic_add_return_relaxed	arch_atomic_add_return_relaxed
++#define arch_atomic_sub_return		arch_atomic_sub_return
++#define arch_atomic_sub_return_acquire	arch_atomic_sub_return
++#define arch_atomic_sub_return_release	arch_atomic_sub_return
+ #define arch_atomic_sub_return_relaxed	arch_atomic_sub_return_relaxed
++#define arch_atomic_fetch_add		arch_atomic_fetch_add
++#define arch_atomic_fetch_add_acquire	arch_atomic_fetch_add
++#define arch_atomic_fetch_add_release	arch_atomic_fetch_add
+ #define arch_atomic_fetch_add_relaxed	arch_atomic_fetch_add_relaxed
++#define arch_atomic_fetch_sub		arch_atomic_fetch_sub
++#define arch_atomic_fetch_sub_acquire	arch_atomic_fetch_sub
++#define arch_atomic_fetch_sub_release	arch_atomic_fetch_sub
+ #define arch_atomic_fetch_sub_relaxed	arch_atomic_fetch_sub_relaxed
+ 
+ #undef ATOMIC_OPS
+ 
+ #define ATOMIC_OPS(op, I, asm_op)					\
+ 	ATOMIC_OP(op, I, asm_op)					\
+-	ATOMIC_FETCH_OP(op, I, asm_op)
++	ATOMIC_FETCH_OP(op, I, asm_op, _db,         )			\
++	ATOMIC_FETCH_OP(op, I, asm_op,    , _relaxed)
+ 
+ ATOMIC_OPS(and, i, and)
+ ATOMIC_OPS(or, i, or)
+ ATOMIC_OPS(xor, i, xor)
+ 
++#define arch_atomic_fetch_and		arch_atomic_fetch_and
++#define arch_atomic_fetch_and_acquire	arch_atomic_fetch_and
++#define arch_atomic_fetch_and_release	arch_atomic_fetch_and
+ #define arch_atomic_fetch_and_relaxed	arch_atomic_fetch_and_relaxed
++#define arch_atomic_fetch_or		arch_atomic_fetch_or
++#define arch_atomic_fetch_or_acquire	arch_atomic_fetch_or
++#define arch_atomic_fetch_or_release	arch_atomic_fetch_or
+ #define arch_atomic_fetch_or_relaxed	arch_atomic_fetch_or_relaxed
++#define arch_atomic_fetch_xor		arch_atomic_fetch_xor
++#define arch_atomic_fetch_xor_acquire	arch_atomic_fetch_xor
++#define arch_atomic_fetch_xor_release	arch_atomic_fetch_xor
+ #define arch_atomic_fetch_xor_relaxed	arch_atomic_fetch_xor_relaxed
+ 
+ #undef ATOMIC_OPS
+@@ -172,18 +196,18 @@ static inline int arch_atomic_sub_if_positive(int i, atomic_t *v)
+ static inline void arch_atomic64_##op(long i, atomic64_t *v)		\
+ {									\
+ 	__asm__ __volatile__(						\
+-	"am"#asm_op"_db.d " " $zero, %1, %0	\n"			\
++	"am"#asm_op".d " " $zero, %1, %0	\n"			\
+ 	: "+ZB" (v->counter)						\
+ 	: "r" (I)							\
+ 	: "memory");							\
+ }
+ 
+-#define ATOMIC64_OP_RETURN(op, I, asm_op, c_op)					\
+-static inline long arch_atomic64_##op##_return_relaxed(long i, atomic64_t *v)	\
++#define ATOMIC64_OP_RETURN(op, I, asm_op, c_op, mb, suffix)			\
++static inline long arch_atomic64_##op##_return##suffix(long i, atomic64_t *v)	\
+ {										\
+ 	long result;								\
+ 	__asm__ __volatile__(							\
+-	"am"#asm_op"_db.d " " %1, %2, %0		\n"			\
++	"am"#asm_op#mb".d " " %1, %2, %0		\n"			\
+ 	: "+ZB" (v->counter), "=&r" (result)					\
+ 	: "r" (I)								\
+ 	: "memory");								\
+@@ -191,13 +215,13 @@ static inline long arch_atomic64_##op##_return_relaxed(long i, atomic64_t *v)	\
+ 	return result c_op I;							\
+ }
+ 
+-#define ATOMIC64_FETCH_OP(op, I, asm_op)					\
+-static inline long arch_atomic64_fetch_##op##_relaxed(long i, atomic64_t *v)	\
++#define ATOMIC64_FETCH_OP(op, I, asm_op, mb, suffix)				\
++static inline long arch_atomic64_fetch_##op##suffix(long i, atomic64_t *v)	\
+ {										\
+ 	long result;								\
+ 										\
+ 	__asm__ __volatile__(							\
+-	"am"#asm_op"_db.d " " %1, %2, %0		\n"			\
++	"am"#asm_op#mb".d " " %1, %2, %0		\n"			\
+ 	: "+ZB" (v->counter), "=&r" (result)					\
+ 	: "r" (I)								\
+ 	: "memory");								\
+@@ -207,29 +231,53 @@ static inline long arch_atomic64_fetch_##op##_relaxed(long i, atomic64_t *v)	\
+ 
+ #define ATOMIC64_OPS(op, I, asm_op, c_op)				      \
+ 	ATOMIC64_OP(op, I, asm_op)					      \
+-	ATOMIC64_OP_RETURN(op, I, asm_op, c_op)				      \
+-	ATOMIC64_FETCH_OP(op, I, asm_op)
++	ATOMIC64_OP_RETURN(op, I, asm_op, c_op, _db,         )		      \
++	ATOMIC64_OP_RETURN(op, I, asm_op, c_op,    , _relaxed)		      \
++	ATOMIC64_FETCH_OP(op, I, asm_op, _db,         )			      \
++	ATOMIC64_FETCH_OP(op, I, asm_op,    , _relaxed)
+ 
+ ATOMIC64_OPS(add, i, add, +)
+ ATOMIC64_OPS(sub, -i, add, +)
+ 
++#define arch_atomic64_add_return		arch_atomic64_add_return
++#define arch_atomic64_add_return_acquire	arch_atomic64_add_return
++#define arch_atomic64_add_return_release	arch_atomic64_add_return
+ #define arch_atomic64_add_return_relaxed	arch_atomic64_add_return_relaxed
++#define arch_atomic64_sub_return		arch_atomic64_sub_return
++#define arch_atomic64_sub_return_acquire	arch_atomic64_sub_return
++#define arch_atomic64_sub_return_release	arch_atomic64_sub_return
+ #define arch_atomic64_sub_return_relaxed	arch_atomic64_sub_return_relaxed
++#define arch_atomic64_fetch_add			arch_atomic64_fetch_add
++#define arch_atomic64_fetch_add_acquire		arch_atomic64_fetch_add
++#define arch_atomic64_fetch_add_release		arch_atomic64_fetch_add
+ #define arch_atomic64_fetch_add_relaxed		arch_atomic64_fetch_add_relaxed
++#define arch_atomic64_fetch_sub			arch_atomic64_fetch_sub
++#define arch_atomic64_fetch_sub_acquire		arch_atomic64_fetch_sub
++#define arch_atomic64_fetch_sub_release		arch_atomic64_fetch_sub
+ #define arch_atomic64_fetch_sub_relaxed		arch_atomic64_fetch_sub_relaxed
+ 
+ #undef ATOMIC64_OPS
+ 
+ #define ATOMIC64_OPS(op, I, asm_op)					      \
+ 	ATOMIC64_OP(op, I, asm_op)					      \
+-	ATOMIC64_FETCH_OP(op, I, asm_op)
++	ATOMIC64_FETCH_OP(op, I, asm_op, _db,         )			      \
++	ATOMIC64_FETCH_OP(op, I, asm_op,    , _relaxed)
+ 
+ ATOMIC64_OPS(and, i, and)
+ ATOMIC64_OPS(or, i, or)
+ ATOMIC64_OPS(xor, i, xor)
+ 
++#define arch_atomic64_fetch_and		arch_atomic64_fetch_and
++#define arch_atomic64_fetch_and_acquire	arch_atomic64_fetch_and
++#define arch_atomic64_fetch_and_release	arch_atomic64_fetch_and
+ #define arch_atomic64_fetch_and_relaxed	arch_atomic64_fetch_and_relaxed
++#define arch_atomic64_fetch_or		arch_atomic64_fetch_or
++#define arch_atomic64_fetch_or_acquire	arch_atomic64_fetch_or
++#define arch_atomic64_fetch_or_release	arch_atomic64_fetch_or
+ #define arch_atomic64_fetch_or_relaxed	arch_atomic64_fetch_or_relaxed
++#define arch_atomic64_fetch_xor		arch_atomic64_fetch_xor
++#define arch_atomic64_fetch_xor_acquire	arch_atomic64_fetch_xor
++#define arch_atomic64_fetch_xor_release	arch_atomic64_fetch_xor
+ #define arch_atomic64_fetch_xor_relaxed	arch_atomic64_fetch_xor_relaxed
+ 
+ #undef ATOMIC64_OPS
+-- 
+2.42.1
+
