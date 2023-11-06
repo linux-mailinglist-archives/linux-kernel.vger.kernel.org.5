@@ -2,40 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D5DAB7E316A
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 00:29:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63EE67E3287
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 02:16:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233581AbjKFX3K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 18:29:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39222 "EHLO
+        id S233252AbjKGBP7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 20:15:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234128AbjKFX2w (ORCPT
+        with ESMTP id S234096AbjKFXXn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 18:28:52 -0500
+        Mon, 6 Nov 2023 18:23:43 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC0682D73;
-        Mon,  6 Nov 2023 15:27:24 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 07506C4160E;
-        Mon,  6 Nov 2023 23:17:33 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CECD49E7;
+        Mon,  6 Nov 2023 15:17:48 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8BF0DC4AF5C;
+        Mon,  6 Nov 2023 23:17:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699312660;
-        bh=msld/84X4aqUFuC0jwo2ErNVQ7VkjPnWj/vpPRAkuSk=;
+        s=k20201202; t=1699312664;
+        bh=f1TYSsmfZN1uXQb54j/YoWoG3GjgkbmfSGXfL6OgGpk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KIIP4vuIMGNi2K05q8PkFNCw1TkA1ifxWumOhT11b/luvJlKwPcP9M5tbOhn2HK9c
-         01iX3b5r11EXG1MNVR1bLW27gTiTBCuUiQjNgeIpSr032NJpKz+QAXRSwBxpZN3wdE
-         3/spubXjqv3nPSBX9ZVJ6+mCJ7TLs/FBekoCXoRTC6grIgQhOx2HRsrNRNV53GVFcv
-         0TZgrjREitEZ/MlLFWLBHC2eIcOBwlMlMDaqSIZO+GpNMMnxyGmeLsmF0ZWVdHUcl8
-         +SHEkr67Ggtuh31HrezvnG7EUgDje9CaGY+i2mV5hLAM0d9f4rDMZbER9IpuVVHk2Q
-         2/Gp4NpA9ObJQ==
+        b=N13FTOiGyfxS4+CR90syEwbJUEPtX1vTAkaDuSLQDvLBx1a/WYZiwTT0BHPC0rozn
+         XR4rDVho1xyXK+tVaUG8MvmwFKHjklkoEfaXzjBxDl/X7a+04xLt0E+UMZVJFYSsIg
+         fdx0FqLMQLpeL51vN0Q13FZP8dcBhv9Ees+NhI1wl+oG8Dlnnwn8e4YUo5VO0BFfhv
+         3HMmxZ5IK3O84CVKEFdEo0xHyw+W8FLwcXD9ExCW8xuKG2HEUWiIuvKpFFNPJ6RqZj
+         OKDYDy8N2w+Z5FgDk05vUcx60FPt140x2Rr1bKG/Bqpf831x4CN3Rk76hSVx2Dww9R
+         4QpEumQMT/bSA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Ronald Wahl <ronald.wahl@raritan.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Sasha Levin <sashal@kernel.org>, tglx@linutronix.de
-Subject: [PATCH AUTOSEL 4.14 3/4] clocksource/drivers/timer-atmel-tcb: Fix initialization on SAM9 hardware
-Date:   Mon,  6 Nov 2023 18:17:24 -0500
-Message-ID: <20231106231728.3736117-3-sashal@kernel.org>
+Cc:     "Mike Rapoport (IBM)" <rppt@kernel.org>,
+        Qi Zheng <zhengqi.arch@bytedance.com>,
+        Mario Casquero <mcasquer@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        David Hildenbrand <david@redhat.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Rik van Riel <riel@surriel.com>,
+        Sasha Levin <sashal@kernel.org>, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org, luto@kernel.org,
+        peterz@infradead.org
+Subject: [PATCH AUTOSEL 4.14 4/4] x86/mm: Drop the 4 MB restriction on minimal NUMA node memory size
+Date:   Mon,  6 Nov 2023 18:17:25 -0500
+Message-ID: <20231106231728.3736117-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231106231728.3736117-1-sashal@kernel.org>
 References: <20231106231728.3736117-1-sashal@kernel.org>
@@ -54,53 +61,110 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ronald Wahl <ronald.wahl@raritan.com>
+From: "Mike Rapoport (IBM)" <rppt@kernel.org>
 
-[ Upstream commit 6d3bc4c02d59996d1d3180d8ed409a9d7d5900e0 ]
+[ Upstream commit a1e2b8b36820d8c91275f207e77e91645b7c6836 ]
 
-On SAM9 hardware two cascaded 16 bit timers are used to form a 32 bit
-high resolution timer that is used as scheduler clock when the kernel
-has been configured that way (CONFIG_ATMEL_CLOCKSOURCE_TCB).
+Qi Zheng reported crashes in a production environment and provided a
+simplified example as a reproducer:
 
-The driver initially triggers a reset-to-zero of the two timers but this
-reset is only performed on the next rising clock. For the first timer
-this is ok - it will be in the next 60ns (16MHz clock). For the chained
-second timer this will only happen after the first timer overflows, i.e.
-after 2^16 clocks (~4ms with a 16MHz clock). So with other words the
-scheduler clock resets to 0 after the first 2^16 clock cycles.
+ |  For example, if we use Qemu to start a two NUMA node kernel,
+ |  one of the nodes has 2M memory (less than NODE_MIN_SIZE),
+ |  and the other node has 2G, then we will encounter the
+ |  following panic:
+ |
+ |    BUG: kernel NULL pointer dereference, address: 0000000000000000
+ |    <...>
+ |    RIP: 0010:_raw_spin_lock_irqsave+0x22/0x40
+ |    <...>
+ |    Call Trace:
+ |      <TASK>
+ |      deactivate_slab()
+ |      bootstrap()
+ |      kmem_cache_init()
+ |      start_kernel()
+ |      secondary_startup_64_no_verify()
 
-It looks like that the scheduler does not like this and behaves wrongly
-over its lifetime, e.g. some tasks are scheduled with a long delay. Why
-that is and if there are additional requirements for this behaviour has
-not been further analysed.
+The crashes happen because of inconsistency between the nodemask that
+has nodes with less than 4MB as memoryless, and the actual memory fed
+into the core mm.
 
-There is a simple fix for resetting the second timer as well when the
-first timer is reset and this is to set the ATMEL_TC_ASWTRG_SET bit in
-the Channel Mode register (CMR) of the first timer. This will also rise
-the TIOA line (clock input of the second timer) when a software trigger
-respective SYNC is issued.
+The commit:
 
-Signed-off-by: Ronald Wahl <ronald.wahl@raritan.com>
-Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-Link: https://lore.kernel.org/r/20231007161803.31342-1-rwahl@gmx.de
+  9391a3f9c7f1 ("[PATCH] x86_64: Clear more state when ignoring empty node in SRAT parsing")
+
+... that introduced minimal size of a NUMA node does not explain why
+a node size cannot be less than 4MB and what boot failures this
+restriction might fix.
+
+Fixes have been submitted to the core MM code to tighten up the
+memory topologies it accepts and to not crash on weird input:
+
+  mm: page_alloc: skip memoryless nodes entirely
+  mm: memory_hotplug: drop memoryless node from fallback lists
+
+Andrew has accepted them into the -mm tree, but there are no
+stable SHA1's yet.
+
+This patch drops the limitation for minimal node size on x86:
+
+  - which works around the crash without the fixes to the core MM.
+  - makes x86 topologies less weird,
+  - removes an arbitrary and undocumented limitation on NUMA topologies.
+
+[ mingo: Improved changelog clarity. ]
+
+Reported-by: Qi Zheng <zhengqi.arch@bytedance.com>
+Tested-by: Mario Casquero <mcasquer@redhat.com>
+Signed-off-by: Mike Rapoport (IBM) <rppt@kernel.org>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Acked-by: David Hildenbrand <david@redhat.com>
+Acked-by: Michal Hocko <mhocko@suse.com>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: Rik van Riel <riel@surriel.com>
+Link: https://lore.kernel.org/r/ZS+2qqjEO5/867br@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clocksource/tcb_clksrc.c | 1 +
- 1 file changed, 1 insertion(+)
+ arch/x86/include/asm/numa.h | 7 -------
+ arch/x86/mm/numa.c          | 7 -------
+ 2 files changed, 14 deletions(-)
 
-diff --git a/drivers/clocksource/tcb_clksrc.c b/drivers/clocksource/tcb_clksrc.c
-index 9de47d4d2d9ef..e489730331a23 100644
---- a/drivers/clocksource/tcb_clksrc.c
-+++ b/drivers/clocksource/tcb_clksrc.c
-@@ -294,6 +294,7 @@ static void __init tcb_setup_dual_chan(struct atmel_tc *tc, int mck_divisor_idx)
- 	writel(mck_divisor_idx			/* likely divide-by-8 */
- 			| ATMEL_TC_WAVE
- 			| ATMEL_TC_WAVESEL_UP		/* free-run */
-+			| ATMEL_TC_ASWTRG_SET		/* TIOA0 rises at software trigger */
- 			| ATMEL_TC_ACPA_SET		/* TIOA0 rises at 0 */
- 			| ATMEL_TC_ACPC_CLEAR,		/* (duty cycle 50%) */
- 			tcaddr + ATMEL_TC_REG(0, CMR));
+diff --git a/arch/x86/include/asm/numa.h b/arch/x86/include/asm/numa.h
+index bbfde3d2662f4..4bcd9d0c7bee7 100644
+--- a/arch/x86/include/asm/numa.h
++++ b/arch/x86/include/asm/numa.h
+@@ -11,13 +11,6 @@
+ 
+ #define NR_NODE_MEMBLKS		(MAX_NUMNODES*2)
+ 
+-/*
+- * Too small node sizes may confuse the VM badly. Usually they
+- * result from BIOS bugs. So dont recognize nodes as standalone
+- * NUMA entities that have less than this amount of RAM listed:
+- */
+-#define NODE_MIN_SIZE (4*1024*1024)
+-
+ extern int numa_off;
+ 
+ /*
+diff --git a/arch/x86/mm/numa.c b/arch/x86/mm/numa.c
+index 15661129794c0..53b733b2fba10 100644
+--- a/arch/x86/mm/numa.c
++++ b/arch/x86/mm/numa.c
+@@ -585,13 +585,6 @@ static int __init numa_register_memblks(struct numa_meminfo *mi)
+ 		if (start >= end)
+ 			continue;
+ 
+-		/*
+-		 * Don't confuse VM with a node that doesn't have the
+-		 * minimum amount of memory:
+-		 */
+-		if (end && (end - start) < NODE_MIN_SIZE)
+-			continue;
+-
+ 		alloc_node_data(nid);
+ 	}
+ 
 -- 
 2.42.0
 
