@@ -2,218 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 091E77E2ACC
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 18:17:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 105387E2ADD
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 18:22:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231685AbjKFRRp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 12:17:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47534 "EHLO
+        id S231555AbjKFRWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 12:22:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229715AbjKFRRo (ORCPT
+        with ESMTP id S229755AbjKFRWG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 12:17:44 -0500
-Received: from smtpout.efficios.com (unknown [IPv6:2607:5300:203:b2ee::31e5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADBA083
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 09:17:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-        s=smtpout1; t=1699291058;
-        bh=1Bm79slS+MhiQC1oY45zbKcFvD9MPaHvt0Pu2hSc8sM=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=SdQ+RVgHzdEIuddxBqmxT5/Hl3/CHdu0CX0W74LV/p5sw1GxTNnkBz07X4NCNO7Lm
-         sVr8cQHhx4uPOoqZ6cBl6l2pPz7F2+u1rcDgOEdL2p3iJuiqUndwEb6uruE6PzSo/f
-         qm8CvjMRrV6wk7bRkPXTRNJaIqpsACKrCOs+U/H4hKv3xxTsHUx4JpBHje1k+cUBzk
-         YZmV1qp8CLPPyPkVr9pW3jPnol8wRPF7EYJGskRlcAVZqbsDI2xlQP6TSupaHqgQsC
-         /Yvnazw0cWgvl4QICVbAjStdJ8VyR5cqIT9RxOgewKysgxJbtEhuAzs9vl/wsOQ0EV
-         tyUTUkawLjGNg==
-Received: from [172.16.0.134] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
-        by smtpout.efficios.com (Postfix) with ESMTPSA id 4SPJ2B2wXkz1b6c;
-        Mon,  6 Nov 2023 12:17:38 -0500 (EST)
-Message-ID: <b7f25858-ab0e-41aa-90a9-35d8348fc206@efficios.com>
-Date:   Mon, 6 Nov 2023 12:18:03 -0500
+        Mon, 6 Nov 2023 12:22:06 -0500
+Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDC4E1BC;
+        Mon,  6 Nov 2023 09:22:02 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1699291320; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=TbvFJH4XprGZfb2hvMmc5ctU8eEq21Oh5g6LOJJdkowBZupRkiv26u49ZCsj8DgBSq
+    lR76qWA/4/oNjZAyoYvTNiBKmwXDz+4uH76Qs/Q+Ar701gGHy+XZCjYwAv+DqqMsazyR
+    NGlC0OjUpb/BlMo85ojxyorVsLhFo2P3BlYSwOJzDXxMpp4dYycizQSQ5LUG9uMRHuH8
+    d4c+Jv3BliIGQcZITW/HxcUmao37YJS2COuT7+Dh3pKFb0xhDpAJzQFyhTOBZUDnJXKW
+    gf+/vdzEDxfhGOi9bSNv99Pwp2r/l7I6loK9sTSRnOikw/YwkpgcoxIXRJqzKUMq8qPV
+    jxmg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1699291320;
+    s=strato-dkim-0002; d=strato.com;
+    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
+    From:Subject:Sender;
+    bh=xhpTO12snhTyUAudCCBknK/y5KS1BxQ8Az7BF7pqWV8=;
+    b=qrYBKbbHO6JObFJMSAryUKngOdRg+UlGqO46xU8f1TkEFdIZib1+D9u+3UOmK1VQG8
+    K2Gh9HJhsV1EOtDE0iuMmEE2eENob4mYuFIeNnfF4qLIV62gDOZQgSAP/1s1ioih4EKT
+    vaejLZHJwINN3ako5nOnZTRF+XTCgvtVhkZbHDzZ5JxsBaQFXBx9LaDclvDfAv1hgam6
+    Dt71wg+OV67MufuQvA4zW3bz+m5nrjralo4D7rc02uZ2tRIA1rcsYMeYX2FAAW33CxTa
+    LGVTPwWNKLA8bWHSurP3VEaN7/FrbvAwr8w/XzhcG7lmJAP06v5WKUCFVV7HsgQwJwtc
+    vJmQ==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo01
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1699291320;
+    s=strato-dkim-0002; d=gerhold.net;
+    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
+    From:Subject:Sender;
+    bh=xhpTO12snhTyUAudCCBknK/y5KS1BxQ8Az7BF7pqWV8=;
+    b=LXNAN7IKiWGOs2CPJoHeQzmNma/6JEW6U+IX7NYsP9CXTYkswXoftiSz8wSYupCpvM
+    YjcKAHbST0itDn8+70faXGYSPAdUl2l3L8T+GCVUx3/BnHxi9j1LnwKNKDJCYCBxBJiR
+    4nQTyC5wS0bvcZZ5txQZ9rEUznb2V+pAJvguLKFNuVw3XVffCjmS2Mwa5VYsYwaGYUrR
+    6x+lMwO8w+SVe+SQ7u57ca4UBiouHkF+iCKXX6BGzCDH6GRqqlpN9ljPonfGfDfQ4J58
+    6kM3HMn6pSqYOGYtwxvfdNA2BZCgFUjT3rEnE8I7/8FT9mXSvteCjF6EpxK3rjtNYNlI
+    ZvbQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1699291320;
+    s=strato-dkim-0003; d=gerhold.net;
+    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
+    From:Subject:Sender;
+    bh=xhpTO12snhTyUAudCCBknK/y5KS1BxQ8Az7BF7pqWV8=;
+    b=flX/bOirgwI//BSG7vd8VfmRD6zPXJC4wHgnejIbeEYvO3dNRud3C03D0a1aE9kjDj
+    e6mO8fPfqgAm1drbZbDQ==
+X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u261EJF5OxJD4peA8Z2L1A=="
+Received: from gerhold.net
+    by smtp.strato.de (RZmta 49.9.1 DYNA|AUTH)
+    with ESMTPSA id Lbb8e2zA6HLxXHV
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Mon, 6 Nov 2023 18:21:59 +0100 (CET)
+Date:   Mon, 6 Nov 2023 18:21:53 +0100
+From:   Stephan Gerhold <stephan@gerhold.net>
+To:     Dang Huynh <danct12@riseup.net>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Robert Marko <robimarko@gmail.com>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH 7/8] arm64: dts: qcom: Add PM8937 PMIC
+Message-ID: <ZUkgsW4pyojMBtD9@gerhold.net>
+References: <20231106-pm8937-v1-0-ec51d9eeec53@riseup.net>
+ <20231106-pm8937-v1-7-ec51d9eeec53@riseup.net>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v2 0/2] sched/fair migration reduction features
-Content-Language: en-US
-To:     K Prateek Nayak <kprateek.nayak@amd.com>,
-        Chen Yu <yu.c.chen@intel.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Swapnil Sapkal <Swapnil.Sapkal@amd.com>,
-        Aaron Lu <aaron.lu@intel.com>, Tim Chen <tim.c.chen@intel.com>,
-        "Gautham R . Shenoy" <gautham.shenoy@amd.com>, x86@kernel.org
-References: <20231019160523.1582101-1-mathieu.desnoyers@efficios.com>
- <85b710a9-5b26-b0df-8c21-c2768a21e182@amd.com>
- <ZUh/LK4iy3ukVaCn@chenyu5-mobl2.ccr.corp.intel.com>
- <a95bab2c-7f7a-18a2-6307-ffcdef4e2726@amd.com>
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-In-Reply-To: <a95bab2c-7f7a-18a2-6307-ffcdef4e2726@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231106-pm8937-v1-7-ec51d9eeec53@riseup.net>
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-11-06 02:06, K Prateek Nayak wrote:
-> Hello Chenyu,
+On Mon, Nov 06, 2023 at 07:08:35PM +0700, Dang Huynh wrote:
+> The PM8937 features integrated peripherals like ADC, GPIO controller,
+> MPPs, PON keys and others.
 > 
-> On 11/6/2023 11:22 AM, Chen Yu wrote:
->> On 2023-10-27 at 08:57:00 +0530, K Prateek Nayak wrote:
->>> Hello Mathieu,
->>>
->>> On 10/19/2023 9:35 PM, Mathieu Desnoyers wrote:
->>>> Hi,
->>>>
->>>> This series introduces two new scheduler features: UTIL_FITS_CAPACITY
->>>> and SELECT_BIAS_PREV. When used together, they achieve a 41% speedup of
->>>> a hackbench workload which leaves some idle CPU time on a 192-core AMD
->>>> EPYC.
->>>>
->>>> The main metrics which are significantly improved are:
->>>>
->>>> - cpu-migrations are reduced by 80%,
->>>> - CPU utilization is increased by 17%.
->>>>
->>>> Feedback is welcome. I am especially interested to learn whether this
->>>> series has positive or detrimental effects on performance of other
->>>> workloads.
->>>
->>> I got a chance to test this series on a dual socket 3rd Generation EPYC
->>> System (2 x 64C/128T). Following is a quick summary:
->>>
->>> - stream and ycsb-mongodb don't see any changes.
->>>
->>> - hackbench and DeathStarBench see a major improvement. Both are high
->>>    utilization workloads with CPUs being overloaded most of the time.
->>>    DeathStarBench is known to benefit from lower migration count. It was
->>>    discussed by Gautham at OSPM '23.
->>>
->>> - tbench, netperf, and sch bench regresses. The former two when the
->>>    system is near fully loaded, and the latter for most cases.
->>
->> Does it mean hackbench gets benefits when the system is overloaded, while
->> tbench/netperf do not get benefit when the system is underloaded?
+> Add the device tree so that any boards with this PMIC can use it.
 > 
-> Yup! Seems like that from the results. From what I have seen so far,
-> there seems to be a work conservation aspect to hackbench where if we
-> reduce the time spent in the kernel (by reducing time to decide on the
-> target which Mathieu's patch [this one] achieves,
-
-I am confused by this comment.
-
-Quoting Daniel Bristot, "work conserving" is defined as "in a system 
-with M processor, the M "higest priority" must be running (in 
-real-time)". This should apply to other scheduling classes as well. This 
-definition fits with this paper's definition [1]: "The Linux scheduler 
-is work-conserving, meaning that it should never leave cores idle if 
-there is work to do."
-
-Do you mean something different by "work conservation" ?
-
-Just in case, I've made the following experiment to figure out if my 
-patches benefit from having less time spent in select_task_rq_fair(). I 
-have copied the original "select_idle_sibling()" into a separate 
-function "select_idle_sibling_orig()", which I call at the beginning of 
-the new "biased" select_idle_sibling. I use its result in an empty asm 
-volatile, which ensures that the code is not optimized away. Then the 
-biased function selects the runqueue with the new biased approach.
-
-The result with hackbench is that the speed up is still pretty much the 
-same with or without the added "select_idle_sibling_orig()" call.
-
-Based on this, my understanding is that the speed up comes from 
-minimizing the amount of migrations (and the side effects caused by 
-those migrations such as runqueue locks and cache misses), rather than 
-by making select_idle_sibling faster.
-
-So based on this, I suspect that we could add some overhead to 
-select_task_runqueue_fair if it means we do a better task placement 
-decision and minimize migrations, and that would still provide an 
-overall benefit performance-wise.
-
-> there is also a
-> second order effect from another one of Mathieu's Patches that uses
-> wakelist but indirectly curbs the SIS_UTIL limits based on Aaron's
-> observation [1] thus reducing time spent in select_idle_cpu())
-> hackbench results seem to improve.
-
-It's possible that an indirect effect of bias towards prev runqueue is 
-to affect the metrics used by select_idle_cpu() as well and make it 
-return early.
-
-I've tried adding a 1000 iteration barrier() loop within 
-select_idle_sibling_orig(), and indeed the hackbench time goes from 29s 
-to 31s. Therefore, slowing down the task rq selection does have some impact.
-
+> Signed-off-by: Dang Huynh <danct12@riseup.net>
+> ---
+>  arch/arm64/boot/dts/qcom/pm8937.dtsi | 202 +++++++++++++++++++++++++++++++++++
+>  1 file changed, 202 insertions(+)
 > 
-> [1] https://lore.kernel.org/lkml/20230905072141.GA253439@ziqianlu-dell/
-> 
-> schbench, tbench, and netperf see that wakeups are faster when the
-> client and server are on same LLC so consolidation as long as there is
-> one task per run queue for under loaded case is better than just keeping
-> them on separate LLCs.
+> diff --git a/arch/arm64/boot/dts/qcom/pm8937.dtsi b/arch/arm64/boot/dts/qcom/pm8937.dtsi
+> new file mode 100644
+> index 000000000000..6091d6938885
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/qcom/pm8937.dtsi
+> @@ -0,0 +1,202 @@
+> +// SPDX-License-Identifier: BSD-3-Clause
+> +/*
+> + * Copyright (c) 2023, Dang Huynh <danct12@riseup.net>
+> + */
+> +
+> +#include <dt-bindings/iio/qcom,spmi-vadc.h>
+> +#include <dt-bindings/input/linux-event-codes.h>
+> +#include <dt-bindings/interrupt-controller/irq.h>
+> +#include <dt-bindings/pinctrl/qcom,pmic-mpp.h>
+> +#include <dt-bindings/spmi/spmi.h>
+> +
+> [...]
+> +&spmi_bus {
+> +	pmic@0 {
+> +		compatible = "qcom,pm8937", "qcom,spmi-pmic";
+> +		reg = <0x0 SPMI_USID>;
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
+> +
+> +		pon@800 {
+> +			compatible = "qcom,pm8916-pon";
+> +			reg = <0x800>;
+> +			mode-bootloader = <0x2>;
+> +			mode-recovery = <0x1>;
+> +
+> +			pm8937_pwrkey: pwrkey {
+> +				compatible = "qcom,pm8941-pwrkey";
+> +				interrupts = <0 0x8 0 IRQ_TYPE_EDGE_BOTH>;
+> +				debounce = <15625>;
+> +				bias-pull-up;
+> +				linux,code = <KEY_POWER>;
+> +			};
+> +
+> +			pm8937_resin: resin {
+> +				compatible = "qcom,pm8941-resin";
+> +				interrupts = <0 0x8 1 IRQ_TYPE_EDGE_BOTH>;
+> +				debounce = <15625>;
+> +				bias-pull-up;
+> +				linux,code = <KEY_VOLUMEDOWN>;
 
-What is faster for the 1:1 client/server ping-pong scenario: having the 
-client and server on the same LLC, but different runqueues, or having 
-them share a single runqueue ? If they wait for each other, then I 
-suspect it's better to place them on the same runqueue as long as there 
-is capacity left.
+Please move the linux,code into the board-specific part and make this
+status = "disabled" by default, like in the other PMIC dtsi files.
 
-> 
->>
->>>    All these benchmarks are client-server / messenger-worker oriented and is
->>>    known to perform better when client-server / messenger-worker are on
->>>    same CCX (LLC domain).
->>
->> I thought hackbench should also be of client-server mode, because hackbench has
->> socket/pipe mode and exchanges datas between sender/receiver.
-> 
-> Yes but its N:M nature makes it slightly complicated to understand where
-> the cache benefits disappear and the work conservation benefits become
-> more prominent.
-
-The N:M nature of hackbench AFAIU causes N-server *and* M-client tasks 
-to pull each other pretty much randomly, therefore trashing cache locality.
-
-I'm still unclear about the definition of "work conservation" in this 
-discussion.
-
-> 
->>
->> This reminds me of your proposal to provide user hint to the scheduler
->> to whether do task consolidation vs task spreading, and could this also
->> be applied to Mathieu's case? For task or task group with "consolidate"
->> flag set, tasks prefer to be woken up on target/previous CPU if the wakee
->> fits into that CPU. In this way we could bring benefit and not introduce
->> regress.
-> 
-> I think even a simple WF_SYNC check will help tbench and netperf case.
-> Let me get back to you with some data on different variants of hackbench
-> wit the latest tip.
-
-AFAIU (to be double-checked) the hackbench workload also has WF_SYNC, 
-which prevents us from using this flag to distinguish between 1:1 
-server/client and N:M scenarios. Or am I missing something ?
+One could theoretically assign any other function to this key. Also,
+some devices don't have this hooked up at all.
 
 Thanks,
-
-Mathieu
-
-[1] https://people.ece.ubc.ca/sasha/papers/eurosys16-final29.pdf
-
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-https://www.efficios.com
-
+Stephan
