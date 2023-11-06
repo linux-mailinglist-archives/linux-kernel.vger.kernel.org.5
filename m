@@ -2,179 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 48D877E2B7B
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 18:53:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C70B7E2B7A
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 18:53:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231980AbjKFRxU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 12:53:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48590 "EHLO
+        id S231911AbjKFRxN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 12:53:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231483AbjKFRxR (ORCPT
+        with ESMTP id S231810AbjKFRxL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 12:53:17 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 122CBB7
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 09:53:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699293195; x=1730829195;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=yFF6ajJagl/5Ex+71j1+0ayOaGeA4IKChZaeUz/c5PI=;
-  b=LL1UsqOSy2NWKF+dPEhzL+IPNeo7fxaHT2msRw0eFYoAon5MbRTpjmH5
-   NDPEYWErBmvpxbLpgMT0FZu0CvgxtoyVt1Vtn6irE5BBVFsDayZUbghGH
-   B/99QBdFzarcTLwiKkvK/4hrGx7T9RG1gAIZO0tvpzKgLTtbZoCSDSb8l
-   h4G/JLxPpiD/7SjuMCLPX4H4mcBcZXSg1OctSQAgEule42LsY+C9L6oov
-   BV20GSUqvYfdciJ3FnnL+RsfV/dl3R64xclyvDEb3l/ivXCGqMvIJERVL
-   2Lf1L45N+RJPoZ8Ixx5ya9e9Tk97ivtAgoauVaWnR26N7U+Eyb43qmqgm
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10886"; a="10875950"
-X-IronPort-AV: E=Sophos;i="6.03,282,1694761200"; 
-   d="scan'208";a="10875950"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Nov 2023 09:53:14 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10886"; a="797383287"
-X-IronPort-AV: E=Sophos;i="6.03,282,1694761200"; 
-   d="scan'208";a="797383287"
-Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by orsmga001.jf.intel.com with ESMTP; 06 Nov 2023 09:53:11 -0800
-Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r03mf-0006cm-28;
-        Mon, 06 Nov 2023 17:53:09 +0000
-Date:   Tue, 7 Nov 2023 01:52:39 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Calvince Otieno <calvncce@gmail.com>, gustavo@embeddedor.com,
-        outreachy@lists.linux.dev
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: vc04_services: remove empty functions
-Message-ID: <202311070101.3sRlVl2Z-lkp@intel.com>
-References: <ZTD677iqMkRPxT27@lab-ubuntu>
+        Mon, 6 Nov 2023 12:53:11 -0500
+Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84C99D49
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 09:53:08 -0800 (PST)
+Received: by mail-oi1-x229.google.com with SMTP id 5614622812f47-3b565e35fedso2849993b6e.2
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 09:53:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1699293188; x=1699897988; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=9WROodUma+YX9D9t3U/MSNsWH+qYxH1P9vdKfkt+6QQ=;
+        b=PobQ5QTDnCm8vGzRfT7VWsT4fmRpH2RYfqsgxlMzmWsPPSB4I/2xhetA1bvmDtIkru
+         0nRJU8gIWBOHD0ziYBprWME7Df0Aer0nVpXw73TJ8hv2PjjK+ezNRHsEFr5TuYdGioNO
+         2Fmg5s2XnGBzzLMC+NeNtu4O6D01EHQOAb6xPjl/p29xi0HNle/EqUBFyu51VmkFXrbc
+         RQ63OwTlVTyhSgu7mBlYvu4pNPN3HGnAzxSh9fyPwEXA5+zu7ttyFg81lbZqlEPNOPfX
+         caHgr262Sc6/nax2GZwlIzclTWV5ZwFVpwN0v7hN4uGTCHlsd+Z53nexL++a/4zFd89A
+         L9Xw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699293188; x=1699897988;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=9WROodUma+YX9D9t3U/MSNsWH+qYxH1P9vdKfkt+6QQ=;
+        b=k5wFwMm1wMpl5IUZti48ADqJyHuxSN1vnIJfBEPu9ydueMq91PJr5vb01wxQMFnY9C
+         dtRxqHX4oAWZQ1LTO4hB712f9ZALbwtGBH14tAoij8fi/6VMb2GOfI7Si90eVSujGXAG
+         EuFhh2j8TDVddDM9UARHGtWoMeN+FpzmguoHrPfQCpS1oU9mTG0zgiOcP1u42RoGm4Dw
+         MY2XY2Oq/E+vFqMpZko4sg40Msvf336OvPnBrora54e0JmUVLqasnrCDkzdVJkF4ZL3Y
+         QQcgaKuXSl/N7Lgvs5YvjDsRZLaPbXNxbHVGJvWyo//1bMCLE3kFx4JAgFQ/U0RhDGCT
+         umdg==
+X-Gm-Message-State: AOJu0YxQTicKAEj0kVGErD1QMtk/SyolPRov9LkDogAJHqpqas88D54r
+        DRcFUxCN++yh1pmxiiy+LtpnIg==
+X-Google-Smtp-Source: AGHT+IEL8z1Tr9lAONkY54ORSL5BRqixdea0A8W3dB2QXLDSm17ZTbZxHici7Eg4mDMAISCQAjNb8Q==
+X-Received: by 2002:a54:4407:0:b0:3ab:38b0:8b84 with SMTP id k7-20020a544407000000b003ab38b08b84mr31465404oiw.17.1699293187829;
+        Mon, 06 Nov 2023 09:53:07 -0800 (PST)
+Received: from [192.168.17.16] ([138.84.54.223])
+        by smtp.gmail.com with ESMTPSA id 11-20020aca100b000000b003b2e4b72a75sm1302246oiq.52.2023.11.06.09.53.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 06 Nov 2023 09:53:07 -0800 (PST)
+Message-ID: <8aec1bd5-befc-486c-9e47-7571b937b8c7@linaro.org>
+Date:   Mon, 6 Nov 2023 11:53:04 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZTD677iqMkRPxT27@lab-ubuntu>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 5.10 00/95] 5.10.200-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
+References: <20231106130304.678610325@linuxfoundation.org>
+Content-Language: en-US
+From:   =?UTF-8?Q?Daniel_D=C3=ADaz?= <daniel.diaz@linaro.org>
+In-Reply-To: <20231106130304.678610325@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Calvince,
+Hello!
 
-kernel test robot noticed the following build warnings:
+On 06/11/23 7:03 a. m., Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.200 release.
+> There are 95 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 08 Nov 2023 13:02:46 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.200-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-[auto build test WARNING on staging/staging-testing]
+There seems to be a problem building for RISC-V with GCC 8, 12, and Clang 17. This is with defconfig, allnoconfig, tinyconfig:
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Calvince-Otieno/staging-vc04_services-remove-empty-functions/20231019-174823
-base:   staging/staging-testing
-patch link:    https://lore.kernel.org/r/ZTD677iqMkRPxT27%40lab-ubuntu
-patch subject: [PATCH] staging: vc04_services: remove empty functions
-config: i386-allmodconfig (https://download.01.org/0day-ci/archive/20231107/202311070101.3sRlVl2Z-lkp@intel.com/config)
-compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231107/202311070101.3sRlVl2Z-lkp@intel.com/reproduce)
+-----8<-----
+/builds/linux/drivers/irqchip/irq-riscv-intc.c: In function 'riscv_intc_init':
+/builds/linux/drivers/irqchip/irq-riscv-intc.c:119:17: error: implicit declaration of function 'fwnode_dev_initialized'; did you mean 'zone_is_initialized'? [-Werror=implicit-function-declaration]
+   119 |                 fwnode_dev_initialized(of_fwnode_handle(node), true);
+       |                 ^~~~~~~~~~~~~~~~~~~~~~
+       |                 zone_is_initialized
+cc1: some warnings being treated as errors
+make[3]: *** [/builds/linux/scripts/Makefile.build:286: drivers/irqchip/irq-riscv-intc.o] Error 1
+make[3]: Target '__build' not remade because of errors.
+make[2]: *** [/builds/linux/scripts/Makefile.build:503: drivers/irqchip] Error 2
+make[2]: Target '__build' not remade because of errors.
+make[1]: *** [/builds/linux/Makefile:1832: drivers] Error 2
+make[1]: Target '__all' not remade because of errors.
+make: *** [Makefile:192: __sub-make] Error 2
+make: Target '__all' not remade because of errors.
+----->8-----
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311070101.3sRlVl2Z-lkp@intel.com/
+Currently bisecting.
 
-All warnings (new ones prefixed by >>):
+Greetings!
 
->> drivers/staging/vc04_services/interface/vchiq_arm/vchiq_debugfs.c:181:6: warning: no previous prototype for function 'vchiq_debugfs_add_instance' [-Wmissing-prototypes]
-   void vchiq_debugfs_add_instance(struct vchiq_instance *instance)
-        ^
-   drivers/staging/vc04_services/interface/vchiq_arm/vchiq_debugfs.c:181:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
-   void vchiq_debugfs_add_instance(struct vchiq_instance *instance)
-   ^
-   static 
->> drivers/staging/vc04_services/interface/vchiq_arm/vchiq_debugfs.c:198:6: warning: no previous prototype for function 'vchiq_debugfs_remove_instance' [-Wmissing-prototypes]
-   void vchiq_debugfs_remove_instance(struct vchiq_instance *instance)
-        ^
-   drivers/staging/vc04_services/interface/vchiq_arm/vchiq_debugfs.c:198:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
-   void vchiq_debugfs_remove_instance(struct vchiq_instance *instance)
-   ^
-   static 
->> drivers/staging/vc04_services/interface/vchiq_arm/vchiq_debugfs.c:206:6: warning: no previous prototype for function 'vchiq_debugfs_init' [-Wmissing-prototypes]
-   void vchiq_debugfs_init(void)
-        ^
-   drivers/staging/vc04_services/interface/vchiq_arm/vchiq_debugfs.c:206:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
-   void vchiq_debugfs_init(void)
-   ^
-   static 
->> drivers/staging/vc04_services/interface/vchiq_arm/vchiq_debugfs.c:224:6: warning: no previous prototype for function 'vchiq_debugfs_deinit' [-Wmissing-prototypes]
-   void vchiq_debugfs_deinit(void)
-        ^
-   drivers/staging/vc04_services/interface/vchiq_arm/vchiq_debugfs.c:224:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
-   void vchiq_debugfs_deinit(void)
-   ^
-   static 
-   4 warnings generated.
+Daniel Díaz
+daniel.diaz@linaro.org
 
-
-vim +/vchiq_debugfs_add_instance +181 drivers/staging/vc04_services/interface/vchiq_arm/vchiq_debugfs.c
-
-71bad7f086419d popcornmix           2013-07-02  179  
-71bad7f086419d popcornmix           2013-07-02  180  /* add an instance (process) to the debugfs entries */
-4ddf9a2555caf2 Jamal Shareef        2019-11-05 @181  void vchiq_debugfs_add_instance(struct vchiq_instance *instance)
-71bad7f086419d popcornmix           2013-07-02  182  {
-71bad7f086419d popcornmix           2013-07-02  183  	char pidstr[16];
-0723103f8ba15a Greg Kroah-Hartman   2018-06-01  184  	struct dentry *top;
-71bad7f086419d popcornmix           2013-07-02  185  
-71bad7f086419d popcornmix           2013-07-02  186  	snprintf(pidstr, sizeof(pidstr), "%d",
-71bad7f086419d popcornmix           2013-07-02  187  		 vchiq_instance_get_pid(instance));
-71bad7f086419d popcornmix           2013-07-02  188  
-24e8d3fc42f259 Greg Kroah-Hartman   2018-06-01  189  	top = debugfs_create_dir(pidstr, vchiq_dbg_clients);
-71bad7f086419d popcornmix           2013-07-02  190  
-0723103f8ba15a Greg Kroah-Hartman   2018-06-01  191  	debugfs_create_file("use_count", 0444, top, instance,
-71bad7f086419d popcornmix           2013-07-02  192  			    &debugfs_usecount_fops);
-0723103f8ba15a Greg Kroah-Hartman   2018-06-01  193  	debugfs_create_file("trace", 0644, top, instance, &debugfs_trace_fops);
-71bad7f086419d popcornmix           2013-07-02  194  
-71bad7f086419d popcornmix           2013-07-02  195  	vchiq_instance_get_debugfs_node(instance)->dentry = top;
-71bad7f086419d popcornmix           2013-07-02  196  }
-71bad7f086419d popcornmix           2013-07-02  197  
-4ddf9a2555caf2 Jamal Shareef        2019-11-05 @198  void vchiq_debugfs_remove_instance(struct vchiq_instance *instance)
-71bad7f086419d popcornmix           2013-07-02  199  {
-aa987e55132f78 Dominic Braun        2018-12-14  200  	struct vchiq_debugfs_node *node =
-aa987e55132f78 Dominic Braun        2018-12-14  201  				vchiq_instance_get_debugfs_node(instance);
-6e475350a40685 Yamanappagouda Patil 2017-02-21  202  
-71bad7f086419d popcornmix           2013-07-02  203  	debugfs_remove_recursive(node->dentry);
-71bad7f086419d popcornmix           2013-07-02  204  }
-71bad7f086419d popcornmix           2013-07-02  205  
-0723103f8ba15a Greg Kroah-Hartman   2018-06-01 @206  void vchiq_debugfs_init(void)
-71bad7f086419d popcornmix           2013-07-02  207  {
-3b93c0f4b6accb Greg Kroah-Hartman   2018-06-01  208  	struct dentry *dir;
-3b93c0f4b6accb Greg Kroah-Hartman   2018-06-01  209  	int i;
-3b93c0f4b6accb Greg Kroah-Hartman   2018-06-01  210  
-2739deaece4bc2 Greg Kroah-Hartman   2018-06-01  211  	vchiq_dbg_dir = debugfs_create_dir("vchiq", NULL);
-24e8d3fc42f259 Greg Kroah-Hartman   2018-06-01  212  	vchiq_dbg_clients = debugfs_create_dir("clients", vchiq_dbg_dir);
-71bad7f086419d popcornmix           2013-07-02  213  
-3b93c0f4b6accb Greg Kroah-Hartman   2018-06-01  214  	/* create an entry under <debugfs>/vchiq/log for each log category */
-3b93c0f4b6accb Greg Kroah-Hartman   2018-06-01  215  	dir = debugfs_create_dir("log", vchiq_dbg_dir);
-3b93c0f4b6accb Greg Kroah-Hartman   2018-06-01  216  
-e1a17ce82f1808 Stefan Wahren        2022-01-23  217  	for (i = 0; i < ARRAY_SIZE(vchiq_debugfs_log_entries); i++)
-3b93c0f4b6accb Greg Kroah-Hartman   2018-06-01  218  		debugfs_create_file(vchiq_debugfs_log_entries[i].name, 0644,
-3b93c0f4b6accb Greg Kroah-Hartman   2018-06-01  219  				    dir, vchiq_debugfs_log_entries[i].plevel,
-3b93c0f4b6accb Greg Kroah-Hartman   2018-06-01  220  				    &debugfs_log_fops);
-71bad7f086419d popcornmix           2013-07-02  221  }
-71bad7f086419d popcornmix           2013-07-02  222  
-71bad7f086419d popcornmix           2013-07-02  223  /* remove all the debugfs entries */
-71bad7f086419d popcornmix           2013-07-02 @224  void vchiq_debugfs_deinit(void)
-71bad7f086419d popcornmix           2013-07-02  225  {
-2739deaece4bc2 Greg Kroah-Hartman   2018-06-01  226  	debugfs_remove_recursive(vchiq_dbg_dir);
-71bad7f086419d popcornmix           2013-07-02  227  }
-71bad7f086419d popcornmix           2013-07-02  228  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
