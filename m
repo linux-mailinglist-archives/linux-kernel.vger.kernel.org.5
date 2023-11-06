@@ -2,95 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D5C37E1B37
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 08:28:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF8B97E1B3C
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 08:30:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231134AbjKFH2h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 02:28:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38184 "EHLO
+        id S230510AbjKFHaj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 02:30:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229881AbjKFH2g (ORCPT
+        with ESMTP id S230079AbjKFHah (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 02:28:36 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9BE4112
-        for <linux-kernel@vger.kernel.org>; Sun,  5 Nov 2023 23:27:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1699255672;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=43URkpYtRBGE0OYmyASXAaiR9gWD2J5xkyb/eiFUiBk=;
-        b=RsLu0LKqlCFfQcEsvKKaKTbNgRvqrpVw3W3Ox8fFDgPbhqWRMrQdLeuAGAbBmT2YocJHuH
-        P7FZ+LH6jVcu2abILAPooko8H42TcRLnApp7j2Bmnk1Kx7/84bwJUeKLKKYUuRg4GDLUXk
-        LIoTdZSWSgsvuVALSteJRUSpQDNf9wU=
-Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
- [209.85.167.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-118-Uw46tjn9O-CbqAbmUszfSA-1; Mon, 06 Nov 2023 02:27:51 -0500
-X-MC-Unique: Uw46tjn9O-CbqAbmUszfSA-1
-Received: by mail-lf1-f72.google.com with SMTP id 2adb3069b0e04-5079a8c68c6so3858153e87.1
-        for <linux-kernel@vger.kernel.org>; Sun, 05 Nov 2023 23:27:50 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699255669; x=1699860469;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=43URkpYtRBGE0OYmyASXAaiR9gWD2J5xkyb/eiFUiBk=;
-        b=SMnzqBN6rdzVgnk8j5hEY7+pdx4jPmQHJY6/hktxglZa4SFFyjXcCBFIEJ4vItZ6ow
-         W0vC5FSPQ4NeudFEX7P1r9HpniuDyflOvWuKtkd/5iFBKVTVI7hdmpU5EfDt63e+KiTu
-         0rH/JJQ6MK/vYtDAOc1dFT0i4iEYKbGvvtvZiPzRI47GQk8QinmAOzJRfn6vRdOsGlyB
-         SeUxrPg3f4R/5+C/m+eqGAQ01aTJJSnLoB8cq95wPnBqDqHH98+BXSPoARXzYHyaRdnj
-         Zay3TmTp1oluLmPISAlJbk9pwgSh2S/+xdMjRiC+PCTxzfFlLmytx2OIvCdjs1UQdyQM
-         R2Rw==
-X-Gm-Message-State: AOJu0YyYpADm5DGOkpnHStZAx0GOVwpTLdUZxZweamhBsM6OVdym6Gfx
-        arZergWhVVT6dEM573I9gjh4xmM8kpB7eEX9Bu/ImEIiPt87RD9+SkhrYmsZthuUnnXyDwu0VHJ
-        m1v9onNJzmsdc0qG7IyPt12q4yZ2lsjrIXSPc7BEN1lY4rKczWC8=
-X-Received: by 2002:a19:e011:0:b0:503:fc2:bfaf with SMTP id x17-20020a19e011000000b005030fc2bfafmr19235615lfg.33.1699255669566;
-        Sun, 05 Nov 2023 23:27:49 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGeuHCmPxbI1vFCSmuwsvTXlqbF/Vv6BpaewiH5OFPHTfdUlAVBDe19efaIgP47YNORg4NZHGPl5Yde3mGZKnw=
-X-Received: by 2002:a19:e011:0:b0:503:fc2:bfaf with SMTP id
- x17-20020a19e011000000b005030fc2bfafmr19235608lfg.33.1699255669287; Sun, 05
- Nov 2023 23:27:49 -0800 (PST)
+        Mon, 6 Nov 2023 02:30:37 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68E9B112
+        for <linux-kernel@vger.kernel.org>; Sun,  5 Nov 2023 23:30:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699255834; x=1730791834;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=Y9+hMyZOY8DXV+V5+GVt/uSbUtua7jEKShXj5NCtDRg=;
+  b=SSaY1Tt8xyuJyAqAUXR26YyyIFPZmrYYKWfuG1wfjfkPYMSinYd5M+uM
+   nHHw0MjGjM0ZyQGJZ+JvdXzStPzmW22B2yN/FWr14wEjXJRQiMYz+Tsp3
+   ux+W8pyZm0pZ1fFDC7OU7TWWqxbh4kLNQjgd3RNYi6qIm+W5bjxyYfppU
+   QLvovXHp0c+IlfoQSUYw/41CX2WoM4WM+Ys2ldCGgSxpiDOnDdqnsyZ8m
+   E/4K8uslu3ibTi5BJMdCLd5d31NY5KE9axLPd0Bvq7BsT3IwoS/e+7IGR
+   I3bzsbMzoKowB46IE+1ASBb/QdCjfRcNFKyRgKjIj6UmdxYb3967saA22
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10885"; a="388105388"
+X-IronPort-AV: E=Sophos;i="6.03,280,1694761200"; 
+   d="scan'208";a="388105388"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2023 23:30:33 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.03,280,1694761200"; 
+   d="scan'208";a="3362408"
+Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
+  by orviesa002.jf.intel.com with ESMTP; 05 Nov 2023 23:30:33 -0800
+Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qzu46-0006EO-0D;
+        Mon, 06 Nov 2023 07:30:30 +0000
+Date:   Mon, 6 Nov 2023 15:28:21 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Thomas Bogendoerfer <tbogendoerfer@suse.de>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Paul Burton <paul.burton@mips.com>
+Subject: arch/mips/sgi-ip27/ip27-hubio.c:30: warning: Function parameter or
+ member 'nasid' not described in 'hub_pio_map'
+Message-ID: <202311061528.2HBbx68B-lkp@intel.com>
 MIME-Version: 1.0
-References: <20231103171641.1703146-1-lulu@redhat.com> <20231103171641.1703146-4-lulu@redhat.com>
-In-Reply-To: <20231103171641.1703146-4-lulu@redhat.com>
-From:   Jason Wang <jasowang@redhat.com>
-Date:   Mon, 6 Nov 2023 15:27:38 +0800
-Message-ID: <CACGkMEt+HRZbCDGUefu268P7+0QffDpMA-RHzArhjZ2i-zRWEw@mail.gmail.com>
-Subject: Re: [RFC v1 3/8] vhost: Add 3 new uapi to support iommufd
-To:     Cindy Lu <lulu@redhat.com>
-Cc:     mst@redhat.com, yi.l.liu@intel.com, jgg@nvidia.com,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 4, 2023 at 1:17=E2=80=AFAM Cindy Lu <lulu@redhat.com> wrote:
->
-> VHOST_VDPA_SET_IOMMU_FD: bind the device to iommufd device
->
-> VDPA_DEVICE_ATTACH_IOMMUFD_AS: Attach a vdpa device to an iommufd
-> address space specified by IOAS id.
->
-> VDPA_DEVICE_DETACH_IOMMUFD_AS: Detach a vdpa device
-> from the iommufd address space
->
-> Signed-off-by: Cindy Lu <lulu@redhat.com>
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   d2f51b3516dade79269ff45eae2a7668ae711b25
+commit: 4bf841ebf17aaa0f7712623896c699b44fa92f44 MIPS: SGI-IP27: get rid of compact node ids
+date:   4 years, 1 month ago
+config: mips-randconfig-r035-20210927 (https://download.01.org/0day-ci/archive/20231106/202311061528.2HBbx68B-lkp@intel.com/config)
+compiler: mips64-linux-gcc (GCC) 12.3.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231106/202311061528.2HBbx68B-lkp@intel.com/reproduce)
 
-As discussed in the previous version, any reason/advantages of this
-compared to just having a single  VDPA_DEVICE_ATTACH_IOMMUFD_AS?
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311061528.2HBbx68B-lkp@intel.com/
 
-Thanks
+All warnings (new ones prefixed by >>):
 
+>> arch/mips/sgi-ip27/ip27-hubio.c:30: warning: Function parameter or member 'nasid' not described in 'hub_pio_map'
+   arch/mips/sgi-ip27/ip27-hubio.c:30: warning: Excess function parameter 'hub' description in 'hub_pio_map'
+
+
+vim +30 arch/mips/sgi-ip27/ip27-hubio.c
+
+^1da177e4c3f41 Linus Torvalds      2005-04-16  18  
+^1da177e4c3f41 Linus Torvalds      2005-04-16  19  /**
+^1da177e4c3f41 Linus Torvalds      2005-04-16  20   * hub_pio_map	-  establish a HUB PIO mapping
+^1da177e4c3f41 Linus Torvalds      2005-04-16  21   *
+^1da177e4c3f41 Linus Torvalds      2005-04-16  22   * @hub:	hub to perform PIO mapping on
+^1da177e4c3f41 Linus Torvalds      2005-04-16  23   * @widget:	widget ID to perform PIO mapping for
+^1da177e4c3f41 Linus Torvalds      2005-04-16  24   * @xtalk_addr: xtalk_address that needs to be mapped
+^1da177e4c3f41 Linus Torvalds      2005-04-16  25   * @size:	size of the PIO mapping
+^1da177e4c3f41 Linus Torvalds      2005-04-16  26   *
+^1da177e4c3f41 Linus Torvalds      2005-04-16  27   **/
+4bf841ebf17aaa Thomas Bogendoerfer 2019-10-03  28  unsigned long hub_pio_map(nasid_t nasid, xwidgetnum_t widget,
+^1da177e4c3f41 Linus Torvalds      2005-04-16  29  			  unsigned long xtalk_addr, size_t size)
+^1da177e4c3f41 Linus Torvalds      2005-04-16 @30  {
+^1da177e4c3f41 Linus Torvalds      2005-04-16  31  	unsigned i;
+^1da177e4c3f41 Linus Torvalds      2005-04-16  32  
+^1da177e4c3f41 Linus Torvalds      2005-04-16  33  	/* use small-window mapping if possible */
+^1da177e4c3f41 Linus Torvalds      2005-04-16  34  	if ((xtalk_addr % SWIN_SIZE) + size <= SWIN_SIZE)
+^1da177e4c3f41 Linus Torvalds      2005-04-16  35  		return NODE_SWIN_BASE(nasid, widget) + (xtalk_addr % SWIN_SIZE);
+^1da177e4c3f41 Linus Torvalds      2005-04-16  36  
+^1da177e4c3f41 Linus Torvalds      2005-04-16  37  	if ((xtalk_addr % BWIN_SIZE) + size > BWIN_SIZE) {
+^1da177e4c3f41 Linus Torvalds      2005-04-16  38  		printk(KERN_WARNING "PIO mapping at hub %d widget %d addr 0x%lx"
+^1da177e4c3f41 Linus Torvalds      2005-04-16  39  				" too big (%ld)\n",
+^1da177e4c3f41 Linus Torvalds      2005-04-16  40  				nasid, widget, xtalk_addr, size);
+^1da177e4c3f41 Linus Torvalds      2005-04-16  41  		return 0;
+^1da177e4c3f41 Linus Torvalds      2005-04-16  42  	}
+^1da177e4c3f41 Linus Torvalds      2005-04-16  43  
+^1da177e4c3f41 Linus Torvalds      2005-04-16  44  	xtalk_addr &= ~(BWIN_SIZE-1);
+^1da177e4c3f41 Linus Torvalds      2005-04-16  45  	for (i = 0; i < HUB_NUM_BIG_WINDOW; i++) {
+4bf841ebf17aaa Thomas Bogendoerfer 2019-10-03  46  		if (test_and_set_bit(i, hub_data(nasid)->h_bigwin_used))
+^1da177e4c3f41 Linus Torvalds      2005-04-16  47  			continue;
+^1da177e4c3f41 Linus Torvalds      2005-04-16  48  
+^1da177e4c3f41 Linus Torvalds      2005-04-16  49  		/*
+^1da177e4c3f41 Linus Torvalds      2005-04-16  50  		 * The code below does a PIO write to setup an ITTE entry.
+^1da177e4c3f41 Linus Torvalds      2005-04-16  51  		 *
+^1da177e4c3f41 Linus Torvalds      2005-04-16  52  		 * We need to prevent other CPUs from seeing our updated
+^1da177e4c3f41 Linus Torvalds      2005-04-16  53  		 * memory shadow of the ITTE (in the piomap) until the ITTE
+^1da177e4c3f41 Linus Torvalds      2005-04-16  54  		 * entry is actually set up; otherwise, another CPU might
+^1da177e4c3f41 Linus Torvalds      2005-04-16  55  		 * attempt a PIO prematurely.
+^1da177e4c3f41 Linus Torvalds      2005-04-16  56  		 *
+^1da177e4c3f41 Linus Torvalds      2005-04-16  57  		 * Also, the only way we can know that an entry has been
+^1da177e4c3f41 Linus Torvalds      2005-04-16  58  		 * received  by the hub and can be used by future PIO reads/
+^1da177e4c3f41 Linus Torvalds      2005-04-16  59  		 * writes is by reading back the ITTE entry after writing it.
+^1da177e4c3f41 Linus Torvalds      2005-04-16  60  		 *
+^1da177e4c3f41 Linus Torvalds      2005-04-16  61  		 * For these two reasons, we PIO read back the ITTE entry
+^1da177e4c3f41 Linus Torvalds      2005-04-16  62  		 * after we write it.
+^1da177e4c3f41 Linus Torvalds      2005-04-16  63  		 */
+^1da177e4c3f41 Linus Torvalds      2005-04-16  64  		IIO_ITTE_PUT(nasid, i, HUB_PIO_MAP_TO_MEM, widget, xtalk_addr);
+db0e7d4e42b055 Thomas Bogendoerfer 2019-02-19  65  		__raw_readq(IIO_ITTE_GET(nasid, i));
+^1da177e4c3f41 Linus Torvalds      2005-04-16  66  
+^1da177e4c3f41 Linus Torvalds      2005-04-16  67  		return NODE_BWIN_BASE(nasid, widget) + (xtalk_addr % BWIN_SIZE);
+^1da177e4c3f41 Linus Torvalds      2005-04-16  68  	}
+^1da177e4c3f41 Linus Torvalds      2005-04-16  69  
+^1da177e4c3f41 Linus Torvalds      2005-04-16  70  	printk(KERN_WARNING "unable to establish PIO mapping for at"
+^1da177e4c3f41 Linus Torvalds      2005-04-16  71  			" hub %d widget %d addr 0x%lx\n",
+^1da177e4c3f41 Linus Torvalds      2005-04-16  72  			nasid, widget, xtalk_addr);
+^1da177e4c3f41 Linus Torvalds      2005-04-16  73  	return 0;
+^1da177e4c3f41 Linus Torvalds      2005-04-16  74  }
+^1da177e4c3f41 Linus Torvalds      2005-04-16  75  
+
+:::::: The code at line 30 was first introduced by commit
+:::::: 1da177e4c3f41524e886b7f1b8a0c1fc7321cac2 Linux-2.6.12-rc2
+
+:::::: TO: Linus Torvalds <torvalds@ppc970.osdl.org>
+:::::: CC: Linus Torvalds <torvalds@ppc970.osdl.org>
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
