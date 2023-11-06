@@ -2,102 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 278177E1A52
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 07:43:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A85957E1A73
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 07:45:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230424AbjKFGnc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 01:43:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50238 "EHLO
+        id S230509AbjKFGpf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 01:45:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229717AbjKFGna (ORCPT
+        with ESMTP id S231308AbjKFGpO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 01:43:30 -0500
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BD10F9;
-        Sun,  5 Nov 2023 22:43:25 -0800 (PST)
-X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 3A66gbokF3312619, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36505.realtek.com.tw[172.21.6.25])
-        by rtits2.realtek.com.tw (8.15.2/2.95/5.92) with ESMTPS id 3A66gbokF3312619
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 6 Nov 2023 14:42:37 +0800
-Received: from RTEXMBS05.realtek.com.tw (172.21.6.98) by
- RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
+        Mon, 6 Nov 2023 01:45:14 -0500
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ED631B2
+        for <linux-kernel@vger.kernel.org>; Sun,  5 Nov 2023 22:44:45 -0800 (PST)
+Received: from dggpemd200004.china.huawei.com (unknown [172.30.72.53])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4SP1wH3mPFz1P7xl;
+        Mon,  6 Nov 2023 14:41:35 +0800 (CST)
+Received: from [10.174.179.24] (10.174.179.24) by
+ dggpemd200004.china.huawei.com (7.185.36.141) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.32; Mon, 6 Nov 2023 14:42:38 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXMBS05.realtek.com.tw (172.21.6.98) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.34; Mon, 6 Nov 2023 14:42:37 +0800
-Received: from RTEXMBS04.realtek.com.tw ([fe80::40c2:6c24:2df4:e6c7]) by
- RTEXMBS04.realtek.com.tw ([fe80::40c2:6c24:2df4:e6c7%5]) with mapi id
- 15.01.2375.007; Mon, 6 Nov 2023 14:42:37 +0800
-From:   Ping-Ke Shih <pkshih@realtek.com>
-To:     Zheng Hacker <hackerzheng666@gmail.com>,
-        Zheng Wang <zyytlz.wz@163.com>
-CC:     "aspriel@gmail.com" <aspriel@gmail.com>,
-        "franky.lin@broadcom.com" <franky.lin@broadcom.com>,
-        "hante.meuleman@broadcom.com" <hante.meuleman@broadcom.com>,
-        "kvalo@kernel.org" <kvalo@kernel.org>,
-        "johannes.berg@intel.com" <johannes.berg@intel.com>,
-        "marcan@marcan.st" <marcan@marcan.st>,
-        "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
-        "jisoo.jang@yonsei.ac.kr" <jisoo.jang@yonsei.ac.kr>,
-        "linuxlovemin@yonsei.ac.kr" <linuxlovemin@yonsei.ac.kr>,
-        "wataru.gohda@cypress.com" <wataru.gohda@cypress.com>,
-        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-        "brcm80211-dev-list.pdl@broadcom.com" 
-        <brcm80211-dev-list.pdl@broadcom.com>,
-        "SHA-cyfmac-dev-list@infineon.com" <SHA-cyfmac-dev-list@infineon.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "security@kernel.org" <security@kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-Subject: RE: [PATCH v3] brcmfmac: Fix use-after-free bug in brcmf_cfg80211_detach
-Thread-Topic: [PATCH v3] brcmfmac: Fix use-after-free bug in
- brcmf_cfg80211_detach
-Thread-Index: AQHaEHB6V0+Brry5e0a00xnicEhvc7Bs12Vg
-Date:   Mon, 6 Nov 2023 06:42:37 +0000
-Message-ID: <e783dbcedc9b444ca2651d2eac036d6e@realtek.com>
-References: <20231106043957.815407-1-zyytlz.wz@163.com>
- <CAJedcCxoDVS-7jVwLvsWOWiv0aObyYBiG-GmqX4bq+Qp+i3iTw@mail.gmail.com>
-In-Reply-To: <CAJedcCxoDVS-7jVwLvsWOWiv0aObyYBiG-GmqX4bq+Qp+i3iTw@mail.gmail.com>
-Accept-Language: en-US, zh-TW
-Content-Language: zh-TW
-x-originating-ip: [172.21.69.94]
-x-kse-serverinfo: RTEXMBS05.realtek.com.tw, 9
-x-kse-antispam-interceptor-info: fallback
-x-kse-antivirus-interceptor-info: fallback
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ 15.2.1258.23; Mon, 6 Nov 2023 14:43:39 +0800
+Subject: Re: [PATCH v7] mm: vmscan: try to reclaim swapcache pages if no swap
+ space
+To:     "Huang, Ying" <ying.huang@intel.com>
+References: <20231104140313.3418001-1-liushixin2@huawei.com>
+ <87h6lzy68z.fsf@yhuang6-desk2.ccr.corp.intel.com>
+CC:     Andrew Morton <akpm@linux-foundation.org>,
+        Yosry Ahmed <yosryahmed@google.com>,
+        Sachin Sant <sachinp@linux.ibm.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>
+From:   Liu Shixin <liushixin2@huawei.com>
+Message-ID: <b00b1425-3942-f7f2-db9b-a45941e4fb44@huawei.com>
+Date:   Mon, 6 Nov 2023 14:43:39 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-ServerInfo: RTEXH36505.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-Antivirus-Interceptor-Info: fallback
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <87h6lzy68z.fsf@yhuang6-desk2.ccr.corp.intel.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.179.24]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpemd200004.china.huawei.com (7.185.36.141)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogWmhlbmcgSGFja2VyIDxo
-YWNrZXJ6aGVuZzY2NkBnbWFpbC5jb20+DQo+IFNlbnQ6IE1vbmRheSwgTm92ZW1iZXIgNiwgMjAy
-MyAxOjE2IFBNDQo+IFRvOiBaaGVuZyBXYW5nIDx6eXl0bHoud3pAMTYzLmNvbT4NCj4gQ2M6IGFz
-cHJpZWxAZ21haWwuY29tOyBmcmFua3kubGluQGJyb2FkY29tLmNvbTsgaGFudGUubWV1bGVtYW5A
-YnJvYWRjb20uY29tOyBrdmFsb0BrZXJuZWwub3JnOw0KPiBqb2hhbm5lcy5iZXJnQGludGVsLmNv
-bTsgbWFyY2FuQG1hcmNhbi5zdDsgbGludXMud2FsbGVpakBsaW5hcm8ub3JnOyBqaXNvby5qYW5n
-QHlvbnNlaS5hYy5rcjsNCj4gbGludXhsb3ZlbWluQHlvbnNlaS5hYy5rcjsgd2F0YXJ1LmdvaGRh
-QGN5cHJlc3MuY29tOyBsaW51eC13aXJlbGVzc0B2Z2VyLmtlcm5lbC5vcmc7DQo+IGJyY204MDIx
-MS1kZXYtbGlzdC5wZGxAYnJvYWRjb20uY29tOyBTSEEtY3lmbWFjLWRldi1saXN0QGluZmluZW9u
-LmNvbTsgbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZzsNCj4gc2VjdXJpdHlAa2VybmVsLm9y
-Zzsgc3RhYmxlQHZnZXIua2VybmVsLm9yZw0KPiBTdWJqZWN0OiBSZTogW1BBVENIIHYzXSBicmNt
-Zm1hYzogRml4IHVzZS1hZnRlci1mcmVlIGJ1ZyBpbiBicmNtZl9jZmc4MDIxMV9kZXRhY2gNCg0K
-c3ViamVjdCBwcmVmaXggIndpZjogYnJjbWZtYWM6IC4uLiINClRyeSAiZ2l0IGxvZyAtLW9uZWxp
-bmUgZHJpdmVycy9uZXQvd2lyZWxlc3MvYnJvYWRjb20vYnJjbTgwMjExL2JyY21mbWFjIiB0byBr
-bm93IHRoYXQuIA0KDQo+IA0KPiBUaGlzIGlzIHRoZSBjYW5kaWRhdGUgcGF0Y2ggb2YgQ1ZFLTIw
-MjMtNDcyMzMgOg0KPiBodHRwczovL252ZC5uaXN0Lmdvdi92dWxuL2RldGFpbC9DVkUtMjAyMy00
-NzIzMw0KDQpJIHRoaW5rIHlvdSBjYW4gYWRkIHRoaXMgbGluayB0byBjb21taXQgbWVzc2FnZSBh
-cyB3ZWxsLiANCg0KDQo=
+
+
+On 2023/11/6 10:18, Huang, Ying wrote:
+> Liu Shixin <liushixin2@huawei.com> writes:
+>
+>> When spaces of swap devices are exhausted, only file pages can be
+>> reclaimed.  But there are still some swapcache pages in anon lru list.
+>> This can lead to a premature out-of-memory.
+>>
+>> The problem is found with such step:
+>>
+>>  Firstly, set a 9MB disk swap space, then create a cgroup with 10MB
+>>  memory limit, then runs an program to allocates about 15MB memory.
+>>
+>> The problem occurs occasionally, which may need about 100 times [1].
+>>
+>> Fix it by checking number of swapcache pages in can_reclaim_anon_pages().
+>> If the number is not zero, return true and set swapcache_only to 1.
+>> When scan anon lru list in swapcache_only mode, non-swapcache pages will
+>> be skipped to isolate in order to accelerate reclaim efficiency.
+>>
+>> However, in swapcache_only mode, the scan count still increased when scan
+>> non-swapcache pages because there are large number of non-swapcache pages
+>> and rare swapcache pages in swapcache_only mode, and if the non-swapcache
+>> is skipped and do not count, the scan of pages in isolate_lru_folios() can
+>> eventually lead to hung task, just as Sachin reported [2].
+>>
+>> By the way, since there are enough times of memory reclaim before OOM, it
+>> is not need to isolate too much swapcache pages in one times.
+>>
+>> [1]. https://lore.kernel.org/lkml/CAJD7tkZAfgncV+KbKr36=eDzMnT=9dZOT0dpMWcurHLr6Do+GA@mail.gmail.com/
+>> [2]. https://lore.kernel.org/linux-mm/CAJD7tkafz_2XAuqE8tGLPEcpLngewhUo=5US14PAtSM9tLBUQg@mail.gmail.com/
+>>
+>> Signed-off-by: Liu Shixin <liushixin2@huawei.com>
+>> Tested-by: Yosry Ahmed <yosryahmed@google.com>
+>> Reviewed-by: "Huang, Ying" <ying.huang@intel.com>
+>> Reviewed-by: Yosry Ahmed <yosryahmed@google.com>
+>> ---
+>> v6->v7: Reset swapcache_only to zero after there are swap spaces.
+>> v5->v6: Fix NULL pointing derefence and hung task problem reported by Sachin.
+>>
+>>  include/linux/swap.h |  6 ++++++
+>>  mm/memcontrol.c      |  8 ++++++++
+>>  mm/vmscan.c          | 36 ++++++++++++++++++++++++++++++++++--
+>>  3 files changed, 48 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/include/linux/swap.h b/include/linux/swap.h
+>> index f6dd6575b905..3ba146ae7cf5 100644
+>> --- a/include/linux/swap.h
+>> +++ b/include/linux/swap.h
+>> @@ -659,6 +659,7 @@ static inline void mem_cgroup_uncharge_swap(swp_entry_t entry, unsigned int nr_p
+>>  }
+>>  
+>>  extern long mem_cgroup_get_nr_swap_pages(struct mem_cgroup *memcg);
+>> +extern long mem_cgroup_get_nr_swapcache_pages(struct mem_cgroup *memcg);
+>>  extern bool mem_cgroup_swap_full(struct folio *folio);
+>>  #else
+>>  static inline void mem_cgroup_swapout(struct folio *folio, swp_entry_t entry)
+>> @@ -681,6 +682,11 @@ static inline long mem_cgroup_get_nr_swap_pages(struct mem_cgroup *memcg)
+>>  	return get_nr_swap_pages();
+>>  }
+>>  
+>> +static inline long mem_cgroup_get_nr_swapcache_pages(struct mem_cgroup *memcg)
+>> +{
+>> +	return total_swapcache_pages();
+>> +}
+>> +
+>>  static inline bool mem_cgroup_swap_full(struct folio *folio)
+>>  {
+>>  	return vm_swap_full();
+>> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+>> index 5b009b233ab8..29e34c06ca83 100644
+>> --- a/mm/memcontrol.c
+>> +++ b/mm/memcontrol.c
+>> @@ -7584,6 +7584,14 @@ long mem_cgroup_get_nr_swap_pages(struct mem_cgroup *memcg)
+>>  	return nr_swap_pages;
+>>  }
+>>  
+>> +long mem_cgroup_get_nr_swapcache_pages(struct mem_cgroup *memcg)
+>> +{
+>> +	if (mem_cgroup_disabled())
+>> +		return total_swapcache_pages();
+>> +
+>> +	return memcg_page_state(memcg, NR_SWAPCACHE);
+>> +}
+>> +
+>>  bool mem_cgroup_swap_full(struct folio *folio)
+>>  {
+>>  	struct mem_cgroup *memcg;
+>> diff --git a/mm/vmscan.c b/mm/vmscan.c
+>> index 6f13394b112e..a5e04291662f 100644
+>> --- a/mm/vmscan.c
+>> +++ b/mm/vmscan.c
+>> @@ -137,6 +137,9 @@ struct scan_control {
+>>  	/* Always discard instead of demoting to lower tier memory */
+>>  	unsigned int no_demotion:1;
+>>  
+>> +	/* Swap space is exhausted, only reclaim swapcache for anon LRU */
+>> +	unsigned int swapcache_only:1;
+>> +
+>>  	/* Allocation order */
+>>  	s8 order;
+>>  
+>> @@ -602,6 +605,12 @@ static bool can_demote(int nid, struct scan_control *sc)
+>>  	return true;
+>>  }
+>>  
+>> +static void set_swapcache_mode(struct scan_control *sc, bool swapcache_only)
+>> +{
+>> +	if (sc)
+>> +		sc->swapcache_only = swapcache_only;
+>> +}
+>> +
+> I think that it's unnecessary to introduce a new function.  I understand
+> that you want to reduce the code duplication.  We can add
+>
+>         sc->swapcache_only = false;
+>
+> at the beginning of can_reclaim_anon_pages() to reduce code duplication.
+> That can cover even more cases IIUC.
+OK, it‘s more appropriate, I will resend v8, thank you.
+
+
+>>  static inline bool can_reclaim_anon_pages(struct mem_cgroup *memcg,
+>>  					  int nid,
+>>  					  struct scan_control *sc)
+>> @@ -611,12 +620,26 @@ static inline bool can_reclaim_anon_pages(struct mem_cgroup *memcg,
+>>  		 * For non-memcg reclaim, is there
+>>  		 * space in any swap device?
+>>  		 */
+>> -		if (get_nr_swap_pages() > 0)
+>> +		if (get_nr_swap_pages() > 0) {
+>> +			set_swapcache_mode(sc, false);
+>>  			return true;
+>> +		}
+>> +		/* Is there any swapcache pages to reclaim? */
+>> +		if (total_swapcache_pages() > 0) {
+>> +			set_swapcache_mode(sc, true);
+>> +			return true;
+>> +		}
+>>  	} else {
+>>  		/* Is the memcg below its swap limit? */
+>> -		if (mem_cgroup_get_nr_swap_pages(memcg) > 0)
+>> +		if (mem_cgroup_get_nr_swap_pages(memcg) > 0) {
+>> +			set_swapcache_mode(sc, false);
+>>  			return true;
+>> +		}
+>> +		/* Is there any swapcache pages in memcg to reclaim? */
+>> +		if (mem_cgroup_get_nr_swapcache_pages(memcg) > 0) {
+>> +			set_swapcache_mode(sc, true);
+>> +			return true;
+>> +		}
+>>  	}
+> If can_demote() returns true, we shouldn't scan swapcache only.
+>
+> --
+> Best Regards,
+> Huang, Ying
+>
+>>  	/*
+>> @@ -2342,6 +2365,15 @@ static unsigned long isolate_lru_folios(unsigned long nr_to_scan,
+>>  		 */
+>>  		scan += nr_pages;
+>>  
+>> +		/*
+>> +		 * Count non-swapcache too because the swapcache pages may
+>> +		 * be rare and it takes too much times here if not count
+>> +		 * the non-swapcache pages.
+>> +		 */
+>> +		if (unlikely(sc->swapcache_only && !is_file_lru(lru) &&
+>> +		    !folio_test_swapcache(folio)))
+>> +			goto move;
+>> +
+>>  		if (!folio_test_lru(folio))
+>>  			goto move;
+>>  		if (!sc->may_unmap && folio_mapped(folio))
+> .
+>
+
