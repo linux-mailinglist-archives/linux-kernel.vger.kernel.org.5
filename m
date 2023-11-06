@@ -2,103 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C95817E1844
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 02:16:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F3687E1840
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 02:15:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230050AbjKFBQI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Nov 2023 20:16:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55304 "EHLO
+        id S229926AbjKFBPK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Nov 2023 20:15:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229485AbjKFBQG (ORCPT
+        with ESMTP id S229485AbjKFBPJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Nov 2023 20:16:06 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EE71FA
-        for <linux-kernel@vger.kernel.org>; Sun,  5 Nov 2023 17:15:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1699233314;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=I1DllSt6fTArQRMX3GewORWveJZhIv9vhXbNXa37doI=;
-        b=CpMcV5oTvMoJd8CiUjsbz1FHViFiZ8TAevJfjd9zqWf32Mmtj17HGW01/B+KaZrWk4OxrI
-        QTrEHRVwPX70i9nxHMGO/VXq0y/78wG9bZHuDzclhdsA3x2fiIwzY62t6MYnP1tSz+9I7K
-        BaA6HNrZ6CyPvL6oucQobBvDiJsnjjg=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-583-FAXzbPVoOsqT7G56Up_RQw-1; Sun, 05 Nov 2023 20:15:08 -0500
-X-MC-Unique: FAXzbPVoOsqT7G56Up_RQw-1
-Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id EF626811E7D;
-        Mon,  6 Nov 2023 01:15:07 +0000 (UTC)
-Received: from fedora (unknown [10.72.120.4])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 430E5492BE7;
-        Mon,  6 Nov 2023 01:15:01 +0000 (UTC)
-Date:   Mon, 6 Nov 2023 09:14:57 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     linux-block@vger.kernel.org, Tejun Heo <tj@kernel.org>,
-        linux-kernel@vger.kernel.org, Juri Lelli <juri.lelli@redhat.com>,
-        Andrew Theurer <atheurer@redhat.com>,
-        Joe Mario <jmario@redhat.com>,
-        Sebastian Jug <sejug@redhat.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Bart Van Assche <bvanassche@acm.org>, ming.lei@redhat.com
-Subject: Re: [PATCH V3] blk-mq: don't schedule block kworker on isolated CPUs
-Message-ID: <ZUg+EfA8b/j5XTD7@fedora>
-References: <20231025025737.358756-1-ming.lei@redhat.com>
+        Sun, 5 Nov 2023 20:15:09 -0500
+Received: from mail-ot1-f69.google.com (mail-ot1-f69.google.com [209.85.210.69])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5619E0
+        for <linux-kernel@vger.kernel.org>; Sun,  5 Nov 2023 17:15:06 -0800 (PST)
+Received: by mail-ot1-f69.google.com with SMTP id 46e09a7af769-6cf61d80fafso5723395a34.1
+        for <linux-kernel@vger.kernel.org>; Sun, 05 Nov 2023 17:15:06 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699233306; x=1699838106;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=XIox3F4MiqG8TxsO0HEjtYkMTrcLIgWSkaFAIbL67EI=;
+        b=awpVeMRFYbOLlTuQ6hERzJLZNNbzYf2+jkgV1ZyNyyIKpmWp6wTCC/oy92aYMJuudM
+         iTirmWnqsHG8yQ5kOg2p/4068PpCfSNgt8yA7MNkVXe7BN71qVncHyI/MU7zFxWeNKF9
+         I7G3+7k+iDggh5oci7R94+7vhqfx4jn1u+YUg85vTGMVzAM6e0baFbDNqhkcDB5sz0fL
+         eaEb7ErFHPq2z0bJop0qt3D8eSKqUTFq6IRipk0OMYBSe7nexLUjTa1fLsMoYwogmtDO
+         OpS4NS6m4fKyYj5eDC/2+TbBtBd4RtJsX5vj06DTfim4qHsmC5UV5V+v7kvZqW4+4iUV
+         dNbA==
+X-Gm-Message-State: AOJu0YwOmaV/7+PSiOhRi8tUgYzadvMltKSvtvVCDF8h9ujMqeLtWoLh
+        ZqgSIWpslsvIIRytp+Mylbk2e2w4HSqKnZ/0vj8tFvMBftFPimo=
+X-Google-Smtp-Source: AGHT+IHJRODSgUUzu9S/SUqIer3tS8JzGqDTu+nmWYRZYRycvaZ6SN7D6rezgEw7RlT/Msu4wjLhPW/maV7z/9Xzs4hWZ5AgMsXP
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231025025737.358756-1-ming.lei@redhat.com>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6830:1147:b0:6bf:27b3:3d29 with SMTP id
+ x7-20020a056830114700b006bf27b33d29mr8610622otq.5.1699233306288; Sun, 05 Nov
+ 2023 17:15:06 -0800 (PST)
+Date:   Sun, 05 Nov 2023 17:15:06 -0800
+In-Reply-To: <20231106004650.2795828-1-lizhi.xu@windriver.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000009ca8d106097195f1@google.com>
+Subject: Re: [syzbot] [net?] general protection fault in ptp_ioctl
+From:   syzbot <syzbot+8a78ecea7ac1a2ea26e5@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org, lizhi.xu@windriver.com,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 25, 2023 at 10:57:37AM +0800, Ming Lei wrote:
-> Kernel parameter of `isolcpus=` or 'nohz_full=' are used for isolating CPUs
-> for specific task, and user often won't want block IO to disturb these CPUs,
-> also long IO latency may be caused if blk-mq kworker is scheduled on these
-> isolated CPUs.
-> 
-> Kernel workqueue only respects this limit for WQ_UNBOUND, for bound wq,
-> the responsibility should be on wq user.
-> 
-> So don't not run block kworker on isolated CPUs by ruling out isolated CPUs
-> from hctx->cpumask. Meantime in cpuhp handler, use queue map to check if
-> all CPUs in this hw queue are offline, this way can avoid any cost in fast
-> IO code path.
-> 
-> Cc: Juri Lelli <juri.lelli@redhat.com>
-> Cc: Andrew Theurer <atheurer@redhat.com>
-> Cc: Joe Mario <jmario@redhat.com>
-> Cc: Sebastian Jug <sejug@redhat.com>
-> Cc: Frederic Weisbecker <frederic@kernel.org>
-> Cc: Bart Van Assche <bvanassche@acm.org>
-> Signed-off-by: Ming Lei <ming.lei@redhat.com>
-> ---
-> 
-> V3:
-> 	- avoid to check invalid cpu as reported by Bart
-> 	- take current cpu(to be offline, not done yet) into account
-> 	- simplify blk_mq_hctx_has_online_cpu()
+Hello,
 
-Hello Jens and Guys,
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-Ping...
+Reported-and-tested-by: syzbot+8a78ecea7ac1a2ea26e5@syzkaller.appspotmail.com
 
-thanks,
-Ming
+Tested on:
 
+commit:         4652b8e4 Merge tag '6.7-rc-ksmbd-server-fixes' of git:..
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+console output: https://syzkaller.appspot.com/x/log.txt?x=11cea00f680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=423e70610024fd6b
+dashboard link: https://syzkaller.appspot.com/bug?extid=8a78ecea7ac1a2ea26e5
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=1219bb08e80000
+
+Note: testing is done by a robot and is best-effort only.
