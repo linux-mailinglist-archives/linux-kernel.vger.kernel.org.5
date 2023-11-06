@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 990517E1AE2
+	by mail.lfdr.de (Postfix) with ESMTP id 3FAA47E1AE1
 	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 08:14:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229991AbjKFHOG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 02:14:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47686 "EHLO
+        id S229785AbjKFHOE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 02:14:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229563AbjKFHOD (ORCPT
+        with ESMTP id S229583AbjKFHOD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 6 Nov 2023 02:14:03 -0500
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC7D5CC
-        for <linux-kernel@vger.kernel.org>; Sun,  5 Nov 2023 23:13:58 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44A93D8
+        for <linux-kernel@vger.kernel.org>; Sun,  5 Nov 2023 23:14:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699254839; x=1730790839;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=E6/kgqA9Lo5JBiyk0XaJAk9Nzct4odqOsifYkRlm8ZI=;
-  b=NQZxqehOr5giCw/JVIsO+cd6Gz6KO3yg5FbgSEA2VP51gXj5nU8zDfFq
-   cBFIEbCFUl3KLgnwpi/TmHfwYN9G9NPLiR9D1l5H/erbJE9Vn4N1EhRhV
-   /VyvTosKJvaGSg5VWA2dr8Cs/0Qp4O26dComYRLJfHsSFSQ0hq/0R8jTk
-   wCGTGDu5KR4ECfTcfnnJWGQLWXjQHv1Hh+TwEVxsxKYWRm1w8pqp2Vi1G
-   C1zGNZMg+lJureajyEe0rEKMAkTVz/B3Eq80EpHtxEw7IrjszU5t/ROFw
-   +oepM/bzHkqyVZ03nqIDpE0nAtgoSpLF1uGIBKgwdF5OZ5x8eDkWtQLp7
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10885"; a="10759035"
+  t=1699254841; x=1730790841;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=c9GeMl676tMxuvRJHqXrxAMwFdaSUf5heq0NrXZPU0Q=;
+  b=Yz3QYMGXBJaVza0EErGtDr++UqnzoYwipTPYBeeJZIjZITKxzCNvxyGV
+   KKMiM9oe9bDJdynXu5iR4jDXxeE8W+vLpWHzrthCKCkcDOF1q8woWVMRT
+   kyxVKLDI3dC5HsfrKiiElE4+lgelm0dCGwKJw5AWPpD1eXuiKUVAZl5i8
+   OQprKUnp0uHtkv8jhE5TW13W7zobrb5UwfKAPRX69pMGcS41kg11Ysd8l
+   PShFL+qPhrtR/6mf2KjT6eBw4SVKDTf0f00AJ2gvk9FRwqeLmSxBiNr6B
+   jExKqBxZgF4P6i6w3y2B2P9wXUbivZW8Qbh8UuDFFVryElB5cA4we0pft
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10885"; a="10759042"
 X-IronPort-AV: E=Sophos;i="6.03,280,1694761200"; 
-   d="scan'208";a="10759035"
+   d="scan'208";a="10759042"
 Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2023 23:13:58 -0800
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2023 23:14:01 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10885"; a="1093690826"
+X-IronPort-AV: E=McAfee;i="6600,9927,10885"; a="1093690868"
 X-IronPort-AV: E=Sophos;i="6.03,280,1694761200"; 
-   d="scan'208";a="1093690826"
+   d="scan'208";a="1093690868"
 Received: from sqa-gate.sh.intel.com (HELO localhost.localdomain) ([10.239.48.212])
-  by fmsmga005.fm.intel.com with ESMTP; 05 Nov 2023 23:13:55 -0800
+  by fmsmga005.fm.intel.com with ESMTP; 05 Nov 2023 23:13:57 -0800
 From:   Tina Zhang <tina.zhang@intel.com>
 To:     Jean-Philippe Brucker <jean-philippe@linaro.org>,
         Kevin Tian <kevin.tian@intel.com>,
@@ -46,10 +46,12 @@ To:     Jean-Philippe Brucker <jean-philippe@linaro.org>,
         will@kernel.org, Yi Liu <yi.l.liu@intel.com>
 Cc:     virtualization@lists.linux-foundation.org, iommu@lists.linux.dev,
         linux-kernel@vger.kernel.org, Tina Zhang <tina.zhang@intel.com>
-Subject: [RFC PATCH 0/5] virtio-iommu: Add VT-d IO page table
-Date:   Mon,  6 Nov 2023 02:12:21 -0500
-Message-Id: <20231106071226.9656-1-tina.zhang@intel.com>
+Subject: [RFC PATCH 1/5] iommu/virtio-iommu: Correct the values of granule and nr_pages
+Date:   Mon,  6 Nov 2023 02:12:22 -0500
+Message-Id: <20231106071226.9656-2-tina.zhang@intel.com>
 X-Mailer: git-send-email 2.39.3
+In-Reply-To: <20231106071226.9656-1-tina.zhang@intel.com>
+References: <20231106071226.9656-1-tina.zhang@intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -62,56 +64,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The proposal about virtio-iommu support page tables is being discussed in
-the virtio-comment mailing list[1]. This patch-set based on Jean's
-virtio-iommu/pgtables branch[2] tries to follow the proposal and add the
-basic VT-d IO page table support to virtio-iommu.
+The value of granule is ilog2(pgsize). When the value of pgsize isn't
+a power of two, granule would make pgsize less than the actual size of
+pgsize. E.g., if pgsize = 0x6000 and granule = ilog2(gather->pgsize), then
+granule = 0xe. 2^0xe = 0x4000 makes the pgsize (0x4000) smaller than the
+actual pgsize (0x6000). Invalidating IOTLB with smaller range would lead
+to cache incoherence. So, roundup pgsize value to the nearest power of 2
+to make sure the granule won't make pgsize less than the actual size. The
+value of "gather->end - gather->start + 1" also needs similar adjustment.
 
-On Intel platform with VT-d nested translation enabled, there are two
-main benefits for enabling virtual IOMMU support VT-d IO page table:
-1) Allowing vSVM (aka vSVA) usage. Virtual Shared Virtual Addressing
-   (vSVA) allows the virtual processor and virtual device to use the
-   same virtual addresses.
-2) Accelerating DMA buffer map operation for vIOVA usage by removing
-   the context switch on DMA buffer map operation.
-(Note: this patch-set doesn't include the whole patch-set for enabling
-vSVM on virtio-iommu, only includes the part for vIOVA case. However,
-the vSVM enabling patch-set needs to base on this patch-set.)
+Signed-off-by: Tina Zhang <tina.zhang@intel.com>
+---
+ drivers/iommu/virtio-iommu.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-There are three changes in this patch-set:
-1) The first patch is a bug fixing patch that tries to resolve an issue
-   about IOTLB invalidation request with incorrect page size.
-2) The next 3 patches are about adding generic IO page table support to
-   VT-d driver.
-3) The last one introduces the VT-d page format table to virtio-iommu
-   driver.
-
-The patch-set is also available at github:
-https://github.com/TinaZhangZW/linux/tree/vt-d-pgtable
-
-The QEMU part is available here:
-https://github.com/TinaZhangZW/qemu/tree/virtio-iommu/vt-d-pgtable
-
-
-[1]:https://lists.oasis-open.org/archives/virtio-comment/202310/msg00018.html
-[2]:https://jpbrucker.net/git/linux/log/?h=virtio-iommu/pgtables
-
-Tina Zhang (5):
-  iommu/virtio-iommu: Correct the values of granule and nr_pages
-  iommu/vt-d: Add generic IO page table support
-  iommu/io-pgtable: Introduce struct vtd_cfg
-  iommu/vt-d: Adapt alloc_pgtable interface to be used by others
-  iommu/virtio-iommu: Support attaching VT-d IO pgtable
-
- drivers/iommu/intel/Kconfig       |   1 +
- drivers/iommu/intel/iommu.c       | 157 ++++++++++++++++++++++++++++++
- drivers/iommu/intel/iommu.h       |   7 ++
- drivers/iommu/io-pgtable.c        |   3 +
- drivers/iommu/virtio-iommu.c      |  27 ++++-
- include/linux/io-pgtable.h        |   7 ++
- include/uapi/linux/virtio_iommu.h |  26 +++++
- 7 files changed, 226 insertions(+), 2 deletions(-)
-
+diff --git a/drivers/iommu/virtio-iommu.c b/drivers/iommu/virtio-iommu.c
+index 08e310672e57..b1ceaac974e2 100644
+--- a/drivers/iommu/virtio-iommu.c
++++ b/drivers/iommu/virtio-iommu.c
+@@ -1289,8 +1289,8 @@ static void viommu_iotlb_sync(struct iommu_domain *domain,
+ 		if (!gather->pgsize)
+ 			return;
+ 
+-		granule = ilog2(gather->pgsize);
+-		nr_pages = (gather->end - gather->start + 1) >> granule;
++		granule = ilog2(__roundup_pow_of_two(gather->pgsize));
++		nr_pages = __roundup_pow_of_two(gather->end - gather->start + 1) >> granule;
+ 		req = (struct virtio_iommu_req_invalidate) {
+ 			.head.type	= VIRTIO_IOMMU_T_INVALIDATE,
+ 			.inv_gran	= cpu_to_le16(VIRTIO_IOMMU_INVAL_G_VA),
 -- 
 2.39.3
 
