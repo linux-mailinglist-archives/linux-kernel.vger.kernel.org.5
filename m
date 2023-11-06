@@ -2,183 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A4B87E221F
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 13:46:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11FCE7E2224
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 13:46:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232052AbjKFMqC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 07:46:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58848 "EHLO
+        id S232055AbjKFMqU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 07:46:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232004AbjKFMpm (ORCPT
+        with ESMTP id S231927AbjKFMqE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 07:45:42 -0500
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D640519A9;
-        Mon,  6 Nov 2023 04:45:16 -0800 (PST)
-Received: from [100.107.97.3] (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        Mon, 6 Nov 2023 07:46:04 -0500
+Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB79410F7
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 04:45:36 -0800 (PST)
+Received: from mail-pg1-f197.google.com (mail-pg1-f197.google.com [209.85.215.197])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id E4F03660748D;
-        Mon,  6 Nov 2023 12:45:14 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1699274715;
-        bh=IZ5sRu5ZB8QlbMlKzbR2HpoB5MIw6ONqWmWF6csTMas=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=Az2KZY+o+wvZ9fBcZcv9AIiSZ99w7vR7RAcnpC5akxEst/P8HePevq+ZcVYM5tdrT
-         gIcdpKjOAW1aIcmMlSFF6UxjMqaMLWV2ESSjmtotMgpPnO3ztaYU1IU7BkyIZttpVF
-         ziL80JQb4wMnXB4TIpjwVMaMuSh6EW+KrMCzmp6+y35ElBPOhnGBG+dsM4scfcyYPO
-         lFnuAJjMig+H8Ghz1Q80vmXaoJU6r313uIEIKoeII+TPlK1sjA/0HCYa3KMdhrZ8pr
-         S8xqhf+zbQt8gv0AYjn34/s+wrESl+LLcS9/qwb4yJU3XNAv8ND0W0cMkypPx/m74V
-         XarvBsrDC+8yA==
-Message-ID: <813b3a54-f973-410f-950b-d99f6e563f1f@collabora.com>
-Date:   Mon, 6 Nov 2023 13:45:14 +0100
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 95EBA40622
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 12:45:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1699274734;
+        bh=Kv5qXMtHe1RqB/IAdF3q285FqfuFYmP+L0xdtku424s=;
+        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+         To:Cc:Content-Type;
+        b=ohC+2P6eIz9UEIwqG6CI5nbi37GUpZWibYGKuK0mqBUXK9lqBp5dMM9a7qEAOh0WC
+         bVy4uj2NJkOQ6aapoLUAQ8Y2RP9Eh+r8C39Hx/FHc6lBodK7R+0I9/EO3sccLQ8Z8d
+         A6s8N/K5l1JZQb6ZBGDQpoMn3fvGvoZhgHRlKlZPFd8bEE8savuzluty0VK01QCcUx
+         iABS0tlFpFUwOSPuPcZ+n+hoMJOCk92KxqdOGQKMgm0n94ojIVHrxaqGG/KWsLA4ty
+         //OJNFdsOKy0vUjOfFxB+QBTVXEKChzZdQ+0AbRjUQdFTDl1xF8t81t2Sq96c+WCFJ
+         /cZlw4R1v5k+Q==
+Received: by mail-pg1-f197.google.com with SMTP id 41be03b00d2f7-5b95ee4ae94so2442926a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 04:45:34 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699274732; x=1699879532;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Kv5qXMtHe1RqB/IAdF3q285FqfuFYmP+L0xdtku424s=;
+        b=nPP1KTTxxAK7RAbEDWdlr9aAph/ZDVm8G96WxezZMnLVMnbk2/93UxXfZlBSr3OrOr
+         FJoX8l54RRUfzHNephqgxVmPaOJuoMkh4B/QbLyDF3ngEHWrirXWAA+0237Md7+ulMIm
+         l62380IHmgu8xx9KBlI5wCkVQKIOpd+wj2oR1mAaqTUiHsqR9zxR+yzZnrTLmgyLLuiR
+         QkGcRVi6cg7Ib8m+WSsHO/Ax4jOvabqBdJTthuAqBVP1Hw3hPHNVXe+yvuzTb/AZlJk2
+         TXdQy8D5XvUWI4tjg5QUl84vZLNfhzchFFiGtM3cLOn+QaaEDg+OV3qSkxRQCm3uAyEr
+         8VJw==
+X-Gm-Message-State: AOJu0YwYPY1dnzgrtWtmYZu5x6km+P6FqzQhsRhIe/TlW2xvHb5RQUvY
+        vWBB+A4bx3n8pC9CS5+tNnCO1W83Pmd9b45YmzFBXL7z6PNqdTHEz9PdJVDFO4Nzgxd+0000wln
+        wuwYwpxpvxjN3xPcRArKZ2W3sADGXV6gJ/woonWODiyz8SW6csVYtsjpkurFVPNbzv6fqq/4=
+X-Received: by 2002:a17:90a:319:b0:280:c7c:3069 with SMTP id 25-20020a17090a031900b002800c7c3069mr20802005pje.7.1699274732420;
+        Mon, 06 Nov 2023 04:45:32 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEh2XiLPI3ndF2x/X6bn2IJNKH5McXJDdk/jTsZOxEv6ay1/WonhiHxfGBgkouzA8kJ3g5is6gUmNd6KZOSgt4=
+X-Received: by 2002:a17:90a:319:b0:280:c7c:3069 with SMTP id
+ 25-20020a17090a031900b002800c7c3069mr20801988pje.7.1699274732095; Mon, 06 Nov
+ 2023 04:45:32 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v8 00/12] add support MDP3 on MT8195 platform
-To:     Moudy Ho <moudy.ho@mediatek.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Cc:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-References: <20231030100626.12564-1-moudy.ho@mediatek.com>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Content-Language: en-US
-In-Reply-To: <20231030100626.12564-1-moudy.ho@mediatek.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231018103337.34622-1-victorshihgli@gmail.com> <d18a2569-ebc3-484f-927a-5e3682457469@intel.com>
+In-Reply-To: <d18a2569-ebc3-484f-927a-5e3682457469@intel.com>
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+Date:   Mon, 6 Nov 2023 14:45:18 +0200
+Message-ID: <CAAd53p5Q5-RVHWytst7=tCNW+A+Sc_swAgUQemQLF27CLbH7+A@mail.gmail.com>
+Subject: Re: [PATCH V2] mmc: sdhci-pci-gli: GL975[05]: Mask the replay timer
+ timeout of AER
+To:     Adrian Hunter <adrian.hunter@intel.com>
+Cc:     Victor Shih <victorshihgli@gmail.com>, ulf.hansson@linaro.org,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        benchuanggli@gmail.com, HL.Liu@genesyslogic.com.tw,
+        Greg.tu@genesyslogic.com.tw, SeanHY.Chen@genesyslogic.com.tw,
+        Victor Shih <victor.shih@genesyslogic.com.tw>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 30/10/23 11:06, Moudy Ho ha scritto:
-> Changes since v7:
-> - Rebase on linux-next.
-> - Dependent dtsi files:
->    https://patchwork.kernel.org/project/linux-mediatek/list/?series=797543
-> - Dependent bindings:
->    https://patchwork.kernel.org/project/linux-mediatek/list/?series=797555
-> - Patch [9/12] has made corresponding adjustments in response to the changes in
->    the compatible name of the PAD component in DTSI and binding.
-> - Adding WROT compatible name in the MDP driver's of_match_table in [9/12] to
->    avoid deactivating 'pm_runtime_*' functions.
-> 
+On Mon, Nov 6, 2023 at 11:29=E2=80=AFAM Adrian Hunter <adrian.hunter@intel.=
+com> wrote:
+>
+> On 18/10/23 13:33, Victor Shih wrote:
+> > From: Victor Shih <victor.shih@genesyslogic.com.tw>
+> >
+> > Due to a flaw in the hardware design, the GL975x replay timer frequentl=
+y
+> > times out when ASPM is enabled. As a result, the warning messages that =
+will
+> > often appear in the system log when the system accesses the GL975x
+> > PCI config. Therefore, the replay timer timeout must be masked.
+> >
+> > Signed-off-by: Victor Shih <victor.shih@genesyslogic.com.tw>
+>
+> Acked-by: Adrian Hunter <adrian.hunter@intel.com>
 
-On MT8195 Cherry Tomato Chromebook, whole series is
+Acked-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
 
-Tested-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+I'll send another patch to address the issue I am seeing.
 
-> Changes since v6:
-> - Rebase on v6.6-rc5.
-> - Dependent dtsi files:
->    https://patchwork.kernel.org/project/linux-mediatek/list/?series=792079
-> - Dependent bindings:
->    https://patchwork.kernel.org/project/linux-mediatek/list/?series=792477
-> - Move the patch that fixes compile warnings from this series and
->    create a separate standalone patch.
-> 
-> Changes since v5:
-> - Rebase on v6.6-rc2.
-> - Dependent dtsi files:
->    https://patchwork.kernel.org/project/linux-mediatek/list/?series=786511
-> - Dependent bindings:
->    https://patchwork.kernel.org/project/linux-mediatek/list/?series=786520
-> - Integrate MMSY/MUTEX structure in "mdp_probe".
-> - Fix the build warnings that were detected by the linux-media
->    build scripts tool.
-> 
-> Changes since v4:
-> - Rebase on v6.6-rc1
-> - Remove any unnecessary DTS settings.
-> - Adjust the usage of MOD and clock in blending components.
-> 
-> Changes since v3:
-> - Depend on :
->    [1] https://patchwork.kernel.org/project/linux-media/list/?series=719841
-> - Suggested by Krzysztof, integrating all newly added bindings for
->    the mt8195 MDP3 into the file "mediatek,mt8195-mdp3.yaml".
-> - Revise MDP3 nodes with generic names.
-> 
-> Changes since v2:
-> - Depend on :
->    [1] MMSYS/MUTEX: https://patchwork.kernel.org/project/linux-mediatek/list/?series=711592
->    [2] MDP3: https://patchwork.kernel.org/project/linux-mediatek/list/?series=711618
-> - Suggested by Rob to revise MDP3 bindings to pass dtbs check
-> - Add parallel paths feature.
-> - Add blended components settings.
-> 
-> Changes since v1:
-> - Depend on :
->    [1] MDP3 : https://patchwork.kernel.org/project/linux-mediatek/list/?series=698872
->    [2] MMSYS/MUTEX: https://patchwork.kernel.org/project/linux-mediatek/list/?series=684959
-> - Fix compilation failure due to use of undeclared identifier in file "mtk-mdp3-cmdq.c"
-> 
-> Hello,
-> 
-> This patch is used to add support for MDP3 on the MT8195 platform that
-> contains more picture quality components, and can arrange more pipelines
-> through two sets of MMSYS and MUTEX respectively.
-> 
-> Moudy Ho (12):
->    media: platform: mtk-mdp3: add support second sets of MMSYS
->    media: platform: mtk-mdp3: add support second sets of MUTEX
->    media: platform: mtk-mdp3: introduce more pipelines from MT8195
->    media: platform: mtk-mdp3: introduce more MDP3 components
->    media: platform: mtk-mdp3: add checks for dummy components
->    media: platform: mtk-mdp3: avoid multiple driver registrations
->    media: platform: mtk-mdp3: extend GCE event waiting in RDMA and WROT
->    media: platform: mtk-mdp3: add support for blending multiple
->      components
->    media: platform: mtk-mdp3: add mt8195 platform configuration
->    media: platform: mtk-mdp3: add mt8195 shared memory configurations
->    media: platform: mtk-mdp3: add mt8195 MDP3 component settings
->    media: platform: mtk-mdp3: add support for parallel pipe to improve
->      FPS
-> 
->   .../platform/mediatek/mdp3/mdp_cfg_data.c     | 729 +++++++++++++-
->   .../platform/mediatek/mdp3/mdp_reg_aal.h      |  25 +
->   .../platform/mediatek/mdp3/mdp_reg_color.h    |  31 +
->   .../media/platform/mediatek/mdp3/mdp_reg_fg.h |  23 +
->   .../platform/mediatek/mdp3/mdp_reg_hdr.h      |  31 +
->   .../platform/mediatek/mdp3/mdp_reg_merge.h    |  25 +
->   .../platform/mediatek/mdp3/mdp_reg_ovl.h      |  25 +
->   .../platform/mediatek/mdp3/mdp_reg_pad.h      |  21 +
->   .../platform/mediatek/mdp3/mdp_reg_rdma.h     |  24 +
->   .../platform/mediatek/mdp3/mdp_reg_rsz.h      |   2 +
->   .../platform/mediatek/mdp3/mdp_reg_tdshp.h    |  34 +
->   .../platform/mediatek/mdp3/mdp_reg_wrot.h     |   8 +
->   .../platform/mediatek/mdp3/mdp_sm_mt8195.h    | 283 ++++++
->   .../platform/mediatek/mdp3/mtk-img-ipi.h      |   4 +
->   .../platform/mediatek/mdp3/mtk-mdp3-cfg.h     |   2 +
->   .../platform/mediatek/mdp3/mtk-mdp3-cmdq.c    | 440 +++++++--
->   .../platform/mediatek/mdp3/mtk-mdp3-cmdq.h    |   1 +
->   .../platform/mediatek/mdp3/mtk-mdp3-comp.c    | 895 +++++++++++++++++-
->   .../platform/mediatek/mdp3/mtk-mdp3-comp.h    |  93 +-
->   .../platform/mediatek/mdp3/mtk-mdp3-core.c    | 139 ++-
->   .../platform/mediatek/mdp3/mtk-mdp3-core.h    |  50 +-
->   .../platform/mediatek/mdp3/mtk-mdp3-m2m.c     |  15 +
->   .../platform/mediatek/mdp3/mtk-mdp3-regs.c    |  18 +
->   .../platform/mediatek/mdp3/mtk-mdp3-regs.h    |   1 +
->   .../platform/mediatek/mdp3/mtk-mdp3-vpu.c     |   3 +-
->   25 files changed, 2744 insertions(+), 178 deletions(-)
->   create mode 100644 drivers/media/platform/mediatek/mdp3/mdp_reg_aal.h
->   create mode 100644 drivers/media/platform/mediatek/mdp3/mdp_reg_color.h
->   create mode 100644 drivers/media/platform/mediatek/mdp3/mdp_reg_fg.h
->   create mode 100644 drivers/media/platform/mediatek/mdp3/mdp_reg_hdr.h
->   create mode 100644 drivers/media/platform/mediatek/mdp3/mdp_reg_merge.h
->   create mode 100644 drivers/media/platform/mediatek/mdp3/mdp_reg_ovl.h
->   create mode 100644 drivers/media/platform/mediatek/mdp3/mdp_reg_pad.h
->   create mode 100644 drivers/media/platform/mediatek/mdp3/mdp_reg_tdshp.h
->   create mode 100644 drivers/media/platform/mediatek/mdp3/mdp_sm_mt8195.h
-> 
+Kai-Heng
 
+>
+> > ---
+> >
+> > Updates in V2:
+> >  - Modify the commit message.
+> >
+> > ---
+> >
+> >  drivers/mmc/host/sdhci-pci-gli.c | 16 ++++++++++++++++
+> >  1 file changed, 16 insertions(+)
+> >
+> > diff --git a/drivers/mmc/host/sdhci-pci-gli.c b/drivers/mmc/host/sdhci-=
+pci-gli.c
+> > index d83261e857a5..d8a991b349a8 100644
+> > --- a/drivers/mmc/host/sdhci-pci-gli.c
+> > +++ b/drivers/mmc/host/sdhci-pci-gli.c
+> > @@ -28,6 +28,9 @@
+> >  #define PCI_GLI_9750_PM_CTRL 0xFC
+> >  #define   PCI_GLI_9750_PM_STATE        GENMASK(1, 0)
+> >
+> > +#define PCI_GLI_9750_CORRERR_MASK                            0x214
+> > +#define   PCI_GLI_9750_CORRERR_MASK_REPLAY_TIMER_TIMEOUT       BIT(12)
+> > +
+> >  #define SDHCI_GLI_9750_CFG2          0x848
+> >  #define   SDHCI_GLI_9750_CFG2_L1DLY    GENMASK(28, 24)
+> >  #define   GLI_9750_CFG2_L1DLY_VALUE    0x1F
+> > @@ -152,6 +155,9 @@
+> >  #define PCI_GLI_9755_PM_CTRL     0xFC
+> >  #define   PCI_GLI_9755_PM_STATE    GENMASK(1, 0)
+> >
+> > +#define PCI_GLI_9755_CORRERR_MASK                            0x214
+> > +#define   PCI_GLI_9755_CORRERR_MASK_REPLAY_TIMER_TIMEOUT       BIT(12)
+> > +
+> >  #define SDHCI_GLI_9767_GM_BURST_SIZE                 0x510
+> >  #define   SDHCI_GLI_9767_GM_BURST_SIZE_AXI_ALWAYS_SET          BIT(8)
+> >
+> > @@ -561,6 +567,11 @@ static void gl9750_hw_setting(struct sdhci_host *h=
+ost)
+> >       value &=3D ~PCI_GLI_9750_PM_STATE;
+> >       pci_write_config_dword(pdev, PCI_GLI_9750_PM_CTRL, value);
+> >
+> > +     /* mask the replay timer timeout of AER */
+> > +     pci_read_config_dword(pdev, PCI_GLI_9750_CORRERR_MASK, &value);
+> > +     value |=3D PCI_GLI_9750_CORRERR_MASK_REPLAY_TIMER_TIMEOUT;
+> > +     pci_write_config_dword(pdev, PCI_GLI_9750_CORRERR_MASK, value);
+> > +
+> >       gl9750_wt_off(host);
+> >  }
+> >
+> > @@ -770,6 +781,11 @@ static void gl9755_hw_setting(struct sdhci_pci_slo=
+t *slot)
+> >       value &=3D ~PCI_GLI_9755_PM_STATE;
+> >       pci_write_config_dword(pdev, PCI_GLI_9755_PM_CTRL, value);
+> >
+> > +     /* mask the replay timer timeout of AER */
+> > +     pci_read_config_dword(pdev, PCI_GLI_9755_CORRERR_MASK, &value);
+> > +     value |=3D PCI_GLI_9755_CORRERR_MASK_REPLAY_TIMER_TIMEOUT;
+> > +     pci_write_config_dword(pdev, PCI_GLI_9755_CORRERR_MASK, value);
+> > +
+> >       gl9755_wt_off(pdev);
+> >  }
+> >
+>
