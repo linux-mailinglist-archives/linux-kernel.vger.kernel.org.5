@@ -2,291 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4426A7E1C9C
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 09:47:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 489217E1C9E
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 09:49:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231299AbjKFIry (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 03:47:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54682 "EHLO
+        id S231324AbjKFItE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 03:49:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231285AbjKFIrw (ORCPT
+        with ESMTP id S231266AbjKFItD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 03:47:52 -0500
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 14E74EA
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 00:47:47 -0800 (PST)
-Received: from loongson.cn (unknown [112.22.233.25])
-        by gateway (Coremail) with SMTP id _____8DxBfEyqEhlmEQ3AA--.43271S3;
-        Mon, 06 Nov 2023 16:47:46 +0800 (CST)
-Received: from localhost.localdomain (unknown [112.22.233.25])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8BxE+QtqEhl0y86AA--.62988S2;
-        Mon, 06 Nov 2023 16:47:44 +0800 (CST)
-From:   WANG Rui <wangrui@loongson.cn>
-To:     Huacai Chen <chenhuacai@kernel.org>, Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     WANG Xuerui <kernel@xen0n.name>, Boqun Feng <boqun.feng@gmail.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        linux-kernel@vger.kernel.org, loongarch@lists.linux.dev,
-        loongson-kernel@lists.loongnix.cn, WANG Rui <wangrui@loongson.cn>
-Subject: [PATCH] LoongArch: Relax memory ordering for atomic operations
-Date:   Mon,  6 Nov 2023 16:47:34 +0800
-Message-ID: <20231106084734.203243-1-wangrui@loongson.cn>
-X-Mailer: git-send-email 2.42.0
+        Mon, 6 Nov 2023 03:49:03 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AACDC83;
+        Mon,  6 Nov 2023 00:49:00 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 606F6C433C8;
+        Mon,  6 Nov 2023 08:48:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699260540;
+        bh=3kUvMLllZC7k4tgPL27MuqZrMvRrgrW6s8SmGJN+mGg=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=L+uQ+HyHFx+Yu5IQWXR82kbYPe3HfizXjY22JrCHyjA2TLxeenomtJJP17ruuyLiJ
+         esBr5LJIS0D/bAtkN+w9UZ2y8Py9SZZQZE+ob3aQEH3+oMymQh4A5zSpBgms3P6/Hz
+         GdNA+EAf/XXzOzOto8poXNBh0UYnbTQTVSy7ltTukQfiuLxP29LdXZ3N6mVzCLTcW6
+         A7TI9c+7dBRVHxGf61HjAR3jyTO3//AbXUFRXc5Vw67n292UG4QXvPHxjcCRYpYfal
+         uI4GusQRFZJ0xH/mFo8uZyMVqFAHYLjSL6hExyJe7STUEy7UyBqnDC2MXDWdDKQq/H
+         fYOm+7EqGWmlw==
+Message-ID: <d2f18887-6920-461c-8c1d-2abd1f7101a0@kernel.org>
+Date:   Mon, 6 Nov 2023 09:48:51 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf8BxE+QtqEhl0y86AA--.62988S2
-X-CM-SenderInfo: pzdqw2txl6z05rqj20fqof0/
-X-Coremail-Antispam: 1Uk129KBj93XoW3Xry8XrW3Cr1xZF4UWr1fZrc_yoWDJFWfp3
-        y09F98tF45Xay5G3yvyan8W345Jr1YvryqqryYyr9ruFy2kwnxJ3W8XF1vvr1Utw48Ka1r
-        Gr4jkayUWFn2vwcCm3ZEXasCq-sJn29KB7ZKAUJUUUUr529EdanIXcx71UUUUU7KY7ZEXa
-        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-        0xBIdaVrnRJUUU9Yb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-        IYs7xG6rWj6s0DM7CIcVAFz4kK6r106r15M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-        0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
-        xVW8Jr0_Cr1UM2kKe7AKxVWUXVWUAwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07
-        AIYIkI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWU
-        XVWUAwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7V
-        AKI48JMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMxCIbckI1I0E14v2
-        6r1Y6r17MI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17
-        CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF
-        0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIx
-        AIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIev
-        Ja73UjIFyTuYvjxU2G-eUUUUU
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 1/2] dt-bindings: PCI: mediatek-gen3: Add support for
+ controlling power and reset
+Content-Language: en-US
+To:     Jian Yang <jian.yang@mediatek.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Herring <robh@kernel.org>,
+        Jianjun Wang <jianjun.wang@mediatek.com>
+Cc:     linux-pci@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Project_Global_Chrome_Upstream_Group@mediatek.com,
+        Chuanjia.Liu@mediatek.com, Jieyy.Yang@mediatek.com,
+        Qizhong.Cheng@mediatek.com, Jianguo.Zhang@mediatek.com
+References: <20231106061220.21485-1-jian.yang@mediatek.com>
+ <20231106061220.21485-2-jian.yang@mediatek.com>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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 fv0=
+In-Reply-To: <20231106061220.21485-2-jian.yang@mediatek.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch relaxes the implementation while satisfying the memory ordering
-requirements for atomic operations, which will help improve performance on
-LA664+.
+On 06/11/2023 07:12, Jian Yang wrote:
+> From: "jian.yang" <jian.yang@mediatek.com>
+> 
+> Add new properties to support control power supplies and reset pin of
+> a downstream component.
+> 
+> Signed-off-by: jian.yang <jian.yang@mediatek.com>
+> ---
+>  .../bindings/pci/mediatek-pcie-gen3.yaml      | 30 +++++++++++++++++++
+>  1 file changed, 30 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/pci/mediatek-pcie-gen3.yaml b/Documentation/devicetree/bindings/pci/mediatek-pcie-gen3.yaml
+> index 7e8c7a2a5f9b..a4f6b48d57fa 100644
+> --- a/Documentation/devicetree/bindings/pci/mediatek-pcie-gen3.yaml
+> +++ b/Documentation/devicetree/bindings/pci/mediatek-pcie-gen3.yaml
+> @@ -84,6 +84,26 @@ properties:
+>      items:
+>        enum: [ phy, mac ]
+>  
+> +  vpcie1v8-supply:
+> +    description:
+> +      The regulator phandle that provides 1.8V power from root port to a
+> +      downstream component.
+> +
+> +  vpcie3v3-supply:
+> +    description:
+> +      The regulator phandle that provides 3.3V power from root port to a
+> +      downstream component.
 
-Unixbench with full threads (8)
-                                           before       after
-  Dhrystone 2 using register variables   203910714.2  203909539.8   0.00%
-  Double-Precision Whetstone                 37930.9        37931   0.00%
-  Execl Throughput                           29431.5      29545.8   0.39%
-  File Copy 1024 bufsize 2000 maxblocks    6645759.5      6676320   0.46%
-  File Copy 256 bufsize 500 maxblocks      2138772.4    2144182.4   0.25%
-  File Copy 4096 bufsize 8000 maxblocks   11640698.4     11602703  -0.33%
-  Pipe Throughput                          8849077.7    8917009.4   0.77%
-  Pipe-based Context Switching             1255108.5    1287277.3   2.56%
-  Process Creation                           50825.9      50442.1  -0.76%
-  Shell Scripts (1 concurrent)               25795.8      25942.3   0.57%
-  Shell Scripts (8 concurrent)                3812.6       3835.2   0.59%
-  System Call Overhead                     9248212.6    9353348.6   1.14%
-                                                                  =======
-  System Benchmarks Index Score               8076.6       8114.4   0.47%
+How 3.3V supply can go from root port to downstream? Do you mean that
+root port is the regulator itself (regulator provider)?
 
-Signed-off-by: WANG Rui <wangrui@loongson.cn>
----
- arch/loongarch/include/asm/atomic.h | 88 ++++++++++++++++++++++-------
- 1 file changed, 68 insertions(+), 20 deletions(-)
+Sorry, all these supplies look like hacks - stuffing PCI device
+properties into the PCI controller node.
 
-diff --git a/arch/loongarch/include/asm/atomic.h b/arch/loongarch/include/asm/atomic.h
-index e27f0c72d324..99af8b3160a8 100644
---- a/arch/loongarch/include/asm/atomic.h
-+++ b/arch/loongarch/include/asm/atomic.h
-@@ -36,19 +36,19 @@
- static inline void arch_atomic_##op(int i, atomic_t *v)			\
- {									\
- 	__asm__ __volatile__(						\
--	"am"#asm_op"_db.w" " $zero, %1, %0	\n"			\
-+	"am"#asm_op".w" " $zero, %1, %0	\n"				\
- 	: "+ZB" (v->counter)						\
- 	: "r" (I)							\
- 	: "memory");							\
- }
- 
--#define ATOMIC_OP_RETURN(op, I, asm_op, c_op)				\
--static inline int arch_atomic_##op##_return_relaxed(int i, atomic_t *v)	\
-+#define ATOMIC_OP_RETURN(op, I, asm_op, c_op, mb, suffix)		\
-+static inline int arch_atomic_##op##_return##suffix(int i, atomic_t *v)	\
- {									\
- 	int result;							\
- 									\
- 	__asm__ __volatile__(						\
--	"am"#asm_op"_db.w" " %1, %2, %0		\n"			\
-+	"am"#asm_op#mb".w" " %1, %2, %0		\n"			\
- 	: "+ZB" (v->counter), "=&r" (result)				\
- 	: "r" (I)							\
- 	: "memory");							\
-@@ -56,13 +56,13 @@ static inline int arch_atomic_##op##_return_relaxed(int i, atomic_t *v)	\
- 	return result c_op I;						\
- }
- 
--#define ATOMIC_FETCH_OP(op, I, asm_op)					\
--static inline int arch_atomic_fetch_##op##_relaxed(int i, atomic_t *v)	\
-+#define ATOMIC_FETCH_OP(op, I, asm_op, mb, suffix)			\
-+static inline int arch_atomic_fetch_##op##suffix(int i, atomic_t *v)	\
- {									\
- 	int result;							\
- 									\
- 	__asm__ __volatile__(						\
--	"am"#asm_op"_db.w" " %1, %2, %0		\n"			\
-+	"am"#asm_op#mb".w" " %1, %2, %0		\n"			\
- 	: "+ZB" (v->counter), "=&r" (result)				\
- 	: "r" (I)							\
- 	: "memory");							\
-@@ -72,29 +72,53 @@ static inline int arch_atomic_fetch_##op##_relaxed(int i, atomic_t *v)	\
- 
- #define ATOMIC_OPS(op, I, asm_op, c_op)					\
- 	ATOMIC_OP(op, I, asm_op)					\
--	ATOMIC_OP_RETURN(op, I, asm_op, c_op)				\
--	ATOMIC_FETCH_OP(op, I, asm_op)
-+	ATOMIC_OP_RETURN(op, I, asm_op, c_op, _db,         )		\
-+	ATOMIC_OP_RETURN(op, I, asm_op, c_op,    , _relaxed)		\
-+	ATOMIC_FETCH_OP(op, I, asm_op, _db,         )			\
-+	ATOMIC_FETCH_OP(op, I, asm_op,    , _relaxed)
- 
- ATOMIC_OPS(add, i, add, +)
- ATOMIC_OPS(sub, -i, add, +)
- 
-+#define arch_atomic_add_return		arch_atomic_add_return
-+#define arch_atomic_add_return_acquire	arch_atomic_add_return
-+#define arch_atomic_add_return_release	arch_atomic_add_return
- #define arch_atomic_add_return_relaxed	arch_atomic_add_return_relaxed
-+#define arch_atomic_sub_return		arch_atomic_sub_return
-+#define arch_atomic_sub_return_acquire	arch_atomic_sub_return
-+#define arch_atomic_sub_return_release	arch_atomic_sub_return
- #define arch_atomic_sub_return_relaxed	arch_atomic_sub_return_relaxed
-+#define arch_atomic_fetch_add		arch_atomic_fetch_add
-+#define arch_atomic_fetch_add_acquire	arch_atomic_fetch_add
-+#define arch_atomic_fetch_add_release	arch_atomic_fetch_add
- #define arch_atomic_fetch_add_relaxed	arch_atomic_fetch_add_relaxed
-+#define arch_atomic_fetch_sub		arch_atomic_fetch_sub
-+#define arch_atomic_fetch_sub_acquire	arch_atomic_fetch_sub
-+#define arch_atomic_fetch_sub_release	arch_atomic_fetch_sub
- #define arch_atomic_fetch_sub_relaxed	arch_atomic_fetch_sub_relaxed
- 
- #undef ATOMIC_OPS
- 
- #define ATOMIC_OPS(op, I, asm_op)					\
- 	ATOMIC_OP(op, I, asm_op)					\
--	ATOMIC_FETCH_OP(op, I, asm_op)
-+	ATOMIC_FETCH_OP(op, I, asm_op, _db,         )			\
-+	ATOMIC_FETCH_OP(op, I, asm_op,    , _relaxed)
- 
- ATOMIC_OPS(and, i, and)
- ATOMIC_OPS(or, i, or)
- ATOMIC_OPS(xor, i, xor)
- 
-+#define arch_atomic_fetch_and		arch_atomic_fetch_and
-+#define arch_atomic_fetch_and_acquire	arch_atomic_fetch_and
-+#define arch_atomic_fetch_and_release	arch_atomic_fetch_and
- #define arch_atomic_fetch_and_relaxed	arch_atomic_fetch_and_relaxed
-+#define arch_atomic_fetch_or		arch_atomic_fetch_or
-+#define arch_atomic_fetch_or_acquire	arch_atomic_fetch_or
-+#define arch_atomic_fetch_or_release	arch_atomic_fetch_or
- #define arch_atomic_fetch_or_relaxed	arch_atomic_fetch_or_relaxed
-+#define arch_atomic_fetch_xor		arch_atomic_fetch_xor
-+#define arch_atomic_fetch_xor_acquire	arch_atomic_fetch_xor
-+#define arch_atomic_fetch_xor_release	arch_atomic_fetch_xor
- #define arch_atomic_fetch_xor_relaxed	arch_atomic_fetch_xor_relaxed
- 
- #undef ATOMIC_OPS
-@@ -172,18 +196,18 @@ static inline int arch_atomic_sub_if_positive(int i, atomic_t *v)
- static inline void arch_atomic64_##op(long i, atomic64_t *v)		\
- {									\
- 	__asm__ __volatile__(						\
--	"am"#asm_op"_db.d " " $zero, %1, %0	\n"			\
-+	"am"#asm_op".d " " $zero, %1, %0	\n"			\
- 	: "+ZB" (v->counter)						\
- 	: "r" (I)							\
- 	: "memory");							\
- }
- 
--#define ATOMIC64_OP_RETURN(op, I, asm_op, c_op)					\
--static inline long arch_atomic64_##op##_return_relaxed(long i, atomic64_t *v)	\
-+#define ATOMIC64_OP_RETURN(op, I, asm_op, c_op, mb, suffix)			\
-+static inline long arch_atomic64_##op##_return##suffix(long i, atomic64_t *v)	\
- {										\
- 	long result;								\
- 	__asm__ __volatile__(							\
--	"am"#asm_op"_db.d " " %1, %2, %0		\n"			\
-+	"am"#asm_op#mb".d " " %1, %2, %0		\n"			\
- 	: "+ZB" (v->counter), "=&r" (result)					\
- 	: "r" (I)								\
- 	: "memory");								\
-@@ -191,13 +215,13 @@ static inline long arch_atomic64_##op##_return_relaxed(long i, atomic64_t *v)	\
- 	return result c_op I;							\
- }
- 
--#define ATOMIC64_FETCH_OP(op, I, asm_op)					\
--static inline long arch_atomic64_fetch_##op##_relaxed(long i, atomic64_t *v)	\
-+#define ATOMIC64_FETCH_OP(op, I, asm_op, mb, suffix)				\
-+static inline long arch_atomic64_fetch_##op##suffix(long i, atomic64_t *v)	\
- {										\
- 	long result;								\
- 										\
- 	__asm__ __volatile__(							\
--	"am"#asm_op"_db.d " " %1, %2, %0		\n"			\
-+	"am"#asm_op#mb".d " " %1, %2, %0		\n"			\
- 	: "+ZB" (v->counter), "=&r" (result)					\
- 	: "r" (I)								\
- 	: "memory");								\
-@@ -207,29 +231,53 @@ static inline long arch_atomic64_fetch_##op##_relaxed(long i, atomic64_t *v)	\
- 
- #define ATOMIC64_OPS(op, I, asm_op, c_op)				      \
- 	ATOMIC64_OP(op, I, asm_op)					      \
--	ATOMIC64_OP_RETURN(op, I, asm_op, c_op)				      \
--	ATOMIC64_FETCH_OP(op, I, asm_op)
-+	ATOMIC64_OP_RETURN(op, I, asm_op, c_op, _db,         )		      \
-+	ATOMIC64_OP_RETURN(op, I, asm_op, c_op,    , _relaxed)		      \
-+	ATOMIC64_FETCH_OP(op, I, asm_op, _db,         )			      \
-+	ATOMIC64_FETCH_OP(op, I, asm_op,    , _relaxed)
- 
- ATOMIC64_OPS(add, i, add, +)
- ATOMIC64_OPS(sub, -i, add, +)
- 
-+#define arch_atomic64_add_return		arch_atomic64_add_return
-+#define arch_atomic64_add_return_acquire	arch_atomic64_add_return
-+#define arch_atomic64_add_return_release	arch_atomic64_add_return
- #define arch_atomic64_add_return_relaxed	arch_atomic64_add_return_relaxed
-+#define arch_atomic64_sub_return		arch_atomic64_sub_return
-+#define arch_atomic64_sub_return_acquire	arch_atomic64_sub_return
-+#define arch_atomic64_sub_return_release	arch_atomic64_sub_return
- #define arch_atomic64_sub_return_relaxed	arch_atomic64_sub_return_relaxed
-+#define arch_atomic64_fetch_add			arch_atomic64_fetch_add
-+#define arch_atomic64_fetch_add_acquire		arch_atomic64_fetch_add
-+#define arch_atomic64_fetch_add_release		arch_atomic64_fetch_add
- #define arch_atomic64_fetch_add_relaxed		arch_atomic64_fetch_add_relaxed
-+#define arch_atomic64_fetch_sub			arch_atomic64_fetch_sub
-+#define arch_atomic64_fetch_sub_acquire		arch_atomic64_fetch_sub
-+#define arch_atomic64_fetch_sub_release		arch_atomic64_fetch_sub
- #define arch_atomic64_fetch_sub_relaxed		arch_atomic64_fetch_sub_relaxed
- 
- #undef ATOMIC64_OPS
- 
- #define ATOMIC64_OPS(op, I, asm_op)					      \
- 	ATOMIC64_OP(op, I, asm_op)					      \
--	ATOMIC64_FETCH_OP(op, I, asm_op)
-+	ATOMIC64_FETCH_OP(op, I, asm_op, _db,         )			      \
-+	ATOMIC64_FETCH_OP(op, I, asm_op,    , _relaxed)
- 
- ATOMIC64_OPS(and, i, and)
- ATOMIC64_OPS(or, i, or)
- ATOMIC64_OPS(xor, i, xor)
- 
-+#define arch_atomic64_fetch_and		arch_atomic64_fetch_and
-+#define arch_atomic64_fetch_and_acquire	arch_atomic64_fetch_and
-+#define arch_atomic64_fetch_and_release	arch_atomic64_fetch_and
- #define arch_atomic64_fetch_and_relaxed	arch_atomic64_fetch_and_relaxed
-+#define arch_atomic64_fetch_or		arch_atomic64_fetch_or
-+#define arch_atomic64_fetch_or_acquire	arch_atomic64_fetch_or
-+#define arch_atomic64_fetch_or_release	arch_atomic64_fetch_or
- #define arch_atomic64_fetch_or_relaxed	arch_atomic64_fetch_or_relaxed
-+#define arch_atomic64_fetch_xor		arch_atomic64_fetch_xor
-+#define arch_atomic64_fetch_xor_acquire	arch_atomic64_fetch_xor
-+#define arch_atomic64_fetch_xor_release	arch_atomic64_fetch_xor
- #define arch_atomic64_fetch_xor_relaxed	arch_atomic64_fetch_xor_relaxed
- 
- #undef ATOMIC64_OPS
--- 
-2.42.1
+Best regards,
+Krzysztof
 
