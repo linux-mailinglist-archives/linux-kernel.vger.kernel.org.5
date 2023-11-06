@@ -2,112 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B34CB7E2785
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 15:48:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D6D97E2798
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 15:49:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231767AbjKFOsi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 09:48:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56992 "EHLO
+        id S232088AbjKFOtY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 09:49:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231604AbjKFOsg (ORCPT
+        with ESMTP id S232006AbjKFOtV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 09:48:36 -0500
-Received: from mail-ot1-f45.google.com (mail-ot1-f45.google.com [209.85.210.45])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C41AB6;
-        Mon,  6 Nov 2023 06:48:34 -0800 (PST)
-Received: by mail-ot1-f45.google.com with SMTP id 46e09a7af769-6ce2add34c9so2670860a34.1;
-        Mon, 06 Nov 2023 06:48:34 -0800 (PST)
+        Mon, 6 Nov 2023 09:49:21 -0500
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A80F8D67
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 06:49:11 -0800 (PST)
+Received: by mail-yb1-xb32.google.com with SMTP id 3f1490d57ef6-d9a6399cf78so3886818276.0
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 06:49:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1699282151; x=1699886951; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=4MAqq03rlcsxc0StZw7VxjL7ypfmXvyq54vttyIPkXA=;
+        b=nOkZA9yNf66J3K2Rb3TSeOC0xHXndccNN2zQyhYecVhVglztsd/uQp2mA/3Aiy9cdn
+         kVEjoFQBkpMZDAj2VH0TIg7cmcYhOt63LKGqv2NsMugRTjfLzZoc/F9qjf8qIXiNldMu
+         Zf2hUGv9/vm1NRDklvHFZLJw38GdRFrH3yRdLREmlh8RuwRdZZGfSZoRUKvNs13yQGZl
+         rpxFg0KG8QT9wQ3S+0veHAmfs8ran8yJY0Xs0arwQMD+2VmUhhHJHA6RYGDQ2K9R1yZc
+         XL7kAZoZ1eXh+nIV9xSpUhheUEavce5S7RYIoNwusg0LdHLfuHQ2enSUQ60j/8wFQgyB
+         JTqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699282113; x=1699886913;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pXUwQRgKYin84qt/NzMuWPYKQwAgJAzQ8CP9C3QMnWk=;
-        b=vvnLp1dgP1f73NpMVittH9GfaRp+k6pV7teZGfkB+9VCSjyhmF7LTLphqMlsP4WIz0
-         pIGru6LsYhcmVCxFqctIavqEdc1VbLUrIH2CmlNdYtKiN90JjaBDiJ2lVOnomH54dvGM
-         6YB2WiDKOUFnKtv8RYJUy6bVlA4/3TwhLrBPj7FkznUtS4PRCJwEPpeeTMiGtoopADSW
-         onTgd+J0l8FI0yV72y6Nz3pc2xhEUS6bZYySM0asJvRBn+kEBmN4ULqn1AKDqyCN/hEE
-         QqNVvMai6ZzCSwl46vIKMvHgLPez2Rgrfb5dNscD4M+6VOzkBuOW1XThSiB+zGWvXzUM
-         wddQ==
-X-Gm-Message-State: AOJu0YyXxMfEdwjf2a3k4pucVLBMtbEurlkBjvlPwic0rCua6f4RXqhY
-        O42p+zQ9+5zsNbSdo6Cyiw==
-X-Google-Smtp-Source: AGHT+IEUkOSozraK2toTye88mFjUT63PkKYjXw5R8snconc3gVvDkuHgI4cJmHvVc/G6yXILft5QbQ==
-X-Received: by 2002:a05:6870:af4a:b0:1ea:7f54:77af with SMTP id uy10-20020a056870af4a00b001ea7f5477afmr31023062oab.10.1699282113677;
-        Mon, 06 Nov 2023 06:48:33 -0800 (PST)
-Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id m2-20020a9d7e82000000b006d32010d5a9sm1272976otp.71.2023.11.06.06.48.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Nov 2023 06:48:33 -0800 (PST)
-Received: (nullmailer pid 321808 invoked by uid 1000);
-        Mon, 06 Nov 2023 14:48:31 -0000
-Date:   Mon, 6 Nov 2023 08:48:31 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Ziqi Chen <quic_ziqichen@quicinc.com>
-Cc:     quic_asutoshd@quicinc.com, quic_cang@quicinc.com,
-        bvanassche@acm.org, mani@kernel.org, beanhuo@micron.com,
-        avri.altman@wdc.com, junwoo80.lee@samsung.com,
-        martin.petersen@oracle.com, quic_nguyenb@quicinc.com,
-        quic_nitirawa@quicinc.com, quic_rampraka@quicinc.com,
-        linux-scsi@vger.kernel.org, Alim Akhtar <alim.akhtar@samsung.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Wolfram Sang <wsa@kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Mark Brown <broonie@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] dt-bindings: ufs: Add msi-parent for UFS MCQ
-Message-ID: <20231106144831.GA317907-robh@kernel.org>
-References: <1698835699-28550-1-git-send-email-quic_ziqichen@quicinc.com>
+        d=1e100.net; s=20230601; t=1699282151; x=1699886951;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=4MAqq03rlcsxc0StZw7VxjL7ypfmXvyq54vttyIPkXA=;
+        b=E407dOAMdxaUZGl4RU+CDmnOCFKUoGvIVf9JjeD+yl6r2fAULu6tluss81AKMKnyFt
+         tBrjULJq9JUtiad5C7KkL/VZozbDSSW7TZc8496oXAL96g8jKftHL0ENVS9CHdhOE7Bb
+         5ouRTRJuIV7WwLyTI1j4zmpTur9iyCC/ByDn84IqxjsXaxEUllTWAR7Ko89WxKt896NG
+         smkoO/auF+AbPJvbogGj2Si8UEjGE5+urdwkenQwuqYlbPbnvokpBRKkKa3H214ZTfog
+         yERgg4Q9osyWVXPfSWARSnuSpx3n5AZ/4MtMUjf+Q11kmOpKfhay0981xtIMmDFFj//M
+         ezJw==
+X-Gm-Message-State: AOJu0YzGs1CFB+VP1TpGcjKU75Pha5cjebqkn5IPKUsHG6OZBXS+s3f7
+        yfFjEIxx4wj/PXwvh93HWEpmdCAEKHc8evAnLJEEFNzRnNq925WL
+X-Google-Smtp-Source: AGHT+IGU74fb4TyBaaI9P8CuZMnMsbExX4WftfwEEZSO556AatiiECmlGmzfMxyvIeX8NrborvtJBPkWvYFREQVgm6I=
+X-Received: by 2002:a25:1102:0:b0:da0:8283:416e with SMTP id
+ 2-20020a251102000000b00da08283416emr6928886ybr.27.1699282150855; Mon, 06 Nov
+ 2023 06:49:10 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1698835699-28550-1-git-send-email-quic_ziqichen@quicinc.com>
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+References: <20231104034033.14926-1-rdunlap@infradead.org>
+In-Reply-To: <20231104034033.14926-1-rdunlap@infradead.org>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Mon, 6 Nov 2023 15:48:35 +0100
+Message-ID: <CAPDyKFp+rXEnCZq30w1BiQRn09usYQ49qTqeouxEN3BHmV7CRA@mail.gmail.com>
+Subject: Re: [PATCH] PM: domains: fix inappropriate use of kernel-doc
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-kernel@vger.kernel.org,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Kevin Hilman <khilman@kernel.org>, linux-pm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 01, 2023 at 06:48:13PM +0800, Ziqi Chen wrote:
-> The Message Signaled Interrupts (MSI) has been introduced
-> to UFS driver since the MCQ be enabled.
-
-Not really relevant when a driver supported MSI, but the when the h/w 
-did. Has UFS always supported MSI? It was added in some version of the 
-spec?
-
-> Hence in UFS DT
-> node we need to give the msi-parent property that point
-> to the hardware entity which serves as the MSI controller
-> for this UFS controller.
-> 
-> Signed-off-by: Ziqi Chen <quic_ziqichen@quicinc.com>
+On Sat, 4 Nov 2023 at 04:40, Randy Dunlap <rdunlap@infradead.org> wrote:
+>
+> There is no mechanism for using kernel-doc notation on a data item
+> (only struct/union/enum definitions, functions, and function-like
+> macros), so convert the "/**" notation to C comment "/*" notation
+> to avoid a kernel-doc warning:
+>
+> drivers/base/power/domain_governor.c:412: warning: cannot understand function prototype: 'struct dev_power_governor pm_domain_always_on_gov = '
+>
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: "Rafael J. Wysocki" <rafael@kernel.org>
+> Cc: Kevin Hilman <khilman@kernel.org>
+> Cc: Ulf Hansson <ulf.hansson@linaro.org>
+> Cc: linux-pm@vger.kernel.org
 > ---
->  Documentation/devicetree/bindings/ufs/ufs-common.yaml | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/ufs/ufs-common.yaml b/Documentation/devicetree/bindings/ufs/ufs-common.yaml
-> index bbaee4f5..42309bb 100644
-> --- a/Documentation/devicetree/bindings/ufs/ufs-common.yaml
-> +++ b/Documentation/devicetree/bindings/ufs/ufs-common.yaml
-> @@ -73,6 +73,8 @@ properties:
->      description:
->        Specifies max. load that can be drawn from VCCQ2 supply.
->  
-> +  msi-parent: true
-> +
->  dependencies:
->    freq-table-hz: [ clocks ]
->  
-> -- 
-> 2.7.4
-> 
+>  drivers/base/power/domain_governor.c |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff -- a/drivers/base/power/domain_governor.c b/drivers/base/power/domain_governor.c
+> --- a/drivers/base/power/domain_governor.c
+> +++ b/drivers/base/power/domain_governor.c
+> @@ -406,7 +406,7 @@ struct dev_power_governor simple_qos_gov
+>         .power_down_ok = default_power_down_ok,
+>  };
+>
+> -/**
+> +/*
+>   * pm_genpd_gov_always_on - A governor implementing an always-on policy
+>   */
+
+While at it, may I suggest that we instead just drop the function
+description altogether. It's not really adding something useful that
+is not already understandable by looking at the code below, I think.
+
+>  struct dev_power_governor pm_domain_always_on_gov = {
+
+Kind regards
+Uffe
