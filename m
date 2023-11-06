@@ -2,90 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EEA37E2F2D
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 22:50:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C312C7E2F5F
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 23:00:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233132AbjKFVuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 16:50:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54336 "EHLO
+        id S233196AbjKFWAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 17:00:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233144AbjKFVud (ORCPT
+        with ESMTP id S232790AbjKFWAp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 16:50:33 -0500
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A05D1D73
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 13:50:30 -0800 (PST)
-Received: by mail-lj1-x229.google.com with SMTP id 38308e7fff4ca-2c6ec78a840so66466351fa.1
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 13:50:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1699307429; x=1699912229; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:user-agent:from:references
-         :in-reply-to:mime-version:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Po0baWUeZiXrEfsJEnTtgJ907NjsZipDGSvYn9f7jW8=;
-        b=TRtocQ234gWAZq3PTgm4+9O3T5fih1V+NqJhMHFhWAoYu4xGwVwXg1LN0ZECrtKxCF
-         a/d5SMN8n4YXYqYNmKQYymm2Bk7d3Ns/najA63Ny8zu1PdZ5i2hUbnNIdONyifyuL5B8
-         hSb3PMqZZjMLVkXSOzZKOx8hCejbVqnDYF/00=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699307429; x=1699912229;
-        h=cc:to:subject:message-id:date:user-agent:from:references
-         :in-reply-to:mime-version:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Po0baWUeZiXrEfsJEnTtgJ907NjsZipDGSvYn9f7jW8=;
-        b=DqvKcmdjD1/56gn19hEfIidG4DiWvpcCKQBTwEnbbz86roGcW6GmbdbwtKT9JZG024
-         zfmFTv+9xDlsi+SIeIeYTeDSuVBUqXUwt7SN1Ohu4GFugapFkFyE49bc0y71sKeOsyK6
-         a3GYajZIzaY+iTGo7JSn0s8wV5Pc+2RGqQ9US+5mvKJYuOErH7RghAbIU7Q0J+Psr2Rq
-         Tr6M2E9J2grBbVC0rN7sorgwRuNXuygbxJrwD/2/SSpp0JcDGX0bufKAqFYlkUxxWlsn
-         9FNS3ah2H49aRfgivzLYzgv8s0oGRkTh6uo3MPupT3HohEYkKltMgj+YiXI65iwETHM3
-         zDow==
-X-Gm-Message-State: AOJu0YydF/Sj38Q6ma0a0w9ZzEbVJ7uwxVxQrIlnM6DEc8dhv3UxjzCN
-        sPz0EJ40gWGSXWUzma4EG5wUbCsBnxtY7kCWIm0O9w==
-X-Google-Smtp-Source: AGHT+IFIMysEALHhZCYIuAeRzHTWg4/eThhbNgVFU1BxyT+5HSLRRz+uRWCoRmFfu6lwHDY82ry+or3PNN915oiLWc8=
-X-Received: by 2002:a05:651c:1208:b0:2c5:1a40:f26a with SMTP id
- i8-20020a05651c120800b002c51a40f26amr23481179lja.13.1699307428851; Mon, 06
- Nov 2023 13:50:28 -0800 (PST)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Mon, 6 Nov 2023 13:50:28 -0800
+        Mon, 6 Nov 2023 17:00:45 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FD8E11F;
+        Mon,  6 Nov 2023 14:00:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699308042; x=1730844042;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=vszWPPXsju9JscN66VI8Yo3KG0OPHwEoAvA9/gUL2jU=;
+  b=Kmj/zlsYRdv8Wg1N+SX7OR//+Nx8rogG5zxkhDhUuq1K186mRt1F6e+y
+   wDmt7s0pxU7D0KBJI6Ce9zFd7UfaoITRBvn2aaKLV2rdrULn/8rM79D6m
+   8iqZag3QIWOL3mz5oTPASuDD2zQEutnSIxOpgrMugvzuSjpzrwnrNfNho
+   1ASZhzmb/UfPrwQkUO8g7agemd0UxaZN3m17U+i92wnSjXYWbfEFWLaug
+   F1OaxVW9p6TqZ0HqfcAp7feRTvFKaMcPzAFwZpclz5EW2QCSrDUUSIJbc
+   az39zQKRc+BUkXMOr6n/Z9Io0QsssmZpYaLi+qJN9og5IZFaVf7dcr6RI
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10886"; a="475614938"
+X-IronPort-AV: E=Sophos;i="6.03,282,1694761200"; 
+   d="scan'208";a="475614938"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Nov 2023 14:00:41 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10886"; a="712335738"
+X-IronPort-AV: E=Sophos;i="6.03,282,1694761200"; 
+   d="scan'208";a="712335738"
+Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Nov 2023 14:00:40 -0800
+Received: from kekkonen.localdomain (localhost [127.0.0.1])
+        by kekkonen.fi.intel.com (Postfix) with SMTP id A5CD211F894;
+        Mon,  6 Nov 2023 23:50:49 +0200 (EET)
+Date:   Mon, 6 Nov 2023 21:50:49 +0000
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc:     Linux ACPI <linux-acpi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 5/7] ACPI: scan: Extract MIPI DisCo for Imaging data
+ into swnodes
+Message-ID: <ZUlfuWB9z1tlOGG7@kekkonen.localdomain>
+References: <4542595.LvFx2qVVIh@kreacher>
+ <1987710.usQuhbGJ8B@kreacher>
 MIME-Version: 1.0
-In-Reply-To: <20231103163434.4.I23d0aa6c8f1fec5c26ad9b3c610df6f4c5392850@changeid>
-References: <20231103163434.1.Ic7577567baff921347d423b722de8b857602efb1@changeid>
- <20231103163434.4.I23d0aa6c8f1fec5c26ad9b3c610df6f4c5392850@changeid>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.10
-Date:   Mon, 6 Nov 2023 13:50:28 -0800
-Message-ID: <CAE-0n51twrV24BE9aBNA8rA4y4J-Dpfh2ZnNMXdZEth-HGvbqA@mail.gmail.com>
-Subject: Re: [PATCH 4/9] arm64: dts: qcom: sm8150: Make watchdog bark
- interrupt edge triggered
-To:     Bjorn Andersson <andersson@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-Cc:     linux-watchdog@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Andy Gross <agross@kernel.org>,
-        Sai Prakash Ranjan <quic_saipraka@quicinc.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1987710.usQuhbGJ8B@kreacher>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Douglas Anderson (2023-11-03 16:34:30)
-> As described in the patch ("arm64: dts: qcom: sc7180: Make watchdog
-> bark interrupt edge triggered"), the Qualcomm watchdog timer's bark
-> interrupt should be configured as edge triggered. Make the change.
->
-> Fixes: b094c8f8dd2a ("arm64: dts: qcom: sm8150: Add watchdog bark interrupt")
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> ---
+Hi Rafael,
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+On Mon, Nov 06, 2023 at 05:27:26PM +0100, Rafael J. Wysocki wrote:
+> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> Subject: [PATCH] ACPI: scan: Extract MIPI DisCo for Imaging data into swnodes
+> 
+> Add information extracted from the MIPI DisCo for Imaging device
+> properties to software nodes created during the CSI-2 connection graph
+> discovery.
+> 
+> Link: https://www.mipi.org/specifications/mipi-disco-imaging
+> Co-developed-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+> Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> ---
+> 
+> v2 -> v3:
+>    * Change the name of the new file to mipi-disco-img.c
+>    * "DiSco" -> "DisCo" in multiple places
+>    * Fix the link in the Link: tag
+>    * Change the number of data lanes limit and add a comment regarding it
+>    * Use ACPI_DEVICE_CSI2_DATA_LANES directly in several places instead
+>      of array sizes equal to it
+
+Thanks for the update. I've tested the set, so you can add:
+
+Tested-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+
+with the following diff fixing mipi-img-lane-polarities parsing:
+
+diff --git a/drivers/acpi/mipi-disco-img.c b/drivers/acpi/mipi-disco-img.c
+index 3123180d9b54..92b45e792a07 100644
+--- a/drivers/acpi/mipi-disco-img.c
++++ b/drivers/acpi/mipi-disco-img.c
+@@ -530,7 +530,12 @@ static void init_csi2_port(struct acpi_device *adev,
+ 	}
+ 
+ 	ret = fwnode_property_count_u8(port_fwnode, "mipi-img-lane-polarities");
+-	if (ret * BITS_PER_TYPE(u8) >= num_lanes + 1) {
++	if (ret < 0) {
++		acpi_handle_debug(handle, "Lane polarity bytes missing\n");
++	} else if (ret * BITS_PER_TYPE(u8) < num_lanes + 1) {
++		acpi_handle_info(handle, "Too few lane polarity bytes (%lu vs. %d)\n",
++				 ret * BITS_PER_TYPE(u8), num_lanes + 1);
++	} else {
+ 		unsigned long mask = 0;
+ 		int byte_count = ret;
+ 		unsigned int i;
+@@ -543,15 +548,15 @@ static void init_csi2_port(struct acpi_device *adev,
+ 		 */
+ 		BUILD_BUG_ON(BITS_PER_TYPE(unsigned long) <= ACPI_DEVICE_CSI2_DATA_LANES);
+ 
+-		if (byte_count > ACPI_DEVICE_CSI2_DATA_LANES) {
++		if (byte_count > sizeof(mask)) {
+ 			acpi_handle_info(handle, "Too many lane polarities: %d\n",
+ 					 byte_count);
+-			byte_count = ACPI_DEVICE_CSI2_DATA_LANES;
++			byte_count = sizeof(mask);
+ 		}
+ 		fwnode_property_read_u8_array(port_fwnode, "mipi-img-lane-polarities",
+ 					      val, byte_count);
+ 
+-		for (i = 0; BITS_PER_TYPE(u8) * i <= num_lanes; i++)
++		for (i = 0; i < byte_count; i++)
+ 			mask |= (unsigned long)val[i] << BITS_PER_TYPE(u8) * i;
+ 
+ 		for (i = 0; i <= num_lanes; i++)
+@@ -561,8 +566,6 @@ static void init_csi2_port(struct acpi_device *adev,
+ 				PROPERTY_ENTRY_U32_ARRAY_LEN("lane-polarities",
+ 							     port->lane_polarities,
+ 							     num_lanes + 1);
+-	} else {
+-		acpi_handle_info(handle, "Lane polarity bytes missing\n");
+ 	}
+ 
+ 	swnodes->nodes[ACPI_DEVICE_SWNODE_EP(port_index)] =
+
+-- 
+Kind regards,
+
+Sakari Ailus
