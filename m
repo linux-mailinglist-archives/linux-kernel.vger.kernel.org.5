@@ -2,40 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E52747E30A0
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 00:07:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 313827E30A3
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 00:07:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233389AbjKFXHI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 18:07:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35224 "EHLO
+        id S233436AbjKFXHM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 18:07:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233445AbjKFXHA (ORCPT
+        with ESMTP id S233435AbjKFXHE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 18:07:00 -0500
+        Mon, 6 Nov 2023 18:07:04 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A4A91713;
-        Mon,  6 Nov 2023 15:06:55 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C342C433C7;
-        Mon,  6 Nov 2023 23:06:53 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE7F010D1;
+        Mon,  6 Nov 2023 15:06:58 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AE117C433BA;
+        Mon,  6 Nov 2023 23:06:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699312014;
-        bh=SiI4uaAjuD4l6FmaRcPvJBaMOLIqONI4+TQPlJbFjtY=;
-        h=From:To:Cc:Subject:Date:From;
-        b=uE5W2bNEofJ2K/XScG0TO0ZuvtxFvUtP/7EbqZs+Avn6yKQZF4hoG8au7ENbMc3ob
-         GXgqQkN28mDpOj/HUUWKsU+SRDCRe0heteITKDhVb/MCgQpEtjnfEyUDvopI1xt3o6
-         GMS5rMDqTyUyTNGQIH9DaL+7f448cvvgLABQaNavHJON8c+pKYeYhJwkAn3ZiIL12E
-         qV8pa8LmQUjMkxajS1fLvTB1hFS3Ewj+B4sPkhucDHMdHwDTjLuNZt+t7v1HLJBwQd
-         pv5a7S91IKrOalOZfT2qAJLJsUvXcAA5o9//qYPmeiJ/V4yhwPvHvKvOdnFPn7IEA/
-         5LYaIp5o0xSOw==
+        s=k20201202; t=1699312018;
+        bh=8QBsEisIjwcVpDLqknlYT5o5ni7l1hnkoLPRVKBzn54=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=YbdHztD+ZvvrgsiZM+LAh0e7aEfy95PX0QOfC7hltcncZE9SpyBQUtsMdSJLApFjA
+         AptNGIx3htiOg8XlfMm3jM4pMiTbAIEthzjdO/al+UTLkEVKd1BESw0GCtU91dbOjf
+         kcD6+ZYMB7LuFwU/wkp/s04qE/jk8NBHa1+U35P5iOgLCkEBgGu270+EmS0Ioej/E2
+         46up6DtRjhbVLop9NkHZC17tQ/bkozL5/VXy/4G62Tt2tMfAFo16fBJS4rU0Fdl74i
+         jptYu+DfMpM9Ba9v+jZZ3kgIlvEVUX/SKU6ygPLz2aL+buGlfIwwI+6mbBkLwjJnTO
+         moio5Ma7E4uwQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     John Stultz <jstultz@google.com>, Ingo Molnar <mingo@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, peterz@infradead.org,
-        mingo@redhat.com, will@kernel.org
-Subject: [PATCH AUTOSEL 6.5 1/5] locking/ww_mutex/test: Fix potential workqueue corruption
-Date:   Mon,  6 Nov 2023 18:06:38 -0500
-Message-ID: <20231106230651.3734359-1-sashal@kernel.org>
+Cc:     Muralidhara M K <muralidhara.mk@amd.com>,
+        Suma Hegde <suma.hegde@amd.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Sasha Levin <sashal@kernel.org>, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
+        x86@kernel.org, mario.limonciello@amd.com, yazen.ghannam@amd.com,
+        Avadhut.Naik@amd.com, linux-pci@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.5 2/5] x86/amd_nb: Add AMD Family MI300 PCI IDs
+Date:   Mon,  6 Nov 2023 18:06:39 -0500
+Message-ID: <20231106230651.3734359-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20231106230651.3734359-1-sashal@kernel.org>
+References: <20231106230651.3734359-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -51,117 +58,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: John Stultz <jstultz@google.com>
+From: Muralidhara M K <muralidhara.mk@amd.com>
 
-[ Upstream commit bccdd808902f8c677317cec47c306e42b93b849e ]
+[ Upstream commit 24775700eaa93ff83b2a0f1e005879cdf186cdd9 ]
 
-In some cases running with the test-ww_mutex code, I was seeing
-odd behavior where sometimes it seemed flush_workqueue was
-returning before all the work threads were finished.
+Add new Root, Device 18h Function 3, and Function 4 PCI IDS
+for AMD F19h Model 90h-9fh (MI300A).
 
-Often this would cause strange crashes as the mutexes would be
-freed while they were being used.
-
-Looking at the code, there is a lifetime problem as the
-controlling thread that spawns the work allocates the
-"struct stress" structures that are passed to the workqueue
-threads. Then when the workqueue threads are finished,
-they free the stress struct that was passed to them.
-
-Unfortunately the workqueue work_struct node is in the stress
-struct. Which means the work_struct is freed before the work
-thread returns and while flush_workqueue is waiting.
-
-It seems like a better idea to have the controlling thread
-both allocate and free the stress structures, so that we can
-be sure we don't corrupt the workqueue by freeing the structure
-prematurely.
-
-So this patch reworks the test to do so, and with this change
-I no longer see the early flush_workqueue returns.
-
-Signed-off-by: John Stultz <jstultz@google.com>
+Signed-off-by: Muralidhara M K <muralidhara.mk@amd.com>
+Signed-off-by: Suma Hegde <suma.hegde@amd.com>
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/20230922043616.19282-3-jstultz@google.com
+Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+Link: https://lore.kernel.org/r/20230926051932.193239-1-suma.hegde@amd.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/locking/test-ww_mutex.c | 20 ++++++++++++--------
- 1 file changed, 12 insertions(+), 8 deletions(-)
+ arch/x86/kernel/amd_nb.c | 5 +++++
+ include/linux/pci_ids.h  | 1 +
+ 2 files changed, 6 insertions(+)
 
-diff --git a/kernel/locking/test-ww_mutex.c b/kernel/locking/test-ww_mutex.c
-index 93cca6e698600..7c5a8f05497f2 100644
---- a/kernel/locking/test-ww_mutex.c
-+++ b/kernel/locking/test-ww_mutex.c
-@@ -466,7 +466,6 @@ static void stress_inorder_work(struct work_struct *work)
- 	} while (!time_after(jiffies, stress->timeout));
+diff --git a/arch/x86/kernel/amd_nb.c b/arch/x86/kernel/amd_nb.c
+index 356de955e78dd..10c2a3c9114ea 100644
+--- a/arch/x86/kernel/amd_nb.c
++++ b/arch/x86/kernel/amd_nb.c
+@@ -27,6 +27,7 @@
+ #define PCI_DEVICE_ID_AMD_1AH_M00H_ROOT		0x153a
+ #define PCI_DEVICE_ID_AMD_1AH_M20H_ROOT		0x1507
+ #define PCI_DEVICE_ID_AMD_MI200_ROOT		0x14bb
++#define PCI_DEVICE_ID_AMD_MI300_ROOT		0x14f8
  
- 	kfree(order);
--	kfree(stress);
- }
+ #define PCI_DEVICE_ID_AMD_17H_DF_F4		0x1464
+ #define PCI_DEVICE_ID_AMD_17H_M10H_DF_F4	0x15ec
+@@ -43,6 +44,7 @@
+ #define PCI_DEVICE_ID_AMD_19H_M78H_DF_F4	0x12fc
+ #define PCI_DEVICE_ID_AMD_1AH_M00H_DF_F4	0x12c4
+ #define PCI_DEVICE_ID_AMD_MI200_DF_F4		0x14d4
++#define PCI_DEVICE_ID_AMD_MI300_DF_F4		0x152c
  
- struct reorder_lock {
-@@ -531,7 +530,6 @@ static void stress_reorder_work(struct work_struct *work)
- 	list_for_each_entry_safe(ll, ln, &locks, link)
- 		kfree(ll);
- 	kfree(order);
--	kfree(stress);
- }
+ /* Protect the PCI config register pairs used for SMN. */
+ static DEFINE_MUTEX(smn_mutex);
+@@ -62,6 +64,7 @@ static const struct pci_device_id amd_root_ids[] = {
+ 	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_1AH_M00H_ROOT) },
+ 	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_1AH_M20H_ROOT) },
+ 	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_MI200_ROOT) },
++	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_MI300_ROOT) },
+ 	{}
+ };
  
- static void stress_one_work(struct work_struct *work)
-@@ -552,8 +550,6 @@ static void stress_one_work(struct work_struct *work)
- 			break;
- 		}
- 	} while (!time_after(jiffies, stress->timeout));
--
--	kfree(stress);
- }
+@@ -93,6 +96,7 @@ static const struct pci_device_id amd_nb_misc_ids[] = {
+ 	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_1AH_M00H_DF_F3) },
+ 	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_1AH_M20H_DF_F3) },
+ 	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_MI200_DF_F3) },
++	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_MI300_DF_F3) },
+ 	{}
+ };
  
- #define STRESS_INORDER BIT(0)
-@@ -564,15 +560,24 @@ static void stress_one_work(struct work_struct *work)
- static int stress(int nlocks, int nthreads, unsigned int flags)
- {
- 	struct ww_mutex *locks;
--	int n;
-+	struct stress *stress_array;
-+	int n, count;
+@@ -115,6 +119,7 @@ static const struct pci_device_id amd_nb_link_ids[] = {
+ 	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_CNB17H_F4) },
+ 	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_1AH_M00H_DF_F4) },
+ 	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_MI200_DF_F4) },
++	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_MI300_DF_F4) },
+ 	{}
+ };
  
- 	locks = kmalloc_array(nlocks, sizeof(*locks), GFP_KERNEL);
- 	if (!locks)
- 		return -ENOMEM;
- 
-+	stress_array = kmalloc_array(nthreads, sizeof(*stress_array),
-+				     GFP_KERNEL);
-+	if (!stress_array) {
-+		kfree(locks);
-+		return -ENOMEM;
-+	}
-+
- 	for (n = 0; n < nlocks; n++)
- 		ww_mutex_init(&locks[n], &ww_class);
- 
-+	count = 0;
- 	for (n = 0; nthreads; n++) {
- 		struct stress *stress;
- 		void (*fn)(struct work_struct *work);
-@@ -596,9 +601,7 @@ static int stress(int nlocks, int nthreads, unsigned int flags)
- 		if (!fn)
- 			continue;
- 
--		stress = kmalloc(sizeof(*stress), GFP_KERNEL);
--		if (!stress)
--			break;
-+		stress = &stress_array[count++];
- 
- 		INIT_WORK(&stress->work, fn);
- 		stress->locks = locks;
-@@ -613,6 +616,7 @@ static int stress(int nlocks, int nthreads, unsigned int flags)
- 
- 	for (n = 0; n < nlocks; n++)
- 		ww_mutex_destroy(&locks[n]);
-+	kfree(stress_array);
- 	kfree(locks);
- 
- 	return 0;
+diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
+index 8f9a459e16718..b2b3c4993a9a0 100644
+--- a/include/linux/pci_ids.h
++++ b/include/linux/pci_ids.h
+@@ -579,6 +579,7 @@
+ #define PCI_DEVICE_ID_AMD_1AH_M00H_DF_F3 0x12c3
+ #define PCI_DEVICE_ID_AMD_1AH_M20H_DF_F3 0x16fb
+ #define PCI_DEVICE_ID_AMD_MI200_DF_F3	0x14d3
++#define PCI_DEVICE_ID_AMD_MI300_DF_F3	0x152b
+ #define PCI_DEVICE_ID_AMD_CNB17H_F3	0x1703
+ #define PCI_DEVICE_ID_AMD_LANCE		0x2000
+ #define PCI_DEVICE_ID_AMD_LANCE_HOME	0x2001
 -- 
 2.42.0
 
