@@ -2,42 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F7777E30E1
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 00:15:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92CCF7E30E4
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 00:15:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233565AbjKFXPH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 18:15:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50528 "EHLO
+        id S233520AbjKFXPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 18:15:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233461AbjKFXOx (ORCPT
+        with ESMTP id S233487AbjKFXO4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 18:14:53 -0500
+        Mon, 6 Nov 2023 18:14:56 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 028BC118;
-        Mon,  6 Nov 2023 15:14:51 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A0545C433C7;
-        Mon,  6 Nov 2023 23:14:49 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCB7210CB;
+        Mon,  6 Nov 2023 15:14:52 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 33A01C433CA;
+        Mon,  6 Nov 2023 23:14:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699312490;
-        bh=2VpchQM44d7HzgCX3wgizYzX0JgaRvK/XXJiO68xAFE=;
+        s=k20201202; t=1699312492;
+        bh=nH7ua12l/437prLse1i5LGVQRNDMxr2wpXgADoEIiMk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rVIHLf3evQsBBuXUyyuFq6ZzQ4Yh8RC+2fSk4PAMUMr9EDgthbqax2eYisiJPk8ro
-         E9sEX9kAzow6MXm2ImdsKF2p1akQQ/lAyjO+4gQONGBIFCKfaiH5vmWV+zl+7FdgtZ
-         pGhdaVOMh44AQDR/w0/N+Yplu2TVarURMq9/2of7WUn7GJss0f2ZnXe/SzG+6thom1
-         V/AKLtCi0ndZdSgEA8cmIeWHhXmVeHS6tMLJUWQrpp5ec56h5J7bZTd7ju3F5eRIbS
-         YS62R5HCpsgU+tJJ2O7wDMlbo13BYJBPrDKGkM7KRTUDXxziN2zo/BW2TE3QFjso8l
-         9b/ZT81pismow==
+        b=OH3XpyGKEQCkz3GUQWdsz0Q963X30pE3GKywhh72U07FZKBatE3VXM7NzMHMvr+ev
+         mk7MIjjaOFdXfA+ehc04tH8AAcMMDGnu451KdCiOIWbzmQLpZvL8BHwYLDTVhnoFIx
+         vNNDXNjJkK0ALMNKJRnSo26uca6J8422Em70M3xshirNPL8oq4lkHR0PrScyescqId
+         csrWaZB/8uWaHfd6oz2ei9QvwHXECVL/UtmoNMTUH2XjR52RGWxUh2EAybTupPC6TM
+         QzxPkiRg0u0xpB+pIlNeU/Tj9oBhP+kt+NGh/g6HMNNU9S11N72CWpB6DiXfKOlx14
+         hiyjaCh329lXQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Ronald Wahl <ronald.wahl@raritan.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Sasha Levin <sashal@kernel.org>, tglx@linutronix.de,
-        nicolas.ferre@microchip.com, claudiu.beznea@tuxon.dev,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH AUTOSEL 6.6 08/13] clocksource/drivers/timer-atmel-tcb: Fix initialization on SAM9 hardware
-Date:   Mon,  6 Nov 2023 18:14:21 -0500
-Message-ID: <20231106231435.3734790-8-sashal@kernel.org>
+Cc:     Frederic Weisbecker <frederic@kernel.org>,
+        Yong He <alexyonghe@tencent.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
+        Like Xu <likexu@tencent.com>, Sasha Levin <sashal@kernel.org>,
+        jiangshanlai@gmail.com, paulmck@kernel.org, josh@joshtriplett.org,
+        rcu@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.6 09/13] srcu: Only accelerate on enqueue time
+Date:   Mon,  6 Nov 2023 18:14:22 -0500
+Message-ID: <20231106231435.3734790-9-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231106231435.3734790-1-sashal@kernel.org>
 References: <20231106231435.3734790-1-sashal@kernel.org>
@@ -56,53 +57,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ronald Wahl <ronald.wahl@raritan.com>
+From: Frederic Weisbecker <frederic@kernel.org>
 
-[ Upstream commit 6d3bc4c02d59996d1d3180d8ed409a9d7d5900e0 ]
+[ Upstream commit 8a77f38bcd28d3c22ab7dd8eff3f299d43c00411 ]
 
-On SAM9 hardware two cascaded 16 bit timers are used to form a 32 bit
-high resolution timer that is used as scheduler clock when the kernel
-has been configured that way (CONFIG_ATMEL_CLOCKSOURCE_TCB).
+Acceleration in SRCU happens on enqueue time for each new callback. This
+operation is expected not to fail and therefore any similar attempt
+from other places shouldn't find any remaining callbacks to accelerate.
 
-The driver initially triggers a reset-to-zero of the two timers but this
-reset is only performed on the next rising clock. For the first timer
-this is ok - it will be in the next 60ns (16MHz clock). For the chained
-second timer this will only happen after the first timer overflows, i.e.
-after 2^16 clocks (~4ms with a 16MHz clock). So with other words the
-scheduler clock resets to 0 after the first 2^16 clock cycles.
+Moreover accelerations performed beyond enqueue time are error prone
+because rcu_seq_snap() then may return the snapshot for a new grace
+period that is not going to be started.
 
-It looks like that the scheduler does not like this and behaves wrongly
-over its lifetime, e.g. some tasks are scheduled with a long delay. Why
-that is and if there are additional requirements for this behaviour has
-not been further analysed.
+Remove these dangerous and needless accelerations and introduce instead
+assertions reporting leaking unaccelerated callbacks beyond enqueue
+time.
 
-There is a simple fix for resetting the second timer as well when the
-first timer is reset and this is to set the ATMEL_TC_ASWTRG_SET bit in
-the Channel Mode register (CMR) of the first timer. This will also rise
-the TIOA line (clock input of the second timer) when a software trigger
-respective SYNC is issued.
-
-Signed-off-by: Ronald Wahl <ronald.wahl@raritan.com>
-Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-Link: https://lore.kernel.org/r/20231007161803.31342-1-rwahl@gmx.de
+Co-developed-by: Yong He <alexyonghe@tencent.com>
+Signed-off-by: Yong He <alexyonghe@tencent.com>
+Co-developed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+Co-developed-by: Neeraj upadhyay <Neeraj.Upadhyay@amd.com>
+Signed-off-by: Neeraj upadhyay <Neeraj.Upadhyay@amd.com>
+Reviewed-by: Like Xu <likexu@tencent.com>
+Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clocksource/timer-atmel-tcb.c | 1 +
- 1 file changed, 1 insertion(+)
+ kernel/rcu/srcutree.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/clocksource/timer-atmel-tcb.c b/drivers/clocksource/timer-atmel-tcb.c
-index 27af17c995900..2a90c92a9182a 100644
---- a/drivers/clocksource/timer-atmel-tcb.c
-+++ b/drivers/clocksource/timer-atmel-tcb.c
-@@ -315,6 +315,7 @@ static void __init tcb_setup_dual_chan(struct atmel_tc *tc, int mck_divisor_idx)
- 	writel(mck_divisor_idx			/* likely divide-by-8 */
- 			| ATMEL_TC_WAVE
- 			| ATMEL_TC_WAVESEL_UP		/* free-run */
-+			| ATMEL_TC_ASWTRG_SET		/* TIOA0 rises at software trigger */
- 			| ATMEL_TC_ACPA_SET		/* TIOA0 rises at 0 */
- 			| ATMEL_TC_ACPC_CLEAR,		/* (duty cycle 50%) */
- 			tcaddr + ATMEL_TC_REG(0, CMR));
+diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+index a1fcb8566b2e3..dbb5116bb0200 100644
+--- a/kernel/rcu/srcutree.c
++++ b/kernel/rcu/srcutree.c
+@@ -782,8 +782,7 @@ static void srcu_gp_start(struct srcu_struct *ssp)
+ 	spin_lock_rcu_node(sdp);  /* Interrupts already disabled. */
+ 	rcu_segcblist_advance(&sdp->srcu_cblist,
+ 			      rcu_seq_current(&ssp->srcu_sup->srcu_gp_seq));
+-	(void)rcu_segcblist_accelerate(&sdp->srcu_cblist,
+-				       rcu_seq_snap(&ssp->srcu_sup->srcu_gp_seq));
++	WARN_ON_ONCE(!rcu_segcblist_segempty(&sdp->srcu_cblist, RCU_NEXT_TAIL));
+ 	spin_unlock_rcu_node(sdp);  /* Interrupts remain disabled. */
+ 	WRITE_ONCE(ssp->srcu_sup->srcu_gp_start, jiffies);
+ 	WRITE_ONCE(ssp->srcu_sup->srcu_n_exp_nodelay, 0);
+@@ -1692,6 +1691,7 @@ static void srcu_invoke_callbacks(struct work_struct *work)
+ 	ssp = sdp->ssp;
+ 	rcu_cblist_init(&ready_cbs);
+ 	spin_lock_irq_rcu_node(sdp);
++	WARN_ON_ONCE(!rcu_segcblist_segempty(&sdp->srcu_cblist, RCU_NEXT_TAIL));
+ 	rcu_segcblist_advance(&sdp->srcu_cblist,
+ 			      rcu_seq_current(&ssp->srcu_sup->srcu_gp_seq));
+ 	if (sdp->srcu_cblist_invoking ||
+@@ -1721,8 +1721,6 @@ static void srcu_invoke_callbacks(struct work_struct *work)
+ 	 */
+ 	spin_lock_irq_rcu_node(sdp);
+ 	rcu_segcblist_add_len(&sdp->srcu_cblist, -len);
+-	(void)rcu_segcblist_accelerate(&sdp->srcu_cblist,
+-				       rcu_seq_snap(&ssp->srcu_sup->srcu_gp_seq));
+ 	sdp->srcu_cblist_invoking = false;
+ 	more = rcu_segcblist_ready_cbs(&sdp->srcu_cblist);
+ 	spin_unlock_irq_rcu_node(sdp);
 -- 
 2.42.0
 
