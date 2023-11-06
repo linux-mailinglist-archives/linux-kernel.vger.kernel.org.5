@@ -2,137 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E96C7E2198
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 13:32:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2AD47E21A9
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 13:33:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231634AbjKFMcF convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 6 Nov 2023 07:32:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40182 "EHLO
+        id S231594AbjKFMd5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 07:33:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231594AbjKFMcD (ORCPT
+        with ESMTP id S231493AbjKFMd4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 07:32:03 -0500
-Received: from mail-ot1-f54.google.com (mail-ot1-f54.google.com [209.85.210.54])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D1C8A6;
-        Mon,  6 Nov 2023 04:32:00 -0800 (PST)
-Received: by mail-ot1-f54.google.com with SMTP id 46e09a7af769-6d3099818c0so844715a34.1;
-        Mon, 06 Nov 2023 04:32:00 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699273920; x=1699878720;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7CLVxleqpC3jykHoWGx0Ji2wnYrlU1c1ECpgQ5J60lY=;
-        b=SlE0L7/5utAhSVPh5TTvmmhNce6lbAo5O+ObBHZ2ES1F3kgjDMZnjwV+AErtHYwiAs
-         ST7jKDJj7zw8s8WH4xJi8yNXM2sHBDdBgxLre8NMSRZdo6ZB+CFD4vc+A0mll+jRACl0
-         1vmXLAj5nfCJG+hO6blws3PpTnVa1hl7vRZGLYmzTBrp5LHfJrjTH4zMTUbPeRAuSfFH
-         jjFv4TG3e62C1LuoAQjrdjIjalnM6UREjl8NDuCN047wSWar5ZprOcGvzAPU5E0qDlNt
-         LJulLZcMMMUFKyUvsbsDiLiGX++occLjv5tPjU4tfOlY3tZ2Sc6r5XqtWxJ0HwINxD9g
-         QAng==
-X-Gm-Message-State: AOJu0YxMY1xfrNu+TvEaCmUKxIT5AhjhVDwkFn8QlyhZkaDzBYrl+GsS
-        GLHriOebtcSOiqJ5iv1eNn6IxncB1qPDyWhlU98=
-X-Google-Smtp-Source: AGHT+IFQoW2nVBuX929i+dbzG3KeetbDlK3NJUcu72+xfX4/rzo7XvmH22n8MppWzSLj8pP4kshs++1RdDUvwBlC/iQ=
-X-Received: by 2002:a05:6820:1899:b0:581:e7b8:dd77 with SMTP id
- bm25-20020a056820189900b00581e7b8dd77mr33128497oob.1.1699273919708; Mon, 06
- Nov 2023 04:31:59 -0800 (PST)
+        Mon, 6 Nov 2023 07:33:56 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B28DE97;
+        Mon,  6 Nov 2023 04:33:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699274033; x=1730810033;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=lly8ppgmxcDDLOmDBL4aU0UCetKvXa6D6CEONx55ShM=;
+  b=fl1HAM8RLmfBfFwSXhfJ2lfviepCCwgP/bGCGYfuPGdd4mOtgtsC9BB+
+   flZFOuZPzuBxjisjuH9GddRb4DWZz2BGCf2Y7EX31vSLvxoYSbKV9z+mw
+   1+aXI8v6inGgtq56I122ebpKVaRgfuIM8rdQpJwiCw0x9EFggcum3DOLo
+   14VtFWl8dkrsRNlmUijI0FGn7mllUlv5lectJmS4BcsZ540qKSZtPGeQA
+   RjcnjSiYiSPhfEIuLOKm82SIKQMnWceXVhdjJcVk8ynhszfaThMMmhEHO
+   pNn1wmSFw31age3VFkeY6mLw1HX7mbhR1lgspmJ0EmJhiHT3pvrBjSXgk
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10885"; a="379657177"
+X-IronPort-AV: E=Sophos;i="6.03,281,1694761200"; 
+   d="scan'208";a="379657177"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Nov 2023 04:33:53 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10885"; a="765938147"
+X-IronPort-AV: E=Sophos;i="6.03,281,1694761200"; 
+   d="scan'208";a="765938147"
+Received: from rmstoi-mobl.ger.corp.intel.com ([10.251.216.76])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Nov 2023 04:33:43 -0800
+Date:   Mon, 6 Nov 2023 14:33:40 +0200 (EET)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     Mario Limonciello <mario.limonciello@amd.com>
+cc:     Karol Herbst <kherbst@redhat.com>, Lyude Paul <lyude@redhat.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?ISO-8859-15?Q?Christian_K=F6nig?= <christian.koenig@amd.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Lukas Wunner <lukas@wunner.de>,
+        Danilo Krummrich <dakr@redhat.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Xinhui Pan <Xinhui.Pan@amd.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Mark Gross <markgross@kernel.org>,
+        Andreas Noever <andreas.noever@gmail.com>,
+        Michael Jamet <michael.jamet@intel.com>,
+        Yehezkel Bernat <YehezkelShB@gmail.com>,
+        =?ISO-8859-15?Q?Pali_Roh=E1r?= <pali@kernel.org>,
+        =?ISO-8859-15?Q?Marek_Beh=FAn?= <kabel@kernel.org>,
+        "Maciej W . Rozycki" <macro@orcam.me.uk>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        "open list:DRM DRIVER FOR NVIDIA GEFORCE/QUADRO GPUS" 
+        <dri-devel@lists.freedesktop.org>,
+        "open list:DRM DRIVER FOR NVIDIA GEFORCE/QUADRO GPUS" 
+        <nouveau@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:RADEON and AMDGPU DRM DRIVERS" 
+        <amd-gfx@lists.freedesktop.org>,
+        "open list:PCI SUBSYSTEM" <linux-pci@vger.kernel.org>,
+        "open list:ACPI" <linux-acpi@vger.kernel.org>,
+        "open list:X86 PLATFORM DRIVERS" 
+        <platform-driver-x86@vger.kernel.org>,
+        "open list:THUNDERBOLT DRIVER" <linux-usb@vger.kernel.org>
+Subject: Re: [PATCH v2 3/9] PCI: Drop pci_is_thunderbolt_attached()
+In-Reply-To: <20231103190758.82911-4-mario.limonciello@amd.com>
+Message-ID: <4747b7b8-ea48-4117-f746-a18dae97bc2@linux.intel.com>
+References: <20231103190758.82911-1-mario.limonciello@amd.com> <20231103190758.82911-4-mario.limonciello@amd.com>
 MIME-Version: 1.0
-References: <12317335.O9o76ZdvQC@kreacher> <283d4abe-885b-415d-a24d-681408a23845@linaro.org>
-In-Reply-To: <283d4abe-885b-415d-a24d-681408a23845@linaro.org>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 6 Nov 2023 13:31:41 +0100
-Message-ID: <CAJZ5v0g3C=wV-4s+hFae5cNrTwLXdXScn40oEp6=Ju6-pKptPQ@mail.gmail.com>
-Subject: Re: [PATCH v2] thermal: core: Add trip thresholds for trip crossing detection
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Lukasz Luba <lukasz.luba@arm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daniel,
+On Fri, 3 Nov 2023, Mario Limonciello wrote:
 
-On Mon, Nov 6, 2023 at 1:02 AM Daniel Lezcano <daniel.lezcano@linaro.org> wrote:
->
->
-> Hi Rafael,
->
->
-> On 03/11/2023 15:56, Rafael J. Wysocki wrote:
-> > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> >
-> > The trip crossing detection in handle_thermal_trip() does not work
-> > correctly in the cases when a trip point is crossed on the way up and
-> > then the zone temperature stays above its low temperature (that is, its
-> > temperature decreased by its hysteresis).  The trip temperature may
-> > be passed by the zone temperature subsequently in that case, even
-> > multiple times, but that does not count as the trip crossing as long as
-> > the zone temperature does not fall below the trip's low temperature or,
-> > in other words, until the trip is crossed on the way down.
-> >
-> > |-----------low--------high------------|
-> >               |<--------->|
-> >               |    hyst   |
-> >               |           |
-> >               |          -|--> crossed on the way up
-> >               |
-> >           <---|-- crossed on the way down
-> >
-> > However, handle_thermal_trip() will invoke thermal_notify_tz_trip_up()
-> > every time the trip temperature is passed by the zone temperature on
-> > the way up regardless of whether or not the trip has been crossed on
-> > the way down yet.  Moreover, it will not call thermal_notify_tz_trip_down()
-> > if the last zone temperature was between the trip's temperature and its
-> > low temperature, so some "trip crossed on the way down" events may not
-> > be reported.
-> >
-> > To address this issue, introduce trip thresholds equal to either the
-> > temperature of the given trip, or its low temperature, such that if
-> > the trip's threshold is passed by the zone temperature on the way up,
-> > its value will be set to the trip's low temperature and
-> > thermal_notify_tz_trip_up() will be called, and if the trip's threshold
-> > is passed by the zone temperature on the way down, its value will be set
-> > to the trip's temperature (high) and thermal_notify_tz_trip_down() will
-> > be called.  Accordingly, if the threshold is passed on the way up, it
-> > cannot be passed on the way up again until its passed on the way down
-> > and if it is passed on the way down, it cannot be passed on the way down
-> > again until it is passed on the way up which guarantees correct
-> > triggering of trip crossing notifications.
-> >
-> > If the last temperature of the zone is invalid, the trip's threshold
-> > will be set depending of the zone's current temperature: If that
-> > temperature is above the trip's temperature, its threshold will be
-> > set to its low temperature or otherwise its threshold will be set to
-> > its (high) temperature.  Because the zone temperature is initially
-> > set to invalid and tz->last_temperature is only updated by
-> > update_temperature(), this is sufficient to set the correct initial
-> > threshold values for all trips.
-> >
-> > Link: https://lore.kernel.org/all/20220718145038.1114379-4-daniel.lezcano@linaro.org
-> > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> > ---
-> >
-> > v1 (RFC) -> v2: Add missing description of a new struct thermal_trip field.
-> >
-> > And because no comments have been sent for a week, this is not an RFC
-> > any more.
->
-> Can you give me a few days to review this patch and test it with some
-> debugfs code planned to be submitted?
+> All callers have switched to dev_is_removable() for detecting
+> hotpluggable PCIe devices.
+> 
+> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
+> ---
+>  include/linux/pci.h | 22 ----------------------
+>  1 file changed, 22 deletions(-)
+> 
+> diff --git a/include/linux/pci.h b/include/linux/pci.h
+> index b56417276042..530b0a360514 100644
+> --- a/include/linux/pci.h
+> +++ b/include/linux/pci.h
+> @@ -2616,28 +2616,6 @@ static inline bool pci_ari_enabled(struct pci_bus *bus)
+>  	return bus->self && bus->self->ari_enabled;
+>  }
+>  
+> -/**
+> - * pci_is_thunderbolt_attached - whether device is on a Thunderbolt daisy chain
+> - * @pdev: PCI device to check
+> - *
+> - * Walk upwards from @pdev and check for each encountered bridge if it's part
+> - * of a Thunderbolt controller.  Reaching the host bridge means @pdev is not
+> - * Thunderbolt-attached.  (But rather soldered to the mainboard usually.)
+> - */
+> -static inline bool pci_is_thunderbolt_attached(struct pci_dev *pdev)
+> -{
+> -	struct pci_dev *parent = pdev;
+> -
+> -	if (pdev->is_thunderbolt)
+> -		return true;
+> -
+> -	while ((parent = pci_upstream_bridge(parent)))
+> -		if (parent->is_thunderbolt)
+> -			return true;
+> -
+> -	return false;
+> -}
+> -
+>  #if defined(CONFIG_PCIEPORTBUS) || defined(CONFIG_EEH)
+>  void pci_uevent_ers(struct pci_dev *pdev, enum  pci_ers_result err_type);
+>  #endif
+> 
 
-Sure, I'm not going to do anything with it until 6.7-rc1 is out anyway.
+I don't think all callers have been removed. Ah, lkp has caught the same 
+problem.
 
-Thanks!
+-- 
+ i.
+
