@@ -2,126 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 88FB87E1FD8
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 12:23:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37E1E7E1FE2
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 12:24:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230155AbjKFLX0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 06:23:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53506 "EHLO
+        id S231414AbjKFLYz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 06:24:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229583AbjKFLXZ (ORCPT
+        with ESMTP id S230009AbjKFLYw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 06:23:25 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7601BBB
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 03:23:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699269802; x=1730805802;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=mHD5i5vDa1OTKSAAbvoZP2HSropGa5tKX66nmBUNaYk=;
-  b=OZ230BlHYihfIpX7OHqE6UVevqcB8WkfUqi1QWVX1yXWp+msxzEHrQu7
-   xZZC3UV1nm+ZJgsTKlmLlubi7tZHVOb4tlxi0RkUnFtc44AduZpg9Co4/
-   YM1A5+pz/NVrDj8UTLm3lYWHqm4+jCchwJhiSNxxahabxt3oHCRalOPfl
-   sSvEwmIr0UQ/D+DHSJKeEx1Pi16Y9dFnyPc4oEUAnnTvkMC3oiWFMkLpE
-   K6XjaHAhYtbEdO0IETZP9VmgYuiuPTyFmmksw6RbU7EB5OzZLkDfecwwq
-   RoIaGfVTX7JrIw6MLSYVWNFcpGldlL8NMr/UbHiP/81K0YKEh0ILAgXko
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10885"; a="393150985"
-X-IronPort-AV: E=Sophos;i="6.03,281,1694761200"; 
-   d="scan'208";a="393150985"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Nov 2023 03:23:21 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.03,281,1694761200"; 
-   d="scan'208";a="3597494"
-Received: from lpilolli-mobl.ger.corp.intel.com (HELO localhost) ([10.252.36.222])
-  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Nov 2023 03:23:17 -0800
-From:   Jani Nikula <jani.nikula@linux.intel.com>
-To:     Abhinav Singh <singhabhinav9051571833@gmail.com>,
-        alexander.deucher@amd.com, christian.koenig@amd.com,
-        Xinhui.Pan@amd.com, airlied@gmail.com, daniel@ffwll.ch
-Cc:     Abhinav Singh <singhabhinav9051571833@gmail.com>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drivers: gpu: Fix warning using plain integer as NULL
-In-Reply-To: <20231103155013.332367-1-singhabhinav9051571833@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20231103155013.332367-1-singhabhinav9051571833@gmail.com>
-Date:   Mon, 06 Nov 2023 13:23:14 +0200
-Message-ID: <87sf5jyvkt.fsf@intel.com>
+        Mon, 6 Nov 2023 06:24:52 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A87FBE
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 03:24:50 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C904C433C7;
+        Mon,  6 Nov 2023 11:24:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699269890;
+        bh=YkEv2EZkQXxEy3IB6Z8hqcYQpz7j5UfPVeWSu4+609Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jeONS6MKrztCYfQmThd6yaLlb5+OCEHxmsTOZ+KR45Ud3a+PBLw6pMOFZ5hsQbmlV
+         4uuY3IhQsnAPAFc/f8jdHratGJr/+itpyLAm/ezOGJWrImzPzGv3jfNZTywYhuQ4iA
+         C8ThKcYvqJGeUPAbERSsji7RNHzQXUKg5mFtZPOfMf5SGdJCo7kjBiULomxIbFSwQP
+         skJt/nYedGg1CKPicr1RI5UAKvlnVQe17zHD3/LYI6Cc2N9+vefA/OCjKtzBY5X0NX
+         Uwld7gfbPsukoJ980zxHOeuZTHMPRvM8Kxyox2/NWSt32csFcSNRmDdHGjfv/eg3XP
+         urNhL4m7CwxmA==
+Date:   Mon, 6 Nov 2023 16:54:45 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Johan Hovold <johan+linaro@kernel.org>,
+        Kishon Vijay Abraham I <kishon@kernel.org>,
+        Stanley Chang <stanley_chang@realtek.com>,
+        linux-kernel@vger.kernel.org, linux-phy@lists.infradead.org,
+        linux-usb@vger.kernel.org
+Subject: Re: [PATCH 0/3] Revert "usb: phy: add usb phy notify port status API"
+Message-ID: <ZUjM/VEliT5c8H4C@matsya>
+References: <20231106110654.31090-1-johan+linaro@kernel.org>
+ <2023110623-pointing-stump-643d@gregkh>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2023110623-pointing-stump-643d@gregkh>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 03 Nov 2023, Abhinav Singh <singhabhinav9051571833@gmail.com> wrote:
-> sparse static analysis tools generate a warning with this message
-> "Using plain integer as NULL pointer". In this case this warning is
-> being shown because we are trying to intialize a pointer to NULL using
-> integer value 0.
->
-> Signed-off-by: Abhinav Singh <singhabhinav9051571833@gmail.com>
-> ---
->  drivers/gpu/drm/radeon/clearstate_evergreen.h | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/gpu/drm/radeon/clearstate_evergreen.h b/drivers/gpu/drm/radeon/clearstate_evergreen.h
-> index 63a1ffbb3ced..3b645558f133 100644
-> --- a/drivers/gpu/drm/radeon/clearstate_evergreen.h
-> +++ b/drivers/gpu/drm/radeon/clearstate_evergreen.h
-> @@ -1049,7 +1049,7 @@ static const struct cs_extent_def SECT_CONTEXT_defs[] =
->      {SECT_CONTEXT_def_5, 0x0000a29e, 5 },
->      {SECT_CONTEXT_def_6, 0x0000a2a5, 56 },
->      {SECT_CONTEXT_def_7, 0x0000a2de, 290 },
-> -    { 0, 0, 0 }
-> +    { NULL, 0, 0 }
+On 06-11-23, 12:15, Greg Kroah-Hartman wrote:
+> On Mon, Nov 06, 2023 at 12:06:51PM +0100, Johan Hovold wrote:
+> > The recently added Realtek PHY drivers depend on the new port status
+> > notification mechanism which was built on the deprecated USB PHY
+> > implementation and devicetree binding.
+> > 
+> > Specifically, using these PHYs would require describing the very same
+> > PHY using both the generic "phy" property and the deprecated "usb-phy"
+> > property which is clearly wrong.
+> > 
+> > We should not be building new functionality on top of the legacy USB PHY
+> > implementation even if it is currently stuck in some kind of
+> > transitional limbo.
+> > 
+> > Revert the new Realtek PHY drivers for now so that the port status
+> > notification interface can be reverted and replaced before we dig
+> > ourselves into an even deeper hole with this PHY mess.
+> > 
+> > Note that there are no upstream users of these PHYs and the drivers were
+> > only included in 6.6 so there should still be time to undo this.
+> 
+> No users of these phy drivers yet?  Why were they added?
 
-Random drive-by comment:
+Not sure why, they didnt go thru phy ss!
 
-I'd just use {} as the sentinel.
+> 
+> > Preferably these should go in through Greg's tree for 6.7-rc1.
+> 
+> I'll be glad to take this if I can get an ack for it.
 
-BR,
-Jani.
+Pls do drop this:
 
->  };
->  static const u32 SECT_CLEAR_def_1[] =
->  {
-> @@ -1060,7 +1060,7 @@ static const u32 SECT_CLEAR_def_1[] =
->  static const struct cs_extent_def SECT_CLEAR_defs[] =
->  {
->      {SECT_CLEAR_def_1, 0x0000ffc0, 3 },
-> -    { 0, 0, 0 }
-> +    { NULL, 0, 0 }
->  };
->  static const u32 SECT_CTRLCONST_def_1[] =
->  {
-> @@ -1070,11 +1070,11 @@ static const u32 SECT_CTRLCONST_def_1[] =
->  static const struct cs_extent_def SECT_CTRLCONST_defs[] =
->  {
->      {SECT_CTRLCONST_def_1, 0x0000f3fc, 2 },
-> -    { 0, 0, 0 }
-> +    { NULL, 0, 0 }
->  };
->  static const struct cs_section_def evergreen_cs_data[] = {
->      { SECT_CONTEXT_defs, SECT_CONTEXT },
->      { SECT_CLEAR_defs, SECT_CLEAR },
->      { SECT_CTRLCONST_defs, SECT_CTRLCONST },
-> -    { 0, SECT_NONE }
-> +    { NULL, SECT_NONE }
->  };
-> --
-> 2.39.2
->
+Acked-by: Vinod Koul <vkoul@kernel.org>
 
 -- 
-Jani Nikula, Intel
+~Vinod
