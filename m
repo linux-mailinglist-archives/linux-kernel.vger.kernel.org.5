@@ -2,83 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 961A87E2CFA
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 20:36:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C12A7E2CF1
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 20:35:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233060AbjKFTgT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 14:36:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52506 "EHLO
+        id S232755AbjKFTfD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 14:35:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232975AbjKFTf5 (ORCPT
+        with ESMTP id S231555AbjKFTe7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 14:35:57 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D410D42
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 11:35:52 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d9a5a3f2d4fso5597543276.3
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 11:35:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1699299351; x=1699904151; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=JeaszBAoxCXKdkXYBf2TzRJcYXC3x0zPMGfP5WqEvsc=;
-        b=4T34G51Vy24jzZYmXhLVBV33LpOwspeKDUmQx9HJQcv5TeDzByoGZmuh1Jx58QYspS
-         GOo0ztpeLs7Zbct5/wX4dWIz8vkxkig9fJVuWYALs+xhjgKI3h1B0z6wlkn9ZKy6VHqN
-         ARAA38YjWfq1heHQVGWuqG0nou7/iBtBHdH44evGq+gCm/8NpJvW9R1f+PPFPAOxkk6+
-         mnkA70x+yEFQj/MtNLsm9IzFE5aacYqnAlH11ATuNlXvbjbGdpnG2ShqGSMdseDseUVP
-         /Nwl7zBP+3eB8WAK/ibp9/4PgeabDcsa21IMJw/cS1z//4pcojchVH/Vjg9TMbcvXIxd
-         uNzA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699299351; x=1699904151;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=JeaszBAoxCXKdkXYBf2TzRJcYXC3x0zPMGfP5WqEvsc=;
-        b=LqxsQkKrNbyX56umMmhVXarNhXUp+LxsOOLjIQNIbpM9NIZEZDWXaywKJliIf2dmGR
-         2rRNppWC5qgMUQt3O1YbMdz8cwMXRC6jDPO2lhek5rSD5uwYs8t7TRi0o32aUD4myeY0
-         JJV3dOq8tZTnJR7sEJu8GzS7qOW9cRqABiVvTGoL++Rzm/c7gUFKyX0+T1PCQW92aeqv
-         wHgQjEsyXacv95jF1+V/JRJeLg7vf9wUha7n25bHU90hJSIolDQAiquVZ/p3JLFEiwsp
-         S5q5z+NUls6FDRwGKyfM1MEj0sD+CUMofivcjUApvrA/cbPemJZVBNtX3y5RDP1jHweu
-         acOQ==
-X-Gm-Message-State: AOJu0YxKTELPlymViI2aGbGQpmsGbYc0IHijfpBprdiXulnbcsd5TJzJ
-        eW70ajV2eduGXBCqyL1TbbZq2F4sfZs3GqMVlxxIJO+bWxq7b8lrC9K9idgdOAxScq6X+xB6LJH
-        ZbC8WY3C1AuJM10Uks59pcgsPF4T93W2qkVHK+bgbD4ph/A7ibQFB3Y/5AwgHfY2F8ZU304g=
-X-Google-Smtp-Source: AGHT+IFfAQBJwHKCUEtc1lCCAvLeb7ZhZV6fQoGJP3MV8a5CMDnMVK4WUbPUdMMs7gks2IbL4dSEWa3/hqNZ
-X-Received: from jstultz-noogler2.c.googlers.com ([fda3:e722:ac3:cc00:24:72f4:c0a8:600])
- (user=jstultz job=sendgmr) by 2002:a05:6902:1083:b0:d9a:c3b8:4274 with SMTP
- id v3-20020a056902108300b00d9ac3b84274mr698792ybu.7.1699299351218; Mon, 06
- Nov 2023 11:35:51 -0800 (PST)
-Date:   Mon,  6 Nov 2023 19:34:51 +0000
-In-Reply-To: <20231106193524.866104-1-jstultz@google.com>
-Mime-Version: 1.0
-References: <20231106193524.866104-1-jstultz@google.com>
-X-Mailer: git-send-email 2.42.0.869.gea05f2083d-goog
-Message-ID: <20231106193524.866104-9-jstultz@google.com>
-Subject: [PATCH v6 08/20] sched: Add CONFIG_PROXY_EXEC & boot argument to enable/disable
-From:   John Stultz <jstultz@google.com>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     John Stultz <jstultz@google.com>,
-        Joel Fernandes <joelaf@google.com>,
-        Qais Yousef <qyousef@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>,
-        Zimuzo Ezeozue <zezeozue@google.com>,
-        Youssef Esmat <youssefesmat@google.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>, kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        Mon, 6 Nov 2023 14:34:59 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A4FB183;
+        Mon,  6 Nov 2023 11:34:55 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8FA7AC433C9;
+        Mon,  6 Nov 2023 19:34:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699299294;
+        bh=Hl1nfA1hQNe7leKhITV5rp/ybaYc2SObTEPuCoXKzsU=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=A19kRBUhdf908QakvSgKid7H5ILLcRyl3LZTCq1N1NbR7P1t/sgJRPyq2mGHLHvNQ
+         c1PmQQF3vJZi27wlDydYRDaG8WnnwIr0O2WZfJhX3FpFS6CHEqJ6CuB7YqBNsWEaZE
+         xyOMV1pLvMG22qoj0QveUa+peLUS08xdNIur+5Fr3xrEIfcoB+ObeLmiFlg1mq0m3q
+         0yN7lT3Uys4lMsk11MZaPaYEVjqE3WuxO6HHuReiJN0i9RJhbO12h4kRSoBuzqWNjB
+         idZCa47/HKlp/rFMD73n780muQHc7iYP5/kr+yLw9PIA6OnA231CX8KwxAGpxy4SoF
+         Lhij6W8x3MIrw==
+Message-ID: <19129763-6f74-4b04-8a5f-441255b76d34@kernel.org>
+Date:   Mon, 6 Nov 2023 12:34:52 -0700
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH v3 09/12] net: add support for skbs with unreadable
+ frags
+Content-Language: en-US
+To:     Stanislav Fomichev <sdf@google.com>,
+        Mina Almasry <almasrymina@google.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linaro-mm-sig@lists.linaro.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Jeroen de Borst <jeroendb@google.com>,
+        Praveen Kaligineedi <pkaligineedi@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Kaiyuan Zhang <kaiyuanz@google.com>
+References: <20231106024413.2801438-1-almasrymina@google.com>
+ <20231106024413.2801438-10-almasrymina@google.com>
+ <ZUk03DhWxV-bOFJL@google.com>
+From:   David Ahern <dsahern@kernel.org>
+In-Reply-To: <ZUk03DhWxV-bOFJL@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -86,136 +73,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds the CONFIG_PROXY_EXEC option, along with
-a boot argument prox_exec= that can be used to disable the
-feature at boot time if CONFIG_PROXY_EXEC was enabled.
+On 11/6/23 11:47 AM, Stanislav Fomichev wrote:
+> On 11/05, Mina Almasry wrote:
+>> For device memory TCP, we expect the skb headers to be available in host
+>> memory for access, and we expect the skb frags to be in device memory
+>> and unaccessible to the host. We expect there to be no mixing and
+>> matching of device memory frags (unaccessible) with host memory frags
+>> (accessible) in the same skb.
+>>
+>> Add a skb->devmem flag which indicates whether the frags in this skb
+>> are device memory frags or not.
+>>
+>> __skb_fill_page_desc() now checks frags added to skbs for page_pool_iovs,
+>> and marks the skb as skb->devmem accordingly.
+>>
+>> Add checks through the network stack to avoid accessing the frags of
+>> devmem skbs and avoid coalescing devmem skbs with non devmem skbs.
+>>
+>> Signed-off-by: Willem de Bruijn <willemb@google.com>
+>> Signed-off-by: Kaiyuan Zhang <kaiyuanz@google.com>
+>> Signed-off-by: Mina Almasry <almasrymina@google.com>
+>>
+>> ---
+>>  include/linux/skbuff.h | 14 +++++++-
+>>  include/net/tcp.h      |  5 +--
+>>  net/core/datagram.c    |  6 ++++
+>>  net/core/gro.c         |  5 ++-
+>>  net/core/skbuff.c      | 77 ++++++++++++++++++++++++++++++++++++------
+>>  net/ipv4/tcp.c         |  6 ++++
+>>  net/ipv4/tcp_input.c   | 13 +++++--
+>>  net/ipv4/tcp_output.c  |  5 ++-
+>>  net/packet/af_packet.c |  4 +--
+>>  9 files changed, 115 insertions(+), 20 deletions(-)
+>>
+>> diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
+>> index 1fae276c1353..8fb468ff8115 100644
+>> --- a/include/linux/skbuff.h
+>> +++ b/include/linux/skbuff.h
+>> @@ -805,6 +805,8 @@ typedef unsigned char *sk_buff_data_t;
+>>   *	@csum_level: indicates the number of consecutive checksums found in
+>>   *		the packet minus one that have been verified as
+>>   *		CHECKSUM_UNNECESSARY (max 3)
+>> + *	@devmem: indicates that all the fragments in this skb are backed by
+>> + *		device memory.
+>>   *	@dst_pending_confirm: need to confirm neighbour
+>>   *	@decrypted: Decrypted SKB
+>>   *	@slow_gro: state present at GRO time, slower prepare step required
+>> @@ -991,7 +993,7 @@ struct sk_buff {
+>>  #if IS_ENABLED(CONFIG_IP_SCTP)
+>>  	__u8			csum_not_inet:1;
+>>  #endif
+>> -
+>> +	__u8			devmem:1;
+>>  #if defined(CONFIG_NET_SCHED) || defined(CONFIG_NET_XGRESS)
+>>  	__u16			tc_index;	/* traffic control index */
+>>  #endif
+>> @@ -1766,6 +1768,12 @@ static inline void skb_zcopy_downgrade_managed(struct sk_buff *skb)
+>>  		__skb_zcopy_downgrade_managed(skb);
+>>  }
+>>  
+>> +/* Return true if frags in this skb are not readable by the host. */
+>> +static inline bool skb_frags_not_readable(const struct sk_buff *skb)
+>> +{
+>> +	return skb->devmem;
+> 
+> bikeshedding: should we also rename 'devmem' sk_buff flag to 'not_readable'?
+> It better communicates the fact that the stack shouldn't dereference the
+> frags (because it has 'devmem' fragments or for some other potential
+> future reason).
 
-Cc: Joel Fernandes <joelaf@google.com>
-Cc: Qais Yousef <qyousef@google.com>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Juri Lelli <juri.lelli@redhat.com>
-Cc: Vincent Guittot <vincent.guittot@linaro.org>
-Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc: Valentin Schneider <vschneid@redhat.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Ben Segall <bsegall@google.com>
-Cc: Zimuzo Ezeozue <zezeozue@google.com>
-Cc: Youssef Esmat <youssefesmat@google.com>
-Cc: Mel Gorman <mgorman@suse.de>
-Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Waiman Long <longman@redhat.com>
-Cc: Boqun Feng <boqun.feng@gmail.com>
-Cc: "Paul E . McKenney" <paulmck@kernel.org>
-Cc: kernel-team@android.com
-Signed-off-by: John Stultz <jstultz@google.com>
----
- .../admin-guide/kernel-parameters.txt         |  4 +++
- include/linux/sched.h                         | 13 ++++++++
- init/Kconfig                                  |  7 +++++
- kernel/sched/core.c                           | 31 +++++++++++++++++++
- 4 files changed, 55 insertions(+)
++1.
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 0a1731a0f0ef..199578ae1606 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -4648,6 +4648,10 @@
- 			that).
- 			Format: <bool>
- 
-+	proxy_exec=	[KNL] Enable or disables "proxy execution" style
-+			solution to mutex based priority inversion.
-+			Format: "enable" or "disable"
-+
- 	psi=		[KNL] Enable or disable pressure stall information
- 			tracking.
- 			Format: <bool>
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index 81334677e008..5f05d9a4cc3f 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -1551,6 +1551,19 @@ struct task_struct {
- 	 */
- };
- 
-+#ifdef CONFIG_PROXY_EXEC
-+DECLARE_STATIC_KEY_TRUE(__sched_proxy_exec);
-+static inline bool sched_proxy_exec(void)
-+{
-+	return static_branch_likely(&__sched_proxy_exec);
-+}
-+#else
-+static inline bool sched_proxy_exec(void)
-+{
-+	return false;
-+}
-+#endif
-+
- static inline struct pid *task_pid(struct task_struct *task)
- {
- 	return task->thread_pid;
-diff --git a/init/Kconfig b/init/Kconfig
-index 6d35728b94b2..884f94d8ee9e 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -908,6 +908,13 @@ config NUMA_BALANCING_DEFAULT_ENABLED
- 	  If set, automatic NUMA balancing will be enabled if running on a NUMA
- 	  machine.
- 
-+config PROXY_EXEC
-+	bool "Proxy Execution"
-+	default n
-+	help
-+	  This option enables proxy execution, a mechanism for mutex owning
-+	  tasks to inherit the scheduling context of higher priority waiters.
-+
- menuconfig CGROUPS
- 	bool "Control Group support"
- 	select KERNFS
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 802551e0009b..a38bf8ef5798 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -117,6 +117,37 @@ EXPORT_TRACEPOINT_SYMBOL_GPL(sched_update_nr_running_tp);
- 
- DEFINE_PER_CPU_SHARED_ALIGNED(struct rq, runqueues);
- 
-+#ifdef CONFIG_PROXY_EXEC
-+DEFINE_STATIC_KEY_TRUE(__sched_proxy_exec);
-+static int __init setup_proxy_exec(char *str)
-+{
-+	int ret = 0;
-+
-+	if (!str)
-+		goto out;
-+
-+	if (!strcmp(str, "enable")) {
-+		static_branch_enable(&__sched_proxy_exec);
-+		ret = 1;
-+	} else if (!strcmp(str, "disable")) {
-+		static_branch_disable(&__sched_proxy_exec);
-+		ret = 1;
-+	}
-+out:
-+	if (!ret)
-+		pr_warn("Unable to parse proxy_exec=\n");
-+
-+	return ret;
-+}
-+#else
-+static int __init setup_proxy_exec(char *str)
-+{
-+	pr_warn("CONFIG_PROXY_EXEC=n, so it cannot be enabled or disabled at boottime\n");
-+	return 0;
-+}
-+#endif
-+__setup("proxy_exec=", setup_proxy_exec);
-+
- #ifdef CONFIG_SCHED_DEBUG
- /*
-  * Debugging: various feature bits
--- 
-2.42.0.869.gea05f2083d-goog
-
+Also, the flag on the skb is an optimization - a high level signal that
+one or more frags is in unreadable memory. There is no requirement that
+all of the frags are in the same memory type.
