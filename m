@@ -2,141 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BC8B67E1BA7
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 09:06:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E7D87E1BB0
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 09:08:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230464AbjKFIGe convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 6 Nov 2023 03:06:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33650 "EHLO
+        id S231176AbjKFIIZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 03:08:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229486AbjKFIGc (ORCPT
+        with ESMTP id S231153AbjKFIIW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 03:06:32 -0500
-Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com [209.85.219.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7CB190;
-        Mon,  6 Nov 2023 00:06:29 -0800 (PST)
-Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-da7238b3eb4so2990997276.1;
-        Mon, 06 Nov 2023 00:06:29 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699257989; x=1699862789;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=GEegE8ckZG10k1Ra1Y/drVVKgI3ZUf2FMeALzLcJgsk=;
-        b=Y7Vbbyfwdp41G+/9MRhLWX9XrTnkUSW/jGsW3UDyoYaZVpb1zhZa7iJ+U/3iAQBgeQ
-         MtU4HEnBIitTXL8JS8KOwzJq9DZ2AZOWBFJv3+DUgHq6Z3/074C4DmXXSSLDwvYFZIXI
-         erDqrxvIDA4rnbr1UtYubHeXNP1KqGUMjJXquwDGJ7w8Xcm/l/MAX27DHhR6vx91X8T/
-         qbEPPe8l0BlrHb9ouoBHhjhsg3e+sWoXaCAvbD/LU7+OMvewq6rs9pGM5p+1lewUnwIN
-         nW5TzTEYScGLfTHlP4qE0XisMfenHiQjA4AiHZaedK5XNIKRZ5f2HWGdQ2whsgx800TR
-         vBXA==
-X-Gm-Message-State: AOJu0Ywy90DsfCbpHoU+BHCSKOZ4X7NStWfBHlQLjUmD0XMKzscw8reb
-        zbElO/pzAoYWbC7XidU1NTk3Jn0U4mYFbg==
-X-Google-Smtp-Source: AGHT+IFg9RQNjiQOpL049DiRTpAneWA1kKsJw01oZXkPJj4HuqwWC1buYHuV9YsiByr4J0TqCkf/3w==
-X-Received: by 2002:a25:a422:0:b0:da0:94fb:fd7e with SMTP id f31-20020a25a422000000b00da094fbfd7emr26392374ybi.45.1699257988724;
-        Mon, 06 Nov 2023 00:06:28 -0800 (PST)
-Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com. [209.85.219.176])
-        by smtp.gmail.com with ESMTPSA id 203-20020a2516d4000000b00d7745e2bb19sm3680396ybw.29.2023.11.06.00.06.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 06 Nov 2023 00:06:28 -0800 (PST)
-Received: by mail-yb1-f176.google.com with SMTP id 3f1490d57ef6-d852b28ec3bso4458136276.2;
-        Mon, 06 Nov 2023 00:06:27 -0800 (PST)
-X-Received: by 2002:a5b:748:0:b0:d9a:4bc3:226d with SMTP id
- s8-20020a5b0748000000b00d9a4bc3226dmr29092496ybq.34.1699257987652; Mon, 06
- Nov 2023 00:06:27 -0800 (PST)
+        Mon, 6 Nov 2023 03:08:22 -0500
+Received: from EUR03-DBA-obe.outbound.protection.outlook.com (mail-dbaeur03on2105.outbound.protection.outlook.com [40.107.104.105])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 509A7DB
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 00:08:18 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jABnNf5cr3gnnXwfCcnpXYQtZnwVkS+8SCj6xoBWAacgtmXtR68L2oD+OSnIAN6jiNPX0nqpzW4Oq1otb11ZcWUgTzyofSDecIb91u3zxH9AbwFnUYxX5/UyzUN2nMopSnHsrwFc+/AkTTothY9bzxKMAF1cKGcEuVTTFH8AjEqZuM/fs2bfgzgImuThVs0awwLzRIk5Z8idr/Egp4yHyq3dUtanju+5/dUAKusPRjxo6+FUMtSq4MqdzgtAwyc0M6hS2bdTdy0swSA4Zk0sqTLFZ670DamkiAYDPyI/LdEYmC9i2cCUi0Nq/QED4l2qmCkYTQGnXGC7f+3bcjIRCQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=lnN4oJmgV8AQzjnmkTCKGAkwbd2OzxkbjPRfXusZ2/8=;
+ b=lp6LHNSfjxwXKqmPgXkWPBgPG6z4zND5Vm+Stx9AvHuki0JGab2I/pxvZhHDl/2X5raA0HIwPTUXhsABYRpREWwkfTu8TZmK5oWwgSJMk/xyjPl5/haz+h40W3HeIYP9k/1B4DLkW+cNid0gWpVjr0Z9vPug55cHKWyQIAPFQQoiEgthuGWWaVACnxwgqoRhSpLdx/hssowZAdAc10Hs7Z219Zwr0Hqxy7ELVImpUyMGPAnemTKnsGOCmlD51GTzlm9yInCQiVN/eJkzv1D2DeQ2eZMGd7bA86TU2tjWjpnq2aE/05WjWq1QLA2m8BEZnBQ9oGvcdgD4AD0QY5pU0A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nokia.com; dmarc=pass action=none header.from=nokia.com;
+ dkim=pass header.d=nokia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nokia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=lnN4oJmgV8AQzjnmkTCKGAkwbd2OzxkbjPRfXusZ2/8=;
+ b=MDV+HGhnIPxrDO1MqHJVH/jGcqSVckdpOTBVKumEkdDKNlj9gYRTS3AiIuMPbwKvkvCcbPj2wu8XUOg6FYwj4AiLH6uS83W2spJ/I6KYrbcqAEHtiQ/XC85lrU06JegIXlTXEs9zl2HAdvtESQ8gIgqwCPvfaBf7a0rsn6DlO/uOvG4yHv0fEzy9eyKpF4U/KPkcigXZXSVzLLyO9xlaRbSefygEvxD0yHCVFbMWclqcRgnF4y12VQnPwH05COorbRmQIvyH8Ac74+SO939P7GQ0sIm8+J1sk1T8CN5Rim48UyVZy9Hl9Opsr8o3F5BVdmT17NSjk0TBH9hREgOe9A==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nokia.com;
+Received: from AM7PR07MB6705.eurprd07.prod.outlook.com (2603:10a6:20b:1a2::10)
+ by AS1PR07MB8565.eurprd07.prod.outlook.com (2603:10a6:20b:481::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.28; Mon, 6 Nov
+ 2023 08:08:15 +0000
+Received: from AM7PR07MB6705.eurprd07.prod.outlook.com
+ ([fe80::bd44:ff70:6237:b6ea]) by AM7PR07MB6705.eurprd07.prod.outlook.com
+ ([fe80::bd44:ff70:6237:b6ea%4]) with mapi id 15.20.6954.028; Mon, 6 Nov 2023
+ 08:08:14 +0000
+From:   Stefan Wiehler <stefan.wiehler@nokia.com>
+To:     Russell King <linux@armlinux.org.uk>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Stefan Wiehler <stefan.wiehler@nokia.com>
+Subject: [PATCH] arm: topology: Fix missing clock-frequency property warning
+Date:   Mon,  6 Nov 2023 09:06:21 +0100
+Message-Id: <20231106080621.12452-1-stefan.wiehler@nokia.com>
+X-Mailer: git-send-email 2.31.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: FR4P281CA0301.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:f6::13) To AM7PR07MB6705.eurprd07.prod.outlook.com
+ (2603:10a6:20b:1a2::10)
 MIME-Version: 1.0
-References: <20231101181601.1493271-1-jolsa@kernel.org>
-In-Reply-To: <20231101181601.1493271-1-jolsa@kernel.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 6 Nov 2023 09:06:15 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdUK4iRF7rTrSypEcbGTO0SnBUFDqT_HA9B7Pj62wTbYAw@mail.gmail.com>
-Message-ID: <CAMuHMdUK4iRF7rTrSypEcbGTO0SnBUFDqT_HA9B7Pj62wTbYAw@mail.gmail.com>
-Subject: Re: [PATCHv2 bpf-next] bpf: fix compilation error without CGROUPS
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        kernel test robot <lkp@intel.com>, bpf@vger.kernel.org,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>,
-        Yafang Shao <laoar.shao@gmail.com>, Tejun Heo <tj@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        MPTCP Upstream <mptcp@lists.linux.dev>,
-        Matthieu Baerts <matttbe@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AM7PR07MB6705:EE_|AS1PR07MB8565:EE_
+X-MS-Office365-Filtering-Correlation-Id: 3f9684ae-b26d-45e6-8c67-08dbde9f86ec
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: LGe2+y4PR/JE1SeBTrufz0eP+3XB1WwIU7aq/WwhHI/JlBdjmbSalHOBaWbYdWqJKuWKvaNiObPtvjoRb1BnmoLeTQs79CGK7CaUQwkKJhRqu2JvbP5roetovhRx99VLB/NRnPsytIAV0/JgPwJ1Z/4fl213UvzWAIE3NOf2OaldDAIpJ+stYbsoVoLxuunG13alOKnTZ4cEu5tVgjcJZIW5AoR/rm45/8L2AU8snfaudUwqj6G6lOfSpcgz9LmQKATb/fYlLtY6M2cibrwiYoQak8yBgFsb9V1pmis6z7mCx0QkYlUPRVOKqJ8ksdX35jjp2z77quFtlQMMN5WXb33mQuEzQxL4/7UBKrVvwxRNOGwWzXymCG0/WD8vRVpAq+IamkhpaAw3cWAnIqxhl84Hd1YwQeirpLgCcapK3rsHvWePauw+dhtTFnIR2ymqbj8MTqXj7qT+T0YZf6/6ZQs29ymgqmhTtELWn/W00QvwVCdfTgFWQPLBShni2sz+SVGnB65/E5TiCUaKsC2Ngdga0J7jZMwzWUYxTRrVaETBVR0NopVAoyVqSpHKuJDSNLlxf1zu//XZuFeZe1EiJ/3B8a6A/RShsovp30IP6tp23e7SmZZuVnO7zPqxvKnuiBM+wfDoBJ+IWq1YAAiP/6je8iyQqwyAChwupeiC/v91msFpxuilj4rySYcQOWpr7LfFivQinqOWh9fMD4Ac/Q==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM7PR07MB6705.eurprd07.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(346002)(136003)(366004)(39860400002)(396003)(230273577357003)(230173577357003)(230922051799003)(64100799003)(186009)(1800799009)(451199024)(6512007)(2616005)(6486002)(6506007)(478600001)(52116002)(6666004)(38100700002)(36756003)(86362001)(82960400001)(5660300002)(44832011)(66556008)(66946007)(66476007)(83380400001)(2906002)(41300700001)(107886003)(26005)(1076003)(38350700005)(8936002)(6916009)(8676002)(316002)(4326008);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?tgHhpSeVuQiq52JiplZImkwrhXmjq8fqDt2kb4l/n61X117P9h0BzlLuyE1Q?=
+ =?us-ascii?Q?4zcwF96VGuVSDBKacbZ402pJjF90cidMi/QtPiLovusTZ6LE7J+fWWF0bZpw?=
+ =?us-ascii?Q?isD4yKRuj1sD1N+HOSsud6C16OV8/xtWx1xVgTyigbHMmOg5s/qhZPklk8nI?=
+ =?us-ascii?Q?Xoy+TJ8VdiovERXM9YjxNQ94sj9VUUhLZMVepugYfz6+TQZCGRlgHaqEUCJ5?=
+ =?us-ascii?Q?67rctuTXxu50bPcUg4cjSWx6bmVZXTJrEeKB1Yn+7qh6WdbON/+6HU+nfxPB?=
+ =?us-ascii?Q?TtQf3HZTveA2oCu1MgPyUh9oGsJYEe+9vFkTrAVQAxGIuSCB7+PwYuL6p/mV?=
+ =?us-ascii?Q?neMkwtvrAEfIHuYHwwswjr4F3jdMVFjcBOQe/VKalbPrmI5Lhbz1RoG8pjCW?=
+ =?us-ascii?Q?tVd0/9V0u1vZrq9UfmI7WkXOW+glZ0bhHD/jBDv2d1kZMcqROLBBuOiuYziO?=
+ =?us-ascii?Q?20g4Nbmciy3UyJm7imjjWtr8LfWqHSoQSOjVpjjwF2+Y1JtSqnPh6iNwzXuw?=
+ =?us-ascii?Q?nPEnXnRhAphOcsfVEzi7Ho7MbfEDLm9L0ijELiIZDi/WncbU2H85+Wv5ifs7?=
+ =?us-ascii?Q?ugO/nS26z/ROeYgsiVBsn0dlnM+pADX+SN9Id2UAYlwWX4u2zsBvLImfVFgt?=
+ =?us-ascii?Q?EXw9+EBpmCcWk8nAJEF23+h2J1/CVk+KuQ4zH30533RUhSSIoYX0gE67Focz?=
+ =?us-ascii?Q?l1s7cp2C2yQ+4LOAIzL29KkcTS60/z6oqEO2Wg8ZxRlgyZ67/s7NFaIGSHWW?=
+ =?us-ascii?Q?rVlJTuGzNnJdYla2RpBA1OsO+FBQ6RAdV+m/1g/bQYahF37gjrQ213CKUfYP?=
+ =?us-ascii?Q?SfzJ53wCLe9BErFUqoLvIAuaHzICvJzw1I3/UqEjYf6nYP9OUkTiXUKE0yHt?=
+ =?us-ascii?Q?U3QgQ3p2jajFD5RQAa8RUc6t+qjznPHpIIVDZ20/FAVfL7dPfJ0Xzb8M+huA?=
+ =?us-ascii?Q?muLeURPcQMeN+h0of9X4N058MwUE2+dzookN+bwWHTLVeG4N4tT8PavkJAwf?=
+ =?us-ascii?Q?g5f3oxj+u8m/Q+Snk9l92lGf6Endv72ZeaUIeL6lCvalvJsSmgwIn/Sov08C?=
+ =?us-ascii?Q?/TxnWx1s2iV2m3+TGgICpW9l/o3h4xhDKV3/2awyLaNqxdyBS7Uqn6awG8yq?=
+ =?us-ascii?Q?QofvDgCc+lKXr9NgSr9K0/2HIZn8hxTJjnDeNM7Pj+Wf3hPGriOddvNJCm7U?=
+ =?us-ascii?Q?wBsvL60XgtalYLnDzdrXoikAjfZlegqUZ5MvdlH6S0/eeHckmmSL0uIvD2UP?=
+ =?us-ascii?Q?QInHoN2bnyoBb7wxvJTs7685vzxmfUVs0T/h3C2246NtERR4eFBc5cI4LKHA?=
+ =?us-ascii?Q?84PhtU2AemOSXvx0xIKveuBUjoBo2a90mCsC8ZeG9JkMxqVm+SHk1DuEz8SY?=
+ =?us-ascii?Q?rSW0Wogi8TgCX/NU/hwNyok+RVTC97u05yTGYWEYA6NTjC/UveGC320IjqDz?=
+ =?us-ascii?Q?hpmmWHB3qvCth++pAneXuj9EaYTB/3WQzJAKko0QmuPiSHbS0o8iHWJEeVB7?=
+ =?us-ascii?Q?b5ec9RYXxWO954wWPMOw2qBdf+RitYxjgf31noDCuMQLJ3s+z+mh/8XIRPWY?=
+ =?us-ascii?Q?j7sIbFi36QjOZ5H/PKXIWkOHmp+QMdvJpNHWqrjzNV8A39H49VFSq87sro4W?=
+ =?us-ascii?Q?hA=3D=3D?=
+X-OriginatorOrg: nokia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3f9684ae-b26d-45e6-8c67-08dbde9f86ec
+X-MS-Exchange-CrossTenant-AuthSource: AM7PR07MB6705.eurprd07.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Nov 2023 08:08:14.8652
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 5d471751-9675-428d-917b-70f44f9630b0
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: NDjLL3SWtJ1jgQE8chSrnkHLRlT8KT368Qney6net7huWJBb3t7p7aA8W+0Kict46MsPm7fuDXy0cBOeTV9WiHrLWLvazTFpSXEtFLRLxVY=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS1PR07MB8565
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 1, 2023 at 7:16 PM Jiri Olsa <jolsa@kernel.org> wrote:
-> From: Matthieu Baerts <matttbe@kernel.org>
-> Our MPTCP CI complained [1] -- and KBuild too -- that it was no longer
-> possible to build the kernel without CONFIG_CGROUPS:
->
->   kernel/bpf/task_iter.c: In function 'bpf_iter_css_task_new':
->   kernel/bpf/task_iter.c:919:14: error: 'CSS_TASK_ITER_PROCS' undeclared (first use in this function)
->     919 |         case CSS_TASK_ITER_PROCS | CSS_TASK_ITER_THREADED:
->         |              ^~~~~~~~~~~~~~~~~~~
->   kernel/bpf/task_iter.c:919:14: note: each undeclared identifier is reported only once for each function it appears in
->   kernel/bpf/task_iter.c:919:36: error: 'CSS_TASK_ITER_THREADED' undeclared (first use in this function)
->     919 |         case CSS_TASK_ITER_PROCS | CSS_TASK_ITER_THREADED:
->         |                                    ^~~~~~~~~~~~~~~~~~~~~~
->   kernel/bpf/task_iter.c:927:60: error: invalid application of 'sizeof' to incomplete type 'struct css_task_iter'
->     927 |         kit->css_it = bpf_mem_alloc(&bpf_global_ma, sizeof(struct css_task_iter));
->         |                                                            ^~~~~~
->   kernel/bpf/task_iter.c:930:9: error: implicit declaration of function 'css_task_iter_start'; did you mean 'task_seq_start'? [-Werror=implicit-function-declaration]
->     930 |         css_task_iter_start(css, flags, kit->css_it);
->         |         ^~~~~~~~~~~~~~~~~~~
->         |         task_seq_start
->   kernel/bpf/task_iter.c: In function 'bpf_iter_css_task_next':
->   kernel/bpf/task_iter.c:940:16: error: implicit declaration of function 'css_task_iter_next'; did you mean 'class_dev_iter_next'? [-Werror=implicit-function-declaration]
->     940 |         return css_task_iter_next(kit->css_it);
->         |                ^~~~~~~~~~~~~~~~~~
->         |                class_dev_iter_next
->   kernel/bpf/task_iter.c:940:16: error: returning 'int' from a function with return type 'struct task_struct *' makes pointer from integer without a cast [-Werror=int-conversion]
->     940 |         return css_task_iter_next(kit->css_it);
->         |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->   kernel/bpf/task_iter.c: In function 'bpf_iter_css_task_destroy':
->   kernel/bpf/task_iter.c:949:9: error: implicit declaration of function 'css_task_iter_end' [-Werror=implicit-function-declaration]
->     949 |         css_task_iter_end(kit->css_it);
->         |         ^~~~~~~~~~~~~~~~~
->
-> This patch simply surrounds with a #ifdef the new code requiring CGroups
-> support. It seems enough for the compiler and this is similar to
-> bpf_iter_css_{new,next,destroy}() functions where no other #ifdef have
-> been added in kernel/bpf/helpers.c and in the selftests.
->
-> Fixes: 9c66dc94b62a ("bpf: Introduce css_task open-coded iterator kfuncs")
-> Link: https://github.com/multipath-tcp/mptcp_net-next/actions/runs/6665206927
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202310260528.aHWgVFqq-lkp@intel.com/
-> Signed-off-by: Matthieu Baerts <matttbe@kernel.org>
-> [ added missing ifdefs for BTF_ID cgroup definitions ]
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+If the clock-frequency property is not set in the cpu node but in the
+parent /cpus node, the following warning is emitted:
 
-Thank you, this (finally, reported first on Oct 20!) fixes the build of
-e.g. m68k/defconfig.
+  /cpus/cpu@X missing clock-frequency property
 
-Tested-by: Geert Uytterhoeven <geert@linux-m68k.org>
+The devicetree specification in section 3.8 however specifies that
+"properties that have identical values across cpu nodes may be placed in
+the /cpus node instead.  A client program must first examine a specific cpu
+node, but if an expected property is not found then it should look at the
+parent /cpus node."
 
-Gr{oetje,eeting}s,
+Signed-off-by: Stefan Wiehler <stefan.wiehler@nokia.com>
+---
+ arch/arm/kernel/topology.c | 21 ++++++++++++++++++---
+ 1 file changed, 18 insertions(+), 3 deletions(-)
 
-                        Geert
+diff --git a/arch/arm/kernel/topology.c b/arch/arm/kernel/topology.c
+index ef0058de432b..32fc1c8d9d11 100644
+--- a/arch/arm/kernel/topology.c
++++ b/arch/arm/kernel/topology.c
+@@ -85,15 +85,24 @@ static bool cap_from_dt = true;
+ static void __init parse_dt_topology(void)
+ {
+ 	const struct cpu_efficiency *cpu_eff;
+-	struct device_node *cn = NULL;
++	struct device_node *pcn = NULL, *cn = NULL;
+ 	unsigned long min_capacity = ULONG_MAX;
+ 	unsigned long max_capacity = 0;
+ 	unsigned long capacity = 0;
+ 	int cpu = 0;
++	const __be32 *common_rate;
++	int common_rate_len;
+ 
+ 	__cpu_capacity = kcalloc(nr_cpu_ids, sizeof(*__cpu_capacity),
+ 				 GFP_NOWAIT);
+ 
++	pcn = of_find_node_by_path("/cpus");
++	if (!pcn) {
++		pr_err("missing CPU root device node\n");
++		return;
++	}
++	common_rate = of_get_property(pcn, "clock-frequency", &common_rate_len);
++
+ 	for_each_possible_cpu(cpu) {
+ 		const __be32 *rate;
+ 		int len;
+@@ -121,8 +130,12 @@ static void __init parse_dt_topology(void)
+ 
+ 		rate = of_get_property(cn, "clock-frequency", &len);
+ 		if (!rate || len != 4) {
+-			pr_err("%pOF missing clock-frequency property\n", cn);
+-			continue;
++			if (common_rate && common_rate_len == 4) {
++				rate = common_rate;
++			} else {
++				pr_err("%pOF missing clock-frequency property\n", cn);
++				continue;
++			}
+ 		}
+ 
+ 		capacity = ((be32_to_cpup(rate)) >> 20) * cpu_eff->efficiency;
+@@ -154,6 +167,8 @@ static void __init parse_dt_topology(void)
+ 
+ 	if (cap_from_dt)
+ 		topology_normalize_cpu_scale();
++
++	of_node_put(pcn);
+ }
+ 
+ /*
+-- 
+2.31.0
 
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
