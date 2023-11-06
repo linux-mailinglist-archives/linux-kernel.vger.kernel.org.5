@@ -2,102 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED3877E1FA8
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 12:10:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A9B87E1FA0
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 12:10:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231490AbjKFLKi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 06:10:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54842 "EHLO
+        id S230105AbjKFLKM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 06:10:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231488AbjKFLKb (ORCPT
+        with ESMTP id S229583AbjKFLKK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 06:10:31 -0500
-Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D72110CC
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 03:10:24 -0800 (PST)
-Received: by mail-qv1-xf33.google.com with SMTP id 6a1803df08f44-66d11fec9a5so24016056d6.1
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 03:10:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1699269023; x=1699873823; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qnJqfkSSRV3TBP0JexdvtsqLHYDxALR7H+cYP6TRCJE=;
-        b=SJtS3dqUGrKW28uxSwfWyiN0BGL2D7TgvMufK+WSZ9HkYWxoBPNKag1WoIpZ2KtIAq
-         W79SAPZQirGVO7OBeSqppVDUTxG+xM/lQZ9xm+HKBFVDbasWLoBLQ7V0jAaGHm7/dEEd
-         O+qOVeidLuM93YEJ7+c10RnZ/TI0X4DP8y39eEHqdCBJWbS3kAXskWEdxWEak4iAA4mv
-         P77vJHf6as5d6EDfWSFK2uAC/d5TmKftjgt7VMZABpJCg0BMBWfCQ+YL1FwynvdwH99x
-         JhY0PoPirXyevOmuNgGS8empZ2/IwKkwOBeCFm26KmsNflqmuKaMb46eo9D9RQwQP9NC
-         fecQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699269023; x=1699873823;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qnJqfkSSRV3TBP0JexdvtsqLHYDxALR7H+cYP6TRCJE=;
-        b=oJ7HQQ8EiGRD5BOWjpW+obJVAYZdCeFoRvK2c4LXDYW2UgepF3pKDgU9/RnCASnvnh
-         /3AHd9nQIJDkPwwTbJgoTgsJDFBnIwVcMozKi0Cutq4j3nSxAWJA93B/0z2BxR4DZ5TZ
-         ixwig91u4z/HWlmRJbQNOZ9Ibb7uADgFwq7N65jHoPOfnBi/a4Z11WUFpSMNFSHgVGcC
-         cC3TGZ35hbmeGyk5E+AFCKi1y7jP0cPaVq6u7t+vJ+N3+eWgBQkvo69TfATtUqFDtOF4
-         YiLUSrkCzOLVA+IdAh32My5/d2BC5YAtQ/KuTzjwtC6+VpqGKgEmzHofc/uwqqGM8mmn
-         rpdQ==
-X-Gm-Message-State: AOJu0YzmNesrqpmUcvkeZFnDeg2Q5xTSWRP3T1p6w7D52SFFXcc8d2N9
-        x5uhb0XKgV64XqvFo+8HDkK9RLutek4uB7TR5OYn8A==
-X-Google-Smtp-Source: AGHT+IHU/+pefiFnPy+6hnE6koYxy9w/9xmRXHTMFvjZ+YNn5s7SNPQyF9p0CVa6tIfW5b4YJfx0jin9klIyZI5tK50=
-X-Received: by 2002:a05:6214:d62:b0:66d:2eab:85ec with SMTP id
- 2-20020a0562140d6200b0066d2eab85ecmr28750220qvs.61.1699269022903; Mon, 06 Nov
- 2023 03:10:22 -0800 (PST)
+        Mon, 6 Nov 2023 06:10:10 -0500
+Received: from DM4PR02CU002.outbound.protection.outlook.com (mail-centralusazon11013023.outbound.protection.outlook.com [52.101.64.23])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C10AA3
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 03:10:06 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Z03yvUZTSB905v0xgsbHmpY5TTn4vh4d/PqvHRMFLB8GVuGnLQSC70gz4KhXUKlxxyKVAF4/qXdQLbpfEYy47lnW3DIv5mrXcC5E0KnDJWgfnIT42ObmE53aiBQJYZlcBbq9tBsGbCMxA7Ei/WpATqCr981a04BhYm8CN2LZGfH5nnWJ7D4Lant+f5SE6r4/3n35vUt4AqX31cBev31hWbKG2DaifEA7j3SFFyoRvkFoSFQmDOz8Vb9PB6dX21V43ECfNZfD2jGYt9PWo33tG3+E39iVFGeSpfHkurDrrPGG5v/HrHHdwNEjHAD1jTZanSA9UBljOM15BB/rD9J4uw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=bNxoCmApGqmhZOeiHCfObfgP8N5ysT5AbqCAJfLFAbo=;
+ b=Xw2TlvMdbd4yPsfDI7vrPcTCMP6b7/c56CSIIAxi48RvUshtc9WFBZRhZ2dWn5n+UtEt3zf2Sn5K3q5+oXyBLSYLhqkaHZxVuE/ViHNJl5TAfFQMr0WrymimUaFzjXw+mgf5P30HtiZMMU7KeGfVu0/Y9FB82BTLbyvW5SIkWNnEHqwTAhcBORgMZfBUyT1GZqg6+brxq2KlGn5CkueXs+njufGEW0qguHBuZuVpDoIy2DbAc8X4moqCMuNC2Vq+inzH82eS1pEmzrWAAvBCrVMvkLh/eEJLJL5gpWRyEZRW5an4gn4j75z735Lz4qvFoxsU2fOQlabQ9tPfk+Me6Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vmware.com; dmarc=pass action=none header.from=vmware.com;
+ dkim=pass header.d=vmware.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=bNxoCmApGqmhZOeiHCfObfgP8N5ysT5AbqCAJfLFAbo=;
+ b=IRxawNDOgE2FDrYbrisNHKHOMXkoJIYkQr0koDHZBIjI/3sNKaeBSUC0QbQXKZDrmlKGdXvtFVlCaBsJrOQzrQjVClfvMFgLJ6imuTr82pdtfOFlRR7s2+qKkcpaN7kw0PZuEMzrGYLqY/ti8bvZPIy3S8UufNSZ85+eGi5uvO0=
+Received: from BY3PR05MB8531.namprd05.prod.outlook.com (2603:10b6:a03:3ce::6)
+ by SA1PR05MB8078.namprd05.prod.outlook.com (2603:10b6:806:1a8::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.29; Mon, 6 Nov
+ 2023 11:10:03 +0000
+Received: from BY3PR05MB8531.namprd05.prod.outlook.com
+ ([fe80::e6fc:9264:2535:6ce2]) by BY3PR05MB8531.namprd05.prod.outlook.com
+ ([fe80::e6fc:9264:2535:6ce2%6]) with mapi id 15.20.6954.028; Mon, 6 Nov 2023
+ 11:10:03 +0000
+From:   Nadav Amit <namit@vmware.com>
+To:     kernel test robot <yujie.liu@intel.com>
+CC:     "oe-kbuild-all@lists.linux.dev" <oe-kbuild-all@lists.linux.dev>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: drivers/misc/vmw_balloon.c:200: warning: Function parameter or
+ member '5' not described in 'vmballoon_batch_entry'
+Thread-Topic: drivers/misc/vmw_balloon.c:200: warning: Function parameter or
+ member '5' not described in 'vmballoon_batch_entry'
+Thread-Index: AQHaEHm0RUkmP/DKsUCC4Vno3JLs/rBtIpQA
+Date:   Mon, 6 Nov 2023 11:10:03 +0000
+Message-ID: <E58106B6-95BC-4FCB-AD93-773E198ED3BD@vmware.com>
+References: <202311061016.YX1N3JbG-lkp@intel.com>
+In-Reply-To: <202311061016.YX1N3JbG-lkp@intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3731.700.6)
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=vmware.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BY3PR05MB8531:EE_|SA1PR05MB8078:EE_
+x-ms-office365-filtering-correlation-id: 698e5b95-db69-4d01-4d7a-08dbdeb8ed3d
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: eE7Zf6Xczk0mTojtCTp7DMIXWHxzEioyqbKxbFGswy0GeewFNWpG5Rvt7t1PDExIBe+iOQvJ18YhY27z7KYjigBLzifWh42oM155SDgvqavzdr0hAkbDMnK53Fpg/YlqC7oXmStnXn7LD8/iA1lN0/N/3MglEWtKT7uCWd0v/EOl4aA+7wBY0IRcH6MGlUnPOy4J4fFBXaiqT88flZoNN490YAoErhYouQCr2F4hV6IBDf95ACL5KWXz40O72YdAup9pKm3FVIK3EW61etqINyho5z7VAu/VNNVcsNOxK3ju8V07s4M2ktL45JAwwy2ardJXACc04t9I4JJSuxYRdeMyaw677HDrVKrwNYCEYldoO1DexGSMDcrmYdm3Tl/ple+2FYmiGsZ1yFuvkAr0le5EZY7PC+SmyvU86tltVkigOB2OIyoB4w/vIkGzM+YrWLoYvJkHblGOoU5yh3vhoCW8In0Z5BASpfeEtDTVt5uIiofqNAP1pPYg5GHDd2b0LtGxXkWizvsh+9669TbmI6vkdvaM+rKO6tmff4bkYRTJElfPdyaXiP8hYwtTSTCDMjHbt/HWgz4Wzk3T2xvnfxNKjRV2QRAeiMexiH0cGrR3bMl5/XZ1CS8z67znUmfbrr9lIZiL7bZT/+eS+KyGUZr4mhj8wELl1t9IsawY4kLIBxqluP/3IKIOq0s4LvnSWztLdrb4xLnPjGtQAFAG59eBP6ltJesruerCcGU6D8O7K6KhWVSSKIHWOSS0wKECxKPuQw5NO76D74t8OSOUHg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY3PR05MB8531.namprd05.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(346002)(376002)(136003)(366004)(396003)(230922051799003)(230173577357003)(230273577357003)(451199024)(1800799009)(64100799003)(186009)(53546011)(6506007)(2616005)(6512007)(966005)(6486002)(478600001)(71200400001)(45080400002)(83380400001)(26005)(41300700001)(2906002)(5660300002)(66446008)(66476007)(66556008)(64756008)(66946007)(54906003)(76116006)(316002)(6916009)(91956017)(38070700009)(4326008)(8936002)(8676002)(38100700002)(36756003)(33656002)(86362001)(122000001)(45980500001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?Z0t4WDlTN29IcGl6UTZOYWVwL0NzZkdRdGdjc2g5dmRrYkVQMzVkS0xFbXVm?=
+ =?utf-8?B?QnI1WTdRcVA3SE0vdzdDZkhlYUlLV0hQUmN5MklVTUVnN1Y0RHFUT3QxTkxM?=
+ =?utf-8?B?c1pkUW5Cdk84T3Q0N2EzazJSZW8yNkZWMkxrekpuS1BGSkpSaDlRakVTTUFx?=
+ =?utf-8?B?VjRFeWVWOHVLRnE2RjJ1MnN6OUtiMXVBekZabFp2bXJUQktzNmNoak9SMmtR?=
+ =?utf-8?B?ZENCVEw2MzRCUjlXRnFRdGVTVk9ZZDhGT2xkMDFSUjBtajdhOVUzdTVNSzlm?=
+ =?utf-8?B?RXFMWmIzVEFjQ2ZrOGJvcmxsSmhiV1ZmTlJhektpWGVCQU5WcWphcEc0dzEz?=
+ =?utf-8?B?ZHJQSTZhRnk1OXVNaWtmcnVHK2ZadE9lZVN6bGN4cTJOekhhU3ppcHVKRnJV?=
+ =?utf-8?B?ZjFVdElQZEN6dm1KZXBuL0wreWhBYksvbjFic2hUUFB2SHZjREhKMnh3OFVH?=
+ =?utf-8?B?L2ZIY1ZqVTdrNmNQY3BDV3NqRjJnMWJJOExCVmtxdXdYWU5xOXZwbWh2Tllk?=
+ =?utf-8?B?MVVxa210S3ZsMlFiZXdKa05RSVNadXFnSGNzUFlGeUFmVmZGTW1aR3gxaERp?=
+ =?utf-8?B?Z1o5QVY4T2NXcE5HeTRoZHV6cGNZK2w5WHhHMEdJNWlzQ2YvaWVnMURkeG1I?=
+ =?utf-8?B?c0cvZ2FObzkxZE5pRTBXczRYUExpdkxFeCtkL2hSWStsaWtRU1dkcUVUcHlP?=
+ =?utf-8?B?a1hIc2swUTdVUitDNW9pRnV2QnNyY3p1Y0M3aXA0anpQTXhob1czL1o3MWV5?=
+ =?utf-8?B?Q1lYblM0d1pLckRzakgybVkyaERzQXJlNVNwYTd0SmF2dnFBTVN4VjJrSEZT?=
+ =?utf-8?B?QVV2eXBNZW8zT2NPZmIybzc4N1duTUN4eTQvRk1SRkxiNUlxNTdHeXdGZEE5?=
+ =?utf-8?B?RlJ6SWZ6Nm1GSEFlbjVnS3FLSnBQSnRzM0dkTkNPNHJIYmZQNjBTWGdhVFp3?=
+ =?utf-8?B?emV2M051S2ZsQXJ0bythVjZzS1c2S1FFUnBnNkFhRmVwMENEc2VjeHpaRkhr?=
+ =?utf-8?B?bW5lTTNCNWdLOUI3bFZjN0VZNzlwYlNOakxUNXpLWjdqNXQ0VzlNcXlnYlMr?=
+ =?utf-8?B?TEJiNnh1WG5GSjNsY1YvV0Jjb3VValRFRVY5S2xNZTkzYzlvUnorSkdwT3lX?=
+ =?utf-8?B?L2xjT2RWZFpMU1JmeUpHaHRZOHJKeldhMzBuc3ZZVkcwNVliVURpbW40RFZG?=
+ =?utf-8?B?c1JGNWUvNEVLc1dNTWNRQ0wrYmFwSVF6V1VkcXZEM2hPSkk3N0toNHF4ZzAr?=
+ =?utf-8?B?dWtPdElYZlRaZXN6QjNKeFh0VTg0KzdQQ3dtNkhlT1dVbUkvM0c4K25rUzlm?=
+ =?utf-8?B?dEFFWnRQYVBzUjNJcElFQkx1Q3FUeDlzWUJsUm1Ud25xSVhuZDEzQUcvalNB?=
+ =?utf-8?B?WXdOZlRFeDNHMjM5NE9tU2FXTlI2aWF2Q21YZXpqdEJzaTVhdHp0ZXlnbzJS?=
+ =?utf-8?B?OWlMK2pMVUx6Sis1Ty9OOW4yRG1sWlpXL3BBcXA1YUlrZS9UcHVOU3BwUEVz?=
+ =?utf-8?B?Z2JBc2lETDl4YlRrbVFpQUUwOHF3V2pjYUtDVllWc0lPV1F6enlvdTNDYlhy?=
+ =?utf-8?B?T2xZZ2FJblVnS3BLUHVDRnJPUyt3Z3JER010NHBhYVFrK1JheFJxcnV0VVpR?=
+ =?utf-8?B?bk5nRWR0bXBMNnVtSVBvaG9sVU0weFpBVkpGRENnZUpqZ3JKclhYc2Q5OFRu?=
+ =?utf-8?B?QWV1T2FjVTNYTDEyQXl5SmtoRnVMaUVKRGlQekI0WjNzaDhiNEVFZmNzTndX?=
+ =?utf-8?B?WUV5aE4vZVpMRXBGcU40TGNqOVNDWWJmMVppOGRlSzJKam1jeVNWTkZDUTBz?=
+ =?utf-8?B?OXBwdmI3YVZROGZPRTB0S0dIWlhqcmdENExzZWx1TFpocCtnMkphRnhNbGZS?=
+ =?utf-8?B?NVJLMTRsNnp0SVY0L1VERWVkamQzcUtyWDFuU05JTS9POENIbUlTUFhOUk1X?=
+ =?utf-8?B?ZTRzeUI1NHBwbTlvbDZxZnJ6bjFxTSszZHNBa1lIVVkzMTBHRDJqeWJJWFd5?=
+ =?utf-8?B?eHh6Ukk4ZkY1S2h5azJNSGcrOXZLOFp1WWk4WkU5TmJRdmsva0t2emVqTjFx?=
+ =?utf-8?B?eUxzMGlkK3Q1UGNFdHRtd2pLK0tlNldPK3ZrUmlrZFd0VExsV0ZHQmFKVy94?=
+ =?utf-8?Q?KuJWDMlnLDn7L0AzYtTPyg4Jg?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <F8CA2497B30A6049B4120A60A6F358F4@namprd05.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <20231105163040.14904-1-pbonzini@redhat.com> <20231105163040.14904-25-pbonzini@redhat.com>
-In-Reply-To: <20231105163040.14904-25-pbonzini@redhat.com>
-From:   Fuad Tabba <tabba@google.com>
-Date:   Mon, 6 Nov 2023 11:09:46 +0000
-Message-ID: <CA+EHjTwOFAEMchVjob=3chD-TJ=Wau3iPnLdtFXBtiRUG4Dtug@mail.gmail.com>
-Subject: Re: [PATCH 24/34] KVM: selftests: Add support for creating private memslots
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Anup Patel <anup@brainfault.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Sean Christopherson <seanjc@google.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>, kvm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Xiaoyao Li <xiaoyao.li@intel.com>,
-        Xu Yilun <yilun.xu@intel.com>,
-        Chao Peng <chao.p.peng@linux.intel.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Anish Moorthy <amoorthy@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Isaku Yamahata <isaku.yamahata@intel.com>,
-        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Maciej Szmigiero <mail@maciej.szmigiero.name>,
-        David Hildenbrand <david@redhat.com>,
-        Quentin Perret <qperret@google.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Wang <wei.w.wang@intel.com>,
-        Liam Merwick <liam.merwick@oracle.com>,
-        Isaku Yamahata <isaku.yamahata@gmail.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+X-OriginatorOrg: vmware.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BY3PR05MB8531.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 698e5b95-db69-4d01-4d7a-08dbdeb8ed3d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Nov 2023 11:10:03.8251
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: OlGX6fg3T38iW3QAb8Roruz5NHmU/mKqtByj/piTorsGxshXSAX1SLVbjTvYrDvxd7qfE6cG8cssyatKaTRK0Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR05MB8078
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -105,292 +129,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-Regarding the subject (and the commit message), should we still be
-calling them "private" slots, or guestmem_slots?
-
-On Sun, Nov 5, 2023 at 4:34=E2=80=AFPM Paolo Bonzini <pbonzini@redhat.com> =
-wrote:
->
-> From: Sean Christopherson <seanjc@google.com>
->
-> Add support for creating "private" memslots via KVM_CREATE_GUEST_MEMFD an=
-d
-> KVM_SET_USER_MEMORY_REGION2.  Make vm_userspace_mem_region_add() a wrappe=
-r
-> to its effective replacement, vm_mem_add(), so that private memslots are
-> fully opt-in, i.e. don't require update all tests that add memory regions=
-.
-
-nit: update->updating
-
->
-> Pivot on the KVM_MEM_PRIVATE flag instead of the validity of the "gmem"
-
-KVM_MEM_PRIVATE  -> KVM_MEM_GUEST_MEMFD
-
-> file descriptor so that simple tests can let vm_mem_add() do the heavy
-> lifting of creating the guest memfd, but also allow the caller to pass in
-> an explicit fd+offset so that fancier tests can do things like back
-> multiple memslots with a single file.  If the caller passes in a fd, dup(=
-)
-> the fd so that (a) __vm_mem_region_delete() can close the fd associated
-> with the memory region without needing yet another flag, and (b) so that
-> the caller can safely close its copy of the fd without having to first
-> destroy memslots.
->
-> Co-developed-by: Ackerley Tng <ackerleytng@google.com>
-> Signed-off-by: Ackerley Tng <ackerleytng@google.com>
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> Message-Id: <20231027182217.3615211-27-seanjc@google.com>
-> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-> ---
->  .../selftests/kvm/include/kvm_util_base.h     | 23 ++++++
->  .../testing/selftests/kvm/include/test_util.h |  5 ++
->  tools/testing/selftests/kvm/lib/kvm_util.c    | 76 +++++++++++--------
->  3 files changed, 73 insertions(+), 31 deletions(-)
->
-> diff --git a/tools/testing/selftests/kvm/include/kvm_util_base.h b/tools/=
-testing/selftests/kvm/include/kvm_util_base.h
-> index 9f144841c2ee..9f861182c02a 100644
-> --- a/tools/testing/selftests/kvm/include/kvm_util_base.h
-> +++ b/tools/testing/selftests/kvm/include/kvm_util_base.h
-> @@ -431,6 +431,26 @@ static inline uint64_t vm_get_stat(struct kvm_vm *vm=
-, const char *stat_name)
->
->  void vm_create_irqchip(struct kvm_vm *vm);
->
-> +static inline int __vm_create_guest_memfd(struct kvm_vm *vm, uint64_t si=
-ze,
-> +                                       uint64_t flags)
-> +{
-> +       struct kvm_create_guest_memfd guest_memfd =3D {
-> +               .size =3D size,
-> +               .flags =3D flags,
-> +       };
-> +
-> +       return __vm_ioctl(vm, KVM_CREATE_GUEST_MEMFD, &guest_memfd);
-> +}
-> +
-> +static inline int vm_create_guest_memfd(struct kvm_vm *vm, uint64_t size=
-,
-> +                                       uint64_t flags)
-> +{
-> +       int fd =3D __vm_create_guest_memfd(vm, size, flags);
-> +
-> +       TEST_ASSERT(fd >=3D 0, KVM_IOCTL_ERROR(KVM_CREATE_GUEST_MEMFD, fd=
-));
-> +       return fd;
-> +}
-> +
->  void vm_set_user_memory_region(struct kvm_vm *vm, uint32_t slot, uint32_=
-t flags,
->                                uint64_t gpa, uint64_t size, void *hva);
->  int __vm_set_user_memory_region(struct kvm_vm *vm, uint32_t slot, uint32=
-_t flags,
-> @@ -439,6 +459,9 @@ void vm_userspace_mem_region_add(struct kvm_vm *vm,
->         enum vm_mem_backing_src_type src_type,
->         uint64_t guest_paddr, uint32_t slot, uint64_t npages,
->         uint32_t flags);
-> +void vm_mem_add(struct kvm_vm *vm, enum vm_mem_backing_src_type src_type=
-,
-> +               uint64_t guest_paddr, uint32_t slot, uint64_t npages,
-> +               uint32_t flags, int guest_memfd_fd, uint64_t guest_memfd_=
-offset);
->
->  void vm_mem_region_set_flags(struct kvm_vm *vm, uint32_t slot, uint32_t =
-flags);
->  void vm_mem_region_move(struct kvm_vm *vm, uint32_t slot, uint64_t new_g=
-pa);
-> diff --git a/tools/testing/selftests/kvm/include/test_util.h b/tools/test=
-ing/selftests/kvm/include/test_util.h
-> index 7e614adc6cf4..7257f2243ab9 100644
-> --- a/tools/testing/selftests/kvm/include/test_util.h
-> +++ b/tools/testing/selftests/kvm/include/test_util.h
-> @@ -142,6 +142,11 @@ static inline bool backing_src_is_shared(enum vm_mem=
-_backing_src_type t)
->         return vm_mem_backing_src_alias(t)->flag & MAP_SHARED;
->  }
->
-> +static inline bool backing_src_can_be_huge(enum vm_mem_backing_src_type =
-t)
-> +{
-> +       return t !=3D VM_MEM_SRC_ANONYMOUS && t !=3D VM_MEM_SRC_SHMEM;
-> +}
-> +
->  /* Aligns x up to the next multiple of size. Size must be a power of 2. =
-*/
->  static inline uint64_t align_up(uint64_t x, uint64_t size)
->  {
-> diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c b/tools/testing/s=
-elftests/kvm/lib/kvm_util.c
-> index 3676b37bea38..b63500fca627 100644
-> --- a/tools/testing/selftests/kvm/lib/kvm_util.c
-> +++ b/tools/testing/selftests/kvm/lib/kvm_util.c
-> @@ -669,6 +669,8 @@ static void __vm_mem_region_delete(struct kvm_vm *vm,
->                 TEST_ASSERT(!ret, __KVM_SYSCALL_ERROR("munmap()", ret));
->                 close(region->fd);
->         }
-> +       if (region->region.guest_memfd >=3D 0)
-> +               close(region->region.guest_memfd);
->
->         free(region);
->  }
-> @@ -870,36 +872,15 @@ void vm_set_user_memory_region(struct kvm_vm *vm, u=
-int32_t slot, uint32_t flags,
->                     errno, strerror(errno));
->  }
->
-> -/*
-> - * VM Userspace Memory Region Add
-> - *
-> - * Input Args:
-> - *   vm - Virtual Machine
-> - *   src_type - Storage source for this region.
-> - *              NULL to use anonymous memory.
-
-"VM_MEM_SRC_ANONYMOUS to use anonymous memory"
-
-> - *   guest_paddr - Starting guest physical address
-> - *   slot - KVM region slot
-> - *   npages - Number of physical pages
-> - *   flags - KVM memory region flags (e.g. KVM_MEM_LOG_DIRTY_PAGES)
-> - *
-> - * Output Args: None
-> - *
-> - * Return: None
-> - *
-> - * Allocates a memory area of the number of pages specified by npages
-> - * and maps it to the VM specified by vm, at a starting physical address
-> - * given by guest_paddr.  The region is created with a KVM region slot
-> - * given by slot, which must be unique and < KVM_MEM_SLOTS_NUM.  The
-> - * region is created with the flags given by flags.
-> - */
-> -void vm_userspace_mem_region_add(struct kvm_vm *vm,
-> -       enum vm_mem_backing_src_type src_type,
-> -       uint64_t guest_paddr, uint32_t slot, uint64_t npages,
-> -       uint32_t flags)
-> +/* FIXME: This thing needs to be ripped apart and rewritten. */
-
-It sure does :)
-
-With these nits:
-
-Reviewed-by: Fuad Tabba <tabba@google.com>
-Tested-by: Fuad Tabba <tabba@google.com>
-
-Cheers,
-/fuad
-
-> +void vm_mem_add(struct kvm_vm *vm, enum vm_mem_backing_src_type src_type=
-,
-> +               uint64_t guest_paddr, uint32_t slot, uint64_t npages,
-> +               uint32_t flags, int guest_memfd, uint64_t guest_memfd_off=
-set)
->  {
->         int ret;
->         struct userspace_mem_region *region;
->         size_t backing_src_pagesz =3D get_backing_src_pagesz(src_type);
-> +       size_t mem_size =3D npages * vm->page_size;
->         size_t alignment;
->
->         TEST_ASSERT(vm_adjust_num_guest_pages(vm->mode, npages) =3D=3D np=
-ages,
-> @@ -952,7 +933,7 @@ void vm_userspace_mem_region_add(struct kvm_vm *vm,
->         /* Allocate and initialize new mem region structure. */
->         region =3D calloc(1, sizeof(*region));
->         TEST_ASSERT(region !=3D NULL, "Insufficient Memory");
-> -       region->mmap_size =3D npages * vm->page_size;
-> +       region->mmap_size =3D mem_size;
->
->  #ifdef __s390x__
->         /* On s390x, the host address must be aligned to 1M (due to PGSTE=
-s) */
-> @@ -999,14 +980,38 @@ void vm_userspace_mem_region_add(struct kvm_vm *vm,
->         /* As needed perform madvise */
->         if ((src_type =3D=3D VM_MEM_SRC_ANONYMOUS ||
->              src_type =3D=3D VM_MEM_SRC_ANONYMOUS_THP) && thp_configured(=
-)) {
-> -               ret =3D madvise(region->host_mem, npages * vm->page_size,
-> +               ret =3D madvise(region->host_mem, mem_size,
->                               src_type =3D=3D VM_MEM_SRC_ANONYMOUS ? MADV=
-_NOHUGEPAGE : MADV_HUGEPAGE);
->                 TEST_ASSERT(ret =3D=3D 0, "madvise failed, addr: %p lengt=
-h: 0x%lx src_type: %s",
-> -                           region->host_mem, npages * vm->page_size,
-> +                           region->host_mem, mem_size,
->                             vm_mem_backing_src_alias(src_type)->name);
->         }
->
->         region->backing_src_type =3D src_type;
-> +
-> +       if (flags & KVM_MEM_GUEST_MEMFD) {
-> +               if (guest_memfd < 0) {
-> +                       uint32_t guest_memfd_flags =3D 0;
-> +                       TEST_ASSERT(!guest_memfd_offset,
-> +                                   "Offset must be zero when creating ne=
-w guest_memfd");
-> +                       guest_memfd =3D vm_create_guest_memfd(vm, mem_siz=
-e, guest_memfd_flags);
-> +               } else {
-> +                       /*
-> +                        * Install a unique fd for each memslot so that t=
-he fd
-> +                        * can be closed when the region is deleted witho=
-ut
-> +                        * needing to track if the fd is owned by the fra=
-mework
-> +                        * or by the caller.
-> +                        */
-> +                       guest_memfd =3D dup(guest_memfd);
-> +                       TEST_ASSERT(guest_memfd >=3D 0, __KVM_SYSCALL_ERR=
-OR("dup()", guest_memfd));
-> +               }
-> +
-> +               region->region.guest_memfd =3D guest_memfd;
-> +               region->region.guest_memfd_offset =3D guest_memfd_offset;
-> +       } else {
-> +               region->region.guest_memfd =3D -1;
-> +       }
-> +
->         region->unused_phy_pages =3D sparsebit_alloc();
->         sparsebit_set_num(region->unused_phy_pages,
->                 guest_paddr >> vm->page_shift, npages);
-> @@ -1019,9 +1024,10 @@ void vm_userspace_mem_region_add(struct kvm_vm *vm=
-,
->         TEST_ASSERT(ret =3D=3D 0, "KVM_SET_USER_MEMORY_REGION2 IOCTL fail=
-ed,\n"
->                 "  rc: %i errno: %i\n"
->                 "  slot: %u flags: 0x%x\n"
-> -               "  guest_phys_addr: 0x%lx size: 0x%lx",
-> +               "  guest_phys_addr: 0x%lx size: 0x%lx guest_memfd: %d\n",
->                 ret, errno, slot, flags,
-> -               guest_paddr, (uint64_t) region->region.memory_size);
-> +               guest_paddr, (uint64_t) region->region.memory_size,
-> +               region->region.guest_memfd);
->
->         /* Add to quick lookup data structures */
->         vm_userspace_mem_region_gpa_insert(&vm->regions.gpa_tree, region)=
-;
-> @@ -1042,6 +1048,14 @@ void vm_userspace_mem_region_add(struct kvm_vm *vm=
-,
->         }
->  }
->
-> +void vm_userspace_mem_region_add(struct kvm_vm *vm,
-> +                                enum vm_mem_backing_src_type src_type,
-> +                                uint64_t guest_paddr, uint32_t slot,
-> +                                uint64_t npages, uint32_t flags)
-> +{
-> +       vm_mem_add(vm, src_type, guest_paddr, slot, npages, flags, -1, 0)=
-;
-> +}
-> +
->  /*
->   * Memslot to region
->   *
-> --
-> 2.39.1
->
->
+WyAtWGF2aWVyIF0NCg0KPiBPbiBOb3YgNiwgMjAyMywgYXQgODoxOCBBTSwga2VybmVsIHRlc3Qg
+cm9ib3QgPHl1amllLmxpdUBpbnRlbC5jb20+IHdyb3RlOg0KPg0KPiAhISBFeHRlcm5hbCBFbWFp
+bA0KPg0KPiB0cmVlOiAgIGh0dHBzOi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJu
+ZWwvZ2l0L3RvcnZhbGRzL2xpbnV4LmdpdCBtYXN0ZXINCj4gaGVhZDogICA3N2ZhMmZiZTg3ZmM2
+MDVjNGJmYTg3ZGZmODdiZTliZmRlZDBlOWEzDQo+IGNvbW1pdDogNmM5NDg3NTc5OWVhZjk5YmZk
+YmIwZWZjZTIxZDc1ZTFjNTZlOTZkNSB2bXdfYmFsbG9vbjogc2ltcGxpZnlpbmcgYmF0Y2ggYWNj
+ZXNzDQo+IGRhdGU6ICAgNSB5ZWFycyBhZ28NCg0KSXNu4oCZdCBpcyBzbGlnaHRseSBzdHJhbmdl
+IGZvciB0aGUgYm90IHRvIGNoZWNrIDUgeWVhciBvbGQgcGF0Y2hlcz8NCg0KPiBBbGwgd2Fybmlu
+Z3MgKG5ldyBvbmVzIHByZWZpeGVkIGJ5ID4+KToNCj4NCj4gICBJbiBmaWxlIGluY2x1ZGVkIGZy
+b20gZHJpdmVycy9taXNjL3Ztd19iYWxsb29uLmM6Mjg6DQo+ICAgaW5jbHVkZS9saW51eC92bXdf
+dm1jaV9kZWZzLmg6MTU5OjMzOiB3YXJuaW5nOiAnVk1DSV9BTk9OX1NSQ19IQU5ETEUnIGRlZmlu
+ZWQgYnV0IG5vdCB1c2VkIFstV3VudXNlZC1jb25zdC12YXJpYWJsZT1dDQo+ICAgICAxNTkgfCBz
+dGF0aWMgY29uc3Qgc3RydWN0IHZtY2lfaGFuZGxlIFZNQ0lfQU5PTl9TUkNfSEFORExFID0gew0K
+PiAgICAgICAgIHwgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBefn5+fn5+fn5+fn5+
+fn5+fn5+fg0KPj4+IGRyaXZlcnMvbWlzYy92bXdfYmFsbG9vbi5jOjIwMDogd2FybmluZzogRnVu
+Y3Rpb24gcGFyYW1ldGVyIG9yIG1lbWJlciAnNScgbm90IGRlc2NyaWJlZCBpbiAndm1iYWxsb29u
+X2JhdGNoX2VudHJ5Jw0KPiAgIGRyaXZlcnMvbWlzYy92bXdfYmFsbG9vbi5vOiB3YXJuaW5nOiBv
+Ymp0b29sOiB2bWJhbGxvb25fZGVmbGF0ZSgpKzB4MWNhOiBzaWJsaW5nIGNhbGwgZnJvbSBjYWxs
+YWJsZSBpbnN0cnVjdGlvbiB3aXRoIG1vZGlmaWVkIHN0YWNrIGZyYW1lDQo+ICAgZHJpdmVycy9t
+aXNjL3Ztd19iYWxsb29uLm86IHdhcm5pbmc6IG9ianRvb2w6IHZtYmFsbG9vbl9kZWJ1Z19zaG93
+KCkrMHg3Mzogc2libGluZyBjYWxsIGZyb20gY2FsbGFibGUgaW5zdHJ1Y3Rpb24gd2l0aCBtb2Rp
+ZmllZCBzdGFjayBmcmFtZQ0KPiAgIGRyaXZlcnMvbWlzYy92bXdfYmFsbG9vbi5vOiB3YXJuaW5n
+OiBvYmp0b29sOiB2bWJhbGxvb25faW5mbGF0ZSgpKzB4YTE6IHNpYmxpbmcgY2FsbCBmcm9tIGNh
+bGxhYmxlIGluc3RydWN0aW9uIHdpdGggbW9kaWZpZWQgc3RhY2sgZnJhbWUNCj4gICBkcml2ZXJz
+L21pc2Mvdm13X2JhbGxvb24ubzogd2FybmluZzogb2JqdG9vbDogdm1iYWxsb29uX3dvcmsoKSsw
+eDg0OiBzaWJsaW5nIGNhbGwgZnJvbSBjYWxsYWJsZSBpbnN0cnVjdGlvbiB3aXRoIG1vZGlmaWVk
+IHN0YWNrIGZyYW1lDQo+DQo+DQo+IHZpbSArMjAwIGRyaXZlcnMvbWlzYy92bXdfYmFsbG9vbi5j
+DQo+DQo+IDM2NWJkN2VmN2VjOGViIFBoaWxpcCBQLiBNb2x0bWFubiAyMDE1LTA4LTA2ICAxODgN
+Cj4gNmM5NDg3NTc5OWVhZjkgTmFkYXYgQW1pdCAgICAgICAgIDIwMTgtMDktMjAgIDE4OSAgLyoq
+DQo+IDZjOTQ4NzU3OTllYWY5IE5hZGF2IEFtaXQgICAgICAgICAyMDE4LTA5LTIwICAxOTAgICAq
+IHN0cnVjdCB2bWJhbGxvb25fYmF0Y2hfZW50cnkgLSBhIGJhdGNoIGVudHJ5IGZvciBsb2NrIG9y
+IHVubG9jay4NCj4gNmM5NDg3NTc5OWVhZjkgTmFkYXYgQW1pdCAgICAgICAgIDIwMTgtMDktMjAg
+IDE5MSAgICoNCj4gNmM5NDg3NTc5OWVhZjkgTmFkYXYgQW1pdCAgICAgICAgIDIwMTgtMDktMjAg
+IDE5MiAgICogQHN0YXR1czogdGhlIHN0YXR1cyBvZiB0aGUgb3BlcmF0aW9uLCB3aGljaCBpcyB3
+cml0dGVuIGJ5IHRoZSBoeXBlcnZpc29yLg0KPiA2Yzk0ODc1Nzk5ZWFmOSBOYWRhdiBBbWl0ICAg
+ICAgICAgMjAxOC0wOS0yMCAgMTkzICAgKiBAcmVzZXJ2ZWQ6IHJlc2VydmVkIGZvciBmdXR1cmUg
+dXNlLiBNdXN0IGJlIHNldCB0byB6ZXJvLg0KPiA2Yzk0ODc1Nzk5ZWFmOSBOYWRhdiBBbWl0ICAg
+ICAgICAgMjAxOC0wOS0yMCAgMTk0ICAgKiBAcGZuOiB0aGUgcGh5c2ljYWwgZnJhbWUgbnVtYmVy
+IG9mIHRoZSBwYWdlIHRvIGJlIGxvY2tlZCBvciB1bmxvY2tlZC4NCj4gNmM5NDg3NTc5OWVhZjkg
+TmFkYXYgQW1pdCAgICAgICAgIDIwMTgtMDktMjAgIDE5NSAgICovDQo+IDZjOTQ4NzU3OTllYWY5
+IE5hZGF2IEFtaXQgICAgICAgICAyMDE4LTA5LTIwICAxOTYgIHN0cnVjdCB2bWJhbGxvb25fYmF0
+Y2hfZW50cnkgew0KPiA2Yzk0ODc1Nzk5ZWFmOSBOYWRhdiBBbWl0ICAgICAgICAgMjAxOC0wOS0y
+MCAgMTk3ICAgICAgIHU2NCBzdGF0dXMgOiA1Ow0KPiA2Yzk0ODc1Nzk5ZWFmOSBOYWRhdiBBbWl0
+ICAgICAgICAgMjAxOC0wOS0yMCAgMTk4ICAgICAgIHU2NCByZXNlcnZlZCA6IFBBR0VfU0hJRlQg
+LSA1Ow0KPiA2Yzk0ODc1Nzk5ZWFmOSBOYWRhdiBBbWl0ICAgICAgICAgMjAxOC0wOS0yMCAgMTk5
+ICAgICAgIHU2NCBwZm4gOiA1MjsNCj4gNmM5NDg3NTc5OWVhZjkgTmFkYXYgQW1pdCAgICAgICAg
+IDIwMTgtMDktMjAgQDIwMCAgfSBfX3BhY2tlZDsNCg0KQW5kIHRoZSBlcnJvciBzZWVtcyBub24t
+c2Vuc2ljYWwgdG8gbWU6IGl0IGFwcGVhcnMgdGhlIG51bWJlciBvZiBiaXRzIHdhcyBtaXN0YWtl
+bmx5DQpjb25zaWRlcmVkIGFzIHRoZSBuYW1lIG9mIHRoZSBmaWVsZCBieSB0aGUgdGVzdC4NCg0K
