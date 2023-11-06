@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 76F8E7E2DE7
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 21:13:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10C027E2DEE
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 21:13:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231993AbjKFUNI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 15:13:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34408 "EHLO
+        id S233191AbjKFUNT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 15:13:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232983AbjKFUMu (ORCPT
+        with ESMTP id S232954AbjKFUMv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 15:12:50 -0500
-Received: from out-178.mta1.migadu.com (out-178.mta1.migadu.com [95.215.58.178])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 312FC10D0
+        Mon, 6 Nov 2023 15:12:51 -0500
+Received: from out-177.mta1.migadu.com (out-177.mta1.migadu.com [95.215.58.177])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D64AF10D3
         for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 12:12:47 -0800 (PST)
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1699301565;
+        t=1699301566;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=J0FZGClDjGLvLD3TemnnZlVkckK/FbBcRM13VFu32PM=;
-        b=u66VHtu/jQ8awmrPx0sqAT3awrwRy7LoUZT6YuP/AeVFLTV8z6gU99EDSnmB7b+vlP8GiH
-        kLVdU8feP/LvgjDFYRFlJYBJnYVG/BCUZebuMkwHoBpVhV+QpImR3lWmGnjoTkYHo9queI
-        m9qLnEnZnW6Qbh8fHp4S9bL0AaSkd1M=
+        bh=kJM+A7peUz+3HNFpMd2AaQcsySYXWlMk/hSPbyjpTN8=;
+        b=UlmlCS1/Z5dNByDcL6mE/0uoH62A1+s+Ul8OA7cSjRv8NsKOsAjlfXrZLnkR3VwZsnhqQm
+        BCWlrEHz9Npwsl36SjkhbQgtrNkJApwPl+NiWrTyhnCPtmdiUaVoCUKg2oM4RE/0RN1Uw9
+        TCk2g0lBq9wUxkhNuVfEb1cqa6QfF3g=
 From:   andrey.konovalov@linux.dev
 To:     Marco Elver <elver@google.com>,
         Alexander Potapenko <glider@google.com>
@@ -36,9 +36,9 @@ Cc:     Andrey Konovalov <andreyknvl@gmail.com>,
         Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org,
         Andrey Konovalov <andreyknvl@google.com>
-Subject: [PATCH RFC 15/20] kasan: add mempool tests
-Date:   Mon,  6 Nov 2023 21:10:24 +0100
-Message-Id: <389467628f04e7defb81cc08079cdc9c983f71a4.1699297309.git.andreyknvl@google.com>
+Subject: [PATCH RFC 16/20] kasan: rename pagealloc tests
+Date:   Mon,  6 Nov 2023 21:10:25 +0100
+Message-Id: <0cf5eb3ea000a76c48554bbc80acb6135ebbb94a.1699297309.git.andreyknvl@google.com>
 In-Reply-To: <cover.1699297309.git.andreyknvl@google.com>
 References: <cover.1699297309.git.andreyknvl@google.com>
 MIME-Version: 1.0
@@ -56,363 +56,146 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Andrey Konovalov <andreyknvl@google.com>
 
-Add KASAN tests for mempool.
+Rename "pagealloc" KASAN tests:
+
+1. Use "kmalloc_large" for tests that use large kmalloc allocations.
+
+2. Use "page_alloc" for tests that use page_alloc.
+
+Also clean up the comments.
 
 Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 ---
- mm/kasan/kasan_test.c | 325 ++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 325 insertions(+)
+ mm/kasan/kasan_test.c | 51 ++++++++++++++++++++++---------------------
+ 1 file changed, 26 insertions(+), 25 deletions(-)
 
 diff --git a/mm/kasan/kasan_test.c b/mm/kasan/kasan_test.c
-index 8281eb42464b..9adbcd04259b 100644
+index 9adbcd04259b..4ea403653a39 100644
 --- a/mm/kasan/kasan_test.c
 +++ b/mm/kasan/kasan_test.c
-@@ -13,6 +13,7 @@
- #include <linux/io.h>
- #include <linux/kasan.h>
- #include <linux/kernel.h>
-+#include <linux/mempool.h>
- #include <linux/mm.h>
- #include <linux/mman.h>
- #include <linux/module.h>
-@@ -798,6 +799,318 @@ static void kmem_cache_bulk(struct kunit *test)
- 	kmem_cache_destroy(cache);
+@@ -214,12 +214,13 @@ static void kmalloc_node_oob_right(struct kunit *test)
  }
  
-+static void *mempool_prepare_kmalloc(struct kunit *test, mempool_t *pool, size_t size)
-+{
-+	int pool_size = 4;
-+	int ret;
-+	void *elem;
-+
-+	memset(pool, 0, sizeof(*pool));
-+	ret = mempool_init_kmalloc_pool(pool, pool_size, size);
-+	KUNIT_ASSERT_EQ(test, ret, 0);
-+
-+	/* Tell mempool to only use preallocated elements. */
-+	mempool_use_prealloc_only(pool);
-+
-+	/*
-+	 * Allocate one element to prevent mempool from freeing elements to the
-+	 * underlying allocator and instead make it add them to the element
-+	 * list when the tests trigger double-free and invalid-free bugs.
-+	 * This allows testing KASAN annotations in add_element().
-+	 */
-+	elem = mempool_alloc(pool, GFP_KERNEL);
-+	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, elem);
-+
-+	return elem;
-+}
-+
-+static struct kmem_cache *mempool_prepare_slab(struct kunit *test, mempool_t *pool, size_t size)
-+{
-+	struct kmem_cache *cache;
-+	int pool_size = 4;
-+	int ret;
-+
-+	cache = kmem_cache_create("test_cache", size, 0, 0, NULL);
-+	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, cache);
-+
-+	memset(pool, 0, sizeof(*pool));
-+	ret = mempool_init_slab_pool(pool, pool_size, cache);
-+	KUNIT_ASSERT_EQ(test, ret, 0);
-+
-+	mempool_use_prealloc_only(pool);
-+
-+	/*
-+	 * Do not allocate one preallocated element, as we skip the double-free
-+	 * and invalid-free tests for slab mempool for simplicity.
-+	 */
-+
-+	return cache;
-+}
-+
-+static void *mempool_prepare_page(struct kunit *test, mempool_t *pool, int order)
-+{
-+	int pool_size = 4;
-+	int ret;
-+	void *elem;
-+
-+	memset(pool, 0, sizeof(*pool));
-+	ret = mempool_init_page_pool(pool, pool_size, order);
-+	KUNIT_ASSERT_EQ(test, ret, 0);
-+
-+	mempool_use_prealloc_only(pool);
-+
-+	elem = mempool_alloc(pool, GFP_KERNEL);
-+	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, elem);
-+
-+	return elem;
-+}
-+
-+static void mempool_oob_right_helper(struct kunit *test, mempool_t *pool, size_t size)
-+{
-+	char *elem;
-+
-+	elem = mempool_alloc(pool, GFP_KERNEL);
-+	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, elem);
-+
-+	OPTIMIZER_HIDE_VAR(elem);
-+
-+	if (IS_ENABLED(CONFIG_KASAN_GENERIC))
-+		KUNIT_EXPECT_KASAN_FAIL(test, elem[size] = 'x');
-+	else
-+		KUNIT_EXPECT_KASAN_FAIL(test,
-+			elem[round_up(size, KASAN_GRANULE_SIZE)] = 'x');
-+
-+	mempool_free(elem, pool);
-+}
-+
-+static void mempool_kmalloc_oob_right(struct kunit *test)
-+{
-+	mempool_t pool;
-+	size_t size = 128 - KASAN_GRANULE_SIZE - 5;
-+	void *extra_elem;
-+
-+	extra_elem = mempool_prepare_kmalloc(test, &pool, size);
-+
-+	mempool_oob_right_helper(test, &pool, size);
-+
-+	mempool_free(extra_elem, &pool);
-+	mempool_exit(&pool);
-+}
-+
-+static void mempool_kmalloc_large_oob_right(struct kunit *test)
-+{
-+	mempool_t pool;
-+	size_t size = KMALLOC_MAX_CACHE_SIZE + 1;
-+	void *extra_elem;
-+
-+	extra_elem = mempool_prepare_kmalloc(test, &pool, size);
-+
-+	mempool_oob_right_helper(test, &pool, size);
-+
-+	mempool_free(extra_elem, &pool);
-+	mempool_exit(&pool);
-+}
-+
-+static void mempool_slab_oob_right(struct kunit *test)
-+{
-+	mempool_t pool;
-+	size_t size = 123;
-+	struct kmem_cache *cache;
-+
-+	cache = mempool_prepare_slab(test, &pool, size);
-+
-+	mempool_oob_right_helper(test, &pool, size);
-+
-+	mempool_exit(&pool);
-+	kmem_cache_destroy(cache);
-+}
-+
-+/*
-+ * Skip the out-of-bounds test for page mempool. With Generic KASAN, page
-+ * allocations have no redzones, and thus the out-of-bounds detection is not
-+ * guaranteed; see https://bugzilla.kernel.org/show_bug.cgi?id=210503. With
-+ * the tag-based KASAN modes, the neighboring allocation might have the same
-+ * tag; see https://bugzilla.kernel.org/show_bug.cgi?id=203505.
-+ */
-+
-+static void mempool_uaf_helper(struct kunit *test, mempool_t *pool, bool page)
-+{
-+	char *elem, *ptr;
-+
-+	elem = mempool_alloc(pool, GFP_KERNEL);
-+	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, elem);
-+
-+	mempool_free(elem, pool);
-+
-+	ptr = page ? page_address((struct page *)elem) : elem;
-+	KUNIT_EXPECT_KASAN_FAIL(test, ((volatile char *)ptr)[0]);
-+}
-+
-+static void mempool_kmalloc_uaf(struct kunit *test)
-+{
-+	mempool_t pool;
-+	size_t size = 128;
-+	void *extra_elem;
-+
-+	extra_elem = mempool_prepare_kmalloc(test, &pool, size);
-+
-+	mempool_uaf_helper(test, &pool, false);
-+
-+	mempool_free(extra_elem, &pool);
-+	mempool_exit(&pool);
-+}
-+
-+static void mempool_kmalloc_large_uaf(struct kunit *test)
-+{
-+	mempool_t pool;
-+	size_t size = KMALLOC_MAX_CACHE_SIZE + 1;
-+	void *extra_elem;
-+
-+	/* page_alloc fallback is only implemented for SLUB. */
-+	KASAN_TEST_NEEDS_CONFIG_ON(test, CONFIG_SLUB);
-+
-+	extra_elem = mempool_prepare_kmalloc(test, &pool, size);
-+
-+	mempool_uaf_helper(test, &pool, false);
-+
-+	mempool_free(extra_elem, &pool);
-+	mempool_exit(&pool);
-+}
-+
-+static void mempool_slab_uaf(struct kunit *test)
-+{
-+	mempool_t pool;
-+	size_t size = 123;
-+	struct kmem_cache *cache;
-+
-+	cache = mempool_prepare_slab(test, &pool, size);
-+
-+	mempool_uaf_helper(test, &pool, false);
-+
-+	mempool_exit(&pool);
-+	kmem_cache_destroy(cache);
-+}
-+
-+static void mempool_page_alloc_uaf(struct kunit *test)
-+{
-+	mempool_t pool;
-+	int order = 2;
-+	void *extra_elem;
-+
-+	extra_elem = mempool_prepare_page(test, &pool, order);
-+
-+	mempool_uaf_helper(test, &pool, true);
-+
-+	mempool_free(extra_elem, &pool);
-+	mempool_exit(&pool);
-+}
-+
-+static void mempool_double_free_helper(struct kunit *test, mempool_t *pool)
-+{
-+	char *elem;
-+
-+	elem = mempool_alloc(pool, GFP_KERNEL);
-+	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, elem);
-+
-+	mempool_free(elem, pool);
-+
-+	KUNIT_EXPECT_KASAN_FAIL(test, mempool_free(elem, pool));
-+}
-+
-+static void mempool_kmalloc_double_free(struct kunit *test)
-+{
-+	mempool_t pool;
-+	size_t size = 128;
-+	char *extra_elem;
-+
-+	extra_elem = mempool_prepare_kmalloc(test, &pool, size);
-+
-+	mempool_double_free_helper(test, &pool);
-+
-+	mempool_free(extra_elem, &pool);
-+	mempool_exit(&pool);
-+}
-+
-+static void mempool_kmalloc_large_double_free(struct kunit *test)
-+{
-+	mempool_t pool;
-+	size_t size = KMALLOC_MAX_CACHE_SIZE + 1;
-+	char *extra_elem;
-+
-+	/* page_alloc fallback is only implemented for SLUB. */
-+	KASAN_TEST_NEEDS_CONFIG_ON(test, CONFIG_SLUB);
-+
-+	extra_elem = mempool_prepare_kmalloc(test, &pool, size);
-+
-+	mempool_double_free_helper(test, &pool);
-+
-+	mempool_free(extra_elem, &pool);
-+	mempool_exit(&pool);
-+}
-+
-+static void mempool_page_alloc_double_free(struct kunit *test)
-+{
-+	mempool_t pool;
-+	int order = 2;
-+	char *extra_elem;
-+
-+	extra_elem = mempool_prepare_page(test, &pool, order);
-+
-+	mempool_double_free_helper(test, &pool);
-+
-+	mempool_free(extra_elem, &pool);
-+	mempool_exit(&pool);
-+}
-+
-+static void mempool_kmalloc_invalid_free_helper(struct kunit *test, mempool_t *pool)
-+{
-+	char *elem;
-+
-+	elem = mempool_alloc(pool, GFP_KERNEL);
-+	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, elem);
-+
-+	KUNIT_EXPECT_KASAN_FAIL(test, mempool_free(elem + 1, pool));
-+
-+	mempool_free(elem, pool);
-+}
-+
-+static void mempool_kmalloc_invalid_free(struct kunit *test)
-+{
-+	mempool_t pool;
-+	size_t size = 128;
-+	char *extra_elem;
-+
-+	extra_elem = mempool_prepare_kmalloc(test, &pool, size);
-+
-+	mempool_kmalloc_invalid_free_helper(test, &pool);
-+
-+	mempool_free(extra_elem, &pool);
-+	mempool_exit(&pool);
-+}
-+
-+static void mempool_kmalloc_large_invalid_free(struct kunit *test)
-+{
-+	mempool_t pool;
-+	size_t size = KMALLOC_MAX_CACHE_SIZE + 1;
-+	char *extra_elem;
-+
-+	/* page_alloc fallback is only implemented for SLUB. */
-+	KASAN_TEST_NEEDS_CONFIG_ON(test, CONFIG_SLUB);
-+
-+	extra_elem = mempool_prepare_kmalloc(test, &pool, size);
-+
-+	mempool_kmalloc_invalid_free_helper(test, &pool);
-+
-+	mempool_free(extra_elem, &pool);
-+	mempool_exit(&pool);
-+}
-+
-+/*
-+ * Skip the invalid-free test for page mempool. The invalid-free detection only
-+ * works for compound pages and mempool preallocates all page elements without
-+ * the __GFP_COMP flag.
-+ */
-+
- static char global_array[10];
+ /*
+- * These kmalloc_pagealloc_* tests try allocating a memory chunk that doesn't
+- * fit into a slab cache and therefore is allocated via the page allocator
+- * fallback. Since this kind of fallback is only implemented for SLUB, these
+- * tests are limited to that allocator.
++ * The kmalloc_large_* tests below use kmalloc() to allocate a memory chunk
++ * that does not fit into the largest slab cache and therefore is allocated via
++ * the page_alloc fallback for SLUB. SLAB has no such fallback, and thus these
++ * tests are not supported for it.
+  */
+-static void kmalloc_pagealloc_oob_right(struct kunit *test)
++
++static void kmalloc_large_oob_right(struct kunit *test)
+ {
+ 	char *ptr;
+ 	size_t size = KMALLOC_MAX_CACHE_SIZE + 10;
+@@ -235,7 +236,7 @@ static void kmalloc_pagealloc_oob_right(struct kunit *test)
+ 	kfree(ptr);
+ }
  
- static void kasan_global_oob_right(struct kunit *test)
-@@ -1538,6 +1851,18 @@ static struct kunit_case kasan_kunit_test_cases[] = {
- 	KUNIT_CASE(kmem_cache_oob),
- 	KUNIT_CASE(kmem_cache_accounted),
- 	KUNIT_CASE(kmem_cache_bulk),
-+	KUNIT_CASE(mempool_kmalloc_oob_right),
-+	KUNIT_CASE(mempool_kmalloc_large_oob_right),
-+	KUNIT_CASE(mempool_slab_oob_right),
-+	KUNIT_CASE(mempool_kmalloc_uaf),
-+	KUNIT_CASE(mempool_kmalloc_large_uaf),
-+	KUNIT_CASE(mempool_slab_uaf),
-+	KUNIT_CASE(mempool_page_alloc_uaf),
-+	KUNIT_CASE(mempool_kmalloc_double_free),
-+	KUNIT_CASE(mempool_kmalloc_large_double_free),
-+	KUNIT_CASE(mempool_page_alloc_double_free),
-+	KUNIT_CASE(mempool_kmalloc_invalid_free),
-+	KUNIT_CASE(mempool_kmalloc_large_invalid_free),
- 	KUNIT_CASE(kasan_global_oob_right),
- 	KUNIT_CASE(kasan_global_oob_left),
- 	KUNIT_CASE(kasan_stack_oob),
+-static void kmalloc_pagealloc_uaf(struct kunit *test)
++static void kmalloc_large_uaf(struct kunit *test)
+ {
+ 	char *ptr;
+ 	size_t size = KMALLOC_MAX_CACHE_SIZE + 10;
+@@ -249,7 +250,7 @@ static void kmalloc_pagealloc_uaf(struct kunit *test)
+ 	KUNIT_EXPECT_KASAN_FAIL(test, ((volatile char *)ptr)[0]);
+ }
+ 
+-static void kmalloc_pagealloc_invalid_free(struct kunit *test)
++static void kmalloc_large_invalid_free(struct kunit *test)
+ {
+ 	char *ptr;
+ 	size_t size = KMALLOC_MAX_CACHE_SIZE + 10;
+@@ -262,7 +263,7 @@ static void kmalloc_pagealloc_invalid_free(struct kunit *test)
+ 	KUNIT_EXPECT_KASAN_FAIL(test, kfree(ptr + 1));
+ }
+ 
+-static void pagealloc_oob_right(struct kunit *test)
++static void page_alloc_oob_right(struct kunit *test)
+ {
+ 	char *ptr;
+ 	struct page *pages;
+@@ -284,7 +285,7 @@ static void pagealloc_oob_right(struct kunit *test)
+ 	free_pages((unsigned long)ptr, order);
+ }
+ 
+-static void pagealloc_uaf(struct kunit *test)
++static void page_alloc_uaf(struct kunit *test)
+ {
+ 	char *ptr;
+ 	struct page *pages;
+@@ -298,15 +299,15 @@ static void pagealloc_uaf(struct kunit *test)
+ 	KUNIT_EXPECT_KASAN_FAIL(test, ((volatile char *)ptr)[0]);
+ }
+ 
+-static void kmalloc_large_oob_right(struct kunit *test)
++/*
++ * Check that KASAN detects an out-of-bounds access for a big object allocated
++ * via kmalloc(). But not as big as to trigger the page_alloc fallback for SLUB.
++ */
++static void kmalloc_big_oob_right(struct kunit *test)
+ {
+ 	char *ptr;
+ 	size_t size = KMALLOC_MAX_CACHE_SIZE - 256;
+ 
+-	/*
+-	 * Allocate a chunk that is large enough, but still fits into a slab
+-	 * and does not trigger the page allocator fallback in SLUB.
+-	 */
+ 	ptr = kmalloc(size, GFP_KERNEL);
+ 	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr);
+ 
+@@ -404,18 +405,18 @@ static void krealloc_less_oob(struct kunit *test)
+ 	krealloc_less_oob_helper(test, 235, 201);
+ }
+ 
+-static void krealloc_pagealloc_more_oob(struct kunit *test)
++static void krealloc_large_more_oob(struct kunit *test)
+ {
+-	/* page_alloc fallback in only implemented for SLUB. */
++	/* page_alloc fallback is only implemented for SLUB. */
+ 	KASAN_TEST_NEEDS_CONFIG_ON(test, CONFIG_SLUB);
+ 
+ 	krealloc_more_oob_helper(test, KMALLOC_MAX_CACHE_SIZE + 201,
+ 					KMALLOC_MAX_CACHE_SIZE + 235);
+ }
+ 
+-static void krealloc_pagealloc_less_oob(struct kunit *test)
++static void krealloc_large_less_oob(struct kunit *test)
+ {
+-	/* page_alloc fallback in only implemented for SLUB. */
++	/* page_alloc fallback is only implemented for SLUB. */
+ 	KASAN_TEST_NEEDS_CONFIG_ON(test, CONFIG_SLUB);
+ 
+ 	krealloc_less_oob_helper(test, KMALLOC_MAX_CACHE_SIZE + 235,
+@@ -1822,16 +1823,16 @@ static struct kunit_case kasan_kunit_test_cases[] = {
+ 	KUNIT_CASE(kmalloc_oob_right),
+ 	KUNIT_CASE(kmalloc_oob_left),
+ 	KUNIT_CASE(kmalloc_node_oob_right),
+-	KUNIT_CASE(kmalloc_pagealloc_oob_right),
+-	KUNIT_CASE(kmalloc_pagealloc_uaf),
+-	KUNIT_CASE(kmalloc_pagealloc_invalid_free),
+-	KUNIT_CASE(pagealloc_oob_right),
+-	KUNIT_CASE(pagealloc_uaf),
+ 	KUNIT_CASE(kmalloc_large_oob_right),
++	KUNIT_CASE(kmalloc_large_uaf),
++	KUNIT_CASE(kmalloc_large_invalid_free),
++	KUNIT_CASE(page_alloc_oob_right),
++	KUNIT_CASE(page_alloc_uaf),
++	KUNIT_CASE(kmalloc_big_oob_right),
+ 	KUNIT_CASE(krealloc_more_oob),
+ 	KUNIT_CASE(krealloc_less_oob),
+-	KUNIT_CASE(krealloc_pagealloc_more_oob),
+-	KUNIT_CASE(krealloc_pagealloc_less_oob),
++	KUNIT_CASE(krealloc_large_more_oob),
++	KUNIT_CASE(krealloc_large_less_oob),
+ 	KUNIT_CASE(krealloc_uaf),
+ 	KUNIT_CASE(kmalloc_oob_16),
+ 	KUNIT_CASE(kmalloc_uaf_16),
 -- 
 2.25.1
 
