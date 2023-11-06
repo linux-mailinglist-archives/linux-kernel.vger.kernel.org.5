@@ -2,65 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 200B97E2B71
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 18:47:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FD0B7E2B6B
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 18:47:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231805AbjKFRr6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 12:47:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35720 "EHLO
+        id S231807AbjKFRrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 12:47:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231980AbjKFRry (ORCPT
+        with ESMTP id S229518AbjKFRre (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 12:47:54 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A1F1D49
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 09:47:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699292870; x=1730828870;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=wf+4bViPMJ/wLn9iYcrNdVmT0wr1Bw6+m9MBBvTNPMQ=;
-  b=EpCmvF0z9dOhR3NKtkvzu9JVB66d3z0VYt8MUfRDvZn/OxT9f/2gq5Ir
-   d5kGrONaTdIVRMtfXOkcEQhQK9JJIGZPQt2/6J1ikbvUtZwWn/PeQB1B3
-   836GF1URJAyYIfiEUzxlA+Oxi6SfOk0T/N015TeUfXMd+6iXOFMgUpy3z
-   E6w3aVLU3SfEGUpnP03qQgK+busEavMom1pWngb+S9Ubh2LuTt60Y49in
-   dmIlZ/mj1peWRk2dLXPzTxhBLUqvMPSw34bULhYmZweGG0hxeew0ACNQD
-   8DJhqsoDvuq/1rFj10NdPJ2BmLF349pUmyr7pVZlVq3baVeEijE1E+krB
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10886"; a="392204343"
-X-IronPort-AV: E=Sophos;i="6.03,282,1694761200"; 
-   d="scan'208";a="392204343"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Nov 2023 09:47:49 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10886"; a="791533609"
-X-IronPort-AV: E=Sophos;i="6.03,282,1694761200"; 
-   d="scan'208";a="791533609"
-Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by orsmga008.jf.intel.com with ESMTP; 06 Nov 2023 09:47:47 -0800
-Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r03hR-0006cO-0T;
-        Mon, 06 Nov 2023 17:47:45 +0000
-Date:   Tue, 7 Nov 2023 01:46:18 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Sui Jingfeng <suijingfeng@loongson.cn>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>
-Cc:     oe-kbuild-all@lists.linux.dev, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 5/8] drm/loongson: Using vbios for the LS7A2000 output
- initialization
-Message-ID: <202311070048.L62vVvHE-lkp@intel.com>
-References: <20231029194607.379459-6-suijingfeng@loongson.cn>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231029194607.379459-6-suijingfeng@loongson.cn>
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        Mon, 6 Nov 2023 12:47:34 -0500
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FF05D49
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 09:47:30 -0800 (PST)
+Received: by mail-ot1-x329.google.com with SMTP id 46e09a7af769-6ce2cf67be2so2989140a34.2
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 09:47:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20230601.gappssmtp.com; s=20230601; t=1699292849; x=1699897649; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:to:from:cc
+         :in-reply-to:subject:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=AjiTCAPQ/Dvh52BiHkeWzErmU2ehyc+Vb2ES67exqnE=;
+        b=xwHBJzAw/uzAkKsYhpH7d2DW8I+ChudZ66luAjAoiv8RYK/2HYoEAPXUGoLadZbfyU
+         YZp+4KPx5d90muzJJ7pS547Gd1mUIm9mRNYQpfP/xaEpf9ETH87n08ljjSNwzSc16bWJ
+         KMuLLkPMwuyjuDeoatltmCjG+a0surbeI9J1FNsXE6JRFzPnLSJmIddIdnOP7rhdUVit
+         U1dQ43B/XiYUe1a6lajh8RVopO7fVKF3sOG4xEe4mWRmy7XiZIqv6/cR4S6IGqHwRTUc
+         BeVtiY8pqIRtEh655JjZoy3M7typfmtz2pNuQOHbxmhE+V+C5ikWx9gx4d5pCHFHX9Ic
+         Yp4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699292849; x=1699897649;
+        h=content-transfer-encoding:mime-version:message-id:to:from:cc
+         :in-reply-to:subject:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=AjiTCAPQ/Dvh52BiHkeWzErmU2ehyc+Vb2ES67exqnE=;
+        b=Mi5nT3mkd3C+UC910n+dDZtSC5yEgSsgVNtFLVw2+U431Fweui247B60RM9Jp+4MKH
+         I+14Fg0hXrfigQNJwvFDynfw7lpkHa7XhlVZ2oyMrkoQRnoTCxsZLtlVCWj8lSrwpbuT
+         +9feqepRhsE5wcIVvBnWUAgr93LfmP0pl0wtN0ok38tqNLMndnsdF38K6sWMtzjnr+IB
+         lYinwT5UODki55fdJTH1VliaK7MBMJFukiZMLn3OCZ1/YNvqydRueGZhalIPzSzC8l2h
+         SBH2P11cLKTkX0bj4J0H+LCtUA/O5268+4tWm03nn1AwX8ebUNqhSsMe01zH9xwerx+7
+         wSjg==
+X-Gm-Message-State: AOJu0YzjUdcr+Rfhs9ehniGNYReiElcPGoNyLtiw5GA0YvxysQUD43Cd
+        NCunXv3vfRWwegde8epp5zHS+g==
+X-Google-Smtp-Source: AGHT+IFHaQWxtub12aD9f9065e5oc0uXm1/nB/k434xLnQkRciT453rkxM4oCkVOVhn2njVQQYU0sw==
+X-Received: by 2002:a05:6830:925:b0:6cd:8c8:1654 with SMTP id v37-20020a056830092500b006cd08c81654mr35325191ott.2.1699292849495;
+        Mon, 06 Nov 2023 09:47:29 -0800 (PST)
+Received: from localhost ([192.184.165.199])
+        by smtp.gmail.com with ESMTPSA id az5-20020a056830458500b006c4727812fdsm1340215otb.15.2023.11.06.09.47.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 Nov 2023 09:47:28 -0800 (PST)
+Date:   Mon, 06 Nov 2023 09:47:28 -0800 (PST)
+X-Google-Original-Date: Mon, 06 Nov 2023 09:40:24 PST (-0800)
+Subject:     Re: [PATCH v2 4/5] riscv: kvm: Use SYM_*() assembly macros instead of deprecated ones
+In-Reply-To: <20231024132655.730417-5-cleger@rivosinc.com>
+CC:     Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu,
+        anup@brainfault.org, atishp@atishpatra.org,
+        ajones@ventanamicro.com, cleger@rivosinc.com,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, kvm-riscv@lists.infradead.org
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     cleger@rivosinc.com
+Message-ID: <mhng-a152f6da-63a0-4863-a637-e6ee4f4fa4d7@palmer-ri-x1c9>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,100 +74,104 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sui,
+On Tue, 24 Oct 2023 06:26:54 PDT (-0700), cleger@rivosinc.com wrote:
+> ENTRY()/END()/WEAK() macros are deprecated and we should make use of the
+> new SYM_*() macros [1] for better annotation of symbols. Replace the
+> deprecated ones with the new ones and fix wrong usage of END()/ENDPROC()
+> to correctly describe the symbols.
+>
+> [1] https://docs.kernel.org/core-api/asm-annotations.html
+>
+> Signed-off-by: Clément Léger <cleger@rivosinc.com>
+> Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
+> ---
+>  arch/riscv/kvm/vcpu_switch.S | 28 ++++++++++++----------------
+>  1 file changed, 12 insertions(+), 16 deletions(-)
+>
+> diff --git a/arch/riscv/kvm/vcpu_switch.S b/arch/riscv/kvm/vcpu_switch.S
+> index d74df8eb4d71..8b18473780ac 100644
+> --- a/arch/riscv/kvm/vcpu_switch.S
+> +++ b/arch/riscv/kvm/vcpu_switch.S
+> @@ -15,7 +15,7 @@
+>  	.altmacro
+>  	.option norelax
+>
+> -ENTRY(__kvm_riscv_switch_to)
+> +SYM_FUNC_START(__kvm_riscv_switch_to)
+>  	/* Save Host GPRs (except A0 and T0-T6) */
+>  	REG_S	ra, (KVM_ARCH_HOST_RA)(a0)
+>  	REG_S	sp, (KVM_ARCH_HOST_SP)(a0)
+> @@ -208,9 +208,9 @@ __kvm_switch_return:
+>
+>  	/* Return to C code */
+>  	ret
+> -ENDPROC(__kvm_riscv_switch_to)
+> +SYM_FUNC_END(__kvm_riscv_switch_to)
+>
+> -ENTRY(__kvm_riscv_unpriv_trap)
+> +SYM_CODE_START(__kvm_riscv_unpriv_trap)
+>  	/*
+>  	 * We assume that faulting unpriv load/store instruction is
+>  	 * 4-byte long and blindly increment SEPC by 4.
+> @@ -231,12 +231,10 @@ ENTRY(__kvm_riscv_unpriv_trap)
+>  	csrr	a1, CSR_HTINST
+>  	REG_S	a1, (KVM_ARCH_TRAP_HTINST)(a0)
+>  	sret
+> -ENDPROC(__kvm_riscv_unpriv_trap)
+> +SYM_CODE_END(__kvm_riscv_unpriv_trap)
+>
+>  #ifdef	CONFIG_FPU
+> -	.align 3
+> -	.global __kvm_riscv_fp_f_save
+> -__kvm_riscv_fp_f_save:
+> +SYM_FUNC_START(__kvm_riscv_fp_f_save)
+>  	csrr t2, CSR_SSTATUS
+>  	li t1, SR_FS
+>  	csrs CSR_SSTATUS, t1
+> @@ -276,10 +274,9 @@ __kvm_riscv_fp_f_save:
+>  	sw t0, KVM_ARCH_FP_F_FCSR(a0)
+>  	csrw CSR_SSTATUS, t2
+>  	ret
+> +SYM_FUNC_END(__kvm_riscv_fp_f_save)
+>
+> -	.align 3
+> -	.global __kvm_riscv_fp_d_save
+> -__kvm_riscv_fp_d_save:
+> +SYM_FUNC_START(__kvm_riscv_fp_d_save)
+>  	csrr t2, CSR_SSTATUS
+>  	li t1, SR_FS
+>  	csrs CSR_SSTATUS, t1
+> @@ -319,10 +316,9 @@ __kvm_riscv_fp_d_save:
+>  	sw t0, KVM_ARCH_FP_D_FCSR(a0)
+>  	csrw CSR_SSTATUS, t2
+>  	ret
+> +SYM_FUNC_END(__kvm_riscv_fp_d_save)
+>
+> -	.align 3
+> -	.global __kvm_riscv_fp_f_restore
+> -__kvm_riscv_fp_f_restore:
+> +SYM_FUNC_START(__kvm_riscv_fp_f_restore)
+>  	csrr t2, CSR_SSTATUS
+>  	li t1, SR_FS
+>  	lw t0, KVM_ARCH_FP_F_FCSR(a0)
+> @@ -362,10 +358,9 @@ __kvm_riscv_fp_f_restore:
+>  	fscsr t0
+>  	csrw CSR_SSTATUS, t2
+>  	ret
+> +SYM_FUNC_END(__kvm_riscv_fp_f_restore)
+>
+> -	.align 3
+> -	.global __kvm_riscv_fp_d_restore
+> -__kvm_riscv_fp_d_restore:
+> +SYM_FUNC_START(__kvm_riscv_fp_d_restore)
+>  	csrr t2, CSR_SSTATUS
+>  	li t1, SR_FS
+>  	lw t0, KVM_ARCH_FP_D_FCSR(a0)
+> @@ -405,4 +400,5 @@ __kvm_riscv_fp_d_restore:
+>  	fscsr t0
+>  	csrw CSR_SSTATUS, t2
+>  	ret
+> +SYM_FUNC_END(__kvm_riscv_fp_d_restore)
+>  #endif
 
-kernel test robot noticed the following build warnings:
-
-[auto build test WARNING on drm-misc/drm-misc-next]
-[also build test WARNING on linus/master v6.6 next-20231106]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Sui-Jingfeng/drm-loongson-Introduce-a-minimal-support-for-Loongson-VBIOS/20231030-034730
-base:   git://anongit.freedesktop.org/drm/drm-misc drm-misc-next
-patch link:    https://lore.kernel.org/r/20231029194607.379459-6-suijingfeng%40loongson.cn
-patch subject: [PATCH 5/8] drm/loongson: Using vbios for the LS7A2000 output initialization
-config: x86_64-randconfig-122-20231102 (https://download.01.org/0day-ci/archive/20231107/202311070048.L62vVvHE-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231107/202311070048.L62vVvHE-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311070048.L62vVvHE-lkp@intel.com/
-
-sparse warnings: (new ones prefixed by >>)
->> drivers/gpu/drm/loongson/lsdc_output_7a2000.c:567:31: sparse: sparse: symbol 'ls7a2000_query_output_configuration' was not declared. Should it be static?
-
-vim +/ls7a2000_query_output_configuration +567 drivers/gpu/drm/loongson/lsdc_output_7a2000.c
-
-   559	
-   560	/*
-   561	 * For LS7A2000, the built-in VGA encoder is transparent. If there are
-   562	 * external encoder exist, then the internal HDMI encoder MUST be enabled
-   563	 * and initialized. As the internal HDMI encoder is always connected, so
-   564	 * only the transmitters which take HDMI signal (such as HDMI to eDP, HDMI
-   565	 * to LVDS, etc) are usable with.
-   566	 */
- > 567	const struct lsdc_output_desc *
-   568	ls7a2000_query_output_configuration(struct drm_device *ddev, unsigned int pipe)
-   569	{
-   570		enum loongson_vbios_encoder_name encoder_name = 0;
-   571		bool ret;
-   572	
-   573		ret = loongson_vbios_query_encoder_info(ddev, pipe, NULL,
-   574							&encoder_name, NULL);
-   575		if (!ret)
-   576			goto bailout;
-   577	
-   578		if (pipe == 0) {
-   579			switch (encoder_name) {
-   580			case ENCODER_CHIP_INTERNAL_HDMI:
-   581				return &ls7a2000_hdmi_pipe0;
-   582	
-   583			/*
-   584			 * For LS7A2000, the built-in VGA encoder is transparent.
-   585			 */
-   586			case ENCODER_CHIP_INTERNAL_VGA:
-   587				return &ls7a2000_vga_pipe0;
-   588	
-   589			/*
-   590			 * External display bridge exists, the internal HDMI encoder
-   591			 * MUST be enabled and initialized. Please add a drm bridge
-   592			 * driver, and attach to this encoder.
-   593			 */
-   594			default:
-   595				return &ls7a2000_hdmi_pipe0;
-   596			}
-   597		}
-   598	
-   599		if (pipe == 1) {
-   600			switch (encoder_name) {
-   601			case ENCODER_CHIP_INTERNAL_HDMI:
-   602				return &ls7a2000_hdmi_pipe1;
-   603	
-   604			/*
-   605			 * External display bridge exists, the internal HDMI encoder
-   606			 * MUST be enabled and initialized. Please add a drm bridge
-   607			 * driver, and attach it to this encoder.
-   608			 */
-   609			default:
-   610				return &ls7a2000_hdmi_pipe1;
-   611			}
-   612		}
-   613	
-   614	bailout:
-   615		if (pipe == 0)
-   616			return &ls7a2000_vga_pipe0;
-   617	
-   618		if (pipe == 1)
-   619			return &ls7a2000_hdmi_pipe1;
-   620	
-   621		return NULL;
-   622	}
-   623	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Acked-by: Palmer Dabbelt <palmer@rivosinc.com>
