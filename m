@@ -2,158 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B6A027E275B
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 15:44:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AE5E7E2769
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 15:44:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231820AbjKFOoG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 09:44:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46330 "EHLO
+        id S231833AbjKFOo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 09:44:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231778AbjKFOoE (ORCPT
+        with ESMTP id S231699AbjKFOo5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 09:44:04 -0500
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96869B6;
-        Mon,  6 Nov 2023 06:44:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
-        t=1699281830; x=1699886630; i=linosanfilippo@gmx.de;
-        bh=hEXmBjzYmq+iyTpBkbCwl1Phma6+Z7uaRav85K2TYII=;
-        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-         In-Reply-To;
-        b=Wa1jJXjCpBAzAHhS65MjWQJmAzReYR+wfA6o6bDKak17EWsN2DQetWOHkmklSPoe
-         l39oZ9ovBlxNlBfONw2e65BwNgUiiBWFZCYug7kusXSqj8XfbJYP9tFu1faM9s3Gl
-         BRGvHV4avTPJAMjhwmCzCAIPDTcGqvwsazWdH1ViLx0sLQs0pcDEpLcqVw2B5F6Bb
-         m+OgLgqnHm+mbryMblL/dJuCsEGBiqTvHGngRtvONfouFNRNGCAVTA9bgfdzcJFum
-         1fphMALn8qnZagm6VMHZ38fuXDGXDylk8E0uAak8uc5QhBGuaREkmLWYOMWY9IITo
-         /aMvqkin2+c0K7Nx5Q==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [192.168.2.42] ([84.162.21.41]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1M1HZo-1qyLs41MRm-002lUq; Mon, 06
- Nov 2023 15:43:50 +0100
-Message-ID: <3fc18b13-fef0-439e-abf0-1fe4e46b224a@gmx.de>
-Date:   Mon, 6 Nov 2023 15:43:49 +0100
+        Mon, 6 Nov 2023 09:44:57 -0500
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB211BB;
+        Mon,  6 Nov 2023 06:44:53 -0800 (PST)
+Received: by mail-pj1-x1033.google.com with SMTP id 98e67ed59e1d1-280cc5f3fdcso4303914a91.1;
+        Mon, 06 Nov 2023 06:44:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699281893; x=1699886693; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HPxhZe6vheeUn9vFdJuJshoNGBm7JfADyEER9bOti4A=;
+        b=eWkzxDLePggVfrSIeVrPKHW8Z3VUmjPJ6X85BcHCVu8NUXUDp8jUicpN+HvwKyGlaa
+         2rIvvLACk2VVQtnzPE/l9yh+4eZ+wP9/fR+vP/egGwk+bWq7TxnmQ6Y9ckI26KvL9YRl
+         yeeBsC5cQK4tyq5LqyGlMGZpJ0Y4PwzuVPH1w6kgK71t1qptbSc2TqmEUN1BaNglsy8X
+         EV+3LZ4Oy9CgUmudQeSh6GWuwaINc24CBkPHbn1IrczuiUQBtQW6UUTQs2R/9svRAvu2
+         8GB5L+vNgKZjCH0O86CLBdS5VQuGhEmbgxLwkq/ILjnoEBDNIY4DUI1eLwccuYFOOvec
+         DqrA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699281893; x=1699886693;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HPxhZe6vheeUn9vFdJuJshoNGBm7JfADyEER9bOti4A=;
+        b=nKPluLRa9vrSK9zhR/4ITcKEVRyMBHzzQy5ArH0cnTspQ2h/dp2TVnr4Pt75gH0auj
+         k4h1IaoI+QrqHYqRrD+FkHFPu54zspGOqzwtcxnGKaEbw+skIV1/YG/S4BHe40K1OXPM
+         XRqXHsCVvkIH7yNZKA3XB8t1ouKDmFmcDHNy2anloVjcr559faluRbKYxeQnhXKa/Zh1
+         ZSVyNAx9HcIPNe1jf9fQsYWluU8C512euizT6inbgmq/8myAid8uMrSKQPwwoKOvuwZw
+         FeGKwxbRphGu5qKhmOus1yhsztDq2M7IjFZuZ39HAIrM5FRkjnaGjM0Cb/gaQDg+vpsN
+         NHCQ==
+X-Gm-Message-State: AOJu0YwfDStL406LU3VQaz39DHz/Xa9+K4jQKcWa5rU8/tYoxqBScUV3
+        MM4C8JzodvE0qPou/eO0LkhZJIEiiOnr0KN7QP0=
+X-Google-Smtp-Source: AGHT+IFak4d2x8lFD6pdfnTjj6PNYc0bk+F3F4X0O069zU3I6Su0oqAPEi9rf4SwI8QSR0/KkjZY6OEORErroicvkNU=
+X-Received: by 2002:a17:90b:3b44:b0:280:cd49:2548 with SMTP id
+ ot4-20020a17090b3b4400b00280cd492548mr11349917pjb.6.1699281892947; Mon, 06
+ Nov 2023 06:44:52 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] tty: serial: Add RS422 flag to struct serial_rs485
-Content-Language: en-US
-To:     Crescent CY Hsieh <crescentcy.hsieh@moxa.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
-References: <20231101064404.45711-1-crescentcy.hsieh@moxa.com>
- <0d203024-ba5c-4258-b549-b9304622978b@gmx.de>
- <ZUiTkyZSbbmTUGYQ@moxa-ThinkCentre-M90t>
-From:   Lino Sanfilippo <LinoSanfilippo@gmx.de>
-In-Reply-To: <ZUiTkyZSbbmTUGYQ@moxa-ThinkCentre-M90t>
-Content-Type: text/plain; charset=UTF-8
+References: <20231106141704.866455-1-zyytlz.wz@163.com> <87o7g7ueom.fsf@kernel.org>
+In-Reply-To: <87o7g7ueom.fsf@kernel.org>
+From:   Zheng Hacker <hackerzheng666@gmail.com>
+Date:   Mon, 6 Nov 2023 22:44:41 +0800
+Message-ID: <CAJedcCytuGmvubqbSZgsU3Db=rg=xM+kSuLZn8BSvA18Yn+9Jw@mail.gmail.com>
+Subject: Re: [PATCH v5] wifi: brcmfmac: Fix use-after-free bug in brcmf_cfg80211_detach
+To:     Kalle Valo <kvalo@kernel.org>
+Cc:     Zheng Wang <zyytlz.wz@163.com>, aspriel@gmail.com,
+        franky.lin@broadcom.com, hante.meuleman@broadcom.com,
+        johannes.berg@intel.com, marcan@marcan.st,
+        linus.walleij@linaro.org, jisoo.jang@yonsei.ac.kr,
+        linuxlovemin@yonsei.ac.kr, wataru.gohda@cypress.com,
+        linux-wireless@vger.kernel.org,
+        brcm80211-dev-list.pdl@broadcom.com, arend.vanspriel@broadcom.com,
+        SHA-cyfmac-dev-list@infineon.com, linux-kernel@vger.kernel.org,
+        security@kernel.org, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:DJf+fGVHnv4vAYJP+DKZ9MaNmbBkIQbu7i1QwzdmM725Oc6M4jP
- 6a3Pz4/Oh78eImtiHPw4OqVQRTBNQtFS9SARTbrkREGKoF2vJr+n0P2dw96UgFf5UpAsBwp
- iR3zsdpAYQKxmxlcazr9d2j8/6DjQayXELYQfpgtUtfqV2QwHdmXgNCRIqEGGiSHz4HpwwP
- KxsUOx1giGJs6MDWYFLkQ==
-UI-OutboundReport: notjunk:1;M01:P0:a6hp+FgPuPc=;zNAvda4tm4/qzcEdzNqKn7OrzHP
- TNL3MTY5/bhIj7weNVx6nutq2npUNjczo8RMSkyGydmdFCIHmkVHTUaC1ujzdrbRqENtHXgyT
- ennODDzwDjhIepwMJbX193egpyZnki8Z6ArV76LuEt19iPKNJekntbQ1r6rWEnhpd1Slx1lKZ
- XxKj1JSd8gcMnfo2oaThbmcaXoPr/g56y+uQF+lyE60nP3umprQ3aSPh/oISYFJAp/F1wBUmE
- +kwaS0B95FKsmh43bAki/B/FWnK7QC/nBIKIlPXzwcbmcY7f8AfIiiRWq6FnKLnwuDlfd+6fv
- 3p0oV58+U2HAkEMxu9AWh3wIi6niLcnRTgHhFex17AWItCrlq1uT5fqDcA893oA/dbKBvY3fx
- 39eG0RItmxAcCAxC7ev0M842Rf62MnGYjg38vwlNQ8cyahp1xp+WXz+VtPZceZQ/vmc+DulvK
- Qp44UKCVjz0aDKTYwAR7+jxH0VBryys5by9ys8BAPlFH0b0b/4y7mU87EqHFPEvmhY1rLldGh
- Su5Bv9ssSUAyrnLBJSGm4kgfipl/Z2dswywaIk490tBKhtSQ1NvTDTHepYND5BfHFWEsllcyR
- uimtPYGNqr1bxBWLZ8Om0wx02Fb/x6CMhMc2DdC0npnWnm4iTjjMItMiZSM5pazoPkOVnsWMg
- ek30GxiKQgdlzYNYrjuH/RZEhq+PL+6yY3VS7zG+5g1lgQyvoEwLBefFHO1CgU/hs+ZodKu+L
- te7y3I4kFMk2wkMvN+VyRacvCDjeQazjr2XTELFYUzJyY0qVMIzWPYDRynCgXFa3H/5im6bA0
- rzUBafxVIGMhcmqJaVz+2aK1/jTnGuWiZFI2MndVu8Xmw9O9Yx7Ne/8/bD8BynKTFw53qJ4Th
- Pr+WCMzDLAVI6GwAz2gedHkgQECqMFVgdi7cp0eX/R9D3F1kJnriYKjnJptZ4t7gs+q372Ej7
- 8g6SCA==
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Thanks! I didn't test it for I don't have a device. Very appreciated
+if anyone could help with that.
 
-On 06.11.23 08:19, Crescent CY Hsieh wrote:
-> On Sat, Nov 04, 2023 at 08:53:18PM +0100, Lino Sanfilippo wrote:
->> On 01.11.23 07:44, Crescent CY Hsieh wrote:
->>> @@ -1371,11 +1371,26 @@ static void uart_sanitize_serial_rs485(struct =
-uart_port *port, struct serial_rs4
->>>  {
->>>  	u32 supported_flags =3D port->rs485_supported.flags;
->>>
->>> -	if (!(rs485->flags & SER_RS485_ENABLED)) {
->>> +	if (!(rs485->flags & (SER_RS485_ENABLED | SER_RS422_ENABLED))) {
->>>  		memset(rs485, 0, sizeof(*rs485));
->>>  		return;
->>>  	}
->>>
->>> +	/* Pick sane setting if the user enables both interfaces */
->>> +	if (rs485->flags & SER_RS485_ENABLED && rs485->flags & SER_RS422_ENA=
-BLED) {
->>> +		dev_warn_ratelimited(port->dev,
->>> +			"%s (%d): Invalid serial interface setting, using RS485 instead\n"=
-,
->>> +			port->name, port->line);
->>> +		rs485->flags &=3D ~SER_RS422_ENABLED;
->>> +	}
->>> +
->>> +	/* Clear other bits and return if RS422 is enabled */
->>> +	if (rs485->flags & SER_RS422_ENABLED) {
->>> +		memset(rs485, 0, sizeof(*rs485));
->>
->> Why are all flags cleared but SER_RS422_ENABLED?
+Kalle Valo <kvalo@kernel.org> =E4=BA=8E2023=E5=B9=B411=E6=9C=886=E6=97=A5=
+=E5=91=A8=E4=B8=80 22:41=E5=86=99=E9=81=93=EF=BC=9A
 >
-> IMO, RS422 and RS485 are distinct serial interfaces. Therefore, when
-> RS422 is enabled, the other RS485 flags should be cleared, and vice
-> versa.
+> Zheng Wang <zyytlz.wz@163.com> writes:
 >
->>> +		rs485->flags |=3D SER_RS422_ENABLED;
->>> +		return;
->>> +	}
->>
->> What about all the other code places that check for SER_RS485_ENABLED?
->> For example uart_update_mctrl(), uart_suspend_port() and uart_resume_po=
-rt() check this flag
->> to decide whether to set the modem control lines or not. Should this no=
-t also apply to
->> SER_RS422_ENABLED?
+> > This is the candidate patch of CVE-2023-47233 :
+> > https://nvd.nist.gov/vuln/detail/CVE-2023-47233
+> >
+> > In brcm80211 driver,it starts with the following invoking chain
+> > to start init a timeout worker:
+> >
+> > ->brcmf_usb_probe
+> >   ->brcmf_usb_probe_cb
+> >     ->brcmf_attach
+> >       ->brcmf_bus_started
+> >         ->brcmf_cfg80211_attach
+> >           ->wl_init_priv
+> >             ->brcmf_init_escan
+> >               ->INIT_WORK(&cfg->escan_timeout_work,
+> >                 brcmf_cfg80211_escan_timeout_worker);
+> >
+> > If we disconnect the USB by hotplug, it will call
+> > brcmf_usb_disconnect to make cleanup. The invoking chain is :
+> >
+> > brcmf_usb_disconnect
+> >   ->brcmf_usb_disconnect_cb
+> >     ->brcmf_detach
+> >       ->brcmf_cfg80211_detach
+> >         ->kfree(cfg);
+> >
+> > While the timeout woker may still be running. This will cause
+> > a use-after-free bug on cfg in brcmf_cfg80211_escan_timeout_worker.
+> >
+> > Fix it by deleting the timer and canceling the worker in
+> > brcmf_cfg80211_detach.
+> >
+> > Fixes: e756af5b30b0 ("brcmfmac: add e-scan support.")
+> > Signed-off-by: Zheng Wang <zyytlz.wz@163.com>
+> > Cc: stable@vger.kernel.org
+> > ---
+> > v5:
+> > - replace del_timer_sync with timer_shutdown_sync suggested by
+> > Arend and Takashi
+> > v4:
+> > - rename the subject and add CVE number as Ping-Ke Shih suggested
+> > v3:
+> > - rename the subject as Johannes suggested
+> > v2:
+> > - fix the error of kernel test bot reported
+> > ---
+> >  drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c | 2 ++
+> >  1 file changed, 2 insertions(+)
+> >
+> > diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.=
+c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
+> > index 667462369a32..a8723a61c9e4 100644
+> > --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
+> > +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
+> > @@ -8431,6 +8431,8 @@ void brcmf_cfg80211_detach(struct brcmf_cfg80211_=
+info *cfg)
+> >       if (!cfg)
+> >               return;
+> >
+> > +     timer_shutdown_sync(&cfg->escan_timeout);
+> > +     cancel_work_sync(&cfg->escan_timeout_work);
+> >       brcmf_pno_detach(cfg);
+> >       brcmf_btcoex_detach(cfg);
+> >       wiphy_unregister(cfg->wiphy);
 >
-> After reviewing the code in serial_core.c, there are actually some codes
-> that check for "SER_RS485_ENABLED" flag before setting the modem control
-> lines.
+> Has anyone tested this on a real device? As v1 didn't even compile I am
+> very cautious:
 >
-> It also appears that these codes can only be done when disabling RS485.
+> https://patchwork.kernel.org/project/linux-wireless/patch/20231104054709.=
+716585-1-zyytlz.wz@163.com/
 >
-> So yes, I will apply "SER_RS422_ENABLED" flag to these locations in the
-> next patch.
+> --
+> https://patchwork.kernel.org/project/linux-wireless/list/
 >
->>
->> Maybe it would be better to change the meaning of the flag: Instead of =
-being a substitution for
->> SER_RS485_ENABLED, it could be used to mark a special mode.
->> So if both SER_RS485_ENABLED and SER_RS485_MODE_RS422 are set it would =
-mean that we have RS422.
->
-> RS422 is not a mode of RS485, so I think using two flags to represent
-> them is much more reasonable, even though they are both included in the
-> "struct serial_rs485".
-
-Yes, RS422 is not a mode of RS485, but you are already using the rs485 (an=
-d not a rs422) structure.
-And treating RS422 as a different mode in the existing code would make thi=
-ngs much easier and keep the code
-clean. For example you would not have to alter all the code places that ch=
-eck for SER_RS485_ENABLED.
-Also SER_RS485_ENABLED and SER_RS422_ENABLED would have the exact same eff=
-ect, so why use two
-different flags, when the effect is the same?
-
-Regards,
-Lino
-
+> https://wireless.wiki.kernel.org/en/developers/documentation/submittingpa=
+tches
