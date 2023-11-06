@@ -2,216 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 01C1F7E1B8C
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 08:54:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6189A7E1B93
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 09:00:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230408AbjKFHyd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 02:54:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34360 "EHLO
+        id S230312AbjKFIAN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 03:00:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229803AbjKFHyb (ORCPT
+        with ESMTP id S229583AbjKFIAL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 02:54:31 -0500
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22987B3
-        for <linux-kernel@vger.kernel.org>; Sun,  5 Nov 2023 23:54:27 -0800 (PST)
-Received: from [192.168.88.20] (91-158-149-209.elisa-laajakaista.fi [91.158.149.209])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 67CC3583;
-        Mon,  6 Nov 2023 08:54:04 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1699257245;
-        bh=AWiS/+jyJMw7C0hLOtwr+kKJPUeb1haOClFxpULuZmQ=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=bRNag+XLKR94Pj/WFtofhAXLUJHlB2O/+yrJ6QbX7x5cwiseopn8n2tGmpv3VwOZm
-         x/UFvnQ6lhi6XmhAGoiNgKYCU3yUT3P0xQX5TaLVmKQhcF+rn2qEdVRPiZ23c1Pagr
-         jFgEfyEYQxD84TboUBKY+Mvsqg1wXCge3Xa//rag=
-Message-ID: <c0c735f7-e00a-4574-9edc-07bc83012070@ideasonboard.com>
-Date:   Mon, 6 Nov 2023 09:54:20 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 02/10] drm/tidss: Use PM autosuspend
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Aradhya Bhatia <a-bhatia1@ti.com>,
-        Devarsh Thakkar <devarsht@ti.com>,
-        Jyri Sarha <jyri.sarha@iki.fi>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Sakari Ailus <sakari.ailus@iki.fi>
-References: <20231101-tidss-probe-v1-0-45149e0f9415@ideasonboard.com>
- <20231101-tidss-probe-v1-2-45149e0f9415@ideasonboard.com>
- <20231101135406.GR12764@pendragon.ideasonboard.com>
- <7395880d-36ba-471c-ba7c-745a0ec8e5de@ideasonboard.com>
- <20231105225330.GA15635@pendragon.ideasonboard.com>
+        Mon, 6 Nov 2023 03:00:11 -0500
+Received: from esa13.fujitsucc.c3s2.iphmx.com (esa13.fujitsucc.c3s2.iphmx.com [68.232.156.96])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69190BF;
+        Mon,  6 Nov 2023 00:00:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj1;
+  t=1699257601; x=1730793601;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=4gxGPFyhxZD7EJzdnw91xEywTxwar21xRe4Xj3dfJeI=;
+  b=s1FsopvnphGX2/cj9mof2Zs4yIyFvjlugN+Rsxc2IDeG6BOsH7j1zLEL
+   zgh0tD9DLvzui01H8M+P1bJPo3SZViiPepCqDIaeqzOdu5tYEhN76qT9t
+   XHUGjbt9F1eAlarXKWW7o+aD0dIDCBJ8UnzHg0CwUQ5qnWLofY56JQw0n
+   opF3jHdMlvs+WEAVtaQVLFM0+KH3Why+p6/ZbQm5D1gc28XZtojoPN6Tp
+   XPnJ1xJLJI2G1djPomM52GRcziwJd6GFWzXnNBY9MfeuaQCQHGuPn3QUf
+   RiWc7MsKAO333wsSZuqXbJwWwTe8dWKA5JH0k0kw8y3A2pP/zRJSo6GdY
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10885"; a="101119440"
+X-IronPort-AV: E=Sophos;i="6.03,280,1694703600"; 
+   d="scan'208";a="101119440"
+Received: from mail-os0jpn01lp2105.outbound.protection.outlook.com (HELO JPN01-OS0-obe.outbound.protection.outlook.com) ([104.47.23.105])
+  by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Nov 2023 16:59:56 +0900
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jSKhqGYtDKcmwb42zJSn7QDwjmFivAv0LrgdXzVNgYYVu7acwh9gYduKJBL3iJgQoBE3QKTYnzqVWpFGlQxCs0v34AoM2L1uexhGXA2Io/wIkQboIf1XLQMhzYg9zdGCj4gRIK0t09ye3w3yWJnr76pd0R88e6/rbGPZf8H3hyajZD9wXexFacKWqdsACNf944i53+2XZMxevBMuK98tfjS9y+/OSpxLSPCiGIqvwx++/76mW8nQDw+MIDAjA0B69AV7TGvd8dPzAIvs8+OdnEFqZC1xT7XFo3JC/sQwDjBWTlt6tc/qTExoVCDKa73llZ2DqjQDNALQBlS4uH5J/w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=4gxGPFyhxZD7EJzdnw91xEywTxwar21xRe4Xj3dfJeI=;
+ b=jvbzgj7KzwuOR8Mt9Ws17rynDfIWbU1HRQfhK+/fK6apgaB2TXe770lI2pQDZNHcmlkqIPrY2wNZ6V4QHv4JdCIpYM/3hRVBKwl7vXmwMH2sWuMq6j4DyTVTrF6w2xaC4X4LERCmuXgPQR7QxtEZiRNquMKwusFRLyK1sJqEHiGlEYYUYYTRBA0r05+dejLcMXdbvQ52PH9n+7ZULBnApZYUtEzsnBAqEo+XZkTrwq2Uoo+Y/HD3yTRhDwcO49tUVuNf+uwxA1WwsckKeP8lyRSa4Xi7nXGHE6AHa+AFyi5J6XA0IPuB8FLrizpjIFDxyTGhB8LSd/WVnelJjx1U8w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
+ dkim=pass header.d=fujitsu.com; arc=none
+Received: from OS0PR01MB5442.jpnprd01.prod.outlook.com (2603:1096:604:a6::10)
+ by OSRPR01MB11660.jpnprd01.prod.outlook.com (2603:1096:604:22f::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.28; Mon, 6 Nov
+ 2023 07:59:53 +0000
+Received: from OS0PR01MB5442.jpnprd01.prod.outlook.com
+ ([fe80::5eb9:637a:8d54:59a0]) by OS0PR01MB5442.jpnprd01.prod.outlook.com
+ ([fe80::5eb9:637a:8d54:59a0%6]) with mapi id 15.20.6954.028; Mon, 6 Nov 2023
+ 07:59:53 +0000
+From:   "Zhijian Li (Fujitsu)" <lizhijian@fujitsu.com>
+To:     "zyjzyj2000@gmail.com" <zyjzyj2000@gmail.com>,
+        "jgg@ziepe.ca" <jgg@ziepe.ca>, "leon@kernel.org" <leon@kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "rpearsonhpe@gmail.com" <rpearsonhpe@gmail.com>,
+        "Daisuke Matsuda (Fujitsu)" <matsuda-daisuke@fujitsu.com>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "yi.zhang@redhat.com" <yi.zhang@redhat.com>
+Subject: Re: [PATCH RFC V2 0/6] rxe_map_mr_sg() fix cleanup and refactor
+Thread-Topic: [PATCH RFC V2 0/6] rxe_map_mr_sg() fix cleanup and refactor
+Thread-Index: AQHaDjvxgnGsUlf/nk+PthrgEoRwxrBs8fkA
+Date:   Mon, 6 Nov 2023 07:59:53 +0000
+Message-ID: <27a06d26-4443-4349-801e-c09da0d57884@fujitsu.com>
+References: <20231103095549.490744-1-lizhijian@fujitsu.com>
+In-Reply-To: <20231103095549.490744-1-lizhijian@fujitsu.com>
+Accept-Language: en-US, zh-CN
 Content-Language: en-US
-From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Autocrypt: addr=tomi.valkeinen@ideasonboard.com; keydata=
- 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
-In-Reply-To: <20231105225330.GA15635@pendragon.ideasonboard.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla Thunderbird
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=fujitsu.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: OS0PR01MB5442:EE_|OSRPR01MB11660:EE_
+x-ms-office365-filtering-correlation-id: 272b14e1-fe75-4a71-afe1-08dbde9e5bf4
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: B94nzE19KELVoHAsbGHRflCnKoFKyZvZAY0SlPn2VsmSm1YOvBEcjhv/MixAYAjU8UWvSBa3AZOPpqEs3tZXbsPgMl1ahGvqy62PW9wCQVcV8xy2JT4qtfRy78LGfD+IvACAyhRdsKPSzt/FoaLs37wzr59SVZ6sLLajXYAqLBbM8aSU00WPxXBpso1iW/WwMVwFImUgWLb1JhfFw07haXmmebAxjhJK1K9DP8w8ymqfWVgz7gE5mM7NbMqwkaJ51aYdPTenElfA5pKE4Jps6HRI40VZCRw30lapQ331iTYX23u9jNIOjlk9+6IAP6OeyyXT4hxbazFAw7ebqfPre4bTv5u/HF4ZEqHcXP3jHqf+4b60pQwT1S07qkq0L6syEPQtNIAK7+wkQH1tn6vWNttTpQowPFdagYKUTcuEf7ArgJnl7ZwBbmhrhrjDarYreaicFkpk09ErZCA222XcLNk5kbePdQ9+3wi4UdTkFnnacrFpilOfuQr4BFikgesFrJh0xxYN1TXzBGCn5CSM7z8fsvZVcMUvWjVneVkc4z6kVgz2uKvbrkw/vB0zTNeYEJIyEoRNeCExaocYWS/ScCAXpwYlnjW+uVKPd4TqK2L9pq5jZJFhTg4hCaUverdSMSrR7GOQvpTesg5UoMvE63PDKKsfkPb1yBUeVjMjH3wM0K6Bkuy9I6F4dYNYxkXzeE3wy0P/frRHmCGTeFXhoA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OS0PR01MB5442.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(376002)(39860400002)(346002)(366004)(396003)(230922051799003)(186009)(451199024)(1590799021)(64100799003)(1800799009)(6506007)(86362001)(53546011)(8936002)(8676002)(38100700002)(966005)(6486002)(478600001)(4326008)(71200400001)(5660300002)(36756003)(31696002)(85182001)(6512007)(91956017)(66446008)(64756008)(66476007)(54906003)(110136005)(66946007)(66556008)(316002)(76116006)(2616005)(31686004)(2906002)(26005)(83380400001)(1580799018)(41300700001)(122000001)(82960400001)(38070700009)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?ZWE2MU5oQW1LalFEaDNrZEVzQ2xuVEY1N3ZiNU0vVjNNL292cFI5WFFlc2RP?=
+ =?utf-8?B?a3AwZHVGNEo0S0pUNlFrM3lIT2xnU2ZtdlJldHdIMHdlUTZUWURhdGtNQWd5?=
+ =?utf-8?B?WmVoMzBQVFpFYTZwVUM5Wk1WTTg1RVlURG9SQ0tFa2cvaTlyWTdKNDdIeTJL?=
+ =?utf-8?B?UEM5Vk44VEZyUWNFaGQrOFlHWjYxb1ZLQnlLTTNxUURiTC9TcUpocWF4NEVq?=
+ =?utf-8?B?ZXNtd09DYlVCQ3hBRGU5TzRLVzJ3dGtabHFFLzVTOFFoL3YxZ0tyRTJLd2Vo?=
+ =?utf-8?B?cHZDb0VlUkxxMFBMblB6TFhBMnp3SlR3TllvMTF1V1ZkRVZMaGdBaUtsdUxH?=
+ =?utf-8?B?K1FjbzR6WlBDRW5UNHViV0NBc29Yd1JRQ3hYYklFNmEvUExNWkY1NEgrQ0Ey?=
+ =?utf-8?B?UDhVV1VxM3VmKy9qYk5rRW8xa3g5Rk9remt5N2hVYndnSnhpN0x6RGhCMDdi?=
+ =?utf-8?B?MXdFYzUzaEZhMUlpaWpzY0JCbnowWjZVcXFEbnMyR3R2aU1vSnQvOU43YUEz?=
+ =?utf-8?B?a21qcWp4SktiMFhSSnV2MW1DSFlMSEVUcGhKQ0k0SXMyY2dUV0d3UGNaUVVw?=
+ =?utf-8?B?R3NkdFRJa21FZUNrL29laHQwSkFZSmNjN1p2QUpuL2Z3aWtwZ1hpalRQakxi?=
+ =?utf-8?B?MW1LNUx2bjFDSDB5NmFBWXpucmhZaW42RU52QzZKd3U5dng1amJTLzN4OXhT?=
+ =?utf-8?B?MzU0RTZvK1dOOG9BYzVSL2VYUSs1bXUwWHZFa2xOVGVCcWhIalgrNnUyZUNN?=
+ =?utf-8?B?dlFLV0xTUmxKRWE3c3RKcFozbno3c3BaR3ZPcGxCcHNtL1YwaFgwK2ZBeSto?=
+ =?utf-8?B?MmVBN1JjZGlaZDduL2NXcjFIak94MmVORDhSbndiR01pQnpzSlE2djl5c3Jj?=
+ =?utf-8?B?S2JySlJUVFBQTnIvbkI0NmFPek9sVHFIeTJwOEU2Q0V2dG5uc0dWVEN1OXNO?=
+ =?utf-8?B?VXlKcit2SmN0OTlkZEQ1cXJVZ1lGNU13d3QzTG15Tnd4NTdOdmpYK09EdFRF?=
+ =?utf-8?B?TE9zQUJ6UFJaTms2bzJ1dWhsNHZuZ1VrckdGNVZDUlBsZER6aGRmMzBvZVZT?=
+ =?utf-8?B?NUg4bG9mR25kd3BFRk1DK1QwSTZRUXFjeUpVYTdRUDZTdnhjYzd4OUVobFhu?=
+ =?utf-8?B?SCtPWlNkcjBhN29uN1IzSEE0TDN0OGRtL2NxNy9sYlBwNG14eGhhSk1wdU1h?=
+ =?utf-8?B?c2oxNTRkQ3NmTjd1OXpWbzZ5L2FBY3BUUE9YMlBVbnRMVXJJNFVLdkNHSFBl?=
+ =?utf-8?B?bVExL1hJcHFjUDduckpCdE9mQlhjOEg0QWNBQzU0ck9JWTMyak1EZjZSR25p?=
+ =?utf-8?B?ZHU3T1hUSFVjWkVFWTlGeEZXSVBnZnFUVlNTTEVOaWJEbHRIdmJQRlB3VkdC?=
+ =?utf-8?B?U29YQmhMSzg0MnNnWVVBajYySVFjeWcxdkpxalpIK05tMk5rUkMzdnF4U3BQ?=
+ =?utf-8?B?QTN4UUFSRFZFRUUrSmszeDFhM0tlVUdKREhRRVpLWC9zOUl6QnJOOURzMzhw?=
+ =?utf-8?B?YUFERDd0QTUxOUdIWVczNmM4MnpnWTd1d3R6Tm5mSXNmU2srNVYyOTBreHNt?=
+ =?utf-8?B?UXVUM1J0QTN6YmJjaDBGVXJ2R3RMTC9hOFhnNkc3MjMwMkw2dGQzcGtGdy9v?=
+ =?utf-8?B?MEFGOC9TekhqM1hFQXNLOFc0d0t6TGd6cENPVnVRNUtnRlU5TFhJdTBkQWlw?=
+ =?utf-8?B?MGoxcm1HYkdVK3VqbFYyMEdoOVEzcmVzTlQvcWxlOTM2U1NZVEJnNkpvdGNM?=
+ =?utf-8?B?WlVtd2Zrck1qdVQrSUltaVMyak13WWUzZkh0cHV6eHd5dHF1b1FzKzEyUS9W?=
+ =?utf-8?B?UXdJU0NXQWMwaERuNW9lOGRPU3VERUtRZ04rOTdRYVhxSm9jMmErRWJxZTl3?=
+ =?utf-8?B?R3N0bHh2QXdocm83UHJMNnMyU0ovdVN2aG05L0I0ZG5PRE8raHp4SHlJMW1m?=
+ =?utf-8?B?bzEvalJ2cnZNeUlIcEJYS3QrOHFNMWI1N2pRaUZjQzJUbEIzb0p4dHJiQ1hF?=
+ =?utf-8?B?SjVnaXFpdGhJcGVQd1BpNGNCYzlTRHJIWEtFVWVXTndKZG1OZm1KWWNwQWhR?=
+ =?utf-8?B?T0ErZWk2eldSQTR4bkE4NnI0YW5vdk5SRzRGRkIwQmRuNW1VTWVROVpHbEhL?=
+ =?utf-8?B?aTIwTnEwN0I5OG84dkVpaXRycUVzUExpbXlnTkNZcXhYUzNvNTl5c0orK3Zn?=
+ =?utf-8?B?WUE9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <4F80B41AD3B3CF45B5B8CDA3B05C8BAA@jpnprd01.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 6R2Bm0cMSJdwml0Wfz7fbQlt3U4sZihZnUbUdCj6lUKAdjGaqtAocBrCv8IjApS6zHVOYGFHCiftsqc+nrrPFRCAwr8PCGZUO53+mbPMbASonsJHv+IaUtJtpPbCgQpw2bIo6A+mkmZG6hP6XtHP0776kJVDB+3uEhma/2KVYQG6p6Z3ntl+eqo0isT8iPGnwnSt/b4dfZUrZ/pEASALNUGtjHwz5aFVL2LYxk9y+x7aUAWqoiGJhEpOKb2BwY5QtkgbGLCW3cdPUuFrzB2ilzCw5TYWZ/bKx5O8guu8Vp2H6EGtoWYTdpXQxTnbOeNMEImKsaV09dfwBI6nNoAYc0tgKfiyLWc+cs9mG5oFCrAZFS2Ek4gA2H8sXMH0QEXOuj79O1T4LOGvoYH5FOD14IHQAK/ZoFGDRkr+in/X5a6R+nKMJvlT9M+EBejjhQNPpAW6f3/R1OvUwOECXHnG28Qo06PS/uQIiweB8+/v8rvcFMxPECeTEGAKq9iqbf/H2jKKRLPmHXcO5xz06bLigBzCGz6UXhWSyexAERmEGECkKY3qtK96AWqLe6r5NbpLKQd4yM1XHbRvwiBFqVOrC8X8/8a9G4TTQLhvFbbAa2H8vD5ReLXyyt6pDHJRl90+x70kSkk4GdhgMwVJvPNnMyGpDJxiuQYR55zscrWqpp4XuwDCMMMxJ1UFMJMdKKJc7HSqEJL1WgdL8e0E3rIjlyL7rp3HbK4dLCC2tRfeYWQ1WdzP852Fe8rHT6TTdcU3pRsZFh1BRH3GJeg1v6zHT+NPCUnRrJ5XQP9Lmb6S0Xk14hwtkGjXoK3fR7zsWn8M0mtcQ2BT/uEmcRAVXUtleUdLAxDxWDt1AFs+i+9MQrYd/wT93hMxANsHVv69Maw2zxy+orcgfj1o4k/f4Q1n5A==
+X-OriginatorOrg: fujitsu.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: OS0PR01MB5442.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 272b14e1-fe75-4a71-afe1-08dbde9e5bf4
+X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Nov 2023 07:59:53.1936
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: o2whFEra/RhyVlm0U/rlEGs+5nnRukM+uYXisC7QCz0a28S2dVIovaIcMUhtlc/XH/LiRXZR0EDWBgtd/guy/A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: OSRPR01MB11660
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/11/2023 00:53, Laurent Pinchart wrote:
-> Hi Tomi,
-> 
-> CC'ing Sakari for his expertise on runtime PM (I think he will soon
-> start wishing he would be ignorant in this area).
-> 
-> On Thu, Nov 02, 2023 at 08:34:45AM +0200, Tomi Valkeinen wrote:
->> On 01/11/2023 15:54, Laurent Pinchart wrote:
->>> On Wed, Nov 01, 2023 at 11:17:39AM +0200, Tomi Valkeinen wrote:
->>>> Use runtime PM autosuspend feature, with 1s timeout, to avoid
->>>> unnecessary suspend-resume cycles when, e.g. the userspace temporarily
->>>> turns off the crtcs when configuring the outputs.
->>>>
->>>> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
->>>> ---
->>>>    drivers/gpu/drm/tidss/tidss_drv.c | 8 +++++++-
->>>>    1 file changed, 7 insertions(+), 1 deletion(-)
->>>>
->>>> diff --git a/drivers/gpu/drm/tidss/tidss_drv.c b/drivers/gpu/drm/tidss/tidss_drv.c
->>>> index f403db11b846..64914331715a 100644
->>>> --- a/drivers/gpu/drm/tidss/tidss_drv.c
->>>> +++ b/drivers/gpu/drm/tidss/tidss_drv.c
->>>> @@ -43,7 +43,9 @@ void tidss_runtime_put(struct tidss_device *tidss)
->>>>    
->>>>    	dev_dbg(tidss->dev, "%s\n", __func__);
->>>>    
->>>> -	r = pm_runtime_put_sync(tidss->dev);
->>>> +	pm_runtime_mark_last_busy(tidss->dev);
->>>> +
->>>> +	r = pm_runtime_put_autosuspend(tidss->dev);
->>>>    	WARN_ON(r < 0);
->>>>    }
->>>>    
->>>> @@ -144,6 +146,9 @@ static int tidss_probe(struct platform_device *pdev)
->>>>    
->>>>    	pm_runtime_enable(dev);
->>>>    
->>>> +	pm_runtime_set_autosuspend_delay(dev, 1000);
->>>> +	pm_runtime_use_autosuspend(dev);
->>>> +
->>>>    #ifndef CONFIG_PM
->>>>    	/* If we don't have PM, we need to call resume manually */
->>>>    	dispc_runtime_resume(tidss->dispc);
->>>
->>> By the way, there's a way to handle this without any ifdef:
->>>
->>> 	dispc_runtime_resume(tidss->dispc);
->>>
->>> 	pm_runtime_set_active(dev);
->>> 	pm_runtime_get_noresume(dev);
->>> 	pm_runtime_enable(dev);
->>> 	pm_runtime_set_autosuspend_delay(dev, 1000);
->>> 	pm_runtime_use_autosuspend(dev);
->>
->> I'm not sure I follow what you are trying to do here. The call to
->> dispc_runtime_resume() would crash if we have PM, as the HW would not be
->> enabled at that point.
-> 
-> Isn't dispc_runtime_resume() meant to enable the hardware ?
-> 
-> The idea is to enable the hardware, then enable runtime PM, and tell the
-> runtime PM framework that the device is enabled. If CONFIG_PM is not
-> set, the RPM calls will be no-ops, and the device will stay enable. If
-> CONFIG_PM is set, the device will be enabled, and will get disabled at
-> end of probe by a call to pm_runtime_put_autosuspend().
-
-(The text below is more about the end result of this series, rather than 
-this specific patch):
-
-Hmm, no, I don't think that's how it works. My understanding is this:
-
-There are multiple parts "enabling the hardware", and I think they 
-usually need to be done in this order: 1) enabling the parent devices, 
-2) system level HW module enable (this is possibly really part of the 
-1), 3) clk/regulator/register setup.
-
-3) is handled by the driver, but 1) and 2) are handled via the runtime 
-PM framework. Calling dispc_runtime_resume() as the first thing could 
-mean that DSS's parents are not enabled or that the DSS HW module is not 
-enabled at the system control level.
-
-That's why I first call pm_runtime_set_active(), which should handle 1) 
-and 2).
-
-The only thing dispc_runtime_resume() does wrt. enabling the hardware is 
-enabling the fclk. It does a lot more, but all the rest is just 
-configuring the hardware to settings that we always want to use (e.g. 
-fifo management).
-
-Now, if the bootloader had enabled the display, and the driver did:
-
-- pm_runtime_enable()
-- pm_runtime_get()
-- dispc_reset()
-
-it would cause dispc_runtime_resume() to be called before the reset. 
-This would mean that the dispc_runtime_resume() would be changing 
-settings that must not be changed while streaming is enabled.
-
-We could do a DSS reset always as the first thing in 
-dispc_runtime_resume() (after enabling the fclk), but that feels a bit 
-pointless as after the first reset the DSS is in a known state.
-
-Also, if we don't do a reset at probe time, there are things we need to 
-take care of: at least we need to mask the IRQs (presuming we register 
-the DSS interrupt at probe time). But generally speaking, I feel a bit 
-uncomfortable leaving an IP possibly running in an unknown state after 
-probe. I'd much rather just reset it at probe.
-
-  Tomi
-
+DQoNClZlcnkgdGhhbmtzIGZvciBhbGwgeW91ciBmZWVkYmFjay4NCg0KT24gMDMvMTEvMjAyMyAx
+Nzo1NSwgTGkgWmhpamlhbiB3cm90ZToNCj4gSSBkb24ndCBjb2xsZWN0IHRoZSBSZXZpZXdlZC1i
+eSB0byB0aGUgcGF0Y2gxLTIgdGhpcyB0aW1lLCBzaW5jZSBpDQo+IHRoaW5rIHdlIGNhbiBtYWtl
+IGl0IGJldHRlci4NCj4gDQo+IFBhdGNoMS0yOiBGaXgga2VybmVsIHBhbmljWzFdIGFuZCBiZW5p
+Zml0IHRvIG1ha2Ugc3JwIHdvcmsgYWdhaW4uDQo+ICAgICAgICAgICAgQWxtb3N0IG5vdGhpbmcg
+Y2hhbmdlIGZyb20gVjEuDQoNClF1b3RlIGZyb20gSmFzb246DQoiDQo+IFRoZSBjb25jZXB0IHdh
+cyB0aGF0IHRoZSB4YXJyYXkgY291bGQgc3RvcmUgYW55dGhpbmcgbGFyZ2VyIHRoYW4NCj4gUEFH
+RV9TSVpFIGFuZCB0aGUgZW50cnkgd291bGQgcG9pbnQgYXQgdGhlIGZpcnN0IHN0cnVjdCBwYWdl
+IG9mIHRoZQ0KPiBjb250aWd1b3VzIGNodW5rDQo+IA0KPiBUaGF0IGxvb2tzIGxpa2UgaXQgaXMg
+cmlnaHQsIG9yIGF0IGxlYXN0IGNsb3NlIHRvIHJpZ2h0LCBzbyBsZXRzIHRyeQ0KPiB0byBrZWVw
+IGl0DQoiDQoNCg0KSXQgc2VlbXMgaXQncyBva2F5IHRvIGFjY2VzcyBhZGRyZXNzL21lbW9yeSBh
+Y3Jvc3MgcGFnZXMgb24gUlhFIGV2ZW4gdGhvdWdoDQp3ZSBvbmx5IG1hcCB0aGUgZmlyc3QgcGFn
+ZS4NCg0KVGhhdCBhbHNvIG1lYW5zIFBBR0VfU0laRSBhbGlnbmVkIE1SIGlzIGFscmVhZHkgc3Vw
+cG9ydGVkLCBzbyBvbmx5IGNoZWNrDQpgaWYgKElTX0FMSUdORUQocGFnZV9zaXplLCBQQUdFX1NJ
+WkUpKWAgaXMgc3VmZmljaWVudCwgcmlnaHQ/DQoNCmRpZmYgLS1naXQgYS9kcml2ZXJzL2luZmlu
+aWJhbmQvc3cvcnhlL3J4ZV9tci5jIGIvZHJpdmVycy9pbmZpbmliYW5kL3N3L3J4ZS9yeGVfbXIu
+Yw0KaW5kZXggZjU0MDQyZTlhZWIyLi4zNzU1ZTUzMGU2ZGMgMTAwNjQ0DQotLS0gYS9kcml2ZXJz
+L2luZmluaWJhbmQvc3cvcnhlL3J4ZV9tci5jDQorKysgYi9kcml2ZXJzL2luZmluaWJhbmQvc3cv
+cnhlL3J4ZV9tci5jDQpAQCAtMjM0LDYgKzIzNCwxMiBAQCBpbnQgcnhlX21hcF9tcl9zZyhzdHJ1
+Y3QgaWJfbXIgKmlibXIsIHN0cnVjdCBzY2F0dGVybGlzdCAqc2dsLA0KICAgICAgICAgc3RydWN0
+IHJ4ZV9tciAqbXIgPSB0b19ybXIoaWJtcik7DQogICAgICAgICB1bnNpZ25lZCBpbnQgcGFnZV9z
+aXplID0gbXJfcGFnZV9zaXplKG1yKTsNCiAgDQorICAgICAgIGlmICghSVNfQUxJR05FRChwYWdl
+X3NpemUsIFBBR0VfU0laRSkpIHsNCisgICAgICAgICAgICAgICByeGVfZXJyX21yKG1yLCAiRklY
+TUUuLi5cbiIpDQorICAgICAgICAgICAgICAgcmV0dXJuIC1FSU5WQUw7DQorICAgICAgIH0NCisN
+CiAgICAgICAgIG1yLT5uYnVmID0gMDsNCiAgICAgICAgIG1yLT5wYWdlX3NoaWZ0ID0gaWxvZzIo
+cGFnZV9zaXplKTsNCiAgICAgICAgIG1yLT5wYWdlX21hc2sgPSB+KCh1NjQpcGFnZV9zaXplIC0g
+MSk7DQpkaWZmIC0tZ2l0IGEvZHJpdmVycy9pbmZpbmliYW5kL3N3L3J4ZS9yeGVfcGFyYW0uaCBi
+L2RyaXZlcnMvaW5maW5pYmFuZC9zdy9yeGUvcnhlX3BhcmFtLmgNCmluZGV4IGQyZjU3ZWFkNzhh
+ZC4uYjFjZjFlMWMwY2UxIDEwMDY0NA0KLS0tIGEvZHJpdmVycy9pbmZpbmliYW5kL3N3L3J4ZS9y
+eGVfcGFyYW0uaA0KKysrIGIvZHJpdmVycy9pbmZpbmliYW5kL3N3L3J4ZS9yeGVfcGFyYW0uaA0K
+QEAgLTM4LDcgKzM4LDcgQEAgc3RhdGljIGlubGluZSBlbnVtIGliX210dSBldGhfbXR1X2ludF90
+b19lbnVtKGludCBtdHUpDQogIC8qIGRlZmF1bHQvaW5pdGlhbCByeGUgZGV2aWNlIHBhcmFtZXRl
+ciBzZXR0aW5ncyAqLw0KICBlbnVtIHJ4ZV9kZXZpY2VfcGFyYW0gew0KICAgICAgICAgUlhFX01B
+WF9NUl9TSVpFICAgICAgICAgICAgICAgICA9IC0xdWxsLA0KLSAgICAgICBSWEVfUEFHRV9TSVpF
+X0NBUCAgICAgICAgICAgICAgID0gMHhmZmZmZjAwMCwNCisgICAgICAgUlhFX1BBR0VfU0laRV9D
+QVAgICAgICAgICAgICAgICA9IDB4ZmZmZmZmZmYgLSAoUEFHRV9TSVpFIC0gMSksDQogICAgICAg
+ICBSWEVfTUFYX1FQX1dSICAgICAgICAgICAgICAgICAgID0gREVGQVVMVF9NQVhfVkFMVUUsDQog
+ICAgICAgICBSWEVfREVWSUNFX0NBUF9GTEFHUyAgICAgICAgICAgID0gSUJfREVWSUNFX0JBRF9Q
+S0VZX0NOVFINCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCBJQl9E
+RVZJQ0VfQkFEX1FLRVlfQ05UUg0KDQoNCiogbWlub3IgY2xlYW51cCB3aWxsIGJlIGRvbmUgYWZ0
+ZXIgdGhpcy4NCg0KVGhhbmtzDQpaaGlqaWFuDQoNCj4gUGF0Y2gzLTU6IGNsZWFudXBzICMgbmV3
+bHkgYWRkDQo+IFBhdGNoNjogbWFrZSBSWEUgc3VwcG9ydCBQQUdFX1NJWkUgYWxpZ25lZCBtciAj
+IG5ld2x5IGFkZCwgYnV0IG5vdCBmdWxseSB0ZXN0ZWQNCj4gDQo+IE15IGJhZCBhcm02NCBtZWNo
+aW5lIG9mZnRlbiBoYW5ncyB3aGVuIGRvaW5nIGJsa3Rlc3RzIGV2ZW4gdGhvdWdoIGkgdXNlIHRo
+ZQ0KPiBkZWZhdWx0IHNpdyBkcml2ZXIuDQo+IA0KPiAtIG52bWUgYW5kIFVMUHMocnRycywgaXNl
+cikgYWx3YXlzIHJlZ2lzdGVycyA0SyBtciBzdGlsbCBkb24ndCBzdXBwb3J0ZWQgeWV0Lg0KPiAN
+Cj4gWzFdIGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2FsbC9DQUhqNGNzOVhScUUyNWp5Vnc5cmo5
+WXVnZmZMbjUrZj0xem5hQkVudTF1c0xPY2lEK2dAbWFpbC5nbWFpbC5jb20vVC8NCj4gDQo+IExp
+IFpoaWppYW4gKDYpOg0KPiAgICBSRE1BL3J4ZTogUkRNQS9yeGU6IGRvbid0IGFsbG93IHJlZ2lz
+dGVyaW5nICFQQUdFX1NJWkUgbXINCj4gICAgUkRNQS9yeGU6IHNldCBSWEVfUEFHRV9TSVpFX0NB
+UCB0byBQQUdFX1NJWkUNCj4gICAgUkRNQS9yeGU6IHJlbW92ZSB1bnVzZWQgcnhlX21yLnBhZ2Vf
+c2hpZnQNCj4gICAgUkRNQS9yeGU6IFVzZSBQQUdFX1NJWkUgYW5kIFBBR0VfU0hJRlQgdG8gZXh0
+cmFjdCBhZGRyZXNzIGZyb20NCj4gICAgICBwYWdlX2xpc3QNCj4gICAgUkRNQS9yeGU6IGNsZWFu
+dXAgcnhlX21yLntwYWdlX3NpemUscGFnZV9zaGlmdH0NCj4gICAgUkRNQS9yeGU6IFN1cHBvcnQg
+UEFHRV9TSVpFIGFsaWduZWQgTVINCj4gDQo+ICAgZHJpdmVycy9pbmZpbmliYW5kL3N3L3J4ZS9y
+eGVfbXIuYyAgICB8IDgwICsrKysrKysrKysrKysrKystLS0tLS0tLS0tLQ0KPiAgIGRyaXZlcnMv
+aW5maW5pYmFuZC9zdy9yeGUvcnhlX3BhcmFtLmggfCAgMiArLQ0KPiAgIGRyaXZlcnMvaW5maW5p
+YmFuZC9zdy9yeGUvcnhlX3ZlcmJzLmggfCAgOSAtLS0NCj4gICAzIGZpbGVzIGNoYW5nZWQsIDQ4
+IGluc2VydGlvbnMoKyksIDQzIGRlbGV0aW9ucygtKQ0KPiA=
