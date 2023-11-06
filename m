@@ -2,144 +2,292 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F7147E2F0D
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 22:37:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 077C67E2F11
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 22:37:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233168AbjKFVhc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 16:37:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42386 "EHLO
+        id S233144AbjKFVhu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 16:37:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233156AbjKFVhb (ORCPT
+        with ESMTP id S233156AbjKFVhs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 16:37:31 -0500
-Received: from mail-oa1-x2f.google.com (mail-oa1-x2f.google.com [IPv6:2001:4860:4864:20::2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A198D57
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 13:37:28 -0800 (PST)
-Received: by mail-oa1-x2f.google.com with SMTP id 586e51a60fabf-1f055438492so2734780fac.3
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 13:37:28 -0800 (PST)
+        Mon, 6 Nov 2023 16:37:48 -0500
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA4C9D75
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 13:37:44 -0800 (PST)
+Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2c518a1d83fso66140721fa.3
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 13:37:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699306646; x=1699911446; darn=vger.kernel.org;
+        d=joelfernandes.org; s=google; t=1699306663; x=1699911463; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=OphoK9q7a6dBe49RqxvB+ZhnnNOavYr9X32u348/Dmw=;
-        b=VGFfeDjrbXEI1xXu64l0H1RKcVFmuJ1caKRQYgQwREIbf4VowDWZy/JDSJBqPkdVSJ
-         tFw9ityfJ5/Xutnjy+vw5c/uj5I+u2z+qASmwHYrWgecywXOurlWo7qED/ionxb7S/+x
-         opLHGGKK4aGHQDaeYoDraqtoStdre6x33lvVHgFW3N3Bt1y+osGf6bIt6UovkHGqYCSW
-         4ULurTpJXP48+cipwWeDb6R9bjM4ErQXeHnkkj1UkITASBTv5ee7mlY2DRWGB+TN5AI2
-         hXsE+f99pO5leDs9Csc940FvRcaNletnE+NtaRjPxuRNVHw5QUCBsGAzlnzBx8qoS8Vf
-         MRPA==
+        bh=7dh0i1Y13fCBXMy4THdL0Y/icX4PEdeYjxpU/J+CTIM=;
+        b=RpUgtOLUhtzIW1Omph/xCaZMtOw3VwEPCMRqtsSPikXey2qARc/YSVBrnx90W06yWc
+         zG0Kcs1pS6dF/Ronej2yeGUUtDHNsbRxkMggPAXpHsKw1z+kxqh3RweM2EKWpMTdp3FX
+         6B0ru+Wgeeir3BGdIeSWK5DUwV6TiwFi6gnak=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699306646; x=1699911446;
+        d=1e100.net; s=20230601; t=1699306663; x=1699911463;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=OphoK9q7a6dBe49RqxvB+ZhnnNOavYr9X32u348/Dmw=;
-        b=wci0y4jdE1737n2QgOqeWEvSuksOvEYG32GCmhAqEbW2ihxAPXo3+k/WujN5GeoDpr
-         MiO1ff1slAlDHcmo+n38hcvDSJW7JWRe8ZUnzO0klBxsPwQ3EM8FxAX5G5lfRXXm323B
-         ml9ASVXBrcaQOmpSjiTA+ZBJNsSM2Hn6201pT+O4ufrjGQSxsDlx5MAiDX1RNh38ISgp
-         aLGJrc4275Efa455X7bhxIgWYp8tq1IHfp4rTcxQuHnFZZ3RX0LbD8EDU1pf94XmpA7z
-         G8JeiBnmHoyy7L3xrGpM9nagL0f/VNwseliryDnsmndXQ+A2LJTCgJ6u+fdxHc8Ww7QJ
-         N0iA==
-X-Gm-Message-State: AOJu0YxUPc6hUOjImSWDNWwRcGxthIMum0SnSNkd6KXBIGaeFWSO8lZo
-        tlqG2HB/gLoV7XxnKGf6EOkY5CZAn8oHp0jxWZM=
-X-Google-Smtp-Source: AGHT+IEP1XqEthoQJtfpl0npA4ae93Dzz/ImFHkuNMcwaOYVT9bgazTQ4NPqNXzu0dmR/IWccQ3n4KaVPdI0Je829g8=
-X-Received: by 2002:a05:6871:339e:b0:1e9:b0fa:de48 with SMTP id
- ng30-20020a056871339e00b001e9b0fade48mr1089412oac.47.1699306645891; Mon, 06
- Nov 2023 13:37:25 -0800 (PST)
+        bh=7dh0i1Y13fCBXMy4THdL0Y/icX4PEdeYjxpU/J+CTIM=;
+        b=qJkeLqNcPZOHSWSXr5xGK0euzDuT4Dk6K/PN0wOGdsuR0NfaKMYfWi6aTlWKkchS4o
+         O61FR00L+5V/Wu1uvwEvQMXTYikKQZ/hX3j//+JNCxe8yzCD9EDXn2ehoHUY1FtsEpD/
+         FJw4/q44XU0oJJa/atoRimJgDOnNfLVDxkfWY6gfgrFP+LdEMJCvuByYfhBsyQlq7+Bg
+         Eut1qu1FkCU+GMRB8pJ4F9udOi2b8ATKdwkzgO+vm1eDHMsUEltgVU0P8kcqWmjmOYRD
+         TUpZAi7kcP7K9t/cumiGcnA9WYgDYJpj5Kb4hRSpQ6ZDxTWrdPzJuEBSsuBOzD3x6Pw4
+         4Fhg==
+X-Gm-Message-State: AOJu0YxgUbqB8kgEBh5RdbNuvY43IrUwzIZVeorbgBbm2K++MTnHckou
+        EF+J9e2cuH8ipkEfb3w3bbP45sIGR22jnR6FW5JuFQ==
+X-Google-Smtp-Source: AGHT+IF1U9B8CrvKz6FExUFO2JsZ/k4spyiScbya7xKbHfrQ4zMlokPsOj4kyImCCUyxFmH/pmXSNZTTeDjnXXKkfNY=
+X-Received: by 2002:a05:651c:213:b0:2c6:ee51:87aa with SMTP id
+ y19-20020a05651c021300b002c6ee5187aamr11968270ljn.39.1699306663102; Mon, 06
+ Nov 2023 13:37:43 -0800 (PST)
 MIME-Version: 1.0
-References: <20231103155013.332367-1-singhabhinav9051571833@gmail.com>
- <CADnq5_OkWD3YmCKgXbtk=Gnba3AgAiAWp2z_nzHQvRfEOsdXVg@mail.gmail.com> <3b92b89b-ca72-4012-b4f2-0b19e4ba9153@gmail.com>
-In-Reply-To: <3b92b89b-ca72-4012-b4f2-0b19e4ba9153@gmail.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 6 Nov 2023 16:37:14 -0500
-Message-ID: <CADnq5_PXRN+PL4wp+sWOXs2L5nQiRmfrw4065R1TE4YKw-ZeUA@mail.gmail.com>
-Subject: Re: [PATCH] drivers: gpu: Fix warning using plain integer as NULL
-To:     Abhinav Singh <singhabhinav9051571833@gmail.com>
-Cc:     alexander.deucher@amd.com, christian.koenig@amd.com,
-        Xinhui.Pan@amd.com, airlied@gmail.com, daniel@ffwll.ch,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
+References: <cover.1699095159.git.bristot@kernel.org> <c7b706d30d6316c52853ca056db5beb82ba72863.1699095159.git.bristot@kernel.org>
+ <CAEXW_YS=PrWDx+YGVR7bmq0_SoKNztzGrreApCd9qk1yBLA5bA@mail.gmail.com> <CAEXW_YQ8kv3tXQJexLSguPuWi0bXiReKDyYNo9+A-Hgp=Zo1vA@mail.gmail.com>
+In-Reply-To: <CAEXW_YQ8kv3tXQJexLSguPuWi0bXiReKDyYNo9+A-Hgp=Zo1vA@mail.gmail.com>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Mon, 6 Nov 2023 16:37:32 -0500
+Message-ID: <CAEXW_YSjsZSrJK_RbGmbLNy4UrLCgu+7NPZjg-wiLuNbGOGr+w@mail.gmail.com>
+Subject: Re: [PATCH v5 6/7] sched/deadline: Deferrable dl server
+To:     Daniel Bristot de Oliveira <bristot@kernel.org>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        linux-kernel@vger.kernel.org,
+        Luca Abeni <luca.abeni@santannapisa.it>,
+        Tommaso Cucinotta <tommaso.cucinotta@santannapisa.it>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vineeth Pillai <vineeth@bitbyteword.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Phil Auld <pauld@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 6, 2023 at 4:20=E2=80=AFPM Abhinav Singh
-<singhabhinav9051571833@gmail.com> wrote:
+On Mon, Nov 6, 2023 at 4:32=E2=80=AFPM Joel Fernandes <joel@joelfernandes.o=
+rg> wrote:
 >
-> On 11/7/23 00:25, Alex Deucher wrote:
-> > Applied.  This matches what we already do in the other clear state head=
-ers.
+> On Mon, Nov 6, 2023 at 2:32=E2=80=AFPM Joel Fernandes <joel@joelfernandes=
+.org> wrote:
 > >
-> > Alex
+> > Hi Daniel,
 > >
-> > On Fri, Nov 3, 2023 at 12:00=E2=80=AFPM Abhinav Singh
-> > <singhabhinav9051571833@gmail.com> wrote:
-> >>
-> >> sparse static analysis tools generate a warning with this message
-> >> "Using plain integer as NULL pointer". In this case this warning is
-> >> being shown because we are trying to intialize a pointer to NULL using
-> >> integer value 0.
-> >>
-> >> Signed-off-by: Abhinav Singh <singhabhinav9051571833@gmail.com>
-> >> ---
-> >>   drivers/gpu/drm/radeon/clearstate_evergreen.h | 8 ++++----
-> >>   1 file changed, 4 insertions(+), 4 deletions(-)
-> >>
-> >> diff --git a/drivers/gpu/drm/radeon/clearstate_evergreen.h b/drivers/g=
-pu/drm/radeon/clearstate_evergreen.h
-> >> index 63a1ffbb3ced..3b645558f133 100644
-> >> --- a/drivers/gpu/drm/radeon/clearstate_evergreen.h
-> >> +++ b/drivers/gpu/drm/radeon/clearstate_evergreen.h
-> >> @@ -1049,7 +1049,7 @@ static const struct cs_extent_def SECT_CONTEXT_d=
-efs[] =3D
-> >>       {SECT_CONTEXT_def_5, 0x0000a29e, 5 },
-> >>       {SECT_CONTEXT_def_6, 0x0000a2a5, 56 },
-> >>       {SECT_CONTEXT_def_7, 0x0000a2de, 290 },
-> >> -    { 0, 0, 0 }
-> >> +    { NULL, 0, 0 }
-> >>   };
-> >>   static const u32 SECT_CLEAR_def_1[] =3D
-> >>   {
-> >> @@ -1060,7 +1060,7 @@ static const u32 SECT_CLEAR_def_1[] =3D
-> >>   static const struct cs_extent_def SECT_CLEAR_defs[] =3D
-> >>   {
-> >>       {SECT_CLEAR_def_1, 0x0000ffc0, 3 },
-> >> -    { 0, 0, 0 }
-> >> +    { NULL, 0, 0 }
-> >>   };
-> >>   static const u32 SECT_CTRLCONST_def_1[] =3D
-> >>   {
-> >> @@ -1070,11 +1070,11 @@ static const u32 SECT_CTRLCONST_def_1[] =3D
-> >>   static const struct cs_extent_def SECT_CTRLCONST_defs[] =3D
-> >>   {
-> >>       {SECT_CTRLCONST_def_1, 0x0000f3fc, 2 },
-> >> -    { 0, 0, 0 }
-> >> +    { NULL, 0, 0 }
-> >>   };
-> >>   static const struct cs_section_def evergreen_cs_data[] =3D {
-> >>       { SECT_CONTEXT_defs, SECT_CONTEXT },
-> >>       { SECT_CLEAR_defs, SECT_CLEAR },
-> >>       { SECT_CTRLCONST_defs, SECT_CTRLCONST },
-> >> -    { 0, SECT_NONE }
-> >> +    { NULL, SECT_NONE }
-> >>   };
-> >> --
-> >> 2.39.2
-> >>
-> Hi Alex, thanks for looking into this. By applied you mean this patch is
-> accepted and it has been merged?
+> > On Sat, Nov 4, 2023 at 6:59=E2=80=AFAM Daniel Bristot de Oliveira
+> > <bristot@kernel.org> wrote:
+> > >
+> > > Among the motivations for the DL servers is the real-time throttling
+> > > mechanism. This mechanism works by throttling the rt_rq after
+> > > running for a long period without leaving space for fair tasks.
+> > >
+> > > The base dl server avoids this problem by boosting fair tasks instead
+> > > of throttling the rt_rq. The point is that it boosts without waiting
+> > > for potential starvation, causing some non-intuitive cases.
+> > >
+> > > For example, an IRQ dispatches two tasks on an idle system, a fair
+> > > and an RT. The DL server will be activated, running the fair task
+> > > before the RT one. This problem can be avoided by deferring the
+> > > dl server activation.
+> > >
+> > > By setting the zerolax option, the dl_server will dispatch an
+> > > SCHED_DEADLINE reservation with replenished runtime, but throttled.
+> > >
+> > > The dl_timer will be set for (period - runtime) ns from start time.
+> > > Thus boosting the fair rq on its 0-laxity time with respect to
+> > > rt_rq.
+> > >
+> > > If the fair scheduler has the opportunity to run while waiting
+> > > for zerolax time, the dl server runtime will be consumed. If
+> > > the runtime is completely consumed before the zerolax time, the
+> > > server will be replenished while still in a throttled state. Then,
+> > > the dl_timer will be reset to the new zerolax time
+> > >
+> > > If the fair server reaches the zerolax time without consuming
+> > > its runtime, the server will be boosted, following CBS rules
+> > > (thus without breaking SCHED_DEADLINE).
+> > >
+> > > Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
+> > > ---
+> > >  include/linux/sched.h   |   2 +
+> > >  kernel/sched/deadline.c | 100 ++++++++++++++++++++++++++++++++++++++=
++-
+> > >  kernel/sched/fair.c     |   3 ++
+> > >  3 files changed, 103 insertions(+), 2 deletions(-)
+> > >
+> > > diff --git a/include/linux/sched.h b/include/linux/sched.h
+> > > index 5ac1f252e136..56e53e6fd5a0 100644
+> > > --- a/include/linux/sched.h
+> > > +++ b/include/linux/sched.h
+> > > @@ -660,6 +660,8 @@ struct sched_dl_entity {
+> > >         unsigned int                    dl_non_contending : 1;
+> > >         unsigned int                    dl_overrun        : 1;
+> > >         unsigned int                    dl_server         : 1;
+> > > +       unsigned int                    dl_zerolax        : 1;
+> > > +       unsigned int                    dl_zerolax_armed  : 1;
+> > >
+> > >         /*
+> > >          * Bandwidth enforcement timer. Each -deadline task has its
+> > > diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
+> > > index 1d7b96ca9011..69ee1fbd60e4 100644
+> > > --- a/kernel/sched/deadline.c
+> > > +++ b/kernel/sched/deadline.c
+> > > @@ -772,6 +772,14 @@ static inline void replenish_dl_new_period(struc=
+t sched_dl_entity *dl_se,
+> > >         /* for non-boosted task, pi_of(dl_se) =3D=3D dl_se */
+> > >         dl_se->deadline =3D rq_clock(rq) + pi_of(dl_se)->dl_deadline;
+> > >         dl_se->runtime =3D pi_of(dl_se)->dl_runtime;
+> > > +
+> > > +       /*
+> > > +        * If it is a zerolax reservation, throttle it.
+> > > +        */
+> > > +       if (dl_se->dl_zerolax) {
+> > > +               dl_se->dl_throttled =3D 1;
+> > > +               dl_se->dl_zerolax_armed =3D 1;
+> > > +       }
+> > >  }
+> > >
+> > >  /*
+> > > @@ -828,6 +836,7 @@ static inline void setup_new_dl_entity(struct sch=
+ed_dl_entity *dl_se)
+> > >   * could happen are, typically, a entity voluntarily trying to overc=
+ome its
+> > >   * runtime, or it just underestimated it during sched_setattr().
+> > >   */
+> > > +static int start_dl_timer(struct sched_dl_entity *dl_se);
+> > >  static void replenish_dl_entity(struct sched_dl_entity *dl_se)
+> > >  {
+> > >         struct dl_rq *dl_rq =3D dl_rq_of_se(dl_se);
+> > > @@ -874,6 +883,28 @@ static void replenish_dl_entity(struct sched_dl_=
+entity *dl_se)
+> > >                 dl_se->dl_yielded =3D 0;
+> > >         if (dl_se->dl_throttled)
+> > >                 dl_se->dl_throttled =3D 0;
+> > > +
+> > > +       /*
+> > > +        * If this is the replenishment of a zerolax reservation,
+> > > +        * clear the flag and return.
+> > > +        */
+> > > +       if (dl_se->dl_zerolax_armed) {
+> > > +               dl_se->dl_zerolax_armed =3D 0;
+> > > +               return;
+> > > +       }
+> > > +
+> > > +       /*
+> > > +        * A this point, if the zerolax server is not armed, and the =
+deadline
+> > > +        * is in the future, throttle the server and arm the zerolax =
+timer.
+> > > +        */
+> > > +       if (dl_se->dl_zerolax &&
+> > > +           dl_time_before(dl_se->deadline - dl_se->runtime, rq_clock=
+(rq))) {
+> > > +               if (!is_dl_boosted(dl_se)) {
+> > > +                       dl_se->dl_zerolax_armed =3D 1;
+> > > +                       dl_se->dl_throttled =3D 1;
+> > > +                       start_dl_timer(dl_se);
+> > > +               }
+> > > +       }
+> > >  }
+> > >
+> > >  /*
+> > > @@ -1024,6 +1055,13 @@ static void update_dl_entity(struct sched_dl_e=
+ntity *dl_se)
+> > >                 }
+> > >
+> > >                 replenish_dl_new_period(dl_se, rq);
+> > > +       } else if (dl_server(dl_se) && dl_se->dl_zerolax) {
+> > > +               /*
+> > > +                * The server can still use its previous deadline, so=
+ throttle
+> > > +                * and arm the zero-laxity timer.
+> > > +                */
+> > > +               dl_se->dl_zerolax_armed =3D 1;
+> > > +               dl_se->dl_throttled =3D 1;
+> > >         }
+> > >  }
+> > >
+> > > @@ -1056,8 +1094,20 @@ static int start_dl_timer(struct sched_dl_enti=
+ty *dl_se)
+> > >          * We want the timer to fire at the deadline, but considering
+> > >          * that it is actually coming from rq->clock and not from
+> > >          * hrtimer's time base reading.
+> > > +        *
+> > > +        * The zerolax reservation will have its timer set to the
+> > > +        * deadline - runtime. At that point, the CBS rule will decid=
+e
+> > > +        * if the current deadline can be used, or if a replenishment
+> > > +        * is required to avoid add too much pressure on the system
+> > > +        * (current u > U).
+> > >          */
+> > > -       act =3D ns_to_ktime(dl_next_period(dl_se));
+> > > +       if (dl_se->dl_zerolax_armed) {
+> > > +               WARN_ON_ONCE(!dl_se->dl_throttled);
+> > > +               act =3D ns_to_ktime(dl_se->deadline - dl_se->runtime)=
+;
+> >
+> > Just a question, here if dl_se->deadline - dl_se->runtime is large,
+> > then does that mean that server activation will be much more into the
+> > future? So say I want to give CFS 30%, then it will take 70% of the
+> > period before CFS preempts RT thus "starving" CFS for this duration. I
+> > think that's Ok for smaller periods and runtimes, though.
+> >
+> > I think it does reserve the amount of required CFS bandwidth so it is
+> > probably OK, though it is perhaps letting RT run more initially (say
+> > if CFS tasks are not CPU bound and occasionally wake up, they will
+> > always be hit by the 70% latency AFAICS which may be large for large
+> > periods and small runtimes).
+> >
+>
+> One more consideration I guess is, because the server is throttled
+> till 0-laxity time, it is possible that if CFS sleeps even a bit
+> (after the DL-server is unthrottled), then it will be pushed out to a
+> full current deadline + period due to CBS. In such a situation,  if
+> CFS-server is the only DL task running, it might starve RT for a bit
+> more time.
+>
+> Example, say CFS runtime is 0.3s and period is 1s. At 0.7s, 0-laxity
+> timer fires. CFS runs for 0.29s, then sleeps for 0.005s and wakes up
+> at 0.295s (its remaining runtime is 0.01s at this point which is < the
+> "time till deadline" of 0.005s). Now the runtime of the CFS-server
+> will be replenished to the full 3s (due to CBS) and the deadline
+> pushed out. The end result is the total runtime that the CFS-server
+> actually gets is 0.0595s (though yes it did sleep for 5ms in between,
+> still that's tiny -- say if it briefly blocked on a kernel mutex).
 
-Yes.  Once it makes it through our CI system, it will show up in my
-drm-next tree.
+Blah, I got lost in decimal points. Here's the example again:
 
-Alex
+Say CFS-server runtime is 0.3s and period is 1s.
+
+At 0.7s, 0-laxity timer fires. CFS runs for 0.29s, then sleeps for
+0.005s and wakes up at 0.295s (its remaining runtime is 0.01s at this
+point which is < the "time till deadline" of 0.005s)
+
+Now the runtime of the CFS-server will be replenished to the full 0.3s
+(due to CBS) and the deadline
+pushed out.
+
+The end result is, the total runtime that the CFS-server actually gets
+is 0.595s (though yes it did sleep for 5ms in between, still that's
+tiny -- say if it briefly blocked on a kernel mutex). That's almost
+double the allocated runtime.
+
+This is just theoretical and I have yet to see if it is actually an
+issue in practice.
+
+Thanks.
