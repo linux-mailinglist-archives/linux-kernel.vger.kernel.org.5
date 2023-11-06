@@ -2,181 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5692C7E1F12
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 12:00:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97BA17E1F13
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 12:00:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231327AbjKFLAd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 06:00:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57148 "EHLO
+        id S231396AbjKFLAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 06:00:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229874AbjKFLAb (ORCPT
+        with ESMTP id S230284AbjKFLAc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 06:00:31 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF6FCB0;
-        Mon,  6 Nov 2023 03:00:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699268429; x=1730804429;
-  h=message-id:date:mime-version:subject:to:references:from:
-   in-reply-to:content-transfer-encoding;
-  bh=vYGTfzfjTaRu1W/Dx7rwKe4uRJQWKt3qrA6K0mo7Kn0=;
-  b=RPFEJhXBiOzclvz0H92IvltjZk59ygjNJoyB402lo4v17p4/oxGd2LX7
-   F4ZrLpoqJTypNT64bbBvlF5BZxPz41xCFiXUwyMdhOBG9A+bnkIdZw8I/
-   zjy5KNqT4KtCPaYAOzk+DEQP3WK99oGMznYqTq8HFlUCejkdNRVVAaA2/
-   frUKpN2jqjvTfJL9SUpENWYD52b0da87o3xm0XvmDnNGvaEKucI6QkAn9
-   q1/F9/UIgwQgR3G50hNMz1uU7fXxgX6koPZg3RlRXkBmWIffRM4a3Wsg8
-   H4nO3mv12cKnBMCJgA50uvwbdyvaUsgwHc9eqtiYsiyaOVaHsqvUKUmZg
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10885"; a="10788723"
-X-IronPort-AV: E=Sophos;i="6.03,281,1694761200"; 
-   d="scan'208";a="10788723"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Nov 2023 03:00:28 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10885"; a="828176819"
-X-IronPort-AV: E=Sophos;i="6.03,281,1694761200"; 
-   d="scan'208";a="828176819"
-Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.251.215.231])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Nov 2023 03:00:17 -0800
-Message-ID: <0d232518-4bac-46cc-8635-d834fa232f85@intel.com>
-Date:   Mon, 6 Nov 2023 13:00:14 +0200
+        Mon, 6 Nov 2023 06:00:32 -0500
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8287CB7;
+        Mon,  6 Nov 2023 03:00:29 -0800 (PST)
+Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A6AFPVk009474;
+        Mon, 6 Nov 2023 11:00:29 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=D1iKgU8MaxGuAanmiVdwjL8M+qWemCsbQIouJx2h9no=;
+ b=Zh4DMfpAf8sU/IEX6RreKH5+teAiKdvNVAGDQjZPSYFwImhqXGDfncUy0v/ce7vIk1hr
+ VvvhZ9QYLon0jq/vlgLL9vc1OjbACiSv8pv5fAF7Kq/oF2JLemwv+vJXH5Z9P9v8vhfG
+ dL03OXBP1cW4rILzfyci5C5FkXet8T7wXtSOMngwTRkfhNpS5dbhkmF6mXeXtQDauVrI
+ pkU3FWXkl1nlGLD4hpEFxChn4zffd6TxjvO29RR5UhFWvAZF1qSWyNr82fyDS4EbSjoJ
+ B/RLWnCMfHjDCLfVnSvNfI9hVwMzzoPDpjSwMb+jmyN/hFhN3T9EQPkDWBUu/UVPXuG8 JQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u6wcnu0m4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 06 Nov 2023 11:00:28 +0000
+Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3A6AGs2e015022;
+        Mon, 6 Nov 2023 11:00:27 GMT
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u6wcnu0jg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 06 Nov 2023 11:00:27 +0000
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3A69doPm028237;
+        Mon, 6 Nov 2023 11:00:26 GMT
+Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
+        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3u62gjrbj2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 06 Nov 2023 11:00:26 +0000
+Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
+        by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3A6B0K4x17367604
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 6 Nov 2023 11:00:20 GMT
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 25DA92004B;
+        Mon,  6 Nov 2023 11:00:20 +0000 (GMT)
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7024320040;
+        Mon,  6 Nov 2023 11:00:19 +0000 (GMT)
+Received: from li-978a334c-2cba-11b2-a85c-a0743a31b510.ibm.com (unknown [9.179.20.192])
+        by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Mon,  6 Nov 2023 11:00:19 +0000 (GMT)
+Message-ID: <5cfee0930c4665481480d00bcb334b8c8c161426.camel@linux.ibm.com>
+Subject: Re: [PATCH 3/4] KVM: s390: cpu model: Use previously unused constant
+From:   Nina Schoetterl-Glausch <nsg@linux.ibm.com>
+To:     David Hildenbrand <david@redhat.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Cornelia Huck <cornelia.huck@de.ibm.com>,
+        Michael Mueller <mimu@linux.vnet.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        David Hildenbrand <dahi@linux.vnet.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>
+Cc:     linux-kernel@vger.kernel.org, Sven Schnelle <svens@linux.ibm.com>,
+        kvm@vger.kernel.org, linux-s390@vger.kernel.org
+Date:   Mon, 06 Nov 2023 12:00:19 +0100
+In-Reply-To: <47d18f06-13b2-4ec5-b601-eb9a2738f06b@redhat.com>
+References: <20231103173008.630217-1-nsg@linux.ibm.com>
+         <20231103173008.630217-4-nsg@linux.ibm.com>
+         <4c3cec3c-da81-426c-815b-afee1de68947@redhat.com>
+         <47d18f06-13b2-4ec5-b601-eb9a2738f06b@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 02/53] perf record: Lazy load kernel symbols
-Content-Language: en-US
-To:     Ian Rogers <irogers@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Nick Terrell <terrelln@fb.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        "Steinar H. Gunderson" <sesse@google.com>,
-        Liam Howlett <liam.howlett@oracle.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Colin Ian King <colin.i.king@gmail.com>,
-        Dmitrii Dolgov <9erthalion6@gmail.com>,
-        Yang Jihong <yangjihong1@huawei.com>,
-        Ming Wang <wangming01@loongson.cn>,
-        James Clark <james.clark@arm.com>,
-        K Prateek Nayak <kprateek.nayak@amd.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        German Gomez <german.gomez@arm.com>,
-        Changbin Du <changbin.du@huawei.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, Li Dong <lidong@vivo.com>,
-        Sandipan Das <sandipan.das@amd.com>,
-        liuwenyu <liuwenyu7@huawei.com>, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org
-References: <20231102175735.2272696-1-irogers@google.com>
- <20231102175735.2272696-3-irogers@google.com>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-In-Reply-To: <20231102175735.2272696-3-irogers@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 0Ddf0zaDIOqePaT9AAAdgOVroaXugE7k
+X-Proofpoint-ORIG-GUID: TujqQAYWG4kRhei_sFweFZhNDJRux6Q6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-06_09,2023-11-02_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 phishscore=0
+ adultscore=0 lowpriorityscore=0 mlxscore=0 mlxlogscore=375 spamscore=0
+ clxscore=1015 malwarescore=0 priorityscore=1501 impostorscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2310240000 definitions=main-2311060091
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/11/23 19:56, Ian Rogers wrote:
-> Commit 5b7ba82a7591 ("perf symbols: Load kernel maps before using")
-> changed it so that loading a kernel dso would cause the symbols for
-> the dso to be eagerly loaded. For perf record this is overhead as the
-> symbols won't be used. Add a symbol_conf to control the behavior and
-> disable it for perf record and perf inject.
-> 
-> Signed-off-by: Ian Rogers <irogers@google.com>
+On Fri, 2023-11-03 at 19:41 +0100, David Hildenbrand wrote:
+> On 03.11.23 19:36, David Hildenbrand wrote:
+> > On 03.11.23 18:30, Nina Schoetterl-Glausch wrote:
+> > > No point in defining a size for the mask if we're not going to use it=
+.
+> >=20
+> > I neither understand the patch description nor what the bug is that is
+> > being fixed (and how that description relates to the patch
+> > subject+description).
+> >=20
+> > Please improve the patch description.
+> >=20
+>=20
+> Should this be
+>=20
+> "
+> KVM: s390: cpu model: use proper define for facility mask size
+>=20
+> We're using S390_ARCH_FAC_LIST_SIZE_U64 instead of=20
+> S390_ARCH_FAC_MASK_SIZE_U64 to define the array size of the facility=20
+> mask. Let's properly use S390_ARCH_FAC_MASK_SIZE_U64. Note that both
+> values are the same and, therefore, this is a pure cleanup.
+> "
+>=20
+> I'm not convinced there is a bug and that this deserves a "Fixes:".
 
-Reviewed-by: Adrian Hunter <adrian.hunter@intel.com>
-
-> ---
->  tools/perf/builtin-inject.c   | 6 ++++++
->  tools/perf/builtin-record.c   | 2 ++
->  tools/perf/util/event.c       | 4 ++--
->  tools/perf/util/symbol_conf.h | 3 ++-
->  4 files changed, 12 insertions(+), 3 deletions(-)
-> 
-> diff --git a/tools/perf/builtin-inject.c b/tools/perf/builtin-inject.c
-> index c8cf2fdd9cff..eb3ef5c24b66 100644
-> --- a/tools/perf/builtin-inject.c
-> +++ b/tools/perf/builtin-inject.c
-> @@ -2265,6 +2265,12 @@ int cmd_inject(int argc, const char **argv)
->  		"perf inject [<options>]",
->  		NULL
->  	};
-> +
-> +	if (!inject.itrace_synth_opts.set) {
-> +		/* Disable eager loading of kernel symbols that adds overhead to perf inject. */
-> +		symbol_conf.lazy_load_kernel_maps = true;
-> +	}
-> +
->  #ifndef HAVE_JITDUMP
->  	set_option_nobuild(options, 'j', "jit", "NO_LIBELF=1", true);
->  #endif
-> diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
-> index dcf288a4fb9a..8ec818568662 100644
-> --- a/tools/perf/builtin-record.c
-> +++ b/tools/perf/builtin-record.c
-> @@ -3989,6 +3989,8 @@ int cmd_record(int argc, const char **argv)
->  # undef set_nobuild
->  #endif
->  
-> +	/* Disable eager loading of kernel symbols that adds overhead to perf record. */
-> +	symbol_conf.lazy_load_kernel_maps = true;
->  	rec->opts.affinity = PERF_AFFINITY_SYS;
->  
->  	rec->evlist = evlist__new();
-> diff --git a/tools/perf/util/event.c b/tools/perf/util/event.c
-> index 923c0fb15122..68f45e9e63b6 100644
-> --- a/tools/perf/util/event.c
-> +++ b/tools/perf/util/event.c
-> @@ -617,13 +617,13 @@ struct map *thread__find_map(struct thread *thread, u8 cpumode, u64 addr,
->  	if (cpumode == PERF_RECORD_MISC_KERNEL && perf_host) {
->  		al->level = 'k';
->  		maps = machine__kernel_maps(machine);
-> -		load_map = true;
-> +		load_map = !symbol_conf.lazy_load_kernel_maps;
->  	} else if (cpumode == PERF_RECORD_MISC_USER && perf_host) {
->  		al->level = '.';
->  	} else if (cpumode == PERF_RECORD_MISC_GUEST_KERNEL && perf_guest) {
->  		al->level = 'g';
->  		maps = machine__kernel_maps(machine);
-> -		load_map = true;
-> +		load_map = !symbol_conf.lazy_load_kernel_maps;
->  	} else if (cpumode == PERF_RECORD_MISC_GUEST_USER && perf_guest) {
->  		al->level = 'u';
->  	} else {
-> diff --git a/tools/perf/util/symbol_conf.h b/tools/perf/util/symbol_conf.h
-> index 0b589570d1d0..2b2fb9e224b0 100644
-> --- a/tools/perf/util/symbol_conf.h
-> +++ b/tools/perf/util/symbol_conf.h
-> @@ -42,7 +42,8 @@ struct symbol_conf {
->  			inline_name,
->  			disable_add2line_warn,
->  			buildid_mmap2,
-> -			guest_code;
-> +			guest_code,
-> +			lazy_load_kernel_maps;
->  	const char	*vmlinux_name,
->  			*kallsyms_name,
->  			*source_prefix,
-
+Oh yeah, sorry, purely a cleanup. S390_ARCH_FAC_MASK_SIZE_U64 wasn't
+used anywhere. I also considered just getting rid of it and using one
+constant for both list and mask.
