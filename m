@@ -2,145 +2,843 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F01EE7E262C
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 14:58:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBBB27E2632
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 14:58:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231189AbjKFN6T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 08:58:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58498 "EHLO
+        id S231569AbjKFN6c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 08:58:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229715AbjKFN6R (ORCPT
+        with ESMTP id S229785AbjKFN6a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 08:58:17 -0500
+        Mon, 6 Nov 2023 08:58:30 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77671BF;
-        Mon,  6 Nov 2023 05:58:15 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BD348C433C8;
-        Mon,  6 Nov 2023 13:58:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699279095;
-        bh=146Hv24u0iSEfP0Lcoz7MmQS/jc9ccb6iAZD/d2PjY8=;
-        h=From:Date:To:Cc:Subject:References:In-Reply-To:From;
-        b=PyUgHft7oDTb28dERhjiXG7ymjucR0IV3zsIgfoMhonHCtvSfIqGeXiBs4IKUbuZ5
-         C7wAD6ia7eObwcY43OU5btkXZKbi/XnI4EEDpk8qt483bh2SwD8PfhqviMyMlhXcf+
-         Ly3RVdmvbAnKJri08i+Op1Tjle50Xsn+QgWJIVPOt9MPZUVr91MjLNQRnJy7t/bqMu
-         Tnwvfyw8bAC1fBq/S9hoGsxom/XHiMm7m8Y2UFrtxP5K24Gc3AmLwWmrNI3js3Ax7Q
-         oaeVl6aQv5HgEns4FF82Bera9+OddYbodYnd3Tr4WINKQHLAiFlaVJ+JBlefgC1/8b
-         CRC4oab8dM2Dw==
-From:   mripard@kernel.org
-Date:   Mon, 6 Nov 2023 14:58:12 +0100
-To:     Dan Carpenter <dan.carpenter@linaro.org>
-Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Daniel =?utf-8?B?RMOtYXo=?= <daniel.diaz@linaro.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Brendan Higgins <brendan.higgins@linux.dev>,
-        David Gow <davidgow@google.com>,
-        =?utf-8?B?TWHDrXJh?= Canal <mcanal@igalia.com>,
-        Arthur Grillo <arthurgrillo@riseup.net>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
-        kernel-janitors@vger.kernel.org,
-        Ville =?utf-8?B?U3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
-        kv-team <kv-team@linaro.org>
-Subject: Re: [RFC] drm/tests: annotate intentional stack trace in
- drm_test_rect_calc_hscale()
-Message-ID: <s4blvjs4ipcqdzodmgsbvgegqh2kxgdnoerpwthvc57hpsulu5@gb2kh7vbv7nq>
-65;7400;1cFrom: Maxime Ripard <mripard@kernel.org>
-References: <02546e59-1afe-4b08-ba81-d94f3b691c9a@moroto.mountain>
- <CA+G9fYuA643RHHpPnz9Ww7rr3zV5a0y=7_uFcybBSL=QP_sQvQ@mail.gmail.com>
- <7b58926a-a7c3-4ad0-b8a3-56baf36939ca@kadam.mountain>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0F10F1;
+        Mon,  6 Nov 2023 05:58:25 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1BA87C433C7;
+        Mon,  6 Nov 2023 13:58:21 +0000 (UTC)
+Message-ID: <c7daf33d-9d6d-499e-b477-35176dbaca38@xs4all.nl>
+Date:   Mon, 6 Nov 2023 14:58:20 +0100
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="xqbcpamsz7sm4ktx"
-Content-Disposition: inline
-In-Reply-To: <7b58926a-a7c3-4ad0-b8a3-56baf36939ca@kadam.mountain>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH v8 13/13] media: vim2m_audio: add virtual driver for
+ audio memory to memory
+Content-Language: en-US, nl
+To:     Shengjiu Wang <shengjiu.wang@nxp.com>, sakari.ailus@iki.fi,
+        tfiga@chromium.org, m.szyprowski@samsung.com, mchehab@kernel.org,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        shengjiu.wang@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
+        nicoleotsuka@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
+        perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
+        linuxppc-dev@lists.ozlabs.org
+References: <1698402948-10618-1-git-send-email-shengjiu.wang@nxp.com>
+ <1698402948-10618-14-git-send-email-shengjiu.wang@nxp.com>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Autocrypt: addr=hverkuil@xs4all.nl; keydata=
+ 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
+In-Reply-To: <1698402948-10618-14-git-send-email-shengjiu.wang@nxp.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 27/10/2023 12:35, Shengjiu Wang wrote:
+> Audio memory to memory virtual driver use video memory to memory
+> virtual driver vim2m.c as example. The main difference is
+> device type is VFL_TYPE_AUDIO and device cap type is V4L2_CAP_AUDIO_M2M.
+> 
+> The device_run function is a dummy function, which is simply
+> copy the data from input buffer to output buffer.
 
---xqbcpamsz7sm4ktx
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I started work on the v4l-utils part of this, using this driver.
 
-Hi,
+I noticed that this driver doesn't expose the V4L2_CID_M2M_AUDIO_SOURCE/SINK_RATE
+controls, and it really should, otherwise it is not representative of this
+type of device.
 
-On Wed, Nov 01, 2023 at 12:08:00PM +0300, Dan Carpenter wrote:
-> Let me add Richard to the CC list.  See lore for more details.
-> https://lore.kernel.org/all/CA+G9fYuA643RHHpPnz9Ww7rr3zV5a0y=3D7_uFcybBSL=
-=3DQP_sQvQ@mail.gmail.com/
->=20
-> On Tue, Oct 31, 2023 at 09:57:48PM +0530, Naresh Kamboju wrote:
-> > On Mon, 30 Oct 2023 at 14:33, Dan Carpenter <dan.carpenter@linaro.org> =
-wrote:
-> > >
-> > > We have started printing more and more intentional stack traces.  Whe=
-ther
-> > > it's testing KASAN is able to detect use after frees or it's part of a
-> > > kunit test.
-> > >
-> > > These stack traces can be problematic.  They suddenly show up as a new
-> > > failure.  Now the test team has to contact the developers.  A bunch of
-> > > people have to investigate the bug.  We finally decide that it's
-> > > intentional so now the test team has to update their filter scripts to
-> > > mark it as intentional.  These filters are ad-hoc because there is no
-> > > standard format for warnings.
-> > >
-> > > A better way would be to mark it as intentional from the start.
-> > >
-> > > Here, I have marked the beginning and the end of the trace.  It's more
-> > > tricky for things like lkdtm_FORTIFY_MEM_MEMBER() where the flow does=
-n't
-> > > reach the end of the function.  I guess I would print a different
-> > > warning for stack traces that can't have a
-> > > "Intentional warning finished\n" message at the end.
-> > >
-> > > I haven't actually tested this patch...  Daniel, do you have a
-> > > list of intentional stack traces we could annotate?
-> >=20
-> > [My two cents]
-> >=20
-> > I have been noticing following kernel warnings / BUGs
->=20
-> Some are intentional and some are not.  I had a similar thing happen to
-> me last week where I had too many Smatch false positives in my devel
-> code so I accidentally sent a patch with a stupid bug.  I've since
-> updated my QC process to run both the devel and released versions of
-> Smatch.
->=20
-> But a similar thing is happening here where we have so many bogus
-> warnings that we missed a real bug.
+It is enough to start with just a single fixed rate listed for each control.
 
-IIRC, there was a similar discussion for lockdep issues. IMO, any
-(unintended) warning should trigger a test failure.
+It would be even nicer if you can have two rates such as 24000 and 48000 and
+do the actual rate conversion, i.e. dropping every other sample or duplicating
+each sample depending on whether you're halving or doubling the rate. That
+should be easy to implement, and it makes this driver much more realistic.
 
-I guess that would require adding some intrumentation to __WARN somehow,
-and also allowing tests to check whether a warning had been generated
-during their execution for tests that want to trigger one.
+Regards,
 
-Maxime
+	Hans
 
---xqbcpamsz7sm4ktx
-Content-Type: application/pgp-signature; name="signature.asc"
+> 
+> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+> ---
+>  drivers/media/test-drivers/Kconfig       |   9 +
+>  drivers/media/test-drivers/Makefile      |   1 +
+>  drivers/media/test-drivers/vim2m_audio.c | 680 +++++++++++++++++++++++
+>  3 files changed, 690 insertions(+)
+>  create mode 100644 drivers/media/test-drivers/vim2m_audio.c
+> 
+> diff --git a/drivers/media/test-drivers/Kconfig b/drivers/media/test-drivers/Kconfig
+> index 459b433e9fae..c280e192d43a 100644
+> --- a/drivers/media/test-drivers/Kconfig
+> +++ b/drivers/media/test-drivers/Kconfig
+> @@ -17,6 +17,15 @@ config VIDEO_VIM2M
+>  	  This is a virtual test device for the memory-to-memory driver
+>  	  framework.
+>  
+> +config VIDEO_VIM2M_AUDIO
+> +	tristate "Virtual Memory-to-Memory Driver For Audio"
+> +	depends on VIDEO_DEV
+> +	select VIDEOBUF2_VMALLOC
+> +	select V4L2_MEM2MEM_DEV
+> +	help
+> +	  This is a virtual audio test device for the memory-to-memory driver
+> +	  framework.
+> +
+>  source "drivers/media/test-drivers/vicodec/Kconfig"
+>  source "drivers/media/test-drivers/vimc/Kconfig"
+>  source "drivers/media/test-drivers/vivid/Kconfig"
+> diff --git a/drivers/media/test-drivers/Makefile b/drivers/media/test-drivers/Makefile
+> index 740714a4584d..c2c33282bf96 100644
+> --- a/drivers/media/test-drivers/Makefile
+> +++ b/drivers/media/test-drivers/Makefile
+> @@ -10,6 +10,7 @@ obj-$(CONFIG_DVB_VIDTV) += vidtv/
+>  
+>  obj-$(CONFIG_VIDEO_VICODEC) += vicodec/
+>  obj-$(CONFIG_VIDEO_VIM2M) += vim2m.o
+> +obj-$(CONFIG_VIDEO_VIM2M_AUDIO) += vim2m_audio.o
+>  obj-$(CONFIG_VIDEO_VIMC) += vimc/
+>  obj-$(CONFIG_VIDEO_VIVID) += vivid/
+>  obj-$(CONFIG_VIDEO_VISL) += visl/
+> diff --git a/drivers/media/test-drivers/vim2m_audio.c b/drivers/media/test-drivers/vim2m_audio.c
+> new file mode 100644
+> index 000000000000..2134e8338417
+> --- /dev/null
+> +++ b/drivers/media/test-drivers/vim2m_audio.c
+> @@ -0,0 +1,680 @@
+> +// SPDX-License-Identifier: GPL-2.0+
+> +/*
+> + * A virtual v4l2-mem2mem example for audio device.
+> + */
+> +
+> +#include <linux/module.h>
+> +#include <linux/delay.h>
+> +#include <linux/fs.h>
+> +#include <linux/sched.h>
+> +#include <linux/slab.h>
+> +
+> +#include <linux/platform_device.h>
+> +#include <media/v4l2-mem2mem.h>
+> +#include <media/v4l2-device.h>
+> +#include <media/v4l2-ioctl.h>
+> +#include <media/v4l2-ctrls.h>
+> +#include <media/v4l2-event.h>
+> +#include <media/videobuf2-vmalloc.h>
+> +#include <sound/dmaengine_pcm.h>
+> +
+> +MODULE_DESCRIPTION("Virtual device for audio mem2mem testing");
+> +MODULE_LICENSE("GPL");
+> +
+> +static unsigned int debug;
+> +module_param(debug, uint, 0644);
+> +MODULE_PARM_DESC(debug, "debug level");
+> +
+> +#define MEM2MEM_NAME "vim2m-audio"
+> +
+> +#define dprintk(dev, lvl, fmt, arg...) \
+> +	v4l2_dbg(lvl, debug, &(dev)->v4l2_dev, "%s: " fmt, __func__, ## arg)
+> +
+> +#define SAMPLE_NUM 4096
+> +
+> +static void audm2m_dev_release(struct device *dev)
+> +{}
+> +
+> +static struct platform_device audm2m_pdev = {
+> +	.name		= MEM2MEM_NAME,
+> +	.dev.release	= audm2m_dev_release,
+> +};
+> +
+> +static u32 formats[] = {
+> +	V4L2_AUDIO_FMT_S8,
+> +	V4L2_AUDIO_FMT_S16_LE,
+> +	V4L2_AUDIO_FMT_U16_LE,
+> +	V4L2_AUDIO_FMT_S24_LE,
+> +	V4L2_AUDIO_FMT_S24_3LE,
+> +	V4L2_AUDIO_FMT_U24_LE,
+> +	V4L2_AUDIO_FMT_U24_3LE,
+> +	V4L2_AUDIO_FMT_S32_LE,
+> +	V4L2_AUDIO_FMT_U32_LE,
+> +	V4L2_AUDIO_FMT_S20_3LE,
+> +	V4L2_AUDIO_FMT_U20_3LE,
+> +};
+> +
+> +#define NUM_FORMATS ARRAY_SIZE(formats)
+> +
+> +/* Per-queue, driver-specific private data */
+> +struct audm2m_q_data {
+> +	unsigned int		rate;
+> +	unsigned int		channels;
+> +	unsigned int		buffersize;
+> +	u32			fourcc;
+> +};
+> +
+> +enum {
+> +	V4L2_M2M_SRC = 0,
+> +	V4L2_M2M_DST = 1,
+> +};
+> +
+> +static snd_pcm_format_t find_format(u32 fourcc)
+> +{
+> +	snd_pcm_format_t fmt;
+> +	unsigned int k;
+> +
+> +	for (k = 0; k < NUM_FORMATS; k++) {
+> +		if (formats[k] == fourcc)
+> +			break;
+> +	}
+> +
+> +	if (k == NUM_FORMATS)
+> +		return 0;
+> +
+> +	fmt = v4l2_fourcc_to_audfmt(formats[k]);
+> +
+> +	return fmt;
+> +}
+> +
+> +struct audm2m_dev {
+> +	struct v4l2_device	v4l2_dev;
+> +	struct video_device	vfd;
+> +
+> +	struct mutex		dev_mutex;
+> +
+> +	struct v4l2_m2m_dev	*m2m_dev;
+> +};
+> +
+> +struct audm2m_ctx {
+> +	struct v4l2_fh		fh;
+> +	struct audm2m_dev	*dev;
+> +
+> +	struct mutex		vb_mutex;
+> +
+> +	/* Source and destination queue data */
+> +	struct audm2m_q_data   q_data[2];
+> +};
+> +
+> +static inline struct audm2m_ctx *file2ctx(struct file *file)
+> +{
+> +	return container_of(file->private_data, struct audm2m_ctx, fh);
+> +}
+> +
+> +static struct audm2m_q_data *get_q_data(struct audm2m_ctx *ctx,
+> +					enum v4l2_buf_type type)
+> +{
+> +	if (type == V4L2_BUF_TYPE_AUDIO_OUTPUT)
+> +		return &ctx->q_data[V4L2_M2M_SRC];
+> +	return &ctx->q_data[V4L2_M2M_DST];
+> +}
+> +
+> +static const char *type_name(enum v4l2_buf_type type)
+> +{
+> +	if (type == V4L2_BUF_TYPE_AUDIO_OUTPUT)
+> +		return "Output";
+> +	return "Capture";
+> +}
+> +
+> +/*
+> + * mem2mem callbacks
+> + */
+> +
+> +/*
+> + * device_run() - prepares and starts the device
+> + */
+> +static void device_run(void *priv)
+> +{
+> +	struct audm2m_ctx *ctx = priv;
+> +	struct audm2m_dev *audm2m_dev;
+> +	struct vb2_v4l2_buffer *src_buf, *dst_buf;
+> +	struct audm2m_q_data *q_data_src, *q_data_dst;
+> +	int src_size, dst_size;
+> +
+> +	audm2m_dev = ctx->dev;
+> +
+> +	q_data_src = get_q_data(ctx, V4L2_BUF_TYPE_AUDIO_OUTPUT);
+> +	if (!q_data_src)
+> +		return;
+> +
+> +	q_data_dst = get_q_data(ctx, V4L2_BUF_TYPE_AUDIO_CAPTURE);
+> +	if (!q_data_dst)
+> +		return;
+> +
+> +	src_buf = v4l2_m2m_next_src_buf(ctx->fh.m2m_ctx);
+> +	dst_buf = v4l2_m2m_next_dst_buf(ctx->fh.m2m_ctx);
+> +
+> +	/* Process the conversion */
+> +	src_size = vb2_get_plane_payload(&src_buf->vb2_buf, 0);
+> +
+> +	if (src_size > q_data_dst->buffersize)
+> +		dst_size = q_data_dst->buffersize;
+> +	else
+> +		dst_size = src_size;
+> +
+> +	memcpy(vb2_plane_vaddr(&dst_buf->vb2_buf, 0),
+> +	       vb2_plane_vaddr(&src_buf->vb2_buf, 0),
+> +	       dst_size);
+> +
+> +	vb2_set_plane_payload(&dst_buf->vb2_buf, 0, dst_size);
+> +
+> +	src_buf = v4l2_m2m_src_buf_remove(ctx->fh.m2m_ctx);
+> +	dst_buf = v4l2_m2m_dst_buf_remove(ctx->fh.m2m_ctx);
+> +
+> +	v4l2_m2m_buf_done(src_buf, VB2_BUF_STATE_DONE);
+> +	v4l2_m2m_buf_done(dst_buf, VB2_BUF_STATE_DONE);
+> +	v4l2_m2m_job_finish(audm2m_dev->m2m_dev, ctx->fh.m2m_ctx);
+> +}
+> +
+> +static int audm2m_querycap(struct file *file, void *priv,
+> +			   struct v4l2_capability *cap)
+> +{
+> +	strscpy(cap->driver, MEM2MEM_NAME, sizeof(cap->driver));
+> +	strscpy(cap->card, MEM2MEM_NAME, sizeof(cap->card));
+> +	snprintf(cap->bus_info, sizeof(cap->bus_info),
+> +		 "platform:%s", MEM2MEM_NAME);
+> +
+> +	return 0;
+> +}
+> +
+> +static int enum_fmt(struct v4l2_fmtdesc *f)
+> +{
+> +	int i, num;
+> +
+> +	num = 0;
+> +
+> +	for (i = 0; i < NUM_FORMATS; ++i) {
+> +		if (num == f->index)
+> +			break;
+> +		/*
+> +		 * Correct type but haven't reached our index yet,
+> +		 * just increment per-type index
+> +		 */
+> +		++num;
+> +	}
+> +
+> +	if (i < NUM_FORMATS) {
+> +		/* Format found */
+> +		f->pixelformat = formats[i];
+> +		return 0;
+> +	}
+> +
+> +	/* Format not found */
+> +	return -EINVAL;
+> +}
+> +
+> +static int audm2m_enum_fmt_audio_cap(struct file *file, void *priv,
+> +				     struct v4l2_fmtdesc *f)
+> +{
+> +	return enum_fmt(f);
+> +}
+> +
+> +static int audm2m_enum_fmt_audio_out(struct file *file, void *priv,
+> +				     struct v4l2_fmtdesc *f)
+> +{
+> +	return enum_fmt(f);
+> +}
+> +
+> +static int audm2m_g_fmt(struct audm2m_ctx *ctx, struct v4l2_format *f)
+> +{
+> +	struct vb2_queue *vq;
+> +	struct audm2m_q_data *q_data;
+> +
+> +	vq = v4l2_m2m_get_vq(ctx->fh.m2m_ctx, f->type);
+> +	if (!vq)
+> +		return -EINVAL;
+> +
+> +	q_data = get_q_data(ctx, f->type);
+> +	if (!q_data)
+> +		return -EINVAL;
+> +
+> +	f->fmt.audio.audioformat = q_data->fourcc;
+> +	f->fmt.audio.channels	= q_data->channels;
+> +	f->fmt.audio.buffersize = q_data->buffersize;
+> +
+> +	return 0;
+> +}
+> +
+> +static int audm2m_g_fmt_audio_out(struct file *file, void *priv,
+> +				  struct v4l2_format *f)
+> +{
+> +	return audm2m_g_fmt(file2ctx(file), f);
+> +}
+> +
+> +static int audm2m_g_fmt_audio_cap(struct file *file, void *priv,
+> +				  struct v4l2_format *f)
+> +{
+> +	return audm2m_g_fmt(file2ctx(file), f);
+> +}
+> +
+> +static int audm2m_try_fmt(struct v4l2_format *f, snd_pcm_format_t fmt)
+> +{
+> +	if (f->fmt.audio.channels < 1)
+> +		f->fmt.audio.channels = 1;
+> +	else if (f->fmt.audio.channels > 8)
+> +		f->fmt.audio.channels = 8;
+> +
+> +	f->fmt.audio.buffersize = f->fmt.audio.channels *
+> +				  snd_pcm_format_physical_width(fmt) *
+> +				  SAMPLE_NUM;
+> +	return 0;
+> +}
+> +
+> +static int audm2m_try_fmt_audio_cap(struct file *file, void *priv,
+> +				    struct v4l2_format *f)
+> +{
+> +	snd_pcm_format_t fmt;
+> +
+> +	fmt = find_format(f->fmt.audio.audioformat);
+> +	if (!fmt) {
+> +		f->fmt.audio.audioformat = formats[0];
+> +		fmt = find_format(f->fmt.audio.audioformat);
+> +	}
+> +
+> +	return audm2m_try_fmt(f, fmt);
+> +}
+> +
+> +static int audm2m_try_fmt_audio_out(struct file *file, void *priv,
+> +				    struct v4l2_format *f)
+> +{
+> +	snd_pcm_format_t fmt;
+> +
+> +	fmt = find_format(f->fmt.audio.audioformat);
+> +	if (!fmt) {
+> +		f->fmt.audio.audioformat = formats[0];
+> +		fmt = find_format(f->fmt.audio.audioformat);
+> +	}
+> +
+> +	return audm2m_try_fmt(f, fmt);
+> +}
+> +
+> +static int audm2m_s_fmt(struct audm2m_ctx *ctx, struct v4l2_format *f)
+> +{
+> +	struct audm2m_q_data *q_data;
+> +	struct vb2_queue *vq;
+> +	snd_pcm_format_t fmt;
+> +
+> +	vq = v4l2_m2m_get_vq(ctx->fh.m2m_ctx, f->type);
+> +	if (!vq)
+> +		return -EINVAL;
+> +
+> +	q_data = get_q_data(ctx, f->type);
+> +	if (!q_data)
+> +		return -EINVAL;
+> +
+> +	if (vb2_is_busy(vq)) {
+> +		v4l2_err(&ctx->dev->v4l2_dev, "%s queue busy\n", __func__);
+> +		return -EBUSY;
+> +	}
+> +
+> +	q_data->fourcc	= f->fmt.audio.audioformat;
+> +	q_data->channels = f->fmt.audio.channels;
+> +
+> +	fmt = find_format(f->fmt.audio.audioformat);
+> +	q_data->buffersize = q_data->channels *
+> +			     snd_pcm_format_physical_width(fmt) *
+> +			     SAMPLE_NUM;
+> +
+> +	dprintk(ctx->dev, 1,
+> +		"Format for type %s: %d/%d, fmt: %c%c%c%c\n",
+> +		type_name(f->type), q_data->rate,
+> +		q_data->channels,
+> +		(q_data->fourcc & 0xff),
+> +		(q_data->fourcc >>  8) & 0xff,
+> +		(q_data->fourcc >> 16) & 0xff,
+> +		(q_data->fourcc >> 24) & 0xff);
+> +
+> +	return 0;
+> +}
+> +
+> +static int audm2m_s_fmt_audio_cap(struct file *file, void *priv,
+> +				  struct v4l2_format *f)
+> +{
+> +	int ret;
+> +
+> +	ret = audm2m_try_fmt_audio_cap(file, priv, f);
+> +	if (ret)
+> +		return ret;
+> +
+> +	return audm2m_s_fmt(file2ctx(file), f);
+> +}
+> +
+> +static int audm2m_s_fmt_audio_out(struct file *file, void *priv,
+> +				  struct v4l2_format *f)
+> +{
+> +	int ret;
+> +
+> +	ret = audm2m_try_fmt_audio_out(file, priv, f);
+> +	if (ret)
+> +		return ret;
+> +
+> +	return audm2m_s_fmt(file2ctx(file), f);
+> +}
+> +
+> +static const struct v4l2_ioctl_ops audm2m_ioctl_ops = {
+> +	.vidioc_querycap		= audm2m_querycap,
+> +
+> +	.vidioc_enum_fmt_audio_cap	= audm2m_enum_fmt_audio_cap,
+> +	.vidioc_g_fmt_audio_cap		= audm2m_g_fmt_audio_cap,
+> +	.vidioc_try_fmt_audio_cap	= audm2m_try_fmt_audio_cap,
+> +	.vidioc_s_fmt_audio_cap		= audm2m_s_fmt_audio_cap,
+> +
+> +	.vidioc_enum_fmt_audio_out	= audm2m_enum_fmt_audio_out,
+> +	.vidioc_g_fmt_audio_out		= audm2m_g_fmt_audio_out,
+> +	.vidioc_try_fmt_audio_out	= audm2m_try_fmt_audio_out,
+> +	.vidioc_s_fmt_audio_out		= audm2m_s_fmt_audio_out,
+> +
+> +	.vidioc_reqbufs			= v4l2_m2m_ioctl_reqbufs,
+> +	.vidioc_querybuf		= v4l2_m2m_ioctl_querybuf,
+> +	.vidioc_qbuf			= v4l2_m2m_ioctl_qbuf,
+> +	.vidioc_dqbuf			= v4l2_m2m_ioctl_dqbuf,
+> +	.vidioc_prepare_buf		= v4l2_m2m_ioctl_prepare_buf,
+> +	.vidioc_create_bufs		= v4l2_m2m_ioctl_create_bufs,
+> +	.vidioc_expbuf			= v4l2_m2m_ioctl_expbuf,
+> +
+> +	.vidioc_streamon		= v4l2_m2m_ioctl_streamon,
+> +	.vidioc_streamoff		= v4l2_m2m_ioctl_streamoff,
+> +
+> +	.vidioc_subscribe_event		= v4l2_ctrl_subscribe_event,
+> +	.vidioc_unsubscribe_event	= v4l2_event_unsubscribe,
+> +};
+> +
+> +/*
+> + * Queue operations
+> + */
+> +static int audm2m_queue_setup(struct vb2_queue *vq,
+> +			      unsigned int *nbuffers,
+> +			      unsigned int *nplanes,
+> +			      unsigned int sizes[],
+> +			      struct device *alloc_devs[])
+> +{
+> +	struct audm2m_ctx *ctx = vb2_get_drv_priv(vq);
+> +	struct audm2m_q_data *q_data;
+> +
+> +	q_data = get_q_data(ctx, vq->type);
+> +
+> +	if (*nplanes)
+> +		return sizes[0] < q_data->buffersize ? -EINVAL : 0;
+> +
+> +	*nplanes = 1;
+> +	sizes[0] = q_data->buffersize;
+> +
+> +	dprintk(ctx->dev, 1, "%s: get %d buffer(s) of size %d each.\n",
+> +		type_name(vq->type), *nplanes, sizes[0]);
+> +
+> +	return 0;
+> +}
+> +
+> +static void audm2m_buf_queue(struct vb2_buffer *vb)
+> +{
+> +	struct vb2_v4l2_buffer *vbuf = to_vb2_v4l2_buffer(vb);
+> +	struct audm2m_ctx *ctx = vb2_get_drv_priv(vb->vb2_queue);
+> +
+> +	v4l2_m2m_buf_queue(ctx->fh.m2m_ctx, vbuf);
+> +}
+> +
+> +static void audm2m_stop_streaming(struct vb2_queue *q)
+> +{
+> +	struct audm2m_ctx *ctx = vb2_get_drv_priv(q);
+> +	struct vb2_v4l2_buffer *vbuf;
+> +
+> +	for (;;) {
+> +		if (V4L2_TYPE_IS_OUTPUT(q->type))
+> +			vbuf = v4l2_m2m_src_buf_remove(ctx->fh.m2m_ctx);
+> +		else
+> +			vbuf = v4l2_m2m_dst_buf_remove(ctx->fh.m2m_ctx);
+> +		if (!vbuf)
+> +			return;
+> +		v4l2_m2m_buf_done(vbuf, VB2_BUF_STATE_ERROR);
+> +	}
+> +}
+> +
+> +static const struct vb2_ops audm2m_qops = {
+> +	.queue_setup	 = audm2m_queue_setup,
+> +	.buf_queue	 = audm2m_buf_queue,
+> +	.stop_streaming  = audm2m_stop_streaming,
+> +	.wait_prepare	 = vb2_ops_wait_prepare,
+> +	.wait_finish	 = vb2_ops_wait_finish,
+> +};
+> +
+> +static int queue_init(void *priv, struct vb2_queue *src_vq,
+> +		      struct vb2_queue *dst_vq)
+> +{
+> +	struct audm2m_ctx *ctx = priv;
+> +	int ret;
+> +
+> +	src_vq->type = V4L2_BUF_TYPE_AUDIO_OUTPUT;
+> +	src_vq->io_modes = VB2_MMAP | VB2_DMABUF;
+> +	src_vq->drv_priv = ctx;
+> +	src_vq->buf_struct_size = sizeof(struct v4l2_m2m_buffer);
+> +	src_vq->ops = &audm2m_qops;
+> +	src_vq->mem_ops = &vb2_vmalloc_memops;
+> +	src_vq->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_COPY;
+> +	src_vq->lock = &ctx->vb_mutex;
+> +	src_vq->min_buffers_needed = 1;
+> +
+> +	ret = vb2_queue_init(src_vq);
+> +	if (ret)
+> +		return ret;
+> +
+> +	dst_vq->type = V4L2_BUF_TYPE_AUDIO_CAPTURE;
+> +	dst_vq->io_modes = VB2_MMAP | VB2_DMABUF;
+> +	dst_vq->drv_priv = ctx;
+> +	dst_vq->buf_struct_size = sizeof(struct v4l2_m2m_buffer);
+> +	dst_vq->ops = &audm2m_qops;
+> +	dst_vq->mem_ops = &vb2_vmalloc_memops;
+> +	dst_vq->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_COPY;
+> +	dst_vq->lock = &ctx->vb_mutex;
+> +	dst_vq->min_buffers_needed = 1;
+> +
+> +	return vb2_queue_init(dst_vq);
+> +}
+> +
+> +/*
+> + * File operations
+> + */
+> +static int audm2m_open(struct file *file)
+> +{
+> +	struct audm2m_dev *dev = video_drvdata(file);
+> +	struct audm2m_ctx *ctx = NULL;
+> +	snd_pcm_format_t fmt;
+> +	int width;
+> +	int rc = 0;
+> +
+> +	if (mutex_lock_interruptible(&dev->dev_mutex))
+> +		return -ERESTARTSYS;
+> +	ctx = kzalloc(sizeof(*ctx), GFP_KERNEL);
+> +	if (!ctx) {
+> +		rc = -ENOMEM;
+> +		goto open_unlock;
+> +	}
+> +
+> +	v4l2_fh_init(&ctx->fh, video_devdata(file));
+> +	file->private_data = &ctx->fh;
+> +	ctx->dev = dev;
+> +
+> +	ctx->q_data[V4L2_M2M_SRC].fourcc = formats[0];
+> +	ctx->q_data[V4L2_M2M_SRC].rate = 8000;
+> +	ctx->q_data[V4L2_M2M_SRC].channels = 2;
+> +
+> +	/* Fix to 4096 samples */
+> +	fmt = find_format(formats[0]);
+> +	width = snd_pcm_format_physical_width(fmt);
+> +	ctx->q_data[V4L2_M2M_SRC].buffersize = SAMPLE_NUM * 2 * width;
+> +	ctx->q_data[V4L2_M2M_DST] = ctx->q_data[V4L2_M2M_SRC];
+> +
+> +	ctx->fh.m2m_ctx = v4l2_m2m_ctx_init(dev->m2m_dev, ctx, &queue_init);
+> +
+> +	mutex_init(&ctx->vb_mutex);
+> +
+> +	if (IS_ERR(ctx->fh.m2m_ctx)) {
+> +		rc = PTR_ERR(ctx->fh.m2m_ctx);
+> +
+> +		v4l2_fh_exit(&ctx->fh);
+> +		kfree(ctx);
+> +		goto open_unlock;
+> +	}
+> +
+> +	v4l2_fh_add(&ctx->fh);
+> +
+> +	dprintk(dev, 1, "Created instance: %p, m2m_ctx: %p\n",
+> +		ctx, ctx->fh.m2m_ctx);
+> +
+> +open_unlock:
+> +	mutex_unlock(&dev->dev_mutex);
+> +	return rc;
+> +}
+> +
+> +static int audm2m_release(struct file *file)
+> +{
+> +	struct audm2m_dev *dev = video_drvdata(file);
+> +	struct audm2m_ctx *ctx = file2ctx(file);
+> +
+> +	dprintk(dev, 1, "Releasing instance %p\n", ctx);
+> +
+> +	v4l2_fh_del(&ctx->fh);
+> +	v4l2_fh_exit(&ctx->fh);
+> +	mutex_lock(&dev->dev_mutex);
+> +	v4l2_m2m_ctx_release(ctx->fh.m2m_ctx);
+> +	mutex_unlock(&dev->dev_mutex);
+> +	kfree(ctx);
+> +
+> +	return 0;
+> +}
+> +
+> +static void audm2m_device_release(struct video_device *vdev)
+> +{
+> +	struct audm2m_dev *dev = container_of(vdev, struct audm2m_dev, vfd);
+> +
+> +	v4l2_device_unregister(&dev->v4l2_dev);
+> +	v4l2_m2m_release(dev->m2m_dev);
+> +
+> +	kfree(dev);
+> +}
+> +
+> +static const struct v4l2_file_operations audm2m_fops = {
+> +	.owner		= THIS_MODULE,
+> +	.open		= audm2m_open,
+> +	.release	= audm2m_release,
+> +	.poll		= v4l2_m2m_fop_poll,
+> +	.unlocked_ioctl	= video_ioctl2,
+> +	.mmap		= v4l2_m2m_fop_mmap,
+> +};
+> +
+> +static const struct video_device audm2m_videodev = {
+> +	.name		= MEM2MEM_NAME,
+> +	.vfl_dir	= VFL_DIR_M2M,
+> +	.fops		= &audm2m_fops,
+> +	.ioctl_ops	= &audm2m_ioctl_ops,
+> +	.minor		= -1,
+> +	.release	= audm2m_device_release,
+> +	.device_caps	= V4L2_CAP_AUDIO_M2M | V4L2_CAP_STREAMING,
+> +};
+> +
+> +static const struct v4l2_m2m_ops m2m_ops = {
+> +	.device_run	= device_run,
+> +};
+> +
+> +static int audm2m_probe(struct platform_device *pdev)
+> +{
+> +	struct audm2m_dev *dev;
+> +	struct video_device *vfd;
+> +	int ret;
+> +
+> +	dev = kzalloc(sizeof(*dev), GFP_KERNEL);
+> +	if (!dev)
+> +		return -ENOMEM;
+> +
+> +	ret = v4l2_device_register(&pdev->dev, &dev->v4l2_dev);
+> +	if (ret)
+> +		goto error_free;
+> +
+> +	mutex_init(&dev->dev_mutex);
+> +
+> +	dev->vfd = audm2m_videodev;
+> +	vfd = &dev->vfd;
+> +	vfd->lock = &dev->dev_mutex;
+> +	vfd->v4l2_dev = &dev->v4l2_dev;
+> +
+> +	video_set_drvdata(vfd, dev);
+> +	platform_set_drvdata(pdev, dev);
+> +
+> +	dev->m2m_dev = v4l2_m2m_init(&m2m_ops);
+> +	if (IS_ERR(dev->m2m_dev)) {
+> +		v4l2_err(&dev->v4l2_dev, "Failed to init mem2mem device\n");
+> +		ret = PTR_ERR(dev->m2m_dev);
+> +		dev->m2m_dev = NULL;
+> +		goto error_dev;
+> +	}
+> +
+> +	ret = video_register_device(vfd, VFL_TYPE_AUDIO, 0);
+> +	if (ret) {
+> +		v4l2_err(&dev->v4l2_dev, "Failed to register video device\n");
+> +		goto error_m2m;
+> +	}
+> +
+> +	v4l2_info(&dev->v4l2_dev,
+> +		  "Device registered as /dev/v4l-audio%d\n", vfd->num);
+> +
+> +	return 0;
+> +
+> +error_m2m:
+> +	v4l2_m2m_release(dev->m2m_dev);
+> +error_dev:
+> +	v4l2_device_unregister(&dev->v4l2_dev);
+> +error_free:
+> +	kfree(dev);
+> +
+> +	return ret;
+> +}
+> +
+> +static void audm2m_remove(struct platform_device *pdev)
+> +{
+> +	struct audm2m_dev *dev = platform_get_drvdata(pdev);
+> +
+> +	v4l2_info(&dev->v4l2_dev, "Removing " MEM2MEM_NAME);
+> +
+> +	video_unregister_device(&dev->vfd);
+> +}
+> +
+> +static struct platform_driver audm2m_pdrv = {
+> +	.probe		= audm2m_probe,
+> +	.remove_new	= audm2m_remove,
+> +	.driver		= {
+> +		.name	= MEM2MEM_NAME,
+> +	},
+> +};
+> +
+> +static void __exit audm2m_exit(void)
+> +{
+> +	platform_driver_unregister(&audm2m_pdrv);
+> +	platform_device_unregister(&audm2m_pdev);
+> +}
+> +
+> +static int __init audm2m_init(void)
+> +{
+> +	int ret;
+> +
+> +	ret = platform_device_register(&audm2m_pdev);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = platform_driver_register(&audm2m_pdrv);
+> +	if (ret)
+> +		platform_device_unregister(&audm2m_pdev);
+> +
+> +	return ret;
+> +}
+> +
+> +module_init(audm2m_init);
+> +module_exit(audm2m_exit);
 
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZUjw9AAKCRDj7w1vZxhR
-xVHxAP9+MVNkRhFAcYBlsPMe3eQ/ZiQV5eqW/Q8okxFof/9xegD/WBapKwZv6qgF
-CyoizI3A8AGSVFpMUx9COGghvklOAQE=
-=iyFQ
------END PGP SIGNATURE-----
-
---xqbcpamsz7sm4ktx--
