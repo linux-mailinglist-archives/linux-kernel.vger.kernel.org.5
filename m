@@ -2,62 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A5957E2D38
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 20:50:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 278F57E2D3D
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 20:53:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232954AbjKFTuu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 14:50:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49508 "EHLO
+        id S232865AbjKFTxm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 14:53:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232891AbjKFTur (ORCPT
+        with ESMTP id S231555AbjKFTxl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 14:50:47 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FBBBD45;
-        Mon,  6 Nov 2023 11:50:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-        bh=f94JPRBiAKH4bv0NOHWLWcrjSw/yWsvyMGtRiVM5Wj8=; b=Q8/sBS6AHUKIctzYnVZm04uavu
-        SYF8NSxXHC972Jcsqdy5S4w7xpwUEKgKME6NDbATjzoWC70WHzuSgYv/dRsSgRo8tjq56+KTd+xd1
-        9NQg/e46gHBqcM6MzkPa7yaLEpgy/rlgFcamN7yOU0pxlZpwfmuI6vCI2hr2x7/porkoBxf+6sx4i
-        mp/gNgRNE0GQLtd7VwgSdx3o2j/5Zv9msH/CUXly7yCRluz9np19PhHwawcrh1XyHHI7fz0KmVUSp
-        f8J24mtxNayL0XPJE7to+5yPM0KJFjXO2+Q75iYDzBUrX/1VdrvAvM185U1FO0/5Wal3tJDNIgRe6
-        bwY/UmNg==;
-Received: from [50.53.46.231] (helo=[192.168.254.15])
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1r05cQ-00HQ9y-2w;
-        Mon, 06 Nov 2023 19:50:42 +0000
-Message-ID: <b4354d60-7b24-4e36-b62a-515e8996334a@infradead.org>
-Date:   Mon, 6 Nov 2023 11:50:41 -0800
+        Mon, 6 Nov 2023 14:53:41 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FA15DB
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 11:53:38 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9640AC433C8;
+        Mon,  6 Nov 2023 19:53:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699300418;
+        bh=zRnp3/+P5SOqdbJs98+fKP7mcvAOuH+BcWqDVT5w1I0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=VWMuyGbhWb+99XI6CaXOnN+In4t9/oJivSghk3iyYk1O8OggZtdP60+/JWbepNzRs
+         ERCCM4JWIL85/4U/Cvn9oCd6M0FlwwwN99HJDNMQOBRVVdf4sNmoSnyqADugQ1lBYm
+         FF29ulVbZmiRYweStkCekKaDhMNI9sU1VA0trarFphCHgbaDXt07ihr3iFMwabsiLm
+         dRc5Sc1kCBRVXWhjVa+X6U511HGDopFQNDynO7ezCMtejycRRgAC6+YsOjs2MtHrzJ
+         3K9P5ZyUkGe6QoOLffbHyYkNcPQz7v+t0zzxzhnRNr1195isktbLgTqeW0h0kNm5RX
+         9GE24ob/uqc6g==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 175F34035D; Mon,  6 Nov 2023 16:53:35 -0300 (-03)
+Date:   Mon, 6 Nov 2023 16:53:35 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-perf-users@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: Re: [PATCH 1/5] perf annotate: Split struct cycles_info
+Message-ID: <ZUlEP9pP3JiSxDVc@kernel.org>
+References: <20231103191907.54531-1-namhyung@kernel.org>
+ <20231103191907.54531-2-namhyung@kernel.org>
+ <ZUk/27WMwtnQPggF@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1] drm: amd: Resolve Sphinx unexpected indentation
- warning
-To:     Hunter Chasens <hunter.chasens18@ncf.edu>,
-        Jani Nikula <jani.nikula@linux.intel.com>
-Cc:     Bagas Sanjaya <bagasdotme@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Lijo Lazar <lijo.lazar@amd.com>,
-        Linux Documentation <linux-doc@vger.kernel.org>,
-        Xinhui.Pan@amd.com, amd-gfx@lists.freedesktop.org,
-        Linux DRI Development <dri-devel@lists.freedesktop.org>,
-        alexander.deucher@amd.com, evan.quan@amd.com,
-        christian.koenig@amd.com
-References: <20231105210044.70371-1-hunter.chasens18@ncf.edu>
- <ZUh2fuCjmgle3vd9@debian.me>
- <665794d7-38e0-4e74-9af7-eca986792e44@infradead.org>
- <ZUigbshGGc451V5L@debian.me> <875y2f193t.fsf@intel.com>
- <irp2myv4jp6o7vut5m7ax4hya5764xzustf2klxfpys42qmevk@yxxus464hito>
-Content-Language: en-US
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <irp2myv4jp6o7vut5m7ax4hya5764xzustf2klxfpys42qmevk@yxxus464hito>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZUk/27WMwtnQPggF@kernel.org>
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,23 +59,160 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 11/6/23 11:06, Hunter Chasens wrote:
-> First, apologies to Jani Nikula. I accedently top posted on the other thread.
-> My email client is giving me a hard time. The following works and, if 
-> everyone agrees, I'll send out a v2.
+Em Mon, Nov 06, 2023 at 04:34:51PM -0300, Arnaldo Carvalho de Melo escreveu:
+> Em Fri, Nov 03, 2023 at 12:19:03PM -0700, Namhyung Kim escreveu:
+> > The cycles info is used only when branch stack is provided.  Split them
+> > into a separate struct and lazy allocate them to save some memory.
+> > 
+> > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> > ---
+> >  tools/perf/ui/browsers/annotate.c |  2 +-
+> >  tools/perf/util/annotate.c        | 34 ++++++++++++++++++-------------
+> >  tools/perf/util/annotate.h        | 14 ++++++++-----
+> >  3 files changed, 30 insertions(+), 20 deletions(-)
+> > 
+> > diff --git a/tools/perf/ui/browsers/annotate.c b/tools/perf/ui/browsers/annotate.c
+> > index ccdb2cd11fbf..d2470f87344d 100644
+> > --- a/tools/perf/ui/browsers/annotate.c
+> > +++ b/tools/perf/ui/browsers/annotate.c
+> > @@ -337,7 +337,7 @@ static void annotate_browser__calc_percent(struct annotate_browser *browser,
+> >  				max_percent = percent;
+> >  		}
+> >  
+> > -		if (max_percent < 0.01 && pos->al.ipc == 0) {
+> > +		if (max_percent < 0.01 && (!pos->al.cycles || pos->al.cycles->ipc == 0)) {
+> >  			RB_CLEAR_NODE(&pos->al.rb_node);
+> >  			continue;
+> >  		}
+> > diff --git a/tools/perf/util/annotate.c b/tools/perf/util/annotate.c
+> > index 82956adf9963..3e7f75827270 100644
+> > --- a/tools/perf/util/annotate.c
+> > +++ b/tools/perf/util/annotate.c
+> > @@ -1100,8 +1100,8 @@ static void annotation__count_and_fill(struct annotation *notes, u64 start, u64
+> >  		for (offset = start; offset <= end; offset++) {
+> >  			struct annotation_line *al = notes->offsets[offset];
+> >  
+> > -			if (al && al->ipc == 0.0) {
+> > -				al->ipc = ipc;
+> > +			if (al && al->cycles && al->cycles->ipc == 0.0) {
+> > +				al->cycles->ipc = ipc;
+> >  				cover_insn++;
+> >  			}
+> >  		}
+> > @@ -1134,13 +1134,18 @@ void annotation__compute_ipc(struct annotation *notes, size_t size)
+> >  		if (ch && ch->cycles) {
+> >  			struct annotation_line *al;
+> >  
+> > +			al = notes->offsets[offset];
+> > +			if (al && al->cycles == NULL) {
+> > +				al->cycles = zalloc(sizeof(*al->cycles));
+> > +				if (al->cycles == NULL)
 > 
->  * E.g.::
->  *
->  *  S: 19Mhz *
->  *  0: 615Mhz
->  *  1: 800Mhz
->  *  2: 888Mhz
->  *  3: 1000Mhz
+> Shouldn't we stop here and tell the user that his system is really tight
+> on memory instead of just ignoring it?
+> 
+> 	if (al->cycles == NULL) {
+> 		ui__error("Not enough memory for allocating branch stack cycles info!\n");
+> 		return ... its a void function :-\
+> 	}
+> 
+> Since its a void function, can't we detect that we need al->cycles
+> allocated at the tool start and allocate it there, then propagate back
+> the error?
+> 
+> Its per line, so doing it lazily is indeed easier, so make that function
+> return an error and bail out when not being able to calculate the ipc
+> for the remaining lines?
 
-Please do.
-Thanks.
+I.e. with this folded into this patch, all but one of the callers of
+symbol__annotate2() already call a ui error messagem for instance:
 
--- 
-~Randy
+                err = symbol__annotate2(ms, evsel, opts, &browser.arch);
+                if (err) {
+                        char msg[BUFSIZ];
+                        dso->annotate_warned = true;
+                        symbol__strerror_disassemble(ms, err, msg, sizeof(msg));
+                        ui__error("Couldn't annotate %s:\n%s", sym->name, msg);
+
+- Arnaldo
+
+diff --git a/tools/perf/util/annotate.c b/tools/perf/util/annotate.c
+index 3e7f758272703554..99ff3bb9cad8daa6 100644
+--- a/tools/perf/util/annotate.c
++++ b/tools/perf/util/annotate.c
+@@ -1114,12 +1114,13 @@ static void annotation__count_and_fill(struct annotation *notes, u64 start, u64
+ 	}
+ }
+ 
+-void annotation__compute_ipc(struct annotation *notes, size_t size)
++static int annotation__compute_ipc(struct annotation *notes, size_t size)
+ {
++	int err = 0;
+ 	s64 offset;
+ 
+ 	if (!notes->src || !notes->src->cycles_hist)
+-		return;
++		return 0;
+ 
+ 	notes->total_insn = annotation__count_insn(notes, 0, size - 1);
+ 	notes->hit_cycles = 0;
+@@ -1137,8 +1138,10 @@ void annotation__compute_ipc(struct annotation *notes, size_t size)
+ 			al = notes->offsets[offset];
+ 			if (al && al->cycles == NULL) {
+ 				al->cycles = zalloc(sizeof(*al->cycles));
+-				if (al->cycles == NULL)
+-					continue;
++				if (al->cycles == NULL) {
++					err = ENOMEM;
++					break;
++				}
+ 			}
+ 			if (ch->have_start)
+ 				annotation__count_and_fill(notes, ch->start, offset, ch);
+@@ -1150,7 +1153,21 @@ void annotation__compute_ipc(struct annotation *notes, size_t size)
+ 			notes->have_cycles = true;
+ 		}
+ 	}
++
++	if (err) {
++		while (++offset < (s64)size) {
++			struct cyc_hist *ch = &notes->src->cycles_hist[offset];
++
++			if (ch && ch->cycles) {
++				struct annotation_line *al = notes->offsets[offset];
++				if (al)
++					zfree(&al->cycles);
++			}
++		}
++	}
++
+ 	annotation__unlock(notes);
++	return 0;
+ }
+ 
+ int addr_map_symbol__inc_samples(struct addr_map_symbol *ams, struct perf_sample *sample,
+@@ -3270,7 +3287,11 @@ int symbol__annotate2(struct map_symbol *ms, struct evsel *evsel,
+ 
+ 	annotation__set_offsets(notes, size);
+ 	annotation__mark_jump_targets(notes, sym);
+-	annotation__compute_ipc(notes, size);
++
++	err = annotation__compute_ipc(notes, size);
++	if (err)
++		goto out_free_offsets;
++
+ 	annotation__init_column_widths(notes, sym);
+ 	notes->nr_events = nr_pcnt;
+ 
+diff --git a/tools/perf/util/annotate.h b/tools/perf/util/annotate.h
+index 16d27952fd5c1b47..19bc2f03917575a8 100644
+--- a/tools/perf/util/annotate.h
++++ b/tools/perf/util/annotate.h
+@@ -329,7 +329,6 @@ static inline bool annotation_line__filter(struct annotation_line *al, struct an
+ }
+ 
+ void annotation__set_offsets(struct annotation *notes, s64 size);
+-void annotation__compute_ipc(struct annotation *notes, size_t size);
+ void annotation__mark_jump_targets(struct annotation *notes, struct symbol *sym);
+ void annotation__update_column_widths(struct annotation *notes);
+ void annotation__init_column_widths(struct annotation *notes, struct symbol *sym);
