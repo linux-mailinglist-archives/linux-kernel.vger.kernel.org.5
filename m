@@ -2,119 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CB8E7E2FC5
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 23:22:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AA317E2FC7
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 23:24:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233132AbjKFWWQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 17:22:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46368 "EHLO
+        id S233145AbjKFWYD convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 6 Nov 2023 17:24:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232005AbjKFWWO (ORCPT
+        with ESMTP id S232005AbjKFWYB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 17:22:14 -0500
-Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05olkn2092.outbound.protection.outlook.com [40.92.90.92])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D214ED57;
-        Mon,  6 Nov 2023 14:22:11 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VQwQen2eWBXacKp2g9IS6sLAtePUl34sFuXyQkGzESejwDQwbILrflCXjoQ2e6y5HmaGl21PAVQg280oLexewbA+qowYQKuzNr8y5xutW3ZOvbXR5x5ZssMiWTh1NdehH5c6mS8D3uiKnGc9WlEU4VPZ779sfu0UbbzhMik/UK6p+HGHsUTrJmRkrRTtBBRVdKMZ+4pa0Ppipx69WMeeEkoEm81XNtBnWckHaOOwwhv+jeJwBggK1GQLcrTD9FfThIcPa3/AEU7UPAc5+SefECrutPp+6utE93/Me2ZX14nYqxUiyrWSxeYEchz2gz03LFF6Aim3e106loQFVnY2qQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=KYgAhFYQrRNovxRm5bsWSiueE9LZzAsAZj+6d0TdFp8=;
- b=csDwMw8Q5QpKI82LXofFoC0CchNwm9cvr4K3H5pQR8W1Ph726IDPT0VRwUov5QXDAco/kzve8i0VhDuUYiqplEA6XpZBJZFLJNbcF00JQRAJMQfYRa1ceWRZhPTuq7TN4wUpKw7LRjlSeMW7Z389hVEWSypO7Ao2omDl7zXFqKJij4Q054xJZ/4mKAdBN+bmWoa4siHngjbxeA75Tu4FuurXODOL0RSQRuyy78KzvklRbimvG2LmqMGbzrU1JCLe8D4f4leTFBMaEYZVK3RZR6KdNRv5wagFRIi1nA6MtKns2NeF3AqH+t2WxFKMhpCKv/doXo/jVtNIaUIS7rY5/Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KYgAhFYQrRNovxRm5bsWSiueE9LZzAsAZj+6d0TdFp8=;
- b=t/k/8aZ0GwkJ+Uc+mwOmas7L7GSDd8A7DXKMTepTc7SxQhRK7iPjnDJgzY0HXr/fAa7sjC8oA9+zjg9uG955sbmc/2EcV4wYPuAAkuhD/yP5xXWB4UN5skPTh95rzNZJ/jppeTD2B/KLZ57CUAKk115fSsHWD8jOVRYKUwncpdl+rm8pMCZWU1xyqnPL6rAexAaZGlpOA/eB1OfxdbYriojor93Bpn0RxM8F9EYC4ezBYtGUr4ucshSSAzWHAeoa5LNDzL0WRaxa+jOAS6emIpnx+MLU3BZukbDf0+0/QEHarevoBVmJv5/lQPZriWs4CUVhxEqzk+9P5QUUR/P/mQ==
-Received: from DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:42a::7)
- by AS8PR10MB6993.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:5a4::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.28; Mon, 6 Nov
- 2023 22:22:09 +0000
-Received: from DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::e2b0:8d7e:e293:bd97]) by DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::e2b0:8d7e:e293:bd97%7]) with mapi id 15.20.6954.028; Mon, 6 Nov 2023
- 22:22:09 +0000
-From:   Yuran Pereira <yuran.pereira@hotmail.com>
-To:     linux-bluetooth@vger.kernel.org
-Cc:     Yuran Pereira <yuran.pereira@hotmail.com>, marcel@holtmann.org,
-        johan.hedberg@gmail.com, luiz.dentz@gmail.com,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: [PATCH 0/2] Bluetooth: Add documentation and replace printk calls
-Date:   Tue,  7 Nov 2023 03:51:47 +0530
-Message-ID: <DB3PR10MB6835C002EB4C5A05AD17610BE8AAA@DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM>
-X-Mailer: git-send-email 2.25.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TMN:  [MAvBBO600D5xPui3UmRVquZ0wutlUJDq]
-X-ClientProxiedBy: JN2P275CA0018.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:3::30)
- To DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:42a::7)
-X-Microsoft-Original-Message-ID: <20231106222147.1793535-1-yuran.pereira@hotmail.com>
+        Mon, 6 Nov 2023 17:24:01 -0500
+Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 489821BC;
+        Mon,  6 Nov 2023 14:23:59 -0800 (PST)
+Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-6c398717726so2192012b3a.2;
+        Mon, 06 Nov 2023 14:23:59 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699309439; x=1699914239;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+5KSCOu691NT1PfrO1kzMKbd/+BqwCFGmhMLBYbiDMU=;
+        b=Xm1ulYXiL5xj9GhPzCf9lO/xEW1P9Mb8RB9RM9tleL9PYBjX7foVpfQcOo0Bo1tHvU
+         +EMGJrCFEEPjooWI8XytCGgCzgtRhC29cwWFY3o/lWeGc5L7qx3MIPiMGsdzfKzdp0hY
+         +ftaCPdr2fFpv3mtyrDXf2KJm69uep3KHIsEG4sa+pdc7rhVQRBOD9xg5k+YV/gHNJ2R
+         4/GQyCnl4aeV9yotcsR9nFp9TV2obZ3MhbvxoLU5/5FYeYyyfaIfwmAfmP85da/Qb7p7
+         4LCAODY1U4Hs9KFy+nfJMPbxq744+M7Is9gv0tigYp6Nbwk6Z1Umft9hxHNgUltzLuoj
+         VFyQ==
+X-Gm-Message-State: AOJu0YxlJ/ezJI4X9njZiJ3zxTliIlka8cgq9JQKQ0BhU35i9LbMl8An
+        62n9aJdTNUmQEeT0acV1iNwQ1uE5W0QYydxVe94=
+X-Google-Smtp-Source: AGHT+IGv+o/+zJivESMR2Z2d4lwNd6Y7F/0po0qUsoq6kPluTYpMriId/VUFweUPW/AXzfZjUY0YyuPA+oYiuLyuApA=
+X-Received: by 2002:a05:6a20:3945:b0:182:2282:fd7a with SMTP id
+ r5-20020a056a20394500b001822282fd7amr8559206pzg.19.1699309438609; Mon, 06 Nov
+ 2023 14:23:58 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DB3PR10MB6835:EE_|AS8PR10MB6993:EE_
-X-MS-Office365-Filtering-Correlation-Id: f8194ab6-2933-4c55-32e5-08dbdf16d0df
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: kwRtveDDQb1w6KYZ45UYKRks5m5R3vJFWo3uFRR1n+wEZG5im/1GG3B3dZyXxV8/k5sCTJbUQzqvvLVuZURJHfxZPZQI4eoRB94oLmDeyydPfWoXcvSzcP7YveFgPIWzuJ9OCt8Dd66KdBLkBScuhOvfnQoBnsxB/j6KBr+QoUQH2+17Y41E+QBpXPhhyZjd8WMA45IH5J23TtCwEs/yQnR6eFZhq8AvB7GrFZjiTZm7m4ly12PTHYLp87uuNCPK9XwsLmGZrbIWef10lsJiH7cZKR/MOVzjcWb1Eycdbww42W0HRGoUaz2n/tFNbPXfuZvbDykNPv6NKUXQe1PVW6Nr7vdPQ+1ouDCZLdx25FesLpaR+D4eMZVRlvPpL4s4VnAheXr2Mcjq0Saw8UAHj8fRitf+BcbjA2jPiiEBuC5wkdCHkzZ6VydyuDs7L51j5KRwcmNi6GoCWUJpGjS3WEkhOS50K7m1jaMBWwgdqRe57HTqVx0igdkfringCA/+YAs5EHZ0b4q72L31JRuyuzzYTS6iXSDR4mgUk69fpwcGJyRQuh9/psfWGhKfzC2et/9OR3o/+9bQ6tbB8mWbGkFKH3rOlpQNkBqC0WKKQAo=
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?mW2HlB7/N3Ly1f3Hs4K+t4tA+VjMa5P76Sz6xGLFRQdsNHlQKaVF9Mkv/psW?=
- =?us-ascii?Q?mJ1K+jLntYjv+GewSgU7upqJvYxQq/NzThaNPTCwmiiHCEJ3N4wBgIARdawV?=
- =?us-ascii?Q?FpPZ1I2oU9mdCk3vUA+Ysk3zkq6FoyDb1zJ8RpdiNZ3M7J/9ujOwTSR1G9ac?=
- =?us-ascii?Q?TOovAb8PJhAyrekUvlB327hCcbPb6CAJjZmGkE3WWXBF/mYPVEEV7F+OJQZD?=
- =?us-ascii?Q?77uNBY4jEDpXythwNKWFwSZWS1JxBsk0GSW8U3aDQ15H9bR1qUhuyP8eFSXd?=
- =?us-ascii?Q?uE7FfGtIrS/BTsCZp+Q5zleKpDnL/Qxgm1lCUwgUAR77U74Y25CLpDLFlWy/?=
- =?us-ascii?Q?d1IsZAJMFYDmLCv0gJIr6z1ybL64nC7A/lGtfOj57oi+40SmtbqzVxb9l2zs?=
- =?us-ascii?Q?C2ylhs1PkDfcS7gbTfbUD/7+ES/RjFDb5NugfPzkpo1mmGb2Jc++RA9RitAg?=
- =?us-ascii?Q?ktIwUXFlsZkQFBvAAQiv6NK63bxxLYKPrR1WUmRMZ0ouqcxCuWB6qTqaMD5K?=
- =?us-ascii?Q?p61iMh6+uCm/R6pj6bPcof9DMGvfZJWz6u0QeBJHOWvtX/YcyojWj8TPRG9E?=
- =?us-ascii?Q?i7bSFfZS8vR4kGBOk6B1o4odRmVvpjweAh26/5RmiJUVYazf24mgzGOQh+CW?=
- =?us-ascii?Q?vdKdImpBdKOWXhgZTRLeLXWwzW5Yg/5bXsoS3X7bMDOks4UUh8JnkUPQwpiI?=
- =?us-ascii?Q?ZK36wgEkolEEzGUTWhu6SUnSrDAMoShGGaWKJz2/UC66SDyxq6WL9MXdFqR/?=
- =?us-ascii?Q?geLzvkWq++sEtE+jYKfEJNeTWpw8wfzj+229+LH+ymfi4zHrnDFDDaRtR/pz?=
- =?us-ascii?Q?eqqU4Fx+FKMVtdvIAGYRhnt2HMm/3JJNpxm7pqPaoCBTUW9g+MWaG/ZYstAZ?=
- =?us-ascii?Q?vgXTabY2rVbfLuJFPxxAwJXdTKhI4SgD69OvGTbulkOAHnjQYGesqN1tiNlR?=
- =?us-ascii?Q?uvUIE4IcU5B1ho/c1wZfrjurbLsCP5am2jcyhM3Ox0TwN0Lr8uiy4dp5h5xw?=
- =?us-ascii?Q?jpJKQl9HbLQvfhWIbHImpOirVQGKn2+l2M7gJi4JXcw+VL4zrMzpNWclUkIh?=
- =?us-ascii?Q?3ldAwoaehx5gSRV9J6r4gwHm7FSol+2V2H9E8Nk4afi4X773aj/cHtlbRB18?=
- =?us-ascii?Q?dx3QkDXJuuvQ6YJellmNXMOD6+WH1ZBwHRpSmKfE/bN1colfjrWpvsSauuM2?=
- =?us-ascii?Q?xrt191JlAmLTLiu4az7J6CbrKp5Xwi520/W1gnx0H+Bk7BbrFofvsnH3yqI?=
- =?us-ascii?Q?=3D?=
-X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-6b909.templateTenant
-X-MS-Exchange-CrossTenant-Network-Message-Id: f8194ab6-2933-4c55-32e5-08dbdf16d0df
-X-MS-Exchange-CrossTenant-AuthSource: DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Nov 2023 22:22:09.5928
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR10MB6993
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20231103191907.54531-1-namhyung@kernel.org> <20231103191907.54531-2-namhyung@kernel.org>
+ <ZUk/27WMwtnQPggF@kernel.org> <ZUlEP9pP3JiSxDVc@kernel.org>
+In-Reply-To: <ZUlEP9pP3JiSxDVc@kernel.org>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Mon, 6 Nov 2023 14:23:47 -0800
+Message-ID: <CAM9d7cgWUfDR9J6NLZBEs-DhXGR1YdaQYyOuANTRbhhUwp=8WQ@mail.gmail.com>
+Subject: Re: [PATCH 1/5] perf annotate: Split struct cycles_info
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-perf-users@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following patchset adds documentation to exported functions in
-`net/bluetooth/lib.c` and ensures that `bt_*` logging functions are
-calling the correct pr_* function as opposed to `printk(KERN_*`.
+Hi Arnaldo,
 
-Yuran Pereira (2):
-  Bluetooth: Add documentation to exported functions in lib
-  Bluetooth: Replaces printk with pr_debug in bt_dbg
+On Mon, Nov 6, 2023 at 11:53 AM Arnaldo Carvalho de Melo
+<acme@kernel.org> wrote:
+>
+> Em Mon, Nov 06, 2023 at 04:34:51PM -0300, Arnaldo Carvalho de Melo escreveu:
+> > Em Fri, Nov 03, 2023 at 12:19:03PM -0700, Namhyung Kim escreveu:
+> > > The cycles info is used only when branch stack is provided.  Split them
+> > > into a separate struct and lazy allocate them to save some memory.
+> > >
+> > > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> > > ---
+> > >  tools/perf/ui/browsers/annotate.c |  2 +-
+> > >  tools/perf/util/annotate.c        | 34 ++++++++++++++++++-------------
+> > >  tools/perf/util/annotate.h        | 14 ++++++++-----
+> > >  3 files changed, 30 insertions(+), 20 deletions(-)
+> > >
+> > > diff --git a/tools/perf/ui/browsers/annotate.c b/tools/perf/ui/browsers/annotate.c
+> > > index ccdb2cd11fbf..d2470f87344d 100644
+> > > --- a/tools/perf/ui/browsers/annotate.c
+> > > +++ b/tools/perf/ui/browsers/annotate.c
+> > > @@ -337,7 +337,7 @@ static void annotate_browser__calc_percent(struct annotate_browser *browser,
+> > >                             max_percent = percent;
+> > >             }
+> > >
+> > > -           if (max_percent < 0.01 && pos->al.ipc == 0) {
+> > > +           if (max_percent < 0.01 && (!pos->al.cycles || pos->al.cycles->ipc == 0)) {
+> > >                     RB_CLEAR_NODE(&pos->al.rb_node);
+> > >                     continue;
+> > >             }
+> > > diff --git a/tools/perf/util/annotate.c b/tools/perf/util/annotate.c
+> > > index 82956adf9963..3e7f75827270 100644
+> > > --- a/tools/perf/util/annotate.c
+> > > +++ b/tools/perf/util/annotate.c
+> > > @@ -1100,8 +1100,8 @@ static void annotation__count_and_fill(struct annotation *notes, u64 start, u64
+> > >             for (offset = start; offset <= end; offset++) {
+> > >                     struct annotation_line *al = notes->offsets[offset];
+> > >
+> > > -                   if (al && al->ipc == 0.0) {
+> > > -                           al->ipc = ipc;
+> > > +                   if (al && al->cycles && al->cycles->ipc == 0.0) {
+> > > +                           al->cycles->ipc = ipc;
+> > >                             cover_insn++;
+> > >                     }
+> > >             }
+> > > @@ -1134,13 +1134,18 @@ void annotation__compute_ipc(struct annotation *notes, size_t size)
+> > >             if (ch && ch->cycles) {
+> > >                     struct annotation_line *al;
+> > >
+> > > +                   al = notes->offsets[offset];
+> > > +                   if (al && al->cycles == NULL) {
+> > > +                           al->cycles = zalloc(sizeof(*al->cycles));
+> > > +                           if (al->cycles == NULL)
+> >
+> > Shouldn't we stop here and tell the user that his system is really tight
+> > on memory instead of just ignoring it?
+> >
+> >       if (al->cycles == NULL) {
+> >               ui__error("Not enough memory for allocating branch stack cycles info!\n");
+> >               return ... its a void function :-\
+> >       }
+> >
+> > Since its a void function, can't we detect that we need al->cycles
+> > allocated at the tool start and allocate it there, then propagate back
+> > the error?
+> >
+> > Its per line, so doing it lazily is indeed easier, so make that function
+> > return an error and bail out when not being able to calculate the ipc
+> > for the remaining lines?
+>
+> I.e. with this folded into this patch, all but one of the callers of
+> symbol__annotate2() already call a ui error messagem for instance:
+>
+>                 err = symbol__annotate2(ms, evsel, opts, &browser.arch);
+>                 if (err) {
+>                         char msg[BUFSIZ];
+>                         dso->annotate_warned = true;
+>                         symbol__strerror_disassemble(ms, err, msg, sizeof(msg));
+>                         ui__error("Couldn't annotate %s:\n%s", sym->name, msg);
+>
+> - Arnaldo
 
- net/bluetooth/lib.c | 71 ++++++++++++++++++++++++++++++++++++++++++---
- 1 file changed, 67 insertions(+), 4 deletions(-)
+Looks good to me, thanks for doing this!
+Namhyung
 
--- 
-2.25.1
 
+>
+> diff --git a/tools/perf/util/annotate.c b/tools/perf/util/annotate.c
+> index 3e7f758272703554..99ff3bb9cad8daa6 100644
+> --- a/tools/perf/util/annotate.c
+> +++ b/tools/perf/util/annotate.c
+> @@ -1114,12 +1114,13 @@ static void annotation__count_and_fill(struct annotation *notes, u64 start, u64
+>         }
+>  }
+>
+> -void annotation__compute_ipc(struct annotation *notes, size_t size)
+> +static int annotation__compute_ipc(struct annotation *notes, size_t size)
+>  {
+> +       int err = 0;
+>         s64 offset;
+>
+>         if (!notes->src || !notes->src->cycles_hist)
+> -               return;
+> +               return 0;
+>
+>         notes->total_insn = annotation__count_insn(notes, 0, size - 1);
+>         notes->hit_cycles = 0;
+> @@ -1137,8 +1138,10 @@ void annotation__compute_ipc(struct annotation *notes, size_t size)
+>                         al = notes->offsets[offset];
+>                         if (al && al->cycles == NULL) {
+>                                 al->cycles = zalloc(sizeof(*al->cycles));
+> -                               if (al->cycles == NULL)
+> -                                       continue;
+> +                               if (al->cycles == NULL) {
+> +                                       err = ENOMEM;
+> +                                       break;
+> +                               }
+>                         }
+>                         if (ch->have_start)
+>                                 annotation__count_and_fill(notes, ch->start, offset, ch);
+> @@ -1150,7 +1153,21 @@ void annotation__compute_ipc(struct annotation *notes, size_t size)
+>                         notes->have_cycles = true;
+>                 }
+>         }
+> +
+> +       if (err) {
+> +               while (++offset < (s64)size) {
+> +                       struct cyc_hist *ch = &notes->src->cycles_hist[offset];
+> +
+> +                       if (ch && ch->cycles) {
+> +                               struct annotation_line *al = notes->offsets[offset];
+> +                               if (al)
+> +                                       zfree(&al->cycles);
+> +                       }
+> +               }
+> +       }
+> +
+>         annotation__unlock(notes);
+> +       return 0;
+>  }
+>
+>  int addr_map_symbol__inc_samples(struct addr_map_symbol *ams, struct perf_sample *sample,
+> @@ -3270,7 +3287,11 @@ int symbol__annotate2(struct map_symbol *ms, struct evsel *evsel,
+>
+>         annotation__set_offsets(notes, size);
+>         annotation__mark_jump_targets(notes, sym);
+> -       annotation__compute_ipc(notes, size);
+> +
+> +       err = annotation__compute_ipc(notes, size);
+> +       if (err)
+> +               goto out_free_offsets;
+> +
+>         annotation__init_column_widths(notes, sym);
+>         notes->nr_events = nr_pcnt;
+>
+> diff --git a/tools/perf/util/annotate.h b/tools/perf/util/annotate.h
+> index 16d27952fd5c1b47..19bc2f03917575a8 100644
+> --- a/tools/perf/util/annotate.h
+> +++ b/tools/perf/util/annotate.h
+> @@ -329,7 +329,6 @@ static inline bool annotation_line__filter(struct annotation_line *al, struct an
+>  }
+>
+>  void annotation__set_offsets(struct annotation *notes, s64 size);
+> -void annotation__compute_ipc(struct annotation *notes, size_t size);
+>  void annotation__mark_jump_targets(struct annotation *notes, struct symbol *sym);
+>  void annotation__update_column_widths(struct annotation *notes);
+>  void annotation__init_column_widths(struct annotation *notes, struct symbol *sym);
