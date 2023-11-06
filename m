@@ -2,233 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A7AC7E2F56
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 22:59:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47D0B7E2F62
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 23:04:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233169AbjKFV7c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 16:59:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53486 "EHLO
+        id S233132AbjKFWEW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 17:04:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233058AbjKFV73 (ORCPT
+        with ESMTP id S232005AbjKFWEV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 16:59:29 -0500
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6B0B11F
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 13:59:25 -0800 (PST)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5af9b0850fdso67726537b3.1
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 13:59:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1699307965; x=1699912765; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=/OS6vf+Ea9868pF6WUQklf5sQIzoehkuuw8I4isih8k=;
-        b=q7R2hLqxOeg4d7cR/V7l+C+qm4LG+cKcoow+QhOKmbUtlZ3ozB4Xye6ImEXIk6zwLF
-         VhH2lh3IWYMGCDdRDhiWcDDOTcfkWZMq2blzvEe7OGhekWhwRRJk7etqc6VcSsDqBRSv
-         tRdG+WNxQVVltV/n0oUR7IbJeg73zTXau5j6WBMRZ/bMjCnEf2fzLX5C99NZWaNYNVMf
-         NGrFbwTt3rQy7+CLlOG55FBhSwcAnsNAgqA/QrYKSKHoG28qAymPQD3dEDCEspj9TMZN
-         AaZMryVYl7TP9KS+j37s+iAnAPwSYu5obB2QLxvTIX5IiTdU2YlXbMb4WvxXQbtBM7Ph
-         9nbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699307965; x=1699912765;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=/OS6vf+Ea9868pF6WUQklf5sQIzoehkuuw8I4isih8k=;
-        b=uYcdEBalQg+XDb6h6oecqzp7X84aaVc1VcfMSwLuslqYV0mEz+NWNZU8SqqlHOPcVd
-         7zW4LOsmyr+6JAbxF2EB2mXfleG9ven0EVAA5uqgfSdzqBHtgCyJPZCDJ7wrUjA4vHo5
-         VgAthPRQQr2SPqfaQbbBDjhL5T50rfvj7x/FN7eV7H/6xM6MZOeyz382Q1mXahchhWtb
-         RgONyjs3JIXKURl+A9VZbijNIP1Gy+V81ecKTlcW7DhOYwaqnCfJqlO4KFs4+vCJGymr
-         rIs1haWj1NMnUQ5hWr10pMFZtdCj/YCQYME0IxNCtnE1HlKE8NrBIwpd8qZ0LyEk82ou
-         LFyg==
-X-Gm-Message-State: AOJu0Yx5rII8+TmJ1oSWfuviBi9bj4OBCP4bFAvUuPWqGdnTn57NO68x
-        YsYYlcFXbNN75TGs1zGHCquVFh4=
-X-Google-Smtp-Source: AGHT+IGhUjiE9VDzMcTJJtqWXGx2vUkjJsBTjExgy9CurrNMa/qX+ungYvsZXoeu861drzM7daa6/X0=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a81:9182:0:b0:5af:a9ab:e131 with SMTP id
- i124-20020a819182000000b005afa9abe131mr230853ywg.1.1699307964987; Mon, 06 Nov
- 2023 13:59:24 -0800 (PST)
-Date:   Mon, 6 Nov 2023 13:59:23 -0800
-In-Reply-To: <CAHS8izMrnVUfbbS=OcJ6JT9SZRRfZ2MC7UnggthpZT=zf2BGLA@mail.gmail.com>
-Mime-Version: 1.0
-References: <20231106024413.2801438-1-almasrymina@google.com>
- <20231106024413.2801438-10-almasrymina@google.com> <ZUk03DhWxV-bOFJL@google.com>
- <19129763-6f74-4b04-8a5f-441255b76d34@kernel.org> <CAHS8izMrnVUfbbS=OcJ6JT9SZRRfZ2MC7UnggthpZT=zf2BGLA@mail.gmail.com>
-Message-ID: <ZUlhu4hlTaqR3CTh@google.com>
-Subject: Re: [RFC PATCH v3 09/12] net: add support for skbs with unreadable frags
-From:   Stanislav Fomichev <sdf@google.com>
-To:     Mina Almasry <almasrymina@google.com>
-Cc:     David Ahern <dsahern@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        "Christian =?utf-8?B?S8O2bmln?=" <christian.koenig@amd.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Jeroen de Borst <jeroendb@google.com>,
-        Praveen Kaligineedi <pkaligineedi@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Kaiyuan Zhang <kaiyuanz@google.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        Mon, 6 Nov 2023 17:04:21 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0596710A
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 14:04:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699308259; x=1730844259;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=DHdBm2pLkPhJr9UAZMbl35Z/fyBQIhnPChy3iWSGc0M=;
+  b=hz3NY5xGeBQeiFCElE4tIuBppeLdcRNm9G9STYY54Xp+L64jydjhVDlQ
+   iqNl7xDekRoMdFMH/pqxsp133XRnDD6Lv8brJmBP4vYvaTrexd/CoQLYI
+   lJFPdvFu//CUaplXwVUJ/vXr8CyUUVLO2oqbrkex8fR+CYg27J3FYxLAC
+   US7ZbmK4e7gnzjZvW0kYwBHRVzrMQuqZu+VGMjDagdaNOLLxGhJVypVfk
+   ZFn/I9QpFn5sR7s6Eb62rpLMe3xEeLxs0tCbrF+VHJWe/W2j8FI13Qbw8
+   CgmNp7iRVG0oAAiLz6LIlcLuxj2JrUksrE7kRe2w4IzE+FOTr+TAUXfqS
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10886"; a="379770936"
+X-IronPort-AV: E=Sophos;i="6.03,282,1694761200"; 
+   d="scan'208";a="379770936"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Nov 2023 14:04:18 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.03,282,1694761200"; 
+   d="scan'208";a="3760794"
+Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
+  by fmviesa002.fm.intel.com with ESMTP; 06 Nov 2023 14:04:16 -0800
+Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r07he-0006lA-1C;
+        Mon, 06 Nov 2023 22:04:14 +0000
+Date:   Tue, 7 Nov 2023 06:03:44 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Cc:     Paul Gazzillo <paul@pgazz.com>,
+        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
+        oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: kismet: WARNING: unmet direct dependencies detected for
+ PINCTRL_SINGLE when selected by ARCH_DAVINCI
+Message-ID: <202311070548.0f6XfBrh-lkp@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/06, Mina Almasry wrote:
-> On Mon, Nov 6, 2023 at 11:34=E2=80=AFAM David Ahern <dsahern@kernel.org> =
-wrote:
-> >
-> > On 11/6/23 11:47 AM, Stanislav Fomichev wrote:
-> > > On 11/05, Mina Almasry wrote:
-> > >> For device memory TCP, we expect the skb headers to be available in =
-host
-> > >> memory for access, and we expect the skb frags to be in device memor=
-y
-> > >> and unaccessible to the host. We expect there to be no mixing and
-> > >> matching of device memory frags (unaccessible) with host memory frag=
-s
-> > >> (accessible) in the same skb.
-> > >>
-> > >> Add a skb->devmem flag which indicates whether the frags in this skb
-> > >> are device memory frags or not.
-> > >>
-> > >> __skb_fill_page_desc() now checks frags added to skbs for page_pool_=
-iovs,
-> > >> and marks the skb as skb->devmem accordingly.
-> > >>
-> > >> Add checks through the network stack to avoid accessing the frags of
-> > >> devmem skbs and avoid coalescing devmem skbs with non devmem skbs.
-> > >>
-> > >> Signed-off-by: Willem de Bruijn <willemb@google.com>
-> > >> Signed-off-by: Kaiyuan Zhang <kaiyuanz@google.com>
-> > >> Signed-off-by: Mina Almasry <almasrymina@google.com>
-> > >>
-> > >> ---
-> > >>  include/linux/skbuff.h | 14 +++++++-
-> > >>  include/net/tcp.h      |  5 +--
-> > >>  net/core/datagram.c    |  6 ++++
-> > >>  net/core/gro.c         |  5 ++-
-> > >>  net/core/skbuff.c      | 77 ++++++++++++++++++++++++++++++++++++---=
----
-> > >>  net/ipv4/tcp.c         |  6 ++++
-> > >>  net/ipv4/tcp_input.c   | 13 +++++--
-> > >>  net/ipv4/tcp_output.c  |  5 ++-
-> > >>  net/packet/af_packet.c |  4 +--
-> > >>  9 files changed, 115 insertions(+), 20 deletions(-)
-> > >>
-> > >> diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
-> > >> index 1fae276c1353..8fb468ff8115 100644
-> > >> --- a/include/linux/skbuff.h
-> > >> +++ b/include/linux/skbuff.h
-> > >> @@ -805,6 +805,8 @@ typedef unsigned char *sk_buff_data_t;
-> > >>   *  @csum_level: indicates the number of consecutive checksums foun=
-d in
-> > >>   *          the packet minus one that have been verified as
-> > >>   *          CHECKSUM_UNNECESSARY (max 3)
-> > >> + *  @devmem: indicates that all the fragments in this skb are backe=
-d by
-> > >> + *          device memory.
-> > >>   *  @dst_pending_confirm: need to confirm neighbour
-> > >>   *  @decrypted: Decrypted SKB
-> > >>   *  @slow_gro: state present at GRO time, slower prepare step requi=
-red
-> > >> @@ -991,7 +993,7 @@ struct sk_buff {
-> > >>  #if IS_ENABLED(CONFIG_IP_SCTP)
-> > >>      __u8                    csum_not_inet:1;
-> > >>  #endif
-> > >> -
-> > >> +    __u8                    devmem:1;
-> > >>  #if defined(CONFIG_NET_SCHED) || defined(CONFIG_NET_XGRESS)
-> > >>      __u16                   tc_index;       /* traffic control inde=
-x */
-> > >>  #endif
-> > >> @@ -1766,6 +1768,12 @@ static inline void skb_zcopy_downgrade_manage=
-d(struct sk_buff *skb)
-> > >>              __skb_zcopy_downgrade_managed(skb);
-> > >>  }
-> > >>
-> > >> +/* Return true if frags in this skb are not readable by the host. *=
-/
-> > >> +static inline bool skb_frags_not_readable(const struct sk_buff *skb=
-)
-> > >> +{
-> > >> +    return skb->devmem;
-> > >
-> > > bikeshedding: should we also rename 'devmem' sk_buff flag to 'not_rea=
-dable'?
-> > > It better communicates the fact that the stack shouldn't dereference =
-the
-> > > frags (because it has 'devmem' fragments or for some other potential
-> > > future reason).
-> >
-> > +1.
-> >
-> > Also, the flag on the skb is an optimization - a high level signal that
-> > one or more frags is in unreadable memory. There is no requirement that
-> > all of the frags are in the same memory type.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   d2f51b3516dade79269ff45eae2a7668ae711b25
+commit: f962396ce29244d9a64f241481fa73fa370404c3 ARM: davinci: support multiplatform build for ARM v5
+date:   4 years, 2 months ago
+config: arm-kismet-CONFIG_PINCTRL_SINGLE-CONFIG_ARCH_DAVINCI-0-0 (https://download.01.org/0day-ci/archive/20231107/202311070548.0f6XfBrh-lkp@intel.com/config)
+reproduce: (https://download.01.org/0day-ci/archive/20231107/202311070548.0f6XfBrh-lkp@intel.com/reproduce)
 
-David: maybe there should be such a requirement (that they all are
-unreadable)? Might be easier to support initially; we can relax later
-on.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311070548.0f6XfBrh-lkp@intel.com/
 
-> The flag indicates that the skb contains all devmem dma-buf memory
-> specifically, not generic 'not_readable' frags as the comment says:
->=20
-> + *     @devmem: indicates that all the fragments in this skb are backed =
-by
-> + *             device memory.
->=20
-> The reason it's not a generic 'not_readable' flag is because handing
-> off a generic not_readable skb to the userspace is semantically not
-> what we're doing. recvmsg() is augmented in this patch series to
-> return a devmem skb to the user via a cmsg_devmem struct which refers
-> specifically to the memory in the dma-buf. recvmsg() in this patch
-> series is not augmented to give any 'not_readable' skb to the
-> userspace.
->=20
-> IMHO skb->devmem + an skb_frags_not_readable() as implemented is
-> correct. If a new type of unreadable skbs are introduced to the stack,
-> I imagine the stack would implement:
->=20
-> 1. new header flag: skb->newmem
-> 2.
->=20
-> static inline bool skb_frags_not_readable(const struct skb_buff *skb)
-> {
->     return skb->devmem || skb->newmem;
-> }
->=20
-> 3. tcp_recvmsg_devmem() would handle skb->devmem skbs is in this patch
-> series, but tcp_recvmsg_newmem() would handle skb->newmem skbs.
+kismet warnings: (new ones prefixed by >>)
+>> kismet: WARNING: unmet direct dependencies detected for PINCTRL_SINGLE when selected by ARCH_DAVINCI
+   .config:6824:warning: symbol value 'ONFIG_ARCH_MMAP_RND_BITS_MI' invalid for ARCH_MMAP_RND_BITS
+   
+   WARNING: unmet direct dependencies detected for PINCTRL_SINGLE
+     Depends on [n]: PINCTRL [=n] && OF [=y] && HAS_IOMEM [=y]
+     Selected by [y]:
+     - ARCH_DAVINCI [=y] && ARCH_MULTI_V5 [=y]
 
-You copy it to the userspace in a special way because your frags
-are page_is_page_pool_iov(). I agree with David, the skb bit is
-just and optimization.
-
-For most of the core stack, it doesn't matter why your skb is not
-readable. For a few places where it matters (recvmsg?), you can
-double-check your frags (all or some) with page_is_page_pool_iov.
-
-Unrelated: we probably need socket to dmabuf association as well (via
-netlink or something).
-We are fundamentally receiving into and sending from a dmabuf (devmem =3D=
-=3D
-dmabuf).
-And once you have this association, recvmsg shouldn't need any new
-special flags.
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
