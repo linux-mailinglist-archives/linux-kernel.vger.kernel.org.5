@@ -2,73 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 64CC37E2B0B
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 18:38:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D8E27E2B62
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 18:41:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231812AbjKFRiE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 12:38:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55740 "EHLO
+        id S231810AbjKFRlo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 12:41:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229567AbjKFRiC (ORCPT
+        with ESMTP id S229603AbjKFRlm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 12:38:02 -0500
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2338FB7;
-        Mon,  6 Nov 2023 09:38:00 -0800 (PST)
-Received: by mail-pj1-x1034.google.com with SMTP id 98e67ed59e1d1-2800f7c8125so4557738a91.1;
-        Mon, 06 Nov 2023 09:38:00 -0800 (PST)
+        Mon, 6 Nov 2023 12:41:42 -0500
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D62ABD45
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 09:41:39 -0800 (PST)
+Received: by mail-pj1-x1030.google.com with SMTP id 98e67ed59e1d1-280200949c3so3493412a91.0
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 09:41:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699292279; x=1699897079; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=JXl+Hk7DG0xQnZU4tGVI8tvUE8tmSEux9caPBMuGXfY=;
-        b=AGIwb2XX6oF84pxTy7lZVJVM/Ea6h0y6ti6LCb8ktD1pNWKShjy5KCJRs9LyiBeGz/
-         IvmJvV3PgmbW2s3oQuGneRDsj8lPVMALccaiCe8Jf+Dr8IOEyi+BmvQV531KkTodwaAt
-         ImsTHNlsFjcBdgNlaon4n6Xjyd/x9MkvxD8P05ZflmLtXHcDaElmZyRYbo0G0yNwASQ7
-         iP4dxcz4wHnhKnoUFToZSwfVGioQSFyg5B2djZbqo2PvSf3BfC/pztjuEAxAvL7gE0jw
-         nd7rx2+hIzS1Hk8V16pfPCFrFoakCn+4ulejmzUZmLrspqMw8JTaf9hJuXDsYQ4fatxz
-         PPnA==
+        d=gmail.com; s=20230601; t=1699292499; x=1699897299; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PQokn8UoRY8iyQHlIyiff09+YQ846OAlOmMikNVi4QE=;
+        b=Y7bLdpSLCiknwdgFuUphflbtEdlKzes3D/gdhBDCajS1EmTA973AmAgYkAMT3IBlBf
+         XW5ovyke3q/513Jh8DAHfR2WqLBlMn1V3tbPSasEZ2dTQ4d+O0weDekxGGrDk108GSdD
+         2hquGE/kXf1NTi2JiZ+RVwNgRnSqHgzFHA/Ns/wzTj2zTu0ZL9X4LyCkascxV7XvaFXp
+         tIE6YBikgKpaD14V1kyLSYuDnPiU4iDzER9bC05wtKFoKhIp3fEC4ZqazXI/CLMhOZBd
+         iFjNugJKcSmwBCZsDGhrn0dMyyHXmqohA8ZQN3fYD2RYQaaR08QR505QfddXazyDpaMb
+         CgRg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699292279; x=1699897079;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=JXl+Hk7DG0xQnZU4tGVI8tvUE8tmSEux9caPBMuGXfY=;
-        b=SwDvbFVLUZ+Zzj7u1N2yk2pWRgS6F0LQQCgWs6K2Ov0cKxsetHErMnvj44wUuSB7w1
-         DI4eRwMSa9u4YlOgNoYHXm3W9+W+E7UKpB3SlyOtZQLKm0DbhPMMeqCdYYCoNXBEGMP0
-         3Oo55kRrN78C46KfsS99V8BdxogVvKbvsR19ddpFgXKLdTiV7uBVbBzXOQ9jRg+LM76P
-         XtPlSAz77cxuvzFUpUFEUiZpKWrGV7l6mvnsveCM5Sw89M0Q+D6HN8iCfhbnBN5GglCf
-         GXwdTGg28dGAw0tOnpddqQmF/pvrcARqJYBiFKspIWswTTZliohkQqnyebjI729rWjA+
-         WtYA==
-X-Gm-Message-State: AOJu0Ywv1kaulThvEX1ZVCCR8ZsXqckTci+SrI765ReAzgo+IG4B2jqZ
-        MSMP5IwicTZbRMjZx4A9SNQ=
-X-Google-Smtp-Source: AGHT+IENG/NaqDAdFCQ9VnTFpP4G2Tf2g017TUG53McEQO60wF6u3aF8m5z8YVdFn8j4VyH1bHKp4g==
-X-Received: by 2002:a17:90b:4c92:b0:277:68c3:64b9 with SMTP id my18-20020a17090b4c9200b0027768c364b9mr267730pjb.5.1699292279446;
-        Mon, 06 Nov 2023 09:37:59 -0800 (PST)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id d11-20020a63fd0b000000b005b82611378bsm60018pgh.52.2023.11.06.09.37.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 06 Nov 2023 09:37:58 -0800 (PST)
-Message-ID: <f643650a-d520-4789-b67c-4f8da46fee73@gmail.com>
-Date:   Mon, 6 Nov 2023 09:37:56 -0800
+        d=1e100.net; s=20230601; t=1699292499; x=1699897299;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=PQokn8UoRY8iyQHlIyiff09+YQ846OAlOmMikNVi4QE=;
+        b=h2/WlqMc2m/jeL1zBMfwyRZ5cvTWyYqsqhCyoEbPYMvTI0SJD8uSlp+8KlZHsJSq+7
+         5zbTwQ1cnsYisat0fIjJHa3nhVXc/0SiPpQS1BuAZk+ZVCHXgKMDQR4q+gOmqSsLbjU5
+         HAD7uJHz/OvTDdPM2NfaXW6lUemGwSPgTwpBvE6fQkXPCcREQAVhM5Ox4fI/O7UcpA6m
+         OoYGQ6bheUy/dZSeK2YTM90gMd3ih4HTxwhVVqah3H3GVOuK7LpyNj0Pf3mioFWAWwjW
+         M1dajWUuL6hU078Fb6znkfiz17/xY9jmhhgyjEF0W0IPXXtn+jVg2Qb7yTf9JYTpdWkA
+         nmCA==
+X-Gm-Message-State: AOJu0YybTIU/A9JWMWyrAQbQNm+hry0pKUDNZned07MNaoWXDvBSWV9i
+        P3cYGe72uR0UWA0twY1/5bSfnKC6HGcB83WWmsA=
+X-Google-Smtp-Source: AGHT+IHiAqA6yTXob/0lQXEwVw+XGA3f3QODgmaimdSwl1J9rXBTTAEdCQf7hLfeBep3tDL+zvrXQld8T9b6eCfMYp4=
+X-Received: by 2002:a17:90b:4a50:b0:26d:17da:5e9f with SMTP id
+ lb16-20020a17090b4a5000b0026d17da5e9fmr10375032pjb.1.1699292499209; Mon, 06
+ Nov 2023 09:41:39 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 5.10 00/95] 5.10.200-rc1 review
-Content-Language: en-US
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org
-References: <20231106130304.678610325@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <20231106130304.678610325@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <cover.1698077459.git.andreyknvl@google.com> <CANpmjNNoJQoWzODAbc4naq--b+LOfK76TCbx9MpL8+4x9=LTiw@mail.gmail.com>
+ <CA+fCnZeQ6nkCbkOR4GqGQ9OzprGNNrXvrOqqsJP0Vr3uJKLdrQ@mail.gmail.com>
+In-Reply-To: <CA+fCnZeQ6nkCbkOR4GqGQ9OzprGNNrXvrOqqsJP0Vr3uJKLdrQ@mail.gmail.com>
+From:   Andrey Konovalov <andreyknvl@gmail.com>
+Date:   Mon, 6 Nov 2023 18:41:28 +0100
+Message-ID: <CA+fCnZeEkj2TdZ37jFOcYcA-+2BwHta7thMZxPf7n2N4Rt--tw@mail.gmail.com>
+Subject: Re: [PATCH v3 00/19] stackdepot: allow evicting stack traces
+To:     Marco Elver <elver@google.com>,
+        Alexander Potapenko <glider@google.com>
+Cc:     andrey.konovalov@linux.dev, Dmitry Vyukov <dvyukov@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>, kasan-dev@googlegroups.com,
+        Evgenii Stepanov <eugenis@google.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Andrey Konovalov <andreyknvl@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -79,48 +76,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/6/23 05:03, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.200 release.
-> There are 95 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 08 Nov 2023 13:02:46 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.200-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+On Fri, Nov 3, 2023 at 10:37=E2=80=AFPM Andrey Konovalov <andreyknvl@gmail.=
+com> wrote:
+>
+> On Tue, Oct 24, 2023 at 3:14=E2=80=AFPM Marco Elver <elver@google.com> wr=
+ote:
+> >
+> > 1. I know fixed-sized slots are need for eviction to work, but have
+> > you evaluated if this causes some excessive memory waste now? Or is it
+> > negligible?
+>
+> With the current default stack depot slot size of 64 frames, a single
+> stack trace takes up ~3-4x on average compared to precisely sized
+> slots (KMSAN is closer to ~4x due to its 3-frame-sized linking
+> records).
+>
+> However, as the tag-based KASAN modes evict old stack traces, the
+> average total amount of memory used for stack traces is ~0.5 MB (with
+> the default stack ring size of 32k entries).
+>
+> I also have just mailed an eviction implementation for Generic KASAN.
+> With it, the stack traces take up ~1 MB per 1 GB of RAM while running
+> syzkaller (stack traces are evicted when they are flushed from
+> quarantine, and quarantine's size depends on the amount of RAM.)
+>
+> The only problem is KMSAN. Based on a discussion with Alexander, it
+> might not be possible to implement the eviction for it. So I suspect,
+> with this change, syzbot might run into the capacity WARNING from time
+> to time.
+>
+> The simplest solution would be to bump the maximum size of stack depot
+> storage to x4 if KMSAN is enabled (to 512 MB from the current 128 MB).
+> KMSAN requires a significant amount of RAM for shadow anyway.
+>
+> Would that be acceptable?
+>
+> > If it turns out to be a problem, one way out would be to partition the
+> > freelist into stack size classes; e.g. one for each of stack traces of
+> > size 8, 16, 32, 64.
+>
+> This shouldn't be hard to implement.
+>
+> However, as one of the perf improvements, I'm thinking of saving a
+> stack trace directly into a stack depot slot (to avoid copying it).
+> With this, we won't know the stack trace size before it is saved. So
+> this won't work together with the size classes.
 
-perf fails to build with:
+On a second thought, saving stack traces directly into a stack depot
+slot will require taking the write lock, which will badly affect
+performance, or using some other elaborate locking scheme, which might
+be an overkill.
 
-util/evlist.c: In function 'evlist__add_aux_dummy':
-util/evlist.c:269:31: warning: implicit declaration of function 
-'evlist__dummy_event'; did you mean 'evsel__is_dummy_event'? 
-[-Wimplicit-function-declaration]
-   269 |         struct evsel *evsel = evlist__dummy_event(evlist);
-       |                               ^~~~~~~~~~~~~~~~~~~
-       |                               evsel__is_dummy_event
-util/evlist.c:269:31: warning: initialization of 'struct evsel *' from 
-'int' makes pointer from integer without a cast [-Wint-conversion]
-
-...
-
-   LINK 
-/local/users/fainelli/buildroot/output/arm64/build/linux-custom/tools/perf/perf
-/local/stbopt_p/toolchains_303/stbgcc-12.3-0.2/bin/../lib/gcc/aarch64-unknown-linux-musl/12.3.0/../../../../aarch64-unknown-linux-musl/bin/ld: 
-/local/users/fainelli/buildroot/output/arm64/build/linux-custom/tools/perf/perf-in.o: 
-in function `evlist__add_aux_dummy':
-/local/users/fainelli/buildroot/output/arm64/build/linux-custom/tools/perf/util/evlist.c:269: 
-undefined reference to `evlist__dummy_event'
-collect2: error: ld returned 1 exit status
-
--- 
-Florian
-
+> > 2. I still think switching to the percpu_rwsem right away is the right
+> > thing, and not actually a downside. I mentioned this before, but you
+> > promised a follow-up patch, so I trust that this will happen. ;-)
+>
+> First thing on my TODO list wrt perf improvements :)
+>
+> > Acked-by: Marco Elver <elver@google.com>
+> >
+> > The series looks good in its current state. However, see my 2
+> > higher-level comments above.
+>
+> Thank you!
