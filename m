@@ -2,157 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E67687E213C
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 13:20:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3F387E214E
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 13:25:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231636AbjKFMUu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 07:20:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40486 "EHLO
+        id S231684AbjKFMZk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 07:25:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231630AbjKFMUr (ORCPT
+        with ESMTP id S230284AbjKFMZi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 07:20:47 -0500
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10DBABD
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 04:20:44 -0800 (PST)
-Received: by mail-yb1-xb2a.google.com with SMTP id 3f1490d57ef6-da2e786743aso4456426276.0
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 04:20:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699273243; x=1699878043; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jNrBmQOtJ17ojJmeT7du8FrKMIIzYnoq4n1GU13u2lU=;
-        b=H92pnSDeWr3e9AcWDs2HT161bar1Tlz7Fq0xkqPxFqi/+B9Gy3Q4RKTt7i7pMaq0U/
-         5G7Po1GNkVT5+BKPE9njjgFfxM8uvnc9MATXcBpooaRBgp1wENAsNdc9ZQzMfpEP/D3a
-         1DByK9X+a2bCTMkzxzTiDcJQC6mBh5Fyw2QctbKPe0tn7LiMuzhuS5ExvE9pI+Kvsqcx
-         yOVTm5+6m+83KiSOCULLpTyzssZWWIUZjfHdXO7Ntg6bIVwPltR9XvarUPODItRCc+V5
-         QHTsznETSfzbZlmPWcVXhqtoIn8imhPZHcrASvA1dHKuUa2WmamaqoD5ma3Q54THTUQ+
-         cHRQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699273243; x=1699878043;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jNrBmQOtJ17ojJmeT7du8FrKMIIzYnoq4n1GU13u2lU=;
-        b=aGgcu3iHfVU7Cgdx7KLKnEaAaxdBKVqhZ7/l0FmzdtqOxv/7tU8CEQEmRWc6jH4KcB
-         Tqtlru3Bzn6NtH9juWcaVOGWjLhzZcpX+3P4Eq6Pixq+tNzVqrlDIt4TAwrm8C71OWsZ
-         VNYvfMwpB209Z73UEgIJYpupOyLNJ8nZNhDT7V8+b81By+Bm+DYOouEDPp3YFlWqQxRm
-         UadFDepjgiuCsrGRndeKe97x6kqZHdZqNkhsQks5/wk2ZSAdkzid0APRLbCw36H7d/zq
-         OE9+dgLQg1R6NHPd1ZZ3emoAZnwFxgQGKS8BWhnYpUY2G5N4gXZhhFu5O+q3RpynBHCe
-         EjVA==
-X-Gm-Message-State: AOJu0YwQ1l86YgIxgOyR46Zfn/s1cMXL3HL1N0lO2LMpR/MflleXg97t
-        nb3Djp7wxw1TbNy7b/XPFtJ6hshy++s5U1Mn/6j+pw==
-X-Google-Smtp-Source: AGHT+IEWI+f1HNKNSeeVWXlqh/hIENbIf83dLNlmNVJ1X8gb5errhSt5Vw0iEDS5BYJhLkKMzUml4nTi0qHyePAxOUU=
-X-Received: by 2002:a25:324c:0:b0:da0:6cf3:c629 with SMTP id
- y73-20020a25324c000000b00da06cf3c629mr24702415yby.41.1699273243154; Mon, 06
- Nov 2023 04:20:43 -0800 (PST)
+        Mon, 6 Nov 2023 07:25:38 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6308A97;
+        Mon,  6 Nov 2023 04:25:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699273536; x=1730809536;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=2pR8X4BMVcOGKWPNkgcioekUqSx5/pk8Jhwvb4ict+4=;
+  b=i1ILJryameQME2wCRiiRbVH+TQb/wd1dauLPCNARzBp00uPXWi8Scw5z
+   1PKdTA9jabyoy9/DLJWxDsU7i/1t6mIraTua7+YHkF1YFmd08tQG/YkQV
+   6kFQqMUsV1QpBQWl/sZQgBvOhG9I/lKWHAE7A9q3mHG+T2H5qxzphMs9n
+   oh6mFO4jU8hLWO/cUJbHw+mKEi5KH1u9gGVexCfS6s5eh05rAz9nATEK5
+   XY4U9JB6/7PRs+pryVjUn0EXe3hOFhEAAgMNFLY2XjPWxuDS4s+2QGZyn
+   voVw4s1RDMdkqSQd8ObwX6ioj8qAPohuGbclSgHI6FrqzVTsVcTLA1e58
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10885"; a="420376184"
+X-IronPort-AV: E=Sophos;i="6.03,281,1694761200"; 
+   d="scan'208";a="420376184"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Nov 2023 04:25:36 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10885"; a="828193825"
+X-IronPort-AV: E=Sophos;i="6.03,281,1694761200"; 
+   d="scan'208";a="828193825"
+Received: from rmstoi-mobl.ger.corp.intel.com ([10.251.216.76])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Nov 2023 04:25:27 -0800
+Date:   Mon, 6 Nov 2023 14:25:24 +0200 (EET)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     Mario Limonciello <mario.limonciello@amd.com>
+cc:     Karol Herbst <kherbst@redhat.com>, Lyude Paul <lyude@redhat.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?ISO-8859-15?Q?Christian_K=F6nig?= <christian.koenig@amd.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Lukas Wunner <lukas@wunner.de>,
+        Danilo Krummrich <dakr@redhat.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Xinhui Pan <Xinhui.Pan@amd.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Mark Gross <markgross@kernel.org>,
+        Andreas Noever <andreas.noever@gmail.com>,
+        Michael Jamet <michael.jamet@intel.com>,
+        Yehezkel Bernat <YehezkelShB@gmail.com>,
+        =?ISO-8859-15?Q?Pali_Roh=E1r?= <pali@kernel.org>,
+        =?ISO-8859-15?Q?Marek_Beh=FAn?= <kabel@kernel.org>,
+        "Maciej W . Rozycki" <macro@orcam.me.uk>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        "open list:DRM DRIVER FOR NVIDIA GEFORCE/QUADRO GPUS" 
+        <dri-devel@lists.freedesktop.org>,
+        "open list:DRM DRIVER FOR NVIDIA GEFORCE/QUADRO GPUS" 
+        <nouveau@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:RADEON and AMDGPU DRM DRIVERS" 
+        <amd-gfx@lists.freedesktop.org>,
+        "open list:PCI SUBSYSTEM" <linux-pci@vger.kernel.org>,
+        "open list:ACPI" <linux-acpi@vger.kernel.org>,
+        "open list:X86 PLATFORM DRIVERS" 
+        <platform-driver-x86@vger.kernel.org>,
+        "open list:THUNDERBOLT DRIVER" <linux-usb@vger.kernel.org>
+Subject: Re: [PATCH v2 1/9] drm/nouveau: Switch from pci_is_thunderbolt_attached()
+ to dev_is_removable()
+In-Reply-To: <20231103190758.82911-2-mario.limonciello@amd.com>
+Message-ID: <55563d57-60c3-1789-1e7c-5e618fbd6253@linux.intel.com>
+References: <20231103190758.82911-1-mario.limonciello@amd.com> <20231103190758.82911-2-mario.limonciello@amd.com>
 MIME-Version: 1.0
-References: <20231106-pm8937-v1-0-ec51d9eeec53@riseup.net> <20231106-pm8937-v1-7-ec51d9eeec53@riseup.net>
-In-Reply-To: <20231106-pm8937-v1-7-ec51d9eeec53@riseup.net>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Mon, 6 Nov 2023 14:20:31 +0200
-Message-ID: <CAA8EJprKNPiaMi1OxVUHtY-YxzUuy_uZhrNemmU6dQeFEukv0w@mail.gmail.com>
-Subject: Re: [PATCH 7/8] arm64: dts: qcom: Add PM8937 PMIC
-To:     Dang Huynh <danct12@riseup.net>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Robert Marko <robimarko@gmail.com>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 6 Nov 2023 at 14:11, Dang Huynh <danct12@riseup.net> wrote:
->
-> The PM8937 features integrated peripherals like ADC, GPIO controller,
-> MPPs, PON keys and others.
->
-> Add the device tree so that any boards with this PMIC can use it.
->
-> Signed-off-by: Dang Huynh <danct12@riseup.net>
+On Fri, 3 Nov 2023, Mario Limonciello wrote:
+
+> pci_is_thunderbolt_attached() only works for Intel TBT devices. Switch to
+> using dev_is_removable() to be able to detect USB4 devices as well.
+
+Please extend this with more details. I had to lookup the TBT change to 
+be able to make any guess why you're doing this (and it's still a guess 
+at best).
+
+-- 
+ i.
+
+
+> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
 > ---
->  arch/arm64/boot/dts/qcom/pm8937.dtsi | 202 +++++++++++++++++++++++++++++=
-++++++
->  1 file changed, 202 insertions(+)
->
-> diff --git a/arch/arm64/boot/dts/qcom/pm8937.dtsi b/arch/arm64/boot/dts/q=
-com/pm8937.dtsi
-> new file mode 100644
-> index 000000000000..6091d6938885
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/qcom/pm8937.dtsi
-> @@ -0,0 +1,202 @@
-> +// SPDX-License-Identifier: BSD-3-Clause
-> +/*
-> + * Copyright (c) 2023, Dang Huynh <danct12@riseup.net>
-> + */
-> +
-> +#include <dt-bindings/iio/qcom,spmi-vadc.h>
-> +#include <dt-bindings/input/linux-event-codes.h>
-> +#include <dt-bindings/interrupt-controller/irq.h>
-> +#include <dt-bindings/pinctrl/qcom,pmic-mpp.h>
-> +#include <dt-bindings/spmi/spmi.h>
-> +
-> +/ {
-> +       thermal-zones {
-> +               pm8937-thermal {
-> +                       polling-delay-passive =3D <0>;
-> +                       polling-delay =3D <0>;
-> +                       thermal-sensors =3D <&pm8937_temp>;
-> +
-> +                       trips {
-> +                               pm8937_trip0: pm8937-trip0 {
-
-I don't think you need labels here. Also you can drop PMIC name from
-trip point node names.
-
-> +                                       temperature =3D <105000>;
-> +                                       hysteresis =3D <0>;
-> +                                       type =3D "passive";
-> +                               };
-> +                               pm8937_trip1: pm8937-trip1 {
-> +                                       temperature =3D <125000>;
-> +                                       hysteresis =3D <0>;
-> +                                       type =3D "passive";
-> +                               };
-> +                               pm8937_trip2: pm8937-trip2 {
-> +                                       temperature =3D <145000>;
-> +                                       hysteresis =3D <0>;
-> +                                       type =3D "passive";
-
-145=C2=B0C is very hot for the passive trip point
-
-Comparing this with other platforms, 125=C2=B0C can be "hot" and 145=C2=B0C=
- is "critical".
-
-Other than that:
-
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-
-> +                               };
-> +                       };
-> +               };
-> +       };
-> +};
-
-
---=20
-With best wishes
-Dmitry
+>  drivers/gpu/drm/nouveau/nouveau_vga.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/nouveau/nouveau_vga.c b/drivers/gpu/drm/nouveau/nouveau_vga.c
+> index f8bf0ec26844..14215b7ca187 100644
+> --- a/drivers/gpu/drm/nouveau/nouveau_vga.c
+> +++ b/drivers/gpu/drm/nouveau/nouveau_vga.c
+> @@ -94,8 +94,8 @@ nouveau_vga_init(struct nouveau_drm *drm)
+>  
+>  	vga_client_register(pdev, nouveau_vga_set_decode);
+>  
+> -	/* don't register Thunderbolt eGPU with vga_switcheroo */
+> -	if (pci_is_thunderbolt_attached(pdev))
+> +	/* don't register USB4/Thunderbolt eGPU with vga_switcheroo */
+> +	if (dev_is_removable(&pdev->dev))
+>  		return;
+>  
+>  	vga_switcheroo_register_client(pdev, &nouveau_switcheroo_ops, runtime);
+> @@ -118,7 +118,7 @@ nouveau_vga_fini(struct nouveau_drm *drm)
+>  
+>  	vga_client_unregister(pdev);
+>  
+> -	if (pci_is_thunderbolt_attached(pdev))
+> +	if (dev_is_removable(&pdev->dev))
+>  		return;
+>  
+>  	vga_switcheroo_unregister_client(pdev);
+> 
