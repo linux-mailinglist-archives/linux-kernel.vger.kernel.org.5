@@ -2,118 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A10837E297E
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 17:13:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D54A7E2986
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 17:15:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232696AbjKFQNU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 11:13:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45058 "EHLO
+        id S232536AbjKFQPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 11:15:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232694AbjKFQNR (ORCPT
+        with ESMTP id S232239AbjKFQPD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 11:13:17 -0500
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F423D57;
-        Mon,  6 Nov 2023 08:13:14 -0800 (PST)
-Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-6b77ab73c6fso3660024b3a.1;
-        Mon, 06 Nov 2023 08:13:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699287193; x=1699891993; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:cc:references:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HwloH4lIsaKOBcUH+ktpM/tPuqiiEi1+sP4h2yghMLE=;
-        b=OVy9MOCkf1m0/wt1Gigzkd/h/81LP0BMl7RIm0spTSwMqVngmfJCZyAoiSzTlUrf3J
-         MOxjz7GVMkdH41Te0Bg8gbCI3EBg7OsU7s0V+8xx148dDdXLQ8MHkRAJN5r8bdkxePd3
-         oARfp2h3OtVTUXuG37dyYNh4AeM/m/bY3Vk10JmH0UUHLLOvuWqz+YL7PVPVom9xiOfF
-         ycVdaLqcm24w6EBKG1/S6lZxVgcB4vp0sLdogfp3Trkf8fKX6qXrGxBGxyLghgjgeykq
-         C5bXNTmYbGqNdHjJP/sEmAiVP1VjKaVV62846mp34KlUE3Cky9TWPtKBj60xPslj1JeP
-         QcOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699287193; x=1699891993;
-        h=content-transfer-encoding:in-reply-to:from:cc:references:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=HwloH4lIsaKOBcUH+ktpM/tPuqiiEi1+sP4h2yghMLE=;
-        b=lFeJ4q5yk8JUK0QgQbMwWYsyDbrhpCPu0AO3wfu+XSWKPMuJjmMf6PHGFo6pzIxIZS
-         7rSUCV+8jRWTqd3SeLs2Yb9sT26VX/G3aEuGUdcLCID/wp+uBHMPbkw6ZlGsmbtC21Lx
-         p+FHKyY6FcHZU1EiZ+nkMp0R+ysjnRl+fzPbbk4EvTPW1tcyU8DzEtQeTcGxCHsfLRZB
-         pb//shjtC+6p1jKnbVpD8fkVb/gNod7h/UYNUD5O2Iqs9MiYDZetRCXzcMVVXwTicyUk
-         JJ+3YJ+nZn9moDB+Oo6eHNdztz/MJds6mqLqOstiOmpD7QK5L0smiymwcagu1MW1URVZ
-         dlpw==
-X-Gm-Message-State: AOJu0Yy318ahXP/KVtc8FYrAw3Mb5siVS9oE1UsmKog2BCcj0wMe+zxX
-        qPNlPnaLe33/6yVfSXasN7I=
-X-Google-Smtp-Source: AGHT+IEKAggblLoWq1aCM5CRiM0ajmV9IssT41pHY1U7hoDv/Yag3Hu7evt62z9utMKTaqCR1DKNrw==
-X-Received: by 2002:a05:6a20:244f:b0:15e:4084:6480 with SMTP id t15-20020a056a20244f00b0015e40846480mr14969189pzc.27.1699287193441;
-        Mon, 06 Nov 2023 08:13:13 -0800 (PST)
-Received: from [192.168.0.100] ([183.247.1.75])
-        by smtp.gmail.com with ESMTPSA id a10-20020a634d0a000000b005b8ea15c338sm5611879pgb.62.2023.11.06.08.13.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 06 Nov 2023 08:13:13 -0800 (PST)
-Message-ID: <21a93447-6830-4884-b488-cbac38df1b96@gmail.com>
-Date:   Tue, 7 Nov 2023 00:13:06 +0800
+        Mon, 6 Nov 2023 11:15:03 -0500
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 034E71BF
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 08:15:00 -0800 (PST)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mfe@pengutronix.de>)
+        id 1r02FZ-0003qg-T5; Mon, 06 Nov 2023 17:14:53 +0100
+Received: from [2a0a:edc0:2:b01:1d::c0] (helo=ptx.whiteo.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <mfe@pengutronix.de>)
+        id 1r02FZ-0075Lk-5q; Mon, 06 Nov 2023 17:14:53 +0100
+Received: from mfe by ptx.whiteo.stw.pengutronix.de with local (Exim 4.92)
+        (envelope-from <mfe@pengutronix.de>)
+        id 1r02FZ-000i2P-3Q; Mon, 06 Nov 2023 17:14:53 +0100
+Date:   Mon, 6 Nov 2023 17:14:53 +0100
+From:   Marco Felsch <m.felsch@pengutronix.de>
+To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+Cc:     shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, linux-imx@nxp.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Peng Fan <peng.fan@nxp.com>
+Subject: Re: [PATCH V2] soc: imx8mp: support 128 bits UID
+Message-ID: <20231106161453.tucbpn643cxub3ah@pengutronix.de>
+References: <20231029034547.3039893-1-peng.fan@oss.nxp.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] bpf: Use E2BIG instead of ENOENT
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-References: <20231104024444.385484-1-chen.dylane@gmail.com>
- <CAADnVQ+1pNzLRwNNzL-0ai0P281hG=eNO2COrCxuCv2VF3KGUA@mail.gmail.com>
- <CA+92Ff+ZW5wu3mZFs--nxcyJyc7YxEhP-yuL-BEsWzVChR9Jdg@mail.gmail.com>
-Cc:     Song Liu <song@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Hao Luo <haoluo@google.com>, bpf <bpf@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-From:   Tao Chen <chen.dylane@gmail.com>
-In-Reply-To: <CA+92Ff+ZW5wu3mZFs--nxcyJyc7YxEhP-yuL-BEsWzVChR9Jdg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231029034547.3039893-1-peng.fan@oss.nxp.com>
+User-Agent: NeoMutt/20180716
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: mfe@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Peng,
 
-Hi, Alexei, the delete element api of stackmap return E2BIG when the key 
-size beyond the buckets size, so i try to keep the same approach. Maybe 
-it's not necessary, anyway, thanks for your reply.
+thanks for your patch, please see my comments below.
 
-在 2023/11/6 下午11:59, Tao Chen 写道:
+On 23-10-29, Peng Fan (OSS) wrote:
+> From: Peng Fan <peng.fan@nxp.com>
 > 
+> Current driver only supports 64bits UID for i.MX8MP, but
+> i.MX8MP UID is actually 128bits, the high 64bits is at 0xE00.
+> So update driver to support it.
 > 
-> ---------- Forwarded message ---------
-> 发件人： *Alexei Starovoitov* <alexei.starovoitov@gmail.com 
-> <mailto:alexei.starovoitov@gmail.com>>
-> Date: 2023年11月5日周日 04:54
-> Subject: Re: [PATCH] bpf: Use E2BIG instead of ENOENT
-> To: Tao Chen <chen.dylane@gmail.com <mailto:chen.dylane@gmail.com>>
-> Cc: Song Liu <song@kernel.org <mailto:song@kernel.org>>, Jiri Olsa 
-> <jolsa@kernel.org <mailto:jolsa@kernel.org>>, Alexei Starovoitov 
-> <ast@kernel.org <mailto:ast@kernel.org>>, Daniel Borkmann 
-> <daniel@iogearbox.net <mailto:daniel@iogearbox.net>>, Andrii Nakryiko 
-> <andrii@kernel.org <mailto:andrii@kernel.org>>, Yonghong Song 
-> <yonghong.song@linux.dev <mailto:yonghong.song@linux.dev>>, Martin KaFai 
-> Lau <martin.lau@linux.dev <mailto:martin.lau@linux.dev>>, John Fastabend 
-> <john.fastabend@gmail.com <mailto:john.fastabend@gmail.com>>, Hao Luo 
-> <haoluo@google.com <mailto:haoluo@google.com>>, bpf <bpf@vger.kernel.org 
-> <mailto:bpf@vger.kernel.org>>, LKML <linux-kernel@vger.kernel.org 
-> <mailto:linux-kernel@vger.kernel.org>>
+> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> ---
 > 
+> V2:
+>  Address Shawn and Macro's comments
 > 
-> On Fri, Nov 3, 2023 at 7:44 PM Tao Chen <chen.dylane@gmail.com 
-> <mailto:chen.dylane@gmail.com>> wrote:
->  >
->  > Use E2BIG instead of ENOENT when the key size beyond the buckets size,
->  > it seems more meaningful.
+>  drivers/soc/imx/soc-imx8m.c | 63 +++++++++++++++++++++++++++++++++----
+>  1 file changed, 57 insertions(+), 6 deletions(-)
 > 
-> seems more meaningful?
-> Sorry. That's hardly a reason to break someone's code.
+> diff --git a/drivers/soc/imx/soc-imx8m.c b/drivers/soc/imx/soc-imx8m.c
+> index ec87d9d878f3..6ed7889e1902 100644
+> --- a/drivers/soc/imx/soc-imx8m.c
+> +++ b/drivers/soc/imx/soc-imx8m.c
+> @@ -24,6 +24,7 @@
+>  #define OCOTP_UID_HIGH			0x420
+>  
+>  #define IMX8MP_OCOTP_UID_OFFSET		0x10
+> +#define IMX8MP_OCOTP_UID_HIGH		0xe00
+>  
+>  /* Same as ANADIG_DIGPROG_IMX7D */
+>  #define ANADIG_DIGPROG_IMX8MM	0x800
+> @@ -31,9 +32,11 @@
+>  struct imx8_soc_data {
+>  	char *name;
+>  	u32 (*soc_revision)(void);
+> +	bool uid_128bit;
+
+Can we replace this by:
+
+  	void (*soc_uid)(void);
+
+and let the driver data set the correct soc_uid function within the
+driver data? Please see below for further comments on this.
+
+>  };
+>  
+>  static u64 soc_uid;
+> +static u64 soc_uid_h;
+>  
+>  #ifdef CONFIG_HAVE_ARM_SMCCC
+>  static u32 imx8mq_soc_revision_from_atf(void)
+> @@ -101,8 +104,6 @@ static void __init imx8mm_soc_uid(void)
+>  	void __iomem *ocotp_base;
+>  	struct device_node *np;
+>  	struct clk *clk;
+> -	u32 offset = of_machine_is_compatible("fsl,imx8mp") ?
+> -		     IMX8MP_OCOTP_UID_OFFSET : 0;
+>  
+>  	np = of_find_compatible_node(NULL, NULL, "fsl,imx8mm-ocotp");
+>  	if (!np)
+> @@ -118,12 +119,52 @@ static void __init imx8mm_soc_uid(void)
+>  
+>  	clk_prepare_enable(clk);
+>  
+> -	soc_uid = readl_relaxed(ocotp_base + OCOTP_UID_HIGH + offset);
+> +	soc_uid = readl_relaxed(ocotp_base + OCOTP_UID_HIGH);
+>  	soc_uid <<= 32;
+> -	soc_uid |= readl_relaxed(ocotp_base + OCOTP_UID_LOW + offset);
+> +	soc_uid |= readl_relaxed(ocotp_base + OCOTP_UID_LOW);
+>  
+>  	clk_disable_unprepare(clk);
+>  	clk_put(clk);
+> +
+> +	iounmap(ocotp_base);
+> +	of_node_put(np);
+> +}
+> +
+> +static void __init imx8mp_soc_uid(void)
+> +{
+> +	void __iomem *ocotp_base;
+> +	struct device_node *np;
+> +	struct clk *clk;
+> +
+> +	np = of_find_compatible_node(NULL, NULL, "fsl,imx8mp-ocotp");
+> +	if (!np)
+> +		return;
+> +
+> +	ocotp_base = of_iomap(np, 0);
+> +	if (!ocotp_base) {
+> +		WARN_ON(!ocotp_base);
+> +		return;
+> +	}
+> +
+> +	clk = of_clk_get_by_name(np, NULL);
+> +	if (IS_ERR(clk)) {
+> +		WARN_ON(IS_ERR(clk));
+> +		return;
+> +	}
+> +
+> +	clk_prepare_enable(clk);
+> +
+> +	soc_uid = readl_relaxed(ocotp_base + OCOTP_UID_HIGH + IMX8MP_OCOTP_UID_OFFSET);
+
+We can avoid this (base + old_reg + offset) pattern now and just do:
+
+	soc_uid = readl_relaxed(ocotp_base + IMX8MP_OCOTP_UID_BITS_64_32);
+
+> +	soc_uid <<= 32;
+> +	soc_uid |= readl_relaxed(ocotp_base + OCOTP_UID_LOW + IMX8MP_OCOTP_UID_OFFSET);
+
+	soc_uid |= readl_relaxed(ocotp_base + IMX8MP_OCOTP_UID_BITS_32_0);
+
+> +	soc_uid_h = readl_relaxed(ocotp_base + IMX8MP_OCOTP_UID_HIGH + 0x10);
+
+	soc_uid = readl_relaxed(ocotp_base + IMX8MP_OCOTP_UID_BITS_128_96);
+
+> +	soc_uid_h <<= 32;
+> +	soc_uid_h |= readl_relaxed(ocotp_base + IMX8MP_OCOTP_UID_HIGH);
+
+	soc_uid |= readl_relaxed(ocotp_base + IMX8MP_OCOTP_UID_BITS_96_64);
+
+with:
+
+#define IMX8MP_OCOTP_UID_BITS_32_0	0x420
+#define IMX8MP_OCOTP_UID_BITS_64_32	0x430
+#define IMX8MP_OCOTP_UID_BITS_96_64	0xe00
+#define IMX8MP_OCOTP_UID_BITS_128_96	0xe10
+
+> +
+> +	clk_disable_unprepare(clk);
+> +	clk_put(clk);
+> +
+>  	iounmap(ocotp_base);
+>  	of_node_put(np);
+>  }
+> @@ -146,7 +187,11 @@ static u32 __init imx8mm_soc_revision(void)
+>  	iounmap(anatop_base);
+>  	of_node_put(np);
+>  
+> -	imx8mm_soc_uid();
+> +
+> +	if (of_machine_is_compatible("fsl,imx8mp"))
+> +		imx8mp_soc_uid();
+> +	else
+> +		imx8mm_soc_uid();
+
+Sorry for beeing a bit picky but we could improve this driver even
+further and drop this additional unnecessary of_machine_is_compatible()
+if we make the soc_uid() a function hook which can be filled by the
+driver data. Doing the UID within the imx8mm_soc_revision() seems wrong
+to too since the revisions is using the anatop and the uid the ocotp
+register space. So it made only sense for the i.MX8MQ.
+
+>  	return rev;
+>  }
+> @@ -169,6 +214,7 @@ static const struct imx8_soc_data imx8mn_soc_data = {
+>  static const struct imx8_soc_data imx8mp_soc_data = {
+>  	.name = "i.MX8MP",
+>  	.soc_revision = imx8mm_soc_revision,
+> +	.uid_128bit = true,
+>  };
+>  
+>  static __maybe_unused const struct of_device_id imx8_soc_match[] = {
+> @@ -222,7 +268,12 @@ static int __init imx8_soc_init(void)
+>  		goto free_soc;
+>  	}
+
+The new hook should be called like it is done for the soc_revision hook,
+so within the:
+
+	if (data) {
+		soc_dev_attr->soc_id = data->name;
+		if (data->soc_revision)
+			soc_rev = data->soc_revision();
+		if (data->soc_uid)
+			data->soc_uid();
+	}
+
+The split into soc_uid() hook for the i.MX8M platforms can be done
+within a seperate patch to make it more clear. The next patch should add
+the support to read the upper 64 bits.
+
+> -	soc_dev_attr->serial_number = kasprintf(GFP_KERNEL, "%016llX", soc_uid);
+> +	if (data->uid_128bit)
+
+This can be checked via:
+
+	if (soc_uid_h)
+> +		soc_dev_attr->serial_number = kasprintf(GFP_KERNEL, "%016llX%016llX",
+> +							soc_uid_h, soc_uid);
+> +	else
+> +		soc_dev_attr->serial_number = kasprintf(GFP_KERNEL, "%016llX", soc_uid);
+> +
+>  	if (!soc_dev_attr->serial_number) {
+>  		ret = -ENOMEM;
+>  		goto free_rev;
+
+Regards,
+  Marco
