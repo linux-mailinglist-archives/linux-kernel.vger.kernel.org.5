@@ -2,368 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 414217E293C
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 16:59:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 328507E2943
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 17:00:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232587AbjKFP7w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 10:59:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49680 "EHLO
+        id S232536AbjKFQAu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 11:00:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232375AbjKFP7s (ORCPT
+        with ESMTP id S231493AbjKFQAr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 10:59:48 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F317134;
-        Mon,  6 Nov 2023 07:59:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699286386; x=1730822386;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=nNLv1SRYuFTxKKGWoPF57npETHhdWVhK7V/evmU3EZ0=;
-  b=ExDgPGp89KgJMJ7spuC4pltQ9hAX5n570J9QAe5UtqbpKYr9axvIObTU
-   63q9+9MM6moQyzIh3MmK04MxfJGCI7lbFdmwo3oP5PHiuB6d4IMWI0Axs
-   Awmq4y+KSOX9M0YEG4/8SVLCRnGukWBPVw6lEHpKjztAg6Tt8JSDvMEMo
-   CYgtOiCH2SjW+xVmwjltO3AJFqJ3SmKkMN8flR4TNGi9w9ZCsGQa3gLDw
-   WvZQEIo0antl/HlTFUgdT5oZKqBjSF57ClLxRbvd9MKWA8aysSSBjDZ/r
-   ICVhlM2hGuz1tGZUWwiE/QD10b1OZ53hLK0X9aktJLD+WVNdPpv02iEW8
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10886"; a="7935095"
-X-IronPort-AV: E=Sophos;i="6.03,282,1694761200"; 
-   d="scan'208";a="7935095"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Nov 2023 07:59:45 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10886"; a="1093820031"
-X-IronPort-AV: E=Sophos;i="6.03,282,1694761200"; 
-   d="scan'208";a="1093820031"
-Received: from b4969161e530.jf.intel.com ([10.165.56.46])
-  by fmsmga005.fm.intel.com with ESMTP; 06 Nov 2023 07:59:43 -0800
-From:   Haitao Huang <haitao.huang@linux.intel.com>
-To:     haitao.huang@linux.intel.com
-Cc:     anakrish@microsoft.com, bp@alien8.de, cgroups@vger.kernel.org,
-        dave.hansen@linux.intel.com, hpa@zytor.com, jarkko@kernel.org,
-        kristen@linux.intel.com, linux-kernel@vger.kernel.org,
-        linux-sgx@vger.kernel.org, mikko.ylinen@linux.intel.com,
-        mingo@redhat.com, mkoutny@suse.com,
-        sean.j.christopherson@intel.com, seanjc@google.com,
-        sohil.mehta@intel.com, tglx@linutronix.de, tj@kernel.org,
-        x86@kernel.org, yangjie@microsoft.com, zhanb@microsoft.com,
-        zhiquan1.li@intel.com
-Subject: [PATCH] x86/sgx: Charge proper mem_cgroup for usage due to EPC reclamation by cgroups
-Date:   Mon,  6 Nov 2023 07:58:59 -0800
-Message-Id: <20231106155859.7251-1-haitao.huang@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231030182013.40086-11-haitao.huang@linux.intel.com>
-References: <20231030182013.40086-11-haitao.huang@linux.intel.com>
+        Mon, 6 Nov 2023 11:00:47 -0500
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24AB4134
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 08:00:44 -0800 (PST)
+Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2c6b30aca06so62015611fa.3
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 08:00:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1699286442; x=1699891242; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=VyUVTN1M5a232QHSATvzR6NdZs204FvtCzNAQj0DPbM=;
+        b=J8bcSonXuH+ukLF4juVyIJYOXUhcEbmM4cujxLNQU7DJJiK86pJL/TZXOEgA4u56IL
+         oaAznj/euM0DG7Azb3Pp+xcTiL+y5kxP/usrw0chQN9fMhVupfYNGZSNFFeM1Alpt/8G
+         ku/Kj8zBv011rBpxGY+bBFeIAhgC8/9BpcXLwbTmEse3O3FRu7jNsFVZ9Li+0SHwvDfR
+         2YhbFzZQF5MBp2FtbdFr463g20XkZAttatSDLzH638nAmKaYDcXuq5B6T4LJ8vZuB3Vq
+         8H9rewFYPGLrnOuqGai/9Z8LmsV/HKK4ibqkjbQIXLZx1Kze1ynZvVo9EbLSiPf5sNpp
+         EoOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699286442; x=1699891242;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=VyUVTN1M5a232QHSATvzR6NdZs204FvtCzNAQj0DPbM=;
+        b=C/zdxT/SYbim73zwgLC+WE/IInDSTpKCJVtCsfG0tLg+oxwB7IwQrLlvoCOrF3vS/m
+         kRTWtCzGIGUusNgNuwyLeZkUYMHBckbbCge/q058PMkW4lFmsE6vJVVkAv73zqh3koCA
+         Ign8sAGaKa/4OiFAeZcz1VolCv9SNHjoyMsgfGmLo5tGCqsU4N8C/M0meFPToPLEOiMy
+         mSxdj79DLT5CNTW/Xb+SY9LjcqtlSUtBRsRZLw0b4qQQTvLK3YBKg4pgESsmQtQkqqaC
+         sbdl84xGejyHNIB34cSpG1aBxHZWEFUYI6PLEVfCOSM3/i91ana3C628h1IzMYiz8d8J
+         nUsw==
+X-Gm-Message-State: AOJu0YyMxmRdEJejKhgQDdJxkRWjZCSbPuzVAEhZDWCx2/wijd/Yf/Hi
+        abosckei3e8cRyO1nvj5wIQenA==
+X-Google-Smtp-Source: AGHT+IG9qDXz1a+/65q4qd+aBHpwa6c/lpvHr42huInEa6zCKjM1+Eak4xU/aGS9J1Wa5Z7+2k4Ciw==
+X-Received: by 2002:a2e:a694:0:b0:2c0:318a:6ee1 with SMTP id q20-20020a2ea694000000b002c0318a6ee1mr20267498lje.49.1699286442295;
+        Mon, 06 Nov 2023 08:00:42 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.218.126])
+        by smtp.gmail.com with ESMTPSA id az34-20020a05600c602200b004076f522058sm12954868wmb.0.2023.11.06.08.00.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 06 Nov 2023 08:00:41 -0800 (PST)
+Message-ID: <9ab9694e-2595-4e88-8a39-c035378c15f4@linaro.org>
+Date:   Mon, 6 Nov 2023 17:00:39 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] arm64: dts: qcom: sm8450: fix soundwire controllers node
+ name
+Content-Language: en-US
+To:     Neil Armstrong <neil.armstrong@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231106-topic-sm8450-upstream-soundwire-bindings-fix-v1-1-41d4844a5a7d@linaro.org>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231106-topic-sm8450-upstream-soundwire-bindings-fix-v1-1-41d4844a5a7d@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enclave Page Cache(EPC) memory can be swapped out to regular system
-memory, and the consumed memory should be charged to a proper
-mem_cgroup. Currently the selection of mem_cgroup to charge is done in
-sgx_encl_get_mem_cgroup(). But it only considers two contexts in which
-the swapping can be done: normal task and the ksgxd kthread.
-With the new EPC cgroup implementation, the swapping can also happen in
-EPC cgroup work-queue threads. In those cases, it improperly selects the
-root mem_cgroup to charge for the RAM usage.
+On 06/11/2023 16:58, Neil Armstrong wrote:
+> Fix the following dt bindings check:
+> arch/arm64/boot/dts/qcom/sm8450-hdk.dtb: soundwire-controller@31f0000: $nodename:0: 'soundwire-controller@31f0000' does not match '^soundwire(@.*)?$'
+>         from schema $id: http://devicetree.org/schemas/soundwire/qcom,soundwire.yaml#
+> 
+> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+> ---
 
-Change sgx_encl_get_mem_cgroup() to handle non-task contexts only and
-return the mem_cgroup of an mm_struct associated with the enclave. The
-return is used to charge for EPC backing pages in all kthread cases.
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-Pass a flag into the top level reclamation function,
-sgx_do_epc_reclamation(), to explicitly indicate whether it is called
-from a background kthread. Internally, if the flag is true, switch the
-active mem_cgroup to the one returned from sgx_encl_get_mem_cgroup(),
-prior to any backing page allocation, in order to ensure that shmem page
-allocations are charged to the enclave's cgroup.
-
-Removed current_is_ksgxd() as it is no longer needed.
-
-Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
-Reported-by: Mikko Ylinen <mikko.ylinen@linux.intel.com>
----
- arch/x86/kernel/cpu/sgx/encl.c       | 43 ++++++++++++++--------------
- arch/x86/kernel/cpu/sgx/encl.h       |  3 +-
- arch/x86/kernel/cpu/sgx/epc_cgroup.c |  8 +++---
- arch/x86/kernel/cpu/sgx/main.c       | 26 +++++++----------
- arch/x86/kernel/cpu/sgx/sgx.h        |  2 +-
- 5 files changed, 38 insertions(+), 44 deletions(-)
-
-diff --git a/arch/x86/kernel/cpu/sgx/encl.c b/arch/x86/kernel/cpu/sgx/encl.c
-index 17dc108d3ff7..930f5bd4b752 100644
---- a/arch/x86/kernel/cpu/sgx/encl.c
-+++ b/arch/x86/kernel/cpu/sgx/encl.c
-@@ -993,9 +993,7 @@ static int __sgx_encl_get_backing(struct sgx_encl *encl, unsigned long page_inde
- }
- 
- /*
-- * When called from ksgxd, returns the mem_cgroup of a struct mm stored
-- * in the enclave's mm_list. When not called from ksgxd, just returns
-- * the mem_cgroup of the current task.
-+ * Returns the mem_cgroup of a struct mm stored in the enclave's mm_list.
-  */
- static struct mem_cgroup *sgx_encl_get_mem_cgroup(struct sgx_encl *encl)
- {
-@@ -1003,14 +1001,6 @@ static struct mem_cgroup *sgx_encl_get_mem_cgroup(struct sgx_encl *encl)
- 	struct sgx_encl_mm *encl_mm;
- 	int idx;
- 
--	/*
--	 * If called from normal task context, return the mem_cgroup
--	 * of the current task's mm. The remainder of the handling is for
--	 * ksgxd.
--	 */
--	if (!current_is_ksgxd())
--		return get_mem_cgroup_from_mm(current->mm);
--
- 	/*
- 	 * Search the enclave's mm_list to find an mm associated with
- 	 * this enclave to charge the allocation to.
-@@ -1047,29 +1037,38 @@ static struct mem_cgroup *sgx_encl_get_mem_cgroup(struct sgx_encl *encl)
-  * @encl:	an enclave pointer
-  * @page_index:	enclave page index
-  * @backing:	data for accessing backing storage for the page
-+ * @indirect:	in ksgxd or EPC cgroup work queue context
-+ *
-+ * Create a backing page for loading data back into an EPC page with ELDU. This function takes
-+ * a reference on a new backing page which must be dropped with a corresponding call to
-+ * sgx_encl_put_backing().
-  *
-- * When called from ksgxd, sets the active memcg from one of the
-- * mms in the enclave's mm_list prior to any backing page allocation,
-- * in order to ensure that shmem page allocations are charged to the
-- * enclave.  Create a backing page for loading data back into an EPC page with
-- * ELDU.  This function takes a reference on a new backing page which
-- * must be dropped with a corresponding call to sgx_encl_put_backing().
-+ * When @indirect is true, sets the active memcg from one of the mms in the enclave's mm_list
-+ * prior to any backing page allocation, in order to ensure that shmem page allocations are
-+ * charged to the enclave.
-  *
-  * Return:
-  *   0 on success,
-  *   -errno otherwise.
-  */
- int sgx_encl_alloc_backing(struct sgx_encl *encl, unsigned long page_index,
--			   struct sgx_backing *backing)
-+			   struct sgx_backing *backing, bool indirect)
- {
--	struct mem_cgroup *encl_memcg = sgx_encl_get_mem_cgroup(encl);
--	struct mem_cgroup *memcg = set_active_memcg(encl_memcg);
-+	struct mem_cgroup *encl_memcg;
-+	struct mem_cgroup *memcg;
- 	int ret;
- 
-+	if (indirect) {
-+		encl_memcg = sgx_encl_get_mem_cgroup(encl);
-+		memcg = set_active_memcg(encl_memcg);
-+	}
-+
- 	ret = __sgx_encl_get_backing(encl, page_index, backing);
- 
--	set_active_memcg(memcg);
--	mem_cgroup_put(encl_memcg);
-+	if (indirect) {
-+		set_active_memcg(memcg);
-+		mem_cgroup_put(encl_memcg);
-+	}
- 
- 	return ret;
- }
-diff --git a/arch/x86/kernel/cpu/sgx/encl.h b/arch/x86/kernel/cpu/sgx/encl.h
-index f94ff14c9486..549cd2e8d98b 100644
---- a/arch/x86/kernel/cpu/sgx/encl.h
-+++ b/arch/x86/kernel/cpu/sgx/encl.h
-@@ -103,12 +103,11 @@ static inline int sgx_encl_find(struct mm_struct *mm, unsigned long addr,
- int sgx_encl_may_map(struct sgx_encl *encl, unsigned long start,
- 		     unsigned long end, unsigned long vm_flags);
- 
--bool current_is_ksgxd(void);
- void sgx_encl_release(struct kref *ref);
- int sgx_encl_mm_add(struct sgx_encl *encl, struct mm_struct *mm);
- const cpumask_t *sgx_encl_cpumask(struct sgx_encl *encl);
- int sgx_encl_alloc_backing(struct sgx_encl *encl, unsigned long page_index,
--			   struct sgx_backing *backing);
-+			   struct sgx_backing *backing, bool indirect);
- void sgx_encl_put_backing(struct sgx_backing *backing);
- int sgx_encl_test_and_clear_young(struct mm_struct *mm,
- 				  struct sgx_encl_page *page);
-diff --git a/arch/x86/kernel/cpu/sgx/epc_cgroup.c b/arch/x86/kernel/cpu/sgx/epc_cgroup.c
-index 110d44c0ef7c..9c82bfd531e6 100644
---- a/arch/x86/kernel/cpu/sgx/epc_cgroup.c
-+++ b/arch/x86/kernel/cpu/sgx/epc_cgroup.c
-@@ -131,7 +131,7 @@ void sgx_epc_cgroup_isolate_pages(struct misc_cg *root,
- }
- 
- static unsigned int sgx_epc_cgroup_reclaim_pages(unsigned int nr_pages,
--						 struct misc_cg *root)
-+						 struct misc_cg *root, bool indirect)
- {
- 	LIST_HEAD(iso);
- 	/*
-@@ -143,7 +143,7 @@ static unsigned int sgx_epc_cgroup_reclaim_pages(unsigned int nr_pages,
- 	nr_pages = min(nr_pages, SGX_NR_TO_SCAN_MAX);
- 	sgx_epc_cgroup_isolate_pages(root, nr_pages, &iso);
- 
--	return sgx_do_epc_reclamation(&iso);
-+	return sgx_do_epc_reclamation(&iso, indirect);
- }
- 
- /*
-@@ -191,7 +191,7 @@ static void sgx_epc_cgroup_reclaim_work_func(struct work_struct *work)
- 			break;
- 
- 		/* Keep reclaiming until above condition is met. */
--		sgx_epc_cgroup_reclaim_pages((unsigned int)(cur - max), epc_cg->cg);
-+		sgx_epc_cgroup_reclaim_pages((unsigned int)(cur - max), epc_cg->cg, true);
- 	}
- }
- 
-@@ -214,7 +214,7 @@ static int __sgx_epc_cgroup_try_charge(struct sgx_epc_cgroup *epc_cg,
- 			return -EBUSY;
- 		}
- 
--		if (!sgx_epc_cgroup_reclaim_pages(1, epc_cg->cg))
-+		if (!sgx_epc_cgroup_reclaim_pages(1, epc_cg->cg, false))
- 			/* All pages were too young to reclaim, try again */
- 			schedule();
- 	}
-diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
-index c496b8f15b54..45036d41c797 100644
---- a/arch/x86/kernel/cpu/sgx/main.c
-+++ b/arch/x86/kernel/cpu/sgx/main.c
-@@ -274,7 +274,7 @@ static void sgx_encl_ewb(struct sgx_epc_page *epc_page,
- }
- 
- static void sgx_reclaimer_write(struct sgx_epc_page *epc_page,
--				struct sgx_backing *backing)
-+				struct sgx_backing *backing, bool indirect)
- {
- 	struct sgx_encl_page *encl_page = epc_page->owner;
- 	struct sgx_encl *encl = encl_page->encl;
-@@ -290,7 +290,7 @@ static void sgx_reclaimer_write(struct sgx_epc_page *epc_page,
- 
- 	if (!encl->secs_child_cnt && test_bit(SGX_ENCL_INITIALIZED, &encl->flags)) {
- 		ret = sgx_encl_alloc_backing(encl, PFN_DOWN(encl->size),
--					   &secs_backing);
-+					   &secs_backing, indirect);
- 		if (ret)
- 			goto out;
- 
-@@ -346,6 +346,7 @@ unsigned int  sgx_isolate_epc_pages(struct sgx_epc_lru_list *lru, unsigned int n
- /**
-  * sgx_do_epc_reclamation() - Perform reclamation for isolated EPC pages.
-  * @iso:		List of isolated pages for reclamation
-+ * @indirect:		In ksgxd or EPC cgroup workqueue threads
-  *
-  * Take a list of EPC pages and reclaim them to the enclave's private shmem files.  Do not
-  * reclaim the pages that have been accessed since the last scan, and move each of those pages
-@@ -362,7 +363,7 @@ unsigned int  sgx_isolate_epc_pages(struct sgx_epc_lru_list *lru, unsigned int n
-  *
-  * Return: number of pages successfully reclaimed.
-  */
--unsigned int sgx_do_epc_reclamation(struct list_head *iso)
-+unsigned int sgx_do_epc_reclamation(struct list_head *iso, bool indirect)
- {
- 	struct sgx_backing backing[SGX_NR_TO_SCAN_MAX];
- 	struct sgx_epc_page *epc_page, *tmp;
-@@ -384,7 +385,7 @@ unsigned int sgx_do_epc_reclamation(struct list_head *iso)
- 		page_index = PFN_DOWN(encl_page->desc - encl_page->encl->base);
- 
- 		mutex_lock(&encl_page->encl->lock);
--		ret = sgx_encl_alloc_backing(encl_page->encl, page_index, &backing[i]);
-+		ret = sgx_encl_alloc_backing(encl_page->encl, page_index, &backing[i], indirect);
- 		if (ret) {
- 			mutex_unlock(&encl_page->encl->lock);
- 			goto skip;
-@@ -411,7 +412,7 @@ unsigned int sgx_do_epc_reclamation(struct list_head *iso)
- 	i = 0;
- 	list_for_each_entry_safe(epc_page, tmp, iso, list) {
- 		encl_page = epc_page->owner;
--		sgx_reclaimer_write(epc_page, &backing[i++]);
-+		sgx_reclaimer_write(epc_page, &backing[i++], indirect);
- 
- 		kref_put(&encl_page->encl->refcount, sgx_encl_release);
- 		sgx_epc_page_reset_state(epc_page);
-@@ -422,7 +423,7 @@ unsigned int sgx_do_epc_reclamation(struct list_head *iso)
- 	return i;
- }
- 
--static void sgx_reclaim_epc_pages_global(void)
-+static void sgx_reclaim_epc_pages_global(bool indirect)
- {
- 	unsigned int nr_to_scan = SGX_NR_TO_SCAN;
- 	LIST_HEAD(iso);
-@@ -432,7 +433,7 @@ static void sgx_reclaim_epc_pages_global(void)
- 	else
- 		sgx_isolate_epc_pages(&sgx_global_lru, nr_to_scan, &iso);
- 
--	sgx_do_epc_reclamation(&iso);
-+	sgx_do_epc_reclamation(&iso, indirect);
- }
- 
- static bool sgx_should_reclaim(unsigned long watermark)
-@@ -449,7 +450,7 @@ static bool sgx_should_reclaim(unsigned long watermark)
- void sgx_reclaim_direct(void)
- {
- 	if (sgx_should_reclaim(SGX_NR_LOW_PAGES))
--		sgx_reclaim_epc_pages_global();
-+		sgx_reclaim_epc_pages_global(false);
- }
- 
- static int ksgxd(void *p)
-@@ -472,7 +473,7 @@ static int ksgxd(void *p)
- 				     sgx_should_reclaim(SGX_NR_HIGH_PAGES));
- 
- 		if (sgx_should_reclaim(SGX_NR_HIGH_PAGES))
--			sgx_reclaim_epc_pages_global();
-+			sgx_reclaim_epc_pages_global(true);
- 
- 		cond_resched();
- 	}
-@@ -495,11 +496,6 @@ static bool __init sgx_page_reclaimer_init(void)
- 	return true;
- }
- 
--bool current_is_ksgxd(void)
--{
--	return current == ksgxd_tsk;
--}
--
- static struct sgx_epc_page *__sgx_alloc_epc_page_from_node(int nid)
- {
- 	struct sgx_numa_node *node = &sgx_numa_nodes[nid];
-@@ -653,7 +649,7 @@ struct sgx_epc_page *sgx_alloc_epc_page(void *owner, bool reclaim)
- 		 * Need to do a global reclamation if cgroup was not full but free
- 		 * physical pages run out, causing __sgx_alloc_epc_page() to fail.
- 		 */
--		sgx_reclaim_epc_pages_global();
-+		sgx_reclaim_epc_pages_global(false);
- 		cond_resched();
- 	}
- 
-diff --git a/arch/x86/kernel/cpu/sgx/sgx.h b/arch/x86/kernel/cpu/sgx/sgx.h
-index 6a40f70ed96f..377625e2ba1d 100644
---- a/arch/x86/kernel/cpu/sgx/sgx.h
-+++ b/arch/x86/kernel/cpu/sgx/sgx.h
-@@ -167,7 +167,7 @@ void sgx_reclaim_direct(void);
- void sgx_mark_page_reclaimable(struct sgx_epc_page *page);
- int sgx_unmark_page_reclaimable(struct sgx_epc_page *page);
- struct sgx_epc_page *sgx_alloc_epc_page(void *owner, bool reclaim);
--unsigned int sgx_do_epc_reclamation(struct list_head *iso);
-+unsigned int sgx_do_epc_reclamation(struct list_head *iso, bool indirect);
- unsigned int sgx_isolate_epc_pages(struct sgx_epc_lru_list *lru, unsigned int nr_to_scan,
- 				   struct list_head *dst);
- 
--- 
-2.25.1
+Best regards,
+Krzysztof
 
