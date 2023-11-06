@@ -2,127 +2,251 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E5257E1958
+	by mail.lfdr.de (Postfix) with ESMTP id D71FD7E1959
 	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 05:13:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230299AbjKFENF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Nov 2023 23:13:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49856 "EHLO
+        id S230151AbjKFEMw convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 5 Nov 2023 23:12:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230117AbjKFEND (ORCPT
+        with ESMTP id S229485AbjKFEMu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Nov 2023 23:13:03 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A53F8BF
-        for <linux-kernel@vger.kernel.org>; Sun,  5 Nov 2023 20:11:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1699243910;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=cHrLb4zEBqMuGuzN6XAqFfCIg5Eok44Njld/JJN4sJk=;
-        b=SMtkO0YURk7J7s+Z0AtondWtRVTosyWmns7DbnAMRSXfpJV1U+yE8D7Ww/HgefzsMGT2QM
-        vPxCwGYJJ0yaxjYG9aQln3+DExq8M5dGM4dk8WDFJcfJI96kWpo5uRn/3GgIadhoOpHUB+
-        0qYOEUGleVlQwgyba2j3X35LQoOZC70=
-Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
- [209.85.167.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-622-5VoToPSCP9uNunmKqWD1jg-1; Sun, 05 Nov 2023 23:11:48 -0500
-X-MC-Unique: 5VoToPSCP9uNunmKqWD1jg-1
-Received: by mail-lf1-f72.google.com with SMTP id 2adb3069b0e04-5094998f7e8so4374241e87.0
-        for <linux-kernel@vger.kernel.org>; Sun, 05 Nov 2023 20:11:48 -0800 (PST)
+        Sun, 5 Nov 2023 23:12:50 -0500
+Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com [209.85.215.176])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23B48B3;
+        Sun,  5 Nov 2023 20:12:47 -0800 (PST)
+Received: by mail-pg1-f176.google.com with SMTP id 41be03b00d2f7-5bda105206fso15084a12.3;
+        Sun, 05 Nov 2023 20:12:47 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699243907; x=1699848707;
+        d=1e100.net; s=20230601; t=1699243966; x=1699848766;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=cHrLb4zEBqMuGuzN6XAqFfCIg5Eok44Njld/JJN4sJk=;
-        b=BThWnERu2Kz2UW8nf6Do7lVrtqtPpiLTbZXkCJcEVk7pkSIwiLy0756JmhaOrD/xiH
-         R/TtQI99dFw1Pqcre93J8+ihW4at/wLIcdn1a5dK1u/xTMdBFX2TfhJ7jplanYq45UHd
-         ToGt4IDTAgdycv0E3iaGIppcf/0ueqz8DagOuT09GwzJ4zPM1aSa9FSNd7QcCoeWkCpS
-         1/29eDXP1bRidzxRgRzciztLwGgA4lFQfHG1ed8V51e1W9P7ThwiCA4XZoFmeX1FLJxf
-         2E/PnIEU9nki/5JkIv9OhVehaCE90unpU8mFlmkwFwZeRPmwuiAwCYZWI6BpucxOTRhB
-         CyVg==
-X-Gm-Message-State: AOJu0Yx0kYGFQsXHoxMsuQLn/YYCH4RjdiiQRY24nE5GYhbANhTnl0Ne
-        bQz1PCaH5BVBMXCELxuodrKb+fWp/PeEYI9ctsrbyesg5hs4bcCw0y/Kr+PvBrS615OWzDzw9T7
-        oytwJT/uQanEJbDWiQ/zdy9OAa8ls16GsCfWLqvq8
-X-Received: by 2002:a19:914a:0:b0:507:9701:2700 with SMTP id y10-20020a19914a000000b0050797012700mr21479172lfj.20.1699243907017;
-        Sun, 05 Nov 2023 20:11:47 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGUWUi5tZ6aymenvsU8IcDkUX50MvzvLjsi++9vXhsqQouRpjAkVN6Zt+HPX/ts88NcBPPpX+/TSiAt8ldNrfw=
-X-Received: by 2002:a19:914a:0:b0:507:9701:2700 with SMTP id
- y10-20020a19914a000000b0050797012700mr21479160lfj.20.1699243906677; Sun, 05
- Nov 2023 20:11:46 -0800 (PST)
+        bh=zElg2gHoZLp6PFI5FrVwiSrAB0jQgVqcXfU6cDRFjZE=;
+        b=u9h6RNLlRtY01nAcZSq/jIZdozxQa+KiTif6VfL4fRPG57165m9xfH7vyy6dXMqR+Q
+         MAA9AQCoZDJ3gyEPd0t0JEn7WYwuZJIy8V9rmJFzwbf8AirXvx/RShy/hskl65Ny2FJP
+         KsZ9W6wahmMrTD4wdlliRm0XQXkv08QTQ4URwxKubV2caSLVUPDvkvFTFqchw5VN/WY+
+         n+MtXSGOsvMQRbfFvp+2zhJcqXjJdRsYG4w1/3UyUicgLwiIFPI64J/kmBxxswevkROv
+         4OQ4yy9oCVxuBgDdulXOmsbENLrr4XBdwlURtprOlNdupHtPFazYCoHrZx/N51PGk+y3
+         I3Fw==
+X-Gm-Message-State: AOJu0YwKrJu18UOXFc178ji1vfWw34/1svPRcsxVyXHpG7cBd5gouq54
+        BLhQpt2DFG0ygqUOZ/bDqG2p1fK62RwvOou7U1k=
+X-Google-Smtp-Source: AGHT+IEHsFBCOrV2v1VPctO7UEKuD7iw/CPc+Zs5eLvi4t7HT1vLebdAv12tnMYlLwH83eCkrGUFOLJ+5Ly3flcy9t8=
+X-Received: by 2002:a05:6a20:e109:b0:180:d9de:2d5e with SMTP id
+ kr9-20020a056a20e10900b00180d9de2d5emr19017424pzb.39.1699243966394; Sun, 05
+ Nov 2023 20:12:46 -0800 (PST)
 MIME-Version: 1.0
-References: <20231103171641.1703146-1-lulu@redhat.com>
-In-Reply-To: <20231103171641.1703146-1-lulu@redhat.com>
-From:   Jason Wang <jasowang@redhat.com>
-Date:   Mon, 6 Nov 2023 12:11:35 +0800
-Message-ID: <CACGkMEvaKw9g0EmNdFh3=iZm3rD-mo_BtaBA3F5bwqNq4NV3Dw@mail.gmail.com>
-Subject: Re: [RFC v1 0/8] vhost-vdpa: add support for iommufd
-To:     Cindy Lu <lulu@redhat.com>
-Cc:     mst@redhat.com, yi.l.liu@intel.com, jgg@nvidia.com,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
+References: <20231012035111.676789-1-namhyung@kernel.org> <20231012035111.676789-10-namhyung@kernel.org>
+ <20231105173618.c3e5d9faef347f27a6c4f049@kernel.org>
+In-Reply-To: <20231105173618.c3e5d9faef347f27a6c4f049@kernel.org>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Sun, 5 Nov 2023 20:12:35 -0800
+Message-ID: <CAM9d7ci_GqRKGLWeDgNx7yyOPURnMML6C9nzgT6XWcsNXGqWjQ@mail.gmail.com>
+Subject: Re: [PATCH 09/48] perf dwarf-regs: Add get_dwarf_regnum()
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-perf-users@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Stephane Eranian <eranian@google.com>,
+        linux-toolchains@vger.kernel.org, linux-trace-devel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 4, 2023 at 1:16=E2=80=AFAM Cindy Lu <lulu@redhat.com> wrote:
+On Sun, Nov 5, 2023 at 1:36 AM Masami Hiramatsu <mhiramat@kernel.org> wrote:
 >
+> On Wed, 11 Oct 2023 20:50:32 -0700
+> Namhyung Kim <namhyung@kernel.org> wrote:
 >
-> Hi All
-> This code provides the iommufd support for vdpa device
-> This code fixes the bugs from the last version and also add the asid supp=
-ort. rebase on kernel
-> v6,6-rc3
-> Test passed in the physical device (vp_vdpa), but  there are still some p=
-roblems in the emulated device (vdpa_sim_net),
-> I will continue working on it
+> > The get_dwarf_regnum() returns a DWARF register number from a register
+> > name string according to the psABI.  Also add two pseudo encodings of
+> > DWARF_REG_PC which is a register that are used by PC-relative addressing
+> > and DWARF_REG_FB which is a frame base register.  They need to be
+> > handled in a special way.
+> >
 >
-> The kernel code is
-> https://gitlab.com/lulu6/vhost/-/tree/iommufdRFC_v1
->
-> Signed-off-by: Cindy Lu <lulu@redhat.com>
+> I have some comments below.
 
-It would be better to have a change summary here.
-
-Thanks
+Sure! :)
 
 >
+> > Cc: Masami Hiramatsu <mhiramat@kernel.org>
+> > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> > ---
+> >  tools/perf/arch/x86/util/dwarf-regs.c | 38 +++++++++++++++++++++++++++
+> >  tools/perf/util/dwarf-regs.c          | 33 +++++++++++++++++++++++
+> >  tools/perf/util/include/dwarf-regs.h  | 11 ++++++++
+> >  3 files changed, 82 insertions(+)
+> >
+> > diff --git a/tools/perf/arch/x86/util/dwarf-regs.c b/tools/perf/arch/x86/util/dwarf-regs.c
+> > index 530934805710..79835b897cae 100644
+> > --- a/tools/perf/arch/x86/util/dwarf-regs.c
+> > +++ b/tools/perf/arch/x86/util/dwarf-regs.c
+> > @@ -113,3 +113,41 @@ int regs_query_register_offset(const char *name)
+> >                       return roff->offset;
+> >       return -EINVAL;
+> >  }
+> > +
+> > +struct dwarf_regs_idx {
+> > +     const char *name;
+> > +     int idx;
+> > +};
+> > +
+> > +static const struct dwarf_regs_idx x86_regidx_table[] = {
+> > +     { "rax", 0 }, { "eax", 0 }, { "ax", 0 }, { "al", 0 },
+> > +     { "rdx", 1 }, { "edx", 1 }, { "dx", 1 }, { "dl", 1 },
+> > +     { "rcx", 2 }, { "ecx", 2 }, { "cx", 2 }, { "cl", 2 },
+> > +     { "rbx", 3 }, { "edx", 3 }, { "bx", 3 }, { "bl", 3 },
+> > +     { "rsi", 4 }, { "esi", 4 }, { "si", 4 }, { "sil", 4 },
+> > +     { "rdi", 5 }, { "edi", 5 }, { "di", 5 }, { "dil", 5 },
+> > +     { "rbp", 6 }, { "ebp", 6 }, { "bp", 6 }, { "bpl", 6 },
+> > +     { "rsp", 7 }, { "esp", 7 }, { "sp", 7 }, { "spl", 7 },
+> > +     { "r8", 8 }, { "r8d", 8 }, { "r8w", 8 }, { "r8b", 8 },
+> > +     { "r9", 9 }, { "r9d", 9 }, { "r9w", 9 }, { "r9b", 9 },
+> > +     { "r10", 10 }, { "r10d", 10 }, { "r10w", 10 }, { "r10b", 10 },
+> > +     { "r11", 11 }, { "r11d", 11 }, { "r11w", 11 }, { "r11b", 11 },
+> > +     { "r12", 12 }, { "r12d", 12 }, { "r12w", 12 }, { "r12b", 12 },
+> > +     { "r13", 13 }, { "r13d", 13 }, { "r13w", 13 }, { "r13b", 13 },
+> > +     { "r14", 14 }, { "r14d", 14 }, { "r14w", 14 }, { "r14b", 14 },
+> > +     { "r15", 15 }, { "r15d", 15 }, { "r15w", 15 }, { "r15b", 15 },
+> > +     { "rip", DWARF_REG_PC },
+> > +};
+> > +
+> > +int get_arch_regnum(const char *name)
+> > +{
+> > +     unsigned int i;
+> > +
+> > +     if (*name != '%')
+> > +             return -1;
 >
-> Cindy Lu (8):
->   vhost/iommufd: Add the functions support iommufd
->   Kconfig: Add the new file vhost/iommufd
->   vhost: Add 3 new uapi to support iommufd
->   vdpa: Add new vdpa_config_ops to support iommufd
->   vdpa_sim :Add support for iommufd
->   vdpa: change the map/unmap process to support iommufd
->   vp_vdpa::Add support for iommufd
->   iommu: expose the function iommu_device_use_default_domain
+> Isn't it better to return an error code? e.g. -EINVAL.
+
+Maybe.. any negative error code would work.
+
 >
->  drivers/iommu/iommu.c             |   2 +
->  drivers/vdpa/vdpa_sim/vdpa_sim.c  |   8 ++
->  drivers/vdpa/virtio_pci/vp_vdpa.c |   4 +
->  drivers/vhost/Kconfig             |   1 +
->  drivers/vhost/Makefile            |   1 +
->  drivers/vhost/iommufd.c           | 178 +++++++++++++++++++++++++
->  drivers/vhost/vdpa.c              | 210 +++++++++++++++++++++++++++++-
->  drivers/vhost/vhost.h             |  21 +++
->  include/linux/vdpa.h              |  38 +++++-
->  include/uapi/linux/vhost.h        |  66 ++++++++++
->  10 files changed, 525 insertions(+), 4 deletions(-)
->  create mode 100644 drivers/vhost/iommufd.c
+> > +
+> > +     for (i = 0; i < ARRAY_SIZE(x86_regidx_table); i++)
+> > +             if (!strcmp(x86_regidx_table[i].name, name + 1))
+> > +                     return x86_regidx_table[i].idx;
+> > +     return -1;
+>
+> And -ENOENT.
+>
+> > +}
+> > diff --git a/tools/perf/util/dwarf-regs.c b/tools/perf/util/dwarf-regs.c
+> > index 69cfaa5953bf..28d786c7df55 100644
+> > --- a/tools/perf/util/dwarf-regs.c
+> > +++ b/tools/perf/util/dwarf-regs.c
+> > @@ -5,6 +5,8 @@
+> >   * Written by: Masami Hiramatsu <mhiramat@kernel.org>
+> >   */
+> >
+> > +#include <stdlib.h>
+> > +#include <string.h>
+> >  #include <debug.h>
+> >  #include <dwarf-regs.h>
+> >  #include <elf.h>
+> > @@ -68,3 +70,34 @@ const char *get_dwarf_regstr(unsigned int n, unsigned int machine)
+> >       }
+> >       return NULL;
+> >  }
+> > +
+> > +__weak int get_arch_regnum(const char *name __maybe_unused)
+> > +{
+> > +     return -1;
+>
+> And -EOPNOTSUPP.
+
+Could be -ENOTSUP.
+
+>
+> > +}
+> > +
+> > +/* Return DWARF register number from architecture register name */
+> > +int get_dwarf_regnum(const char *name, unsigned int machine)
+> > +{
+> > +     char *regname = strdup(name);
+> > +     int reg = -1;
+> > +     char *p;
+> > +
+> > +     if (regname == NULL)
+> > +             return -1;
+>
+> Here, -EINVAL.
+>
+> > +
+> > +     /* For convenience, remove trailing characters */
+> > +     p = strpbrk(regname, " ,)");
+> > +     if (p)
+> > +             *p = '\0';
+> > +
+> > +     switch (machine) {
+> > +     case EM_NONE:   /* Generic arch - use host arch */
+> > +             reg = get_arch_regnum(regname);
+> > +             break;
+> > +     default:
+> > +             pr_err("ELF MACHINE %x is not supported.\n", machine);
+> > +     }
+> > +     free(regname);
+> > +     return reg;
+> > +}
+> > diff --git a/tools/perf/util/include/dwarf-regs.h b/tools/perf/util/include/dwarf-regs.h
+> > index 7d99a084e82d..b515f694f55e 100644
+> > --- a/tools/perf/util/include/dwarf-regs.h
+> > +++ b/tools/perf/util/include/dwarf-regs.h
+> > @@ -2,6 +2,9 @@
+> >  #ifndef _PERF_DWARF_REGS_H_
+> >  #define _PERF_DWARF_REGS_H_
+> >
+> > +#define DWARF_REG_PC  0xd3af9c /* random number */
+> > +#define DWARF_REG_FB  0xd3affb /* random number */
+> > +
+>
+> Is this for other patch in the series?
+
+Yes, they are to support global and local variables later.
+
+Thanks,
+Namhyung
+
+>
+> >  #ifdef HAVE_DWARF_SUPPORT
+> >  const char *get_arch_regstr(unsigned int n);
+> >  /*
+> > @@ -10,6 +13,14 @@ const char *get_arch_regstr(unsigned int n);
+> >   * machine: ELF machine signature (EM_*)
+> >   */
+> >  const char *get_dwarf_regstr(unsigned int n, unsigned int machine);
+> > +
+> > +int get_arch_regnum(const char *name);
+> > +/*
+> > + * get_dwarf_regnum - Returns DWARF regnum from register name
+> > + * name: architecture register name
+> > + * machine: ELF machine signature (EM_*)
+> > + */
+> > +int get_dwarf_regnum(const char *name, unsigned int machine);
+> >  #endif
+> >
+> >  #ifdef HAVE_ARCH_REGS_QUERY_REGISTER_OFFSET
+> > --
+> > 2.42.0.655.g421f12c284-goog
+> >
+>
+> Thank you,
 >
 > --
-> 2.34.3
->
-
+> Masami Hiramatsu (Google) <mhiramat@kernel.org>
