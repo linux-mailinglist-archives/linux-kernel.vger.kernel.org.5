@@ -2,39 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CDF57E310E
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 00:17:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EAFFD7E3110
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 00:17:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233692AbjKFXRQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 18:17:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49342 "EHLO
+        id S233749AbjKFXRX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 18:17:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233703AbjKFXQh (ORCPT
+        with ESMTP id S233639AbjKFXQl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 18:16:37 -0500
+        Mon, 6 Nov 2023 18:16:41 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 691561994;
-        Mon,  6 Nov 2023 15:15:41 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D4BA3C433CD;
-        Mon,  6 Nov 2023 23:15:39 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCDA4212D;
+        Mon,  6 Nov 2023 15:15:44 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BC3B5C433C8;
+        Mon,  6 Nov 2023 23:15:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699312540;
-        bh=zA4jpt05ydd9C5AV2YlIvKzxemrsE7xyQ079BQs1hLE=;
+        s=k20201202; t=1699312544;
+        bh=LO4hMTKUYKEyxNtgfrH8fljSkWOJqgcyCWbJec+fCtU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UaIMznYk/fgnbO6jHuS3W57P8Ym0WGj5OUQe5KvDGtAWWlKW1otl/Uo29ZaYBs9uw
-         tqtFt5JlWzq/UbW+JoFcYUPJH73XEYMhb80qYHUVb7lvfcB/EaPOzXRZZYTtF3bVFB
-         7oUA1q0gbOUjzpjTgAXKoOwYmZn5pJBBDHNCGlxtHRHnbLmmwhuNDuHT+kn6L2GSIA
-         iBwaGD+Zd+mLOyj8TRv8Q4U+2WRMID4pxKgbCVKuIw44Hhar5dv1Bkf97qlU8ZlGtN
-         Yr4n2AcK04YWENYpiQ+K7/qRa2Ad/dA+QNcwdaOYm2bGsSTUilKATesQxZdxzFh2G7
-         16VS5tXMpzFeA==
+        b=EjxUKW/XPr1kKEnoemDmi+JbLDztAfofijTD6ZN/lKJYzHYg/xqKLnvVMiggG87vL
+         4XduvWJIS2mvkwb7hP7l5PPBBGzegULKfmC4Az54ioaiIJjMVUnT8gZZeTJRfYGrAY
+         VfwJSeSPug6AsT51oeeWLoB7K2YUW98zS88t2cCxKeYD3YbKVShkkykvSN9MXuRCnr
+         p/rChto+JfNyx+nm0jxHnaqC/sDhv2fREdRZG1WhG8zl79NUES0QjjyaDKTKjDLBe8
+         WKRxeCyECehUgggaRr0B5cFTLtUsHOOl0sUmL/3ff4dOgcEOLXNJHJ/dEPBVfek1e2
+         HV9uezaHmMo7A==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Frederic Weisbecker <frederic@kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Tejun Heo <tj@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 6.5 12/13] workqueue: Provide one lock class key per work_on_cpu() callsite
-Date:   Mon,  6 Nov 2023 18:15:05 -0500
-Message-ID: <20231106231514.3735077-12-sashal@kernel.org>
+Cc:     "Mike Rapoport (IBM)" <rppt@kernel.org>,
+        Qi Zheng <zhengqi.arch@bytedance.com>,
+        Mario Casquero <mcasquer@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        David Hildenbrand <david@redhat.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Rik van Riel <riel@surriel.com>,
+        Sasha Levin <sashal@kernel.org>, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org, luto@kernel.org,
+        peterz@infradead.org
+Subject: [PATCH AUTOSEL 6.5 13/13] x86/mm: Drop the 4 MB restriction on minimal NUMA node memory size
+Date:   Mon,  6 Nov 2023 18:15:06 -0500
+Message-ID: <20231106231514.3735077-13-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231106231514.3735077-1-sashal@kernel.org>
 References: <20231106231514.3735077-1-sashal@kernel.org>
@@ -53,297 +61,110 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Frederic Weisbecker <frederic@kernel.org>
+From: "Mike Rapoport (IBM)" <rppt@kernel.org>
 
-[ Upstream commit 265f3ed077036f053981f5eea0b5b43e7c5b39ff ]
+[ Upstream commit a1e2b8b36820d8c91275f207e77e91645b7c6836 ]
 
-All callers of work_on_cpu() share the same lock class key for all the
-functions queued. As a result the workqueue related locking scenario for
-a function A may be spuriously accounted as an inversion against the
-locking scenario of function B such as in the following model:
+Qi Zheng reported crashes in a production environment and provided a
+simplified example as a reproducer:
 
-	long A(void *arg)
-	{
-		mutex_lock(&mutex);
-		mutex_unlock(&mutex);
-	}
+ |  For example, if we use Qemu to start a two NUMA node kernel,
+ |  one of the nodes has 2M memory (less than NODE_MIN_SIZE),
+ |  and the other node has 2G, then we will encounter the
+ |  following panic:
+ |
+ |    BUG: kernel NULL pointer dereference, address: 0000000000000000
+ |    <...>
+ |    RIP: 0010:_raw_spin_lock_irqsave+0x22/0x40
+ |    <...>
+ |    Call Trace:
+ |      <TASK>
+ |      deactivate_slab()
+ |      bootstrap()
+ |      kmem_cache_init()
+ |      start_kernel()
+ |      secondary_startup_64_no_verify()
 
-	long B(void *arg)
-	{
-	}
+The crashes happen because of inconsistency between the nodemask that
+has nodes with less than 4MB as memoryless, and the actual memory fed
+into the core mm.
 
-	void launchA(void)
-	{
-		work_on_cpu(0, A, NULL);
-	}
+The commit:
 
-	void launchB(void)
-	{
-		mutex_lock(&mutex);
-		work_on_cpu(1, B, NULL);
-		mutex_unlock(&mutex);
-	}
+  9391a3f9c7f1 ("[PATCH] x86_64: Clear more state when ignoring empty node in SRAT parsing")
 
-launchA and launchB running concurrently have no chance to deadlock.
-However the above can be reported by lockdep as a possible locking
-inversion because the works containing A() and B() are treated as
-belonging to the same locking class.
+... that introduced minimal size of a NUMA node does not explain why
+a node size cannot be less than 4MB and what boot failures this
+restriction might fix.
 
-The following shows an existing example of such a spurious lockdep splat:
+Fixes have been submitted to the core MM code to tighten up the
+memory topologies it accepts and to not crash on weird input:
 
-	 ======================================================
-	 WARNING: possible circular locking dependency detected
-	 6.6.0-rc1-00065-g934ebd6e5359 #35409 Not tainted
-	 ------------------------------------------------------
-	 kworker/0:1/9 is trying to acquire lock:
-	 ffffffff9bc72f30 (cpu_hotplug_lock){++++}-{0:0}, at: _cpu_down+0x57/0x2b0
+  mm: page_alloc: skip memoryless nodes entirely
+  mm: memory_hotplug: drop memoryless node from fallback lists
 
-	 but task is already holding lock:
-	 ffff9e3bc0057e60 ((work_completion)(&wfc.work)){+.+.}-{0:0}, at: process_scheduled_works+0x216/0x500
+Andrew has accepted them into the -mm tree, but there are no
+stable SHA1's yet.
 
-	 which lock already depends on the new lock.
+This patch drops the limitation for minimal node size on x86:
 
-	 the existing dependency chain (in reverse order) is:
+  - which works around the crash without the fixes to the core MM.
+  - makes x86 topologies less weird,
+  - removes an arbitrary and undocumented limitation on NUMA topologies.
 
-	 -> #2 ((work_completion)(&wfc.work)){+.+.}-{0:0}:
-			__flush_work+0x83/0x4e0
-			work_on_cpu+0x97/0xc0
-			rcu_nocb_cpu_offload+0x62/0xb0
-			rcu_nocb_toggle+0xd0/0x1d0
-			kthread+0xe6/0x120
-			ret_from_fork+0x2f/0x40
-			ret_from_fork_asm+0x1b/0x30
+[ mingo: Improved changelog clarity. ]
 
-	 -> #1 (rcu_state.barrier_mutex){+.+.}-{3:3}:
-			__mutex_lock+0x81/0xc80
-			rcu_nocb_cpu_deoffload+0x38/0xb0
-			rcu_nocb_toggle+0x144/0x1d0
-			kthread+0xe6/0x120
-			ret_from_fork+0x2f/0x40
-			ret_from_fork_asm+0x1b/0x30
-
-	 -> #0 (cpu_hotplug_lock){++++}-{0:0}:
-			__lock_acquire+0x1538/0x2500
-			lock_acquire+0xbf/0x2a0
-			percpu_down_write+0x31/0x200
-			_cpu_down+0x57/0x2b0
-			__cpu_down_maps_locked+0x10/0x20
-			work_for_cpu_fn+0x15/0x20
-			process_scheduled_works+0x2a7/0x500
-			worker_thread+0x173/0x330
-			kthread+0xe6/0x120
-			ret_from_fork+0x2f/0x40
-			ret_from_fork_asm+0x1b/0x30
-
-	 other info that might help us debug this:
-
-	 Chain exists of:
-	   cpu_hotplug_lock --> rcu_state.barrier_mutex --> (work_completion)(&wfc.work)
-
-	  Possible unsafe locking scenario:
-
-			CPU0                    CPU1
-			----                    ----
-	   lock((work_completion)(&wfc.work));
-									lock(rcu_state.barrier_mutex);
-									lock((work_completion)(&wfc.work));
-	   lock(cpu_hotplug_lock);
-
-	  *** DEADLOCK ***
-
-	 2 locks held by kworker/0:1/9:
-	  #0: ffff900481068b38 ((wq_completion)events){+.+.}-{0:0}, at: process_scheduled_works+0x212/0x500
-	  #1: ffff9e3bc0057e60 ((work_completion)(&wfc.work)){+.+.}-{0:0}, at: process_scheduled_works+0x216/0x500
-
-	 stack backtrace:
-	 CPU: 0 PID: 9 Comm: kworker/0:1 Not tainted 6.6.0-rc1-00065-g934ebd6e5359 #35409
-	 Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
-	 Workqueue: events work_for_cpu_fn
-	 Call Trace:
-	 rcu-torture: rcu_torture_read_exit: Start of episode
-	  <TASK>
-	  dump_stack_lvl+0x4a/0x80
-	  check_noncircular+0x132/0x150
-	  __lock_acquire+0x1538/0x2500
-	  lock_acquire+0xbf/0x2a0
-	  ? _cpu_down+0x57/0x2b0
-	  percpu_down_write+0x31/0x200
-	  ? _cpu_down+0x57/0x2b0
-	  _cpu_down+0x57/0x2b0
-	  __cpu_down_maps_locked+0x10/0x20
-	  work_for_cpu_fn+0x15/0x20
-	  process_scheduled_works+0x2a7/0x500
-	  worker_thread+0x173/0x330
-	  ? __pfx_worker_thread+0x10/0x10
-	  kthread+0xe6/0x120
-	  ? __pfx_kthread+0x10/0x10
-	  ret_from_fork+0x2f/0x40
-	  ? __pfx_kthread+0x10/0x10
-	  ret_from_fork_asm+0x1b/0x30
-	  </TASK
-
-Fix this with providing one lock class key per work_on_cpu() caller.
-
-Reported-and-tested-by: Paul E. McKenney <paulmck@kernel.org>
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-Signed-off-by: Tejun Heo <tj@kernel.org>
+Reported-by: Qi Zheng <zhengqi.arch@bytedance.com>
+Tested-by: Mario Casquero <mcasquer@redhat.com>
+Signed-off-by: Mike Rapoport (IBM) <rppt@kernel.org>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Acked-by: David Hildenbrand <david@redhat.com>
+Acked-by: Michal Hocko <mhocko@suse.com>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: Rik van Riel <riel@surriel.com>
+Link: https://lore.kernel.org/r/ZS+2qqjEO5/867br@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/workqueue.h | 46 +++++++++++++++++++++++++++++++++------
- kernel/workqueue.c        | 20 ++++++++++-------
- 2 files changed, 51 insertions(+), 15 deletions(-)
+ arch/x86/include/asm/numa.h | 7 -------
+ arch/x86/mm/numa.c          | 7 -------
+ 2 files changed, 14 deletions(-)
 
-diff --git a/include/linux/workqueue.h b/include/linux/workqueue.h
-index 683efe29fa698..ca26c1f94f044 100644
---- a/include/linux/workqueue.h
-+++ b/include/linux/workqueue.h
-@@ -222,18 +222,16 @@ static inline unsigned int work_static(struct work_struct *work) { return 0; }
-  * to generate better code.
-  */
- #ifdef CONFIG_LOCKDEP
--#define __INIT_WORK(_work, _func, _onstack)				\
-+#define __INIT_WORK_KEY(_work, _func, _onstack, _key)			\
- 	do {								\
--		static struct lock_class_key __key;			\
--									\
- 		__init_work((_work), _onstack);				\
- 		(_work)->data = (atomic_long_t) WORK_DATA_INIT();	\
--		lockdep_init_map(&(_work)->lockdep_map, "(work_completion)"#_work, &__key, 0); \
-+		lockdep_init_map(&(_work)->lockdep_map, "(work_completion)"#_work, (_key), 0); \
- 		INIT_LIST_HEAD(&(_work)->entry);			\
- 		(_work)->func = (_func);				\
- 	} while (0)
- #else
--#define __INIT_WORK(_work, _func, _onstack)				\
-+#define __INIT_WORK_KEY(_work, _func, _onstack, _key)			\
- 	do {								\
- 		__init_work((_work), _onstack);				\
- 		(_work)->data = (atomic_long_t) WORK_DATA_INIT();	\
-@@ -242,12 +240,22 @@ static inline unsigned int work_static(struct work_struct *work) { return 0; }
- 	} while (0)
- #endif
+diff --git a/arch/x86/include/asm/numa.h b/arch/x86/include/asm/numa.h
+index e3bae2b60a0db..ef2844d691735 100644
+--- a/arch/x86/include/asm/numa.h
++++ b/arch/x86/include/asm/numa.h
+@@ -12,13 +12,6 @@
  
-+#define __INIT_WORK(_work, _func, _onstack)				\
-+	do {								\
-+		static __maybe_unused struct lock_class_key __key;	\
-+									\
-+		__INIT_WORK_KEY(_work, _func, _onstack, &__key);	\
-+	} while (0)
-+
- #define INIT_WORK(_work, _func)						\
- 	__INIT_WORK((_work), (_func), 0)
+ #define NR_NODE_MEMBLKS		(MAX_NUMNODES*2)
  
- #define INIT_WORK_ONSTACK(_work, _func)					\
- 	__INIT_WORK((_work), (_func), 1)
+-/*
+- * Too small node sizes may confuse the VM badly. Usually they
+- * result from BIOS bugs. So dont recognize nodes as standalone
+- * NUMA entities that have less than this amount of RAM listed:
+- */
+-#define NODE_MIN_SIZE (4*1024*1024)
+-
+ extern int numa_off;
  
-+#define INIT_WORK_ONSTACK_KEY(_work, _func, _key)			\
-+	__INIT_WORK_KEY((_work), (_func), 1, _key)
-+
- #define __INIT_DELAYED_WORK(_work, _func, _tflags)			\
- 	do {								\
- 		INIT_WORK(&(_work)->work, (_func));			\
-@@ -683,8 +691,32 @@ static inline long work_on_cpu_safe(int cpu, long (*fn)(void *), void *arg)
- 	return fn(arg);
- }
- #else
--long work_on_cpu(int cpu, long (*fn)(void *), void *arg);
--long work_on_cpu_safe(int cpu, long (*fn)(void *), void *arg);
-+long work_on_cpu_key(int cpu, long (*fn)(void *),
-+		     void *arg, struct lock_class_key *key);
-+/*
-+ * A new key is defined for each caller to make sure the work
-+ * associated with the function doesn't share its locking class.
-+ */
-+#define work_on_cpu(_cpu, _fn, _arg)			\
-+({							\
-+	static struct lock_class_key __key;		\
-+							\
-+	work_on_cpu_key(_cpu, _fn, _arg, &__key);	\
-+})
-+
-+long work_on_cpu_safe_key(int cpu, long (*fn)(void *),
-+			  void *arg, struct lock_class_key *key);
-+
-+/*
-+ * A new key is defined for each caller to make sure the work
-+ * associated with the function doesn't share its locking class.
-+ */
-+#define work_on_cpu_safe(_cpu, _fn, _arg)		\
-+({							\
-+	static struct lock_class_key __key;		\
-+							\
-+	work_on_cpu_safe_key(_cpu, _fn, _arg, &__key);	\
-+})
- #endif /* CONFIG_SMP */
+ /*
+diff --git a/arch/x86/mm/numa.c b/arch/x86/mm/numa.c
+index 2aadb2019b4f2..55e3d895f15c3 100644
+--- a/arch/x86/mm/numa.c
++++ b/arch/x86/mm/numa.c
+@@ -601,13 +601,6 @@ static int __init numa_register_memblks(struct numa_meminfo *mi)
+ 		if (start >= end)
+ 			continue;
  
- #ifdef CONFIG_FREEZER
-diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-index e4a37d7a6752d..a7fcb25417726 100644
---- a/kernel/workqueue.c
-+++ b/kernel/workqueue.c
-@@ -5571,50 +5571,54 @@ static void work_for_cpu_fn(struct work_struct *work)
- }
+-		/*
+-		 * Don't confuse VM with a node that doesn't have the
+-		 * minimum amount of memory:
+-		 */
+-		if (end && (end - start) < NODE_MIN_SIZE)
+-			continue;
+-
+ 		alloc_node_data(nid);
+ 	}
  
- /**
-- * work_on_cpu - run a function in thread context on a particular cpu
-+ * work_on_cpu_key - run a function in thread context on a particular cpu
-  * @cpu: the cpu to run on
-  * @fn: the function to run
-  * @arg: the function arg
-+ * @key: The lock class key for lock debugging purposes
-  *
-  * It is up to the caller to ensure that the cpu doesn't go offline.
-  * The caller must not hold any locks which would prevent @fn from completing.
-  *
-  * Return: The value @fn returns.
-  */
--long work_on_cpu(int cpu, long (*fn)(void *), void *arg)
-+long work_on_cpu_key(int cpu, long (*fn)(void *),
-+		     void *arg, struct lock_class_key *key)
- {
- 	struct work_for_cpu wfc = { .fn = fn, .arg = arg };
- 
--	INIT_WORK_ONSTACK(&wfc.work, work_for_cpu_fn);
-+	INIT_WORK_ONSTACK_KEY(&wfc.work, work_for_cpu_fn, key);
- 	schedule_work_on(cpu, &wfc.work);
- 	flush_work(&wfc.work);
- 	destroy_work_on_stack(&wfc.work);
- 	return wfc.ret;
- }
--EXPORT_SYMBOL_GPL(work_on_cpu);
-+EXPORT_SYMBOL_GPL(work_on_cpu_key);
- 
- /**
-- * work_on_cpu_safe - run a function in thread context on a particular cpu
-+ * work_on_cpu_safe_key - run a function in thread context on a particular cpu
-  * @cpu: the cpu to run on
-  * @fn:  the function to run
-  * @arg: the function argument
-+ * @key: The lock class key for lock debugging purposes
-  *
-  * Disables CPU hotplug and calls work_on_cpu(). The caller must not hold
-  * any locks which would prevent @fn from completing.
-  *
-  * Return: The value @fn returns.
-  */
--long work_on_cpu_safe(int cpu, long (*fn)(void *), void *arg)
-+long work_on_cpu_safe_key(int cpu, long (*fn)(void *),
-+			  void *arg, struct lock_class_key *key)
- {
- 	long ret = -ENODEV;
- 
- 	cpus_read_lock();
- 	if (cpu_online(cpu))
--		ret = work_on_cpu(cpu, fn, arg);
-+		ret = work_on_cpu_key(cpu, fn, arg, key);
- 	cpus_read_unlock();
- 	return ret;
- }
--EXPORT_SYMBOL_GPL(work_on_cpu_safe);
-+EXPORT_SYMBOL_GPL(work_on_cpu_safe_key);
- #endif /* CONFIG_SMP */
- 
- #ifdef CONFIG_FREEZER
 -- 
 2.42.0
 
