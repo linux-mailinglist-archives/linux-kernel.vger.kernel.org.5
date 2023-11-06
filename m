@@ -2,154 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C4817E2CDC
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 20:32:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B5E87E2CE2
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 20:32:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232405AbjKFTcV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 14:32:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54702 "EHLO
+        id S232686AbjKFTcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 14:32:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232196AbjKFTcU (ORCPT
+        with ESMTP id S232818AbjKFTcf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 14:32:20 -0500
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [81.169.146.166])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76315103;
-        Mon,  6 Nov 2023 11:32:16 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1699299133; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=XgdK8DDDpP7P/1cRCviflvC29vjgRoykNcFhCm6wzuO5yiCNenKwOZFVDeIawWXRBz
-    /tV82bPOlkiaZiWDf1Yqjne2h17MUcpdnqNlojZAmh9Rf7REU2M4Vz8qGRkGox/36Uun
-    1xHoZE/+nKlbGYzdHi2q+zTHIYDlESTk35rlP/ieTi1YXgwlZdA3qlGExsxwiMi+hHgK
-    H6J+Q3kqC1anvaXvePgdQn9o6lI09CDc12GCDegHVjmYswGlH2aG/rOCXyvn+Tr8fTr6
-    v6eYOHACHB9dtrDQ4IyzpaBKoN+cpOUfo466LNqILm1dgAEy0S2m/gN0tN/kxgZsA8dN
-    02iA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1699299133;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=57RQjPWYE9g4BN2v5kN64PfbhlJAlDmf3yAW/OfR5M8=;
-    b=hflZzDUklEr6swZnMYCJG8fxNOm/pxuM7zc3ADVSDRblZSwVmNSdgiWnwuo/8Fxyja
-    cVDrAh+RnaV8RXMJPFFGBwSTHVEdk1VcTsIDKqH++YGfVjq3rWAHLPOGM/SayZ0fTrwx
-    7h6Sk5/iWGj6tTUryMmfAoN5sS8JPlPse9f8CH8iYzfatgs6Sb726XKhAHMbH7OGpNbh
-    UOADSycJf3WuBVAaYK6egytk9b15mNHg3nXJo4LkfBnHno/IJVYbt3YRc1oxApcVKduT
-    Vi76UlXLTOuUBOXHRcs5rONMc+zDZolHKZa0kUP2f5PkWZXw4MijVBa43Y8jVGTvNxZP
-    TYZQ==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo01
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1699299133;
-    s=strato-dkim-0002; d=gerhold.net;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=57RQjPWYE9g4BN2v5kN64PfbhlJAlDmf3yAW/OfR5M8=;
-    b=A47wv3mVHbDnzv9hd/VX6KibC7qG5NS2NA+nCQmgDeZoGy7B0AuRYAu8EURvXyux+V
-    GsupN8BpaRN6r/Zy479y43i6qONdLD3Gm9+1R9lOxMuZE8M387RK+SE+KdmksolunMbO
-    4MDEqfx61XVJvV8pQxY83ssUqpdS9HDKsvubSj0UyIw/KDr/cYH+lbkWaFrzdq37Gq6+
-    PgceXAKiEB9B7httlLbRPYJNg5+BXdp1LZBf4IRYla+2urK5FpLNN/g82Tg+6xJ15Rbl
-    2ChTQ/6cyG21GX6khluN1KYoPekV5wf6P0JF+yS2Ew/ItN3NgU2tXSiqUBaufdblM3bY
-    X9fQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1699299133;
-    s=strato-dkim-0003; d=gerhold.net;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=57RQjPWYE9g4BN2v5kN64PfbhlJAlDmf3yAW/OfR5M8=;
-    b=PKWoXJs2g1NzjZFqNDhnkHqrZds63JVCS15UTRSumafGZY+WrzTLn4NBgLZbMbho3p
-    ZauCBFKuaWaZQAw1Y7DQ==
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u261EJF5OxJD4peA8Z2L1A=="
-Received: from gerhold.net
-    by smtp.strato.de (RZmta 49.9.1 DYNA|AUTH)
-    with ESMTPSA id Lbb8e2zA6JWDXXQ
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Mon, 6 Nov 2023 20:32:13 +0100 (CET)
-Date:   Mon, 6 Nov 2023 20:32:06 +0100
-From:   Stephan Gerhold <stephan@gerhold.net>
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     Dang Huynh <danct12@riseup.net>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Robert Marko <robimarko@gmail.com>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH 5/8] regulator: qcom_smd: Add PM8937 regulators
-Message-ID: <ZUk_NmR9Hb922ZFF@gerhold.net>
-References: <20231106-pm8937-v1-0-ec51d9eeec53@riseup.net>
- <20231106-pm8937-v1-5-ec51d9eeec53@riseup.net>
- <CAA8EJprRT=thU-7_rfX6Qhk55iC9Hc0d8x46uyt-p4DOHCrrwQ@mail.gmail.com>
+        Mon, 6 Nov 2023 14:32:35 -0500
+Received: from mail-vk1-xa34.google.com (mail-vk1-xa34.google.com [IPv6:2607:f8b0:4864:20::a34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83FC1103
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 11:32:30 -0800 (PST)
+Received: by mail-vk1-xa34.google.com with SMTP id 71dfb90a1353d-4ac45927974so738748e0c.3
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 11:32:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1699299149; x=1699903949; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=DAHtCI4uX5rSDG9hdPsxsTF21tKIZfBDAKE7xDsp3rU=;
+        b=Z2jm4Z2fM/s6CReA9bNMbi06a5UFGrWJtM4czIwF5UVP2NCEgE/Lbi/nNoBg6uY3eh
+         UutNwYXbnLSrdmNCi9OpK/jy9T6nsE8KET3oC3oBZWwl4SbtcQJ1ShLFHYylPkSmn7iK
+         vGLEdlB86xa2m7u+i+obR0ZGO4OOhMcuHcTcn3qEJ/y2S3OsDzF2VLDq79m1pULy+mcv
+         fsNZKo39mESiFIuASuhNiGmFgpPebJ16GvBfQpstPJMHNpTeKyzMpYPf+W7pcjWpuhw+
+         zXk3ZjtydtJRHjq44iY0IzLz1r+lTI3FOlqUBzxyV16/uGKS+vmOtQ4Hf9gQF2TuDVhS
+         a78w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699299149; x=1699903949;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DAHtCI4uX5rSDG9hdPsxsTF21tKIZfBDAKE7xDsp3rU=;
+        b=jdocTXyF+lpmZyJob40giLL9+WRGW5ljTl/36HjkK5rCLttex+57zFEPxz92QUHi0O
+         fDVYZwZlygCE1nCpsI+6Y6WMGrV34Er0mQ2rEoHrGnNv6BEseiI/HvtTM4IxoUtKFldS
+         RBWZWYP14KZBdcZ42eoArAwFwM+3KweRD9BosmMP00cD/rMOqQZxJYefS7NQ3uMulTat
+         dRUyKkMn4IClemWBM+WhTqgV6k2UZaPDt20YHLsMFxCw369neX1WFt6sp5+adgOz1zoT
+         /poKM7GePw80Pf+i4We1CHDWwmTfMTt9C6G0XrqcA2LgPpKg08vWP4Abdfu8yYsT40wj
+         1mkQ==
+X-Gm-Message-State: AOJu0Yz7NvrEfJdv1yXnj9IrtECANLEyfmE4B3QyH423fisF0Y0RLzKn
+        zzTaPV4CCgVmboTz72tfMS5NuhdqZV30vk7v+mU=
+X-Google-Smtp-Source: AGHT+IHHrThxyHmJktLceZ794OYsaOv21wFux00FTZbUeam8b2XhNtl+ya1TeSFos/G045SdeP1ylg==
+X-Received: by 2002:a1f:1c4a:0:b0:49b:289a:cc4a with SMTP id c71-20020a1f1c4a000000b0049b289acc4amr27005359vkc.3.1699299149465;
+        Mon, 06 Nov 2023 11:32:29 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-68-26-201.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.26.201])
+        by smtp.gmail.com with ESMTPSA id b3-20020a0ce883000000b0066cfd398ab5sm3663160qvo.146.2023.11.06.11.32.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 Nov 2023 11:32:28 -0800 (PST)
+Received: from jgg by wakko with local (Exim 4.95)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1r05Km-001Qut-BY;
+        Mon, 06 Nov 2023 15:32:28 -0400
+Date:   Mon, 6 Nov 2023 15:32:28 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Tina Zhang <tina.zhang@intel.com>
+Cc:     Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>, joro@8bytes.org,
+        will@kernel.org, Yi Liu <yi.l.liu@intel.com>,
+        virtualization@lists.linux-foundation.org, iommu@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 2/5] iommu/vt-d: Add generic IO page table support
+Message-ID: <20231106193228.GU4634@ziepe.ca>
+References: <20231106071226.9656-1-tina.zhang@intel.com>
+ <20231106071226.9656-3-tina.zhang@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAA8EJprRT=thU-7_rfX6Qhk55iC9Hc0d8x46uyt-p4DOHCrrwQ@mail.gmail.com>
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20231106071226.9656-3-tina.zhang@intel.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 06, 2023 at 02:15:12PM +0200, Dmitry Baryshkov wrote:
-> On Mon, 6 Nov 2023 at 14:11, Dang Huynh <danct12@riseup.net> wrote:
-> >
-> > The PM8937 is found on boards with MSM8917, MSM8937, MSM8940 SoCs and
-> > APQ variants.
-> >
-> > It provides 6 SMPS (two are controlled by SPMI) and 23 LDO regulators.
-> >
-> > Signed-off-by: Dang Huynh <danct12@riseup.net>
+On Mon, Nov 06, 2023 at 02:12:23AM -0500, Tina Zhang wrote:
+> Add basic hook up code to implement generic IO page table framework.
 > 
-> I haven't checked LDO / SMPS types.
+> Signed-off-by: Tina Zhang <tina.zhang@intel.com>
+> ---
+>  drivers/iommu/intel/Kconfig |  1 +
+>  drivers/iommu/intel/iommu.c | 94 +++++++++++++++++++++++++++++++++++++
+>  drivers/iommu/intel/iommu.h |  7 +++
+>  drivers/iommu/io-pgtable.c  |  3 ++
+>  include/linux/io-pgtable.h  |  2 +
+>  5 files changed, 107 insertions(+)
 
-That's kind of the part where one would most likely make mistakes
-though. :D
+If this is going to happen can we also convert vt-d to actually use
+the io page table stuff directly and shuffle the code around so it is
+structured like the rest of the io page table implementations?
 
-I checked them based on the log Dang posted on IRC, by cross-referencing
-the voltage ranges with the regulator types in the SPMI regulator driver.
-
-Looks good :)
-
-Reviewed-by: Stephan Gerhold <stephan@gerhold.net>
-
-Thanks,
-Stephan
-
-(bootloader) Detected PMIC 0x10019
-(bootloader)   s1: 1225000 mV, disabled,   fast  (smps)
-(bootloader)   s2: 1162500 mV,  enabled,   fast  (smps)
-(bootloader)   s3: 1412500 mV,  enabled,   fast  (smps)
-(bootloader)   s4: 2050000 mV,  enabled,   fast  (smps)
-(bootloader)   s5: 1225000 mV,  enabled,   fast  (ftsmps2p5)
-(bootloader)   s6: 1225000 mV,  enabled,   fast  (ftsmps2p5)
-(bootloader)   l1: 1000000 mV, disabled, normal  (ult_nldo)
-(bootloader)   l2: 1250000 mV,  enabled, normal  (ult_nldo)
-(bootloader)   l3: 1350000 mV,  enabled,   idle  (ult_nldo)
-(bootloader)   l4: 1800000 mV, disabled, normal  (ult_pldo)
-(bootloader)   l5: 1800000 mV,  enabled,   idle  (ult_pldo)
-(bootloader)   l6: 1800000 mV,  enabled, normal  (ult_pldo)
-(bootloader)   l7: 1800000 mV,  enabled, normal  (ult_pldo)
-(bootloader)   l8: 2900000 mV,  enabled, normal  (ult_pldo)
-(bootloader)   l9: 3300000 mV, disabled, normal  (ult_pldo)
-(bootloader)  l10: 2800000 mV, disabled, normal  (ult_pldo)
-(bootloader)  l11: 2950000 mV,  enabled, normal  (ult_pldo)
-(bootloader)  l12: 2950000 mV,  enabled, normal  (ult_pldo)
-(bootloader)  l13: 3075000 mV,  enabled, normal  (ult_pldo)
-(bootloader)  l14: 1800000 mV, disabled, normal  (ult_pldo)
-(bootloader)  l15: 1800000 mV, disabled, normal  (ult_pldo)
-(bootloader)  l16: 1800000 mV, disabled, normal  (ult_pldo)
-(bootloader)  l17: 2850000 mV,  enabled, normal  (ult_pldo)
-(bootloader)  l18: 2700000 mV, disabled, normal  (ult_pldo)
-(bootloader)  l19: 1300000 mV, disabled, normal  (ult_nldo)
-(bootloader)  l20: 1740000 mV, disabled  (ln_ldo)
-(bootloader)  l21: 1740000 mV, disabled  (ln_ldo)
-(bootloader)  l22: 2800000 mV, disabled, normal  (ult_pldo)
-(bootloader)  l23: 1300000 mV, disabled, normal  (nldo1)
+Jason
