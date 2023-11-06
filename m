@@ -2,174 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BE597E2ECC
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 22:17:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D11167E2ED2
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 22:18:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233092AbjKFVR6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 16:17:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40752 "EHLO
+        id S233126AbjKFVSI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 16:18:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231739AbjKFVR4 (ORCPT
+        with ESMTP id S233129AbjKFVSF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 16:17:56 -0500
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAC27AF
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 13:17:52 -0800 (PST)
-Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-9dd5879a126so495790366b.3
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 13:17:52 -0800 (PST)
+        Mon, 6 Nov 2023 16:18:05 -0500
+Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28BE910C1
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 13:18:01 -0800 (PST)
+Received: by mail-pl1-x64a.google.com with SMTP id d9443c01a7336-1cc23f2226bso33363715ad.2
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 13:18:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1699305471; x=1699910271; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AAnPepekn0x1vd4cfhce4CIyWaNk1MulfdxYt46UIgc=;
-        b=PznbsALXkm9uyk2DK9Bo6VJORe44GAcpckaeSL0s/gISyJJCpflPlY/Q8OHZ2mmUNj
-         /UMY8SCsGiPoKmi1eXiwgEQd3TY8/g2ohz0EFG6ZR5KCrw9TWjiYSi4jfgjm3eeIlfTO
-         kPI8puQk6RMmQIGmy/Z26pK6+FtjVRrDv51kscsaWD/iq0VCC7XiI2DGpWD38Jv0O1r+
-         nTIGhPs92ipifQCWBlnSdkBaEtF5IqStVro4nRgV0qjhBhnOdEUknZvUnoblNgOiY6+k
-         Dhh4CstswOIYvHmrOlt7E/YvZYiR5DSXvA4JHxAvZfArHi6vmGF48yVDU3kvh014grg9
-         2OBA==
+        d=google.com; s=20230601; t=1699305480; x=1699910280; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Q+e/wl/IpkV0o6PDo9Tkqa7B1djQqq2R6AetcJyqBsw=;
+        b=guQnzDNrQ0IEnDzO5hmG0IkO9uQpBsE3dQM3ouRmgcIUj8ovtjwTeObif9ZB0Nh1IL
+         Ogw6bASCzlrDbxFB1Ig73mKR0hWGudoulglTPgsFRJei6ZPUavDy4CLE+hiAQ2wiPiVN
+         JnVSSX6b0kXkG45BERqEsZABipd1zMRyVExPL5PbHvNDYjMHAKcAGZMk0PXvKxLwHz6D
+         o2WL1O+bGCtEfRVE6g71WCK1G9uV763h8zt62FZGAOOnSjhBTeAFTbXE8POz71PKERm6
+         IWsFEuPkzt4SAFAUIRJ2XlWdw05sk/Sqf7JtUTQINTH/G/eTA8goRYsvdbBmmRirOhKz
+         7CLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699305471; x=1699910271;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=AAnPepekn0x1vd4cfhce4CIyWaNk1MulfdxYt46UIgc=;
-        b=LjAheVYdmEeWASkvXMA6kYGW4W3CtnLGph0GEpiVf3pcYEBToiPTk9Ri1PnbzBmsoy
-         XxjnfpaumnP9rNUJc8V8ft2RxBHlSdWYZUCQLm/crvJjW5npss27+B/P9ypjmojinPs8
-         Wr3sTNkzvrzhnze34lHzya9V4rI10gVlBfc9X/9lM8KCujE1yuP58a5MqtEp5gszpBjH
-         5fJpHHJZqGHv88GmBLYInyX/b8YZUvAtASYNoB97FhxnhSRlspFumAf2eJiMfQtndZsG
-         +qa2mNigNfaMigEgIQdvzNuZeWsjliaAOYbWvF/usTtJyORHnvYADjBcW0kaTbefFS2Z
-         fpjw==
-X-Gm-Message-State: AOJu0Yyj7OK7BUsLqTHd9nftaxzgFewe0aO5rAzfAOcQ1uIJ3Gor8sJ/
-        x/9VC/rEkStRmwf48T6/DYZ7Tm2olQppASm7vbrrdw==
-X-Google-Smtp-Source: AGHT+IGOjsdVz/kagTQoVD1M4q/hpjgaTIGdDmAJ91afhh21ti6yIDPUL1wxJ28xkf3TBI5vb5Wymu1dBshzViRM6SE=
-X-Received: by 2002:a17:907:7295:b0:9bf:30e8:5bf9 with SMTP id
- dt21-20020a170907729500b009bf30e85bf9mr14245983ejc.4.1699305471174; Mon, 06
- Nov 2023 13:17:51 -0800 (PST)
-MIME-Version: 1.0
-References: <20231104031303.592879-1-longman@redhat.com> <20231104031303.592879-3-longman@redhat.com>
- <CAJD7tkZirDce=Zq9bm_b_R=yXkj1OaqCe2ObRXzV-BtDc3X9VQ@mail.gmail.com> <2212f172-def9-3ec7-b3d7-732c2b2c365e@redhat.com>
-In-Reply-To: <2212f172-def9-3ec7-b3d7-732c2b2c365e@redhat.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Mon, 6 Nov 2023 13:17:14 -0800
-Message-ID: <CAJD7tkYmSAg_T289jRczARsXu2sCW0GrR9VPyL04fQRKzCK0hg@mail.gmail.com>
-Subject: Re: [PATCH v3 2/3] cgroup/rstat: Optimize cgroup_rstat_updated_list()
-To:     Waiman Long <longman@redhat.com>
-Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Joe Mario <jmario@redhat.com>,
-        Sebastian Jug <sejug@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+        d=1e100.net; s=20230601; t=1699305480; x=1699910280;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=Q+e/wl/IpkV0o6PDo9Tkqa7B1djQqq2R6AetcJyqBsw=;
+        b=NJTnXo9J8HY6yGU+KEY5goIKGq/PTfmDDtE0vDHIGRFTVk+h6Es2SJHlFHGuQvE96b
+         mWFs8FGlFL3uPqdWSR8zLx7W8JKGyBGAhSKH7xjcHtAPjdvwuUs66zXjs+nrAvo5ru1U
+         aHm1+fvoRPNJqk6avUKDIDpwlwQR1doHZIn9QSCBm2KR4te2gdVu+tm7eIsBl5ZoyL4n
+         yQYVAHtuzpqI/0T6VBYQ5At1GTPYIqohvIDl20vuRM/H58joAc7dymmmRAG+dcl0HOtX
+         Briw3v9SRMWIq8KlDDr9+CkZ5/WHUdYSSZj7GuLtVBaYpig+YkPBWJHlUMw99+U4N4LM
+         yZXA==
+X-Gm-Message-State: AOJu0YwkgZIm7yXuDf66hpdGf67w4oh8b3ONjH+849du0weZTKLIHuBA
+        SxqCxYyWRxRbKOETo++RZLwYLTI=
+X-Google-Smtp-Source: AGHT+IFyUJONzj4do13pt+qQjhpP+paqIv/cmkYUyDep9IE9Z/JO/7Oa2cHBSiwtEe3VWLUwCJQwRDY=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a17:902:f809:b0:1cc:2a6f:ab91 with SMTP id
+ ix9-20020a170902f80900b001cc2a6fab91mr467862plb.0.1699305480560; Mon, 06 Nov
+ 2023 13:18:00 -0800 (PST)
+Date:   Mon, 6 Nov 2023 13:17:59 -0800
+In-Reply-To: <CAHS8izNFv7r6vqYR_TYqcCuDO61F+nnNMhsSu=DrYWSr3sVgrA@mail.gmail.com>
+Mime-Version: 1.0
+References: <20231106024413.2801438-1-almasrymina@google.com>
+ <20231106024413.2801438-11-almasrymina@google.com> <ZUk0FGuJ28s1d9OX@google.com>
+ <CAHS8izNFv7r6vqYR_TYqcCuDO61F+nnNMhsSu=DrYWSr3sVgrA@mail.gmail.com>
+Message-ID: <ZUlYB99GK1Q8is-I@google.com>
+Subject: Re: [RFC PATCH v3 10/12] tcp: RX path for devmem TCP
+From:   Stanislav Fomichev <sdf@google.com>
+To:     Mina Almasry <almasrymina@google.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linaro-mm-sig@lists.linaro.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        David Ahern <dsahern@kernel.org>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        "Christian =?utf-8?B?S8O2bmln?=" <christian.koenig@amd.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Jeroen de Borst <jeroendb@google.com>,
+        Praveen Kaligineedi <pkaligineedi@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Kaiyuan Zhang <kaiyuanz@google.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 6, 2023 at 12:37=E2=80=AFPM Waiman Long <longman@redhat.com> wr=
-ote:
->
-> On 11/6/23 15:07, Yosry Ahmed wrote:
-> > On Fri, Nov 3, 2023 at 8:13=E2=80=AFPM Waiman Long <longman@redhat.com>=
- wrote:
-> >> The current design of cgroup_rstat_cpu_pop_updated() is to traverse
-> >> the updated tree in a way to pop out the leaf nodes first before
-> >> their parents. This can cause traversal of multiple nodes before a
-> >> leaf node can be found and popped out. IOW, a given node in the tree
-> >> can be visited multiple times before the whole operation is done. So
-> >> it is not very efficient and the code can be hard to read.
-> >>
-> >> With the introduction of cgroup_rstat_updated_list() to build a list
-> >> of cgroups to be flushed first before any flushing operation is being
-> >> done, we can optimize the way the updated tree nodes are being popped
-> >> by pushing the parents first to the tail end of the list before their
-> >> children. In this way, most updated tree nodes will be visited only
-> >> once with the exception of the subtree root as we still need to go
-> >> back to its parent and popped it out of its updated_children list.
-> >> This also makes the code easier to read.
-> >>
-> >> A parallel kernel build on a 2-socket x86-64 server is used as the
-> >> benchmarking tool for measuring the lock hold time. Below were the loc=
-k
-> >> hold time frequency distribution before and after the patch:
-> >>
-> >>       Hold time        Before patch       After patch
-> >>       ---------        ------------       -----------
-> >>         0-01 us        13,738,708         14,594,545
-> >>        01-05 us         1,177,194            439,926
-> >>        05-10 us             4,984              5,960
-> >>        10-15 us             3,562              3,543
-> >>        15-20 us             1,314              1,397
-> >>        20-25 us                18                 25
-> >>        25-30 us                12                 12
-> >>
-> >> It can be seen that the patch pushes the lock hold time towards the
-> >> lower end.
-> >>
-> >> Signed-off-by: Waiman Long <longman@redhat.com>
-> >> ---
-> > I don't know why git decided to show this diff in the most confusing
-> > way possible.
-> I agree. The diff is really hard to look at. It will be easier to apply
-> the patch & looks at the actual rstat.c file.
+On 11/06, Mina Almasry wrote:
+> On Mon, Nov 6, 2023 at 10:44=E2=80=AFAM Stanislav Fomichev <sdf@google.co=
+m> wrote:
+> >
+> > On 11/05, Mina Almasry wrote:
+> > > In tcp_recvmsg_locked(), detect if the skb being received by the user
+> > > is a devmem skb. In this case - if the user provided the MSG_SOCK_DEV=
+MEM
+> > > flag - pass it to tcp_recvmsg_devmem() for custom handling.
+> > >
+> > > tcp_recvmsg_devmem() copies any data in the skb header to the linear
+> > > buffer, and returns a cmsg to the user indicating the number of bytes
+> > > returned in the linear buffer.
+> > >
+> > > tcp_recvmsg_devmem() then loops over the unaccessible devmem skb frag=
+s,
+> > > and returns to the user a cmsg_devmem indicating the location of the
+> > > data in the dmabuf device memory. cmsg_devmem contains this informati=
+on:
+> > >
+> > > 1. the offset into the dmabuf where the payload starts. 'frag_offset'=
+.
+> > > 2. the size of the frag. 'frag_size'.
+> > > 3. an opaque token 'frag_token' to return to the kernel when the buff=
+er
+> > > is to be released.
+> > >
+> > > The pages awaiting freeing are stored in the newly added
+> > > sk->sk_user_pages, and each page passed to userspace is get_page()'d.
+> > > This reference is dropped once the userspace indicates that it is
+> > > done reading this page.  All pages are released when the socket is
+> > > destroyed.
+> > >
+> > > Signed-off-by: Willem de Bruijn <willemb@google.com>
+> > > Signed-off-by: Kaiyuan Zhang <kaiyuanz@google.com>
+> > > Signed-off-by: Mina Almasry <almasrymina@google.com>
+> > >
+> > > ---
+> > >
+> > > RFC v3:
+> > > - Fixed issue with put_cmsg() failing silently.
+> > >
+> > > ---
+> > >  include/linux/socket.h            |   1 +
+> > >  include/net/page_pool/helpers.h   |   9 ++
+> > >  include/net/sock.h                |   2 +
+> > >  include/uapi/asm-generic/socket.h |   5 +
+> > >  include/uapi/linux/uio.h          |   6 +
+> > >  net/ipv4/tcp.c                    | 189 ++++++++++++++++++++++++++++=
++-
+> > >  net/ipv4/tcp_ipv4.c               |   7 ++
+> > >  7 files changed, 214 insertions(+), 5 deletions(-)
+> > >
+> > > diff --git a/include/linux/socket.h b/include/linux/socket.h
+> > > index cfcb7e2c3813..fe2b9e2081bb 100644
+> > > --- a/include/linux/socket.h
+> > > +++ b/include/linux/socket.h
+> > > @@ -326,6 +326,7 @@ struct ucred {
+> > >                                         * plain text and require encr=
+yption
+> > >                                         */
+> > >
+> > > +#define MSG_SOCK_DEVMEM 0x2000000    /* Receive devmem skbs as cmsg =
+*/
+> >
+> > Sharing the feedback that I've been providing internally on the public =
+list:
+> >
+>=20
+> There may have been a miscommunication. I don't recall hearing this
+> specific feedback from you, at least in the last few months. Sorry if
+> it seemed like I'm ignoring feedback :)
 
-Would the diff be simpler if patches 1 & 2 were squashed?
+No worries, there was a thread long time ago about this whole token
+interface and whether it should support out-of-order refills, etc.
 
-[..]
+> > IMHO, we need a better UAPI to receive the tokens and give them back to
+> > the kernel. CMSG + setsockopt(SO_DEVMEM_DONTNEED) get the job done,
+> > but look dated and hacky :-(
 > >
-> >>    *
-> >>    * The only ordering guarantee is that, for a parent and a child pai=
-r
-> >> - * covered by a given traversal, if a child is visited, its parent is
-> >> - * guaranteed to be visited afterwards.
-> >> + * covered by a given traversal, the child is before its parent in
-> >> + * the list.
-> >> + *
-> >> + * Note that updated_children is self terminated while updated_next i=
-s
-> >> + * parent cgroup terminated except the cgroup root which can be self
-> >> + * terminated.
-> > IIUC updated_children and updated_next is the same list.
-> > updated_children is the head, and updated_next is how the list items
-> > are linked. This comment makes it seem like they are two different
-> > lists.
-> Thanks for the comment. I will rework the comment to clarify that a bit
-> more.
-> >
-> > I am actually wondering if it's worth using the singly linked list
-> > here. We are saving 8 bytes percpu, but the semantics are fairly
-> > confusing. Wouldn't this be easier to reason about if you just use
-> > list_head?
-> >
-> > updated_children would be replaced with LIST_HEAD (or similar), and
-> > the list would be NULL terminated instead of terminated by self/parent
-> > cgroup. IIUC the reason it's not NULL-terminated now is because we use
-> > cgroup->updated_next to check quickly if a cgroup is on the list or
-> > not. If we use list_heads, we can just use list_emtpy() IIUC.
-> >
-> > We can also simplify the semantics of unlinking @root from the updated
-> > tree below, it would just be list_del() IIUC, which is actually more
-> > performant as well. It seems like overall we would simplify a lot of
-> > things. When forming the updated_list, we can just walk the tree and
-> > splice the lists in the correct order.
-> >
-> > It seems to me that saving 8 bytes percpu is not worth the complexity
-> > of the custom list semantics here. Am I missing something here?
->
-> It will cost an additional 16 bytes of percpu memory if converted to
-> list_heads. Like other lists, there will be sibling and children
-> list_heads. There are also 2 pointers to update instead of one. Anyway,
-> I don't have an objection to convert them to list_heads if agreed by Teju=
-n.
+> > We should either do some kind of user/kernel shared memory queue to
+> > receive/return the tokens (similar to what Jonathan was doing in his
+> > proposal?)
+>=20
+> I'll take a look at Jonathan's proposal, sorry, I'm not immediately
+> familiar but I wanted to respond :-) But is the suggestion here to
+> build a new kernel-user communication channel primitive for the
+> purpose of passing the information in the devmem cmsg? IMHO that seems
+> like an overkill. Why add 100-200 lines of code to the kernel to add
+> something that can already be done with existing primitives? I don't
+> see anything concretely wrong with cmsg & setsockopt approach, and if
+> we switch to something I'd prefer to switch to an existing primitive
+> for simplicity?
+>=20
+> The only other existing primitive to pass data outside of the linear
+> buffer is the MSG_ERRQUEUE that is used for zerocopy. Is that
+> preferred? Any other suggestions or existing primitives I'm not aware
+> of?
 
-Yes you are right. It's definitely not free, but it's also not super
-costly. It's just that every time I look at the rstat code I need to
-remind myself of how updated_next and updated_children work. I will
-let Tejun decide.
+I guess I'm just wondering whether other people have any suggestions
+here. Not sure Jonathan's way was better, but we fundamentally
+have two queues between the kernel and the userspace:
+- userspace receiving tokens (recvmsg + magical flag)
+- userspace refilling tokens (setsockopt + magical flag)
+
+So having some kind of shared memory producer-consumer queue feels natural.
+And using 'classic' socket api here feels like a stretch, idk.
+
+But maybe I'm overthinking and overcomplicating :-)
+
+> > or bite the bullet and switch to io_uring.
+> >
+>=20
+> IMO io_uring & socket support are orthogonal, and one doesn't preclude
+> the other. As you know we like to use sockets and I believe there are
+> issues with io_uring adoption at Google that I'm not familiar with
+> (and could be wrong). I'm interested in exploring io_uring support as
+> a follow up but I think David Wei will be interested in io_uring
+> support as well anyway.
+
+Ack, might be one more reason on our side to adopt iouring :-p
+
+> > I was also suggesting to do it via netlink initially, but it's probably
+> > a bit slow for these purpose, idk.
+>=20
+> Yeah, I hear netlink is reserved for control paths and is
+> inappropriate for data path, but I'll let folks correct me if wrong.
+>=20
+> --=20
+> Thanks,
+> Mina
