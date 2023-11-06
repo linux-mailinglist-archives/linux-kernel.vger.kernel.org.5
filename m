@@ -2,127 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D8847E2AA6
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 18:08:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99EF17E2AB1
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 18:10:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232646AbjKFRIh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 12:08:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35134 "EHLO
+        id S232920AbjKFRKE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 12:10:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232405AbjKFRIg (ORCPT
+        with ESMTP id S232919AbjKFRKB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 12:08:36 -0500
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12DBED47;
-        Mon,  6 Nov 2023 09:08:32 -0800 (PST)
-Received: by mail-pg1-x536.google.com with SMTP id 41be03b00d2f7-53fa455cd94so2892014a12.2;
-        Mon, 06 Nov 2023 09:08:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699290511; x=1699895311; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7zfoDrt1e9fCUXEtYpas/Vn47svbwQXQsu/mnzQxCLU=;
-        b=kZNoR4BWO8WtU3CTnC+sjWl+726Heq3HupxyJWrhPHFAXX93VtNIECUnVpjdnNxQSJ
-         ax04fyMZe3j7J+FG2Fqtuy01AS3yQFw2sqzx3dLj5Hwq3N0zrdoZzTfwUJlkpTx8fbTB
-         wcI0/frJWP7wC5Mgy+QSgEQeAx62NIvZ/oevlgXHOWHkDW4q+A/4aqtmS2I7ZbMqnCL3
-         hWQJPpbET8oRoAsyF/ujTEGOXDdcmKu1yK3Up3Y9UHDrm7ATApOFXdzCMjnugpD8sdOx
-         cQGVJ8Avu0SUK7DWhWkIlmMU/bm2SFMZ11OwTwPH8YSUPLPuwwzw2yEJ0jLJs8H36/0+
-         85BQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699290511; x=1699895311;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7zfoDrt1e9fCUXEtYpas/Vn47svbwQXQsu/mnzQxCLU=;
-        b=mFr4/buuljYos3knxjAYaT+tbm0VhhbCGyHnD9zwCY14ADRaOgYryS3JP3LT/oDz+V
-         wc0maThPKivAsFymkl13EArySZwvDsRd8K6X6SoI8xOpvjvztNN1hjuzGOBrzBoTkhzt
-         uhXnBvHWlaRH4ZSA4BCR9Cn8b63poIkWHd7JJBm/qa5VPfjif3hmINZzsFAJcwYHEXmY
-         HnM7s0duDV6xe+/Pgm4UuOgunY9/KsiI7rljjaa6a2ucjRWzTzekXrlMBq83/N3Sdwb6
-         Q7xkRUa05l5gNg1bS8EMazSdogS9JFRJuOk9zARIiUbePZpF+s25m9xGzadjAqikav1K
-         TF1A==
-X-Gm-Message-State: AOJu0YwOakLLPOcCQm8xwKthyGuzxxY/0Y2h39ZmBqnRbrp0YHufQyP6
-        PQB/+x3OuTf6ma2voOYAXf+rFODMAQpECzxwiww=
-X-Google-Smtp-Source: AGHT+IGUg1ociNXol7xR6OAA0jZBUsIUoo8cClk/i/igaI4/ds2fB5KIC8oYFd7ZACVTHps5QDGjlL1HowmQgQhWo10=
-X-Received: by 2002:a17:90a:1a17:b0:280:2c55:77c5 with SMTP id
- 23-20020a17090a1a1700b002802c5577c5mr19651657pjk.46.1699290511444; Mon, 06
- Nov 2023 09:08:31 -0800 (PST)
+        Mon, 6 Nov 2023 12:10:01 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E9C1D6B;
+        Mon,  6 Nov 2023 09:09:58 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4302DC433CC;
+        Mon,  6 Nov 2023 17:09:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699290598;
+        bh=UFzUofNNLBASgkPIJgDuNdjyCEGP5bQHseuE8TRa7W0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=hQaJvupT4KjzsBJdf632gxvpFt08jPP2HUDi32DeJFMsVaQqfn9+Ll6lnsXFhbVsU
+         +b+Uav8d70GJwoVLBcWGbauVZbqJyurllHJlodYjkF6SDrEnGz3fnAOCBkBac+VmM2
+         phkpuBXi7HP8IMxpaip3rkmLqlZcM7mVARX6ASdBtDbHE+vnJaf+kRheCDZAmVo1ON
+         luwtZETkz9Wbr8zxDVN1wz4WWSh0J+fC7LZ4QWtWv/MT1K/1X5AcAZwsLPk40G7sB1
+         iEPNu4LejFDtl2mkefC5ZDw8eZsClBKglllw9L+IK68px2zWyh4hNO2BAaNrlk34XZ
+         7xZTEWkPoai4w==
+Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-50970c2115eso1670521e87.1;
+        Mon, 06 Nov 2023 09:09:58 -0800 (PST)
+X-Gm-Message-State: AOJu0Yw2IKqAJPS+2Fkxq0EZP056hMXrFq21oAH0ITMOhJQjMEefwdyV
+        zs+mm5NpysbD2AMDQorVKJdP8yVbWhLP0ZXjbQ==
+X-Google-Smtp-Source: AGHT+IGpMZ2uYxaFKvHqjpiuPBw5ga6h3w246K/OsJC2VAWaxh57/wBNpyznpCnRCwVbLEpl1hL6RVNZkRP/FNRR2yI=
+X-Received: by 2002:ac2:53ab:0:b0:507:ce2f:8f0c with SMTP id
+ j11-20020ac253ab000000b00507ce2f8f0cmr22254953lfh.35.1699290596382; Mon, 06
+ Nov 2023 09:09:56 -0800 (PST)
 MIME-Version: 1.0
-References: <20231106130309.112650042@linuxfoundation.org> <2665d8bc-111c-45ca-a473-b1c892867e9c@oracle.com>
-In-Reply-To: <2665d8bc-111c-45ca-a473-b1c892867e9c@oracle.com>
-From:   Allen Pais <stable.kernel.dev@gmail.com>
-Date:   Mon, 6 Nov 2023 09:08:20 -0800
-Message-ID: <CAJq+SaCqtQwk+eCgXT9jQU33Ufqr+aOaQq+VsXHCqdc1Qp8Vkg@mail.gmail.com>
-Subject: Re: [PATCH 5.15 000/128] 5.15.138-rc1 review
-To:     Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sasha Levin <sashal@kernel.org>,
-        mizhang@google.com, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org, Vegard Nossum <vegard.nossum@oracle.com>,
-        Darren Kenny <darren.kenny@oracle.com>
+References: <20230828211424.2964562-1-nfraprado@collabora.com>
+ <20230828211424.2964562-4-nfraprado@collabora.com> <e90cb52f-d55b-d3ba-3933-6cc7b43fcfbc@arm.com>
+ <CA+G9fYsbq28w7m-sf6LhMscXHdPs0cGXU7kK6YzjKdUFKuQ+6A@mail.gmail.com> <e72e144a-c617-4a9e-adfb-e25ddabeb4c7@sirena.org.uk>
+In-Reply-To: <e72e144a-c617-4a9e-adfb-e25ddabeb4c7@sirena.org.uk>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Mon, 6 Nov 2023 11:09:44 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqL-3O6omPf4HcPFctgid+br04QW5p81qDx0CPMqh_eXTg@mail.gmail.com>
+Message-ID: <CAL_JsqL-3O6omPf4HcPFctgid+br04QW5p81qDx0CPMqh_eXTg@mail.gmail.com>
+Subject: Re: [PATCH v3 3/3] kselftest: Add new test for detecting unprobed
+ Devicetree devices
+To:     Mark Brown <broonie@kernel.org>,
+        =?UTF-8?B?TsOtY29sYXMgRi4gUi4gQS4gUHJhZG8=?= 
+        <nfraprado@collabora.com>
+Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Aishwarya TCV <aishwarya.tcv@arm.com>,
+        kernelci@lists.linux.dev, kernel@collabora.com,
+        Guenter Roeck <groeck@chromium.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Frank Rowand <frowand.list@gmail.com>,
+        Shuah Khan <shuah@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Nov 2, 2023 at 12:36=E2=80=AFPM Mark Brown <broonie@kernel.org> wro=
+te:
 >
-> On 06/11/23 6:32 pm, Greg Kroah-Hartman wrote:
-> > This is the start of the stable review cycle for the 5.15.138 release.
-> > There are 128 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> >
-> > Responses should be made by Wed, 08 Nov 2023 13:02:46 +0000.
-> > Anything received after that time might be too late.
-> >
+> On Thu, Nov 02, 2023 at 07:15:58PM +0530, Naresh Kamboju wrote:
+> > On Thu, 2 Nov 2023 at 17:41, Aishwarya TCV <aishwarya.tcv@arm.com> wrot=
+e:
 >
-> I am seeing a build failure with perf:
+> > > https://storage.kernelci.org/mainline/master/v6.6-9152-gdeefd5024f07/=
+arm64/defconfig%2Bkselftest/gcc-10/logs/kselftest.log
 >
-> tools/perf/util/evlist.c: In function evlist__add_aux_dummy:
-> tools/perf/util/evlist.c:266:31: error: implicit declaration of function
-> evlist__dummy_event; did you mean evlist__add_sb_event=C3=A2=E2=82=AC=E2=
-=84=A2?
-> [-Werror=3Dimplicit-function-declaration]
->    266 |         struct evsel *evsel =3D evlist__dummy_event(evlist);
->        |                               ^~~~~~~~~~~~~~~~~~~
->        |                               evlist__add_sb_event
+> ...
 >
+> > May be due to, A loop of symlinks that are pointing to self / same file=
+s ?
 >
-> I think we should drop these three commits:
+> Right, it does look like something bad is going on with symlinks:
 >
-> 20a5799cae7dc perf evlist: Avoid frequency mode for the dummy event
-> 7de783c81c7e7 perf tools: Get rid of evlist__add_on_all_cpus()
-> 141ce9207068e perf evlist: Add evlist__add_dummy_on_all_cpus()
+> > > '/tmp/kci/linux/tools/testing/selftests/../../../build/source/build/s=
+ource/build/source/build/source/build/source/build/source/build/source/buil=
+d/source/build/source/build/source/build/source/build/source/build/source/b=
+uild/source/build/source/build/source/build/source/build/source/build/sourc=
+e/build/source/build/source/build/source/build/source/build/source/build/so=
+urce/build/source/build/source/build/source/build/source/build/source/build=
+/source/build/source/build/source/build/source/build/source/build/source/bu=
+ild/source/build/source/build/source/build/source/tools/testing/selftests/p=
+owerpc/vphn/vphn.c'
 >
-> Backport was requested here:
-> https://lore.kernel.org/stable/CAL715WLTjMGQrhm6wWqFSeL_Oq-HzoQd5CqewvLRL=
-v0Xbnibgw@mail.gmail.com/
+> > Please build by using tuxmake and validate builds are working.
 >
+> Note that tuxmake does an in tree build of kselftest:
+>
+>   make --silent --keep-going --jobs=3D8 O=3D/home/tuxbuild/.cache/tuxmake=
+/builds/1/build INSTALL_PATH=3D/home/tuxbuild/.cache/tuxmake/builds/1/build=
+/kselftest_install ARCH=3Darm64 CROSS_COMPILE=3Daarch64-linux-gnu- CROSS_CO=
+MPILE_COMPAT=3Darm-linux-gnueabihf- 'CC=3Dsccache aarch64-linux-gnu-gcc' 'H=
+OSTCC=3Dsccache gcc' kselftest-install
+>
+> and does it's own tarball build too, whereas kernelci does an out of
+> tree build and uses kselftest-gen_tar:
+>
+>   make KBUILD_BUILD_USER=3DKernelCI FORMAT=3D.xz ARCH=3Darm64 HOSTCC=3Dgc=
+c CROSS_COMPILE=3Daarch64-linux-gnu- CROSS_COMPILE_COMPAT=3Darm-linux-gnuea=
+bihf- CC=3D"ccache aarch64-linux-gnu-gcc" O=3D/tmp/kci/linux/build -C/tmp/k=
+ci/linux -j10 kselftest-gen_tar
+>
+> and that the error is in the dt-extract-compatibles program which is
+> part of the kernel (well, imported into the kernel from dtc upstream):
+>
+>   File "/tmp/kci/linux/tools/testing/selftests/../../../scripts/dtc/dt-ex=
+tract-compatibles", line 107, in <module>
+>     compat_ignore_list.extend(parse_compatibles_to_ignore(f))
+>
+> This all suggests that something to do with how the build is set up is
+> resulting in the source symlink that gets created for out of tree builds
+> blowing up, I guess it's not specifically the DT stuff that's blowing it
+> up but rather that it's tripping over an existing bug.  Really does look
+> like a legitimate bug though, the source link is set up by the in tree
+> kernel build infrastructure.
+>
+> I did poke a bit at reproducing outside of the KernelCI scripts but
+> didn't manage to yet.
 
+I can repro with "make dt_compatible_check". The problem is with an
+'out of tree' build within the tree. That's my normal setup, but the
+difference is I have ".build" directories. If I use "build" instead,
+then I can repro. The issue is the iglob will recurse into "build" but
+not hidden directories (by default). There's no option to not follow
+symlinks which would solve this (there is an open python issue since
+2017 to add it). I don't see a simple solution in python other than
+getting a full list with glob(), convert to absolute paths, and remove
+duplicates. I imagine that will be somewhat slow.
 
- Just tested perf build, I see the same errors:
+A simple solution would be instead of passing the source tree root to
+dt-extract-compatibles, pass 'arch', 'drivers', and 'sound' instead.
+There shouldn't be compatibles anywhere else.
 
-tools/perf/util/evlist.c: In function 'evlist__add_aux_dummy':
-/linux/tools/perf/util/evlist.c:266:24: error: implicit declaration of
-function 'evlist__dummy_event'; did you mean 'evlist__add_sb_event'?
-[-Werror=3Dimplicit-function-declaration]
-  struct evsel *evsel =3D evlist__dummy_event(evlist);
-                        ^~~~~~~~~~~~~~~~~~~
-                        evlist__add_sb_event
-linux/tools/perf/util/evlist.c:266:24: error: initialization makes
-pointer from integer without a cast [-Werror=3Dint-conversion]
-
-Thanks,
-Allen
+Rob
