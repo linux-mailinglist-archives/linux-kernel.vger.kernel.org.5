@@ -2,62 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EB6E87E1A97
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 08:00:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2E217E1A8D
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 07:58:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230502AbjKFHAB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 02:00:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48742 "EHLO
+        id S230449AbjKFG6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 01:58:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230424AbjKFG75 (ORCPT
+        with ESMTP id S229717AbjKFG6H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 01:59:57 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CEACBB
-        for <linux-kernel@vger.kernel.org>; Sun,  5 Nov 2023 22:59:55 -0800 (PST)
+        Mon, 6 Nov 2023 01:58:07 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04FCCA4;
+        Sun,  5 Nov 2023 22:58:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699253995; x=1730789995;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=dbh2CWMpd+icdilLpDkSpVgYFt/E0AyxSgbvKFOsvd8=;
-  b=PxCWOVtTXPeaHNbYErXHu0k2E0cf7I6GaZc9//up2WOiwOns9SZBcMBn
-   NJOGZI82sOY1rf2Ze2/xJ5dcgfll4NQ7fjPwEZEGbw6GH91sXc2DwS5HA
-   x4XFX2FrQPLnGc1FFp7j+ZMvXEfOwfqIoBs7Huic5ogG3ilYKtbA06LtN
-   68+SLnUW39WjkfodAWEgtn/1h+tfc8xUOBbF3F96dOiUuMUw0IHtCMbny
-   1ENg2QM6fdWAeWYyJDOfJEhAYF3rElYRO/JRLRyWnZc1v1OggezTP1/DO
-   D0CYKsHtIS4zxv+aK+bUF7GHaxJSQTfSleaz6N1vV6c4Kn2T7hqDh3+5n
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10885"; a="10757439"
+  t=1699253885; x=1730789885;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=d/1uCOzy63KPya2fh5wdWCSdQMv4USuUbMlWjMlQ4EE=;
+  b=WCRSfy5jCKnakdsywufSVJFh7zTRlmeLcqy73FlNTw4Ufwo7PYgFn36R
+   x1u86eKmaEoQBuj9Lo1MCDrXMhudCUjwT6FPrS/Sm7pVhQB7ZpXONZjdO
+   pXCXsUCWkhJ0K57SS3DTbdfKZsyLo1pBGRrgJB3HdA60JM1E4LOcbqPXK
+   bUtImtOAGsk6s5ShajCKjhv/p3eq29biyeDWgF+zuoXoAxgx8V4NYRqTq
+   9gFIyDTw7438D4D5qbW1X35lULKFZC7RwmQsNkE9uWrfdwJOP/+Y4vbBl
+   NaqYxKZJeQu7CLfOg6UCKZzq4uACbBofZLrI+mdvcZXukXFeXS8R3lFpD
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10885"; a="368554212"
 X-IronPort-AV: E=Sophos;i="6.03,280,1694761200"; 
-   d="scan'208";a="10757439"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2023 22:59:54 -0800
+   d="scan'208";a="368554212"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2023 22:58:04 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10885"; a="762236548"
+X-IronPort-AV: E=McAfee;i="6600,9927,10885"; a="738719602"
 X-IronPort-AV: E=Sophos;i="6.03,280,1694761200"; 
-   d="scan'208";a="762236548"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2023 22:59:51 -0800
-From:   "Huang, Ying" <ying.huang@intel.com>
-To:     Liu Shixin <liushixin2@huawei.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Yosry Ahmed <yosryahmed@google.com>,
-        Sachin Sant <sachinp@linux.ibm.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v8] mm: vmscan: try to reclaim swapcache pages if no
- swap space
-In-Reply-To: <20231106074452.2581835-1-liushixin2@huawei.com> (Liu Shixin's
-        message of "Mon, 6 Nov 2023 15:44:52 +0800")
-References: <20231106074452.2581835-1-liushixin2@huawei.com>
-Date:   Mon, 06 Nov 2023 14:57:49 +0800
-Message-ID: <87pm0nv05u.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+   d="scan'208";a="738719602"
+Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.251.215.231])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2023 22:57:59 -0800
+Message-ID: <0c36eb5d-d703-47e2-963f-619cb542ba3f@intel.com>
+Date:   Mon, 6 Nov 2023 08:57:57 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V2 2/6] mmc: cqhci: Increase recovery halt timeout
+Content-Language: en-US
+To:     Avri Altman <Avri.Altman@wdc.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        =?UTF-8?Q?Kornel_Dul=C4=99ba?= <korneld@chromium.org>,
+        Radoslaw Biernacki <biernacki@google.com>,
+        Gwendal Grignou <gwendal@chromium.org>,
+        Asutosh Das <quic_asutoshd@quicinc.com>
+Cc:     Chaotian Jing <chaotian.jing@mediatek.com>,
+        Bhavya Kapoor <b-kapoor@ti.com>,
+        Kamal Dasu <kamal.dasu@broadcom.com>,
+        Al Cooper <alcooperx@gmail.com>,
+        Haibo Chen <haibo.chen@nxp.com>,
+        Shaik Sajida Bhanu <quic_c_sbhanu@quicinc.com>,
+        Sai Krishna Potthuri <sai.krishna.potthuri@amd.com>,
+        Victor Shih <victor.shih@genesyslogic.com.tw>,
+        Ben Chuang <ben.chuang@genesyslogic.com.tw>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Aniruddha Tvs Rao <anrao@nvidia.com>,
+        Chun-Hung Wu <chun-hung.wu@mediatek.com>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20231103084720.6886-1-adrian.hunter@intel.com>
+ <20231103084720.6886-3-adrian.hunter@intel.com>
+ <DM6PR04MB65752D6E30DFE006E2CD5632FCA5A@DM6PR04MB6575.namprd04.prod.outlook.com>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+In-Reply-To: <DM6PR04MB65752D6E30DFE006E2CD5632FCA5A@DM6PR04MB6575.namprd04.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
@@ -68,163 +84,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Liu Shixin <liushixin2@huawei.com> writes:
+On 3/11/23 12:37, Avri Altman wrote:
+>> Failing to halt complicates the recovery. Additionally, unless the card or
+>> controller are stuck, which is expected to be very rare, then the halt should
+>> succeed, so it is better to wait. Set a large timeout.
+> Maybe also explain that If task queuing is in progress, CQE needs to complete the operation, sending both commands and processing the responses.
 
-> When spaces of swap devices are exhausted, only file pages can be
-> reclaimed.  But there are still some swapcache pages in anon lru list.
-> This can lead to a premature out-of-memory.
->
-> The problem is found with such step:
->
->  Firstly, set a 9MB disk swap space, then create a cgroup with 10MB
->  memory limit, then runs an program to allocates about 15MB memory.
->
-> The problem occurs occasionally, which may need about 100 times [1].
->
-> Fix it by checking number of swapcache pages in can_reclaim_anon_pages().
-> If the number is not zero, return true and set swapcache_only to 1.
-> When scan anon lru list in swapcache_only mode, non-swapcache pages will
-> be skipped to isolate in order to accelerate reclaim efficiency.
->
-> However, in swapcache_only mode, the scan count still increased when scan
-> non-swapcache pages because there are large number of non-swapcache pages
-> and rare swapcache pages in swapcache_only mode, and if the non-swapcache
-> is skipped and do not count, the scan of pages in isolate_lru_folios() can
-> eventually lead to hung task, just as Sachin reported [2].
->
-> By the way, since there are enough times of memory reclaim before OOM, it
-> is not need to isolate too much swapcache pages in one times.
->
-> [1]. https://lore.kernel.org/lkml/CAJD7tkZAfgncV+KbKr36=eDzMnT=9dZOT0dpMWcurHLr6Do+GA@mail.gmail.com/
-> [2]. https://lore.kernel.org/linux-mm/CAJD7tkafz_2XAuqE8tGLPEcpLngewhUo=5US14PAtSM9tLBUQg@mail.gmail.com/
->
-> Signed-off-by: Liu Shixin <liushixin2@huawei.com>
-> Tested-by: Yosry Ahmed <yosryahmed@google.com>
-> Reviewed-by: "Huang, Ying" <ying.huang@intel.com>
-> Reviewed-by: Yosry Ahmed <yosryahmed@google.com>
-> ---
-> v7->v8: Reset swapcache_only at the beginning of can_reclaim_anon_pages().
-> v6->v7: Reset swapcache_only to zero after there are swap spaces.
-> v5->v6: Fix NULL pointing derefence and hung task problem reported by Sachin.
->
->  include/linux/swap.h |  6 ++++++
->  mm/memcontrol.c      |  8 ++++++++
->  mm/vmscan.c          | 27 +++++++++++++++++++++++++++
->  3 files changed, 41 insertions(+)
->
-> diff --git a/include/linux/swap.h b/include/linux/swap.h
-> index f6dd6575b905..3ba146ae7cf5 100644
-> --- a/include/linux/swap.h
-> +++ b/include/linux/swap.h
-> @@ -659,6 +659,7 @@ static inline void mem_cgroup_uncharge_swap(swp_entry_t entry, unsigned int nr_p
->  }
->  
->  extern long mem_cgroup_get_nr_swap_pages(struct mem_cgroup *memcg);
-> +extern long mem_cgroup_get_nr_swapcache_pages(struct mem_cgroup *memcg);
->  extern bool mem_cgroup_swap_full(struct folio *folio);
->  #else
->  static inline void mem_cgroup_swapout(struct folio *folio, swp_entry_t entry)
-> @@ -681,6 +682,11 @@ static inline long mem_cgroup_get_nr_swap_pages(struct mem_cgroup *memcg)
->  	return get_nr_swap_pages();
->  }
->  
-> +static inline long mem_cgroup_get_nr_swapcache_pages(struct mem_cgroup *memcg)
-> +{
-> +	return total_swapcache_pages();
-> +}
-> +
->  static inline bool mem_cgroup_swap_full(struct folio *folio)
->  {
->  	return vm_swap_full();
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 5b009b233ab8..29e34c06ca83 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -7584,6 +7584,14 @@ long mem_cgroup_get_nr_swap_pages(struct mem_cgroup *memcg)
->  	return nr_swap_pages;
->  }
->  
-> +long mem_cgroup_get_nr_swapcache_pages(struct mem_cgroup *memcg)
-> +{
-> +	if (mem_cgroup_disabled())
-> +		return total_swapcache_pages();
-> +
-> +	return memcg_page_state(memcg, NR_SWAPCACHE);
-> +}
-> +
->  bool mem_cgroup_swap_full(struct folio *folio)
->  {
->  	struct mem_cgroup *memcg;
-> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index 6f13394b112e..5d5a169ec98c 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -137,6 +137,9 @@ struct scan_control {
->  	/* Always discard instead of demoting to lower tier memory */
->  	unsigned int no_demotion:1;
->  
-> +	/* Swap space is exhausted, only reclaim swapcache for anon LRU */
-> +	unsigned int swapcache_only:1;
-> +
->  	/* Allocation order */
->  	s8 order;
->  
-> @@ -606,6 +609,9 @@ static inline bool can_reclaim_anon_pages(struct mem_cgroup *memcg,
->  					  int nid,
->  					  struct scan_control *sc)
->  {
-> +	if (sc)
-> +		sc->swapcache_only = 0;
-> +
->  	if (memcg == NULL) {
->  		/*
->  		 * For non-memcg reclaim, is there
-> @@ -613,10 +619,22 @@ static inline bool can_reclaim_anon_pages(struct mem_cgroup *memcg,
->  		 */
->  		if (get_nr_swap_pages() > 0)
->  			return true;
-> +		/* Is there any swapcache pages to reclaim? */
-> +		if (total_swapcache_pages() > 0) {
-> +			if (sc)
-> +				sc->swapcache_only = 1;
-> +			return true;
-> +		}
->  	} else {
->  		/* Is the memcg below its swap limit? */
->  		if (mem_cgroup_get_nr_swap_pages(memcg) > 0)
->  			return true;
-> +		/* Is there any swapcache pages in memcg to reclaim? */
-> +		if (mem_cgroup_get_nr_swapcache_pages(memcg) > 0) {
-> +			if (sc)
-> +				sc->swapcache_only = 1;
-> +			return true;
-> +		}
->  	}
+True, although those commands should be quite quick.
 
-I understand that this is only possible in theory.  But if can_demote()
-== true, get_nr_swap_pages() == 0, total_swapcache_pages() > 0, we will
-demote only anonymous pages in swapcache.  I think that this isn't
-reasonable.  So, swapcache pages should be checked after can_demote()
-checking.
+> 
+>>
+>> Fixes: a4080225f51d ("mmc: cqhci: support for command queue enabled
+>> host")
+>> Cc: stable@vger.kernel.org
+>> Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
+> Reviewed-by: Avri Altman <avri.altman@wdc.com>
+> 
+>> ---
+>>  drivers/mmc/host/cqhci-core.c | 6 +++---
+>>  1 file changed, 3 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/mmc/host/cqhci-core.c b/drivers/mmc/host/cqhci-core.c
+>> index b3d7d6d8d654..15f5a069af1f 100644
+>> --- a/drivers/mmc/host/cqhci-core.c
+>> +++ b/drivers/mmc/host/cqhci-core.c
+>> @@ -984,10 +984,10 @@ static bool cqhci_halt(struct mmc_host *mmc,
+>> unsigned int timeout)
+>>  /*
+>>   * After halting we expect to be able to use the command line. We interpret
+>> the
+>>   * failure to halt to mean the data lines might still be in use (and the upper
+>> - * layers will need to send a STOP command), so we set the timeout based
+>> on a
+>> - * generous command timeout.
+>> + * layers will need to send a STOP command), however failing to halt
+>> + complicates
+>> + * the recovery, so set a timeout that would reasonably allow I/O to
+>> complete.
+>>   */
+>> -#define CQHCI_START_HALT_TIMEOUT       5
+>> +#define CQHCI_START_HALT_TIMEOUT       500
+>>
+>>  static void cqhci_recovery_start(struct mmc_host *mmc)  {
+>> --
+>> 2.34.1
+> 
 
---
-Best Regards,
-Huang, Ying
-
->  	/*
-> @@ -2342,6 +2360,15 @@ static unsigned long isolate_lru_folios(unsigned long nr_to_scan,
->  		 */
->  		scan += nr_pages;
->  
-> +		/*
-> +		 * Count non-swapcache too because the swapcache pages may
-> +		 * be rare and it takes too much times here if not count
-> +		 * the non-swapcache pages.
-> +		 */
-> +		if (unlikely(sc->swapcache_only && !is_file_lru(lru) &&
-> +		    !folio_test_swapcache(folio)))
-> +			goto move;
-> +
->  		if (!folio_test_lru(folio))
->  			goto move;
->  		if (!sc->may_unmap && folio_mapped(folio))
