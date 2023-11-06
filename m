@@ -2,70 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD1117E26BE
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 15:26:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1E2B7E26BA
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 15:25:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231750AbjKFO0C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 09:26:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49862 "EHLO
+        id S231764AbjKFOZ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 09:25:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229563AbjKFOZ7 (ORCPT
+        with ESMTP id S231358AbjKFOZZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 09:25:59 -0500
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BEBABF;
-        Mon,  6 Nov 2023 06:25:56 -0800 (PST)
-Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-5440f25dcc7so5514526a12.0;
-        Mon, 06 Nov 2023 06:25:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699280755; x=1699885555; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=p+IJUfXZsOW51np1tosDmPgs6aK7LQL7UbN0Dlaw73o=;
-        b=ILTZSDck39PGDBOo4gHADOUKXS4NZvuSe39uF73FR72vuh5sd8uVPTI53EP5Pc69o9
-         pISN0n/1BmKqk965mfuJsRfBbIwTB5Tb6aUzN35fop7M7XAhH7TV9MJojcOK8UBTLip4
-         m/fRn4Btw6TKswNN3Ag0NJ6vFAAlhZBOu1tYYqvgS/TTUv80IOGWKpGBA9h4fp5UxDqY
-         3KlNtddIoGCPhpGIxjMJ6qjQmU/Mce2Rdsj44Th1nuAszPzsSr9vQk9Ay0kzXjZbQfZg
-         L50vFIlJVR4A26LjNyAkkA8ps7wi0S0fxb10sqhlrff6l976aHUzqNc7THjF8dRsK/gr
-         f6pA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699280755; x=1699885555;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=p+IJUfXZsOW51np1tosDmPgs6aK7LQL7UbN0Dlaw73o=;
-        b=jBINs8Zg6LaxnGfxF+/5ESw+mX1rk/A+Qp2XcqSPyt+tKH59T0x4ots7w14esA83m3
-         VkISkze9bz9Y3b8tsd2QHf2WbeLNjIc5Mk7d0fxREbH5nJ1xlWqsjf8UJCZAE4myWyE+
-         cUl/LHJRuiLp3Q/M1oqJozlh1U+YkGbWBjJDMdiwpRUwW3AG70Dwp7s1CV0igQkjY72f
-         7LdIYHmdA7jZq7KSTgmMGRoN1+RE1UHHBzu8atepzcZQ9yH6t/M28kFCZIozZah76jPX
-         zdiYWBlv1+7L0EHzKYSzwb5mXfsGiuatOPEVIPjyh1HpeNMgeZEXCaBbkuShePkzX4SI
-         QSZg==
-X-Gm-Message-State: AOJu0YygzCQ9WF3JGKGXMtR9aNBtSwRp2zjTJgB5gjjx9JwSeCDxl4RC
-        q66tKhaSXMfMh1BtcA438eFCFWSne6+WzLVqaAc=
-X-Google-Smtp-Source: AGHT+IEqw5OX3EtYIyMue2Umob88eYYxIoWxUZvwH8rdXlFYg/NsYYT/TdLOVqdYwrjrZhsibk7B2I8VDbgJTnl4tSs=
-X-Received: by 2002:a17:907:934c:b0:9bf:b6f5:3a08 with SMTP id
- bv12-20020a170907934c00b009bfb6f53a08mr13644299ejc.52.1699280754821; Mon, 06
- Nov 2023 06:25:54 -0800 (PST)
+        Mon, 6 Nov 2023 09:25:25 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD4A9C6;
+        Mon,  6 Nov 2023 06:25:22 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77C91C433C8;
+        Mon,  6 Nov 2023 14:25:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699280722;
+        bh=HY3kSLldl7rK8Qt1R1njkwITH3UB/c7/iTo+eGw2/5g=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dfuahSDA/ik+wqTm44m7fP26rdFTxfGHXXZAKtyCwwZL+BxZTfimvszIss7cGXVMK
+         kta0oN61FDmSKiy356qtTiM36ZO08ms5xIsA/Wdu3q5PiG+VeFI5HGGD0BrCdwv3ry
+         Uiw0Q1gnPy4/4MXy6Y0Zr4iTtshf0OMxdXWVrTvc3zYo3pNLPnO8MTS5H+l0yZfAn0
+         CVi2wIg/VJ8PGrZMoBZ4SVGP1lC1Rf1cli4TI36cIxzjPv6MaPFEgtZSyEd/aV3gR3
+         JBvEwolJGEI4j3CM3NHHGz7cQt5ObIFJSE0aHoePGuSNLHbPOj3J0pXIuu2eEt/nhK
+         0+dPGI19MJMfw==
+Received: from johan by xi.lan with local (Exim 4.96)
+        (envelope-from <johan@kernel.org>)
+        id 1r00YJ-0000Ob-2S;
+        Mon, 06 Nov 2023 15:26:08 +0100
+Date:   Mon, 6 Nov 2023 15:26:07 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
+Cc:     linux-renesas-soc@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 3/3] gnss: ubx: add support for the reset gpio
+Message-ID: <ZUj3fzArgPU4kYYT@hovoldconsulting.com>
+References: <20231103225601.6499-1-wsa+renesas@sang-engineering.com>
+ <20231103225601.6499-4-wsa+renesas@sang-engineering.com>
 MIME-Version: 1.0
-References: <20231103104900.409470-1-ubizjak@gmail.com> <CAJZ5v0iOY3u_jBmf=_3AnqEWHb+eTA6DtTfoU3tb=0RB0O+szw@mail.gmail.com>
-In-Reply-To: <CAJZ5v0iOY3u_jBmf=_3AnqEWHb+eTA6DtTfoU3tb=0RB0O+szw@mail.gmail.com>
-From:   Uros Bizjak <ubizjak@gmail.com>
-Date:   Mon, 6 Nov 2023 15:25:43 +0100
-Message-ID: <CAFULd4YPVcWL6_bo2T4O=a6ed9hTOakp2m1_XBF3w-uWhyd4dQ@mail.gmail.com>
-Subject: Re: [PATCH] x86/acpi: Use %rip-relative addressing in wakeup_64.S
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     x86@kernel.org, linux-pm@vger.kernel.org,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231103225601.6499-4-wsa+renesas@sang-engineering.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -74,96 +55,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 6, 2023 at 3:14=E2=80=AFPM Rafael J. Wysocki <rafael@kernel.org=
-> wrote:
->
-> On Fri, Nov 3, 2023 at 11:49=E2=80=AFAM Uros Bizjak <ubizjak@gmail.com> w=
-rote:
-> >
-> > Instruction with %rip-relative address operand is one byte shorter than
-> > its absolute address counterpart and is also compatible with position
-> > independent executable (-fpie) build.
-> >
-> > No functional changes intended.
->
-> I'm wondering what's the exact motivation for making this change.
+On Fri, Nov 03, 2023 at 11:56:00PM +0100, Wolfram Sang wrote:
+> The Renesas KingFisher board includes a U-Blox Neo-M8 chip. This chip
+> has a reset pin which is also wired on the board. Add code to the driver
+> to support this reset pin. Because my GNSS device is hooked up via UART
+> and I2C simultaneously, I could verify functionality by opening/closing
+> the GNSS device using UART and see if the corresponding I2C device was
+> visible on the bus.
 
-Mainly to be consistent with what the compiler emits by default when a
-symbol is accessed. As said in the commit message, the %rip-relative
-access is also one byte shorter, and results in a position independent
-code.
+>  static int ubx_set_active(struct gnss_serial *gserial)
+> @@ -29,6 +31,8 @@ static int ubx_set_active(struct gnss_serial *gserial)
+>  	if (ret)
+>  		return ret;
+>  
+> +	gpiod_set_value_cansleep(data->reset_gpio, 0);
+> +
+>  	return 0;
+>  }
+>  
+> @@ -37,6 +41,8 @@ static int ubx_set_standby(struct gnss_serial *gserial)
+>  	struct ubx_data *data = gnss_serial_get_drvdata(gserial);
+>  	int ret;
+>  
+> +	gpiod_set_value_cansleep(data->reset_gpio, 1);
+> +
+>  	ret = regulator_disable(data->vcc);
+>  	if (ret)
+>  		return ret;
+> @@ -90,6 +96,13 @@ static int ubx_probe(struct serdev_device *serdev)
+>  	if (ret < 0 && ret != -ENODEV)
+>  		goto err_free_gserial;
+>  
+> +	/* Start with reset asserted */
+> +	data->reset_gpio = devm_gpiod_get_optional(&serdev->dev, "reset", GPIOD_OUT_HIGH);
+> +	if (IS_ERR(data->reset_gpio)) {
+> +		ret = PTR_ERR(data->reset_gpio);
+> +		goto err_free_gserial;
+> +	}
+> +
+>  	ret = gnss_serial_register(gserial);
+>  	if (ret)
+>  		goto err_free_gserial;
 
-> Any urgent need for it doesn't seem to be there.
+So as I just replied to you v3, the hardware integration manual for
+NEO-M8 and the datasheets for some of the other modules explicitly says
+that the RESET_N pin should not be used this way:
 
-True. It's mostly a nice-to-have change.
+	1.5 I/O pins
+	RESET_N: Reset input
+	Driving RESET_N low activates a hardware reset of the system.
+	Use this pin only to reset the module. Do not use RESET_N to
+	turn the module on and off, since the reset state increases
+	power consumption.
 
-Thanks,
-Uros.
+(and AFAIU you should generally not try to use reset this way unless it
+is explicitly said to be supported).
 
-> > Cc: "Rafael J. Wysocki" <rafael@kernel.org>
-> > Cc: Len Brown <len.brown@intel.com>
-> > Cc: Pavel Machek <pavel@ucw.cz>
-> > Cc: Thomas Gleixner <tglx@linutronix.de>
-> > Cc: Ingo Molnar <mingo@kernel.org>
-> > Cc: Borislav Petkov <bp@alien8.de>
-> > Cc: Dave Hansen <dave.hansen@linux.intel.com>
-> > Cc: "H. Peter Anvin" <hpa@zytor.com>
-> > Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
-> > ---
-> >  arch/x86/kernel/acpi/wakeup_64.S | 24 ++++++++++++------------
-> >  1 file changed, 12 insertions(+), 12 deletions(-)
-> >
-> > diff --git a/arch/x86/kernel/acpi/wakeup_64.S b/arch/x86/kernel/acpi/wa=
-keup_64.S
-> > index d5d8a352eafa..94ff83f3d3fe 100644
-> > --- a/arch/x86/kernel/acpi/wakeup_64.S
-> > +++ b/arch/x86/kernel/acpi/wakeup_64.S
-> > @@ -17,7 +17,7 @@
-> >          * Hooray, we are in Long 64-bit mode (but still running in low=
- memory)
-> >          */
-> >  SYM_FUNC_START(wakeup_long64)
-> > -       movq    saved_magic, %rax
-> > +       movq    saved_magic(%rip), %rax
-> >         movq    $0x123456789abcdef0, %rdx
-> >         cmpq    %rdx, %rax
-> >         je      2f
-> > @@ -33,14 +33,14 @@ SYM_FUNC_START(wakeup_long64)
-> >         movw    %ax, %es
-> >         movw    %ax, %fs
-> >         movw    %ax, %gs
-> > -       movq    saved_rsp, %rsp
-> > +       movq    saved_rsp(%rip), %rsp
-> >
-> > -       movq    saved_rbx, %rbx
-> > -       movq    saved_rdi, %rdi
-> > -       movq    saved_rsi, %rsi
-> > -       movq    saved_rbp, %rbp
-> > +       movq    saved_rbx(%rip), %rbx
-> > +       movq    saved_rdi(%rip), %rdi
-> > +       movq    saved_rsi(%rip), %rsi
-> > +       movq    saved_rbp(%rip), %rbp
-> >
-> > -       movq    saved_rip, %rax
-> > +       movq    saved_rip(%rip), %rax
-> >         ANNOTATE_RETPOLINE_SAFE
-> >         jmp     *%rax
-> >  SYM_FUNC_END(wakeup_long64)
-> > @@ -72,11 +72,11 @@ SYM_FUNC_START(do_suspend_lowlevel)
-> >
-> >         movq    $.Lresume_point, saved_rip(%rip)
-> >
-> > -       movq    %rsp, saved_rsp
-> > -       movq    %rbp, saved_rbp
-> > -       movq    %rbx, saved_rbx
-> > -       movq    %rdi, saved_rdi
-> > -       movq    %rsi, saved_rsi
-> > +       movq    %rsp, saved_rsp(%rip)
-> > +       movq    %rbp, saved_rbp(%rip)
-> > +       movq    %rbx, saved_rbx(%rip)
-> > +       movq    %rdi, saved_rdi(%rip)
-> > +       movq    %rsi, saved_rsi(%rip)
-> >
-> >         addq    $8, %rsp
-> >         movl    $3, %edi
-> > --
+Johan
