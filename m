@@ -2,134 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 97BA17E1F13
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 12:00:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1B957E1F17
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 12:01:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231396AbjKFLAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 06:00:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57150 "EHLO
+        id S231441AbjKFLA7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 06:00:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230284AbjKFLAc (ORCPT
+        with ESMTP id S231230AbjKFLA4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 06:00:32 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8287CB7;
-        Mon,  6 Nov 2023 03:00:29 -0800 (PST)
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A6AFPVk009474;
-        Mon, 6 Nov 2023 11:00:29 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=D1iKgU8MaxGuAanmiVdwjL8M+qWemCsbQIouJx2h9no=;
- b=Zh4DMfpAf8sU/IEX6RreKH5+teAiKdvNVAGDQjZPSYFwImhqXGDfncUy0v/ce7vIk1hr
- VvvhZ9QYLon0jq/vlgLL9vc1OjbACiSv8pv5fAF7Kq/oF2JLemwv+vJXH5Z9P9v8vhfG
- dL03OXBP1cW4rILzfyci5C5FkXet8T7wXtSOMngwTRkfhNpS5dbhkmF6mXeXtQDauVrI
- pkU3FWXkl1nlGLD4hpEFxChn4zffd6TxjvO29RR5UhFWvAZF1qSWyNr82fyDS4EbSjoJ
- B/RLWnCMfHjDCLfVnSvNfI9hVwMzzoPDpjSwMb+jmyN/hFhN3T9EQPkDWBUu/UVPXuG8 JQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u6wcnu0m4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 06 Nov 2023 11:00:28 +0000
-Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3A6AGs2e015022;
-        Mon, 6 Nov 2023 11:00:27 GMT
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u6wcnu0jg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 06 Nov 2023 11:00:27 +0000
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3A69doPm028237;
-        Mon, 6 Nov 2023 11:00:26 GMT
-Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
-        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3u62gjrbj2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 06 Nov 2023 11:00:26 +0000
-Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
-        by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3A6B0K4x17367604
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 6 Nov 2023 11:00:20 GMT
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 25DA92004B;
-        Mon,  6 Nov 2023 11:00:20 +0000 (GMT)
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7024320040;
-        Mon,  6 Nov 2023 11:00:19 +0000 (GMT)
-Received: from li-978a334c-2cba-11b2-a85c-a0743a31b510.ibm.com (unknown [9.179.20.192])
-        by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Mon,  6 Nov 2023 11:00:19 +0000 (GMT)
-Message-ID: <5cfee0930c4665481480d00bcb334b8c8c161426.camel@linux.ibm.com>
-Subject: Re: [PATCH 3/4] KVM: s390: cpu model: Use previously unused constant
-From:   Nina Schoetterl-Glausch <nsg@linux.ibm.com>
-To:     David Hildenbrand <david@redhat.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Cornelia Huck <cornelia.huck@de.ibm.com>,
-        Michael Mueller <mimu@linux.vnet.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        David Hildenbrand <dahi@linux.vnet.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>
-Cc:     linux-kernel@vger.kernel.org, Sven Schnelle <svens@linux.ibm.com>,
-        kvm@vger.kernel.org, linux-s390@vger.kernel.org
-Date:   Mon, 06 Nov 2023 12:00:19 +0100
-In-Reply-To: <47d18f06-13b2-4ec5-b601-eb9a2738f06b@redhat.com>
-References: <20231103173008.630217-1-nsg@linux.ibm.com>
-         <20231103173008.630217-4-nsg@linux.ibm.com>
-         <4c3cec3c-da81-426c-815b-afee1de68947@redhat.com>
-         <47d18f06-13b2-4ec5-b601-eb9a2738f06b@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Mon, 6 Nov 2023 06:00:56 -0500
+Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29B72D69
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 03:00:51 -0800 (PST)
+Received: by mail-qk1-x733.google.com with SMTP id af79cd13be357-7789cb322deso282240385a.3
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 03:00:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1699268449; x=1699873249; darn=vger.kernel.org;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=i8Lc9yhYdHhhQyrx1NZSXf9nwg/wEFSRP4DUBdcsGag=;
+        b=FiTrByRLW/8vJfATcUPWsChwGVkH6eyJeGKrUuSrXCLrNiZghNCqKTJZ0tdkr19due
+         zrYUc5KWMmXhqQ0FeAc2a79NR7NMiFqIhhlPUq20Vl1L68eEGaawpGpijncQ6YJK+Z70
+         J5UOViZ+UDty4kb6liEiiR1k09mkWasmMaPxk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699268449; x=1699873249;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=i8Lc9yhYdHhhQyrx1NZSXf9nwg/wEFSRP4DUBdcsGag=;
+        b=fO+G11OCUIwBh/yqabN4PfE356HfUHBr6EyHn0XC/7HYzgvVP+LzE4IB/Ay5iBDGPF
+         PVi3G0JsTjKGw94TfvO1rCCNM/ADCOs7dXb1R/Tgr5/o8IrDmoyB2w/+SbDvMjCL6X6w
+         Uze2NiIVVWftLUO9b6UnEhQBhQydAuHeha/PV7L+8ggFLZWaxNGDWZkSbsBGCSXT1x9W
+         31lBjF9l+X+2PlVMBZuoOBMnZPykso+n/YdqfRqxvUfdfoxRh3qeziajFzOn50ksh0Ns
+         OxVw5Dr48Od7Jan4VjQIvIEQTNUrkMV1bvHdtVjiRGnM/BtLDl4VfnZEKJVg9lcLtSrq
+         viag==
+X-Gm-Message-State: AOJu0Yws4PdJyZAKUmG76fP3kY0udGwr2EwHh7EH+P8QlKtOi2mbLn8k
+        HeBftstesCNNecOPcE6zdO7Ydg==
+X-Google-Smtp-Source: AGHT+IG/qsPTlEshuDlwqMcy6FG/FrxW8iH4rewTKHPzTxKQN6hMQGMOqp939jEyrOYymGJq5qcaGQ==
+X-Received: by 2002:a05:620a:2908:b0:76c:e2db:42b0 with SMTP id m8-20020a05620a290800b0076ce2db42b0mr34443254qkp.64.1699268449628;
+        Mon, 06 Nov 2023 03:00:49 -0800 (PST)
+Received: from denia.c.googlers.com (112.49.199.35.bc.googleusercontent.com. [35.199.49.112])
+        by smtp.gmail.com with ESMTPSA id e15-20020a05620a12cf00b0076eee688a95sm3208519qkl.0.2023.11.06.03.00.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 Nov 2023 03:00:49 -0800 (PST)
+From:   Ricardo Ribalda <ribalda@chromium.org>
+Date:   Mon, 06 Nov 2023 11:00:30 +0000
+Subject: [PATCH v3] media: uvcvideo: Implement V4L2_EVENT_FRAME_SYNC
 MIME-Version: 1.0
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 0Ddf0zaDIOqePaT9AAAdgOVroaXugE7k
-X-Proofpoint-ORIG-GUID: TujqQAYWG4kRhei_sFweFZhNDJRux6Q6
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-06_09,2023-11-02_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 phishscore=0
- adultscore=0 lowpriorityscore=0 mlxscore=0 mlxlogscore=375 spamscore=0
- clxscore=1015 malwarescore=0 priorityscore=1501 impostorscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2310240000 definitions=main-2311060091
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20231106-uvc-event-v3-1-c2d2fdaa2e2c@chromium.org>
+X-B4-Tracking: v=1; b=H4sIAE3HSGUC/22Nyw7CIBREf6VhLYZHROvK/zAueFwKSQsNtETT9
+ N+l3WiMyzOZM7OgDMlDRtdmQQmKzz6GCvzQIO1k6AB7UxkxwjgljOC5aAwFwoQNN1QpZbRiFtW
+ +khmwSjJoV40w930NxwTWP/eD+6Oy83mK6bX/Fbql/6YLxRRzJSWB1or2xG7apTj4eTjG1KFtq
+ LCPTIn4llmVz+YCXFhiLBU/8rqubxbOayb3AAAA
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Ricardo Ribalda <ribalda@chromium.org>
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Esker Wong <esker@chromium.org>
+X-Mailer: b4 0.12.3
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2023-11-03 at 19:41 +0100, David Hildenbrand wrote:
-> On 03.11.23 19:36, David Hildenbrand wrote:
-> > On 03.11.23 18:30, Nina Schoetterl-Glausch wrote:
-> > > No point in defining a size for the mask if we're not going to use it=
-.
-> >=20
-> > I neither understand the patch description nor what the bug is that is
-> > being fixed (and how that description relates to the patch
-> > subject+description).
-> >=20
-> > Please improve the patch description.
-> >=20
->=20
-> Should this be
->=20
-> "
-> KVM: s390: cpu model: use proper define for facility mask size
->=20
-> We're using S390_ARCH_FAC_LIST_SIZE_U64 instead of=20
-> S390_ARCH_FAC_MASK_SIZE_U64 to define the array size of the facility=20
-> mask. Let's properly use S390_ARCH_FAC_MASK_SIZE_U64. Note that both
-> values are the same and, therefore, this is a pure cleanup.
-> "
->=20
-> I'm not convinced there is a bug and that this deserves a "Fixes:".
+Add support for the frame_sync event, so user-space can become aware
+earlier of new frames.
 
-Oh yeah, sorry, purely a cleanup. S390_ARCH_FAC_MASK_SIZE_U64 wasn't
-used anywhere. I also considered just getting rid of it and using one
-constant for both list and mask.
+Suggested-by: Esker Wong <esker@chromium.org>
+Tested-by: Esker Wong <esker@chromium.org>
+Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+---
+We have measured a latency of around 30msecs between frame sync
+and dqbuf.
+---
+Changes in v3:
+- Sent wrong patch as v2 sorry :S
+- Link to v2: https://lore.kernel.org/r/20231106-uvc-event-v2-1-7d8e36f0df16@chromium.org
+
+Changes in v2:
+- Suggested by Laurent. Split sequence++ and event init.
+- Link to v1: https://lore.kernel.org/r/20231020-uvc-event-v1-1-3baa0e9f6952@chromium.org
+---
+ drivers/media/usb/uvc/uvc_v4l2.c  | 2 ++
+ drivers/media/usb/uvc/uvc_video.c | 7 +++++++
+ 2 files changed, 9 insertions(+)
+
+diff --git a/drivers/media/usb/uvc/uvc_v4l2.c b/drivers/media/usb/uvc/uvc_v4l2.c
+index f4988f03640a..9f3fb5fd2375 100644
+--- a/drivers/media/usb/uvc/uvc_v4l2.c
++++ b/drivers/media/usb/uvc/uvc_v4l2.c
+@@ -1352,6 +1352,8 @@ static int uvc_ioctl_subscribe_event(struct v4l2_fh *fh,
+ 	switch (sub->type) {
+ 	case V4L2_EVENT_CTRL:
+ 		return v4l2_event_subscribe(fh, sub, 0, &uvc_ctrl_sub_ev_ops);
++	case V4L2_EVENT_FRAME_SYNC:
++		return v4l2_event_subscribe(fh, sub, 0, NULL);
+ 	default:
+ 		return -EINVAL;
+ 	}
+diff --git a/drivers/media/usb/uvc/uvc_video.c b/drivers/media/usb/uvc/uvc_video.c
+index 28dde08ec6c5..6a9410133908 100644
+--- a/drivers/media/usb/uvc/uvc_video.c
++++ b/drivers/media/usb/uvc/uvc_video.c
+@@ -1073,9 +1073,16 @@ static int uvc_video_decode_start(struct uvc_streaming *stream,
+ 	 * that discontinuous sequence numbers always indicate lost frames.
+ 	 */
+ 	if (stream->last_fid != fid) {
++		struct v4l2_event event = {
++			.type = V4L2_EVENT_FRAME_SYNC,
++		};
++
+ 		stream->sequence++;
+ 		if (stream->sequence)
+ 			uvc_video_stats_update(stream);
++
++		event.u.frame_sync.frame_sequence = stream->sequence;
++		v4l2_event_queue(&stream->vdev, &event);
+ 	}
+ 
+ 	uvc_video_clock_decode(stream, buf, data, len);
+
+---
+base-commit: ce55c22ec8b223a90ff3e084d842f73cfba35588
+change-id: 20231020-uvc-event-d3d1bbbdcb2f
+
+Best regards,
+-- 
+Ricardo Ribalda <ribalda@chromium.org>
+
