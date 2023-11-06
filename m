@@ -2,161 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 095427E2BA1
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 19:07:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E7117E2BA5
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 19:08:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231993AbjKFSHU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 13:07:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53506 "EHLO
+        id S231940AbjKFSIX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 13:08:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231567AbjKFSHS (ORCPT
+        with ESMTP id S231860AbjKFSIW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 13:07:18 -0500
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D424BD49
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 10:07:14 -0800 (PST)
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A6HTTTc000369;
-        Mon, 6 Nov 2023 18:07:05 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=nETqSnSYD+nVyeAtm/Qlmd6HanYcAr/2Ev263z4J3ZQ=;
- b=V6iHNuN3mV0drat9Csy6LAVIuwECcCpLlm9tB3JoaweYtIAIJlkZJkd+D4OQHWyHale3
- SueXbOSjyBm0en2JwW/klupK7jZTMEvxGXaBkkSUS5Gm+XbkYLQyUZa5z5iesbiv9MgY
- xDFeL2Xmi6Zp80MnVWg/CgSOI8tdcMUGbKck82HncB0dYdM7ilGjg9xAkKBMFPV4B2QC
- UEanmKcAC3GZm833S38IJrmIhIYNR3kBGG88NGw4aMBFvcFMBKy/yumGKb8I4LkVt5M3
- T+RPGnqP4LyO7FgiGYYT10HDgWbTA/xU9cLoYaTis0lahbk2wO4E8JN9ggQbqburVwAi uA== 
-Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u6yehs1w9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 06 Nov 2023 18:07:04 +0000
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-        by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3A6I73jT023546
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 6 Nov 2023 18:07:03 GMT
-Received: from [10.71.110.254] (10.80.80.8) by nasanex01b.na.qualcomm.com
- (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Mon, 6 Nov
- 2023 10:07:02 -0800
-Message-ID: <74a0b395-5ab9-4fcc-bc1c-fc8d2714da98@quicinc.com>
-Date:   Mon, 6 Nov 2023 10:07:01 -0800
+        Mon, 6 Nov 2023 13:08:22 -0500
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F0171BF
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 10:08:19 -0800 (PST)
+Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-4078fe6a063so2805e9.1
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 10:08:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1699294098; x=1699898898; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=gvxKfIw/qhx183V8pjQFG77yQdxOaDbyZ6p0kSrYaSI=;
+        b=QzJuXJWiPErbG36A+wLUsYDo9NJ/KJ0/s9cUSb6v3VmE5satKa76XHF0iRbYfzLtu/
+         XC9yEQpxeoMKTQ/TIWHApfjWg/md6XWlYzXiJ3vTYIhvGrNL88Rhy1tIcoM9HqKUeXYQ
+         fkuGD+QWVs3ZZCeiXFkyk7BOY+G7s5xlkwuqM70WBJKaNuCshBoHsYskucC8TkWDy2rr
+         f3VKwdLiZBbjyWhCdce/vhRvNwJ7D/uN2VkXgWGge1JzKCvLPeyyxFyKIytA7CNxYbJV
+         9KmwszqfLUK0m0P8N9wplx4P+3819mjrMV3V8n8lELi5pjAy+qRP+fC8sl8Ayjo7C6sk
+         wQ/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699294098; x=1699898898;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=gvxKfIw/qhx183V8pjQFG77yQdxOaDbyZ6p0kSrYaSI=;
+        b=pCO4rAAXtDpQQ8vulYyRm6Itw6cxmne0DaTF3G6hqEjH0I3aIT51zkncxxlVDmL3Ed
+         WIqJ7nAXZw6yt1eJvJKtr3rXxWKOIGEZwdfav/+4sA9Fcy1gPL80QjLfEQZt72GziwJX
+         OYIDD7Px0Vtk1nOJLEs5BhyJ+XVIKBeIIAFlWhNjFi0AfORQvvuXVKtixEObQVqpOPjx
+         ZWnCCXg7jC+NsALBhOUYoF4AtD7WgegRwQ5xMPUn0XStIIIAOa1RiYnFmypok7rmr5Ey
+         vdmdL9z5Bvmb7OQy0ig9t9Sxx4hapXz0gDwROYepEXi+1zOs1XsKvZfckGIf7J7cPt+x
+         oygA==
+X-Gm-Message-State: AOJu0YxLJfmxifhOFBusGCQ1nwTwK2g0Q+9kF2Xn8vAP5ZGHR3mT+ZHZ
+        x/zKYbbcFBgtIN4dyy9jUFG/eg6oYajTsgfjD1pzjA==
+X-Google-Smtp-Source: AGHT+IEtKcIBvpT66Vzw4Vt+Z5qcdMAem4q/7C95lgnmRMwNMsLlhPeDCwpmCTvC0mTK6FbbC02hXSsZ5yU+b+J7PuA=
+X-Received: by 2002:a05:600c:1da0:b0:3fe:eb42:7ec with SMTP id
+ p32-20020a05600c1da000b003feeb4207ecmr6431wms.1.1699294097906; Mon, 06 Nov
+ 2023 10:08:17 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] drm/panel: starry-2081101qfh032011-53g: Fine tune the
- panel power sequence
-Content-Language: en-US
-To:     Zhengqiao Xia <xiazhengqiao@huaqin.corp-partner.google.com>
-CC:     <neil.armstrong@linaro.org>, <sam@ravnborg.org>,
-        <maarten.lankhorst@linux.intel.com>, <mripard@kernel.org>,
-        <airlied@gmail.com>, <daniel@ffwll.ch>,
-        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
-        <xuxinxiong@huaqin.corp-partner.google.com>
-References: <20231102130844.13432-1-xiazhengqiao@huaqin.corp-partner.google.com>
- <6b80dfa4-66d2-40fc-bf3b-88a8ada09b50@quicinc.com>
- <CADYyEwQzDoN83y2NGL6QvgaUSthzONoaHZ6HSKYpuY1EuZe-cQ@mail.gmail.com>
-From:   Jessica Zhang <quic_jesszhan@quicinc.com>
-In-Reply-To: <CADYyEwQzDoN83y2NGL6QvgaUSthzONoaHZ6HSKYpuY1EuZe-cQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: axNikcc_GGbUrmx-KYePhbyKs_5kyeoW
-X-Proofpoint-ORIG-GUID: axNikcc_GGbUrmx-KYePhbyKs_5kyeoW
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-06_13,2023-11-02_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
- lowpriorityscore=0 adultscore=0 priorityscore=1501 spamscore=0
- malwarescore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 suspectscore=0
- phishscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2310240000 definitions=main-2311060148
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231106172557.2963-1-rf@opensource.cirrus.com>
+In-Reply-To: <20231106172557.2963-1-rf@opensource.cirrus.com>
+From:   David Gow <davidgow@google.com>
+Date:   Mon, 6 Nov 2023 10:08:04 -0800
+Message-ID: <CABVgOSnTpn+qJPcXfZ4o=fP=+NrL+WO2TyHhpdMLzGj-g5M_rA@mail.gmail.com>
+Subject: Re: [PATCH v2] kunit: test: Avoid cast warning when adding kfree() as
+ an action
+To:     Richard Fitzgerald <rf@opensource.cirrus.com>
+Cc:     brendan.higgins@linux.dev, rmoar@google.com,
+        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org, patches@opensource.cirrus.com,
+        kernel test robot <lkp@intel.com>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="0000000000001a55a206097fbd74"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--0000000000001a55a206097fbd74
+Content-Type: text/plain; charset="UTF-8"
 
+On Mon, 6 Nov 2023 at 09:26, Richard Fitzgerald
+<rf@opensource.cirrus.com> wrote:
+>
+> In kunit_log_test() pass the kfree_wrapper() function to kunit_add_action()
+> instead of directly passing kfree().
+>
+> This prevents a cast warning:
+>
+> lib/kunit/kunit-test.c:565:25: warning: cast from 'void (*)(const void *)'
+> to 'kunit_action_t *' (aka 'void (*)(void *)') converts to incompatible
+> function type [-Wcast-function-type-strict]
+>
+>    564          full_log = string_stream_get_string(test->log);
+>  > 565          kunit_add_action(test, (kunit_action_t *)kfree, full_log);
+>
+> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes: https://lore.kernel.org/oe-kbuild-all/202311070041.kWVYx7YP-lkp@intel.com/
+> Fixes: 05e2006ce493 ("kunit: Use string_stream for test log")
+> ---
 
-On 11/3/2023 11:55 PM, Zhengqiao Xia wrote:
-> Hi  Jessica ,
-> 
->> Fixes: 6069b66cd962 ("drm/panel: support for STARRY 2081101QFH032011-53G
-> MIPI-DSI panel")
-> 
-> I'm not very familiar with this upstream process, Where should I add these?
+Looks good to me, thanks!
 
-You can add the Fixes tag before the signed-off-by. For example [1]:
+Reviewed-by: David Gow <davidgow@google.com>
 
-Fixes: 01d6c3578379 ("drm/syncobj: add support for timeline point wait v8")
-Signed-off-by: Erik Kurzinger <ekurzinger@nvidia.com>
-<...>
+Cheers,
+-- David
 
-Thanks,
+--0000000000001a55a206097fbd74
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
 
-Jessica Zhang
-
-[1] 
-https://cgit.freedesktop.org/drm/drm-misc/commit/?h=drm-misc-fixes&id=101c9f637efa1655f55876644d4439e552267527
-
-> 
-> Thanks
-> 
-> 
-> On Sat, Nov 4, 2023 at 2:40 AM Jessica Zhang <quic_jesszhan@quicinc.com>
->> wrote:
->>
->>
->> On 11/2/2023 6:08 AM, xiazhengqiao wrote:
->>> For "starry, 2081101qfh032011-53g" this panel, it is stipulated in the
->> Hi Zhengqiao,
->> Nit: Can you reword this to "For the "starry, 2081101qfh032011-53g"
->> panel..."?
->>> panel spec that MIPI needs to keep the LP11 state before the
->>> lcm_reset pin is pulled high.
->> Was this fixing some panel issue? If so, maybe we can add
->> Fixes: 6069b66cd962 ("drm/panel: support for STARRY 2081101QFH032011-53G
->> MIPI-DSI panel")
->> Otherwise, with the commit msg fix, this looks good to me:
->> Reviewed-by: Jessica Zhang <quic_jesszhan@quicinc.com>
->> Thanks,
->> Jessica Zhang
->>
->>
->>>
->>> Signed-off-by: xiazhengqiao <xiazhengqiao@huaqin.corp-partner.google.com
->>>
->>
->> ---
->>>    drivers/gpu/drm/panel/panel-boe-tv101wum-nl6.c | 1 +
->>>    1 file changed, 1 insertion(+)
->>>
->>> diff --git a/drivers/gpu/drm/panel/panel-boe-tv101wum-nl6.c
->> b/drivers/gpu/drm/panel/panel-boe-tv101wum-nl6.c
->>> index 4f370bc6dca8..4ed8c2e28d37 100644
->>> --- a/drivers/gpu/drm/panel/panel-boe-tv101wum-nl6.c
->>> +++ b/drivers/gpu/drm/panel/panel-boe-tv101wum-nl6.c
->>> @@ -1765,6 +1765,7 @@ static const struct panel_desc
->> starry_qfh032011_53g_desc = {
->>>        .mode_flags = MIPI_DSI_MODE_VIDEO | MIPI_DSI_MODE_VIDEO_SYNC_PULSE
->> |
->>>                      MIPI_DSI_MODE_LPM,
->>>        .init_cmds = starry_qfh032011_53g_init_cmd,
->>> +     .lp11_before_reset = true,
->>>    };
->>>
->>>    static const struct drm_display_mode
->> starry_himax83102_j02_default_mode = {
->>> --
->>> 2.17.1
->>>
->>
-> 
+MIIPnwYJKoZIhvcNAQcCoIIPkDCCD4wCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
+ggz5MIIEtjCCA56gAwIBAgIQeAMYYHb81ngUVR0WyMTzqzANBgkqhkiG9w0BAQsFADBMMSAwHgYD
+VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
+AxMKR2xvYmFsU2lnbjAeFw0yMDA3MjgwMDAwMDBaFw0yOTAzMTgwMDAwMDBaMFQxCzAJBgNVBAYT
+AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFz
+IFIzIFNNSU1FIENBIDIwMjAwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCvLe9xPU9W
+dpiHLAvX7kFnaFZPuJLey7LYaMO8P/xSngB9IN73mVc7YiLov12Fekdtn5kL8PjmDBEvTYmWsuQS
+6VBo3vdlqqXZ0M9eMkjcKqijrmDRleudEoPDzTumwQ18VB/3I+vbN039HIaRQ5x+NHGiPHVfk6Rx
+c6KAbYceyeqqfuJEcq23vhTdium/Bf5hHqYUhuJwnBQ+dAUcFndUKMJrth6lHeoifkbw2bv81zxJ
+I9cvIy516+oUekqiSFGfzAqByv41OrgLV4fLGCDH3yRh1tj7EtV3l2TngqtrDLUs5R+sWIItPa/4
+AJXB1Q3nGNl2tNjVpcSn0uJ7aFPbAgMBAAGjggGKMIIBhjAOBgNVHQ8BAf8EBAMCAYYwHQYDVR0l
+BBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFHzM
+CmjXouseLHIb0c1dlW+N+/JjMB8GA1UdIwQYMBaAFI/wS3+oLkUkrk1Q+mOai97i3Ru8MHsGCCsG
+AQUFBwEBBG8wbTAuBggrBgEFBQcwAYYiaHR0cDovL29jc3AyLmdsb2JhbHNpZ24uY29tL3Jvb3Ry
+MzA7BggrBgEFBQcwAoYvaHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvcm9vdC1y
+My5jcnQwNgYDVR0fBC8wLTAroCmgJ4YlaHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9yb290LXIz
+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
+ddIn9n5Jt6Z1o79zxraLMEwGA1UdIARFMEMwQQYJKwYBBAGgMgEoMDQwMgYIKwYBBQUHAgEWJmh0
+dHBzOi8vd3d3Lmdsb2JhbHNpZ24uY29tL3JlcG9zaXRvcnkvMAwGA1UdEwEB/wQCMAAwgZoGCCsG
+AQUFBwEBBIGNMIGKMD4GCCsGAQUFBzABhjJodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9jYS9n
+c2F0bGFzcjNzbWltZWNhMjAyMDBIBggrBgEFBQcwAoY8aHR0cDovL3NlY3VyZS5nbG9iYWxzaWdu
+LmNvbS9jYWNlcnQvZ3NhdGxhc3Izc21pbWVjYTIwMjAuY3J0MB8GA1UdIwQYMBaAFHzMCmjXouse
+LHIb0c1dlW+N+/JjMEYGA1UdHwQ/MD0wO6A5oDeGNWh0dHA6Ly9jcmwuZ2xvYmFsc2lnbi5jb20v
+Y2EvZ3NhdGxhc3Izc21pbWVjYTIwMjAuY3JsMA0GCSqGSIb3DQEBCwUAA4IBAQBtHFwIgQZjer5K
+H+4Q+wns10k7qN+4wN2Uf+JsyOYjukaMEgdLErfA1wwtQ9uHkoYQZcWBuVVkQFa5hI+sqI2m1Weq
+riMCFSiU38s1tADdMX12IMfJRN60Nznhrw+nPyDRZqRhUTW24TwnHorkDnFPW8PHo7fAw4FrpI0n
+impZAng7ccvvK09K3ZuhwTIxJMsPXCZYsrXWORTw5sczRAP6XvKbPBJnsJoSTe5dFBPBHOQJOGhU
+qWfEfWnWMJPF3LxSGLpLFQXO3RwQqmxv08avwXfVPouh1xuB3FX7rpDabT8YDhu9JgIZkLEKko7L
+yQt6zWwng7k8YF/jGbiAta6VMYICajCCAmYCAQEwaDBUMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQ
+R2xvYmFsU2lnbiBudi1zYTEqMCgGA1UEAxMhR2xvYmFsU2lnbiBBdGxhcyBSMyBTTUlNRSBDQSAy
+MDIwAhABzgV+4+mJnUzG7XDy6d2uMA0GCWCGSAFlAwQCAQUAoIHUMC8GCSqGSIb3DQEJBDEiBCD2
+gn/VxQP6TSSdfRYKyDzVmsAxAKw7gEJCj7IcNiTD9DAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcB
+MBwGCSqGSIb3DQEJBTEPFw0yMzExMDYxODA4MThaMGkGCSqGSIb3DQEJDzFcMFowCwYJYIZIAWUD
+BAEqMAsGCWCGSAFlAwQBFjALBglghkgBZQMEAQIwCgYIKoZIhvcNAwcwCwYJKoZIhvcNAQEKMAsG
+CSqGSIb3DQEBBzALBglghkgBZQMEAgEwDQYJKoZIhvcNAQEBBQAEggEAXsiFJajIEiPhYx2jKx3T
+eg/FAPdfEGPTWv7ATyH8gKfw/C/LZrm9DRVNnA6QConlt6TN0LvaxGq6pswzphVkIgZqfqhL0hQY
++ZXXJeRqT984maSlTA80HQWiG/mkSho2OAljePapA7IUIj0vcKSbamVRrfZDrzIT8PBFukKIfG51
+0RByqZvy9pvK+KIHoLe8xEzzajPke7vNij2DeGQ+BVhGfPEeyvXwRN3r6/bg2+H9QNzLtRhsSjEG
+DEVyiiNwBmS02kb1mZmbPVFXWJeHwPfnnQd23T5NYNUuZnsTXeLoOxd13+bhasy+X4tEQ5WLOLNe
+/j7Gzhm4ZoZDvvDtyg==
+--0000000000001a55a206097fbd74--
