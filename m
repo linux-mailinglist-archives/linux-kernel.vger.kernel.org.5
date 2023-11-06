@@ -2,19 +2,19 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CFB47E2EA2
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 22:07:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 181E17E2EA4
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 22:07:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233112AbjKFVHl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 16:07:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57706 "EHLO
+        id S233139AbjKFVHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 16:07:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233014AbjKFVHi (ORCPT
+        with ESMTP id S233081AbjKFVHi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 6 Nov 2023 16:07:38 -0500
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE242D51
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 13:07:34 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 379CDD75
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 13:07:35 -0800 (PST)
 From:   John Ogness <john.ogness@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1699304853;
@@ -22,29 +22,29 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=z3f4HQf7ma/ip4YULZcgH7RuMtHihS3FcdUbZrma7Uk=;
-        b=Ka1zOgQRVwOC98UHvxmZ5RPErohmKs1H9jqjbO7+JzTjJeJqk7Md97RUUPigivGsEB481W
-        oPlaHboW50PHEI3jAd8tARikwPbeXPSg12R2JjR0lJdqwr6PioNEHgRO37S3g8d4ElHquM
-        fq+4TvhRAA2TDg7hrK8mYHFYMZkr1we6FfOsh+CnyL0VMD5FBSX3+ed9qjPQj8uBE04fnl
-        e4VMyeBG4M0Afa5PwMJRi3tUVEavK73KAoWvrZQ7x1xfRAqG5yjoWt+MiOVjqZvihlsoFl
-        mK4jH2PofoWJeOTPZ8EafGy75YOfZQblvEaaWbnTlvCQbwx6JP2NJvekIq0a3A==
+        bh=zy0aCNS0BNbBR2t/Vy2pLfxqa358VYw0pvvR05rDg/o=;
+        b=fB6LLMePAfBS6UsMHNPaGN1Jp491bueVhdT9MO5Poa+tLrJXPOEbHESi9XjdXfPX/nq8zj
+        Fy5eumkd+lH2QB7p1YFdETnX/II5LCSnAhWuUVcUYv7/qIdiCOtb7HjraMrTj8Onso/pFF
+        8V6YPGa9VHUK4pQ7Z8bTiw/rrkZDsDboZE5aHm9OAHBj6hEONNlfwJmLTQOEuO5tHZ4Ibd
+        2s7hOSONf4fJKU6NKS/5aKD3l74gjI7t+EO4KqcJGlM4vno/UySNkR8p03mQiQU+G++tBt
+        Jp5KQMn8Zh5hLvxc83e7nKW1IBu9K1liHOM3+eSpb8DCl6UIFszPphqlTi8Z8A==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1699304853;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=z3f4HQf7ma/ip4YULZcgH7RuMtHihS3FcdUbZrma7Uk=;
-        b=1c9aXZumpnPAe5mtBK859fA03kvAfrkbOsMQkwd4RKKpZDEGwC4iFIy27xrg6l01nOCBp6
-        s6F2tGPdLd3fHXCA==
+        bh=zy0aCNS0BNbBR2t/Vy2pLfxqa358VYw0pvvR05rDg/o=;
+        b=HbiGHTBfFOaOEt2JUlfzI0MJAMvgqI0KgYMKg369AG+/tYwBccrxc0M4/aXxi7/3czo/64
+        Krv9JHZCFJytrADA==
 To:     Petr Mladek <pmladek@suse.com>
 Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org, Mukesh Ojha <quic_mojha@quicinc.com>
-Subject: [PATCH printk v2 1/9] printk: ringbuffer: Do not skip non-finalized records with prb_next_seq()
-Date:   Mon,  6 Nov 2023 22:13:22 +0106
-Message-Id: <20231106210730.115192-2-john.ogness@linutronix.de>
+        linux-kernel@vger.kernel.org
+Subject: [PATCH printk v2 2/9] printk: ringbuffer: Clarify special lpos values
+Date:   Mon,  6 Nov 2023 22:13:23 +0106
+Message-Id: <20231106210730.115192-3-john.ogness@linutronix.de>
 In-Reply-To: <20231106210730.115192-1-john.ogness@linutronix.de>
 References: <20231106210730.115192-1-john.ogness@linutronix.de>
 MIME-Version: 1.0
@@ -59,333 +59,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit f244b4dc53e5 ("printk: ringbuffer: Improve
-prb_next_seq() performance") introduced an optimization for
-prb_next_seq() by using best-effort to track recently finalized
-records. However, the order of finalization does not
-necessarily match the order of the records. The optimization
-changed prb_next_seq() to return inconsistent results, possibly
-yielding sequence numbers that are not available to readers
-because they are preceded by non-finalized records or they are
-not yet visible to the reader CPU.
+For empty line records, no data blocks are created. Instead,
+these valid records are identified by special logical position
+values (in fields of @prb_desc.text_blk_lpos).
 
-Rather than simply best-effort tracking recently finalized
-records, force the committing writer to read records and
-increment the last "contiguous block" of finalized records. In
-order to do this, the sequence number instead of ID must be
-stored because ID's cannot be directly compared.
+Currently the macro NO_LPOS is used for empty line records.
+This name is confusing because it does not imply _why_ there is
+no data block.
 
-A new memory barrier pair is introduced to guarantee that a
-reader can always read the records up until the sequence number
-returned by prb_next_seq() (unless the records have since
-been overwritten in the ringbuffer).
+Rename NO_LPOS to EMPTY_LINE_LPOS so that it is clear why there
+is no data block.
 
-This restores the original functionality of prb_next_seq()
-while also keeping the optimization.
+Also add comments explaining the use of EMPTY_LINE_LPOS as well
+as clarification to the values used to represent data-less
+blocks.
 
-For 32bit systems, only the lower 32 bits of the sequence
-number are stored. When reading the value, it is expanded to
-the full 64bit sequence number by folding in the value
-returned by prb_first_seq().
-
-Fixes: f244b4dc53e5 ("printk: ringbuffer: Improve prb_next_seq() performance")
 Signed-off-by: John Ogness <john.ogness@linutronix.de>
 ---
- kernel/printk/printk_ringbuffer.c | 189 ++++++++++++++++++++++++------
- kernel/printk/printk_ringbuffer.h |   4 +-
- 2 files changed, 153 insertions(+), 40 deletions(-)
+ kernel/printk/printk_ringbuffer.c | 20 ++++++++++++++++----
+ kernel/printk/printk_ringbuffer.h | 16 +++++++++++++++-
+ 2 files changed, 31 insertions(+), 5 deletions(-)
 
 diff --git a/kernel/printk/printk_ringbuffer.c b/kernel/printk/printk_ringbuffer.c
-index fde338606ce8..94eede5356ac 100644
+index 94eede5356ac..43d77db435c5 100644
 --- a/kernel/printk/printk_ringbuffer.c
 +++ b/kernel/printk/printk_ringbuffer.c
-@@ -6,6 +6,7 @@
- #include <linux/errno.h>
- #include <linux/bug.h>
- #include "printk_ringbuffer.h"
-+#include "internal.h"
+@@ -1034,9 +1034,13 @@ static char *data_alloc(struct printk_ringbuffer *rb, unsigned int size,
+ 	unsigned long next_lpos;
  
- /**
-  * DOC: printk_ringbuffer overview
-@@ -303,6 +304,9 @@
-  *
-  *   desc_push_tail:B / desc_reserve:D
-  *     set descriptor reusable (state), then push descriptor tail (id)
-+ *
-+ *   desc_update_last_finalized:A / desc_last_finalized_seq:A
-+ *     store finalized record, then set new highest finalized sequence number
-  */
+ 	if (size == 0) {
+-		/* Specify a data-less block. */
+-		blk_lpos->begin = NO_LPOS;
+-		blk_lpos->next = NO_LPOS;
++		/*
++		 * Data blocks are not created for empty lines. Instead, the
++		 * reader will recognize these special lpos values and handle
++		 * it appropriately.
++		 */
++		blk_lpos->begin = EMPTY_LINE_LPOS;
++		blk_lpos->next = EMPTY_LINE_LPOS;
+ 		return NULL;
+ 	}
  
- #define DATA_SIZE(data_ring)		_DATA_SIZE((data_ring)->size_bits)
-@@ -1441,20 +1445,144 @@ bool prb_reserve_in_last(struct prb_reserved_entry *e, struct printk_ringbuffer
- 	return false;
- }
+@@ -1214,10 +1218,18 @@ static const char *get_data(struct prb_data_ring *data_ring,
  
-+#ifdef CONFIG_64BIT
+ 	/* Data-less data block description. */
+ 	if (BLK_DATALESS(blk_lpos)) {
+-		if (blk_lpos->begin == NO_LPOS && blk_lpos->next == NO_LPOS) {
++		/*
++		 * Records that are just empty lines are also valid, even
++		 * though they do not have a data block. For such records
++		 * explicitly return empty string data to signify success.
++		 */
++		if (blk_lpos->begin == EMPTY_LINE_LPOS &&
++		    blk_lpos->next == EMPTY_LINE_LPOS) {
+ 			*data_size = 0;
+ 			return "";
+ 		}
 +
-+#define __u64seq_to_ulseq(u64seq) (u64seq)
-+#define __ulseq_to_u64seq(ulseq) (ulseq)
-+
-+#else /* CONFIG_64BIT */
-+
-+static u64 prb_first_seq(struct printk_ringbuffer *rb);
-+
-+#define __u64seq_to_ulseq(u64seq) ((u32)u64seq)
-+static inline u64 __ulseq_to_u64seq(u32 ulseq)
-+{
-+	u64 rb_first_seq = prb_first_seq(prb);
-+	u64 seq;
-+
-+	/*
-+	 * The provided sequence is only the lower 32 bits of the ringbuffer
-+	 * sequence. It needs to be expanded to 64bit. Get the first sequence
-+	 * number from the ringbuffer and fold it.
-+	 */
-+	seq = rb_first_seq - ((u32)rb_first_seq - ulseq);
-+
-+	return seq;
-+}
-+
-+#endif /* CONFIG_64BIT */
-+
-+/*
-+ * @last_finalized_seq value guarantees that all records up to and including
-+ * this sequence number are finalized and can be read. The only exception are
-+ * too old records which have already been overwritten.
-+ *
-+ * It is also guaranteed that @last_finalized_seq only increases.
-+ *
-+ * Be aware that finalized records following non-finalized records are not
-+ * reported because they are not yet available to the reader. For example,
-+ * a new record stored via printk() will not be available to a printer if
-+ * it follows a record that has not been finalized yet. However, once that
-+ * non-finalized record becomes finalized, @last_finalized_seq will be
-+ * appropriately updated and the full set of finalized records will be
-+ * available to the printer. And since each printk() caller will either
-+ * directly print or trigger deferred printing of all available unprinted
-+ * records, all printk() messages will get printed.
-+ */
-+static u64 desc_last_finalized_seq(struct prb_desc_ring *desc_ring)
-+{
-+	unsigned long ulseq;
-+
-+	/*
-+	 * Guarantee the sequence number is loaded before loading the
-+	 * associated record in order to guarantee that the record can be
-+	 * seen by this CPU. This pairs with desc_update_last_finalized:A.
-+	 */
-+	ulseq = atomic_long_read_acquire(&desc_ring->last_finalized_seq
-+					); /* LMM(desc_last_finalized_seq:A) */
-+
-+	return __ulseq_to_u64seq(ulseq);
-+}
-+
-+static bool _prb_read_valid(struct printk_ringbuffer *rb, u64 *seq,
-+			    struct printk_record *r, unsigned int *line_count);
-+
-+/*
-+ * Check if there are records directly following @last_finalized_seq that are
-+ * finalized. If so, update @last_finalized_seq to the latest of these
-+ * records. It is not allowed to skip over records that are not yet finalized.
-+ */
-+static void desc_update_last_finalized(struct printk_ringbuffer *rb)
-+{
-+	struct prb_desc_ring *desc_ring = &rb->desc_ring;
-+	u64 old_seq = desc_last_finalized_seq(desc_ring);
-+	unsigned long oldval;
-+	unsigned long newval;
-+	u64 finalized_seq;
-+	u64 try_seq;
-+
-+try_again:
-+	finalized_seq = old_seq;
-+	try_seq = finalized_seq + 1;
-+
-+	/* Try to find later finalized records. */
-+	while (_prb_read_valid(rb, &try_seq, NULL, NULL)) {
-+		finalized_seq = try_seq;
-+		try_seq++;
-+	}
-+
-+	/* No update needed if no later finalized record was found. */
-+	if (finalized_seq == old_seq)
-+		return;
-+
-+	oldval = __u64seq_to_ulseq(old_seq);
-+	newval = __u64seq_to_ulseq(finalized_seq);
-+
-+	/*
-+	 * Set the sequence number of a later finalized record that has been
-+	 * seen.
-+	 *
-+	 * Guarantee the record data is visible to other CPUs before storing
-+	 * its sequence number. This pairs with desc_last_finalized_seq:A.
-+	 *
-+	 * Memory barrier involvement:
-+	 *
-+	 * If desc_last_finalized_seq:A reads from
-+	 * desc_update_last_finalized:A, then desc_read:A reads from
-+	 * _prb_commit:B.
-+	 *
-+	 * Relies on:
-+	 *
-+	 * RELEASE from _prb_commit:B to desc_update_last_finalized:A
-+	 *    matching
-+	 * ACQUIRE from desc_last_finalized_seq:A to desc_read:A
-+	 *
-+	 * Note: _prb_commit:B and desc_update_last_finalized:A can be
-+	 *       different CPUs. However, the desc_update_last_finalized:A
-+	 *       CPU (which performs the release) must have previously seen
-+	 *       _prb_commit:B.
-+	 */
-+	if (!atomic_long_try_cmpxchg_release(&desc_ring->last_finalized_seq,
-+				&oldval, newval)) { /* LMM(desc_update_last_finalized:A) */
-+		old_seq = __ulseq_to_u64seq(oldval);
-+		goto try_again;
-+	}
-+}
-+
- /*
-  * Attempt to finalize a specified descriptor. If this fails, the descriptor
-  * is either already final or it will finalize itself when the writer commits.
-  */
--static void desc_make_final(struct prb_desc_ring *desc_ring, unsigned long id)
-+static void desc_make_final(struct printk_ringbuffer *rb, unsigned long id)
- {
-+	struct prb_desc_ring *desc_ring = &rb->desc_ring;
- 	unsigned long prev_state_val = DESC_SV(id, desc_committed);
- 	struct prb_desc *d = to_desc(desc_ring, id);
++		/* Data lost, invalid, or otherwise unavailable. */
+ 		return NULL;
+ 	}
  
--	atomic_long_cmpxchg_relaxed(&d->state_var, prev_state_val,
--			DESC_SV(id, desc_finalized)); /* LMM(desc_make_final:A) */
--
--	/* Best effort to remember the last finalized @id. */
--	atomic_long_set(&desc_ring->last_finalized_id, id);
-+	if (atomic_long_try_cmpxchg_relaxed(&d->state_var, &prev_state_val,
-+			DESC_SV(id, desc_finalized))) { /* LMM(desc_make_final:A) */
-+		desc_update_last_finalized(rb);
-+	}
- }
- 
- /**
-@@ -1550,7 +1678,7 @@ bool prb_reserve(struct prb_reserved_entry *e, struct printk_ringbuffer *rb,
- 	 * readers. (For seq==0 there is no previous descriptor.)
- 	 */
- 	if (info->seq > 0)
--		desc_make_final(desc_ring, DESC_ID(id - 1));
-+		desc_make_final(rb, DESC_ID(id - 1));
- 
- 	r->text_buf = data_alloc(rb, r->text_buf_size, &d->text_blk_lpos, id);
- 	/* If text data allocation fails, a data-less record is committed. */
-@@ -1643,7 +1771,7 @@ void prb_commit(struct prb_reserved_entry *e)
- 	 */
- 	head_id = atomic_long_read(&desc_ring->head_id); /* LMM(prb_commit:A) */
- 	if (head_id != e->id)
--		desc_make_final(desc_ring, e->id);
-+		desc_make_final(e->rb, e->id);
- }
- 
- /**
-@@ -1663,12 +1791,9 @@ void prb_commit(struct prb_reserved_entry *e)
-  */
- void prb_final_commit(struct prb_reserved_entry *e)
- {
--	struct prb_desc_ring *desc_ring = &e->rb->desc_ring;
--
- 	_prb_commit(e, desc_finalized);
- 
--	/* Best effort to remember the last finalized @id. */
--	atomic_long_set(&desc_ring->last_finalized_id, e->id);
-+	desc_update_last_finalized(e->rb);
- }
- 
- /*
-@@ -2008,7 +2133,9 @@ u64 prb_first_valid_seq(struct printk_ringbuffer *rb)
-  * newest sequence number available to readers will be.
-  *
-  * This provides readers a sequence number to jump to if all currently
-- * available records should be skipped.
-+ * available records should be skipped. It is guaranteed that all records
-+ * previous to the returned value have been finalized and are (or were)
-+ * available to the reader.
-  *
-  * Context: Any context.
-  * Return: The sequence number of the next newest (not yet available) record
-@@ -2017,33 +2144,19 @@ u64 prb_first_valid_seq(struct printk_ringbuffer *rb)
- u64 prb_next_seq(struct printk_ringbuffer *rb)
- {
- 	struct prb_desc_ring *desc_ring = &rb->desc_ring;
--	enum desc_state d_state;
--	unsigned long id;
- 	u64 seq;
- 
--	/* Check if the cached @id still points to a valid @seq. */
--	id = atomic_long_read(&desc_ring->last_finalized_id);
--	d_state = desc_read(desc_ring, id, NULL, &seq, NULL);
-+	seq = desc_last_finalized_seq(desc_ring);
- 
--	if (d_state == desc_finalized || d_state == desc_reusable) {
--		/*
--		 * Begin searching after the last finalized record.
--		 *
--		 * On 0, the search must begin at 0 because of hack#2
--		 * of the bootstrapping phase it is not known if a
--		 * record at index 0 exists.
--		 */
--		if (seq != 0)
--			seq++;
--	} else {
--		/*
--		 * The information about the last finalized sequence number
--		 * has gone. It should happen only when there is a flood of
--		 * new messages and the ringbuffer is rapidly recycled.
--		 * Give up and start from the beginning.
--		 */
--		seq = 0;
--	}
-+	/*
-+	 * Begin searching after the last finalized record.
-+	 *
-+	 * On 0, the search must begin at 0 because of hack#2
-+	 * of the bootstrapping phase it is not known if a
-+	 * record at index 0 exists.
-+	 */
-+	if (seq != 0)
-+		seq++;
- 
- 	/*
- 	 * The information about the last finalized @seq might be inaccurate.
-@@ -2085,7 +2198,7 @@ void prb_init(struct printk_ringbuffer *rb,
- 	rb->desc_ring.infos = infos;
- 	atomic_long_set(&rb->desc_ring.head_id, DESC0_ID(descbits));
- 	atomic_long_set(&rb->desc_ring.tail_id, DESC0_ID(descbits));
--	atomic_long_set(&rb->desc_ring.last_finalized_id, DESC0_ID(descbits));
-+	atomic_long_set(&rb->desc_ring.last_finalized_seq, 0);
- 
- 	rb->text_data_ring.size_bits = textbits;
- 	rb->text_data_ring.data = text_buf;
 diff --git a/kernel/printk/printk_ringbuffer.h b/kernel/printk/printk_ringbuffer.h
-index 18cd25e489b8..3374a5a3303e 100644
+index 3374a5a3303e..5c09061433f3 100644
 --- a/kernel/printk/printk_ringbuffer.h
 +++ b/kernel/printk/printk_ringbuffer.h
-@@ -75,7 +75,7 @@ struct prb_desc_ring {
- 	struct printk_info	*infos;
- 	atomic_long_t		head_id;
- 	atomic_long_t		tail_id;
--	atomic_long_t		last_finalized_id;
-+	atomic_long_t		last_finalized_seq;
- };
+@@ -127,8 +127,22 @@ enum desc_state {
+ #define DESC_SV(id, state)	(((unsigned long)state << DESC_FLAGS_SHIFT) | id)
+ #define DESC_ID_MASK		(~DESC_FLAGS_MASK)
+ #define DESC_ID(sv)		((sv) & DESC_ID_MASK)
++
++/*
++ * Special data block logical position values (for fields of
++ * @prb_desc.text_blk_lpos).
++ *
++ * - Bit0 is used to identify if the record has no data block. (Implemented in
++ *   the LPOS_DATALESS() macro.)
++ *
++ * - Bit1 specifies the reason for not having a data block.
++ *
++ * These special values could never be real lpos values because of the
++ * meta data and alignment padding of data blocks. (See to_blk_size() for
++ * details.)
++ */
+ #define FAILED_LPOS		0x1
+-#define NO_LPOS			0x3
++#define EMPTY_LINE_LPOS		0x3
  
- /*
-@@ -259,7 +259,7 @@ static struct printk_ringbuffer name = {							\
- 		.infos		= &_##name##_infos[0],						\
- 		.head_id	= ATOMIC_INIT(DESC0_ID(descbits)),				\
- 		.tail_id	= ATOMIC_INIT(DESC0_ID(descbits)),				\
--		.last_finalized_id = ATOMIC_INIT(DESC0_ID(descbits)),				\
-+		.last_finalized_seq = ATOMIC_INIT(0),						\
- 	},											\
- 	.text_data_ring = {									\
- 		.size_bits	= (avgtextbits) + (descbits),					\
+ #define FAILED_BLK_LPOS	\
+ {				\
 -- 
 2.39.2
 
