@@ -2,129 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B81A7E196D
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 05:46:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A6727E1971
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 05:51:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230252AbjKFEqS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Nov 2023 23:46:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56856 "EHLO
+        id S230293AbjKFEvQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Nov 2023 23:51:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229485AbjKFEqR (ORCPT
+        with ESMTP id S229485AbjKFEvO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Nov 2023 23:46:17 -0500
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF9B4DB;
-        Sun,  5 Nov 2023 20:46:14 -0800 (PST)
-Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-6b1e46ca282so4402954b3a.2;
-        Sun, 05 Nov 2023 20:46:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699245974; x=1699850774; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=32YDJ9UCxSqwPmBexBFw6Ms3U4O90iERTciee1S7uFw=;
-        b=m4CnkeUTkGzbP0q5uBPryJt6YmKBZ/Ev61svjdIkgxlG9T14neWUixSw33rtcVNObv
-         nomZzq7VADIwPPxI7xXJbPkJV8qcWnEP0CT2Qg97xF0aA1ZBdE4xGem1PX6UHo983SXz
-         la2XyGvPLdZwLLK0+7eS3cqnRjor3agMEB4opVf6vLcNKTVaZE+zPpiPP0Fi9Ox9vjid
-         vAfa2r91pW3GMX3BmGN9lwCqetwsxH99bGNSj34ey9o2hosA9+jGTaeyYegLk/dXvmW4
-         prMqWyHDnwXCTgq59aZS6NAlehYzi3bQrib4cfkwIEJeyCECqyWuc7DmLJY6nyGw6JF/
-         +lkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699245974; x=1699850774;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=32YDJ9UCxSqwPmBexBFw6Ms3U4O90iERTciee1S7uFw=;
-        b=LlXBaCs8CEpeifBZqdvJi6WxV6yhj7Hqw5BmU1wjSklmVjEVR0xpi790STNtXg9eSh
-         lLG4Bwu9IuTMslWV83OttW2TVJtIVVQsTFtDe4sa710wOP4oj/Vuy61B/S21IwLn/wl/
-         PADYoRnQqtemD/CrXGkTXFlEki/5UmdREesaiMNTU5Jj4bzho0Of+huLEouBum2Pne3K
-         7zCisAYY8erdY9k3NMQFMs2CQVZnTnUe1J6IEZMvOHSGTOj3ijnoZqolPd6eNywQbQBt
-         VjbV205qZY8T0JZUA/SgMIp7rp6pqTNxGkqbgPqH9awFiZi2FmoePyJGcijfhr+X60zr
-         KEtg==
-X-Gm-Message-State: AOJu0Yz/cjKOuHr9/hS+kPw+noeYPRJ4Aiw7967PgqMrqcZB4QBV3WbC
-        kUD/8h/6VD8cPdHmYZRRlHM=
-X-Google-Smtp-Source: AGHT+IFfATC9E2EJdl6t/GNI8B9ZZ98HIGEZfXC9l8qyYKjBLF3c0dva0LIDFn/gFjZSeVYYioBINw==
-X-Received: by 2002:a05:6a20:144f:b0:13c:ca8b:7e29 with SMTP id a15-20020a056a20144f00b0013cca8b7e29mr35142833pzi.12.1699245974114;
-        Sun, 05 Nov 2023 20:46:14 -0800 (PST)
-Received: from debian.me ([103.131.18.64])
-        by smtp.gmail.com with ESMTPSA id s18-20020a17090330d200b001c627413e87sm4887823plc.290.2023.11.05.20.46.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 05 Nov 2023 20:46:13 -0800 (PST)
-Received: by debian.me (Postfix, from userid 1000)
-        id 3EB5A822370C; Mon,  6 Nov 2023 11:46:07 +0700 (WIB)
-Date:   Mon, 6 Nov 2023 11:46:07 +0700
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-To:     Hunter Chasens <hunter.chasens18@ncf.edu>, corbet@lwn.net,
-        Jani Nikula <jani.nikula@intel.com>,
-        Luca Coelho <luciano.coelho@intel.com>
-Cc:     airlied@gmail.com, daniel@ffwll.ch,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, dri-devel@lists.freedesktop.org,
-        Linux Documentation <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v1] docs: gpu: rfc: i915_scheduler.rst remove unused
- directives for namespacing
-Message-ID: <ZUhvj2uj_PvaDxIM@debian.me>
-References: <20231104134708.69432-1-hunter.chasens18@ncf.edu>
+        Sun, 5 Nov 2023 23:51:14 -0500
+Received: from gentwo.org (gentwo.org [IPv6:2a02:4780:10:3cd9::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5876E1
+        for <linux-kernel@vger.kernel.org>; Sun,  5 Nov 2023 20:51:10 -0800 (PST)
+Received: by gentwo.org (Postfix, from userid 1003)
+        id 0FE2848F5A; Sun,  5 Nov 2023 20:51:09 -0800 (PST)
+Received: from localhost (localhost [127.0.0.1])
+        by gentwo.org (Postfix) with ESMTP id 0D51D48F46;
+        Sun,  5 Nov 2023 20:51:09 -0800 (PST)
+Date:   Sun, 5 Nov 2023 20:51:09 -0800 (PST)
+From:   Christoph Lameter <cl@linux.com>
+To:     linux-arm-kernel@lists.infradead.org
+cc:     linux-kernel@vger.kernel.org, Anshuman.Khandual@arm.com,
+        Valentin.Schneider@arm.com,
+        Vanshidhar Konda <vanshikonda@os.amperecomputing.com>,
+        Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Dave Kleikamp <dave.kleikamp@oracle.com>
+Subject: [RFC] ARM64: Introduce CONFIG_MAXSMP
+Message-ID: <fb0e2c3c-0289-f1ed-102e-219b2f9303d4@linux.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="6Wwjq5qJEKQkV4NO"
-Content-Disposition: inline
-In-Reply-To: <20231104134708.69432-1-hunter.chasens18@ncf.edu>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; format=flowed; charset=US-ASCII
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Ampere Computing develops high end ARM processors that support an ever
+increasing number of processors. The current default of 256 processors is
+not enough for our newer products. The default is used by Linux
+distros and therefore our customers cannot use distro kernels because
+the number of processors is not supported.
 
---6Wwjq5qJEKQkV4NO
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The x86 arch has support for a "CONFIG_MAXSMP" configuration option that
+enables support for the largest known configurations. This usually means
+hundreds or thousands of processors. For those sizes it is no longer
+practical to allocate bitmaps of cpus on the kernel stack. There is
+a kernel option CONFIG_CPUMASK_OFFSTACK that makes the kernel allocate
+and free bitmaps for cpu masks from slab memory instead of keeping it
+on the stack etc.
 
-On Sat, Nov 04, 2023 at 09:47:08AM -0400, Hunter Chasens wrote:
-> diff --git a/Documentation/gpu/rfc/i915_scheduler.rst b/Documentation/gpu=
-/rfc/i915_scheduler.rst
-> index c237ebc024cd..23ba7006929b 100644
-> --- a/Documentation/gpu/rfc/i915_scheduler.rst
-> +++ b/Documentation/gpu/rfc/i915_scheduler.rst
-> @@ -135,13 +135,9 @@ Add I915_CONTEXT_ENGINES_EXT_PARALLEL_SUBMIT and
->  drm_i915_context_engines_parallel_submit to the uAPI to implement this
->  extension.
-> =20
-> -.. c:namespace-push:: rfc
-> -
->  .. kernel-doc:: include/uapi/drm/i915_drm.h
->          :functions: i915_context_engines_parallel_submit
-> =20
-> -.. c:namespace-pop::
-> -
->  Extend execbuf2 IOCTL to support submitting N BBs in a single IOCTL
->  -------------------------------------------------------------------
->  Contexts that have been configured with the 'set_parallel' extension can=
- only
+With that is becomes possible to dynamically size the allocation of
+the bitmap depending on the quantity of processors detected on
+bootup.
 
-The warnings go away, thanks!
+This patch enables that logic if CONFIG_MAXSMP is enabled.
 
-Fixes: f6757dfcfde7 ("drm/doc: fix duplicate declaration warning")
-Reviewed-by: Bagas Sanjaya <bagasdotme@gmail.com>
+If CONFIG_MAXSMP is disabled then a default of 64 processors
+is supported. A bitmap for 64 processors fits into one word and
+therefore can be efficiently handled on the stack. Using a pointer
+to a bitmap would be overkill.
 
---=20
-An old man doll... just what I always wanted! - Clara
+The number of processors can be manually configured if
+CONFIG_MAXSMP is not set.
 
---6Wwjq5qJEKQkV4NO
-Content-Type: application/pgp-signature; name="signature.asc"
+Currently the default for CONFIG_MAXSMP is 512 processors.
+This will have to be increased if ARM processor vendors start
+supporting more processors.
 
------BEGIN PGP SIGNATURE-----
+Signed-off-by: Christoph Lameter (Ampere) <cl@linux.com>
 
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZUhviAAKCRD2uYlJVVFO
-ozwWAP4tUvIkF1gh+MbNCqESi7gLMuWjBdyWuZTEHcgyN3SBywEAkiw5LRZhtw7s
-X12IB03vD5Sr1fxvaXjdv9YYpRrjywQ=
-=MAkp
------END PGP SIGNATURE-----
+Index: linux/arch/arm64/Kconfig
+===================================================================
+--- linux.orig/arch/arm64/Kconfig
++++ linux/arch/arm64/Kconfig
+@@ -1402,10 +1402,56 @@ config SCHED_SMT
+  	  MultiThreading at a cost of slightly increased overhead in some
+  	  places. If unsure say N here.
 
---6Wwjq5qJEKQkV4NO--
++
++config MAXSMP
++	bool "Compile kernel with support for the maximum number of SMP Processors"
++	depends on SMP && DEBUG_KERNEL
++	select CPUMASK_OFFSTACK
++	help
++	  Enable maximum number of CPUS and NUMA Nodes for this architecture.
++	  If unsure, say N.
++
++#
++# The maximum number of CPUs supported:
++#
++# The main config value is NR_CPUS, which defaults to NR_CPUS_DEFAULT,
++# and which can be configured interactively in the
++# [NR_CPUS_RANGE_BEGIN ... NR_CPUS_RANGE_END] range.
++#
++# ( If MAXSMP is enabled we just use the highest possible value and disable
++#   interactive configuration. )
++#
++
++config NR_CPUS_RANGE_BEGIN
++	int
++	default NR_CPUS_RANGE_END if MAXSMP
++	default    1 if !SMP
++	default    2
++
++config NR_CPUS_RANGE_END
++	int
++	default 8192 if  SMP && CPUMASK_OFFSTACK
++	default  512 if  SMP && !CPUMASK_OFFSTACK
++	default    1 if !SMP
++
++config NR_CPUS_DEFAULT
++	int
++	default  512 if  MAXSMP
++	default   64 if  SMP
++	default    1 if !SMP
++
+  config NR_CPUS
+-	int "Maximum number of CPUs (2-4096)"
+-	range 2 4096
+-	default "256"
++	int "Set maximum number of CPUs" if SMP && !MAXSMP
++	range NR_CPUS_RANGE_BEGIN NR_CPUS_RANGE_END
++	default NR_CPUS_DEFAULT
++	help
++	  This allows you to specify the maximum number of CPUs which this
++	  kernel will support.  If CPUMASK_OFFSTACK is enabled, the maximum
++	  supported value is 8192, otherwise the maximum value is 512.  The
++	  minimum value which makes sense is 2.
++
++	  This is purely to save memory: each supported CPU adds about 8KB
++	  to the kernel image.
+
+  config HOTPLUG_CPU
+  	bool "Support for hot-pluggable CPUs"
+Index: linux/arch/arm64/configs/defconfig
+===================================================================
+--- linux.orig/arch/arm64/configs/defconfig
++++ linux/arch/arm64/configs/defconfig
+@@ -15,6 +15,7 @@ CONFIG_TASK_IO_ACCOUNTING=y
+  CONFIG_IKCONFIG=y
+  CONFIG_IKCONFIG_PROC=y
+  CONFIG_NUMA_BALANCING=y
++CONFIG_MAXSMP=y
+  CONFIG_MEMCG=y
+  CONFIG_BLK_CGROUP=y
+  CONFIG_CGROUP_PIDS=y
