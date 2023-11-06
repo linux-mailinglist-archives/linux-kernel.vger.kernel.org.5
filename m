@@ -2,42 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C96A67E311F
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 00:18:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02F7B7E3127
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 00:18:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233772AbjKFXSY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 18:18:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34728 "EHLO
+        id S233746AbjKFXSi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 18:18:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233740AbjKFXRu (ORCPT
+        with ESMTP id S233660AbjKFXRw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 18:17:50 -0500
+        Mon, 6 Nov 2023 18:17:52 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDE1810F5;
-        Mon,  6 Nov 2023 15:16:10 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A5AB2C433CC;
-        Mon,  6 Nov 2023 23:16:05 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 105E31BF9;
+        Mon,  6 Nov 2023 15:16:14 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E61C2C433C9;
+        Mon,  6 Nov 2023 23:16:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699312566;
-        bh=2VpchQM44d7HzgCX3wgizYzX0JgaRvK/XXJiO68xAFE=;
+        s=k20201202; t=1699312572;
+        bh=g7kNIN6Av4zarGbiPnOaX25BkRmH3v9AGZFkhO4WQ24=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PmCTfUnl8VPRuAhiuCGEx3vC6+9R54Bl1IYJVAOffYjX72Wf3qaMJGCi50r5DIAQz
-         7TL1gh4EDbe0322aaXa6b9xpR1OPbAd1Gn4NQ6gYbSZe58TnK6NbxZjkFv7z2sYR44
-         FXe+JCYbUBCP8vVYoZEmVwBJMkVk1vzV4Vo5Ou9xQcwujIRLhodZUr4q74yn2oMA8H
-         5M+X/XCCewXaWhJO006EGroNQHrWsY20/2eqB4TMyOR1+j2vzDyj+f86SlVF7iXRyC
-         HkYAqj+bRX4tkPiasIC5hBfuQMV5Mf1dJJ9ewp2/4Cylzc3RnPAZ0u8/vHUXQVoa47
-         jo6JIzlaldvSw==
+        b=RqOYeaGLclbRSlts06nPwlei4nTHn7YZGzOUr0Gq2u2yc+6+a5Se7Cgrz740GPQht
+         NnRmTFllYEYuE4yXd4dW69VY6Ub9r3zHOQSLdo07mR07b4WhyIQubDO8syL7upsAgh
+         yf+jl5YowIP+KNR2360zSnfnJ2B4MFgPh1XHefN40BLv46tLBcdJhRa39td56ekhmg
+         dqSISniTxBsdWI/5bGx+Lyqt1Oic2+3kb2Mo/rZLfpLqEhvqjxcdrve62CggOlQbvh
+         Ffoi5diXDA5pUVLckgksFRfskrNbdcRArQ7zXzpfXaRj3Op9t9JzuYHH0PvXlGoOh4
+         HES01+y5A8+pA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Ronald Wahl <ronald.wahl@raritan.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Sasha Levin <sashal@kernel.org>, tglx@linutronix.de,
-        nicolas.ferre@microchip.com, claudiu.beznea@tuxon.dev,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH AUTOSEL 6.1 07/11] clocksource/drivers/timer-atmel-tcb: Fix initialization on SAM9 hardware
-Date:   Mon,  6 Nov 2023 18:15:41 -0500
-Message-ID: <20231106231553.3735366-7-sashal@kernel.org>
+Cc:     Rik van Riel <riel@surriel.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Imran Khan <imran.f.khan@oracle.com>,
+        Leonardo Bras <leobras@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Juergen Gross <jgross@suse.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Sasha Levin <sashal@kernel.org>, tj@kernel.org,
+        rostedt@goodmis.org, linux-doc@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.1 08/11] smp,csd: Throw an error if a CSD lock is stuck for too long
+Date:   Mon,  6 Nov 2023 18:15:42 -0500
+Message-ID: <20231106231553.3735366-8-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231106231553.3735366-1-sashal@kernel.org>
 References: <20231106231553.3735366-1-sashal@kernel.org>
@@ -56,53 +61,103 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ronald Wahl <ronald.wahl@raritan.com>
+From: Rik van Riel <riel@surriel.com>
 
-[ Upstream commit 6d3bc4c02d59996d1d3180d8ed409a9d7d5900e0 ]
+[ Upstream commit 94b3f0b5af2c7af69e3d6e0cdd9b0ea535f22186 ]
 
-On SAM9 hardware two cascaded 16 bit timers are used to form a 32 bit
-high resolution timer that is used as scheduler clock when the kernel
-has been configured that way (CONFIG_ATMEL_CLOCKSOURCE_TCB).
+The CSD lock seems to get stuck in 2 "modes". When it gets stuck
+temporarily, it usually gets released in a few seconds, and sometimes
+up to one or two minutes.
 
-The driver initially triggers a reset-to-zero of the two timers but this
-reset is only performed on the next rising clock. For the first timer
-this is ok - it will be in the next 60ns (16MHz clock). For the chained
-second timer this will only happen after the first timer overflows, i.e.
-after 2^16 clocks (~4ms with a 16MHz clock). So with other words the
-scheduler clock resets to 0 after the first 2^16 clock cycles.
+If the CSD lock stays stuck for more than several minutes, it never
+seems to get unstuck, and gradually more and more things in the system
+end up also getting stuck.
 
-It looks like that the scheduler does not like this and behaves wrongly
-over its lifetime, e.g. some tasks are scheduled with a long delay. Why
-that is and if there are additional requirements for this behaviour has
-not been further analysed.
+In the latter case, we should just give up, so the system can dump out
+a little more information about what went wrong, and, with panic_on_oops
+and a kdump kernel loaded, dump a whole bunch more information about what
+might have gone wrong.  In addition, there is an smp.panic_on_ipistall
+kernel boot parameter that by default retains the old behavior, but when
+set enables the panic after the CSD lock has been stuck for more than
+the specified number of milliseconds, as in 300,000 for five minutes.
 
-There is a simple fix for resetting the second timer as well when the
-first timer is reset and this is to set the ATMEL_TC_ASWTRG_SET bit in
-the Channel Mode register (CMR) of the first timer. This will also rise
-the TIOA line (clock input of the second timer) when a software trigger
-respective SYNC is issued.
+[ paulmck: Apply Imran Khan feedback. ]
+[ paulmck: Apply Leonardo Bras feedback. ]
 
-Signed-off-by: Ronald Wahl <ronald.wahl@raritan.com>
-Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-Link: https://lore.kernel.org/r/20231007161803.31342-1-rwahl@gmx.de
+Link: https://lore.kernel.org/lkml/bc7cc8b0-f587-4451-8bcd-0daae627bcc7@paulmck-laptop/
+Signed-off-by: Rik van Riel <riel@surriel.com>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Reviewed-by: Imran Khan <imran.f.khan@oracle.com>
+Reviewed-by: Leonardo Bras <leobras@redhat.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Valentin Schneider <vschneid@redhat.com>
+Cc: Juergen Gross <jgross@suse.com>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: Randy Dunlap <rdunlap@infradead.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clocksource/timer-atmel-tcb.c | 1 +
- 1 file changed, 1 insertion(+)
+ Documentation/admin-guide/kernel-parameters.txt |  7 +++++++
+ kernel/smp.c                                    | 13 ++++++++++++-
+ 2 files changed, 19 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/clocksource/timer-atmel-tcb.c b/drivers/clocksource/timer-atmel-tcb.c
-index 27af17c995900..2a90c92a9182a 100644
---- a/drivers/clocksource/timer-atmel-tcb.c
-+++ b/drivers/clocksource/timer-atmel-tcb.c
-@@ -315,6 +315,7 @@ static void __init tcb_setup_dual_chan(struct atmel_tc *tc, int mck_divisor_idx)
- 	writel(mck_divisor_idx			/* likely divide-by-8 */
- 			| ATMEL_TC_WAVE
- 			| ATMEL_TC_WAVESEL_UP		/* free-run */
-+			| ATMEL_TC_ASWTRG_SET		/* TIOA0 rises at software trigger */
- 			| ATMEL_TC_ACPA_SET		/* TIOA0 rises at 0 */
- 			| ATMEL_TC_ACPC_CLEAR,		/* (duty cycle 50%) */
- 			tcaddr + ATMEL_TC_REG(0, CMR));
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index 31af352b4762d..4ad60e127e048 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -5671,6 +5671,13 @@
+ 			This feature may be more efficiently disabled
+ 			using the csdlock_debug- kernel parameter.
+ 
++	smp.panic_on_ipistall= [KNL]
++			If a csd_lock_timeout extends for more than
++			the specified number of milliseconds, panic the
++			system.  By default, let CSD-lock acquisition
++			take as long as they take.  Specifying 300,000
++			for this value provides a 5-minute timeout.
++
+ 	smsc-ircc2.nopnp	[HW] Don't use PNP to discover SMC devices
+ 	smsc-ircc2.ircc_cfg=	[HW] Device configuration I/O port
+ 	smsc-ircc2.ircc_sir=	[HW] SIR base I/O port
+diff --git a/kernel/smp.c b/kernel/smp.c
+index 06a413987a14a..63e466bb6b03a 100644
+--- a/kernel/smp.c
++++ b/kernel/smp.c
+@@ -185,6 +185,8 @@ static DEFINE_PER_CPU(struct cfd_seq_local, cfd_seq_local);
+ 
+ static ulong csd_lock_timeout = 5000;  /* CSD lock timeout in milliseconds. */
+ module_param(csd_lock_timeout, ulong, 0444);
++static int panic_on_ipistall;  /* CSD panic timeout in milliseconds, 300000 for five minutes. */
++module_param(panic_on_ipistall, int, 0444);
+ 
+ static atomic_t csd_bug_count = ATOMIC_INIT(0);
+ static u64 cfd_seq;
+@@ -343,6 +345,7 @@ static bool csd_lock_wait_toolong(struct __call_single_data *csd, u64 ts0, u64 *
+ 	}
+ 
+ 	ts2 = sched_clock();
++	/* How long since we last checked for a stuck CSD lock.*/
+ 	ts_delta = ts2 - *ts1;
+ 	if (likely(ts_delta <= csd_lock_timeout_ns || csd_lock_timeout_ns == 0))
+ 		return false;
+@@ -356,9 +359,17 @@ static bool csd_lock_wait_toolong(struct __call_single_data *csd, u64 ts0, u64 *
+ 	else
+ 		cpux = cpu;
+ 	cpu_cur_csd = smp_load_acquire(&per_cpu(cur_csd, cpux)); /* Before func and info. */
++	/* How long since this CSD lock was stuck. */
++	ts_delta = ts2 - ts0;
+ 	pr_alert("csd: %s non-responsive CSD lock (#%d) on CPU#%d, waiting %llu ns for CPU#%02d %pS(%ps).\n",
+-		 firsttime ? "Detected" : "Continued", *bug_id, raw_smp_processor_id(), ts2 - ts0,
++		 firsttime ? "Detected" : "Continued", *bug_id, raw_smp_processor_id(), ts_delta,
+ 		 cpu, csd->func, csd->info);
++	/*
++	 * If the CSD lock is still stuck after 5 minutes, it is unlikely
++	 * to become unstuck. Use a signed comparison to avoid triggering
++	 * on underflows when the TSC is out of sync between sockets.
++	 */
++	BUG_ON(panic_on_ipistall > 0 && (s64)ts_delta > ((s64)panic_on_ipistall * NSEC_PER_MSEC));
+ 	if (cpu_cur_csd && csd != cpu_cur_csd) {
+ 		pr_alert("\tcsd: CSD lock (#%d) handling prior %pS(%ps) request.\n",
+ 			 *bug_id, READ_ONCE(per_cpu(cur_csd_func, cpux)),
 -- 
 2.42.0
 
