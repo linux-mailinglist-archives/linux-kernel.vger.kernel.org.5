@@ -2,252 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 106EC7E1A1C
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 07:15:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D0BEF7E1A26
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 07:18:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230407AbjKFGPJ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 6 Nov 2023 01:15:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39160 "EHLO
+        id S230415AbjKFGSV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 01:18:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230319AbjKFGPH (ORCPT
+        with ESMTP id S230319AbjKFGSU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 01:15:07 -0500
-Received: from comms.drone (in.bow.st [71.19.146.166])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08A1493
-        for <linux-kernel@vger.kernel.org>; Sun,  5 Nov 2023 22:15:01 -0800 (PST)
-Received: from homebase (unknown [IPv6:fe80::2259:21a4:f292:8bfb])
-        by comms.drone (Postfix) with ESMTPSA id 85F4FFCF9;
-        Mon,  6 Nov 2023 06:14:58 +0000 (UTC)
-From:   "Mathew\, Cherry G.*" <c@bow.st>
-To:     Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: [RFC+Patch] Formal models as source of truth for Software Architects.
-References: <85v8axxrmo.fsf@bow.st>
-        <2defe3ff-90df-2627-dd19-0442a90b20a4@huaweicloud.com>
-        <857cmw2ael.fsf@bow.st>
-        <b260c8f8-266f-08c5-2e87-875174042a5b@huaweicloud.com>
-Date:   Mon, 06 Nov 2023 06:12:25 +0000
-In-Reply-To: <b260c8f8-266f-08c5-2e87-875174042a5b@huaweicloud.com> (Jonas
-        Oberhauser's message of "Sun, 5 Nov 2023 22:06:21 +0100")
-Message-ID: <85lebb1kc6.fsf@bow.st>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (berkeley-unix)
+        Mon, 6 Nov 2023 01:18:20 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FD4BB8
+        for <linux-kernel@vger.kernel.org>; Sun,  5 Nov 2023 22:18:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699251497; x=1730787497;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=jwLrjPJM8W4EgWXVhJEDJ381+U00fzbVSM4E3ev4aA8=;
+  b=GusTfXZjDLzxrtyoPWpEqVtTmiyPNaP6ameFwTTkJ9harTUPBnQoMcP6
+   X8Q7al3osF5uAlAgRA+aqxS/nuH3bGjCANNmR9UWyLEve9nnHlUphLkmn
+   hX40v1EIszMHiOi9zWfPtRZtLHkcSb0353WIL6P4iKjYmTQPJLMEtFg/v
+   S4KH5dJU2sN2AQf+Xovom79nJtx7Dgg9xjt9k0DW9Ph/5QV8wxTBpLrJq
+   JJi5kokcLU/XHFa8V5LM618BH7xuK0218c3zfxJFwK39bpS1p6+qx7XXu
+   gayOgaNW0+con1zPhu8uYTZlVcb673VRnth+LsfShO25nwgzSMHkNurOp
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10885"; a="374245399"
+X-IronPort-AV: E=Sophos;i="6.03,280,1694761200"; 
+   d="scan'208";a="374245399"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2023 22:18:10 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10885"; a="791376095"
+X-IronPort-AV: E=Sophos;i="6.03,280,1694761200"; 
+   d="scan'208";a="791376095"
+Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
+  by orsmga008.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 05 Nov 2023 22:18:08 -0800
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Sun, 5 Nov 2023 22:18:08 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Sun, 5 Nov 2023 22:18:07 -0800
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34 via Frontend Transport; Sun, 5 Nov 2023 22:18:07 -0800
+Received: from NAM04-BN8-obe.outbound.protection.outlook.com (104.47.74.41) by
+ edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.34; Sun, 5 Nov 2023 22:18:07 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fG98vhS8IKweJlGi/Lpw3pCmOuJuKYQAUf7+XHUuSReBvL8LUyNuhWNA/XTOtvixp0tsIcnY3a8C8iZBcAbhRx9p5heJ6FCVm54iETdoWqhRJNCmcbgfk098CF1XM4JBUFHvB3UrbO+Uhxbn2dQxWVU3c43RD2m+S9w+OBzEambQo9u/FJdFQMl+rSK/8YYBK4f7Xc2Yx8l4JGWogq+nymPd4ET9gVblCSLwAqfdK3AE4/nQ8nqAC2JYMWZi+Z6sRqMlrUCJXGMognWbHXjDWcqSIS6o2rxS+BDGCCSspooQZyYhFB2u55IZof0o8/kSpZFpAbasPzF4E4/9GGFwyQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=7VVisqA0u1g+kP/cEAir2IOimTL9Y9nZb/a4p/yGIGQ=;
+ b=cmUmtewlGDiedHc6x58QUdrjiOvtD7Spe8Zlm2fWJoe3Zs/LOguT8J7TW7Z4N1vKFAOUALCpLcD5qc5NucQn1upZCWEfCWlB9GRm9dMAZS8ycxbaXCiCMBQZmQLibK6zfONUMcTDeY7E7EddHr/DfWF9bsjm2gxsV/UVptdyu93Z4KrmW0HKEhCPY/HmpnAE/MC+3EC5Acr0jNTNZ/jB1hCYtIuksLC/k2A99m5HDQ7jvFjsJgLV2/Pfs0DSUD2ETip2AHMg4+jpblVMwtBSJ/GVOTFeVrgSBT7l1zFf5GT68nfuyCZIKyXkqRiqFNITEx1XAphNdVlR48Z98pmObQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from CY5PR11MB6392.namprd11.prod.outlook.com (2603:10b6:930:37::15)
+ by MN2PR11MB4520.namprd11.prod.outlook.com (2603:10b6:208:265::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.28; Mon, 6 Nov
+ 2023 06:18:00 +0000
+Received: from CY5PR11MB6392.namprd11.prod.outlook.com
+ ([fe80::15d3:7425:a09e:1c86]) by CY5PR11MB6392.namprd11.prod.outlook.com
+ ([fe80::15d3:7425:a09e:1c86%4]) with mapi id 15.20.6933.028; Mon, 6 Nov 2023
+ 06:18:00 +0000
+Date:   Mon, 6 Nov 2023 14:13:17 +0800
+From:   kernel test robot <yujie.liu@intel.com>
+To:     Sean Anderson <sean.anderson@seco.com>
+CC:     <oe-kbuild-all@lists.linux.dev>, <linux-kernel@vger.kernel.org>
+Subject: drivers/tty/serial/uartlite.c:79: warning: Function parameter or
+ member 'reg_ops' not described in 'uartlite_data'
+Message-ID: <202311061059.NUeUar9b-lkp@intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+X-ClientProxiedBy: SI1PR02CA0039.apcprd02.prod.outlook.com
+ (2603:1096:4:1f6::9) To CY5PR11MB6392.namprd11.prod.outlook.com
+ (2603:10b6:930:37::15)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CY5PR11MB6392:EE_|MN2PR11MB4520:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1a15e8ce-ff22-45ce-7e4d-08dbde902046
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: nYJH1NoI/KvkpbgxotZ9ERX3khZw47Y0HE3qiQ91fsG3eEgpWMlXgFcd9fvAXRSBSs2pMSuJSHXWtc5xMoDZRIjURB6mMEaRgeBrqYy15vrFSLu1u5fD9dT3ZNrVW44qHbZ+LOGItRpXayzL41EG1E/bdn4w5aU4m5T019LdpvFyVCQ5C8HDBOXdwZfcfC84ks8ZPvKq0f3tdQWcsUNvU6+Lo4RuV1zCwKwi0OrdiNOv1y49gQuwThmbfiWnoOdhiizEFal1aENRSU3DWRJCmy6R434SiSSbZ5WhgWzP6IkbfG34uEjtIOvVgK9OU/Hnt4AGm+yVjLOk8qj+xFRiE/MedrVbp84XGfFuCWG2cQ5e/vHC4zC9XNCOvG9GOfLdcX9aVhNHyYdaxtqcCB6pWELf4WlIBS64TuS6R7DkKa67ukyvZuCxHszxbug4LJX28fIkyEXUtx89ybhXxshJopFlxWK73186TXgz9/NLKFMh+9SYxjXzuJjsPtMeqMGwOMBo6nHJODUUmD5CwhfnyLi2rOyP1XlwzIrbx9ur4zaOxB9PsRhNN/b3EblTkpziWjUNrMfdJKepJXO9uVAS9udYXNXgv3MQPW0I52WF/2PaQ5gTg5DNE09bc87ZHwqk1OlXE29HKHsOn0w0LGS5yw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY5PR11MB6392.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(376002)(136003)(346002)(39860400002)(366004)(230922051799003)(230273577357003)(230173577357003)(64100799003)(451199024)(186009)(1800799009)(6506007)(478600001)(2616005)(6512007)(6666004)(966005)(6486002)(36756003)(38100700002)(82960400001)(86362001)(66946007)(5660300002)(66476007)(316002)(66556008)(41300700001)(83380400001)(2906002)(26005)(1076003)(8676002)(4326008)(6916009)(8936002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?KBTSJ8n7YTj9unyPlzdZbvDm4M9RZ+9UwV4soGjggLfMqE6qGK/xgU2AfmCy?=
+ =?us-ascii?Q?cxEXcz+5Hv0fJ6GrA2eJFhRc+0i5qcSoRky9V688+2rYajdU9DlFKiRQhJJQ?=
+ =?us-ascii?Q?t2u8BShOU0An/HiOFv16PI2h00PzDCLBNZVuM6H8+FzfO+VN9NfpXfjkhjLp?=
+ =?us-ascii?Q?5IomaJTlqNeKIw8J5xjAbX8GYZdm6ESWz99tyvDGNWOLtCyd3Cf8N0WGRxaW?=
+ =?us-ascii?Q?7PN/X4m/RLTWOLkYiBFYWgoFhkBrCWdtH6JGQL2/uv6OLGKk4zKiHffQCon5?=
+ =?us-ascii?Q?5VL8LE4gw0s57G5XIRGu+IXiLfu5ysjNhOC6OZRUY372kcOsZcoblDwD2iFV?=
+ =?us-ascii?Q?kxfZWU2swhngEeCp/05d0KWsrEDzYfRBAplYqiHNNgWeDdusZDkTaVNUBiPr?=
+ =?us-ascii?Q?s9ov33oE2SRE35ZZgJXjh2Rz/FGL8BrpKaqbkNZnQZKkc8oWla7dwJUfynVZ?=
+ =?us-ascii?Q?SV4F7rILwJLuh1MHR3AOba2XLVe7h2DmL1WEq1Bw6TA6pZxi9M7JOzJ3QzoW?=
+ =?us-ascii?Q?eUNijFMuibdGQY96lYXvA+SEMXufaASPEvXdylUpN9CQ39kzXCV/8JuZ5bkt?=
+ =?us-ascii?Q?pL4CAAFg6Ky2tpyF9iqt6btXGL91CiPm0U8eV3xDCIlkqkb7+uy7kox5kADs?=
+ =?us-ascii?Q?lZ5502oWu7L65aXNtsDdpLecs+rD7D5ULWS4gnzc+B3fynbc3i/DRtSlQzGt?=
+ =?us-ascii?Q?rquh7GmQdPsVzuOAiNVHaXMKOnXLND9EH0Zsn9swELObOGNO/aZEinL5dTc0?=
+ =?us-ascii?Q?Sg2rJ8VTFWeC4XnuV/exk0q1UFP9Z22iLJKXA0whyqdrb/k4iP9aiCT6BI/u?=
+ =?us-ascii?Q?tgqITL7asxuHWE6g4jlf2f/pXZp5dWfjPVo5YrQTKaUy0piziztUuEQ+uaK+?=
+ =?us-ascii?Q?JcJxNerp/voeoMqD1BDoXPG4wmDj8ghUkrrQ53b4iSj8QeczkSMN6latV2MV?=
+ =?us-ascii?Q?WQYgQ+qV2T0dezWESx77W/ZA+GLcX3KoEC52CBCqmupMZXF58/iZZLqCUbFc?=
+ =?us-ascii?Q?GAZudrQro7/CGLb8PujglKTf+WI3QHK0RYqC/QRCanHfqIl1HlePXmUUwvia?=
+ =?us-ascii?Q?RdSK8jw1cgzrNNe4chlYfXvlSxmQ9oZ9okekv4Orqmijzm+/6UDHgb/lbpxl?=
+ =?us-ascii?Q?Dsh5iGPtfyKCsE8VyQc3s/bKODtr5zGE8O/BDhCpGEFfLsDmt9u3l9+sSQFq?=
+ =?us-ascii?Q?n80mjXuhYg7mexLmTfJ1hrwSmoBkoJqA3U0zhVuh4fVrOUc7Rx4heIAhHVDK?=
+ =?us-ascii?Q?dCOdXaH2IUHZpZJe1hNxBO6OgQKqb5YDu7xybphiAClmVfXnpvKtB7bOJhw/?=
+ =?us-ascii?Q?7bHDTvR+75Au50IffyeGsZ4Ost67C9kiEONhbR4cmSCup2GnwN4NEoaMzeng?=
+ =?us-ascii?Q?UPA/Vme+2rpfryxRMKUS4XcDL84RshHmv5bio/xIvC+MvYReTBdZKYDzIOyC?=
+ =?us-ascii?Q?0knN7ooG2egiC49EVIohcxTBnJdfpWz3vE/3FxmoqcNMdQNM5Kjfh+cN9Nui?=
+ =?us-ascii?Q?+ME5goGkHR+77abE0Lpdj3bXyY8RV4/n1jL8TD5lTR/FF5k+OsgplIJYjJvl?=
+ =?us-ascii?Q?oA/2za8/MaRTd5yaepxS6h8v5fPILXHJkLqGLgLy?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1a15e8ce-ff22-45ce-7e4d-08dbde902046
+X-MS-Exchange-CrossTenant-AuthSource: CY5PR11MB6392.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Nov 2023 06:18:00.1848
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: cYFKoL4Q3anDVbdZlYHRpO0T3GaTQTGIK2W6ftsOkJruG6h3YwYL+iPwdxCjpUIVObMaa41iRsD5FfepJ5lkjQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR11MB4520
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jonas,
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   77fa2fbe87fc605c4bfa87dff87be9bfded0e9a3
+commit: ea017f5853e9a6a11cfa9bdc61ba823a1ed54ee8 tty: serial: uartlite: Prevent changing fixed parameters
+date:   2 years, 2 months ago
+config: i386-randconfig-004-20231101 (https://download.01.org/0day-ci/archive/20231106/202311061059.NUeUar9b-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231106/202311061059.NUeUar9b-lkp@intel.com/reproduce)
 
->>>>> Jonas Oberhauser <jonas.oberhauser@huaweicloud.com> writes:
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <yujie.liu@intel.com>
+| Closes: https://lore.kernel.org/r/202311061059.NUeUar9b-lkp@intel.com/
 
+All warnings (new ones prefixed by >>):
 
-[...]
-
-
-    > I meant that we implemented an internal tool to transpile from C
-    > to PlusCal.
-
-I'm curious about the design/architecture here - how did you manage the
-logical mappings from C->PlusCal - did you have a third language to
-specify the mappings, or did you use heuristics with inherent
-assumptions ?
-
-    > It sounded like a great idea at the time. But then it quickly fell
-    > out of use.
-
-This is something I'm keen to understand why - was this because
-programmers focussed on the C code, and the transpiler+constraints
-became a "testing problem" which ended up in bitrot ? Or is there
-something related to the software methodology/development process ? Or
-perhaps the percieved ROI of formal verification wasn't as much as
-initially thought ? Something else ?
+>> drivers/tty/serial/uartlite.c:79: warning: Function parameter or member 'reg_ops' not described in 'uartlite_data'
+>> drivers/tty/serial/uartlite.c:79: warning: Function parameter or member 'clk' not described in 'uartlite_data'
+   drivers/tty/serial/uartlite.c:79: warning: Function parameter or member 'baud' not described in 'uartlite_data'
+   drivers/tty/serial/uartlite.c:79: warning: Function parameter or member 'cflags' not described in 'uartlite_data'
 
 
-[...]
+vim +79 drivers/tty/serial/uartlite.c
 
+deeb33e8fdd834 Shubhrajyoti Datta 2018-08-06  66  
+ea017f5853e9a6 Sean Anderson      2021-08-26  67  /**
+ea017f5853e9a6 Sean Anderson      2021-08-26  68   * struct uartlite_data: Driver private data
+ea017f5853e9a6 Sean Anderson      2021-08-26  69   * reg_ops: Functions to read/write registers
+ea017f5853e9a6 Sean Anderson      2021-08-26  70   * clk: Our parent clock, if present
+ea017f5853e9a6 Sean Anderson      2021-08-26  71   * baud: The baud rate configured when this device was synthesized
+ea017f5853e9a6 Sean Anderson      2021-08-26  72   * cflags: The cflags for parity and data bits
+ea017f5853e9a6 Sean Anderson      2021-08-26  73   */
 
-    > For reuse, I think the main issue is that implementation code is
-    > always a source of truth - the truth of what's really going to be
-    > executed.  If we want to have a second source of truth, it should
-    > be a different truth, such as "assumptions of the other parts of
-    > the system".
+"@" is required before each struct member.
 
-    > Since you already have this source of truth, if you make a
-    > different implementation in another kernel, you can compare what
-    > the original driver was doing with what your new implementation is
-    > doing.  There's no need to have yet another copy of what the
-    > driver might be doing.
+da7bf20e775804 Shubhrajyoti Datta 2018-07-21  74  struct uartlite_data {
+da7bf20e775804 Shubhrajyoti Datta 2018-07-21  75  	const struct uartlite_reg_ops *reg_ops;
+14288befeb572b Shubhrajyoti Datta 2018-07-21  76  	struct clk *clk;
+ea017f5853e9a6 Sean Anderson      2021-08-26  77  	unsigned int baud;
+ea017f5853e9a6 Sean Anderson      2021-08-26  78  	tcflag_t cflags;
+da7bf20e775804 Shubhrajyoti Datta 2018-07-21 @79  };
+da7bf20e775804 Shubhrajyoti Datta 2018-07-21  80  
 
+:::::: The code at line 79 was first introduced by commit
+:::::: da7bf20e7758042eb3931ff68fc96bdfaf94d881 tty: serial: uartlite: Add structure for private data
 
-I understand what you're saying, but there are a few points that I'm
-probably not able to express clearly.
-
-Just to set context, and not to state the obvious - as you likely
-already know, Formal languages such as pluscal or promela have an
-"execution model" that is different from a programming language - in
-that, when one writes code in them, one's mental model needs to pay
-attention to behaviour, whereas function becomes a more abstract
-problem, as you  pointed out. I wrote a very hand wavy description of
-this in the context of spin:
-
-https://mail-index.netbsd.org/tech-kern/2023/09/28/msg029203.html
-
-I believe this kind of mental frame needs its own discipline, and is an
-opportunity to divide concerns - that of design/architecture vs. that of
-engineering/implementation.
-
-So to return to your concern about code duplication, in the context of
-codegen, one could make the same argument about compiled or transpiled
-code - if it were manually transpiled. And yet we are comfortable as
-programmers, assuming that the "higher level language" is the source of
-truth, while happily stepping "down" to gcc __inline__ __asm__ {} when
-needed. So, for eg: (and I believe there are tools out there that can
-do this to some degree) - if the programming code could be
-auto-generated/"compiled" from the formal specification, then this would
-become directly analogous. 
-
-
-[...]
-
-    >> Can you give me an example of how this works/a pre-existing tool
-    >> that helps with this simplification ? I'm actually currently
-    >> looking at re-writing modex to do precisely this (but with the
-    >> translation end-point being something close to the original
-    >> model).
-
-
-    > I think any higher level language, including C, goes into this
-    > direction. Some are just a lot better at building abstractions and
-    > describing the code more model-like than
-    > tiniest-implementation-detail-like.
-
-C is problematic because it doesn't for eg: define concurrency or
-consistency models - in many cases, even the data types are not clearly
-defined (eg: "integer" is machine word size dependant). So it's really
-hard to specify something formal at the level of C that is not very
-context (OS/CPU arch) specific. This is one of the reasons why for eg:
-in spin's promela, data types are extremely limited, and very precisely
-defined. I'm sure there are several other differences, I'm not expert
-enough to comment - just sharing my observations so far. The point being
-that programming languages such as C are probably not expressive enough
-to encapsulate formal models precisely enough. 
-
-    > (and sometimes that's not what you want).
-
-    >> > So writing the blueprint twice - once in some modelling
-    >> language > and once in a language meant for execution - doesn't
-    >> really > provide a lot of benefit.  But it requires doing changes
-    >> at two > levels whenever the software design changes. It just
-    >> violates DRY.
-    >> 
-    >> IMHO, this would be true if:
-    >> 
-    >> a) The implementation language was expressive enough to cleanly
-    >> encapsulate the model.
-    >> 
-    >> b) If the toolchain around it were able to do model verification
-    >> (eg: by exploring LTL bounds).
-
-
-    > We are building internal tools for such b) things. Not quite
-    > exhaustive formal verification tools, but tools that can express
-    > and check more complex properties at source level without false
-    > positives.
-
-    > (They may have false negatives, but that's not really a
-    > showstopper. False positives would be.)
-
-Fair enough - this is the level of tradeoff that only someone with a
-clear industrial application would be able to make, as I imagine you
-are. This is also where I believe the gap between theory (of formal
-methods) and practise is, so this is insightful - I'd be curious to know
-more, if you're able to share.
-
-
-[...]
-
-    >> 
-    >> I'm a bit skeptical about the "doxygen" approach (i've seen this
-    >> in some versions of Java iirc, as well) - basically you're
-    >> bypassing all the goodness that the language parser provides by
-    >> hiding from it - I'm not sure how this is useful other than to
-    >> shimmy in a specific bandaid fix. Which is fine, if you're
-    >> fighting fires, but I think for a more structured approach, I'm
-    >> not seeing what you're seeing, I'm afraid. Open to be signposted
-    >> though.
-
-
-    > By executable comment I mean a comment that has a formal semantics
-    > that can be executed.
-
-    > Think more pre&post conditions + ghost code. E.g., for a tricky
-    > sort algorithm like timsort the comment might be something like
-
-    > var __ghost_array = copy(input_array);
-
-    > .... // complicated timsort code here
-
-    > insertion_sort(&__ghost_array); // timsort should give the same
-    > output as insertion stort, note that both are stable
-
-    > for (i in 0...array_len) {     assert (sorted_array[i] ==
-    > __ghost_array[i]); }
-
-
-    > This is probably not going to help you find the well-known timsort
-    > bug, but it might be enough to find more trivial mistakes when
-    > rolling your own timsort.  Anyways this is what I mean by
-    > executable comment - a more readable, maintainable implementation
-    > of the code that tells you what the code ought to be doing + some
-    > checks to say that they're really doing the same thing.
-
-This looks closer to testing to me - the assertions for eg: seems to be
-atemporal ie; only concerned about "immedate" values, unlike LTL which
-can check behaviour across an "execution sequence" (in the set of all
-possible execution sequences). So from an FV perspective, I would write
-the assertion to look more like: "eventually is_sorted(array)", where
-is_sorted() has magic to check to if the array elements are sorted in
-whatever required order.
-
-    > As I understand, doxygen is just a way to link human-readable
-    > documentation with code, but maybe I'm wrong about this.
-
-Yes, I just meant that as a way to put parsable code in comments.
-
-[...]
-
-    >> 
-    >> So in some sense, I believe we're nearing the "Deep Neural Nets"
-    >> moment, when GPU computation took inference to the next level.
-
-
-    > Yeah, it's pretty impressive. Actually even the power of laptops
-    > is pretty impressive.  Things like GenMC or Dat3M can do bounded
-    > verification of (slightly massaged) C algorithms from the linux
-    > kernel by more or less exploring the full execution space (of a
-    > bounded client) within a couple of minutes on a laptop.
-
-    > But for many scenarios, we are still a factor of at least
-    > trillions away from using something where exhaustive exploration
-    > works - not something that we'll fix by tying a bunch of
-    > supercomputers together...
-
-
-I agree - but it's still quite impressive - plus there are ways to be
-smart about bounding the search space - eg: using modularity and
-inter-module communications interfaces, optimisation techniques such as
-partial order reduction, etc. I'm sure you've made those optimisations -
-and I'm curious to know what kind of "CI" performance is possible in
-state of the art.
-
-Best,
+:::::: TO: Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>
+:::::: CC: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 -- 
-MattC/(~cherry)
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
+
