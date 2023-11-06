@@ -2,46 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C3E37E1946
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 04:53:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79E1B7E1947
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 04:56:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230237AbjKFDxQ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 5 Nov 2023 22:53:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49992 "EHLO
+        id S230197AbjKFD4A convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 5 Nov 2023 22:56:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229485AbjKFDxO (ORCPT
+        with ESMTP id S229485AbjKFDz6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Nov 2023 22:53:14 -0500
-Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27293B8;
-        Sun,  5 Nov 2023 19:53:12 -0800 (PST)
-Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-6b5af4662b7so3228675b3a.3;
-        Sun, 05 Nov 2023 19:53:12 -0800 (PST)
+        Sun, 5 Nov 2023 22:55:58 -0500
+Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26156F9;
+        Sun,  5 Nov 2023 19:55:56 -0800 (PST)
+Received: by mail-pg1-f180.google.com with SMTP id 41be03b00d2f7-5b92b670f2aso3218210a12.2;
+        Sun, 05 Nov 2023 19:55:56 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699242791; x=1699847591;
+        d=1e100.net; s=20230601; t=1699242955; x=1699847755;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=V9fuperXbeRFYlZWP5/ntLp8L3b3+pqukS7QhZ37B4g=;
-        b=gKMVxxTad4M2cJgx46voGyaaaAJ2PLdgkl1H3dmnquvQqLImuYmNNWItpqgzs6CFwS
-         P8dln463ICN/OfwB6QkhHUnymrZPQYiWFgtPTYyEqyV+H2DHB270SEyiYA9HcwIq5A48
-         1ofScY/5UFqwkfvVVCHfY+2hu89pdcnEZPmdFYQvRFHZOjhxH9vzBq5KSOP4Zx8FCxgG
-         m9opSPXAtiSYtFBFPDEyciyIc9gRTPbolb+q+EM0yTMq7DXhOXnG4X/FDCOvVFw4EtpG
-         Eel4s2PVhvw/sNE3iOUwcM3qdU3yCeBV8Ejd0gjV7rl407QX/EnU59HJCt/lIkDxwa/k
-         Adgg==
-X-Gm-Message-State: AOJu0YyG++K4+2gY1atcFLBdlWquVZGQMYtbYQUp8QfdBI6P1PZGOlVW
-        XRnshl5rpIMu2bIBPdWWinu2n06OCF1plX2K7X4=
-X-Google-Smtp-Source: AGHT+IEMFJMj6FwaXzp9OKZ1xMULFepLkLhpWrOdhdq5zAb4NRilIJ1dq6E9I2tmIq1mzK666LSNLzxKwgpEGrLHPlc=
-X-Received: by 2002:a05:6a20:54a3:b0:13d:17cc:5bca with SMTP id
- i35-20020a056a2054a300b0013d17cc5bcamr26548829pzk.18.1699242791516; Sun, 05
- Nov 2023 19:53:11 -0800 (PST)
+        bh=QfWESybjsduF9qwoLWKD5+nRstHYc4pbbbkyPkX7v3A=;
+        b=OgztEGUK5KEaQMF2EViuF3gWUTTcpqFPwNBPUG40xh3/IZ7hNDFbaR1hqwg5gfCjVg
+         iWlzY+tBxsdVY8A/dmxp3b31WAq6Ts76RYxQX7W6CU/mX8rWrEl4t3sObwTc7dmOdrtO
+         BAwveymhv/USTGnnJseRBbbWI+wZaN4Cm8dmi4YnWufoDLMmwbqtuhfPeovpoo2/j+DI
+         N5D3qHQSByktQH8TYj+GRT6+VV9m6SbmmrC230YzVs1wg3ISB0lPph5pm9bW8++RJV6A
+         03ekkbybgHbFxXs1cUZwZ36N1kfhroRZqFwZxxDuWlZ/aqoJnb11YxRtJThev3HkmqX+
+         BFDw==
+X-Gm-Message-State: AOJu0YwQhMs3FuuoiXHdMfaP1O7h9CdikJ0zOBI7CMenV0bShnrP6e6G
+        8Ur/ay0DelZJ3iSq/g1cigDlOclom9T9IVDkVXY=
+X-Google-Smtp-Source: AGHT+IGbzywoiCWSH7SJOoGMLj3HgkTdhIfrlAkfTOdxwAJ0kx0qGL3BL1wIafykBBczR49bXKwLpmnOoHl//fXz4SQ=
+X-Received: by 2002:a05:6300:8004:b0:181:61ad:3aeb with SMTP id
+ an4-20020a056300800400b0018161ad3aebmr19226207pzc.43.1699242955563; Sun, 05
+ Nov 2023 19:55:55 -0800 (PST)
 MIME-Version: 1.0
-References: <20231102175735.2272696-1-irogers@google.com> <20231102175735.2272696-7-irogers@google.com>
-In-Reply-To: <20231102175735.2272696-7-irogers@google.com>
+References: <20231102175735.2272696-1-irogers@google.com> <20231102175735.2272696-8-irogers@google.com>
+In-Reply-To: <20231102175735.2272696-8-irogers@google.com>
 From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Sun, 5 Nov 2023 19:53:00 -0800
-Message-ID: <CAM9d7chgQBGMmyDyi98OUzyJHWaNUfw34VD=pStkX_n-t5Vpkg@mail.gmail.com>
-Subject: Re: [PATCH v4 06/53] tools api fs: Switch filename__read_str to use io.h
+Date:   Sun, 5 Nov 2023 19:55:44 -0800
+Message-ID: <CAM9d7chKHASNE2BbL-6G7KJ-SwKMGXW+wujLsqiB+pFUPxJ2kA@mail.gmail.com>
+Subject: Re: [PATCH v4 07/53] tools api fs: Avoid reading whole file for a 1
+ byte bool
 To:     Ian Rogers <irogers@google.com>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -91,71 +92,60 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Thu, Nov 2, 2023 at 10:58 AM Ian Rogers <irogers@google.com> wrote:
 >
-> filename__read_str has its own string reading code that allocates
-> memory before reading into it. The memory allocated is sized at BUFSIZ
-> that is 8kb. Most strings are short and so most of this 8kb is
-> wasted.
->
-> Refactor io__getline so that the newline character can be configurable
-> and ignored in the case of filename__read_str.
->
-> Code like build_caches_for_cpu in perf's header.c will read many
-> strings and hold them in a data structure, in this case multiple
-> strings per cache level per CPU. Using io.h's io__getline avoids the
-> wasted memory as strings are temporarily read into a buffer on the
-> stack before being copied to a buffer that grows 128 bytes at a time
-> and is never sized larger than the string.
->
-> For a 16 hyperthread system the memory consumption of "perf record
-> true" is reduced by 180kb, primarily through saving memory when
-> reading the cache information.
+> sysfs__read_bool used the first byte from a fully read file into a
+> string. It then looked at the first byte's value. Avoid doing this and
+> just read the first byte.
 >
 > Signed-off-by: Ian Rogers <irogers@google.com>
 > ---
-
-[SNIP]
-> diff --git a/tools/lib/api/io.h b/tools/lib/api/io.h
-> index a77b74c5fb65..50d33e14fb56 100644
-> --- a/tools/lib/api/io.h
-> +++ b/tools/lib/api/io.h
-> @@ -141,7 +141,7 @@ static inline int io__get_dec(struct io *io, __u64 *dec)
->  }
+>  tools/lib/api/fs/fs.c | 18 +++++++++---------
+>  1 file changed, 9 insertions(+), 9 deletions(-)
 >
->  /* Read up to and including the first newline following the pattern of getline. */
+> diff --git a/tools/lib/api/fs/fs.c b/tools/lib/api/fs/fs.c
+> index 496812b5f1d2..4c35a689d1fc 100644
+> --- a/tools/lib/api/fs/fs.c
+> +++ b/tools/lib/api/fs/fs.c
+> @@ -447,15 +447,16 @@ int sysfs__read_str(const char *entry, char **buf, size_t *sizep)
+>
+>  int sysfs__read_bool(const char *entry, bool *value)
+>  {
+> -       char *buf;
+> -       size_t size;
+> -       int ret;
+> +       struct io io;
+> +       char bf[16];
+> +       int ret = 0;
+>
+> -       ret = sysfs__read_str(entry, &buf, &size);
+> -       if (ret < 0)
+> -               return ret;
+> +       io.fd = open(entry, O_RDONLY);
 
-You may want to update the comment as well.
-
-> -static inline ssize_t io__getline(struct io *io, char **line_out, size_t *line_len_out)
-> +static inline ssize_t io__getline_nl(struct io *io, char **line_out, size_t *line_len_out, int nl)
-
-How about io__getdelim() similar to POSIX?
+The entry is a name in sysfs, so you need to get the full name.
 
 Thanks,
 Namhyung
 
 
->  {
->         char buf[128];
->         int buf_pos = 0;
-> @@ -151,7 +151,7 @@ static inline ssize_t io__getline(struct io *io, char **line_out, size_t *line_l
+> +       if (io.fd < 0)
+> +               return -errno;
 >
->         /* TODO: reuse previously allocated memory. */
->         free(*line_out);
-> -       while (ch != '\n') {
-> +       while (ch != nl) {
->                 ch = io__get_char(io);
+> -       switch (buf[0]) {
+> +       io__init(&io, io.fd, bf, sizeof(bf));
+> +       switch (io__get_char(&io)) {
+>         case '1':
+>         case 'y':
+>         case 'Y':
+> @@ -469,8 +470,7 @@ int sysfs__read_bool(const char *entry, bool *value)
+>         default:
+>                 ret = -1;
+>         }
+> -
+> -       free(buf);
+> +       close(io.fd);
 >
->                 if (ch < 0)
-> @@ -184,4 +184,9 @@ static inline ssize_t io__getline(struct io *io, char **line_out, size_t *line_l
->         return -ENOMEM;
+>         return ret;
 >  }
->
-> +static inline ssize_t io__getline(struct io *io, char **line_out, size_t *line_len_out)
-> +{
-> +       return io__getline_nl(io, line_out, line_len_out, /*nl=*/'\n');
-> +}
-> +
->  #endif /* __API_IO__ */
 > --
 > 2.42.0.869.gea05f2083d-goog
 >
