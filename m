@@ -2,391 +2,395 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D2CC27E1F8D
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 12:09:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED3877E1FA8
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 12:10:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231445AbjKFLI7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 06:08:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58936 "EHLO
+        id S231490AbjKFLKi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 06:10:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231243AbjKFLI4 (ORCPT
+        with ESMTP id S231488AbjKFLKb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 06:08:56 -0500
-Received: from mail-vs1-xe35.google.com (mail-vs1-xe35.google.com [IPv6:2607:f8b0:4864:20::e35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8472BE
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 03:08:52 -0800 (PST)
-Received: by mail-vs1-xe35.google.com with SMTP id ada2fe7eead31-45dad6ece90so752467137.0
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 03:08:52 -0800 (PST)
+        Mon, 6 Nov 2023 06:10:31 -0500
+Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D72110CC
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 03:10:24 -0800 (PST)
+Received: by mail-qv1-xf33.google.com with SMTP id 6a1803df08f44-66d11fec9a5so24016056d6.1
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 03:10:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699268932; x=1699873732; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=HYJNzQq/iZCyHEXhcqakseQ4P36UyMxahEMaigDbFQU=;
-        b=Btys0ueIxiUrRmhpbR/akhvhZQhfU0Yf07Mge5UMGEXDlJolGJYGXJICt8GrzDS2PK
-         ZJZdHfTxtmU++IfgicIFkiqu23YY8nppcUP/L5bpyR71KVHCFJn6/xUckx4KwT0AjCH8
-         yUGGz/twDDNqT3eRWd77MWBoVz5KIAPmKnsiI9712NygDG0k3nyjoZQaL9c7I3z0LPJ7
-         W3B66c9NXp3Kmko424Cv4BXL1Ox3xQr9tRmtZ3JSDLDck1Dw7V3NuZhZoCuc79h/McmN
-         wsZTRqgE/vC0qFdftlu6oAk5g57jj0y7k5AvE9kx46i1m83tk45y178N8PdENK28BGse
-         Y0Yw==
+        d=google.com; s=20230601; t=1699269023; x=1699873823; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qnJqfkSSRV3TBP0JexdvtsqLHYDxALR7H+cYP6TRCJE=;
+        b=SJtS3dqUGrKW28uxSwfWyiN0BGL2D7TgvMufK+WSZ9HkYWxoBPNKag1WoIpZ2KtIAq
+         W79SAPZQirGVO7OBeSqppVDUTxG+xM/lQZ9xm+HKBFVDbasWLoBLQ7V0jAaGHm7/dEEd
+         O+qOVeidLuM93YEJ7+c10RnZ/TI0X4DP8y39eEHqdCBJWbS3kAXskWEdxWEak4iAA4mv
+         P77vJHf6as5d6EDfWSFK2uAC/d5TmKftjgt7VMZABpJCg0BMBWfCQ+YL1FwynvdwH99x
+         JhY0PoPirXyevOmuNgGS8empZ2/IwKkwOBeCFm26KmsNflqmuKaMb46eo9D9RQwQP9NC
+         fecQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699268932; x=1699873732;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=HYJNzQq/iZCyHEXhcqakseQ4P36UyMxahEMaigDbFQU=;
-        b=PM4EWxe81erO8zXp7GbWBDfHV82DPkX/Mnlcr6cu9z6ieZKa8/NHYxH/y3yghWxv21
-         wY8UniM+ISEYsbTyEQcfMmmUnoz1gJ9PRNGcfFYWucKZ6BX3wTHDa5wS+74mbw/40MEf
-         Ej7+g8ii16XJBx+h/UomT+zEXKzdIpbcge2RmjC8eX7iBUKnvGBehBA7t4sxUR71bzGn
-         y3mtuGI+3Tc20/bfoeYwcuaF5BmyS/RnNSDVR9BCdanOAiou/+mEoDx7/bq3uGrqAwdW
-         RkLeR2YqPmLIiLH0b9LKo0rJ90QSAigxgo3wgh6KaLCn8i5jJkKJ46EskFm1olVA3bsc
-         Z/9Q==
-X-Gm-Message-State: AOJu0Yzwobp8rOufDbBf75HPxwQypnY7Qf0SOOugJBzbPu/ogz54hBXH
-        wqcYOhrjnRfYTlxDLltQ69I5hidD9rGUJ4NWMovWATXHSUrT2lCLlm8=
-X-Google-Smtp-Source: AGHT+IGfsMpRhMisDXxcEXuRc7SmrFeg4eEGz1ySqUKyaP4pdw2wPV5NDIIBqbnkixjgXWBOHzAx0M8BLLMX6GOW96o=
-X-Received: by 2002:a67:ef42:0:b0:45d:aa79:46d4 with SMTP id
- k2-20020a67ef42000000b0045daa7946d4mr3259836vsr.14.1699268931874; Mon, 06 Nov
- 2023 03:08:51 -0800 (PST)
+        d=1e100.net; s=20230601; t=1699269023; x=1699873823;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qnJqfkSSRV3TBP0JexdvtsqLHYDxALR7H+cYP6TRCJE=;
+        b=oJ7HQQ8EiGRD5BOWjpW+obJVAYZdCeFoRvK2c4LXDYW2UgepF3pKDgU9/RnCASnvnh
+         /3AHd9nQIJDkPwwTbJgoTgsJDFBnIwVcMozKi0Cutq4j3nSxAWJA93B/0z2BxR4DZ5TZ
+         ixwig91u4z/HWlmRJbQNOZ9Ibb7uADgFwq7N65jHoPOfnBi/a4Z11WUFpSMNFSHgVGcC
+         cC3TGZ35hbmeGyk5E+AFCKi1y7jP0cPaVq6u7t+vJ+N3+eWgBQkvo69TfATtUqFDtOF4
+         YiLUSrkCzOLVA+IdAh32My5/d2BC5YAtQ/KuTzjwtC6+VpqGKgEmzHofc/uwqqGM8mmn
+         rpdQ==
+X-Gm-Message-State: AOJu0YzmNesrqpmUcvkeZFnDeg2Q5xTSWRP3T1p6w7D52SFFXcc8d2N9
+        x5uhb0XKgV64XqvFo+8HDkK9RLutek4uB7TR5OYn8A==
+X-Google-Smtp-Source: AGHT+IHU/+pefiFnPy+6hnE6koYxy9w/9xmRXHTMFvjZ+YNn5s7SNPQyF9p0CVa6tIfW5b4YJfx0jin9klIyZI5tK50=
+X-Received: by 2002:a05:6214:d62:b0:66d:2eab:85ec with SMTP id
+ 2-20020a0562140d6200b0066d2eab85ecmr28750220qvs.61.1699269022903; Mon, 06 Nov
+ 2023 03:10:22 -0800 (PST)
 MIME-Version: 1.0
-References: <20231026080409.4149616-1-jens.wiklander@linaro.org> <20231026080409.4149616-3-jens.wiklander@linaro.org>
-In-Reply-To: <20231026080409.4149616-3-jens.wiklander@linaro.org>
-From:   Sumit Garg <sumit.garg@linaro.org>
-Date:   Mon, 6 Nov 2023 16:38:40 +0530
-Message-ID: <CAFA6WYNKpbtSNFigvzc4WSV0PV+0pTJPykMLmX8f-Vuw8xNs=w@mail.gmail.com>
-Subject: Re: [PATCH 2/2] optee: ffa_abi: add asynchronous notifications
-To:     Jens Wiklander <jens.wiklander@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, op-tee@lists.trustedfirmware.org,
-        Jerome Forissier <jerome.forissier@linaro.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Marc Bonnici <marc.bonnici@arm.com>,
-        Olivier Deprez <Olivier.Deprez@arm.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>
+References: <20231105163040.14904-1-pbonzini@redhat.com> <20231105163040.14904-25-pbonzini@redhat.com>
+In-Reply-To: <20231105163040.14904-25-pbonzini@redhat.com>
+From:   Fuad Tabba <tabba@google.com>
+Date:   Mon, 6 Nov 2023 11:09:46 +0000
+Message-ID: <CA+EHjTwOFAEMchVjob=3chD-TJ=Wau3iPnLdtFXBtiRUG4Dtug@mail.gmail.com>
+Subject: Re: [PATCH 24/34] KVM: selftests: Add support for creating private memslots
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Anup Patel <anup@brainfault.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Sean Christopherson <seanjc@google.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>, kvm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Xiaoyao Li <xiaoyao.li@intel.com>,
+        Xu Yilun <yilun.xu@intel.com>,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Anish Moorthy <amoorthy@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Isaku Yamahata <isaku.yamahata@intel.com>,
+        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Maciej Szmigiero <mail@maciej.szmigiero.name>,
+        David Hildenbrand <david@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Wang <wei.w.wang@intel.com>,
+        Liam Merwick <liam.merwick@oracle.com>,
+        Isaku Yamahata <isaku.yamahata@gmail.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 26 Oct 2023 at 13:34, Jens Wiklander <jens.wiklander@linaro.org> wrote:
->
-> Adds support for asynchronous notifications from OP-TEE in secure world
-> when communicating via FF-A. In principle from OP-TEE and kernel driver
-> point of view this works in the same way as for the SMC ABI based
-> implementation.
->
-> The OP-TEE FF-A ABI is expanded in OPTEE_FFA_EXCHANGE_CAPABILITIES with
-> the capability OPTEE_FFA_SEC_CAP_ASYNC_NOTIF to indicate that OP-TEE
-> supports asynchronous notifications. OPTEE_FFA_ENABLE_ASYNC_NOTIF is
-> also added to tell that the driver has successfully initialized these
-> notifications.
->
-> Notification capability is negotiated while the driver is initialized.
-> If both sides supports these notifications then they are enabled.
->
-> The notification concept in this driver is merged with the FF-A concept,
-> the lower 64 values are reserved for FF-A as asynchronous notifications
-> while the synchronous notifications uses the higher values.
+Hi,
 
-s/uses/use/
+Regarding the subject (and the commit message), should we still be
+calling them "private" slots, or guestmem_slots?
+
+On Sun, Nov 5, 2023 at 4:34=E2=80=AFPM Paolo Bonzini <pbonzini@redhat.com> =
+wrote:
+>
+> From: Sean Christopherson <seanjc@google.com>
+>
+> Add support for creating "private" memslots via KVM_CREATE_GUEST_MEMFD an=
+d
+> KVM_SET_USER_MEMORY_REGION2.  Make vm_userspace_mem_region_add() a wrappe=
+r
+> to its effective replacement, vm_mem_add(), so that private memslots are
+> fully opt-in, i.e. don't require update all tests that add memory regions=
+.
+
+nit: update->updating
 
 >
-> So a FF-A notification has to be allocated for each discrete
-> asynchronous notification value needed. Only one asynchronous
-> notification value is used at the moment, the "do bottom half"
-> notification.
+> Pivot on the KVM_MEM_PRIVATE flag instead of the validity of the "gmem"
+
+KVM_MEM_PRIVATE  -> KVM_MEM_GUEST_MEMFD
+
+> file descriptor so that simple tests can let vm_mem_add() do the heavy
+> lifting of creating the guest memfd, but also allow the caller to pass in
+> an explicit fd+offset so that fancier tests can do things like back
+> multiple memslots with a single file.  If the caller passes in a fd, dup(=
+)
+> the fd so that (a) __vm_mem_region_delete() can close the fd associated
+> with the memory region without needing yet another flag, and (b) so that
+> the caller can safely close its copy of the fd without having to first
+> destroy memslots.
 >
-> Signed-off-by: Jens Wiklander <jens.wiklander@linaro.org>
+> Co-developed-by: Ackerley Tng <ackerleytng@google.com>
+> Signed-off-by: Ackerley Tng <ackerleytng@google.com>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> Message-Id: <20231027182217.3615211-27-seanjc@google.com>
+> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 > ---
->  drivers/tee/optee/ffa_abi.c       | 91 ++++++++++++++++++++++++++++++-
->  drivers/tee/optee/optee_ffa.h     | 28 ++++++++--
->  drivers/tee/optee/optee_private.h |  4 +-
->  3 files changed, 115 insertions(+), 8 deletions(-)
+>  .../selftests/kvm/include/kvm_util_base.h     | 23 ++++++
+>  .../testing/selftests/kvm/include/test_util.h |  5 ++
+>  tools/testing/selftests/kvm/lib/kvm_util.c    | 76 +++++++++++--------
+>  3 files changed, 73 insertions(+), 31 deletions(-)
 >
-
-Apart from nits below, feel free to add:
-
-Reviewed-by: Sumit Garg <sumit.garg@linaro.org>
-
-> diff --git a/drivers/tee/optee/ffa_abi.c b/drivers/tee/optee/ffa_abi.c
-> index 0828240f27e6..e68acc42db65 100644
-> --- a/drivers/tee/optee/ffa_abi.c
-> +++ b/drivers/tee/optee/ffa_abi.c
-> @@ -1,6 +1,6 @@
->  // SPDX-License-Identifier: GPL-2.0-only
->  /*
-> - * Copyright (c) 2021, Linaro Limited
-> + * Copyright (c) 2021, 2023 Linaro Limited
->   */
+> diff --git a/tools/testing/selftests/kvm/include/kvm_util_base.h b/tools/=
+testing/selftests/kvm/include/kvm_util_base.h
+> index 9f144841c2ee..9f861182c02a 100644
+> --- a/tools/testing/selftests/kvm/include/kvm_util_base.h
+> +++ b/tools/testing/selftests/kvm/include/kvm_util_base.h
+> @@ -431,6 +431,26 @@ static inline uint64_t vm_get_stat(struct kvm_vm *vm=
+, const char *stat_name)
 >
->  #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-> @@ -692,7 +692,8 @@ static bool optee_ffa_api_is_compatbile(struct ffa_device *ffa_dev,
->  static bool optee_ffa_exchange_caps(struct ffa_device *ffa_dev,
->                                     const struct ffa_ops *ops,
->                                     u32 *sec_caps,
-> -                                   unsigned int *rpc_param_count)
-> +                                   unsigned int *rpc_param_count,
-> +                                   unsigned int *max_notif_value)
->  {
->         struct ffa_send_direct_data data = { OPTEE_FFA_EXCHANGE_CAPABILITIES };
->         int rc;
-> @@ -709,10 +710,39 @@ static bool optee_ffa_exchange_caps(struct ffa_device *ffa_dev,
+>  void vm_create_irqchip(struct kvm_vm *vm);
 >
->         *rpc_param_count = (u8)data.data1;
->         *sec_caps = data.data2;
-> +       if (data.data3)
-> +               *max_notif_value = data.data3;
-> +       else
-> +               *max_notif_value = OPTEE_DEFAULT_MAX_NOTIF_VALUE;
->
->         return true;
->  }
->
-> +static void notif_callback(int notify_id, void *cb_data)
+> +static inline int __vm_create_guest_memfd(struct kvm_vm *vm, uint64_t si=
+ze,
+> +                                       uint64_t flags)
 > +{
-> +       struct optee *optee = cb_data;
-> +
-> +       if (notify_id == optee->ffa.bottom_half_value)
-> +               optee_do_bottom_half(optee->ctx);
-> +       else
-> +               optee_notif_send(optee, notify_id);
-> +}
-> +
-> +static int enable_async_notif(struct optee *optee)
-> +{
-> +       struct ffa_device *ffa_dev = optee->ffa.ffa_dev;
-> +       struct ffa_send_direct_data data = {
-> +               .data0 = OPTEE_FFA_ENABLE_ASYNC_NOTIF,
-> +               .data1 = optee->ffa.bottom_half_value,
+> +       struct kvm_create_guest_memfd guest_memfd =3D {
+> +               .size =3D size,
+> +               .flags =3D flags,
 > +       };
-> +       int rc;
 > +
-> +       rc = ffa_dev->ops->msg_ops->sync_send_receive(ffa_dev, &data);
-> +       if (rc)
-> +               return rc;
-> +       return data.data0;
+> +       return __vm_ioctl(vm, KVM_CREATE_GUEST_MEMFD, &guest_memfd);
 > +}
 > +
->  static void optee_ffa_get_version(struct tee_device *teedev,
->                                   struct tee_ioctl_version_data *vers)
->  {
-> @@ -775,7 +805,11 @@ static const struct optee_ops optee_ffa_ops = {
->  static void optee_ffa_remove(struct ffa_device *ffa_dev)
->  {
->         struct optee *optee = ffa_dev_get_drvdata(ffa_dev);
-> +       const struct ffa_notifier_ops *ops = ffa_dev->ops->notifier_ops;
-> +       u32 bottom_half_id = optee->ffa.bottom_half_value;
+> +static inline int vm_create_guest_memfd(struct kvm_vm *vm, uint64_t size=
+,
+> +                                       uint64_t flags)
+> +{
+> +       int fd =3D __vm_create_guest_memfd(vm, size, flags);
+> +
+> +       TEST_ASSERT(fd >=3D 0, KVM_IOCTL_ERROR(KVM_CREATE_GUEST_MEMFD, fd=
+));
+> +       return fd;
+> +}
+> +
+>  void vm_set_user_memory_region(struct kvm_vm *vm, uint32_t slot, uint32_=
+t flags,
+>                                uint64_t gpa, uint64_t size, void *hva);
+>  int __vm_set_user_memory_region(struct kvm_vm *vm, uint32_t slot, uint32=
+_t flags,
+> @@ -439,6 +459,9 @@ void vm_userspace_mem_region_add(struct kvm_vm *vm,
+>         enum vm_mem_backing_src_type src_type,
+>         uint64_t guest_paddr, uint32_t slot, uint64_t npages,
+>         uint32_t flags);
+> +void vm_mem_add(struct kvm_vm *vm, enum vm_mem_backing_src_type src_type=
+,
+> +               uint64_t guest_paddr, uint32_t slot, uint64_t npages,
+> +               uint32_t flags, int guest_memfd_fd, uint64_t guest_memfd_=
+offset);
 >
-> +       if (bottom_half_id != U32_MAX)
-> +               ops->notify_relinquish(ffa_dev, bottom_half_id);
-
-nit: I would have preferred to keep common convention among FF-A calls
-here being:
-
-ffa_dev->ops->notifier_ops->notify_relinquish()
-
-similar to:
-
-ffa_dev->ops->msg_ops->sync_send_receive()
-
->         optee_remove_common(optee);
->
->         mutex_destroy(&optee->ffa.mutex);
-> @@ -784,9 +818,49 @@ static void optee_ffa_remove(struct ffa_device *ffa_dev)
->         kfree(optee);
+>  void vm_mem_region_set_flags(struct kvm_vm *vm, uint32_t slot, uint32_t =
+flags);
+>  void vm_mem_region_move(struct kvm_vm *vm, uint32_t slot, uint64_t new_g=
+pa);
+> diff --git a/tools/testing/selftests/kvm/include/test_util.h b/tools/test=
+ing/selftests/kvm/include/test_util.h
+> index 7e614adc6cf4..7257f2243ab9 100644
+> --- a/tools/testing/selftests/kvm/include/test_util.h
+> +++ b/tools/testing/selftests/kvm/include/test_util.h
+> @@ -142,6 +142,11 @@ static inline bool backing_src_is_shared(enum vm_mem=
+_backing_src_type t)
+>         return vm_mem_backing_src_alias(t)->flag & MAP_SHARED;
 >  }
 >
-> +static int optee_ffa_async_notif_init(struct ffa_device *ffa_dev,
-> +                                     struct optee *optee)
+> +static inline bool backing_src_can_be_huge(enum vm_mem_backing_src_type =
+t)
 > +{
-> +       const struct ffa_notifier_ops *ops = ffa_dev->ops->notifier_ops;
-> +       bool is_per_vcpu = false;
-> +       u32 notif_id = 0;
-> +       int rc;
-> +
-> +       while (true) {
-> +               rc = ops->notify_request(ffa_dev, is_per_vcpu,
-> +                                              notif_callback, optee,
-> +                                              notif_id);
-
-Ditto.
-
-> +               if (!rc)
-> +                       break;
-> +               /*
-> +                * -EACCES means that the notification ID was
-> +                * already bound, try the next one as long as we
-> +                * haven't reached the max. Any other error is a
-> +                * permanent error, so skip asynchronous
-> +                * notifications in that case.
-> +                */
-> +               if (rc != -EACCES)
-> +                       return rc;
-> +               notif_id++;
-> +               if (notif_id >= OPTEE_FFA_MAX_ASYNC_NOTIF_VALUE)
-> +                       return rc;
-> +       }
-> +       optee->ffa.bottom_half_value = notif_id;
-> +
-> +       rc = enable_async_notif(optee);
-> +       if (rc < 0) {
-> +               ops->notify_relinquish(ffa_dev, notif_id);
-
-Ditto.
-
-> +               optee->ffa.bottom_half_value = U32_MAX;
-> +       }
-> +
-> +       return rc;
+> +       return t !=3D VM_MEM_SRC_ANONYMOUS && t !=3D VM_MEM_SRC_SHMEM;
 > +}
 > +
->  static int optee_ffa_probe(struct ffa_device *ffa_dev)
+>  /* Aligns x up to the next multiple of size. Size must be a power of 2. =
+*/
+>  static inline uint64_t align_up(uint64_t x, uint64_t size)
 >  {
-> +       const struct ffa_notifier_ops *notif_ops;
->         const struct ffa_ops *ffa_ops;
-> +       unsigned int max_notif_value;
->         unsigned int rpc_param_count;
->         struct tee_shm_pool *pool;
->         struct tee_device *teedev;
-> @@ -797,12 +871,13 @@ static int optee_ffa_probe(struct ffa_device *ffa_dev)
->         int rc;
+> diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c b/tools/testing/s=
+elftests/kvm/lib/kvm_util.c
+> index 3676b37bea38..b63500fca627 100644
+> --- a/tools/testing/selftests/kvm/lib/kvm_util.c
+> +++ b/tools/testing/selftests/kvm/lib/kvm_util.c
+> @@ -669,6 +669,8 @@ static void __vm_mem_region_delete(struct kvm_vm *vm,
+>                 TEST_ASSERT(!ret, __KVM_SYSCALL_ERROR("munmap()", ret));
+>                 close(region->fd);
+>         }
+> +       if (region->region.guest_memfd >=3D 0)
+> +               close(region->region.guest_memfd);
 >
->         ffa_ops = ffa_dev->ops;
-> +       notif_ops = ffa_ops->notifier_ops;
+>         free(region);
+>  }
+> @@ -870,36 +872,15 @@ void vm_set_user_memory_region(struct kvm_vm *vm, u=
+int32_t slot, uint32_t flags,
+>                     errno, strerror(errno));
+>  }
 >
->         if (!optee_ffa_api_is_compatbile(ffa_dev, ffa_ops))
->                 return -EINVAL;
+> -/*
+> - * VM Userspace Memory Region Add
+> - *
+> - * Input Args:
+> - *   vm - Virtual Machine
+> - *   src_type - Storage source for this region.
+> - *              NULL to use anonymous memory.
+
+"VM_MEM_SRC_ANONYMOUS to use anonymous memory"
+
+> - *   guest_paddr - Starting guest physical address
+> - *   slot - KVM region slot
+> - *   npages - Number of physical pages
+> - *   flags - KVM memory region flags (e.g. KVM_MEM_LOG_DIRTY_PAGES)
+> - *
+> - * Output Args: None
+> - *
+> - * Return: None
+> - *
+> - * Allocates a memory area of the number of pages specified by npages
+> - * and maps it to the VM specified by vm, at a starting physical address
+> - * given by guest_paddr.  The region is created with a KVM region slot
+> - * given by slot, which must be unique and < KVM_MEM_SLOTS_NUM.  The
+> - * region is created with the flags given by flags.
+> - */
+> -void vm_userspace_mem_region_add(struct kvm_vm *vm,
+> -       enum vm_mem_backing_src_type src_type,
+> -       uint64_t guest_paddr, uint32_t slot, uint64_t npages,
+> -       uint32_t flags)
+> +/* FIXME: This thing needs to be ripped apart and rewritten. */
+
+It sure does :)
+
+With these nits:
+
+Reviewed-by: Fuad Tabba <tabba@google.com>
+Tested-by: Fuad Tabba <tabba@google.com>
+
+Cheers,
+/fuad
+
+> +void vm_mem_add(struct kvm_vm *vm, enum vm_mem_backing_src_type src_type=
+,
+> +               uint64_t guest_paddr, uint32_t slot, uint64_t npages,
+> +               uint32_t flags, int guest_memfd, uint64_t guest_memfd_off=
+set)
+>  {
+>         int ret;
+>         struct userspace_mem_region *region;
+>         size_t backing_src_pagesz =3D get_backing_src_pagesz(src_type);
+> +       size_t mem_size =3D npages * vm->page_size;
+>         size_t alignment;
 >
->         if (!optee_ffa_exchange_caps(ffa_dev, ffa_ops, &sec_caps,
-> -                                    &rpc_param_count))
-> +                                    &rpc_param_count, &max_notif_value))
->                 return -EINVAL;
->         if (sec_caps & OPTEE_FFA_SEC_CAP_ARG_OFFSET)
->                 arg_cache_flags |= OPTEE_SHM_ARG_SHARED;
-> @@ -820,6 +895,7 @@ static int optee_ffa_probe(struct ffa_device *ffa_dev)
+>         TEST_ASSERT(vm_adjust_num_guest_pages(vm->mode, npages) =3D=3D np=
+ages,
+> @@ -952,7 +933,7 @@ void vm_userspace_mem_region_add(struct kvm_vm *vm,
+>         /* Allocate and initialize new mem region structure. */
+>         region =3D calloc(1, sizeof(*region));
+>         TEST_ASSERT(region !=3D NULL, "Insufficient Memory");
+> -       region->mmap_size =3D npages * vm->page_size;
+> +       region->mmap_size =3D mem_size;
 >
->         optee->ops = &optee_ffa_ops;
->         optee->ffa.ffa_dev = ffa_dev;
-> +       optee->ffa.bottom_half_value = U32_MAX;
->         optee->rpc_param_count = rpc_param_count;
+>  #ifdef __s390x__
+>         /* On s390x, the host address must be aligned to 1M (due to PGSTE=
+s) */
+> @@ -999,14 +980,38 @@ void vm_userspace_mem_region_add(struct kvm_vm *vm,
+>         /* As needed perform madvise */
+>         if ((src_type =3D=3D VM_MEM_SRC_ANONYMOUS ||
+>              src_type =3D=3D VM_MEM_SRC_ANONYMOUS_THP) && thp_configured(=
+)) {
+> -               ret =3D madvise(region->host_mem, npages * vm->page_size,
+> +               ret =3D madvise(region->host_mem, mem_size,
+>                               src_type =3D=3D VM_MEM_SRC_ANONYMOUS ? MADV=
+_NOHUGEPAGE : MADV_HUGEPAGE);
+>                 TEST_ASSERT(ret =3D=3D 0, "madvise failed, addr: %p lengt=
+h: 0x%lx src_type: %s",
+> -                           region->host_mem, npages * vm->page_size,
+> +                           region->host_mem, mem_size,
+>                             vm_mem_backing_src_alias(src_type)->name);
+>         }
 >
->         teedev = tee_device_alloc(&optee_ffa_clnt_desc, NULL, optee->pool,
-> @@ -864,6 +940,12 @@ static int optee_ffa_probe(struct ffa_device *ffa_dev)
->         rc = optee_notif_init(optee, OPTEE_DEFAULT_MAX_NOTIF_VALUE);
->         if (rc)
->                 goto err_close_ctx;
-> +       if (sec_caps & OPTEE_FFA_SEC_CAP_ASYNC_NOTIF) {
-> +               rc = optee_ffa_async_notif_init(ffa_dev, optee);
-> +               if (rc < 0)
-> +                       pr_err("Failed to initialize async notifications: %d",
-> +                              rc);
+>         region->backing_src_type =3D src_type;
+> +
+> +       if (flags & KVM_MEM_GUEST_MEMFD) {
+> +               if (guest_memfd < 0) {
+> +                       uint32_t guest_memfd_flags =3D 0;
+> +                       TEST_ASSERT(!guest_memfd_offset,
+> +                                   "Offset must be zero when creating ne=
+w guest_memfd");
+> +                       guest_memfd =3D vm_create_guest_memfd(vm, mem_siz=
+e, guest_memfd_flags);
+> +               } else {
+> +                       /*
+> +                        * Install a unique fd for each memslot so that t=
+he fd
+> +                        * can be closed when the region is deleted witho=
+ut
+> +                        * needing to track if the fd is owned by the fra=
+mework
+> +                        * or by the caller.
+> +                        */
+> +                       guest_memfd =3D dup(guest_memfd);
+> +                       TEST_ASSERT(guest_memfd >=3D 0, __KVM_SYSCALL_ERR=
+OR("dup()", guest_memfd));
+> +               }
+> +
+> +               region->region.guest_memfd =3D guest_memfd;
+> +               region->region.guest_memfd_offset =3D guest_memfd_offset;
+> +       } else {
+> +               region->region.guest_memfd =3D -1;
 > +       }
->
->         rc = optee_enumerate_devices(PTA_CMD_GET_DEVICES);
->         if (rc)
-> @@ -874,6 +956,9 @@ static int optee_ffa_probe(struct ffa_device *ffa_dev)
->
->  err_unregister_devices:
->         optee_unregister_devices();
-> +       if (optee->ffa.bottom_half_value != U32_MAX)
-> +               notif_ops->notify_relinquish(ffa_dev,
-> +                                            optee->ffa.bottom_half_value);
->         optee_notif_uninit(optee);
->  err_close_ctx:
->         teedev_close_context(ctx);
-> diff --git a/drivers/tee/optee/optee_ffa.h b/drivers/tee/optee/optee_ffa.h
-> index 97266243deaa..fa14d931af8a 100644
-> --- a/drivers/tee/optee/optee_ffa.h
-> +++ b/drivers/tee/optee/optee_ffa.h
-> @@ -1,6 +1,6 @@
->  /* SPDX-License-Identifier: BSD-2-Clause */
->  /*
-> - * Copyright (c) 2019-2021, Linaro Limited
-> + * Copyright (c) 2019-2021, 2023 Linaro Limited
->   */
->
->  /*
-> @@ -73,7 +73,7 @@
->   *
->   * Call register usage:
->   * w3:    Service ID, OPTEE_FFA_EXCHANGE_CAPABILITIES
-> - * w4-w7: Note used (MBZ)
-> + * w4-w7: Not used (MBZ)
->   *
->   * Return register usage:
->   * w3:    Error code, 0 on success
-> @@ -82,14 +82,16 @@
->   *                   OPTEE_FFA_YIELDING_CALL_WITH_ARG.
->   *        Bit[31:8]: Reserved (MBZ)
->   * w5:   Bitfield of secure world capabilities OPTEE_FFA_SEC_CAP_* below,
-> - *       unused bits MBZ.
-> - * w6-w7: Not used (MBZ)
-> + * w6:   The maximum secure world notification number
-> + * w7:   Not used (MBZ)
->   */
->  /*
->   * Secure world supports giving an offset into the argument shared memory
->   * object, see also OPTEE_FFA_YIELDING_CALL_WITH_ARG
->   */
->  #define OPTEE_FFA_SEC_CAP_ARG_OFFSET   BIT(0)
-> +/* OP-TEE supports asynchronous notification via FF-A */
-> +#define OPTEE_FFA_SEC_CAP_ASYNC_NOTIF  BIT(1)
->
->  #define OPTEE_FFA_EXCHANGE_CAPABILITIES OPTEE_FFA_BLOCKING_CALL(2)
->
-> @@ -108,6 +110,24 @@
->   */
->  #define OPTEE_FFA_UNREGISTER_SHM       OPTEE_FFA_BLOCKING_CALL(3)
->
-> +/*
-> + * Inform OP-TEE that normal world is able to receive asynchronous
-
-s/that normal/that the normal/
-
--Sumit
-
-> + * notifications.
-> + *
-> + * Call register usage:
-> + * w3:    Service ID, OPTEE_FFA_ENABLE_ASYNC_NOTIF
-> + * w4:   Notification value to request bottom half processing, should be
-> + *       less than OPTEE_FFA_MAX_ASYNC_NOTIF_VALUE.
-> + * w5-w7: Not used (MBZ)
-> + *
-> + * Return register usage:
-> + * w3:    Error code, 0 on success
-> + * w4-w7: Note used (MBZ)
-> + */
-> +#define OPTEE_FFA_ENABLE_ASYNC_NOTIF   OPTEE_FFA_BLOCKING_CALL(5)
 > +
-> +#define OPTEE_FFA_MAX_ASYNC_NOTIF_VALUE 64
+>         region->unused_phy_pages =3D sparsebit_alloc();
+>         sparsebit_set_num(region->unused_phy_pages,
+>                 guest_paddr >> vm->page_shift, npages);
+> @@ -1019,9 +1024,10 @@ void vm_userspace_mem_region_add(struct kvm_vm *vm=
+,
+>         TEST_ASSERT(ret =3D=3D 0, "KVM_SET_USER_MEMORY_REGION2 IOCTL fail=
+ed,\n"
+>                 "  rc: %i errno: %i\n"
+>                 "  slot: %u flags: 0x%x\n"
+> -               "  guest_phys_addr: 0x%lx size: 0x%lx",
+> +               "  guest_phys_addr: 0x%lx size: 0x%lx guest_memfd: %d\n",
+>                 ret, errno, slot, flags,
+> -               guest_paddr, (uint64_t) region->region.memory_size);
+> +               guest_paddr, (uint64_t) region->region.memory_size,
+> +               region->region.guest_memfd);
+>
+>         /* Add to quick lookup data structures */
+>         vm_userspace_mem_region_gpa_insert(&vm->regions.gpa_tree, region)=
+;
+> @@ -1042,6 +1048,14 @@ void vm_userspace_mem_region_add(struct kvm_vm *vm=
+,
+>         }
+>  }
+>
+> +void vm_userspace_mem_region_add(struct kvm_vm *vm,
+> +                                enum vm_mem_backing_src_type src_type,
+> +                                uint64_t guest_paddr, uint32_t slot,
+> +                                uint64_t npages, uint32_t flags)
+> +{
+> +       vm_mem_add(vm, src_type, guest_paddr, slot, npages, flags, -1, 0)=
+;
+> +}
 > +
 >  /*
->   * Call with struct optee_msg_arg as argument in the supplied shared memory
->   * with a zero internal offset and normal cached memory attributes.
-> diff --git a/drivers/tee/optee/optee_private.h b/drivers/tee/optee/optee_private.h
-> index 2165bd11e6ac..91f4ec45e388 100644
-> --- a/drivers/tee/optee/optee_private.h
-> +++ b/drivers/tee/optee/optee_private.h
-> @@ -129,12 +129,14 @@ struct optee_smc {
->   * struct optee_ffa_data -  FFA communication struct
->   * @ffa_dev            FFA device, contains the destination id, the id of
->   *                     OP-TEE in secure world
-> - * @ffa_ops            FFA operations
-> + * @bottom_half_value  Notification ID used for bottom half signalling or
-> + *                     U32_MAX if unused
->   * @mutex              Serializes access to @global_ids
->   * @global_ids         FF-A shared memory global handle translation
->   */
->  struct optee_ffa {
->         struct ffa_device *ffa_dev;
-> +       u32 bottom_half_value;
->         /* Serializes access to @global_ids */
->         struct mutex mutex;
->         struct rhashtable global_ids;
+>   * Memslot to region
+>   *
 > --
-> 2.34.1
+> 2.39.1
+>
 >
