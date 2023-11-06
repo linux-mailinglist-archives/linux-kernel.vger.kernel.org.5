@@ -2,147 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 751E17E2FAA
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 23:16:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E199C7E2FAC
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 23:17:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233248AbjKFWQO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 17:16:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52922 "EHLO
+        id S233258AbjKFWRF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 17:17:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233132AbjKFWQL (ORCPT
+        with ESMTP id S233216AbjKFWRE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 17:16:11 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20C04183;
-        Mon,  6 Nov 2023 14:16:09 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 654D4C433C7;
-        Mon,  6 Nov 2023 22:16:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699308968;
-        bh=WqMPMf39yh9ITC8OB+ZJDb9Ky2cXoNVF1zs0fDuZdN0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=s9wsq7xSaMr7iJ3kiO+j9shFPCu8qXLQJrWBsw5/DIGa63jW9h/MG2FWa4Q2525Fk
-         OjpRYf8HorKnxNU3Hxd7c9qYr5lVgIQ2x2GKK4SW3NQG2m2DrhvB+H4HSpgNcBV0Xm
-         UexMpN5ETc1fwqspUoTwns6vzMNGIZVNuuUpM3LRhO2Bm4e0H3XmyhB/R8RnmgY61O
-         RMkozKDLwcq2NKMzwnpifndjlCiTKAbwke2cUF3PmrGJ1apjCeBMdRlf9vbK3njNaf
-         nd2W1a1Kw3zJIXfyl08QIw/lVuVFqZH09q5OGyu7ra9oxT7+g50f5xlVeku7nKzyeu
-         VvuUm+kw/bHlQ==
-Date:   Mon, 6 Nov 2023 16:16:06 -0600
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Sunil V L <sunilvl@ventanamicro.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-acpi@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-serial@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Anup Patel <anup@brainfault.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Andrew Jones <ajones@ventanamicro.com>,
-        Atish Kumar Patra <atishp@rivosinc.com>,
-        Haibo Xu <haibo1.xu@intel.com>
-Subject: Re: [RFC PATCH v2 06/21] RISC-V: Kconfig: Select deferred GSI probe
- for ACPI systems
-Message-ID: <20231106221606.GA264641@bhelgaas>
+        Mon, 6 Nov 2023 17:17:04 -0500
+Received: from mail-4316.protonmail.ch (mail-4316.protonmail.ch [185.70.43.16])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24DE1183;
+        Mon,  6 Nov 2023 14:17:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
+        s=protonmail; t=1699309018; x=1699568218;
+        bh=BNxWJUeheK6gz+So6VEqeeEFNOpFymOedNOxNufT0d0=;
+        h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+         Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+         Message-ID:BIMI-Selector;
+        b=AhnJxO6x4c/fSu8ujTAjajj1x3Mu/Din++uRfo0kverW+MHLIWmWKx6WmTmU8yp9R
+         7FPjgfq3tlf+8MnWO8JaZ8okYOBh+tm9RngiZFaEjYZ9oqCfoOZGzHvsUixNPT7bhg
+         /lq0bX4cnwl1AJ31WUs623LDmb4n3yG/+kZLaBwmZTxLuEhT4+X+iDbvhlajZKeQUP
+         H1VbBmfHizNix7nj9LQ1usxSoPPXIpGzO9d8eqWjzO3DRyzuq5PowRaqKkeA/F5kDk
+         oAqZkk3KM0acDSjIfA/siNk4XHRWeV2SrznQn/25k6gS+WSgItnlvUG5ijFr2n5JsO
+         OPwBsbG6zf+ZQ==
+Date:   Mon, 06 Nov 2023 22:16:53 +0000
+To:     Gary Guo <gary@garyguo.net>, Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Alice Ryhl <aliceryhl@google.com>,
+        Martin Rodriguez Reboredo <yakoyoku@gmail.com>,
+        Vincenzo Palazzo <vincenzopalazzodev@gmail.com>
+From:   Benno Lossin <benno.lossin@proton.me>
+Cc:     Wedson Almeida Filho <walmeida@microsoft.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] rust: bindings: rename const binding using sed
+Message-ID: <b73f01b8-1253-40df-8e22-06b6e3b6755d@proton.me>
+In-Reply-To: <20231104145700.2495176-1-gary@garyguo.net>
+References: <20231104145700.2495176-1-gary@garyguo.net>
+Feedback-ID: 71780778:user:proton
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZTuzJ1nsicZYp+uh@sunil-laptop>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 27, 2023 at 06:25:03PM +0530, Sunil V L wrote:
-> On Thu, Oct 26, 2023 at 12:04:08PM -0500, Bjorn Helgaas wrote:
-> > On Thu, Oct 26, 2023 at 01:53:29AM +0530, Sunil V L wrote:
-> > > On RISC-V platforms, apart from root interrupt controllers (which
-> > > provide local interrupts and IPI), other interrupt controllers in the
-> > > hierarchy are probed late. Enable this select this CONFIG option for
-> > > RISC-V platforms so that device drivers which connect to deferred
-> > > interrupt controllers can take appropriate action.
-> > 
-> > Quite a bit of this series seems related to the question of interrupt
-> > controllers being probed "late".
-> > 
-> > I don't see anything specific about *how* late this might be, but from
-> > the use of -EPROBE_DEFER in individual drivers (8250_pnp explicitly,
-> > and acpi_register_gsi() and pnp_irq() and acpi_pci_irq_enable(), which
-> > are called from driver .probe() paths) it seems like interrupt
-> > controllers might be detected even after devices that use them.
-> > 
-> > That seems like a fairly invasive change to the driver probe flow.
-> > If we really need to do that, I think it might merit a little more
-> > background as justification since we haven't had to do it for any
-> > other arch yet.
-> 
-> In RISC-V, the APLIC can be a converter from wired (GSI) to MSI interrupts.
-> Hence, especially in this mode, it has to be a platform device to use
-> device MSI domain. Also, according to Marc Zyngier there is no reason to
-> probe interrupt controllers early apart from root controller. So, the
-> device drivers which use wired interrupts need to be probed after APLIC.
-> 
-> The PNP devices and PCI INTx GSI links use either
-> acpi_dev_resource_interrupt() (PNP) or acpi_register_gsi() directly
-> (PCI). The approach taken here is to follow the example of
-> acpi_irq_get() which is enhanced to return EPROBE_DEFER and several
-> platform device drivers which use platform_get_irq() seem to be handling
-> this already.
+On 04.11.23 15:56, Gary Guo wrote:
+> diff --git a/rust/Makefile b/rust/Makefile
+> index a27f35f924ec..57f7f5e5a95d 100644
+> --- a/rust/Makefile
+> +++ b/rust/Makefile
+> @@ -337,6 +337,8 @@ quiet_cmd_bindgen =3D BINDGEN $@
+>=20
+>   $(obj)/bindings/bindings_generated.rs: private bindgen_target_flags =3D=
+ \
+>       $(shell grep -Ev '^#|^$$' $(srctree)/$(src)/bindgen_parameters)
+> +$(obj)/bindings/bindings_generated.rs: private bindgen_target_extra =3D =
+; \
+> +    sed -Ei 's/pub const RUST_CONST_HELPER_([a-zA-Z0-9_]*)/pub const \1/=
+g' $@
 
-This series (patch 04/21 "ACPI: irq: Add support for deferred probe in
-acpi_register_gsi()" [1]) makes acpi_register_gsi() return
--EPROBE_DEFER, which percolates up through pci_enable_device().
+I think I mentioned this before, but I think this should use `^`
+to ensure that this is only replaced at the beginning of lines.
 
-Maybe that's ok, but this affects *all* PCI drivers, and it's a new
-case that did not occur before.  Many drivers emit warning or error
-messages for any pci_enable_device() failure, which you probably don't
-want in this case, since -EPROBE_DEFER is not really a "failure";
-IIUC, it just means "probe again later."
+--=20
+Cheers,
+Benno
 
-> Using ResourceSource dependency (mbigen uses) in the namespace as part of
-> Extended Interrupt Descriptor will not ensure the order since PNP/INTx
-> GSI devices don't work with that.
 
-Are these PNP/INTx GSI devices described in ACPI?  In the namespace?
-Or in a static table?
-
-> Is there any other better way to create dependency between IO devices
-> and the interrupt controllers when interrupt controller itself is a
-> platform device? While using core_initcall() for interrupt controllers
-> seem to work which forces the interrupt controller to be probed first,
-> Marc is not in favor of that approach since it is fragile.
-
-I guess PCI interrupts from the PCI host bridges (PNP0A03 devices)
-feed into the APLIC?  And APLIC is described via MADT?  Based on this
-series, it looks like this:
-
-    acpi_init
-  +   acpi_riscv_init
-  +     riscv_acpi_aplic_platform_init
-  +       acpi_table_parse_madt(ACPI_MADT_TYPE_APLIC, aplic_parse_madt, 0)
-      acpi_scan_init
-        acpi_pci_root_init
-        acpi_pci_link_init
-	acpi_bus_scan             # add PCI host bridges, etc
-
-If that's the sequence, it looks like aplic_parse_madt() should be
-called before the PCI host bridges are added.
-
-Or maybe this isn't how the APLICs are enumerated?
-
-Bjorn
-
-[1] https://lore.kernel.org/r/20231025202344.581132-5-sunilvl@ventanamicro.com
