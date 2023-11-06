@@ -2,99 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B8EC77E25DE
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 14:43:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AAE587E25DC
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 14:43:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231935AbjKFNnm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 08:43:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55714 "EHLO
+        id S231641AbjKFNnj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 08:43:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230192AbjKFNnh (ORCPT
+        with ESMTP id S229922AbjKFNnh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 6 Nov 2023 08:43:37 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D430CBF;
-        Mon,  6 Nov 2023 05:43:34 -0800 (PST)
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A6Coo77004819;
-        Mon, 6 Nov 2023 13:43:34 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=YZp4oLK5iXzn4ExIqPYZzqPlL5iac2fpiMqDfzauBNw=;
- b=JI1Cnh1z60/7ibR0HLg0C1sizeHkW7P6MMfA41O44AsEOLIOGhMOo7UjkZdbbqEgm+ch
- gA+w0VG+W6EFKEpGbN5xM2yGwqyvOarhKbozg/MHMnhEJ9OLuxEACAMszzR9b0N7j3LH
- IuzDOwd0JFhLJ5BvTVhUxX1Dtw+TzWJpbQFbALvXYn/JNb4uekYBFD2uvIYrFNpiPjJT
- mOsX7hEKSfAfWxjmswi3upL0UlF9k/xHmA4ZGs6GlLwx2Ftbajs5bEnkh78v1vL+1a49
- EeCANwkynoJX3etP9e+GrnlbtrRUehFI4+bylFnlhYzgWaexFjEOIAzK5yZ/TFJ1sYsU 2A== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u705rj62t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 06 Nov 2023 13:43:34 +0000
-Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3A6DC43r026866;
-        Mon, 6 Nov 2023 13:43:33 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u705rj62b-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 06 Nov 2023 13:43:33 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3A6D4vQQ016958;
-        Mon, 6 Nov 2023 13:43:33 GMT
-Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
-        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3u6301h1bp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 06 Nov 2023 13:43:32 +0000
-Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
-        by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3A6DhRSP11076212
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 6 Nov 2023 13:43:27 GMT
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id F245120040;
-        Mon,  6 Nov 2023 13:43:26 +0000 (GMT)
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5070B20043;
-        Mon,  6 Nov 2023 13:43:26 +0000 (GMT)
-Received: from osiris (unknown [9.171.27.3])
-        by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-        Mon,  6 Nov 2023 13:43:26 +0000 (GMT)
-Date:   Mon, 6 Nov 2023 14:43:24 +0100
-From:   Heiko Carstens <hca@linux.ibm.com>
-To:     Nina Schoetterl-Glausch <nsg@linux.ibm.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        David Hildenbrand <dahi@linux.vnet.ibm.com>,
-        Cornelia Huck <cornelia.huck@de.ibm.com>,
-        linux-s390@vger.kernel.org, Sven Schnelle <svens@linux.ibm.com>,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Michael Mueller <mimu@linux.vnet.ibm.com>
-Subject: Re: [PATCH 2/4] KVM: s390: vsie: Fix length of facility list shadowed
-Message-ID: <20231106134324.12197-B-hca@linux.ibm.com>
-References: <20231103173008.630217-1-nsg@linux.ibm.com>
- <20231103173008.630217-3-nsg@linux.ibm.com>
- <c05841de-d1d9-406b-a143-f1e3662d99b9@redhat.com>
- <c78b345b9b59197cad89a661095f5f3d1e0d0718.camel@linux.ibm.com>
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10485D8;
+        Mon,  6 Nov 2023 05:43:35 -0800 (PST)
+Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-99357737980so671389466b.2;
+        Mon, 06 Nov 2023 05:43:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699278213; x=1699883013; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=8bIyalhCg66VMh95Lz1+QG+xtj+2//dT9BezOv0mZgc=;
+        b=E6a3onPK43GgUXizfDzGgG04DBJwTXN+5eEkvZxDlBxVvXylOUg2kke1YOyKPpT2Ym
+         +p5TG9qTbRX7tGS+N/OgLn2U30XkE0UlMHzsAFWl69rjO+BiMklyQIyN1OBR6TewzvbH
+         T0wegWO5jcOl17rFo1Zwt1JyS0SwFhsi/xWsPsKDdoEv2vcfeiiyh9ZlXmpNNbNOia/I
+         EwsoJPcTQtHwiel+zAv9qwOpjswdBfts7P4M7VgCiJzfyianbsiiA60XzfWDVQUMbh1T
+         mBProqF69tTaliuhQpopIAhtS2ObUWSnxuqInINavzyQutOXg0JqQZdPfaPluWIlNuqH
+         ub0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699278213; x=1699883013;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8bIyalhCg66VMh95Lz1+QG+xtj+2//dT9BezOv0mZgc=;
+        b=J0JguYX3ket4TArTSYNsdGzb5h44xvLNYOZs3tOujb3C369GDBYxksFpxCq8drQjpo
+         xkYVN78kKT+pltvLitOouKuIQoPobsPsc0/kFMHK1kmbrXoQeeW3qtFU6jMyHiiB71PZ
+         c90mzm8ly0BQF+0rlLwRRcnPvPkV+svumpxZJpU/Wrbcnbn+4sxoHMEScj4HCyZURoyo
+         qzQuFsMR7ABDzZd1EdH1H+nsy6CMfu/JI22o58i/OJZVuNVYuUBFbldurGi8FvH7RxAx
+         kTUW+ub4DSusSTQGwfm05BNwRiF8gLpq13rWGTUCQSG/H++qum0KZNmA+am5B9arui17
+         ly/Q==
+X-Gm-Message-State: AOJu0YwRKCz19AY82JwVeWB8PW0eDdlOY3qGL58eFzsDBTeZj0dvnp1I
+        T2EVdUOunlGVWkMVF1F9dGs=
+X-Google-Smtp-Source: AGHT+IFNT/wOvgssp9+QJ9PKC1UhtTdtUU1ANukS40GMcmrWqn/ZGkvf0CRwKrQ2Tqf73Z447jiglA==
+X-Received: by 2002:a17:907:7255:b0:9bf:10f3:e435 with SMTP id ds21-20020a170907725500b009bf10f3e435mr13613113ejc.1.1699278213249;
+        Mon, 06 Nov 2023 05:43:33 -0800 (PST)
+Received: from skbuf ([188.26.57.160])
+        by smtp.gmail.com with ESMTPSA id h3-20020a170906260300b009887f4e0291sm4113208ejc.27.2023.11.06.05.43.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 Nov 2023 05:43:33 -0800 (PST)
+Date:   Mon, 6 Nov 2023 15:43:30 +0200
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Hans Ulli Kroll <ulli.kroll@googlemail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        Andrew Lunn <andrew@lunn.ch>,
+        linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net v2 4/4] net: ethernet: cortina: Handle large frames
+Message-ID: <20231106134330.nyxuayv5g6q4l43y@skbuf>
+References: <20231105-gemini-largeframe-fix-v2-0-cd3a5aa6c496@linaro.org>
+ <20231105-gemini-largeframe-fix-v2-0-cd3a5aa6c496@linaro.org>
+ <20231105-gemini-largeframe-fix-v2-4-cd3a5aa6c496@linaro.org>
+ <20231105-gemini-largeframe-fix-v2-4-cd3a5aa6c496@linaro.org>
+ <20231106132626.orn5r57cc7n5ditj@skbuf>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <c78b345b9b59197cad89a661095f5f3d1e0d0718.camel@linux.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: VWtgHUFx8d9AAqCwkp6KIM0A5_ZH2oUJ
-X-Proofpoint-ORIG-GUID: N8lA1Ldrmw2cU4pgGuYc8wa-U2l_4O0z
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-06_12,2023-11-02_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 malwarescore=0
- impostorscore=0 lowpriorityscore=0 priorityscore=1501 mlxscore=0
- spamscore=0 mlxlogscore=404 clxscore=1011 phishscore=0 adultscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2310240000 definitions=main-2311060110
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+In-Reply-To: <20231106132626.orn5r57cc7n5ditj@skbuf>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -102,25 +82,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 06, 2023 at 02:06:22PM +0100, Nina Schoetterl-Glausch wrote:
-> > > +unsigned int stfle_size(void)
-> > > +{
-> > > +	static unsigned int size = 0;
-> > > +	u64 dummy;
-> > > +
-> > > +	if (!size) {
-> > > +		size = __stfle_asm(&dummy, 1) + 1;
-> > > +	}
+On Mon, Nov 06, 2023 at 03:26:26PM +0200, Vladimir Oltean wrote:
+> Gemini should never attempt to provide checksums for DSA-tagged packets
+> unless it is able to take skb->csum_start into consideration, otherwise
+> it will get it wrong.
 
-Please get rid of the braces here. checkpatch.pl with "--strict" should
-complain too, I guess.
-
-> > Possible races? Should have to use an atomic?
-> 
-> Good point. Calling __stfle_asm multiple times is fine
-> and AFAIK torn reads/writes aren't possible. I don't see a way
-> for the compiler to break things either.
-> But it might indeed be nicer to use an atomic, without
-> any downsides.
-
-Please use WRITE_ONCE() and READ_ONCE(); that's more than sufficient here.
+Additionally, since Gemini does not put NETIF_F_IP_CSUM | NETIF_F_IPV6_CSUM
+in vlan_features, DSA won't inherit (thus won't have) them. So,
+validate_xmit_skb() should perform the skb checksum during the xmit on
+the user port, which is earlier compared to the xmit on the conduit.
+So, I guess skb->ip_summed should already be CHECKSUM_NONE here?
+I think the only problem for DSA is the lack of the TSS_BYPASS_BIT. The
+rest is unrelated.
