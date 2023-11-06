@@ -2,113 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EB6D7E1B8E
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 08:55:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A08A7E1B71
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 08:41:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230431AbjKFHzt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 02:55:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37414 "EHLO
+        id S231255AbjKFHlQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 02:41:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229563AbjKFHzr (ORCPT
+        with ESMTP id S231277AbjKFHlN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 02:55:47 -0500
-Received: from mailout1.samsung.com (mailout1.samsung.com [203.254.224.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E751DB3
-        for <linux-kernel@vger.kernel.org>; Sun,  5 Nov 2023 23:55:41 -0800 (PST)
-Received: from epcas5p3.samsung.com (unknown [182.195.41.41])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20231106075539epoutp0183eea43b3cd34e6cf0cabe6c40f29fee~U_YwyPM4K2757527575epoutp01d
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 07:55:39 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20231106075539epoutp0183eea43b3cd34e6cf0cabe6c40f29fee~U_YwyPM4K2757527575epoutp01d
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1699257339;
-        bh=6NYx99oCWyMXAuJQC3OusH2vT6lJSfTjX8zw5hfAzvE=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=MZvj4vrYJaJDHxSB/4lg3rCf56rZuQ94fJdIuOW/7hzLCpUD2sf7NQlq81YQJ5Uj1
-         S5kCxauinNACzNIu4sthRMGPJFjoVCWs/5iN1MCJg3N+/TFOlfd5zJFuvuVDl7Uopo
-         OMmE35zKoCW784VFy5ypfu2ZM+pVRFY/CeHb5tt0=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas5p3.samsung.com (KnoxPortal) with ESMTP id
-        20231106075539epcas5p3b7b48b19d7968bacebe62918775115b4~U_YwY_dFe2090520905epcas5p3h;
-        Mon,  6 Nov 2023 07:55:39 +0000 (GMT)
-Received: from epsmgec5p1-new.samsung.com (unknown [182.195.38.182]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 4SP3Yk1zLXz4x9Q9; Mon,  6 Nov
-        2023 07:55:38 +0000 (GMT)
-Received: from epcas5p4.samsung.com ( [182.195.41.42]) by
-        epsmgec5p1-new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        67.CB.19369.AFB98456; Mon,  6 Nov 2023 16:55:38 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas5p2.samsung.com (KnoxPortal) with ESMTPA id
-        20231106074844epcas5p252beb2aa7925de34aea33d5c64d1d72e~U_StddITd2058820588epcas5p2n;
-        Mon,  6 Nov 2023 07:48:44 +0000 (GMT)
-Received: from epsmgmc1p1new.samsung.com (unknown [182.195.42.40]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20231106074844epsmtrp20f47fa419814ea03c209a3b9c4d9dc19~U_StctKF91829318293epsmtrp2c;
-        Mon,  6 Nov 2023 07:48:44 +0000 (GMT)
-X-AuditID: b6c32a50-9e1ff70000004ba9-ea-65489bfaa706
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgmc1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        7E.6E.07368.B5A98456; Mon,  6 Nov 2023 16:48:43 +0900 (KST)
-Received: from AHRE124.. (unknown [109.105.118.124]) by epsmtip2.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20231106074842epsmtip29fbba4a4dd6ccb175ec68b965e03fa4b~U_SsQtdsB1909319093epsmtip2Z;
-        Mon,  6 Nov 2023 07:48:42 +0000 (GMT)
-From:   Xiaobing Li <xiaobing.li@samsung.com>
-To:     axboe@kernel.dk, asml.silence@gmail.com
-Cc:     linux-kernel@vger.kernel.org, io-uring@vger.kernel.org,
-        kun.dou@samsung.com, peiwei.li@samsung.com, joshi.k@samsung.com,
-        kundan.kumar@samsung.com, wenwen.chen@samsung.com,
-        ruyi.zhang@samsung.com, Xiaobing Li <xiaobing.li@samsung.com>
-Subject: [PATCH] IO_URING: Statistics of the true utilization of sq threads.
-Date:   Mon,  6 Nov 2023 15:40:55 +0800
-Message-Id: <20231106074055.1248629-1-xiaobing.li@samsung.com>
-X-Mailer: git-send-email 2.34.1
+        Mon, 6 Nov 2023 02:41:13 -0500
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAB0BD7B
+        for <linux-kernel@vger.kernel.org>; Sun,  5 Nov 2023 23:41:08 -0800 (PST)
+Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-40842752c6eso32005445e9.1
+        for <linux-kernel@vger.kernel.org>; Sun, 05 Nov 2023 23:41:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1699256467; x=1699861267; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=gpFeNf9yrP1eir+PI027zqRzTZKovs4/BV0iaqeAGVk=;
+        b=fGz1S6HzwYg3K/fkJm66Ux/k6RISreDtOeMGF+yYxTUNPr1xdHh8QceDXnk49giEcS
+         Rf2Nyd2PIiJ5uvtBWNvqsmmNr8MAExyI/gfA6NwXvCHoxjjUgHgkXbbQ8J9lJtg0Vl5c
+         qqEcjezq4CGnSjZS2OzU4REDHFjif3otM/zrMvBkKkRNf8FXb32MP3KEgFi6lmkt9VV/
+         zYN/I+9dJxzhWyUbyFpH92S90DvYD1ImD40XP67xP3eJTf2nlf1qUQtk6yCniR62qL3P
+         +DFEBM4pSHAhuNw8LsG37lKFXgPNArdy41Si9oOMBAljbonnA+awGVLgEkuNHTo7q+qw
+         khGw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699256467; x=1699861267;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=gpFeNf9yrP1eir+PI027zqRzTZKovs4/BV0iaqeAGVk=;
+        b=svtx3bqNij24HCp9NqYM12Bw6PHIyqmzSQX7IwLfVrI51zFfw1VajW3PGevUxFtq7k
+         Uq38ESujszui9qMwRrHdiB2OtmSj5krHJZLsNBzZluhkyx5aF/2+pQ9S5ggeWi48LhT0
+         rgSQvTa3PXyNpionjiJLbYmI10/QiSJerLXhNs5dNevEKKrF7cD6xRyZE0M2wChaZFGo
+         +H9lZmtm3Ash/MFoS5lYnGX0CqivzTt4zsL6dsE3+OSavKuHMOqIEEKsTgTBJPFaZ+g/
+         vbdltEZeO8lfQJzbmDnTbPrigJO1fVPS+pm/CJkwIvPwX0XeQwIWeEx/TFEGhffa6lCf
+         Z3BQ==
+X-Gm-Message-State: AOJu0Yy0iTaQ5hDjscTlQSZIivMkRrea/0r7Ipe+DjYdKfwRGh9815AR
+        jT5vAfgqxLq4XedqGGHb0o2CYA==
+X-Google-Smtp-Source: AGHT+IE9CxcQhFjo6dSvbaORoBC9qR31dAqxB+BHYuTDQMaDGg3/pAMYLQeKazuGg5/ICW6Vpq/DDw==
+X-Received: by 2002:a05:600c:1d07:b0:407:8317:ad81 with SMTP id l7-20020a05600c1d0700b004078317ad81mr24945458wms.1.1699256467162;
+        Sun, 05 Nov 2023 23:41:07 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.218.126])
+        by smtp.gmail.com with ESMTPSA id e10-20020a05600c4e4a00b00406447b798bsm11486805wmq.37.2023.11.05.23.41.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 05 Nov 2023 23:41:06 -0800 (PST)
+Message-ID: <9c8105d5-c469-4b00-be3d-eaa7fe93f205@linaro.org>
+Date:   Mon, 6 Nov 2023 08:41:05 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprEJsWRmVeSWpSXmKPExsWy7bCmlu6v2R6pBt0dXBZzVm1jtFh9t5/N
-        4l3rORaLo//fsln86r7LaLH1y1dWi8u75rBZPNvLafHl8Hd2i6lbdjBZdLRcZnTg9tg56y67
-        x+WzpR59W1YxenzeJBfAEpVtk5GamJJapJCal5yfkpmXbqvkHRzvHG9qZmCoa2hpYa6kkJeY
-        m2qr5OIToOuWmQN0k5JCWWJOKVAoILG4WEnfzqYov7QkVSEjv7jEVim1ICWnwKRArzgxt7g0
-        L10vL7XEytDAwMgUqDAhO2PN2mOsBS2CFR+7VzM2MB7l7WLk5JAQMJGYf30eSxcjF4eQwB5G
-        iTMHN7FDOJ8YJdZ0r2GCcL4xSqz+38sK0/L9UgNU1V5GiW9HXjFDOC8ZJXYsO8oCUsUmoC1x
-        fV0XWIcIkP368VSwJcwCn4Hm3v4GViQs4CNxb/k3dhCbRUBVYv2PfWwgNq+AnUT/lBmMEOvk
-        JfYfPMsMEReUODnzCVgvM1C8eetsZoial+wSz3/JQtguEj+btjJB2MISr45vYYewpSQ+v9vL
-        BmEXSxzp+c4KcpCEQAOjxPTbV6GKrCX+XdkDtIADaIGmxPpd+hBhWYmpp9YxQezlk+j9/QRq
-        Pq/EjnkwtqrE6ksPWSBsaYnXDb+h4h4S5y7sYAYZKSQQK7Hibf0ERvlZSL6ZheSbWQiLFzAy
-        r2KUSi0ozk1PTTYtMNTNSy2HR21yfu4mRnDi1ArYwbh6w1+9Q4xMHIyHGCU4mJVEeP/ae6QK
-        8aYkVlalFuXHF5XmpBYfYjQFhvFEZinR5Hxg6s4riTc0sTQwMTMzM7E0NjNUEud93To3RUgg
-        PbEkNTs1tSC1CKaPiYNTqoFJtvdu/6XbRgHZd5XEXp52v3LQffefleKc9wsydq2VmXB7xZZD
-        ot9fGv75slXX2qluvb/vhx8cMnOV/irs0NM9LVPRN9E6de9399lC/+JW2Ol3l5U/cG76W3jO
-        eceNiVwLJvwxF/DOfNbB1y5R2iZ03XOS2YvDwupHHmiZvZFkir3j+F3JaPWROQqrDkb8efXc
-        /cmswI5ZHG66P6q4zpx6fHFmu0RWXNOqqr13z5nxnY5Uuf3h1tv1K4qOf1jpNJsp91NfA38G
-        x6mwvT13L35xL1jD2zFF9E20nOOqedfvTu8xqGJpeyEowr1nuQVH0nLelP/yzG77nBp6OTiv
-        GK7d+bPU1OQFe2hg57EOJoGlSizFGYmGWsxFxYkA61MqQCUEAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrNLMWRmVeSWpSXmKPExsWy7bCSvG70LI9UgyMdFhZzVm1jtFh9t5/N
-        4l3rORaLo//fsln86r7LaLH1y1dWi8u75rBZPNvLafHl8Hd2i6lbdjBZdLRcZnTg9tg56y67
-        x+WzpR59W1YxenzeJBfAEsVlk5Kak1mWWqRvl8CVsWbtMdaCFsGKj92rGRsYj/J2MXJySAiY
-        SHy/1MDexcjFISSwm1Hi3aGrLF2MHEAJaYk/f8ohaoQlVv57DlXznFHi8OHpjCAJNgFtievr
-        ulhB6kUEdCUa7yqA1DAL/GWU+Lp6DhtIjbCAj8S95d/YQWwWAVWJ9T/2gcV5Bewk+qfMYIRY
-        IC+x/+BZZoi4oMTJmU9YQGxmoHjz1tnMExj5ZiFJzUKSWsDItIpRMrWgODc9N9mwwDAvtVyv
-        ODG3uDQvXS85P3cTIzh8tTR2MN6b/0/vECMTB+MhRgkOZiUR3r/2HqlCvCmJlVWpRfnxRaU5
-        qcWHGKU5WJTEeQ1nzE4REkhPLEnNTk0tSC2CyTJxcEo1MM279DT8qsGF65WTdzr3ZwtOvNmi
-        dHvXv3DdyckGL75fzj6gyB9/es6f2UXsLSrKwcaMQWUHnksomZ636Dl2KE3h7605dz9cfRPy
-        26Ms3m7xWivOA1Kxv+VfsCgXf8/s+6J4fO2zxze2Z9d+m1STfVPYSy5hWewr+/6OFL6YiL2W
-        B9lVbm/kDrmX+eTci+9/H364K/faLq9+9j9N/1X67zqXvv6+xl555rmdN+zr4zMXxPns/2q6
-        dO+qZ7FLSxVnsqoxp/MxnPn1cFaJyBzVSzcmleoLJN7JuJtbyMYVpCmacfNl/ZOlgdZnP1ww
-        nvtqa6pgtOfWascEZ2XGCK+ZpidMjs8KLVr9xOXAlhLt6+uUWIozEg21mIuKEwGi1af/zgIA
-        AA==
-X-CMS-MailID: 20231106074844epcas5p252beb2aa7925de34aea33d5c64d1d72e
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: REQ_APPROVE
-CMS-TYPE: 105P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20231106074844epcas5p252beb2aa7925de34aea33d5c64d1d72e
-References: <CGME20231106074844epcas5p252beb2aa7925de34aea33d5c64d1d72e@epcas5p2.samsung.com>
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 7/7] ARM: dts: qcom: apq8026-samsung-milletwifi: Enable
+ modem
+Content-Language: en-US
+To:     Bryant Mairs <bryant@mai.rs>, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org
+References: <20231105204759.37107-1-bryant@mai.rs>
+ <20231105204759.37107-8-bryant@mai.rs>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231105204759.37107-8-bryant@mai.rs>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -116,73 +127,13 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since the sq thread has a while(1) structure, during this process, there
-may be a lot of time that is not processing IO but does not exceed the
-timeout period, therefore, the sqpoll thread will keep running and will
-keep occupying the CPU. Obviously, the CPU is wasted at this time;Our
-goal is to count the part of the time that the sqpoll thread actually
-processes IO, so as to reflect the part of the CPU it uses to process
-IO, which can be used to help improve the actual utilization of the CPU
-in the future.
+On 05/11/2023 21:46, Bryant Mairs wrote:
+> Enable the modem hardware for milletwifi, which is actually only the GPS
+> functionality.
+> 
 
-Signed-off-by: Xiaobing Li <xiaobing.li@samsung.com>
----
- io_uring/sqpoll.c | 8 ++++++++
- io_uring/sqpoll.h | 2 ++
- 2 files changed, 10 insertions(+)
+Squash.
 
-diff --git a/io_uring/sqpoll.c b/io_uring/sqpoll.c
-index bd6c2c7959a5..27b01ad42678 100644
---- a/io_uring/sqpoll.c
-+++ b/io_uring/sqpoll.c
-@@ -224,6 +224,7 @@ static int io_sq_thread(void *data)
- 	struct io_ring_ctx *ctx;
- 	unsigned long timeout = 0;
- 	char buf[TASK_COMM_LEN];
-+	unsigned long long start, begin, end;
- 	DEFINE_WAIT(wait);
- 
- 	snprintf(buf, sizeof(buf), "iou-sqp-%d", sqd->task_pid);
-@@ -235,6 +236,7 @@ static int io_sq_thread(void *data)
- 		set_cpus_allowed_ptr(current, cpu_online_mask);
- 
- 	mutex_lock(&sqd->lock);
-+	start = jiffies;
- 	while (1) {
- 		bool cap_entries, sqt_spin = false;
- 
-@@ -245,12 +247,18 @@ static int io_sq_thread(void *data)
- 		}
- 
- 		cap_entries = !list_is_singular(&sqd->ctx_list);
-+		begin = jiffies;
- 		list_for_each_entry(ctx, &sqd->ctx_list, sqd_list) {
- 			int ret = __io_sq_thread(ctx, cap_entries);
- 
- 			if (!sqt_spin && (ret > 0 || !wq_list_empty(&ctx->iopoll_list)))
- 				sqt_spin = true;
- 		}
-+		end = jiffies;
-+		sqd->total = end - start;
-+		if (sqt_spin == true)
-+			sqd->work += end - begin;
-+
- 		if (io_run_task_work())
- 			sqt_spin = true;
- 
-diff --git a/io_uring/sqpoll.h b/io_uring/sqpoll.h
-index 8df37e8c9149..c6b2ecb654fd 100644
---- a/io_uring/sqpoll.h
-+++ b/io_uring/sqpoll.h
-@@ -16,6 +16,8 @@ struct io_sq_data {
- 	pid_t			task_pid;
- 	pid_t			task_tgid;
- 
-+	unsigned long long work;
-+	unsigned long long total;
- 	unsigned long		state;
- 	struct completion	exited;
- };
--- 
-2.34.1
+Best regards,
+Krzysztof
 
