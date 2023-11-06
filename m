@@ -2,75 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 86ACB7E2E4D
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 21:39:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F35627E2E50
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 21:40:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233022AbjKFUjv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 15:39:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56378 "EHLO
+        id S233034AbjKFUkL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 15:40:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232927AbjKFUju (ORCPT
+        with ESMTP id S233018AbjKFUkJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 15:39:50 -0500
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB2E5D51
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 12:39:47 -0800 (PST)
-Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-99bdeae1d0aso758528066b.1
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 12:39:47 -0800 (PST)
+        Mon, 6 Nov 2023 15:40:09 -0500
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EBB4D7D
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 12:40:06 -0800 (PST)
+Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-9c603e235d1so732142266b.3
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 12:40:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699303186; x=1699907986; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=l9Pj3CbqVoyRsFI6pcxBRHg+5kdmNkfaklddDA6T6Lc=;
-        b=EuVPfQaefIv96fC2hIh/pjcR2rdChDQN9f7DYmj3tDlvYnRA8MIyhZvEaVk8w/rvpM
-         BYrg1sTdMvxh6W383n5Ke8Z0BOgU9Ny3LeOIPN00duk2JtFXUbK8aCInUeUkoXHneHnu
-         nD++9g18Kc80DJXGNiHRym8eUT0UR2udnB+USI0F7fqS1rzFDgF2lxeINvJoMGKMy9C8
-         mAa1PHbLh6YObXcLzEbNw/e3EgYfW3f68IX+QJahMi74+l3qdamJPN2sqdDciiD8hmMs
-         qq3ucqDl8spHuYastsB1CIVSCcMyn8IO8F7CoXsIZVtWVfF7xl7cEN0yRj0FaoEAuTDZ
-         R+tg==
+        d=linaro.org; s=google; t=1699303205; x=1699908005; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=z4ueLM+hW/ynmGLFc19/p50o3+heSetgdlEte3tA2+k=;
+        b=r/OVz8O6ap71YkL1IhBQn4Y260WMJjLBTmbZg1DxfXZ+XC7ZrjCgL8lkw1audpJo+K
+         ZHi+GiwYN804VjQTJCi4RSRqm6eYEa0V3V7R+bM4ZJcjBb9ee1OV9Rq1gQiytKuGa383
+         i8lYe/0MYidz+a1Sdqf22AM1YQAjOrDLsiFA5jkBpBB6jalZnU3lS1Hs+IHe9cMS52WH
+         jlaftcEkq73fwiQdQ312SR2Gh1TXEuf2ddTl6lODnyynLq1Y0OWMYREj5y3XumIpFgwe
+         oPomEuetUe7FTueXI8FLdxrpfcPsQWbkiQfPlqj1+Vr+lqzagGuKFgBuahKNq+oOM8kd
+         PkPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699303186; x=1699907986;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=l9Pj3CbqVoyRsFI6pcxBRHg+5kdmNkfaklddDA6T6Lc=;
-        b=pVYfJ1OQLuK8goRRalc4a9DI3RtGAhX06sjM9Q3cRPkUBS6xWdfmq+EdustluMky4G
-         YwPbdk1ltKn/J6aUg14xAEBQTAb4uuBOjG919Fyl48Qbr1xdCwhVONF908zoWRhbwox4
-         CuUcOW2T7Dj7P7lz5xqKo+dlHwqIWNjoJDDKa+DFBpEUnqfA5AIAbZwRhymfrNRq6s9i
-         P5hmSilKTq6hRnStAGBVnWGzekPd5WMdJBzJAstWV+wKLOE212pR1CPyPdd4Gzki0v7B
-         6WCLoFFFSCyHWjAEHufeejYzr98nbDY3jrFIMEuHEm36lMQMuE5ttCXmV+zbUuWKnr72
-         odFQ==
-X-Gm-Message-State: AOJu0YzcPHHk9Fta5y5q87zFuS2jAJC6+vAEnzbV4hgnjVxROK6NwuZl
-        jtaOhOgVgtsgOC33Xvi9u30p9h2YRkQQiJtVr/0=
-X-Google-Smtp-Source: AGHT+IF6u/uaj4D2IhbOFztf5VyO1dBp9ThddK4Jt7W+yQVGmKzpsXXaSTKl2V/QIqbLeLeoBwvIQg==
-X-Received: by 2002:a17:907:9289:b0:9bf:388e:8e93 with SMTP id bw9-20020a170907928900b009bf388e8e93mr14486284ejc.0.1699303186072;
-        Mon, 06 Nov 2023 12:39:46 -0800 (PST)
+        d=1e100.net; s=20230601; t=1699303205; x=1699908005;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=z4ueLM+hW/ynmGLFc19/p50o3+heSetgdlEte3tA2+k=;
+        b=pz/wzUEzcrhlWdEb/y8Mhw1x9bPWToA+AfFFp74e37ayPCLiAtZ/wKu2HC22yoBrbr
+         +yHLVfHBpA70vbqsZ73z3tnrW/E1LAoXbAjgrK30oz7WqQZ9p5+iyivvidlDLbG6YDkH
+         HaZExhWUGGvygRnOtlWirlK2eHrXPbvBdqEqO3Ibp19+aQijF0v+KkVkR9YqsP16Yucz
+         hcd9ZeMhlKjt2svxQI/7RTYLzEY9ncGgiYObWu1pqDkAUIHOXB/TsT70IFjvTLIsjc2G
+         VTNd/hWMxMWWvggy3re/1hr7iNZsYB7WSs15exT3yr5FA2K3yc971N1CusNsJQfpQpjA
+         yyCA==
+X-Gm-Message-State: AOJu0YzVfSToQMITkxxCHVC2pxsPvKTsWlKhtan9HKLRxz03W9mIHl7R
+        u2Eu0RBltGVIVqxRL8Z1Ko+ONA==
+X-Google-Smtp-Source: AGHT+IHWcsX2aykA5oAwhtVu/+oB2jxtLCIL5F8J0KvdB7dTkNixgXPwOq4QOJk7BZWj0alm2vGzzg==
+X-Received: by 2002:a17:907:e92:b0:9be:2991:81f9 with SMTP id ho18-20020a1709070e9200b009be299181f9mr15707661ejc.1.1699303205024;
+        Mon, 06 Nov 2023 12:40:05 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.218.126])
-        by smtp.gmail.com with ESMTPSA id g15-20020a17090669cf00b009adc81bb544sm226395ejs.106.2023.11.06.12.39.43
+        by smtp.gmail.com with ESMTPSA id g15-20020a17090669cf00b009adc81bb544sm226395ejs.106.2023.11.06.12.40.03
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 06 Nov 2023 12:39:45 -0800 (PST)
-Message-ID: <e4884c86-0b8c-4e73-9280-296be98d57b1@linaro.org>
-Date:   Mon, 6 Nov 2023 21:39:42 +0100
+        Mon, 06 Nov 2023 12:40:04 -0800 (PST)
+Message-ID: <814214c0-796d-42b7-a62e-fbb555fa070c@linaro.org>
+Date:   Mon, 6 Nov 2023 21:40:03 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] arm64: dts: imx8mn-var-som-symphony: add vcc supply for
- PCA9534
-To:     Hugo Villeneuve <hugo@hugovil.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>
-Cc:     Hugo Villeneuve <hvilleneuve@dimonoff.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-References: <20231106185736.668966-1-hugo@hugovil.com>
+Subject: Re: [PATCH v2] dt-bindings: watchdog: nxp,pnx4008-wdt: convert txt to
+ yaml
 Content-Language: en-US
+To:     Nik Bune <n2h9z4@gmail.com>, wim@linux-watchdog.org,
+        linux@roeck-us.net, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        skhan@linuxfoundation.org, stigge@antcom.de
+Cc:     linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231106175428.162256-1-n2h9z4@gmail.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -116,7 +109,7 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231106185736.668966-1-hugo@hugovil.com>
+In-Reply-To: <20231106175428.162256-1-n2h9z4@gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -129,20 +122,14 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/11/2023 19:57, Hugo Villeneuve wrote:
-> From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+On 06/11/2023 18:54, Nik Bune wrote:
+> Convert txt file to yaml. Add maintainers from git blame.
 > 
-> The following warning is shown when probing device:
-> 
->     pca953x 1-0020: supply vcc not found, using dummy regulator
-> 
-> Add fixed 3.3v regulator as vcc supply to silence the warning.
+> Signed-off-by: Nik Bune <n2h9z4@gmail.com>
+> ---
 > 
 
-This is not really a warning. It's perfectly fine to use dummy
-regulator. Adding such fixed supply has sense in following cases:
-1. Bindings require the supply,
-2. This is in fact exactly that supply (verified on schematics).
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
 Best regards,
 Krzysztof
