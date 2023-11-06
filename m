@@ -2,116 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 681C17E2BAE
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 19:10:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 044C37E2BB4
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 19:10:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232178AbjKFSKa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 13:10:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38256 "EHLO
+        id S232347AbjKFSKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 13:10:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232174AbjKFSK3 (ORCPT
+        with ESMTP id S232174AbjKFSKs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 13:10:29 -0500
-Received: from bmailout1.hostsharing.net (bmailout1.hostsharing.net [83.223.95.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0078DD47;
-        Mon,  6 Nov 2023 10:10:24 -0800 (PST)
-Received: from h08.hostsharing.net (h08.hostsharing.net [83.223.95.28])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256
-         client-signature RSA-PSS (4096 bits) client-digest SHA256)
-        (Client CN "*.hostsharing.net", Issuer "RapidSSL Global TLS RSA4096 SHA256 2022 CA1" (verified OK))
-        by bmailout1.hostsharing.net (Postfix) with ESMTPS id D4A49300002D5;
-        Mon,  6 Nov 2023 19:10:22 +0100 (CET)
-Received: by h08.hostsharing.net (Postfix, from userid 100393)
-        id CCA24473B55; Mon,  6 Nov 2023 19:10:22 +0100 (CET)
-Date:   Mon, 6 Nov 2023 19:10:22 +0100
-From:   Lukas Wunner <lukas@wunner.de>
-To:     Mario Limonciello <mario.limonciello@amd.com>
-Cc:     Karol Herbst <kherbst@redhat.com>, Lyude Paul <lyude@redhat.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Danilo Krummrich <dakr@redhat.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Xinhui Pan <Xinhui.Pan@amd.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Mark Gross <markgross@kernel.org>,
-        Andreas Noever <andreas.noever@gmail.com>,
-        Michael Jamet <michael.jamet@intel.com>,
-        Yehezkel Bernat <YehezkelShB@gmail.com>,
-        Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>,
-        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
-        "Maciej W . Rozycki" <macro@orcam.me.uk>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        "open list:DRM DRIVER FOR NVIDIA GEFORCE/QUADRO GPUS" 
-        <dri-devel@lists.freedesktop.org>,
-        "open list:DRM DRIVER FOR NVIDIA GEFORCE/QUADRO GPUS" 
-        <nouveau@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:RADEON and AMDGPU DRM DRIVERS" 
-        <amd-gfx@lists.freedesktop.org>,
-        "open list:PCI SUBSYSTEM" <linux-pci@vger.kernel.org>,
-        "open list:ACPI" <linux-acpi@vger.kernel.org>,
-        "open list:X86 PLATFORM DRIVERS" 
-        <platform-driver-x86@vger.kernel.org>,
-        "open list:THUNDERBOLT DRIVER" <linux-usb@vger.kernel.org>
-Subject: Re: [PATCH v2 8/9] PCI: Exclude PCIe ports used for tunneling in
- pcie_bandwidth_available()
-Message-ID: <20231106181022.GA18564@wunner.de>
-References: <20231103190758.82911-1-mario.limonciello@amd.com>
- <20231103190758.82911-9-mario.limonciello@amd.com>
+        Mon, 6 Nov 2023 13:10:48 -0500
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDE8BD69;
+        Mon,  6 Nov 2023 10:10:42 -0800 (PST)
+Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1cc1e1e74beso43210235ad.1;
+        Mon, 06 Nov 2023 10:10:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699294241; x=1699899041; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=6aeaOI8MbYrugaPJQaJX+2xkIjaYuj35oOxvaZJrJ1M=;
+        b=AocWBtufpEGONulTPtfyxORMMyVf53nZku/owOleGGbP32u4pZChHoVjQ/XbHgQjdl
+         r60TkqnESc70VpHXayaYbemMih0SEUDyafkKIX8feJNMGJ2LSQYLR7zuRBNqTYzylV2m
+         7xPQSZ9EpAmRNaPA01341n5NfD9Tv48MKjcYcRf0XM9LvqP/+AzucJA/Ip+L8QtyBH70
+         f/YNqzgb7saz1/1d4kttN28faD3uLCaRRDGfOGTabsJ05A138GCLre4zZGwCfbw9vWfv
+         HGRU44Uq2HsGqguxqQI4u/kreOrvxZPRFuvluaKRrFFYXzV23MmeYjdMpFyXRyiSpxE9
+         QGIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699294241; x=1699899041;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=6aeaOI8MbYrugaPJQaJX+2xkIjaYuj35oOxvaZJrJ1M=;
+        b=YWy6WaMwhQPknC8Uyjg4kjS+Ojy8xU1jQAhm0aUKRAV2kvWitm8FvHNxurGkrsTWBG
+         Rpn+GH/2wccV2Hu3soHR+UGaXAeP3pH33D2pNIYzUVr3HPywKIuUGH1P6JcVArmJh2iX
+         SMbC7rkFbQlo7lHJRUKqiZDn5OvDKQN41ffj6NN+n4HqPEt+rk5vV/piRGeiNWxM+DKx
+         Qojzwj0zba3SOtejI8cmYNinbwW2TeSIbamPBIqY+xB+DsHf2+T5WOa6KgP3NcCGFeFE
+         pffAluGeeQP7Wzhj1CTzdYb/PEhhTzIURgZBFIqgyj+ln8yZqKzYzDz0z3evB4n1F/EO
+         Hcdg==
+X-Gm-Message-State: AOJu0YygDCE/gVFoiu99rIdAfGjONPwc2h9RgoYOFQOe8XSfN26vuGMP
+        pZZosI85EQ3zqz4SsnM6ci0=
+X-Google-Smtp-Source: AGHT+IGPxAyjEIGTW0SVOf1c4n9pmp4SZmAl1KUT4gerqyFGpmwdD+PCMRj2sgL+m38KjWxF0YGP4w==
+X-Received: by 2002:a17:902:f686:b0:1cc:510c:a0b9 with SMTP id l6-20020a170902f68600b001cc510ca0b9mr28510882plg.34.1699294241376;
+        Mon, 06 Nov 2023 10:10:41 -0800 (PST)
+Received: from localhost.localdomain ([2405:201:6815:d829:2ad7:8520:6556:6c40])
+        by smtp.gmail.com with ESMTPSA id t13-20020a170902e84d00b001bb3beb2bc6sm6167173plg.65.2023.11.06.10.10.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 Nov 2023 10:10:40 -0800 (PST)
+From:   Atul Kumar Pant <atulpant.linux@gmail.com>
+To:     tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org,
+        shuah@kernel.org
+Cc:     Atul Kumar Pant <atulpant.linux@gmail.com>,
+        cgroups@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v1] selftests: cgroup: Fixes a typo in a comment
+Date:   Mon,  6 Nov 2023 23:40:34 +0530
+Message-Id: <20231106181034.117120-1-atulpant.linux@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231103190758.82911-9-mario.limonciello@amd.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 03, 2023 at 02:07:57PM -0500, Mario Limonciello wrote:
-> The USB4 spec specifies that PCIe ports that are used for tunneling
-> PCIe traffic over USB4 fabric will be hardcoded to advertise 2.5GT/s and
-> behave as a PCIe Gen1 device. The actual performance of these ports is
-> controlled by the fabric implementation.
-> 
-> Downstream drivers such as amdgpu which utilize pcie_bandwidth_available()
-> to program the device will always find the PCIe ports used for
-> tunneling as a limiting factor potentially leading to incorrect
-> performance decisions.
-> 
-> To prevent problems in downstream drivers check explicitly for ports
-> being used for PCIe tunneling and skip them when looking for bandwidth
-> limitations of the hierarchy. If the only device connected is a root port
-> used for tunneling then report that device.
+Signed-off-by: Atul Kumar Pant <atulpant.linux@gmail.com>
+---
+ tools/testing/selftests/cgroup/test_freezer.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I think a better approach would be to define three new bandwidths for
-Thunderbolt in enum pci_bus_speed and add appropriate descriptions in
-pci_speed_string().  Those three bandwidths would be 10 GBit/s for
-Thunderbolt 1, 20 GBit/s for Thunderbolt 2, 40 GBit/s for Thunderbolt 3
-and 4.
+diff --git a/tools/testing/selftests/cgroup/test_freezer.c b/tools/testing/selftests/cgroup/test_freezer.c
+index ff519029f6f4..8845353aca53 100644
+--- a/tools/testing/selftests/cgroup/test_freezer.c
++++ b/tools/testing/selftests/cgroup/test_freezer.c
+@@ -740,7 +740,7 @@ static int test_cgfreezer_ptraced(const char *root)
+ 
+ 	/*
+ 	 * cg_check_frozen(cgroup, true) will fail here,
+-	 * because the task in in the TRACEd state.
++	 * because the task is in the TRACEd state.
+ 	 */
+ 	if (cg_freeze_wait(cgroup, false))
+ 		goto cleanup;
+-- 
+2.25.1
 
-Code to determine the Thunderbolt generation from the PCI ID already exists
-in tb_switch_get_generation().
-
-This will not only address the amdgpu issue you're trying to solve,
-but also emit an accurate speed from __pcie_print_link_status().
-
-The speed you're reporting with your approach is not necessarily
-accurate because the next non-tunneled device in the hierarchy might
-be connected with a far higher PCIe speed than what the Thunderbolt
-fabric allows.
-
-Thanks,
-
-Lukas
