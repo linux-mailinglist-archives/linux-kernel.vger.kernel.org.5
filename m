@@ -2,158 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DF7F37E1DC5
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 11:00:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1639D7E1DCD
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 11:02:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230211AbjKFKAS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 05:00:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59508 "EHLO
+        id S229671AbjKFKC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 05:02:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230145AbjKFKAQ (ORCPT
+        with ESMTP id S229478AbjKFKCZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 05:00:16 -0500
-Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3437AA6;
-        Mon,  6 Nov 2023 02:00:13 -0800 (PST)
-Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
-        by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
-        id 1qzwOn-00EXYf-L5; Mon, 06 Nov 2023 18:00:02 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Mon, 06 Nov 2023 18:00:08 +0800
-Date:   Mon, 6 Nov 2023 18:00:08 +0800
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Stephan =?iso-8859-1?Q?M=FCller?= <smueller@chronox.de>
-Subject: [PATCH] crypto: jitterentropy - Hide esoteric Kconfig options under
- FIPS and EXPERT
-Message-ID: <ZUi5KMUaNkp0c1Ds@gondor.apana.org.au>
-References: <Yzv0wXi4Uu2WND37@gondor.apana.org.au>
- <Y5mGGrBJaDL6mnQJ@gondor.apana.org.au>
- <Y/MDmL02XYfSz8XX@gondor.apana.org.au>
- <ZEYLC6QsKnqlEQzW@gondor.apana.org.au>
- <ZJ0RSuWLwzikFr9r@gondor.apana.org.au>
- <ZOxnTFhchkTvKpZV@gondor.apana.org.au>
- <ZUNIBcBJ0VeZRmT9@gondor.apana.org.au>
- <CAHk-=wj0-QNH5gMeYs3b+LU-isJyE4Eu9p8vVH9fb-vHHmUw0g@mail.gmail.com>
- <ZUSKk6Tb7+0n9X5s@gondor.apana.org.au>
- <CAHk-=wh=xH7TNHeaYdsrVW6p1fCQEV5PZMpaFNsZyXYqzn8Stg@mail.gmail.com>
+        Mon, 6 Nov 2023 05:02:25 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03ACFDB
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 02:01:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1699264895;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=dPgIyr8eZGTaHHUAuqbeAy3ULtRETSOYafFMSoTIqOE=;
+        b=Vfr2kg8sJoO4PlEywLRLHIGxLnam2KP+yBssHW0f7Y853BH7VzxceflCBPf2QlQUpmSHmu
+        YvEGevutIwV4OLiHjo/gGfBVNJ2WGqJAHONk+GML0O4j0Hb5tXp4+8fNdXPENnYEbp+DBA
+        TVipfhZfLG1V+6K8IDSWPgQu1EndS/w=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-526-UYj-SFJDNK6K_-IvvJ016g-1; Mon, 06 Nov 2023 05:01:19 -0500
+X-MC-Unique: UYj-SFJDNK6K_-IvvJ016g-1
+Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 6011D185A780;
+        Mon,  6 Nov 2023 10:01:19 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.9])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 37F56492BE0;
+        Mon,  6 Nov 2023 10:01:18 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <ZUiXkPPP1TuOgmmf@fedora.fritz.box>
+References: <ZUiXkPPP1TuOgmmf@fedora.fritz.box> <20231022183917.1013135-1-sanpeqf@gmail.com> <ZUfQo47uo0p2ZsYg@fedora.fritz.box> <CAH2r5msde65PMtn-96VZDAQkT_rq+e-2G4O+zbPUR8zSWGxMsg@mail.gmail.com> <20231105193601.GB91123@sol.localdomain> <ZUfvk-6y2pER6Rmc@fedora.fritz.box> <20231105201516.GC91123@sol.localdomain>
+To:     Damian Tometzki <damian@riscv-rocks.de>
+Cc:     dhowells@redhat.com, Eric Biggers <ebiggers@kernel.org>,
+        Steve French <smfrench@gmail.com>,
+        John Sanpe <sanpeqf@gmail.com>,
+        CIFS <linux-cifs@vger.kernel.org>,
+        Namjae Jeon <linkinjeon@kernel.org>,
+        Paulo Alcantara <pc@manguebit.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: smb cifs: Linux 6.7 pre rc-1 kernel dump in smb2_get_aead_req
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wh=xH7TNHeaYdsrVW6p1fCQEV5PZMpaFNsZyXYqzn8Stg@mail.gmail.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <2545099.1699264877.1@warthog.procyon.org.uk>
+Date:   Mon, 06 Nov 2023 10:01:17 +0000
+Message-ID: <2545100.1699264877@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 02, 2023 at 08:32:36PM -1000, Linus Torvalds wrote:
-> 
-> I think that would help the situation, but I assume the sizing for the
-> jitter buffer is at least partly due to trying to account for cache
-> sizing or similar issues?
-> 
-> Which really means that I assume any static compile-time answer to
-> that question is always wrong - whether you are an expert or not.
-> Unless you are just building the thing for one particular machine.
-> 
-> So I do think the problem is deeper than "this is a question only for
-> experts". I definitely don't think you should ask a regular user (or
-> even a distro kernel package manager). I suspect it's likely that the
-> question is just wrong in general - because any particular one buffer
-> size for any number of machines simply cannot be the right answer.
-> 
-> I realize that the commit says "*allow* for configuration of memory
-> size", but I really question the whole approach.
+Damian Tometzki <damian@riscv-rocks.de> wrote:
 
-Yes I think these are all valid points.  I just noticed that I
-forgot to cc the author so let's see if Stephan has anything to
-add.
+> the revert of f1b4cb650b9a0eeba206d8f069fcdc532bfbcd74 solved the issue of
+> the kernel dump.
 
-> But yes - hiding these questions from any reasonable normal user is at
-> least a good first step.
+That almost certainly did not fix the problem - merely hid the wanring.
 
-OK here's the patch:
+Prior to f1b4cb650b9a0eeba206d8f069fcdc532bfbcd74, ->user_backed is explicitly
+set if the iov_iter is initialised to a user-backed type, now it's just
+inferred from the type being 0 or 1 - so I think that the iov_iter has not
+been initialised somewhere.
 
----8<---
-As JITTERENTROPY is selected by default if you enable the CRYPTO
-API, any Kconfig options added there will show up for every single
-user.  Hide the esoteric options under EXPERT as well as FIPS so
-that only distro makers will see them.
+Somewhere being from SMB2_tcon() and cifs_send_recv() on down.
 
-Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+David
 
-diff --git a/crypto/Kconfig b/crypto/Kconfig
-index bbf51d55724e..70661f58ee41 100644
---- a/crypto/Kconfig
-+++ b/crypto/Kconfig
-@@ -1297,10 +1297,12 @@ config CRYPTO_JITTERENTROPY
- 
- 	  See https://www.chronox.de/jent.html
- 
-+if CRYPTO_JITTERENTROPY
-+if CRYPTO_FIPS && EXPERT
-+
- choice
- 	prompt "CPU Jitter RNG Memory Size"
- 	default CRYPTO_JITTERENTROPY_MEMSIZE_2
--	depends on CRYPTO_JITTERENTROPY
- 	help
- 	  The Jitter RNG measures the execution time of memory accesses.
- 	  Multiple consecutive memory accesses are performed. If the memory
-@@ -1344,7 +1346,6 @@ config CRYPTO_JITTERENTROPY_OSR
- 	int "CPU Jitter RNG Oversampling Rate"
- 	range 1 15
- 	default 1
--	depends on CRYPTO_JITTERENTROPY
- 	help
- 	  The Jitter RNG allows the specification of an oversampling rate (OSR).
- 	  The Jitter RNG operation requires a fixed amount of timing
-@@ -1359,7 +1360,6 @@ config CRYPTO_JITTERENTROPY_OSR
- 
- config CRYPTO_JITTERENTROPY_TESTINTERFACE
- 	bool "CPU Jitter RNG Test Interface"
--	depends on CRYPTO_JITTERENTROPY
- 	help
- 	  The test interface allows a privileged process to capture
- 	  the raw unconditioned high resolution time stamp noise that
-@@ -1377,6 +1377,28 @@ config CRYPTO_JITTERENTROPY_TESTINTERFACE
- 
- 	  If unsure, select N.
- 
-+endif	# if CRYPTO_FIPS && EXPERT
-+
-+if !(CRYPTO_FIPS && EXPERT)
-+
-+config CRYPTO_JITTERENTROPY_MEMORY_BLOCKS
-+	int
-+	default 64
-+
-+config CRYPTO_JITTERENTROPY_MEMORY_BLOCKSIZE
-+	int
-+	default 32
-+
-+config CRYPTO_JITTERENTROPY_OSR
-+	int
-+	default 1
-+
-+config CRYPTO_JITTERENTROPY_TESTINTERFACE
-+	bool
-+
-+endif	# if !(CRYPTO_FIPS && EXPERT)
-+endif	# if CRYPTO_JITTERENTROPY
-+
- config CRYPTO_KDF800108_CTR
- 	tristate
- 	select CRYPTO_HMAC
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
