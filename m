@@ -2,144 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C690C7E297A
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 17:13:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A10837E297E
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 17:13:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231777AbjKFQNK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 11:13:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41284 "EHLO
+        id S232696AbjKFQNU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 11:13:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229642AbjKFQNG (ORCPT
+        with ESMTP id S232694AbjKFQNR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 11:13:06 -0500
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBBC91BC
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 08:13:03 -0800 (PST)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5a7cf717bacso63996067b3.1
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 08:13:03 -0800 (PST)
+        Mon, 6 Nov 2023 11:13:17 -0500
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F423D57;
+        Mon,  6 Nov 2023 08:13:14 -0800 (PST)
+Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-6b77ab73c6fso3660024b3a.1;
+        Mon, 06 Nov 2023 08:13:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1699287183; x=1699891983; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=mmoUoGnC/t23H3IPxV2qsT2AAyd7sUSE5gGiJgJlDX0=;
-        b=Oe1xs7MQxbs5oPRVpc1SJfxw+zaBXWx0tAzWWUfGeY0ZnxLo3TUCZUwSHoYrsLcen+
-         0T98De4h1V0jyIRipVTcdvrBJ3Gf6ahV4xyT5pGJZOMVm2tQZItGID1uzEtmhh/aG+xd
-         iN5yBgGbHR5grM6zMLTpWxCSPRcfeObuMhPxbVqdGo94SCvbVIL/p7EHqsDDYVZS7oux
-         38cAa3a5BNG2BF/RGEaagKWyzMT3MhudxuLj0b7sjmXHkLqn1bXVwZoG0xgvZmFfzo6o
-         qOXxpsu4IIKS84P9O1shcP+44+bOV0AFRJXACHqrQAZ8unbvgtfM8pN2zOg6LTUiLAxB
-         P8KQ==
+        d=gmail.com; s=20230601; t=1699287193; x=1699891993; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:cc:references:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HwloH4lIsaKOBcUH+ktpM/tPuqiiEi1+sP4h2yghMLE=;
+        b=OVy9MOCkf1m0/wt1Gigzkd/h/81LP0BMl7RIm0spTSwMqVngmfJCZyAoiSzTlUrf3J
+         MOxjz7GVMkdH41Te0Bg8gbCI3EBg7OsU7s0V+8xx148dDdXLQ8MHkRAJN5r8bdkxePd3
+         oARfp2h3OtVTUXuG37dyYNh4AeM/m/bY3Vk10JmH0UUHLLOvuWqz+YL7PVPVom9xiOfF
+         ycVdaLqcm24w6EBKG1/S6lZxVgcB4vp0sLdogfp3Trkf8fKX6qXrGxBGxyLghgjgeykq
+         C5bXNTmYbGqNdHjJP/sEmAiVP1VjKaVV62846mp34KlUE3Cky9TWPtKBj60xPslj1JeP
+         QcOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699287183; x=1699891983;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=mmoUoGnC/t23H3IPxV2qsT2AAyd7sUSE5gGiJgJlDX0=;
-        b=HhLXA2+StoAxBx/50fz5r5fmSUkJLjx68IHPBXj0scHiZ3a/pYVwRgLGu/IQlS/MXK
-         sh2Mk9KHTt0nqwUxLI9J2gGfFeakr07l4IWF8A0neyr0jf0dKRzWohQt4j7+l/Zh6HKc
-         kAG+YSLLwCHZbWcDY6CjEAtBLp1o+WCo2CCdadKNkCb1vPXmXid0SazeAFALIVpzL2No
-         7f+cSNy9BfDbfBts2Exg/Vr1K9DIVLJs4uLFW2KhbFW7oma6i/3EpQwpBBtYDSXI8KOO
-         UavQPxzxqogYgmWNEr39KD86ES5N+O+tVzhgxXfsz8q56uqdpqS5JJpADiQG/RqgUF3M
-         mswg==
-X-Gm-Message-State: AOJu0Yxxh3xGFvbs5IPvcCU81vJaUVQ1tQguq3l612Jwql4ndT/G2Wqj
-        LSN3crot1KNJVuCe9V8alMYeFibNA7c=
-X-Google-Smtp-Source: AGHT+IEuz2kxbbqGFRlRrYjmJAAmCd5YL62xYCCumvx9nTcHzja2SicRUTSCOZ5GtJw0RknzXE1Az5YHDFw=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a0d:d5d2:0:b0:5a7:ad67:b4b6 with SMTP id
- x201-20020a0dd5d2000000b005a7ad67b4b6mr228755ywd.2.1699287183068; Mon, 06 Nov
- 2023 08:13:03 -0800 (PST)
-Date:   Mon, 6 Nov 2023 08:13:01 -0800
-In-Reply-To: <CA+EHjTxy6TWM3oBG0Q6v5090XTrs+M8_m5=6Z2E1P-HyTkrGWg@mail.gmail.com>
-Mime-Version: 1.0
-References: <20231105163040.14904-1-pbonzini@redhat.com> <20231105163040.14904-26-pbonzini@redhat.com>
- <CA+EHjTxy6TWM3oBG0Q6v5090XTrs+M8_m5=6Z2E1P-HyTkrGWg@mail.gmail.com>
-Message-ID: <ZUkQjW-yMnLfD7XW@google.com>
-Subject: Re: [PATCH 25/34] KVM: selftests: Add helpers to convert guest memory
- b/w private and shared
-From:   Sean Christopherson <seanjc@google.com>
-To:     Fuad Tabba <tabba@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Anup Patel <anup@brainfault.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>, kvm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Xiaoyao Li <xiaoyao.li@intel.com>,
-        Xu Yilun <yilun.xu@intel.com>,
-        Chao Peng <chao.p.peng@linux.intel.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Anish Moorthy <amoorthy@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Isaku Yamahata <isaku.yamahata@intel.com>,
-        "=?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?=" <mic@digikod.net>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Maciej Szmigiero <mail@maciej.szmigiero.name>,
-        David Hildenbrand <david@redhat.com>,
-        Quentin Perret <qperret@google.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Wang <wei.w.wang@intel.com>,
-        Liam Merwick <liam.merwick@oracle.com>,
-        Isaku Yamahata <isaku.yamahata@gmail.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        d=1e100.net; s=20230601; t=1699287193; x=1699891993;
+        h=content-transfer-encoding:in-reply-to:from:cc:references:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=HwloH4lIsaKOBcUH+ktpM/tPuqiiEi1+sP4h2yghMLE=;
+        b=lFeJ4q5yk8JUK0QgQbMwWYsyDbrhpCPu0AO3wfu+XSWKPMuJjmMf6PHGFo6pzIxIZS
+         7rSUCV+8jRWTqd3SeLs2Yb9sT26VX/G3aEuGUdcLCID/wp+uBHMPbkw6ZlGsmbtC21Lx
+         p+FHKyY6FcHZU1EiZ+nkMp0R+ysjnRl+fzPbbk4EvTPW1tcyU8DzEtQeTcGxCHsfLRZB
+         pb//shjtC+6p1jKnbVpD8fkVb/gNod7h/UYNUD5O2Iqs9MiYDZetRCXzcMVVXwTicyUk
+         JJ+3YJ+nZn9moDB+Oo6eHNdztz/MJds6mqLqOstiOmpD7QK5L0smiymwcagu1MW1URVZ
+         dlpw==
+X-Gm-Message-State: AOJu0Yy318ahXP/KVtc8FYrAw3Mb5siVS9oE1UsmKog2BCcj0wMe+zxX
+        qPNlPnaLe33/6yVfSXasN7I=
+X-Google-Smtp-Source: AGHT+IEKAggblLoWq1aCM5CRiM0ajmV9IssT41pHY1U7hoDv/Yag3Hu7evt62z9utMKTaqCR1DKNrw==
+X-Received: by 2002:a05:6a20:244f:b0:15e:4084:6480 with SMTP id t15-20020a056a20244f00b0015e40846480mr14969189pzc.27.1699287193441;
+        Mon, 06 Nov 2023 08:13:13 -0800 (PST)
+Received: from [192.168.0.100] ([183.247.1.75])
+        by smtp.gmail.com with ESMTPSA id a10-20020a634d0a000000b005b8ea15c338sm5611879pgb.62.2023.11.06.08.13.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 06 Nov 2023 08:13:13 -0800 (PST)
+Message-ID: <21a93447-6830-4884-b488-cbac38df1b96@gmail.com>
+Date:   Tue, 7 Nov 2023 00:13:06 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] bpf: Use E2BIG instead of ENOENT
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+References: <20231104024444.385484-1-chen.dylane@gmail.com>
+ <CAADnVQ+1pNzLRwNNzL-0ai0P281hG=eNO2COrCxuCv2VF3KGUA@mail.gmail.com>
+ <CA+92Ff+ZW5wu3mZFs--nxcyJyc7YxEhP-yuL-BEsWzVChR9Jdg@mail.gmail.com>
+Cc:     Song Liu <song@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Hao Luo <haoluo@google.com>, bpf <bpf@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+From:   Tao Chen <chen.dylane@gmail.com>
+In-Reply-To: <CA+92Ff+ZW5wu3mZFs--nxcyJyc7YxEhP-yuL-BEsWzVChR9Jdg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 06, 2023, Fuad Tabba wrote:
-> On Sun, Nov 5, 2023 at 4:34=E2=80=AFPM Paolo Bonzini <pbonzini@redhat.com=
-> wrote:
-> > +void vm_guest_mem_fallocate(struct kvm_vm *vm, uint64_t base, uint64_t=
- size,
-> > +                           bool punch_hole)
-> > +{
-> > +       const int mode =3D FALLOC_FL_KEEP_SIZE | (punch_hole ? FALLOC_F=
-L_PUNCH_HOLE : 0);
-> > +       struct userspace_mem_region *region;
-> > +       uint64_t end =3D base + size;
-> > +       uint64_t gpa, len;
-> > +       off_t fd_offset;
-> > +       int ret;
-> > +
-> > +       for (gpa =3D base; gpa < end; gpa +=3D len) {
-> > +               uint64_t offset;
-> > +
-> > +               region =3D userspace_mem_region_find(vm, gpa, gpa);
-> > +               TEST_ASSERT(region && region->region.flags & KVM_MEM_GU=
-EST_MEMFD,
-> > +                           "Private memory region not found for GPA 0x=
-%lx", gpa);
-> > +
-> > +               offset =3D (gpa - region->region.guest_phys_addr);
->=20
-> nit: why the parentheses?
 
-I simply forgot to remove them when I changed the function to support spann=
-ing
-multiple memslots, i.e. when the code went from this
+Hi, Alexei, the delete element api of stackmap return E2BIG when the key 
+size beyond the buckets size, so i try to keep the same approach. Maybe 
+it's not necessary, anyway, thanks for your reply.
 
-	fd_offset =3D region->region.gmem_offset +
-		    (gpa - region->region.guest_phys_addr);
-
-to what you see above.
+在 2023/11/6 下午11:59, Tao Chen 写道:
+> 
+> 
+> ---------- Forwarded message ---------
+> 发件人： *Alexei Starovoitov* <alexei.starovoitov@gmail.com 
+> <mailto:alexei.starovoitov@gmail.com>>
+> Date: 2023年11月5日周日 04:54
+> Subject: Re: [PATCH] bpf: Use E2BIG instead of ENOENT
+> To: Tao Chen <chen.dylane@gmail.com <mailto:chen.dylane@gmail.com>>
+> Cc: Song Liu <song@kernel.org <mailto:song@kernel.org>>, Jiri Olsa 
+> <jolsa@kernel.org <mailto:jolsa@kernel.org>>, Alexei Starovoitov 
+> <ast@kernel.org <mailto:ast@kernel.org>>, Daniel Borkmann 
+> <daniel@iogearbox.net <mailto:daniel@iogearbox.net>>, Andrii Nakryiko 
+> <andrii@kernel.org <mailto:andrii@kernel.org>>, Yonghong Song 
+> <yonghong.song@linux.dev <mailto:yonghong.song@linux.dev>>, Martin KaFai 
+> Lau <martin.lau@linux.dev <mailto:martin.lau@linux.dev>>, John Fastabend 
+> <john.fastabend@gmail.com <mailto:john.fastabend@gmail.com>>, Hao Luo 
+> <haoluo@google.com <mailto:haoluo@google.com>>, bpf <bpf@vger.kernel.org 
+> <mailto:bpf@vger.kernel.org>>, LKML <linux-kernel@vger.kernel.org 
+> <mailto:linux-kernel@vger.kernel.org>>
+> 
+> 
+> On Fri, Nov 3, 2023 at 7:44 PM Tao Chen <chen.dylane@gmail.com 
+> <mailto:chen.dylane@gmail.com>> wrote:
+>  >
+>  > Use E2BIG instead of ENOENT when the key size beyond the buckets size,
+>  > it seems more meaningful.
+> 
+> seems more meaningful?
+> Sorry. That's hardly a reason to break someone's code.
