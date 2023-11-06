@@ -2,96 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D3A177E2B84
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 18:56:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2C757E2B88
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 18:58:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231940AbjKFR4e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 12:56:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41764 "EHLO
+        id S231929AbjKFR6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 12:58:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229567AbjKFR4b (ORCPT
+        with ESMTP id S229603AbjKFR6d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 12:56:31 -0500
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7670D99;
-        Mon,  6 Nov 2023 09:56:29 -0800 (PST)
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1cc3c51f830so35102795ad.1;
-        Mon, 06 Nov 2023 09:56:29 -0800 (PST)
+        Mon, 6 Nov 2023 12:58:33 -0500
+Received: from mail-oa1-f78.google.com (mail-oa1-f78.google.com [209.85.160.78])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51CEBD49
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 09:58:30 -0800 (PST)
+Received: by mail-oa1-f78.google.com with SMTP id 586e51a60fabf-1e1a878ef40so6280051fac.1
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 09:58:30 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699293388; x=1699898188;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=m2JiLGU3s2KC5CtuIF/v5v0hrQFMexnAPPTq2XcVAbU=;
-        b=faceN5SnOQATyVbwfLk+WX4wCVXmjFqxhsuoCIKkyxI+9ZM9ZGKZUffecTM5GvH4At
-         L7uhDBYoTKOsdlKUG+mU7GK+JXpj5FAk4BmhyiTrrHbBxaOOAldA+SkXHg71ysownnNf
-         RSjid2286FWOrTV1LSE9nYQMPW0Ezipgf2nBvokOxDbwbrj+rtFHuRdRboiR25Vc5gcR
-         SOsdyX/GauTADPjIaMGOYOwrrsxfKTCwyV8STqKy4Dp9+7Z+m60Bh1M6OKX442tazWll
-         45tfv/sB309XpxhP3xBOtAZNrEZELA1rdEYCcVBE28FcDrF7jcqQa2ce8bMHhanJVllF
-         or8w==
-X-Gm-Message-State: AOJu0Ywe+uI6HT0OOvtJcxLHY7T+6xvDsu3ph6IYtInQCnV2ShCDbJD2
-        p346ebcoeXAGahAHmwIrzPVUO+goQpA=
-X-Google-Smtp-Source: AGHT+IFIwKD7s3sm65uE7HT8rxOzB6AZxTRmE3vQkBIYawoH5/ytsoH4xg0bWJUM7sJt3cSmSdVFAQ==
-X-Received: by 2002:a17:902:6803:b0:1c9:ca02:645c with SMTP id h3-20020a170902680300b001c9ca02645cmr20888180plk.36.1699293388064;
-        Mon, 06 Nov 2023 09:56:28 -0800 (PST)
-Received: from ?IPV6:2620:0:1000:8411:ac50:9303:758b:edb9? ([2620:0:1000:8411:ac50:9303:758b:edb9])
-        by smtp.gmail.com with ESMTPSA id jj19-20020a170903049300b001b86dd825e7sm6191205plb.108.2023.11.06.09.56.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 06 Nov 2023 09:56:27 -0800 (PST)
-Message-ID: <5850d5ac-e735-4358-866d-f410b00ba39d@acm.org>
-Date:   Mon, 6 Nov 2023 09:56:23 -0800
+        d=1e100.net; s=20230601; t=1699293509; x=1699898309;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=cEwpAGHL4EI/McPACelobvea5qiK1E1BuwDNpbN5Cvw=;
+        b=sm53vCcjYwDYWTGWjl6YCENChcB8KjDsRIeRqn7wN0Q+a16ndI+VPwkm3HuXncMoVT
+         W7yjtXnned9U41UK9mfzk6w2cwtw9YxVJFEMabIv4NZeN//iEe7hzMXOcjkrqH9vGf3u
+         VavekvhvlcPFpi+1N5Dmj6ubuAfDY1xoMl/lQfw9GNdEFcS6gt9/QFG6Ly8ZOpTEwgd6
+         INVqc9ZfjHXLvfMfXfSTxqdR6uFdBuzqWqvMRA8aacSdLARRBhb4SWo96Zw11y2UvsWF
+         aVuc/3eShSPxQ67Zt/9ylmXMy6McSj9hADANrA4J0g24FPWHVsXgnAunP1oqYi6g4m2Z
+         d6pw==
+X-Gm-Message-State: AOJu0YysHUI+YMxHOQV0SMQVeMBLHaxKkGtLQPUY+xr48xYJXuPbzwuI
+        /EI5X5BQSX0zeiAAndnmqnk4dRt8FjXVRnbkgacF7m1eiL00
+X-Google-Smtp-Source: AGHT+IFVdGyGw4V9NalCvcwOQMO5/jv1/gIhFzEs+6lpVCpt8jlug0h41Tj+reKtxIf2znLbcFPCjtySt2mvQ6TIbz6QBKuzPlFS
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] dt-bindings: ufs: Add msi-parent for UFS MCQ
-Content-Language: en-US
-To:     Rob Herring <robh@kernel.org>,
-        Ziqi Chen <quic_ziqichen@quicinc.com>
-Cc:     quic_asutoshd@quicinc.com, quic_cang@quicinc.com, mani@kernel.org,
-        beanhuo@micron.com, avri.altman@wdc.com, junwoo80.lee@samsung.com,
-        martin.petersen@oracle.com, quic_nguyenb@quicinc.com,
-        quic_nitirawa@quicinc.com, quic_rampraka@quicinc.com,
-        linux-scsi@vger.kernel.org, Alim Akhtar <alim.akhtar@samsung.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Wolfram Sang <wsa@kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Mark Brown <broonie@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <1698835699-28550-1-git-send-email-quic_ziqichen@quicinc.com>
- <20231106144831.GA317907-robh@kernel.org>
-From:   Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <20231106144831.GA317907-robh@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6870:9a19:b0:1dd:1837:c704 with SMTP id
+ fo25-20020a0568709a1900b001dd1837c704mr226202oab.2.1699293509742; Mon, 06 Nov
+ 2023 09:58:29 -0800 (PST)
+Date:   Mon, 06 Nov 2023 09:58:29 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000004769106097f9a34@google.com>
+Subject: [syzbot] [btrfs?] memory leak in btrfs_add_delayed_tree_ref
+From:   syzbot <syzbot+d3ddc6dcc6386dea398b@syzkaller.appspotmail.com>
+To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/6/23 06:48, Rob Herring wrote:
-> On Wed, Nov 01, 2023 at 06:48:13PM +0800, Ziqi Chen wrote:
->> The Message Signaled Interrupts (MSI) has been introduced
->> to UFS driver since the MCQ be enabled.
-> 
-> Not really relevant when a driver supported MSI, but the when the h/w
-> did. Has UFS always supported MSI? It was added in some version of the
-> spec?
+Hello,
 
-MSI support has been introduced in UFSHCI version 4.0 and I think that
-the controller vendor can decide whether or not to implement MSI. Does
-this mean that the patch needs to be improved?
+syzbot found the following issue on:
 
-Thanks,
+HEAD commit:    8f6f76a6a29f Merge tag 'mm-nonmm-stable-2023-11-02-14-08' ..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=15169b87680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=5ea2285f517f94d0
+dashboard link: https://syzkaller.appspot.com/bug?extid=d3ddc6dcc6386dea398b
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=179c2ecf680000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=149dff40e80000
 
-Bart.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/dfead0cc157b/disk-8f6f76a6.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/c2ab876430bc/vmlinux-8f6f76a6.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/e9cd314888e8/bzImage-8f6f76a6.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/4a497ff0ef1a/mount_0.gz
 
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+d3ddc6dcc6386dea398b@syzkaller.appspotmail.com
+
+executing program
+BUG: memory leak
+unreferenced object 0xffff88810891e940 (size 64):
+  comm "syz-executor244", pid 5031, jiffies 4294941874 (age 13.150s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 00 e0 51 00 00 00 00 00  ..........Q.....
+  backtrace:
+    [<ffffffff816336ad>] kmemleak_alloc_recursive include/linux/kmemleak.h:42 [inline]
+    [<ffffffff816336ad>] slab_post_alloc_hook mm/slab.h:766 [inline]
+    [<ffffffff816336ad>] slab_alloc_node mm/slub.c:3478 [inline]
+    [<ffffffff816336ad>] __kmem_cache_alloc_node+0x2dd/0x3f0 mm/slub.c:3517
+    [<ffffffff8157e505>] kmalloc_trace+0x25/0x90 mm/slab_common.c:1098
+    [<ffffffff82135480>] kmalloc include/linux/slab.h:600 [inline]
+    [<ffffffff82135480>] kzalloc include/linux/slab.h:721 [inline]
+    [<ffffffff82135480>] btrfs_add_delayed_tree_ref+0x550/0x5b0 fs/btrfs/delayed-ref.c:1045
+    [<ffffffff820874bb>] btrfs_alloc_tree_block+0x65b/0x7c0 fs/btrfs/extent-tree.c:5153
+    [<ffffffff8206c15e>] btrfs_force_cow_block+0x1be/0xb30 fs/btrfs/ctree.c:563
+    [<ffffffff8206cbf8>] btrfs_cow_block+0x128/0x3b0 fs/btrfs/ctree.c:741
+    [<ffffffff82073609>] btrfs_search_slot+0xa49/0x1770 fs/btrfs/ctree.c:2095
+    [<ffffffff82074fa3>] btrfs_insert_empty_items+0x43/0xc0 fs/btrfs/ctree.c:4285
+    [<ffffffff820b8a34>] btrfs_create_new_inode+0x354/0xfe0 fs/btrfs/inode.c:6283
+    [<ffffffff820b99e7>] btrfs_create_common+0xf7/0x190 fs/btrfs/inode.c:6511
+    [<ffffffff820b9c12>] btrfs_create+0x72/0x90 fs/btrfs/inode.c:6551
+    [<ffffffff816b673f>] lookup_open fs/namei.c:3477 [inline]
+    [<ffffffff816b673f>] open_last_lookups fs/namei.c:3546 [inline]
+    [<ffffffff816b673f>] path_openat+0x17df/0x1d60 fs/namei.c:3776
+    [<ffffffff816b78e1>] do_filp_open+0xd1/0x1c0 fs/namei.c:3809
+    [<ffffffff816906c4>] do_sys_openat2+0xf4/0x150 fs/open.c:1440
+    [<ffffffff81690ec5>] do_sys_open fs/open.c:1455 [inline]
+    [<ffffffff81690ec5>] __do_sys_open fs/open.c:1463 [inline]
+    [<ffffffff81690ec5>] __se_sys_open fs/open.c:1459 [inline]
+    [<ffffffff81690ec5>] __x64_sys_open+0xa5/0xf0 fs/open.c:1459
+    [<ffffffff84b5dd4f>] do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+    [<ffffffff84b5dd4f>] do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:82
+
+BUG: memory leak
+unreferenced object 0xffff88810891e980 (size 64):
+  comm "syz-executor244", pid 5031, jiffies 4294941874 (age 13.150s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 00 00 69 00 00 00 00 00  ..........i.....
+  backtrace:
+    [<ffffffff816336ad>] kmemleak_alloc_recursive include/linux/kmemleak.h:42 [inline]
+    [<ffffffff816336ad>] slab_post_alloc_hook mm/slab.h:766 [inline]
+    [<ffffffff816336ad>] slab_alloc_node mm/slub.c:3478 [inline]
+    [<ffffffff816336ad>] __kmem_cache_alloc_node+0x2dd/0x3f0 mm/slub.c:3517
+    [<ffffffff8157e505>] kmalloc_trace+0x25/0x90 mm/slab_common.c:1098
+    [<ffffffff82135480>] kmalloc include/linux/slab.h:600 [inline]
+    [<ffffffff82135480>] kzalloc include/linux/slab.h:721 [inline]
+    [<ffffffff82135480>] btrfs_add_delayed_tree_ref+0x550/0x5b0 fs/btrfs/delayed-ref.c:1045
+    [<ffffffff82083f81>] btrfs_free_tree_block+0x131/0x450 fs/btrfs/extent-tree.c:3432
+    [<ffffffff8206c678>] btrfs_force_cow_block+0x6d8/0xb30 fs/btrfs/ctree.c:618
+    [<ffffffff8206cbf8>] btrfs_cow_block+0x128/0x3b0 fs/btrfs/ctree.c:741
+    [<ffffffff82073609>] btrfs_search_slot+0xa49/0x1770 fs/btrfs/ctree.c:2095
+    [<ffffffff82074fa3>] btrfs_insert_empty_items+0x43/0xc0 fs/btrfs/ctree.c:4285
+    [<ffffffff820b8a34>] btrfs_create_new_inode+0x354/0xfe0 fs/btrfs/inode.c:6283
+    [<ffffffff820b99e7>] btrfs_create_common+0xf7/0x190 fs/btrfs/inode.c:6511
+    [<ffffffff820b9c12>] btrfs_create+0x72/0x90 fs/btrfs/inode.c:6551
+    [<ffffffff816b673f>] lookup_open fs/namei.c:3477 [inline]
+    [<ffffffff816b673f>] open_last_lookups fs/namei.c:3546 [inline]
+    [<ffffffff816b673f>] path_openat+0x17df/0x1d60 fs/namei.c:3776
+    [<ffffffff816b78e1>] do_filp_open+0xd1/0x1c0 fs/namei.c:3809
+    [<ffffffff816906c4>] do_sys_openat2+0xf4/0x150 fs/open.c:1440
+    [<ffffffff81690ec5>] do_sys_open fs/open.c:1455 [inline]
+    [<ffffffff81690ec5>] __do_sys_open fs/open.c:1463 [inline]
+    [<ffffffff81690ec5>] __se_sys_open fs/open.c:1459 [inline]
+    [<ffffffff81690ec5>] __x64_sys_open+0xa5/0xf0 fs/open.c:1459
+    [<ffffffff84b5dd4f>] do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+    [<ffffffff84b5dd4f>] do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:82
+
+BUG: memory leak
+unreferenced object 0xffff88810891ea00 (size 64):
+  comm "syz-executor244", pid 5031, jiffies 4294941874 (age 13.150s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 00 f0 51 00 00 00 00 00  ..........Q.....
+  backtrace:
+    [<ffffffff816336ad>] kmemleak_alloc_recursive include/linux/kmemleak.h:42 [inline]
+    [<ffffffff816336ad>] slab_post_alloc_hook mm/slab.h:766 [inline]
+    [<ffffffff816336ad>] slab_alloc_node mm/slub.c:3478 [inline]
+    [<ffffffff816336ad>] __kmem_cache_alloc_node+0x2dd/0x3f0 mm/slub.c:3517
+    [<ffffffff8157e505>] kmalloc_trace+0x25/0x90 mm/slab_common.c:1098
+    [<ffffffff82135480>] kmalloc include/linux/slab.h:600 [inline]
+    [<ffffffff82135480>] kzalloc include/linux/slab.h:721 [inline]
+    [<ffffffff82135480>] btrfs_add_delayed_tree_ref+0x550/0x5b0 fs/btrfs/delayed-ref.c:1045
+    [<ffffffff820874bb>] btrfs_alloc_tree_block+0x65b/0x7c0 fs/btrfs/extent-tree.c:5153
+    [<ffffffff8206c15e>] btrfs_force_cow_block+0x1be/0xb30 fs/btrfs/ctree.c:563
+    [<ffffffff8206cbf8>] btrfs_cow_block+0x128/0x3b0 fs/btrfs/ctree.c:741
+    [<ffffffff82073609>] btrfs_search_slot+0xa49/0x1770 fs/btrfs/ctree.c:2095
+    [<ffffffff82074fa3>] btrfs_insert_empty_items+0x43/0xc0 fs/btrfs/ctree.c:4285
+    [<ffffffff820b8a34>] btrfs_create_new_inode+0x354/0xfe0 fs/btrfs/inode.c:6283
+    [<ffffffff820b99e7>] btrfs_create_common+0xf7/0x190 fs/btrfs/inode.c:6511
+    [<ffffffff820b9c12>] btrfs_create+0x72/0x90 fs/btrfs/inode.c:6551
+    [<ffffffff816b673f>] lookup_open fs/namei.c:3477 [inline]
+    [<ffffffff816b673f>] open_last_lookups fs/namei.c:3546 [inline]
+    [<ffffffff816b673f>] path_openat+0x17df/0x1d60 fs/namei.c:3776
+    [<ffffffff816b78e1>] do_filp_open+0xd1/0x1c0 fs/namei.c:3809
+    [<ffffffff816906c4>] do_sys_openat2+0xf4/0x150 fs/open.c:1440
+    [<ffffffff81690ec5>] do_sys_open fs/open.c:1455 [inline]
+    [<ffffffff81690ec5>] __do_sys_open fs/open.c:1463 [inline]
+    [<ffffffff81690ec5>] __se_sys_open fs/open.c:1459 [inline]
+    [<ffffffff81690ec5>] __x64_sys_open+0xa5/0xf0 fs/open.c:1459
+    [<ffffffff84b5dd4f>] do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+    [<ffffffff84b5dd4f>] do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:82
+
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
