@@ -2,234 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B9CD7E2FDD
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 23:32:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CC557E2FE7
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 23:34:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233156AbjKFWcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 17:32:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57762 "EHLO
+        id S233203AbjKFWed (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 17:34:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232478AbjKFWcQ (ORCPT
+        with ESMTP id S233137AbjKFWec (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 17:32:16 -0500
-Received: from mail-yw1-x1130.google.com (mail-yw1-x1130.google.com [IPv6:2607:f8b0:4864:20::1130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F3FE1BC
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 14:32:13 -0800 (PST)
-Received: by mail-yw1-x1130.google.com with SMTP id 00721157ae682-5a90d6ab962so58827237b3.2
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 14:32:13 -0800 (PST)
+        Mon, 6 Nov 2023 17:34:32 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51E04D75
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 14:34:28 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d9caf486775so5791799276.2
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 14:34:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699309932; x=1699914732; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=vS8c68PwDjZrnN8E2boHHmWYxJEzqCnb24kWpDMw6E8=;
-        b=S75mCdalLoHkybIiSMWtuFGYwLKtR9guRCGLeQhwE2ru2kC3GA9RdxKTLt1uEzcis+
-         gwsmjyzo4khfva/4D/0AYoPQXLISwXXs3is19rXLNXAENc2SOqFBz2lzYWf2Mqib7UXr
-         xHNK2UfqGYEqO/dk5yXXVjjzeGyPwV/vU1cXUVt+8RKgL4c39F3fDsyiDlK85V9/3GLK
-         kI+y++XhX6ZznJ65e6PUtSMK008wgSpKKHHrmSWA1Zp6xy33VRGhcOI42kSu+bvbDW0i
-         aMLFEvNWjf235MYn4ZE6Cpaedn1m9Mgs6y16gC+xrP2k6z+9MEzBDShZc/Iqs5HRDguZ
-         oyqA==
+        d=google.com; s=20230601; t=1699310067; x=1699914867; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Zv4RhvnOMGMg3eq9ITCzr1fXI0OmuHMDkPX1MRaWOUU=;
+        b=AEAWP4pigd41zdBt1hBIUie5sLlAIM4ueJ0NGxsLXsOIxP2p4z0CasI4hWr8TTAy+f
+         TE8Q8TELXMmsMG0/4IZhOQvLbUKScbQ0mYfluhOjFdSRIybwPkGCSfgr0jwgpfxzC5Lv
+         As2b06TOL63ltUGXrOKwNTPGgm+ATwXzhbfvzN7CG2yAuAsSn2Lhz1SKBxy3wiuYWhUf
+         thuXg7SE1KdbcY8bN2ClER6N44owNc2MTNmtZIkbISSjHCmfeIh8QK2enP9VZzrhizpi
+         UHKZk5YLrExrejpD2TxqnsUw/TfapD6JP040TC59mLlw2teH/GaWyPbtml/+VsnUenf0
+         8Ebg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699309932; x=1699914732;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=vS8c68PwDjZrnN8E2boHHmWYxJEzqCnb24kWpDMw6E8=;
-        b=U3uRPCMjqKRzihAgHaNnpwPnq7nJd0BsXvmRf7my8e8e12C/eiKAHzigbGRfe+amy7
-         aQGVsWEPExXPnQogWEx9YGb38sSXG0OlhBcbG1LTJR404Z21hkVnd/ldHLsOurGUVMT4
-         DQBWrZMZ7JwPVTcaiY5rwi5Atb1LhLjxY/OunmfC5XOamZXx1VboM9dJFdKbcUObVxkd
-         BMU44uMdv3w/2SnhQ2/XKvtxw2+BKX7E32M+xwneqIdWxe3kTyn46UXW4/ujIPd4C7qh
-         bpI0TGQCXGxsdXKqJnceHapYyYlNqXFUpaTdeqNgEdiKl/yEsQ0+0RO5yhGr5ktATVR2
-         gZBA==
-X-Gm-Message-State: AOJu0YxcboubsPWFGbhJxu07BA8rETs96tJQ6Tci4/j7OOce9ZpRqJS4
-        bd+8gaHjCaK8SidKh3izT93gH71Er4G0pg4ft4Q1GA==
-X-Google-Smtp-Source: AGHT+IEkfcFDjRMb51eVMXIsoxg+oNYwQThokby7Lk/bHzE7TTbyMrHrz9hxP5reF14igeHX+vIX1BenSnXNUlcnUGE=
-X-Received: by 2002:a25:e702:0:b0:d43:a84f:a6aa with SMTP id
- e2-20020a25e702000000b00d43a84fa6aamr28064010ybh.39.1699309932551; Mon, 06
- Nov 2023 14:32:12 -0800 (PST)
-MIME-Version: 1.0
-References: <20231103184655.23555-1-quic_kbajaj@quicinc.com>
- <20231103184655.23555-3-quic_kbajaj@quicinc.com> <CAA8EJprNyu0r_mV9hbKA1fSvoEvTHuk5umxU8H64Voj_cnZcFQ@mail.gmail.com>
- <1830fc44-7bac-4db5-af59-112410d73a64@linaro.org> <af05dbdb-21bf-34f0-e9b3-9f6b9a0c3115@quicinc.com>
- <CAA8EJpq89g9EeyKcogU+Mt9ie6Bk-rmgi=GqyycYBm_291i1Bw@mail.gmail.com> <d5492e4d-6c70-7d6c-3f5b-a0b5d9266ab0@quicinc.com>
-In-Reply-To: <d5492e4d-6c70-7d6c-3f5b-a0b5d9266ab0@quicinc.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Tue, 7 Nov 2023 00:32:01 +0200
-Message-ID: <CAA8EJpr+8MSEHbziTJhhnkeFhPemRARL_bpWEvHmVvAcbp++Cw@mail.gmail.com>
-Subject: Re: [RFC PATCH 2/2] arm64: dts: qcom: qcm6490: Add qcm6490 idp and
- rb3 board
-To:     Mukesh Ojha <quic_mojha@quicinc.com>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Komal Bajaj <quic_kbajaj@quicinc.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, quic_nainmeht@quicinc.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1699310067; x=1699914867;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Zv4RhvnOMGMg3eq9ITCzr1fXI0OmuHMDkPX1MRaWOUU=;
+        b=n/GoUJ+f6IXdAnO9dg86O2Tja3aaCGKoOzV73Szvp/fE82DE6ShCkU3t5GRybAPsqU
+         ki0LA/lGO0ivREwjf1OBN6MpfeeziSm103839gpPl/6NuXQEOOG937PjJ4SkQuuBti3t
+         yD5hbhzUE5bZWLpNWQJ0QJGs5ZdUS+JMuz+k3sUv8SwWzzSd5q5EZzzktwhSvmTtCilU
+         m+ZNGoYsK5/ZxCU8S68vb+y3+mjmumgcqWjxuairWQRRRPsy/N1VXHqD63EeNmyp8BjZ
+         tFa5JYVYjIcoeOGxZOipzoFMU6F7mnoUB5Y339bfq0PJCQBhGEv8o5OytNdtAQtOt8n+
+         8yxg==
+X-Gm-Message-State: AOJu0Yzf/J+fSYP1CX31mY9rwbAvoLZZP2HNPAXuutMctFgw7A14+g1O
+        qKEoc7krZIktALTUDdaTR2tcBMA=
+X-Google-Smtp-Source: AGHT+IG3dN7sVGEmAqpGExbdQBclQaMGObFV5Ff7qDqy+XlnkEORRSYhm4pZMVboGPR/chlEPa5JMbg=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a05:6902:1083:b0:da0:567d:f819 with SMTP id
+ v3-20020a056902108300b00da0567df819mr727054ybu.10.1699310067541; Mon, 06 Nov
+ 2023 14:34:27 -0800 (PST)
+Date:   Mon, 6 Nov 2023 14:34:25 -0800
+In-Reply-To: <CAF=yD-+MFpO5Hdqn+Q9X54SBpgcBeJvKTRD53X2oM4s8uVqnAQ@mail.gmail.com>
+Mime-Version: 1.0
+References: <20231106024413.2801438-1-almasrymina@google.com>
+ <20231106024413.2801438-11-almasrymina@google.com> <ZUk0FGuJ28s1d9OX@google.com>
+ <CAHS8izNFv7r6vqYR_TYqcCuDO61F+nnNMhsSu=DrYWSr3sVgrA@mail.gmail.com> <CAF=yD-+MFpO5Hdqn+Q9X54SBpgcBeJvKTRD53X2oM4s8uVqnAQ@mail.gmail.com>
+Message-ID: <ZUlp8XutSAScKs_0@google.com>
+Subject: Re: [RFC PATCH v3 10/12] tcp: RX path for devmem TCP
+From:   Stanislav Fomichev <sdf@google.com>
+To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Cc:     Mina Almasry <almasrymina@google.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        David Ahern <dsahern@kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        "Christian =?utf-8?B?S8O2bmln?=" <christian.koenig@amd.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Jeroen de Borst <jeroendb@google.com>,
+        Praveen Kaligineedi <pkaligineedi@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Kaiyuan Zhang <kaiyuanz@google.com>
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 6 Nov 2023 at 16:46, Mukesh Ojha <quic_mojha@quicinc.com> wrote:
->
->
->
-> On 11/6/2023 5:24 PM, Dmitry Baryshkov wrote:
-> > On Mon, 6 Nov 2023 at 13:41, Mukesh Ojha <quic_mojha@quicinc.com> wrote:
-> >>
-> >>
-> >> On 11/5/2023 6:38 PM, Krzysztof Kozlowski wrote:
-> >>> On 03/11/2023 23:22, Dmitry Baryshkov wrote:
-> >>>> On Fri, 3 Nov 2023 at 20:49, Komal Bajaj <quic_kbajaj@quicinc.com> wrote:
-> >>>>>
-> >>>>> Add qcm6490 devicetree file for QCM6490 IDP and QCM6490 RB3
-> >>>>> platform. QCM6490 is derived from SC7280 meant for various
-> >>>>> form factor including IoT.
-> >>>>>
-> >>>>> Supported features are, as of now:
-> >>>>> * Debug UART
-> >>>>> * eMMC (only in IDP)
-> >>>>> * USB
-> >>>>>
-> >>>
-> >>> ...
-> >>>
-> >>>>> +
-> >>>>> diff --git a/arch/arm64/boot/dts/qcom/qcm6490-iot-common.dtsi b/arch/arm64/boot/dts/qcom/qcm6490-iot-common.dtsi
-> >>>>> new file mode 100644
-> >>>>> index 000000000000..01adc97789d0
-> >>>>> --- /dev/null
-> >>>>> +++ b/arch/arm64/boot/dts/qcom/qcm6490-iot-common.dtsi
-> >>>>
-> >>>> I have mixed feelings towards this file. Usually we add such 'common'
-> >>>> files only for the phone platforms where most of the devices are
-> >>>> common.
-> >>>> Do you expect that IDP and RB3 will have a lot of common code other
-> >>>> than these regulator settings?
-> >>>
-> >>> I agree here. What exactly is common in the real hardware between IDP
-> >>> and RB3? Commit msg does not explain it, so I do not see enough
-> >>> justification for common file. Just because some DTS looks similar for
-> >>> different hardware does not mean you should creat common file.
-> >>
-> >> @Dmitry/@Krzysztof,
-> >>
-> >> Thank you for reviewing the RFC, we wanted to continue the
-> >> suggestion/discussion given on [1] , where we discussed that this
-> >> qcm6490 is going to be targeted for IOT segment and will have different
-> >> memory map and it is going to use some of co-processors like adsp/cdsp
-> >> which chrome does not use.
-> >>
-> >> So to your question what is common between RB3 and IDP, mostly they will
-> >> share common memory map(similar to [2]) and regulator settings and both
-> >> will use adsp/cdsp etc., we will be posting the memory map changes as
-> >> well in coming weeks once this RFC is acked.
+On 11/06, Willem de Bruijn wrote:
+> > > IMHO, we need a better UAPI to receive the tokens and give them back to
+> > > the kernel. CMSG + setsockopt(SO_DEVMEM_DONTNEED) get the job done,
+> > > but look dated and hacky :-(
+> > >
+> > > We should either do some kind of user/kernel shared memory queue to
+> > > receive/return the tokens (similar to what Jonathan was doing in his
+> > > proposal?)
 > >
-> > Is the memory map going to be the same as the one used on Fairphone5?
->
-> No, Fairphone5 looks to be using chrome memory map and i suggested
-> here to move them into sc7280.dtsi
->
-> https://lore.kernel.org/lkml/d5d53346-ca3b-986a-e104-d87c37115b62@quicinc.com/
->
+> > I'll take a look at Jonathan's proposal, sorry, I'm not immediately
+> > familiar but I wanted to respond :-) But is the suggestion here to
+> > build a new kernel-user communication channel primitive for the
+> > purpose of passing the information in the devmem cmsg? IMHO that seems
+> > like an overkill. Why add 100-200 lines of code to the kernel to add
+> > something that can already be done with existing primitives? I don't
+> > see anything concretely wrong with cmsg & setsockopt approach, and if
+> > we switch to something I'd prefer to switch to an existing primitive
+> > for simplicity?
 > >
-> > Are ADSP and CDSP physically present on sc7280?
->
-> Yes, they are present but not used.
+> > The only other existing primitive to pass data outside of the linear
+> > buffer is the MSG_ERRQUEUE that is used for zerocopy. Is that
+> > preferred? Any other suggestions or existing primitives I'm not aware
+> > of?
+> >
+> > > or bite the bullet and switch to io_uring.
+> > >
+> >
+> > IMO io_uring & socket support are orthogonal, and one doesn't preclude
+> > the other. As you know we like to use sockets and I believe there are
+> > issues with io_uring adoption at Google that I'm not familiar with
+> > (and could be wrong). I'm interested in exploring io_uring support as
+> > a follow up but I think David Wei will be interested in io_uring
+> > support as well anyway.
+> 
+> I also disagree that we need to replace a standard socket interface
+> with something "faster", in quotes.
+> 
+> This interface is not the bottleneck to the target workload.
+> 
+> Replacing the synchronous sockets interface with something more
+> performant for workloads where it is, is an orthogonal challenge.
+> However we do that, I think that traditional sockets should continue
+> to be supported.
+> 
+> The feature may already even work with io_uring, as both recvmsg with
+> cmsg and setsockopt have io_uring support now.
 
-So ADSP and CDSP should go into sc7280.dtsi. They will anyway have
-status = "disabled";
+I'm not really concerned with faster. I would prefer something cleaner :-)
 
->
-> >
-> > I think that your goal should be to:
-> > - populate missing device in sc7280.dtsi
-> > - maybe add qcm6490.dtsi which defines SoC-level common data (e.g. memory map)
-> > - push the rest to board files.
->
-> Agree to all of the point.
-> We started with the same thought at[3] but it got lost in discussion
-> due to its differentiation with mobile counter part(fairphone) which
-> follow chrome memory map and hence we came up with qcm6490-iot-common.
-> Do you think, qcm6490-iot.dtsi should be good ?
-
-No. DT describes hardware, and -iot is not a hardware abstraction / unification.
-If you consider your memory map to be generic for the qcm6490 (and FP5
-being the only exception), add it to the qcm6490.dtsi (and let FP5
-override it, like some of the phones do). If it can not be considered
-generic for the SoC, then you have no other choice than to replicate
-it to all board files.
-
->
-> [3]
-> https://lore.kernel.org/linux-arm-msm/20231003175456.14774-3-quic_kbajaj@quicinc.com/
->
-> -Mukesh
-> >
-> > I don't think that putting regulators to the common file is a good
-> > idea. Platforms will further change and limit voltage limits and
-> > modes, so they usually go to the board file.
-> >
-> >>
-> >>
-> >> Thanks,
-> >> Mukesh
-> >>
-> >> [1]
-> >> https://lore.kernel.org/linux-arm-msm/d97ebf74-ad03-86d6-b826-b57be209b9e2@quicinc.com/
-> >>
-> >> [2]
-> >> commit 90c856602e0346ce9ff234062e86a198d71fa723
-> >> Author: Douglas Anderson <dianders@chromium.org>
-> >> Date:   Tue Jan 25 14:44:20 2022 -0800
-> >>
-> >>       arm64: dts: qcom: sc7280: Factor out Chrome common fragment
-> >>
-> >>       This factors out a device tree fragment from some sc7280 device
-> >>       trees. It represents the device tree bits that should be included for
-> >>       "Chrome" based sc7280 boards. On these boards the bootloader (Coreboot
-> >>       + Depthcharge) configures things slightly different than the
-> >>       bootloader that Qualcomm provides. The modem firmware on these boards
-> >>       also works differently than on other Qulacomm products and thus the
-> >>       reserved memory map needs to be adjusted.
-> >>
-> >>       NOTES:
-> >>       - This is _not_ quite a no-op change. The "herobrine" and "idp"
-> >>         fragments here were different and it looks like someone simply
-> >>         forgot to update the herobrine version. This updates a few numbers
-> >>         to match IDP. This will also cause the `pmk8350_pon` to be disabled
-> >>         on idp/crd, which I belive is a correct change.
-> >>       - At the moment this assumes LTE skus. Once it's clearer how WiFi SKUs
-> >>         will work (how much of the memory map they can reclaim) we may add
-> >>         an extra fragment that will rejigger one way or the other.
-> >>
-> >>       Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> >>       Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-> >>       Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
-> >>       Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> >>       Link:
-> >> https://lore.kernel.org/r/20220125144316.v2.3.Iac012fa8d727be46448d47027a1813ea716423ce@changeid
-> >>
-> >>
-> >>>
-> >>> Best regards,
-> >>> Krzysztof
-> >>>
-> >
-> >
-> >
-
-
-
--- 
-With best wishes
-Dmitry
+Or maybe we should just have it documented. With some kind of path
+towards beautiful world where we can create dynamic queues..
