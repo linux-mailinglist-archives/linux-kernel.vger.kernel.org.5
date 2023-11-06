@@ -2,131 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E2CA7E1D19
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 10:17:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABEAC7E1D15
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 10:16:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231391AbjKFJR6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 04:17:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44446 "EHLO
+        id S231295AbjKFJQy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 04:16:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230475AbjKFJR4 (ORCPT
+        with ESMTP id S230475AbjKFJQw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 04:17:56 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B771FA
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 01:17:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1699262228;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=5e6mOiJPde7i1hVZv69YfOb7z/h87xjiUMR0oLDOiv4=;
-        b=At+YZv7tawrHRWgDNxgltVCQZyGfhLgrKW33IBCazhwdaLnIIwk2K+DCcRrjzhVPuKhyUN
-        TO9NmzuajT18yRIt2aY94VpcJjS1OlVvYOhyQhpLRL4PNh+kBKH1hECVW7UkcrvQSSaTsU
-        65pwQJQLXQ5Ez2WOhCdWfbhaZip6GHI=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-439-P67FVGIvNBSN5uwcn3t72g-1; Mon, 06 Nov 2023 04:17:01 -0500
-X-MC-Unique: P67FVGIvNBSN5uwcn3t72g-1
-Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-9c167384046so58520766b.0
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 01:17:01 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699262220; x=1699867020;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=5e6mOiJPde7i1hVZv69YfOb7z/h87xjiUMR0oLDOiv4=;
-        b=xJhBK2eKrqgNwTerNQuycOQlNtNcMJ2FtGm7cL/i9NXFEy5mUOCK1G0cLON7nArqoZ
-         n6up/hOtmIFfu1yg3cKdBK/QkogFETKEeLVliCLBZKtTnZMoWSb6wpOsQ4nVnZjLr7gv
-         n+SvU2V1wecNuskyb1gXBT5yg3bP34I8yvWJ+CdDiPQIFVixP5VEwfrihzHdIgJcDSth
-         Qv+UEI+I6bjzgxFUiObblyKP9YTDap5XX555AEWCxcRZEqXVkNgWBY0ImTYMJ0rzHuyz
-         gQLNuxBzltVG3rjYjT8zuom3Le3DObTfk/SUufWXb+E2Ysmi/0piVQAcr1mGzQPEMTrR
-         sW8g==
-X-Gm-Message-State: AOJu0YysB+SMyAWVjj2OR95JMkOxvXJhZ21jpnzlbjM7CNWCSc62/+UF
-        U/KI/ihfGs1K2gd7ha/CyIgquHB9jRm2BYXc9f5TDDNpVGuxnrNcPaFQN0HlPluhuxjNMJWLZxl
-        2xfN9A3tXBEjvwSBqHZXCvWye
-X-Received: by 2002:a17:907:9811:b0:9dd:b624:dea9 with SMTP id ji17-20020a170907981100b009ddb624dea9mr5908954ejc.7.1699262220635;
-        Mon, 06 Nov 2023 01:17:00 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHg+Dca1Hqr/M7XD/LNddS3HhgudK6ckTsPr4vuaCXPSKcGEUtvPE7ntVOMTBjItD9G/Xyblw==
-X-Received: by 2002:a17:907:9811:b0:9dd:b624:dea9 with SMTP id ji17-20020a170907981100b009ddb624dea9mr5908931ejc.7.1699262220297;
-        Mon, 06 Nov 2023 01:17:00 -0800 (PST)
-Received: from pstanner-thinkpadt14sgen1.remote.csb ([2a01:599:91a:4014:af36:ab77:ffe6:b2fd])
-        by smtp.gmail.com with ESMTPSA id r19-20020a1709067fd300b009930042510csm3902969ejs.222.2023.11.06.01.16.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Nov 2023 01:16:59 -0800 (PST)
-From:   Philipp Stanner <pstanner@redhat.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Cc:     linux-ppp@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Philipp Stanner <pstanner@redhat.com>,
-        Dave Airlie <airlied@redhat.com>
-Subject: [PATCH v2] drivers/net/ppp: use standard array-copy-function
-Date:   Mon,  6 Nov 2023 10:16:00 +0100
-Message-ID: <20231106091559.14419-2-pstanner@redhat.com>
-X-Mailer: git-send-email 2.41.0
+        Mon, 6 Nov 2023 04:16:52 -0500
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B61FFCC;
+        Mon,  6 Nov 2023 01:16:49 -0800 (PST)
+Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A69GOuL022631;
+        Mon, 6 Nov 2023 09:16:41 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=0/Q0Ge0wOeHrnYI00dxrJo5eTA+PZ3BAJJf6HaX7Wcg=;
+ b=bbG5cgglIc2ObLAOWbYBEp4TEp3gzacdMrhS6JOVAAyHgD9j7Gp9yCiiH3lQi7thU6Pi
+ 5jmzKbdBHQeBQQbagutiJMyf2bxoMcnvUFkIEzmBl+bzSxpwj84utDsdWcsVA32KbD29
+ swaVZUOFl1dbafq5V49nWpINDFGyU+NIlMLWSKjmuzLirKHGR+i85P5AdR12Aeld4fUM
+ YsAnZNv3z/OmrGxXTkYnzpzfDfUpsy84lLDW9cLvTcD34NSTW7IPoJnZBt9FZURSuQli
+ p1dvjJwSZ4pwaKTaF64E/3iY+dnMUJ7RtQlD4QSklLC/kq/th0vIkQHY3Jw5N/ISIOgj CQ== 
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u6uj0kcjt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 06 Nov 2023 09:16:41 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3A68S0Mj025671;
+        Mon, 6 Nov 2023 09:16:39 GMT
+Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
+        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3u619n86xs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 06 Nov 2023 09:16:38 +0000
+Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
+        by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3A69GZRV16646790
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 6 Nov 2023 09:16:36 GMT
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id CFF3220040;
+        Mon,  6 Nov 2023 09:16:35 +0000 (GMT)
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A1EB720043;
+        Mon,  6 Nov 2023 09:16:35 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+        by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Mon,  6 Nov 2023 09:16:35 +0000 (GMT)
+From:   Thomas Richter <tmricht@linux.ibm.com>
+To:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        acme@kernel.org, namhyung@kernel.org
+Cc:     svens@linux.ibm.com, gor@linux.ibm.com, sumanthk@linux.ibm.com,
+        hca@linux.ibm.com, Ilya Leoshkevich <iii@linux.ibm.com>,
+        Thomas Richter <tmricht@linux.ibm.com>
+Subject: [PATCH v2 PING] perf test: Adjust test case perf record offcpu profiling tests for s390
+Date:   Mon,  6 Nov 2023 10:16:27 +0100
+Message-Id: <20231106091627.2022530-1-tmricht@linux.ibm.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: W1dcv77m9a-K-07oadxRDNJvgd-oxPik
+X-Proofpoint-GUID: W1dcv77m9a-K-07oadxRDNJvgd-oxPik
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-06_07,2023-11-02_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 clxscore=1011
+ mlxlogscore=999 spamscore=0 malwarescore=0 adultscore=0 mlxscore=0
+ lowpriorityscore=0 suspectscore=0 phishscore=0 bulkscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2310240000 definitions=main-2311060080
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In ppp_generic.c, memdup_user() is utilized to copy a userspace array.
-This is done without an overflow-check, which is, however, not critical
-because the multiplicands are an unsigned short and struct sock_filter,
-which is currently of size 8.
+On s390 using linux-next the test case
+    87: perf record offcpu profiling tests
+fails. The root cause is this command
 
-Regardless, string.h now provides memdup_array_user(), a wrapper for
-copying userspace arrays in a standardized manner, which has the
-advantage of making it more obvious to the reader that an array is being
-copied.
-The wrapper additionally performs an obligatory overflow check, saving
-the reader the effort of analyzing the potential for overflow, and
-making the code a bit more robust in case of future changes to the
-multiplicands len * size.
+ # ./perf  record --off-cpu -e dummy -- ./perf bench sched messaging -l 10
+ # Running 'sched/messaging' benchmark:
+ # 20 sender and receiver processes per group
+ # 10 groups == 400 processes run
 
-Replace memdup_user() with memdup_array_user().
+     Total time: 0.231 [sec]
+ [ perf record: Woken up 1 times to write data ]
+ [ perf record: Captured and wrote 0.077 MB perf.data (401 samples) ]
+ #
 
-Suggested-by: Dave Airlie <airlied@redhat.com>
-Signed-off-by: Philipp Stanner <pstanner@redhat.com>
+It does not generate 800+ sample entries, on s390 usually around 40[1-9],
+sometimes a few more, but never more than 450. The higher the number
+of CPUs the lower the number of samples.
+
+Looking at function chain
+  bench_sched_messaging()
+  +--> group()
+the senders and receiver threads are created. The senders and receivers
+call function ready() which writes one bytes and wait for a reply using
+poll system() call.
+
+As context switches are counted, the function ready() will trigger
+a context switch when no input data is available after the write
+system call. The write system call does not trigger context switches
+when the data size is small. And writing 1000 bytes (10 iterations with
+100 bytes) is not much and certainly won't block.
+
+The 400+ context switch on s390 occur when the some receiver/sender
+threads call ready() and wait for the response from function
+bench_sched_messaging() being kicked off.
+
+Lower the number of expected context switches to 400 to succeed on
+s390.
+
+Suggested-by: Namhyung Kim <namhyung@kernel.org>
+Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+Co-developed-by: Ilya Leoshkevich <iii@linux.ibm.com>
+Signed-off-by: Thomas Richter <tmricht@linux.ibm.com>
 ---
-Changes in v2:
-- Rename the commit and rephrase its message completely so that it
-  becomes a) obvious that we're not fixing an actual overflow here and
-  b) emphasize that the goal is increasing readability. (Al Viro)
----
- drivers/net/ppp/ppp_generic.c | 4 ++--
+ tools/perf/tests/shell/record_offcpu.sh | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ppp/ppp_generic.c b/drivers/net/ppp/ppp_generic.c
-index a9beacd552cf..0193af2d31c9 100644
---- a/drivers/net/ppp/ppp_generic.c
-+++ b/drivers/net/ppp/ppp_generic.c
-@@ -570,8 +570,8 @@ static struct bpf_prog *get_filter(struct sock_fprog *uprog)
- 
- 	/* uprog->len is unsigned short, so no overflow here */
- 	fprog.len = uprog->len;
--	fprog.filter = memdup_user(uprog->filter,
--				   uprog->len * sizeof(struct sock_filter));
-+	fprog.filter = memdup_array_user(uprog->filter,
-+					 uprog->len, sizeof(struct sock_filter));
- 	if (IS_ERR(fprog.filter))
- 		return ERR_CAST(fprog.filter);
- 
+diff --git a/tools/perf/tests/shell/record_offcpu.sh b/tools/perf/tests/shell/record_offcpu.sh
+index a1ef8f0d2b5c..67c925f3a15a 100755
+--- a/tools/perf/tests/shell/record_offcpu.sh
++++ b/tools/perf/tests/shell/record_offcpu.sh
+@@ -77,9 +77,9 @@ test_offcpu_child() {
+     err=1
+     return
+   fi
+-  # each process waits for read and write, so it should be more than 800 events
++  # each process waits at least for poll, so it should be more than 400 events
+   if ! perf report -i ${perfdata} -s comm -q -n -t ';' --percent-limit=90 | \
+-    awk -F ";" '{ if (NF > 3 && int($3) < 800) exit 1; }'
++    awk -F ";" '{ if (NF > 3 && int($3) < 400) exit 1; }'
+   then
+     echo "Child task off-cpu test [Failed invalid output]"
+     err=1
 -- 
 2.41.0
 
