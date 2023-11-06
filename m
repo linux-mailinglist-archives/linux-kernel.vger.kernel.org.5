@@ -2,148 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FFD47E226D
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 13:54:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5BCF7E21E7
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 13:40:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231723AbjKFMyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 07:54:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53656 "EHLO
+        id S231615AbjKFMk2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 07:40:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231704AbjKFMyM (ORCPT
+        with ESMTP id S230192AbjKFMk1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 07:54:12 -0500
-X-Greylist: delayed 964 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 06 Nov 2023 04:54:08 PST
-Received: from mailrelay5-1.pub.mailoutpod2-cph3.one.com (mailrelay5-1.pub.mailoutpod2-cph3.one.com [IPv6:2a02:2350:5:404::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 201C6100
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 04:54:08 -0800 (PST)
+        Mon, 6 Nov 2023 07:40:27 -0500
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1014AD;
+        Mon,  6 Nov 2023 04:40:23 -0800 (PST)
+Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-53e2308198eso7342264a12.1;
+        Mon, 06 Nov 2023 04:40:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ravnborg.org; s=rsa2;
-        h=in-reply-to:content-type:mime-version:references:message-id:subject:cc:to:
-         from:date:from;
-        bh=ycGE/iiF6naL2xL+fBBE0XZ1/cqgYsFMAA6Zd70Z1Jw=;
-        b=vH0RQZrM7dNH2YoCChVMLaE/dsodYd4JiNpusQKHpaBW6JvYamB0+7MjZ79+L9EAsPzpz/3kRcE5V
-         MU4ZtPdhrs5EzGmZsKpEsBxhhMVhPUXprBBUNy+id59z5Ta+vvN4Ky+oxE4I/mQX3t7e6oW+GJnePU
-         KPp02ls3Yxg9o4MZFS8zvDadV11Hn/OCskuoJfqPqnuNVOswrhKX6ERDvtA1pAyUt8zatmRRS1jqUn
-         uH1QhkPTs+3O2zX4qUCyZViauaS5O+RX8/A/rD/9hkHz9ANrqT/yDrJdfrY+Gx807b8OygHBLqBovC
-         z06mvg2o1PTiihrhntQexMiVVf2R/kg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed;
-        d=ravnborg.org; s=ed2;
-        h=in-reply-to:content-type:mime-version:references:message-id:subject:cc:to:
-         from:date:from;
-        bh=ycGE/iiF6naL2xL+fBBE0XZ1/cqgYsFMAA6Zd70Z1Jw=;
-        b=1VXLx7xnbBAvswLF+WCHpEVP3EylBfIQQbC2ezJfpjo1RVM2giMnZHZcZL4BjEV832K4nAvP2FcSY
-         Wh9x88vAw==
-X-HalOne-ID: 5177d4a4-7ca1-11ee-b013-a71ee59276a3
-Received: from ravnborg.org (2-105-2-98-cable.dk.customer.tdc.net [2.105.2.98])
-        by mailrelay5 (Halon) with ESMTPSA
-        id 5177d4a4-7ca1-11ee-b013-a71ee59276a3;
-        Mon, 06 Nov 2023 12:38:01 +0000 (UTC)
-Date:   Mon, 6 Nov 2023 13:38:00 +0100
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     Aradhya Bhatia <a-bhatia1@ti.com>
-Cc:     Tomi Valkeinen <tomba@kernel.org>, Jyri Sarha <jyri.sarha@iki.fi>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Francesco Dolcini <francesco@dolcini.it>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        DRI Development List <dri-devel@lists.freedesktop.org>,
-        Linux Kernel List <linux-kernel@vger.kernel.org>,
-        Nishanth Menon <nm@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Devarsh Thakkar <devarsht@ti.com>,
-        Jayesh Choudhary <j-choudhary@ti.com>
-Subject: Re: [PATCH] drm/bridge: tc358767: Support input format negotiation
- hook
-Message-ID: <20231106123800.GC47195@ravnborg.org>
-References: <20231030192846.27934-1-a-bhatia1@ti.com>
+        d=gmail.com; s=20230601; t=1699274422; x=1699879222; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=q/j5ZdORQp2c8s4IMJhl7QIq4MbRa4fgg20gEx4WXX8=;
+        b=AMMoHTJvo9+1QinCV+oigPoHv4LKZ2GUiik+1o9UwWxfg/S8KNVeHgfi/bqpSaRtJ+
+         8xbIG71fLlRhColRkza1PsIOfwNMDQoiGBlplJH6Wd+TlrGQyhtKCOqtZfMVLVUoNRad
+         +01xsdf700eturdjs4rHbbw8bS2IdNLzxXzBHJnhBJe8zWyVz9x32QkFfmZegDe6gkxc
+         Or8Clxvpxw7A1FKkblzdZuNM5/pPO3t5NBsdtJ2E33iI594xEqImGrePm6wtP0QyILpt
+         6ymsWJwMAlYSUWVuovh/GW6htvxAj45CRAv9/pWdHayXgSscYK7FGWLfFpOZ6PxShoSF
+         oq7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699274422; x=1699879222;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=q/j5ZdORQp2c8s4IMJhl7QIq4MbRa4fgg20gEx4WXX8=;
+        b=TPYG7HDnwOBC6e6mpCoOgOzY2sLHWrUNYxSg/DSgN94RRsE+q1VSVzTLAOR9jut6h2
+         FhyOg6MH/HinaGJgnkKtTQnds9YSGvbIwnsu4lRL6fY8zYTBXM2yuTkEz/ztLmY/9EOR
+         pmBdopaJjbPUm0p2Xfq4iw8aAiwGqXHGVhs80yIYn0xQS6rx8NpkILCcxkryMSM/Jp4v
+         ozUqM9w+5SkElaykkEPAobPye1WlmCfWxF+P21JlLof6vtAvOHQ501oQZ8JUTxieFcAV
+         +0QreSu0B0DwyUgXNmGZaopPvdFY8QHCKXhBbxr0TMjc2fdirGSNTkM8d496AVoLUs8h
+         LDgg==
+X-Gm-Message-State: AOJu0YwjAJqk1bzFZ0FY8Q40U+Fm6wmD/Rp05zNLmbwzj9LNNvpMploj
+        Otz6tY1KaRho/noI1tMbezk=
+X-Google-Smtp-Source: AGHT+IGAz6Uu6354N+6w/E0T+0S1OgMe1mnBTFZ5yII6j2prs0Cc+X6f/ro/zCVVkp3kzBMo/wnpag==
+X-Received: by 2002:a17:906:7313:b0:9be:7de2:927c with SMTP id di19-20020a170906731300b009be7de2927cmr13174418ejc.70.1699274421947;
+        Mon, 06 Nov 2023 04:40:21 -0800 (PST)
+Received: from skbuf ([188.26.57.160])
+        by smtp.gmail.com with ESMTPSA id fi3-20020a170906da0300b0099ce188be7fsm4060117ejb.3.2023.11.06.04.40.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 Nov 2023 04:40:21 -0800 (PST)
+Date:   Mon, 6 Nov 2023 14:40:19 +0200
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Hans Ulli Kroll <ulli.kroll@googlemail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        Andrew Lunn <andrew@lunn.ch>,
+        linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net v2 3/4] net: ethernet: cortina: Protect against
+ oversized frames
+Message-ID: <20231106124019.ethagifngefgcihm@skbuf>
+References: <20231105-gemini-largeframe-fix-v2-0-cd3a5aa6c496@linaro.org>
+ <20231105-gemini-largeframe-fix-v2-3-cd3a5aa6c496@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231030192846.27934-1-a-bhatia1@ti.com>
+In-Reply-To: <20231105-gemini-largeframe-fix-v2-3-cd3a5aa6c496@linaro.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Aradhya,
-
-On Tue, Oct 31, 2023 at 12:58:46AM +0530, Aradhya Bhatia wrote:
-> With new connector model, tc358767 will not create the connector, when
-> DRM_BRIDGE_ATTACH_NO_CONNECTOR is set and display-controller driver will
-> rely on format negotiation to setup the encoder format.
+On Sun, Nov 05, 2023 at 09:57:25PM +0100, Linus Walleij wrote:
+> The max size of a transfer no matter the MTU is 64KB-1 so immediately
+> bail out if the skb exceeds that.
 > 
-> Add the missing input-format negotiation hook in the
-> drm_bridge_funcs to complete DRM_BRIDGE_ATTACH_NO_CONNECTOR support.
+> The calling site tries to linearize the skbuff on error so return a
+> special error code -E2BIG to indicate that this will not work in
+> any way and bail out immediately if this happens.
 > 
-> Input format is selected to MEDIA_BUS_FMT_RGB888_1X24 as default, as is
-> the case with older model.
-> 
-> Reported-by: Jan Kiszka <jan.kiszka@siemens.com>
-> Signed-off-by: Aradhya Bhatia <a-bhatia1@ti.com>
+> Fixes: 4d5ae32f5e1e ("net: ethernet: Add a driver for Gemini gigabit ethernet")
+> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 > ---
+>  drivers/net/ethernet/cortina/gemini.c | 13 ++++++++++++-
+>  1 file changed, 12 insertions(+), 1 deletion(-)
 > 
-> Notes:
-> 
->   * Since I do not have hardware with me, this was just build tested. I would
->     appreciate it if someone could test and review it, especically somebody, who
->     uses the bridge for DPI/DSI to eDP format conversion.
-> 
->   * The Toshiba TC358767 bridge is not enabled in arm64 defconfig by default,
->     when it should be. Hence, I sent a quick patch[0] earlier.
-> 
-> [0]: https://lore.kernel.org/all/20231030152834.18450-1-a-bhatia1@ti.com/
-> 
->  drivers/gpu/drm/bridge/tc358767.c | 25 +++++++++++++++++++++++++
->  1 file changed, 25 insertions(+)
-> 
-> diff --git a/drivers/gpu/drm/bridge/tc358767.c b/drivers/gpu/drm/bridge/tc358767.c
-> index ef2e373606ba..0affcefdeb1c 100644
-> --- a/drivers/gpu/drm/bridge/tc358767.c
-> +++ b/drivers/gpu/drm/bridge/tc358767.c
-> @@ -1751,6 +1751,30 @@ tc_dpi_atomic_get_input_bus_fmts(struct drm_bridge *bridge,
->  	return input_fmts;
->  }
+> diff --git a/drivers/net/ethernet/cortina/gemini.c b/drivers/net/ethernet/cortina/gemini.c
+> index b21a94b4ab5c..576174a862a9 100644
+> --- a/drivers/net/ethernet/cortina/gemini.c
+> +++ b/drivers/net/ethernet/cortina/gemini.c
+> @@ -1151,6 +1151,12 @@ static int gmac_map_tx_bufs(struct net_device *netdev, struct sk_buff *skb,
+>  	if (skb->protocol == htons(ETH_P_8021Q))
+>  		mtu += VLAN_HLEN;
 >  
-> +static u32 *
-> +tc_edp_atomic_get_input_bus_fmts(struct drm_bridge *bridge,
-> +				 struct drm_bridge_state *bridge_state,
-> +				 struct drm_crtc_state *crtc_state,
-> +				 struct drm_connector_state *conn_state,
-> +				 u32 output_fmt,
-> +				 unsigned int *num_input_fmts)
-> +{
-> +	u32 *input_fmts;
+> +	if (skb->len > 65535) {
+> +		/* The field for length is only 16 bits */
+> +		netdev_err(netdev, "%s: frame too big, max size 65535 bytes\n", __func__);
+> +		return -E2BIG;
+> +	}
 > +
-> +	*num_input_fmts = 0;
-> +
-> +	input_fmts = kcalloc(MAX_INPUT_SEL_FORMATS, sizeof(*input_fmts),
-> +			     GFP_KERNEL);
-> +	if (!input_fmts)
-> +		return NULL;
-> +
-> +	/* This is the DSI/DPI-end bus format */
-> +	input_fmts[0] = MEDIA_BUS_FMT_RGB888_1X24;
-> +	*num_input_fmts = 1;
-> +
-> +	return input_fmts;
-> +}
 
-You could benefit from using the helper:
-drm_atomic_helper_bridge_propagate_bus_fmt()
+Prints in the packet data path are extremely discouraged, since if they
+trigger, they will spam your serial console and make it unusable.
 
-	Sam
+I see that the out_drop label already bumps a counter. That should be
+enough to signal there is a problem.
+
+>  	word1 = skb->len;
+>  	word3 = SOF_BIT;
+>  
+> @@ -1232,6 +1238,7 @@ static netdev_tx_t gmac_start_xmit(struct sk_buff *skb,
+>  	struct gmac_txq *txq;
+>  	int txq_num, nfrags;
+>  	union dma_rwptr rw;
+> +	int ret;
+>  
+>  	if (skb->len >= 0x10000)
+>  		goto out_drop_free;
+
+Since you already have this test, does the newly introduced one make
+this redundant? Why not just change the limit here?
+
+> @@ -1269,7 +1276,11 @@ static netdev_tx_t gmac_start_xmit(struct sk_buff *skb,
+>  		}
+>  	}
+>  
+> -	if (gmac_map_tx_bufs(netdev, skb, txq, &w)) {
+> +	ret = gmac_map_tx_bufs(netdev, skb, txq, &w);
+> +	if (ret == -E2BIG)
+> +		goto out_drop;
+
+Why out_drop and not out_drop_free? This handling will eventually cause an OOM.
+
+The fact that it didn't makes me suspect that you never actually hit this condition,
+because the network stack isn't delivering skbs larger than dev->mtu.
+Maybe net/core/pktgen.c doesn't take the MTU into consideration, I'm not
+completely sure there...
+
+> +	if (ret) {
+> +		/* Linearize and retry */
+>  		if (skb_linearize(skb))
+>  			goto out_drop;
+>  
+> 
+> -- 
+> 2.34.1
+> 
