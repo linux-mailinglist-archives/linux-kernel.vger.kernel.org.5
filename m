@@ -2,66 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D5D67E188D
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 03:20:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75DE57E1896
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 03:26:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229995AbjKFCUO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Nov 2023 21:20:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45898 "EHLO
+        id S229926AbjKFC0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Nov 2023 21:26:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229447AbjKFCUL (ORCPT
+        with ESMTP id S229447AbjKFC0U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Nov 2023 21:20:11 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6A61C6
-        for <linux-kernel@vger.kernel.org>; Sun,  5 Nov 2023 18:20:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699237208; x=1730773208;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=KZ1JE9nQ/ZPSsgmW/pCfXIcQwsbXp5MJrRE9yEZvPt4=;
-  b=lvX1JttfCEFAB1nC7vWc4eYQ44tHpQaYYYmqXfsB+3uQZehMZ22JOzDe
-   B3V5CwFkLCj+VYwC8EwEGDXOSfSnog4vDHDFSaxYZw89l3mBznOvCMnNy
-   5VwIZpTN68Vv6yNrdnLkpbW364mBwELf1DZBkd00R172re4DiWuErC//q
-   reYTyjo8/OIRch+nhrtkc4V7/85wcnqfoSjSM/ewGyDhh2bt/zhp/sxNw
-   KhLbcdTDWB00ezNMwxXPo+G8kF5Qa/hYAf8PuhqaAqoyZwpLGpFh+uqyk
-   ne4XD+OEr3+EprMeZJWbm1hLbeO8qo4CkANVqplPfNHONzPOdyvxqDWIN
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10885"; a="420309791"
-X-IronPort-AV: E=Sophos;i="6.03,279,1694761200"; 
-   d="scan'208";a="420309791"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2023 18:20:08 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10885"; a="885759898"
-X-IronPort-AV: E=Sophos;i="6.03,279,1694761200"; 
-   d="scan'208";a="885759898"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2023 18:20:05 -0800
-From:   "Huang, Ying" <ying.huang@intel.com>
-To:     Liu Shixin <liushixin2@huawei.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Yosry Ahmed <yosryahmed@google.com>,
-        Sachin Sant <sachinp@linux.ibm.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v7] mm: vmscan: try to reclaim swapcache pages if no
- swap space
-In-Reply-To: <20231104140313.3418001-1-liushixin2@huawei.com> (Liu Shixin's
-        message of "Sat, 4 Nov 2023 22:03:13 +0800")
-References: <20231104140313.3418001-1-liushixin2@huawei.com>
-Date:   Mon, 06 Nov 2023 10:18:04 +0800
-Message-ID: <87h6lzy68z.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+        Sun, 5 Nov 2023 21:26:20 -0500
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52805D6
+        for <linux-kernel@vger.kernel.org>; Sun,  5 Nov 2023 18:26:17 -0800 (PST)
+Received: by mail-pj1-x1033.google.com with SMTP id 98e67ed59e1d1-28099d11c49so1297559a91.1
+        for <linux-kernel@vger.kernel.org>; Sun, 05 Nov 2023 18:26:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1699237577; x=1699842377; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=4+zjHfcFj8TqUlH84WYwsqc/8Y29BbFUby3pKruCyyo=;
+        b=ByT/Wdw8UiJKQFJ8L2fbJIKApIh/PJcgdYD9GkG37Rx/iqC+uPXVB99IpXfzZdh9J3
+         rdfbWs9zVKXZZrIhiayi/GMPJv0w8VqHLLSogiYELRaMY2MlnG3gZ4uhck89cfYP0h0F
+         8VvruuSrW+YeMIJpXkHpCFFAtqaDJH0ue8lS0t7GfmiybLqKFql6riuXaZdEXVBx/lU0
+         sbLO1p+1EPzXx/vcwJjT2zzKQN3QLou9Zbi7R5EAg2iNwcfaF6WJ7W42NtWg7Jocuhjo
+         7gPAuuCQfCTnZ2XvbB+wkQkoC5bk2I+tWDwWIKpQjmv+cZ0VnAPD02wS01mcauyh5yVz
+         zw4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699237577; x=1699842377;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=4+zjHfcFj8TqUlH84WYwsqc/8Y29BbFUby3pKruCyyo=;
+        b=n/4xp7KS4rxP/QH7RsxXOyJ2xQUlUT5yc3xfzUQX7ZtFeTSK7Tnb4yTKa4g2dFvpyq
+         5C4pPAi35lnEQVTs8OyEpEw6HNDEozOCsYWHhUPbsuA02h+L492baQbC/QCRL4C3MVjY
+         dhDlCEjE+CwVx3v1CGgceUYmyK1U3LRQ7y328ehsi0eumucyKk9QQRflh50NceTh2jWF
+         Z7WhLleX5yXKhokVqRvU+vLoUbbnnWMY60qd2rCkIgNDM6PkTeW9iWIdIo3F6GztiKS8
+         mREfSwqEyl6PgrH2dnK0VvMtEIgjCByuMwLLjV6ApFKLWNADHnbzJ7zqhluxXLevPCtB
+         xoWg==
+X-Gm-Message-State: AOJu0YwskymvJghneo6z0x1b27eNICvfXFHedPbYEgTVzB5iQxjOQpoT
+        j5s0W0e/Tc/j/4j+AAnJNrRBig==
+X-Google-Smtp-Source: AGHT+IGXh2OTE0HtTz18uLoZnkxoWT3Ir57Kp8XxMeM0i7FeY+b193kXNd3C1M/38jDoZnuejggAsQ==
+X-Received: by 2002:a17:90b:3781:b0:27d:15e3:3aa9 with SMTP id mz1-20020a17090b378100b0027d15e33aa9mr26980182pjb.3.1699237576750;
+        Sun, 05 Nov 2023 18:26:16 -0800 (PST)
+Received: from octopus ([2400:4050:c3e1:100:44eb:593c:2134:f5ea])
+        by smtp.gmail.com with ESMTPSA id cq13-20020a17090af98d00b00280c285f878sm4447627pjb.55.2023.11.05.18.26.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 05 Nov 2023 18:26:16 -0800 (PST)
+Date:   Mon, 6 Nov 2023 11:26:11 +0900
+From:   AKASHI Takahiro <takahiro.akashi@linaro.org>
+To:     Cristian Marussi <cristian.marussi@arm.com>
+Cc:     Oleksii Moisieiev <Oleksii_Moisieiev@epam.com>,
+        "sudeep.holla@arm.com" <sudeep.holla@arm.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>
+Subject: Re: [RFC v5 3/5] firmware: arm_scmi: Add SCMI v3.2 pincontrol
+ protocol basic support
+Message-ID: <ZUhOw0+HVcJYmvp6@octopus>
+Mail-Followup-To: AKASHI Takahiro <takahiro.akashi@linaro.org>,
+        Cristian Marussi <cristian.marussi@arm.com>,
+        Oleksii Moisieiev <Oleksii_Moisieiev@epam.com>,
+        "sudeep.holla@arm.com" <sudeep.holla@arm.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>
+References: <cover.1698353854.git.oleksii_moisieiev@epam.com>
+ <7300b8804396075d2ae565f46de51a980ce846e6.1698353854.git.oleksii_moisieiev@epam.com>
+ <ZUNYkRtXUPeM4ppS@pluto>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZUNYkRtXUPeM4ppS@pluto>
+X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URI_DOTEDU autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,176 +96,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Liu Shixin <liushixin2@huawei.com> writes:
+On Thu, Nov 02, 2023 at 08:06:41AM +0000, Cristian Marussi wrote:
+> On Fri, Oct 27, 2023 at 06:28:10AM +0000, Oleksii Moisieiev wrote:
+> > Add basic implementation of the SCMI v3.2 pincontrol protocol.
+> > 
+> > Signed-off-by: Oleksii Moisieiev <oleksii_moisieiev@epam.com>
+> > ---
+> 
+> Hi Oleksii,
+> 
+> the new get/set v3.2 implementation seems finer to me at first sight.
+> I'll try to test this next days and give you more feedback.
 
-> When spaces of swap devices are exhausted, only file pages can be
-> reclaimed.  But there are still some swapcache pages in anon lru list.
-> This can lead to a premature out-of-memory.
->
-> The problem is found with such step:
->
->  Firstly, set a 9MB disk swap space, then create a cgroup with 10MB
->  memory limit, then runs an program to allocates about 15MB memory.
->
-> The problem occurs occasionally, which may need about 100 times [1].
->
-> Fix it by checking number of swapcache pages in can_reclaim_anon_pages().
-> If the number is not zero, return true and set swapcache_only to 1.
-> When scan anon lru list in swapcache_only mode, non-swapcache pages will
-> be skipped to isolate in order to accelerate reclaim efficiency.
->
-> However, in swapcache_only mode, the scan count still increased when scan
-> non-swapcache pages because there are large number of non-swapcache pages
-> and rare swapcache pages in swapcache_only mode, and if the non-swapcache
-> is skipped and do not count, the scan of pages in isolate_lru_folios() can
-> eventually lead to hung task, just as Sachin reported [2].
->
-> By the way, since there are enough times of memory reclaim before OOM, it
-> is not need to isolate too much swapcache pages in one times.
->
-> [1]. https://lore.kernel.org/lkml/CAJD7tkZAfgncV+KbKr36=eDzMnT=9dZOT0dpMWcurHLr6Do+GA@mail.gmail.com/
-> [2]. https://lore.kernel.org/linux-mm/CAJD7tkafz_2XAuqE8tGLPEcpLngewhUo=5US14PAtSM9tLBUQg@mail.gmail.com/
->
-> Signed-off-by: Liu Shixin <liushixin2@huawei.com>
-> Tested-by: Yosry Ahmed <yosryahmed@google.com>
-> Reviewed-by: "Huang, Ying" <ying.huang@intel.com>
-> Reviewed-by: Yosry Ahmed <yosryahmed@google.com>
-> ---
-> v6->v7: Reset swapcache_only to zero after there are swap spaces.
-> v5->v6: Fix NULL pointing derefence and hung task problem reported by Sachin.
->
->  include/linux/swap.h |  6 ++++++
->  mm/memcontrol.c      |  8 ++++++++
->  mm/vmscan.c          | 36 ++++++++++++++++++++++++++++++++++--
->  3 files changed, 48 insertions(+), 2 deletions(-)
->
-> diff --git a/include/linux/swap.h b/include/linux/swap.h
-> index f6dd6575b905..3ba146ae7cf5 100644
-> --- a/include/linux/swap.h
-> +++ b/include/linux/swap.h
-> @@ -659,6 +659,7 @@ static inline void mem_cgroup_uncharge_swap(swp_entry_t entry, unsigned int nr_p
->  }
->  
->  extern long mem_cgroup_get_nr_swap_pages(struct mem_cgroup *memcg);
-> +extern long mem_cgroup_get_nr_swapcache_pages(struct mem_cgroup *memcg);
->  extern bool mem_cgroup_swap_full(struct folio *folio);
->  #else
->  static inline void mem_cgroup_swapout(struct folio *folio, swp_entry_t entry)
-> @@ -681,6 +682,11 @@ static inline long mem_cgroup_get_nr_swap_pages(struct mem_cgroup *memcg)
->  	return get_nr_swap_pages();
->  }
->  
-> +static inline long mem_cgroup_get_nr_swapcache_pages(struct mem_cgroup *memcg)
-> +{
-> +	return total_swapcache_pages();
-> +}
-> +
->  static inline bool mem_cgroup_swap_full(struct folio *folio)
->  {
->  	return vm_swap_full();
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 5b009b233ab8..29e34c06ca83 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -7584,6 +7584,14 @@ long mem_cgroup_get_nr_swap_pages(struct mem_cgroup *memcg)
->  	return nr_swap_pages;
->  }
->  
-> +long mem_cgroup_get_nr_swapcache_pages(struct mem_cgroup *memcg)
-> +{
-> +	if (mem_cgroup_disabled())
-> +		return total_swapcache_pages();
-> +
-> +	return memcg_page_state(memcg, NR_SWAPCACHE);
-> +}
-> +
->  bool mem_cgroup_swap_full(struct folio *folio)
->  {
->  	struct mem_cgroup *memcg;
-> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index 6f13394b112e..a5e04291662f 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -137,6 +137,9 @@ struct scan_control {
->  	/* Always discard instead of demoting to lower tier memory */
->  	unsigned int no_demotion:1;
->  
-> +	/* Swap space is exhausted, only reclaim swapcache for anon LRU */
-> +	unsigned int swapcache_only:1;
-> +
->  	/* Allocation order */
->  	s8 order;
->  
-> @@ -602,6 +605,12 @@ static bool can_demote(int nid, struct scan_control *sc)
->  	return true;
->  }
->  
-> +static void set_swapcache_mode(struct scan_control *sc, bool swapcache_only)
-> +{
-> +	if (sc)
-> +		sc->swapcache_only = swapcache_only;
-> +}
-> +
+I don't think that this version addresses my comment yet:
 
-I think that it's unnecessary to introduce a new function.  I understand
-that you want to reduce the code duplication.  We can add
+https://lkml.iu.edu//hypermail/linux/kernel/2308.2/07483.html
 
-        sc->swapcache_only = false;
+I hope that it will be fixed in your *final* v5.
 
-at the beginning of can_reclaim_anon_pages() to reduce code duplication.
-That can cover even more cases IIUC.
+-Takahiro Akashi
 
->  static inline bool can_reclaim_anon_pages(struct mem_cgroup *memcg,
->  					  int nid,
->  					  struct scan_control *sc)
-> @@ -611,12 +620,26 @@ static inline bool can_reclaim_anon_pages(struct mem_cgroup *memcg,
->  		 * For non-memcg reclaim, is there
->  		 * space in any swap device?
->  		 */
-> -		if (get_nr_swap_pages() > 0)
-> +		if (get_nr_swap_pages() > 0) {
-> +			set_swapcache_mode(sc, false);
->  			return true;
-> +		}
-> +		/* Is there any swapcache pages to reclaim? */
-> +		if (total_swapcache_pages() > 0) {
-> +			set_swapcache_mode(sc, true);
-> +			return true;
-> +		}
->  	} else {
->  		/* Is the memcg below its swap limit? */
-> -		if (mem_cgroup_get_nr_swap_pages(memcg) > 0)
-> +		if (mem_cgroup_get_nr_swap_pages(memcg) > 0) {
-> +			set_swapcache_mode(sc, false);
->  			return true;
-> +		}
-> +		/* Is there any swapcache pages in memcg to reclaim? */
-> +		if (mem_cgroup_get_nr_swapcache_pages(memcg) > 0) {
-> +			set_swapcache_mode(sc, true);
-> +			return true;
-> +		}
->  	}
-
-If can_demote() returns true, we shouldn't scan swapcache only.
-
---
-Best Regards,
-Huang, Ying
-
->  	/*
-> @@ -2342,6 +2365,15 @@ static unsigned long isolate_lru_folios(unsigned long nr_to_scan,
->  		 */
->  		scan += nr_pages;
->  
-> +		/*
-> +		 * Count non-swapcache too because the swapcache pages may
-> +		 * be rare and it takes too much times here if not count
-> +		 * the non-swapcache pages.
-> +		 */
-> +		if (unlikely(sc->swapcache_only && !is_file_lru(lru) &&
-> +		    !folio_test_swapcache(folio)))
-> +			goto move;
-> +
->  		if (!folio_test_lru(folio))
->  			goto move;
->  		if (!sc->may_unmap && folio_mapped(folio))
+> Thanks,
+> Cristian
