@@ -2,64 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F1B847E31A1
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 00:49:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FEB67E31A7
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 00:51:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232954AbjKFXt1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 18:49:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59224 "EHLO
+        id S233111AbjKFXvW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 18:51:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232152AbjKFXtZ (ORCPT
+        with ESMTP id S231739AbjKFXvU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 18:49:25 -0500
+        Mon, 6 Nov 2023 18:51:20 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A2F392;
-        Mon,  6 Nov 2023 15:49:23 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E181EC433C8;
-        Mon,  6 Nov 2023 23:49:21 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A667692
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 15:51:18 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D4237C433C7;
+        Mon,  6 Nov 2023 23:51:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699314562;
-        bh=vxZh7uQV/qwyCfhEVz7KfEgklD4PUHvJkzFT4Xt+7Io=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=TFosqqH0vuGDxkFCsh+y8Th4LUHgwk30AfF75ljEHSTXLtMUk2YpH/GAXfDeG1cB3
-         EzzTqqwD10r+HNVDCDGMl/N9V+DlnnlaMlnsdhCSKRXW7kiDd6ZX/CfRV6Cct4HtiQ
-         wzhiUJixHByChVm0W6BzlMoNriYyTYKbS8P7oxUmWSqfycy8waSYkgLZ8G7l6DcUb9
-         yRu6v2+nPnJJ/LEhXXMhAppXHfuR2Ot211vqmVt2x0dQ0FQD/LjomoseKxhd4IkmfI
-         nO3xKT4vKQZHAedO3bH2w68OluwUQn9mgzPzFUjOGKBQBQdEfJLpsI+oxYPSbYpJ42
-         d4M9M97iHVSYw==
-Message-ID: <583db67b-96c6-4e17-bea0-b5a14799db4a@kernel.org>
-Date:   Mon, 6 Nov 2023 16:49:20 -0700
+        s=k20201202; t=1699314678;
+        bh=ug7V1tbLRIildaS+c6ipgNYbpP3MEP1leM3HDA/pNkE=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=g/J1Ta1DDq5rM2T0i0r2i8ySnmYDnynAyI8MgLPEtC83Sc1yqctCBvAM7mV58yjpV
+         XAlZcJOR/lZ0+6KLOLaVgfnoH849vWznNg2tLTK8OpJJ8c4fSpX6dSNyVIH4BoFJ56
+         Z8dZb0HzliYqJH3ScFvBR7mCPYAbw9GldSFgHbJ46E1jCkLxw77XQXpkP6XUDA7d5a
+         c1MjSrTqnkRAr9syYUW3CtFskcFDtKzAGC49s39p1nhOFbTQqNK6zQorbxSPAgj9Tp
+         CFxYonO+6HMVOF0L1d0a3xpRF7g0uhces3+/XJugNe71DetWe/QMl9ViY4Mmmutupj
+         oJfmMudJysf1w==
+From:   SeongJae Park <sj@kernel.org>
+To:     SeongJae Park <sj@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, damon@lists.linux.dev,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/3] mm/damon/sysfs: fix unhandled return values
+Date:   Mon,  6 Nov 2023 23:51:16 +0000
+Message-Id: <20231106235116.95842-1-sj@kernel.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231106233408.51159-1-sj@kernel.org>
+References: 
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v3 06/12] memory-provider: dmabuf devmem memory
- provider
-Content-Language: en-US
-To:     Mina Almasry <almasrymina@google.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Jeroen de Borst <jeroendb@google.com>,
-        Praveen Kaligineedi <pkaligineedi@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Kaiyuan Zhang <kaiyuanz@google.com>
-References: <20231106024413.2801438-1-almasrymina@google.com>
- <20231106024413.2801438-7-almasrymina@google.com>
-From:   David Ahern <dsahern@kernel.org>
-In-Reply-To: <20231106024413.2801438-7-almasrymina@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -70,48 +49,23 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/5/23 7:44 PM, Mina Almasry wrote:
-> diff --git a/include/net/page_pool/helpers.h b/include/net/page_pool/helpers.h
-> index 78cbb040af94..b93243c2a640 100644
-> --- a/include/net/page_pool/helpers.h
-> +++ b/include/net/page_pool/helpers.h
-> @@ -111,6 +112,45 @@ page_pool_iov_binding(const struct page_pool_iov *ppiov)
->  	return page_pool_iov_owner(ppiov)->binding;
->  }
->  
-> +static inline int page_pool_iov_refcount(const struct page_pool_iov *ppiov)
-> +{
-> +	return refcount_read(&ppiov->refcount);
-> +}
-> +
-> +static inline void page_pool_iov_get_many(struct page_pool_iov *ppiov,
-> +					  unsigned int count)
-> +{
-> +	refcount_add(count, &ppiov->refcount);
-> +}
-> +
-> +void __page_pool_iov_free(struct page_pool_iov *ppiov);
-> +
-> +static inline void page_pool_iov_put_many(struct page_pool_iov *ppiov,
-> +					  unsigned int count)
-> +{
-> +	if (!refcount_sub_and_test(count, &ppiov->refcount))
-> +		return;
-> +
-> +	__page_pool_iov_free(ppiov);
-> +}
-> +
-> +/* page pool mm helpers */
-> +
-> +static inline bool page_is_page_pool_iov(const struct page *page)
-> +{
-> +	return (unsigned long)page & PP_DEVMEM;
+On Mon, 6 Nov 2023 23:34:05 +0000 SeongJae Park <sj@kernel.org> wrote:
 
-This is another one where the code can be more generic to not force a
-lot changes later.  e.g., PP_CUSTOM or PP_NO_PAGE. Then io_uring use
-case with host memory can leverage the iov pool in a similar manner.
+> Some of DAMON sysfs interface code is not handling return values from
+> some functions.  As a result, confusing user input handling or
+> NULL-dereference is possible.  Check those properly.
+> 
+> Please note that these patches are not cleanly applicable on mm-unstable
+> since mm-unstable has dropped the mainline-merged patches and rebased on
+> v6.6, while some DAMON patches that these patches are depend on are
+> merged in the mainline after v6.6.  I confirmed these patches can
+> cleanly applied on latest mainline, or mm-stable-2023-11-01-14-33.
 
-That does mean skb->devmem needs to be a flag on the page pool and not
-just assume iov == device memory.
+I just checked mm-unstable has just updated, and confirmed these patches can
+cleanly applied.
 
 
+Thanks,
+SJ
+
+[...]
