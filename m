@@ -2,160 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 897997E2FBD
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 23:21:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5795D7E2FC1
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 23:21:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233156AbjKFWVI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 17:21:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55132 "EHLO
+        id S233225AbjKFWVR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 17:21:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232005AbjKFWVF (ORCPT
+        with ESMTP id S233166AbjKFWVL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 17:21:05 -0500
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7815D183;
-        Mon,  6 Nov 2023 14:21:02 -0800 (PST)
-Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A6MBAbJ002837;
-        Mon, 6 Nov 2023 22:21:01 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=mA552N5htsafit5Cwefei0xjOIrV3dSC6J30CUekmnc=;
- b=ptQzSEA2EQLxHCdT1h39b7ceIIebtU992z9oEfxHd7gm/kJsqE4oAQ9uej5WpebOR5vQ
- 0YKgFkhGMPXucnnc0Um68t1TXzA5b2ZohDPz4aoZoFoj6EiBa9gByz4Yqe8EHud7fvnb
- NZG78vFhGve7Ka6Juf2zZNxM58tn7Qa1FvCddUxjIQwNNuEK/lAaY4eXjgU688SKuhMy
- chC7m130Xu59JjA+4uHytCnGkuiOETMvJKDRQ4UnaZ7uD/P6oAc/BCM44G+m+jtLPnRs
- sIi2Q21m80o+7cbvA0L547aK1pGBCYoB+laBnwyZ04ELP9J3ZwYwTvot/vKQOBlwZzO+ Vw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u78q3r7jn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 06 Nov 2023 22:21:01 +0000
-Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3A6MFHUu013517;
-        Mon, 6 Nov 2023 22:21:00 GMT
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u78q3r7jc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 06 Nov 2023 22:21:00 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3A6M35C0025671;
-        Mon, 6 Nov 2023 22:21:00 GMT
-Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
-        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3u619nce82-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 06 Nov 2023 22:21:00 +0000
-Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
-        by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3A6MKvbL17433250
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 6 Nov 2023 22:20:57 GMT
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 081DA2004B;
-        Mon,  6 Nov 2023 22:20:57 +0000 (GMT)
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5B47520040;
-        Mon,  6 Nov 2023 22:20:56 +0000 (GMT)
-Received: from li-ce58cfcc-320b-11b2-a85c-85e19b5285e0 (unknown [9.171.62.82])
-        by smtpav06.fra02v.mail.ibm.com (Postfix) with SMTP;
-        Mon,  6 Nov 2023 22:20:56 +0000 (GMT)
-Date:   Mon, 6 Nov 2023 23:20:54 +0100
-From:   Halil Pasic <pasic@linux.ibm.com>
-To:     Tony Krowiak <akrowiak@linux.ibm.com>
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, jjherne@linux.ibm.com,
-        borntraeger@linux.ibm.com, frankja@linux.ibm.com,
-        imbrenda@linux.ibm.com, david@redhat.com, stable@vger.kernel.org,
-        Halil Pasic <pasic@linux.ibm.com>
-Subject: Re: [PATCH] s390/vfio-ap: fix sysfs status attribute for AP queue
- devices
-Message-ID: <20231106232054.059b1d0a.pasic@linux.ibm.com>
-In-Reply-To: <20231020204838.409521-1-akrowiak@linux.ibm.com>
-References: <20231020204838.409521-1-akrowiak@linux.ibm.com>
-Organization: IBM
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        Mon, 6 Nov 2023 17:21:11 -0500
+Received: from mail-oa1-x2a.google.com (mail-oa1-x2a.google.com [IPv6:2001:4860:4864:20::2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C4E0D6E;
+        Mon,  6 Nov 2023 14:21:09 -0800 (PST)
+Received: by mail-oa1-x2a.google.com with SMTP id 586e51a60fabf-1e9e4636ce6so476546fac.0;
+        Mon, 06 Nov 2023 14:21:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699309268; x=1699914068; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Bk1iGqzSFhqcLXMUJQBLSwculIJFSVmZJKxDlYOyfpY=;
+        b=WOVjzewsq3/y9eXUAdiAZ2CFK4bHu9BPXC3HKVx/MRSZuJ/r47AtXuos6EbFQLn1ZY
+         t5QxcNLL1q80pL5Zvv6ivZjRpihdkmVGn5tRGDJoaOwLOvQ7oQi4w8MYsGSNnM/hbFaQ
+         bG8kUriiJEX2tuHZMRezDi/v0Oqj1I9+0RyhiDehAhfaFWkRYHmG8PxHbZMSQ3CYpvZB
+         1WFfvgMqH1+xslmtOsjekiDQ8edUfBvvWvgU15kCbYnd7HbatPNI19S6f8lwaqMNKRjX
+         HObUXR+y2snam51owS1ZRGVzoQ5J/5vwrk76FIqkSlLgB4lPzJu9h9DWQs+miQN1RXq6
+         famw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699309268; x=1699914068;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Bk1iGqzSFhqcLXMUJQBLSwculIJFSVmZJKxDlYOyfpY=;
+        b=TfI0ZDaQJL5pLsIqCFLJ3HuuYjO1x/S3i6IOAZBPq0zDmfEDC3CX2vRh35GuLk8ioW
+         TjwFpDnC3V/Gz1HY0L2WS+dU5sQVUxHV34FKmzihhOCrXzFin2kxVxSKf0EGGc5DDxVs
+         pO4EvAHRg6LoBVp+kPkKKyjK02s11paAJpbESMkJS4Ilz/AmgUxKrEAJTp/XyqjxkmWI
+         xRJdIduRzqeGNEtZzPQwbVfVoXIyiFRIQkeWwkB0diH8BRIpZpHhlcrfQEsWcJ+14TLK
+         0jFu4wyGaGtUtdmukumoqHLlploAiQR6PPiF0ZQvj3QkHi/O6sf2lev46beF6LtJ9NaG
+         rGXg==
+X-Gm-Message-State: AOJu0Yy+/mrigYS+NWSq0l0H2T0scxYp7Dpc4Hceo2KJwoOfxvqCCpBT
+        fLhFpW12ylqKlfYGEHfC57A=
+X-Google-Smtp-Source: AGHT+IFrQVI3UuOVAMqIkpO31ev7YOIxC0kgQ+xbMLCn9eC76+pRj/jd6eEkJJQYjVE7MHOWeg1B+g==
+X-Received: by 2002:a05:6358:6f0e:b0:16b:6e91:f7f8 with SMTP id r14-20020a0563586f0e00b0016b6e91f7f8mr2559604rwn.0.1699309268298;
+        Mon, 06 Nov 2023 14:21:08 -0800 (PST)
+Received: from localhost.localdomain ([140.116.154.65])
+        by smtp.gmail.com with ESMTPSA id b7-20020a63cf47000000b00588e8421fa8sm217869pgj.84.2023.11.06.14.21.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 Nov 2023 14:21:07 -0800 (PST)
+From:   Kuan-Wei Chiu <visitorckw@gmail.com>
+To:     wintera@linux.ibm.com, wenjia@linux.ibm.com, hca@linux.ibm.com,
+        gor@linux.ibm.com, agordeev@linux.ibm.com
+Cc:     borntraeger@linux.ibm.com, svens@linux.ibm.com,
+        linux-s390@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Kuan-Wei Chiu <visitorckw@gmail.com>
+Subject: [PATCH] s390/qeth: Fix typo 'weed' in comment
+Date:   Tue,  7 Nov 2023 06:20:59 +0800
+Message-Id: <20231106222059.1475375-1-visitorckw@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: MtbJDBAnTwKkfBZWg5dE6U7jpycJDm1T
-X-Proofpoint-ORIG-GUID: IzzDEXocsv2P6GwOTOLF0oxeBlqt1mp0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-06_15,2023-11-02_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 mlxscore=0
- suspectscore=0 spamscore=0 mlxlogscore=999 malwarescore=0 impostorscore=0
- lowpriorityscore=0 adultscore=0 bulkscore=0 priorityscore=1501
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2310240000 definitions=main-2311060183
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 20 Oct 2023 16:48:35 -0400
-Tony Krowiak <akrowiak@linux.ibm.com> wrote:
+Replace 'weed' with 'we' in the comment.
 
-> The 'status' attribute for AP queue devices bound to the vfio_ap device
-> driver displays incorrect status when the mediated device is attached to a
-> guest, but the queue device is not passed through. In the current
-> implementation, the status displayed is 'in_use' which is not correct; it
-> should be 'assigned'. This can happen if one of the queue devices
-> associated with a given adapter is not bound to the vfio_ap device driver.
-> For example:
-> 
-> Queues listed in /sys/bus/ap/drivers/vfio_ap:
-> 14.0005
-> 14.0006
-> 14.000d
-> 16.0006
-> 16.000d
-> 
-> Queues listed in /sys/devices/vfio_ap/matrix/$UUID/matrix
-> 14.0005
-> 14.0006
-> 14.000d
-> 16.0005
-> 16.0006
-> 16.000d
-> 
-> Queues listed in /sys/devices/vfio_ap/matrix/$UUID/guest_matrix
-> 14.0005
-> 14.0006
-> 14.000d
-> 
-> The reason no queues for adapter 0x16 are listed in the guest_matrix is
-> because queue 16.0005 is not bound to the vfio_ap device driver, so no
-> queue associated with the adapter is passed through to the guest;
-> therefore, each queue device for adapter 0x16 should display 'assigned'
-> instead of 'in_use', because those queues are not in use by a guest, but
-> only assigned to the mediated device.
-> 
-> Let's check the AP configuration for the guest to determine whether a
-> queue device is passed through before displaying a status of 'in_use'.
-> 
-> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
-> Fixes: f139862b92cf ("s390/vfio-ap: add status attribute to AP queue device's sysfs dir")
+Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
+---
+ drivers/s390/net/qeth_core_main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Acked-by: Halil Pasic <pasic@linux.ibm.com>
+diff --git a/drivers/s390/net/qeth_core_main.c b/drivers/s390/net/qeth_core_main.c
+index 6af2511e070c..cf8506d0f185 100644
+--- a/drivers/s390/net/qeth_core_main.c
++++ b/drivers/s390/net/qeth_core_main.c
+@@ -3675,7 +3675,7 @@ static void qeth_flush_queue(struct qeth_qdio_out_q *queue)
+ static void qeth_check_outbound_queue(struct qeth_qdio_out_q *queue)
+ {
+ 	/*
+-	 * check if weed have to switch to non-packing mode or if
++	 * check if we have to switch to non-packing mode or if
+ 	 * we have to get a pci flag out on the queue
+ 	 */
+ 	if ((atomic_read(&queue->used_buffers) <= QETH_LOW_WATERMARK_PACK) ||
+-- 
+2.25.1
 
-I'm not sure if there is documentation. I assume there is
-no additional documentation except for the code and the
-commit messages on what those actually mean. So there
-is no way to cross-check and no need to update it.
-
-I personally don't feel like having clarity on these states. In
-use does not actually mean that the guest is actually using
-it: the guest can happily ignore the queue. The unassigned
-is pretty clear. What "assigned" vs "in use" is supposed
-to express, not so much to me.
-
-I don't think this fix qualifies for the stable process,
-but it has been a while since I've looked at the corresponding
-process documentation.
-
-> Cc: stable@vger.kernel.org
