@@ -2,83 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CD527E291D
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 16:50:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F2E7A7E2909
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 16:49:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232881AbjKFPu3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 10:50:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33082 "EHLO
+        id S232269AbjKFPt4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 10:49:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232564AbjKFPuH (ORCPT
+        with ESMTP id S231827AbjKFPtz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 10:50:07 -0500
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EF38D45;
-        Mon,  6 Nov 2023 07:50:04 -0800 (PST)
-Received: from dggpemm100001.china.huawei.com (unknown [172.30.72.56])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4SPG0L0dT2zPntQ;
-        Mon,  6 Nov 2023 23:45:54 +0800 (CST)
-Received: from localhost.localdomain (10.175.112.125) by
- dggpemm100001.china.huawei.com (7.185.36.93) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Mon, 6 Nov 2023 23:50:02 +0800
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-CC:     <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Hildenbrand <david@redhat.com>,
-        <linux-s390@vger.kernel.org>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>
-Subject: [PATCH 08/10] mm: memory: use a folio in insert_page_into_pte_locked()
-Date:   Mon, 6 Nov 2023 23:49:48 +0800
-Message-ID: <20231106154950.3399469-9-wangkefeng.wang@huawei.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20231106154950.3399469-1-wangkefeng.wang@huawei.com>
-References: <20231106154950.3399469-1-wangkefeng.wang@huawei.com>
+        Mon, 6 Nov 2023 10:49:55 -0500
+Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A367A107;
+        Mon,  6 Nov 2023 07:49:51 -0800 (PST)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 67EE4C0007;
+        Mon,  6 Nov 2023 15:49:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1699285790;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2fzTFRtE8OUbr2+PUc5Jsl8FOsZhgcgp2/rGQyh/LaY=;
+        b=Mb+7QgvYWX/CYi2SnZpUmb520oUd+hxz+xJaJ7govP4NaDscocn8T9sLa3PPdowGzGVeE9
+        jHw2T41xtF3qCod4eSrM4sJzrq8YgUQpdW8lYtEDb+8DkfQ4O2BMcuDO69Qtos2P1gGAkl
+        ImYQ3hsGtS8UgiexOWyg2LX7cwI9oJ28QBPHvi9nFCjY0s8vT3TNpuDEQgUi5cO0EiI5qx
+        fks8P+retlmvPU/zNNZaGyfSiHG0+/ZwnRFr3rjOfdB0bJJX1wAlFQ55iLivjyT+8c9UYb
+        b0XcMrPuzjGhK32FwDE8RsogzTjUwcznfhXPGLRsltUjPh3cVBC/yup6+vJDuA==
+Date:   Mon, 6 Nov 2023 16:49:48 +0100
+From:   Mehdi Djait <mehdi.djait@bootlin.com>
+To:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+Cc:     mchehab@kernel.org, hverkuil-cisco@xs4all.nl,
+        krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
+        conor+dt@kernel.org, laurent.pinchart@ideasonboard.com,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, thomas.petazzoni@bootlin.com,
+        alexandre.belloni@bootlin.com, maxime.chevallier@bootlin.com
+Subject: Re: [PATCH v7 3/3] media: i2c: Introduce a driver for the Techwell
+ TW9900 decoder
+Message-ID: <ZUkLHDH2Budi+zgc@pc-70.home>
+References: <cover.1697463708.git.mehdi.djait@bootlin.com>
+ <c3cd9002b2db69a6fb155722adc8410cd6e1f9ab.1697463708.git.mehdi.djait@bootlin.com>
+ <ZUNz_h1fn9RH9Uc5@aptenodytes>
+ <ZUj/FQTyajQJrxoU@pc-70.home>
+ <ZUkFXl7vBS36y4Qi@aptenodytes>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.112.125]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpemm100001.china.huawei.com (7.185.36.93)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZUkFXl7vBS36y4Qi@aptenodytes>
+X-GND-Sasl: mehdi.djait@bootlin.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use a folio in insert_page_into_pte_locked(), which is preparetion
-for converting mm counter functions to take a folio.
+Hi Paul,
 
-Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
----
- mm/memory.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+On Mon, Nov 06, 2023 at 04:25:18PM +0100, Paul Kocialkowski wrote:
+> > > > +static void tw9900_fill_fmt(const struct tw9900_mode *mode,
+> > > > +			    struct v4l2_mbus_framefmt *fmt)
+> > > > +{
+> > > > +	fmt->code = MEDIA_BUS_FMT_UYVY8_2X8;
+> > > > +	fmt->width = mode->width;
+> > > > +	fmt->height = mode->height;
+> > > > +	fmt->field = V4L2_FIELD_NONE;
+> > > > +	fmt->quantization = V4L2_QUANTIZATION_DEFAULT;
+> > > > +	fmt->colorspace = V4L2_COLORSPACE_SMPTE170M;
+> > > > +	fmt->xfer_func = V4L2_MAP_XFER_FUNC_DEFAULT(V4L2_COLORSPACE_SMPTE170M);
+> > > > +	fmt->ycbcr_enc = V4L2_MAP_YCBCR_ENC_DEFAULT(V4L2_COLORSPACE_SMPTE170M);
+> > > > +}
+> > > > +
+> > > > +static int tw9900_cfg_fmt(struct v4l2_subdev *sd,
+> > > 
+> > > You might have to differentiate between set_fmt/get_fmt to return -EBUSY
+> > > if streaming is on in set_fmt. However I understand it will just copy the
+> > > current mode in both cases, but this might still be required to follow v4l2
+> > > semantics (please double-check).
+> > > 
+> > 
+> > This should be done in the driver calling the pad subdev_call set_fmt,
+> > right ?
+> 
+> Well the two things are distinct, even though it's not obvious to think about
+> a case where you wouldn't have a video device to grab the frames.
+> 
+> For instance you can see this being done here:
+> https://elixir.bootlin.com/linux/latest/source/drivers/media/i2c/ov5648.c#L2259
+> 
+> I'm just not sure about what the V4L2 subdev API mandates. It would be useful
+> to find some piece of documentation that clarifies the requirement.
 
-diff --git a/mm/memory.c b/mm/memory.c
-index fbed32a09fec..dd3760988e02 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -1854,10 +1854,13 @@ static int validate_page_before_insert(struct page *page)
- static int insert_page_into_pte_locked(struct vm_area_struct *vma, pte_t *pte,
- 			unsigned long addr, struct page *page, pgprot_t prot)
- {
-+	struct folio *folio;
-+
- 	if (!pte_none(ptep_get(pte)))
- 		return -EBUSY;
-+	folio = page_folio(page);
- 	/* Ok, finally just insert the thing.. */
--	get_page(page);
-+	folio_get(folio);
- 	inc_mm_counter(vma->vm_mm, mm_counter_file(page));
- 	page_add_file_rmap(page, vma, false);
- 	set_pte_at(vma->vm_mm, addr, pte, mk_pte(page, prot));
--- 
-2.27.0
+Ok, I will split the functions then.
 
+--
+Kind Regards
+Mehdi Djait
