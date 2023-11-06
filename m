@@ -2,67 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 61A0B7E1899
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 03:27:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FBBA7E189C
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 03:28:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230030AbjKFC1g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Nov 2023 21:27:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50030 "EHLO
+        id S230124AbjKFC2N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Nov 2023 21:28:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229447AbjKFC1e (ORCPT
+        with ESMTP id S229717AbjKFC2M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Nov 2023 21:27:34 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 982E4D6;
-        Sun,  5 Nov 2023 18:27:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699237652; x=1730773652;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=2GJpYqysQuTF5tqL/b1VeNnpS+0M2mXiG2Sc6wszklQ=;
-  b=ix4w//199YS1AIjn0/AYfqwrANvPFHlbDbIaOgJRuA0iXVsruSmXYGD2
-   j8TWwUvx40fdU8WOufGtUpZVfEpzbkQuR4aPgCAQFLHM3tdWtZRk+s5WS
-   338NSboLI6QdsBgGpEqaXg9r8pA8EyXIPEu6hqOXD7mavPkfLmTc5RpC+
-   SSZhonOLv0NRDwJXy1KyeVea3lFHAB8Mki0XJt813RSi0Dexw+n4Qv9V4
-   GGh4/HybLHJ/rnhbo0nkfiVv2VxnvyZChY0pQGvMku0Xp+Zr8kEynKCs7
-   FYsSRm2ZPRTwl3BKwOOx+ExDzydjBneR6uCjXtcfe54mi1hRTRSCRR4lA
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10885"; a="420310411"
-X-IronPort-AV: E=Sophos;i="6.03,280,1694761200"; 
-   d="scan'208";a="420310411"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2023 18:27:30 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10885"; a="885760713"
-X-IronPort-AV: E=Sophos;i="6.03,280,1694761200"; 
-   d="scan'208";a="885760713"
-Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by orsmga004.jf.intel.com with ESMTP; 05 Nov 2023 18:27:28 -0800
-Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qzpKn-00060u-2U;
-        Mon, 06 Nov 2023 02:27:25 +0000
-Date:   Mon, 6 Nov 2023 10:26:47 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Justin Lai <justinlai0215@realtek.com>, kuba@kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev, davem@davemloft.net,
-        edumazet@google.com, pabeni@redhat.com,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        andrew@lunn.ch, pkshih@realtek.com, larry.chiu@realtek.com,
-        Justin Lai <justinlai0215@realtek.com>
-Subject: Re: [PATCH net-next v10 12/13] net:ethernet:realtek: Update the
- Makefile and Kconfig in the realtek folder
-Message-ID: <202311060957.C85OYvxq-lkp@intel.com>
-References: <20231102154505.940783-13-justinlai0215@realtek.com>
+        Sun, 5 Nov 2023 21:28:12 -0500
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97838FF
+        for <linux-kernel@vger.kernel.org>; Sun,  5 Nov 2023 18:28:08 -0800 (PST)
+Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1ca85ff26afso7747515ad.1
+        for <linux-kernel@vger.kernel.org>; Sun, 05 Nov 2023 18:28:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1699237688; x=1699842488; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:to:from:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=8ICXDgrUHS6vF/SNPSijdTNrJfbN2u8WpcsExfAzl5Y=;
+        b=e1o5xTU2yVE18YW1DnaNuNCjKDFO5m3ZS5/vS9lcdpUjkj8FMblQEF6s+J9/7kq9q0
+         SBd08vzClQdFYQjWsOxTmwiNWMXZCOMSJr+YvTmvgoPGbb//J/h5+QnQj/4qki2UDX+x
+         j/FQM8AERkjkTlYmFA1JG96ixAC/YEQN9/RT3j7VRgb+k9+xKYQm/E1WfJ05BYzAyAhr
+         2d6saErNaSxfx0lPKfE4LrRn6tIIkckuMvysYpfNhQskUBRDSwYnllT1DSz4KoynpZCo
+         U88xr1xzzZLjRDBGGtRHnakcMrd+INeyJuG1PQi+dXS8yfeIyjcHU11jJ+39hDc+LA1Y
+         Hauw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699237688; x=1699842488;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:to:from:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=8ICXDgrUHS6vF/SNPSijdTNrJfbN2u8WpcsExfAzl5Y=;
+        b=ZJsohXhWYTppzmr7rD/t4/aMo3+qzKphdq1PTVgfXYk0oHlPOy88y6Gl+Jy4FqwShp
+         qtI5DYs2dmPu8Cmook2g69/mzs0bF6OOi9IHK/o+Dtv3fqXa0JNmZ6loAUhloCrNC2Ft
+         TSg78KOJeykRU9wjNgI3njs7CnoWd5EgXn+/y+936gJNhe1XbooS2z48zZmnX07TJEYd
+         hqjv/wto1yRZ/H0dgJJhgl7FVQ18NBdG45peAcPCCUtn1XeiE22q4PI7aWGTkgNHfRCf
+         A8sd+jeBiImgidw2S/Wb2gWtkpA2ynS6Ikn9AJcNREzBLe2BbPXY7gaa6iyQIiwArnwU
+         waxw==
+X-Gm-Message-State: AOJu0YxBZEwJae7ZPTR0Ov54VJ4J7bKCDaL3dYWpx3+U+HUXlD7criCi
+        SY0//aRWQNMvfoZtsBZ/TAQ1Sw==
+X-Google-Smtp-Source: AGHT+IGKeESJ321fkysf/ehuZaNxdclt+G5XHCOjmYZoDKjWobUxbFP67O0IeMp/d/iW1j9dzcL4Nw==
+X-Received: by 2002:a17:902:c649:b0:1cc:3202:dcca with SMTP id s9-20020a170902c64900b001cc3202dccamr23138767pls.2.1699237687807;
+        Sun, 05 Nov 2023 18:28:07 -0800 (PST)
+Received: from octopus ([2400:4050:c3e1:100:44eb:593c:2134:f5ea])
+        by smtp.gmail.com with ESMTPSA id jc15-20020a17090325cf00b001cc0d1af177sm4735588plb.229.2023.11.05.18.28.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 05 Nov 2023 18:28:07 -0800 (PST)
+Date:   Mon, 6 Nov 2023 11:28:03 +0900
+From:   AKASHI Takahiro <takahiro.akashi@linaro.org>
+To:     Cristian Marussi <cristian.marussi@arm.com>,
+        Oleksii Moisieiev <Oleksii_Moisieiev@epam.com>,
+        "sudeep.holla@arm.com" <sudeep.holla@arm.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>
+Subject: Re: [RFC v5 3/5] firmware: arm_scmi: Add SCMI v3.2 pincontrol
+ protocol basic support
+Message-ID: <ZUhPMxpho1WR5b+8@octopus>
+Mail-Followup-To: AKASHI Takahiro <takahiro.akashi@linaro.org>,
+        Cristian Marussi <cristian.marussi@arm.com>,
+        Oleksii Moisieiev <Oleksii_Moisieiev@epam.com>,
+        "sudeep.holla@arm.com" <sudeep.holla@arm.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>
+References: <cover.1698353854.git.oleksii_moisieiev@epam.com>
+ <7300b8804396075d2ae565f46de51a980ce846e6.1698353854.git.oleksii_moisieiev@epam.com>
+ <ZUNYkRtXUPeM4ppS@pluto>
+ <ZUhOw0+HVcJYmvp6@octopus>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231102154505.940783-13-justinlai0215@realtek.com>
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+In-Reply-To: <ZUhOw0+HVcJYmvp6@octopus>
+X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URI_DOTEDU autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,39 +97,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Justin,
+On Mon, Nov 06, 2023 at 11:26:11AM +0900, AKASHI Takahiro wrote:
+> On Thu, Nov 02, 2023 at 08:06:41AM +0000, Cristian Marussi wrote:
+> > On Fri, Oct 27, 2023 at 06:28:10AM +0000, Oleksii Moisieiev wrote:
+> > > Add basic implementation of the SCMI v3.2 pincontrol protocol.
+> > > 
+> > > Signed-off-by: Oleksii Moisieiev <oleksii_moisieiev@epam.com>
+> > > ---
+> > 
+> > Hi Oleksii,
+> > 
+> > the new get/set v3.2 implementation seems finer to me at first sight.
+> > I'll try to test this next days and give you more feedback.
+> 
+> I don't think that this version addresses my comment yet:
+> 
+> https://lkml.iu.edu//hypermail/linux/kernel/2308.2/07483.html
+> 
+> I hope that it will be fixed in your *final* v5.
 
-kernel test robot noticed the following build errors:
-
-[auto build test ERROR on net-next/main]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Justin-Lai/net-ethernet-realtek-rtase-Add-pci-table-supported-in-this-module/20231103-032946
-base:   net-next/main
-patch link:    https://lore.kernel.org/r/20231102154505.940783-13-justinlai0215%40realtek.com
-patch subject: [PATCH net-next v10 12/13] net:ethernet:realtek: Update the Makefile and Kconfig in the realtek folder
-config: alpha-allyesconfig (https://download.01.org/0day-ci/archive/20231106/202311060957.C85OYvxq-lkp@intel.com/config)
-compiler: alpha-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231106/202311060957.C85OYvxq-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311060957.C85OYvxq-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
->> drivers/net/ethernet/realtek/rtase/rtase_main.c:68:10: fatal error: net/page_pool.h: No such file or directory
-      68 | #include <net/page_pool.h>
-         |          ^~~~~~~~~~~~~~~~~
-   compilation terminated.
+Oops, this comment should better go against patch#4/5.
 
 
-vim +68 drivers/net/ethernet/realtek/rtase/rtase_main.c
-
-db2657d0fa3a98 Justin Lai 2023-11-02 @68  #include <net/page_pool.h>
-db2657d0fa3a98 Justin Lai 2023-11-02  69  #include <net/pkt_cls.h>
-db2657d0fa3a98 Justin Lai 2023-11-02  70  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> -Takahiro Akashi
+> 
+> > Thanks,
+> > Cristian
