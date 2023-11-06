@@ -2,145 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A4C577E2A1F
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 17:41:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D8997E2A25
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 17:43:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231277AbjKFQlJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 11:41:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47982 "EHLO
+        id S232202AbjKFQnd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 11:43:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232912AbjKFQlD (ORCPT
+        with ESMTP id S232781AbjKFQnb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 11:41:03 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C012C10FD
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 08:40:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699288855; x=1730824855;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=W6TBX3wq5n6LG78ZXRmLyTkh51LstlH+EyHwK5EG/UU=;
-  b=IPRVuF4lSBU/EodqejFw1cIt6lALlEgmAdvdm+ab9HhXklQuWqHBpF3R
-   L12kgTJW9lfaXAc9XJOU8OruD9HCPyddxCU2Tc03M8rWAG7TCwBMsxyCH
-   WQ6qGa937/HCkFEfQQ7hJCalxcc45HJausSGgkN3ylLhVOrJtRKQHSU1y
-   yxNWIu4LEb6cnGHOQxxPoY2JM0CA0PiguVdMGQA3c7x2iALS7UKeDoA4b
-   rS8i/PJ9yagkwCjECbnhkLTmtvCqr+EPNtM3kJJg6h9kFj4yZ3dVmK82K
-   4S+u157SqLWH5rtfswGWjkdpO2+eoCMirD8SKdVHqTE+EWtWHyvOS2i8g
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10886"; a="453620461"
-X-IronPort-AV: E=Sophos;i="6.03,282,1694761200"; 
-   d="scan'208";a="453620461"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Nov 2023 08:40:46 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.03,282,1694761200"; 
-   d="scan'208";a="10502671"
-Received: from lpilolli-mobl.ger.corp.intel.com (HELO localhost) ([10.252.36.222])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Nov 2023 08:40:43 -0800
-From:   Jani Nikula <jani.nikula@linux.intel.com>
-To:     Abhinav Singh <singhabhinav9051571833@gmail.com>,
-        alexander.deucher@amd.com, christian.koenig@amd.com,
-        Xinhui.Pan@amd.com, airlied@gmail.com, daniel@ffwll.ch
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drivers: gpu: Fix warning using plain integer as NULL
-In-Reply-To: <a2310260-ba15-428e-9fd1-08abb9565b18@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20231103155013.332367-1-singhabhinav9051571833@gmail.com>
- <87sf5jyvkt.fsf@intel.com>
- <a2310260-ba15-428e-9fd1-08abb9565b18@gmail.com>
-Date:   Mon, 06 Nov 2023 18:40:39 +0200
-Message-ID: <87h6lyzvg8.fsf@intel.com>
+        Mon, 6 Nov 2023 11:43:31 -0500
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E87DCD4D;
+        Mon,  6 Nov 2023 08:43:27 -0800 (PST)
+Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-6bf03b98b9bso4334094b3a.1;
+        Mon, 06 Nov 2023 08:43:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699289007; x=1699893807; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=xYiXnGi32nL1dAgLwz8qgQxJ2TizbYw6290xQdYSCOQ=;
+        b=KRNdCFEoNsC9Vl5Ej9YyqbZW78HGzZgfK6dNExWibbdWnkf/psFWTgQ4x6/PMGvwhU
+         Fy7RMAtPru0Qx7emelu2HSU648kI7Mx0XJOEsZsuNhy1pqOU6My4NvShtW3UefEnmsLx
+         VF9co059ubafe4Mv7TyP16KB04HPGHPTJ+4QwxgItkV7rs3iE7FHjkHeSfr2asY75H4i
+         F+eOdCHf8I46cG+JXTs5gRuz6X0DIBBqSbKj4Bn5R6dhh5rg57RYeCgG4ASOszr6JuHj
+         6OillDPwETf/dY+PWM2JjMcoyEirbsl4s4uVpvl6Bn84CVWAGdVIJAzzbqfEuuzXSbNO
+         7Rbg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699289007; x=1699893807;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=xYiXnGi32nL1dAgLwz8qgQxJ2TizbYw6290xQdYSCOQ=;
+        b=Bu6UXOHV5FKCVx4R76Hk0FDAVcvcQUJ3M41NaSt4D8x+5JdqGX6P1hrYLzEofm0x7u
+         L8QkkxkXgcQihDDtEV/aF7edw0c7P4omWubdqAnJ3fitXDPvQtqk5ObCZKwr0bVQKqQP
+         kXwY9jTaOb0qqvqtNhne0+4d9J/Yh8qUJBDx0m/hYcaM6igCnxVj3+FcI1pmDB6u/FqM
+         Wj19zH5msMRQicqiJWfIZAcltfA0CMyKvp+6TWpHLERqsBr+fokOJX9CeI41RNf3pO5m
+         Cc5HeHk4GfTDaQUZz4Uz2YRzCXXQB5rOan33si/27aVeg2+2mY26rZ8kCMcqAF+kUIjd
+         WfLQ==
+X-Gm-Message-State: AOJu0YxDgkAtxBpdKzWlsLfH9jTjARUag4Qaf/U4+e1oh3Nz1Jf2kmpd
+        H5pKyxvTM8nKNhNtTFpnoMlbFuNTsm53nXAL
+X-Google-Smtp-Source: AGHT+IETqIoBt7sVYlAlg0e0WxxwL5q30EOTulNV3m2su1KngxTkc1RtM4Ez78vLMhLRS7AXPvKQyA==
+X-Received: by 2002:a05:6a21:a581:b0:15e:b253:269f with SMTP id gd1-20020a056a21a58100b0015eb253269fmr16315420pzc.28.1699289006581;
+        Mon, 06 Nov 2023 08:43:26 -0800 (PST)
+Received: from archlinux.srmu.edu.in ([103.4.222.252])
+        by smtp.gmail.com with ESMTPSA id b6-20020a056a000a8600b006933e71956dsm5828227pfl.9.2023.11.06.08.43.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 Nov 2023 08:43:26 -0800 (PST)
+From:   Anshul Dalal <anshulusr@gmail.com>
+To:     linux-input@vger.kernel.org, devicetree@vger.kernel.org
+Cc:     Anshul Dalal <anshulusr@gmail.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        =?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>,
+        Jeff LaBundy <jeff@labundy.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH v7 1/2] dt-bindings: input: bindings for Adafruit Seesaw Gamepad
+Date:   Mon,  6 Nov 2023 22:11:31 +0530
+Message-ID: <20231106164134.114668-1-anshulusr@gmail.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 06 Nov 2023, Abhinav Singh <singhabhinav9051571833@gmail.com> wrote:
-> On 11/6/23 16:53, Jani Nikula wrote:
->> On Fri, 03 Nov 2023, Abhinav Singh <singhabhinav9051571833@gmail.com> wrote:
->>> sparse static analysis tools generate a warning with this message
->>> "Using plain integer as NULL pointer". In this case this warning is
->>> being shown because we are trying to intialize a pointer to NULL using
->>> integer value 0.
->>>
->>> Signed-off-by: Abhinav Singh <singhabhinav9051571833@gmail.com>
->>> ---
->>>   drivers/gpu/drm/radeon/clearstate_evergreen.h | 8 ++++----
->>>   1 file changed, 4 insertions(+), 4 deletions(-)
->>>
->>> diff --git a/drivers/gpu/drm/radeon/clearstate_evergreen.h b/drivers/gpu/drm/radeon/clearstate_evergreen.h
->>> index 63a1ffbb3ced..3b645558f133 100644
->>> --- a/drivers/gpu/drm/radeon/clearstate_evergreen.h
->>> +++ b/drivers/gpu/drm/radeon/clearstate_evergreen.h
->>> @@ -1049,7 +1049,7 @@ static const struct cs_extent_def SECT_CONTEXT_defs[] =
->>>       {SECT_CONTEXT_def_5, 0x0000a29e, 5 },
->>>       {SECT_CONTEXT_def_6, 0x0000a2a5, 56 },
->>>       {SECT_CONTEXT_def_7, 0x0000a2de, 290 },
->>> -    { 0, 0, 0 }
->>> +    { NULL, 0, 0 }
->> 
->> Random drive-by comment:
->> 
->> I'd just use {} as the sentinel.
->> 
->> BR,
->> Jani.
->> 
->>>   };
->>>   static const u32 SECT_CLEAR_def_1[] =
->>>   {
->>> @@ -1060,7 +1060,7 @@ static const u32 SECT_CLEAR_def_1[] =
->>>   static const struct cs_extent_def SECT_CLEAR_defs[] =
->>>   {
->>>       {SECT_CLEAR_def_1, 0x0000ffc0, 3 },
->>> -    { 0, 0, 0 }
->>> +    { NULL, 0, 0 }
->>>   };
->>>   static const u32 SECT_CTRLCONST_def_1[] =
->>>   {
->>> @@ -1070,11 +1070,11 @@ static const u32 SECT_CTRLCONST_def_1[] =
->>>   static const struct cs_extent_def SECT_CTRLCONST_defs[] =
->>>   {
->>>       {SECT_CTRLCONST_def_1, 0x0000f3fc, 2 },
->>> -    { 0, 0, 0 }
->>> +    { NULL, 0, 0 }
->>>   };
->>>   static const struct cs_section_def evergreen_cs_data[] = {
->>>       { SECT_CONTEXT_defs, SECT_CONTEXT },
->>>       { SECT_CLEAR_defs, SECT_CLEAR },
->>>       { SECT_CTRLCONST_defs, SECT_CTRLCONST },
->>> -    { 0, SECT_NONE }
->>> +    { NULL, SECT_NONE }
->>>   };
->>> --
->>> 2.39.2
->>>
->> 
-> Hi, Thanks for dropping by and the suggestion. I thought of using NULL 
-> instead of {} is because, first the warning itself says that 0 is used 
-> to intialize pointers with NULL, and second due this link 
-> https://www.spinics.net/lists/linux-sparse/msg10066.html where linus is 
-> talking about not using 0 NULL intialization of pointer variable and he 
-> thinks this is a legitimate issue and not some false positive
+Adds bindings for the Adafruit Seesaw Gamepad.
 
-But... {} is neither of those things. It's empty initialization instead
-of 0. It's valid in GCC and C23, and used all over the place in the
-kernel.
+The gamepad functions as an i2c device with the default address of 0x50
+and has an IRQ pin that can be enabled in the driver to allow for a rising
+edge trigger on each button press or joystick movement.
 
-BR,
-Jani.
+Product page:
+  https://www.adafruit.com/product/5743
+Arduino driver:
+  https://github.com/adafruit/Adafruit_Seesaw
 
+Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Signed-off-by: Anshul Dalal <anshulusr@gmail.com>
+---
 
+Changes for v7:
+- no updates
 
+Changes for v6:
+- no updates
+
+Changes for v5:
+- Added link to the datasheet
+
+Changes for v4:
+- Fixed the URI for the id field
+- Added `interrupts` property
+
+Changes for v3:
+- Updated id field to reflect updated file name from previous version
+- Added `reg` property
+
+Changes for v2:
+- Renamed file to `adafruit,seesaw-gamepad.yaml`
+- Removed quotes for `$id` and `$schema`
+- Removed "Bindings for" from the description
+- Changed node name to the generic name "joystick"
+- Changed compatible to 'adafruit,seesaw-gamepad' instead of
+  'adafruit,seesaw_gamepad'
+---
+ .../input/adafruit,seesaw-gamepad.yaml        | 60 +++++++++++++++++++
+ 1 file changed, 60 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/input/adafruit,seesaw-gamepad.yaml
+
+diff --git a/Documentation/devicetree/bindings/input/adafruit,seesaw-gamepad.yaml b/Documentation/devicetree/bindings/input/adafruit,seesaw-gamepad.yaml
+new file mode 100644
+index 000000000000..3f0d1c5a3b9b
+--- /dev/null
++++ b/Documentation/devicetree/bindings/input/adafruit,seesaw-gamepad.yaml
+@@ -0,0 +1,60 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/input/adafruit,seesaw-gamepad.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Adafruit Mini I2C Gamepad with seesaw
++
++maintainers:
++  - Anshul Dalal <anshulusr@gmail.com>
++
++description: |
++  Adafruit Mini I2C Gamepad
++
++    +-----------------------------+
++    |   ___                       |
++    |  /   \               (X)    |
++    | |  S  |  __   __  (Y)   (A) |
++    |  \___/  |ST| |SE|    (B)    |
++    |                             |
++    +-----------------------------+
++
++  S -> 10-bit percision bidirectional analog joystick
++  ST -> Start
++  SE -> Select
++  X, A, B, Y -> Digital action buttons
++
++  Datasheet: https://cdn-learn.adafruit.com/downloads/pdf/gamepad-qt.pdf
++  Product page: https://www.adafruit.com/product/5743
++  Arduino Driver: https://github.com/adafruit/Adafruit_Seesaw
++
++properties:
++  compatible:
++    const: adafruit,seesaw-gamepad
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++    description:
++      The gamepad's IRQ pin triggers a rising edge if interrupts are enabled.
++
++required:
++  - compatible
++  - reg
++
++additionalProperties: false
++
++examples:
++  - |
++    i2c {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        joystick@50 {
++            compatible = "adafruit,seesaw-gamepad";
++            reg = <0x50>;
++        };
++    };
 -- 
-Jani Nikula, Intel
+2.42.0
+
