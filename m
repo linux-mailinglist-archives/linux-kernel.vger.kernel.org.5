@@ -2,107 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 338987E1F90
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 12:09:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4B2F7E1F06
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 11:58:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231186AbjKFLJO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 06:09:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36836 "EHLO
+        id S231448AbjKFK65 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 05:58:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230160AbjKFLJM (ORCPT
+        with ESMTP id S229799AbjKFK6w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 06:09:12 -0500
-X-Greylist: delayed 728 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 06 Nov 2023 03:09:06 PST
-Received: from dilbert.mork.no (dilbert.mork.no [IPv6:2a01:4f9:c010:a439::d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34FF8BE;
-        Mon,  6 Nov 2023 03:09:05 -0800 (PST)
-Received: from canardo.dyn.mork.no ([IPv6:2a01:799:10da:6900:0:0:0:1])
-        (authenticated bits=0)
-        by dilbert.mork.no (8.17.1.9/8.17.1.9) with ESMTPSA id 3A6AttXT2689685
-        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=OK);
-        Mon, 6 Nov 2023 10:55:56 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mork.no; s=b;
-        t=1699268150; bh=my/IgPfusIE4M9FRFP6RHKyylmz6+9fhEowX1+bbe38=;
-        h=From:To:Cc:Subject:References:Date:Message-ID:From;
-        b=MCwGn8+DghdfNDHGtgSJCQgkkHvYfBJp9eZMdWQh65g8EiKO4Y2vYaT9hwGBzqm4q
-         C3X8Tm5W1cNEXgHTfRLk7AotWV78E4snZIQEOV9EtQgI8hnFYn7O9uLU5ziY5a5Sp6
-         2/m7OFwxcBFnCHC4Ht6ISMJTVgkWEY1EVtf8FJ3M=
-Received: from miraculix.mork.no ([IPv6:2a01:799:10da:690a:d43d:737:5289:b66f])
-        (authenticated bits=0)
-        by canardo.dyn.mork.no (8.17.1.9/8.17.1.9) with ESMTPSA id 3A6AtnvE1598821
-        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=OK);
-        Mon, 6 Nov 2023 11:55:49 +0100
-Received: (nullmailer pid 1536086 invoked by uid 1000);
-        Mon, 06 Nov 2023 10:55:49 -0000
-From:   =?utf-8?Q?Bj=C3=B8rn_Mork?= <bjorn@mork.no>
-To:     Oliver Neukum <oneukum@suse.com>
-Cc:     Ren Mingshuai <renmingshuai@huawei.com>, kuba@kernel.org,
-        caowangbao@huawei.com, davem@davemloft.net, khlebnikov@openvz.org,
-        liaichun@huawei.com, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, yanan@huawei.com
-Subject: Re: [PATCH] net: usbnet: Fix potential NULL pointer dereference
-Organization: m
-References: <20231101213832.77bd657b@kernel.org>
-        <20231102090630.938759-1-renmingshuai@huawei.com>
-        <80af8b7a-c543-4386-bb0c-a356189581a0@suse.com>
-Date:   Mon, 06 Nov 2023 11:55:49 +0100
-In-Reply-To: <80af8b7a-c543-4386-bb0c-a356189581a0@suse.com> (Oliver Neukum's
-        message of "Mon, 6 Nov 2023 11:18:39 +0100")
-Message-ID: <871qd3up56.fsf@miraculix.mork.no>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+        Mon, 6 Nov 2023 05:58:52 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BB8DB0;
+        Mon,  6 Nov 2023 02:58:50 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2AD3EC433C7;
+        Mon,  6 Nov 2023 10:58:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699268329;
+        bh=Sg8f81K8kk3/SHGG8dWL3FhrCJtkIiWJ0jEsgKtTGhg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Th/nT6VeS2zk1OlULtw+APVIYXcTssnx5cdpxe9RWD0rBicD+1gbBEBPHnoIJ2JxS
+         y0BaJK13gBKtKqEq76LNJbcJooPSje3Rwa686by63MpTCvKZ9nW0vsP+ImT+OBHxlT
+         /nq79xJlOCrCMBfTp/K2hw05nNLWY9683dIA1GR968Irjlhm1oNjc/Q7Rh5/ujtfpE
+         EJyXp/JtyEqTP9GYp16IRj+3RmdFZfOV5og+MqYW5QDIk7bLhEYHgjdSpFJKPghEE1
+         8DyuRWRhuQF5tpNI71knoBGV9foel4lRcP/XoizdI/dUMengOwxo81jAxXZMKfiSbY
+         cDmyD6XWbes/Q==
+Date:   Mon, 6 Nov 2023 10:58:46 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Duje =?utf-8?Q?Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
+Cc:     Robin Murphy <robin.murphy@arm.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Tony Lindgren <tony@atomide.com>,
+        Daniel Mack <daniel@zonque.org>,
+        Haojian Zhuang <haojian.zhuang@gmail.com>,
+        Robert Jarzmik <robert.jarzmik@free.fr>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, Leo Yan <leoy@marvell.com>,
+        Zhangfei Gao <zhangfei.gao@marvell.com>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Tony Luck <tony.luck@intel.com>,
+        "Guilherme G . Piccoli" <gpiccoli@igalia.com>,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
+        alsa-devel@alsa-project.org, linux-hardening@vger.kernel.org,
+        phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
+        Karel Balej <balejk@matfyz.cz>,
+        kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH v7 06/10] ASoC: pxa: Suppress SSPA on ARM64
+Message-ID: <ZUjG5tUrBvm6PDvB@finisterre.sirena.org.uk>
+References: <20231102152033.5511-1-duje.mihanovic@skole.hr>
+ <dc7aaff0-f767-494e-9a3a-40fcacc1674e@sirena.org.uk>
+ <3b4ac48b-e29d-415f-89f1-6d354f18c4a4@arm.com>
+ <4855402.GXAFRqVoOG@radijator>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Virus-Scanned: clamav-milter 1.0.3 at canardo
-X-Virus-Status: Clean
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="cDAfE28G8f8xdnBg"
+Content-Disposition: inline
+In-Reply-To: <4855402.GXAFRqVoOG@radijator>
+X-Cookie: Save energy:  Drive a smaller shell.
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Oliver Neukum <oneukum@suse.com> writes:
 
-> yes it looks like NCM does funky things, but what does that mean?
->
-> ndp_to_end_store()
->
->         /* flush pending data before changing flag */
->         netif_tx_lock_bh(dev->net);
->         usbnet_start_xmit(NULL, dev->net);
->         spin_lock_bh(&ctx->mtx);
->         if (enable)
->
-> expects some odd semantics from it. The proposed patch simply
-> increases the drop counter, which is by itself questionable, as
-> we drop nothing.
->
-> But it definitely does no IO, so we flush nothing.
-> That is, we clearly have bug(s) but the patch only papers over
-> them.
-> And frankly, the basic question needs to be answered:
-> Are you allowed to call ndo_start_xmit() with a NULL skb?
->
-> My understanding until now was that you must not.
+--cDAfE28G8f8xdnBg
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Yuck.  I see that I'm to blame for that code, so I've tried to figure
-out what the idea behind it could possibly have been.
+On Fri, Nov 03, 2023 at 05:58:05PM +0100, Duje Mihanovi=C4=87 wrote:
 
-I believe that code is based on the (safe?) assumption that the struct
-usbnet driver_info->tx_fixup points to cdc_ncm_tx_fixup().  And
-cdc_ncm_tx_fixup does lots of weird stuff, including special handling of
-NULL skb. It might return a valid skb for further processing by
-usbnet_start_xmit().  If it doesn't, then we jump straight to
-"not_drop", like we do when cdc_ncm_tx_fixup decides to eat the passed
-skb.
+> I just looked at it again and it looks like no code in sound/soc/pxa/* or=
+=20
+> sound/arm/pxa* depends on AACI in any way. Therefore, I believe that to f=
+ix=20
+> this correctly, I would have to remove "select SND_ARM" from sound/soc/px=
+a/
+> Kconfig and optionally move the PXA2xx code out of sound/arm/ and into so=
+und/
+> soc/pxa/. Is this correct? If so, I'd also split that fix into a separate=
+=20
+> series.
 
-But "funky" is i precise description of all this...  If someone feels
-like it, then all that open coded skb queing inside cdc_ncm should be
-completely rewritten.
+There's the pxa-ac97 driver to consider...
 
+--cDAfE28G8f8xdnBg
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
 
-Bj=C3=B8rn
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmVIxuUACgkQJNaLcl1U
+h9AeGAf/c2+d+tcgxFoSAkZXFPkCaz/eMgb8h+BgUpxjiuIheHzsxvbKE0zqEpob
+LLb77Y8RJuFjRED+1HDwewAzExBafqDv6jOitYbrJDCL+ERlb72HhaWK7jrSvo9y
+OjupBMTVvmLY0W64K7Vb2NM0T2/OIxrKApBbEMUxxpEagmmM1I09erf7m1Gi0Sfl
+31oZwOnmH810ZaG0mtQuZijawmCMSuEnpl0vjhrQe0D8mSieZRdlT8IdpMVN7sm+
+IZ6qvIh644bG7uf1E9a0QV6eM9ziLMDdId1h4W3hCTssoFesy9wWw6dV2mZiKrat
+/yjpAz05qMaAFLHi45RxQYjqwdAKQw==
+=jjeN
+-----END PGP SIGNATURE-----
+
+--cDAfE28G8f8xdnBg--
