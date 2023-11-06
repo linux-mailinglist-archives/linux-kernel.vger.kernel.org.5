@@ -2,111 +2,252 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 877527E1A11
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 07:12:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 106EC7E1A1C
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 07:15:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230319AbjKFGMd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 01:12:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39120 "EHLO
+        id S230407AbjKFGPJ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 6 Nov 2023 01:15:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229485AbjKFGMc (ORCPT
+        with ESMTP id S230319AbjKFGPH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 01:12:32 -0500
-Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DFC7FA;
-        Sun,  5 Nov 2023 22:12:28 -0800 (PST)
-X-UUID: 743680667c6b11eea33bb35ae8d461a2-20231106
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Type:Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=grp1AlMkyekbeDiBRfj+htcx3Y2qk/xgnK8jPrJfTv8=;
-        b=a3tmYAYGbxzC1lsN+xzDtWfpfUPBRpzY1PLA+VYSf34M6/rbe5S5fPw/9kRhucpuKDFuMuYaeOxUmgWKt4r1/RJTtao8C42Dfm3/P0aUrssX6p0DcvdJYpG71y1B7WK2djJ7ErcRdwsyxZtLz3Ei+nveJN/2JKv4VNksCoJ1L3w=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.33,REQID:1150d3e3-3d4e-4c1f-856d-4797e928126b,IP:0,U
-        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-        release,TS:0
-X-CID-META: VersionHash:364b77b,CLOUDID:b8e4b85f-c89d-4129-91cb-8ebfae4653fc,B
-        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-        RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
-        DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR
-X-UUID: 743680667c6b11eea33bb35ae8d461a2-20231106
-Received: from mtkmbs14n2.mediatek.inc [(172.21.101.76)] by mailgw01.mediatek.com
-        (envelope-from <jian.yang@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 2138774526; Mon, 06 Nov 2023 14:12:24 +0800
-Received: from mtkmbs13n2.mediatek.inc (172.21.101.108) by
- mtkmbs13n1.mediatek.inc (172.21.101.193) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Mon, 6 Nov 2023 14:12:23 +0800
-Received: from mhfsdcap04.gcn.mediatek.inc (10.17.3.154) by
- mtkmbs13n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Mon, 6 Nov 2023 14:12:22 +0800
-From:   Jian Yang <jian.yang@mediatek.com>
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Herring <robh@kernel.org>,
-        Jianjun Wang <jianjun.wang@mediatek.com>
-CC:     <linux-pci@vger.kernel.org>, <linux-mediatek@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-        <Chuanjia.Liu@mediatek.com>, <Jieyy.Yang@mediatek.com>,
-        <Qizhong.Cheng@mediatek.com>, <Jianguo.Zhang@mediatek.com>,
-        Jian Yang <jian.yang@mediatek.com>
-Subject: [PATCH v4 0/2] PCI: mediatek-gen3: Support controlling power supplies
-Date:   Mon, 6 Nov 2023 14:12:18 +0800
-Message-ID: <20231106061220.21485-1-jian.yang@mediatek.com>
-X-Mailer: git-send-email 2.25.1
+        Mon, 6 Nov 2023 01:15:07 -0500
+Received: from comms.drone (in.bow.st [71.19.146.166])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08A1493
+        for <linux-kernel@vger.kernel.org>; Sun,  5 Nov 2023 22:15:01 -0800 (PST)
+Received: from homebase (unknown [IPv6:fe80::2259:21a4:f292:8bfb])
+        by comms.drone (Postfix) with ESMTPSA id 85F4FFCF9;
+        Mon,  6 Nov 2023 06:14:58 +0000 (UTC)
+From:   "Mathew\, Cherry G.*" <c@bow.st>
+To:     Jonas Oberhauser <jonas.oberhauser@huaweicloud.com>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [RFC+Patch] Formal models as source of truth for Software Architects.
+References: <85v8axxrmo.fsf@bow.st>
+        <2defe3ff-90df-2627-dd19-0442a90b20a4@huaweicloud.com>
+        <857cmw2ael.fsf@bow.st>
+        <b260c8f8-266f-08c5-2e87-875174042a5b@huaweicloud.com>
+Date:   Mon, 06 Nov 2023 06:12:25 +0000
+In-Reply-To: <b260c8f8-266f-08c5-2e87-875174042a5b@huaweicloud.com> (Jonas
+        Oberhauser's message of "Sun, 5 Nov 2023 22:06:21 +0100")
+Message-ID: <85lebb1kc6.fsf@bow.st>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (berkeley-unix)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for controlling power supplies and reset GPIO of a downstream
-component in Mediatek's PCIe GEN3 controller driver.
+Hi Jonas,
 
-Changes in v4:
-1. Rename power supplies properties in DT binding and driver.
-2. Reorder variables alphabetically.
-3. Use 'dev_err_probe' to do some error handling stuff.
+>>>>> Jonas Oberhauser <jonas.oberhauser@huaweicloud.com> writes:
 
-Changes in v3:
-1. Modify description of power supply properties in DT binding.
-2. Remove unused header files.
-3. Use 'device_wakeup_path' to determine whether the downstream component
-needs to skip the reset process in system suspend scenarios.
 
-Changes in v2:
-1. Remove an unnecessary property in dt-bindings file.
-2. Use the flag 'GPIOD_OUT_LOW' to set initial state of a downstream
-component's reset GPIO.
-3. Keep downstream component powered on in suspend state if it is capable
-of waking up the system.
+[...]
 
-jian.yang (2):
-  dt-bindings: PCI: mediatek-gen3: Add support for controlling power and
-    reset
-  PCI: mediatek-gen3: Add power and reset control feature for downstream
-    component
 
- .../bindings/pci/mediatek-pcie-gen3.yaml      | 30 +++++++
- drivers/pci/controller/pcie-mediatek-gen3.c   | 89 ++++++++++++++++++-
- 2 files changed, 118 insertions(+), 1 deletion(-)
+    > I meant that we implemented an internal tool to transpile from C
+    > to PlusCal.
+
+I'm curious about the design/architecture here - how did you manage the
+logical mappings from C->PlusCal - did you have a third language to
+specify the mappings, or did you use heuristics with inherent
+assumptions ?
+
+    > It sounded like a great idea at the time. But then it quickly fell
+    > out of use.
+
+This is something I'm keen to understand why - was this because
+programmers focussed on the C code, and the transpiler+constraints
+became a "testing problem" which ended up in bitrot ? Or is there
+something related to the software methodology/development process ? Or
+perhaps the percieved ROI of formal verification wasn't as much as
+initially thought ? Something else ?
+
+
+[...]
+
+
+    > For reuse, I think the main issue is that implementation code is
+    > always a source of truth - the truth of what's really going to be
+    > executed.  If we want to have a second source of truth, it should
+    > be a different truth, such as "assumptions of the other parts of
+    > the system".
+
+    > Since you already have this source of truth, if you make a
+    > different implementation in another kernel, you can compare what
+    > the original driver was doing with what your new implementation is
+    > doing.  There's no need to have yet another copy of what the
+    > driver might be doing.
+
+
+I understand what you're saying, but there are a few points that I'm
+probably not able to express clearly.
+
+Just to set context, and not to state the obvious - as you likely
+already know, Formal languages such as pluscal or promela have an
+"execution model" that is different from a programming language - in
+that, when one writes code in them, one's mental model needs to pay
+attention to behaviour, whereas function becomes a more abstract
+problem, as you  pointed out. I wrote a very hand wavy description of
+this in the context of spin:
+
+https://mail-index.netbsd.org/tech-kern/2023/09/28/msg029203.html
+
+I believe this kind of mental frame needs its own discipline, and is an
+opportunity to divide concerns - that of design/architecture vs. that of
+engineering/implementation.
+
+So to return to your concern about code duplication, in the context of
+codegen, one could make the same argument about compiled or transpiled
+code - if it were manually transpiled. And yet we are comfortable as
+programmers, assuming that the "higher level language" is the source of
+truth, while happily stepping "down" to gcc __inline__ __asm__ {} when
+needed. So, for eg: (and I believe there are tools out there that can
+do this to some degree) - if the programming code could be
+auto-generated/"compiled" from the formal specification, then this would
+become directly analogous. 
+
+
+[...]
+
+    >> Can you give me an example of how this works/a pre-existing tool
+    >> that helps with this simplification ? I'm actually currently
+    >> looking at re-writing modex to do precisely this (but with the
+    >> translation end-point being something close to the original
+    >> model).
+
+
+    > I think any higher level language, including C, goes into this
+    > direction. Some are just a lot better at building abstractions and
+    > describing the code more model-like than
+    > tiniest-implementation-detail-like.
+
+C is problematic because it doesn't for eg: define concurrency or
+consistency models - in many cases, even the data types are not clearly
+defined (eg: "integer" is machine word size dependant). So it's really
+hard to specify something formal at the level of C that is not very
+context (OS/CPU arch) specific. This is one of the reasons why for eg:
+in spin's promela, data types are extremely limited, and very precisely
+defined. I'm sure there are several other differences, I'm not expert
+enough to comment - just sharing my observations so far. The point being
+that programming languages such as C are probably not expressive enough
+to encapsulate formal models precisely enough. 
+
+    > (and sometimes that's not what you want).
+
+    >> > So writing the blueprint twice - once in some modelling
+    >> language > and once in a language meant for execution - doesn't
+    >> really > provide a lot of benefit.  But it requires doing changes
+    >> at two > levels whenever the software design changes. It just
+    >> violates DRY.
+    >> 
+    >> IMHO, this would be true if:
+    >> 
+    >> a) The implementation language was expressive enough to cleanly
+    >> encapsulate the model.
+    >> 
+    >> b) If the toolchain around it were able to do model verification
+    >> (eg: by exploring LTL bounds).
+
+
+    > We are building internal tools for such b) things. Not quite
+    > exhaustive formal verification tools, but tools that can express
+    > and check more complex properties at source level without false
+    > positives.
+
+    > (They may have false negatives, but that's not really a
+    > showstopper. False positives would be.)
+
+Fair enough - this is the level of tradeoff that only someone with a
+clear industrial application would be able to make, as I imagine you
+are. This is also where I believe the gap between theory (of formal
+methods) and practise is, so this is insightful - I'd be curious to know
+more, if you're able to share.
+
+
+[...]
+
+    >> 
+    >> I'm a bit skeptical about the "doxygen" approach (i've seen this
+    >> in some versions of Java iirc, as well) - basically you're
+    >> bypassing all the goodness that the language parser provides by
+    >> hiding from it - I'm not sure how this is useful other than to
+    >> shimmy in a specific bandaid fix. Which is fine, if you're
+    >> fighting fires, but I think for a more structured approach, I'm
+    >> not seeing what you're seeing, I'm afraid. Open to be signposted
+    >> though.
+
+
+    > By executable comment I mean a comment that has a formal semantics
+    > that can be executed.
+
+    > Think more pre&post conditions + ghost code. E.g., for a tricky
+    > sort algorithm like timsort the comment might be something like
+
+    > var __ghost_array = copy(input_array);
+
+    > .... // complicated timsort code here
+
+    > insertion_sort(&__ghost_array); // timsort should give the same
+    > output as insertion stort, note that both are stable
+
+    > for (i in 0...array_len) {     assert (sorted_array[i] ==
+    > __ghost_array[i]); }
+
+
+    > This is probably not going to help you find the well-known timsort
+    > bug, but it might be enough to find more trivial mistakes when
+    > rolling your own timsort.  Anyways this is what I mean by
+    > executable comment - a more readable, maintainable implementation
+    > of the code that tells you what the code ought to be doing + some
+    > checks to say that they're really doing the same thing.
+
+This looks closer to testing to me - the assertions for eg: seems to be
+atemporal ie; only concerned about "immedate" values, unlike LTL which
+can check behaviour across an "execution sequence" (in the set of all
+possible execution sequences). So from an FV perspective, I would write
+the assertion to look more like: "eventually is_sorted(array)", where
+is_sorted() has magic to check to if the array elements are sorted in
+whatever required order.
+
+    > As I understand, doxygen is just a way to link human-readable
+    > documentation with code, but maybe I'm wrong about this.
+
+Yes, I just meant that as a way to put parsable code in comments.
+
+[...]
+
+    >> 
+    >> So in some sense, I believe we're nearing the "Deep Neural Nets"
+    >> moment, when GPU computation took inference to the next level.
+
+
+    > Yeah, it's pretty impressive. Actually even the power of laptops
+    > is pretty impressive.  Things like GenMC or Dat3M can do bounded
+    > verification of (slightly massaged) C algorithms from the linux
+    > kernel by more or less exploring the full execution space (of a
+    > bounded client) within a couple of minutes on a laptop.
+
+    > But for many scenarios, we are still a factor of at least
+    > trillions away from using something where exhaustive exploration
+    > works - not something that we'll fix by tying a bunch of
+    > supercomputers together...
+
+
+I agree - but it's still quite impressive - plus there are ways to be
+smart about bounding the search space - eg: using modularity and
+inter-module communications interfaces, optimisation techniques such as
+partial order reduction, etc. I'm sure you've made those optimisations -
+and I'm curious to know what kind of "CI" performance is possible in
+state of the art.
+
+Best,
 
 -- 
-2.18.0
-
+MattC/(~cherry)
