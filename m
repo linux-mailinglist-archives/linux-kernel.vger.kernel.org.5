@@ -2,64 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E12E87E26B7
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 15:24:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D42D7E26C0
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 15:26:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230146AbjKFOY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 09:24:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41996 "EHLO
+        id S231812AbjKFO0T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 09:26:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231730AbjKFOYz (ORCPT
+        with ESMTP id S231800AbjKFO0N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 09:24:55 -0500
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A88BD49
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 06:24:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Ru6akWdDI9qjF0C1ZdQG8GZxuKhYDPwGk6ba5A7x1CA=; b=PxqlT8UHec1fHIpMhVTMPPCBcK
-        nh07BatdHfqbJ/ViFgutWH8OnFxL+htc5mE6/U238dsRYrg56dZDA+TFfzuPmljxH2B7bK041NYLm
-        4uNneNjHZlTy3t5LPKLvxx+DbhzrmOjoeiGRiHxRlX68QjH11G+T/GoxT2gIyz0N3TCi4K4g2byfC
-        F/FWVhZx9W/vzKqSXs7lTf+3kSCFt+0cDhUb0uBnN1QAVwo4ZAMV01Q2M9pwR0ynDQjQtixrSyAZf
-        aRnTjNWZZfkghbTjKNmEJU2yCGeJWEJy3UvyY5dzh4+MW0mRprYI1RsmGPDwH+X9t9UjgtKYr77m6
-        e0wd3N/Q==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1r00Wk-00Aa2M-2h;
-        Mon, 06 Nov 2023 14:24:31 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 7B14230049D; Mon,  6 Nov 2023 15:24:30 +0100 (CET)
-Date:   Mon, 6 Nov 2023 15:24:30 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Daniel Bristot de Oliveira <bristot@kernel.org>
-Cc:     Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        linux-kernel@vger.kernel.org,
-        Luca Abeni <luca.abeni@santannapisa.it>,
-        Tommaso Cucinotta <tommaso.cucinotta@santannapisa.it>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Vineeth Pillai <vineeth@bitbyteword.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Phil Auld <pauld@redhat.com>
-Subject: Re: [PATCH v5 5/7] sched/fair: Add trivial fair server
-Message-ID: <20231106142430.GF3818@noisy.programming.kicks-ass.net>
-References: <cover.1699095159.git.bristot@kernel.org>
- <4e0d14eb6e0ec33055197ac7ddb57ef7ab3894a5.1699095159.git.bristot@kernel.org>
+        Mon, 6 Nov 2023 09:26:13 -0500
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D177BD51
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 06:26:09 -0800 (PST)
+Received: by mail-yb1-xb2f.google.com with SMTP id 3f1490d57ef6-da7238b3eb4so3374980276.1
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 06:26:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1699280768; x=1699885568; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=clebCQm1+LBapUz3ORAAhgjPSPUNZu8n0M4MtoluA3A=;
+        b=izHuTFs6nSpiQocOEUbAdQQKi4oY4J15jeSfl0MlKsXZYQKc3UrqoKx79JMsTyRgXx
+         TOConcjbYjTFxxpn7hf+ldOklrF/hQoWLvvO+m58dP5TFGHPIMU0M75iANxJxJ7qRePf
+         tGvJEcqQwO5LFClfAyMHBmD33Fe7mJDS/8xpFKqW2YeqIWaOq2ThySgTeCy+ws9Ld6LC
+         kmC7S7vpxwQi2Lro8i5wxVi7IcGeXuJjOuXf7dQRelL2M5L5kff3g3RyuUCFyc9zZ0/6
+         16l7YpiwykFe+maFkBB4c8N+GtrdazjpWEVtyApx5ORvZazBriQOP4vUihCn/CE9JqkR
+         nppQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699280768; x=1699885568;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=clebCQm1+LBapUz3ORAAhgjPSPUNZu8n0M4MtoluA3A=;
+        b=hsfyjJubGuIesfZ6OsxnkEG+sLD3ugebUo814hnGgVu6xJy3UKhJD8M+IGb11DsVfD
+         EzdvxOvVdcyDv130R0YD4d5LIiVTwa2KwgMWAqbkYra8lKVPQdiAFWUQE23fA3sXToap
+         SRMU7hQCJpQ4tgm7ZzOYvNzz8Abh2tOkMQ4Ta9eEf2ACCn+jDDklQWCMxXgoCMZyW1jH
+         qrlLusXz0ue18RfF2H8ZVs1xH95Ml6mLguLrVD3HBMazLmr7vtNtqnMpDa0IwoRRgfiW
+         hzWBUrAqp7JTnd7WKzzr5uGBMlThTEKHwIAMlLdrxkCr/K0s2SywcEN97zrfXbnKR++k
+         PzBw==
+X-Gm-Message-State: AOJu0YwLzKPxZvWj1XuxNFNjsmUxHnE2VwlP886liEl5Gt5lVS80CMkZ
+        PlzHBAwJrISb/7EJ9+WuT36gg/x0LJ6R7scxCE2v3A==
+X-Google-Smtp-Source: AGHT+IF5BH9O6Ws3yKpEkBHytetsUIpUzn9flJjQzqMC5RNQD4AQcnOdSNKrmQ5eAT0CoDKg5+dINR8k2R6zA+yCKi4=
+X-Received: by 2002:a25:db11:0:b0:da0:4c63:f648 with SMTP id
+ g17-20020a25db11000000b00da04c63f648mr28557922ybf.6.1699280768250; Mon, 06
+ Nov 2023 06:26:08 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4e0d14eb6e0ec33055197ac7ddb57ef7ab3894a5.1699095159.git.bristot@kernel.org>
+References: <20231106104018.29179-1-wenchao.chen@unisoc.com>
+In-Reply-To: <20231106104018.29179-1-wenchao.chen@unisoc.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Mon, 6 Nov 2023 15:25:32 +0100
+Message-ID: <CAPDyKFrJ=hGbeQzAHwk1KA_Wn=W7oVFy56V6kCisb_BkXRq7ew@mail.gmail.com>
+Subject: Re: [PATCH] mmc: sdhci-sprd: Fix the clock switch
+To:     Wenchao Chen <wenchao.chen@unisoc.com>
+Cc:     zhang.lyra@gmail.com, orsonzhai@gmail.com,
+        baolin.wang@linux.alibaba.com, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, wenchao.chen666@gmail.com,
+        zhenxiong.lai@unisoc.com, yuelin.tang@unisoc.com
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,31 +69,128 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 04, 2023 at 11:59:22AM +0100, Daniel Bristot de Oliveira wrote:
+On Mon, 6 Nov 2023 at 11:40, Wenchao Chen <wenchao.chen@unisoc.com> wrote:
+>
+> Some SOCs have a "1x_enable" clock that needs to be turned on and off
+> in probe, remove and runtime pm.
 
-> [ dl_server do not account for rt ]
+Well, first of all, what is a "1x_enable" clock and why do we need it?
 
-> diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
-> index 541d547e1019..1d7b96ca9011 100644
-> --- a/kernel/sched/deadline.c
-> +++ b/kernel/sched/deadline.c
-> @@ -1382,6 +1382,13 @@ static void update_curr_dl_se(struct rq *rq, struct sched_dl_entity *dl_se, s64
->  			resched_curr(rq);
->  	}
->  
-> +	/*
-> +	 * The fair server (sole dl_server) does not account for real-time
-> +	 * workload because it is running fair work.
-> +	 */
-> +	if (dl_server(dl_se))
-> +		return;
+Moreover, the clock needs to be described as a part of the DT bindings
+for the sdhci-sprd mmc controller. That said, it looks like the
+binding for the sdhci-sprd controller needs to be converted to the
+yaml format first, can you please have a look at that too?
+
+>
+> Fixes: fb8bd90f83c4 ("mmc: sdhci-sprd: Add Spreadtrum's initial host controller")
+> Signed-off-by: Wenchao Chen <wenchao.chen@unisoc.com>
+
+Kind regards
+Uffe
+
+> ---
+>  drivers/mmc/host/sdhci-sprd.c | 29 +++++++++++++++++++++++++----
+>  1 file changed, 25 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/mmc/host/sdhci-sprd.c b/drivers/mmc/host/sdhci-sprd.c
+> index 6b84ba27e6ab..3367f924dc5b 100644
+> --- a/drivers/mmc/host/sdhci-sprd.c
+> +++ b/drivers/mmc/host/sdhci-sprd.c
+> @@ -83,6 +83,7 @@ struct sdhci_sprd_host {
+>         u32 version;
+>         struct clk *clk_sdio;
+>         struct clk *clk_enable;
+> +       struct clk *clk_1x_enable;
+>         struct clk *clk_2x_enable;
+>         struct pinctrl *pinctrl;
+>         struct pinctrl_state *pins_uhs;
+> @@ -784,6 +785,10 @@ static int sdhci_sprd_probe(struct platform_device *pdev)
+>         }
+>         sprd_host->clk_enable = clk;
+>
+> +       clk = devm_clk_get(&pdev->dev, "1x_enable");
+> +       if (!IS_ERR(clk))
+> +               sprd_host->clk_1x_enable = clk;
 > +
->  	/*
->  	 * Because -- for now -- we share the rt bandwidth, we need to
->  	 * account our runtime there too, otherwise actual rt tasks
-
-Should we perhaps write this like so?
-
-	if (dl_se == &rq->fair_server)
-		return;
-
+>         clk = devm_clk_get(&pdev->dev, "2x_enable");
+>         if (!IS_ERR(clk))
+>                 sprd_host->clk_2x_enable = clk;
+> @@ -793,12 +798,16 @@ static int sdhci_sprd_probe(struct platform_device *pdev)
+>                 goto pltfm_free;
+>
+>         ret = clk_prepare_enable(sprd_host->clk_enable);
+> +       if (ret)
+> +               goto clk_sdio_disable;
+> +
+> +       ret = clk_prepare_enable(sprd_host->clk_1x_enable);
+>         if (ret)
+>                 goto clk_disable;
+>
+>         ret = clk_prepare_enable(sprd_host->clk_2x_enable);
+>         if (ret)
+> -               goto clk_disable2;
+> +               goto clk_1x_disable;
+>
+>         sdhci_sprd_init_config(host);
+>         host->version = sdhci_readw(host, SDHCI_HOST_VERSION);
+> @@ -858,10 +867,13 @@ static int sdhci_sprd_probe(struct platform_device *pdev)
+>
+>         clk_disable_unprepare(sprd_host->clk_2x_enable);
+>
+> -clk_disable2:
+> -       clk_disable_unprepare(sprd_host->clk_enable);
+> +clk_1x_disable:
+> +       clk_disable_unprepare(sprd_host->clk_1x_enable);
+>
+>  clk_disable:
+> +       clk_disable_unprepare(sprd_host->clk_enable);
+> +
+> +clk_sdio_disable:
+>         clk_disable_unprepare(sprd_host->clk_sdio);
+>
+>  pltfm_free:
+> @@ -878,6 +890,7 @@ static void sdhci_sprd_remove(struct platform_device *pdev)
+>
+>         clk_disable_unprepare(sprd_host->clk_sdio);
+>         clk_disable_unprepare(sprd_host->clk_enable);
+> +       clk_disable_unprepare(sprd_host->clk_1x_enable);
+>         clk_disable_unprepare(sprd_host->clk_2x_enable);
+>
+>         sdhci_pltfm_free(pdev);
+> @@ -900,6 +913,7 @@ static int sdhci_sprd_runtime_suspend(struct device *dev)
+>
+>         clk_disable_unprepare(sprd_host->clk_sdio);
+>         clk_disable_unprepare(sprd_host->clk_enable);
+> +       clk_disable_unprepare(sprd_host->clk_1x_enable);
+>         clk_disable_unprepare(sprd_host->clk_2x_enable);
+>
+>         return 0;
+> @@ -915,10 +929,14 @@ static int sdhci_sprd_runtime_resume(struct device *dev)
+>         if (ret)
+>                 return ret;
+>
+> -       ret = clk_prepare_enable(sprd_host->clk_enable);
+> +       ret = clk_prepare_enable(sprd_host->clk_1x_enable);
+>         if (ret)
+>                 goto clk_2x_disable;
+>
+> +       ret = clk_prepare_enable(sprd_host->clk_enable);
+> +       if (ret)
+> +               goto clk_1x_disable;
+> +
+>         ret = clk_prepare_enable(sprd_host->clk_sdio);
+>         if (ret)
+>                 goto clk_disable;
+> @@ -931,6 +949,9 @@ static int sdhci_sprd_runtime_resume(struct device *dev)
+>  clk_disable:
+>         clk_disable_unprepare(sprd_host->clk_enable);
+>
+> +clk_1x_disable:
+> +       clk_disable_unprepare(sprd_host->clk_1x_enable);
+> +
+>  clk_2x_disable:
+>         clk_disable_unprepare(sprd_host->clk_2x_enable);
+>
+> --
+> 2.17.1
+>
