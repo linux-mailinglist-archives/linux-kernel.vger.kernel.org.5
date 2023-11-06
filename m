@@ -2,98 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ACF547E2CD0
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 20:28:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30ED37E2CD5
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 20:29:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232323AbjKFT2d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 14:28:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53656 "EHLO
+        id S232380AbjKFT3z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 14:29:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231555AbjKFT2c (ORCPT
+        with ESMTP id S231699AbjKFT3w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 14:28:32 -0500
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2ADA698
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 11:28:29 -0800 (PST)
-Received: by mail-ot1-x333.google.com with SMTP id 46e09a7af769-6ce2ee17cb5so3157221a34.2
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 11:28:29 -0800 (PST)
+        Mon, 6 Nov 2023 14:29:52 -0500
+Received: from mail-vs1-xe30.google.com (mail-vs1-xe30.google.com [IPv6:2607:f8b0:4864:20::e30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42468103
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 11:29:48 -0800 (PST)
+Received: by mail-vs1-xe30.google.com with SMTP id ada2fe7eead31-45f0e332d6bso838188137.2
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 11:29:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1699298908; x=1699903708; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=mlzvkAJRzuQZnUx9+U36N20af1pAsethgx21gTjo+4o=;
-        b=brfH2M5wBYZXqLt4JinyWrWM+NPX/Ps9+Jy08MnkU0W5VQJ7ayOOhtzEK/v3SfBj9Z
-         caNi45PXXQzHixZRujGuNYuWjtolBMTdBkCZKmGw8lJtGgBamyIq/7snaHbHhTVYniYZ
-         7gwB1onEiMR/BFQgASFgwsPQ2oWtRS7GOK1Z9zvXfOHeDg/yLIa7iR1WrOo8hHl7bQcZ
-         5tIzvDQhYhLCchyd34MbWGl4xraypnen3AiPa1HMRVGxZwAF/hGMfGST+BOUT+bi/4y5
-         oQUzq8HxjwHOjVCis2HbOpgLz+s+UfJy77CYqicTZvWpEHNE9h4T8vGUuK0oK1wcypvm
-         nFwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699298908; x=1699903708;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=google.com; s=20230601; t=1699298987; x=1699903787; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=mlzvkAJRzuQZnUx9+U36N20af1pAsethgx21gTjo+4o=;
-        b=ZefW4nV9JYWozFM2UXW6K1mN188hRRY5GN3os5xj8twcLvGXUL0/Jx8fTafThRpVxx
-         BNEuHIo0yVx4kdVL2QG6DKgM6DPCHCO1AlluBTzlFicvp610kCQXQQty/1MQFpDqloFi
-         PqVv4vXoF31WVTRJ4ACnPCw5tApRfFk1rQIyzCIToJO3d7L9A3wl4QHyqOaY2AdDq5wb
-         d13x639FKcEY5i1Euklz6tbjVpKnHss06h8HUtVKEoqkqgEGuXiePwJsy7ffSckpQg6Y
-         1FL9le1t55j5ybgnO6KfkUA/IcFu/ofF/9lyEGkpDaNzwRHoXIz2gfu3M2V5HjRd58b7
-         2vmw==
-X-Gm-Message-State: AOJu0YxXcdfW2lEuhCfnkGELsdpkDB05XjfplDUMk61ZuiOC6W4YNAyB
-        JqGHb/rqINWHD2VfBCibMNjtFg==
-X-Google-Smtp-Source: AGHT+IGoMs3p/xp+2w/gcKq1uzQMmpxpoGkiwmFBR+1NzSnc9n7fN+/BGdPuKf2XBPGGt1/dGj4jPQ==
-X-Received: by 2002:a05:6830:2b2a:b0:6d3:1f3e:4c4 with SMTP id l42-20020a0568302b2a00b006d31f3e04c4mr19267202otv.0.1699298908462;
-        Mon, 06 Nov 2023 11:28:28 -0800 (PST)
-Received: from localhost ([2620:10d:c091:400::5:86b7])
-        by smtp.gmail.com with ESMTPSA id jy5-20020a05622a818500b004181b41e793sm3660625qtb.50.2023.11.06.11.28.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Nov 2023 11:28:28 -0800 (PST)
-Date:   Mon, 6 Nov 2023 14:28:27 -0500
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Stefan Roesch <shr@devkernel.io>
-Cc:     kernel-team@fb.com, akpm@linux-foundation.org, riel@surriel.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH v1] mm: Fix for negative counter: nr_file_hugepages
-Message-ID: <20231106192827.GA3661273@cmpxchg.org>
-References: <20231106181918.1091043-1-shr@devkernel.io>
+        bh=G7Si+k3SGcxGf6sJGMI/kj5eJZ6V+SjfPyFVm8vGoBA=;
+        b=LqlReyfqOi5hTdMQbb+YXa8+g7KEHgzvrOt4dBaC2f3Fn1pp1kl+nekse8KlFM49ll
+         k1tuf0NyoOUYtWmrTR/FzHfuh9VczuBtD4kwQ1iPmv4fzL4mguF1IZCyYtvZem/8ddqQ
+         Vp7G1IGaHYgyO4r1YsHBD9G/4lN++Lcdrk907s0ZKDP0GdV4EgmL6mtDEx9g+Q6KZtKn
+         cIcjMsIBNHNOhO3WChRAcKEWGKwbu0zQQHrgrmtiu+h1ugFZ8MsydbCgufcarunRAtQL
+         O4WVSSFCdSmKRZ1XOdS2X+FDURpiHUl9/AYVD5GnqLQFqX2zWDQdnZUPySVTzzd8RQu5
+         nVTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699298987; x=1699903787;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=G7Si+k3SGcxGf6sJGMI/kj5eJZ6V+SjfPyFVm8vGoBA=;
+        b=P+Gp0LsqCmG8u8yzopbWOhTxIHj4bN2AZ4p+qXMPpa1bduj+MjPWIGf9EDWt50gUTk
+         3EILGHTKRB1Ey83VQ2QtGCeEHe6IFYi/sBenJIb31gKhZh2hcp1SoZ5XlaqobPOW8cmw
+         etADcr4poykRPO73o0iLQJfN2sBCo6i8dE25XqLM6IQtJEPX0GOC2qW0oKmeogMOYbcf
+         oaL8VOWI4b0F1IOoU/jnsaYp3C584T8aBx7x934k9HB938eVlKk1w1KTUDdSwPuvMVYB
+         bTxBWP3Y+YLfDimA2HM5ly2FT1pubwmDg/euJj2/7dSPSpkB2w6gShTYzh6F9BCYTYGd
+         ib4w==
+X-Gm-Message-State: AOJu0YxB9xjQfUErbOjGCft0gFvwU9KO1cQ3X0hAR5kdy43MhyefBMn7
+        8G1BGoJxbHf3oSZk8sYObBCUKVfZuAYPiacDRgtl5A==
+X-Google-Smtp-Source: AGHT+IG22F7RZ7INsRT61We/dhQuubrTDUtrXNKt9IRXUitWz7JbG7ca/qoY3u3vM4us0jqLVC7nFfmA8VO3BFOqiRY=
+X-Received: by 2002:a67:a247:0:b0:45d:9083:f877 with SMTP id
+ t7-20020a67a247000000b0045d9083f877mr7751422vsh.5.1699298986878; Mon, 06 Nov
+ 2023 11:29:46 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231106181918.1091043-1-shr@devkernel.io>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20231106024413.2801438-1-almasrymina@google.com>
+ <20231106024413.2801438-11-almasrymina@google.com> <ZUk0FGuJ28s1d9OX@google.com>
+In-Reply-To: <ZUk0FGuJ28s1d9OX@google.com>
+From:   Mina Almasry <almasrymina@google.com>
+Date:   Mon, 6 Nov 2023 11:29:33 -0800
+Message-ID: <CAHS8izNFv7r6vqYR_TYqcCuDO61F+nnNMhsSu=DrYWSr3sVgrA@mail.gmail.com>
+Subject: Re: [RFC PATCH v3 10/12] tcp: RX path for devmem TCP
+To:     Stanislav Fomichev <sdf@google.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linaro-mm-sig@lists.linaro.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        David Ahern <dsahern@kernel.org>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Jeroen de Borst <jeroendb@google.com>,
+        Praveen Kaligineedi <pkaligineedi@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Kaiyuan Zhang <kaiyuanz@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 06, 2023 at 10:19:18AM -0800, Stefan Roesch wrote:
-> While qualifiying the 6.4 release, the following warning was detected in
-> messages:
-> 
-> vmstat_refresh: nr_file_hugepages -15664
-> 
-> The warning is caused by the incorrect updating of the NR_FILE_THPS
-> counter in the function split_huge_page_to_list. The if case is checking
-> for folio_test_swapbacked, but the else case is missing the check for
-> folio_test_pmd_mappable. The other functions that manipulate the counter
-> like __filemap_add_folio and filemap_unaccount_folio have the
-> corresponding check.
-> 
-> I have a test case, which reproduces the problem. It can be found here:
->   https://github.com/sroeschus/testcase/blob/main/vmstat_refresh/madv.c
-> 
-> The test case reproduces on an XFS filesystem. Running the same test
-> case on a BTRFS filesystem does not reproduce the problem.
-> 
-> AFAIK version 6.1 until 6.6 are affected by this problem.
-> 
-> Signed-off-by: Stefan Roesch <shr@devkernel.io>
-> Co-debugged-by: Johannes Weiner <hannes@cmpxchg.org>
+On Mon, Nov 6, 2023 at 10:44=E2=80=AFAM Stanislav Fomichev <sdf@google.com>=
+ wrote:
+>
+> On 11/05, Mina Almasry wrote:
+> > In tcp_recvmsg_locked(), detect if the skb being received by the user
+> > is a devmem skb. In this case - if the user provided the MSG_SOCK_DEVME=
+M
+> > flag - pass it to tcp_recvmsg_devmem() for custom handling.
+> >
+> > tcp_recvmsg_devmem() copies any data in the skb header to the linear
+> > buffer, and returns a cmsg to the user indicating the number of bytes
+> > returned in the linear buffer.
+> >
+> > tcp_recvmsg_devmem() then loops over the unaccessible devmem skb frags,
+> > and returns to the user a cmsg_devmem indicating the location of the
+> > data in the dmabuf device memory. cmsg_devmem contains this information=
+:
+> >
+> > 1. the offset into the dmabuf where the payload starts. 'frag_offset'.
+> > 2. the size of the frag. 'frag_size'.
+> > 3. an opaque token 'frag_token' to return to the kernel when the buffer
+> > is to be released.
+> >
+> > The pages awaiting freeing are stored in the newly added
+> > sk->sk_user_pages, and each page passed to userspace is get_page()'d.
+> > This reference is dropped once the userspace indicates that it is
+> > done reading this page.  All pages are released when the socket is
+> > destroyed.
+> >
+> > Signed-off-by: Willem de Bruijn <willemb@google.com>
+> > Signed-off-by: Kaiyuan Zhang <kaiyuanz@google.com>
+> > Signed-off-by: Mina Almasry <almasrymina@google.com>
+> >
+> > ---
+> >
+> > RFC v3:
+> > - Fixed issue with put_cmsg() failing silently.
+> >
+> > ---
+> >  include/linux/socket.h            |   1 +
+> >  include/net/page_pool/helpers.h   |   9 ++
+> >  include/net/sock.h                |   2 +
+> >  include/uapi/asm-generic/socket.h |   5 +
+> >  include/uapi/linux/uio.h          |   6 +
+> >  net/ipv4/tcp.c                    | 189 +++++++++++++++++++++++++++++-
+> >  net/ipv4/tcp_ipv4.c               |   7 ++
+> >  7 files changed, 214 insertions(+), 5 deletions(-)
+> >
+> > diff --git a/include/linux/socket.h b/include/linux/socket.h
+> > index cfcb7e2c3813..fe2b9e2081bb 100644
+> > --- a/include/linux/socket.h
+> > +++ b/include/linux/socket.h
+> > @@ -326,6 +326,7 @@ struct ucred {
+> >                                         * plain text and require encryp=
+tion
+> >                                         */
+> >
+> > +#define MSG_SOCK_DEVMEM 0x2000000    /* Receive devmem skbs as cmsg */
+>
+> Sharing the feedback that I've been providing internally on the public li=
+st:
+>
 
-With the newline fix Willy pointed out, and CC: stable:
+There may have been a miscommunication. I don't recall hearing this
+specific feedback from you, at least in the last few months. Sorry if
+it seemed like I'm ignoring feedback :)
 
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+> IMHO, we need a better UAPI to receive the tokens and give them back to
+> the kernel. CMSG + setsockopt(SO_DEVMEM_DONTNEED) get the job done,
+> but look dated and hacky :-(
+>
+> We should either do some kind of user/kernel shared memory queue to
+> receive/return the tokens (similar to what Jonathan was doing in his
+> proposal?)
+
+I'll take a look at Jonathan's proposal, sorry, I'm not immediately
+familiar but I wanted to respond :-) But is the suggestion here to
+build a new kernel-user communication channel primitive for the
+purpose of passing the information in the devmem cmsg? IMHO that seems
+like an overkill. Why add 100-200 lines of code to the kernel to add
+something that can already be done with existing primitives? I don't
+see anything concretely wrong with cmsg & setsockopt approach, and if
+we switch to something I'd prefer to switch to an existing primitive
+for simplicity?
+
+The only other existing primitive to pass data outside of the linear
+buffer is the MSG_ERRQUEUE that is used for zerocopy. Is that
+preferred? Any other suggestions or existing primitives I'm not aware
+of?
+
+> or bite the bullet and switch to io_uring.
+>
+
+IMO io_uring & socket support are orthogonal, and one doesn't preclude
+the other. As you know we like to use sockets and I believe there are
+issues with io_uring adoption at Google that I'm not familiar with
+(and could be wrong). I'm interested in exploring io_uring support as
+a follow up but I think David Wei will be interested in io_uring
+support as well anyway.
+
+> I was also suggesting to do it via netlink initially, but it's probably
+> a bit slow for these purpose, idk.
+
+Yeah, I hear netlink is reserved for control paths and is
+inappropriate for data path, but I'll let folks correct me if wrong.
+
+--=20
+Thanks,
+Mina
