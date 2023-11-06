@@ -2,88 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 086A37E2A10
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 17:40:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C80107E2A19
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 17:40:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232151AbjKFQkS convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 6 Nov 2023 11:40:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41780 "EHLO
+        id S232866AbjKFQkt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 11:40:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231792AbjKFQkR (ORCPT
+        with ESMTP id S232787AbjKFQkq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 11:40:17 -0500
-Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com [209.85.219.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E68BA1BF;
-        Mon,  6 Nov 2023 08:40:13 -0800 (PST)
-Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-da2b9211dc0so4530203276.3;
-        Mon, 06 Nov 2023 08:40:13 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699288813; x=1699893613;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=lozX/5uE8E9wTSAQJ6cDeuHkVJrKETQfNxx1vpXTbcc=;
-        b=FwjMj56ZDm2zYD/FP9o+gDNAglANLcsFFB9f5/acmTEQVFTduS5qq208K1Vf66z8p5
-         t2HZU0yYDLzNWEYsfTC/DMymJ5J0XFQgFV2xhjDySzx0U3Hmp2A/N+pEHrvzRG2Qb2G+
-         loJxp+oCumy8vrKJqiksE61rN4YFsN9t8Ns7QzwXYYvilROn/YsGShr2M6vpk5fuwTDM
-         XeqRztIilUxXlIk1ycjQRCQqvPa/fPhoK+zfXAvPK7GbYWS9FcAi2k6ByU6lBdOALJML
-         tbKi6VSaQL+dph2n90jzw9sFovWYR8JT7Z6efa1F43S7ifHRNIOuOYRXXpcoD1U7X/qr
-         Foqw==
-X-Gm-Message-State: AOJu0YwdSvH6dnwMvDOEF/hklzXy2q/hwuxBeJ5s/av1igs48LKg50DG
-        oRHmUomEr1kqH0AjZCf2Z0Hlxb1T1FVAqA==
-X-Google-Smtp-Source: AGHT+IH3Qg60XJ775OcT8sue3DFeb8fUBDnpU7Jul0u1NlKFqYAi/hK6VEsMYBpBMwVwIpSKATL2fg==
-X-Received: by 2002:a25:ce8c:0:b0:da0:37c8:9f00 with SMTP id x134-20020a25ce8c000000b00da037c89f00mr28255123ybe.36.1699288812915;
-        Mon, 06 Nov 2023 08:40:12 -0800 (PST)
-Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com. [209.85.128.179])
-        by smtp.gmail.com with ESMTPSA id z11-20020a25ad8b000000b00da06fc45421sm4128278ybi.54.2023.11.06.08.40.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 06 Nov 2023 08:40:12 -0800 (PST)
-Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-5a7b3d33663so56593867b3.3;
-        Mon, 06 Nov 2023 08:40:12 -0800 (PST)
-X-Received: by 2002:a81:a04e:0:b0:5a7:b560:12df with SMTP id
- x75-20020a81a04e000000b005a7b56012dfmr11125598ywg.8.1699288811909; Mon, 06
- Nov 2023 08:40:11 -0800 (PST)
-MIME-Version: 1.0
-References: <20231106-of_overlay_fdt_apply-kerneldoc-v1-1-9a2d132bc6c1@bootlin.com>
-In-Reply-To: <20231106-of_overlay_fdt_apply-kerneldoc-v1-1-9a2d132bc6c1@bootlin.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 6 Nov 2023 17:40:00 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdWdEg0m=D6aVW+R=9TSR7BsQWQfPdtORVH-HcgUsQ0oxQ@mail.gmail.com>
-Message-ID: <CAMuHMdWdEg0m=D6aVW+R=9TSR7BsQWQfPdtORVH-HcgUsQ0oxQ@mail.gmail.com>
-Subject: Re: [PATCH] of: overlay: enable of_overlay_fdt_apply() kerneldoc
-To:     Luca Ceresoli <luca.ceresoli@bootlin.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+        Mon, 6 Nov 2023 11:40:46 -0500
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F2AAF3;
+        Mon,  6 Nov 2023 08:40:43 -0800 (PST)
+Received: from pps.filterd (m0353722.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A6G9wJq012558;
+        Mon, 6 Nov 2023 16:40:14 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=ntZsLRi2hus613FqdTu44OeobP9ahDx7BzxS4O7ju4U=;
+ b=L4q+mC098fBK/UtAXsxypV3spcgftlRSQJy+2CUdgGUDbllToOxeEm8Ic1aTxLNFn60H
+ kpBu540y2frJ67xd0dCxSk8FMsKSzWpz1OmRKQbbpIY/1/ke3t7u1IQVRHcYdbwxVMvE
+ 26w5IES8+okz+YwgVtpyzR2PI2Lkeen0BykOmCm4v6yaUBFVW+pnKoC8gS8xTf5h8k7p
+ +lCFW1muge7J1+J9RgrHgn4x0ImTND3khz6cXsT9LliFLTEUYHWC3IUv6V2pjFOk5CYS
+ xCH5uZN5SrorLDmGelw7b8Msj0PHgsuuWrOOt/lGky9E/UBf2iF70MbAcTeS/6wLmdF0 ew== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u73dwh8y0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 06 Nov 2023 16:40:14 +0000
+Received: from m0353722.ppops.net (m0353722.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3A6GA5af013143;
+        Mon, 6 Nov 2023 16:40:13 GMT
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u73dwh8xj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 06 Nov 2023 16:40:13 +0000
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3A6Eqi53028251;
+        Mon, 6 Nov 2023 16:40:12 GMT
+Received: from smtprelay04.dal12v.mail.ibm.com ([172.16.1.6])
+        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3u62gjt9gx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 06 Nov 2023 16:40:12 +0000
+Received: from smtpav04.wdc07v.mail.ibm.com (smtpav04.wdc07v.mail.ibm.com [10.39.53.231])
+        by smtprelay04.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3A6GeBce18875026
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 6 Nov 2023 16:40:11 GMT
+Received: from smtpav04.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 86AE658045;
+        Mon,  6 Nov 2023 16:40:11 +0000 (GMT)
+Received: from smtpav04.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 44E8E58056;
+        Mon,  6 Nov 2023 16:40:09 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.61.58.168])
+        by smtpav04.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+        Mon,  6 Nov 2023 16:40:09 +0000 (GMT)
+Message-ID: <980b8df5eccc03a67328e28b7cef2b777bc310f0.camel@linux.ibm.com>
+Subject: Re: [PATCH v4 12/23] security: Introduce file_post_open hook
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Roberto Sassu <roberto.sassu@huaweicloud.com>,
+        viro@zeniv.linux.org.uk, brauner@kernel.org,
+        chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
+        kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
+        paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
+        dmitry.kasatkin@gmail.com, dhowells@redhat.com, jarkko@kernel.org,
+        stephen.smalley.work@gmail.com, eparis@parisplace.org,
+        casey@schaufler-ca.com, mic@digikod.net
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
+        selinux@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>,
+        Stefan Berger <stefanb@linux.ibm.com>
+Date:   Mon, 06 Nov 2023 11:40:08 -0500
+In-Reply-To: <20231027083558.484911-13-roberto.sassu@huaweicloud.com>
+References: <20231027083558.484911-1-roberto.sassu@huaweicloud.com>
+         <20231027083558.484911-13-roberto.sassu@huaweicloud.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-22.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: zw57y4MwJGx3BnjPgEXX4OPSmxPCeezQ
+X-Proofpoint-GUID: _5sXQ_fpTpFu-_ZM3yCz4MGm249TyFjc
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-06_12,2023-11-02_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
+ priorityscore=1501 suspectscore=0 spamscore=0 clxscore=1015 mlxscore=0
+ lowpriorityscore=0 bulkscore=0 impostorscore=0 malwarescore=0 adultscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2310240000 definitions=main-2311060134
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 6, 2023 at 2:03 PM Luca Ceresoli <luca.ceresoli@bootlin.com> wrote:
-> of_overlay_fdt_apply() already has a kerneldoc-formatted documentation,
-> except it is nor marked as such. Adding the second asterisk is enough for
-> the documentation to take it into account correctly.
->
-> Signed-off-by: Luca Ceresoli <luca.ceresoli@bootlin.com>
+On Fri, 2023-10-27 at 10:35 +0200, Roberto Sassu wrote:
+> diff --git a/security/security.c b/security/security.c
+> index 2ee958afaf40..d24a8f92d641 100644
+> --- a/security/security.c
+> +++ b/security/security.c
+> @@ -2947,6 +2947,23 @@ int security_file_open(struct file *file)
+>         return fsnotify_perm(file, MAY_OPEN);
+>  }
+>  
+> +/**
+> + * security_file_post_open() - Recheck access to a file after it has been opened
+> + * @file: the file
+> + * @mask: access mask
+> + *
+> + * Recheck access with mask after the file has been opened. The hook is useful
+> + * for LSMs that require the file content to be available in order to make
+> + * decisions.
+> + *
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+The hook isn't limited to "Recheck access".    It's used for measuring,
+appraising, and auditing a file's integrity.   Sorry for suggesting an
+incomplete patch description.  Please update the wording here and the
+patch description accordingly.
 
-Gr{oetje,eeting}s,
-
-                        Geert
+> + * Return: Returns 0 if permission is granted.
+> + */
+> +int security_file_post_open(struct file *file, int mask)
+> +{
+> +       return call_int_hook(file_post_open, 0, file, mask);
+> +}
+> +EXPORT_SYMBOL_GPL(security_file_post_open);
+> +
+>  /**
+>   * security_file_truncate() - Check if truncating a file is allowed
+>   * @file: file
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+thanks,
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Mimi
+
