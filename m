@@ -2,240 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 20A827E3027
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 23:49:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D4D27E302B
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 23:52:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233227AbjKFWtj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 17:49:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35546 "EHLO
+        id S233240AbjKFWwe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 17:52:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233217AbjKFWti (ORCPT
+        with ESMTP id S233217AbjKFWwd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 17:49:38 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB159D6E
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 14:49:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699310975; x=1730846975;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=EMLgOROeCF2utULDNO+8pR4x0ROBK/cUmYyQmhkf/eA=;
-  b=iiR6FsOykRCEESwKi5NSyymdg8wKJg/sIctGx4KdLnDYjhvdaABDzC/s
-   KZGM7RAUN46P/rqVyr1jsJSqf55+5E0YeJAk6isNYGLjefpk6SHypaoDj
-   FTaSBJPZpqDKrzNh3J29351dN4eLx0gHKBYubCDmV6uPjzwKvpdZYBcjn
-   Ln2yXqm2M0wnDXwwSHAAkHmrFf5R/xRH/i0GgHALEc5gTWNUQ7LbV5mn0
-   4F+WSVhuOVqQwSqk5aAo35KtFbSv6L3vLPNeFrKrF/+3G1VcSMDzDLoT7
-   OiOGRlAnOt87B/N67Cv59uRkm89r+2qvbOzBCDvlcZI0lNexs/ACEws/k
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10886"; a="8019291"
-X-IronPort-AV: E=Sophos;i="6.03,282,1694761200"; 
-   d="scan'208";a="8019291"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Nov 2023 14:49:35 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10886"; a="935934774"
-X-IronPort-AV: E=Sophos;i="6.03,282,1694761200"; 
-   d="scan'208";a="935934774"
-Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by orsmga005.jf.intel.com with ESMTP; 06 Nov 2023 14:49:32 -0800
-Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r08PS-0006mi-0X;
-        Mon, 06 Nov 2023 22:49:30 +0000
-Date:   Tue, 7 Nov 2023 06:47:36 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Sreekanth Reddy <sreekanth.reddy@avagotech.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Hannes Reinecke <hare@suse.de>
-Subject: drivers/scsi/mpt3sas/mpt3sas_base.c:1648:61: warning: '%d' directive
- output may be truncated writing between 1 and 3 bytes into a region of size
- between 1 and 32
-Message-ID: <202311070619.k72DqC4f-lkp@intel.com>
+        Mon, 6 Nov 2023 17:52:33 -0500
+Received: from mail-oa1-f80.google.com (mail-oa1-f80.google.com [209.85.160.80])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B713D73
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 14:52:29 -0800 (PST)
+Received: by mail-oa1-f80.google.com with SMTP id 586e51a60fabf-1ef4782ef93so6191567fac.1
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 14:52:29 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699311148; x=1699915948;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=gVjrZIYw052So8S0TQsLIpyybr5BKhUBF66hcLzozOo=;
+        b=S4SE2b68e07nIGOWoC/KhJspZ2tNkizzMFh2jJYyGp05Wy1pc5JCIVG9Ve5XFZbKHR
+         Fg6ekxHASFiB3Xj+jQDXBLKHVom0hlskL2XOCnQR7VetWoKhLDHf7+7SWeNXwgEMy02T
+         a0xNAVV8HqRXbP4HI3f45B6fBP5UNipGL1It7gW1PVFKjcd7PW0m8mXcoi80Gn7J9jia
+         B7QMVYTFRRgHKXICDxz60o0ukoAXEv9sbq/Rx6dh1fGr00Lx5ZKbDE7DynqwGd6geKB6
+         njGEXt2xJJTt8OgDfyhVOqzXD8T7so3rxXs/znkgGm0aMfeR8UznURCn0nnjgPIpcJeF
+         ZcVA==
+X-Gm-Message-State: AOJu0Yzpp9y8cjEtvoBYopJ036giSN6V4zi1VrbNufv9zPv42uebRoAl
+        54uvKSL267i6Y+74vxjJBqAmPHZS33mwvejeXUF2KGGSxbmj
+X-Google-Smtp-Source: AGHT+IFB7j58wbrZ2aBYzqpaJqnn8TcbxJBmQW57UZjeYHqs+Co2g/njg3yP6/NN5ZjiNKR3Rt7IBifrhZbtUHazgg/BLO34ilyq
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6870:2199:b0:1e9:668b:7ba0 with SMTP id
+ l25-20020a056870219900b001e9668b7ba0mr374170oae.4.1699311148403; Mon, 06 Nov
+ 2023 14:52:28 -0800 (PST)
+Date:   Mon, 06 Nov 2023 14:52:28 -0800
+In-Reply-To: <0000000000009e122006088a2b8d@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000005d11b8060983b5b7@google.com>
+Subject: Re: [syzbot] [dccp?] general protection fault in dccp_write_xmit (2)
+From:   syzbot <syzbot+c71bc336c5061153b502@syzkaller.appspotmail.com>
+To:     bragathemanick0908@gmail.com, davem@davemloft.net,
+        dccp@vger.kernel.org, edumazet@google.com, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        pabeni@redhat.com, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sreekanth,
+syzbot has found a reproducer for the following issue on:
 
-FYI, the error/warning still remains.
+HEAD commit:    d2f51b3516da Merge tag 'rtc-6.7' of git://git.kernel.org/p..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=16675f40e80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=cd456c5e6582895e
+dashboard link: https://syzkaller.appspot.com/bug?extid=c71bc336c5061153b502
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=167ac787680000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1799f190e80000
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   d2f51b3516dade79269ff45eae2a7668ae711b25
-commit: d357e84d65dfcdb502fdb1aaab2873a82a828db5 mpt3sas: Define 'hba_mpi_version_belonged' IOC variable
-date:   8 years ago
-config: x86_64-buildonly-randconfig-006-20230911 (https://download.01.org/0day-ci/archive/20231107/202311070619.k72DqC4f-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231107/202311070619.k72DqC4f-lkp@intel.com/reproduce)
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-d2f51b35.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/d678011e498e/vmlinux-d2f51b35.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/4f6ed772923d/bzImage-d2f51b35.xz
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311070619.k72DqC4f-lkp@intel.com/
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+c71bc336c5061153b502@syzkaller.appspotmail.com
 
-All warnings (new ones prefixed by >>):
-
-   In file included from include/linux/kobject.h:21,
-                    from include/linux/module.h:17,
-                    from drivers/scsi/mpt3sas/mpt3sas_base.c:47:
-   include/linux/sysfs.h: In function 'sysfs_get_dirent':
-   include/linux/sysfs.h:496:44: warning: pointer targets in passing argument 2 of 'kernfs_find_and_get' differ in signedness [-Wpointer-sign]
-     496 |         return kernfs_find_and_get(parent, name);
-         |                                            ^~~~
-         |                                            |
-         |                                            const unsigned char *
-   In file included from include/linux/sysfs.h:15:
-   include/linux/kernfs.h:428:57: note: expected 'const char *' but argument is of type 'const unsigned char *'
-     428 | kernfs_find_and_get(struct kernfs_node *kn, const char *name)
-         |                                             ~~~~~~~~~~~~^~~~
-   drivers/scsi/mpt3sas/mpt3sas_base.c: In function '_base_assign_reply_queues':
-   drivers/scsi/mpt3sas/mpt3sas_base.c:1713:57: warning: suggest braces around empty body in an 'if' statement [-Wempty-body]
-    1713 |                             ioc->name, reply_q->vector));
-         |                                                         ^
-   drivers/scsi/mpt3sas/mpt3sas_base.c: At top level:
-   drivers/scsi/mpt3sas/mpt3sas_base.c:1820:1: warning: no previous declaration for 'mpt3sas_base_unmap_resources' [-Wmissing-declarations]
-    1820 | mpt3sas_base_unmap_resources(struct MPT3SAS_ADAPTER *ioc)
-         | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/scsi/mpt3sas/mpt3sas_base.c: In function '_base_display_ioc_capabilities':
-   drivers/scsi/mpt3sas/mpt3sas_base.c:2477:36: warning: pointer targets in passing argument 2 of 'strncpy' differ in signedness [-Wpointer-sign]
-    2477 |         strncpy(desc, ioc->manu_pg0.ChipName, 16);
-         |                       ~~~~~~~~~~~~~^~~~~~~~~
-         |                                    |
-         |                                    U8 * {aka unsigned char *}
-   In file included from include/linux/bitmap.h:8,
-                    from include/linux/cpumask.h:11,
-                    from arch/x86/include/asm/cpumask.h:4,
-                    from arch/x86/include/asm/msr.h:10,
-                    from arch/x86/include/asm/processor.h:20,
-                    from arch/x86/include/asm/thread_info.h:52,
-                    from include/linux/thread_info.h:54,
-                    from arch/x86/include/asm/preempt.h:6,
-                    from include/linux/preempt.h:64,
-                    from include/linux/spinlock.h:50,
-                    from include/linux/seqlock.h:35,
-                    from include/linux/time.h:5,
-                    from include/linux/stat.h:18,
-                    from include/linux/module.h:10:
-   include/linux/string.h:23:30: note: expected 'const char *' but argument is of type 'U8 *' {aka 'unsigned char *'}
-      23 | extern char * strncpy(char *,const char *, __kernel_size_t);
-         |                              ^~~~~~~~~~~~
-   drivers/scsi/mpt3sas/mpt3sas_base.c: In function '_base_handshake_req_reply_wait':
-   drivers/scsi/mpt3sas/mpt3sas_base.c:3503:13: warning: variable 'dummy' set but not used [-Wunused-but-set-variable]
-    3503 |         u16 dummy;
-         |             ^~~~~
-   drivers/scsi/mpt3sas/mpt3sas_base.c: In function 'mpt3sas_base_sas_iounit_control':
-   drivers/scsi/mpt3sas/mpt3sas_base.c:3628:23: warning: variable 'timeleft' set but not used [-Wunused-but-set-variable]
-    3628 |         unsigned long timeleft;
-         |                       ^~~~~~~~
-   drivers/scsi/mpt3sas/mpt3sas_base.c: In function 'mpt3sas_base_scsi_enclosure_processor':
-   drivers/scsi/mpt3sas/mpt3sas_base.c:3732:23: warning: variable 'timeleft' set but not used [-Wunused-but-set-variable]
-    3732 |         unsigned long timeleft;
-         |                       ^~~~~~~~
-   drivers/scsi/mpt3sas/mpt3sas_base.c: In function '_base_send_port_enable':
-   drivers/scsi/mpt3sas/mpt3sas_base.c:4174:23: warning: variable 'timeleft' set but not used [-Wunused-but-set-variable]
-    4174 |         unsigned long timeleft;
-         |                       ^~~~~~~~
-   drivers/scsi/mpt3sas/mpt3sas_base.c: In function '_base_event_notification':
-   drivers/scsi/mpt3sas/mpt3sas_base.c:4399:42: warning: suggest braces around empty body in an 'else' statement [-Wempty-body]
-    4399 |                     ioc->name, __func__));
-         |                                          ^
-   drivers/scsi/mpt3sas/mpt3sas_base.c:4355:23: warning: variable 'timeleft' set but not used [-Wunused-but-set-variable]
-    4355 |         unsigned long timeleft;
-         |                       ^~~~~~~~
-   drivers/scsi/mpt3sas/mpt3sas_base.c: In function '_base_request_irq':
->> drivers/scsi/mpt3sas/mpt3sas_base.c:1648:61: warning: '%d' directive output may be truncated writing between 1 and 3 bytes into a region of size between 1 and 32 [-Wformat-truncation=]
-    1648 |                 snprintf(reply_q->name, MPT_NAME_LENGTH, "%s%d",
-         |                                                             ^~
-   drivers/scsi/mpt3sas/mpt3sas_base.c:1648:58: note: directive argument in the range [0, 255]
-    1648 |                 snprintf(reply_q->name, MPT_NAME_LENGTH, "%s%d",
-         |                                                          ^~~~~~
-   drivers/scsi/mpt3sas/mpt3sas_base.c:1648:17: note: 'snprintf' output between 2 and 35 bytes into a destination of size 32
-    1648 |                 snprintf(reply_q->name, MPT_NAME_LENGTH, "%s%d",
-         |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    1649 |                     driver_name, ioc->id);
-         |                     ~~~~~~~~~~~~~~~~~~~~~
-   drivers/scsi/mpt3sas/mpt3sas_base.c:1645:61: warning: '%d' directive output may be truncated writing between 1 and 3 bytes into a region of size between 1 and 32 [-Wformat-truncation=]
-    1645 |                 snprintf(reply_q->name, MPT_NAME_LENGTH, "%s%d-msix%d",
-         |                                                             ^~
-   drivers/scsi/mpt3sas/mpt3sas_base.c:1645:58: note: directive argument in the range [0, 255]
-    1645 |                 snprintf(reply_q->name, MPT_NAME_LENGTH, "%s%d-msix%d",
-         |                                                          ^~~~~~~~~~~~~
-   drivers/scsi/mpt3sas/mpt3sas_base.c:1645:58: note: directive argument in the range [0, 254]
-   drivers/scsi/mpt3sas/mpt3sas_base.c:1645:17: note: 'snprintf' output between 8 and 43 bytes into a destination of size 32
-    1645 |                 snprintf(reply_q->name, MPT_NAME_LENGTH, "%s%d-msix%d",
-         |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    1646 |                     driver_name, ioc->id, index);
-         |                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
+CPU: 3 PID: 5345 Comm: syz-executor785 Not tainted 6.6.0-syzkaller-14651-gd2f51b3516da #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+RIP: 0010:ccid_hc_tx_send_packet net/dccp/ccid.h:166 [inline]
+RIP: 0010:dccp_write_xmit+0x66/0x1d0 net/dccp/output.c:356
+Code: 00 48 85 c0 49 89 c4 0f 84 03 01 00 00 e8 82 5f cd f7 41 80 3e 00 0f 85 45 01 00 00 48 8b 9d f8 08 00 00 48 89 d8 48 c1 e8 03 <42> 80 3c 28 00 0f 85 1f 01 00 00 48 8b 1b 48 8d bb b0 00 00 00 48
+RSP: 0018:ffffc90003797870 EFLAGS: 00010246
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: ffff88802a2bd000 RSI: ffffffff89ba330e RDI: ffff88802d7d9540
+RBP: ffff88802d7d9540 R08: 0000000000000001 R09: fffffbfff23e11e9
+R10: ffffffff91f08f4f R11: ffffffff915e5030 R12: ffff8880186c9cc0
+R13: dffffc0000000000 R14: ffffed1005afb3c7 R15: ffff88802d7d9e38
+FS:  00007f263ceef6c0(0000) GS:ffff88806b900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000020002980 CR3: 000000001b2ab000 CR4: 0000000000350ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ dccp_sendmsg+0x968/0xcc0 net/dccp/proto.c:801
+ inet_sendmsg+0x9d/0xe0 net/ipv4/af_inet.c:847
+ sock_sendmsg_nosec net/socket.c:730 [inline]
+ __sock_sendmsg+0xd5/0x180 net/socket.c:745
+ ____sys_sendmsg+0x2ac/0x940 net/socket.c:2588
+ ___sys_sendmsg+0x135/0x1d0 net/socket.c:2642
+ __sys_sendmmsg+0x1a1/0x450 net/socket.c:2728
+ __do_sys_sendmmsg net/socket.c:2757 [inline]
+ __se_sys_sendmmsg net/socket.c:2754 [inline]
+ __x64_sys_sendmmsg+0x9c/0x100 net/socket.c:2754
+ do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+ do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:82
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+RIP: 0033:0x7f263cf53559
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 61 1a 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f263ceef218 EFLAGS: 00000246 ORIG_RAX: 0000000000000133
+RAX: ffffffffffffffda RBX: 00007f263cfdd438 RCX: 00007f263cf53559
+RDX: 0400000000000239 RSI: 0000000020002980 RDI: 0000000000000006
+RBP: 00007f263cfdd430 R08: 00007fff5b335167 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007f263cfdd43c
+R13: 00007f263cfaa504 R14: 0400000000000239 R15: 00007fff5b335168
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:ccid_hc_tx_send_packet net/dccp/ccid.h:166 [inline]
+RIP: 0010:dccp_write_xmit+0x66/0x1d0 net/dccp/output.c:356
+Code: 00 48 85 c0 49 89 c4 0f 84 03 01 00 00 e8 82 5f cd f7 41 80 3e 00 0f 85 45 01 00 00 48 8b 9d f8 08 00 00 48 89 d8 48 c1 e8 03 <42> 80 3c 28 00 0f 85 1f 01 00 00 48 8b 1b 48 8d bb b0 00 00 00 48
+RSP: 0018:ffffc90003797870 EFLAGS: 00010246
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: ffff88802a2bd000 RSI: ffffffff89ba330e RDI: ffff88802d7d9540
+RBP: ffff88802d7d9540 R08: 0000000000000001 R09: fffffbfff23e11e9
+R10: ffffffff91f08f4f R11: ffffffff915e5030 R12: ffff8880186c9cc0
+R13: dffffc0000000000 R14: ffffed1005afb3c7 R15: ffff88802d7d9e38
+FS:  00007f263ceef6c0(0000) GS:ffff88806b900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000020002980 CR3: 000000001b2ab000 CR4: 0000000000350ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+----------------
+Code disassembly (best guess):
+   0:	00 48 85             	add    %cl,-0x7b(%rax)
+   3:	c0 49 89 c4          	rorb   $0xc4,-0x77(%rcx)
+   7:	0f 84 03 01 00 00    	je     0x110
+   d:	e8 82 5f cd f7       	call   0xf7cd5f94
+  12:	41 80 3e 00          	cmpb   $0x0,(%r14)
+  16:	0f 85 45 01 00 00    	jne    0x161
+  1c:	48 8b 9d f8 08 00 00 	mov    0x8f8(%rbp),%rbx
+  23:	48 89 d8             	mov    %rbx,%rax
+  26:	48 c1 e8 03          	shr    $0x3,%rax
+* 2a:	42 80 3c 28 00       	cmpb   $0x0,(%rax,%r13,1) <-- trapping instruction
+  2f:	0f 85 1f 01 00 00    	jne    0x154
+  35:	48 8b 1b             	mov    (%rbx),%rbx
+  38:	48 8d bb b0 00 00 00 	lea    0xb0(%rbx),%rdi
+  3f:	48                   	rex.W
 
 
-vim +1648 drivers/scsi/mpt3sas/mpt3sas_base.c
-
-f92363d1235949 Sreekanth Reddy 2012-11-30  1614  
-f92363d1235949 Sreekanth Reddy 2012-11-30  1615  /**
-f92363d1235949 Sreekanth Reddy 2012-11-30  1616   * _base_request_irq - request irq
-f92363d1235949 Sreekanth Reddy 2012-11-30  1617   * @ioc: per adapter object
-f92363d1235949 Sreekanth Reddy 2012-11-30  1618   * @index: msix index into vector table
-f92363d1235949 Sreekanth Reddy 2012-11-30  1619   * @vector: irq vector
-f92363d1235949 Sreekanth Reddy 2012-11-30  1620   *
-f92363d1235949 Sreekanth Reddy 2012-11-30  1621   * Inserting respective reply_queue into the list.
-f92363d1235949 Sreekanth Reddy 2012-11-30  1622   */
-f92363d1235949 Sreekanth Reddy 2012-11-30  1623  static int
-f92363d1235949 Sreekanth Reddy 2012-11-30  1624  _base_request_irq(struct MPT3SAS_ADAPTER *ioc, u8 index, u32 vector)
-f92363d1235949 Sreekanth Reddy 2012-11-30  1625  {
-f92363d1235949 Sreekanth Reddy 2012-11-30  1626  	struct adapter_reply_queue *reply_q;
-f92363d1235949 Sreekanth Reddy 2012-11-30  1627  	int r;
-f92363d1235949 Sreekanth Reddy 2012-11-30  1628  
-f92363d1235949 Sreekanth Reddy 2012-11-30  1629  	reply_q =  kzalloc(sizeof(struct adapter_reply_queue), GFP_KERNEL);
-f92363d1235949 Sreekanth Reddy 2012-11-30  1630  	if (!reply_q) {
-f92363d1235949 Sreekanth Reddy 2012-11-30  1631  		pr_err(MPT3SAS_FMT "unable to allocate memory %d!\n",
-f92363d1235949 Sreekanth Reddy 2012-11-30  1632  		    ioc->name, (int)sizeof(struct adapter_reply_queue));
-f92363d1235949 Sreekanth Reddy 2012-11-30  1633  		return -ENOMEM;
-f92363d1235949 Sreekanth Reddy 2012-11-30  1634  	}
-f92363d1235949 Sreekanth Reddy 2012-11-30  1635  	reply_q->ioc = ioc;
-f92363d1235949 Sreekanth Reddy 2012-11-30  1636  	reply_q->msix_index = index;
-f92363d1235949 Sreekanth Reddy 2012-11-30  1637  	reply_q->vector = vector;
-14b3114d940cdc Sreekanth Reddy 2015-01-12  1638  
-14b3114d940cdc Sreekanth Reddy 2015-01-12  1639  	if (!alloc_cpumask_var(&reply_q->affinity_hint, GFP_KERNEL))
-14b3114d940cdc Sreekanth Reddy 2015-01-12  1640  		return -ENOMEM;
-14b3114d940cdc Sreekanth Reddy 2015-01-12  1641  	cpumask_clear(reply_q->affinity_hint);
-14b3114d940cdc Sreekanth Reddy 2015-01-12  1642  
-f92363d1235949 Sreekanth Reddy 2012-11-30  1643  	atomic_set(&reply_q->busy, 0);
-f92363d1235949 Sreekanth Reddy 2012-11-30  1644  	if (ioc->msix_enable)
-f92363d1235949 Sreekanth Reddy 2012-11-30  1645  		snprintf(reply_q->name, MPT_NAME_LENGTH, "%s%d-msix%d",
-d357e84d65dfcd Sreekanth Reddy 2015-11-11  1646  		    driver_name, ioc->id, index);
-f92363d1235949 Sreekanth Reddy 2012-11-30  1647  	else
-f92363d1235949 Sreekanth Reddy 2012-11-30 @1648  		snprintf(reply_q->name, MPT_NAME_LENGTH, "%s%d",
-d357e84d65dfcd Sreekanth Reddy 2015-11-11  1649  		    driver_name, ioc->id);
-f92363d1235949 Sreekanth Reddy 2012-11-30  1650  	r = request_irq(vector, _base_interrupt, IRQF_SHARED, reply_q->name,
-f92363d1235949 Sreekanth Reddy 2012-11-30  1651  	    reply_q);
-f92363d1235949 Sreekanth Reddy 2012-11-30  1652  	if (r) {
-f92363d1235949 Sreekanth Reddy 2012-11-30  1653  		pr_err(MPT3SAS_FMT "unable to allocate interrupt %d!\n",
-f92363d1235949 Sreekanth Reddy 2012-11-30  1654  		    reply_q->name, vector);
-f92363d1235949 Sreekanth Reddy 2012-11-30  1655  		kfree(reply_q);
-f92363d1235949 Sreekanth Reddy 2012-11-30  1656  		return -EBUSY;
-f92363d1235949 Sreekanth Reddy 2012-11-30  1657  	}
-f92363d1235949 Sreekanth Reddy 2012-11-30  1658  
-f92363d1235949 Sreekanth Reddy 2012-11-30  1659  	INIT_LIST_HEAD(&reply_q->list);
-f92363d1235949 Sreekanth Reddy 2012-11-30  1660  	list_add_tail(&reply_q->list, &ioc->reply_queue_list);
-f92363d1235949 Sreekanth Reddy 2012-11-30  1661  	return 0;
-f92363d1235949 Sreekanth Reddy 2012-11-30  1662  }
-f92363d1235949 Sreekanth Reddy 2012-11-30  1663  
-
-:::::: The code at line 1648 was first introduced by commit
-:::::: f92363d12359498f9a9960511de1a550f0ec41c2 [SCSI] mpt3sas: add new driver supporting 12GB SAS
-
-:::::: TO: Sreekanth Reddy <Sreekanth.Reddy@lsi.com>
-:::::: CC: James Bottomley <JBottomley@Parallels.com>
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+---
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
