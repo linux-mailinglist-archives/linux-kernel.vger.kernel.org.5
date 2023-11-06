@@ -2,57 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D50D77E192D
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 04:25:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 467F97E1931
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 04:26:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230243AbjKFDZ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Nov 2023 22:25:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49582 "EHLO
+        id S230240AbjKFD0z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Nov 2023 22:26:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229485AbjKFDZY (ORCPT
+        with ESMTP id S230117AbjKFD0y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Nov 2023 22:25:24 -0500
+        Sun, 5 Nov 2023 22:26:54 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1F59FB;
-        Sun,  5 Nov 2023 19:25:21 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B57DBC433C8;
-        Mon,  6 Nov 2023 03:25:17 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36E3BFB;
+        Sun,  5 Nov 2023 19:26:51 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7787C433C9;
+        Mon,  6 Nov 2023 03:26:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699241121;
-        bh=n2FlAsTnGGnaOX5T+2LaXbteTzxZ7uxa6cFJoH8mL80=;
+        s=k20201202; t=1699241210;
+        bh=16hEpJyK4t6U7gx49fwTY6bI15ZJiHsgzXQDYDHEELE=;
         h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=cpvquSqRwDGX5EjUGDzD4sEhrb7nnmppxOKRXA57VyM4hoA/QIPuAZDul0T5L5qQi
-         weUw03ublp4RNbItzX3iozWtSDMJ0btAo/xpfZz1juTsf+azwq0QkMEGeNaftYvWfq
-         jpB6xbpfqTOADsQzgEJI3zp8u/lWL2RQnLpNAmXuG9ZwKek+0DQggYa7CiOOlwRfA3
-         kpmYtBxLYqGwzz3rEXsl0I5Pf3v12eH54lCetjz5q1XtHUiMnGYlhhYleLREK6FK/j
-         fQ50Tg/FoUm90ZuAwEZEHKHMrRUBAE2duAbFvNkZf5sqWmjYNPuEXKXYKqB52fSt3f
-         BLAEPLhppKv7Q==
-Message-ID: <1a06e28dbac24d32168a7362a903d6076fafdc34.camel@kernel.org>
-Subject: Re: [PATCH v3 4/6] tpm: Support TPM2 sized buffers (TPM2B)
+        b=PXTLJ/mX6yE/jYLi6RbCsBx4yIXEgI0n3lsYK6FY08SbW9f8vYCByzPywC6hW4+vp
+         qiEG4b7fGCVB/3YWjuh25f+lRX73XGbO5IKHQVoLNn8zFfJR24quxvPUb8fqM6i0gS
+         J6GnBUwPmVqyVvjNSVw0QaP4u6jnU2int4YlF3GrvCB/EOpd6pFUa7+u/oaS6k1a3q
+         hP/F2IP78ShycL4U3hs2n/dgGFedGsGgKfOo46oO1Fot4ZfHtIR/4Al+uFiPwBbi9m
+         iUDBQsukSzgMCZlLXiorM3hESZ8EfCtGMQJPpQH8wb5gEvURI2q7CJiYZ5pnL/2NMs
+         Z4Cm3uJoLe8RA==
+Message-ID: <b4581a686daf943a4c9a24373db0dfd58b7fecd7.camel@kernel.org>
+Subject: Re: [PATCH v6 00/12] Add Cgroup support for SGX EPC memory
 From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     James Bottomley <James.Bottomley@HansenPartnership.com>,
-        linux-integrity@vger.kernel.org
-Cc:     keyrings@vger.kernel.org,
-        William Roberts <bill.c.roberts@gmail.com>,
-        Stefan Berger <stefanb@linux.ibm.com>,
-        David Howells <dhowells@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Peter Huewe <peterhuewe@gmx.de>,
-        Paul Moore <paul@paul-moore.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Jerry Snitselaar <jsnitsel@redhat.com>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        Julien Gomes <julien@arista.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:SECURITY SUBSYSTEM" 
-        <linux-security-module@vger.kernel.org>
-Date:   Mon, 06 Nov 2023 05:25:15 +0200
-In-Reply-To: <d4157726d924a3ddad477923d6bcb4a8e6a55e60.camel@HansenPartnership.com>
-References: <20231024011531.442587-1-jarkko@kernel.org>
-         <20231024011531.442587-5-jarkko@kernel.org>
-         <d4157726d924a3ddad477923d6bcb4a8e6a55e60.camel@HansenPartnership.com>
+To:     Haitao Huang <haitao.huang@linux.intel.com>,
+        dave.hansen@linux.intel.com, tj@kernel.org, mkoutny@suse.com,
+        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
+        x86@kernel.org, cgroups@vger.kernel.org, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
+        sohil.mehta@intel.com
+Cc:     zhiquan1.li@intel.com, kristen@linux.intel.com, seanjc@google.com,
+        zhanb@microsoft.com, anakrish@microsoft.com,
+        mikko.ylinen@linux.intel.com, yangjie@microsoft.com
+Date:   Mon, 06 Nov 2023 05:26:44 +0200
+In-Reply-To: <20231030182013.40086-1-haitao.huang@linux.intel.com>
+References: <20231030182013.40086-1-haitao.huang@linux.intel.com>
 Autocrypt: addr=jarkko@kernel.org; prefer-encrypt=mutual;
  keydata=mQINBF0RXVoBEACq7dxNqGliHRIUjKeA0Ajj8R0JiNRbhayBAmCmjfDh6m/QTNfyCmFBv6ZPe4EbBEyCgcFxerS0qgkaRD0FApKgtrX842rkwDyyhTA222rkv5Q/U2SY1Hi55kekBcAgYHVQzhvHnRrckvE7YxDlH06mnUGlL63s9NI/xnhtJvn92rLNvWqAyn+48Ud/EcE9oBo6vvq10O0UAHN/PEsyqtThN9tlTEKH8IMXmy1FAC70Ov8Ap63ZJT2RE7H4wbIYrHOOxarfHaKHcKy+UjZBhuQ54sGxxch2kXQCfkXOY7Ab7KKNkb4u2jDc6lyz8TJlc8Twi5KQcWBzomnYy5R0OJ01g6byY7vCSwAfCSp87P50F5O2pmjqd82mdB3Noy+CWIlV1kjMjaJglTyFGym7CWkvx7+yP+Jjq643aIbveN/Tx5OYZIhtSMRtJDzT+nDIgD83NyHL6JHO3LzKZEw6yZJWWSXyK9P5H8RX7ipWf3o3NaUCcs1K8wyTcgBZ/GT9X9SprH1ySYAGJz+G1UyPMQT1V4OirkQaMfN0Ht7jl6gEXXOs0Ks1sOdaKZUFIGn9P1cNRixp34Bw3edL4ZjNljXZa12MqzbaArTCm+WzJqrvkToOx2bqU37Y1vNskOBdYkCvWhKsIf8Gj5LZiVjFnX27bXeLv6Gd3asJ4qcQAl06+wARAQABtChKYXJra28gU2Fra2luZW4gPGphcmtrby5zYWtraW5lbkBpa2kuZmk+iQJXBBMBCgBBAhsBBQsJCAcCBhUKCQgLAgQWAgMBAh4BAheAAhkBFiEEUQfmbTR4ipPjInyQOrBUhsd1L+EFAmSlnJMFCQl1crkACgkQOrBUhsd1L+EPKw/9EnoAjcbK+duuIN4JA6iXCfdWrYK8DhvaMgfNIbH4ZrtbMYwAPsHeZTv/C47pf48sp200OvdQoA2qoYdtX+I1JLhz7aaRtemBp1lwZEESeNG5j
         0EwCSLeR6ITQanlpnj8FQ0MnLi8yKf8crWR8QyKlE96zT1yBFxNsjveGHBpW9syHjSFUZOLVA9JVSv6eSGobvU265EPxekVH3+GreSzs/lXWOMvXdLONbUtRJSktq1/p8T5m+btNxRKRi16gQOK8gZL/VRXg0/GLhNgobOniAYKz/q9pM/6vQWDzVeg+ur1HHbln/C28DJNubV8+4VnmZGWDpb2AOrEVX8xXyPr6MZmsPdf0/X5nSHDjF8+NOwWfPcdIu+ZmPKX0kAzDtefDoXD54dm13WvPVxH1zS1hz66LKRmEhutXUpE05U+XBrpxlXGKEU3MF/XeaMN04s6JktjXyIyAeG7G7TrexHcDEmi7bbUhzPCHMHnL3ialXDH59hpzdYBMiFkMiQ1xv45ow5W3AsCkfgljEG4GAnLbvnFJgbcvdYhR5QEfS2/vBXLrmHsi+cNlGuD9maf22ymiUJEdAe9AtwapT6YLNSlHuOF4OhmBemYkmTAYB6Jo/2jD5sSDnQXglO/Ib1+qh9Adj/iCgjavijojl3kebWNcusZGspuQpYQKoKHFSZLyqe0I0phcmtrbyBTYWtraW5lbiA8amFya2tvQGtlcm5lbC5vcmc+iQJUBBMBCgA+AhsBBQsJCAcCBhUKCQgLAgQWAgMBAh4BAheAFiEEUQfmbTR4ipPjInyQOrBUhsd1L+EFAmSlnJ8FCQl1crkACgkQOrBUhsd1L+H4UxAAnw2J8ew6vDB+vAK2snuNKUaVsyZX2EPJJ9WZStGkCyEzbnG/a3dk4ktpGlNLpk9tJJKTpb88efDIkp/Xa1fIUuOP75QQO8lNePX8lsc1aVWwNr4QHqTWe1Jgr1rBE29qeZA1R/poAMezI3Rrn5YEchexdDqFICba6KL2Wzl/yFR2puXMZoscVen3+NjyXE2UZiLdH0F/zacr2sIiwzKwp3Ej3m+fXmvxp+EPvRlt9LzxiTnDNKAy3A+xBec2uNveAM
@@ -77,48 +66,215 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2023-10-27 at 08:32 -0400, James Bottomley wrote:
-> On Tue, 2023-10-24 at 04:15 +0300, Jarkko Sakkinen wrote:
-> > +++ b/drivers/char/tpm/tpm-buf.c
-> > @@ -7,22 +7,32 @@
-> > =C2=A0#include <linux/tpm.h>
-> > =C2=A0
-> > =C2=A0/**
-> > - * tpm_buf_init() - Initialize from the heap
-> > + * tpm_buf_init() - Initialize a TPM buffer
-> > =C2=A0 * @buf:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0A @tpm_buf
-> > + * @sized:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0Represent a sized buffer (TPM2=
-B)
-> > + * @alloc:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0Allocate from the heap
-> > =C2=A0 *
-> > =C2=A0 * Initialize all structure fields to zero, allocate a page from =
-the
-> > heap, and
-> > =C2=A0 * zero the bytes that the buffer headers will consume.
-> > =C2=A0 *
-> > =C2=A0 * Return: 0 or -ENOMEM
-> > =C2=A0 */
-> > -int tpm_buf_init(struct tpm_buf *buf)
-> > +int tpm_buf_init(struct tpm_buf *buf, bool alloc, bool sized)
+On Mon, 2023-10-30 at 11:20 -0700, Haitao Huang wrote:
+> SGX Enclave Page Cache (EPC) memory allocations are separate from normal =
+RAM allocations, and
+> are managed solely by the SGX subsystem. The existing cgroup memory contr=
+oller cannot be used
+> to limit or account for SGX EPC memory, which is a desirable feature in s=
+ome environments,
+> e.g., support for pod level control in a Kubernates cluster on a VM or ba=
+remetal host [1,2].
+> =C2=A0
+> This patchset implements the support for sgx_epc memory within the misc c=
+group controller. The
+> user can use the misc cgroup controller to set and enforce a max limit on=
+ total EPC usage per
+> cgroup. The implementation reports current usage and events of reaching t=
+he limit per cgroup as
+> well as the total system capacity.
+> =C2=A0
+> With the EPC misc controller enabled, every EPC page allocation is accoun=
+ted for a cgroup's
+> usage, reflected in the 'sgx_epc' entry in the 'misc.current' interface f=
+ile of the cgroup.
+> Much like normal system memory, EPC memory can be overcommitted via virtu=
+al memory techniques
+> and pages can be swapped out of the EPC to their backing store (normal sy=
+stem memory allocated
+> via shmem, accounted by the memory controller). When the EPC usage of a c=
+group reaches its hard
+> limit ('sgx_epc' entry in the 'misc.max' file), the cgroup starts a recla=
+mation process to swap
+> out some EPC pages within the same cgroup and its descendant to their bac=
+king store. Although
+> the SGX architecture supports swapping for all pages, to avoid extra comp=
+lexities, this
+> implementation does not support swapping for certain page types, e.g.=C2=
+=A0 Version Array(VA) pages,
+> and treat them as unreclaimable pages.=C2=A0 When the limit is reached bu=
+t nothing left in the
+> cgroup for reclamation, i.e., only unreclaimable pages left, any new EPC =
+allocation in the
+> cgroup will result in an ENOMEM error.
 >=20
-> I think it creates a phenomenally confusing interface to use multiple
-> booleans because, unlike flags, it's not self describing at point of
-> use.=C2=A0 The confusion is enormously heightened here by having the doc
-> book arguments be the reverse of the actual function prototype (I just
-> tripped over this).
+> The EPC pages allocated for guest VMs by the virtual EPC driver are not r=
+eclaimable by the host
+> kernel [5]. Therefore they are also treated as unreclaimable from cgroup'=
+s point of view.=C2=A0 And
+> the virtual EPC driver translates an ENOMEM error resulted from an EPC al=
+location request into
+> a SIGBUS to the user process.
 >=20
-> The alloc flag is particularly counter intuitive: if you pass in an
-> allocated buffer, you expect to be responsible for freeing it again,
-> but that's not how you use it; you really use it like a reset not an
-> alloc, which looks odd because you already created a separate
-> tpm_buf_reset function which can't be used in this case.
+> This work was originally authored by Sean Christopherson a few years ago,=
+ and previously
+> modified by Kristen C. Accardi to utilize the misc cgroup controller rath=
+er than a custom
+> controller. I have been updating the patches based on review comments sin=
+ce V2 [3, 4, 10],
+> simplified the implementation/design and fixed some stability issues foun=
+d from testing.
+> =C2=A0
+> The patches are organized as following:=20
+> - Patches 1-3 are prerequisite misc cgroup changes for adding new APIs, s=
+tructs, resource
+> =C2=A0 types.
+> - Patch 4 implements basic misc controller for EPC without reclamation.
+> - Patches 5-9 prepare for per-cgroup reclamation.
+> =C2=A0=C2=A0=C2=A0 * Separate out the existing infrastructure of tracking=
+ reclaimable pages
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 from the global reclaimer(ksgxd) to a newl=
+y created LRU list struct.
+> =C2=A0=C2=A0=C2=A0 * Separate out reusable top-level functions for reclam=
+ation.
+> - Patch 10 adds support for per-cgroup reclamation.
+> - Patch 11 adds documentation for the EPC cgroup.
+> - Patch 12 adds test scripts.
 >=20
-> Why not replace the alloc flags with two reset functions: one for TPM2B
-> buffers and one for command buffers?
+> I appreciate your review and providing tags if appropriate.
 >=20
-> James
+> ---
+> V6:
+> - Dropped OOM killing path, only implement non-preemptive enforcement of =
+max limit (Dave, Michal)
+> - Simplified reclamation flow by taking out sgx_epc_reclaim_control, forc=
+ed reclamation by
+> =C2=A0 ignoring 'age".
+> - Restructured patches: split misc API + resource types patch and the big=
+ EPC cgroup patch
+> =C2=A0 (Kai, Michal)
+> - Dropped some Tested-by/Reviewed-by tags due to significant changes
+> - Added more selftests
+>=20
+> v5:
+> - Replace the manual test script with a selftest script.
+> - Restore the "From" tag for some patches to Sean (Kai)
+> - Style fixes (Jarkko)
+>=20
+> v4:
+> - Collected "Tested-by" from Mikko. I kept it for now as no functional ch=
+anges in v4.
+> - Rebased on to v6.6_rc1 and reordered patches as described above.
+> - Separated out the bug fixes [7,8,9]. This series depend on those patche=
+s. (Dave, Jarkko)
+> - Added comments in commit message to give more preview what's to come ne=
+xt. (Jarkko)
+> - Fixed some documentation error, gap, style (Mikko, Randy)
+> - Fixed some comments, typo, style in code (Mikko, Kai)
+> - Patch format and background for reclaimable vs unreclaimable (Kai, Jark=
+ko)
+> - Fixed typo (Pavel)
+> - Exclude the previous fixes/enhancements for self-tests. Patch 18 now de=
+pends on series [6]
+> - Use the same to list for cover and all patches. (Solo)
+> =C2=A0
+> v3:
+> =C2=A0
+> - Added EPC states to replace flags in sgx_epc_page struct. (Jarkko)
+> - Unrolled wrappers for cond_resched, list (Dave)
+> - Separate patches for adding reclaimable and unreclaimable lists. (Dave)
+> - Other improvements on patch flow, commit messages, styles. (Dave, Jarkk=
+o)
+> - Simplified the cgroup tree walking with plain
+> =C2=A0 css_for_each_descendant_pre.
+> - Fixed race conditions and crashes.
+> - OOM killer to wait for the victim enclave pages being reclaimed.
+> - Unblock the user by handling misc_max_write callback asynchronously.
+> - Rebased onto 6.4 and no longer base this series on the MCA patchset.
+> - Fix an overflow in misc_try_charge.
+> - Fix a NULL pointer in SGX PF handler.
+> - Updated and included the SGX selftest patches previously reviewed. Thos=
+e
+> =C2=A0 patches fix issues triggered in high EPC pressure required for cgr=
+oup
+> =C2=A0 testing.
+> - Added test scripts to help setup and test SGX EPC cgroups.
+> =C2=A0
+> [1]https://lore.kernel.org/all/DM6PR21MB11772A6ED915825854B419D6C4989@DM6=
+PR21MB1177.namprd21.prod.outlook.com/
+> [2]https://lore.kernel.org/all/ZD7Iutppjj+muH4p@himmelriiki/
+> [3]https://lore.kernel.org/all/20221202183655.3767674-1-kristen@linux.int=
+el.com/
+> [4]https://lore.kernel.org/linux-sgx/20230712230202.47929-1-haitao.huang@=
+linux.intel.com/
+> [5]Documentation/arch/x86/sgx.rst, Section "Virtual EPC"
+> [6]https://lore.kernel.org/linux-sgx/20220905020411.17290-1-jarkko@kernel=
+.org/
+> [7]https://lore.kernel.org/linux-sgx/ZLcXmvDKheCRYOjG@slm.duckdns.org/
+> [8]https://lore.kernel.org/linux-sgx/20230721120231.13916-1-haitao.huang@=
+linux.intel.com/
+> [9]https://lore.kernel.org/linux-sgx/20230728051024.33063-1-haitao.huang@=
+linux.intel.com/
+> [10]https://lore.kernel.org/all/20230923030657.16148-1-haitao.huang@linux=
+.intel.com/
+>=20
+> Haitao Huang (2):
+> =C2=A0 x86/sgx: Introduce EPC page states
+> =C2=A0 selftests/sgx: Add scripts for EPC cgroup testing
+>=20
+> Kristen Carlson Accardi (5):
+> =C2=A0 cgroup/misc: Add per resource callbacks for CSS events
+> =C2=A0 cgroup/misc: Export APIs for SGX driver
+> =C2=A0 cgroup/misc: Add SGX EPC resource type
+> =C2=A0 x86/sgx: Implement basic EPC misc cgroup functionality
+> =C2=A0 x86/sgx: Implement EPC reclamation for cgroup
+>=20
+> Sean Christopherson (5):
+> =C2=A0 x86/sgx: Add sgx_epc_lru_list to encapsulate LRU list
+> =C2=A0 x86/sgx: Use sgx_epc_lru_list for existing active page list
+> =C2=A0 x86/sgx: Use a list to track to-be-reclaimed pages
+> =C2=A0 x86/sgx: Restructure top-level EPC reclaim function
+> =C2=A0 Docs/x86/sgx: Add description for cgroup support
+>=20
+> =C2=A0Documentation/arch/x86/sgx.rst=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 74 ++++
+> =C2=A0arch/x86/Kconfig=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 13 +
+> =C2=A0arch/x86/kernel/cpu/sgx/Makefile=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0 1 +
+> =C2=A0arch/x86/kernel/cpu/sgx/encl.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0 2 +-
+> =C2=A0arch/x86/kernel/cpu/sgx/epc_cgroup.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 | 319 ++++++++++++++++++
+> =C2=A0arch/x86/kernel/cpu/sgx/epc_cgroup.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 49 +++
+> =C2=A0arch/x86/kernel/cpu/sgx/main.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | 245 +++++++++-----
+> =C2=A0arch/x86/kernel/cpu/sgx/sgx.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 88 +++=
++-
+> =C2=A0include/linux/misc_cgroup.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=
+=A0 42 +++
+> =C2=A0kernel/cgroup/misc.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 52 ++-
+> =C2=A0.../selftests/sgx/run_epc_cg_selftests.sh=C2=A0=C2=A0=C2=A0=C2=A0 |=
+ 196 +++++++++++
+> =C2=A0.../selftests/sgx/watch_misc_for_tests.sh=C2=A0=C2=A0=C2=A0=C2=A0 |=
+=C2=A0 13 +
+> =C2=A012 files changed, 996 insertions(+), 98 deletions(-)
+> =C2=A0create mode 100644 arch/x86/kernel/cpu/sgx/epc_cgroup.c
+> =C2=A0create mode 100644 arch/x86/kernel/cpu/sgx/epc_cgroup.h
+> =C2=A0create mode 100755 tools/testing/selftests/sgx/run_epc_cg_selftests=
+.sh
+> =C2=A0create mode 100755 tools/testing/selftests/sgx/watch_misc_for_tests=
+.sh
+>=20
 
-Or you can make that as internal (__tpm_buf_init()) and add two
-wrappers.
+Is this expected to work on NUC7?
+
+Planning to test this next week (no time this week).
 
 BR, Jarkko
