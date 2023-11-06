@@ -2,93 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CEA3F7E295A
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 17:04:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A219C7E295D
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 17:04:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232350AbjKFQEI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 11:04:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48484 "EHLO
+        id S232192AbjKFQEV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 11:04:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbjKFQEG (ORCPT
+        with ESMTP id S229518AbjKFQEU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 11:04:06 -0500
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F7A613E;
-        Mon,  6 Nov 2023 08:04:03 -0800 (PST)
-Received: from pps.filterd (m0353724.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A6FeF2u017483;
-        Mon, 6 Nov 2023 16:04:02 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : from : to : cc : references : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=MGbbZNP/mdzm3S/5Ztp69aF9Y4qswVAtQclS9ietJKA=;
- b=BDy1w+uFOknc7t5DYyGqJGcHUTt6dv3FKCK/HR3bGpWQrSCuZ8jKax3vcPrMruTzgHmy
- acAzgCUG97l4NIjYh9M1Bh+oErIOOL+sA96962qwVqEfEaK9vHFqZ5AfwQxn33dQXl/w
- 0WkKJLEa0XwSPG9Io+U0x6hN5B+c+9zil1adB8w5dnDTdnu6TBd1ca/2rQuEdP5VaqLT
- M8rgKTqAEeY/5GapWj9HtEvI6fsfThbauiDb7ttsb/j5xKoFmL8eulBokAaqEHIa3sz/
- wu5hvlpjRYWrgdkjTxzztOt8RJA776v0cqy6L53LinzHQWIzkPwTO//en9Etyag87oXe dA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u7302rvg6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 06 Nov 2023 16:04:00 +0000
-Received: from m0353724.ppops.net (m0353724.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3A6FeiEY020142;
-        Mon, 6 Nov 2023 16:03:53 GMT
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u7302rvax-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 06 Nov 2023 16:03:53 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3A6FZvQk012848;
-        Mon, 6 Nov 2023 16:03:41 GMT
-Received: from smtprelay07.dal12v.mail.ibm.com ([172.16.1.9])
-        by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3u609sjpge-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 06 Nov 2023 16:03:41 +0000
-Received: from smtpav05.wdc07v.mail.ibm.com (smtpav05.wdc07v.mail.ibm.com [10.39.53.232])
-        by smtprelay07.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3A6G3e2615008032
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 6 Nov 2023 16:03:41 GMT
-Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D48A158063;
-        Mon,  6 Nov 2023 16:03:40 +0000 (GMT)
-Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id CB9EC58053;
-        Mon,  6 Nov 2023 16:03:39 +0000 (GMT)
-Received: from [9.61.121.140] (unknown [9.61.121.140])
-        by smtpav05.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-        Mon,  6 Nov 2023 16:03:39 +0000 (GMT)
-Message-ID: <cff6c61d-71a9-4dcc-a12a-5160b67d9ae4@linux.ibm.com>
-Date:   Mon, 6 Nov 2023 11:03:39 -0500
+        Mon, 6 Nov 2023 11:04:20 -0500
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73553D42
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 08:04:17 -0800 (PST)
+Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-2c6b30acacdso62581941fa.2
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 08:04:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1699286656; x=1699891456; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:references:cc:to
+         :from:content-language:subject:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=aH7QaIpa6g6T5bYkp64GaIwpentra1wGCZo7o0CJjFE=;
+        b=KXqy1A4TCAtMhlUwB3KMsA7wAEqAIjvzqWI+hjR9MAumr2z77bNiq/FFAC+v6mBntq
+         8YQ9/Qgo89oI9QoZgvcPTXD4p1MyX83zEllUYHqNTYVh+3V2dzeLr1pAs0N9ZHbMbeCt
+         fyTBAnPQFzkOlXw7y9w4qGp79HL9VNgEx0uq49w3bpzYzTWZ3R2YE3IuaONSymgnmApi
+         nRppJZYiyeYPy/R9BAcpFNRJhtBRS5btUTAbieSiLUawI9d1A0g5R0RcCK3se1s/VloS
+         ktPdgGAqdW9aNmKpZLw+nUdTzviXp7tif6wQNoqJJ5N8VjfDu1m4wzwSsHegKnRsE/3k
+         vSAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699286656; x=1699891456;
+        h=content-transfer-encoding:in-reply-to:autocrypt:references:cc:to
+         :from:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=aH7QaIpa6g6T5bYkp64GaIwpentra1wGCZo7o0CJjFE=;
+        b=cw4pSMB7q0GBNBtbbHpguEUclKiMECfAzz29XzSamSw2k3Cmhj0ewd0nh44IPQFYI7
+         ejNmrSqcdo6UwgkUJevKch4GfWMZcac35weE0lXOW3WBOCK/CCMsxtWIV//AG/EmldxP
+         PS0Uhtf1mYM33ehV7993nW3tV1bX67xoBTt5hOKAOWrmUyGK9HdtE5lHfIuGjnY1lU7B
+         Ts4ofPo2gm4ZsIJxPIAAyaVEm7c6cQWamwYu22mg1mv0fu8Y4TIDyx8WYIfDJ44vMOv6
+         1hPEHi43gv8X0AtOCfjrwkesViQdBC1arb6FC/D2e0cI4Ot6ImtY3/2RgpslAOJKdgMA
+         yfgw==
+X-Gm-Message-State: AOJu0YyYTi19JyeopMUv2zPBVhayW9FIJMhABUP4j8OJlTWFLTzGA357
+        sAlYcxF+GCyIbkvEG0qxCnudog==
+X-Google-Smtp-Source: AGHT+IH5t9FnBmEkz2wT1SfYPCe5I/Y+MmcpJoUOokIajQH1qSYy7wk7dHmDi6zvpnnm80QedV7ufQ==
+X-Received: by 2002:a2e:9e4d:0:b0:2c5:d52:a08e with SMTP id g13-20020a2e9e4d000000b002c50d52a08emr22258707ljk.20.1699286655675;
+        Mon, 06 Nov 2023 08:04:15 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.218.126])
+        by smtp.gmail.com with ESMTPSA id g8-20020a5d4888000000b0032f7cc56509sm2203853wrq.98.2023.11.06.08.04.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 06 Nov 2023 08:04:15 -0800 (PST)
+Message-ID: <12778a24-f73f-44da-b384-7ee06633500d@linaro.org>
+Date:   Mon, 6 Nov 2023 17:04:13 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] s390/vfio-ap: fix sysfs status attribute for AP queue
- devices
+Subject: Re: [PATCH] arm64: dts: qcom: sm8450: fix soundwire controllers node
+ name
 Content-Language: en-US
-From:   Tony Krowiak <akrowiak@linux.ibm.com>
-To:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Cc:     jjherne@linux.ibm.com, pasic@linux.ibm.com,
-        borntraeger@linux.ibm.com, frankja@linux.ibm.com,
-        imbrenda@linux.ibm.com, david@redhat.com, stable@vger.kernel.org
-References: <20231020204838.409521-1-akrowiak@linux.ibm.com>
-Organization: IBM
-In-Reply-To: <20231020204838.409521-1-akrowiak@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To:     Neil Armstrong <neil.armstrong@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231106-topic-sm8450-upstream-soundwire-bindings-fix-v1-1-41d4844a5a7d@linaro.org>
+ <757e9f3c-e70e-457e-a6d5-6d204b7294c5@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <757e9f3c-e70e-457e-a6d5-6d204b7294c5@linaro.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: dsx9XxmwV9OrZfFiJB7AK9_H2MfZQJl8
-X-Proofpoint-GUID: v-z6IauqZ0fi2RxW9WwV0zFaK3ZLHkdN
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-06_12,2023-11-02_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- spamscore=0 impostorscore=0 suspectscore=0 mlxscore=0 bulkscore=0
- lowpriorityscore=0 adultscore=0 clxscore=1015 mlxlogscore=999 phishscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2310240000 definitions=main-2311060129
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -97,78 +127,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PING
-This patch is pretty straight forward, does anyone see a reason why this 
-shouldn't be integrated?
+On 06/11/2023 17:02, Krzysztof Kozlowski wrote:
+> On 06/11/2023 16:58, Neil Armstrong wrote:
+>> Fix the following dt bindings check:
+>> arch/arm64/boot/dts/qcom/sm8450-hdk.dtb: soundwire-controller@31f0000: $nodename:0: 'soundwire-controller@31f0000' does not match '^soundwire(@.*)?$'
+>>         from schema $id: http://devicetree.org/schemas/soundwire/qcom,soundwire.yaml#
+> 
+> Wait, how did you get this? There is no such pattern enforcement.
 
-On 10/20/23 16:48, Tony Krowiak wrote:
-> The 'status' attribute for AP queue devices bound to the vfio_ap device
-> driver displays incorrect status when the mediated device is attached to a
-> guest, but the queue device is not passed through. In the current
-> implementation, the status displayed is 'in_use' which is not correct; it
-> should be 'assigned'. This can happen if one of the queue devices
-> associated with a given adapter is not bound to the vfio_ap device driver.
-> For example:
-> 
-> Queues listed in /sys/bus/ap/drivers/vfio_ap:
-> 14.0005
-> 14.0006
-> 14.000d
-> 16.0006
-> 16.000d
-> 
-> Queues listed in /sys/devices/vfio_ap/matrix/$UUID/matrix
-> 14.0005
-> 14.0006
-> 14.000d
-> 16.0005
-> 16.0006
-> 16.000d
-> 
-> Queues listed in /sys/devices/vfio_ap/matrix/$UUID/guest_matrix
-> 14.0005
-> 14.0006
-> 14.000d
-> 
-> The reason no queues for adapter 0x16 are listed in the guest_matrix is
-> because queue 16.0005 is not bound to the vfio_ap device driver, so no
-> queue associated with the adapter is passed through to the guest;
-> therefore, each queue device for adapter 0x16 should display 'assigned'
-> instead of 'in_use', because those queues are not in use by a guest, but
-> only assigned to the mediated device.
-> 
-> Let's check the AP configuration for the guest to determine whether a
-> queue device is passed through before displaying a status of 'in_use'.
-> 
-> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
-> Fixes: f139862b92cf ("s390/vfio-ap: add status attribute to AP queue device's sysfs dir")
-> Cc: stable@vger.kernel.org
-> ---
->   drivers/s390/crypto/vfio_ap_ops.c | 7 ++++++-
->   1 file changed, 6 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/s390/crypto/vfio_ap_ops.c b/drivers/s390/crypto/vfio_ap_ops.c
-> index 4db538a55192..871c14a6921f 100644
-> --- a/drivers/s390/crypto/vfio_ap_ops.c
-> +++ b/drivers/s390/crypto/vfio_ap_ops.c
-> @@ -1976,6 +1976,7 @@ static ssize_t status_show(struct device *dev,
->   {
->   	ssize_t nchars = 0;
->   	struct vfio_ap_queue *q;
-> +	unsigned long apid, apqi;
->   	struct ap_matrix_mdev *matrix_mdev;
->   	struct ap_device *apdev = to_ap_dev(dev);
->   
-> @@ -1984,7 +1985,11 @@ static ssize_t status_show(struct device *dev,
->   	matrix_mdev = vfio_ap_mdev_for_queue(q);
->   
->   	if (matrix_mdev) {
-> -		if (matrix_mdev->kvm)
-> +		apid = AP_QID_CARD(q->apqn);
-> +		apqi = AP_QID_QUEUE(q->apqn);
-> +		if (matrix_mdev->kvm &&
-> +		    test_bit_inv(apid, matrix_mdev->shadow_apcb.apm) &&
-> +		    test_bit_inv(apqi, matrix_mdev->shadow_apcb.aqm))
->   			nchars = scnprintf(buf, PAGE_SIZE, "%s\n",
->   					   AP_QUEUE_IN_USE);
->   		else
+Never mind, I found recent patch:
+https://lore.kernel.org/all/20231016155537.2973625-1-robh@kernel.org/
+
+Best regards,
+Krzysztof
+
