@@ -2,78 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 33C5A7E2BE8
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 19:28:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F52D7E2BEF
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 19:32:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232339AbjKFS2F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 13:28:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38364 "EHLO
+        id S232339AbjKFScG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 13:32:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231773AbjKFS2E (ORCPT
+        with ESMTP id S231773AbjKFScE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 13:28:04 -0500
-Received: from mail-yw1-x112d.google.com (mail-yw1-x112d.google.com [IPv6:2607:f8b0:4864:20::112d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E94194;
-        Mon,  6 Nov 2023 10:28:01 -0800 (PST)
-Received: by mail-yw1-x112d.google.com with SMTP id 00721157ae682-5a81ab75f21so57574977b3.2;
-        Mon, 06 Nov 2023 10:28:01 -0800 (PST)
+        Mon, 6 Nov 2023 13:32:04 -0500
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5124FD49;
+        Mon,  6 Nov 2023 10:32:01 -0800 (PST)
+Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1cc330e8f58so33580215ad.3;
+        Mon, 06 Nov 2023 10:32:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699295280; x=1699900080; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=yiHuG/fT5g9xmDilldbrq0qWyx0Loz2x/M7JAocEXNM=;
-        b=PjgvQO2fNvAC+9I2C85uC8622mxEY/X3T4J/UaR6zTlecrLYq5eFJ291QOS6I3bUMT
-         sj+uT+iB/MkxiZDY0U/UHtj9igk+P759nOST7vc28p4YW+PHkSt8/bBAsS/yStWWXkpM
-         +nY/K0VREOYSY8L4uWZ873y4vFFebk8Tc2kESkTaHgbBjczcZJ/16MI/AGu+UpwYP3bV
-         47QPmQXXXz0Z8HzWdVtwAb3Q3rvOABP8MvwZTtZwBxhSmuWDlemUIQYGlm7Ibreb07py
-         rWJM0CF4gBGM257vpJ5//VeYWW+AquRxeUHsC56n6ECjHd76+sA99pdmQTOkyz35grcZ
-         U/tw==
+        d=gmail.com; s=20230601; t=1699295521; x=1699900321; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=RolW8kmfT6ZCz66bTNAjEmvRmOGj5ZqsnmWESYphJzc=;
+        b=aW3nFXg7W2ZCtG249zntt53EABbUFmLyOWq1xU3YFouZ+/cjAdLhr3/TTUPVBx5/QE
+         vFG7MiqiBvCrCmGhOP7d/e1oee+2R9nIXMAGq8KrsbdXGWeUQ5OWBQqGooMocH3ewtOq
+         pa1COWQj1ODDIzu8V8enTiFwh9cFHi0jwlHoamhT2icH7jwyvZ1lw72i0wuSe+oC7VEH
+         5Ui3ip+lF23Y1Kxm3L597x3atJq8yucY9lBWceTDWVDHkVT0dOqh16oM97a5AOAsHIjN
+         +I8O7UVcaOq/yTnRDjm0Ec+64+AQKAqtTHRqiRA350kPj8fgjieu7H6wjnPICBMLcidu
+         55Gw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699295280; x=1699900080;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yiHuG/fT5g9xmDilldbrq0qWyx0Loz2x/M7JAocEXNM=;
-        b=xBEiJkudyfNYOrqxQRj6XE35B+d0CV/rSE+MCdrAF4JqnxfdPbYNqAQHGPWzWaYk3h
-         Xo1Ar1i86Q24MQSOiWyIufnWrINNp82KoVHg00xlBOne3bck9XoNlLHlAn29sAbt6gJW
-         kI7XcXHWk0hdMUoJXYR4WKVQSC57itI3UyBudhvkF1Neg0etr6h755sKSsy6GcoNr/XJ
-         hoVcZhGPoM36Swjc9k9Mbh1jbhMYRnqzcTXW+La5eSwrL5hkbvIn/tI4Lp1ECv12RQpo
-         jvFDYqGcwmylWS3ATE0pzKU0gVSCksSgnfKCR2foL14WgrZhluhJ8mqCvCejH76QYLAq
-         uzOg==
-X-Gm-Message-State: AOJu0YzFNNTCy3BHbKudn8xkTeG2aN85uNhdQr6hnUhTNO5qfQrT+du/
-        ebK9638yd/VbUlENSpPuE9U=
-X-Google-Smtp-Source: AGHT+IGLpyKFoZDbHCGPb7BuzxNKsicyASbBbioV81Opbu3cH8TozOUxOR+7VmIouo+kynqD8bJ/5Q==
-X-Received: by 2002:a05:690c:95:b0:5a8:60ad:39a4 with SMTP id be21-20020a05690c009500b005a860ad39a4mr12508141ywb.3.1699295280544;
-        Mon, 06 Nov 2023 10:28:00 -0800 (PST)
-Received: from debian ([50.205.20.42])
-        by smtp.gmail.com with ESMTPSA id w200-20020a0dd4d1000000b005a50575b1c8sm4576552ywd.26.2023.11.06.10.27.59
+        d=1e100.net; s=20230601; t=1699295521; x=1699900321;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=RolW8kmfT6ZCz66bTNAjEmvRmOGj5ZqsnmWESYphJzc=;
+        b=Cpgl65TuxkHH+srSegdn4W5l8ycTCaEdUy1xqdklQeQ9wrTZ7g5Dix9ox6eY1Ak4+M
+         to7GO07XTQhWFocXHvdPrGdhndu7jo2Kz0RfysQmxufukfvC9lCOI91J8IbynGVq4YdD
+         VbRKTTQPNO6d6Q17YUjLFGhHS5pV2tkAQwC/9vMbURMQ1E8eLL2ffhyjcfZm9VHIuLf7
+         zKOHbZHxyVcbHZErbaN01aa0sHbcxZqXX0ypcvierhtgV11hnVAgCIDOobuPElbKyG5d
+         wEbFnGUJEd/v9lN6bobD/cwRD6mwm2MKsayt+f1zMjUxyu9hzgYDJHRKAPUKUDZdY1jy
+         xrlQ==
+X-Gm-Message-State: AOJu0YwRal6Q7FKoLcb8NGpW9LH4Nu+OwU28al+WVp11rHYBpMEX+AU5
+        gKWjo3tedJhUZuz0gtAuOOc=
+X-Google-Smtp-Source: AGHT+IGdvV5WuqZ+RWDIMrRsDenhCX5seXleE023kFPddMhxXei7cSUD1PW2U+fLmxlxyMLTKt2JeQ==
+X-Received: by 2002:a17:903:2013:b0:1cc:251c:c381 with SMTP id s19-20020a170903201300b001cc251cc381mr19680064pla.29.1699295520329;
+        Mon, 06 Nov 2023 10:32:00 -0800 (PST)
+Received: from localhost (fwdproxy-prn-020.fbsv.net. [2a03:2880:ff:14::face:b00c])
+        by smtp.gmail.com with ESMTPSA id u14-20020a170902e5ce00b001c9b35287aesm6213048plf.88.2023.11.06.10.31.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Nov 2023 10:28:00 -0800 (PST)
-From:   fan <nifan.cxl@gmail.com>
-X-Google-Original-From: fan <fan@debian>
-Date:   Mon, 6 Nov 2023 10:27:32 -0800
-To:     Jim Harris <jim.harris@samsung.com>
-Cc:     Davidlohr Bueso <dave@stgolabs.net>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Alison Schofield <alison.schofield@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Fan Ni <fan.ni@samsung.com>,
-        "linux-cxl@vger.kernel.org" <linux-cxl@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] cxl/region: fix x9 interleave typo
-Message-ID: <ZUkwFLIKCSLXTCmq@debian>
-References: <CGME20231103201835uscas1p29ca7f76ed5e4c829bfb022a040202d73@uscas1p2.samsung.com>
- <169904271254.204936.8580772404462743630.stgit@ubuntu>
+        Mon, 06 Nov 2023 10:31:59 -0800 (PST)
+From:   Nhat Pham <nphamcs@gmail.com>
+To:     akpm@linux-foundation.org
+Cc:     hannes@cmpxchg.org, cerasuolodomenico@gmail.com,
+        yosryahmed@google.com, sjenning@redhat.com, ddstreet@ieee.org,
+        vitaly.wool@konsulko.com, mhocko@kernel.org,
+        roman.gushchin@linux.dev, shakeelb@google.com,
+        muchun.song@linux.dev, chrisl@kernel.org, linux-mm@kvack.org,
+        kernel-team@meta.com, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, shuah@kernel.org
+Subject: [PATCH v5 0/6] workload-specific and memory pressure-driven zswap writeback
+Date:   Mon,  6 Nov 2023 10:31:53 -0800
+Message-Id: <20231106183159.3562879-1-nphamcs@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <169904271254.204936.8580772404462743630.stgit@ubuntu>
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,29 +75,116 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 03, 2023 at 08:18:34PM +0000, Jim Harris wrote:
-> CXL supports x3, x6 and x12 - not x9.
-> 
-> Fixes: 80d10a6cee050 ("cxl/region: Add interleave geometry attributes")
-> Signed-off-by: Jim Harris <jim.harris@samsung.com>
-> ---
+Changelog:
+v5:
+   * Replace reference getting with an rcu_read_lock() section for
+     zswap lru modifications (suggested by Yosry)
+   * Add a new prep patch that allows mem_cgroup_iter() to return
+     online cgroup.
+   * Add a callback that updates pool->next_shrink when the cgroup is
+     offlined (suggested by Yosry Ahmed, Johannes Weiner)
+v4:
+   * Rename list_lru_add to list_lru_add_obj and __list_lru_add to
+     list_lru_add (patch 1) (suggested by Johannes Weiner and
+	 Yosry Ahmed)
+   * Some cleanups on the memcg aware LRU patch (patch 2)
+     (suggested by Yosry Ahmed)
+   * Use event interface for the new per-cgroup writeback counters.
+     (patch 3) (suggested by Yosry Ahmed)
+   * Abstract zswap's lruvec states and handling into 
+     zswap_lruvec_state (patch 5) (suggested by Yosry Ahmed)
+v3:
+   * Add a patch to export per-cgroup zswap writeback counters
+   * Add a patch to update zswap's kselftest
+   * Separate the new list_lru functions into its own prep patch
+   * Do not start from the top of the hierarchy when encounter a memcg
+     that is not online for the global limit zswap writeback (patch 2)
+     (suggested by Yosry Ahmed)
+   * Do not remove the swap entry from list_lru in
+     __read_swapcache_async() (patch 2) (suggested by Yosry Ahmed)
+   * Removed a redundant zswap pool getting (patch 2)
+     (reported by Ryan Roberts)
+   * Use atomic for the nr_zswap_protected (instead of lruvec's lock)
+     (patch 5) (suggested by Yosry Ahmed)
+   * Remove the per-cgroup zswap shrinker knob (patch 5)
+     (suggested by Yosry Ahmed)
+v2:
+   * Fix loongarch compiler errors
+   * Use pool stats instead of memcg stats when !CONFIG_MEMCG_KEM
 
-Reviewed-by: Fan Ni <fan.ni@samsung.com>
+There are currently several issues with zswap writeback:
 
->  drivers/cxl/core/region.c |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/cxl/core/region.c b/drivers/cxl/core/region.c
-> index 6d63b8798c29..d295b3488e4a 100644
-> --- a/drivers/cxl/core/region.c
-> +++ b/drivers/cxl/core/region.c
-> @@ -403,7 +403,7 @@ static ssize_t interleave_ways_store(struct device *dev,
->  		return rc;
->  
->  	/*
-> -	 * Even for x3, x9, and x12 interleaves the region interleave must be a
-> +	 * Even for x3, x6, and x12 interleaves the region interleave must be a
->  	 * power of 2 multiple of the host bridge interleave.
->  	 */
->  	if (!is_power_of_2(val / cxld->interleave_ways) ||
-> 
+1. There is only a single global LRU for zswap, making it impossible to
+   perform worload-specific shrinking - an memcg under memory pressure
+   cannot determine which pages in the pool it owns, and often ends up
+   writing pages from other memcgs. This issue has been previously
+   observed in practice and mitigated by simply disabling
+   memcg-initiated shrinking:
+
+   https://lore.kernel.org/all/20230530232435.3097106-1-nphamcs@gmail.com/T/#u
+
+   But this solution leaves a lot to be desired, as we still do not
+   have an avenue for an memcg to free up its own memory locked up in
+   the zswap pool.
+
+2. We only shrink the zswap pool when the user-defined limit is hit.
+   This means that if we set the limit too high, cold data that are
+   unlikely to be used again will reside in the pool, wasting precious
+   memory. It is hard to predict how much zswap space will be needed
+   ahead of time, as this depends on the workload (specifically, on
+   factors such as memory access patterns and compressibility of the
+   memory pages).
+
+This patch series solves these issues by separating the global zswap
+LRU into per-memcg and per-NUMA LRUs, and performs workload-specific
+(i.e memcg- and NUMA-aware) zswap writeback under memory pressure. The
+new shrinker does not have any parameter that must be tuned by the
+user, and can be opted in or out on a per-memcg basis.
+
+As a proof of concept, we ran the following synthetic benchmark:
+build the linux kernel in a memory-limited cgroup, and allocate some
+cold data in tmpfs to see if the shrinker could write them out and
+improved the overall performance. Depending on the amount of cold data
+generated, we observe from 14% to 35% reduction in kernel CPU time used
+in the kernel builds.
+
+Domenico Cerasuolo (3):
+  zswap: make shrinking memcg-aware
+  mm: memcg: add per-memcg zswap writeback stat
+  selftests: cgroup: update per-memcg zswap writeback selftest
+
+Nhat Pham (3):
+  list_lru: allows explicit memcg and NUMA node selection
+  memcontrol: allows mem_cgroup_iter() to check for onlineness
+  zswap: shrinks zswap pool based on memory pressure
+
+ Documentation/admin-guide/mm/zswap.rst      |   7 +
+ drivers/android/binder_alloc.c              |   5 +-
+ fs/dcache.c                                 |   8 +-
+ fs/gfs2/quota.c                             |   6 +-
+ fs/inode.c                                  |   4 +-
+ fs/nfs/nfs42xattr.c                         |   8 +-
+ fs/nfsd/filecache.c                         |   4 +-
+ fs/xfs/xfs_buf.c                            |   6 +-
+ fs/xfs/xfs_dquot.c                          |   2 +-
+ fs/xfs/xfs_qm.c                             |   2 +-
+ include/linux/list_lru.h                    |  46 ++-
+ include/linux/memcontrol.h                  |   9 +-
+ include/linux/mmzone.h                      |   2 +
+ include/linux/vm_event_item.h               |   1 +
+ include/linux/zswap.h                       |  27 +-
+ mm/list_lru.c                               |  48 ++-
+ mm/memcontrol.c                             |  20 +-
+ mm/mmzone.c                                 |   1 +
+ mm/shrinker.c                               |   4 +-
+ mm/swap.h                                   |   3 +-
+ mm/swap_state.c                             |  26 +-
+ mm/vmscan.c                                 |  26 +-
+ mm/vmstat.c                                 |   1 +
+ mm/workingset.c                             |   4 +-
+ mm/zswap.c                                  | 430 +++++++++++++++++---
+ tools/testing/selftests/cgroup/test_zswap.c |  74 ++--
+ 26 files changed, 625 insertions(+), 149 deletions(-)
+
+-- 
+2.34.1
