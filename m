@@ -2,562 +2,265 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 06EFF7E2A28
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 17:43:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E6787E2AF1
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 18:29:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232781AbjKFQnj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 11:43:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51892 "EHLO
+        id S231364AbjKFR3y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 12:29:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232844AbjKFQnf (ORCPT
+        with ESMTP id S232939AbjKFQnx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 11:43:35 -0500
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78AAED6A;
-        Mon,  6 Nov 2023 08:43:31 -0800 (PST)
-Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-6b20a48522fso3917407b3a.1;
-        Mon, 06 Nov 2023 08:43:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699289010; x=1699893810; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AP87UhSCC46+0c928P7ouPYnXUNXXO4Vz6ijcnIzTD8=;
-        b=nsvY1P+e7SCtDGeda6eOR3abtOxDai8DQ80lu9v9FqIazQ27VTSZkNJqxs30LVDJ7g
-         XQJT5QbKwNSwBY5U86xHRVPbtvxcNcQeMzuxyfxVWFO5kJ8sMU1COvkjd/Wjbss7K+E7
-         7byS8o+4xKDg8412OM2PyO3Cj+Zr73Wzp4t67tVkfp1/Oe7dsxelYQfU0Vutz+r0MAZw
-         qdrWdczoAhJRIXe2h/Xm4G6Dh+Lxwgb0up+MrPwONiS80X0LbCVz5Er2cmYU+O0kRTMk
-         QoJxKUuZm+d/m6tDK+2kaar9IDuvl4DxAQVlz0gMdinhOx+kxBxsTZqpmYfMf9ZX1VsU
-         R+zg==
+        Mon, 6 Nov 2023 11:43:53 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C00EC0
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 08:43:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1699288983;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=demYFbT8NdCvlVcXbfq0xkIzU4JrzURf1aMU2MsFGP8=;
+        b=N1Lzti0qvocj1MKpaYEdlJHzRopjXU3D9Ypbs3vp2kDjLwxVM7cmeIcvg4RzReXddZncM3
+        W4EE08cRQdeZvs2YH4J+edn3xyLTYLZqBDE0DcfdEx/q2vYGPe63Rsok6z4ZmuwYNw1EB/
+        74RlIsdOpaAoKQd8hWkog3kcyGW191M=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-82-sb-cLAWyOZ-0WxaT3yS50Q-1; Mon, 06 Nov 2023 11:43:01 -0500
+X-MC-Unique: sb-cLAWyOZ-0WxaT3yS50Q-1
+Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-9ae686dafedso335917566b.3
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 08:43:01 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699289010; x=1699893810;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=AP87UhSCC46+0c928P7ouPYnXUNXXO4Vz6ijcnIzTD8=;
-        b=eQocTXYGowsMPSJcsxrJXfZsqG3FZn+K4zY3i5FTGXlOJGyuaDCk2atiSLArAGPPck
-         cKTe3OZMnJX5oHcr1/m6hKngjWz1MvSxPBQ62Lyq/Umqjj9NGvhN7GW/WOSxwmBMZyHI
-         HKrkHzT/DBM2UfG5ckJViAGy9sTy94bjGVsOgyLzO9Dj/KyFcl5pwTQQ1lWpSDLObDSW
-         MsyDbkHMB8bexmu8shAM2Do3Nd0+zhc+FtFZ5v7S2uiuzzXk6SqXZpW8JZjc4di9w3h3
-         icBYhLnLBxN+oZq+pp1oDO+O9xia5sofBS05aGUzalwNU1qMiev2y1J4zCJBFUMKbZYw
-         EPnA==
-X-Gm-Message-State: AOJu0YyZxOfasNqoIiF1em3E6DaXotqV6/W80SKTj6zshb7i2A58phOK
-        jrquZjhfWnPj7K34W0QD86zuDXQvh3VceUbc
-X-Google-Smtp-Source: AGHT+IGZpcEKGhDjlddo0oTBeKfc7jgJTuvIBOxlRqoN8wR1J+6id150fQL4Jlu9OdPhI8L4tsjjkQ==
-X-Received: by 2002:a05:6a00:816:b0:6bc:b13c:35d5 with SMTP id m22-20020a056a00081600b006bcb13c35d5mr28249801pfk.13.1699289010324;
-        Mon, 06 Nov 2023 08:43:30 -0800 (PST)
-Received: from archlinux.srmu.edu.in ([103.4.222.252])
-        by smtp.gmail.com with ESMTPSA id b6-20020a056a000a8600b006933e71956dsm5828227pfl.9.2023.11.06.08.43.26
+        d=1e100.net; s=20230601; t=1699288980; x=1699893780;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=demYFbT8NdCvlVcXbfq0xkIzU4JrzURf1aMU2MsFGP8=;
+        b=Kcya0ZxQyvmvleChHtOntPvMabm2dz+aUCokf3kPfW6bVSBk9ptMzFkUsh43+Xc/wT
+         q0hy7ZJC+Kd2gg9LiqSLYqP5kiiivlyqVg3kCHgoF0Dm5g9ZWdPFqR/fm/Q+d5Fc4l8a
+         2VITUCOSVRZrIUFLTmKLVkB7F/jVhKULJaT+gq9UmD0gKQKg8xp0pPbyj3fEHn0ATsyR
+         E6ohvhyIUSxYEcMJ7nu8sDRf525s2LYxb1t1bCz6Qnv74UAluy4JPiT7a1eOBf/IeFjm
+         kL4hShiH3mHgCY6YbowXr1hikQQGrKtXOpy2ciOS00FWFHY+1S//NpeCenk76IycnD1t
+         D83Q==
+X-Gm-Message-State: AOJu0YxUvYOGAI8FBGZ0I+7OSqwrtiBaXvMlwkJ/wpWK7gQCOha2NFNH
+        iQ2anUbFyzZhtKe1GHToYTo6LJDX9NKD0XZUWUK7loXr4c9C38cR2LxO+DORYypGLkLElL4mFHZ
+        wpi1XYY7TlzwznUsNKqR5ZEjO
+X-Received: by 2002:a17:907:928e:b0:9bd:fc4b:6c9b with SMTP id bw14-20020a170907928e00b009bdfc4b6c9bmr13504487ejc.36.1699288980034;
+        Mon, 06 Nov 2023 08:43:00 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGVPJsYG3aMdFI5JpPur2FeiziwRgTsK4RlEloHYDldOEJVfngzX+4WALEbu2FkUVLxIU9I7g==
+X-Received: by 2002:a17:907:928e:b0:9bd:fc4b:6c9b with SMTP id bw14-20020a170907928e00b009bdfc4b6c9bmr13504461ejc.36.1699288979682;
+        Mon, 06 Nov 2023 08:42:59 -0800 (PST)
+Received: from pollux ([2a02:810d:4b3f:de9c:abf:b8ff:feee:998b])
+        by smtp.gmail.com with ESMTPSA id t16-20020a17090616d000b009ce03057c48sm16987ejd.214.2023.11.06.08.42.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Nov 2023 08:43:30 -0800 (PST)
-From:   Anshul Dalal <anshulusr@gmail.com>
-To:     linux-input@vger.kernel.org, devicetree@vger.kernel.org
-Cc:     Anshul Dalal <anshulusr@gmail.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        =?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>,
-        Jeff LaBundy <jeff@labundy.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v7 2/2] input: joystick: driver for Adafruit Seesaw Gamepad
-Date:   Mon,  6 Nov 2023 22:11:32 +0530
-Message-ID: <20231106164134.114668-2-anshulusr@gmail.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231106164134.114668-1-anshulusr@gmail.com>
-References: <20231106164134.114668-1-anshulusr@gmail.com>
+        Mon, 06 Nov 2023 08:42:59 -0800 (PST)
+Date:   Mon, 6 Nov 2023 17:42:56 +0100
+From:   Danilo Krummrich <dakr@redhat.com>
+To:     Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
+Cc:     airlied@gmail.com, daniel@ffwll.ch, matthew.brost@intel.com,
+        thomas.hellstrom@linux.intel.com, sarah.walker@imgtec.com,
+        donald.robson@imgtec.com, boris.brezillon@collabora.com,
+        faith@gfxstrand.net, dri-devel@lists.freedesktop.org,
+        nouveau@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH drm-misc-next v8 09/12] drm/gpuvm: reference count
+ drm_gpuvm structures
+Message-ID: <ZUkXkJ+zT7OFGosC@pollux>
+References: <20231101233113.8059-10-dakr@redhat.com>
+ <be93d9ef-3d3e-4262-a280-d2922b983ca1@amd.com>
+ <ZUTyGTxcH7WlHKsv@pollux>
+ <a2e13a27-d2e5-4ae3-9c11-c18b425b69cc@amd.com>
+ <b533af44-0404-49c9-9879-3414d0964acc@redhat.com>
+ <51dea5f3-a18b-4797-b4fa-87da7db4624a@amd.com>
+ <ZUjZFFtLM435tTxJ@pollux>
+ <8e87d962-c80c-40d9-94d7-58b6cd9dd794@amd.com>
+ <ZUj0DdYZUgjhcvf5@pollux>
+ <6d3c48f6-a92d-49b3-b836-ee1bc95b56bf@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <6d3c48f6-a92d-49b3-b836-ee1bc95b56bf@amd.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adds a driver for a mini gamepad that communicates over i2c, the gamepad
-has bidirectional thumb stick input and six buttons.
+On Mon, Nov 06, 2023 at 04:10:50PM +0100, Christian König wrote:
+> Am 06.11.23 um 15:11 schrieb Danilo Krummrich:
+> > On Mon, Nov 06, 2023 at 02:05:13PM +0100, Christian König wrote:
+> > > Am 06.11.23 um 13:16 schrieb Danilo Krummrich:
+> > > > [SNIP]
+> > > > This reference count just prevents that the VM is freed as long as other
+> > > > ressources are attached to it that carry a VM pointer, such as mappings and
+> > > > VM_BOs. The motivation for that are VM_BOs. For mappings it's indeed a bit
+> > > > paranoid, but it doesn't hurt either and keeps it consistant.
+> > > Ah! Yeah, we have similar semantics in amdgpu as well.
+> > > 
+> > > But we keep the reference to the root GEM object and not the VM.
+> > > 
+> > > Ok, that makes much more sense then keeping one reference for each mapping.
+> > > 
+> > > > > Because of this the mapping should *never* have a reference to the VM, but
+> > > > > rather the VM destroys all mapping when it is destroyed itself.
+> > > > > 
+> > > > > > Hence, If the VM is still alive at a point where you don't expect it to
+> > > > > > be, then it's
+> > > > > > simply a driver bug.
+> > > > > Driver bugs is just what I try to prevent here. When individual mappings
+> > > > > keep the VM structure alive then drivers are responsible to clean them up,
+> > > > > if the VM cleans up after itself then we don't need to worry about it in the
+> > > > > driver.
+> > > > Drivers are *always* responsible for that. This has nothing to do with whether
+> > > > the VM is reference counted or not. GPUVM can't clean up mappings after itself.
+> > > Why not?
+> > I feel like we're talking past each other here, at least to some extend.
+> > However, I can't yet see where exactly the misunderstanding resides.
+> 
+> +1
+> 
+> > > At least in amdgpu we have it exactly like that. E.g. the higher level can
+> > > cleanup the BO_VM structure at any time possible, even when there are
+> > > mappings.
+> > What do you mean with "cleanup the VM_BO structue" exactly?
+> > 
+> > The VM_BO structure keeps track of all the mappings mapped in the VM_BO's VM
+> > being backed by the VM_BO's GEM object. And the GEM objects keeps a list of
+> > the corresponding VM_BOs.
+> > 
+> > Hence, as long as there are mappings that this VM_BO keeps track of, this VM_BO
+> > should stay alive.
+> 
+> No, exactly the other way around. When the VM_BO structure is destroyed the
+> mappings are destroyed with them.
 
-The gamepad chip utilizes the open framework from Adafruit called 'Seesaw'
-to transmit the ADC data for the joystick and digital pin state for the
-buttons. I have only implemented the functionality required to receive the
-thumb stick and button state.
+This seems to be the same misunderstanding as with the VM reference count.
 
-Steps in reading the gamepad state over i2c:
-  1. Reset the registers
-  2. Set the pin mode of the pins specified by the `BUTTON_MASK` to input
-      `BUTTON_MASK`: A bit-map for the six digital pins internally
-       connected to the joystick buttons.
-  3. Enable internal pullup resistors for the `BUTTON_MASK`
-  4. Bulk set the pin state HIGH for `BUTTON_MASK`
-  5. Poll the device for button and joystick state done by:
-      `seesaw_read_data(struct i2c_client *client, struct seesaw_data *data)`
+It seems to me that you want to say that for amdgpu it seems to be a use-case
+to get rid of all mappings backed by a given BO and mapped in a given VM, hence
+a VM_BO. You can do that. Thers's even a helper for that in GPUVM.
 
-Product page:
-  https://www.adafruit.com/product/5743
-Arduino driver:
-  https://github.com/adafruit/Adafruit_Seesaw
+But also in this case you first need to get rid of all mappings before you
+*free* the VM_BO - GPUVM ensures that.
 
-Driver tested on RPi Zero 2W
+> 
+> Otherwise you would need to destroy each individual mapping separately
+> before teardown which is quite inefficient.
 
-Signed-off-by: Anshul Dalal <anshulusr@gmail.com>
----
+Not sure what you mean, but I don't see a difference between walking all VM_BOs
+and removing their mappings and walking the VM's tree of mappings and removing
+each of them. Comes down to the same effort in the end. But surely can go both
+ways if you know all the existing VM_BOs.
 
-Changes for v7:
-adafruit-seesaw.c
-- Fixed formatting for macro definitions
-- Made SEESAW_BUTTON_MASK static const
-- Removed __be16 type for x and y fields of seesaw_data
-- Used sparse_keymap implementation instead of custom keymap
-- Used i2c_msg instead of i2c_master_send and recv in
-  seesaw_register_read
-- Use temporary variable `adc_data` to store data received from ADC
-- Changed read_buf from u8[4] to __be32
-- Use usleep_range instead of msleep
-- Removed 'Reviewed-by: Thomas WeiÃŸschuh' due to large number of changes
-  since last review
-Kconfig:
-- Added `select INPUT_SPARSEKMAP`
+> 
+> > > The VM then keeps track which areas still need to be invalidated
+> > > in the physical representation of the page tables.
+> > And the VM does that through its tree of mappings (struct drm_gpuva). Hence, if
+> > the VM would just remove those structures on cleanup by itself, you'd loose the
+> > ability of cleaning up the page tables. Unless, you track this separately, which
+> > would make the whole tracking of GPUVM itself kinda pointless.
+> 
+> But how do you then keep track of areas which are freed and needs to be
+> updated so that nobody can access the underlying memory any more?
 
-Changes for v6:
-- Added TODO
-- Removed `clang-format` directives
-- Namespaced device buttons
-- Removed `char physical_path[32]` field from `struct seesaw_gamepad`
-- Added `packed` attribute to `struct seesaw_data`
-- Moved from having booleans per button to single `u32 button_state`
-- Added `seesaw_button_description` array to directly associate device
-  buttons with respective keycodes
-- Added wrapper functions `seesaw_register_` around `i2c_master_` API
-- Ratelimited input error reporting with `dev_err_ratelimited`
-- Removed `of_device_id`
+"areas which are freed", what do refer to? What do yo mean with that?
 
-Changes for v5:
-- Added link to the datasheet
-- Added debug log message when `seesaw_read_data` fails
+Do you mean areas of the VA space not containing mappings? Why would I need to
+track them explicitly? When the mapping is removed the corresponding page tables
+/ page table entries are gone as well, hence no subsequent access to the
+underlaying memory would be possible.
 
-Changes for v4:
-- Changed `1UL << BUTTON_` to BIT(BUTTON_)
-- Removed `hardware_id` field from `struct seesaw_gamepad`
-- Removed redundant checks for the number of bytes written and received by
-  `i2c_master_send` and `i2c_master_recv`
-- Used `get_unaligned_be32` to instantiate `u32 result` from `read_buf`
-- Changed  `result & (1UL << BUTTON_)` to
-  `test_bit(BUTTON_, (long *)&result)`
-- Changed `KBUILD_MODNAME` in id-tables to `SEESAW_DEVICE_NAME`
-- Fixed formatting issues
-- Changed button reporting:
-    Since the gamepad had the action buttons in a non-standard layout:
-         (X)
-      (Y)   (A)
-         (B)
-    Therefore moved to using generic directional action button event codes
-    instead of BTN_[ABXY].
+> 
+> > > I would expect that the generalized GPU VM handling would need something
+> > > similar. If we leave that to the driver then each driver would have to
+> > > implement that stuff on it's own again.
+> > Similar to what? What exactly do you think can be generalized here?
+> 
+> Similar to how amdgpu works.
 
-Changes for v3:
-- no updates
+I don't think it's quite fair to just throw the "look at what amdgpu does"
+argument at me. What am I supposed to do? Read and understand *every* detail of
+*every* driver?
 
-Changes for v2:
-adafruit-seesaw.c:
-- Renamed file from 'adafruit_seesaw.c'
-- Changed device name from 'seesaw_gamepad' to 'seesaw-gamepad'
-- Changed count parameter for receiving joystick x on line 118:
-    `2` to `sizeof(write_buf)`
-- Fixed invalid buffer size on line 123 and 126:
-    `data->y` to `sizeof(data->y)`
-- Added comment for the `mdelay(10)` on line 169
-- Changed inconsistent indentation on line 271
-Kconfig:
-- Fixed indentation for the help text
-- Updated module name
-Makefile:
-- Updated module object file name
-MAINTAINERS:
-- Updated file name for the driver and bindings
----
- MAINTAINERS                              |   7 +
- drivers/input/joystick/Kconfig           |  10 +
- drivers/input/joystick/Makefile          |   1 +
- drivers/input/joystick/adafruit-seesaw.c | 315 +++++++++++++++++++++++
- 4 files changed, 333 insertions(+)
- create mode 100644 drivers/input/joystick/adafruit-seesaw.c
+Did you read through the GPUVM code? That's a honest question and I'm asking it
+because I feel like you're picking up some details from commit messages and
+start questioning them (and that's perfectly fine and absolutely welcome).
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 81d5fc0bba68..cd4f9deb77e2 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -441,6 +441,13 @@ W:	http://wiki.analog.com/AD7879
- W:	https://ez.analog.com/linux-software-drivers
- F:	drivers/input/touchscreen/ad7879.c
- 
-+ADAFRUIT MINI I2C GAMEPAD
-+M:	Anshul Dalal <anshulusr@gmail.com>
-+L:	linux-input@vger.kernel.org
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/input/adafruit_seesaw.yaml
-+F:	drivers/input/joystick/adafruit_seesaw.c
-+
- ADDRESS SPACE LAYOUT RANDOMIZATION (ASLR)
- M:	Jiri Kosina <jikos@kernel.org>
- S:	Maintained
-diff --git a/drivers/input/joystick/Kconfig b/drivers/input/joystick/Kconfig
-index ac6925ce8366..7914bef999b7 100644
---- a/drivers/input/joystick/Kconfig
-+++ b/drivers/input/joystick/Kconfig
-@@ -412,4 +412,14 @@ config JOYSTICK_SENSEHAT
- 	  To compile this driver as a module, choose M here: the
- 	  module will be called sensehat_joystick.
- 
-+config JOYSTICK_SEESAW
-+	tristate "Adafruit Mini I2C Gamepad with Seesaw"
-+	depends on I2C
-+	select INPUT_SPARSEKMAP
-+	help
-+	  Say Y here if you want to use the Adafruit Mini I2C Gamepad.
-+
-+	  To compile this driver as a module, choose M here: the module will be
-+	  called adafruit_seesaw.
-+
- endif
-diff --git a/drivers/input/joystick/Makefile b/drivers/input/joystick/Makefile
-index 3937535f0098..fdc653209542 100644
---- a/drivers/input/joystick/Makefile
-+++ b/drivers/input/joystick/Makefile
-@@ -28,6 +28,7 @@ obj-$(CONFIG_JOYSTICK_N64)		+= n64joy.o
- obj-$(CONFIG_JOYSTICK_PSXPAD_SPI)	+= psxpad-spi.o
- obj-$(CONFIG_JOYSTICK_PXRC)		+= pxrc.o
- obj-$(CONFIG_JOYSTICK_QWIIC)		+= qwiic-joystick.o
-+obj-$(CONFIG_JOYSTICK_SEESAW)		+= adafruit_seesaw.o
- obj-$(CONFIG_JOYSTICK_SENSEHAT)	+= sensehat-joystick.o
- obj-$(CONFIG_JOYSTICK_SIDEWINDER)	+= sidewinder.o
- obj-$(CONFIG_JOYSTICK_SPACEBALL)	+= spaceball.o
-diff --git a/drivers/input/joystick/adafruit-seesaw.c b/drivers/input/joystick/adafruit-seesaw.c
-new file mode 100644
-index 000000000000..8e8ef26a585f
---- /dev/null
-+++ b/drivers/input/joystick/adafruit-seesaw.c
-@@ -0,0 +1,315 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright (C) 2023 Anshul Dalal <anshulusr@gmail.com>
-+ *
-+ * Driver for Adafruit Mini I2C Gamepad
-+ *
-+ * Based on the work of:
-+ *	Oleh Kravchenko (Sparkfun Qwiic Joystick driver)
-+ *
-+ * Datasheet: https://cdn-learn.adafruit.com/downloads/pdf/gamepad-qt.pdf
-+ * Product page: https://www.adafruit.com/product/5743
-+ * Firmware and hardware sources: https://github.com/adafruit/Adafruit_Seesaw
-+ *
-+ * TODO:
-+ *	- Add interrupt support
-+ */
-+
-+#include <asm-generic/unaligned.h>
-+#include <linux/bits.h>
-+#include <linux/delay.h>
-+#include <linux/i2c.h>
-+#include <linux/input.h>
-+#include <linux/input/sparse-keymap.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+
-+#define SEESAW_DEVICE_NAME	     "seesaw-gamepad"
-+
-+#define SEESAW_STATUS_BASE	     0x00
-+#define SEESAW_GPIO_BASE	     0x01
-+#define SEESAW_ADC_BASE		     0x09
-+
-+#define SEESAW_GPIO_DIRCLR_BULK	     0x03
-+#define SEESAW_GPIO_BULK	     0x04
-+#define SEESAW_GPIO_BULK_SET	     0x05
-+#define SEESAW_GPIO_PULLENSET	     0x0b
-+
-+#define SEESAW_STATUS_HW_ID	     0x01
-+#define SEESAW_STATUS_SWRST	     0x7f
-+
-+#define SEESAW_ADC_OFFSET	     0x07
-+
-+#define SEESAW_BUTTON_A		     0x05
-+#define SEESAW_BUTTON_B		     0x01
-+#define SEESAW_BUTTON_X		     0x06
-+#define SEESAW_BUTTON_Y		     0x02
-+#define SEESAW_BUTTON_START	     0x10
-+#define SEESAW_BUTTON_SELECT	     0x00
-+
-+#define SEESAW_ANALOG_X		     0x0e
-+#define SEESAW_ANALOG_Y		     0x0f
-+
-+#define SEESAW_JOYSTICK_MAX_AXIS     1023
-+#define SEESAW_JOYSTICK_FUZZ	     2
-+#define SEESAW_JOYSTICK_FLAT	     4
-+
-+#define SEESAW_GAMEPAD_POLL_INTERVAL 16
-+#define SEESAW_GAMEPAD_POLL_MIN	     8
-+#define SEESAW_GAMEPAD_POLL_MAX	     32
-+
-+static const u32 SEESAW_BUTTON_MASK =
-+	BIT(SEESAW_BUTTON_A) | BIT(SEESAW_BUTTON_B) | BIT(SEESAW_BUTTON_X) |
-+	BIT(SEESAW_BUTTON_Y) | BIT(SEESAW_BUTTON_START) |
-+	BIT(SEESAW_BUTTON_SELECT);
-+
-+struct seesaw_gamepad {
-+	struct input_dev *input_dev;
-+	struct i2c_client *i2c_client;
-+};
-+
-+struct seesaw_data {
-+	u16 x;
-+	u16 y;
-+	u32 button_state;
-+};
-+
-+struct seesaw_button_description {
-+	unsigned int code;
-+	unsigned int bit;
-+};
-+
-+static const struct key_entry seesaw_buttons_new[] = {
-+	{ KE_KEY, SEESAW_BUTTON_A, .keycode = BTN_SOUTH },
-+	{ KE_KEY, SEESAW_BUTTON_B, .keycode = BTN_EAST },
-+	{ KE_KEY, SEESAW_BUTTON_X, .keycode = BTN_NORTH },
-+	{ KE_KEY, SEESAW_BUTTON_Y, .keycode = BTN_WEST },
-+	{ KE_KEY, SEESAW_BUTTON_START, .keycode = BTN_START },
-+	{ KE_KEY, SEESAW_BUTTON_SELECT, .keycode = BTN_SELECT },
-+	{ KE_END, 0 },
-+};
-+
-+static int seesaw_register_read(struct i2c_client *client, u8 register_high,
-+				u8 register_low, char *buf, int count)
-+{
-+	int ret;
-+	u8 register_buf[2] = { register_high, register_low };
-+
-+	struct i2c_msg message_buf[2] = {
-+		{
-+			.addr = client->addr,
-+			.flags = client->flags,
-+			.len = sizeof(register_buf),
-+			.buf = register_buf
-+		},
-+		{
-+			.addr = client->addr,
-+			.flags = client->flags | I2C_M_RD,
-+			.len = count,
-+			.buf = buf
-+		},
-+	};
-+	ret = i2c_transfer(client->adapter, message_buf,
-+			   ARRAY_SIZE(message_buf));
-+
-+	if (ret < 0)
-+		return ret;
-+
-+	return 0;
-+}
-+
-+static int seesaw_register_write_u8(struct i2c_client *client, u8 register_high,
-+				    u8 register_low, u8 value)
-+{
-+	int ret;
-+	u8 write_buf[3] = { register_high, register_low, value };
-+
-+	ret = i2c_master_send(client, write_buf, sizeof(write_buf));
-+	if (ret < 0)
-+		return ret;
-+
-+	return 0;
-+}
-+
-+static int seesaw_register_write_u32(struct i2c_client *client,
-+				     u8 register_high, u8 register_low,
-+				     u32 value)
-+{
-+	int ret;
-+	u8 write_buf[6] = { register_high, register_low };
-+
-+	put_unaligned_be32(value, write_buf + 2);
-+	ret = i2c_master_send(client, write_buf, sizeof(write_buf));
-+	if (ret < 0)
-+		return ret;
-+
-+	return 0;
-+}
-+
-+static int seesaw_read_data(struct i2c_client *client, struct seesaw_data *data)
-+{
-+	int ret;
-+	__be16 adc_data;
-+	__be32 read_buf;
-+
-+	ret = seesaw_register_read(client, SEESAW_GPIO_BASE, SEESAW_GPIO_BULK,
-+				   (char *)&read_buf, sizeof(read_buf));
-+	if (ret)
-+		return ret;
-+
-+	data->button_state = ~be32_to_cpu(read_buf);
-+
-+	ret = seesaw_register_read(client, SEESAW_ADC_BASE,
-+				   SEESAW_ADC_OFFSET + SEESAW_ANALOG_X,
-+				   (char *)&adc_data, sizeof(adc_data));
-+	if (ret)
-+		return ret;
-+	/*
-+	 * ADC reads left as max and right as 0, must be reversed since kernel
-+	 * expects reports in opposite order.
-+	 */
-+	data->x = SEESAW_JOYSTICK_MAX_AXIS - be16_to_cpu(adc_data);
-+
-+	ret = seesaw_register_read(client, SEESAW_ADC_BASE,
-+				   SEESAW_ADC_OFFSET + SEESAW_ANALOG_Y,
-+				   (char *)&adc_data, sizeof(adc_data));
-+	if (ret)
-+		return ret;
-+	data->y = be16_to_cpu(adc_data);
-+
-+	return 0;
-+}
-+
-+static void seesaw_poll(struct input_dev *input)
-+{
-+	int err, i;
-+	struct seesaw_gamepad *private = input_get_drvdata(input);
-+	struct seesaw_data data;
-+
-+	err = seesaw_read_data(private->i2c_client, &data);
-+	if (err) {
-+		dev_err_ratelimited(&input->dev,
-+				    "failed to read joystick state: %d\n", err);
-+		return;
-+	}
-+
-+	input_report_abs(input, ABS_X, data.x);
-+	input_report_abs(input, ABS_Y, data.y);
-+
-+	for_each_set_bit(i, (long *)&SEESAW_BUTTON_MASK,
-+			 BITS_PER_TYPE(SEESAW_BUTTON_MASK)) {
-+		if (!sparse_keymap_report_event(
-+			    input, i, data.button_state & BIT(i), false)) {
-+			dev_err_ratelimited(&input->dev,
-+					    "failed to report keymap event");
-+			return;
-+		};
-+	}
-+
-+	input_sync(input);
-+}
-+
-+static int seesaw_probe(struct i2c_client *client)
-+{
-+	int ret;
-+	u8 hardware_id;
-+	struct seesaw_gamepad *seesaw;
-+
-+	ret = seesaw_register_write_u8(client, SEESAW_STATUS_BASE,
-+				       SEESAW_STATUS_SWRST, 0xFF);
-+	if (ret)
-+		return ret;
-+
-+	/* Wait for the registers to reset before proceeding */
-+	usleep_range(10000, 15000);
-+
-+	seesaw = devm_kzalloc(&client->dev, sizeof(*seesaw), GFP_KERNEL);
-+	if (!seesaw)
-+		return -ENOMEM;
-+
-+	ret = seesaw_register_read(client, SEESAW_STATUS_BASE,
-+				   SEESAW_STATUS_HW_ID, &hardware_id,
-+				   sizeof(hardware_id));
-+	if (ret)
-+		return ret;
-+
-+	dev_dbg(&client->dev, "Adafruit Seesaw Gamepad, Hardware ID: %02x\n",
-+		hardware_id);
-+
-+	/* Set Pin Mode to input and enable pull-up resistors */
-+	ret = seesaw_register_write_u32(client, SEESAW_GPIO_BASE,
-+					SEESAW_GPIO_DIRCLR_BULK,
-+					SEESAW_BUTTON_MASK);
-+	if (ret)
-+		return ret;
-+	ret = seesaw_register_write_u32(client, SEESAW_GPIO_BASE,
-+					SEESAW_GPIO_PULLENSET,
-+					SEESAW_BUTTON_MASK);
-+	if (ret)
-+		return ret;
-+	ret = seesaw_register_write_u32(client, SEESAW_GPIO_BASE,
-+					SEESAW_GPIO_BULK_SET,
-+					SEESAW_BUTTON_MASK);
-+	if (ret)
-+		return ret;
-+
-+	seesaw->i2c_client = client;
-+	seesaw->input_dev = devm_input_allocate_device(&client->dev);
-+	if (!seesaw->input_dev)
-+		return -ENOMEM;
-+
-+	seesaw->input_dev->id.bustype = BUS_I2C;
-+	seesaw->input_dev->name = "Adafruit Seesaw Gamepad";
-+	seesaw->input_dev->phys = "i2c/" SEESAW_DEVICE_NAME;
-+	input_set_drvdata(seesaw->input_dev, seesaw);
-+	input_set_abs_params(seesaw->input_dev, ABS_X, 0,
-+			     SEESAW_JOYSTICK_MAX_AXIS, SEESAW_JOYSTICK_FUZZ,
-+			     SEESAW_JOYSTICK_FLAT);
-+	input_set_abs_params(seesaw->input_dev, ABS_Y, 0,
-+			     SEESAW_JOYSTICK_MAX_AXIS, SEESAW_JOYSTICK_FUZZ,
-+			     SEESAW_JOYSTICK_FLAT);
-+
-+	ret = sparse_keymap_setup(seesaw->input_dev, seesaw_buttons_new, NULL);
-+	if (ret) {
-+		dev_err(&client->dev,
-+			"failed to set up input device keymap: %d\n", ret);
-+		return ret;
-+	}
-+
-+	ret = input_setup_polling(seesaw->input_dev, seesaw_poll);
-+	if (ret) {
-+		dev_err(&client->dev, "failed to set up polling: %d\n", ret);
-+		return ret;
-+	}
-+
-+	input_set_poll_interval(seesaw->input_dev, SEESAW_GAMEPAD_POLL_INTERVAL);
-+	input_set_max_poll_interval(seesaw->input_dev, SEESAW_GAMEPAD_POLL_MAX);
-+	input_set_min_poll_interval(seesaw->input_dev, SEESAW_GAMEPAD_POLL_MIN);
-+
-+	ret = input_register_device(seesaw->input_dev);
-+	if (ret) {
-+		dev_err(&client->dev, "failed to register joystick: %d\n", ret);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static const struct i2c_device_id seesaw_id_table[] = {
-+	{ SEESAW_DEVICE_NAME, 0 },
-+	{ /* Sentinel */ }
-+};
-+MODULE_DEVICE_TABLE(i2c, seesaw_id_table);
-+
-+static struct i2c_driver seesaw_driver = {
-+	.driver = {
-+		.name = SEESAW_DEVICE_NAME,
-+	},
-+	.id_table = seesaw_id_table,
-+	.probe = seesaw_probe,
-+};
-+module_i2c_driver(seesaw_driver);
-+
-+MODULE_AUTHOR("Anshul Dalal <anshulusr@gmail.com>");
-+MODULE_DESCRIPTION("Adafruit Mini I2C Gamepad driver");
-+MODULE_LICENSE("GPL");
--- 
-2.42.0
+But if the answers don't satisfy you or do not lead to a better understanding it
+just seems you ask others to check out amdgpu rather than taking the time to go
+though the proposed code yourself making suggestions to improve it or explicitly
+point out the changes you require.
+
+> 
+> From what I can see you are basically re-inventing everything we already
+> have in there and asking the same questions we stumbled over years ago.
+
+I did not ask any questions in the first place. I came up with something that
+Nouveau, Xe, Panthor, PowerVR, etc. required and that works for them.
+
+They also all provided a lot of ideas and contributed code through the review
+process.
+
+Of course, I want this to work for amdgpu as well. So, if you think we're
+missing something fundamential or if you see something that simply doesn't work
+for other drivers, like amdgpu, please educate us. I'm surely willing to learn
+and, if required, change the code.
+
+But please don't just tell me I would re-invent amdgpu and assume that I know
+all the details of this driver. None of that is reasonable.
+
+> 
+> > > > If the driver left mappings, GPUVM would just leak them without reference count.
+> > > > It doesn't know about the drivers surrounding structures, nor does it know about
+> > > > attached ressources such as PT(E)s.
+> > > What are we talking with the word "mapping"? The BO_VM structure? Or each
+> > > individual mapping?
+> > An individual mapping represented by struct drm_gpuva.
+> 
+> Yeah than that certainly doesn't work. See below.
+> 
+> > > E.g. what we need to prevent is that VM structure (or the root GEM object)
+> > > is released while VM_BOs are still around. That's what I totally agree on.
+> > > 
+> > > But each individual mapping is a different story. Userspace can create so
+> > > many of them that we probably could even overrun a 32bit counter quite
+> > > easily.
+> > REFCOUNT_MAX is specified as 0x7fff_ffff. I agree there can be a lot of
+> > mappings, but (including the VM_BO references) more than 2.147.483.647 per VM?
+> 
+> IIRC on amdgpu we can create something like 100k mappings per second and
+> each takes ~64 bytes.
+> 
+> So you just need 128GiB of memory and approx 20 seconds to let the kernel
+> run into a refcount overrun.
+
+100.000 * 20 = 2.000.000
+
+That's pretty far from REFCOUNT_MAX with 2.147.483.647. So, it's more like
+20.000s if we can keep the pace and have enough memory. Also, it's not only the
+mapping structures itself, it's also page tables, userspace structures, etc.
+
+Again, is the number of ~2.15 Billion mappings something we really need to worry
+about?
+
+I'm still not convinced about that. But I think we can also just cap GPUVM at,
+let's say, 1 Billion mappings?
+
+> 
+> The worst I've seen in a real world game was around 19k mappings, but that
+> doesn't mean that this here can't be exploited.
+> 
+> What can be done is to keep one reference per VM_BO structure, but I think
+> per mapping is rather unrealistic.
+> 
+> Regards,
+> Christian.
+> 
+> 
 
