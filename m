@@ -2,162 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D7EA47E1A7C
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 07:50:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77D217E1A80
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 07:52:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230409AbjKFGu6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 01:50:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44700 "EHLO
+        id S230452AbjKFGwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 01:52:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229717AbjKFGu5 (ORCPT
+        with ESMTP id S229717AbjKFGwa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 01:50:57 -0500
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8985F2;
-        Sun,  5 Nov 2023 22:50:53 -0800 (PST)
-Received: by mail-wr1-x42f.google.com with SMTP id ffacd0b85a97d-32f78dcf036so3030128f8f.0;
-        Sun, 05 Nov 2023 22:50:53 -0800 (PST)
+        Mon, 6 Nov 2023 01:52:30 -0500
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B09CF2;
+        Sun,  5 Nov 2023 22:52:27 -0800 (PST)
+Received: by mail-pj1-x102d.google.com with SMTP id 98e67ed59e1d1-2802c41b716so3351974a91.1;
+        Sun, 05 Nov 2023 22:52:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699253452; x=1699858252; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=NbqQdpAVIW9N67UKj8YDab5KVvVGkqnhm/9Uw2oo0UQ=;
-        b=auSbn6bqsFQr4gL+AJoMtZ1R8E7C9VL+LY3TiOqo+VehnA6TCpvuRnVURAarNiu1XJ
-         S8RraXAoqFYz4kdeeuy4tJD8IbxeX+2YbzVLLpV/PraZ7LcFwGojv/qA5ArBdpAzPO5m
-         TkTznnYlyfvYDHINvRzz4WzSCM48tjnrBdJSjeRwDvbFRzZjAkh1rPpdLOU+kPLXaU2t
-         3qlNS9oFSBCOFsnj0YJPO6ySeWMu62nK1uqmZuVk+R2dPTCPe+iIx+fx7XhUhx5Rg2RN
-         j6V4I+IefHS19maF592oU87hRa++SbPyRw4egUPf15XyjavzVlFEhiwHa0h/VFrmls1f
-         JGmQ==
+        d=gmail.com; s=20230601; t=1699253547; x=1699858347; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bviLxA9QNdIstU/q8Z042feuvD4EaOTMHTUZ5s5WBZ4=;
+        b=YeI3yy20zOTq2eiHR1TDItV616F3z7EUlis54FrTnsmdhmB//BTZ3yZUPiJiTZp7x2
+         eDKSqeKOY8FHOwzGe6lylUQyyaK1JY/ouC5mlyTDSnTnzHPePqR/jxr8vvz4amfaAqen
+         wd6Ba/HOHbxZxM0G3XshKziGpDTUyNDSylMJgmng1rblx403sKln6EYb1lM3SrxnSTBC
+         r6r1KMxHGWo8MMf628KSTu1bhdO7guQv3igO3zgnE3hwOQ67zESaj+IbKq2/POaVCakR
+         M1TMt9i1eHpJbEmBh0xFcvC7iTcxfsfk13ewmZxhmHrP0j2h1UOqAbuXwomYAFPmtNtt
+         ZthQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699253452; x=1699858252;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=NbqQdpAVIW9N67UKj8YDab5KVvVGkqnhm/9Uw2oo0UQ=;
-        b=qkJSF8V7pop6NB5bIPt1hjPaq18ClqJWT0EHVNr+GFO8fctFFnJXxRYYVV/O148MSd
-         woU52syhdgSoZh+7GMiDOvjHVcACfjiAVFG+rGfgPZzp8FsomoGyl70mYCLnx0vXVxcd
-         ayiYGVblwuPtxamVvpTbCj7gccA2Go3sYyGnRA437qKjVqxC3ZxM+c39Bmh7y2xavFYX
-         sQ9Mwy0fb8Y3XjsrB9l2G0Z7Is0gUel0JCDHd9R3I4E7OQ6HMNGJ2/qfGzkS45EOSKSZ
-         U/04Bx1dMBaRVApYUTFArpeVXou5ArpfplE5OT7wKEHkwiw4sqaMB5elaE7FJps6JwKf
-         xBBQ==
-X-Gm-Message-State: AOJu0YwO9nwdAcH94cmtyoDTtixvE6PYZMfirefaS9BULswBwzWgy+Za
-        YGnSWP0azfZT1CZQ9l2f1RLsPK3FORY=
-X-Google-Smtp-Source: AGHT+IFziN0N5HWnkm5Tj9LEgU3hA4t796SFyuYWsDbYUOc+n4dyooIrAZsZ78DqWAeALjPl26a6ng==
-X-Received: by 2002:a5d:5847:0:b0:32f:88f9:ba44 with SMTP id i7-20020a5d5847000000b0032f88f9ba44mr10049314wrf.25.1699253452090;
-        Sun, 05 Nov 2023 22:50:52 -0800 (PST)
-Received: from amir-ThinkPad-T480.lan ([5.29.249.86])
-        by smtp.gmail.com with ESMTPSA id r22-20020a05600c35d600b003fee567235bsm11132388wmq.1.2023.11.05.22.50.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 05 Nov 2023 22:50:51 -0800 (PST)
-From:   Amir Goldstein <amir73il@gmail.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Miklos Szeredi <miklos@szeredi.hu>,
-        Christian Brauner <brauner@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-unionfs@vger.kernel.org
-Subject: [GIT PULL] overlayfs update for 6.7
-Date:   Mon,  6 Nov 2023 08:50:45 +0200
-Message-Id: <20231106065045.895874-1-amir73il@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        d=1e100.net; s=20230601; t=1699253547; x=1699858347;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=bviLxA9QNdIstU/q8Z042feuvD4EaOTMHTUZ5s5WBZ4=;
+        b=hmIYcWcMP8rhQSpB16ztcxh13X6p5Xa8oTpc2Iw7pnE7Ed6nj9pmMl4Imqw0xux5tL
+         NQ5cuPzLAsmwa6uxhnnbYwYvinVtLuoy70oKgJ+wUYzRCTVQ/umArRlHKByy1hUaiBMO
+         5GG0COJxs5HnqntVHe7KOHqUQJNqhrdECW1FG8xGLpKVt1Y4a6t5skIvKTHTT7HUFU2n
+         dAGUGH39YdGhG+OW2CFeU64fcO5rxJO09jTNijeBvh/uVcb8BERibDSxABrtkOuThHZu
+         OcHnXyqtD1N27jPYcRHzprDoR03TTL/61a0iNz+jwbowD2SwlSLlUHIs7MBJ4lC3lmWp
+         WhsA==
+X-Gm-Message-State: AOJu0Yy+BQDnBT2ei6hAp5Pvsqy3F7QH5camqLdSjKV5cqOTPX3dr8Qh
+        EH2VJEcVjfcb+sk+rziUw6kg55lAGsMi0XIsUpI=
+X-Google-Smtp-Source: AGHT+IH0UsoRI9qSbDMkZLg8GKhuey+R/ZxL8cN0JuTvG/kGi6E7pvI+gBl7zzbU0OCpWZ0FZGDubJtg1T3QAZtnMRA=
+X-Received: by 2002:a17:90a:1a0b:b0:280:c576:31b6 with SMTP id
+ 11-20020a17090a1a0b00b00280c57631b6mr10365842pjk.39.1699253546534; Sun, 05
+ Nov 2023 22:52:26 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231106043957.815407-1-zyytlz.wz@163.com> <CAJedcCxoDVS-7jVwLvsWOWiv0aObyYBiG-GmqX4bq+Qp+i3iTw@mail.gmail.com>
+ <e783dbcedc9b444ca2651d2eac036d6e@realtek.com>
+In-Reply-To: <e783dbcedc9b444ca2651d2eac036d6e@realtek.com>
+From:   Zheng Hacker <hackerzheng666@gmail.com>
+Date:   Mon, 6 Nov 2023 14:52:15 +0800
+Message-ID: <CAJedcCzWkozTPHd6Lm7uzxZHyxzZw1zQwb=LBzuGRbCw7ThmRQ@mail.gmail.com>
+Subject: Re: [PATCH v3] brcmfmac: Fix use-after-free bug in brcmf_cfg80211_detach
+To:     Ping-Ke Shih <pkshih@realtek.com>
+Cc:     Zheng Wang <zyytlz.wz@163.com>,
+        "aspriel@gmail.com" <aspriel@gmail.com>,
+        "franky.lin@broadcom.com" <franky.lin@broadcom.com>,
+        "hante.meuleman@broadcom.com" <hante.meuleman@broadcom.com>,
+        "kvalo@kernel.org" <kvalo@kernel.org>,
+        "johannes.berg@intel.com" <johannes.berg@intel.com>,
+        "marcan@marcan.st" <marcan@marcan.st>,
+        "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
+        "jisoo.jang@yonsei.ac.kr" <jisoo.jang@yonsei.ac.kr>,
+        "linuxlovemin@yonsei.ac.kr" <linuxlovemin@yonsei.ac.kr>,
+        "wataru.gohda@cypress.com" <wataru.gohda@cypress.com>,
+        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        "brcm80211-dev-list.pdl@broadcom.com" 
+        <brcm80211-dev-list.pdl@broadcom.com>,
+        "SHA-cyfmac-dev-list@infineon.com" <SHA-cyfmac-dev-list@infineon.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "security@kernel.org" <security@kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Ping-Ke Shih <pkshih@realtek.com> =E4=BA=8E2023=E5=B9=B411=E6=9C=886=E6=97=
+=A5=E5=91=A8=E4=B8=80 14:43=E5=86=99=E9=81=93=EF=BC=9A
+>
+>
+>
+> > -----Original Message-----
+> > From: Zheng Hacker <hackerzheng666@gmail.com>
+> > Sent: Monday, November 6, 2023 1:16 PM
+> > To: Zheng Wang <zyytlz.wz@163.com>
+> > Cc: aspriel@gmail.com; franky.lin@broadcom.com; hante.meuleman@broadcom=
+.com; kvalo@kernel.org;
+> > johannes.berg@intel.com; marcan@marcan.st; linus.walleij@linaro.org; ji=
+soo.jang@yonsei.ac.kr;
+> > linuxlovemin@yonsei.ac.kr; wataru.gohda@cypress.com; linux-wireless@vge=
+r.kernel.org;
+> > brcm80211-dev-list.pdl@broadcom.com; SHA-cyfmac-dev-list@infineon.com; =
+linux-kernel@vger.kernel.org;
+> > security@kernel.org; stable@vger.kernel.org
+> > Subject: Re: [PATCH v3] brcmfmac: Fix use-after-free bug in brcmf_cfg80=
+211_detach
+>
+> subject prefix "wif: brcmfmac: ..."
+> Try "git log --oneline drivers/net/wireless/broadcom/brcm80211/brcmfmac" =
+to know that.
+>
 
-Please pull overlayfs update for 6.7.
+Get it! Thanks for your kind reminder.
 
-Most of the changes in this update have been sitting in linux-next for
-several weeks, based on two prerequisite vfs topic branches.
-Last week, after the vfs branches were merged, I rebased overlayfs-next
-to reduce noise.
+> >
+> > This is the candidate patch of CVE-2023-47233 :
+> > https://nvd.nist.gov/vuln/detail/CVE-2023-47233
+>
+> I think you can add this link to commit message as well.
+>
+>
 
-Last week, I also added patches for new mount options to replace the
-lowerdir append syntax that we disabled in v6.6-rc6 and v6.5.8.
+Will apply your suggestion in the next version.
 
-This branch has gone through the usual overlayfs test routines and it
-merges cleanly with master branch of the moment.
-
-Thanks,
-Amir.
-
-----------------------------------------------------------------
-The following changes since commit 14ab6d425e80674b6a0145f05719b11e82e64824:
-
-  Merge tag 'vfs-6.7.ctime' of gitolite.kernel.org:pub/scm/linux/kernel/git/vfs/vfs (2023-10-30 09:47:13 -1000)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/overlayfs/vfs.git ovl-update-6.7
-
-for you to fetch changes up to 24e16e385f2272b1a9df51337a5c32d28a29c7ad:
-
-  ovl: add support for appending lowerdirs one by one (2023-10-31 00:13:02 +0200)
-
-----------------------------------------------------------------
-overlayfs update for 6.7
-
-Contains the following patch sets:
-
-- Overlayfs aio cleanups and fixes [1]
-
-- Overlayfs lock ordering changes [2]
-
-- Add support for nesting overlayfs private xattrs [3]
-
-- Add new mount options for appending lowerdirs [4]
-
-[1] https://lore.kernel.org/r/20230912173653.3317828-1-amir73il@gmail.com/
-[2] https://lore.kernel.org/r/20230816152334.924960-1-amir73il@gmail.com/
-[3] https://lore.kernel.org/r/cover.1694512044.git.alexl@redhat.com/
-[4] https://lore.kernel.org/r/20231030120419.478228-1-amir73il@gmail.com/
-
-----------------------------------------------------------------
-Alexander Larsson (4):
-      ovl: Add OVL_XATTR_TRUSTED/USER_PREFIX_LEN macros
-      ovl: Support escaped overlay.* xattrs
-      ovl: Add an alternative type of whiteout
-      ovl: Add documentation on nesting of overlayfs mounts
-
-Amir Goldstein (14):
-      ovl: use simpler function to convert iocb to rw flags
-      ovl: propagate IOCB_APPEND flag on writes to realfile
-      ovl: punt write aio completion to workqueue
-      ovl: protect copying of realinode attributes to ovl inode
-      ovl: add helper ovl_file_modified()
-      ovl: split ovl_want_write() into two helpers
-      ovl: reorder ovl_want_write() after ovl_inode_lock()
-      ovl: do not open/llseek lower file with upper sb_writers held
-      ovl: do not encode lower fh with upper sb_writers held
-      ovl: Move xattr support to new xattrs.c file
-      ovl: remove unused code in lowerdir param parsing
-      ovl: store and show the user provided lowerdir mount option
-      ovl: refactor layer parsing helpers
-      ovl: add support for appending lowerdirs one by one
-
- Documentation/filesystems/overlayfs.rst |  40 +++-
- fs/overlayfs/Makefile                   |   2 +-
- fs/overlayfs/copy_up.c                  | 142 +++++++++-----
- fs/overlayfs/dir.c                      |  64 +++----
- fs/overlayfs/export.c                   |   7 +-
- fs/overlayfs/file.c                     |  88 ++++++---
- fs/overlayfs/inode.c                    | 165 ++--------------
- fs/overlayfs/namei.c                    |  52 ++++--
- fs/overlayfs/overlayfs.h                |  72 +++++--
- fs/overlayfs/params.c                   | 322 +++++++++++++++++---------------
- fs/overlayfs/params.h                   |   1 +
- fs/overlayfs/readdir.c                  |  27 ++-
- fs/overlayfs/super.c                    |  92 ++-------
- fs/overlayfs/util.c                     | 115 +++++++++++-
- fs/overlayfs/xattrs.c                   | 271 +++++++++++++++++++++++++++
- fs/super.c                              |   1 +
- 16 files changed, 929 insertions(+), 532 deletions(-)
- create mode 100644 fs/overlayfs/xattrs.c
+Best regrads,
+Zheng
