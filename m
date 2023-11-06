@@ -2,124 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BFA7A7E2BB9
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 19:11:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FB727E2BBD
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 19:14:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232342AbjKFSL5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 13:11:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58722 "EHLO
+        id S232174AbjKFSOh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 13:14:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231915AbjKFSL4 (ORCPT
+        with ESMTP id S231805AbjKFSOg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 13:11:56 -0500
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54030C6;
-        Mon,  6 Nov 2023 10:11:53 -0800 (PST)
-Received: by mail-pg1-x533.google.com with SMTP id 41be03b00d2f7-5aaebfac4b0so3153361a12.2;
-        Mon, 06 Nov 2023 10:11:53 -0800 (PST)
+        Mon, 6 Nov 2023 13:14:36 -0500
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85D7E94
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 10:14:33 -0800 (PST)
+Received: by mail-pg1-x535.google.com with SMTP id 41be03b00d2f7-5bcf83a8f6cso3638992a12.2
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 10:14:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699294313; x=1699899113; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=LcI5OntQB8Ozk+nrL6l6Pc64wO1UnRJQSv9QVd1F4r0=;
-        b=A6lvOUAo5RoHzVBvdM2h7wpV2/pArXcYvUhmoN0pis0yU+q2tqF8nZ00LgMU10ysLe
-         kR36jlYMJsLziaiznQDVZR6AvS5xCcFXkhz6EL6tDX1HCZqPJGC/5ZyS4xy/t41XXYn5
-         TzflXPJtW51KGBjSqrZAswJBzydjc9RNzH+6bLZPigbgAnGmOlHwZKxOSbfv7v7qYlDo
-         SfdRBTwy0p2XQB77MvHfnAzGEQnQn4817Qo/XCnow6yz1woyfUFqCxz6MZxEMvq3ghBd
-         PZmw/hNE21eXQq9fV2JhpvSoj5AqMGsZubtekREvUPV0tGyRWH9foeTSHL5dXLEpCg/x
-         azxg==
+        d=linaro.org; s=google; t=1699294473; x=1699899273; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9eApiH5er5Q+LmkTrIbz1RtOUAFBAp0J1EDavJZLMnI=;
+        b=krBaCoSckOyvAbipWNHdVS3zSH4SyrmNET8GcmTvmgATO1k6/p1enb7pNcmnnxp+6y
+         Rv32fo426D5zvLoY80WQDIw0JADBcDZ+kNYN5HLCZNxKrp0C0RPWySwgsNkZsaYemLlV
+         PDAD893zQ52HJZGmFSDxCMTawcBp/2+TuH712758R4blSXfp6xeHF7EPCA51jXXiAgD8
+         /iKHz4oYRSOoeoXjwcn/w8IkZOdBVUXo0wrrWZXgZLR7K661U2hGb37kAhLl9cuPWwMW
+         WuRNX006NUs3AEFGHgAsPVua3FlJZHc2hXL2M+n8K8ystmBJnAj38IPPJQr++TA6u2WJ
+         36xw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699294313; x=1699899113;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=LcI5OntQB8Ozk+nrL6l6Pc64wO1UnRJQSv9QVd1F4r0=;
-        b=pqRHl65PY4d2kPJwgLOMzQbJsCNydKyWmYSoqNyD5+nlSftrsyWhRh0Vg7Y79efHjp
-         60vkWPUbkdkd0fE7q6MQ7NjazfjiWvBe6u1Ex2j4cv5jmkD14/SbSWDhUXnvhjskD4sJ
-         PppBadB/8QDDN2913vIKwfpfwpFgzZnvuKEQhoGrqIJgnk4qVo97+hhqrQY6xMawwjPE
-         elxzcjZnslwhNWQsfbC9MkHwJGmggbkUHwlZSt/DpookjlJS+KI9AEWR0fcTtIw391ap
-         MBaMgVuJHPsgns38Cscre80Nh5reSVJ/RcJOfpxZi0+2hAbXHOAeB2p1MaYVURhs1kQX
-         9CMA==
-X-Gm-Message-State: AOJu0YwaCNouRAiqzlox684J3bZJ5T/YR9q/lzUkE2g14+2w5sm7SJDb
-        8Y8bCdyTe8/Y3iZbo5tgT0phnk9FwQw=
-X-Google-Smtp-Source: AGHT+IHF57SPUGYIywUVjb/TOqr/IyfkWD811q9uPukp4atCiav/WgE+uU+rNZl3P0CSpXLk5AzlwQ==
-X-Received: by 2002:a05:6a20:6a09:b0:138:2fb8:6c48 with SMTP id p9-20020a056a206a0900b001382fb86c48mr26852811pzk.8.1699294312677;
-        Mon, 06 Nov 2023 10:11:52 -0800 (PST)
-Received: from localhost.localdomain ([2405:201:6815:d829:2ad7:8520:6556:6c40])
-        by smtp.gmail.com with ESMTPSA id du8-20020a056a002b4800b0069346777241sm6054637pfb.97.2023.11.06.10.11.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Nov 2023 10:11:52 -0800 (PST)
-From:   Atul Kumar Pant <atulpant.linux@gmail.com>
-To:     tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org,
-        shuah@kernel.org
-Cc:     Atul Kumar Pant <atulpant.linux@gmail.com>,
-        cgroups@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v1] selftests: cgroup: Fixes code style errors
-Date:   Mon,  6 Nov 2023 23:41:44 +0530
-Message-Id: <20231106181144.117188-1-atulpant.linux@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        d=1e100.net; s=20230601; t=1699294473; x=1699899273;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9eApiH5er5Q+LmkTrIbz1RtOUAFBAp0J1EDavJZLMnI=;
+        b=DTgvAzgKVpkWqr7VYs8KGvkLenqKJhEa7OFqnTi9NyVKOmBi+Y7bcV0JXxUZFP99g8
+         k2jkN+ybm/LAUSxjDpoXvEqctJUELVR3ZdzPMKx9O+O0jVw+8PDUabkruHXF2+n5qDPM
+         maFGP6GIiIh35tl35+v5wrI/C8UMwBlUvLLpwVWClU9XXoqjjTgYbgoXYH+nyl/suHOM
+         Jw48CsAGPNQXX+GAWqxo46f6AhBA43I0WQc8z7sEW6UXYt7agtRIeSjmjJUbpMApt6wW
+         gbT09N0a86obB2fHsRcCoJavIkLKjiW787/tZpkiMceJOE1h65WQL59Oey3mAbH1tB3t
+         NzAg==
+X-Gm-Message-State: AOJu0Yw4ChgSjt3DIzjlB+pVHdw5bUtcPke8PRavcaK4A/ffVD4krHLy
+        vyyQmeaMKKLwlj/9gn2SiapPHugOEizccenG79YiaQ==
+X-Google-Smtp-Source: AGHT+IFxo6QPh+LlR1UORVHDkuRmzt/uzetk8veCXwUog6IYZKml7Dzr0uG/OJNPi7jnuYHy2QaQxVRk5w1zTym/o8o=
+X-Received: by 2002:a05:6a20:9188:b0:15e:a8:6bb4 with SMTP id
+ v8-20020a056a20918800b0015e00a86bb4mr27161506pzd.8.1699294472848; Mon, 06 Nov
+ 2023 10:14:32 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20231106130304.678610325@linuxfoundation.org> <8aec1bd5-befc-486c-9e47-7571b937b8c7@linaro.org>
+In-Reply-To: <8aec1bd5-befc-486c-9e47-7571b937b8c7@linaro.org>
+From:   =?UTF-8?B?RGFuaWVsIETDrWF6?= <daniel.diaz@linaro.org>
+Date:   Mon, 6 Nov 2023 12:14:21 -0600
+Message-ID: <CAEUSe7_g2LbOkb6BqqdPha4SX4669O33H0a04sJ7AfbR1wfA_w@mail.gmail.com>
+Subject: Re: [PATCH 5.10 00/95] 5.10.200-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
+        apatel@ventanamicro.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes following checkpatch.pl issues:
-ERROR: do not use assignment in if condition
-ERROR: Macros starting with if should be enclosed by a do - while
+Hello!
 
-Signed-off-by: Atul Kumar Pant <atulpant.linux@gmail.com>
----
- tools/testing/selftests/cgroup/cgroup_util.c | 14 ++++++++------
- tools/testing/selftests/cgroup/test_core.c   |  3 ++-
- 2 files changed, 10 insertions(+), 7 deletions(-)
+On Mon, 6 Nov 2023 at 11:53, Daniel D=C3=ADaz <daniel.diaz@linaro.org> wrot=
+e:
+> On 06/11/23 7:03 a. m., Greg Kroah-Hartman wrote:
+> > This is the start of the stable review cycle for the 5.10.200 release.
+> > There are 95 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> >
+> > Responses should be made by Wed, 08 Nov 2023 13:02:46 +0000.
+> > Anything received after that time might be too late.
+> >
+> > The whole patch series can be found in one patch at:
+> >       https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.10.200-rc1.gz
+> > or in the git tree and branch at:
+> >       git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.10.y
+> > and the diffstat can be found below.
+> >
+> > thanks,
+> >
+> > greg k-h
+>
+> There seems to be a problem building for RISC-V with GCC 8, 12, and Clang=
+ 17. This is with defconfig, allnoconfig, tinyconfig:
+>
+> -----8<-----
+> /builds/linux/drivers/irqchip/irq-riscv-intc.c: In function 'riscv_intc_i=
+nit':
+> /builds/linux/drivers/irqchip/irq-riscv-intc.c:119:17: error: implicit de=
+claration of function 'fwnode_dev_initialized'; did you mean 'zone_is_initi=
+alized'? [-Werror=3Dimplicit-function-declaration]
+>    119 |                 fwnode_dev_initialized(of_fwnode_handle(node), t=
+rue);
+>        |                 ^~~~~~~~~~~~~~~~~~~~~~
+>        |                 zone_is_initialized
+> cc1: some warnings being treated as errors
+> make[3]: *** [/builds/linux/scripts/Makefile.build:286: drivers/irqchip/i=
+rq-riscv-intc.o] Error 1
+> make[3]: Target '__build' not remade because of errors.
+> make[2]: *** [/builds/linux/scripts/Makefile.build:503: drivers/irqchip] =
+Error 2
+> make[2]: Target '__build' not remade because of errors.
+> make[1]: *** [/builds/linux/Makefile:1832: drivers] Error 2
+> make[1]: Target '__all' not remade because of errors.
+> make: *** [Makefile:192: __sub-make] Error 2
+> make: Target '__all' not remade because of errors.
+> ----->8-----
+>
+> Currently bisecting.
 
-diff --git a/tools/testing/selftests/cgroup/cgroup_util.c b/tools/testing/selftests/cgroup/cgroup_util.c
-index 0340d4ca8f51..e165c4a703a6 100644
---- a/tools/testing/selftests/cgroup/cgroup_util.c
-+++ b/tools/testing/selftests/cgroup/cgroup_util.c
-@@ -411,12 +411,14 @@ int dirfd_open_opath(const char *dir)
- 	return open(dir, O_DIRECTORY | O_CLOEXEC | O_NOFOLLOW | O_PATH);
- }
- 
--#define close_prot_errno(fd)                                                   \
--	if (fd >= 0) {                                                         \
--		int _e_ = errno;                                               \
--		close(fd);                                                     \
--		errno = _e_;                                                   \
--	}
-+#define close_prot_errno(fd)				\
-+	do {						\
-+		if (fd >= 0) {                          \
-+			int _e_ = errno;                \
-+			close(fd);                      \
-+			errno = _e_;                    \
-+		}					\
-+	} while (0);
- 
- static int clone_into_cgroup_run_nowait(const char *cgroup,
- 					int (*fn)(const char *cgroup, void *arg),
-diff --git a/tools/testing/selftests/cgroup/test_core.c b/tools/testing/selftests/cgroup/test_core.c
-index 80aa6b2373b9..ad758e510174 100644
---- a/tools/testing/selftests/cgroup/test_core.c
-+++ b/tools/testing/selftests/cgroup/test_core.c
-@@ -817,7 +817,8 @@ static int test_cgcore_lesser_ns_open(const char *root)
- 	if (cg_enter_current(cg_test_a))
- 		goto cleanup;
- 
--	if ((status = write(cg_test_b_procs_fd, "0", 1)) >= 0 || errno != ENOENT)
-+	status = write(cg_test_b_procs_fd, "0", 1);
-+	if (status >= 0 || errno != ENOENT)
- 		goto cleanup;
- 
- 	ret = KSFT_PASS;
--- 
-2.25.1
+-----8<-----
+Bisection done!
+First commit presenting NEW behaviour: 6751b1fbf98ba2c40bbdda22e2e6714a9c27=
+b91b
 
+commit 6751b1fbf98ba2c40bbdda22e2e6714a9c27b91b
+Author: Anup Patel <apatel@ventanamicro.com>
+Date:   Tue Oct 3 10:13:51 2023 +0530
+
+    irqchip/riscv-intc: Mark all INTC nodes as initialized
+
+    [ Upstream commit e13cd66bd821be417c498a34928652db4ac6b436 ]
+----->8-----
+
+Reverting that commit makes the build happy again.
+
+Greetings!
+
+Daniel D=C3=ADaz
+daniel.diaz@linaro.org
