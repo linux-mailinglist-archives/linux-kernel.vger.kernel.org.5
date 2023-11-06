@@ -2,52 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A9D37E2E66
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 21:46:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B38B67E2E69
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 21:48:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233065AbjKFUqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 15:46:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33486 "EHLO
+        id S232985AbjKFUsp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 15:48:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232927AbjKFUqA (ORCPT
+        with ESMTP id S229755AbjKFUso (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 15:46:00 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C92910A;
-        Mon,  6 Nov 2023 12:45:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-        bh=hSnj/mFuGgrQUOLsjQk08q0jexZjMGNOYi/PaMiXeoA=; b=Y9KimkO3wL+3x+Eqdi9EOLe1W3
-        bBWlN3hF8iV1zhnGhz4DYE/aUButatnO4bdWGhkWIWU5w3WVjwwFYlR94yIgZXpBg+y83WWqOA29h
-        jwctEylS6lX0w1+UtLrtu5Chyx7P1Erd/ywIwUIZm0HQTZOeBhuccrIaryO0Qfz9hxHml6oSfzsWX
-        3KVL37f0IJMWLC1GOj1YPqAee83K2DDJDVHKfRpuxdXYxxNHUyDBwTH/Yt2eNH9BuB+6450Msrd8i
-        Rt8ora+9RKyJmP/TVrv4FRPO2wY8cfQCqcbtoALwgqW8wfGzVKWoo9+z0BrZqW4ZWuMabOnyNXx1d
-        JaqqttpQ==;
-Received: from [50.53.46.231] (helo=[192.168.254.15])
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1r06Tq-00HWwj-2B;
-        Mon, 06 Nov 2023 20:45:54 +0000
-Message-ID: <dc85784d-c96c-45a4-bbfa-036f535b048f@infradead.org>
-Date:   Mon, 6 Nov 2023 12:45:54 -0800
+        Mon, 6 Nov 2023 15:48:44 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4861710A
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 12:48:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699303721; x=1730839721;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=2A3DxbgwDIeKtTHs+XIhBI+I56ziuucumFGPKJ8wOPc=;
+  b=L9AKyJuoP6fz0137jKo1QnGeRVwraO+0F1bMtYeCEvlqhLOZr5NlSsNZ
+   VzHQSqwWgrZ54gNrFTfF3/6XdIYppSFjpwAurCyzigkCM54/siIlX/qvq
+   1NpvlnDxJbQ/lsMIRVNGGUmldOiS9pZwanZIhHoJ+8UX69PmP7pfNjAdH
+   k2iXSRRPgsnG1vPiZ2jIuktMcw/5TuWw6I3lwvqCMGxrVbcpNqvgojX5u
+   g0kAQ5qfTIHqyvzI8dAE6jFEZozsaEXC/gOULsT5d/+ZcJr9youHHrH/u
+   tI83nb0z7Q81k2CDat+dYpx1DCzo8mStPZ6MFzmxnn+9cZ8+jD5Oq/PvZ
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10886"; a="455845985"
+X-IronPort-AV: E=Sophos;i="6.03,282,1694761200"; 
+   d="scan'208";a="455845985"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Nov 2023 12:48:40 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.03,282,1694761200"; 
+   d="scan'208";a="10577613"
+Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
+  by fmviesa001.fm.intel.com with ESMTP; 06 Nov 2023 12:48:39 -0800
+Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r06WS-0006im-2W;
+        Mon, 06 Nov 2023 20:48:36 +0000
+Date:   Tue, 7 Nov 2023 04:48:12 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Rohan McLure <rmclure@linux.ibm.com>
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        linux-kernel@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>
+Subject: drivers/media/platform/verisilicon/hantro_g2_hevc_dec.c:578:5:
+ warning: stack frame size (2144) exceeds limit (2048) in
+ 'hantro_g2_hevc_dec_run'
+Message-ID: <202311070412.oRu9ZBhc-lkp@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] tty: serial: uartlite: Document uartlite_data in
- kernel-doc style
-Content-Language: en-US
-To:     Sean Anderson <sean.anderson@seco.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>, linux-serial@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Peter Korsgaard <jacmet@sunsite.dk>,
-        kernel test robot <yujie.liu@intel.com>
-References: <20231106152428.3641883-1-sean.anderson@seco.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20231106152428.3641883-1-sean.anderson@seco.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -56,51 +63,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Rohan,
+
+FYI, the error/warning was bisected to this commit, please ignore it if it's irrelevant.
+
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   d2f51b3516dade79269ff45eae2a7668ae711b25
+commit: 6f0926c00565a91f3bd7ca1aa05db307daed5e0f powerpc/kcsan: Add KCSAN Support
+date:   9 months ago
+config: powerpc64-allyesconfig (https://download.01.org/0day-ci/archive/20231107/202311070412.oRu9ZBhc-lkp@intel.com/config)
+compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231107/202311070412.oRu9ZBhc-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311070412.oRu9ZBhc-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> drivers/media/platform/verisilicon/hantro_g2_hevc_dec.c:578:5: warning: stack frame size (2144) exceeds limit (2048) in 'hantro_g2_hevc_dec_run' [-Wframe-larger-than]
+     578 | int hantro_g2_hevc_dec_run(struct hantro_ctx *ctx)
+         |     ^
+   1 warning generated.
+--
+>> drivers/input/touchscreen/cyttsp4_core.c:1682:12: warning: stack frame size (2112) exceeds limit (2048) in 'cyttsp4_startup' [-Wframe-larger-than]
+    1682 | static int cyttsp4_startup(struct cyttsp4 *cd)
+         |            ^
+   1 warning generated.
+--
+   drivers/net/ethernet/ibm/ibmvnic.c:194:6: warning: variable 'rc' set but not used [-Wunused-but-set-variable]
+     194 |         int rc, i;
+         |             ^
+>> drivers/net/ethernet/ibm/ibmvnic.c:5970:13: warning: stack frame size (2320) exceeds limit (2048) in 'ibmvnic_tasklet' [-Wframe-larger-than]
+    5970 | static void ibmvnic_tasklet(struct tasklet_struct *t)
+         |             ^
+   2 warnings generated.
+--
+>> drivers/net/ethernet/qlogic/qed/qed_mng_tlv.c:1244:5: warning: stack frame size (2368) exceeds limit (2048) in 'qed_mfw_process_tlv_req' [-Wframe-larger-than]
+    1244 | int qed_mfw_process_tlv_req(struct qed_hwfn *p_hwfn, struct qed_ptt *p_ptt)
+         |     ^
+   1 warning generated.
 
 
-On 11/6/23 07:24, Sean Anderson wrote:
-> Use @ and - to conform with kernel-doc style.
-> 
-> Reported-by: kernel test robot <yujie.liu@intel.com>
-> Signed-off-by: Sean Anderson <sean.anderson@seco.com>
+vim +/hantro_g2_hevc_dec_run +578 drivers/media/platform/verisilicon/hantro_g2_hevc_dec.c
 
-Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
+5523dc7b851849 drivers/staging/media/hantro/hantro_g2_hevc_dec.c Benjamin Gaignard 2021-07-15  577  
+cb5dd5a0fa518d drivers/staging/media/hantro/hantro_g2_hevc_dec.c Benjamin Gaignard 2021-06-03 @578  int hantro_g2_hevc_dec_run(struct hantro_ctx *ctx)
 
-Thanks.
+:::::: The code at line 578 was first introduced by commit
+:::::: cb5dd5a0fa518dff14ff2b90837c3c8f98f4dd5c media: hantro: Introduce G2/HEVC decoder
 
-Greg will probably just wait to apply it sometime after the current
-merge window closes. At least that's been my experience.
-
-> ---
-> I have no idea what phase of release the kernel is in. If it is too
-> late/early in the cycle, please just review this at the appropriate
-> time. This patch is unlikely to need rebasing, and I am unlikely to
-> remember to send it later.
-> 
->  drivers/tty/serial/uartlite.c | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/tty/serial/uartlite.c b/drivers/tty/serial/uartlite.c
-> index 404c14acafa5..e586d7aeac98 100644
-> --- a/drivers/tty/serial/uartlite.c
-> +++ b/drivers/tty/serial/uartlite.c
-> @@ -62,11 +62,11 @@ static struct uart_port *console_port;
->  #endif
->  
->  /**
-> - * struct uartlite_data: Driver private data
-> - * reg_ops: Functions to read/write registers
-> - * clk: Our parent clock, if present
-> - * baud: The baud rate configured when this device was synthesized
-> - * cflags: The cflags for parity and data bits
-> + * struct uartlite_data - Driver private data
-> + * @reg_ops: Functions to read/write registers
-> + * @clk: Our parent clock, if present
-> + * @baud: The baud rate configured when this device was synthesized
-> + * @cflags: The cflags for parity and data bits
->   */
->  struct uartlite_data {
->  	const struct uartlite_reg_ops *reg_ops;
+:::::: TO: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+:::::: CC: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
 -- 
-~Randy
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
