@@ -2,232 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AA317E2FC7
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 23:24:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F300D7E2FC8
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 23:24:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233145AbjKFWYD convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 6 Nov 2023 17:24:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41898 "EHLO
+        id S233203AbjKFWYH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 17:24:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232005AbjKFWYB (ORCPT
+        with ESMTP id S233166AbjKFWYF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 17:24:01 -0500
-Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 489821BC;
-        Mon,  6 Nov 2023 14:23:59 -0800 (PST)
-Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-6c398717726so2192012b3a.2;
-        Mon, 06 Nov 2023 14:23:59 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699309439; x=1699914239;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+5KSCOu691NT1PfrO1kzMKbd/+BqwCFGmhMLBYbiDMU=;
-        b=Xm1ulYXiL5xj9GhPzCf9lO/xEW1P9Mb8RB9RM9tleL9PYBjX7foVpfQcOo0Bo1tHvU
-         +EMGJrCFEEPjooWI8XytCGgCzgtRhC29cwWFY3o/lWeGc5L7qx3MIPiMGsdzfKzdp0hY
-         +ftaCPdr2fFpv3mtyrDXf2KJm69uep3KHIsEG4sa+pdc7rhVQRBOD9xg5k+YV/gHNJ2R
-         4/GQyCnl4aeV9yotcsR9nFp9TV2obZ3MhbvxoLU5/5FYeYyyfaIfwmAfmP85da/Qb7p7
-         4LCAODY1U4Hs9KFy+nfJMPbxq744+M7Is9gv0tigYp6Nbwk6Z1Umft9hxHNgUltzLuoj
-         VFyQ==
-X-Gm-Message-State: AOJu0YxlJ/ezJI4X9njZiJ3zxTliIlka8cgq9JQKQ0BhU35i9LbMl8An
-        62n9aJdTNUmQEeT0acV1iNwQ1uE5W0QYydxVe94=
-X-Google-Smtp-Source: AGHT+IGv+o/+zJivESMR2Z2d4lwNd6Y7F/0po0qUsoq6kPluTYpMriId/VUFweUPW/AXzfZjUY0YyuPA+oYiuLyuApA=
-X-Received: by 2002:a05:6a20:3945:b0:182:2282:fd7a with SMTP id
- r5-20020a056a20394500b001822282fd7amr8559206pzg.19.1699309438609; Mon, 06 Nov
- 2023 14:23:58 -0800 (PST)
+        Mon, 6 Nov 2023 17:24:05 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 872B41BC;
+        Mon,  6 Nov 2023 14:24:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699309442; x=1730845442;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=nEo4XFze6SJivoconKEWFlj+qCo316IjE6eASevBY+E=;
+  b=RHDRmJ65BIWDZwYEjTh5T6W9R9jUDuA1bAEGq9wPodtPLHQAwY3OZPE1
+   EVBWDbUdIPLo3ytjpkGLW4DrLwEedS+96P+av13zIpOHcbly9t2ieoIXE
+   0xS02ErSBemTp27RcyhAvuJtq2zeZ0Ks1zmb+g+0GajKlzxQgX6GXTjp/
+   tpu15ln3HF7HrYDti2fwrQ5KP0fE3Yvq+uYwq9mQYGBZO4aVaBuHfWCcq
+   BYaSpdfu2WJSyaSRfM9YfWCMH2J5BhvEX2L+wic2+rkACaj/lJuyoxPhB
+   RuSIVLcGNyZbMMres6gqZLtiPmJlH9Kcx9UBcqjJTB4qejrrPiA15Kgtw
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10886"; a="8012275"
+X-IronPort-AV: E=Sophos;i="6.03,282,1694761200"; 
+   d="scan'208";a="8012275"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Nov 2023 14:24:02 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10886"; a="853147693"
+X-IronPort-AV: E=Sophos;i="6.03,282,1694761200"; 
+   d="scan'208";a="853147693"
+Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
+  by FMSMGA003.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 06 Nov 2023 14:23:59 -0800
+Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Mon, 6 Nov 2023 14:24:00 -0800
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Mon, 6 Nov 2023 14:23:59 -0800
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34 via Frontend Transport; Mon, 6 Nov 2023 14:23:59 -0800
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (104.47.57.40) by
+ edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.34; Mon, 6 Nov 2023 14:23:58 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=eAa/6PyN1k+4Mph53qIXDZqzaSSjd2Bgoh8+EousfEVQsAJK8AyCVtLkwjoZqrWWkuYoe8RXVmaY65y8iW+xXY9S0wI0CS5lAhMaVkXBOZn2Ciy5nCCDPIj4+uRu/9yOqiBnILEpCnsA24TMeTTnT+j/9XQuFoKj3CQgVMrc7LZ5TJ0uLke06mGi6A3flf5LMxAKSIr8yx5W9s/8XmDeFSIASc6+PELowOHkSNxAhoTGrayGBzHpIGCDCvmEvXi03Tpr1g2McGu6Kq26GN5vLtLzpCPpeqGAW7g+rgwKkiyiwf54nrGzYNgyHFAsrtrBzrug73g68MzTPlrhuhEmzw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=nEo4XFze6SJivoconKEWFlj+qCo316IjE6eASevBY+E=;
+ b=aIpB0XYb9dfDPnXAxnnokglqhYMsZNxyWhJ226AW4yNuZ7A7Xx3t4Z+EL2YoG9jyk6/Y7JgE7NeP9Ib2maYTwmgYWtOry++GpPSPaEZODcKNT20V8zWK6SXvv31Uu2iejQX5JnmQWBCcSOqSDD7ZzN3tfyQR5gUNXzrqIXlxLSvg2yIKWvPImNkfLL9VcILqm7mEIM4kk+QLkqaFCluo+re07G7fktgR67lc3NuUhXNVdX0sX+JZN1613QW33rD1NCZyGuJvi9eiX2FRCsntKkc9Z7TdvSPu6m/c7bQGOgTQQ6Y1AR8ATWe4Vw+xFvpF3sDCDM5ki2GAp7zgVJlWWw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from BL1PR11MB5978.namprd11.prod.outlook.com (2603:10b6:208:385::18)
+ by IA1PR11MB7872.namprd11.prod.outlook.com (2603:10b6:208:3fe::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.28; Mon, 6 Nov
+ 2023 22:23:52 +0000
+Received: from BL1PR11MB5978.namprd11.prod.outlook.com
+ ([fe80::5d1:aa22:7c98:f3c6]) by BL1PR11MB5978.namprd11.prod.outlook.com
+ ([fe80::5d1:aa22:7c98:f3c6%6]) with mapi id 15.20.6954.021; Mon, 6 Nov 2023
+ 22:23:52 +0000
+From:   "Huang, Kai" <kai.huang@intel.com>
+To:     "hpa@zytor.com" <hpa@zytor.com>,
+        "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "jarkko@kernel.org" <jarkko@kernel.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "mkoutny@suse.com" <mkoutny@suse.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "haitao.huang@linux.intel.com" <haitao.huang@linux.intel.com>,
+        "Mehta, Sohil" <sohil.mehta@intel.com>,
+        "tj@kernel.org" <tj@kernel.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "bp@alien8.de" <bp@alien8.de>
+CC:     "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
+        "Christopherson,, Sean" <seanjc@google.com>,
+        "Zhang, Bo" <zhanb@microsoft.com>,
+        "kristen@linux.intel.com" <kristen@linux.intel.com>,
+        "yangjie@microsoft.com" <yangjie@microsoft.com>,
+        "sean.j.christopherson@intel.com" <sean.j.christopherson@intel.com>,
+        "Li, Zhiquan1" <zhiquan1.li@intel.com>,
+        "anakrish@microsoft.com" <anakrish@microsoft.com>
+Subject: Re: [PATCH v6 04/12] x86/sgx: Implement basic EPC misc cgroup
+ functionality
+Thread-Topic: [PATCH v6 04/12] x86/sgx: Implement basic EPC misc cgroup
+ functionality
+Thread-Index: AQHaC13a8dHEeRpnz0q8yAogc4UDz7Bt6RWA
+Date:   Mon, 6 Nov 2023 22:23:52 +0000
+Message-ID: <9f4374bcab0ffba024204d97a2bf1f3a1128bdd5.camel@intel.com>
+References: <20231030182013.40086-1-haitao.huang@linux.intel.com>
+         <20231030182013.40086-5-haitao.huang@linux.intel.com>
+In-Reply-To: <20231030182013.40086-5-haitao.huang@linux.intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BL1PR11MB5978:EE_|IA1PR11MB7872:EE_
+x-ms-office365-filtering-correlation-id: a43c21ed-8310-4a0b-b3cf-08dbdf170e6a
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: QbxOs6dfrzJaXYqEknIdYu7kCtTS2jRi0URHhSoj0aanSEolC3xtda7bpwbVCl8wCkjSsRX/GAa2mUrRDUyJ56pvUp8AWrejUlLZJCRtdUODDEEz2PCdZ0hoyXlAJXJMM56vANvBV+fgvnUl6kv9rJ4UM3uGVQvJt0eXBnxiMGJUsJ30iDwnQgapdehS2WOX/lMmaagA9+vWEP0dKdu6GEe7JE4uX/BEJu+P/hAZ5d8UYMSbhENDbLFYMZPbEC4C6q7PdzxI3P76eqYsoRmlnLitotHhNx4G47FuP9tjcAOS52L6Tj9vrTVd05pKClIivC4VvauD+U1QU9lswdYh1lI6GubEfMmmhi/kLticRfGvuoWyu4mMXKMy5tKxNR14Kf84gXmbxCm6qbdAtDsdIMAw8xoj5tX9a78GwcHKT+RYb2IpW2J33t8ylalmrtLPtotadlj/svld/p5nGnkU1EoU2Qg5+h1RjohRl+slhcF2f4I7hcY3Hpgeyg6jc/K/JK+GHXobZRbVTLQfJrk+AzWxSv44xLE/lx9jXLgusFbhddLBnqQrPahHOo/DnQ0LYyVmvoITIqHQunBxOS+Msf2x02TMKwF0zrXtXUcY2T0EdWXCDs0Reim9EQ6v5fr6f9h9Rg4cP67XjfZqliOW/Q==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR11MB5978.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(230922051799003)(451199024)(1800799009)(186009)(26005)(6512007)(6506007)(2616005)(122000001)(38100700002)(36756003)(82960400001)(86362001)(6486002)(4744005)(5660300002)(71200400001)(2906002)(7416002)(4001150100001)(8936002)(83380400001)(8676002)(4326008)(921008)(38070700009)(66446008)(64756008)(66476007)(76116006)(54906003)(66946007)(316002)(508600001)(66556008)(110136005)(91956017);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?SHFRckM4d25TK01TR1BJbENMYktFRlBqZ1g3MDcweGNXTnlIT3dKVWliYmJn?=
+ =?utf-8?B?bVhpVUxMZDhOb1I5cUx2KzVMR1BJZnpEVVR0NnZhb1VpdnBrZmlVUm9aZWpG?=
+ =?utf-8?B?bE9ONFNvSlBvcExKWFZ4OHhPcTFLTFJnSHYzS2M5a040TUFZbnkzNW9XWkdC?=
+ =?utf-8?B?QS9QRSt2R2hhSno4UkR1Ty9kV0dKVzVnekhVaHBvUDRCTUdIRjE1TG9pbmlS?=
+ =?utf-8?B?Z29XT0pEWFBVcHJJOGU0RTZlRUhTY2dUME0wMDJxZXJoZEYxc2NLSlR0WGw2?=
+ =?utf-8?B?YjJzYkR4K3greHdwYlFMeEZDcm83a1dlVWlkcUdocFFrY2lleFlHVkUrR2R3?=
+ =?utf-8?B?UTl6R01hQW94NnNMVm42TGJYem9wcVBLNWkzL0QxMmFkRVJ6bU5TRTdmTXR3?=
+ =?utf-8?B?bzNkL1RhdkIyYXhpZzJEdTlnQ2wrSW1YQzR2NDZJSEx0aGh0WjFVWVlvSFJG?=
+ =?utf-8?B?T2I2amxFV1lmQUFFN2tSNUtKSjNUUnNwbkRod3B6WXRtblF0MFZnM1lVV3Zh?=
+ =?utf-8?B?T2s5aHdkTW50b29MTitOL3VKa3VHMGNUWTdIVjNGWVZnMERJUzJmQ3JOT3BP?=
+ =?utf-8?B?SXNOSk50YUJYWnZOYVJjMDJuMEpVamtpeDgrZ0V3TW94dUdhTHdLSTFVR0Vo?=
+ =?utf-8?B?eU93VitvSFhVMGZvK2xTVlQ2RkZaWEVrcFJPM09tOGVGTFM2dzZxT3p4U3lK?=
+ =?utf-8?B?TDRSQ29VWjhqNHJUbmVDZWx2MWJsKzI3M0E3bmtqUFVBNDFCdm81VmhSUzFi?=
+ =?utf-8?B?ZzgxY0tDQ3FtbXE3b0tFN2FXRWhvb0FLT2Z5aGR5NndrSjNnZEd3dXVoSldJ?=
+ =?utf-8?B?VWs1Nmo4YllVS3l2b2tTMGZOMS8zYkdEei9ETTI4bG9iaTJpelV4bmRBaWUw?=
+ =?utf-8?B?TXJFZVpyOTdTbkVaRU1yL2pTL2tVdndrK0NobDdHcUdSR2xrSy9QT3duTlBq?=
+ =?utf-8?B?OXUySVBzbkhMbi9KZ01FcXJNY2dEK3V5MG9wL0QxTVlNOGJTSnZFMTRnRWNZ?=
+ =?utf-8?B?K1RWNEhZeE1GdEtMWHVPQjU4RS9NVDNtdmx4ay9HcnI4SDhmdW0vM2g0YnNo?=
+ =?utf-8?B?bkJjTmJFTXppSW5PTWJ2dldWYi9JSlI0VGs0RDJ3NlIycitkemZiMWZCakox?=
+ =?utf-8?B?Zk8veXY5QzN1NzlvdjlGNUpBNUJ4NmwzbUVhK3Y2MHFNQ1pWOEdkU0Rkb0E5?=
+ =?utf-8?B?YnovVC9rSW05NTloOHo3Njh3cDBBMzZWM2lGaGxtM01JZmxaM3ZEVUNPelhq?=
+ =?utf-8?B?ZmowUlB4V3dPMHMremV2U28zc0YvSURaTDRYRjJ4Z0NVeDQ1ZTM5ckVJMVRH?=
+ =?utf-8?B?MXBsenB3VmcvdC9Qd29FaDgrMGNSdmU5OVpubWNnYlZRbUV0ZTN2RmZ6aTNr?=
+ =?utf-8?B?MXJLY3hEbE9YOXpxWngwUi9iYWNHYW00NVdNVnl4ZzBTR1BPREROVmFSaE15?=
+ =?utf-8?B?Ty9mN2VPMm1wQ21jN1dEUCt5TllPQldPamZ0dnZOVngrMUFVV0FjSWFHQThM?=
+ =?utf-8?B?UjhsVERWdDZpUDlVcUhiSXRNR1E5VndPL21LRmY5VmgwcnNFV2pNcGlQSmsx?=
+ =?utf-8?B?MmdqRXR3UWhyZHNSd0hMODM5dlZ4UGhOYWNvRWVaMUZGTzNyUUpEWVh5NUJU?=
+ =?utf-8?B?bmIrRUl4cHN2SllvZFZialoxOGNhME9nSnlYTWhONitEaDd1aDNmRS90RGI1?=
+ =?utf-8?B?RGRoRHJmbW1hdzY2VTNxWHVmQlRMaHY1SUpVVjB1eVdpK2NVT2IrRitUK0tj?=
+ =?utf-8?B?TFVLUVBqcHNybG1SMG1rTUF6a2tzNW1aVFJTYlpEUUx0TU15TThxeDVuVnI3?=
+ =?utf-8?B?Wkp3UkNPeldKdXZhSGFZbzdMNDZmY3h1WUJvUW5sRTVSQksxOGE2RXVod3V6?=
+ =?utf-8?B?eWdzY0FuamdaMlRxNTVnK2l1VWpRanhMRDVIb0hiOTFlL3VwSERidlIvM3Z2?=
+ =?utf-8?B?WWdmT2JvTXNFb3FTa1NBbG9pL2wxTmNQRlppZDNsV3NLQ0liNnd0dmpaOWZs?=
+ =?utf-8?B?ZkpueXdzUTNoTURERHdmVldyQ2pPZitYWFBWYkYzajFNc3lKUUZxUGxGVXIw?=
+ =?utf-8?B?SkxOMm4zOWFNYW9JSTVEQ0NDNkplamxrTG8xVXFPTnlzMUJpcVFJendDTmxy?=
+ =?utf-8?B?RUVpNkVzeFJscERjalN5WEt0R0NnYnNwa3pwM294ZlI2cTZFdk1mdjdrS2pF?=
+ =?utf-8?B?d1E9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <A9C1B765728288458D4E06C997A004BB@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <20231103191907.54531-1-namhyung@kernel.org> <20231103191907.54531-2-namhyung@kernel.org>
- <ZUk/27WMwtnQPggF@kernel.org> <ZUlEP9pP3JiSxDVc@kernel.org>
-In-Reply-To: <ZUlEP9pP3JiSxDVc@kernel.org>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Mon, 6 Nov 2023 14:23:47 -0800
-Message-ID: <CAM9d7cgWUfDR9J6NLZBEs-DhXGR1YdaQYyOuANTRbhhUwp=8WQ@mail.gmail.com>
-Subject: Re: [PATCH 1/5] perf annotate: Split struct cycles_info
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BL1PR11MB5978.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a43c21ed-8310-4a0b-b3cf-08dbdf170e6a
+X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Nov 2023 22:23:52.2078
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: FUA0lSFn1yhWPEG4xuhZt+E8bMcl1LKYjPzWBgOW0W7u+Dw/5T9lGuqQDdhMJoW8hgl/i2CD9MPvX252Y++ioQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR11MB7872
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnaldo,
-
-On Mon, Nov 6, 2023 at 11:53 AM Arnaldo Carvalho de Melo
-<acme@kernel.org> wrote:
->
-> Em Mon, Nov 06, 2023 at 04:34:51PM -0300, Arnaldo Carvalho de Melo escreveu:
-> > Em Fri, Nov 03, 2023 at 12:19:03PM -0700, Namhyung Kim escreveu:
-> > > The cycles info is used only when branch stack is provided.  Split them
-> > > into a separate struct and lazy allocate them to save some memory.
-> > >
-> > > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> > > ---
-> > >  tools/perf/ui/browsers/annotate.c |  2 +-
-> > >  tools/perf/util/annotate.c        | 34 ++++++++++++++++++-------------
-> > >  tools/perf/util/annotate.h        | 14 ++++++++-----
-> > >  3 files changed, 30 insertions(+), 20 deletions(-)
-> > >
-> > > diff --git a/tools/perf/ui/browsers/annotate.c b/tools/perf/ui/browsers/annotate.c
-> > > index ccdb2cd11fbf..d2470f87344d 100644
-> > > --- a/tools/perf/ui/browsers/annotate.c
-> > > +++ b/tools/perf/ui/browsers/annotate.c
-> > > @@ -337,7 +337,7 @@ static void annotate_browser__calc_percent(struct annotate_browser *browser,
-> > >                             max_percent = percent;
-> > >             }
-> > >
-> > > -           if (max_percent < 0.01 && pos->al.ipc == 0) {
-> > > +           if (max_percent < 0.01 && (!pos->al.cycles || pos->al.cycles->ipc == 0)) {
-> > >                     RB_CLEAR_NODE(&pos->al.rb_node);
-> > >                     continue;
-> > >             }
-> > > diff --git a/tools/perf/util/annotate.c b/tools/perf/util/annotate.c
-> > > index 82956adf9963..3e7f75827270 100644
-> > > --- a/tools/perf/util/annotate.c
-> > > +++ b/tools/perf/util/annotate.c
-> > > @@ -1100,8 +1100,8 @@ static void annotation__count_and_fill(struct annotation *notes, u64 start, u64
-> > >             for (offset = start; offset <= end; offset++) {
-> > >                     struct annotation_line *al = notes->offsets[offset];
-> > >
-> > > -                   if (al && al->ipc == 0.0) {
-> > > -                           al->ipc = ipc;
-> > > +                   if (al && al->cycles && al->cycles->ipc == 0.0) {
-> > > +                           al->cycles->ipc = ipc;
-> > >                             cover_insn++;
-> > >                     }
-> > >             }
-> > > @@ -1134,13 +1134,18 @@ void annotation__compute_ipc(struct annotation *notes, size_t size)
-> > >             if (ch && ch->cycles) {
-> > >                     struct annotation_line *al;
-> > >
-> > > +                   al = notes->offsets[offset];
-> > > +                   if (al && al->cycles == NULL) {
-> > > +                           al->cycles = zalloc(sizeof(*al->cycles));
-> > > +                           if (al->cycles == NULL)
-> >
-> > Shouldn't we stop here and tell the user that his system is really tight
-> > on memory instead of just ignoring it?
-> >
-> >       if (al->cycles == NULL) {
-> >               ui__error("Not enough memory for allocating branch stack cycles info!\n");
-> >               return ... its a void function :-\
-> >       }
-> >
-> > Since its a void function, can't we detect that we need al->cycles
-> > allocated at the tool start and allocate it there, then propagate back
-> > the error?
-> >
-> > Its per line, so doing it lazily is indeed easier, so make that function
-> > return an error and bail out when not being able to calculate the ipc
-> > for the remaining lines?
->
-> I.e. with this folded into this patch, all but one of the callers of
-> symbol__annotate2() already call a ui error messagem for instance:
->
->                 err = symbol__annotate2(ms, evsel, opts, &browser.arch);
->                 if (err) {
->                         char msg[BUFSIZ];
->                         dso->annotate_warned = true;
->                         symbol__strerror_disassemble(ms, err, msg, sizeof(msg));
->                         ui__error("Couldn't annotate %s:\n%s", sym->name, msg);
->
-> - Arnaldo
-
-Looks good to me, thanks for doing this!
-Namhyung
-
-
->
-> diff --git a/tools/perf/util/annotate.c b/tools/perf/util/annotate.c
-> index 3e7f758272703554..99ff3bb9cad8daa6 100644
-> --- a/tools/perf/util/annotate.c
-> +++ b/tools/perf/util/annotate.c
-> @@ -1114,12 +1114,13 @@ static void annotation__count_and_fill(struct annotation *notes, u64 start, u64
->         }
->  }
->
-> -void annotation__compute_ipc(struct annotation *notes, size_t size)
-> +static int annotation__compute_ipc(struct annotation *notes, size_t size)
->  {
-> +       int err = 0;
->         s64 offset;
->
->         if (!notes->src || !notes->src->cycles_hist)
-> -               return;
-> +               return 0;
->
->         notes->total_insn = annotation__count_insn(notes, 0, size - 1);
->         notes->hit_cycles = 0;
-> @@ -1137,8 +1138,10 @@ void annotation__compute_ipc(struct annotation *notes, size_t size)
->                         al = notes->offsets[offset];
->                         if (al && al->cycles == NULL) {
->                                 al->cycles = zalloc(sizeof(*al->cycles));
-> -                               if (al->cycles == NULL)
-> -                                       continue;
-> +                               if (al->cycles == NULL) {
-> +                                       err = ENOMEM;
-> +                                       break;
-> +                               }
->                         }
->                         if (ch->have_start)
->                                 annotation__count_and_fill(notes, ch->start, offset, ch);
-> @@ -1150,7 +1153,21 @@ void annotation__compute_ipc(struct annotation *notes, size_t size)
->                         notes->have_cycles = true;
->                 }
->         }
-> +
-> +       if (err) {
-> +               while (++offset < (s64)size) {
-> +                       struct cyc_hist *ch = &notes->src->cycles_hist[offset];
-> +
-> +                       if (ch && ch->cycles) {
-> +                               struct annotation_line *al = notes->offsets[offset];
-> +                               if (al)
-> +                                       zfree(&al->cycles);
-> +                       }
-> +               }
-> +       }
-> +
->         annotation__unlock(notes);
-> +       return 0;
->  }
->
->  int addr_map_symbol__inc_samples(struct addr_map_symbol *ams, struct perf_sample *sample,
-> @@ -3270,7 +3287,11 @@ int symbol__annotate2(struct map_symbol *ms, struct evsel *evsel,
->
->         annotation__set_offsets(notes, size);
->         annotation__mark_jump_targets(notes, sym);
-> -       annotation__compute_ipc(notes, size);
-> +
-> +       err = annotation__compute_ipc(notes, size);
-> +       if (err)
-> +               goto out_free_offsets;
-> +
->         annotation__init_column_widths(notes, sym);
->         notes->nr_events = nr_pcnt;
->
-> diff --git a/tools/perf/util/annotate.h b/tools/perf/util/annotate.h
-> index 16d27952fd5c1b47..19bc2f03917575a8 100644
-> --- a/tools/perf/util/annotate.h
-> +++ b/tools/perf/util/annotate.h
-> @@ -329,7 +329,6 @@ static inline bool annotation_line__filter(struct annotation_line *al, struct an
->  }
->
->  void annotation__set_offsets(struct annotation *notes, s64 size);
-> -void annotation__compute_ipc(struct annotation *notes, size_t size);
->  void annotation__mark_jump_targets(struct annotation *notes, struct symbol *sym);
->  void annotation__update_column_widths(struct annotation *notes);
->  void annotation__init_column_widths(struct annotation *notes, struct symbol *sym);
+T24gTW9uLCAyMDIzLTEwLTMwIGF0IDExOjIwIC0wNzAwLCBIYWl0YW8gSHVhbmcgd3JvdGU6DQo+
+ICtzdGF0aWMgaW50IF9faW5pdCBzZ3hfZXBjX2Nncm91cF9pbml0KHZvaWQpDQo+ICt7DQo+ICsJ
+c3RydWN0IG1pc2NfY2cgKmNnOw0KPiArDQo+ICsJaWYgKCFib290X2NwdV9oYXMoWDg2X0ZFQVRV
+UkVfU0dYKSkNCj4gKwkJcmV0dXJuIDA7DQo+ICsNCj4gKwljZyA9IG1pc2NfY2dfcm9vdCgpOw0K
+PiArCUJVR19PTighY2cpOw0KPiArDQo+ICsJcmV0dXJuIHNneF9lcGNfY2dyb3VwX2FsbG9jKGNn
+KTsNCj4gK30NCj4gK3N1YnN5c19pbml0Y2FsbChzZ3hfZXBjX2Nncm91cF9pbml0KTsNCg0KVGhp
+cyBzaG91bGQgYmUgY2FsbGVkIGZyb20gc2d4X2luaXQoKSwgd2hpY2ggaXMgdGhlIHBsYWNlIHRv
+IGluaXQgU0dYIHJlbGF0ZWQNCnN0YWZmLiAgSW4gY2FzZSB5b3UgZGlkbid0IG5vdGljZSwgc2d4
+X2luaXQoKSBpcyBhY3R1YWxseSBkZXZpY2VfaW5pdGNhbGwoKSwNCndoaWNoIGlzIGFjdHVhbGx5
+IGNhbGxlZCBfYWZ0ZXJfIHRoZSBzdWJzeXNfaW5pdGNhbGwoKSB5b3UgdXNlZCBhYm92ZS4NCg==
