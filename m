@@ -2,120 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 20F9C7E26BC
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 15:25:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD1117E26BE
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 15:26:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231596AbjKFOZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 09:25:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50722 "EHLO
+        id S231750AbjKFO0C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 09:26:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229563AbjKFOZ5 (ORCPT
+        with ESMTP id S229563AbjKFOZ7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 09:25:57 -0500
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ABF5DF
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 06:25:53 -0800 (PST)
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A66tsF9003575;
-        Mon, 6 Nov 2023 14:25:47 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type; s=qcppdkim1;
- bh=RHtjl9Y8AOTJrzlR+/eTZQ/YBNP/qMKUVfpQIE0pZFg=;
- b=nM6FRlR3shYiK7frKA5Epjt5/Ard179T6e00a+R6jIk8siTa5zI2IGpsM3eT/XB6ujX8
- kHGvfD96r3kAAMkt43bXjxU1+E+TMtOXY3sDmxl1PEIaWjyzWZf5pXKgQn/QChC70Inq
- pNu1J/I6kDPKmojpXcdZN9dxQ4ZsQkUPm9w8/vEKCxn1Xf59iWEfMzTMYURNxOJBzd9d
- No7dgJTS/UV6ZtrPWJz7iyqGtIRW6Yfl5MqLOAZo9e3pCo6X709yharKvmcWZWRr8FxB
- 4PiXGUKTxkYcFXMyIwsFKU/pAcKb/Hl4lwRwcqHKdzKKL+xuBhbp0USv3G/n31rEk2Na zg== 
-Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u5eqn4c2f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 06 Nov 2023 14:25:47 +0000
-Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
-        by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3A6EPk0l012901
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 6 Nov 2023 14:25:47 GMT
-Received: from hu-mojha-hyd.qualcomm.com (10.80.80.8) by
- nasanex01c.na.qualcomm.com (10.45.79.139) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.39; Mon, 6 Nov 2023 06:25:44 -0800
-From:   Mukesh Ojha <quic_mojha@quicinc.com>
-To:     <johannes@sipsolutions.net>, <gregkh@linuxfoundation.org>,
-        <rafael@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>,
-        Mukesh Ojha <quic_mojha@quicinc.com>
-Subject: [PATCH] devcoredump: Send uevent once devcd is ready
-Date:   Mon, 6 Nov 2023 19:55:35 +0530
-Message-ID: <1699280735-31482-1-git-send-email-quic_mojha@quicinc.com>
-X-Mailer: git-send-email 2.7.4
+        Mon, 6 Nov 2023 09:25:59 -0500
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BEBABF;
+        Mon,  6 Nov 2023 06:25:56 -0800 (PST)
+Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-5440f25dcc7so5514526a12.0;
+        Mon, 06 Nov 2023 06:25:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699280755; x=1699885555; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=p+IJUfXZsOW51np1tosDmPgs6aK7LQL7UbN0Dlaw73o=;
+        b=ILTZSDck39PGDBOo4gHADOUKXS4NZvuSe39uF73FR72vuh5sd8uVPTI53EP5Pc69o9
+         pISN0n/1BmKqk965mfuJsRfBbIwTB5Tb6aUzN35fop7M7XAhH7TV9MJojcOK8UBTLip4
+         m/fRn4Btw6TKswNN3Ag0NJ6vFAAlhZBOu1tYYqvgS/TTUv80IOGWKpGBA9h4fp5UxDqY
+         3KlNtddIoGCPhpGIxjMJ6qjQmU/Mce2Rdsj44Th1nuAszPzsSr9vQk9Ay0kzXjZbQfZg
+         L50vFIlJVR4A26LjNyAkkA8ps7wi0S0fxb10sqhlrff6l976aHUzqNc7THjF8dRsK/gr
+         f6pA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699280755; x=1699885555;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=p+IJUfXZsOW51np1tosDmPgs6aK7LQL7UbN0Dlaw73o=;
+        b=jBINs8Zg6LaxnGfxF+/5ESw+mX1rk/A+Qp2XcqSPyt+tKH59T0x4ots7w14esA83m3
+         VkISkze9bz9Y3b8tsd2QHf2WbeLNjIc5Mk7d0fxREbH5nJ1xlWqsjf8UJCZAE4myWyE+
+         cUl/LHJRuiLp3Q/M1oqJozlh1U+YkGbWBjJDMdiwpRUwW3AG70Dwp7s1CV0igQkjY72f
+         7LdIYHmdA7jZq7KSTgmMGRoN1+RE1UHHBzu8atepzcZQ9yH6t/M28kFCZIozZah76jPX
+         zdiYWBlv1+7L0EHzKYSzwb5mXfsGiuatOPEVIPjyh1HpeNMgeZEXCaBbkuShePkzX4SI
+         QSZg==
+X-Gm-Message-State: AOJu0YygzCQ9WF3JGKGXMtR9aNBtSwRp2zjTJgB5gjjx9JwSeCDxl4RC
+        q66tKhaSXMfMh1BtcA438eFCFWSne6+WzLVqaAc=
+X-Google-Smtp-Source: AGHT+IEqw5OX3EtYIyMue2Umob88eYYxIoWxUZvwH8rdXlFYg/NsYYT/TdLOVqdYwrjrZhsibk7B2I8VDbgJTnl4tSs=
+X-Received: by 2002:a17:907:934c:b0:9bf:b6f5:3a08 with SMTP id
+ bv12-20020a170907934c00b009bfb6f53a08mr13644299ejc.52.1699280754821; Mon, 06
+ Nov 2023 06:25:54 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01c.na.qualcomm.com (10.45.79.139)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: G-0uEUbctdT3MkSwdfSyDteyQyaIF0qg
-X-Proofpoint-ORIG-GUID: G-0uEUbctdT3MkSwdfSyDteyQyaIF0qg
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-06_12,2023-11-02_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxscore=0
- malwarescore=0 clxscore=1015 adultscore=0 impostorscore=0 mlxlogscore=949
- priorityscore=1501 phishscore=0 lowpriorityscore=0 spamscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2310240000 definitions=main-2311060116
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20231103104900.409470-1-ubizjak@gmail.com> <CAJZ5v0iOY3u_jBmf=_3AnqEWHb+eTA6DtTfoU3tb=0RB0O+szw@mail.gmail.com>
+In-Reply-To: <CAJZ5v0iOY3u_jBmf=_3AnqEWHb+eTA6DtTfoU3tb=0RB0O+szw@mail.gmail.com>
+From:   Uros Bizjak <ubizjak@gmail.com>
+Date:   Mon, 6 Nov 2023 15:25:43 +0100
+Message-ID: <CAFULd4YPVcWL6_bo2T4O=a6ed9hTOakp2m1_XBF3w-uWhyd4dQ@mail.gmail.com>
+Subject: Re: [PATCH] x86/acpi: Use %rip-relative addressing in wakeup_64.S
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     x86@kernel.org, linux-pm@vger.kernel.org,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-dev_coredumpm() creates a devcoredump device and adds it
-to the core kernel framework which eventually end up
-sending uevent to the user space and later creates a
-symbolic link to the failed device. An application
-running in userspace may be interested in this symbolic
-link to get the name of the failed device.
+On Mon, Nov 6, 2023 at 3:14=E2=80=AFPM Rafael J. Wysocki <rafael@kernel.org=
+> wrote:
+>
+> On Fri, Nov 3, 2023 at 11:49=E2=80=AFAM Uros Bizjak <ubizjak@gmail.com> w=
+rote:
+> >
+> > Instruction with %rip-relative address operand is one byte shorter than
+> > its absolute address counterpart and is also compatible with position
+> > independent executable (-fpie) build.
+> >
+> > No functional changes intended.
+>
+> I'm wondering what's the exact motivation for making this change.
 
-In a issue scenario, once uevent sent to the user space
-it start reading '/sys/class/devcoredump/devcdX/failing_device'
-to get the actual name of the device which might not been
-created and it is in its path of creation.
+Mainly to be consistent with what the compiler emits by default when a
+symbol is accessed. As said in the commit message, the %rip-relative
+access is also one byte shorter, and results in a position independent
+code.
 
-To fix this, suppress sending uevent till the failing device
-symbolic link gets created and send uevent once symbolic
-link is created successfully.
+> Any urgent need for it doesn't seem to be there.
 
-Signed-off-by: Mukesh Ojha <quic_mojha@quicinc.com>
----
- drivers/base/devcoredump.c | 3 +++
- 1 file changed, 3 insertions(+)
+True. It's mostly a nice-to-have change.
 
-diff --git a/drivers/base/devcoredump.c b/drivers/base/devcoredump.c
-index 91536ee05f14..7e2d1f0d903a 100644
---- a/drivers/base/devcoredump.c
-+++ b/drivers/base/devcoredump.c
-@@ -362,6 +362,7 @@ void dev_coredumpm(struct device *dev, struct module *owner,
- 	devcd->devcd_dev.class = &devcd_class;
- 
- 	mutex_lock(&devcd->mutex);
-+	dev_set_uevent_suppress(&devcd->devcd_dev, true);
- 	if (device_add(&devcd->devcd_dev))
- 		goto put_device;
- 
-@@ -376,6 +377,8 @@ void dev_coredumpm(struct device *dev, struct module *owner,
- 		              "devcoredump"))
- 		dev_warn(dev, "devcoredump create_link failed\n");
- 
-+	dev_set_uevent_suppress(&devcd->devcd_dev, false);
-+	kobject_uevent(&devcd->devcd_dev.kobj, KOBJ_ADD);
- 	INIT_DELAYED_WORK(&devcd->del_wk, devcd_del);
- 	schedule_delayed_work(&devcd->del_wk, DEVCD_TIMEOUT);
- 	mutex_unlock(&devcd->mutex);
--- 
-2.7.4
+Thanks,
+Uros.
 
+> > Cc: "Rafael J. Wysocki" <rafael@kernel.org>
+> > Cc: Len Brown <len.brown@intel.com>
+> > Cc: Pavel Machek <pavel@ucw.cz>
+> > Cc: Thomas Gleixner <tglx@linutronix.de>
+> > Cc: Ingo Molnar <mingo@kernel.org>
+> > Cc: Borislav Petkov <bp@alien8.de>
+> > Cc: Dave Hansen <dave.hansen@linux.intel.com>
+> > Cc: "H. Peter Anvin" <hpa@zytor.com>
+> > Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
+> > ---
+> >  arch/x86/kernel/acpi/wakeup_64.S | 24 ++++++++++++------------
+> >  1 file changed, 12 insertions(+), 12 deletions(-)
+> >
+> > diff --git a/arch/x86/kernel/acpi/wakeup_64.S b/arch/x86/kernel/acpi/wa=
+keup_64.S
+> > index d5d8a352eafa..94ff83f3d3fe 100644
+> > --- a/arch/x86/kernel/acpi/wakeup_64.S
+> > +++ b/arch/x86/kernel/acpi/wakeup_64.S
+> > @@ -17,7 +17,7 @@
+> >          * Hooray, we are in Long 64-bit mode (but still running in low=
+ memory)
+> >          */
+> >  SYM_FUNC_START(wakeup_long64)
+> > -       movq    saved_magic, %rax
+> > +       movq    saved_magic(%rip), %rax
+> >         movq    $0x123456789abcdef0, %rdx
+> >         cmpq    %rdx, %rax
+> >         je      2f
+> > @@ -33,14 +33,14 @@ SYM_FUNC_START(wakeup_long64)
+> >         movw    %ax, %es
+> >         movw    %ax, %fs
+> >         movw    %ax, %gs
+> > -       movq    saved_rsp, %rsp
+> > +       movq    saved_rsp(%rip), %rsp
+> >
+> > -       movq    saved_rbx, %rbx
+> > -       movq    saved_rdi, %rdi
+> > -       movq    saved_rsi, %rsi
+> > -       movq    saved_rbp, %rbp
+> > +       movq    saved_rbx(%rip), %rbx
+> > +       movq    saved_rdi(%rip), %rdi
+> > +       movq    saved_rsi(%rip), %rsi
+> > +       movq    saved_rbp(%rip), %rbp
+> >
+> > -       movq    saved_rip, %rax
+> > +       movq    saved_rip(%rip), %rax
+> >         ANNOTATE_RETPOLINE_SAFE
+> >         jmp     *%rax
+> >  SYM_FUNC_END(wakeup_long64)
+> > @@ -72,11 +72,11 @@ SYM_FUNC_START(do_suspend_lowlevel)
+> >
+> >         movq    $.Lresume_point, saved_rip(%rip)
+> >
+> > -       movq    %rsp, saved_rsp
+> > -       movq    %rbp, saved_rbp
+> > -       movq    %rbx, saved_rbx
+> > -       movq    %rdi, saved_rdi
+> > -       movq    %rsi, saved_rsi
+> > +       movq    %rsp, saved_rsp(%rip)
+> > +       movq    %rbp, saved_rbp(%rip)
+> > +       movq    %rbx, saved_rbx(%rip)
+> > +       movq    %rdi, saved_rdi(%rip)
+> > +       movq    %rsi, saved_rsi(%rip)
+> >
+> >         addq    $8, %rsp
+> >         movl    $3, %edi
+> > --
