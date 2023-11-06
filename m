@@ -2,127 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C6637E2E3F
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 21:33:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 701107E2E45
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 21:38:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233036AbjKFUdT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 15:33:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36426 "EHLO
+        id S232985AbjKFUiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 15:38:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233032AbjKFUdR (ORCPT
+        with ESMTP id S229755AbjKFUiL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 15:33:17 -0500
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1C79D71
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 12:33:13 -0800 (PST)
-Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-9d10972e63eso723591866b.2
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 12:33:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1699302790; x=1699907590; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yu558aCQ58tOsOXlyTwpsX2dRSxkRn2ndl7ZRwGGxrQ=;
-        b=kZ2vfnMSYihukJfOT0ckRHzZqE5MHec7lwLS9I8quS2AzEhTYS9e629Moo3B80GaUF
-         HxujgyaSK9deGk+fpigIxMX9O6bZYXASAFmCBdSQvl8Qm6iaziaHcBSk3wsbt4W6P2ZA
-         GASuG6GAAqyg+ARlsjgwB6C/WBDZ0OUt/68gM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699302790; x=1699907590;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yu558aCQ58tOsOXlyTwpsX2dRSxkRn2ndl7ZRwGGxrQ=;
-        b=EwpknLBto0LUDA6PUMJI36byiplI7GFvuMZOwejfymk++Kve9fd9M6P7Eo0xFFh9fP
-         GKlv0kMqzkLpARDjV+VCOp9tgpA+Tmr+FyJ4Lddyizyc9diVmc4TnVEcFKgSKHDQiiFh
-         gUeRsFf051aFC5lVtmv7/nuVwSyqj1pq2jpsIDNFZg9JxbokAuoKBW+78cZq1YHft39V
-         q1/PMTSKpsgwFRL/LunUze/fpVBh92Kz0uyHB8piofPNbXUew/+tHzaRz9KS25UOq3/y
-         eq6XTw+W5jipu7mozkt1KP3oA/HiFv/xgPhhO8JxpCyJaEfS6jZfJM8cWrRhDXBMOkzN
-         FBww==
-X-Gm-Message-State: AOJu0YxLRBgzyYXH2EhJx13xZyUQtIm7gP3D5OF5hDgNDDp1a0lgK6GY
-        lNS5pU+XRU1Ce2PjL/i7CR/sjgZ8ZsC46HsvVLwxAoh1
-X-Google-Smtp-Source: AGHT+IHqy77KgfIe1ve/5vCbXMrIDiQE+pheeNajLYLsuKUp3pV+3hP/sI+jJP83JuJVPsgF4Klo0g==
-X-Received: by 2002:a17:907:25cb:b0:9e0:727a:e491 with SMTP id ae11-20020a17090725cb00b009e0727ae491mr3577163ejc.35.1699302790285;
-        Mon, 06 Nov 2023 12:33:10 -0800 (PST)
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com. [209.85.128.46])
-        by smtp.gmail.com with ESMTPSA id d22-20020a170906175600b009b2ba067b37sm217885eje.202.2023.11.06.12.33.09
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 06 Nov 2023 12:33:10 -0800 (PST)
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-40837124e1cso21065e9.0
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 12:33:09 -0800 (PST)
-X-Received: by 2002:a05:600c:5104:b0:409:222d:87d2 with SMTP id
- o4-20020a05600c510400b00409222d87d2mr39925wms.4.1699302789261; Mon, 06 Nov
- 2023 12:33:09 -0800 (PST)
+        Mon, 6 Nov 2023 15:38:11 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 490EAD51
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 12:37:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1699303041;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=OlKBq5ACwOl3HsoTA4bZWBOpaJXjxysreGnsxwW1EII=;
+        b=BT5oSe3CnfBuGiSpF+Ua0O7BTbyy2MJltR27q9XxZP2HyqKLRkbtuSZ1WZSLB3VG/8S4jS
+        mwYh2/ZL9I9XIaqtNv2bParx2biKXZaLRB0XNfUEDeoasOiLohL+lAT7QgebgQ4ISc8NDv
+        bmb2avUSXwmWHjI6nVpCbC+yawhFPsY=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-100-eB4IiIG9MXSNphzwsxPHpg-1; Mon, 06 Nov 2023 15:37:18 -0500
+X-MC-Unique: eB4IiIG9MXSNphzwsxPHpg-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 73918811E7E;
+        Mon,  6 Nov 2023 20:37:17 +0000 (UTC)
+Received: from [10.22.17.168] (unknown [10.22.17.168])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id BE01B492A;
+        Mon,  6 Nov 2023 20:37:16 +0000 (UTC)
+Message-ID: <2212f172-def9-3ec7-b3d7-732c2b2c365e@redhat.com>
+Date:   Mon, 6 Nov 2023 15:37:16 -0500
 MIME-Version: 1.0
-References: <20231106202718.2770821-1-hsinyi@chromium.org> <20231106202718.2770821-4-hsinyi@chromium.org>
-In-Reply-To: <20231106202718.2770821-4-hsinyi@chromium.org>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Mon, 6 Nov 2023 12:32:52 -0800
-X-Gmail-Original-Message-ID: <CAD=FV=WZS0ADX+0MyK3W75BkJ6qcohbj0ZC5CvnT0gedx0z0gg@mail.gmail.com>
-Message-ID: <CAD=FV=WZS0ADX+0MyK3W75BkJ6qcohbj0ZC5CvnT0gedx0z0gg@mail.gmail.com>
-Subject: Re: [PATCH v3 3/3] drm/panel-edp: Avoid adding multiple preferred modes
-To:     Hsin-Yi Wang <hsinyi@chromium.org>
-Cc:     Neil Armstrong <neil.armstrong@linaro.org>,
-        Jessica Zhang <quic_jesszhan@quicinc.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v3 2/3] cgroup/rstat: Optimize cgroup_rstat_updated_list()
+Content-Language: en-US
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Joe Mario <jmario@redhat.com>,
+        Sebastian Jug <sejug@redhat.com>
+References: <20231104031303.592879-1-longman@redhat.com>
+ <20231104031303.592879-3-longman@redhat.com>
+ <CAJD7tkZirDce=Zq9bm_b_R=yXkj1OaqCe2ObRXzV-BtDc3X9VQ@mail.gmail.com>
+From:   Waiman Long <longman@redhat.com>
+In-Reply-To: <CAJD7tkZirDce=Zq9bm_b_R=yXkj1OaqCe2ObRXzV-BtDc3X9VQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
+X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Mon, Nov 6, 2023 at 12:27=E2=80=AFPM Hsin-Yi Wang <hsinyi@chromium.org> =
-wrote:
+On 11/6/23 15:07, Yosry Ahmed wrote:
+> On Fri, Nov 3, 2023 at 8:13 PM Waiman Long <longman@redhat.com> wrote:
+>> The current design of cgroup_rstat_cpu_pop_updated() is to traverse
+>> the updated tree in a way to pop out the leaf nodes first before
+>> their parents. This can cause traversal of multiple nodes before a
+>> leaf node can be found and popped out. IOW, a given node in the tree
+>> can be visited multiple times before the whole operation is done. So
+>> it is not very efficient and the code can be hard to read.
+>>
+>> With the introduction of cgroup_rstat_updated_list() to build a list
+>> of cgroups to be flushed first before any flushing operation is being
+>> done, we can optimize the way the updated tree nodes are being popped
+>> by pushing the parents first to the tail end of the list before their
+>> children. In this way, most updated tree nodes will be visited only
+>> once with the exception of the subtree root as we still need to go
+>> back to its parent and popped it out of its updated_children list.
+>> This also makes the code easier to read.
+>>
+>> A parallel kernel build on a 2-socket x86-64 server is used as the
+>> benchmarking tool for measuring the lock hold time. Below were the lock
+>> hold time frequency distribution before and after the patch:
+>>
+>>       Hold time        Before patch       After patch
+>>       ---------        ------------       -----------
+>>         0-01 us        13,738,708         14,594,545
+>>        01-05 us         1,177,194            439,926
+>>        05-10 us             4,984              5,960
+>>        10-15 us             3,562              3,543
+>>        15-20 us             1,314              1,397
+>>        20-25 us                18                 25
+>>        25-30 us                12                 12
+>>
+>> It can be seen that the patch pushes the lock hold time towards the
+>> lower end.
+>>
+>> Signed-off-by: Waiman Long <longman@redhat.com>
+>> ---
+> I don't know why git decided to show this diff in the most confusing
+> way possible.
+I agree. The diff is really hard to look at. It will be easier to apply 
+the patch & looks at the actual rstat.c file.
 >
-> diff --git a/drivers/gpu/drm/panel/panel-edp.c b/drivers/gpu/drm/panel/pa=
-nel-edp.c
-> index 0fb439b5efb1..54dbbdf62ec0 100644
-> --- a/drivers/gpu/drm/panel/panel-edp.c
-> +++ b/drivers/gpu/drm/panel/panel-edp.c
-> @@ -594,8 +594,20 @@ static int panel_edp_get_modes(struct drm_panel *pan=
-el,
->                                       p->detected_panel !=3D ERR_PTR(-EIN=
-VAL) &&
->                                       p->detected_panel->override_edid_mo=
-de;
+>>   kernel/cgroup/rstat.c | 132 ++++++++++++++++++++++--------------------
+>>   1 file changed, 70 insertions(+), 62 deletions(-)
+>>
+>> diff --git a/kernel/cgroup/rstat.c b/kernel/cgroup/rstat.c
+>> index 1f300bf4dc40..d2b709cfeb2a 100644
+>> --- a/kernel/cgroup/rstat.c
+>> +++ b/kernel/cgroup/rstat.c
+>> @@ -74,64 +74,90 @@ __bpf_kfunc void cgroup_rstat_updated(struct cgroup *cgrp, int cpu)
+>>   }
+>>
+>>   /**
+>> - * cgroup_rstat_cpu_pop_updated - iterate and dismantle rstat_cpu updated tree
+>> - * @pos: current position
+>> - * @root: root of the tree to traversal
+>> + * cgroup_rstat_push_children - push children cgroups into the given list
+>> + * @head: current head of the list (= parent cgroup)
+>> + * @prstatc: cgroup_rstat_cpu of the parent cgroup
+>>    * @cpu: target cpu
+>> + * Return: A new singly linked list of cgroups to be flush
+>>    *
+>> - * Walks the updated rstat_cpu tree on @cpu from @root.  %NULL @pos starts
+>> - * the traversal and %NULL return indicates the end.  During traversal,
+>> - * each returned cgroup is unlinked from the tree.  Must be called with the
+>> - * matching cgroup_rstat_cpu_lock held.
+>> + * Recursively traverse down the cgroup_rstat_cpu updated tree and push
+>> + * parent first before its children. The parent is pushed by the caller.
+> I think it might be useful here (and elsewhere in the patch) where
+> "push" is being used to elaborate that we push to the beginning in a
+> stack-like fashion.
+Right, I am thinking about a stack when I use the word "push". I will 
+clarify that in the comment.
 >
-> -       /* probe EDID if a DDC bus is available */
-> -       if (p->ddc) {
-> +       /*
-> +        * If both edid and hard-coded modes exists, only add hard-coded =
-modes
-> +        * to avoid multiple preferred modes.
-> +        */
-> +       if (p->desc->num_timings || p->desc->num_modes) {
-> +               /*
-> +                * Add hard-coded panel modes. Don't call this if there a=
-re no
-> +                * timings and no modes (the generic edp-panel case) beca=
-use it
-> +                * will clobber the display_info that was already set by
-> +                * drm_add_edid_modes().
-> +                */
-> +               num +=3D panel_edp_get_non_edid_modes(p, connector);
-> +       } else if (p->ddc) {
-> +               /* probe EDID if a DDC bus is available */
+>> + * The recursion depth is the depth of the current updated tree.
+>> + */
+>> +static struct cgroup *cgroup_rstat_push_children(struct cgroup *head,
+>> +                               struct cgroup_rstat_cpu *prstatc, int cpu)
+>> +{
+>> +       struct cgroup *child, *parent;
+>> +       struct cgroup_rstat_cpu *crstatc;
+>> +
+>> +       parent = head;
+>> +       child = prstatc->updated_children;
+>> +       prstatc->updated_children = parent;
+>> +
+>> +       /* updated_next is parent cgroup terminated */
+>> +       while (child != parent) {
+>> +               child->rstat_flush_next = head;
+>> +               head = child;
+>> +               crstatc = cgroup_rstat_cpu(child, cpu);
+>> +               if (crstatc->updated_children != parent)
+> I think cgroup->updated_children is set to the cgroup itself if it's
+> empty, right? Shouldn't this be crstatc->updated_children != child?
+My mistake. Will fix it in the next version.
+>
+>> +                       head = cgroup_rstat_push_children(head, crstatc, cpu);
+>> +               child = crstatc->updated_next;
+>> +               crstatc->updated_next = NULL;
+>> +       }
+>> +       return head;
+>> +}
+>> +
+>> +/**
+>> + * cgroup_rstat_updated_list - return a list of updated cgroups to be flushed
+>> + * @root: root of the cgroup subtree to traverse
+>> + * @cpu: target cpu
+>> + * Return: A singly linked list of cgroups to be flushed
+>> + *
+>> + * Walks the updated rstat_cpu tree on @cpu from @root.  During traversal,
+>> + * each returned cgroup is unlinked from the updated tree.  Must be called
+>> + * with the matching cgroup_rstat_cpu_lock held.
+> This function takes care of holding the lock actually. I think that
+> sentence should be applied to cgroup_rstat_push_children() above?
+It is left over from before this patch. Will remove that.
+>
+>>    *
+>>    * The only ordering guarantee is that, for a parent and a child pair
+>> - * covered by a given traversal, if a child is visited, its parent is
+>> - * guaranteed to be visited afterwards.
+>> + * covered by a given traversal, the child is before its parent in
+>> + * the list.
+>> + *
+>> + * Note that updated_children is self terminated while updated_next is
+>> + * parent cgroup terminated except the cgroup root which can be self
+>> + * terminated.
+> IIUC updated_children and updated_next is the same list.
+> updated_children is the head, and updated_next is how the list items
+> are linked. This comment makes it seem like they are two different
+> lists.
+Thanks for the comment. I will rework the comment to clarify that a bit 
+more.
+>
+> I am actually wondering if it's worth using the singly linked list
+> here. We are saving 8 bytes percpu, but the semantics are fairly
+> confusing. Wouldn't this be easier to reason about if you just use
+> list_head?
+>
+> updated_children would be replaced with LIST_HEAD (or similar), and
+> the list would be NULL terminated instead of terminated by self/parent
+> cgroup. IIUC the reason it's not NULL-terminated now is because we use
+> cgroup->updated_next to check quickly if a cgroup is on the list or
+> not. If we use list_heads, we can just use list_emtpy() IIUC.
+>
+> We can also simplify the semantics of unlinking @root from the updated
+> tree below, it would just be list_del() IIUC, which is actually more
+> performant as well. It seems like overall we would simplify a lot of
+> things. When forming the updated_list, we can just walk the tree and
+> splice the lists in the correct order.
+>
+> It seems to me that saving 8 bytes percpu is not worth the complexity
+> of the custom list semantics here. Am I missing something here?
 
-As per discussion in v2, I think if you have the "ddc" you still want
-to fetch the EDID, you just don't want to add the modes from the EDID.
-This will mean that the EDID is present in sysfs if userspace wants to
-look at it for whatever reason.
+It will cost an additional 16 bytes of percpu memory if converted to 
+list_heads. Like other lists, there will be sibling and children 
+list_heads. There are also 2 pointers to update instead of one. Anyway, 
+I don't have an objection to convert them to list_heads if agreed by Tejun.
 
--Doug
+Cheers,
+Longman
+
+
