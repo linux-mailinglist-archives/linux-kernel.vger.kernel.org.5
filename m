@@ -2,212 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A622F7E1ECA
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 11:46:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCB757E1ECB
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 11:47:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230308AbjKFKq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 05:46:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57230 "EHLO
+        id S231206AbjKFKr3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 05:47:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230021AbjKFKq5 (ORCPT
+        with ESMTP id S229583AbjKFKr1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 05:46:57 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FF3DA4
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 02:46:14 -0800 (PST)
+        Mon, 6 Nov 2023 05:47:27 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08934FA
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 02:46:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1699267573;
+        s=mimecast20190719; t=1699267602;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=UBBHGlGug2sDaMRAASVGz4oXj62d4vp0Qb3y5VCW+Oc=;
-        b=JEc9CMsu7FO+jO6sLV1NHKm/jeyD4R6uvFgVt1c8Pq6Gos1TmzTI8X7xbMkcIC3l12SNw4
-        LURjjCS6vw4bGlAVX1Io3HUqzylHTlkKXLoYUtMkeF/E2XIhjhsBQJNz3zXHx44xElkOj4
-        XwypiwCIbKhMMG17YTNwe7nyjNPrIPc=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=Y6QcvY42P7J5f+1XN4Qoz7DTeNEAzvUSzxn7o+ZphKQ=;
+        b=UXuvy783ljVnl/qQxSadI5dwB9V4aYW04zp8wUkYemb1HI/KQMZhXihLbBIUuCD580pkZi
+        w0WJGLtJ3MwgNtZ4m0g8UH2DYBrASvIZbZg3aVpi7sjCMthmoLe4PCt5xufBrmCCvqU59d
+        i7iDruZ0wUB9lZqd0+UtBY7Qrs9jVtQ=
+Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
+ [209.85.222.199]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-500-h8cSF4KdOkiTBYXSf3a6UA-1; Mon, 06 Nov 2023 05:46:12 -0500
-X-MC-Unique: h8cSF4KdOkiTBYXSf3a6UA-1
-Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-32da8de4833so2228427f8f.3
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 02:46:11 -0800 (PST)
+ us-mta-251-oUQnfsfuM6ykOr0AqrLbqQ-1; Mon, 06 Nov 2023 05:46:41 -0500
+X-MC-Unique: oUQnfsfuM6ykOr0AqrLbqQ-1
+Received: by mail-qk1-f199.google.com with SMTP id af79cd13be357-7788fb069abso656304085a.0
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 02:46:41 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699267570; x=1699872370;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:from:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=UBBHGlGug2sDaMRAASVGz4oXj62d4vp0Qb3y5VCW+Oc=;
-        b=s1W1YwvtkcuWiUbtFXIzTSY3iteTe5nwF4aKdXlwWsGLymD3K/u9PCCWObFZHpW48a
-         Cukz4Zi1dKmtxE1934d2reEZqrIoaFzcDOK53YsFJh7tlNDU41lAUvsZfoLJJHzLEgO9
-         RZtVx6+p91CW46o5imemdHKYKtSWSyUEYsmCD+MZcaTDfm8+bSqR8Q34draRa8tld5dc
-         hWqq6zvp42kU3viYm5rJR3HxnKjAZu8zk6ByYUplUxuI+wjRouXfkD66+9Q3ZfR+87FW
-         LPAT9kDd533jMeTCX3D6ixQMy4FVkDhBSiEAyEimDBJfftAEw/JoPX3m0rtFwuJK+oHy
-         FETw==
-X-Gm-Message-State: AOJu0YycEAykrv9v94W6fBoXlPZ5lVZbxyV60LLP+avgPp4Xg3sUWbvY
-        pT1nLgnh0f7YZxXxoj4Nj+3d99lK8T+5vOkrwWho9al6MJD3J2vm7koQgNVmpaoyMzmbVIGl4TI
-        h8fOGJsEiIwNEL10Oejss04Nc0aGuSDAg
-X-Received: by 2002:a5d:6d87:0:b0:32f:908e:c7e0 with SMTP id l7-20020a5d6d87000000b0032f908ec7e0mr17559316wrs.28.1699267570468;
-        Mon, 06 Nov 2023 02:46:10 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEw0KbgCDEwB5tVpLvVGERVzNbBBFGIocZLxK974H+Lu925obU4SRUVDW8ECTLCXhMFU5ORqw==
-X-Received: by 2002:a5d:6d87:0:b0:32f:908e:c7e0 with SMTP id l7-20020a5d6d87000000b0032f908ec7e0mr17559295wrs.28.1699267570128;
-        Mon, 06 Nov 2023 02:46:10 -0800 (PST)
-Received: from ?IPV6:2a01:e0a:c:37e0:ced3:55bd:f454:e722? ([2a01:e0a:c:37e0:ced3:55bd:f454:e722])
-        by smtp.gmail.com with ESMTPSA id o17-20020adfcf11000000b0032da319a27asm9148638wrj.9.2023.11.06.02.46.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 06 Nov 2023 02:46:09 -0800 (PST)
-Message-ID: <f19a2cb4-57b6-427c-b69c-47a848420530@redhat.com>
-Date:   Mon, 6 Nov 2023 11:46:08 +0100
+        d=1e100.net; s=20230601; t=1699267600; x=1699872400;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Y6QcvY42P7J5f+1XN4Qoz7DTeNEAzvUSzxn7o+ZphKQ=;
+        b=k0NHGK2UM1vDJn3CFdHiGYtk6yaCFIvVfiVNyx/na8iFVPGGa93jiMn2iU+Q2r/lkw
+         AmLxMb/x6zjD5LSAjzy917Ol5UTbJFfySHtI120DPRfVlRtH3hWgvdnUjAugu7Mn8wQk
+         ZfQsLp/M3ybUls5dGCM+zycJGt8gJD2hsk9WAFrNXcUGDAh0auPwu7XtFERL1VFcjpeA
+         fL4v6rWYnddfLL8qnJJs7rp7niKE9nxgsCkxSTrAuHFD8Hfhv50MOCxd1OKuMFC8s/mK
+         Bs4RnYx6Dh5Two5J6DtGIgGqk+IGL5AW6z01Dfi2kD9nBSMe4pZWDWGGSTKgnOXWWw3X
+         XdHw==
+X-Gm-Message-State: AOJu0Yx9DCo7Si1uxmQftKv/bVIhFtRKZTFdNLUIFEPHjHwXS1EHwLnE
+        qM41dQMyQDIGAhBGiGg+q8wyuEKzMr/I37kkr5iAhfaRP2F/Aw7LgizbUfPTx1ZMkaacaGwQkG3
+        jZpgdwcTjGs761dCB82QVNW0S
+X-Received: by 2002:a05:620a:4622:b0:779:cf70:8495 with SMTP id br34-20020a05620a462200b00779cf708495mr13042343qkb.22.1699267600590;
+        Mon, 06 Nov 2023 02:46:40 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IE0MTPNegxkHg2EtjSBJdIkcLWvJeBZhkiYCgUyFVAeJU8p43NP4uMhUlLf+FYjn63g6E1jfw==
+X-Received: by 2002:a05:620a:4622:b0:779:cf70:8495 with SMTP id br34-20020a05620a462200b00779cf708495mr13042320qkb.22.1699267600334;
+        Mon, 06 Nov 2023 02:46:40 -0800 (PST)
+Received: from sgarzare-redhat ([5.179.191.143])
+        by smtp.gmail.com with ESMTPSA id ay18-20020a05622a229200b004181c32dcc3sm3258973qtb.16.2023.11.06.02.46.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 Nov 2023 02:46:39 -0800 (PST)
+Date:   Mon, 6 Nov 2023 11:46:26 +0100
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     f.storniolo95@gmail.com
+Cc:     luigi.leonardi@outlook.com, kvm@vger.kernel.org,
+        davem@davemloft.net, edumazet@google.com, mst@redhat.com,
+        imbrenda@linux.vnet.ibm.com, kuba@kernel.org, asias@redhat.com,
+        stefanha@redhat.com, pabeni@redhat.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH net 2/4] test/vsock fix: add missing check on socket
+ creation
+Message-ID: <dhech4poimv5fphsxpy4oxy5ks5kpki6kzboy6kpnfm65vz3tp@nm6hoicgj5ze>
+References: <20231103175551.41025-1-f.storniolo95@gmail.com>
+ <20231103175551.41025-3-f.storniolo95@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] drm/mgag200: Flush the cache to improve latency
-From:   Jocelyn Falempe <jfalempe@redhat.com>
-To:     Thomas Zimmermann <tzimmermann@suse.de>,
-        dri-devel@lists.freedesktop.org, airlied@redhat.com,
-        daniel@ffwll.ch
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20231019135655.313759-1-jfalempe@redhat.com>
- <660c0260-0e22-4e9c-ab13-157adaa0b14d@suse.de>
- <74b367bd-ac80-478b-8f82-e98cb6e40475@redhat.com>
-Content-Language: en-US
-In-Reply-To: <74b367bd-ac80-478b-8f82-e98cb6e40475@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20231103175551.41025-3-f.storniolo95@gmail.com>
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/10/2023 10:30, Jocelyn Falempe wrote:
-> On 20/10/2023 14:06, Thomas Zimmermann wrote:
->> (cc'ing lkml for feedback)
->>
->> Hi Jocelyn
->>
->> Am 19.10.23 um 15:55 schrieb Jocelyn Falempe:
->>> We found a regression in v5.10 on real-time server, using the
->>> rt-kernel and the mgag200 driver. It's some really specialized
->>> workload, with <10us latency expectation on isolated core.
->>> After the v5.10, the real time tasks missed their <10us latency
->>> when something prints on the screen (fbcon or printk)
->>
->> I'd like to hear the opinion of the RT-devs on this patch. Because 
->> AFAIK we never did such a workaround in other drivers. And AFAIK 
->> printk is a PITA anyway.
-> 
-> Most other drivers uses DMA, which means this workaround can't apply to 
-> them.
-> 
->>
->> IMHO if that RT system cannot handle differences in framebuffer 
->> caching, it's under-powered. It's just a matter of time until 
->> something else changes and the problem returns. And (honest question) 
->> as it's an x86-64, how do they handle System Management Mode?
-> 
-> I think it's not a big news, that the Matrox G200 from 1999 is 
-> under-powered.
-> I was also a bit surprised that flushing the cache would have such 
-> effect on latency. The tests we are doing can run 24h with the 
-> workaround, without any interrupt taking more than 10us. Without the 
-> workaround, every ~30s the interrupt failed its 10us target.
-> 
->>
->>>
->>> The regression has been bisected to 2 commits:
->>> 0b34d58b6c32 ("drm/mgag200: Enable caching for SHMEM pages")
->>> 4862ffaec523 ("drm/mgag200: Move vmap out of commit tail")
->>>
->>> The first one changed the system memory framebuffer from Write-Combine
->>> to the default caching.
->>> Before the second commit, the mgag200 driver used to unmap the
->>> framebuffer after each frame, which implicitly does a cache flush.
->>> Both regressions are fixed by the following patch, which forces a
->>> cache flush after each frame, reverting to almost v5.9 behavior.
->>
->> With that second commit, we essentially never unmap an active 
->> framebuffer console. But with commit
->>
->> 359c6649cd9a ("drm/gem: Implement shadow-plane {begin, end}_fb_access 
->> with vmap")
->>
->> we now again unmap the console framebuffer after the pageflip happened.
->>
->> So how does the latest kernel behave wrt to the problem?
-> 
-> The regression was found when upgrading the server from v5.4 to v5.14, 
-> so we didn't test with later kernels.
-> We will test with v6.3 (which should have 359c6649cd9a ) and see what it 
-> gives.
+On Fri, Nov 03, 2023 at 06:55:49PM +0100, f.storniolo95@gmail.com wrote:
+>From: Filippo Storniolo <f.storniolo95@gmail.com>
+>
+>Add check on socket() return value in vsock_listen()
+>and vsock_connect()
+>
+>Co-developed-by: Luigi Leonardi <luigi.leonardi@outlook.com>
+>Signed-off-by: Luigi Leonardi <luigi.leonardi@outlook.com>
+>Signed-off-by: Filippo Storniolo <f.storniolo95@gmail.com>
+>---
+> tools/testing/vsock/util.c | 8 ++++++++
+> 1 file changed, 8 insertions(+)
 
-I don't have a clear explanation, but testing with v6.3, and forcing the 
-Write Combine, doesn't fix the latency issue. So forcing the cache flush 
-is still needed.
+If you need to resend the entire series, maybe you can remove "fix"
+from the commit title.
 
-Also, on some systems, they use "isolated cpu" to handle RT task, but 
-with a standard kernel (so without the CONFIG_PREEMPT_RT).
-So I'm wondering if we can use a kernel module parameter for this,
-so that users that wants to achieve low latency, can opt-in ?
+But it's a minor thing, so I would only change it if there's something
+else that justifies sending a v2:
 
-something like mgag200.force_cache_flush=1 or mgag200.low_latency=1 ?
+Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
 
-Best regards,
-
--- 
-
-Jocelyn
-
->>
->>> This is necessary only if you have strong realtime constraints, so I
->>> put the cache flush under the CONFIG_PREEMPT_RT config flag.
->>> Also clflush is only availabe on x86, (and this issue has only been
->>> reproduced on x86_64) so it's also under the CONFIG_X86 config flag.
->>>
->>> Fixes: 0b34d58b6c32 ("drm/mgag200: Enable caching for SHMEM pages")
->>> Fixes: 4862ffaec523 ("drm/mgag200: Move vmap out of commit tail")
->>> Signed-off-by: Jocelyn Falempe <jfalempe@redhat.com>
->>> ---
->>>   drivers/gpu/drm/mgag200/mgag200_mode.c | 5 +++++
->>>   1 file changed, 5 insertions(+)
->>>
->>> diff --git a/drivers/gpu/drm/mgag200/mgag200_mode.c 
->>> b/drivers/gpu/drm/mgag200/mgag200_mode.c
->>> index af3ce5a6a636..11660cd29cea 100644
->>> --- a/drivers/gpu/drm/mgag200/mgag200_mode.c
->>> +++ b/drivers/gpu/drm/mgag200/mgag200_mode.c
->>> @@ -13,6 +13,7 @@
->>>   #include <drm/drm_atomic.h>
->>>   #include <drm/drm_atomic_helper.h>
->>> +#include <drm/drm_cache.h>
->>>   #include <drm/drm_damage_helper.h>
->>>   #include <drm/drm_format_helper.h>
->>>   #include <drm/drm_fourcc.h>
->>> @@ -436,6 +437,10 @@ static void mgag200_handle_damage(struct 
->>> mga_device *mdev, const struct iosys_ma
->>>       iosys_map_incr(&dst, drm_fb_clip_offset(fb->pitches[0], 
->>> fb->format, clip));
->>>       drm_fb_memcpy(&dst, fb->pitches, vmap, fb, clip);
->>> +    /* On RT systems, flushing the cache reduces the latency for 
->>> other RT tasks */
->>> +#if defined(CONFIG_X86) && defined(CONFIG_PREEMPT_RT)
->>> +    drm_clflush_virt_range(vmap, fb->height * fb->pitches[0]);
->>> +#endif
->>
->> Your second commit is part of a larger patchset that updates several 
->> drivers. They might all be affected. So if anything, the patch should 
->> go here before the unmap call:
->>
->> https://elixir.bootlin.com/linux/v6.5/source/drivers/gpu/drm/drm_gem_atomic_helper.c#L377
->>
-> The regression was found only with G200 currently, so I don't want to 
-> apply it blindly on other drivers.
-> 
-> Thanks for your help,
-> 
-> Best regards,
-> 
+>
+>diff --git a/tools/testing/vsock/util.c b/tools/testing/vsock/util.c
+>index 92336721321a..698b0b44a2ee 100644
+>--- a/tools/testing/vsock/util.c
+>+++ b/tools/testing/vsock/util.c
+>@@ -104,6 +104,10 @@ static int vsock_connect(unsigned int cid, unsigned int port, int type)
+> 	control_expectln("LISTENING");
+>
+> 	fd = socket(AF_VSOCK, type, 0);
+>+	if (fd < 0) {
+>+		perror("socket");
+>+		exit(EXIT_FAILURE);
+>+	}
+>
+> 	timeout_begin(TIMEOUT);
+> 	do {
+>@@ -158,6 +162,10 @@ static int vsock_accept(unsigned int cid, unsigned int port,
+> 	int old_errno;
+>
+> 	fd = socket(AF_VSOCK, type, 0);
+>+	if (fd < 0) {
+>+		perror("socket");
+>+		exit(EXIT_FAILURE);
+>+	}
+>
+> 	if (bind(fd, &addr.sa, sizeof(addr.svm)) < 0) {
+> 		perror("bind");
+>-- 
+>2.41.0
+>
 
