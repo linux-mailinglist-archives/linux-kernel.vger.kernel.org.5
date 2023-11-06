@@ -2,81 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 80A287E1A8A
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 07:55:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB6E87E1A97
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 08:00:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230473AbjKFGzQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 01:55:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57952 "EHLO
+        id S230502AbjKFHAB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 02:00:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230312AbjKFGzO (ORCPT
+        with ESMTP id S230424AbjKFG75 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 01:55:14 -0500
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8308F9;
-        Sun,  5 Nov 2023 22:55:11 -0800 (PST)
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A65jsWZ016340;
-        Mon, 6 Nov 2023 06:54:43 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=HJ6GRnQ/8Ob7oEFSpbuEehbm50jZlgbcaROVolgfBDg=;
- b=Gl571hWahS3qa3QG+V78TMTGRYia/qM8+iZW1RZnVi+4yrfcEnBzrgHP7vqprnuYed1Q
- Y97W0QRsDaG4iIg3M1TOEfWCebbGgQDE7bg187P5a5pasANqW8/fNUvwvznc+AO9jJAn
- dKXcBoY/Y+fWOshm/zYa+ED1+S96abm/ZkoIo3xN7CgmcL46vOmU2tm/k0gmoaifvTMm
- 4V4qu3d9x7ESjkczZ+lg/gEBsdd3EmlDBOfYSBwlEVdhTkwaWumlYEKgtneHr3/IoDLf
- 6N8x5sUWXrfLt7LKcBdCjpvHlYL8Q0neTK7F2dbkkEc8Z9NKjuzwYKlRAdggByaQiHJs 3g== 
-Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u5eqn38sr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 06 Nov 2023 06:54:42 +0000
-Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
-        by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3A66sYpi024802
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 6 Nov 2023 06:54:35 GMT
-Received: from [10.214.66.81] (10.80.80.8) by nasanex01c.na.qualcomm.com
- (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Sun, 5 Nov
- 2023 22:54:31 -0800
-Message-ID: <5e83d947-c77f-9318-4a4c-377a8304b8fd@quicinc.com>
-Date:   Mon, 6 Nov 2023 12:24:28 +0530
+        Mon, 6 Nov 2023 01:59:57 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CEACBB
+        for <linux-kernel@vger.kernel.org>; Sun,  5 Nov 2023 22:59:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699253995; x=1730789995;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=dbh2CWMpd+icdilLpDkSpVgYFt/E0AyxSgbvKFOsvd8=;
+  b=PxCWOVtTXPeaHNbYErXHu0k2E0cf7I6GaZc9//up2WOiwOns9SZBcMBn
+   NJOGZI82sOY1rf2Ze2/xJ5dcgfll4NQ7fjPwEZEGbw6GH91sXc2DwS5HA
+   x4XFX2FrQPLnGc1FFp7j+ZMvXEfOwfqIoBs7Huic5ogG3ilYKtbA06LtN
+   68+SLnUW39WjkfodAWEgtn/1h+tfc8xUOBbF3F96dOiUuMUw0IHtCMbny
+   1ENg2QM6fdWAeWYyJDOfJEhAYF3rElYRO/JRLRyWnZc1v1OggezTP1/DO
+   D0CYKsHtIS4zxv+aK+bUF7GHaxJSQTfSleaz6N1vV6c4Kn2T7hqDh3+5n
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10885"; a="10757439"
+X-IronPort-AV: E=Sophos;i="6.03,280,1694761200"; 
+   d="scan'208";a="10757439"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2023 22:59:54 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10885"; a="762236548"
+X-IronPort-AV: E=Sophos;i="6.03,280,1694761200"; 
+   d="scan'208";a="762236548"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2023 22:59:51 -0800
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Liu Shixin <liushixin2@huawei.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Yosry Ahmed <yosryahmed@google.com>,
+        Sachin Sant <sachinp@linux.ibm.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v8] mm: vmscan: try to reclaim swapcache pages if no
+ swap space
+In-Reply-To: <20231106074452.2581835-1-liushixin2@huawei.com> (Liu Shixin's
+        message of "Mon, 6 Nov 2023 15:44:52 +0800")
+References: <20231106074452.2581835-1-liushixin2@huawei.com>
+Date:   Mon, 06 Nov 2023 14:57:49 +0800
+Message-ID: <87pm0nv05u.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] soc: qcom: llcc: Fix dis_cap_alloc and retain_on_pc
- configuration
-To:     Bjorn Andersson <quic_bjorande@quicinc.com>,
-        Atul Dhudase <quic_adhudase@quicinc.com>
-CC:     <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <swboyd@chromium.org>,
-        <isaacm@codeaurora.org>, <dianders@chromium.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20231103105712.1159213-1-quic_adhudase@quicinc.com>
- <20231103193345.GY3553829@hu-bjorande-lv.qualcomm.com>
-Content-Language: en-US
-From:   Mukesh Ojha <quic_mojha@quicinc.com>
-In-Reply-To: <20231103193345.GY3553829@hu-bjorande-lv.qualcomm.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01c.na.qualcomm.com (10.45.79.139)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 8jRe6dw1F8iLfi4zfsQc1OmpK_zXY-EA
-X-Proofpoint-ORIG-GUID: 8jRe6dw1F8iLfi4zfsQc1OmpK_zXY-EA
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-06_04,2023-11-02_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxscore=0
- malwarescore=0 clxscore=1015 adultscore=0 impostorscore=0 mlxlogscore=999
- priorityscore=1501 phishscore=0 lowpriorityscore=0 spamscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2310240000 definitions=main-2311060059
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Type: text/plain; charset=ascii
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -84,70 +68,163 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Liu Shixin <liushixin2@huawei.com> writes:
 
+> When spaces of swap devices are exhausted, only file pages can be
+> reclaimed.  But there are still some swapcache pages in anon lru list.
+> This can lead to a premature out-of-memory.
+>
+> The problem is found with such step:
+>
+>  Firstly, set a 9MB disk swap space, then create a cgroup with 10MB
+>  memory limit, then runs an program to allocates about 15MB memory.
+>
+> The problem occurs occasionally, which may need about 100 times [1].
+>
+> Fix it by checking number of swapcache pages in can_reclaim_anon_pages().
+> If the number is not zero, return true and set swapcache_only to 1.
+> When scan anon lru list in swapcache_only mode, non-swapcache pages will
+> be skipped to isolate in order to accelerate reclaim efficiency.
+>
+> However, in swapcache_only mode, the scan count still increased when scan
+> non-swapcache pages because there are large number of non-swapcache pages
+> and rare swapcache pages in swapcache_only mode, and if the non-swapcache
+> is skipped and do not count, the scan of pages in isolate_lru_folios() can
+> eventually lead to hung task, just as Sachin reported [2].
+>
+> By the way, since there are enough times of memory reclaim before OOM, it
+> is not need to isolate too much swapcache pages in one times.
+>
+> [1]. https://lore.kernel.org/lkml/CAJD7tkZAfgncV+KbKr36=eDzMnT=9dZOT0dpMWcurHLr6Do+GA@mail.gmail.com/
+> [2]. https://lore.kernel.org/linux-mm/CAJD7tkafz_2XAuqE8tGLPEcpLngewhUo=5US14PAtSM9tLBUQg@mail.gmail.com/
+>
+> Signed-off-by: Liu Shixin <liushixin2@huawei.com>
+> Tested-by: Yosry Ahmed <yosryahmed@google.com>
+> Reviewed-by: "Huang, Ying" <ying.huang@intel.com>
+> Reviewed-by: Yosry Ahmed <yosryahmed@google.com>
+> ---
+> v7->v8: Reset swapcache_only at the beginning of can_reclaim_anon_pages().
+> v6->v7: Reset swapcache_only to zero after there are swap spaces.
+> v5->v6: Fix NULL pointing derefence and hung task problem reported by Sachin.
+>
+>  include/linux/swap.h |  6 ++++++
+>  mm/memcontrol.c      |  8 ++++++++
+>  mm/vmscan.c          | 27 +++++++++++++++++++++++++++
+>  3 files changed, 41 insertions(+)
+>
+> diff --git a/include/linux/swap.h b/include/linux/swap.h
+> index f6dd6575b905..3ba146ae7cf5 100644
+> --- a/include/linux/swap.h
+> +++ b/include/linux/swap.h
+> @@ -659,6 +659,7 @@ static inline void mem_cgroup_uncharge_swap(swp_entry_t entry, unsigned int nr_p
+>  }
+>  
+>  extern long mem_cgroup_get_nr_swap_pages(struct mem_cgroup *memcg);
+> +extern long mem_cgroup_get_nr_swapcache_pages(struct mem_cgroup *memcg);
+>  extern bool mem_cgroup_swap_full(struct folio *folio);
+>  #else
+>  static inline void mem_cgroup_swapout(struct folio *folio, swp_entry_t entry)
+> @@ -681,6 +682,11 @@ static inline long mem_cgroup_get_nr_swap_pages(struct mem_cgroup *memcg)
+>  	return get_nr_swap_pages();
+>  }
+>  
+> +static inline long mem_cgroup_get_nr_swapcache_pages(struct mem_cgroup *memcg)
+> +{
+> +	return total_swapcache_pages();
+> +}
+> +
+>  static inline bool mem_cgroup_swap_full(struct folio *folio)
+>  {
+>  	return vm_swap_full();
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 5b009b233ab8..29e34c06ca83 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -7584,6 +7584,14 @@ long mem_cgroup_get_nr_swap_pages(struct mem_cgroup *memcg)
+>  	return nr_swap_pages;
+>  }
+>  
+> +long mem_cgroup_get_nr_swapcache_pages(struct mem_cgroup *memcg)
+> +{
+> +	if (mem_cgroup_disabled())
+> +		return total_swapcache_pages();
+> +
+> +	return memcg_page_state(memcg, NR_SWAPCACHE);
+> +}
+> +
+>  bool mem_cgroup_swap_full(struct folio *folio)
+>  {
+>  	struct mem_cgroup *memcg;
+> diff --git a/mm/vmscan.c b/mm/vmscan.c
+> index 6f13394b112e..5d5a169ec98c 100644
+> --- a/mm/vmscan.c
+> +++ b/mm/vmscan.c
+> @@ -137,6 +137,9 @@ struct scan_control {
+>  	/* Always discard instead of demoting to lower tier memory */
+>  	unsigned int no_demotion:1;
+>  
+> +	/* Swap space is exhausted, only reclaim swapcache for anon LRU */
+> +	unsigned int swapcache_only:1;
+> +
+>  	/* Allocation order */
+>  	s8 order;
+>  
+> @@ -606,6 +609,9 @@ static inline bool can_reclaim_anon_pages(struct mem_cgroup *memcg,
+>  					  int nid,
+>  					  struct scan_control *sc)
+>  {
+> +	if (sc)
+> +		sc->swapcache_only = 0;
+> +
+>  	if (memcg == NULL) {
+>  		/*
+>  		 * For non-memcg reclaim, is there
+> @@ -613,10 +619,22 @@ static inline bool can_reclaim_anon_pages(struct mem_cgroup *memcg,
+>  		 */
+>  		if (get_nr_swap_pages() > 0)
+>  			return true;
+> +		/* Is there any swapcache pages to reclaim? */
+> +		if (total_swapcache_pages() > 0) {
+> +			if (sc)
+> +				sc->swapcache_only = 1;
+> +			return true;
+> +		}
+>  	} else {
+>  		/* Is the memcg below its swap limit? */
+>  		if (mem_cgroup_get_nr_swap_pages(memcg) > 0)
+>  			return true;
+> +		/* Is there any swapcache pages in memcg to reclaim? */
+> +		if (mem_cgroup_get_nr_swapcache_pages(memcg) > 0) {
+> +			if (sc)
+> +				sc->swapcache_only = 1;
+> +			return true;
+> +		}
+>  	}
 
-On 11/4/2023 1:03 AM, Bjorn Andersson wrote:
-> On Fri, Nov 03, 2023 at 04:27:12PM +0530, Atul Dhudase wrote:
->> While programming dis_cap_alloc and retain_on_pc, set a bit
->> corresponding to a specific SCID without disturbing the
->> previously configured bits.
->>
-> 
-> As far as I can see, the only invocation of _qcom_llcc_cfg_program()
-> comes from qcom_llcc_cfg_program(), which is only called once, from
-> qcom_llcc_probe(), and here also seems to only be the single write to
-> these two registers.
+I understand that this is only possible in theory.  But if can_demote()
+== true, get_nr_swap_pages() == 0, total_swapcache_pages() > 0, we will
+demote only anonymous pages in swapcache.  I think that this isn't
+reasonable.  So, swapcache pages should be checked after can_demote()
+checking.
 
-It does not look to be single write but the write is for each slice
-in the same register which was overriding other slices values.
+--
+Best Regards,
+Huang, Ying
 
--Mukesh
-> 
-> This implies that "the previously configured bits" would be some unknown
-> configuration provided to us either from the bootloader or by reset of
-> the hardware. As such this changes the value of the two registers from
-> being known, to having 31 unknown bits.
-> 
-> 
-> I'm not saying that the change is wrong, but you're altering the
-> behavior of every platform except SDM845.
-> As such, I want the commit message to provide an actual problem
-> description, and mention the fact that you're changing the logic to
-> retain the state prior to Linux.
-> 
-> Regards,
-> Bjorn
-> 
->> Fixes: c14e64b46944 ("soc: qcom: llcc: Support chipsets that can write to llcc")
->> Signed-off-by: Atul Dhudase <quic_adhudase@quicinc.com>
->> ---
->>   drivers/soc/qcom/llcc-qcom.c | 8 ++++----
->>   1 file changed, 4 insertions(+), 4 deletions(-)
->>
->> diff --git a/drivers/soc/qcom/llcc-qcom.c b/drivers/soc/qcom/llcc-qcom.c
->> index 674abd0d6700..509d972c1bd9 100644
->> --- a/drivers/soc/qcom/llcc-qcom.c
->> +++ b/drivers/soc/qcom/llcc-qcom.c
->> @@ -941,15 +941,15 @@ static int _qcom_llcc_cfg_program(const struct llcc_slice_config *config,
->>   		u32 disable_cap_alloc, retain_pc;
->>
->>   		disable_cap_alloc = config->dis_cap_alloc << config->slice_id;
->> -		ret = regmap_write(drv_data->bcast_regmap,
->> -				LLCC_TRP_SCID_DIS_CAP_ALLOC, disable_cap_alloc);
->> +		ret = regmap_update_bits(drv_data->bcast_regmap, LLCC_TRP_SCID_DIS_CAP_ALLOC,
->> +				BIT(config->slice_id), disable_cap_alloc);
->>   		if (ret)
->>   			return ret;
->>
->>   		if (drv_data->version < LLCC_VERSION_4_1_0_0) {
->>   			retain_pc = config->retain_on_pc << config->slice_id;
->> -			ret = regmap_write(drv_data->bcast_regmap,
->> -					LLCC_TRP_PCB_ACT, retain_pc);
->> +			ret = regmap_update_bits(drv_data->bcast_regmap, LLCC_TRP_PCB_ACT,
->> +					BIT(config->slice_id), retain_pc);
->>   			if (ret)
->>   				return ret;
->>   		}
->> --
->> 2.25.1
->>
+>  	/*
+> @@ -2342,6 +2360,15 @@ static unsigned long isolate_lru_folios(unsigned long nr_to_scan,
+>  		 */
+>  		scan += nr_pages;
+>  
+> +		/*
+> +		 * Count non-swapcache too because the swapcache pages may
+> +		 * be rare and it takes too much times here if not count
+> +		 * the non-swapcache pages.
+> +		 */
+> +		if (unlikely(sc->swapcache_only && !is_file_lru(lru) &&
+> +		    !folio_test_swapcache(folio)))
+> +			goto move;
+> +
+>  		if (!folio_test_lru(folio))
+>  			goto move;
+>  		if (!sc->may_unmap && folio_mapped(folio))
