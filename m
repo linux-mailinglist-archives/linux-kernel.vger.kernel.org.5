@@ -2,205 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E4D77E1D1C
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 10:18:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 293B67E1D1E
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 10:22:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231334AbjKFJSg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 04:18:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55672 "EHLO
+        id S231266AbjKFJWT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 04:22:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230475AbjKFJSe (ORCPT
+        with ESMTP id S230475AbjKFJWQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 04:18:34 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 52C2BDB;
-        Mon,  6 Nov 2023 01:18:31 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EAB531FB;
-        Mon,  6 Nov 2023 01:19:14 -0800 (PST)
-Received: from [10.57.1.27] (unknown [10.57.1.27])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1AB433F6C4;
-        Mon,  6 Nov 2023 01:18:27 -0800 (PST)
-Message-ID: <bae19559-0aea-422f-931f-b51aa8f3f5a3@arm.com>
-Date:   Mon, 6 Nov 2023 09:19:21 +0000
+        Mon, 6 Nov 2023 04:22:16 -0500
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DBEFDF;
+        Mon,  6 Nov 2023 01:22:12 -0800 (PST)
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-991c786369cso614750366b.1;
+        Mon, 06 Nov 2023 01:22:12 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699262530; x=1699867330;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=7vxzdd7hvG1LZGKkqhTZumSilwKU2j2TuY6Cx8E9gJo=;
+        b=ZAVfNjQXQ9iIYVR8xPs5bXtfwI1GmrzhAY0nAmwC7iJiEGthN41WxKuvWbTOpGCvah
+         SlgAzOFzdowtHPre1yIbkLyWQ/T0NlnjO2jVqopbS5kmwsk22HS+fIqkl/323RdoNJJq
+         RXqHD6Q2ZTV0wJqoW0dX505zax0MBFOv4iWE0CoUFJnjbsj0iVJBwbihusnAJbNQqWJs
+         CT9LFrd21T2LmLGfrxRVfBam9vTsmk0RI2HoDc0t+51CbdQsqLm8DJ2gMlLvECrek2id
+         PUpC/yr3kfdrceEpXaV0syosNb0VAaeGZ5IqZa2scXL7nESbAf/2nCSfuKEpPAJvHuwb
+         NTwA==
+X-Gm-Message-State: AOJu0YwB3G+xi3XtrrTD1rwA4YNoaMIN/DMXy9dOJ4PdXXDsRYTIdCFW
+        ddXbL5rbiYx/CtM0NOl+Ex2fBrmMT04=
+X-Google-Smtp-Source: AGHT+IF++APSwFNH6r2Ey/Q67hM2PkyNzMGIaLHd/q7k/8mo1G5861RXhVzAIHRm7zWxfkxBUM9UWQ==
+X-Received: by 2002:a17:907:31c3:b0:9bf:122a:7db2 with SMTP id xf3-20020a17090731c300b009bf122a7db2mr13821438ejb.66.1699262529951;
+        Mon, 06 Nov 2023 01:22:09 -0800 (PST)
+Received: from ramallet.home (cst-prg-38-127.cust.vodafone.cz. [46.135.38.127])
+        by smtp.gmail.com with ESMTPSA id w5-20020a05640234c500b005402748cf29sm4098608edc.50.2023.11.06.01.22.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 Nov 2023 01:22:09 -0800 (PST)
+From:   Tomeu Vizoso <tomeu@tomeuvizoso.net>
+To:     linux-kernel@vger.kernel.org
+Cc:     Tomeu Vizoso <tomeu@tomeuvizoso.net>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
+        DEVICE TREE BINDINGS),
+        linux-arm-kernel@lists.infradead.org (moderated list:ARM/Amlogic Meson
+        SoC support),
+        linux-amlogic@lists.infradead.org (open list:ARM/Amlogic Meson SoC
+        support)
+Subject: [PATCH RESEND] arm64: dts: VIM3: Set the rates of the clocks for the NPU
+Date:   Mon,  6 Nov 2023 10:22:02 +0100
+Message-ID: <20231106092202.11127-1-tomeu@tomeuvizoso.net>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Subject: Re: [PATCH v4 8/8] thermal: exynos: use set_trips
-To:     m.majewski2@samsung.com
-Cc:     Bartlomiej Zolnierkiewicz <bzolnier@gmail.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-samsung-soc@vger.kernel.org" 
-        <linux-samsung-soc@vger.kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>
-References: <2c4b6c1b-b9e7-42b2-8f7b-446ebe9d15ac@arm.com>
- <20231025133027.524152-1-m.majewski2@samsung.com>
- <20231025133027.524152-9-m.majewski2@samsung.com>
- <CGME20231025133100eucas1p14e6de58e52560d165bdb8b809e406278@eucms1p4>
- <20231102103507eucms1p4aea91982ebcc4a9a6314d9c4e03050fc@eucms1p4>
-Content-Language: en-US
-In-Reply-To: <20231102103507eucms1p4aea91982ebcc4a9a6314d9c4e03050fc@eucms1p4>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Otherwise they are left at 24MHz and the NPU runs very slowly.
 
+Signed-off-by: Tomeu Vizoso <tomeu@tomeuvizoso.net>
+Suggested-by: Lucas Stach <l.stach@pengutronix.de>
+---
+ arch/arm64/boot/dts/amlogic/meson-g12-common.dtsi | 3 +++
+ 1 file changed, 3 insertions(+)
 
-On 11/2/23 10:35, Mateusz Majewski wrote:
-> Hi,
-> 
->>> +        th &= ~(0xff << 0);
->>> +        th |= temp_to_code(data, temp) << 0;
->>   
->> This 2-line pattern repeats a few times. It looks like a nice cadidate
->> for an inline function which can abstract that. Something like:
->>   
->> val = update_temp_value(data, temp, threshold, LOW_TEMP_SHIFT)
->>   
->> Assisted with the macros {LOW|HIGH|CRIT}_TEMP_SHIFT, the code
->> would look less convoluted IMO.
->> (The old code with the multiplication for the shift value wasn't
->> cleaner nor faster).
-> 
-> What would you think about something like this?
-> 
-> static void exynos_tmu_update_temp(struct exynos_tmu_data *data, int reg_off,
->                                     int bit_off, u8 temp)
-> {
->          u32 th;
-> 
->          th = readl(data->base + reg_off);
->          th &= ~(0xff << bit_off);
->          th |= temp_to_code(data, temp) << bit_off;
->          writel(th, data->base + reg_off);
-> }
-> 
-> And then, it would be used like this:
-> 
-> static void exynos4412_tmu_set_crit_temp(struct exynos_tmu_data *data, u8 temp)
-> {
->          exynos_tmu_update_temp(data, EXYNOS_THD_TEMP_RISE, 24, temp);
->          exynos_tmu_update_bit(data, EXYNOS_TMU_REG_CONTROL,
->                                EXYNOS_TMU_THERM_TRIP_EN_SHIFT, true);
-> }
+diff --git a/arch/arm64/boot/dts/amlogic/meson-g12-common.dtsi b/arch/arm64/boot/dts/amlogic/meson-g12-common.dtsi
+index ff68b911b729..9d5eab6595d0 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-g12-common.dtsi
++++ b/arch/arm64/boot/dts/amlogic/meson-g12-common.dtsi
+@@ -2502,6 +2502,9 @@ npu: npu@ff100000 {
+ 		clocks = <&clkc CLKID_NNA_CORE_CLK>,
+ 			 <&clkc CLKID_NNA_AXI_CLK>;
+ 		clock-names = "core", "bus";
++		assigned-clocks = <&clkc CLKID_NNA_CORE_CLK>,
++				  <&clkc CLKID_NNA_AXI_CLK>;
++		assigned-clock-rates = <800000000>, <800000000>;
+ 		resets = <&reset RESET_NNA>;
+ 		status = "disabled";
+ 	};
+-- 
+2.41.0
 
-Yes, this looks good.
-
-> 
-> Granted it's not as clear as if we had some macro like CRIT_TEMP_SHIFT, but
-> we would need more than one variant anyway, as Exynos 5433 uses different
-> values of reg_off, and the new function looks short and inviting IMHO.
-
-Fair enough.
-
-> 
->>> -static void exynos7_tmu_set_trip_temp(struct exynos_tmu_data *data,
->>> -                                      int trip, u8 temp)
->>> +static void exynos7_tmu_update_temp(struct exynos_tmu_data *data, u8 temp,
->>> +                                    int idx, bool rise)
->>>     {
->>>             unsigned int reg_off, bit_off;
->>>             u32 th;
->>> +        void __iomem *reg;
->>>     
->>> -        reg_off = ((7 - trip) / 2) * 4;
->>> -        bit_off = ((8 - trip) % 2);
->>> +        reg_off = ((7 - idx) / 2) * 4;
->>   
->> Why can't we just have a set of defined register macros and pick one
->> in some small function?
->> A lot of operations here, also some assumption.
->>   
->>> +        bit_off = ((8 - idx) % 2);
->>   
->> So this can only be 0 or 1 and than it's used for the shift
->> multiplication. Also I don't know the history of older code and
->> if it was missed after some cleaning, but 'idx % 2' gives
->> equal values but w/o subtraction.
->>   
->> BTW, the code assumes the 'idx' values are under control somewhere else.
->> Is that because the DT make sure in the schema that the range cannot be
->> too big?
->> What are the possible values for 'idx'?
-> 
-> In the old code, the values of trip (which is the same thing, I will
-> change the name back from idx) were limited by the value of data->ntrip,
-> which was always 8 (value is per SoC). In the new code, there are only three
-> variants:
-> 
-> static void exynos7_tmu_set_low_temp(struct exynos_tmu_data *data, u8 temp)
-> {
->          exynos7_tmu_update_temp(data, temp, 0, false);
-> }
-> 
-> static void exynos7_tmu_set_high_temp(struct exynos_tmu_data *data, u8 temp)
-> {
->          exynos7_tmu_update_temp(data, temp, 1, true);
-> }
-> 
-> static void exynos7_tmu_set_crit_temp(struct exynos_tmu_data *data, u8 temp)
-> {
->          /*
->           * Like Exynos 4210, Exynos 7 does not seem to support critical temperature
->           * handling in hardware. Again, we still set a separate interrupt for it.
->           */
->          exynos7_tmu_update_temp(data, temp, 7, true);
-> }
-> 
-> To be fair, considering the values are constant like this, I should probably
-> just do the calculations myself and then in code just call exynos_tmu_update_temp
-> (from above) and exynos_tmu_update_bit, like on all other SoCs. I guess I were
-> a bit too scared to touch Exynos 7 code...
-
-Yes, anything that can be pre-calculated with nice comment, would be
-more desired. I would suggest to not be afraid about touching that
-Exynos 7 code.
-
-> 
->>> -        if (on) {
->>> -                for (i = 0; i < data->ntrip; i++) {
->>> -                        if (thermal_zone_get_trip(tz, i, &trip))
->>> -                                continue;
->>> -
->>> -                        interrupt_en |=
->>> -                                (1 << (EXYNOS_TMU_INTEN_RISE0_SHIFT + i * 4));
->>> -                }
->>> -
->>> -                if (data->soc != SOC_ARCH_EXYNOS4210)
->>> -                        interrupt_en |=
->>> -                                interrupt_en << EXYNOS_TMU_INTEN_FALL0_SHIFT;
->>> -
->>> +        if (on)
->>>                     con |= (1 << EXYNOS_TMU_CORE_EN_SHIFT);
->>> -        } else {
->>> +        else
->>>                     con &= ~(1 << EXYNOS_TMU_CORE_EN_SHIFT);
->>   
->> Please also consider the BIT() helper here and above...
-> 
-> Will do, but should I do this in a separate patch in these cases? I don't touch
-> the con lines otherwise, and this patch is already humongous.
-
-That would definitely deserve an extra patch to address it. Please add
-to the patch set.
-
-Regards,
-Lukasz
