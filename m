@@ -2,166 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A293A7E30BC
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 00:08:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F6687E30C0
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 00:11:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233621AbjKFXIG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 18:08:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35232 "EHLO
+        id S233325AbjKFXLU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 18:11:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233533AbjKFXHh (ORCPT
+        with ESMTP id S233226AbjKFXLR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 18:07:37 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D32971703;
-        Mon,  6 Nov 2023 15:07:32 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7AB6CC433C7;
-        Mon,  6 Nov 2023 23:07:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699312052;
-        bh=md3aXzGLS4KCiMpHUZ/uZtMIj/5YQPVs/Nh62VwgmFs=;
-        h=From:To:Cc:Subject:Date:From;
-        b=LXtX3WosRNuQ0jADLol+qQIXVaRakLQaDwzvbjbDsqLhiYTosifWpaQTci1GTBkNP
-         xEHzlDRIpsa5mj2u1zOD9kpD/V+u7GI5s1bryXSFfvZG9sOSwYnyPEVxx9epSJOSrV
-         p370ph26O7+FJamB8WfqZMCJ6x7am+jJFUMhyaRS6SppnZAnvbpY5k3V0Xy928iM7F
-         FhnJp4yiKD4jiLsEGpYXxexhEHoP55ZZdjOXE9+TFUlpczKNE+PEBh4zCo5XtCxJfS
-         YSZzgS+Z0ZwIOaH/yafggs7S0VuMB8V4ZTCytizzzGOw4EyoIRAru1zgP6Hsna0hC3
-         VTC6Rr74LY7dQ==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     John Stultz <jstultz@google.com>, Ingo Molnar <mingo@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, peterz@infradead.org,
-        mingo@redhat.com, will@kernel.org
-Subject: [PATCH AUTOSEL 4.14] locking/ww_mutex/test: Fix potential workqueue corruption
-Date:   Mon,  6 Nov 2023 18:07:29 -0500
-Message-ID: <20231106230729.3734685-1-sashal@kernel.org>
-X-Mailer: git-send-email 2.42.0
+        Mon, 6 Nov 2023 18:11:17 -0500
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4F8AD77
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 15:11:13 -0800 (PST)
+Received: by mail-ot1-x331.google.com with SMTP id 46e09a7af769-6ce2988d62eso3294220a34.1
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 15:11:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1699312273; x=1699917073; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=cl1a3BIlGOodzNLugPywadXuDNbB772BtN6sPF7d3Lw=;
+        b=gHkoTftqQ8UqHb1fR8OSU+h3xjRiunf3HJbSl47pP26UeJXeH4kk7/B+YPKfDV3eXd
+         uLDQOBl+ySS09Dalvr6lcSyRGXIUvH4uk+NUDC5g2Bo5HkC7oMhuIibjsDnzRE8JVqYA
+         YHizBJw34ojHQPMnZtVdYKAIswJKWBSftrPCRxNaqTn72gHtR5DBfbJlp2LmCJFW6ToF
+         DDEMFLlU9J2A6wnGaadN4WIMVXmOjTtyNwKzeSVFQyXGGd04/k0pPUX2iiTTk73NGFuj
+         LqIYs0/Qtd1+J6qHXehEHcFBj2OqgvHtgsgh7HdGdy927Uzd0IQVd0iyEHcMy1vD5zX8
+         kGaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699312273; x=1699917073;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=cl1a3BIlGOodzNLugPywadXuDNbB772BtN6sPF7d3Lw=;
+        b=D1iL/wV5bqX4NFWA/PD4OiA9qlj5TDoqrlgUg3qXVCriksv+zf42A4JP7sYUWFmCXz
+         Xal8+6OEMSAjxcIrBTa1A8c1ZXmwyUtiy8QZ3TsA1Pv5HrDMGKdDagqkB3g/4OqmT/2n
+         iWZ4R0of/xpmsDkukvsyyVxc9cAv6ZirOEkbuQJL0An9AIwO5SKocy9EvObdHpSqq/j0
+         x9W4PgBBG3T9onvhfxzV/oFX99G3yJtmSJROfhp7n5eyCE7G2CYWyMMhDWv/xiHUv+fC
+         bj+giFAVhuS2w+NNsZNE/ns2pPnc070X6OpzXJHLc49Lt2sO/aoIQpUXIOftFr65940d
+         9Eyg==
+X-Gm-Message-State: AOJu0Ywic7PcX/twWaDTqegcZQmDbg9NVID/d0H1RdQNaldbVtnGIlYH
+        Yslrp7xUiT1ThPl65h60ZOQYVCfie+hzh7efm/fqFA==
+X-Google-Smtp-Source: AGHT+IGb1DmE54qptCOR2jAgyCBNxxBT8ZRXpnCC4KrdEm4H9wksmx24bdsLdxd9hYmTf1F9bDafFA==
+X-Received: by 2002:a05:6830:2b2a:b0:6d3:1f3e:4c4 with SMTP id l42-20020a0568302b2a00b006d31f3e04c4mr19885732otv.0.1699312272970;
+        Mon, 06 Nov 2023 15:11:12 -0800 (PST)
+Received: from evan.ba.rivosinc.com ([64.71.180.162])
+        by smtp.gmail.com with ESMTPSA id w19-20020a9d77d3000000b006d309c126fbsm1418385otl.57.2023.11.06.15.11.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 Nov 2023 15:11:12 -0800 (PST)
+From:   Evan Green <evan@rivosinc.com>
+To:     Palmer Dabbelt <palmer@rivosinc.com>
+Cc:     cleger@rivosinc.com, Evan Green <evan@rivosinc.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@rivosinc.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
+Subject: [PATCH] RISC-V: Remove __init on unaligned_emulation_finish()
+Date:   Mon,  6 Nov 2023 15:11:05 -0800
+Message-Id: <20231106231105.3141413-1-evan@rivosinc.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 4.14.328
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: John Stultz <jstultz@google.com>
+This function shouldn't be __init, since it's called during hotplug. The
+warning says it well enough:
 
-[ Upstream commit bccdd808902f8c677317cec47c306e42b93b849e ]
+WARNING: modpost: vmlinux: section mismatch in reference:
+check_unaligned_access_all_cpus+0x13a (section: .text) ->
+unaligned_emulation_finish (section: .init.text)
 
-In some cases running with the test-ww_mutex code, I was seeing
-odd behavior where sometimes it seemed flush_workqueue was
-returning before all the work threads were finished.
+Signed-off-by: Evan Green <evan@rivosinc.com>
+Fixes: 71c54b3d169d ("riscv: report misaligned accesses emulation to hwprobe")
 
-Often this would cause strange crashes as the mutexes would be
-freed while they were being used.
-
-Looking at the code, there is a lifetime problem as the
-controlling thread that spawns the work allocates the
-"struct stress" structures that are passed to the workqueue
-threads. Then when the workqueue threads are finished,
-they free the stress struct that was passed to them.
-
-Unfortunately the workqueue work_struct node is in the stress
-struct. Which means the work_struct is freed before the work
-thread returns and while flush_workqueue is waiting.
-
-It seems like a better idea to have the controlling thread
-both allocate and free the stress structures, so that we can
-be sure we don't corrupt the workqueue by freeing the structure
-prematurely.
-
-So this patch reworks the test to do so, and with this change
-I no longer see the early flush_workqueue returns.
-
-Signed-off-by: John Stultz <jstultz@google.com>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/20230922043616.19282-3-jstultz@google.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/locking/test-ww_mutex.c | 20 ++++++++++++--------
- 1 file changed, 12 insertions(+), 8 deletions(-)
 
-diff --git a/kernel/locking/test-ww_mutex.c b/kernel/locking/test-ww_mutex.c
-index 654977862b06b..8489a01f943e8 100644
---- a/kernel/locking/test-ww_mutex.c
-+++ b/kernel/locking/test-ww_mutex.c
-@@ -439,7 +439,6 @@ static void stress_inorder_work(struct work_struct *work)
- 	} while (!time_after(jiffies, stress->timeout));
- 
- 	kfree(order);
--	kfree(stress);
+ arch/riscv/kernel/traps_misaligned.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/riscv/kernel/traps_misaligned.c b/arch/riscv/kernel/traps_misaligned.c
+index bba301b5194d..5eba37147caa 100644
+--- a/arch/riscv/kernel/traps_misaligned.c
++++ b/arch/riscv/kernel/traps_misaligned.c
+@@ -625,7 +625,7 @@ bool check_unaligned_access_emulated(int cpu)
+ 	return misaligned_emu_detected;
  }
  
- struct reorder_lock {
-@@ -504,7 +503,6 @@ static void stress_reorder_work(struct work_struct *work)
- 	list_for_each_entry_safe(ll, ln, &locks, link)
- 		kfree(ll);
- 	kfree(order);
--	kfree(stress);
- }
- 
- static void stress_one_work(struct work_struct *work)
-@@ -525,8 +523,6 @@ static void stress_one_work(struct work_struct *work)
- 			break;
- 		}
- 	} while (!time_after(jiffies, stress->timeout));
--
--	kfree(stress);
- }
- 
- #define STRESS_INORDER BIT(0)
-@@ -537,15 +533,24 @@ static void stress_one_work(struct work_struct *work)
- static int stress(int nlocks, int nthreads, unsigned int flags)
+-void __init unaligned_emulation_finish(void)
++void unaligned_emulation_finish(void)
  {
- 	struct ww_mutex *locks;
--	int n;
-+	struct stress *stress_array;
-+	int n, count;
+ 	int cpu;
  
- 	locks = kmalloc_array(nlocks, sizeof(*locks), GFP_KERNEL);
- 	if (!locks)
- 		return -ENOMEM;
- 
-+	stress_array = kmalloc_array(nthreads, sizeof(*stress_array),
-+				     GFP_KERNEL);
-+	if (!stress_array) {
-+		kfree(locks);
-+		return -ENOMEM;
-+	}
-+
- 	for (n = 0; n < nlocks; n++)
- 		ww_mutex_init(&locks[n], &ww_class);
- 
-+	count = 0;
- 	for (n = 0; nthreads; n++) {
- 		struct stress *stress;
- 		void (*fn)(struct work_struct *work);
-@@ -569,9 +574,7 @@ static int stress(int nlocks, int nthreads, unsigned int flags)
- 		if (!fn)
- 			continue;
- 
--		stress = kmalloc(sizeof(*stress), GFP_KERNEL);
--		if (!stress)
--			break;
-+		stress = &stress_array[count++];
- 
- 		INIT_WORK(&stress->work, fn);
- 		stress->locks = locks;
-@@ -586,6 +589,7 @@ static int stress(int nlocks, int nthreads, unsigned int flags)
- 
- 	for (n = 0; n < nlocks; n++)
- 		ww_mutex_destroy(&locks[n]);
-+	kfree(stress_array);
- 	kfree(locks);
- 
- 	return 0;
 -- 
-2.42.0
+2.34.1
 
