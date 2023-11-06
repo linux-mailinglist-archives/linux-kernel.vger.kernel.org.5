@@ -2,46 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C6C197E26A3
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 15:23:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F7507E26B1
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 15:24:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231666AbjKFOXn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 09:23:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49368 "EHLO
+        id S231708AbjKFOYf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 09:24:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229485AbjKFOXk (ORCPT
+        with ESMTP id S230146AbjKFOYd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 09:23:40 -0500
+        Mon, 6 Nov 2023 09:24:33 -0500
 Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05132BF;
-        Mon,  6 Nov 2023 06:23:36 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AEB5134;
+        Mon,  6 Nov 2023 06:24:30 -0800 (PST)
 Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A6CfNux000794;
-        Mon, 6 Nov 2023 15:23:18 +0100
+        by mx07-00178001.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A6CfNv9000794;
+        Mon, 6 Nov 2023 15:24:19 +0100
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
         from:to:cc:subject:date:message-id:in-reply-to:references
         :mime-version:content-transfer-encoding:content-type; s=
-        selector1; bh=rkHoTntJC29nPNdgPKNfEyJLt/Ru5H+gyk6qO+rfScA=; b=QY
-        I44LuXgG73qkryyh4Hsg/VKOdU394M74DkwKqniOXP4QENujMjGBcnE0Pyq4xJ1K
-        xsePpe3xYoUPTkWWnPzHfMQnaAX/u0PPHWj1i1gpC4/BeK6mXar3zM3YH4qL9cgN
-        UxEuCXiRWQPTuMYd3SAdCivti6XK1MVZPHshHSZ2IfeZI9wY8Nf7dwCgtVtIXodT
-        AmuS11NAqXy8+yoD3RLYN8EkIyf5uOvXjY80gUttnyxrJWnFuzpX4iKdqg/3v/MV
-        12HF5LBG1aDm48SdOUY+AEQ/Tdhh6WP4VMxNjZPKRjS2sG0+MXX4eKJfg9YfHD7f
-        abEEjP1vPZiqtwlAbSCg==
+        selector1; bh=LV9O0rO7JK3j2ifGDEu1Rw+yCX0BEe+HAzDkOd4hRrM=; b=RC
+        6jDGTuk4M3y+41bAcGF6UWatSH/W2XgeKawDKDEGffZnk+lBsfYaeCtSmbiCufIk
+        pUSswNbQ9mVlXuQcaOaPPYraPDBQHsX+l/EvnMwDOG7IGKWLljlVFL4g+7s9JLKt
+        XeWNzR5MDQ6YSeVIW8nJl7vvW9/dFMrdEHuyHeuxYciatUmxNlxHtCB6UlrdnJrM
+        04LxWSJQBEGEc7Bu/rYWIz8wh3yR44KApvnQ7zZp26eLY7uwVT6rxt8Bu91zZ6Vz
+        atzHA2KIyN7spkg7dd6FbTMeB/ROMC2fIZkFcaP73Gw+dKQ96AAzRqO5AmuZZyQ0
+        hNGDv6e0rKRTNNBmoDMg==
 Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3u5eqrqhgk-1
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3u5eqrqhmn-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 06 Nov 2023 15:23:18 +0100 (CET)
+        Mon, 06 Nov 2023 15:24:19 +0100 (CET)
 Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 964B710005E;
-        Mon,  6 Nov 2023 15:23:17 +0100 (CET)
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 707B5100059;
+        Mon,  6 Nov 2023 15:24:18 +0100 (CET)
 Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 8DFAC257A92;
-        Mon,  6 Nov 2023 15:23:17 +0100 (CET)
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 65A072561B6;
+        Mon,  6 Nov 2023 15:24:18 +0100 (CET)
 Received: from localhost (10.201.21.240) by SHFDAG1NODE1.st.com (10.75.129.69)
  with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 6 Nov
- 2023 15:23:17 +0100
+ 2023 15:24:18 +0100
 From:   <gabriel.fernandez@foss.st.com>
 To:     Michael Turquette <mturquette@baylibre.com>,
         Stephen Boyd <sboyd@kernel.org>,
@@ -55,9 +55,9 @@ CC:     <linux-clk@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-stm32@st-md-mailman.stormreply.com>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>
-Subject: [PATCH 3/4] clk: stm32mp1: move stm32mp1 clock driver into stm32 directory
-Date:   Mon, 6 Nov 2023 15:18:44 +0100
-Message-ID: <20231106141845.102648-4-gabriel.fernandez@foss.st.com>
+Subject: [PATCH 4/4] arm64: dts: st: add rcc support in stm32mp251
+Date:   Mon, 6 Nov 2023 15:18:45 +0100
+Message-ID: <20231106141845.102648-5-gabriel.fernandez@foss.st.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20231106141845.102648-1-gabriel.fernandez@foss.st.com>
 References: <20231106141845.102648-1-gabriel.fernandez@foss.st.com>
@@ -81,75 +81,198 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
 
-Move all STM32MP clock drivers into same directory (stm32).
+Add RCC support used for to manage clocks and resets on stm32mp251.
 
 Signed-off-by: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
 ---
- drivers/clk/Kconfig                    | 4 ----
- drivers/clk/Makefile                   | 1 -
- drivers/clk/stm32/Kconfig              | 7 +++++++
- drivers/clk/stm32/Makefile             | 1 +
- drivers/clk/{ => stm32}/clk-stm32mp1.c | 0
- 5 files changed, 8 insertions(+), 5 deletions(-)
- rename drivers/clk/{ => stm32}/clk-stm32mp1.c (100%)
+ arch/arm64/boot/dts/st/stm32mp251.dtsi | 59 ++++++++++++++------------
+ 1 file changed, 31 insertions(+), 28 deletions(-)
 
-diff --git a/drivers/clk/Kconfig b/drivers/clk/Kconfig
-index 61a68a241152..472bf4a43ce5 100644
---- a/drivers/clk/Kconfig
-+++ b/drivers/clk/Kconfig
-@@ -414,10 +414,6 @@ config COMMON_CLK_VC7
- 	  Renesas Versaclock7 is a family of configurable clock generator
- 	  and jitter attenuator ICs with fractional and integer dividers.
+diff --git a/arch/arm64/boot/dts/st/stm32mp251.dtsi b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+index 124403f5f1f4..698d0f68b98d 100644
+--- a/arch/arm64/boot/dts/st/stm32mp251.dtsi
++++ b/arch/arm64/boot/dts/st/stm32mp251.dtsi
+@@ -3,7 +3,9 @@
+  * Copyright (C) STMicroelectronics 2023 - All Rights Reserved
+  * Author: Alexandre Torgue <alexandre.torgue@foss.st.com> for STMicroelectronics.
+  */
++#include <dt-bindings/clock/stm32mp25-clks.h>
+ #include <dt-bindings/interrupt-controller/arm-gic.h>
++#include <dt-bindings/reset/stm32mp25-resets.h>
  
--config COMMON_CLK_STM32MP157
--	def_bool COMMON_CLK && MACH_STM32MP157
--	help
--	  Support for stm32mp157 SoC family clocks
+ / {
+ 	#address-cells = <2>;
+@@ -35,22 +37,10 @@ arm_wdt: watchdog {
+ 	};
  
- config COMMON_CLK_STM32F
- 	def_bool COMMON_CLK && (MACH_STM32F429 || MACH_STM32F469 || MACH_STM32F746)
-diff --git a/drivers/clk/Makefile b/drivers/clk/Makefile
-index ed71f2e0ee36..14fa8d4ecc1f 100644
---- a/drivers/clk/Makefile
-+++ b/drivers/clk/Makefile
-@@ -70,7 +70,6 @@ obj-$(CONFIG_COMMON_CLK_SI570)		+= clk-si570.o
- obj-$(CONFIG_COMMON_CLK_SP7021)		+= clk-sp7021.o
- obj-$(CONFIG_COMMON_CLK_STM32F)		+= clk-stm32f4.o
- obj-$(CONFIG_COMMON_CLK_STM32H7)	+= clk-stm32h7.o
--obj-$(CONFIG_COMMON_CLK_STM32MP157)	+= clk-stm32mp1.o
- obj-$(CONFIG_COMMON_CLK_TPS68470)      += clk-tps68470.o
- obj-$(CONFIG_CLK_TWL6040)		+= clk-twl6040.o
- obj-$(CONFIG_CLK_TWL)			+= clk-twl.o
-diff --git a/drivers/clk/stm32/Kconfig b/drivers/clk/stm32/Kconfig
-index 0755fbee3356..b8a34d07864c 100644
---- a/drivers/clk/stm32/Kconfig
-+++ b/drivers/clk/stm32/Kconfig
-@@ -17,6 +17,13 @@ config COMMON_CLK_STM32MP135
- 	help
- 	  Support for stm32mp13x SoC family clocks.
+ 	clocks {
+-		ck_flexgen_08: ck-flexgen-08 {
++		clk_rcbsec: clk-rcbsec {
+ 			#clock-cells = <0>;
+ 			compatible = "fixed-clock";
+-			clock-frequency = <100000000>;
+-		};
+-
+-		ck_flexgen_51: ck-flexgen-51 {
+-			#clock-cells = <0>;
+-			compatible = "fixed-clock";
+-			clock-frequency = <200000000>;
+-		};
+-
+-		ck_icn_ls_mcu: ck-icn-ls-mcu {
+-			#clock-cells = <0>;
+-			compatible = "fixed-clock";
+-			clock-frequency = <200000000>;
++			clock-frequency = <64000000>;
+ 		};
+ 	};
  
-+config COMMON_CLK_STM32MP157
-+	bool "Clock driver for stm32mp15x clocks"
-+	depends on ARM || COMPILE_TEST
-+	default y
-+	help
-+	  Support for stm32mp15x SoC family clocks.
+@@ -122,7 +112,7 @@ usart2: serial@400e0000 {
+ 				compatible = "st,stm32h7-uart";
+ 				reg = <0x400e0000 0x400>;
+ 				interrupts = <GIC_SPI 115 IRQ_TYPE_LEVEL_HIGH>;
+-				clocks = <&ck_flexgen_08>;
++				clocks = <&rcc CK_KER_USART2>;
+ 				status = "disabled";
+ 			};
+ 
+@@ -131,7 +121,7 @@ sdmmc1: mmc@48220000 {
+ 				arm,primecell-periphid = <0x00353180>;
+ 				reg = <0x48220000 0x400>, <0x44230400 0x8>;
+ 				interrupts = <GIC_SPI 123 IRQ_TYPE_LEVEL_HIGH>;
+-				clocks = <&ck_flexgen_51>;
++				clocks = <&rcc CK_KER_SDMMC1 >;
+ 				clock-names = "apb_pclk";
+ 				cap-sd-highspeed;
+ 				cap-mmc-highspeed;
+@@ -140,6 +130,19 @@ sdmmc1: mmc@48220000 {
+ 			};
+ 		};
+ 
++		rcc: rcc@44200000 {
++			compatible = "st,stm32mp25-rcc";
++			reg = <0x44200000 0x10000>;
++			#clock-cells = <1>;
++			#reset-cells = <1>;
++			clock-names = "hse", "hsi", "msi", "lse", "lsi";
++			clocks = <&scmi_clk CK_SCMI_HSE>,
++				<&scmi_clk CK_SCMI_HSI>,
++				<&scmi_clk CK_SCMI_MSI>,
++				<&scmi_clk CK_SCMI_LSE>,
++				<&scmi_clk CK_SCMI_LSI>;
++		};
 +
- config COMMON_CLK_STM32MP257
- 	bool "Clock driver for stm32mp25x clocks"
- 	depends on ARM64 || COMPILE_TEST
-diff --git a/drivers/clk/stm32/Makefile b/drivers/clk/stm32/Makefile
-index ee592f562e86..e4bcc215fdf3 100644
---- a/drivers/clk/stm32/Makefile
-+++ b/drivers/clk/stm32/Makefile
-@@ -1,2 +1,3 @@
- obj-$(CONFIG_COMMON_CLK_STM32MP135)	+= clk-stm32mp13.o clk-stm32-core.o reset-stm32.o
-+obj-$(CONFIG_COMMON_CLK_STM32MP157)	+= clk-stm32mp1.o
- obj-$(CONFIG_COMMON_CLK_STM32MP257)	+= clk-stm32mp25.o clk-stm32-core.o reset-stm32.o
-diff --git a/drivers/clk/clk-stm32mp1.c b/drivers/clk/stm32/clk-stm32mp1.c
-similarity index 100%
-rename from drivers/clk/clk-stm32mp1.c
-rename to drivers/clk/stm32/clk-stm32mp1.c
+ 		syscfg: syscon@44230000 {
+ 			compatible = "st,stm32mp25-syscfg", "syscon";
+ 			reg = <0x44230000 0x10000>;
+@@ -158,7 +161,7 @@ gpioa: gpio@44240000 {
+ 				interrupt-controller;
+ 				#interrupt-cells = <2>;
+ 				reg = <0x0 0x400>;
+-				clocks = <&ck_icn_ls_mcu>;
++				clocks = <&scmi_clk CK_SCMI_GPIOA>;
+ 				st,bank-name = "GPIOA";
+ 				status = "disabled";
+ 			};
+@@ -169,7 +172,7 @@ gpiob: gpio@44250000 {
+ 				interrupt-controller;
+ 				#interrupt-cells = <2>;
+ 				reg = <0x10000 0x400>;
+-				clocks = <&ck_icn_ls_mcu>;
++				clocks = <&scmi_clk CK_SCMI_GPIOB>;
+ 				st,bank-name = "GPIOB";
+ 				status = "disabled";
+ 			};
+@@ -180,7 +183,7 @@ gpioc: gpio@44260000 {
+ 				interrupt-controller;
+ 				#interrupt-cells = <2>;
+ 				reg = <0x20000 0x400>;
+-				clocks = <&ck_icn_ls_mcu>;
++				clocks = <&scmi_clk CK_SCMI_GPIOC>;
+ 				st,bank-name = "GPIOC";
+ 				status = "disabled";
+ 			};
+@@ -191,7 +194,7 @@ gpiod: gpio@44270000 {
+ 				interrupt-controller;
+ 				#interrupt-cells = <2>;
+ 				reg = <0x30000 0x400>;
+-				clocks = <&ck_icn_ls_mcu>;
++				clocks = <&scmi_clk CK_SCMI_GPIOD>;
+ 				st,bank-name = "GPIOD";
+ 				status = "disabled";
+ 			};
+@@ -202,7 +205,7 @@ gpioe: gpio@44280000 {
+ 				interrupt-controller;
+ 				#interrupt-cells = <2>;
+ 				reg = <0x40000 0x400>;
+-				clocks = <&ck_icn_ls_mcu>;
++				clocks = <&scmi_clk CK_SCMI_GPIOE>;
+ 				st,bank-name = "GPIOE";
+ 				status = "disabled";
+ 			};
+@@ -213,7 +216,7 @@ gpiof: gpio@44290000 {
+ 				interrupt-controller;
+ 				#interrupt-cells = <2>;
+ 				reg = <0x50000 0x400>;
+-				clocks = <&ck_icn_ls_mcu>;
++				clocks = <&scmi_clk CK_SCMI_GPIOF>;
+ 				st,bank-name = "GPIOF";
+ 				status = "disabled";
+ 			};
+@@ -224,7 +227,7 @@ gpiog: gpio@442a0000 {
+ 				interrupt-controller;
+ 				#interrupt-cells = <2>;
+ 				reg = <0x60000 0x400>;
+-				clocks = <&ck_icn_ls_mcu>;
++				clocks = <&scmi_clk CK_SCMI_GPIOG>;
+ 				st,bank-name = "GPIOG";
+ 				status = "disabled";
+ 			};
+@@ -235,7 +238,7 @@ gpioh: gpio@442b0000 {
+ 				interrupt-controller;
+ 				#interrupt-cells = <2>;
+ 				reg = <0x70000 0x400>;
+-				clocks = <&ck_icn_ls_mcu>;
++				clocks = <&scmi_clk CK_SCMI_GPIOH>;
+ 				st,bank-name = "GPIOH";
+ 				status = "disabled";
+ 			};
+@@ -246,7 +249,7 @@ gpioi: gpio@442c0000 {
+ 				interrupt-controller;
+ 				#interrupt-cells = <2>;
+ 				reg = <0x80000 0x400>;
+-				clocks = <&ck_icn_ls_mcu>;
++				clocks = <&scmi_clk CK_SCMI_GPIOI>;
+ 				st,bank-name = "GPIOI";
+ 				status = "disabled";
+ 			};
+@@ -257,7 +260,7 @@ gpioj: gpio@442d0000 {
+ 				interrupt-controller;
+ 				#interrupt-cells = <2>;
+ 				reg = <0x90000 0x400>;
+-				clocks = <&ck_icn_ls_mcu>;
++				clocks = <&scmi_clk CK_SCMI_GPIOJ>;
+ 				st,bank-name = "GPIOJ";
+ 				status = "disabled";
+ 			};
+@@ -268,7 +271,7 @@ gpiok: gpio@442e0000 {
+ 				interrupt-controller;
+ 				#interrupt-cells = <2>;
+ 				reg = <0xa0000 0x400>;
+-				clocks = <&ck_icn_ls_mcu>;
++				clocks = <&scmi_clk CK_SCMI_GPIOK>;
+ 				st,bank-name = "GPIOK";
+ 				status = "disabled";
+ 			};
+@@ -287,7 +290,7 @@ gpioz: gpio@46200000 {
+ 				interrupt-controller;
+ 				#interrupt-cells = <2>;
+ 				reg = <0 0x400>;
+-				clocks = <&ck_icn_ls_mcu>;
++				clocks = <&scmi_clk CK_SCMI_GPIOZ>;
+ 				st,bank-name = "GPIOZ";
+ 				st,bank-ioport = <11>;
+ 				status = "disabled";
 -- 
 2.25.1
 
