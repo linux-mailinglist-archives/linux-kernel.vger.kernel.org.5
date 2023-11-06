@@ -2,62 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 188C37E2A9C
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 18:06:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A42B7E2A9D
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 18:06:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232916AbjKFRGD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 12:06:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48794 "EHLO
+        id S232934AbjKFRGQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 12:06:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232905AbjKFRFz (ORCPT
+        with ESMTP id S232948AbjKFRGL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 12:05:55 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0ADC7191
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 09:05:53 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EF95FC433C8;
-        Mon,  6 Nov 2023 17:05:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699290352;
-        bh=6Eq+YatJG0VvqdrxwV51hQ2WRfosTf/8anuMEfSdnh8=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=s23V+aEJl9t9k/evyNTlaMGYiqKJZd9hSQ67QZ9jOLYu0D4p0cRlyqinpBnkHwUua
-         xza9rXOqvMUx8mVCbOI7pR14ooVZzp99rU0sVeHeGyFr6IYmMahNtB/kOvZkY5oruL
-         76uQH/XTN768/uEb8EoU3v2s1megidfT86BLEvRXBjnBP0taQn0eakIYnmcTXIJZ84
-         skSLaIHwePLGGTtOstbJ8mR3T3aaA9PNoTQeBb5BB12yWoHBwwCSG2pwTEb/EIMN0x
-         I4RW9raCnLSB8sW0oWzbP/qMPxPBuz1fadQdHyIb9eWq7qegyO2y1Zj28I2MCVnvF8
-         jpeDER+GWVgFg==
-Message-ID: <57aa0315-0485-4ff7-830b-4dccc4df2eb7@kernel.org>
-Date:   Mon, 6 Nov 2023 18:05:46 +0100
+        Mon, 6 Nov 2023 12:06:11 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F5D7D4D
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 09:06:04 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1699290362;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=pZ3oZu5FL3iDnulyvyRySUZ+OPqqpbFeLzlANOh/grc=;
+        b=s52TttkOLnmZQGf7EPUklZuD0TXWk1gi1FMyXTNlJF/jgcfVkOveVLztrr9osQj5L7n3ml
+        4fUJj6sFZjs0Fiw2O0DYChfLBs/mhNCM2u4rZeBU8Rw8SnZsaI7ckKMwr2geCPhAeSiwYd
+        eGKmuUJ8k2/f5p4JtJ/X3ng/C5uN4VPrrCsMBtKiz+qlxMGf+SxMzLeKr/8DT9nPxj2MG0
+        NzR87j5qU179UTyRhW60pdwz6aSyYidvOaASlB/+1Fk/BBDZfmkt/Zclyk0IxsZx789P8E
+        I5w3vmmtU0wd3oFuH5757y8RkEaq+NN0AvK/A3L6xJi38645+ffVys8Y5Y5FLQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1699290362;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=pZ3oZu5FL3iDnulyvyRySUZ+OPqqpbFeLzlANOh/grc=;
+        b=RKv6GAwcsVU207jCbt5AH8f2VwnTBfhmN+igtJzZNO1st0+sbTaaE0gPIMzD3pNQCWJzSh
+        su3nsfnmP0zq8KBQ==
+To:     James Tai <james.tai@realtek.com>, linux-kernel@vger.kernel.org,
+        linux-realtek-soc@lists.infradead.org
+Cc:     Marc Zyngier <maz@kernel.org>
+Subject: Re: [PATCH 3/6] irqchip: Introduce RTD1319 support using the
+ Realtek Common Interrupt Controller Driver
+In-Reply-To: <20231102142731.2087245-4-james.tai@realtek.com>
+References: <20231102142731.2087245-1-james.tai@realtek.com>
+ <20231102142731.2087245-4-james.tai@realtek.com>
+Date:   Mon, 06 Nov 2023 18:06:01 +0100
+Message-ID: <87r0l2hkw6.ffs@tglx>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 6/7] sched/deadline: Deferrable dl server
-Content-Language: en-US, pt-BR, it-IT
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        linux-kernel@vger.kernel.org,
-        Luca Abeni <luca.abeni@santannapisa.it>,
-        Tommaso Cucinotta <tommaso.cucinotta@santannapisa.it>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Vineeth Pillai <vineeth@bitbyteword.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Phil Auld <pauld@redhat.com>
-References: <cover.1699095159.git.bristot@kernel.org>
- <c7b706d30d6316c52853ca056db5beb82ba72863.1699095159.git.bristot@kernel.org>
- <20231106145519.GG3818@noisy.programming.kicks-ass.net>
-From:   Daniel Bristot de Oliveira <bristot@kernel.org>
-In-Reply-To: <20231106145519.GG3818@noisy.programming.kicks-ass.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -66,47 +57,23 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/6/23 15:55, Peter Zijlstra wrote:
-> On Sat, Nov 04, 2023 at 11:59:23AM +0100, Daniel Bristot de Oliveira wrote:
-> 
->> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
->> index b15f7f376a67..399237cd9f59 100644
->> --- a/kernel/sched/fair.c
->> +++ b/kernel/sched/fair.c
->> @@ -1201,6 +1201,8 @@ static void update_curr(struct cfs_rq *cfs_rq)
->>  		account_group_exec_runtime(curtask, delta_exec);
->>  		if (curtask->server)
->>  			dl_server_update(curtask->server, delta_exec);
->> +		else
->> +			dl_server_update(&rq_of(cfs_rq)->fair_server, delta_exec);
->>  	}
->>  
->>  	account_cfs_rq_runtime(cfs_rq, delta_exec);
->  
-> @@ -1195,8 +1196,17 @@ static void update_curr(struct cfs_rq *c
->  	update_deadline(cfs_rq, curr);
->  	update_min_vruntime(cfs_rq);
->  
-> -	if (entity_is_task(curr))
-> -		update_curr_task(task_of(curr), delta_exec);
-> +	if (entity_is_task(curr)) {
-> +		struct task_struct *p = task_of(curr);
-> +		update_curr_task(p, delta_exec);
-> +		/*
-> +		 * Any fair task that runs outside of fair_server should
-> +		 * account against fair_server such that it can account for
-> +		 * this time and possible avoid running this period.
-> +		 */
-> +		if (p->dl_server != &rq->fair_server)
-> +			dl_server_update(&rq->fair_server, delta_exec);
-aren't we missing:
-		   else
-			dl_server_update(&rq_of(cfs_rq)->fair_server, delta_exec);
+On Thu, Nov 02 2023 at 22:27, James Tai wrote:
+> +
+> +enum rtd1319_iso_isr_bits {
+> +	RTD1319_ISO_ISR_TC3_SHIFT = 1,
+> +	RTD1319_ISO_ISR_UR0_SHIFT = 2,
 
-or am I missing something? :-)
+Please use tabular formatting all over the place.
 
-> +	}
->  
->  	account_cfs_rq_runtime(cfs_rq, delta_exec);
->  }
+> +	RTD1319_ISO_ISR_LSADC0_SHIFT = 3,
+> +	RTD1319_ISO_ISR_IRDA_SHIFT = 5,
+> +
+
+
+> +static const struct realtek_intc_info rtd1319_intc_iso_info = {
+> +	.isr_offset = 0x0,
+> +	.umsk_isr_offset = 0x4,
+> +	.scpu_int_en_offset = 0x40,
+
+Magic numbers. Defines exist for a reason.
 
