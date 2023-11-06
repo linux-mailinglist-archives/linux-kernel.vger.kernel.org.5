@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A8187E22AF
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 14:03:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 082667E22B1
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 14:03:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231750AbjKFNDh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 08:03:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39758 "EHLO
+        id S231865AbjKFNDj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 08:03:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231676AbjKFNDf (ORCPT
+        with ESMTP id S231738AbjKFNDh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 08:03:35 -0500
+        Mon, 6 Nov 2023 08:03:37 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49C7791
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 05:03:33 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA393C433C9;
-        Mon,  6 Nov 2023 13:03:31 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9DEA91
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 05:03:34 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7BFBFC433C8;
+        Mon,  6 Nov 2023 13:03:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699275813;
-        bh=c2QlOKGHQKRqJ8EHXE6QadmeF5FbUeU59kjhrGvz5yw=;
+        s=k20201202; t=1699275814;
+        bh=owObuKCcgXmEq70pl4Bog7WiL0JeLtAQhOmCUT7KEHY=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=V2L8VwqFv/HrOK4xFKDjH29GWomWmFlUcCZcQMYqb1rlKaBtBZ+D1M//7VlYGOqG+
-         rqNp3CJvqGVoIzCopKDshQvznXDQKbtmTk1EEJ7rRXF8wWbY/KUcOu43OVhHPyMZlI
-         mke7Qyza5Ggc830Zcz/tUOQAE0Hu+OnMvfEwzU7l2noHWTU7DpAX1n7YhVoEZltqyw
-         GhnUnb44SP/MvFtediHFQIE2rRWdbprGGIIEDzv1EaPpSDKfb78O34hgY3v9Zp65y1
-         VqqeHVNFZQfdnqrSPCkpxbhysCYtlKr+RzsH2ImpPw9jrlF59oKfGFO0RNI6vmu/XS
-         LHFvp60OyLaxg==
+        b=MCGPBk8R+dedAi85lfupC3BaR0+vHAP+hU9XzYPIkTiGwtDlQZTR/Ne4yrrnKwSUa
+         YxfJJFbnP75dAcFNCkcgWQYdC7QCtEbVRiuPsmLq5hFUAyyqPwOrT5bCUmWrxFiAwS
+         2+BeTT/ORjK8iBij1MEzDgT4xhJeOimzXWvfwwqwRxoute9VYK0rIEttvfvmBmMa7h
+         qgYP4tp5seMFNTSMfvWd3w0UmpUfPtw78Jfq9/4VSbul4eHwMB8EaU8IkUazYck7pD
+         LCxKRWFc/BYAQp9aB2F+uNOrC6lWzakoYEjsAEyJcrDM5yd1TR1F28oEBRtH/ivV3L
+         NgMxkmkYv7KuQ==
 From:   Mark Brown <broonie@kernel.org>
 To:     Jerome Brunet <jbrunet@baylibre.com>
 Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20231106103712.703962-1-jbrunet@baylibre.com>
-References: <20231106103712.703962-1-jbrunet@baylibre.com>
-Subject: Re: [PATCH] ASoC: dapm: fix clock get name
-Message-Id: <169927581117.3037292.10632201210620631466.b4-ty@kernel.org>
-Date:   Mon, 06 Nov 2023 13:03:31 +0000
+In-Reply-To: <20231106104013.704356-1-jbrunet@baylibre.com>
+References: <20231106104013.704356-1-jbrunet@baylibre.com>
+Subject: Re: [PATCH] ASoC: hdmi-codec: register hpd callback on component
+ probe
+Message-Id: <169927581290.3037292.1560531691981321378.b4-ty@kernel.org>
+Date:   Mon, 06 Nov 2023 13:03:32 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -49,11 +50,16 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 06 Nov 2023 11:37:09 +0100, Jerome Brunet wrote:
-> The name currently used to get the clock includes the dapm prefix.
-> It should use the name as provided to the widget, without the prefix.
+On Mon, 06 Nov 2023 11:40:11 +0100, Jerome Brunet wrote:
+> The HDMI hotplug callback to the hdmi-codec is currently registered when
+> jack is set.
 > 
+> The hotplug not only serves to report the ASoC jack state but also to get
+> the ELD. It should be registered when the component probes instead, so it
+> does not depend on the card driver registering a jack for the HDMI to
+> properly report the ELD.
 > 
+> [...]
 
 Applied to
 
@@ -61,8 +67,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: dapm: fix clock get name
-      commit: 4bdcbc31ad2112385ad525b28972c45015e6ad70
+[1/1] ASoC: hdmi-codec: register hpd callback on component probe
+      commit: 15be353d55f9e12e34f9a819f51eb41fdef5eda8
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
