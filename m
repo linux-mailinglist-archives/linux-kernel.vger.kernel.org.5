@@ -2,205 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E4297E2A69
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 17:54:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B15DF7E2A6B
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 17:54:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232781AbjKFQyW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 11:54:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46670 "EHLO
+        id S232909AbjKFQyr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 11:54:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229485AbjKFQyU (ORCPT
+        with ESMTP id S231793AbjKFQyo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 11:54:20 -0500
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9264CB8
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 08:54:17 -0800 (PST)
-Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-9c603e235d1so693510366b.3
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 08:54:17 -0800 (PST)
+        Mon, 6 Nov 2023 11:54:44 -0500
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 002B8B8;
+        Mon,  6 Nov 2023 08:54:40 -0800 (PST)
+Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-50931355d48so6290378e87.3;
+        Mon, 06 Nov 2023 08:54:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1699289653; x=1699894453; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ONrkCNODdlggpLA5mWEcjOQapfgKfPxTrYxnVyq0KIA=;
-        b=R3Ij1IqQr3d9D/9+aXfZ166oFufd3il1HNh2NqMcE7qRP9SWdYobrMNQQFRykAu1g2
-         mar/98Lwyt5an9U1DVAER1lwj0EG8UGI8Hmlv+vLHa6UVBUG5gQr7b1sPEfIlO57iUK3
-         r7jl6yT1AMWP7xMuyW6VlEY4CqFmlgmaNLtB4=
+        d=gmail.com; s=20230601; t=1699289679; x=1699894479; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=8elnE1XjhWMPUXqSeSunlp8ee0oj8Ip2PAAjrMBLS9E=;
+        b=OIXvVb0D2AaGtjDFI7v93yA6YD/8ymN3zC7BMsTX00g3O8oGj0rzE+vXUFpJGj5LMs
+         UcmB8us5HaylHVkbCatbfbUSB7Zi6De13Pw2sKyrgNNoDBUbbKGbIkP8dGBpoQU0qiQq
+         a/xZkEiqi2V108IiUmqMiWwhDC6ybFNxfs0BIlN1ncLk8Ny4MzOAO0ktZG7i+OWcwTbX
+         mnmGwgNA05lM/kvFsFjFMnSWRpDo4MGDKYeT3c3GkLtpDVUZnsiErFw2HpJMkoPkEW0q
+         C7A5r4hG6uts2e3+pZay4mYG+jzazJEDWy5+iHJgMeu1Pif4jwh182NRwJJSJUn3N43c
+         n2SA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699289653; x=1699894453;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ONrkCNODdlggpLA5mWEcjOQapfgKfPxTrYxnVyq0KIA=;
-        b=b41S4OkBT/WOaVTNBOdQJkQiZsGwztWx+U+rYBUnnGg/Szw/Yq+uLXztR8fdKqLMRO
-         HxhQBAbc6jzAwq00dVlq3bKUmiWETBrKGB4Qm3CNpnYQx9dhIOg3ZBowWoAkfOWmOvxt
-         H2O8o+B9VFy2RtQ3UtpXt3GE745neMwfMt2TIqjCRw/SLFxpjEZFCZyqQqKARsrvol4f
-         7Kf7hkuYitirsSos1XXlK4i+hwjATOXLBHeZG8zXfav00olDsjlWAV4NxAVWF8qHtMXn
-         gWXCiXDOf8OANPWoszksayUZKlOmG42RkJMb5Ojhf5NQ1WL5sZ38+5AndUsSHnelPVAK
-         cWMA==
-X-Gm-Message-State: AOJu0YzDyNmHM7pOOT0A6NiMsn8YgRzCbt797iShRu4ewBgpxPHHv6to
-        0PJcFXDEDJFB42U1gZuKLqzXUQckWuQjcixBk2s33A==
-X-Google-Smtp-Source: AGHT+IGHoQPi0sUq181Nr7DZBcOep9breR9jBPjL43ps+PPF4lBsGYH6ulTD/er8+4kGTs7LOD6JmA==
-X-Received: by 2002:a17:907:e92:b0:9be:2991:81f9 with SMTP id ho18-20020a1709070e9200b009be299181f9mr15250604ejc.1.1699289652313;
-        Mon, 06 Nov 2023 08:54:12 -0800 (PST)
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com. [209.85.128.48])
-        by smtp.gmail.com with ESMTPSA id n3-20020a170906724300b009ddc90505desm29617ejk.141.2023.11.06.08.54.11
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 06 Nov 2023 08:54:12 -0800 (PST)
-Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-4078fe6a063so108555e9.1
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 08:54:11 -0800 (PST)
-X-Received: by 2002:a05:600c:4c19:b0:3f6:f4b:d4a6 with SMTP id
- d25-20020a05600c4c1900b003f60f4bd4a6mr146334wmp.7.1699289651347; Mon, 06 Nov
- 2023 08:54:11 -0800 (PST)
+        d=1e100.net; s=20230601; t=1699289679; x=1699894479;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=8elnE1XjhWMPUXqSeSunlp8ee0oj8Ip2PAAjrMBLS9E=;
+        b=fLhe4094/oghulAS5FNT6gB7xe2vlId2ylEDqkn9UdWKlf4ByScbDx+ugPp8lqsn4m
+         Zospyu33QQBSsvWsekZRKQS5hWYXHynh+QV9ED3Zm2DeREuA9Xtgwe0KY3NjRFyviNbL
+         4S6HU6bgqVU5SiBls2ngkj2Lt1DTtuYpK53KeuMljbh0D3EHmA04zF39A0kBuOjMK89M
+         Wo9gHeEapp740WsOelhbJZJY+b9VOo+DMJJtGJIa2px7b/UntW49c4iv+4vYSSyDN78r
+         0RaTTVkWLM4ETYyVF17iqhV7LJZOW79X+xYoT181/KjTckZQH8jLaf1RV9i9Fn0bGBVC
+         BhXw==
+X-Gm-Message-State: AOJu0YzHPKNTTkusp1Rsvfxh6XzNnkRJ24/lNp83StF2WB4fkhXe9DWE
+        +bdrngytsIR8vn86m1CLKso=
+X-Google-Smtp-Source: AGHT+IEG+EysC/stZahdMiOU2j4mPPOR+fDfVS3Lc6TId6QtNZOtXuwrdck4ED20CYnqLnXAo3RqIA==
+X-Received: by 2002:a2e:b0ed:0:b0:2bd:19c5:3950 with SMTP id h13-20020a2eb0ed000000b002bd19c53950mr22618653ljl.33.1699289678832;
+        Mon, 06 Nov 2023 08:54:38 -0800 (PST)
+Received: from localhost.localdomain (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
+        by smtp.googlemail.com with ESMTPSA id a11-20020a05600c348b00b0040813e14b49sm13182044wmq.30.2023.11.06.08.54.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 Nov 2023 08:54:38 -0800 (PST)
+From:   Christian Marangi <ansuelsmth@gmail.com>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Christian Marangi <ansuelsmth@gmail.com>,
+        Robert Marko <robimarko@gmail.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [net-next RFC PATCH v5 1/4] net: phy: aquantia: move to separate directory
+Date:   Mon,  6 Nov 2023 17:54:30 +0100
+Message-Id: <20231106165433.2746-1-ansuelsmth@gmail.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-References: <20231103105440.23904-1-quic_anshar@quicinc.com>
-In-Reply-To: <20231103105440.23904-1-quic_anshar@quicinc.com>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Mon, 6 Nov 2023 08:53:59 -0800
-X-Gmail-Original-Message-ID: <CAD=FV=XOyHr9hNA0gEdssGz5qqyXHU75K9TUH3HSHK3+jpfswg@mail.gmail.com>
-Message-ID: <CAD=FV=XOyHr9hNA0gEdssGz5qqyXHU75K9TUH3HSHK3+jpfswg@mail.gmail.com>
-Subject: Re: [PATCH v2] arm64: dts: qcom: sc7280: Add capacity and DPC properties
-To:     Ankit Sharma <quic_anshar@quicinc.com>
-Cc:     cros-qcom-dts-watchers@chromium.org, agross@kernel.org,
-        andersson@kernel.org, konrad.dybcio@linaro.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, quic_ashayj@quicinc.com,
-        quic_atulpant@quicinc.com, quic_rgottimu@quicinc.com,
-        quic_shashim@quicinc.com, quic_pkondeti@quicinc.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Move aquantia PHY driver to separate driectory in preparation for
+firmware loading support to keep things tidy.
 
-On Fri, Nov 3, 2023 at 3:54=E2=80=AFAM Ankit Sharma <quic_anshar@quicinc.co=
-m> wrote:
->
-> The "capacity-dmips-mhz" and "dynamic-power-coefficient" are
-> used to build Energy Model which in turn is used by EAS to take
-> placement decisions. So add it to SC7280 soc.
->
-> Signed-off-by: Ankit Sharma <quic_anshar@quicinc.com>
-> ---
-> changes in v2: https://lore.kernel.org/all/20231103095358.29312-1-quic_an=
-shar@quicinc.com/
->  - updated commit message and subject.
->
->  arch/arm64/boot/dts/qcom/sc7280.dtsi | 16 ++++++++++++++++
->  1 file changed, 16 insertions(+)
->
-> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/q=
-com/sc7280.dtsi
-> index 8601253aec70..b1890824188c 100644
-> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> @@ -176,6 +176,8 @@
->                                            &CLUSTER_SLEEP_0>;
->                         next-level-cache =3D <&L2_0>;
->                         operating-points-v2 =3D <&cpu0_opp_table>;
-> +                       capacity-dmips-mhz =3D <1024>;
-> +                       dynamic-power-coefficient =3D <100>;
->                         interconnects =3D <&gem_noc MASTER_APPSS_PROC 3 &=
-mc_virt SLAVE_EBI1 3>,
->                                         <&epss_l3 MASTER_EPSS_L3_APPS &ep=
-ss_l3 SLAVE_EPSS_L3_SHARED>;
->                         qcom,freq-domain =3D <&cpufreq_hw 0>;
-> @@ -204,6 +206,8 @@
->                                            &CLUSTER_SLEEP_0>;
->                         next-level-cache =3D <&L2_100>;
->                         operating-points-v2 =3D <&cpu0_opp_table>;
-> +                       capacity-dmips-mhz =3D <1024>;
-> +                       dynamic-power-coefficient =3D <100>;
->                         interconnects =3D <&gem_noc MASTER_APPSS_PROC 3 &=
-mc_virt SLAVE_EBI1 3>,
->                                         <&epss_l3 MASTER_EPSS_L3_APPS &ep=
-ss_l3 SLAVE_EPSS_L3_SHARED>;
->                         qcom,freq-domain =3D <&cpufreq_hw 0>;
-> @@ -227,6 +231,8 @@
->                                            &CLUSTER_SLEEP_0>;
->                         next-level-cache =3D <&L2_200>;
->                         operating-points-v2 =3D <&cpu0_opp_table>;
-> +                       capacity-dmips-mhz =3D <1024>;
-> +                       dynamic-power-coefficient =3D <100>;
->                         interconnects =3D <&gem_noc MASTER_APPSS_PROC 3 &=
-mc_virt SLAVE_EBI1 3>,
->                                         <&epss_l3 MASTER_EPSS_L3_APPS &ep=
-ss_l3 SLAVE_EPSS_L3_SHARED>;
->                         qcom,freq-domain =3D <&cpufreq_hw 0>;
-> @@ -250,6 +256,8 @@
->                                            &CLUSTER_SLEEP_0>;
->                         next-level-cache =3D <&L2_300>;
->                         operating-points-v2 =3D <&cpu0_opp_table>;
-> +                       capacity-dmips-mhz =3D <1024>;
-> +                       dynamic-power-coefficient =3D <100>;
->                         interconnects =3D <&gem_noc MASTER_APPSS_PROC 3 &=
-mc_virt SLAVE_EBI1 3>,
->                                         <&epss_l3 MASTER_EPSS_L3_APPS &ep=
-ss_l3 SLAVE_EPSS_L3_SHARED>;
->                         qcom,freq-domain =3D <&cpufreq_hw 0>;
-> @@ -273,6 +281,8 @@
->                                            &CLUSTER_SLEEP_0>;
->                         next-level-cache =3D <&L2_400>;
->                         operating-points-v2 =3D <&cpu4_opp_table>;
-> +                       capacity-dmips-mhz =3D <1946>;
+Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+---
+---
+Changes v4:
+- Keep order for kconfig config
+Changes v3:
+- Add this patch
 
-Though I don't think it's technically required, in other systems
-(including the examples in the documentation) the biggest CPU gets
-1024 "capacity-dmips-mhz" and the other ones are scaled to that.
+ drivers/net/phy/Kconfig                         | 5 +----
+ drivers/net/phy/Makefile                        | 6 +-----
+ drivers/net/phy/aquantia/Kconfig                | 5 +++++
+ drivers/net/phy/aquantia/Makefile               | 6 ++++++
+ drivers/net/phy/{ => aquantia}/aquantia.h       | 0
+ drivers/net/phy/{ => aquantia}/aquantia_hwmon.c | 0
+ drivers/net/phy/{ => aquantia}/aquantia_main.c  | 0
+ 7 files changed, 13 insertions(+), 9 deletions(-)
+ create mode 100644 drivers/net/phy/aquantia/Kconfig
+ create mode 100644 drivers/net/phy/aquantia/Makefile
+ rename drivers/net/phy/{ => aquantia}/aquantia.h (100%)
+ rename drivers/net/phy/{ => aquantia}/aquantia_hwmon.c (100%)
+ rename drivers/net/phy/{ => aquantia}/aquantia_main.c (100%)
 
+diff --git a/drivers/net/phy/Kconfig b/drivers/net/phy/Kconfig
+index 421d2b62918f..25cfc5ded1da 100644
+--- a/drivers/net/phy/Kconfig
++++ b/drivers/net/phy/Kconfig
+@@ -96,10 +96,7 @@ config ADIN1100_PHY
+ 	  Currently supports the:
+ 	  - ADIN1100 - Robust,Industrial, Low Power 10BASE-T1L Ethernet PHY
+ 
+-config AQUANTIA_PHY
+-	tristate "Aquantia PHYs"
+-	help
+-	  Currently supports the Aquantia AQ1202, AQ2104, AQR105, AQR405
++source "drivers/net/phy/aquantia/Kconfig"
+ 
+ config AX88796B_PHY
+ 	tristate "Asix PHYs"
+diff --git a/drivers/net/phy/Makefile b/drivers/net/phy/Makefile
+index c945ed9bd14b..f65e85c91fc1 100644
+--- a/drivers/net/phy/Makefile
++++ b/drivers/net/phy/Makefile
+@@ -35,11 +35,7 @@ obj-y				+= $(sfp-obj-y) $(sfp-obj-m)
+ obj-$(CONFIG_ADIN_PHY)		+= adin.o
+ obj-$(CONFIG_ADIN1100_PHY)	+= adin1100.o
+ obj-$(CONFIG_AMD_PHY)		+= amd.o
+-aquantia-objs			+= aquantia_main.o
+-ifdef CONFIG_HWMON
+-aquantia-objs			+= aquantia_hwmon.o
+-endif
+-obj-$(CONFIG_AQUANTIA_PHY)	+= aquantia.o
++obj-$(CONFIG_AQUANTIA_PHY)	+= aquantia/
+ obj-$(CONFIG_AT803X_PHY)	+= at803x.o
+ obj-$(CONFIG_AX88796B_PHY)	+= ax88796b.o
+ obj-$(CONFIG_BCM54140_PHY)	+= bcm54140.o
+diff --git a/drivers/net/phy/aquantia/Kconfig b/drivers/net/phy/aquantia/Kconfig
+new file mode 100644
+index 000000000000..226146417a6a
+--- /dev/null
++++ b/drivers/net/phy/aquantia/Kconfig
+@@ -0,0 +1,5 @@
++# SPDX-License-Identifier: GPL-2.0-only
++config AQUANTIA_PHY
++	tristate "Aquantia PHYs"
++	help
++	  Currently supports the Aquantia AQ1202, AQ2104, AQR105, AQR405
+diff --git a/drivers/net/phy/aquantia/Makefile b/drivers/net/phy/aquantia/Makefile
+new file mode 100644
+index 000000000000..346f350bc084
+--- /dev/null
++++ b/drivers/net/phy/aquantia/Makefile
+@@ -0,0 +1,6 @@
++# SPDX-License-Identifier: GPL-2.0
++aquantia-objs			+= aquantia_main.o
++ifdef CONFIG_HWMON
++aquantia-objs			+= aquantia_hwmon.o
++endif
++obj-$(CONFIG_AQUANTIA_PHY)	+= aquantia.o
+diff --git a/drivers/net/phy/aquantia.h b/drivers/net/phy/aquantia/aquantia.h
+similarity index 100%
+rename from drivers/net/phy/aquantia.h
+rename to drivers/net/phy/aquantia/aquantia.h
+diff --git a/drivers/net/phy/aquantia_hwmon.c b/drivers/net/phy/aquantia/aquantia_hwmon.c
+similarity index 100%
+rename from drivers/net/phy/aquantia_hwmon.c
+rename to drivers/net/phy/aquantia/aquantia_hwmon.c
+diff --git a/drivers/net/phy/aquantia_main.c b/drivers/net/phy/aquantia/aquantia_main.c
+similarity index 100%
+rename from drivers/net/phy/aquantia_main.c
+rename to drivers/net/phy/aquantia/aquantia_main.c
+-- 
+2.40.1
 
-> +                       dynamic-power-coefficient =3D <520>;
->                         interconnects =3D <&gem_noc MASTER_APPSS_PROC 3 &=
-mc_virt SLAVE_EBI1 3>,
->                                         <&epss_l3 MASTER_EPSS_L3_APPS &ep=
-ss_l3 SLAVE_EPSS_L3_SHARED>;
->                         qcom,freq-domain =3D <&cpufreq_hw 1>;
-> @@ -296,6 +306,8 @@
->                                            &CLUSTER_SLEEP_0>;
->                         next-level-cache =3D <&L2_500>;
->                         operating-points-v2 =3D <&cpu4_opp_table>;
-> +                       capacity-dmips-mhz =3D <1946>;
-> +                       dynamic-power-coefficient =3D <520>;
->                         interconnects =3D <&gem_noc MASTER_APPSS_PROC 3 &=
-mc_virt SLAVE_EBI1 3>,
->                                         <&epss_l3 MASTER_EPSS_L3_APPS &ep=
-ss_l3 SLAVE_EPSS_L3_SHARED>;
->                         qcom,freq-domain =3D <&cpufreq_hw 1>;
-> @@ -319,6 +331,8 @@
->                                            &CLUSTER_SLEEP_0>;
->                         next-level-cache =3D <&L2_600>;
->                         operating-points-v2 =3D <&cpu4_opp_table>;
-> +                       capacity-dmips-mhz =3D <1946>;
-> +                       dynamic-power-coefficient =3D <520>;
->                         interconnects =3D <&gem_noc MASTER_APPSS_PROC 3 &=
-mc_virt SLAVE_EBI1 3>,
->                                         <&epss_l3 MASTER_EPSS_L3_APPS &ep=
-ss_l3 SLAVE_EPSS_L3_SHARED>;
->                         qcom,freq-domain =3D <&cpufreq_hw 1>;
-> @@ -342,6 +356,8 @@
->                                            &CLUSTER_SLEEP_0>;
->                         next-level-cache =3D <&L2_700>;
->                         operating-points-v2 =3D <&cpu7_opp_table>;
-> +                       capacity-dmips-mhz =3D <1985>;
-> +                       dynamic-power-coefficient =3D <552>;
-
-The fact that cpu7 has different values for capacity-dmips-mhz and
-dynamic-power-coefficient is surprising to me. I think what this means
-is that at the same MHz this core can process more instructions than
-the other big CPUs but that (at the same MHz) it burns more power
-doing so. Is that really true? I thought that this core was
-essentially the same as the other big cores but was simply anointed to
-be able to run a little faster.
-
-
--Doug
