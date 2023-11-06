@@ -2,59 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CDFAC7E2B8C
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 18:59:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 388007E2B8F
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 19:02:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232106AbjKFR7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 12:59:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37568 "EHLO
+        id S231755AbjKFSCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 13:02:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231940AbjKFR67 (ORCPT
+        with ESMTP id S229567AbjKFSCH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 12:58:59 -0500
-Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::227])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D231FD47;
-        Mon,  6 Nov 2023 09:58:53 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 81CDA20003;
-        Mon,  6 Nov 2023 17:58:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1699293532;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ghK2kxsjca6u59VkbLnWStX76G5XSjL+RnTMtyq6xsk=;
-        b=aWF7NFZGmGlV2OGNuo6DWXwKWAKwyn1teyXFIvU68LTUamCExtuHmUY7xWGR+smJxW6LZi
-        P7bB0G/AzRvhQSj7HDFFhOZDBlj3OCIyVn6EBL/bmDC6AMiWPqdWhjZWbii7FJQ+8EVLf0
-        jsDMGiNEO6YQFXuyCS9z0xOOzUtGdW9BE7WAOa67YXOt4r8G98KglPlJYhsnYVGwUJT45F
-        DuaMouncyrxWQLer6xhFlu0Ehh4MnI0T2tV5n+8R19uZJKwiY/zYEQ7LLxT5SlquWNmoU/
-        npaR/i32JeUTPH0bs7du4pVI6bUpPg5Pj31TqLKd21EH2q99+pO8ybCybQshtQ==
-Date:   Mon, 6 Nov 2023 18:58:51 +0100
-From:   Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-To:     Mehdi Djait <mehdi.djait@bootlin.com>
-Cc:     mchehab@kernel.org, hverkuil-cisco@xs4all.nl,
-        krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
-        conor+dt@kernel.org, laurent.pinchart@ideasonboard.com,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, thomas.petazzoni@bootlin.com,
-        alexandre.belloni@bootlin.com, maxime.chevallier@bootlin.com
-Subject: Re: [PATCH v7 3/3] media: i2c: Introduce a driver for the Techwell
- TW9900 decoder
-Message-ID: <ZUkpWzw_5SdqqL2X@aptenodytes>
-References: <cover.1697463708.git.mehdi.djait@bootlin.com>
- <c3cd9002b2db69a6fb155722adc8410cd6e1f9ab.1697463708.git.mehdi.djait@bootlin.com>
- <ZUNz_h1fn9RH9Uc5@aptenodytes>
- <ZUj/FQTyajQJrxoU@pc-70.home>
- <ZUkFXl7vBS36y4Qi@aptenodytes>
- <ZUkLHDH2Budi+zgc@pc-70.home>
+        Mon, 6 Nov 2023 13:02:07 -0500
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A49001BF
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 10:02:00 -0800 (PST)
+Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-4083f613272so41714295e9.1
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 10:02:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mobile-devices.fr; s=google; t=1699293719; x=1699898519; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:subject:to:content-language:user-agent
+         :mime-version:date:message-id:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PDm506CW1CfmWdc8ZEPy9UyaSh27+NblN2O42wc6Ric=;
+        b=n3XlSfI+EJkXgZ8IZLr47V57EQeA2XyjilPCsf8ZdWHCdAtHZ/kz0qhIfq/mdd4cfh
+         Z48kIXXUzlhf62FnfQ0aFuLaULB9+mksAfEJ2L2zqjQZh/+IC1uB7TVXS56UVHqFKERz
+         2FDKXZjwADB4PnbvRL75+s5XZGx8Mqj5f3LSw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699293719; x=1699898519;
+        h=content-transfer-encoding:cc:subject:to:content-language:user-agent
+         :mime-version:date:message-id:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=PDm506CW1CfmWdc8ZEPy9UyaSh27+NblN2O42wc6Ric=;
+        b=XXh75t8AHaGArG8OhxUC0ENEUXlZOk0d9Pablma+/K5z1Rifc+PNGIZ+YVhVj9c2qY
+         JV3Fs+jupOzlKjxCyI4lLDpNH39Bg3gH0VYen7zd1qfw5uQaFsUa0lcAuDSfqX2fqrOx
+         LGc1VXSJfW7P3pfj/in2iwxMOP+JpErNybD3/haNfGREUeEu/GGfNMH8hc2ZTDQkTo8O
+         zYGBGJpYvpVbk4HF7ZdAMddVpBnxnEYF15MUPIgvSxTtDKDD2EwUpXEb7Fq2FfGKrACZ
+         /H9qAgnvUuXIkCdxC4wZ7sLe064JxblIgpLbIxRi15fKNp8QXl25aaHCIkmhf7Q9s5O3
+         ZRbg==
+X-Gm-Message-State: AOJu0Ywol24AATrfh29mzeFBGv5voihPKPMPACqOYUp/eEETcMvNoEkh
+        WPh5iB2/P25YSqaM65UyaTWALmGKFfMnphn9y+c=
+X-Google-Smtp-Source: AGHT+IEN04Uu8Xyw8RUlVXXHKf0i80rZNPf69h/WP9HYr9XT0vrLjOEwh1KX8/yJvOWvKUwZqfwCyw==
+X-Received: by 2002:a05:600c:4fd4:b0:405:3b92:2fed with SMTP id o20-20020a05600c4fd400b004053b922fedmr372167wmq.26.1699293719033;
+        Mon, 06 Nov 2023 10:01:59 -0800 (PST)
+Received: from [10.42.42.90] (static-css-cqn-143221.business.bouyguestelecom.com. [176.149.143.221])
+        by smtp.gmail.com with ESMTPSA id f14-20020a05600c154e00b004097881d7a8sm10027857wmg.0.2023.11.06.10.01.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 06 Nov 2023 10:01:58 -0800 (PST)
+From:   Maxime Jayat <maxime.jayat@mobile-devices.fr>
+X-Google-Original-From: Maxime Jayat <maxime.jayat@munic.io>
+Message-ID: <40579c18-63c0-43a4-8d4c-f3a6c1c0b417@munic.io>
+Date:   Mon, 6 Nov 2023 19:01:58 +0100
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="5gPrNW+ynBXLwBH9"
-Content-Disposition: inline
-In-Reply-To: <ZUkLHDH2Budi+zgc@pc-70.home>
-X-GND-Sasl: paul.kocialkowski@bootlin.com
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To:     Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Subject: [PATCH] can: netlink: Fix TDCO calculation using the old data
+ bittiming
+Cc:     linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,95 +73,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The TDCO calculation was done using the currently applied data bittiming,
+instead of the newly computed data bittiming, which means that the TDCO
+had an invalid value unless setting the same data bittiming twice.
 
---5gPrNW+ynBXLwBH9
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Fixes: d99755f71a80 ("can: netlink: add interface for CAN-FD Transmitter Delay Compensation (TDC)")
+Signed-off-by: Maxime Jayat <maxime.jayat@mobile-devices.fr>
+---
+ drivers/net/can/dev/netlink.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Hi,
+diff --git a/drivers/net/can/dev/netlink.c b/drivers/net/can/dev/netlink.c
+index 036d85ef07f5..dfdc039d92a6 100644
+--- a/drivers/net/can/dev/netlink.c
++++ b/drivers/net/can/dev/netlink.c
+@@ -346,7 +346,7 @@ static int can_changelink(struct net_device *dev, struct nlattr *tb[],
+ 			/* Neither of TDC parameters nor TDC flags are
+ 			 * provided: do calculation
+ 			 */
+-			can_calc_tdco(&priv->tdc, priv->tdc_const, &priv->data_bittiming,
++			can_calc_tdco(&priv->tdc, priv->tdc_const, &dbt,
+ 				      &priv->ctrlmode, priv->ctrlmode_supported);
+ 		} /* else: both CAN_CTRLMODE_TDC_{AUTO,MANUAL} are explicitly
+ 		   * turned off. TDC is disabled: do nothing
+-- 
+2.34.1
 
-On Mon 06 Nov 23, 16:49, Mehdi Djait wrote:
-> Hi Paul,
->=20
-> On Mon, Nov 06, 2023 at 04:25:18PM +0100, Paul Kocialkowski wrote:
-> > > > > +static void tw9900_fill_fmt(const struct tw9900_mode *mode,
-> > > > > +			    struct v4l2_mbus_framefmt *fmt)
-> > > > > +{
-> > > > > +	fmt->code =3D MEDIA_BUS_FMT_UYVY8_2X8;
-> > > > > +	fmt->width =3D mode->width;
-> > > > > +	fmt->height =3D mode->height;
-> > > > > +	fmt->field =3D V4L2_FIELD_NONE;
-> > > > > +	fmt->quantization =3D V4L2_QUANTIZATION_DEFAULT;
-> > > > > +	fmt->colorspace =3D V4L2_COLORSPACE_SMPTE170M;
-> > > > > +	fmt->xfer_func =3D V4L2_MAP_XFER_FUNC_DEFAULT(V4L2_COLORSPACE_S=
-MPTE170M);
-> > > > > +	fmt->ycbcr_enc =3D V4L2_MAP_YCBCR_ENC_DEFAULT(V4L2_COLORSPACE_S=
-MPTE170M);
-> > > > > +}
-> > > > > +
-> > > > > +static int tw9900_cfg_fmt(struct v4l2_subdev *sd,
-> > > >=20
-> > > > You might have to differentiate between set_fmt/get_fmt to return -=
-EBUSY
-> > > > if streaming is on in set_fmt. However I understand it will just co=
-py the
-> > > > current mode in both cases, but this might still be required to fol=
-low v4l2
-> > > > semantics (please double-check).
-> > > >=20
-> > >=20
-> > > This should be done in the driver calling the pad subdev_call set_fmt,
-> > > right ?
-> >=20
-> > Well the two things are distinct, even though it's not obvious to think=
- about
-> > a case where you wouldn't have a video device to grab the frames.
-> >=20
-> > For instance you can see this being done here:
-> > https://elixir.bootlin.com/linux/latest/source/drivers/media/i2c/ov5648=
-=2Ec#L2259
-> >=20
-> > I'm just not sure about what the V4L2 subdev API mandates. It would be =
-useful
-> > to find some piece of documentation that clarifies the requirement.
->=20
-> Ok, I will split the functions then.
-
-I was more interested in finding out the right answer rather than having you
-follow an example from another driver. You can see the docs at:
-https://www.kernel.org/doc/html/latest/userspace-api/media/v4l/vidioc-subde=
-v-g-fmt.html#return-value
-
-So I think it's a good measure to return -EBUSY here. You can just have set=
-_fmt
-call into get_fmt with an extra check before.
-
-Also see the part about the which field. I'm not sure it should have
-implications in your case but better double-check that too.
-
-Cheers,
-
-Paul
-
---=20
-Paul Kocialkowski, Bootlin
-Embedded Linux and kernel engineering
-https://bootlin.com
-
---5gPrNW+ynBXLwBH9
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEJZpWjZeIetVBefti3cLmz3+fv9EFAmVJKVsACgkQ3cLmz3+f
-v9EozAf+I00QqYcdUt8VF0JbQM85Fr2jjcK8jqzkaoPKyO+IQ9JDQprTRzr00mlG
-9ak7DQSV40QQs3OTTRk5GYEf9ujs6GA34Yn+HjECqYEs9aabQYnGq7Xqc8vM1+5q
-DPPk0jPcQtdi04lZGmDhAi0XhrLLt2kPvofX1mU4CbX1qQALMRalsuZDF2PTv20p
-b3+T/Fx67uzJ+OgeP+mUIskgg7lE4l5/FiYeBmOB292OUZF5wB5yeYJLVOcDFue0
-BuoXk65TQXToVPZhk8AIjgRRthXDt2ztvzFaVh7v+MGmZa1DXULac0WIY8E5dUxV
-e0pL3Vr7WomhFpx70zYT3p0gMUDXKg==
-=wFvV
------END PGP SIGNATURE-----
-
---5gPrNW+ynBXLwBH9--
