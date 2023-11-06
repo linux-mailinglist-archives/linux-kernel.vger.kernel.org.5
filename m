@@ -2,50 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE2207E2932
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 16:58:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 931357E2935
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 16:58:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232204AbjKFP6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 10:58:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50244 "EHLO
+        id S232341AbjKFP6l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 10:58:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231929AbjKFP6L (ORCPT
+        with ESMTP id S232032AbjKFP6k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 10:58:11 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFADA107
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 07:58:08 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6326C433C8;
-        Mon,  6 Nov 2023 15:58:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699286288;
-        bh=mdCc81ZkKWiCWgh0DtK923uhvIGiH7XK/k1z5kL2ckc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jVpno2ADWZzo2xf5ZUTtn0YL9/ygi4EpKLhqUMgJow50tSO1nxdvrrC2av4reY9CE
-         aCNR/Ks5ICeomvaqfiOel5d9nG5SS9mZHe3jlroaKuN+vrWWCs97gwzYTEcD2IDcKM
-         v8sX8al7SpfPBoSwW+vjtSqXZ85J0aeAWiCTImGWQSY4dB+X+TamwBbPXVTbLhdWkE
-         Dm39mJ8u8jYxZN7J4eLXDH4ko7fmrUklGnmooQ6uRk9ithUWd0zRY/Zr5mMh7p0LOi
-         OoRSIOBPovrjb53n4nalOPH5FQwzjorT8cBOP+inXtCB1V8U6OmNxBIV19xHpFXvf+
-         ITxTKa9mM8iIg==
-Date:   Mon, 6 Nov 2023 08:58:06 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Eric Dumazet <edumazet@google.com>
-Cc:     davem@davemloft.net, dsahern@kernel.org, kuba@kernel.org,
-        pabeni@redhat.com, ndesaulniers@google.com, trix@redhat.com,
-        0x7f454c46@gmail.com, noureddine@arista.com, hch@infradead.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, patches@lists.linux.dev
-Subject: Re: [PATCH net v2] tcp: Fix -Wc23-extensions in tcp_options_write()
-Message-ID: <20231106155806.GA1181828@dev-arch.thelio-3990X>
-References: <20231106-tcp-ao-fix-label-in-compound-statement-warning-v2-1-91eff6e1648c@kernel.org>
- <CANn89i+GF=4QuVMevE7Ur2Zi0nDjBujMHWJayURR9fbcr+McnA@mail.gmail.com>
+        Mon, 6 Nov 2023 10:58:40 -0500
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 670E013E
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 07:58:37 -0800 (PST)
+Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-507973f3b65so6148271e87.3
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 07:58:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1699286315; x=1699891115; darn=vger.kernel.org;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=pz+lvo9KWB/0i1C6RY/EtcgH2mRAd7C23ZyO/WkKZOQ=;
+        b=pzoW6JFrp+FypLfDc2Y3K5D9KywA8oNZ/4VdUvU50eLUTg3DLv6r5OruDsuXLE3ne/
+         07ZhZ4KUiD9x8PUS/RC/jeJictDMBmecCsJyK+qtmlulAQvTeuS5LpIeHf2fOkfaOppE
+         LfrANhgDK67uOmpJkzE29X2fP/zvibRJ4y1xvObzGWIab/ulTE6grs3Z6jgKk2DctvaY
+         aY+yofsPEa3C/jc5xl9LORkJOaR61Y3dgzBwe7jooMlWnvnsSdiKmCBYLPuF9HsLBjJu
+         AjxTx2vBRmmRXK9k0tRZjP2gfma2NXTmx1jTa2jvJl2OVF7ebWvsSFt1I4wBmt3IjBpL
+         1nyQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699286315; x=1699891115;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=pz+lvo9KWB/0i1C6RY/EtcgH2mRAd7C23ZyO/WkKZOQ=;
+        b=QKH8XPUnGJmKLroBoOrRpB1opZm/w9nHBoUEuKtkhh/LyKpKmZCOXGrGG2Ttmk37fU
+         KjHt6JRcGu2+HFm2LWe+rZrBjV0y3FS5vQugm/GiAhM5UhHTjhyUN81tz73fOIT2InM0
+         +Gtd1tXZHnIKGnXzP+mG/AsfB+x27xD61NEApLscnZ8I4rreACGD7GZa56varexFfyuU
+         iUk/kdH3ziCw4Z8HoYdqUmzEtW1HfF5dECpI6NGxFSmmtJiqq3h3fUvZ1iEanMPJjlLz
+         OTIN3Kb1lQI7mmYMuI+GVGeUUOESPQiDQKWswG7G6AVWwMRg7VRiPPvQd5mxFD1jyDz0
+         U68A==
+X-Gm-Message-State: AOJu0YxPjBNs72iGKVqibqX/0XalFaQ5CgMtUnmL0ERmnKaUQQSBjL/e
+        nZz9xFqZXBzJgkJMsFxYxDmmMQ==
+X-Google-Smtp-Source: AGHT+IE7C1jByKEvpl6j51TMqPSkZhjWqwB6jxg4LPUOR/FkXArv3oKYNjCeTWC9t2cAb0W3GECoBw==
+X-Received: by 2002:ac2:48b8:0:b0:507:aa44:28f8 with SMTP id u24-20020ac248b8000000b00507aa4428f8mr21123982lfg.6.1699286315483;
+        Mon, 06 Nov 2023 07:58:35 -0800 (PST)
+Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:52eb:f6ff:feb3:451a])
+        by smtp.gmail.com with ESMTPSA id p12-20020adfe60c000000b0032d886039easm9688287wrm.14.2023.11.06.07.58.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 Nov 2023 07:58:35 -0800 (PST)
+From:   Neil Armstrong <neil.armstrong@linaro.org>
+Date:   Mon, 06 Nov 2023 16:58:33 +0100
+Subject: [PATCH] arm64: dts: qcom: sm8450: fix soundwire controllers node
+ name
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CANn89i+GF=4QuVMevE7Ur2Zi0nDjBujMHWJayURR9fbcr+McnA@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20231106-topic-sm8450-upstream-soundwire-bindings-fix-v1-1-41d4844a5a7d@linaro.org>
+X-B4-Tracking: v=1; b=H4sIACgNSWUC/x2NMQ6DMAwAv4I811JCKar6lapDgh3qASeKgVZC/
+ L1Rx7vh7gDjKmzw6A6ovItJ1gb+0sH0DjozCjWG3vVX792Iay4yoS334eZwK7ZWDgta3pQ+Uhm
+ jKInOhkm+mIgGRzHENDK0ZKnc9H/3fJ3nDzm+TQN+AAAA
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Neil Armstrong <neil.armstrong@linaro.org>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2044;
+ i=neil.armstrong@linaro.org; h=from:subject:message-id;
+ bh=6+9hJc9qj0vwlS9G0ytuTFWYQuw2Z3HbqLNwaaRYS1o=;
+ b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBlSQ0qbwciZpCbfNkwPeyAVV3IWHBGEcLt1l/Kt9Ne
+ DVlGQL+JAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZUkNKgAKCRB33NvayMhJ0ZXmD/
+ 47Q7FW4nSwFahwsv7/nEUnLvhdbDAwOwL8p5VwtAvZEF+DeqfQ7CUPKn2AU/StZOYDx9NGWucAq9EX
+ DfXCG41DisIXvarMzRa0DhUWma0qsDAA57HdSxCrp0moVOGfkKmierNQoZPRo1hDxYeUETyRh1zLAb
+ Lvp/nkX2NC0kK9doVZ6fqFjvb5AHaTQuCWZgm/HKFWbo630plgakmYtax5yDnlf0UDa/rVCHrkR3Yy
+ k+nXWEOO5sVVmpYBJPJsm8xYJ4bkw/oPsM/acXb2O0cbbU3SFzCiLGaHmpmCfZlzaAYV2rz+G2y3Zu
+ c1p7dq9T33xkbRNSuaqEiBp4i4LOnh3PGCb+rfRJ10+fTuhCnGRQAIC6cuf+RnFU7Y+kMh7ZkbZ8vP
+ M6g6yv/Qsu6/aFm1TnidBGdywvDWhbUTB3hvFm5PPasXIoH2bT2srhXhzkGgfLt//vl4hN5y1F9t66
+ qmaI6K8yDhM/nJ1j0MTGfbr4O0if3D1yWDa/ph8I0R3cx8v/LY+oVRpZ6NEFJ1IyeHuc0Bz9QlFcbg
+ xy548sOb9u3chlX9LGBvlJqsZhhwuyiI/DiIN+QEF2wMqUpV34ViyCgjhs+QPon6ExAAZO9yglWq/8
+ iubk59dOpDORc/WwZ74ycu+z/Yo9ID/laJgftCD3JI6Kp2KltUzVSRVu1Vog==
+X-Developer-Key: i=neil.armstrong@linaro.org; a=openpgp;
+ fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -54,167 +96,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 06, 2023 at 04:52:52PM +0100, Eric Dumazet wrote:
-> On Mon, Nov 6, 2023 at 4:36 PM Nathan Chancellor <nathan@kernel.org> wrote:
-> >
-> > Clang warns (or errors with CONFIG_WERROR=y) when CONFIG_TCP_AO is set:
-> >
-> >   net/ipv4/tcp_output.c:663:2: error: label at end of compound statement is a C23 extension [-Werror,-Wc23-extensions]
-> >     663 |         }
-> >         |         ^
-> >   1 error generated.
-> >
-> > On earlier releases (such as clang-11, the current minimum supported
-> > version for building the kernel) that do not support C23, this was a
-> > hard error unconditionally:
-> >
-> >   net/ipv4/tcp_output.c:663:2: error: expected statement
-> >           }
-> >           ^
-> >   1 error generated.
-> >
-> > While adding a semicolon after the label would resolve this, it is more
-> > in line with the kernel as a whole to refactor this block into a
-> > standalone function, which means the goto a label construct can just be
-> > replaced with a simple return. Do so to resolve the warning.
-> >
-> > Closes: https://github.com/ClangBuiltLinux/linux/issues/1953
-> > Fixes: 1e03d32bea8e ("net/tcp: Add TCP-AO sign to outgoing packets")
-> > Signed-off-by: Nathan Chancellor <nathan@kernel.org>
-> > ---
-> > Please let me know if this function should have a different name. I
-> > think I got all the changes of the function shuffle correct but some
-> > testing would be appreciated.
-> >
-> > Changes in v2:
-> > - Break out problematic block into its own function so that goto can be
-> >   replaced with a simple return, instead of the simple semicolon
-> >   approach of v1 (Christoph)
-> > - Link to v1: https://lore.kernel.org/r/20231031-tcp-ao-fix-label-in-compound-statement-warning-v1-1-c9731d115f17@kernel.org
-> > ---
-> >  net/ipv4/tcp_output.c | 69 ++++++++++++++++++++++++++++-----------------------
-> >  1 file changed, 38 insertions(+), 31 deletions(-)
-> >
-> > diff --git a/net/ipv4/tcp_output.c b/net/ipv4/tcp_output.c
-> > index 0d8dd5b7e2e5..3f8dc74fbf40 100644
-> > --- a/net/ipv4/tcp_output.c
-> > +++ b/net/ipv4/tcp_output.c
-> > @@ -601,6 +601,43 @@ static void bpf_skops_write_hdr_opt(struct sock *sk, struct sk_buff *skb,
-> >  }
-> >  #endif
-> >
-> > +static void process_tcp_ao_options(struct tcp_sock *tp,
-> > +                                  const struct tcp_request_sock *tcprsk,
-> > +                                  struct tcp_out_options *opts,
-> > +                                  struct tcp_out_options *opts,
-> 
-> ptr has a different type than in the caller, this is a bit confusing
-> 
-> I would use
-> 
-> static __be32 * process_tcp_ao_options(struct tcp_sock *tp, const
-> struct tcp_request_sock *tcprsk,
->                   struct tcp_out_options *opts,struct tcp_key *key, __be32 *ptr)
+Fix the following dt bindings check:
+arch/arm64/boot/dts/qcom/sm8450-hdk.dtb: soundwire-controller@31f0000: $nodename:0: 'soundwire-controller@31f0000' does not match '^soundwire(@.*)?$'
+        from schema $id: http://devicetree.org/schemas/soundwire/qcom,soundwire.yaml#
 
-Ah, this suggestion is much better, thanks. I'll make this adjustment
-and send a v3 later today in case others have any suggested changes (I
-know netdev prefers waiting 24 hours for another revision but I'd like
-to get this warning cleared up by -rc1 so it does not proliferate into
-other trees and I sent v1 almost a week ago).
+Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+---
+ arch/arm64/boot/dts/qcom/sm8450.dtsi | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-> > +{
-> > +#ifdef CONFIG_TCP_AO
-> > +       u8 maclen = tcp_ao_maclen(key->ao_key);
-> > +
-> > +       if (tcprsk) {
-> > +               u8 aolen = maclen + sizeof(struct tcp_ao_hdr);
-> > +
-> > +               *(*ptr)++ = htonl((TCPOPT_AO << 24) | (aolen << 16) |
-> > +                                 (tcprsk->ao_keyid << 8) |
-> > +                                 (tcprsk->ao_rcv_next));
-> 
-> 
->                  *ptr++ = ...
-> 
-> (and in all other *ptr uses in this helper)
-> 
-> > +       } else {
-> > +               struct tcp_ao_key *rnext_key;
-> > +               struct tcp_ao_info *ao_info;
-> > +
-> > +               ao_info = rcu_dereference_check(tp->ao_info,
-> > +                       lockdep_sock_is_held(&tp->inet_conn.icsk_inet.sk));
-> > +               rnext_key = READ_ONCE(ao_info->rnext_key);
-> > +               if (WARN_ON_ONCE(!rnext_key))
-> > +                       return;
-> > +               *(*ptr)++ = htonl((TCPOPT_AO << 24) |
-> > +                                 (tcp_ao_len(key->ao_key) << 16) |
-> > +                                 (key->ao_key->sndid << 8) |
-> > +                                 (rnext_key->rcvid));
-> > +       }
-> > +       opts->hash_location = (__u8 *)(*ptr);
-> > +       *ptr += maclen / sizeof(**ptr);
-> > +       if (unlikely(maclen % sizeof(**ptr))) {
-> > +               memset(*ptr, TCPOPT_NOP, sizeof(**ptr));
-> > +               (*ptr)++;
-> > +       }
-> > +#endif
-> 
->     return ptr;
-> +}
-> > +
-> >  /* Write previously computed TCP options to the packet.
-> >   *
-> >   * Beware: Something in the Internet is very sensitive to the ordering of
-> > @@ -629,37 +666,7 @@ static void tcp_options_write(struct tcphdr *th, struct tcp_sock *tp,
-> >                 opts->hash_location = (__u8 *)ptr;
-> >                 ptr += 4;
-> >         } else if (tcp_key_is_ao(key)) {
-> > -#ifdef CONFIG_TCP_AO
-> > -               u8 maclen = tcp_ao_maclen(key->ao_key);
-> > -
-> > -               if (tcprsk) {
-> > -                       u8 aolen = maclen + sizeof(struct tcp_ao_hdr);
-> > -
-> > -                       *ptr++ = htonl((TCPOPT_AO << 24) | (aolen << 16) |
-> > -                                      (tcprsk->ao_keyid << 8) |
-> > -                                      (tcprsk->ao_rcv_next));
-> > -               } else {
-> > -                       struct tcp_ao_key *rnext_key;
-> > -                       struct tcp_ao_info *ao_info;
-> > -
-> > -                       ao_info = rcu_dereference_check(tp->ao_info,
-> > -                               lockdep_sock_is_held(&tp->inet_conn.icsk_inet.sk));
-> > -                       rnext_key = READ_ONCE(ao_info->rnext_key);
-> > -                       if (WARN_ON_ONCE(!rnext_key))
-> > -                               goto out_ao;
-> > -                       *ptr++ = htonl((TCPOPT_AO << 24) |
-> > -                                      (tcp_ao_len(key->ao_key) << 16) |
-> > -                                      (key->ao_key->sndid << 8) |
-> > -                                      (rnext_key->rcvid));
-> > -               }
-> > -               opts->hash_location = (__u8 *)ptr;
-> > -               ptr += maclen / sizeof(*ptr);
-> > -               if (unlikely(maclen % sizeof(*ptr))) {
-> > -                       memset(ptr, TCPOPT_NOP, sizeof(*ptr));
-> > -                       ptr++;
-> > -               }
-> > -out_ao:
-> > -#endif
-> > +               process_tcp_ao_options(tp, tcprsk, opts, key, &ptr);
-> 
-> ptr = process_tcp_ao_options(tp, tcprsk, opts, key, ptr);
-> 
-> 
-> >         }
-> >         if (unlikely(opts->mss)) {
-> >                 *ptr++ = htonl((TCPOPT_MSS << 24) |
-> >
-> > ---
-> > base-commit: c1ed833e0b3b7b9edc82b97b73b2a8a10ceab241
-> > change-id: 20231031-tcp-ao-fix-label-in-compound-statement-warning-ebd6c9978498
-> >
-> > Best regards,
-> > --
-> > Nathan Chancellor <nathan@kernel.org>
-> >
+diff --git a/arch/arm64/boot/dts/qcom/sm8450.dtsi b/arch/arm64/boot/dts/qcom/sm8450.dtsi
+index 9b0ff240e678..a305f8c03f9e 100644
+--- a/arch/arm64/boot/dts/qcom/sm8450.dtsi
++++ b/arch/arm64/boot/dts/qcom/sm8450.dtsi
+@@ -2165,7 +2165,7 @@ wsa2macro: codec@31e0000 {
+ 			#sound-dai-cells = <1>;
+ 		};
+ 
+-		swr4: soundwire-controller@31f0000 {
++		swr4: soundwire@31f0000 {
+ 			compatible = "qcom,soundwire-v1.7.0";
+ 			reg = <0 0x031f0000 0 0x2000>;
+ 			interrupts = <GIC_SPI 171 IRQ_TYPE_LEVEL_HIGH>;
+@@ -2213,7 +2213,7 @@ rxmacro: codec@3200000 {
+ 			#sound-dai-cells = <1>;
+ 		};
+ 
+-		swr1: soundwire-controller@3210000 {
++		swr1: soundwire@3210000 {
+ 			compatible = "qcom,soundwire-v1.7.0";
+ 			reg = <0 0x03210000 0 0x2000>;
+ 			interrupts = <GIC_SPI 155 IRQ_TYPE_LEVEL_HIGH>;
+@@ -2280,7 +2280,7 @@ wsamacro: codec@3240000 {
+ 			#sound-dai-cells = <1>;
+ 		};
+ 
+-		swr0: soundwire-controller@3250000 {
++		swr0: soundwire@3250000 {
+ 			compatible = "qcom,soundwire-v1.7.0";
+ 			reg = <0 0x03250000 0 0x2000>;
+ 			interrupts = <GIC_SPI 170 IRQ_TYPE_LEVEL_HIGH>;
+@@ -2307,7 +2307,7 @@ swr0: soundwire-controller@3250000 {
+ 			status = "disabled";
+ 		};
+ 
+-		swr2: soundwire-controller@33b0000 {
++		swr2: soundwire@33b0000 {
+ 			compatible = "qcom,soundwire-v1.7.0";
+ 			reg = <0 0x033b0000 0 0x2000>;
+ 			interrupts = <GIC_SPI 496 IRQ_TYPE_LEVEL_HIGH>,
+
+---
+base-commit: d9ea330bc3c68e8d08e116f3827ae94568fef367
+change-id: 20231106-topic-sm8450-upstream-soundwire-bindings-fix-fdd40dbabf6e
+
+Best regards,
+-- 
+Neil Armstrong <neil.armstrong@linaro.org>
+
