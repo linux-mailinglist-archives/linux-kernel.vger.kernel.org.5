@@ -2,170 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B87C77E201E
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 12:36:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EAED7E2020
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 12:37:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231462AbjKFLgb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 06:36:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60522 "EHLO
+        id S231473AbjKFLhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 06:37:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229974AbjKFLg3 (ORCPT
+        with ESMTP id S229583AbjKFLhg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 06:36:29 -0500
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2087.outbound.protection.outlook.com [40.107.237.87])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5210EB3;
-        Mon,  6 Nov 2023 03:36:26 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NDdhnEc0mdRhVOF0kZScvzLlsojNCShzpOcQBZ8ysExXIgiZAFZSOn4ysGwoLo/ehaxVSCbXleLEY3Z2B1Z3Tk2X97RKIdJk4RL/ph1nxnGNCnvFiYFUROWpWe5sTmZuM1U3s9aEn7r/UVLfIRc1iVT9j3ZLIe3GhHqRyeRV6zdN/riSbJXj/EBm/2F3HWXr6cZdRz9PDtfj5MHCdOFKAKkPBsPpqquwyqATRW8jydVffZRog4HR9xSj2OstvDBpNQ97cS9to9FsMu5TuYUmpLy2zGCvupZXv2DZp/jAefExBuGuBx6JChJT5LPrPx3ubqnv/wD3ZzajOTBtMkKAqw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=iqTlQeBgbcIWowlcj0q5vh8XTUTb21oIVfbEgmfJk8k=;
- b=aRYF5BaeyVJtBYTvSn5FsKucnRnPght/3VsHDrk52FtgVwL880amU9JQyshZFQDqVqU7Cxl9iA7falHfqyEV08s8Ai/TrmMiqzKH4T7+uGrEEhfNtDTDzBMtGQRzGa5CyfE0BI1zEwoDyeVqWzIZeocXmN5HANHIWgUQzrq957daRYD44Nxuv4bV1NCxIh7mSibLWvpTbh84YaVlBTjwkQlk278XSoZisHyyU2AjFJjPxT1g7cQt1muxVKbVSK/nN2BKu3n2SOEQXNP3s8Lqj2d6XwYDjQ27BKkUYUU9uTl72c2FN1z7AVqG/iiAGWZyrRES8aHiaaYJkSC1KDmceA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=iqTlQeBgbcIWowlcj0q5vh8XTUTb21oIVfbEgmfJk8k=;
- b=MQ6t40LEFmdatmWfP/UStT2F/3YZlnvNWsN4u4IYollffhvI1U62Fd/tYgTC3o8Uyg7jnqcww+/71b8hiPrF0eKXxLqp5KMLoxCJTFNU5Jur6dMIWA2gtOcrWRVru0zsdEpREd5TiY+HKj21jIsyqnJfuolqxfldTSouXDMBdPg=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from BYAPR12MB4614.namprd12.prod.outlook.com (2603:10b6:a03:a6::22)
- by DM6PR12MB4403.namprd12.prod.outlook.com (2603:10b6:5:2ab::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.28; Mon, 6 Nov
- 2023 11:36:23 +0000
-Received: from BYAPR12MB4614.namprd12.prod.outlook.com
- ([fe80::ce36:81fc:9c50:c892]) by BYAPR12MB4614.namprd12.prod.outlook.com
- ([fe80::ce36:81fc:9c50:c892%6]) with mapi id 15.20.6954.028; Mon, 6 Nov 2023
- 11:36:23 +0000
-Message-ID: <29c3e90b-9e9a-b428-661a-bff5d2b034af@amd.com>
-Date:   Mon, 6 Nov 2023 17:06:12 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.13.1
-Subject: Re: [PATCH v1] drm: amd: Resolve Sphinx unexpected indentation
- warning
-Content-Language: en-US
-To:     Hunter Chasens <hunter.chasens18@ncf.edu>,
-        linux-kernel@vger.kernel.org
-Cc:     linux-doc@vger.kernel.org, Xinhui.Pan@amd.com,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        daniel@ffwll.ch, alexander.deucher@amd.com, evan.quan@amd.com,
-        airlied@gmail.com, christian.koenig@amd.com
-References: <20231105210044.70371-1-hunter.chasens18@ncf.edu>
-From:   "Lazar, Lijo" <lijo.lazar@amd.com>
-In-Reply-To: <20231105210044.70371-1-hunter.chasens18@ncf.edu>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: PN2PR01CA0197.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:c01:e9::6) To BYAPR12MB4614.namprd12.prod.outlook.com
- (2603:10b6:a03:a6::22)
+        Mon, 6 Nov 2023 06:37:36 -0500
+Received: from mail-oo1-f71.google.com (mail-oo1-f71.google.com [209.85.161.71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ABE7B3
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 03:37:33 -0800 (PST)
+Received: by mail-oo1-f71.google.com with SMTP id 006d021491bc7-583f706347dso5316416eaf.2
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 03:37:33 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699270652; x=1699875452;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=752K2dY/AB7mbBB/HscAYS2JfEjDyA9h6rYTmopUx6k=;
+        b=cWb1GVw++I7d70GfL2S1dJ7l0DtZc3hb8Zcun/3SIUPPMqCiyk1uSkUG2FkFPSE0cB
+         RJL3+SoU9k7dNKcLy4h21d5CF7nX+mK2fjafa4tn264KOO8/+nH40e0s2rXG5BRKVp5t
+         QPy5rYGM57mUaMgG0Lzl2jz6wVwdIgW8bQYTTZtaIefZAJ4HvYpfYKZf2RifemcX2ORl
+         fX01kDDBONgNTbWTxwXPP4u33O2mh6zatGDF+VKDdPG2yS4UauTO/6QBxcQyCpTrXM4t
+         /FvyEZRm+z4Zn7FWNcIdpQT/x4TKU572y0GCiccVEy1oEvOOEQuZd8uiY9/FzSOgT1nD
+         P3Ag==
+X-Gm-Message-State: AOJu0Yyyld22h9BFpVd/0OipsjLFg8EgDZDO7xFlNoVZgZbUwnfeYfyZ
+        nFvSPaeWafVWzaYfT8Rndxhm8H7VUnreEmdDthBzgZIv81kYjjM=
+X-Google-Smtp-Source: AGHT+IGRJtLfhN0dIqIJ7xD/OKrZaIm/VTcPZy30F8bh7eLSPDRd49pd0B9SHJbdy2DCD+fxgnK6ewrZNOut58xY9szCjObPJx4c
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BYAPR12MB4614:EE_|DM6PR12MB4403:EE_
-X-MS-Office365-Filtering-Correlation-Id: 8716dad4-c51c-4787-69a9-08dbdebc9a65
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: +CuBxQQ2uDnf+8Ul6NoMb7Tr7HfvJZNIUi1yoqcA0Zgi5APwPKPQwGESjB4eNxKGQrYGPaHvw5y6IR1jrLoAyA88ixFWaZPsAvq6TW/QMJAvPLBNGTEH+XToITuQcuQOg8vJPDow03sBi3/pp7LrkLcUJAaDqeThprCcY05IS0EGe7/2vr/WELOdnV4oRRO/eBA0CAP/NETCSqk8chz0mZg2XVmOtCqTUWLbPf44Hz9qA40hUx1pkJ/NvQmry1e81fzeRo03vm+DyEqgM5bPY475VCQDDo9GEVEzV5ZA1vQe6ROnBa3vR0VfZfLNK97dyCKidyBxBztM0mnTPInBEARKRYeooPy/kwRgBDrReUubmyuYr4SkKmbkDL4zLtRDWNULaharmgVl/6cf298RK3oDCl3cagDmOoqV9LUltr4jlAB4jIe/ayiVjZGz0LaZuZywbxUa3s+YxNHgWeVnFBIcfG75m1JKqkuV49NSSmGOMy+8WBgj0C7WoN10dwfg42FMWSJCXiBLZGWny3+R8yabkWfsvC943L5qrluM+Udq1PKAFpudz3jQmKsNMDoAnGol8ysf5kNSdhwKxKCNMMRIlA545eM4NRPsUsND6Ikpkfx4YnxeWarG7PXH8rhBw/aRYz34v6RWQYdszJlrfY9u5tGhZncaXAhrQNtyRl8hEhjufHcFQZTavwKazgyL
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB4614.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(376002)(396003)(366004)(136003)(346002)(230922051799003)(230273577357003)(230173577357003)(186009)(1800799009)(64100799003)(451199024)(83380400001)(316002)(38100700002)(53546011)(478600001)(6486002)(6666004)(6506007)(66556008)(66476007)(26005)(6512007)(66946007)(2616005)(5660300002)(2906002)(8676002)(36756003)(31696002)(41300700001)(86362001)(4326008)(8936002)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?YWtUam42NWRYalZqN05mWWtrM1dqejhMTktCZHRtNkhuekF3a3dKTXZjMkpj?=
- =?utf-8?B?dHhSeW1XMTZ4QU1Qa2x4eHRoeWlUL2Q4TnJNZWs4TjRsbEI3OGVQMkI4KzZN?=
- =?utf-8?B?U2k4QmliTkhjemlKYVVtZmUzOU9kVCszWlpac3ZpbnBjcC9sL3ZwMzRxZHY2?=
- =?utf-8?B?WGtFNGFsc1YwNVlvY1ZaeUhkeTlhbUVKVmUzNDdSNjAvSHQyNlIybnQrWVNr?=
- =?utf-8?B?T3JEYWFYNnZibjRIeE5xY2g0ZnQ5YTlMelg0dkExcHNsTWtDc1dVWDlUU1h4?=
- =?utf-8?B?a0kybEViV0FXaGIxTW1zM3UyeDFiaGU1MTkvZzAvNTFWc2RJdEltSXlWVERk?=
- =?utf-8?B?Y25mYTFxSHYydmF3cDZDN3JHa2dXUVNXajdpQU0vTjlJUldpSklLckpaY050?=
- =?utf-8?B?YjlRR2JocjJrUmE2SVI3amJhWHl3bXlwSlRFV1lmcWx3N1c1cEpZNjkxM2NB?=
- =?utf-8?B?b04wdDdNUitnS1U0aXVNbkptVHY3SFdkMU01bG5ybnRVRzVBUmM1akQzNnZY?=
- =?utf-8?B?TG01enBiZ0VvWjUrT2RCdk1VUHUxLzJKbmkyRnJpdmFVRHN4cDdUS0phaVI0?=
- =?utf-8?B?MXdXL3V3Q3pIZWZkYmFuTEZzVXpHQzhQdlVmVll0bXB6Z1dyUVNMUE8xUC9F?=
- =?utf-8?B?TTIxRHNVQ2lONkZob0JYdnJUMGZGMTBCTUQwWmR6aGhIbmlsSGNMcjlMaTRN?=
- =?utf-8?B?NGdMQTY4TGRCTVQwQjhLRDZKYnpXTVQ4eXo0dDlhNjJJNVByNENxMzF5Rk5F?=
- =?utf-8?B?TzBxb0JKZDBKTWNydVpxODhaZUR1eDhpYXNBV3VMQlZCcUFVM2M0NDI0REx4?=
- =?utf-8?B?ZUZwYXgzQUdqSGlIcDV6aW95Tk5rMkl1WjBSZHBFSHNWcnJCL3hveFdxZktP?=
- =?utf-8?B?STVONVJJak5jNzRQSXBKWnZDa3RRMmtxMlg4d2p3eVY5MzRLakRhTlBUOFZv?=
- =?utf-8?B?ZzF2aHFaY2kyTFNydUZYNE1EOGN5NkVQdFh6SDdKOUdlRHN6L25odVkvRXBQ?=
- =?utf-8?B?OUNlbUk3NmVDUmw5QkhyYlI2cTFYRXVQOHoyOUJ2eW5TZTR2ZTU3djdKWmJs?=
- =?utf-8?B?cGNSQUFiRDExTUNIL1RlUVg0ZTJnZzhOM254TjFTSVE1SmFQQ0VOcFozU0tV?=
- =?utf-8?B?RW1RSk1kNjR5YVJXbkJRQzJvekdWSk9TLzIwaGtjUGdGQVlsdlUrenY4QkJG?=
- =?utf-8?B?NVpLbkIxSXZCQTZMck41Vk8rWHo4TDRuR2xQSWljVDZJbFMvRVEyR3V5d1o5?=
- =?utf-8?B?TlpUcW94RmFVcjRPb2NrTUVZZmFHSVFtOXErdk5mQWRlNWIxMnlOZkozRkRO?=
- =?utf-8?B?WUt2c3M3RW5EUEV0NEJTdlhPeCs2ODIybFdjeTFZRGd6VGE5dVpEdE54THlC?=
- =?utf-8?B?TXhJU2VZdUVtV2YzaSsrQ0tUcVFrUnl6eE5janduNUg5b2NKdkFoY085WjRS?=
- =?utf-8?B?Z1ZKTm9RT3NwQ2NwK2xVYnVNUUtXT3dkR2NlNmx1Zm9MMStMTXFEYnk1WGpx?=
- =?utf-8?B?YmFURmFBckQ5aE9WT3Z2QVRqOU1ZV3VaV1hPdCtDeEFURzFoYy85VVRUSlZq?=
- =?utf-8?B?UVBqa0hCQTJPb29uMCtNc1lVamJCejFacjNERHAreHgxdDJtOWNOTHJOMU5z?=
- =?utf-8?B?dldTbmNjNDlyOFJRZUh0T2wzc0Y5MzdiRklaRXdjNndET1dZclR0QWtXNHp3?=
- =?utf-8?B?MUdaSm1kbWpvMnJyL3hBQTRURTJ4enFSRzZzNWFoaFl3enYrNG5jcGNUS1lr?=
- =?utf-8?B?WDhvSVRVYUh5NjdxaVlwVEY0RU5GTzAybk10bTdpN2toWkRMQlpKajBKazNV?=
- =?utf-8?B?cndLcDkwdWVrdGlPV2RtcFhORDZleldnRmFwZUFNTUQweTZPZTZpMUFmS0dj?=
- =?utf-8?B?b3dJdjRoZjN6TmxDa2ZtckFZN3IvSDcxSTRNeWV4R1NidDU1dlViYTdEMzJw?=
- =?utf-8?B?UXFKWE1yOFVsZ3ZyNWs2N1FhOFVPNEQ3TzQ5YnV5MHlNMlNDMm0vbXhJdTFU?=
- =?utf-8?B?dzBWMFJZR0UxQWZ1TjhISVhFVC96K3FZSlNYdjM4S1Q3cW5VRFpDSzQwSURW?=
- =?utf-8?B?Ni91WVJ2ZzRHR3R3VG85RFdMcjYxcHRBL0d6OVN4eUtMV3BvYmNGMVRqRzBE?=
- =?utf-8?Q?V2DWJ0yKVYh655JY4YaFmtWxP?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8716dad4-c51c-4787-69a9-08dbdebc9a65
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB4614.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Nov 2023 11:36:23.2838
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 2ySbcIUKNkuHmTucnfMFw/4uNUAyriY2V570r+VAtySSQ1C0hW5jlQp3X1W5iz87
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4403
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Received: by 2002:a4a:d38b:0:b0:581:d9c6:79be with SMTP id
+ i11-20020a4ad38b000000b00581d9c679bemr9354957oos.1.1699270652655; Mon, 06 Nov
+ 2023 03:37:32 -0800 (PST)
+Date:   Mon, 06 Nov 2023 03:37:32 -0800
+In-Reply-To: <000000000000910ad106089f45eb@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000a0ff5306097a47f6@google.com>
+Subject: Re: [syzbot] [PATCH] Test for 2030579113a1
+From:   syzbot <syzbot+df3f3ef31f60781fa911@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+For archival purposes, forwarding an incoming command email to
+linux-kernel@vger.kernel.org.
 
+***
 
-On 11/6/2023 2:30 AM, Hunter Chasens wrote:
-> Resolves Sphinx unexpected indentation warning when compiling
-> documentation (e.g. `make htmldocs`). Replaces tabs with spaces and adds
-> a literal block to keep vertical formatting of the
-> example power state list.
-> 
-> Signed-off-by: Hunter Chasens <hunter.chasens18@ncf.edu>
+Subject: [PATCH] Test for 2030579113a1
+Author: eadavis@qq.com
 
-Thanks!
-	Reviewed-by: Lijo Lazar <lijo.lazar@amd.com>
-> ---
->   drivers/gpu/drm/amd/pm/amdgpu_pm.c | 13 ++++++++-----
->   1 file changed, 8 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/amd/pm/amdgpu_pm.c b/drivers/gpu/drm/amd/pm/amdgpu_pm.c
-> index 517b9fb4624c..703fe2542258 100644
-> --- a/drivers/gpu/drm/amd/pm/amdgpu_pm.c
-> +++ b/drivers/gpu/drm/amd/pm/amdgpu_pm.c
-> @@ -990,11 +990,14 @@ static ssize_t amdgpu_get_pp_features(struct device *dev,
->    * the power state and the clock information for those levels. If deep sleep is
->    * applied to a clock, the level will be denoted by a special level 'S:'
->    * E.g.,
-> - *	S: 19Mhz *
-> - *	0: 615Mhz
-> - *	1: 800Mhz
-> - *	2: 888Mhz
-> - *	3: 1000Mhz
-> + *
-> + * ::
-> + *
-> + *  S: 19Mhz *
-> + *  0: 615Mhz
-> + *  1: 800Mhz
-> + *  2: 888Mhz
-> + *  3: 1000Mhz
->    *
->    *
->    * To manually adjust these states, first select manual using
+please test BUG: corrupted list in ptp_open
+
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git 2dac75696c6d
+
+diff --git a/drivers/ptp/ptp_chardev.c b/drivers/ptp/ptp_chardev.c
+index 282cd7d24077..473b6d992507 100644
+--- a/drivers/ptp/ptp_chardev.c
++++ b/drivers/ptp/ptp_chardev.c
+@@ -108,6 +108,7 @@ int ptp_open(struct posix_clock_context *pccontext, fmode_t fmode)
+ 		container_of(pccontext->clk, struct ptp_clock, clock);
+ 	struct timestamp_event_queue *queue;
+ 	char debugfsname[32];
++	unsigned long flags;
+ 
+ 	queue = kzalloc(sizeof(*queue), GFP_KERNEL);
+ 	if (!queue)
+@@ -119,7 +120,9 @@ int ptp_open(struct posix_clock_context *pccontext, fmode_t fmode)
+ 	}
+ 	bitmap_set(queue->mask, 0, PTP_MAX_CHANNELS);
+ 	spin_lock_init(&queue->lock);
++	spin_lock_irqsave(&ptp->tsevqs_lock, flags);
+ 	list_add_tail(&queue->qlist, &ptp->tsevqs);
++	spin_unlock_irqrestore(&ptp->tsevqs_lock, flags);
+ 	pccontext->private_clkdata = queue;
+ 
+ 	/* Debugfs contents */
+@@ -139,16 +142,16 @@ int ptp_release(struct posix_clock_context *pccontext)
+ {
+ 	struct timestamp_event_queue *queue = pccontext->private_clkdata;
+ 	unsigned long flags;
++	struct ptp_clock *ptp =
++		container_of(pccontext->clk, struct ptp_clock, clock);
+ 
+-	if (queue) {
+-		debugfs_remove(queue->debugfs_instance);
+-		pccontext->private_clkdata = NULL;
+-		spin_lock_irqsave(&queue->lock, flags);
+-		list_del(&queue->qlist);
+-		spin_unlock_irqrestore(&queue->lock, flags);
+-		bitmap_free(queue->mask);
+-		kfree(queue);
+-	}
++	debugfs_remove(queue->debugfs_instance);
++	pccontext->private_clkdata = NULL;
++	spin_lock_irqsave(&ptp->tsevqs_lock, flags);
++	list_del(&queue->qlist);
++	spin_unlock_irqrestore(&ptp->tsevqs_lock, flags);
++	bitmap_free(queue->mask);
++	kfree(queue);
+ 	return 0;
+ }
+ 
+diff --git a/drivers/ptp/ptp_clock.c b/drivers/ptp/ptp_clock.c
+index 3d1b0a97301c..b901f2910963 100644
+--- a/drivers/ptp/ptp_clock.c
++++ b/drivers/ptp/ptp_clock.c
+@@ -179,11 +179,11 @@ static void ptp_clock_release(struct device *dev)
+ 	mutex_destroy(&ptp->pincfg_mux);
+ 	mutex_destroy(&ptp->n_vclocks_mux);
+ 	/* Delete first entry */
++	spin_lock_irqsave(&tsevq->lock, flags);
+ 	tsevq = list_first_entry(&ptp->tsevqs, struct timestamp_event_queue,
+ 				 qlist);
+-	spin_lock_irqsave(&tsevq->lock, flags);
+ 	list_del(&tsevq->qlist);
+-	spin_unlock_irqrestore(&tsevq->lock, flags);
++	spin_unlock_irqrestore(&ptp->tsevqs_lock, flags);
+ 	bitmap_free(tsevq->mask);
+ 	kfree(tsevq);
+ 	debugfs_remove(ptp->debugfs_root);
+@@ -247,6 +247,7 @@ struct ptp_clock *ptp_clock_register(struct ptp_clock_info *info,
+ 	if (!queue)
+ 		goto no_memory_queue;
+ 	list_add_tail(&queue->qlist, &ptp->tsevqs);
++	spin_lock_init(&ptp->tsevqs_lock);
+ 	queue->mask = bitmap_alloc(PTP_MAX_CHANNELS, GFP_KERNEL);
+ 	if (!queue->mask)
+ 		goto no_memory_bitmap;
+@@ -407,6 +408,7 @@ void ptp_clock_event(struct ptp_clock *ptp, struct ptp_clock_event *event)
+ {
+ 	struct timestamp_event_queue *tsevq;
+ 	struct pps_event_time evt;
++	unsigned long flags;
+ 
+ 	switch (event->type) {
+ 
+@@ -415,10 +417,12 @@ void ptp_clock_event(struct ptp_clock *ptp, struct ptp_clock_event *event)
+ 
+ 	case PTP_CLOCK_EXTTS:
+ 		/* Enqueue timestamp on selected queues */
++		spin_lock_irqsave(&ptp->tsevqs_lock, flags);
+ 		list_for_each_entry(tsevq, &ptp->tsevqs, qlist) {
+ 			if (test_bit((unsigned int)event->index, tsevq->mask))
+ 				enqueue_external_timestamp(tsevq, event);
+ 		}
++		spin_unlock_irqrestore(&ptp->tsevqs_lock, flags);
+ 		wake_up_interruptible(&ptp->tsev_wq);
+ 		break;
+ 
+diff --git a/drivers/ptp/ptp_private.h b/drivers/ptp/ptp_private.h
+index 52f87e394aa6..35fde0a05746 100644
+--- a/drivers/ptp/ptp_private.h
++++ b/drivers/ptp/ptp_private.h
+@@ -44,6 +44,7 @@ struct ptp_clock {
+ 	struct pps_device *pps_source;
+ 	long dialed_frequency; /* remembers the frequency adjustment */
+ 	struct list_head tsevqs; /* timestamp fifo list */
++	spinlock_t tsevqs_lock; /* protects tsevqs from concurrent access */
+ 	struct mutex pincfg_mux; /* protect concurrent info->pin_config access */
+ 	wait_queue_head_t tsev_wq;
+ 	int defunct; /* tells readers to go away when clock is being removed */
+diff --git a/drivers/ptp/ptp_chardev.c b/drivers/ptp/ptp_chardev.c
+index 473b6d992507..3f7a74788802 100644
+--- a/drivers/ptp/ptp_chardev.c
++++ b/drivers/ptp/ptp_chardev.c
+@@ -588,7 +588,5 @@ ssize_t ptp_read(struct posix_clock_context *pccontext, uint rdflags,
+ free_event:
+ 	kfree(event);
+ exit:
+-	if (result < 0)
+-		ptp_release(pccontext);
+ 	return result;
+ }
+-- 
+2.25.1
+
