@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 38FBC7E2DCE
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 21:11:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B14EF7E2DD4
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 21:12:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232455AbjKFULs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 15:11:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41262 "EHLO
+        id S233007AbjKFUMD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 15:12:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233015AbjKFULp (ORCPT
+        with ESMTP id S232865AbjKFULq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 15:11:45 -0500
-Received: from out-178.mta1.migadu.com (out-178.mta1.migadu.com [95.215.58.178])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A84E10CC
+        Mon, 6 Nov 2023 15:11:46 -0500
+Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [IPv6:2001:41d0:203:375::ba])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB744D75
         for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 12:11:42 -0800 (PST)
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1699301500;
+        t=1699301501;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=22d9hHWXVi8zazHV61QMl0VMY5WvMEtggwgAvi4OURE=;
-        b=uCxP18KqioH8DesdZGPrQhB9iAWKsetIiyp+iZWAll3HfZniU6A5CfSfVvg/YBXwUWgOgp
-        g7au6m059IPietJorP9ETACRyTK+wluf8gUh/M/fKwcPWO9JGxfNf9EdEiOA8l56yCB+on
-        SoSVmK/iZ+6LRI96vDxmC3Xr0mWe7BI=
+        bh=mCp2zVxGwC1RwRlWPaWBJT09DIYULTSyRat3kYinLuo=;
+        b=d537NTwRPy7XHKrbuKDfSOCLE08WU2ewkqbATysLDcBjkJxGbnCtGoml9BLyk6/HLbiYso
+        RIWijpSbPsp80ot8o8jmcjVSegnslv45cg4Nvd81jyQ1AX00FXznhsA0/PT1hlWfYlVBc3
+        NcK/vgYL8Yq2KxPrM8UJdzKMgl1NbA8=
 From:   andrey.konovalov@linux.dev
 To:     Marco Elver <elver@google.com>,
         Alexander Potapenko <glider@google.com>
@@ -36,9 +36,9 @@ Cc:     Andrey Konovalov <andreyknvl@gmail.com>,
         Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org,
         Andrey Konovalov <andreyknvl@google.com>
-Subject: [PATCH RFC 09/20] kasan: save free stack traces for slab mempools
-Date:   Mon,  6 Nov 2023 21:10:18 +0100
-Message-Id: <52d80b4c1d42b10b6c2c3cba57b628a88cb58e03.1699297309.git.andreyknvl@google.com>
+Subject: [PATCH RFC 10/20] kasan: clean up and rename ____kasan_kmalloc
+Date:   Mon,  6 Nov 2023 21:10:19 +0100
+Message-Id: <ac4e6fd5fde6f8d87fba1745860d93087c53b2cd.1699297309.git.andreyknvl@google.com>
 In-Reply-To: <cover.1699297309.git.andreyknvl@google.com>
 References: <cover.1699297309.git.andreyknvl@google.com>
 MIME-Version: 1.0
@@ -56,98 +56,104 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Andrey Konovalov <andreyknvl@google.com>
 
-Make kasan_mempool_poison_object save free stack traces for slab and
-kmalloc mempools when the object is freed into the mempool.
+Introduce a new poison_kmalloc_redzone helper function that poisons
+the redzone for kmalloc object.
 
-Also simplify and rename ____kasan_slab_free to poison_slab_object and
-do a few other reability changes.
+Drop the confusingly named ____kasan_kmalloc function and instead use
+poison_kmalloc_redzone along with the other required parts of
+____kasan_kmalloc in the callers' code.
+
+This is a preparatory change for the following patches in this series.
 
 Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 ---
- include/linux/kasan.h |  5 +++--
- mm/kasan/common.c     | 20 +++++++++-----------
- 2 files changed, 12 insertions(+), 13 deletions(-)
+ mm/kasan/common.c | 42 ++++++++++++++++++++++--------------------
+ 1 file changed, 22 insertions(+), 20 deletions(-)
 
-diff --git a/include/linux/kasan.h b/include/linux/kasan.h
-index f8ebde384bd7..e636a00e26ba 100644
---- a/include/linux/kasan.h
-+++ b/include/linux/kasan.h
-@@ -268,8 +268,9 @@ bool __kasan_mempool_poison_object(void *ptr, unsigned long ip);
-  * to reuse them instead of freeing them back to the slab allocator (e.g.
-  * mempool).
-  *
-- * This function poisons a slab allocation without initializing its memory and
-- * without putting it into the quarantine (for the Generic mode).
-+ * This function poisons a slab allocation and saves a free stack trace for it
-+ * without initializing the allocation's memory and without putting it into the
-+ * quarantine (for the Generic mode).
-  *
-  * This function also performs checks to detect double-free and invalid-free
-  * bugs and reports them. The caller can use the return value of this function
 diff --git a/mm/kasan/common.c b/mm/kasan/common.c
-index 7c28d0a5af2c..683d0dad32f2 100644
+index 683d0dad32f2..ceb06d5f169f 100644
 --- a/mm/kasan/common.c
 +++ b/mm/kasan/common.c
-@@ -197,8 +197,8 @@ void * __must_check __kasan_init_slab_obj(struct kmem_cache *cache,
- 	return (void *)object;
+@@ -302,26 +302,12 @@ void * __must_check __kasan_slab_alloc(struct kmem_cache *cache,
+ 	return tagged_object;
  }
  
--static inline bool ____kasan_slab_free(struct kmem_cache *cache, void *object,
--				unsigned long ip, bool quarantine, bool init)
-+static inline bool poison_slab_object(struct kmem_cache *cache, void *object,
-+				      unsigned long ip, bool init)
+-static inline void *____kasan_kmalloc(struct kmem_cache *cache,
++static inline void poison_kmalloc_redzone(struct kmem_cache *cache,
+ 				const void *object, size_t size, gfp_t flags)
  {
- 	void *tagged_object;
+ 	unsigned long redzone_start;
+ 	unsigned long redzone_end;
  
-@@ -211,13 +211,12 @@ static inline bool ____kasan_slab_free(struct kmem_cache *cache, void *object,
- 	if (is_kfence_address(object))
- 		return false;
- 
--	if (unlikely(nearest_obj(cache, virt_to_slab(object), object) !=
--	    object)) {
-+	if (unlikely(nearest_obj(cache, virt_to_slab(object), object) != object)) {
- 		kasan_report_invalid_free(tagged_object, ip, KASAN_REPORT_INVALID_FREE);
- 		return true;
- 	}
- 
--	/* RCU slabs could be legally used after free within the RCU period */
-+	/* RCU slabs could be legally used after free within the RCU period. */
- 	if (unlikely(cache->flags & SLAB_TYPESAFE_BY_RCU))
- 		return false;
- 
-@@ -229,19 +228,18 @@ static inline bool ____kasan_slab_free(struct kmem_cache *cache, void *object,
- 	kasan_poison(object, round_up(cache->object_size, KASAN_GRANULE_SIZE),
- 			KASAN_SLAB_FREE, init);
- 
--	if ((IS_ENABLED(CONFIG_KASAN_GENERIC) && !quarantine))
--		return false;
+-	if (gfpflags_allow_blocking(flags))
+-		kasan_quarantine_reduce();
 -
- 	if (kasan_stack_collection_enabled())
- 		kasan_save_free_info(cache, tagged_object);
+-	if (unlikely(object == NULL))
+-		return NULL;
+-
+-	if (is_kfence_address(kasan_reset_tag(object)))
+-		return (void *)object;
+-
+-	/*
+-	 * The object has already been unpoisoned by kasan_slab_alloc() for
+-	 * kmalloc() or by kasan_krealloc() for krealloc().
+-	 */
+-
+ 	/*
+ 	 * The redzone has byte-level precision for the generic mode.
+ 	 * Partially poison the last object granule to cover the unaligned
+@@ -345,14 +331,25 @@ static inline void *____kasan_kmalloc(struct kmem_cache *cache,
+ 	if (kasan_stack_collection_enabled() && is_kmalloc_cache(cache))
+ 		kasan_save_alloc_info(cache, (void *)object, flags);
  
--	return kasan_quarantine_put(cache, object);
-+	return false;
+-	/* Keep the tag that was set by kasan_slab_alloc(). */
+-	return (void *)object;
  }
  
- bool __kasan_slab_free(struct kmem_cache *cache, void *object,
- 				unsigned long ip, bool init)
+ void * __must_check __kasan_kmalloc(struct kmem_cache *cache, const void *object,
+ 					size_t size, gfp_t flags)
  {
--	return ____kasan_slab_free(cache, object, ip, true, init);
-+	bool buggy_object = poison_slab_object(cache, object, ip, init);
+-	return ____kasan_kmalloc(cache, object, size, flags);
++	if (gfpflags_allow_blocking(flags))
++		kasan_quarantine_reduce();
 +
-+	return buggy_object ? true : kasan_quarantine_put(cache, object);
++	if (unlikely(object == NULL))
++		return NULL;
++
++	if (is_kfence_address(kasan_reset_tag(object)))
++		return (void *)object;
++
++	/* The object has already been unpoisoned by kasan_slab_alloc(). */
++	poison_kmalloc_redzone(cache, object, size, flags);
++
++	/* Keep the tag that was set by kasan_slab_alloc(). */
++	return (void *)object;
+ }
+ EXPORT_SYMBOL(__kasan_kmalloc);
+ 
+@@ -398,6 +395,9 @@ void * __must_check __kasan_krealloc(const void *object, size_t size, gfp_t flag
+ 	if (unlikely(object == ZERO_SIZE_PTR))
+ 		return (void *)object;
+ 
++	if (is_kfence_address(kasan_reset_tag(object)))
++		return (void *)object;
++
+ 	/*
+ 	 * Unpoison the object's data.
+ 	 * Part of it might already have been unpoisoned, but it's unknown
+@@ -410,8 +410,10 @@ void * __must_check __kasan_krealloc(const void *object, size_t size, gfp_t flag
+ 	/* Piggy-back on kmalloc() instrumentation to poison the redzone. */
+ 	if (unlikely(!slab))
+ 		return __kasan_kmalloc_large(object, size, flags);
+-	else
+-		return ____kasan_kmalloc(slab->slab_cache, object, size, flags);
++	else {
++		poison_kmalloc_redzone(slab->slab_cache, object, size, flags);
++		return (void *)object;
++	}
  }
  
- static inline bool check_page_allocation(void *ptr, unsigned long ip)
-@@ -462,7 +460,7 @@ bool __kasan_mempool_poison_object(void *ptr, unsigned long ip)
- 	}
- 
- 	slab = folio_slab(folio);
--	return !____kasan_slab_free(slab->slab_cache, ptr, ip, false, false);
-+	return !poison_slab_object(slab->slab_cache, ptr, ip, false);
- }
- 
- void __kasan_mempool_unpoison_object(void *ptr, size_t size, unsigned long ip)
+ bool __kasan_mempool_poison_pages(struct page *page, unsigned int order,
 -- 
 2.25.1
 
