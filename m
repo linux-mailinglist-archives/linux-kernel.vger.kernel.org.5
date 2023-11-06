@@ -2,68 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 81BAF7E2E1F
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 21:24:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76EE57E2E27
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 21:27:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232071AbjKFUYQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 15:24:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37430 "EHLO
+        id S232503AbjKFU11 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 15:27:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231169AbjKFUYP (ORCPT
+        with ESMTP id S231169AbjKFU10 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 15:24:15 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B8ABD71;
-        Mon,  6 Nov 2023 12:24:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699302250; x=1730838250;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=HUQJarH/crV1JopZJb9YSb1wHfMu7JhiXQvXe0faobI=;
-  b=dXk2ebsKvvNWPDE301Pv9Ge5nX9Umy4WaHt6++1CVS6ZC9K4i1TgdqzC
-   cix6COZk0k8mbcqcCpgtSlJCnxbAW1gTreLIy5S3w9mjU8wipWNHL41IU
-   QmHMQDdfPSUCen56wzLXX/GzG3PaGTE1Y5vRWTlLXlhxfsT0QT591SSex
-   SUb+3QiHlxyDB7b/oJOfWvclUfSa8dbSPRZbLT3lw/7yhE/BtDvRdfwad
-   +rt6nIZSSkAewZOcisYewFh9OmyOe4VWY9t7WCnbvTTpjfyDYSSROE6Dz
-   qlWaFtWPYiZ80SnoWELdZOy8BFs6lUWHbTNAkdoqASyWn/lAeeYPEeGcy
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10886"; a="453670644"
-X-IronPort-AV: E=Sophos;i="6.03,282,1694761200"; 
-   d="scan'208";a="453670644"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Nov 2023 12:24:09 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10886"; a="797421965"
-X-IronPort-AV: E=Sophos;i="6.03,282,1694761200"; 
-   d="scan'208";a="797421965"
-Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by orsmga001.jf.intel.com with ESMTP; 06 Nov 2023 12:24:06 -0800
-Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r068i-0006i4-0B;
-        Mon, 06 Nov 2023 20:24:04 +0000
-Date:   Tue, 7 Nov 2023 04:22:44 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Frank Li <Frank.Li@nxp.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:TTY LAYER AND SERIAL DRIVERS" 
-        <linux-serial@vger.kernel.org>
-Cc:     oe-kbuild-all@lists.linux.dev, alexandre.belloni@bootlin.com,
-        conor.culhane@silvaco.com, imx@lists.linux.dev, joe@perches.com,
-        linux-i3c@lists.infradead.org, miquel.raynal@bootlin.com
-Subject: Re: [PATCH 1/1] tty: i3c: add tty over i3c master support
-Message-ID: <202311070330.5mylauLR-lkp@intel.com>
-References: <20231018211111.3437929-1-Frank.Li@nxp.com>
+        Mon, 6 Nov 2023 15:27:26 -0500
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE42ED71
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 12:27:23 -0800 (PST)
+Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-6b77ab73c6fso3885844b3a.1
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 12:27:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1699302443; x=1699907243; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=80E3933pskVlE5UyIRV6Ob4lwrCmfSHIsxb+JaP6S0I=;
+        b=Sp9MEwLO4ifu/D7BHUiv4t9ZGeKViCsSfhYCqlDmH+8yE4QVQlo0tFPMgLPFISRGQC
+         TLNnc677HAEcLfEII6apLbVK0FarGfB0WyBZQxWndHWvB4mPrs1WFENRouaI+OHS3N6c
+         Pts2m331z/LWIrQwJdPM5PlTlIpXdDcuki3aU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699302443; x=1699907243;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=80E3933pskVlE5UyIRV6Ob4lwrCmfSHIsxb+JaP6S0I=;
+        b=jZs846mWLGcrALmfiPdGBoz+S4SNOiKVNLn41zMbUK39qtuZKGqJzBBHzzU+pRXBmg
+         lwe1OA2FSvO83yZjNunTyKUBXRmoRNEeCaVXWbBhAUl+cOfG2nu58lW9iGjj5iGw7jrP
+         bc7bOBgyJCXa0HoqeP5tbCNbl7O98bcwhe1KoBDlkCFIdBkMpADO5nWatEeBoghjNwf4
+         +nGqx/URgi9aD5TlY6246vKgkecYZemFv8ifUAscrKjfKAPKB+5yAXBpGFktz62as4Bi
+         cnVAPhMrTCswtweomEGL9hzWcWXG5btei26Qwm00Y95Wn4CLb2FjcWQjSWWF4kvaJ7Gc
+         kRyg==
+X-Gm-Message-State: AOJu0Yxm9XOcXRA7RSBThaAg3FDI9t3SXJJ8HIgqhpyRNaxI2aH7bjTB
+        jpvM3o6hLzIormUhnVeBG1xXGg==
+X-Google-Smtp-Source: AGHT+IFt2a2rg2N35fU4YkotwbhqznStieELiLySmeft6wTdm0GPhFQxNEJH0xIcvECj7GXb4c3NJQ==
+X-Received: by 2002:a05:6a00:14c5:b0:68e:351b:15b9 with SMTP id w5-20020a056a0014c500b0068e351b15b9mr817734pfu.4.1699302443259;
+        Mon, 06 Nov 2023 12:27:23 -0800 (PST)
+Received: from hsinyi.sjc.corp.google.com ([2620:15c:9d:2:3374:ff6c:474e:a78])
+        by smtp.gmail.com with ESMTPSA id fj36-20020a056a003a2400b00689f5940061sm6144150pfb.17.2023.11.06.12.27.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 Nov 2023 12:27:22 -0800 (PST)
+From:   Hsin-Yi Wang <hsinyi@chromium.org>
+To:     Douglas Anderson <dianders@chromium.org>
+Cc:     Neil Armstrong <neil.armstrong@linaro.org>,
+        Jessica Zhang <quic_jesszhan@quicinc.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 0/3] Add a few panels and use correct modes
+Date:   Mon,  6 Nov 2023 12:22:47 -0800
+Message-ID: <20231106202718.2770821-1-hsinyi@chromium.org>
+X-Mailer: git-send-email 2.42.0.869.gea05f2083d-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231018211111.3437929-1-Frank.Li@nxp.com>
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,97 +73,22 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Frank,
+This series contains 3 patches:
+1. Add a few new generic edp panels.
+2. Support a new quirk to override the mode read from edid
+3. Only add hard-coded mode if both edid and hard-coded modes presents.
 
-kernel test robot noticed the following build errors:
+v1: https://patchwork.kernel.org/project/dri-devel/cover/20231101212604.1636517-1-hsinyi@chromium.org/
+v2: https://patchwork.kernel.org/project/dri-devel/cover/20231102221309.1971910-1-hsinyi@chromium.org/
 
-[auto build test ERROR on tty/tty-testing]
-[also build test ERROR on tty/tty-next tty/tty-linus linus/master v6.6 next-20231106]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Hsin-Yi Wang (3):
+  drm/panel-edp: drm/panel-edp: Add several generic edp panels
+  drm/panel-edp: Add override_edid_mode quirk for generic edp
+  drm/panel-edp: Avoid adding multiple preferred modes
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Frank-Li/tty-i3c-add-tty-over-i3c-master-support/20231019-051407
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/tty.git tty-testing
-patch link:    https://lore.kernel.org/r/20231018211111.3437929-1-Frank.Li%40nxp.com
-patch subject: [PATCH 1/1] tty: i3c: add tty over i3c master support
-config: microblaze-allyesconfig (https://download.01.org/0day-ci/archive/20231107/202311070330.5mylauLR-lkp@intel.com/config)
-compiler: microblaze-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231107/202311070330.5mylauLR-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311070330.5mylauLR-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   drivers/tty/i3c_tty.c: In function 'tty_i3c_rxwork':
->> drivers/tty/i3c_tty.c:265:26: error: 'struct i3c_priv_xfer' has no member named 'actual_len'
-     265 |                 if (xfers.actual_len) {
-         |                          ^
-   drivers/tty/i3c_tty.c:266:82: error: 'struct i3c_priv_xfer' has no member named 'actual_len'
-     266 |                         tty_insert_flip_string(&sport->port, sport->buffer, xfers.actual_len);
-         |                                                                                  ^
->> drivers/tty/i3c_tty.c:271:25: error: implicit declaration of function 'i3c_device_getstatus_format1' [-Werror=implicit-function-declaration]
-     271 |                         i3c_device_getstatus_format1(sport->i3cdev, &status);
-         |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/tty/i3c_tty.c: At top level:
-   drivers/tty/i3c_tty.c:400:6: warning: no previous prototype for 'i3c_remove' [-Wmissing-prototypes]
-     400 | void i3c_remove(struct i3c_device *dev)
-         |      ^~~~~~~~~~
-   cc1: some warnings being treated as errors
-
-
-vim +265 drivers/tty/i3c_tty.c
-
-   246	
-   247	static void tty_i3c_rxwork(struct work_struct *work)
-   248	{
-   249		struct ttyi3c_port *sport = container_of(work, struct ttyi3c_port, rxwork);
-   250		struct i3c_priv_xfer xfers;
-   251		int retry = I3C_TTY_RETRY;
-   252		u16 status = BIT(0);
-   253	
-   254		do {
-   255			memset(&xfers, 0, sizeof(xfers));
-   256			xfers.data.in = sport->buffer;
-   257			xfers.len = I3C_TTY_TRANS_SIZE;
-   258			xfers.rnw = 1;
-   259	
-   260			if (I3C_TTY_RX_STOP & atomic_read(&sport->status))
-   261				break;
-   262	
-   263			i3c_device_do_priv_xfers(sport->i3cdev, &xfers, 1);
-   264	
- > 265			if (xfers.actual_len) {
-   266				tty_insert_flip_string(&sport->port, sport->buffer, xfers.actual_len);
-   267				retry = 20;
-   268				continue;
-   269			} else {
-   270				status = BIT(0);
- > 271				i3c_device_getstatus_format1(sport->i3cdev, &status);
-   272				/*
-   273				 * Target side need some time to fill data into fifo. Target side may not
-   274				 * have hardware update status in real time. Software update status always
-   275				 * need some delays.
-   276				 *
-   277				 * Generally, target side have cicular buffer in memory, it will be moved
-   278				 * into FIFO by CPU or DMA. 'status' just show if cicular buffer empty. But
-   279				 * there are gap, espcially CPU have not response irq to fill FIFO in time.
-   280				 * So xfers.actual will be zero, wait for little time to avoid flood
-   281				 * transfer in i3c bus.
-   282				 */
-   283				usleep_range(I3C_TTY_YIELD_US, 10 * I3C_TTY_YIELD_US);
-   284				retry--;
-   285			}
-   286	
-   287		} while (retry && (status & BIT(0)));
-   288	
-   289		tty_flip_buffer_push(&sport->port);
-   290	}
-   291	
+ drivers/gpu/drm/panel/panel-edp.c | 148 ++++++++++++++++++++++++++----
+ 1 file changed, 132 insertions(+), 16 deletions(-)
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.42.0.869.gea05f2083d-goog
+
