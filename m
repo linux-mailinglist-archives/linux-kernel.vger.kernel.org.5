@@ -2,123 +2,277 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BCA17E2EF3
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 22:30:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A6127E2EF6
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 22:32:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233092AbjKFVa0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 16:30:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47634 "EHLO
+        id S233087AbjKFVck (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 16:32:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232954AbjKFVaY (ORCPT
+        with ESMTP id S233005AbjKFVci (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 16:30:24 -0500
-Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D70B9D6E;
-        Mon,  6 Nov 2023 13:30:20 -0800 (PST)
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 24F1D1C0070; Mon,  6 Nov 2023 22:30:18 +0100 (CET)
-Date:   Mon, 6 Nov 2023 22:30:17 +0100
-From:   Pavel Machek <pavel@denx.de>
-To:     Daniel =?iso-8859-1?Q?D=EDaz?= <daniel.diaz@linaro.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org
-Subject: Re: [PATCH 5.10 00/95] 5.10.200-rc1 review
-Message-ID: <ZUla6RAd3LMyHZ9G@duo.ucw.cz>
-References: <20231106130304.678610325@linuxfoundation.org>
- <8aec1bd5-befc-486c-9e47-7571b937b8c7@linaro.org>
+        Mon, 6 Nov 2023 16:32:38 -0500
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5185FB0
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 13:32:35 -0800 (PST)
+Received: by mail-lj1-x233.google.com with SMTP id 38308e7fff4ca-2c54c8934abso70500311fa.0
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 13:32:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1699306353; x=1699911153; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TFuNQvNz6VrigJhBNosf/uvYFJji3ZKCfAmovuTcn/Y=;
+        b=WAaa50qsWk3jABk1DmSqGg5Z7OA9W9a0+AelCz5OsjcxF/0bhzquoFUy5TcFoS97BV
+         2skpE95rhTxEQgIDOdHoKzzF02M17ntOUNVgeiJHaI4j7L9OHWpYod46ubA82RanySmW
+         o8xQqM/VR4tUV6/oZYNqQC0hIplmb82ZgDW1E=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699306353; x=1699911153;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=TFuNQvNz6VrigJhBNosf/uvYFJji3ZKCfAmovuTcn/Y=;
+        b=qD5zTVQXYyFWoGCzfVyA5HL7iQE1QyYrKE1CcsKWsYsVtmvbp6hVLgU8dtfqGRvsIB
+         BKPp55oWwpZXFJ1iAl+3PYMLKkwDYfSW7BElxeVCtBDsHncMSG8bvP472/kAdcS6ka4S
+         STeghOzxX0n7JB0XiNcPFfo8b1dRjKLGRRHp9A4ospRXWujkigpkJHXYpabIqp7l+3LN
+         OZtvD2foOAzByU4KBRtRrjXCjVtqpA64i5SKTX8MsJ4QraUV4DLZQ8UucukLZpNwmnax
+         EVM67ZwyzmyK/UClFyyxmRmPrnTzPn0IpYHs+/i0Vo7UfnBmU/28T8P0X0bwLcNsLLyp
+         RRLQ==
+X-Gm-Message-State: AOJu0YzwloCn7PJ9rWnQlXqRu86QhXnAWMLlFvTdMeNiItKHc+e0mLva
+        OKw5FNH9YiSBBdHuhQGUWAAVxMSlRdkLL3V/vIfTYQ==
+X-Google-Smtp-Source: AGHT+IF3bktFCNpdSPZ33wXIdxerwcsZTrZQgNtcaBEL1jDL8yYFxH+qopoVxoDxjxJOkR1LijrrfjC07LxpmEQhQsE=
+X-Received: by 2002:a2e:9a97:0:b0:2c5:911:db70 with SMTP id
+ p23-20020a2e9a97000000b002c50911db70mr20227847lji.14.1699306353305; Mon, 06
+ Nov 2023 13:32:33 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="SlteEoC60KSBKHNT"
-Content-Disposition: inline
-In-Reply-To: <8aec1bd5-befc-486c-9e47-7571b937b8c7@linaro.org>
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_NEUTRAL,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+References: <cover.1699095159.git.bristot@kernel.org> <c7b706d30d6316c52853ca056db5beb82ba72863.1699095159.git.bristot@kernel.org>
+ <CAEXW_YS=PrWDx+YGVR7bmq0_SoKNztzGrreApCd9qk1yBLA5bA@mail.gmail.com>
+In-Reply-To: <CAEXW_YS=PrWDx+YGVR7bmq0_SoKNztzGrreApCd9qk1yBLA5bA@mail.gmail.com>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Mon, 6 Nov 2023 16:32:22 -0500
+Message-ID: <CAEXW_YQ8kv3tXQJexLSguPuWi0bXiReKDyYNo9+A-Hgp=Zo1vA@mail.gmail.com>
+Subject: Re: [PATCH v5 6/7] sched/deadline: Deferrable dl server
+To:     Daniel Bristot de Oliveira <bristot@kernel.org>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        linux-kernel@vger.kernel.org,
+        Luca Abeni <luca.abeni@santannapisa.it>,
+        Tommaso Cucinotta <tommaso.cucinotta@santannapisa.it>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vineeth Pillai <vineeth@bitbyteword.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Phil Auld <pauld@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Nov 6, 2023 at 2:32=E2=80=AFPM Joel Fernandes <joel@joelfernandes.o=
+rg> wrote:
+>
+> Hi Daniel,
+>
+> On Sat, Nov 4, 2023 at 6:59=E2=80=AFAM Daniel Bristot de Oliveira
+> <bristot@kernel.org> wrote:
+> >
+> > Among the motivations for the DL servers is the real-time throttling
+> > mechanism. This mechanism works by throttling the rt_rq after
+> > running for a long period without leaving space for fair tasks.
+> >
+> > The base dl server avoids this problem by boosting fair tasks instead
+> > of throttling the rt_rq. The point is that it boosts without waiting
+> > for potential starvation, causing some non-intuitive cases.
+> >
+> > For example, an IRQ dispatches two tasks on an idle system, a fair
+> > and an RT. The DL server will be activated, running the fair task
+> > before the RT one. This problem can be avoided by deferring the
+> > dl server activation.
+> >
+> > By setting the zerolax option, the dl_server will dispatch an
+> > SCHED_DEADLINE reservation with replenished runtime, but throttled.
+> >
+> > The dl_timer will be set for (period - runtime) ns from start time.
+> > Thus boosting the fair rq on its 0-laxity time with respect to
+> > rt_rq.
+> >
+> > If the fair scheduler has the opportunity to run while waiting
+> > for zerolax time, the dl server runtime will be consumed. If
+> > the runtime is completely consumed before the zerolax time, the
+> > server will be replenished while still in a throttled state. Then,
+> > the dl_timer will be reset to the new zerolax time
+> >
+> > If the fair server reaches the zerolax time without consuming
+> > its runtime, the server will be boosted, following CBS rules
+> > (thus without breaking SCHED_DEADLINE).
+> >
+> > Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
+> > ---
+> >  include/linux/sched.h   |   2 +
+> >  kernel/sched/deadline.c | 100 +++++++++++++++++++++++++++++++++++++++-
+> >  kernel/sched/fair.c     |   3 ++
+> >  3 files changed, 103 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/include/linux/sched.h b/include/linux/sched.h
+> > index 5ac1f252e136..56e53e6fd5a0 100644
+> > --- a/include/linux/sched.h
+> > +++ b/include/linux/sched.h
+> > @@ -660,6 +660,8 @@ struct sched_dl_entity {
+> >         unsigned int                    dl_non_contending : 1;
+> >         unsigned int                    dl_overrun        : 1;
+> >         unsigned int                    dl_server         : 1;
+> > +       unsigned int                    dl_zerolax        : 1;
+> > +       unsigned int                    dl_zerolax_armed  : 1;
+> >
+> >         /*
+> >          * Bandwidth enforcement timer. Each -deadline task has its
+> > diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
+> > index 1d7b96ca9011..69ee1fbd60e4 100644
+> > --- a/kernel/sched/deadline.c
+> > +++ b/kernel/sched/deadline.c
+> > @@ -772,6 +772,14 @@ static inline void replenish_dl_new_period(struct =
+sched_dl_entity *dl_se,
+> >         /* for non-boosted task, pi_of(dl_se) =3D=3D dl_se */
+> >         dl_se->deadline =3D rq_clock(rq) + pi_of(dl_se)->dl_deadline;
+> >         dl_se->runtime =3D pi_of(dl_se)->dl_runtime;
+> > +
+> > +       /*
+> > +        * If it is a zerolax reservation, throttle it.
+> > +        */
+> > +       if (dl_se->dl_zerolax) {
+> > +               dl_se->dl_throttled =3D 1;
+> > +               dl_se->dl_zerolax_armed =3D 1;
+> > +       }
+> >  }
+> >
+> >  /*
+> > @@ -828,6 +836,7 @@ static inline void setup_new_dl_entity(struct sched=
+_dl_entity *dl_se)
+> >   * could happen are, typically, a entity voluntarily trying to overcom=
+e its
+> >   * runtime, or it just underestimated it during sched_setattr().
+> >   */
+> > +static int start_dl_timer(struct sched_dl_entity *dl_se);
+> >  static void replenish_dl_entity(struct sched_dl_entity *dl_se)
+> >  {
+> >         struct dl_rq *dl_rq =3D dl_rq_of_se(dl_se);
+> > @@ -874,6 +883,28 @@ static void replenish_dl_entity(struct sched_dl_en=
+tity *dl_se)
+> >                 dl_se->dl_yielded =3D 0;
+> >         if (dl_se->dl_throttled)
+> >                 dl_se->dl_throttled =3D 0;
+> > +
+> > +       /*
+> > +        * If this is the replenishment of a zerolax reservation,
+> > +        * clear the flag and return.
+> > +        */
+> > +       if (dl_se->dl_zerolax_armed) {
+> > +               dl_se->dl_zerolax_armed =3D 0;
+> > +               return;
+> > +       }
+> > +
+> > +       /*
+> > +        * A this point, if the zerolax server is not armed, and the de=
+adline
+> > +        * is in the future, throttle the server and arm the zerolax ti=
+mer.
+> > +        */
+> > +       if (dl_se->dl_zerolax &&
+> > +           dl_time_before(dl_se->deadline - dl_se->runtime, rq_clock(r=
+q))) {
+> > +               if (!is_dl_boosted(dl_se)) {
+> > +                       dl_se->dl_zerolax_armed =3D 1;
+> > +                       dl_se->dl_throttled =3D 1;
+> > +                       start_dl_timer(dl_se);
+> > +               }
+> > +       }
+> >  }
+> >
+> >  /*
+> > @@ -1024,6 +1055,13 @@ static void update_dl_entity(struct sched_dl_ent=
+ity *dl_se)
+> >                 }
+> >
+> >                 replenish_dl_new_period(dl_se, rq);
+> > +       } else if (dl_server(dl_se) && dl_se->dl_zerolax) {
+> > +               /*
+> > +                * The server can still use its previous deadline, so t=
+hrottle
+> > +                * and arm the zero-laxity timer.
+> > +                */
+> > +               dl_se->dl_zerolax_armed =3D 1;
+> > +               dl_se->dl_throttled =3D 1;
+> >         }
+> >  }
+> >
+> > @@ -1056,8 +1094,20 @@ static int start_dl_timer(struct sched_dl_entity=
+ *dl_se)
+> >          * We want the timer to fire at the deadline, but considering
+> >          * that it is actually coming from rq->clock and not from
+> >          * hrtimer's time base reading.
+> > +        *
+> > +        * The zerolax reservation will have its timer set to the
+> > +        * deadline - runtime. At that point, the CBS rule will decide
+> > +        * if the current deadline can be used, or if a replenishment
+> > +        * is required to avoid add too much pressure on the system
+> > +        * (current u > U).
+> >          */
+> > -       act =3D ns_to_ktime(dl_next_period(dl_se));
+> > +       if (dl_se->dl_zerolax_armed) {
+> > +               WARN_ON_ONCE(!dl_se->dl_throttled);
+> > +               act =3D ns_to_ktime(dl_se->deadline - dl_se->runtime);
+>
+> Just a question, here if dl_se->deadline - dl_se->runtime is large,
+> then does that mean that server activation will be much more into the
+> future? So say I want to give CFS 30%, then it will take 70% of the
+> period before CFS preempts RT thus "starving" CFS for this duration. I
+> think that's Ok for smaller periods and runtimes, though.
+>
+> I think it does reserve the amount of required CFS bandwidth so it is
+> probably OK, though it is perhaps letting RT run more initially (say
+> if CFS tasks are not CPU bound and occasionally wake up, they will
+> always be hit by the 70% latency AFAICS which may be large for large
+> periods and small runtimes).
+>
 
---SlteEoC60KSBKHNT
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+One more consideration I guess is, because the server is throttled
+till 0-laxity time, it is possible that if CFS sleeps even a bit
+(after the DL-server is unthrottled), then it will be pushed out to a
+full current deadline + period due to CBS. In such a situation,  if
+CFS-server is the only DL task running, it might starve RT for a bit
+more time.
 
-Hi!
+Example, say CFS runtime is 0.3s and period is 1s. At 0.7s, 0-laxity
+timer fires. CFS runs for 0.29s, then sleeps for 0.005s and wakes up
+at 0.295s (its remaining runtime is 0.01s at this point which is < the
+"time till deadline" of 0.005s). Now the runtime of the CFS-server
+will be replenished to the full 3s (due to CBS) and the deadline
+pushed out. The end result is the total runtime that the CFS-server
+actually gets is 0.0595s (though yes it did sleep for 5ms in between,
+still that's tiny -- say if it briefly blocked on a kernel mutex).
 
-> > This is the start of the stable review cycle for the 5.10.200 release.
-> > There are 95 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> >=20
-> > Responses should be made by Wed, 08 Nov 2023 13:02:46 +0000.
-> > Anything received after that time might be too late.
-> >=20
-> > The whole patch series can be found in one patch at:
-> > 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.=
-200-rc1.gz
-> > or in the git tree and branch at:
-> > 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.g=
-it linux-5.10.y
-> > and the diffstat can be found below.
->=20
-> There seems to be a problem building for RISC-V with GCC 8, 12, and Clang=
- 17. This is with defconfig, allnoconfig, tinyconfig:
->=20
-> -----8<-----
-> /builds/linux/drivers/irqchip/irq-riscv-intc.c: In function 'riscv_intc_i=
-nit':
-> /builds/linux/drivers/irqchip/irq-riscv-intc.c:119:17: error: implicit de=
-claration of function 'fwnode_dev_initialized'; did you mean 'zone_is_initi=
-alized'? [-Werror=3Dimplicit-function-declaration]
->   119 |                 fwnode_dev_initialized(of_fwnode_handle(node), tr=
-ue);
->       |                 ^~~~~~~~~~~~~~~~~~~~~~
->       |                 zone_is_initialized
-> cc1: some warnings being treated as errors
-> make[3]: *** [/builds/linux/scripts/Makefile.build:286: drivers/irqchip/i=
-rq-riscv-intc.o] Error 1
-> make[3]: Target '__build' not remade because of errors.
-> make[2]: *** [/builds/linux/scripts/Makefile.build:503: drivers/irqchip] =
-Error 2
-> make[2]: Target '__build' not remade because of errors.
-> make[1]: *** [/builds/linux/Makefile:1832: drivers] Error 2
-> make[1]: Target '__all' not remade because of errors.
-> make: *** [Makefile:192: __sub-make] Error 2
-> make: Target '__all' not remade because of errors.
-> ----->8-----
+On the other hand, if the CFS server started a bit earlier than the
+0-laxity, it would probably not have had CBS pushing it out.
 
-We see same problems in our risc-v build:
+This is likely also not an issue for shorter runtime/period values,
+still the throttling till later has a small trade-off (Not saying we
+should not do this, this whole series is likely a huge improvement
+over the current RT throttling).
 
-https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/jobs/546849=
-2319
+There is a chance I am uttering nonsense as I am not a DL expert, so
+apologies if so.
 
-> Currently bisecting.
-
-Thank you!
-
-Best regards,
-								Pavel
---=20
-DENX Software Engineering GmbH,        Managing Director: Erika Unter
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-
---SlteEoC60KSBKHNT
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZUla6QAKCRAw5/Bqldv6
-8sEcAJ9mFWtNIHn1WL1ES3oJMB3QbtUh3QCfYXOqshd6mrKwsY02B4hDExKfLQk=
-=LsI3
------END PGP SIGNATURE-----
-
---SlteEoC60KSBKHNT--
+Thanks.
