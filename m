@@ -2,83 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 25E827E2591
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 14:33:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37BA97E259D
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 14:33:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232788AbjKFNdb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 08:33:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39286 "EHLO
+        id S232782AbjKFNdo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 08:33:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232068AbjKFNd3 (ORCPT
+        with ESMTP id S232787AbjKFNdm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 08:33:29 -0500
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 542DC125;
-        Mon,  6 Nov 2023 05:33:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
-        t=1699277600; x=1699882400; i=rwarsow@gmx.de;
-        bh=e39j+u5nhKmUY6Y/YYmY9yLI0830P/dNBLtVUkw7q2M=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject;
-        b=CzFDp9BI8tS2evaEUDIWo8HybGad3XEzKBk5cO2ttysJDG3LR/CRj5io1y/S+VF6
-         QZsBTvx0qWp5pJVWq1afFRm1kcywISMjWRTI1+mI2d0Fnc1f2bPyI9C41k2jqjRxb
-         6RE0UmKO/cb9oM5g9ArHDdwS8fQpIz1BP9On85tI5+LBfsbFAe/jKMT1cFPgYlzRT
-         dUrib8+pQY6sQgtKzBYN0Rqbm5qpNId9LPOx5DYwDgLxCZVTbv7oOV+W11KZdszQb
-         WypZzZjQUo8be0+MUnhxONpJRamAnz1dMuKN81zYLqyx4WJXcRkw+7vNkpGQybJRX
-         MTEqlo1+OBdgahXwxw==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [192.168.100.20] ([46.142.35.115]) by mail.gmx.net (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1M42nY-1qzzjE0oPg-0003xQ; Mon, 06
- Nov 2023 14:33:20 +0100
-Message-ID: <fb4a1dea-241e-4c1c-907b-ffeae64d47c4@gmx.de>
-Date:   Mon, 6 Nov 2023 14:33:19 +0100
+        Mon, 6 Nov 2023 08:33:42 -0500
+Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B55BD107;
+        Mon,  6 Nov 2023 05:33:36 -0800 (PST)
+Received: by mail-qt1-x82b.google.com with SMTP id d75a77b69052e-41cc75c55f0so44849271cf.1;
+        Mon, 06 Nov 2023 05:33:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699277616; x=1699882416; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3kfYO/jqXsEVbiPCa+98Wg6yWGKOyc07wJKMC7BNdsQ=;
+        b=YJ1o35PIC4Ts2CiYbaO5InTOJCdp2W7SskqYLl9q2vqf+5AEaGZF7dAojOCI9X5t90
+         DiCanFZPGEx9nlNg5Gc4JwwIPYgp5yandgOoVe2/qUFP7R3sTyum/blrVhTJdo1UfOXS
+         +4XeJ6OMnDdAs9j8r+Y1gKB8JzkBrPKJ4ovcpsuHuKGgNwid+6xecdyvawhLWlQpFNJ/
+         niK3A7Q7HvFUwLYEjYdHxNwreJ5ljubf2TKqlROFTlK8bNQUEYXrj5SyUsSLHuydDkPu
+         KDYKWXzk3L206GKeUdw3aHN5ePdbYbsyail+37Mc6Yydmy1btxsNi7wBdM6a8JmbJ7hn
+         fowA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699277616; x=1699882416;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3kfYO/jqXsEVbiPCa+98Wg6yWGKOyc07wJKMC7BNdsQ=;
+        b=qIPrdjANE2+oW+qdHswEheUZ1Y7/QoLBC7jgkbnqontKWD8Ie8PoovkonHq/EPHFeZ
+         wXp2aJT+FlHEntIuNcFnCx/S8qZy5TllZiUPHoukWSnRLn5l8m+kuGRbQd6l+ARjYrCf
+         LBfWV/UxwdhA2A80XgqPhFVTZjA8VRT0it2bmMNblC9gp5QyaxEP+Tb7TgqQ2z3uL5y8
+         qJw3x5Y/NkNz+1Q9Rb8zeOJqyRxmUobQmxCHPCFvKH9TVYSE86mD2hSOCIBHOKwolY0r
+         StDC7ZdLTnfBnf/RpYdBBqb5z3/KUlwrqm8v/Se+LFTlwLmflYm2qcEFUYTU9Yp2m9st
+         xmNw==
+X-Gm-Message-State: AOJu0YxcmPPlWz6uY2vhec2/PoLO+ey0Q4shJ9VVkKi0lJxKADfi0xHa
+        RJR5LqXVt778X/3t9Nivr6ky1G+p7TyPfz/5EQz65peEK/w=
+X-Google-Smtp-Source: AGHT+IGfna+ns1OJYt9vnIpo34kwqS4zK3N8Q0DIkJXGI7keTrtYAHV1O3+FoRhLDkMnqRpc5FeiUhOWpjUGAD2eMr0=
+X-Received: by 2002:a05:6214:482:b0:66f:b7ff:1e12 with SMTP id
+ pt2-20020a056214048200b0066fb7ff1e12mr16096792qvb.20.1699277615718; Mon, 06
+ Nov 2023 05:33:35 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From:   Ronald Warsow <rwarsow@gmx.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org
-Content-Language: de-DE, en-US
-Subject: Re: [PATCH 6.6 00/30] 6.6.1-rc1 review
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:b9kUwxS7uLdrAxzLx7xooVQjFDVvE5X4gPvw6wCIX/ftvUldvky
- XtGsUTKs9jZW/13QTKEnUBYRr+zcIau2Fu6Ow9MtjUxbx1iSnU9wHJLBReQ9pTUvf0kiMYO
- 6un1rnJtXiny8OxFH8oN2FWRFK5cf7K7WvqxL0bJCnSsmgwEBlEXYLQd1o/oB5Gj0cx0UQg
- 6FMeWlcGCDizRWMEMSfPg==
-UI-OutboundReport: notjunk:1;M01:P0:efJ8v4b2BPo=;fBugDu8HHtzxdfbooJecWChUQC+
- 9fBTNqLZmxxymotMV/4N48Vd2RHNFjEBcX+XR4FU5sHJsoQ49KaqeupZluLoSF4SJyF8dwWHz
- bRxMrrQiLSoNxhTPekR0Np6iTR6vgbNaclX7D+pPcQgYH/WVVzLJwENPLz7HnwUdVO7vEvHon
- 6oOmwfAnnmbRhzUOoapOF168cVWK2+536mvGhUNDd8vt1zyhQELVI6y5mEPDb+mMXItVSBIg1
- 6Ek7oRpo9vjFdjX+Q15XIFreKJagmxJfJGWDaYgUDRDiJgSZBWlqVoJ7jd7Ie9bWOURAKNfhR
- Y4s2hiT0tGx4YZVnj02c3zQOACgdSs7+c2qOFmKKwGFQsCml/TxifnrHf059ZTLumj3TQZXJu
- LeC7gtFvUZM5ndYJMAX9jm1yeQJCitoI5iolmOvBGU7pteOXZGnh1Y6xEUSmDFZsJRA4+GvlL
- 7aVTa2LcOaV+ugEXocR6B8lpJYSkUIpAOn1UKmAN0Bs6LyC6qeP2NYPtixPp0DmAdVGwuhI6r
- 2454H1qgtE1utuSpY90iN7SV8h2xmeIU61npzwmg/yk4wnWMn/TMHgA0PgZkXVj5IAlI8uxVq
- maJKRiC8PMtR7Q2UNCNsgkgLtO9E5WlZRJ6ZsmktwUYwQLny5fiVWitBC2YCTHr56qwyOqtNc
- bji/wXFFDttoWNaKMsLb2PMuEr47LGDguOvH5CFnmQzxZNj3HytIPs6VhnvX7jN6eDbSt4cty
- 5WqY/H2ZXZGs5RgnuVba2xrR/bMimc/tvzExBIqlMRLH0lbUVK34Cb1fBKD28cTOa5tIckImb
- Y2ag4Ft2ma5j3pvP4JqU8iv+TeQlAGSdbP9Asluzfw1Ty50xkhsunZy3NdsnVsNMA2/dPpMqp
- xkuptfz9WRNPqbeng8ekqxxS+hBPRCvkME2mfET6lMnEZaLmF2X+jRhd/yxj3PvgDkrHgZUlN
- mEl0Wg==
+References: <20231025140205.3586473-1-mszeredi@redhat.com> <374433e3-ab72-64a3-0fa0-ab455268e5e0@themaw.net>
+ <20231106121053.egamth3hr7zcfzji@ws.net.home>
+In-Reply-To: <20231106121053.egamth3hr7zcfzji@ws.net.home>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Mon, 6 Nov 2023 15:33:23 +0200
+Message-ID: <CAOQ4uxgn--PshKxMDmM4YoDQ8x3+a0NwCv+Bppjq-3w9V+Sxpg@mail.gmail.com>
+Subject: Re: [PATCH v4 0/6] querying mount attributes
+To:     Karel Zak <kzak@redhat.com>
+Cc:     Ian Kent <raven@themaw.net>, Miklos Szeredi <mszeredi@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-man@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        David Howells <dhowells@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <christian@brauner.io>,
+        Matthew House <mattlloydhouse@gmail.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg
+On Mon, Nov 6, 2023 at 2:11=E2=80=AFPM Karel Zak <kzak@redhat.com> wrote:
+>
+> On Wed, Nov 01, 2023 at 07:52:45PM +0800, Ian Kent wrote:
+> > On 25/10/23 22:01, Miklos Szeredi wrote:
+> > Looks ok to me,covers the primary cases I needed when I worked
+> > on using fsinfo() in systemd.
+>
+> Our work on systemd was about two areas: get mount info (stat/listmount()
+> now) from the kernel, and get the mount ID from notification.
+>
+> There was watch_queue.h with WATCH_TYPE_MOUNT_NOTIFY and struct
+> mount_notification->auxiliary_mount (aka mount ID) and event subtype
+> to get the change status (new mount, umount, etc.)
+>
+> For example David's:
+>  https://patchwork.kernel.org/project/linux-security-module/patch/1559917=
+11016.15579.4449417925184028666.stgit@warthog.procyon.org.uk/
+>
+> Do we have any replacement for this?
+>
 
-6.6.1-rc1
+The plan is to extend fanotify for mount namespace change notifications.
 
-compiles, boots and runs here on x86_64
-(Intel Rocket Lake, i5-11400)
+Here is a simple POC for FAN_UNMOUNT notification:
 
-Thanks
+https://lore.kernel.org/linux-fsdevel/20230414182903.1852019-1-amir73il@gma=
+il.com/
 
-Tested-by: Ronald Warsow <rwarsow@gmx.de>
+I was waiting for Miklos' patches to land, so that we can report
+mnt_id_unique (of mount and its parent mount) in the events.
 
+The plan is to start with setting a mark on a vfsmount to get
+FAN_MOUNT/FAN_UNMOUNT notifications for changes to direct
+children of that mount.
+
+This part, I was planning to do myself. I cannot say for sure when
+I will be able to get to it, but it should be a rather simple patch.
+
+If anybody else would like to volunteer for the task, I will be
+happy to assist.
+
+Not sure if we are going to need special notifications for mount
+move and mount beneath?
+
+Not sure if we are going to need notifications on mount attribute
+changes?
+
+We may later also implement a mark on a mount namespace
+to get events on all mount namespace changes.
+
+If you have any feedback about this rough plan, or more items
+to the wish list, please feel free to share them.
+
+Thanks,
+Amir.
