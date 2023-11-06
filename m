@@ -2,49 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A2DF7E1949
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 04:57:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1E167E194B
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 04:59:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230237AbjKFD5w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Nov 2023 22:57:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52100 "EHLO
+        id S230273AbjKFD7E convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 5 Nov 2023 22:59:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230117AbjKFD5v (ORCPT
+        with ESMTP id S230266AbjKFD7D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Nov 2023 22:57:51 -0500
-Received: from mail-40131.protonmail.ch (mail-40131.protonmail.ch [185.70.40.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13EDEF2
-        for <linux-kernel@vger.kernel.org>; Sun,  5 Nov 2023 19:57:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail3; t=1699243066; x=1699502266;
-        bh=As3a27QMW/BoHW+UlSXOW4dmynjX02XHuetDPzr1fAg=;
-        h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-         Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-         Message-ID:BIMI-Selector;
-        b=BlhvldTx+ZtolLJefmPmmfXaOWSIoBHIGgVD+Ozt4PdRogycXX5xb/xAjyTNQJkoN
-         1gG1i0KW01EJD/WZ929bmEkGbwsexNCyMqEXdYZC/127RtzPlTSRal2Aypr3Nuv7k+
-         QRpizadcihXeVXMqOcRy0VdIa3J+E3oCGMgHkzNBk/lQi1OxE9X6RsgYUjOHpHEmdV
-         8MiR0g/1UXnAG2bQjilDkbwTYXEEkp351zsCtQXUUHRY2QuWLVPN/6RZyay0KvoDP8
-         K2eOMom3LhYidTXM0riGHoot+2itGyI6MxGDnvd5NoRU15MRhhar2jMW5aWQBznbIB
-         6J7BGZ3Rr9bxQ==
-Date:   Mon, 06 Nov 2023 03:57:39 +0000
-To:     Su Hui <suhui@nfschina.com>
-From:   Rahul Rameshbabu <sergeantsagara@protonmail.com>
-Cc:     ping.cheng@wacom.com, jason.gerecke@wacom.com, jikos@kernel.org,
-        benjamin.tissoires@redhat.com, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] HID: wacom_sys: add error code check in wacom_feature_mapping
-Message-ID: <871qd31qkx.fsf@protonmail.com>
-In-Reply-To: <20231020090237.201029-1-suhui@nfschina.com>
-References: <20231020090237.201029-1-suhui@nfschina.com>
-Feedback-ID: 26003777:user:proton
+        Sun, 5 Nov 2023 22:59:03 -0500
+Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4C7EBF;
+        Sun,  5 Nov 2023 19:59:00 -0800 (PST)
+Received: by mail-pg1-f180.google.com with SMTP id 41be03b00d2f7-577fff1cae6so2943011a12.1;
+        Sun, 05 Nov 2023 19:59:00 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699243140; x=1699847940;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=yEdoTvgGm7uaeRMpxpJUiRCbk25iqfmxfW6IznSRR4k=;
+        b=wAaHvs2KpBGLKpnrkB7I1GLIFdcdqWNOlu2Qfx4TU7Gh0gomvyOFXKEmq7AapXKCci
+         IgKbhp4Cu7nZpvfbJYQ2oHR5WNaSKEKVoUqkZ9S0EstMhqMwjSD7QKuGLOzv6jI+rdp3
+         RAyqtvS7D5FaCGiFeiqSh1MdRrQgtCVXB8lvhhK32hvxTUQQ3iIje5EoSrsHoLVoQBlx
+         DczNb5VYf0KE8EF86KymxcdOoqARn/7r4UC8seQqRtEK6lag/ThwrOdvwgL6u0Xj/sZj
+         PJgRpAmH+gAOGWLA1Q8c7w27DsDR5xKDKO74uBhGOR/6QseSVG0Mh1zOTUHzer+D0djP
+         Gb3Q==
+X-Gm-Message-State: AOJu0Yzr1C0sO4W08V8oOtW8s6KntMb9opBk4w7POxnF0M01yTBoSIJL
+        HvJ+SL62t96+8Ah8v3RviZqHHLfs+m5NLfoQ0Vs=
+X-Google-Smtp-Source: AGHT+IGqXRhIlSp9n7LFeXq/QU+32ZT64Xuy7q9+PMfg8AU/WfX/S5FEsO/v4jpm1n/CJstkJIgz1QiglBCnSl6U2JY=
+X-Received: by 2002:a17:90b:1c01:b0:280:280c:efe3 with SMTP id
+ oc1-20020a17090b1c0100b00280280cefe3mr12716575pjb.14.1699243140100; Sun, 05
+ Nov 2023 19:59:00 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+References: <20231102175735.2272696-1-irogers@google.com> <20231102175735.2272696-2-irogers@google.com>
+ <CAM9d7cgbPGzgc=QG8dStvq1iX8snGyeKTJDrg2XBjX0pCX9Qtg@mail.gmail.com> <CAP-5=fXgy95LsYLbbWN85prBs43jvGehOcwYFK-ZK2cOqCyPJA@mail.gmail.com>
+In-Reply-To: <CAP-5=fXgy95LsYLbbWN85prBs43jvGehOcwYFK-ZK2cOqCyPJA@mail.gmail.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Sun, 5 Nov 2023 19:58:49 -0800
+Message-ID: <CAM9d7ch9pXWZdFKf5zrQZg+nrf_0YpVro5vvkkO+LPfoLTynPQ@mail.gmail.com>
+Subject: Re: [PATCH v4 01/53] perf comm: Use regular mutex
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Nick Terrell <terrelln@fb.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        "Steinar H. Gunderson" <sesse@google.com>,
+        Liam Howlett <liam.howlett@oracle.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Colin Ian King <colin.i.king@gmail.com>,
+        Dmitrii Dolgov <9erthalion6@gmail.com>,
+        Yang Jihong <yangjihong1@huawei.com>,
+        Ming Wang <wangming01@loongson.cn>,
+        James Clark <james.clark@arm.com>,
+        K Prateek Nayak <kprateek.nayak@amd.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        German Gomez <german.gomez@arm.com>,
+        Changbin Du <changbin.du@huawei.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, Li Dong <lidong@vivo.com>,
+        Sandipan Das <sandipan.das@amd.com>,
+        liuwenyu <liuwenyu7@huawei.com>, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -52,53 +90,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 20 Oct, 2023 17:02:38 +0800 "Su Hui" <suhui@nfschina.com> wrote:
-> hid_report_raw_event() can return error code like '-ENOMEM' if
-> failed, so check 'ret' to make sure all things work fine.
-
-I can agree with adding logging for error cases personally.
-
+On Sun, Nov 5, 2023 at 1:35 PM Ian Rogers <irogers@google.com> wrote:
 >
-> Signed-off-by: Su Hui <suhui@nfschina.com>
-> ---
->  drivers/hid/wacom_sys.c | 4 ++++
->  1 file changed, 4 insertions(+)
+> On Sun, Nov 5, 2023 at 9:32 AM Namhyung Kim <namhyung@kernel.org> wrote:
+> >
+> > Hi Ian,
+> >
+> > On Thu, Nov 2, 2023 at 10:58 AM Ian Rogers <irogers@google.com> wrote:
+> > >
+> > > The rwsem is only after used for writing so switch to a mutex that has
+> > > better error checking.
+> >
+> > Hmm.. ok.  It doesn't make sense to use rwsem without readers.
+> >
+> > >
+> > > Fixes: 7a8f349e9d14 ("perf rwsem: Add debug mode that uses a mutex")
+> >
+> > But I'm not sure this is a fix.  Other than that,
 >
-> diff --git a/drivers/hid/wacom_sys.c b/drivers/hid/wacom_sys.c
-> index 3f704b8072e8..1f898d4ee708 100644
-> --- a/drivers/hid/wacom_sys.c
-> +++ b/drivers/hid/wacom_sys.c
-> @@ -320,6 +320,8 @@ static void wacom_feature_mapping(struct hid_device *=
-hdev,
->  =09=09=09if (ret =3D=3D n && features->type =3D=3D HID_GENERIC) {
->  =09=09=09=09ret =3D hid_report_raw_event(hdev,
->  =09=09=09=09=09HID_FEATURE_REPORT, data, n, 0);
-> +=09=09=09=09if (ret)
-> +=09=09=09=09=09hid_warn(hdev, "failed to report feature\n");
+> Thanks Namhyung, it fixes the case that you enable RWS_ERRORCHECK in
+> rwsem.h as the rwsem static initialization is wrong for a mutex.
 
-I think we should report the returned error information as well.
+Sounds like we need a separate fix.  Maybe you need to
+add a static initializer macro depending on the config.
 
-  https://docs.kernel.org/core-api/printk-formats.html#error-pointers
-
-Typically what I do is use ERR_PTR in tandem with the %pe modifier for
-printing errors.
-
->  =09=09=09} else if (ret =3D=3D 2 && features->type !=3D HID_GENERIC) {
->  =09=09=09=09features->touch_max =3D data[1];
->  =09=09=09} else {
-> @@ -381,6 +383,8 @@ static void wacom_feature_mapping(struct hid_device *=
-hdev,
->  =09=09if (ret =3D=3D n) {
->  =09=09=09ret =3D hid_report_raw_event(hdev, HID_FEATURE_REPORT,
->  =09=09=09=09=09=09   data, n, 0);
-> +=09=09=09if (ret)
-> +=09=09=09=09hid_warn(hdev, "failed to report feature\n");
->  =09=09} else {
->  =09=09=09hid_warn(hdev, "%s: could not retrieve sensor offsets\n",
->  =09=09=09=09 __func__);
-
---
-Thanks for the patch,
-
-Rahul Rameshbabu
-
+Thanks,
+Namhyung
