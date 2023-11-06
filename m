@@ -2,38 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 062A97E3098
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 00:06:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C69977E309E
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 00:07:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233379AbjKFXGm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 18:06:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55350 "EHLO
+        id S233376AbjKFXGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 18:06:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233317AbjKFXGk (ORCPT
+        with ESMTP id S233374AbjKFXGo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 18:06:40 -0500
+        Mon, 6 Nov 2023 18:06:44 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6F1CD77;
-        Mon,  6 Nov 2023 15:06:37 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B081C433CA;
-        Mon,  6 Nov 2023 23:06:36 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39CF0D73;
+        Mon,  6 Nov 2023 15:06:41 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52A5DC433C7;
+        Mon,  6 Nov 2023 23:06:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699311997;
-        bh=VHVJ13YZqdYKkwnFgKP74fWXjhwE0I38JVB17STLT78=;
+        s=k20201202; t=1699312000;
+        bh=4G1C15qqWoa8WZ4NPJj+98V/NuK8foqW7t8CBB/oMHI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iA7d/SNgwFFXZmKvRt2VOwbhJiEqG8BcRl4V0IEg79/ZXTBIOSEHVHiYToa756NQV
-         g3aQLIbg6rvQGCkjRCqimQjhuFF3+cOUwztebjqA2syzd9n1l+fSegCSTj9FSmdRIO
-         Z9mg78TtleqCEbYANwcSGlGzG0+XiD7ZVw0obzm/kxi7goDXAhxWbd8XQDz99/ZEuC
-         qYxFwziPksSz93vjfO6/n4hGCfFywckwyq0MjxpjhzTSCRMkixOuUEy0EHRx7uvaAV
-         a1Mm4yrcWdlxULZMtbIV/xJYA61+NdnINQUgMCbF+DFl380kKqcVPv/kxTyq7nOq+N
-         PxKabgTRgpa4A==
+        b=Y2+7Z6Q2HrIeFGoa/qDRAZmDBo+XvqKf2zT/Gf29nA9G375a7L57CkbiPBkhSoxYn
+         YeS68Aw8thutptTT+8MKzXZQalAWlLFKZ77OvBJkaCd5w22+9OgUbyA2IqnhIl+J2n
+         WrU3OzIu86Pn0idCgktA9FvLUnrgoEe3PKFzQtJ79J6ANC71gtrAPnDv1cEwXyOtfL
+         42xmFkrFERn4yx5IXtkv5rzOXSlb3rJJR90SZWy4SUhfeLssZg8VzaItCiCZgSDd+r
+         qxmdJcbNavhnUAnJQgRmbhAiHP+3HwwkJ7z+OqngIlsY3sZPnLzoxBsxfqm3c+1H2b
+         EeeadQI9qIEUA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Kent Overstreet <kent.overstreet@gmail.com>,
-        Sasha Levin <sashal@kernel.org>, kent.overstreet@linux.dev
-Subject: [PATCH AUTOSEL 6.6 4/5] lib/generic-radix-tree.c: Don't overflow in peek()
-Date:   Mon,  6 Nov 2023 18:06:10 -0500
-Message-ID: <20231106230622.3734225-4-sashal@kernel.org>
+Cc:     Josh Poimboeuf <jpoimboe@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Marco Elver <elver@google.com>,
+        Sasha Levin <sashal@kernel.org>, masahiroy@kernel.org,
+        samitolvanen@google.com, keescook@chromium.org,
+        peterz@infradead.org, linux-kbuild@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.6 5/5] x86/retpoline: Make sure there are no unconverted return thunks due to KCSAN
+Date:   Mon,  6 Nov 2023 18:06:11 -0500
+Message-ID: <20231106230622.3734225-5-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231106230622.3734225-1-sashal@kernel.org>
 References: <20231106230622.3734225-1-sashal@kernel.org>
@@ -52,82 +58,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kent Overstreet <kent.overstreet@gmail.com>
+From: Josh Poimboeuf <jpoimboe@kernel.org>
 
-[ Upstream commit 9492261ff2460252cf2d8de89cdf854c7e2b28a0 ]
+[ Upstream commit 2d7ce49f58dc95495b3e22e45d2be7de909b2c63 ]
 
-When we started spreading new inode numbers throughout most of the 64
-bit inode space, that triggered some corner case bugs, in particular
-some integer overflows related to the radix tree code. Oops.
+Enabling CONFIG_KCSAN leads to unconverted, default return thunks to
+remain after patching.
 
-Signed-off-by: Kent Overstreet <kent.overstreet@gmail.com>
+As David Kaplan describes in his debugging of the issue, it is caused by
+a couple of KCSAN-generated constructors which aren't processed by
+objtool:
+
+  "When KCSAN is enabled, GCC generates lots of constructor functions
+  named _sub_I_00099_0 which call __tsan_init and then return.  The
+  returns in these are generally annotated normally by objtool and fixed
+  up at runtime.  But objtool runs on vmlinux.o and vmlinux.o does not
+  include a couple of object files that are in vmlinux, like
+  init/version-timestamp.o and .vmlinux.export.o, both of which contain
+  _sub_I_00099_0 functions.  As a result, the returns in these functions
+  are not annotated, and the panic occurs when we call one of them in
+  do_ctors and it uses the default return thunk.
+
+  This difference can be seen by counting the number of these functions in the object files:
+  $ objdump -d vmlinux.o|grep -c "<_sub_I_00099_0>:"
+  2601
+  $ objdump -d vmlinux|grep -c "<_sub_I_00099_0>:"
+  2603
+
+  If these functions are only run during kernel boot, there is no
+  speculation concern."
+
+Fix it by disabling KCSAN on version-timestamp.o and .vmlinux.export.o
+so the extra functions don't get generated.  KASAN and GCOV are already
+disabled for those files.
+
+  [ bp: Massage commit message. ]
+
+Closes: https://lore.kernel.org/lkml/20231016214810.GA3942238@dev-arch.thelio-3990X/
+Reported-by: Nathan Chancellor <nathan@kernel.org>
+Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
+Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Acked-by: Marco Elver <elver@google.com>
+Tested-by: Nathan Chancellor <nathan@kernel.org>
+Link: https://lore.kernel.org/r/20231017165946.v4i2d4exyqwqq3bx@treble
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/generic-radix-tree.h |  7 +++++++
- lib/generic-radix-tree.c           | 17 ++++++++++++++---
- 2 files changed, 21 insertions(+), 3 deletions(-)
+ init/Makefile            | 1 +
+ scripts/Makefile.vmlinux | 1 +
+ 2 files changed, 2 insertions(+)
 
-diff --git a/include/linux/generic-radix-tree.h b/include/linux/generic-radix-tree.h
-index 107613f7d7920..f6cd0f909d9fb 100644
---- a/include/linux/generic-radix-tree.h
-+++ b/include/linux/generic-radix-tree.h
-@@ -38,6 +38,7 @@
+diff --git a/init/Makefile b/init/Makefile
+index ec557ada3c12e..cbac576c57d63 100644
+--- a/init/Makefile
++++ b/init/Makefile
+@@ -60,4 +60,5 @@ include/generated/utsversion.h: FORCE
+ $(obj)/version-timestamp.o: include/generated/utsversion.h
+ CFLAGS_version-timestamp.o := -include include/generated/utsversion.h
+ KASAN_SANITIZE_version-timestamp.o := n
++KCSAN_SANITIZE_version-timestamp.o := n
+ GCOV_PROFILE_version-timestamp.o := n
+diff --git a/scripts/Makefile.vmlinux b/scripts/Makefile.vmlinux
+index 3cd6ca15f390d..c9f3e03124d7f 100644
+--- a/scripts/Makefile.vmlinux
++++ b/scripts/Makefile.vmlinux
+@@ -19,6 +19,7 @@ quiet_cmd_cc_o_c = CC      $@
  
- #include <asm/page.h>
- #include <linux/bug.h>
-+#include <linux/limits.h>
- #include <linux/log2.h>
- #include <linux/math.h>
- #include <linux/types.h>
-@@ -184,6 +185,12 @@ void *__genradix_iter_peek(struct genradix_iter *, struct __genradix *, size_t);
- static inline void __genradix_iter_advance(struct genradix_iter *iter,
- 					   size_t obj_size)
- {
-+	if (iter->offset + obj_size < iter->offset) {
-+		iter->offset	= SIZE_MAX;
-+		iter->pos	= SIZE_MAX;
-+		return;
-+	}
-+
- 	iter->offset += obj_size;
- 
- 	if (!is_power_of_2(obj_size) &&
-diff --git a/lib/generic-radix-tree.c b/lib/generic-radix-tree.c
-index f25eb111c0516..7dfa88282b006 100644
---- a/lib/generic-radix-tree.c
-+++ b/lib/generic-radix-tree.c
-@@ -166,6 +166,10 @@ void *__genradix_iter_peek(struct genradix_iter *iter,
- 	struct genradix_root *r;
- 	struct genradix_node *n;
- 	unsigned level, i;
-+
-+	if (iter->offset == SIZE_MAX)
-+		return NULL;
-+
- restart:
- 	r = READ_ONCE(radix->root);
- 	if (!r)
-@@ -184,10 +188,17 @@ void *__genradix_iter_peek(struct genradix_iter *iter,
- 			(GENRADIX_ARY - 1);
- 
- 		while (!n->children[i]) {
-+			size_t objs_per_ptr = genradix_depth_size(level);
-+
-+			if (iter->offset + objs_per_ptr < iter->offset) {
-+				iter->offset	= SIZE_MAX;
-+				iter->pos	= SIZE_MAX;
-+				return NULL;
-+			}
-+
- 			i++;
--			iter->offset = round_down(iter->offset +
--					   genradix_depth_size(level),
--					   genradix_depth_size(level));
-+			iter->offset = round_down(iter->offset + objs_per_ptr,
-+						  objs_per_ptr);
- 			iter->pos = (iter->offset >> PAGE_SHIFT) *
- 				objs_per_page;
- 			if (i == GENRADIX_ARY)
+ ifdef CONFIG_MODULES
+ KASAN_SANITIZE_.vmlinux.export.o := n
++KCSAN_SANITIZE_.vmlinux.export.o := n
+ GCOV_PROFILE_.vmlinux.export.o := n
+ targets += .vmlinux.export.o
+ vmlinux: .vmlinux.export.o
 -- 
 2.42.0
 
