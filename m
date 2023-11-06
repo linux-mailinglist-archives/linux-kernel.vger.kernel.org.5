@@ -2,184 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B1AB67E2072
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 12:53:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 808417E2076
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 12:53:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230192AbjKFLxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 06:53:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42550 "EHLO
+        id S231522AbjKFLx5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 06:53:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231530AbjKFLxK (ORCPT
+        with ESMTP id S229583AbjKFLxx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 06:53:10 -0500
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4173E94;
-        Mon,  6 Nov 2023 03:53:07 -0800 (PST)
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A68jVo9001565;
-        Mon, 6 Nov 2023 11:53:03 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : date :
- subject : mime-version : content-type : content-transfer-encoding :
- message-id : references : in-reply-to : to : cc; s=qcppdkim1;
- bh=1tQZ31Of8xJt0eEt4Gtg8plvRxa6YFAbkNUQasMTork=;
- b=dPbnJS759kj7Ri9kELrWlVed8fCIIjWLR+lhosZC4904KTq/dx+lQa2F08Fk8q2bxksJ
- wCfvFahDo9GcY71UtUYzv+FzdJnkMq7GSDfg6i9x2BvVwrbQjO/odDAH//UfF+TsJRNx
- Bt+ZC2wFKfC6ksKUJeIIw5psnivNEsP+AMSPoTUJD8rZztShXA5iJYPnkdZ9AYHh5STL
- fWn5164ddj9/Rf14lfRVkPgRpvE0Ck0Z7puT1vDATQoicPMNkTNbWR4dWUA9xtPQLOX0
- kxj/LBzGVLz444OOGwUWjCjvxxcAdqjChAoekc9Wh7i7jPeHtU3GveYJX1/lsICoIIWl bg== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u5efym387-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 06 Nov 2023 11:53:02 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3A6Br26q016657
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 6 Nov 2023 11:53:02 GMT
-Received: from hu-krichai-hyd.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.39; Mon, 6 Nov 2023 03:52:56 -0800
-From:   Krishna chaitanya chundru <quic_krichai@quicinc.com>
-Date:   Mon, 6 Nov 2023 17:22:35 +0530
-Subject: [PATCH 2/2] phy: qcom-qmp-pcie: Add support for keeping refclk
- always on
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <20231106-refclk_always_on-v1-2-17a7fd8b532b@quicinc.com>
-References: <20231106-refclk_always_on-v1-0-17a7fd8b532b@quicinc.com>
-In-Reply-To: <20231106-refclk_always_on-v1-0-17a7fd8b532b@quicinc.com>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
+        Mon, 6 Nov 2023 06:53:53 -0500
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2083.outbound.protection.outlook.com [40.107.237.83])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADD0EEA;
+        Mon,  6 Nov 2023 03:53:50 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=j61vRowqoIzuBlZWrPl+lcan17UynL/8i7W8TMeUYk8R1XYTVQ7T+6oZ/NxZNlssNDtV8jWg0p3UBHWrgjX8tohj+wX5bxvh57OEahih6OvomhHPsKipkvmJYXU+m8D/mGgqYyKbL1AYM7vEOfCxWr6z9CX0JrliGykTBIk0KpseNAsBbiqt8MHxohmJ2dlF19GIEixYHsHpDLMzgSrBfRp2+VeNFWy1mFmvH09nVUtmBTFkeTb7jLBuKT+IccRyoHAYVnQ5s8NH3nmVZEDO2AyoqF0RKMRN2jBs+s6E1mu6cJqqAry/LKOUHICrj5feymVQG5AXUempYdDZVitcyA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=NxztdKt2LTnu6rdoHzDmCD0NVqNKmqsjzMvrtfnihNQ=;
+ b=fY19fIo6oDcSBijP+HHqbOjc7Afaj2Z7242LARO99Qpw0hb4m/HDYKJC8KTMvpL0AIg8/qS9ABFC/k6Kj+WTI0gUyPsPzsNX0Lv82Z11iE+SVeDOjkNPPDmqsYll5r9m7/ATZyMy9AILQi963hT64SQiDWwKhwBcgHF54jC82In07Y5XtWVbZ/grBRfAiBpMYkZWcrFuRTjdmACtDG5dT+zvDJ3CeAmIyMUuske6kQY2sGoNdPb9f/SSrk9ltE8LVMb0PHNPVGOpYSLjMrXvaL6dvp2+EuomdOjXBimyIQKflQO1L6WA54SlvQ32jGYgJ9VS+8sgyBxbryHnLVYeoA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=amd.com; dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=NxztdKt2LTnu6rdoHzDmCD0NVqNKmqsjzMvrtfnihNQ=;
+ b=mn3ahO2OYzAKEWxvpqrGGy6RjVJAxoBE6ySqZUU4Pt9QELKVT3vp4GZ9blMh4ai4mt8hmSZkWopDAn6Gk4DIDw6FOQRRNNiP2rvc0nA4HKVe/iC0uJIl9iXFnFQD8fbSHwjds+inHVYtXsgoxuM1bIKnxjpFJqqkC0EN3KbF8Qs=
+Received: from BL0PR0102CA0041.prod.exchangelabs.com (2603:10b6:208:25::18) by
+ BN9PR12MB5356.namprd12.prod.outlook.com (2603:10b6:408:105::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.28; Mon, 6 Nov
+ 2023 11:53:48 +0000
+Received: from BL02EPF0001A105.namprd05.prod.outlook.com
+ (2603:10b6:208:25:cafe::df) by BL0PR0102CA0041.outlook.office365.com
+ (2603:10b6:208:25::18) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.28 via Frontend
+ Transport; Mon, 6 Nov 2023 11:53:48 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ BL02EPF0001A105.mail.protection.outlook.com (10.167.241.137) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.6977.16 via Frontend Transport; Mon, 6 Nov 2023 11:53:48 +0000
+Received: from localhost (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.32; Mon, 6 Nov
+ 2023 05:53:46 -0600
+From:   Michal Simek <michal.simek@amd.com>
+To:     <linux-kernel@vger.kernel.org>, <monstr@monstr.eu>,
+        <michal.simek@xilinx.com>, <git@xilinx.com>
+CC:     Conor Dooley <conor+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-CC:     <linux-arm-msm@vger.kernel.org>, <linux-phy@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <quic_vbadigan@quicinc.com>, <quic_ramkri@quicinc.com>,
-        <quic_nitegupt@quicinc.com>, <quic_skananth@quicinc.com>,
-        <quic_vpernami@quicinc.com>, <quic_parass@quicinc.com>,
-        "Krishna chaitanya chundru" <quic_krichai@quicinc.com>
-X-Mailer: b4 0.13-dev-83828
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1699271565; l=3215;
- i=quic_krichai@quicinc.com; s=20230907; h=from:subject:message-id;
- bh=SqH7FpHxB6avrAK5wfH/RehnYdIY7klfgUG7KOgIP+8=;
- b=HF5ll8k9sU/UO8HcGZKG5+Ruhz/juvce6B9ALRKPtTP0fJiUB3bEyF7wCvb/wvC/pX10LfN0D
- B93pDuN5OnBDLaQ5SYENJo37NucDvDsd940W8QkglT8knuxfQtK1w3z
-X-Developer-Key: i=quic_krichai@quicinc.com; a=ed25519;
- pk=10CL2pdAKFyzyOHbfSWHCD0X0my7CXxj8gJScmn1FAg=
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 9Z4rfTRz8Bf3uM6cBbDEfvwWRNQC2L8c
-X-Proofpoint-ORIG-GUID: 9Z4rfTRz8Bf3uM6cBbDEfvwWRNQC2L8c
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-06_10,2023-11-02_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- mlxlogscore=999 priorityscore=1501 malwarescore=0 mlxscore=0 clxscore=1015
- phishscore=0 adultscore=0 suspectscore=0 lowpriorityscore=0 spamscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2310240000 definitions=main-2311060098
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+        Rob Herring <robh+dt@kernel.org>, <devicetree@vger.kernel.org>
+Subject: [PATCH] dt-bindings: soc: Add new board description for MicroBlaze V
+Date:   Mon, 6 Nov 2023 12:53:40 +0100
+Message-ID: <50c277c92c41a582ef171fb75efc6a6a4f860be2.1699271616.git.michal.simek@amd.com>
+X-Mailer: git-send-email 2.36.1
+MIME-Version: 1.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1285; i=michal.simek@amd.com; h=from:subject:message-id; bh=rquOInBbWhUh7O0DOSCKM4I1RqSUPsURm6mD4B4bozY=; b=owGbwMvMwCR4yjP1tKYXjyLjabUkhlSPy4d/aT+d8Mvw/ZTyuL9NZ2tn8YaGKKXKXr70sz1Ds Slu3sczHbEsDIJMDLJiiizSNlfO7K2cMUX44mE5mDmsTCBDGLg4BWAis5MY5hlPkmJee1VzNU/U 8y1MHvbcr28svc0wv0jum8fZ+hmfHuqucljzn/F0luY/IQA=
+X-Developer-Key: i=michal.simek@amd.com; a=openpgp; fpr=67350C9BF5CCEE9B5364356A377C7F21FE3D1F91
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL02EPF0001A105:EE_|BN9PR12MB5356:EE_
+X-MS-Office365-Filtering-Correlation-Id: a83d6757-2cbe-4b5a-bd1c-08dbdebf096a
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: psQ0QtdDWf2zXc9wP94+6EDOALotEt3DeciwDVSQ9oFk7GV80mzit2d8XBMuWwbQvXWuTkRki47oeUwOvAGMWEYlOqZ2lb0iYNmOX4p16YR7A77gUt+xvvcbC9xMXyfb4+N8ZMQ9TCo1S8KtStRvzvxOTzq/aY2yfwtf4rx7LByUFWOPVllc+TjTwrk4BMCkS1ZicLSpjkd3z1HV1rIqBLfPikoXCkRJhGuIJwRz5JNbcqTYBgxGEi3zHXGAeSbXnDxB7JsUclx4+4q5rOIR6p5jsEHsZfnTWVjudOF85m16tJhVxCcUWomVWIldQy9Y6Dzkt+SAjqSzod3i5UUs3pS1a7eJPMO6m0JqYKlZYVA90p4y2a1LmNCt5jluF4b5mENwTcwVA5zoxfj5lzAE2kxyVrWKtVqq06r6k1lnoZgVtJABQ2bCW3Xgd4ykGD8iopmlPoqg3mbLbJMyD2qjVnI1wh99S5KKEhjeBZXBjdpiZeIaPyGlBCE3t6RR1oYOttDoqpedEUK9obntjJp3mI45SI+UFGZUCCWF9cbPWO3RqqAZmmIN/ugHlG6aMV/587cecCDFTrJ7UbCW2W5WxQqoH/mrnLSvcNb4zjATk5H8/SChwylE20r7utbtfZ5tDA+B8kvp3BZqXGhr7hWYPK8WBd3fOFvkxHd5WYUh0m7wH3bhMjhH7LPzkx57SmGW5rTKiA4UEyDsiGm4amwvLtL4WpCLfsapQpvsDHDOe+CRaDB+5vjeq9XtnHbQ9Uh398I10EUBuVO031gksM/IrIeel+sCFzE3DLB+5wMXsuBajNDXo37h+Hg7pUdwOunH
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(396003)(346002)(376002)(39860400002)(136003)(230922051799003)(64100799003)(451199024)(186009)(1800799009)(82310400011)(46966006)(40470700004)(36840700001)(40480700001)(2906002)(356005)(4326008)(8676002)(8936002)(41300700001)(5660300002)(36860700001)(81166007)(86362001)(47076005)(40460700003)(426003)(336012)(82740400003)(70206006)(70586007)(44832011)(2616005)(110136005)(316002)(54906003)(6666004)(26005)(966005)(16526019)(478600001)(36756003)(36900700001)(2101003);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Nov 2023 11:53:48.0698
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: a83d6757-2cbe-4b5a-bd1c-08dbdebf096a
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: BL02EPF0001A105.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR12MB5356
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In PCIe low power states like L1.1 or L1.2 the phy will stop
-supplying refclk to endpoint. If endpoint asserts clkreq to bring
-back link L0, then RC needs to provide refclk to endpoint.
+MicroBlaze V is new AMD/Xilinx soft-core 32bit RISC-V processor IP.
+It is hardware compatible with classic MicroBlaze processor. Processor can
+be used with standard AMD/Xilinx IPs including interrupt controller and
+timer.
 
-If there is some issues in platform with clkreq signal propagation
-to host and due to that host will not send refclk which results PCIe link
-down. For those platforms  phy needs to provide refclk even in low power
-states.
-
-Add a flag which indicates refclk is always supplied to endpoint.
-
-Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
+Signed-off-by: Michal Simek <michal.simek@amd.com>
 ---
- drivers/phy/qualcomm/phy-qcom-qmp-pcie.c | 21 +++++++++++++++++----
- 1 file changed, 17 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/phy/qualcomm/phy-qcom-qmp-pcie.c b/drivers/phy/qualcomm/phy-qcom-qmp-pcie.c
-index a63ca7424974..d7e377a7d96e 100644
---- a/drivers/phy/qualcomm/phy-qcom-qmp-pcie.c
-+++ b/drivers/phy/qualcomm/phy-qcom-qmp-pcie.c
-@@ -43,6 +43,8 @@
- /* QPHY_PCS_STATUS bit */
- #define PHYSTATUS				BIT(6)
- #define PHYSTATUS_4_20				BIT(7)
-+/* PCS_PCIE_ENDPOINT_REFCLK_CNTRL */
-+#define EPCLK_ALWAYS_ON_EN			BIT(6)
- 
- #define PHY_INIT_COMPLETE_TIMEOUT		10000
- 
-@@ -77,6 +79,7 @@ enum qphy_reg_layout {
- 	QPHY_START_CTRL,
- 	QPHY_PCS_STATUS,
- 	QPHY_PCS_POWER_DOWN_CONTROL,
-+	QPHY_PCS_ENDPOINT_REFCLK_CNTRL,
- 	/* Keep last to ensure regs_layout arrays are properly initialized */
- 	QPHY_LAYOUT_SIZE
- };
-@@ -103,10 +106,11 @@ static const unsigned int sdm845_qhp_pciephy_regs_layout[QPHY_LAYOUT_SIZE] = {
- };
- 
- static const unsigned int pciephy_v4_regs_layout[QPHY_LAYOUT_SIZE] = {
--	[QPHY_SW_RESET]			= QPHY_V4_PCS_SW_RESET,
--	[QPHY_START_CTRL]		= QPHY_V4_PCS_START_CONTROL,
--	[QPHY_PCS_STATUS]		= QPHY_V4_PCS_PCS_STATUS1,
--	[QPHY_PCS_POWER_DOWN_CONTROL]	= QPHY_V4_PCS_POWER_DOWN_CONTROL,
-+	[QPHY_SW_RESET]				= QPHY_V4_PCS_SW_RESET,
-+	[QPHY_START_CTRL]			= QPHY_V4_PCS_START_CONTROL,
-+	[QPHY_PCS_STATUS]			= QPHY_V4_PCS_PCS_STATUS1,
-+	[QPHY_PCS_POWER_DOWN_CONTROL]		= QPHY_V4_PCS_POWER_DOWN_CONTROL,
-+	[QPHY_PCS_ENDPOINT_REFCLK_CNTRL]	= QPHY_V4_PCS_PCIE_ENDPOINT_REFCLK_CNTRL,
- };
- 
- static const unsigned int pciephy_v5_regs_layout[QPHY_LAYOUT_SIZE] = {
-@@ -2244,6 +2248,8 @@ struct qmp_pcie {
- 	struct phy *phy;
- 	int mode;
- 
-+	bool refclk_always_on;
-+
- 	struct clk_fixed_rate pipe_clk_fixed;
- };
- 
-@@ -3159,6 +3165,10 @@ static void qmp_pcie_init_registers(struct qmp_pcie *qmp, const struct qmp_phy_c
- 	qmp_pcie_configure(pcs, tbls->pcs, tbls->pcs_num);
- 	qmp_pcie_configure(pcs_misc, tbls->pcs_misc, tbls->pcs_misc_num);
- 
-+	if (qmp->refclk_always_on && cfg->regs[QPHY_PCS_ENDPOINT_REFCLK_CNTRL])
-+		qphy_setbits(pcs_misc, cfg->regs[QPHY_PCS_ENDPOINT_REFCLK_CNTRL],
-+			     EPCLK_ALWAYS_ON_EN);
-+
- 	if (cfg->lanes >= 4 && qmp->tcsr_4ln_config) {
- 		qmp_pcie_configure(serdes, cfg->serdes_4ln_tbl, cfg->serdes_4ln_num);
- 		qmp_pcie_init_port_b(qmp, tbls);
-@@ -3681,6 +3691,9 @@ static int qmp_pcie_probe(struct platform_device *pdev)
- 	if (ret)
- 		goto err_node_put;
- 
-+	qmp->refclk_always_on = of_property_read_bool(dev->of_node,
-+						      "qcom,refclk-always-on");
-+
- 	ret = phy_pipe_clk_register(qmp, np);
- 	if (ret)
- 		goto err_node_put;
+ .../devicetree/bindings/soc/amd/amd.yaml      | 26 +++++++++++++++++++
+ 1 file changed, 26 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/soc/amd/amd.yaml
 
+diff --git a/Documentation/devicetree/bindings/soc/amd/amd.yaml b/Documentation/devicetree/bindings/soc/amd/amd.yaml
+new file mode 100644
+index 000000000000..21adf28756fa
+--- /dev/null
++++ b/Documentation/devicetree/bindings/soc/amd/amd.yaml
+@@ -0,0 +1,26 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/soc/amd/amd.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: AMD Platforms
++
++maintainers:
++  - Michal Simek <michal.simek@amd.com>
++
++description: |
++  AMD boards with MicroBlaze V SOC
++
++properties:
++  $nodename:
++    const: '/'
++  compatible:
++    oneOf:
++      - description: AMD MicroBlaze V
++        items:
++          - const: amd,mbv
++
++additionalProperties: true
++
++...
 -- 
-2.42.0
+2.36.1
 
