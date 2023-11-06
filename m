@@ -2,42 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F181C7E3132
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 00:19:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6ECE7E3133
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 00:19:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233619AbjKFXT2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 18:19:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49326 "EHLO
+        id S233781AbjKFXTb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 18:19:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233846AbjKFXS6 (ORCPT
+        with ESMTP id S233523AbjKFXS7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 18:18:58 -0500
+        Mon, 6 Nov 2023 18:18:59 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AAE12D51;
-        Mon,  6 Nov 2023 15:16:33 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C06D1C43142;
-        Mon,  6 Nov 2023 23:16:29 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 971AE1FF3;
+        Mon,  6 Nov 2023 15:16:34 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5CEA6C116B9;
+        Mon,  6 Nov 2023 23:16:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699312590;
-        bh=2VpchQM44d7HzgCX3wgizYzX0JgaRvK/XXJiO68xAFE=;
+        s=k20201202; t=1699312592;
+        bh=atzgIJSBnitBRnuTg9+iVQo6MzRA1sRC1sIg4DN8W+U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=d8Zx20qOWEREfjfcmVM4idv4rFInKrfEDpU1hCgkAZxW0bYDL0jLDE69Jmch07wND
-         SkyHwgPrJ3GROL3HgzJe/UU0wY+LRqroYJ2YaGtcVZGx8K0FteFW+Lp1B0hYa9CvaU
-         SvcZcfS3Fu2b+yVTFSne3XiS+hx6APVl7NI2j7JU7kBXrD/dAplCokVChPoFeGMqHn
-         TSLzBOyBpoZM7az1JdntdxeGjmHrL0USztfI+guvM2TljSr2nDTnQNqyN4YnfcH7xH
-         EmwC3qgI+0Acqw7lGv3gB7V+hU6RzhWcWb0ic0w1i3jGv+h8y+C5I1h6aJhK+xTc7T
-         hVHS+iAAr8RWA==
+        b=YztD/SbcBmMOa/IeNZZR4n+LDUuTu4znbI+frASnllUjmlCpZ+n5Ba4RM7CUYu95d
+         D7urN7SWuNxaq8gac7EOt/tjgOQ1vLlvrVvsvZ2RRe0bPYHeR6XYkoxLbES9RNaabh
+         m0Ny3CZEvpYDbisRq6Gt5qG+8sISpCOcKsP7a3XYb2JC6EEENeWLef5RnzUUTNf2fe
+         wOIoCg0biRp7qK+Q2W4MGYA/ITF56cP95+eXF7AKpW112RNagjhCZUXdJkeCBlHxDH
+         ywAUpBhtLiIFinZRAybwVsnQ4ba9vmboTNrPTa8yZEUHIxpfCpOswB7CiuFHDDFMLL
+         a2y7FyqUyM/jQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Ronald Wahl <ronald.wahl@raritan.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Sasha Levin <sashal@kernel.org>, tglx@linutronix.de,
-        nicolas.ferre@microchip.com, claudiu.beznea@tuxon.dev,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH AUTOSEL 5.15 4/6] clocksource/drivers/timer-atmel-tcb: Fix initialization on SAM9 hardware
-Date:   Mon,  6 Nov 2023 18:16:17 -0500
-Message-ID: <20231106231622.3735613-4-sashal@kernel.org>
+Cc:     Frederic Weisbecker <frederic@kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Tejun Heo <tj@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.15 5/6] workqueue: Provide one lock class key per work_on_cpu() callsite
+Date:   Mon,  6 Nov 2023 18:16:18 -0500
+Message-ID: <20231106231622.3735613-5-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231106231622.3735613-1-sashal@kernel.org>
 References: <20231106231622.3735613-1-sashal@kernel.org>
@@ -56,53 +53,297 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ronald Wahl <ronald.wahl@raritan.com>
+From: Frederic Weisbecker <frederic@kernel.org>
 
-[ Upstream commit 6d3bc4c02d59996d1d3180d8ed409a9d7d5900e0 ]
+[ Upstream commit 265f3ed077036f053981f5eea0b5b43e7c5b39ff ]
 
-On SAM9 hardware two cascaded 16 bit timers are used to form a 32 bit
-high resolution timer that is used as scheduler clock when the kernel
-has been configured that way (CONFIG_ATMEL_CLOCKSOURCE_TCB).
+All callers of work_on_cpu() share the same lock class key for all the
+functions queued. As a result the workqueue related locking scenario for
+a function A may be spuriously accounted as an inversion against the
+locking scenario of function B such as in the following model:
 
-The driver initially triggers a reset-to-zero of the two timers but this
-reset is only performed on the next rising clock. For the first timer
-this is ok - it will be in the next 60ns (16MHz clock). For the chained
-second timer this will only happen after the first timer overflows, i.e.
-after 2^16 clocks (~4ms with a 16MHz clock). So with other words the
-scheduler clock resets to 0 after the first 2^16 clock cycles.
+	long A(void *arg)
+	{
+		mutex_lock(&mutex);
+		mutex_unlock(&mutex);
+	}
 
-It looks like that the scheduler does not like this and behaves wrongly
-over its lifetime, e.g. some tasks are scheduled with a long delay. Why
-that is and if there are additional requirements for this behaviour has
-not been further analysed.
+	long B(void *arg)
+	{
+	}
 
-There is a simple fix for resetting the second timer as well when the
-first timer is reset and this is to set the ATMEL_TC_ASWTRG_SET bit in
-the Channel Mode register (CMR) of the first timer. This will also rise
-the TIOA line (clock input of the second timer) when a software trigger
-respective SYNC is issued.
+	void launchA(void)
+	{
+		work_on_cpu(0, A, NULL);
+	}
 
-Signed-off-by: Ronald Wahl <ronald.wahl@raritan.com>
-Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-Link: https://lore.kernel.org/r/20231007161803.31342-1-rwahl@gmx.de
+	void launchB(void)
+	{
+		mutex_lock(&mutex);
+		work_on_cpu(1, B, NULL);
+		mutex_unlock(&mutex);
+	}
+
+launchA and launchB running concurrently have no chance to deadlock.
+However the above can be reported by lockdep as a possible locking
+inversion because the works containing A() and B() are treated as
+belonging to the same locking class.
+
+The following shows an existing example of such a spurious lockdep splat:
+
+	 ======================================================
+	 WARNING: possible circular locking dependency detected
+	 6.6.0-rc1-00065-g934ebd6e5359 #35409 Not tainted
+	 ------------------------------------------------------
+	 kworker/0:1/9 is trying to acquire lock:
+	 ffffffff9bc72f30 (cpu_hotplug_lock){++++}-{0:0}, at: _cpu_down+0x57/0x2b0
+
+	 but task is already holding lock:
+	 ffff9e3bc0057e60 ((work_completion)(&wfc.work)){+.+.}-{0:0}, at: process_scheduled_works+0x216/0x500
+
+	 which lock already depends on the new lock.
+
+	 the existing dependency chain (in reverse order) is:
+
+	 -> #2 ((work_completion)(&wfc.work)){+.+.}-{0:0}:
+			__flush_work+0x83/0x4e0
+			work_on_cpu+0x97/0xc0
+			rcu_nocb_cpu_offload+0x62/0xb0
+			rcu_nocb_toggle+0xd0/0x1d0
+			kthread+0xe6/0x120
+			ret_from_fork+0x2f/0x40
+			ret_from_fork_asm+0x1b/0x30
+
+	 -> #1 (rcu_state.barrier_mutex){+.+.}-{3:3}:
+			__mutex_lock+0x81/0xc80
+			rcu_nocb_cpu_deoffload+0x38/0xb0
+			rcu_nocb_toggle+0x144/0x1d0
+			kthread+0xe6/0x120
+			ret_from_fork+0x2f/0x40
+			ret_from_fork_asm+0x1b/0x30
+
+	 -> #0 (cpu_hotplug_lock){++++}-{0:0}:
+			__lock_acquire+0x1538/0x2500
+			lock_acquire+0xbf/0x2a0
+			percpu_down_write+0x31/0x200
+			_cpu_down+0x57/0x2b0
+			__cpu_down_maps_locked+0x10/0x20
+			work_for_cpu_fn+0x15/0x20
+			process_scheduled_works+0x2a7/0x500
+			worker_thread+0x173/0x330
+			kthread+0xe6/0x120
+			ret_from_fork+0x2f/0x40
+			ret_from_fork_asm+0x1b/0x30
+
+	 other info that might help us debug this:
+
+	 Chain exists of:
+	   cpu_hotplug_lock --> rcu_state.barrier_mutex --> (work_completion)(&wfc.work)
+
+	  Possible unsafe locking scenario:
+
+			CPU0                    CPU1
+			----                    ----
+	   lock((work_completion)(&wfc.work));
+									lock(rcu_state.barrier_mutex);
+									lock((work_completion)(&wfc.work));
+	   lock(cpu_hotplug_lock);
+
+	  *** DEADLOCK ***
+
+	 2 locks held by kworker/0:1/9:
+	  #0: ffff900481068b38 ((wq_completion)events){+.+.}-{0:0}, at: process_scheduled_works+0x212/0x500
+	  #1: ffff9e3bc0057e60 ((work_completion)(&wfc.work)){+.+.}-{0:0}, at: process_scheduled_works+0x216/0x500
+
+	 stack backtrace:
+	 CPU: 0 PID: 9 Comm: kworker/0:1 Not tainted 6.6.0-rc1-00065-g934ebd6e5359 #35409
+	 Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+	 Workqueue: events work_for_cpu_fn
+	 Call Trace:
+	 rcu-torture: rcu_torture_read_exit: Start of episode
+	  <TASK>
+	  dump_stack_lvl+0x4a/0x80
+	  check_noncircular+0x132/0x150
+	  __lock_acquire+0x1538/0x2500
+	  lock_acquire+0xbf/0x2a0
+	  ? _cpu_down+0x57/0x2b0
+	  percpu_down_write+0x31/0x200
+	  ? _cpu_down+0x57/0x2b0
+	  _cpu_down+0x57/0x2b0
+	  __cpu_down_maps_locked+0x10/0x20
+	  work_for_cpu_fn+0x15/0x20
+	  process_scheduled_works+0x2a7/0x500
+	  worker_thread+0x173/0x330
+	  ? __pfx_worker_thread+0x10/0x10
+	  kthread+0xe6/0x120
+	  ? __pfx_kthread+0x10/0x10
+	  ret_from_fork+0x2f/0x40
+	  ? __pfx_kthread+0x10/0x10
+	  ret_from_fork_asm+0x1b/0x30
+	  </TASK
+
+Fix this with providing one lock class key per work_on_cpu() caller.
+
+Reported-and-tested-by: Paul E. McKenney <paulmck@kernel.org>
+Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+Signed-off-by: Tejun Heo <tj@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clocksource/timer-atmel-tcb.c | 1 +
- 1 file changed, 1 insertion(+)
+ include/linux/workqueue.h | 46 +++++++++++++++++++++++++++++++++------
+ kernel/workqueue.c        | 20 ++++++++++-------
+ 2 files changed, 51 insertions(+), 15 deletions(-)
 
-diff --git a/drivers/clocksource/timer-atmel-tcb.c b/drivers/clocksource/timer-atmel-tcb.c
-index 27af17c995900..2a90c92a9182a 100644
---- a/drivers/clocksource/timer-atmel-tcb.c
-+++ b/drivers/clocksource/timer-atmel-tcb.c
-@@ -315,6 +315,7 @@ static void __init tcb_setup_dual_chan(struct atmel_tc *tc, int mck_divisor_idx)
- 	writel(mck_divisor_idx			/* likely divide-by-8 */
- 			| ATMEL_TC_WAVE
- 			| ATMEL_TC_WAVESEL_UP		/* free-run */
-+			| ATMEL_TC_ASWTRG_SET		/* TIOA0 rises at software trigger */
- 			| ATMEL_TC_ACPA_SET		/* TIOA0 rises at 0 */
- 			| ATMEL_TC_ACPC_CLEAR,		/* (duty cycle 50%) */
- 			tcaddr + ATMEL_TC_REG(0, CMR));
+diff --git a/include/linux/workqueue.h b/include/linux/workqueue.h
+index 20a47eb94b0f3..1e96680f50230 100644
+--- a/include/linux/workqueue.h
++++ b/include/linux/workqueue.h
+@@ -222,18 +222,16 @@ static inline unsigned int work_static(struct work_struct *work) { return 0; }
+  * to generate better code.
+  */
+ #ifdef CONFIG_LOCKDEP
+-#define __INIT_WORK(_work, _func, _onstack)				\
++#define __INIT_WORK_KEY(_work, _func, _onstack, _key)			\
+ 	do {								\
+-		static struct lock_class_key __key;			\
+-									\
+ 		__init_work((_work), _onstack);				\
+ 		(_work)->data = (atomic_long_t) WORK_DATA_INIT();	\
+-		lockdep_init_map(&(_work)->lockdep_map, "(work_completion)"#_work, &__key, 0); \
++		lockdep_init_map(&(_work)->lockdep_map, "(work_completion)"#_work, (_key), 0); \
+ 		INIT_LIST_HEAD(&(_work)->entry);			\
+ 		(_work)->func = (_func);				\
+ 	} while (0)
+ #else
+-#define __INIT_WORK(_work, _func, _onstack)				\
++#define __INIT_WORK_KEY(_work, _func, _onstack, _key)			\
+ 	do {								\
+ 		__init_work((_work), _onstack);				\
+ 		(_work)->data = (atomic_long_t) WORK_DATA_INIT();	\
+@@ -242,12 +240,22 @@ static inline unsigned int work_static(struct work_struct *work) { return 0; }
+ 	} while (0)
+ #endif
+ 
++#define __INIT_WORK(_work, _func, _onstack)				\
++	do {								\
++		static __maybe_unused struct lock_class_key __key;	\
++									\
++		__INIT_WORK_KEY(_work, _func, _onstack, &__key);	\
++	} while (0)
++
+ #define INIT_WORK(_work, _func)						\
+ 	__INIT_WORK((_work), (_func), 0)
+ 
+ #define INIT_WORK_ONSTACK(_work, _func)					\
+ 	__INIT_WORK((_work), (_func), 1)
+ 
++#define INIT_WORK_ONSTACK_KEY(_work, _func, _key)			\
++	__INIT_WORK_KEY((_work), (_func), 1, _key)
++
+ #define __INIT_DELAYED_WORK(_work, _func, _tflags)			\
+ 	do {								\
+ 		INIT_WORK(&(_work)->work, (_func));			\
+@@ -632,8 +640,32 @@ static inline long work_on_cpu_safe(int cpu, long (*fn)(void *), void *arg)
+ 	return fn(arg);
+ }
+ #else
+-long work_on_cpu(int cpu, long (*fn)(void *), void *arg);
+-long work_on_cpu_safe(int cpu, long (*fn)(void *), void *arg);
++long work_on_cpu_key(int cpu, long (*fn)(void *),
++		     void *arg, struct lock_class_key *key);
++/*
++ * A new key is defined for each caller to make sure the work
++ * associated with the function doesn't share its locking class.
++ */
++#define work_on_cpu(_cpu, _fn, _arg)			\
++({							\
++	static struct lock_class_key __key;		\
++							\
++	work_on_cpu_key(_cpu, _fn, _arg, &__key);	\
++})
++
++long work_on_cpu_safe_key(int cpu, long (*fn)(void *),
++			  void *arg, struct lock_class_key *key);
++
++/*
++ * A new key is defined for each caller to make sure the work
++ * associated with the function doesn't share its locking class.
++ */
++#define work_on_cpu_safe(_cpu, _fn, _arg)		\
++({							\
++	static struct lock_class_key __key;		\
++							\
++	work_on_cpu_safe_key(_cpu, _fn, _arg, &__key);	\
++})
+ #endif /* CONFIG_SMP */
+ 
+ #ifdef CONFIG_FREEZER
+diff --git a/kernel/workqueue.c b/kernel/workqueue.c
+index 19868cf588779..962ee27ec7d70 100644
+--- a/kernel/workqueue.c
++++ b/kernel/workqueue.c
+@@ -5209,50 +5209,54 @@ static void work_for_cpu_fn(struct work_struct *work)
+ }
+ 
+ /**
+- * work_on_cpu - run a function in thread context on a particular cpu
++ * work_on_cpu_key - run a function in thread context on a particular cpu
+  * @cpu: the cpu to run on
+  * @fn: the function to run
+  * @arg: the function arg
++ * @key: The lock class key for lock debugging purposes
+  *
+  * It is up to the caller to ensure that the cpu doesn't go offline.
+  * The caller must not hold any locks which would prevent @fn from completing.
+  *
+  * Return: The value @fn returns.
+  */
+-long work_on_cpu(int cpu, long (*fn)(void *), void *arg)
++long work_on_cpu_key(int cpu, long (*fn)(void *),
++		     void *arg, struct lock_class_key *key)
+ {
+ 	struct work_for_cpu wfc = { .fn = fn, .arg = arg };
+ 
+-	INIT_WORK_ONSTACK(&wfc.work, work_for_cpu_fn);
++	INIT_WORK_ONSTACK_KEY(&wfc.work, work_for_cpu_fn, key);
+ 	schedule_work_on(cpu, &wfc.work);
+ 	flush_work(&wfc.work);
+ 	destroy_work_on_stack(&wfc.work);
+ 	return wfc.ret;
+ }
+-EXPORT_SYMBOL_GPL(work_on_cpu);
++EXPORT_SYMBOL_GPL(work_on_cpu_key);
+ 
+ /**
+- * work_on_cpu_safe - run a function in thread context on a particular cpu
++ * work_on_cpu_safe_key - run a function in thread context on a particular cpu
+  * @cpu: the cpu to run on
+  * @fn:  the function to run
+  * @arg: the function argument
++ * @key: The lock class key for lock debugging purposes
+  *
+  * Disables CPU hotplug and calls work_on_cpu(). The caller must not hold
+  * any locks which would prevent @fn from completing.
+  *
+  * Return: The value @fn returns.
+  */
+-long work_on_cpu_safe(int cpu, long (*fn)(void *), void *arg)
++long work_on_cpu_safe_key(int cpu, long (*fn)(void *),
++			  void *arg, struct lock_class_key *key)
+ {
+ 	long ret = -ENODEV;
+ 
+ 	cpus_read_lock();
+ 	if (cpu_online(cpu))
+-		ret = work_on_cpu(cpu, fn, arg);
++		ret = work_on_cpu_key(cpu, fn, arg, key);
+ 	cpus_read_unlock();
+ 	return ret;
+ }
+-EXPORT_SYMBOL_GPL(work_on_cpu_safe);
++EXPORT_SYMBOL_GPL(work_on_cpu_safe_key);
+ #endif /* CONFIG_SMP */
+ 
+ #ifdef CONFIG_FREEZER
 -- 
 2.42.0
 
