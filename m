@@ -2,185 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 374FC7E1C4C
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 09:33:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DBB2A7E1C33
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 09:29:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231266AbjKFIdo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 03:33:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37228 "EHLO
+        id S231330AbjKFI3R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 03:29:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230431AbjKFIdm (ORCPT
+        with ESMTP id S231283AbjKFI3F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 03:33:42 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D614CC
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 00:33:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699259620; x=1730795620;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=UMBi1pRhFRy1yHTd3DnU7X0y7EIi2n9evQP9hgRgYGY=;
-  b=X7mDPnNKVPmi/jp5cweY4life4yRfy4tadYpGX89qWXew4zoFD5snnue
-   9AAwfslySuNKmEav6u5OjQGxoC3wb4v/GsNHPFnTCaeV6Tu/mtSIUmD58
-   gQrRZ3UnxyQefAgUd6Scn3MTqEq/Gja2TVwgd98NQWBVYhkEpknDsmFis
-   GoOPSaB3GMyP2Yv962RtG6hBTS9RsvHzcm8YUWjKFxdrRrJlwLnG1Jbf5
-   7qZpoxINIYExVNFvasxjq5Ennys4RllBhLPnOLh82HxGOBwjNMgvEtw0p
-   wtT22FuVDWOUt8Ljc2nJ0a2tOSg1568tLoGhv7XqJRFLOo9He0IGmnKYN
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10885"; a="10768247"
-X-IronPort-AV: E=Sophos;i="6.03,280,1694761200"; 
-   d="scan'208";a="10768247"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Nov 2023 00:33:40 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10885"; a="738744400"
-X-IronPort-AV: E=Sophos;i="6.03,280,1694761200"; 
-   d="scan'208";a="738744400"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by orsmga006.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 06 Nov 2023 00:33:39 -0800
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Mon, 6 Nov 2023 00:33:39 -0800
-Received: from fmsmsx603.amr.corp.intel.com (10.18.126.83) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Mon, 6 Nov 2023 00:33:38 -0800
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34 via Frontend Transport; Mon, 6 Nov 2023 00:33:38 -0800
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.101)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.34; Mon, 6 Nov 2023 00:33:38 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=krvl0uKCi9ZfMVxjk69Sm/A6U9D0b20N78EgEXeFpBfvfKAg4Va/qGx5cEIq7FMXIXtMCHAuRdVCjHHtZTroewZ+B7VeE/309IqcyDzvfcubTAza8ZUG68BFWUN9HbAbE+qb8DaQD3Rj+IUQgZwVp1XbIK2AC9n5Fw3ebN/5fyd798+lUcQZxy5WG8E7vqZdQ9uWCXXB3WDJSYC8UpLvHskG1QDLN4X3951TXM9zWKJ6oe5KoZMLqpb9kUhxOI1lGxB4eZvSAVMttru0h4uDpfFwFW+pyu5Ewphm2IWW1ckBf5oigWk0J9+zZUJrFak0PTX422LWmU49FxFq+jE2bg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=cinz0bqexJ+kErZ8SEyNMx7u0+cCdgH9w3582GpyWus=;
- b=azoddYAUBYsCryWCnxnrehpOog5i9RWeBsvxIofZeH6aQ7eSVVW9bDNa2+NveTVtPxw2oQh87YCBqqjSC68rE4OjJrL+Kb4bvHkASrkY1gRUgj3Jj+7lUkKp2CWL1EqHq1o+dm6lnYmkK/TurV3giDILhD5750IbIxqc2B2W+uFfHG3woDpxB+z1yBzOCpMcKWT6hnZvXs/BXp7ym5Ztud1uigpOL53atoLa4eKFnLihkLbSS4XRyL+gukB4SDONmwPdD9UNPDTrCz/wWRaugO5IPRAcRlAOprb/fUdHMZ4MdkYNysr88xF2iASg/eRyqiPGqy5Hdc2CDEFrq9VV+g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from CY5PR11MB6392.namprd11.prod.outlook.com (2603:10b6:930:37::15)
- by SA1PR11MB6846.namprd11.prod.outlook.com (2603:10b6:806:2b0::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.28; Mon, 6 Nov
- 2023 08:33:36 +0000
-Received: from CY5PR11MB6392.namprd11.prod.outlook.com
- ([fe80::15d3:7425:a09e:1c86]) by CY5PR11MB6392.namprd11.prod.outlook.com
- ([fe80::15d3:7425:a09e:1c86%4]) with mapi id 15.20.6933.028; Mon, 6 Nov 2023
- 08:33:36 +0000
-Date:   Mon, 6 Nov 2023 16:28:53 +0800
-From:   kernel test robot <yujie.liu@intel.com>
-To:     Nava kishore Manne <nava.manne@xilinx.com>
-CC:     <oe-kbuild-all@lists.linux.dev>, <linux-kernel@vger.kernel.org>,
-        "Moritz Fischer" <mdf@kernel.org>,
-        Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>
-Subject: drivers/fpga/versal-fpga.c:78:34: warning: 'versal_fpga_of_match'
- defined but not used
-Message-ID: <202311052137.qkYX2xHU-lkp@intel.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-X-ClientProxiedBy: SG3P274CA0002.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:be::14)
- To CY5PR11MB6392.namprd11.prod.outlook.com (2603:10b6:930:37::15)
+        Mon, 6 Nov 2023 03:29:05 -0500
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84F19D49
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 00:29:02 -0800 (PST)
+Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-4083f613272so36970185e9.1
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 00:29:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1699259341; x=1699864141; darn=vger.kernel.org;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=PNu0NhO35ovIfiYPvGl781iKPTMgquYiMp0mZ7xCvVM=;
+        b=hAqfMY8Ysmpfw86qHBPXNWGNbWKNHC3f9Qs0ZDoZKA6owl+DMyjwlcLLDLtYpQ/7Fk
+         NwyOo21qtCOW07LQ93ntRCdPNhrR7tSPmiagPrA6Y02ZJB+x+x0E2cqpRg5yCfzb8L/e
+         5qxgsEyoj+uiCdmyR/LlugYJFeAnJtacoUK9oDfhhlbomIrALlPr2GQDEtBDWElv8joc
+         T5V0lR8QWHd8VtLfhpEUJPBQeonPckSpMvfoc3aCQ0dBUiL3juY0UuY9VeaI8HEq7h3N
+         z20Xxwpm8YuA8+aGqcpRW+lb4wNuXmi8rf7Vve2jR0T5YaDJlvQCCAs5bwIH1CmHh4R3
+         aCPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699259341; x=1699864141;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=PNu0NhO35ovIfiYPvGl781iKPTMgquYiMp0mZ7xCvVM=;
+        b=ghsJiiFzbLKE4LGw79tTFvF5dtHSlddAHehKMx2v0nstC6PGgCkaLOdryhrgsXNGHt
+         fWukup8xfvYRSEvQZaCObfm7l7TDKH8JZRuGvnwUP6102nSimPX9lfXZtXL+HjtGdR4r
+         UQHQX/bxSv52x897hBUp4a3T2pfMGtXnye4bL+n5AfkYdVLm+1egRpfbqdGut6gAEdTZ
+         ES3WP77UmfQZ9zeCMUCK0FlKquRRob1+s6IaJjeBGlSRYHtUGM5cqMIXEvTmXqHNTSDS
+         Ba973q0hN6DwCxsbweZErd5je9kHcd/jXwEuH7swZQGtRLAadNtYrjiaN5oQ8QkyPLaI
+         imYg==
+X-Gm-Message-State: AOJu0YzD83fAP1b2rYcBHuJxdQvhRUTiV9y+7bXAOo0B1zA35AvfcbPu
+        ONdpIhNXtFri4pPAmO5YmytxXQ==
+X-Google-Smtp-Source: AGHT+IFNSWvxCMuznflCmXVJC8pcrpQ0ahid6voOMeDpvpNi4pcVt2K3yxXoEO1C4Rrjz0biHXdA0A==
+X-Received: by 2002:a5d:46ca:0:b0:32d:b289:4bda with SMTP id g10-20020a5d46ca000000b0032db2894bdamr23459681wrs.40.1699259340970;
+        Mon, 06 Nov 2023 00:29:00 -0800 (PST)
+Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:52eb:f6ff:feb3:451a])
+        by smtp.gmail.com with ESMTPSA id p12-20020adfce0c000000b0032dc1fc84f2sm8796126wrn.46.2023.11.06.00.29.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 Nov 2023 00:29:00 -0800 (PST)
+From:   Neil Armstrong <neil.armstrong@linaro.org>
+Date:   Mon, 06 Nov 2023 09:28:54 +0100
+Subject: [PATCH v3 3/3] remoteproc: qcom: pas: Add SM8650 remoteproc
+ support
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY5PR11MB6392:EE_|SA1PR11MB6846:EE_
-X-MS-Office365-Filtering-Correlation-Id: 959d003a-42a5-452c-ca70-08dbdea311ad
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: xdvDAOQhTbaPVOmbAR1nWvjiE+P8MkNVRGEPejKU2ohH02s8ReopWrtg/ILNLi4ukUhk74ERjmv93hZeKw3HxM4Y0m31n0wM6ZuWtb+dWMmfOrtf6CkvTqXTCeF7ytRqZ1Rsz/xfIuiuCba9PKQS/Yq2EcdjIh2VQkS+PMhuqmwDm23ftZH9G5Ltusq3eu92JOHF3jMpnlgk4tc7/3jhfeME+obJk32qbRg267GfNMA23jzLPbIvueuVHTBK6ZXvYETJyXE3tc7YpRYygpTK9WpAgl/HAZJGMbYdm7mvUKqnKyWPaOUMdyD6FqwUP/V+UA4DyJ++0/TuGr/Y1XylNHLJ77pBfX9469XlvW/VQERDxHWRwM5tydO7ssJvxI3YJdoZY1r/3Qi6XCgbnGNonnY8sWBmk/WNjZY/mMdL/BkukYrACV8OIkvB0GGtb2A+n6m/23WyATF6KQv5FwW7Pk0i43hLujOgH/PET2gjpa9D4cnu2QkG5vKBqn+ofbiDrsYXTsYz9ytzqWi0VQrszJISu+Nebv6OOLuwMEPkQSFdaoYKCqeR8vuvCeZk3HI90XtDhCJt5teUKflSYr9MgKJ7jZNxWwWLbYhSEOjyZCLdMCRUMRfwDKOQ5dJQJfPUoKnlBs8njv1I7xWV5ZxLSg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY5PR11MB6392.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(136003)(366004)(396003)(376002)(346002)(230173577357003)(230273577357003)(230922051799003)(451199024)(1800799009)(64100799003)(186009)(2906002)(26005)(83380400001)(38100700002)(86362001)(36756003)(82960400001)(6506007)(8936002)(4326008)(8676002)(6666004)(41300700001)(6512007)(6486002)(966005)(478600001)(66556008)(66476007)(54906003)(66946007)(316002)(6916009)(5660300002)(2616005)(1076003);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?dzfv4fNMlqWywE0q0zyfIUk1srBPI7CI8TFYNcvQ1aDblqYtEnfi00r3gKUa?=
- =?us-ascii?Q?kRiHPF3bqsYlyXylCDjfPn4dop48vtku8E2qmpVRjsWDYjh17tAqZ0UVlgfA?=
- =?us-ascii?Q?W3HYN9h7FrEUF9iLLNerC/rTOY0LxRHTvSzN1PnUJjBFBuQQXf4u2aHWszXA?=
- =?us-ascii?Q?lcozxB2DmDMv9gGFWbqTmJHdTCfNkryARF5M2dTx6PnZUXeDfBWRYlHDpYy6?=
- =?us-ascii?Q?ZK8e7AnU8V0QKidNZkxyeu8HToK0tF9EfIgqQvzlHQgRCdmu52ntfBNFuAlZ?=
- =?us-ascii?Q?n+getmjL+W3bSnaD+Adbbel2QpUBYexjol+F6A8YxyeD/2U2I2m7YA3ty4Dh?=
- =?us-ascii?Q?+wKgfWvTuWks/jAdwZ/WBNQX+s43dGhuof0xWL6CLXkRmL/oP6TmOtQSAdjh?=
- =?us-ascii?Q?rX6k10ZDshkzAA3s71bKq2sGzQ77myMOA277j5hFgrtBskU31vnUnUrlDDsb?=
- =?us-ascii?Q?RZ0o+TYKwVI1bONs3PhAW/SsCmYOXuXrWN3qCxlOB+MKTzGYae3cfAMa887w?=
- =?us-ascii?Q?+Wd2zO0CH7PBE2nxPvkFy6LBvdmFbBpLT7twhuTQ/I9H/OtqgiZoXKoXgHxd?=
- =?us-ascii?Q?8jhZXUf58j/MLF4f/nJBtr+QXzol5ETqsh0QZ4wgZHtpl0zuuqPl6/CXbFMf?=
- =?us-ascii?Q?wSANrGCNW4Q/NjecqyMyDPeLo6bC9OSGb4B16yuATu2rpRNXD4fo6M9ExsRU?=
- =?us-ascii?Q?GDTOzcBeQADvSEbbYiZebH9kXKmxMskqElWARa3KXBs5yQxQijc5qn7v9FYl?=
- =?us-ascii?Q?Nzbxbs9nxXlTlHuUuqZkIKcU58UicTgE4Iid/IfiHX6zcmT0ZxHW0f/au0+A?=
- =?us-ascii?Q?+DSi0SoHLoMz4JEuphYcERafg/7lIC2WOPS51ymp2nNA75n0dxKArftxXO24?=
- =?us-ascii?Q?ixn9fbNBhqq8FHgjJ1F1/Ud3i0pVvZM9rHA0NbmnnyBhu69a8ssFB21D/GQT?=
- =?us-ascii?Q?8ichzeor/yFReqKaXmfKRTSlSFDBwquQFQIO9CQbErYeWw3dxkrTsnmfi6dL?=
- =?us-ascii?Q?1v4F9WNm7prL8+tE8eRQSIy7FlFSkPvQ9854uCQuH2YyjYgYEEdMdEQQGBrq?=
- =?us-ascii?Q?AsCtRPnTmosJTuSLMTgtwSsyJukBD3R3ZQ31ma0T82wga5dlnHJzsfVoz3we?=
- =?us-ascii?Q?j8waKCHvx9s3k7PqboYABo+nyZoyLUukp1869iNwB9+ErbW5TwAvUOvckFjH?=
- =?us-ascii?Q?R+UBnmVd1InPrD02EU5xhtGeGCn2yhvCd1T+K8JH3RU2p0tQZ/bA826L2PXg?=
- =?us-ascii?Q?/t1d13C8O/c6L4D3xIIw41VGhqSY+Md+2BhGeOR+YSCxl+TlXSod7Upmx2JS?=
- =?us-ascii?Q?aSG12tXnrF6tYVpq1F0CEm2tSOO+wd3WjRYQvO9ztAW6Qn06ArSAo8pJl+5O?=
- =?us-ascii?Q?gdyR8lBScfJKeQx3mv0Oujhxwle/L3N7LjzN5RelnBNKEgUfhe/OBJBhQzv9?=
- =?us-ascii?Q?dK8MUFZwM3Il2PEoX8A2whnXxLsFGerxq2nAHCnMY+EUaKdJugMPMCNGJbhF?=
- =?us-ascii?Q?5sY/CcqrktESD4Rvi+vNf5IUVlM3cY1RiodoHz1QhrfgYbskRH/alGl23HWJ?=
- =?us-ascii?Q?WUXoORjwHoSUwsIlLzoWY4vSlCkP4llqNyPe1/Vu?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 959d003a-42a5-452c-ca70-08dbdea311ad
-X-MS-Exchange-CrossTenant-AuthSource: CY5PR11MB6392.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Nov 2023 08:33:36.1769
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 50CRO/5ebWJInAkx7Aqs8nze1LvRb+pGE6xyEO2UKU3ssY+uuIksppYL/i3Aa3OdopViCJqe50unCowmTmLzhw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR11MB6846
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20231106-topic-sm8650-upstream-remoteproc-v3-3-dbd4cabaeb47@linaro.org>
+References: <20231106-topic-sm8650-upstream-remoteproc-v3-0-dbd4cabaeb47@linaro.org>
+In-Reply-To: <20231106-topic-sm8650-upstream-remoteproc-v3-0-dbd4cabaeb47@linaro.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Manivannan Sadhasivam <mani@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2575;
+ i=neil.armstrong@linaro.org; h=from:subject:message-id;
+ bh=V+hhGqyuT9McQl2wN0mZk+6+Al3b4CJGDt+P4+rXTSk=;
+ b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBlSKPISG+tdQXIB8ruDIY47ZQKBf7rTWBmkxeTL4DC
+ OcC4d+iJAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZUijyAAKCRB33NvayMhJ0eGXD/
+ 9YubQFacjudBzLyt+YWtzqUqEZlsQso7plhS2jq+5V2W77Nu381v3J1Z+KXagFZ8F/tP6f12Hx8y/6
+ OUHXcSa9OqI/A9GZPW0RimcRCMUJYQDngCMi+jOJ2SdQ1Pye1Ccg1ulWnSpxVkYojtVERA2FkBu+9c
+ nRuYyi02rslpVBWtUG1BvyiN7xfrk8LVZuxmhxwevAv08t2ZthajAU23/Hg4XjlZhJPgGIwYLIPyrM
+ It9iaT50OfVkjMNdmxirxqR3AX0riZDAj+E6Kg7L7jeEl3sDg3vVazOIVPhEVV11gIQl8225cZWCWZ
+ Hh7nq46XkMM6uEIbK1Kj56A+hncnyzhgyeruZG7MMukDkh8ySnsuwwf8laPHm4EhgfdlAORmxrew/o
+ O2rg/GHgtkToDv287zwMZ28GASEqLN28ja0sFAaZbM9rlVDCbYptXiwykcxxAqXwbfbO9dXGJHduvw
+ pQuVHaOCF8ck9ZeXFZNs05qXQrU/EWSmTsFXM+ZH+4ruDrsKrNKsVVYnp3D05Nz1RKtM8X75rX6lPH
+ fu3QDfIbYIA5CUdDYVgEyndfpaPHRNaVpazd9zDEMIzH/2vUwK3HhZUtAEEPHSe5jbEXvzbzfqFYis
+ uHhT5X/pjTzs+D7XLcgmNCnlU7q+RG0vASsCrMCjhjxCupyXRv+3kbsppfdw==
+X-Developer-Key: i=neil.armstrong@linaro.org; a=openpgp;
+ fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nava,
+Add DSP Peripheral Authentication Service support for the SM8650 platform.
 
-kernel test robot noticed a build warning:
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+---
+ drivers/remoteproc/qcom_q6v5_pas.c | 50 ++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 50 insertions(+)
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   1c41041124bd14dd6610da256a3da4e5b74ce6b1
-commit: 01c54e628932c655e4cd2c6ed0cc688ec6e6f96b fpga: versal-fpga: Add versal fpga manager driver
-date:   2 years, 4 months ago
-config: i386-buildonly-randconfig-005-20231101 (https://download.01.org/0day-ci/archive/20231105/202311052137.qkYX2xHU-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231105/202311052137.qkYX2xHU-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <yujie.liu@intel.com>
-| Closes: https://lore.kernel.org/r/202311052137.qkYX2xHU-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> drivers/fpga/versal-fpga.c:78:34: warning: 'versal_fpga_of_match' defined but not used [-Wunused-const-variable=]
-      78 | static const struct of_device_id versal_fpga_of_match[] = {
-         |                                  ^~~~~~~~~~~~~~~~~~~~
-
-
-vim +/versal_fpga_of_match +78 drivers/fpga/versal-fpga.c
-
-01c54e628932c6 Nava kishore Manne 2021-06-26  77  
-01c54e628932c6 Nava kishore Manne 2021-06-26 @78  static const struct of_device_id versal_fpga_of_match[] = {
-01c54e628932c6 Nava kishore Manne 2021-06-26  79  	{ .compatible = "xlnx,versal-fpga", },
-01c54e628932c6 Nava kishore Manne 2021-06-26  80  	{},
-01c54e628932c6 Nava kishore Manne 2021-06-26  81  };
-01c54e628932c6 Nava kishore Manne 2021-06-26  82  MODULE_DEVICE_TABLE(of, versal_fpga_of_match);
-01c54e628932c6 Nava kishore Manne 2021-06-26  83  
+diff --git a/drivers/remoteproc/qcom_q6v5_pas.c b/drivers/remoteproc/qcom_q6v5_pas.c
+index 2ea364a04d4c..8f7429d86a6f 100644
+--- a/drivers/remoteproc/qcom_q6v5_pas.c
++++ b/drivers/remoteproc/qcom_q6v5_pas.c
+@@ -1196,6 +1196,53 @@ static const struct adsp_data sm8550_mpss_resource = {
+ 	.region_assign_vmid = QCOM_SCM_VMID_MSS_MSA,
+ };
+ 
++static const struct adsp_data sm8650_cdsp_resource = {
++	.crash_reason_smem = 601,
++	.firmware_name = "cdsp.mdt",
++	.dtb_firmware_name = "cdsp_dtb.mdt",
++	.pas_id = 18,
++	.dtb_pas_id = 0x25,
++	.minidump_id = 7,
++	.auto_boot = true,
++	.proxy_pd_names = (char*[]){
++		"cx",
++		"mxc",
++		"nsp",
++		NULL
++	},
++	.load_state = "cdsp",
++	.ssr_name = "cdsp",
++	.sysmon_name = "cdsp",
++	.ssctl_id = 0x17,
++	.region_assign_idx = 2,
++	.region_assign_count = 1,
++	.region_assign_shared = true,
++	.region_assign_vmid = QCOM_SCM_VMID_CDSP,
++};
++
++static const struct adsp_data sm8650_mpss_resource = {
++	.crash_reason_smem = 421,
++	.firmware_name = "modem.mdt",
++	.dtb_firmware_name = "modem_dtb.mdt",
++	.pas_id = 4,
++	.dtb_pas_id = 0x26,
++	.minidump_id = 3,
++	.auto_boot = false,
++	.decrypt_shutdown = true,
++	.proxy_pd_names = (char*[]){
++		"cx",
++		"mss",
++		NULL
++	},
++	.load_state = "modem",
++	.ssr_name = "mpss",
++	.sysmon_name = "modem",
++	.ssctl_id = 0x12,
++	.region_assign_idx = 2,
++	.region_assign_count = 2,
++	.region_assign_vmid = QCOM_SCM_VMID_MSS_MSA,
++};
++
+ static const struct of_device_id adsp_of_match[] = {
+ 	{ .compatible = "qcom,msm8226-adsp-pil", .data = &adsp_resource_init},
+ 	{ .compatible = "qcom,msm8953-adsp-pil", .data = &msm8996_adsp_resource},
+@@ -1248,6 +1295,9 @@ static const struct of_device_id adsp_of_match[] = {
+ 	{ .compatible = "qcom,sm8550-adsp-pas", .data = &sm8550_adsp_resource},
+ 	{ .compatible = "qcom,sm8550-cdsp-pas", .data = &sm8550_cdsp_resource},
+ 	{ .compatible = "qcom,sm8550-mpss-pas", .data = &sm8550_mpss_resource},
++	{ .compatible = "qcom,sm8650-adsp-pas", .data = &sm8550_adsp_resource},
++	{ .compatible = "qcom,sm8650-cdsp-pas", .data = &sm8650_cdsp_resource},
++	{ .compatible = "qcom,sm8650-mpss-pas", .data = &sm8650_mpss_resource},
+ 	{ },
+ };
+ MODULE_DEVICE_TABLE(of, adsp_of_match);
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.34.1
 
