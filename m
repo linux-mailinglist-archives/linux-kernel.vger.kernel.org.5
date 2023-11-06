@@ -2,233 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 168B27E3020
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 23:45:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20A827E3027
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 23:49:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233379AbjKFWpV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 17:45:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46148 "EHLO
+        id S233227AbjKFWtj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 17:49:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233380AbjKFWpF (ORCPT
+        with ESMTP id S233217AbjKFWti (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 17:45:05 -0500
-Received: from mail-yw1-x112d.google.com (mail-yw1-x112d.google.com [IPv6:2607:f8b0:4864:20::112d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC9A210EA
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 14:44:51 -0800 (PST)
-Received: by mail-yw1-x112d.google.com with SMTP id 00721157ae682-5afabb23900so60381457b3.2
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 14:44:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699310691; x=1699915491; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Jh4ueUUtnHe+xpZ555uV9QkBq8rONsDDGRxRxIz5vUk=;
-        b=V2TAxHD48QaOdmpfyG5eD8yq/njaTlwLVCQhpMd7KzdrRDhvua3C3Kms1pvND9NjN0
-         1tM0lgZ8AhW8WiAQrEJPbQNrNTUW8TC0OBddroDUveaV0EiNvhkiIyyCmA4PfVodlth2
-         9kNqF3wEACpON3+2PNIXOoausAotBZlyOPzN3xtfezBvfGmTLr0Oz8AiEE5qbu0u5/ZM
-         TcKNDuqLYDRZr8dJKf0ISkfIbgQi+sGWjd3iuwd8YEggYpTZmhT48AENeVasb+3zk1Vi
-         A5QKERiavNQZu2Kr2xbts/NT1FtEeJP3mdaV3nzlxB6Bvz+PdtzGjnenzDVs1cS3JFfu
-         ycOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699310691; x=1699915491;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Jh4ueUUtnHe+xpZ555uV9QkBq8rONsDDGRxRxIz5vUk=;
-        b=cRL2WI1GxZpg/AR2x6VunuOIN0ssBgEb90/Wvz2W0e1ESNkkvQZwShd55ET9a89HMv
-         nqxjvjMXGjJvk+eyWRxmwPBDDXbTwo6gh+D51wnC61RswRSgrNiwgACsKM793w1HfnFp
-         96la884g1hMMgxnXQFEL1tTqyDwlxsXx9NOSPlhnG5rUBT+Pl4vmaZ76Tz4jmMGJ2kWh
-         oievhkRDhgbXCM8nh2/feYcl7EJNBBG3D5srRkJr0czexMfEX6FY1ceg6s8GMqr2silA
-         lRfssM5bRsEC0RS/JysoAKEZ0SGIUSPppMksrlrsU/BHpLX6lTnny2o6VGUjKGKNI5kY
-         Ybfw==
-X-Gm-Message-State: AOJu0Yw8S5sGgT8uVtd+wneSoqxsRRfyMY/BUE9eKxaknxXVxuNvb1U8
-        cVT2MSgdMV3oFY0FBZTQM3QE16PHYP4NFX0zgiX6uQ==
-X-Google-Smtp-Source: AGHT+IFW46W/qi2R11wocWXMwQfH71KxUBDhedZj2DPWapnZTpkSztTFIYEo5cIEnwGFOFiUNQD9a/CWiF7cl9YjzYQ=
-X-Received: by 2002:a05:690c:681:b0:577:a46:26e5 with SMTP id
- bp1-20020a05690c068100b005770a4626e5mr15037079ywb.31.1699310690873; Mon, 06
- Nov 2023 14:44:50 -0800 (PST)
+        Mon, 6 Nov 2023 17:49:38 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB159D6E
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 14:49:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699310975; x=1730846975;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=EMLgOROeCF2utULDNO+8pR4x0ROBK/cUmYyQmhkf/eA=;
+  b=iiR6FsOykRCEESwKi5NSyymdg8wKJg/sIctGx4KdLnDYjhvdaABDzC/s
+   KZGM7RAUN46P/rqVyr1jsJSqf55+5E0YeJAk6isNYGLjefpk6SHypaoDj
+   FTaSBJPZpqDKrzNh3J29351dN4eLx0gHKBYubCDmV6uPjzwKvpdZYBcjn
+   Ln2yXqm2M0wnDXwwSHAAkHmrFf5R/xRH/i0GgHALEc5gTWNUQ7LbV5mn0
+   4F+WSVhuOVqQwSqk5aAo35KtFbSv6L3vLPNeFrKrF/+3G1VcSMDzDLoT7
+   OiOGRlAnOt87B/N67Cv59uRkm89r+2qvbOzBCDvlcZI0lNexs/ACEws/k
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10886"; a="8019291"
+X-IronPort-AV: E=Sophos;i="6.03,282,1694761200"; 
+   d="scan'208";a="8019291"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Nov 2023 14:49:35 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10886"; a="935934774"
+X-IronPort-AV: E=Sophos;i="6.03,282,1694761200"; 
+   d="scan'208";a="935934774"
+Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
+  by orsmga005.jf.intel.com with ESMTP; 06 Nov 2023 14:49:32 -0800
+Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r08PS-0006mi-0X;
+        Mon, 06 Nov 2023 22:49:30 +0000
+Date:   Tue, 7 Nov 2023 06:47:36 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Sreekanth Reddy <sreekanth.reddy@avagotech.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Hannes Reinecke <hare@suse.de>
+Subject: drivers/scsi/mpt3sas/mpt3sas_base.c:1648:61: warning: '%d' directive
+ output may be truncated writing between 1 and 3 bytes into a region of size
+ between 1 and 32
+Message-ID: <202311070619.k72DqC4f-lkp@intel.com>
 MIME-Version: 1.0
-References: <20231105-gemini-largeframe-fix-v2-0-cd3a5aa6c496@linaro.org>
- <20231105-gemini-largeframe-fix-v2-4-cd3a5aa6c496@linaro.org> <20231106132626.orn5r57cc7n5ditj@skbuf>
-In-Reply-To: <20231106132626.orn5r57cc7n5ditj@skbuf>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Mon, 6 Nov 2023 23:44:37 +0100
-Message-ID: <CACRpkdb-iAQdw3S_1iBX=SFt6LCPvdW8+K0nvuXxD01q1K9A1A@mail.gmail.com>
-Subject: Re: [PATCH net v2 4/4] net: ethernet: cortina: Handle large frames
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Hans Ulli Kroll <ulli.kroll@googlemail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        Andrew Lunn <andrew@lunn.ch>,
-        linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 6, 2023 at 2:26=E2=80=AFPM Vladimir Oltean <olteanv@gmail.com> =
-wrote:
-> On Sun, Nov 05, 2023 at 09:57:26PM +0100, Linus Walleij wrote:
+Hi Sreekanth,
 
-> > If we start sending bigger frames (after first bumping up the MTU
-> > on both interfaces sending and receiveing the frames), truncated
-> > packets start to appear on the target such as in this tcpdump
-> > resulting from ping -s 1474:
->
-> A bit related: what is gmac_fix_features() supposed to do? I see it
-> unsets GMAC_OFFLOAD_FEATURES when the MTU goes over a certain limit,
-> and that also includes NETIF_F_IP_CSUM | NETIF_F_IPV6_CSUM. Is that
-> limit correct, or is it supposed to kick in sooner, to allow
-> validate_xmit_skb() -> skb_csum_hwoffload_help() do the software
-> checksuum for you? I'm not sure whether that was the intention.
+FYI, the error/warning still remains.
 
-That indeed seems like the intention. But it's a bit suboptimal, because it
-disables hardware checksum just because the MTU goes over a
-certain level, and stops using the hardware checksum also for all
-packets smaller than the MTU :(
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   d2f51b3516dade79269ff45eae2a7668ae711b25
+commit: d357e84d65dfcdb502fdb1aaab2873a82a828db5 mpt3sas: Define 'hba_mpi_version_belonged' IOC variable
+date:   8 years ago
+config: x86_64-buildonly-randconfig-006-20230911 (https://download.01.org/0day-ci/archive/20231107/202311070619.k72DqC4f-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231107/202311070619.k72DqC4f-lkp@intel.com/reproduce)
 
-I'll delete this and make the driver slot in the SW fallback per-packet
-instead, I think it is fair to assume that most packets will be < MTU
-and it is really just a question of where the fallback gets called.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311070619.k72DqC4f-lkp@intel.com/
 
-> > Suggested-by: Vladimir Oltean <olteanv@gmail.com>
->
-> To be clear, I didn't suggest any of this. I just pointed towards the gem=
-ini.c
-> driver as being the problem. Please remove my Suggested-by tag.
+All warnings (new ones prefixed by >>):
 
-OK sorry, it was just my way of trying to provide credit where
-credit is due, because you helped so much with this bug.
+   In file included from include/linux/kobject.h:21,
+                    from include/linux/module.h:17,
+                    from drivers/scsi/mpt3sas/mpt3sas_base.c:47:
+   include/linux/sysfs.h: In function 'sysfs_get_dirent':
+   include/linux/sysfs.h:496:44: warning: pointer targets in passing argument 2 of 'kernfs_find_and_get' differ in signedness [-Wpointer-sign]
+     496 |         return kernfs_find_and_get(parent, name);
+         |                                            ^~~~
+         |                                            |
+         |                                            const unsigned char *
+   In file included from include/linux/sysfs.h:15:
+   include/linux/kernfs.h:428:57: note: expected 'const char *' but argument is of type 'const unsigned char *'
+     428 | kernfs_find_and_get(struct kernfs_node *kn, const char *name)
+         |                                             ~~~~~~~~~~~~^~~~
+   drivers/scsi/mpt3sas/mpt3sas_base.c: In function '_base_assign_reply_queues':
+   drivers/scsi/mpt3sas/mpt3sas_base.c:1713:57: warning: suggest braces around empty body in an 'if' statement [-Wempty-body]
+    1713 |                             ioc->name, reply_q->vector));
+         |                                                         ^
+   drivers/scsi/mpt3sas/mpt3sas_base.c: At top level:
+   drivers/scsi/mpt3sas/mpt3sas_base.c:1820:1: warning: no previous declaration for 'mpt3sas_base_unmap_resources' [-Wmissing-declarations]
+    1820 | mpt3sas_base_unmap_resources(struct MPT3SAS_ADAPTER *ioc)
+         | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   drivers/scsi/mpt3sas/mpt3sas_base.c: In function '_base_display_ioc_capabilities':
+   drivers/scsi/mpt3sas/mpt3sas_base.c:2477:36: warning: pointer targets in passing argument 2 of 'strncpy' differ in signedness [-Wpointer-sign]
+    2477 |         strncpy(desc, ioc->manu_pg0.ChipName, 16);
+         |                       ~~~~~~~~~~~~~^~~~~~~~~
+         |                                    |
+         |                                    U8 * {aka unsigned char *}
+   In file included from include/linux/bitmap.h:8,
+                    from include/linux/cpumask.h:11,
+                    from arch/x86/include/asm/cpumask.h:4,
+                    from arch/x86/include/asm/msr.h:10,
+                    from arch/x86/include/asm/processor.h:20,
+                    from arch/x86/include/asm/thread_info.h:52,
+                    from include/linux/thread_info.h:54,
+                    from arch/x86/include/asm/preempt.h:6,
+                    from include/linux/preempt.h:64,
+                    from include/linux/spinlock.h:50,
+                    from include/linux/seqlock.h:35,
+                    from include/linux/time.h:5,
+                    from include/linux/stat.h:18,
+                    from include/linux/module.h:10:
+   include/linux/string.h:23:30: note: expected 'const char *' but argument is of type 'U8 *' {aka 'unsigned char *'}
+      23 | extern char * strncpy(char *,const char *, __kernel_size_t);
+         |                              ^~~~~~~~~~~~
+   drivers/scsi/mpt3sas/mpt3sas_base.c: In function '_base_handshake_req_reply_wait':
+   drivers/scsi/mpt3sas/mpt3sas_base.c:3503:13: warning: variable 'dummy' set but not used [-Wunused-but-set-variable]
+    3503 |         u16 dummy;
+         |             ^~~~~
+   drivers/scsi/mpt3sas/mpt3sas_base.c: In function 'mpt3sas_base_sas_iounit_control':
+   drivers/scsi/mpt3sas/mpt3sas_base.c:3628:23: warning: variable 'timeleft' set but not used [-Wunused-but-set-variable]
+    3628 |         unsigned long timeleft;
+         |                       ^~~~~~~~
+   drivers/scsi/mpt3sas/mpt3sas_base.c: In function 'mpt3sas_base_scsi_enclosure_processor':
+   drivers/scsi/mpt3sas/mpt3sas_base.c:3732:23: warning: variable 'timeleft' set but not used [-Wunused-but-set-variable]
+    3732 |         unsigned long timeleft;
+         |                       ^~~~~~~~
+   drivers/scsi/mpt3sas/mpt3sas_base.c: In function '_base_send_port_enable':
+   drivers/scsi/mpt3sas/mpt3sas_base.c:4174:23: warning: variable 'timeleft' set but not used [-Wunused-but-set-variable]
+    4174 |         unsigned long timeleft;
+         |                       ^~~~~~~~
+   drivers/scsi/mpt3sas/mpt3sas_base.c: In function '_base_event_notification':
+   drivers/scsi/mpt3sas/mpt3sas_base.c:4399:42: warning: suggest braces around empty body in an 'else' statement [-Wempty-body]
+    4399 |                     ioc->name, __func__));
+         |                                          ^
+   drivers/scsi/mpt3sas/mpt3sas_base.c:4355:23: warning: variable 'timeleft' set but not used [-Wunused-but-set-variable]
+    4355 |         unsigned long timeleft;
+         |                       ^~~~~~~~
+   drivers/scsi/mpt3sas/mpt3sas_base.c: In function '_base_request_irq':
+>> drivers/scsi/mpt3sas/mpt3sas_base.c:1648:61: warning: '%d' directive output may be truncated writing between 1 and 3 bytes into a region of size between 1 and 32 [-Wformat-truncation=]
+    1648 |                 snprintf(reply_q->name, MPT_NAME_LENGTH, "%s%d",
+         |                                                             ^~
+   drivers/scsi/mpt3sas/mpt3sas_base.c:1648:58: note: directive argument in the range [0, 255]
+    1648 |                 snprintf(reply_q->name, MPT_NAME_LENGTH, "%s%d",
+         |                                                          ^~~~~~
+   drivers/scsi/mpt3sas/mpt3sas_base.c:1648:17: note: 'snprintf' output between 2 and 35 bytes into a destination of size 32
+    1648 |                 snprintf(reply_q->name, MPT_NAME_LENGTH, "%s%d",
+         |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    1649 |                     driver_name, ioc->id);
+         |                     ~~~~~~~~~~~~~~~~~~~~~
+   drivers/scsi/mpt3sas/mpt3sas_base.c:1645:61: warning: '%d' directive output may be truncated writing between 1 and 3 bytes into a region of size between 1 and 32 [-Wformat-truncation=]
+    1645 |                 snprintf(reply_q->name, MPT_NAME_LENGTH, "%s%d-msix%d",
+         |                                                             ^~
+   drivers/scsi/mpt3sas/mpt3sas_base.c:1645:58: note: directive argument in the range [0, 255]
+    1645 |                 snprintf(reply_q->name, MPT_NAME_LENGTH, "%s%d-msix%d",
+         |                                                          ^~~~~~~~~~~~~
+   drivers/scsi/mpt3sas/mpt3sas_base.c:1645:58: note: directive argument in the range [0, 254]
+   drivers/scsi/mpt3sas/mpt3sas_base.c:1645:17: note: 'snprintf' output between 8 and 43 bytes into a destination of size 32
+    1645 |                 snprintf(reply_q->name, MPT_NAME_LENGTH, "%s%d-msix%d",
+         |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    1646 |                     driver_name, ioc->id, index);
+         |                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-> > -     if (skb->ip_summed !=3D CHECKSUM_NONE) {
-> > +     if (skb->len >=3D ETH_FRAME_LEN) {
-> > +             /* Hardware offloaded checksumming isn't working on frame=
-s
-> > +              * bigger than 1514 bytes. Perhaps the buffer is only 151=
-8
-> > +              * bytes fitting a normal frame and a checksum?
-> > +              * Just use software checksumming and bypass on bigger fr=
-ames.
-> > +              */
-> > +             if (skb->ip_summed =3D=3D CHECKSUM_PARTIAL) {
-> > +                     ret =3D skb_checksum_help(skb);
-> > +                     if (ret)
-> > +                             return ret;
-> > +             }
-> > +             word1 |=3D TSS_BYPASS_BIT;
-> > +     } else if (skb->ip_summed =3D=3D CHECKSUM_PARTIAL) {
-> >               int tcp =3D 0;
-> >
-> >               if (skb->protocol =3D=3D htons(ETH_P_IP)) {
->
-> [ context: tag_rtl4_a.c is a "category 2", aka "Ethertype", tagger ]
->
-> We say this in Documentation/networking/dsa/dsa.rst:
->
-> Checksum offload should work with category 1 and 2 taggers when the DSA c=
-onduit
-> driver declares NETIF_F_HW_CSUM in vlan_features
-> and looks at csum_start and csum_offset.
-> For those cases, DSA will shift the checksum start and offset by
-> the tag size. If the DSA conduit driver still uses the legacy NETIF_F_IP_=
-CSUM
-> or NETIF_F_IPV6_CSUM in vlan_features, the offload might only work if the
-> offload hardware already expects that specific tag (perhaps due to matchi=
-ng
-> vendors).
 
-Since things work smoothly I can only assume that the Gemini
-checksum engine actually knows about the Realtek ethertype (0x8899)
-and the protocol (0xa) and takes action on that, since the switch works.
+vim +1648 drivers/scsi/mpt3sas/mpt3sas_base.c
 
-OR: it has some heuristic on for how to handle it. (Such as looking for
-a valid TCP or UDP header to figure out where to put the checksum.)
+f92363d1235949 Sreekanth Reddy 2012-11-30  1614  
+f92363d1235949 Sreekanth Reddy 2012-11-30  1615  /**
+f92363d1235949 Sreekanth Reddy 2012-11-30  1616   * _base_request_irq - request irq
+f92363d1235949 Sreekanth Reddy 2012-11-30  1617   * @ioc: per adapter object
+f92363d1235949 Sreekanth Reddy 2012-11-30  1618   * @index: msix index into vector table
+f92363d1235949 Sreekanth Reddy 2012-11-30  1619   * @vector: irq vector
+f92363d1235949 Sreekanth Reddy 2012-11-30  1620   *
+f92363d1235949 Sreekanth Reddy 2012-11-30  1621   * Inserting respective reply_queue into the list.
+f92363d1235949 Sreekanth Reddy 2012-11-30  1622   */
+f92363d1235949 Sreekanth Reddy 2012-11-30  1623  static int
+f92363d1235949 Sreekanth Reddy 2012-11-30  1624  _base_request_irq(struct MPT3SAS_ADAPTER *ioc, u8 index, u32 vector)
+f92363d1235949 Sreekanth Reddy 2012-11-30  1625  {
+f92363d1235949 Sreekanth Reddy 2012-11-30  1626  	struct adapter_reply_queue *reply_q;
+f92363d1235949 Sreekanth Reddy 2012-11-30  1627  	int r;
+f92363d1235949 Sreekanth Reddy 2012-11-30  1628  
+f92363d1235949 Sreekanth Reddy 2012-11-30  1629  	reply_q =  kzalloc(sizeof(struct adapter_reply_queue), GFP_KERNEL);
+f92363d1235949 Sreekanth Reddy 2012-11-30  1630  	if (!reply_q) {
+f92363d1235949 Sreekanth Reddy 2012-11-30  1631  		pr_err(MPT3SAS_FMT "unable to allocate memory %d!\n",
+f92363d1235949 Sreekanth Reddy 2012-11-30  1632  		    ioc->name, (int)sizeof(struct adapter_reply_queue));
+f92363d1235949 Sreekanth Reddy 2012-11-30  1633  		return -ENOMEM;
+f92363d1235949 Sreekanth Reddy 2012-11-30  1634  	}
+f92363d1235949 Sreekanth Reddy 2012-11-30  1635  	reply_q->ioc = ioc;
+f92363d1235949 Sreekanth Reddy 2012-11-30  1636  	reply_q->msix_index = index;
+f92363d1235949 Sreekanth Reddy 2012-11-30  1637  	reply_q->vector = vector;
+14b3114d940cdc Sreekanth Reddy 2015-01-12  1638  
+14b3114d940cdc Sreekanth Reddy 2015-01-12  1639  	if (!alloc_cpumask_var(&reply_q->affinity_hint, GFP_KERNEL))
+14b3114d940cdc Sreekanth Reddy 2015-01-12  1640  		return -ENOMEM;
+14b3114d940cdc Sreekanth Reddy 2015-01-12  1641  	cpumask_clear(reply_q->affinity_hint);
+14b3114d940cdc Sreekanth Reddy 2015-01-12  1642  
+f92363d1235949 Sreekanth Reddy 2012-11-30  1643  	atomic_set(&reply_q->busy, 0);
+f92363d1235949 Sreekanth Reddy 2012-11-30  1644  	if (ioc->msix_enable)
+f92363d1235949 Sreekanth Reddy 2012-11-30  1645  		snprintf(reply_q->name, MPT_NAME_LENGTH, "%s%d-msix%d",
+d357e84d65dfcd Sreekanth Reddy 2015-11-11  1646  		    driver_name, ioc->id, index);
+f92363d1235949 Sreekanth Reddy 2012-11-30  1647  	else
+f92363d1235949 Sreekanth Reddy 2012-11-30 @1648  		snprintf(reply_q->name, MPT_NAME_LENGTH, "%s%d",
+d357e84d65dfcd Sreekanth Reddy 2015-11-11  1649  		    driver_name, ioc->id);
+f92363d1235949 Sreekanth Reddy 2012-11-30  1650  	r = request_irq(vector, _base_interrupt, IRQF_SHARED, reply_q->name,
+f92363d1235949 Sreekanth Reddy 2012-11-30  1651  	    reply_q);
+f92363d1235949 Sreekanth Reddy 2012-11-30  1652  	if (r) {
+f92363d1235949 Sreekanth Reddy 2012-11-30  1653  		pr_err(MPT3SAS_FMT "unable to allocate interrupt %d!\n",
+f92363d1235949 Sreekanth Reddy 2012-11-30  1654  		    reply_q->name, vector);
+f92363d1235949 Sreekanth Reddy 2012-11-30  1655  		kfree(reply_q);
+f92363d1235949 Sreekanth Reddy 2012-11-30  1656  		return -EBUSY;
+f92363d1235949 Sreekanth Reddy 2012-11-30  1657  	}
+f92363d1235949 Sreekanth Reddy 2012-11-30  1658  
+f92363d1235949 Sreekanth Reddy 2012-11-30  1659  	INIT_LIST_HEAD(&reply_q->list);
+f92363d1235949 Sreekanth Reddy 2012-11-30  1660  	list_add_tail(&reply_q->list, &ioc->reply_queue_list);
+f92363d1235949 Sreekanth Reddy 2012-11-30  1661  	return 0;
+f92363d1235949 Sreekanth Reddy 2012-11-30  1662  }
+f92363d1235949 Sreekanth Reddy 2012-11-30  1663  
 
-But I have no idea how it does it. It doesn't have a firmware AFAIK.
+:::::: The code at line 1648 was first introduced by commit
+:::::: f92363d12359498f9a9960511de1a550f0ec41c2 [SCSI] mpt3sas: add new driver supporting 12GB SAS
 
-Examples listed were ICMP so just IP checksums but I tried for example
-SSH, and HTTP and packets look like this:
+:::::: TO: Sreekanth Reddy <Sreekanth.Reddy@lsi.com>
+:::::: CC: James Bottomley <JBottomley@Parallels.com>
 
-22:51:35.457191 9a:ec:30:5a:46:96 (oui Unknown) > bc:ae:c5:6b:a8:3d
-(oui Unknown),
-ethertype IPv4 (0x0800), length 434: (tos 0x48, ttl 64, id 8221,
-offset 0, flags [DF], proto TCP (6), length 420)
-    _gateway.48102 > fedora.ssh: Flags [P.], cksum 0xcf1b (correct),
-seq 811:1179, ack 2310,
-   win 2054, options [nop,nop,TS val 74858741 ecr 1981407207], length 368
-
-Checksum correct. So...
-
-> DSA user ports inherit those flags from the conduit, and it is up to
-> the driver to correctly fall back to software checksum when the IP header=
- is not
-> where the hardware expects. If that check is ineffective, the packets mig=
-ht go
-> to the network without a proper checksum (the checksum field will have th=
-e
-> pseudo IP header sum).
-
-It definately does not contain the pseudo IP header sum because
-it would be the same all the time but tcpdump is happy:
-cksum 0xcf1b (correct)
-cksum 0x0655 (correct)
-cksum 0xd247 (correct)
-cksum 0x06b1 (correct)
-
-> Shouldn't "word1 |=3D TSS_BYPASS_BIT;" be done depending on skb->protocol=
-,
-> rather than depending on skb->len?!
->
->                 if (skb->protocol =3D=3D htons(ETH_P_IP)) {
->                         word1 |=3D TSS_IP_CHKSUM_BIT;
->                         tcp =3D ip_hdr(skb)->protocol =3D=3D IPPROTO_TCP;
->                 } else { /* IPv6 */
->                         word1 |=3D TSS_IPV6_ENABLE_BIT;
->                         tcp =3D ipv6_hdr(skb)->nexthdr =3D=3D IPPROTO_TCP=
-;
->                 } // here
->                         word1 |=3D TSS_BYPASS_BIT;
-
-Oddly it assumes everything is either TCP or UDP on
-IPv4 or IPv6. And yet things such as ICMP work just fine.
-
-I think the checksum engine can contain some various
-heuristics, such as if it cannot recognize what is coming
-in as the selected TCP or UDP, it will pass right through.
-
-> Gemini should never attempt to provide checksums for DSA-tagged packets
-> unless it is able to take skb->csum_start into consideration, otherwise
-> it will get it wrong.
->
-> This is somewhat independent of the other problem you've found, which
-> seems to be that large non-DSA packets get truncated anyway. But not
-> bypassing TX checksum offload truncates a packet? Hmm, strange.
-
-I have a theory about that in the comment, which is that when they
-engineered the hardware they only put in a hardware buffer for
-1518 bytes in the checksum engine. If you try to put in any more
-it gets truncated. It's a reasonable guess.
-
-If you do not set the checkumming engine to "bypass" it will try
-to fit the incoming paket into the checksumming buffer, and then
-it will look to see if it can find the right TCP or UDP headers.
-If it can't it will pass the packet out from the buffer without doing
-any changes. But the buffer is just 1518 bytes, which means that
-no matter what kind of package it is, it will get truncated if it
-does not fit into the checksumming buffer.
-
-This would give exactly the behaviour we're seeing.
-
-Yours,
-Linus Walleij
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
