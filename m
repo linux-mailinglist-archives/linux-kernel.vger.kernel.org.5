@@ -2,48 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4210E7E22B4
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 14:03:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 581497E22B8
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 14:04:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231891AbjKFNDp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 08:03:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55308 "EHLO
+        id S231894AbjKFNEL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 08:04:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231871AbjKFNDl (ORCPT
+        with ESMTP id S231920AbjKFNEH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 08:03:41 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DBA110A;
-        Mon,  6 Nov 2023 05:03:39 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC4B3C433C7;
-        Mon,  6 Nov 2023 13:03:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699275819;
-        bh=JhxQ4u/qMC60fSJVdjEYN/spA/OnlG3WT3EXnXH+T7M=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=QggcINbbJRyNRYpSC2A9TY5xFzLBF/4H+qi/J8vgwdpJQnu+Cdaz0wI5lW8VqMeG5
-         rr7Xr9kaMerKCJj/Kw44cwwMnCbwpwdMIm4nLcep+7SSwcjyc3FZsAvfsaOlgzYlWc
-         qM51WPlgwImZJaDRIEpER0VdXBlHbFpRjJ7UtakvFYvfia7MPpskAzSlYcqvy6zkpM
-         hkGhvOpQyZuw9IsBM3RbjxF8vJ4Pp0NRiVCabPMJIJXGcttR51+Qxb2nV3A/qJzU5k
-         QICrJZDK0yYPAPFHrnN1X4sj/RRVcVKxQ3mwzhFTJ4d4jSGhy5NURnVKFCcRA6tXYf
-         ko6zsyaVCfNrA==
-From:   Mark Brown <broonie@kernel.org>
-To:     Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
-Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        git@amd.com, Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>
-In-Reply-To: <1699037031-702858-1-git-send-email-radhey.shyam.pandey@amd.com>
-References: <1699037031-702858-1-git-send-email-radhey.shyam.pandey@amd.com>
-Subject: Re: [PATCH] spi: spi-zynq-qspi: add spi-mem to driver kconfig
- dependencies
-Message-Id: <169927581730.3037377.1844652491397531332.b4-ty@kernel.org>
-Date:   Mon, 06 Nov 2023 13:03:37 +0000
+        Mon, 6 Nov 2023 08:04:07 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACF821B2;
+        Mon,  6 Nov 2023 05:04:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699275844; x=1730811844;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=v+viOGU3qwP1vIfGdPJcXm+0kRpH20trqAeV1C9YH3M=;
+  b=gwp6HCpZvU5VFchfRP/Xf+XYr7J1V/l2keBDsVzixseSBgDfo2ivlZS3
+   sCqctNqvd3uvnI/AVh/Q8vSR3qtfY5cyrmGmwOkj/t1jP6KFBVTIPVVkW
+   X7zEQTESOaDS8s2GhacppEBjmxA2T/kg0AbziHwRzlHWOuBdeob1ifpU6
+   ln494w+RuNYOe+ufEUEvxeFnKOj+zsmd2BHMSeDkSx7kOkUQy+qY9JBZf
+   XuXcQjzZ6IT49OEz5Bctd0cZOuLKu/j69IPdIiZsFMWgsNe+dEkirGsRM
+   MYgTO3Jqyt2awacaH3lZoLfM8rwcd0mKtMJeoUeUJPCwI1kKgRhjtVD7T
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10885"; a="368605708"
+X-IronPort-AV: E=Sophos;i="6.03,281,1694761200"; 
+   d="scan'208";a="368605708"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Nov 2023 05:04:04 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10885"; a="879442673"
+X-IronPort-AV: E=Sophos;i="6.03,281,1694761200"; 
+   d="scan'208";a="879442673"
+Received: from jgulati-mobl.ger.corp.intel.com (HELO box.shutemov.name) ([10.249.42.157])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Nov 2023 05:03:59 -0800
+Received: by box.shutemov.name (Postfix, from userid 1000)
+        id 8C032104790; Mon,  6 Nov 2023 16:03:56 +0300 (+03)
+Date:   Mon, 6 Nov 2023 16:03:56 +0300
+From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+To:     "Nikunj A. Dadhania" <nikunj@amd.com>
+Cc:     seanjc@google.com, pbonzini@redhat.com,
+        Dave Hansen <dave.hansen@intel.com>,
+        linux-kernel@vger.kernel.org, thomas.lendacky@amd.com,
+        x86@kernel.org, kvm@vger.kernel.org, bp@alien8.de,
+        mingo@redhat.com, tglx@linutronix.de, dave.hansen@linux.intel.com,
+        dionnaglaze@google.com, pgonda@google.com
+Subject: Re: [PATCH v5 13/14] x86/tsc: Mark Secure TSC as reliable clocksource
+Message-ID: <20231106130356.5mppou4pzxmldy22@box.shutemov.name>
+References: <20231030063652.68675-1-nikunj@amd.com>
+ <20231030063652.68675-14-nikunj@amd.com>
+ <57d63309-51cd-4138-889d-43fbdf5ec790@intel.com>
+ <ae267e31-5722-4784-9146-28bb13ca7cf5@amd.com>
+ <20231102103306.v7ydmrobd5ibs4yn@box.shutemov.name>
+ <5d8040b2-c761-4cea-a2ec-39319603e94a@amd.com>
+ <cf92b26e-d940-4dc8-a339-56903952cee2@amd.com>
+ <20231102123851.jsdolkfz7sd3jys7@box>
+ <b56a1eb7-4e31-4806-9f5e-31efe7212e04@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-0438c
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b56a1eb7-4e31-4806-9f5e-31efe7212e04@amd.com>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -51,37 +75,23 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 04 Nov 2023 00:13:51 +0530, Radhey Shyam Pandey wrote:
-> Zynq QSPI driver has been converted to use spi-mem framework so
-> add spi-mem to driver kconfig dependencies.
+On Mon, Nov 06, 2023 at 05:23:44PM +0530, Nikunj A. Dadhania wrote:
+> > Maybe kvmclock rating has to be even lower after detecting sane TSC?
 > 
+> If I set kvmclock rating to 298, I do see exact behavior as you have seen on the bare-metal.
 > 
+> [    0.004520] clocksource: clocksource_enqueue: name kvm-clock rating 298
+> [...]
+> [    1.827422] clocksource: clocksource_enqueue: name tsc-early rating 299
+> [...]
+> [    3.485059] clocksource: Switched to clocksource tsc-early
+> [...]
+> [    3.623625] clocksource: clocksource_enqueue: name tsc rating 300
+> [    3.628954] clocksource: Switched to clocksource tsc
 
-Applied to
+This looks more reasonable to me. But I don't really understand
+timekeeping. It would be nice to hear from someone who knows what he
+saying.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
-
-Thanks!
-
-[1/1] spi: spi-zynq-qspi: add spi-mem to driver kconfig dependencies
-      commit: c2ded280a4b1b7bd93e53670528504be08d24967
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
+-- 
+  Kiryl Shutsemau / Kirill A. Shutemov
