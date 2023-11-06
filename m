@@ -2,88 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FEEC7E217F
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 13:27:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37B937E218A
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 13:30:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231626AbjKFM1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 07:27:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50130 "EHLO
+        id S231604AbjKFMaE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 07:30:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230284AbjKFM1w (ORCPT
+        with ESMTP id S229583AbjKFMaE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 07:27:52 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4910897;
-        Mon,  6 Nov 2023 04:27:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699273670; x=1730809670;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=PoyeCM8Yua9sK4/tet7vyzbQ1ABy9+K2hq4FnkLDYA4=;
-  b=cKnP2KpFLLMJJKrdz+6QZytwKMn7Zf0kw/UbFcFJDKNfkcJDrCHQUv8Z
-   zeZfual7aBC1ow7GaclAfJ4zFlMCwPvKrzCMw4Fpw9UaMhUluvcACziBP
-   CQ0qt3tAeKik9dPQ7mch0J4MSdcguQdg/9axARS9vh9tcQCArRpCs5MUm
-   dFhso6FLRYc6STibv21SzOmwOhQdTv9Z71iLsm4xg98NlwLZaUigbkvTV
-   qmvhEUOk0IZ51y/eEKDD1LOz8x6iGOjmxBaWcJoC1BKff3NK4iEKailO3
-   UkceOIdot4kOOSdeszaaX7aVNgm5aOAcz99wa1a2JCT0hxEp9cPqkgLuk
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10885"; a="368600078"
-X-IronPort-AV: E=Sophos;i="6.03,281,1694761200"; 
-   d="scan'208";a="368600078"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Nov 2023 04:27:49 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10885"; a="765937251"
-X-IronPort-AV: E=Sophos;i="6.03,281,1694761200"; 
-   d="scan'208";a="765937251"
-Received: from rmstoi-mobl.ger.corp.intel.com ([10.251.216.76])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Nov 2023 04:27:42 -0800
-Date:   Mon, 6 Nov 2023 14:27:39 +0200 (EET)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Mario Limonciello <mario.limonciello@amd.com>
-cc:     Karol Herbst <kherbst@redhat.com>, Lyude Paul <lyude@redhat.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?ISO-8859-15?Q?Christian_K=F6nig?= <christian.koenig@amd.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Lukas Wunner <lukas@wunner.de>,
-        Danilo Krummrich <dakr@redhat.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Xinhui Pan <Xinhui.Pan@amd.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Mark Gross <markgross@kernel.org>,
-        Andreas Noever <andreas.noever@gmail.com>,
-        Michael Jamet <michael.jamet@intel.com>,
-        Yehezkel Bernat <YehezkelShB@gmail.com>,
-        =?ISO-8859-15?Q?Pali_Roh=E1r?= <pali@kernel.org>,
-        =?ISO-8859-15?Q?Marek_Beh=FAn?= <kabel@kernel.org>,
-        "Maciej W . Rozycki" <macro@orcam.me.uk>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        "open list:DRM DRIVER FOR NVIDIA GEFORCE/QUADRO GPUS" 
-        <dri-devel@lists.freedesktop.org>,
-        "open list:DRM DRIVER FOR NVIDIA GEFORCE/QUADRO GPUS" 
-        <nouveau@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:RADEON and AMDGPU DRM DRIVERS" 
-        <amd-gfx@lists.freedesktop.org>,
-        "open list:PCI SUBSYSTEM" <linux-pci@vger.kernel.org>,
-        "open list:ACPI" <linux-acpi@vger.kernel.org>,
-        "open list:X86 PLATFORM DRIVERS" 
-        <platform-driver-x86@vger.kernel.org>,
-        "open list:THUNDERBOLT DRIVER" <linux-usb@vger.kernel.org>
-Subject: Re: [PATCH v2 2/9] drm/radeon: Switch from pci_is_thunderbolt_attached()
- to dev_is_removable()
-In-Reply-To: <20231103190758.82911-3-mario.limonciello@amd.com>
-Message-ID: <71a39188-2caf-58a-1094-4773e88c111b@linux.intel.com>
-References: <20231103190758.82911-1-mario.limonciello@amd.com> <20231103190758.82911-3-mario.limonciello@amd.com>
+        Mon, 6 Nov 2023 07:30:04 -0500
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1016DF
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 04:29:57 -0800 (PST)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mfe@pengutronix.de>)
+        id 1qzyjm-0008I6-80; Mon, 06 Nov 2023 13:29:50 +0100
+Received: from [2a0a:edc0:2:b01:1d::c0] (helo=ptx.whiteo.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <mfe@pengutronix.de>)
+        id 1qzyjk-0071dX-Jx; Mon, 06 Nov 2023 13:29:48 +0100
+Received: from mfe by ptx.whiteo.stw.pengutronix.de with local (Exim 4.92)
+        (envelope-from <mfe@pengutronix.de>)
+        id 1qzyjk-000fiX-HD; Mon, 06 Nov 2023 13:29:48 +0100
+Date:   Mon, 6 Nov 2023 13:29:48 +0100
+From:   Marco Felsch <m.felsch@pengutronix.de>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     Kamel Bouhara <kamel.bouhara@bootlin.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Henrik Rydberg <rydberg@bitmath.org>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, mark.satterthwaite@touchnetix.com,
+        bartp@baasheep.co.uk, hannah.rossiter@touchnetix.com,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        bsp-development.geo@leica-geosystems.com
+Subject: Re: [PATCH v3 3/3] Input: Add TouchNetix axiom i2c touchscreen driver
+Message-ID: <20231106122948.le7y4xdwabnjkhgn@pengutronix.de>
+References: <20231012074034.1090436-1-kamel.bouhara@bootlin.com>
+ <20231012074034.1090436-4-kamel.bouhara@bootlin.com>
+ <20231020120310.vrn6ew3fcg5e545w@pengutronix.de>
+ <20231022193529.GC3072@kb-xps>
+ <ZT9uJMExvf7B0gtR@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZT9uJMExvf7B0gtR@google.com>
+User-Agent: NeoMutt/20180716
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: mfe@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -91,55 +67,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 3 Nov 2023, Mario Limonciello wrote:
+Hi Dimitry,
 
-> pci_is_thunderbolt_attached() only works for Intel TBT devices. Switch to
-> using dev_is_removable() to be able to detect USB4 devices as well.
-
-Same here as with 1/9.
-
--- 
- i.
-
-> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
-> ---
->  drivers/gpu/drm/radeon/radeon_device.c | 4 ++--
->  drivers/gpu/drm/radeon/radeon_kms.c    | 2 +-
->  2 files changed, 3 insertions(+), 3 deletions(-)
+On 23-10-30, Dmitry Torokhov wrote:
+> On Sun, Oct 22, 2023 at 09:35:29PM +0200, Kamel Bouhara wrote:
+> > On Fri, Oct 20, 2023 at 02:03:10PM +0200, Marco Felsch wrote:
+> > > > +
+> > > > +static int
+> > > > +axiom_i2c_write(struct i2c_client *client, u8 usage, u8 page, u8 *buf, u16 len)
+> > > > +{
+> > > > +	struct axiom_data *ts = i2c_get_clientdata(client);
+> > > > +	struct axiom_cmd_header cmd_header;
+> > > > +	struct i2c_msg msg[2];
+> > > > +	int ret;
+> > > > +
+> > > > +	cmd_header.target_address = cpu_to_le16(usage_to_target_address(ts, usage, page, 0));
+> > > > +	cmd_header.length = cpu_to_le16(len);
+> > > > +	cmd_header.read = 0;
+> > > > +
+> > > > +	msg[0].addr = client->addr;
+> > > > +	msg[0].flags = 0;
+> > > > +	msg[0].len = sizeof(cmd_header);
+> > > > +	msg[0].buf = (u8 *)&cmd_header;
+> > > > +
+> > > > +	msg[1].addr = client->addr;
+> > > > +	msg[1].flags = 0;
+> > > > +	msg[1].len = len;
+> > > > +	msg[1].buf = (char *)buf;
+> > >
+> > > Please check the "comms protocol app note", for write it is not allowed
+> > > to send a stop, so the whole data must be send in one i2c_msg.
+> > >
+> > 
+> > Well I only have the "Programmer's Guide", I'll have to check that as it
+> > really seems to works as it yet.
 > 
-> diff --git a/drivers/gpu/drm/radeon/radeon_device.c b/drivers/gpu/drm/radeon/radeon_device.c
-> index afbb3a80c0c6..ba0ca0694d18 100644
-> --- a/drivers/gpu/drm/radeon/radeon_device.c
-> +++ b/drivers/gpu/drm/radeon/radeon_device.c
-> @@ -1429,7 +1429,7 @@ int radeon_device_init(struct radeon_device *rdev,
->  
->  	if (rdev->flags & RADEON_IS_PX)
->  		runtime = true;
-> -	if (!pci_is_thunderbolt_attached(rdev->pdev))
-> +	if (!dev_is_removable(&rdev->pdev->dev))
->  		vga_switcheroo_register_client(rdev->pdev,
->  					       &radeon_switcheroo_ops, runtime);
->  	if (runtime)
-> @@ -1519,7 +1519,7 @@ void radeon_device_fini(struct radeon_device *rdev)
->  	radeon_bo_evict_vram(rdev);
->  	radeon_audio_component_fini(rdev);
->  	radeon_fini(rdev);
-> -	if (!pci_is_thunderbolt_attached(rdev->pdev))
-> +	if (!dev_is_removable(&rdev->pdev->dev))
->  		vga_switcheroo_unregister_client(rdev->pdev);
->  	if (rdev->flags & RADEON_IS_PX)
->  		vga_switcheroo_fini_domain_pm_ops(rdev->dev);
-> diff --git a/drivers/gpu/drm/radeon/radeon_kms.c b/drivers/gpu/drm/radeon/radeon_kms.c
-> index a16590c6247f..ead912a58ab8 100644
-> --- a/drivers/gpu/drm/radeon/radeon_kms.c
-> +++ b/drivers/gpu/drm/radeon/radeon_kms.c
-> @@ -138,7 +138,7 @@ int radeon_driver_load_kms(struct drm_device *dev, unsigned long flags)
->  	if ((radeon_runtime_pm != 0) &&
->  	    radeon_has_atpx() &&
->  	    ((flags & RADEON_IS_IGP) == 0) &&
-> -	    !pci_is_thunderbolt_attached(pdev))
-> +	    !dev_is_removable(&pdev->dev))
->  		flags |= RADEON_IS_PX;
->  
->  	/* radeon_device_init should report only fatal error
+> As far as I know we only send "stop" on the last message in a sequence
+> of messages in i2c_transfer() unless it is explicitly requested with
+> I2C_M_STOP flag.
+
+You're right, I re-checked this again but this approach is still wrong
+since the protocol does not allow sending the payload as separate
+message. The payload must be send as one message starting with the
+i2c-address of the touchconroller followed by the target register
+address and how many bytes should be written followed by the payload.
+
+> ...
+> > > > +
+> > > > +static void axiom_i2c_remove(struct i2c_client *client)
+> > > > +{
+> > > > +	struct axiom_data *ts = i2c_get_clientdata(client);
+> > > > +
+> > > > +	input_unregister_device(ts->input_dev);
+> > >
+> > > This can be part of devm_add_action_or_reset() and we could remove the
+> > > .remove() callback for this driver.
+> > >
+> > 
+> > Sure, thanks for the tips :)!
+> 
+> Actually input devices allocated with devm do not need to be explicitly
+> inregistered, so you do not need to bother with
+> devm_add_action_or_reset() and simply delete axiom_i2c_remove().
+
+Ah I see.. so all devm_alloced...() device don't need that explicite
+unregister. Thanks.
+
+Regards,
+  Marco
+
+> 
+> Thanks.
+> 
+> -- 
+> Dmitry
 > 
