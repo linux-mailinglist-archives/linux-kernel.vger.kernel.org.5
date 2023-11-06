@@ -2,122 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 690637E27CD
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 15:55:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C7CB7E27C9
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 15:55:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232005AbjKFOzs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 09:55:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39050 "EHLO
+        id S231915AbjKFOza (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 09:55:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231966AbjKFOzn (ORCPT
+        with ESMTP id S231287AbjKFOzZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 09:55:43 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 185D9D6F
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 06:55:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=qvU8Xyqhs1wH5xyO0C4Nf41uT9frHkMXUO274zeOckc=; b=ufN2Auc+tran6e9TEnYUAgvmAz
-        WDCMsHESuR0DOIA41SsM+z5VUlKlYDkfbvtbx3V65z2fD4FONWBCZ00Dys31GuTlFyE6kfZ7F17P4
-        FGi4ztCotXrJ7E2m5mglMr7hQP90u0pq6AnXFuJejXx/prjG7ob2Qoz4uRYYvbpFdl5pusGJmlyyx
-        Y9xzrm+hFqXOeQ33ZAOirnJeuX3oEQj2LSYLfv6EUe1v3n1eBGlOJY9gUF4fTupXbdds+2xCNZIlK
-        rhqpaTPCFL+oM9PjXeYENxH5LdjG2bUhVs6qPCJL2f25aNTrrDWtF0cKZGUsI0e/Xjp2rmIWgXAm0
-        sYUet1XQ==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1r010Z-006ZR2-5J; Mon, 06 Nov 2023 14:55:19 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 6926B300592; Mon,  6 Nov 2023 15:55:19 +0100 (CET)
-Date:   Mon, 6 Nov 2023 15:55:19 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Daniel Bristot de Oliveira <bristot@kernel.org>
-Cc:     Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        linux-kernel@vger.kernel.org,
-        Luca Abeni <luca.abeni@santannapisa.it>,
-        Tommaso Cucinotta <tommaso.cucinotta@santannapisa.it>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Vineeth Pillai <vineeth@bitbyteword.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Phil Auld <pauld@redhat.com>
-Subject: Re: [PATCH v5 6/7] sched/deadline: Deferrable dl server
-Message-ID: <20231106145519.GG3818@noisy.programming.kicks-ass.net>
-References: <cover.1699095159.git.bristot@kernel.org>
- <c7b706d30d6316c52853ca056db5beb82ba72863.1699095159.git.bristot@kernel.org>
+        Mon, 6 Nov 2023 09:55:25 -0500
+Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09997B6
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 06:55:23 -0800 (PST)
+Received: by mail-io1-xd29.google.com with SMTP id ca18e2360f4ac-7748ca56133so41197439f.0
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 06:55:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1699282522; x=1699887322; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Iairs2nHbf4BFvIm6R4/DL1Lv/6t5zKTAWcYMmkRBmo=;
+        b=2k2tFvPu8qRmpOnG+RiggRUTFNK/9Zy6UWXbrZjYt2n7CyZiFT2s1T4v+W7mdL1yM3
+         VY7X7dmA7OMhpkacCdHBiHaHI07Cj411B+YdTMEajUBSk0YoNQc476nm8e3WVfAZDLcP
+         ++Lv3l5+Bhv5FplzALUKJAE4SjpezHeyKOAUeJS8IHu/OFwwpTOJV8932MXyj1gdQW0e
+         8fqGI0TQUtNosHvEpnoSK5YHN0vIqoCgtWSeroUZ4/lR9u96bvLa9sIntZgSoB65GaQ7
+         kEd/pAfwhydldOle+MCFKIX78Nuy6zzbP+Y/tQp8mHhrYDxL1FpQXvXQQyUEdi8qGXZK
+         zSRw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699282522; x=1699887322;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Iairs2nHbf4BFvIm6R4/DL1Lv/6t5zKTAWcYMmkRBmo=;
+        b=KzObPJS+kO1kdmE1aDtnnX0jhr5KKPyXtAf7QRFXU/VOVx9eRGeV2b3jTdBlYUrrbg
+         gvUpLepjQQPI41CGCXtBrAfaXfygr1n13yB9Whh7Gnf+I+ZNk6gteg/lY27xRSyiG3cW
+         gTNK1N4UFxNSoZh7VQ+rRYXf7dN1q5+cEt/fEvL4SRLraNs8rW8qivzEr/26OD4ZIQWD
+         NZrkjA4DqLmgZThA9rCXwMzzQ/R47pbGLUEqSvGRpHpHfMT5Zt7UttPH0UDkTgTWnyMF
+         Jpgur/w+xFZoYW7eWRCFqc2wp80utfAxO91EomN4lRiyJ04uk9ODKHJjBKzrScOnqa5h
+         Ynvw==
+X-Gm-Message-State: AOJu0YwQttazRzLvnOPP5nZcXfkosXhTzKsxFYnFtucKoaHi1f/okkuD
+        /KwQ61itPMCUSJ9KxLUHksTbKA==
+X-Google-Smtp-Source: AGHT+IEG4LkvzOFaOp62JcFT1CxHf8o8fb6KRC4bWob/4jtCewcHGdjRc90M/C/q507HMKpXurQncA==
+X-Received: by 2002:a92:d08b:0:b0:359:39ac:a161 with SMTP id h11-20020a92d08b000000b0035939aca161mr15435444ilh.1.1699282522379;
+        Mon, 06 Nov 2023 06:55:22 -0800 (PST)
+Received: from [192.168.1.116] ([96.43.243.2])
+        by smtp.gmail.com with ESMTPSA id gs25-20020a0566382d9900b0042b2f0b77aasm2118414jab.95.2023.11.06.06.55.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 06 Nov 2023 06:55:21 -0800 (PST)
+Message-ID: <2a1bdb5a-1216-45b0-a78d-5542b36ccd17@kernel.dk>
+Date:   Mon, 6 Nov 2023 07:55:20 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c7b706d30d6316c52853ca056db5beb82ba72863.1699095159.git.bristot@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] IO_URING: Statistics of the true utilization of sq
+ threads.
+Content-Language: en-US
+To:     Xiaobing Li <xiaobing.li@samsung.com>, asml.silence@gmail.com
+Cc:     linux-kernel@vger.kernel.org, io-uring@vger.kernel.org,
+        kun.dou@samsung.com, peiwei.li@samsung.com, joshi.k@samsung.com,
+        kundan.kumar@samsung.com, wenwen.chen@samsung.com,
+        ruyi.zhang@samsung.com
+References: <CGME20231106074844epcas5p252beb2aa7925de34aea33d5c64d1d72e@epcas5p2.samsung.com>
+ <20231106074055.1248629-1-xiaobing.li@samsung.com>
+From:   Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <20231106074055.1248629-1-xiaobing.li@samsung.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 04, 2023 at 11:59:23AM +0100, Daniel Bristot de Oliveira wrote:
+On 11/6/23 12:40 AM, Xiaobing Li wrote:
+> Since the sq thread has a while(1) structure, during this process, there
+> may be a lot of time that is not processing IO but does not exceed the
+> timeout period, therefore, the sqpoll thread will keep running and will
+> keep occupying the CPU. Obviously, the CPU is wasted at this time;Our
+> goal is to count the part of the time that the sqpoll thread actually
+> processes IO, so as to reflect the part of the CPU it uses to process
+> IO, which can be used to help improve the actual utilization of the CPU
+> in the future.
+> 
+> Signed-off-by: Xiaobing Li <xiaobing.li@samsung.com>
+> ---
+>  io_uring/sqpoll.c | 8 ++++++++
+>  io_uring/sqpoll.h | 2 ++
+>  2 files changed, 10 insertions(+)
+> 
+> diff --git a/io_uring/sqpoll.c b/io_uring/sqpoll.c
+> index bd6c2c7959a5..27b01ad42678 100644
+> --- a/io_uring/sqpoll.c
+> +++ b/io_uring/sqpoll.c
+> @@ -224,6 +224,7 @@ static int io_sq_thread(void *data)
+>  	struct io_ring_ctx *ctx;
+>  	unsigned long timeout = 0;
+>  	char buf[TASK_COMM_LEN];
+> +	unsigned long long start, begin, end;
+>  	DEFINE_WAIT(wait);
 
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index b15f7f376a67..399237cd9f59 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -1201,6 +1201,8 @@ static void update_curr(struct cfs_rq *cfs_rq)
->  		account_group_exec_runtime(curtask, delta_exec);
->  		if (curtask->server)
->  			dl_server_update(curtask->server, delta_exec);
-> +		else
-> +			dl_server_update(&rq_of(cfs_rq)->fair_server, delta_exec);
->  	}
->  
->  	account_cfs_rq_runtime(cfs_rq, delta_exec);
+These can just be unsigned long, that's the size of jiffies on any
+platform. Ditto for struct io_sq_data.
 
-I've rewritten that something like so..
+And while this looks fine, nothing is using this accounting. For this to
+be an acceptable patch, surely the value needs to be used somehow or at
+least you should be able to query it?
 
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -1182,12 +1182,13 @@ s64 update_curr_common(struct rq *rq)
- static void update_curr(struct cfs_rq *cfs_rq)
- {
- 	struct sched_entity *curr = cfs_rq->curr;
-+	struct rq *rq = rq_of(cfs_rq);
- 	s64 delta_exec;
- 
- 	if (unlikely(!curr))
- 		return;
- 
--	delta_exec = update_curr_se(rq_of(cfs_rq), curr);
-+	delta_exec = update_curr_se(rq, curr);
- 	if (unlikely(delta_exec <= 0))
- 		return;
- 
-@@ -1195,8 +1196,17 @@ static void update_curr(struct cfs_rq *c
- 	update_deadline(cfs_rq, curr);
- 	update_min_vruntime(cfs_rq);
- 
--	if (entity_is_task(curr))
--		update_curr_task(task_of(curr), delta_exec);
-+	if (entity_is_task(curr)) {
-+		struct task_struct *p = task_of(curr);
-+		update_curr_task(p, delta_exec);
-+		/*
-+		 * Any fair task that runs outside of fair_server should
-+		 * account against fair_server such that it can account for
-+		 * this time and possible avoid running this period.
-+		 */
-+		if (p->dl_server != &rq->fair_server)
-+			dl_server_update(&rq->fair_server, delta_exec);
-+	}
- 
- 	account_cfs_rq_runtime(cfs_rq, delta_exec);
- }
+-- 
+Jens Axboe
+
