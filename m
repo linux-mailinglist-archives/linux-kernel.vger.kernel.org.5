@@ -2,149 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ABEAC7E1D15
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 10:16:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E4D77E1D1C
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 10:18:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231295AbjKFJQy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 04:16:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59436 "EHLO
+        id S231334AbjKFJSg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 04:18:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230475AbjKFJQw (ORCPT
+        with ESMTP id S230475AbjKFJSe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 04:16:52 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B61FFCC;
-        Mon,  6 Nov 2023 01:16:49 -0800 (PST)
-Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A69GOuL022631;
-        Mon, 6 Nov 2023 09:16:41 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=0/Q0Ge0wOeHrnYI00dxrJo5eTA+PZ3BAJJf6HaX7Wcg=;
- b=bbG5cgglIc2ObLAOWbYBEp4TEp3gzacdMrhS6JOVAAyHgD9j7Gp9yCiiH3lQi7thU6Pi
- 5jmzKbdBHQeBQQbagutiJMyf2bxoMcnvUFkIEzmBl+bzSxpwj84utDsdWcsVA32KbD29
- swaVZUOFl1dbafq5V49nWpINDFGyU+NIlMLWSKjmuzLirKHGR+i85P5AdR12Aeld4fUM
- YsAnZNv3z/OmrGxXTkYnzpzfDfUpsy84lLDW9cLvTcD34NSTW7IPoJnZBt9FZURSuQli
- p1dvjJwSZ4pwaKTaF64E/3iY+dnMUJ7RtQlD4QSklLC/kq/th0vIkQHY3Jw5N/ISIOgj CQ== 
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u6uj0kcjt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 06 Nov 2023 09:16:41 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3A68S0Mj025671;
-        Mon, 6 Nov 2023 09:16:39 GMT
-Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
-        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3u619n86xs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 06 Nov 2023 09:16:38 +0000
-Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
-        by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3A69GZRV16646790
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 6 Nov 2023 09:16:36 GMT
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id CFF3220040;
-        Mon,  6 Nov 2023 09:16:35 +0000 (GMT)
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A1EB720043;
-        Mon,  6 Nov 2023 09:16:35 +0000 (GMT)
-Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
-        by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Mon,  6 Nov 2023 09:16:35 +0000 (GMT)
-From:   Thomas Richter <tmricht@linux.ibm.com>
-To:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        acme@kernel.org, namhyung@kernel.org
-Cc:     svens@linux.ibm.com, gor@linux.ibm.com, sumanthk@linux.ibm.com,
-        hca@linux.ibm.com, Ilya Leoshkevich <iii@linux.ibm.com>,
-        Thomas Richter <tmricht@linux.ibm.com>
-Subject: [PATCH v2 PING] perf test: Adjust test case perf record offcpu profiling tests for s390
-Date:   Mon,  6 Nov 2023 10:16:27 +0100
-Message-Id: <20231106091627.2022530-1-tmricht@linux.ibm.com>
-X-Mailer: git-send-email 2.39.2
+        Mon, 6 Nov 2023 04:18:34 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 52C2BDB;
+        Mon,  6 Nov 2023 01:18:31 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EAB531FB;
+        Mon,  6 Nov 2023 01:19:14 -0800 (PST)
+Received: from [10.57.1.27] (unknown [10.57.1.27])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1AB433F6C4;
+        Mon,  6 Nov 2023 01:18:27 -0800 (PST)
+Message-ID: <bae19559-0aea-422f-931f-b51aa8f3f5a3@arm.com>
+Date:   Mon, 6 Nov 2023 09:19:21 +0000
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Subject: Re: [PATCH v4 8/8] thermal: exynos: use set_trips
+To:     m.majewski2@samsung.com
+Cc:     Bartlomiej Zolnierkiewicz <bzolnier@gmail.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-samsung-soc@vger.kernel.org" 
+        <linux-samsung-soc@vger.kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>
+References: <2c4b6c1b-b9e7-42b2-8f7b-446ebe9d15ac@arm.com>
+ <20231025133027.524152-1-m.majewski2@samsung.com>
+ <20231025133027.524152-9-m.majewski2@samsung.com>
+ <CGME20231025133100eucas1p14e6de58e52560d165bdb8b809e406278@eucms1p4>
+ <20231102103507eucms1p4aea91982ebcc4a9a6314d9c4e03050fc@eucms1p4>
+Content-Language: en-US
+In-Reply-To: <20231102103507eucms1p4aea91982ebcc4a9a6314d9c4e03050fc@eucms1p4>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: W1dcv77m9a-K-07oadxRDNJvgd-oxPik
-X-Proofpoint-GUID: W1dcv77m9a-K-07oadxRDNJvgd-oxPik
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-06_07,2023-11-02_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 clxscore=1011
- mlxlogscore=999 spamscore=0 malwarescore=0 adultscore=0 mlxscore=0
- lowpriorityscore=0 suspectscore=0 phishscore=0 bulkscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2310240000 definitions=main-2311060080
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On s390 using linux-next the test case
-    87: perf record offcpu profiling tests
-fails. The root cause is this command
 
- # ./perf  record --off-cpu -e dummy -- ./perf bench sched messaging -l 10
- # Running 'sched/messaging' benchmark:
- # 20 sender and receiver processes per group
- # 10 groups == 400 processes run
 
-     Total time: 0.231 [sec]
- [ perf record: Woken up 1 times to write data ]
- [ perf record: Captured and wrote 0.077 MB perf.data (401 samples) ]
- #
+On 11/2/23 10:35, Mateusz Majewski wrote:
+> Hi,
+> 
+>>> +        th &= ~(0xff << 0);
+>>> +        th |= temp_to_code(data, temp) << 0;
+>>   
+>> This 2-line pattern repeats a few times. It looks like a nice cadidate
+>> for an inline function which can abstract that. Something like:
+>>   
+>> val = update_temp_value(data, temp, threshold, LOW_TEMP_SHIFT)
+>>   
+>> Assisted with the macros {LOW|HIGH|CRIT}_TEMP_SHIFT, the code
+>> would look less convoluted IMO.
+>> (The old code with the multiplication for the shift value wasn't
+>> cleaner nor faster).
+> 
+> What would you think about something like this?
+> 
+> static void exynos_tmu_update_temp(struct exynos_tmu_data *data, int reg_off,
+>                                     int bit_off, u8 temp)
+> {
+>          u32 th;
+> 
+>          th = readl(data->base + reg_off);
+>          th &= ~(0xff << bit_off);
+>          th |= temp_to_code(data, temp) << bit_off;
+>          writel(th, data->base + reg_off);
+> }
+> 
+> And then, it would be used like this:
+> 
+> static void exynos4412_tmu_set_crit_temp(struct exynos_tmu_data *data, u8 temp)
+> {
+>          exynos_tmu_update_temp(data, EXYNOS_THD_TEMP_RISE, 24, temp);
+>          exynos_tmu_update_bit(data, EXYNOS_TMU_REG_CONTROL,
+>                                EXYNOS_TMU_THERM_TRIP_EN_SHIFT, true);
+> }
 
-It does not generate 800+ sample entries, on s390 usually around 40[1-9],
-sometimes a few more, but never more than 450. The higher the number
-of CPUs the lower the number of samples.
+Yes, this looks good.
 
-Looking at function chain
-  bench_sched_messaging()
-  +--> group()
-the senders and receiver threads are created. The senders and receivers
-call function ready() which writes one bytes and wait for a reply using
-poll system() call.
+> 
+> Granted it's not as clear as if we had some macro like CRIT_TEMP_SHIFT, but
+> we would need more than one variant anyway, as Exynos 5433 uses different
+> values of reg_off, and the new function looks short and inviting IMHO.
 
-As context switches are counted, the function ready() will trigger
-a context switch when no input data is available after the write
-system call. The write system call does not trigger context switches
-when the data size is small. And writing 1000 bytes (10 iterations with
-100 bytes) is not much and certainly won't block.
+Fair enough.
 
-The 400+ context switch on s390 occur when the some receiver/sender
-threads call ready() and wait for the response from function
-bench_sched_messaging() being kicked off.
+> 
+>>> -static void exynos7_tmu_set_trip_temp(struct exynos_tmu_data *data,
+>>> -                                      int trip, u8 temp)
+>>> +static void exynos7_tmu_update_temp(struct exynos_tmu_data *data, u8 temp,
+>>> +                                    int idx, bool rise)
+>>>     {
+>>>             unsigned int reg_off, bit_off;
+>>>             u32 th;
+>>> +        void __iomem *reg;
+>>>     
+>>> -        reg_off = ((7 - trip) / 2) * 4;
+>>> -        bit_off = ((8 - trip) % 2);
+>>> +        reg_off = ((7 - idx) / 2) * 4;
+>>   
+>> Why can't we just have a set of defined register macros and pick one
+>> in some small function?
+>> A lot of operations here, also some assumption.
+>>   
+>>> +        bit_off = ((8 - idx) % 2);
+>>   
+>> So this can only be 0 or 1 and than it's used for the shift
+>> multiplication. Also I don't know the history of older code and
+>> if it was missed after some cleaning, but 'idx % 2' gives
+>> equal values but w/o subtraction.
+>>   
+>> BTW, the code assumes the 'idx' values are under control somewhere else.
+>> Is that because the DT make sure in the schema that the range cannot be
+>> too big?
+>> What are the possible values for 'idx'?
+> 
+> In the old code, the values of trip (which is the same thing, I will
+> change the name back from idx) were limited by the value of data->ntrip,
+> which was always 8 (value is per SoC). In the new code, there are only three
+> variants:
+> 
+> static void exynos7_tmu_set_low_temp(struct exynos_tmu_data *data, u8 temp)
+> {
+>          exynos7_tmu_update_temp(data, temp, 0, false);
+> }
+> 
+> static void exynos7_tmu_set_high_temp(struct exynos_tmu_data *data, u8 temp)
+> {
+>          exynos7_tmu_update_temp(data, temp, 1, true);
+> }
+> 
+> static void exynos7_tmu_set_crit_temp(struct exynos_tmu_data *data, u8 temp)
+> {
+>          /*
+>           * Like Exynos 4210, Exynos 7 does not seem to support critical temperature
+>           * handling in hardware. Again, we still set a separate interrupt for it.
+>           */
+>          exynos7_tmu_update_temp(data, temp, 7, true);
+> }
+> 
+> To be fair, considering the values are constant like this, I should probably
+> just do the calculations myself and then in code just call exynos_tmu_update_temp
+> (from above) and exynos_tmu_update_bit, like on all other SoCs. I guess I were
+> a bit too scared to touch Exynos 7 code...
 
-Lower the number of expected context switches to 400 to succeed on
-s390.
+Yes, anything that can be pre-calculated with nice comment, would be
+more desired. I would suggest to not be afraid about touching that
+Exynos 7 code.
 
-Suggested-by: Namhyung Kim <namhyung@kernel.org>
-Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
-Co-developed-by: Ilya Leoshkevich <iii@linux.ibm.com>
-Signed-off-by: Thomas Richter <tmricht@linux.ibm.com>
----
- tools/perf/tests/shell/record_offcpu.sh | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+>>> -        if (on) {
+>>> -                for (i = 0; i < data->ntrip; i++) {
+>>> -                        if (thermal_zone_get_trip(tz, i, &trip))
+>>> -                                continue;
+>>> -
+>>> -                        interrupt_en |=
+>>> -                                (1 << (EXYNOS_TMU_INTEN_RISE0_SHIFT + i * 4));
+>>> -                }
+>>> -
+>>> -                if (data->soc != SOC_ARCH_EXYNOS4210)
+>>> -                        interrupt_en |=
+>>> -                                interrupt_en << EXYNOS_TMU_INTEN_FALL0_SHIFT;
+>>> -
+>>> +        if (on)
+>>>                     con |= (1 << EXYNOS_TMU_CORE_EN_SHIFT);
+>>> -        } else {
+>>> +        else
+>>>                     con &= ~(1 << EXYNOS_TMU_CORE_EN_SHIFT);
+>>   
+>> Please also consider the BIT() helper here and above...
+> 
+> Will do, but should I do this in a separate patch in these cases? I don't touch
+> the con lines otherwise, and this patch is already humongous.
 
-diff --git a/tools/perf/tests/shell/record_offcpu.sh b/tools/perf/tests/shell/record_offcpu.sh
-index a1ef8f0d2b5c..67c925f3a15a 100755
---- a/tools/perf/tests/shell/record_offcpu.sh
-+++ b/tools/perf/tests/shell/record_offcpu.sh
-@@ -77,9 +77,9 @@ test_offcpu_child() {
-     err=1
-     return
-   fi
--  # each process waits for read and write, so it should be more than 800 events
-+  # each process waits at least for poll, so it should be more than 400 events
-   if ! perf report -i ${perfdata} -s comm -q -n -t ';' --percent-limit=90 | \
--    awk -F ";" '{ if (NF > 3 && int($3) < 800) exit 1; }'
-+    awk -F ";" '{ if (NF > 3 && int($3) < 400) exit 1; }'
-   then
-     echo "Child task off-cpu test [Failed invalid output]"
-     err=1
--- 
-2.41.0
+That would definitely deserve an extra patch to address it. Please add
+to the patch set.
 
+Regards,
+Lukasz
