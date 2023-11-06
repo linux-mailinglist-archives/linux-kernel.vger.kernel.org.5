@@ -2,103 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DF9ED7E1BD0
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 09:20:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CFFF7E1BD5
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 09:21:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230431AbjKFIUI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 03:20:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60376 "EHLO
+        id S231164AbjKFIVM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 03:21:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229563AbjKFIUG (ORCPT
+        with ESMTP id S229881AbjKFIVK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 03:20:06 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AC49B0
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 00:20:04 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 19772C433C7;
-        Mon,  6 Nov 2023 08:20:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699258804;
-        bh=nPH/BnrNNKYu+SnYLgUUWF6lghiewNMl8ubSLajK9IM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lZIQMuJv3NM7DJO00UHZQll5WzsWNG2Gg4AjU1lM3QElF+mcuSYkt4W6dOkvN8AN9
-         r0x1iiDHpbuF26CFVKL6sq3G41WlTzyCgOWF9g2hp2l0k+sbbzd7sYgyBNDhXltvOv
-         EFPVGOlKSc8I05cEM6kAGZoX4hh6D6+92WkGUcOdwOnX9oXh6autCiM55zflO/6Yvi
-         6wjvOIHtVV609AD+hO3KrD+Gx6SdB1m5bx4CeOOUrmzkUt+dW1lKNWlsCrJxYAV/2p
-         ffPhrv1udeFM425zU0tG5gcJ05EgzST4v29c1WhdL2/3edgP6/dKEj5YWdGi6N6onB
-         DfDMNVBG56DLQ==
-Received: from johan by xi.lan with local (Exim 4.96)
-        (envelope-from <johan@kernel.org>)
-        id 1qzuqm-0006gp-2p;
-        Mon, 06 Nov 2023 09:20:48 +0100
-Date:   Mon, 6 Nov 2023 09:20:48 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     Stefan Eichenberger <stefan.eichenberger@toradex.com>
-Cc:     Francesco Dolcini <francesco@dolcini.it>,
-        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Felipe Balbi <balbi@ti.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Francesco Dolcini <francesco.dolcini@toradex.com>
-Subject: Re: [PATCH v1] USB: dwc3: only call usb_phy_set_suspend in
- suspend/resume
-Message-ID: <ZUih4BJLkslLIMx5@hovoldconsulting.com>
-References: <20231103102236.13656-1-francesco@dolcini.it>
- <ZUUkqeKFZmsubxu5@hovoldconsulting.com>
- <GV0P278MB0589921FFF5487D2F94D3FF2E8A4A@GV0P278MB0589.CHEP278.PROD.OUTLOOK.COM>
+        Mon, 6 Nov 2023 03:21:10 -0500
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3A13B0;
+        Mon,  6 Nov 2023 00:21:06 -0800 (PST)
+Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-5441305cbd1so4721410a12.2;
+        Mon, 06 Nov 2023 00:21:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699258865; x=1699863665; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=6CAxeD9k/h7Ij3442H7AYa1Ial+ZqnbCmUdyG4+O9qI=;
+        b=d2EsxuDUMwQih7luHLoCo04oleWYM7lpaOrwWeBrv9hJDf8yntqMxZIISjDFJv0x30
+         piNsIzM4zn7iFmxYgie2d46ClIGhh8VuFVcvf4vQ3kAGB41bs3YBPnXS8jC9ajo+Fg4U
+         mYSi1+seSMhGEv9ecjTlKtsM/dsLwelchRYjlFXyph/Yvq2jodcnExAc6yejCS+0LfNo
+         789RCO90B7wEWcKll3Ne8DC8lVYkwD3eCvYRsoZ1EWIboq9SYbV/5QT0sMAF2oQP3HPN
+         l0Dagu6ztit2vuquTawmIN+R0T9A0D70FKEt8oeKGq4nyCHcsMB2688bOCGhQyiAN9bH
+         5sdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699258865; x=1699863665;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=6CAxeD9k/h7Ij3442H7AYa1Ial+ZqnbCmUdyG4+O9qI=;
+        b=hgOILu84SOUGWimZgxiOJfU7bRSK47Wb3joyjKCR4OBOChCmoDekTqmLNFhXzHnCyV
+         QFTe4s9C8Ja5ennFFgLwxUaomt2Fq/NPovv/hKsjmG9aFRktycNEA/o7bxsuHzIxISeX
+         RqAZwBrXpTUxr9tkruy+Kq2gnl/GdclIeKjQe8tKmlUnYReN8BtA1WbNp7YsEE0yve86
+         FY3lEaYWf2cxnUuoJuRRMGtP3EZWaONL8wFTm7n9RpQvpgWCh3WAIRjnbKgr/lnauYQc
+         q48XzQdua/MK5Tqs/NFFoVcn2HX0UlLZ1/HqExvgtCdWxySZyR9za60JJ85xqY5BURAS
+         VVWA==
+X-Gm-Message-State: AOJu0Yy6D2uWSQLNDavH5fpD4wWBIFtTwHSCqvyc0BaqA0qtqyWz6AmC
+        oQPTeLZSNImoQ72Eu1nAruQ=
+X-Google-Smtp-Source: AGHT+IEIYqQsEYTTsY8a3PXAfXadOiOQg4SuI9aS+6yMBAVnI0NRrUeqTn7uvZ/zGgiTiFl2Vz1scg==
+X-Received: by 2002:a05:6402:22a9:b0:53f:25c4:357b with SMTP id cx9-20020a05640222a900b0053f25c4357bmr22742422edb.4.1699258865104;
+        Mon, 06 Nov 2023 00:21:05 -0800 (PST)
+Received: from tom-HP-ZBook-Fury-15-G7-Mobile-Workstation.station (net-188-217-59-109.cust.vodafonedsl.it. [188.217.59.109])
+        by smtp.gmail.com with ESMTPSA id x1-20020a50ba81000000b005434e3d8e7bsm4221884ede.1.2023.11.06.00.21.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 Nov 2023 00:21:04 -0800 (PST)
+From:   Tommaso Merciai <tomm.merciai@gmail.com>
+Cc:     sakari.ailus@linux.intel.com, martin.hecht@avnet.eu,
+        michael.roeder@avnet.eu, mhecht73@gmail.com,
+        linuxfancy@googlegroups.com, laurent.pinchart@ideasonboard.com,
+        Tommaso Merciai <tomm.merciai@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+        Gerald Loacker <gerald.loacker@wolfvision.net>,
+        Bingbu Cao <bingbu.cao@intel.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Daniel Scally <djrscally@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
+Subject: [PATCH v13 0/3] media: i2c: Add support for alvium camera
+Date:   Mon,  6 Nov 2023 09:20:55 +0100
+Message-Id: <20231106082102.368937-1-tomm.merciai@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <GV0P278MB0589921FFF5487D2F94D3FF2E8A4A@GV0P278MB0589.CHEP278.PROD.OUTLOOK.COM>
-X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 04, 2023 at 11:51:22AM +0000, Stefan Eichenberger wrote:
-> > From: Johan Hovold <johan@kernel.org>
+Hi all,
 
-> > When reviewing the driver I did find a bug in the xhci-plat driver which
-> > is likely the cause for the imbalance you're seeing. I just sent a fix
-> > here in case you want to give it a try:
-> > 
-> >         https://lore.kernel.org/lkml/20231103164323.14294-1-johan+linaro@kernel.org/
-> 
-> I tested it and it solves the issue we have. Thanks a lot for the fix!
-> Before the use count for our regulator always went up to 2 and now it is
-> 1 as expected.
-> root@verdin-imx8mp-14773241:~# cat /sys/kernel/debug/regulator/CTRL_SLEEP_MOCI#/use_count
-> 1
-> 
-> Also when going to suspend the regulator is turned off now. With the
-> suspend patch applied from us the use count will be one more but
-> everything still works as expected.
+This series add support for Allied Vision Alvium camera.
+The Alvium camera is shipped with sensor + isp in the same housing.
+The camera can be equipped with one out of various sensor and abstract
+the user from this. Camera is connected via MIPI CSI-2.
 
-Thanks for testing.
+Driver use latest V4L2_CCI_I2C API.
 
-> > But, also, why are you using legacy PHYs? Which platform is this for?
-> 
-> We have an external hub that we want to turn off when the system goes
-> into suspend. For the i.MX8MM we use the phy-generic driver to achieve
-> this. When I saw that the dwc3 driver would support the phy-generic via
-> usb-phy, I thought we could use the same approach for the i.MX8MP and,
-> in the future, the AM62. Maybe I misunderstood, would the right solution
-> be to add a suspend function to the fsl,imx8mp-usb-phy driver and use
-> vbus instead? But what would we do for the AM62, as it doesn't have a
-> phy driver if I'm not mistaken.
+https://www.alliedvision.com/en/products/embedded-vision-solutions/
 
-That's not how the phy driver is supposed be used, and for on-board hubs
-we now have:
+Tested the following alvium models:
+ - alvium 1500 C-500c
+ - alvium 1800 C-2050c
+ - alvium 1800 C-1240c
+ - alvium 1800 C-040c
+ - alvium 1800 C-052c
+ - alvium 1800 C-240m
 
-	drivers/usb/misc/onboard_usb_hub.c
+Note:
+ - Driver is rebased on top of [1], commit [2].
 
-Have you tried using that one instead?
+Thanks & Regards,
+Tommaso
 
-Johan
+ - [1] https://git.linuxtv.org/sailus/media_tree.git/log/
+ - [2] media: Documentation: LP-11 and LP-111 are states, not modes (c9a1b0b583db)
+
+Tommaso Merciai (3):
+  dt-bindings: vendor-prefixes: Add prefix alliedvision
+  media: dt-bindings: alvium: add document YAML binding
+  media: i2c: Add support for alvium camera
+
+ .../media/i2c/alliedvision,alvium-csi2.yaml   |   81 +
+ .../devicetree/bindings/vendor-prefixes.yaml  |    2 +
+ MAINTAINERS                                   |    9 +
+ drivers/media/i2c/Kconfig                     |   10 +
+ drivers/media/i2c/Makefile                    |    1 +
+ drivers/media/i2c/alvium-csi2.c               | 2637 +++++++++++++++++
+ drivers/media/i2c/alvium-csi2.h               |  488 +++
+ 7 files changed, 3228 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/media/i2c/alliedvision,alvium-csi2.yaml
+ create mode 100644 drivers/media/i2c/alvium-csi2.c
+ create mode 100644 drivers/media/i2c/alvium-csi2.h
+
+-- 
+2.34.1
+
