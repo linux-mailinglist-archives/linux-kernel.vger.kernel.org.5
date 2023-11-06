@@ -2,54 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 380C27E262F
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 14:58:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F01EE7E262C
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 14:58:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231358AbjKFN6Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 08:58:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58526 "EHLO
+        id S231189AbjKFN6T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 08:58:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229785AbjKFN6W (ORCPT
+        with ESMTP id S229715AbjKFN6R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 08:58:22 -0500
-Received: from out-183.mta0.migadu.com (out-183.mta0.migadu.com [91.218.175.183])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39599F4
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 05:58:19 -0800 (PST)
-Message-ID: <c736ddff-8523-463a-aa9a-3c8542486d69@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1699279097;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YpJtQNjFqtQun1UvL/4GUP7sq9HgupW691S6klaKvC8=;
-        b=qlvQ3FFPO/1CekUdKexuT0MbYhC22LlVBltuHnwyVYU8d+rzh6Q99+brRFabRMaaFITG4B
-        rCabmlVd/Bx7N36ZqC9GYjX1j+HlRLTch5cSgnqqrTzHTbe+lLmrVGrc/w/sMLzvaRq+EF
-        ToQJAcBwgjeG4jwxCcV8vhlSSGjR3Yw=
-Date:   Mon, 6 Nov 2023 21:58:03 +0800
+        Mon, 6 Nov 2023 08:58:17 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77671BF;
+        Mon,  6 Nov 2023 05:58:15 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BD348C433C8;
+        Mon,  6 Nov 2023 13:58:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699279095;
+        bh=146Hv24u0iSEfP0Lcoz7MmQS/jc9ccb6iAZD/d2PjY8=;
+        h=From:Date:To:Cc:Subject:References:In-Reply-To:From;
+        b=PyUgHft7oDTb28dERhjiXG7ymjucR0IV3zsIgfoMhonHCtvSfIqGeXiBs4IKUbuZ5
+         C7wAD6ia7eObwcY43OU5btkXZKbi/XnI4EEDpk8qt483bh2SwD8PfhqviMyMlhXcf+
+         Ly3RVdmvbAnKJri08i+Op1Tjle50Xsn+QgWJIVPOt9MPZUVr91MjLNQRnJy7t/bqMu
+         Tnwvfyw8bAC1fBq/S9hoGsxom/XHiMm7m8Y2UFrtxP5K24Gc3AmLwWmrNI3js3Ax7Q
+         oaeVl6aQv5HgEns4FF82Bera9+OddYbodYnd3Tr4WINKQHLAiFlaVJ+JBlefgC1/8b
+         CRC4oab8dM2Dw==
+From:   mripard@kernel.org
+Date:   Mon, 6 Nov 2023 14:58:12 +0100
+To:     Dan Carpenter <dan.carpenter@linaro.org>
+Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Daniel =?utf-8?B?RMOtYXo=?= <daniel.diaz@linaro.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Brendan Higgins <brendan.higgins@linux.dev>,
+        David Gow <davidgow@google.com>,
+        =?utf-8?B?TWHDrXJh?= Canal <mcanal@igalia.com>,
+        Arthur Grillo <arthurgrillo@riseup.net>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        kernel-janitors@vger.kernel.org,
+        Ville =?utf-8?B?U3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
+        kv-team <kv-team@linaro.org>
+Subject: Re: [RFC] drm/tests: annotate intentional stack trace in
+ drm_test_rect_calc_hscale()
+Message-ID: <s4blvjs4ipcqdzodmgsbvgegqh2kxgdnoerpwthvc57hpsulu5@gb2kh7vbv7nq>
+65;7400;1cFrom: Maxime Ripard <mripard@kernel.org>
+References: <02546e59-1afe-4b08-ba81-d94f3b691c9a@moroto.mountain>
+ <CA+G9fYuA643RHHpPnz9Ww7rr3zV5a0y=7_uFcybBSL=QP_sQvQ@mail.gmail.com>
+ <7b58926a-a7c3-4ad0-b8a3-56baf36939ca@kadam.mountain>
 MIME-Version: 1.0
-Subject: Re: [PATCH RFC V2 0/6] rxe_map_mr_sg() fix cleanup and refactor
-To:     "Zhijian Li (Fujitsu)" <lizhijian@fujitsu.com>,
-        "zyjzyj2000@gmail.com" <zyjzyj2000@gmail.com>,
-        "jgg@ziepe.ca" <jgg@ziepe.ca>, "leon@kernel.org" <leon@kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "rpearsonhpe@gmail.com" <rpearsonhpe@gmail.com>,
-        "Daisuke Matsuda (Fujitsu)" <matsuda-daisuke@fujitsu.com>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "yi.zhang@redhat.com" <yi.zhang@redhat.com>
-References: <20231103095549.490744-1-lizhijian@fujitsu.com>
- <d838620b-51df-4216-864e-1c793dae7721@linux.dev>
- <a256a01d-1572-427a-80df-46f2079af967@fujitsu.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <a256a01d-1572-427a-80df-46f2079af967@fujitsu.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="xqbcpamsz7sm4ktx"
+Content-Disposition: inline
+In-Reply-To: <7b58926a-a7c3-4ad0-b8a3-56baf36939ca@kadam.mountain>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,76 +69,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-在 2023/11/6 12:07, Zhijian Li (Fujitsu) 写道:
-> 
-> 
-> On 03/11/2023 21:00, Zhu Yanjun wrote:
->> 在 2023/11/3 17:55, Li Zhijian 写道:
->>> I don't collect the Reviewed-by to the patch1-2 this time, since i
->>> think we can make it better.
->>>
->>> Patch1-2: Fix kernel panic[1] and benifit to make srp work again.
->>>             Almost nothing change from V1.
->>> Patch3-5: cleanups # newly add
->>> Patch6: make RXE support PAGE_SIZE aligned mr # newly add, but not fully tested
->>>
->>> My bad arm64 mechine offten hangs when doing blktests even though i use the
->>> default siw driver.
->>>
->>> - nvme and ULPs(rtrs, iser) always registers 4K mr still don't supported yet.
->>
->> Zhijian
->>
->> Please read carefully the whole discussion about this problem. You will find a lot of valuable suggestions, especially suggestions from Jason.
-> 
-> Okay, i will read it again. If you can tell me which thread, that would be better.
-> 
-> 
->>
->>   From the whole discussion, it seems that the root cause is very clear.
->> We need to fix this prolem. Please do not send this kind of commits again.
->>
-> 
-> Let's think about what's our goal first.
-> 
-> - 1) Fix the panic[1] and only support PAGE_SIZE MR
-> - 2) support PAGE_SIZE aligned MR
-> - 3) support any page_size MR.
-> 
-> I'm sorry i'm not familiar with the linux MM subsystem. It seem it's safe/correct to access
-> address/memory across pages start from the return of kmap_loca_page(page).
-> In other words, 2) is already native supported, right?
 
-Yes. Please read the comments from Jason, Leon and Bart. They shared a 
-lot of good advice. From them, we can know the root cause and how to fix 
-this problem.
+--xqbcpamsz7sm4ktx
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Good Luck.
+Hi,
 
-Zhu Yanjun
+On Wed, Nov 01, 2023 at 12:08:00PM +0300, Dan Carpenter wrote:
+> Let me add Richard to the CC list.  See lore for more details.
+> https://lore.kernel.org/all/CA+G9fYuA643RHHpPnz9Ww7rr3zV5a0y=3D7_uFcybBSL=
+=3DQP_sQvQ@mail.gmail.com/
+>=20
+> On Tue, Oct 31, 2023 at 09:57:48PM +0530, Naresh Kamboju wrote:
+> > On Mon, 30 Oct 2023 at 14:33, Dan Carpenter <dan.carpenter@linaro.org> =
+wrote:
+> > >
+> > > We have started printing more and more intentional stack traces.  Whe=
+ther
+> > > it's testing KASAN is able to detect use after frees or it's part of a
+> > > kunit test.
+> > >
+> > > These stack traces can be problematic.  They suddenly show up as a new
+> > > failure.  Now the test team has to contact the developers.  A bunch of
+> > > people have to investigate the bug.  We finally decide that it's
+> > > intentional so now the test team has to update their filter scripts to
+> > > mark it as intentional.  These filters are ad-hoc because there is no
+> > > standard format for warnings.
+> > >
+> > > A better way would be to mark it as intentional from the start.
+> > >
+> > > Here, I have marked the beginning and the end of the trace.  It's more
+> > > tricky for things like lkdtm_FORTIFY_MEM_MEMBER() where the flow does=
+n't
+> > > reach the end of the function.  I guess I would print a different
+> > > warning for stack traces that can't have a
+> > > "Intentional warning finished\n" message at the end.
+> > >
+> > > I haven't actually tested this patch...  Daniel, do you have a
+> > > list of intentional stack traces we could annotate?
+> >=20
+> > [My two cents]
+> >=20
+> > I have been noticing following kernel warnings / BUGs
+>=20
+> Some are intentional and some are not.  I had a similar thing happen to
+> me last week where I had too many Smatch false positives in my devel
+> code so I accidentally sent a patch with a stupid bug.  I've since
+> updated my QC process to run both the devel and released versions of
+> Smatch.
+>=20
+> But a similar thing is happening here where we have so many bogus
+> warnings that we missed a real bug.
 
-> 
-> I get totally confused now.
-> 
-> 
-> 
->> Zhu Yanjun
->>
->>>
->>> [1] https://lore.kernel.org/all/CAHj4cs9XRqE25jyVw9rj9YugffLn5+f=1znaBEnu1usLOciD+g@mail.gmail.com/T/
->>>
->>> Li Zhijian (6):
->>>     RDMA/rxe: RDMA/rxe: don't allow registering !PAGE_SIZE mr
->>>     RDMA/rxe: set RXE_PAGE_SIZE_CAP to PAGE_SIZE
->>>     RDMA/rxe: remove unused rxe_mr.page_shift
->>>     RDMA/rxe: Use PAGE_SIZE and PAGE_SHIFT to extract address from
->>>       page_list
->>>     RDMA/rxe: cleanup rxe_mr.{page_size,page_shift}
->>>     RDMA/rxe: Support PAGE_SIZE aligned MR
->>>
->>>    drivers/infiniband/sw/rxe/rxe_mr.c    | 80 ++++++++++++++++-----------
->>>    drivers/infiniband/sw/rxe/rxe_param.h |  2 +-
->>>    drivers/infiniband/sw/rxe/rxe_verbs.h |  9 ---
->>>    3 files changed, 48 insertions(+), 43 deletions(-)
->>>
+IIRC, there was a similar discussion for lockdep issues. IMO, any
+(unintended) warning should trigger a test failure.
 
+I guess that would require adding some intrumentation to __WARN somehow,
+and also allowing tests to check whether a warning had been generated
+during their execution for tests that want to trigger one.
+
+Maxime
+
+--xqbcpamsz7sm4ktx
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZUjw9AAKCRDj7w1vZxhR
+xVHxAP9+MVNkRhFAcYBlsPMe3eQ/ZiQV5eqW/Q8okxFof/9xegD/WBapKwZv6qgF
+CyoizI3A8AGSVFpMUx9COGghvklOAQE=
+=iyFQ
+-----END PGP SIGNATURE-----
+
+--xqbcpamsz7sm4ktx--
