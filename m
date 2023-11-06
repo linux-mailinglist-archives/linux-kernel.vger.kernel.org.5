@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 747A87E1926
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 04:22:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D50D77E192D
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 04:25:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230151AbjKFDWf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Nov 2023 22:22:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33112 "EHLO
+        id S230243AbjKFDZ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Nov 2023 22:25:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229485AbjKFDWe (ORCPT
+        with ESMTP id S229485AbjKFDZY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Nov 2023 22:22:34 -0500
+        Sun, 5 Nov 2023 22:25:24 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EE9AFB;
-        Sun,  5 Nov 2023 19:22:31 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 600D2C433C8;
-        Mon,  6 Nov 2023 03:22:28 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1F59FB;
+        Sun,  5 Nov 2023 19:25:21 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B57DBC433C8;
+        Mon,  6 Nov 2023 03:25:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699240951;
-        bh=2c6CX0o+84P4lGO884nCjWFaYcrlxoVgYh9gQ0cUKyE=;
+        s=k20201202; t=1699241121;
+        bh=n2FlAsTnGGnaOX5T+2LaXbteTzxZ7uxa6cFJoH8mL80=;
         h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=NL1Jf/7H0Lf0gLHdUMYc6Aibr0JXuTM9NG2NVoJYixq3ALTu92TZPdWEyZ+sMi0zB
-         Wpsfx1Xgsx4gDgcGxhPNpWQLtKyf5QXHloE9SNNveHRUWPkD5BNpHS9TCqVgEPW0NN
-         KONOi2T7HmptMn8Vhcx3YWRaGNwPnku8YET+OeF4cU2ALpXhM7zwX5YDXItPjEvyGa
-         EeRJTaKKp9IS0o/58nE+sJjU4+z7YaOq/WXsoketHwSZF8cqnQQVH51T14Weeck3mf
-         9vr523WGtlgZhOJzN75WSMXiY1nfqGQ3dQxFEgzxqW6+8NRGOuwql7SYzx5ABO1LZu
-         Hx/6Bs1b+w25A==
-Message-ID: <d95c6e8e3d6c589fb6af57dc0cb7e5c84659e295.camel@kernel.org>
-Subject: Re: [PATCH v3 5/6] tpm: Add tpm_buf_read_{u8,u16,u32}
+        b=cpvquSqRwDGX5EjUGDzD4sEhrb7nnmppxOKRXA57VyM4hoA/QIPuAZDul0T5L5qQi
+         weUw03ublp4RNbItzX3iozWtSDMJ0btAo/xpfZz1juTsf+azwq0QkMEGeNaftYvWfq
+         jpB6xbpfqTOADsQzgEJI3zp8u/lWL2RQnLpNAmXuG9ZwKek+0DQggYa7CiOOlwRfA3
+         kpmYtBxLYqGwzz3rEXsl0I5Pf3v12eH54lCetjz5q1XtHUiMnGYlhhYleLREK6FK/j
+         fQ50Tg/FoUm90ZuAwEZEHKHMrRUBAE2duAbFvNkZf5sqWmjYNPuEXKXYKqB52fSt3f
+         BLAEPLhppKv7Q==
+Message-ID: <1a06e28dbac24d32168a7362a903d6076fafdc34.camel@kernel.org>
+Subject: Re: [PATCH v3 4/6] tpm: Support TPM2 sized buffers (TPM2B)
 From:   Jarkko Sakkinen <jarkko@kernel.org>
 To:     James Bottomley <James.Bottomley@HansenPartnership.com>,
         linux-integrity@vger.kernel.org
@@ -39,15 +39,20 @@ Cc:     keyrings@vger.kernel.org,
         Jason Gunthorpe <jgg@ziepe.ca>,
         Mimi Zohar <zohar@linux.ibm.com>,
         Peter Huewe <peterhuewe@gmx.de>,
+        Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Jerry Snitselaar <jsnitsel@redhat.com>,
         Mario Limonciello <mario.limonciello@amd.com>,
         Julien Gomes <julien@arista.com>,
-        Jerry Snitselaar <jsnitsel@redhat.com>,
-        open list <linux-kernel@vger.kernel.org>
-Date:   Mon, 06 Nov 2023 05:22:26 +0200
-In-Reply-To: <6c733fad84445bd29df230ecb5310535bfef2254.camel@HansenPartnership.com>
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:SECURITY SUBSYSTEM" 
+        <linux-security-module@vger.kernel.org>
+Date:   Mon, 06 Nov 2023 05:25:15 +0200
+In-Reply-To: <d4157726d924a3ddad477923d6bcb4a8e6a55e60.camel@HansenPartnership.com>
 References: <20231024011531.442587-1-jarkko@kernel.org>
-         <20231024011531.442587-6-jarkko@kernel.org>
-         <6c733fad84445bd29df230ecb5310535bfef2254.camel@HansenPartnership.com>
+         <20231024011531.442587-5-jarkko@kernel.org>
+         <d4157726d924a3ddad477923d6bcb4a8e6a55e60.camel@HansenPartnership.com>
 Autocrypt: addr=jarkko@kernel.org; prefer-encrypt=mutual;
  keydata=mQINBF0RXVoBEACq7dxNqGliHRIUjKeA0Ajj8R0JiNRbhayBAmCmjfDh6m/QTNfyCmFBv6ZPe4EbBEyCgcFxerS0qgkaRD0FApKgtrX842rkwDyyhTA222rkv5Q/U2SY1Hi55kekBcAgYHVQzhvHnRrckvE7YxDlH06mnUGlL63s9NI/xnhtJvn92rLNvWqAyn+48Ud/EcE9oBo6vvq10O0UAHN/PEsyqtThN9tlTEKH8IMXmy1FAC70Ov8Ap63ZJT2RE7H4wbIYrHOOxarfHaKHcKy+UjZBhuQ54sGxxch2kXQCfkXOY7Ab7KKNkb4u2jDc6lyz8TJlc8Twi5KQcWBzomnYy5R0OJ01g6byY7vCSwAfCSp87P50F5O2pmjqd82mdB3Noy+CWIlV1kjMjaJglTyFGym7CWkvx7+yP+Jjq643aIbveN/Tx5OYZIhtSMRtJDzT+nDIgD83NyHL6JHO3LzKZEw6yZJWWSXyK9P5H8RX7ipWf3o3NaUCcs1K8wyTcgBZ/GT9X9SprH1ySYAGJz+G1UyPMQT1V4OirkQaMfN0Ht7jl6gEXXOs0Ks1sOdaKZUFIGn9P1cNRixp34Bw3edL4ZjNljXZa12MqzbaArTCm+WzJqrvkToOx2bqU37Y1vNskOBdYkCvWhKsIf8Gj5LZiVjFnX27bXeLv6Gd3asJ4qcQAl06+wARAQABtChKYXJra28gU2Fra2luZW4gPGphcmtrby5zYWtraW5lbkBpa2kuZmk+iQJXBBMBCgBBAhsBBQsJCAcCBhUKCQgLAgQWAgMBAh4BAheAAhkBFiEEUQfmbTR4ipPjInyQOrBUhsd1L+EFAmSlnJMFCQl1crkACgkQOrBUhsd1L+EPKw/9EnoAjcbK+duuIN4JA6iXCfdWrYK8DhvaMgfNIbH4ZrtbMYwAPsHeZTv/C47pf48sp200OvdQoA2qoYdtX+I1JLhz7aaRtemBp1lwZEESeNG5j
         0EwCSLeR6ITQanlpnj8FQ0MnLi8yKf8crWR8QyKlE96zT1yBFxNsjveGHBpW9syHjSFUZOLVA9JVSv6eSGobvU265EPxekVH3+GreSzs/lXWOMvXdLONbUtRJSktq1/p8T5m+btNxRKRi16gQOK8gZL/VRXg0/GLhNgobOniAYKz/q9pM/6vQWDzVeg+ur1HHbln/C28DJNubV8+4VnmZGWDpb2AOrEVX8xXyPr6MZmsPdf0/X5nSHDjF8+NOwWfPcdIu+ZmPKX0kAzDtefDoXD54dm13WvPVxH1zS1hz66LKRmEhutXUpE05U+XBrpxlXGKEU3MF/XeaMN04s6JktjXyIyAeG7G7TrexHcDEmi7bbUhzPCHMHnL3ialXDH59hpzdYBMiFkMiQ1xv45ow5W3AsCkfgljEG4GAnLbvnFJgbcvdYhR5QEfS2/vBXLrmHsi+cNlGuD9maf22ymiUJEdAe9AtwapT6YLNSlHuOF4OhmBemYkmTAYB6Jo/2jD5sSDnQXglO/Ib1+qh9Adj/iCgjavijojl3kebWNcusZGspuQpYQKoKHFSZLyqe0I0phcmtrbyBTYWtraW5lbiA8amFya2tvQGtlcm5lbC5vcmc+iQJUBBMBCgA+AhsBBQsJCAcCBhUKCQgLAgQWAgMBAh4BAheAFiEEUQfmbTR4ipPjInyQOrBUhsd1L+EFAmSlnJ8FCQl1crkACgkQOrBUhsd1L+H4UxAAnw2J8ew6vDB+vAK2snuNKUaVsyZX2EPJJ9WZStGkCyEzbnG/a3dk4ktpGlNLpk9tJJKTpb88efDIkp/Xa1fIUuOP75QQO8lNePX8lsc1aVWwNr4QHqTWe1Jgr1rBE29qeZA1R/poAMezI3Rrn5YEchexdDqFICba6KL2Wzl/yFR2puXMZoscVen3+NjyXE2UZiLdH0F/zacr2sIiwzKwp3Ej3m+fXmvxp+EPvRlt9LzxiTnDNKAy3A+xBec2uNveAM
@@ -72,38 +77,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2023-10-27 at 08:24 -0400, James Bottomley wrote:
+On Fri, 2023-10-27 at 08:32 -0400, James Bottomley wrote:
 > On Tue, 2023-10-24 at 04:15 +0300, Jarkko Sakkinen wrote:
 > > +++ b/drivers/char/tpm/tpm-buf.c
-> > @@ -124,3 +124,72 @@ void tpm_buf_append_u32(struct tpm_buf *buf,
-> > const u32 value)
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0tpm_buf_append(buf, (u8=
- *)&value2, 4);
-> > =C2=A0}
-> > =C2=A0EXPORT_SYMBOL_GPL(tpm_buf_append_u32);
-> > +
-> > +/**
-> > + * tpm_buf_read() - Read from a TPM buffer
-> > + * @buf:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0&tpm_buf instance
-> > + * @offset:=C2=A0=C2=A0=C2=A0=C2=A0offset within the buffer
-> > + * @count:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0the number of bytes to read
-> > + * @output:=C2=A0=C2=A0=C2=A0=C2=A0the output buffer
-> > + */
-> > +static void tpm_buf_read(const struct tpm_buf *buf, off_t *offset,
-> > size_t count, void *output)
-> > +{
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (*(offset + count) >=3D b=
-uf->length) {
+> > @@ -7,22 +7,32 @@
+> > =C2=A0#include <linux/tpm.h>
+> > =C2=A0
+> > =C2=A0/**
+> > - * tpm_buf_init() - Initialize from the heap
+> > + * tpm_buf_init() - Initialize a TPM buffer
+> > =C2=A0 * @buf:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0A @tpm_buf
+> > + * @sized:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0Represent a sized buffer (TPM2=
+B)
+> > + * @alloc:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0Allocate from the heap
+> > =C2=A0 *
+> > =C2=A0 * Initialize all structure fields to zero, allocate a page from =
+the
+> > heap, and
+> > =C2=A0 * zero the bytes that the buffer headers will consume.
+> > =C2=A0 *
+> > =C2=A0 * Return: 0 or -ENOMEM
+> > =C2=A0 */
+> > -int tpm_buf_init(struct tpm_buf *buf)
+> > +int tpm_buf_init(struct tpm_buf *buf, bool alloc, bool sized)
 >=20
-> I don't think you mean that; it's dereferencing a random location in
-> the stack, which is why I see this check trip randomly when testing.=C2=
-=A0 I
-> think you mean
+> I think it creates a phenomenally confusing interface to use multiple
+> booleans because, unlike flags, it's not self describing at point of
+> use.=C2=A0 The confusion is enormously heightened here by having the doc
+> book arguments be the reverse of the actual function prototype (I just
+> tripped over this).
 >=20
-> if (*offset + count >=3D buf->length) {
+> The alloc flag is particularly counter intuitive: if you pass in an
+> allocated buffer, you expect to be responsible for freeing it again,
+> but that's not how you use it; you really use it like a reset not an
+> alloc, which looks odd because you already created a separate
+> tpm_buf_reset function which can't be used in this case.
+>=20
+> Why not replace the alloc flags with two reset functions: one for TPM2B
+> buffers and one for command buffers?
 >=20
 > James
 
-Yes, true! Thank you.
+Or you can make that as internal (__tpm_buf_init()) and add two
+wrappers.
 
 BR, Jarkko
