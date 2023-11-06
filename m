@@ -2,174 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 57F997E2ED4
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 22:19:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EB997E2EE2
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 22:20:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233106AbjKFVTV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 16:19:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57084 "EHLO
+        id S233095AbjKFVUN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 16:20:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232527AbjKFVTU (ORCPT
+        with ESMTP id S231739AbjKFVUM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 16:19:20 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31CEEAF
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 13:19:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699305557; x=1730841557;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=mpCWcrut8F62PbVYjjL5lHvEe1d7GJoXVDQ8V9vdBdQ=;
-  b=nj+Ca+uQFenqHKojku1/DxxmXDzDMuAiUuXWCM2pOfsvvwLhslJGmtQu
-   2hwOS9SkZCed2oDDHH++z31+TD8k8NOj/S4on2VhvZ3+8Lz9+PvUSJqtk
-   rxnQ7Ubd082dyMByfpaYdAwrt4Yk4owp/SamcrayOT2Deg8DrDiFg+TnH
-   6EdNHyDm3g1r1ZEG7BEmGUIOWtREECOyBjMI+MW+6ySAAlU5St7oeGrTW
-   4mw5GHsnFKenD1f3SBPqGEjJE2R5LH6U26n8NcOkwtoaCC0TPm/PINeG6
-   GXaJtK0u5bL6B9sYY21YathVf1pJmf0y/tHY0oys/hPkxxJaZ1leKjRrs
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10886"; a="10911431"
-X-IronPort-AV: E=Sophos;i="6.03,282,1694761200"; 
-   d="scan'208";a="10911431"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Nov 2023 13:19:17 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10886"; a="755964159"
-X-IronPort-AV: E=Sophos;i="6.03,282,1694761200"; 
-   d="scan'208";a="755964159"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga007.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Nov 2023 13:19:16 -0800
-Received: from [10.212.114.233] (kliang2-mobl1.ccr.corp.intel.com [10.212.114.233])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by linux.intel.com (Postfix) with ESMTPS id 91DF7580D4E;
-        Mon,  6 Nov 2023 13:19:14 -0800 (PST)
-Message-ID: <fb1ebf48-ac2f-499a-b480-ba8474b12200@linux.intel.com>
-Date:   Mon, 6 Nov 2023 16:19:13 -0500
+        Mon, 6 Nov 2023 16:20:12 -0500
+Received: from mail-oo1-xc2c.google.com (mail-oo1-xc2c.google.com [IPv6:2607:f8b0:4864:20::c2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22B3EB0
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 13:20:08 -0800 (PST)
+Received: by mail-oo1-xc2c.google.com with SMTP id 006d021491bc7-587af6285c0so259110eaf.1
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 13:20:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699305607; x=1699910407; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=1fyk105fO9nPx1K8RQh7z3r5ykWh5/CrtqeSXyVa34c=;
+        b=JvFrQIucl4wwnjjUBHxPi136YHvcmK1vXo/iEFHP7XkJwvsLxU3O7bHNyxd0/pGMoe
+         DTgYlVV30RcrPfxwogT52lgJjYq9L9g0Af/0RqtlflfTlBi4igUd10VwGrC4aJrlw53S
+         mAqaDJvGDJ1z3SYthJgBJj6aUxgb+asmR30yHvvGL2nsLcG3d0yUKqp2kqvqYMY54pub
+         pvuUv5alO3HcL+4KcgzJVzsUeU1nNq/RCZoFMCP0P0YnQ429T7n3n3b/NC/AVBqCHuP+
+         Y1i8daTZshS3O4yppLPPd9rwzFQfVK1lsuoNvLqSuIICCSbm5ObX1EIRmzULpS24TflS
+         /HfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699305607; x=1699910407;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=1fyk105fO9nPx1K8RQh7z3r5ykWh5/CrtqeSXyVa34c=;
+        b=s8HPGo+FovdQJ4DgW5NugumK2H2alD7JZFjFvfcpSbMUGMQKCDBQi2mgwrZDlZbSE1
+         cv5EOpgNWKu6PTVD9XR2BELwBHIaIwXPg6vsXXgf/eoEgMothqY4uckJ8mo8qMoBpsSt
+         UFIeobHjGRoY9kGxdGh9Hl4oV1TxeS0IBd0Zi+SOHKWp7fYx7zp5UZiESXveDPFrgwA2
+         7IrHWhScp6MDUsit7gAuUeHf8egrHctIdDjY3GlCgUOPvEQ6N3Mj7742liIYdy9IGprb
+         JZLKZHZ9J0dqcUxsrwgHcYmSrVuS8M2h6K0Vl/cF97O/SJ6fYLkBhK9FtCYpvZcLoO9f
+         s4FQ==
+X-Gm-Message-State: AOJu0Yy3JnnYbpHESyBcAkYB8Gvc3JBwaMr1y7Ho9PQqjXM2v76fUJwS
+        8K6wWrla2yhupiYqyfedgSs=
+X-Google-Smtp-Source: AGHT+IH4VDf8xNiyaOS4OHF/NY+0agil1P2kuT4qJkDyOIVe9taGaS0U+sjLOgwU7KXVIGo4aSi+fQ==
+X-Received: by 2002:a05:6358:f201:b0:169:4a72:2b84 with SMTP id jj1-20020a056358f20100b001694a722b84mr41339730rwb.1.1699305607292;
+        Mon, 06 Nov 2023 13:20:07 -0800 (PST)
+Received: from [192.168.0.152] ([103.75.161.210])
+        by smtp.gmail.com with ESMTPSA id y188-20020a6364c5000000b005b92ba3938dsm190941pgb.77.2023.11.06.13.20.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 06 Nov 2023 13:20:06 -0800 (PST)
+Message-ID: <3b92b89b-ca72-4012-b4f2-0b19e4ba9153@gmail.com>
+Date:   Tue, 7 Nov 2023 02:49:56 +0530
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V5 2/8] perf/x86: Add PERF_X86_EVENT_NEEDS_BRANCH_STACK
- flag
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     peterz@infradead.org, mingo@redhat.com,
-        linux-kernel@vger.kernel.org, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
-        namhyung@kernel.org, irogers@google.com, adrian.hunter@intel.com,
-        ak@linux.intel.com, eranian@google.com,
-        alexey.v.bayduraev@linux.intel.com, tinghao.zhang@intel.com
-References: <20231025201626.3000228-1-kan.liang@linux.intel.com>
- <20231025201626.3000228-2-kan.liang@linux.intel.com>
- <ZUlWuROfYcYJlRn4@kernel.org>
+Subject: Re: [PATCH] drivers: gpu: Fix warning using plain integer as NULL
 Content-Language: en-US
-From:   "Liang, Kan" <kan.liang@linux.intel.com>
-In-Reply-To: <ZUlWuROfYcYJlRn4@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+To:     Alex Deucher <alexdeucher@gmail.com>
+Cc:     alexander.deucher@amd.com, christian.koenig@amd.com,
+        Xinhui.Pan@amd.com, airlied@gmail.com, daniel@ffwll.ch,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+References: <20231103155013.332367-1-singhabhinav9051571833@gmail.com>
+ <CADnq5_OkWD3YmCKgXbtk=Gnba3AgAiAWp2z_nzHQvRfEOsdXVg@mail.gmail.com>
+From:   Abhinav Singh <singhabhinav9051571833@gmail.com>
+In-Reply-To: <CADnq5_OkWD3YmCKgXbtk=Gnba3AgAiAWp2z_nzHQvRfEOsdXVg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2023-11-06 4:12 p.m., Arnaldo Carvalho de Melo wrote:
-> Em Wed, Oct 25, 2023 at 01:16:20PM -0700, kan.liang@linux.intel.com escreveu:
->> From: Kan Liang <kan.liang@linux.intel.com>
+On 11/7/23 00:25, Alex Deucher wrote:
+> Applied.  This matches what we already do in the other clear state headers.
+> 
+> Alex
+> 
+> On Fri, Nov 3, 2023 at 12:00 PM Abhinav Singh
+> <singhabhinav9051571833@gmail.com> wrote:
 >>
->> Currently, branch_sample_type !=0 is used to check whether a branch
->> stack setup is required. But it doesn't check the sample type,
->> unnecessary branch stack setup may be done for a counting event. E.g.,
->> perf record -e "{branch-instructions,branch-misses}:S" -j any
->> Also, the event only with the new PERF_SAMPLE_BRANCH_COUNTERS branch
->> sample type may not require a branch stack setup either.
+>> sparse static analysis tools generate a warning with this message
+>> "Using plain integer as NULL pointer". In this case this warning is
+>> being shown because we are trying to intialize a pointer to NULL using
+>> integer value 0.
 >>
->> Add a new flag NEEDS_BRANCH_STACK to indicate whether the event requires
->> a branch stack setup. Replace the needs_branch_stack() by checking the
->> new flag.
->>
->> The counting event check is implemented here. The later patch will take
->> the new PERF_SAMPLE_BRANCH_COUNTERS into account.
->>
->> Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+>> Signed-off-by: Abhinav Singh <singhabhinav9051571833@gmail.com>
 >> ---
+>>   drivers/gpu/drm/radeon/clearstate_evergreen.h | 8 ++++----
+>>   1 file changed, 4 insertions(+), 4 deletions(-)
 >>
->> No changes since V4
-> 
-> So I saw this on tip/perf/urgent, I'm picking the tools bits then.
-
-Thanks Arnaldo.
-
-Ian has already reviewed the tool parts.
-
-But I still owe a test case for the feature. I will post a patch later.
-https://lore.kernel.org/lkml/acbb895a-475e-4679-98fc-6b90c05a00af@linux.intel.com/
-
-Thanks,
-Kan
-
-> 
-> - Arnaldo
->  
->>  arch/x86/events/intel/core.c       | 14 +++++++++++---
->>  arch/x86/events/perf_event_flags.h |  1 +
->>  2 files changed, 12 insertions(+), 3 deletions(-)
+>> diff --git a/drivers/gpu/drm/radeon/clearstate_evergreen.h b/drivers/gpu/drm/radeon/clearstate_evergreen.h
+>> index 63a1ffbb3ced..3b645558f133 100644
+>> --- a/drivers/gpu/drm/radeon/clearstate_evergreen.h
+>> +++ b/drivers/gpu/drm/radeon/clearstate_evergreen.h
+>> @@ -1049,7 +1049,7 @@ static const struct cs_extent_def SECT_CONTEXT_defs[] =
+>>       {SECT_CONTEXT_def_5, 0x0000a29e, 5 },
+>>       {SECT_CONTEXT_def_6, 0x0000a2a5, 56 },
+>>       {SECT_CONTEXT_def_7, 0x0000a2de, 290 },
+>> -    { 0, 0, 0 }
+>> +    { NULL, 0, 0 }
+>>   };
+>>   static const u32 SECT_CLEAR_def_1[] =
+>>   {
+>> @@ -1060,7 +1060,7 @@ static const u32 SECT_CLEAR_def_1[] =
+>>   static const struct cs_extent_def SECT_CLEAR_defs[] =
+>>   {
+>>       {SECT_CLEAR_def_1, 0x0000ffc0, 3 },
+>> -    { 0, 0, 0 }
+>> +    { NULL, 0, 0 }
+>>   };
+>>   static const u32 SECT_CTRLCONST_def_1[] =
+>>   {
+>> @@ -1070,11 +1070,11 @@ static const u32 SECT_CTRLCONST_def_1[] =
+>>   static const struct cs_extent_def SECT_CTRLCONST_defs[] =
+>>   {
+>>       {SECT_CTRLCONST_def_1, 0x0000f3fc, 2 },
+>> -    { 0, 0, 0 }
+>> +    { NULL, 0, 0 }
+>>   };
+>>   static const struct cs_section_def evergreen_cs_data[] = {
+>>       { SECT_CONTEXT_defs, SECT_CONTEXT },
+>>       { SECT_CLEAR_defs, SECT_CLEAR },
+>>       { SECT_CTRLCONST_defs, SECT_CTRLCONST },
+>> -    { 0, SECT_NONE }
+>> +    { NULL, SECT_NONE }
+>>   };
+>> --
+>> 2.39.2
 >>
->> diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
->> index 41a164764a84..a99449c0d77c 100644
->> --- a/arch/x86/events/intel/core.c
->> +++ b/arch/x86/events/intel/core.c
->> @@ -2527,9 +2527,14 @@ static void intel_pmu_assign_event(struct perf_event *event, int idx)
->>  		perf_report_aux_output_id(event, idx);
->>  }
->>  
->> +static __always_inline bool intel_pmu_needs_branch_stack(struct perf_event *event)
->> +{
->> +	return event->hw.flags & PERF_X86_EVENT_NEEDS_BRANCH_STACK;
->> +}
->> +
->>  static void intel_pmu_del_event(struct perf_event *event)
->>  {
->> -	if (needs_branch_stack(event))
->> +	if (intel_pmu_needs_branch_stack(event))
->>  		intel_pmu_lbr_del(event);
->>  	if (event->attr.precise_ip)
->>  		intel_pmu_pebs_del(event);
->> @@ -2820,7 +2825,7 @@ static void intel_pmu_add_event(struct perf_event *event)
->>  {
->>  	if (event->attr.precise_ip)
->>  		intel_pmu_pebs_add(event);
->> -	if (needs_branch_stack(event))
->> +	if (intel_pmu_needs_branch_stack(event))
->>  		intel_pmu_lbr_add(event);
->>  }
->>  
->> @@ -3897,7 +3902,10 @@ static int intel_pmu_hw_config(struct perf_event *event)
->>  			x86_pmu.pebs_aliases(event);
->>  	}
->>  
->> -	if (needs_branch_stack(event)) {
->> +	if (needs_branch_stack(event) && is_sampling_event(event))
->> +		event->hw.flags  |= PERF_X86_EVENT_NEEDS_BRANCH_STACK;
->> +
->> +	if (intel_pmu_needs_branch_stack(event)) {
->>  		ret = intel_pmu_setup_lbr_filter(event);
->>  		if (ret)
->>  			return ret;
->> diff --git a/arch/x86/events/perf_event_flags.h b/arch/x86/events/perf_event_flags.h
->> index 1dc19b9b4426..a1685981c520 100644
->> --- a/arch/x86/events/perf_event_flags.h
->> +++ b/arch/x86/events/perf_event_flags.h
->> @@ -20,3 +20,4 @@ PERF_ARCH(TOPDOWN,		0x04000) /* Count Topdown slots/metrics events */
->>  PERF_ARCH(PEBS_STLAT,		0x08000) /* st+stlat data address sampling */
->>  PERF_ARCH(AMD_BRS,		0x10000) /* AMD Branch Sampling */
->>  PERF_ARCH(PEBS_LAT_HYBRID,	0x20000) /* ld and st lat for hybrid */
->> +PERF_ARCH(NEEDS_BRANCH_STACK,	0x40000) /* require branch stack setup */
->> -- 
->> 2.35.1
->>
-> 
+Hi Alex, thanks for looking into this. By applied you mean this patch is 
+accepted and it has been merged?
