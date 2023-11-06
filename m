@@ -2,292 +2,361 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 077C67E2F11
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 22:37:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 658C67E2FF8
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 23:43:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233144AbjKFVhu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 16:37:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57838 "EHLO
+        id S233227AbjKFWne (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 17:43:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233156AbjKFVhs (ORCPT
+        with ESMTP id S232478AbjKFWnd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 16:37:48 -0500
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA4C9D75
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 13:37:44 -0800 (PST)
-Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2c518a1d83fso66140721fa.3
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 13:37:44 -0800 (PST)
+        Mon, 6 Nov 2023 17:43:33 -0500
+Received: from mail-ua1-x935.google.com (mail-ua1-x935.google.com [IPv6:2607:f8b0:4864:20::935])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9471D6E
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 14:43:29 -0800 (PST)
+Received: by mail-ua1-x935.google.com with SMTP id a1e0cc1a2514c-7ba8e3107c9so1918617241.1
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 14:43:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1699306663; x=1699911463; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1699310609; x=1699915409; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=7dh0i1Y13fCBXMy4THdL0Y/icX4PEdeYjxpU/J+CTIM=;
-        b=RpUgtOLUhtzIW1Omph/xCaZMtOw3VwEPCMRqtsSPikXey2qARc/YSVBrnx90W06yWc
-         zG0Kcs1pS6dF/Ronej2yeGUUtDHNsbRxkMggPAXpHsKw1z+kxqh3RweM2EKWpMTdp3FX
-         6B0ru+Wgeeir3BGdIeSWK5DUwV6TiwFi6gnak=
+        bh=G91RqLPHyzBB6So+n/9gpI/px/Gha0CvH/a8ASBTrpE=;
+        b=ZI+TUEJuoQoFm7gg/jq7IgkRHvfEa6rJrtCOcw15jPwbgmmNldYTWI/Xd9JbOyCadH
+         +1KcmEELAEEr9MoUfZ8KfKVu0AEcPXZ+KYi8yVUzdzlsV4McdaJkNtYe3ups3PjsOIg7
+         DFp95sIXD7f5pewqiq5aS2BErTh2b/JeV1rOtf1OPu8//ZtmumCsxbqat5M9T3SyRCx/
+         s66J6gMvmlnhW+Ow5JlQdbW+830obiSBC2wI7CruQz6isFF/q9xzp6ZE7ALOIj6wUc4B
+         eTd4Rm/qKCOi71/q+meJdn9h9nYF9vhP5livcVdz9Dg+EOu+w/BIX5IGnPdTptREUaoA
+         BWfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699306663; x=1699911463;
+        d=1e100.net; s=20230601; t=1699310609; x=1699915409;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=7dh0i1Y13fCBXMy4THdL0Y/icX4PEdeYjxpU/J+CTIM=;
-        b=qJkeLqNcPZOHSWSXr5xGK0euzDuT4Dk6K/PN0wOGdsuR0NfaKMYfWi6aTlWKkchS4o
-         O61FR00L+5V/Wu1uvwEvQMXTYikKQZ/hX3j//+JNCxe8yzCD9EDXn2ehoHUY1FtsEpD/
-         FJw4/q44XU0oJJa/atoRimJgDOnNfLVDxkfWY6gfgrFP+LdEMJCvuByYfhBsyQlq7+Bg
-         Eut1qu1FkCU+GMRB8pJ4F9udOi2b8ATKdwkzgO+vm1eDHMsUEltgVU0P8kcqWmjmOYRD
-         TUpZAi7kcP7K9t/cumiGcnA9WYgDYJpj5Kb4hRSpQ6ZDxTWrdPzJuEBSsuBOzD3x6Pw4
-         4Fhg==
-X-Gm-Message-State: AOJu0YxgUbqB8kgEBh5RdbNuvY43IrUwzIZVeorbgBbm2K++MTnHckou
-        EF+J9e2cuH8ipkEfb3w3bbP45sIGR22jnR6FW5JuFQ==
-X-Google-Smtp-Source: AGHT+IF1U9B8CrvKz6FExUFO2JsZ/k4spyiScbya7xKbHfrQ4zMlokPsOj4kyImCCUyxFmH/pmXSNZTTeDjnXXKkfNY=
-X-Received: by 2002:a05:651c:213:b0:2c6:ee51:87aa with SMTP id
- y19-20020a05651c021300b002c6ee5187aamr11968270ljn.39.1699306663102; Mon, 06
- Nov 2023 13:37:43 -0800 (PST)
+        bh=G91RqLPHyzBB6So+n/9gpI/px/Gha0CvH/a8ASBTrpE=;
+        b=Qp+n65B8tbHea1VPTLY5O2U13AkiuUHKEOvVRVqHGMKshEVsYEiNDKa+b2x1rWPmnr
+         oW8lzaH5j8EMS2Q4ae9r662zDSdMrs9iV96MCYHLkhiIx5juk0ZBQmrUS+twslXUaHHd
+         iX0ju7eWTHf3I7g1oAwozhNEMncfgWnRTJW/DN05y01acB2g+rvXeP3VyEJk3Wof3Fol
+         1GYoze4D21fMNnckCp8UlzA3jyGYASzLCpGi2gTvWt+e//MJUgHn5urO/kJUzljhXH1d
+         dAGRDHoEKfBYSp8OVccxjWb9SWn+P/1Odk/Gymrcb51dSSkLdiHyO04spPe1LOWlRSG4
+         VlWA==
+X-Gm-Message-State: AOJu0YxaoagX12mcMD1SQwu07DAYBKr6oGQ8UMxC9qcMINZaHkkVlchh
+        nmVzQKJouR2wGYktPuW0Fjc4tSqv1oMjLLX4ad0=
+X-Google-Smtp-Source: AGHT+IH7Qnvq5uOsoGrYFHeP4mxLgQ8FqMEO/nTDNq3szgK4S2O3ZAC4r7aMqgRCi8DYLPvpX0lij6cQ233UzuMrdww=
+X-Received: by 2002:a67:c00c:0:b0:45e:f8af:79cc with SMTP id
+ v12-20020a67c00c000000b0045ef8af79ccmr5408821vsi.8.1699310608988; Mon, 06 Nov
+ 2023 14:43:28 -0800 (PST)
 MIME-Version: 1.0
-References: <cover.1699095159.git.bristot@kernel.org> <c7b706d30d6316c52853ca056db5beb82ba72863.1699095159.git.bristot@kernel.org>
- <CAEXW_YS=PrWDx+YGVR7bmq0_SoKNztzGrreApCd9qk1yBLA5bA@mail.gmail.com> <CAEXW_YQ8kv3tXQJexLSguPuWi0bXiReKDyYNo9+A-Hgp=Zo1vA@mail.gmail.com>
-In-Reply-To: <CAEXW_YQ8kv3tXQJexLSguPuWi0bXiReKDyYNo9+A-Hgp=Zo1vA@mail.gmail.com>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Mon, 6 Nov 2023 16:37:32 -0500
-Message-ID: <CAEXW_YSjsZSrJK_RbGmbLNy4UrLCgu+7NPZjg-wiLuNbGOGr+w@mail.gmail.com>
-Subject: Re: [PATCH v5 6/7] sched/deadline: Deferrable dl server
-To:     Daniel Bristot de Oliveira <bristot@kernel.org>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        linux-kernel@vger.kernel.org,
-        Luca Abeni <luca.abeni@santannapisa.it>,
-        Tommaso Cucinotta <tommaso.cucinotta@santannapisa.it>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vineeth Pillai <vineeth@bitbyteword.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Phil Auld <pauld@redhat.com>
+References: <2fe5ce7e-9c5c-4df4-b4fc-9fd3d9b2dccb@arm.com> <20231104093423.170054-1-v-songbaohua@oppo.com>
+ <e84ae266-6de4-4b40-babc-ce4777b4c3fa@arm.com>
+In-Reply-To: <e84ae266-6de4-4b40-babc-ce4777b4c3fa@arm.com>
+From:   Barry Song <21cnbao@gmail.com>
+Date:   Tue, 7 Nov 2023 05:39:10 +0800
+Message-ID: <CAGsJ_4yXjex8txgEGt7+WMKp4uDQTn-fR06ijv4Ac68MkhjMDw@mail.gmail.com>
+Subject: Re: [PATCH v3 4/4] mm: swap: Swap-out small-sized THP without splitting
+To:     Steven Price <steven.price@arm.com>
+Cc:     akpm@linux-foundation.org, david@redhat.com,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org, mhocko@suse.com,
+        ryan.roberts@arm.com, shy828301@gmail.com,
+        wangkefeng.wang@huawei.com, willy@infradead.org, xiang@kernel.org,
+        ying.huang@intel.com, yuzhao@google.com,
+        Barry Song <v-songbaohua@oppo.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 6, 2023 at 4:32=E2=80=AFPM Joel Fernandes <joel@joelfernandes.o=
-rg> wrote:
+On Mon, Nov 6, 2023 at 6:12=E2=80=AFPM Steven Price <steven.price@arm.com> =
+wrote:
 >
-> On Mon, Nov 6, 2023 at 2:32=E2=80=AFPM Joel Fernandes <joel@joelfernandes=
-.org> wrote:
+> On 04/11/2023 09:34, Barry Song wrote:
+> >> Yes that's right. mte_save_tags() needs to allocate memory so can fail
+> >> and if failing then arch_prepare_to_swap() would need to put things ba=
+ck
+> >> how they were with calls to mte_invalidate_tags() (although I think
+> >> you'd actually want to refactor to create a function which takes a
+> >> struct page *).
+> >>
+> >> Steve
 > >
-> > Hi Daniel,
+> > Thanks, Steve. combining all comments from You and Ryan, I made a v2.
+> > One tricky thing is that we are restoring one page rather than folio
+> > in arch_restore_swap() as we are only swapping in one page at this
+> > stage.
 > >
-> > On Sat, Nov 4, 2023 at 6:59=E2=80=AFAM Daniel Bristot de Oliveira
-> > <bristot@kernel.org> wrote:
-> > >
-> > > Among the motivations for the DL servers is the real-time throttling
-> > > mechanism. This mechanism works by throttling the rt_rq after
-> > > running for a long period without leaving space for fair tasks.
-> > >
-> > > The base dl server avoids this problem by boosting fair tasks instead
-> > > of throttling the rt_rq. The point is that it boosts without waiting
-> > > for potential starvation, causing some non-intuitive cases.
-> > >
-> > > For example, an IRQ dispatches two tasks on an idle system, a fair
-> > > and an RT. The DL server will be activated, running the fair task
-> > > before the RT one. This problem can be avoided by deferring the
-> > > dl server activation.
-> > >
-> > > By setting the zerolax option, the dl_server will dispatch an
-> > > SCHED_DEADLINE reservation with replenished runtime, but throttled.
-> > >
-> > > The dl_timer will be set for (period - runtime) ns from start time.
-> > > Thus boosting the fair rq on its 0-laxity time with respect to
-> > > rt_rq.
-> > >
-> > > If the fair scheduler has the opportunity to run while waiting
-> > > for zerolax time, the dl server runtime will be consumed. If
-> > > the runtime is completely consumed before the zerolax time, the
-> > > server will be replenished while still in a throttled state. Then,
-> > > the dl_timer will be reset to the new zerolax time
-> > >
-> > > If the fair server reaches the zerolax time without consuming
-> > > its runtime, the server will be boosted, following CBS rules
-> > > (thus without breaking SCHED_DEADLINE).
-> > >
-> > > Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
-> > > ---
-> > >  include/linux/sched.h   |   2 +
-> > >  kernel/sched/deadline.c | 100 ++++++++++++++++++++++++++++++++++++++=
-+-
-> > >  kernel/sched/fair.c     |   3 ++
-> > >  3 files changed, 103 insertions(+), 2 deletions(-)
-> > >
-> > > diff --git a/include/linux/sched.h b/include/linux/sched.h
-> > > index 5ac1f252e136..56e53e6fd5a0 100644
-> > > --- a/include/linux/sched.h
-> > > +++ b/include/linux/sched.h
-> > > @@ -660,6 +660,8 @@ struct sched_dl_entity {
-> > >         unsigned int                    dl_non_contending : 1;
-> > >         unsigned int                    dl_overrun        : 1;
-> > >         unsigned int                    dl_server         : 1;
-> > > +       unsigned int                    dl_zerolax        : 1;
-> > > +       unsigned int                    dl_zerolax_armed  : 1;
-> > >
-> > >         /*
-> > >          * Bandwidth enforcement timer. Each -deadline task has its
-> > > diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
-> > > index 1d7b96ca9011..69ee1fbd60e4 100644
-> > > --- a/kernel/sched/deadline.c
-> > > +++ b/kernel/sched/deadline.c
-> > > @@ -772,6 +772,14 @@ static inline void replenish_dl_new_period(struc=
-t sched_dl_entity *dl_se,
-> > >         /* for non-boosted task, pi_of(dl_se) =3D=3D dl_se */
-> > >         dl_se->deadline =3D rq_clock(rq) + pi_of(dl_se)->dl_deadline;
-> > >         dl_se->runtime =3D pi_of(dl_se)->dl_runtime;
-> > > +
-> > > +       /*
-> > > +        * If it is a zerolax reservation, throttle it.
-> > > +        */
-> > > +       if (dl_se->dl_zerolax) {
-> > > +               dl_se->dl_throttled =3D 1;
-> > > +               dl_se->dl_zerolax_armed =3D 1;
-> > > +       }
-> > >  }
-> > >
-> > >  /*
-> > > @@ -828,6 +836,7 @@ static inline void setup_new_dl_entity(struct sch=
-ed_dl_entity *dl_se)
-> > >   * could happen are, typically, a entity voluntarily trying to overc=
-ome its
-> > >   * runtime, or it just underestimated it during sched_setattr().
-> > >   */
-> > > +static int start_dl_timer(struct sched_dl_entity *dl_se);
-> > >  static void replenish_dl_entity(struct sched_dl_entity *dl_se)
-> > >  {
-> > >         struct dl_rq *dl_rq =3D dl_rq_of_se(dl_se);
-> > > @@ -874,6 +883,28 @@ static void replenish_dl_entity(struct sched_dl_=
-entity *dl_se)
-> > >                 dl_se->dl_yielded =3D 0;
-> > >         if (dl_se->dl_throttled)
-> > >                 dl_se->dl_throttled =3D 0;
-> > > +
-> > > +       /*
-> > > +        * If this is the replenishment of a zerolax reservation,
-> > > +        * clear the flag and return.
-> > > +        */
-> > > +       if (dl_se->dl_zerolax_armed) {
-> > > +               dl_se->dl_zerolax_armed =3D 0;
-> > > +               return;
-> > > +       }
-> > > +
-> > > +       /*
-> > > +        * A this point, if the zerolax server is not armed, and the =
-deadline
-> > > +        * is in the future, throttle the server and arm the zerolax =
-timer.
-> > > +        */
-> > > +       if (dl_se->dl_zerolax &&
-> > > +           dl_time_before(dl_se->deadline - dl_se->runtime, rq_clock=
-(rq))) {
-> > > +               if (!is_dl_boosted(dl_se)) {
-> > > +                       dl_se->dl_zerolax_armed =3D 1;
-> > > +                       dl_se->dl_throttled =3D 1;
-> > > +                       start_dl_timer(dl_se);
-> > > +               }
-> > > +       }
-> > >  }
-> > >
-> > >  /*
-> > > @@ -1024,6 +1055,13 @@ static void update_dl_entity(struct sched_dl_e=
-ntity *dl_se)
-> > >                 }
-> > >
-> > >                 replenish_dl_new_period(dl_se, rq);
-> > > +       } else if (dl_server(dl_se) && dl_se->dl_zerolax) {
-> > > +               /*
-> > > +                * The server can still use its previous deadline, so=
- throttle
-> > > +                * and arm the zero-laxity timer.
-> > > +                */
-> > > +               dl_se->dl_zerolax_armed =3D 1;
-> > > +               dl_se->dl_throttled =3D 1;
-> > >         }
-> > >  }
-> > >
-> > > @@ -1056,8 +1094,20 @@ static int start_dl_timer(struct sched_dl_enti=
-ty *dl_se)
-> > >          * We want the timer to fire at the deadline, but considering
-> > >          * that it is actually coming from rq->clock and not from
-> > >          * hrtimer's time base reading.
-> > > +        *
-> > > +        * The zerolax reservation will have its timer set to the
-> > > +        * deadline - runtime. At that point, the CBS rule will decid=
-e
-> > > +        * if the current deadline can be used, or if a replenishment
-> > > +        * is required to avoid add too much pressure on the system
-> > > +        * (current u > U).
-> > >          */
-> > > -       act =3D ns_to_ktime(dl_next_period(dl_se));
-> > > +       if (dl_se->dl_zerolax_armed) {
-> > > +               WARN_ON_ONCE(!dl_se->dl_throttled);
-> > > +               act =3D ns_to_ktime(dl_se->deadline - dl_se->runtime)=
-;
+> > [RFC v2 PATCH] arm64: mm: swap: save and restore mte tags for large fol=
+ios
 > >
-> > Just a question, here if dl_se->deadline - dl_se->runtime is large,
-> > then does that mean that server activation will be much more into the
-> > future? So say I want to give CFS 30%, then it will take 70% of the
-> > period before CFS preempts RT thus "starving" CFS for this duration. I
-> > think that's Ok for smaller periods and runtimes, though.
+> > This patch makes MTE tags saving and restoring support large folios,
+> > then we don't need to split them into base pages for swapping on
+> > ARM64 SoCs with MTE.
 > >
-> > I think it does reserve the amount of required CFS bandwidth so it is
-> > probably OK, though it is perhaps letting RT run more initially (say
-> > if CFS tasks are not CPU bound and occasionally wake up, they will
-> > always be hit by the 70% latency AFAICS which may be large for large
-> > periods and small runtimes).
+> > This patch moves arch_prepare_to_swap() to take folio rather than
+> > page, as we support THP swap-out as a whole. And this patch also
+> > drops arch_thp_swp_supported() as ARM64 MTE is the only one who
+> > needs it.
 > >
+> > Signed-off-by: Barry Song <v-songbaohua@oppo.com>
+> > ---
+> >  arch/arm64/include/asm/pgtable.h | 21 +++------------
+> >  arch/arm64/mm/mteswap.c          | 44 ++++++++++++++++++++++++++++++++
+> >  include/linux/huge_mm.h          | 12 ---------
+> >  include/linux/pgtable.h          |  2 +-
+> >  mm/page_io.c                     |  2 +-
+> >  mm/swap_slots.c                  |  2 +-
+> >  6 files changed, 51 insertions(+), 32 deletions(-)
+> >
+> > diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/=
+pgtable.h
+> > index b19a8aee684c..d8f523dc41e7 100644
+> > --- a/arch/arm64/include/asm/pgtable.h
+> > +++ b/arch/arm64/include/asm/pgtable.h
+> > @@ -45,12 +45,6 @@
+> >       __flush_tlb_range(vma, addr, end, PUD_SIZE, false, 1)
+> >  #endif /* CONFIG_TRANSPARENT_HUGEPAGE */
+> >
+> > -static inline bool arch_thp_swp_supported(void)
+> > -{
+> > -     return !system_supports_mte();
+> > -}
+> > -#define arch_thp_swp_supported arch_thp_swp_supported
+> > -
+> >  /*
+> >   * Outside of a few very special situations (e.g. hibernation), we alw=
+ays
+> >   * use broadcast TLB invalidation instructions, therefore a spurious p=
+age
+> > @@ -1036,12 +1030,8 @@ static inline pmd_t pmdp_establish(struct vm_are=
+a_struct *vma,
+> >  #ifdef CONFIG_ARM64_MTE
+> >
+> >  #define __HAVE_ARCH_PREPARE_TO_SWAP
+> > -static inline int arch_prepare_to_swap(struct page *page)
+> > -{
+> > -     if (system_supports_mte())
+> > -             return mte_save_tags(page);
+> > -     return 0;
+> > -}
+> > +#define arch_prepare_to_swap arch_prepare_to_swap
+> > +extern int arch_prepare_to_swap(struct folio *folio);
+> >
+> >  #define __HAVE_ARCH_SWAP_INVALIDATE
+> >  static inline void arch_swap_invalidate_page(int type, pgoff_t offset)
+> > @@ -1057,11 +1047,8 @@ static inline void arch_swap_invalidate_area(int=
+ type)
+> >  }
+> >
+> >  #define __HAVE_ARCH_SWAP_RESTORE
+> > -static inline void arch_swap_restore(swp_entry_t entry, struct folio *=
+folio)
+> > -{
+> > -     if (system_supports_mte())
+> > -             mte_restore_tags(entry, &folio->page);
+> > -}
+> > +#define arch_swap_restore arch_swap_restore
+> > +extern void arch_swap_restore(swp_entry_t entry, struct folio *folio);
+> >
+> >  #endif /* CONFIG_ARM64_MTE */
+> >
+> > diff --git a/arch/arm64/mm/mteswap.c b/arch/arm64/mm/mteswap.c
+> > index a31833e3ddc5..14a479e4ea8e 100644
+> > --- a/arch/arm64/mm/mteswap.c
+> > +++ b/arch/arm64/mm/mteswap.c
+> > @@ -68,6 +68,12 @@ void mte_invalidate_tags(int type, pgoff_t offset)
+> >       mte_free_tag_storage(tags);
+> >  }
+> >
+> > +static inline void __mte_invalidate_tags(struct page *page)
+> > +{
+> > +     swp_entry_t entry =3D page_swap_entry(page);
+> > +     mte_invalidate_tags(swp_type(entry), swp_offset(entry));
+> > +}
+> > +
+> >  void mte_invalidate_tags_area(int type)
+> >  {
+> >       swp_entry_t entry =3D swp_entry(type, 0);
+> > @@ -83,3 +89,41 @@ void mte_invalidate_tags_area(int type)
+> >       }
+> >       xa_unlock(&mte_pages);
+> >  }
+> > +
+> > +int arch_prepare_to_swap(struct folio *folio)
+> > +{
+> > +     int err;
+> > +     long i;
+> > +
+> > +     if (system_supports_mte()) {
+> > +             long nr =3D folio_nr_pages(folio);
+> > +             for (i =3D 0; i < nr; i++) {
+> > +                     err =3D mte_save_tags(folio_page(folio, i));
+> > +                     if (err)
+> > +                             goto out;
+> > +             }
+> > +     }
+> > +     return 0;
+> > +
+> > +out:
+> > +     while (--i)
+> > +             __mte_invalidate_tags(folio_page(folio, i));
+> > +     return err;
+> > +}
+> > +
+> > +void arch_swap_restore(swp_entry_t entry, struct folio *folio)
+> > +{
+> > +     if (system_supports_mte()) {
+> > +             /*
+> > +              * We don't support large folios swap in as whole yet, bu=
+t
+> > +              * we can hit a large folio which is still in swapcache
+> > +              * after those related processes' PTEs have been unmapped
+> > +              * but before the swapcache folio  is dropped, in this ca=
+se,
+> > +              * we need to find the exact page which "entry" is mappin=
+g
+> > +              * to. If we are not hitting swapcache, this folio won't =
+be
+> > +              * large
+> > +              */
 >
-> One more consideration I guess is, because the server is throttled
-> till 0-laxity time, it is possible that if CFS sleeps even a bit
-> (after the DL-server is unthrottled), then it will be pushed out to a
-> full current deadline + period due to CBS. In such a situation,  if
-> CFS-server is the only DL task running, it might starve RT for a bit
-> more time.
+> Does it make sense to keep arch_swap_restore taking a folio? I'm not
+> sure I understand why the change was made in the first place. It just
+> seems odd to have a function taking a struct folio but making the
+> assumption that it's actually only a single page (and having to use
+> entry to figure out which page).
+
+Steve, let me give an example. in case we have a large anon folios with
+16 pages.
+
+while reclaiming, we do add_to_swap(), this folio is added to swapcache
+as a whole; then we unmap the folio; in the last step,  we try to release
+the folio.
+
+we have a good chance some processes might access the virtual address
+after the folio is unmapped but before the folio is finally released. thus,
+do_swap_page() will find the large folio in swapcache, there is no I/O need=
+ed.
+
+Let's assume processes read the 3rd page of the unmapped folio, in
+do_swap_page(), the code is like,
+
+vm_fault_t do_swap_page(struct vm_fault *vmf)
+{
+     swp_entry_t entry;
+     ...
+     entry =3D pte_to_swp_entry(vmf->orig_pte);
+
+     folio =3D swap_cache_get_folio(entry, vma, vmf->address);
+     if (folio)
+           page =3D folio_file_page(folio, swp_offset(entry));
+
+     arch_swap_restore(entry, folio);
+}
+
+entry points to the 3rd page, but folio points to the head page. so we
+can't use the entry parameter to restore the whole folio in
+arch_swap_restore()
+
+then we have two choices in arch_swap_restore()
+1. we get the 1st page's swap entry and restore all 16 tags in this large f=
+olio.
+2. we restore the 3rd tag only by getting the right page in the folio
+
+if we choose 1, in all 16 page faults of do_swap_page for the 16 unmapped
+PTEs, we will restore 16*16=3D256 tags. One pte will have one page fault
+since we don't restore 16 PTEs in do_swap_page().
+
+if we choose 2, in all 16 pages fault of do_swap_page for the 16 unmapped
+PTEs, we will only restore 16 *1=3D16 tags.
+
 >
-> Example, say CFS runtime is 0.3s and period is 1s. At 0.7s, 0-laxity
-> timer fires. CFS runs for 0.29s, then sleeps for 0.005s and wakes up
-> at 0.295s (its remaining runtime is 0.01s at this point which is < the
-> "time till deadline" of 0.005s). Now the runtime of the CFS-server
-> will be replenished to the full 3s (due to CBS) and the deadline
-> pushed out. The end result is the total runtime that the CFS-server
-> actually gets is 0.0595s (though yes it did sleep for 5ms in between,
-> still that's tiny -- say if it briefly blocked on a kernel mutex).
+> It seems particularly broken in the case of unuse_pte() which calls
+> page_folio() to get the folio in the first place.
+>
+> Other than that it looks correct to me.
+>
+> Thanks,
+>
+> Steve
+>
+> > +             struct page *page =3D folio_file_page(folio, swp_offset(e=
+ntry));
+> > +             mte_restore_tags(entry, page);
+> > +     }
+> > +}
+> > diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
+> > index fa0350b0812a..f83fb8d5241e 100644
+> > --- a/include/linux/huge_mm.h
+> > +++ b/include/linux/huge_mm.h
+> > @@ -400,16 +400,4 @@ static inline int split_folio(struct folio *folio)
+> >       return split_folio_to_list(folio, NULL);
+> >  }
+> >
+> > -/*
+> > - * archs that select ARCH_WANTS_THP_SWAP but don't support THP_SWP due=
+ to
+> > - * limitations in the implementation like arm64 MTE can override this =
+to
+> > - * false
+> > - */
+> > -#ifndef arch_thp_swp_supported
+> > -static inline bool arch_thp_swp_supported(void)
+> > -{
+> > -     return true;
+> > -}
+> > -#endif
+> > -
+> >  #endif /* _LINUX_HUGE_MM_H */
+> > diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
+> > index af7639c3b0a3..33ab4ddd91dd 100644
+> > --- a/include/linux/pgtable.h
+> > +++ b/include/linux/pgtable.h
+> > @@ -897,7 +897,7 @@ static inline int arch_unmap_one(struct mm_struct *=
+mm,
+> >   * prototypes must be defined in the arch-specific asm/pgtable.h file.
+> >   */
+> >  #ifndef __HAVE_ARCH_PREPARE_TO_SWAP
+> > -static inline int arch_prepare_to_swap(struct page *page)
+> > +static inline int arch_prepare_to_swap(struct folio *folio)
+> >  {
+> >       return 0;
+> >  }
+> > diff --git a/mm/page_io.c b/mm/page_io.c
+> > index cb559ae324c6..0fd832474c1d 100644
+> > --- a/mm/page_io.c
+> > +++ b/mm/page_io.c
+> > @@ -189,7 +189,7 @@ int swap_writepage(struct page *page, struct writeb=
+ack_control *wbc)
+> >        * Arch code may have to preserve more data than just the page
+> >        * contents, e.g. memory tags.
+> >        */
+> > -     ret =3D arch_prepare_to_swap(&folio->page);
+> > +     ret =3D arch_prepare_to_swap(folio);
+> >       if (ret) {
+> >               folio_mark_dirty(folio);
+> >               folio_unlock(folio);
+> > diff --git a/mm/swap_slots.c b/mm/swap_slots.c
+> > index 0bec1f705f8e..2325adbb1f19 100644
+> > --- a/mm/swap_slots.c
+> > +++ b/mm/swap_slots.c
+> > @@ -307,7 +307,7 @@ swp_entry_t folio_alloc_swap(struct folio *folio)
+> >       entry.val =3D 0;
+> >
+> >       if (folio_test_large(folio)) {
+> > -             if (IS_ENABLED(CONFIG_THP_SWAP) && arch_thp_swp_supported=
+())
+> > +             if (IS_ENABLED(CONFIG_THP_SWAP))
+> >                       get_swap_pages(1, &entry, folio_nr_pages(folio));
+> >               goto out;
+> >       }
+>
 
-Blah, I got lost in decimal points. Here's the example again:
-
-Say CFS-server runtime is 0.3s and period is 1s.
-
-At 0.7s, 0-laxity timer fires. CFS runs for 0.29s, then sleeps for
-0.005s and wakes up at 0.295s (its remaining runtime is 0.01s at this
-point which is < the "time till deadline" of 0.005s)
-
-Now the runtime of the CFS-server will be replenished to the full 0.3s
-(due to CBS) and the deadline
-pushed out.
-
-The end result is, the total runtime that the CFS-server actually gets
-is 0.595s (though yes it did sleep for 5ms in between, still that's
-tiny -- say if it briefly blocked on a kernel mutex). That's almost
-double the allocated runtime.
-
-This is just theoretical and I have yet to see if it is actually an
-issue in practice.
-
-Thanks.
+Thanks
+Barry
