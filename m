@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 15B587E2283
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 13:56:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD0F37E2286
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 13:57:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231700AbjKFM46 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 07:56:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56296 "EHLO
+        id S229689AbjKFM5J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 07:57:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230514AbjKFM45 (ORCPT
+        with ESMTP id S231704AbjKFM5I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 07:56:57 -0500
+        Mon, 6 Nov 2023 07:57:08 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA497A9;
-        Mon,  6 Nov 2023 04:56:53 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E51F0C433CA;
-        Mon,  6 Nov 2023 12:56:52 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F22AB8;
+        Mon,  6 Nov 2023 04:57:05 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C9388C433C7;
+        Mon,  6 Nov 2023 12:57:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1699275413;
-        bh=RovK8HQK7N44J2KsgwsMa0xpeZZiEG8V4eFEcPd221s=;
+        s=korg; t=1699275425;
+        bh=91XMDEaz+kg1KIfgTuYeEQd868vbHqKOBc+0GMghNjU=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=2qcj/PjkGVdh1W0Z3qTCvT3G/x7/VbhsxzKo8YosgdddchlTWctYh+LOpQILWXPGo
-         lVxTJIKnA1BaVHHRb2QAOeaLmzBBNBQjN6fW9TuEXaPU0XP6NT+Frq4fe00HmzNtO6
-         wHSgXu7hA6XBItEFcf9jFLjdB5llWP0Ewxp5lbck=
-Date:   Mon, 6 Nov 2023 13:56:50 +0100
+        b=UC/qHwhCjj/GJSxAM1U/h1CtMYMg5SBK92CjxGCOk9iV2g/qluAsrPX6+xFkFhQFg
+         VbSlddBIP4KBRJBPn2QroY5rUgVYFEXIZULT3/05xshggwTWTb+mSlWnmqewBXJ+jr
+         t5L8jjNNjVPlr7Qy7NgdaiT+t6Vtjbgbfia0P6ow=
+Date:   Mon, 6 Nov 2023 13:57:02 +0100
 From:   Greg KH <gregkh@linuxfoundation.org>
 To:     Florian Eckert <fe@dev.tdt.de>
 Cc:     Eckert.Florian@googlemail.com, jirislaby@kernel.org, pavel@ucw.cz,
@@ -33,7 +33,7 @@ Cc:     Eckert.Florian@googlemail.com, jirislaby@kernel.org, pavel@ucw.cz,
         linux-serial@vger.kernel.org, linux-leds@vger.kernel.org
 Subject: Re: [Patch v7 2/6] leds: ledtrig-tty: free allocated ttyname buffer
  on deactivate
-Message-ID: <2023110629-scenic-rounding-905f@gregkh>
+Message-ID: <2023110653-deceptive-camisole-0d2d@gregkh>
 References: <20231106123415.3365732-1-fe@dev.tdt.de>
  <20231106123415.3365732-3-fe@dev.tdt.de>
 MIME-Version: 1.0
@@ -83,9 +83,32 @@ On Mon, Nov 06, 2023 at 01:34:11PM +0100, Florian Eckert wrote:
 > 2.30.2
 > 
 
-This should be sent independent of your new changes please, as it is a
-bugfix for all kernels.
+Hi,
+
+This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
+a patch that has triggered this response.  He used to manually respond
+to these common problems, but in order to save his sanity (he kept
+writing the same thing over and over, yet to different people), I was
+created.  Hopefully you will not take offence and will fix the problem
+in your patch and resubmit it so that it can be accepted into the Linux
+kernel tree.
+
+You are receiving this message because of the following common error(s)
+as indicated below:
+
+- You have marked a patch with a "Fixes:" tag for a commit that is in an
+  older released kernel, yet you do not have a cc: stable line in the
+  signed-off-by area at all, which means that the patch will not be
+  applied to any older kernel releases.  To properly fix this, please
+  follow the documented rules in the
+  Documentation/process/stable-kernel-rules.rst file for how to resolve
+  this.
+
+If you wish to discuss this problem further, or you have questions about
+how to resolve this issue, please feel free to respond to this email and
+Greg will reply once he has dug out from the pending patches received
+from other developers.
 
 thanks,
 
-greg k-h
+greg k-h's patch email bot
