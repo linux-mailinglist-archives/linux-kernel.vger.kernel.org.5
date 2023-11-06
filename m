@@ -2,73 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D8BA7E2E2A
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 21:27:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C001F7E2E24
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 21:26:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232985AbjKFU1c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 15:27:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34322 "EHLO
+        id S232618AbjKFU0R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 15:26:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232955AbjKFU1a (ORCPT
+        with ESMTP id S231801AbjKFU0O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 15:27:30 -0500
-Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31D4AD71
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 12:27:27 -0800 (PST)
-Received: by mail-oi1-x22f.google.com with SMTP id 5614622812f47-3b2ea7cca04so3176153b6e.2
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 12:27:27 -0800 (PST)
+        Mon, 6 Nov 2023 15:26:14 -0500
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FF10D73
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 12:26:11 -0800 (PST)
+Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-9d2d8343dc4so730145366b.0
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 12:26:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1699302446; x=1699907246; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=google.com; s=20230601; t=1699302370; x=1699907170; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=lJlE6HDvd5TvSMidl1UF4V7GiD3TUKDPHWop4ycck10=;
-        b=j49zgON+ginlYUWH6XsufPn1jVyMvo600PjaME66lFJwZttshjNnmWiaBalYFNf7lJ
-         oCUAtI+CT/k3fWB2HZpTGlxvXzM4OsJPgN8n1/i3rI1840uyeu4DS8ly1pOtEgwKQ1FP
-         hgrnCnqEE67gt9q9F2D3nz7z+/PJJpAAVstOM=
+        bh=S5TYX6lEuKCahV5efuUP6jLDN7dIzcQfoIdtrIEy2yE=;
+        b=JWFOBx5LE6U+yKxQgaLz8qQhRYG7kQeSU2749JDJXc9bJuc+akMVtJoULQXgF5wdGI
+         qKAdCjLBemx+LLwIg4D2VWiaTpPnvvb5sQK/7b/MfX8w0fUfCno798BvYzp92czuMw0U
+         T89WUcQgIOiLeRSxo+NzNxb9QO8ibNdLU1HVacqiYBqyivQ+U77HMyZLWB6IOyIU01Gn
+         mtndT2vytrhuc+A7gPXmaKYW3izgOtLAK/nhfxsRxynr2tkMdKl/2tDolmmUNJ6+TxS3
+         n9T8zP/r0kWtrJTqfOG8yb7ZvehBS/E44pZ+cICaAJ6j4ZHaltZjBISsSMRbNqPlG2Fy
+         Y9mQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699302446; x=1699907246;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1699302370; x=1699907170;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=lJlE6HDvd5TvSMidl1UF4V7GiD3TUKDPHWop4ycck10=;
-        b=jvS5mvyXstBBy2yXm0QNpx8qS4LWJKXKE96/yUb2Adj+z4aUhi6eZXC0AkHll9YgOZ
-         BiSnj3VKfT4b2uy9aLB0hGeNvsiu2jPoZIVnPfMbxuUbq3UP2pj3XyWX5ed8edWCMfnT
-         CS9dM78qc+hhkUfQHXSXlgbi+H3VvBHll9TldQd71prJf2hbx+htt+ZF45L0oA5gQWZy
-         cwNn1h0QqFFDpNB5jkeHlKaYtcguYGGQm1DaoKrxoAJKcst4QIeOb7DplmFL1ENNcfn2
-         R0s1EiCar3zmJDLGedoLfAttO7g16D1xCgMX+vmiv9CqEyHnNCMJx8LZdDfxxSIabA+j
-         t84Q==
-X-Gm-Message-State: AOJu0YxNx5Zad9QxlTsp7STk754fSo3+1nwq3YOrf0Ea2z4jlBSodMlI
-        2eEBUXmW+C4Mezln5Aau+B2xpA==
-X-Google-Smtp-Source: AGHT+IHORZrZsA5dLANY/D81cJ/P7A/DV77m6AkT39LNl3opooSdqvw4XiSBztpduAKqkYdXSfyXgA==
-X-Received: by 2002:a05:6808:1b14:b0:3a7:2390:3583 with SMTP id bx20-20020a0568081b1400b003a723903583mr38346779oib.38.1699302446477;
-        Mon, 06 Nov 2023 12:27:26 -0800 (PST)
-Received: from hsinyi.sjc.corp.google.com ([2620:15c:9d:2:3374:ff6c:474e:a78])
-        by smtp.gmail.com with ESMTPSA id fj36-20020a056a003a2400b00689f5940061sm6144150pfb.17.2023.11.06.12.27.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Nov 2023 12:27:26 -0800 (PST)
-From:   Hsin-Yi Wang <hsinyi@chromium.org>
-To:     Douglas Anderson <dianders@chromium.org>
-Cc:     Neil Armstrong <neil.armstrong@linaro.org>,
-        Jessica Zhang <quic_jesszhan@quicinc.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 3/3] drm/panel-edp: Avoid adding multiple preferred modes
-Date:   Mon,  6 Nov 2023 12:22:50 -0800
-Message-ID: <20231106202718.2770821-4-hsinyi@chromium.org>
-X-Mailer: git-send-email 2.42.0.869.gea05f2083d-goog
-In-Reply-To: <20231106202718.2770821-1-hsinyi@chromium.org>
-References: <20231106202718.2770821-1-hsinyi@chromium.org>
+        bh=S5TYX6lEuKCahV5efuUP6jLDN7dIzcQfoIdtrIEy2yE=;
+        b=Bn4AmDJGp/ouqJv89mFCCSPFoqqwik+k5+Ul5k0Bow+n7MfVyYGeh6fO5wiFQShwY0
+         DGfm5ZD4TeEOc8soeyItLLkb+7MGuypM31F+PSMQs0enD6PvG/yuleUNhzGBgYx1FznN
+         t3ce+cK6LZF2Hi8BDEQENdLOjiUxA4VWx+K1LHc5nOkd4w1z5slzD/DdwJrQ2c7URHy9
+         8/uKQcYOb4gchdH/L3RWACFbJKCMY4Jh5hlMHbIFMcH9ClVAMVphaVYRObACGTPFIF2Q
+         g/tWSrq2aQjBVixi98M0lf0DEUonODr/R+fIChafJmRBoPHxJn7t03NhiQEqwanTq74S
+         GJFA==
+X-Gm-Message-State: AOJu0YzbD6FAsr1YS1EABU22dAiVzvDDOKw1enW4Ss6TR0zbP0JUiP5T
+        IyQkjDZOS1LRnjJyRnHu4r/XgcdaGGnuqT6Kh7jU3Q==
+X-Google-Smtp-Source: AGHT+IE/P/U+nspRnmXie0ihSzjkMxQma5uYY9b94Sf1X7ObMkz1sGnPPXsA59befGpud1esC1lLX+/xCb8XugZ3QVg=
+X-Received: by 2002:a17:907:26c9:b0:9e0:dcf:17d5 with SMTP id
+ bp9-20020a17090726c900b009e00dcf17d5mr3945353ejc.43.1699302369549; Mon, 06
+ Nov 2023 12:26:09 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+References: <20231106183159.3562879-1-nphamcs@gmail.com> <20231106183159.3562879-4-nphamcs@gmail.com>
+In-Reply-To: <20231106183159.3562879-4-nphamcs@gmail.com>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Mon, 6 Nov 2023 12:25:33 -0800
+Message-ID: <CAJD7tkYcEc03d+6kwkXu8M_fd9ZDzh6B5G+VjmFXx+H09mhfmg@mail.gmail.com>
+Subject: Re: [PATCH v5 3/6] zswap: make shrinking memcg-aware
+To:     Nhat Pham <nphamcs@gmail.com>
+Cc:     akpm@linux-foundation.org, hannes@cmpxchg.org,
+        cerasuolodomenico@gmail.com, sjenning@redhat.com,
+        ddstreet@ieee.org, vitaly.wool@konsulko.com, mhocko@kernel.org,
+        roman.gushchin@linux.dev, shakeelb@google.com,
+        muchun.song@linux.dev, chrisl@kernel.org, linux-mm@kvack.org,
+        kernel-team@meta.com, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, shuah@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,62 +76,212 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If a non generic edp-panel is under aux-bus, the mode read from edid would
-still be selected as preferred and results in multiple preferred modes,
-which is ambiguous.
+On Mon, Nov 6, 2023 at 10:32=E2=80=AFAM Nhat Pham <nphamcs@gmail.com> wrote=
+:
+>
+> From: Domenico Cerasuolo <cerasuolodomenico@gmail.com>
+>
+> Currently, we only have a single global LRU for zswap. This makes it
+> impossible to perform worload-specific shrinking - an memcg cannot
+> determine which pages in the pool it owns, and often ends up writing
+> pages from other memcgs. This issue has been previously observed in
+> practice and mitigated by simply disabling memcg-initiated shrinking:
+>
+> https://lore.kernel.org/all/20230530232435.3097106-1-nphamcs@gmail.com/T/=
+#u
+>
+> This patch fully resolves the issue by replacing the global zswap LRU
+> with memcg- and NUMA-specific LRUs, and modify the reclaim logic:
+>
+> a) When a store attempt hits an memcg limit, it now triggers a
+>    synchronous reclaim attempt that, if successful, allows the new
+>    hotter page to be accepted by zswap.
+> b) If the store attempt instead hits the global zswap limit, it will
+>    trigger an asynchronous reclaim attempt, in which an memcg is
+>    selected for reclaim in a round-robin-like fashion.
+>
+> Signed-off-by: Domenico Cerasuolo <cerasuolodomenico@gmail.com>
+> Co-developed-by: Nhat Pham <nphamcs@gmail.com>
+> Signed-off-by: Nhat Pham <nphamcs@gmail.com>
+> ---
+>  include/linux/memcontrol.h |   5 +
+>  include/linux/zswap.h      |   2 +
+>  mm/memcontrol.c            |   2 +
+>  mm/swap.h                  |   3 +-
+>  mm/swap_state.c            |  24 +++-
+>  mm/zswap.c                 | 252 +++++++++++++++++++++++++++++--------
+>  6 files changed, 227 insertions(+), 61 deletions(-)
+>
+> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> index 55c85f952afd..95f6c9e60ed1 100644
+> --- a/include/linux/memcontrol.h
+> +++ b/include/linux/memcontrol.h
+> @@ -1187,6 +1187,11 @@ static inline struct mem_cgroup *page_memcg_check(=
+struct page *page)
+>         return NULL;
+>  }
+>
+> +static inline struct mem_cgroup *get_mem_cgroup_from_objcg(struct obj_cg=
+roup *objcg)
+> +{
+> +       return NULL;
+> +}
+> +
+>  static inline bool folio_memcg_kmem(struct folio *folio)
+>  {
+>         return false;
+> diff --git a/include/linux/zswap.h b/include/linux/zswap.h
+> index 2a60ce39cfde..e571e393669b 100644
+> --- a/include/linux/zswap.h
+> +++ b/include/linux/zswap.h
+> @@ -15,6 +15,7 @@ bool zswap_load(struct folio *folio);
+>  void zswap_invalidate(int type, pgoff_t offset);
+>  void zswap_swapon(int type);
+>  void zswap_swapoff(int type);
+> +void zswap_memcg_offline_cleanup(struct mem_cgroup *memcg);
+>
+>  #else
+>
+> @@ -31,6 +32,7 @@ static inline bool zswap_load(struct folio *folio)
+>  static inline void zswap_invalidate(int type, pgoff_t offset) {}
+>  static inline void zswap_swapon(int type) {}
+>  static inline void zswap_swapoff(int type) {}
+> +static inline void zswap_memcg_offline_cleanup(struct mem_cgroup *memcg)=
+ {}
+>
+>  #endif
+>
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 6f7fc0101252..2ef49b471a16 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -5640,6 +5640,8 @@ static void mem_cgroup_css_offline(struct cgroup_su=
+bsys_state *css)
+>         page_counter_set_min(&memcg->memory, 0);
+>         page_counter_set_low(&memcg->memory, 0);
+>
+> +       zswap_memcg_offline_cleanup(memcg);
 
-If both hard-coded mode and edid exists, only add mode from hard-coded.
+I think the "_cleanup" suffix is unnecessary. I guess most calls made
+here are cleanup calls anyway.
 
-Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
----
-v2->v3: if hard-coded mode presents, don't add edid mode.
----
- drivers/gpu/drm/panel/panel-edp.c | 25 +++++++++++++++----------
- 1 file changed, 15 insertions(+), 10 deletions(-)
+> +
+>         memcg_offline_kmem(memcg);
+>         reparent_shrinker_deferred(memcg);
+>         wb_memcg_offline(memcg);
+> diff --git a/mm/swap.h b/mm/swap.h
+> index 73c332ee4d91..c0dc73e10e91 100644
+> --- a/mm/swap.h
+> +++ b/mm/swap.h
 
-diff --git a/drivers/gpu/drm/panel/panel-edp.c b/drivers/gpu/drm/panel/panel-edp.c
-index 0fb439b5efb1..54dbbdf62ec0 100644
---- a/drivers/gpu/drm/panel/panel-edp.c
-+++ b/drivers/gpu/drm/panel/panel-edp.c
-@@ -594,8 +594,20 @@ static int panel_edp_get_modes(struct drm_panel *panel,
- 				      p->detected_panel != ERR_PTR(-EINVAL) &&
- 				      p->detected_panel->override_edid_mode;
- 
--	/* probe EDID if a DDC bus is available */
--	if (p->ddc) {
-+	/*
-+	 * If both edid and hard-coded modes exists, only add hard-coded modes
-+	 * to avoid multiple preferred modes.
-+	 */
-+	if (p->desc->num_timings || p->desc->num_modes) {
-+		/*
-+		 * Add hard-coded panel modes. Don't call this if there are no
-+		 * timings and no modes (the generic edp-panel case) because it
-+		 * will clobber the display_info that was already set by
-+		 * drm_add_edid_modes().
-+		 */
-+		num += panel_edp_get_non_edid_modes(p, connector);
-+	} else if (p->ddc) {
-+		/* probe EDID if a DDC bus is available */
- 		pm_runtime_get_sync(panel->dev);
- 
- 		if (!p->edid)
-@@ -617,14 +629,7 @@ static int panel_edp_get_modes(struct drm_panel *panel,
- 		pm_runtime_put_autosuspend(panel->dev);
- 	}
- 
--	/*
--	 * Add hard-coded panel modes. Don't call this if there are no timings
--	 * and no modes (the generic edp-panel case) because it will clobber
--	 * the display_info that was already set by drm_add_edid_modes().
--	 */
--	if (p->desc->num_timings || p->desc->num_modes)
--		num += panel_edp_get_non_edid_modes(p, connector);
--	else if (!num)
-+	if (!num)
- 		dev_warn(p->base.dev, "No display modes\n");
- 
- 	/*
--- 
-2.42.0.869.gea05f2083d-goog
+> @@ -289,15 +291,42 @@ static void zswap_update_total_size(void)
+>         zswap_pool_total_size =3D total;
+>  }
+>
+> +/* should be called under RCU */
+> +static inline struct mem_cgroup *get_mem_cgroup_from_entry(struct zswap_=
+entry *entry)
 
+Do not use "get" in the name if we are not actually taking a ref here.
+mem_cgroup_from_entry()?
+
+> +{
+> +       return entry->objcg ? obj_cgroup_memcg(entry->objcg) : NULL;
+> +}
+> +
+> +static inline int entry_to_nid(struct zswap_entry *entry)
+> +{
+> +       return page_to_nid(virt_to_page(entry));
+> +}
+> +
+> +void zswap_memcg_offline_cleanup(struct mem_cgroup *memcg)
+> +{
+> +       struct zswap_pool *pool;
+> +
+> +       /* lock out zswap pools list modification */
+> +       spin_lock(&zswap_pools_lock);
+> +       list_for_each_entry(pool, &zswap_pools, list) {
+> +               spin_lock(&pool->next_shrink_lock);
+
+This lock is only needed to synchronize updating pool->next_shrink,
+right? Can we just use atomic operations instead? (e.g. cmpxchg()).
+
+> +               if (pool->next_shrink =3D=3D memcg)
+> +                       pool->next_shrink =3D
+> +                               mem_cgroup_iter(NULL, pool->next_shrink, =
+NULL, true);
+> +               spin_unlock(&pool->next_shrink_lock);
+> +       }
+> +       spin_unlock(&zswap_pools_lock);
+> +}
+> +
+>  /*********************************
+>  * zswap entry functions
+>  **********************************/
+>  static struct kmem_cache *zswap_entry_cache;
+>
+> -static struct zswap_entry *zswap_entry_cache_alloc(gfp_t gfp)
+> +static struct zswap_entry *zswap_entry_cache_alloc(gfp_t gfp, int nid)
+>  {
+>         struct zswap_entry *entry;
+> -       entry =3D kmem_cache_alloc(zswap_entry_cache, gfp);
+> +       entry =3D kmem_cache_alloc_node(zswap_entry_cache, gfp, nid);
+>         if (!entry)
+>                 return NULL;
+>         entry->refcount =3D 1;
+[..]
+> @@ -1233,15 +1369,15 @@ bool zswap_store(struct folio *folio)
+>                 zswap_invalidate_entry(tree, dupentry);
+>         }
+>         spin_unlock(&tree->lock);
+> -
+> -       /*
+> -        * XXX: zswap reclaim does not work with cgroups yet. Without a
+> -        * cgroup-aware entry LRU, we will push out entries system-wide b=
+ased on
+> -        * local cgroup limits.
+> -        */
+>         objcg =3D get_obj_cgroup_from_folio(folio);
+> -       if (objcg && !obj_cgroup_may_zswap(objcg))
+> -               goto reject;
+> +       if (objcg && !obj_cgroup_may_zswap(objcg)) {
+> +               memcg =3D get_mem_cgroup_from_objcg(objcg);
+> +               if (shrink_memcg(memcg)) {
+> +                       mem_cgroup_put(memcg);
+> +                       goto reject;
+> +               }
+> +               mem_cgroup_put(memcg);
+
+Can we just use RCU here as well? (same around memcg_list_lru_alloc()
+call below).
+
+> +       }
+>
+>         /* reclaim space if needed */
+>         if (zswap_is_full()) {
+> @@ -1258,7 +1394,7 @@ bool zswap_store(struct folio *folio)
+>         }
+>
+>         /* allocate entry */
+> -       entry =3D zswap_entry_cache_alloc(GFP_KERNEL);
+> +       entry =3D zswap_entry_cache_alloc(GFP_KERNEL, page_to_nid(page));
+>         if (!entry) {
+>                 zswap_reject_kmemcache_fail++;
+>                 goto reject;
+> @@ -1285,6 +1421,15 @@ bool zswap_store(struct folio *folio)
+>         if (!entry->pool)
+>                 goto freepage;
+>
+> +       if (objcg) {
+> +               memcg =3D get_mem_cgroup_from_objcg(objcg);
+> +               if (memcg_list_lru_alloc(memcg, &entry->pool->list_lru, G=
+FP_KERNEL)) {
+> +                       mem_cgroup_put(memcg);
+> +                       goto put_pool;
+> +               }
+> +               mem_cgroup_put(memcg);
+> +       }
+> +
+>         /* compress */
+>         acomp_ctx =3D raw_cpu_ptr(entry->pool->acomp_ctx);
+>
