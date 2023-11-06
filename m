@@ -2,155 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D8FAB7E2F42
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 22:52:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DF027E2F5E
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 23:00:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233144AbjKFVw6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 16:52:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58286 "EHLO
+        id S233166AbjKFWAF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 17:00:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233201AbjKFVw5 (ORCPT
+        with ESMTP id S233005AbjKFWAD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 16:52:57 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66B0510C6
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 13:52:54 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C771FC433C8;
-        Mon,  6 Nov 2023 21:52:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699307574;
-        bh=PsotStaK9ZAaZtI+skUP3rL8VxWaOePc9RUMFsnrGS4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GJylrAxpy0sU4J8JhAemtAOyYhOTnWa2/iAUE2uovc3xI/eZpmi4pD0YZAcjvGiTt
-         5ClRpcsbZgJpDzH2RVPWe8ETq70HjvLBBZur/saSsxSiBjHRvBQ6SCUttOnpz1uKD+
-         NH2zkmeXusQPH8z+c4nUdNJ/h72XjBUdQZd3vk0StWadNwNnMjEN/yls2WldcDWDsX
-         tX7+SEWoqmQS4/jtDBkCKRnbU6mCbmTXsyqf5ezbApx9hHkNwBi8rtEOuEDbNyNeXd
-         UXI5LzpNKObwj7/4tyuGIVcgtfKEdxgV/LohsXcl0KRiv9fTa9IaZOVSxqYObkOESC
-         iv5DdmuOlkUCw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 269264035D; Mon,  6 Nov 2023 18:52:51 -0300 (-03)
-Date:   Mon, 6 Nov 2023 18:52:51 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Adrian Hunter <adrian.hunter@intel.com>
-Cc:     Leo Yan <leo.yan@linaro.org>, James Clark <james.clark@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        John Garry <john.g.garry@oracle.com>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>, coresight@lists.linaro.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 1/2] perf auxtrace: Add 'T' itrace option for
- timestamp trace
-Message-ID: <ZUlgM8pgf19UeyM9@kernel.org>
-References: <20231014074513.1668000-1-leo.yan@linaro.org>
- <20231014074513.1668000-2-leo.yan@linaro.org>
- <8a2ea58f-f835-4d1a-8bd6-3a63b3b0db94@intel.com>
+        Mon, 6 Nov 2023 17:00:03 -0500
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A9F811F
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 14:00:00 -0800 (PST)
+Received: by mail-lj1-x233.google.com with SMTP id 38308e7fff4ca-2c501bd6ff1so70519041fa.3
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 14:00:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1699307998; x=1699912798; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wNAdiaf7CFJFGR+XgzzaLNcE9ebdwuse14Opfb1nM5c=;
+        b=kcAAVMP10DTDI2ae70aEJp0Gd55mBciOjpjv+jBt1LqnCXGssXHFPj9tl0rG2yEP9K
+         Tt2LBd+nXhPfo6aFCxYNHDmWBw9i6fyNEdKJNM+kFUsrYWJy+GFVjxqMgtZFdvwQeZ+l
+         x1GlLVogdxV3J1kkE7NZ3klePV2SLioSXKhSk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699307998; x=1699912798;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=wNAdiaf7CFJFGR+XgzzaLNcE9ebdwuse14Opfb1nM5c=;
+        b=psrjpdvt1web1JblOem/0RijLQt6EczGk5/KeK0T3a/5d4ZNn/mdbXOPqxodoH85kA
+         flBp2ct+c0flAMVtoRR1tuUFugoNoLeN68JoIp3JM1ccsCTAhgF5p6dH8lJPCSDYobPA
+         PfSsSXb/wBJ+hQsr6tXywk5+u+eVq1fJ6EjubDe3kTFtW13iuP10SAFdNTnaB63PEnwc
+         cVluUBT9h3BuX9Lq7CSpSgxPs0kXrbqx4i3FZuYuc6s3+S9uxFMJHiLwU2XxtupV47D8
+         HSjhVC0bf1J9BMWI3U1vfDldEdTq76UGAwqASbAqB8tNpeTwv8XMupHkbvOjZ5aHFlxf
+         0hCQ==
+X-Gm-Message-State: AOJu0YzkuG1IDO1+oC9gtD1XLWezJc6iLrqzKcF4oEfmiKC6pOy3BUEN
+        Mv1WxeLrnC1ElS7T25m2hiYH8zOmLChM+qCXMfUUIUVb
+X-Google-Smtp-Source: AGHT+IFlWKrrZqaZ63jhXg+XryqO5vJAtq6AMh1DIb2lXdUfImgRobQThi+TJEt/wJO9nUa/zcqdhg==
+X-Received: by 2002:a05:6512:31d0:b0:508:1332:558a with SMTP id j16-20020a05651231d000b005081332558amr28782819lfe.2.1699307998470;
+        Mon, 06 Nov 2023 13:59:58 -0800 (PST)
+Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com. [209.85.167.52])
+        by smtp.gmail.com with ESMTPSA id i6-20020a196d06000000b00509495d8a3csm102963lfc.255.2023.11.06.13.59.58
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 06 Nov 2023 13:59:58 -0800 (PST)
+Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-507a5edc2ebso370e87.1
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 13:59:58 -0800 (PST)
+X-Received: by 2002:a05:600c:a005:b0:408:3727:92c5 with SMTP id
+ jg5-20020a05600ca00500b00408372792c5mr40609wmb.2.1699307595154; Mon, 06 Nov
+ 2023 13:53:15 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8a2ea58f-f835-4d1a-8bd6-3a63b3b0db94@intel.com>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231103163434.1.Ic7577567baff921347d423b722de8b857602efb1@changeid>
+ <CAE-0n50vtad5hkkAuV-hvsnm+tTevd_4OSr3iGofBa5L8A0RQw@mail.gmail.com>
+In-Reply-To: <CAE-0n50vtad5hkkAuV-hvsnm+tTevd_4OSr3iGofBa5L8A0RQw@mail.gmail.com>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Mon, 6 Nov 2023 13:52:58 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=UJE6VKrjFJ2g=4qRHLdnqymossWSAFeKyUykxm1sTCtQ@mail.gmail.com>
+Message-ID: <CAD=FV=UJE6VKrjFJ2g=4qRHLdnqymossWSAFeKyUykxm1sTCtQ@mail.gmail.com>
+Subject: Re: [PATCH 1/9] arm64: dts: qcom: sc7180: Make watchdog bark
+ interrupt edge triggered
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Bjorn Andersson <andersson@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        linux-watchdog@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Andy Gross <agross@kernel.org>,
+        "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
+        Kees Cook <keescook@chromium.org>,
+        Sai Prakash Ranjan <quic_saipraka@quicinc.com>,
+        Tony Luck <tony.luck@intel.com>,
+        cros-qcom-dts-watchers@chromium.org, devicetree@vger.kernel.org,
+        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, Oct 19, 2023 at 01:47:15PM +0300, Adrian Hunter escreveu:
-> On 14/10/23 10:45, Leo Yan wrote:
-> > An AUX trace can contain timestamp, but in some situations, the hardware
-> > trace module (e.g. Arm CoreSight) cannot decide the traced timestamp is
-> > the same source with CPU's time, thus the decoder can not use the
-> > timestamp trace for samples.
-> > 
-> > This patch introduces 'T' itrace option. If users know the platforms
-> 
-> "If users know" <- how would users know?  Could the kernel
-> or tools also figure it out?
+Hi,
 
-Adrian, I'm trying to go all the outstanding patches, do you still have
-any issues with this series?
+On Mon, Nov 6, 2023 at 1:49=E2=80=AFPM Stephen Boyd <swboyd@chromium.org> w=
+rote:
+>
+> Quoting Douglas Anderson (2023-11-03 16:34:27)
+> > On sc7180 when the watchdog timer fires your logs get filled with:
+> >   watchdog0: pretimeout event
+> >   watchdog0: pretimeout event
+> >   watchdog0: pretimeout event
+> >   ...
+> >   watchdog0: pretimeout event
+> >
+> > If you're using console-ramoops to debug crashes the above gets quite
+> > annoying since it blows away any other log messages that might have
+> > been there.
+> >
+> > The issue is that the "bark" interrupt (AKA the "pretimeout"
+> > interrupt) remains high until the watchdog is pet. Since we've got
+> > things configured as "level" triggered we'll keep getting interrupted
+> > over and over.
+> >
+> > Let's switch to edge triggered. Now we'll get one interrupt when the
+> > "bark" interrupt goes off we'll get one interrupt and won't get
+>
+> "We'll get one" twice?
 
-- Arnaldo
- 
-> > they are working on have the same time counter with CPUs, users can
-> > use this new option to tell a decoder for using timestamp trace as
-> > kernel time.
-> > 
-> > Signed-off-by: Leo Yan <leo.yan@linaro.org>
+I like to make like to make typos. If you hadn't hadn't noticed.
+
+I'll wait another few days and send a version with the typo fixed
+unless Bjorn tells me not to (because he didn't care and applied it
+anyway or because he fixed it himself while applying).
+
+
+> > another one until the "bark" interrupt is cleared and asserts again.
+> >
+> > This matches how many older Qualcomm SoCs have things configured.
+> >
+> > Fixes: 28cc13e4060c ("arm64: dts: qcom: sc7180: Add watchdog bark inter=
+rupt")
+> > Signed-off-by: Douglas Anderson <dianders@chromium.org>
 > > ---
-> >  tools/perf/Documentation/itrace.txt | 1 +
-> >  tools/perf/util/auxtrace.c          | 3 +++
-> >  tools/perf/util/auxtrace.h          | 3 +++
-> >  3 files changed, 7 insertions(+)
-> > 
-> > diff --git a/tools/perf/Documentation/itrace.txt b/tools/perf/Documentation/itrace.txt
-> > index a97f95825b14..19cc179be9a7 100644
-> > --- a/tools/perf/Documentation/itrace.txt
-> > +++ b/tools/perf/Documentation/itrace.txt
-> > @@ -25,6 +25,7 @@
-> >  		q	quicker (less detailed) decoding
-> >  		A	approximate IPC
-> >  		Z	prefer to ignore timestamps (so-called "timeless" decoding)
-> > +		T	use the timestamp trace as kernel time
-> >  
-> >  	The default is all events i.e. the same as --itrace=iybxwpe,
-> >  	except for perf script where it is --itrace=ce
-> > diff --git a/tools/perf/util/auxtrace.c b/tools/perf/util/auxtrace.c
-> > index a0368202a746..f528c4364d23 100644
-> > --- a/tools/perf/util/auxtrace.c
-> > +++ b/tools/perf/util/auxtrace.c
-> > @@ -1638,6 +1638,9 @@ int itrace_do_parse_synth_opts(struct itrace_synth_opts *synth_opts,
-> >  		case 'Z':
-> >  			synth_opts->timeless_decoding = true;
-> >  			break;
-> > +		case 'T':
-> > +			synth_opts->use_timestamp = true;
-> > +			break;
-> >  		case ' ':
-> >  		case ',':
-> >  			break;
-> > diff --git a/tools/perf/util/auxtrace.h b/tools/perf/util/auxtrace.h
-> > index 29eb82dff574..55702215a82d 100644
-> > --- a/tools/perf/util/auxtrace.h
-> > +++ b/tools/perf/util/auxtrace.h
-> > @@ -99,6 +99,7 @@ enum itrace_period_type {
-> >   * @remote_access: whether to synthesize remote access events
-> >   * @mem: whether to synthesize memory events
-> >   * @timeless_decoding: prefer "timeless" decoding i.e. ignore timestamps
-> > + * @use_timestamp: use the timestamp trace as kernel time
-> >   * @vm_time_correlation: perform VM Time Correlation
-> >   * @vm_tm_corr_dry_run: VM Time Correlation dry-run
-> >   * @vm_tm_corr_args:  VM Time Correlation implementation-specific arguments
-> > @@ -146,6 +147,7 @@ struct itrace_synth_opts {
-> >  	bool			remote_access;
-> >  	bool			mem;
-> >  	bool			timeless_decoding;
-> > +	bool			use_timestamp;
-> >  	bool			vm_time_correlation;
-> >  	bool			vm_tm_corr_dry_run;
-> >  	char			*vm_tm_corr_args;
-> > @@ -678,6 +680,7 @@ bool auxtrace__evsel_is_auxtrace(struct perf_session *session,
-> >  "				q:			quicker (less detailed) decoding\n" \
-> >  "				A:			approximate IPC\n" \
-> >  "				Z:			prefer to ignore timestamps (so-called \"timeless\" decoding)\n" \
-> > +"				T:			use the timestamp trace as kernel time\n" \
-> >  "				PERIOD[ns|us|ms|i|t]:   specify period to sample stream\n" \
-> >  "				concatenate multiple options. Default is iybxwpe or cewp\n"
-> >  
-> 
+>
+> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
 
--- 
+Thanks!
 
-- Arnaldo
+-Doug
