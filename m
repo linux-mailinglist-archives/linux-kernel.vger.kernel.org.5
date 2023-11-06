@@ -2,186 +2,311 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C299B7E3166
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 00:28:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BA757E316C
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 00:29:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234024AbjKFX20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 18:28:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48324 "EHLO
+        id S233241AbjKFX3N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 18:29:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233957AbjKFX2L (ORCPT
+        with ESMTP id S234318AbjKFX3A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 18:28:11 -0500
-Received: from mail-oa1-f77.google.com (mail-oa1-f77.google.com [209.85.160.77])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A79747BC
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 15:25:23 -0800 (PST)
-Received: by mail-oa1-f77.google.com with SMTP id 586e51a60fabf-1e9a324c12fso7049373fac.2
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 15:25:22 -0800 (PST)
+        Mon, 6 Nov 2023 18:29:00 -0500
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DF7610FE
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 15:27:54 -0800 (PST)
+Received: by mail-oi1-x234.google.com with SMTP id 5614622812f47-3b2ea7cc821so3261555b6e.1
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 15:27:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1699313273; x=1699918073; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=oyBgh+zEqvzqf0dBlal8b/uizmWNW97SzNAlzA3P/rc=;
+        b=UFRTSsVAyYiaVbAINwh+/3wkFktr6RU2IJ1X7RIgHR/BNCK0lcZASdQOVK7tlQnzwg
+         cuRbcwTGKK4IRRPvvRkP6ehcaY9xTGEZb8xatSO3f196uRkxbT/mDNkKiiJ3pLwBIaFE
+         YDRCf56uJPbuSFCLjJA+IZX91h9f3bWdGorCuwq7isVDyiCggo7BFrgz3tG93c2pvyiZ
+         baUniTye6YI+6Ht6oeBOWSvZcJebII2XWrV3lUmI6bI5pT6MiXTRWeGb1SWwFhJFq+4H
+         7ml00SLW+XQ58TjfyYCDJgkWiJg8QFOVcSH56b4AoLSs+xR/rfNh1ta1LC81ql9/My43
+         cxAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699313122; x=1699917922;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4tIuCoytmVadRySr33DQZ5/TwXBcyTI+qOt/uxCcdew=;
-        b=Htjymna6mDkQQGMjvGLPdFxJTE+eLAADl+NZCp8y9N3NSkM7Gtvn70OWvs/z1OQl+V
-         2G2Scn8sANFHyfcG2qTk0nj6EVb+8+7xSijjzHtbVdv0u+CvC56kdbkEib5dhM8Pw4J1
-         CL+ElxWxt+uu2HphzvplAbx69+0iBOywAwLKGcxEh7lWrqS0lE92I3hwLru1Amb4Yxju
-         U7Vcx9gb8+3J/rtft8ITQrwW7m1N5x9CEQzMBG52h23A7+VyarlX63eGoP9k1QlbC+xy
-         iXIJymNSncENHz9ci2hfVEjdoeBn2LL8iW8jaMPsFSh+gMGjyJXdbV1uWds36faKCPXb
-         k9MQ==
-X-Gm-Message-State: AOJu0YyOdKyEKh7E51DsHQRwZGbQjBAA6L/A/2bA6FSqDf4kvVvymwZH
-        Q3wNhVeZbH0rcTbfLAMW2a2BKMFMqkJLaAyEGGlyBxYRpotk
-X-Google-Smtp-Source: AGHT+IGZnbMG2wIjxKhbru5Ov2b3CCz3h1LseB0sEh5MBxu3ykMqYgKg6klDliWZX6650SH3AnLqNCoNgwsFj+QnIVQ6y8i/RZKz
+        d=1e100.net; s=20230601; t=1699313273; x=1699918073;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=oyBgh+zEqvzqf0dBlal8b/uizmWNW97SzNAlzA3P/rc=;
+        b=IVp8B72de82TSJIwEhKITf0wr3hi4UiHZ0ElkKlRhN7G8ApDJMC7hy7hEhtx1SwlB0
+         m8xPtF/b86E0depV0jdzhYVwH4PL9SV+aiL2WKXewCMASR2a8ve8Jfj6NEhQtgNeQr7V
+         VNRFphx+JMJ+/QCzqhtYAoLSmgOqvdu8BV5E3sdZ1G7DLhr7aZc1QDhruWqSK5UQJLki
+         C0y/58v5cxTKfKiY7mTYggCelN/4c8BfcAiGYRAihRahNK/iuY0uJR+e1FFUS0XNUetK
+         bEWzcY7aotxsYUU8bBgmMgPKRnFFzt1nLAx4x8X3l2/R8PLDHh0gWYOkDKYqUzw1Vebj
+         iWuA==
+X-Gm-Message-State: AOJu0YzRYYcT9o7SN4SYuxef/ei9Pg/w9R+zQvD7XZufApVBbCLacIh/
+        oMxVGP9ZGye9jryM7UBHfjhG2XXt9of8NnNNJvh0yw==
+X-Google-Smtp-Source: AGHT+IG59kPBd3u1YDLzyUJBeB7FlEZKtBj0ageMZxiI9VbXckY1biWa86oVt9rMTTU8zWrU/TgHQTYgQyBEzAjUIkY=
+X-Received: by 2002:a05:6808:150d:b0:3b5:75d5:696d with SMTP id
+ u13-20020a056808150d00b003b575d5696dmr20309651oiw.44.1699313273312; Mon, 06
+ Nov 2023 15:27:53 -0800 (PST)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6871:5d4:b0:1e9:9dda:12d with SMTP id
- v20-20020a05687105d400b001e99dda012dmr519982oan.2.1699313122401; Mon, 06 Nov
- 2023 15:25:22 -0800 (PST)
-Date:   Mon, 06 Nov 2023 15:25:22 -0800
-In-Reply-To: <0000000000002a4da90603a5cbbf@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000005e40d0609842b6d@google.com>
-Subject: Re: [syzbot] [dri?] kernel BUG in vmf_insert_pfn_prot (2)
-From:   syzbot <syzbot+398e17b61dab22cc56bc@syzkaller.appspotmail.com>
-To:     airlied@gmail.com, christian.koenig@amd.com, daniel@ffwll.ch,
-        dri-devel@lists.freedesktop.org, hdanton@sina.com,
-        linaro-mm-sig-bounces@lists.linaro.org,
-        linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, maarten.lankhorst@linux.intel.com,
-        mripard@kernel.org, sumit.semwal@linaro.org,
-        syzkaller-bugs@googlegroups.com, tzimmermann@suse.de
+References: <20231106024413.2801438-1-almasrymina@google.com>
+ <20231106024413.2801438-10-almasrymina@google.com> <ZUk03DhWxV-bOFJL@google.com>
+ <19129763-6f74-4b04-8a5f-441255b76d34@kernel.org> <CAHS8izMrnVUfbbS=OcJ6JT9SZRRfZ2MC7UnggthpZT=zf2BGLA@mail.gmail.com>
+ <ZUlhu4hlTaqR3CTh@google.com> <CAHS8izMaAhoae5ChnzO4gny1cYYnqV1cB8MC2cAF3eoyt+Sf4A@mail.gmail.com>
+ <ZUlvzm24SA3YjirV@google.com>
+In-Reply-To: <ZUlvzm24SA3YjirV@google.com>
+From:   Mina Almasry <almasrymina@google.com>
+Date:   Mon, 6 Nov 2023 15:27:40 -0800
+Message-ID: <CAHS8izMQ5Um_ScY0VgAjaEaT-hRh4tFoTgc6Xr9Tj5rEj0fijA@mail.gmail.com>
+Subject: Re: [RFC PATCH v3 09/12] net: add support for skbs with unreadable frags
+To:     Stanislav Fomichev <sdf@google.com>
+Cc:     David Ahern <dsahern@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Jeroen de Borst <jeroendb@google.com>,
+        Praveen Kaligineedi <pkaligineedi@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Kaiyuan Zhang <kaiyuanz@google.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+On Mon, Nov 6, 2023 at 2:59=E2=80=AFPM Stanislav Fomichev <sdf@google.com> =
+wrote:
+>
+> On 11/06, Mina Almasry wrote:
+> > On Mon, Nov 6, 2023 at 1:59=E2=80=AFPM Stanislav Fomichev <sdf@google.c=
+om> wrote:
+> > >
+> > > On 11/06, Mina Almasry wrote:
+> > > > On Mon, Nov 6, 2023 at 11:34=E2=80=AFAM David Ahern <dsahern@kernel=
+.org> wrote:
+> > > > >
+> > > > > On 11/6/23 11:47 AM, Stanislav Fomichev wrote:
+> > > > > > On 11/05, Mina Almasry wrote:
+> > > > > >> For device memory TCP, we expect the skb headers to be availab=
+le in host
+> > > > > >> memory for access, and we expect the skb frags to be in device=
+ memory
+> > > > > >> and unaccessible to the host. We expect there to be no mixing =
+and
+> > > > > >> matching of device memory frags (unaccessible) with host memor=
+y frags
+> > > > > >> (accessible) in the same skb.
+> > > > > >>
+> > > > > >> Add a skb->devmem flag which indicates whether the frags in th=
+is skb
+> > > > > >> are device memory frags or not.
+> > > > > >>
+> > > > > >> __skb_fill_page_desc() now checks frags added to skbs for page=
+_pool_iovs,
+> > > > > >> and marks the skb as skb->devmem accordingly.
+> > > > > >>
+> > > > > >> Add checks through the network stack to avoid accessing the fr=
+ags of
+> > > > > >> devmem skbs and avoid coalescing devmem skbs with non devmem s=
+kbs.
+> > > > > >>
+> > > > > >> Signed-off-by: Willem de Bruijn <willemb@google.com>
+> > > > > >> Signed-off-by: Kaiyuan Zhang <kaiyuanz@google.com>
+> > > > > >> Signed-off-by: Mina Almasry <almasrymina@google.com>
+> > > > > >>
+> > > > > >> ---
+> > > > > >>  include/linux/skbuff.h | 14 +++++++-
+> > > > > >>  include/net/tcp.h      |  5 +--
+> > > > > >>  net/core/datagram.c    |  6 ++++
+> > > > > >>  net/core/gro.c         |  5 ++-
+> > > > > >>  net/core/skbuff.c      | 77 +++++++++++++++++++++++++++++++++=
++++------
+> > > > > >>  net/ipv4/tcp.c         |  6 ++++
+> > > > > >>  net/ipv4/tcp_input.c   | 13 +++++--
+> > > > > >>  net/ipv4/tcp_output.c  |  5 ++-
+> > > > > >>  net/packet/af_packet.c |  4 +--
+> > > > > >>  9 files changed, 115 insertions(+), 20 deletions(-)
+> > > > > >>
+> > > > > >> diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
+> > > > > >> index 1fae276c1353..8fb468ff8115 100644
+> > > > > >> --- a/include/linux/skbuff.h
+> > > > > >> +++ b/include/linux/skbuff.h
+> > > > > >> @@ -805,6 +805,8 @@ typedef unsigned char *sk_buff_data_t;
+> > > > > >>   *  @csum_level: indicates the number of consecutive checksum=
+s found in
+> > > > > >>   *          the packet minus one that have been verified as
+> > > > > >>   *          CHECKSUM_UNNECESSARY (max 3)
+> > > > > >> + *  @devmem: indicates that all the fragments in this skb are=
+ backed by
+> > > > > >> + *          device memory.
+> > > > > >>   *  @dst_pending_confirm: need to confirm neighbour
+> > > > > >>   *  @decrypted: Decrypted SKB
+> > > > > >>   *  @slow_gro: state present at GRO time, slower prepare step=
+ required
+> > > > > >> @@ -991,7 +993,7 @@ struct sk_buff {
+> > > > > >>  #if IS_ENABLED(CONFIG_IP_SCTP)
+> > > > > >>      __u8                    csum_not_inet:1;
+> > > > > >>  #endif
+> > > > > >> -
+> > > > > >> +    __u8                    devmem:1;
+> > > > > >>  #if defined(CONFIG_NET_SCHED) || defined(CONFIG_NET_XGRESS)
+> > > > > >>      __u16                   tc_index;       /* traffic contro=
+l index */
+> > > > > >>  #endif
+> > > > > >> @@ -1766,6 +1768,12 @@ static inline void skb_zcopy_downgrade_=
+managed(struct sk_buff *skb)
+> > > > > >>              __skb_zcopy_downgrade_managed(skb);
+> > > > > >>  }
+> > > > > >>
+> > > > > >> +/* Return true if frags in this skb are not readable by the h=
+ost. */
+> > > > > >> +static inline bool skb_frags_not_readable(const struct sk_buf=
+f *skb)
+> > > > > >> +{
+> > > > > >> +    return skb->devmem;
+> > > > > >
+> > > > > > bikeshedding: should we also rename 'devmem' sk_buff flag to 'n=
+ot_readable'?
+> > > > > > It better communicates the fact that the stack shouldn't derefe=
+rence the
+> > > > > > frags (because it has 'devmem' fragments or for some other pote=
+ntial
+> > > > > > future reason).
+> > > > >
+> > > > > +1.
+> > > > >
+> > > > > Also, the flag on the skb is an optimization - a high level signa=
+l that
+> > > > > one or more frags is in unreadable memory. There is no requiremen=
+t that
+> > > > > all of the frags are in the same memory type.
+> > >
+> > > David: maybe there should be such a requirement (that they all are
+> > > unreadable)? Might be easier to support initially; we can relax later
+> > > on.
+> > >
+> >
+> > Currently devmem =3D=3D not_readable, and the restriction is that all t=
+he
+> > frags in the same skb must be either all readable or all unreadable
+> > (all devmem or all non-devmem).
+> >
+> > > > The flag indicates that the skb contains all devmem dma-buf memory
+> > > > specifically, not generic 'not_readable' frags as the comment says:
+> > > >
+> > > > + *     @devmem: indicates that all the fragments in this skb are b=
+acked by
+> > > > + *             device memory.
+> > > >
+> > > > The reason it's not a generic 'not_readable' flag is because handin=
+g
+> > > > off a generic not_readable skb to the userspace is semantically not
+> > > > what we're doing. recvmsg() is augmented in this patch series to
+> > > > return a devmem skb to the user via a cmsg_devmem struct which refe=
+rs
+> > > > specifically to the memory in the dma-buf. recvmsg() in this patch
+> > > > series is not augmented to give any 'not_readable' skb to the
+> > > > userspace.
+> > > >
+> > > > IMHO skb->devmem + an skb_frags_not_readable() as implemented is
+> > > > correct. If a new type of unreadable skbs are introduced to the sta=
+ck,
+> > > > I imagine the stack would implement:
+> > > >
+> > > > 1. new header flag: skb->newmem
+> > > > 2.
+> > > >
+> > > > static inline bool skb_frags_not_readable(const struct skb_buff *sk=
+b)
+> > > > {
+> > > >     return skb->devmem || skb->newmem;
+> > > > }
+> > > >
+> > > > 3. tcp_recvmsg_devmem() would handle skb->devmem skbs is in this pa=
+tch
+> > > > series, but tcp_recvmsg_newmem() would handle skb->newmem skbs.
+> > >
+> > > You copy it to the userspace in a special way because your frags
+> > > are page_is_page_pool_iov(). I agree with David, the skb bit is
+> > > just and optimization.
+> > >
+> > > For most of the core stack, it doesn't matter why your skb is not
+> > > readable. For a few places where it matters (recvmsg?), you can
+> > > double-check your frags (all or some) with page_is_page_pool_iov.
+> > >
+> >
+> > I see, we can do that then. I.e. make the header flag 'not_readable'
+> > and check the frags to decide to delegate to tcp_recvmsg_devmem() or
+> > something else. We can even assume not_readable =3D=3D devmem because
+> > currently devmem is the only type of unreadable frag currently.
+> >
+> > > Unrelated: we probably need socket to dmabuf association as well (via
+> > > netlink or something).
+> >
+> > Not sure this is possible. The dma-buf is bound to the rx-queue, and
+> > any packets that land on that rx-queue are bound to that dma-buf,
+> > regardless of which socket that packet belongs to. So the association
+> > IMO must be rx-queue to dma-buf, not socket to dma-buf.
+>
+> But there is still always 1 dmabuf to 1 socket association (on rx), right=
+?
+> Because otherwise, there is no way currently to tell, at recvmsg, which
+> dmabuf the received token belongs to.
+>
 
-HEAD commit:    d2f51b3516da Merge tag 'rtc-6.7' of git://git.kernel.org/p..
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=1422ebef680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=1ffa1cec3b40f3ce
-dashboard link: https://syzkaller.appspot.com/bug?extid=398e17b61dab22cc56bc
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16344918e80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=156bb2c0e80000
+Yes, but this 1 dma-buf to 1 socket association happens because the
+user binds the dma-buf to an rx-queue and configures flow steering of
+the socket to that rx-queue.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/01a7f380fc8d/disk-d2f51b35.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/c2fe46c74542/vmlinux-d2f51b35.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/247d6a0567c5/bzImage-d2f51b35.xz
+> So why not have a separate control channel action to say: this socket fd
+> is supposed to receive into this dmabuf fd?
+> This action would put
+> the socket into permanent 'MSG_SOCK_DEVMEM' mode. Maybe you can also
+> put some checks at the lower level to to enforce this dmabuf
+> association. (to avoid any potential issues with flow steering)
+>
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+398e17b61dab22cc56bc@syzkaller.appspotmail.com
+setsockopt(SO_DEVMEM_ASSERT_DMA_BUF, dmabuf_fd)? Sounds interesting,
+but maybe a bit of a weird API to me. Because the API can't enforce
+the socket to receive packets on a dma-buf (rx-queue binding + flow
+steering does that), but the API can assert that incoming packets are
+received on said dma-buf. I guess it would check packets before they
+are acked and would drop packets that landed on the wrong queue.
 
-------------[ cut here ]------------
-kernel BUG at mm/memory.c:2216!
-invalid opcode: 0000 [#1] PREEMPT SMP KASAN
-CPU: 1 PID: 5067 Comm: syz-executor340 Not tainted 6.6.0-syzkaller-14651-gd2f51b3516da #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/09/2023
-RIP: 0010:vmf_insert_pfn_prot+0x247/0x430 mm/memory.c:2216
-Code: 0f 0b e8 7c e6 bd ff 49 89 ef bf 20 00 00 00 41 83 e7 28 4c 89 fe e8 f8 e1 bd ff 49 83 ff 20 0f 85 aa fe ff ff e8 59 e6 bd ff <0f> 0b 48 bd ff ff ff ff ff ff 0f 00 e8 48 e6 bd ff 4c 89 f6 48 89
-RSP: 0018:ffffc90003bbf758 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: ffff88802847ec00 RCX: ffffffff81cab618
-RDX: ffff888015bd1dc0 RSI: ffffffff81cab627 RDI: 0000000000000007
-RBP: 000000000c040474 R08: 0000000000000007 R09: 0000000000000020
-R10: 0000000000000020 R11: 0000000000000009 R12: 0000000020ffd000
-R13: 1ffff92000777eec R14: 000000000001e529 R15: 0000000000000020
-FS:  0000555555e2a480(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000020ffd000 CR3: 000000002aae7000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- drm_gem_shmem_fault+0x207/0x400 drivers/gpu/drm/drm_gem_shmem_helper.c:531
- __do_fault+0x107/0x5f0 mm/memory.c:4265
- do_read_fault mm/memory.c:4628 [inline]
- do_fault mm/memory.c:4762 [inline]
- do_pte_missing mm/memory.c:3730 [inline]
- handle_pte_fault mm/memory.c:5038 [inline]
- __handle_mm_fault+0x2682/0x3d60 mm/memory.c:5179
- handle_mm_fault+0x478/0xa00 mm/memory.c:5344
- do_user_addr_fault+0x3d1/0x1000 arch/x86/mm/fault.c:1413
- handle_page_fault arch/x86/mm/fault.c:1505 [inline]
- exc_page_fault+0x5c/0xd0 arch/x86/mm/fault.c:1561
- asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:570
-RIP: 0010:rep_movs_alternative+0x4a/0x70 arch/x86/lib/copy_user_64.S:71
-Code: 75 f1 c3 66 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 8b 06 48 89 07 48 83 c6 08 48 83 c7 08 83 e9 08 74 df 83 f9 08 73 e8 eb c9 <f3> a4 c3 48 89 c8 48 c1 e9 03 83 e0 07 f3 48 a5 89 c1 85 c9 75 b3
-RSP: 0018:ffffc90003bbfb50 EFLAGS: 00050206
-RAX: 0000000000000001 RBX: 0000000020ffd000 RCX: 0000000000001000
-RDX: 0000000000000000 RSI: 0000000020ffd000 RDI: ffff888018796000
-RBP: 0000000000001000 R08: 0000000000000001 R09: ffffed10030f2dff
-R10: ffff888018796fff R11: 0000000000000000 R12: 0000000020ffe000
-R13: ffff888018796000 R14: 0000000000000000 R15: 0000000020ffd000
- copy_user_generic arch/x86/include/asm/uaccess_64.h:112 [inline]
- raw_copy_from_user arch/x86/include/asm/uaccess_64.h:127 [inline]
- _copy_from_user+0xc2/0xf0 lib/usercopy.c:23
- copy_from_user include/linux/uaccess.h:183 [inline]
- snd_rawmidi_kernel_write1+0x360/0x860 sound/core/rawmidi.c:1618
- snd_rawmidi_write+0x26e/0xc00 sound/core/rawmidi.c:1687
- vfs_write+0x2a4/0xdf0 fs/read_write.c:582
- ksys_write+0x1f0/0x250 fs/read_write.c:637
- do_syscall_x64 arch/x86/entry/common.c:51 [inline]
- do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:82
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-RIP: 0033:0x7f31add88d69
-Code: 48 83 c4 28 c3 e8 37 17 00 00 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffdd9a49ee8 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 00007ffdd9a49f00 RCX: 00007f31add88d69
-RDX: 00000000fffffd2c RSI: 0000000020000000 RDI: 0000000000000004
-RBP: 00007ffdd9a49f08 R08: 0000000000000000 R09: 0000000000000000
-R10: 00007ffdd9a49f08 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007ffdd9a4a168 R14: 0000000000000001 R15: 0000000000000001
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:vmf_insert_pfn_prot+0x247/0x430 mm/memory.c:2216
-Code: 0f 0b e8 7c e6 bd ff 49 89 ef bf 20 00 00 00 41 83 e7 28 4c 89 fe e8 f8 e1 bd ff 49 83 ff 20 0f 85 aa fe ff ff e8 59 e6 bd ff <0f> 0b 48 bd ff ff ff ff ff ff 0f 00 e8 48 e6 bd ff 4c 89 f6 48 89
-RSP: 0018:ffffc90003bbf758 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: ffff88802847ec00 RCX: ffffffff81cab618
-RDX: ffff888015bd1dc0 RSI: ffffffff81cab627 RDI: 0000000000000007
-RBP: 000000000c040474 R08: 0000000000000007 R09: 0000000000000020
-R10: 0000000000000020 R11: 0000000000000009 R12: 0000000020ffd000
-R13: 1ffff92000777eec R14: 000000000001e529 R15: 0000000000000020
-FS:  0000555555e2a480(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000020acb000 CR3: 000000002aae7000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-----------------
-Code disassembly (best guess):
-   0:	75 f1                	jne    0xfffffff3
-   2:	c3                   	ret
-   3:	66 66 2e 0f 1f 84 00 	data16 cs nopw 0x0(%rax,%rax,1)
-   a:	00 00 00 00
-   e:	66 90                	xchg   %ax,%ax
-  10:	48 8b 06             	mov    (%rsi),%rax
-  13:	48 89 07             	mov    %rax,(%rdi)
-  16:	48 83 c6 08          	add    $0x8,%rsi
-  1a:	48 83 c7 08          	add    $0x8,%rdi
-  1e:	83 e9 08             	sub    $0x8,%ecx
-  21:	74 df                	je     0x2
-  23:	83 f9 08             	cmp    $0x8,%ecx
-  26:	73 e8                	jae    0x10
-  28:	eb c9                	jmp    0xfffffff3
-* 2a:	f3 a4                	rep movsb %ds:(%rsi),%es:(%rdi) <-- trapping instruction
-  2c:	c3                   	ret
-  2d:	48 89 c8             	mov    %rcx,%rax
-  30:	48 c1 e9 03          	shr    $0x3,%rcx
-  34:	83 e0 07             	and    $0x7,%eax
-  37:	f3 48 a5             	rep movsq %ds:(%rsi),%es:(%rdi)
-  3a:	89 c1                	mov    %eax,%ecx
-  3c:	85 c9                	test   %ecx,%ecx
-  3e:	75 b3                	jne    0xfffffff3
+I'm a bit unsure about defensively programming features (and uapi no
+less) to 'avoid any potential issues with flow steering'. Flow
+steering is supposed to work.
 
+Also if we wanted to defensively program something to avoid flow
+steering issues, then I'd suggest adding to cmsg_devmem the dma-buf fd
+that the data is on, not this setsockopt() that asserts. IMO it's a
+weird API for the userspace to ask the kernel to assert some condition
+(at least I haven't seen it before or commonly).
 
----
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+But again, in general, I'm a bit unsure about defensively designing
+uapi around a feature like flow steering that's supposed to work.
+
+> We'll still have dmabuf to rx-queue association because of various reason=
+s..
+
+--
+Thanks,
+Mina
