@@ -2,71 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ACE77E2E09
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 21:18:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60B637E2E12
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 21:20:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232004AbjKFUSG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 15:18:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43764 "EHLO
+        id S232071AbjKFUUU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 15:20:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbjKFUSE (ORCPT
+        with ESMTP id S231169AbjKFUUR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 15:18:04 -0500
-Received: from mail-yw1-x1134.google.com (mail-yw1-x1134.google.com [IPv6:2607:f8b0:4864:20::1134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3185D77
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 12:18:01 -0800 (PST)
-Received: by mail-yw1-x1134.google.com with SMTP id 00721157ae682-5a822f96aedso59072077b3.2
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 12:18:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ncf.edu; s=google; t=1699301880; x=1699906680; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=U8ZaLnkOmfn6VUj4P2bkyzAv0ojbKADStfSaOPEyh7k=;
-        b=YuXeChXaR12GuDusRAHx2xim51OmR8OslhG4H51IsNrwFr96NYyLiZLQIiB2c5pRdL
-         +RdFx2pn6MsDs6QCwMFR7CoEQJ/hUu882EHtEiFnMutv/7yXJC4xYmehOFosr07YD9V2
-         dssjr1XwMrB6BF24UNePkNYe9G7j8OXKWmQ8xjxa1Dfb/PxZ48cqI/e8Y6/ZPk9tk4tG
-         YVWpllurG5nlnHVFjeL0nuDkrQLCNOMc8v7peKVoqwKEm4smeTWga3QqoNyhu7V8//qj
-         nILxKyKaK/BlFDMECvkIn3sOxwwThPqLxVlAxWWvA4p+kR/1SHuzGme02Q/99NZtVgqj
-         enXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699301880; x=1699906680;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=U8ZaLnkOmfn6VUj4P2bkyzAv0ojbKADStfSaOPEyh7k=;
-        b=wrWQalWsinRVcyj4QQER9LUSJgQBk+begEVdDRgxxvMj61/thCM+HnCaPGa+uSVhTv
-         2mQKnTIAfJ4O3OZxFHVMUiFGa2qyJCFH7WcLsxOtz4ugf/qx229+vx0CyUskJlsfZphs
-         pgDFE6ezyzjMQvQay3Vw+Kp1FybvgDw4KwT89tYKMilmaC/qekVuINWoTg6uXytZq3JF
-         QRj0ckUKAYFaGc9oA6sX94+YBPk/ZnJs/uI90QuwVquH8NNlWqrkrwaMO8k8vJLc7ywd
-         n1nlUHIM1rDVkDeGXfesP30WkTr7S4YKXaZaeifAiu81iG0ai3q5wch9x8Es6E+l6OAJ
-         jIQA==
-X-Gm-Message-State: AOJu0YzOL25HUpirihix/XJW4jvlRnej8cO5IadbNg/YJQX906i8MDSB
-        fGRh9Dt5XvcrGsdTj73FGBc7GaWZcbfDl7AiZezADzY05cIfaK1fGIw811IVBTgCIQ2x9akV2nY
-        mGyyVaU+7MX6Ta3E4QntDKzXAUiKqH7mvgayvMTfhAkX94EDrAje1DV2ixKLYst9z8X25B9/Nc5
-        5ZMDf3ncf7vGNVwuM=
-X-Google-Smtp-Source: AGHT+IEQcelb7+yRoiYucbFC0plzPHM97ye3oRTkSaTHrhyd7sCMz0sZn3o3ovon0cvSA7iGE8n/Yw==
-X-Received: by 2002:a81:658b:0:b0:583:a3ab:b950 with SMTP id z133-20020a81658b000000b00583a3abb950mr10575615ywb.50.1699301880325;
-        Mon, 06 Nov 2023 12:18:00 -0800 (PST)
-Received: from localhost.localdomain ([2601:580:8201:d0::d089])
-        by smtp.gmail.com with ESMTPSA id q203-20020a815cd4000000b005a4da74b869sm4782343ywb.139.2023.11.06.12.17.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Nov 2023 12:18:00 -0800 (PST)
-From:   Hunter Chasens <hunter.chasens18@ncf.edu>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-doc@vger.kernel.org, alexander.deucher@amd.com,
-        christian.koenig@amd.com, Xinhui.Pan@amd.com, airlied@gmail.com,
-        daniel@ffwll.ch, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org,
-        Hunter Chasens <hunter.chasens18@ncf.edu>
-Subject: [PATCH v2] drm: amd: Resolve Sphinx unexpected indentation warning
-Date:   Mon,  6 Nov 2023 15:17:39 -0500
-Message-Id: <20231106201739.29507-1-hunter.chasens18@ncf.edu>
-X-Mailer: git-send-email 2.39.3
+        Mon, 6 Nov 2023 15:20:17 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63A20D75;
+        Mon,  6 Nov 2023 12:20:14 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0CDBAC433C8;
+        Mon,  6 Nov 2023 20:20:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699302014;
+        bh=ekujjvi8RS42//7/8F4SRHBAC5/p/7Prwv5G3MrhLrQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=mJWrTK887hpU3DCPmEEplv5u2zbVfH05jpyFTqRoJrfAUC5w9AGNpvfT52YrsolZs
+         Wscxx/a/dBa45B53uLMeAOMR9UxFYciNL/LRLcfe2RWm+iKBr80a/xBLP81wxbDsEq
+         vQQKhvYc0HA5NqxRvmgm1L8BODTXS8anvgQyE6KPIX2cILDTtAP6uBpdOSaHZr2Xgs
+         7Q5rput9GqfNiSFWC9LAy4Z9EgKMWFTpeW+F1rQQbNoacfDmAuBYx5JQByN/Xcal58
+         gtdEMFtuqP7J9wFGSR3GugIAOt4GWy6J/MbhevBcwG86bAjoxE574pQBFZt9OqUh6X
+         jXo2+Pj73ZdkQ==
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-9e1fb7faa9dso28284566b.2;
+        Mon, 06 Nov 2023 12:20:13 -0800 (PST)
+X-Gm-Message-State: AOJu0YxaJvMTEr5j4iIv87QSekyAduROougKgbksb1xX+b3vWZihDOAQ
+        f9oYAII2iwuUxzBQlQRwtP8N7ulROGcn5ihmgIQ=
+X-Google-Smtp-Source: AGHT+IF2tLpAh8ZaxZMrEekDHhrr1YK4Mgm0S0K26K6vFFfjn1sriLkmpvn9chTRaqerKcosZplVN6BYhrUA6QkxAIQ=
+X-Received: by 2002:a17:907:7255:b0:9c3:8242:e665 with SMTP id
+ ds21-20020a170907725500b009c38242e665mr14289406ejc.8.1699302012434; Mon, 06
+ Nov 2023 12:20:12 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+References: <00000000000004769106097f9a34@google.com>
+In-Reply-To: <00000000000004769106097f9a34@google.com>
+From:   Filipe Manana <fdmanana@kernel.org>
+Date:   Mon, 6 Nov 2023 20:19:35 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H5u6fDxpmdOzS6EL1zC2N-Bvn1=srJFfC4TYkoDwndGRA@mail.gmail.com>
+Message-ID: <CAL3q7H5u6fDxpmdOzS6EL1zC2N-Bvn1=srJFfC4TYkoDwndGRA@mail.gmail.com>
+Subject: Re: [syzbot] [btrfs?] memory leak in btrfs_add_delayed_tree_ref
+To:     syzbot <syzbot+d3ddc6dcc6386dea398b@syzkaller.appspotmail.com>
+Cc:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,40 +59,211 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Resolves Sphinx unexpected indentation warning when compiling
-documentation (e.g. `make htmldocs`). Replaces tabs with spaces and adds
-a literal block to keep vertical formatting of the
-example power state list.
+On Mon, Nov 6, 2023 at 5:59=E2=80=AFPM syzbot
+<syzbot+d3ddc6dcc6386dea398b@syzkaller.appspotmail.com> wrote:
+>
+> Hello,
+>
+> syzbot found the following issue on:
+>
+> HEAD commit:    8f6f76a6a29f Merge tag 'mm-nonmm-stable-2023-11-02-14-08'=
+ ..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=3D15169b8768000=
+0
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=3D5ea2285f517f9=
+4d0
+> dashboard link: https://syzkaller.appspot.com/bug?extid=3Dd3ddc6dcc6386de=
+a398b
+> compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for D=
+ebian) 2.40
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D179c2ecf680=
+000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D149dff40e8000=
+0
+>
+> Downloadable assets:
+> disk image: https://storage.googleapis.com/syzbot-assets/dfead0cc157b/dis=
+k-8f6f76a6.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/c2ab876430bc/vmlinu=
+x-8f6f76a6.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/e9cd314888e8/b=
+zImage-8f6f76a6.xz
+> mounted in repro: https://storage.googleapis.com/syzbot-assets/4a497ff0ef=
+1a/mount_0.gz
+>
+> IMPORTANT: if you fix the issue, please add the following tag to the comm=
+it:
+> Reported-by: syzbot+d3ddc6dcc6386dea398b@syzkaller.appspotmail.com
 
-Signed-off-by: Hunter Chasens <hunter.chasens18@ncf.edu>
----
- drivers/gpu/drm/amd/pm/amdgpu_pm.c | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
+#syz fix: btrfs: fix qgroup record leaks when using simple quotas
 
-diff --git a/drivers/gpu/drm/amd/pm/amdgpu_pm.c b/drivers/gpu/drm/amd/pm/amdgpu_pm.c
-index 517b9fb4624c..81b8ceb26890 100644
---- a/drivers/gpu/drm/amd/pm/amdgpu_pm.c
-+++ b/drivers/gpu/drm/amd/pm/amdgpu_pm.c
-@@ -989,12 +989,13 @@ static ssize_t amdgpu_get_pp_features(struct device *dev,
-  * Reading back the files will show you the available power levels within
-  * the power state and the clock information for those levels. If deep sleep is
-  * applied to a clock, the level will be denoted by a special level 'S:'
-- * E.g.,
-- *	S: 19Mhz *
-- *	0: 615Mhz
-- *	1: 800Mhz
-- *	2: 888Mhz
-- *	3: 1000Mhz
-+ * E.g.::
-+ *
-+ *  S: 19Mhz *
-+ *  0: 615Mhz
-+ *  1: 800Mhz
-+ *  2: 888Mhz
-+ *  3: 1000Mhz
-  *
-  *
-  * To manually adjust these states, first select manual using
--- 
-2.39.3
+https://lore.kernel.org/linux-btrfs/2431d473c04bede4387c081007d532758fcd2f2=
+8.1699301753.git.fdmanana@suse.com/
 
+>
+> executing program
+> BUG: memory leak
+> unreferenced object 0xffff88810891e940 (size 64):
+>   comm "syz-executor244", pid 5031, jiffies 4294941874 (age 13.150s)
+>   hex dump (first 32 bytes):
+>     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+>     00 00 00 00 00 00 00 00 00 e0 51 00 00 00 00 00  ..........Q.....
+>   backtrace:
+>     [<ffffffff816336ad>] kmemleak_alloc_recursive include/linux/kmemleak.=
+h:42 [inline]
+>     [<ffffffff816336ad>] slab_post_alloc_hook mm/slab.h:766 [inline]
+>     [<ffffffff816336ad>] slab_alloc_node mm/slub.c:3478 [inline]
+>     [<ffffffff816336ad>] __kmem_cache_alloc_node+0x2dd/0x3f0 mm/slub.c:35=
+17
+>     [<ffffffff8157e505>] kmalloc_trace+0x25/0x90 mm/slab_common.c:1098
+>     [<ffffffff82135480>] kmalloc include/linux/slab.h:600 [inline]
+>     [<ffffffff82135480>] kzalloc include/linux/slab.h:721 [inline]
+>     [<ffffffff82135480>] btrfs_add_delayed_tree_ref+0x550/0x5b0 fs/btrfs/=
+delayed-ref.c:1045
+>     [<ffffffff820874bb>] btrfs_alloc_tree_block+0x65b/0x7c0 fs/btrfs/exte=
+nt-tree.c:5153
+>     [<ffffffff8206c15e>] btrfs_force_cow_block+0x1be/0xb30 fs/btrfs/ctree=
+.c:563
+>     [<ffffffff8206cbf8>] btrfs_cow_block+0x128/0x3b0 fs/btrfs/ctree.c:741
+>     [<ffffffff82073609>] btrfs_search_slot+0xa49/0x1770 fs/btrfs/ctree.c:=
+2095
+>     [<ffffffff82074fa3>] btrfs_insert_empty_items+0x43/0xc0 fs/btrfs/ctre=
+e.c:4285
+>     [<ffffffff820b8a34>] btrfs_create_new_inode+0x354/0xfe0 fs/btrfs/inod=
+e.c:6283
+>     [<ffffffff820b99e7>] btrfs_create_common+0xf7/0x190 fs/btrfs/inode.c:=
+6511
+>     [<ffffffff820b9c12>] btrfs_create+0x72/0x90 fs/btrfs/inode.c:6551
+>     [<ffffffff816b673f>] lookup_open fs/namei.c:3477 [inline]
+>     [<ffffffff816b673f>] open_last_lookups fs/namei.c:3546 [inline]
+>     [<ffffffff816b673f>] path_openat+0x17df/0x1d60 fs/namei.c:3776
+>     [<ffffffff816b78e1>] do_filp_open+0xd1/0x1c0 fs/namei.c:3809
+>     [<ffffffff816906c4>] do_sys_openat2+0xf4/0x150 fs/open.c:1440
+>     [<ffffffff81690ec5>] do_sys_open fs/open.c:1455 [inline]
+>     [<ffffffff81690ec5>] __do_sys_open fs/open.c:1463 [inline]
+>     [<ffffffff81690ec5>] __se_sys_open fs/open.c:1459 [inline]
+>     [<ffffffff81690ec5>] __x64_sys_open+0xa5/0xf0 fs/open.c:1459
+>     [<ffffffff84b5dd4f>] do_syscall_x64 arch/x86/entry/common.c:51 [inlin=
+e]
+>     [<ffffffff84b5dd4f>] do_syscall_64+0x3f/0x110 arch/x86/entry/common.c=
+:82
+>
+> BUG: memory leak
+> unreferenced object 0xffff88810891e980 (size 64):
+>   comm "syz-executor244", pid 5031, jiffies 4294941874 (age 13.150s)
+>   hex dump (first 32 bytes):
+>     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+>     00 00 00 00 00 00 00 00 00 00 69 00 00 00 00 00  ..........i.....
+>   backtrace:
+>     [<ffffffff816336ad>] kmemleak_alloc_recursive include/linux/kmemleak.=
+h:42 [inline]
+>     [<ffffffff816336ad>] slab_post_alloc_hook mm/slab.h:766 [inline]
+>     [<ffffffff816336ad>] slab_alloc_node mm/slub.c:3478 [inline]
+>     [<ffffffff816336ad>] __kmem_cache_alloc_node+0x2dd/0x3f0 mm/slub.c:35=
+17
+>     [<ffffffff8157e505>] kmalloc_trace+0x25/0x90 mm/slab_common.c:1098
+>     [<ffffffff82135480>] kmalloc include/linux/slab.h:600 [inline]
+>     [<ffffffff82135480>] kzalloc include/linux/slab.h:721 [inline]
+>     [<ffffffff82135480>] btrfs_add_delayed_tree_ref+0x550/0x5b0 fs/btrfs/=
+delayed-ref.c:1045
+>     [<ffffffff82083f81>] btrfs_free_tree_block+0x131/0x450 fs/btrfs/exten=
+t-tree.c:3432
+>     [<ffffffff8206c678>] btrfs_force_cow_block+0x6d8/0xb30 fs/btrfs/ctree=
+.c:618
+>     [<ffffffff8206cbf8>] btrfs_cow_block+0x128/0x3b0 fs/btrfs/ctree.c:741
+>     [<ffffffff82073609>] btrfs_search_slot+0xa49/0x1770 fs/btrfs/ctree.c:=
+2095
+>     [<ffffffff82074fa3>] btrfs_insert_empty_items+0x43/0xc0 fs/btrfs/ctre=
+e.c:4285
+>     [<ffffffff820b8a34>] btrfs_create_new_inode+0x354/0xfe0 fs/btrfs/inod=
+e.c:6283
+>     [<ffffffff820b99e7>] btrfs_create_common+0xf7/0x190 fs/btrfs/inode.c:=
+6511
+>     [<ffffffff820b9c12>] btrfs_create+0x72/0x90 fs/btrfs/inode.c:6551
+>     [<ffffffff816b673f>] lookup_open fs/namei.c:3477 [inline]
+>     [<ffffffff816b673f>] open_last_lookups fs/namei.c:3546 [inline]
+>     [<ffffffff816b673f>] path_openat+0x17df/0x1d60 fs/namei.c:3776
+>     [<ffffffff816b78e1>] do_filp_open+0xd1/0x1c0 fs/namei.c:3809
+>     [<ffffffff816906c4>] do_sys_openat2+0xf4/0x150 fs/open.c:1440
+>     [<ffffffff81690ec5>] do_sys_open fs/open.c:1455 [inline]
+>     [<ffffffff81690ec5>] __do_sys_open fs/open.c:1463 [inline]
+>     [<ffffffff81690ec5>] __se_sys_open fs/open.c:1459 [inline]
+>     [<ffffffff81690ec5>] __x64_sys_open+0xa5/0xf0 fs/open.c:1459
+>     [<ffffffff84b5dd4f>] do_syscall_x64 arch/x86/entry/common.c:51 [inlin=
+e]
+>     [<ffffffff84b5dd4f>] do_syscall_64+0x3f/0x110 arch/x86/entry/common.c=
+:82
+>
+> BUG: memory leak
+> unreferenced object 0xffff88810891ea00 (size 64):
+>   comm "syz-executor244", pid 5031, jiffies 4294941874 (age 13.150s)
+>   hex dump (first 32 bytes):
+>     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+>     00 00 00 00 00 00 00 00 00 f0 51 00 00 00 00 00  ..........Q.....
+>   backtrace:
+>     [<ffffffff816336ad>] kmemleak_alloc_recursive include/linux/kmemleak.=
+h:42 [inline]
+>     [<ffffffff816336ad>] slab_post_alloc_hook mm/slab.h:766 [inline]
+>     [<ffffffff816336ad>] slab_alloc_node mm/slub.c:3478 [inline]
+>     [<ffffffff816336ad>] __kmem_cache_alloc_node+0x2dd/0x3f0 mm/slub.c:35=
+17
+>     [<ffffffff8157e505>] kmalloc_trace+0x25/0x90 mm/slab_common.c:1098
+>     [<ffffffff82135480>] kmalloc include/linux/slab.h:600 [inline]
+>     [<ffffffff82135480>] kzalloc include/linux/slab.h:721 [inline]
+>     [<ffffffff82135480>] btrfs_add_delayed_tree_ref+0x550/0x5b0 fs/btrfs/=
+delayed-ref.c:1045
+>     [<ffffffff820874bb>] btrfs_alloc_tree_block+0x65b/0x7c0 fs/btrfs/exte=
+nt-tree.c:5153
+>     [<ffffffff8206c15e>] btrfs_force_cow_block+0x1be/0xb30 fs/btrfs/ctree=
+.c:563
+>     [<ffffffff8206cbf8>] btrfs_cow_block+0x128/0x3b0 fs/btrfs/ctree.c:741
+>     [<ffffffff82073609>] btrfs_search_slot+0xa49/0x1770 fs/btrfs/ctree.c:=
+2095
+>     [<ffffffff82074fa3>] btrfs_insert_empty_items+0x43/0xc0 fs/btrfs/ctre=
+e.c:4285
+>     [<ffffffff820b8a34>] btrfs_create_new_inode+0x354/0xfe0 fs/btrfs/inod=
+e.c:6283
+>     [<ffffffff820b99e7>] btrfs_create_common+0xf7/0x190 fs/btrfs/inode.c:=
+6511
+>     [<ffffffff820b9c12>] btrfs_create+0x72/0x90 fs/btrfs/inode.c:6551
+>     [<ffffffff816b673f>] lookup_open fs/namei.c:3477 [inline]
+>     [<ffffffff816b673f>] open_last_lookups fs/namei.c:3546 [inline]
+>     [<ffffffff816b673f>] path_openat+0x17df/0x1d60 fs/namei.c:3776
+>     [<ffffffff816b78e1>] do_filp_open+0xd1/0x1c0 fs/namei.c:3809
+>     [<ffffffff816906c4>] do_sys_openat2+0xf4/0x150 fs/open.c:1440
+>     [<ffffffff81690ec5>] do_sys_open fs/open.c:1455 [inline]
+>     [<ffffffff81690ec5>] __do_sys_open fs/open.c:1463 [inline]
+>     [<ffffffff81690ec5>] __se_sys_open fs/open.c:1459 [inline]
+>     [<ffffffff81690ec5>] __x64_sys_open+0xa5/0xf0 fs/open.c:1459
+>     [<ffffffff84b5dd4f>] do_syscall_x64 arch/x86/entry/common.c:51 [inlin=
+e]
+>     [<ffffffff84b5dd4f>] do_syscall_64+0x3f/0x110 arch/x86/entry/common.c=
+:82
+>
+>
+>
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+>
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+>
+> If the report is already addressed, let syzbot know by replying with:
+> #syz fix: exact-commit-title
+>
+> If you want syzbot to run the reproducer, reply with:
+> #syz test: git://repo/address.git branch-or-commit-hash
+> If you attach or paste a git patch, syzbot will apply it before testing.
+>
+> If you want to overwrite report's subsystems, reply with:
+> #syz set subsystems: new-subsystem
+> (See the list of subsystem names on the web dashboard)
+>
+> If the report is a duplicate of another one, reply with:
+> #syz dup: exact-subject-of-another-report
+>
+> If you want to undo deduplication, reply with:
+> #syz undup
