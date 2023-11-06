@@ -2,73 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B58377E25EA
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 14:45:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C25937E25E8
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 14:44:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232625AbjKFNpE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 08:45:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57968 "EHLO
+        id S232787AbjKFNoc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 08:44:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230192AbjKFNpC (ORCPT
+        with ESMTP id S230192AbjKFNob (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 08:45:02 -0500
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 230B0D8;
-        Mon,  6 Nov 2023 05:45:00 -0800 (PST)
-Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A6D276V011570;
-        Mon, 6 Nov 2023 13:44:55 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding;
- s=corp-2023-03-30; bh=6YHJjY4Bdvy1h7hf5nC46l/cIWxl0iVN7Q28DIqENBo=;
- b=2NTeiBTzaAHfDuf9ZRTEFTFMA0KiNylDlLF+4se3wOMcv7DkqSsTr+WRbSeRqAUSC9l8
- wyChpgaMyU0D1wCZKhmcU871dSYsqgj48lTKcY951CFGCvSZDiNCH+T52vXPlhZ+nNIk
- R6DFdX1LOk4Sk71j70tFeD5z9fuMS1g7+gRsWmvJ7x5fplOf75m2JclqGTkxnU9locCp
- aj5wLbvF7S4VYvNK/0dq0iMNElxXk4eBPdspMVhr84QWcDETRvQoQSd+BnCqUnvyiJou
- RtSKRa0rUAzBewR36FVLhDaGxVa2Od7vvpvCRkgcFKQG5DxJpGt917vBLNpVRTNW+yv7 GA== 
-Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3u5cj2u4gc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 06 Nov 2023 13:44:54 +0000
-Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3A6D6iBO020666;
-        Mon, 6 Nov 2023 13:44:42 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3u5cdbc8d8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 06 Nov 2023 13:44:42 +0000
-Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3A6DifHf024328;
-        Mon, 6 Nov 2023 13:44:41 GMT
-Received: from localhost.localdomain (dhcp-10-175-43-221.vpn.oracle.com [10.175.43.221])
-        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 3u5cdbc8bj-1;
-        Mon, 06 Nov 2023 13:44:41 +0000
-From:   Vegard Nossum <vegard.nossum@oracle.com>
-To:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Vegard Nossum <vegard.nossum@oracle.com>,
-        linux-fsdevel@vger.kernel.org, Nick Piggin <npiggin@kernel.dk>,
-        Waiman Long <Waiman.Long@hp.com>, linux-doc@vger.kernel.org
-Subject: [PATCH v2] dcache: remove unnecessary NULL check in dget_dlock()
-Date:   Mon,  6 Nov 2023 14:44:17 +0100
-Message-Id: <20231106134417.98833-1-vegard.nossum@oracle.com>
-X-Mailer: git-send-email 2.34.1
+        Mon, 6 Nov 2023 08:44:31 -0500
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46CFCDB
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 05:44:28 -0800 (PST)
+Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-507cd62472dso5950702e87.0
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 05:44:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1699278266; x=1699883066; darn=vger.kernel.org;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=zfut42GZ6PJsX7RslNyzOoo+yrwpRsBHvP3u/FnXLmg=;
+        b=t3B7QSlmEjUv1A8FdwtPvgaD+7A6NsRDq/Z660xex7MQKIAlH5rLndQ1QV5vruG6Y0
+         klKrwzuSzEKRUji7Dv7+8yddwCdwN5ScPSDUdPHeTEz8ADG0RWDe79jPEjmiyuYF2Ew4
+         eZWjtS0MKBVBVwvI5yUhCsrHBhPkpoXS5rLKv6VW3tJLinfL1h2HERyUCapXkNQCaS5I
+         sfFJLhPS83dJdYLFPYXj+Dm8ELXsctNIFeY4ECbuWE+8QH53h0SPATKTdm/VdHFwpK1Q
+         cpTiZsmcigHoA4v7WZOnZS1HKG2fT11iYpI9G95WICOsUkT94/KZBBmArQJgN1p8mvsy
+         ewOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699278266; x=1699883066;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=zfut42GZ6PJsX7RslNyzOoo+yrwpRsBHvP3u/FnXLmg=;
+        b=Z4sEiR/3dPQQ2eX3jiaBPx+xAbgMOAzOwcAXs87Vrnssnd2nfU9N2Y4dCdcXvNiPJ4
+         xKNcSFpBm+Mtbx5bwXqI9Zzvb4EMdofrc57zzJAuaJUAeQidYU1Ddk1nTBRAlQrgw1IL
+         NS6ce6IJLqeqbY9Xxt2oPcMFQsIkBgQ2nt9Re23rWbQAN4m03EVcbeWkJLgxKNcTzKAu
+         E0ca3Ro1KlsiWwIKhfFWMILIYrdQtUb/RtgrDkbUmjYVEXMCKtUsQ9elgamryXpEei+Y
+         zba7lGAwyq+7GBHbb7jJDK74IQ4TjXg/QESCPg067vdr0xWaF0ftusOlIIkIgp1m3g5f
+         t0qw==
+X-Gm-Message-State: AOJu0Yz2kPmiBSKi2GhVtPgP2ZQWteWepeP2FRTj6+RaoFTaRFMdLEBz
+        SWcxxvlwR100ii+EvEEQ6qfqpg==
+X-Google-Smtp-Source: AGHT+IH4bzAeeYdxryFqi17NUYVW5UsmYhLWSTUCigieIHr7c5swW3uUM3EOV8t/mdnyfou3jNyCSA==
+X-Received: by 2002:a19:6505:0:b0:4fe:2815:8ba7 with SMTP id z5-20020a196505000000b004fe28158ba7mr3312316lfb.25.1699278266334;
+        Mon, 06 Nov 2023 05:44:26 -0800 (PST)
+Received: from [127.0.1.1] ([85.235.12.238])
+        by smtp.gmail.com with ESMTPSA id w25-20020a19c519000000b004fe2de20d88sm1123959lfe.232.2023.11.06.05.44.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 Nov 2023 05:44:25 -0800 (PST)
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Mon, 06 Nov 2023 14:44:25 +0100
+Subject: [PATCH] powerpc: Fix signature of pfn_to_kaddr()
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-06_12,2023-11-02_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 adultscore=0
- mlxlogscore=999 phishscore=0 mlxscore=0 bulkscore=0 spamscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2310240000 definitions=main-2311060111
-X-Proofpoint-ORIG-GUID: _jd5P7Syl5cgkzIKqm3ezlqYqdq0z8Sr
-X-Proofpoint-GUID: _jd5P7Syl5cgkzIKqm3ezlqYqdq0z8Sr
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20231106-virt-to-pfn-fix-ppc-v1-1-93197a7ccab4@linaro.org>
+X-B4-Tracking: v=1; b=H4sIALjtSGUC/x2MQQqAIBAAvxJ7bsG1UOor0SF0q72YaEgg/T3pO
+ AwzFTIn4QxzVyFxkSxXaEB9B+7cwsEovjFopQciZbBIuvG+MO4Bd3kwRod+Is+jdUaRhVbGxE3
+ 912V93w8BGl8jZQAAAA==
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        kernel test robot <lkp@intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>
+X-Mailer: b4 0.12.4
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,198 +76,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-dget_dlock() requires dentry->d_lock to be held when called, yet
-contains a NULL check for dentry.
+There is a const in the returned value from pfn_to_kaddr()
+but there are consumers that want to modify the result
+and the generic function pfn_to_virt() in <asm-generic/page.h>
+does allow this, so let's relax this requirement and do not
+make the returned value const.
 
-An audit of all calls to dget_dlock() shows that it is never called
-with a NULL pointer (as spin_lock()/spin_unlock() would crash in these
-cases):
-
-  $ git grep -W '\<dget_dlock\>'
-
-  arch/powerpc/platforms/cell/spufs/inode.c-              spin_lock(&dentry->d_lock);
-  arch/powerpc/platforms/cell/spufs/inode.c-              if (simple_positive(dentry)) {
-  arch/powerpc/platforms/cell/spufs/inode.c:                      dget_dlock(dentry);
-
-  fs/autofs/expire.c-             spin_lock_nested(&child->d_lock, DENTRY_D_LOCK_NESTED);
-  fs/autofs/expire.c-             if (simple_positive(child)) {
-  fs/autofs/expire.c:                     dget_dlock(child);
-
-  fs/autofs/root.c:                       dget_dlock(active);
-  fs/autofs/root.c-                       spin_unlock(&active->d_lock);
-
-  fs/autofs/root.c:                       dget_dlock(expiring);
-  fs/autofs/root.c-                       spin_unlock(&expiring->d_lock);
-
-  fs/ceph/dir.c-          if (!spin_trylock(&dentry->d_lock))
-  fs/ceph/dir.c-                  continue;
-  [...]
-  fs/ceph/dir.c:                          dget_dlock(dentry);
-
-  fs/ceph/mds_client.c-           spin_lock(&alias->d_lock);
-  [...]
-  fs/ceph/mds_client.c:                   dn = dget_dlock(alias);
-
-  fs/configfs/inode.c-            spin_lock(&dentry->d_lock);
-  fs/configfs/inode.c-            if (simple_positive(dentry)) {
-  fs/configfs/inode.c:                    dget_dlock(dentry);
-
-  fs/libfs.c:                             found = dget_dlock(d);
-  fs/libfs.c-                     spin_unlock(&d->d_lock);
-
-  fs/libfs.c:             found = dget_dlock(child);
-  fs/libfs.c-     spin_unlock(&child->d_lock);
-
-  fs/libfs.c:                             child = dget_dlock(d);
-  fs/libfs.c-                     spin_unlock(&d->d_lock);
-
-  fs/ocfs2/dcache.c:                      dget_dlock(dentry);
-  fs/ocfs2/dcache.c-                      spin_unlock(&dentry->d_lock);
-
-  include/linux/dcache.h:static inline struct dentry *dget_dlock(struct dentry *dentry)
-
-After taking out the NULL check, dget_dlock() becomes almost identical
-to __dget_dlock(); the only difference is that dget_dlock() returns the
-dentry that was passed in. These are static inline helpers, so we can
-rely on the compiler to discard unused return values. We can therefore
-also remove __dget_dlock() and replace calls to it by dget_dlock().
-
-Also fix up and improve the kerneldoc comments while we're at it.
-
-Al Viro pointed out that we can also clean up some of the callers to
-make use of the returned value and provided a bit more info for the
-kerneldoc.
-
-While preparing v2 I also noticed that the tabs used in the kerneldoc
-comments were causing the kerneldoc to get parsed incorrectly so I also
-fixed this up (including for d_unhashed, which is otherwise unrelated).
-
-Testing: x86 defconfig build + boot; make htmldocs for the kerneldoc
-warning. objdump shows there are code generation changes.
-
-Link: https://lore.kernel.org/all/20231022164520.915013-1-vegard.nossum@oracle.com/
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-Cc: Christian Brauner <brauner@kernel.org>
-Cc: linux-fsdevel@vger.kernel.org
-Cc: Nick Piggin <npiggin@kernel.dk>
-Cc: Waiman Long <Waiman.Long@hp.com>
-Cc: linux-doc@vger.kernel.org
-Signed-off-by: Vegard Nossum <vegard.nossum@oracle.com>
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202311061940.4pBrm44u-lkp@intel.com/
+Fixes: 58b6fed89ab0 ("powerpc: Make virt_to_pfn() a static inline")
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 ---
- fs/dcache.c            | 16 ++++------------
- include/linux/dcache.h | 29 +++++++++++++++++++----------
- 2 files changed, 23 insertions(+), 22 deletions(-)
+The remaining warnings from the test robot appear a bit bogus.
+If someone knows what to do about them, please help. The warnings
+often properly uncovers problems that have been around forever
+due to these functions being disguised as macros.
+---
+ arch/powerpc/include/asm/page.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/dcache.c b/fs/dcache.c
-index c82ae731df9a..4bf33ba588d8 100644
---- a/fs/dcache.c
-+++ b/fs/dcache.c
-@@ -942,12 +942,6 @@ void dput_to_list(struct dentry *dentry, struct list_head *list)
- 	spin_unlock(&dentry->d_lock);
+diff --git a/arch/powerpc/include/asm/page.h b/arch/powerpc/include/asm/page.h
+index e5fcc79b5bfb..5243e48dc13a 100644
+--- a/arch/powerpc/include/asm/page.h
++++ b/arch/powerpc/include/asm/page.h
+@@ -230,7 +230,7 @@ static inline unsigned long virt_to_pfn(const void *kaddr)
+ 	return __pa(kaddr) >> PAGE_SHIFT;
  }
  
--/* This must be called with d_lock held */
--static inline void __dget_dlock(struct dentry *dentry)
--{
--	dentry->d_lockref.count++;
--}
--
- static inline void __dget(struct dentry *dentry)
+-static inline const void *pfn_to_kaddr(unsigned long pfn)
++static inline void *pfn_to_kaddr(unsigned long pfn)
  {
- 	lockref_get(&dentry->d_lockref);
-@@ -1034,7 +1028,7 @@ static struct dentry *__d_find_alias(struct inode *inode)
- 	hlist_for_each_entry(alias, &inode->i_dentry, d_u.d_alias) {
- 		spin_lock(&alias->d_lock);
-  		if (!d_unhashed(alias)) {
--			__dget_dlock(alias);
-+			dget_dlock(alias);
- 			spin_unlock(&alias->d_lock);
- 			return alias;
- 		}
-@@ -1707,8 +1701,7 @@ static enum d_walk_ret find_submount(void *_data, struct dentry *dentry)
- {
- 	struct dentry **victim = _data;
- 	if (d_mountpoint(dentry)) {
--		__dget_dlock(dentry);
--		*victim = dentry;
-+		*victim = dget_dlock(dentry);
- 		return D_WALK_QUIT;
- 	}
- 	return D_WALK_CONTINUE;
-@@ -1853,8 +1846,7 @@ struct dentry *d_alloc(struct dentry * parent, const struct qstr *name)
- 	 * don't need child lock because it is not subject
- 	 * to concurrency here
- 	 */
--	__dget_dlock(parent);
--	dentry->d_parent = parent;
-+	dentry->d_parent = dget_dlock(parent);
- 	list_add(&dentry->d_child, &parent->d_subdirs);
- 	spin_unlock(&parent->d_lock);
- 
-@@ -2851,7 +2843,7 @@ struct dentry *d_exact_alias(struct dentry *entry, struct inode *inode)
- 			spin_unlock(&alias->d_lock);
- 			alias = NULL;
- 		} else {
--			__dget_dlock(alias);
-+			dget_dlock(alias);
- 			__d_rehash(alias);
- 			spin_unlock(&alias->d_lock);
- 		}
-diff --git a/include/linux/dcache.h b/include/linux/dcache.h
-index 3da2f0545d5d..82127cf10992 100644
---- a/include/linux/dcache.h
-+++ b/include/linux/dcache.h
-@@ -301,20 +301,29 @@ extern char *dentry_path(const struct dentry *, char *, int);
- /* Allocation counts.. */
- 
- /**
-- *	dget, dget_dlock -	get a reference to a dentry
-- *	@dentry: dentry to get a reference to
-+ * dget_dlock - get a reference to a dentry
-+ * @dentry: dentry to get a reference to
-  *
-- *	Given a dentry or %NULL pointer increment the reference count
-- *	if appropriate and return the dentry. A dentry will not be 
-- *	destroyed when it has references.
-+ * Given a live dentry, increment the reference count and return
-+ * the dentry.  For a dentry to be live, it can be hashed, positive,
-+ * or have a non-negative &dentry->d_lockref.count
-+ *
-+ * Context: @dentry->d_lock must be held.
-  */
- static inline struct dentry *dget_dlock(struct dentry *dentry)
- {
--	if (dentry)
--		dentry->d_lockref.count++;
-+	dentry->d_lockref.count++;
- 	return dentry;
+ 	return __va(pfn << PAGE_SHIFT);
  }
- 
-+/**
-+ * dget - get a reference to a dentry
-+ * @dentry: dentry to get a reference to
-+ *
-+ * Given a dentry or %NULL pointer increment the reference count
-+ * if appropriate and return the dentry.  A dentry will not be
-+ * destroyed when it has references.
-+ */
- static inline struct dentry *dget(struct dentry *dentry)
- {
- 	if (dentry)
-@@ -325,10 +334,10 @@ static inline struct dentry *dget(struct dentry *dentry)
- extern struct dentry *dget_parent(struct dentry *dentry);
- 
- /**
-- *	d_unhashed -	is dentry hashed
-- *	@dentry: entry to check
-+ * d_unhashed - is dentry hashed
-+ * @dentry: entry to check
-  *
-- *	Returns true if the dentry passed is not currently hashed.
-+ * Returns true if the dentry passed is not currently hashed.
-  */
-  
- static inline int d_unhashed(const struct dentry *dentry)
+
+---
+base-commit: d2f51b3516dade79269ff45eae2a7668ae711b25
+change-id: 20231106-virt-to-pfn-fix-ppc-d91de47c6017
+
+Best regards,
 -- 
-2.34.1
+Linus Walleij <linus.walleij@linaro.org>
 
