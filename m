@@ -2,102 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 55FA67E2A2D
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 17:45:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC72C7E2A32
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 17:46:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231793AbjKFQp5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 11:45:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39356 "EHLO
+        id S232375AbjKFQqX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 11:46:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229485AbjKFQpy (ORCPT
+        with ESMTP id S229485AbjKFQqV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 11:45:54 -0500
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15846191
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 08:45:52 -0800 (PST)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5aecf6e30e9so63484417b3.1
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 08:45:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1699289151; x=1699893951; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=aOiMdoM502S2KW47u+OJd6KgkJY8UT00qBsOiFWsPPc=;
-        b=Jq2+XEWiyUJsJPCSRmHnk6MACYI4JIuS5Vr4/gGLw8fHmEfcHMboDCmaOIWmGC2nkG
-         6qQ0NWu5zkYAivmwzlyfHaXjHmT4jJsj+JjTKahBVYh9llYVINU2o+OrIQx4ZOa9ounk
-         mV8+v3mtAttKhxqaE0xfR4sDr54NPKoREA1a3OTuYJp0Y5TaO6a5aLQ+IPgJ80Lz8YFf
-         Zf7+lVl45jtEJfTb+Kc3ql0513p0jc6kp7I7y6AS/c8EJmHhGIuyf0rc1WzqL6swOZzX
-         MWMlE5gzQ3agyruVHSA9GoasLJK5L46lsjVbTxLRvAHw37+JYIMJIJYHnsuJtWZBy2f6
-         jH1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699289151; x=1699893951;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=aOiMdoM502S2KW47u+OJd6KgkJY8UT00qBsOiFWsPPc=;
-        b=Czy1MpYSWYR2NBnXqoVeuoBHPjM/c7cOZrh57UkMoIIL5I3jZUuYkZr4IofPuyHH7Q
-         JkQbAKUK7ThanSAb6NTOX2wsRonDbF2G1hxI8X5UO3WMbHFiw2HkkJqKQhoKAn/Lhf+t
-         xswKBplkqjkXAQU4NUx2dTy80DAnc8VvO1tW6BWueWXPGvzAWDmF1ErVuJlzO+3K0mbr
-         vsyi8XE24os8uNZoimiumca1TVfUlHC+8C5t5G8N/eUjXLVEu31ZnajuaBMlj1ur8OSV
-         MuRoKlnYFfq8eRd/D1UVW9s+Eo3rvaL4Cr16ytHJ+qNTo32zbew4cl9IbsKPgfPCUL0c
-         gi9Q==
-X-Gm-Message-State: AOJu0YwA8J84itiRJE68j5iRk1Ene/0p3ut87nzcKU+dfvbAhNHzOXCr
-        vxfX4rqpwK+AyoH6l+yXA7wgywsB2AU=
-X-Google-Smtp-Source: AGHT+IGzgx6Xrns9ibInxlOaaTlB1HMfvVJO1aF0Ilz0hUdWqLLXikJDl0rzl1f3edD8+cyAQV+3hR8QkVw=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:c789:0:b0:d9a:c218:8177 with SMTP id
- w131-20020a25c789000000b00d9ac2188177mr514830ybe.8.1699289151328; Mon, 06 Nov
- 2023 08:45:51 -0800 (PST)
-Date:   Mon, 6 Nov 2023 08:45:49 -0800
-In-Reply-To: <874ae0019fb33784520270db7d5213af0d42290d.camel@redhat.com>
-Mime-Version: 1.0
-References: <20231010200220.897953-1-john.allen@amd.com> <20231010200220.897953-4-john.allen@amd.com>
- <8484053f-2777-eb55-a30c-64125fbfc3ec@amd.com> <ZS7PubpX4k/LXGNq@johallen-workstation>
- <c65817b0-7fa6-7c0b-6423-5f33062c9665@amd.com> <874ae0019fb33784520270db7d5213af0d42290d.camel@redhat.com>
-Message-ID: <ZUkYPfxHmMZB03iv@google.com>
-Subject: Re: [PATCH 3/9] KVM: x86: SVM: Pass through shadow stack MSRs
-From:   Sean Christopherson <seanjc@google.com>
-To:     Maxim Levitsky <mlevitsk@redhat.com>
-Cc:     nikunj@amd.com, John Allen <john.allen@amd.com>,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        pbonzini@redhat.com, weijiang.yang@intel.com,
-        rick.p.edgecombe@intel.com, x86@kernel.org,
-        thomas.lendacky@amd.com, bp@alien8.de
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        Mon, 6 Nov 2023 11:46:21 -0500
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2045.outbound.protection.outlook.com [40.107.220.45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3A6CC0;
+        Mon,  6 Nov 2023 08:46:18 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BeoJ9olzQlbhAsrMagcxyjFfD1LGLLomDxHRD51B3dYwHh08Nz2mmt0GKI6CZ0avc1H9+bHb7ihsfTLKHO0dKngzOA9ZRcHPCsr9JZlRqeIvz/gqZNQc3wk79MJVkgzd8tvYrRcAzxomQq6RXn4QYnTm1qrsi9nWIiXfNfFsRy+xljUBTQLZhm+kOnRNru0r1WhKq8UpHnnBEQhbssM9fcDfYVIXe67STBRuu0Ou61YYi87jo/6zjEYxqIObgbuY/JEfcFnvsbXSZ8e47UG2QaRQJqAmm+VLdRO+/PAVemuv6Wi5FMNpEWq9JZ2v08TYbvGxqMTdpu++qEspKSxP9w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=4k4WZ/A1TYfkk0m2CIMNmMpw7PJw5qnrqUp5yr5hdsc=;
+ b=XtfKtxPfe32qvCPXBnjhAwyQx+Ne0bTOyn6MLe9xl5vLQoQ7yB2BjJPqYKOgr+tWygSm80CklyMjtCpewd91OK2YFzsQTfNOT7uj8HlWOPfXlAcvuZ4c/nUQmUya3ZiPdzXEUr3Qq2hvuhTzN9aSZPHvPmp2KRDCPD8jgMIWAQqOM9RGNHRJqbNUd3LiN17QPsjtDO3g2VSAyW2TQH3m4Qs4q5K0RF0fpK1AcA54DZK+mvA7EdP+HQQ7yscCb75X3V9KoRHFxUM4Iuev3Hq2jECZij62qN6TcuuWlbLPD0g9IttMgiXnYhb+EaTPeeWFBkVFP8MJQ3IANZjz+RDPSA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=4k4WZ/A1TYfkk0m2CIMNmMpw7PJw5qnrqUp5yr5hdsc=;
+ b=q31wrKnkD52mi6aRK6Izo3oPtqi5B+I2d30izX3sArhGuZ1Jbwgh88kcv/3eS5vBJcPXxTCH6hUlLmlMIXzwR093KFemxec5C/7Xlf5VN5e/zVOWwijPZTpI/rSkNAiQKbDnPFsGzLR30eHnAc6drX65LJcwluO9YJamRQsTHyg=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from MN0PR12MB6101.namprd12.prod.outlook.com (2603:10b6:208:3cb::10)
+ by CO6PR12MB5459.namprd12.prod.outlook.com (2603:10b6:303:13b::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.28; Mon, 6 Nov
+ 2023 16:46:14 +0000
+Received: from MN0PR12MB6101.namprd12.prod.outlook.com
+ ([fe80::83d7:9c4f:4d9b:1f2a]) by MN0PR12MB6101.namprd12.prod.outlook.com
+ ([fe80::83d7:9c4f:4d9b:1f2a%5]) with mapi id 15.20.6954.027; Mon, 6 Nov 2023
+ 16:46:14 +0000
+Message-ID: <00e4bd57-bcf4-4fb0-805a-61fbf6ef2587@amd.com>
+Date:   Mon, 6 Nov 2023 10:46:08 -0600
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 3/9] PCI: Drop pci_is_thunderbolt_attached()
+Content-Language: en-US
+To:     =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Cc:     Karol Herbst <kherbst@redhat.com>, Lyude Paul <lyude@redhat.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Lukas Wunner <lukas@wunner.de>,
+        Danilo Krummrich <dakr@redhat.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Xinhui Pan <Xinhui.Pan@amd.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Mark Gross <markgross@kernel.org>,
+        Andreas Noever <andreas.noever@gmail.com>,
+        Michael Jamet <michael.jamet@intel.com>,
+        Yehezkel Bernat <YehezkelShB@gmail.com>,
+        =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>,
+        =?UTF-8?Q?Marek_Beh=C3=BAn?= <kabel@kernel.org>,
+        "Maciej W . Rozycki" <macro@orcam.me.uk>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        "open list:DRM DRIVER FOR NVIDIA GEFORCE/QUADRO GPUS" 
+        <dri-devel@lists.freedesktop.org>,
+        "open list:DRM DRIVER FOR NVIDIA GEFORCE/QUADRO GPUS" 
+        <nouveau@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:RADEON and AMDGPU DRM DRIVERS" 
+        <amd-gfx@lists.freedesktop.org>,
+        "open list:PCI SUBSYSTEM" <linux-pci@vger.kernel.org>,
+        "open list:ACPI" <linux-acpi@vger.kernel.org>,
+        "open list:X86 PLATFORM DRIVERS" 
+        <platform-driver-x86@vger.kernel.org>,
+        "open list:THUNDERBOLT DRIVER" <linux-usb@vger.kernel.org>
+References: <20231103190758.82911-1-mario.limonciello@amd.com>
+ <20231103190758.82911-4-mario.limonciello@amd.com>
+ <4747b7b8-ea48-4117-f746-a18dae97bc2@linux.intel.com>
+From:   Mario Limonciello <mario.limonciello@amd.com>
+In-Reply-To: <4747b7b8-ea48-4117-f746-a18dae97bc2@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: SN7PR04CA0041.namprd04.prod.outlook.com
+ (2603:10b6:806:120::16) To MN0PR12MB6101.namprd12.prod.outlook.com
+ (2603:10b6:208:3cb::10)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MN0PR12MB6101:EE_|CO6PR12MB5459:EE_
+X-MS-Office365-Filtering-Correlation-Id: f2fd8018-7f26-4b4f-4f23-08dbdee7e35f
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: CIeJEUaF7oSw8wrZDbdwbfM+FCJGvNUjm8ILjIFpNikla2R4QWbsA6fBiH4HmjRFoxr+1BQmZpfpKb9VuAqXEs2T9+kbVIzZxUEztrPllOn/FSU9ENC/Z4Iw2tBesacL1axybu0VQL7Xp8iiqUPrKXWTLLXJJVj0LXheMRFcOOgp+3IGhIsGzPovBUpcHUr4AIOuEf/E17mbM0KEtv5KZRYyDTTdvKNkMbUOBFufzlZRL5MdTCcGd/dXI70SdZCpUJxklC2r6qjC8Bw6m3+djEvwYCKKiAL+kmecT6hz8NdI5PVAHQ1E9YzQC8PUyZTJMPCMIUX4RkM1W5fatEEiRS9TM8flUArKSC2DgLM/q8TCCDP+3pPp+/seBNTWEk4PhfpXoZ4JVsfWyf5deCBgjadchXSY6d4OAO++INcQ1RsD1JzlD+D3FZsR+gK9uxuYgnhJ59bt3d3stl7MUd/6P+CQElo282MbZcR22Rx1d44flPtqbn4a3ZuctghRHGmI0H1iZD6lLdrXnhTeccSYcQguC46hqbrIVVTxoIJOIq3EeUK4UohIi3FXHa4sc97WHlJpmk29YSBa/duJb2IOQC6ynMPrsQqJTohglMssHlIUUY0yfgD+4hbSxa3t5eMm
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR12MB6101.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(136003)(376002)(366004)(346002)(39860400002)(230922051799003)(1800799009)(64100799003)(451199024)(186009)(86362001)(38100700002)(7416002)(5660300002)(41300700001)(2906002)(31696002)(36756003)(478600001)(83380400001)(31686004)(53546011)(6512007)(66946007)(26005)(2616005)(66556008)(316002)(6916009)(54906003)(66476007)(966005)(6486002)(44832011)(6666004)(6506007)(4326008)(8936002)(8676002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?aHYyUDJ5MDRuTGgxOVA0TFFZSitMb05ua0pPVFpKbFhJbnY3d0hUeFNPb1FJ?=
+ =?utf-8?B?NXNpYkVFZDVGbGx6S1JML3V1Sk1FY1BRTi9DdUl1clNYeHY2QUwwenhQL0po?=
+ =?utf-8?B?UjlDdUlPZ3FDUU4yRit5RW9XY3ZFb0hsMGhaYW9vWWh0WUwxV24zSmQ4T2wy?=
+ =?utf-8?B?aG5MZ0syNVVvdWxoaFFCclFhQjZha09iZFg4cENwMytDbFJiNWpLbU1lMU1W?=
+ =?utf-8?B?U3dLaGZSSzVTQXptMHh2RjhSeTJSTnc1V21GVzBNVkc5WW1PbG9yTHFRbXRC?=
+ =?utf-8?B?eGgzd3pXTUs3TXM4ZGFQVjQ4UUFQRmxqdTg5SG5xcytVMmh5aXdsWFNVMG4v?=
+ =?utf-8?B?blhCaSs0a1A4bG1aVU5mSXRzMlplOUZxNFZFMWJXdWh3QXJIRFdRc1lIck1w?=
+ =?utf-8?B?MGVpalJpa09aK3g3VWZybS81Nkt4aXhqM0ZtcXZmenl0QVoxbklSc3hIemNo?=
+ =?utf-8?B?K21WSStQUm50Ykp1TExDdG9FUExUMitjZERkQ2RGU3oySXN1Z3pPU3Z5TkEw?=
+ =?utf-8?B?SVFzSjB6bGt1YmFoc25qZytiTkJXcm5MYmFkRDRqd1l1bS9LOWhVMnFyS0d1?=
+ =?utf-8?B?MEtnRnJTL1U3cFJKaThER1NHSzBnVzJSMTlPa3h3NFV0RkEzd2VQVWkvUjA4?=
+ =?utf-8?B?WXgrcXdxVWE3dkZjRjB0bzdjSmpYTDFYdnZJVFNxL2VZZ21YL241SStNYThu?=
+ =?utf-8?B?dUxpZnJVbGJpVkd0NWtxbFpUeGE4WjVLTGVIWTU2ZWVIQ2pPUUp2VXp5RzIy?=
+ =?utf-8?B?NUNyQXdMcXdha3VZTmVxT1VpMEUvZWdiRDBxVUtFOWVuODlhT1R4ZWg5aFAz?=
+ =?utf-8?B?VU81WHQvaEhlV2ZhYzBGZW1Vb2V0Vy82dHpLMVlkK21KQmpTVW1udzErTjc0?=
+ =?utf-8?B?S1pQU2JPc3d1bXE1aXJNcHhPa1BLVzNxdWNJQ3B2cGhxS1k4TDhuM1c1dW02?=
+ =?utf-8?B?MzdpdXlPRFhKYm8ySHVjc0RJQ0NxZ1NmOVdMS01YRHAvN2VYbmVXNnVyY3JY?=
+ =?utf-8?B?WTNwTkRsaS85cGVaRldlZENiYk1xamV4Y2JOQkwxaDIwck4xK05LQ0NRa3pH?=
+ =?utf-8?B?TTVEdkJZV2lCVmdXb054dEFZU3I5aktIS3BZUEFPSVg5U1NGNkpnVGxWeGYz?=
+ =?utf-8?B?b25JcnlBK1I5THF2SkhTYVgwY0ZId3JGOWErSEpaWjM4emQ5RVp4bDJHMzhj?=
+ =?utf-8?B?YjlNc29zUTBCSW5JUk5TTnY3c3IxRnN2ZVJPSFdTUmVEeEVFdklueHhaYWhN?=
+ =?utf-8?B?TzBwL0ptN2pPSkVESW5kMHVWT2I4UE5pMk5rejVjbFdNd1FJRVYrMWhsZ2Rz?=
+ =?utf-8?B?RHJsaVQxckQ4b2V3Wk8wZ2RGRG9DM1AxS2tDTUFYbGExdmx3K3VvOG0reDRt?=
+ =?utf-8?B?ZW0wN2ZmQkk3a0NLbk5yaHNtVjRuTTViN0pTOVhYc2NsVk0zWWJvanMwVlBB?=
+ =?utf-8?B?MENnZDBuekF6dFMrTXZlRE1RMVJmaW1ET0M2aUVpWUtmRkJqbStQWktKQ0ln?=
+ =?utf-8?B?Ry9NeWQ2Q1luRGQzYW85TWFSMEpvd3BPM2RsRy9pdldJL3BwbzFsK3NtaGxD?=
+ =?utf-8?B?R2p1VVFpYmY2bm56d1ZOYXFxbk5vVzA5bXAvVlNFWmdTNTVkaSthNWdsNnFW?=
+ =?utf-8?B?cU9PdmgyZktsTnkxVUlGOU9rTTdGeUVDb2JTbEYxUmpIRTg5Rm44RUNnZW1z?=
+ =?utf-8?B?UGtJVFdRVXBTVTJqV1F4QUFGanhtcHdTTVVWUGJiajNyR0F4VTV3elJzRDRa?=
+ =?utf-8?B?cjNxTGxkdTY5ajJ4UDFnZlNnUWpzN3RNQnBmNnRWYjQ2SzZmbkN1WkZKRGNp?=
+ =?utf-8?B?RHBwRTFreFFnV2NkYUFuN0xxU2lmWGFUNmNRdnJoT2wvQTVYRVdiNksyYlpy?=
+ =?utf-8?B?ckQ4L0owTnJ5TzN6RzdPaGVRVm0yd2EyYnZkTDVZZjBENWR1S2ZjWkZoRzFw?=
+ =?utf-8?B?REF5K1E4L01vWGNJQ29ST2tmVG1aMXlYZkU0V2xuMm50d2xRdXVIamFLUGZU?=
+ =?utf-8?B?QWNTYWMxQ29GTklQa2QrazE0NXNpSVNvTkwwTnZUam93VTdkN2ZtOGFJdE5W?=
+ =?utf-8?B?VnRZZWJaZllOdnlnTUR2NHIzWHFKWjgyQjZtZEIyUFlCNjVuWkh2UzlvalRE?=
+ =?utf-8?Q?Fe33DM1ogHIVEDSu1gHXxcyfe?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f2fd8018-7f26-4b4f-4f23-08dbdee7e35f
+X-MS-Exchange-CrossTenant-AuthSource: MN0PR12MB6101.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Nov 2023 16:46:14.2846
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: l8ScKQKnTLwrn/ojGvrLtj7ItMW6VOssrrPvrwUKJuoVWTknF3jUHrwUMBvskyGOFpW5NKvchYGMePXFNy+hEQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO6PR12MB5459
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 02, 2023, Maxim Levitsky wrote:
-> On Wed, 2023-10-18 at 16:57 +0530, Nikunj A. Dadhania wrote:
-> > On 10/17/2023 11:47 PM, John Allen wrote:
-> > In that case, intercept should be cleared from the very beginning.
-> > 
-> > +	{ .index = MSR_IA32_PL0_SSP,                    .always = true },
-> > +	{ .index = MSR_IA32_PL1_SSP,                    .always = true },
-> > +	{ .index = MSR_IA32_PL2_SSP,                    .always = true },
-> > +	{ .index = MSR_IA32_PL3_SSP,                    .always = true },
+On 11/6/2023 06:33, Ilpo Järvinen wrote:
+> On Fri, 3 Nov 2023, Mario Limonciello wrote:
 > 
-> .always is only true when a MSR is *always* passed through. CET msrs are only
-> passed through when CET is supported.
+>> All callers have switched to dev_is_removable() for detecting
+>> hotpluggable PCIe devices.
+>>
+>> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
+>> ---
+>>   include/linux/pci.h | 22 ----------------------
+>>   1 file changed, 22 deletions(-)
+>>
+>> diff --git a/include/linux/pci.h b/include/linux/pci.h
+>> index b56417276042..530b0a360514 100644
+>> --- a/include/linux/pci.h
+>> +++ b/include/linux/pci.h
+>> @@ -2616,28 +2616,6 @@ static inline bool pci_ari_enabled(struct pci_bus *bus)
+>>   	return bus->self && bus->self->ari_enabled;
+>>   }
+>>   
+>> -/**
+>> - * pci_is_thunderbolt_attached - whether device is on a Thunderbolt daisy chain
+>> - * @pdev: PCI device to check
+>> - *
+>> - * Walk upwards from @pdev and check for each encountered bridge if it's part
+>> - * of a Thunderbolt controller.  Reaching the host bridge means @pdev is not
+>> - * Thunderbolt-attached.  (But rather soldered to the mainboard usually.)
+>> - */
+>> -static inline bool pci_is_thunderbolt_attached(struct pci_dev *pdev)
+>> -{
+>> -	struct pci_dev *parent = pdev;
+>> -
+>> -	if (pdev->is_thunderbolt)
+>> -		return true;
+>> -
+>> -	while ((parent = pci_upstream_bridge(parent)))
+>> -		if (parent->is_thunderbolt)
+>> -			return true;
+>> -
+>> -	return false;
+>> -}
+>> -
+>>   #if defined(CONFIG_PCIEPORTBUS) || defined(CONFIG_EEH)
+>>   void pci_uevent_ers(struct pci_dev *pdev, enum  pci_ers_result err_type);
+>>   #endif
+>>
 > 
-> Therefore I don't expect that we ever add another msr to this list which has
-> .always = true.
+> I don't think all callers have been removed. Ah, lkp has caught the same
+> problem.
 > 
-> In fact the .always = True for X86_64 arch msrs like MSR_GS_BASE/MSR_FS_BASE
-> and such is not 100% correct too - when we start a VM which doesn't have
-> cpuid bit X86_FEATURE_LM, these msrs should not exist and I think that we
-> have a kvm unit test that fails because of this on 32 bit but I didn't bother
-> yet to fix it.
-> 
-> .always probably needs to be dropped completely.
 
-FWIW, I have a half-baked series to clean up SVM's MSR interception code and
-converge the SVM and VMX APIs.  E.g. set_msr_interception_bitmap()'s inverted
-polarity confuses me every time I look at its usage.
+As I mentioned in the cover letter this series is done on 6.6 + a patch 
+going into 6.7-rc1.  The LKP report will drop off when I rebase the 
+series on 6.7-rc1.
 
-I can hunt down the branch if someone plans on tackling this code.
+As it's not yet in Linus' tree here is that patch so you can see it:
+
+https://gitlab.freedesktop.org/agd5f/linux/-/commit/7b1c6263eaf4fd64ffe1cafdc504a42ee4bfbb33
