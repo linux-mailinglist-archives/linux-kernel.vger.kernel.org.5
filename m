@@ -2,154 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A6727E1971
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 05:51:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 521767E1973
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 05:51:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230293AbjKFEvQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Nov 2023 23:51:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59250 "EHLO
+        id S230316AbjKFEvb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Nov 2023 23:51:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229485AbjKFEvO (ORCPT
+        with ESMTP id S230269AbjKFEv3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Nov 2023 23:51:14 -0500
-Received: from gentwo.org (gentwo.org [IPv6:2a02:4780:10:3cd9::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5876E1
-        for <linux-kernel@vger.kernel.org>; Sun,  5 Nov 2023 20:51:10 -0800 (PST)
-Received: by gentwo.org (Postfix, from userid 1003)
-        id 0FE2848F5A; Sun,  5 Nov 2023 20:51:09 -0800 (PST)
-Received: from localhost (localhost [127.0.0.1])
-        by gentwo.org (Postfix) with ESMTP id 0D51D48F46;
-        Sun,  5 Nov 2023 20:51:09 -0800 (PST)
-Date:   Sun, 5 Nov 2023 20:51:09 -0800 (PST)
-From:   Christoph Lameter <cl@linux.com>
-To:     linux-arm-kernel@lists.infradead.org
-cc:     linux-kernel@vger.kernel.org, Anshuman.Khandual@arm.com,
-        Valentin.Schneider@arm.com,
-        Vanshidhar Konda <vanshikonda@os.amperecomputing.com>,
-        Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Dave Kleikamp <dave.kleikamp@oracle.com>
-Subject: [RFC] ARM64: Introduce CONFIG_MAXSMP
-Message-ID: <fb0e2c3c-0289-f1ed-102e-219b2f9303d4@linux.com>
+        Sun, 5 Nov 2023 23:51:29 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E018F9;
+        Sun,  5 Nov 2023 20:51:26 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3C83BC433C7;
+        Mon,  6 Nov 2023 04:51:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699246285;
+        bh=rySQffP2NQSfe8P6PjPcJtxJpIx3FMaahWg+eEcTVRY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cqOrrjDYWjgU06y+Om+9Tr8F3s1IrKw+AX0vwGeez7F1LD7CfpKDGjgaBRdr0piOW
+         w2lr4mMv7460Mo+rDBqGO4a8/eunMGqZoLCN/LGqzO7L+XLsjspBZsq/+lNgYo4A3j
+         VAtGhDGJFalXR+Nsa68Bgv2hkgpN2EmIBEpXaqwXNW4VijmVzxYKrs8lEkpccZSoLe
+         xKXOWnox/vzIuCyH2snHWfe9YazB/RX4UinKjbXZSTzg/kG3ZHPpo5KS6DmSRWsftD
+         oxPy7PDDild10TR2+wnQPtv864ydxYdmG36uj9dn0etagsrT2Y+X78HLy/Q+13FoRY
+         aQ7+qC20ryVMg==
+Date:   Mon, 6 Nov 2023 10:21:19 +0530
+From:   Manivannan Sadhasivam <mani@kernel.org>
+To:     Jeffrey Hugo <quic_jhugo@quicinc.com>
+Cc:     Qiang Yu <quic_qianyu@quicinc.com>, mhi@lists.linux.dev,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        quic_cang@quicinc.com, quic_mrana@quicinc.com
+Subject: Re: [PATCH v2 1/2] bus: mhi: host: Add spinlock to protect WP access
+ when queueing TREs
+Message-ID: <20231106045119.GB2474@thinkpad>
+References: <1694594861-12691-1-git-send-email-quic_qianyu@quicinc.com>
+ <1694594861-12691-2-git-send-email-quic_qianyu@quicinc.com>
+ <af4fc816-d75b-997d-6d37-a774f5eb96ae@quicinc.com>
+ <dfeb6071-8ae4-38ba-5273-59478ea8e178@quicinc.com>
+ <c30c9c68-bfe1-0cc5-c511-218f7d1da92d@quicinc.com>
+ <15526b95-518c-445a-be64-6a15259405fb@quicinc.com>
+ <472817a7-78bb-25d9-b8c6-2d70f713b7fb@quicinc.com>
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed; charset=US-ASCII
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <472817a7-78bb-25d9-b8c6-2d70f713b7fb@quicinc.com>
+X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ampere Computing develops high end ARM processors that support an ever
-increasing number of processors. The current default of 256 processors is
-not enough for our newer products. The default is used by Linux
-distros and therefore our customers cannot use distro kernels because
-the number of processors is not supported.
+On Fri, Oct 20, 2023 at 09:07:35AM -0600, Jeffrey Hugo wrote:
+> On 10/16/2023 2:46 AM, Qiang Yu wrote:
+> > 
+> > On 9/29/2023 11:22 PM, Jeffrey Hugo wrote:
+> > > On 9/24/2023 9:10 PM, Qiang Yu wrote:
+> > > > 
+> > > > On 9/22/2023 10:44 PM, Jeffrey Hugo wrote:
+> > > > > On 9/13/2023 2:47 AM, Qiang Yu wrote:
+> > > > > > From: Bhaumik Bhatt <bbhatt@codeaurora.org>
+> > > > > > 
+> > > > > > Protect WP accesses such that multiple threads queueing buffers for
+> > > > > > incoming data do not race and access the same WP twice.
+> > > > > > Ensure read and
+> > > > > > write locks for the channel are not taken in succession
+> > > > > > by dropping the
+> > > > > > read lock from parse_xfer_event() such that a callback given to client
+> > > > > > can potentially queue buffers and acquire the write lock
+> > > > > > in that process.
+> > > > > > Any queueing of buffers should be done without channel
+> > > > > > read lock acquired
+> > > > > > as it can result in multiple locks and a soft lockup.
+> > > > > > 
+> > > > > > Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+> > > > > > Signed-off-by: Qiang Yu <quic_qianyu@quicinc.com>
+> > > > > > ---
+> > > > > >   drivers/bus/mhi/host/main.c | 11 ++++++++++-
+> > > > > >   1 file changed, 10 insertions(+), 1 deletion(-)
+> > > > > > 
+> > > > > > diff --git a/drivers/bus/mhi/host/main.c b/drivers/bus/mhi/host/main.c
+> > > > > > index dcf627b..13c4b89 100644
+> > > > > > --- a/drivers/bus/mhi/host/main.c
+> > > > > > +++ b/drivers/bus/mhi/host/main.c
+> > > > > > @@ -642,6 +642,7 @@ static int parse_xfer_event(struct
+> > > > > > mhi_controller *mhi_cntrl,
+> > > > > >               mhi_del_ring_element(mhi_cntrl, tre_ring);
+> > > > > >               local_rp = tre_ring->rp;
+> > > > > >   +            read_unlock_bh(&mhi_chan->lock);
+> > > > > 
+> > > > > This doesn't work due to the
+> > > > > write_lock_irqsave(&mhi_chan->lock, flags); on line 591.
+> > > > Write_lock_irqsave(&mhi_chan->lock, flags) is used in case of
+> > > > ev_code >= MHI_EV_CC_OOB. We only read_lock/read_unlock the
+> > > > mhi_chan while ev_code < MHI_EV_CC_OOB.
+> > > 
+> > > Sorry.  OOB != EOB
+> > > 
+> > > > > 
+> > > > > I really don't like that we are unlocking the mhi_chan while
+> > > > > still using it.  It opens up a window where the mhi_chan
+> > > > > state can be updated between here and the client using the
+> > > > > callback to queue a buf.
+> > > > > 
+> > > > > Perhaps we need a new lock that just protects the wp, and
+> > > > > needs to be only grabbed while mhi_chan->lock is held?
+> > > > 
+> > > > Since we have employed mhi_chan lock to protect the channel and
+> > > > what we are concerned here is that client may queue buf to a
+> > > > disabled or stopped channel, can we check channel state after
+> > > > getting mhi_chan->lock like line 595.
+> > > > 
+> > > > We can add the check after getting write lock in mhi_gen_tre()
+> > > > and after getting read lock again here.
+> > > 
+> > > I'm not sure that is sufficient.  After you unlock to notify the
+> > > client, MHI is going to manipulate the packet count and runtime_pm
+> > > without the lock (648-652).  It seems like that adds additional
+> > > races which won't be covered by the additional check you propose.
+> > 
+> > I don't think read_lock_bh(&mhi_chan->lock) can protect runtime_pm and
+> > the packet count here. Even if we do not unlock, mhi state and packet
+> > count can still be changed because we did not get pm_lock here, which is
+> > used in all mhi state transition function.
+> > 
+> > I also checked all places that mhi_chan->lock is grabbed, did not see
+> > packet count and runtime_pm be protected by write_lock(&mhi_chan->lock).
+> > 
+> > 
+> > If you really don't like the unlock operation, we can also take a new
+> > lock. But I think we only need to add the new lock in two places,
+> > mhi_gen_tre and mhi_pm_m0_transition while mhi_chan->lock is held.
+> 
+> Mani, if I recall correctly, you were the architect of the locking.  Do you
+> have an opinion?
+> 
 
-The x86 arch has support for a "CONFIG_MAXSMP" configuration option that
-enables support for the largest known configurations. This usually means
-hundreds or thousands of processors. For those sizes it is no longer
-practical to allocate bitmaps of cpus on the kernel stack. There is
-a kernel option CONFIG_CPUMASK_OFFSTACK that makes the kernel allocate
-and free bitmaps for cpu masks from slab memory instead of keeping it
-on the stack etc.
+TBH, the locking situation is a mess with MHI. Initially, we happen to have
+separate locks for protecting various operations, but then during review, it was
+advised to reuse existing locks and avoid having too many separate locks.
 
-With that is becomes possible to dynamically size the allocation of
-the bitmap depending on the quantity of processors detected on
-bootup.
+This worked well but then we kind of abused the locks over time. I asked Hemant
+and Bhaumik to audit the locks and fix them, but both of them left Qcom.
 
-This patch enables that logic if CONFIG_MAXSMP is enabled.
+So in this situation, the intent of the pm_lock was to protect concurrent access
+against updating the pm_state. And it also happen to protect _other_things_ such
+as runtime_put, pending_pkts etc... But not properly, because most of the time
+read lock is taken in places where pm_state is being read. So there is still a
+possibility of race while accessing these _other_things_.
 
-If CONFIG_MAXSMP is disabled then a default of 64 processors
-is supported. A bitmap for 64 processors fits into one word and
-therefore can be efficiently handled on the stack. Using a pointer
-to a bitmap would be overkill.
+For this patch, I'm happy with dropping chan->lock before calling xfer_cb() and
+I want someone (maybe Qiang) to do the audit of locking in general and come up
+with fixes where needed.
 
-The number of processors can be manually configured if
-CONFIG_MAXSMP is not set.
-
-Currently the default for CONFIG_MAXSMP is 512 processors.
-This will have to be increased if ARM processor vendors start
-supporting more processors.
-
-Signed-off-by: Christoph Lameter (Ampere) <cl@linux.com>
-
-Index: linux/arch/arm64/Kconfig
-===================================================================
---- linux.orig/arch/arm64/Kconfig
-+++ linux/arch/arm64/Kconfig
-@@ -1402,10 +1402,56 @@ config SCHED_SMT
-  	  MultiThreading at a cost of slightly increased overhead in some
-  	  places. If unsure say N here.
-
-+
-+config MAXSMP
-+	bool "Compile kernel with support for the maximum number of SMP Processors"
-+	depends on SMP && DEBUG_KERNEL
-+	select CPUMASK_OFFSTACK
-+	help
-+	  Enable maximum number of CPUS and NUMA Nodes for this architecture.
-+	  If unsure, say N.
-+
-+#
-+# The maximum number of CPUs supported:
-+#
-+# The main config value is NR_CPUS, which defaults to NR_CPUS_DEFAULT,
-+# and which can be configured interactively in the
-+# [NR_CPUS_RANGE_BEGIN ... NR_CPUS_RANGE_END] range.
-+#
-+# ( If MAXSMP is enabled we just use the highest possible value and disable
-+#   interactive configuration. )
-+#
-+
-+config NR_CPUS_RANGE_BEGIN
-+	int
-+	default NR_CPUS_RANGE_END if MAXSMP
-+	default    1 if !SMP
-+	default    2
-+
-+config NR_CPUS_RANGE_END
-+	int
-+	default 8192 if  SMP && CPUMASK_OFFSTACK
-+	default  512 if  SMP && !CPUMASK_OFFSTACK
-+	default    1 if !SMP
-+
-+config NR_CPUS_DEFAULT
-+	int
-+	default  512 if  MAXSMP
-+	default   64 if  SMP
-+	default    1 if !SMP
-+
-  config NR_CPUS
--	int "Maximum number of CPUs (2-4096)"
--	range 2 4096
--	default "256"
-+	int "Set maximum number of CPUs" if SMP && !MAXSMP
-+	range NR_CPUS_RANGE_BEGIN NR_CPUS_RANGE_END
-+	default NR_CPUS_DEFAULT
-+	help
-+	  This allows you to specify the maximum number of CPUs which this
-+	  kernel will support.  If CPUMASK_OFFSTACK is enabled, the maximum
-+	  supported value is 8192, otherwise the maximum value is 512.  The
-+	  minimum value which makes sense is 2.
-+
-+	  This is purely to save memory: each supported CPU adds about 8KB
-+	  to the kernel image.
-
-  config HOTPLUG_CPU
-  	bool "Support for hot-pluggable CPUs"
-Index: linux/arch/arm64/configs/defconfig
-===================================================================
---- linux.orig/arch/arm64/configs/defconfig
-+++ linux/arch/arm64/configs/defconfig
-@@ -15,6 +15,7 @@ CONFIG_TASK_IO_ACCOUNTING=y
-  CONFIG_IKCONFIG=y
-  CONFIG_IKCONFIG_PROC=y
-  CONFIG_NUMA_BALANCING=y
-+CONFIG_MAXSMP=y
-  CONFIG_MEMCG=y
-  CONFIG_BLK_CGROUP=y
-  CONFIG_CGROUP_PIDS=y
+- Mani
+-- 
+மணிவண்ணன் சதாசிவம்
