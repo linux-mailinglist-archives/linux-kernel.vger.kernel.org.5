@@ -2,86 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 480397E2CF9
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 20:36:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A967A7E2CF0
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 20:35:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233052AbjKFTgR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 14:36:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52464 "EHLO
+        id S232618AbjKFTfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 14:35:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232967AbjKFTf5 (ORCPT
+        with ESMTP id S231277AbjKFTe7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 14:35:57 -0500
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ADD2D47
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 11:35:50 -0800 (PST)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5af9b0850fdso65781507b3.1
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 11:35:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1699299349; x=1699904149; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=E57J/i4cUWuAwfC7XG6AzrNtexVrU81CJufi+3vfKlM=;
-        b=qXw7kJ5W0ifuJtSiQBRP27i2DJmvwdlsh9bncGmXbYBqDYYEhEuBOo5Cyjdowg7FC1
-         Jhb56lpXVAGKmF23W3Lr2b6LWUQVVfH/uiyDSURF+9b+F2lm1TVf6PI2gAlcZk28FjNA
-         r2/TjPFMz9+xSTpX9OrFKN1XcDX6WAt7VMFMi0K/Xs+Bv8NpjV9yQBkIUSD66D3cpg2z
-         pVf1RvV4cIPrt48yP88jt+byUsYVm6bMZY1W+lrQ7Cogj1riaUOL9PFj4ikkfH0OVMkM
-         ZYgdKsdUZ5lK0V6A1uXFuot2Vlb3ON+ix7ymyjPEQymtDHtsFIGMNylBLM3/ky/eiiN7
-         PVQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699299349; x=1699904149;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=E57J/i4cUWuAwfC7XG6AzrNtexVrU81CJufi+3vfKlM=;
-        b=WswFjBlqhuztzGjE/M7PP+uFuT8tLpSDkoXusnGxZv7nNRknTT0IHtSj8iqTWPCnuU
-         9O7FPP92JiwqIPvj7dZPQFE5pX/oHZyU1nkfruEWcDVa/uE/qfhBB/jaBwB1Hhuwt8J3
-         O/F6z5JcIRjCbZNsQ6sRsMzNs+RhUW84hB5aA0YdlSVdKAFl6W47WsP9e5/jTZeUfbgJ
-         J3mid+MZsE4twpJPkjnLsdMVpwiLqtT7a/m7zWSzk2LtRnS40N0km0Fo4lLbrV36t+Zv
-         KJNP9A8qWKP+JwBpcZyODoBIZ87z3uIdaOJ2MxJAeB5qzQxsIGbkKxLeM7HE5f3SsqPn
-         5g7Q==
-X-Gm-Message-State: AOJu0YzGrf6INBJZe4vMZmLRK7cxn5YxR9xbzEVR9R+L85Ac+UzWvLAN
-        wQevlU4j2UaeZxTMiWwb3zdK6GttrECeBhYnpMJm8Pb5h3KuCSL3VHeheRKrWEtxB94ruhTJmEj
-        LG1t936qa61ks6H/ojzGbHCGkBX5XsQ2PvwqVOwUldfE1Pm2p3mDfoha3GnFG+Pd0rfTvJsg=
-X-Google-Smtp-Source: AGHT+IEp4vHO62WTZMDwX26JCgUwtSKYYeDVwtDwzdUlAENraqFn2qKaM1LQfz49GTp+jAgBqyhNrwEpfL/O
-X-Received: from jstultz-noogler2.c.googlers.com ([fda3:e722:ac3:cc00:24:72f4:c0a8:600])
- (user=jstultz job=sendgmr) by 2002:a05:6902:1083:b0:d9a:c3b8:4274 with SMTP
- id v3-20020a056902108300b00d9ac3b84274mr698783ybu.7.1699299349407; Mon, 06
- Nov 2023 11:35:49 -0800 (PST)
-Date:   Mon,  6 Nov 2023 19:34:50 +0000
-In-Reply-To: <20231106193524.866104-1-jstultz@google.com>
-Mime-Version: 1.0
-References: <20231106193524.866104-1-jstultz@google.com>
-X-Mailer: git-send-email 2.42.0.869.gea05f2083d-goog
-Message-ID: <20231106193524.866104-8-jstultz@google.com>
-Subject: [PATCH v6 07/20] locking/mutex: Add p->blocked_on wrappers for
- correctness checks
-From:   John Stultz <jstultz@google.com>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Valentin Schneider <valentin.schneider@arm.com>,
-        Joel Fernandes <joelaf@google.com>,
-        Qais Yousef <qyousef@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
+        Mon, 6 Nov 2023 14:34:59 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A6FF1BC
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 11:34:55 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87623C433CA;
+        Mon,  6 Nov 2023 19:34:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699299294;
+        bh=muQm112T23le5C+Uxd9oMAYYs0iqRDU3+iNJkbAH0Xc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=MFFiIGrnIRu/mrJa2bbMu5CYQ9MgJ6xt7+laLHpJ4f6F5TUNtTNPITvd+ffNqF0cs
+         AGJTeRWL5iFK2SMj0PyZ3UEwtBC38lcAqcRGgPgO7KwSEboY5cxd3eS4R8yU8W6RN6
+         j9u0hQHsGDnc94OGZDcGs8TRVxJ2wAeFxr7DtPImbmB7GpQbxyKw0xuUig/OOgxhvJ
+         dmZnaVK7oEvZ+MMx7Uh+Qkng53VTxLGXl9bbC5lK1SmTBnSONYK4Iw/cARMhicXTEf
+         XR4+ZNVEc+dMJ510oa7muZhoHqUSqewCoa2xR1ySTBUKzJkuJ1NH1Z5gw3L5Go2xeI
+         N9iRmK95jDj4A==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id B40E74035D; Mon,  6 Nov 2023 16:34:51 -0300 (-03)
+Date:   Mon, 6 Nov 2023 16:34:51 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>,
-        Zimuzo Ezeozue <zezeozue@google.com>,
-        Youssef Esmat <youssefesmat@google.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>, kernel-team@android.com,
-        "Connor O'Brien" <connoro@google.com>,
-        John Stultz <jstultz@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        Ingo Molnar <mingo@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-perf-users@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: Re: [PATCH 1/5] perf annotate: Split struct cycles_info
+Message-ID: <ZUk/27WMwtnQPggF@kernel.org>
+References: <20231103191907.54531-1-namhyung@kernel.org>
+ <20231103191907.54531-2-namhyung@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231103191907.54531-2-namhyung@kernel.org>
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -89,175 +58,176 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Valentin Schneider <valentin.schneider@arm.com>
+Em Fri, Nov 03, 2023 at 12:19:03PM -0700, Namhyung Kim escreveu:
+> The cycles info is used only when branch stack is provided.  Split them
+> into a separate struct and lazy allocate them to save some memory.
+> 
+> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> ---
+>  tools/perf/ui/browsers/annotate.c |  2 +-
+>  tools/perf/util/annotate.c        | 34 ++++++++++++++++++-------------
+>  tools/perf/util/annotate.h        | 14 ++++++++-----
+>  3 files changed, 30 insertions(+), 20 deletions(-)
+> 
+> diff --git a/tools/perf/ui/browsers/annotate.c b/tools/perf/ui/browsers/annotate.c
+> index ccdb2cd11fbf..d2470f87344d 100644
+> --- a/tools/perf/ui/browsers/annotate.c
+> +++ b/tools/perf/ui/browsers/annotate.c
+> @@ -337,7 +337,7 @@ static void annotate_browser__calc_percent(struct annotate_browser *browser,
+>  				max_percent = percent;
+>  		}
+>  
+> -		if (max_percent < 0.01 && pos->al.ipc == 0) {
+> +		if (max_percent < 0.01 && (!pos->al.cycles || pos->al.cycles->ipc == 0)) {
+>  			RB_CLEAR_NODE(&pos->al.rb_node);
+>  			continue;
+>  		}
+> diff --git a/tools/perf/util/annotate.c b/tools/perf/util/annotate.c
+> index 82956adf9963..3e7f75827270 100644
+> --- a/tools/perf/util/annotate.c
+> +++ b/tools/perf/util/annotate.c
+> @@ -1100,8 +1100,8 @@ static void annotation__count_and_fill(struct annotation *notes, u64 start, u64
+>  		for (offset = start; offset <= end; offset++) {
+>  			struct annotation_line *al = notes->offsets[offset];
+>  
+> -			if (al && al->ipc == 0.0) {
+> -				al->ipc = ipc;
+> +			if (al && al->cycles && al->cycles->ipc == 0.0) {
+> +				al->cycles->ipc = ipc;
+>  				cover_insn++;
+>  			}
+>  		}
+> @@ -1134,13 +1134,18 @@ void annotation__compute_ipc(struct annotation *notes, size_t size)
+>  		if (ch && ch->cycles) {
+>  			struct annotation_line *al;
+>  
+> +			al = notes->offsets[offset];
+> +			if (al && al->cycles == NULL) {
+> +				al->cycles = zalloc(sizeof(*al->cycles));
+> +				if (al->cycles == NULL)
 
-This lets us assert p->blocked_lock is held whenever we access
-p->blocked_on, as well as warn us for unexpected state changes.
+Shouldn't we stop here and tell the user that his system is really tight
+on memory instead of just ignoring it?
 
-Cc: Joel Fernandes <joelaf@google.com>
-Cc: Qais Yousef <qyousef@google.com>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Juri Lelli <juri.lelli@redhat.com>
-Cc: Vincent Guittot <vincent.guittot@linaro.org>
-Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc: Valentin Schneider <vschneid@redhat.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Ben Segall <bsegall@google.com>
-Cc: Zimuzo Ezeozue <zezeozue@google.com>
-Cc: Youssef Esmat <youssefesmat@google.com>
-Cc: Mel Gorman <mgorman@suse.de>
-Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Waiman Long <longman@redhat.com>
-Cc: Boqun Feng <boqun.feng@gmail.com>
-Cc: "Paul E . McKenney" <paulmck@kernel.org>
-Cc: kernel-team@android.com
-Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
-[fix conflicts, call in more places]
-Signed-off-by: Connor O'Brien <connoro@google.com>
-[jstultz: tweaked commit subject, added get_task_blocked_on() as well]
-Signed-off-by: John Stultz <jstultz@google.com>
----
-v2:
-* Added get_task_blocked_on() accessor
-v4:
-* Address READ_ONCE usage that was dropped in v2
-* Reordered to be a later add on to the main patch series as
-  Peter was unhappy with similar wrappers in other patches.
-v5:
-* Added some extra correctness checking in wrappers
----
- include/linux/sched.h        | 22 ++++++++++++++++++++++
- kernel/locking/mutex-debug.c |  4 ++--
- kernel/locking/mutex.c       | 10 +++++-----
- kernel/locking/ww_mutex.h    |  4 ++--
- 4 files changed, 31 insertions(+), 9 deletions(-)
+	if (al->cycles == NULL) {
+		ui__error("Not enough memory for allocating branch stack cycles info!\n");
+		return ... its a void function :-\
+	}
 
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index a9258dae00e0..81334677e008 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -2248,6 +2248,28 @@ static inline int rwlock_needbreak(rwlock_t *lock)
- #endif
- }
- 
-+static inline void set_task_blocked_on(struct task_struct *p, struct mutex *m)
-+{
-+	lockdep_assert_held(&p->blocked_lock);
-+
-+	/* We should be setting values to NULL or NULL to values */
-+	WARN_ON((!m && !p->blocked_on) || (m && p->blocked_on));
-+
-+	p->blocked_on = m;
-+}
-+
-+static inline struct mutex *get_task_blocked_on(struct task_struct *p)
-+{
-+	lockdep_assert_held(&p->blocked_lock);
-+
-+	return p->blocked_on;
-+}
-+
-+static inline struct mutex *get_task_blocked_on_once(struct task_struct *p)
-+{
-+	return READ_ONCE(p->blocked_on);
-+}
-+
- static __always_inline bool need_resched(void)
- {
- 	return unlikely(tif_need_resched());
-diff --git a/kernel/locking/mutex-debug.c b/kernel/locking/mutex-debug.c
-index 7228909c3e62..1eedf7c60c00 100644
---- a/kernel/locking/mutex-debug.c
-+++ b/kernel/locking/mutex-debug.c
-@@ -53,13 +53,13 @@ void debug_mutex_add_waiter(struct mutex *lock, struct mutex_waiter *waiter,
- 	lockdep_assert_held(&lock->wait_lock);
- 
- 	/* Current thread can't be already blocked (since it's executing!) */
--	DEBUG_LOCKS_WARN_ON(task->blocked_on);
-+	DEBUG_LOCKS_WARN_ON(get_task_blocked_on(task));
- }
- 
- void debug_mutex_remove_waiter(struct mutex *lock, struct mutex_waiter *waiter,
- 			 struct task_struct *task)
- {
--	struct mutex *blocked_on = READ_ONCE(task->blocked_on);
-+	struct mutex *blocked_on = get_task_blocked_on_once(task);
- 
- 	DEBUG_LOCKS_WARN_ON(list_empty(&waiter->list));
- 	DEBUG_LOCKS_WARN_ON(waiter->task != task);
-diff --git a/kernel/locking/mutex.c b/kernel/locking/mutex.c
-index df186c0bf4a9..36e563f69705 100644
---- a/kernel/locking/mutex.c
-+++ b/kernel/locking/mutex.c
-@@ -623,7 +623,7 @@ __mutex_lock_common(struct mutex *lock, unsigned int state, unsigned int subclas
- 			goto err_early_kill;
- 	}
- 
--	current->blocked_on = lock;
-+	set_task_blocked_on(current, lock);
- 	set_current_state(state);
- 	trace_contention_begin(lock, LCB_F_MUTEX);
- 	for (;;) {
-@@ -670,7 +670,7 @@ __mutex_lock_common(struct mutex *lock, unsigned int state, unsigned int subclas
- 		/*
- 		 * Gets reset by unlock path().
- 		 */
--		current->blocked_on = lock;
-+		set_task_blocked_on(current, lock);
- 		set_current_state(state);
- 		/*
- 		 * Here we order against unlock; we must either see it change
-@@ -699,7 +699,7 @@ __mutex_lock_common(struct mutex *lock, unsigned int state, unsigned int subclas
- 		}
- 	}
- acquired:
--	current->blocked_on = NULL;
-+	set_task_blocked_on(current, NULL);
- 	__set_current_state(TASK_RUNNING);
- 
- 	if (ww_ctx) {
-@@ -731,7 +731,7 @@ __mutex_lock_common(struct mutex *lock, unsigned int state, unsigned int subclas
- 	return 0;
- 
- err:
--	current->blocked_on = NULL;
-+	set_task_blocked_on(current, NULL);
- 	__set_current_state(TASK_RUNNING);
- 	__mutex_remove_waiter(lock, &waiter);
- err_early_kill:
-@@ -950,7 +950,7 @@ static noinline void __sched __mutex_unlock_slowpath(struct mutex *lock, unsigne
- 		debug_mutex_wake_waiter(lock, waiter);
- 		raw_spin_lock(&next->blocked_lock);
- 		WARN_ON(next->blocked_on != lock);
--		next->blocked_on = NULL;
-+		set_task_blocked_on(current, NULL);
- 		raw_spin_unlock(&next->blocked_lock);
- 		wake_q_add(&wake_q, next);
- 	}
-diff --git a/kernel/locking/ww_mutex.h b/kernel/locking/ww_mutex.h
-index 2929a95b4272..44a532dda927 100644
---- a/kernel/locking/ww_mutex.h
-+++ b/kernel/locking/ww_mutex.h
-@@ -292,7 +292,7 @@ __ww_mutex_die(struct MUTEX *lock, struct MUTEX_WAITER *waiter,
- 		 * blocked_on relationships that can't resolve.
- 		 */
- 		WARN_ON(waiter->task->blocked_on != lock);
--		waiter->task->blocked_on = NULL;
-+		set_task_blocked_on(waiter->task, NULL);
- 		wake_q_add(wake_q, waiter->task);
- 		raw_spin_unlock(&waiter->task->blocked_lock);
- 	}
-@@ -349,7 +349,7 @@ static bool __ww_mutex_wound(struct MUTEX *lock,
- 			 * blocked_on pointer. Otherwise we can see circular
- 			 * blocked_on relationships that can't resolve.
- 			 */
--			owner->blocked_on = NULL;
-+			set_task_blocked_on(owner, NULL);
- 			wake_q_add(wake_q, owner);
- 			raw_spin_unlock(&owner->blocked_lock);
- 		}
+Since its a void function, can't we detect that we need al->cycles
+allocated at the tool start and allocate it there, then propagate back
+the error?
+
+Its per line, so doing it lazily is indeed easier, so make that function
+return an error and bail out when not being able to calculate the ipc
+for the remaining lines?
+
+- Arnaldo
+
+> +					continue;
+> +			}
+>  			if (ch->have_start)
+>  				annotation__count_and_fill(notes, ch->start, offset, ch);
+> -			al = notes->offsets[offset];
+>  			if (al && ch->num_aggr) {
+> -				al->cycles = ch->cycles_aggr / ch->num_aggr;
+> -				al->cycles_max = ch->cycles_max;
+> -				al->cycles_min = ch->cycles_min;
+> +				al->cycles->avg = ch->cycles_aggr / ch->num_aggr;
+> +				al->cycles->max = ch->cycles_max;
+> +				al->cycles->min = ch->cycles_min;
+>  			}
+>  			notes->have_cycles = true;
+>  		}
+> @@ -1225,6 +1230,7 @@ static void annotation_line__exit(struct annotation_line *al)
+>  {
+>  	zfree_srcline(&al->path);
+>  	zfree(&al->line);
+> +	zfree(&al->cycles);
+>  }
+>  
+>  static size_t disasm_line_size(int nr)
+> @@ -3083,8 +3089,8 @@ static void __annotation_line__write(struct annotation_line *al, struct annotati
+>  	int printed;
+>  
+>  	if (first_line && (al->offset == -1 || percent_max == 0.0)) {
+> -		if (notes->have_cycles) {
+> -			if (al->ipc == 0.0 && al->cycles == 0)
+> +		if (notes->have_cycles && al->cycles) {
+> +			if (al->cycles->ipc == 0.0 && al->cycles->avg == 0)
+>  				show_title = true;
+>  		} else
+>  			show_title = true;
+> @@ -3121,17 +3127,17 @@ static void __annotation_line__write(struct annotation_line *al, struct annotati
+>  	}
+>  
+>  	if (notes->have_cycles) {
+> -		if (al->ipc)
+> -			obj__printf(obj, "%*.2f ", ANNOTATION__IPC_WIDTH - 1, al->ipc);
+> +		if (al->cycles && al->cycles->ipc)
+> +			obj__printf(obj, "%*.2f ", ANNOTATION__IPC_WIDTH - 1, al->cycles->ipc);
+>  		else if (!show_title)
+>  			obj__printf(obj, "%*s", ANNOTATION__IPC_WIDTH, " ");
+>  		else
+>  			obj__printf(obj, "%*s ", ANNOTATION__IPC_WIDTH - 1, "IPC");
+>  
+>  		if (!notes->options->show_minmax_cycle) {
+> -			if (al->cycles)
+> +			if (al->cycles && al->cycles->avg)
+>  				obj__printf(obj, "%*" PRIu64 " ",
+> -					   ANNOTATION__CYCLES_WIDTH - 1, al->cycles);
+> +					   ANNOTATION__CYCLES_WIDTH - 1, al->cycles->avg);
+>  			else if (!show_title)
+>  				obj__printf(obj, "%*s",
+>  					    ANNOTATION__CYCLES_WIDTH, " ");
+> @@ -3145,8 +3151,8 @@ static void __annotation_line__write(struct annotation_line *al, struct annotati
+>  
+>  				scnprintf(str, sizeof(str),
+>  					"%" PRIu64 "(%" PRIu64 "/%" PRIu64 ")",
+> -					al->cycles, al->cycles_min,
+> -					al->cycles_max);
+> +					al->cycles->avg, al->cycles->min,
+> +					al->cycles->max);
+>  
+>  				obj__printf(obj, "%*s ",
+>  					    ANNOTATION__MINMAX_CYCLES_WIDTH - 1,
+> diff --git a/tools/perf/util/annotate.h b/tools/perf/util/annotate.h
+> index 962780559176..16d27952fd5c 100644
+> --- a/tools/perf/util/annotate.h
+> +++ b/tools/perf/util/annotate.h
+> @@ -130,6 +130,13 @@ struct annotation_data {
+>  	struct sym_hist_entry	 he;
+>  };
+>  
+> +struct cycles_info {
+> +	float			 ipc;
+> +	u64			 avg;
+> +	u64			 max;
+> +	u64			 min;
+> +};
+> +
+>  struct annotation_line {
+>  	struct list_head	 node;
+>  	struct rb_node		 rb_node;
+> @@ -137,12 +144,9 @@ struct annotation_line {
+>  	char			*line;
+>  	int			 line_nr;
+>  	char			*fileloc;
+> -	int			 jump_sources;
+> -	float			 ipc;
+> -	u64			 cycles;
+> -	u64			 cycles_max;
+> -	u64			 cycles_min;
+>  	char			*path;
+> +	struct cycles_info	*cycles;
+> +	int			 jump_sources;
+>  	u32			 idx;
+>  	int			 idx_asm;
+>  	int			 data_nr;
+> -- 
+> 2.42.0.869.gea05f2083d-goog
+> 
+
 -- 
-2.42.0.869.gea05f2083d-goog
 
+- Arnaldo
