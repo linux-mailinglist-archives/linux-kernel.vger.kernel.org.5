@@ -2,111 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EBA37E2BD0
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 19:21:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6F2B7E2BCB
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 19:21:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232431AbjKFSVY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 13:21:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50482 "EHLO
+        id S232342AbjKFSVQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 13:21:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232348AbjKFSVS (ORCPT
+        with ESMTP id S232128AbjKFSVN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 13:21:18 -0500
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CABE94;
-        Mon,  6 Nov 2023 10:21:15 -0800 (PST)
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A6D8Fai021364;
-        Mon, 6 Nov 2023 18:21:06 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : date :
- subject : mime-version : content-type : content-transfer-encoding :
- message-id : references : in-reply-to : to : cc; s=qcppdkim1;
- bh=KXhTaYqFaKXTr7+mcAYcRVmQtxxoVueu+E2/hfA2RQs=;
- b=OnYhsNFVWdgD+5c63G+YMjcIyWcBHG3YgV1k1DT8EPzZ1jmUTqB6fcESX7Wmquvu9IuM
- enrwEBQ2nQYoptlsQuvkOwUHdeeqiVowywE88rxZT1/q+H81PLNgGq3UXsXYblIjwgDP
- iMM4b5pFbLEGqLPsSfGxmlwpcUrJB+H60WpLxMsE+Bcg41y1xwk/P8KcZVOgEk2f3cJF
- iKGWUwotMBHDieVQOudFlQK1xEVInkwutpogoMTSelIkyLK1JxQXnmJvMf9C/lv0Clfg
- d8ByqXteqQ2Bglh8dn2hkxjDzV+4zznshegXT2qlLmdzh1PFy3BP5Z+Yq8hD2pZ8gNQh UA== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u6wer1dnb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 06 Nov 2023 18:21:05 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3A6IL5Fi021760
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 6 Nov 2023 18:21:05 GMT
-Received: from hu-jjohnson-lv.qualcomm.com (10.49.16.6) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.39; Mon, 6 Nov 2023 10:21:05 -0800
-From:   Jeff Johnson <quic_jjohnson@quicinc.com>
-Date:   Mon, 6 Nov 2023 10:21:04 -0800
-Subject: [PATCH 1/2] wifi: ath11k: Remove struct ath11k::ops
+        Mon, 6 Nov 2023 13:21:13 -0500
+Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47430D4D;
+        Mon,  6 Nov 2023 10:21:10 -0800 (PST)
+Received: by mail-qt1-x82c.google.com with SMTP id d75a77b69052e-42033328ad0so3764941cf.0;
+        Mon, 06 Nov 2023 10:21:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699294869; x=1699899669; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=SQrzTgI4HfQNrka2FNCvIJjf2ADMLYsvYWHL3HxoBJw=;
+        b=QUuvRMMTqsqH6Gr970kY6W0HsC4JY7KNk6+p8aUQCTuN1AAX+0T8nZka3i7SByM/p5
+         s3KJ8XnUhJdZshCdSjXW9PpI+VMsG39ONTe3uIYC5suhIL2X5GBgCYDFXb3/fDl10XKN
+         nWRBjka37syCwoP8GYlvTm/emoS5sO7NZrZFJUXt5S2ko0Ol4XiSpVZdg9zEfonqY37p
+         AbhHIrXZifR8Ylgi5gcTnqakzvcL5hgjutT+gZms+kLHQQoaNswPbFOfIV8fg3qiMTi8
+         JOOsIuLXsnniGEJIRxAR4MvUhpQCHcc5YCYX3rgwumfIuw6hXxsS4w5jlNG/JkTvAqn/
+         PEug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699294869; x=1699899669;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=SQrzTgI4HfQNrka2FNCvIJjf2ADMLYsvYWHL3HxoBJw=;
+        b=MSPPrj9VQpgWGy/0vIRHVXcgWLJqcgRIsZbtxTns5U31NkUmKpOjU04qYUZS2bmQ9S
+         J8Ooe3PIx9MRhHAh4PCGaVFks7YHdqQDUj2D5NMY8wMpVNQOK7Ps1hP4xOfokdoO/kvW
+         UMIbytOpBYtThR2xfx8XAeD4A32A9btkD/BPiY+0ztumB5Yphe7eBV8x/PQwGscLL210
+         TvwzVSrLnUSuU8CrOqNGdkYakPUTfeupFy3s/brkopgKAOckiicC2/lMG7FtT4WYhopW
+         oIp8z69Uh+GJG8Z6W7tHM+5gLDmU9LBzfL+WEC/oHaREPPxYYAAHb6UsARqek9aTBAF/
+         NMMQ==
+X-Gm-Message-State: AOJu0YyZVzPIAmC2Q59cx1jqs8LFZ5CqnNu4wnbiqf0Fw6w4wC8hZAKu
+        Vh6pZWW0mg0+Zt8NA8oO0DLJFhyJIdk=
+X-Google-Smtp-Source: AGHT+IG45+mtC2eYMDM6QW7spOj49kaUMAWYaUWRTi1PQTc5vrEi17GCFup6TQj0zomNY52VNMB7Fw==
+X-Received: by 2002:a05:622a:1447:b0:417:9646:8e2 with SMTP id v7-20020a05622a144700b00417964608e2mr37140262qtx.17.1699294869280;
+        Mon, 06 Nov 2023 10:21:09 -0800 (PST)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id z9-20020ac86b89000000b0041cb8947ed2sm3595786qts.26.2023.11.06.10.21.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 06 Nov 2023 10:21:08 -0800 (PST)
+Message-ID: <2d007bae-c958-4693-9467-ad0f20f68bb2@gmail.com>
+Date:   Mon, 6 Nov 2023 10:21:05 -0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 6.6 00/30] 6.6.1-rc1 review
+Content-Language: en-US
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org
+References: <20231106130257.903265688@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <20231106130257.903265688@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-ID: <20231106-ath12k-remove-ieee80211_ops-v1-1-d72cef1a855b@quicinc.com>
-References: <20231106-ath12k-remove-ieee80211_ops-v1-0-d72cef1a855b@quicinc.com>
-In-Reply-To: <20231106-ath12k-remove-ieee80211_ops-v1-0-d72cef1a855b@quicinc.com>
-To:     Kalle Valo <kvalo@kernel.org>
-CC:     <ath11k@lists.infradead.org>, <linux-wireless@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <ath12k@lists.infradead.org>,
-        Jeff Johnson <quic_jjohnson@quicinc.com>
-X-Mailer: b4 0.12.3
-X-Originating-IP: [10.49.16.6]
-X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: LxNsz99jzpYWetG5oIxXXWm9Ea_55EZi
-X-Proofpoint-GUID: LxNsz99jzpYWetG5oIxXXWm9Ea_55EZi
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-06_14,2023-11-02_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 malwarescore=0
- spamscore=0 lowpriorityscore=0 clxscore=1015 impostorscore=0 phishscore=0
- mlxscore=0 priorityscore=1501 adultscore=0 mlxlogscore=481 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2310240000
- definitions=main-2311060150
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently struct ath11k defines the following member:
-        struct ieee80211_ops *ops;
+On 11/6/23 05:03, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.6.1 release.
+> There are 30 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 08 Nov 2023 13:02:46 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.6.1-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.6.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-This is being flagged by checkpatch.pl:
-WARNING: struct ieee80211_ops should normally be const
+On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels, build tested on 
+BMIPS_GENERIC:
 
-The original plan was to add the const qualifier.  However, it turns
-out this is actually unused, so remove it.
-
-No functional changes, compile tested only.
-
-Signed-off-by: Jeff Johnson <quic_jjohnson@quicinc.com>
----
- drivers/net/wireless/ath/ath11k/core.h | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/drivers/net/wireless/ath/ath11k/core.h b/drivers/net/wireless/ath/ath11k/core.h
-index f12b606e2d2e..7e3b6779f4e9 100644
---- a/drivers/net/wireless/ath/ath11k/core.h
-+++ b/drivers/net/wireless/ath/ath11k/core.h
-@@ -599,7 +599,6 @@ struct ath11k {
- 	struct ath11k_base *ab;
- 	struct ath11k_pdev *pdev;
- 	struct ieee80211_hw *hw;
--	struct ieee80211_ops *ops;
- 	struct ath11k_pdev_wmi *wmi;
- 	struct ath11k_pdev_dp dp;
- 	u8 mac_addr[ETH_ALEN];
-
+Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
 -- 
-2.42.0
+Florian
 
