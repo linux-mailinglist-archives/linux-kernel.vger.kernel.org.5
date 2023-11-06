@@ -2,277 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A6127E2EF6
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 22:32:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 842DC7E2EFA
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 22:33:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233087AbjKFVck (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 16:32:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45088 "EHLO
+        id S233137AbjKFVdx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 16:33:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233005AbjKFVci (ORCPT
+        with ESMTP id S233005AbjKFVdv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 16:32:38 -0500
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5185FB0
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 13:32:35 -0800 (PST)
-Received: by mail-lj1-x233.google.com with SMTP id 38308e7fff4ca-2c54c8934abso70500311fa.0
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 13:32:35 -0800 (PST)
+        Mon, 6 Nov 2023 16:33:51 -0500
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80655BB;
+        Mon,  6 Nov 2023 13:33:48 -0800 (PST)
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A6FkfC9008589;
+        Mon, 6 Nov 2023 21:33:31 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-id : content-transfer-encoding : mime-version; s=corp-2023-03-30;
+ bh=cdxLMUnG7uL7qMCY3v9q5mHm2umoZwbvnfcKngrF30w=;
+ b=ccTxxIYJDTUM8sO2oJwqgUW0Cfl6tgMK8i7GitpU8SNXYcL07Q4V1hottOGfKbzJr5fd
+ 89xLYxs3dkv/iZQy3vWjh5GrCi5nTouzZI2WX9lR/s6Zcju5sq5d7aO1p/6ErE4/xV2k
+ yqu8Oj8Wxs6sbSdh8YsEm7uKJkyHjQGSPqZAIophfxWn43JBWE1NM7TyF6X2nDZVnH3Y
+ GqJ1MWPoyJuDBtAbhSyyby062Q0xM1XykibtpVWdE0W7NXVEkOyJsQvPmaHQHYigx2Nb
+ GDI4T2sxyvV8HHLgSYDGgd5TGw+bNAhK0fzh5cDB3V7Ik6b4M5jLdsNxVXCrwVwlfCrf TA== 
+Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3u5ccdvf3j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 06 Nov 2023 21:33:31 +0000
+Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3A6KqaqL038335;
+        Mon, 6 Nov 2023 21:33:31 GMT
+Received: from nam04-dm6-obe.outbound.protection.outlook.com (mail-dm6nam04lp2041.outbound.protection.outlook.com [104.47.73.41])
+        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3u5cdchrv8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 06 Nov 2023 21:33:31 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=I+EC8eM4Q3DTLa06LX8LcTQfnclQRX8YU3uSF7zKETKdu2SoKalr47cC78wJJFIvLPxoFJzDNAWaQRQ3slEIfJ7C9nrUsz2pU8jR8tDcbt/xIiyFbcyaSbUJLKyo7VrnSHUC4i7LzONkCwJds4h6wlgvFxzA82LNkNq/fcrmpyM/uZwMaNqv6vzp26R6MhN0gBvlY8BbH4G8rIbXJESZnyZZQGbQKyGT4KpEHFBLk6uIKoITtDkEZrIiwRaycIth4JxXfdBGnJZ1Y4cJTYCHP2O6jYE3nMI4mOu35NJR7Yi0MEV+hOnQ2RToiyI8caDnj0JaPue+GlHrIqF9/A3cRQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=cdxLMUnG7uL7qMCY3v9q5mHm2umoZwbvnfcKngrF30w=;
+ b=LELtAkLosRJNnvvFFv408cLdzZpoHKfhic6Y++qSwSsaSZ/ds4rlvhaBERtCHRyUU9L9yVOrxwg8f5ZXP0iFxeWzLzSshzDaacxo+O+gSPQKhyb3mTWAdJX+XjfW286A5dZxbyP/xb3TEFzdLNq5Xe96OtcWDWVvav5L3M+wFLYT5/lkQFdmjxwlYuL8fiu9tYqGbdNhIcS4uuxDXWA0zUHixrgqE7cM2SFtCErmSNz4QiavlLJQbutvL45aZkgy4fILDo63iPqqqLw96iPH0exUyMgpVbM0UdzyppszqIsGyZlR8weqB/FBX5CkSwy7CBuf6zuq7n0ASD00A2TMIg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1699306353; x=1699911153; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TFuNQvNz6VrigJhBNosf/uvYFJji3ZKCfAmovuTcn/Y=;
-        b=WAaa50qsWk3jABk1DmSqGg5Z7OA9W9a0+AelCz5OsjcxF/0bhzquoFUy5TcFoS97BV
-         2skpE95rhTxEQgIDOdHoKzzF02M17ntOUNVgeiJHaI4j7L9OHWpYod46ubA82RanySmW
-         o8xQqM/VR4tUV6/oZYNqQC0hIplmb82ZgDW1E=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699306353; x=1699911153;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TFuNQvNz6VrigJhBNosf/uvYFJji3ZKCfAmovuTcn/Y=;
-        b=qD5zTVQXYyFWoGCzfVyA5HL7iQE1QyYrKE1CcsKWsYsVtmvbp6hVLgU8dtfqGRvsIB
-         BKPp55oWwpZXFJ1iAl+3PYMLKkwDYfSW7BElxeVCtBDsHncMSG8bvP472/kAdcS6ka4S
-         STeghOzxX0n7JB0XiNcPFfo8b1dRjKLGRRHp9A4ospRXWujkigpkJHXYpabIqp7l+3LN
-         OZtvD2foOAzByU4KBRtRrjXCjVtqpA64i5SKTX8MsJ4QraUV4DLZQ8UucukLZpNwmnax
-         EVM67ZwyzmyK/UClFyyxmRmPrnTzPn0IpYHs+/i0Vo7UfnBmU/28T8P0X0bwLcNsLLyp
-         RRLQ==
-X-Gm-Message-State: AOJu0YzwloCn7PJ9rWnQlXqRu86QhXnAWMLlFvTdMeNiItKHc+e0mLva
-        OKw5FNH9YiSBBdHuhQGUWAAVxMSlRdkLL3V/vIfTYQ==
-X-Google-Smtp-Source: AGHT+IF3bktFCNpdSPZ33wXIdxerwcsZTrZQgNtcaBEL1jDL8yYFxH+qopoVxoDxjxJOkR1LijrrfjC07LxpmEQhQsE=
-X-Received: by 2002:a2e:9a97:0:b0:2c5:911:db70 with SMTP id
- p23-20020a2e9a97000000b002c50911db70mr20227847lji.14.1699306353305; Mon, 06
- Nov 2023 13:32:33 -0800 (PST)
-MIME-Version: 1.0
-References: <cover.1699095159.git.bristot@kernel.org> <c7b706d30d6316c52853ca056db5beb82ba72863.1699095159.git.bristot@kernel.org>
- <CAEXW_YS=PrWDx+YGVR7bmq0_SoKNztzGrreApCd9qk1yBLA5bA@mail.gmail.com>
-In-Reply-To: <CAEXW_YS=PrWDx+YGVR7bmq0_SoKNztzGrreApCd9qk1yBLA5bA@mail.gmail.com>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Mon, 6 Nov 2023 16:32:22 -0500
-Message-ID: <CAEXW_YQ8kv3tXQJexLSguPuWi0bXiReKDyYNo9+A-Hgp=Zo1vA@mail.gmail.com>
-Subject: Re: [PATCH v5 6/7] sched/deadline: Deferrable dl server
-To:     Daniel Bristot de Oliveira <bristot@kernel.org>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        linux-kernel@vger.kernel.org,
-        Luca Abeni <luca.abeni@santannapisa.it>,
-        Tommaso Cucinotta <tommaso.cucinotta@santannapisa.it>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vineeth Pillai <vineeth@bitbyteword.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Phil Auld <pauld@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=cdxLMUnG7uL7qMCY3v9q5mHm2umoZwbvnfcKngrF30w=;
+ b=Mq4N2x2D2Lf/0nUjBEjIgOL+XNsvJJEFutPon6RBoErRMdUtYxvr6QFvLrv8+JyMwKIJiHnpYGaviuuJ8phVtWPeP0uxnyis5cFVlXd/hpVyTPBymnnC2mAUYB2DBXV41R+V3JForhH8qyGxkDOaVBZgr8mdy70v1+DN+zjnztg=
+Received: from CH2PR10MB4150.namprd10.prod.outlook.com (2603:10b6:610:ac::13)
+ by PH7PR10MB6084.namprd10.prod.outlook.com (2603:10b6:510:1f8::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.33; Mon, 6 Nov
+ 2023 21:33:28 +0000
+Received: from CH2PR10MB4150.namprd10.prod.outlook.com
+ ([fe80::adf2:9029:9b90:56f0]) by CH2PR10MB4150.namprd10.prod.outlook.com
+ ([fe80::adf2:9029:9b90:56f0%7]) with mapi id 15.20.6954.028; Mon, 6 Nov 2023
+ 21:33:28 +0000
+From:   Eric Snowberg <eric.snowberg@oracle.com>
+To:     Mimi Zohar <zohar@linux.ibm.com>
+CC:     "dmitry.kasatkin@gmail.com" <dmitry.kasatkin@gmail.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Paul Moore <paul@paul-moore.com>,
+        "jmorris@namei.org" <jmorris@namei.org>,
+        "serge@hallyn.com" <serge@hallyn.com>,
+        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/2] ima: Add machine keyring reference to
+ IMA_KEYRINGS_PERMIT_SIGNED_BY_BUILTIN_OR_SECONDARY
+Thread-Topic: [PATCH 1/2] ima: Add machine keyring reference to
+ IMA_KEYRINGS_PERMIT_SIGNED_BY_BUILTIN_OR_SECONDARY
+Thread-Index: AQHaDa+pZZRsKpDWhk+qRUJ4DEESTrBttPqAgAAhXIA=
+Date:   Mon, 6 Nov 2023 21:33:28 +0000
+Message-ID: <E078E14A-C743-446F-9F78-7F3DDA8A2815@oracle.com>
+References: <20231102170617.2403495-1-eric.snowberg@oracle.com>
+ <20231102170617.2403495-2-eric.snowberg@oracle.com>
+ <3bae86a2572e1ced0ad069ed6ecd2c0a7d33e11e.camel@linux.ibm.com>
+In-Reply-To: <3bae86a2572e1ced0ad069ed6ecd2c0a7d33e11e.camel@linux.ibm.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3731.700.6)
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: CH2PR10MB4150:EE_|PH7PR10MB6084:EE_
+x-ms-office365-filtering-correlation-id: 74a8b45d-7eba-4fa8-343e-08dbdf100438
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: j3Ja46KdYBT/QPrgvCuTnHLFU+XNigQyBZJusI+dYXE7CJp8KHGMxuAOuFCzxpJuXSISWmfMsNdKFbuiWA6M6o8V9FFMFG1cLhXMoUUF4zAt27LkHUw39CzbryiI+llcHR5VU2nlajmogPQzD1NPREoGxwhRU8SWx3Fmyz0IPhQu692zzEDVhIBhW5N6XKmGCMu83txuXSiQsSRshqsdcwcB2gzrvxlXdyGGgqS6csw1Ymic7iZR6JaHEWsS0h5K7aI76fmA0RjuZuddahNylj1Nj5X5SiaavCQw2HYKdxyxCECHcrWbwMpQM4iIHFjv2ug4IAM8UE/FCF8lSbC0Eij7kC9il4C6lWbN/J4mcEcybGv7Lnpl7QkO9EZsOz/APgXmKC2NCjJznHDi9OdvWoLnrjih80OJbAy9g9TdwaOWi/Xxz03X0Ys455+vXUiJNHSp3xeTvZG5jknklWRZt9EOmLGGKIa0loatAyMsnH4qZQykKDCdBGoGwqvpPeoprTYS1m61z8ceFrhBgXzkzlqS8PBKTvIrnm27UlLmyHg/797NnGtIiUSzFsxLLvXuewfeglh+lDcsM1Zmk3DWgwp9HVTg0tOQPNDGb19XWkJbGLQgP0ZNky6f0mCsf/e326wXHp2bZ7f5FkIr6WrFpQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH2PR10MB4150.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(366004)(136003)(346002)(39860400002)(376002)(230922051799003)(64100799003)(1800799009)(186009)(451199024)(38070700009)(2616005)(478600001)(86362001)(36756003)(33656002)(38100700002)(6512007)(122000001)(5660300002)(66946007)(83380400001)(53546011)(26005)(71200400001)(64756008)(2906002)(6506007)(41300700001)(6486002)(8936002)(66446008)(91956017)(316002)(66476007)(66556008)(8676002)(966005)(6916009)(54906003)(44832011)(4326008)(76116006)(45980500001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?wsZVZDUipdwSGZq6JTH9UNSVEQa2Uds/C+tTf0wqEx8ZWXkoDwmhHl/ue6sh?=
+ =?us-ascii?Q?W40nNBWBd8i25XvWH8lYLqUyt88Kj6hvSKiZNp/lViC96tAtQ9sLsWZ4+mo+?=
+ =?us-ascii?Q?pB7H5s9gRjD4nQBWJRTKS81g6bzwK+k6JOhKF+N3MqLxsW09if0tUBrfxNwP?=
+ =?us-ascii?Q?h0RvZz5NIrO3CKzvi4wLfKPcsWkE1o538be31CAWZjbf8awBu0Y3kKHMoxzo?=
+ =?us-ascii?Q?6QxutLyf6dUW0WxOBZZyTRcvn72PtWeYRMHpIqQTE8M/P4xgXfl4RbgGNcjy?=
+ =?us-ascii?Q?nhroGGEWphOARAdElhfz0xfRV6ZaLGDm8xzb7sW9CwECOCBRhjPNdsqjwUYp?=
+ =?us-ascii?Q?XNcSCooANFiXa1+xZtAsiLMDAhLEn4a/SzNimz7TyA3VNH+ReCRlUT5GzxzY?=
+ =?us-ascii?Q?Vjk3spxhFDhS3nrW11SL4Gq1wO5Lekm47zxbRHm6WPJ5cre44dqMkB1q5kKO?=
+ =?us-ascii?Q?RDvnmUklDzf11u7DFJAN5nWzNWkvwpdIEg8kTnIJPFfQtzY8yo/xsQK3Xn/7?=
+ =?us-ascii?Q?VanJYPVYbNIg9bs785b21O5ciu3jP5yefHtFRj82QPv5JYJ63Vb2eMixVr0d?=
+ =?us-ascii?Q?SgwMwjk7CtLZX6k9rOJIGLKei9q0ED1cmPebLvGJDmVDmtV+A03kRex/QEvQ?=
+ =?us-ascii?Q?nkt3baHiKBt0oRV+nOLp8ySYR0sdFS8/bpuClXZjUtWPpAtFp0QUs/tVoljs?=
+ =?us-ascii?Q?SwUEHNWJsOEU/c6h/p6Qea24lI7yh0J00nznPOlREd150ZVCrrLcgQ0y52Rb?=
+ =?us-ascii?Q?xCsczAbBgiSrYN9srCHk4I1hlQkxwOIeZ6iSvd0U6R18LT9776lWGSWL45BU?=
+ =?us-ascii?Q?BtEVhJ/iECKLb2fvpTYrBbXhR2n6Qmj3hbO9q7Q1lAZ179bhFJwRwvJ0dMv6?=
+ =?us-ascii?Q?IS5alpKoUmLX9/lxG/jtwy8VGOOVgMsJvi7NnydKe1FJzzJvPW/NmcVNaX+I?=
+ =?us-ascii?Q?mt/IXeAWHsSstsHwGPGkkpTqmdlqdyHFUaCTcjkarJmrjyL0HDq+FyPJ8DtU?=
+ =?us-ascii?Q?jIjXu72+vQDZTGVnPG7urpL1xBCNr1fsyxQW+YwUlfH/2L8axow4m9tekKUO?=
+ =?us-ascii?Q?ng0y039udy70HwC+tkKmepZNAFqhsmZQMddhsqDVYBOhz2wl8I7RXlctEr/2?=
+ =?us-ascii?Q?Q6+oP/fYNjugLbfGzGg/dmJIfakoUetzeeDbNKAu444Jdk/rjz3dMl96lorW?=
+ =?us-ascii?Q?hysyMkB0f7X2wMMx6dGuUrGkqvSuE4ysDttu9cKGePy8WqImSntyZXPbqIZA?=
+ =?us-ascii?Q?b4j6WKod+PgmhZ2Iy5n6T2L3i57hcPtGokHy2Xr6wB/ciaBSUgwLBQrDpjEj?=
+ =?us-ascii?Q?vjBwZPAiqMTgEARixXkvyrO2FV+QNWIG+8WBau9B8gDzk63wBQFg+Kbj5sdX?=
+ =?us-ascii?Q?efv7osAvVkM10LVa36UVu4y6D5Q0y3wjpdwDzs5o4tZyUvGAHmiyq1AJpGLd?=
+ =?us-ascii?Q?Z4NMM06spMaHmzRENa0wBNuo1tL7aaBH/iAuIzEkwa33hkdAGpZdnovgmPmu?=
+ =?us-ascii?Q?wieaZ/CVNY9eRqA4NjgK0hsRQpzXddHPFtemzhth4Nm4O/ejBnC1UsyQ4qm0?=
+ =?us-ascii?Q?avXeopM8kMk4KeFW5bjWPwxuq/J43ggsA9kPMDV8IwlfvI9fmZNDtvjllbWL?=
+ =?us-ascii?Q?wg=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <9BFA86D0397FB4479E5A21E99AD08495@namprd10.prod.outlook.com>
 Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?us-ascii?Q?nNE4ZWo7LpONunXw8o+dfJN6HshynYGzduNE8mOINDxhSIqW9u4TU68Rc8EV?=
+ =?us-ascii?Q?XiUHhRJn6s4zrz9u5Ko/H/rTYCejf3AwkJRPm1XOMcnnb46c7zwqBgvBr6J8?=
+ =?us-ascii?Q?kk0B2HDsfiAtJ2obQo/8VEaBS7rN7dp7B1yM+Mi2TtHKuV8RFsSo+D8ZW0Nj?=
+ =?us-ascii?Q?JlYi6/UE3VJVOsqIWM4PS8hM9DClL6LItt8xEkyki5N+YsW1HPeii9yIgNia?=
+ =?us-ascii?Q?GpfPgwxdBbqs0jFPybUMaOWWtgrfE5fi+MgYhfW9oIPTzR7OncJSdTL0W8Sl?=
+ =?us-ascii?Q?5pdups12PUzLsfJtX3eUzBAgc4/0AT6bGfspa2zNaP8Po59f/hJfxyKq1a3j?=
+ =?us-ascii?Q?XV48rhcF3nyQC6bcrPmO84l6lBm/gmFDwgIoBXstXW+xyICOv16otcgs4dUH?=
+ =?us-ascii?Q?X8hq6XtvCDm7jxv9JdisgWflqEKzCKsQp6d5f00Xj/giIJpV3133Aopb4YYi?=
+ =?us-ascii?Q?zthFp6Yz19cE8GnXzpvaHfK6HQ08pJJDavOuH+W8j//OIiTvjCyAXwS76rdj?=
+ =?us-ascii?Q?hFn6h9qbSZ0pOkvV8C1/sWBvFyHq+GLRTqNUsbN6Vdcm5sZov1n6VI4ocjf2?=
+ =?us-ascii?Q?VdA/izlE7pQ3oOrcCGq7WLOYUgNdZ/PMNEAp0KHbfk+ShjtOhXg9rtVJrsfh?=
+ =?us-ascii?Q?ShdcuSPUN60AJkFosJ0uTRXsrk0rZT7OhW2ShY28eKBdPrCTYH57bruawiP4?=
+ =?us-ascii?Q?bKIGw7zrSBdwMTmbEiFFgVKu2ZQXliEGkvN99BcHa0sUGlKRzhhqPevNPC17?=
+ =?us-ascii?Q?MzweYkTdvFiYwm27G40fdPsEc5qvkuy7N+eCKffjG62d2zJI0hpA2GlrQZHU?=
+ =?us-ascii?Q?JpkrJK2O2iv5M5YlxtGQsmkhFKi2Digdlt5pI2CBQHkvutKENY2aJaJX5GEV?=
+ =?us-ascii?Q?YzcZ+tG7/uNUuUXaYMwo8dvxUWLkHe7Mst2BHNyjsIFxY0OkFuFGghOHx3/j?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CH2PR10MB4150.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 74a8b45d-7eba-4fa8-343e-08dbdf100438
+X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Nov 2023 21:33:28.6258
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: IFD4bNfZU8ukjDgXkzm1wrNeP/8fTzCVs/Vy1RLcVwmA4AGT2CpbiaQXMLVRpFaa/tUlOOEIQm9a5Xpz+jyNnCEJYZjQbY7kJUDQJ5jnv/M=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR10MB6084
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-06_15,2023-11-02_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0 bulkscore=0
+ mlxlogscore=999 phishscore=0 spamscore=0 suspectscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2310240000
+ definitions=main-2311060177
+X-Proofpoint-ORIG-GUID: SdVmS7z77vSQeQXXk5q_U_Q76repO7PC
+X-Proofpoint-GUID: SdVmS7z77vSQeQXXk5q_U_Q76repO7PC
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 6, 2023 at 2:32=E2=80=AFPM Joel Fernandes <joel@joelfernandes.o=
-rg> wrote:
->
-> Hi Daniel,
->
-> On Sat, Nov 4, 2023 at 6:59=E2=80=AFAM Daniel Bristot de Oliveira
-> <bristot@kernel.org> wrote:
-> >
-> > Among the motivations for the DL servers is the real-time throttling
-> > mechanism. This mechanism works by throttling the rt_rq after
-> > running for a long period without leaving space for fair tasks.
-> >
-> > The base dl server avoids this problem by boosting fair tasks instead
-> > of throttling the rt_rq. The point is that it boosts without waiting
-> > for potential starvation, causing some non-intuitive cases.
-> >
-> > For example, an IRQ dispatches two tasks on an idle system, a fair
-> > and an RT. The DL server will be activated, running the fair task
-> > before the RT one. This problem can be avoided by deferring the
-> > dl server activation.
-> >
-> > By setting the zerolax option, the dl_server will dispatch an
-> > SCHED_DEADLINE reservation with replenished runtime, but throttled.
-> >
-> > The dl_timer will be set for (period - runtime) ns from start time.
-> > Thus boosting the fair rq on its 0-laxity time with respect to
-> > rt_rq.
-> >
-> > If the fair scheduler has the opportunity to run while waiting
-> > for zerolax time, the dl server runtime will be consumed. If
-> > the runtime is completely consumed before the zerolax time, the
-> > server will be replenished while still in a throttled state. Then,
-> > the dl_timer will be reset to the new zerolax time
-> >
-> > If the fair server reaches the zerolax time without consuming
-> > its runtime, the server will be boosted, following CBS rules
-> > (thus without breaking SCHED_DEADLINE).
-> >
-> > Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
-> > ---
-> >  include/linux/sched.h   |   2 +
-> >  kernel/sched/deadline.c | 100 +++++++++++++++++++++++++++++++++++++++-
-> >  kernel/sched/fair.c     |   3 ++
-> >  3 files changed, 103 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/include/linux/sched.h b/include/linux/sched.h
-> > index 5ac1f252e136..56e53e6fd5a0 100644
-> > --- a/include/linux/sched.h
-> > +++ b/include/linux/sched.h
-> > @@ -660,6 +660,8 @@ struct sched_dl_entity {
-> >         unsigned int                    dl_non_contending : 1;
-> >         unsigned int                    dl_overrun        : 1;
-> >         unsigned int                    dl_server         : 1;
-> > +       unsigned int                    dl_zerolax        : 1;
-> > +       unsigned int                    dl_zerolax_armed  : 1;
-> >
-> >         /*
-> >          * Bandwidth enforcement timer. Each -deadline task has its
-> > diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
-> > index 1d7b96ca9011..69ee1fbd60e4 100644
-> > --- a/kernel/sched/deadline.c
-> > +++ b/kernel/sched/deadline.c
-> > @@ -772,6 +772,14 @@ static inline void replenish_dl_new_period(struct =
-sched_dl_entity *dl_se,
-> >         /* for non-boosted task, pi_of(dl_se) =3D=3D dl_se */
-> >         dl_se->deadline =3D rq_clock(rq) + pi_of(dl_se)->dl_deadline;
-> >         dl_se->runtime =3D pi_of(dl_se)->dl_runtime;
-> > +
-> > +       /*
-> > +        * If it is a zerolax reservation, throttle it.
-> > +        */
-> > +       if (dl_se->dl_zerolax) {
-> > +               dl_se->dl_throttled =3D 1;
-> > +               dl_se->dl_zerolax_armed =3D 1;
-> > +       }
-> >  }
-> >
-> >  /*
-> > @@ -828,6 +836,7 @@ static inline void setup_new_dl_entity(struct sched=
-_dl_entity *dl_se)
-> >   * could happen are, typically, a entity voluntarily trying to overcom=
-e its
-> >   * runtime, or it just underestimated it during sched_setattr().
-> >   */
-> > +static int start_dl_timer(struct sched_dl_entity *dl_se);
-> >  static void replenish_dl_entity(struct sched_dl_entity *dl_se)
-> >  {
-> >         struct dl_rq *dl_rq =3D dl_rq_of_se(dl_se);
-> > @@ -874,6 +883,28 @@ static void replenish_dl_entity(struct sched_dl_en=
-tity *dl_se)
-> >                 dl_se->dl_yielded =3D 0;
-> >         if (dl_se->dl_throttled)
-> >                 dl_se->dl_throttled =3D 0;
-> > +
-> > +       /*
-> > +        * If this is the replenishment of a zerolax reservation,
-> > +        * clear the flag and return.
-> > +        */
-> > +       if (dl_se->dl_zerolax_armed) {
-> > +               dl_se->dl_zerolax_armed =3D 0;
-> > +               return;
-> > +       }
-> > +
-> > +       /*
-> > +        * A this point, if the zerolax server is not armed, and the de=
-adline
-> > +        * is in the future, throttle the server and arm the zerolax ti=
-mer.
-> > +        */
-> > +       if (dl_se->dl_zerolax &&
-> > +           dl_time_before(dl_se->deadline - dl_se->runtime, rq_clock(r=
-q))) {
-> > +               if (!is_dl_boosted(dl_se)) {
-> > +                       dl_se->dl_zerolax_armed =3D 1;
-> > +                       dl_se->dl_throttled =3D 1;
-> > +                       start_dl_timer(dl_se);
-> > +               }
-> > +       }
-> >  }
-> >
-> >  /*
-> > @@ -1024,6 +1055,13 @@ static void update_dl_entity(struct sched_dl_ent=
-ity *dl_se)
-> >                 }
-> >
-> >                 replenish_dl_new_period(dl_se, rq);
-> > +       } else if (dl_server(dl_se) && dl_se->dl_zerolax) {
-> > +               /*
-> > +                * The server can still use its previous deadline, so t=
-hrottle
-> > +                * and arm the zero-laxity timer.
-> > +                */
-> > +               dl_se->dl_zerolax_armed =3D 1;
-> > +               dl_se->dl_throttled =3D 1;
-> >         }
-> >  }
-> >
-> > @@ -1056,8 +1094,20 @@ static int start_dl_timer(struct sched_dl_entity=
- *dl_se)
-> >          * We want the timer to fire at the deadline, but considering
-> >          * that it is actually coming from rq->clock and not from
-> >          * hrtimer's time base reading.
-> > +        *
-> > +        * The zerolax reservation will have its timer set to the
-> > +        * deadline - runtime. At that point, the CBS rule will decide
-> > +        * if the current deadline can be used, or if a replenishment
-> > +        * is required to avoid add too much pressure on the system
-> > +        * (current u > U).
-> >          */
-> > -       act =3D ns_to_ktime(dl_next_period(dl_se));
-> > +       if (dl_se->dl_zerolax_armed) {
-> > +               WARN_ON_ONCE(!dl_se->dl_throttled);
-> > +               act =3D ns_to_ktime(dl_se->deadline - dl_se->runtime);
->
-> Just a question, here if dl_se->deadline - dl_se->runtime is large,
-> then does that mean that server activation will be much more into the
-> future? So say I want to give CFS 30%, then it will take 70% of the
-> period before CFS preempts RT thus "starving" CFS for this duration. I
-> think that's Ok for smaller periods and runtimes, though.
->
-> I think it does reserve the amount of required CFS bandwidth so it is
-> probably OK, though it is perhaps letting RT run more initially (say
-> if CFS tasks are not CPU bound and occasionally wake up, they will
-> always be hit by the 70% latency AFAICS which may be large for large
-> periods and small runtimes).
->
 
-One more consideration I guess is, because the server is throttled
-till 0-laxity time, it is possible that if CFS sleeps even a bit
-(after the DL-server is unthrottled), then it will be pushed out to a
-full current deadline + period due to CBS. In such a situation,  if
-CFS-server is the only DL task running, it might starve RT for a bit
-more time.
 
-Example, say CFS runtime is 0.3s and period is 1s. At 0.7s, 0-laxity
-timer fires. CFS runs for 0.29s, then sleeps for 0.005s and wakes up
-at 0.295s (its remaining runtime is 0.01s at this point which is < the
-"time till deadline" of 0.005s). Now the runtime of the CFS-server
-will be replenished to the full 3s (due to CBS) and the deadline
-pushed out. The end result is the total runtime that the CFS-server
-actually gets is 0.0595s (though yes it did sleep for 5ms in between,
-still that's tiny -- say if it briefly blocked on a kernel mutex).
+> On Nov 6, 2023, at 12:33 PM, Mimi Zohar <zohar@linux.ibm.com> wrote:
+>=20
+> Hi Eric,
+>=20
+> The subject line is referred to as the 'summary' phrase.  As far as I'm
+> aware the length is still between 70-75 charcaters.  Refer to=20
+> https://www.kernel.org/doc/Documentation/process/submitting-patches.rst
+> .
+>=20
+> On Thu, 2023-11-02 at 13:06 -0400, Eric Snowberg wrote:
+>> When the machine keyring is enabled, it may be used as a trust source
+>> for the .ima keyring.  Add a reference to this in
+>> IMA_KEYRINGS_PERMIT_SIGNED_BY_BUILTIN_OR_SECONDARY.
+>>=20
+>> Signed-off-by: Eric Snowberg <eric.snowberg@oracle.com>
+>> ---
+>> security/integrity/ima/Kconfig | 10 +++++-----
+>> 1 file changed, 5 insertions(+), 5 deletions(-)
+>>=20
+>> diff --git a/security/integrity/ima/Kconfig b/security/integrity/ima/Kco=
+nfig
+>> index a6bd817efc1a..c5dc0fabbc8b 100644
+>> --- a/security/integrity/ima/Kconfig
+>> +++ b/security/integrity/ima/Kconfig
+>> @@ -243,7 +243,7 @@ config IMA_APPRAISE_MODSIG
+>>    to accept such signatures.
+>>=20
+>> config IMA_KEYRINGS_PERMIT_SIGNED_BY_BUILTIN_OR_SECONDARY
+>> - bool "Permit keys validly signed by a built-in or secondary CA cert (E=
+XPERIMENTAL)"
+>> + bool "Permit keys validly signed by a built-in, secondary or machine C=
+A cert (EXPERIMENTAL)"
+>=20
+> Please add 'machine' in between built-in and secondary, like described
+> below.
 
-On the other hand, if the CFS server started a bit earlier than the
-0-laxity, it would probably not have had CBS pushing it out.
+I'll make both changes and send out a new version, thanks.
 
-This is likely also not an issue for shorter runtime/period values,
-still the throttling till later has a small trade-off (Not saying we
-should not do this, this whole series is likely a huge improvement
-over the current RT throttling).
-
-There is a chance I am uttering nonsense as I am not a DL expert, so
-apologies if so.
-
-Thanks.
