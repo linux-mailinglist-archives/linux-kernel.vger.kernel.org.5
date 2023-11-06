@@ -2,60 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 14B0D7E2AFE
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 18:33:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 266917E2B04
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 18:36:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231496AbjKFRdq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 12:33:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59904 "EHLO
+        id S231699AbjKFRgG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 12:36:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229567AbjKFRdp (ORCPT
+        with ESMTP id S229567AbjKFRgF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 12:33:45 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6103DD47
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 09:33:42 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E8389C433C7;
-        Mon,  6 Nov 2023 17:33:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699292022;
-        bh=oOcDWz4H6EBWQZ8XRRFn7yilwzV+aCmfOKBCXufKkEY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=F98WpxiwlABjLnTlC53iqz0UZ/avBbM4z0K08bsO8UinsyRhiHLr4d/VdaGgXHjFs
-         hbp/KzU+RkYgF4qtjf944AAgi1q0MpdnGUwvEcAZ2p4zHPqTXXfMbbeAFrEbrMt27y
-         HyrQBYLc8VuRI8aHJerD3OWeliIJKf+QYKvyRvqZTl0A4R1yav+mqMJhf9W4JRXGdZ
-         lco0JJ2ZhSA74E0bLiwKcOdV2J5eMkn2pbJMIEs4Doe0QqOBSohaSohew6u8WHbOYR
-         ZZhEXLUdmEQCOmoygJb7kNh2IorPhmBhHZqqlnmxPxhJCckiG4vn43K3SGJXf5CzUr
-         8E1Bz0PS1GPUw==
-Date:   Mon, 6 Nov 2023 17:33:36 +0000
-From:   Conor Dooley <conor@kernel.org>
-To:     Christian Marangi <ansuelsmth@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Robert Marko <robimarko@gmail.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [net-next RFC PATCH v5 4/4] dt-bindings: Document bindings for
- Marvell Aquantia PHY
-Message-ID: <20231106-plentiful-kilt-9f228cbbe6e0@spud>
-References: <20231106165433.2746-1-ansuelsmth@gmail.com>
- <20231106165433.2746-4-ansuelsmth@gmail.com>
+        Mon, 6 Nov 2023 12:36:05 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E438BD45
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 09:36:01 -0800 (PST)
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A6GdBP5022997;
+        Mon, 6 Nov 2023 17:35:57 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=FrfXeWtjU0Ruex8wMO6jSQzaCluEQ3NY8dv9N4305wc=;
+ b=Uac931rR+5ooJz4n5ak651QTsQM9wUunEY0Crd0orpfBOP7xX9znq4smui4mSlHrBoLc
+ XMvx2hFLvEpd6IPGxdaCieZUJys9Z6EC+VXSDqw2e3Qy/cDak+SIbUhn4hiGxsK9/gtB
+ ZvCEhGod9fzcqErd435y0Ruvrl+4xMLbBsn2GLKqqo0An2tZ1OQ9vDwnNqzoZfr6wz+Y
+ Yj7mxrR/6fp3T31HBqQAqY7sJry3jfq0Mk3OAN+FoMTdb22eX8wyNAQumVEgUMbjHt14
+ thjTIGWkCvkSSZna7JKOUSeimbLad5DYdz6QlK3dyCFPCzPcAX8iOJY7JoIimjdrBoy8 jA== 
+Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u5f8dvx6u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 06 Nov 2023 17:35:56 +0000
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+        by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3A6HZuQO003465
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 6 Nov 2023 17:35:56 GMT
+Received: from [10.71.110.254] (10.80.80.8) by nasanex01b.na.qualcomm.com
+ (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Mon, 6 Nov
+ 2023 09:35:56 -0800
+Message-ID: <f97c86a6-34d3-45e1-8673-8a3f02f88392@quicinc.com>
+Date:   Mon, 6 Nov 2023 09:35:55 -0800
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="L/mZ8GihQdWIG/0t"
-Content-Disposition: inline
-In-Reply-To: <20231106165433.2746-4-ansuelsmth@gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/3] drm/ci: Add support for SM8250 Gitlab Runner
+Content-Language: en-US
+To:     Helen Koike <helen.koike@collabora.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>
+CC:     <robdclark@chromium.org>, <quic_abhinavk@quicinc.com>,
+        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
+        <freedreno@lists.freedesktop.org>
+References: <20231010-rb5-runner-v1-0-aba1fcc6e3aa@quicinc.com>
+ <0b0b1065-06e8-44ea-a4a1-395980afac5a@collabora.com>
+From:   Jessica Zhang <quic_jesszhan@quicinc.com>
+In-Reply-To: <0b0b1065-06e8-44ea-a4a1-395980afac5a@collabora.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: oidrzqcyGQaChlGbzrGUmlmHaPwU8_VC
+X-Proofpoint-GUID: oidrzqcyGQaChlGbzrGUmlmHaPwU8_VC
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-06_13,2023-11-02_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 clxscore=1015
+ priorityscore=1501 lowpriorityscore=0 malwarescore=0 adultscore=0
+ mlxscore=0 suspectscore=0 phishscore=0 mlxlogscore=999 spamscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2310240000 definitions=main-2311060143
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -65,193 +83,94 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---L/mZ8GihQdWIG/0t
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Nov 06, 2023 at 05:54:33PM +0100, Christian Marangi wrote:
-> Document bindings for Marvell Aquantia PHY.
->=20
-> The Marvell Aquantia PHY require a firmware to work correctly and there
-> at least 3 way to load this firmware.
->=20
-> Describe all the different way and document the binding "firmware-name"
-> to load the PHY firmware from userspace.
->=20
-> Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
-> ---
-> Changes v5:
-> - Drop extra entry not related to HW description
-> Changes v3:
-> - Make DT description more OS agnostic
-> - Use custom select to fix dtbs checks
-> Changes v2:
-> - Add DT patch
->=20
->  .../bindings/net/marvell,aquantia.yaml        | 123 ++++++++++++++++++
->  1 file changed, 123 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/net/marvell,aquanti=
-a.yaml
->=20
-> diff --git a/Documentation/devicetree/bindings/net/marvell,aquantia.yaml =
-b/Documentation/devicetree/bindings/net/marvell,aquantia.yaml
-> new file mode 100644
-> index 000000000000..7106c5bdf73c
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/net/marvell,aquantia.yaml
-> @@ -0,0 +1,123 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/net/marvell,aquantia.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Marvell Aquantia Ethernet PHY
-> +
-> +maintainers:
-> +  - Christian Marangi <ansuelsmth@gmail.com>
-> +
-> +description: |
-> +  Marvell Aquantia Ethernet PHY require a firmware to be loaded to actua=
-lly
-> +  work.
-> +
-> +  This can be done and is implemented by OEM in 3 different way:
-> +    - Attached SPI flash directly to the PHY with the firmware. The PHY
-> +      will self load the firmware in the presence of this configuration.
+On 11/4/2023 6:02 AM, Helen Koike wrote:
+> Hi Jessica,
+> 
+> On 10/10/2023 19:25, Jessica Zhang wrote:
+>> Recently, we've registered a Gitlab runner for a Qualcomm RB5 device 
+>> that will be
+>> hosted and maintained in Qualcomm labs.
+>>
+>> This series will add a corresponding CI job for testing SM8250 devices 
+>> and add the
+>> skip/fails/flakes list. We were able to complete a successful run [1] 
+>> with these
+>> changes.
+>>
+>> For now, we will keep the job as manual trigger only and drop that 
+>> rule later
+>> after we stabilize the tests.
+>>
+>> [1] https://gitlab.freedesktop.org/drm/msm/-/jobs/50092719
+>>
+>> ---
+> 
+> Thank you for you patchset.
+> 
+> I'm getting the following error:
+> 
+> "serial.serialutil.SerialException: [Errno 2] could not open port 
+> /dev/ttyUSB0: [Errno 2] No such file or directory: '/dev/ttyUSB0'"
+> 
+> https://gitlab.freedesktop.org/helen.fornazier/linux/-/jobs/51193215#L146
+> 
+> I'm wondering if I'm missing some configuration.
+> 
+> I tested on top of drm-misc-next.
 
-> +    - Dedicated partition on system NAND with firmware in it. NVMEM
-> +      subsystem will be used and the declared NVMEM cell will load
-> +      the firmware to the PHY using the PHY mailbox interface.
+Hi Helen,
 
-I'd probably phrase this one as something more like "Read from a
-dedicated partition on system NAND declared in an NVMEM cell, and loaded
-to the PHY using its mailbox interface." or something like that - mostly
-to get rid of the linux specific "NVMEM subsystem" from the description.
+Sorry for the inconvenience, but I had to temporarily take down the 
+runner last Friday to physically move the setup (as part of a 
+reorganization of our lab here).
 
-Otherwise,
-Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+I'll update this thread as soon as the runner is back up -- the move 
+will be complete by the end of this week.
 
-Cheers,
-Conor.
+> 
+> Also, I'd like to add in the docs an entry about the devices we have, 
+> which tag they need, which dts they correspond to, which farm they are 
+> located, who to contact if there is any problem and maybe some comment 
+> about the device (how it is hooked up, the logs comes from uart or ssh, 
+> does it use fastboot, etc) if you find it useful.
+> Would you mind adding an entry in the docs with this information for the 
+> sm8250? (Than I'll add the info of the other devices after yours).
 
-> +    - Manually provided firmware loaded from a file in the filesystem.
-> +
-> +allOf:
-> +  - $ref: ethernet-phy.yaml#
-> +
-> +select:
-> +  properties:
-> +    compatible:
-> +      contains:
-> +        enum:
-> +          - ethernet-phy-id03a1.b445
-> +          - ethernet-phy-id03a1.b460
-> +          - ethernet-phy-id03a1.b4a2
-> +          - ethernet-phy-id03a1.b4d0
-> +          - ethernet-phy-id03a1.b4e0
-> +          - ethernet-phy-id03a1.b5c2
-> +          - ethernet-phy-id03a1.b4b0
-> +          - ethernet-phy-id03a1.b662
-> +          - ethernet-phy-id03a1.b712
-> +          - ethernet-phy-id31c3.1c12
-> +  required:
-> +    - compatible
-> +
-> +properties:
-> +  reg:
-> +    maxItems: 1
-> +
-> +  firmware-name:
-> +    description: specify the name of PHY firmware to load
-> +
-> +  nvmem-cells:
-> +    description: phandle to the firmware nvmem cell
-> +    maxItems: 1
-> +
-> +  nvmem-cell-names:
-> +    const: firmware
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +
-> +unevaluatedProperties: false
-> +
-> +examples:
-> +  - |
-> +    mdio {
-> +        #address-cells =3D <1>;
-> +        #size-cells =3D <0>;
-> +
-> +        ethernet-phy@0 {
-> +            /*  Only needed to make DT lint tools work. Do not copy/paste
-> +             *  into real DTS files.
-> +             */
-> +            compatible =3D "ethernet-phy-id31c3.1c12",
-> +                         "ethernet-phy-ieee802.3-c45";
-> +
-> +            reg =3D <0>;
-> +            firmware-name =3D "AQR-G4_v5.4.C-AQR_CIG_WF-1945_0x8_ID44776=
-_VER1630.cld";
-> +        };
-> +
-> +        ethernet-phy@1 {
-> +            /*  Only needed to make DT lint tools work. Do not copy/paste
-> +             *  into real DTS files.
-> +             */
-> +            compatible =3D "ethernet-phy-id31c3.1c12",
-> +                         "ethernet-phy-ieee802.3-c45";
-> +
-> +            reg =3D <0>;
-> +            nvmem-cells =3D <&aqr_fw>;
-> +            nvmem-cell-names =3D "firmware";
-> +        };
-> +    };
-> +
-> +    flash {
-> +        compatible =3D "jedec,spi-nor";
-> +        #address-cells =3D <1>;
-> +        #size-cells =3D <1>;
-> +
-> +        partitions {
-> +            compatible =3D "fixed-partitions";
-> +            #address-cells =3D <1>;
-> +            #size-cells =3D <1>;
-> +
-> +            /* ... */
-> +
-> +            partition@650000 {
-> +                compatible =3D "nvmem-cells";
-> +                label =3D "0:ethphyfw";
-> +                reg =3D <0x650000 0x80000>;
-> +                read-only;
-> +                #address-cells =3D <1>;
-> +                #size-cells =3D <1>;
-> +
-> +                aqr_fw: aqr_fw@0 {
-> +                    reg =3D <0x0 0x5f42a>;
-> +                };
-> +            };
-> +
-> +            /* ... */
-> +
-> +        };
-> +    };
-> --=20
-> 2.40.1
->=20
+Sure, sounds good.
 
---L/mZ8GihQdWIG/0t
-Content-Type: application/pgp-signature; name="signature.asc"
+> 
+> 
+>> Jessica Zhang (3):
+>>        drm/ci: Add SM8250 job to CI
+> 
+> I would also move this patch to last, so we don't have a commit where 
+> things shouldn't work properly.
+> Or maybe squash them all.
 
------BEGIN PGP SIGNATURE-----
+Acked -- I'll move this patch to the end.
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZUkjcAAKCRB4tDGHoIJi
-0nWmAQD/6caNNaXg4llLe5jQkRunI0dM64BFefhMSwUhRP5KugD/TbX4eaFaejKE
-darP3qusg8I9T17zUTxt8PN8F35mbAc=
-=Kg0u
------END PGP SIGNATURE-----
+Thanks,
 
---L/mZ8GihQdWIG/0t--
+Jessica Zhang
+
+> 
+> Regards,
+> Helen
+> 
+>>        drm/ci: enable CONFIG_INTERCONNECT_QCOM_SM8250 for arm64 config
+>>        drm/ci: Add skips, fails and flakes for SM8250
+>>
+>>   drivers/gpu/drm/ci/arm64.config                 |  1 +
+>>   drivers/gpu/drm/ci/build.sh                     |  1 +
+>>   drivers/gpu/drm/ci/test.yml                     | 15 +++++++++++++
+>>   drivers/gpu/drm/ci/xfails/msm-sm8250-fails.txt  | 29 
+>> +++++++++++++++++++++++++
+>>   drivers/gpu/drm/ci/xfails/msm-sm8250-flakes.txt |  3 +++
+>>   drivers/gpu/drm/ci/xfails/msm-sm8250-skips.txt  |  8 +++++++
+>>   6 files changed, 57 insertions(+)
+>> ---
+>> base-commit: dcd88f8c63341ed11a8c5019408f62202cd9d1f2
+>> change-id: 20230919-rb5-runner-77ec32bd61e7
+>>
+>> Best regards,
