@@ -2,175 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A5A27E212E
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 13:18:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E67687E213C
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 13:20:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231913AbjKFMSo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 07:18:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54098 "EHLO
+        id S231636AbjKFMUu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 07:20:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231887AbjKFMSS (ORCPT
+        with ESMTP id S231630AbjKFMUr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 07:18:18 -0500
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3112710DD;
-        Mon,  6 Nov 2023 04:18:14 -0800 (PST)
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A6Bkw2U008679;
-        Mon, 6 Nov 2023 12:18:13 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=n1HCNS2C1DIwKMuK9T+3ZhC1Zs59rbEWAeWHmBM+lqw=;
- b=i5AHHhBnIONfmYlm0w/zpnikchMh3ADiH7/S4H+lS3sZrDzcNiJSkFoJuw/Oz8eb9WxL
- 53MrMnOPDOVChRktJtMhh6O0EGh/6tEQTMWNt6LhjdzygTeWF/SX+LDNvg3Hs/sf4Fz7
- Q6WT+4Fl+VzABax5a3VhL55Oi4EmdJMWeYcjYYatPzRVT8Ngkzj7MEhjcew5alX2ZUOt
- VLhFHczCFOZ4ZmUNSywxM662PVtD8FwYgNhLBhLW1MNvGdVsfluIjfeHl00iNjtNLQrD
- vX23YBmWaohAPPfAzmbpYvn2YDz3i2ovWuwygV9omZurByskW9QQu4edo8iDXj+SGj1U 9Q== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u6yjtrwn3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 06 Nov 2023 12:18:13 +0000
-Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3A6BlZ8a011477;
-        Mon, 6 Nov 2023 12:18:12 GMT
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u6yjtrwmt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 06 Nov 2023 12:18:12 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3A6AbsxW007958;
-        Mon, 6 Nov 2023 12:18:12 GMT
-Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
-        by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3u60ny996j-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 06 Nov 2023 12:18:11 +0000
-Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
-        by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3A6CI5P614090842
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 6 Nov 2023 12:18:05 GMT
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id BBD492004B;
-        Mon,  6 Nov 2023 12:18:05 +0000 (GMT)
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 620C620040;
-        Mon,  6 Nov 2023 12:18:05 +0000 (GMT)
-Received: from p-imbrenda (unknown [9.152.224.66])
-        by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Mon,  6 Nov 2023 12:18:05 +0000 (GMT)
-Date:   Mon, 6 Nov 2023 13:18:03 +0100
-From:   Claudio Imbrenda <imbrenda@linux.ibm.com>
-To:     Nina Schoetterl-Glausch <nsg@linux.ibm.com>
-Cc:     Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-s390@vger.kernel.org,
-        Cornelia Huck <cornelia.huck@de.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Michael Mueller <mimu@linux.vnet.ibm.com>,
-        David Hildenbrand <dahi@linux.vnet.ibm.com>
-Subject: Re: [PATCH 4/4] KVM: s390: Minor refactor of base/ext facility
- lists
-Message-ID: <20231106131803.15985f2e@p-imbrenda>
-In-Reply-To: <44148ab315f28a6d77627675cbde26977418c5df.camel@linux.ibm.com>
-References: <20231103173008.630217-1-nsg@linux.ibm.com>
-        <20231103173008.630217-5-nsg@linux.ibm.com>
-        <20231103193254.7deef2e5@p-imbrenda>
-        <44148ab315f28a6d77627675cbde26977418c5df.camel@linux.ibm.com>
-Organization: IBM
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Mon, 6 Nov 2023 07:20:47 -0500
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10DBABD
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 04:20:44 -0800 (PST)
+Received: by mail-yb1-xb2a.google.com with SMTP id 3f1490d57ef6-da2e786743aso4456426276.0
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 04:20:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1699273243; x=1699878043; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jNrBmQOtJ17ojJmeT7du8FrKMIIzYnoq4n1GU13u2lU=;
+        b=H92pnSDeWr3e9AcWDs2HT161bar1Tlz7Fq0xkqPxFqi/+B9Gy3Q4RKTt7i7pMaq0U/
+         5G7Po1GNkVT5+BKPE9njjgFfxM8uvnc9MATXcBpooaRBgp1wENAsNdc9ZQzMfpEP/D3a
+         1DByK9X+a2bCTMkzxzTiDcJQC6mBh5Fyw2QctbKPe0tn7LiMuzhuS5ExvE9pI+Kvsqcx
+         yOVTm5+6m+83KiSOCULLpTyzssZWWIUZjfHdXO7Ntg6bIVwPltR9XvarUPODItRCc+V5
+         QHTsznETSfzbZlmPWcVXhqtoIn8imhPZHcrASvA1dHKuUa2WmamaqoD5ma3Q54THTUQ+
+         cHRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699273243; x=1699878043;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=jNrBmQOtJ17ojJmeT7du8FrKMIIzYnoq4n1GU13u2lU=;
+        b=aGgcu3iHfVU7Cgdx7KLKnEaAaxdBKVqhZ7/l0FmzdtqOxv/7tU8CEQEmRWc6jH4KcB
+         Tqtlru3Bzn6NtH9juWcaVOGWjLhzZcpX+3P4Eq6Pixq+tNzVqrlDIt4TAwrm8C71OWsZ
+         VNYvfMwpB209Z73UEgIJYpupOyLNJ8nZNhDT7V8+b81By+Bm+DYOouEDPp3YFlWqQxRm
+         UadFDepjgiuCsrGRndeKe97x6kqZHdZqNkhsQks5/wk2ZSAdkzid0APRLbCw36H7d/zq
+         OE9+dgLQg1R6NHPd1ZZ3emoAZnwFxgQGKS8BWhnYpUY2G5N4gXZhhFu5O+q3RpynBHCe
+         EjVA==
+X-Gm-Message-State: AOJu0YwQ1l86YgIxgOyR46Zfn/s1cMXL3HL1N0lO2LMpR/MflleXg97t
+        nb3Djp7wxw1TbNy7b/XPFtJ6hshy++s5U1Mn/6j+pw==
+X-Google-Smtp-Source: AGHT+IEWI+f1HNKNSeeVWXlqh/hIENbIf83dLNlmNVJ1X8gb5errhSt5Vw0iEDS5BYJhLkKMzUml4nTi0qHyePAxOUU=
+X-Received: by 2002:a25:324c:0:b0:da0:6cf3:c629 with SMTP id
+ y73-20020a25324c000000b00da06cf3c629mr24702415yby.41.1699273243154; Mon, 06
+ Nov 2023 04:20:43 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: zCB3qCG0MBJbK2Og1pgD2i0QNMNE7wAS
-X-Proofpoint-ORIG-GUID: VNPB-bMD6Dt-6lDqQztXxZ7bqmVTtsQx
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-06_10,2023-11-02_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- lowpriorityscore=0 priorityscore=1501 mlxscore=0 malwarescore=0
- adultscore=0 spamscore=0 bulkscore=0 mlxlogscore=773 clxscore=1015
- suspectscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2310240000 definitions=main-2311060100
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231106-pm8937-v1-0-ec51d9eeec53@riseup.net> <20231106-pm8937-v1-7-ec51d9eeec53@riseup.net>
+In-Reply-To: <20231106-pm8937-v1-7-ec51d9eeec53@riseup.net>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Mon, 6 Nov 2023 14:20:31 +0200
+Message-ID: <CAA8EJprKNPiaMi1OxVUHtY-YxzUuy_uZhrNemmU6dQeFEukv0w@mail.gmail.com>
+Subject: Re: [PATCH 7/8] arm64: dts: qcom: Add PM8937 PMIC
+To:     Dang Huynh <danct12@riseup.net>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Robert Marko <robimarko@gmail.com>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 06 Nov 2023 12:38:55 +0100
-Nina Schoetterl-Glausch <nsg@linux.ibm.com> wrote:
+On Mon, 6 Nov 2023 at 14:11, Dang Huynh <danct12@riseup.net> wrote:
+>
+> The PM8937 features integrated peripherals like ADC, GPIO controller,
+> MPPs, PON keys and others.
+>
+> Add the device tree so that any boards with this PMIC can use it.
+>
+> Signed-off-by: Dang Huynh <danct12@riseup.net>
+> ---
+>  arch/arm64/boot/dts/qcom/pm8937.dtsi | 202 +++++++++++++++++++++++++++++=
+++++++
+>  1 file changed, 202 insertions(+)
+>
+> diff --git a/arch/arm64/boot/dts/qcom/pm8937.dtsi b/arch/arm64/boot/dts/q=
+com/pm8937.dtsi
+> new file mode 100644
+> index 000000000000..6091d6938885
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/qcom/pm8937.dtsi
+> @@ -0,0 +1,202 @@
+> +// SPDX-License-Identifier: BSD-3-Clause
+> +/*
+> + * Copyright (c) 2023, Dang Huynh <danct12@riseup.net>
+> + */
+> +
+> +#include <dt-bindings/iio/qcom,spmi-vadc.h>
+> +#include <dt-bindings/input/linux-event-codes.h>
+> +#include <dt-bindings/interrupt-controller/irq.h>
+> +#include <dt-bindings/pinctrl/qcom,pmic-mpp.h>
+> +#include <dt-bindings/spmi/spmi.h>
+> +
+> +/ {
+> +       thermal-zones {
+> +               pm8937-thermal {
+> +                       polling-delay-passive =3D <0>;
+> +                       polling-delay =3D <0>;
+> +                       thermal-sensors =3D <&pm8937_temp>;
+> +
+> +                       trips {
+> +                               pm8937_trip0: pm8937-trip0 {
 
-[...]
+I don't think you need labels here. Also you can drop PMIC name from
+trip point node names.
 
-> > this was sized to [SIZE_INTERNAL], now it doesn't have a fixed size. is
-> > this intentional?  
-> 
-> Yes, it's as big as it needs to be, that way it cannot be too small, so one
-> less thing to consider.
+> +                                       temperature =3D <105000>;
+> +                                       hysteresis =3D <0>;
+> +                                       type =3D "passive";
+> +                               };
+> +                               pm8937_trip1: pm8937-trip1 {
+> +                                       temperature =3D <125000>;
+> +                                       hysteresis =3D <0>;
+> +                                       type =3D "passive";
+> +                               };
+> +                               pm8937_trip2: pm8937-trip2 {
+> +                                       temperature =3D <145000>;
+> +                                       hysteresis =3D <0>;
+> +                                       type =3D "passive";
 
-fair enough
- 
-> [...]
-> > >  /* available cpu features supported by kvm */
-> > >  static DECLARE_BITMAP(kvm_s390_available_cpu_feat, KVM_S390_VM_CPU_FEAT_NR_BITS);
-> > > @@ -3341,13 +3333,16 @@ int kvm_arch_init_vm(struct kvm *kvm, unsigned long type)
-> > >  	kvm->arch.sie_page2->kvm = kvm;
-> > >  	kvm->arch.model.fac_list = kvm->arch.sie_page2->fac_list;
-> > >  
-> > > -	for (i = 0; i < kvm_s390_fac_size(); i++) {
-> > > +	for (i = 0; i < ARRAY_SIZE(kvm_s390_fac_base); i++) {
-> > >  		kvm->arch.model.fac_mask[i] = stfle_fac_list[i] &
-> > > -					      (kvm_s390_fac_base[i] |
-> > > -					       kvm_s390_fac_ext[i]);
-> > > +					      kvm_s390_fac_base[i];
-> > >  		kvm->arch.model.fac_list[i] = stfle_fac_list[i] &
-> > >  					      kvm_s390_fac_base[i];
-> > >  	}
-> > > +	for (i = 0; i < ARRAY_SIZE(kvm_s390_fac_ext); i++) {
-> > > +		kvm->arch.model.fac_mask[i] |= stfle_fac_list[i] &
-> > > +					       kvm_s390_fac_ext[i];
-> > > +	}  
-> > 
-> > I like it better when it's all in one place, instead of having two loops  
-> 
-> Hmm, it's the result of the arrays being different lengths now.
+145=C2=B0C is very hot for the passive trip point
 
-ah, I had missed that, the names are very similar.
+Comparing this with other platforms, 125=C2=B0C can be "hot" and 145=C2=B0C=
+ is "critical".
 
-> 
-> [...]
-> 
-> > > -	for (i = 0; i < 16; i++)
-> > > -		kvm_s390_fac_base[i] |=
-> > > -			stfle_fac_list[i] & nonhyp_mask(i);
-> > > +	for (i = 0; i < HMFAI_DWORDS; i++)
-> > > +		kvm_s390_fac_base[i] |= nonhyp_mask(i);  
-> > 
-> > where did the stfle_fac_list[i] go?  
-> 
-> I deleted it. That's what I meant by "Get rid of implicit double
-> anding of stfle_fac_list".
-> Besides it being redundant I didn't like it conceptually.
-> kvm_s390_fac_base specifies the facilities we support, regardless
-> if they're installed in the configuration. The hypervisor managed
-> ones are unconditionally declared via FACILITIES_KVM and we can add
-> the non hypervisor managed ones unconditionally, too.
+Other than that:
 
-makes sense
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
-> 
-> > >  	r = __kvm_s390_init();
-> > >  	if (r)  
-> >   
-> 
+> +                               };
+> +                       };
+> +               };
+> +       };
+> +};
 
+
+--=20
+With best wishes
+Dmitry
