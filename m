@@ -2,187 +2,460 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CCD87E1888
+	by mail.lfdr.de (Postfix) with ESMTP id 640B67E1889
 	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 03:16:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229926AbjKFCPD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Nov 2023 21:15:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46508 "EHLO
+        id S230030AbjKFCQB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Nov 2023 21:16:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229447AbjKFCPB (ORCPT
+        with ESMTP id S229671AbjKFCP7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Nov 2023 21:15:01 -0500
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8D5DEB
-        for <linux-kernel@vger.kernel.org>; Sun,  5 Nov 2023 18:14:58 -0800 (PST)
-Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-6bd73395bceso3214620b3a.0
-        for <linux-kernel@vger.kernel.org>; Sun, 05 Nov 2023 18:14:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=nathanrossi.com; s=google; t=1699236897; x=1699841697; darn=vger.kernel.org;
-        h=mime-version:content-transfer-encoding:subject:cc:to:from
-         :message-id:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ws+jU834Z5pTFjaSqg7/r2pohlZD9LFdAotisTHBmcI=;
-        b=c/qYfM70BedTUEz6I8040Ov72NuFbAHKNKP+eAWNZ+bVMpJnyeZHGpZH985tYW+Mpn
-         YmpLMKfpQ/OU7y7uIRrkxMs7flr11UMYR7mJecZXCgGVMRFucnfMLfxZA0P8cJMr61p9
-         KODRqbVLtO5eU9MooyATemcOi7YtapMM49LHMNeuk67lDWL2hXy09Yiu6jnlk2s2uTsT
-         lMUoiaGizrwXVZsU+vJF8Y9qIlVNRigkkUAPuM3owLr/mhr98erCWlC3nFdCPMIzPsZG
-         BN8DUdCo+xSPlNlO5RogVnC5U0p3lP18YFPnRySnWDFPlXBdokiSKJbVChA3p9aOHSSw
-         LCZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699236897; x=1699841697;
-        h=mime-version:content-transfer-encoding:subject:cc:to:from
-         :message-id:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ws+jU834Z5pTFjaSqg7/r2pohlZD9LFdAotisTHBmcI=;
-        b=N994AelCUQcb3pMXPu2vvkKoUhsyNh8gVExkYl7eiiEBwCdxyxGNx8el54yawesx4s
-         YZ80BnqcM1Fs6UrVBZEny/9diHuz/kTfARQTQ3W/UJaSx3Htd/ccQVPFHJMh2ueO2NVz
-         zHjfV8TwGKQ+1jWfc+TbcixaZGfApp8/uetvoGzNL+xsZDPI1pXi2D+FBHSIZtsZ/uo+
-         uDR0gCaysawZZ/fc5PMF69KDfi8i3BaM41+jwjs6myJVVm6vN8V5chLnh9itqyHd+d7k
-         soJxlqRpgpAs7UnRgKnXlBCYuU1JYJW13GUMljJc4kaCujZQc/TkROp1+pqaFcPmOfIB
-         MnMg==
-X-Gm-Message-State: AOJu0YxtWUKBKwXmeiKEydNmLlmlQT8gWgfbq9YbFJU/TStmdVwbV4MS
-        VzkAeaQDW17CvHnhpntfjKE7QnKn1PbQKi9J/GdO1g==
-X-Google-Smtp-Source: AGHT+IHR2nhzPl6lt4YYapmqhrLBMX6QH5ic7OLG3JGF8/stq+pN8h2t4zePr3+UKE9bM02bEaIXgw==
-X-Received: by 2002:a05:6a20:1446:b0:13f:13cb:bc50 with SMTP id a6-20020a056a20144600b0013f13cbbc50mr13293588pzi.25.1699236896754;
-        Sun, 05 Nov 2023 18:14:56 -0800 (PST)
-Received: from [127.0.1.1] (117-20-68-32.751444.bne.nbn.aussiebb.net. [117.20.68.32])
-        by smtp.gmail.com with UTF8SMTPSA id d185-20020a6336c2000000b005b4b70738e5sm4534743pga.8.2023.11.05.18.14.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 05 Nov 2023 18:14:56 -0800 (PST)
-Date:   Mon, 06 Nov 2023 02:14:36 +0000
-Message-Id: <20231106021436.1917894-1-nathan@nathanrossi.com>
-From:   Nathan Rossi <nathan@nathanrossi.com>
-To:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Cc:     Nathan Rossi <nathan@nathanrossi.com>,
-        Nathan Rossi <nathan.rossi@digi.com>,
-        Fabio Estevam <festevam@gmail.com>, Li Jun <jun.li@nxp.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>
-Subject: [PATCH v2] arm64: dts: imx8mp: imx8mq: Add parkmode-disable-ss-quirk on DWC3
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+        Sun, 5 Nov 2023 21:15:59 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C061EB
+        for <linux-kernel@vger.kernel.org>; Sun,  5 Nov 2023 18:15:53 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AAE89C433CC
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 02:15:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699236952;
+        bh=h5gWl5Q0bZXzm1YCwlvjxTCjksXTl6xwqfIP0HmbW7Y=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=fTolnndtB3if2Bhw3WPoOWoo4SsCsmOP9/bRP9wmTHNf9C20cN9yCxyrsL5yo3LPX
+         BTXBH3JG7+yuh9iZD8Fkv84JKheoUdl/OgMKawpxrLMo1YTyoIqlIDSKZz7JQO5bm1
+         ifhdMIW2zKsOi2rdHgFGHrPLjKY/HN94bXkllBg7rNxCqM2c6nROIAamUNdXDdiJ35
+         eReJjYvy2Brv0l9q7ApRkQo07cvnRgmF0CRKsJZiilfaDeV+LoUPuI7UK2Q+SXxntr
+         b4S3fWRkBQrphct681wLf57L5lRWiTow+O2ysjMKp7eLGGqY4GHnuIAAl56rGeinXl
+         3RGP/RTOWSyzg==
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-9ae2cc4d17eso605922866b.1
+        for <linux-kernel@vger.kernel.org>; Sun, 05 Nov 2023 18:15:52 -0800 (PST)
+X-Gm-Message-State: AOJu0Yzzt4WftcyZopxjat869MuUXfitCp6MfjPTAYvDVTtdrua8ts+E
+        WyQ8wDLgRaasnZgwrkjipLh8W0M7bPbcn276xWs=
+X-Google-Smtp-Source: AGHT+IGctUB49kwwGNkb+gq4lE2Nm3YUgBhHfwn7jJ2aYf7eCn7H6h7cFOeIrzDCxBXIhwL8iZOMVX2q1EP7UtWDdCI=
+X-Received: by 2002:a17:907:84a:b0:9be:c2cd:aa29 with SMTP id
+ ww10-20020a170907084a00b009bec2cdaa29mr10598664ejb.77.1699236951067; Sun, 05
+ Nov 2023 18:15:51 -0800 (PST)
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <CAAhV-H5DH3Oj3ttSpa_k6jUdZ+0_pMwgoaqUTGGFr46j7DMXRw@mail.gmail.com>
+ <ba16ad66-4b35-4fb4-b4e6-1d785f260eea@ristioja.ee> <CAAhV-H64AKdGoHnVLLOYXznpr_aq1jC_TUYXFQRdOjoBxanxkw@mail.gmail.com>
+ <c3bb7983-86e4-424e-aadd-e82a0cb6ef37@ristioja.ee> <CAAhV-H7UTnTWQeT_qo7VgBczaZo37zjosREr16H8DsLi21XPqQ@mail.gmail.com>
+ <CAAhV-H7fJS3-3_hqA4BUdH+q5EG6wSmEoPpO-fUZn5h35O=6OA@mail.gmail.com>
+ <31ed0db1-9398-4c46-a391-fc644ec49268@ristioja.ee> <CAAhV-H4MekBgYZ1nJ-M7bnpo3bczOMcTanij18ACCALz2svjQQ@mail.gmail.com>
+ <ZUSJDG82vzbuyFEY@P70.localdomain> <CAAhV-H6GyOnTOm6b8Xp=ySctyE-T905WKDUS2AZuqnEyzM7ZEg@mail.gmail.com>
+ <ZUWtTuIcMwwCWg7z@P70.localdomain> <CAAhV-H7wnjac1Znr2yh8S2bGwuxF1RRGp=cn9oracrWm6y5VVQ@mail.gmail.com>
+ <51add74a-1d1a-493d-bb50-fccdad11b22c@ristioja.ee>
+In-Reply-To: <51add74a-1d1a-493d-bb50-fccdad11b22c@ristioja.ee>
+From:   Huacai Chen <chenhuacai@kernel.org>
+Date:   Mon, 6 Nov 2023 10:15:38 +0800
+X-Gmail-Original-Message-ID: <CAAhV-H7nhkvLoDMwQDwNEhykZANGMq-Qrzip48qYzgQs1fNUgA@mail.gmail.com>
+Message-ID: <CAAhV-H7nhkvLoDMwQDwNEhykZANGMq-Qrzip48qYzgQs1fNUgA@mail.gmail.com>
+Subject: Re: Blank screen on boot of Linux 6.5 and later on Lenovo ThinkPad L570
+To:     Jaak Ristioja <jaak@ristioja.ee>
+Cc:     Evan Preston <x.arch@epreston.net>,
+        Linux regressions mailing list <regressions@lists.linux.dev>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        Linux DRI Development <dri-devel@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Thorsten Leemhuis <regressions@leemhuis.info>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Bagas Sanjaya <bagasdotme@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_PDS_OTHER_BAD_TLD,
+        T_SCC_BODY_TEXT_LINE,WEIRD_PORT autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nathan Rossi <nathan.rossi@digi.com>
+Hi, Jaak and Evan,
 
-The i.MX8MP and i.MX8MQ devices both use the same DWC3 controller and
-are both affected by a known issue with the controller due to specific
-behaviour when park mode is enabled in SuperSpeed host mode operation.
+On Mon, Nov 6, 2023 at 12:28=E2=80=AFAM Jaak Ristioja <jaak@ristioja.ee> wr=
+ote:
+>
+> On 05.11.23 14:40, Huacai Chen wrote:
+> > Hi, Evan,
+> >
+> > On Sat, Nov 4, 2023 at 10:50=E2=80=AFAM Evan Preston <x.arch@epreston.n=
+et> wrote:
+> >>
+> >> Hi Huacai,
+> >>
+> >> On 2023-11-03 Fri 02:36pm, Huacai Chen wrote:
+> >>> Hi, Evan,
+> >>>
+> >>> On Fri, Nov 3, 2023 at 1:54=E2=80=AFPM Evan Preston <x.arch@epreston.=
+net> wrote:
+> >>>>
+> >>>> Hi Huacai,
+> >>>>
+> >>>> On 2023-11-02 Thu 08:38pm, Huacai Chen wrote:
+> >>>>> Hi, Jaak,
+> >>>>>
+> >>>>> On Wed, Nov 1, 2023 at 7:52=E2=80=AFPM Jaak Ristioja <jaak@ristioja=
+.ee> wrote:
+> >>>>>>
+> >>>>>> On 31.10.23 14:17, Huacai Chen wrote:
+> >>>>>>> Hi, Jaak and Evan,
+> >>>>>>>
+> >>>>>>> On Sun, Oct 29, 2023 at 9:42=E2=80=AFAM Huacai Chen <chenhuacai@k=
+ernel.org> wrote:
+> >>>>>>>>
+> >>>>>>>> On Sat, Oct 28, 2023 at 7:06=E2=80=AFPM Jaak Ristioja <jaak@rist=
+ioja.ee> wrote:
+> >>>>>>>>>
+> >>>>>>>>> On 26.10.23 03:58, Huacai Chen wrote:
+> >>>>>>>>>> Hi, Jaak,
+> >>>>>>>>>>
+> >>>>>>>>>> On Thu, Oct 26, 2023 at 2:49=E2=80=AFAM Jaak Ristioja <jaak@ri=
+stioja.ee> wrote:
+> >>>>>>>>>>>
+> >>>>>>>>>>> On 25.10.23 16:23, Huacai Chen wrote:
+> >>>>>>>>>>>> On Wed, Oct 25, 2023 at 6:08=E2=80=AFPM Thorsten Leemhuis
+> >>>>>>>>>>>> <regressions@leemhuis.info> wrote:
+> >>>>>>>>>>>>>
+> >>>>>>>>>>>>> Javier, Dave, Sima,
+> >>>>>>>>>>>>>
+> >>>>>>>>>>>>> On 23.10.23 00:54, Evan Preston wrote:
+> >>>>>>>>>>>>>> On 2023-10-20 Fri 05:48pm, Huacai Chen wrote:
+> >>>>>>>>>>>>>>> On Fri, Oct 20, 2023 at 5:35=E2=80=AFPM Linux regression =
+tracking (Thorsten
+> >>>>>>>>>>>>>>> Leemhuis) <regressions@leemhuis.info> wrote:
+> >>>>>>>>>>>>>>>> On 09.10.23 10:54, Huacai Chen wrote:
+> >>>>>>>>>>>>>>>>> On Mon, Oct 9, 2023 at 4:45=E2=80=AFPM Bagas Sanjaya <b=
+agasdotme@gmail.com> wrote:
+> >>>>>>>>>>>>>>>>>> On Mon, Oct 09, 2023 at 09:27:02AM +0800, Huacai Chen =
+wrote:
+> >>>>>>>>>>>>>>>>>>> On Tue, Sep 26, 2023 at 10:31=E2=80=AFPM Huacai Chen =
+<chenhuacai@kernel.org> wrote:
+> >>>>>>>>>>>>>>>>>>>> On Tue, Sep 26, 2023 at 7:15=E2=80=AFPM Linux regres=
+sion tracking (Thorsten
+> >>>>>>>>>>>>>>>>>>>> Leemhuis) <regressions@leemhuis.info> wrote:
+> >>>>>>>>>>>>>>>>>>>>> On 13.09.23 14:02, Jaak Ristioja wrote:
+> >>>>>>>>>>>>>>>>>>>>>>
+> >>>>>>>>>>>>>>>>>>>>>> Upgrading to Linux 6.5 on a Lenovo ThinkPad L570 (=
+Integrated Intel HD
+> >>>>>>>>>>>>>>>>>>>>>> Graphics 620 (rev 02), Intel(R) Core(TM) i7-7500U)=
+ results in a blank
+> >>>>>>>>>>>>>>>>>>>>>> screen after boot until the display manager starts=
+... if it does start
+> >>>>>>>>>>>>>>>>>>>>>> at all. Using the nomodeset kernel parameter seems=
+ to be a workaround.
+> >>>>>>>>>>>>>>>>>>>>>>
+> >>>>>>>>>>>>>>>>>>>>>> I've bisected this to commit 60aebc9559492cea6a962=
+5f514a8041717e3a2e4
+> >>>>>>>>>>>>>>>>>>>>>> ("drivers/firmware: Move sysfb_init() from device_=
+initcall to
+> >>>>>>>>>>>>>>>>>>>>>> subsys_initcall_sync").
+> >>>>>>>>>>>>>>>>>>>>>
+> >>>>>>>>>>>>>>>>>>> As confirmed by Jaak, disabling DRM_SIMPLEDRM makes t=
+hings work fine
+> >>>>>>>>>>>>>>>>>>> again. So I guess the reason:
+> >>>>>>>>>>>>>>>>
+> >>>>>>>>>>>>>>>> Well, this to me still looks a lot (please correct me if=
+ I'm wrong) like
+> >>>>>>>>>>>>>>>> regression that should be fixed, as DRM_SIMPLEDRM was en=
+abled beforehand
+> >>>>>>>>>>>>>>>> if I understood things correctly. Or is there a proper f=
+ix for this
+> >>>>>>>>>>>>>>>> already in the works and I just missed this? Or is there=
+ some good
+> >>>>>>>>>>>>>>>> reason why this won't/can't be fixed?
+> >>>>>>>>>>>>>>>
+> >>>>>>>>>>>>>>> DRM_SIMPLEDRM was enabled but it didn't work at all becau=
+se there was
+> >>>>>>>>>>>>>>> no corresponding platform device. Now DRM_SIMPLEDRM works=
+ but it has a
+> >>>>>>>>>>>>>>> blank screen. Of course it is valuable to investigate fur=
+ther about
+> >>>>>>>>>>>>>>> DRM_SIMPLEDRM on Jaak's machine, but that needs Jaak's ef=
+fort because
+> >>>>>>>>>>>>>>> I don't have a same machine.
+> >>>>>>>>>>>>>
+> >>>>>>>>>>>>> Side note: Huacai, have you tried working with Jaak to get =
+down to the
+> >>>>>>>>>>>>> real problem? Evan, might you be able to help out here?
+> >>>>>>>>>>>> No, Jaak has no response after he 'fixed' his problem by dis=
+abling SIMPLEDRM.
+> >>>>>>>>>>>>
+> >>>>>>>>>>>
+> >>>>>>>>>>> I'm sorry, what was it exactly you want me to do? Please be m=
+indful that
+> >>>>>>>>>>> I'm not familiar with the internals of the Linux kernel and D=
+RI, and it
+> >>>>>>>>>>> might sometimes take weeks before I have time to work and res=
+pond on this.
+> >>>>>>>>>> It doesn't matter. I hope you can do some experiments to inves=
+tigate
+> >>>>>>>>>> deeper. The first experiment you can do is enabling SIMPLEFB (=
+i.e.
+> >>>>>>>>>> CONFIG_FB_SIMPLE) instead of SIMPLEDRM (CONFIG_DRM_SIMPLEDRM) =
+to see
+> >>>>>>>>>> whether there is also a blank screen. If no blank screen, that
+> >>>>>>>>>> probably means SIMPLEDRM has a bug, if still blank screen, tha=
+t means
+> >>>>>>>>>> the firmware may pass wrong screen information.
+> >>>>>>>>>
+> >>>>>>>>> Testing with 6.5.9 I get a blank screen with CONFIG_DRM_SIMPLED=
+RM=3Dy and
+> >>>>>>>>> get no blank screen with CONFIG_FB_SIMPLE=3Dy and CONFIG_DRM_SI=
+MPLEDRM unset.
+> >>>>>>>> CONFIG_FB_SIMPLE and  CONFIG_DRM_SIMPLEDRM use the same device c=
+reated
+> >>>>>>>> by sysfb_init(). Since FB_SIMPLE works fine, I think the real pr=
+oblem
+> >>>>>>>> is that DRM_SIMPLEDRM has a bug. The next step is to enable
+> >>>>>>>> CONFIG_DRM_SIMPLEDRM and trace its initialization. In detail, ad=
+ding
+> >>>>>>>> some printk() in simpledrm_probe() and its sub-routines to see w=
+here
+> >>>>>>>> the driver fails. The output of these printk() can be seen by th=
+e
+> >>>>>>>> 'dmesg' command after boot.
+> >>>>>>> I need your help. I tried with my laptop (ThinkPad E490, Intel Co=
+re
+> >>>>>>> i3-8145U, UHD Graphics 620) but I can't reproduce your problem. S=
+o
+> >>>>>>> please patch your 6.5.x kernel with this temporary patch [1], the=
+n
+> >>>>>>> build a "bad kernel" with SIMPLEDRM enabled. And after booting yo=
+ur
+> >>>>>>> machine with this "bad kernel", please give me the dmesg output. =
+Thank
+> >>>>>>> you very much.
+> >>>>>>>
+> >>>>>>> [1] http://ddns.miaomiaomiao.top:9000/download/kernel/patch-6.5.9
+> >>>>>>
+> >>>>>> I'm unable to download it. Can you please send it by e-mail?
+> >>>>> I'm sorry, please download from attachment.
+> >>>>
+> >>>> When applying this patch the first hunk (drivers/firmware/sysfb.c) f=
+ails for
+> >>>> me with 6.5.9.  Attempting to load the 6.5.9 kernel without this pat=
+ch
+> >>>> produces no dmesg output on my machine.
+> >>> You copy-paste the patch? If you download it directly it can be
+> >>> applied successfully, I think.
+> >>
+> >> The patch downloaded from your URL applies successfully.  However, I s=
+till
+> >> see no dmesg output using the patched 6.5.9 kernel.  'journalctl -k -b=
+ all'
+> >> shows no dmesg output from any 6.5.x boots, only from 6.4.12 boots.
+> > Thank you for your testing. Since you cannot boot to GUI successfully
+> > as Jaak, you may have some troubles with getting the dmesg output. But
+> > you can try to use "systemd.unit=3Dmulti-user.target" boot parameters.
+> > In this way you may boot to the login: prompt and then you can get
+> > dmesg output. Or if you still fail, you may use 'jornalctl -k -b -1'
+> > to get the previous dmesg output with 6.4.12.
+> >
+> > Hi, Jaak,
+> >
+> > Have you tested? I think you can successfully get a dmesg output with m=
+y patch.
+>
+> Yes, just tested it, here I think are the relevant parts from a dmesg
+> produced with CONFIG_DRM_SIMPLEDRM and the patch provided by Huacai:
+>
+> ...
+> [    2.909625] sysfb 1
+> [    2.909627] sysfb 2
+> ...
+> [    2.951477] ACPI: bus type drm_connector registered
+> [    2.952096] i915 0000:00:02.0: [drm] VT-d active for gfx access
+> [    2.952105] resource: resource sanity check: requesting [mem
+> 0x00000000e0000000-0x00000000efffffff], which spans more than BOOTFB
+> [mem 0xe0000000-0xe012bfff]
+> [    2.952111] caller i915_ggtt_init_hw+0x88/0x120 mapping multiple BARs
+> [    2.952138] i915 0000:00:02.0: [drm] Using Transparent Hugepages
+> [    2.953204] Loading firmware: i915/kbl_dmc_ver1_04.bin
+> [    2.953485] i915 0000:00:02.0: [drm] Finished loading DMC firmware
+> i915/kbl_dmc_ver1_04.bin (v1.4)
+> ...
+> [    4.142075] [drm] Initialized i915 1.6.0 20201103 for 0000:00:02.0 on
+> minor 0
+> [    4.144269] ACPI: video: Video Device [GFX0] (multi-head: yes  rom:
+> no  post: no)
+> [    4.144414] input: Video Bus as
+> /devices/LNXSYSTM:00/LNXSYBUS:00/PNP0A08:00/LNXVIDEO:00/input/input4
+> [    4.144580] [drm] Initialized vgem 1.0.0 20120112 for vgem on minor 1
+> [    4.144590] usbcore: registered new interface driver udl
+> [    4.144603] T: probe 1
+> [    4.144605] T: create 1
+> [    4.144610] T: create 2
+> [    4.144611] T: create 3a-1
+> [    4.144613] T: create 3a-2
+> [    4.144614] T: create 3a-3
+> [    4.144616] T: create 3a-4
+> [    4.144618] T: create 4
+> [    4.144619] T: create 5
+> [    4.144621] simple-framebuffer simple-framebuffer.0: [drm] display
+> mode=3D{"": 60 18432 640 640 640 640 480 480 480 480 0x40 0x0}
+> [    4.144628] simple-framebuffer simple-framebuffer.0: [drm]
+> framebuffer format=3DXR24 little-endian (0x34325258), size=3D640x480,
+> stride=3D2560 byte
+> [    4.144633] T: create 6b-1
+> [    4.144635] T: create 6b-2
+> [    4.144637] simple-framebuffer simple-framebuffer.0: [drm] using I/O
+> memory framebuffer at [mem 0xe0000000-0xe012bfff flags 0x200]
+> [    4.144643] T: create 6b-3
+> [    4.144660] T: create 6b-4
+> [    4.144662] T: create 7
+> [    4.144673] T: create 8
+> [    4.144676] T: create 9
+> [    4.144678] T: create 10
+> [    4.144681] T: create 11
+> [    4.144685] T: create 12
+> [    4.144689] T: probe 2
+> [    4.144728] [drm] Initialized simpledrm 1.0.0 20200625 for
+> simple-framebuffer.0 on minor 2
+> [    4.144732] T: probe 3
+> [    4.145905] Console: switching to colour frame buffer device 80x30
+> [    4.150437] simple-framebuffer simple-framebuffer.0: [drm] fb0:
+> simpledrmdrmfb frame buffer device
+> [    4.150766] T: probe 4
+> [    4.151218] loop: module loaded
+> [    4.154434] i915 0000:00:02.0: [drm] fb1: i915drmfb frame buffer devic=
+e
+> ...
+> [   44.630789] simple-framebuffer simple-framebuffer.0: swiotlb buffer
+> is full (sz: 1310720 bytes), total 32768 (slots), used 0 (slots)
+> ...
+>
+> The last message might be due to the display manager starting up.
+>
+> Hope it helps.
+Thank you for your testing. Jaak's problem seems related to the
+initialization order, you can try to modify drivers/gpu/drm/Makefile,
+move
 
-Under heavy USB traffic from multiple endpoints the controller will
-sometimes incorrectly process transactions such that some transactions
-are lost, or the controller may hang when processing transactions. When
-the controller hangs it does not recover.
+obj-y                  +=3D tiny/
 
-This issue is documented partially within the linux-imx vendor kernel
-which references a Synopsys STAR number 9001415732 in commits [1] and
-additional details in [2]. Those commits provide some additional
-controller internal implementation specifics around the incorrect
-behaviour of the SuperSpeed host controller operation when park mode is
-enabled.
+to between these two lines
 
-The summary of this issue is that the host controller can incorrectly
-enter/exit park mode such that part of the controller is in a state
-which behaves as if in park mode even though it is not. In this state
-the controller incorrectly calculates the number of TRBs available which
-results in incorrect access of the internal caches causing the overwrite
-of pending requests in the cache which should have been processed but
-are ignored. This can cause the controller to drop the requests or hang
-waiting for the pending state of the dropped requests.
+obj-$(CONFIG_DRM_SCHED) +=3D scheduler/
+obj-$(CONFIG_DRM_RADEON)+=3D radeon/
 
-The workaround for this issue is to disable park mode for SuperSpeed
-operation of the controller through the GUCTL1[17] bit. This is already
-available as a quirk for the DWC3 controller and can be enabled via the
-'snps,parkmode-disable-ss-quirk' device tree property.
+then build a new 6.5.x kernel to see whether your problem is resolved.
 
-It is possible to replicate this failure on an i.MX8MP EVK with a USB
-Hub connecting 4 SuperSpeed USB flash drives. Performing continuous
-small read operations (dd if=/dev/sd... of=/dev/null bs=16) on the block
-devices will result in device errors initially and will eventually
-result in the controller hanging.
+Evan's problem seems a little strange, could you please give me your
+config files of both 6.4.12 and 6.5.x? And you can also try the above
+method to see if anything changes.
 
-  [13240.896936] xhci-hcd xhci-hcd.0.auto: WARN Event TRB for slot 4 ep 2 with no TDs queued?
-  [13240.990708] usb 2-1.3: reset SuperSpeed USB device number 5 using xhci-hcd
-  [13241.015582] sd 2:0:0:0: [sdc] tag#0 UNKNOWN(0x2003) Result: hostbyte=0x07 driverbyte=DRIVER_OK cmd_age=0s
-  [13241.025198] sd 2:0:0:0: [sdc] tag#0 CDB: opcode=0x28 28 00 00 00 03 e0 00 01 00 00
-  [13241.032949] I/O error, dev sdc, sector 992 op 0x0:(READ) flags 0x80700 phys_seg 25 prio class 2
-  [13272.150710] usb 2-1.2: reset SuperSpeed USB device number 4 using xhci-hcd
-  [13272.175469] sd 1:0:0:0: [sdb] tag#0 UNKNOWN(0x2003) Result: hostbyte=0x03 driverbyte=DRIVER_OK cmd_age=31s
-  [13272.185365] sd 1:0:0:0: [sdb] tag#0 CDB: opcode=0x28 28 00 00 00 03 e0 00 01 00 00
-  [13272.193385] I/O error, dev sdb, sector 992 op 0x0:(READ) flags 0x80700 phys_seg 18 prio class 2
-  [13434.846556] xhci-hcd xhci-hcd.0.auto: xHCI host not responding to stop endpoint command
-  [13434.854592] xhci-hcd xhci-hcd.0.auto: xHCI host controller not responding, assume dead
-  [13434.862553] xhci-hcd xhci-hcd.0.auto: HC died; cleaning up
+Huacai
 
-[1] https://github.com/nxp-imx/linux-imx/commit/97a5349d936b08cf301730b59e4e8855283f815c
-[2] https://github.com/nxp-imx/linux-imx/commit/b4b5cbc5a12d7c3b920d1d7cba0ada3379e4e42b
-
-Fixes: fb8587a2c165 ("arm64: dtsi: imx8mp: add usb nodes")
-Fixes: ad37549cb5dc ("arm64: dts: imx8mq: add USB nodes")
-Signed-off-by: Nathan Rossi <nathan.rossi@digi.com>
-Reviewed-by: Fabio Estevam <festevam@gmail.com>
----
-Changes in v2:
-- Added Fixes to commit message
----
- arch/arm64/boot/dts/freescale/imx8mp.dtsi | 2 ++
- arch/arm64/boot/dts/freescale/imx8mq.dtsi | 2 ++
- 2 files changed, 4 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/freescale/imx8mp.dtsi b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
-index c9a610ba48..1264da6012 100644
---- a/arch/arm64/boot/dts/freescale/imx8mp.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
-@@ -2072,6 +2072,7 @@ usb_dwc3_0: usb@38100000 {
- 				phys = <&usb3_phy0>, <&usb3_phy0>;
- 				phy-names = "usb2-phy", "usb3-phy";
- 				snps,gfladj-refclk-lpm-sel-quirk;
-+				snps,parkmode-disable-ss-quirk;
- 			};
- 
- 		};
-@@ -2114,6 +2115,7 @@ usb_dwc3_1: usb@38200000 {
- 				phys = <&usb3_phy1>, <&usb3_phy1>;
- 				phy-names = "usb2-phy", "usb3-phy";
- 				snps,gfladj-refclk-lpm-sel-quirk;
-+				snps,parkmode-disable-ss-quirk;
- 			};
- 		};
- 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mq.dtsi b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
-index 4b1ce9fc17..c6dc3ba0d4 100644
---- a/arch/arm64/boot/dts/freescale/imx8mq.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
-@@ -1649,6 +1649,7 @@ usb_dwc3_0: usb@38100000 {
- 			phys = <&usb3_phy0>, <&usb3_phy0>;
- 			phy-names = "usb2-phy", "usb3-phy";
- 			power-domains = <&pgc_otg1>;
-+			snps,parkmode-disable-ss-quirk;
- 			status = "disabled";
- 		};
- 
-@@ -1680,6 +1681,7 @@ usb_dwc3_1: usb@38200000 {
- 			phys = <&usb3_phy1>, <&usb3_phy1>;
- 			phy-names = "usb2-phy", "usb3-phy";
- 			power-domains = <&pgc_otg2>;
-+			snps,parkmode-disable-ss-quirk;
- 			status = "disabled";
- 		};
- 
----
-2.42.0
+>
+> J
+>
+> >
+> >>
+> >> Evan
+> >>
+> >>>
+> >>> Huacai
+> >>>
+> >>>>
+> >>>> Evan
+> >>>>
+> >>>>>
+> >>>>> Huacai
+> >>>>>
+> >>>>>>
+> >>>>>> Jaak
+> >>>>>>
+> >>>>>>>
+> >>>>>>>
+> >>>>>>> Huacai
+> >>>>>>>
+> >>>>>>>>
+> >>>>>>>> Huacai
+> >>>>>>>>
+> >>>>>>>>>
+> >>>>>>>>> Jaak
+> >>>>>>>>>
+> >>>>>>>>>>
+> >>>>>>>>>> Huacai
+> >>>>>>>>>>
+> >>>>>>>>>>>
+> >>>>>>>>>>> Jaak
+> >>>>>>>>>>>
+> >>>>>>>>>>>>>
+> >>>>>>>>>>>>> But I write this mail for a different reason:
+> >>>>>>>>>>>>>
+> >>>>>>>>>>>>>> I am having the same issue on a Lenovo Thinkpad P70 (Intel
+> >>>>>>>>>>>>>> Corporation HD Graphics 530 (rev 06), Intel(R) Core(TM) i7=
+-6700HQ).
+> >>>>>>>>>>>>>> Upgrading from Linux 6.4.12 to 6.5 and later results in on=
+ly a blank
+> >>>>>>>>>>>>>> screen after boot and a rapidly flashing device-access-sta=
+tus
+> >>>>>>>>>>>>>> indicator.
+> >>>>>>>>>>>>>
+> >>>>>>>>>>>>> This additional report makes me wonder if we should revert =
+the culprit
+> >>>>>>>>>>>>> (60aebc9559492c ("drivers/firmware: Move sysfb_init() from
+> >>>>>>>>>>>>> device_initcall to subsys_initcall_sync") [v6.5-rc1]). But =
+I guess that
+> >>>>>>>>>>>>> might lead to regressions for some users? But the patch des=
+cription says
+> >>>>>>>>>>>>> that this is not a common configuration, so can we maybe ge=
+t away with that?
+> >>>>>>>>>>>>     From my point of view, this is not a regression, 60aebc9=
+559492c
+> >>>>>>>>>>>> doesn't cause a problem, but exposes a problem. So we need t=
+o fix the
+> >>>>>>>>>>>> real problem (SIMPLEDRM has a blank screen on some condition=
+s). This
+> >>>>>>>>>>>> needs Jaak or Evan's help.
+> >>>>>>>>>>>>
+> >>>>>>>>>>>> Huacai
+> >>>>>>>>>>>>>
+> >>>>>>>>>>>>> Ciao, Thorsten (wearing his 'the Linux kernel's regression =
+tracker' hat)
+> >>>>>>>>>>>>> --
+> >>>>>>>>>>>>> Everything you wanna know about Linux kernel regression tra=
+cking:
+> >>>>>>>>>>>>> https://linux-regtracking.leemhuis.info/about/#tldr
+> >>>>>>>>>>>>> If I did something stupid, please tell me, as explained on =
+that page.
+> >>>>>>>>>>>>>
+> >>>>>>>>>>>>>>>>>>> When SIMPLEDRM takes over the framebuffer, the screen=
+ is blank (don't
+> >>>>>>>>>>>>>>>>>>> know why). And before 60aebc9559492cea6a9625f ("drive=
+rs/firmware: Move
+> >>>>>>>>>>>>>>>>>>> sysfb_init() from device_initcall to subsys_initcall_=
+sync") there is
+> >>>>>>>>>>>>>>>>>>> no platform device created for SIMPLEDRM at early sta=
+ge, so it seems
+> >>>>>>>>>>>>>>>>>>> also "no problem".
+> >>>>>>>>>>>>>>>>>> I don't understand above. You mean that after that com=
+mit the platform
+> >>>>>>>>>>>>>>>>>> device is also none, right?
+> >>>>>>>>>>>>>>>>> No. The SIMPLEDRM driver needs a platform device to wor=
+k, and that
+> >>>>>>>>>>>>>>>>> commit makes the platform device created earlier. So, b=
+efore that
+> >>>>>>>>>>>>>>>>> commit, SIMPLEDRM doesn't work, but the screen isn't bl=
+ank; after that
+> >>>>>>>>>>>>>>>>> commit, SIMPLEDRM works, but the screen is blank.
+> >>>>>>>>>>>>>>>>>
+> >>>>>>>>>>>>>>>>> Huacai
+> >>>>>>>>>>>>>>>>>>
+> >>>>>>>>>>>>>>>>>> Confused...
+> >>>>>>>>>>>>>>>>>>
+> >>>>>>>>>>>>>>>>>> --
+> >>>>>>>>>>>>>>>>>> An old man doll... just what I always wanted! - Clara
+> >>>>>>>>>>>>>>>>>
+> >>>>>>>>>>>>>>>>>
+> >>>>>>>>>>>>>>
+> >>>>>>>>>>>>>>
+> >>>>>>>>>>>
+> >>>>>>>>>
+> >>>>>>
+> >>>>
+> >>>>
+>
