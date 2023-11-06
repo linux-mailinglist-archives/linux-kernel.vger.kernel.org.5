@@ -2,145 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E48BB7E181A
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 01:13:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 588127E1824
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 01:27:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229852AbjKFAN1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Nov 2023 19:13:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52966 "EHLO
+        id S229888AbjKFAUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Nov 2023 19:20:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229447AbjKFAN0 (ORCPT
+        with ESMTP id S229447AbjKFAUp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Nov 2023 19:13:26 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1685393
-        for <linux-kernel@vger.kernel.org>; Sun,  5 Nov 2023 16:13:23 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1699229600;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=cXAJ9BZo5drVO9Ek1zL6cxPlBwfYa/GlMFz6PSVAW64=;
-        b=XbwclX53fKHatfiJi+lC0QjE5YW9TW7PPHKSSdyJy1XbsBMln+Jv6EVhqGrT8nQIoTi38h
-        eEJ4YAV6WKxphWcYtlgxV2Xw+yJPrREy3PT4Qlpo9CuAEww4C5bBKc7cVoVJfPbReWWCc2
-        aOTTumF86m62nDAG2D+EFyDXmjRW2ZL6AAbNNWZlUObEWinEPmXb3tPWN7jj+oA1y39a/M
-        A8p922udvyzo8Vne3o/LkdG4IO664+lPpHAqIzVO++wpzKuuiX8exMmS2PLAUYNlbSrlJV
-        i3eHgM6c7q4gu/E8jIoJBG64zMkO48u63oXNgdU15L54JaiRZCVc6JGf5182aA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1699229600;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=cXAJ9BZo5drVO9Ek1zL6cxPlBwfYa/GlMFz6PSVAW64=;
-        b=YAmlV74+FJQTd1bifrk1V2sExI5NtKC2uSPt9g6Mbcn+NmAX2ncOu24fl/DafkKMeRY55G
-        Wd9sr04P6gHMe2Bg==
-To:     Ben Greear <greearb@candelatech.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Cc:     Rodolfo Giometti <giometti@enneenne.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH/RFC] debugobjects/slub: Print slab info and backtrace.
-In-Reply-To: <dc3a6aa1-bb46-666b-4cba-5345636164bc@candelatech.com>
-References: <20231103013704.1232723-1-greearb@candelatech.com>
- <92a422d6-76c8-ce25-c331-0718b73dd274@candelatech.com>
- <875y2gi33n.ffs@tglx>
- <dc3a6aa1-bb46-666b-4cba-5345636164bc@candelatech.com>
-Date:   Mon, 06 Nov 2023 01:13:19 +0100
-Message-ID: <8734xjivs0.ffs@tglx>
+        Sun, 5 Nov 2023 19:20:45 -0500
+Received: from mail-oi1-f200.google.com (mail-oi1-f200.google.com [209.85.167.200])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4502BB
+        for <linux-kernel@vger.kernel.org>; Sun,  5 Nov 2023 16:20:42 -0800 (PST)
+Received: by mail-oi1-f200.google.com with SMTP id 5614622812f47-3b3eba1fc32so6344143b6e.0
+        for <linux-kernel@vger.kernel.org>; Sun, 05 Nov 2023 16:20:42 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699230042; x=1699834842;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=CZQ78xmx/1eRfl04UsY8L//cVD5boCST8JLASCkpPAM=;
+        b=t9C6hwN6R8q22+orByfisGve6zUH4hiJV6PHU/FLAUZ7UX7jYqWP4NELMgoGws4fBk
+         BQRtkf4oorFqNeBrhQ+u3puwhyra+jxeOi/Qyj5/7/+TvaiSmg86E6EmQD5kZSbfVXyt
+         f8ZA19HjdLMxUJaqZepdpSSmNqLgdIbXKn5CPwn6Jd9unHx5HumgsdYYku8OKfaT3VRj
+         +3RKh4lpS8fF0gZxuHkNoU1XcRlK8XAKnspOUbUkPkg8N1TzDgsLmlJvl+V/J2f2gyN3
+         wuReokZzGMVi1kzaeG1+37gigbvwz67ctmePCa7bLazTJQu2OoEVF5Mv8acyVKRVjgCq
+         EYig==
+X-Gm-Message-State: AOJu0Ywd6bkyu9lhW/9y9Ej0KmOnBbbtv2NiquHC0a49HmlvAXI01LmR
+        cT+4jFTI6uh5pU7M6/ZpvljffYClvBQz36WpQajPckjnQFA1fiA=
+X-Google-Smtp-Source: AGHT+IHj57wW+sCPUol7vmw7gJAPCqNkuxKdYor7AN3c9KjaHJWT6sbIKpj+fHnGzz+gjX4B4+8drv8bJmx4YYugta1DJ3QY/o9u
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Received: by 2002:a05:6808:aaf:b0:3ae:2ba1:af6a with SMTP id
+ r15-20020a0568080aaf00b003ae2ba1af6amr8868889oij.8.1699230042171; Sun, 05 Nov
+ 2023 16:20:42 -0800 (PST)
+Date:   Sun, 05 Nov 2023 16:20:42 -0800
+In-Reply-To: <000000000000e7b62806096c7d67@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000000e304b060970d3be@google.com>
+Subject: Re: [syzbot] [PATCH] null pointer dereference
+From:   syzbot <syzbot+8a78ecea7ac1a2ea26e5@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 05 2023 at 09:40, Ben Greear wrote:
-> On 11/5/23 8:20 AM, Thomas Gleixner wrote:
->>> 16147 Nov 02 17:28:25 ct523c-2103 kernel:  worker_thread+0x38a/0x680
->> 
->> Can you please provide proper kernel dmesg output next time instead of
->> this mess?
->
-> You are complaining because there are a few extra tokens put in this
-> by journalctl?
+For archival purposes, forwarding an incoming command email to
+linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com.
 
-Superfluous information is just distracting :)
+***
 
->>>   ODEBUG: free active (active state 0) object: ffff888181c029a0 object type: timer_list hint: kobject_delayed_cleanup+0x0/0x140
->>>   WARNING: CPU: 1 PID: 104 at lib/debugobjects.c:549 debug_print_object+0xf0/0x170
->>>   CPU: 1 PID: 104 Comm: kworker/1:10 Tainted: G        W          6.6.0-rc7+ #17
->>>   Workqueue: events kobject_delayed_cleanup
->>>   RIP: 0010:debug_print_object+0xf0/0x170
->>>    debug_check_no_obj_freed+0x261/0x2b0
->>>    __kmem_cache_free+0x185/0x200
->>>    device_release+0x57/0x100
->>>    kobject_delayed_cleanup+0xdf/0x140
->>>    process_one_work+0x475/0x920
->>>    worker_thread+0x38a/0x680
->> 
->> So what happens is:
->> 
->> pps_unregister_cdev()
->>    device_destroy()
->>      put_device()
->>       device_unregister()
->>         device_del()
->>         put_device() <- Drops final reference to dev->kobj
->>           schedule_delayed_work()
->> 
->> worker thread:
->>    kobject_delayed_cleanup()
->>      device_release()
->>        pps_device_destruct()
->>          cdev_del(&pps->cdev)
->>            kobject_put(&cdev->kobj) <- Drops final reference
->>              schedule_delayed_work()
->>                init_timer(&cdev->kobj.release.timer);
->>                start_timer();
->>         ...
->>         kfree(dev);
->>         kfree(pps); <- Debug object detects the active timer to be freed
->>                        because cdev and its kobject are embedded in
->>                        struct pps_device.
->> 
->> pps_device_destruct() is unfortunately not on the call trace of the
->> debug objects splat anymore stack because kfree(pps) is a tail call.
->
-> So, is this a real bug, or just false positive?
+Subject: [PATCH] null pointer dereference
+Author: yuran.pereira@hotmail.com
 
-Freeing an active timer is obviously a bug, no?
+#syz test: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
 
->> So yes, that collected stacktrace is helpful.
->
-> The one I added, or was the original code enough to find this?
+Signed-off-by: Yuran Pereira <yuran.pereira@hotmail.com>
+---
+ drivers/ptp/ptp_chardev.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-The one you added. Collecting this information is useful when the object
-tracked by debugobjects provides a hint which does not give any
-information about the source of trouble:
-
-   timer_list hint: kobject_delayed_cleanup+0x0/0x140
-
-It points to the work function, but that function is useless to figure
-out where the kobject belongs to. So the extra stack trace during init
-provides the missing information.
-
-Though I just looked at the patch again. This part is problematic:
-
-> +	trace_handle = stack_depot_save(entries, nr_entries, GFP_NOWAIT);
-
-This breaks on RT as you cannot allocate with a raw spinlock held.
-
-Let met think about that.
-
-Thanks,
-
-        tglx
-
-
+diff --git a/drivers/ptp/ptp_chardev.c b/drivers/ptp/ptp_chardev.c
+index 282cd7d24077..5b36c34629a0 100644
+--- a/drivers/ptp/ptp_chardev.c
++++ b/drivers/ptp/ptp_chardev.c
+@@ -173,6 +173,8 @@ long ptp_ioctl(struct posix_clock_context *pccontext, unsigned int cmd,
+ 	int enable, err = 0;
+ 
+ 	tsevq = pccontext->private_clkdata;
++	if (!tsevq)
++		return -EINVAL;
+ 
+ 	switch (cmd) {
+ 
+-- 
+2.25.1
 
