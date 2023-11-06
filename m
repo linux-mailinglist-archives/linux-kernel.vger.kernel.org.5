@@ -2,18 +2,18 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B702B7E2EA3
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 22:07:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A992E7E2EA1
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 22:07:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233145AbjKFVHs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 16:07:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57710 "EHLO
+        id S233131AbjKFVHn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 16:07:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233080AbjKFVHi (ORCPT
+        with ESMTP id S233093AbjKFVHi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 6 Nov 2023 16:07:38 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FBB7D76
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6F4C103
         for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 13:07:35 -0800 (PST)
 From:   John Ogness <john.ogness@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
@@ -22,29 +22,29 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=krH2QkxdJALvXRu9Bq+Fw3gs7PqsPIKkUheQqZKkVK0=;
-        b=QMdwCTBCqjbEWs3BE4hUb1Y9Hym3aJ4RR2/J7tmD2m4kRWoI3l0B2B2psbP22JClESL9J7
-        ZgTv1JSFlm1LMLVKTaFpw7IaDmsVLLf+0+uSwWIoOPLJJXsxF7EQhdtPbqLKfbedcoSYOK
-        oHLZo/QR8v6WlnUWfFhhUVBD8elhrD+EvlaYd84rX8j0QT+FjLqTl1eClLY2I6+tVxji0L
-        4NQ7PndmDJtqPTPCPnCe7RdXMERG5rqkuhtN6rNzxXPsr2mvRbMxQ5cDtAdiyWDs0DE2e2
-        yWxsRwU8mUaCACmX/UKN1m+uk8AwUbGpAK220XDYe7nr8JyAO6G6a2g9XpTAAQ==
+        bh=EjNlI5JonKv0m/kINdXCywSbWYOfTvFxrSFxNOQW5Ko=;
+        b=MJVAR+sgDJZ8TL8ljWTnvRYcn0y6yHtJzqUbEQ1e08Ii5zXYVTcFfCo+HM+F2/58vSrvt8
+        EROu+OomB2vxIDFyqIF2UTt13/UFWVxvHcwBgtziEhu4iXKMvgFDdEgFc77rLT8H+sO9ty
+        3U6iH2DrYM/PwKtpj508qEy+IUrJug5tljmMnPg/N4zQWNiSoxyk6pEDgjCYL/m1iXd/sB
+        KfsNmQVvxP+S+XbGcI+HrkLUQn2BTjvNDWOSesTg2KVF2HrtTRtzQKIeDXn6CpErnA3WBD
+        6lV/LSeGIK0g3Hvm7yE9wr20Vmx93ZNrfmVWVFvMByZgIub8HG2pQFLQnSb51A==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1699304854;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=krH2QkxdJALvXRu9Bq+Fw3gs7PqsPIKkUheQqZKkVK0=;
-        b=mlP0P/xItlPB8rJI+B2aSLZNJdPxPRLp0Ee10WmEDPUHH+5vxuKYEC22SmOHkCwAKvaP7M
-        JLdzZZH1TEVxRECw==
+        bh=EjNlI5JonKv0m/kINdXCywSbWYOfTvFxrSFxNOQW5Ko=;
+        b=RyhUWvptryHr7Sz4ofjXpuWKZwkpDAcmLBQ1/uuyrbLijg192A/cny+0wnHW0xwQ/7zmoj
+        PfrSVwuLOHUZAOCQ==
 To:     Petr Mladek <pmladek@suse.com>
 Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH printk v2 3/9] printk: For @suppress_panic_printk check for other CPU in panic
-Date:   Mon,  6 Nov 2023 22:13:24 +0106
-Message-Id: <20231106210730.115192-4-john.ogness@linutronix.de>
+Subject: [PATCH printk v2 4/9] printk: Add this_cpu_in_panic()
+Date:   Mon,  6 Nov 2023 22:13:25 +0106
+Message-Id: <20231106210730.115192-5-john.ogness@linutronix.de>
 In-Reply-To: <20231106210730.115192-1-john.ogness@linutronix.de>
 References: <20231106210730.115192-1-john.ogness@linutronix.de>
 MIME-Version: 1.0
@@ -59,35 +59,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently @suppress_panic_printk is checked along with
-non-matching @panic_cpu and current CPU. This works
-because @suppress_panic_printk is only set when
-panic_in_progress() is true.
+There is already panic_in_progress() and other_cpu_in_panic(),
+but checking if the current CPU is the panic CPU must still be
+open coded.
 
-Rather than relying on the @suppress_panic_printk semantics,
-use the concise helper function other_cpu_in_progress(). The
-helper function exists to avoid open coding such tests.
+Add this_cpu_in_panic() to complete the set.
 
 Signed-off-by: John Ogness <john.ogness@linutronix.de>
 Reviewed-by: Petr Mladek <pmladek@suse.com>
 ---
- kernel/printk/printk.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ kernel/printk/internal.h |  1 +
+ kernel/printk/printk.c   | 43 +++++++++++++++++++++-------------------
+ 2 files changed, 24 insertions(+), 20 deletions(-)
 
+diff --git a/kernel/printk/internal.h b/kernel/printk/internal.h
+index 6c2afee5ef62..ac2d9750e5f8 100644
+--- a/kernel/printk/internal.h
++++ b/kernel/printk/internal.h
+@@ -130,6 +130,7 @@ struct printk_message {
+ };
+ 
+ bool other_cpu_in_panic(void);
++bool this_cpu_in_panic(void);
+ bool printk_get_next_message(struct printk_message *pmsg, u64 seq,
+ 			     bool is_extended, bool may_supress);
+ 
 diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-index be95a6851164..22bb45d8f2f2 100644
+index 22bb45d8f2f2..82dc2c7949b7 100644
 --- a/kernel/printk/printk.c
 +++ b/kernel/printk/printk.c
-@@ -2270,8 +2270,7 @@ asmlinkage int vprintk_emit(int facility, int level,
- 	if (unlikely(suppress_printk))
- 		return 0;
+@@ -347,6 +347,29 @@ static bool panic_in_progress(void)
+ 	return unlikely(atomic_read(&panic_cpu) != PANIC_CPU_INVALID);
+ }
  
--	if (unlikely(suppress_panic_printk) &&
--	    atomic_read(&panic_cpu) != raw_smp_processor_id())
-+	if (unlikely(suppress_panic_printk) && other_cpu_in_panic())
- 		return 0;
++/* Return true if a panic is in progress on the current CPU. */
++bool this_cpu_in_panic(void)
++{
++	/*
++	 * We can use raw_smp_processor_id() here because it is impossible for
++	 * the task to be migrated to the panic_cpu, or away from it. If
++	 * panic_cpu has already been set, and we're not currently executing on
++	 * that CPU, then we never will be.
++	 */
++	return unlikely(atomic_read(&panic_cpu) == raw_smp_processor_id());
++}
++
++/*
++ * Return true if a panic is in progress on a remote CPU.
++ *
++ * On true, the local CPU should immediately release any printing resources
++ * that may be needed by the panic CPU.
++ */
++bool other_cpu_in_panic(void)
++{
++	return (panic_in_progress() && !this_cpu_in_panic());
++}
++
+ /*
+  * This is used for debugging the mess that is the VT code by
+  * keeping track if we have the console semaphore held. It's
+@@ -2592,26 +2615,6 @@ static int console_cpu_notify(unsigned int cpu)
+ 	return 0;
+ }
  
- 	if (level == LOGLEVEL_SCHED) {
+-/*
+- * Return true if a panic is in progress on a remote CPU.
+- *
+- * On true, the local CPU should immediately release any printing resources
+- * that may be needed by the panic CPU.
+- */
+-bool other_cpu_in_panic(void)
+-{
+-	if (!panic_in_progress())
+-		return false;
+-
+-	/*
+-	 * We can use raw_smp_processor_id() here because it is impossible for
+-	 * the task to be migrated to the panic_cpu, or away from it. If
+-	 * panic_cpu has already been set, and we're not currently executing on
+-	 * that CPU, then we never will be.
+-	 */
+-	return atomic_read(&panic_cpu) != raw_smp_processor_id();
+-}
+-
+ /**
+  * console_lock - block the console subsystem from printing
+  *
 -- 
 2.39.2
 
