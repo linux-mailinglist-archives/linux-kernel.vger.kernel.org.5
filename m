@@ -2,47 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 02E5C7E27FC
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 16:01:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86ACE7E27F2
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 16:00:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231767AbjKFPBF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 10:01:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53558 "EHLO
+        id S232025AbjKFPAl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 10:00:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231947AbjKFPAe (ORCPT
+        with ESMTP id S231699AbjKFPAd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 10:00:34 -0500
+        Mon, 6 Nov 2023 10:00:33 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67843184
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 07:00:31 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 627B6C433B6;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 515FBA4
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 07:00:30 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 51D00C43391;
         Mon,  6 Nov 2023 15:00:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1699282829;
-        bh=VWCKe7SjFh7Bq6TAg/SU7Px7u48cI9rpqXcfMsj++00=;
+        bh=+IkgCci2CVR2RK1E54OUNo+9XrRa7iGFAkIPDs7u4rA=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=UtDBledcwcoJZyUIZWrXUPzitXxY+nodql2ACEEcF2akw2wiv7yLIcIUj2RdqcZ+v
-         zikdWGqTGs2h+wnWlzL+tVuE4pIa1Dv7pVB/SJ12+aWmpXSSMbKovYIBUWJ6cGRSvo
-         M11dxmDHUHjmyEW4hOAzlxaKZXqYtjRdof4Uf0Td0utwqVoTWa+KuNHdeyXmhfEY6w
-         +B/9GWmZvNvYab6hE6twYg5LGz+zpAdrsVCm9O226fG2dxcDzqf7LKSt8ArJYooTMs
-         fqUMqezbEvhoqhoau4EzSlEeOIg8vzabQw/pBXtHAO5qoe40+rGC2ti+lFzQt+ANMO
-         agFBETtvRWGZQ==
+        b=Qz1rcVQCZXc7c2x6lRLP6XvMHa6Lfu3aib6mxgwSW6yMlZos4Jxv7Dp7w0uRRpFqF
+         aFTEsfRt6mOTDmPboZ84lu6xHm0cbl/vm+9zCuXS367dO9hjV6/lCPpVuzTYBgSIow
+         lZnnZl4Xxlup0K3OT8vqdWhW1aYvkuxyKauU+M3ncpf2Ek/5oCxG2N0CpsBRQCVwIO
+         SDL0mBDRBnOcGqjv6Qift/SrFBTVrTRongmTf5D5bGY9Mmlw/AYm7wPcYB5jU/5Iog
+         33b1p2ZViB4QwuJw8wOqYiatA36MngQoXYy8/w5HlgFTfDhOk1fYbAzxPO7EiThTjI
+         7/0KWZitn3IUQ==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 4232BC04DD9;
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 33578E0009B;
         Mon,  6 Nov 2023 15:00:29 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v1] RISC-V: capitalise CMO op macros
+Subject: Re: [PATCH v2] riscv: mm: update T-Head memory type definitions
 From:   patchwork-bot+linux-riscv@kernel.org
-Message-Id: <169928282926.16503.8131988006359901785.git-patchwork-notify@kernel.org>
+Message-Id: <169928282920.16503.8733188249165369994.git-patchwork-notify@kernel.org>
 Date:   Mon, 06 Nov 2023 15:00:29 +0000
-References: <20230915-aloe-dollar-994937477776@spud>
-In-Reply-To: <20230915-aloe-dollar-994937477776@spud>
-To:     Conor Dooley <conor@kernel.org>
-Cc:     linux-riscv@lists.infradead.org, palmer@dabbelt.com,
-        conor.dooley@microchip.com, ajones@ventanamicro.com,
-        paul.walmsley@sifive.com, linux-kernel@vger.kernel.org
+References: <20230912072510.2510-1-jszhang@kernel.org>
+In-Reply-To: <20230912072510.2510-1-jszhang@kernel.org>
+To:     Jisheng Zhang <jszhang@kernel.org>
+Cc:     linux-riscv@lists.infradead.org, paul.walmsley@sifive.com,
+        palmer@dabbelt.com, aou@eecs.berkeley.edu,
+        linux-kernel@vger.kernel.org, guoren@kernel.org,
+        dfustini@baylibre.com
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -58,27 +59,19 @@ Hello:
 This patch was applied to riscv/linux.git (for-next)
 by Palmer Dabbelt <palmer@rivosinc.com>:
 
-On Fri, 15 Sep 2023 16:40:44 +0100 you wrote:
-> From: Conor Dooley <conor.dooley@microchip.com>
+On Tue, 12 Sep 2023 15:25:10 +0800 you wrote:
+> Update T-Head memory type definitions according to C910 doc [1]
+> For NC and IO, SH property isn't configurable, hardcoded as SH,
+> so set SH for NOCACHE and IO.
 > 
-> The CMO op macros initially used lower case, as the original iteration
-> of the ALT_CMO_OP alternative stringified the first parameter to
-> finalise the assembly for the standard variant.
-> As a knock-on, the T-Head versions of these CMOs had to use mixed case
-> defines. Commit dd23e9535889 ("RISC-V: replace cbom instructions with
-> an insn-def") removed the asm construction with stringify, replacing it
-> an insn-def macro, rending the lower-case surplus to requirements.
-> As far as I can tell from a brief check, CBO_zero does not see similar
-> use and didn't require the mixed case define in the first place.
-> Replace the lower case characters now for consistency with other
-> insn-def macros in the standard and T-Head forms, and adjust the
-> callsites.
+> And also set bit[61](Bufferable) for NOCACHE according to the
+> table 6.1 in the doc [1].
 > 
 > [...]
 
 Here is the summary with links:
-  - [v1] RISC-V: capitalise CMO op macros
-    https://git.kernel.org/riscv/c/d3eabf2f2c81
+  - [v2] riscv: mm: update T-Head memory type definitions
+    https://git.kernel.org/riscv/c/dbfbda3bd6bf
 
 You are awesome, thank you!
 -- 
