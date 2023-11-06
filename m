@@ -2,45 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B5AFA7E30B0
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 00:07:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33B7C7E30B4
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 00:07:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233311AbjKFXHj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 18:07:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38198 "EHLO
+        id S233557AbjKFXHm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 18:07:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233423AbjKFXHU (ORCPT
+        with ESMTP id S233480AbjKFXHY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 18:07:20 -0500
+        Mon, 6 Nov 2023 18:07:24 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7940170C;
-        Mon,  6 Nov 2023 15:07:14 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E1BD5C433C8;
-        Mon,  6 Nov 2023 23:07:13 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BD46D75;
+        Mon,  6 Nov 2023 15:07:18 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51DE0C433C7;
+        Mon,  6 Nov 2023 23:07:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699312034;
-        bh=VHVJ13YZqdYKkwnFgKP74fWXjhwE0I38JVB17STLT78=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kqtoSRq4D+AJqQqbNl8/czKE7eoRBWB1dvwMZ9jN6/DKXDHL6nD0RD+UNMu77rJye
-         A8atZuo1TUOumTw8YHXceyMe8Lwr4kIiq6S8M/Ll3rr7zg+dUFgMnh4WXSJYuJdy6m
-         QPlSg9o7wpONvimyy7ub8LkqcEjgYEqmRrxMrDy/WtHJDzu42v+bEjGEsXYCsY6IGa
-         M7sVSq8sXOAn5Bt4Z52YaF4J0jcw6XLFsScyqTniSwqEVAZqphCs2J1okfRz5H9kCA
-         w6x+sa/hHwr07ZjAutbOgBu5C3X0v+a38Pm5d+ZP3TfsZmnXPlnK72jOXRm4Kb/OLQ
-         5ax+EdchabCEQ==
+        s=k20201202; t=1699312038;
+        bh=0tTwBJJ7kefbYFnhairBCVSSDGf51FT5fjnUlbazo34=;
+        h=From:To:Cc:Subject:Date:From;
+        b=DVdN7+bovwyKGyPvTnJzMozwiCIFlxwJ5dXbMo77D/j5UsnNNQRisYG5EPuZerEMU
+         p/KI+VLwpRV2IJBh0GuyAa44G/V8PcIt18ZuAB7AZ+o1JQXG3rK0ing3Ul203MyVHq
+         VesjBLfPOUd2C5i/LtaSNsXorWOBETieZYlaeYJ/LD7CyqI9AhYaiviWUNT3JV1nnd
+         NJ80WZNo5z5LEbDfZtTsfElKHuhPhK1GkWIwCzYd6+Zze/B6ZNBteRV2ItrUMW3MG4
+         em1217WCdRnP+H4rp4Pygy8ZcDWIesglHYXsV+8MwUFbY0fcTqfcVAalg5jlbAWSV0
+         miMqyhYdVNewA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Kent Overstreet <kent.overstreet@gmail.com>,
-        Sasha Levin <sashal@kernel.org>, kent.overstreet@linux.dev
-Subject: [PATCH AUTOSEL 6.1 2/2] lib/generic-radix-tree.c: Don't overflow in peek()
-Date:   Mon,  6 Nov 2023 18:07:09 -0500
-Message-ID: <20231106230710.3734490-2-sashal@kernel.org>
+Cc:     John Stultz <jstultz@google.com>, Ingo Molnar <mingo@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, peterz@infradead.org,
+        mingo@redhat.com, will@kernel.org
+Subject: [PATCH AUTOSEL 5.15] locking/ww_mutex/test: Fix potential workqueue corruption
+Date:   Mon,  6 Nov 2023 18:07:15 -0500
+Message-ID: <20231106230715.3734545-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231106230710.3734490-1-sashal@kernel.org>
-References: <20231106230710.3734490-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.1.61
+X-stable-base: Linux 5.15.137
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
@@ -52,82 +51,117 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kent Overstreet <kent.overstreet@gmail.com>
+From: John Stultz <jstultz@google.com>
 
-[ Upstream commit 9492261ff2460252cf2d8de89cdf854c7e2b28a0 ]
+[ Upstream commit bccdd808902f8c677317cec47c306e42b93b849e ]
 
-When we started spreading new inode numbers throughout most of the 64
-bit inode space, that triggered some corner case bugs, in particular
-some integer overflows related to the radix tree code. Oops.
+In some cases running with the test-ww_mutex code, I was seeing
+odd behavior where sometimes it seemed flush_workqueue was
+returning before all the work threads were finished.
 
-Signed-off-by: Kent Overstreet <kent.overstreet@gmail.com>
+Often this would cause strange crashes as the mutexes would be
+freed while they were being used.
+
+Looking at the code, there is a lifetime problem as the
+controlling thread that spawns the work allocates the
+"struct stress" structures that are passed to the workqueue
+threads. Then when the workqueue threads are finished,
+they free the stress struct that was passed to them.
+
+Unfortunately the workqueue work_struct node is in the stress
+struct. Which means the work_struct is freed before the work
+thread returns and while flush_workqueue is waiting.
+
+It seems like a better idea to have the controlling thread
+both allocate and free the stress structures, so that we can
+be sure we don't corrupt the workqueue by freeing the structure
+prematurely.
+
+So this patch reworks the test to do so, and with this change
+I no longer see the early flush_workqueue returns.
+
+Signed-off-by: John Stultz <jstultz@google.com>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Link: https://lore.kernel.org/r/20230922043616.19282-3-jstultz@google.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/generic-radix-tree.h |  7 +++++++
- lib/generic-radix-tree.c           | 17 ++++++++++++++---
- 2 files changed, 21 insertions(+), 3 deletions(-)
+ kernel/locking/test-ww_mutex.c | 20 ++++++++++++--------
+ 1 file changed, 12 insertions(+), 8 deletions(-)
 
-diff --git a/include/linux/generic-radix-tree.h b/include/linux/generic-radix-tree.h
-index 107613f7d7920..f6cd0f909d9fb 100644
---- a/include/linux/generic-radix-tree.h
-+++ b/include/linux/generic-radix-tree.h
-@@ -38,6 +38,7 @@
+diff --git a/kernel/locking/test-ww_mutex.c b/kernel/locking/test-ww_mutex.c
+index 3e82f449b4ff7..da36997d8742c 100644
+--- a/kernel/locking/test-ww_mutex.c
++++ b/kernel/locking/test-ww_mutex.c
+@@ -426,7 +426,6 @@ static void stress_inorder_work(struct work_struct *work)
+ 	} while (!time_after(jiffies, stress->timeout));
  
- #include <asm/page.h>
- #include <linux/bug.h>
-+#include <linux/limits.h>
- #include <linux/log2.h>
- #include <linux/math.h>
- #include <linux/types.h>
-@@ -184,6 +185,12 @@ void *__genradix_iter_peek(struct genradix_iter *, struct __genradix *, size_t);
- static inline void __genradix_iter_advance(struct genradix_iter *iter,
- 					   size_t obj_size)
+ 	kfree(order);
+-	kfree(stress);
+ }
+ 
+ struct reorder_lock {
+@@ -491,7 +490,6 @@ static void stress_reorder_work(struct work_struct *work)
+ 	list_for_each_entry_safe(ll, ln, &locks, link)
+ 		kfree(ll);
+ 	kfree(order);
+-	kfree(stress);
+ }
+ 
+ static void stress_one_work(struct work_struct *work)
+@@ -512,8 +510,6 @@ static void stress_one_work(struct work_struct *work)
+ 			break;
+ 		}
+ 	} while (!time_after(jiffies, stress->timeout));
+-
+-	kfree(stress);
+ }
+ 
+ #define STRESS_INORDER BIT(0)
+@@ -524,15 +520,24 @@ static void stress_one_work(struct work_struct *work)
+ static int stress(int nlocks, int nthreads, unsigned int flags)
  {
-+	if (iter->offset + obj_size < iter->offset) {
-+		iter->offset	= SIZE_MAX;
-+		iter->pos	= SIZE_MAX;
-+		return;
+ 	struct ww_mutex *locks;
+-	int n;
++	struct stress *stress_array;
++	int n, count;
+ 
+ 	locks = kmalloc_array(nlocks, sizeof(*locks), GFP_KERNEL);
+ 	if (!locks)
+ 		return -ENOMEM;
+ 
++	stress_array = kmalloc_array(nthreads, sizeof(*stress_array),
++				     GFP_KERNEL);
++	if (!stress_array) {
++		kfree(locks);
++		return -ENOMEM;
 +	}
 +
- 	iter->offset += obj_size;
+ 	for (n = 0; n < nlocks; n++)
+ 		ww_mutex_init(&locks[n], &ww_class);
  
- 	if (!is_power_of_2(obj_size) &&
-diff --git a/lib/generic-radix-tree.c b/lib/generic-radix-tree.c
-index f25eb111c0516..7dfa88282b006 100644
---- a/lib/generic-radix-tree.c
-+++ b/lib/generic-radix-tree.c
-@@ -166,6 +166,10 @@ void *__genradix_iter_peek(struct genradix_iter *iter,
- 	struct genradix_root *r;
- 	struct genradix_node *n;
- 	unsigned level, i;
-+
-+	if (iter->offset == SIZE_MAX)
-+		return NULL;
-+
- restart:
- 	r = READ_ONCE(radix->root);
- 	if (!r)
-@@ -184,10 +188,17 @@ void *__genradix_iter_peek(struct genradix_iter *iter,
- 			(GENRADIX_ARY - 1);
++	count = 0;
+ 	for (n = 0; nthreads; n++) {
+ 		struct stress *stress;
+ 		void (*fn)(struct work_struct *work);
+@@ -556,9 +561,7 @@ static int stress(int nlocks, int nthreads, unsigned int flags)
+ 		if (!fn)
+ 			continue;
  
- 		while (!n->children[i]) {
-+			size_t objs_per_ptr = genradix_depth_size(level);
-+
-+			if (iter->offset + objs_per_ptr < iter->offset) {
-+				iter->offset	= SIZE_MAX;
-+				iter->pos	= SIZE_MAX;
-+				return NULL;
-+			}
-+
- 			i++;
--			iter->offset = round_down(iter->offset +
--					   genradix_depth_size(level),
--					   genradix_depth_size(level));
-+			iter->offset = round_down(iter->offset + objs_per_ptr,
-+						  objs_per_ptr);
- 			iter->pos = (iter->offset >> PAGE_SHIFT) *
- 				objs_per_page;
- 			if (i == GENRADIX_ARY)
+-		stress = kmalloc(sizeof(*stress), GFP_KERNEL);
+-		if (!stress)
+-			break;
++		stress = &stress_array[count++];
+ 
+ 		INIT_WORK(&stress->work, fn);
+ 		stress->locks = locks;
+@@ -573,6 +576,7 @@ static int stress(int nlocks, int nthreads, unsigned int flags)
+ 
+ 	for (n = 0; n < nlocks; n++)
+ 		ww_mutex_destroy(&locks[n]);
++	kfree(stress_array);
+ 	kfree(locks);
+ 
+ 	return 0;
 -- 
 2.42.0
 
