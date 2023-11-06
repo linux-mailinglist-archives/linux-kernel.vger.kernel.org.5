@@ -2,90 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A5DF37E2BE4
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 19:27:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33C5A7E2BE8
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 19:28:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232909AbjKFS1B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 13:27:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58298 "EHLO
+        id S232339AbjKFS2F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 13:28:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232958AbjKFS0q (ORCPT
+        with ESMTP id S231773AbjKFS2E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 13:26:46 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65EDC173A
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 10:26:37 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C262C433C7;
-        Mon,  6 Nov 2023 18:26:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1699295196;
-        bh=VzcmarRj5xg87q6eM78zA0Xh095fv6u/JvD6rbia9pk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=pwaKx8X1ahf/f+kUWCkPOV0SH985FU13FHH0XDHIhcibepRoAQglwQ+AingOuHCt+
-         hexL80g9HbmCscfsbE9u/hmukg1wVvvFNNxoGr1EG/sc2a+CvnE3x1Cr684W/7AMt0
-         h97vxN4soL/QFx4qs1xSAhkzh2f5VB2n6TYMKW0A=
-Date:   Mon, 6 Nov 2023 10:26:35 -0800
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Stefan Roesch <shr@devkernel.io>
-Cc:     kernel-team@fb.com, hannes@cmpxchg.org, riel@surriel.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH v1] mm: Fix for negative counter: nr_file_hugepages
-Message-Id: <20231106102635.55bdf0cd99baad5c1fc8617a@linux-foundation.org>
-In-Reply-To: <20231106181918.1091043-1-shr@devkernel.io>
-References: <20231106181918.1091043-1-shr@devkernel.io>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Mon, 6 Nov 2023 13:28:04 -0500
+Received: from mail-yw1-x112d.google.com (mail-yw1-x112d.google.com [IPv6:2607:f8b0:4864:20::112d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E94194;
+        Mon,  6 Nov 2023 10:28:01 -0800 (PST)
+Received: by mail-yw1-x112d.google.com with SMTP id 00721157ae682-5a81ab75f21so57574977b3.2;
+        Mon, 06 Nov 2023 10:28:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699295280; x=1699900080; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=yiHuG/fT5g9xmDilldbrq0qWyx0Loz2x/M7JAocEXNM=;
+        b=PjgvQO2fNvAC+9I2C85uC8622mxEY/X3T4J/UaR6zTlecrLYq5eFJ291QOS6I3bUMT
+         sj+uT+iB/MkxiZDY0U/UHtj9igk+P759nOST7vc28p4YW+PHkSt8/bBAsS/yStWWXkpM
+         +nY/K0VREOYSY8L4uWZ873y4vFFebk8Tc2kESkTaHgbBjczcZJ/16MI/AGu+UpwYP3bV
+         47QPmQXXXz0Z8HzWdVtwAb3Q3rvOABP8MvwZTtZwBxhSmuWDlemUIQYGlm7Ibreb07py
+         rWJM0CF4gBGM257vpJ5//VeYWW+AquRxeUHsC56n6ECjHd76+sA99pdmQTOkyz35grcZ
+         U/tw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699295280; x=1699900080;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yiHuG/fT5g9xmDilldbrq0qWyx0Loz2x/M7JAocEXNM=;
+        b=xBEiJkudyfNYOrqxQRj6XE35B+d0CV/rSE+MCdrAF4JqnxfdPbYNqAQHGPWzWaYk3h
+         Xo1Ar1i86Q24MQSOiWyIufnWrINNp82KoVHg00xlBOne3bck9XoNlLHlAn29sAbt6gJW
+         kI7XcXHWk0hdMUoJXYR4WKVQSC57itI3UyBudhvkF1Neg0etr6h755sKSsy6GcoNr/XJ
+         hoVcZhGPoM36Swjc9k9Mbh1jbhMYRnqzcTXW+La5eSwrL5hkbvIn/tI4Lp1ECv12RQpo
+         jvFDYqGcwmylWS3ATE0pzKU0gVSCksSgnfKCR2foL14WgrZhluhJ8mqCvCejH76QYLAq
+         uzOg==
+X-Gm-Message-State: AOJu0YzFNNTCy3BHbKudn8xkTeG2aN85uNhdQr6hnUhTNO5qfQrT+du/
+        ebK9638yd/VbUlENSpPuE9U=
+X-Google-Smtp-Source: AGHT+IGLpyKFoZDbHCGPb7BuzxNKsicyASbBbioV81Opbu3cH8TozOUxOR+7VmIouo+kynqD8bJ/5Q==
+X-Received: by 2002:a05:690c:95:b0:5a8:60ad:39a4 with SMTP id be21-20020a05690c009500b005a860ad39a4mr12508141ywb.3.1699295280544;
+        Mon, 06 Nov 2023 10:28:00 -0800 (PST)
+Received: from debian ([50.205.20.42])
+        by smtp.gmail.com with ESMTPSA id w200-20020a0dd4d1000000b005a50575b1c8sm4576552ywd.26.2023.11.06.10.27.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 Nov 2023 10:28:00 -0800 (PST)
+From:   fan <nifan.cxl@gmail.com>
+X-Google-Original-From: fan <fan@debian>
+Date:   Mon, 6 Nov 2023 10:27:32 -0800
+To:     Jim Harris <jim.harris@samsung.com>
+Cc:     Davidlohr Bueso <dave@stgolabs.net>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Alison Schofield <alison.schofield@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Fan Ni <fan.ni@samsung.com>,
+        "linux-cxl@vger.kernel.org" <linux-cxl@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] cxl/region: fix x9 interleave typo
+Message-ID: <ZUkwFLIKCSLXTCmq@debian>
+References: <CGME20231103201835uscas1p29ca7f76ed5e4c829bfb022a040202d73@uscas1p2.samsung.com>
+ <169904271254.204936.8580772404462743630.stgit@ubuntu>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <169904271254.204936.8580772404462743630.stgit@ubuntu>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon,  6 Nov 2023 10:19:18 -0800 Stefan Roesch <shr@devkernel.io> wrote:
+On Fri, Nov 03, 2023 at 08:18:34PM +0000, Jim Harris wrote:
+> CXL supports x3, x6 and x12 - not x9.
+> 
+> Fixes: 80d10a6cee050 ("cxl/region: Add interleave geometry attributes")
+> Signed-off-by: Jim Harris <jim.harris@samsung.com>
+> ---
 
-> While qualifiying the 6.4 release, the following warning was detected in
-> messages:
-> 
-> vmstat_refresh: nr_file_hugepages -15664
-> 
-> The warning is caused by the incorrect updating of the NR_FILE_THPS
-> counter in the function split_huge_page_to_list. The if case is checking
-> for folio_test_swapbacked, but the else case is missing the check for
-> folio_test_pmd_mappable. The other functions that manipulate the counter
-> like __filemap_add_folio and filemap_unaccount_folio have the
-> corresponding check.
-> 
-> I have a test case, which reproduces the problem. It can be found here:
->   https://github.com/sroeschus/testcase/blob/main/vmstat_refresh/madv.c
-> 
-> The test case reproduces on an XFS filesystem. Running the same test
-> case on a BTRFS filesystem does not reproduce the problem.
-> 
-> AFAIK version 6.1 until 6.6 are affected by this problem.
+Reviewed-by: Fan Ni <fan.ni@samsung.com>
 
-I'm thinking a cc:stable is justified.
-
-> --- a/mm/huge_memory.c
-> +++ b/mm/huge_memory.c
-> @@ -2740,7 +2740,8 @@ int split_huge_page_to_list(struct page *page, struct list_head *list)
->  			if (folio_test_swapbacked(folio)) {
->  				__lruvec_stat_mod_folio(folio, NR_SHMEM_THPS,
->  							-nr);
-> -			} else {
-> +			} else if (folio_test_pmd_mappable(folio)) {
-> +
->  				__lruvec_stat_mod_folio(folio, NR_FILE_THPS,
->  							-nr);
->  				filemap_nr_thps_dec(mapping);
+>  drivers/cxl/core/region.c |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-
-I expect this will backport OK until it hits 3e9a13daa ("huge_memory:
-convert split_huge_page_to_list() to use a folio") at which point the
--stable maintainers might request a reworked version.
-
+> diff --git a/drivers/cxl/core/region.c b/drivers/cxl/core/region.c
+> index 6d63b8798c29..d295b3488e4a 100644
+> --- a/drivers/cxl/core/region.c
+> +++ b/drivers/cxl/core/region.c
+> @@ -403,7 +403,7 @@ static ssize_t interleave_ways_store(struct device *dev,
+>  		return rc;
+>  
+>  	/*
+> -	 * Even for x3, x9, and x12 interleaves the region interleave must be a
+> +	 * Even for x3, x6, and x12 interleaves the region interleave must be a
+>  	 * power of 2 multiple of the host bridge interleave.
+>  	 */
+>  	if (!is_power_of_2(val / cxld->interleave_ways) ||
+> 
