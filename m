@@ -2,49 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 46E827E2A8D
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 18:00:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34F687E2A94
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 18:04:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232911AbjKFRAh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 12:00:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50950 "EHLO
+        id S232781AbjKFRE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 12:04:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232477AbjKFRAg (ORCPT
+        with ESMTP id S232375AbjKFREZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 12:00:36 -0500
-Received: from imap5.colo.codethink.co.uk (imap5.colo.codethink.co.uk [78.40.148.171])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CAD6191
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 09:00:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=codethink.co.uk; s=imap5-20230908; h=Sender:Content-Transfer-Encoding:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-Type:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=/lBnAPLXd3bmIiEmokYvLT/eas4j7AzPy7ap5uVAF/8=; b=2fBzHE6phz8gS9PkUpr2gm+AYL
-        uavhFVVyTdHAH3vIIJYI0/pClS60XMYqHQShvAwvJKdxsnfMAE2sT/a0k7W+8hdo7UcFx3zTq8857
-        OeyLT5rqaCXrPij8+/ePnA9sERiYhk206klNoDarjsmXJw07b22qqG90g8+UtfEHuckrnJJUALq4E
-        5JGH3WCpsdkxR5if0EUwSqcTiqY9hGPBMWasnincIETNFZnpK8nIMCZ0uKx+PlT23t1MLwgacNnuZ
-        wU6Ujh6C8i9wUG0gunhN8kHBCbEC6YS5heiUNdG8yti79a9YeN7j4I34ZBfK805kVYiCb4DmpFqAt
-        ANG2ktVQ==;
-Received: from [167.98.27.226] (helo=ct-lt-2504.guest.codethink.co.uk)
-        by imap5.colo.codethink.co.uk with esmtpsa  (Exim 4.94.2 #2 (Debian))
-        id 1r02xf-00Fh3F-OO; Mon, 06 Nov 2023 17:00:27 +0000
-From:   Ivan Orlov <ivan.orlov@codethink.co.uk>
-To:     paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu
-Cc:     Ivan Orlov <ivan.orlov@codethink.co.uk>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        ben.dooks@codethink.co.uk
-Subject: [PATCH] riscv: lib: Implement optimized memchr function
-Date:   Mon,  6 Nov 2023 17:00:25 +0000
-Message-Id: <20231106170025.778193-1-ivan.orlov@codethink.co.uk>
-X-Mailer: git-send-email 2.34.1
-MIME-Version: 1.0
+        Mon, 6 Nov 2023 12:04:25 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ED4C191;
+        Mon,  6 Nov 2023 09:04:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699290262; x=1730826262;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=AFhd0H1Z99WCIs9OOUwwrGEMPYjPKg3yorZl/36vNXg=;
+  b=JYrRnTxPDYSWr7Oeuxhf4w1mWupXpdFXHuesfnutN63rnSsrd1EHhEeh
+   82lqmuTMVTBSUIJriP+xA54qDhQascf6fyjdBKZRE18emQp2WbNf7PADk
+   TImNIVedZWMFPBptoYbj98Qh4exOZecwZpQMdsIPNGZmVilmXJdVlWSpA
+   m4PjRXjEJAAglmCLWS8Pkj37+UvGAyUeWx+PJJ+Rl+ZhfhuasDInjxvRh
+   cMTedbz5aVQzFpwlgEi4xsIjs40p3FRgJBWl08V01QM2mKZg57q8vH93w
+   vChyrd+inhgoosz2nDLXMDymQsvWB00N4K+I7GQczCUenU6vIGllpOGn0
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10886"; a="379712492"
+X-IronPort-AV: E=Sophos;i="6.03,282,1694761200"; 
+   d="scan'208";a="379712492"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Nov 2023 09:03:33 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.03,282,1694761200"; 
+   d="scan'208";a="3675639"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by fmviesa002.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 06 Nov 2023 09:03:33 -0800
+Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Mon, 6 Nov 2023 09:03:32 -0800
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34 via Frontend Transport; Mon, 6 Nov 2023 09:03:32 -0800
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.40) by
+ edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.34; Mon, 6 Nov 2023 09:03:31 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gqqqcz5qE6ouSxsd8iEEioFcAOmq2Iuv5R+kweOuvpb3Bh1SYNP5rsz15KaANa1ZSqcSl9oF3gMG16af27CWGFkw/vzI4hhnSlh3EqFIkIvUqVjRF0sAzc2eKQdgDBZ4eFnMfQ3I1aTbdSwn5WpRYri80PvaLON3U4QCssZYXEXW3dezBB6cZBb7EcHRAujT1fe2J+yVjn0ibPbNXGPf8Ig9eh6xiHOA91n0tuXj1PxBBNbc2jvufV2aSFbPVMLJP/jX6lDMRAA3Qk+13Hv+QzTDa3E5iPAgBQ7ulJiPgKGTK/0TP0kKJPRS2OErhnOi+e6PygfAiKBfh1aqlyJNbQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=wK+taGT9yIYT2xEbW4I0y/GxS/B6fksZkhLiIDK6Ow4=;
+ b=emsWu3TVQv7nbFm8agJU3GCreD46AHYisuzRBgRyXWMLqmconrphTHjJp1DumLtWA4PPqzOwf8NxGz7pq8kJMYEaydyHW5xb3wEE3DGoZBrkIdOY0hvUuTeYSSa3L6Q/SyhHQUqrBHpa/rj7LeXRcHs7pblBPgheur8Qc/zR1nJGHDAJaW5YZlWVx3+2CafQdhdGrqZQ7Jm1vfjrqFk4yCVR9QSnBLD6XC85n2GKb2CG3tMbe4gU1jbpnzv6GGKYJ7I4ktcz3uGZpcbe3/dVAhkzBEB+nuvbCpHGyKX+iNeD40aCVnlUakYv8VQy/vB+zAm03Hu4D7DHQhasPbsAvQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from SJ2PR11MB7573.namprd11.prod.outlook.com (2603:10b6:a03:4d2::10)
+ by MW5PR11MB5788.namprd11.prod.outlook.com (2603:10b6:303:198::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.28; Mon, 6 Nov
+ 2023 17:03:26 +0000
+Received: from SJ2PR11MB7573.namprd11.prod.outlook.com
+ ([fe80::6710:537d:b74:f1e5]) by SJ2PR11MB7573.namprd11.prod.outlook.com
+ ([fe80::6710:537d:b74:f1e5%5]) with mapi id 15.20.6954.027; Mon, 6 Nov 2023
+ 17:03:26 +0000
+Message-ID: <755ed028-f73a-47ed-a58a-65f4f48eaee3@intel.com>
+Date:   Mon, 6 Nov 2023 09:03:24 -0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 23/24] selftests/resctrl: Add L2 CAT test
+To:     =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+CC:     <linux-kselftest@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
+        "Shaopeng Tan" <tan.shaopeng@jp.fujitsu.com>,
+        =?UTF-8?Q?Maciej_Wiecz=C3=B3r-Retman?= 
+        <maciej.wieczor-retman@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <20231024092634.7122-1-ilpo.jarvinen@linux.intel.com>
+ <20231024092634.7122-24-ilpo.jarvinen@linux.intel.com>
+ <8051f3ef-1126-41fb-b6cc-f48441936dd7@intel.com>
+ <2514e73e-2419-7c88-3f22-469db4b2fa25@linux.intel.com>
+ <48c6795b-554a-4019-bb8d-a2ca0f6fbb2b@intel.com>
+ <4008929-d12b-793e-dce8-eb5ba03b4ebb@linux.intel.com>
+Content-Language: en-US
+From:   Reinette Chatre <reinette.chatre@intel.com>
+In-Reply-To: <4008929-d12b-793e-dce8-eb5ba03b4ebb@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-Sender: ivan.orlov@codethink.co.uk
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-ClientProxiedBy: MW3PR05CA0016.namprd05.prod.outlook.com
+ (2603:10b6:303:2b::21) To SJ2PR11MB7573.namprd11.prod.outlook.com
+ (2603:10b6:a03:4d2::10)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ2PR11MB7573:EE_|MW5PR11MB5788:EE_
+X-MS-Office365-Filtering-Correlation-Id: a8ecac54-f35a-4f18-e2e4-08dbdeea4ab5
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Wo8eRo4kuH4BGhrZ6G0EcfIYw13td2tbFhNnDi1UZ2WWOUvoIgYQL+LELJcwgf8uNCeC7/A1aQKmTTrDl090ch4KjfycxSUnSus3zyWmf4UB3stK7qa3QxbMrNOwHraqtclG45CwK0RUoCnN1XwKeuBi5oEOqztnf+9j1Cf3AAeoNtf/aPpLT4sb0qrMKVujZ7chWys9PzJXCzZwZ4WryIZmsdPiyCXIcYJKemsAwU8PdrGY1p8S2zjNHoiVQjTnYBaqQeFqFWfwUEFEqZkf7tQEjdAPtFHfU1bN8dbRkep3KnhXkQ5LfVPKT5UuXnZn5v3VeCCyn+FKZZvi+AqYKl3xpwtQIwtXbg49zhbrzbvue93LP7JKqKVbRiMiXH3N+fsALffBuUuYAPQLSpFhnJMwqhS3ltXe1PRrWD9kZMjKxW5PlfAguij6WUhYlHIXkPP8eC0W8vlDk9edfkaUPS+hIUVOG0NumgfJ0uAYVdEtEnxY2Yd5Ep0UHPt9TgboyB3ECMXxJp9q3DHSF9JQ2C6oLdm4ohsyV5V7M9vMNu9kP4VtUA7PL0HYHLitFGkcBNWCxtJAiDKxd8ZR2QsAFqRHZh94m7k1yVHasBCQhxw1XROBqMse8CL6riQlTls7hYSMdwriIpXH6qOLJ8nR5FrcU6ClPAzAgIfF7TQX0YDPnb4yiF8K0hUNWUEocyv8
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR11MB7573.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(346002)(396003)(136003)(376002)(39860400002)(230922051799003)(230173577357003)(230273577357003)(186009)(1800799009)(64100799003)(451199024)(44832011)(6506007)(6512007)(2616005)(478600001)(6486002)(53546011)(83380400001)(2906002)(26005)(66574015)(66946007)(5660300002)(66556008)(66476007)(41300700001)(316002)(8676002)(4326008)(8936002)(6916009)(54906003)(38100700002)(36756003)(82960400001)(31696002)(86362001)(66899024)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bDFWR1pmd1dzMUF3UHpYdlU2NnA0eXZXM0luZlpPZUpyRFFmbElub29xcEtr?=
+ =?utf-8?B?dEdldXROSkZIc2pEZDFtY240RUVoVWZlNy9acUpXc3ZBTzlJN2puZEtNTVk4?=
+ =?utf-8?B?VDJwNUpEelNraWtPbVJoMGVYOVlZL3dSdlREZ29BTWlmcTZjbzEya2hGN1Rt?=
+ =?utf-8?B?VS8xeGFOYmhZSjBKZUkxTjhTa3VkOURYRitqdnhkd0xVa1N3cUxuSjRMN2dI?=
+ =?utf-8?B?OE5SWW1WYlRDalE0RnJCNXF5Uk12M3FSVFhVSC9Td3drcTNycU4zSVcvNVV5?=
+ =?utf-8?B?QlorMklJY0J6WndJVTlKK2hYa3M3WVdPUTRXL05nUUwzbStaVGJDekc4cldO?=
+ =?utf-8?B?OEZqYjRkQktoMjA3MWhnRjd2U1JiMXpVTTVlMnBRdzdybzBHYnlTVUNGVzlv?=
+ =?utf-8?B?SVJkVzRZWFJMQmVwK2dSczN0d2JKZzl1Q3RmVUhiWmlrMys0VmJwOVc3c2pV?=
+ =?utf-8?B?SWZCNnpyMWJSZi9zMXh3RDV1ZDdLODFXNTR0bmVoM3BkNzJqUVhVZzIrOXUw?=
+ =?utf-8?B?YVlhT3BPamtaTkw0UGFLdzUvSmhXSXZPK2I1NGhrUG05MUxjZEZuZTlFQWdp?=
+ =?utf-8?B?UUNzNUFISFhrLy9kYkNwS1picS81RU5yWUV5aUgxTEpLakQwbkVRUklnSGFw?=
+ =?utf-8?B?a28ySkhJMGhwajZZQllPNS9BMno5bTdvQjNZV3lTNTBKMGFuWm42NDJVUDls?=
+ =?utf-8?B?aWtRYlR3dTJMclFkUlpiYWhNU3lhRWE3SkNXanFhdHJEd2xpYVZWTnQwYmMw?=
+ =?utf-8?B?cUxNWnpTU29yUXFuNEFQd1V3RE1Qa2pKeFNYL1NrenpUUUdqREE3YTZpQnpN?=
+ =?utf-8?B?N1ZNTkhnU2FZYmcrTVQxQnI1OXZzUzhFd3dBd29pVkdhWlZkb05Dc0pJRSsr?=
+ =?utf-8?B?aUZhY1JUSlhLNVNoUUJ2cjZJenNrRE45NHEzZ1pqaEo4L1hjL0R3WGtDcXBQ?=
+ =?utf-8?B?enh6VUYybjZWNFIwWmdLeUNjT1ZWbGNETjBja2NkbXA0a0N2bmsva2gzRWEv?=
+ =?utf-8?B?NUVUcGpKbVlma2lsUTM4eUczVWR1cnBYRU5vMGwwbkxIRjU5eU1kdXE0TmNP?=
+ =?utf-8?B?SjlLTXk5WDV1cC8zM2hQeU9yV1RWZkNuYU45clJFTW5YN3RkbkwrcUgzeXd2?=
+ =?utf-8?B?SzhIVmV5WjdBTldncFFJN1NHbHhaME1MTTQvNXZtMWVOcFFzN1FhQmpaVmpF?=
+ =?utf-8?B?VHNBYkRxc003cWhWNUQ3U05tME9ySEtqemJxcjk2d0RPc3RSOHU2UUk3MlJi?=
+ =?utf-8?B?MFdyMmF2Mk0zWERYd3VLSVlYYVhxTUpoSGZUVzdSMjVYNytpR0ZoYnZIUFNO?=
+ =?utf-8?B?eFJVR25UQ3l1Y0ZHVEFFdjFkTythT1hXc3NEVHBwWXVMQ0hXdmNpTkkrT0NB?=
+ =?utf-8?B?akprOENZekZjdWRYZC9lWnpROTRBQ1JpRDRBYXFCdjJBYVNXb25QMGhJQU44?=
+ =?utf-8?B?cGcrcTBXTjRTK3luSUxrUy9uWnNLN2tIQmNoUzJkTzJ0UUdwV2Zqb09MVGVM?=
+ =?utf-8?B?aG9zM3oyNDcwWXBJUzRTUTFtS1pqWG1UeGNSdldvM1hweGxLMnRMU2NvSmVT?=
+ =?utf-8?B?R3A2ODBsZ2w5VUJhV1VzYXJ4d0xaVzBpWWc0UjAvY0ZOUmdiSk9RNTNBVm1S?=
+ =?utf-8?B?dTdYVmpPNUlkTEEyTnA0N01FVjNUV1hmZVI1MDNtUlQ2YkV1Z0ZkQXZYVDZN?=
+ =?utf-8?B?Y0lwUTZpVm1JOXcyekptSlFUWEoxMHJmaEF4RlNoaEtxY0QrNmFSeXRNcGpw?=
+ =?utf-8?B?dE9rOXBPaHNmMWxrc3ZMMHA0QjdBK1FheFkvRmNpTWh6TXFrMzJQREQwNUVY?=
+ =?utf-8?B?K3VsZjhJZDF0dzd2QWJ2UnNMNlR1Zi8xREhLU3J0c1l4VFhZWG9Ma2huaElO?=
+ =?utf-8?B?TEpOQkpOQ3ZEQVEzM1dESHRpdjg2YWgrekVSVy9RcXpKSUJweW11L1RPZkFs?=
+ =?utf-8?B?ZkYxNjZIclMwWEhlNGFjbGx5RFg3SnJTUVAyT3R6UVA0Rnh1SFBOU2RVUlQ4?=
+ =?utf-8?B?QmRuMm1TbVRldlBrR0d0YitOaGJFdnZYclpxKzZIT2RLbFdiSm5qNTZ5dTVB?=
+ =?utf-8?B?Q3dYRzNCa0UzNGpDUnRGZHhMOFhLc2FmS3EyZjk5am9ua0JVM3oxendrOTZE?=
+ =?utf-8?B?R1Z4VldtY3R4S21HMXdWQXdCVmhiTllVM3diTW9VMWp6SEN0cmdUV1RhbHE4?=
+ =?utf-8?B?bHc9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: a8ecac54-f35a-4f18-e2e4-08dbdeea4ab5
+X-MS-Exchange-CrossTenant-AuthSource: SJ2PR11MB7573.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Nov 2023 17:03:26.2165
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 5d40XEmSDN04zS2CcGaTBaxOa7LMHhKXyXhZ1JycHyZqSLKUszowaidfXwSfKPHHGArITVZNyOXh8pCoPLunPcYqpKP/APQDmc6/qsm8bzM=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW5PR11MB5788
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -52,225 +165,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-At the moment we don't have an architecture-specific memchr
-implementation for riscv in the Kernel. The generic version of this
-function iterates the memory area bytewise looking for the target value,
-which is not the optimal approach.
+Hi Ilpo,
 
-Instead of iterating the memory byte by byte, we can iterate over words
-of memory. Word still takes only one cycle to be loaded, and it could be
-checked for containing the target byte in just 5 operations:
+On 11/6/2023 1:53 AM, Ilpo Järvinen wrote:
+> On Fri, 3 Nov 2023, Reinette Chatre wrote:
+>> On 11/3/2023 3:39 AM, Ilpo Järvinen wrote:
+>>> On Thu, 2 Nov 2023, Reinette Chatre wrote:
+>>>> On 10/24/2023 2:26 AM, Ilpo Järvinen wrote:
+>>>
+>>>>> Add L2 CAT selftest. As measuring L2 misses is not easily available
+>>>>> with perf, use L3 accesses as a proxy for L2 CAT working or not.
+>>>>
+>>>> I understand the exact measurement is not available but I do notice some
+>>>> L2 related symbolic counters when I run "perf list". l2_rqsts.all_demand_miss
+>>>> looks promising.
+>>>
+>>> Okay, I was under impression that L2 misses are not available. Both based 
+>>> on what you mentioned to me half an year ago and because of what flags I 
+>>> found from the header. But I'll take another look into it.
+>>
+>> You are correct that when I did L2 testing a long time ago I used
+>> the model specific L2 miss counts. I was hoping that things have improved
+>> so that model specific counters are not needed, as you have tried here.
+>> I found the l2_rqsts symbol while looking for alternatives but I am not
+>> familiar enough with perf to know how these symbolic names are mapped.
+>> I was hoping that they could be a simple drop-in replacement to
+>> experiment with.
+> 
+> According to perf_event_open() manpage, mapping those symbolic names 
+> requires libpfm so this would add a library dependency?
 
-1. Let's say we are looking for the byte BA. XOR the word with
-0xBABA..BA
-2. If we have zero byte in the result, the word contains byte BA. Let's
-subtract 0x0101..01 from the xor result.
-3. Calculate the ~(xor result).
-4. And the results of steps 2 and 3. If in the xor result we had a zero
-bit somewhere, and after subtracting the 0x0101..01 it turned to 1,
-we will get 1 in the result
-5. And the result of step 4 with 0x8080..80. If we had a leading zero
-bit in the xor result which turned to 1 after subtracting 0x0101..01,
-it was the leading bit of a zero byte. So, if result of this step != 0,
-the word contains the byte we are looking for.
+I do not see perf list using this library to determine the event and
+umask but I am in unfamiliar territory. I'll have to spend some more
+time here to determine options.
 
-The same approach is used in the arm64 implementation of this function.
+> 
+>>>>> Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+>>>>> ---
+>>>>>  tools/testing/selftests/resctrl/cat_test.c    | 68 +++++++++++++++++--
+>>>>>  tools/testing/selftests/resctrl/resctrl.h     |  1 +
+>>>>>  .../testing/selftests/resctrl/resctrl_tests.c |  1 +
+>>>>>  3 files changed, 63 insertions(+), 7 deletions(-)
+>>>>>
+>>>>> diff --git a/tools/testing/selftests/resctrl/cat_test.c b/tools/testing/selftests/resctrl/cat_test.c
+>>>>> index 48a96acd9e31..a9c72022bb5a 100644
+>>>>> --- a/tools/testing/selftests/resctrl/cat_test.c
+>>>>> +++ b/tools/testing/selftests/resctrl/cat_test.c
+>>>>> @@ -131,8 +131,47 @@ void cat_test_cleanup(void)
+>>>>>  	remove(RESULT_FILE_NAME);
+>>>>>  }
+>>>>>  
+>>>>> +/*
+>>>>> + * L2 CAT test measures L2 misses indirectly using L3 accesses as a proxy
+>>>>> + * because perf cannot directly provide the number of L2 misses (there are
+>>>>> + * only platform specific ways to get the number of L2 misses).
+>>>>> + *
+>>>>> + * This function sets up L3 CAT to reduce noise from other processes during
+>>>>> + * L2 CAT test.
+>>>>
+>>>> This motivation is not clear to me. Does the same isolation used during 
+>>>> L3 CAT testing not work? I expected it to follow the same idea with the 
+>>>> L2 cache split in two, the test using one part and the rest of the 
+>>>> system using the other. Is that not enough isolation?
+>>>
+>>> Isolation for L2 is done very same way as with L3 and I think it itself 
+>>> works just fine.
+>>>
+>>> However, because L2 CAT selftest as is measures L3 accesses that in ideal 
+>>> world equals to L2 misses, isolating selftest related L3 accesses from the 
+>>> rest of the system should reduce noise in the # of L3 accesses. It's not 
+>>> mandatory though so if L3 CAT is not available the function just prints a 
+>>> warning about the potential noise and does setup nothing for L3.
+>>
+>> This is not clear to me. If the read misses L2 and then accesses L3 then
+>> it should not matter which part of L3 cache the work is isolated to. 
+>> What noise do you have in mind?
+> 
+> The way it is currently done is to measure L3 accesses. If something else 
+> runs at the same time as the CAT selftest, it can do mem accesses that 
+> cause L3 accesses which is noise in the # of L3 accesses number since 
+> those accesses were unrelated to the L2 CAT selftest.
+> 
 
-So, this patch introduces the riscv-specific memchr function which
-accepts 3 parameters (address, target byte and count) and works in the
-following way:
+Creating a CAT allocation sets aside a portion of cache where a task/cpu
+can allocation into cache, it does not prevent one task from accessing
+the cache concurrently with another.
 
-0. If count is smaller than 128, iterate the area byte by byte as we
-would not get any performance gain here.
-1. If address is not aligned, iterate SZREG - (address % SZREG) bytes
-to avoid unaligned memory access.
-2. If count is larger than 128, iterate words of memory until we find
-the word which contains the target byte.
-3. If we have found the word, iterate through it byte by byte and return
-the address of the first occurrence.
-4. If we have not found the word, iterate the remainder (in case if
-the count was not divisible by 8).
-5. If we still have not found the target byte, return 0.
-
-Here you can see the benchmark results for "Sifive Hifive Unmatched"
-board, which compares the old and new memchr implementations.
-
-| test_count | array_size | old_mean_ktime  | new_mean_ktime  |
----------------------------------------------------------------
-|      10000 |         10 |             415 |             409 |
-|      10000 |        100 |             642 |             717 |
-|      10000 |        128 |             714 |             775 |
-|      10000 |        256 |            1031 |             611 |
-|       5000 |        512 |            1686 |             769 |
-|       5000 |        768 |            2320 |             925 |
-|       5000 |       1024 |            2968 |            1095 |
-|       5000 |       1500 |            4165 |            1383 |
-|       5000 |       2048 |            5567 |            1731 |
-|       3000 |       4096 |           10698 |            3028 |
-|       3000 |      16384 |           41630 |           10766 |
-|       1000 |     524288 |         1475454 |          498183 |
-|       1000 |    1048576 |         2952080 |          997018 |
-|        500 |   10485760 |        49491492 |        29335358 |
-|        100 |  134217728 |       636033660 |       377157970 |
-|         20 |  536870912 |      2546979300 |      1510817350 |
-|         20 | 1073741824 |      5095776750 |      3019167250 |
-
-The target symbol was always placed at the last index of the array, and
-the mean time of function execution was measured using the ktime_get
-function.
-
-As you can see, the new function shows much better results even for
-the small arrays of 256 elements, therefore I believe it could be a
-useful addition to the existing riscv-specific string functions.
-
-Signed-off-by: Ivan Orlov <ivan.orlov@codethink.co.uk>
----
- arch/riscv/include/asm/string.h |  2 +
- arch/riscv/kernel/riscv_ksyms.c |  1 +
- arch/riscv/lib/Makefile         |  1 +
- arch/riscv/lib/memchr.S         | 98 +++++++++++++++++++++++++++++++++
- 4 files changed, 102 insertions(+)
- create mode 100644 arch/riscv/lib/memchr.S
-
-diff --git a/arch/riscv/include/asm/string.h b/arch/riscv/include/asm/string.h
-index a96b1fea24fe..ec1a643cb625 100644
---- a/arch/riscv/include/asm/string.h
-+++ b/arch/riscv/include/asm/string.h
-@@ -18,6 +18,8 @@ extern asmlinkage void *__memcpy(void *, const void *, size_t);
- #define __HAVE_ARCH_MEMMOVE
- extern asmlinkage void *memmove(void *, const void *, size_t);
- extern asmlinkage void *__memmove(void *, const void *, size_t);
-+#define __HAVE_ARCH_MEMCHR
-+extern asmlinkage void *memchr(const void *, int, size_t);
- 
- #define __HAVE_ARCH_STRCMP
- extern asmlinkage int strcmp(const char *cs, const char *ct);
-diff --git a/arch/riscv/kernel/riscv_ksyms.c b/arch/riscv/kernel/riscv_ksyms.c
-index a72879b4249a..08c0d846366b 100644
---- a/arch/riscv/kernel/riscv_ksyms.c
-+++ b/arch/riscv/kernel/riscv_ksyms.c
-@@ -9,6 +9,7 @@
- /*
-  * Assembly functions that may be used (directly or indirectly) by modules
-  */
-+EXPORT_SYMBOL(memchr);
- EXPORT_SYMBOL(memset);
- EXPORT_SYMBOL(memcpy);
- EXPORT_SYMBOL(memmove);
-diff --git a/arch/riscv/lib/Makefile b/arch/riscv/lib/Makefile
-index 26cb2502ecf8..0a8b64f8ca88 100644
---- a/arch/riscv/lib/Makefile
-+++ b/arch/riscv/lib/Makefile
-@@ -1,4 +1,5 @@
- # SPDX-License-Identifier: GPL-2.0-only
-+lib-y			+= memchr.o
- lib-y			+= delay.o
- lib-y			+= memcpy.o
- lib-y			+= memset.o
-diff --git a/arch/riscv/lib/memchr.S b/arch/riscv/lib/memchr.S
-new file mode 100644
-index 000000000000..d48e0fa3cd84
---- /dev/null
-+++ b/arch/riscv/lib/memchr.S
-@@ -0,0 +1,98 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+/*
-+ * Copyright (c) 2023 Codethink Ltd.
-+ * Author: Ivan Orlov <ivan.orlov@codethink.co.uk>
-+ */
-+
-+#include <linux/linkage.h>
-+#include <asm/asm.h>
-+
-+#define REP_01 __REG_SEL(0x0101010101010101, 0x01010101)
-+#define REP_80 __REG_SEL(0x8080808080808080, 0x80808080)
-+
-+#define MIN_BORDER 128
-+
-+SYM_FUNC_START(memchr)
-+	andi a1, a1, 0xFF
-+
-+	// use byte-wide iteration for small numbers
-+	add t1, x0, a2
-+	sltiu t2, a2, MIN_BORDER
-+	bnez t2, 6f
-+
-+	// get the number of bytes we should iterate before alignment
-+	andi t0, a0, SZREG - 1
-+	beqz t0, 4f
-+
-+	# get the SZREG - t0
-+	xor t0, t0, SZREG - 1
-+	addi t0, t0, 1
-+
-+	sub a2, a2, t0
-+	// iterate before alignment
-+1:
-+	beq t0, x0, 4f
-+	lbu t2, 0(a0)
-+	beq t2, a1, 3f
-+	addi t0, t0, -1
-+	addi a0, a0, 1
-+	j 1b
-+
-+2:
-+	// found a word. Iterate it until we find the target byte
-+	li t1, SZREG
-+	j 6f
-+3:
-+	ret
-+
-+4:
-+	// get the count remainder
-+	andi t1, a2, SZREG - 1
-+
-+	// align the count
-+	sub a2, a2, t1
-+
-+	// if we have no words to iterate, iterate the remainder
-+	beqz a2, 6f
-+
-+	// from 0xBA we will get 0xBABABABABABABABA
-+	li t3, REP_01
-+	mul t3, t3, a1
-+
-+	add a2, a2, a0
-+
-+	li t4, REP_01
-+	li t5, REP_80
-+
-+5:
-+	REG_L t2, 0(a0)
-+
-+	// after this xor we will get one zero byte in the word if it contains the target byte
-+	xor t2, t2, t3
-+
-+	// word v contains the target byte if (v - 0x01010101) & (~v) & 0x80808080 is positive
-+	sub t0, t2, t4
-+
-+	not t2, t2
-+
-+	and t0, t0, t2
-+	and t0, t0, t5
-+
-+	bnez t0, 2b
-+	addi a0, a0, SZREG
-+	bne a0, a2, 5b
-+
-+6:
-+	// iterate the remainder
-+	beq t1, x0, 7f
-+	lbu t4, 0(a0)
-+	beq t4, a1, 3b
-+	addi a0, a0, 1
-+	addi t1, t1, -1
-+	j 6b
-+
-+7:
-+	addi a0, x0, 0
-+	ret
-+SYM_FUNC_END(memchr)
-+SYM_FUNC_ALIAS(__pi_memchr, memchr)
--- 
-2.34.1
+Reinette
 
