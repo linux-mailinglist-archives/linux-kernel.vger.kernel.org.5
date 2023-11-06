@@ -2,94 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C265F7E2BAB
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 19:10:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 681C17E2BAE
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 19:10:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232152AbjKFSKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 13:10:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42466 "EHLO
+        id S232178AbjKFSKa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 13:10:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231567AbjKFSKQ (ORCPT
+        with ESMTP id S232174AbjKFSK3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 13:10:16 -0500
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9FF4C6;
-        Mon,  6 Nov 2023 10:10:13 -0800 (PST)
-Received: by mail-pj1-x102b.google.com with SMTP id 98e67ed59e1d1-27ff83feb29so4513192a91.3;
-        Mon, 06 Nov 2023 10:10:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699294213; x=1699899013; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=0hyNCGm882vleV6fWFop1iVQRBn8+2rPGqpsVkRuaVQ=;
-        b=gIsMGq3KqpLPL8Ne025dIwQpRLdKZsyitsCFuDhGmeMGZWsTeB4N10+pclgwQtgi2T
-         mR6vpDRwTnkPh/9g++PqhZquNRz6vqcyP4+QaZ46K+ZiEqcpRZm+s+yvx++xNyeVQ70Q
-         0fO3sIGkmJXsu2CPsyiDBtexsRmeWDr31TqBdYTeLVF4Mms2OoAXCEnl/SbkUysSg84v
-         96jjRXZJ4jjlIS8EdybRjNNsqc5Tt+4K0FrMKjyisd1lAE9/a0KTVELsSVKX7lWVCqtt
-         Re5s4dH7meJgCINlosNQMZGMVgtNX5rRjs3I/ePAIkrEkeyi4yVmqgLzTuMBbuvqmUat
-         zobQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699294213; x=1699899013;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=0hyNCGm882vleV6fWFop1iVQRBn8+2rPGqpsVkRuaVQ=;
-        b=OwILsIVgV8tSHjg3r71Bt+Q3X+m8bw1UVSQBOMNa/DiOyol6oHKqJesLV69v4KHlt8
-         1TEcwjr5J/fs0HgEADmbePquHI+/xZ3mjnQD4gOT/uYDysXy7LNNAPaRBI3Yn7nkjth1
-         8M2fe7kZXmGBJmSAYrGEudmrXoKxpnGWol359aDWe2z18qbRK4w2ys2frHPOGKIQfpsD
-         zNMur9YPR3hp6F4SywUio6W9vxxXIFlPhTOOb9zvCj1xX8s8kGUvHgb84b9fd+yGPEAr
-         xPh4M9pBUtpsNT1DzWW9LrHfVaT4ZsBBzJrFbv6bJ6N9+0yp2OY+qMZSwhbL//JJ15nj
-         fA4g==
-X-Gm-Message-State: AOJu0YxuW4d4eWWigG6w7u13cc/odRJX4AAgt2Zih6XJrGY1gEk5MGze
-        3S/wKnxzzgKQeAAGmoZUW5Y=
-X-Google-Smtp-Source: AGHT+IECzAVRoFqj+aM7dGWG6MXzjLS8pOw2hWIkBeO4fZkYJ4qIco06AySXEb71YwHchZqvAKnymA==
-X-Received: by 2002:a17:90a:bf04:b0:27f:f9e5:b8d6 with SMTP id c4-20020a17090abf0400b0027ff9e5b8d6mr27911613pjs.41.1699294213263;
-        Mon, 06 Nov 2023 10:10:13 -0800 (PST)
-Received: from localhost.localdomain ([2405:201:6815:d829:2ad7:8520:6556:6c40])
-        by smtp.gmail.com with ESMTPSA id ge13-20020a17090b0e0d00b0026801e06ac1sm5754949pjb.30.2023.11.06.10.10.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Nov 2023 10:10:12 -0800 (PST)
-From:   Atul Kumar Pant <atulpant.linux@gmail.com>
-To:     shuah@kernel.org, ivan.orlov0322@gmail.com
-Cc:     Atul Kumar Pant <atulpant.linux@gmail.com>,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v1] selftests: sched: Remove initialization to 0 for a static variable
-Date:   Mon,  6 Nov 2023 23:40:05 +0530
-Message-Id: <20231106181005.117062-1-atulpant.linux@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Mon, 6 Nov 2023 13:10:29 -0500
+Received: from bmailout1.hostsharing.net (bmailout1.hostsharing.net [83.223.95.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0078DD47;
+        Mon,  6 Nov 2023 10:10:24 -0800 (PST)
+Received: from h08.hostsharing.net (h08.hostsharing.net [83.223.95.28])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256
+         client-signature RSA-PSS (4096 bits) client-digest SHA256)
+        (Client CN "*.hostsharing.net", Issuer "RapidSSL Global TLS RSA4096 SHA256 2022 CA1" (verified OK))
+        by bmailout1.hostsharing.net (Postfix) with ESMTPS id D4A49300002D5;
+        Mon,  6 Nov 2023 19:10:22 +0100 (CET)
+Received: by h08.hostsharing.net (Postfix, from userid 100393)
+        id CCA24473B55; Mon,  6 Nov 2023 19:10:22 +0100 (CET)
+Date:   Mon, 6 Nov 2023 19:10:22 +0100
+From:   Lukas Wunner <lukas@wunner.de>
+To:     Mario Limonciello <mario.limonciello@amd.com>
+Cc:     Karol Herbst <kherbst@redhat.com>, Lyude Paul <lyude@redhat.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Danilo Krummrich <dakr@redhat.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Xinhui Pan <Xinhui.Pan@amd.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Mark Gross <markgross@kernel.org>,
+        Andreas Noever <andreas.noever@gmail.com>,
+        Michael Jamet <michael.jamet@intel.com>,
+        Yehezkel Bernat <YehezkelShB@gmail.com>,
+        Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>,
+        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
+        "Maciej W . Rozycki" <macro@orcam.me.uk>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        "open list:DRM DRIVER FOR NVIDIA GEFORCE/QUADRO GPUS" 
+        <dri-devel@lists.freedesktop.org>,
+        "open list:DRM DRIVER FOR NVIDIA GEFORCE/QUADRO GPUS" 
+        <nouveau@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:RADEON and AMDGPU DRM DRIVERS" 
+        <amd-gfx@lists.freedesktop.org>,
+        "open list:PCI SUBSYSTEM" <linux-pci@vger.kernel.org>,
+        "open list:ACPI" <linux-acpi@vger.kernel.org>,
+        "open list:X86 PLATFORM DRIVERS" 
+        <platform-driver-x86@vger.kernel.org>,
+        "open list:THUNDERBOLT DRIVER" <linux-usb@vger.kernel.org>
+Subject: Re: [PATCH v2 8/9] PCI: Exclude PCIe ports used for tunneling in
+ pcie_bandwidth_available()
+Message-ID: <20231106181022.GA18564@wunner.de>
+References: <20231103190758.82911-1-mario.limonciello@amd.com>
+ <20231103190758.82911-9-mario.limonciello@amd.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231103190758.82911-9-mario.limonciello@amd.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes following checkpatch.pl issue:
-ERROR: do not initialise statics to 0
+On Fri, Nov 03, 2023 at 02:07:57PM -0500, Mario Limonciello wrote:
+> The USB4 spec specifies that PCIe ports that are used for tunneling
+> PCIe traffic over USB4 fabric will be hardcoded to advertise 2.5GT/s and
+> behave as a PCIe Gen1 device. The actual performance of these ports is
+> controlled by the fabric implementation.
+> 
+> Downstream drivers such as amdgpu which utilize pcie_bandwidth_available()
+> to program the device will always find the PCIe ports used for
+> tunneling as a limiting factor potentially leading to incorrect
+> performance decisions.
+> 
+> To prevent problems in downstream drivers check explicitly for ports
+> being used for PCIe tunneling and skip them when looking for bandwidth
+> limitations of the hierarchy. If the only device connected is a root port
+> used for tunneling then report that device.
 
-Signed-off-by: Atul Kumar Pant <atulpant.linux@gmail.com>
----
- tools/testing/selftests/sched/cs_prctl_test.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I think a better approach would be to define three new bandwidths for
+Thunderbolt in enum pci_bus_speed and add appropriate descriptions in
+pci_speed_string().  Those three bandwidths would be 10 GBit/s for
+Thunderbolt 1, 20 GBit/s for Thunderbolt 2, 40 GBit/s for Thunderbolt 3
+and 4.
 
-diff --git a/tools/testing/selftests/sched/cs_prctl_test.c b/tools/testing/selftests/sched/cs_prctl_test.c
-index 3e1619b6bf2d..7ba057154343 100644
---- a/tools/testing/selftests/sched/cs_prctl_test.c
-+++ b/tools/testing/selftests/sched/cs_prctl_test.c
-@@ -72,7 +72,7 @@ struct child_args {
- 
- static struct child_args procs[MAX_PROCESSES];
- static int num_processes = 2;
--static int need_cleanup = 0;
-+static int need_cleanup;
- 
- static int _prctl(int option, unsigned long arg2, unsigned long arg3, unsigned long arg4,
- 		  unsigned long arg5)
--- 
-2.25.1
+Code to determine the Thunderbolt generation from the PCI ID already exists
+in tb_switch_get_generation().
 
+This will not only address the amdgpu issue you're trying to solve,
+but also emit an accurate speed from __pcie_print_link_status().
+
+The speed you're reporting with your approach is not necessarily
+accurate because the next non-tunneled device in the hierarchy might
+be connected with a far higher PCIe speed than what the Thunderbolt
+fabric allows.
+
+Thanks,
+
+Lukas
