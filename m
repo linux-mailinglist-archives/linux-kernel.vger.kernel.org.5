@@ -2,108 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 671647E2796
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 15:49:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B34CB7E2785
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 15:48:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231949AbjKFOtO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 09:49:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42676 "EHLO
+        id S231767AbjKFOsi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 09:48:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231764AbjKFOtG (ORCPT
+        with ESMTP id S231604AbjKFOsg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 09:49:06 -0500
-Received: from m15.mail.163.com (m15.mail.163.com [45.254.50.219])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3250EEA;
-        Mon,  6 Nov 2023 06:49:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=omdBI
-        C+e1jVadRkJ0QsCI7L9wKGBA2OoP3PF04hqiWI=; b=icMCVQ56bJbR9Qbyx5nf8
-        0K8Qsm3F0mVQpUaeIG9VWBB+uvDnib0yQlDhY6wUINDGKYU317uWmk0ttZf7EoVy
-        6kaDmtMy3pWOzXfqtTVI5dKzpWYc5pUSFlCZSOIS346pbgYo1UqwxXe/9M+sKjuu
-        7a9qCM/qUzF6yGpD5ntDXE=
-Received: from leanderwang-LC4.localdomain (unknown [111.206.145.21])
-        by zwqz-smtp-mta-g2-2 (Coremail) with SMTP id _____wAXH5Gu_Ehl9FmbBw--.1952S5;
-        Mon, 06 Nov 2023 22:48:21 +0800 (CST)
-From:   Zheng Wang <zyytlz.wz@163.com>
-To:     dmitry.osipenko@collabora.com
-Cc:     Kyrie.Wu@mediatek.com, bin.liu@mediatek.com, mchehab@kernel.org,
-        matthias.bgg@gmail.com, angelogioacchino.delregno@collabora.com,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, Irui.Wang@mediatek.com,
-        security@kernel.org, hackerzheng666@gmail.com,
-        amergnat@baylibre.com, wenst@chromium.org, stable@vger.kernel.org,
-        Zheng Wang <zyytlz.wz@163.com>
-Subject: [RESEND PATCH v2 3/3] media: mtk-jpeg: Fix timeout schedule error in mtk_jpegdec_worker.
-Date:   Mon,  6 Nov 2023 22:48:11 +0800
-Message-Id: <20231106144811.868127-4-zyytlz.wz@163.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231106144811.868127-1-zyytlz.wz@163.com>
-References: <20231106144811.868127-1-zyytlz.wz@163.com>
+        Mon, 6 Nov 2023 09:48:36 -0500
+Received: from mail-ot1-f45.google.com (mail-ot1-f45.google.com [209.85.210.45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C41AB6;
+        Mon,  6 Nov 2023 06:48:34 -0800 (PST)
+Received: by mail-ot1-f45.google.com with SMTP id 46e09a7af769-6ce2add34c9so2670860a34.1;
+        Mon, 06 Nov 2023 06:48:34 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699282113; x=1699886913;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=pXUwQRgKYin84qt/NzMuWPYKQwAgJAzQ8CP9C3QMnWk=;
+        b=vvnLp1dgP1f73NpMVittH9GfaRp+k6pV7teZGfkB+9VCSjyhmF7LTLphqMlsP4WIz0
+         pIGru6LsYhcmVCxFqctIavqEdc1VbLUrIH2CmlNdYtKiN90JjaBDiJ2lVOnomH54dvGM
+         6YB2WiDKOUFnKtv8RYJUy6bVlA4/3TwhLrBPj7FkznUtS4PRCJwEPpeeTMiGtoopADSW
+         onTgd+J0l8FI0yV72y6Nz3pc2xhEUS6bZYySM0asJvRBn+kEBmN4ULqn1AKDqyCN/hEE
+         QqNVvMai6ZzCSwl46vIKMvHgLPez2Rgrfb5dNscD4M+6VOzkBuOW1XThSiB+zGWvXzUM
+         wddQ==
+X-Gm-Message-State: AOJu0YyXxMfEdwjf2a3k4pucVLBMtbEurlkBjvlPwic0rCua6f4RXqhY
+        O42p+zQ9+5zsNbSdo6Cyiw==
+X-Google-Smtp-Source: AGHT+IEUkOSozraK2toTye88mFjUT63PkKYjXw5R8snconc3gVvDkuHgI4cJmHvVc/G6yXILft5QbQ==
+X-Received: by 2002:a05:6870:af4a:b0:1ea:7f54:77af with SMTP id uy10-20020a056870af4a00b001ea7f5477afmr31023062oab.10.1699282113677;
+        Mon, 06 Nov 2023 06:48:33 -0800 (PST)
+Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id m2-20020a9d7e82000000b006d32010d5a9sm1272976otp.71.2023.11.06.06.48.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 Nov 2023 06:48:33 -0800 (PST)
+Received: (nullmailer pid 321808 invoked by uid 1000);
+        Mon, 06 Nov 2023 14:48:31 -0000
+Date:   Mon, 6 Nov 2023 08:48:31 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Ziqi Chen <quic_ziqichen@quicinc.com>
+Cc:     quic_asutoshd@quicinc.com, quic_cang@quicinc.com,
+        bvanassche@acm.org, mani@kernel.org, beanhuo@micron.com,
+        avri.altman@wdc.com, junwoo80.lee@samsung.com,
+        martin.petersen@oracle.com, quic_nguyenb@quicinc.com,
+        quic_nitirawa@quicinc.com, quic_rampraka@quicinc.com,
+        linux-scsi@vger.kernel.org, Alim Akhtar <alim.akhtar@samsung.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Wolfram Sang <wsa@kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Mark Brown <broonie@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] dt-bindings: ufs: Add msi-parent for UFS MCQ
+Message-ID: <20231106144831.GA317907-robh@kernel.org>
+References: <1698835699-28550-1-git-send-email-quic_ziqichen@quicinc.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: _____wAXH5Gu_Ehl9FmbBw--.1952S5
-X-Coremail-Antispam: 1Uf129KBjvJXoW7Ar15uF1rKrW5Gr4xtw4Dtwb_yoW8ZF1rpF
-        WfK3yqkrWUWrZ8tF4UA3W7ZFy5G34Fgr47Ww43Xwn5A343XF47tryjya4xtFWIyFy2ka4F
-        yF4vg34xJFsFyFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07UF1v3UUUUU=
-X-Originating-IP: [111.206.145.21]
-X-CM-SenderInfo: h2113zf2oz6qqrwthudrp/xtbBmwsgU1etjJUTHQAAsO
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1698835699-28550-1-git-send-email-quic_ziqichen@quicinc.com>
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In mtk_jpegdec_worker, if error occurs in mtk_jpeg_set_dec_dst, it
-will start the timeout worker and invoke v4l2_m2m_job_finish at
-the same time. This will break the logic of design for there should
-be only one function to call v4l2_m2m_job_finish. But now the timeout
-handler and mtk_jpegdec_worker will both invoke it.
+On Wed, Nov 01, 2023 at 06:48:13PM +0800, Ziqi Chen wrote:
+> The Message Signaled Interrupts (MSI) has been introduced
+> to UFS driver since the MCQ be enabled.
 
-Fix it by start the worker only if mtk_jpeg_set_dec_dst successfully
-finished.
+Not really relevant when a driver supported MSI, but the when the h/w 
+did. Has UFS always supported MSI? It was added in some version of the 
+spec?
 
-Fixes: da4ede4b7fd6 ("media: mtk-jpeg: move data/code inside CONFIG_OF blocks")
-Signed-off-by: Zheng Wang <zyytlz.wz@163.com>
-Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
-Cc: stable@vger.kernel.org
----
-v2:
-- put the patches into a single series suggested by Dmitry
----
- drivers/media/platform/mediatek/jpeg/mtk_jpeg_core.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/media/platform/mediatek/jpeg/mtk_jpeg_core.c b/drivers/media/platform/mediatek/jpeg/mtk_jpeg_core.c
-index a39acde2724a..c3456c700c07 100644
---- a/drivers/media/platform/mediatek/jpeg/mtk_jpeg_core.c
-+++ b/drivers/media/platform/mediatek/jpeg/mtk_jpeg_core.c
-@@ -1749,9 +1749,6 @@ static void mtk_jpegdec_worker(struct work_struct *work)
- 	v4l2_m2m_src_buf_remove(ctx->fh.m2m_ctx);
- 	v4l2_m2m_dst_buf_remove(ctx->fh.m2m_ctx);
- 
--	schedule_delayed_work(&comp_jpeg[hw_id]->job_timeout_work,
--			      msecs_to_jiffies(MTK_JPEG_HW_TIMEOUT_MSEC));
--
- 	mtk_jpeg_set_dec_src(ctx, &src_buf->vb2_buf, &bs);
- 	if (mtk_jpeg_set_dec_dst(ctx,
- 				 &jpeg_src_buf->dec_param,
-@@ -1761,6 +1758,9 @@ static void mtk_jpegdec_worker(struct work_struct *work)
- 		goto setdst_end;
- 	}
- 
-+	schedule_delayed_work(&comp_jpeg[hw_id]->job_timeout_work,
-+			      msecs_to_jiffies(MTK_JPEG_HW_TIMEOUT_MSEC));
-+
- 	spin_lock_irqsave(&comp_jpeg[hw_id]->hw_lock, flags);
- 	ctx->total_frame_num++;
- 	mtk_jpeg_dec_reset(comp_jpeg[hw_id]->reg_base);
--- 
-2.25.1
-
+> Hence in UFS DT
+> node we need to give the msi-parent property that point
+> to the hardware entity which serves as the MSI controller
+> for this UFS controller.
+> 
+> Signed-off-by: Ziqi Chen <quic_ziqichen@quicinc.com>
+> ---
+>  Documentation/devicetree/bindings/ufs/ufs-common.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/ufs/ufs-common.yaml b/Documentation/devicetree/bindings/ufs/ufs-common.yaml
+> index bbaee4f5..42309bb 100644
+> --- a/Documentation/devicetree/bindings/ufs/ufs-common.yaml
+> +++ b/Documentation/devicetree/bindings/ufs/ufs-common.yaml
+> @@ -73,6 +73,8 @@ properties:
+>      description:
+>        Specifies max. load that can be drawn from VCCQ2 supply.
+>  
+> +  msi-parent: true
+> +
+>  dependencies:
+>    freq-table-hz: [ clocks ]
+>  
+> -- 
+> 2.7.4
+> 
