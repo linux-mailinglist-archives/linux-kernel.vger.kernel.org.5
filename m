@@ -2,205 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 322187E289C
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 16:26:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7F387E28A9
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 16:29:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229839AbjKFP0F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 10:26:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54390 "EHLO
+        id S232120AbjKFP3I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 10:29:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232077AbjKFP0E (ORCPT
+        with ESMTP id S232077AbjKFP3G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 10:26:04 -0500
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [81.169.146.165])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA4F8125;
-        Mon,  6 Nov 2023 07:25:59 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1699284356; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=UCypJLI2/6Im0BcJK2hsUf5uWGwEgvC6d7BF+zVrib0j+3ldCtveiqz0JlHaqubsQ/
-    F1ZDbHMuh1mLc8BG6iaMiAOVz01HCqzmF6bj9463VXt0myJ7i3flaZL8x2DSbgNEFdeP
-    NCd52aTp/wLkAqqQjZJ6/KyOUsnMi05g5oGr0JZCesYFiUdcI3ARx2hDUmcb1D1RTHV9
-    Tq0CzEPH5S4JwCg8XuGKLsPZOCVYkP4ez1MvsxSqNxB1Vl6srjhggvP1RsNMpDqP3g6c
-    Ulx8vcwSu+9z6AiUeVVRQgnzqyeTbz7WOv+S13qSkkTGHiXmRJTU+9y7cZ3+VjwocCI7
-    gTjQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1699284356;
-    s=strato-dkim-0002; d=strato.com;
-    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
-    From:Subject:Sender;
-    bh=4+7Xy5eB573jOAnhsPwiB88+6XPcbZGKnLQ8s6Ckgzo=;
-    b=m8RlJIOtDcYSysLv/GKbiCjSuEGVVhagrGvDMTdNm1I/CGp/Q7inMUdeLeZXnDLBwt
-    64skjjyNhIuRMS5pdlMPqP5VgZOzWNuwfxvMDaS9f+JsvF6Z6PozFSJGBajcAEd0SkiC
-    OrUEAlAaCR+b9Q3XXpFdYfCTJG5QDkDCo8z2nX0ZIOWsfT7esEGubqUMASP+BUSjpxlV
-    LF4NYJcLsHHKshDH4qh1is6cMsRXpPrFt6+qH+VAR5RxlCDDc9XoZTuyp6k4h0hq8fAy
-    IR1r1wBb3+6S/T4qqvFAL3apQrRxG84iICrSFc6EnPx0LFpUZl9AWAM+8TYFOCKskZom
-    AG5w==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo01
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1699284356;
-    s=strato-dkim-0002; d=chronox.de;
-    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
-    From:Subject:Sender;
-    bh=4+7Xy5eB573jOAnhsPwiB88+6XPcbZGKnLQ8s6Ckgzo=;
-    b=XRo1mPwdu9PLzhUr5RqXiezTiv3NxqcdNsI2ctoiy915GEbsgr6s3cpS0iAMHX6ohh
-    lRmW6+I4XrtQyIOQwmbuf6EiBP1RsC43HQiD9KptwKxi7fzXGG4enR141j+QXw7yMaPQ
-    InNFinFzTemGQdMgpWfJFgFzsz3FrY60w/n9Rx586ohS3VDAX9v5Ve0dBLhvZTFUDrGn
-    lF+u5n5GoxL70duglcOkpumo06UzSvKk2hudk1HwPZAbSwcskylIcfll2e/Ye4i68woZ
-    CmedpbHoBsD06z/GpLbNd06w1Pz5lZd08QYDdScoAlfr8OePD5iFn+cpqvWnYIc6tDWO
-    kN6g==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1699284356;
-    s=strato-dkim-0003; d=chronox.de;
-    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
-    From:Subject:Sender;
-    bh=4+7Xy5eB573jOAnhsPwiB88+6XPcbZGKnLQ8s6Ckgzo=;
-    b=oOrkLeqOsc787HxWrD7wGw20Eu/e6FHS9dXU5xvGR5f0Minu2DVhDTYXxVW1r0Leum
-    LswCVbMvhD62XWy7DzBg==
-X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNyiHySGSa9k9zmwdP57PWmc+BP1jdA=="
-Received: from tauon.chronox.de
-    by smtp.strato.de (RZmta 49.9.1 AUTH)
-    with ESMTPSA id 6b1cadzA6FPrBht
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Mon, 6 Nov 2023 16:25:53 +0100 (CET)
-From:   Stephan Mueller <smueller@chronox.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Steffen Klassert <steffen.klassert@secunet.com>
-Subject: Re: [PATCH] crypto: jitterentropy - Hide esoteric Kconfig options under FIPS
- and EXPERT
-Date:   Mon, 06 Nov 2023 16:25:51 +0100
-Message-ID: <3094055.QNPB7aoccF@tauon.chronox.de>
-In-Reply-To: <ZUi5KMUaNkp0c1Ds@gondor.apana.org.au>
-References: <Yzv0wXi4Uu2WND37@gondor.apana.org.au>
- <CAHk-=wh=xH7TNHeaYdsrVW6p1fCQEV5PZMpaFNsZyXYqzn8Stg@mail.gmail.com>
- <ZUi5KMUaNkp0c1Ds@gondor.apana.org.au>
+        Mon, 6 Nov 2023 10:29:06 -0500
+Received: from mail-oa1-x32.google.com (mail-oa1-x32.google.com [IPv6:2001:4860:4864:20::32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4C2DDB
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 07:29:03 -0800 (PST)
+Received: by mail-oa1-x32.google.com with SMTP id 586e51a60fabf-1e9a757e04eso2818776fac.0
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 07:29:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699284543; x=1699889343; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=uvIhF9xuFJUuwvzTU42upDnVbw8DHp9VYw/HLhc/loM=;
+        b=jSqiELyWosBn2X0Vnu4os0rUVmZy9KIHT+w6XofuBKGh+GIyjfbaOBL1Cnvpxmh27A
+         QuSthOS8oPqkbaCNdNKXGWj9fBHa3iiIxgOrkT3R5cwD3XjAwF1Nts8DL0P5vQ25aCSI
+         aAdSLCjbk4pUC7BHT4XgR+kQfA1QTnE+uUz5msGYvduIkNP3eJ17ol3j7wEfBb9ZTCxP
+         6i7WpcSmLWOK1kwfLG+00W3vODB5caAxcAmsQP9zJ6it3/RDhdmOFNC4tdf+ZhVZA+t1
+         e5/UaVRSsPj3i/Lw0N572kenyURh5XMijbbElbzhgXdxKSgb8trtnEGyBXCXiMa2dD/i
+         Z3SQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699284543; x=1699889343;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=uvIhF9xuFJUuwvzTU42upDnVbw8DHp9VYw/HLhc/loM=;
+        b=w6IKA8op0Nmf2lWnaThlx4i1loH9dQDd2xs3Sqyt9L0aRMolnhv2XRPrHoeZC3+WDK
+         uV7wk1nLXZzuHOTNK+IvD1PdtAD0KM+7eWjxvI1zOifqtudo91ZQwDgsiKSofk4MK86Y
+         H/7NpSNrLzCeJ+oHlABLlw9l4hNHlAynamafBrxcU4WgPJQrrvP0+kTd/uoeuQwQO5D7
+         rqzULVxyWHLFuDHpYLbd9AGWUMgXUFcIURDGbAWo9EUUO5+m9jAlvJ8au6558tOJ0v3u
+         sPzFav2HSiQLkJMkuC+2nYJbHMtH5i3jfAjjX2pfxl7hoYLjneAc2gldNz6Ja4j9/UsF
+         Dg5g==
+X-Gm-Message-State: AOJu0YwRXvQ9lCwK5673FIf+3agZIRNobyJpSvKthJ0L6poAvvOUItyv
+        DYZQHbasuQf07qsj1NHMH5BRHarLZAHzC9vU7tI=
+X-Google-Smtp-Source: AGHT+IFteXQH9BHt3ZRZ7W8tal+jmYmVtmtqRSJtP+IzhFyTFRZv9u7SFv3/jCWbln4qIky7btDjoxGt8fk0qUfbPt8=
+X-Received: by 2002:a05:6871:489:b0:1ef:b0b6:7e14 with SMTP id
+ f9-20020a056871048900b001efb0b67e14mr6595oaj.10.1699284543003; Mon, 06 Nov
+ 2023 07:29:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+References: <CABXGCsNsDLvZR8RGf9ji5938QreSix89FCpGHju+9in2x6OfDw@mail.gmail.com>
+In-Reply-To: <CABXGCsNsDLvZR8RGf9ji5938QreSix89FCpGHju+9in2x6OfDw@mail.gmail.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Mon, 6 Nov 2023 10:28:51 -0500
+Message-ID: <CADnq5_ObMvxN4pFAsWU7OM3SAtYCNHKE_fHsLqizGm0p1ubp=w@mail.gmail.com>
+Subject: Re: 6.7/regression/KASAN: null-ptr-deref in amdgpu_ras_reset_error_count+0x2d6
+To:     Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
+Cc:     tao.zhou1@amd.com, Hawking.Zhang@amd.com,
+        "Deucher, Alexander" <alexander.deucher@amd.com>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Montag, 6. November 2023, 11:00:08 CET schrieb Herbert Xu:
+On Mon, Nov 6, 2023 at 10:22=E2=80=AFAM Mikhail Gavrilov
+<mikhail.v.gavrilov@gmail.com> wrote:
+>
+> Hi,
+> another release cycle, and another regression.
+> After another kernel update in Fedora Rawhide GPU not
+> entering in graphic mode on my laptop ASUS ROG Strix G15 Advantage
+> Edition G513QY-HQ007.
+> And in kernel log appears this bug trace:
+> [   22.574698] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> [   22.574704] BUG: KASAN: null-ptr-deref in
+> amdgpu_ras_reset_error_count+0x2d6/0x3e0 [amdgpu]
+> [   22.575115] Read of size 4 at addr 0000000000000180 by task (udev-work=
+er)/504
+>
+> [   22.575125] CPU: 2 PID: 504 Comm: (udev-worker) Tainted: G        W
+>    L     6.6.0-last-d2f51b3516dade79269ff45eae2a7668ae711b25+ #163
+> [   22.575135] Hardware name: ASUSTeK COMPUTER INC. ROG Strix
+> G513QY_G513QY/G513QY, BIOS G513QY.331 02/24/2023
+> [   22.575143] Call Trace:
+> [   22.575147]  <TASK>
+> [   22.575151]  dump_stack_lvl+0x76/0xd0
+> [   22.575158]  kasan_report+0xa6/0xe0
+> [   22.575165]  ? amdgpu_ras_reset_error_count+0x2d6/0x3e0 [amdgpu]
+> [   22.575320]  kasan_check_range+0x105/0x1b0
+> [   22.575320]  amdgpu_ras_reset_error_count+0x2d6/0x3e0 [amdgpu]
+> [   22.575320]  gmc_v9_0_late_init+0xcf/0x1b0 [amdgpu]
+> [   22.575320]  amdgpu_device_ip_late_init+0x103/0x7b0 [amdgpu]
+> [   22.575320]  amdgpu_device_init+0x7b33/0x8a90 [amdgpu]
+> [   22.575320]  ? __pfx_amdgpu_device_init+0x10/0x10 [amdgpu]
+> [   22.575320]  ? __pfx_pci_bus_read_config_word+0x10/0x10
+> [   22.575320]  ? do_pci_enable_device+0x22d/0x2a0
+> [   22.575320]  ? __pfx_pci_request_acs+0x1/0x10
+> [   22.575320]  ? _raw_spin_unlock_irqrestore+0x66/0x80
+> [   22.575320]  ? lockdep_hardirqs_on+0x81/0x110
+> [   22.575320]  ? __kasan_check_byte+0x13/0x50
+> [   22.575320]  amdgpu_driver_load_kms+0x1d/0x4b0 [amdgpu]
+> [   22.575320]  amdgpu_pci_probe+0x282/0xac0 [amdgpu]
+> [   22.575320]  ? __pfx_amdgpu_pci_probe+0x10/0x10 [amdgpu]
+> [   22.575320]  local_pci_probe+0xdd/0x190
+> [   22.575320]  pci_device_probe+0x23a/0x780
+> [   22.575320]  ? kernfs_add_one+0x326/0x490
+> [   22.575320]  ? kernfs_get.part.0+0x4c/0x70
+> [   22.575320]  ? __pfx_pci_device_probe+0x10/0x10
+> [   22.575320]  ? kernfs_create_link+0x16b/0x230
+> [   22.575320]  ? kernfs_put+0x1c/0x40
+> [   22.575320]  ? sysfs_do_create_link_sd+0x8e/0x100
+> [   22.575320]  really_probe+0x3e2/0xb80
+> [   22.575320]  __driver_probe_device+0x18c/0x450
+> [   22.575320]  driver_probe_device+0x4a/0x120
+> [   22.575320]  __driver_attach+0x1e5/0x4a0
+> [   22.575320]  ? __pfx___driver_attach+0x10/0x10
+> [   22.575320]  bus_for_each_dev+0x109/0x190
+> [   22.575320]  ? __pfx_bus_for_each_dev+0x10/0x10
+> [   22.575320]  bus_add_driver+0x2a1/0x570
+> [   22.575320]  driver_register+0x134/0x460
+> [   22.575320]  ? __pfx_amdgpu_init+0x10/0x10 [amdgpu]
+> [   22.575320]  do_one_initcall+0xd6/0x430
+> [   22.575320]  ? __pfx_do_one_initcall+0x10/0x10
+> [   22.575320]  ? kasan_unpoison+0x44/0x70
+> [   22.575320]  do_init_module+0x238/0x770
+> [   22.575320]  load_module+0x5581/0x6f10
+> [   22.575320]  ? __pfx_load_module+0x10/0x10
+> [   22.575320]  ? ima_post_read_file+0x189/0x1b0
+> [   22.575320]  ? __pfx_ima_post_read_file+0x10/0x10
+> [   22.575320]  ? __pfx_bpf_lsm_kernel_post_read_file+0x10/0x10
+> [   22.575320]  ? kernel_read_file+0x243/0x820
+> [   22.575320]  ? __pfx_kernel_read_file+0x10/0x10
+> [   22.575320]  ? init_module_from_file+0xd1/0x130
+> [   22.575320]  init_module_from_file+0xd1/0x130
+> [   22.575320]  ? __pfx_init_module_from_file+0x10/0x10
+> [   22.575320]  ? local_clock_noinstr+0x45/0xc0
+> [   22.575320]  ? do_raw_spin_unlock+0x58/0x1f0
+> [   22.575320]  idempotent_init_module+0x235/0x650
+> [   22.575320]  ? __pfx_idempotent_init_module+0x10/0x10
+> [   22.575320]  ? __pfx_bpf_lsm_capable+0x10/0x10
+> [   22.575320]  ? security_capable+0x74/0xb0
+> [   22.575320]  __x64_sys_finit_module+0xbe/0x130
+> [   22.575320]  do_syscall_64+0x64/0xe0
+> [   22.575320]  ? do_syscall_64+0x70/0xe0
+> [   22.575320]  ? lockdep_hardirqs_on+0x81/0x110
+> [   22.575320]  ? do_syscall_64+0x70/0xe0
+> [   22.575320]  ? do_syscall_64+0x70/0xe0
+> [   22.575320]  ? do_syscall_64+0x70/0xe0
+> [   22.575320]  ? do_syscall_64+0x70/0xe0
+> [   22.575320]  ? do_syscall_64+0x70/0xe0
+> [   22.575320]  ? do_syscall_64+0x70/0xe0
+> [   22.575320]  ? lockdep_hardirqs_on+0x81/0x110
+> [   22.575320]  ? do_syscall_64+0x70/0xe0
+> [   22.575320]  ? lockdep_hardirqs_on+0x81/0x110
+> [   22.575320]  entry_SYSCALL_64_after_hwframe+0x6e/0x76
+> [   22.575320] RIP: 0033:0x7f8ab56bbf8d
+> [   22.575320] Code: ff c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e
+> fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24
+> 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 73 4e 0c 00 f7 d8 64 89
+> 01 48
+> [   22.575320] RSP: 002b:00007ffe2e836608 EFLAGS: 00000246 ORIG_RAX:
+> 0000000000000139
+> [   22.575320] RAX: ffffffffffffffda RBX: 000055f55ef37f30 RCX: 00007f8ab=
+56bbf8d
+> [   22.575320] RDX: 0000000000000000 RSI: 000055f55ef10950 RDI: 000000000=
+0000015
+> [   22.575320] RBP: 00007ffe2e8366c0 R08: 0000000000000000 R09: 00007ffe2=
+e836650
+> [   22.575320] R10: 0000000000000015 R11: 0000000000000246 R12: 000055f55=
+ef10950
+> [   22.575320] R13: 0000000000020000 R14: 000055f55ef37240 R15: 000055f55=
+ef393d0
+> [   22.575320]  </TASK>
+> [   22.575320] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>
+>
+> Using bisect, I found out that this commit is to blame
+> =E2=9D=AF git bisect good
+> 73582be11ac8f6d6765e185bf48f22efb9d28c3b is the first bad commit
+> commit 73582be11ac8f6d6765e185bf48f22efb9d28c3b
+> Author: Tao Zhou <tao.zhou1@amd.com>
+> Date:   Thu Oct 12 14:33:37 2023 +0800
+>
+>     drm/amdgpu: bypass RAS error reset in some conditions
+>
+>     PMFW is responsible for RAS error reset in some conditions, driver ca=
+n
+>     skip the operation.
+>
+>     v2: add check for ras->in_recovery, it's set earlier than
+>     amdgpu_in_reset.
+>
+>     v3: fix error in gpu reset check.
+>
+>     Signed-off-by: Tao Zhou <tao.zhou1@amd.com>
+>     Reviewed-by: Hawking Zhang <Hawking.Zhang@amd.com>
+>     Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+>
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c | 10 +++++++++-
+>  1 file changed, 9 insertions(+), 1 deletion(-)
+>
+> I rebuilt the kernel from master with reverted
+> 73582be11ac8f6d6765e185bf48f22efb9d28c3b and my laptop started working
+> again.
+>
+> All kernel logs and build config I attached below.
+> Laptop hardware probe is here: https://linux-hardware.org/?probe=3D85a38e=
+7906
 
-Hi Herbert,
+Already fixed in this commit:
+https://gitlab.freedesktop.org/agd5f/linux/-/commit/d1d4c0b7b65b7fab2bc6f97=
+af9e823b1c42ccdb0
+Which is in included in last weeks PR.
 
-> On Thu, Nov 02, 2023 at 08:32:36PM -1000, Linus Torvalds wrote:
-> > I think that would help the situation, but I assume the sizing for the
-> > jitter buffer is at least partly due to trying to account for cache
-> > sizing or similar issues?
-> > 
-> > Which really means that I assume any static compile-time answer to
-> > that question is always wrong - whether you are an expert or not.
-> > Unless you are just building the thing for one particular machine.
-> > 
-> > So I do think the problem is deeper than "this is a question only for
-> > experts". I definitely don't think you should ask a regular user (or
-> > even a distro kernel package manager). I suspect it's likely that the
-> > question is just wrong in general - because any particular one buffer
-> > size for any number of machines simply cannot be the right answer.
-> > 
-> > I realize that the commit says "*allow* for configuration of memory
-> > size", but I really question the whole approach.
-> 
-> Yes I think these are all valid points.  I just noticed that I
-> forgot to cc the author so let's see if Stephan has anything to
-> add.
+Alex
 
-I concur that these questions are more for experts. 
-> 
-> > But yes - hiding these questions from any reasonable normal user is at
-> > least a good first step.
-> 
-> OK here's the patch:
-> 
-> ---8<---
-> As JITTERENTROPY is selected by default if you enable the CRYPTO
-> API, any Kconfig options added there will show up for every single
-> user.  Hide the esoteric options under EXPERT as well as FIPS so
-> that only distro makers will see them.
-> 
-> Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
-> Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
-> 
-> diff --git a/crypto/Kconfig b/crypto/Kconfig
-> index bbf51d55724e..70661f58ee41 100644
-> --- a/crypto/Kconfig
-> +++ b/crypto/Kconfig
-> @@ -1297,10 +1297,12 @@ config CRYPTO_JITTERENTROPY
-> 
->  	  See https://www.chronox.de/jent.html
-> 
-> +if CRYPTO_JITTERENTROPY
-> +if CRYPTO_FIPS && EXPERT
-> +
->  choice
->  	prompt "CPU Jitter RNG Memory Size"
->  	default CRYPTO_JITTERENTROPY_MEMSIZE_2
-> -	depends on CRYPTO_JITTERENTROPY
->  	help
->  	  The Jitter RNG measures the execution time of memory accesses.
->  	  Multiple consecutive memory accesses are performed. If the memory
-> @@ -1344,7 +1346,6 @@ config CRYPTO_JITTERENTROPY_OSR
->  	int "CPU Jitter RNG Oversampling Rate"
->  	range 1 15
->  	default 1
-> -	depends on CRYPTO_JITTERENTROPY
->  	help
->  	  The Jitter RNG allows the specification of an oversampling rate (OSR).
->  	  The Jitter RNG operation requires a fixed amount of timing
-> @@ -1359,7 +1360,6 @@ config CRYPTO_JITTERENTROPY_OSR
-> 
->  config CRYPTO_JITTERENTROPY_TESTINTERFACE
->  	bool "CPU Jitter RNG Test Interface"
-> -	depends on CRYPTO_JITTERENTROPY
->  	help
->  	  The test interface allows a privileged process to capture
->  	  the raw unconditioned high resolution time stamp noise that
-> @@ -1377,6 +1377,28 @@ config CRYPTO_JITTERENTROPY_TESTINTERFACE
-> 
->  	  If unsure, select N.
-> 
-> +endif	# if CRYPTO_FIPS && EXPERT
-> +
-> +if !(CRYPTO_FIPS && EXPERT)
-> +
-> +config CRYPTO_JITTERENTROPY_MEMORY_BLOCKS
-> +	int
-> +	default 64
-> +
-> +config CRYPTO_JITTERENTROPY_MEMORY_BLOCKSIZE
-> +	int
-> +	default 32
-> +
-> +config CRYPTO_JITTERENTROPY_OSR
-> +	int
-> +	default 1
-> +
-> +config CRYPTO_JITTERENTROPY_TESTINTERFACE
-> +	bool
-> +
-> +endif	# if !(CRYPTO_FIPS && EXPERT)
-> +endif	# if CRYPTO_JITTERENTROPY
-> +
->  config CRYPTO_KDF800108_CTR
->  	tristate
->  	select CRYPTO_HMAC
-
-Reviewed-by: Stephan Mueller <smueller@chronox.de>
-
-
-Ciao
-Stephan
-
-
+>
+> --
+> Best Regards,
+> Mike Gavrilov.
