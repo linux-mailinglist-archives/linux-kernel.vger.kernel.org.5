@@ -2,42 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C64217E3138
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 00:19:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACEA77E3139
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 00:20:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233637AbjKFXT5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 18:19:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35882 "EHLO
+        id S233805AbjKFXUB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 18:20:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233785AbjKFXTT (ORCPT
+        with ESMTP id S233685AbjKFXTX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 18:19:19 -0500
+        Mon, 6 Nov 2023 18:19:23 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88AAE30DA;
-        Mon,  6 Nov 2023 15:16:42 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51CC0C4339A;
-        Mon,  6 Nov 2023 23:16:41 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03B5630E9;
+        Mon,  6 Nov 2023 15:16:44 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E4365C433C8;
+        Mon,  6 Nov 2023 23:16:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699312602;
-        bh=5zznlCMbQ/vkgibx+/0Wb3RSQMeyIz43984bDL8JTZI=;
-        h=From:To:Cc:Subject:Date:From;
-        b=RixurXLxvXOvNhxvRJaS75UweWghKPYiJimYxxvSMTmJ2/VcyYpJBn/qe2mP1rxvx
-         aejcF7LcKY9MW3XGmjlbvs7zw52l2xof96oEn7R6Hn8GiaZhPw5uqpX22XdR8T7lFh
-         pPFFjFiWSn349di8X98qaeDFUOSmahYqaWqkFXJOkHmlEEVskmpyJ+XUMEMvrirB4x
-         PdoVHQr+7izRFoW614shRsdCYSe1KhEZIeYa6F3ELthYcX6oX4Ytma8HTYz+bTQbHn
-         yDu063z5D62gJ621JvvKyDYfkQjKeFsJxpvisLatW6YWwj0tHIiLVAVF1Hy5h+drmq
-         qV7JMzmxOog1g==
+        s=k20201202; t=1699312603;
+        bh=0arbaNvnIAxlUW81YmPdpGIiJDwasLYkkL9kpZGsC8g=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=Ts2Z4Lu+PSkLgcRLcZFqoBNk/DOMyf4olS2F9P4VzT+ltKwePuxS7WxF2+bNXYoOh
+         vRF0UXKNpa1NXumeI4FMB4Qs7bUKJUL/p48Od9zo0U5an0Ko4EX9oF/7l7gy73UBu7
+         HN3/RYOxoDm3goPTW4Mt9YXjDV4blQXNERhQ2CgCnUp91rF6Z5OjL87NS4s8IXykgB
+         ASRH+t21ZFSXCMOnvxGnhf0voSGvMi82hO3lZ6hc/bFHF4RoLpfzGIZNw0YzhfcY5l
+         C3PCbcdPLc59RRuPSMPfx9F7kZqORqqA9BmmJRTqlYb9qdqM56dYhwB7eAqx6/6NkD
+         ehKb+cvrOrjEw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Shuai Xue <xueshuai@linux.alibaba.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, mingo@redhat.com,
-        acme@kernel.org, linux-perf-users@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 1/5] perf/core: Bail out early if the request AUX area is out of bound
-Date:   Mon,  6 Nov 2023 18:16:32 -0500
-Message-ID: <20231106231639.3735753-1-sashal@kernel.org>
+Cc:     Jacky Bai <ping.bai@nxp.com>, Peng Fan <peng.fan@nxp.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Sasha Levin <sashal@kernel.org>, tglx@linutronix.de,
+        shawnguo@kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: [PATCH AUTOSEL 5.10 2/5] clocksource/drivers/timer-imx-gpt: Fix potential memory leak
+Date:   Mon,  6 Nov 2023 18:16:33 -0500
+Message-ID: <20231106231639.3735753-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20231106231639.3735753-1-sashal@kernel.org>
+References: <20231106231639.3735753-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -53,74 +54,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shuai Xue <xueshuai@linux.alibaba.com>
+From: Jacky Bai <ping.bai@nxp.com>
 
-[ Upstream commit 54aee5f15b83437f23b2b2469bcf21bdd9823916 ]
+[ Upstream commit 8051a993ce222a5158bccc6ac22ace9253dd71cb ]
 
-When perf-record with a large AUX area, e.g 4GB, it fails with:
+Fix coverity Issue CID 250382:  Resource leak (RESOURCE_LEAK).
+Add kfree when error return.
 
-    #perf record -C 0 -m ,4G -e arm_spe_0// -- sleep 1
-    failed to mmap with 12 (Cannot allocate memory)
-
-and it reveals a WARNING with __alloc_pages():
-
-	------------[ cut here ]------------
-	WARNING: CPU: 44 PID: 17573 at mm/page_alloc.c:5568 __alloc_pages+0x1ec/0x248
-	Call trace:
-	 __alloc_pages+0x1ec/0x248
-	 __kmalloc_large_node+0xc0/0x1f8
-	 __kmalloc_node+0x134/0x1e8
-	 rb_alloc_aux+0xe0/0x298
-	 perf_mmap+0x440/0x660
-	 mmap_region+0x308/0x8a8
-	 do_mmap+0x3c0/0x528
-	 vm_mmap_pgoff+0xf4/0x1b8
-	 ksys_mmap_pgoff+0x18c/0x218
-	 __arm64_sys_mmap+0x38/0x58
-	 invoke_syscall+0x50/0x128
-	 el0_svc_common.constprop.0+0x58/0x188
-	 do_el0_svc+0x34/0x50
-	 el0_svc+0x34/0x108
-	 el0t_64_sync_handler+0xb8/0xc0
-	 el0t_64_sync+0x1a4/0x1a8
-
-'rb->aux_pages' allocated by kcalloc() is a pointer array which is used to
-maintains AUX trace pages. The allocated page for this array is physically
-contiguous (and virtually contiguous) with an order of 0..MAX_ORDER. If the
-size of pointer array crosses the limitation set by MAX_ORDER, it reveals a
-WARNING.
-
-So bail out early with -ENOMEM if the request AUX area is out of bound,
-e.g.:
-
-    #perf record -C 0 -m ,4G -e arm_spe_0// -- sleep 1
-    failed to mmap with 12 (Cannot allocate memory)
-
-Signed-off-by: Shuai Xue <xueshuai@linux.alibaba.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Signed-off-by: Jacky Bai <ping.bai@nxp.com>
+Reviewed-by: Peng Fan <peng.fan@nxp.com>
+Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+Link: https://lore.kernel.org/r/20231009083922.1942971-1-ping.bai@nxp.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/events/ring_buffer.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/clocksource/timer-imx-gpt.c | 18 +++++++++++++-----
+ 1 file changed, 13 insertions(+), 5 deletions(-)
 
-diff --git a/kernel/events/ring_buffer.c b/kernel/events/ring_buffer.c
-index 4032cd4750001..01351e7e25435 100644
---- a/kernel/events/ring_buffer.c
-+++ b/kernel/events/ring_buffer.c
-@@ -691,6 +691,12 @@ int rb_alloc_aux(struct perf_buffer *rb, struct perf_event *event,
- 		max_order--;
- 	}
+diff --git a/drivers/clocksource/timer-imx-gpt.c b/drivers/clocksource/timer-imx-gpt.c
+index 7b2c70f2f353b..fabff69e52e58 100644
+--- a/drivers/clocksource/timer-imx-gpt.c
++++ b/drivers/clocksource/timer-imx-gpt.c
+@@ -454,12 +454,16 @@ static int __init mxc_timer_init_dt(struct device_node *np,  enum imx_gpt_type t
+ 		return -ENOMEM;
  
-+	/*
-+	 * kcalloc_node() is unable to allocate buffer if the size is larger
-+	 * than: PAGE_SIZE << MAX_ORDER; directly bail out in this case.
-+	 */
-+	if (get_order((unsigned long)nr_pages * sizeof(void *)) > MAX_ORDER)
-+		return -ENOMEM;
- 	rb->aux_pages = kcalloc_node(nr_pages, sizeof(void *), GFP_KERNEL,
- 				     node);
- 	if (!rb->aux_pages)
+ 	imxtm->base = of_iomap(np, 0);
+-	if (!imxtm->base)
+-		return -ENXIO;
++	if (!imxtm->base) {
++		ret = -ENXIO;
++		goto err_kfree;
++	}
+ 
+ 	imxtm->irq = irq_of_parse_and_map(np, 0);
+-	if (imxtm->irq <= 0)
+-		return -EINVAL;
++	if (imxtm->irq <= 0) {
++		ret = -EINVAL;
++		goto err_kfree;
++	}
+ 
+ 	imxtm->clk_ipg = of_clk_get_by_name(np, "ipg");
+ 
+@@ -472,11 +476,15 @@ static int __init mxc_timer_init_dt(struct device_node *np,  enum imx_gpt_type t
+ 
+ 	ret = _mxc_timer_init(imxtm);
+ 	if (ret)
+-		return ret;
++		goto err_kfree;
+ 
+ 	initialized = 1;
+ 
+ 	return 0;
++
++err_kfree:
++	kfree(imxtm);
++	return ret;
+ }
+ 
+ static int __init imx1_timer_init_dt(struct device_node *np)
 -- 
 2.42.0
 
