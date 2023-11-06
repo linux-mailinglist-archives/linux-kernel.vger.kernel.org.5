@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D0E27E30B5
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 00:07:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E02587E30B8
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 00:07:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233572AbjKFXHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 18:07:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59320 "EHLO
+        id S233608AbjKFXHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 18:07:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233438AbjKFXH0 (ORCPT
+        with ESMTP id S233495AbjKFXH2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 18:07:26 -0500
+        Mon, 6 Nov 2023 18:07:28 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 292BAD7E;
-        Mon,  6 Nov 2023 15:07:22 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C368DC433C9;
-        Mon,  6 Nov 2023 23:07:20 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A08CF10D4;
+        Mon,  6 Nov 2023 15:07:25 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51116C433C7;
+        Mon,  6 Nov 2023 23:07:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699312041;
+        s=k20201202; t=1699312045;
         bh=0tTwBJJ7kefbYFnhairBCVSSDGf51FT5fjnUlbazo34=;
         h=From:To:Cc:Subject:Date:From;
-        b=YvoZVnhF/gm4eKj+50MTOMiqDQCJpgXFfhoxwmV39E2mImfDpopDIINKtNsSv2QH4
-         VqB0Z5RWlTYGB6gbAfMZSCObefZ1iLFPaJVshPvBWBnVmi4jFi/AP13NAFTYQtcVoF
-         JqIMDkfcFxPv17FMgy7c2cRN+l80/5gVjNbBrwsvEQgQfinhQWgxKyWSxvfsWbmsVg
-         Y+/wACEgQ0WlR6a2DnpExWUDPzse2wpPohk2O3YDzy6jObZMAbwQNvpEtW+V0J0i/N
-         Kl3VNmMfP/14cWI7Oax9QOt2PYtUW4tTaYDhCJmfEs8Uncje3CQuZXjcO66mhncL2M
-         ycJEC1sV1/BDQ==
+        b=R4Zse7oSM8Kqo7eR1dKoWDVZ1dx013RDVBs9pUnPOi0klDI5ox8w+bes48WDlQACb
+         RPR4tDH3yTnFKSajp3cB+ke8eNrQpRgvtbFhhPGGnUKtgM7iZ4BoVMMV4xJr2U3jhU
+         /1tmx112F2NEVhHmAjnsfIVARisDR6btNFdSarqXhdJKO0QJm3lMkjmbse8NiE+DDJ
+         xPiPho8wIoOoJ84hVMKHaLKLB5eHfsi8RXaJ2lSoKwZEyOHuZa2Me8rOQvM7bj61/d
+         ivh/+W17eNVHGYm72elDR1M1T4AVz6AFYoitBhNjruNvdZsbdmCVxNw1BeLjRiIn2u
+         GHrR2uFdKdU+A==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     John Stultz <jstultz@google.com>, Ingo Molnar <mingo@kernel.org>,
         Sasha Levin <sashal@kernel.org>, peterz@infradead.org,
         mingo@redhat.com, will@kernel.org
-Subject: [PATCH AUTOSEL 5.10] locking/ww_mutex/test: Fix potential workqueue corruption
-Date:   Mon,  6 Nov 2023 18:07:18 -0500
-Message-ID: <20231106230718.3734580-1-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4] locking/ww_mutex/test: Fix potential workqueue corruption
+Date:   Mon,  6 Nov 2023 18:07:22 -0500
+Message-ID: <20231106230722.3734615-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.10.199
+X-stable-base: Linux 5.4.259
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
