@@ -2,104 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C5567E2D95
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 21:06:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98D0A7E2D9C
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 21:06:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232321AbjKFUGP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 15:06:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40110 "EHLO
+        id S232918AbjKFUGq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 15:06:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231777AbjKFUGN (ORCPT
+        with ESMTP id S231801AbjKFUGo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 15:06:13 -0500
-Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22DC21BF
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 12:06:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        sang-engineering.com; h=date:from:to:cc:subject:message-id
-        :references:mime-version:content-type:in-reply-to; s=k1; bh=vjZF
-        qOeaA5LnEvg7LgKIYy3UkKcpigHlSgqw4G26ag8=; b=JLv9rI0rbmHPlQYxKl7T
-        ygwR/amMDIBMCRPI7WXXcaouj38UoUWUebE4OXL3n6MmN95nF2nwHe35Ax3Wasf6
-        q0gHZ0sXG9QYPcPlR+MgLgaGSXcOVI3VVlNuxNb8GUKqgmct/E6iAPlYoJ22yryp
-        NWbvh38Qi1I/dHddmW7qBngSuNTfWHZYbjtx8cOB/eyLKg7+SpZdrf3Rs7l1S1Tl
-        +M2kGmJpPLQ3uE6He9enkJWzFHJtL7kNgux+ZxkzdrjdfztM5+1fUR9ZtYnrOvBA
-        7qZ2kzhfveKxmQHiHsNmHoklbBC6q3LJzs50UMMT08vtPnqud8jm1j8a+zbNbNge
-        9g==
-Received: (qmail 2147080 invoked from network); 6 Nov 2023 21:06:06 +0100
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 6 Nov 2023 21:06:06 +0100
-X-UD-Smtp-Session: l3s3148p1@e2NaYoEJluQujnvL
-Date:   Mon, 6 Nov 2023 21:06:05 +0100
-From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
-To:     Johan Hovold <johan@kernel.org>
-Cc:     linux-renesas-soc@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 3/3] gnss: ubx: add support for the reset gpio
-Message-ID: <ZUlHLZ1mm9IpSPal@ninjato>
-Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Johan Hovold <johan@kernel.org>, linux-renesas-soc@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        linux-kernel@vger.kernel.org
-References: <20231103225601.6499-1-wsa+renesas@sang-engineering.com>
- <20231103225601.6499-4-wsa+renesas@sang-engineering.com>
- <ZUj3fzArgPU4kYYT@hovoldconsulting.com>
+        Mon, 6 Nov 2023 15:06:44 -0500
+Received: from mailout1n.rrzn.uni-hannover.de (mailout1n.rrzn.uni-hannover.de [130.75.2.107])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2A62D51;
+        Mon,  6 Nov 2023 12:06:39 -0800 (PST)
+Received: from [10.23.33.142] (mmsrv.sra.uni-hannover.de [130.75.33.181])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mailout1n.rrzn.uni-hannover.de (Postfix) with ESMTPSA id 2975F10E;
+        Mon,  6 Nov 2023 21:06:37 +0100 (CET)
+Message-ID: <eb8e22f3-77dc-4923-a7ba-e237ee226edb@sra.uni-hannover.de>
+Date:   Mon, 6 Nov 2023 21:06:36 +0100
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="XtrtXT+bQEBVz+kB"
-Content-Disposition: inline
-In-Reply-To: <ZUj3fzArgPU4kYYT@hovoldconsulting.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: Requesting your attention and expertise regarding a Tablet/Kernel
+ issue
+To:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        David Revoy <davidrevoy@protonmail.com>
+Cc:     jkosina@suse.cz, jason.gerecke@wacom.com,
+        jose.exposito89@gmail.com, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org, nils@nilsfuhler.de,
+        peter.hutterer@who-t.net, ping.cheng@wacom.com,
+        bagasdotme@gmail.com
+References: <nycvar.YFH.7.76.2311012033290.29220@cbobk.fhfr.pm>
+ <20231103200524.53930-1-ostapyshyn@sra.uni-hannover.de>
+ <bokQB3BK040-4fGy8tNfZrdM2mNmWxZud9O-KMmYqOkfa1JTC1ocUjoAzCEpPsbsAvY5qb5TcSP6XsQLaja2XO0gapOcsZyeVdCvq6T31qA=@protonmail.com>
+ <CAO-hwJLpKTb9yxvxaPDLZkF9kDF8u2VRJUf9yiQd+neOyxPeug@mail.gmail.com>
+Content-Language: en-US
+From:   Illia Ostapyshyn <ostapyshyn@sra.uni-hannover.de>
+In-Reply-To: <CAO-hwJLpKTb9yxvxaPDLZkF9kDF8u2VRJUf9yiQd+neOyxPeug@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Virus-Scanned: clamav-milter 0.103.9 at mailout1n
+X-Virus-Status: Clean
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 11/6/23 17:59, Benjamin Tissoires wrote:
 
---XtrtXT+bQEBVz+kB
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> If the pen has 2 buttons, and an eraser side, it would be a serious
+> design flow for XPPEN to report both as eraser.
+> 
+> Could you please use sudo hid-recorder from hid-tools[1] on any kernel
+> version and send us the logs here?
+> I'll be able to replay the events locally, and understand why the
+> kernel doesn't work properly.
+> 
+> And if there is a design flaw that can be fixed, we might even be able
+> to use hid-bpf to change it :)
 
+My wild guess is that XP-Pen 16 Artist Pro reports an Eraser usage 
+without Invert for the upper button and Eraser with Invert for the 
+eraser tip.  A device-specific driver could work with that, but there 
+seems to be no way to incorporate two different erasers (thus, allowing 
+userspace to map them to different actions arbitrarily) in the generic 
+driver currently.
 
-> 	1.5 I/O pins
-> 	RESET_N: Reset input
-> 	Driving RESET_N low activates a hardware reset of the system.
-> 	Use this pin only to reset the module. Do not use RESET_N to
-> 	turn the module on and off, since the reset state increases
-> 	power consumption.
->=20
-> (and AFAIU you should generally not try to use reset this way unless it
-> is explicitly said to be supported).
+> Generally speaking, relying on X to fix your hardware is going to be a
+> dead end. When you switch to wayland, you'll lose all of your fixes,
+> which isn't great.
 
-Oh! That's the opposite of my intention :/ Okay, today I learnt
-something. Thank you for pointing this out. I will remember this and
-double check reset handling in the future.
+> AFAIU, the kernel now "merges" both buttons, which is a problem. It
+> seems to be a serious regression. This case is also worrying because I
+> added regression tests on hid, but I don't have access to all of the
+> various tablets, so I implemented them from the Microsoft
+> specification[0]. We need a special case for you here.
 
-That means I only need to de-assert reset in probe() for now, right?
+The issue preventing David from mapping HID_DG_ERASER to BTN_STYLUS2 is 
+that the hidinput_hid_event is not compatible with hidinput_setkeycode. 
+If usage->code is no longer BTN_TOUCH after remapping, it won't be 
+released when Eraser reports 0.  A simple fix is:
 
+--- a/drivers/hid/hid-input.c
++++ b/drivers/hid/hid-input.c
+@@ -1589,7 +1589,7 @@ void hidinput_hid_event(struct hid_device *hid, 
+struct hid_field *field, struct
+  			/* value is off, tool is not rubber, ignore */
+  			return;
+  		else if (*quirks & HID_QUIRK_NOINVERT &&
+-			 !test_bit(BTN_TOUCH, input->key)) {
++			 !test_bit(usage->code, input->key)) {
+  			/*
+  			 * There is no invert to release the tool, let hid_input
+  			 * send BTN_TOUCH with scancode and release the tool after.
 
---XtrtXT+bQEBVz+kB
-Content-Type: application/pgp-signature; name="signature.asc"
+This change alone fixes David's problem and the right-click mapping in 
+hwdb works again.  However, the tool switches to rubber for the remapped 
+eraser (here BTN_STYLUS2) events, both for devices with and without 
+Invert.  This does no harm but is not useful either.  A cleaner solution 
+for devices without Invert would be to omit the whole tool switching 
+logic in this case:
 
------BEGIN PGP SIGNATURE-----
+@@ -1577,6 +1577,9 @@ void hidinput_hid_event(struct hid_device *hid, 
+struct hid_field *field, struct
 
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmVJRy0ACgkQFA3kzBSg
-Kbblgw/9HkWUa0iBE7Mo2bg3mjgmftVGc9rJBWSmmDiocs9jX9ksuSH6a5AHiqMe
-+xpfG6MI4xjUzLGL1+YaITrYQyKE3ZUMSLeKqwJSV+qxhBo+biDtWq/EKExyO+91
-PAb553VbrW+QmdK2+bcsHKi+LqZ0kSy18IF9vaCV7fQozNXwRvxocyTBLGZmfrZo
-xQ0+Mt1+T5nNkU8dHtyKENHuMlgFYSlGbUiLEdIUPYBNA9TAew+7JDiyx6ZS88hu
-Njkso91lBK981JBPS3kmpL+/WsRXsm+tEuc/6snQ4TWu9LlIDv+TsYXZ6rh3Oe7L
-B+3L+mMa+fUcRkt0rfCh18hbLASgtQZ67HfT5t5jUqlq5L4aR0wYNHNt1Gu2S3g/
-Of/XiEfvD54yjwled7izZEW9U7yQcSrPSi49DSzuibavicjYK+dKTw7P/v21z2Pc
-UWlAuFsoyamyGyswY2Z1vIBSnFtIgySFcr6cS5YGwTHomzxWUkH81zjKtZfIHmD8
-hafMaegBE40vE+9wBMp0+UpAv5Zt5KgI7W6FCHIiu8offra9dch54SiaARjJlMe4
-etaFgu//W+bxGQDUuIfNJER8V8FMsb+3gip1eR7dQq+MnZqIVubaVIRhCOYoxDZf
-7Dxkr1o28KP3W4ETDirAAuR8/BtaZimx/9uXm9CEewYtGX7GANU=
-=TGul
------END PGP SIGNATURE-----
+  	switch (usage->hid) {
+  	case HID_DG_ERASER:
++		if (*quirks & HID_QUIRK_NOINVERT && usage->code != BTN_TOUCH)
++			break;
++
+  		report->tool_active |= !!value;
 
---XtrtXT+bQEBVz+kB--
+Remapping Invert does not work anyway as the Invert tool is hardcoded in 
+hidinput_hid_event.  Even worse, I guess (not tested) trying to do so 
+would mask BTN_TOOL_RUBBER from dev->keybit and could cause weird 
+behavior similar to one between 87562fcd1342 and 276e14e6c3.  This 
+raises the question: should users be able to remap Invert after all?
