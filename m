@@ -2,69 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 662AC7E1921
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 04:19:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D26E7E1929
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 04:23:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230319AbjKFDTb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Nov 2023 22:19:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56624 "EHLO
+        id S230180AbjKFDXJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Nov 2023 22:23:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230117AbjKFDTa (ORCPT
+        with ESMTP id S229485AbjKFDXH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Nov 2023 22:19:30 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86BF8FB
-        for <linux-kernel@vger.kernel.org>; Sun,  5 Nov 2023 19:19:27 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 2EDF5C433C9;
-        Mon,  6 Nov 2023 03:19:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699240767;
-        bh=wiqMzuMaV956d+3ym4s4C73aptfsfHg0OVa1RHrqErA=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=OhFIp7npTfuK/j4dipGO2nnp97mw2uz9EL9eDFTpXb8uTM2udivLnR//XxEk0dCi4
-         mIYEqc8YqKm4v2lSai99AmciY1qvo/gX3KsAoFuwhnxRClHacVgWz2X84u1r6UoPgT
-         /EQZMit4+AX8xypeoVEW/tIdcLH3P01ByIHKrJfsiEJfmmLeXK7upi4bhfjw4XjOnZ
-         dRhEzZq9n9NtiCHPi5PJF6KbQCn803b1qzEn+XO5+/j2wkXuNHMzyaNH9/IOncsPtD
-         c7/fpbUjAuRxs4gM740vYDVKJcQ/g90zQS886MKj9raOws5XxZL3h3vFurFO37vkA2
-         XhHsVfztmBVrQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 197F8C395FC;
-        Mon,  6 Nov 2023 03:19:27 +0000 (UTC)
-Subject: Re: [GIT PULL] RTC for 6.7
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20231105230218a45aa668@mail.local>
-References: <20231105230218a45aa668@mail.local>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20231105230218a45aa668@mail.local>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/abelloni/linux.git tags/rtc-6.7
-X-PR-Tracked-Commit-Id: cfb67623ce281e045ec11e3eddb1b68b879b53a1
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: d2f51b3516dade79269ff45eae2a7668ae711b25
-Message-Id: <169924076709.12392.2756557352194646388.pr-tracker-bot@kernel.org>
-Date:   Mon, 06 Nov 2023 03:19:27 +0000
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Sun, 5 Nov 2023 22:23:07 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5500BB;
+        Sun,  5 Nov 2023 19:23:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699240985; x=1730776985;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=d0GJaRr0bVj8J9IvowV4cvGbvN8Uw+bGKm4vNcfReLQ=;
+  b=Ih1RGuf/Dl6IHo46U6SnpoxFL/W360YLXJgRzy8qoksdqggrGr6e08Kf
+   eJtMiOml+ZJQsbLFsRsj4up5D89Vqu9e8w9ZLrCn8nSRsKdicYn1IE9HB
+   NbMV8G/NBdvzaWWEl5BaG4AuvGqzQCrHcSlt+i+dDHnuh9ikidjmP7fee
+   8Lujh1LaF3nwYQJrxSoEWq1mwLXnvehJxNCoefh+SLQNlWTHy7GW9lfwW
+   tZ60zfWi8PYeoYKTLW0FJtNvS6oyifov9teR/2Mg5X4xcbG6DIv2D7OWw
+   4Nxx4lgb0sC/IG3nwB6Txd9MRTlUIUOHDRmLKOXOaOXpUpPgLdvrDWfKs
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10885"; a="2182573"
+X-IronPort-AV: E=Sophos;i="6.03,280,1694761200"; 
+   d="scan'208";a="2182573"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2023 19:23:04 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10885"; a="885772160"
+X-IronPort-AV: E=Sophos;i="6.03,280,1694761200"; 
+   d="scan'208";a="885772160"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Nov 2023 19:23:00 -0800
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+Cc:     Gregory Price <gregory.price@memverge.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Gregory Price <gourry.memverge@gmail.com>,
+        <linux-kernel@vger.kernel.org>, <linux-cxl@vger.kernel.org>,
+        <linux-mm@kvack.org>, <akpm@linux-foundation.org>,
+        <aneesh.kumar@linux.ibm.com>, <weixugc@google.com>,
+        <apopple@nvidia.com>, <tim.c.chen@intel.com>,
+        <dave.hansen@intel.com>, <shy828301@gmail.com>,
+        <gregkh@linuxfoundation.org>, <rafael@kernel.org>
+Subject: Re: [RFC PATCH v3 0/4] Node Weights and Weighted Interleave
+In-Reply-To: <20231103141636.000007e4@Huawei.com> (Jonathan Cameron's message
+        of "Fri, 3 Nov 2023 14:16:36 +0000")
+References: <20231031003810.4532-1-gregory.price@memverge.com>
+        <rm43wgtlvwowjolzcf6gj4un4qac4myngxqnd2jwt5yqxree62@t66scnrruttc>
+        <20231031152142.GA3029315@cmpxchg.org>
+        <jgh5b5bm73qe7m3qmnsjo3drazgfaix3ycqmom5u6tfp6hcerj@ij4vftrutvrt>
+        <ZUCCGJgrqqk87aGN@memverge.com>
+        <pmxrljwp4ayl3fcu7rxm6prbumgb5l3lwb75lqfipmxxxwnqfo@nb5qjcxw22gp>
+        <ZUKDz5NpMsoyzWtZ@memverge.com>
+        <a4f5das6ckw5lwj3qv2eaygx4nypb762b6mdnxivrjjndqlhjk@zpjao2ewfdoc>
+        <ZUMVI4YG7mB54u0D@memverge.com>
+        <87fs1nz3ee.fsf@yhuang6-desk2.ccr.corp.intel.com>
+        <20231103141636.000007e4@Huawei.com>
+Date:   Mon, 06 Nov 2023 11:20:58 +0800
+Message-ID: <8734xjworp.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ascii
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Mon, 6 Nov 2023 00:02:18 +0100:
+Jonathan Cameron <Jonathan.Cameron@Huawei.com> writes:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/abelloni/linux.git tags/rtc-6.7
+> On Fri, 03 Nov 2023 15:45:13 +0800
+> "Huang, Ying" <ying.huang@intel.com> wrote:
+>
+>> Gregory Price <gregory.price@memverge.com> writes:
+>> 
+>> > On Thu, Nov 02, 2023 at 10:47:33AM +0100, Michal Hocko wrote:  
+>> >> On Wed 01-11-23 12:58:55, Gregory Price wrote:  
+>> >> > Basically consider: `numactl --interleave=all ...`
+>> >> > 
+>> >> > If `--weights=...`: when a node hotplug event occurs, there is no
+>> >> > recourse for adding a weight for the new node (it will default to 1).  
+>> >> 
+>> >> Correct and this is what I was asking about in an earlier email. How
+>> >> much do we really need to consider this setup. Is this something nice to
+>> >> have or does the nature of the technology requires to be fully dynamic
+>> >> and expect new nodes coming up at any moment?
+>> >>    
+>> >
+>> > Dynamic Capacity is expected to cause a numa node to change size (in
+>> > number of memory blocks) rather than cause numa nodes to come and go, so
+>> > maybe handling the full node hotplug is a bit of an overreach.  
+>> 
+>> Will node max bandwidth change with the number of memory blocks?
+>
+> Typically no as even a single memory extent would probably be interleaved
+> across all the actual memory devices (think DIMMS for simplicity) within
+> a CXL device. I guess a device 'could' do some scaling based on capacity
+> provided to a particular host but feels like they should be separate controls.
+> I don't recall there being anything in the specification to suggest the
+> need to recheck the CDAT info for updates when DC add / remove events happen.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/d2f51b3516dade79269ff45eae2a7668ae711b25
+Sounds good!  Thank you for detailed explanation.
 
-Thank you!
+> Mind you, who knows in future :)  We'll point out in relevant forums that
+> doing so would be very hard to handle cleanly in Linux.
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Thanks!
+
+--
+Best Regards,
+Huang, Ying
