@@ -2,79 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 289A77E1C8F
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 09:43:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DCB97E1C95
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 09:46:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231240AbjKFInz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 03:43:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51150 "EHLO
+        id S231255AbjKFIqG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 03:46:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231220AbjKFInx (ORCPT
+        with ESMTP id S231171AbjKFIqD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 03:43:53 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43B78CC
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 00:43:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1699260185;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=t2V4SrKmDXM7Q2ya/olfBds0kRGyhozqRxAHHZYjEaw=;
-        b=GeICvC9cS0oavNbL80sw0chDc/BqwZU4se9E30Yp6H94R50fxNNKV64Ae41458yBgIeHfY
-        AaxW7plsaGNkExIiyfSubEhjz2F8uBbUAojRAE55z6ZpTupcPKrpuikBqkHtemHZShTQQo
-        zH3F1cl4o3ilrm1m54/7dTshZn/dLXY=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-356-wYTKZQ-cMii9FEMzKIbxYQ-1; Mon, 06 Nov 2023 03:43:03 -0500
-X-MC-Unique: wYTKZQ-cMii9FEMzKIbxYQ-1
-Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-32fa25668acso2128697f8f.1
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 00:43:03 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699260182; x=1699864982;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=t2V4SrKmDXM7Q2ya/olfBds0kRGyhozqRxAHHZYjEaw=;
-        b=IAYLZtTzL8DuDKP4F+ppY0+fKp8vzMfT+MTiw5XJaLtfqZ8IUJ3CQGtKV47OOOQEkw
-         Jx6Y8mBBg00OilMFjuXdpkTjnGIV4EQc+UOyw36wwDGeOC6wR4lvfOOm0D5UTb+9DOq2
-         fH4VMzrxFW6vX7ncWZDNIrIUvjmNedwvTYF9PmykYCQa3u7d3CZUZq7iQSKBflbO8viM
-         laZfMBymrWyO23TPX2SimR/lS3tNN8G3Bmgr/AYZWeisbUBF/RdPcE1IK/qmtHghben6
-         0t8P9wiy5m5ttBTm1SXngtY6NMxcNlhdDoxzimE/vRCHxhL7jQqw2cYCfBGLPeteLMFP
-         x4hA==
-X-Gm-Message-State: AOJu0YwHbQTwcRdZ0qjE8k8LorKRhdFD2bf+hmqAqx9OR1wVP7NPQ8dJ
-        sh3WGk0nEA8FBZB1+07t5ldPr8uQGfIaaTDLo8vAzD+YmDhIWJ/SdC2wBAWYm52h9ZweWdQDM4w
-        H0JmbXALMuM65fONT89WvyPXt
-X-Received: by 2002:a05:6000:1b09:b0:31f:a256:4bbb with SMTP id f9-20020a0560001b0900b0031fa2564bbbmr19083183wrz.71.1699260182719;
-        Mon, 06 Nov 2023 00:43:02 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHX7O05rSfYP8gnU/IJPVZ20H/dR30/gVHdp15QL98NSczZRPr1cdg4L3jI9YQeK5n1BcwYMw==
-X-Received: by 2002:a05:6000:1b09:b0:31f:a256:4bbb with SMTP id f9-20020a0560001b0900b0031fa2564bbbmr19083166wrz.71.1699260182307;
-        Mon, 06 Nov 2023 00:43:02 -0800 (PST)
-Received: from sgarzare-redhat ([5.179.191.143])
-        by smtp.gmail.com with ESMTPSA id y15-20020adff6cf000000b0032f7f4089b7sm8733539wrp.43.2023.11.06.00.43.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Nov 2023 00:43:01 -0800 (PST)
-Date:   Mon, 6 Nov 2023 09:42:56 +0100
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Shigeru Yoshida <syoshida@redhat.com>
-Cc:     stefanha@redhat.com, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        syzbot+0c8ce1da0ac31abbadcd@syzkaller.appspotmail.com
-Subject: Re: [PATCH net v2] virtio/vsock: Fix uninit-value in
- virtio_transport_recv_pkt()
-Message-ID: <pqynwprcnwpg5febbvz2z5gdjkayri6tm2azorkdhgnedyzpln@o7bgedbhmjfn>
-References: <20231104150531.257952-1-syoshida@redhat.com>
+        Mon, 6 Nov 2023 03:46:03 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C484383;
+        Mon,  6 Nov 2023 00:46:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699260360; x=1730796360;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Ir4YTPIfr1j4DIKNSzioONONldEnRAkdPcJaPnz9zYY=;
+  b=jpBMUJnZtLuoi8PYp13Iql6Qh7Dgd0vOLbO2k07rvE+a2b4OKW+oo9Pk
+   3Ol5Wx01iGRd0Cq+GvDV/v9dSxn4ZPwjkT7kr3hUTdeqoLgVaniikMMSI
+   GgXaBR8T7w7AJFbZ+LOusjuTamYxRJNYqMNN/OuS7Mo9TqIwgonWpp07i
+   BDMVLy1z41MM8gysqOibFqfK3AokSTMnB1ifAbsg+EGMjOE/Fqc1p31H6
+   INBC8O6MDyG06CfDLTWrUYlcFMCsAvBIoAgKDRKUMH5hG0xazlJ37DxiU
+   Fk8PT6WWp+eddPXdGLJsN2rRCQx+NXhnhiGfpwTKUl6AhNGoQwDvtZxpv
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10885"; a="369440107"
+X-IronPort-AV: E=Sophos;i="6.03,280,1694761200"; 
+   d="scan'208";a="369440107"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Nov 2023 00:46:00 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10885"; a="765886877"
+X-IronPort-AV: E=Sophos;i="6.03,280,1694761200"; 
+   d="scan'208";a="765886877"
+Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Nov 2023 00:45:58 -0800
+Received: from kekkonen.localdomain (localhost [127.0.0.1])
+        by kekkonen.fi.intel.com (Postfix) with SMTP id AE0FE11FB8D;
+        Mon,  6 Nov 2023 10:45:55 +0200 (EET)
+Date:   Mon, 6 Nov 2023 08:45:55 +0000
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Jacopo Mondi <jacopo.mondi@ideasonboard.com>
+Cc:     Sebastian Reichel <sre@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 4/4] media: i2c: gc0308: new driver
+Message-ID: <ZUinwwRVwqnIuueJ@kekkonen.localdomain>
+References: <20231027011417.2174658-1-sre@kernel.org>
+ <20231027011417.2174658-5-sre@kernel.org>
+ <zcei5x4omoqamuap42imybtbsax4bw43juymald4l7ccq766lb@2wknnhmawdbt>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231104150531.257952-1-syoshida@redhat.com>
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+In-Reply-To: <zcei5x4omoqamuap42imybtbsax4bw43juymald4l7ccq766lb@2wknnhmawdbt>
+X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -82,111 +71,165 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 05, 2023 at 12:05:31AM +0900, Shigeru Yoshida wrote:
->KMSAN reported the following uninit-value access issue:
->
->=====================================================
->BUG: KMSAN: uninit-value in virtio_transport_recv_pkt+0x1dfb/0x26a0 net/vmw_vsock/virtio_transport_common.c:1421
-> virtio_transport_recv_pkt+0x1dfb/0x26a0 net/vmw_vsock/virtio_transport_common.c:1421
-> vsock_loopback_work+0x3bb/0x5a0 net/vmw_vsock/vsock_loopback.c:120
-> process_one_work kernel/workqueue.c:2630 [inline]
-> process_scheduled_works+0xff6/0x1e60 kernel/workqueue.c:2703
-> worker_thread+0xeca/0x14d0 kernel/workqueue.c:2784
-> kthread+0x3cc/0x520 kernel/kthread.c:388
-> ret_from_fork+0x66/0x80 arch/x86/kernel/process.c:147
-> ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
->
->Uninit was stored to memory at:
-> virtio_transport_space_update net/vmw_vsock/virtio_transport_common.c:1274 [inline]
-> virtio_transport_recv_pkt+0x1ee8/0x26a0 net/vmw_vsock/virtio_transport_common.c:1415
-> vsock_loopback_work+0x3bb/0x5a0 net/vmw_vsock/vsock_loopback.c:120
-> process_one_work kernel/workqueue.c:2630 [inline]
-> process_scheduled_works+0xff6/0x1e60 kernel/workqueue.c:2703
-> worker_thread+0xeca/0x14d0 kernel/workqueue.c:2784
-> kthread+0x3cc/0x520 kernel/kthread.c:388
-> ret_from_fork+0x66/0x80 arch/x86/kernel/process.c:147
-> ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
->
->Uninit was created at:
-> slab_post_alloc_hook+0x105/0xad0 mm/slab.h:767
-> slab_alloc_node mm/slub.c:3478 [inline]
-> kmem_cache_alloc_node+0x5a2/0xaf0 mm/slub.c:3523
-> kmalloc_reserve+0x13c/0x4a0 net/core/skbuff.c:559
-> __alloc_skb+0x2fd/0x770 net/core/skbuff.c:650
-> alloc_skb include/linux/skbuff.h:1286 [inline]
-> virtio_vsock_alloc_skb include/linux/virtio_vsock.h:66 [inline]
-> virtio_transport_alloc_skb+0x90/0x11e0 net/vmw_vsock/virtio_transport_common.c:58
-> virtio_transport_reset_no_sock net/vmw_vsock/virtio_transport_common.c:957 [inline]
-> virtio_transport_recv_pkt+0x1279/0x26a0 net/vmw_vsock/virtio_transport_common.c:1387
-> vsock_loopback_work+0x3bb/0x5a0 net/vmw_vsock/vsock_loopback.c:120
-> process_one_work kernel/workqueue.c:2630 [inline]
-> process_scheduled_works+0xff6/0x1e60 kernel/workqueue.c:2703
-> worker_thread+0xeca/0x14d0 kernel/workqueue.c:2784
-> kthread+0x3cc/0x520 kernel/kthread.c:388
-> ret_from_fork+0x66/0x80 arch/x86/kernel/process.c:147
-> ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
->
->CPU: 1 PID: 10664 Comm: kworker/1:5 Not tainted 6.6.0-rc3-00146-g9f3ebbef746f #3
->Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.2-1.fc38 04/01/2014
->Workqueue: vsock-loopback vsock_loopback_work
->=====================================================
->
->The following simple reproducer can cause the issue described above:
->
->int main(void)
->{
->  int sock;
->  struct sockaddr_vm addr = {
->    .svm_family = AF_VSOCK,
->    .svm_cid = VMADDR_CID_ANY,
->    .svm_port = 1234,
->  };
->
->  sock = socket(AF_VSOCK, SOCK_STREAM, 0);
->  connect(sock, (struct sockaddr *)&addr, sizeof(addr));
->  return 0;
->}
->
->This issue occurs because the `buf_alloc` and `fwd_cnt` fields of the
->`struct virtio_vsock_hdr` are not initialized when a new skb is allocated
->in `virtio_transport_init_hdr()`. This patch resolves the issue by
->initializing these fields during allocation.
->
->Fixes: 71dc9ec9ac7d ("virtio/vsock: replace virtio_vsock_pkt with sk_buff")
->Reported-and-tested-by: syzbot+0c8ce1da0ac31abbadcd@syzkaller.appspotmail.com
->Closes: https://syzkaller.appspot.com/bug?extid=0c8ce1da0ac31abbadcd
->Signed-off-by: Shigeru Yoshida <syoshida@redhat.com>
->---
->v1->v2:
->- Rebase on the latest net tree
->https://lore.kernel.org/all/20231026150154.3536433-1-syoshida@redhat.com/
->---
-> net/vmw_vsock/virtio_transport_common.c | 2 ++
-> 1 file changed, 2 insertions(+)
+Hi Jacopo, Sebastian,
 
-The patch remained the same, so you could bring back my R-b ;-)
-In any case:
+On Mon, Oct 30, 2023 at 09:37:08AM +0100, Jacopo Mondi wrote:
+> > +static bool gc0308_is_valid_format(u32 code)
+> > +{
+> > +	unsigned int i;
+> > +
+> > +	for (i = 0; i < ARRAY_SIZE(gc0308_formats); i++) {
+> > +		if (gc0308_formats[i].code == code)
+> > +			return true;
+> > +	}
+> > +
+> > +	return false;
+> > +}
+> > +
+> > +static int gc0308_enum_frame_size(struct v4l2_subdev *subdev,
+> > +				  struct v4l2_subdev_state *sd_state,
+> > +				  struct v4l2_subdev_frame_size_enum *fse)
+> > +{
+> > +	if (fse->index >= ARRAY_SIZE(gc0308_frame_sizes))
+> > +		return -EINVAL;
+> > +
+> > +	if (!gc0308_is_valid_format(fse->code))
+> > +		return -EINVAL;
+> > +
+> > +	fse->min_width = gc0308_frame_sizes[fse->index].width;
+> > +	fse->max_width = gc0308_frame_sizes[fse->index].width;
+> > +	fse->min_height = gc0308_frame_sizes[fse->index].height;
+> > +	fse->max_height = gc0308_frame_sizes[fse->index].height;
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static void gc0308_update_pad_format(const struct gc0308_frame_size *mode,
+> > +				     struct v4l2_mbus_framefmt *fmt, u32 code)
+> > +{
+> > +	fmt->width = mode->width;
+> > +	fmt->height = mode->height;
+> > +	fmt->code = code;
+> > +	fmt->field = V4L2_FIELD_NONE;
+> > +	fmt->colorspace = V4L2_COLORSPACE_SRGB;
+> > +}
+> > +
+> > +static int gc0308_set_format(struct v4l2_subdev *sd,
+> > +			     struct v4l2_subdev_state *sd_state,
+> > +			     struct v4l2_subdev_format *fmt)
+> > +{
+> > +	struct gc0308 *gc0308 = to_gc0308(sd);
+> > +	const struct gc0308_frame_size *mode;
+> > +	unsigned int i;
+> > +
+> > +	for (i = 0; i < ARRAY_SIZE(gc0308_formats); i++) {
+> > +		if (fmt->format.code == gc0308_formats[i].code)
+> > +			break;
+> > +	}
+> > +
+> > +	if (i >= ARRAY_SIZE(gc0308_formats)) {
+> > +		dev_warn(gc0308->dev, "unsupported format code: %08x\n",
+> > +			 fmt->format.code);
 
-Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
+This isn't supposed to generate a kernel log message. I'd drop it
+altogether.
 
-Thanks,
-Stefano
+> > +		i = 0;
+> > +	}
+> 
+> This looks very similar to gc0308_is_valid_format()
 
->
->diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/virtio_transport_common.c
->index e22c81435ef7..dc65dd4d26df 100644
->--- a/net/vmw_vsock/virtio_transport_common.c
->+++ b/net/vmw_vsock/virtio_transport_common.c
->@@ -130,6 +130,8 @@ static void virtio_transport_init_hdr(struct sk_buff *skb,
-> 	hdr->dst_port	= cpu_to_le32(dst_port);
-> 	hdr->flags	= cpu_to_le32(info->flags);
-> 	hdr->len	= cpu_to_le32(payload_len);
->+	hdr->buf_alloc	= cpu_to_le32(0);
->+	hdr->fwd_cnt	= cpu_to_le32(0);
-> }
->
-> static void virtio_transport_copy_nonlinear_skb(const struct sk_buff *skb,
->-- 
->2.41.0
->
+Could gc0308_is_valid_format() return a pointer to the format array or
+NULL? Then you could check for NULL here and use the first entry in that
+case.
 
+> 
+> > +
+> > +	mode = v4l2_find_nearest_size(gc0308_frame_sizes,
+> > +				      ARRAY_SIZE(gc0308_frame_sizes), width,
+> > +				      height, fmt->format.width,
+> > +				      fmt->format.height);
+> > +
+> > +	gc0308_update_pad_format(mode, &fmt->format, gc0308_formats[i].code);
+> > +	*v4l2_subdev_get_pad_format(sd, sd_state, fmt->pad) = fmt->format;
+> > +
+> > +	if (fmt->which == V4L2_SUBDEV_FORMAT_TRY)
+> > +		return 0;
+> > +
+> > +	gc0308->mode.out_format = gc0308_formats[i].regval;
+> > +	gc0308->mode.subsample = mode->subsample;
+> > +	gc0308->mode.width = mode->width;
+> > +	gc0308->mode.height = mode->height;
+> > +
+> > +	return 0;
+> > +}
+
+...
+
+> > +	ret = v4l2_async_register_subdev(&gc0308->sd);
+> > +	if (ret) {
+> > +		dev_err_probe(dev, ret, "failed to register v4l subdev\n");
+> > +		goto fail_power_off;
+> > +	}
+> > +
+> > +	pm_runtime_set_active(dev);
+> > +	pm_runtime_enable(dev);
+> > +	pm_runtime_set_autosuspend_delay(&client->dev, 1000);
+> > +	pm_runtime_use_autosuspend(&client->dev);
+> > +	pm_runtime_idle(dev);
+
+This will effective power off the device immediately, without a delay. But
+I guess that's ok.
+
+Note that enabling runtime PM needs to take place before registering the
+sub-device. I'd move all these calls before that.
+
+> > +
+> > +	return 0;
+> > +
+> > +fail_power_off:
+> > +	gc0308_power_off(dev);
+> > +fail_subdev_cleanup:
+> > +	v4l2_subdev_cleanup(&gc0308->sd);
+> > +fail_media_entity_cleanup:
+> > +	media_entity_cleanup(&gc0308->sd.entity);
+> > +fail_ctrl_hdl_cleanup:
+> > +	v4l2_ctrl_handler_free(&gc0308->hdl);
+> > +	return ret;
+> > +}
+> > +
+> > +static void gc0308_remove(struct i2c_client *client)
+> > +{
+> > +	struct gc0308 *gc0308 = i2c_get_clientdata(client);
+> > +	struct device *dev = &client->dev;
+> > +
+> > +	pm_runtime_get_sync(dev);
+> 
+> Uh, I've never seen this call in a _remove before. Is it intentional ?
+
+I think disabling runtime PM and marking the device suspended are enough
+here runtime PM-wise.
+
+> 
+> Apart these two nits the rest is good! thanks for addressing the
+> comments received on the previous version.
+> 
+> Reviewed-by: Jacopo Mondi <jacopo.mondi@ideasonboard.com>
+> 
+> Thanks
+>   j
+> 
+> > +
+> > +	v4l2_async_unregister_subdev(&gc0308->sd);
+> > +	v4l2_ctrl_handler_free(&gc0308->hdl);
+> > +
+> > +	pm_runtime_disable(dev);
+> > +	pm_runtime_set_suspended(dev);
+> > +	pm_runtime_put_noidle(dev);
+> > +	gc0308_power_off(dev);
+> > +}
+
+-- 
+Regards,
+
+Sakari Ailus
