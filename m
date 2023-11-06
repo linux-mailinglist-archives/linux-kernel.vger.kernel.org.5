@@ -2,106 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FE037E2B95
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 19:04:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BED867E2B9A
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 19:06:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231803AbjKFSEd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 13:04:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43520 "EHLO
+        id S231915AbjKFSGG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 13:06:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230514AbjKFSEb (ORCPT
+        with ESMTP id S231800AbjKFSGE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 13:04:31 -0500
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A1D3D4D
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 10:04:28 -0800 (PST)
-Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-9dbb3d12aefso685261866b.0
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 10:04:27 -0800 (PST)
+        Mon, 6 Nov 2023 13:06:04 -0500
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6724D47;
+        Mon,  6 Nov 2023 10:06:01 -0800 (PST)
+Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-507bd644a96so6849374e87.3;
+        Mon, 06 Nov 2023 10:06:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699293866; x=1699898666; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1699293960; x=1699898760; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=MFwbWDLUdsWWY4JdKUSpXKXnctZdyDOvhR+9uQhZNK4=;
-        b=EhZXzxcjrT/aal9pth6IIgfH2GPtxiOQ0Nwgity4E3xbsejEOn5uk7egPocA6wNc07
-         NS5wZSrexeqLtmuRdnmPcBvznhMuL75uc0guj9owda8S9v9N0mF1HmbhtRXrLmkXWLri
-         LgMvjaQ8slrxl+eQL/m2/yf0nBG2AAavZ5Uc6M3pks0ciiWqqRS3U8asQgIOMFXcdfp2
-         HYV8QifsShkiuYiPui/Y/3yfDYEqZw6ZvhW90t54nDqVdubmnrrLQsb1EK7Rhk34jCMh
-         rvAFeu3qwXT3ESm9MS6YM5ZoznTDitnUUtDrF/rg7XGigignsr5g6tZRWRsUc44yCFl7
-         ogFg==
+        bh=jFJrO7z2AOZpVZxEtLlcen43+JRmpqTB2YOgHcrEaEs=;
+        b=L1OkgSfkURZB1XucDnUvlS4QxpqzcFUk5rapX1YbHU0RmvX6OeKunAt3e9tpZdhaLN
+         gAqFm8oAwVnwD161jxvSg+Ng+P3KS+UWHGvwVLwh8bmteVFU0+1aN/33S8RePzvvxURk
+         lecBFX19eQ9LtCh6v6jVMUSRn0V6VkWdg9FGGSxFsSs6zMZFYB8L6DGt7lSUu+iD8/iW
+         kN4688jdEQ/H3h31kNetvuA0Y3YnctOy1XCQ1XpdgRe3BfGC0UDkPwOPKdCgOp8HRgCm
+         CpAU/wY0XaiGZc69a2NoY4uNZsa6/NwfRBofv1td+hTF5CDI2VNr0DfzX9vIKGzQnKEJ
+         tZ3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699293866; x=1699898666;
+        d=1e100.net; s=20230601; t=1699293960; x=1699898760;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=MFwbWDLUdsWWY4JdKUSpXKXnctZdyDOvhR+9uQhZNK4=;
-        b=BiVRnzoSIXPmy3guqPnUvSvHxAJzsHNUeznpMQsOq/3ucPXUFJXduo8tIqOR+f/744
-         jc/zga54bDjBI3wgXizfyRAxmwYohUL2TUl4qRHrYLrewQJpHGPKNpTEptJ+o0ursunV
-         1vWkbCKl0NW/fQ7il7k283dLHSKw6Y6dko4WSnK7Nj45KNrheUukoMn93fmYpvUjv/B6
-         5+wKepclhh0wHzSACc9+aIZWnUyEFc9h1/ksJ72eRZ+0BywTh8/mDCbhTSU7nTXytdi+
-         vA35E7Ai946Qg//JJLJf7BY6jAJLmtQJmTX4TQ0u4r4efhUywPB3zfggsZTtxmMVmD9L
-         PrxA==
-X-Gm-Message-State: AOJu0Yz45o24BV6sKLUrjuvF/Bq67UecJgzc6VcypR5m4yY7w17ry+6s
-        dfGIwgBjh02hJQ1r5XuEQR2Clg==
-X-Google-Smtp-Source: AGHT+IHr8bnuWZj/iOFtunRgfK7Wwa+dsby/zXewBm5diZrFmq94VJef1rIQkqwg9lkIuEsT0/wTeg==
-X-Received: by 2002:a17:907:7e84:b0:9dd:cc3d:7ba7 with SMTP id qb4-20020a1709077e8400b009ddcc3d7ba7mr6962413ejc.29.1699293866528;
-        Mon, 06 Nov 2023 10:04:26 -0800 (PST)
-Received: from krzk-bin.. ([178.197.218.126])
-        by smtp.gmail.com with ESMTPSA id u11-20020a17090617cb00b009920e9a3a73sm92962eje.115.2023.11.06.10.04.24
+        bh=jFJrO7z2AOZpVZxEtLlcen43+JRmpqTB2YOgHcrEaEs=;
+        b=m3W0VcBwhaLgEUcUR4Cfbt0jlBpxR9lkN2PzbMdlYwXgdwLJrYXdiGRMrMEXR1RydR
+         ISkGyvUaTjjFBa0e3+TcArRNJ9uicOOc4VLzqKiquxin8vQm10OESRX3fnKo+cVv175R
+         QWaWxUQUH2nyLvzYggMt5Kntys2vzasWf40nDVs9Xww/6k+3SV6HceU5+zYpMuN3YjHH
+         z9OqzegDf1v9O3P195kA575lpBoJtlRaX8SMon2hZGMrMFv7WKqG1R1qSrQ8o+Jdo4Nv
+         lz4AE6KV3MYuns/LRM7r9Yl95tQEHD8XPqxUwwCSA2UtIrtTLj/wxqeyQMn+fRlx8C7n
+         NCwg==
+X-Gm-Message-State: AOJu0YxUm+8aFC5K5OXiP42Ie3XTH1hE9Z6WiRnf1sjAN3VE5t+96mIs
+        xLHrfjH95eYDJugx4QUnduU=
+X-Google-Smtp-Source: AGHT+IHkisUClwP06UenqkN/5I/6BzE/Tui8qauyREkxPjsuQGIt8lJc1uGELlGNoyCJCk4H9xdVeQ==
+X-Received: by 2002:ac2:4d07:0:b0:502:ff3b:766f with SMTP id r7-20020ac24d07000000b00502ff3b766fmr19920812lfi.6.1699293959736;
+        Mon, 06 Nov 2023 10:05:59 -0800 (PST)
+Received: from mars.. ([2a02:168:6806:0:be30:bf77:9975:b433])
+        by smtp.gmail.com with ESMTPSA id f9-20020a0560001b0900b0032db430fb9bsm217577wrz.68.2023.11.06.10.05.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Nov 2023 10:04:25 -0800 (PST)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Banajit Goswami <bgoswami@quicinc.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH] ASoC: dt-bindings: qcom,sm8250: add SM8550 sound card
-Date:   Mon,  6 Nov 2023 19:04:22 +0100
-Message-Id: <20231106180422.170492-1-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
+        Mon, 06 Nov 2023 10:05:58 -0800 (PST)
+From:   Klaus Kudielka <klaus.kudielka@gmail.com>
+To:     Russell King <linux@armlinux.org.uk>, Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Klaus Kudielka <klaus.kudielka@gmail.com>
+Subject: [PATCH net] net: phylink: initialize carrier state at creation
+Date:   Mon,  6 Nov 2023 19:05:06 +0100
+Message-ID: <20231106180506.2665-1-klaus.kudielka@gmail.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add sound card for SM8550, which as of now looks fully compatible with
-SM8450.
+Background: Turris Omnia (Armada 385); eth2 (mvneta) connected to SFP bus;
+SFP module is present, but no fiber connected, so definitely no carrier.
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+After booting, eth2 is down, but netdev LED trigger surprisingly reports
+link active. Then, after "ip link set eth2 up", the link indicator goes
+away - as I would have expected it from the beginning.
+
+It turns out, that the default carrier state after netdev creation is
+"carrier ok". Some ethernet drivers explicitly call netif_carrier_off
+during probing, others (like mvneta) don't - which explains the current
+behaviour: only when the device is brought up, phylink_start calls
+netif_carrier_off.
+
+Fix this for all drivers, by calling netif_carrier_off in phylink_create.
+
+Suggested-by: Andrew Lunn <andrew@lunn.ch>
+Signed-off-by: Klaus Kudielka <klaus.kudielka@gmail.com>
 ---
- Documentation/devicetree/bindings/sound/qcom,sm8250.yaml | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/net/phy/phylink.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml b/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml
-index 262de7a60a73..88904ac4aa77 100644
---- a/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml
-+++ b/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml
-@@ -21,6 +21,10 @@ properties:
-               - lenovo,yoga-c630-sndcard
-               - qcom,db845c-sndcard
-           - const: qcom,sdm845-sndcard
-+      - items:
-+          - enum:
-+              - qcom,sm8550-sndcard
-+          - const: qcom,sm8450-sndcard
-       - enum:
-           - qcom,apq8016-sbc-sndcard
-           - qcom,msm8916-qdsp6-sndcard
+diff --git a/drivers/net/phy/phylink.c b/drivers/net/phy/phylink.c
+index 6712883498..a28da80bde 100644
+--- a/drivers/net/phy/phylink.c
++++ b/drivers/net/phy/phylink.c
+@@ -1616,6 +1616,7 @@ struct phylink *phylink_create(struct phylink_config *config,
+ 	pl->config = config;
+ 	if (config->type == PHYLINK_NETDEV) {
+ 		pl->netdev = to_net_dev(config->dev);
++		netif_carrier_off(pl->netdev);
+ 	} else if (config->type == PHYLINK_DEV) {
+ 		pl->dev = config->dev;
+ 	} else {
 -- 
-2.34.1
+2.42.0
 
