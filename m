@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CEC37E1B69
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 08:40:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79E5A7E1B6D
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 08:41:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231131AbjKFHkx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 02:40:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42562 "EHLO
+        id S231247AbjKFHlF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 02:41:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231163AbjKFHkv (ORCPT
+        with ESMTP id S231245AbjKFHlA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 02:40:51 -0500
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 749A2AF
-        for <linux-kernel@vger.kernel.org>; Sun,  5 Nov 2023 23:40:47 -0800 (PST)
-Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-50930f126b1so5083137e87.3
-        for <linux-kernel@vger.kernel.org>; Sun, 05 Nov 2023 23:40:47 -0800 (PST)
+        Mon, 6 Nov 2023 02:41:00 -0500
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C188AD57
+        for <linux-kernel@vger.kernel.org>; Sun,  5 Nov 2023 23:40:56 -0800 (PST)
+Received: by mail-lj1-x229.google.com with SMTP id 38308e7fff4ca-2c6ef6c1ec2so50453261fa.2
+        for <linux-kernel@vger.kernel.org>; Sun, 05 Nov 2023 23:40:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699256445; x=1699861245; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1699256455; x=1699861255; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=JmqTrOYNtDPmBkwNAHZr1Cesr1m1VYhAo3UET3rJVVU=;
-        b=J9niIEDZr1NVInwskLB0ZqND+Rk3S6TyC1mOfD57km+n81+L/wg9eSoBOk20fH2CxY
-         QPf8hUMECfU+dpFMJaYEak0yNq8RiwdMKUNYTdHACaE3UWibPG3xZB6528rBz86Kr0ue
-         WpZmULbGueMObdn5/+25/Lccf16/4POWDqP4Y7s+/SogDFKMMlNirqQU2RJMnd5aFS/M
-         HjwxQ2nV2y31u5fm2D6JdazHsiuaUU5lAmx33HcyNNkmRIMyS1HMkByXeZ95xlwRr645
-         viNp9ho9/eN/d4HfndCZiaHPs9KLKRrPOfryf52hqZVDXjGrXHO/ar1Xibb2HVZNldFq
-         gPgg==
+        bh=zZtAMBRWYfS3ZEecMf62oA+uLVzuLeNQUxImYAURQqs=;
+        b=OYf0cjkd5oNUe2dQCdmVZX3cRGGMWsKvOQnmfzqXUg7kVXkhOIDFY4/9FR/IjfBUQO
+         x0+1djbsmSc94c5pSzowuKP4zijVxYKrbgSXvAvSHlPfgvp7AV0ZbrIv3sEV9H0rbPP4
+         Al6LOIbRofcemwZSiXfEuw3G4FgUQXx6V2noQW2i77hMaPDpmOO3FP+1qJFqCcQSErgL
+         gylGxhsjn73P489LsiyYk06f+5F6t1Im43ZxaOW3poaDRfBC5E3fOhORvMeRtdtMynG3
+         8Nhi7rNYCXMZSy2cQreaTC4ahkMOcXOCBIQZI9n4SKSXWVaZsDDaBGmNhBMO4SVVQ/nw
+         fBMA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699256445; x=1699861245;
+        d=1e100.net; s=20230601; t=1699256455; x=1699861255;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=JmqTrOYNtDPmBkwNAHZr1Cesr1m1VYhAo3UET3rJVVU=;
-        b=voh1TnETtBtl218BiEE41o+UXe3Uh7DrVuM4vfNshzakqHiy+ZzQ+puzXvDNeZH41g
-         gteZLL6X0VUOoMw62jVJ9K4biXtkR8NNlbYGBWrbsCNliodUb+dQLD6sEOs7N2zrNyzH
-         89mVzCop3YlYjbYbFLk1jayRWi8wU+UXEgVhx1Sr6aAYpmzjEVms6wLOkh9Be/Ug0T2X
-         sKJ3s9sSBsz1l0iK1eYwQcZjPPuxf9MBoZAOm/u1uduj9x8w1tpp3Zr9xedvhzCE/OR0
-         Cq1Vmi3ClxOqn11tsXCiR8THaReBZ2594HyIr9rewA4jjBy/0tFA2j536zSBGo9B/97S
-         UWHg==
-X-Gm-Message-State: AOJu0YxC4/AIplSf29hxdl20DC1K8iRladTWdIcEuYB4NPu7f+aS+SXl
-        uIMIag7pqgraLeYSXREAoztFjw==
-X-Google-Smtp-Source: AGHT+IEFy+GYGWH1jiJLdv5hdtx8dmCqwLxu2m++pzY2tw2EguQxIuOxCtYwk+/Trat0+SmHNFMqlw==
-X-Received: by 2002:a05:6512:33c3:b0:509:489f:d84e with SMTP id d3-20020a05651233c300b00509489fd84emr11939322lfg.37.1699256445742;
-        Sun, 05 Nov 2023 23:40:45 -0800 (PST)
+        bh=zZtAMBRWYfS3ZEecMf62oA+uLVzuLeNQUxImYAURQqs=;
+        b=ei2V6PD8n4M8Iy+i+ZacxbBq1VOJjwFtQvatLgQjfxwtIsfOMyKuKCbHVUHueIru4d
+         2Z8IF9s0ff8GWulVMgBYXZ/kpVS76gZTSwCgAQbTOKMSPmR7M4HWLaasroAJU/1ELR1v
+         vvJTYzwbwyGJw6SvB0UM786iEmwlSRw3gIcJ1sEsqiR0NF96HEWKkZDjE/cCBK07LCHK
+         Nz4k0yaxD8f2AB3LGGVpCAEVk4YRrQPhM+1tJkLLUq0fzRdu/Xb0oeYITcMbxk3Yu1xe
+         6bI5/H95pCKQ45DSvASnSE86bPRqCmhAtWHikwOVtDPvBiSXPES7x9JRnwS5ViAGQR6X
+         P0xw==
+X-Gm-Message-State: AOJu0YyMxOxQYohG5zmvK55yqLMb6cUF6r4ALH79lSGI2enaUPxLRUPh
+        0/CtD5qtZTWDfSoj/idKwNJ8iQ==
+X-Google-Smtp-Source: AGHT+IFltuEmUKFldA0/lrmtPMQMOc8+F6NWE7QplkX7MaWYlFeyM1D6r7AVIHNWCdBztiuWwKxhSw==
+X-Received: by 2002:a2e:9d15:0:b0:2c6:ed8b:5f81 with SMTP id t21-20020a2e9d15000000b002c6ed8b5f81mr9536227lji.44.1699256455034;
+        Sun, 05 Nov 2023 23:40:55 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.218.126])
-        by smtp.gmail.com with ESMTPSA id e10-20020a05600c4e4a00b00406447b798bsm11486805wmq.37.2023.11.05.23.40.44
+        by smtp.gmail.com with ESMTPSA id e10-20020a05600c4e4a00b00406447b798bsm11486805wmq.37.2023.11.05.23.40.53
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 05 Nov 2023 23:40:45 -0800 (PST)
-Message-ID: <8c6fc5db-520e-4fb0-9b15-647221a8bd84@linaro.org>
-Date:   Mon, 6 Nov 2023 08:40:44 +0100
+        Sun, 05 Nov 2023 23:40:54 -0800 (PST)
+Message-ID: <a99c7041-f023-4bd4-8f8a-5a72a7b0c44c@linaro.org>
+Date:   Mon, 6 Nov 2023 08:40:53 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 5/7] ARM: dts: qcom: apq8026-samsung-milletwifi: Enable
- charger
+Subject: Re: [PATCH 6/7] ARM: dts: qcom: apq8026-samsung-milletwifi: Enable
+ Wi-Fi and Bluetooth
 Content-Language: en-US
 To:     Bryant Mairs <bryant@mai.rs>, Andy Gross <agross@kernel.org>,
         Bjorn Andersson <andersson@kernel.org>,
@@ -68,7 +68,7 @@ To:     Bryant Mairs <bryant@mai.rs>, Andy Gross <agross@kernel.org>,
         linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-input@vger.kernel.org
 References: <20231105204759.37107-1-bryant@mai.rs>
- <20231105204759.37107-6-bryant@mai.rs>
+ <20231105204759.37107-7-bryant@mai.rs>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -114,12 +114,12 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231105204759.37107-6-bryant@mai.rs>
+In-Reply-To: <20231105204759.37107-7-bryant@mai.rs>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -128,15 +128,12 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 05/11/2023 21:46, Bryant Mairs wrote:
-> Enable charging support.
+> Enable Wi-Fi and Bluetooth support for milletwifi. This device
+> uses the WCN3660A that is already supported, so it only needs to be
+> enabled in the DTS.
 > 
-> Signed-off-by: Bryant Mairs <bryant@mai.rs>
-> ---
->  .../qcom/qcom-apq8026-samsung-milletwifi.dts  | 28 +++++++++++++++++++
->  1 file changed, 28 insertions(+)
 
-Squash with new board. One logical change is to add new board. Not add
-incomplete board and immediately fix it.
+Squash.
 
 Best regards,
 Krzysztof
