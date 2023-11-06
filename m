@@ -2,164 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C39407E2EBA
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 22:13:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7B687E2EB5
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 22:12:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233085AbjKFVN6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 16:13:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36068 "EHLO
+        id S233079AbjKFVMw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 16:12:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233084AbjKFVNw (ORCPT
+        with ESMTP id S232927AbjKFVMu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 16:13:52 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4E42AF;
-        Mon,  6 Nov 2023 13:13:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699305228; x=1730841228;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=tbKByqfuyURCHPp+0iRLoLExVfyExuPe8MltNNHCMcM=;
-  b=J9LQuialDNAbHlh7EZHijuXmdiycygxnxCXUs00bYCE6tNWMGSJWwvYA
-   wavO4KWr49lQiuT6t9s2Vb/i271TkGWGeVWnh3c3Uq0p1YmSal4JkPDFB
-   rCtPBS8kJJfQ4O76efyIDxecRWRYMvJ5sDomlpyr1STb57wRFCpZNe+eT
-   9W7b4ui9q+A5a85K/KTnH2GpL+uQKX9DZPeSVj/NbwTa8nBlqTg5426aH
-   zxte/U9voYhUosX5cNnd1AE2/IagR+bfZR4TC741vBAu9DLBFa761+jTw
-   K8nsan69vNATKy7koVUN4stFvyQ+XD5AWDcrSQDh9RhZ8VQ18OwfIYX06
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10886"; a="379763323"
-X-IronPort-AV: E=Sophos;i="6.03,282,1694761200"; 
-   d="scan'208";a="379763323"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Nov 2023 13:13:23 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10886"; a="712327288"
-X-IronPort-AV: E=Sophos;i="6.03,282,1694761200"; 
-   d="scan'208";a="712327288"
-Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by orsmga003.jf.intel.com with ESMTP; 06 Nov 2023 13:13:16 -0800
-Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r06uH-0006jY-2v;
-        Mon, 06 Nov 2023 21:13:13 +0000
-Date:   Tue, 7 Nov 2023 05:11:39 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Nitesh Shetty <nj.shetty@samsung.com>,
-        Jens Axboe <axboe@kernel.dk>, Jonathan Corbet <corbet@lwn.net>,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@kernel.org>, dm-devel@lists.linux.dev,
-        Keith Busch <kbusch@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Chaitanya Kulkarni <kch@nvidia.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        nitheshshetty@gmail.com, anuj1072538@gmail.com,
-        gost.dev@samsung.com, mcgrof@kernel.org,
-        Nitesh Shetty <nj.shetty@samsung.com>,
-        Hannes Reinecke <hare@suse.de>,
-        Damien Le Moal <damien.lemoal@opensource.wdc.com>,
-        Anuj Gupta <anuj20.g@samsung.com>,
-        Vincent Fu <vincent.fu@samsung.com>,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v17 12/12] null_blk: add support for copy offload
-Message-ID: <202311070508.mIPbaEHa-lkp@intel.com>
-References: <20231019110147.31672-13-nj.shetty@samsung.com>
+        Mon, 6 Nov 2023 16:12:50 -0500
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71FAFD76
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 13:12:47 -0800 (PST)
+Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-9dbb3d12aefso714504766b.0
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 13:12:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1699305162; x=1699909962; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5fUcm+yN6XAMjy25ZogKbU2Yy8ZDqJ+sIhPAHGmb2ZM=;
+        b=C1QRDL3f+CGiMD3LKE74yCnlqFyDm/nsFS6VQLSJhmPOZ8rwbXuoPJ0eBTfbD4Rcpf
+         GHVyMaEwY5Jsyvmbes5Qpzsd7mVMcCF+y+idEZZ9OEsj4h/hbVMLvKtgtQ+jdRTL5Qka
+         +zpnen0e8ROOStYomE6hMaoOMQ20Ma+PQpNRY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699305162; x=1699909962;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5fUcm+yN6XAMjy25ZogKbU2Yy8ZDqJ+sIhPAHGmb2ZM=;
+        b=mESAiZcOGqzbxt2t9L0JKDyQRYThRps+erzU89BB0N9AkV99i7wA50Nvdfq4LfLGyO
+         bdf/lJQVvTFs8JtwrslZv3WthmG4vjGWnTys7y/OSAREzg4JrEq1kV3wM51Lv+JSDxuu
+         DHSZrzrvmZPrgn5rv5ZI0dsmHf2kzuSztIQZE844WhanZ6mTZIuxffbK9vMvj50imYqs
+         x3R1Qh3IuN5GQFn3BqDef6Qmxxwf4V8Hju3jr3/HGdDzXdS2wOzL0DWcXdyM4B36kcTK
+         TfgFCrwR0/25yqaYq0F/anqPzTIVAKXirkyD260Oj4E+bZ/p20na+K4hAjD+Hul4T7CV
+         Jpqg==
+X-Gm-Message-State: AOJu0YxwfNV3bumeZ3iIsqpVHbmquYCzFYHGM8l6f5wbeIk19VY7wovw
+        hFKWEb2JAEg1N+IYTtEshnh8h2ZI4Ym9XNmVOERJiBCP
+X-Google-Smtp-Source: AGHT+IEYZwB7kdvOa2R8DqPoBFtpCrprjRFdEq4fcT4tfuXYxbRUxLW+ovhzMAsvacY4CmsmRN8VWQ==
+X-Received: by 2002:a17:907:26c9:b0:9e0:dde:cc9f with SMTP id bp9-20020a17090726c900b009e00ddecc9fmr4053633ejc.22.1699305162351;
+        Mon, 06 Nov 2023 13:12:42 -0800 (PST)
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com. [209.85.128.51])
+        by smtp.gmail.com with ESMTPSA id jp27-20020a170906f75b00b009b94c545678sm251117ejb.153.2023.11.06.13.12.41
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 06 Nov 2023 13:12:41 -0800 (PST)
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-40853f2e93eso22915e9.0
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 13:12:41 -0800 (PST)
+X-Received: by 2002:a05:600c:1f92:b0:407:7f21:878e with SMTP id
+ je18-20020a05600c1f9200b004077f21878emr5139wmb.1.1699305160926; Mon, 06 Nov
+ 2023 13:12:40 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231019110147.31672-13-nj.shetty@samsung.com>
+References: <20231106210337.2900034-1-hsinyi@chromium.org> <20231106210337.2900034-4-hsinyi@chromium.org>
+In-Reply-To: <20231106210337.2900034-4-hsinyi@chromium.org>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Mon, 6 Nov 2023 13:12:23 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=VYd96GKM9VzmOPbF55-QEVL3EaCHhY8g+7hPSrDBL31Q@mail.gmail.com>
+Message-ID: <CAD=FV=VYd96GKM9VzmOPbF55-QEVL3EaCHhY8g+7hPSrDBL31Q@mail.gmail.com>
+Subject: Re: [PATCH v4 3/3] drm/panel-edp: Avoid adding multiple preferred modes
+To:     Hsin-Yi Wang <hsinyi@chromium.org>
+Cc:     Neil Armstrong <neil.armstrong@linaro.org>,
+        Jessica Zhang <quic_jesszhan@quicinc.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nitesh,
+Hi,
 
-kernel test robot noticed the following build warnings:
+On Mon, Nov 6, 2023 at 1:03=E2=80=AFPM Hsin-Yi Wang <hsinyi@chromium.org> w=
+rote:
+>
+> @@ -622,7 +627,7 @@ static int panel_edp_get_modes(struct drm_panel *pane=
+l,
+>          * and no modes (the generic edp-panel case) because it will clob=
+ber
+>          * the display_info that was already set by drm_add_edid_modes().
+>          */
+> -       if (p->desc->num_timings || p->desc->num_modes)
+> +       if (has_hard_coded_modes)
 
-[auto build test WARNING on 213f891525c222e8ed145ce1ce7ae1f47921cb9c]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Nitesh-Shetty/block-Introduce-queue-limits-and-sysfs-for-copy-offload-support/20231019-200658
-base:   213f891525c222e8ed145ce1ce7ae1f47921cb9c
-patch link:    https://lore.kernel.org/r/20231019110147.31672-13-nj.shetty%40samsung.com
-patch subject: [PATCH v17 12/12] null_blk: add support for copy offload
-config: i386-allmodconfig (https://download.01.org/0day-ci/archive/20231107/202311070508.mIPbaEHa-lkp@intel.com/config)
-compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231107/202311070508.mIPbaEHa-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311070508.mIPbaEHa-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   In file included from drivers/block/null_blk/main.c:15:
-   In file included from drivers/block/null_blk/trace.h:104:
-   In file included from include/trace/define_trace.h:102:
-   In file included from include/trace/trace_events.h:237:
->> drivers/block/null_blk/trace.h:94:34: warning: format specifies type 'unsigned long' but the argument has type 'size_t' (aka 'unsigned int') [-Wformat]
-                             __entry->dst, __entry->src, __entry->len)
-                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~
-   include/trace/stages/stage3_trace_output.h:6:17: note: expanded from macro '__entry'
-   #define __entry field
-                   ^
-   include/trace/stages/stage3_trace_output.h:9:43: note: expanded from macro 'TP_printk'
-   #define TP_printk(fmt, args...) fmt "\n", args
-                                   ~~~       ^
-   include/trace/trace_events.h:45:16: note: expanded from macro 'TRACE_EVENT'
-                                PARAMS(print));                   \
-                                ~~~~~~~^~~~~~~
-   include/linux/tracepoint.h:107:25: note: expanded from macro 'PARAMS'
-   #define PARAMS(args...) args
-                           ^~~~
-   include/trace/trace_events.h:203:27: note: expanded from macro 'DECLARE_EVENT_CLASS'
-           trace_event_printf(iter, print);                                \
-                                    ^~~~~
-   1 warning generated.
-
-
-vim +94 drivers/block/null_blk/trace.h
-
-    72	
-    73	TRACE_EVENT(nullb_copy_op,
-    74			TP_PROTO(struct request *req,
-    75				 sector_t dst, sector_t src, size_t len),
-    76			TP_ARGS(req, dst, src, len),
-    77			TP_STRUCT__entry(
-    78					 __array(char, disk, DISK_NAME_LEN)
-    79					 __field(enum req_op, op)
-    80					 __field(sector_t, dst)
-    81					 __field(sector_t, src)
-    82					 __field(size_t, len)
-    83			),
-    84			TP_fast_assign(
-    85				       __entry->op = req_op(req);
-    86				       __assign_disk_name(__entry->disk, req->q->disk);
-    87				       __entry->dst = dst;
-    88				       __entry->src = src;
-    89				       __entry->len = len;
-    90			),
-    91			TP_printk("%s req=%-15s: dst=%llu, src=%llu, len=%lu",
-    92				  __print_disk_name(__entry->disk),
-    93				  blk_op_str(__entry->op),
-  > 94				  __entry->dst, __entry->src, __entry->len)
-    95	);
-    96	#endif /* _TRACE_NULLB_H */
-    97	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+nit: the comment above this line is a bit confusing now and probably
+needs to be updated or removed.
