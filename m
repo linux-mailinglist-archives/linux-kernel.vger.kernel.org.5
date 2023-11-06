@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EF3D7E2DD3
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 21:11:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E1967E2DE4
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 21:13:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233020AbjKFUL7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 15:11:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41174 "EHLO
+        id S229485AbjKFUM7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 15:12:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232987AbjKFULq (ORCPT
+        with ESMTP id S233015AbjKFUMs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 15:11:46 -0500
-Received: from out-178.mta1.migadu.com (out-178.mta1.migadu.com [95.215.58.178])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BFAED77
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 12:11:43 -0800 (PST)
+        Mon, 6 Nov 2023 15:12:48 -0500
+Received: from out-188.mta1.migadu.com (out-188.mta1.migadu.com [IPv6:2001:41d0:203:375::bc])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53A76D75
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 12:12:45 -0800 (PST)
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1699301501;
+        t=1699301563;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=CJgfMj/P7YPw/LlXCqtrAgQfJMC0kIuIB9F1taTDejA=;
-        b=RItIssP+VxjIXsAX7VSo3+5Kc1Se3hq8f7f/cbQzFTUM6RKLnsGl4CAP/yG2vvcChay10m
-        sSL9QfjTxiEsvbgUXV80kI0/hG2Tid6pbZndkQAOOqmBYC5P+q26F0bUqJ3gTSejNUH0wQ
-        8h5rzVebWZwZH9+D6V1P/RwTQQDBARw=
+        bh=pzcd7T6SaBRo5t2Dalks3vRx+ahOG8KGm+CRn7Qcn4c=;
+        b=pwv3dkzff3LD7yWHcbYcgAz4JV6yfUR59dhP8YxPHgOJqBy44vK2HoY3LSsvhd8ac/r+Kw
+        YjUTxsAxtuUXSOSqxissVE/DJambefCo5UZhQA3OpygTzSXNBEkWw+ttz9+sRuo965g4Qr
+        dO5rxteHGvoYv4f78rDOUpqGsj2A/J4=
 From:   andrey.konovalov@linux.dev
 To:     Marco Elver <elver@google.com>,
         Alexander Potapenko <glider@google.com>
@@ -36,9 +36,9 @@ Cc:     Andrey Konovalov <andreyknvl@gmail.com>,
         Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org,
         Andrey Konovalov <andreyknvl@google.com>
-Subject: [PATCH RFC 11/20] kasan: introduce poison_kmalloc_large_redzone
-Date:   Mon,  6 Nov 2023 21:10:20 +0100
-Message-Id: <79f306b7713aa06876975bbc782c392087652383.1699297309.git.andreyknvl@google.com>
+Subject: [PATCH RFC 12/20] kasan: save alloc stack traces for mempool
+Date:   Mon,  6 Nov 2023 21:10:21 +0100
+Message-Id: <325b1285d95f7bb6d2865750aa0088ab4cb5e0c3.1699297309.git.andreyknvl@google.com>
 In-Reply-To: <cover.1699297309.git.andreyknvl@google.com>
 References: <cover.1699297309.git.andreyknvl@google.com>
 MIME-Version: 1.0
@@ -56,99 +56,111 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Andrey Konovalov <andreyknvl@google.com>
 
-Split out a poison_kmalloc_large_redzone helper from
-__kasan_kmalloc_large and use it in the caller's code.
+Update kasan_mempool_unpoison_object to properly poison the redzone and
+save alloc strack traces for kmalloc and slab pools.
 
-This is a preparatory change for the following patches in this series.
+As a part of this change, split out and use a unpoison_slab_object helper
+function from __kasan_slab_alloc.
 
 Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 ---
- mm/kasan/common.c | 41 +++++++++++++++++++++++------------------
- 1 file changed, 23 insertions(+), 18 deletions(-)
+ include/linux/kasan.h |  7 +++---
+ mm/kasan/common.c     | 50 ++++++++++++++++++++++++++++++++++---------
+ 2 files changed, 44 insertions(+), 13 deletions(-)
 
+diff --git a/include/linux/kasan.h b/include/linux/kasan.h
+index e636a00e26ba..7392c5d89b92 100644
+--- a/include/linux/kasan.h
++++ b/include/linux/kasan.h
+@@ -303,9 +303,10 @@ void __kasan_mempool_unpoison_object(void *ptr, size_t size, unsigned long ip);
+  * mempool).
+  *
+  * This function unpoisons a slab allocation that was previously poisoned via
+- * kasan_mempool_poison_object() without initializing its memory. For the
+- * tag-based modes, this function does not assign a new tag to the allocation
+- * and instead restores the original tags based on the pointer value.
++ * kasan_mempool_poison_object() and saves an alloc stack trace for it without
++ * initializing the allocation's memory. For the tag-based modes, this function
++ * does not assign a new tag to the allocation and instead restores the
++ * original tags based on the pointer value.
+  *
+  * This function operates on all slab allocations including large kmalloc
+  * allocations (the ones returned by kmalloc_large() or by kmalloc() with the
 diff --git a/mm/kasan/common.c b/mm/kasan/common.c
-index ceb06d5f169f..b50e4fbaf238 100644
+index b50e4fbaf238..65850d37fd27 100644
 --- a/mm/kasan/common.c
 +++ b/mm/kasan/common.c
-@@ -353,23 +353,12 @@ void * __must_check __kasan_kmalloc(struct kmem_cache *cache, const void *object
+@@ -267,6 +267,20 @@ void __kasan_kfree_large(void *ptr, unsigned long ip)
+ 	/* The object will be poisoned by kasan_poison_pages(). */
  }
- EXPORT_SYMBOL(__kasan_kmalloc);
  
--void * __must_check __kasan_kmalloc_large(const void *ptr, size_t size,
-+static inline void poison_kmalloc_large_redzone(const void *ptr, size_t size,
- 						gfp_t flags)
- {
- 	unsigned long redzone_start;
- 	unsigned long redzone_end;
- 
--	if (gfpflags_allow_blocking(flags))
--		kasan_quarantine_reduce();
--
--	if (unlikely(ptr == NULL))
--		return NULL;
--
--	/*
--	 * The object has already been unpoisoned by kasan_unpoison_pages() for
--	 * alloc_pages() or by kasan_krealloc() for krealloc().
--	 */
--
- 	/*
- 	 * The redzone has byte-level precision for the generic mode.
- 	 * Partially poison the last object granule to cover the unaligned
-@@ -379,12 +368,25 @@ void * __must_check __kasan_kmalloc_large(const void *ptr, size_t size,
- 		kasan_poison_last_granule(ptr, size);
- 
- 	/* Poison the aligned part of the redzone. */
--	redzone_start = round_up((unsigned long)(ptr + size),
--				KASAN_GRANULE_SIZE);
-+	redzone_start = round_up((unsigned long)(ptr + size), KASAN_GRANULE_SIZE);
- 	redzone_end = (unsigned long)ptr + page_size(virt_to_page(ptr));
- 	kasan_poison((void *)redzone_start, redzone_end - redzone_start,
- 		     KASAN_PAGE_REDZONE, false);
-+}
- 
-+void * __must_check __kasan_kmalloc_large(const void *ptr, size_t size,
-+						gfp_t flags)
++void unpoison_slab_object(struct kmem_cache *cache, void *object, gfp_t flags,
++			  bool init)
 +{
-+	if (gfpflags_allow_blocking(flags))
-+		kasan_quarantine_reduce();
++	/*
++	 * Unpoison the whole object. For kmalloc() allocations,
++	 * poison_kmalloc_redzone() will do precise poisoning.
++	 */
++	kasan_unpoison(object, cache->object_size, init);
 +
-+	if (unlikely(ptr == NULL))
-+		return NULL;
++	/* Save alloc info (if possible) for non-kmalloc() allocations. */
++	if (kasan_stack_collection_enabled() && !is_kmalloc_cache(cache))
++		kasan_save_alloc_info(cache, object, flags);
++}
 +
-+	/* The object has already been unpoisoned by kasan_unpoison_pages(). */
-+	poison_kmalloc_large_redzone(ptr, size, flags);
-+
-+	/* Keep the tag that was set by alloc_pages(). */
- 	return (void *)ptr;
- }
- 
-@@ -392,6 +394,9 @@ void * __must_check __kasan_krealloc(const void *object, size_t size, gfp_t flag
+ void * __must_check __kasan_slab_alloc(struct kmem_cache *cache,
+ 					void *object, gfp_t flags, bool init)
  {
- 	struct slab *slab;
+@@ -289,15 +303,8 @@ void * __must_check __kasan_slab_alloc(struct kmem_cache *cache,
+ 	tag = assign_tag(cache, object, false);
+ 	tagged_object = set_tag(object, tag);
  
-+	if (gfpflags_allow_blocking(flags))
-+		kasan_quarantine_reduce();
+-	/*
+-	 * Unpoison the whole object.
+-	 * For kmalloc() allocations, kasan_kmalloc() will do precise poisoning.
+-	 */
+-	kasan_unpoison(tagged_object, cache->object_size, init);
+-
+-	/* Save alloc info (if possible) for non-kmalloc() allocations. */
+-	if (kasan_stack_collection_enabled() && !is_kmalloc_cache(cache))
+-		kasan_save_alloc_info(cache, tagged_object, flags);
++	/* Unpoison the object and save alloc info for non-kmalloc() allocations. */
++	unpoison_slab_object(cache, tagged_object, flags, init);
+ 
+ 	return tagged_object;
+ }
+@@ -472,7 +479,30 @@ bool __kasan_mempool_poison_object(void *ptr, unsigned long ip)
+ 
+ void __kasan_mempool_unpoison_object(void *ptr, size_t size, unsigned long ip)
+ {
+-	kasan_unpoison(ptr, size, false);
++	struct slab *slab;
++	gfp_t flags = 0; /* Might be executing under a lock. */
 +
- 	if (unlikely(object == ZERO_SIZE_PTR))
- 		return (void *)object;
- 
-@@ -409,11 +414,11 @@ void * __must_check __kasan_krealloc(const void *object, size_t size, gfp_t flag
- 
- 	/* Piggy-back on kmalloc() instrumentation to poison the redzone. */
- 	if (unlikely(!slab))
--		return __kasan_kmalloc_large(object, size, flags);
--	else {
-+		poison_kmalloc_large_redzone(object, size, flags);
-+	else
- 		poison_kmalloc_redzone(slab->slab_cache, object, size, flags);
--		return (void *)object;
--	}
++	if (is_kfence_address(kasan_reset_tag(ptr)))
++		return;
 +
-+	return (void *)object;
++	slab = virt_to_slab(ptr);
++
++	/*
++	 * This function can be called for large kmalloc allocation that get
++	 * their memory from page_alloc.
++	 */
++	if (unlikely(!slab)) {
++		kasan_unpoison(ptr, size, false);
++		poison_kmalloc_large_redzone(ptr, size, flags);
++		return;
++	}
++
++	/* Unpoison the object and save alloc info for non-kmalloc() allocations. */
++	unpoison_slab_object(slab->slab_cache, ptr, size, flags);
++
++	/* Poison the redzone and save alloc info for kmalloc() allocations. */
++	if (is_kmalloc_cache(slab->slab_cache))
++		poison_kmalloc_redzone(slab->slab_cache, ptr, size, flags);
  }
  
- bool __kasan_mempool_poison_pages(struct page *page, unsigned int order,
+ bool __kasan_check_byte(const void *address, unsigned long ip)
 -- 
 2.25.1
 
