@@ -2,62 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8583E7E29E8
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 17:36:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21B867E29F8
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 17:37:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232614AbjKFQgv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 11:36:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59466 "EHLO
+        id S232923AbjKFQhy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 11:37:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230086AbjKFQgu (ORCPT
+        with ESMTP id S232916AbjKFQhs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 11:36:50 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2035F3
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 08:36:47 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B76A2C433C8;
-        Mon,  6 Nov 2023 16:36:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699288607;
-        bh=i/ae4hJdIve54O+1/N5AmqSGvw4v4QG1RuIz6Bfe7CI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=L857G2yVMIhWjeGXQli2nFJEwQ0RSUX8law95qewMP8pO770uwM75kzCM+9RHP2xd
-         bDklj+dQFl3KO3+LMMGUoQJbKr7kI4bWrhxtAXUitScGAj00A3WjjtrggYUyqnFB5m
-         qdzzL/ukBqUkmrRCiF/53Alr1Np7gu/D8eqACXQXOAVq51BVq8h6GNp2/q9gwvNQiw
-         eQViz11kodlKygGXKutlU8+TyEiw9swBw5zBgehVtNWlBYl/zS4ZmZzp/8eBwlPhT3
-         dQqJluzNO4KQ/GRX0ZehccHL7qNp9O3SFhY94+qaSwIHXUbrS4NVNFsruuvpLM0Cw6
-         tkhPk1RU4Dy4A==
-Date:   Mon, 6 Nov 2023 09:36:44 -0700
-From:   Keith Busch <kbusch@kernel.org>
-To:     Mark O'Donovan <shiftee@posteo.net>
-Cc:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-        sagi@grimberg.me, hch@lst.de, axboe@kernel.dk, hare@suse.de
-Subject: Re: [PATCH v3 0/3] nvme-tcp: always set valid seq_num in dhchap reply
-Message-ID: <ZUkWHNgXt_RNQVwG@kbusch-mbp.dhcp.thefacebook.com>
-References: <20231025105125.134443-1-shiftee@posteo.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231025105125.134443-1-shiftee@posteo.net>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Mon, 6 Nov 2023 11:37:48 -0500
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7989410DB;
+        Mon,  6 Nov 2023 08:37:43 -0800 (PST)
+Received: from pps.filterd (m0353724.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A6GFm5r005417;
+        Mon, 6 Nov 2023 16:37:10 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=H4NlHBTKBFQ1Gv20U3eQViy1SptM4Vrxu8DsL5fD13g=;
+ b=LJ7uhMlwHTttnv7iOcSjHi06tOwVtRRSYA2rJCaTR4FRgvSh5D6pjomBLJNhyCoDYTKt
+ ulLR0kclaVfHXjTn//iToLqFw4pOmLh2xjndZWQmx5HevVwwzo0f9qd0iNePls37dx3S
+ PydiEa/DBcIn7qKhviB0mtO2hGpUwc2CBRRVeZz+BpjvDQw3a8OvGBjFrfZ5/OGd+cAr
+ 66Av8kZGySY4EDJi7QIIbxTmXDULdHGxowNkIudg//1j98fR2IWRYS0Xqi0VoRRS/S4t
+ mWywwWvpOujIf0oyFgnaa8XXQXAYMMVlQDo+LdrD/l4QaKIsPN/BrWmO8kcK0BTxuBEp UQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u73gn0mny-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 06 Nov 2023 16:37:09 +0000
+Received: from m0353724.ppops.net (m0353724.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3A6GSBsr021544;
+        Mon, 6 Nov 2023 16:37:09 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u73gn0mn5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 06 Nov 2023 16:37:09 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3A6FcRGd016939;
+        Mon, 6 Nov 2023 16:37:07 GMT
+Received: from smtprelay02.dal12v.mail.ibm.com ([172.16.1.4])
+        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3u6301j2r0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 06 Nov 2023 16:37:07 +0000
+Received: from smtpav04.wdc07v.mail.ibm.com (smtpav04.wdc07v.mail.ibm.com [10.39.53.231])
+        by smtprelay02.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3A6Gb7ej43974954
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 6 Nov 2023 16:37:07 GMT
+Received: from smtpav04.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 079FF58052;
+        Mon,  6 Nov 2023 16:37:06 +0000 (GMT)
+Received: from smtpav04.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 95B2658045;
+        Mon,  6 Nov 2023 16:37:04 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.61.58.168])
+        by smtpav04.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+        Mon,  6 Nov 2023 16:37:04 +0000 (GMT)
+Message-ID: <705011c8c952cfe97093844ab78b8ed4476db579.camel@linux.ibm.com>
+Subject: Re: [PATCH v4 00/23] security: Move IMA and EVM to the LSM
+ infrastructure
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Roberto Sassu <roberto.sassu@huaweicloud.com>,
+        viro@zeniv.linux.org.uk, brauner@kernel.org,
+        chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
+        kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
+        paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
+        dmitry.kasatkin@gmail.com, dhowells@redhat.com, jarkko@kernel.org,
+        stephen.smalley.work@gmail.com, eparis@parisplace.org,
+        casey@schaufler-ca.com, mic@digikod.net
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
+        selinux@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>
+Date:   Mon, 06 Nov 2023 11:37:03 -0500
+In-Reply-To: <20231027083558.484911-1-roberto.sassu@huaweicloud.com>
+References: <20231027083558.484911-1-roberto.sassu@huaweicloud.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-22.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: XZO7wLDJQ-btd4kEJTWKEqAiNlg5rWPx
+X-Proofpoint-GUID: 9pc1zSUp6gPx3E58KO4rVPeBfcFnDP-0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-06_12,2023-11-02_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
+ priorityscore=1501 impostorscore=0 spamscore=0 mlxscore=0 bulkscore=0
+ phishscore=0 malwarescore=0 adultscore=0 suspectscore=0 lowpriorityscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2310240000 definitions=main-2311060134
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 25, 2023 at 10:51:22AM +0000, Mark O'Donovan wrote:
-> The first patch is a small unrelated fix which makes it clear that the
-> response data section of the Success1 message is not optional.
+On Fri, 2023-10-27 at 10:35 +0200, Roberto Sassu wrote:
+> From: Roberto Sassu <roberto.sassu@huawei.com>
 > 
-> The second patch removes use of the host sequence number (S2) as an
-> indicator of bi-directional authentication.
+> IMA and EVM are not effectively LSMs, especially due to the fact that in
+> the past they could not provide a security blob while there is another LSM
+> active.
 > 
-> The third patch causes us to always set the host sequence number (S2)
-> to a non-zero value instead of the 0 value reserved for the secure
-> channel feature.
+> That changed in the recent years, the LSM stacking feature now makes it
+> possible to stack together multiple LSMs, and allows them to provide a
+> security blob for most kernel objects. While the LSM stacking feature has
+> some limitations being worked out, it is already suitable to make IMA and
+> EVM as LSMs.
+> 
+> In short, while this patch set is big, it does not make any functional
+> change to IMA and EVM. IMA and EVM functions are called by the LSM
+> infrastructure in the same places as before (except ima_post_path_mknod()),
+> rather being hardcoded calls, and the inode metadata pointer is directly
+> stored in the inode security blob rather than in a separate rbtree.
+> 
+> To avoid functional changes, it was necessary to keep the 'integrity' LSM
+> in addition to the newly introduced 'ima' and 'evm' LSMs, despite there is
+> no LSM ID assigned to it. There are two reasons: first, IMA and EVM still
+> share the same inode metadata, and thus cannot directly reserve space in
+> the security blob for it; second, someone needs to initialize 'ima' and
+> 'evm' exactly in this order, as the LSM infrastructure cannot guarantee
+> that.
+> 
+> The patch set is organized as follows.
+> 
+> Patches 1-9 make IMA and EVM functions suitable to be registered to the LSM
+> infrastructure, by aligning function parameters.
+> 
+> Patches 10-18 add new LSM hooks in the same places where IMA and EVM
+> functions are called, if there is no LSM hook already.
+> 
+> Patches 19-22 do the bulk of the work, introduce the new LSMs 'ima' and
+> 'evm', and move hardcoded calls to IMA, EVM and integrity functions to
+> those LSMs. In addition, they reserve one slot for the 'evm' LSM to supply
+> an xattr with the inode_init_security hook.
+> 
+> Finally, patch 23 removes the rbtree used to bind integrity metadata to the
+> inodes, and instead reserves a space in the inode security blob to store
+> the pointer to that metadata. This also brings performance improvements due
+> to retrieving metadata in constant time, as opposed to logarithmic.
+> 
+> The patch set applies on top of lsm/next-queue, commit 0310640b00d2 ("lsm:
+> don't yet account for IMA in LSM_CONFIG_COUNT calculation"), plus commits
+> in linux-integrity/next-integrity-testing up to bc4532e9cd3b ("ima: detect
+> changes to the backing overlay file").
 
-Thanks, queued up for nvme-6.7.
+Thanks, Roberto!  The patch set looks really good.  I just sent a few
+very minor comments.
+
+Mimi
+
