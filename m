@@ -2,143 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 520AF7E1B48
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 08:36:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 151997E1B4D
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 08:37:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231149AbjKFHgk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 02:36:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41086 "EHLO
+        id S231152AbjKFHhA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 02:37:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229705AbjKFHgh (ORCPT
+        with ESMTP id S231158AbjKFHg5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 02:36:37 -0500
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 196C1FA
-        for <linux-kernel@vger.kernel.org>; Sun,  5 Nov 2023 23:36:35 -0800 (PST)
-Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-4083ac51d8aso31864735e9.2
-        for <linux-kernel@vger.kernel.org>; Sun, 05 Nov 2023 23:36:35 -0800 (PST)
+        Mon, 6 Nov 2023 02:36:57 -0500
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F191A134
+        for <linux-kernel@vger.kernel.org>; Sun,  5 Nov 2023 23:36:52 -0800 (PST)
+Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-5435336ab0bso6994168a12.1
+        for <linux-kernel@vger.kernel.org>; Sun, 05 Nov 2023 23:36:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699256193; x=1699860993; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=7HZFuTThqNBXigENUrn1+5WKDQWbvpxI76bKk+psjyA=;
-        b=GMDwqX6RM117sRyEORyqNTsKtRng/EI/Qy972VKZGVGsgI4he364XMAIlkQK/QJPlZ
-         IrlugvBJKPGkijFNrpEGTmVn7tR8x2c6+9qKz0+UXgXlv4NIf5+a6bo25KK5QuwsYVAY
-         S2W9rxA3oyIElt1kHdm9dRBYfSmfm6t5SgXc1I2BXXcZTyzwAGZbOunKo2/T13rtbAFK
-         hSdcKlih6YUIURT5nTo72LHFcdETiEb+oGLiGHfsNSZ/sMHhwZ7WmuE3Ld7nmuVa5MYN
-         I7oue72s0Is3OX61S/B+KmiZZy97jW4O7HZYVUcSKmrfX+P0UcY4HUA2bZgEwmu1uiec
-         D8Yg==
+        d=riscv-rocks.de; s=google; t=1699256211; x=1699861011; darn=vger.kernel.org;
+        h=organization:user-agent:in-reply-to:content-disposition
+         :mime-version:references:mail-followup-to:reply-to:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=J5Y2aGthN1YDrgbuoXhH81nEgX3ffno/slnIsK/Qu8E=;
+        b=WM1bujhhHfdMll9lUCNd1LAebpINkmiT+/j6ENA0WjAcyOE77yYokL1fE2uT8VY2Fr
+         kg3x2AgYyNTrINlniYHLeLVIk0n96eopDHX7m135BzNDoR5PZOsbDs9BucKu1KEQGtgo
+         KhpVhSlrfAFB06vBOvlIuh2Q6CqY0QoxHc3BAxw050IpNivKMfdu4xwz2GSQ3IuC2fiS
+         zefTpHpwMLetDC8phsP9DFSiTdjwF4A7RIt/r57nftmihlX5YbPstEIKkGAKM+3OND/N
+         D/ZE0WaktzZm7jQKJvzGq7Po+jTifwhQC+oDbd8V1Hex6V0qKRzkUzzvho5Egrdyo0aZ
+         JsuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699256193; x=1699860993;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=7HZFuTThqNBXigENUrn1+5WKDQWbvpxI76bKk+psjyA=;
-        b=AhMW5O6L0KxrRZkb/8nys3V1S1T2H/Xa9X48HK20VXI39Pqj8SDBCAaJzYcJkYvR4w
-         faJUY3sbJPcC8BF0hDWxNYZmuNSz8OB74IusF2LMOw/+FvK3DDA2SfczlmbzhFQ/GXcC
-         /obua9V3tUQV2aL5zqt5I2+n5ZYW5sfminbp2xTSxnvUsoAxq7EyICMkliBQkgjh4VfQ
-         NbBrA3DpF8GdYWFQyy/ygFrkCGn0naIFyh3rwQhfXp+bOs3hkerDvt1eE5yHP+HpWZsp
-         efgNkJFPhtOW+RuiqmZGK52A4Ts0jxOMgPrv7firinDciBuQJeHwhfF6u+BoIIfOF5bm
-         ZXAA==
-X-Gm-Message-State: AOJu0YxM1JKN0aW+7vtFUAhEgYDy10BFL6e4GFFwjYD6RjfV+1ue26kE
-        xCy/g09nZppVpG1lTbnpnaM2BA==
-X-Google-Smtp-Source: AGHT+IEMLyn73bpYlJ/TIeAS79j+E2f9q22Y5AXgwoqNowHVBP1vIUhhP0rWupQ7gRGRk8VVrPFIXA==
-X-Received: by 2002:a05:600c:1992:b0:406:53c0:3c71 with SMTP id t18-20020a05600c199200b0040653c03c71mr23564326wmq.37.1699256193469;
-        Sun, 05 Nov 2023 23:36:33 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.218.126])
-        by smtp.gmail.com with ESMTPSA id q8-20020a05600c46c800b0040776008abdsm11186755wmo.40.2023.11.05.23.36.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 05 Nov 2023 23:36:32 -0800 (PST)
-Message-ID: <84d8b4cf-4ce0-4c90-926c-2a022e28bd9e@linaro.org>
-Date:   Mon, 6 Nov 2023 08:36:30 +0100
+        d=1e100.net; s=20230601; t=1699256211; x=1699861011;
+        h=organization:user-agent:in-reply-to:content-disposition
+         :mime-version:references:mail-followup-to:reply-to:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=J5Y2aGthN1YDrgbuoXhH81nEgX3ffno/slnIsK/Qu8E=;
+        b=roO4Bk3KMwwu0VVSoC6orpl5LgGYI00B/xjMY/MNy2XomUJF36jbvBxOfWpacvz+bq
+         AzgqaWdnQO1Xfs1KnZcvbwyw17YUn1QW/Z1PTxakNfgjo4p1iwvWmOfOq0VI18GsO4tg
+         WkA2ivSuHZ8g2aNi2jLYfUlh8lDQl3arJYPLMaXQHDCYNfCLBdvses8rGevvns90CyNT
+         RHiGWAeFZRtDNlUmR9CCttLGgUQODnrdPTQOmILvqrTjh8bLfw6Un0wZgkKWOq2mVCVh
+         CrnUEcSH9aj1wSvwn96uICwAngl4wRAgx1vkJZpguMQYpMWt1gRNSkPxpm0p2TV7G/7U
+         xa/w==
+X-Gm-Message-State: AOJu0YwPF7K7Mhyr8mSEXXUv+Dk83SKVeHcQps1nTlMk3wRKV3vvpEdL
+        MoOMxohBn3SHUEoLeXdaoch54A==
+X-Google-Smtp-Source: AGHT+IHRdxgPLaEB/Ys53FpvH5+8AW9GdamUpHFdhxBifRJQyJEUpUrJUUSKnvQ3gtRK2DIDINCsrg==
+X-Received: by 2002:a17:907:1def:b0:9d6:d78f:cdd9 with SMTP id og47-20020a1709071def00b009d6d78fcdd9mr10689622ejc.35.1699256211299;
+        Sun, 05 Nov 2023 23:36:51 -0800 (PST)
+Received: from fedora.fritz.box (p5494469c.dip0.t-ipconnect.de. [84.148.70.156])
+        by smtp.gmail.com with ESMTPSA id a9-20020a170906190900b009a5f1d15642sm3794096eje.158.2023.11.05.23.36.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 05 Nov 2023 23:36:50 -0800 (PST)
+Date:   Mon, 6 Nov 2023 08:36:48 +0100
+From:   Damian Tometzki <damian@riscv-rocks.de>
+To:     Eric Biggers <ebiggers@kernel.org>, dhowells@redhat.com
+Cc:     Steve French <smfrench@gmail.com>,
+        Damian Tometzki <damian@riscv-rocks.de>,
+        John Sanpe <sanpeqf@gmail.com>,
+        CIFS <linux-cifs@vger.kernel.org>,
+        Namjae Jeon <linkinjeon@kernel.org>,
+        Paulo Alcantara <pc@manguebit.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: smb cifs: Linux 6.7 pre rc-1 kernel dump in smb2_get_aead_req
+Message-ID: <ZUiXkPPP1TuOgmmf@fedora.fritz.box>
+Reply-To: Damian Tometzki <damian@riscv-rocks.de>
+Mail-Followup-To: Eric Biggers <ebiggers@kernel.org>, dhowells@redhat.com,
+        Steve French <smfrench@gmail.com>,
+        Damian Tometzki <damian@riscv-rocks.de>,
+        John Sanpe <sanpeqf@gmail.com>, CIFS <linux-cifs@vger.kernel.org>,
+        Namjae Jeon <linkinjeon@kernel.org>,
+        Paulo Alcantara <pc@manguebit.com>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <20231022183917.1013135-1-sanpeqf@gmail.com>
+ <ZUfQo47uo0p2ZsYg@fedora.fritz.box>
+ <CAH2r5msde65PMtn-96VZDAQkT_rq+e-2G4O+zbPUR8zSWGxMsg@mail.gmail.com>
+ <20231105193601.GB91123@sol.localdomain>
+ <ZUfvk-6y2pER6Rmc@fedora.fritz.box>
+ <20231105201516.GC91123@sol.localdomain>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/7] dt-bindings: input: melfas,mms114: add MMS252
- compatible
-Content-Language: en-US
-To:     Bryant Mairs <bryant@mai.rs>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org
-Cc:     Luca Weiss <luca@z3ntu.xyz>
-References: <20231105204759.37107-1-bryant@mai.rs>
- <20231105204759.37107-2-bryant@mai.rs>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231105204759.37107-2-bryant@mai.rs>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231105201516.GC91123@sol.localdomain>
+User-Agent: Mutt
+X-Operating-System: Linux Fedora release 39 (Thirty Nine) (Kernel 6.6.0)
+Organization: Linux hacker
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/11/2023 21:46, Bryant Mairs wrote:
-> From: Luca Weiss <luca@z3ntu.xyz>
+On Sun, 05. Nov 12:15, Eric Biggers wrote:
+> On Sun, Nov 05, 2023 at 08:40:03PM +0100, Damian Tometzki wrote:
+> > On Sun, 05. Nov 11:36, Eric Biggers wrote:
+> > > On Sun, Nov 05, 2023 at 11:05:30AM -0700, Steve French wrote:
+> > > > maybe related to this recent crypto patch?
+> > > > 
+> > > > https://git.samba.org/?p=sfrench/cifs-2.6.git;a=commit;h=783fa2c94f4150fe1b7f7d88b3baf6d98f82b41b
+> > > > 
+> > > > On Sun, Nov 5, 2023, 10:32 Damian Tometzki <damian@riscv-rocks.de> wrote:
+> > > > > [   83.530503] CPU: 7 PID: 4584 Comm: mount.cifs Tainted: G        W
+> > > > >     6.6.0 #61
+> > > > > [   83.530508] Hardware name: LENOVO 20XWCTO1WW/20XWCTO1WW, BIOS N32ET86W
+> > > > > (1.62 ) 07/12/2023
+> > > 
+> > > The above suggests that this warning occurred on 6.6, not on 6.7 pre rc1.
+> > > 
+> > > - Eric
+> > Hello,
+> > 
+> > is little bit missleading but it is 6.6 from linus mainline git with all
+> > the pull request. 
+> > 
+> > Damian
+> > 
 > 
-> Add a compatible for MMS252 touchscreen which appears to work fine with
-> the MMS114 driver.
+> Okay, next time please mention the actual commit ID.  Anyway, the warning is
+> 'WARN_ON_ONCE(user_backed_iter(&rqst[i].rq_iter))', so maybe take a look at
+> changes from 
 > 
-> Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
-> Signed-off-by: Bryant Mairs <bryant@mai.rs>
+>     commit f1b4cb650b9a0eeba206d8f069fcdc532bfbcd74
+>     Author: David Howells <dhowells@redhat.com>
+>     Date:   Mon Sep 25 13:03:03 2023 +0100
+> 
+>         iov_iter: Derive user-backedness from the iterator type
+>
+Hello Eric,
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+the revert of f1b4cb650b9a0eeba206d8f069fcdc532bfbcd74 solved the issue of the kernel dump.
 
-Best regards,
-Krzysztof
-
+diff --git a/include/linux/uio.h b/include/linux/uio.h
+index b6214cbf2a43..02a8e5e6c458 100644
+--- a/include/linux/uio.h
++++ b/include/linux/uio.h
+@@ -43,6 +43,7 @@ struct iov_iter {
+        bool copy_mc;
+        bool nofault;
+        bool data_source;
++       bool user_backed;
+        size_t iov_offset;
+        /*
+         * Hack alert: overlay ubuf_iovec with iovec + count, so
+@@ -139,7 +140,7 @@ static inline unsigned char iov_iter_rw(const struct iov_iter *i)
+ 
+ static inline bool user_backed_iter(const struct iov_iter *i)
+ {
+-       return iter_is_ubuf(i) || iter_is_iovec(i);
++       return i->user_backed;
+ }
+ 
+ /*
+@@ -358,6 +359,7 @@ static inline void iov_iter_ubuf(struct iov_iter *i, unsigned int direction,
+        *i = (struct iov_iter) {
+                .iter_type = ITER_UBUF,
+                .copy_mc = false,
++               .user_backed = true,
+                .data_source = direction,
+                .ubuf = buf,
+                .count = count,
+diff --git a/lib/iov_iter.c b/lib/iov_iter.c
+index de7d11cf4c63..a077c15727b2 100644
+--- a/lib/iov_iter.c
++++ b/lib/iov_iter.c
+@@ -168,6 +168,7 @@ void iov_iter_init(struct iov_iter *i, unsigned int direction,
+                .iter_type = ITER_IOVEC,
+                .copy_mc = false,
+                .nofault = false,
++               .user_backed = true,
+                .data_source = direction,
+                .__iov = iov,
+                .nr_segs = nr_segs,
+ 
+> and the pull request that contained it:
+> 
+>     commit df9c65b5fc7ef1caabdb7a01a2415cbb8a00908d
+>     Merge: 3b3f874cc1d07 b5f0e20f444cd
+>     Author: Linus Torvalds <torvalds@linux-foundation.org>
+>     Date:   Mon Oct 30 09:24:21 2023 -1000
+> 
+>         Merge tag 'vfs-6.7.iov_iter' of gitolite.kernel.org:pub/scm/linux/kernel/git/vfs/vfs
+> 
+>         Pull iov_iter updates from Christian Brauner:
+>          "This contain's David's iov_iter cleanup work to convert the iov_iter
+>           iteration macros to inline functions:
