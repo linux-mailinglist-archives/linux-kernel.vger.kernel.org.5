@@ -2,81 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5615F7E2624
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 14:56:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 380C27E262F
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 14:58:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231573AbjKFNz6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 08:55:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52424 "EHLO
+        id S231358AbjKFN6Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 08:58:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229921AbjKFNz4 (ORCPT
+        with ESMTP id S229785AbjKFN6W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 08:55:56 -0500
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8D6ABF
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 05:55:53 -0800 (PST)
-Received: by mail-wr1-x42b.google.com with SMTP id ffacd0b85a97d-307d58b3efbso2615405f8f.0
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 05:55:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699278952; x=1699883752; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=k7K/G0f6ZEQYZQT5cSn0nDVYnEltfi7z57xwENHHtHM=;
-        b=yIgCa0TdliwwR3nTmefjuk9/SE/lTLg32cZhAUOcF6Tng54SFntxkfZ/hgtom/zQ1R
-         +Uc7dUu2so/zvQeQLZbSP0WCtxIsk+ylZp4Os6Dt2vuu2pKpN50mIUMra+6QBqUISUPE
-         rCeSYWTqo1HmFl0amqd6yhnleUnqbU7+yt8nlYhfP8JooVG9WFW0oe+gFE5Oz/oa+PqT
-         RuwdR6ohFqJmt9ZTTU7YKIMCpqTyMd4jGH4lnntcfHZugpBAkvgFxqowpNIcZzmQ9SaH
-         wzUfeayW1ZaWaSLyNYsduj6tVgflEDfzqVq1LHXpHzqhaKYPl2wXSIqRVxUEKxDTDCBz
-         v0lw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699278952; x=1699883752;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=k7K/G0f6ZEQYZQT5cSn0nDVYnEltfi7z57xwENHHtHM=;
-        b=d57HVDXPKi/lraekd/EHUnrWbXYwbHEiwXWmD22rlr2HYZrV8Yl627DCiCcDwHMWAe
-         zNYkjCKN6rwfthnsKmr1Sijjt3q9FfdS/xdvCMqVYCuSDWcZ7kp++psZoje7Ec4OKbnQ
-         HiSHMWo/+2UtMUEjLv3Mcs/oN2/bT66trg8ODM9bfbOedSrqku1F7ksiY57cRqET6e8Y
-         UCbN/udykMcjugFOHFPfIOvgY3XEXT2HPTmf5SExr+5LJRVSxuv6LJcaNb9dEpU2gfRR
-         Sopw+cbtV2b0ZbdNcwgGL1FGAbpCFRxeBsNfiePoxbi1wL9n+UeevriM5my0ChCrw0uI
-         PVBA==
-X-Gm-Message-State: AOJu0YzuF/QXZ+ATB4qI/DADLnSeG0Cau1XvCXDDXQHd982vRdGQVLvm
-        N3RREXOorC6VKZdPgIjMy7tC4A==
-X-Google-Smtp-Source: AGHT+IGR+a68DIJMCWA87zZmPqnk0K4fWbuHIkwr5qAkD+KetGDdjDJSkrxRV54oIblYdbBTES4HNw==
-X-Received: by 2002:adf:f646:0:b0:31f:db1b:7296 with SMTP id x6-20020adff646000000b0031fdb1b7296mr18563924wrp.21.1699278952438;
-        Mon, 06 Nov 2023 05:55:52 -0800 (PST)
-Received: from [192.168.1.7] (host-92-25-138-185.as13285.net. [92.25.138.185])
-        by smtp.gmail.com with ESMTPSA id g8-20020a5d4888000000b0032f7cc56509sm1932116wrq.98.2023.11.06.05.55.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 06 Nov 2023 05:55:51 -0800 (PST)
-Message-ID: <f6848c84-ba5a-473b-9a98-8115611c1789@linaro.org>
-Date:   Mon, 6 Nov 2023 13:55:51 +0000
+        Mon, 6 Nov 2023 08:58:22 -0500
+Received: from out-183.mta0.migadu.com (out-183.mta0.migadu.com [91.218.175.183])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39599F4
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 05:58:19 -0800 (PST)
+Message-ID: <c736ddff-8523-463a-aa9a-3c8542486d69@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1699279097;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=YpJtQNjFqtQun1UvL/4GUP7sq9HgupW691S6klaKvC8=;
+        b=qlvQ3FFPO/1CekUdKexuT0MbYhC22LlVBltuHnwyVYU8d+rzh6Q99+brRFabRMaaFITG4B
+        rCabmlVd/Bx7N36ZqC9GYjX1j+HlRLTch5cSgnqqrTzHTbe+lLmrVGrc/w/sMLzvaRq+EF
+        ToQJAcBwgjeG4jwxCcV8vhlSSGjR3Yw=
+Date:   Mon, 6 Nov 2023 21:58:03 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/8] mfd: qcom-spmi-pmic: Add support for PM8937
-Content-Language: en-US
-To:     Dang Huynh <danct12@riseup.net>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Robert Marko <robimarko@gmail.com>
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-References: <20231106-pm8937-v1-0-ec51d9eeec53@riseup.net>
- <20231106-pm8937-v1-1-ec51d9eeec53@riseup.net>
-From:   Caleb Connolly <caleb.connolly@linaro.org>
-In-Reply-To: <20231106-pm8937-v1-1-ec51d9eeec53@riseup.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH RFC V2 0/6] rxe_map_mr_sg() fix cleanup and refactor
+To:     "Zhijian Li (Fujitsu)" <lizhijian@fujitsu.com>,
+        "zyjzyj2000@gmail.com" <zyjzyj2000@gmail.com>,
+        "jgg@ziepe.ca" <jgg@ziepe.ca>, "leon@kernel.org" <leon@kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "rpearsonhpe@gmail.com" <rpearsonhpe@gmail.com>,
+        "Daisuke Matsuda (Fujitsu)" <matsuda-daisuke@fujitsu.com>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "yi.zhang@redhat.com" <yi.zhang@redhat.com>
+References: <20231103095549.490744-1-lizhijian@fujitsu.com>
+ <d838620b-51df-4216-864e-1c793dae7721@linux.dev>
+ <a256a01d-1572-427a-80df-46f2079af967@fujitsu.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Zhu Yanjun <yanjun.zhu@linux.dev>
+In-Reply-To: <a256a01d-1572-427a-80df-46f2079af967@fujitsu.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -84,47 +57,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 06/11/2023 12:08, Dang Huynh wrote:
-> Add the subtype and compatible strings for PM8937.
+在 2023/11/6 12:07, Zhijian Li (Fujitsu) 写道:
 > 
-> The PM8937 is found in various SoCs, including MSM8917, MSM8937,
-> MSM8940 and APQ variants.
 > 
-> Signed-off-by: Dang Huynh <danct12@riseup.net>
+> On 03/11/2023 21:00, Zhu Yanjun wrote:
+>> 在 2023/11/3 17:55, Li Zhijian 写道:
+>>> I don't collect the Reviewed-by to the patch1-2 this time, since i
+>>> think we can make it better.
+>>>
+>>> Patch1-2: Fix kernel panic[1] and benifit to make srp work again.
+>>>             Almost nothing change from V1.
+>>> Patch3-5: cleanups # newly add
+>>> Patch6: make RXE support PAGE_SIZE aligned mr # newly add, but not fully tested
+>>>
+>>> My bad arm64 mechine offten hangs when doing blktests even though i use the
+>>> default siw driver.
+>>>
+>>> - nvme and ULPs(rtrs, iser) always registers 4K mr still don't supported yet.
+>>
+>> Zhijian
+>>
+>> Please read carefully the whole discussion about this problem. You will find a lot of valuable suggestions, especially suggestions from Jason.
+> 
+> Okay, i will read it again. If you can tell me which thread, that would be better.
+> 
+> 
+>>
+>>   From the whole discussion, it seems that the root cause is very clear.
+>> We need to fix this prolem. Please do not send this kind of commits again.
+>>
+> 
+> Let's think about what's our goal first.
+> 
+> - 1) Fix the panic[1] and only support PAGE_SIZE MR
+> - 2) support PAGE_SIZE aligned MR
+> - 3) support any page_size MR.
+> 
+> I'm sorry i'm not familiar with the linux MM subsystem. It seem it's safe/correct to access
+> address/memory across pages start from the return of kmap_loca_page(page).
+> In other words, 2) is already native supported, right?
 
-Reviewed-by: Caleb Connolly <caleb.connolly@linaro.org>
-> ---
->  drivers/mfd/qcom-spmi-pmic.c      | 1 +
->  include/soc/qcom/qcom-spmi-pmic.h | 1 +
->  2 files changed, 2 insertions(+)
-> 
-> diff --git a/drivers/mfd/qcom-spmi-pmic.c b/drivers/mfd/qcom-spmi-pmic.c
-> index 4549fa9f7d4b..eab5bf6cff10 100644
-> --- a/drivers/mfd/qcom-spmi-pmic.c
-> +++ b/drivers/mfd/qcom-spmi-pmic.c
-> @@ -53,6 +53,7 @@ static const struct of_device_id pmic_spmi_id_table[] = {
->  	{ .compatible = "qcom,pm8901", .data = N_USIDS(2) },
->  	{ .compatible = "qcom,pm8909", .data = N_USIDS(2) },
->  	{ .compatible = "qcom,pm8916", .data = N_USIDS(2) },
-> +	{ .compatible = "qcom,pm8937", .data = N_USIDS(2) },
->  	{ .compatible = "qcom,pm8941", .data = N_USIDS(2) },
->  	{ .compatible = "qcom,pm8950", .data = N_USIDS(2) },
->  	{ .compatible = "qcom,pm8994", .data = N_USIDS(2) },
-> diff --git a/include/soc/qcom/qcom-spmi-pmic.h b/include/soc/qcom/qcom-spmi-pmic.h
-> index c47cc71a999e..17a0a8c3d656 100644
-> --- a/include/soc/qcom/qcom-spmi-pmic.h
-> +++ b/include/soc/qcom/qcom-spmi-pmic.h
-> @@ -31,6 +31,7 @@
->  #define PM8998_SUBTYPE		0x14
->  #define PMI8998_SUBTYPE		0x15
->  #define PM8005_SUBTYPE		0x18
-> +#define PM8937_SUBTYPE		0x19
->  #define PM660L_SUBTYPE		0x1a
->  #define PM660_SUBTYPE		0x1b
->  #define PM8150_SUBTYPE		0x1e
-> 
+Yes. Please read the comments from Jason, Leon and Bart. They shared a 
+lot of good advice. From them, we can know the root cause and how to fix 
+this problem.
 
--- 
-// Caleb (they/them)
+Good Luck.
+
+Zhu Yanjun
+
+> 
+> I get totally confused now.
+> 
+> 
+> 
+>> Zhu Yanjun
+>>
+>>>
+>>> [1] https://lore.kernel.org/all/CAHj4cs9XRqE25jyVw9rj9YugffLn5+f=1znaBEnu1usLOciD+g@mail.gmail.com/T/
+>>>
+>>> Li Zhijian (6):
+>>>     RDMA/rxe: RDMA/rxe: don't allow registering !PAGE_SIZE mr
+>>>     RDMA/rxe: set RXE_PAGE_SIZE_CAP to PAGE_SIZE
+>>>     RDMA/rxe: remove unused rxe_mr.page_shift
+>>>     RDMA/rxe: Use PAGE_SIZE and PAGE_SHIFT to extract address from
+>>>       page_list
+>>>     RDMA/rxe: cleanup rxe_mr.{page_size,page_shift}
+>>>     RDMA/rxe: Support PAGE_SIZE aligned MR
+>>>
+>>>    drivers/infiniband/sw/rxe/rxe_mr.c    | 80 ++++++++++++++++-----------
+>>>    drivers/infiniband/sw/rxe/rxe_param.h |  2 +-
+>>>    drivers/infiniband/sw/rxe/rxe_verbs.h |  9 ---
+>>>    3 files changed, 48 insertions(+), 43 deletions(-)
+>>>
+
