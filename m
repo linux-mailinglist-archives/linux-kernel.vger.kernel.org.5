@@ -2,51 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 45C797E30AC
+	by mail.lfdr.de (Postfix) with ESMTP id A24F47E30AD
 	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 00:07:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233488AbjKFXH1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 18:07:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36136 "EHLO
+        id S233507AbjKFXHb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 18:07:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233451AbjKFXHN (ORCPT
+        with ESMTP id S233395AbjKFXHS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 18:07:13 -0500
+        Mon, 6 Nov 2023 18:07:18 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4E2010FC;
-        Mon,  6 Nov 2023 15:07:09 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E6803C433C8;
-        Mon,  6 Nov 2023 23:07:07 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCF511703;
+        Mon,  6 Nov 2023 15:07:13 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 683B4C43397;
+        Mon,  6 Nov 2023 23:07:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699312029;
-        bh=4G1C15qqWoa8WZ4NPJj+98V/NuK8foqW7t8CBB/oMHI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JisrU95GKuhRGW2UbfFn71jCF16IPIJBqI+ct76ED+PWAwixS9g1F9eVYRD55PUH8
-         7k6qQd8TSMmTUws+Ha3pK2e99B/Z1O+akcENayzCkrL+0/+f5RsMPnmNKhC0f9JAvn
-         SAuZ/B8OIqVU037yaieC8tO2eVX+3AszuYL8kRH5vqVoCdio+NcP5Wg6vdn4fh5Jxc
-         gTG55Ya7/D/MCRCFca+6fZxtlYVSioJFRunrOThg0mlj0ANaJa1WIQlFDi23870gpt
-         qM60xsJifmGSwyrAIeoPAKR6M7mfJuxV+rsKYe6+SI6ibzYMadjjwAmi69U2xG2oCg
-         zZjwMKFReKmiA==
+        s=k20201202; t=1699312033;
+        bh=7OMpCGtSPUxcuBaWVkffzrmyXC7CuWBRgBSd2fL7ESk=;
+        h=From:To:Cc:Subject:Date:From;
+        b=M+n3pVdZOpLkvPsXnOeToW6p24t2/RxaL019T0XZ1vP/BkbG/LkJ/d8OBGVVNpAen
+         iTCFs1F+CIZWk64sdm0xLhfncIQvvqXGr1QixSm6UREvN802aRZREKUlLzzZAXKA+3
+         zcSrxRQo3oBSRkcDToQihfY8H7lr0oHbzm2bXpCioE7bOETMkl9S1A1j4KNEQqDzNE
+         MS1xDmBFbU3mAAW15i/N7wMDPj/zK+U4Y4ag+WkkJ9lplvPyeRQlwJ8DL3tghb+41g
+         HmvzN9pMFp2khTBvaOCvRvQ1OUzoEPCpO/qYAxAQxeyNcMTE3sQsVPa++I4AcXJQV7
+         yCEi8O+W2/Dmg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Josh Poimboeuf <jpoimboe@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Marco Elver <elver@google.com>,
-        Sasha Levin <sashal@kernel.org>, masahiroy@kernel.org,
-        peterz@infradead.org, samitolvanen@google.com,
-        keescook@chromium.org, linux-kbuild@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.5 5/5] x86/retpoline: Make sure there are no unconverted return thunks due to KCSAN
-Date:   Mon,  6 Nov 2023 18:06:42 -0500
-Message-ID: <20231106230651.3734359-5-sashal@kernel.org>
+Cc:     John Stultz <jstultz@google.com>, Ingo Molnar <mingo@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, peterz@infradead.org,
+        mingo@redhat.com, will@kernel.org
+Subject: [PATCH AUTOSEL 6.1 1/2] locking/ww_mutex/test: Fix potential workqueue corruption
+Date:   Mon,  6 Nov 2023 18:07:08 -0500
+Message-ID: <20231106230710.3734490-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231106230651.3734359-1-sashal@kernel.org>
-References: <20231106230651.3734359-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.5.10
+X-stable-base: Linux 6.1.61
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
@@ -58,78 +51,117 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Josh Poimboeuf <jpoimboe@kernel.org>
+From: John Stultz <jstultz@google.com>
 
-[ Upstream commit 2d7ce49f58dc95495b3e22e45d2be7de909b2c63 ]
+[ Upstream commit bccdd808902f8c677317cec47c306e42b93b849e ]
 
-Enabling CONFIG_KCSAN leads to unconverted, default return thunks to
-remain after patching.
+In some cases running with the test-ww_mutex code, I was seeing
+odd behavior where sometimes it seemed flush_workqueue was
+returning before all the work threads were finished.
 
-As David Kaplan describes in his debugging of the issue, it is caused by
-a couple of KCSAN-generated constructors which aren't processed by
-objtool:
+Often this would cause strange crashes as the mutexes would be
+freed while they were being used.
 
-  "When KCSAN is enabled, GCC generates lots of constructor functions
-  named _sub_I_00099_0 which call __tsan_init and then return.  The
-  returns in these are generally annotated normally by objtool and fixed
-  up at runtime.  But objtool runs on vmlinux.o and vmlinux.o does not
-  include a couple of object files that are in vmlinux, like
-  init/version-timestamp.o and .vmlinux.export.o, both of which contain
-  _sub_I_00099_0 functions.  As a result, the returns in these functions
-  are not annotated, and the panic occurs when we call one of them in
-  do_ctors and it uses the default return thunk.
+Looking at the code, there is a lifetime problem as the
+controlling thread that spawns the work allocates the
+"struct stress" structures that are passed to the workqueue
+threads. Then when the workqueue threads are finished,
+they free the stress struct that was passed to them.
 
-  This difference can be seen by counting the number of these functions in the object files:
-  $ objdump -d vmlinux.o|grep -c "<_sub_I_00099_0>:"
-  2601
-  $ objdump -d vmlinux|grep -c "<_sub_I_00099_0>:"
-  2603
+Unfortunately the workqueue work_struct node is in the stress
+struct. Which means the work_struct is freed before the work
+thread returns and while flush_workqueue is waiting.
 
-  If these functions are only run during kernel boot, there is no
-  speculation concern."
+It seems like a better idea to have the controlling thread
+both allocate and free the stress structures, so that we can
+be sure we don't corrupt the workqueue by freeing the structure
+prematurely.
 
-Fix it by disabling KCSAN on version-timestamp.o and .vmlinux.export.o
-so the extra functions don't get generated.  KASAN and GCOV are already
-disabled for those files.
+So this patch reworks the test to do so, and with this change
+I no longer see the early flush_workqueue returns.
 
-  [ bp: Massage commit message. ]
-
-Closes: https://lore.kernel.org/lkml/20231016214810.GA3942238@dev-arch.thelio-3990X/
-Reported-by: Nathan Chancellor <nathan@kernel.org>
-Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
-Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-Acked-by: Marco Elver <elver@google.com>
-Tested-by: Nathan Chancellor <nathan@kernel.org>
-Link: https://lore.kernel.org/r/20231017165946.v4i2d4exyqwqq3bx@treble
+Signed-off-by: John Stultz <jstultz@google.com>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Link: https://lore.kernel.org/r/20230922043616.19282-3-jstultz@google.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- init/Makefile            | 1 +
- scripts/Makefile.vmlinux | 1 +
- 2 files changed, 2 insertions(+)
+ kernel/locking/test-ww_mutex.c | 20 ++++++++++++--------
+ 1 file changed, 12 insertions(+), 8 deletions(-)
 
-diff --git a/init/Makefile b/init/Makefile
-index ec557ada3c12e..cbac576c57d63 100644
---- a/init/Makefile
-+++ b/init/Makefile
-@@ -60,4 +60,5 @@ include/generated/utsversion.h: FORCE
- $(obj)/version-timestamp.o: include/generated/utsversion.h
- CFLAGS_version-timestamp.o := -include include/generated/utsversion.h
- KASAN_SANITIZE_version-timestamp.o := n
-+KCSAN_SANITIZE_version-timestamp.o := n
- GCOV_PROFILE_version-timestamp.o := n
-diff --git a/scripts/Makefile.vmlinux b/scripts/Makefile.vmlinux
-index 3cd6ca15f390d..c9f3e03124d7f 100644
---- a/scripts/Makefile.vmlinux
-+++ b/scripts/Makefile.vmlinux
-@@ -19,6 +19,7 @@ quiet_cmd_cc_o_c = CC      $@
+diff --git a/kernel/locking/test-ww_mutex.c b/kernel/locking/test-ww_mutex.c
+index 43efb2a041602..b1e25695185a4 100644
+--- a/kernel/locking/test-ww_mutex.c
++++ b/kernel/locking/test-ww_mutex.c
+@@ -466,7 +466,6 @@ static void stress_inorder_work(struct work_struct *work)
+ 	} while (!time_after(jiffies, stress->timeout));
  
- ifdef CONFIG_MODULES
- KASAN_SANITIZE_.vmlinux.export.o := n
-+KCSAN_SANITIZE_.vmlinux.export.o := n
- GCOV_PROFILE_.vmlinux.export.o := n
- targets += .vmlinux.export.o
- vmlinux: .vmlinux.export.o
+ 	kfree(order);
+-	kfree(stress);
+ }
+ 
+ struct reorder_lock {
+@@ -531,7 +530,6 @@ static void stress_reorder_work(struct work_struct *work)
+ 	list_for_each_entry_safe(ll, ln, &locks, link)
+ 		kfree(ll);
+ 	kfree(order);
+-	kfree(stress);
+ }
+ 
+ static void stress_one_work(struct work_struct *work)
+@@ -552,8 +550,6 @@ static void stress_one_work(struct work_struct *work)
+ 			break;
+ 		}
+ 	} while (!time_after(jiffies, stress->timeout));
+-
+-	kfree(stress);
+ }
+ 
+ #define STRESS_INORDER BIT(0)
+@@ -564,15 +560,24 @@ static void stress_one_work(struct work_struct *work)
+ static int stress(int nlocks, int nthreads, unsigned int flags)
+ {
+ 	struct ww_mutex *locks;
+-	int n;
++	struct stress *stress_array;
++	int n, count;
+ 
+ 	locks = kmalloc_array(nlocks, sizeof(*locks), GFP_KERNEL);
+ 	if (!locks)
+ 		return -ENOMEM;
+ 
++	stress_array = kmalloc_array(nthreads, sizeof(*stress_array),
++				     GFP_KERNEL);
++	if (!stress_array) {
++		kfree(locks);
++		return -ENOMEM;
++	}
++
+ 	for (n = 0; n < nlocks; n++)
+ 		ww_mutex_init(&locks[n], &ww_class);
+ 
++	count = 0;
+ 	for (n = 0; nthreads; n++) {
+ 		struct stress *stress;
+ 		void (*fn)(struct work_struct *work);
+@@ -596,9 +601,7 @@ static int stress(int nlocks, int nthreads, unsigned int flags)
+ 		if (!fn)
+ 			continue;
+ 
+-		stress = kmalloc(sizeof(*stress), GFP_KERNEL);
+-		if (!stress)
+-			break;
++		stress = &stress_array[count++];
+ 
+ 		INIT_WORK(&stress->work, fn);
+ 		stress->locks = locks;
+@@ -613,6 +616,7 @@ static int stress(int nlocks, int nthreads, unsigned int flags)
+ 
+ 	for (n = 0; n < nlocks; n++)
+ 		ww_mutex_destroy(&locks[n]);
++	kfree(stress_array);
+ 	kfree(locks);
+ 
+ 	return 0;
 -- 
 2.42.0
 
