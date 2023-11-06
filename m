@@ -2,193 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D4BBE7E196C
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 05:43:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B81A7E196D
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 05:46:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230299AbjKFEng convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 5 Nov 2023 23:43:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40052 "EHLO
+        id S230252AbjKFEqS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Nov 2023 23:46:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230030AbjKFEnf (ORCPT
+        with ESMTP id S229485AbjKFEqR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Nov 2023 23:43:35 -0500
-Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50B99DB;
-        Sun,  5 Nov 2023 20:43:32 -0800 (PST)
-Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-5bbd3eb2f8fso4002441a12.1;
-        Sun, 05 Nov 2023 20:43:32 -0800 (PST)
+        Sun, 5 Nov 2023 23:46:17 -0500
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF9B4DB;
+        Sun,  5 Nov 2023 20:46:14 -0800 (PST)
+Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-6b1e46ca282so4402954b3a.2;
+        Sun, 05 Nov 2023 20:46:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699245974; x=1699850774; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=32YDJ9UCxSqwPmBexBFw6Ms3U4O90iERTciee1S7uFw=;
+        b=m4CnkeUTkGzbP0q5uBPryJt6YmKBZ/Ev61svjdIkgxlG9T14neWUixSw33rtcVNObv
+         nomZzq7VADIwPPxI7xXJbPkJV8qcWnEP0CT2Qg97xF0aA1ZBdE4xGem1PX6UHo983SXz
+         la2XyGvPLdZwLLK0+7eS3cqnRjor3agMEB4opVf6vLcNKTVaZE+zPpiPP0Fi9Ox9vjid
+         vAfa2r91pW3GMX3BmGN9lwCqetwsxH99bGNSj34ey9o2hosA9+jGTaeyYegLk/dXvmW4
+         prMqWyHDnwXCTgq59aZS6NAlehYzi3bQrib4cfkwIEJeyCECqyWuc7DmLJY6nyGw6JF/
+         +lkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699245812; x=1699850612;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6C2jeN2Odetxmw6gVUouX0/vQcl2vGThHkHjs3za6HY=;
-        b=hnUR3JNJiiHPJczW84UkZkHBAYJddT3uE+qTGXBj2w5HJKvc5CiOtwUCCLjMUYzq9L
-         XZaOVwI4J+vVhEd25TL+A1kVNXa9jyV1nU6vSwHoPd2/EqJHNWyiKfhXFdHrewQuZ345
-         KDAaQOBOjp9L5H0Dhhq+Zxh/VTqw9lzNeYY3RemursMzotP19dOzvQk4/+U4aXRmyQlf
-         1EClSEPvAq5QfR1a5+MwjxyEoi5+BVAwzovD0VwIleyziGoGBzYHkO+QCy7ZqWVcSdR7
-         dihOI00JSM2uO7U+PGd5UyeZpmVsc+0k73gu0wrcZ8L1UVhlIAKv7fLuTX6BWv45ip0M
-         j3DQ==
-X-Gm-Message-State: AOJu0YxXXMMfSxvE2pgTKN1ZkPG1UBWBtn6JSROhFhWxE8HsQaELx6Xy
-        D51Hmwf7yJnIIHPY0HI2jZaym+4CMwkeP/OrOeUCElU3
-X-Google-Smtp-Source: AGHT+IGm+zzo14njj0m+cNvE7vTXIneDseu1SyMhMZlFHanWdZ8QlLV/UBwo4tEtRXgD6by0PkfdlEYnI1By0SDi6Is=
-X-Received: by 2002:a17:90b:3ec9:b0:27d:1369:515e with SMTP id
- rm9-20020a17090b3ec900b0027d1369515emr13446086pjb.22.1699245811686; Sun, 05
- Nov 2023 20:43:31 -0800 (PST)
+        d=1e100.net; s=20230601; t=1699245974; x=1699850774;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=32YDJ9UCxSqwPmBexBFw6Ms3U4O90iERTciee1S7uFw=;
+        b=LlXBaCs8CEpeifBZqdvJi6WxV6yhj7Hqw5BmU1wjSklmVjEVR0xpi790STNtXg9eSh
+         lLG4Bwu9IuTMslWV83OttW2TVJtIVVQsTFtDe4sa710wOP4oj/Vuy61B/S21IwLn/wl/
+         PADYoRnQqtemD/CrXGkTXFlEki/5UmdREesaiMNTU5Jj4bzho0Of+huLEouBum2Pne3K
+         7zCisAYY8erdY9k3NMQFMs2CQVZnTnUe1J6IEZMvOHSGTOj3ijnoZqolPd6eNywQbQBt
+         VjbV205qZY8T0JZUA/SgMIp7rp6pqTNxGkqbgPqH9awFiZi2FmoePyJGcijfhr+X60zr
+         KEtg==
+X-Gm-Message-State: AOJu0Yz/cjKOuHr9/hS+kPw+noeYPRJ4Aiw7967PgqMrqcZB4QBV3WbC
+        kUD/8h/6VD8cPdHmYZRRlHM=
+X-Google-Smtp-Source: AGHT+IFfATC9E2EJdl6t/GNI8B9ZZ98HIGEZfXC9l8qyYKjBLF3c0dva0LIDFn/gFjZSeVYYioBINw==
+X-Received: by 2002:a05:6a20:144f:b0:13c:ca8b:7e29 with SMTP id a15-20020a056a20144f00b0013cca8b7e29mr35142833pzi.12.1699245974114;
+        Sun, 05 Nov 2023 20:46:14 -0800 (PST)
+Received: from debian.me ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id s18-20020a17090330d200b001c627413e87sm4887823plc.290.2023.11.05.20.46.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 05 Nov 2023 20:46:13 -0800 (PST)
+Received: by debian.me (Postfix, from userid 1000)
+        id 3EB5A822370C; Mon,  6 Nov 2023 11:46:07 +0700 (WIB)
+Date:   Mon, 6 Nov 2023 11:46:07 +0700
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+To:     Hunter Chasens <hunter.chasens18@ncf.edu>, corbet@lwn.net,
+        Jani Nikula <jani.nikula@intel.com>,
+        Luca Coelho <luciano.coelho@intel.com>
+Cc:     airlied@gmail.com, daniel@ffwll.ch,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, dri-devel@lists.freedesktop.org,
+        Linux Documentation <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v1] docs: gpu: rfc: i915_scheduler.rst remove unused
+ directives for namespacing
+Message-ID: <ZUhvj2uj_PvaDxIM@debian.me>
+References: <20231104134708.69432-1-hunter.chasens18@ncf.edu>
 MIME-Version: 1.0
-References: <20231026062615.3096537-1-namhyung@kernel.org> <5a153604-3e9c-4ae9-b216-64f24199efc4@intel.com>
- <ZTrFxazbxVx5G1N7@kernel.org>
-In-Reply-To: <ZTrFxazbxVx5G1N7@kernel.org>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Sun, 5 Nov 2023 20:43:20 -0800
-Message-ID: <CAM9d7ch7gnYMOc_nvy5neLdEhsjDZpr1=Obh-UW3=A14J_T68w@mail.gmail.com>
-Subject: Re: [PATCH] perf tools: Add -H short option for --hierarchy
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="6Wwjq5qJEKQkV4NO"
+Content-Disposition: inline
+In-Reply-To: <20231104134708.69432-1-hunter.chasens18@ncf.edu>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnaldo,
 
-On Thu, Oct 26, 2023 at 1:02 PM Arnaldo Carvalho de Melo
-<acme@kernel.org> wrote:
->
-> Em Thu, Oct 26, 2023 at 09:46:02AM +0300, Adrian Hunter escreveu:
-> > On 26/10/23 09:26, Namhyung Kim wrote:
-> > > I found the hierarchy mode useful, but it's easy to make a typo when
-> > > using it.  Let's add a short option for that.
->
-> > > Also update the documentation. :)
->
-> > Perhaps it would also be possible to support bash-completions for
-> > long options
->
-> It works:
->
->   # . ~acme/git/linux/tools/perf/perf-completion.sh
->   # perf top --hi<TAB>
->   --hide_kernel_symbols  --hide_user_symbols    --hierarchy
->   #
->
-> And:
->
-> perf top --hie<ENTER>
->
-> works as it is unambiguous (so far).
+--6Wwjq5qJEKQkV4NO
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks for the test!
+On Sat, Nov 04, 2023 at 09:47:08AM -0400, Hunter Chasens wrote:
+> diff --git a/Documentation/gpu/rfc/i915_scheduler.rst b/Documentation/gpu=
+/rfc/i915_scheduler.rst
+> index c237ebc024cd..23ba7006929b 100644
+> --- a/Documentation/gpu/rfc/i915_scheduler.rst
+> +++ b/Documentation/gpu/rfc/i915_scheduler.rst
+> @@ -135,13 +135,9 @@ Add I915_CONTEXT_ENGINES_EXT_PARALLEL_SUBMIT and
+>  drm_i915_context_engines_parallel_submit to the uAPI to implement this
+>  extension.
+> =20
+> -.. c:namespace-push:: rfc
+> -
+>  .. kernel-doc:: include/uapi/drm/i915_drm.h
+>          :functions: i915_context_engines_parallel_submit
+> =20
+> -.. c:namespace-pop::
+> -
+>  Extend execbuf2 IOCTL to support submitting N BBs in a single IOCTL
+>  -------------------------------------------------------------------
+>  Contexts that have been configured with the 'set_parallel' extension can=
+ only
 
->
-> What we don't have is a way to use hierachy by default, i.e. we should
-> have:
->
-> perf config top.hierarchy=1
->
-> and then:
->
-> perf top
->
-> would always use the hierarchy view.
->
-> tools/perf/Documentation/perf-config.txt has the options that can be
-> set, like:
->
-> # perf report | head -15
-> # To display the perf.data header info, please use --header/--header-only options.
-> #
-> #
-> # Total Lost Samples: 0
-> #
-> # Samples: 373K of event 'cycles:P'
-> # Event count (approx.): 205365133495
-> #
-> # Overhead  Command          Shared Object                                     Symbol
-> # ........  ...............  .................    ...................................
-> #
->      3.17%  MediaDe~hine #6  libc.so.6            [.] pthread_mutex_lock@@GLIBC_2.2.5
->      2.31%  swapper          [kernel.vmlinux]     [k] psi_group_change
->      1.87%  MediaSu~sor #10  libc.so.6            [.] pthread_mutex_lock@@GLIBC_2.2.5
->      1.84%  MediaSu~isor #7  libc.so.6            [.] pthread_mutex_lock@@GLIBC_2.2.5
-> #
->
-> Then:
->
-> # perf config report.sort_order=dso
-> # perf report | head -15
-> # To display the perf.data header info, please use --header/--header-only options.
-> #
-> #
-> # Total Lost Samples: 0
-> #
-> # Samples: 373K of event 'cycles:P'
-> # Event count (approx.): 205365133495
-> #
-> # Overhead  Shared Object
-> # ........  ..............................................
-> #
->     59.52%  [kernel.vmlinux]
->     19.79%  libc.so.6
->      8.07%  libxul.so
->      5.25%  libopenh264.so.2.3.1
-> #
->
-> # cat ~/.perfconfig
-> # this file is auto-generated.
-> [report]
->         sort_order = dso
-> [root@five ~]# perf config report.sort_order
-> report.sort_order=dso
-> #
->
-> Right now 'perf top' has only:
->
-> static int perf_top_config(const char *var, const char *value, void *cb __maybe_unused)
-> {
->         if (!strcmp(var, "top.call-graph")) {
->                 var = "call-graph.record-mode";
->                 return perf_default_config(var, value, cb);
->         }
->         if (!strcmp(var, "top.children")) {
->                 symbol_conf.cumulate_callchain = perf_config_bool(var, value);
->                 return 0;
->         }
->
->         return 0;
-> }
->
-> This would be similar to what was done for --no-children on:
+The warnings go away, thanks!
 
-Sure, I can add the config option later.  But it's not
-compatible with some options that change the output
-like --children and --fields.  Maybe it needs to handle
-some kind of priority of settings for incompatible one.
+Fixes: f6757dfcfde7 ("drm/doc: fix duplicate declaration warning")
+Reviewed-by: Bagas Sanjaya <bagasdotme@gmail.com>
 
-Thanks,
-Namhyung
+--=20
+An old man doll... just what I always wanted! - Clara
 
->
-> https://git.kernel.org/torvalds/c/104ac991bd821773cba6f262f97a4a752ed76dd5
->
-> $ git show --pretty=full 104ac991bd821773cba6f262f97a4a752ed76dd5 | head -5
-> commit 104ac991bd821773cba6f262f97a4a752ed76dd5
-> Author: Namhyung Kim <namhyung@kernel.org>
-> Commit: Jiri Olsa <jolsa@kernel.org>
->
->     perf top: Add top.children config option
->
-> - Arnaldo
+--6Wwjq5qJEKQkV4NO
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZUhviAAKCRD2uYlJVVFO
+ozwWAP4tUvIkF1gh+MbNCqESi7gLMuWjBdyWuZTEHcgyN3SBywEAkiw5LRZhtw7s
+X12IB03vD5Sr1fxvaXjdv9YYpRrjywQ=
+=MAkp
+-----END PGP SIGNATURE-----
+
+--6Wwjq5qJEKQkV4NO--
