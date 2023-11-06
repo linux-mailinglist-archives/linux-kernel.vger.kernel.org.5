@@ -2,95 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C638D7E356E
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 08:01:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA4037E2606
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Nov 2023 14:49:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233585AbjKGHBZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 02:01:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33690 "EHLO
+        id S231395AbjKFNtC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 08:49:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230089AbjKGHBX (ORCPT
+        with ESMTP id S232854AbjKFNtA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 02:01:23 -0500
+        Mon, 6 Nov 2023 08:49:00 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A10D11A
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 23:01:20 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A0F91C433C7;
-        Tue,  7 Nov 2023 07:01:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1699340480;
-        bh=PwZNo4H0+xJc5t0ME1zU4siHPtjo0n0x/hgKoJJp1Wg=;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 905A9D8;
+        Mon,  6 Nov 2023 05:48:57 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A19F1C433C8;
+        Mon,  6 Nov 2023 13:48:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699278537;
+        bh=0oKTtQUIuA/UNh7BlgWnSQNzeQifRGq3xhGewAMVSxY=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bvO/Z76czVdugwXRRrUFDNfBthP/D12rTYBLpKCN+UGrmf+R9/mGKKmmUbRXr8hSw
-         e/REna7XTvcgMxQnjIiAyL/boIYfNbHSVH3EaVydchap1uEDHzUlYdXqML8gSasN2z
-         8Fa1rtL5eBYNPnr85IdktQc1KkR1ZXojJhdrKo/c=
-Date:   Mon, 6 Nov 2023 14:48:48 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Johan Hovold <johan@kernel.org>
-Cc:     Johan Hovold <johan+linaro@kernel.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Stanley Chang <stanley_chang@realtek.com>,
-        linux-kernel@vger.kernel.org, linux-phy@lists.infradead.org,
-        linux-usb@vger.kernel.org
-Subject: Re: [PATCH 0/3] Revert "usb: phy: add usb phy notify port status API"
-Message-ID: <2023110636-illusive-widow-8c95@gregkh>
-References: <20231106110654.31090-1-johan+linaro@kernel.org>
- <2023110623-pointing-stump-643d@gregkh>
- <ZUjNLj-sKBogTKcd@hovoldconsulting.com>
+        b=FRpXWwPy9u6MeGKGXxbWlU1WmJgV3hbnixx9QtvllDEtK3uII8EB2C7+THkh7RBMg
+         m2bWGSP5/Er6O1+LGoMxqVScHzLlnAxOY6bgFZPhyDnCfDEfecjCR5YEvKdPB+iX3B
+         CgVCqlQvge0l6sU4P416040LhEUbQvizBDduzgwycPXXleAfbc0IP3ZZrLwaGn1/r0
+         1R0et4621CUs8/YVzqR6kPYV/wBMDaukvLWGaxC74ayR6T7Pwj3vFBPWFZ32hSUoxg
+         ywGkBpIqRPnj+EvefMCG7ulBSBuldyYWt51BvTDIeLCWyrdqXyGHLhMtSM2cLNC4eH
+         jU5bJjBQF9zEw==
+Date:   Mon, 6 Nov 2023 13:48:53 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Harald Mommer <Harald.Mommer@opensynergy.com>
+Cc:     virtio-dev@lists.oasis-open.org,
+        Haixu Cui <quic_haixcui@quicinc.com>,
+        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Harald.Mommer@gmail.com, quic_ztu@quicinc.com,
+        Matti Moell <Matti.Moell@opensynergy.com>,
+        Mikhail Golubev <Mikhail.Golubev@opensynergy.com>
+Subject: Re: [RFC PATCH v1 3/3] SPI: Add virtio SPI driver (V4 draft
+ specification).
+Message-ID: <ZUjuxfKdwRQgbfdb@finisterre.sirena.org.uk>
+References: <20231027161016.26625-1-Harald.Mommer@opensynergy.com>
+ <20231027161016.26625-4-Harald.Mommer@opensynergy.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="0TlT5yIZ49HmuB9r"
 Content-Disposition: inline
-In-Reply-To: <ZUjNLj-sKBogTKcd@hovoldconsulting.com>
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DATE_IN_PAST_12_24,
-        DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <20231027161016.26625-4-Harald.Mommer@opensynergy.com>
+X-Cookie: Save energy:  Drive a smaller shell.
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 06, 2023 at 12:25:34PM +0100, Johan Hovold wrote:
-> On Mon, Nov 06, 2023 at 12:15:59PM +0100, Greg Kroah-Hartman wrote:
-> > On Mon, Nov 06, 2023 at 12:06:51PM +0100, Johan Hovold wrote:
-> > > The recently added Realtek PHY drivers depend on the new port status
-> > > notification mechanism which was built on the deprecated USB PHY
-> > > implementation and devicetree binding.
-> > > 
-> > > Specifically, using these PHYs would require describing the very same
-> > > PHY using both the generic "phy" property and the deprecated "usb-phy"
-> > > property which is clearly wrong.
-> > > 
-> > > We should not be building new functionality on top of the legacy USB PHY
-> > > implementation even if it is currently stuck in some kind of
-> > > transitional limbo.
-> > > 
-> > > Revert the new Realtek PHY drivers for now so that the port status
-> > > notification interface can be reverted and replaced before we dig
-> > > ourselves into an even deeper hole with this PHY mess.
-> > > 
-> > > Note that there are no upstream users of these PHYs and the drivers were
-> > > only included in 6.6 so there should still be time to undo this.
-> > 
-> > No users of these phy drivers yet?  Why were they added?
-> 
-> The devicetree bindings were also merged in 6.6 (and are left in place),
-> but there are no devicetrees that actually use these new bindings in
-> mainline yet.
-> 
-> > > Preferably these should go in through Greg's tree for 6.7-rc1.
-> > 
-> > I'll be glad to take this if I can get an ack for it.
-> 
-> They went in through your tree, but note that you may now get a conflict
-> with 
-> 
-> 	7e909370a5cd ("phy: realtek: Replace of_device.h with explicit includes")
-> 
-> in the phy tree.
 
-I fixed it up by hand, should be good now, thanks.
+--0TlT5yIZ49HmuB9r
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-greg k-h
+On Fri, Oct 27, 2023 at 06:10:16PM +0200, Harald Mommer wrote:
+
+> +config SPI_VIRTIO
+> +	tristate "Virtio SPI SPI Controller"
+> +	depends on VIRTIO
+> +	help
+> +	  This enables the Virtio SPI driver.
+> +
+> +	  Virtio SPI is an SPI driver for virtual machines using Virtio.
+> +
+> +	  If your Linux is a virtual machine using Virtio, say Y here.
+> +
+
+This advice is going to be inappropriate for the majortiy of guests.
+
+> +	// clang-format off
+> +	struct spi_transfer_head transfer_head	____cacheline_aligned;
+> +	const uint8_t *tx_buf			____cacheline_aligned;
+> +	uint8_t *rx_buf				____cacheline_aligned;
+> +	struct spi_transfer_result result	____cacheline_aligned;
+> +	// clang-format on
+
+Remove this clang-format stuff.
+
+> +static struct spi_board_info board_info = {
+> +	.modalias = "spi-virtio",
+> +	.max_speed_hz = 125000000, /* Arbitrary very high limit */
+> +	.bus_num = 0, /* Patched later during initialization */
+> +	.chip_select = 0, /* Patched later during initialization */
+> +	.mode = SPI_MODE_0,
+> +};
+
+> +/* Compare with file i2c_virtio.c structure virtio_i2c_msg_done */
+
+In what way is one supposed to compare with the i2c driver?  What
+happens if the I2C driver changes?  It would be better to ensure that
+the code can be read and understood as a standalone thing.
+
+> +	/* Fill struct spi_transfer_head */
+> +	th->slave_id = spi->chip_select;
+
+If the spec just copied the Linux terminology it'd have few issues :(
+
+> +	th->bits_per_word = spi->bits_per_word;
+> +	th->cs_change = xfer->cs_change;
+
+The virtio spec for cs_change is *not* what the Linux cs_change field
+does, this will not do the right thing.
+
+> +	th->tx_nbits = xfer->tx_nbits;
+> +	th->rx_nbits = xfer->rx_nbits;
+> +	th->reserved[0] = 0;
+> +	th->reserved[1] = 0;
+> +	th->reserved[2] = 0;
+> +
+> +#if (VIRTIO_SPI_CPHA != SPI_CPHA)
+> +#error VIRTIO_SPI_CPHA != SPI_CPHA
+> +#endif
+
+BUILD_BUG_ON()
+
+
+--0TlT5yIZ49HmuB9r
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmVI7sUACgkQJNaLcl1U
+h9AZlQf/Ve5Bnp+BSp6duxDV3rwHEnTdISxriTPwTP6X5GCiAyuO0ExccnmmTkMD
+78KimEB+hAUqR5t7BLAjmA/7D61cBteKtHBk7hetDNIngdT7INOFqaAsxQOk0eaE
+gyD98W7pF3Rb+aji1fkTCHi3GuwSCHitrLPNx6SxIfvlw9ghR8oz9O+10XcCNk2+
+t2yKYMR2zG0vvExIDiaavW9WCWOJsGt+F4y8Q/5eMS2RkSg18SBPY3EA96eOVAU3
+1jpkO6O2RQ0m/3lZURcRiq4HaPA13tfW6X8EzMtcop5nQtwSSufzZK0Vr/HbWF1T
+NGxwslv7oXq/I5gDxAxXrRDvgWrbUw==
+=mAr1
+-----END PGP SIGNATURE-----
+
+--0TlT5yIZ49HmuB9r--
