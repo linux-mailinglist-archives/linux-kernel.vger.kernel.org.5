@@ -2,45 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 42D387E3D6D
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 13:28:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBC5F7E3D62
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 13:28:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234477AbjKGM2f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 07:28:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52448 "EHLO
+        id S234107AbjKGM2E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 07:28:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234456AbjKGM2T (ORCPT
+        with ESMTP id S234522AbjKGM1n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 07:28:19 -0500
+        Tue, 7 Nov 2023 07:27:43 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 623BB1BE3;
-        Tue,  7 Nov 2023 04:12:50 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 00559C433D9;
-        Tue,  7 Nov 2023 12:12:48 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50E511BD5;
+        Tue,  7 Nov 2023 04:12:51 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E426C433CC;
+        Tue,  7 Nov 2023 12:12:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699359170;
-        bh=5cZf+VEDr57V8sHYLQJNxpRjufE1uClcMABUaLZIGhE=;
+        s=k20201202; t=1699359171;
+        bh=G1LZmW0uj2wl31zbRTfBEtzBFB1PwJzMm9gk0a9oPXQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pizTXf8NzkJHeBqTilQQejuCQKcNg0Q5PvfbbfR1Luuql/M3KYjoEaoAb+Fy50XST
-         Wndh9eC2gvxzVGdI5pRP8Dq7LapSzMnlArKBBJn6tdpWHp/RAHFuZxSi6UJQDJpbXd
-         HMx18pa9AabvoZdE4kFa8wXW+t+rgPNrcKY9JmVbMuTItNbXMV4/uH3LlkNCmF7NWA
-         TeqV3K94nz/E/IbqCurQIYMQdRs8vcwWQD8Mzna9MONDxmQY8W3euG7VPrx7rDCb6N
-         EjFMLO5vf2FeC4iTZLSYJvUbmJwfQeDa6Oo21pLQ7sAtTEJsxRilqNOd/i44Kh7Fiu
-         qIeYmxIkC6RSA==
+        b=U4BIOuVi+yLap5lcEcbQUBxO+hEGPe7D87+csNmdDe1KDIJu75zZJrii4O6u30MOX
+         z//VyTSJ/xj35NdT5xGJkJkKqzj/VYXy9aaRccp1XSTsMiELK5mJ0g8cLAr5/eNwPm
+         7IxqmrZs7HyqgTSbfw34HDA8V/yNktBE97KsX89R+KRhsSANoJDW8kDbscG9NUgBOa
+         yr2V3oIDoOWdtr+9Yk0jfQVS/0EOQ4NFDdfh4VUx2wt2weVtd2TX3MpE+Ug07WW6eX
+         h10NYUVXurY3L7JaR9RL7XpfdMxzheAGCM+NiaoE+MUP0ltz+hG6D0hNlYtZcJCWds
+         tf5+4gh1ctGoQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     ZhengHan Wang <wzhmmmmm@gmail.com>,
-        Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
-        Sasha Levin <sashal@kernel.org>, marcel@holtmann.org,
-        johan.hedberg@gmail.com, luiz.dentz@gmail.com,
-        linux-bluetooth@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 10/11] Bluetooth: Fix double free in hci_conn_cleanup
-Date:   Tue,  7 Nov 2023 07:12:25 -0500
-Message-ID: <20231107121230.3758617-10-sashal@kernel.org>
+Cc:     Olli Asikainen <olli.asikainen@gmail.com>,
+        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        Sasha Levin <sashal@kernel.org>, hmh@hmh.eng.br,
+        hdegoede@redhat.com, markgross@kernel.org,
+        ibm-acpi-devel@lists.sourceforge.net,
+        platform-driver-x86@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.10 11/11] platform/x86: thinkpad_acpi: Add battery quirk for Thinkpad X120e
+Date:   Tue,  7 Nov 2023 07:12:26 -0500
+Message-ID: <20231107121230.3758617-11-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231107121230.3758617-1-sashal@kernel.org>
 References: <20231107121230.3758617-1-sashal@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.10.199
@@ -55,137 +57,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: ZhengHan Wang <wzhmmmmm@gmail.com>
+From: Olli Asikainen <olli.asikainen@gmail.com>
 
-[ Upstream commit a85fb91e3d728bdfc80833167e8162cce8bc7004 ]
+[ Upstream commit 916646758aea81a143ce89103910f715ed923346 ]
 
-syzbot reports a slab use-after-free in hci_conn_hash_flush [1].
-After releasing an object using hci_conn_del_sysfs in the
-hci_conn_cleanup function, releasing the same object again
-using the hci_dev_put and hci_conn_put functions causes a double free.
-Here's a simplified flow:
+Thinkpad X120e also needs this battery quirk.
 
-hci_conn_del_sysfs:
-  hci_dev_put
-    put_device
-      kobject_put
-        kref_put
-          kobject_release
-            kobject_cleanup
-              kfree_const
-                kfree(name)
-
-hci_dev_put:
-  ...
-    kfree(name)
-
-hci_conn_put:
-  put_device
-    ...
-      kfree(name)
-
-This patch drop the hci_dev_put and hci_conn_put function
-call in hci_conn_cleanup function, because the object is
-freed in hci_conn_del_sysfs function.
-
-This patch also fixes the refcounting in hci_conn_add_sysfs() and
-hci_conn_del_sysfs() to take into account device_add() failures.
-
-This fixes CVE-2023-28464.
-
-Link: https://syzkaller.appspot.com/bug?id=1bb51491ca5df96a5f724899d1dbb87afda61419 [1]
-
-Signed-off-by: ZhengHan Wang <wzhmmmmm@gmail.com>
-Co-developed-by: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
-Signed-off-by: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
+Signed-off-by: Olli Asikainen <olli.asikainen@gmail.com>
+Link: https://lore.kernel.org/r/20231024190922.2742-1-olli.asikainen@gmail.com
+Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/bluetooth/hci_conn.c  |  6 ++----
- net/bluetooth/hci_sysfs.c | 23 ++++++++++++-----------
- 2 files changed, 14 insertions(+), 15 deletions(-)
+ drivers/platform/x86/thinkpad_acpi.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/net/bluetooth/hci_conn.c b/net/bluetooth/hci_conn.c
-index a9f6089a2ae2a..74721c3e49b34 100644
---- a/net/bluetooth/hci_conn.c
-+++ b/net/bluetooth/hci_conn.c
-@@ -135,13 +135,11 @@ static void hci_conn_cleanup(struct hci_conn *conn)
- 			hdev->notify(hdev, HCI_NOTIFY_CONN_DEL);
- 	}
- 
--	hci_conn_del_sysfs(conn);
--
- 	debugfs_remove_recursive(conn->debugfs);
- 
--	hci_dev_put(hdev);
-+	hci_conn_del_sysfs(conn);
- 
--	hci_conn_put(conn);
-+	hci_dev_put(hdev);
- }
- 
- static void le_scan_cleanup(struct work_struct *work)
-diff --git a/net/bluetooth/hci_sysfs.c b/net/bluetooth/hci_sysfs.c
-index ccd2c377bf83c..266112c960ee8 100644
---- a/net/bluetooth/hci_sysfs.c
-+++ b/net/bluetooth/hci_sysfs.c
-@@ -33,7 +33,7 @@ void hci_conn_init_sysfs(struct hci_conn *conn)
- {
- 	struct hci_dev *hdev = conn->hdev;
- 
--	BT_DBG("conn %p", conn);
-+	bt_dev_dbg(hdev, "conn %p", conn);
- 
- 	conn->dev.type = &bt_link;
- 	conn->dev.class = bt_class;
-@@ -46,27 +46,30 @@ void hci_conn_add_sysfs(struct hci_conn *conn)
- {
- 	struct hci_dev *hdev = conn->hdev;
- 
--	BT_DBG("conn %p", conn);
-+	bt_dev_dbg(hdev, "conn %p", conn);
- 
- 	if (device_is_registered(&conn->dev))
- 		return;
- 
- 	dev_set_name(&conn->dev, "%s:%d", hdev->name, conn->handle);
- 
--	if (device_add(&conn->dev) < 0) {
-+	if (device_add(&conn->dev) < 0)
- 		bt_dev_err(hdev, "failed to register connection device");
--		return;
--	}
--
--	hci_dev_hold(hdev);
- }
- 
- void hci_conn_del_sysfs(struct hci_conn *conn)
- {
- 	struct hci_dev *hdev = conn->hdev;
- 
--	if (!device_is_registered(&conn->dev))
-+	bt_dev_dbg(hdev, "conn %p", conn);
-+
-+	if (!device_is_registered(&conn->dev)) {
-+		/* If device_add() has *not* succeeded, use *only* put_device()
-+		 * to drop the reference count.
-+		 */
-+		put_device(&conn->dev);
- 		return;
-+	}
- 
- 	while (1) {
- 		struct device *dev;
-@@ -78,9 +81,7 @@ void hci_conn_del_sysfs(struct hci_conn *conn)
- 		put_device(dev);
- 	}
- 
--	device_del(&conn->dev);
--
--	hci_dev_put(hdev);
-+	device_unregister(&conn->dev);
- }
- 
- static void bt_host_release(struct device *dev)
+diff --git a/drivers/platform/x86/thinkpad_acpi.c b/drivers/platform/x86/thinkpad_acpi.c
+index d8d241344d22d..00ca996b4d4b9 100644
+--- a/drivers/platform/x86/thinkpad_acpi.c
++++ b/drivers/platform/x86/thinkpad_acpi.c
+@@ -9718,6 +9718,7 @@ static const struct tpacpi_quirk battery_quirk_table[] __initconst = {
+ 	 * Individual addressing is broken on models that expose the
+ 	 * primary battery as BAT1.
+ 	 */
++	TPACPI_Q_LNV('8', 'F', true),       /* Thinkpad X120e */
+ 	TPACPI_Q_LNV('J', '7', true),       /* B5400 */
+ 	TPACPI_Q_LNV('J', 'I', true),       /* Thinkpad 11e */
+ 	TPACPI_Q_LNV3('R', '0', 'B', true), /* Thinkpad 11e gen 3 */
 -- 
 2.42.0
 
