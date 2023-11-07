@@ -2,193 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CDAC07E3F24
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 13:49:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BEAD37E3B73
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 13:05:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233910AbjKGMEd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 07:04:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55278 "EHLO
+        id S233811AbjKGMFg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 07:05:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230082AbjKGMEY (ORCPT
+        with ESMTP id S230082AbjKGMFd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 07:04:24 -0500
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 107FA11A;
-        Tue,  7 Nov 2023 04:04:19 -0800 (PST)
-Received: from loongson.cn (unknown [10.2.5.213])
-        by gateway (Coremail) with SMTP id _____8BxyerAJ0pl5Kw3AA--.34185S3;
-        Tue, 07 Nov 2023 20:04:16 +0800 (CST)
-Received: from localhost.localdomain (unknown [10.2.5.213])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8Axji+_J0plPBo7AA--.63299S5;
-        Tue, 07 Nov 2023 20:04:16 +0800 (CST)
-From:   Bibo Mao <maobibo@loongson.cn>
-To:     Tianrui Zhao <zhaotianrui@loongson.cn>,
-        Huacai Chen <chenhuacai@kernel.org>
-Cc:     WANG Xuerui <kernel@xen0n.name>, kvm@vger.kernel.org,
-        loongarch@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 3/3] LoongArch: KVM: Remove kvm_acquire_timer before entering guest
-Date:   Tue,  7 Nov 2023 20:04:14 +0800
-Message-Id: <20231107120414.1927261-4-maobibo@loongson.cn>
-X-Mailer: git-send-email 2.39.3
-In-Reply-To: <20231107120414.1927261-1-maobibo@loongson.cn>
-References: <20231107120414.1927261-1-maobibo@loongson.cn>
+        Tue, 7 Nov 2023 07:05:33 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 843DF10A;
+        Tue,  7 Nov 2023 04:05:28 -0800 (PST)
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A78islH002670;
+        Tue, 7 Nov 2023 12:05:24 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=qcppdkim1;
+ bh=nM3mtK/EJZgTpkb7oMAqPCl09T/2yf37VYR5MnTqyVE=;
+ b=dM1K0ijaARkqJLW6/XCrR/P7OJRhyzPuKF/Bd2rksHLOo1otjO7vURax3/3HSXRQjKF4
+ 0i6/dt3hXVcbTpwKgKqKKKUGcXqByMqHIuZ1f2R4pyMxWE/0TYfADXPFZJMNdb21VkMr
+ ZrQ8gHbwb425gZP09D5wGEeLy66bKR3laP0dMHBcgPKgbrOGUEytTxaqX1G9eOPj+Cb4
+ EECR5isZQLUeMqFWy/KZmM+cASh69CMTwPfEI//ChUR9kgZIB/5uLKwBEqx1LQxk7YrB
+ bcSBuZ4GpVXiNt8PsMkVqFMp49Y0Zi2C5+1Vv/jCXyLOvYUkqf1dCatgANTGg3IxdvAq og== 
+Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u6wer3cbs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 07 Nov 2023 12:05:24 +0000
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+        by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3A7C5Nam012624
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 7 Nov 2023 12:05:23 GMT
+Received: from hu-shazhuss-hyd.qualcomm.com (10.80.80.8) by
+ nasanex01b.na.qualcomm.com (10.46.141.250) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.39; Tue, 7 Nov 2023 04:05:20 -0800
+From:   Shazad Hussain <quic_shazhuss@quicinc.com>
+To:     <agross@kernel.org>, <andersson@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <konrad.dybcio@linaro.org>
+CC:     Shazad Hussain <quic_shazhuss@quicinc.com>,
+        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v1] arm64: dts: qcom: sa8775p-ride: enable pmm8654au_0_pon_resin
+Date:   Tue, 7 Nov 2023 17:35:02 +0530
+Message-ID: <20231107120503.28917-1-quic_shazhuss@quicinc.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf8Axji+_J0plPBo7AA--.63299S5
-X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
-X-Coremail-Antispam: 1Uk129KBj93XoWxJw47Aw4kCr1kZFWfGFW5XFc_yoWruF43pF
-        Z7urn2qw4rXr4UGw1jya1kur45XrWkKr13Xa4kJrWFyrnIyr1YvF4kGF95XFW3J3yIyF1S
-        vryrtw15uF4DAwbCm3ZEXasCq-sJn29KB7ZKAUJUUUU8529EdanIXcx71UUUUU7KY7ZEXa
-        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-        0xBIdaVrnRJUUUkFb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1a6r1DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
-        xVWxJr0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0cIa020Ex4CE44I27w
-        Aqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jw0_WrylYx0Ex4A2jsIE
-        14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCF04k20xvY0x
-        0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E
-        7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcV
-        C0I7IYx2IY67AKxVW8JVW5JwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF
-        04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r4j6F4UMIIF0xvEx4A2jsIEc7
-        CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07Ul4E_UUUUU=
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: 0lfPR1xQ_MnSWR7YYEg7wHa1sb_HUzYQ
+X-Proofpoint-GUID: 0lfPR1xQ_MnSWR7YYEg7wHa1sb_HUzYQ
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-07_01,2023-11-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 malwarescore=0
+ spamscore=0 lowpriorityscore=0 clxscore=1011 impostorscore=0 phishscore=0
+ mlxscore=0 priorityscore=1501 adultscore=0 mlxlogscore=564 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2310240000
+ definitions=main-2311070100
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The vm timer emulation happens in two places, one is during vcpu thread
-context switch, the other is idle instruction emulation and before
-entering to guest. SW timer switching is remove during idle instruction
-emulation, so it is not necessary to disable SW timer before entering to
-guest.
+The volume down key is controlled by PMIC via the PON hardware on
+sa8775p platform, so enable the same for sa8775p-ride.
 
-This patch removes SW timer handling before entering guest mode, and put it
-in HW restore flow when vcpu thread is sched-in. With this patch, vm
-timer emulation is simpler, there is SW/HW timer switch only in vcpu
-thread context switch scenario.
-
-Signed-off-by: Bibo Mao <maobibo@loongson.cn>
+Signed-off-by: Shazad Hussain <quic_shazhuss@quicinc.com>
 ---
- arch/loongarch/include/asm/kvm_vcpu.h |  1 -
- arch/loongarch/kvm/timer.c            | 21 +++++++------------
- arch/loongarch/kvm/vcpu.c             | 29 ---------------------------
- 3 files changed, 7 insertions(+), 44 deletions(-)
+ arch/arm64/boot/dts/qcom/sa8775p-ride.dts | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/arch/loongarch/include/asm/kvm_vcpu.h b/arch/loongarch/include/asm/kvm_vcpu.h
-index 553cfa2b2b1c..0e87652f780a 100644
---- a/arch/loongarch/include/asm/kvm_vcpu.h
-+++ b/arch/loongarch/include/asm/kvm_vcpu.h
-@@ -55,7 +55,6 @@ void kvm_save_fpu(struct loongarch_fpu *fpu);
- void kvm_restore_fpu(struct loongarch_fpu *fpu);
- void kvm_restore_fcsr(struct loongarch_fpu *fpu);
+diff --git a/arch/arm64/boot/dts/qcom/sa8775p-ride.dts b/arch/arm64/boot/dts/qcom/sa8775p-ride.dts
+index 9760bb4b468c..26ad05bd3b3f 100644
+--- a/arch/arm64/boot/dts/qcom/sa8775p-ride.dts
++++ b/arch/arm64/boot/dts/qcom/sa8775p-ride.dts
+@@ -461,6 +461,11 @@
+ 			  "ANALOG_PON_OPT";
+ };
  
--void kvm_acquire_timer(struct kvm_vcpu *vcpu);
- void kvm_init_timer(struct kvm_vcpu *vcpu, unsigned long hz);
- void kvm_reset_timer(struct kvm_vcpu *vcpu);
- void kvm_save_timer(struct kvm_vcpu *vcpu);
-diff --git a/arch/loongarch/kvm/timer.c b/arch/loongarch/kvm/timer.c
-index 1d29bd21a9da..45109fa0b299 100644
---- a/arch/loongarch/kvm/timer.c
-+++ b/arch/loongarch/kvm/timer.c
-@@ -64,19 +64,6 @@ void kvm_init_timer(struct kvm_vcpu *vcpu, unsigned long timer_hz)
- 	kvm_write_sw_gcsr(vcpu->arch.csr, LOONGARCH_CSR_TVAL, 0);
- }
- 
--/*
-- * Restore hard timer state and enable guest to access timer registers
-- * without trap, should be called with irq disabled
-- */
--void kvm_acquire_timer(struct kvm_vcpu *vcpu)
--{
--	/*
--	 * Freeze the soft-timer and sync the guest stable timer with it. We do
--	 * this with interrupts disabled to avoid latency.
--	 */
--	hrtimer_cancel(&vcpu->arch.swtimer);
--}
--
- /*
-  * Restore soft timer state from saved context.
-  */
-@@ -115,12 +102,18 @@ void kvm_restore_timer(struct kvm_vcpu *vcpu)
- 		/*
- 		 * Inject timer here though sw timer should inject timer
- 		 * interrupt async already, since sw timer may be cancelled
--		 * during injecting intr async in function kvm_acquire_timer
-+		 * during injecting intr async
- 		 */
- 		kvm_queue_irq(vcpu, INT_TI);
- 	}
- 
- 	write_gcsr_timertick(delta);
++&pmm8654au_0_pon_resin {
++	linux,code = <KEY_VOLUMEDOWN>;
++	status = "okay";
++};
 +
-+	/*
-+	 * Freeze the soft-timer and sync the guest stable timer with it. We do
-+	 * this with interrupts disabled to avoid latency.
-+	 */
-+	hrtimer_cancel(&vcpu->arch.swtimer);
- }
- 
- /*
-diff --git a/arch/loongarch/kvm/vcpu.c b/arch/loongarch/kvm/vcpu.c
-index 42663a345bd1..cf1c4d64c1b7 100644
---- a/arch/loongarch/kvm/vcpu.c
-+++ b/arch/loongarch/kvm/vcpu.c
-@@ -95,7 +95,6 @@ static int kvm_pre_enter_guest(struct kvm_vcpu *vcpu)
- 		 * check vmid before vcpu enter guest
- 		 */
- 		local_irq_disable();
--		kvm_acquire_timer(vcpu);
- 		kvm_deliver_intr(vcpu);
- 		kvm_deliver_exception(vcpu);
- 		/* Make sure the vcpu mode has been written */
-@@ -251,23 +250,6 @@ int kvm_arch_vcpu_ioctl_set_guest_debug(struct kvm_vcpu *vcpu,
- 	return -EINVAL;
- }
- 
--/**
-- * kvm_migrate_count() - Migrate timer.
-- * @vcpu:       Virtual CPU.
-- *
-- * Migrate hrtimer to the current CPU by cancelling and restarting it
-- * if the hrtimer is active.
-- *
-- * Must be called when the vCPU is migrated to a different CPU, so that
-- * the timer can interrupt the guest at the new CPU, and the timer irq can
-- * be delivered to the vCPU.
-- */
--static void kvm_migrate_count(struct kvm_vcpu *vcpu)
--{
--	if (hrtimer_cancel(&vcpu->arch.swtimer))
--		hrtimer_restart(&vcpu->arch.swtimer);
--}
--
- static int _kvm_getcsr(struct kvm_vcpu *vcpu, unsigned int id, u64 *val)
- {
- 	unsigned long gintc;
-@@ -796,17 +778,6 @@ void kvm_arch_vcpu_load(struct kvm_vcpu *vcpu, int cpu)
- 	unsigned long flags;
- 
- 	local_irq_save(flags);
--	if (vcpu->arch.last_sched_cpu != cpu) {
--		kvm_debug("[%d->%d]KVM vCPU[%d] switch\n",
--				vcpu->arch.last_sched_cpu, cpu, vcpu->vcpu_id);
--		/*
--		 * Migrate the timer interrupt to the current CPU so that it
--		 * always interrupts the guest and synchronously triggers a
--		 * guest timer interrupt.
--		 */
--		kvm_migrate_count(vcpu);
--	}
--
- 	/* Restore guest state to registers */
- 	_kvm_vcpu_load(vcpu, cpu);
- 	local_irq_restore(flags);
+ &pmm8654au_1_gpios {
+ 	gpio-line-names = "PMIC_C_ID0",
+ 			  "PMIC_C_ID1",
 -- 
-2.39.3
+2.17.1
 
