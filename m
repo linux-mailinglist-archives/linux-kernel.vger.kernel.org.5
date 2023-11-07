@@ -2,47 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ADA5D7E3AA0
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 11:57:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA29C7E3AA7
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 11:59:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234330AbjKGK5f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 05:57:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39082 "EHLO
+        id S234415AbjKGK7P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 05:59:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234375AbjKGK5I (ORCPT
+        with ESMTP id S234447AbjKGK65 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 05:57:08 -0500
+        Tue, 7 Nov 2023 05:58:57 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9737F1724;
-        Tue,  7 Nov 2023 02:56:29 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D9ECC433CC;
-        Tue,  7 Nov 2023 10:56:28 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CD3719AF
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 02:57:52 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AD84DC433C7;
+        Tue,  7 Nov 2023 10:57:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699354589;
-        bh=W35i6xhopLV9dptndmhPlBN36HCJbHWE45T4K9LNRx4=;
-        h=Date:From:To:Cc:Subject:From;
-        b=agsjD5eRfJS9WxEWpNLyh4cQNFSKk4GyfeQCL9G/NmPfF/N/NFjQIPzeFwiHFTLXM
-         3S0exWfuhfjqdEV9M9kmCdenoCdH9zL1TMcO6WrCvCUvci4DCwEQCobFqmaMG7OG3W
-         TePo+ph2OgZCB8rxApaqZ7PRWNbwD5PLtYLCANIgSyfZSD2S5qwCxP2stTBthuUWtX
-         GP358/6IPH1wdQJbKy5Uq1NxFvq2xlFmk+xYrqOjN4zmyvJVr+q/4kdkuWB5SFowTz
-         LnaiRj2doFH2y8kW6Tpoot9j8ydhZr1V054JFkFicI4cILctct0n01X2s7jiCcaYJf
-         KlbDvvni6YDRg==
-Date:   Tue, 7 Nov 2023 11:56:26 +0100
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Z qiang <qiang.zhang1211@gmail.com>
-Subject: [GIT PULL] RCU fixes for v6.7-rc1
-Message-ID: <ZUoX2lAwknn9JkEm@lothringen>
+        s=k20201202; t=1699354672;
+        bh=SZv0J0mT59n2rZKjNBl8CMR8RlpgRNfa0+MUCGFThB0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=O/f56Qzx1DTTqtDZ23652PJa4QPOvkmUrSpgkQDF0xV4MpQZ/yFMzHZutCIEyf7Fh
+         COtX6iCuuiR//L5Q5vpD/D/8QUbe7t31vf7fjTFpDEjwDDl5QykQKuwgJFq9SzvJS8
+         GaTudeP8naxDp1BWECaGrfA8lh/jpEqUZxlckGsct6hmWMhA/oJ+Xx0ie7WAsJM9lP
+         vquzOGQE5axH9BEa9ANyw4jNqC2w4ZeANezDp7qt/dywkNn2FC2Hx2Kb0wWaOzXt7P
+         4opfSncIL6l074QFgGrGtzw9asAQnsAE2JmMHRe8kEMniNlyUKLWpOw5bGhU97JOd3
+         BPkTvIHuYF5Vg==
+Date:   Tue, 7 Nov 2023 11:57:49 +0100
+From:   Maxime Ripard <mripard@kernel.org>
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Douglas Anderson <dianders@chromium.org>,
+        Rob Clark <robdclark@gmail.com>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Sean Paul <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Jessica Zhang <quic_jesszhan@quicinc.com>,
+        Marek Vasut <marex@denx.de>, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org
+Subject: Re: [RFC PATCH 03/10] drm/mipi-dsi: add API for manual control over
+ the DSI link power state
+Message-ID: <2z3yvvtd6ttsd7qw43sl5svtfijxevdr6omxxmws64k6l5qv55@5nnh2b32h2ep>
+References: <20231016165355.1327217-1-dmitry.baryshkov@linaro.org>
+ <20231016165355.1327217-4-dmitry.baryshkov@linaro.org>
+ <7e4ak4e77fp5dat2aopyq3g4wnqu3tt7di7ytdr3dvgjviyhrd@vqiqx6iso6vg>
+ <CAA8EJpp48AdJmx_U=bEJZUWZgOiT1Ctz6Lpe9QwjLXkMQvsw5w@mail.gmail.com>
+ <uj6rtlionmacnwlqxy6ejt5iaczgbbe5z54ipte5ffbixcx3p4@pps7fcr3uqhf>
+ <1696f131-83fb-4d0c-b4d7-0bdb61e4ae65@linaro.org>
+ <mxtb6vymowutj7whbrygwlcupbdnfqxjralc3nwwapsbvrcmbm@sewxtdslfoen>
+ <CAA8EJpozZkEswnioKjRCqBg4fcjVHFwGivoFNTNHVwyocKprQw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="gxtcgkxgr2bmmbci"
 Content-Disposition: inline
+In-Reply-To: <CAA8EJpozZkEswnioKjRCqBg4fcjVHFwGivoFNTNHVwyocKprQw@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -53,38 +78,124 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Linus,
 
-Please pull the latest RCU git tree from:
+--gxtcgkxgr2bmmbci
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/frederic/linux-dynticks.git tags/rcu-fixes-v6.7
++GKH
 
-for you to fetch changes up to a80712b9cc7e57830260ec5e1feb9cdb59e1da2f:
+On Thu, Oct 26, 2023 at 11:41:34AM +0300, Dmitry Baryshkov wrote:
+> > > > Also, we would still need to update every single panel driver, whic=
+h is
+> > > > going to create a lot of boilerplate that people might get wrong.
+> > >
+> > > Yes, quite unfortunately. Another approach that I have in mind is to =
+add two
+> > > callbacks to mipi_dsi_device. This way the DSI host will call into the
+> > > device to initialise it once the link has been powered up and just be=
+fore
+> > > tearing it down. We solve a lot of problems this way, no boilerplate =
+and the
+> > > panel / bridge are in control of the initialisation procedure. WDYT?
+> > >
+> > > > I have the feeling that we should lay out the problem without talki=
+ng
+> > > > about any existing code base first. So, what does the MIPI-DSI spec
+> > > > requires and what does panels and bridges expect?
+> > >
+> > > There is not that much in the DSI spec (or maybe I do not understand =
+the
+> > > question). The spec is more about the power states and the commands. =
+Our
+> > > problem is that this doesn't fully match kernel expectations.
+> >
+> > You're explicitly asking for comments on that series. How can we provide
+> > any comment if you're dead-set on a particular implementation and not
+> > explain what the problem you are trying to solve is?
+>=20
+> Ah, excuse me. I thought that I explained that in the cover letter.
+>=20
+> DSI device lifetime has three different stages:
+> 1. before the DSI link being powered up and clocking,
+> 2. when the DSI link is in LP state (for the purpose of this question,
+> this is the time between the DSI link being powered up and the video
+> stream start)
+> 3. when the DSI link is in HS state (while streaming the video).
+>=20
+> Different DSI bridges have different requirements with respect to the
+> code being executed at stages 1 and 2. For example several DSI-to-eDP
+> bridges (ps8640, tc358767 require for the link to be quiet during
+> reset time.
+> The DSI-controlled bridges and DSI panels need to send some commands
+> in stage 2, before starting up video
+>=20
+> In the DRM subsystem stage 3 naturally maps to the
+> drm_bridge_funcs::enable, stage 1 also naturally maps to the
+> drm_bridge_funcs::pre_enable. Stage 2 doesn't have its own place in
+> the DRM call chain.
+> Earlier we attempted to solve that using the pre_enable_prev_first,
+> which remapped pre-enable callback execution order. However it has led
+> us to the two issues. First, at the DSI host driver we do not know
+> whether the panel / bridge were updated to use pre_enable_prev_first
+> or not. Second, if the bridge has to perform steps during both stages
+> 1 and 2, it can not do that.
+>=20
+> I'm trying to find a way to express the difference between stages 1
+> and 2 in the generic code, so that we do not to worry about particular
+> DSI host and DSI bridge / panel peculiarities when implementing the
+> DSI host and/or DSI panel driver.
+>=20
+> Last, but not least, we currently document that it is fine to call DSI
+> transfer functions at any point during the driver's life time (at
+> least that was the interpretation that we have agreed in the
+> DSI-related threads). It has its own drawbacks for the DSI host
+> drivers. The hosts have to deal with the DSI commands being sent at
+> the different times, when the host is fully powered down, when it is
+> running in the LP mode and when it is fully running and streaming
+> video. By defining DSI lifetime more precisely, we can limit the
+> period when the DSI commands can be legitimately sent, simplifying DSI
+> host drives.
 
-  rcu/tasks-trace: Handle new PF_IDLE semantics (2023-11-01 22:12:03 +0100)
+Thanks for writing this :)
 
-----------------------------------------------------------------
-RCU fixes for v6.7
+> > Thinking more about it, I'm even more skeptical about the general
+> > approach that this should be implemented at the bridge level (or in
+> > KMS).
+> >
+> > It looks to me that this is very much a bus problem. USB device drivers
+> > also require the bus to be powered and generally available to send data
+> > to their device, and you don't fix that up in the HID or storage
+> > drivers, you make the bus behave that way.
+> >
+> > What prevents us from fixing it at the bus level?
+>=20
+> Yes, this can also be possible. Do you mean adding code / callbacks to
+> struct mipi_dsi_device ?
 
-* Fix a lock inversion between scheduler and RCU introduced
-  in v6.2-rc4. The scenario could trigger on any user of RCU_NOCB
-  (mostly Android and also nohz_full).
+Yes, even more so with your summary above, I really think this should be
+dealt with at the bus layer.
 
-* Fix PF_IDLE semantic changes introduced in v6.6-rc3 breaking some
-  RCU-Tasks and RCU-Tasks-Trace expectations as to what exactly is
-  an idle task. This resulted in potential spurious stalls and
-  warnings.
+To put it in a different way, if we had an (imaginary, probably)
+MIPI-DSI device that didn't fit into KMS but in any other framework, we
+would still have all the constraints you list above. It really is a bus
+matter, not something that bridges need to express.
 
-----------------------------------------------------------------
-Frederic Weisbecker (3):
-      rcu: Introduce rcu_cpu_online()
-      rcu/tasks: Handle new PF_IDLE semantics
-      rcu/tasks-trace: Handle new PF_IDLE semantics
+I had a look at the other buses we have in the kernel and it looks like
+HSI might have the same requirements?
 
-Peter Zijlstra (1):
-      rcu: Break rcu_node_0 --> &rq->__lock order
+Maxime
 
- kernel/rcu/rcu.h   |  2 ++
- kernel/rcu/tasks.h | 32 +++++++++++++++++++++++++++++---
- kernel/rcu/tree.c  | 43 ++++++++++++++++++++++++++++++++-----------
- 3 files changed, 63 insertions(+), 14 deletions(-)
+--gxtcgkxgr2bmmbci
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZUoYLQAKCRDj7w1vZxhR
+xb5/AP9ur7o+WNgPDxCmvT8EAcxrlM8qGwtHOpSPORzeRKdLoAEA9fFl6YYXKCR/
+7vsBwaX6Z10UcCEvv9k1HEKXLhxVcgw=
+=uM1e
+-----END PGP SIGNATURE-----
+
+--gxtcgkxgr2bmmbci--
