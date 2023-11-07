@@ -2,182 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 452EB7E472F
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 18:38:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F4167E4735
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 18:40:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343638AbjKGRij (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 12:38:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41016 "EHLO
+        id S1343743AbjKGRkE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 12:40:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229565AbjKGRih (ORCPT
+        with ESMTP id S235124AbjKGRkB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 12:38:37 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85B18120
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 09:37:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1699378669;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zm8Amys7QGjJOjN2CWnRiELnLonabUOLC+9I3mdxhrc=;
-        b=H/QHXFrAt0nNQSzFYSLqgWrNNOW8QG+qbmWNVfTksaR+eFlag6I7VySs1LIGLJpuqycAWU
-        FtbxiD3AsQijShfdtCn0krAO3YQCuNJBWcgK69fhrasRmZE3xIXScDkEP0idGDSDfK8v3x
-        05QjpRbd3yXkFhUABC+AeDUa3KG/P0o=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-35-BcVxSCqZO8izOQ7a6Yo_fQ-1; Tue, 07 Nov 2023 12:37:47 -0500
-X-MC-Unique: BcVxSCqZO8izOQ7a6Yo_fQ-1
-Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-9c75b999aaaso427893366b.2
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 09:37:47 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699378666; x=1699983466;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zm8Amys7QGjJOjN2CWnRiELnLonabUOLC+9I3mdxhrc=;
-        b=b5+NWnyK5zGL7axXLZZKc6yrxLtqmPyGGpJAMcRxVqwTi8hHhCyBSqY+Oq3p/9KWK+
-         jLKOJMQ0gtYOpFooFz31Wp7Vca+OOArTW2RzuwWCfuE+Gnlk3mtHny8Sq5eZcA0ETlSy
-         mEDZ7acmBmou8EWx05Jmqcih8ell45tCB9cv60hqsDxurbOi1uoShwtsn70idmLW+YMi
-         gv9sTfnZBjbCzEn1klyss5ez55ansGGtavZzgelkY+U/gMrKHR/RGZLss8VUXR7ePZdV
-         /AQ50iooYVshdTho9WG0nxeUeOyvUIw1wPEStYg4be/Bzh3++dMelb4huRhqSLQYKvFV
-         /pIg==
-X-Gm-Message-State: AOJu0Yx41h1k+Tn6Prt6PJBadTA9Du0tweMRpyqN3lvbPdKhu3Lc9Sg2
-        HMxRqAveyq6GS3drEt6T4PWyv++HaEXylyoLhhljSJ8tNazP5kYw91PYGxXof/pQHi0u2IbfkwD
-        CTch9T5ayu/DDQdeoqWKcQ7zk
-X-Received: by 2002:a17:907:c003:b0:9df:867f:f74c with SMTP id ss3-20020a170907c00300b009df867ff74cmr8174892ejc.65.1699378666271;
-        Tue, 07 Nov 2023 09:37:46 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFh/gMLEZHMHGCh/pJHcMtqzdd7B/+yaNlwBMsqxyn+hUxrg4ZTCUCPYq3PJ6zllM44UhIBLQ==
-X-Received: by 2002:a17:907:c003:b0:9df:867f:f74c with SMTP id ss3-20020a170907c00300b009df867ff74cmr8174873ejc.65.1699378665944;
-        Tue, 07 Nov 2023 09:37:45 -0800 (PST)
-Received: from [192.168.0.224] (host-95-250-205-146.retail.telecomitalia.it. [95.250.205.146])
-        by smtp.gmail.com with ESMTPSA id a1-20020a170906190100b009b913aa7cdasm1276630eje.92.2023.11.07.09.37.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 07 Nov 2023 09:37:45 -0800 (PST)
-Message-ID: <7d1ea71b-5218-4ee0-bc89-f02ee6bd5154@redhat.com>
-Date:   Tue, 7 Nov 2023 18:37:44 +0100
+        Tue, 7 Nov 2023 12:40:01 -0500
+Received: from sonic312-30.consmr.mail.ne1.yahoo.com (sonic312-30.consmr.mail.ne1.yahoo.com [66.163.191.211])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFA6312A
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 09:39:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1699378797; bh=tBt60bDXg1DqrNe9NMPxzOTPoUq4uLMvRSkc+FjV4dc=; h=Date:Subject:To:Cc:References:From:In-Reply-To:From:Subject:Reply-To; b=d8198OO/iZETZOuIf2PZUqiZUZ9p1lo0mad1QBpFfqUZVNT8jx4ptmQCoP9bEQaSWCfPJ831FR5bQjTpQdH6uQPPJl61m0yQCHpKsgEgALYZ5kAgarWB3BIxdwMgSbg2TLsgC9RtlEFxqbJ7SVatv5+oePoIyq+SKlxQ0Rtzwo9XJBDVYwP8dk6vkENw8XUrYK27XpWJ9kWHv+TDQuhmEXb+y5+WfWHKH51krtOqBJm74ioLsRjUpfygSD0r6Jj1Um80I0LHUgkasJVl020cEXr6WaHBUwZDVOC9jUffH3wPjCXt/+9Ko0vexw+ZrFwmUup8o6Nl1+pIdrWpAQJNgA==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1699378797; bh=WOubmKwgFxTqlfu77Z9l+rrRYZyfLqTwATZzCOEUYdQ=; h=X-Sonic-MF:Date:Subject:To:From:From:Subject; b=b1VGSmrwWwaB1tgD5GI7kjQfp/ujnfOv+DX1J+VY2gq0taJSITsz5ye+eCa1jjK1sW4VeS1HmIcpzg4iNVB8CYyKn+I4+y8lca16z3sqs9898ISanG8K6S/fQII4p/MiOysmBpVhHgLUROsD6kyeKBNBDabf0Ola594F/jjo04AgfSVpyNGk7nA6QAXc3CgnPg4wGChAKq0fQD/89+CD65DVAzY5FovLkiY8YwWgGvt4ersCRR6UZ5U09Iu6qFHO1aQw1PVI3ifx6JJ63j/yys+lCi2e6CgP/ZBTwpoo9MvoY+B9/97ZvR4bxfzbNvzMPnUMp1lCN2i+BjhUx6YnnA==
+X-YMail-OSG: SFQyYJ0VM1kvUG3BWDEX8IHrV3f.bTLq_hdLmDzE5lZ71wrVTFkCpntr69jH4s1
+ 0NAjglFni_c0n7pPkAjy1q8hBvaOsKAfmgYZJxIVUCIk6n2lrleS_J0qDTfTiZlSckNmoMaFpQfC
+ g8hDWm9J_9IECyGEvB8mq2u_jI6h91EEnzOdVQTr1hCtm6WmV6vnF6KEwdys07HMoOa.o.8_7CfW
+ gH6ruNXu06LsHgZcdlSrzg8.qQKQuo2RhvIswkNsH2GS1FSf2PcLg6HBSfJQzOjoFSEhkNixSpVa
+ zl5K_dOPEJNgYrtvW499gD6CjAZQ3RANOPtqJWzc6RQtadtNLGA1aogJyEeHJzxX4JQV7mR.ikgT
+ vYWKvTICOIiHMyptC_szVntYwZnRo1V.Qslj7SwflzXG5aFfT_pwPoTanndFgEDbNkYQDY2Tq9VS
+ L6FLcb7_cgTmZI8xstNybPPo2by3VimFqKUO2sVSroFy1s0zQV1aoUbCiFGtfaVko9OWlAUxfnGD
+ SPq5MFnjIsuIj4wlfo7KZSIIWgfo969z5AiEXCepjlbeuWtbU2AaFrkxDzpl.VqfnZj7uPiJwfVW
+ 9EggHdla0QEMKEjBqLrQDWqu.JDdi87hRGUDFk_9zDZakSR8g_cux93hHLVMMvgrRdYMRC1Bl4k8
+ Jv82LRIqgLH.Cgr05M1TnQ.mGN_vABEMJWJXz3xGyF7AgIKGEgptbfT.O7MfScvNtpVzwUbnJpvB
+ bdhL7HUSo5Klv4fCnZgQgde99NGaiD_.jPauDGnMEkDmnofTVxzK.9ECFGzgK2CtGbvYCvCBsDBl
+ Dwgh2bU.AZ4vi.tLtr6UUCmP_L7mUEnrwIt8QKmvPLjYCN5LdFXg9oDfLmnDjIGeAp.lAM.u.2np
+ Htqpi8Ky1JWm_32FVaC6YlDh_Ekocce7IH4ZFF7DACUp8NbbU6v1HogrBcs82UUnhtSzXEOG5jfR
+ fsgbYQCPwaqPgWWmKXMEN7IwgYA7Q6PdyfXd6z67ZpnlupqVGCcXaqk02qJ9TSB95FpD2_uVQZd6
+ 73jM4xtRa8oFNl4ltL4uV5EQvJ9id9Bm_1FE3O_qKLWyK_xiyOn0LyhN3L4RQ0fpzPmdlRdxzB4r
+ 5asXQa7h8CzpVMyMOBIExNt_Owlsmd8sEXqvdRuoaMHgXZSdrft6D_6pQb.K5g2ak533rKHwvX1x
+ xVTRREUYZ4JDm0gKHp3QefrQ5mk98r7NYMGBVlTDl53DfQoQcLMEassGXnBQ59VrBm5ZcZ.2PrgE
+ pZWb5oLupSL60lt9OFLi_nAgv_C0w9LNIved_WR3ffnsbr7r9U8NZhyUuILhLAhdgV3.EDo2TlA3
+ FLnR2RMXC4AjD.mnwHxv8X31Ghdf2sdosarU5Wr3WLf.VgxkF_CUn0Jjb.KXAMSOImzJKbVhNgUg
+ o9jjaNrclJtJLyXqt7S49.bJgIdkQ2nf0O9cKR2uab4UaoWnRGUJ6T5WWqsHq_caIySISOg7vt3q
+ .FjeMD7pbiCOh_xa7S_Wm.Z72t2bZnS_fpdBAISRsWE5p.kBltf66YRjOHZnB0di01JIwlIVM7rq
+ mqVBc4llsIlVyYt21cyoDdNS7nbca4X.GNOyF7UAxugWNQydHDRX6BsdewfoTl6pisNxbxMmy7uR
+ e2P.mDfPgupY3M8l1w9_l.908CdzBxhesrW29WhoXhWiRsy_15sAnjmAnw6wg.3xRJlP2rffkFcj
+ MldI3h5noa9XXQDZMDPkecK9u4v_2Nn_TVDvnh9l_.XxyigbIwMRRRCbWtnZjUPe1ZOur.aBWz1g
+ 0LNUCPmBOhqgb4lZyJ4Etzj0pSIxNB3B8PiDqHH7sJlqe6CDLWOtKpsGR3xhzMweKViHWH0cr6oW
+ 8eY5Cgoy3wivtMy_B05vCkh6HmM_u9UXfPBzqZ21xIOlLC_yaT28UX0KBGkshjCLjzbCowV88o5W
+ BQiASpW9ED_sWNr87UR.qlPQMHKlyfO8hAJfRfh8u3n9rgonRtFntyD0QzFzYeqc6efQkjvmNbGd
+ uEdbji6pBTCq_lasBF4jsvHMP5hYjKOOhuUhNmMthuHVnGUPszeykJZGRLFBilYhcLSohMWth1R4
+ VvGyl3rTTVxb.b6dPCWnsy_JPFmMO_tlMQgB5EPJ.b_sstd7DIgxbvuQ5j2V3OUJtmKCOFZQd2HL
+ xDJjudweCipUvnBJTaWTO6s3bSBmm6.xkrmnLoXUOKMWaMOZMU.xfRGfhVFc_JEnapWW5qkSEJ.m
+ vyneY2xv9m74QENsQSfPAvbVz1tOuqCavFhB5Lox0zyt7c8ux3DUwaNJ2WwhSd5bOeLgeh1eyvsw
+ 5mY8-
+X-Sonic-MF: <casey@schaufler-ca.com>
+X-Sonic-ID: b0caf173-8b98-4db2-b24d-c9eb7b1886bb
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic312.consmr.mail.ne1.yahoo.com with HTTP; Tue, 7 Nov 2023 17:39:57 +0000
+Received: by hermes--production-ne1-56df75844-8pvmk (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID 1586259eb8feadc3eca5524add296fcb;
+          Tue, 07 Nov 2023 17:39:55 +0000 (UTC)
+Message-ID: <2901d529-55c4-4d3b-91fc-157e0f949959@schaufler-ca.com>
+Date:   Tue, 7 Nov 2023 09:39:54 -0800
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 6/7] sched/deadline: Deferrable dl server
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Joel Fernandes <joel@joelfernandes.org>
-Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Valentin Schneider <vschneid@redhat.com>,
-        linux-kernel@vger.kernel.org,
-        Luca Abeni <luca.abeni@santannapisa.it>,
-        Tommaso Cucinotta <tommaso.cucinotta@santannapisa.it>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vineeth Pillai <vineeth@bitbyteword.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Phil Auld <pauld@redhat.com>
-References: <cover.1699095159.git.bristot@kernel.org>
- <c7b706d30d6316c52853ca056db5beb82ba72863.1699095159.git.bristot@kernel.org>
- <CAEXW_YS=PrWDx+YGVR7bmq0_SoKNztzGrreApCd9qk1yBLA5bA@mail.gmail.com>
- <CAEXW_YQ8kv3tXQJexLSguPuWi0bXiReKDyYNo9+A-Hgp=Zo1vA@mail.gmail.com>
- <CAEXW_YSjsZSrJK_RbGmbLNy4UrLCgu+7NPZjg-wiLuNbGOGr+w@mail.gmail.com>
- <20231107114732.5dd350ec@gandalf.local.home>
+Subject: Re: [PATCH v5 13/23] security: Introduce file_pre_free_security hook
 Content-Language: en-US
-From:   Daniel Bristot de Oliveira <bristot@redhat.com>
-In-Reply-To: <20231107114732.5dd350ec@gandalf.local.home>
+To:     Roberto Sassu <roberto.sassu@huaweicloud.com>,
+        viro@zeniv.linux.org.uk, brauner@kernel.org,
+        chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
+        kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
+        paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
+        zohar@linux.ibm.com, dmitry.kasatkin@gmail.com,
+        dhowells@redhat.com, jarkko@kernel.org,
+        stephen.smalley.work@gmail.com, eparis@parisplace.org,
+        mic@digikod.net
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
+        selinux@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>,
+        Casey Schaufler <casey@schaufler-ca.com>
+References: <20231107134012.682009-1-roberto.sassu@huaweicloud.com>
+ <20231107134012.682009-14-roberto.sassu@huaweicloud.com>
+From:   Casey Schaufler <casey@schaufler-ca.com>
+In-Reply-To: <20231107134012.682009-14-roberto.sassu@huaweicloud.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
+X-Mailer: WebService/1.1.21896 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/7/23 17:47, Steven Rostedt wrote:
-> On Mon, 6 Nov 2023 16:37:32 -0500
-> Joel Fernandes <joel@joelfernandes.org> wrote:
-> 
->> Say CFS-server runtime is 0.3s and period is 1s.
->>
->> At 0.7s, 0-laxity timer fires. CFS runs for 0.29s, then sleeps for
->> 0.005s and wakes up at 0.295s (its remaining runtime is 0.01s at this
->> point which is < the "time till deadline" of 0.005s)
->>
->> Now the runtime of the CFS-server will be replenished to the full 0.3s
->> (due to CBS) and the deadline
->> pushed out.
->>
->> The end result is, the total runtime that the CFS-server actually gets
->> is 0.595s (though yes it did sleep for 5ms in between, still that's
->> tiny -- say if it briefly blocked on a kernel mutex). That's almost
->> double the allocated runtime.
->>
->> This is just theoretical and I have yet to see if it is actually an
->> issue in practice.
-> 
-> Let me see if I understand what you are asking. By pushing the execution of
-> the CFS-server to the end of its period, if it it was briefly blocked and
-> was not able to consume all of its zerolax time, its bandwidth gets
-> refreshed. Then it can run again, basically doubling its total time.
-> 
-> But this is basically saying that it ran for its runtime at the start of
-> one period and at the beginning of another, right?
-> 
-> Is that an issue? The CFS-server is still just consuming it's time per
-> period. That means that an RT tasks was starving the system that much to
-> push it forward too much anyway. I wonder if we just document this
-> behavior, if that would be enough?
+On 11/7/2023 5:40 AM, Roberto Sassu wrote:
+> From: Roberto Sassu <roberto.sassu@huawei.com>
+>
+> In preparation for moving IMA and EVM to the LSM infrastructure, introduce
+> the file_pre_free_security hook.
+>
+> IMA calculates at file close the new digest of the file content and writes
+> it to security.ima, so that appraisal at next file access succeeds.
+>
+> LSMs could also take some action before the last reference of a file is
+> released.
+>
+> The new hook cannot return an error and cannot cause the operation to be
+> reverted.
+>
+> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
 
-The code is not doing what I intended because I thought it was doing overload
-control on the replenishment, but it is not (my bad).
+Acked-by: Casey Schaufler <casey@schaufler-ca.com>
 
-he is seeing this timeline:
 
-- w=waiting
-- r=running
-- s=sleeping
-- T=throttled
-- 3/10 reservation (30%).
-
-|wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww|rrrrrrrrrrrrrrrrrrrrrrrrrrr|s|rrrrrrrrr+rrrrrrrr+rrrrrrrrr|TTTTTTTTTT <CPU
-|___________________________period 1_______________________________________________________________|________period 2_______________________ < internal-period
-0---------1---------2---------3---------4---------5---------6--------7--------8---------9----------10.......11.......12.........13......... < Real-time
-
-It is not actually that bad because the ~2x runtime is over 2 periods.
-
-But it is not what I intended... I intended this:
-
-|wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww|rrrrrrrrrrrrrrrrrrrrrrrrrrrrsr|TTTTTTTTTT[...]TTTTTTTTTTT|rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr|TTTTTTT
-|___________________________period 1_________________________________|_________period 2________________________[...]___________|___period 3____________________|[.... internal-period
-0---------1---------2---------3---------4---------5---------6--------7--------8---------9----------10.......11.[...]16.........17........18........19........20|[.... < Real-time
----------------------------------------------------------------------+---------------------------------------------------------|
-                                                                     |                                                         +new period
-                                                                     +30/30>30/100, thus new period.
-
-At the replenishment time, if the runtime left/period left > dl_rutime/dl_period,
-replenish with a new period to avoid adding to much pressure to CBS/EDF.
-
-One might say: but then the task period is different... or out of sync...
-but it is not a problem: look at the "real-time"... the task starts and
-run at the "deadline - runtime...." emulating the "zerolax"
-(note, I do not like the term zerolax here... but (thomas voice:) whatever :-)).
-
-One could say: in presence of deadline, this timelime will be different...
-
-But that is intentional, as we do not want the fair server to break DL. But more
-than that, if one has DL tasks, FIFO latency "property" is broken, and they should
-just disable the defer option....
-
-that is what I mentioned at the log:
-
-"If the fair server reaches the zerolax time without consuming
-its runtime, the server will be boosted, following CBS rules
-(thus without breaking SCHED_DEADLINE)."
-
-by the rule I meant doing the overload check... I thought it was
-there already... but it was not... there was no need for it.
-
-I am working on it... it is a simple change (but I need to test).
-
--- Daniel
-
+> ---
+>  fs/file_table.c               |  1 +
+>  include/linux/lsm_hook_defs.h |  1 +
+>  include/linux/security.h      |  4 ++++
+>  security/security.c           | 11 +++++++++++
+>  4 files changed, 17 insertions(+)
+>
+> diff --git a/fs/file_table.c b/fs/file_table.c
+> index de4a2915bfd4..64ed74555e64 100644
+> --- a/fs/file_table.c
+> +++ b/fs/file_table.c
+> @@ -385,6 +385,7 @@ static void __fput(struct file *file)
+>  	eventpoll_release(file);
+>  	locks_remove_file(file);
+>  
+> +	security_file_pre_free(file);
+>  	ima_file_free(file);
+>  	if (unlikely(file->f_flags & FASYNC)) {
+>  		if (file->f_op->fasync)
+> diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_defs.h
+> index 4f6861fecacd..5d0a09ead7ac 100644
+> --- a/include/linux/lsm_hook_defs.h
+> +++ b/include/linux/lsm_hook_defs.h
+> @@ -173,6 +173,7 @@ LSM_HOOK(int, 0, kernfs_init_security, struct kernfs_node *kn_dir,
+>  	 struct kernfs_node *kn)
+>  LSM_HOOK(int, 0, file_permission, struct file *file, int mask)
+>  LSM_HOOK(int, 0, file_alloc_security, struct file *file)
+> +LSM_HOOK(void, LSM_RET_VOID, file_pre_free_security, struct file *file)
+>  LSM_HOOK(void, LSM_RET_VOID, file_free_security, struct file *file)
+>  LSM_HOOK(int, 0, file_ioctl, struct file *file, unsigned int cmd,
+>  	 unsigned long arg)
+> diff --git a/include/linux/security.h b/include/linux/security.h
+> index c360458920b1..a570213693d9 100644
+> --- a/include/linux/security.h
+> +++ b/include/linux/security.h
+> @@ -395,6 +395,7 @@ int security_kernfs_init_security(struct kernfs_node *kn_dir,
+>  				  struct kernfs_node *kn);
+>  int security_file_permission(struct file *file, int mask);
+>  int security_file_alloc(struct file *file);
+> +void security_file_pre_free(struct file *file);
+>  void security_file_free(struct file *file);
+>  int security_file_ioctl(struct file *file, unsigned int cmd, unsigned long arg);
+>  int security_mmap_file(struct file *file, unsigned long prot,
+> @@ -1006,6 +1007,9 @@ static inline int security_file_alloc(struct file *file)
+>  	return 0;
+>  }
+>  
+> +static inline void security_file_pre_free(struct file *file)
+> +{ }
+> +
+>  static inline void security_file_free(struct file *file)
+>  { }
+>  
+> diff --git a/security/security.c b/security/security.c
+> index fe6a160afc35..331a3e5efb62 100644
+> --- a/security/security.c
+> +++ b/security/security.c
+> @@ -2724,6 +2724,17 @@ int security_file_alloc(struct file *file)
+>  	return rc;
+>  }
+>  
+> +/**
+> + * security_file_pre_free() - Perform actions before releasing the file ref
+> + * @file: the file
+> + *
+> + * Perform actions before releasing the last reference to a file.
+> + */
+> +void security_file_pre_free(struct file *file)
+> +{
+> +	call_void_hook(file_pre_free_security, file);
+> +}
+> +
+>  /**
+>   * security_file_free() - Free a file's LSM blob
+>   * @file: the file
