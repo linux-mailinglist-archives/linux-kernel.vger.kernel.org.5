@@ -2,96 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB5DF7E4A72
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 22:18:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9B057E4A76
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 22:19:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343971AbjKGVSZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 16:18:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39604 "EHLO
+        id S1343987AbjKGVTw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 16:19:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232753AbjKGVSX (ORCPT
+        with ESMTP id S232753AbjKGVTu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 16:18:23 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9873410C1
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 13:18:21 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ECCACC433C8;
-        Tue,  7 Nov 2023 21:18:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699391900;
-        bh=ERY6UoPM1GU+DApAE6GlRP0eE5/JGMTXNItE6V115wA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hDJAeHguvCHh9PnNxdYfWKpS3BeRZVKZHNNj3AofUcu6WTNBu5vyAl+fzuzBKDBGL
-         TMftQr7ws8l27wuaVsrB2xI8SGzVcJJK7HfNQ1Uv7LuvqGQDEnOpVXaZrq1FACn8L6
-         iksu1TvG2EbSL3u6XxXXr8RJ+iH5qiDZxzFIrWXpfx7R7ahSGdmGJN7jefI5yf5AQP
-         Mq+ZjrPN1SxVTXgM06oGGmn9IOdNu0VVdiLBt1If5RcXj2XlVTIAXGzV494IXPkP21
-         viz2kFv8dYWcqueZMoscfNB5qtwMwcpU/3fiG5pHqkmJPXwRgHThZM9gqxS7+IoZ2C
-         ZLu/X0tHLQA9w==
-Date:   Tue, 7 Nov 2023 21:18:16 +0000
-From:   Conor Dooley <conor@kernel.org>
-To:     Michal Simek <michal.simek@amd.com>
-Cc:     linux-kernel@vger.kernel.org, monstr@monstr.eu,
-        michal.simek@xilinx.com, git@xilinx.com,
-        Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: soc: Add new board description for
- MicroBlaze V
-Message-ID: <20231107-expensive-jitters-92e454f77ea8@spud>
-References: <50c277c92c41a582ef171fb75efc6a6a4f860be2.1699271616.git.michal.simek@amd.com>
- <20231106-hangnail-prankster-a04e713bed35@spud>
- <4223470c-5596-4168-9c89-e701559fbbed@amd.com>
+        Tue, 7 Nov 2023 16:19:50 -0500
+Received: from mail-ua1-x934.google.com (mail-ua1-x934.google.com [IPv6:2607:f8b0:4864:20::934])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC20110C1
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 13:19:47 -0800 (PST)
+Received: by mail-ua1-x934.google.com with SMTP id a1e0cc1a2514c-7ba0d338367so2749103241.2
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 13:19:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1699391987; x=1699996787; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=H6vtB6oGNeNraeO1yfc6WDVHQCGu06A7XkYHqu97D2c=;
+        b=0qCpusB5cgJsovyh+pflw6eb7M0+rxhkXqUUV57dWxTspNfOyvZJzzSCqvkW+N1FrS
+         KiR8RmuRy7bxGqZE4qdy3tCGanjdKdDgC7beNnOEoYptIBik1gKxC/6ON4ZOg/Z2hNyj
+         DAKipbvHGVeOHp7RyWj2RS9aE30t0vT836lR/ctBajfm2ZrzTmX7Lakc7QhXGOqyElwC
+         c/WVUv+dUkQ7kX/oL9GKWoos1K2b9SkmmQiKLGchPwdr8JV1bGaQz8B+g5PVoxIHPTze
+         4X8Gy+wOTF2R+6DUDjmTO+pHw/79tXdvy3SFPimRaaJC0d/M9p2BbWGdKUeRDi2ltsZx
+         ebMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699391987; x=1699996787;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=H6vtB6oGNeNraeO1yfc6WDVHQCGu06A7XkYHqu97D2c=;
+        b=hJXvE/Z4TpFWrP+8Ii1caRGA+AzRlTKbKs4n/JvQqJvZW0saL4lTU/82OjPdZXVGVl
+         9r8M2KzSq7ViNypsDbnOijLONhxtIxci5wMnOkDYxs+6Re6hEFISCP0/LGCpYuJs7cs1
+         tUHO/J+Nu9AD9IgUHEjqK7uJFpHWtdNrUo1CsTlp8iN9346DH4GgGSi2QLPrYh7qO92A
+         R8fNxaiWMRemHRc6ueAoqtoUJ8VlKMEmb2RAHkZeM5J7l+gxPoGoqbSU5SDYthSIubKO
+         o1Qde5EO0yQDepAvwtFkPtagV30lsaaEv044mp1fcvvX80BqiULmQvf3KfZNLRbWIak1
+         bq2A==
+X-Gm-Message-State: AOJu0YzfoHsMWrvnTeO0z/vUTYPWpOIQ86gio/B8yTcunY+Oc9BjGGz9
+        OvOrSRy7ganw8rYTJ2k0qMiwvfOrNb0ensHnPmL/2Q==
+X-Google-Smtp-Source: AGHT+IGP/CXPxw/3EMz20UnoxCfjtef8X0h1zK6Yh6FlZoE34oBHf9lsr5FmmVHSCxlfjvy68G8o2l++xlKxI0QUgP0=
+X-Received: by 2002:a05:6102:4712:b0:45d:91b3:74b7 with SMTP id
+ ei18-20020a056102471200b0045d91b374b7mr12087084vsb.27.1699391986590; Tue, 07
+ Nov 2023 13:19:46 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="l64Ovq0UtbQtisQg"
-Content-Disposition: inline
-In-Reply-To: <4223470c-5596-4168-9c89-e701559fbbed@amd.com>
+References: <20231106024413.2801438-1-almasrymina@google.com>
+ <20231106024413.2801438-9-almasrymina@google.com> <7e851882-9a85-3672-c3d5-73b47599873c@huawei.com>
+In-Reply-To: <7e851882-9a85-3672-c3d5-73b47599873c@huawei.com>
+From:   Mina Almasry <almasrymina@google.com>
+Date:   Tue, 7 Nov 2023 13:19:32 -0800
+Message-ID: <CAHS8izPGa99LyEc=AeqNaK8X68b7dovxCHOLbR=hnbaybN_zgQ@mail.gmail.com>
+Subject: Re: [RFC PATCH v3 08/12] net: support non paged skb frags
+To:     Yunsheng Lin <linyunsheng@huawei.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linaro-mm-sig@lists.linaro.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        David Ahern <dsahern@kernel.org>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Jeroen de Borst <jeroendb@google.com>,
+        Praveen Kaligineedi <pkaligineedi@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Nov 7, 2023 at 1:00=E2=80=AFAM Yunsheng Lin <linyunsheng@huawei.com=
+> wrote:
+>
+> On 2023/11/6 10:44, Mina Almasry wrote:
+> > Make skb_frag_page() fail in the case where the frag is not backed
+> > by a page, and fix its relevent callers to handle this case.
+> >
+> > Correctly handle skb_frag refcounting in the page_pool_iovs case.
+> >
+> > Signed-off-by: Mina Almasry <almasrymina@google.com>
+> >
+>
+> ...
+>
+> >  /**
+> >   * skb_frag_page - retrieve the page referred to by a paged fragment
+> >   * @frag: the paged fragment
+> >   *
+> > - * Returns the &struct page associated with @frag.
+> > + * Returns the &struct page associated with @frag. Returns NULL if thi=
+s frag
+> > + * has no associated page.
+> >   */
+> >  static inline struct page *skb_frag_page(const skb_frag_t *frag)
+> >  {
+> > -     return frag->bv_page;
+> > +     if (!page_is_page_pool_iov(frag->bv_page))
+> > +             return frag->bv_page;
+> > +
+> > +     return NULL;
+>
+> It seems most of callers don't expect NULL returning for skb_frag_page(),
+> and this patch only changes a few relevant callers to handle the NULL cas=
+e.
+>
 
---l64Ovq0UtbQtisQg
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Yes, I did not change code that I guessed was not likely to be
+affected or enable the devmem TCP case. Here is my breakdown:
 
-On Tue, Nov 07, 2023 at 12:09:58PM +0100, Michal Simek wrote:
->=20
->=20
-> On 11/6/23 18:07, Conor Dooley wrote:
-> > On Mon, Nov 06, 2023 at 12:53:40PM +0100, Michal Simek wrote:
-> > > MicroBlaze V is new AMD/Xilinx soft-core 32bit RISC-V processor IP.
-> > > It is hardware compatible with classic MicroBlaze processor. Processo=
-r can
-> > > be used with standard AMD/Xilinx IPs including interrupt controller a=
-nd
-> > > timer.
-> > >=20
-> > > Signed-off-by: Michal Simek <michal.simek@amd.com>
-> > > ---
-> > >=20
-> > >   .../devicetree/bindings/soc/amd/amd.yaml      | 26 ++++++++++++++++=
-+++
-> >=20
-> > Bindings for SoCs (and by extension boards with them) usually go to in
-> > $arch/$vendor.yaml not into soc/$vendor/$vendor.yaml. Why is this any
-> > different?
->=20
-> I actually found it based on tracking renesas.yaml which describes one of
-> risc-v board. No problem to move it under bindings/riscv/
+=E2=9E=9C  cos-kernel git:(tcpdevmem) =E2=9C=97 ack -i "skb_frag_page\("
+--ignore-dir=3Ddrivers -t cc -l
+net/core/dev.c
+net/core/datagram.c
+net/core/xdp.c
+net/core/skbuff.c
+net/core/filter.c
+net/core/gro.c
+net/appletalk/ddp.c
+net/wireless/util.c
+net/tls/tls_device.c
+net/tls/tls_device_fallback.c
+net/ipv4/tcp.c
+net/ipv4/tcp_output.c
+net/bpf/test_run.c
+include/linux/skbuff.h
 
-That one is kinda a special case, as it contains arm/arm64/riscv.
+I'm ignoring ank skb_frag_page() calls in drivers because drivers need
+to add support for devmem TCP, and handle these calls at time of
+adding support, I think that's reasonable.
 
---l64Ovq0UtbQtisQg
-Content-Type: application/pgp-signature; name="signature.asc"
+net/core/dev.c:
+I think I missed ilegal_highdma()
 
------BEGIN PGP SIGNATURE-----
+net/core/datagram.c:
+__skb_datagram_iter() protected by not_readable(skb) check.
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZUqpmAAKCRB4tDGHoIJi
-0sWaAP4q1cECiBH/VWu1Z2ske7bzSK4pWDsxCedqUlVDPzU2GwD/TfyjYTvKNOov
-Sg/a6SEckcmadodqQO0MZ0ca30P0bQA=
-=DNsf
------END PGP SIGNATURE-----
+net/core/skbuff.c:
+protected by not_readable(skb) check.
 
---l64Ovq0UtbQtisQg--
+net/core/filter.c:
+bpf_xdp_frags_shrink_tail seems like xdp specific, not sure it's relevant h=
+ere.
+
+net/core/gro.c:
+skb_gro_reset_offset: protected by NULL check
+
+net/ipv4/tcp.c:
+tcp_zerocopy_receive protected by NULL check.
+
+net/ipv4/tcp_output.c:
+tcp_clone_payload: handles NULL return fine.
+
+net/bpf/test_run.c:
+seems xdp specific and not sure if it can run into devmem issues.
+
+include/linux/skbuff.h:
+I think the multiple calls here are being handled correctly, but let
+me know if not.
+
+All the calls in these files, I think, are code paths not possible to
+hit devmem TCP with the current support, I think:
+net/core/xdp.c
+net/appletalk/ddp.c
+net/wireless/util.c
+net/tls/tls_device.c
+net/tls/tls_device_fallback.c
+
+All in all I think maybe all in all I missed illegal_highdma(). I'll
+fix it in the next iteration.
+
+> It may make more sense to add a new helper to do the above checking, and
+> add a warning in skb_frag_page() to catch any missing NULL checking for
+> skb_frag_page() caller, something like below?
+>
+>  static inline struct page *skb_frag_page(const skb_frag_t *frag)
+>  {
+> -       return frag->bv_page;
+> +       struct page *page =3D frag->bv_page;
+> +
+> +       BUG_ON(page_is_page_pool_iov(page));
+> +
+> +       return page;
+> +}
+> +
+> +static inline struct page *skb_frag_readable_page(const skb_frag_t *frag=
+)
+> +{
+> +       struct page *page =3D frag->bv_page;
+> +
+> +       if (!page_is_page_pool_iov(page))
+> +               return page;
+> +
+> +       return NULL;
+>  }
+>
+>
+
+My personal immediate reaction is that this may just introduce code
+churn without significant benefit. If an unsuspecting caller call
+skb_frag_page() on devmem frag and doesn't correctly handle NULL
+return, it will crash or error out anyway, and likely in some obvious
+way, so maybe the BUG_ON() isn't so useful that it's worth changing
+all the call sites. But if there is consensus on adding a change like
+you propose, I have no problem adding it.
+
+--=20
+Thanks,
+Mina
