@@ -2,221 +2,367 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BF3D7E4877
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 19:41:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38DE47E4880
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 19:44:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234954AbjKGSlz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 13:41:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40208 "EHLO
+        id S234110AbjKGSoI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 13:44:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235307AbjKGSlo (ORCPT
+        with ESMTP id S233046AbjKGSoG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 13:41:44 -0500
-Received: from rcdn-iport-3.cisco.com (rcdn-iport-3.cisco.com [173.37.86.74])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6498610F5;
-        Tue,  7 Nov 2023 10:41:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=cisco.com; i=@cisco.com; l=1002; q=dns/txt; s=iport;
-  t=1699382502; x=1700592102;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=BgeaM4zBD1ryYKt1d/jmi7Sd0vc4zGs4uJRkrxlTC1Q=;
-  b=K1iqRTdu/sZkjsLTj5+AqohGaNrAa65HmKc3XhhIGOFmvT8xLeiv6cVX
-   pOvJrM3452xBL3uuQJMJyqdE3OhioDfAqSH2PxJ8q12Pt+yRAY1y6aAgm
-   a0HyXbzDWiyfbJ92iYI2ruSWCXKVJ4fWrXP2+Nx33WcHS1fEaK/taAdXb
-   g=;
-X-CSE-ConnectionGUID: +m6lyHK9R3+7i2zz6BfBBA==
-X-CSE-MsgGUID: cPbMiLXoQ6Ob2vxO8ESYrw==
-X-IPAS-Result: =?us-ascii?q?A0AmAAC+g0plmJFdJa1aHQEBAQEJARIBBQUBQCWBFggBC?=
- =?us-ascii?q?wGBZlJ4WzxIhFKDTAOETl+GQIIlnX6BJQNWDwEBAQ0BAUQEAQGFBgIWhxACJ?=
- =?us-ascii?q?jQJDgECAgIBAQEBAwIDAQEBAQEBAQIBAQUBAQECAQcEFAEBAQEBAQEBHhkFE?=
- =?us-ascii?q?A4nhWgNCIZEAQEBAQMSEREMAQE3AQ8CAQgOCgICJgICAjAVEAIEAQ0FCBqCX?=
- =?us-ascii?q?IJfAwGgGwGBQAKKKHqBMoEBggkBAQYEBbJsCYEaLgGICQGBUIg3JxuCDYFXg?=
- =?us-ascii?q?jcxPoJhAoFig1k5gi+DcoU5BzKCIoNTjSYJd0dwGwMHA4EAECsHBDAbBwYJF?=
- =?us-ascii?q?C0jBlEEKCQJExI+BIFlgVEKgQI/Dw4Rgj8iAgc2NhlIglUJFQw0SnYQKgQUF?=
- =?us-ascii?q?4ESBGoFGBUeNxESFw0DCHYdAhEjPAMFAwQzChINCyEFFEMDQgZJCwMCGgUDA?=
- =?us-ascii?q?wSBNgUNHgIQGgYNJwMDE00CEBQDOwMDBgMLMQMwVUQMUANsHzYJPAsEDB8CG?=
- =?us-ascii?q?x4NJygCNUMDEQUSAhYDKyIDRB1AAwttPTUUGwUEOylZBaEugkCBOJYeSa4zC?=
- =?us-ascii?q?oQMoT8XhAGMc5kMmD4ggi+lWQIEAgQFAg4BAQaBYzqBW3AVgyJSGQ+OIBkfg?=
- =?us-ascii?q?0CPeXY7AgcLAQEDCYtKAQE?=
-IronPort-PHdr: A9a23:aZFSEhbo7WnzPx4i6UPKYRD/LTDhhN3EVzX9orI9gL5IN6O78IunZ
- grU5O5mixnCWoCIo/5Hiu+Dq6n7QiRA+peOtnkebYZBHwEIk8QYngEsQYaFBET3IeSsbnkSF
- 8VZX1gj9Ha+YgBOAMirX1TJuTWp6CIKXBD2NA57POPwT43bldi20+mx05bSeA5PwjG6ZOA6I
- BC/tw6ErsANmsMiMvMo1xLTq31UeuJbjW9pPgeVmBDxp4+8qZVi6C9X/fkm8qZ9
-IronPort-Data: A9a23:bNvYcqxBNRsx+bXr/096t+cKxirEfRIJ4+MujC+fZmUNrF6WrkUEy
- TRJWWuCPvnfNjbzctt1Oo7ipB5S65GEz9U3G1Bu/lhgHilAwSbn6Xt1DatR0we6dJCroJdPt
- p1GAjX4BJlpCCea/lH0auSJQUBUjcmgXqD7BPPPJhd/TAplTDZJoR94kobVuKYw6TSCK13L4
- YiaT/H3Ygf/gGctaj1MscpvlTs21BjMkGJA1rABTagjUG/2zxE9EJ8ZLKetGHr0KqE88jmSH
- rurIBmRpws1zj91Yj+Xuu+Tnn4iHtY+CTOzZk9+AMBOtPTtShsaic7XPNJEAateZq7gc9pZk
- L2hvrToIesl0zGldOk1C3Fl/y9C0aJuu7qZJWmfkp2plA6ZciH+0atEAmscFNhNkgp3KTkmG
- f0wMjsBaFWIgPi7heP9Qeh3jcNlJ87uVG8dkig/lneCUrB3GtaaH/iiCdxwhF/cguhNFOzCZ
- s4QahJkbQ/LZFtEPVJ/5JcWxbzz3iKiL2UJwL6TjaEP6U3S6Dx26ebKOoDLavvaaP5khFnN8
- woq+EygUk1Fa7Rz0wGt9nOqm/+Kni7hXo8WPKO3++Qsg1CJwGEXThoMWjOTpfi/l177QNlEK
- mQK9Sc066s/7kqmSp/6RRLQnZKflgQXV9wVGOog5UTcjKHV+A2eQGMDS1atdeDKqud1QGIux
- 3+qzumyRmNu6q+HF1iT3J29+Gba1TcuEUcOYioNTA0g6tbloZ0ugh+ncjqFOPPr5jESMWygq
- w1mvBTSlJ1I0pFWj/TTEUTvxmPz9sKQH2bZ8y2OBjr9hj6VcrJJcGBB1LQ2xexLIIDcRV6bs
- T1V3cOf9+sJS5qKkURhodnh/pn3u55p0xWF3DaD+qXNERzxohZPmqgLsFlDyL9BaJpsRNMQS
- Ba7VfltzJFSJmC2SqR8fpi8Dc8npYC5S4W0DKGJMoYWMsUpHONiwM2ITRDIt4wKuBZ0+ZzTx
- b/HGSpRJS9AUP8+nGbeqxk1i+dymEjSOl8/tbiin0j4jtJylVaeSKwONxOVf/sl4aafyDg5A
- P4BX/ZmPy53CbWkCgGOqNZ7BQlTfRATW8usw+QJLbHrH+aTMDx7YxMn6el/K9UNcmU8vrqgw
- 0xRrWcClQel2ieddVvVAp2hAZu2NatCQbsAFXVEFX6j2mMoZsCk66J3Snf9VeNPGDBLpRKsc
- 8Q4Rg==
-IronPort-HdrOrdr: A9a23:BzSGxKDz1y+UNxzlHejpsseALOsnbusQ8zAXPh9KOH9om52j9/
- xGws576fatskdhZJhBo7y90KnpewKkyXcH2/hgAV7EZniphILIFvAs0WKG+UyDJ8SQzJ8h6U
- 4NSdkYNDS0NykFsS+Y2nj4Lz9D+qj6zEnAv463pBkdKHAPV0gj1XYHNu/xKDwPeOAyP+tCKH
- Pq3Ls9m9PPQwVwUu2LQlM+c6zoodrNmJj6YRgAKSIGxWC15w+A2frRKTTd+g0RfQ9u7N4ZnF
- QtlTaX2oyT99WAjjPM3W7a6Jpb3PH7zMFYOcCKgs8Jbh3xlweBfu1aKv6/lQFwhNvqxEchkd
- HKrRtlFd908Wntcma8pgao8xX80Qwp92TpxTaj8DneSI3CNXcH4vh69MVkmyjimgwdVRZHof
- t2Nleixt5q5NX77XzADpbzJkpXfwGP0AkfeKYo/g5iuM0lGf9sRUh1xjIJLH/GdxiKsrwPAa
- 1gCtrR6+1Rdk7fZ3fFvnN3yNjpRXgrGAyaK3Jy8PB9/gIm1EyR9XFoj/A3jzMF7tYwWpNE7+
- PLPuBhk6xPVNYfaeZ4CP0aScW6B2TRSVaUWVjibWjPBeUCITbAupT36LI66KWjf4EJ1oI7nN
- DEXElDvWA/dkryAYmF3YFN8BrKXGKhNA6dh/129tx8oPnxVbDrOSqMRBQnlNahuewWBonBV/
- O6KPttcrbexKvVaPB0NiHFKu5vwCMlIbgoU/4AKiaznv4=
-X-Talos-CUID: 9a23:35Kio2ATh1GgSkP6E2piqkoFOuN0SCaek3aKMV3mI2hDYpTAHA==
-X-Talos-MUID: 9a23:mXSuQAW2Cldv26zq/DTUjhRjEPdv2vqJAhoTgbJWlvK1LzMlbg==
-X-IronPort-Anti-Spam-Filtered: true
-Received: from rcdn-core-9.cisco.com ([173.37.93.145])
-  by rcdn-iport-3.cisco.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2023 18:41:41 +0000
-Received: from rcdn-opgw-2.cisco.com (rcdn-opgw-2.cisco.com [72.163.7.163])
-        by rcdn-core-9.cisco.com (8.15.2/8.15.2) with ESMTPS id 3A7IffVg003404
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 7 Nov 2023 18:41:41 GMT
-X-CSE-ConnectionGUID: MBRuegIcTNqH3Mim+qb/cQ==
-X-CSE-MsgGUID: lDbsUMU1T7ChD695i25cQw==
-Authentication-Results: rcdn-opgw-2.cisco.com; dkim=pass (signature verified) header.i=@cisco.com; spf=Pass smtp.mailfrom=kartilak@cisco.com; dmarc=pass (p=quarantine dis=none) d=cisco.com
-X-IronPort-AV: E=Sophos;i="6.03,284,1694736000"; 
-   d="scan'208";a="7352214"
-Received: from mail-dm6nam11lp2169.outbound.protection.outlook.com (HELO NAM11-DM6-obe.outbound.protection.outlook.com) ([104.47.57.169])
-  by rcdn-opgw-2.cisco.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2023 18:41:41 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CFRqL17MVj0YZR/VM8Gpo8JLfslC7IxS508pJ8OUQYO4JDHwPMsZ/NqhTWcdc5r6n3P2I/hN8ancEi0LWJB7HpW7GDZSWE85OAMmObZA3NJJSwqP4MuOiahlIUttJjElSg+GwYjgBlmJ5jXZyKOpl2VgWCXZ1C5LbXuVGaxnigNcGIdzD+KK/DeCAgVii+m+m4zI/Lh4bVaIYTzFCKFFtDKfUZ1du2vIuu2JwYLberDKtpGc8OjFSVBR3yKiHU8Ii6f8lz5JcicoZDXK+YdZ1Qzx8HL0VMO/2RPULcIXRjfihrz6Wd9JgpIymxY9urPrDh6Pko9pvZHsSd7oXPC9ww==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=BgeaM4zBD1ryYKt1d/jmi7Sd0vc4zGs4uJRkrxlTC1Q=;
- b=UHV+yMSYso3tcHyiKUFR3ONIulOcqCsnYgch+jBYNkoTzxr2FPDGEki7buHGbSvDPbGubMEcRR/M5iRLH/hZHIaHAcu4isn0HCeiuEbG7TbSKjEZZJsUDhZMCE6zxgqoI9dSfJOOUxBHLtkwDDUA3IuTH1BfoK7jdnmktHpFhVHSfum2cv5ZfQmZAe5kx6QLHpmiTPkfEuW/SGRRgKR/wpon3TYCdyqL3ABUmXxWuwn7AB3tj56AF2wP62N//6JwbUCHM/S2XK/Az/hb2MMFQPeGCz1ZNrchLJVdWQY+Kz3D5+PNwCqWoLUQHMdgm3eT5QQKQO/Q887c/loZItte6A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=cisco.com; dmarc=pass action=none header.from=cisco.com;
- dkim=pass header.d=cisco.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cisco.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BgeaM4zBD1ryYKt1d/jmi7Sd0vc4zGs4uJRkrxlTC1Q=;
- b=DqWbtPe/3vBMzaCrnU3/qAYifZqGiqP68KMfQ56JjX2qdqXOKgixbIESTlcNfPicO1SNIc3xGUpzR03YNUKYnJF2RiQAvknEZEIyhOa0RRlemheWalHsoSjwa/fbSSzbbjisn5CB9avCIKZAajPeVn6FMKEcM0hG6H+bp/wd8DQ=
-Received: from SJ0PR11MB5896.namprd11.prod.outlook.com (2603:10b6:a03:42c::19)
- by SN7PR11MB7666.namprd11.prod.outlook.com (2603:10b6:806:34b::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.21; Tue, 7 Nov
- 2023 18:41:39 +0000
-Received: from SJ0PR11MB5896.namprd11.prod.outlook.com
- ([fe80::24ee:3bbf:e40:6022]) by SJ0PR11MB5896.namprd11.prod.outlook.com
- ([fe80::24ee:3bbf:e40:6022%7]) with mapi id 15.20.6954.028; Tue, 7 Nov 2023
- 18:41:39 +0000
-From:   "Karan Tilak Kumar (kartilak)" <kartilak@cisco.com>
-To:     Hannes Reinecke <hare@suse.de>,
-        "Sesidhar Baddela (sebaddel)" <sebaddel@cisco.com>
-CC:     "Arulprabhu Ponnusamy (arulponn)" <arulponn@cisco.com>,
-        "Dhanraj Jhawar (djhawar)" <djhawar@cisco.com>,
-        "Gian Carlo Boffa (gcboffa)" <gcboffa@cisco.com>,
-        "Masa Kai (mkai2)" <mkai2@cisco.com>,
-        "Satish Kharat (satishkh)" <satishkh@cisco.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v2 13/13] scsi: fnic: Improve logs and add support for
- multiqueue (MQ)
-Thread-Topic: [PATCH v2 13/13] scsi: fnic: Improve logs and add support for
- multiqueue (MQ)
-Thread-Index: AQHaCP/2MFkSdLeZq0m6/Pp6+iIsGLBmsvEAgAcb0ZCAALbcAIAAu92w
-Date:   Tue, 7 Nov 2023 18:41:39 +0000
-Message-ID: <SJ0PR11MB5896DC0CC401E400A0557AF6C3A9A@SJ0PR11MB5896.namprd11.prod.outlook.com>
-References: <20231027180302.418676-1-kartilak@cisco.com>
- <20231027180302.418676-14-kartilak@cisco.com>
- <2e7c1749-428b-4c88-8e0e-df6ed4d8def5@suse.de>
- <SJ0PR11MB5896E9241A26DACE35684E12C3AAA@SJ0PR11MB5896.namprd11.prod.outlook.com>
- <a2853642-b79a-4860-abd6-3e218171e491@suse.de>
-In-Reply-To: <a2853642-b79a-4860-abd6-3e218171e491@suse.de>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SJ0PR11MB5896:EE_|SN7PR11MB7666:EE_
-x-ms-office365-filtering-correlation-id: e9721fab-c427-47e8-7628-08dbdfc12ddb
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: m1LCMDya7ESxAdqz0+Tyux5+feb0J4NNLenWoEWNQ1Y/9XbjF/YWQ3mqV+9uzOKST/enGT5ufj3L9vnYuXiPCmBJtxXfhUzOmAedxcen60qCcQ9wjSdZBVD+Ohdi2Snou7t0P2dglE7gm5TPIoSmw84enSRR2dM5bVqUTsCuj6VY/yLC0QfRTf0cnmlUDiv5rg0IYZBd55zatg6ud7VBwAbhHoW3naYYlbL96ECby2J+teE8oqLYqd8l+CretCk0p+CtMxhGOJ+V6K07Qd52wbcAJcoY1m1c9KTd07dJZTpLwSvt5vt/S1cXpehwW+uSAyQFLp2nZfdzjD9XfwFWHHom/oZwWPXKTg/n8vVGPvqJcKkDVaRMrimYzXbmePCIonCTIEQUbKs2vxr7ehJbfxVq4dyXr/z8AjlYlI8xefA5F9REo0fbd88G8k7BPiG8tdqhgP9tqGN4bbJv3KiM4ghb/M8dC1+r6avaw4ZprnCvrzqNIf6FBZ3KGcyENrMpq5GUueNvPNbqppnUJ1U+w0tgMt+qVXfszE+wpIhE2d5BtR9VbDd+SKR9eSTSIr6s4whjSGBfS2EtaJDpyEt9nzVAZ2gxJ3jQtISIrzN2G407IYbqyqboyb2avh5i716D
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR11MB5896.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(396003)(366004)(376002)(346002)(136003)(230922051799003)(451199024)(186009)(64100799003)(1800799009)(122000001)(9686003)(8676002)(316002)(38070700009)(76116006)(4326008)(2906002)(110136005)(8936002)(66446008)(52536014)(64756008)(33656002)(54906003)(86362001)(41300700001)(4744005)(6636002)(66946007)(66476007)(66556008)(5660300002)(71200400001)(53546011)(6506007)(478600001)(55016003)(38100700002)(7696005)(83380400001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?bk1UU0dMTEE2b3BkUUJpRTFYcFMyTVU4TVM2Q3M4eFkyc0xadHJjLzBhVE5i?=
- =?utf-8?B?alFJL0d2Z1ZLODBLd1lkbURDVGJmRXErdDQ3cEpTNlZPeFdDYWFaMzJuVCta?=
- =?utf-8?B?WUVUMHlYWmo0TUJLSlJzckE0S3l1Tlh3V3M0K1UyamVXcXRCdXNqbC9iWW4x?=
- =?utf-8?B?QkhnZkd3TVdzUGtLbjhoc0c1TWdkWUlxTUNtUFp0Q1lJenNORThtcUFzZTZJ?=
- =?utf-8?B?UE9aZDlhbEZqSTJSM2sxYm9yNWE5NGp1Y1ZFWVNXT0FOZ1JDRm56MFlJSVJD?=
- =?utf-8?B?YWRsbmVyZUpDMWowc2h2anlIUUtKQW9XMjBwMURYUVNVdkMxVG5wc0F6WXBH?=
- =?utf-8?B?Q2ZhdTZobmJ2clF4UmhPMTFXc3BwTVpabk96OE55NkM2Q25mZGtHV1YvZ0p5?=
- =?utf-8?B?Zk5SMCtCN1JUNHBjUERIajJWd21JMy9lV2daNVhPTTlPeGhDRDRBTGF0VmY1?=
- =?utf-8?B?eXlVMkNTWXlaaHZOSHliL3p5S2lMbUZrV1laWGc3OEdYUC9VRVJjQnVPQ0t6?=
- =?utf-8?B?bzU1ZVo5cjJRbG43TzFEV2JLNzc2eVJabGVNVDRuR0swa3Jrd3JJTlBGUWFY?=
- =?utf-8?B?WCtTamRsTSt3M0tpb2tiVTJ2MDdoUXhoMFF2V2QvZDA5VXdhWEZlWEtKNVVR?=
- =?utf-8?B?ajlvbFJGeCtlNlpPbzRCbUtzTmtTYlZuM1JsQmxaaXVSbjY1dDJtN2tkVEll?=
- =?utf-8?B?czRxc1d1SDNuSXFQZ3BoNWVkbWNDNHFwNStNM1NwS1NBSDh4YU5KS2FMZlVL?=
- =?utf-8?B?a3VFWmJ6N28rZndma0JsdXZjTzViMEROM1JIbXVURUU0M3V1VXJ1c25FcFpr?=
- =?utf-8?B?WExoampGMERWWDMxSEJiLzZnNEVIaEJTQjlDandlUjlkWUI2VFNram5DeUhL?=
- =?utf-8?B?czduZTlUQ0pjYXlMdTJ1dUlCRlRFZDhTMzNLSEV3cFRQQ1Z3dmd0VFRpWENI?=
- =?utf-8?B?Z0cxdzFKSVpqU1AzL2l4QU1mVEovcXMrR2NLaVlnSXJQN204Q0FMajBtRi94?=
- =?utf-8?B?Y2pLL0ZoeTZtNmI0MmV6TWJ2RVpFdjJLdHU5Q3JHd3FhRUZ6ajdaanAxVVEx?=
- =?utf-8?B?cGIwOEJNVW5ydkY0Ry9OdVZwakQyZTdlMUhjOG1GYWdRSE9FNWkyRXRIN29P?=
- =?utf-8?B?WmN5SWNFWWNwNnVqTmE5cE13UENDVUxaRFpSeUI5dnE4VkNLbkVFYjg3dFB4?=
- =?utf-8?B?Y1BQWHUrd3pubUFVK1RUVVh4SENLRklLeWs1L1VsSUVYU0twZnIydHRHdnM1?=
- =?utf-8?B?OE1hK2VQSldKOG8vaVREUVRDVkNWUmVYK1F2WWs3SjJmYTAyQnE1dDhWUmY3?=
- =?utf-8?B?K3JRU2VmMmtjcUJmeElxZElYdysxZThLUFhDcnNMRnBCaTNtZVRQTGx6NUVO?=
- =?utf-8?B?d3VYa1IzWmdEVGlvN1JwS1lPRHdrWkU4WG5DUHcxVE9IWnNFOHZvclc5eFlq?=
- =?utf-8?B?NFhCclM3Mi9mcmZFMnBqMzA1ZkgzTlZ5YlhMWGNHNDFEeDZYRVNVK25RcXdZ?=
- =?utf-8?B?MElxekgyTm05dWxpZG5Xb05vSnJIVjVEaE9HcExyei90eEpBQWZqTFlvRVNz?=
- =?utf-8?B?Tmlnc3ozemwvNHc2dHdOc3VaWW5uaTRKV1dBai9EZlR2SER1M3N4OWxodWZ0?=
- =?utf-8?B?elkzd291T3NDem5DZkRIMGFQMzJlcGhMSk02WndHQTR3ZjVZT1hqN0V5ZDl2?=
- =?utf-8?B?TjhROURqQ2IxZnlYRHptdGlHdUYza1o2UW5pVmhqa3p6NFRYMmwwWCtYOE5E?=
- =?utf-8?B?Ulorejg1bHB0YktROVl1aGZ2V1ZpdDU5bG9sc1NQUmZoMmxINEZIdG9KWEdn?=
- =?utf-8?B?cnYwTDUweW4zVjIvWDZTTjZlWnFSN2NhTzFTeVF5T2F5Z1ppaW1ZQU94cWty?=
- =?utf-8?B?TFZIc2ZDc1BNYVJBRTBST3RxWEgreWRhMlZVemFUNGhydjJzdnpOV09yM09I?=
- =?utf-8?B?RFJhcGJFbHBLRWlyN3ZUYW9LWTRvcXRZOWlhYWM1YWxJUS9Rb25lUWpCSmQy?=
- =?utf-8?B?cjNuaEcxR29pcnlmdEdtRVRIZFh3QklGN2VCdjhwcjAzZUtBcElvckxINU4z?=
- =?utf-8?B?eUh0ZENwWWxvSWJoYTBzSWthMkVBc2tIVzBaeC8yTXNRTnVyOGZZNWhQZWRy?=
- =?utf-8?B?cS80MlpaRnl6TlhFZ2ZTbk82S3FLS2NoU0NZUGdoSEdLUkYwVzVwNEtmOTlM?=
- =?utf-8?Q?z4TWNJVjLUbe/dVT0MKB3QM=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Tue, 7 Nov 2023 13:44:06 -0500
+Received: from sonic302-28.consmr.mail.ne1.yahoo.com (sonic302-28.consmr.mail.ne1.yahoo.com [66.163.186.154])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21B92B9
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 10:44:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1699382643; bh=OJOi4iItoWsAThZmEXT+v+/nfoU8OY/Frl16sOjwMsU=; h=Date:Subject:To:Cc:References:From:In-Reply-To:From:Subject:Reply-To; b=cW1VLrmHhlt4+37s9jl82kSyeniIfxadiDU4s1+JINA7zaACN6DCB6xyltfSehWbAvD8/PmDEY+Av+Vycs72H7xOO1AZYFIx2yR1Bej9vr4wPLi62Uzi/JGh5NHMJg+t/FyY3VoadFYi1ovzZribRc/vonUVK/1sx94XiCmYWAf9MK0hKnYNPLAJfcVoWrilhptOPdWCgoMKcSjjm6K2AVr47Qm4so9EL55XSCuARyV/YLlnJQ8Z68/RIfc257LQXPc2euAUnb6UG+5YyvsaBnlyvxklI8UxGTWVbhFpnZTRre7qQUeFssw3EssNXtdbBr7hoC4iT7YH1jFX/+JTAw==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1699382643; bh=WdezkqfcaQ9zdWJH2KBZNUsjqI6R3dPDmPDTC/Tkwyp=; h=X-Sonic-MF:Date:Subject:To:From:From:Subject; b=RLR9eqqnBq8V+ObEDL+Hlmefrc8R7exTwYRqgHbEPTAZHUKtcxU+msNU12NVylQhBBTF6+SnySnYynU9yxirju3rGuu6ZTuEv+ukcfqDijDwQgeXovtbA6f4Lt0I6+/zilndyCxml+itY85+fMnr5kH8X6js11WmukC7Wnbw3fpYE6XG2TdWmIg7D1RaS4X85KNQ0nwcSivV+EzHgTNf+I2h22o6KYyuPTFST1el44HxF6oMZ3ucg43bbCypo+MY/lKeaeF6Zr1oFSNxACMLz3lDd8VeSU1kJgCKI0F1K3VkoV82VtezwzwexYW7s6H/02Q/5BQO9NPkt9YuXQOPHA==
+X-YMail-OSG: 5Lo_j2EVM1mZWA.tAkZwinBUMfS_Sq4PfUg3E04IQArCLUwCkU8kV4RzrCJaCtk
+ wqW6Omg8xHq3W1Ir._0JLmFIcAsYvO.IjqvBW0BHjEbU2kHE__eeQJf5CT9T9krKSE6XtzI4S0WG
+ gRwN1dDeiC__Eip1OZYrG.vq9IkiUxJEmPxBrrMKWgsMX5FfKVe.h.GBkatBCFKMPiYTd6K7S_dI
+ O7NBML5Xfc7TuYAQyw3jxVdE11hwSTHBI.PrahLFWWeBMJXMoY3aDr7OORIISWQ9UPJPn1ft3tdm
+ hVAOpe31M9V84231c6xetJm3d9xr29UrvRJ3ccZFNOS7bM6C831xC1zibw0qJ1SCmBkQb9dia91v
+ smL5gopbs8XmFyhoUQUhKsYPr7Ax9VpzPWMgXAHjLI3WlWMx5N9tup3RDBDHRQo7yRTzmCeDNfm8
+ o62R_jR7qajUU4LqJcxGjztXC1m4dgzhaBV0uZqC090jjWZ34ieQFASe2Gc6jWxZYIr9BSk5qp3R
+ bk3ofVu9RNfHz3Op6UQVLY6aBAyHc5C3sUmxEn8XKxRKuKxK_9BI_EYGVA1gh6E4rtchMoOpz6VT
+ 6Hz68hb9MjVRm8jnORr4n5Lejr3GqquKp1y84c7VyGF5dtIAz_Ncwh_a_CvXw6Gs1aLUMds9HYkS
+ z5aH3GaF2E6Evhoz7yMMdFgaxhfTrV63c6Yr56HD..4to5SJkMTnnUEAKkROuZC535PJ5AMcOJiy
+ 1AnYirI7eaBT7Ofs4x2mZc_f2GmtJ.M.h4Jni35IgBR0UYi29SXvsC.7ZpEcusm4gorwiRdSy7Oj
+ 62cvZvrdUeqQz.afDI3bsL4jAcui7pBWrxLGB61wrHQae8tawtp6zacEIkcBd13OYv6svPjBoLQB
+ KxXhLoPQNlXyerdYawnstWf6wt4YiE2lD.nebetA47.AtcbqNMbbmoB6jEFBGps9A_tOYDoZIuaV
+ QFapJLhzVV03XDTqWRPYLdi4Pa2yWxQoG4s0d8f1W5sO237R2JNFDmKd2CXdFfRHXTX1VqJZtA_m
+ .mC4EEWkMjcEJcDCLHX6S2Z8TYRsBtf0eCmwfiO4TQJRMPQ9zFqe3FayyPKotlEWpCntQ._3PUtZ
+ rJ7ACgI3L0Uc0sZ6E18fiDJTveILeVeSH8FRkQ4k1yYQBG1Wtjc4h6PU110PlyCLTsUGbZItan2i
+ dcnxw0Q2pXJxn_m2W6.rT1Ed5VZhN4H3QIjT.HQ_WcxqEFksLFxwUyju8y2Pi.wAL.5DIhxDw96E
+ dy75uqLd9CC0MmMwONQaud4FBV9Hixq7xkCZ_9HW3rcQzd7Uu2WT5VNN3xyKIO2.Oxa7_wWp0CmC
+ q2leoocbgohkuV6rctXbBXbxsmPkF.USBYQ54XkKjqInbLxyO_vv34pEPseU2YBZNcwAkZNmzR8d
+ Wso6OJV3Q20Kq3Iy7Y15t8VPtIFLtLhA5kLn9Bz0ZcZ61BTg19VQtWf9E0SxxCGzBAY9V.I3JAQL
+ PNBCfizZCYvOcEDO1pGK5XMNX7vE_.U0nil8oRAATRm0qLZDnqk892FPo_uXerDE0V6ZzCQ8rqSz
+ DFJUM6APR20iE2us9atf3CeQydCdyrjLwod5.AJ0c0NuNvyP9EfRI9A_etWupH6PHvYbfEPJO80y
+ .3wNQRVOgByWYRwA.1YVQole.A2mh.ZZxttQPEENIBUHQ3uMIEvkH0HCgXXfBQFG1myr0K0pT2Cl
+ _YfSfjkXcqBMRE.KjpNGOebE6Tu9iGCi2d_i6QnlUgpsz5Ti7bhwLsjG_4IgwXr9995.mkN4dmeJ
+ SEKkcGEAkJPsVXVBg5J8Q72oiryrr2dDyRDb2ncKyvT1PeU2RAMs1LipNGbMgrAdFiHB0MUORGEY
+ TrUmk217FGF64q1uv.PU00RfPsEUUumxcBHC9dhq_5vfW7k8nVzInb6hQ7F.BmY0v3fhoH4OEqbp
+ Ms4mG2FOWw.tAAlmdDoh4buVqMFjTxiRDwhg4Zn3ES8Ej0aPbVJBjEPtqgsYY_E7JGHdjgZziVSN
+ NccxX5GMrpcKWvOT8NdP.T3RDY1KMUOUtWufkywUpLgwbyREygmnWV.SwUwxFqh.7kriYUclOK5l
+ mPX86kBDktGRJP8qrvbHQ2xtZcWfg0w0zgoYgxG.B4OJX7HJlxpK4NUZgXttRFIHjSWveC._emAP
+ oXXrfM9yhopvCLdXBRjhR261_dlCsmbhZqmmp6Ga4UUOTPkUvwhLLNRo2EfT.ht6dJQkfpxRFWa.
+ EAtQm89IOldwJUi4pl.1n9nYKHkzbBitn38Dv7FuJPTuuylERdlHSGZiaiBYIjiijY13HIl_xsr_
+ 8i04-
+X-Sonic-MF: <casey@schaufler-ca.com>
+X-Sonic-ID: 77fd18a1-01b2-44d8-8c9a-474d7cbed84b
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic302.consmr.mail.ne1.yahoo.com with HTTP; Tue, 7 Nov 2023 18:44:03 +0000
+Received: by hermes--production-bf1-5b945b6d47-6s4m5 (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID d0eed0c4a5cdcddaae759b33e2e69648;
+          Tue, 07 Nov 2023 18:43:58 +0000 (UTC)
+Message-ID: <e5d0b34a-1e9a-47df-bb6e-67b53c878e4f@schaufler-ca.com>
+Date:   Tue, 7 Nov 2023 10:43:54 -0800
 MIME-Version: 1.0
-X-OriginatorOrg: cisco.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR11MB5896.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e9721fab-c427-47e8-7628-08dbdfc12ddb
-X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Nov 2023 18:41:39.4081
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 5ae1af62-9505-4097-a69a-c1553ef7840e
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ug1gEZBZs5i8M0XUH3RzqYxCANigYAYWcqfVx/8dlIZGQshyd9ymJE7BATo+iOFcFjGXpHnRi4PTdGafvTnYiQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR11MB7666
-X-Outbound-SMTP-Client: 72.163.7.163, rcdn-opgw-2.cisco.com
-X-Outbound-Node: rcdn-core-9.cisco.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 20/23] ima: Move IMA-Appraisal to LSM infrastructure
+Content-Language: en-US
+To:     Roberto Sassu <roberto.sassu@huaweicloud.com>,
+        viro@zeniv.linux.org.uk, brauner@kernel.org,
+        chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
+        kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
+        paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
+        zohar@linux.ibm.com, dmitry.kasatkin@gmail.com,
+        dhowells@redhat.com, jarkko@kernel.org,
+        stephen.smalley.work@gmail.com, eparis@parisplace.org,
+        mic@digikod.net
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
+        selinux@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>,
+        Stefan Berger <stefanb@linux.ibm.com>,
+        Casey Schaufler <casey@schaufler-ca.com>
+References: <20231107134012.682009-1-roberto.sassu@huaweicloud.com>
+ <20231107134012.682009-21-roberto.sassu@huaweicloud.com>
+From:   Casey Schaufler <casey@schaufler-ca.com>
+In-Reply-To: <20231107134012.682009-21-roberto.sassu@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Mailer: WebService/1.1.21896 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gTW9uZGF5LCBOb3ZlbWJlciA2LCAyMDIzIDExOjI3IFBNLCBIYW5uZXMgUmVpbmVja2UgPGhh
-cmVAc3VzZS5kZT4gd3JvdGU6DQo+DQo+IE9uIDExLzYvMjMgMjE6NDQsIEthcmFuIFRpbGFrIEt1
-bWFyIChrYXJ0aWxhaykgd3JvdGU6DQo+ID4gT24gVGh1cnNkYXksIE5vdmVtYmVyIDIsIDIwMjMg
-MTI6NTkgQU0sIEhhbm5lcyBSZWluZWNrZSA8aGFyZUBzdXNlLmRlPiB3cm90ZToNCj4gPj4gUGxl
-YXNlIG1vdmUgdGhpcyBjaGFuZ2UgdG8gdGhlIGxhc3QgcGF0Y2guDQo+ID4+IEFuZCBJIHdvdWxk
-IHdhZ2VyIHRoYXQgdGhpcyBjaGFuZ2UgaXMgbW9yZSBpbnRydXNpdmUgdGhhbiBhIHNpbXBsZSBw
-YXRjaCwgc28gYW4gdXBkYXRlIHRvIDEuNyBvciBldmVuIDIuMCBpcyB3YXJyYW50ZWQuDQo+ID4+
-DQo+ID4NCj4gPiBUaGUgdmVyc2lvbiBjaGFuZ2UgaXMgaW4gdGhlIGxhc3QgcGF0Y2ggb2YgdGhl
-IHBhdGNoc2V0Lg0KPiA+IERvIHlvdSBtZWFuIHRoYXQgSSBuZWVkIHRvIG1ha2UgYSBzZXBhcmF0
-ZSBwYXRjaCB0byBpbmNyZW1lbnQgdGhlIHZlcnNpb24gbnVtYmVyPw0KPiA+IEluIHYzLCBJJ2xs
-IHVwZGF0ZSBpdCB0byAxLjcuMC4wLg0KPiA+DQo+IFllcywgcGxlYXNlLiBBbmQgbWFrZSB0aGlz
-IHRoZSBsYXN0IHBhdGNoIG9mIHRoZSBwYXRjaCBzZXJpZXMuDQoNClN1cmUsIHdpbGwgZG8uIEkn
-bGwgbWFrZSB0aGlzIGNoYW5nZSBpbiB2My4NCg0KUmVnYXJkcywNCkthcmFuDQo=
+On 11/7/2023 5:40 AM, Roberto Sassu wrote:
+> From: Roberto Sassu <roberto.sassu@huawei.com>
+>
+> Do the registration of IMA-Appraisal only functions separately from the
+> rest of IMA functions, as appraisal is a separate feature not necessarily
+> enabled in the kernel configuration.
+>
+> Reuse the same approach as for other IMA functions, move hardcoded calls
+> from various places in the kernel to the LSM infrastructure. Declare the
+> functions as static and register them as hook implementations in
+> init_ima_appraise_lsm(), called by init_ima_lsm().
+>
+> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> Reviewed-by: Stefan Berger <stefanb@linux.ibm.com>
+> Reviewed-by: Mimi Zohar <zohar@linux.ibm.com>
+
+Ackeded-by: Casey Schaufler <casey@schaufler-ca.com>
+
+
+> ---
+>  fs/attr.c                             |  2 -
+>  include/linux/ima.h                   | 55 ---------------------------
+>  security/integrity/ima/ima.h          |  5 +++
+>  security/integrity/ima/ima_appraise.c | 38 +++++++++++++-----
+>  security/integrity/ima/ima_main.c     |  1 +
+>  security/security.c                   | 13 -------
+>  6 files changed, 35 insertions(+), 79 deletions(-)
+>
+> diff --git a/fs/attr.c b/fs/attr.c
+> index 221d2bb0a906..38841f3ebbcb 100644
+> --- a/fs/attr.c
+> +++ b/fs/attr.c
+> @@ -17,7 +17,6 @@
+>  #include <linux/filelock.h>
+>  #include <linux/security.h>
+>  #include <linux/evm.h>
+> -#include <linux/ima.h>
+>  
+>  #include "internal.h"
+>  
+> @@ -503,7 +502,6 @@ int notify_change(struct mnt_idmap *idmap, struct dentry *dentry,
+>  	if (!error) {
+>  		fsnotify_change(dentry, ia_valid);
+>  		security_inode_post_setattr(idmap, dentry, ia_valid);
+> -		ima_inode_post_setattr(idmap, dentry, ia_valid);
+>  		evm_inode_post_setattr(idmap, dentry, ia_valid);
+>  	}
+>  
+> diff --git a/include/linux/ima.h b/include/linux/ima.h
+> index 23ae24b60ecf..0bae61a15b60 100644
+> --- a/include/linux/ima.h
+> +++ b/include/linux/ima.h
+> @@ -92,66 +92,11 @@ static inline void ima_add_kexec_buffer(struct kimage *image)
+>  
+>  #ifdef CONFIG_IMA_APPRAISE
+>  extern bool is_ima_appraise_enabled(void);
+> -extern void ima_inode_post_setattr(struct mnt_idmap *idmap,
+> -				   struct dentry *dentry, int ia_valid);
+> -extern int ima_inode_setxattr(struct mnt_idmap *idmap, struct dentry *dentry,
+> -			      const char *xattr_name, const void *xattr_value,
+> -			      size_t xattr_value_len, int flags);
+> -extern int ima_inode_set_acl(struct mnt_idmap *idmap,
+> -			     struct dentry *dentry, const char *acl_name,
+> -			     struct posix_acl *kacl);
+> -static inline int ima_inode_remove_acl(struct mnt_idmap *idmap,
+> -				       struct dentry *dentry,
+> -				       const char *acl_name)
+> -{
+> -	return ima_inode_set_acl(idmap, dentry, acl_name, NULL);
+> -}
+> -
+> -extern int ima_inode_removexattr(struct mnt_idmap *idmap, struct dentry *dentry,
+> -				 const char *xattr_name);
+>  #else
+>  static inline bool is_ima_appraise_enabled(void)
+>  {
+>  	return 0;
+>  }
+> -
+> -static inline void ima_inode_post_setattr(struct mnt_idmap *idmap,
+> -					  struct dentry *dentry, int ia_valid)
+> -{
+> -	return;
+> -}
+> -
+> -static inline int ima_inode_setxattr(struct mnt_idmap *idmap,
+> -				     struct dentry *dentry,
+> -				     const char *xattr_name,
+> -				     const void *xattr_value,
+> -				     size_t xattr_value_len,
+> -				     int flags)
+> -{
+> -	return 0;
+> -}
+> -
+> -static inline int ima_inode_set_acl(struct mnt_idmap *idmap,
+> -				    struct dentry *dentry, const char *acl_name,
+> -				    struct posix_acl *kacl)
+> -{
+> -
+> -	return 0;
+> -}
+> -
+> -static inline int ima_inode_removexattr(struct mnt_idmap *idmap,
+> -					struct dentry *dentry,
+> -					const char *xattr_name)
+> -{
+> -	return 0;
+> -}
+> -
+> -static inline int ima_inode_remove_acl(struct mnt_idmap *idmap,
+> -				       struct dentry *dentry,
+> -				       const char *acl_name)
+> -{
+> -	return 0;
+> -}
+>  #endif /* CONFIG_IMA_APPRAISE */
+>  
+>  #if defined(CONFIG_IMA_APPRAISE) && defined(CONFIG_INTEGRITY_TRUSTED_KEYRING)
+> diff --git a/security/integrity/ima/ima.h b/security/integrity/ima/ima.h
+> index c0412100023e..a27fc10f84f7 100644
+> --- a/security/integrity/ima/ima.h
+> +++ b/security/integrity/ima/ima.h
+> @@ -334,6 +334,7 @@ enum hash_algo ima_get_hash_algo(const struct evm_ima_xattr_data *xattr_value,
+>  				 int xattr_len);
+>  int ima_read_xattr(struct dentry *dentry,
+>  		   struct evm_ima_xattr_data **xattr_value, int xattr_len);
+> +void __init init_ima_appraise_lsm(const struct lsm_id *lsmid);
+>  
+>  #else
+>  static inline int ima_check_blacklist(struct integrity_iint_cache *iint,
+> @@ -385,6 +386,10 @@ static inline int ima_read_xattr(struct dentry *dentry,
+>  	return 0;
+>  }
+>  
+> +static inline void __init init_ima_appraise_lsm(const struct lsm_id *lsmid)
+> +{
+> +}
+> +
+>  #endif /* CONFIG_IMA_APPRAISE */
+>  
+>  #ifdef CONFIG_IMA_APPRAISE_MODSIG
+> diff --git a/security/integrity/ima/ima_appraise.c b/security/integrity/ima/ima_appraise.c
+> index 36abc84ba299..076451109637 100644
+> --- a/security/integrity/ima/ima_appraise.c
+> +++ b/security/integrity/ima/ima_appraise.c
+> @@ -636,8 +636,8 @@ void ima_update_xattr(struct integrity_iint_cache *iint, struct file *file)
+>   * This function is called from notify_change(), which expects the caller
+>   * to lock the inode's i_mutex.
+>   */
+> -void ima_inode_post_setattr(struct mnt_idmap *idmap,
+> -			    struct dentry *dentry, int ia_valid)
+> +static void ima_inode_post_setattr(struct mnt_idmap *idmap,
+> +				   struct dentry *dentry, int ia_valid)
+>  {
+>  	struct inode *inode = d_backing_inode(dentry);
+>  	struct integrity_iint_cache *iint;
+> @@ -750,9 +750,9 @@ static int validate_hash_algo(struct dentry *dentry,
+>  	return -EACCES;
+>  }
+>  
+> -int ima_inode_setxattr(struct mnt_idmap *idmap, struct dentry *dentry,
+> -		       const char *xattr_name, const void *xattr_value,
+> -		       size_t xattr_value_len, int flags)
+> +static int ima_inode_setxattr(struct mnt_idmap *idmap, struct dentry *dentry,
+> +			      const char *xattr_name, const void *xattr_value,
+> +			      size_t xattr_value_len, int flags)
+>  {
+>  	const struct evm_ima_xattr_data *xvalue = xattr_value;
+>  	int digsig = 0;
+> @@ -781,8 +781,8 @@ int ima_inode_setxattr(struct mnt_idmap *idmap, struct dentry *dentry,
+>  	return result;
+>  }
+>  
+> -int ima_inode_set_acl(struct mnt_idmap *idmap, struct dentry *dentry,
+> -		      const char *acl_name, struct posix_acl *kacl)
+> +static int ima_inode_set_acl(struct mnt_idmap *idmap, struct dentry *dentry,
+> +			     const char *acl_name, struct posix_acl *kacl)
+>  {
+>  	if (evm_revalidate_status(acl_name))
+>  		ima_reset_appraise_flags(d_backing_inode(dentry), 0);
+> @@ -790,8 +790,8 @@ int ima_inode_set_acl(struct mnt_idmap *idmap, struct dentry *dentry,
+>  	return 0;
+>  }
+>  
+> -int ima_inode_removexattr(struct mnt_idmap *idmap, struct dentry *dentry,
+> -			  const char *xattr_name)
+> +static int ima_inode_removexattr(struct mnt_idmap *idmap, struct dentry *dentry,
+> +				 const char *xattr_name)
+>  {
+>  	int result;
+>  
+> @@ -803,3 +803,23 @@ int ima_inode_removexattr(struct mnt_idmap *idmap, struct dentry *dentry,
+>  	}
+>  	return result;
+>  }
+> +
+> +static int ima_inode_remove_acl(struct mnt_idmap *idmap, struct dentry *dentry,
+> +				const char *acl_name)
+> +{
+> +	return ima_inode_set_acl(idmap, dentry, acl_name, NULL);
+> +}
+> +
+> +static struct security_hook_list ima_appraise_hooks[] __ro_after_init = {
+> +	LSM_HOOK_INIT(inode_post_setattr, ima_inode_post_setattr),
+> +	LSM_HOOK_INIT(inode_setxattr, ima_inode_setxattr),
+> +	LSM_HOOK_INIT(inode_set_acl, ima_inode_set_acl),
+> +	LSM_HOOK_INIT(inode_removexattr, ima_inode_removexattr),
+> +	LSM_HOOK_INIT(inode_remove_acl, ima_inode_remove_acl),
+> +};
+> +
+> +void __init init_ima_appraise_lsm(const struct lsm_id *lsmid)
+> +{
+> +	security_add_hooks(ima_appraise_hooks, ARRAY_SIZE(ima_appraise_hooks),
+> +			   lsmid);
+> +}
+> diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
+> index f923ff5c6524..9aabbc37916c 100644
+> --- a/security/integrity/ima/ima_main.c
+> +++ b/security/integrity/ima/ima_main.c
+> @@ -1161,6 +1161,7 @@ const struct lsm_id *ima_get_lsm_id(void)
+>  void __init init_ima_lsm(void)
+>  {
+>  	security_add_hooks(ima_hooks, ARRAY_SIZE(ima_hooks), &ima_lsmid);
+> +	init_ima_appraise_lsm(&ima_lsmid);
+>  }
+>  
+>  /* Introduce a dummy function as 'ima' init method (it cannot be NULL). */
+> diff --git a/security/security.c b/security/security.c
+> index b2fdcbaa4b30..456f3fe74116 100644
+> --- a/security/security.c
+> +++ b/security/security.c
+> @@ -20,7 +20,6 @@
+>  #include <linux/kernel_read_file.h>
+>  #include <linux/lsm_hooks.h>
+>  #include <linux/integrity.h>
+> -#include <linux/ima.h>
+>  #include <linux/evm.h>
+>  #include <linux/fsnotify.h>
+>  #include <linux/mman.h>
+> @@ -2308,9 +2307,6 @@ int security_inode_setxattr(struct mnt_idmap *idmap,
+>  
+>  	if (ret == 1)
+>  		ret = cap_inode_setxattr(dentry, name, value, size, flags);
+> -	if (ret)
+> -		return ret;
+> -	ret = ima_inode_setxattr(idmap, dentry, name, value, size, flags);
+>  	if (ret)
+>  		return ret;
+>  	return evm_inode_setxattr(idmap, dentry, name, value, size, flags);
+> @@ -2338,9 +2334,6 @@ int security_inode_set_acl(struct mnt_idmap *idmap,
+>  		return 0;
+>  	ret = call_int_hook(inode_set_acl, 0, idmap, dentry, acl_name,
+>  			    kacl);
+> -	if (ret)
+> -		return ret;
+> -	ret = ima_inode_set_acl(idmap, dentry, acl_name, kacl);
+>  	if (ret)
+>  		return ret;
+>  	return evm_inode_set_acl(idmap, dentry, acl_name, kacl);
+> @@ -2401,9 +2394,6 @@ int security_inode_remove_acl(struct mnt_idmap *idmap,
+>  	if (unlikely(IS_PRIVATE(d_backing_inode(dentry))))
+>  		return 0;
+>  	ret = call_int_hook(inode_remove_acl, 0, idmap, dentry, acl_name);
+> -	if (ret)
+> -		return ret;
+> -	ret = ima_inode_remove_acl(idmap, dentry, acl_name);
+>  	if (ret)
+>  		return ret;
+>  	return evm_inode_remove_acl(idmap, dentry, acl_name);
+> @@ -2503,9 +2493,6 @@ int security_inode_removexattr(struct mnt_idmap *idmap,
+>  	ret = call_int_hook(inode_removexattr, 1, idmap, dentry, name);
+>  	if (ret == 1)
+>  		ret = cap_inode_removexattr(idmap, dentry, name);
+> -	if (ret)
+> -		return ret;
+> -	ret = ima_inode_removexattr(idmap, dentry, name);
+>  	if (ret)
+>  		return ret;
+>  	return evm_inode_removexattr(idmap, dentry, name);
