@@ -2,46 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 61F347E45D7
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 17:21:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AFC07E4551
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 17:04:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343777AbjKGQVI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 11:21:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35912 "EHLO
+        id S1344053AbjKGQEa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 11:04:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234598AbjKGQUr (ORCPT
+        with ESMTP id S1344421AbjKGQD7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 11:20:47 -0500
+        Tue, 7 Nov 2023 11:03:59 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 456333C34;
-        Tue,  7 Nov 2023 07:54:55 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 961D1C433C8;
-        Tue,  7 Nov 2023 15:54:53 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BCFC3C3A;
+        Tue,  7 Nov 2023 07:54:56 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61EC5C433CA;
+        Tue,  7 Nov 2023 15:54:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699372494;
-        bh=I2CHZ9wd0uCeF6OSY/9nvcGL7/hxfer4R5tJQPKhdg8=;
+        s=k20201202; t=1699372496;
+        bh=MzMoMqCGgKbcz50+gvc/58uGjIc/GmjVeBYUOW2NIFg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=A4D/RvhGfL+JV6Vohi2/FzaOEFwWMohiGGvOwf3k+32u4JGO/saC9STo7NMqlK86N
-         S4HNh9GAitlDQb47ziNP2xDqxePTUC6t28IY5xYWbxGtYpdrhMhpuSi6JSZiFIMCBh
-         31V+SAumRXIx4jll0TckSuMz0DohaEvAJX0ccmfLdV9PMPAJBi3+Z7xx9IOi8cvnYq
-         mL/x6s5czudlOq28FskZkil3Zb1UrAC6K88rCVDHu4uSBiJU8FkxUbxkT8jnrLHAHg
-         0/BvMtKfmlzK6MQSBWbKtW/PgH6yvmUtf6QvaeD9CQtLTtc6pMuSVfFpXpbWCEOhrO
-         KlZtR+EHNK25w==
+        b=q6y50N8KEsfoFgLFaT1Ht4IJzn4cpNwDjkH7CUKWnvGvPqe6wBaETCJuZE3W9K++J
+         EGJLW30CryA57mGhNALNg9G1t5swf4ucsjnTXhZfYqCCtmQUpekFjxyPeYLFrtwN0O
+         1bsPQELhsGclMIO20aklNICv6BST3UhEGqEeNWtt1B/vMETuYDzvb9wt0bydwORK/J
+         JBfakoMGKEKBQR37eC1i6C9jJCeReAbPzq5vPavKe5zJ+/Tk1xFkYP1hGvZYWvOTR+
+         pcVkMVrh9naojBQOB94DbjmXFBYflY1QNvM7L86gMJ82rQZ3MWM1l+Vy72FKCxHep9
+         +VWyhXTdJflZA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Cezary Rojewski <cezary.rojewski@intel.com>,
-        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>,
-        perex@perex.cz, tiwai@suse.com, broonie@kernel.org,
-        mengyingkun@loongson.cn, pierre-louis.bossart@linux.intel.com,
-        zhangyiqun@phytium.com.cn, siyanteng@loongson.cn,
-        linux-sound@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 08/11] ALSA: hda: Fix possible null-ptr-deref when assigning a stream
-Date:   Tue,  7 Nov 2023 10:54:16 -0500
-Message-ID: <20231107155430.3768779-8-sashal@kernel.org>
+Cc:     =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Sasha Levin <sashal@kernel.org>, 3chas3@gmail.com,
+        linux-atm-general@lists.sourceforge.net, netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 09/11] atm: iphase: Do PCI error checks on own line
+Date:   Tue,  7 Nov 2023 10:54:17 -0500
+Message-ID: <20231107155430.3768779-9-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231107155430.3768779-1-sashal@kernel.org>
 References: <20231107155430.3768779-1-sashal@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 4.19.297
@@ -50,40 +49,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Cezary Rojewski <cezary.rojewski@intel.com>
+From: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
 
-[ Upstream commit f93dc90c2e8ed664985e366aa6459ac83cdab236 ]
+[ Upstream commit c28742447ca9879b52fbaf022ad844f0ffcd749c ]
 
-While AudioDSP drivers assign streams exclusively of HOST or LINK type,
-nothing blocks a user to attempt to assign a COUPLED stream. As
-supplied substream instance may be a stub, what is the case when
-code-loading, such scenario ends with null-ptr-deref.
+In get_esi() PCI errors are checked inside line-split "if" conditions (in
+addition to the file not following the coding style). To make the code in
+get_esi() more readable, fix the coding style and use the usual error
+handling pattern with a separate variable.
 
-Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
-Link: https://lore.kernel.org/r/20231006102857.749143-2-cezary.rojewski@intel.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+In addition, initialization of 'error' variable at declaration is not
+needed.
+
+No functional changes intended.
+
+Link: https://lore.kernel.org/r/20230911125354.25501-4-ilpo.jarvinen@linux.intel.com
+Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/hda/hdac_stream.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/atm/iphase.c | 20 +++++++++++---------
+ 1 file changed, 11 insertions(+), 9 deletions(-)
 
-diff --git a/sound/hda/hdac_stream.c b/sound/hda/hdac_stream.c
-index eee422390d8e2..2569f82b6fa02 100644
---- a/sound/hda/hdac_stream.c
-+++ b/sound/hda/hdac_stream.c
-@@ -241,8 +241,10 @@ struct hdac_stream *snd_hdac_stream_assign(struct hdac_bus *bus,
- 	struct hdac_stream *res = NULL;
- 
- 	/* make a non-zero unique key for the substream */
--	int key = (substream->pcm->device << 16) | (substream->number << 2) |
--		(substream->stream + 1);
-+	int key = (substream->number << 2) | (substream->stream + 1);
-+
-+	if (substream->pcm)
-+		key |= (substream->pcm->device << 16);
- 
- 	list_for_each_entry(azx_dev, &bus->stream_list, list) {
- 		if (azx_dev->direction != substream->stream)
+diff --git a/drivers/atm/iphase.c b/drivers/atm/iphase.c
+index 827c6d5e61774..b6d8c2660e4a0 100644
+--- a/drivers/atm/iphase.c
++++ b/drivers/atm/iphase.c
+@@ -2290,19 +2290,21 @@ static int get_esi(struct atm_dev *dev)
+ static int reset_sar(struct atm_dev *dev)  
+ {  
+ 	IADEV *iadev;  
+-	int i, error = 1;  
++	int i, error;
+ 	unsigned int pci[64];  
+ 	  
+ 	iadev = INPH_IA_DEV(dev);  
+-	for(i=0; i<64; i++)  
+-	  if ((error = pci_read_config_dword(iadev->pci,  
+-				i*4, &pci[i])) != PCIBIOS_SUCCESSFUL)  
+-  	      return error;  
++	for (i = 0; i < 64; i++) {
++		error = pci_read_config_dword(iadev->pci, i * 4, &pci[i]);
++		if (error != PCIBIOS_SUCCESSFUL)
++			return error;
++	}
+ 	writel(0, iadev->reg+IPHASE5575_EXT_RESET);  
+-	for(i=0; i<64; i++)  
+-	  if ((error = pci_write_config_dword(iadev->pci,  
+-					i*4, pci[i])) != PCIBIOS_SUCCESSFUL)  
+-	    return error;  
++	for (i = 0; i < 64; i++) {
++		error = pci_write_config_dword(iadev->pci, i * 4, pci[i]);
++		if (error != PCIBIOS_SUCCESSFUL)
++			return error;
++	}
+ 	udelay(5);  
+ 	return 0;  
+ }  
 -- 
 2.42.0
 
