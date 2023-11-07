@@ -2,92 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E72F7E354A
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 07:37:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C25707E353D
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 07:32:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233677AbjKGGhx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 01:37:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50832 "EHLO
+        id S232647AbjKGGcu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 01:32:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233618AbjKGGhl (ORCPT
+        with ESMTP id S232095AbjKGGcs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 01:37:41 -0500
-Received: from cstnet.cn (smtp84.cstnet.cn [159.226.251.84])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 411CC129
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 22:37:36 -0800 (PST)
-Received: from localhost (unknown [124.16.138.129])
-        by APP-05 (Coremail) with SMTP id zQCowABXOQ4L20llS8PdAA--.63801S2;
-        Tue, 07 Nov 2023 14:36:59 +0800 (CST)
-From:   Chen Ni <nichen@iscas.ac.cn>
-To:     herbert@gondor.apana.org.au, davem@davemloft.net, t-kristo@ti.com,
-        j-keerthy@ti.com
-Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Chen Ni <nichen@iscas.ac.cn>
-Subject: [PATCH] crypto: sa2ul - Add check for crypto_aead_setkey
-Date:   Tue,  7 Nov 2023 06:31:52 +0000
-Message-Id: <20231107063152.529830-1-nichen@iscas.ac.cn>
-X-Mailer: git-send-email 2.25.1
+        Tue, 7 Nov 2023 01:32:48 -0500
+Received: from codeconstruct.com.au (pi.codeconstruct.com.au [203.29.241.158])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D3E510D
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 22:32:45 -0800 (PST)
+Received: from [192.168.68.112] (ppp14-2-79-67.adl-apt-pir-bras31.tpg.internode.on.net [14.2.79.67])
+        by mail.codeconstruct.com.au (Postfix) with ESMTPSA id DD00F20059;
+        Tue,  7 Nov 2023 14:32:38 +0800 (AWST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=codeconstruct.com.au; s=2022a; t=1699338759;
+        bh=MKuaj0jg90e1Nx29apttkt6YjYFsc3MzYDII/TbtDLs=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=OKC3cG2TFWGZ9o+reKKcP6G0mzAazWfzL2qpO1XHXV+3XlCMdogJ5ovQFkJ2Soi8A
+         ZC8tzFfP/8oF9wTyjxTcgduoi3u7HR7IAFJd96I/HuJu2QKWs1aUuPXnHRfpiJHQsZ
+         NJNOLwRFHmaFfJG3LqGzga4KGCntU3vQ5LdrhVXAbjOOOXQ20rAp0YHL1sc23qXw1T
+         14xGxreH9kflNL12456nlkJMA0dLCj7DzpoLqbhs20nCEVezHKVLsaktJR3VSp0UzG
+         nhM3q0cxhNU94y3+C6vvr6tvMpjlMPn/2eNGjV/cFcCHiyGyGaneqzSSYIxwUaK0Qq
+         Ja7WJHIzH4MAw==
+Message-ID: <f3b30b70563c68b56451e3eb7a3e22ce4c142651.camel@codeconstruct.com.au>
+Subject: Re: [PATCH 05/10] ipmi: kcs_bmc: Define client actions in terms of
+ kcs_bmc_client
+From:   Andrew Jeffery <andrew@codeconstruct.com.au>
+To:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+Cc:     minyard@acm.org, openipmi-developer@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, aladyshev22@gmail.com,
+        jk@codeconstruct.com.au
+Date:   Tue, 07 Nov 2023 17:02:37 +1030
+In-Reply-To: <20231103151651.000045ae@Huawei.com>
+References: <20231103061522.1268637-1-andrew@codeconstruct.com.au>
+         <20231103061522.1268637-6-andrew@codeconstruct.com.au>
+         <20231103151651.000045ae@Huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4-2 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: zQCowABXOQ4L20llS8PdAA--.63801S2
-X-Coremail-Antispam: 1UD129KBjvdXoWrZFyrGr15trWfJF4rCw1rWFg_yoWDKFX_Cr
-        ZFg3ZxWrWUAr48u39rW3yrAryFqasxuF93uFWvqa43Aay5Aw4ruF4xArn5ZryFyr4UJrn8
-        Ww47CryrAry7ZjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbc8FF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
-        Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AKxVWxJr
-        0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-        2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6r47
-        MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr
-        0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0E
-        wIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJV
-        W8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAI
-        cVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjfUYeHqDUUUU
-X-Originating-IP: [124.16.138.129]
-X-CM-SenderInfo: xqlfxv3q6l2u1dvotugofq/
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add check for crypto_aead_setkey() and return the error if it fails
-in order to transfer the error.
+On Fri, 2023-11-03 at 15:16 +0000, Jonathan Cameron wrote:
+> On Fri,  3 Nov 2023 16:45:17 +1030
+> Andrew Jeffery <andrew@codeconstruct.com.au> wrote:
+>=20
+> > Operations such as reading and writing from hardware and updating the
+> > events of interest are operations in which the client is interested, bu=
+t
+> > are applied to the device. Strengthen the concept of the client in the
+> > subsystem and clean up some call-sites by translating between the clien=
+t
+> > and device types in the core of the KCS subsystem.
+> >=20
+> > Signed-off-by: Andrew Jeffery <andrew@codeconstruct.com.au>
+> > ---
+> >  drivers/char/ipmi/kcs_bmc.c           | 67 ++++++++++++++++++---------
+> >  drivers/char/ipmi/kcs_bmc_cdev_ipmi.c | 50 ++++++++++----------
+> >  drivers/char/ipmi/kcs_bmc_client.h    | 15 +++---
+> >  drivers/char/ipmi/kcs_bmc_serio.c     | 10 ++--
+> >  4 files changed, 81 insertions(+), 61 deletions(-)
+> >=20
+> > diff --git a/drivers/char/ipmi/kcs_bmc.c b/drivers/char/ipmi/kcs_bmc.c
+> > index 5a3f199241d2..d70e503041bd 100644
+> > --- a/drivers/char/ipmi/kcs_bmc.c
+> > +++ b/drivers/char/ipmi/kcs_bmc.c
+> > @@ -22,33 +22,53 @@ static LIST_HEAD(kcs_bmc_drivers);
+> > =20
+> >  /* Consumer data access */
+> > =20
+> > -u8 kcs_bmc_read_data(struct kcs_bmc_device *kcs_bmc)
+> > +static void kcs_bmc_client_validate(struct kcs_bmc_client *client)
+> >  {
+> > -	return kcs_bmc->ops->io_inputb(kcs_bmc, kcs_bmc->ioreg.idr);
+> > +	WARN_ONCE(client !=3D READ_ONCE(client->dev->client), "KCS client con=
+fusion detected");
+>=20
+> Is this intended as runtime validation or to catch bugs?
+> If just catch bugs then fair enough.
 
-Fixes: d2c8ac187fc9 ("crypto: sa2ul - Add AEAD algorithm support")
-Signed-off-by: Chen Ni <nichen@iscas.ac.cn>
----
- drivers/crypto/sa2ul.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+Ah, I think I missed replying here.
 
-diff --git a/drivers/crypto/sa2ul.c b/drivers/crypto/sa2ul.c
-index 6846a8429574..6bac2382e261 100644
---- a/drivers/crypto/sa2ul.c
-+++ b/drivers/crypto/sa2ul.c
-@@ -1806,6 +1806,7 @@ static int sa_aead_setkey(struct crypto_aead *authenc,
- 	int cmdl_len;
- 	struct sa_cmdl_cfg cfg;
- 	int key_idx;
-+	int error;
- 
- 	if (crypto_authenc_extractkeys(&keys, key, keylen) != 0)
- 		return -EINVAL;
-@@ -1869,7 +1870,9 @@ static int sa_aead_setkey(struct crypto_aead *authenc,
- 	crypto_aead_set_flags(ctx->fallback.aead,
- 			      crypto_aead_get_flags(authenc) &
- 			      CRYPTO_TFM_REQ_MASK);
--	crypto_aead_setkey(ctx->fallback.aead, key, keylen);
-+	error = crypto_aead_setkey(ctx->fallback.aead, key, keylen);
-+	if (error)
-+		return error;
- 
- 	return 0;
- }
--- 
-2.25.1
+So for "runtime validation" I assume you mean "things userspace might
+do that are not valid - the error condition should be detected and
+punted back to userspace", vs "catch bugs" meaning "the implementation
+in the kernel failed to uphold an invariant and now there are
+Problems".
 
+If that sounds accurate, then it's the latter: The WARN_ONCE() is
+asserting "don't operate on a client that doesn't own the device". It
+isn't an error that can be punted back for handling in userspace as it
+should not be possible for the kernel to get into this state to begin
+with. If we reach this state it's an error in the programming of the
+kernel module that's a client of the KCS subsystem.
+
+>=20
+> With that question answered based on my somewhat vague understanding of t=
+he kcs subsystem.
+> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+
+Thanks,
+
+Andrew
