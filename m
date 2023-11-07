@@ -2,49 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 179657E443B
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 16:51:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 590D07E4441
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 16:51:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343553AbjKGPvZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 10:51:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56648 "EHLO
+        id S235010AbjKGPvc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 10:51:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343749AbjKGPvB (ORCPT
+        with ESMTP id S234852AbjKGPvD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 10:51:01 -0500
+        Tue, 7 Nov 2023 10:51:03 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18DB4211D;
-        Tue,  7 Nov 2023 07:48:51 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D39AC433C9;
-        Tue,  7 Nov 2023 15:48:48 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD4E22121;
+        Tue,  7 Nov 2023 07:48:52 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 34D46C433CA;
+        Tue,  7 Nov 2023 15:48:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699372130;
-        bh=NSY1IFlDv4rVL8cXqlzKdvVbDftfZI0kP20/Mj3znx0=;
-        h=From:To:Cc:Subject:Date:From;
-        b=lM4m/Jt47wxKdXw1JLPkbUn6ObX8ve7rbmTuQdIRWS8MW6Dpx6q8ujfx5xfMw8RwR
-         +3J9bOzuLqTgLRtWMYvpiBCpahPO1H/8xhoR0ODDMfzI7ljicLHHc3fXpwpzyZeEnR
-         bDfZP4pXsU/pJMTbi95z9v6wlm7/ek6avL8KagBt9CbBfqnbsqld6cDGqoNQI7Rewr
-         VkabjMTxWac7BRm5C+XSS7qT4Y2G07SyAO9E7rL9ogqDl3QJBHNGc0tsitGxxpSfeK
-         3BJYKu2B29OBPRKASuXGuRllY4N5VpnF8Jd43m+UXMRaIzEW1KKE08aoWRIITj1RHT
-         lBOnU6EOExZ7g==
+        s=k20201202; t=1699372132;
+        bh=ewzWWtPdDgRdNjz+LGLb7PV8Vvt5Kxx3w3BbVJ8jQ6g=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=OFx/jgychcJarL6Ii2x5YnwG9zbWG6E149m0TC6vVNrDakEjOiV0w2KplBjDDAfnN
+         wmcr/09Agyy6FjWrlS4RpegiLcfKvYRbbsqzcArw19a9hZqko1yKgCsZEkKYKKbCDg
+         p3eMh4HHQfLE+xxs/DpMzEjcL8SIMJw/GelpOQNmIQyc+ns84mt3RvtkE9Ucqn/jsJ
+         ECC109gFSfbjJfiN983eSr1S8CWSQ3+Hvd4sXJndUbgd/MZYffH+3invswEqx5KUZ2
+         jC2N7dd7INY9DGkwwnomWGEcHWksh7RgCjpyRcU2YssFcgiesBz0gcd0IlX+orie+Y
+         XErWTjRYtMDiw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Trevor Wu <trevor.wu@mediatek.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
+Cc:     Richard Fitzgerald <rf@opensource.cirrus.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
         Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>, lgirdwood@gmail.com,
-        perex@perex.cz, tiwai@suse.com, matthias.bgg@gmail.com,
-        amergnat@baylibre.com, ckeepax@opensource.cirrus.com,
-        robh@kernel.org, dan.carpenter@linaro.org,
-        kuninori.morimoto.gx@renesas.com,
-        xiazhengqiao@huaqin.corp-partner.google.com,
-        linux-sound@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: [PATCH AUTOSEL 6.5 01/34] ASoC: mediatek: mt8188-mt6359: support dynamic pinctrl
-Date:   Tue,  7 Nov 2023 10:47:41 -0500
-Message-ID: <20231107154846.3766119-1-sashal@kernel.org>
+        perex@perex.cz, tiwai@suse.com, linux-sound@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.5 02/34] ASoC: soc-card: Add storage for PCI SSID
+Date:   Tue,  7 Nov 2023 10:47:42 -0500
+Message-ID: <20231107154846.3766119-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20231107154846.3766119-1-sashal@kernel.org>
+References: <20231107154846.3766119-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -54,78 +49,120 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Trevor Wu <trevor.wu@mediatek.com>
+From: Richard Fitzgerald <rf@opensource.cirrus.com>
 
-[ Upstream commit d601bb78f06b9e3cbb52e6b87b88add9920a11b6 ]
+[ Upstream commit 47f56e38a199bd45514b8e0142399cba4feeaf1a ]
 
-To avoid power leakage, it is recommended to replace the default pinctrl
-state with dynamic pinctrl since certain audio pinmux functions can
-remain in a HIGH state even when audio is disabled. Linking pinctrl with
-DAPM using SND_SOC_DAPM_PINCTRL will ensure that audio pins remain in
-GPIO mode by default and only switch to an audio function when necessary.
+Add members to struct snd_soc_card to store the PCI subsystem ID (SSID)
+of the soundcard.
 
-Signed-off-by: Trevor Wu <trevor.wu@mediatek.com>
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Link: https://lore.kernel.org/r/20230825024935.10878-2-trevor.wu@mediatek.com
+The PCI specification provides two registers to store a vendor-specific
+SSID that can be read by drivers to uniquely identify a particular
+"soundcard". This is defined in the PCI specification to distinguish
+products that use the same silicon (and therefore have the same silicon
+ID) so that product-specific differences can be applied.
+
+PCI only defines 0xFFFF as an invalid value. 0x0000 is not defined as
+invalid. So the usual pattern of zero-filling the struct and then
+assuming a zero value unset will not work. A flag is included to
+indicate when the SSID information has been filled in.
+
+Unlike DMI information, which has a free-format entirely up to the vendor,
+the PCI SSID has a strictly defined format and a registry of vendor IDs.
+
+It is usual in Windows drivers that the SSID is used as the sole identifier
+of the specific end-product and the Windows driver contains tables mapping
+that to information about the hardware setup, rather than using ACPI
+properties.
+
+This SSID is important information for ASoC components that need to apply
+hardware-specific configuration on PCI-based systems.
+
+As the SSID is a generic part of the PCI specification and is treated as
+identifying the "soundcard", it is reasonable to include this information
+in struct snd_soc_card, instead of components inventing their own custom
+ways to pass this information around.
+
+Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20230912163207.3498161-2-rf@opensource.cirrus.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/mediatek/mt8188/mt8188-mt6359.c | 21 +++++++++++++++++++++
- 1 file changed, 21 insertions(+)
+ include/sound/soc-card.h | 37 +++++++++++++++++++++++++++++++++++++
+ include/sound/soc.h      | 11 +++++++++++
+ 2 files changed, 48 insertions(+)
 
-diff --git a/sound/soc/mediatek/mt8188/mt8188-mt6359.c b/sound/soc/mediatek/mt8188/mt8188-mt6359.c
-index ac69c23e0da1c..7048ff52ab86a 100644
---- a/sound/soc/mediatek/mt8188/mt8188-mt6359.c
-+++ b/sound/soc/mediatek/mt8188/mt8188-mt6359.c
-@@ -246,6 +246,11 @@ static const struct snd_soc_dapm_widget mt8188_mt6359_widgets[] = {
- 	SND_SOC_DAPM_MIC("Headset Mic", NULL),
- 	SND_SOC_DAPM_SINK("HDMI"),
- 	SND_SOC_DAPM_SINK("DP"),
+diff --git a/include/sound/soc-card.h b/include/sound/soc-card.h
+index fc94dfb0021fd..e8ff2e089cd00 100644
+--- a/include/sound/soc-card.h
++++ b/include/sound/soc-card.h
+@@ -59,6 +59,43 @@ int snd_soc_card_add_dai_link(struct snd_soc_card *card,
+ void snd_soc_card_remove_dai_link(struct snd_soc_card *card,
+ 				  struct snd_soc_dai_link *dai_link);
+ 
++#ifdef CONFIG_PCI
++static inline void snd_soc_card_set_pci_ssid(struct snd_soc_card *card,
++					     unsigned short vendor,
++					     unsigned short device)
++{
++	card->pci_subsystem_vendor = vendor;
++	card->pci_subsystem_device = device;
++	card->pci_subsystem_set = true;
++}
 +
-+	/* dynamic pinctrl */
-+	SND_SOC_DAPM_PINCTRL("ETDM_SPK_PIN", "aud_etdm_spk_on", "aud_etdm_spk_off"),
-+	SND_SOC_DAPM_PINCTRL("ETDM_HP_PIN", "aud_etdm_hp_on", "aud_etdm_hp_off"),
-+	SND_SOC_DAPM_PINCTRL("MTKAIF_PIN", "aud_mtkaif_on", "aud_mtkaif_off"),
- };
- 
- static const struct snd_kcontrol_new mt8188_mt6359_controls[] = {
-@@ -267,6 +272,7 @@ static int mt8188_mt6359_mtkaif_calibration(struct snd_soc_pcm_runtime *rtd)
- 		snd_soc_rtdcom_lookup(rtd, AFE_PCM_NAME);
- 	struct snd_soc_component *cmpnt_codec =
- 		asoc_rtd_to_codec(rtd, 0)->component;
-+	struct snd_soc_dapm_widget *pin_w = NULL, *w;
- 	struct mtk_base_afe *afe;
- 	struct mt8188_afe_private *afe_priv;
- 	struct mtkaif_param *param;
-@@ -306,6 +312,18 @@ static int mt8188_mt6359_mtkaif_calibration(struct snd_soc_pcm_runtime *rtd)
- 		return 0;
- 	}
- 
-+	for_each_card_widgets(rtd->card, w) {
-+		if (!strcmp(w->name, "MTKAIF_PIN")) {
-+			pin_w = w;
-+			break;
-+		}
-+	}
++static inline int snd_soc_card_get_pci_ssid(struct snd_soc_card *card,
++					    unsigned short *vendor,
++					    unsigned short *device)
++{
++	if (!card->pci_subsystem_set)
++		return -ENOENT;
 +
-+	if (pin_w)
-+		dapm_pinctrl_event(pin_w, NULL, SND_SOC_DAPM_PRE_PMU);
-+	else
-+		dev_dbg(afe->dev, "%s(), no pinmux widget, please check if default on\n", __func__);
++	*vendor = card->pci_subsystem_vendor;
++	*device = card->pci_subsystem_device;
 +
- 	pm_runtime_get_sync(afe->dev);
- 	mt6359_mtkaif_calibration_enable(cmpnt_codec);
- 
-@@ -403,6 +421,9 @@ static int mt8188_mt6359_mtkaif_calibration(struct snd_soc_pcm_runtime *rtd)
- 	for (i = 0; i < MT8188_MTKAIF_MISO_NUM; i++)
- 		param->mtkaif_phase_cycle[i] = mtkaif_phase_cycle[i];
- 
-+	if (pin_w)
-+		dapm_pinctrl_event(pin_w, NULL, SND_SOC_DAPM_POST_PMD);
++	return 0;
++}
++#else /* !CONFIG_PCI */
++static inline void snd_soc_card_set_pci_ssid(struct snd_soc_card *card,
++					     unsigned short vendor,
++					     unsigned short device)
++{
++}
 +
- 	dev_dbg(afe->dev, "%s(), end, calibration ok %d\n",
- 		__func__, param->mtkaif_calibration_ok);
++static inline int snd_soc_card_get_pci_ssid(struct snd_soc_card *card,
++					    unsigned short *vendor,
++					    unsigned short *device)
++{
++	return -ENOENT;
++}
++#endif /* CONFIG_PCI */
++
+ /* device driver data */
+ static inline void snd_soc_card_set_drvdata(struct snd_soc_card *card,
+ 					    void *data)
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index b27f84580c5b0..4ef184f1f9b0b 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -931,6 +931,17 @@ struct snd_soc_card {
+ #ifdef CONFIG_DMI
+ 	char dmi_longname[80];
+ #endif /* CONFIG_DMI */
++
++#ifdef CONFIG_PCI
++	/*
++	 * PCI does not define 0 as invalid, so pci_subsystem_set indicates
++	 * whether a value has been written to these fields.
++	 */
++	unsigned short pci_subsystem_vendor;
++	unsigned short pci_subsystem_device;
++	bool pci_subsystem_set;
++#endif /* CONFIG_PCI */
++
+ 	char topology_shortname[32];
  
+ 	struct device *dev;
 -- 
 2.42.0
 
