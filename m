@@ -2,138 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA1797E46AA
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 18:20:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C1DD7E472D
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 18:37:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234576AbjKGRUv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 12:20:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40418 "EHLO
+        id S235072AbjKGRhL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 12:37:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229458AbjKGRUu (ORCPT
+        with ESMTP id S230501AbjKGRhJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 12:20:50 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D4139B
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 09:20:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1699377607;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7BzU3dDdSH7oEfLk2Y642FIj/xbly1n4FfWSInGGOWQ=;
-        b=DLAti/uzSJnwSc41TilXjGtHN7fvGa7OF2T2g/CzUvRuZF/HPzz1xViS3RuO3j4ltopjbH
-        /FiNOvyZaSWT4KhXTaCV32TRlO/lEgl90h/qcApCLM5Cs3U3FdPFy05zf5aW+sSVxlDOJb
-        KalxLX0g4d1FRAko+qFHKvZSgcoFDoU=
-Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
- [209.85.160.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-690-_6x60YteOhGR1CazdrIy5g-1; Tue, 07 Nov 2023 12:20:06 -0500
-X-MC-Unique: _6x60YteOhGR1CazdrIy5g-1
-Received: by mail-qt1-f197.google.com with SMTP id d75a77b69052e-41cdce61dcbso73158271cf.3
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 09:20:06 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699377605; x=1699982405;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7BzU3dDdSH7oEfLk2Y642FIj/xbly1n4FfWSInGGOWQ=;
-        b=p5cXzQYgsS25FDw+LzMh3RckY57fXDs8aso0gafI1rbYAnYEdboG+oXFsvdeoeGgy1
-         aKyAo1GtrAro2DqyqSGv8Y4PkY/8viO24b0nQPgF/3ZxWIRAuwSGjumKhk9iq/PIZv1E
-         H2biDoVfdEW4ee3poPJgisH2NS3E+hHCXh1DEAkshkhOSuDKGcWdoQ9gibykouwgWOfX
-         8iviInxND+uL729Gjj8e0/WbYzYFSyzRaSs+8AUe2sF+8sbwXkHorE6YZRQz98DCgkoT
-         Gz6AhdX9z4TSn1S8DMA0K9AFOU77YeC7IIqrnJnnXI/nIgt9x2LAvctjupI87Z40cRZU
-         b5Yw==
-X-Gm-Message-State: AOJu0YyBDeBaUiwsQqni0+G3qwIY3N5LBU+gUknN2hPUlRhCxyNd3dMf
-        lW4iYMhZWjHWm3hbne7KKOGwoLXmYT/BG0tK/ZKDS5tohYyOiX+pL6UP2B05koHmHt7GHd8rCJw
-        Uu/I7YcdOF9n4pJMIDpUGK19i
-X-Received: by 2002:ac8:7f0a:0:b0:419:4c21:d706 with SMTP id f10-20020ac87f0a000000b004194c21d706mr41838470qtk.23.1699377605716;
-        Tue, 07 Nov 2023 09:20:05 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEmk5NphBaKNBHbqE52Hw8MNilCJ0v2xrcEj47TC7u8ivcNr/mb5kCdrz4mKADOyy+M6i9epw==
-X-Received: by 2002:ac8:7f0a:0:b0:419:4c21:d706 with SMTP id f10-20020ac87f0a000000b004194c21d706mr41838445qtk.23.1699377605471;
-        Tue, 07 Nov 2023 09:20:05 -0800 (PST)
-Received: from localhost (ip98-179-76-75.ph.ph.cox.net. [98.179.76.75])
-        by smtp.gmail.com with ESMTPSA id p25-20020ac84619000000b0041cbb7139a9sm81308qtn.65.2023.11.07.09.20.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Nov 2023 09:20:05 -0800 (PST)
-Date:   Tue, 7 Nov 2023 10:20:03 -0700
-From:   Jerry Snitselaar <jsnitsel@redhat.com>
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        William Roberts <bill.c.roberts@gmail.com>,
-        Stefan Berger <stefanb@linux.ibm.com>,
-        David Howells <dhowells@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Peter Huewe <peterhuewe@gmx.de>,
-        James Bottomley <jejb@linux.ibm.com>,
-        Paul Moore <paul@paul-moore.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        Julien Gomes <julien@arista.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:SECURITY SUBSYSTEM" 
-        <linux-security-module@vger.kernel.org>
-Subject: Re: [PATCH v3 4/6] tpm: Support TPM2 sized buffers (TPM2B)
-Message-ID: <nwbyc2al5msr7d2wqvqcfdm75osrestjncuhjgxxigm773a6k5@bc7hjv5srjxv>
-References: <20231024011531.442587-1-jarkko@kernel.org>
- <20231024011531.442587-5-jarkko@kernel.org>
+        Tue, 7 Nov 2023 12:37:09 -0500
+Received: from 4.mo560.mail-out.ovh.net (4.mo560.mail-out.ovh.net [87.98.172.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2323B125
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 09:37:07 -0800 (PST)
+Received: from director6.ghost.mail-out.ovh.net (unknown [10.109.156.242])
+        by mo560.mail-out.ovh.net (Postfix) with ESMTP id BF22128BC8
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 17:20:10 +0000 (UTC)
+Received: from ghost-submission-6684bf9d7b-ch27t (unknown [10.110.171.220])
+        by director6.ghost.mail-out.ovh.net (Postfix) with ESMTPS id 3002E1FD2F;
+        Tue,  7 Nov 2023 17:20:10 +0000 (UTC)
+Received: from RCM-web9.webmail.mail.ovh.net ([151.80.29.21])
+        by ghost-submission-6684bf9d7b-ch27t with ESMTPSA
+        id sbZmCcpxSmVvfwEAiK7Wbg
+        (envelope-from <jose.pekkarinen@foxhound.fi>); Tue, 07 Nov 2023 17:20:10 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231024011531.442587-5-jarkko@kernel.org>
+Date:   Tue, 07 Nov 2023 19:20:09 +0200
+From:   =?UTF-8?Q?Jos=C3=A9_Pekkarinen?= <jose.pekkarinen@foxhound.fi>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     rafael@kernel.org, len.brown@intel.com, pavel@ucw.cz,
+        skhan@linuxfoundation.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+95f2e2439b97575ec3c0@syzkaller.appspotmail.com
+Subject: Re: [PATCH] drivers core: lookup sysfs power group before removal
+In-Reply-To: <2023110706-mustiness-arbitrary-fc9f@gregkh>
+References: <20231101173627.2658-1-jose.pekkarinen@foxhound.fi>
+ <2023110139-dupe-snipping-5700@gregkh>
+ <835b2930c710381b8da38eca821aa92d@foxhound.fi>
+ <2023110353-bring-contented-c9f8@gregkh>
+ <e13104c9e55b0bd8eee0a333b3ed7975@foxhound.fi>
+ <2023110706-mustiness-arbitrary-fc9f@gregkh>
+User-Agent: Roundcube Webmail/1.4.15
+Message-ID: <e8dccfb0ec240014a98660493aa34fc2@foxhound.fi>
+X-Sender: jose.pekkarinen@foxhound.fi
+Organization: Foxhound Ltd.
+X-Originating-IP: 45.141.215.21
+X-Webmail-UserID: jose.pekkarinen@foxhound.fi
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+X-Ovh-Tracer-Id: 8199366075018552835
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedruddujedgtdejucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepggffhffvvefujghffgfkgihoihgtgfesthekjhdttderjeenucfhrhhomheplfhoshorucfrvghkkhgrrhhinhgvnhcuoehjohhsvgdrphgvkhhkrghrihhnvghnsehfohighhhouhhnugdrfhhiqeenucggtffrrghtthgvrhhnpeekhfeguddufeegvdelgedtvdffgeehvddtkeevkeejvedvgeeitdefleehtdeitdenucfkphepuddvjedrtddrtddruddpgeehrddugedurddvudehrddvuddpudehuddrkedtrddvledrvddunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepuddvjedrtddrtddruddpmhgrihhlfhhrohhmpeeojhhoshgvrdhpvghkkhgrrhhinhgvnhesfhhogihhohhunhgurdhfiheqpdhnsggprhgtphhtthhopedupdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdfovfetjfhoshhtpehmohehiedtpdhmohguvgepshhmthhpohhuth
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 24, 2023 at 04:15:22AM +0300, Jarkko Sakkinen wrote:
-> Add boolean parameters @alloc and @sized to tpm_buf_init():
+On 2023-11-07 11:53, Greg KH wrote:
+> On Tue, Nov 07, 2023 at 10:56:20AM +0200, José Pekkarinen wrote:
+>> On 2023-11-03 20:36, Greg KH wrote:
+>> > On Fri, Nov 03, 2023 at 07:49:39PM +0200, José Pekkarinen wrote:
+>> > > On 2023-11-01 19:54, Greg KH wrote:
+>> > > > On Wed, Nov 01, 2023 at 07:36:27PM +0200, José Pekkarinen wrote:
+>> > > > > Hinted by syzboot, there is a few cases where the sysfs power group
+>> > > > > may
+>> > > > > not be there, like the failure while adding it, or adding its runtime
+>> > > > > group, or when the sysfs firmware loader fallback fail to populate. In
+>> > > > > the last case, the device_del function will be called leading to
+>> > > > > attempt
+>> > > > > to remove the sysfs group. This patch will lookup for it in advance to
+>> > > > > grant that it is effectively there before cleaning it up.
+>> > > > >
+>> > > > > Reported-by: syzbot+95f2e2439b97575ec3c0@syzkaller.appspotmail.com
+>> > > > >
+>> > > > > Signed-off-by: José Pekkarinen <jose.pekkarinen@foxhound.fi>
+>> > > > > ---
+>> > > > >  drivers/base/power/sysfs.c | 4 +++-
+>> > > > >  1 file changed, 3 insertions(+), 1 deletion(-)
+>> > > > >
+>> > > > > diff --git a/drivers/base/power/sysfs.c b/drivers/base/power/sysfs.c
+>> > > > > index a1474fb67db9..6601729c4698 100644
+>> > > > > --- a/drivers/base/power/sysfs.c
+>> > > > > +++ b/drivers/base/power/sysfs.c
+>> > > > > @@ -834,5 +834,7 @@ void dpm_sysfs_remove(struct device *dev)
+>> > > > >  	dev_pm_qos_constraints_destroy(dev);
+>> > > > >  	rpm_sysfs_remove(dev);
+>> > > > >  	sysfs_unmerge_group(&dev->kobj, &pm_wakeup_attr_group);
+>> > > > > -	sysfs_remove_group(&dev->kobj, &pm_attr_group);
+>> > > > > +
+>> > > > > +	if (kernfs_find_and_get((&dev->kobj)->sd, pm_attr_group.name))
+>> > > > > +		sysfs_remove_group(&dev->kobj, &pm_attr_group);
+>> > > >
+>> > > > What's to keep it from going away right after finding it?
+>> > > >
+>> > > > In other words, what is wrong with removing a group that is not there?
+>> > > > What error happens?  It should be fine, or are you seeing real code
+>> > > > failures somewhere?
+>> > >
+>> > >     No, this is just hitting a warning that sysbot complains about by
+>> > > setting panic on warning, no big deal, though it can be a wrong
+>> > > behaviour
+>> > > in ueagle-atm driver, since it defines to disconnect the device if the
+>> > > firmware is not there, no matter the sysfs fallback.
+>> >
+>> > Then fix the driver please.
+>> 
+>>     I'm afraid I was wrong in the assumption that the probe return 
+>> value
+>> of the driver would influence the testing result, so this no longer 
+>> seems
+>> fixable from driver side.
 > 
-> * If @alloc is set to false, buf->data is assumed to be pre-feeded and
->   owned by the caller.
-> * If @sized is set to true, the buffer represents a sized buffer
->   (TPM2B).
-> 
-> Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
-> ---
->  drivers/char/tpm/tpm-buf.c                | 32 ++++++++++++++++-------
->  drivers/char/tpm/tpm-sysfs.c              |  2 +-
->  drivers/char/tpm/tpm1-cmd.c               | 14 +++++-----
->  drivers/char/tpm/tpm2-cmd.c               | 22 ++++++++--------
->  drivers/char/tpm/tpm2-space.c             |  4 +--
->  drivers/char/tpm/tpm_vtpm_proxy.c         |  2 +-
->  include/linux/tpm.h                       |  3 ++-
->  security/keys/trusted-keys/trusted_tpm1.c |  4 +--
->  security/keys/trusted-keys/trusted_tpm2.c |  6 ++---
->  9 files changed, 51 insertions(+), 38 deletions(-)
-> 
-> diff --git a/drivers/char/tpm/tpm-buf.c b/drivers/char/tpm/tpm-buf.c
-> index fa9a4c51157a..f1d92d7e758d 100644
-> --- a/drivers/char/tpm/tpm-buf.c
-> +++ b/drivers/char/tpm/tpm-buf.c
-> @@ -7,22 +7,32 @@
->  #include <linux/tpm.h>
->  
->  /**
-> - * tpm_buf_init() - Initialize from the heap
-> + * tpm_buf_init() - Initialize a TPM buffer
->   * @buf:	A @tpm_buf
-> + * @sized:	Represent a sized buffer (TPM2B)
-> + * @alloc:	Allocate from the heap
->   *
->   * Initialize all structure fields to zero, allocate a page from the heap, and
+> Why is it not fixable from the driver side?  It is the code that is
+> creating, and then removing, the files, not the driver core, or am I
+> missing something here?
 
-Depending on what the decision ends up being on the bools, flags,
-separate functions, or wrappers possibly an "if needed" should be
-tacked on to the end of "allocate a page from the heap" here.
+     I don't think this is much of a problem since the situation is 
+unlikely to
+happen. The reproducer is attempting to register a simulated ueagle 
+modem and
+checks if the device becomes ready. If it doesn't for any reason, in 
+this case,
+the lack of the firmware, it just disconnect it and try to populate it 
+again.
+After a few minutes banging the kernel this way it hits the situation 
+where the
+asynchronous firmware loader didn't yet populate the sysfs files before 
+the
+device is getting removed, and hit the warning of missing the power 
+attributes
+in sysfs, while removing the sysfs groups. If it is a problem, it is 
+certainly
+not a top priority problem to solve for sure.
 
-
-Flags would be better when coming across calls to the routine in the
-code than the bools, but I think switching to wrappers around
-a __tpm_buf_init for the different types would be good.
-
-
->   * zero the bytes that the buffer headers will consume.
->   *
-
+     José.
