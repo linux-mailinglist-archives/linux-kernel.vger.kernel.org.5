@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3ECDA7E3742
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 10:09:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D32297E3736
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 10:08:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233932AbjKGJJ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 04:09:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46022 "EHLO
+        id S233927AbjKGJJA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 04:09:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233913AbjKGJIc (ORCPT
+        with ESMTP id S233934AbjKGJIh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 04:08:32 -0500
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 552141724
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 01:08:22 -0800 (PST)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5afc00161daso63765487b3.1
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 01:08:22 -0800 (PST)
+        Tue, 7 Nov 2023 04:08:37 -0500
+Received: from mail-lf1-x149.google.com (mail-lf1-x149.google.com [IPv6:2a00:1450:4864:20::149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A592911A
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 01:08:25 -0800 (PST)
+Received: by mail-lf1-x149.google.com with SMTP id 2adb3069b0e04-507f20a111fso3667511e87.0
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 01:08:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1699348101; x=1699952901; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1699348104; x=1699952904; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=PSKgABfKin0QFWodlZljA42NEOuJivSk0X0VqFGlieg=;
-        b=IqoexA586XrJmxf230PVY0NqjfR134AfvED5ajfCrUmMhhRYN2mcEhG5xOIh+gvzST
-         1eJvZBf64Y+vJB+yoPsnMfIwXprZNS54fx6g6OANNif4BNg0Jx8tvbLYEU8GcETVNMmh
-         nJD2RcATIkWEE2UlvmcvhmJxIfnBXQSXvWdbZsb+v8bH4GmXg3IyHl8rmVa1tyAUpIFu
-         kvtdcA0QMMJSvXoyE3wkhRxiqZLwmdm3p/Kc2nMCFXzgSGzgEKUCcMWuNOhhADI3Nbvq
-         uV+7CvcO59AutF22+pQs6/eg6NhJp1EG+r3ew/Fg9R2OX4P2LcEntZmuafW4jK17Bdmi
-         HvLA==
+        bh=jdBn3S4js/l9w9fbnbImdcyCevaHmMvFucicp7ucn8c=;
+        b=qVtdRFSH3s6EzSDDdbFO+FbHUcDTtPNk01Wf6YXYkwtwhJOtCJT88extJqCfcCVRkf
+         TDRZDajEa+A5WpLX8rKADMnSbB3T5qmEedX2glAPuf3CRmwwTXXYDlGXovcBoQY7U7cC
+         +Kyh7KzbP+TzzAbNX8kJXhS26X4Xa57FKa+NtK1CbdUp8mFqMNabM/KqYZiRxJO0c0Lf
+         Yn/DFLFSjwYRO1ON3lrjB96W1nuOwG4vihapXvl8d5WlZF/na4DDovcs7+MvQIWKRIgm
+         DYX9qr2t8MN1ysnuzspFbQKXovoqnaG97Q+edCwVcMg2cSS+A8ZLF7U96hundB1vZqtO
+         1mFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699348101; x=1699952901;
+        d=1e100.net; s=20230601; t=1699348104; x=1699952904;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=PSKgABfKin0QFWodlZljA42NEOuJivSk0X0VqFGlieg=;
-        b=XcrCSL2bMA0A8/A+riggClQT+bdropRBLXAjpvjKVbqbeiTh5q5LVMUWb1fZkaX3Td
-         YqCrAEVeaOvaXqvjCab7PZlpIE8J/iNy5pb8LwHcalHB53FdnC7fGce18DLitmZpMJBJ
-         rjIO93IGzKtVseIUgq/MVQs3rupE2C9lBPMNWM2oEX5s36RUffHezpYQfUqkQQBNjlAQ
-         b6ZrcE/l7G9DMBFWfCHpa6v0CHjZt7exRFA4QQ+OvemW2Lys0UoT3FzLdxbHUwG60E5i
-         Hy6mn0DhX/fcZcRbUJ91q1yQMW90lZMYD8CBAnG7wKfuYejND7D2hPz5SrH1h0EiPNez
-         4xoQ==
-X-Gm-Message-State: AOJu0YzApIt92yjs+9Gr5F75XYgpcDbOGCRwadYEUs9t8C9phzdC3jVc
-        7vMXWnyR+H7tRI3qoUnEv6XGRMLoL+3EhRM=
-X-Google-Smtp-Source: AGHT+IHYcIYTlCLYoI0xSblajexRHspS6I52oG0dryYVEPFtWNNcZIMtmnp2bAIfdCa+SDvcKLwizAaIs/ZaJsY=
+        bh=jdBn3S4js/l9w9fbnbImdcyCevaHmMvFucicp7ucn8c=;
+        b=NSUvjOtlOPOlSN1D6q3G1gCq8KrnvlKoPcwI+Ws8sgQOKmLn60Feil2+UYhiu/ZpbL
+         7zm7JgatItiJOSW4LyXM4apmDW3iJS0PhGrzvKzF20e7zAU1aDeVKvuJ1ZitcuFTnBEz
+         IYctBkkFvlAdXqeaz/RuHMKbF9XEqtQvrhiHHPNpgMwn3bZRNF9Qb6h8c7nl0c+juO35
+         a3degytfoeDOgLGbpfUNPNTma4Yovh9UYNGvan/CEl7+hzWztAjc8JyTe5nyF+T854wM
+         cbMA7miq8tBFdjPuwyZpS9FsV3NPajKACBqmQGnussQ7uCrGEE6WgJLrsJ40JvMp/JOl
+         qtIg==
+X-Gm-Message-State: AOJu0Yy8g8bt1TX20kMOKBgy0tTd2ZhbjGOU3hs0wgZe9z9qlCd3eM34
+        /iT6q+g6Vtr3v8s5iEjHm5IlGsilQZ5PLT8=
+X-Google-Smtp-Source: AGHT+IHyOoj3oHJI2k0kduiGdFQZ/ZVOc99M9QN484IBitUoU1OoygGR3uMyKzmSTdTgB/Ygt/I1QjaeOiHgo1M=
 X-Received: from aliceryhl2.c.googlers.com ([fda3:e722:ac3:cc00:68:949d:c0a8:572])
- (user=aliceryhl job=sendgmr) by 2002:a25:ae0a:0:b0:da3:b880:180e with SMTP id
- a10-20020a25ae0a000000b00da3b880180emr309599ybj.2.1699348101374; Tue, 07 Nov
- 2023 01:08:21 -0800 (PST)
-Date:   Tue,  7 Nov 2023 09:08:18 +0000
-In-Reply-To: <20231102185934.773885-11-cmllamas@google.com>
+ (user=aliceryhl job=sendgmr) by 2002:ac2:4951:0:b0:502:9f97:3286 with SMTP id
+ o17-20020ac24951000000b005029f973286mr35014lfi.1.1699348104021; Tue, 07 Nov
+ 2023 01:08:24 -0800 (PST)
+Date:   Tue,  7 Nov 2023 09:08:21 +0000
+In-Reply-To: <20231102185934.773885-12-cmllamas@google.com>
 Mime-Version: 1.0
-References: <20231102185934.773885-11-cmllamas@google.com>
+References: <20231102185934.773885-12-cmllamas@google.com>
 X-Mailer: git-send-email 2.42.0.869.gea05f2083d-goog
-Message-ID: <20231107090818.258621-1-aliceryhl@google.com>
-Subject: Re: [PATCH 10/21] binder: do unlocked work in binder_alloc_new_buf()
+Message-ID: <20231107090821.258938-1-aliceryhl@google.com>
+Subject: Re: [PATCH 11/21] binder: remove pid param in binder_alloc_new_buf()
 From:   Alice Ryhl <aliceryhl@google.com>
 To:     Carlos Llamas <cmllamas@google.com>
 Cc:     "=?UTF-8?q?Arve=20Hj=C3=B8nnev=C3=A5g?=" <arve@android.com>,
@@ -74,61 +74,16 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I found a few issues in this patch:
-
 Carlos Llamas <cmllamas@google.com> writes:
-> -	data_offsets_size = ALIGN(data_size, sizeof(void *)) +
-> -		ALIGN(offsets_size, sizeof(void *));
-> -
-> -	if (data_offsets_size < data_size || data_offsets_size < offsets_size) {
-> -		binder_alloc_debug(BINDER_DEBUG_BUFFER_ALLOC,
-> -				"%d: got transaction with invalid size %zd-%zd\n",
-> -				alloc->pid, data_size, offsets_size);
-> -		return ERR_PTR(-EINVAL);
-> -	}
-> -	size = data_offsets_size + ALIGN(extra_buffers_size, sizeof(void *));
-> -	if (size < data_offsets_size || size < extra_buffers_size) {
-> -		binder_alloc_debug(BINDER_DEBUG_BUFFER_ALLOC,
-> -				"%d: got transaction with invalid extra_buffers_size %zd\n",
-> -				alloc->pid, extra_buffers_size);
-> -		return ERR_PTR(-EINVAL);
-> -	}
-> [snip]
-> +	size = ALIGN(data_size, sizeof(void *)) +
-> +		ALIGN(offsets_size, sizeof(void *)) +
-> +		ALIGN(extra_buffers_size, sizeof(void *));
-> +
-> +	if (size < data_size ||
-> +	    size < offsets_size ||
-> +	    size < extra_buffers_size) {
-> +		binder_alloc_debug(BINDER_DEBUG_BUFFER_ALLOC,
-> +				   "%d: got transaction with invalid size %zd-%zd-%zd\n",
-> +				   alloc->pid, data_size, offsets_size,
-> +				   extra_buffers_size);
-> +		return ERR_PTR(-EINVAL);
-> +	}
+> Binder attributes the buffer allocation to the current->tgid everytime.
+> There is no need to pass this as a parameter so drop it.
+> 
+> Also add a few touchups to follow the coding guidelines. No functional
+> changes are introduced in this patch.
+> 
+> Signed-off-by: Carlos Llamas <cmllamas@google.com>
 
-Consolidating the overflow check into one if statement like this doesn't
-catch all cases of integer overflow. For example, if all three sizes are
-9223372036854775816, then the computed size will be 9223372036854775832,
-so this would not trigger the overflow check.
+You could argue that this code would be cleaner without this change,
+since it now relies on global state. However, I'm okay either way.
 
-Carlos Llamas <cmllamas@google.com> writes:
->  	mutex_unlock(&alloc->mutex);
-> +
-> +	if (IS_ERR(buffer))
-> +		goto out;
-> +
-> +	buffer->data_size = data_size;
-> +	buffer->offsets_size = offsets_size;
-> +	buffer->async_transaction = is_async;
-> +	buffer->extra_buffers_size = extra_buffers_size;
-> +	buffer->pid = pid;
-
-With this change, if there is a concurrent call to
-debug_low_async_space_locked, then there is a data race on the
-async_transaction field. Similarly for print_binder_buffer.
-
-Perhaps these writes should be moved before the mutex_unlock?
-
-Alice
+Reviewed-by: Alice Ryhl <aliceryhl@google.com>
