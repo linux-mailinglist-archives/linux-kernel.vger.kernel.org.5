@@ -2,159 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DF327E3D22
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 13:26:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E96987E3D2A
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 13:26:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234561AbjKGM0J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 07:26:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52694 "EHLO
+        id S234282AbjKGM0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 07:26:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234171AbjKGMZy (ORCPT
+        with ESMTP id S234305AbjKGMZz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 07:25:54 -0500
-Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BAD8289E5
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 04:18:25 -0800 (PST)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.nyi.internal (Postfix) with ESMTP id E1AE25C0257;
-        Tue,  7 Nov 2023 07:18:02 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Tue, 07 Nov 2023 07:18:02 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
-         h=cc:cc:content-type:content-type:date:date:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to; s=fm3; t=1699359482; x=
-        1699445882; bh=VAEwo8KOUsK6uSerfegtu1pr87C48EnHQkGfQIDgWKU=; b=v
-        581JpKJgtzGgMkwQI7oRgC2c6KiqLZ5FU/DRgWP4AV/9TmvlXaSkeAw2Qm3BmnP8
-        jUU/XxboNB7jgCPsTGTa+vD9u28/eyNohTQmK3z7eDldhcrvOH+WPuqQ9NU8lWCW
-        DWS+hLAdflet1oRXIJlw5pYsguNiXw80vfTLIgdmOqMFdLqY5qU8jaEzEcMFti6+
-        aiYL59V1+uMDP5GVBlsG96y9fA3zPjo7imI+eGdx+Z7DCJKY4cwfPNsbFYwKoQIY
-        /6wCGBN8e+NTn2UgEQDDqjTvXdmuczrQ5CVdH0fAN6CWtd//THLrEKX8mUL5x8gz
-        +EqEwyXzIHryyCGq1y9rw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; t=1699359482; x=1699445882; bh=VAEwo8KOUsK6u
-        Serfegtu1pr87C48EnHQkGfQIDgWKU=; b=GiurI7MDATJs84n+0RpI/6qor4ivC
-        UCkPkivN2t9/YRbvXQrCFdGkebeoTOG9P0uSBviYA5jlg06HqAagiOp47O6jTKIU
-        a49f6PYYmZZ8eKwdsSl1XJm6eJgYORePbkApbFg/CmD+Ei89ZXIL17QaAhx5iOJ4
-        ETj/TPvDnB7fSU0S0TLdJExsul3Rjd+z9rlcAiclWWbQGgQDS48QPfov12viKBPK
-        weeYbTMiBMmhlxEo7t/TZsESN0nXDSX82tph+Pi/Qg16BVLJwRgKMvN0/hG5R5fM
-        VzHgHsI8++Van4j+zGY8BHk47nU+aLSuRoUyXZ6Pz3SdO/uUTyWYMjsow==
-X-ME-Sender: <xms:-SpKZQpMRutNScnrU3xDyqg8f6cZZGNF9I6RBkax6dZZsc2MHDI3fQ>
-    <xme:-SpKZWp4bWITM0FUapsSrfy-WfShS07sAIsbpv3uESEgwchY6s4KiXsnwRj1JDbri
-    oVJwUpCki8zRVBd7w4>
-X-ME-Received: <xmr:-SpKZVPZ4yd-7k_kKL7sWGFbctBmL1uBoWanpLNiuDBxqGQ6iNzFYh4s8Na-HLkj5805XyzLGJreCuk4_40zFsRP67QtbQWV>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudduiedgfeejucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepvfgrkhgr
-    shhhihcuufgrkhgrmhhothhouceoohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhird
-    hjpheqnecuggftrfgrthhtvghrnhepudeufffhjeefjeevieekvdfhjeduhfdtgeefuddt
-    leetjeffgeekleffleegfeeinecuffhomhgrihhnpehkvghrnhgvlhdrohhrghdpshhush
-    gvrdgtohhmnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhho
-    mhepohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhirdhjph
-X-ME-Proxy: <xmx:-SpKZX6Gq0is_4eO32oNZY2zeKOyz2C1L51NTrj5eDk6lcYMVRkAZw>
-    <xmx:-SpKZf47SYj-W77tozLzBzJDPqfLlNNfWcDEx_cdVzIH-etEyh7xsw>
-    <xmx:-SpKZXhbI-ZPWr7LV0zUNu89g-9k-fye6xSRf2MS-5PFyALFqYceEA>
-    <xmx:-ipKZVSPQjtADUn3ZqKavMHUunMXwGLL9PrWT0XhZgn-InBsMDNA3w>
-Feedback-ID: ie8e14432:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 7 Nov 2023 07:17:59 -0500 (EST)
-Date:   Tue, 7 Nov 2023 21:17:56 +0900
-From:   Takashi Sakamoto <o-takashi@sakamocchi.jp>
-To:     Mario Limonciello <mario.limonciello@amd.com>
-Cc:     Linux kernel regressions list <regressions@lists.linux.dev>,
-        a.mark.broadworth@gmail.com, matthias.schrumpf@freenet.de,
-        LKML <linux-kernel@vger.kernel.org>, aros@gmx.com,
-        bagasdotme@gmail.com
-Subject: Re: Regression from dcadfd7f7c74ef9ee415e072a19bdf6c085159eb
-Message-ID: <20231107121756.GA168964@workstation.local>
-Mail-Followup-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        Linux kernel regressions list <regressions@lists.linux.dev>,
-        a.mark.broadworth@gmail.com, matthias.schrumpf@freenet.de,
-        LKML <linux-kernel@vger.kernel.org>, aros@gmx.com,
-        bagasdotme@gmail.com
-References: <f878b188-3fe4-420c-9bcb-b431ac6088dd@amd.com>
+        Tue, 7 Nov 2023 07:25:55 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 402C228A76
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 04:18:33 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16449C433C8;
+        Tue,  7 Nov 2023 12:18:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699359497;
+        bh=OTPITfqoNgf8Jzf8gCNGibipMX2tb1QEAd6RqdUSFCI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ErkAgx2RlSbgqNuK93lfa05dXA86rnpmhfM3cU4WQFYbRPcBcW/JoBe8xE0Q60nJB
+         QnzybSObkncybEV90rL/vgxrw9inzONRa/W/F3hc/1UxVTiACMJ4CIgSglV7dcX8bv
+         oYI7H07T1jEXslAmOQaCIkxHiSWDRcHPXAgEMvLdUQrmq6q9yB8DAcoDF19aabn9ZJ
+         jRu+KQwBOpyupjliuRv7NQ6POOca6d2zc7uZQ3n/Opqu1Ku3VQ0Or95OU/jmvykL/w
+         4kUtQEyDWZOqT+yb6i9jXYa18Nkd36THaI1EzzcWDb3mdD/p8UGchClV+oYjaJEIVD
+         wt9/alUabVVDQ==
+Date:   Tue, 7 Nov 2023 13:18:14 +0100
+From:   Maxime Ripard <mripard@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Douglas Anderson <dianders@chromium.org>,
+        Rob Clark <robdclark@gmail.com>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Sean Paul <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Jessica Zhang <quic_jesszhan@quicinc.com>,
+        Marek Vasut <marex@denx.de>, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org
+Subject: Re: [RFC PATCH 03/10] drm/mipi-dsi: add API for manual control over
+ the DSI link power state
+Message-ID: <hkzoi4sazufi5xdgr6hacuzk72cnbtmm6dwm2bzfgwh5yij6wj@2g4eb6ea4dgd>
+References: <20231016165355.1327217-1-dmitry.baryshkov@linaro.org>
+ <20231016165355.1327217-4-dmitry.baryshkov@linaro.org>
+ <7e4ak4e77fp5dat2aopyq3g4wnqu3tt7di7ytdr3dvgjviyhrd@vqiqx6iso6vg>
+ <CAA8EJpp48AdJmx_U=bEJZUWZgOiT1Ctz6Lpe9QwjLXkMQvsw5w@mail.gmail.com>
+ <uj6rtlionmacnwlqxy6ejt5iaczgbbe5z54ipte5ffbixcx3p4@pps7fcr3uqhf>
+ <1696f131-83fb-4d0c-b4d7-0bdb61e4ae65@linaro.org>
+ <mxtb6vymowutj7whbrygwlcupbdnfqxjralc3nwwapsbvrcmbm@sewxtdslfoen>
+ <CAA8EJpozZkEswnioKjRCqBg4fcjVHFwGivoFNTNHVwyocKprQw@mail.gmail.com>
+ <2z3yvvtd6ttsd7qw43sl5svtfijxevdr6omxxmws64k6l5qv55@5nnh2b32h2ep>
+ <2023110704-playback-grit-7a27@gregkh>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="dlcuzb3mgsgh2p4c"
 Content-Disposition: inline
-In-Reply-To: <f878b188-3fe4-420c-9bcb-b431ac6088dd@amd.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <2023110704-playback-grit-7a27@gregkh>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mario,
 
-Thanks for the report.
+--dlcuzb3mgsgh2p4c
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I apologize for the inconvenience you and your reporter facing, however
-I can not avoid to say that the problem appears to be specific to the AMD
-Ryzen machines.
+On Tue, Nov 07, 2023 at 12:22:21PM +0100, Greg Kroah-Hartman wrote:
+> On Tue, Nov 07, 2023 at 11:57:49AM +0100, Maxime Ripard wrote:
+> > +GKH
+>=20
+> Why?  I don't see a question for me here, sorry.
 
-I've already received the similar report[1], and have been
-investigating it in the last few weeks, then got the insight. Please take
-a look at my short report about it in PR to Linus for 6.7-rc1:
-https://lore.kernel.org/lkml/20231105144852.GA165906@workstation.local/
+I guess the question is: we have a bus with various power states
+(powered off, low power, high speed)
 
-I can confirm that I have been abe to reproduce the problem on AMD Ryzen
-machine. However, it's important to note that I have not observed the
-problem on the following systems:
+low power is typically used to send commands to a device, high speed to
+transmit pixels, but still allows to send commands.
 
-* Intel machine (Sandy Bridge and Skylake generations)
-* AMD machines predating Ryzen (Sempron 145)
-* Machines using different 1394 OHCI hardware from other vendors such as
-  TI
-* VIA VT6307 connected directly to PCI slot (i.e. without the issued
-  PCIe/PCI bridge)
+Depending on the devices, there's different requirements about the state
+devices expect the bus to be in to send commands. Some will need to send
+all the commands in the low power state, some don't care, etc. See
+the mail I was replying too for more details.
 
-Currently, I have not been able to obtain any useful debug output from
-the Linux system or any hardware error reports when the system reboots.
-It seems that the system reboots spontaneously. My assumption at this
-point is that AMD Ryzen machines detect a specific hardware error
-triggered by Ryzen machine quirk related to the combination of the Asmedia
-ASM1083/1085 and VIA VT6306/6307/6308, leading to power reset.
+We've tried so far to model that in KMS itself, so the framework the
+drivers would register too, but we're kind of reaching the limits of
+what we can do there. It also feels to me that "the driver can't access
+its device" is more of a problem for the bus to solve rather than the
+framework.
 
-I genuinely appreciate your assistance in debugging this elusive
-hardware issue. If any workaround specific to AMD Ryzen machine quirk is
-required in PCI driver for 1394 OHCI hardware, I'm willing to apply it.
-However, it is preferable to figure out the reboot mechanism at first,
-I think.
-
-On Mon, Nov 06, 2023 at 02:14:39PM -0600, Mario Limonciello wrote:
-> Hi,
-> 
-> I recently came across a kernel bugzilla that bisected a boot problem [1]
-> introduced in kernel 6.5 to this change.
-> 
-> commit dcadfd7f7c74ef9ee415e072a19bdf6c085159eb (HEAD -> dcadfd7f7c7)
-> Author: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-> Date:   Tue May 30 08:12:40 2023 +0900
-> 
->     firewire: core: use union for callback of transaction completion
-> 
-> Removing the firewire card from the system fixes it for both reporters
-> (CC'ed)
-> 
-> As the author of this issue can you please take a look at it?
-> 
-> Thanks,
-> 
-> [1] https://bugzilla.kernel.org/show_bug.cgi?id=217993
-
-
-[1] https://bugzilla.suse.com/show_bug.cgi?id=1215436
-[2] https://bugzilla.kernel.org/show_bug.cgi?id=217994
+Do you agree? Are you aware of any other bus in Linux with similar
+requirements we could look at? Or any suggestion on how to solve it?
 
 Thanks
+Maxime
 
-Takashi Sakamoto
+--dlcuzb3mgsgh2p4c
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZUorBgAKCRDj7w1vZxhR
+xX4iAPwJyqaJwy9edtHIOgX1Ky1Mp1GAxI1ipJP7MO22Wy9lAAD/V/u6QTmSypUr
+ObUiBBEweBdU/Zz6s4t5E56TaLF4PQI=
+=W84/
+-----END PGP SIGNATURE-----
+
+--dlcuzb3mgsgh2p4c--
