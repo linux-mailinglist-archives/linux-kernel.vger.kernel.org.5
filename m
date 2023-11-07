@@ -2,106 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 62A8B7E3672
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 09:14:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B3787E367F
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 09:15:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233668AbjKGIOK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 03:14:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37232 "EHLO
+        id S233744AbjKGIPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 03:15:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233590AbjKGIOI (ORCPT
+        with ESMTP id S233764AbjKGIPD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 03:14:08 -0500
-Received: from smtpbguseast1.qq.com (smtpbguseast1.qq.com [54.204.34.129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8771FE8;
-        Tue,  7 Nov 2023 00:14:03 -0800 (PST)
-X-QQ-mid: bizesmtp91t1699344838tve14rzx
-Received: from localhost.localdomain ( [175.11.90.246])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Tue, 07 Nov 2023 16:13:52 +0800 (CST)
-X-QQ-SSF: 00400000000000O0T000000A0000000
-X-QQ-FEAT: 3M0okmaRx3gmxPjUV56yDKvB3Uhj8OcIpw7vWvpFGbsFfrB+bfwV7TozelY5e
-        DMI/DxjOU8Tal584vSNyxOx5pZja88QCqwwjIl0o4CnUzPFLiXAU5V+M/gM+ILYnZlGx2fL
-        Jtl2leZXWwQhqffFZSUUQEocdjWH3F4eOS62spWgc7UHKQqsP8msvrB1ZrTyn/0osDH2IbE
-        vLMPurMnhNfp3gYSRyxXgXcSFR8EijFT4Tc5E7FQEEtmDyQ5kGlsh+q0H5Fhu9zhx67geNf
-        LIX4c7sTyfsZqkCglfVxYcWEEYPYE2251UY5+kro/DpLtPKHGkK0BdTXZKmtZBmMBpLtKWV
-        B1POWAVC+ErxfxG5NqfZuSDd+jfAvfTIqZSM81S0nMdu5b7Xn/ktDwb+Q498ZuzIU6ci3Qs
-X-QQ-GoodBg: 2
-X-BIZMAIL-ID: 11280650343400386784
-From:   Zhou Jifeng <zhoujifeng@kylinos.com.cn>
-To:     zhoujifeng@kylinos.com.cn
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        miklos@szeredi.hu
-Subject: [PATCH v2] fuse: Track process write operations in both direct and writethrough modes
-Date:   Tue,  7 Nov 2023 16:13:50 +0800
-Message-Id: <20231107081350.14472-1-zhoujifeng@kylinos.com.cn>
-X-Mailer: git-send-email 2.18.1
-In-Reply-To: <20231028065912.6084-1-zhoujifeng@kylinos.com.cn>
-References: <20231028065912.6084-1-zhoujifeng@kylinos.com.cn>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:kylinos.com.cn:qybglogicsvrgz:qybglogicsvrgz6a-1
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 7 Nov 2023 03:15:03 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B30D210C2;
+        Tue,  7 Nov 2023 00:14:59 -0800 (PST)
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A774Jww002051;
+        Tue, 7 Nov 2023 08:14:55 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id; s=qcppdkim1;
+ bh=Ye6FCLjWdRk2oDlGqeyerZ54UhxPJCiJAh5veftcq1E=;
+ b=dIl5BSrvm3YIlekj8G+jJKFdBHIW3coX9qjrpuVl7Aybo0uXUdJ3bwt79Hrdkff+w6ln
+ VW4N8qxOzTm+46+EzTsTwqG6Gajzlz5hZad8zEVaHO2DxTKEyNMHVH10qks/L374W+1L
+ fvzuOV51+zJQP9VCOmIvFVLorZwONhm9omJvUwfJDBA6l5ItPaMZB1aTUNo1ageIbFQ5
+ J8uXL/Oukb+BS7XZGLF8kkRYOLn1CwJK7OYEu7pgom7l1bAdxO9yFIob8V+AzB2UMswg
+ izWLGaE2CXpEOZs5q7U+3Gll9GSIo+n4eFUA+eaHaVfBFIGkQAbO8nsNY9wpKvX7cyG1 KQ== 
+Received: from aptaippmta02.qualcomm.com (tpe-colo-wan-fw-bordernet.qualcomm.com [103.229.16.4])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u6wer2wqw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 07 Nov 2023 08:14:55 +0000
+Received: from pps.filterd (APTAIPPMTA02.qualcomm.com [127.0.0.1])
+        by APTAIPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 3A78EqTE029303;
+        Tue, 7 Nov 2023 08:14:52 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by APTAIPPMTA02.qualcomm.com (PPS) with ESMTP id 3u5f1ke4kp-1;
+        Tue, 07 Nov 2023 08:14:52 +0000
+Received: from APTAIPPMTA02.qualcomm.com (APTAIPPMTA02.qualcomm.com [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3A78Eq9b029292;
+        Tue, 7 Nov 2023 08:14:52 GMT
+Received: from cbsp-sh-gv.qualcomm.com (CBSP-SH-gv.ap.qualcomm.com [10.231.249.68])
+        by APTAIPPMTA02.qualcomm.com (PPS) with ESMTP id 3A78EqhK029291;
+        Tue, 07 Nov 2023 08:14:52 +0000
+Received: by cbsp-sh-gv.qualcomm.com (Postfix, from userid 4098150)
+        id 70041544C; Tue,  7 Nov 2023 16:14:51 +0800 (CST)
+From:   Qiang Yu <quic_qianyu@quicinc.com>
+To:     mani@kernel.org, quic_jhugo@quicinc.com
+Cc:     mhi@lists.linux.dev, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, quic_cang@quicinc.com,
+        quic_mrana@quicinc.com, Qiang Yu <quic_qianyu@quicinc.com>
+Subject: [PATCH v3 0/2] bus: mhi: host: Add SDX75 support and its dependency
+Date:   Tue,  7 Nov 2023 16:14:48 +0800
+Message-Id: <1699344890-87076-1-git-send-email-quic_qianyu@quicinc.com>
+X-Mailer: git-send-email 2.7.4
+X-QCInternal: smtphost
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: i9BQc2riPHKNrwNYZaj0HhTFbdrl4scV
+X-Proofpoint-GUID: i9BQc2riPHKNrwNYZaj0HhTFbdrl4scV
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-06_15,2023-11-02_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 malwarescore=0
+ spamscore=0 lowpriorityscore=0 clxscore=1015 impostorscore=0 phishscore=0
+ mlxscore=0 priorityscore=1501 adultscore=0 mlxlogscore=609 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2310240000
+ definitions=main-2311070067
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Due to the fact that fuse does not count the write IO of processes in the
-direct and writethrough write modes, user processes cannot track
-write_bytes through the “/proc/[pid]/io” path. For example, the system
-tool iotop cannot count the write operations of the corresponding process.
+This series add new configuration for Qualcomm SDX75 and new parameter
+ready_timeout_ms for waiting ready state.
 
-Signed-off-by: Zhou Jifeng <zhoujifeng@kylinos.com.cn>
----
-v1 -> v2: Fix "Miss error code" issue
+v1->v2: Start with "bus: mhi: host:" for the cover letter subjects
+v2->v3: Use Qualcomm SDX75 in commit message of the cover letter
 
- fs/fuse/file.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+Qiang Yu (2):
+  bus: mhi: host: Add a separate timeout parameter for waiting ready
+  bus: mhi: host: pci_generic: Add SDX75 based modem support
 
-diff --git a/fs/fuse/file.c b/fs/fuse/file.c
-index 1cdb6327511e..4846ab8c01cf 100644
---- a/fs/fuse/file.c
-+++ b/fs/fuse/file.c
-@@ -19,6 +19,7 @@
- #include <linux/uio.h>
- #include <linux/fs.h>
- #include <linux/filelock.h>
-+#include <linux/task_io_accounting_ops.h>
- 
- static int fuse_send_open(struct fuse_mount *fm, u64 nodeid,
- 			  unsigned int open_flags, int opcode,
-@@ -1305,6 +1306,7 @@ static ssize_t fuse_cache_write_iter(struct kiocb *iocb, struct iov_iter *from)
- 	ssize_t written = 0;
- 	struct inode *inode = mapping->host;
- 	ssize_t err;
-+	ssize_t count;
- 	struct fuse_conn *fc = get_fuse_conn(inode);
- 
- 	if (fc->writeback_cache) {
-@@ -1330,6 +1332,9 @@ static ssize_t fuse_cache_write_iter(struct kiocb *iocb, struct iov_iter *from)
- 	if (err <= 0)
- 		goto out;
- 
-+	count = err;
-+	task_io_account_write(count);
-+
- 	err = file_remove_privs(file);
- 	if (err)
- 		goto out;
-@@ -1600,6 +1605,7 @@ static ssize_t fuse_direct_write_iter(struct kiocb *iocb, struct iov_iter *from)
- 
- 	res = generic_write_checks(iocb, from);
- 	if (res > 0) {
-+		task_io_account_write(res);
- 		if (!is_sync_kiocb(iocb) && iocb->ki_flags & IOCB_DIRECT) {
- 			res = fuse_direct_IO(iocb, from);
- 		} else {
+ drivers/bus/mhi/host/init.c        |  1 +
+ drivers/bus/mhi/host/internal.h    |  2 +-
+ drivers/bus/mhi/host/main.c        |  5 +++--
+ drivers/bus/mhi/host/pci_generic.c | 22 ++++++++++++++++++++++
+ drivers/bus/mhi/host/pm.c          | 24 +++++++++++++++++-------
+ include/linux/mhi.h                |  4 ++++
+ 6 files changed, 48 insertions(+), 10 deletions(-)
+
 -- 
-2.18.1
+2.7.4
 
