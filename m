@@ -2,175 +2,371 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 74A117E46EE
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 18:28:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8170D7E46F2
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 18:28:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343691AbjKGR2Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 12:28:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49298 "EHLO
+        id S1343843AbjKGR2c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 12:28:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234756AbjKGR2W (ORCPT
+        with ESMTP id S1343723AbjKGR2Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 12:28:22 -0500
-Received: from sonic312-30.consmr.mail.ne1.yahoo.com (sonic312-30.consmr.mail.ne1.yahoo.com [66.163.191.211])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E058511D
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 09:28:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1699378099; bh=Vuzh02cMvmcAtEzf3k3+FZYaX94n0h9qNSO3oBVGzmA=; h=Date:Subject:To:Cc:References:From:In-Reply-To:From:Subject:Reply-To; b=QFbYQV2IcWM2oEAs5AdocYBfsfFBYw7KsT5MEhgh29MY9D9XrAmER9Eb4bnIWT/uxO5Iwd06CD/0bN2qxbNeIiZFMDOYEMi1haksHOCiLVYYWbmLSauu0LAFJf83pZ9C9Hjw5VKjYcea+Sm8dFFpsnJiMgQadGRui306QYQRq/tQF/eVViV0Q4Gr+mwL+pk1hOLhO53cTzGSdZLY6ICxLZgIXW51rdO57GJ3pRTaW+O50qTGs0rfrLUJUBNy8IKt20I2RDpiOSRxT+jksCyHTuiHyua9wWfVk+0gUdfbbZGP1t9to4RnVOZyjruzuaPHQn2NixmtF9oU93aoheuL3w==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1699378099; bh=mk1w+Ieot6s9pQ4+PTm30Rrb2+y2xVwNYFApPgCcvm7=; h=X-Sonic-MF:Date:Subject:To:From:From:Subject; b=W+3qUTULl0NVnRToZZkjN/YBQ8BnHcGZL2jjZwkgGBYz5BLeJlbZWUzDtbvjh4ESyDCcyp9KBW+xUljiJ1kfNMF+tU4AmN/22GOOYvaPNI8T6LX0Arl7xhuf8nZwtsiyODi3guClC/Gbfr6ihUseSdf3YwjUZBgd0J1TgOSyMCBLCETCK/RDJ5K3bCZAz7zUzrN91qdW1FL9c3ZBkbipmTXQv8UEff7sTkKsOdKGutbA4FM2KnndbJ6GLn5KWHgKShZo/WFbAu0BMrFAshN71ROqzj7oJskT9MZsPi94VdFkKgAi05SXXVXnFFg8DBne486/Ok66Sfmmoh7kHbUxAQ==
-X-YMail-OSG: 5NGy234VM1k22CfhqPa_orY2QON07wbqgEkO9N8zbm_Ox.wu9OAaOrHRfFjhZo2
- .P9oKdF1i4yHuiT1YMz8WLPS_M7GjiAFwyvDbBFEeJTmgDz_PIVHmkmoJP9oX_PFZq_UI.h0QPhU
- Wc2AsBWdjUCnDe2YOJsVkSI3rgDR6T7yd5W.rMj15BhA9h_Ljrr3nhK26E0JHaBe_G.5Xn_QyIwE
- liwNFEkA.voTU.zxcA5YjR0F1_P2ZafxvwAVJHF9LG4EoDsN5T44eRj28wvbbl5BPjnHPyXTX3ZH
- 2LXM8Y5LNRdMolj3fcqfT4vhjB62sFLDOUA4EjqP3CX5WdvC7kTM40gJRbIwRMh4Q937c5fzvzUr
- JxO9tRefznbSjhbuLZUzPRvgwSEiegj1A7fjoHalSY_tgZHMZl42pG1xq4NL3Zr.uwYNnKpZqvKG
- ixRozRX1QKBu.E8qOhH6wSO8N6hpRLxUszyC_QirxB_smBKJZK4.jVwY_4I9S6vUQdcmt4ZLz0y8
- 0iKc0RfBpiH8bTo0vCeXz7PDgkSxNy_8ytly4iZ_1_jTUkDmYjT4sazYF7RPRoq8Y7ne3LnAN1ON
- rBSZIWYsMj7Odh3GVaVs6ilVCmhStQvVGITmT9NgksuFVRBxGvh_ZCz37TGSXz4l9prvqDqTVA3C
- CS17Sik2hXSwuLDinnNSRnupA67x15z0olmuhl5hIj7IFKvYv6VxFtgO.J9JygH17.4RRSwTasRK
- yqGb1B9VMSSBm5A2SHP5HjsBWIQU11gPa.amB1Koje71oS2CWFSlpLPXJuhsCYb4tGxj8kxNcfcF
- 6bgLTRaT1ImQY8Yrn6wXEOZRuarQokA5iKAwx_E2diC9tuWg9TbJglalJMCIxWmXv5YeU.TeSX71
- lLQQWUwyVUXxFXuLf7LEsjPqbE7sOVspqfr5sYBjBXobRdlFEucIAtYhD.ExmzPwrLzZ_VjS58zR
- YMpRkBwMHCBEfEwc0mvgGbsXKYcwNEMYhMG4wg5fTMZHm52kLzub4kso37uKl26KZeOsgQWtsi0g
- 6C5N8wavcQ2oyQmvv1h38IX_ahayRRPVEDkmPYOx4eZEvx1V1dsiqaO3cVweWub7pahr51asdrJX
- IjRUOy9By3tZi.rLXFXwRiwhp93ujvnNTekRjcQ9FcgBm9frqRqCG.v48J_7j2CDq4BwUUxbH4GP
- F.9FsWD_awGepa_iKJ9xdCyc0Ffo0QqbkCE9YUr36mf2aNJ4REj979QXUw20vsd6wT_FgabOY0IG
- A48.wOzdshSEIDJXeMwiGgOIQZHnLyvZ3WC68_prYK4X7X5lc.Bg29viiTMXIlj_j2V.pV0cxiin
- bwJ95hGfSSaFRU.PDuwzk1gi7LP4WIhZyYHW.3_82yyFCvDjKDHiEnTJtfqNCvZswLL8Csr4pbLw
- Z6fLr3BhM_a1NPXynEgbkUBz0KvEFjFCSRFbHHaj6QFiBZdkBfu5_uWarszTVScjpIgSgWdBuEXL
- mpXtf4CQp.a9p9kWDhJ3mGHYdcTA.DQWVoR8f7pJVFA0WLkr1nsTuQzX7Ylttui8kq1M3W52yOla
- llLIYVDhsAej5WQaMdxVw_JU95CWrf_.RLY6tqUsQcnx4UHBfS6dCf9jc5ywATMtS4T80TB8UIi7
- hj7xCvwKcL2NBrq9oIYnsQlVCpXMBiQHQ874XrIrZWXcVa0kLkpBM3d8nWAjBXHt3zvMadk1TlWx
- ZAYn0yJHCm3L8xdlCi2YrjK567WlUCIdXLaKV_np.Asr6iAExqgNGlP0V_QR.wbfpknTfVIVqU3M
- nL6naw7Eh7T4mgeNnddm2zzq5sIg5iTddMU9BMQX0zDJIw5iPB.Yp5eIwdxc9uA2T7tfvVj0ykHt
- B6JmPMuxkHIyLBIn5G5KE7GfAHtWBMlcksQwx8PmJ9cWOHnmA_uAqP5oEKwMVMQTnBJo3MXRNciW
- Ty1xlVViGTUKovx8HECEPHi99qDU6rzaEeYv6qDfsq9Mc1tQhyYCw4rFWlB5yynim6.ynV4g_Js2
- XzgyU1g5uHj.n73K07OYNPRuidF22uX5IaDdfSBqu5u85JEZBdjiFRXOr_t6caEktZoQZ0.xYtLw
- oKtZFU9AGd108JQ5gqdfUSq3I_BnBQNcH6_JQDw7Pl_t8q63_UmrVaTRQg6S9vQ3FWLRGa9.a3tZ
- lxGrqAoBVYz5iL5TBtmW61ygPLhr2Z0kIO1KSkYBOGQGiZwdyAOcDdx6_XaJ5M.EUeITtyRXNwQn
- AeXLFJfIl2PW7tqYUMkf1nQPuuF_YyCZ9ngzuV5IDbe3wgX2VY8MqP9a8iSdhBv5VWHLo.lqnehw
- -
-X-Sonic-MF: <casey@schaufler-ca.com>
-X-Sonic-ID: 7b6bbd4e-a7ae-4325-b188-0332db778a84
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic312.consmr.mail.ne1.yahoo.com with HTTP; Tue, 7 Nov 2023 17:28:19 +0000
-Received: by hermes--production-ne1-56df75844-sgvl5 (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID 852b5eafef80ced81f270152710c3028;
-          Tue, 07 Nov 2023 17:28:17 +0000 (UTC)
-Message-ID: <ef11b142-e5f2-4e75-86dc-554c93d78513@schaufler-ca.com>
-Date:   Tue, 7 Nov 2023 09:28:16 -0800
+        Tue, 7 Nov 2023 12:28:24 -0500
+Received: from mail-vs1-xe2e.google.com (mail-vs1-xe2e.google.com [IPv6:2607:f8b0:4864:20::e2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 407B09C
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 09:28:22 -0800 (PST)
+Received: by mail-vs1-xe2e.google.com with SMTP id ada2fe7eead31-45e777af839so1181685137.3
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 09:28:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1699378101; x=1699982901; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=9JWYsxX7o9LoPZR+AYodFHECF/k1HsJ4BkaZR+67S10=;
+        b=kJbF+x6fW8gQxO4AvxFwdpLy3ZlHnkruXMl4cnBbFMUVrfGNmi8X/JpScNF8SCXFxd
+         x+gYgsp0Q0aIpUBYtFhEo09QvdwiLsLCCAdmt+BGxnKcS1uJmjw6FA85U7c0xOGC6/Yz
+         XNdstREsDfnIheOeVMHx5UA565l991L9LWhAo1IDJKdi7Kd0jrKuQOCW30ZD+VsL516q
+         /a2HbgVz8KFaHIzZ5+5aLAOAL+diJDUKU699QPkK/kOkLr9NiSC0fY9gKae8KzZsDpoc
+         nbD5q/AxmFVOe9pKd+xO3Znc46DgL3OyDfFgvZx68mh1DoUYAKP1jP6AY6ZxkBSnNCTv
+         9OvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699378101; x=1699982901;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9JWYsxX7o9LoPZR+AYodFHECF/k1HsJ4BkaZR+67S10=;
+        b=vvEs9//n/LG2BxuyLPKFTyBanPsrrr9ujGaZvG3Rl1463UOpSTKo8Sdnizct1vt6eQ
+         SSyf8sJMZ8f2xMg3StmVUuiJd3cA5WfP7N15aOT4DTFU7H/OjvdSJ8MEGdrEPVKBA2nt
+         ppkdGAryH0kPeoI0DDY2NRHV3Uhld0bysXc/9sfxofA3Hi6ZF2wP4hR8cYNO5PneRZp2
+         VJR2lHHEnX5sQHy5gW0DeZi2gsPW9dpEBxZw6zIsKQHgX7RL1choUcF9NCnojIZelM84
+         BJ5w6sCjUxRmxj8YSmAgJeISkV22U0VmxL2k5WEstYFSB60mv9XH47ipXfz3pDcTkpFe
+         3T2w==
+X-Gm-Message-State: AOJu0YwDiPAQnwC4bMB19ovRi3mR52P64jYx0mSVAWd6reNhkIH9pVen
+        zufNj2J/BGp4LD1/dXEOqrnPnw==
+X-Google-Smtp-Source: AGHT+IEudbmue8M6yA0xYro+jpm67k3FqoYEVMiQJJJo3YDKtmhjQwvFlnib/BHQNSOPw13z4fvWdQ==
+X-Received: by 2002:a05:6102:5493:b0:45f:3b30:9c93 with SMTP id bk19-20020a056102549300b0045f3b309c93mr5730588vsb.22.1699378101200;
+        Tue, 07 Nov 2023 09:28:21 -0800 (PST)
+Received: from localhost ([2620:10d:c091:400::5:86b7])
+        by smtp.gmail.com with ESMTPSA id o11-20020a056214108b00b0067095b0c473sm98923qvr.11.2023.11.07.09.28.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Nov 2023 09:28:20 -0800 (PST)
+Date:   Tue, 7 Nov 2023 12:28:20 -0500
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     "zhaoyang.huang" <zhaoyang.huang@unisoc.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Zhaoyang Huang <huangzhaoyang@gmail.com>,
+        steve.kang@unisoc.com, Vlastimil Babka <vbabka@suse.cz>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Subject: Re: [PATCHv6 1/1] mm: optimization on page allocation when CMA
+ enabled
+Message-ID: <20231107172820.GA3745089@cmpxchg.org>
+References: <20231016071245.2865233-1-zhaoyang.huang@unisoc.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 08/23] evm: Align evm_inode_post_setxattr() definition
- with LSM infrastructure
-Content-Language: en-US
-To:     Roberto Sassu <roberto.sassu@huaweicloud.com>,
-        viro@zeniv.linux.org.uk, brauner@kernel.org,
-        chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
-        kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
-        paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
-        zohar@linux.ibm.com, dmitry.kasatkin@gmail.com,
-        dhowells@redhat.com, jarkko@kernel.org,
-        stephen.smalley.work@gmail.com, eparis@parisplace.org,
-        mic@digikod.net
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
-        selinux@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>,
-        Stefan Berger <stefanb@linux.ibm.com>,
-        Casey Schaufler <casey@schaufler-ca.com>
-References: <20231107134012.682009-1-roberto.sassu@huaweicloud.com>
- <20231107134012.682009-9-roberto.sassu@huaweicloud.com>
-From:   Casey Schaufler <casey@schaufler-ca.com>
-In-Reply-To: <20231107134012.682009-9-roberto.sassu@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Mailer: WebService/1.1.21896 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231016071245.2865233-1-zhaoyang.huang@unisoc.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/7/2023 5:39 AM, Roberto Sassu wrote:
-> From: Roberto Sassu <roberto.sassu@huawei.com>
->
-> Change evm_inode_post_setxattr() definition, so that it can be registered
-> as implementation of the inode_post_setxattr hook.
->
-> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> Reviewed-by: Stefan Berger <stefanb@linux.ibm.com>
-> Reviewed-by: Mimi Zohar <zohar@linux.ibm.com>
+On Mon, Oct 16, 2023 at 03:12:45PM +0800, zhaoyang.huang wrote:
+> From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+> 
+> According to current CMA utilization policy, an alloc_pages(GFP_USER)
+> could 'steal' UNMOVABLE & RECLAIMABLE page blocks via the help of
+> CMA(pass zone_watermark_ok by counting CMA in but use U&R in rmqueue),
+> which could lead to following alloc_pages(GFP_KERNEL) fail.
+> Solving this by introducing second watermark checking for GFP_MOVABLE,
+> which could have the allocation use CMA when proper.
+> 
+> -- Free_pages(30MB)
+> |
+> |
+> -- WMARK_LOW(25MB)
+> |
+> -- Free_CMA(12MB)
+> |
+> |
+> --
 
-Reviewed-by: Casey Schaufler <casey@schaufler-ca.com>
+We're running into the same issue in production and had an incident
+over the weekend because of it. The hosts have a raised
+vm.min_free_kbytes for network rx reliability, which makes the
+mismatch between free pages and what's actually allocatable by regular
+kernel requests quite pronounced. It wasn't OOMing this time, but we
+saw very high rates of thrashing while CMA had plenty of headroom.
 
+I had raised the broader issue around poor CMA utilization before:
+https://lore.kernel.org/lkml/20230726145304.1319046-1-hannes@cmpxchg.org/
 
-> ---
->  include/linux/evm.h               | 8 +++++---
->  security/integrity/evm/evm_main.c | 4 +++-
->  security/security.c               | 2 +-
->  3 files changed, 9 insertions(+), 5 deletions(-)
->
-> diff --git a/include/linux/evm.h b/include/linux/evm.h
-> index 7c6a74dbc093..437d4076a3b3 100644
-> --- a/include/linux/evm.h
-> +++ b/include/linux/evm.h
-> @@ -31,7 +31,8 @@ extern int evm_inode_setxattr(struct mnt_idmap *idmap,
->  extern void evm_inode_post_setxattr(struct dentry *dentry,
->  				    const char *xattr_name,
->  				    const void *xattr_value,
-> -				    size_t xattr_value_len);
-> +				    size_t xattr_value_len,
-> +				    int flags);
->  extern int evm_inode_removexattr(struct mnt_idmap *idmap,
->  				 struct dentry *dentry, const char *xattr_name);
->  extern void evm_inode_post_removexattr(struct dentry *dentry,
-> @@ -55,7 +56,7 @@ static inline void evm_inode_post_set_acl(struct dentry *dentry,
->  					  const char *acl_name,
->  					  struct posix_acl *kacl)
->  {
-> -	return evm_inode_post_setxattr(dentry, acl_name, NULL, 0);
-> +	return evm_inode_post_setxattr(dentry, acl_name, NULL, 0, 0);
+For context, we're using hugetlb_cma at several gigabytes to allow
+sharing hosts between jobs that use hugetlb and jobs that don't.
+
+> @@ -2078,6 +2078,43 @@ __rmqueue_fallback(struct zone *zone, int order, int start_migratetype,
+>  
 >  }
 >  
->  int evm_inode_init_security(struct inode *inode, struct inode *dir,
-> @@ -114,7 +115,8 @@ static inline int evm_inode_setxattr(struct mnt_idmap *idmap,
->  static inline void evm_inode_post_setxattr(struct dentry *dentry,
->  					   const char *xattr_name,
->  					   const void *xattr_value,
-> -					   size_t xattr_value_len)
-> +					   size_t xattr_value_len,
-> +					   int flags)
->  {
->  	return;
->  }
-> diff --git a/security/integrity/evm/evm_main.c b/security/integrity/evm/evm_main.c
-> index 7fc083d53fdf..ea84a6f835ff 100644
-> --- a/security/integrity/evm/evm_main.c
-> +++ b/security/integrity/evm/evm_main.c
-> @@ -730,6 +730,7 @@ bool evm_revalidate_status(const char *xattr_name)
->   * @xattr_name: pointer to the affected extended attribute name
->   * @xattr_value: pointer to the new extended attribute value
->   * @xattr_value_len: pointer to the new extended attribute value length
-> + * @flags: flags to pass into filesystem operations
->   *
->   * Update the HMAC stored in 'security.evm' to reflect the change.
->   *
-> @@ -738,7 +739,8 @@ bool evm_revalidate_status(const char *xattr_name)
->   * i_mutex lock.
->   */
->  void evm_inode_post_setxattr(struct dentry *dentry, const char *xattr_name,
-> -			     const void *xattr_value, size_t xattr_value_len)
-> +			     const void *xattr_value, size_t xattr_value_len,
-> +			     int flags)
->  {
->  	if (!evm_revalidate_status(xattr_name))
->  		return;
-> diff --git a/security/security.c b/security/security.c
-> index ae3625198c9f..53793f3cb36a 100644
-> --- a/security/security.c
-> +++ b/security/security.c
-> @@ -2367,7 +2367,7 @@ void security_inode_post_setxattr(struct dentry *dentry, const char *name,
->  	if (unlikely(IS_PRIVATE(d_backing_inode(dentry))))
->  		return;
->  	call_void_hook(inode_post_setxattr, dentry, name, value, size, flags);
-> -	evm_inode_post_setxattr(dentry, name, value, size);
-> +	evm_inode_post_setxattr(dentry, name, value, size, flags);
->  }
->  
->  /**
+> +#ifdef CONFIG_CMA
+> +/*
+> + * GFP_MOVABLE allocation could drain UNMOVABLE & RECLAIMABLE page blocks via
+> + * the help of CMA which makes GFP_KERNEL failed. Checking if zone_watermark_ok
+> + * again without ALLOC_CMA to see if to use CMA first.
+> + */
+> +static bool use_cma_first(struct zone *zone, unsigned int order, unsigned int alloc_flags)
+> +{
+> +	unsigned long watermark;
+> +	bool cma_first = false;
+> +
+> +	watermark = wmark_pages(zone, alloc_flags & ALLOC_WMARK_MASK);
+> +	/* check if GFP_MOVABLE pass previous zone_watermark_ok via the help of CMA */
+> +	if (zone_watermark_ok(zone, order, watermark, 0, alloc_flags & (~ALLOC_CMA))) {
+> +		/*
+> +		 * Balance movable allocations between regular and CMA areas by
+> +		 * allocating from CMA when over half of the zone's free memory
+> +		 * is in the CMA area.
+> +		 */
+> +		cma_first = (zone_page_state(zone, NR_FREE_CMA_PAGES) >
+> +				zone_page_state(zone, NR_FREE_PAGES) / 2);
+> +	} else {
+> +		/*
+> +		 * watermark failed means UNMOVABLE & RECLAIMBLE is not enough
+> +		 * now, we should use cma first to keep them stay around the
+> +		 * corresponding watermark
+> +		 */
+> +		cma_first = true;
+> +	}
+> +	return cma_first;
+
+I think it's a step in the right direction. However, it doesn't take
+the lowmem reserves into account. With DMA32 that can be an additional
+multiple gigabytes of "free" memory not available to GFP_KERNEL. It
+also has a knee in the balancing curve because it doesn't take
+reserves into account *until* non-CMA is depleted - at which point it
+would already be below the use-CMA threshold by the full reserves and
+watermarks.
+
+A more complete solution would have to plumb the highest_zoneidx
+information through the rmqueue family of functions somehow, and
+always take unavailable free memory into account:
+
+---
+Subject: [PATCH] mm: page_alloc: use CMA when kernel allocations are beginning
+ to fail
+
+We can get into a situation where kernel allocations are starting to
+fail on watermarks, but movable allocations still don't use CMA
+because they make up more than half of the free memory. This can
+happen in particular with elevated vm.min_free_kbytes settings, where
+the remaining free pages aren't available to non-atomic requests.
+
+Example scenario:
+
+      Free: 3.0G
+Watermarks: 2.0G
+       CMA: 1.4G
+-> non-CMA: 1.6G
+
+CMA isn't used because CMA <= free/2. Kernel allocations fail due to
+non-CMA < watermarks. If memory is mostly unreclaimable (e.g. anon
+without swap), the kernel is more likely to OOM prematurely.
+
+Reduce the probability of that happening by taking reserves and
+watermarks into account when deciding whether to start using CMA.
+
+Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+---
+ mm/page_alloc.c | 93 +++++++++++++++++++++++++++++++------------------
+ 1 file changed, 59 insertions(+), 34 deletions(-)
+
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 733732e7e0ba..b9273d7f23b8 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -2079,30 +2079,52 @@ __rmqueue_fallback(struct zone *zone, int order, int start_migratetype,
+ 
+ }
+ 
++static bool should_try_cma(struct zone *zone, unsigned int order,
++			   gfp_t gfp_flags, unsigned int alloc_flags)
++{
++	long free_pages;
++
++	if (!IS_ENABLED(CONFIG_CMA) || !(alloc_flags & ALLOC_CMA))
++		return false;
++
++	/*
++	 * CMA regions can be used by movable allocations while
++	 * they're not otherwise in use. This is a delicate balance:
++	 * Filling CMA too soon poses a latency risk for actual CMA
++	 * allocations (think camera app startup). Filling CMA too
++	 * late risks premature OOMs from non-movable allocations.
++	 *
++	 * Start using CMA once it dominates the remaining free
++	 * memory. Be sure to take watermarks and reserves into
++	 * account when considering what's truly "free".
++	 *
++	 * free_pages can go negative, but that's okay because
++	 * NR_FREE_CMA_PAGES should not.
++	 */
++
++	free_pages = zone_page_state(zone, NR_FREE_PAGES);
++	free_pages -= zone->lowmem_reserve[gfp_zone(gfp_flags)];
++	free_pages -= wmark_pages(zone, alloc_flags & ALLOC_WMARK_MASK);
++
++	return zone_page_state(zone, NR_FREE_CMA_PAGES) > free_pages / 2;
++}
++
+ /*
+  * Do the hard work of removing an element from the buddy allocator.
+  * Call me with the zone->lock already held.
+  */
+ static __always_inline struct page *
+-__rmqueue(struct zone *zone, unsigned int order, int migratetype,
+-						unsigned int alloc_flags)
++__rmqueue(struct zone *zone, unsigned int order, gfp_t gfp_flags,
++	  int migratetype, unsigned int alloc_flags)
+ {
+ 	struct page *page;
+ 
+-	if (IS_ENABLED(CONFIG_CMA)) {
+-		/*
+-		 * Balance movable allocations between regular and CMA areas by
+-		 * allocating from CMA when over half of the zone's free memory
+-		 * is in the CMA area.
+-		 */
+-		if (alloc_flags & ALLOC_CMA &&
+-		    zone_page_state(zone, NR_FREE_CMA_PAGES) >
+-		    zone_page_state(zone, NR_FREE_PAGES) / 2) {
+-			page = __rmqueue_cma_fallback(zone, order);
+-			if (page)
+-				return page;
+-		}
++	if (should_try_cma(zone, order, gfp_flags, alloc_flags)) {
++		page = __rmqueue_cma_fallback(zone, order);
++		if (page)
++			return page;
+ 	}
++
+ retry:
+ 	page = __rmqueue_smallest(zone, order, migratetype);
+ 	if (unlikely(!page)) {
+@@ -2121,7 +2143,7 @@ __rmqueue(struct zone *zone, unsigned int order, int migratetype,
+  * a single hold of the lock, for efficiency.  Add them to the supplied list.
+  * Returns the number of new pages which were placed at *list.
+  */
+-static int rmqueue_bulk(struct zone *zone, unsigned int order,
++static int rmqueue_bulk(struct zone *zone, unsigned int order, gfp_t gfp_flags,
+ 			unsigned long count, struct list_head *list,
+ 			int migratetype, unsigned int alloc_flags)
+ {
+@@ -2130,8 +2152,8 @@ static int rmqueue_bulk(struct zone *zone, unsigned int order,
+ 
+ 	spin_lock_irqsave(&zone->lock, flags);
+ 	for (i = 0; i < count; ++i) {
+-		struct page *page = __rmqueue(zone, order, migratetype,
+-								alloc_flags);
++		struct page *page = __rmqueue(zone, order, gfp_flags,
++					      migratetype, alloc_flags);
+ 		if (unlikely(page == NULL))
+ 			break;
+ 
+@@ -2714,8 +2736,8 @@ static inline void zone_statistics(struct zone *preferred_zone, struct zone *z,
+ 
+ static __always_inline
+ struct page *rmqueue_buddy(struct zone *preferred_zone, struct zone *zone,
+-			   unsigned int order, unsigned int alloc_flags,
+-			   int migratetype)
++			   unsigned int order, gfp_t gfp_flags,
++			   unsigned int alloc_flags, int migratetype)
+ {
+ 	struct page *page;
+ 	unsigned long flags;
+@@ -2726,7 +2748,8 @@ struct page *rmqueue_buddy(struct zone *preferred_zone, struct zone *zone,
+ 		if (alloc_flags & ALLOC_HIGHATOMIC)
+ 			page = __rmqueue_smallest(zone, order, MIGRATE_HIGHATOMIC);
+ 		if (!page) {
+-			page = __rmqueue(zone, order, migratetype, alloc_flags);
++			page = __rmqueue(zone, order, migratetype,
++					 gfp_flags, alloc_flags);
+ 
+ 			/*
+ 			 * If the allocation fails, allow OOM handling access
+@@ -2806,10 +2829,10 @@ static int nr_pcp_alloc(struct per_cpu_pages *pcp, struct zone *zone, int order)
+ /* Remove page from the per-cpu list, caller must protect the list */
+ static inline
+ struct page *__rmqueue_pcplist(struct zone *zone, unsigned int order,
+-			int migratetype,
+-			unsigned int alloc_flags,
+-			struct per_cpu_pages *pcp,
+-			struct list_head *list)
++			       gfp_t gfp_flags, int migratetype,
++			       unsigned int alloc_flags,
++			       struct per_cpu_pages *pcp,
++			       struct list_head *list)
+ {
+ 	struct page *page;
+ 
+@@ -2818,7 +2841,7 @@ struct page *__rmqueue_pcplist(struct zone *zone, unsigned int order,
+ 			int batch = nr_pcp_alloc(pcp, zone, order);
+ 			int alloced;
+ 
+-			alloced = rmqueue_bulk(zone, order,
++			alloced = rmqueue_bulk(zone, order, gfp_flags,
+ 					batch, list,
+ 					migratetype, alloc_flags);
+ 
+@@ -2837,8 +2860,9 @@ struct page *__rmqueue_pcplist(struct zone *zone, unsigned int order,
+ 
+ /* Lock and remove page from the per-cpu list */
+ static struct page *rmqueue_pcplist(struct zone *preferred_zone,
+-			struct zone *zone, unsigned int order,
+-			int migratetype, unsigned int alloc_flags)
++				    struct zone *zone, unsigned int order,
++				    gfp_t gfp_flags, int migratetype,
++				    unsigned int alloc_flags)
+ {
+ 	struct per_cpu_pages *pcp;
+ 	struct list_head *list;
+@@ -2860,7 +2884,8 @@ static struct page *rmqueue_pcplist(struct zone *preferred_zone,
+ 	 */
+ 	pcp->free_count >>= 1;
+ 	list = &pcp->lists[order_to_pindex(migratetype, order)];
+-	page = __rmqueue_pcplist(zone, order, migratetype, alloc_flags, pcp, list);
++	page = __rmqueue_pcplist(zone, order, gfp_flags, migratetype,
++				 alloc_flags, pcp, list);
+ 	pcp_spin_unlock(pcp);
+ 	pcp_trylock_finish(UP_flags);
+ 	if (page) {
+@@ -2898,13 +2923,13 @@ struct page *rmqueue(struct zone *preferred_zone,
+ 
+ 	if (likely(pcp_allowed_order(order))) {
+ 		page = rmqueue_pcplist(preferred_zone, zone, order,
+-				       migratetype, alloc_flags);
++				       gfp_flags, migratetype, alloc_flags);
+ 		if (likely(page))
+ 			goto out;
+ 	}
+ 
+-	page = rmqueue_buddy(preferred_zone, zone, order, alloc_flags,
+-							migratetype);
++	page = rmqueue_buddy(preferred_zone, zone, order, gfp_flags,
++			     alloc_flags, migratetype);
+ 
+ out:
+ 	/* Separate test+clear to avoid unnecessary atomics */
+@@ -4480,8 +4505,8 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
+ 			continue;
+ 		}
+ 
+-		page = __rmqueue_pcplist(zone, 0, ac.migratetype, alloc_flags,
+-								pcp, pcp_list);
++		page = __rmqueue_pcplist(zone, 0, gfp, ac.migratetype,
++					 alloc_flags, pcp, pcp_list);
+ 		if (unlikely(!page)) {
+ 			/* Try and allocate at least one page */
+ 			if (!nr_account) {
+-- 
+2.42.0
+
