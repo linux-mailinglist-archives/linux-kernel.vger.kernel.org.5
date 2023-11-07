@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C5C07E3F17
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 13:47:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D66E7E3F1B
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 13:47:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343783AbjKGMrV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 07:47:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41494 "EHLO
+        id S235431AbjKGMr0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 07:47:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235325AbjKGMq5 (ORCPT
+        with ESMTP id S235354AbjKGMrB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 07:46:57 -0500
+        Tue, 7 Nov 2023 07:47:01 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5307DC945;
-        Tue,  7 Nov 2023 04:33:06 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6B0AEC433C9;
-        Tue,  7 Nov 2023 12:33:04 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F8CAC95D;
+        Tue,  7 Nov 2023 04:33:09 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26390C433CC;
+        Tue,  7 Nov 2023 12:33:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699360385;
-        bh=yTUkAbSOWbPFtXr4p0Q28MnJPqNQ0ClvWZAnZTKlqUM=;
+        s=k20201202; t=1699360388;
+        bh=IaD5LuAKOSRiEqSUbXrGBACv2jpcb8C7CQaFLspeXIg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WwF8WgqUWQhUD9OHZ7Smm29jouit6z/k1iW0fUupaDCSAhwbx2mETuW1KswHjnnUZ
-         QCg+FUfMJBG+bcYrfY1SdF5TukPuWexRNJxQM2/czWcVcNM7ShBXGlv5Y2AomZAs4T
-         MjCFXrqnyh2dOdyazYvfu2flxBLHtubZC8B2oFH95YJ+r36yrisDs4Ut1QDfnvlufA
-         xA/V1DoI34kxvgiXFS90/CHvhH2G+qtoUmBxiz/pLQqHcUO/xQK7DTVuU7evWWg0+f
-         SC9woCLxl9O3rvHc5rEnHYL6X/tQCEDrJJvEtK/p6nLLO4XqvO31Pt68PtDWPhxbIJ
-         DY7vcn2CjuT/A==
+        b=R52i5plICzcXNAQx4OvNfu6UCj81TZF0cr6Z8QpR1bBU+YjeMlqpFR9E1I+PnD8nv
+         clq2m7ir5oIZPjQ79WR4mlNi+VGeydCpR+FIm0yZLCR7LzJNtArp4R0u9DX8pi7KWv
+         nj+UUGCYqNBTsRDWK2/H9e61T5HKEI/gfJDeQNMnZ3XdN2HIJGyvcczjIjSS47fdMr
+         JVb1n+V/Xn8S0fObSlwRLSmTrs2fL+2tfOvGRCxh6i9ewnBJ/WdKXxpTFHC8kU34uc
+         C/Y0nlXzljWTuChK7w0dLybw4yI6KeEB33BBhg9zxT1ZAgtPllNS+RA2VIr4Vq/Aip
+         eMsUtsHYP2Sjg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Mario Limonciello <mario.limonciello@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Sasha Levin <sashal@kernel.org>, christian.koenig@amd.com,
-        Xinhui.Pan@amd.com, airlied@gmail.com, daniel@ffwll.ch,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 4.14 3/4] drm/amd: Fix UBSAN array-index-out-of-bounds for Polaris and Tonga
-Date:   Tue,  7 Nov 2023 07:32:40 -0500
-Message-ID: <20231107123256.3763357-3-sashal@kernel.org>
+Cc:     zhujun2 <zhujun2@cmss.chinamobile.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>, shuah@kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.14 4/4] selftests/efivarfs: create-read: fix a resource leak
+Date:   Tue,  7 Nov 2023 07:32:41 -0500
+Message-ID: <20231107123256.3763357-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231107123256.3763357-1-sashal@kernel.org>
 References: <20231107123256.3763357-1-sashal@kernel.org>
@@ -55,79 +54,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mario Limonciello <mario.limonciello@amd.com>
+From: zhujun2 <zhujun2@cmss.chinamobile.com>
 
-[ Upstream commit 0f0e59075b5c22f1e871fbd508d6e4f495048356 ]
+[ Upstream commit 3f6f8a8c5e11a9b384a36df4f40f0c9a653b6975 ]
 
-For pptable structs that use flexible array sizes, use flexible arrays.
+The opened file should be closed in main(), otherwise resource
+leak will occur that this problem was discovered by code reading
 
-Link: https://bugs.launchpad.net/ubuntu/+source/linux/+bug/2036742
-Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
-Acked-by: Alex Deucher <alexander.deucher@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: zhujun2 <zhujun2@cmss.chinamobile.com>
+Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/powerplay/hwmgr/pptable_v1_0.h | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ tools/testing/selftests/efivarfs/create-read.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/gpu/drm/amd/powerplay/hwmgr/pptable_v1_0.h b/drivers/gpu/drm/amd/powerplay/hwmgr/pptable_v1_0.h
-index d5a4a08c6d392..0c61e2bc14cde 100644
---- a/drivers/gpu/drm/amd/powerplay/hwmgr/pptable_v1_0.h
-+++ b/drivers/gpu/drm/amd/powerplay/hwmgr/pptable_v1_0.h
-@@ -164,7 +164,7 @@ typedef struct _ATOM_Tonga_State {
- typedef struct _ATOM_Tonga_State_Array {
- 	UCHAR ucRevId;
- 	UCHAR ucNumEntries;		/* Number of entries. */
--	ATOM_Tonga_State entries[1];	/* Dynamically allocate entries. */
-+	ATOM_Tonga_State entries[];	/* Dynamically allocate entries. */
- } ATOM_Tonga_State_Array;
+diff --git a/tools/testing/selftests/efivarfs/create-read.c b/tools/testing/selftests/efivarfs/create-read.c
+index 9674a19396a32..7bc7af4eb2c17 100644
+--- a/tools/testing/selftests/efivarfs/create-read.c
++++ b/tools/testing/selftests/efivarfs/create-read.c
+@@ -32,8 +32,10 @@ int main(int argc, char **argv)
+ 	rc = read(fd, buf, sizeof(buf));
+ 	if (rc != 0) {
+ 		fprintf(stderr, "Reading a new var should return EOF\n");
++		close(fd);
+ 		return EXIT_FAILURE;
+ 	}
  
- typedef struct _ATOM_Tonga_MCLK_Dependency_Record {
-@@ -210,7 +210,7 @@ typedef struct _ATOM_Polaris_SCLK_Dependency_Record {
- typedef struct _ATOM_Polaris_SCLK_Dependency_Table {
- 	UCHAR ucRevId;
- 	UCHAR ucNumEntries;							/* Number of entries. */
--	ATOM_Polaris_SCLK_Dependency_Record entries[1];				 /* Dynamically allocate entries. */
-+	ATOM_Polaris_SCLK_Dependency_Record entries[];				 /* Dynamically allocate entries. */
- } ATOM_Polaris_SCLK_Dependency_Table;
- 
- typedef struct _ATOM_Tonga_PCIE_Record {
-@@ -222,7 +222,7 @@ typedef struct _ATOM_Tonga_PCIE_Record {
- typedef struct _ATOM_Tonga_PCIE_Table {
- 	UCHAR ucRevId;
- 	UCHAR ucNumEntries; 										/* Number of entries. */
--	ATOM_Tonga_PCIE_Record entries[1];							/* Dynamically allocate entries. */
-+	ATOM_Tonga_PCIE_Record entries[];							/* Dynamically allocate entries. */
- } ATOM_Tonga_PCIE_Table;
- 
- typedef struct _ATOM_Polaris10_PCIE_Record {
-@@ -235,7 +235,7 @@ typedef struct _ATOM_Polaris10_PCIE_Record {
- typedef struct _ATOM_Polaris10_PCIE_Table {
- 	UCHAR ucRevId;
- 	UCHAR ucNumEntries;                                         /* Number of entries. */
--	ATOM_Polaris10_PCIE_Record entries[1];                      /* Dynamically allocate entries. */
-+	ATOM_Polaris10_PCIE_Record entries[];                      /* Dynamically allocate entries. */
- } ATOM_Polaris10_PCIE_Table;
- 
- 
-@@ -252,7 +252,7 @@ typedef struct _ATOM_Tonga_MM_Dependency_Record {
- typedef struct _ATOM_Tonga_MM_Dependency_Table {
- 	UCHAR ucRevId;
- 	UCHAR ucNumEntries; 										/* Number of entries. */
--	ATOM_Tonga_MM_Dependency_Record entries[1]; 			   /* Dynamically allocate entries. */
-+	ATOM_Tonga_MM_Dependency_Record entries[]; 			   /* Dynamically allocate entries. */
- } ATOM_Tonga_MM_Dependency_Table;
- 
- typedef struct _ATOM_Tonga_Voltage_Lookup_Record {
-@@ -265,7 +265,7 @@ typedef struct _ATOM_Tonga_Voltage_Lookup_Record {
- typedef struct _ATOM_Tonga_Voltage_Lookup_Table {
- 	UCHAR ucRevId;
- 	UCHAR ucNumEntries; 										/* Number of entries. */
--	ATOM_Tonga_Voltage_Lookup_Record entries[1];				/* Dynamically allocate entries. */
-+	ATOM_Tonga_Voltage_Lookup_Record entries[];				/* Dynamically allocate entries. */
- } ATOM_Tonga_Voltage_Lookup_Table;
- 
- typedef struct _ATOM_Tonga_Fan_Table {
++	close(fd);
+ 	return EXIT_SUCCESS;
+ }
 -- 
 2.42.0
 
