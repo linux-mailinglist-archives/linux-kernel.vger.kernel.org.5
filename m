@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CCBA7E3DAB
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 13:30:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A60357E3C3D
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 13:13:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234167AbjKGMaN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 07:30:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36338 "EHLO
+        id S234415AbjKGMNb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 07:13:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234392AbjKGM3q (ORCPT
+        with ESMTP id S234324AbjKGMMx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 07:29:46 -0500
+        Tue, 7 Nov 2023 07:12:53 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 870531FC4;
-        Tue,  7 Nov 2023 04:10:30 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E2979C433C9;
-        Tue,  7 Nov 2023 12:10:28 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D26551719;
+        Tue,  7 Nov 2023 04:10:31 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65055C433C8;
+        Tue,  7 Nov 2023 12:10:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699359029;
-        bh=rjyDa/JzWevqiRTvkRQBMVxrkWCq/sYG2ae5ELikHhw=;
+        s=k20201202; t=1699359031;
+        bh=t6G25MEJSnwJK7DcjSvRtlB6Af99sFaeY5S7cLvFQcc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=M4cZUewBoAKO5Sw4jxy8jYpPrn+VKH7zoiMlhKMSp+E6yzSGR9UszTheUg/Co2aMY
-         JqhCbMRCWsXV9nVM2JRdaqIoNr8nGIdS5YIhb5J2KHtOA1zNV39JbaRLT9SDIgmB71
-         5JkXOCV3sS6gqq+rADq9pPlBVwzIMG0njZaQPwmGR3gy8OJAB0h1okjVAS1KeVX+Sd
-         Fhz3TbN7waWKry28Kw6ANzYPXf+m+JUVLgdqOsIrZ+tHE4QuLnMWXf5Qko8qKLhuSV
-         XFqfnayLYp6dTGDKZ6niVJUd3cIBPYqM2rTcrq9akQ7XBR82gEKlA0wSzdyRvWT4vj
-         c1+xdF+f0KSZg==
+        b=i3aJq+ml7YB3ZDFBaqg9PtbD/lN77EEuHOzQCAVKeCFwZop+lY+nrho1ZnA2emp4a
+         Y24oGNfiHBWrbLmniXIHLk3GgqgYRBgjo4NZ3j60LxlC0CEsZ8sEd7XE2NusYjAQ4p
+         w6T9Jx6BfOI7jNccwDHevx4f619l2kMNA4FEoNUr8HIGIdqPiy7y0MyLJQQgBJFY1K
+         YeTiqaXxHF40r0cuucxNoaHcgvYuldeCdTjXkrzy2KOtyZxmRYfMQIQZlASf5uBfwP
+         b0QtPQ8kdowjmbzk+9whWJ2WMUz2pS6sGWo9FP1aIPRrZnAs2cWtVLPu0ozRcsUUfq
+         QuKNvpu2fquVA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Gregory Greenman <gregory.greenman@intel.com>,
-        Johannes Berg <johannes.berg@intel.com>,
-        Sasha Levin <sashal@kernel.org>, kvalo@kernel.org,
-        miriam.rachel.korenblit@intel.com, emmanuel.grumbach@intel.com,
-        ilan.peer@intel.com, linux-wireless@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.5 22/30] wifi: iwlwifi: mvm: fix size check for fw_link_id
-Date:   Tue,  7 Nov 2023 07:08:37 -0500
-Message-ID: <20231107120922.3757126-22-sashal@kernel.org>
+Cc:     youwan Wang <wangyouwan@126.com>,
+        Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
+        Sasha Levin <sashal@kernel.org>, marcel@holtmann.org,
+        johan.hedberg@gmail.com, luiz.dentz@gmail.com,
+        linux-bluetooth@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.5 23/30] Bluetooth: btusb: Add date->evt_skb is NULL check
+Date:   Tue,  7 Nov 2023 07:08:38 -0500
+Message-ID: <20231107120922.3757126-23-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231107120922.3757126-1-sashal@kernel.org>
 References: <20231107120922.3757126-1-sashal@kernel.org>
@@ -55,44 +55,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gregory Greenman <gregory.greenman@intel.com>
+From: youwan Wang <wangyouwan@126.com>
 
-[ Upstream commit e25bd1853cc8308158d97e5b3696ea3689fa0840 ]
+[ Upstream commit 624820f7c8826dd010e8b1963303c145f99816e9 ]
 
-Check that fw_link_id does not exceed the size of link_id_to_link_conf
-array. There's no any codepath that can cause that, but it's still
-safer to verify in case fw_link_id gets corrupted.
+fix crash because of null pointers
 
-Signed-off-by: Gregory Greenman <gregory.greenman@intel.com>
-Link: https://lore.kernel.org/r/20231017115047.3385bd11f423.I2d30fdb464f951c648217553c47901857a0046c7@changeid
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+[ 6104.969662] BUG: kernel NULL pointer dereference, address: 00000000000000c8
+[ 6104.969667] #PF: supervisor read access in kernel mode
+[ 6104.969668] #PF: error_code(0x0000) - not-present page
+[ 6104.969670] PGD 0 P4D 0
+[ 6104.969673] Oops: 0000 [#1] SMP NOPTI
+[ 6104.969684] RIP: 0010:btusb_mtk_hci_wmt_sync+0x144/0x220 [btusb]
+[ 6104.969688] RSP: 0018:ffffb8d681533d48 EFLAGS: 00010246
+[ 6104.969689] RAX: 0000000000000000 RBX: ffff8ad560bb2000 RCX: 0000000000000006
+[ 6104.969691] RDX: 0000000000000000 RSI: ffffb8d681533d08 RDI: 0000000000000000
+[ 6104.969692] RBP: ffffb8d681533d70 R08: 0000000000000001 R09: 0000000000000001
+[ 6104.969694] R10: 0000000000000001 R11: 00000000fa83b2da R12: ffff8ad461d1d7c0
+[ 6104.969695] R13: 0000000000000000 R14: ffff8ad459618c18 R15: ffffb8d681533d90
+[ 6104.969697] FS:  00007f5a1cab9d40(0000) GS:ffff8ad578200000(0000) knlGS:00000
+[ 6104.969699] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[ 6104.969700] CR2: 00000000000000c8 CR3: 000000018620c001 CR4: 0000000000760ef0
+[ 6104.969701] PKRU: 55555554
+[ 6104.969702] Call Trace:
+[ 6104.969708]  btusb_mtk_shutdown+0x44/0x80 [btusb]
+[ 6104.969732]  hci_dev_do_close+0x470/0x5c0 [bluetooth]
+[ 6104.969748]  hci_rfkill_set_block+0x56/0xa0 [bluetooth]
+[ 6104.969753]  rfkill_set_block+0x92/0x160
+[ 6104.969755]  rfkill_fop_write+0x136/0x1e0
+[ 6104.969759]  __vfs_write+0x18/0x40
+[ 6104.969761]  vfs_write+0xdf/0x1c0
+[ 6104.969763]  ksys_write+0xb1/0xe0
+[ 6104.969765]  __x64_sys_write+0x1a/0x20
+[ 6104.969769]  do_syscall_64+0x51/0x180
+[ 6104.969771]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[ 6104.969773] RIP: 0033:0x7f5a21f18fef
+[ 6104.9] RSP: 002b:00007ffeefe39010 EFLAGS: 00000293 ORIG_RAX: 0000000000000001
+[ 6104.969780] RAX: ffffffffffffffda RBX: 000055c10a7560a0 RCX: 00007f5a21f18fef
+[ 6104.969781] RDX: 0000000000000008 RSI: 00007ffeefe39060 RDI: 0000000000000012
+[ 6104.969782] RBP: 00007ffeefe39060 R08: 0000000000000000 R09: 0000000000000017
+[ 6104.969784] R10: 00007ffeefe38d97 R11: 0000000000000293 R12: 0000000000000002
+[ 6104.969785] R13: 00007ffeefe39220 R14: 00007ffeefe391a0 R15: 000055c10a72acf0
+
+Signed-off-by: youwan Wang <wangyouwan@126.com>
+Signed-off-by: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/intel/iwlwifi/mvm/link.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/bluetooth/btusb.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/link.c b/drivers/net/wireless/intel/iwlwifi/mvm/link.c
-index ace82e2c5bd91..a15e2c6caa242 100644
---- a/drivers/net/wireless/intel/iwlwifi/mvm/link.c
-+++ b/drivers/net/wireless/intel/iwlwifi/mvm/link.c
-@@ -61,7 +61,7 @@ int iwl_mvm_add_link(struct iwl_mvm *mvm, struct ieee80211_vif *vif,
- 	if (link_info->fw_link_id == IWL_MVM_FW_LINK_ID_INVALID) {
- 		link_info->fw_link_id = iwl_mvm_get_free_fw_link_id(mvm,
- 								    mvmvif);
--		if (link_info->fw_link_id == IWL_MVM_FW_LINK_ID_INVALID)
-+		if (link_info->fw_link_id >= ARRAY_SIZE(mvm->link_id_to_link_conf))
- 			return -EINVAL;
+diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
+index ca9e2a210fff2..ea29469fe0cff 100644
+--- a/drivers/bluetooth/btusb.c
++++ b/drivers/bluetooth/btusb.c
+@@ -2803,6 +2803,9 @@ static int btusb_mtk_hci_wmt_sync(struct hci_dev *hdev,
+ 		goto err_free_wc;
+ 	}
  
- 		rcu_assign_pointer(mvm->link_id_to_link_conf[link_info->fw_link_id],
-@@ -245,7 +245,7 @@ int iwl_mvm_remove_link(struct iwl_mvm *mvm, struct ieee80211_vif *vif,
- 	int ret;
- 
- 	if (WARN_ON(!link_info ||
--		    link_info->fw_link_id == IWL_MVM_FW_LINK_ID_INVALID))
-+		    link_info->fw_link_id >= ARRAY_SIZE(mvm->link_id_to_link_conf)))
- 		return -EINVAL;
- 
- 	RCU_INIT_POINTER(mvm->link_id_to_link_conf[link_info->fw_link_id],
++	if (data->evt_skb == NULL)
++		goto err_free_wc;
++
+ 	/* Parse and handle the return WMT event */
+ 	wmt_evt = (struct btmtk_hci_wmt_evt *)data->evt_skb->data;
+ 	if (wmt_evt->whdr.op != hdr->op) {
 -- 
 2.42.0
 
