@@ -2,198 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EFED57E4847
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 19:32:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FEAE7E4843
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 19:32:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343506AbjKGScn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 13:32:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34564 "EHLO
+        id S234928AbjKGScO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 13:32:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229664AbjKGScm (ORCPT
+        with ESMTP id S229664AbjKGScM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 13:32:42 -0500
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7ED0E125
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 10:32:40 -0800 (PST)
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3A7IVq3N015312;
-        Tue, 7 Nov 2023 12:31:52 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1699381912;
-        bh=avFqmwExvMZTboA6xudv//HHo5yrU/rJv20C0agxdH4=;
-        h=Date:Subject:To:CC:References:From:In-Reply-To;
-        b=sR4kDIBmpAAXihN0XtA8jDMaZNsqH1LC13iIGXLAIyCOE3HZyvRqOtHTHv6rnMX8l
-         Zl3Xq1qfo5m4cdrABENE2K2U/e+1T/7Fk2qAFURvBGOJaxkhPl13R1aHZbvzqy0B+s
-         VnMviSAOtp97xMve3QhqLyMLsH5Iz6+oFkGBim+g=
-Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3A7IVqfM017145
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 7 Nov 2023 12:31:52 -0600
-Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 7
- Nov 2023 12:31:52 -0600
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 7 Nov 2023 12:31:52 -0600
-Received: from [10.249.132.69] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3A7IVih0039685;
-        Tue, 7 Nov 2023 12:31:45 -0600
-Message-ID: <b642d226-1312-4846-a353-622a7e21939e@ti.com>
-Date:   Wed, 8 Nov 2023 00:01:44 +0530
+        Tue, 7 Nov 2023 13:32:12 -0500
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE441125;
+        Tue,  7 Nov 2023 10:32:10 -0800 (PST)
+Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1cc29f39e7aso40609825ad.0;
+        Tue, 07 Nov 2023 10:32:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699381930; x=1699986730; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=SunHHN1/iQODqSQHwnSP1s4Wb0vFxONmUla7Hxi/DaY=;
+        b=UOD9Ul188EhSXQJEGsJPvd3yb5W+3v3mGrl0rLRB2fU6PmiH22IOufs96rnYPGAaq7
+         DslTGostaqu0JVaDuYP7CR6mZM3ldbDA8rXI1rAhA028xDCEsqcU6K93tCIOC5EEJLly
+         +c70NZYrA2tQZzJIDmelge/5zP2NB1ZmphBO1emA8wxQLdjZwy5E6HOyOdaInSR4iSMm
+         Yk1yPBdLCvj1OmTmt1MKgbWwsprPpHAKjXco5EsSEWmM7N1jJZiOdIT4dttQi4MZ+C+O
+         W6Cydj9WeQZTl9NbCXmYoUNMpjcH7jwv5X+qVaE41U3Qjeqj1dwL3ZPsWHsbSPfeb1Gh
+         vJEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699381930; x=1699986730;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=SunHHN1/iQODqSQHwnSP1s4Wb0vFxONmUla7Hxi/DaY=;
+        b=qJ9t86/ihXBFixFrUOxRnmxE+nC7pECfL+Mee0ydA8RIm1mL9kb9QeojS5RrM3XmII
+         Qu+v9ZEb5519+F/vjvW8z4V2w2j9TlXP20txXJhAMKDcODzwjQTs3ewfHlxLXJsR5Ck1
+         oXeIFOUwrTzg0teErulVNEQlh0rl2/AHAbNIXQacgMXqZ5CGx1kJrrimjvmruVIaShjf
+         WPw1NBVF5LXpCYkTsQDWHXTAFPnmkJnD23gs9NRqLt4LMpQRe0zn0PEHKwEJzjF+Lvw2
+         3qnN5q7nx0Qz0NBmgq/Zc/ml31KDHHfQfw81CCY2yI/9AcMkd9yCooqE5coNtYDf+pYO
+         ECOA==
+X-Gm-Message-State: AOJu0YwHzLTBhOcLlI99g0lRUuZsUGRfyx49G1EnGxJHj2YS/f9eV3Ua
+        6Enbt9FtcpRo5KRtXUOlhNzByOXloxhdBA==
+X-Google-Smtp-Source: AGHT+IE8x1K/3j8/6uiu2lfwOH0eUUp91B4Py2DmFccL89sMo3+gKp3MwqyDxjclm3qrwZaNeITylw==
+X-Received: by 2002:a17:903:22c5:b0:1cc:3a60:bd69 with SMTP id y5-20020a17090322c500b001cc3a60bd69mr29499374plg.25.1699381930027;
+        Tue, 07 Nov 2023 10:32:10 -0800 (PST)
+Received: from localhost ([216.228.127.128])
+        by smtp.gmail.com with ESMTPSA id d2-20020a170902cec200b001c3be750900sm136703plg.163.2023.11.07.10.32.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Nov 2023 10:32:09 -0800 (PST)
+Date:   Tue, 7 Nov 2023 10:32:06 -0800
+From:   Yury Norov <yury.norov@gmail.com>
+To:     Alexander Lobakin <aleksander.lobakin@intel.com>
+Cc:     Alexander Potapenko <glider@google.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Syed Nayyar Waris <syednwaris@gmail.com>,
+        Kees Cook <keescook@chromium.org>,
+        kernel test robot <lkp@intel.com>,
+        oe-kbuild-all@lists.linux.dev, linux-hardening@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [alobakin:pfcp 11/19] include/linux/bitmap.h:642:17: warning:
+ array subscript [1, 1024] is outside array bounds of 'long unsigned int[1]'
+Message-ID: <ZUqCpmDgKFbscRgW@yury-ThinkPad>
+References: <202310170708.fJzLlgDM-lkp@intel.com>
+ <bd7fe929-c6fc-42be-9d2f-3f53ec21fd10@intel.com>
+ <ZUkvOCxyiin_77qd@smile.fi.intel.com>
+ <0a29df6b-bc27-43e9-a97d-57ecabb29a9e@intel.com>
+ <CAG_fn=VtA6e3oGm4WVnxmy9yMBab780-U_4VoHSqm4tcd2UTzQ@mail.gmail.com>
+ <ca0ad357-727b-4f41-a3d6-2c48a9dd5836@intel.com>
+ <e3b4b1a6-5383-4bfb-ba83-ab27d58dae29@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] drm/bridge: tc358767: Support input format negotiation
- hook
-Content-Language: en-US
-To:     Sam Ravnborg <sam@ravnborg.org>
-CC:     Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
-        Devarsh Thakkar <devarsht@ti.com>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        DRI Development List <dri-devel@lists.freedesktop.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Robert Foss <rfoss@kernel.org>,
-        Francesco Dolcini <francesco@dolcini.it>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Maxime Ripard <mripard@kernel.org>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Jayesh Choudhary <j-choudhary@ti.com>,
-        Tomi Valkeinen <tomba@kernel.org>,
-        Linux Kernel List <linux-kernel@vger.kernel.org>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Jyri Sarha <jyri.sarha@iki.fi>
-References: <20231030192846.27934-1-a-bhatia1@ti.com>
- <20231106123800.GC47195@ravnborg.org>
- <7ddf0edb-2925-4b7c-ad07-27c030dd0232@ti.com>
- <20231107154115.GA100782@ravnborg.org>
-From:   Aradhya Bhatia <a-bhatia1@ti.com>
-In-Reply-To: <20231107154115.GA100782@ravnborg.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <e3b4b1a6-5383-4bfb-ba83-ab27d58dae29@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sam,
-
-On 07-Nov-23 21:11, Sam Ravnborg wrote:
-> Hi Aradhya,
+On Tue, Nov 07, 2023 at 06:24:04PM +0100, Alexander Lobakin wrote:
+> From: Alexander Lobakin <aleksander.lobakin@intel.com>
+> Date: Tue, 7 Nov 2023 17:44:00 +0100
 > 
-> On Tue, Nov 07, 2023 at 01:17:03AM +0530, Aradhya Bhatia wrote:
->> Hi Sam,
->>
->> Thank you for the suggestion!
->>
->> On 06-Nov-23 18:08, Sam Ravnborg wrote:
->>> Hi Aradhya,
->>>
->>> On Tue, Oct 31, 2023 at 12:58:46AM +0530, Aradhya Bhatia wrote:
->>>> With new connector model, tc358767 will not create the connector, when
->>>> DRM_BRIDGE_ATTACH_NO_CONNECTOR is set and display-controller driver will
->>>> rely on format negotiation to setup the encoder format.
->>>>
->>>> Add the missing input-format negotiation hook in the
->>>> drm_bridge_funcs to complete DRM_BRIDGE_ATTACH_NO_CONNECTOR support.
->>>>
->>>> Input format is selected to MEDIA_BUS_FMT_RGB888_1X24 as default, as is
->>>> the case with older model.
->>>>
->>>> Reported-by: Jan Kiszka <jan.kiszka@siemens.com>
->>>> Signed-off-by: Aradhya Bhatia <a-bhatia1@ti.com>
->>>> ---
->>>>
->>>> Notes:
->>>>
->>>>   * Since I do not have hardware with me, this was just build tested. I would
->>>>     appreciate it if someone could test and review it, especically somebody, who
->>>>     uses the bridge for DPI/DSI to eDP format conversion.
->>>>
->>>>   * The Toshiba TC358767 bridge is not enabled in arm64 defconfig by default,
->>>>     when it should be. Hence, I sent a quick patch[0] earlier.
->>>>
->>>> [0]: https://lore.kernel.org/all/20231030152834.18450-1-a-bhatia1@ti.com/
->>>>
->>>>  drivers/gpu/drm/bridge/tc358767.c | 25 +++++++++++++++++++++++++
->>>>  1 file changed, 25 insertions(+)
->>>>
->>>> diff --git a/drivers/gpu/drm/bridge/tc358767.c b/drivers/gpu/drm/bridge/tc358767.c
->>>> index ef2e373606ba..0affcefdeb1c 100644
->>>> --- a/drivers/gpu/drm/bridge/tc358767.c
->>>> +++ b/drivers/gpu/drm/bridge/tc358767.c
->>>> @@ -1751,6 +1751,30 @@ tc_dpi_atomic_get_input_bus_fmts(struct drm_bridge *bridge,
->>>>  	return input_fmts;
->>>>  }
->>>>  
->>>> +static u32 *
->>>> +tc_edp_atomic_get_input_bus_fmts(struct drm_bridge *bridge,
->>>> +				 struct drm_bridge_state *bridge_state,
->>>> +				 struct drm_crtc_state *crtc_state,
->>>> +				 struct drm_connector_state *conn_state,
->>>> +				 u32 output_fmt,
->>>> +				 unsigned int *num_input_fmts)
->>>> +{
->>>> +	u32 *input_fmts;
->>>> +
->>>> +	*num_input_fmts = 0;
->>>> +
->>>> +	input_fmts = kcalloc(MAX_INPUT_SEL_FORMATS, sizeof(*input_fmts),
->>>> +			     GFP_KERNEL);
->>>> +	if (!input_fmts)
->>>> +		return NULL;
->>>> +
->>>> +	/* This is the DSI/DPI-end bus format */
->>>> +	input_fmts[0] = MEDIA_BUS_FMT_RGB888_1X24;
->>>> +	*num_input_fmts = 1;
->>>> +
->>>> +	return input_fmts;
->>>> +}
->>>
->>> You could benefit from using the helper:
->>> drm_atomic_helper_bridge_propagate_bus_fmt()
->>
->> You are right!
->>
->> Upon taking a second look, I realize that the bridge chain works with
->> MEDIA_BUS_FMT_FIXED bus format, when tc358767 is being used in DPI/DSI
->> to eDP mode (because the panel-bridge does not have a get_output_bus_fmt
->> hook, and uses the same helper for its get_input_bus_fmt hook). My patch
->> creates a deviation from that, by forcing MEDIA_BUS_FMT_RGB888_1X24 even
->> when eDP is involved.
->>
->> Using the helper here, will certainly address this deviation.
->>
->> However, for the DPI/DSI to DP mode, MEDIA_BUS_FMT_RGB888_1X24 bus
->> format is required, and *just* using the helper as its get_input_bus_fmt
->> hook, might not be enough.
->>
->> Since tc358767 is the last bridge in DPI/DSI to DP mode, the
->> output_fmt parameter get defaulted to MEDIA_BUS_FMT_FIXED too, as there
->> is no get_output_bus_fmt hook present in the driver. If we simply us
->> the helper here, the input_fmt will also get set to MEDIA_BUS_FMT_FIXED.
->> This too is an unwanted deviation.
->>
->> It seems like the right way to address both the cases, would be by
->> adding the get_output_bus_fmt hook that sets output_fmt to
->> MEDIA_BUS_FMT_RGB888_1X24, as well as using the helper as the
->> get_input_bus_fmt hook.
->>
->> If this seems good to you too, I will send a new version of Tomi's
->> series[0] which incorporates this patch.
+> > From: Alexander Potapenko <glider@google.com>
+> > Date: Tue, 7 Nov 2023 17:33:56 +0100
+> > 
+> >> On Tue, Nov 7, 2023 at 2:23 PM Alexander Lobakin
+> >> <aleksander.lobakin@intel.com> wrote:
 > 
-> I never managed to fully wrap my head around the bus fmt negotiation,
-> and as I am trying to recover from a flu this is not the time to try.
-> Your explanations sounds like you have grasped it so I suggest to move
-> ahead.
+> [...]
 > 
+> > I tested it on GCC 9 using modified make.cross from lkp and it triggers
+> > on one more file:
+> > 
+> > drivers/thermal/intel/intel_soc_dts_iosf.c: In function 'sys_get_curr_temp':
+> > ./include/linux/bitmap.h:601:18: error: array subscript [1,
+> > 288230376151711744] is outside array bounds of 'long unsigned int[1]'
+> > [-Werror=array-bounds]
+> > 
+> >> to give the compiler some hints about the range of values passed to
+> >> bitmap_write() rather than suppressing the optimizations.
+> > 
+> > OPTIMIZER_HIDE_VAR() doesn't disable optimizations if I get it
+> > correctly, rather shuts up the compiler in cases like this one.
+> > 
+> > I've been thinking of using __member_size() from fortify-string.h, we
+> > could probably optimize the object code even a bit more while silencing
+> > this warning.
+> > Adding Kees, maybe he'd like to participate in sorting this out as well.
+> 
+> This one seems to work. At least previously mad GCC 9.3.0 now sits
+> quietly, as if I added OPTIMIZER_HIDE_VAR() as Yury suggested.
+ 
+What's wrong with OPTIMIZER_HIDE_VAR()? The problem is clearly on GCC
+side, namely - it doesn't realize that the map[index+1] fetch is
+conditional.
 
-Sure, I will send a new version.
+And moreover, it's fixed in later stable builds. I tested 12 and 13,
+and both are silent.
 
-Hope you recover soon! =)
+> Note that ideally @map should be marked as `POS` in both cases to help
+> Clang, but `POS` gets undefined at the end of fortify-string.h, so I
+> decided to not do that within this draft.
+> 
+> Thanks,
+> Olek
+> ---
+> diff --git a/include/linux/bitmap.h b/include/linux/bitmap.h
+> index e8031a157db5..efa0a0287d7c 100644
+> --- a/include/linux/bitmap.h
+> +++ b/include/linux/bitmap.h
+> @@ -589,12 +589,14 @@ static inline unsigned long bitmap_read(const
+> unsigned long *map,
+>  	size_t index = BIT_WORD(start);
+>  	unsigned long offset = start % BITS_PER_LONG;
+>  	unsigned long space = BITS_PER_LONG - offset;
+> +	const size_t map_size = __member_size(map);
+>  	unsigned long value_low, value_high;
+> 
+>  	if (unlikely(!nbits || nbits > BITS_PER_LONG))
+>  		return 0;
+> 
+> -	if (space >= nbits)
+> +	if ((__builtin_constant_p(map_size) && map_size != SIZE_MAX &&
+> +	     index + 1 >= map_size / sizeof(long)) || space >= nbits)
+>  		return (map[index] >> offset) & BITMAP_LAST_WORD_MASK(nbits);
 
-Regards
-Aradhya
+This silences the compiler, but breaks the code logic and hides potential bugs.
+After the fix, the following code will become legit:
+
+        DECLARE_BITMAP(bitmap, 64);
+
+        bitmap_fill(bitmap, 64)
+        char ret = bitmap_read(bitmap, 60, 8); // OK, return 0b00001111
+
+Before this change, the return value would be undef: 0xXXXX1111, and
+it would (should) trigger Warray-bounds on compile time, because it's
+a compile-time boundary violation.
+
+On runtime KASAN, UBSAN and whatever *SAN would most likely be silenced
+too with your fix. So no, this one doesn't seem to work.
+
+>  	value_low = map[index] & BITMAP_FIRST_WORD_MASK(start);
+> @@ -620,6 +622,7 @@ static inline unsigned long bitmap_read(const
+> unsigned long *map,
+>  static inline void bitmap_write(unsigned long *map, unsigned long value,
+>  				unsigned long start, unsigned long nbits)
+>  {
+> +	const size_t map_size = __member_size(map);
+>  	size_t index;
+>  	unsigned long offset;
+>  	unsigned long space;
+> @@ -638,7 +641,9 @@ static inline void bitmap_write(unsigned long *map,
+> unsigned long value,
+> 
+>  	map[index] &= (fit ? (~(mask << offset)) :
+> ~BITMAP_FIRST_WORD_MASK(start));
+>  	map[index] |= value << offset;
+> -	if (fit)
+> +
+> +	if ((__builtin_constant_p(map_size) && map_size != SIZE_MAX &&
+> +	     index + 1 >= map_size / sizeof(long)) || fit)
+>  		return;
+> 
+>  	map[index + 1] &= BITMAP_FIRST_WORD_MASK(start + nbits);
