@@ -2,85 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E3407E4623
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 17:36:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC4007E4AAC
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 22:28:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234981AbjKGQgG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 11:36:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47000 "EHLO
+        id S1344013AbjKGV2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 16:28:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234583AbjKGQfx (ORCPT
+        with ESMTP id S235295AbjKGV2n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 11:35:53 -0500
-Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0367F1BCF;
-        Tue,  7 Nov 2023 08:28:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
-        ; s=x; h=Subject:Content-Transfer-Encoding:Mime-Version:Message-Id:Cc:To:From
-        :Date:subject:date:message-id:reply-to;
-        bh=QR8eNGZtZ5/4gDAfH5F8xdJ5v45aXKC3TOBwTCF9ej8=; b=ajgl1Gz6XOyG4dhnPFkvUlQBx1
-        M7E8WvCd7CqEbNY6qVXRXFdh3EUHT3GUSQTqUOvHtdNYPDu8iSaro4oddNA9caXjPU7otOvdZiv85
-        pFLtkNCqgyLLF+Ys/fThfiTX4SDgNzznSx9dx0mmViWNm/nqXhAdiFNbBlaqf3/8OwoQ=;
-Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:60652 helo=pettiford)
-        by mail.hugovil.com with esmtpa (Exim 4.92)
-        (envelope-from <hugo@hugovil.com>)
-        id 1r0Ovt-0007qL-5P; Tue, 07 Nov 2023 11:28:05 -0500
-Date:   Tue, 7 Nov 2023 11:28:04 -0500
-From:   Hugo Villeneuve <hugo@hugovil.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Hugo Villeneuve <hvilleneuve@dimonoff.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Message-Id: <20231107112804.e854521b47caeafdc642a2f3@hugovil.com>
-In-Reply-To: <8534fc67-83b3-4f41-a1e3-635866e1dd9c@linaro.org>
-References: <20231107160122.1648093-1-hugo@hugovil.com>
-        <8534fc67-83b3-4f41-a1e3-635866e1dd9c@linaro.org>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 70.80.174.168
-X-SA-Exim-Mail-From: hugo@hugovil.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.hugovil.com
-X-Spam-Level: 
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
-        * -2.3 NICE_REPLY_A Looks like a legit reply (A)
-X-Spam-Status: No, score=-3.4 required=5.0 tests=ALL_TRUSTED,NICE_REPLY_A,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.2
-Subject: Re: [PATCH] arm64: dts: imx8mn-var-som: reorder reg properties
- after compatible strings
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
+        Tue, 7 Nov 2023 16:28:43 -0500
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1807FD7A
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 13:28:41 -0800 (PST)
+Received: by mail-yb1-xb2d.google.com with SMTP id 3f1490d57ef6-d9abc069c8bso5568556276.3
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 13:28:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ncf.edu; s=google; t=1699392520; x=1699997320; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=5GrfKC2IvsZBEgQFQYe2RhJApLNUugeSPWTjf04uUac=;
+        b=SZ75Mow2RJnjfqUkUo9Ts/5nTwSU6WLwQRugmCLkr2Dik0rDWkSLg+zY627HR/FGwb
+         JolNPghyYsQsAI8uVDP+ygzbZI9x3wP+M9hEQvwXg6kef/SSNP7sHBV0ZJ+znZ/Mlda8
+         j2YAc9Sk6VHWOUGvs+UrVrWg3L/VGyFQFST0s4OA5UMoAWzBQDT4735cLlr14mlM45xH
+         ISE3qBrFDADzc8G3fui9Z5lR1FTUsaYGLtlJNNXXUrgwIxBvIOqTUYvUf02lBOP/Z0IT
+         t5lkx9zVe+dYweRbN6YaDZMaN7AdyOlVUeRHucnWtX8eBiw00lZFIktcwh/Yzm2sOI6Y
+         hEKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699392520; x=1699997320;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=5GrfKC2IvsZBEgQFQYe2RhJApLNUugeSPWTjf04uUac=;
+        b=u2ezOEOmUs3JEv8nfWTAuWXXgml6EXkTyl3vMCHzJGCjNn3ciXieQsT9CubecAgvxZ
+         OAMu8lK2Weru/JergTx//AvGKDkvV3wunu0I+srPumfV/75FLvPPlgz0Foz8/BAgGuaz
+         tt2q5l1+0h37ocA3xS2Fkpm/3glOsi/0HvNDa33UaK1WxbLQ6NA2wOiWYVRSiba85lPn
+         bW6taUBh2rSNO5vOBcjdEbZP3BK8z7HAN3tzmIFyza7s03iTYTEOIPFE0sjLXXpcg0OW
+         94c2zsE3YV+UW4HPTn9HFrplG39BuaJbTU3u3GofAmzI6Krz+ma1UJzTxFLtPr1nMi81
+         7i+g==
+X-Gm-Message-State: AOJu0YxvU0Sd7h4oQeMQHuC6b4jzsvA/Q9YluwivDV5kN27PR+DyyDS/
+        Jyb65qAID5/+n8HahFdAgy0kj/O+WvUwfRFcljguni/zTlop4D7dPQflrIQ3S5axjFHBKuayseg
+        qpMsf0hSxsBmKEvtFt5IPXji/C67xVuOTAUuf4UfhopjpHgfxmeu0jg7xaZrRLG5aqFbzJNlxi0
+        b7De6TLcxjjUHvleM=
+X-Google-Smtp-Source: AGHT+IEVGxWjSPfH29B0f+BhNDDfe9GVs/2MnfzycBPjOvD0xg9LpfAOaj+zUSsjtvyDbSoQfjhDcg==
+X-Received: by 2002:a25:97c8:0:b0:d9a:6b46:f49d with SMTP id j8-20020a2597c8000000b00d9a6b46f49dmr9749055ybo.59.1699392519826;
+        Tue, 07 Nov 2023 13:28:39 -0800 (PST)
+Received: from Lux.hsd1.fl.comcast.net ([2601:580:8201:d0::4174])
+        by smtp.gmail.com with ESMTPSA id j186-20020a25d2c3000000b00da06575fbc8sm5657649ybg.2.2023.11.07.13.28.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Nov 2023 13:28:39 -0800 (PST)
+From:   Hunter Chasens <hunter.chasens18@ncf.edu>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-doc@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        amd-gfx@lists.freedesktop.org, daniel@ffwll.ch, airlied@gmail.com,
+        Xinhui.Pan@amd.com, christian.koenig@amd.com,
+        alexander.deucher@amd.com,
+        Hunter Chasens <hunter.chasens18@ncf.edu>
+Subject: [PATCH v3] drm: amd: Resolve Sphinx unexpected indentation warning
+Date:   Tue,  7 Nov 2023 11:28:30 -0500
+Message-ID: <20231107162830.36856-1-hunter.chasens18@ncf.edu>
+X-Mailer: git-send-email 2.42.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 7 Nov 2023 17:19:20 +0100
-Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> wrote:
+Resolves Sphinx unexpected indentation warning when compiling
+documentation (e.g. `make htmldocs`). Replaces tabs with spaces and adds
+a literal block to keep vertical formatting of the
+example power state list.
 
-> On 07/11/2023 17:01, Hugo Villeneuve wrote:
-> > From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
-> > 
-> > Move reg nodes after the compatible string, to follow DT conventions.
-> 
-> This is a bit of churn... like patches for checkpatch. But unlike
-> checkpatch, it's not even documented.
+Signed-off-by: Hunter Chasens <hunter.chasens18@ncf.edu>
+---
+ drivers/gpu/drm/amd/pm/amdgpu_pm.c | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
-Hi,
-I do not really understand your point or if I must change
-something...
+diff --git a/drivers/gpu/drm/amd/pm/amdgpu_pm.c b/drivers/gpu/drm/amd/pm/amdgpu_pm.c
+index 517b9fb4624c..576202bf64f3 100644
+--- a/drivers/gpu/drm/amd/pm/amdgpu_pm.c
++++ b/drivers/gpu/drm/amd/pm/amdgpu_pm.c
+@@ -989,12 +989,13 @@ static ssize_t amdgpu_get_pp_features(struct device *dev,
+  * Reading back the files will show you the available power levels within
+  * the power state and the clock information for those levels. If deep sleep is
+  * applied to a clock, the level will be denoted by a special level 'S:'
+- * E.g.,
+- *	S: 19Mhz *
+- *	0: 615Mhz
+- *	1: 800Mhz
+- *	2: 888Mhz
+- *	3: 1000Mhz
++ * E.g., ::
++ *
++ *  S: 19Mhz *
++ *  0: 615Mhz
++ *  1: 800Mhz
++ *  2: 888Mhz
++ *  3: 1000Mhz
+  *
+  *
+  * To manually adjust these states, first select manual using
+-- 
+2.42.0
 
-But looking at a lot of dts, the reg property is always following the
-compatible string, so I assumed it was an undocumented convention or
-best practice...
-
-Hugo.
