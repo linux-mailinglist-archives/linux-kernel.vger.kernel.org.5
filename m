@@ -2,258 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 869A07E4912
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 20:19:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DC1B7E490F
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 20:18:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343656AbjKGTTm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 14:19:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35804 "EHLO
+        id S1343616AbjKGTSs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 14:18:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235065AbjKGTTk (ORCPT
+        with ESMTP id S235166AbjKGTSq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 14:19:40 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50304119
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 11:19:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699384778; x=1730920778;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=JaNeliEt2AqY/2cfH8cujaaWomO/quuyZNntHGbuo0I=;
-  b=Y4TfbHxJ37Sr0eyDO04+vKBy21cPJQBoKptA1IJNXAMwUMmRb2ilM04j
-   E4ujQDWbgPdVqr9RHmNmFUiRqbAZEDJXydsFNl/prSjNjv/bYCgCaRLAh
-   oXSvukutGE5kB/mn1YOy7Kk2s+DoSvW3R45YD1PuY0EbSZRPlk85F6bsO
-   PnuqGLEWk1kMzHcNbYpIlFsZS+HM8w39BVIW1EOWLwGmqYbSLzlhUWy7d
-   RTYnZEfWe/gt7aJNTbv5wYKtpw2/2RHoLthIfo6TUX9cEUaeeUpBiBwjl
-   GbFl4e3JiCJz6Omys7ILF1sW+Wyb0m05SL4ipGnZ4B3SUOQ+/rYQUJcBy
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10887"; a="2534784"
-X-IronPort-AV: E=Sophos;i="6.03,284,1694761200"; 
-   d="scan'208";a="2534784"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2023 11:19:38 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10887"; a="833213817"
-X-IronPort-AV: E=Sophos;i="6.03,284,1694761200"; 
-   d="scan'208";a="833213817"
-Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by fmsmga004.fm.intel.com with ESMTP; 07 Nov 2023 11:19:36 -0800
-Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r0Rbq-0007LQ-0i;
-        Tue, 07 Nov 2023 19:19:34 +0000
-Date:   Wed, 8 Nov 2023 03:18:19 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Daniel Wagner <daniel.wagner@bmw-carit.de>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Michal Marek <mmarek@suse.com>
-Subject: arch/powerpc/platforms/embedded6xx/mvme5100.c:140:65: error: passing
- argument 5 of 'early_read_config_dword' from incompatible pointer type
-Message-ID: <202311080209.eVnG4LWq-lkp@intel.com>
-MIME-Version: 1.0
+        Tue, 7 Nov 2023 14:18:46 -0500
+Received: from EUR02-VI1-obe.outbound.protection.outlook.com (mail-vi1eur02olkn2014.outbound.protection.outlook.com [40.92.48.14])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C2D4183;
+        Tue,  7 Nov 2023 11:18:44 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RqEFrHDWv0jJhA6GHIJQ8T0zx3rM1f2tn4o1McGYzJd4/DtxegJ2gWssI34enS4kGY3LbbLKIhABEQQQn7FH4j2ZI15xEnUGFDHRc0M4IkY6VR2wBIWjwYS2F89hVo40t+gL8PYpNsZjFQD4EbDJMeLs1AjOdItntbIiwFeSfnYkoXgaSdUUSX8FTL6AwCdJiKq7iCC6y3Ee/zYfQ7+ANAFUQx6zYep5F6ClOFU9zH2+1weAQ3XL+6vPfgfykpJJbCnkR23VzgcYcZrfVKE5qvb4WSSBjQTKIDRfvIGVfUqEeUgkyQnNYkP1IDYORZcL99axWEIy5IjuzN8i+RWT8A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=bQ3RtWK4aQcY54Io0JlYoCU9P/vvs/n5goS0WLeAFjM=;
+ b=U42hNxuLpI3VlGSc6t3IDJCzIBisOyBG+b7yOHmD1b/y6O5GDp3JGKjldtKJrwyrttR++At1HFbc7Ao4EYJtZQG7d84zK43ZMuw3mB8Zbmhi/6AvvjC4dx9JDoEzjXdCC8ABmQFToNdTxS+GxM8Svplq+RPaKMRa73k1K8hAjKl08h9ofY29ADlvVP5mgLfTDl1GLmPFgz9CHJazO4gEdRx81690FO+/hoPt7t9g86C1XsnN5TyQK75SLJ3bMbbxoO4EFUicS6vJ93BJlvTm6zu1f5BfYiQvrjceztegqXnFvNPafmJ0RWq+VbqLPvRuEyBpXFoeLjt0RhKVfUNSmQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=bQ3RtWK4aQcY54Io0JlYoCU9P/vvs/n5goS0WLeAFjM=;
+ b=TO7CAqrTP/YCgC9STlIVRRDk5KSMxWZ55MtXA+RIeu/zdLRTevO2Yb3bC8AUeHaED3R8QholxC3DFg4kJwZxOohX2/jPSp6Yg/reqSJS+PmJH1wFz2ynPU9DBri4e5BGKmcPNLAGtkr+1mcsktV9aqAHB6K/RWpW1GgUxpWfQ/UQI/xYPMqDB1M2+KV8u619gfUFCtfnw6m3rTfBUWLi1l2kXFhsSJt5dSTiKZbKvjgACzhGBhPnFggbBwliOyaI+8Tfj5jaTAenmifz4a79+3ZcssB5dHggaAWdYEQ8ydpn/VKtk7oGMuQQhtBgEE9HvzV0/d2+6C+6cKqJv4jCfA==
+Received: from DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:42a::7)
+ by AS2PR10MB6687.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:55e::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.28; Tue, 7 Nov
+ 2023 19:18:42 +0000
+Received: from DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::e2b0:8d7e:e293:bd97]) by DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::e2b0:8d7e:e293:bd97%7]) with mapi id 15.20.6954.028; Tue, 7 Nov 2023
+ 19:18:41 +0000
+Date:   Wed, 8 Nov 2023 00:48:26 +0530
+From:   Yuran Pereira <yuran.pereira@hotmail.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     richardcochran@gmail.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+8a78ecea7ac1a2ea26e5@syzkaller.appspotmail.com
+Subject: Re: [PATCH] Fixes a null pointer dereference in ptp_ioctl
+Message-ID: <DB3PR10MB683592085FA903B0D1B552A9E8A9A@DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM>
+References: <DB3PR10MB683554F488A562C8A89286C2E8AAA@DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM>
+ <20231107100034.09786df1@kernel.org>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20231107100034.09786df1@kernel.org>
+X-TMN:  [/YNK5m88Z7nqeYWIUiQxoRM6psd636C6]
+X-ClientProxiedBy: JN2P275CA0013.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:3::25)
+ To DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:42a::7)
+X-Microsoft-Original-Message-ID: <20231107191826.GA1844302@nmj-network>
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DB3PR10MB6835:EE_|AS2PR10MB6687:EE_
+X-MS-Office365-Filtering-Correlation-Id: a7841366-3eb7-4a82-cf8b-08dbdfc65a52
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: io4gnCDNkd1D/ViarpgX9yLS8vBEGWEnzUrGjwUvOL6mxaSVMHy6jzOESazBNTKW5wfQFilbb5JTRQJwsRLYmymxO3e7sG/FHS0dKsvTSlBrqfb4YSw+pZEc1vwi+UOxaKh1bEx73ZjMQeF0AfNfqrfNSRd78ICQOMhT9x+/qpgibrwGDglIZpBtkQmDBSnn2kAM5Zg2NarH/SAR8cLsnvOiYk4NWbX8i0OY6gkGXEKCtGuXDC+MWqhBz9bvg769lbjnuBrlrQDgk/BSbZOl7YRRxQiHJD5s3n9ti3auAUV8n6aByVjp/1Wol6oNXGfuINCiQhalCzBysYIUTzLRde9/zYXNrjC2qGBZ2EpfArPe+mfSMMPpT+IK+5y5r0Y9LTwQKIKHtKD7/TLQr2zfXczsncby/PFWzuheVXq0YUs3UMIknQnZZyXK/wXoBbyse8cI9FQur9PnKsypYfKR4f2A3XWB/PcNBTvl0yMSKfCH9NaRWEH2o5zBiOD6ZvIVOBppB0ufnF2H51LHQOQpiWeov3HHoZdbCw4Nb6VirVAsv02TiUts5f9E5Us9jZkz
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?jdHBEWvNvqbykZgqCnd/u8Lu6WLZs9sxBbJXNO0OIao7eAthlSI38nFjaOev?=
+ =?us-ascii?Q?fcVx5V0HbDW9zK2ICQoNRYRlMrIqNauhFG6ETYq05WpqsMX96QWed4+vZ0vP?=
+ =?us-ascii?Q?u4Ysv/MgD5nEHyIUf4V4YHFf3Gsq5AZXSXlDg+PWbjVhxv6L7309i2yo7xv7?=
+ =?us-ascii?Q?c34FY4PxSkvHQ7/xIEtN/Vr+xUbH7BhlAnDmcDGNxM0pdM/9q4Sd2RRY2qTv?=
+ =?us-ascii?Q?iHgDWxbn8zbq0wNjNZ4tXZSBGii7pUxQeeemSvL/cjiYqy93EJxberHNVgj7?=
+ =?us-ascii?Q?BKDrSjkU2ZEB8OZvGiH2mDVeQVgYS6NRAkgP8AwFBAYdbYOGnAvWStccllu0?=
+ =?us-ascii?Q?aXT4xhdSVNJhuKE5iztq7epAbLJ5m6WKViJyDZQ4OS+yIDI/fAUzQrJkBSFN?=
+ =?us-ascii?Q?0nO2YNkgA6DttbnuXtHmC5Meom58u7WEJDEH3H6vWzawWvKSLAG0kmBqtrvr?=
+ =?us-ascii?Q?KT3PKpNx6ZLX+dNWPdi3WVmAhHhEOBH8/xP9BEfA1a1T7gNpQUGDoP/0746K?=
+ =?us-ascii?Q?ZXuQK2ZXzczcAZMRuLaJLiMeTVDy6NaNjeL8QvcvZo6ZMB1C3E0s2rXXye9H?=
+ =?us-ascii?Q?Qz7TsGw43hQr1FZdqF+nX7ZDBKgVFgWSod1wkTRrJm8G3AnmcEPCmZ4rrjaD?=
+ =?us-ascii?Q?dEm/PAeLgMKsi9iGiXFc0r7jYc9D5l5WgiZy/Emp6kqfqtqDMRPYG9sGORlT?=
+ =?us-ascii?Q?MXFCgqq6vx7MjxPRHDT1/uwy0v+lWewNaYIl61Utgc87xJ4EjTlkhtWOw7Q3?=
+ =?us-ascii?Q?Gu+nv44T62poGJ5XY7DdoJJnT7ZQsL4lDc3W9+71RzXz9yUQheoLfuukSSgZ?=
+ =?us-ascii?Q?ohoFN4SaMPgfJA8Xm+XiW+IkGeNgreqejXbNzEqtfnjqiPh+eCYbNWlJ1fSZ?=
+ =?us-ascii?Q?Do4xjF2GuqjsQgmtn2zbWyvcpxgUIzW14GPz3FDxk1mTBkmcOVo18k3w9QXC?=
+ =?us-ascii?Q?mjBplLDWpqNbKvrgZ75h+87R4/LCtm/zHQv2lWehv3eGZETb8GXcJ0Zh58d7?=
+ =?us-ascii?Q?WrnLI4/OfUSrTKwCgHM3JuJ4KuUPDbQEOlg0VGqSJ8qFJmKiT1aJU9ZIpuki?=
+ =?us-ascii?Q?jeGwxiIOWd7Z6OX9CApLgZ/wdEOVHoY+9E+kiUTYjr1PddPqvDuEccB5TWEJ?=
+ =?us-ascii?Q?YiL/eXfVnmO0cxoYj+JOm8/QZbohdBqJfyP/tqJ2dMZi0yMTrmwSR8cRDQqo?=
+ =?us-ascii?Q?MHY/f/Tai34gGK+MEc74PGl85gKgMiT8UB5XDlWfhqAQG98cKlX6MF67RoE?=
+ =?us-ascii?Q?=3D?=
+X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-6b909.templateTenant
+X-MS-Exchange-CrossTenant-Network-Message-Id: a7841366-3eb7-4a82-cf8b-08dbdfc65a52
+X-MS-Exchange-CrossTenant-AuthSource: DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Nov 2023 19:18:41.8738
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS2PR10MB6687
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   be3ca57cfb777ad820c6659d52e60bbdd36bf5ff
-commit: ea8daa7b97842aab8507b5b5b1e3226cf2d514a6 kbuild: Add option to turn incompatible pointer check into error
-date:   8 years ago
-config: powerpc-randconfig-c003-20220718 (https://download.01.org/0day-ci/archive/20231108/202311080209.eVnG4LWq-lkp@intel.com/config)
-compiler: powerpc-linux-gcc (GCC) 11.3.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231108/202311080209.eVnG4LWq-lkp@intel.com/reproduce)
+Hey Jakub,
+On Tue, Nov 07, 2023 at 10:00:34AM -0800, Jakub Kicinski wrote:
+> 
+> Just Link:
+> 
+> > Reported-by: syzbot+8a78ecea7ac1a2ea26e5@syzkaller.appspotmail.com
+> > Fixes: c5a445b1e934 ("ptp: support event queue reader channel masks")
+> > 
+> 
+> No empty lines between tags.
+> 
+Rookie mistake from me. I will pay better attention next time.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311080209.eVnG4LWq-lkp@intel.com/
+> 
+> When you repost please make sure you CC everyone get_maintainer 
+> (run on  the patch file, not the paths) points out.
+Interesting, I always run get_maintainer on the modified file
+will do it on the patch file too from now on.
 
-All errors (new ones prefixed by >>):
+> And CC Edward Adam Davis <eadavis@qq.com> since his fixing similar
+> issues.
+Alright, I'll do that.
 
-         |         ^~~~~~
-   include/linux/dma-mapping.h: In function 'dma_unmap_page':
-   include/asm-generic/bug.h:145:47: warning: suggest braces around empty body in an 'if' statement [-Wempty-body]
-     145 | #define BUG_ON(condition) do { if (condition) ; } while (0)
-         |                                               ^
-   include/linux/dma-mapping.h:207:9: note: in expansion of macro 'BUG_ON'
-     207 |         BUG_ON(!valid_dma_direction(dir));
-         |         ^~~~~~
-   include/linux/dma-mapping.h: In function 'dma_sync_single_for_cpu':
-   include/asm-generic/bug.h:145:47: warning: suggest braces around empty body in an 'if' statement [-Wempty-body]
-     145 | #define BUG_ON(condition) do { if (condition) ; } while (0)
-         |                                               ^
-   include/linux/dma-mapping.h:219:9: note: in expansion of macro 'BUG_ON'
-     219 |         BUG_ON(!valid_dma_direction(dir));
-         |         ^~~~~~
-   include/linux/dma-mapping.h: In function 'dma_sync_single_for_device':
-   include/asm-generic/bug.h:145:47: warning: suggest braces around empty body in an 'if' statement [-Wempty-body]
-     145 | #define BUG_ON(condition) do { if (condition) ; } while (0)
-         |                                               ^
-   include/linux/dma-mapping.h:231:9: note: in expansion of macro 'BUG_ON'
-     231 |         BUG_ON(!valid_dma_direction(dir));
-         |         ^~~~~~
-   include/linux/dma-mapping.h: In function 'dma_sync_single_range_for_cpu':
-   include/asm-generic/bug.h:145:47: warning: suggest braces around empty body in an 'if' statement [-Wempty-body]
-     145 | #define BUG_ON(condition) do { if (condition) ; } while (0)
-         |                                               ^
-   include/linux/dma-mapping.h:245:9: note: in expansion of macro 'BUG_ON'
-     245 |         BUG_ON(!valid_dma_direction(dir));
-         |         ^~~~~~
-   include/linux/dma-mapping.h: In function 'dma_sync_single_range_for_device':
-   include/asm-generic/bug.h:145:47: warning: suggest braces around empty body in an 'if' statement [-Wempty-body]
-     145 | #define BUG_ON(condition) do { if (condition) ; } while (0)
-         |                                               ^
-   include/linux/dma-mapping.h:259:9: note: in expansion of macro 'BUG_ON'
-     259 |         BUG_ON(!valid_dma_direction(dir));
-         |         ^~~~~~
-   include/linux/dma-mapping.h: In function 'dma_sync_sg_for_cpu':
-   include/asm-generic/bug.h:145:47: warning: suggest braces around empty body in an 'if' statement [-Wempty-body]
-     145 | #define BUG_ON(condition) do { if (condition) ; } while (0)
-         |                                               ^
-   include/linux/dma-mapping.h:271:9: note: in expansion of macro 'BUG_ON'
-     271 |         BUG_ON(!valid_dma_direction(dir));
-         |         ^~~~~~
-   include/linux/dma-mapping.h: In function 'dma_sync_sg_for_device':
-   include/asm-generic/bug.h:145:47: warning: suggest braces around empty body in an 'if' statement [-Wempty-body]
-     145 | #define BUG_ON(condition) do { if (condition) ; } while (0)
-         |                                               ^
-   include/linux/dma-mapping.h:283:9: note: in expansion of macro 'BUG_ON'
-     283 |         BUG_ON(!valid_dma_direction(dir));
-         |         ^~~~~~
-   include/linux/dma-mapping.h: In function 'dma_mmap_attrs':
-   include/asm-generic/bug.h:145:47: warning: suggest braces around empty body in an 'if' statement [-Wempty-body]
-     145 | #define BUG_ON(condition) do { if (condition) ; } while (0)
-         |                                               ^
-   include/linux/dma-mapping.h:325:9: note: in expansion of macro 'BUG_ON'
-     325 |         BUG_ON(!ops);
-         |         ^~~~~~
-   include/linux/dma-mapping.h: In function 'dma_get_sgtable_attrs':
-   include/asm-generic/bug.h:145:47: warning: suggest braces around empty body in an 'if' statement [-Wempty-body]
-     145 | #define BUG_ON(condition) do { if (condition) ; } while (0)
-         |                                               ^
-   include/linux/dma-mapping.h:342:9: note: in expansion of macro 'BUG_ON'
-     342 |         BUG_ON(!ops);
-         |         ^~~~~~
-   include/linux/dma-mapping.h: In function 'dma_alloc_attrs':
-   include/asm-generic/bug.h:145:47: warning: suggest braces around empty body in an 'if' statement [-Wempty-body]
-     145 | #define BUG_ON(condition) do { if (condition) ; } while (0)
-         |                                               ^
-   include/linux/dma-mapping.h:362:9: note: in expansion of macro 'BUG_ON'
-     362 |         BUG_ON(!ops);
-         |         ^~~~~~
-   include/linux/dma-mapping.h: In function 'dma_free_attrs':
-   include/asm-generic/bug.h:145:47: warning: suggest braces around empty body in an 'if' statement [-Wempty-body]
-     145 | #define BUG_ON(condition) do { if (condition) ; } while (0)
-         |                                               ^
-   include/linux/dma-mapping.h:383:9: note: in expansion of macro 'BUG_ON'
-     383 |         BUG_ON(!ops);
-         |         ^~~~~~
-   include/linux/seq_file.h: In function 'seq_get_buf':
-   include/asm-generic/bug.h:145:47: warning: suggest braces around empty body in an 'if' statement [-Wempty-body]
-     145 | #define BUG_ON(condition) do { if (condition) ; } while (0)
-         |                                               ^
-   include/linux/seq_file.h:70:9: note: in expansion of macro 'BUG_ON'
-      70 |         BUG_ON(m->count > m->size);
-         |         ^~~~~~
-   include/linux/seq_file.h: In function 'seq_commit':
-   include/asm-generic/bug.h:145:47: warning: suggest braces around empty body in an 'if' statement [-Wempty-body]
-     145 | #define BUG_ON(condition) do { if (condition) ; } while (0)
-         |                                               ^
-   include/linux/seq_file.h:93:17: note: in expansion of macro 'BUG_ON'
-      93 |                 BUG_ON(m->count + num > m->size);
-         |                 ^~~~~~
-   arch/powerpc/platforms/embedded6xx/mvme5100.c: In function 'mvme5100_pic_init':
-   include/asm-generic/bug.h:145:47: warning: suggest braces around empty body in an 'if' statement [-Wempty-body]
-     145 | #define BUG_ON(condition) do { if (condition) ; } while (0)
-         |                                               ^
-   arch/powerpc/platforms/embedded6xx/mvme5100.c:73:9: note: in expansion of macro 'BUG_ON'
-      73 |         BUG_ON(mpic == NULL);
-         |         ^~~~~~
-   arch/powerpc/platforms/embedded6xx/mvme5100.c: In function 'mvme5100_add_bridge':
->> arch/powerpc/platforms/embedded6xx/mvme5100.c:140:65: error: passing argument 5 of 'early_read_config_dword' from incompatible pointer type [-Werror=incompatible-pointer-types]
-     140 |         early_read_config_dword(hose, 0, 0, PCI_BASE_ADDRESS_1, &pci_membase);
-         |                                                                 ^~~~~~~~~~~~
-         |                                                                 |
-         |                                                                 phys_addr_t * {aka long long unsigned int *}
-   In file included from arch/powerpc/platforms/embedded6xx/mvme5100.c:23:
-   arch/powerpc/include/asm/pci-bridge.h:139:53: note: expected 'u32 *' {aka 'unsigned int *'} but argument is of type 'phys_addr_t *' {aka 'long long unsigned int *'}
-     139 |                         int dev_fn, int where, u32 *val);
-         |                                                ~~~~~^~~
-   In file included from include/linux/printk.h:6,
-                    from include/linux/kernel.h:13,
-                    from include/linux/list.h:8,
-                    from include/linux/kobject.h:20,
-                    from include/linux/device.h:17,
-                    from include/linux/of_platform.h:14,
-                    from arch/powerpc/platforms/embedded6xx/mvme5100.c:20:
-   include/linux/kern_levels.h:4:25: warning: format '%x' expects argument of type 'unsigned int', but argument 2 has type 'phys_addr_t' {aka 'long long unsigned int'} [-Wformat=]
-       4 | #define KERN_SOH        "\001"          /* ASCII Start Of Header */
-         |                         ^~~~~~
-   include/linux/kern_levels.h:13:25: note: in expansion of macro 'KERN_SOH'
-      13 | #define KERN_INFO       KERN_SOH "6"    /* informational */
-         |                         ^~~~~~~~
-   include/linux/printk.h:259:16: note: in expansion of macro 'KERN_INFO'
-     259 |         printk(KERN_INFO pr_fmt(fmt), ##__VA_ARGS__)
-         |                ^~~~~~~~~
-   arch/powerpc/platforms/embedded6xx/mvme5100.c:147:9: note: in expansion of macro 'pr_info'
-     147 |         pr_info("mvme5100_pic_init: pci_membase: %x\n", pci_membase);
-         |         ^~~~~~~
-   cc1: some warnings being treated as errors
+Thank you for the feedback.
 
-
-vim +/early_read_config_dword +140 arch/powerpc/platforms/embedded6xx/mvme5100.c
-
-be2019816e4dcd Stephen Chivers 2014-01-09  110  
-be2019816e4dcd Stephen Chivers 2014-01-09  111  static int __init mvme5100_add_bridge(struct device_node *dev)
-be2019816e4dcd Stephen Chivers 2014-01-09  112  {
-be2019816e4dcd Stephen Chivers 2014-01-09  113  	const int		*bus_range;
-be2019816e4dcd Stephen Chivers 2014-01-09  114  	int			len;
-be2019816e4dcd Stephen Chivers 2014-01-09  115  	struct pci_controller	*hose;
-be2019816e4dcd Stephen Chivers 2014-01-09  116  	unsigned short		devid;
-be2019816e4dcd Stephen Chivers 2014-01-09  117  
-be2019816e4dcd Stephen Chivers 2014-01-09  118  	pr_info("Adding PCI host bridge %s\n", dev->full_name);
-be2019816e4dcd Stephen Chivers 2014-01-09  119  
-be2019816e4dcd Stephen Chivers 2014-01-09  120  	bus_range = of_get_property(dev, "bus-range", &len);
-be2019816e4dcd Stephen Chivers 2014-01-09  121  
-be2019816e4dcd Stephen Chivers 2014-01-09  122  	hose = pcibios_alloc_controller(dev);
-be2019816e4dcd Stephen Chivers 2014-01-09  123  	if (hose == NULL)
-be2019816e4dcd Stephen Chivers 2014-01-09  124  		return -ENOMEM;
-be2019816e4dcd Stephen Chivers 2014-01-09  125  
-be2019816e4dcd Stephen Chivers 2014-01-09  126  	hose->first_busno = bus_range ? bus_range[0] : 0;
-be2019816e4dcd Stephen Chivers 2014-01-09  127  	hose->last_busno = bus_range ? bus_range[1] : 0xff;
-be2019816e4dcd Stephen Chivers 2014-01-09  128  
-be2019816e4dcd Stephen Chivers 2014-01-09  129  	setup_indirect_pci(hose, 0xfe000cf8, 0xfe000cfc, 0);
-be2019816e4dcd Stephen Chivers 2014-01-09  130  
-be2019816e4dcd Stephen Chivers 2014-01-09  131  	pci_process_bridge_OF_ranges(hose, dev, 1);
-be2019816e4dcd Stephen Chivers 2014-01-09  132  
-be2019816e4dcd Stephen Chivers 2014-01-09  133  	early_read_config_word(hose, 0, 0, PCI_DEVICE_ID, &devid);
-be2019816e4dcd Stephen Chivers 2014-01-09  134  
-be2019816e4dcd Stephen Chivers 2014-01-09  135  	if (devid != PCI_DEVICE_ID_MOTOROLA_HAWK) {
-be2019816e4dcd Stephen Chivers 2014-01-09  136  		pr_err("HAWK PHB not present?\n");
-be2019816e4dcd Stephen Chivers 2014-01-09  137  		return 0;
-be2019816e4dcd Stephen Chivers 2014-01-09  138  	}
-be2019816e4dcd Stephen Chivers 2014-01-09  139  
-be2019816e4dcd Stephen Chivers 2014-01-09 @140  	early_read_config_dword(hose, 0, 0, PCI_BASE_ADDRESS_1, &pci_membase);
-be2019816e4dcd Stephen Chivers 2014-01-09  141  
-be2019816e4dcd Stephen Chivers 2014-01-09  142  	if (pci_membase == 0) {
-be2019816e4dcd Stephen Chivers 2014-01-09  143  		pr_err("HAWK PHB mibar not correctly set?\n");
-be2019816e4dcd Stephen Chivers 2014-01-09  144  		return 0;
-be2019816e4dcd Stephen Chivers 2014-01-09  145  	}
-be2019816e4dcd Stephen Chivers 2014-01-09  146  
-be2019816e4dcd Stephen Chivers 2014-01-09  147  	pr_info("mvme5100_pic_init: pci_membase: %x\n", pci_membase);
-be2019816e4dcd Stephen Chivers 2014-01-09  148  
-be2019816e4dcd Stephen Chivers 2014-01-09  149  	return 0;
-be2019816e4dcd Stephen Chivers 2014-01-09  150  }
-be2019816e4dcd Stephen Chivers 2014-01-09  151  
-
-:::::: The code at line 140 was first introduced by commit
-:::::: be2019816e4dcdb02493da332b65a8b68b70106c powerpc/embedded6xx: Add support for Motorola/Emerson MVME5100
-
-:::::: TO: Stephen Chivers <schivers@mandarin.aust.csc.com>
-:::::: CC: Scott Wood <scottwood@freescale.com>
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Yuran
