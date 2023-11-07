@@ -2,302 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA91D7E401C
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 14:34:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 243237E4021
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 14:38:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233872AbjKGNeq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 08:34:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34714 "EHLO
+        id S233861AbjKGNiV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 08:38:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229693AbjKGNeo (ORCPT
+        with ESMTP id S229580AbjKGNiU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 08:34:44 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BDF69F
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 05:34:41 -0800 (PST)
-Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A7DMfdV027040;
-        Tue, 7 Nov 2023 13:34:29 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : in-reply-to : references : date : message-id : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=v3QkukCicnhLUxBi0c5Ls5rlqn8O3DTToO3Z55A5kTg=;
- b=ndwJHnCByIlKDBCsND4tEU4L2U5WwVHFB46dqPkWGs/dZQxf8JE0vJSy+XstM71CbYF7
- ntaI6QZlrCLJAK31/Bt1WigP6C2yCRm/3UKWsYTd/LZ1SZE8rnQ/mlJjW73FSxzHjNLA
- c+oYrxpzrcfRGiW4MCMYUgnNOQ27FZH0BNe2aR4CpccN9SxiXiEK0LryeZ4TOhpWk7/r
- fNF6IucoiJh/MBQhjKYvoqtEqg2lcCILmeeWEH93yacnCbngBoFN1s9BTSLu4mMFHN1S
- WyTNuUONMoxKTdOjbf5DV7o/WHLrS3P6NWTQ2jfoF3Fp2pBAy4oytcd/ezrAq7cExpMS 4Q== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u7p2k8aaa-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 07 Nov 2023 13:34:29 +0000
-Received: from m0353727.ppops.net (m0353727.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3A7DNrkS030005;
-        Tue, 7 Nov 2023 13:34:28 GMT
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u7p2k8a9c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 07 Nov 2023 13:34:28 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3A7C1kbU012794;
-        Tue, 7 Nov 2023 13:34:27 GMT
-Received: from smtprelay07.wdc07v.mail.ibm.com ([172.16.1.74])
-        by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3u609ss3tn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 07 Nov 2023 13:34:27 +0000
-Received: from smtpav02.dal12v.mail.ibm.com (smtpav02.dal12v.mail.ibm.com [10.241.53.101])
-        by smtprelay07.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3A7DYQpx21562090
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 7 Nov 2023 13:34:27 GMT
-Received: from smtpav02.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A77945805C;
-        Tue,  7 Nov 2023 13:34:26 +0000 (GMT)
-Received: from smtpav02.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6BBCC5805A;
-        Tue,  7 Nov 2023 13:34:24 +0000 (GMT)
-Received: from skywalker.linux.ibm.com (unknown [9.43.45.200])
-        by smtpav02.dal12v.mail.ibm.com (Postfix) with ESMTP;
-        Tue,  7 Nov 2023 13:34:24 +0000 (GMT)
-X-Mailer: emacs 29.1 (via feedmail 11-beta-1 I)
-From:   "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>
-Cc:     "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 29/37] powerpc/nohash: Replace pte_user() by pte_read()
-In-Reply-To: <02c4b724-f503-31ea-eb77-4b3cd6776fd8@csgroup.eu>
-References: <cover.1695659959.git.christophe.leroy@csgroup.eu>
- <72cbb5be595e9ef884140def73815ed0b0b37010.1695659959.git.christophe.leroy@csgroup.eu>
- <877cn39jyp.fsf@linux.ibm.com>
- <02c4b724-f503-31ea-eb77-4b3cd6776fd8@csgroup.eu>
-Date:   Tue, 07 Nov 2023 19:04:22 +0530
-Message-ID: <87zfzpznz5.fsf@linux.ibm.com>
+        Tue, 7 Nov 2023 08:38:20 -0500
+Received: from mail-oa1-x2c.google.com (mail-oa1-x2c.google.com [IPv6:2001:4860:4864:20::2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5555FA3;
+        Tue,  7 Nov 2023 05:38:16 -0800 (PST)
+Received: by mail-oa1-x2c.google.com with SMTP id 586e51a60fabf-1ef9f1640a5so3299965fac.3;
+        Tue, 07 Nov 2023 05:38:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699364295; x=1699969095; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=u/JzXXKi9EWZmEKt0kuoOZHJPpAwEzdC1EaLt8yqMl0=;
+        b=SvZwRFwNtsK0nRIEZ6lMg77JvtUpgkfCRvkRhtOHKX6VcpCDY/xIBDmlunRAekadn1
+         4dxDDd/xihwhSRaIpQW4kmo3IoQKhqoq5EvwDuoXNhsBdM0yRrL/xfaT/o9tlx/6Eh6k
+         yTbxelendmcpv8EOn2I1CG2hv35DfGbKjXOty0+CdebM2gvAwCbKSvxjqWW1MQ07HyKT
+         O+bTUKLa3sBbKyTPGFJUwJaJMJJxv/sJymXmtP6LNpPMlVnL3ahzAequUDedqLiabqZT
+         7mm6dsbCeqmOsb/kJJfcCWtuvbDX9hDCOWGOvzeZ3Iu1dsPqZU4U2O867vuLdzGZYxcP
+         Sakw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699364295; x=1699969095;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=u/JzXXKi9EWZmEKt0kuoOZHJPpAwEzdC1EaLt8yqMl0=;
+        b=kQD8z3ppxKg5IiyQe5rNuctgrfKRr3q82D9CtrjDJL5RSzL8zTszF3tHtaqRZ9qQJ1
+         5+ppxVAt2SFfa6vwiyk/1J+lS2uPGK16DQp3s9a6rBKolfUDIOSAzy0TCpL+t6ojWJjq
+         Qg06VWWnicWqntbdbwOwTwjHINq+Y7lRUYDlcc/NeG0xWOwuKyt52ZPgKtfyTTn5R0tm
+         0VlwcTP7I5xIRAW02iJLGq8lVua3yHpjLj5LVR6IathXJnClAoalvTfAWita81Ljd4p3
+         bUjw3hCGLo9MWbhbZjsiSEOW4FsBfLUi6PTdozAO8KhmZnJkYsWZuP6PbCost7c/Ijuq
+         jHkQ==
+X-Gm-Message-State: AOJu0Ywq4pwA/IJLmpOXxxVm8QWB3oMZvRibXVmGMhtHF43TPdDAdj6j
+        fvaxJR2US1sRhJclJc3E7Jlqu5yri95ijqNe8AU=
+X-Google-Smtp-Source: AGHT+IHNBTVDKA0fR0kDClpaT8pql9m1AEsUIvWGKaOkV7HGpxLEMW93vsgGqKhwvt+ff8/n4Uq7GyTt1WdlZHsmbo0=
+X-Received: by 2002:a05:6871:af8c:b0:1e9:b9e6:98e1 with SMTP id
+ zx12-20020a056871af8c00b001e9b9e698e1mr2251960oab.1.1699364295339; Tue, 07
+ Nov 2023 05:38:15 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+References: <20231107121837.3759358-1-sashal@kernel.org> <20231107121837.3759358-21-sashal@kernel.org>
+In-Reply-To: <20231107121837.3759358-21-sashal@kernel.org>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Tue, 7 Nov 2023 08:38:03 -0500
+Message-ID: <CADnq5_PzxAMvY7FKDuBT-7RwGhXusoKioF8zXwKR9oWvdp9foQ@mail.gmail.com>
+Subject: Re: [PATCH AUTOSEL 6.6 21/40] drm/radeon: Fix UBSAN
+ array-index-out-of-bounds for Radeon HD 5430
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Felix Held <felix.held@amd.com>,
+        dri-devel@lists.freedesktop.org, Xinhui.Pan@amd.com,
+        amd-gfx@lists.freedesktop.org,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        christian.koenig@amd.com
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: _yXYOuy1iDNyTTaHU1L3JHzj4hQSRrwv
-X-Proofpoint-ORIG-GUID: Dw-1ecWryLezBGYYr4IUtTKLD0JgQSOV
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-07_04,2023-11-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=526
- priorityscore=1501 spamscore=0 lowpriorityscore=0 impostorscore=0
- malwarescore=0 phishscore=0 suspectscore=0 clxscore=1015 mlxscore=0
- adultscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2310240000 definitions=main-2311070112
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christophe Leroy <christophe.leroy@csgroup.eu> writes:
-
-> Le 31/10/2023 =C3=A0 11:15, Aneesh Kumar K.V a =C3=A9crit=C2=A0:
->> Christophe Leroy <christophe.leroy@csgroup.eu> writes:
->>=20
->>> pte_user() is now only used in pte_access_permitted() to check
->>> access on vmas. User flag is cleared to make a page unreadable.
->>>
->>> So rename it pte_read() and remove pte_user() which isn't used
->>> anymore.
->>>
->>> For the time being it checks _PAGE_USER but in the near futur
->>> all plateforms will be converted to _PAGE_READ so lets support
->>> both for now.
->>>
->>> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
->>> ---
->>>   arch/powerpc/include/asm/nohash/32/pte-8xx.h |  7 -------
->>>   arch/powerpc/include/asm/nohash/pgtable.h    | 13 +++++++------
->>>   arch/powerpc/mm/ioremap.c                    |  4 ----
->>>   3 files changed, 7 insertions(+), 17 deletions(-)
->>>
->>> diff --git a/arch/powerpc/include/asm/nohash/32/pte-8xx.h b/arch/powerp=
-c/include/asm/nohash/32/pte-8xx.h
->>> index 62c965a4511a..1ee38befd29a 100644
->>> --- a/arch/powerpc/include/asm/nohash/32/pte-8xx.h
->>> +++ b/arch/powerpc/include/asm/nohash/32/pte-8xx.h
->>> @@ -112,13 +112,6 @@ static inline pte_t pte_mkwrite_novma(pte_t pte)
->>>=20=20=20
->>>   #define pte_mkwrite_novma pte_mkwrite_novma
->>>=20=20=20
->>> -static inline bool pte_user(pte_t pte)
->>> -{
->>> -	return !(pte_val(pte) & _PAGE_SH);
->>> -}
->>> -
->>> -#define pte_user pte_user
->>> -
->>>   static inline pte_t pte_mkhuge(pte_t pte)
->>>   {
->>>   	return __pte(pte_val(pte) | _PAGE_SPS | _PAGE_HUGE);
->>> diff --git a/arch/powerpc/include/asm/nohash/pgtable.h b/arch/powerpc/i=
-nclude/asm/nohash/pgtable.h
->>> index ee677162f9e6..aba56fe3b1c6 100644
->>> --- a/arch/powerpc/include/asm/nohash/pgtable.h
->>> +++ b/arch/powerpc/include/asm/nohash/pgtable.h
->>> @@ -160,9 +160,6 @@ static inline int pte_write(pte_t pte)
->>>   	return pte_val(pte) & _PAGE_WRITE;
->>>   }
->>>   #endif
->>> -#ifndef pte_read
->>> -static inline int pte_read(pte_t pte)		{ return 1; }
->>> -#endif
->>>   static inline int pte_dirty(pte_t pte)		{ return pte_val(pte) & _PAGE=
-_DIRTY; }
->>>   static inline int pte_special(pte_t pte)	{ return pte_val(pte) & _PAG=
-E_SPECIAL; }
->>>   static inline int pte_none(pte_t pte)		{ return (pte_val(pte) & ~_PTE=
-_NONE_MASK) =3D=3D 0; }
->>> @@ -190,10 +187,14 @@ static inline int pte_young(pte_t pte)
->>>    * and PTE_64BIT, PAGE_KERNEL_X contains _PAGE_BAP_SR which is also in
->>>    * _PAGE_USER.  Need to explicitly match _PAGE_BAP_UR bit in that cas=
-e too.
->>>    */
->>> -#ifndef pte_user
->>> -static inline bool pte_user(pte_t pte)
->>> +#ifndef pte_read
->>> +static inline bool pte_read(pte_t pte)
->>>   {
->>> +#ifdef _PAGE_READ
->>> +	return (pte_val(pte) & _PAGE_READ) =3D=3D _PAGE_READ;
->>> +#else
->>>   	return (pte_val(pte) & _PAGE_USER) =3D=3D _PAGE_USER;
->>> +#endif
->>>   }
->>>   #endif
->>>=20=20=20
->>> @@ -208,7 +209,7 @@ static inline bool pte_access_permitted(pte_t pte, =
-bool write)
->>>   	 * A read-only access is controlled by _PAGE_USER bit.
->>>   	 * We have _PAGE_READ set for WRITE and EXECUTE
->>>   	 */
->>> -	if (!pte_present(pte) || !pte_user(pte) || !pte_read(pte))
->>> +	if (!pte_present(pte) || !pte_read(pte))
->>>   		return false;
->>>=20=20=20
->>>   	if (write && !pte_write(pte))
->>> diff --git a/arch/powerpc/mm/ioremap.c b/arch/powerpc/mm/ioremap.c
->>> index 7823c38f09de..7b0afcabd89f 100644
->>> --- a/arch/powerpc/mm/ioremap.c
->>> +++ b/arch/powerpc/mm/ioremap.c
->>> @@ -50,10 +50,6 @@ void __iomem *ioremap_prot(phys_addr_t addr, size_t =
-size, unsigned long flags)
->>>   	if (pte_write(pte))
->>>   		pte =3D pte_mkdirty(pte);
->>>=20=20=20
->>> -	/* we don't want to let _PAGE_USER leak out */
->>> -	if (WARN_ON(pte_user(pte)))
->>> -		return NULL;
->>>
->>=20
->> This check is still valid right? I understand that we want to remove
->> _PAGE_USER. But then loosing this check is ok?
+On Tue, Nov 7, 2023 at 7:20=E2=80=AFAM Sasha Levin <sashal@kernel.org> wrot=
+e:
 >
-> Well, we may have to think about it for book3s/64. For all others=20
-> _PAGE_USER is gone and replaced by a check of addresses versus TASK_SIZE.
+> From: Mario Limonciello <mario.limonciello@amd.com>
 >
-> As ioremap() will map into vmalloc space that address is necesserally=20
-> correct.
->=20
+> [ Upstream commit c63079c61177ba1b17fa05c6875699a36924fe39 ]
 >
+> For pptable structs that use flexible array sizes, use flexible arrays.
+>
+> Suggested-by: Felix Held <felix.held@amd.com>
+> Link: https://gitlab.freedesktop.org/drm/amd/-/issues/2894
+> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
+> Acked-by: Alex Deucher <alexander.deucher@amd.com>
+> Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
 
-We are adding the pte flags check not the map addr check there. Something l=
-ike this?
+FWIW, I don't think any of these UBSAN variable sized array changes
+are really stable material.  They are not really fixing an actual
+issue just making UBSAN happy.
 
-diff --git a/arch/powerpc/include/asm/book3s/64/pgtable.h b/arch/powerpc/in=
-clude/asm/book3s/64/pgtable.h
-index 7c7de7b56df0..b053b86e0069 100644
---- a/arch/powerpc/include/asm/book3s/64/pgtable.h
-+++ b/arch/powerpc/include/asm/book3s/64/pgtable.h
-@@ -1462,5 +1462,11 @@ static inline bool pud_is_leaf(pud_t pud)
- 	return !!(pud_raw(pud) & cpu_to_be64(_PAGE_PTE));
- }
-=20
-+#define arch_ioremap_valid_pte arch_ioremap_valid_pte
-+static inline bool arch_ioremap_valid_pte(pte_t pte)
-+{
-+	return !!(pte_raw(pte) & cpu_to_be64(_PAGE_PRIVILEGED));
-+}
-+
- #endif /* __ASSEMBLY__ */
- #endif /* _ASM_POWERPC_BOOK3S_64_PGTABLE_H_ */
-diff --git a/arch/powerpc/include/asm/nohash/32/pte-8xx.h b/arch/powerpc/in=
-clude/asm/nohash/32/pte-8xx.h
-index 137dc3c84e45..7b23d2543528 100644
---- a/arch/powerpc/include/asm/nohash/32/pte-8xx.h
-+++ b/arch/powerpc/include/asm/nohash/32/pte-8xx.h
-@@ -223,5 +223,11 @@ static inline pte_t ptep_get(pte_t *ptep)
-=20
- #endif
-=20
-+#define arch_ioremap_valid_pte arch_ioremap_valid_pte
-+static inline bool arch_ioremap_valid_pte(pte_t pte)
-+{
-+	return !!(pte_val(pte) & (_PAGE_SH))
-+}
-+
- #endif /* __KERNEL__ */
- #endif /*  _ASM_POWERPC_NOHASH_32_PTE_8xx_H */
-diff --git a/arch/powerpc/include/asm/nohash/pte-e500.h b/arch/powerpc/incl=
-ude/asm/nohash/pte-e500.h
-index f516f0b5b7a8..d31274178aa6 100644
---- a/arch/powerpc/include/asm/nohash/pte-e500.h
-+++ b/arch/powerpc/include/asm/nohash/pte-e500.h
-@@ -105,6 +105,13 @@ static inline pte_t pte_mkexec(pte_t pte)
- }
- #define pte_mkexec pte_mkexec
-=20
-+#define arch_ioremap_valid_pte arch_ioremap_valid_pte
-+static inline bool arch_ioremap_valid_pte(pte_t pte)
-+{
-+	return !(pte_val(pte) & (_PAGE_BAP_UR | _PAGE_BAP_UW | _PAGE_BAP_UX))
-+}
-+
-+
- #endif /* __ASSEMBLY__ */
-=20
- #endif /* __KERNEL__ */
-diff --git a/arch/powerpc/include/asm/pgtable.h b/arch/powerpc/include/asm/=
-pgtable.h
-index 2bfb7dd3b49e..417abe5dcbd8 100644
---- a/arch/powerpc/include/asm/pgtable.h
-+++ b/arch/powerpc/include/asm/pgtable.h
-@@ -231,6 +231,13 @@ static inline bool arch_supports_memmap_on_memory(unsi=
-gned long vmemmap_size)
-=20
- #endif /* CONFIG_PPC64 */
-=20
-+#ifndef arch_ioremap_valid_pte
-+static inline book arch_ioremap_valid_pte(pte_t pte)
-+{
-+	return true;
-+}
-+#endif
-+
- #endif /* __ASSEMBLY__ */
-=20
- #endif /* _ASM_POWERPC_PGTABLE_H */
-diff --git a/arch/powerpc/mm/ioremap.c b/arch/powerpc/mm/ioremap.c
-index 7b0afcabd89f..1a39e698c3d4 100644
---- a/arch/powerpc/mm/ioremap.c
-+++ b/arch/powerpc/mm/ioremap.c
-@@ -50,6 +50,9 @@ void __iomem *ioremap_prot(phys_addr_t addr, size_t size,=
- unsigned long flags)
- 	if (pte_write(pte))
- 		pte =3D pte_mkdirty(pte);
-=20
-+	if (WARN_ON(!arch_ioremap_valid_pte(pte)))
-+		return NULL;
-+
- 	if (iowa_is_active())
- 		return iowa_ioremap(addr, size, pte_pgprot(pte), caller);
- 	return __ioremap_caller(addr, size, pte_pgprot(pte), caller);
-=20
+Alex
+
+
+> ---
+>  drivers/gpu/drm/radeon/pptable.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/radeon/pptable.h b/drivers/gpu/drm/radeon/pp=
+table.h
+> index 4c2eec49dadc9..94947229888ba 100644
+> --- a/drivers/gpu/drm/radeon/pptable.h
+> +++ b/drivers/gpu/drm/radeon/pptable.h
+> @@ -74,7 +74,7 @@ typedef struct _ATOM_PPLIB_THERMALCONTROLLER
+>  typedef struct _ATOM_PPLIB_STATE
+>  {
+>      UCHAR ucNonClockStateIndex;
+> -    UCHAR ucClockStateIndices[1]; // variable-sized
+> +    UCHAR ucClockStateIndices[]; // variable-sized
+>  } ATOM_PPLIB_STATE;
+>
+>
+> --
+> 2.42.0
+>
