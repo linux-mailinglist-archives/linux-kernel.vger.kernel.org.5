@@ -2,68 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F058C7E384E
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 10:55:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0FFC7E3857
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 10:57:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234016AbjKGJzU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 04:55:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54036 "EHLO
+        id S233714AbjKGJ5x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 04:57:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234054AbjKGJzA (ORCPT
+        with ESMTP id S229776AbjKGJ5w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 04:55:00 -0500
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7417210F3;
-        Tue,  7 Nov 2023 01:54:51 -0800 (PST)
-Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-6b5cac99cfdso4465859b3a.2;
-        Tue, 07 Nov 2023 01:54:51 -0800 (PST)
+        Tue, 7 Nov 2023 04:57:52 -0500
+Received: from mail-oo1-xc2d.google.com (mail-oo1-xc2d.google.com [IPv6:2607:f8b0:4864:20::c2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29F14F3;
+        Tue,  7 Nov 2023 01:57:50 -0800 (PST)
+Received: by mail-oo1-xc2d.google.com with SMTP id 006d021491bc7-581e5a9413bso3027090eaf.1;
+        Tue, 07 Nov 2023 01:57:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699350890; x=1699955690; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SmIG2BB5oMZIMJvfS5LNShy64tFn+UOtZXHaIVjFwZs=;
-        b=jhhNAtwAfKw4Ecof8CqgOav8c70S/H3H2RGhEq5q3J1iFkk5KQt0B828pU81Mpy3V+
-         9kV/SPA15D/dUREy0YIEX3a6YDTacBbszExVRYPUg861HKYAsIKQj5WXzNTjccuYui4+
-         eWtbbMPKxtHjXyH4bXaU5qmYwXsox2vj3aaP0io4ijHPZymM+aoxjItpDzeuI+hXLimS
-         2t3H58gvON3eO5omLeAyeSGmySeVB+yCnXF05uSaQVTueOmRvKWT0MPLYpo5O6ZvqqGU
-         +Cvuq1N9NFF/yJYr3ltVazq3i6BR3lBr8QV5sCFXRDOQU2XVQuaffEVWjDhmi2L95RR3
-         27PQ==
+        d=gmail.com; s=20230601; t=1699351069; x=1699955869; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=FEmyl1Kghqf1NFmsUhneaNM1whAWfSEyfRV9qa+1zHQ=;
+        b=YvEwurqYMEPV3Z7fG0MGrLV4ldxNx3htDAWtndpdVtJJOFNR9v35SLtBWsKukw3YGF
+         raUmgPhf/9nRK/c0gDUisVB71dQ0SCvcgEKaWn2Kt6BBHCgntGw05i5hJZJTEoCDE+2H
+         loMnMiiMSbnL1NYYmUSTFNNYAzvhD8EAejdYebPNKr2xItBDmEnRAccUX9vGKT23bpWh
+         D2AJ/EloY9WfMWzAjy/rmg9Nov+oYsPfgohwdX5fBzYYGY0Un0YhgNxG/X+TUStiCwer
+         gyI73ghwgcPAy264MRF23MLTb2jawLyewJ9OctNuMBBIf4YL/8yD+FMs5QN8ByHAeHeA
+         c1fw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699350890; x=1699955690;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SmIG2BB5oMZIMJvfS5LNShy64tFn+UOtZXHaIVjFwZs=;
-        b=dVk/Tee5utmGenmtOw2JMjfQZor8hTUASTpcKnQW5AF0CHvt4UY+4iHSsiDrnYlJCk
-         uaNrAWwb2IGO0wwFRW++ddyWQ+8GH9WtPUEsn4aXhycVzVBNPSh/EmwRauqlC+7iTCz9
-         vqkfSpY+AH/j2iHmOmB/GRyhSTYwjjGPQykqQ8vF2yVhCiC6SWEX9GvAq8c8kAir1uqh
-         mMjCorYg5IS4OWFZZ3HmlXqKGLOgttslwUWdGe6grz0vd/Z5cWcs41dYzePjCo39/0It
-         NriARJ8/5TunfNd1aXr4ubOpbSTKtoXDqdTaqHHHIyaSWhDvjLbW2e2jzNftwdYZ/9Bc
-         vMNg==
-X-Gm-Message-State: AOJu0Yw4Qu3MgdHTX+ETsAQcFaQFkcGxIE4h7v2YdzKA7PbuiLOhRY8w
-        cAQI3wXrjeSfsu5umkMF1Sk=
-X-Google-Smtp-Source: AGHT+IHnWGSNm4gQ3U45n+wXQaNEMozegFa4guOQqx+0QUroNTgdYTfuT3PnILgSVjiQ+F3DdPpxyw==
-X-Received: by 2002:a05:6a00:814:b0:6b2:2a2d:7a26 with SMTP id m20-20020a056a00081400b006b22a2d7a26mr32525997pfk.28.1699350890518;
-        Tue, 07 Nov 2023 01:54:50 -0800 (PST)
+        d=1e100.net; s=20230601; t=1699351069; x=1699955869;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=FEmyl1Kghqf1NFmsUhneaNM1whAWfSEyfRV9qa+1zHQ=;
+        b=tHod+bPZUvzCRD0QQMAMFa6wkvuKI3/K1Ns4zcLf8N/tmPEO1Z5ihGwuHamnKrvatq
+         VYOuB8Olc80Tngc2hx3zDMtvsjTqTJ2rambmZ9DkbSrfRuJujIfhHA1UdA5tGZq/QnoX
+         yMaxrpevu4IKBa3IWeYstzX3RnYDKxF7lKS9SVCefj+3pYof4VuVMaQOeIvz0szNiFHM
+         vcl86zP6mpEMN/fsZCeb0vIDlTZntdeKks9h5e71zioVG7idkXN2IXzaAXDsI6ueUo3J
+         AkV+NqaNfMROBfIxv3IftPN8BU9fQS7TJKLewnAIlv+A3LXXJPw1bxwzz/gf00kvVRiS
+         jvJg==
+X-Gm-Message-State: AOJu0YyM8REAvuFF0CvoVsR5MYB2XS3HcFSFtImHNnon7upw0rMlpqZM
+        cGt5SgY2S0nKCZvKPF0pmSk=
+X-Google-Smtp-Source: AGHT+IEjP3cfB6RzvPIrx7HvLhSsNb5+H9spbid2pxKtkEGgfOdw26RhUypbJOBhO8NKUd1NC3OJ6A==
+X-Received: by 2002:a05:6358:1904:b0:168:e0db:ce43 with SMTP id w4-20020a056358190400b00168e0dbce43mr31469455rwm.31.1699351069343;
+        Tue, 07 Nov 2023 01:57:49 -0800 (PST)
 Received: from localhost.localdomain (2001-b400-e25d-e1ee-eb42-adf3-9163-f337.emome-ip6.hinet.net. [2001:b400:e25d:e1ee:eb42:adf3:9163:f337])
-        by smtp.gmail.com with ESMTPSA id u8-20020aa78388000000b0068fe5a5a566sm7106705pfm.142.2023.11.07.01.54.47
+        by smtp.gmail.com with ESMTPSA id v13-20020a63f20d000000b0050f85ef50d1sm1078725pgh.26.2023.11.07.01.57.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Nov 2023 01:54:50 -0800 (PST)
+        Tue, 07 Nov 2023 01:57:49 -0800 (PST)
 From:   Victor Shih <victorshihgli@gmail.com>
 To:     ulf.hansson@linaro.org, adrian.hunter@intel.com
 Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
         benchuanggli@gmail.com, HL.Liu@genesyslogic.com.tw,
         Greg.tu@genesyslogic.com.tw, SeanHY.Chen.tu@genesyslogic.com.tw,
-        kai.heng.feng@canonical.com, Victor Shih <victorshihgli@gmail.com>,
-        Victor Shih <victor.shih@genesyslogic.com.tw>,
-        Kai-Heng Feng <kai.heng.geng@canonical.com>
-Subject: [PATCH V3 2/2] mmc: sdhci-pci-gli: GL9755: Mask the replay timer timeout of AER
-Date:   Tue,  7 Nov 2023 17:54:37 +0800
-Message-Id: <20231107095437.8724-3-victorshihgli@gmail.com>
+        kai.heng.feng@canonical.com,
+        Victor Shih <victor.shih@genesyslogic.com.tw>
+Subject: [PATCH V3 0/2] mmc: sdhci-pci-gli: GL975[05]: Mask the replay timer timeout of AER
+Date:   Tue,  7 Nov 2023 17:57:39 +0800
+Message-Id: <20231107095741.8832-1-victorshihgli@gmail.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231107095437.8724-1-victorshihgli@gmail.com>
-References: <20231107095437.8724-1-victorshihgli@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -78,45 +74,29 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Victor Shih <victor.shih@genesyslogic.com.tw>
 
-Due to a flaw in the hardware design, the GL9755 replay timer frequently
-times out when ASPM is enabled. As a result, the warning messages will
-often appear in the system log when the system accesses the GL9755
+Summary
+=======
+Due to a flaw in the hardware design, the GL975x replay timer frequently
+times out when ASPM is enabled. As a result, the warning messages that will
+often appear in the system log when the system accesses the GL975x
 PCI config. Therefore, the replay timer timeout must be masked.
 
-Fixes: 36ed2fd32b2c ("mmc: sdhci-pci-gli: A workaround to allow GL9755 to enter ASPM L1.2")
-Signed-off-by: Victor Shih <victor.shih@genesyslogic.com.tw>
-Acked-by: Adrian Hunter <adrian.hunter@intel.com>
-Acked-by: Kai-Heng Feng <kai.heng.geng@canonical.com>
----
- drivers/mmc/host/sdhci-pci-gli.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+Patch structure
+===============
+patch#1: for GL9750
+patch#2: for GL9755
 
-diff --git a/drivers/mmc/host/sdhci-pci-gli.c b/drivers/mmc/host/sdhci-pci-gli.c
-index 3887bfd7386b..d8a991b349a8 100644
---- a/drivers/mmc/host/sdhci-pci-gli.c
-+++ b/drivers/mmc/host/sdhci-pci-gli.c
-@@ -155,6 +155,9 @@
- #define PCI_GLI_9755_PM_CTRL     0xFC
- #define   PCI_GLI_9755_PM_STATE    GENMASK(1, 0)
- 
-+#define PCI_GLI_9755_CORRERR_MASK				0x214
-+#define   PCI_GLI_9755_CORRERR_MASK_REPLAY_TIMER_TIMEOUT	  BIT(12)
-+
- #define SDHCI_GLI_9767_GM_BURST_SIZE			0x510
- #define   SDHCI_GLI_9767_GM_BURST_SIZE_AXI_ALWAYS_SET	  BIT(8)
- 
-@@ -778,6 +781,11 @@ static void gl9755_hw_setting(struct sdhci_pci_slot *slot)
- 	value &= ~PCI_GLI_9755_PM_STATE;
- 	pci_write_config_dword(pdev, PCI_GLI_9755_PM_CTRL, value);
- 
-+	/* mask the replay timer timeout of AER */
-+	pci_read_config_dword(pdev, PCI_GLI_9755_CORRERR_MASK, &value);
-+	value |= PCI_GLI_9755_CORRERR_MASK_REPLAY_TIMER_TIMEOUT;
-+	pci_write_config_dword(pdev, PCI_GLI_9755_CORRERR_MASK, value);
-+
- 	gl9755_wt_off(pdev);
- }
- 
+Changes in v3 (November. 7, 2023)
+* Split patch in two patches. One patch for GL9750 and another for GL9755.
+* Add fixes tag to corresponding patches.
+
+Victor Shih (2):
+  mmc: sdhci-pci-gli: GL9750: Mask the replay timer timeout of AER
+  mmc: sdhci-pci-gli: GL9755: Mask the replay timer timeout of AER
+
+ drivers/mmc/host/sdhci-pci-gli.c | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
+
 -- 
 2.25.1
 
