@@ -2,43 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 33D667E453B
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 17:03:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E34787E45E4
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 17:21:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343619AbjKGQDa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 11:03:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34798 "EHLO
+        id S234889AbjKGQVf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 11:21:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235428AbjKGQDB (ORCPT
+        with ESMTP id S229959AbjKGQUy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 11:03:01 -0500
+        Tue, 7 Nov 2023 11:20:54 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F67E324B;
-        Tue,  7 Nov 2023 07:53:59 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 736ECC433C7;
-        Tue,  7 Nov 2023 15:53:57 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91C05325E;
+        Tue,  7 Nov 2023 07:54:02 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C915C433C7;
+        Tue,  7 Nov 2023 15:54:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699372439;
-        bh=SNKAzwnb2gokCznSGZ31gAf0LcEGM/4nnwpD/NOXYBI=;
+        s=k20201202; t=1699372442;
+        bh=ceHWTVGA9EM/EhI1jzMe9yw9hKsuwFG7Yh+OAwZf3QE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WRI68NXCfMtBeCTVgTyt3VdfLJeIsJeRmLlfQXXKlnQ0eZu+SmQ03fFSuHJYHGFUE
-         fmm6vorFYWvYp6xk2X1Gt7PR8ycDLYWh9kqaFifGDUqwlBUPIo2qsBlcgMhSxuvWHt
-         m+goRBjzmYGvewYxjLK0FjdL54G/Hu6URsROrmv7avxDBeuGLF9PD+kSIIJvEEEs8b
-         E7BxaVMqZhDZD0Urn2AB48pSNHPAilPTtms2JIygRjQarliy0ypPa6h6D19PPyGIZZ
-         A9hGMHWTJyWmEpksorzv1hFJQXD4yeR4+iWLeiN9NUwUbcHQTLlrIyN7qAmV41cYRq
-         RfAU6ykxrdWiQ==
+        b=QNahZaIv81TlF69d6XNQya4t4jTkAfp438vzqR68S895/V/Pz4SvB/6+kyaHTulEJ
+         /gloPF1/MriEwyi5703lg9La6mnMZyiQompHxHju9d0AkCdi7yQROuKOMeN9EG7LzB
+         BMGetcBkOA23Z/5H0pDE7SNpwqmM7OeHuI8NCE5ac4uyxNzUdlRwbRzhWs59mB94Q9
+         3TPf+/Br/1LQLUXbm34MxRkhk0P02REjIWJKqDkia3uOlRO3xlIx+gmtppCEkalBvp
+         f66JnHAK1TACRvyYUGQ9VviuelxyKQxyHVDHo/5v0PYrzVG7HG8S3md9dFHe7tDaln
+         BXObsJoLVwspQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Manas Ghandat <ghandatmanas@gmail.com>,
-        syzbot+aea1ad91e854d0a83e04@syzkaller.appspotmail.com,
+        syzbot+79d792676d8ac050949f@syzkaller.appspotmail.com,
         Dave Kleikamp <dave.kleikamp@oracle.com>,
         Sasha Levin <sashal@kernel.org>, shaggy@kernel.org,
-        juntong.deng@outlook.com, andrew.kanner@gmail.com,
-        yogi.kernel@gmail.com, wonguk.lee1023@gmail.com,
-        jfs-discussion@lists.sourceforge.net, code@siddh.me
-Subject: [PATCH AUTOSEL 5.4 05/12] jfs: fix array-index-out-of-bounds in dbFindLeaf
-Date:   Tue,  7 Nov 2023 10:53:23 -0500
-Message-ID: <20231107155343.3768464-5-sashal@kernel.org>
+        jlayton@kernel.org, brauner@kernel.org, liushixin2@huawei.com,
+        okanatov@gmail.com, jfs-discussion@lists.sourceforge.net
+Subject: [PATCH AUTOSEL 5.4 06/12] jfs: fix array-index-out-of-bounds in diAlloc
+Date:   Tue,  7 Nov 2023 10:53:24 -0500
+Message-ID: <20231107155343.3768464-6-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231107155343.3768464-1-sashal@kernel.org>
 References: <20231107155343.3768464-1-sashal@kernel.org>
@@ -53,83 +52,44 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Manas Ghandat <ghandatmanas@gmail.com>
 
-[ Upstream commit 22cad8bc1d36547cdae0eef316c47d917ce3147c ]
+[ Upstream commit 05d9ea1ceb62a55af6727a69269a4fd310edf483 ]
 
-Currently while searching for dmtree_t for sufficient free blocks there
-is an array out of bounds while getting element in tp->dm_stree. To add
-the required check for out of bound we first need to determine the type
-of dmtree. Thus added an extra parameter to dbFindLeaf so that the type
-of tree can be determined and the required check can be applied.
+Currently there is not check against the agno of the iag while
+allocating new inodes to avoid fragmentation problem. Added the check
+which is required.
 
-Reported-by: syzbot+aea1ad91e854d0a83e04@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=aea1ad91e854d0a83e04
+Reported-by: syzbot+79d792676d8ac050949f@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?extid=79d792676d8ac050949f
 Signed-off-by: Manas Ghandat <ghandatmanas@gmail.com>
 Signed-off-by: Dave Kleikamp <dave.kleikamp@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/jfs/jfs_dmap.c | 14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
+ fs/jfs/jfs_imap.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/fs/jfs/jfs_dmap.c b/fs/jfs/jfs_dmap.c
-index b23b219b20aab..ea330ce921b1a 100644
---- a/fs/jfs/jfs_dmap.c
-+++ b/fs/jfs/jfs_dmap.c
-@@ -87,7 +87,7 @@ static int dbAllocCtl(struct bmap * bmp, s64 nblocks, int l2nb, s64 blkno,
- static int dbExtend(struct inode *ip, s64 blkno, s64 nblocks, s64 addnblocks);
- static int dbFindBits(u32 word, int l2nb);
- static int dbFindCtl(struct bmap * bmp, int l2nb, int level, s64 * blkno);
--static int dbFindLeaf(dmtree_t * tp, int l2nb, int *leafidx);
-+static int dbFindLeaf(dmtree_t *tp, int l2nb, int *leafidx, bool is_ctl);
- static int dbFreeBits(struct bmap * bmp, struct dmap * dp, s64 blkno,
- 		      int nblocks);
- static int dbFreeDmap(struct bmap * bmp, struct dmap * dp, s64 blkno,
-@@ -1785,7 +1785,7 @@ static int dbFindCtl(struct bmap * bmp, int l2nb, int level, s64 * blkno)
- 		 * dbFindLeaf() returns the index of the leaf at which
- 		 * free space was found.
- 		 */
--		rc = dbFindLeaf((dmtree_t *) dcp, l2nb, &leafidx);
-+		rc = dbFindLeaf((dmtree_t *) dcp, l2nb, &leafidx, true);
- 
- 		/* release the buffer.
- 		 */
-@@ -2032,7 +2032,7 @@ dbAllocDmapLev(struct bmap * bmp,
- 	 * free space.  if sufficient free space is found, dbFindLeaf()
- 	 * returns the index of the leaf at which free space was found.
- 	 */
--	if (dbFindLeaf((dmtree_t *) & dp->tree, l2nb, &leafidx))
-+	if (dbFindLeaf((dmtree_t *) &dp->tree, l2nb, &leafidx, false))
- 		return -ENOSPC;
- 
- 	if (leafidx < 0)
-@@ -2992,14 +2992,18 @@ static void dbAdjTree(dmtree_t * tp, int leafno, int newval)
-  *	leafidx	- return pointer to be set to the index of the leaf
-  *		  describing at least l2nb free blocks if sufficient
-  *		  free blocks are found.
-+ *	is_ctl	- determines if the tree is of type ctl
-  *
-  * RETURN VALUES:
-  *	0	- success
-  *	-ENOSPC	- insufficient free blocks.
-  */
--static int dbFindLeaf(dmtree_t * tp, int l2nb, int *leafidx)
-+static int dbFindLeaf(dmtree_t *tp, int l2nb, int *leafidx, bool is_ctl)
+diff --git a/fs/jfs/jfs_imap.c b/fs/jfs/jfs_imap.c
+index 67c67604b8c85..14f918a4831d3 100644
+--- a/fs/jfs/jfs_imap.c
++++ b/fs/jfs/jfs_imap.c
+@@ -1322,7 +1322,7 @@ diInitInode(struct inode *ip, int iagno, int ino, int extno, struct iag * iagp)
+ int diAlloc(struct inode *pip, bool dir, struct inode *ip)
  {
- 	int ti, n = 0, k, x = 0;
-+	int max_size;
-+
-+	max_size = is_ctl ? CTLTREESIZE : TREESIZE;
+ 	int rc, ino, iagno, addext, extno, bitno, sword;
+-	int nwords, rem, i, agno;
++	int nwords, rem, i, agno, dn_numag;
+ 	u32 mask, inosmap, extsmap;
+ 	struct inode *ipimap;
+ 	struct metapage *mp;
+@@ -1358,6 +1358,9 @@ int diAlloc(struct inode *pip, bool dir, struct inode *ip)
  
- 	/* first check the root of the tree to see if there is
- 	 * sufficient free space.
-@@ -3020,6 +3024,8 @@ static int dbFindLeaf(dmtree_t * tp, int l2nb, int *leafidx)
- 			/* sufficient free space found.  move to the next
- 			 * level (or quit if this is the last level).
- 			 */
-+			if (x + n > max_size)
-+				return -ENOSPC;
- 			if (l2nb <= tp->dmt_stree[x + n])
- 				break;
- 		}
+ 	/* get the ag number of this iag */
+ 	agno = BLKTOAG(JFS_IP(pip)->agstart, JFS_SBI(pip->i_sb));
++	dn_numag = JFS_SBI(pip->i_sb)->bmap->db_numag;
++	if (agno < 0 || agno > dn_numag)
++		return -EIO;
+ 
+ 	if (atomic_read(&JFS_SBI(pip->i_sb)->bmap->db_active[agno])) {
+ 		/*
 -- 
 2.42.0
 
