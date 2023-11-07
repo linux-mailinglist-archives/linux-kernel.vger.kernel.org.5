@@ -2,114 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D68877E3743
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 10:10:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5632F7E3746
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 10:11:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233910AbjKGJKK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 04:10:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34902 "EHLO
+        id S233976AbjKGJLc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 04:11:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233872AbjKGJJk (ORCPT
+        with ESMTP id S233873AbjKGJLO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 04:09:40 -0500
-Received: from mail-lf1-x14a.google.com (mail-lf1-x14a.google.com [IPv6:2a00:1450:4864:20::14a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E49B172C
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 01:08:53 -0800 (PST)
-Received: by mail-lf1-x14a.google.com with SMTP id 2adb3069b0e04-507ee71fc4eso5600059e87.2
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 01:08:53 -0800 (PST)
+        Tue, 7 Nov 2023 04:11:14 -0500
+Received: from mail-vk1-xa32.google.com (mail-vk1-xa32.google.com [IPv6:2607:f8b0:4864:20::a32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E68E210D2
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 01:10:20 -0800 (PST)
+Received: by mail-vk1-xa32.google.com with SMTP id 71dfb90a1353d-4ac89e8e964so95937e0c.3
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 01:10:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1699348131; x=1699952931; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=3xFMLem70HhYX6nRkbkKvKTWxCL0yDkauEaz3DzbPvo=;
-        b=hnjzFTZAXhdOY6Fthq1RZEukW3xlcF6a9BhrtC3K33z2sAVKengGCVmhjwGLvsw//C
-         4JFJrfbR15fczPwL7m0Kdyaw/z96acqz+GCZCcYBNOkJ64jqsoKjhUMue7l0OCwmr3+U
-         CjED/16b4SOlJFvkMavJIeGoh0Fawe52vXgXjd0re+/OOwVkQrK+YUHHRYox52OGb07C
-         R0o78jncSfWSSX0RSWDGH+Sr3AoGJYMXIRUJfi/3gj9JmIAl0iyMfV84VqK8el/7vyqw
-         g+19Z0hoL5XgiEUIAPhGDI/iZRLD7734hTsEk+YBS6ird/pFSrrB4SpkMTLkXX1HOH0p
-         gb2g==
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1699348220; x=1699953020; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Xulp6w5/Ri/9r9/SFm3g0afSqwuslLKNN9sBarwCc+M=;
+        b=w5Xz9J/CCdvsdQSp89wd++1zXUYR8bQSlv2+zbLdC18+QOc5/TfmCfGY3tFmqWrZlm
+         o61vPIWpMEbg2loSN4kbI3YwLFP4ywEcnMU8OfbZopPYEFnRPaULWQMncZAH6ogZ3EqJ
+         a5ArBVg+FsQ2z97LOgttaSH8y5dEeha7sAzOB25JfTruC2XKYnCCf9uV4dnmIBXPoUJ0
+         3y4eNojx6YNng489kcqzckojc/u+bOn0lrPKo7kkgiv2fvYWy++BxyZ9ORqJbZKSMzC6
+         Y91LcJyOvAjxJb+BULQKoMx0uUcDEVLe9oB7jT9t6Thdoc7yp7ZD968HDcFyUL9fBLxg
+         XajQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699348131; x=1699952931;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3xFMLem70HhYX6nRkbkKvKTWxCL0yDkauEaz3DzbPvo=;
-        b=Sdd9NuqvNapOqDofv2X+gntC74wW8CW2s2pHyYx9rQE761QfGLSz9CYsaEgEd9KN/7
-         vnbxZTId0R28mTlHYEZzpQQ7dUF5jvgkCnk4d9w2UpoaobZGn9K8SssifLAquhQPtBgu
-         8HdJfciE2m+H57L6sTgFsbBW/4PhDTe8bS3ouO/UohlLVl8r8WzN7VUnQ5IE90d5zPSM
-         8u23LnwfT10cORlo2RbkUzib060O4g+eJgZyWe9lcikDnczYqBd6S+akLHcUzAweX1Xn
-         vNwcoCbi2EthCuBHsp5EPMfbJwQexoHCIe5LgWVnQqkROCszNQ/H5I1fhFy45VL2y+gY
-         KA4g==
-X-Gm-Message-State: AOJu0YzA4Sh7tCnjh73/vMSzwI3TxGyuv9gOgcMrIAAh4SLRbIlHYAyh
-        pBqolZ5hwpdr+Ltp8schgYQXzHgZo4ZuuA0=
-X-Google-Smtp-Source: AGHT+IHN7wQPceBPLuoJnA3rKiTrr+D0LIGTZ8UiA6BwJX2KnDvqCrX+E13FjJLa5896VLuVQnoxClj5GYMd8dI=
-X-Received: from aliceryhl2.c.googlers.com ([fda3:e722:ac3:cc00:68:949d:c0a8:572])
- (user=aliceryhl job=sendgmr) by 2002:ac2:53b9:0:b0:509:440f:3c5 with SMTP id
- j25-20020ac253b9000000b00509440f03c5mr149140lfh.1.1699348131534; Tue, 07 Nov
- 2023 01:08:51 -0800 (PST)
-Date:   Tue,  7 Nov 2023 09:08:49 +0000
-In-Reply-To: <20231102185934.773885-22-cmllamas@google.com>
-Mime-Version: 1.0
-References: <20231102185934.773885-22-cmllamas@google.com>
-X-Mailer: git-send-email 2.42.0.869.gea05f2083d-goog
-Message-ID: <20231107090849.262070-1-aliceryhl@google.com>
-Subject: Re: [PATCH 21/21] binder: switch alloc->mutex to spinlock_t
-From:   Alice Ryhl <aliceryhl@google.com>
-To:     Carlos Llamas <cmllamas@google.com>
-Cc:     "=?UTF-8?q?Arve=20Hj=C3=B8nnev=C3=A5g?=" <arve@android.com>,
-        Christian Brauner <brauner@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        kernel-team@android.com, linux-kernel@vger.kernel.org,
-        Martijn Coenen <maco@android.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Todd Kjos <tkjos@android.com>
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1699348220; x=1699953020;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Xulp6w5/Ri/9r9/SFm3g0afSqwuslLKNN9sBarwCc+M=;
+        b=dCz3lnE0bQ0gGKJcBki7irxpzEqKT6eSGPOEU/sVYksOiwQB+yVGyUM2xKWPgg3zFx
+         QHcEKHZI2cpuphI9K3S3Pw1m6mCFIJ5NEen9sJpdDG0Civ1AoEsd/m7lKmqErgcQYeMD
+         UURcfPj5e4hWm8Vv9L+PRO1Wi/a1bVJ0Pgzlr85JY62rfJHzHFYIrAYDsE4FI3ukxjPn
+         TjhdNb+ZrkXQCZQ2xR9mcsAn8GH9GBBQl09Ca6R9nwvR3lN/wkSQdzlxrR2O6isj8Pdn
+         j6MQ8VZMM1gxKvSbkwFEVRI44tIPG30F7p4RCh517U8cX5OmniXYGw9RAzYO18+mCBX+
+         xC6A==
+X-Gm-Message-State: AOJu0YzgDFrgA43wrK4opUctudbLsIef86mJlqF+4iFMpK1iYox1HFwj
+        8siBQ0C1i/4A/I+ZSZF9caRpi0ngQ3gOTZE647Uixw==
+X-Google-Smtp-Source: AGHT+IFDFaKR9NMG4dZaJMkah2C97w13KEHk1neO0arRwkZJctjZwUSTptdJ2oiPbGmmc1T2lRbCx09xouJlEYXIl8I=
+X-Received: by 2002:a1f:ac95:0:b0:496:2282:5c2f with SMTP id
+ v143-20020a1fac95000000b0049622825c2fmr27964014vke.6.1699348219878; Tue, 07
+ Nov 2023 01:10:19 -0800 (PST)
+MIME-Version: 1.0
+References: <20231107003603.20973-1-rdunlap@infradead.org>
+In-Reply-To: <20231107003603.20973-1-rdunlap@infradead.org>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Tue, 7 Nov 2023 10:10:08 +0100
+Message-ID: <CAMRc=MfECR_HDgqH3EPub=8GaV3OuHeSMnAxmuwnT=frztQPkQ@mail.gmail.com>
+Subject: Re: [PATCH] ARM: davinci: also select PINCTRL
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        linux-arm-kernel@lists.infradead.org, patches@armlinux.org.uk,
+        Russell King <linux@armlinux.org.uk>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Carlos Llamas <cmllamas@google.com> writes:
-> The alloc->mutex is a highly contended lock that causes performance
-> issues on Android devices. When a low-priority task is given this lock
-> and it sleeps, it becomes difficult for the task to wakeup and complete
-> its work. This delays other tasks that are also waiting on the mutex.
-
-Grammar nit: "to wake up"
-
-> The problem gets worse when there is memory pressure in the system,
-> because this increases the contention on the alloc->mutex while the
-> shrinker reclaims binder pages.
-> 
-> Switching to a spinlock helps to keep the waiters running and avoids the
-> overhead of waking up tasks. This significantly improves the transaction
-> latency when the problematic scenario occurs.
+On Tue, Nov 7, 2023 at 1:36=E2=80=AFAM Randy Dunlap <rdunlap@infradead.org>=
+ wrote:
 >
-> [snip]
+> kconfig warns when PINCTRL_SINGLE is selected but PINCTRL is not
+> set, so also set PINCTRL for ARCH_DAVINCI. This prevents a
+> kconfig/build warning:
 >
-> Note that it is only possible to convert this lock after a series of
-> changes made by previous patches. These mainly include refactoring the
-> sections that might_sleep() and changing the locking order with the
-> mmap_lock amongst others.
-> 
-> Signed-off-by: Carlos Llamas <cmllamas@google.com>
+>    WARNING: unmet direct dependencies detected for PINCTRL_SINGLE
+>      Depends on [n]: PINCTRL [=3Dn] && OF [=3Dy] && HAS_IOMEM [=3Dy]
+>      Selected by [y]:
+>      - ARCH_DAVINCI [=3Dy] && ARCH_MULTI_V5 [=3Dy]
+>
+> Fixes: f962396ce292 ("ARM: davinci: support multiplatform build for ARM v=
+5")
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes: lore.kernel.org/r/202311070548.0f6XfBrh-lkp@intel.com
+> Cc: Bartosz Golaszewski <brgl@bgdev.pl>
+> Cc: Arnd Bergmann <arnd@arndb.de>
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: patches@armlinux.org.uk
+> Cc: Russell King <linux@armlinux.org.uk>
+> ---
+> KernelVersion: 6.6
+>
+>  arch/arm/mach-davinci/Kconfig |    1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff -- a/arch/arm/mach-davinci/Kconfig b/arch/arm/mach-davinci/Kconfig
+> --- a/arch/arm/mach-davinci/Kconfig
+> +++ b/arch/arm/mach-davinci/Kconfig
+> @@ -10,6 +10,7 @@ menuconfig ARCH_DAVINCI
+>         select PM_GENERIC_DOMAINS_OF if PM && OF
+>         select REGMAP_MMIO
+>         select RESET_CONTROLLER
+> +       select PINCTRL
+>         select PINCTRL_SINGLE
+>
+>  if ARCH_DAVINCI
 
-Nice!
-
-Reviewed-by: Alice Ryhl <aliceryhl@google.com>
-
->  	 * binder_free_buf_locked(). However, that could
-> -	 * increase contention for the alloc mutex if clear_on_free
-> -	 * is used frequently for large buffers. The mutex is not
-> +	 * increase contention for the alloc->lock if clear_on_free
-> +	 * is used frequently for large buffers. This lock is not
-
-Grammar nit: Shouldn't this say "However, that could increase contention
-on alloc->lock if clear_on_free is used frequently for large buffers."?
-
-Alice
+Acked-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
