@@ -2,47 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A5E57E4146
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 14:54:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BA4E7E4164
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 15:03:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234947AbjKGNyp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 08:54:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50746 "EHLO
+        id S234668AbjKGOD1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 09:03:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234520AbjKGNxc (ORCPT
+        with ESMTP id S233974AbjKGODX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 08:53:32 -0500
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B61119AE
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 05:52:56 -0800 (PST)
-Received: from dggpemm100001.china.huawei.com (unknown [172.30.72.53])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4SPqLL4w68zMmNZ;
-        Tue,  7 Nov 2023 21:48:26 +0800 (CST)
-Received: from localhost.localdomain (10.175.112.125) by
- dggpemm100001.china.huawei.com (7.185.36.93) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Tue, 7 Nov 2023 21:52:53 +0800
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-CC:     <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Hildenbrand <david@redhat.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>
-Subject: [PATCH 6/6] mm: memory: use folio_prealloc() in do_anonymous_page()
-Date:   Tue, 7 Nov 2023 21:52:16 +0800
-Message-ID: <20231107135216.415926-7-wangkefeng.wang@huawei.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20231107135216.415926-1-wangkefeng.wang@huawei.com>
-References: <20231107135216.415926-1-wangkefeng.wang@huawei.com>
+        Tue, 7 Nov 2023 09:03:23 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09C1D10EB
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 05:55:08 -0800 (PST)
+Received: from [100.107.97.3] (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 4D88066074CE;
+        Tue,  7 Nov 2023 13:55:06 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1699365307;
+        bh=lEovXn58/a4qnfn12fKn636CmpY/k7Bme8lkfOulb/Q=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=b3cY5YwBIxpK4sAvXA6iiM2EDfd+5tG/YQQgKjaRzy6Q2pPcZo+fL2kgLsimWGfzh
+         ChwLHWADVMWoPM9DBcoGGkynvuiJt+qmzXGUwPA74HFfctyEtdH5ZcZfKEDne/hv/5
+         oTSZJ9ogffTuXH9OkMCvrjlGyjCYUn/DIEEYvdkONqf0+idjbq32qrPF66yqGMciBE
+         3eaJ/gZFZbXfY80AAXV7/Md2iyD+CR7zBA9eXnFsxi+BzA7NOwgArqE5vlrq9T/y+8
+         fPR3wxQ9OC04v/+792yj0/jjK9r8Ne5WRduqQJHOYjDKkOHFW7uCNRTxjpiQt2z37/
+         bhojXkVF5oMQA==
+Message-ID: <534c55c3-d045-4c0b-a374-431ac0fe4751@collabora.com>
+Date:   Tue, 7 Nov 2023 14:55:03 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.112.125]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpemm100001.china.huawei.com (7.185.36.93)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 3/3] ASoC: SOF: mediatek: remove unused variables
+Content-Language: en-US
+To:     Trevor Wu <trevor.wu@mediatek.com>,
+        pierre-louis.bossart@linux.intel.com,
+        peter.ujfalusi@linux.intel.com, yung-chuan.liao@linux.intel.com,
+        ranjani.sridharan@linux.intel.com, kai.vehmanen@linux.intel.com,
+        daniel.baluta@nxp.com, broonie@kernel.org, lgirdwood@gmail.com,
+        tiwai@suse.com, perex@perex.cz, matthias.bgg@gmail.com
+Cc:     yc.hung@mediatek.com, sound-open-firmware@alsa-project.org,
+        alsa-devel@alsa-project.org, linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20231103095433.10475-1-trevor.wu@mediatek.com>
+ <20231103095433.10475-4-trevor.wu@mediatek.com>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20231103095433.10475-4-trevor.wu@mediatek.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -51,46 +64,13 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use folio_prealloc() to simplify code a bit.
+Il 03/11/23 10:54, Trevor Wu ha scritto:
+> To prevent confusion on the follow-up platform, it is necessary to
+> remove any unused variables within the struct mtk_adsp_chip_info.
+> 
+> Signed-off-by: Trevor Wu <trevor.wu@mediatek.com>
+> Reviewed-by: Yaochun Hung <yc.hung@mediatek.com>
 
-Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
----
- mm/memory.c | 14 +++-----------
- 1 file changed, 3 insertions(+), 11 deletions(-)
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 
-diff --git a/mm/memory.c b/mm/memory.c
-index 1a7dc19bd35d..e4deab750a51 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -4167,14 +4167,10 @@ static vm_fault_t do_anonymous_page(struct vm_fault *vmf)
- 
- 	/* Allocate our own private page. */
- 	if (unlikely(anon_vma_prepare(vma)))
--		goto oom;
--	folio = vma_alloc_zeroed_movable_folio(vma, vmf->address);
-+		return VM_FAULT_OOM;
-+	folio = folio_prealloc(vma->vm_mm, vma, vmf->address, true);
- 	if (!folio)
--		goto oom;
--
--	if (mem_cgroup_charge(folio, vma->vm_mm, GFP_KERNEL))
--		goto oom_free_page;
--	folio_throttle_swaprate(folio, GFP_KERNEL);
-+		return VM_FAULT_OOM;
- 
- 	/*
- 	 * The memory barrier inside __folio_mark_uptodate makes sure that
-@@ -4225,10 +4221,6 @@ static vm_fault_t do_anonymous_page(struct vm_fault *vmf)
- release:
- 	folio_put(folio);
- 	goto unlock;
--oom_free_page:
--	folio_put(folio);
--oom:
--	return VM_FAULT_OOM;
- }
- 
- /*
--- 
-2.27.0
 
