@@ -2,81 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A8B727E4A8B
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 22:23:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9A317E4A8C
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 22:24:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235222AbjKGVXk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 16:23:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45816 "EHLO
+        id S234921AbjKGVYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 16:24:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234888AbjKGVXi (ORCPT
+        with ESMTP id S1344129AbjKGVX6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 16:23:38 -0500
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E3AF10D5
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 13:23:36 -0800 (PST)
-Received: by mail-io1-xd2f.google.com with SMTP id ca18e2360f4ac-7a950f1451fso50075539f.1
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 13:23:36 -0800 (PST)
+        Tue, 7 Nov 2023 16:23:58 -0500
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B86B10C1
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 13:23:56 -0800 (PST)
+Received: by mail-yb1-xb32.google.com with SMTP id 3f1490d57ef6-da37522a363so6535057276.0
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 13:23:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1699392215; x=1699997015; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=wtzi+TszAqVWEZJQWIHSFO/HSHZJHi2BvQ12spn5fho=;
-        b=ZQb9I1hQiQxV5PND4Ea68bZEmNh19y0Zs+jwJHjplPT3KmtnP+XGBP1M7rivOZYZui
-         ibA1Qi3yIQnttKYUxiEv6k+dJZp1AjbQbRVKGEZxSlbnRKdJMWts5O8yt9ei4MPkoM/V
-         BLQ+fgde4E7YVbglbSKbuNrbokmReirkwmeQ8=
+        d=linaro.org; s=google; t=1699392235; x=1699997035; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=dvTG10ABG0x3sP4grZoASxI3B60KESzfNKXhZ50ortI=;
+        b=ppQpqpxLU/ScMTwdWIWqh37x7ql512apFKf7SNVefgiJ8rJvX9Eqbrnftroq1hn5xw
+         OoRSeHEh4jOt4I+T6Jxn/PAYogTyQMKNncqY7Sw5QVPPkTdh4a/Rl9wxf/pupsrciN9n
+         R2afkbBcom6jMu6R6r1/jfU4hUB+rHjaJEuXd6nJvBpk36PY3rODxNs4MlCjYgTJsO5/
+         D3dbFa83U8p32hGdciCLemVdr6ZrecNtCooEkUgbb4OV9+kFde3R94Fdf89Kc2j8ImoJ
+         ww2Gp7ZoSi56Cpk6jjY6XgZeCIdhCYV2RVKEk83mkeW02f1zbeFTFOLULp0ONCfkCDEQ
+         6/eA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699392215; x=1699997015;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=wtzi+TszAqVWEZJQWIHSFO/HSHZJHi2BvQ12spn5fho=;
-        b=QQ7tB0kYD77kbzMzOUb/vfFfIjmO6qPI5bQxOIIfkDgpF+FZhkB1Bx+3ITB3sb6vkB
-         yhdDcg8MUgf3hR1Njs8kGRJUtXdm7r9d84JqI6Qby3BTKlzgpCHUXxGP14zDxgyreaZ/
-         zlkoQ6xA1kPmn7vemPjQMYNwALnM3hxsFQXIiy71WB2Xiri7zVMd175sT6DcsAPFDhn9
-         FWuLI9/NnXyZPIn1TlOoiy8dWzXI6Jp/N63Ruj1wM3PJ4z2kGZ3isbpp5BzWCStEo1m2
-         ni915hDP2RrqhtjZGuM38QOozRQTp8/ROxRoUo/fIjCmTjfZ8CMOs33ZKrJLsuIWB2QB
-         r50Q==
-X-Gm-Message-State: AOJu0Yywl9PtaCo5WxCjvvWQsR89mR29CWPRSEwzNGzuK9iMFPG5lb1/
-        LRiOcVQRQIF53sXvmVbbAua4UA==
-X-Google-Smtp-Source: AGHT+IFUJw2/d40v1RpVWENnkltY7sbFKy+YRt8lL1zimhATc9h6LLV6++VkRY9Dgw1ERsUTIleVdw==
-X-Received: by 2002:a5d:8ad7:0:b0:7ad:3ee0:86fc with SMTP id e23-20020a5d8ad7000000b007ad3ee086fcmr80165iot.1.1699392215338;
-        Tue, 07 Nov 2023 13:23:35 -0800 (PST)
-Received: from [192.168.1.128] ([38.175.170.29])
-        by smtp.gmail.com with ESMTPSA id gq10-20020a0566382d0a00b00458edc46632sm2883067jab.156.2023.11.07.13.23.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 07 Nov 2023 13:23:34 -0800 (PST)
-Message-ID: <0f3a63ff-cbf9-4e06-8f4f-fd22bafa26fe@linuxfoundation.org>
-Date:   Tue, 7 Nov 2023 14:23:34 -0700
+        d=1e100.net; s=20230601; t=1699392235; x=1699997035;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=dvTG10ABG0x3sP4grZoASxI3B60KESzfNKXhZ50ortI=;
+        b=a4yf6inQMUBaZRYZikfk3/A9aT+p1r1RGPSYRoPkh2H3t96InrvW0+wggU7S/OhYUU
+         2yv0QFg0JRDXgQWFgeT4L4mDWgo0uWtP9S9GYKiDmtBmiMNwlMTIWvuZOb4VB6pkhOsB
+         cUwPdMSuG/A7xsdwD9Z6eCcC1gpkKq4670VrTmjx17vSZAC3u6moJwm6WKxsqN2En5p9
+         Div8yZFni2ORARA5sEkYbvJLMF61JZwANfmbbkKqFrrtyjVBf451+zqPCtUhR/tpTy8O
+         PIUM+c4VbkwOH0lU7kRWGzbQCmbwy7eOLfTyfo3jIrKhRoY/LXZfQO1PfpWVAyr1MpA0
+         aI8w==
+X-Gm-Message-State: AOJu0YxFy79F0wcfz/mzKyquVvV3oZJQgE7Ic4rERYJs6PHxajwxLR/V
+        PQZTL6FlrrMtwjtJs3rIic0LnKSO26x60gVETx5VGw==
+X-Google-Smtp-Source: AGHT+IGTIU8jvCkV2BUmMTj6P61DCp2zrVll07uOzohXhnifKAxxWHa52coxZVe3Ciqk7nE0PKdFhk/25bhDX0311ks=
+X-Received: by 2002:a25:202:0:b0:da3:b4a0:8807 with SMTP id
+ 2-20020a250202000000b00da3b4a08807mr19738231ybc.65.1699392235379; Tue, 07 Nov
+ 2023 13:23:55 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] selftests: capabilities: namespace create varies for root
- and normal user
-Content-Language: en-US
-To:     Swarup Laxman Kotiaklapudi <swarupkotikalapudi@gmail.com>,
-        shuah@kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20230929125348.13302-1-swarupkotikalapudi@gmail.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <20230929125348.13302-1-swarupkotikalapudi@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <1696632910-21942-1-git-send-email-quic_khsieh@quicinc.com>
+ <CAA8EJpoFRp+7GyO=F3Ar21tfG5Yt0cL6zkAquqg7D1XXQjp50Q@mail.gmail.com> <55a4f98e-2772-e4fd-ae8a-132f92582c78@quicinc.com>
+In-Reply-To: <55a4f98e-2772-e4fd-ae8a-132f92582c78@quicinc.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Tue, 7 Nov 2023 23:23:43 +0200
+Message-ID: <CAA8EJpo9CFf-Z3eiuKPvwf-y6eGkSibro-q-=SBxKK_L-zFOBA@mail.gmail.com>
+Subject: Re: [PATCH v7 0/7] incorporate pm runtime framework and eDP clean up
+To:     Kuogee Hsieh <quic_khsieh@quicinc.com>
+Cc:     dri-devel@lists.freedesktop.org, robdclark@gmail.com,
+        sean@poorly.run, swboyd@chromium.org, dianders@chromium.org,
+        vkoul@kernel.org, daniel@ffwll.ch, airlied@gmail.com,
+        agross@kernel.org, andersson@kernel.org, quic_abhinavk@quicinc.com,
+        quic_jesszhan@quicinc.com, quic_sbillaka@quicinc.com,
+        marijn.suijten@somainline.org, freedreno@lists.freedesktop.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/29/23 06:53, Swarup Laxman Kotiaklapudi wrote:
-> Change namespace creation for root and non-root
-> user differently in create_and_enter_ns() function
-> 
+On Tue, 7 Nov 2023 at 23:01, Kuogee Hsieh <quic_khsieh@quicinc.com> wrote:
+>
+>
+> On 11/6/2023 5:55 PM, Dmitry Baryshkov wrote:
+> > On Sat, 7 Oct 2023 at 01:55, Kuogee Hsieh <quic_khsieh@quicinc.com> wrote:
+> >> The purpose of this patch series is to incorporate pm runtime framework
+> >> into MSM eDP/DP driver so that eDP panel can be detected by DRM eDP panel
+> >> driver during system probe time. During incorporating procedure, original
+> >> customized pm realted fucntions, such as dp_pm_prepare(), dp_pm_suspend(),
+> >> dp_pm_resume() and dp_pm_prepare(), are removed and replaced with functions
+> >> provided by pm runtiem framework such as pm_runtime_force_suspend() and
+> >> pm_runtime_force_resume(). In addition, both eDP aux-bus and irq handler
+> >> are bound at system probe time too.
+> >
+> > With this patchset in place I can crash the board using the following
+> > sequence (SM8350-HDK):
+> >
+> > - plug the USBC DP dongle
+> > - run modetest at any mode, don't press Enter yet
+> > - unplug the dongle
+> > - press Enter to stop modetest
+> >
+> > => the board resets to Sahara.
+> >
+> > Please ping me if you need any additional information from my side.
+>
+> questiosn,
+>
+> 1) which dongle are you used?
 
-Sorry for the delay on reviewing this.
+I have used several Dell and Hama USB-C dongles.
 
-Can you tell me more about why this change is needed and
-include it in the change log.
+>
+> 2) what code branch shoud I used to duplicate this problem.
 
-thanks,
--- Shuah
+I have pushed my kernel tree to
+git.codelinaro.org/dmitry.baryshkov/linux.git, branch test-dp-rpm
+I had several UCSI patches on top, but they should not be relevant.
+
+>
+> I can not duplicate  system crash problem at my setup kodiak (SM7325)
+> chrome book with my PM runtime patch series.
+>
+> my code base is Linux 6.6-rc2 + pm runtime patch series (7 patches)
+>
+> I did:
+>
+> 1) plugin either apple dongle (DP-to-HDMI) + 1080p display or DP typeC
+> cable directly to 1080p display
+>
+> 2)  stop ui
+>
+> 3) /usr/bin/modetest -M msm -s 34:1920x1080 (see test pattern show at
+> display)
+>
+> 4) unplug apple dongle or DP typeC cable
+>
+> 5) hit enter key
+>
+> 6) start ui
+>
+> 7) display back to login page of chrome book
+>
+>
+
+
+-- 
+With best wishes
+Dmitry
