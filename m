@@ -2,139 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E1CD7E4201
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 15:45:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB76B7E4206
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 15:45:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234459AbjKGOpP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 09:45:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59296 "EHLO
+        id S234670AbjKGOpT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 09:45:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230178AbjKGOpM (ORCPT
+        with ESMTP id S234474AbjKGOpP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 09:45:12 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C83F511B;
-        Tue,  7 Nov 2023 06:45:09 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D68C4C433C7;
-        Tue,  7 Nov 2023 14:45:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699368309;
-        bh=DCyfmXibenthavLR5OiO0v+ClmxD1f/SWmuBNmS/nbQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=igKU9F11MB0Xcq4Nu0c1zh1QEB+4EOVvhCFXhykinYrteyoEIZAmk+OCdpz2BIrQD
-         REEqlz5XNUcIntoHKJiiT4Lx9GXJ2dr/INGX7xQ9WkESsMdsAmgVmn4UrXxVNNKIzx
-         04wxNoRpL6NneIX5ip6sDXZ3CPuQcySARG4dKSdmVUsZGiAQaBSjTT7WpntRKTChTx
-         r8upz/bfdHhVFgxb+EDNsDPEUEDd7StSdXkwW2NXLK3qCEIUN28TnS6dS8DHQL9lBh
-         XMoiLPgXPHqE3UphKCKtmZUbr4l4xKKDuE/9QVhTRkLrk3hB9IdS2U7zMtGif3kj2l
-         vwpEpHoVapRYg==
-Date:   Tue, 7 Nov 2023 20:14:45 +0530
-From:   Manivannan Sadhasivam <mani@kernel.org>
-To:     Mrinmay Sarkar <quic_msarkar@quicinc.com>
-Cc:     agross@kernel.org, andersson@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        konrad.dybcio@linaro.org, mani@kernel.org, robh+dt@kernel.org,
-        quic_shazhuss@quicinc.com, quic_nitegupt@quicinc.com,
-        quic_ramkri@quicinc.com, quic_nayiluri@quicinc.com,
-        dmitry.baryshkov@linaro.org, robh@kernel.org,
-        quic_krichai@quicinc.com, quic_vbadigan@quicinc.com,
-        quic_parass@quicinc.com, quic_schintav@quicinc.com,
-        quic_shijjose@quicinc.com, Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        linux-pci@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mhi@lists.linux.dev
-Subject: Re: [PATCH v7 3/4] PCI: epf-mhi: Add support for SA8775P
-Message-ID: <20231107144445.GA147804@thinkpad>
-References: <1699361428-12802-1-git-send-email-quic_msarkar@quicinc.com>
- <1699361428-12802-4-git-send-email-quic_msarkar@quicinc.com>
+        Tue, 7 Nov 2023 09:45:15 -0500
+Received: from mail-ua1-x935.google.com (mail-ua1-x935.google.com [IPv6:2607:f8b0:4864:20::935])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B55AC122
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 06:45:11 -0800 (PST)
+Received: by mail-ua1-x935.google.com with SMTP id a1e0cc1a2514c-7b9dc244151so4293713241.1
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 06:45:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1699368311; x=1699973111; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=wyN2qeNAfzq8T3+c7zpkeHbe0JGvUl4QQakn3ilisA8=;
+        b=WO2FruOS+35EeokZGi3+p8AOKgGFYvA2aODoy4OuFhgECOK9oG6fBf53WnxJ+D9cns
+         qzQ+igZhuW3ExWxZSZ4TlDOB1yBGfXiL5ibaaqAs8F4DO+npv1wXHxC8rSxjmUknBCXw
+         m0az9UntG32K2E765UHwXhMBjmlsCwTK0ZljmclPMyF+f9ul1Y/iaVlcCvVvWG7OA6jo
+         v/2iCC8RmSIOFa4YII5iLGcA+FBZglhFCruksYCCVTWOyfVIKsutuXke0f+4fE2YIstS
+         exYlEe+3VSd8UaxGST7PP42p+JfdWvrzUrl+ZXv6FBCLCs6JOLgqhfE1oBp9tZG+AarI
+         purg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699368311; x=1699973111;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=wyN2qeNAfzq8T3+c7zpkeHbe0JGvUl4QQakn3ilisA8=;
+        b=Cfqr3eS0dlPnBXq0E4ESpQgkuFtSWgO5M76hu52+HAdlKcK0hdJI0KwSB2pAS3kz+s
+         6ukEKoxktyusBXShSX3mwJfXP6dYwffCo8iETd7e53zI2q5dAem6hoXWdgDbTVSZXIRy
+         XQIQCD+KJl6ahwM++ikKFUXrVack+zalK4MgpqVPZUMfgfxH410OiMnqiE4W5rQYEOij
+         UMa8jWseBA8gAW6wirYG1SOUIuMOyaf0zTFTVD0rnRuL3Hq+bbBFKa/yHav2al5oBmw0
+         zAxt5rTYeCkpPmqSWsd7ybn7Obd6aqrQFAQOOusi9IHD76vtY8sECt6mYv8TV1mCtFGx
+         k0Xw==
+X-Gm-Message-State: AOJu0YwmcQol9nSMBYdbpgG3to14CLyDj8GBhBDNVznIElbC177Hw5zV
+        ZY1MC/o5r2Tft24iXQ3GCu44c4khTTUKoizSVjfzSg==
+X-Google-Smtp-Source: AGHT+IFEKYNQ1IZRyacc+TbJB29Eep3DcxhfqJjpGlrvXPJYZx9aeEnU8QXk3++wPel+Ov/4o7VWGAN3Q3SDq1/ZiFI=
+X-Received: by 2002:a05:6102:2d01:b0:457:c953:bc39 with SMTP id
+ ih1-20020a0561022d0100b00457c953bc39mr1586305vsb.1.1699368310737; Tue, 07 Nov
+ 2023 06:45:10 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1699361428-12802-4-git-send-email-quic_msarkar@quicinc.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <CA+G9fYsrLTbFkz-LJmAY9efDyEr-8bHcxivBDPToPjBxjStoDg@mail.gmail.com>
+ <ZUpH0FNTYAl9Z+L6@finisterre.sirena.org.uk>
+In-Reply-To: <ZUpH0FNTYAl9Z+L6@finisterre.sirena.org.uk>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 7 Nov 2023 20:14:59 +0530
+Message-ID: <CA+G9fYta5cUpFArGfON3R+HUGxJRyEsc9zdTwwk5Un+wHqLN8g@mail.gmail.com>
+Subject: Re: selftests: arm64: fp-stress: Unable to handle kernel paging
+ request at virtual address
+To:     Mark Brown <broonie@kernel.org>
+Cc:     linux-stable <stable@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        lkft-triage@lists.linaro.org,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>,
+        Dan Carpenter <dan.carpenter@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>, Shuah Khan <shuah@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 07, 2023 at 06:20:27PM +0530, Mrinmay Sarkar wrote:
-> Add support for Qualcomm Snapdragon SA8775P SoC to the EPF driver.
-> Reusing PID (0x0306) as dedicated PID for SA8775P EP is yet to decide
-> and it supports HDMA.
+On Tue, 7 Nov 2023 at 19:51, Mark Brown <broonie@kernel.org> wrote:
+>
+> On Tue, Nov 07, 2023 at 06:43:25PM +0530, Naresh Kamboju wrote:
+>
+> > # # SVE-VL-64-0: Expected
+> > [3904000039044000390480003904c0003904000139044001390480013904c0013904000239044002390480023904c0023904000339044003390480033904c003]
+> > <>
+>
+> You've elided *lots* of error reports from the actual test which suggest
+> that there is substantial memory corruption, it looks like tearing part
+> way through loading or saving the values - the start of the vectors
+> looks fine but at some point they get what looks like a related process'
+> data, eg:
+>
+> # # SVE-VL-64-0:        Expected [3904000039044000390480003904c0003904000139044001390480013904c0013904000239044002390480023904c0023904000339044003390480033904c003]
+> # # SVE-VL-64-0:        Got      [3904000039044000390480003904c000390480003904c00039040001390440013904000139044001390480013904c001390480013904c0013904000239044002]
+>
+> This only appears to affect SVE and SME, I didn't spot any FPSIMD
+> corruption but then that is the smallest case (and I didn't notice any
+> VL 16 cases either).  It looks like the corruption is on the first thing
+> we check each time (either register 0 or the highest ZA.H vector for
+> ZA), all the values do look lke they were plausibly generated by
+> fp-stress test programs.
+>
+> Then we get what looks like memory corruption:
+>
+> > # # SVE-VL-256-<1>[   88.160313] Unable to handle kernel paging
+> > request at virtual address 00550f0344550f02
+>
+> > <4>[   88.195706] Call trace:
+> > <4>[ 88.196098] percpu_ref_get_many
+> > (include/linux/percpu-refcount.h:174 (discriminator 2)
+> > include/linux/percpu-refcount.h:204 (discriminator 2))
+> > <4>[ 88.196815] refill_obj_stock (mm/memcontrol.c:3339 (discriminator 2))
+> > <4>[ 88.197367] obj_cgroup_uncharge (mm/memcontrol.c:3406)
+> > <4>[ 88.197835] kmem_cache_free (include/linux/mm.h:1630
+> > include/linux/mm.h:1849 include/linux/mm.h:1859 mm/slab.h:208
+> > mm/slab.h:572 mm/slub.c:3804 mm/slub.c:3831)
+> > <4>[ 88.198407] put_pid.part.0 (kernel/pid.c:118)
+> > <4>[ 88.198870] delayed_put_pid (kernel/pid.c:127)
+> > <4>[ 88.200527] rcu_core (arch/arm64/include/asm/preempt.h:13
+> > (discriminator 1) kernel/rcu/tree.c:2146 (discriminator 1)
+> > kernel/rcu/tree.c:2403 (discriminator 1))
+>
+> This all seems very surprising, especially given that AFAICT there are
+> no changes in stable-6.6-rc for arch/arm64.
 
-"SA8775P is currently reusing the PID 0x0306 (the default one hardcoded in the
-config space header) as the unique PID is not yet allocated. But the host side
-stack works fine with the default PID. It will get updated once the PID is
-finalized."
+We do not see on the mainline and next.
+Is this reported problems on stable-rc 6.6 and 6.5 are due to running
+latest kselftest on older kernels ?
 
-> Currently, it has no fixed PCI class, so it is
-> being advertised as "PCI_CLASS_OTHERS".
-> 
-> Signed-off-by: Mrinmay Sarkar <quic_msarkar@quicinc.com>
-> Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> ---
->  drivers/pci/endpoint/functions/pci-epf-mhi.c | 17 +++++++++++++++++
->  1 file changed, 17 insertions(+)
-> 
-> diff --git a/drivers/pci/endpoint/functions/pci-epf-mhi.c b/drivers/pci/endpoint/functions/pci-epf-mhi.c
-> index b7b9d3e..23ea94e 100644
-> --- a/drivers/pci/endpoint/functions/pci-epf-mhi.c
-> +++ b/drivers/pci/endpoint/functions/pci-epf-mhi.c
-> @@ -114,6 +114,22 @@ static const struct pci_epf_mhi_ep_info sm8450_info = {
->  	.flags = MHI_EPF_USE_DMA,
->  };
->  
-> +static struct pci_epf_header sa8775p_header = {
-> +	.vendorid = PCI_VENDOR_ID_QCOM,
-> +	.deviceid = 0x0306,               /* FIXME: Update deviceid for sa8775p EP */
-> +	.baseclass_code = PCI_CLASS_OTHERS,
-> +	.interrupt_pin = PCI_INTERRUPT_INTA,
-> +};
-> +
-> +static const struct pci_epf_mhi_ep_info sa8775p_info = {
-> +	.config = &mhi_v1_config,
-> +	.epf_header = &sa8775p_header,
-> +	.bar_num = BAR_0,
-> +	.epf_flags = PCI_BASE_ADDRESS_MEM_TYPE_32,
-> +	.msi_count = 32,
-> +	.mru = 0x8000,
-> +};
-> +
->  struct pci_epf_mhi {
->  	const struct pci_epc_features *epc_features;
->  	const struct pci_epf_mhi_ep_info *info;
-> @@ -677,6 +693,7 @@ static int pci_epf_mhi_probe(struct pci_epf *epf,
->  }
->  
->  static const struct pci_epf_device_id pci_epf_mhi_ids[] = {
-> +	{ .name = "sa8775p", .driver_data = (kernel_ulong_t)&sa8775p_info },
+--
+# # SSVE-VL-32-1: Mismatch: PID=641, iteration=0, reg=0
+# # SSVE-VL-128-1: Got         [<junk>]
+# # SSVE-VL-256-1: Got       [<junk>]
 
-The ID should be changed to "pci_epf_mhi_sa8775p". I know that you followed the
-existing pattern, but it was my fault to ignore the prefix "pci_epf_mhi" and now
-the function name would appear as "functions/sa8775p/" and it would create issue
-if we happen to support multiple functions for this EP.
+Unable to handle kernel paging request at virtual address 00740f0322740f02
+0<1>[   89.400173] Mem abort info:
+<1>[   89.400844]   ESR = 0x0000000096000004
+<1>[   89.401974]   EC = 0x25: DABT (current EL), IL = 32 bits
+<1>[   89.403399]   SET = 0, FnV = 0
+<1>[   89.404421]   EA = 0, S1PTW = 0
+<1>[   89.405317]   FSC = 0x04: level 0 translation fault
+<1>[   89.406545] Data abort info:
+<1>[   89.407493]   ISV = 0, ISS = 0x00000004, ISS2 = 0x00000000
+<1>[   89.408785]   CM = 0, WnR = 0, TnD = 0, TagAccess = 0
+<1>[   89.410001]   GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
+<1>[   89.411485] [00740f0322740f02] address between user and kernel
+address ranges
+<0>[   89.413851] Internal error: Oops: 0000000096000004 [#1] PREEMPT SMP
+<4>[   89.415573] Modules linked in: crct10dif_ce sm3_ce sm3 sha3_ce
+sha512_ce sha512_arm64 fuse drm dm_mod ip_tables x_tables
+<4>[   89.419561] CPU: 1 PID: 22 Comm: ksoftirqd/1 Not tainted 6.5.11-rc1 #1
+<4>[   89.420795] Hardware name: linux,dummy-virt (DT)
+<4>[   89.422676] pstate: 624000c9 (nZCv daIF +PAN -UAO +TCO -DIT
+-SSBS BTYPE=--)
+<4>[   89.424344] pc : refill_obj_stock+0x6c/0x250
+<4>[   89.426324] lr : refill_obj_stock+0x6c/0x250
+<trim>
+<4>[   89.447170] Call trace:
+<4>[   89.447756]  refill_obj_stock+0x6c/0x250
+<4>[   89.449033]  obj_cgroup_uncharge+0x20/0x38
+<4>[   89.450457]  kmem_cache_free+0xf8/0x500
+<4>[   89.451066]  delayed_put_pid+0x50/0xb0
+<4>[   89.452401]  rcu_core+0x3cc/0x950
+<4>[   89.453369]  rcu_core_si+0x1c/0x30
+<4>[   89.454465]  __do_softirq+0x118/0x438
+<4>[   89.455738]  run_ksoftirqd+0x40/0xf8
+<4>[   89.456893]  smpboot_thread_fn+0x1d0/0x248
+<4>[   89.457969]  kthread+0xfc/0x1a0
+<4>[   89.459171]  ret_from_fork+0x10/0x20
+<0>[   89.460445] Code: aa1603e0 97fffef8 aa0003f4 97f6cbf6 (f9400269)
+<4>[   89.462028] ---[ end trace 0000000000000000 ]---
+<0>[   89.463494] Kernel panic - not syncing: Oops: Fatal exception in interrupt
+<2>[   89.465046] SMP: stopping secondary CPUs
+<0>[   89.466327] Kernel Offset: 0x2dabffa00000 from 0xffff800080000000
+<0>[   89.467385] PHYS_OFFSET: 0x40000000
+<0>[   89.468131] CPU features: 0x00000000,68f167a1,cce6773f
+<0>[   89.469850] Memory Limit: none
+<0>[   89.470836] ---[ end Kernel panic - not syncing: Oops: Fatal
+exception in interrupt ]---
 
-I will share the patch with you for changing the names for other functions as
-well. Please apply it on top this series and send it together. Even though it is
-an ABI breakage if we change the function name, luckily there isn't anyone (to
-my knowledge) using this driver outside Qcom and myself yet.
 
-- Mani
 
->  	{ .name = "sdx55", .driver_data = (kernel_ulong_t)&sdx55_info },
->  	{ .name = "sm8450", .driver_data = (kernel_ulong_t)&sm8450_info },
->  	{},
-> -- 
-> 2.7.4
-> 
-> 
+Links:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.5.y/build/v6.5.10-89-g73d52afec3ab/testrun/20963504/suite/log-parser-test/tests/
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.5.y/build/v6.5.10-89-g73d52afec3ab/testrun/20963709/suite/log-parser-test/tests/
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.5.y/build/v6.5.10-89-g73d52afec3ab/testrun/20963709/suite/log-parser-test/test/check-kernel-oops/log
 
--- 
-மணிவண்ணன் சதாசிவம்
+- Naresh
