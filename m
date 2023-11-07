@@ -2,151 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA8517E3504
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 07:03:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0168E7E3506
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 07:05:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232095AbjKGGD6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 01:03:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33804 "EHLO
+        id S233360AbjKGGFz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 01:05:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229559AbjKGGDz (ORCPT
+        with ESMTP id S229559AbjKGGFy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 01:03:55 -0500
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43520DF
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 22:03:53 -0800 (PST)
-Received: by mail-pg1-x534.google.com with SMTP id 41be03b00d2f7-55b5a37acb6so497040a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 22:03:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699337033; x=1699941833; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=lKFEEOwu+JwvBa63rAI+zxMPRAeyFot/drhB3OU5pF8=;
-        b=OA04UC1/OCaLprOgNkJHfIlJg4/bjHSANxwX0HprwWoo6c97yupaUsqBXR/m2nEAVP
-         Lkg0j09GdiiuH6YAHTyeZPOjUGHEcRPuJUHEVd2ok+BnxFoCUJPz9sglBwllUkSyHQ0U
-         ksDjCiIYLb2jeDoEL2VUbHRjHgZOxuw6lpssSxuGM6ZsyOyPwWlRgSjBK2KPSODhxOhU
-         talR1V+XLxUeCH8zz9EftYG6FPq8hwzR0pgp+osPTxRsN2Cw8BXVYctBAZjBSionOmBq
-         6hydVlAYah5wwCvAeAfVhk+vMG9D4fpFNDWKe9IxNdFDLYn9IxBorTJM60lL77nRmIBh
-         9f0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699337033; x=1699941833;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=lKFEEOwu+JwvBa63rAI+zxMPRAeyFot/drhB3OU5pF8=;
-        b=Ned12QwGkz9CwUztvPKULkgqIIRsvalgFunD3ycxHTEELw1O8b4rSMu2njbIA5isD+
-         sERdAY+3pdmhYJofO/0eOQcbsS/xvx0WXRvp39vzRZMAcoAOC7cQwmL8iICu6IbpGZ+i
-         N/MNq3JT3dHdHpy0tbVKaKXd+JLv2ajjR03f7nS0nYMkoi7lp6i8YNeVV1AV4SJdeGmx
-         nIq3Fpzokfjmw3uLEgmSjLdn6n54nikCUDTqJbz2j8bfvRDk+RADDVIPfiWBvZazPq/4
-         XbwJLuhj5EytaTVRWa2ZfQGef5fWMc+yigCH82xTY+2A+4sWL570co2xnECuCsWJqsYh
-         lfpA==
-X-Gm-Message-State: AOJu0YxagL7XABvaYx6/sXfSyFZdor2m9twZ+xCumzMSZmm77cZMsieH
-        Rk8QESj844akK170NJ7W0ks=
-X-Google-Smtp-Source: AGHT+IEYjDnHlZaeLjHfEXLGnwRtpD+SbIvNxQUtdUAz9T0ERhq0lqVvZiRjtyeTQBeHaCk0XeNZnw==
-X-Received: by 2002:a17:903:32d2:b0:1cc:32c6:e5fa with SMTP id i18-20020a17090332d200b001cc32c6e5famr28596508plr.6.1699337032527;
-        Mon, 06 Nov 2023 22:03:52 -0800 (PST)
-Received: from [192.168.0.152] ([103.75.161.209])
-        by smtp.gmail.com with ESMTPSA id g9-20020a170902c38900b001c726147a45sm6840474plg.190.2023.11.06.22.03.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 06 Nov 2023 22:03:52 -0800 (PST)
-Message-ID: <d252d281-96a5-404c-a6a2-fbaa65bea28a@gmail.com>
-Date:   Tue, 7 Nov 2023 11:33:41 +0530
+        Tue, 7 Nov 2023 01:05:54 -0500
+Received: from mail.marcansoft.com (marcansoft.com [212.63.210.85])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DAD410F;
+        Mon,  6 Nov 2023 22:05:50 -0800 (PST)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: sendonly@marcansoft.com)
+        by mail.marcansoft.com (Postfix) with ESMTPSA id 2F4D541A42;
+        Tue,  7 Nov 2023 06:05:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=marcan.st; s=default;
+        t=1699337148; bh=xxiIjvDbAksu9Y0ctF1XaFpoIJj+/zvV5fHsF1bZhWE=;
+        h=From:Date:Subject:To:Cc;
+        b=CbqR6KMrHZj9VLynVWP+/xA9O8EBvwGhCoiLtoxy2Gtv6X3uY2SuPrdKhzVs5KEXP
+         axj76Y5/95D36x2sUYdzp1uvsMDwx+dnuhjMYiz/yGdarzNoiykiw8Rp7Jl8o1vWYp
+         sRtxRuR/5i/DqGOrQ0l/uda7z6FjIgdGf9Xgp5JOerQQPcO28LAMgO2iWeccSCCy0i
+         myqPyGS1B5UNjkZ+o2HMeLXlo4igKykO2CQkKs6VFZJ2JWj3twQU3E4n9ox35AfqkH
+         zyONO/Ja59+x+SN5KKjLd9+hBO0bIn3LwQyRaNyvtvVVvqqFQu/yWgr6SCWY+b/kmv
+         SE4yY1UbiYb5Q==
+From:   Hector Martin <marcan@marcan.st>
+Date:   Tue, 07 Nov 2023 15:05:31 +0900
+Subject: [PATCH] wifi: brcmfmac: cfg80211: Use WSEC to set SAE password
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] drivers: gpu: Fix warning using plain integer as NULL
-Content-Language: en-US
-To:     Alex Deucher <alexdeucher@gmail.com>
-Cc:     alexander.deucher@amd.com, christian.koenig@amd.com,
-        Xinhui.Pan@amd.com, airlied@gmail.com, daniel@ffwll.ch,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-References: <20231103155013.332367-1-singhabhinav9051571833@gmail.com>
- <CADnq5_OkWD3YmCKgXbtk=Gnba3AgAiAWp2z_nzHQvRfEOsdXVg@mail.gmail.com>
- <3b92b89b-ca72-4012-b4f2-0b19e4ba9153@gmail.com>
- <CADnq5_PXRN+PL4wp+sWOXs2L5nQiRmfrw4065R1TE4YKw-ZeUA@mail.gmail.com>
-From:   Abhinav Singh <singhabhinav9051571833@gmail.com>
-In-Reply-To: <CADnq5_PXRN+PL4wp+sWOXs2L5nQiRmfrw4065R1TE4YKw-ZeUA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20231107-brcmfmac-wpa3-v1-1-4c7db8636680@marcan.st>
+X-B4-Tracking: v=1; b=H4sIAKrTSWUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDI2NDQwNz3aSi5Ny03MRk3fKCRGNdy1TTNDOzVIukVGMTJaCegqLUtMwKsHn
+ RsbW1AGedk2VfAAAA
+To:     Arend van Spriel <aspriel@gmail.com>,
+        Franky Lin <franky.lin@broadcom.com>,
+        Hante Meuleman <hante.meuleman@broadcom.com>,
+        Kalle Valo <kvalo@kernel.org>
+Cc:     Daniel Berlin <dberlin@dberlin.org>,
+        linux-wireless@vger.kernel.org,
+        brcm80211-dev-list.pdl@broadcom.com,
+        SHA-cyfmac-dev-list@infineon.com, linux-kernel@vger.kernel.org,
+        asahi@lists.linux.dev, Hector Martin <marcan@marcan.st>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3904; i=marcan@marcan.st;
+ h=from:subject:message-id; bh=xxiIjvDbAksu9Y0ctF1XaFpoIJj+/zvV5fHsF1bZhWE=;
+ b=owGbwMvMwCUm+yP4NEe/cRLjabUkhlTPyztmvH8ycYLr6kUKfp8LOWw7r6s2+TX9ODqZ557ei
+ a+HCtOlO0pZGMS4GGTFFFkaT/Se6vacfk5dNWU6zBxWJpAhDFycAjARpSCG/8GvbKvezs6a+urN
+ 0W/fHZctLo3OMovf6ZdReXnZtQXKt0UY/jsY6c+TjG31uZ8b/+1CVMlnbrl14YE7hR4FPJq6583
+ jU8wA
+X-Developer-Key: i=marcan@marcan.st; a=openpgp;
+ fpr=FC18F00317968B7BE86201CBE22A629A4C515DD5
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/7/23 03:07, Alex Deucher wrote:
-> On Mon, Nov 6, 2023 at 4:20 PM Abhinav Singh
-> <singhabhinav9051571833@gmail.com> wrote:
->>
->> On 11/7/23 00:25, Alex Deucher wrote:
->>> Applied.  This matches what we already do in the other clear state headers.
->>>
->>> Alex
->>>
->>> On Fri, Nov 3, 2023 at 12:00 PM Abhinav Singh
->>> <singhabhinav9051571833@gmail.com> wrote:
->>>>
->>>> sparse static analysis tools generate a warning with this message
->>>> "Using plain integer as NULL pointer". In this case this warning is
->>>> being shown because we are trying to intialize a pointer to NULL using
->>>> integer value 0.
->>>>
->>>> Signed-off-by: Abhinav Singh <singhabhinav9051571833@gmail.com>
->>>> ---
->>>>    drivers/gpu/drm/radeon/clearstate_evergreen.h | 8 ++++----
->>>>    1 file changed, 4 insertions(+), 4 deletions(-)
->>>>
->>>> diff --git a/drivers/gpu/drm/radeon/clearstate_evergreen.h b/drivers/gpu/drm/radeon/clearstate_evergreen.h
->>>> index 63a1ffbb3ced..3b645558f133 100644
->>>> --- a/drivers/gpu/drm/radeon/clearstate_evergreen.h
->>>> +++ b/drivers/gpu/drm/radeon/clearstate_evergreen.h
->>>> @@ -1049,7 +1049,7 @@ static const struct cs_extent_def SECT_CONTEXT_defs[] =
->>>>        {SECT_CONTEXT_def_5, 0x0000a29e, 5 },
->>>>        {SECT_CONTEXT_def_6, 0x0000a2a5, 56 },
->>>>        {SECT_CONTEXT_def_7, 0x0000a2de, 290 },
->>>> -    { 0, 0, 0 }
->>>> +    { NULL, 0, 0 }
->>>>    };
->>>>    static const u32 SECT_CLEAR_def_1[] =
->>>>    {
->>>> @@ -1060,7 +1060,7 @@ static const u32 SECT_CLEAR_def_1[] =
->>>>    static const struct cs_extent_def SECT_CLEAR_defs[] =
->>>>    {
->>>>        {SECT_CLEAR_def_1, 0x0000ffc0, 3 },
->>>> -    { 0, 0, 0 }
->>>> +    { NULL, 0, 0 }
->>>>    };
->>>>    static const u32 SECT_CTRLCONST_def_1[] =
->>>>    {
->>>> @@ -1070,11 +1070,11 @@ static const u32 SECT_CTRLCONST_def_1[] =
->>>>    static const struct cs_extent_def SECT_CTRLCONST_defs[] =
->>>>    {
->>>>        {SECT_CTRLCONST_def_1, 0x0000f3fc, 2 },
->>>> -    { 0, 0, 0 }
->>>> +    { NULL, 0, 0 }
->>>>    };
->>>>    static const struct cs_section_def evergreen_cs_data[] = {
->>>>        { SECT_CONTEXT_defs, SECT_CONTEXT },
->>>>        { SECT_CLEAR_defs, SECT_CLEAR },
->>>>        { SECT_CTRLCONST_defs, SECT_CTRLCONST },
->>>> -    { 0, SECT_NONE }
->>>> +    { NULL, SECT_NONE }
->>>>    };
->>>> --
->>>> 2.39.2
->>>>
->> Hi Alex, thanks for looking into this. By applied you mean this patch is
->> accepted and it has been merged?
-> 
-> Yes.  Once it makes it through our CI system, it will show up in my
-> drm-next tree.
-> 
-> Alex
-Okay, this is my first patch to get into kernel :)
-Thank you once again for your time with this patch and accepting it.
+Using the WSEC command instead of sae_password seems to be the supported
+mechanism on newer firmware, and also how the brcmdhd driver does it.
+
+According to user reports [1], the sae_password codepath doesn't actually
+work on machines with Cypress chips anyway, so no harm in removing it.
+
+This makes WPA3 work with iwd, or with wpa_supplicant pending a support
+patchset [2].
+
+[1] https://rachelbythebay.com/w/2023/11/06/wpa3/
+[2] http://lists.infradead.org/pipermail/hostap/2023-July/041653.html
+
+Signed-off-by: Hector Martin <marcan@marcan.st>
+---
+ .../broadcom/brcm80211/brcmfmac/cfg80211.c         | 46 +++++++++-------------
+ .../broadcom/brcm80211/brcmfmac/fwil_types.h       |  2 +-
+ 2 files changed, 20 insertions(+), 28 deletions(-)
+
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
+index 2a90bb24ba77..138af70a33b8 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
+@@ -1687,52 +1687,44 @@ static u16 brcmf_map_fw_linkdown_reason(const struct brcmf_event_msg *e)
+ 	return reason;
+ }
+ 
+-static int brcmf_set_pmk(struct brcmf_if *ifp, const u8 *pmk_data, u16 pmk_len)
++static int brcmf_set_wsec(struct brcmf_if *ifp, const u8 *key, u16 key_len, u16 flags)
+ {
+ 	struct brcmf_pub *drvr = ifp->drvr;
+ 	struct brcmf_wsec_pmk_le pmk;
+ 	int err;
+ 
++	if (key_len > sizeof(pmk.key)) {
++		bphy_err(drvr, "key must be less than %zu bytes\n",
++			 sizeof(pmk.key));
++		return -EINVAL;
++	}
++
+ 	memset(&pmk, 0, sizeof(pmk));
+ 
+-	/* pass pmk directly */
+-	pmk.key_len = cpu_to_le16(pmk_len);
+-	pmk.flags = cpu_to_le16(0);
+-	memcpy(pmk.key, pmk_data, pmk_len);
++	/* pass key material directly */
++	pmk.key_len = cpu_to_le16(key_len);
++	pmk.flags = cpu_to_le16(flags);
++	memcpy(pmk.key, key, key_len);
+ 
+-	/* store psk in firmware */
++	/* store key material in firmware */
+ 	err = brcmf_fil_cmd_data_set(ifp, BRCMF_C_SET_WSEC_PMK,
+ 				     &pmk, sizeof(pmk));
+ 	if (err < 0)
+ 		bphy_err(drvr, "failed to change PSK in firmware (len=%u)\n",
+-			 pmk_len);
++			 key_len);
+ 
+ 	return err;
+ }
+ 
++static int brcmf_set_pmk(struct brcmf_if *ifp, const u8 *pmk_data, u16 pmk_len)
++{
++	return brcmf_set_wsec(ifp, pmk_data, pmk_len, 0);
++}
++
+ static int brcmf_set_sae_password(struct brcmf_if *ifp, const u8 *pwd_data,
+ 				  u16 pwd_len)
+ {
+-	struct brcmf_pub *drvr = ifp->drvr;
+-	struct brcmf_wsec_sae_pwd_le sae_pwd;
+-	int err;
+-
+-	if (pwd_len > BRCMF_WSEC_MAX_SAE_PASSWORD_LEN) {
+-		bphy_err(drvr, "sae_password must be less than %d\n",
+-			 BRCMF_WSEC_MAX_SAE_PASSWORD_LEN);
+-		return -EINVAL;
+-	}
+-
+-	sae_pwd.key_len = cpu_to_le16(pwd_len);
+-	memcpy(sae_pwd.key, pwd_data, pwd_len);
+-
+-	err = brcmf_fil_iovar_data_set(ifp, "sae_password", &sae_pwd,
+-				       sizeof(sae_pwd));
+-	if (err < 0)
+-		bphy_err(drvr, "failed to set SAE password in firmware (len=%u)\n",
+-			 pwd_len);
+-
+-	return err;
++	return brcmf_set_wsec(ifp, pwd_data, pwd_len, BRCMF_WSEC_PASSPHRASE);
+ }
+ 
+ static void brcmf_link_down(struct brcmf_cfg80211_vif *vif, u16 reason,
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fwil_types.h b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fwil_types.h
+index 611d1a6aabb9..b68c46caabe8 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fwil_types.h
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fwil_types.h
+@@ -584,7 +584,7 @@ struct brcmf_wsec_key_le {
+ struct brcmf_wsec_pmk_le {
+ 	__le16  key_len;
+ 	__le16  flags;
+-	u8 key[2 * BRCMF_WSEC_MAX_PSK_LEN + 1];
++	u8 key[BRCMF_WSEC_MAX_SAE_PASSWORD_LEN];
+ };
+ 
+ /**
+
+---
+base-commit: ffc253263a1375a65fa6c9f62a893e9767fbebfa
+change-id: 20231107-brcmfmac-wpa3-9e5f66e8be34
+
+Best regards,
+-- 
+Hector Martin <marcan@marcan.st>
+
