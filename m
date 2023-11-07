@@ -2,88 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA27E7E383A
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 10:53:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB2BC7E383D
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 10:53:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233936AbjKGJxa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 04:53:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36560 "EHLO
+        id S233946AbjKGJxd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 04:53:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233843AbjKGJx2 (ORCPT
+        with ESMTP id S233914AbjKGJx3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 04:53:28 -0500
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C25111D;
-        Tue,  7 Nov 2023 01:53:25 -0800 (PST)
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A75EGmk016905;
-        Tue, 7 Nov 2023 09:53:10 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=JJyqOeDVKPnGpmsy8rK0MY4A/PgRThwklgkRF/cIzpY=;
- b=U72jG0bIl9KTpsPSfw7f1ugM34wJ2fwoaq+5/PAV+Zalu4hqa6Q2vBSCg419f+BE2QzE
- 7gDh5c50tNZ5jWDAgCji2apzgc91vincZfjJCORI2MWfB9ItGFF7tEqs2qwYNMXXYk0q
- kfTPvSZTRe70hOjBpu2g6BQ1POEqZwYlAs2ASz/pNfqfqgOc70b77a2KtdWerQuXqPIW
- MFpbNReg6VlRuMbEMmNneC9nr/zPWOY4IH5cAK0AEiSIFKHf6+pBKLaMcEgqFedy6P9k
- Z0/Fq1gm85SzRzsJyYNEVLDbzjVzciuLw6bHgTbBY58zygd9zU3ocnFNtgEVT836KmEK JA== 
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u758n1qnq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 07 Nov 2023 09:53:10 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3A79rAbj012332
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 7 Nov 2023 09:53:10 GMT
-Received: from [10.218.41.203] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Tue, 7 Nov
- 2023 01:53:03 -0800
-Message-ID: <996d4368-57d9-43cf-381b-4d4c5ded9fdc@quicinc.com>
-Date:   Tue, 7 Nov 2023 15:23:00 +0530
+        Tue, 7 Nov 2023 04:53:29 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6496011A;
+        Tue,  7 Nov 2023 01:53:26 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A14F1C433C7;
+        Tue,  7 Nov 2023 09:53:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1699350806;
+        bh=DA0JawH4OXqawayuIjowXm96ODaep8O9+ehWDI0jCxY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Lst+1i6gzIOSuXeN/XntOhQ3vjuv8Dnz1NyyPTZUOhU5nsa3mU+4Y6WgtxzwBqlz4
+         zPEAC7GBtyUYuqen1cYQjr2KPWLoswcJbJ0sifnviJa3xAxKVrsoDMrexcJw4koj+6
+         Kh4vQmvnbWlBHNLk376+R7VAPa4sNg5Pu2WtWaw4=
+Date:   Tue, 7 Nov 2023 10:53:23 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     =?iso-8859-1?Q?Jos=E9?= Pekkarinen <jose.pekkarinen@foxhound.fi>
+Cc:     rafael@kernel.org, len.brown@intel.com, pavel@ucw.cz,
+        skhan@linuxfoundation.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+95f2e2439b97575ec3c0@syzkaller.appspotmail.com
+Subject: Re: [PATCH] drivers core: lookup sysfs power group before removal
+Message-ID: <2023110706-mustiness-arbitrary-fc9f@gregkh>
+References: <20231101173627.2658-1-jose.pekkarinen@foxhound.fi>
+ <2023110139-dupe-snipping-5700@gregkh>
+ <835b2930c710381b8da38eca821aa92d@foxhound.fi>
+ <2023110353-bring-contented-c9f8@gregkh>
+ <e13104c9e55b0bd8eee0a333b3ed7975@foxhound.fi>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.13.1
-Subject: Re: [PATCH 2/2] phy: qcom-qmp-pcie: Add support for keeping refclk
- always on
-Content-Language: en-US
-To:     Bjorn Andersson <andersson@kernel.org>
-CC:     Andy Gross <agross@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-phy@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <quic_vbadigan@quicinc.com>, <quic_ramkri@quicinc.com>,
-        <quic_nitegupt@quicinc.com>, <quic_skananth@quicinc.com>,
-        <quic_vpernami@quicinc.com>, <quic_parass@quicinc.com>
-References: <20231106-refclk_always_on-v1-0-17a7fd8b532b@quicinc.com>
- <20231106-refclk_always_on-v1-2-17a7fd8b532b@quicinc.com>
- <p3ozkq2rjkl2qowkbb5oq2bk33s476ismuxhkxv3ttlvafjyis@ctmowtnwg4rp>
-From:   Krishna Chaitanya Chundru <quic_krichai@quicinc.com>
-In-Reply-To: <p3ozkq2rjkl2qowkbb5oq2bk33s476ismuxhkxv3ttlvafjyis@ctmowtnwg4rp>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: JfbwFeJkvyn76N6Sx05YKPT4RNeSE8Dw
-X-Proofpoint-ORIG-GUID: JfbwFeJkvyn76N6Sx05YKPT4RNeSE8Dw
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-06_15,2023-11-02_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- bulkscore=0 mlxscore=0 mlxlogscore=999 spamscore=0 suspectscore=0
- adultscore=0 impostorscore=0 clxscore=1015 malwarescore=0
- priorityscore=1501 phishscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2310240000 definitions=main-2311070081
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <e13104c9e55b0bd8eee0a333b3ed7975@foxhound.fi>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -92,112 +54,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Nov 07, 2023 at 10:56:20AM +0200, José Pekkarinen wrote:
+> On 2023-11-03 20:36, Greg KH wrote:
+> > On Fri, Nov 03, 2023 at 07:49:39PM +0200, José Pekkarinen wrote:
+> > > On 2023-11-01 19:54, Greg KH wrote:
+> > > > On Wed, Nov 01, 2023 at 07:36:27PM +0200, José Pekkarinen wrote:
+> > > > > Hinted by syzboot, there is a few cases where the sysfs power group
+> > > > > may
+> > > > > not be there, like the failure while adding it, or adding its runtime
+> > > > > group, or when the sysfs firmware loader fallback fail to populate. In
+> > > > > the last case, the device_del function will be called leading to
+> > > > > attempt
+> > > > > to remove the sysfs group. This patch will lookup for it in advance to
+> > > > > grant that it is effectively there before cleaning it up.
+> > > > >
+> > > > > Reported-by: syzbot+95f2e2439b97575ec3c0@syzkaller.appspotmail.com
+> > > > >
+> > > > > Signed-off-by: José Pekkarinen <jose.pekkarinen@foxhound.fi>
+> > > > > ---
+> > > > >  drivers/base/power/sysfs.c | 4 +++-
+> > > > >  1 file changed, 3 insertions(+), 1 deletion(-)
+> > > > >
+> > > > > diff --git a/drivers/base/power/sysfs.c b/drivers/base/power/sysfs.c
+> > > > > index a1474fb67db9..6601729c4698 100644
+> > > > > --- a/drivers/base/power/sysfs.c
+> > > > > +++ b/drivers/base/power/sysfs.c
+> > > > > @@ -834,5 +834,7 @@ void dpm_sysfs_remove(struct device *dev)
+> > > > >  	dev_pm_qos_constraints_destroy(dev);
+> > > > >  	rpm_sysfs_remove(dev);
+> > > > >  	sysfs_unmerge_group(&dev->kobj, &pm_wakeup_attr_group);
+> > > > > -	sysfs_remove_group(&dev->kobj, &pm_attr_group);
+> > > > > +
+> > > > > +	if (kernfs_find_and_get((&dev->kobj)->sd, pm_attr_group.name))
+> > > > > +		sysfs_remove_group(&dev->kobj, &pm_attr_group);
+> > > >
+> > > > What's to keep it from going away right after finding it?
+> > > >
+> > > > In other words, what is wrong with removing a group that is not there?
+> > > > What error happens?  It should be fine, or are you seeing real code
+> > > > failures somewhere?
+> > > 
+> > >     No, this is just hitting a warning that sysbot complains about by
+> > > setting panic on warning, no big deal, though it can be a wrong
+> > > behaviour
+> > > in ueagle-atm driver, since it defines to disconnect the device if the
+> > > firmware is not there, no matter the sysfs fallback.
+> > 
+> > Then fix the driver please.
+> 
+>     I'm afraid I was wrong in the assumption that the probe return value
+> of the driver would influence the testing result, so this no longer seems
+> fixable from driver side.
 
-On 11/6/2023 9:47 PM, Bjorn Andersson wrote:
-> On Mon, Nov 06, 2023 at 05:22:35PM +0530, Krishna chaitanya chundru wrote:
->> In PCIe low power states like L1.1 or L1.2 the phy will stop
->> supplying refclk to endpoint. If endpoint asserts clkreq to bring
->> back link L0, then RC needs to provide refclk to endpoint.
->>
->> If there is some issues in platform with clkreq signal propagation
->> to host and due to that host will not send refclk which results PCIe link
->> down. For those platforms  phy needs to provide refclk even in low power
-> Double <space> ------------^^
-ACK
->> states.
->>
->> Add a flag which indicates refclk is always supplied to endpoint.
->>
-> The patch itself look good, the problem description looks good, but if
-> you have an indication that the refclk "is always supplied to the
-> endpoint", then you don't have a problem with refclk and I don't think
-> you need this patch.
->
-> Something to the tune of "keep refclk always supplied to endpoint" seems
-> to more appropriately describe what this flag is doing.
-Sure I will change it in my next patch.
->> Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
->> ---
->>   drivers/phy/qualcomm/phy-qcom-qmp-pcie.c | 21 +++++++++++++++++----
->>   1 file changed, 17 insertions(+), 4 deletions(-)
->>
->> diff --git a/drivers/phy/qualcomm/phy-qcom-qmp-pcie.c b/drivers/phy/qualcomm/phy-qcom-qmp-pcie.c
->> index a63ca7424974..d7e377a7d96e 100644
->> --- a/drivers/phy/qualcomm/phy-qcom-qmp-pcie.c
->> +++ b/drivers/phy/qualcomm/phy-qcom-qmp-pcie.c
->> @@ -43,6 +43,8 @@
->>   /* QPHY_PCS_STATUS bit */
->>   #define PHYSTATUS				BIT(6)
->>   #define PHYSTATUS_4_20				BIT(7)
->> +/* PCS_PCIE_ENDPOINT_REFCLK_CNTRL */
->> +#define EPCLK_ALWAYS_ON_EN			BIT(6)
->>   
->>   #define PHY_INIT_COMPLETE_TIMEOUT		10000
->>   
->> @@ -77,6 +79,7 @@ enum qphy_reg_layout {
->>   	QPHY_START_CTRL,
->>   	QPHY_PCS_STATUS,
->>   	QPHY_PCS_POWER_DOWN_CONTROL,
->> +	QPHY_PCS_ENDPOINT_REFCLK_CNTRL,
->>   	/* Keep last to ensure regs_layout arrays are properly initialized */
->>   	QPHY_LAYOUT_SIZE
->>   };
->> @@ -103,10 +106,11 @@ static const unsigned int sdm845_qhp_pciephy_regs_layout[QPHY_LAYOUT_SIZE] = {
->>   };
->>   
->>   static const unsigned int pciephy_v4_regs_layout[QPHY_LAYOUT_SIZE] = {
->> -	[QPHY_SW_RESET]			= QPHY_V4_PCS_SW_RESET,
->> -	[QPHY_START_CTRL]		= QPHY_V4_PCS_START_CONTROL,
->> -	[QPHY_PCS_STATUS]		= QPHY_V4_PCS_PCS_STATUS1,
->> -	[QPHY_PCS_POWER_DOWN_CONTROL]	= QPHY_V4_PCS_POWER_DOWN_CONTROL,
->> +	[QPHY_SW_RESET]				= QPHY_V4_PCS_SW_RESET,
->> +	[QPHY_START_CTRL]			= QPHY_V4_PCS_START_CONTROL,
->> +	[QPHY_PCS_STATUS]			= QPHY_V4_PCS_PCS_STATUS1,
->> +	[QPHY_PCS_POWER_DOWN_CONTROL]		= QPHY_V4_PCS_POWER_DOWN_CONTROL,
->> +	[QPHY_PCS_ENDPOINT_REFCLK_CNTRL]	= QPHY_V4_PCS_PCIE_ENDPOINT_REFCLK_CNTRL,
->>   };
->>   
->>   static const unsigned int pciephy_v5_regs_layout[QPHY_LAYOUT_SIZE] = {
->> @@ -2244,6 +2248,8 @@ struct qmp_pcie {
->>   	struct phy *phy;
->>   	int mode;
->>   
->> +	bool refclk_always_on;
->> +
->>   	struct clk_fixed_rate pipe_clk_fixed;
->>   };
->>   
->> @@ -3159,6 +3165,10 @@ static void qmp_pcie_init_registers(struct qmp_pcie *qmp, const struct qmp_phy_c
->>   	qmp_pcie_configure(pcs, tbls->pcs, tbls->pcs_num);
->>   	qmp_pcie_configure(pcs_misc, tbls->pcs_misc, tbls->pcs_misc_num);
->>   
->> +	if (qmp->refclk_always_on && cfg->regs[QPHY_PCS_ENDPOINT_REFCLK_CNTRL])
->> +		qphy_setbits(pcs_misc, cfg->regs[QPHY_PCS_ENDPOINT_REFCLK_CNTRL],
->> +			     EPCLK_ALWAYS_ON_EN);
->> +
->>   	if (cfg->lanes >= 4 && qmp->tcsr_4ln_config) {
->>   		qmp_pcie_configure(serdes, cfg->serdes_4ln_tbl, cfg->serdes_4ln_num);
->>   		qmp_pcie_init_port_b(qmp, tbls);
->> @@ -3681,6 +3691,9 @@ static int qmp_pcie_probe(struct platform_device *pdev)
->>   	if (ret)
->>   		goto err_node_put;
->>   
->> +	qmp->refclk_always_on = of_property_read_bool(dev->of_node,
->> +						      "qcom,refclk-always-on");
-> Leave this line unwrapped, for readability.
->
-> Regards,
-> Bjorn
+Why is it not fixable from the driver side?  It is the code that is
+creating, and then removing, the files, not the driver core, or am I
+missing something here?
 
-sure I will update this in next patch.
+> It may be fixed here in the base, in the sysfs or not to fix it at all
+> since this seem to be a very difficult to reach situation. I'm fine
+> with any approach, and I can do the work, I'd just like to read what
+> are your preferences on the topic.
 
-- Krishna Chaitanya.
+Please prove that the driver is not the offending one here first please,
+otherwise, why isn't this an issue for all drivers?
 
->> +
->>   	ret = phy_pipe_clk_register(qmp, np);
->>   	if (ret)
->>   		goto err_node_put;
->>
->> -- 
->> 2.42.0
->>
+thanks,
+
+greg k-h
