@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D61D7E373E
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 10:09:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 988497E373F
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 10:09:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233897AbjKGJJj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 04:09:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34784 "EHLO
+        id S233975AbjKGJJo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 04:09:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233953AbjKGJJG (ORCPT
+        with ESMTP id S233973AbjKGJJP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 04:09:06 -0500
-Received: from mail-lj1-x249.google.com (mail-lj1-x249.google.com [IPv6:2a00:1450:4864:20::249])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D0E719B7
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 01:08:42 -0800 (PST)
-Received: by mail-lj1-x249.google.com with SMTP id 38308e7fff4ca-2c5194d4e98so58917341fa.3
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 01:08:42 -0800 (PST)
+        Tue, 7 Nov 2023 04:09:15 -0500
+Received: from mail-lj1-x24a.google.com (mail-lj1-x24a.google.com [IPv6:2a00:1450:4864:20::24a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 516E31BD3
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 01:08:44 -0800 (PST)
+Received: by mail-lj1-x24a.google.com with SMTP id 38308e7fff4ca-2c50d73e212so59096381fa.1
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 01:08:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1699348120; x=1699952920; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1699348123; x=1699952923; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=FGeD84+hJd1e2F5c9+bd3H9nCk4ZlrwAx/OTD8OZ/cY=;
-        b=iEUfASqDINCgBB/t3KyBMsou7Ni+zam+fWfwAdWmpQEro0vAibAcg+JpU4PDlFnyEc
-         AwoI+MtqUoIlC7D//njpzEkyRZRH+/oANghI/L7m8DlsNCgAJlcGhBC0rXcIiiTU/2yC
-         SHYsWodX+ywI7uM5JUl2nbhjv7neZeDEaqpZpf6arTPzFlUJ8LmxKc4yumGSwdQBU+Vr
-         lrPEsGEFHyURm2vhc5cODfsL/7L5rW8e+1io/JeLOfxcNfPSmPAuufiWA8Ef6O1XBPAF
-         guufP/CedLwSbyEWF84KvSdI+9hSwEldOInuuKcTYrsUFQZMcJjeEQQTQ31712kgKZl8
-         QkmA==
+        bh=5BAuWCTnwuDSlFD1uUY2dNmkoljlGCWC41ZF9rF00uM=;
+        b=uFFSxY/GVFipCeUgaQBHGLZ3l/ZU255q4DHiW1bPFSyraKto7Fcjri8KugqH+XQnaY
+         n4DJKtuP0lwm26li4ID7M8mZeuJeXJR1Zskx+3+atsUBe4ZOfLKkdPsHgdLHz3wrjooh
+         OEKFKoxnrrV1kEDS74gPArM5vosn0JCXN4u7SraczaWd0bGk31X6TLAukjXhSGP7FA+s
+         WiP+J24F33K0o6r1NNoSxsM0UzY+WkbO4/nG8pmgdNz5MklxMMVcVGnwt7+ZanLY3Zp8
+         0tdO5LAO1AEIMaHrvFeP5PxHdo1jKvqLrrzljISLHvwbh7KAhnKTe+JdNWK9/fsusdUz
+         m01g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699348120; x=1699952920;
+        d=1e100.net; s=20230601; t=1699348123; x=1699952923;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=FGeD84+hJd1e2F5c9+bd3H9nCk4ZlrwAx/OTD8OZ/cY=;
-        b=mGOX3cHze2/r1DUTn1QAfD9oppasYzG9QqhgcBoB28p81hDw6HWAGmI+dyh8YZCenJ
-         TlJqL/wor0hnyki4WyI0gORIS9Dsfw+c/C1OYJHPJ95g/4Ph7gARxzC9afyGtOsv7c3C
-         zuxZRH8P4Mnt5Rvyk4q4jRx9j+fL8Cotmcyf1ya3KZawOpYrl2lG9T1iwaAG4LXgixX/
-         /nrduc0iweblZkm9Gc6cp4IqVNips6HPDRzdp1e0Igof0hzcK1/svdwzMmOddP+B3hHE
-         4dKLlwe5Xam1XprXgazohkhN9Jb+Sum7sGzVlH5bbYf7LZAK5467jRQ1LMSLIdRQPPZh
-         f82A==
-X-Gm-Message-State: AOJu0YyIowax0ZF9J9UhA2wsrLKPVc3Zp/n94Qwsv0KbD3jdM80iK+c9
-        MluV1lh/0j2Pr/A4K469AwKhTWCAPr2q854=
-X-Google-Smtp-Source: AGHT+IH1g8u+va3RNZnMNkWHKjqLI2EALqkzguZ6gsN0uNIu/Y8WPDNiencaGuhED7ccDpmQJIoVGtYbzpK0OOk=
+        bh=5BAuWCTnwuDSlFD1uUY2dNmkoljlGCWC41ZF9rF00uM=;
+        b=W41YDf97S2eSFPuEW1rKkm3qiDHiCX17qBUiA6u7muzXzF+9JqgfQYM4jlIv/Mw0jo
+         ih2uVX2ufYthtXtY3gPP2RV9hd9L9LjwMFL8lj3SjJD7fjDybhVTJrnIyj6bq+hT6K84
+         bS0IVgLQTjVPtbUZn9tQld74meT/jTJMDIjLXksfgIAbSoOUHMbzcJfxNMBKjR4tUknU
+         aIWgCNh/OjkCvcdpLHW0q+EVcoxi4UcQuSTIkrCdATu27sjF3CU39mLcCjDbpNlW758O
+         C2JIqgtuy2qKEdPuXg0bysyLv8iIdpj9QmcelbW/Ju5vTz7CvmypI3vVasGNknqh9mZr
+         CWlA==
+X-Gm-Message-State: AOJu0YwZvTG4ynHTK23xMUPcNuj02KOsO2Nk7LVwjOEhDjogLOKpGInc
+        +X5jCl85n9GKa+5GD9ermoTlTvJh9geQjpI=
+X-Google-Smtp-Source: AGHT+IG931hZ+qR0BKxa91yuqFUMVySq851zM5KJt2sKfZz1kC+Ej0+8Cpn+JJEuZRyvKRM4tDsUJPlECJS/U5g=
 X-Received: from aliceryhl2.c.googlers.com ([fda3:e722:ac3:cc00:68:949d:c0a8:572])
- (user=aliceryhl job=sendgmr) by 2002:a05:6512:5d6:b0:500:c703:3f4c with SMTP
- id o22-20020a05651205d600b00500c7033f4cmr305938lfo.2.1699348120636; Tue, 07
- Nov 2023 01:08:40 -0800 (PST)
-Date:   Tue,  7 Nov 2023 09:08:38 +0000
-In-Reply-To: <20231102185934.773885-18-cmllamas@google.com>
+ (user=aliceryhl job=sendgmr) by 2002:a2e:a7cc:0:b0:2c5:13a7:21dc with SMTP id
+ x12-20020a2ea7cc000000b002c513a721dcmr373805ljp.6.1699348123113; Tue, 07 Nov
+ 2023 01:08:43 -0800 (PST)
+Date:   Tue,  7 Nov 2023 09:08:40 +0000
+In-Reply-To: <20231102185934.773885-19-cmllamas@google.com>
 Mime-Version: 1.0
-References: <20231102185934.773885-18-cmllamas@google.com>
+References: <20231102185934.773885-19-cmllamas@google.com>
 X-Mailer: git-send-email 2.42.0.869.gea05f2083d-goog
-Message-ID: <20231107090838.260730-1-aliceryhl@google.com>
-Subject: Re: [PATCH 17/21] binder: malloc new_buffer outside of locks
+Message-ID: <20231107090840.261023-1-aliceryhl@google.com>
+Subject: Re: [PATCH 18/21] binder: initialize lru pages in mmap callback
 From:   Alice Ryhl <aliceryhl@google.com>
 To:     Carlos Llamas <cmllamas@google.com>
 Cc:     "=?UTF-8?q?Arve=20Hj=C3=B8nnev=C3=A5g?=" <arve@android.com>,
@@ -75,25 +75,10 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Carlos Llamas <cmllamas@google.com> writes:
-> Preallocate new_buffer before acquiring the alloc->mutex and hand it
-> down to binder_alloc_new_buf_locked(). The new buffer will be used in
-> the vast majority of requests (measured at 98.2% in field data). The
-> buffer is discarded otherwise. This change is required in preparation
-> for transitioning alloc->mutex into a spinlock in subsequent commits.
-> 
+> Rather than repeatedly initializing some of the binder_lru_page members
+> during binder_alloc_new_buf(), perform this initialization just once in
+> binder_alloc_mmap_handler(), after the pages have been created.
+>
 > Signed-off-by: Carlos Llamas <cmllamas@google.com>
 
-You also need to free the new buffer here:
-
-	if (unlikely(!best_fit)) {
-		binder_alloc_debug(BINDER_DEBUG_USER_ERROR,
-				   "%d: binder_alloc_buf size %zd failed, no address space\n",
-				   alloc->pid, size);
-		debug_no_space_locked(alloc);
-		return ERR_PTR(-ENOSPC);
-	}
-
-Other than the above, this looks correct to me.
-
-Alice
-
+Reviewed-by: Alice Ryhl <aliceryhl@google.com>
