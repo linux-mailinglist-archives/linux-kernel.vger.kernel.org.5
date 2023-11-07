@@ -2,47 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0EB27E3E32
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 13:34:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F46F7E3DFD
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 13:32:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235061AbjKGMem (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 07:34:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53060 "EHLO
+        id S234803AbjKGMcM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 07:32:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343566AbjKGMeN (ORCPT
+        with ESMTP id S234895AbjKGMbp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 07:34:13 -0500
+        Tue, 7 Nov 2023 07:31:45 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0D7B5258;
-        Tue,  7 Nov 2023 04:13:24 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 54EFCC433CB;
-        Tue,  7 Nov 2023 12:13:22 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CE595278;
+        Tue,  7 Nov 2023 04:13:26 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 235E6C433C8;
+        Tue,  7 Nov 2023 12:13:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699359203;
-        bh=q5xEAjcaG5TO08PsnRP5mH0OMVS1kzr5nXD9L79tdtk=;
+        s=k20201202; t=1699359205;
+        bh=VaqDE6fQVZ2X6Is7bxsXHIppiyotbmLorYPzvQNc/tw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZxCXRXYVhfhRhTuhs/0ZYHFxvH/k0ktyko365x6TOKopw7V+GLhPeHZYFUTqSC/Qu
-         3qHhKwHxawH0L39zUQvD7uM5LB8Js4Hbd0PQUZYq9NaVEymCGQMW9WdNtPnvqSsCGz
-         bcnuiEzfyPD/Z9wskh4y+qy8z50F7XrU1+DZ6j5G9uRauRmB/PJ7fzO3S/oQdjedb3
-         mdx4pYzHcxTZBgRzuop1AZQQEMJAC3E8qMFqNGDNGnXZjg2EaxgVb9Ue8hHt2ik+oM
-         En9ddr9CkucwsDbMzZqpZc6ipI8aWJBZ/08m5mjGg940HyIk1HI8ls/yR7HPrw0qmk
-         TQV7R6qFjZAdw==
+        b=EeaxGuaum+vBM/9GcUJ9DtW1NsvDvAZEUAR+vAz3mI+LrH5IhGyDCyWtyMbOVffRn
+         0e6tifR2Yzut0rSDKhWkK2jBYon2zkF/CBjTbOrcKEvOBpAjI/3EIPFWmR9rOS7yNt
+         sdm59poOVH+qhuptM1/UFVT4mA2itofq8XOhEbNmEpD780ymM+eN8oq0B274GOJ0ef
+         zm1n2S6vhXEeazjOuetRfNZ2zX9X4FyKN/tIOr5lxLyaW04DM6v1FXQK0nMBklTjMD
+         hokOjOkaPFrSjhrO1Rrac342xS0iw2Ri7XqJuPYHwH1GU/3M31R5mjoEggX8083VI6
+         MrgJB9XfydHjQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Dmitry Antipov <dmantipov@yandex.ru>,
-        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>,
+        Jeff Johnson <quic_jjohnson@quicinc.com>,
         Kalle Valo <quic_kvalo@quicinc.com>,
         Sasha Levin <sashal@kernel.org>, kvalo@kernel.org,
         nathan@kernel.org, ndesaulniers@google.com,
-        linux-wireless@vger.kernel.org, llvm@lists.linux.dev
-Subject: [PATCH AUTOSEL 4.19 2/7] wifi: ath9k: fix clang-specific fortify warnings
-Date:   Tue,  7 Nov 2023 07:13:10 -0500
-Message-ID: <20231107121318.3759058-2-sashal@kernel.org>
+        ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
+        llvm@lists.linux.dev
+Subject: [PATCH AUTOSEL 4.19 3/7] wifi: ath10k: fix clang-specific fortify warning
+Date:   Tue,  7 Nov 2023 07:13:11 -0500
+Message-ID: <20231107121318.3759058-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231107121318.3759058-1-sashal@kernel.org>
 References: <20231107121318.3759058-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 4.19.297
@@ -59,35 +59,13 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Dmitry Antipov <dmantipov@yandex.ru>
 
-[ Upstream commit 95f97fe0ac974467ab4da215985a32b2fdf48af0 ]
+[ Upstream commit cb4c132ebfeac5962f7258ffc831caa0c4dada1a ]
 
 When compiling with clang 16.0.6 and CONFIG_FORTIFY_SOURCE=y, I've
 noticed the following (somewhat confusing due to absence of an actual
 source code location):
 
-In file included from drivers/net/wireless/ath/ath9k/debug.c:17:
-In file included from ./include/linux/slab.h:16:
-In file included from ./include/linux/gfp.h:7:
-In file included from ./include/linux/mmzone.h:8:
-In file included from ./include/linux/spinlock.h:56:
-In file included from ./include/linux/preempt.h:79:
-In file included from ./arch/x86/include/asm/preempt.h:9:
-In file included from ./include/linux/thread_info.h:60:
-In file included from ./arch/x86/include/asm/thread_info.h:53:
-In file included from ./arch/x86/include/asm/cpufeature.h:5:
-In file included from ./arch/x86/include/asm/processor.h:23:
-In file included from ./arch/x86/include/asm/msr.h:11:
-In file included from ./arch/x86/include/asm/cpumask.h:5:
-In file included from ./include/linux/cpumask.h:12:
-In file included from ./include/linux/bitmap.h:11:
-In file included from ./include/linux/string.h:254:
-./include/linux/fortify-string.h:592:4: warning: call to '__read_overflow2_field'
-declared with 'warning' attribute: detected read beyond size of field (2nd
-parameter); maybe use struct_group()? [-Wattribute-warning]
-                        __read_overflow2_field(q_size_field, size);
-
-In file included from drivers/net/wireless/ath/ath9k/htc_drv_debug.c:17:
-In file included from drivers/net/wireless/ath/ath9k/htc.h:20:
+In file included from drivers/net/wireless/ath/ath10k/debug.c:8:
 In file included from ./include/linux/module.h:13:
 In file included from ./include/linux/stat.h:19:
 In file included from ./include/linux/time.h:60:
@@ -105,47 +83,32 @@ declared with 'warning' attribute: detected read beyond size of field (2nd
 parameter); maybe use struct_group()? [-Wattribute-warning]
                         __read_overflow2_field(q_size_field, size);
 
-The compiler actually complains on 'ath9k_get_et_strings()' and
-'ath9k_htc_get_et_strings()' due to the same reason: fortification logic
-inteprets call to 'memcpy()' as an attempt to copy the whole array from
-it's first member and so issues an overread warning. These warnings may
-be silenced by passing an address of the whole array and not the first
-member to 'memcpy()'.
+The compiler actually complains on 'ath10k_debug_get_et_strings()' where
+fortification logic inteprets call to 'memcpy()' as an attempt to copy
+the whole 'ath10k_gstrings_stats' array from it's first member and so
+issues an overread warning. This warning may be silenced by passing
+an address of the whole array and not the first member to 'memcpy()'.
 
 Signed-off-by: Dmitry Antipov <dmantipov@yandex.ru>
-Acked-by: Toke Høiland-Jørgensen <toke@toke.dk>
+Acked-by: Jeff Johnson <quic_jjohnson@quicinc.com>
 Signed-off-by: Kalle Valo <quic_kvalo@quicinc.com>
-Link: https://lore.kernel.org/r/20230829093856.234584-1-dmantipov@yandex.ru
+Link: https://lore.kernel.org/r/20230829093652.234537-1-dmantipov@yandex.ru
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath9k/debug.c         | 2 +-
- drivers/net/wireless/ath/ath9k/htc_drv_debug.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/wireless/ath/ath10k/debug.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath9k/debug.c b/drivers/net/wireless/ath/ath9k/debug.c
-index 84fe686709496..e0a4e3fa87305 100644
---- a/drivers/net/wireless/ath/ath9k/debug.c
-+++ b/drivers/net/wireless/ath/ath9k/debug.c
-@@ -1297,7 +1297,7 @@ void ath9k_get_et_strings(struct ieee80211_hw *hw,
- 			  u32 sset, u8 *data)
+diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
+index 4e980e78ba95c..9586deab5c004 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.c
++++ b/drivers/net/wireless/ath/ath10k/debug.c
+@@ -1146,7 +1146,7 @@ void ath10k_debug_get_et_strings(struct ieee80211_hw *hw,
+ 				 u32 sset, u8 *data)
  {
  	if (sset == ETH_SS_STATS)
--		memcpy(data, *ath9k_gstrings_stats,
-+		memcpy(data, ath9k_gstrings_stats,
- 		       sizeof(ath9k_gstrings_stats));
- }
- 
-diff --git a/drivers/net/wireless/ath/ath9k/htc_drv_debug.c b/drivers/net/wireless/ath/ath9k/htc_drv_debug.c
-index c55aab01fff5d..e79bbcd3279af 100644
---- a/drivers/net/wireless/ath/ath9k/htc_drv_debug.c
-+++ b/drivers/net/wireless/ath/ath9k/htc_drv_debug.c
-@@ -428,7 +428,7 @@ void ath9k_htc_get_et_strings(struct ieee80211_hw *hw,
- 			      u32 sset, u8 *data)
- {
- 	if (sset == ETH_SS_STATS)
--		memcpy(data, *ath9k_htc_gstrings_stats,
-+		memcpy(data, ath9k_htc_gstrings_stats,
- 		       sizeof(ath9k_htc_gstrings_stats));
+-		memcpy(data, *ath10k_gstrings_stats,
++		memcpy(data, ath10k_gstrings_stats,
+ 		       sizeof(ath10k_gstrings_stats));
  }
  
 -- 
