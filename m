@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 918237E4395
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 16:37:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7D367E4303
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 16:12:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344012AbjKGPhk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 10:37:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45608 "EHLO
+        id S235185AbjKGPMq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 10:12:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235440AbjKGPh1 (ORCPT
+        with ESMTP id S235117AbjKGPMI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 10:37:27 -0500
+        Tue, 7 Nov 2023 10:12:08 -0500
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90D59D75;
-        Tue,  7 Nov 2023 06:58:56 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20CC0132;
+        Tue,  7 Nov 2023 06:58:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699369137; x=1730905137;
+  t=1699369139; x=1730905139;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=VWeErb8XXD2SBqMy8L7JRBcxtOCdpKU+Rt6/TTjVA8Q=;
-  b=k+jcX8HKCyPvqiQi2rbZB6u5NLy62vOl9/dbgyIPTnKkBuOwtvu9ALxf
-   iwDIiucyPEDlCF0ARsWMBj1DkbIA4K25+nTtFy8Jz79FKW4xsdATTf2mp
-   ZzFj8NR4x+nzcJwXEbprJD+EsKrT87Aa8I7AQtbad4w6eXqWCZj0JeSxS
-   rkBAJHJFIHzQX8J3EENRSAKZNC0TxcIC6RUOGjZMM0dskLwNjCSotHbry
-   UQBiYLpeAfD3OxPOWHnBt3fHtF5guXn0W0PXczTFXk6y4xKSkAwqKyWfX
-   WoQHqRuFcRSnnWcJs1T8yw70kNFYVprbSxFhGEbrVmqm+bYYu4jxxcYdm
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10887"; a="2462312"
+  bh=4SCW6Dkj/Vj+qX6sWycKS9/fk9MJ8AKVtZUkBL10lrs=;
+  b=J/hZKf3Ct4O8Fu9vQb0uOoMYf/cq32CJsCvXOTGIcvP2+xHpsBFJvpZq
+   +bCB4B7xj+2g2LoM5f/GsS+VvByeECKByeXmY4nYkM1RM3cdNQCoE9RIg
+   ZTGzIFJKWwvuK+Ncyo8cFIjpzmnrkuj0r7X9evewQvHEtJ3Juu8BjQlfe
+   GQ3ThM7Mx3w1h1aZRT10wq9EdxdHIIOuS680RPquWJ7Vqtd0EYstDq9qz
+   7x62uYe8pGIq92SGjxly9T1SQWX/kAClxGFtyfxYjw8h7h9Gb2e4yav3y
+   J2Jrmua7iogIwiIXj6dusD2HJvWawamNdlJEnO6P2myveCdLw/MG4CdoE
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10887"; a="2462318"
 X-IronPort-AV: E=Sophos;i="6.03,284,1694761200"; 
-   d="scan'208";a="2462312"
+   d="scan'208";a="2462318"
 Received: from fmviesa001.fm.intel.com ([10.60.135.141])
   by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2023 06:58:13 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.03,284,1694761200"; 
-   d="scan'208";a="10851387"
+   d="scan'208";a="10851391"
 Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
   by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2023 06:58:12 -0800
 From:   isaku.yamahata@intel.com
@@ -47,10 +47,12 @@ Cc:     isaku.yamahata@intel.com, isaku.yamahata@gmail.com,
         David Matlack <dmatlack@google.com>,
         Kai Huang <kai.huang@intel.com>,
         Zhi Wang <zhi.wang.linux@gmail.com>, chen.bo@intel.com,
-        hang.yuan@intel.com, tina.zhang@intel.com
-Subject: [PATCH v17 047/116] [MARKER] The start of TDX KVM patch series: TDX EPT violation
-Date:   Tue,  7 Nov 2023 06:56:13 -0800
-Message-Id: <44843c38b4f8b658d81c3cb7fd071b99524f53e0.1699368322.git.isaku.yamahata@intel.com>
+        hang.yuan@intel.com, tina.zhang@intel.com,
+        Yan Zhao <yan.y.zhao@intel.com>,
+        Yuan Yao <yuan.yao@linux.intel.com>
+Subject: [PATCH v17 048/116] KVM: x86/mmu: TDX: Do not enable page track for TD guest
+Date:   Tue,  7 Nov 2023 06:56:14 -0800
+Message-Id: <b1c31659542f7ac08c06fb823f5405e287cd42fd.1699368322.git.isaku.yamahata@intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1699368322.git.isaku.yamahata@intel.com>
 References: <cover.1699368322.git.isaku.yamahata@intel.com>
@@ -66,34 +68,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Isaku Yamahata <isaku.yamahata@intel.com>
+From: Yan Zhao <yan.y.zhao@intel.com>
 
-This empty commit is to mark the start of patch series of TDX EPT
-violation.
+TDX does not support write protection and hence page track.
+Though !tdp_enabled and kvm_shadow_root_allocated(kvm) are always false
+for TD guest, should also return false when external write tracking is
+enabled.
 
-Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+Cc: Yuan Yao <yuan.yao@linux.intel.com>
+Signed-off-by: Yan Zhao <yan.y.zhao@intel.com>
 ---
- Documentation/virt/kvm/intel-tdx-layer-status.rst | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/x86/kvm/mmu/page_track.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/Documentation/virt/kvm/intel-tdx-layer-status.rst b/Documentation/virt/kvm/intel-tdx-layer-status.rst
-index 7903473abad1..c4d67dd9ddf8 100644
---- a/Documentation/virt/kvm/intel-tdx-layer-status.rst
-+++ b/Documentation/virt/kvm/intel-tdx-layer-status.rst
-@@ -20,11 +20,11 @@ Patch Layer status
- * TDX architectural definitions:        Applied
- * TD VM creation/destruction:           Applied
- * TD vcpu creation/destruction:         Applied
--* TDX EPT violation:                    Not yet
-+* TDX EPT violation:                    Applying
- * TD finalization:                      Not yet
- * TD vcpu enter/exit:                   Not yet
- * TD vcpu interrupts/exit/hypercall:    Not yet
+diff --git a/arch/x86/kvm/mmu/page_track.c b/arch/x86/kvm/mmu/page_track.c
+index c87da11f3a04..ce698ab213c1 100644
+--- a/arch/x86/kvm/mmu/page_track.c
++++ b/arch/x86/kvm/mmu/page_track.c
+@@ -22,6 +22,9 @@
  
- * KVM MMU GPA shared bits:              Applied
- * KVM TDP refactoring for TDX:          Applied
--* KVM TDP MMU hooks:                    Applying
-+* KVM TDP MMU hooks:                    Applied
+ bool kvm_page_track_write_tracking_enabled(struct kvm *kvm)
+ {
++	if (kvm->arch.vm_type == KVM_X86_TDX_VM)
++		return false;
++
+ 	return IS_ENABLED(CONFIG_KVM_EXTERNAL_WRITE_TRACKING) ||
+ 	       !tdp_enabled || kvm_shadow_root_allocated(kvm);
+ }
 -- 
 2.25.1
 
