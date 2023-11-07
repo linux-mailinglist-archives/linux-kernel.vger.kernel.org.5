@@ -2,66 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1882C7E4C98
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 00:13:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C2147E4C97
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 00:13:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344142AbjKGXNt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 18:13:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59832 "EHLO
+        id S1344430AbjKGXNa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 18:13:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344352AbjKGXMn (ORCPT
+        with ESMTP id S235158AbjKGXMf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 18:12:43 -0500
+        Tue, 7 Nov 2023 18:12:35 -0500
 Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DED326A9
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 15:11:07 -0800 (PST)
-Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A7LKAuk020974;
-        Tue, 7 Nov 2023 23:09:55 GMT
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7630E25B1
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 15:11:01 -0800 (PST)
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A7LJl4R004882;
+        Tue, 7 Nov 2023 23:09:57 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references :
  content-transfer-encoding : content-type : mime-version;
- s=corp-2023-03-30; bh=l0oi6U6XTqi6xUPiF/Vm9OcTQYEcBRyzZ+85IJdGD1g=;
- b=VR6zPQvwIB3atsVE32l07vELNjlh7gG6oicrEi8PbH/A/zXpsThzAJ9AsjfV3ktiH5c5
- S1nMSlrt9MiFGmJyGTxsTuHDp1lnkALddSYR+hvJASDB2aYH0Zj08oryoK/GhOWuCu9O
- 0rTypyt16iIScZCV/PABzoiGuBMtnoxv9/Wi+32UAy8ZmwaF5/QXw1tdMVdas6s0TbHa
- 84Fm59+3b/1XZJfcCDzCtb6MOX7i0W7qjrqhKtvMFqJXjJcQdbGl2PJmVq12NU49s3Co
- rRvGr/4qk2Pbc3YNuZbmio3n5OO0YW2lljr+GtNyTDVkNqhrJ6YX2H7Zr5QYFgMGagek 1Q== 
-Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3u7w2207b9-1
+ s=corp-2023-03-30; bh=tq1zfiB4GDrADd32Dobq32ENEB6+vmdJZsjvmxtBuP0=;
+ b=Www6Nr99Uhvw+7rllhU7Yp5jICuS3pHCT8VqVxFwN2YUlcLgTttPA8GOQDRMvukDHFeC
+ Q8reD7pb7zqnEd7PMK1rvucuZVi1NJcmhxXAo47Xf4L6zU0lkVidYpty/rZMSt4CiVJa
+ DBX/orgV2rbQJXHzQCFUwvrUh2meVMILBiSVIbjb6UlhEYvJjmZdPSEUJ3p1aygqwkHj
+ PkPAhgg3G+9FYPvIazV/IgPfeGLqfZVpjEW8HMsl7ksNz7a/qrGNiNgbb1TtW8Wanm7n
+ mQOApqDE+W6tdIACyQyjtjZhK5RcpuMOyOrH/rWjVTL15BeUF8jCg71lVdQ3HeeeeNLd DA== 
+Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3u7w22g6c7-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 07 Nov 2023 23:09:55 +0000
-Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3A7N2MwB003811;
-        Tue, 7 Nov 2023 23:09:54 GMT
-Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2041.outbound.protection.outlook.com [104.47.66.41])
-        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3u7w1vvcgg-1
+        Tue, 07 Nov 2023 23:09:57 +0000
+Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3A7N2CYQ011114;
+        Tue, 7 Nov 2023 23:09:56 GMT
+Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2101.outbound.protection.outlook.com [104.47.58.101])
+        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3u7w1tvajt-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 07 Nov 2023 23:09:54 +0000
+        Tue, 07 Nov 2023 23:09:56 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VDBZrMND44D6Fm99c+fw/330ICNfOFMfr1Rhp3oldIQAnBQMt9IrVio6jKbJ2zTpLe71QD4tE36YYJtIHTCt1WS4K5L3slWyibS2tenGV65S7mOhpBFEqHzI7sxCZ5cagoTMEsNc7YwZoh6o1po5p+1GjaOG/FOCcR4/hXVWlDADIwXjQKOjoIRGkb9fXsKmSv6NN3R+18U5ZCKWKWY/doqxIruhGmgS0xRW1MuR4UT9M+tdx/CnWrBW4282ffJ8/y+IZjJnNHpuXWpiRcyEIP6kVfdBxRAADtwzCMqYjQIdxcyaVizvsqIkdivzaBGUXmiaGuCv0l+bejj8ifjPMw==
+ b=f0fAyMci7+3EakWL4qP0aIBCmfVvEkf7SwqPGa9tm0V8VQI2/b4FalMO/tGPOy1fLMO78ZrFVVDL0mAzfmMRWEuYv1Rprn2gXZJPuliPROeNBwopYVAxUMnak5RJOt+XqvqkXYIL7GAxrWIALFngXlcG1L8KBpyuT6WMZaZdi1dSc+ZIa4IsfLRgU3wX9drid4kdDNTPgcxNjejGbfqOCpOegCC9Vf9JLrl5aiNHwPyWUigKhf+fM+3JXh5vTWas05HkuLED02GW1/8QQZ5okMFlxH91zoKnyPGFf01pZEtCOATT+iL989CnNnkQ+Oq8S/z+fMeTIGqp6Sh3w6I/XQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=l0oi6U6XTqi6xUPiF/Vm9OcTQYEcBRyzZ+85IJdGD1g=;
- b=F7CFE2QSxc55HT6ZvE0ULg43KdfmkG/pM95TSKw+A2MXkoF7eXP8FA9pjyaemlTYHBG6kgmS32xlaEwwCrdxyuh3uRTwYu3OZI9WmpsYTNkz0YsohmObQjyBXlHnnog0JQ0XDqJG//TIOvkMn/MnwirWzB/s5Br8kY3BfYyXJf0fbEU2/nS+jrDVcGBl5iKHIdg82aA5+y8zrFUJCvwICfzhBjDKuZyBtzkgN6GWDEmOH/LklZqZ787MTE3ZcMkiMtEmFw62rkaBf31zlaO8t6g/KVH1DVroDrAiHIBhAyQcsGRD1PVf+bH5Bl8JHYRPYvYM/9tRK+eNEN6c9dFWwQ==
+ bh=tq1zfiB4GDrADd32Dobq32ENEB6+vmdJZsjvmxtBuP0=;
+ b=NNAS/rhai4FS3amuYXQ1VcCX4vOnPnCemhKHxKzL2+FM2SJjNLAOEPc/WFTzT+rZmbQXbd8Zr+xnfxxb6YmKBEtPJ+zniR9DbprIj6qS71qwjP7W1S4PgYW5XrZ1ZV0J3hOht1Xwl8LJHKjim/U+Lra7/TX/UvRSiz+udHpl+9TyU/0IdA+/R7NkeDdfea44htIn7P6T0SboHU/1iIO3strUOzu55JNYWNUiYSVN2B/Nzm9RSk6L4mxvc8fwa30OGKCZw9EhLYxEHkN+qLnu311SDYstwTWiNKAhH/Mmie+ld/M/4fjjzzxR6Aj0nSM3XyklprR3aune81R7d6p3aA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
  dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=l0oi6U6XTqi6xUPiF/Vm9OcTQYEcBRyzZ+85IJdGD1g=;
- b=ihaGfDJq2N+Pm+/v9+SpbEsemIe/gKAIY7ZWeu2jRtmjaCXe/H53rzNN4Zv1gBaPkGnH96JMdP15+esZPjq5Z7LdkMSDfWLL+ARH7FGcQMoX2Phnf8kOuctNgQBU3JuXFhE2UrqyLun0AzvSWamFd10TPWNDS7+EzlJqSX3cHio=
+ bh=tq1zfiB4GDrADd32Dobq32ENEB6+vmdJZsjvmxtBuP0=;
+ b=souTidh4Rmk/fOvai8bXm4HNJwdQBllrr7fdcZ/S4SNyM/b1oJpvA2oOfs43i+15VMlpyVasXCUv1+C1l6lcTZJ9IfG9YFzaEVuvAOb/sa09zo4OUOl3NHSJOnyuUWori8eaACtfUt5eYzrWckAQ7K1pZjaSXqoSYuSV7zopYIA=
 Received: from DM8PR10MB5416.namprd10.prod.outlook.com (2603:10b6:8:3f::19) by
  IA1PR10MB7261.namprd10.prod.outlook.com (2603:10b6:208:3f6::11) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.28; Tue, 7 Nov
- 2023 23:09:50 +0000
+ 2023 23:09:52 +0000
 Received: from DM8PR10MB5416.namprd10.prod.outlook.com
  ([fe80::c72:c098:4fc2:629b]) by DM8PR10MB5416.namprd10.prod.outlook.com
  ([fe80::c72:c098:4fc2:629b%4]) with mapi id 15.20.6954.028; Tue, 7 Nov 2023
- 23:09:50 +0000
+ 23:09:52 +0000
 From:   Ankur Arora <ankur.a.arora@oracle.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     tglx@linutronix.de, peterz@infradead.org,
@@ -79,110 +79,117 @@ Cc:     tglx@linutronix.de, peterz@infradead.org,
         krypton@ulrich-teichert.org, rostedt@goodmis.org,
         David.Laight@ACULAB.COM, richard@nod.at, mjguzik@gmail.com,
         Ankur Arora <ankur.a.arora@oracle.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Tudor Ambarus <tudor.ambarus@linaro.org>,
-        Pratyush Yadav <pratyush@kernel.org>
-Subject: [RFC PATCH 82/86] treewide: mtd: remove cond_resched()
-Date:   Tue,  7 Nov 2023 15:08:18 -0800
-Message-Id: <20231107230822.371443-26-ankur.a.arora@oracle.com>
+        Inki Dae <inki.dae@samsung.com>,
+        Jagan Teki <jagan@amarulasolutions.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Robert Foss <rfoss@kernel.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>
+Subject: [RFC PATCH 83/86] treewide: drm: remove cond_resched()
+Date:   Tue,  7 Nov 2023 15:08:19 -0800
+Message-Id: <20231107230822.371443-27-ankur.a.arora@oracle.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20231107230822.371443-1-ankur.a.arora@oracle.com>
 References: <20231107215742.363031-1-ankur.a.arora@oracle.com>
  <20231107230822.371443-1-ankur.a.arora@oracle.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-ClientProxiedBy: MW4PR04CA0046.namprd04.prod.outlook.com
- (2603:10b6:303:6a::21) To DM8PR10MB5416.namprd10.prod.outlook.com
+X-ClientProxiedBy: MW4P221CA0001.NAMP221.PROD.OUTLOOK.COM
+ (2603:10b6:303:8b::6) To DM8PR10MB5416.namprd10.prod.outlook.com
  (2603:10b6:8:3f::19)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: DM8PR10MB5416:EE_|IA1PR10MB7261:EE_
-X-MS-Office365-Filtering-Correlation-Id: bb59d173-d6a6-444c-d2dd-08dbdfe6a490
+X-MS-Office365-Filtering-Correlation-Id: f34de6d7-050b-48bc-eaed-08dbdfe6a60b
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Y2ys7eH2V0e2+cm5P/g3qeA72iXFdOYfiqQNRw6VLL1Urmz8pkbjItAc7am02jEO1aYELjBxR7zkqh5GDRygttbhWjP3WjRhUUmy9ZKoK7IF5XU1YKtaidwu4uZhLiIlAC9SYxa3jLCl7o/6EExOe412cyYuUtzpWh+PpdKVCAS9UA9SNQrmXHtFqI26uIt+bm+I/LMJl0847y/uE2B8Xr3Q39kWxIWteCwdG70tiNvNI/Sc6PVFPRc82TZdSfNK29/kx6qVyRYKU03QWMe7XJl4HCxGaNfWPCJ6MS6mFfbksCzW/AurQIsK4q0DXq9JHjNQvuyyIABURGcE89ygn4bIaGJDV8tP7sSlWluRftZk4IPp5Pj0MYQc1QARucciH2RRNlt3+YaI9Eg6UZj4mucY7pHilro7CwTa/45fnASYcek4aOhSfdXXHq8wJQUoEe90Jkhnd59EQLIfFfazQoax3BDtqerbq9qlEKfdl0Py7rHAmAEd1p/+zRyekd0K2FbYLvz0CPSRnxwmSxt3Q+VTklnGjUifpLspc+SVNTkmdfKoq02qk24wkDvlHWpR8Fl+lSnujaxTCl9yKPl6JNTiLPpuSk2pcow1wp6AX1GxLpYyVkG6xaejmyzyX+OC
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM8PR10MB5416.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(346002)(376002)(136003)(396003)(366004)(230273577357003)(230922051799003)(230173577357003)(451199024)(64100799003)(186009)(1800799009)(66899024)(30864003)(6506007)(478600001)(6512007)(2616005)(6486002)(966005)(6666004)(7406005)(36756003)(103116003)(38100700002)(86362001)(1076003)(41300700001)(7416002)(5660300002)(316002)(66556008)(66476007)(83380400001)(2906002)(54906003)(26005)(66946007)(6916009)(8676002)(4326008)(8936002);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: IJbQ6QvghiESUH2/hQ9+av35ukOOyeyFyaOUiHTHKjDPrYSc6Q8VzARXXYCAkfWlhGgRgnwh6AvIVEA3r2MAT5z2pHTkqFw20LrSTUO9z/k2TcecSSOaQqrHspm8m1aYxLMX/jD3rSFdrLw8L7FMDoH6jvBMZ82oeWun6J/zgQIUQgxp+AfftNm2LHSW2nmjnIoDlPO4xnRYd5xpsqNZjAxu5CSyIkN0R9mGpltKwSerkYPDKiT7lvw9MpECK2mYr4+CKj78686jKsc4qgCY5IcV7pQOsnIihY3h4MsAXLXH4kfFXjAXtCLmDTwObrCQwkY2TbC/4/F2QWLuU6NVh8b1L4H5cAd+LwguL4PRVYg1agx2N55uaYmhCjWUgVpG5jbC1/ErN2OQhuMxkvUhc25qI3OMCMWaAIsdvhhP4xJFszCbrzXpw5X8vrHayXYgYGZGP/sOVy/AsaQcfpf3a5wmY+34PGdSV8Fj1lqMM0ChaaOu3tNXoZ7fC6jHXgte0NwT2Z/AO/aYLC6KQFhDqamHvNaRBBVviEWDIAq0snQ=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM8PR10MB5416.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(346002)(376002)(136003)(396003)(366004)(230922051799003)(451199024)(64100799003)(186009)(1800799009)(66899024)(30864003)(6506007)(478600001)(6512007)(2616005)(6486002)(966005)(6666004)(7406005)(36756003)(103116003)(38100700002)(86362001)(1076003)(41300700001)(7416002)(5660300002)(316002)(66556008)(66476007)(83380400001)(2906002)(54906003)(26005)(66946007)(6916009)(8676002)(4326008)(8936002);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?mkkqFPwc2n+raKKdEIfY1OP4r9YLO3eJx1I525mdqiNrHqezX+zLajDuStuI?=
- =?us-ascii?Q?pNwYGVuzpD4wS2fnPWtEAPcuIopvSjLkAGt4Jh2PuYE9fMZQs7ggqWExi7TK?=
- =?us-ascii?Q?8STqV+v8vUJ91oNBZFxm1+NSfKpbjUH2XABKRNABRcyjkq9Lphv1wIU74I5n?=
- =?us-ascii?Q?ti/bS0Fft2vm1t1IPMOT4J932htMxSdMZyr4wukDe5o/DOWU7HVyt74OlJxN?=
- =?us-ascii?Q?Pcis5lUDNf6wDmHZNwYfypog+FRLI32OM2qaYMlBOLc/4I0WbYUtVqMe7Ab+?=
- =?us-ascii?Q?by8QvbVUwko83iSX/ZBNfPprCFe5rQRuILqIzTTtsoXM3AuOuzPsl8vph/nk?=
- =?us-ascii?Q?Y0dXLuZQOxGimtTASUZsCqxijkFNkHuOtyJBZ96v6BfsYT8sKnXxLmQg3rfj?=
- =?us-ascii?Q?K5+odEl1zETS2MyiP4gzyt+Y3zXURDF8cLj9VgtvIaCFNH9HwPbb+Ze5JIqF?=
- =?us-ascii?Q?mOESFZmu6IOLD/qPrrbyL66mb5ALdEUBAMjV6h1gW7NVjSp5AbbF+cwpuNJF?=
- =?us-ascii?Q?SaWchmlumE6+c3fHirS7xPgvekfqLehzX3seTb7fiko4Gvo9Z7eK7khWa78F?=
- =?us-ascii?Q?hvi3KbZpcLCA7UscUnb/pjHgtv78VaXFg/s/nrPk8rQT+lOuJ0RrlxTj7dyX?=
- =?us-ascii?Q?R+KdBqAIESWDY2EUaWz3Of5q9KhUGmkP3gnmVqI8W33LqcQTObE0tKLb+D8U?=
- =?us-ascii?Q?ehF5PqVBqR+1vYo8zsoXwLdPmura1zURc2dea/VdEFAV6WHemKvbL+SNGo2N?=
- =?us-ascii?Q?gdiRfjOJI8kSkGzm93P28jtja5/eUfgv6Cb2VHl2x/do/iY1yx5zQ8tQa4Zw?=
- =?us-ascii?Q?RfwVngNN7MVv/Vtd1zBFu3EaN8N/MZvAlOuLzZ2rjCbIQosqtLwndpIro7I6?=
- =?us-ascii?Q?uSFI9cJ8vUevGRzJPLi3mYdlorFCTCdB+O9doe5qfSVh7wwCbQCdGaB/I8+N?=
- =?us-ascii?Q?HLeB/S9xpuXdsLGyforz758HWJV1MiCQ5Vv8XOsSdZSjRSTDBd5KgYOvJ2Cq?=
- =?us-ascii?Q?4WhE6ECafmJwSAAaw0ApMjnLJntVkClaYTOdTlxnCyrQx/eoak61AZnQzxkH?=
- =?us-ascii?Q?4GjVCdBuUgWs9ms5jRKjEUS6BpDlipl+MoSfqXxANBE/SdrK3Qyo2CnePZxC?=
- =?us-ascii?Q?grQvyUzJlTi6QYi4UR8cmSUPjBtQ7M+AvHLEBFFhoZz1heky5ypc+3Qy7SXt?=
- =?us-ascii?Q?F4xlxCbho/JU35p/Ej4twqd8MYg6EjFk8eLYOacZk7uDiXCzK48F7r62nDRW?=
- =?us-ascii?Q?DqMDesBWYMLJFO9oyCcx6+Ryl2LCzqdlsncAgbh+P4cLjCWS3kdaxxXkyb51?=
- =?us-ascii?Q?bwT8NEqc+Rpen1qyxO/Fx+N5j879qu6rTdybVkAoIVj98LaWrZOISYEffrG0?=
- =?us-ascii?Q?6jah4Ev/g8oPxl9B3Fv3jI23mjKwY73zQMm3zsTp7D2mUD5MvDg4Jlz0zSHT?=
- =?us-ascii?Q?dqzYusB3XLG0tQECywr6FQnEtNIkqKzxalHq4eOxvj/FL7slLXMd3pFBRxvr?=
- =?us-ascii?Q?zEuDAOdDwFZppoHq2+iaF+qOfrj2Ci6GRJEWUhN+sCOezHa2mOhkz7JghVcl?=
- =?us-ascii?Q?FGe0rsE8VLFiqM0bjkVTH7S7Bxzk+tBGRVdfjuR6qdqO0ebTxilE8Yyuue7h?=
- =?us-ascii?Q?7w=3D=3D?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?LZfXZLcj3ZW4ZR3ZPK0iOitquxDz3gwFbIehjJ40ixOoDCs2nELVhY0BU3Mq?=
+ =?us-ascii?Q?qQxW4QCJ7LjQP7URrPgneCkvZY+1RVZ/zhbMzGsoQCfXWZq2NXP+ozQqtPeo?=
+ =?us-ascii?Q?1J0ku53vtUqtwi2BkqqBgM/BlRZu/swrJ41aTK0pC+Z+fHc++Nyq38S+Cq0h?=
+ =?us-ascii?Q?+q5qGrYMGW76y3cT8twguYuxhf6gwv8V349OFBr65dqyCpNX+wpUJRvcIhC5?=
+ =?us-ascii?Q?yrwCB9jDFEb2Yf79V0Wg/K89Dme19ZlNGhC0PpF2SnUAFm3SPv2JnqdO0T0g?=
+ =?us-ascii?Q?7MiYcahD1QMMXSiH2k/gmGx0f4h/VrrE5uEE2PDJaYBqZiioSz4UYUxvEQWs?=
+ =?us-ascii?Q?xGu9Alg0bbH4AeHckpe8ZTzbLRSxbKyHSh0DPQ84aPBHcgC0KrFhSJYqXVfX?=
+ =?us-ascii?Q?mgc7vbeyZn/oOgbz2WIuQ0bEIV+A2s0FlaULnUPgogZE3kdQut72zjxCqaFR?=
+ =?us-ascii?Q?ULuOV8pMKtEnAQl7begVv5hNpkECUrLFZLszeTVn0MOjf7xiRuBriBRt+I66?=
+ =?us-ascii?Q?ybCPAHKv7PjYBQPl8zVbOJGwqcJ3OIUxTbav10sZsfnqwvcGf7CB6kbrywjP?=
+ =?us-ascii?Q?tIUlloMDuzj9fXBF64XdPNvw2SYPeyvZ9qtM1S5OElj50s8BGAk7UYwJCQee?=
+ =?us-ascii?Q?mfRWbqf03a62UhG7a8LgcKGNzMVpAxFK/KTmB2dABBKKqrhl/h6eWyk6Fjc9?=
+ =?us-ascii?Q?60TtNu1AMi/oNYUv+yp9gBxmVzPTE6ADV9OmJk3bOfEYGUuSLjNWIccVmKcb?=
+ =?us-ascii?Q?VpZylHpdzed2LNi48O1a5s9TvhH8IbJuG37/r0iSiuV+4B79v6t50w8vwqSD?=
+ =?us-ascii?Q?7aXVe68pzUF619SfzhBfngj9hKTEPO+6LybHVhmC9iizDTCwCNgx9MOCnYLC?=
+ =?us-ascii?Q?Uz0yYxeSmwr2DKuy6a74sgzWFYuIz5Daxn8AD09+2TnOM8hktDeB90wb4jvA?=
+ =?us-ascii?Q?I1Xu1Vb27+ZOEI1wepQTYEYK82a/TxB4jypGCHjeAyZ42UXmNb7MKdiInX92?=
+ =?us-ascii?Q?/pQOTRYv5Ebqj/0jcmVcMNdcRQnZSXjYZaKgwcAWw5DeNIp/AOJqkqz4Q01+?=
+ =?us-ascii?Q?pwYy4GieZcu6Xg7kJtw2HG1iGaBk+BSGire2Bnlr0FCSIedlQHqYfAaREXpE?=
+ =?us-ascii?Q?T+ERNPljg/ADexL6hPPsUmURwGAg2Jwfc5lwiZgR+oF/nStEe/zqgqCZlKoG?=
+ =?us-ascii?Q?oULZuZqbsXXq2a/UZJtBNvGA1prv6AZFHTjB/QKCPkwbn8j3ypB7GZAGjHpW?=
+ =?us-ascii?Q?pT83Yn5a+mXE6gtwYdrsOxVX4NtdhldcsjXtXjzFuVTEUBN0nZ6GHkV8LSoM?=
+ =?us-ascii?Q?GcGZ5s5DqCG4AGlYydDDqgAYySx1uKPkx4k5JZjKUpsOsd2tbpaG24wOW8pz?=
+ =?us-ascii?Q?XFH19jMF1CjLu6leFErs6f0pWKT60bGfheTiyIYUOq9WPTSJVK16cfg6i2UI?=
+ =?us-ascii?Q?6UD42OsW3cTRfUha1ifBxGOnjPjNiQdcZlxfdcl3Do44HuzE45U3uvOm41cN?=
+ =?us-ascii?Q?8JsqPXmUv8TL2EEtoaH1rmcCHuKmTz7WZrjDobJaUbjBxEL5br69mGDBvAC0?=
+ =?us-ascii?Q?yoNd302Z2zG5YzQNWK9R83PT0GfMVkGwsWrRyDpbCXCLCu3MgRLUg3opKAD4?=
+ =?us-ascii?Q?rw=3D=3D?=
 X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?us-ascii?Q?dpD4XlG92Z7fIrFOZYaJm6H/mVqE/uP3xFtpKLqaSfdYr63aXmvEQsTSemHv?=
- =?us-ascii?Q?QhyVuLHA9xRxE376e/Mer14DfOBOHvhXBT7p+BoMHweNBBidVPlsfhVFTNZz?=
- =?us-ascii?Q?IotBeYEgtamBk+H5Najo2myaE5WKzWNzjg1AgTpWb1rfvxOOooS1UCRPZNeL?=
- =?us-ascii?Q?vLqCY+UpuakezIq5RUaZEfmu9wA6up6oigPsqSm8mSgeg78Mv39KS6HRbtPv?=
- =?us-ascii?Q?84mjn1qqU/cwwr41LJq/sndLQ5nEVGV1gkfYhiQzSjvyE2hOWB6vbwFOcWeU?=
- =?us-ascii?Q?hw/+bw5j4ddKQf8h7fcJ//PdsHRIpVGPwhK/PbqL6pajra0eUMHg96A2kIia?=
- =?us-ascii?Q?1LhuNikqyuIlHdpH9GPH1nq8tLIR62X0jbDLhlVFgYyWOQX0YfpgZnc2SQ/+?=
- =?us-ascii?Q?l6+CIB3Td1BgeH4oVSgQiKrhRjJH+YGRGo0AsemtMJQbb9V+n4bk+1Bnz4gI?=
- =?us-ascii?Q?zRerJ6BAcRRDorpuBdLApSn4CIXGoCSvbdSdBhtNT8urpBYJe4EJZFaUg8f+?=
- =?us-ascii?Q?MPZfKpwECe7C/SkCObzj1DnYnaDj20XPjVaZE25+4VTCmIop4mmCPZ+bqp3Y?=
- =?us-ascii?Q?GB5OiH7xtC6bztt1WlM/ntaNNHVLWkR4dOp30Y4Fbi+WiZ4LH9GvYw4HyLVQ?=
- =?us-ascii?Q?P04P7UEvABkJTv/UlZ7ovtirKWLZCL2I1Ig7mNFda4JaxPfg4DCudNLoMIs6?=
- =?us-ascii?Q?rLb3d5D0eJK/MJMdbNse0/kyH2Dk+y2tGeDt4UZQnQxb3oKnyTfSJPMgZfZs?=
- =?us-ascii?Q?ptGtRJTxULY/5xknbnIcmdkos1DQP6DlRrX15yc0HX+GGJA66oMib/1+9oRF?=
- =?us-ascii?Q?QafmskcwgFUBpQaOy4hEpCXpqx3pPiJOxnN4cL3pzYPDbAndizVmLKeEHfB4?=
- =?us-ascii?Q?7TZwnykBkuWJ+0vLMw+yQ5iTlrzLAoxos9/B4WxCmY3HzCUivoi8OacUd+AY?=
- =?us-ascii?Q?Vwd8WrtjjZXXdBl3jTTPxGDpDfvevVS/dY6PVVs2i/MH3wT1JQT73KVx96lA?=
- =?us-ascii?Q?qrJS/q47dRQhIFsrQdAJtxlyF3vmWRuDELqPrpRscJkLzVxT0xE3UkuE8OaA?=
- =?us-ascii?Q?4mrxk1fksR1FRZLnnWreLJ6Blx2T9la7Qvb1zuK2aoswMyucUvNE/uGJzFil?=
- =?us-ascii?Q?Yr1irMh+mV2H21ZSQPAtRER0NQJlXhahtPZlPPxyLIuZzcL4IvgNn72orSWQ?=
- =?us-ascii?Q?cPqjafQYdAZUoS8LwIVyq6gOosQnIrSFPp3HjJvbaG7/umZ728s/tSNUP2fb?=
- =?us-ascii?Q?dpvqZloUZLtrEFpv0z/KIlQe7cu9hGnTbzaiUkml9vk7q23wk7RMy5I65vcn?=
- =?us-ascii?Q?hGiGTn0o2urYo0gK1b15D13O6pInbHfFK8/iW05jT4s6i5gxTtvhutGDbGKU?=
- =?us-ascii?Q?YK1hHUoEx+4ahyb+X5SrQojPQMOhrchA1D+Pb0RxyXWk+G9MVIn0a1MF0IgQ?=
- =?us-ascii?Q?jEX9nAD0OJNINM2EtNc/8DZNUbyddGHLi1bkg7ES/2J6BWcteKwJakSfxyyc?=
- =?us-ascii?Q?GClKJxQzb8+Ms/DKPDtS5VxVnUsfvbCEtuUr/4PBB2HTNVWyKKWU3fPV5soG?=
- =?us-ascii?Q?KtJI3lOP2AeO5C2b3Sau159eQjPO2PZlDBhabKogDo0smEIfZpErXP9AaeFj?=
- =?us-ascii?Q?QNqljI9LtwF7InTL8+odVzA=3D?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?us-ascii?Q?K66kyMtFgkz0oHjjZQi8GnF0K/v4j+tVZk3et9s/MuSYDZrtAxAPwuDOI2ZX?=
+ =?us-ascii?Q?9uubPr8KAUsbh5h8qHy8PckqnwBEQLvlDg6r5nuD5PdcNNSrqLpM2Q6eBfXH?=
+ =?us-ascii?Q?N7WC/rr1lgKUBIx0td1FUPg3Y25+NLHZDZkm13S+RmoR0w/RA5jYm/NmL1Ql?=
+ =?us-ascii?Q?F/qzzLZhAJ0Aot1Ydtwr2IqYg5XCeWNCjuVfqvqjj0v04E77Hciwbuw+GnGL?=
+ =?us-ascii?Q?mFuUXwIiXTEcKmHUO9fIqgGlVG6axm1bC5wN4HnQwlXGthcP7LpKo8kFcSx1?=
+ =?us-ascii?Q?D22ksAWxF+OpMCLIWBRCn7I5vwAGvcI4PMYF2x3iQsmX5sREJ5hdleWZaFGu?=
+ =?us-ascii?Q?AkWXaWb6qJTiXywuBhjTCYEP/JnRM6O83Q4IrPXygXrz0MW+C63navW2Ptjh?=
+ =?us-ascii?Q?pHt+eNIPlELaS8J1YAM9sq6+TijuLZC5IlI8Fx0q5QVEQiZRlH3ruW6SVzN9?=
+ =?us-ascii?Q?yGwmMSm3eu/kV6KZftkqfh3stfjetEHkARavTR45pLynsRK5Eg5WUG9SPAAT?=
+ =?us-ascii?Q?yl/R96Cww0LEJV3aCMuyiI8bQ45QYVanf/AkA7iUt+bDBO6uKmQRV+Hrzs0U?=
+ =?us-ascii?Q?92AiC3sA5fQu6h9qIAgMceTw7synzQWHvKggLZqKEhh6nvwwDhWhLup5Nt72?=
+ =?us-ascii?Q?8QQuKHFFo7n9nUZMT5Ixpgy9mxO62Uy8SWpNCC6CSV8j5lCiBiYMcbGKf7mM?=
+ =?us-ascii?Q?TCSW7COPN7+WWfm6fukS+5dDSLZxLbJP+Fv+iBSSaO7todw82HG16yZpEe2z?=
+ =?us-ascii?Q?N+j8W91CkGSetfmlZSsXAe0szVnoij8Rn39PfMvPAgy29t5EBIoaz0siPmrl?=
+ =?us-ascii?Q?s3R7J3oDptG2xN9FmYv6QdUcDGj94PA5OJxgcRcnCZuSsx7auM0rA8OYFPlo?=
+ =?us-ascii?Q?PWZIl1ZQzxsKINYhSRH8NYgwRo5Q5AyEvMmHogv6DGuHflW6oCcgJOsvb1D1?=
+ =?us-ascii?Q?3sc67H0EOh5KmyaZGm/t3Vys2GYWG+KdBFasEU/H+Fr5iYr2kcspTxj4p1ng?=
+ =?us-ascii?Q?9BuXc/pgNtJ4zjUlUHZHclqBYgeqB2W3BNFmQJm3Z5tlhZEjUEW5PHgk0GZA?=
+ =?us-ascii?Q?RWK4hNHvLAhpGnQ+mAX/aQJ2ePbV75bMehXVafx+fuog5MpdUSG2NyzffwSG?=
+ =?us-ascii?Q?5QcCYOm+x1tgwD72wrNcLD2u0HHQCeERQlaRZ7clq1r8JEud+KjTptUFIBNv?=
+ =?us-ascii?Q?irYLcKrrSuVvj1hrGVd4nWDIXdALyJ5LCiNeMf5D7d0hoPaW0gWHw61pSW1G?=
+ =?us-ascii?Q?3FH1zXYCcUlrXRX1cD4f+c9kd3kqaOma7Tkc0CoDSo6Xp0yGXNhBGQLlKceX?=
+ =?us-ascii?Q?FUGN4xdLdsKk71y9tvCJLgfVgdZruAXaBYZtvuE/1p7TfyAn7prvfO+7BnbN?=
+ =?us-ascii?Q?AxfpoBcsy+d8hsKohnU85s+SMDbypKkrTg7vECwO7PR/5TX4yM25AoFiMSfp?=
+ =?us-ascii?Q?qNu2cvscFPUu/6xDSbIkcAZu0cHPwwpPVNdxlwJyvM7dLpMpOkdpAfQ5XigE?=
+ =?us-ascii?Q?qJlf76bqIbq0O4c2aDRjfoyzDC4qR7/r6G5FRr+NTeBOIDu14Vcq9q3vq8Aj?=
+ =?us-ascii?Q?JfZ+hOAva9VoINWpgNKjQ1tv9VjLBBhJuOT66vVH438lT0tju02y4yNHoGDB?=
+ =?us-ascii?Q?WuCo806kktwhLZuT4JMmXSbi4drElrRL2Zx+mASxtU/hvvJGKkzw31Xe33so?=
+ =?us-ascii?Q?gITGxEAWJ0FQ3eiy+VaP6FtepbY=3D?=
 X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: bb59d173-d6a6-444c-d2dd-08dbdfe6a490
+X-MS-Exchange-CrossTenant-Network-Message-Id: f34de6d7-050b-48bc-eaed-08dbdfe6a60b
 X-MS-Exchange-CrossTenant-AuthSource: DM8PR10MB5416.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Nov 2023 23:09:50.1934
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Nov 2023 23:09:52.6615
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: KQJO+2JFGzXtGTsAXSokwvzyjsezpGMHzHsatF1IiNL2BvtpyqePIePgRgDXEXU/APJgIlolY6S4ALd9Fbkebj63aK13LZyiU5/AvF9oE/o=
+X-MS-Exchange-CrossTenant-UserPrincipalName: 4KgUi8pQ/sLDd1hH8cvqS4xgI7VTK4sdeywxhD0+8ZH6u+RYKx2TSBr8V1fn/rt9Sgx7bXi+60qqGVd69XQGdlqBcY1gZ2LbmXdEDfg8QoI=
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR10MB7261
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-11-07_13,2023-11-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999 mlxscore=0
- adultscore=0 phishscore=0 suspectscore=0 spamscore=0 malwarescore=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 suspectscore=0
+ malwarescore=0 mlxlogscore=999 bulkscore=0 mlxscore=0 adultscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311060000
  definitions=main-2311070189
-X-Proofpoint-GUID: POEwDWfdeX3YQoqtarJb98fDmkw6lv8d
-X-Proofpoint-ORIG-GUID: POEwDWfdeX3YQoqtarJb98fDmkw6lv8d
+X-Proofpoint-ORIG-GUID: bZTJoCchBsrZ1u2CPnAl9mrDpIaDH0f_
+X-Proofpoint-GUID: bZTJoCchBsrZ1u2CPnAl9mrDpIaDH0f_
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -224,748 +231,755 @@ Most of the uses here are in set-1 (some right after we give up a lock
 or enable bottom-halves, causing an explicit preemption check.)
 
 There are a few cases from set-3. Replace them with
-cond_resched_stall(). Some of those places, however, have wait-times
-milliseconds, so maybe we should just have an msleep() there?
+cond_resched_stall().
 
 [1] https://lore.kernel.org/lkml/20231107215742.363031-1-ankur.a.arora@oracle.com/
 
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: Vignesh Raghavendra <vigneshr@ti.com>
-Cc: Kyungmin Park <kyungmin.park@samsung.com>
-Cc: Tudor Ambarus <tudor.ambarus@linaro.org>
-Cc: Pratyush Yadav <pratyush@kernel.org>
+Cc: Inki Dae <inki.dae@samsung.com> 
+Cc: Jagan Teki <jagan@amarulasolutions.com> 
+Cc: Marek Szyprowski <m.szyprowski@samsung.com> 
+Cc: Andrzej Hajda <andrzej.hajda@intel.com> 
+Cc: Neil Armstrong <neil.armstrong@linaro.org> 
+Cc: Robert Foss <rfoss@kernel.org> 
+Cc: David Airlie <airlied@gmail.com> 
+Cc: Daniel Vetter <daniel@ffwll.ch> 
+Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com> 
+Cc: Maxime Ripard <mripard@kernel.org> 
+Cc: Thomas Zimmermann <tzimmermann@suse.de> 
 Signed-off-by: Ankur Arora <ankur.a.arora@oracle.com>
 ---
- drivers/mtd/chips/cfi_cmdset_0001.c        |  6 ------
- drivers/mtd/chips/cfi_cmdset_0002.c        |  1 -
- drivers/mtd/chips/cfi_util.c               |  2 +-
- drivers/mtd/devices/spear_smi.c            |  2 +-
- drivers/mtd/devices/sst25l.c               |  3 +--
- drivers/mtd/devices/st_spi_fsm.c           |  4 ----
- drivers/mtd/inftlcore.c                    |  5 -----
- drivers/mtd/lpddr/lpddr_cmds.c             |  6 +-----
- drivers/mtd/mtd_blkdevs.c                  |  1 -
- drivers/mtd/nand/onenand/onenand_base.c    | 18 +-----------------
- drivers/mtd/nand/onenand/onenand_samsung.c |  8 +++++++-
- drivers/mtd/nand/raw/diskonchip.c          |  4 ++--
- drivers/mtd/nand/raw/fsmc_nand.c           |  3 +--
- drivers/mtd/nand/raw/hisi504_nand.c        |  2 +-
- drivers/mtd/nand/raw/nand_base.c           |  3 +--
- drivers/mtd/nand/raw/nand_legacy.c         | 17 +++++++++++++++--
- drivers/mtd/spi-nor/core.c                 |  8 +++++++-
- drivers/mtd/tests/mtd_test.c               |  2 --
- drivers/mtd/tests/mtd_test.h               |  2 +-
- drivers/mtd/tests/pagetest.c               |  1 -
- drivers/mtd/tests/readtest.c               |  2 --
- drivers/mtd/tests/torturetest.c            |  1 -
- drivers/mtd/ubi/attach.c                   | 10 ----------
- drivers/mtd/ubi/build.c                    |  2 --
- drivers/mtd/ubi/cdev.c                     |  4 ----
- drivers/mtd/ubi/eba.c                      |  8 --------
- drivers/mtd/ubi/misc.c                     |  2 --
- drivers/mtd/ubi/vtbl.c                     |  6 ------
- drivers/mtd/ubi/wl.c                       | 13 -------------
- 29 files changed, 40 insertions(+), 106 deletions(-)
+ drivers/gpu/drm/bridge/samsung-dsim.c         |  2 +-
+ drivers/gpu/drm/drm_buddy.c                   |  1 -
+ drivers/gpu/drm/drm_gem.c                     |  1 -
+ .../gpu/drm/i915/gem/i915_gem_execbuffer.c    |  2 +-
+ drivers/gpu/drm/i915/gem/i915_gem_object.c    |  1 -
+ drivers/gpu/drm/i915/gem/i915_gem_shmem.c     |  2 --
+ .../gpu/drm/i915/gem/selftests/huge_pages.c   |  6 ----
+ .../drm/i915/gem/selftests/i915_gem_mman.c    |  5 ----
+ drivers/gpu/drm/i915/gt/intel_breadcrumbs.c   |  2 +-
+ drivers/gpu/drm/i915/gt/intel_gt.c            |  2 +-
+ drivers/gpu/drm/i915/gt/intel_migrate.c       |  4 ---
+ drivers/gpu/drm/i915/gt/selftest_execlists.c  |  4 ---
+ drivers/gpu/drm/i915/gt/selftest_hangcheck.c  |  2 --
+ drivers/gpu/drm/i915/gt/selftest_lrc.c        |  2 --
+ drivers/gpu/drm/i915/gt/selftest_migrate.c    |  2 --
+ drivers/gpu/drm/i915/gt/selftest_timeline.c   |  4 ---
+ drivers/gpu/drm/i915/i915_active.c            |  2 +-
+ drivers/gpu/drm/i915/i915_gem_evict.c         |  2 --
+ drivers/gpu/drm/i915/i915_gpu_error.c         | 18 ++++--------
+ drivers/gpu/drm/i915/intel_uncore.c           |  1 -
+ drivers/gpu/drm/i915/selftests/i915_gem_gtt.c |  2 --
+ drivers/gpu/drm/i915/selftests/i915_request.c |  2 --
+ .../gpu/drm/i915/selftests/i915_selftest.c    |  3 --
+ drivers/gpu/drm/i915/selftests/i915_vma.c     |  9 ------
+ .../gpu/drm/i915/selftests/igt_flush_test.c   |  2 --
+ .../drm/i915/selftests/intel_memory_region.c  |  4 ---
+ drivers/gpu/drm/tests/drm_buddy_test.c        |  5 ----
+ drivers/gpu/drm/tests/drm_mm_test.c           | 29 -------------------
+ 28 files changed, 11 insertions(+), 110 deletions(-)
 
-diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
-index 11b06fefaa0e..c6abed74e4df 100644
---- a/drivers/mtd/chips/cfi_cmdset_0001.c
-+++ b/drivers/mtd/chips/cfi_cmdset_0001.c
-@@ -1208,7 +1208,6 @@ static int __xipram xip_wait_for_operation(
- 			local_irq_enable();
- 			mutex_unlock(&chip->mutex);
- 			xip_iprefetch();
--			cond_resched();
+diff --git a/drivers/gpu/drm/bridge/samsung-dsim.c b/drivers/gpu/drm/bridge/samsung-dsim.c
+index cf777bdb25d2..ae537b9bf8df 100644
+--- a/drivers/gpu/drm/bridge/samsung-dsim.c
++++ b/drivers/gpu/drm/bridge/samsung-dsim.c
+@@ -1013,7 +1013,7 @@ static int samsung_dsim_wait_for_hdr_fifo(struct samsung_dsim *dsi)
+ 		if (reg & DSIM_SFR_HEADER_EMPTY)
+ 			return 0;
  
- 			/*
- 			 * We're back.  However someone else might have
-@@ -1337,7 +1336,6 @@ static int inval_cache_and_wait_for_operation(
- 			sleep_time = 1000000/HZ;
- 		} else {
- 			udelay(1);
--			cond_resched();
- 			timeo--;
- 		}
- 		mutex_lock(&chip->mutex);
-@@ -1913,10 +1911,6 @@ static int cfi_intelext_writev (struct mtd_info *mtd, const struct kvec *vecs,
- 				return 0;
- 		}
+-		if (!cond_resched())
++		if (!cond_resched_stall())
+ 			usleep_range(950, 1050);
+ 	} while (--timeout);
  
--		/* Be nice and reschedule with the chip in a usable state for other
--		   processes. */
+diff --git a/drivers/gpu/drm/drm_buddy.c b/drivers/gpu/drm/drm_buddy.c
+index e6f5ba5f4baf..fe401d18bf4d 100644
+--- a/drivers/gpu/drm/drm_buddy.c
++++ b/drivers/gpu/drm/drm_buddy.c
+@@ -311,7 +311,6 @@ void drm_buddy_free_list(struct drm_buddy *mm, struct list_head *objects)
+ 
+ 	list_for_each_entry_safe(block, on, objects, link) {
+ 		drm_buddy_free_block(mm, block);
 -		cond_resched();
--
- 	} while (len);
- 
- 	return 0;
-diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
-index df589d9b4d70..f6d8f8ccbe3f 100644
---- a/drivers/mtd/chips/cfi_cmdset_0002.c
-+++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-@@ -1105,7 +1105,6 @@ static void __xipram xip_udelay(struct map_info *map, struct flchip *chip,
- 			local_irq_enable();
- 			mutex_unlock(&chip->mutex);
- 			xip_iprefetch();
--			cond_resched();
- 
- 			/*
- 			 * We're back.  However someone else might have
-diff --git a/drivers/mtd/chips/cfi_util.c b/drivers/mtd/chips/cfi_util.c
-index 140c69a67e82..c178dae31a59 100644
---- a/drivers/mtd/chips/cfi_util.c
-+++ b/drivers/mtd/chips/cfi_util.c
-@@ -28,7 +28,7 @@ void cfi_udelay(int us)
- 		msleep(DIV_ROUND_UP(us, 1000));
- 	} else {
- 		udelay(us);
--		cond_resched();
-+		cond_resched_stall();
  	}
+ 	INIT_LIST_HEAD(objects);
  }
- EXPORT_SYMBOL(cfi_udelay);
-diff --git a/drivers/mtd/devices/spear_smi.c b/drivers/mtd/devices/spear_smi.c
-index 0a35e5236ae5..9b4d226633a9 100644
---- a/drivers/mtd/devices/spear_smi.c
-+++ b/drivers/mtd/devices/spear_smi.c
-@@ -278,7 +278,7 @@ static int spear_smi_wait_till_ready(struct spear_smi *dev, u32 bank,
- 			return 0;
- 		}
- 
--		cond_resched();
-+		cond_resched_stall();
- 	} while (!time_after_eq(jiffies, finish));
- 
- 	dev_err(&dev->pdev->dev, "smi controller is busy, timeout\n");
-diff --git a/drivers/mtd/devices/sst25l.c b/drivers/mtd/devices/sst25l.c
-index 8813994ce9f4..ff16147d9bdd 100644
---- a/drivers/mtd/devices/sst25l.c
-+++ b/drivers/mtd/devices/sst25l.c
-@@ -132,8 +132,7 @@ static int sst25l_wait_till_ready(struct sst25l_flash *flash)
- 			return err;
- 		if (!(status & SST25L_STATUS_BUSY))
- 			return 0;
--
--		cond_resched();
-+		cond_resched_stall();
- 	} while (!time_after_eq(jiffies, deadline));
- 
- 	return -ETIMEDOUT;
-diff --git a/drivers/mtd/devices/st_spi_fsm.c b/drivers/mtd/devices/st_spi_fsm.c
-index 95530cbbb1e0..a0f5874c1941 100644
---- a/drivers/mtd/devices/st_spi_fsm.c
-+++ b/drivers/mtd/devices/st_spi_fsm.c
-@@ -738,8 +738,6 @@ static void stfsm_wait_seq(struct stfsm *fsm)
- 
- 		if (stfsm_is_idle(fsm))
- 			return;
--
--		cond_resched();
- 	}
- 
- 	dev_err(fsm->dev, "timeout on sequence completion\n");
-@@ -901,8 +899,6 @@ static uint8_t stfsm_wait_busy(struct stfsm *fsm)
- 		if (!timeout)
- 			/* Restart */
- 			writel(seq->seq_cfg, fsm->base + SPI_FAST_SEQ_CFG);
--
--		cond_resched();
- 	}
- 
- 	dev_err(fsm->dev, "timeout on wait_busy\n");
-diff --git a/drivers/mtd/inftlcore.c b/drivers/mtd/inftlcore.c
-index 9739387cff8c..c757b8a25748 100644
---- a/drivers/mtd/inftlcore.c
-+++ b/drivers/mtd/inftlcore.c
-@@ -732,11 +732,6 @@ static void INFTL_trydeletechain(struct INFTLrecord *inftl, unsigned thisVUC)
- 
- 		/* Now sort out whatever was pointing to it... */
- 		*prevEUN = BLOCK_NIL;
--
--		/* Ideally we'd actually be responsive to new
--		   requests while we're doing this -- if there's
--		   free space why should others be made to wait? */
--		cond_resched();
- 	}
- 
- 	inftl->VUtable[thisVUC] = BLOCK_NIL;
-diff --git a/drivers/mtd/lpddr/lpddr_cmds.c b/drivers/mtd/lpddr/lpddr_cmds.c
-index 3c3939bc2dad..ad8992d24082 100644
---- a/drivers/mtd/lpddr/lpddr_cmds.c
-+++ b/drivers/mtd/lpddr/lpddr_cmds.c
-@@ -161,7 +161,7 @@ static int wait_for_ready(struct map_info *map, struct flchip *chip,
- 			sleep_time = 1000000/HZ;
- 		} else {
- 			udelay(1);
--			cond_resched();
-+			cond_resched_stall();
- 			timeo--;
- 		}
- 		mutex_lock(&chip->mutex);
-@@ -677,10 +677,6 @@ static int lpddr_writev(struct mtd_info *mtd, const struct kvec *vecs,
- 		(*retlen) += size;
- 		len -= size;
- 
--		/* Be nice and reschedule with the chip in a usable
--		 * state for other processes */
--		cond_resched();
--
- 	} while (len);
- 
- 	return 0;
-diff --git a/drivers/mtd/mtd_blkdevs.c b/drivers/mtd/mtd_blkdevs.c
-index ff18636e0889..96bff5627a31 100644
---- a/drivers/mtd/mtd_blkdevs.c
-+++ b/drivers/mtd/mtd_blkdevs.c
-@@ -158,7 +158,6 @@ static void mtd_blktrans_work(struct mtd_blktrans_dev *dev)
- 		}
- 
- 		background_done = 0;
--		cond_resched();
- 		spin_lock_irq(&dev->queue_lock);
- 	}
- }
-diff --git a/drivers/mtd/nand/onenand/onenand_base.c b/drivers/mtd/nand/onenand/onenand_base.c
-index f66385faf631..97d07e4cc150 100644
---- a/drivers/mtd/nand/onenand/onenand_base.c
-+++ b/drivers/mtd/nand/onenand/onenand_base.c
-@@ -567,7 +567,7 @@ static int onenand_wait(struct mtd_info *mtd, int state)
- 			break;
- 
- 		if (state != FL_READING && state != FL_PREPARING_ERASE)
--			cond_resched();
-+			cond_resched_stall();
- 	}
- 	/* To get correct interrupt status in timeout case */
- 	interrupt = this->read_word(this->base + ONENAND_REG_INTERRUPT);
-@@ -1143,8 +1143,6 @@ static int onenand_mlc_read_ops_nolock(struct mtd_info *mtd, loff_t from,
- 	stats = mtd->ecc_stats;
- 
- 	while (read < len) {
--		cond_resched();
--
- 		thislen = min_t(int, writesize, len - read);
- 
- 		column = from & (writesize - 1);
-@@ -1307,7 +1305,6 @@ static int onenand_read_ops_nolock(struct mtd_info *mtd, loff_t from,
- 		buf += thislen;
- 		thislen = min_t(int, writesize, len - read);
- 		column = 0;
--		cond_resched();
- 		/* Now wait for load */
- 		ret = this->wait(mtd, FL_READING);
- 		onenand_update_bufferram(mtd, from, !ret);
-@@ -1378,8 +1375,6 @@ static int onenand_read_oob_nolock(struct mtd_info *mtd, loff_t from,
- 	readcmd = ONENAND_IS_4KB_PAGE(this) ? ONENAND_CMD_READ : ONENAND_CMD_READOOB;
- 
- 	while (read < len) {
--		cond_resched();
--
- 		thislen = oobsize - column;
- 		thislen = min_t(int, thislen, len);
- 
-@@ -1565,8 +1560,6 @@ int onenand_bbt_read_oob(struct mtd_info *mtd, loff_t from,
- 	readcmd = ONENAND_IS_4KB_PAGE(this) ? ONENAND_CMD_READ : ONENAND_CMD_READOOB;
- 
- 	while (read < len) {
--		cond_resched();
--
- 		thislen = mtd->oobsize - column;
- 		thislen = min_t(int, thislen, len);
- 
-@@ -1838,8 +1831,6 @@ static int onenand_write_ops_nolock(struct mtd_info *mtd, loff_t to,
- 			thislen = min_t(int, mtd->writesize - column, len - written);
- 			thisooblen = min_t(int, oobsize - oobcolumn, ooblen - oobwritten);
- 
--			cond_resched();
--
- 			this->command(mtd, ONENAND_CMD_BUFFERRAM, to, thislen);
- 
- 			/* Partial page write */
-@@ -2022,8 +2013,6 @@ static int onenand_write_oob_nolock(struct mtd_info *mtd, loff_t to,
- 	while (written < len) {
- 		int thislen = min_t(int, oobsize, len - written);
- 
--		cond_resched();
--
- 		this->command(mtd, ONENAND_CMD_BUFFERRAM, to, mtd->oobsize);
- 
- 		/* We send data to spare ram with oobsize
-@@ -2232,7 +2221,6 @@ static int onenand_multiblock_erase(struct mtd_info *mtd,
- 		}
- 
- 		/* last block of 64-eb series */
--		cond_resched();
- 		this->command(mtd, ONENAND_CMD_ERASE, addr, block_size);
- 		onenand_invalidate_bufferram(mtd, addr, block_size);
- 
-@@ -2288,8 +2276,6 @@ static int onenand_block_by_block_erase(struct mtd_info *mtd,
- 
- 	/* Loop through the blocks */
- 	while (len) {
--		cond_resched();
--
- 		/* Check if we have a bad block, we do not erase bad blocks */
- 		if (onenand_block_isbad_nolock(mtd, addr, 0)) {
- 			printk(KERN_WARNING "%s: attempt to erase a bad block "
-@@ -2799,8 +2785,6 @@ static int onenand_otp_write_oob_nolock(struct mtd_info *mtd, loff_t to,
- 	while (written < len) {
- 		int thislen = min_t(int, oobsize, len - written);
- 
--		cond_resched();
--
- 		block = (int) (to >> this->erase_shift);
- 		/*
- 		 * Write 'DFS, FBA' of Flash
-diff --git a/drivers/mtd/nand/onenand/onenand_samsung.c b/drivers/mtd/nand/onenand/onenand_samsung.c
-index fd6890a03d55..2e0c8f50d77d 100644
---- a/drivers/mtd/nand/onenand/onenand_samsung.c
-+++ b/drivers/mtd/nand/onenand/onenand_samsung.c
-@@ -338,8 +338,14 @@ static int s3c_onenand_wait(struct mtd_info *mtd, int state)
- 		if (stat & flags)
- 			break;
- 
-+		/*
-+		 * Use a cond_resched_stall() to avoid spinning in
-+		 * a tight loop.
-+		 * Though, given that the timeout is in milliseconds,
-+		 * maybe this should timeout or event wait?
-+		 */
- 		if (state != FL_READING)
--			cond_resched();
-+			cond_resched_stall();
- 	}
- 	/* To get correct interrupt status in timeout case */
- 	stat = s3c_read_reg(INT_ERR_STAT_OFFSET);
-diff --git a/drivers/mtd/nand/raw/diskonchip.c b/drivers/mtd/nand/raw/diskonchip.c
-index 5d2ddb037a9a..930b4fdf75e0 100644
---- a/drivers/mtd/nand/raw/diskonchip.c
-+++ b/drivers/mtd/nand/raw/diskonchip.c
-@@ -248,7 +248,7 @@ static int _DoC_WaitReady(struct doc_priv *doc)
- 				return -EIO;
- 			}
- 			udelay(1);
--			cond_resched();
-+			cond_resched_stall();
- 		}
- 	} else {
- 		while (!(ReadDOC(docptr, CDSNControl) & CDSN_CTRL_FR_B)) {
-@@ -257,7 +257,7 @@ static int _DoC_WaitReady(struct doc_priv *doc)
- 				return -EIO;
- 			}
- 			udelay(1);
--			cond_resched();
-+			cond_resched_stall();
- 		}
- 	}
- 
-diff --git a/drivers/mtd/nand/raw/fsmc_nand.c b/drivers/mtd/nand/raw/fsmc_nand.c
-index 811982da3557..20e88e98e517 100644
---- a/drivers/mtd/nand/raw/fsmc_nand.c
-+++ b/drivers/mtd/nand/raw/fsmc_nand.c
-@@ -398,8 +398,7 @@ static int fsmc_read_hwecc_ecc4(struct nand_chip *chip, const u8 *data,
- 	do {
- 		if (readl_relaxed(host->regs_va + STS) & FSMC_CODE_RDY)
- 			break;
--
--		cond_resched();
-+		cond_resched_stall();
- 	} while (!time_after_eq(jiffies, deadline));
- 
- 	if (time_after_eq(jiffies, deadline)) {
-diff --git a/drivers/mtd/nand/raw/hisi504_nand.c b/drivers/mtd/nand/raw/hisi504_nand.c
-index fe291a2e5c77..bf669b1750f8 100644
---- a/drivers/mtd/nand/raw/hisi504_nand.c
-+++ b/drivers/mtd/nand/raw/hisi504_nand.c
-@@ -819,7 +819,7 @@ static int hisi_nfc_suspend(struct device *dev)
- 		if (((hinfc_read(host, HINFC504_STATUS) & 0x1) == 0x0) &&
- 		    (hinfc_read(host, HINFC504_DMA_CTRL) &
- 		     HINFC504_DMA_CTRL_DMA_START)) {
--			cond_resched();
-+			cond_resched_stall();
- 			return 0;
- 		}
- 	}
-diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index 1fcac403cee6..656126b05f09 100644
---- a/drivers/mtd/nand/raw/nand_base.c
-+++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -730,8 +730,7 @@ int nand_gpio_waitrdy(struct nand_chip *chip, struct gpio_desc *gpiod,
- 	do {
- 		if (gpiod_get_value_cansleep(gpiod))
- 			return 0;
--
--		cond_resched();
-+		cond_resched_stall();
- 	} while	(time_before(jiffies, timeout_ms));
- 
- 	return gpiod_get_value_cansleep(gpiod) ? 0 : -ETIMEDOUT;
-diff --git a/drivers/mtd/nand/raw/nand_legacy.c b/drivers/mtd/nand/raw/nand_legacy.c
-index 743792edf98d..aaef537b46c3 100644
---- a/drivers/mtd/nand/raw/nand_legacy.c
-+++ b/drivers/mtd/nand/raw/nand_legacy.c
-@@ -203,7 +203,13 @@ void nand_wait_ready(struct nand_chip *chip)
- 	do {
- 		if (chip->legacy.dev_ready(chip))
- 			return;
--		cond_resched();
-+		/*
-+		 * Use a cond_resched_stall() to avoid spinning in
-+		 * a tight loop.
-+		 * Though, given that the timeout is in milliseconds,
-+		 * maybe this should timeout or event wait?
-+		 */
-+		cond_resched_stall();
- 	} while (time_before(jiffies, timeo));
- 
- 	if (!chip->legacy.dev_ready(chip))
-@@ -565,7 +571,14 @@ static int nand_wait(struct nand_chip *chip)
- 				if (status & NAND_STATUS_READY)
- 					break;
- 			}
--			cond_resched();
-+
-+			/*
-+			 * Use a cond_resched_stall() to avoid spinning in
-+			 * a tight loop.
-+			 * Though, given that the timeout is in milliseconds,
-+			 * maybe this should timeout or event wait?
-+			 */
-+			cond_resched_stall();
- 		} while (time_before(jiffies, timeo));
- 	}
- 
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 1b0c6770c14e..e32e6eebb0e2 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -730,7 +730,13 @@ static int spi_nor_wait_till_ready_with_timeout(struct spi_nor *nor,
- 		if (ret)
- 			return 0;
- 
--		cond_resched();
-+		/*
-+		 * Use a cond_resched_stall() to avoid spinning in
-+		 * a tight loop.
-+		 * Though, given that the timeout is in milliseconds,
-+		 * maybe this should timeout or event wait?
-+		 */
-+		cond_resched_stall();
- 	}
- 
- 	dev_dbg(nor->dev, "flash operation timed out\n");
-diff --git a/drivers/mtd/tests/mtd_test.c b/drivers/mtd/tests/mtd_test.c
-index c84250beffdc..5bb0c6ef7df9 100644
---- a/drivers/mtd/tests/mtd_test.c
-+++ b/drivers/mtd/tests/mtd_test.c
-@@ -51,7 +51,6 @@ int mtdtest_scan_for_bad_eraseblocks(struct mtd_info *mtd, unsigned char *bbt,
- 		bbt[i] = is_block_bad(mtd, eb + i) ? 1 : 0;
- 		if (bbt[i])
- 			bad += 1;
--		cond_resched();
- 	}
- 	pr_info("scanned %d eraseblocks, %d are bad\n", i, bad);
- 
-@@ -70,7 +69,6 @@ int mtdtest_erase_good_eraseblocks(struct mtd_info *mtd, unsigned char *bbt,
- 		err = mtdtest_erase_eraseblock(mtd, eb + i);
- 		if (err)
- 			return err;
--		cond_resched();
- 	}
- 
- 	return 0;
-diff --git a/drivers/mtd/tests/mtd_test.h b/drivers/mtd/tests/mtd_test.h
-index 5a6e3bbe0474..4742f53c6f25 100644
---- a/drivers/mtd/tests/mtd_test.h
-+++ b/drivers/mtd/tests/mtd_test.h
-@@ -4,7 +4,7 @@
- 
- static inline int mtdtest_relax(void)
+diff --git a/drivers/gpu/drm/drm_gem.c b/drivers/gpu/drm/drm_gem.c
+index 44a948b80ee1..881caa4b48a9 100644
+--- a/drivers/gpu/drm/drm_gem.c
++++ b/drivers/gpu/drm/drm_gem.c
+@@ -506,7 +506,6 @@ static void drm_gem_check_release_batch(struct folio_batch *fbatch)
  {
+ 	check_move_unevictable_folios(fbatch);
+ 	__folio_batch_release(fbatch);
 -	cond_resched();
-+	cond_resched_stall();
- 	if (signal_pending(current)) {
- 		pr_info("aborting test due to pending signal!\n");
- 		return -EINTR;
-diff --git a/drivers/mtd/tests/pagetest.c b/drivers/mtd/tests/pagetest.c
-index 8eb40b6e6dfa..79330c0ccd85 100644
---- a/drivers/mtd/tests/pagetest.c
-+++ b/drivers/mtd/tests/pagetest.c
-@@ -43,7 +43,6 @@ static int write_eraseblock(int ebnum)
- 	loff_t addr = (loff_t)ebnum * mtd->erasesize;
- 
- 	prandom_bytes_state(&rnd_state, writebuf, mtd->erasesize);
--	cond_resched();
- 	return mtdtest_write(mtd, addr, mtd->erasesize, writebuf);
  }
  
-diff --git a/drivers/mtd/tests/readtest.c b/drivers/mtd/tests/readtest.c
-index 99670ef91f2b..c862d9a6dc1d 100644
---- a/drivers/mtd/tests/readtest.c
-+++ b/drivers/mtd/tests/readtest.c
-@@ -91,7 +91,6 @@ static void dump_eraseblock(int ebnum)
- 		for (j = 0; j < 32 && i < n; j++, i++)
- 			p += sprintf(p, "%02x", (unsigned int)iobuf[i]);
- 		printk(KERN_CRIT "%s\n", line);
+ /**
+diff --git a/drivers/gpu/drm/i915/gem/i915_gem_execbuffer.c b/drivers/gpu/drm/i915/gem/i915_gem_execbuffer.c
+index 5a687a3686bd..0b16689423b4 100644
+--- a/drivers/gpu/drm/i915/gem/i915_gem_execbuffer.c
++++ b/drivers/gpu/drm/i915/gem/i915_gem_execbuffer.c
+@@ -1812,7 +1812,7 @@ static noinline int eb_relocate_parse_slow(struct i915_execbuffer *eb)
+ 		err = eb_copy_relocations(eb);
+ 		have_copy = err == 0;
+ 	} else {
+-		cond_resched();
++		cond_resched_stall();
+ 		err = 0;
+ 	}
+ 
+diff --git a/drivers/gpu/drm/i915/gem/i915_gem_object.c b/drivers/gpu/drm/i915/gem/i915_gem_object.c
+index ef9346ed6d0f..172eee1e8889 100644
+--- a/drivers/gpu/drm/i915/gem/i915_gem_object.c
++++ b/drivers/gpu/drm/i915/gem/i915_gem_object.c
+@@ -414,7 +414,6 @@ static void __i915_gem_free_objects(struct drm_i915_private *i915,
+ 
+ 		/* But keep the pointer alive for RCU-protected lookups */
+ 		call_rcu(&obj->rcu, __i915_gem_free_object_rcu);
 -		cond_resched();
  	}
- 	if (!mtd->oobsize)
- 		return;
-@@ -106,7 +105,6 @@ static void dump_eraseblock(int ebnum)
- 				p += sprintf(p, "%02x",
- 					     (unsigned int)iobuf1[i]);
- 			printk(KERN_CRIT "%s\n", line);
--			cond_resched();
- 		}
  }
  
-diff --git a/drivers/mtd/tests/torturetest.c b/drivers/mtd/tests/torturetest.c
-index 841689b4d86d..94cf4f6c6c4c 100644
---- a/drivers/mtd/tests/torturetest.c
-+++ b/drivers/mtd/tests/torturetest.c
-@@ -390,7 +390,6 @@ static void report_corrupt(unsigned char *read, unsigned char *written)
- 	       " what was read from flash and what was expected\n");
+diff --git a/drivers/gpu/drm/i915/gem/i915_gem_shmem.c b/drivers/gpu/drm/i915/gem/i915_gem_shmem.c
+index 73a4a4eb29e0..38ea2fc206e0 100644
+--- a/drivers/gpu/drm/i915/gem/i915_gem_shmem.c
++++ b/drivers/gpu/drm/i915/gem/i915_gem_shmem.c
+@@ -26,7 +26,6 @@ static void check_release_folio_batch(struct folio_batch *fbatch)
+ {
+ 	check_move_unevictable_folios(fbatch);
+ 	__folio_batch_release(fbatch);
+-	cond_resched();
+ }
  
- 	for (i = 0; i < check_len; i += pgsize) {
--		cond_resched();
- 		bytes = bits = 0;
- 		first = countdiffs(written, read, i, pgsize, &bytes,
- 				   &bits);
-diff --git a/drivers/mtd/ubi/attach.c b/drivers/mtd/ubi/attach.c
-index ae5abe492b52..0994d2d8edf0 100644
---- a/drivers/mtd/ubi/attach.c
-+++ b/drivers/mtd/ubi/attach.c
-@@ -1390,8 +1390,6 @@ static int scan_all(struct ubi_device *ubi, struct ubi_attach_info *ai,
- 		goto out_ech;
+ void shmem_sg_free_table(struct sg_table *st, struct address_space *mapping,
+@@ -108,7 +107,6 @@ int shmem_sg_alloc_table(struct drm_i915_private *i915, struct sg_table *st,
+ 		gfp_t gfp = noreclaim;
  
- 	for (pnum = start; pnum < ubi->peb_count; pnum++) {
--		cond_resched();
--
- 		dbg_gen("process PEB %d", pnum);
- 		err = scan_peb(ubi, ai, pnum, false);
- 		if (err < 0)
-@@ -1504,8 +1502,6 @@ static int scan_fast(struct ubi_device *ubi, struct ubi_attach_info **ai)
- 		goto out_ech;
- 
- 	for (pnum = 0; pnum < UBI_FM_MAX_START; pnum++) {
--		cond_resched();
--
- 		dbg_gen("process PEB %d", pnum);
- 		err = scan_peb(ubi, scan_ai, pnum, true);
- 		if (err < 0)
-@@ -1674,8 +1670,6 @@ static int self_check_ai(struct ubi_device *ubi, struct ubi_attach_info *ai)
- 	ubi_rb_for_each_entry(rb1, av, &ai->volumes, rb) {
- 		int leb_count = 0;
- 
--		cond_resched();
--
- 		vols_found += 1;
- 
- 		if (ai->is_empty) {
-@@ -1715,8 +1709,6 @@ static int self_check_ai(struct ubi_device *ubi, struct ubi_attach_info *ai)
- 
- 		last_aeb = NULL;
- 		ubi_rb_for_each_entry(rb2, aeb, &av->root, u.rb) {
+ 		do {
 -			cond_resched();
+ 			folio = shmem_read_folio_gfp(mapping, i, gfp);
+ 			if (!IS_ERR(folio))
+ 				break;
+diff --git a/drivers/gpu/drm/i915/gem/selftests/huge_pages.c b/drivers/gpu/drm/i915/gem/selftests/huge_pages.c
+index 6b9f6cf50bf6..fae0fa993404 100644
+--- a/drivers/gpu/drm/i915/gem/selftests/huge_pages.c
++++ b/drivers/gpu/drm/i915/gem/selftests/huge_pages.c
+@@ -1447,8 +1447,6 @@ static int igt_ppgtt_smoke_huge(void *arg)
+ 
+ 		if (err)
+ 			break;
 -
- 			last_aeb = aeb;
- 			leb_count += 1;
- 
-@@ -1790,8 +1782,6 @@ static int self_check_ai(struct ubi_device *ubi, struct ubi_attach_info *ai)
- 		ubi_rb_for_each_entry(rb2, aeb, &av->root, u.rb) {
- 			int vol_type;
- 
--			cond_resched();
--
- 			last_aeb = aeb;
- 
- 			err = ubi_io_read_vid_hdr(ubi, aeb->pnum, vidb, 1);
-diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
-index 8ee51e49fced..52740f461259 100644
---- a/drivers/mtd/ubi/build.c
-+++ b/drivers/mtd/ubi/build.c
-@@ -1257,8 +1257,6 @@ static int __init ubi_init(void)
- 		struct mtd_dev_param *p = &mtd_dev_param[i];
- 		struct mtd_info *mtd;
- 
 -		cond_resched();
+ 	}
+ 
+ 	return err;
+@@ -1538,8 +1536,6 @@ static int igt_ppgtt_sanity_check(void *arg)
+ 				goto out;
+ 			}
+ 		}
 -
- 		mtd = open_mtd_device(p->name);
- 		if (IS_ERR(mtd)) {
- 			err = PTR_ERR(mtd);
-diff --git a/drivers/mtd/ubi/cdev.c b/drivers/mtd/ubi/cdev.c
-index f43430b9c1e6..e60c0ad0eeb4 100644
---- a/drivers/mtd/ubi/cdev.c
-+++ b/drivers/mtd/ubi/cdev.c
-@@ -209,8 +209,6 @@ static ssize_t vol_cdev_read(struct file *file, __user char *buf, size_t count,
- 	lnum = div_u64_rem(*offp, vol->usable_leb_size, &off);
+-		cond_resched();
+ 	}
+ 
+ out:
+@@ -1738,8 +1734,6 @@ static int igt_ppgtt_mixed(void *arg)
+ 			break;
+ 
+ 		addr += obj->base.size;
+-
+-		cond_resched();
+ 	}
+ 
+ 	i915_gem_context_unlock_engines(ctx);
+diff --git a/drivers/gpu/drm/i915/gem/selftests/i915_gem_mman.c b/drivers/gpu/drm/i915/gem/selftests/i915_gem_mman.c
+index 72957a36a36b..c994071532cf 100644
+--- a/drivers/gpu/drm/i915/gem/selftests/i915_gem_mman.c
++++ b/drivers/gpu/drm/i915/gem/selftests/i915_gem_mman.c
+@@ -221,7 +221,6 @@ static int check_partial_mappings(struct drm_i915_gem_object *obj,
+ 		u32 *cpu;
+ 
+ 		GEM_BUG_ON(view.partial.size > nreal);
+-		cond_resched();
+ 
+ 		vma = i915_gem_object_ggtt_pin(obj, &view, 0, 0, PIN_MAPPABLE);
+ 		if (IS_ERR(vma)) {
+@@ -1026,8 +1025,6 @@ static void igt_close_objects(struct drm_i915_private *i915,
+ 		i915_gem_object_put(obj);
+ 	}
+ 
+-	cond_resched();
+-
+ 	i915_gem_drain_freed_objects(i915);
+ }
+ 
+@@ -1041,8 +1038,6 @@ static void igt_make_evictable(struct list_head *objects)
+ 			i915_gem_object_unpin_pages(obj);
+ 		i915_gem_object_unlock(obj);
+ 	}
+-
+-	cond_resched();
+ }
+ 
+ static int igt_fill_mappable(struct intel_memory_region *mr,
+diff --git a/drivers/gpu/drm/i915/gt/intel_breadcrumbs.c b/drivers/gpu/drm/i915/gt/intel_breadcrumbs.c
+index ecc990ec1b95..e016f1203f7c 100644
+--- a/drivers/gpu/drm/i915/gt/intel_breadcrumbs.c
++++ b/drivers/gpu/drm/i915/gt/intel_breadcrumbs.c
+@@ -315,7 +315,7 @@ void __intel_breadcrumbs_park(struct intel_breadcrumbs *b)
+ 		local_irq_disable();
+ 		signal_irq_work(&b->irq_work);
+ 		local_irq_enable();
+-		cond_resched();
++		cond_resched_stall();
+ 	}
+ }
+ 
+diff --git a/drivers/gpu/drm/i915/gt/intel_gt.c b/drivers/gpu/drm/i915/gt/intel_gt.c
+index 449f0b7fc843..40cfdf4f5fff 100644
+--- a/drivers/gpu/drm/i915/gt/intel_gt.c
++++ b/drivers/gpu/drm/i915/gt/intel_gt.c
+@@ -664,7 +664,7 @@ int intel_gt_wait_for_idle(struct intel_gt *gt, long timeout)
+ 
+ 	while ((timeout = intel_gt_retire_requests_timeout(gt, timeout,
+ 							   &remaining_timeout)) > 0) {
+-		cond_resched();
++		cond_resched_stall();
+ 		if (signal_pending(current))
+ 			return -EINTR;
+ 	}
+diff --git a/drivers/gpu/drm/i915/gt/intel_migrate.c b/drivers/gpu/drm/i915/gt/intel_migrate.c
+index 576e5ef0289b..cc3f62d5c28f 100644
+--- a/drivers/gpu/drm/i915/gt/intel_migrate.c
++++ b/drivers/gpu/drm/i915/gt/intel_migrate.c
+@@ -906,8 +906,6 @@ intel_context_migrate_copy(struct intel_context *ce,
+ 			err = -EINVAL;
+ 			break;
+ 		}
+-
+-		cond_resched();
+ 	} while (1);
+ 
+ out_ce:
+@@ -1067,8 +1065,6 @@ intel_context_migrate_clear(struct intel_context *ce,
+ 		i915_request_add(rq);
+ 		if (err || !it.sg || !sg_dma_len(it.sg))
+ 			break;
+-
+-		cond_resched();
+ 	} while (1);
+ 
+ out_ce:
+diff --git a/drivers/gpu/drm/i915/gt/selftest_execlists.c b/drivers/gpu/drm/i915/gt/selftest_execlists.c
+index 4202df5b8c12..52c8fa3e5cad 100644
+--- a/drivers/gpu/drm/i915/gt/selftest_execlists.c
++++ b/drivers/gpu/drm/i915/gt/selftest_execlists.c
+@@ -60,8 +60,6 @@ static int wait_for_submit(struct intel_engine_cs *engine,
+ 
+ 		if (done)
+ 			return -ETIME;
+-
+-		cond_resched();
+ 	} while (1);
+ }
+ 
+@@ -72,7 +70,6 @@ static int wait_for_reset(struct intel_engine_cs *engine,
+ 	timeout += jiffies;
  
  	do {
 -		cond_resched();
+ 		intel_engine_flush_submission(engine);
+ 
+ 		if (READ_ONCE(engine->execlists.pending[0]))
+@@ -1373,7 +1370,6 @@ static int live_timeslice_queue(void *arg)
+ 
+ 		/* Wait until we ack the release_queue and start timeslicing */
+ 		do {
+-			cond_resched();
+ 			intel_engine_flush_submission(engine);
+ 		} while (READ_ONCE(engine->execlists.pending[0]));
+ 
+diff --git a/drivers/gpu/drm/i915/gt/selftest_hangcheck.c b/drivers/gpu/drm/i915/gt/selftest_hangcheck.c
+index 0dd4d00ee894..e751ed2cf8b2 100644
+--- a/drivers/gpu/drm/i915/gt/selftest_hangcheck.c
++++ b/drivers/gpu/drm/i915/gt/selftest_hangcheck.c
+@@ -939,8 +939,6 @@ static void active_engine(struct kthread_work *work)
+ 			pr_err("[%s] Request put failed: %d!\n", engine->name, err);
+ 			break;
+ 		}
 -
- 		if (off + len >= vol->usable_leb_size)
- 			len = vol->usable_leb_size - off;
- 
-@@ -289,8 +287,6 @@ static ssize_t vol_cdev_direct_write(struct file *file, const char __user *buf,
- 	len = count > tbuf_size ? tbuf_size : count;
- 
- 	while (count) {
 -		cond_resched();
+ 	}
+ 
+ 	for (count = 0; count < ARRAY_SIZE(rq); count++) {
+diff --git a/drivers/gpu/drm/i915/gt/selftest_lrc.c b/drivers/gpu/drm/i915/gt/selftest_lrc.c
+index 5f826b6dcf5d..83a42492f0d0 100644
+--- a/drivers/gpu/drm/i915/gt/selftest_lrc.c
++++ b/drivers/gpu/drm/i915/gt/selftest_lrc.c
+@@ -70,8 +70,6 @@ static int wait_for_submit(struct intel_engine_cs *engine,
+ 
+ 		if (done)
+ 			return -ETIME;
 -
- 		if (off + len >= vol->usable_leb_size)
- 			len = vol->usable_leb_size - off;
+-		cond_resched();
+ 	} while (1);
+ }
  
-diff --git a/drivers/mtd/ubi/eba.c b/drivers/mtd/ubi/eba.c
-index 655ff41863e2..f1e097503826 100644
---- a/drivers/mtd/ubi/eba.c
-+++ b/drivers/mtd/ubi/eba.c
-@@ -1408,9 +1408,7 @@ int ubi_eba_copy_leb(struct ubi_device *ubi, int from, int to,
- 		aldata_size = data_size =
- 			ubi_calc_data_len(ubi, ubi->peb_buf, data_size);
+diff --git a/drivers/gpu/drm/i915/gt/selftest_migrate.c b/drivers/gpu/drm/i915/gt/selftest_migrate.c
+index 3def5ca72dec..9dfa70699df9 100644
+--- a/drivers/gpu/drm/i915/gt/selftest_migrate.c
++++ b/drivers/gpu/drm/i915/gt/selftest_migrate.c
+@@ -210,8 +210,6 @@ static int intel_context_copy_ccs(struct intel_context *ce,
+ 		i915_request_add(rq);
+ 		if (err || !it.sg || !sg_dma_len(it.sg))
+ 			break;
+-
+-		cond_resched();
+ 	} while (1);
  
+ out_ce:
+diff --git a/drivers/gpu/drm/i915/gt/selftest_timeline.c b/drivers/gpu/drm/i915/gt/selftest_timeline.c
+index fa36cf920bde..15b8fd41ad90 100644
+--- a/drivers/gpu/drm/i915/gt/selftest_timeline.c
++++ b/drivers/gpu/drm/i915/gt/selftest_timeline.c
+@@ -352,7 +352,6 @@ static int bench_sync(void *arg)
+ 		__func__, count, (long long)div64_ul(ktime_to_ns(kt), count));
+ 
+ 	mock_timeline_fini(&tl);
 -	cond_resched();
- 	crc = crc32(UBI_CRC32_INIT, ubi->peb_buf, data_size);
+ 
+ 	mock_timeline_init(&tl, 0);
+ 
+@@ -382,7 +381,6 @@ static int bench_sync(void *arg)
+ 		__func__, count, (long long)div64_ul(ktime_to_ns(kt), count));
+ 
+ 	mock_timeline_fini(&tl);
 -	cond_resched();
+ 
+ 	mock_timeline_init(&tl, 0);
+ 
+@@ -405,7 +403,6 @@ static int bench_sync(void *arg)
+ 	pr_info("%s: %lu repeated insert/lookups, %lluns/op\n",
+ 		__func__, count, (long long)div64_ul(ktime_to_ns(kt), count));
+ 	mock_timeline_fini(&tl);
+-	cond_resched();
+ 
+ 	/* Benchmark searching for a known context id and changing the seqno */
+ 	for (last_order = 1, order = 1; order < 32;
+@@ -434,7 +431,6 @@ static int bench_sync(void *arg)
+ 			__func__, count, order,
+ 			(long long)div64_ul(ktime_to_ns(kt), count));
+ 		mock_timeline_fini(&tl);
+-		cond_resched();
+ 	}
+ 
+ 	return 0;
+diff --git a/drivers/gpu/drm/i915/i915_active.c b/drivers/gpu/drm/i915/i915_active.c
+index 5ec293011d99..810251c33495 100644
+--- a/drivers/gpu/drm/i915/i915_active.c
++++ b/drivers/gpu/drm/i915/i915_active.c
+@@ -865,7 +865,7 @@ int i915_active_acquire_preallocate_barrier(struct i915_active *ref,
+ 
+ 	/* Wait until the previous preallocation is completed */
+ 	while (!llist_empty(&ref->preallocated_barriers))
+-		cond_resched();
++		cond_resched_stall();
  
  	/*
- 	 * It may turn out to be that the whole @from physical eraseblock
-@@ -1432,8 +1430,6 @@ int ubi_eba_copy_leb(struct ubi_device *ubi, int from, int to,
- 		goto out_unlock_buf;
- 	}
+ 	 * Preallocate a node for each physical engine supporting the target
+diff --git a/drivers/gpu/drm/i915/i915_gem_evict.c b/drivers/gpu/drm/i915/i915_gem_evict.c
+index c02ebd6900ae..1a600f42a3ad 100644
+--- a/drivers/gpu/drm/i915/i915_gem_evict.c
++++ b/drivers/gpu/drm/i915/i915_gem_evict.c
+@@ -267,8 +267,6 @@ i915_gem_evict_something(struct i915_address_space *vm,
+ 	if (ret)
+ 		return ret;
  
 -	cond_resched();
 -
- 	/* Read the VID header back and check if it was written correctly */
- 	err = ubi_io_read_vid_hdr(ubi, to, vidb, 1);
- 	if (err) {
-@@ -1454,8 +1450,6 @@ int ubi_eba_copy_leb(struct ubi_device *ubi, int from, int to,
- 				err = MOVE_TARGET_WR_ERR;
- 			goto out_unlock_buf;
+ 	flags |= PIN_NONBLOCK;
+ 	goto search_again;
+ 
+diff --git a/drivers/gpu/drm/i915/i915_gpu_error.c b/drivers/gpu/drm/i915/i915_gpu_error.c
+index 4008bb09fdb5..410072145d4d 100644
+--- a/drivers/gpu/drm/i915/i915_gpu_error.c
++++ b/drivers/gpu/drm/i915/i915_gpu_error.c
+@@ -320,8 +320,6 @@ static int compress_page(struct i915_vma_compress *c,
+ 
+ 		if (zlib_deflate(zstream, Z_NO_FLUSH) != Z_OK)
+ 			return -EIO;
+-
+-		cond_resched();
+ 	} while (zstream->avail_in);
+ 
+ 	/* Fallback to uncompressed if we increase size? */
+@@ -408,7 +406,6 @@ static int compress_page(struct i915_vma_compress *c,
+ 	if (!(wc && i915_memcpy_from_wc(ptr, src, PAGE_SIZE)))
+ 		memcpy(ptr, src, PAGE_SIZE);
+ 	list_add_tail(&virt_to_page(ptr)->lru, &dst->page_list);
+-	cond_resched();
+ 
+ 	return 0;
+ }
+@@ -2325,13 +2322,6 @@ void intel_klog_error_capture(struct intel_gt *gt,
+ 						 l_count, line++, ptr2);
+ 					ptr[pos] = chr;
+ 					ptr2 = ptr + pos;
+-
+-					/*
+-					 * If spewing large amounts of data via a serial console,
+-					 * this can be a very slow process. So be friendly and try
+-					 * not to cause 'softlockup on CPU' problems.
+-					 */
+-					cond_resched();
+ 				}
+ 
+ 				if (ptr2 < (ptr + count))
+@@ -2352,8 +2342,12 @@ void intel_klog_error_capture(struct intel_gt *gt,
+ 				got--;
+ 			}
+ 
+-			/* As above. */
+-			cond_resched();
++			/*
++			 * If spewing large amounts of data via a serial console,
++			 * this can be a very slow process. So be friendly and try
++			 * not to cause 'softlockup on CPU' problems.
++			 */
++			cond_resched_stall();
  		}
+ 
+ 		if (got)
+diff --git a/drivers/gpu/drm/i915/intel_uncore.c b/drivers/gpu/drm/i915/intel_uncore.c
+index dfefad5a5fec..d2e74cfb1aac 100644
+--- a/drivers/gpu/drm/i915/intel_uncore.c
++++ b/drivers/gpu/drm/i915/intel_uncore.c
+@@ -487,7 +487,6 @@ intel_uncore_forcewake_reset(struct intel_uncore *uncore)
+ 		}
+ 
+ 		spin_unlock_irqrestore(&uncore->lock, irqflags);
+-		cond_resched();
+ 	}
+ 
+ 	drm_WARN_ON(&uncore->i915->drm, active_domains);
+diff --git a/drivers/gpu/drm/i915/selftests/i915_gem_gtt.c b/drivers/gpu/drm/i915/selftests/i915_gem_gtt.c
+index 5c397a2df70e..4b497e969a33 100644
+--- a/drivers/gpu/drm/i915/selftests/i915_gem_gtt.c
++++ b/drivers/gpu/drm/i915/selftests/i915_gem_gtt.c
+@@ -201,7 +201,6 @@ static int igt_ppgtt_alloc(void *arg)
+ 		}
+ 
+ 		ppgtt->vm.allocate_va_range(&ppgtt->vm, &stash, 0, size);
+-		cond_resched();
+ 
+ 		ppgtt->vm.clear_range(&ppgtt->vm, 0, size);
+ 
+@@ -224,7 +223,6 @@ static int igt_ppgtt_alloc(void *arg)
+ 
+ 		ppgtt->vm.allocate_va_range(&ppgtt->vm, &stash,
+ 					    last, size - last);
+-		cond_resched();
+ 
+ 		i915_vm_free_pt_stash(&ppgtt->vm, &stash);
+ 	}
+diff --git a/drivers/gpu/drm/i915/selftests/i915_request.c b/drivers/gpu/drm/i915/selftests/i915_request.c
+index a9b79888c193..43bb54fc8c78 100644
+--- a/drivers/gpu/drm/i915/selftests/i915_request.c
++++ b/drivers/gpu/drm/i915/selftests/i915_request.c
+@@ -438,8 +438,6 @@ static void __igt_breadcrumbs_smoketest(struct kthread_work *work)
+ 
+ 		num_fences += count;
+ 		num_waits++;
 -
 -		cond_resched();
  	}
  
- 	ubi_assert(vol->eba_tbl->entries[lnum].pnum == from);
-@@ -1640,8 +1634,6 @@ int ubi_eba_init(struct ubi_device *ubi, struct ubi_attach_info *ai)
- 		if (!vol)
+ 	atomic_long_add(num_fences, &t->num_fences);
+diff --git a/drivers/gpu/drm/i915/selftests/i915_selftest.c b/drivers/gpu/drm/i915/selftests/i915_selftest.c
+index ee79e0809a6d..17e6bbc3c87e 100644
+--- a/drivers/gpu/drm/i915/selftests/i915_selftest.c
++++ b/drivers/gpu/drm/i915/selftests/i915_selftest.c
+@@ -179,7 +179,6 @@ static int __run_selftests(const char *name,
+ 		if (!st->enabled)
  			continue;
  
 -		cond_resched();
--
- 		tbl = ubi_eba_create_table(vol, vol->reserved_pebs);
- 		if (IS_ERR(tbl)) {
- 			err = PTR_ERR(tbl);
-diff --git a/drivers/mtd/ubi/misc.c b/drivers/mtd/ubi/misc.c
-index 1794d66b6eb7..8751337a8101 100644
---- a/drivers/mtd/ubi/misc.c
-+++ b/drivers/mtd/ubi/misc.c
-@@ -61,8 +61,6 @@ int ubi_check_volume(struct ubi_device *ubi, int vol_id)
- 	for (i = 0; i < vol->used_ebs; i++) {
- 		int size;
+ 		if (signal_pending(current))
+ 			return -EINTR;
  
+@@ -381,7 +380,6 @@ int __i915_subtests(const char *caller,
+ 	int err;
+ 
+ 	for (; count--; st++) {
 -		cond_resched();
--
- 		if (i == vol->used_ebs - 1)
- 			size = vol->last_eb_bytes;
- 		else
-diff --git a/drivers/mtd/ubi/vtbl.c b/drivers/mtd/ubi/vtbl.c
-index f700f0e4f2ec..6e0d8b3109d5 100644
---- a/drivers/mtd/ubi/vtbl.c
-+++ b/drivers/mtd/ubi/vtbl.c
-@@ -163,8 +163,6 @@ static int vtbl_check(const struct ubi_device *ubi,
- 	const char *name;
+ 		if (signal_pending(current))
+ 			return -EINTR;
  
- 	for (i = 0; i < ubi->vtbl_slots; i++) {
+@@ -414,7 +412,6 @@ bool __igt_timeout(unsigned long timeout, const char *fmt, ...)
+ 	va_list va;
+ 
+ 	if (!signal_pending(current)) {
 -		cond_resched();
+ 		if (time_before(jiffies, timeout))
+ 			return false;
+ 	}
+diff --git a/drivers/gpu/drm/i915/selftests/i915_vma.c b/drivers/gpu/drm/i915/selftests/i915_vma.c
+index 71b52d5efef4..1bacdcd77c5b 100644
+--- a/drivers/gpu/drm/i915/selftests/i915_vma.c
++++ b/drivers/gpu/drm/i915/selftests/i915_vma.c
+@@ -197,8 +197,6 @@ static int igt_vma_create(void *arg)
+ 			list_del_init(&ctx->link);
+ 			mock_context_close(ctx);
+ 		}
 -
- 		reserved_pebs = be32_to_cpu(vtbl[i].reserved_pebs);
- 		alignment = be32_to_cpu(vtbl[i].alignment);
- 		data_pad = be32_to_cpu(vtbl[i].data_pad);
-@@ -526,8 +524,6 @@ static int init_volumes(struct ubi_device *ubi,
- 	struct ubi_volume *vol;
- 
- 	for (i = 0; i < ubi->vtbl_slots; i++) {
 -		cond_resched();
--
- 		if (be32_to_cpu(vtbl[i].reserved_pebs) == 0)
- 			continue; /* Empty record */
- 
-@@ -736,8 +732,6 @@ static int check_attaching_info(const struct ubi_device *ubi,
  	}
  
- 	for (i = 0; i < ubi->vtbl_slots + UBI_INT_VOL_COUNT; i++) {
+ end:
+@@ -347,8 +345,6 @@ static int igt_vma_pin1(void *arg)
+ 				goto out;
+ 			}
+ 		}
+-
+-		cond_resched();
+ 	}
+ 
+ 	err = 0;
+@@ -697,7 +693,6 @@ static int igt_vma_rotate_remap(void *arg)
+ 						pr_err("Unbinding returned %i\n", err);
+ 						goto out_object;
+ 					}
+-					cond_resched();
+ 				}
+ 			}
+ 		}
+@@ -858,8 +853,6 @@ static int igt_vma_partial(void *arg)
+ 					pr_err("Unbinding returned %i\n", err);
+ 					goto out_object;
+ 				}
+-
+-				cond_resched();
+ 			}
+ 		}
+ 
+@@ -1085,8 +1078,6 @@ static int igt_vma_remapped_gtt(void *arg)
+ 				}
+ 			}
+ 			i915_vma_unpin_iomap(vma);
+-
+-			cond_resched();
+ 		}
+ 	}
+ 
+diff --git a/drivers/gpu/drm/i915/selftests/igt_flush_test.c b/drivers/gpu/drm/i915/selftests/igt_flush_test.c
+index 29110abb4fe0..fbc1b606df29 100644
+--- a/drivers/gpu/drm/i915/selftests/igt_flush_test.c
++++ b/drivers/gpu/drm/i915/selftests/igt_flush_test.c
+@@ -22,8 +22,6 @@ int igt_flush_test(struct drm_i915_private *i915)
+ 		if (intel_gt_is_wedged(gt))
+ 			ret = -EIO;
+ 
 -		cond_resched();
 -
- 		av = ubi_find_av(ai, i);
- 		vol = ubi->volumes[i];
- 		if (!vol) {
-diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
-index 26a214f016c1..5ff22ac93ba9 100644
---- a/drivers/mtd/ubi/wl.c
-+++ b/drivers/mtd/ubi/wl.c
-@@ -190,8 +190,6 @@ static int do_work(struct ubi_device *ubi)
- 	int err;
- 	struct ubi_work *wrk;
+ 		if (intel_gt_wait_for_idle(gt, HZ * 3) == -ETIME) {
+ 			pr_err("%pS timed out, cancelling all further testing.\n",
+ 			       __builtin_return_address(0));
+diff --git a/drivers/gpu/drm/i915/selftests/intel_memory_region.c b/drivers/gpu/drm/i915/selftests/intel_memory_region.c
+index d985d9bae2e8..3fce433284bd 100644
+--- a/drivers/gpu/drm/i915/selftests/intel_memory_region.c
++++ b/drivers/gpu/drm/i915/selftests/intel_memory_region.c
+@@ -46,8 +46,6 @@ static void close_objects(struct intel_memory_region *mem,
+ 		i915_gem_object_put(obj);
+ 	}
  
 -	cond_resched();
 -
- 	/*
- 	 * @ubi->work_sem is used to synchronize with the workers. Workers take
- 	 * it in read mode, so many of them may be doing works at a time. But
-@@ -519,7 +517,6 @@ static void serve_prot_queue(struct ubi_device *ubi)
- 			 * too long.
- 			 */
- 			spin_unlock(&ubi->wl_lock);
--			cond_resched();
- 			goto repeat;
+ 	i915_gem_drain_freed_objects(i915);
+ }
+ 
+@@ -1290,8 +1288,6 @@ static int _perf_memcpy(struct intel_memory_region *src_mr,
+ 			div64_u64(mul_u32_u32(4 * size,
+ 					      1000 * 1000 * 1000),
+ 				  t[1] + 2 * t[2] + t[3]) >> 20);
+-
+-		cond_resched();
+ 	}
+ 
+ 	i915_gem_object_unpin_map(dst);
+diff --git a/drivers/gpu/drm/tests/drm_buddy_test.c b/drivers/gpu/drm/tests/drm_buddy_test.c
+index 09ee6f6af896..7ee65bad4bb7 100644
+--- a/drivers/gpu/drm/tests/drm_buddy_test.c
++++ b/drivers/gpu/drm/tests/drm_buddy_test.c
+@@ -29,7 +29,6 @@ static bool __timeout(unsigned long timeout, const char *fmt, ...)
+ 	va_list va;
+ 
+ 	if (!signal_pending(current)) {
+-		cond_resched();
+ 		if (time_before(jiffies, timeout))
+ 			return false;
+ 	}
+@@ -485,8 +484,6 @@ static void drm_test_buddy_alloc_smoke(struct kunit *test)
+ 
+ 		if (err || timeout)
+ 			break;
+-
+-		cond_resched();
+ 	}
+ 
+ 	kfree(order);
+@@ -681,8 +678,6 @@ static void drm_test_buddy_alloc_range(struct kunit *test)
+ 		rem -= size;
+ 		if (!rem)
+ 			break;
+-
+-		cond_resched();
+ 	}
+ 
+ 	drm_buddy_free_list(&mm, &blocks);
+diff --git a/drivers/gpu/drm/tests/drm_mm_test.c b/drivers/gpu/drm/tests/drm_mm_test.c
+index 05d5e7af6d25..7d11740ef599 100644
+--- a/drivers/gpu/drm/tests/drm_mm_test.c
++++ b/drivers/gpu/drm/tests/drm_mm_test.c
+@@ -474,8 +474,6 @@ static void drm_test_mm_reserve(struct kunit *test)
+ 		KUNIT_ASSERT_FALSE(test, __drm_test_mm_reserve(test, count, size - 1));
+ 		KUNIT_ASSERT_FALSE(test, __drm_test_mm_reserve(test, count, size));
+ 		KUNIT_ASSERT_FALSE(test, __drm_test_mm_reserve(test, count, size + 1));
+-
+-		cond_resched();
+ 	}
+ }
+ 
+@@ -645,8 +643,6 @@ static int __drm_test_mm_insert(struct kunit *test, unsigned int count, u64 size
+ 		drm_mm_for_each_node_safe(node, next, &mm)
+ 			drm_mm_remove_node(node);
+ 		DRM_MM_BUG_ON(!drm_mm_clean(&mm));
+-
+-		cond_resched();
+ 	}
+ 
+ 	ret = 0;
+@@ -671,8 +667,6 @@ static void drm_test_mm_insert(struct kunit *test)
+ 		KUNIT_ASSERT_FALSE(test, __drm_test_mm_insert(test, count, size - 1, false));
+ 		KUNIT_ASSERT_FALSE(test, __drm_test_mm_insert(test, count, size, false));
+ 		KUNIT_ASSERT_FALSE(test, __drm_test_mm_insert(test, count, size + 1, false));
+-
+-		cond_resched();
+ 	}
+ }
+ 
+@@ -693,8 +687,6 @@ static void drm_test_mm_replace(struct kunit *test)
+ 		KUNIT_ASSERT_FALSE(test, __drm_test_mm_insert(test, count, size - 1, true));
+ 		KUNIT_ASSERT_FALSE(test, __drm_test_mm_insert(test, count, size, true));
+ 		KUNIT_ASSERT_FALSE(test, __drm_test_mm_insert(test, count, size + 1, true));
+-
+-		cond_resched();
+ 	}
+ }
+ 
+@@ -882,8 +874,6 @@ static int __drm_test_mm_insert_range(struct kunit *test, unsigned int count, u6
+ 		drm_mm_for_each_node_safe(node, next, &mm)
+ 			drm_mm_remove_node(node);
+ 		DRM_MM_BUG_ON(!drm_mm_clean(&mm));
+-
+-		cond_resched();
+ 	}
+ 
+ 	ret = 0;
+@@ -942,8 +932,6 @@ static void drm_test_mm_insert_range(struct kunit *test)
+ 								    max / 2, max));
+ 		KUNIT_ASSERT_FALSE(test, __drm_test_mm_insert_range(test, count, size,
+ 								    max / 4 + 1, 3 * max / 4 - 1));
+-
+-		cond_resched();
+ 	}
+ }
+ 
+@@ -1086,8 +1074,6 @@ static void drm_test_mm_align(struct kunit *test)
+ 		drm_mm_for_each_node_safe(node, next, &mm)
+ 			drm_mm_remove_node(node);
+ 		DRM_MM_BUG_ON(!drm_mm_clean(&mm));
+-
+-		cond_resched();
+ 	}
+ 
+ out:
+@@ -1122,8 +1108,6 @@ static void drm_test_mm_align_pot(struct kunit *test, int max)
+ 			KUNIT_FAIL(test, "insert failed with alignment=%llx [%d]", align, bit);
+ 			goto out;
+ 		}
+-
+-		cond_resched();
+ 	}
+ 
+ out:
+@@ -1465,8 +1449,6 @@ static void drm_test_mm_evict(struct kunit *test)
+ 				goto out;
+ 			}
+ 		}
+-
+-		cond_resched();
+ 	}
+ 
+ out:
+@@ -1547,8 +1529,6 @@ static void drm_test_mm_evict_range(struct kunit *test)
+ 				goto out;
+ 			}
+ 		}
+-
+-		cond_resched();
+ 	}
+ 
+ out:
+@@ -1658,7 +1638,6 @@ static void drm_test_mm_topdown(struct kunit *test)
+ 		drm_mm_for_each_node_safe(node, next, &mm)
+ 			drm_mm_remove_node(node);
+ 		DRM_MM_BUG_ON(!drm_mm_clean(&mm));
+-		cond_resched();
+ 	}
+ 
+ out:
+@@ -1750,7 +1729,6 @@ static void drm_test_mm_bottomup(struct kunit *test)
+ 		drm_mm_for_each_node_safe(node, next, &mm)
+ 			drm_mm_remove_node(node);
+ 		DRM_MM_BUG_ON(!drm_mm_clean(&mm));
+-		cond_resched();
+ 	}
+ 
+ out:
+@@ -1968,8 +1946,6 @@ static void drm_test_mm_color(struct kunit *test)
+ 			drm_mm_remove_node(node);
+ 			kfree(node);
+ 		}
+-
+-		cond_resched();
+ 	}
+ 
+ out:
+@@ -2038,7 +2014,6 @@ static int evict_color(struct kunit *test, struct drm_mm *mm, u64 range_start,
  		}
  	}
-@@ -1703,8 +1700,6 @@ int ubi_thread(void *u)
+ 
+-	cond_resched();
+ 	return 0;
+ }
+ 
+@@ -2110,8 +2085,6 @@ static void drm_test_mm_color_evict(struct kunit *test)
+ 				goto out;
  			}
- 		} else
- 			failures = 0;
+ 		}
 -
 -		cond_resched();
  	}
  
- 	dbg_wl("background thread \"%s\" is killed", ubi->bgt_name);
-@@ -1805,8 +1800,6 @@ int ubi_wl_init(struct ubi_device *ubi, struct ubi_attach_info *ai)
- 
- 	ubi->free_count = 0;
- 	list_for_each_entry_safe(aeb, tmp, &ai->erase, u.list) {
--		cond_resched();
+ out:
+@@ -2196,8 +2169,6 @@ static void drm_test_mm_color_evict_range(struct kunit *test)
+ 				goto out;
+ 			}
+ 		}
 -
- 		err = erase_aeb(ubi, aeb, false);
- 		if (err)
- 			goto out_free;
-@@ -1815,8 +1808,6 @@ int ubi_wl_init(struct ubi_device *ubi, struct ubi_attach_info *ai)
+-		cond_resched();
  	}
  
- 	list_for_each_entry(aeb, &ai->free, u.list) {
--		cond_resched();
--
- 		e = kmem_cache_alloc(ubi_wl_entry_slab, GFP_KERNEL);
- 		if (!e) {
- 			err = -ENOMEM;
-@@ -1837,8 +1828,6 @@ int ubi_wl_init(struct ubi_device *ubi, struct ubi_attach_info *ai)
- 
- 	ubi_rb_for_each_entry(rb1, av, &ai->volumes, rb) {
- 		ubi_rb_for_each_entry(rb2, aeb, &av->root, u.rb) {
--			cond_resched();
--
- 			e = kmem_cache_alloc(ubi_wl_entry_slab, GFP_KERNEL);
- 			if (!e) {
- 				err = -ENOMEM;
-@@ -1864,8 +1853,6 @@ int ubi_wl_init(struct ubi_device *ubi, struct ubi_attach_info *ai)
- 	}
- 
- 	list_for_each_entry(aeb, &ai->fastmap, u.list) {
--		cond_resched();
--
- 		e = ubi_find_fm_block(ubi, aeb->pnum);
- 
- 		if (e) {
+ out:
 -- 
 2.31.1
 
