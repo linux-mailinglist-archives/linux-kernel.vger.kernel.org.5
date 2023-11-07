@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D1C377E3BC0
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 13:09:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24DD97E3BC4
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 13:09:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234045AbjKGMJd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 07:09:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42556 "EHLO
+        id S234401AbjKGMJi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 07:09:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234380AbjKGMJE (ORCPT
+        with ESMTP id S234337AbjKGMJT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 07:09:04 -0500
+        Tue, 7 Nov 2023 07:09:19 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F59B1992;
-        Tue,  7 Nov 2023 04:08:25 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D29D5C43397;
-        Tue,  7 Nov 2023 12:08:23 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4EA519AA;
+        Tue,  7 Nov 2023 04:08:27 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59A78C433CC;
+        Tue,  7 Nov 2023 12:08:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699358904;
-        bh=xv71y4RgD6KT3qku1TlNETf8NHx9L4ImQWIpvKHMIL4=;
+        s=k20201202; t=1699358906;
+        bh=JaI066b+mCXWtqSok9hBW4AJ9FeTe0b469OtgVh/uT8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ttmFUc92UN6DZxMAmQQd+fdBeUPYQsMCZ8uy08omNT6EndUIdBEcBgh4TqwB4e8Ta
-         OKhjl5w96afHiwRB6fHDGGHniGjb6lzIEeB32uju19mC2SN25m716iMMUF41KtH8Ed
-         N4/nkGi8mNgIpL9E/o5gN2rYErAsl97oET374QBPqLH+xHt2j6zyCkZqeui/MjzVAL
-         aqZ6x4EQUrWNDTf0VA00Dy6KAaHtUitrKhkHQdlJ3xUpCybcEJKLsAHKlsdoYFiTGM
-         oeTkJFN7yu1ytBJxpfZ2/DQ+vf11QEk1Zgzxo4SYY9uIru0XS6tIhmyOKhCQcVGUI3
-         qA3TvikiGOibw==
+        b=IaBSzQMq/TmTV6t0sG/AxA/lmo+vs4Na+NmKPWN1WtM/fMpWjDlifun1gjIEYeSEP
+         JHMsnfx235uwUeHlyLRnFf0hx1paPATidq22H9YeQVBtE/XnT+QatEpFV6/U0kFxQI
+         3ztHAFumkzJVAe/gHFsZwcUjp6p0Vl6SwNHDLkSTyjRbHu8YcmAhZTj1Jij3xrWHXW
+         xa5nh/IaPBvG66F+08rBqS44HVKF0VlAzIC4WDkdMYP5vNFCuA9g5duajDEsErtbgh
+         QZFvQpIc8jPYPmEId2nTn5bDF/UUMfZVrZr6ralcCisQfWnhp3mwSKg0v+Cbvgkhs/
+         AaVDFa57pBZ8A==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     youwan Wang <wangyouwan@126.com>,
+Cc:     ZhengHan Wang <wzhmmmmm@gmail.com>,
         Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
         Sasha Levin <sashal@kernel.org>, marcel@holtmann.org,
         johan.hedberg@gmail.com, luiz.dentz@gmail.com,
         linux-bluetooth@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 24/31] Bluetooth: btusb: Add date->evt_skb is NULL check
-Date:   Tue,  7 Nov 2023 07:06:11 -0500
-Message-ID: <20231107120704.3756327-24-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.6 25/31] Bluetooth: Fix double free in hci_conn_cleanup
+Date:   Tue,  7 Nov 2023 07:06:12 -0500
+Message-ID: <20231107120704.3756327-25-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231107120704.3756327-1-sashal@kernel.org>
 References: <20231107120704.3756327-1-sashal@kernel.org>
@@ -55,69 +55,137 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: youwan Wang <wangyouwan@126.com>
+From: ZhengHan Wang <wzhmmmmm@gmail.com>
 
-[ Upstream commit 624820f7c8826dd010e8b1963303c145f99816e9 ]
+[ Upstream commit a85fb91e3d728bdfc80833167e8162cce8bc7004 ]
 
-fix crash because of null pointers
+syzbot reports a slab use-after-free in hci_conn_hash_flush [1].
+After releasing an object using hci_conn_del_sysfs in the
+hci_conn_cleanup function, releasing the same object again
+using the hci_dev_put and hci_conn_put functions causes a double free.
+Here's a simplified flow:
 
-[ 6104.969662] BUG: kernel NULL pointer dereference, address: 00000000000000c8
-[ 6104.969667] #PF: supervisor read access in kernel mode
-[ 6104.969668] #PF: error_code(0x0000) - not-present page
-[ 6104.969670] PGD 0 P4D 0
-[ 6104.969673] Oops: 0000 [#1] SMP NOPTI
-[ 6104.969684] RIP: 0010:btusb_mtk_hci_wmt_sync+0x144/0x220 [btusb]
-[ 6104.969688] RSP: 0018:ffffb8d681533d48 EFLAGS: 00010246
-[ 6104.969689] RAX: 0000000000000000 RBX: ffff8ad560bb2000 RCX: 0000000000000006
-[ 6104.969691] RDX: 0000000000000000 RSI: ffffb8d681533d08 RDI: 0000000000000000
-[ 6104.969692] RBP: ffffb8d681533d70 R08: 0000000000000001 R09: 0000000000000001
-[ 6104.969694] R10: 0000000000000001 R11: 00000000fa83b2da R12: ffff8ad461d1d7c0
-[ 6104.969695] R13: 0000000000000000 R14: ffff8ad459618c18 R15: ffffb8d681533d90
-[ 6104.969697] FS:  00007f5a1cab9d40(0000) GS:ffff8ad578200000(0000) knlGS:00000
-[ 6104.969699] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[ 6104.969700] CR2: 00000000000000c8 CR3: 000000018620c001 CR4: 0000000000760ef0
-[ 6104.969701] PKRU: 55555554
-[ 6104.969702] Call Trace:
-[ 6104.969708]  btusb_mtk_shutdown+0x44/0x80 [btusb]
-[ 6104.969732]  hci_dev_do_close+0x470/0x5c0 [bluetooth]
-[ 6104.969748]  hci_rfkill_set_block+0x56/0xa0 [bluetooth]
-[ 6104.969753]  rfkill_set_block+0x92/0x160
-[ 6104.969755]  rfkill_fop_write+0x136/0x1e0
-[ 6104.969759]  __vfs_write+0x18/0x40
-[ 6104.969761]  vfs_write+0xdf/0x1c0
-[ 6104.969763]  ksys_write+0xb1/0xe0
-[ 6104.969765]  __x64_sys_write+0x1a/0x20
-[ 6104.969769]  do_syscall_64+0x51/0x180
-[ 6104.969771]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-[ 6104.969773] RIP: 0033:0x7f5a21f18fef
-[ 6104.9] RSP: 002b:00007ffeefe39010 EFLAGS: 00000293 ORIG_RAX: 0000000000000001
-[ 6104.969780] RAX: ffffffffffffffda RBX: 000055c10a7560a0 RCX: 00007f5a21f18fef
-[ 6104.969781] RDX: 0000000000000008 RSI: 00007ffeefe39060 RDI: 0000000000000012
-[ 6104.969782] RBP: 00007ffeefe39060 R08: 0000000000000000 R09: 0000000000000017
-[ 6104.969784] R10: 00007ffeefe38d97 R11: 0000000000000293 R12: 0000000000000002
-[ 6104.969785] R13: 00007ffeefe39220 R14: 00007ffeefe391a0 R15: 000055c10a72acf0
+hci_conn_del_sysfs:
+  hci_dev_put
+    put_device
+      kobject_put
+        kref_put
+          kobject_release
+            kobject_cleanup
+              kfree_const
+                kfree(name)
 
-Signed-off-by: youwan Wang <wangyouwan@126.com>
+hci_dev_put:
+  ...
+    kfree(name)
+
+hci_conn_put:
+  put_device
+    ...
+      kfree(name)
+
+This patch drop the hci_dev_put and hci_conn_put function
+call in hci_conn_cleanup function, because the object is
+freed in hci_conn_del_sysfs function.
+
+This patch also fixes the refcounting in hci_conn_add_sysfs() and
+hci_conn_del_sysfs() to take into account device_add() failures.
+
+This fixes CVE-2023-28464.
+
+Link: https://syzkaller.appspot.com/bug?id=1bb51491ca5df96a5f724899d1dbb87afda61419 [1]
+
+Signed-off-by: ZhengHan Wang <wzhmmmmm@gmail.com>
+Co-developed-by: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
 Signed-off-by: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/bluetooth/btusb.c | 3 +++
- 1 file changed, 3 insertions(+)
+ net/bluetooth/hci_conn.c  |  6 ++----
+ net/bluetooth/hci_sysfs.c | 23 ++++++++++++-----------
+ 2 files changed, 14 insertions(+), 15 deletions(-)
 
-diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
-index 499f4809fcdf3..63ebd5677d267 100644
---- a/drivers/bluetooth/btusb.c
-+++ b/drivers/bluetooth/btusb.c
-@@ -2818,6 +2818,9 @@ static int btusb_mtk_hci_wmt_sync(struct hci_dev *hdev,
- 		goto err_free_wc;
+diff --git a/net/bluetooth/hci_conn.c b/net/bluetooth/hci_conn.c
+index 73470cc3518a7..7dd6a4fe25c1b 100644
+--- a/net/bluetooth/hci_conn.c
++++ b/net/bluetooth/hci_conn.c
+@@ -169,13 +169,11 @@ static void hci_conn_cleanup(struct hci_conn *conn)
+ 			hdev->notify(hdev, HCI_NOTIFY_CONN_DEL);
  	}
  
-+	if (data->evt_skb == NULL)
-+		goto err_free_wc;
+-	hci_conn_del_sysfs(conn);
+-
+ 	debugfs_remove_recursive(conn->debugfs);
+ 
+-	hci_dev_put(hdev);
++	hci_conn_del_sysfs(conn);
+ 
+-	hci_conn_put(conn);
++	hci_dev_put(hdev);
+ }
+ 
+ static void hci_acl_create_connection(struct hci_conn *conn)
+diff --git a/net/bluetooth/hci_sysfs.c b/net/bluetooth/hci_sysfs.c
+index 15b33579007cb..367e32fe30eb8 100644
+--- a/net/bluetooth/hci_sysfs.c
++++ b/net/bluetooth/hci_sysfs.c
+@@ -35,7 +35,7 @@ void hci_conn_init_sysfs(struct hci_conn *conn)
+ {
+ 	struct hci_dev *hdev = conn->hdev;
+ 
+-	BT_DBG("conn %p", conn);
++	bt_dev_dbg(hdev, "conn %p", conn);
+ 
+ 	conn->dev.type = &bt_link;
+ 	conn->dev.class = &bt_class;
+@@ -48,27 +48,30 @@ void hci_conn_add_sysfs(struct hci_conn *conn)
+ {
+ 	struct hci_dev *hdev = conn->hdev;
+ 
+-	BT_DBG("conn %p", conn);
++	bt_dev_dbg(hdev, "conn %p", conn);
+ 
+ 	if (device_is_registered(&conn->dev))
+ 		return;
+ 
+ 	dev_set_name(&conn->dev, "%s:%d", hdev->name, conn->handle);
+ 
+-	if (device_add(&conn->dev) < 0) {
++	if (device_add(&conn->dev) < 0)
+ 		bt_dev_err(hdev, "failed to register connection device");
+-		return;
+-	}
+-
+-	hci_dev_hold(hdev);
+ }
+ 
+ void hci_conn_del_sysfs(struct hci_conn *conn)
+ {
+ 	struct hci_dev *hdev = conn->hdev;
+ 
+-	if (!device_is_registered(&conn->dev))
++	bt_dev_dbg(hdev, "conn %p", conn);
 +
- 	/* Parse and handle the return WMT event */
- 	wmt_evt = (struct btmtk_hci_wmt_evt *)data->evt_skb->data;
- 	if (wmt_evt->whdr.op != hdr->op) {
++	if (!device_is_registered(&conn->dev)) {
++		/* If device_add() has *not* succeeded, use *only* put_device()
++		 * to drop the reference count.
++		 */
++		put_device(&conn->dev);
+ 		return;
++	}
+ 
+ 	while (1) {
+ 		struct device *dev;
+@@ -80,9 +83,7 @@ void hci_conn_del_sysfs(struct hci_conn *conn)
+ 		put_device(dev);
+ 	}
+ 
+-	device_del(&conn->dev);
+-
+-	hci_dev_put(hdev);
++	device_unregister(&conn->dev);
+ }
+ 
+ static void bt_host_release(struct device *dev)
 -- 
 2.42.0
 
