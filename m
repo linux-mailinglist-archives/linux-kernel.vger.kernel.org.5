@@ -2,170 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F7197E3755
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 10:17:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6F5B7E375B
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 10:19:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233809AbjKGJRt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 04:17:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50972 "EHLO
+        id S233819AbjKGJTd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 04:19:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233701AbjKGJRr (ORCPT
+        with ESMTP id S233701AbjKGJTa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 04:17:47 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81331113;
-        Tue,  7 Nov 2023 01:17:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699348664; x=1730884664;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=P71XwON/JZ6FXbku3xz98s//Jj44TIH+098MqA3/xKw=;
-  b=M/t536hovMpT9bVbl2AwmcJp33m2cv6JkJBw0YoHQJYhAFlTm7t+9Vj3
-   7L0nJmwzrPp+vXuy2hpkVgX3lQTVJEF6z2M+85zEqbdE+v/pz765pksfZ
-   D3Ph2B9IqIc1BGKuGQNEH2fK7UPLWw9Hy5e3MrLfbeYFuZqntHptY6CS3
-   ZQgJiHDp7idJCliD15fSBiP7dl8kZEKcBewUbva879VPdiF0ZQlzRbG7/
-   7O5ebsK3AnhlwVHXH8+BgrNHy+6R8QzdFK/CsU+eh+ZxK2VwJZZFcdYhl
-   vb+K00VUhaiSr+MjnfLfyP5wPTM/uYEDzMVmzg5w8ZrEylwdr3/Wz4/0G
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10886"; a="369662257"
-X-IronPort-AV: E=Sophos;i="6.03,283,1694761200"; 
-   d="scan'208";a="369662257"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2023 01:17:44 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10886"; a="906357335"
-X-IronPort-AV: E=Sophos;i="6.03,283,1694761200"; 
-   d="scan'208";a="906357335"
-Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by fmsmga001.fm.intel.com with ESMTP; 07 Nov 2023 01:17:42 -0800
-Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r0IDL-00070S-2U;
-        Tue, 07 Nov 2023 09:17:39 +0000
-Date:   Tue, 7 Nov 2023 17:16:14 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Ashish Mhetre <amhetre@nvidia.com>, krzysztof.kozlowski@linaro.org,
-        thierry.reding@gmail.com, jonathanh@nvidia.com,
-        dmitry.osipenko@collabora.com
-Cc:     oe-kbuild-all@lists.linux.dev, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Ashish Mhetre <amhetre@nvidia.com>
-Subject: Re: [PATCH 1/2] memory: tegra: Add SID override programming for MC
- clients
-Message-ID: <202311071607.IzbwSn2f-lkp@intel.com>
-References: <20231107052824.29418-1-amhetre@nvidia.com>
+        Tue, 7 Nov 2023 04:19:30 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CE0B122;
+        Tue,  7 Nov 2023 01:19:27 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6CE03C433C8;
+        Tue,  7 Nov 2023 09:19:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699348767;
+        bh=VDrXsVNkm+N8iNlJC3ZwEH4c+vJY+PF2deM4StXlHO8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NYHtnTJnvG6VbnZXS27Xlyz8fAbAUOKKK+C0hD/yaEtP3hsK1Ft/lHn10pWx8x1ar
+         lvK7xSDqD7EuZfakWhLeb+ssDHh2t/ywB0jfMWGhw0gQ7PD0kmMLqM52eTbYssUDAU
+         0b+6+E6otlZyPvBUDvMpMsvMC80povFl+2nQNBvX7nCWH+5ucojPZNMfaeK1Z076i8
+         Mk3Y3AaVvEcXbmZ1safxJou7RShM8a6rP+ur+hRMrkOU4u4ojoBlei0eTHmSOB9+eG
+         PxF2bIabLg/DSeV0GPKgiGapHIOaZLvAViYf+VDWadCax+CBHM6PCRQZyguJRXGzRG
+         b8tJ6WJhB2NUA==
+Date:   Tue, 7 Nov 2023 10:19:24 +0100
+From:   Maxime Ripard <mripard@kernel.org>
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     Keith Zhao <keith.zhao@starfivetech.com>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Shengyang Chen <shengyang.chen@starfivetech.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Jagan Teki <jagan@edgeble.ai>,
+        Rob Herring <robh+dt@kernel.org>,
+        Chris Morgan <macromorgan@hotmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Changhuang Liang <changhuang.liang@starfivetech.com>,
+        Jack Zhu <jack.zhu@starfivetech.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Shawn Guo <shawnguo@kernel.org>, christian.koenig@amd.com
+Subject: Re: [PATCH v2 6/6] drm/vs: Add hdmi driver
+Message-ID: <rx7oxrxs6dgwdkdu4l7y74yek4656jejixzccryml6jl6t5elp@jvk7agdcljwg>
+References: <20231025103957.3776-1-keith.zhao@starfivetech.com>
+ <20231025103957.3776-7-keith.zhao@starfivetech.com>
+ <70805ff2-56a8-45e1-a31c-ffb0e84749e5@linaro.org>
+ <3twc4zoohon7uujypgjtlnryfmebx4osvpykagnwr5nemmqz2w@w4vw55uswebh>
+ <CAA8EJppxQ7J8DEDFsWzPL8bDpNW-KY0nhUA++zDBRpMCpP-bkA@mail.gmail.com>
+ <344veqjvvwlo7vls2kdlgjggf77of2ijxwc2hmk7tarm75ugcs@bmozk23uqxqr>
+ <CAA8EJpomaDoJVkq+_NhcxqOs6X-dFd=Vo9Wtqnp8egNaWzDH2Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="sx3kokd2nvv34uc7"
 Content-Disposition: inline
-In-Reply-To: <20231107052824.29418-1-amhetre@nvidia.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CAA8EJpomaDoJVkq+_NhcxqOs6X-dFd=Vo9Wtqnp8egNaWzDH2Q@mail.gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ashish,
 
-kernel test robot noticed the following build warnings:
+--sx3kokd2nvv34uc7
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-[auto build test WARNING on tegra/for-next]
-[also build test WARNING on linus/master v6.6 next-20231107]
-[cannot apply to tegra-drm/drm/tegra/for-next]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Hi,
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Ashish-Mhetre/memory-tegra-Skip-SID-programming-if-SID-registers-aren-t-set/20231107-133149
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/tegra/linux.git for-next
-patch link:    https://lore.kernel.org/r/20231107052824.29418-1-amhetre%40nvidia.com
-patch subject: [PATCH 1/2] memory: tegra: Add SID override programming for MC clients
-config: arm64-defconfig (https://download.01.org/0day-ci/archive/20231107/202311071607.IzbwSn2f-lkp@intel.com/config)
-compiler: aarch64-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231107/202311071607.IzbwSn2f-lkp@intel.com/reproduce)
+On Sun, Oct 29, 2023 at 06:52:24PM +0200, Dmitry Baryshkov wrote:
+> On Thu, 26 Oct 2023 at 14:53, Maxime Ripard <mripard@kernel.org> wrote:
+> >
+> > On Thu, Oct 26, 2023 at 11:57:22AM +0300, Dmitry Baryshkov wrote:
+> > > On Thu, 26 Oct 2023 at 11:07, Maxime Ripard <mripard@kernel.org> wrot=
+e:
+> > > >
+> > > > On Thu, Oct 26, 2023 at 01:23:53AM +0300, Dmitry Baryshkov wrote:
+> > > > > > +static int starfive_hdmi_register(struct drm_device *drm, stru=
+ct starfive_hdmi *hdmi)
+> > > > > > +{
+> > > > > > +   struct drm_encoder *encoder =3D &hdmi->encoder;
+> > > > > > +   struct device *dev =3D hdmi->dev;
+> > > > > > +
+> > > > > > +   encoder->possible_crtcs =3D drm_of_find_possible_crtcs(drm,=
+ dev->of_node);
+> > > > > > +
+> > > > > > +   /*
+> > > > > > +    * If we failed to find the CRTC(s) which this encoder is
+> > > > > > +    * supposed to be connected to, it's because the CRTC has
+> > > > > > +    * not been registered yet.  Defer probing, and hope that
+> > > > > > +    * the required CRTC is added later.
+> > > > > > +    */
+> > > > > > +   if (encoder->possible_crtcs =3D=3D 0)
+> > > > > > +           return -EPROBE_DEFER;
+> > > > > > +
+> > > > > > +   drm_encoder_helper_add(encoder, &starfive_hdmi_encoder_help=
+er_funcs);
+> > > > > > +
+> > > > > > +   hdmi->connector.polled =3D DRM_CONNECTOR_POLL_HPD;
+> > > > > > +
+> > > > > > +   drm_connector_helper_add(&hdmi->connector,
+> > > > > > +                            &starfive_hdmi_connector_helper_fu=
+ncs);
+> > > > > > +   drmm_connector_init(drm, &hdmi->connector,
+> > > > > > +                       &starfive_hdmi_connector_funcs,
+> > > > > > +                       DRM_MODE_CONNECTOR_HDMIA,
+> > > > >
+> > > > > On an embedded device one can not be so sure. There can be MHL or=
+ HDMI
+> > > > > Alternative Mode. Usually we use drm_bridge here and drm_bridge_c=
+onnector.
+> > > >
+> > > > On an HDMI driver, it's far from being a requirement, especially gi=
+ven
+> > > > the limitations bridges have.
+> > >
+> > > It's a blessing that things like MHL / HDMI-in-USB-C / HDMI-to-MyDP
+> > > are not widely used in the wild and are mostly non-existing except
+> > > several phones that preate wide DP usage.
+> >
+> > And those can be supported without relying on bridges.
+>=20
+> Yes, they likely can, in the way that nouveau handles I2C TV encoders.
+> But I don't think this can scale. We can have different devices
+> attached to the DSI, LVDS, HDMI and even DP image sources. I don't see
+> a scalable solution for either of them. E.g. by switching drm/msm to
+> use panel bridges for DSI panels we were able to significantly unify
+> and simplify code paths.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311071607.IzbwSn2f-lkp@intel.com/
+I'm glad it worked fine for drm/msm, but what I don't really like is the
+current dogma that *everything* should be a bridge, and that's just a
+poor guideline.
 
-All warnings (new ones prefixed by >>):
+> > > Using drm_connector directly prevents one from handling possible
+> > > modifications on the board level. For example, with the DRM connector
+> > > in place, handling a separate HPD GPIO will result in code duplication
+> > > from the hdmi-connector driver. Handling any other variations in the
+> > > board design (which are pretty common in the embedded world) will also
+> > > require changing the driver itself. drm_bridge / drm_bridge_connector
+> > > save us from those issues.
+> >
+> > And we have other solutions there too. Like, EDIDs are pretty much in
+> > the same spot with a lot of device variations, but it also works without
+> > a common driver. I'd really wish we were having less bridges and more
+> > helpers, but here we are.
+> >
+> > > BTW: what are the limitations of the drm_bridge wrt. HDMI output? I'm
+> > > asking because we heavily depend on the bridge infrastructure for HDMI
+> > > output. Maybe we are missing something there, which went unnoticed to
+> > > me and my colleagues.
+> >
+> > A bridge cannot extend the connector state or use properties, for
+> > example. It works for basic stuff but falls apart as soon as you're
+> > trying to do something slightly advanced.
+>=20
+> Ack. I agree, we didn't have a necessity to implement properties up to
+> now. But that sounds like an interesting topic for DSI-to-HDMI bridges
+> and HDCP support. I'll need to check if any of the RB3/RB5/Dragonboard
+> bridges are programmed with the HDCP keys.
 
-   drivers/memory/tegra/tegra186.c: In function 'tegra186_mc_resume':
-   drivers/memory/tegra/tegra186.c:78:17: error: implicit declaration of function 'tegra186_mc_client_sid_override' [-Werror=implicit-function-declaration]
-      78 |                 tegra186_mc_client_sid_override(mc, client, client->sid);
-         |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/memory/tegra/tegra186.c: At top level:
->> drivers/memory/tegra/tegra186.c:85:13: warning: conflicting types for 'tegra186_mc_client_sid_override'; have 'void(struct tegra_mc *, const struct tegra_mc_client *, unsigned int)'
-      85 | static void tegra186_mc_client_sid_override(struct tegra_mc *mc,
-         |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/memory/tegra/tegra186.c:85:13: error: static declaration of 'tegra186_mc_client_sid_override' follows non-static declaration
-   drivers/memory/tegra/tegra186.c:78:17: note: previous implicit declaration of 'tegra186_mc_client_sid_override' with type 'void(struct tegra_mc *, const struct tegra_mc_client *, unsigned int)'
-      78 |                 tegra186_mc_client_sid_override(mc, client, client->sid);
-         |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   cc1: some warnings being treated as errors
+Aside from HDCP, the current color management work will also require to
+expose properties on the connectors.
 
+Maxime
 
-vim +85 drivers/memory/tegra/tegra186.c
+--sx3kokd2nvv34uc7
+Content-Type: application/pgp-signature; name="signature.asc"
 
-7355c7b9ae0d45 Thierry Reding 2021-06-02   70  
-142620fbbbbba0 Ashish Mhetre  2023-11-07   71  static int tegra186_mc_resume(struct tegra_mc *mc)
-142620fbbbbba0 Ashish Mhetre  2023-11-07   72  {
-142620fbbbbba0 Ashish Mhetre  2023-11-07   73  	unsigned int i;
-142620fbbbbba0 Ashish Mhetre  2023-11-07   74  
-142620fbbbbba0 Ashish Mhetre  2023-11-07   75  	for (i = 0; i < mc->soc->num_clients; i++) {
-142620fbbbbba0 Ashish Mhetre  2023-11-07   76  		const struct tegra_mc_client *client = &mc->soc->clients[i];
-142620fbbbbba0 Ashish Mhetre  2023-11-07   77  
-142620fbbbbba0 Ashish Mhetre  2023-11-07  @78  		tegra186_mc_client_sid_override(mc, client, client->sid);
-142620fbbbbba0 Ashish Mhetre  2023-11-07   79  	}
-142620fbbbbba0 Ashish Mhetre  2023-11-07   80  
-142620fbbbbba0 Ashish Mhetre  2023-11-07   81  	return 0;
-142620fbbbbba0 Ashish Mhetre  2023-11-07   82  }
-142620fbbbbba0 Ashish Mhetre  2023-11-07   83  
-eaf89f1cd38cf7 Arnd Bergmann  2021-07-22   84  #if IS_ENABLED(CONFIG_IOMMU_API)
-393d66fd2cacba Thierry Reding 2021-06-03  @85  static void tegra186_mc_client_sid_override(struct tegra_mc *mc,
-393d66fd2cacba Thierry Reding 2021-06-03   86  					    const struct tegra_mc_client *client,
-393d66fd2cacba Thierry Reding 2021-06-03   87  					    unsigned int sid)
-393d66fd2cacba Thierry Reding 2021-06-03   88  {
-393d66fd2cacba Thierry Reding 2021-06-03   89  	u32 value, old;
-393d66fd2cacba Thierry Reding 2021-06-03   90  
-393d66fd2cacba Thierry Reding 2021-06-03   91  	value = readl(mc->regs + client->regs.sid.security);
-393d66fd2cacba Thierry Reding 2021-06-03   92  	if ((value & MC_SID_STREAMID_SECURITY_OVERRIDE) == 0) {
-393d66fd2cacba Thierry Reding 2021-06-03   93  		/*
-393d66fd2cacba Thierry Reding 2021-06-03   94  		 * If the secure firmware has locked this down the override
-393d66fd2cacba Thierry Reding 2021-06-03   95  		 * for this memory client, there's nothing we can do here.
-393d66fd2cacba Thierry Reding 2021-06-03   96  		 */
-393d66fd2cacba Thierry Reding 2021-06-03   97  		if (value & MC_SID_STREAMID_SECURITY_WRITE_ACCESS_DISABLED)
-393d66fd2cacba Thierry Reding 2021-06-03   98  			return;
-393d66fd2cacba Thierry Reding 2021-06-03   99  
-393d66fd2cacba Thierry Reding 2021-06-03  100  		/*
-393d66fd2cacba Thierry Reding 2021-06-03  101  		 * Otherwise, try to set the override itself. Typically the
-393d66fd2cacba Thierry Reding 2021-06-03  102  		 * secure firmware will never have set this configuration.
-393d66fd2cacba Thierry Reding 2021-06-03  103  		 * Instead, it will either have disabled write access to
-393d66fd2cacba Thierry Reding 2021-06-03  104  		 * this field, or it will already have set an explicit
-393d66fd2cacba Thierry Reding 2021-06-03  105  		 * override itself.
-393d66fd2cacba Thierry Reding 2021-06-03  106  		 */
-393d66fd2cacba Thierry Reding 2021-06-03  107  		WARN_ON((value & MC_SID_STREAMID_SECURITY_OVERRIDE) == 0);
-393d66fd2cacba Thierry Reding 2021-06-03  108  
-393d66fd2cacba Thierry Reding 2021-06-03  109  		value |= MC_SID_STREAMID_SECURITY_OVERRIDE;
-393d66fd2cacba Thierry Reding 2021-06-03  110  		writel(value, mc->regs + client->regs.sid.security);
-393d66fd2cacba Thierry Reding 2021-06-03  111  	}
-393d66fd2cacba Thierry Reding 2021-06-03  112  
-393d66fd2cacba Thierry Reding 2021-06-03  113  	value = readl(mc->regs + client->regs.sid.override);
-393d66fd2cacba Thierry Reding 2021-06-03  114  	old = value & MC_SID_STREAMID_OVERRIDE_MASK;
-393d66fd2cacba Thierry Reding 2021-06-03  115  
-393d66fd2cacba Thierry Reding 2021-06-03  116  	if (old != sid) {
-393d66fd2cacba Thierry Reding 2021-06-03  117  		dev_dbg(mc->dev, "overriding SID %x for %s with %x\n", old,
-393d66fd2cacba Thierry Reding 2021-06-03  118  			client->name, sid);
-393d66fd2cacba Thierry Reding 2021-06-03  119  		writel(sid, mc->regs + client->regs.sid.override);
-393d66fd2cacba Thierry Reding 2021-06-03  120  	}
-393d66fd2cacba Thierry Reding 2021-06-03  121  }
-eaf89f1cd38cf7 Arnd Bergmann  2021-07-22  122  #endif
-393d66fd2cacba Thierry Reding 2021-06-03  123  
+-----BEGIN PGP SIGNATURE-----
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZUoBHAAKCRDj7w1vZxhR
+xWiBAP4sevvTIl4u+we2L7l/PqToVfQ/nXueZ0RTUgw/AJ/I1wEA+wM7mB5NCTiB
+uAat91IEFc4bWWOTLkkDTh9pBOjkfwg=
+=28g0
+-----END PGP SIGNATURE-----
+
+--sx3kokd2nvv34uc7--
