@@ -2,227 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 182E57E3210
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 01:12:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A28227E320E
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 01:12:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233488AbjKGAMz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 19:12:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58598 "EHLO
+        id S233436AbjKGAMT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 19:12:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230248AbjKGAMy (ORCPT
+        with ESMTP id S230248AbjKGAMR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 19:12:54 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C62E7BB
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 16:12:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699315971; x=1730851971;
-  h=date:from:to:cc:subject:message-id;
-  bh=e8a4/dE7fp5uGLmtd3xne+eo3BBs04lG2ZJaxiF/L0w=;
-  b=XT9lP5UgO7ble1zCINhkUEeT4SpRBc3z/N9jpVCZDFOPsC5oMY9r92Ip
-   p3bCPuTgHTKF3NZVTlEucCTKjvPrmXIsj4/smk2FFtTBvxEJuoLuxaQKS
-   2NagyoaBs4LkWT62VjrJg+s7cB3i/hjgpJUIHiCzOTB9Lr+TuCEtGnhz/
-   Ofh6+yRGi0v+lZ/ihIwKw1aQGHOfrVf7z/7abSt4gDUmKyK/tuEgdmJDW
-   vpra/OO460a/+ScyDZTYzSpd3u72WB/UVemLkBuVOlZJ9hPipAWHF2WFR
-   If2AC0+l7lKSUi/cdL4zMPXBFy+eLunr80pP+z30z74S0/JLtigfFRNOj
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10886"; a="2318525"
-X-IronPort-AV: E=Sophos;i="6.03,282,1694761200"; 
-   d="scan'208";a="2318525"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Nov 2023 16:12:51 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.03,282,1694761200"; 
-   d="scan'208";a="10225315"
-Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by orviesa001.jf.intel.com with ESMTP; 06 Nov 2023 16:12:50 -0800
-Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r09i2-0006ps-1H;
-        Tue, 07 Nov 2023 00:12:46 +0000
-Date:   Tue, 07 Nov 2023 08:12:10 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:perf/urgent] BUILD SUCCESS
- ecaf76f3b2958b7cf67a59540b7a6d82d4bfc965
-Message-ID: <202311070808.O7072gBS-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+        Mon, 6 Nov 2023 19:12:17 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3506BB
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 16:12:14 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 71E1FC433C8;
+        Tue,  7 Nov 2023 00:12:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699315934;
+        bh=IzvDcSXVc6Sv1zIOCJrJxYCGu8IPPHkKg7fcM6qoiKw=;
+        h=From:Date:Subject:To:Cc:Reply-To:From;
+        b=iS2m562nrCl1RiKX+Sy1RYiunIDGdiPcDySe5O4CZMNtjC83k6cd0IFZQBUoyP6En
+         vrvhJ1P4lLueHCUDlA0vqNJnmLZwNsAPscRt1Zx+x3n0xL/NUOk8GjE5oTvn/HqRdQ
+         Dd2afZgesSkF0Ox6WEAfoM7jdhVQO8QFsw3LI3h/rxZFhy29zGyft7PTfB/p4oXYxQ
+         lqgTq/pqJ33QiB0GNjpSWb9Zk/timrYiIzLFiOWS29ALBzDdJisVc1zYOGe5WEk10I
+         /WAEFww3iu25SOTtLJsGHO+cSN5v/U20sR2IzOlAEs6Q7ay/2ZVjT8O+kp0azA4OGw
+         IDWMf14m+H7FQ==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by smtp.lore.kernel.org (Postfix) with ESMTP id 54BD3C4332F;
+        Tue,  7 Nov 2023 00:12:14 +0000 (UTC)
+From:   Steev Klimaszewski via B4 Relay 
+        <devnull+steev.kali.org@kernel.org>
+Date:   Mon, 06 Nov 2023 18:12:11 -0600
+Subject: [PATCH] arm64: dts: qcom: sdm850-lenovo-yoga: Add wakeup-sources
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20231106-wakeup-source-v1-1-36b1f39e67fd@kali.org>
+X-B4-Tracking: v=1; b=H4sIANqASWUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDI2NDQwMz3fLE7NTSAt3i/NKi5FRdQ9PENLM000QzYyNLJaCegqLUtMwKsHn
+ RsbW1AGuFZptfAAAA
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Steev Klimaszewski <steev@kali.org>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1699315933; l=1648;
+ i=steev@kali.org; s=20231106; h=from:subject:message-id;
+ bh=XxMr1pRCV6LxTCL9BHo4MJtPNXm2qJQqiz+fIboTk1I=;
+ b=vjaUjZqT8uoer/iEV4k7jfxyJNb8OqOWndAP7CAxWb8vSu85CqW+CrAoPCv+59Z0xqc9erI5Z
+ +Yjw6KDVd3UCDvzeJtXYgZ7om7X9WAhiQfVPZbUTqH4bva01E/4mHYB
+X-Developer-Key: i=steev@kali.org; a=ed25519;
+ pk=KY+JnLRNy7Hdf04yfpE5ubOsDBIIfXAWnBijkySXbb4=
+X-Endpoint-Received: by B4 Relay for steev@kali.org/20231106 with auth_id=97
+X-Original-From: Steev Klimaszewski <steev@kali.org>
+Reply-To: <steev@kali.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git perf/urgent
-branch HEAD: ecaf76f3b2958b7cf67a59540b7a6d82d4bfc965  Merge branch 'perf/urgent' into perf/core, to pick up fix
+From: Steev Klimaszewski <steev@kali.org>
 
-elapsed time: 1814m
+The keyboard, touchpad and touchscreen can all be used to wake the
+computer up from sleep, so mark them as such in the dts file.
 
-configs tested: 151
-configs skipped: 2
+Signed-off-by: Steev Klimaszewski <steev@kali.org>
+---
+It would be nice to wake up the Lenovo Yoga C630 from suspend by hitting
+the keyboard or touchpad or even touchscreen, so this patch enables that
+ability.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+I'm not married to enabling it for the touchscreen, so if anyone wants
+me to drop that hunk, I'd be fine with it.
+---
+ arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                            hsdk_defconfig   gcc  
-arc                   randconfig-001-20231106   gcc  
-arc                   randconfig-002-20231106   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                                 defconfig   gcc  
-arm                      jornada720_defconfig   gcc  
-arm                         lpc18xx_defconfig   gcc  
-arm                          pxa3xx_defconfig   gcc  
-arm                   randconfig-001-20231106   gcc  
-arm                   randconfig-002-20231106   gcc  
-arm                   randconfig-003-20231106   gcc  
-arm                   randconfig-004-20231106   gcc  
-arm64                 randconfig-001-20231106   gcc  
-arm64                 randconfig-002-20231106   gcc  
-arm64                 randconfig-003-20231106   gcc  
-arm64                 randconfig-004-20231106   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-csky                  randconfig-001-20231106   gcc  
-csky                  randconfig-002-20231106   gcc  
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20231106   gcc  
-i386         buildonly-randconfig-002-20231106   gcc  
-i386         buildonly-randconfig-003-20231106   gcc  
-i386         buildonly-randconfig-004-20231106   gcc  
-i386         buildonly-randconfig-005-20231106   gcc  
-i386         buildonly-randconfig-006-20231106   gcc  
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                  randconfig-001-20231106   gcc  
-i386                  randconfig-002-20231106   gcc  
-i386                  randconfig-003-20231106   gcc  
-i386                  randconfig-004-20231106   gcc  
-i386                  randconfig-005-20231106   gcc  
-i386                  randconfig-006-20231106   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                        allyesconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20231106   gcc  
-loongarch             randconfig-002-20231106   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-m68k                          sun3x_defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                             allmodconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-openrisc                         allmodconfig   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   gcc  
-powerpc                     ep8248e_defconfig   gcc  
-powerpc               randconfig-001-20231106   gcc  
-powerpc               randconfig-002-20231106   gcc  
-powerpc               randconfig-003-20231106   gcc  
-powerpc64             randconfig-001-20231106   gcc  
-powerpc64             randconfig-002-20231106   gcc  
-powerpc64             randconfig-003-20231106   gcc  
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                    nommu_k210_defconfig   gcc  
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                              allnoconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-sh                               alldefconfig   gcc  
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sh                          rsk7201_defconfig   gcc  
-sh                   secureedge5410_defconfig   gcc  
-sh                            titan_defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64       buildonly-randconfig-001-20231106   gcc  
-x86_64       buildonly-randconfig-002-20231106   gcc  
-x86_64       buildonly-randconfig-003-20231106   gcc  
-x86_64       buildonly-randconfig-004-20231106   gcc  
-x86_64       buildonly-randconfig-005-20231106   gcc  
-x86_64       buildonly-randconfig-006-20231106   gcc  
-x86_64                              defconfig   gcc  
-x86_64                                  kexec   gcc  
-x86_64                randconfig-001-20231106   gcc  
-x86_64                randconfig-002-20231106   gcc  
-x86_64                randconfig-003-20231106   gcc  
-x86_64                randconfig-004-20231106   gcc  
-x86_64                randconfig-005-20231106   gcc  
-x86_64                randconfig-006-20231106   gcc  
-x86_64                randconfig-011-20231106   gcc  
-x86_64                randconfig-012-20231106   gcc  
-x86_64                randconfig-013-20231106   gcc  
-x86_64                randconfig-014-20231106   gcc  
-x86_64                randconfig-015-20231106   gcc  
-x86_64                randconfig-016-20231106   gcc  
-x86_64                           rhel-8.3-bpf   gcc  
-x86_64                          rhel-8.3-func   gcc  
-x86_64                    rhel-8.3-kselftests   gcc  
-x86_64                         rhel-8.3-kunit   gcc  
-x86_64                           rhel-8.3-ltp   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                            allnoconfig   gcc  
-xtensa                           allyesconfig   gcc  
+diff --git a/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts b/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
+index 92a812b5f423..9ddffb98408d 100644
+--- a/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
++++ b/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
+@@ -384,6 +384,8 @@ tsel: hid@15 {
+ 		hid-descr-addr = <0x1>;
+ 
+ 		interrupts-extended = <&tlmm 37 IRQ_TYPE_LEVEL_HIGH>;
++
++		wakeup-source;
+ 	};
+ 
+ 	tsc2: hid@2c {
+@@ -392,6 +394,8 @@ tsc2: hid@2c {
+ 		hid-descr-addr = <0x20>;
+ 
+ 		interrupts-extended = <&tlmm 37 IRQ_TYPE_LEVEL_HIGH>;
++
++		wakeup-source;
+ 	};
+ };
+ 
+@@ -408,6 +412,8 @@ tsc1: hid@10 {
+ 
+ 		pinctrl-names = "default";
+ 		pinctrl-0 = <&i2c5_hid_active>;
++
++		wakeup-source;
+ 	};
+ };
+ 
+@@ -482,6 +488,8 @@ ecsh: hid@5c {
+ 
+ 		pinctrl-names = "default";
+ 		pinctrl-0 = <&i2c11_hid_active>;
++
++		wakeup-source;
+ 	};
+ };
+ 
 
+---
+base-commit: 3ff7a5781ceee3befb9224d29cef6e6a4766c5fe
+change-id: 20231106-wakeup-source-15af6f5a6329
+
+Best regards,
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Steev Klimaszewski <steev@kali.org>
+
