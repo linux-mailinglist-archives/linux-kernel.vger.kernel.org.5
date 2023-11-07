@@ -2,148 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F1AC47E3A1E
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 11:43:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 805727E3A23
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 11:43:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233986AbjKGKnE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 05:43:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44872 "EHLO
+        id S233987AbjKGKng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 05:43:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233796AbjKGKnC (ORCPT
+        with ESMTP id S233796AbjKGKnf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 05:43:02 -0500
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B72F5F7
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 02:42:59 -0800 (PST)
-Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-9dd5879a126so583283166b.3
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 02:42:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699353778; x=1699958578; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=bsmfEqZyHLXQYIDEHlob9aAnGjDF7uO/0bK6CtZNc4o=;
-        b=iuVmiiFaZ7lOe3cJQVULgjIb+5/0eYv2g+wyGGkJPXKlI856h5KKVxP9NmEXq62KCn
-         OMbnFwmmtd/yGRobLxHkknEVWb/kxxHwnDepCc9zw9kAlBfDpjINt/5PmoiiGvbf46Ch
-         i8UP/AGKL3dniqrr9syNQLHF4wohBXzwK8t7hPa/EymiogIBmwk3JNf8M5kXm39w6vt9
-         BCasOf2vhDFrg5fQ3EyuwOCcwee2Vukr2iqnarpI/QLg/xSIPqZmHNnOq/XZNcYmhCMs
-         D1C+C0FekxsRV09Ty9D0mBWCdkSHkLEY13O5wxQp0vpxzgaCCD5FGfKQz8eEUvN03GA7
-         PfXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699353778; x=1699958578;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=bsmfEqZyHLXQYIDEHlob9aAnGjDF7uO/0bK6CtZNc4o=;
-        b=aq4ynrhZc4js0ict0rZgV8duNKiosjAxnarexmSNsp9E9q0dnRTM0u1B+cvSoIeTAd
-         morWS4YR8I8qifEqj7FAiqJUxtdnDLejow1N/gV1Te4czsLNpj3BLoJBtzFk6P8trE0h
-         Tk9n4/0ne+GrMxswoG6AYUx+yliu0OLFk7RQ2+X+i7cOj1WvQrPv6K7iENIgAp87iTuV
-         US2fxAJEV+yPVQO+1h3OWC1q2AXWY1Q9gqAusPPPV8nO3bmzZFYUquNf92tKrqLK8sYz
-         CppjAnNx0x71d//IOqHZneheW9E0ADgyBqzp8lRN0fcgYKee1TSqX0B/jtK1ZcgwkBBg
-         1QsA==
-X-Gm-Message-State: AOJu0YwhmYt8K4hiDeLL0Yxx1ZjNqI5+DMsaSpweFa8lYU8GVSb1964O
-        K+fcf6P8G3vLBdHM/w80OtrfJA==
-X-Google-Smtp-Source: AGHT+IF9cFcbABaZ1rzrsL5Af7aCgLA33g5E+q1qAw1ZEVp1MYxE2yYrhDyN01QLgCq+ioiG13m+ng==
-X-Received: by 2002:a17:906:dace:b0:9ae:55ae:587f with SMTP id xi14-20020a170906dace00b009ae55ae587fmr18187072ejb.37.1699353778191;
-        Tue, 07 Nov 2023 02:42:58 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.218.126])
-        by smtp.gmail.com with ESMTPSA id a23-20020a1709063a5700b009bf7a4d591bsm886616ejf.45.2023.11.07.02.42.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 07 Nov 2023 02:42:57 -0800 (PST)
-Message-ID: <3d9e50db-19f0-43b3-8042-2f80a1e7b79e@linaro.org>
-Date:   Tue, 7 Nov 2023 11:42:54 +0100
+        Tue, 7 Nov 2023 05:43:35 -0500
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F00D6B0;
+        Tue,  7 Nov 2023 02:43:30 -0800 (PST)
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4SPlDq5g5Xz4f3n68;
+        Tue,  7 Nov 2023 18:43:23 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+        by mail.maildlp.com (Postfix) with ESMTP id 847171A0175;
+        Tue,  7 Nov 2023 18:43:27 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+        by APP1 (Coremail) with SMTP id cCh0CgCn9w3LFEpleJsZAQ--.59006S2;
+        Tue, 07 Nov 2023 18:43:27 +0800 (CST)
+Subject: Re: [linus:master] [bpf] c930472552:
+ WARNING:at_kernel/bpf/memalloc.c:#bpf_mem_alloc_init
+To:     Yonghong Song <yonghong.song@linux.dev>,
+        Alexei Starovoitov <ast@kernel.org>,
+        kernel test robot <oliver.sang@intel.com>
+Cc:     oe-lkp@lists.linux.dev, lkp@intel.com,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        "houtao1@huawei.com" <houtao1@huawei.com>
+References: <202310302113.9f8fe705-oliver.sang@intel.com>
+ <7506b682-3be3-fcd0-4bb4-c1db48f609a2@huaweicloud.com>
+ <99e9d615-b720-7f33-3df0-9824a92f6644@huaweicloud.com>
+ <52383a4f-6efd-43ce-bedb-a91e130850f3@linux.dev>
+ <3629948c-793e-307b-6b6e-00557f3f6212@huaweicloud.com>
+ <3b3b1384-88ba-4796-8e11-d6632afb35ac@linux.dev>
+From:   Hou Tao <houtao@huaweicloud.com>
+Message-ID: <f413cce7-db58-fd5c-63b9-5dfc5876c1aa@huaweicloud.com>
+Date:   Tue, 7 Nov 2023 18:43:23 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v10 0/3] Support pwm/tach driver for aspeed ast26xx
-Content-Language: en-US
-To:     Billy Tsai <billy_tsai@aspeedtech.com>, jdelvare@suse.com,
-        linux@roeck-us.net, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, joel@jms.id.au, andrew@aj.id.au,
-        corbet@lwn.net, thierry.reding@gmail.com,
-        u.kleine-koenig@pengutronix.de, p.zabel@pengutronix.de,
-        naresh.solanki@9elements.com, linux-hwmon@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-pwm@vger.kernel.org,
-        BMC-SW@aspeedtech.com, patrick@stwcx.xyz
-References: <20231107103955.1166655-1-billy_tsai@aspeedtech.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231107103955.1166655-1-billy_tsai@aspeedtech.com>
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <3b3b1384-88ba-4796-8e11-d6632afb35ac@linux.dev>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Language: en-US
+X-CM-TRANSID: cCh0CgCn9w3LFEpleJsZAQ--.59006S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxJw48ur15KF1xCr47tFW5Wrg_yoWrtF1DpF
+        WayFyxtF4kAry7Ar42qw48uF40ywsagryUW34Yqr1UZrn0vr18tr48t3yUuaykZr48Cayj
+        qrs5ta4fZr4DAaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUyEb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
+        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
+        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE
+        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
+        xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
+        c7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU1zuWJUUUUU==
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,MAY_BE_FORGED,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/11/2023 11:39, Billy Tsai wrote:
-> Unlike the old design that the register setting of the TACH should based
-> on the configure of the PWM. In ast26xx, the dependency between pwm and
-> tach controller is eliminated and becomes a separate hardware block. One
-> is used to provide pwm output and another is used to monitor the frequency
-> of the input. This driver implements them by exposing two kernel
-> subsystems: PWM and HWMON. The PWM subsystem can be utilized alongside
-> existing drivers for controlling elements such as fans (pwm-fan.c),
-> beepers (pwm-beeper.c) and so on. Through the HWMON subsystem, the driver
-> provides sysfs interfaces for fan.
-> 
-> Changes since v9:
-> Change the type of fan-driving-mode to string
-> Fix some typos and formatting issues.
+Hi,
 
-Please run scripts/checkpatch.pl and fix reported warnings. Some
-warnings can be ignored, but the code here looks like it needs a fix.
-Feel free to get in touch if the warning is not clear.
+On 11/4/2023 12:49 AM, Yonghong Song wrote:
+>
+> On 11/2/23 11:54 PM, Hou Tao wrote:
+>> Hi,
+>>
+>> On 11/3/2023 12:08 AM, Yonghong Song wrote:
+>>> On 11/2/23 6:40 AM, Hou Tao wrote:
+>>>> Hi Alexei,
+>>>>
+>>>> On 10/31/2023 4:01 PM, Hou Tao wrote:
+>>>>> Hi,
+>>>>>
+>>>>> On 10/30/2023 10:11 PM, kernel test robot wrote:
+>>>>>> hi, Hou Tao,
+>>>>>>
+>>>>>> we noticed a WARN_ONCE added in this commit was hit in our tests.
+>>>>>> FYI.
+>>>>>>
+>>>>>>
+SNIP
+>>>> I see what has happened. The problem is twofold:
+>>>> (1) The object_size of kmalloc-cg-96 is adjust from 96 to 128 due to
+>>>> slab merge in __kmem_cache_alias(). For SLAB, SLAB_HWCACHE_ALIGN is
+>>>> enabled by default for kmalloc slab, so align is 64 and size is 128
+>>>> for
+>>>> kmalloc-cg-96. So when unit_alloc() does kmalloc_node(96,
+>>>> __GFP_ACCOUNT,
+>>>> node), ksize() will return 128 instead of 96 for the returned pointer.
+>>>> SLUB has a similar merge logic, but because its align is 8 under
+>>>> x86-64,
+>>>> so the warning doesn't happen for i386 + SLUB, but I think the similar
+>>>> problem may exist for other architectures.
+>>>> (2) kmalloc_size_roundup() returns the object_size of kmalloc-96
+>>>> instead
+>>>> of kmalloc-cg-96, so bpf_mem_cache_adjust_size() doesn't adjust
+>>>> size_index accordingly. The reason why the object_size of
+>>>> kmalloc-96 is
+>>>> 96 instead of 128 is that there is slab merge for kmalloc-96.
+>>>>
+>>>> About how to fix the problem, I have two ideas:
+>>>> The first is to introduce kmalloc_size_roundup_flags(), so
+>>>> bpf_mem_cache_adjust_size() could use kmalloc_size_roundup_flags(size,
+>>>> __GFP_ACCOUNT) to get the object_size of kmalloc-cg-xxx. It could fix
+>>>> the warning for now, but the warning may pop-up occasionally due to
+>>>> SLUB
+>>>> merge and unusual slab align. The second is just using the
+>>>> bpf_mem_cache
+>>>> pointer to get the unit_size which is saved before the to-be-free
+>>>> pointer. Its downside is that it may can not be able to skip the free
+>>>> operation for pointer which is not allocated from bpf ma, but I
+>>>> think it
+>>>> is acceptable. I prefer the latter solution. What do you think ?
+>>>
+>>> Is it possible that in bpf_mem_cache_adjust_size(), we do a series of
+>>> kmalloc (for supported bucket size) and call ksize() to get the actual
+>>> allocated object size. So eventually all possible allocated object
+>>> sizes
+>>> will be used for size_index[]. This will avoid all kind of special
+>>> corner cases due to config/macro/arch etc. WDYT?
+>> It is basically the same as the first proposed solution and it has the
+>> same flaw. The problem is that slab merge can happen in any time, so the
+>> return value of ksize() may change even all passed pointers are
+>> allocated from the same slab. Considering the following case: during the
+>> invocation of bpf_mem_cache_adjust_size() or the initialization of
+>> bpf_global_ma, there is no slab merge and ksize() for a 96-bytes object
+>> returns 96. But after these invocations, a new slab created by a kernel
+>> module is merged to kmalloc-cg-96 and the object_size of kmalloc-cg-96
+>> is adjust from 96 to 128 (which is possible for x86-64 + CONFIG_SLAB,
+>> because it is alignment requirement is 64 for 96-bytes slab). So soon or
+>
+> So, the object_size for allocated objects in that is adjusted from 96
+> to 128
+> while previously allocated objects should have no change, it is merely
+> ksize(old_obj)
+> previous return 96, now returns 128, right? Okay, so this is indeed a
+> problem
+> since we use ksize() to decide the bucket.
 
-Best regards,
-Krzysztof
+Yes. The object_size of underlying slab changes, so the return value of
+ksize() will change as well.
+>
+>
+>> later, when bpf_global_ma frees a 96-byte-sized pointer which is
+>> allocated from a bpf_mem_cache in which unit_size is 96, bpf_mem_free()
+>> will free the pointer through a bpf_mem_cache in which unit_size is 128,
+>> because the return value of ksize() changes. Maybe we should introduce a
+>> new API in mm which returns size instead of object_size of underlying
+>> slab, so the return value will not change due to slab merge.
+>
+> In this case, to avoid the warning, indeed we need to use '96' instead
+> of '128'.
+> So use the original ksize() return value is indeed a solution.
+> We could use the mechanism similar to percpu alloc to save '96' in the
+> memory.
+
+We have already saved the pointer of bpf_mem_cache in the extra space
+(aka LLIST_NODE_SZ) which is allocated together with the returned
+pointer, so I think we could use bpf_mem_cache->unit_size to get the
+size of the free pointer directly. I will check whether or not there is
+performance degradation before posting the patch.
+
+Regards,
+Tao
 
