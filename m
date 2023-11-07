@@ -2,249 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D24997E46C8
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 18:24:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2BE37E46C7
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 18:24:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343616AbjKGRYU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 12:24:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35198 "EHLO
+        id S234735AbjKGRYR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 12:24:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234964AbjKGRYQ (ORCPT
+        with ESMTP id S234554AbjKGRYP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 12:24:16 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC22CDF;
-        Tue,  7 Nov 2023 09:24:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699377854; x=1730913854;
-  h=message-id:date:subject:from:to:cc:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=uUk8rqUH4aD9I44Kegkd3dW+HgyDghKN2aBKObM4/W4=;
-  b=naMsk9RG0esgK7KXyM6bawY6vI7TWPR1Vfl+L2m3Oby2V1esK4solLGX
-   +nvCfvHI5GdBFUOSSy8dMOdiTXbZIyHoZgF6BK0JFzGqB5Xf2fbvwQAl3
-   vxgDKVwh+VOa3ms2Ht6OqjsDNcT+zqqJYWCCaVJeIZ3ketg3Tgqd0lA+z
-   mElYrZ1OD9oO1W+UD5fR5hHKn7uZWKV3CraOPmC/6tPGsyfy+gYLcgr7L
-   yKAckXkxVMDEmuKDOfO4dvBwdQrU0yG2ntVlxqUsOOCAzkzweagJyuELY
-   TrBXDh+C7W3UblHuybjvgSP24NjM3IbyUI/iJHuDbLb+D0JB25K7HayYV
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10887"; a="369754124"
-X-IronPort-AV: E=Sophos;i="6.03,284,1694761200"; 
-   d="scan'208";a="369754124"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2023 09:24:14 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10887"; a="833172877"
-X-IronPort-AV: E=Sophos;i="6.03,284,1694761200"; 
-   d="scan'208";a="833172877"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by fmsmga004.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 07 Nov 2023 09:24:12 -0800
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Tue, 7 Nov 2023 09:24:12 -0800
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Tue, 7 Nov 2023 09:24:11 -0800
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34 via Frontend Transport; Tue, 7 Nov 2023 09:24:11 -0800
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.100)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.34; Tue, 7 Nov 2023 09:24:11 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YUaqtaLaTjd1dQO71N79W4p1LKtQENq4SGCPjHLK5gBwaOjro40EK+hZEevFmmH1SWTN3+vblWhMWvsAiM4EsX30eNdRGK5BwBA/SBYK50FDVYq/Glslu9ok6RkecGRHt7befR4GFKgu0DK+6dAiTKZ9M8/nSQ+4OteWZLp57VTTahu8xUikrMGp1/7m+zVvOqhH3/xbbGx04QiPaGspXybJDAC4jO2fLDpBxNGz8hFI12V5zthcpE+OUMfoVD1DV8UOjcVXmy3IE9sAoE0eZsJGpSKQuGu9auStEtw9ldJ12WnNuedal5EMc2biSG51Hae5Joe9yRmyaCTRHJquFg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=yib1vAu6W0oBfBkRvakDCCZVsTrSwcpYqQ0eUk7aI7s=;
- b=WWxD37zRfYUg15RyH+V6i7rmPP70QVUZJrT5uLUxo4EjgOfmrD2mibuHHSHbV/mlBdptIHSQ01rzQXEQo6+vC3iDVAzSA2Ox28wZ8qCTHgX8VgOnS/W9f7DHb9Hhk9ZHkQV4WbJi1OoozPAlGwpDrQp/966HtbKnMbADISYhYcdFtRrFcuqwp0lywZvWSXQmkRCPDzJOoSBSgNzltkionyg6n5z/Su4Ne23LMLEniZWEXabSRGOmKnOW8cUGtuA65k9TzWb1RbGGNOGnjWsLk6Jlyz6FzI0/fjiOv/3ILG4bE42Q3Bp5CsYpy7FPrIeRlgyNvVlp+u68WyA/maf7wQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from DM6PR11MB3625.namprd11.prod.outlook.com (2603:10b6:5:13a::21)
- by CO1PR11MB5027.namprd11.prod.outlook.com (2603:10b6:303:9d::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.29; Tue, 7 Nov
- 2023 17:24:09 +0000
-Received: from DM6PR11MB3625.namprd11.prod.outlook.com
- ([fe80::36be:aaee:c5fe:2b80]) by DM6PR11MB3625.namprd11.prod.outlook.com
- ([fe80::36be:aaee:c5fe:2b80%7]) with mapi id 15.20.6954.029; Tue, 7 Nov 2023
- 17:24:09 +0000
-Message-ID: <e3b4b1a6-5383-4bfb-ba83-ab27d58dae29@intel.com>
-Date:   Tue, 7 Nov 2023 18:24:04 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [alobakin:pfcp 11/19] include/linux/bitmap.h:642:17: warning:
- array subscript [1, 1024] is outside array bounds of 'long unsigned int[1]'
-Content-Language: en-US
-From:   Alexander Lobakin <aleksander.lobakin@intel.com>
-To:     Alexander Potapenko <glider@google.com>
-CC:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Yury Norov <yury.norov@gmail.com>,
-        Syed Nayyar Waris <syednwaris@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        kernel test robot <lkp@intel.com>,
-        <oe-kbuild-all@lists.linux.dev>, <linux-hardening@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <202310170708.fJzLlgDM-lkp@intel.com>
- <bd7fe929-c6fc-42be-9d2f-3f53ec21fd10@intel.com>
- <ZUkvOCxyiin_77qd@smile.fi.intel.com>
- <0a29df6b-bc27-43e9-a97d-57ecabb29a9e@intel.com>
- <CAG_fn=VtA6e3oGm4WVnxmy9yMBab780-U_4VoHSqm4tcd2UTzQ@mail.gmail.com>
- <ca0ad357-727b-4f41-a3d6-2c48a9dd5836@intel.com>
-In-Reply-To: <ca0ad357-727b-4f41-a3d6-2c48a9dd5836@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: WA1P291CA0023.POLP291.PROD.OUTLOOK.COM
- (2603:10a6:1d0:19::7) To DM6PR11MB3625.namprd11.prod.outlook.com
- (2603:10b6:5:13a::21)
+        Tue, 7 Nov 2023 12:24:15 -0500
+Received: from sonic316-26.consmr.mail.ne1.yahoo.com (sonic316-26.consmr.mail.ne1.yahoo.com [66.163.187.152])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D55BEF7
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 09:24:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1699377853; bh=uXmPHTvUbz6sszab9fn8DlTvb1KVw2BghtMCHwCGtWU=; h=Date:Subject:To:Cc:References:From:In-Reply-To:From:Subject:Reply-To; b=rdj2ZjzCy+4Zb2fgRRNob/3Rqv9Ut3G+lUydRPSlWRHHxOQ8cS/VGuavVxdNqC0Bz/C2rFjoWkHmjJQDrPRwzFpg4L3MVMvOU1VGpWYbEW4Acgp4gPBcknH9LWlGs7TlWtRslsu/5z4/zGemhPPK9cZjERMvhIBPxYcbdbaHUtejDD886Azrws3YXA0hu6C8RfwJaulDHWgrg2S9ZTMXElQ36ucLmS46dU6HpiM2XQEkwivlVrwNSR04UxMP61DZ2yo97L/TYjOs2RXqRWMg35wSFE+VIM3T0PhQFY7qvZdKrNDg4nJaUAMLfuJVYUbDQyVqNGKS2sGrjKHWMnLcCw==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1699377853; bh=fp6XSCWINzeezmYTFlRDZr4slFSGndpvixsrdNhlYKR=; h=X-Sonic-MF:Date:Subject:To:From:From:Subject; b=TcDF3mWXhmx535gAwt+M3pCVK3AhhoRfIYSNkZlrmNvPReTYFrOykuWIRQ+o9/ShdO26KF1rO1uqrIMbTGxWmysi14FdhzE3pog+VYvFwB3DV9YJaRqPMsXEVgMyw/ecbpi6CnPfgY7koLlbgsEdt0aXxHUFvC4nsmVn/GfmIfuKJwSfTDXb2X8IsKfBAOGVV1bC80rKiOJ5mjZ+pHn5X6QxtHuDz/H+XGCcTR/ntVlo4kvdocI+suvleGkmm2EFuknBev/ZZcDmmv9e+gAKJX9FMLpOHI5B9ks9hR0TCsOZr5Rx/W8q4DbZmFdc/uVsgTEp4PC4IbCBTGrpyX20rw==
+X-YMail-OSG: Sg1wd5UVM1lNSJPlB8W8XNn96fahcVxYlGiJWBmOWkDs4Yak38tuI0gRgOLxX.Z
+ aTzoiLd02TXjWqlsjgFAtdZMzIZTqTbIyasVsr8Gi.qphSO9WOa03BqAxrUKZk.dWRy5wR7O_nRq
+ QyYTM3ScupulMBkWG8fwXOWIWkcu4TU539sRm9At.lR1lzjATJ_cxF41CztWqdbUU3_KpiOyZOf6
+ 5KG8m5NCE0RTgMfR85Z6xZ.Q3IZSnq0yyb97yhRC4jFDCF3O6EIvgvL_U0rXoLvvxleHC3eV7DvC
+ GkPfkhd9Lxx2kn4nRVSL7egjHfAzHKVAHH.lQRkeok_flymKjgHrQZoEoY3xmSmR4kBxzYX2dqwC
+ A3Q8YSNsrC1qhBpib_nChWbJ.iytYLhEJZKuDXnfwOevykZuHSeHlH1QYtHtIhT_pMc5W7HKpAvH
+ 3hX8ikaEs10lrfbt8zMswce6C1GnZ.C6zYrGnNTTIlROPo0k9G8lOwPttgmtpY5FkSRZEkzpZw.3
+ IUv3iZWM5n2ryKk0AIcvDRhELqITAXtdR.hvrtN6VMiz0D_LqR4rjCvl728v4PoWH9GGv6DIVyME
+ LOoeBpEKYDSJF2ofXCT3_MOFKqxlYuY.b8lkA4AE79BhJWtw7Ue3LpNqU.iGnFrqU9bsbsE2CoGZ
+ 5NbOYdXjNxTArBjS9SZWksfAifJfp9BMNJDuSC6q2KYX9bqzGjRpxTi64Hk6W0psn7JHOMsxNG5Q
+ 5U3.PMb92tN4vIxKOtPoJLhlpz_JeAh7h3ZVgj286lgmGeTC99u1XyK8zSRTMmEarxXKTYnZRQ0H
+ AE8BXcI5QM2zNNsXaLm7UCb1UsU.L7VyR.acilH2dsMbNLFZHvkFmG.KC5ALQoVMEdjPuG297ceh
+ A9ABJNnKUZ5ejle9gqmFG6ohspCFiPH22bIh_SxtZmLR07dmL.XW8bnxdBEhMwGmEOK2.Uu0KUZM
+ uPfMV3RZojt354BrcrBPnqxHtju77AZ9Sas3DqID1c_OhA.srDE1xRLc9FB9RsgrabwW9Mz7xc50
+ mnKvkqVi0A4ewxg9xu6gbRnZDV4SQNr7_FnWvBwfPta71j4eXg1Zi8r_odiuthlIpEWGuqmHO3jA
+ TlZay.uNf0BHKR4bddYLuwLS01AzlkoIF9Vv_.AxvL1ZhsriGOm12g87N9rgzToZjFpuQ6v4VvKf
+ i0f1T5_tBUi8Z82CTiJo35yUWlFI_rkn0WDPHWwrGYrMyCqZHBZaNBLQwTLfnCuES9jBymxJq9g2
+ TLK825Lr8q.wIS01BdOvGYIhhTCxzqxs7hkCe8weYMgNyZQ1ncfqQ8zU55RS.GogtD7Uj72lssQ9
+ 0Z.4IIx7chyrrUtrfluXszoisGEZ6yHFkyBPJHkNFGnmilYlC4.JNyIVsHEiiQo3fSYK9h7ICAcn
+ 3Xlr7gqThCBDIAUSEqxWGzVg8R1FzUK9vaLSuJU7Lpsn1m.kIH0DtTgWZYIiy4fMUFqWEnlQqLxe
+ IQtMblrSSd4DtUB6LtXn9m692w9oCh5FQY4BBNQTOOIoAcrvyl9TqGeBCV2pNrm.Xd9r5hEdl20G
+ _p5nKKop0M1lAW0R6gS5MxSwaF8FRQQATfcAn.lemvKrZNS2Bxtm.ozWyaUwIHnu7Ca7ukIq1orV
+ sZGJOX3T4S95bgGK63.JrV76iRMuvVYCydmYWt4I3jXsgbfHsqm0BHgJCUmMK_6G59VhoRJ4NXmu
+ jYa6t7g_dDTO.ULQT.CkUof912a_ySk8iDuc6s9DcTfEkteCOnW23qoDHg_0cnMDPC33xgVGYZl.
+ NyTUMIZq.yrS6.MPa6SB7dBm10XXp1IMaruEuW6HkSNFewFfQYNnuzbUyBCZl_Msr_8iqX5FCsNE
+ I0h6EPfr8CJFmH6h36bduPeP_pQUUMmxywgtFFpnZPQ7llZ7UpgGGkRtEemRXp4SdfbC0xs_iSAU
+ AEb0gqKjJBHsN3ujyCr3Q5zqkxxgjlunobZLMg6Jgc8rX6cK_mAZKcDWrgcGUkq9K8rfaBsb.SxM
+ PSkAvqcwakuyshCEAxz.FzJSRRUB1w6gqE0cPyY4dom48f5c_e8ZXEkmh4pk17NX4u6T4kgRR.98
+ qyaMXxU9qn4JFXMKupHR7xDs5OnnwvNFDyONIeoTooD2O3ESdPlfud3ytIyBZtrtUStk3mmWGoaF
+ irhX6d1PyWr6SgCj9rKZuKSfjip9bAz2ESRHWMXuNBCII.E2iRxSLK41lgGTvfzkt8q5YGEcmQsw
+ TNGlL3mM6QhbEiITyJjZdPkPLCHqM6YbT5Ibm8epuR9da89o16P.qhMUlkV_HFB9V9tggJQ--
+X-Sonic-MF: <casey@schaufler-ca.com>
+X-Sonic-ID: c4cf64ea-9951-47ca-9f25-75b530ee50e7
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic316.consmr.mail.ne1.yahoo.com with HTTP; Tue, 7 Nov 2023 17:24:13 +0000
+Received: by hermes--production-ne1-56df75844-vlcrv (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID f65706eb2f505f823b3ecf99fabcb059;
+          Tue, 07 Nov 2023 17:24:12 +0000 (UTC)
+Message-ID: <38ef6320-76c4-4e5a-b930-151aeba6c739@schaufler-ca.com>
+Date:   Tue, 7 Nov 2023 09:24:11 -0800
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR11MB3625:EE_|CO1PR11MB5027:EE_
-X-MS-Office365-Filtering-Correlation-Id: a20448a9-06e9-4989-7574-08dbdfb65a0f
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: RsznJrANkPM1HtCxy/l0TWXAFfe1iK1xcC6P6NidjCnkx2KQgJNLCNXsC2uz3ph8MzcgsPwuPTtr37S5XNC7A8VwnqIkW2GfXRydFOj4/6qxTVNKtC4gp9GkedvIHgJp1zYaUqkvQaMejusLK5352IeJ8Lpmn3v61R+V0tdrl6bY933eAuw73O3PYU8moS4hHV6WlvZtfCXg/sH6JtJ+BfS/j9G9BGpT4dkK8cMa7zuZHNk4+V/F73KeJh0pWb9rvINdZE0omSbyXil+yC1ijhJi5EdG56+sTEDZtoaXAESyu2TgZlKJOXTYa0Kx9jXvrh88hMpwZQ2PGHZdcrx0OcfNwp0yzkYhrHHiIBWktWOYT+qQH2A21YH9qiu5Nw9QRxRIvoB5ppUA+zLNhzgDvxm0u/7DCEYR8F0GFJennmNjGCg6RwSUZmBMy5ioElLiznHNeX5xGWVeYTL4UZa/04btEa6LcBYzqn2uMmBO1lBwTcuLpcZKzmYpAuBdAPdItngFu2jwYXQKyw9b+NHh3DDQrnHKVgeP1Qp+vJQsj6f0MkdSSXY3YnDlTAgVWB4G4oTZbvg+K6r3d9zW+S04M41doaT7j/gq/ToytlHpb3/sqC5shSu9HI/Dgt4xcHzVlCt8nkbfXi98X2LVA37Kj00AJdVfhz/ul+JFwmzfl1DMFBdf+MCJ17XW4BhbdtUG
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB3625.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(376002)(346002)(39860400002)(396003)(366004)(230273577357003)(230173577357003)(230922051799003)(451199024)(1800799009)(186009)(64100799003)(66899024)(2616005)(83380400001)(26005)(66556008)(54906003)(66476007)(66946007)(6916009)(316002)(6506007)(53546011)(2906002)(5660300002)(6512007)(31696002)(478600001)(6486002)(86362001)(38100700002)(6666004)(82960400001)(31686004)(36756003)(4326008)(8936002)(8676002)(41300700001)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?WmlqSGlOTFhhcytVRzBmRWk3OUR2WGhmKzZGYjhDOVJzTzQ2WEVPTFVjQ3Rn?=
- =?utf-8?B?cWprZ2lJU3R4eEEzSjBiQUFsRmFKZ2NxOFhKWThWOWp2Y25QMkd3QTJzemZp?=
- =?utf-8?B?Nm9ieUtLK2NyZC85akg2eWhiZzJFYWFFdVgxMXY0enVsQVY2bGtNbU9HMUJJ?=
- =?utf-8?B?NWNRNzJrMHZUL29tZ3RGSDNzaEhBd0JyQzk1Z3dXNWdIa1Z3U2pUSXk1WVRr?=
- =?utf-8?B?WlNmQVF0MFAvUEJwMUtSTVBuMWpwdEl4VWFKa1k3RmN4L2xES0dGOWdWbktp?=
- =?utf-8?B?bFNHcFBLN3I0UzJsT0NFWDhuRldPZ1hNejQ2VGR0SkRBbmEvOGxZaE5GbGpi?=
- =?utf-8?B?TkRzbVlDeFF3SUsrMk9aOXFzbnJHYzZFRTJCVUFKc0ovNm9tbFoyZFhCVG9k?=
- =?utf-8?B?aHFvTEVGSmFXTDg3ODMzV2hDL1ROU2NERHR5ZklYdGVQNWEzb2ZBWmlLdGxs?=
- =?utf-8?B?Mk1SR2hhbCtUMXF0MXozNDQxYitvTWJJNXJJQjZCbC9ndXhKWC9tZEkxQXVi?=
- =?utf-8?B?UHJ1dStRTnVwTjJ3aFFOSzAybjVWZU5mZGNlTmVYS3VBV2x4RHd5Tlk1Rmt4?=
- =?utf-8?B?S2dmK2JKbk1UNmF6ek8zUjg1NElBekJ0eS9wdCtxY1ppRExCZlQwdEExYmlZ?=
- =?utf-8?B?Qk1OYTU5dWc0RVhHcy9yNUt5Tm9YV0pwaG9KeldRSUVsMit4U0ZRWGlKUmRj?=
- =?utf-8?B?a1Q1bm5OSENob1RwR0NuQVovdmlzTDhnRk9lbi96Q0QxOHBYSmE1WEg4d0x6?=
- =?utf-8?B?TFFPVmJsNzJlaWFRVjdDMCtPOUtheVVIUVpZRTN4OExQVFAzNkFiVDhlNkpv?=
- =?utf-8?B?clkxOEVRYWFRL29uc1VpRnZWc2RmMVh4SHhvSmIxL2x6RzI5anZlMGVXK1FR?=
- =?utf-8?B?VHNueVlYUlVWMVM3S1pTWHBqS2plWnB6NlVqbVlQalNxdmV1WGVKdFZiVlE4?=
- =?utf-8?B?dG5XeHlvYlFiZzBHVW53K2tTczlxcXRjS2ozMHRJVEE5L3BNRW9hSFZ0L3Jp?=
- =?utf-8?B?L1V6VkJiU29jN1hyRXdHRVUzSjJJUEpwVUNXNWV3Smo4ZVZSNHJaTmppQ2R0?=
- =?utf-8?B?N1c4c0hWcFd6UUk2ZTlHcE82Rm44dkVJYWtBVG1rN2hJNFl2OGdDUUtQSDhr?=
- =?utf-8?B?VDNOVEFySWdxRSs2dEdHYTFBTDZ1b2xKREthZy9wc2xhNVo2WHMrNU9JS0R5?=
- =?utf-8?B?SHAzZlBITVpCVFVCNHgrYjl2U3dsQzVBelVldzZ6b2xVQkpaVzdobC9BbTlh?=
- =?utf-8?B?NzNzcWVKaDVXenFpMkVsNGc2aFU5NEUrT25LZzJ6a1ZFMlk5WE5KYi9PTnNa?=
- =?utf-8?B?S201OHo0dHIyaGIrdXlybUF4MjZyQWlrTGZmak80S2ZZSWRBdSt5cExXakNM?=
- =?utf-8?B?dDRBSTQvem82cE4wdUFUNnpHYmU2L3JrRHBDU0NrNllqSVhSb1Y0cC9xSDRk?=
- =?utf-8?B?dG5jbTczenJVV1BYRGVubjFLTis4SnVXTkUyUlVGbG1NYVNGNnVrNDRHbkYx?=
- =?utf-8?B?U2Jlb2JaU2ZlRXdQdlhTVzcxVnppeTdpWHo5Y3NROFlwVVVURWJCTHM3dWZK?=
- =?utf-8?B?N3J2U3lwTll3REo2ZEZIcWoxanZaRVhoVmVuNVVyTHp4VUhrSkpSTExsa09Y?=
- =?utf-8?B?aHZnU0FydjhpSStoMGlNaVNqWUdma1JvVUJtSlNxNnhQdVRjdnpEQjNTdHlO?=
- =?utf-8?B?MVdldTVSUTJ2SGx6bnJ2VVV3WDhnQTdvcVVKekw1WTRqQ2FYR0FrN0ErUWl0?=
- =?utf-8?B?Zjh2WEpNbCtSa2RodkZLNVFsL0hmSmFYRzliNW5DTXFPOGczYnBkcWs1cUlv?=
- =?utf-8?B?c1NaSUh4YVpXY2tyMzlpZWtUOFRpd3ZZeWN0MCs4d0FvcW5SSUdDaXh6UTB1?=
- =?utf-8?B?OHUwa0pXMmdXOXorQVVMbUh6SElyUXpTbHlwdGVDMGQyc0NYeGRYVTg0VVJv?=
- =?utf-8?B?bnYvVEs3SDJGSmU5YkJDNGFPT2ZaT2MvM1RzS3NaU1hjYmxMeTg4RVM4dkEr?=
- =?utf-8?B?WWlLa1V2SlhNODIzTStuN1BIMkRnVi9EYXpzNmJZSVFGUk5LbTNwaEpaRW1X?=
- =?utf-8?B?MmRkZ2dnMTgza3VnUXU0cCtqUGx6OTk3YkFUSzBJb2FKOEcvcm1QdTFzanla?=
- =?utf-8?B?VEszelovM01uRUNaYXBRNi85dHRpTDhKbzVNMDR5WGF5TmdpZVNEZ3p4WWYx?=
- =?utf-8?B?a2c9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: a20448a9-06e9-4989-7574-08dbdfb65a0f
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB3625.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Nov 2023 17:24:09.3608
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 8Zuk5YhvsN9vck4nDaPxt/be2KUrvEDXVHztffRVPJl1Jb93XFC/33+3TBtFQGU9/0PKfZi1u47kX0VkgWc8SZw7UidFitrv/q5vqJ0dh28=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR11MB5027
-X-OriginatorOrg: intel.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 04/23] ima: Align ima_inode_removexattr() definition
+ with LSM infrastructure
+Content-Language: en-US
+To:     Roberto Sassu <roberto.sassu@huaweicloud.com>,
+        viro@zeniv.linux.org.uk, brauner@kernel.org,
+        chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
+        kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
+        paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
+        zohar@linux.ibm.com, dmitry.kasatkin@gmail.com,
+        dhowells@redhat.com, jarkko@kernel.org,
+        stephen.smalley.work@gmail.com, eparis@parisplace.org,
+        mic@digikod.net
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
+        selinux@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>,
+        Stefan Berger <stefanb@linux.ibm.com>,
+        Casey Schaufler <casey@schaufler-ca.com>
+References: <20231107134012.682009-1-roberto.sassu@huaweicloud.com>
+ <20231107134012.682009-5-roberto.sassu@huaweicloud.com>
+From:   Casey Schaufler <casey@schaufler-ca.com>
+In-Reply-To: <20231107134012.682009-5-roberto.sassu@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Mailer: WebService/1.1.21896 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Lobakin <aleksander.lobakin@intel.com>
-Date: Tue, 7 Nov 2023 17:44:00 +0100
+On 11/7/2023 5:39 AM, Roberto Sassu wrote:
+> From: Roberto Sassu <roberto.sassu@huawei.com>
+>
+> Change ima_inode_removexattr() definition, so that it can be registered as
+> implementation of the inode_removexattr hook.
+>
+> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> Reviewed-by: Stefan Berger <stefanb@linux.ibm.com>
 
-> From: Alexander Potapenko <glider@google.com>
-> Date: Tue, 7 Nov 2023 17:33:56 +0100
-> 
->> On Tue, Nov 7, 2023 at 2:23 PM Alexander Lobakin
->> <aleksander.lobakin@intel.com> wrote:
+Reviewed-by: Casey Schaufler <casey@schaufler-ca.com>
 
-[...]
 
-> I tested it on GCC 9 using modified make.cross from lkp and it triggers
-> on one more file:
-> 
-> drivers/thermal/intel/intel_soc_dts_iosf.c: In function 'sys_get_curr_temp':
-> ./include/linux/bitmap.h:601:18: error: array subscript [1,
-> 288230376151711744] is outside array bounds of 'long unsigned int[1]'
-> [-Werror=array-bounds]
-> 
->> to give the compiler some hints about the range of values passed to
->> bitmap_write() rather than suppressing the optimizations.
-> 
-> OPTIMIZER_HIDE_VAR() doesn't disable optimizations if I get it
-> correctly, rather shuts up the compiler in cases like this one.
-> 
-> I've been thinking of using __member_size() from fortify-string.h, we
-> could probably optimize the object code even a bit more while silencing
-> this warning.
-> Adding Kees, maybe he'd like to participate in sorting this out as well.
-
-This one seems to work. At least previously mad GCC 9.3.0 now sits
-quietly, as if I added OPTIMIZER_HIDE_VAR() as Yury suggested.
-
-Note that ideally @map should be marked as `POS` in both cases to help
-Clang, but `POS` gets undefined at the end of fortify-string.h, so I
-decided to not do that within this draft.
-
-Thanks,
-Olek
----
-diff --git a/include/linux/bitmap.h b/include/linux/bitmap.h
-index e8031a157db5..efa0a0287d7c 100644
---- a/include/linux/bitmap.h
-+++ b/include/linux/bitmap.h
-@@ -589,12 +589,14 @@ static inline unsigned long bitmap_read(const
-unsigned long *map,
- 	size_t index = BIT_WORD(start);
- 	unsigned long offset = start % BITS_PER_LONG;
- 	unsigned long space = BITS_PER_LONG - offset;
-+	const size_t map_size = __member_size(map);
- 	unsigned long value_low, value_high;
-
- 	if (unlikely(!nbits || nbits > BITS_PER_LONG))
- 		return 0;
-
--	if (space >= nbits)
-+	if ((__builtin_constant_p(map_size) && map_size != SIZE_MAX &&
-+	     index + 1 >= map_size / sizeof(long)) || space >= nbits)
- 		return (map[index] >> offset) & BITMAP_LAST_WORD_MASK(nbits);
-
- 	value_low = map[index] & BITMAP_FIRST_WORD_MASK(start);
-@@ -620,6 +622,7 @@ static inline unsigned long bitmap_read(const
-unsigned long *map,
- static inline void bitmap_write(unsigned long *map, unsigned long value,
- 				unsigned long start, unsigned long nbits)
- {
-+	const size_t map_size = __member_size(map);
- 	size_t index;
- 	unsigned long offset;
- 	unsigned long space;
-@@ -638,7 +641,9 @@ static inline void bitmap_write(unsigned long *map,
-unsigned long value,
-
- 	map[index] &= (fit ? (~(mask << offset)) :
-~BITMAP_FIRST_WORD_MASK(start));
- 	map[index] |= value << offset;
--	if (fit)
-+
-+	if ((__builtin_constant_p(map_size) && map_size != SIZE_MAX &&
-+	     index + 1 >= map_size / sizeof(long)) || fit)
- 		return;
-
- 	map[index + 1] &= BITMAP_FIRST_WORD_MASK(start + nbits);
+> ---
+>  include/linux/ima.h                   | 7 +++++--
+>  security/integrity/ima/ima_appraise.c | 3 ++-
+>  security/security.c                   | 2 +-
+>  3 files changed, 8 insertions(+), 4 deletions(-)
+>
+> diff --git a/include/linux/ima.h b/include/linux/ima.h
+> index 077324309c11..678a03fddd7e 100644
+> --- a/include/linux/ima.h
+> +++ b/include/linux/ima.h
+> @@ -200,7 +200,9 @@ static inline int ima_inode_remove_acl(struct mnt_idmap *idmap,
+>  {
+>  	return ima_inode_set_acl(idmap, dentry, acl_name, NULL);
+>  }
+> -extern int ima_inode_removexattr(struct dentry *dentry, const char *xattr_name);
+> +
+> +extern int ima_inode_removexattr(struct mnt_idmap *idmap, struct dentry *dentry,
+> +				 const char *xattr_name);
+>  #else
+>  static inline bool is_ima_appraise_enabled(void)
+>  {
+> @@ -231,7 +233,8 @@ static inline int ima_inode_set_acl(struct mnt_idmap *idmap,
+>  	return 0;
+>  }
+>  
+> -static inline int ima_inode_removexattr(struct dentry *dentry,
+> +static inline int ima_inode_removexattr(struct mnt_idmap *idmap,
+> +					struct dentry *dentry,
+>  					const char *xattr_name)
+>  {
+>  	return 0;
+> diff --git a/security/integrity/ima/ima_appraise.c b/security/integrity/ima/ima_appraise.c
+> index cb2d0d11aa77..36abc84ba299 100644
+> --- a/security/integrity/ima/ima_appraise.c
+> +++ b/security/integrity/ima/ima_appraise.c
+> @@ -790,7 +790,8 @@ int ima_inode_set_acl(struct mnt_idmap *idmap, struct dentry *dentry,
+>  	return 0;
+>  }
+>  
+> -int ima_inode_removexattr(struct dentry *dentry, const char *xattr_name)
+> +int ima_inode_removexattr(struct mnt_idmap *idmap, struct dentry *dentry,
+> +			  const char *xattr_name)
+>  {
+>  	int result;
+>  
+> diff --git a/security/security.c b/security/security.c
+> index ec5c8065ea36..358ec01a5492 100644
+> --- a/security/security.c
+> +++ b/security/security.c
+> @@ -2430,7 +2430,7 @@ int security_inode_removexattr(struct mnt_idmap *idmap,
+>  		ret = cap_inode_removexattr(idmap, dentry, name);
+>  	if (ret)
+>  		return ret;
+> -	ret = ima_inode_removexattr(dentry, name);
+> +	ret = ima_inode_removexattr(idmap, dentry, name);
+>  	if (ret)
+>  		return ret;
+>  	return evm_inode_removexattr(idmap, dentry, name);
