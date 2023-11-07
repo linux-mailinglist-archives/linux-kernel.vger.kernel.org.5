@@ -2,174 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AB7597E4860
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 19:38:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 141047E4862
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 19:39:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232166AbjKGSiw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 13:38:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45712 "EHLO
+        id S232452AbjKGSja (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 13:39:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229565AbjKGSiu (ORCPT
+        with ESMTP id S229565AbjKGSj2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 13:38:50 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D578212B
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 10:38:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1699382285;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=InIrBHm4KFm9lYj657uNMT2gFwfHIWbZC6mGLJVc7tk=;
-        b=GbdaPaKRkBakd3HJcPOoWygTfRSgxtERwAgLcXW34amVudlnLXtSyL31l7pzd1Q9b1i70c
-        adtsCffv4mGRUAJA7l1ohQf/ak6gJLuUke3MSB/WcYcK3fx6qSBGVgWZxNZjh3iHaOHGHy
-        MhmOoTaqjaOYhHVNUQWYDUcPHDV4ckc=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-481-K9XZb1qaP9OwIKIWVZtGbA-1; Tue, 07 Nov 2023 13:38:02 -0500
-X-MC-Unique: K9XZb1qaP9OwIKIWVZtGbA-1
-Received: by mail-qk1-f199.google.com with SMTP id af79cd13be357-77a29e32885so650843385a.1
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 10:38:02 -0800 (PST)
+        Tue, 7 Nov 2023 13:39:28 -0500
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BCC6D79
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 10:39:26 -0800 (PST)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5b3715f3b41so80316677b3.2
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 10:39:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1699382365; x=1699987165; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=OT9bj/29t1BqbSJ5iHMrrGwZYaUkERVnWSnezKZ0wXI=;
+        b=kwk7yBSrMnZdncH1jQcReilehc08ZAVeylnNRnGJcel3U+U7LzoT0Ckv799nsN3rdi
+         KKN28wQcuitUzYHrZkU+HeeIVmg3tZA7gjcnWmJFETxkwNDdk9v4rwy6aOo4x6tV/ca+
+         /Gyl6OBNTyFfLsfjRI8KzbUCdCzqq7p0uV8d4nFtustyt9+CNm2adKjShYDHw+cyAhAA
+         Vmrxkf1yrVGmt6sQZDBHP7WWdbxHfqh+NOsuOB4caufuMeHRgjNzL7Z2sja8mH01LhHV
+         BF9FyXbUuxdu37EiuoBQAgULMIiH/rRkdthjkz+RhAm2nXMXy4Hcjs5uOVceJaJpwbCA
+         m1yw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699382282; x=1699987082;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=InIrBHm4KFm9lYj657uNMT2gFwfHIWbZC6mGLJVc7tk=;
-        b=ra51jnP2lyMF9fFv8c5q10xl92oBD2/1GYK5coITr9FZ/mOymMncb/yN8LhrfmUohQ
-         OQij84BacMIbewq5jpOUSBIFx/i0PWrFUsSmcBBo9RL5rdBJXcSe8S19A62aTtQ3+Fce
-         poJBbe6aD0MBqDvcoWofVW5KfOJsA4Jl6i2Bf30+3ISjFpklRIpqc+8+bEP1PGAJqBN+
-         vk/EPEkeeLGJpWR4txlAaJNZjpSELlT/8NnzqzfL71ZKC8KSoMXes4dC4AJ4mYbqQaWk
-         pCbOosMhUXmJinqg1PJ6jU3HMISh3xHVyOTP6WiR2vAUj8HyxnvomZGJ+036C9vHx6as
-         5YMw==
-X-Gm-Message-State: AOJu0YwoQ4xDiAOtYSccYn68bcUTzjiH8iFtZ9+Qhcgy1X8uLUKUwcxL
-        Mbjj8IiUHn3gyZwrXLgSGOukm3El0euGNPnZc1A6PMi2bRCuJX0PdRH4eSfAdoI2xUJ/Dr82E/B
-        2Dd63ZKXJOwtVs8J50lwLeO+O
-X-Received: by 2002:a05:620a:1373:b0:778:912b:6014 with SMTP id d19-20020a05620a137300b00778912b6014mr29659779qkl.37.1699382282147;
-        Tue, 07 Nov 2023 10:38:02 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFFLmjKNv/RxgHklKcgSXkz+1uBlm0nE2/KM8eT7xeJCPC73MWGdrxaRj8lE8j078oEsKC3SQ==
-X-Received: by 2002:a05:620a:1373:b0:778:912b:6014 with SMTP id d19-20020a05620a137300b00778912b6014mr29659755qkl.37.1699382281862;
-        Tue, 07 Nov 2023 10:38:01 -0800 (PST)
-Received: from fedora ([2600:1700:1ff0:d0e0::37])
-        by smtp.gmail.com with ESMTPSA id g12-20020a05620a218c00b00767da10efb6sm153350qka.97.2023.11.07.10.38.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Nov 2023 10:38:01 -0800 (PST)
-Date:   Tue, 7 Nov 2023 12:37:58 -0600
-From:   Andrew Halaney <ahalaney@redhat.com>
-To:     Mrinmay Sarkar <quic_msarkar@quicinc.com>
-Cc:     agross@kernel.org, andersson@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        konrad.dybcio@linaro.org, mani@kernel.org, robh+dt@kernel.org,
-        quic_shazhuss@quicinc.com, quic_nitegupt@quicinc.com,
-        quic_ramkri@quicinc.com, quic_nayiluri@quicinc.com,
-        dmitry.baryshkov@linaro.org, robh@kernel.org,
-        quic_krichai@quicinc.com, quic_vbadigan@quicinc.com,
-        quic_parass@quicinc.com, quic_schintav@quicinc.com,
-        quic_shijjose@quicinc.com, Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-phy@lists.infradead.org
-Subject: Re: [PATCH v1 2/2] arm64: dts: qcom: sa8775p: Add ep pcie1
- controller node
-Message-ID: <i3yum3wbko33jwn7tfbcflpcxe5k5j5ituhyxtucx6gk2bs3gz@7ncewfmepnai>
-References: <1699362294-15558-1-git-send-email-quic_msarkar@quicinc.com>
- <1699362294-15558-3-git-send-email-quic_msarkar@quicinc.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1699362294-15558-3-git-send-email-quic_msarkar@quicinc.com>
+        d=1e100.net; s=20230601; t=1699382365; x=1699987165;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=OT9bj/29t1BqbSJ5iHMrrGwZYaUkERVnWSnezKZ0wXI=;
+        b=psLweBFZIopOWijmzXx9NoZkI/mJF5g62WR3ufUknIXWUy+ZOsiDHKJ79u7bJI1gkz
+         1Jsh7I/1q026F2g2S2BvxhkJUF8hgBGsV4YHsGwszu2rXHgRSW/PyJJIvR/RMZkDNbkg
+         KTIMcKo762GXtC/SZ53MMyyWvuYsFYC8OL5NT+FzfXU/nTKodnMQZOdGtId9oZpKOBn3
+         t+jApL2+z8DFALr2twlJtS3btpidnidq0CbtqlQZBqOhHt6k4pVwFOAGfSBOUseCvnYS
+         XNNduiKozoyNceXecHq6ZESoS+Ybd/QAbShCcry7x/Emqp8+suNKk5BUE+D+wVgk5q6p
+         Lvfw==
+X-Gm-Message-State: AOJu0YzlVPlXkE6ny6TW5gnaacbePO9V1+K5CYwaM35OU/7dylRdNx7Q
+        mhutzy/iJBNuQ6bZyRSRRSx3RsVwYZM=
+X-Google-Smtp-Source: AGHT+IG4HOSCPYw9f8qMhhQB2ugljmmWkWpna/lil2xtTRCeFCmFCpSgEesdvsEQwdd66zWxIR+SgTLrK/8=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a81:9182:0:b0:5af:a9ab:e131 with SMTP id
+ i124-20020a819182000000b005afa9abe131mr275401ywg.1.1699382365501; Tue, 07 Nov
+ 2023 10:39:25 -0800 (PST)
+Date:   Tue, 7 Nov 2023 10:39:23 -0800
+In-Reply-To: <690bd404204106fc17d465e2fdb9be8863767544.camel@redhat.com>
+Mime-Version: 1.0
+References: <20230914063325.85503-1-weijiang.yang@intel.com>
+ <20230914063325.85503-20-weijiang.yang@intel.com> <d67fe0ca19f7aef855aa376ada0fc96a66ca0d4f.camel@redhat.com>
+ <ZUJ9fDuQUNe9BLUA@google.com> <ff6b7e9d90d80feb9dcabb0fbd3808c04db3ff94.camel@redhat.com>
+ <ZUQ3tcuAxYQ5bWwC@google.com> <690bd404204106fc17d465e2fdb9be8863767544.camel@redhat.com>
+Message-ID: <ZUqEWySrEeJXCoAO@google.com>
+Subject: Re: [PATCH v6 19/25] KVM: VMX: Emulate read and write to CET MSRs
+From:   Sean Christopherson <seanjc@google.com>
+To:     Maxim Levitsky <mlevitsk@redhat.com>
+Cc:     Yang Weijiang <weijiang.yang@intel.com>, pbonzini@redhat.com,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dave.hansen@intel.com, peterz@infradead.org, chao.gao@intel.com,
+        rick.p.edgecombe@intel.com, john.allen@amd.com
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 07, 2023 at 06:34:53PM +0530, Mrinmay Sarkar wrote:
-> Add ep pcie dtsi node for pcie1 controller found on sa8775p platform.
-> It supports gen4 and x4 link width. Limiting the speed to Gen3 due to
-> stability issues.
-
-I wouldn't mind a bit more information on what "stability" issues
-entails! I'm a sucker for details in a commit message.
-
+On Tue, Nov 07, 2023, Maxim Levitsky wrote:
+> On Thu, 2023-11-02 at 16:58 -0700, Sean Christopherson wrote:
+> > Ooh, if we're clever, I bet we can extend KVM_{G,S}ET_ONE_REG to also work with
+> > existing MSRs, GPRs, and other stuff,
 > 
-> Signed-off-by: Mrinmay Sarkar <quic_msarkar@quicinc.com>
-> ---
->  arch/arm64/boot/dts/qcom/sa8775p.dtsi | 48 +++++++++++++++++++++++++++++++++++
->  1 file changed, 48 insertions(+)
+> Not sure if we want to make it work with MSRs. MSRs are a very well defined thing
+> on x86, and we already have an API to read/write them.
+
+Yeah, the API is weird though :-)
+
+> Other registers maybe, don't know.
 > 
-> diff --git a/arch/arm64/boot/dts/qcom/sa8775p.dtsi b/arch/arm64/boot/dts/qcom/sa8775p.dtsi
-> index 7eab458..acd7bd8 100644
-> --- a/arch/arm64/boot/dts/qcom/sa8775p.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sa8775p.dtsi
-> @@ -3732,6 +3732,54 @@
->  		status = "disabled";
->  	};
->  
-> +	pcie1_ep: pcie-ep@1c10000 {
-> +		compatible = "qcom,sa8775p-pcie-ep";
-> +		reg = <0x0 0x01c10000 0x0 0x3000>,
-> +		      <0x0 0x60000000 0x0 0xf20>,
-> +		      <0x0 0x60000f20 0x0 0xa8>,
-> +		      <0x0 0x60001000 0x0 0x4000>,
-> +		      <0x0 0x60200000 0x0 0x100000>,
-> +		      <0x0 0x01c13000 0x0 0x1000>,
-> +			  <0x0 0x60005000 0x0 0x2000>;
-> +		reg-names = "parf", "dbi", "elbi", "atu", "addr_space",
-> +			    "mmio", "dma";
-> +
-> +		clocks = <&gcc GCC_PCIE_1_AUX_CLK>,
-> +			 <&gcc GCC_PCIE_1_CFG_AHB_CLK>,
-> +			 <&gcc GCC_PCIE_1_MSTR_AXI_CLK>,
-> +			 <&gcc GCC_PCIE_1_SLV_AXI_CLK>,
-> +			 <&gcc GCC_PCIE_1_SLV_Q2A_AXI_CLK>;
-> +
-> +		clock-names = "aux",
-> +			      "cfg",
-> +			      "bus_master",
-> +			      "bus_slave",
-> +			      "slave_q2a";
-> +
-> +		interrupts = <GIC_SPI 518 IRQ_TYPE_LEVEL_HIGH>,
-> +					 <GIC_SPI 152 IRQ_TYPE_LEVEL_HIGH>,
-> +					 <GIC_SPI 474 IRQ_TYPE_LEVEL_HIGH>;
-> +
-> +		interrupt-names = "global", "doorbell", "dma";
-> +
-> +		interconnects = <&pcie_anoc MASTER_PCIE_1 0 &mc_virt SLAVE_EBI1 0>,
-> +				<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_PCIE_1 0>;
-
-I keep seeing Konrad requesting that we use the #define instead of a raw
-number 0, i.e. something like QCOM_ICC_TAG_ALWAYS (although if I'm
-reading that correctly QCOM_ICC_TAG_ALWAYS doesn't evaluate to 0, so
-make sure you pick the appropriate one).
-
-> +		interconnect-names = "pcie-mem", "cpu-pcie";
-
-This is nitpicky, but unless someone told you to do the whitespace
-between some of these properties I'd get more consistent. i.e. reg and
-reg-names has no newline between them, but clocks and clock-names does,
-and then interconnects/interconnect-names does not.
-
-> +
-> +		dma-coherent;
-> +
-> +		iommus = <&pcie_smmu 0x80 0x7f>;
-> +		resets = <&gcc GCC_PCIE_1_BCR>;
-> +		reset-names = "core";
-> +		power-domains = <&gcc PCIE_1_GDSC>;
-> +		phys = <&pcie1_phy>;
-> +		phy-names = "pciephy";
-> +		max-link-speed = <3>; /* FIXME: Limiting the Gen speed due to stability issues */
-> +		num-lanes = <4>;
-> +
-> +		status = "disabled";
-> +	};
-> +
->  	pcie1_phy: phy@1c14000 {
->  		compatible = "qcom,sa8775p-qmp-gen4x4-pcie-phy";
->  		reg = <0x0 0x1c14000 0x0 0x4000>;
-> -- 
-> 2.7.4
+> >  i.e. not force userspace through the funky
+> > KVM_SET_MSRS just to set one reg, and not force a RMW of all GPRs just to set
+> > RIP or something.
+> Setting one GPR like RIP does sound like a valid use case of KVM_SET_ONE_REG.
 > 
+> >   E.g. use bits 39:32 of the id to encode the register class,
+> > bits 31:0 to hold the index within a class, and reserve bits 63:40 for future
+> > usage.
+> > 
+> > Then for KVM-defined registers, we can route them internally as needed, e.g. we
+> > can still define MSR_KVM_SSP so that internal it's treated like an MSR, but its
+> > index isn't ABI and so can be changed at will.  And future KVM-defined registers
+> > wouldn't _need_ to be treated like MSRs, i.e. we could route registers through
+> > the MSR APIs if and only if it makes sense to do so.
 > 
+> I am not sure that even internally I'll treat MSR_KVM_SSP as MSR. 
+> An MSR IMHO is a msr, a register is a register, mixing this up will
+> just add to the confusion.
 
+I disagree, things like MSR_{FS,GS}_BASE already set the precedent that MSRs and
+registers can be separate viewpoints to the same internal CPU state.  AIUI, these
+days, whether a register is exposed via an MSR or dedicated ISA largely comes
+down to CPL restrictions and performance.
+
+> Honestly if I were to add support for the SSP register, I'll just add a new
+> ioctl/capability and vendor callback. All of this code is just harmless
+> boilerplate code.
+
+We've had far too many bugs and confusion over error handling for things like
+checking "is this value legal" to be considered harmless boilerplate code.
+
+> Even using KVM_GET_ONE_REG/KVM_SET_ONE_REG is probably overkill, although using
+> it for new registers is reasonable.
+
+Maybe, but if we're going to bother adding new ioctls() for x86, I don't see any
+benefit to reinventing a wheel that's only good for one thing.
