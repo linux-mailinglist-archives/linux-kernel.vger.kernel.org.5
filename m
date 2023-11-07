@@ -2,67 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D71497E37E2
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 10:29:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54AD27E37E7
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 10:32:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232141AbjKGJ3Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 04:29:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37218 "EHLO
+        id S233612AbjKGJcR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 04:32:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229541AbjKGJ3P (ORCPT
+        with ESMTP id S229543AbjKGJcP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 04:29:15 -0500
-Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com [61.152.239.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FAB9106;
-        Tue,  7 Nov 2023 01:29:11 -0800 (PST)
-Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
-        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
-        by fd01.gateway.ufhost.com (Postfix) with ESMTP id E61BA80D3;
-        Tue,  7 Nov 2023 17:29:08 +0800 (CST)
-Received: from EXMBX073.cuchost.com (172.16.6.83) by EXMBX166.cuchost.com
- (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Tue, 7 Nov
- 2023 17:29:08 +0800
-Received: from [192.168.1.218] (180.164.60.184) by EXMBX073.cuchost.com
- (172.16.6.83) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Tue, 7 Nov
- 2023 17:29:08 +0800
-Message-ID: <48b93e44-6cd3-03a5-0eb2-4123b3790877@starfivetech.com>
-Date:   Tue, 7 Nov 2023 17:29:08 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v11 0/9] Add StarFive Camera Subsystem driver
-Content-Language: en-US
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Todor Tomov <todor.too@gmail.com>,
-        <bryan.odonoghue@linaro.org>, Rob Herring <robh+dt@kernel.org>,
-        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        "Laurent Pinchart" <laurent.pinchart@ideasonboard.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        <linux-media@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-staging@lists.linux.dev>,
-        <changhuang.liang@starfivetech.com>
-References: <20231025031422.3695-1-jack.zhu@starfivetech.com>
- <15ef0a70-734e-280a-f014-41914a55d8cf@starfivetech.com>
- <a3a2c179-2cbe-5a55-a21e-b45abfb6d494@starfivetech.com>
- <2023110745-tableful-trapezoid-4206@gregkh>
- <2023110730-thousand-skyrocket-d6ba@gregkh>
- <a2dbb182-2573-4c86-7e18-319d26a6593c@starfivetech.com>
- <2023110756-alto-stream-eb92@gregkh>
-From:   Jack Zhu <jack.zhu@starfivetech.com>
-In-Reply-To: <2023110756-alto-stream-eb92@gregkh>
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 7 Nov 2023 04:32:15 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC53F114;
+        Tue,  7 Nov 2023 01:32:12 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA885C433C7;
+        Tue,  7 Nov 2023 09:32:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699349532;
+        bh=2de/ujfjpG8mGlZWE7v/o1nNFaTyVAJBU4Ts5xFC4U0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=LNyTBRsD05STGYMOgAp7X7/N0gA+x1NsiEoSS9iKpCh7a3mCWBTau6vGYnAjuUXfw
+         CJWgEeO9HFa7knJEmYnCEG30wnz+oNoIhDQKXlWq70W6BC/NyqxgajmtDgHzZ2Shle
+         Cjjpukmc2z9RJ6V3ngSJKpEI8DgRCk1zmPP7J9imVDfx1Ii6XeQmKNGFgKHSgqbfo+
+         qTM1Lv+gAGaNTmROZVigZlRoR6PnBbBpaIzgSPK6vq+uVLHudGOl58oyEhaJfH/WYp
+         am1yeP2MM2KY5omGv3KBPE+AJ346FMudJYcicBuxYh2EIGi/d24+PEEHkLi5ltuVXJ
+         T9U6eMbLNszNw==
+Date:   Tue, 7 Nov 2023 18:32:07 +0900
+From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-perf-users@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Stephane Eranian <eranian@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        linux-toolchains@vger.kernel.org, linux-trace-devel@vger.kernel.org
+Subject: Re: [PATCH 33/48] perf dwarf-aux: Check allowed DWARF Ops
+Message-Id: <20231107183207.2e3aded5985f699fdb3bcd16@kernel.org>
+In-Reply-To: <20231012035111.676789-34-namhyung@kernel.org>
+References: <20231012035111.676789-1-namhyung@kernel.org>
+        <20231012035111.676789-34-namhyung@kernel.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [180.164.60.184]
-X-ClientProxiedBy: EXCAS062.cuchost.com (172.16.6.22) To EXMBX073.cuchost.com
- (172.16.6.83)
-X-YovoleRuleAgent: yovoleflag
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+X-Spam-Status: No, score=-6.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,34 +61,162 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 11 Oct 2023 20:50:56 -0700
+Namhyung Kim <namhyung@kernel.org> wrote:
 
-
-On 2023/11/7 16:27, Greg Kroah-Hartman wrote:
-> On Tue, Nov 07, 2023 at 04:05:11PM +0800, Jack Zhu wrote:
->> > Also, while you wait, why not just finish off the last 3 items on the
->> > TODO list which would make your code not be required to go into the
->> > staging portion of the tree at all?  You've had a few weeks now, what is
->> > preventing that from happening, and when will that work actually be
->> > done?
->> > 
->> 
->> One of my colleagues is doing related development, but he also has other
->> projects at the same time, so he cannot devote all his efforts to this
->> development. And we expect to use libcamera, which may take some time.
+> The DWARF location expression can be fairly complex and it'd be hard
+> to match it with the condition correctly.  So let's be conservative
+> and only allow simple expressions.  For now it just checks the first
+> operation in the list.  The following operations looks ok:
 > 
-> So that means there is no real plan at all to get this out of the
-> staging directory?  If so, why should we take it at all as obviously
-> this means that the code is now abandoned?
+>  * DW_OP_stack_value
+>  * DW_OP_deref_size
+>  * DW_OP_deref
+>  * DW_OP_piece
+> 
+> To refuse complex (and unsupported) location expressions, add
+> check_allowed_ops() to compare the rest of the list.  It seems earlier
+> result contained those unsupported expressions.  For example, I found
+> some local struct variable is placed like below.
+> 
+>  <2><43d1517>: Abbrev Number: 62 (DW_TAG_variable)
+>     <43d1518>   DW_AT_location    : 15 byte block: 91 50 93 8 91 78 93 4 93 84 8 91 68 93 4
+>         (DW_OP_fbreg: -48; DW_OP_piece: 8;
+>          DW_OP_fbreg: -8; DW_OP_piece: 4;
+>          DW_OP_piece: 1028;
+>          DW_OP_fbreg: -24; DW_OP_piece: 4)
+> 
+> Another example is something like this.
+> 
+>     0057c8be ffffffffffffffff ffffffff812109f0 (base address)
+>     0057c8ce ffffffff812112b5 ffffffff812112c8 (DW_OP_breg3 (rbx): 0;
+>                                                 DW_OP_constu: 18446744073709551612;
+>                                                 DW_OP_and;
+>                                                 DW_OP_stack_value)
+> 
+> It should refuse them.  After the change, the stat shows:
+> 
+>   Annotate data type stats:
+>   total 294, ok 158 (53.7%), bad 136 (46.3%)
+>   -----------------------------------------------------------
+>           30 : no_sym
+>           32 : no_mem_ops
+>           53 : no_var
+>           14 : no_typeinfo
+>            7 : bad_offset
 > 
 
-Hi Greg,
+The code itself looks good to me.
 
-It's not like that, we won't give up on this code. We just want to make
-development easier using incremental development. Our developers are already
-working on development, but I can't give you an accurate time. There should
-be a preliminary version in about 3 months.
+Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+
+If this fixes the previous patch in the same series (this seems a fix for the
+main usecase), please make it to a single patch.
+
+Thank you,
+
+> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> ---
+>  tools/perf/util/dwarf-aux.c | 44 +++++++++++++++++++++++++++++++++----
+>  1 file changed, 40 insertions(+), 4 deletions(-)
+> 
+> diff --git a/tools/perf/util/dwarf-aux.c b/tools/perf/util/dwarf-aux.c
+> index 7f3822d08ab7..093d7e82b333 100644
+> --- a/tools/perf/util/dwarf-aux.c
+> +++ b/tools/perf/util/dwarf-aux.c
+> @@ -1305,6 +1305,34 @@ static bool match_var_offset(Dwarf_Die *die_mem, struct find_var_data *data,
+>  	return true;
+>  }
+>  
+> +static bool check_allowed_ops(Dwarf_Op *ops, size_t nops)
+> +{
+> +	/* The first op is checked separately */
+> +	ops++;
+> +	nops--;
+> +
+> +	/*
+> +	 * It needs to make sure if the location expression matches to the given
+> +	 * register and offset exactly.  Thus it rejects any complex expressions
+> +	 * and only allows a few of selected operators that doesn't change the
+> +	 * location.
+> +	 */
+> +	while (nops) {
+> +		switch (ops->atom) {
+> +		case DW_OP_stack_value:
+> +		case DW_OP_deref_size:
+> +		case DW_OP_deref:
+> +		case DW_OP_piece:
+> +			break;
+> +		default:
+> +			return false;
+> +		}
+> +		ops++;
+> +		nops--;
+> +	}
+> +	return true;
+> +}
+> +
+>  /* Only checks direct child DIEs in the given scope. */
+>  static int __die_find_var_reg_cb(Dwarf_Die *die_mem, void *arg)
+>  {
+> @@ -1332,25 +1360,31 @@ static int __die_find_var_reg_cb(Dwarf_Die *die_mem, void *arg)
+>  		/* Local variables accessed using frame base register */
+>  		if (data->is_fbreg && ops->atom == DW_OP_fbreg &&
+>  		    data->offset >= (int)ops->number &&
+> +		    check_allowed_ops(ops, nops) &&
+>  		    match_var_offset(die_mem, data, data->offset, ops->number))
+>  			return DIE_FIND_CB_END;
+>  
+>  		/* Only match with a simple case */
+>  		if (data->reg < DWARF_OP_DIRECT_REGS) {
+> -			if (ops->atom == (DW_OP_reg0 + data->reg) && nops == 1)
+> +			/* pointer variables saved in a register 0 to 31 */
+> +			if (ops->atom == (DW_OP_reg0 + data->reg) &&
+> +			    check_allowed_ops(ops, nops))
+>  				return DIE_FIND_CB_END;
+>  
+>  			/* Local variables accessed by a register + offset */
+>  			if (ops->atom == (DW_OP_breg0 + data->reg) &&
+> +			    check_allowed_ops(ops, nops) &&
+>  			    match_var_offset(die_mem, data, data->offset, ops->number))
+>  				return DIE_FIND_CB_END;
+>  		} else {
+> +			/* pointer variables saved in a register 32 or above */
+>  			if (ops->atom == DW_OP_regx && ops->number == data->reg &&
+> -			    nops == 1)
+> +			    check_allowed_ops(ops, nops))
+>  				return DIE_FIND_CB_END;
+>  
+>  			/* Local variables accessed by a register + offset */
+>  			if (ops->atom == DW_OP_bregx && data->reg == ops->number &&
+> +			    check_allowed_ops(ops, nops) &&
+>  			    match_var_offset(die_mem, data, data->offset, ops->number2))
+>  				return DIE_FIND_CB_END;
+>  		}
+> @@ -1412,7 +1446,8 @@ static int __die_find_var_addr_cb(Dwarf_Die *die_mem, void *arg)
+>  		if (data->addr < ops->number)
+>  			continue;
+>  
+> -		if (match_var_offset(die_mem, data, data->addr, ops->number))
+> +		if (check_allowed_ops(ops, nops) &&
+> +		    match_var_offset(die_mem, data, data->addr, ops->number))
+>  			return DIE_FIND_CB_END;
+>  	}
+>  	return DIE_FIND_CB_SIBLING;
+> @@ -1501,7 +1536,8 @@ int die_get_cfa(Dwarf *dwarf, u64 pc, int *preg, int *poffset)
+>  		return -1;
+>  
+>  	if (!dwarf_cfi_addrframe(cfi, pc, &frame) &&
+> -	    !dwarf_frame_cfa(frame, &ops, &nops) && nops == 1) {
+> +	    !dwarf_frame_cfa(frame, &ops, &nops) &&
+> +	    check_allowed_ops(ops, nops)) {
+>  		*preg = reg_from_dwarf_op(ops);
+>  		*poffset = offset_from_dwarf_op(ops);
+>  		return 0;
+> -- 
+> 2.42.0.655.g421f12c284-goog
+> 
+
 
 -- 
-Regards,
-
-Jack Zhu
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
