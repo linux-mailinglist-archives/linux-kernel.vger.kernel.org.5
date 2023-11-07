@@ -2,47 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A61607E451A
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 17:01:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6778B7E45BC
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 17:17:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344204AbjKGQBc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 11:01:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34722 "EHLO
+        id S1344408AbjKGQRt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 11:17:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344852AbjKGP7p (ORCPT
+        with ESMTP id S235339AbjKGQRS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 10:59:45 -0500
+        Tue, 7 Nov 2023 11:17:18 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58BAA8247;
-        Tue,  7 Nov 2023 07:52:56 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D107C433C8;
-        Tue,  7 Nov 2023 15:52:54 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDA0226AD;
+        Tue,  7 Nov 2023 07:52:59 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0AFD7C433C8;
+        Tue,  7 Nov 2023 15:52:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699372376;
-        bh=qN3rItjyznkYkiw5CfwOeNetUMQmDaNY0SggpPaoW9o=;
+        s=k20201202; t=1699372379;
+        bh=S2Pxy3eWEuhMbE5OllKwcG5yExbHwd7NQd2weNzpLDw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mKFkASHfi1keaNAMIGdnAPT+If2tXoSwsJbEMqAOFyrJlUbFLQ5np60JEyHq3mUIc
-         k49BYLoBvL1hGlN2LVnSzqWPvghsz0TSQ/PIslPvtz2ArCBhoroByrL7y7Ou5chQOn
-         3KW36HHSpm8O5SvcJQc9Xd3+6/87iyIqNX4BoCgpOtjnoeQpXmq9deeiQZn8lY/8H6
-         GrR4XvL/OdblC2+u1Vnz1bH5bwEHZxnoFpRiaxheTNYD/S6xaDt2aA8Dnw6p5OZcym
-         J10IAs3Xs030w4V2eiSrKwWnlYjUfPuq7jUBSGU3qITr9cTRMGtJC6wzCZo0UZbVww
-         n3bBN37T50Ezw==
+        b=pi/cBM+Qp7LTfu3E+7wLXhEwbJxoLvUoHMSeOzft5sVqp6Xh3ndKgECA17IhUJaNx
+         W0BRSgawgjkpUkmFeIdDxemDmeC73JEIthipqlow2tem82AHYDNuD3Z7Twx2aIDy+L
+         KNC6UTCp2L4ZOIOTi9gAgUXH0xkH8OSoydl2uqck/zZUpF80u8bDz8Zqvc5bI0fzib
+         VXoljN1t0JbR+oRVeXFLbLiNgjVWYwnAvUK8nAr29yBBh8CjrEGl3unoGoH/rss8n6
+         OQDkrhn4W9iAS4wrVEMpOB6mVDjn7SSDjduEk5rNtVBC+NOS25eccHeKprukZgtDVa
+         yol0ndbrZf/rA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Dean Luick <dean.luick@cornelisnetworks.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Sasha Levin <sashal@kernel.org>,
-        dennis.dalessandro@cornelisnetworks.com, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 03/16] RDMA/hfi1: Use FIELD_GET() to extract Link Width
-Date:   Tue,  7 Nov 2023 10:52:22 -0500
-Message-ID: <20231107155249.3768098-3-sashal@kernel.org>
+Cc:     Juntong Deng <juntong.deng@outlook.com>,
+        syzbot+debee9ab7ae2b34b0307@syzkaller.appspotmail.com,
+        Dave Kleikamp <dave.kleikamp@oracle.com>,
+        Sasha Levin <sashal@kernel.org>, shaggy@kernel.org,
+        wonguk.lee1023@gmail.com, liushixin2@huawei.com,
+        andrew.kanner@gmail.com, yogi.kernel@gmail.com,
+        ghandatmanas@gmail.com, code@siddh.me,
+        jfs-discussion@lists.sourceforge.net
+Subject: [PATCH AUTOSEL 5.10 04/16] fs/jfs: Add check for negative db_l2nbperpage
+Date:   Tue,  7 Nov 2023 10:52:23 -0500
+Message-ID: <20231107155249.3768098-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231107155249.3768098-1-sashal@kernel.org>
 References: <20231107155249.3768098-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.10.199
@@ -51,58 +52,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+From: Juntong Deng <juntong.deng@outlook.com>
 
-[ Upstream commit 8bf7187d978610b9e327a3d92728c8864a575ebd ]
+[ Upstream commit 525b861a008143048535011f3816d407940f4bfa ]
 
-Use FIELD_GET() to extract PCIe Negotiated Link Width field instead of
-custom masking and shifting, and remove extract_width() which only
-wraps that FIELD_GET().
+l2nbperpage is log2(number of blks per page), and the minimum legal
+value should be 0, not negative.
 
-Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
-Link: https://lore.kernel.org/r/20230919125648.1920-2-ilpo.jarvinen@linux.intel.com
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Reviewed-by: Dean Luick <dean.luick@cornelisnetworks.com>
-Signed-off-by: Leon Romanovsky <leon@kernel.org>
+In the case of l2nbperpage being negative, an error will occur
+when subsequently used as shift exponent.
+
+Syzbot reported this bug:
+
+UBSAN: shift-out-of-bounds in fs/jfs/jfs_dmap.c:799:12
+shift exponent -16777216 is negative
+
+Reported-by: syzbot+debee9ab7ae2b34b0307@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?extid=debee9ab7ae2b34b0307
+Signed-off-by: Juntong Deng <juntong.deng@outlook.com>
+Signed-off-by: Dave Kleikamp <dave.kleikamp@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/hfi1/pcie.c | 9 ++-------
- 1 file changed, 2 insertions(+), 7 deletions(-)
+ fs/jfs/jfs_dmap.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/hw/hfi1/pcie.c b/drivers/infiniband/hw/hfi1/pcie.c
-index 18d32f053d26e..3aa0215fca419 100644
---- a/drivers/infiniband/hw/hfi1/pcie.c
-+++ b/drivers/infiniband/hw/hfi1/pcie.c
-@@ -45,6 +45,7 @@
-  *
-  */
+diff --git a/fs/jfs/jfs_dmap.c b/fs/jfs/jfs_dmap.c
+index a9c078fc2302a..06dda2c7a6e24 100644
+--- a/fs/jfs/jfs_dmap.c
++++ b/fs/jfs/jfs_dmap.c
+@@ -180,7 +180,8 @@ int dbMount(struct inode *ipbmap)
+ 	bmp->db_nfree = le64_to_cpu(dbmp_le->dn_nfree);
  
-+#include <linux/bitfield.h>
- #include <linux/pci.h>
- #include <linux/io.h>
- #include <linux/delay.h>
-@@ -261,12 +262,6 @@ static u32 extract_speed(u16 linkstat)
- 	return speed;
- }
- 
--/* return the PCIe link speed from the given link status */
--static u32 extract_width(u16 linkstat)
--{
--	return (linkstat & PCI_EXP_LNKSTA_NLW) >> PCI_EXP_LNKSTA_NLW_SHIFT;
--}
--
- /* read the link status and set dd->{lbus_width,lbus_speed,lbus_info} */
- static void update_lbus_info(struct hfi1_devdata *dd)
- {
-@@ -279,7 +274,7 @@ static void update_lbus_info(struct hfi1_devdata *dd)
- 		return;
+ 	bmp->db_l2nbperpage = le32_to_cpu(dbmp_le->dn_l2nbperpage);
+-	if (bmp->db_l2nbperpage > L2PSIZE - L2MINBLOCKSIZE) {
++	if (bmp->db_l2nbperpage > L2PSIZE - L2MINBLOCKSIZE ||
++		bmp->db_l2nbperpage < 0) {
+ 		err = -EINVAL;
+ 		goto err_release_metapage;
  	}
- 
--	dd->lbus_width = extract_width(linkstat);
-+	dd->lbus_width = FIELD_GET(PCI_EXP_LNKSTA_NLW, linkstat);
- 	dd->lbus_speed = extract_speed(linkstat);
- 	snprintf(dd->lbus_info, sizeof(dd->lbus_info),
- 		 "PCIe,%uMHz,x%u", dd->lbus_speed, dd->lbus_width);
 -- 
 2.42.0
 
