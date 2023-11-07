@@ -2,197 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A969A7E4A36
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 22:00:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B000E7E4A3B
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 22:01:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343759AbjKGVAL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 16:00:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39736 "EHLO
+        id S1343545AbjKGVBX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 16:01:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231519AbjKGVAK (ORCPT
+        with ESMTP id S231519AbjKGVBW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 16:00:10 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 648851724;
-        Tue,  7 Nov 2023 13:00:08 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 903CDC433C7;
-        Tue,  7 Nov 2023 21:00:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699390808;
-        bh=LarIf6JBeHjPIH1r2xen7IJx+ARqZUkJ5J7Gxn4B/lE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rBxQ5bABLQTCBix7Ka06a2C5R6TyRqXRoUflQKl6rVneKCp4SDSkfyOYI5OqrTHr5
-         VGko1ipUJyLSbvzJ2xZLmtt33f6+HS+VTb40L685erl32vfuz2ZEp9b6B/lTholrsf
-         hFUNSHnJ8ZD9KjPIROrLdC8aeibxhFylqaKpFkbZi2tB4I186XorlaOjj9VUj/iAo/
-         TlkaZTWYWAFVpZozkYeZunhIR0D3oG69+r1PKYwTREx2mW9QFg71k0BginE2jEQO5d
-         HVMX50Ev+r5kP1YhmVca3XNMEa/O5zMB8Uk/oauxTKGdMqAyHw7k0k0WQK8Bc7Eskj
-         qwM4bOWIyB3NA==
-Date:   Tue, 7 Nov 2023 14:00:04 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Yoann Congal <yoann.congal@smile.fr>, linux-kbuild@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        Brandon Maier <brandon.maier@collins.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        llvm@lists.linux.dev
-Subject: Re: [PATCH v5] kconfig: avoid an infinite loop in
- oldconfig/syncconfig
-Message-ID: <20231107210004.GA2065849@dev-arch.thelio-3990X>
-References: <20231104222715.3967791-1-yoann.congal@smile.fr>
- <CAK7LNAS6J5Nh8nOUHbaf123yd1Z-1q--FvB1ok8GQcoNorAROw@mail.gmail.com>
+        Tue, 7 Nov 2023 16:01:22 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1EE510C6;
+        Tue,  7 Nov 2023 13:01:20 -0800 (PST)
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A7GfXVT026997;
+        Tue, 7 Nov 2023 21:01:04 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=7ZwM7r3QrT26WkewixkRvzlkvg33eyhy6lV/EJbSppw=;
+ b=pMzkDX/kOsTWxo9K4EoSOBUAzo4ZzJj8Bl7zzLHYz+g/7SqKgtrwx0ER7ilsFq6JbVSS
+ ZOI14UftbHZlMCbC3HEmQLdzqWra0XF02iYyz6+EXRWSWSZpIlfDLJUgKb3PNsNdXHfl
+ bOFJzzcEGinFbR7MAwodO1KOBS34686x+xLysr9ogXe5LXoZF3u1QYKKSPimH2hRStWo
+ OIxvftN2BUKNFSb2Fq1EQNPooDRBSAAUFsvdEZIjkBfsf3ilLeLiOqAPIUy2O3GFmInw
+ mJz6FZ7f6ZkvusX9n1iBYfLQBGFgUNmg6cJJWGTTy9ZJqd4njN8qyw9vECUFhPB7RlmA 0w== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u74v337y3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 07 Nov 2023 21:01:04 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3A7L13jX016096
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 7 Nov 2023 21:01:03 GMT
+Received: from [10.110.83.137] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Tue, 7 Nov
+ 2023 13:01:01 -0800
+Message-ID: <55a4f98e-2772-e4fd-ae8a-132f92582c78@quicinc.com>
+Date:   Tue, 7 Nov 2023 13:00:24 -0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v7 0/7] incorporate pm runtime framework and eDP clean up
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+CC:     <dri-devel@lists.freedesktop.org>, <robdclark@gmail.com>,
+        <sean@poorly.run>, <swboyd@chromium.org>, <dianders@chromium.org>,
+        <vkoul@kernel.org>, <daniel@ffwll.ch>, <airlied@gmail.com>,
+        <agross@kernel.org>, <andersson@kernel.org>,
+        <quic_abhinavk@quicinc.com>, <quic_jesszhan@quicinc.com>,
+        <quic_sbillaka@quicinc.com>, <marijn.suijten@somainline.org>,
+        <freedreno@lists.freedesktop.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <1696632910-21942-1-git-send-email-quic_khsieh@quicinc.com>
+ <CAA8EJpoFRp+7GyO=F3Ar21tfG5Yt0cL6zkAquqg7D1XXQjp50Q@mail.gmail.com>
+Content-Language: en-US
+From:   Kuogee Hsieh <quic_khsieh@quicinc.com>
+In-Reply-To: <CAA8EJpoFRp+7GyO=F3Ar21tfG5Yt0cL6zkAquqg7D1XXQjp50Q@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAK7LNAS6J5Nh8nOUHbaf123yd1Z-1q--FvB1ok8GQcoNorAROw@mail.gmail.com>
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: u0myOGG0V7VbiTtSM4TzrOb_sXsIbdRh
+X-Proofpoint-ORIG-GUID: u0myOGG0V7VbiTtSM4TzrOb_sXsIbdRh
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-07_12,2023-11-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 lowpriorityscore=0
+ bulkscore=0 clxscore=1011 impostorscore=0 spamscore=0 priorityscore=1501
+ malwarescore=0 phishscore=0 suspectscore=0 adultscore=0 mlxlogscore=627
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2310240000
+ definitions=main-2311070174
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 05, 2023 at 04:55:57PM +0900, Masahiro Yamada wrote:
-> On Sun, Nov 5, 2023 at 7:27 AM Yoann Congal <yoann.congal@smile.fr> wrote:
-> >
-> > Exit on error when asking for value and reading stdin returns an error
-> > (mainly if it has reached EOF or is closed).
-> >
-> > This infinite loop happens in particular for hex/int configs without an
-> > explicit default value.
-> >
-> > Previously, this case would loop:
-> > * oldconfig prompts for the value but stdin has reached EOF
-> > * It gets the global default value : an empty string
-> > * This is not a valid hex/int value so it prompts again, hence the
-> >   infinite loop.
-> >
-> > This case happens with a configuration like this (a hex config without a
-> > valid default value):
-> >   config TEST_KCONFIG
-> >        hex "Test KConfig"
-> >        # default 0x0
-> >
-> > And using:
-> >   make oldconfig < /dev/null
-> >
-> > This was discovered when working on Yocto bug[0] on a downstream
-> > kconfig user (U-boot)
-> >
-> > [0]: https://bugzilla.yoctoproject.org/show_bug.cgi?id=14136
-> >
-> > CC: Brandon Maier <brandon.maier@collins.com>
-> > Signed-off-by: Yoann Congal <yoann.congal@smile.fr>
-> 
-> Applied to linux-kbuild.
-> Thanks.
 
-For what it's worth, this change breaks our continuous integration [1]
-because tuxmake explicitly uses /dev/null as stdin to make for
-non-interactive commands (I think it does this as basically the
-equivalent of "yes '' | make" in Python), so the error will always
-occur.
+On 11/6/2023 5:55 PM, Dmitry Baryshkov wrote:
+> On Sat, 7 Oct 2023 at 01:55, Kuogee Hsieh <quic_khsieh@quicinc.com> wrote:
+>> The purpose of this patch series is to incorporate pm runtime framework
+>> into MSM eDP/DP driver so that eDP panel can be detected by DRM eDP panel
+>> driver during system probe time. During incorporating procedure, original
+>> customized pm realted fucntions, such as dp_pm_prepare(), dp_pm_suspend(),
+>> dp_pm_resume() and dp_pm_prepare(), are removed and replaced with functions
+>> provided by pm runtiem framework such as pm_runtime_force_suspend() and
+>> pm_runtime_force_resume(). In addition, both eDP aux-bus and irq handler
+>> are bound at system probe time too.
+>
+> With this patchset in place I can crash the board using the following
+> sequence (SM8350-HDK):
+>
+> - plug the USBC DP dongle
+> - run modetest at any mode, don't press Enter yet
+> - unplug the dongle
+> - press Enter to stop modetest
+>
+> => the board resets to Sahara.
+>
+> Please ping me if you need any additional information from my side.
 
-Before:
+questiosn,
 
-$ curl -LSso .config https://gitlab.archlinux.org/archlinux/packaging/packages/linux/-/raw/main/config
+1) which dongle are you used?
 
-# Same as 'make < /dev/null' but still
-$ python3 -c "import subprocess; subprocess.run(['make', '-j128'], stdin=subprocess.DEVNULL)"
-  SYNC    include/config/auto.conf
-  HOSTCC  scripts/basic/fixdep
-  HOSTCC  scripts/kconfig/conf.o
-  HOSTCC  scripts/kconfig/confdata.o
-  HOSTCC  scripts/kconfig/expr.o
-  LEX     scripts/kconfig/lexer.lex.c
-  YACC    scripts/kconfig/parser.tab.[ch]
-  HOSTCC  scripts/kconfig/menu.o
-  HOSTCC  scripts/kconfig/preprocess.o
-  HOSTCC  scripts/kconfig/symbol.o
-  HOSTCC  scripts/kconfig/util.o
-  HOSTCC  scripts/kconfig/lexer.lex.o
-  HOSTCC  scripts/kconfig/parser.tab.o
-  HOSTLD  scripts/kconfig/conf
-*
-* Restart config...
-*
-...
-Error in reading or end of file.
+2) what code branch shoud I used to duplicate this problem.
 
-  GEN     arch/x86/include/generated/asm/orc_hash.h
-  WRAP    arch/x86/include/generated/uapi/asm/bpf_perf_event.h
-  WRAP    arch/x86/include/generated/uapi/asm/errno.h
-...
+I can not duplicate  system crash problem at my setup kodiak (SM7325) 
+chrome book with my PM runtime patch series.
 
-After:
+my code base is Linux 6.6-rc2 + pm runtime patch series (7 patches)
 
-$ curl -LSso .config https://gitlab.archlinux.org/archlinux/packaging/packages/linux/-/raw/main/config
+I did:
 
-$ python3 -c "import subprocess; subprocess.run(['make', '-j128'], stdin=subprocess.DEVNULL)"
-  SYNC    include/config/auto.conf
-  HOSTCC  scripts/basic/fixdep
-  HOSTCC  scripts/kconfig/conf.o
-  HOSTCC  scripts/kconfig/confdata.o
-  HOSTCC  scripts/kconfig/expr.o
-  LEX     scripts/kconfig/lexer.lex.c
-  YACC    scripts/kconfig/parser.tab.[ch]
-  HOSTCC  scripts/kconfig/menu.o
-  HOSTCC  scripts/kconfig/preprocess.o
-  HOSTCC  scripts/kconfig/symbol.o
-  HOSTCC  scripts/kconfig/util.o
-  HOSTCC  scripts/kconfig/lexer.lex.o
-  HOSTCC  scripts/kconfig/parser.tab.o
-  HOSTLD  scripts/kconfig/conf
-*
-* Restart config...
-*
-...
-Error in reading or end of file.
-make[3]: *** [scripts/kconfig/Makefile:77: syncconfig] Error 1
-...
+1) plugin either apple dongle (DP-to-HDMI) + 1080p display or DP typeC 
+cable directly to 1080p display
 
-We have been doing this for some time and never run across an infinite
-loop in syncconfig. Can this be improved?
+2)  stop ui
 
-[1]: https://github.com/ClangBuiltLinux/continuous-integration2/actions/runs/6784349581
+3) /usr/bin/modetest -M msm -s 34:1920x1080 (see test pattern show at 
+display)
 
-Cheers,
-Nathan
+4) unplug apple dongle or DP typeC cable
 
-> > ---
-> > v4->v5:
-> >  * Switched to Masahiro Yamada's suggested code.
-> > v3->v4:
-> >  * Added Brandon Maier's "Tested-by". Thanks!
-> > v2->v3:
-> >  * Simplify the patch by fusing comments of :
-> >    * Masahiro Yamada : Exit as soon as reading stdin hits an error
-> >    * Randy Dunlap : Display the name of the currently read symbol
-> > v1->v2:
-> >  * Improve coding style
-> >  * Put more info in the commit message
-> > ---
-> >  scripts/kconfig/conf.c | 4 +++-
-> >  1 file changed, 3 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/scripts/kconfig/conf.c b/scripts/kconfig/conf.c
-> > index 33d19e419908..62de1fbaff97 100644
-> > --- a/scripts/kconfig/conf.c
-> > +++ b/scripts/kconfig/conf.c
-> > @@ -76,8 +76,10 @@ static void strip(char *str)
-> >  /* Helper function to facilitate fgets() by Jean Sacren. */
-> >  static void xfgets(char *str, int size, FILE *in)
-> >  {
-> > -       if (!fgets(str, size, in))
-> > +       if (!fgets(str, size, in)) {
-> >                 fprintf(stderr, "\nError in reading or end of file.\n");
-> > +               exit(1);
-> > +       }
-> >
-> >         if (!tty_stdio)
-> >                 printf("%s", str);
-> > --
-> > 2.30.2
-> >
-> 
-> 
-> -- 
-> Best Regards
-> Masahiro Yamada
+5) hit enter key
+
+6) start ui
+
+7) display back to login page of chrome book
+
+
