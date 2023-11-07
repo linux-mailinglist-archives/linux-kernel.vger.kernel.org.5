@@ -2,120 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F97B7E3B2A
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 12:37:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F69F7E3B2D
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 12:40:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232667AbjKGLhZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 06:37:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40572 "EHLO
+        id S232147AbjKGLka (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 06:40:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229541AbjKGLhY (ORCPT
+        with ESMTP id S229541AbjKGLk2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 06:37:24 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CC13EA
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 03:37:21 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23444C433C7;
-        Tue,  7 Nov 2023 11:37:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699357041;
-        bh=txhWC7Qk/B+OuUbVMEFoUuEQ+inCT1iopvkXocpTbpQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=nLI4zejY3Awsws4zBH2Um0JJUz32OBAW7xmtGH7vvZ1dz1Wu0Rp63D1NMYOQXwRJ+
-         e2a8+oHGAthz7QNzYYBdR5AUn4kOpZzbO6Cjmcbj7eg1/erqLEYbnyQvAskU3bHWbu
-         2oObyICVXiIDe2rEgcmPqBhe6flbtAbFCFwxEP8IanBA1QiVHM9LEi0YoeALUlV071
-         s0vILooiXx8N8Nn5zY1nzleZOTlHZ9R6Gq6PZrkmvOCUimLuASBXz9YsTwaR8tjryv
-         +fxmj+smX+T4+1+fa/9brOIy0AdErquwXKZJekQLIaOoaMWlBpKNrlZ4k3xgVdNZ2Q
-         yKkzmCLIX72DQ==
-Received: from disco-boy.misterjones.org ([217.182.43.188] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.95)
-        (envelope-from <maz@kernel.org>)
-        id 1r0KOU-00B4hc-CM;
-        Tue, 07 Nov 2023 11:37:18 +0000
+        Tue, 7 Nov 2023 06:40:28 -0500
+X-Greylist: delayed 65 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 07 Nov 2023 03:40:24 PST
+Received: from esa2.ltts.com (unknown [14.140.155.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93BAE10A
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 03:40:24 -0800 (PST)
+IronPort-SDR: vZskKhWkhoRlNPyPhDTWyfDGqfphpKEfQVJ89sBo1eQ3eM9yA0Emtl32lLQHyQAeq57XK/VSLw
+ kwt0uHE2XkXw==
+Received: from unknown (HELO BLTSP01651.lnties.com) ([10.20.120.98])
+  by esa2.ltts.com with ESMTP; 07 Nov 2023 17:09:15 +0530
+From:   Gairuboina Sirisha <sirisha.gairuboina@Ltts.com>
+To:     jpanis@baylibre.com
+Cc:     arnd@arndb.de, gregkh@linuxfoundation.org,
+        krzysztof.kozlowski+dt@linaro.org, lee@kernel.org,
+        linux-kernel@vger.kernel.org, sirisha.gairuboina@Ltts.com,
+        Gairuboina Sirisha <sirisha.gairuboina@ltts.com>
+Subject: Re: [PATCH v1 0/3] TPS65224 PMIC driver
+Date:   Tue,  7 Nov 2023 17:07:40 +0530
+Message-Id: <20231107113740.1034738-1-sirisha.gairuboina@Ltts.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <b9449689-73da-41a8-a94e-f82686ab0bb0@baylibre.com>
+References: <b9449689-73da-41a8-a94e-f82686ab0bb0@baylibre.com>
 MIME-Version: 1.0
-Date:   Tue, 07 Nov 2023 11:37:18 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Chen-Yu Tsai <wenst@chromium.org>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH 3/3] irqchip/gic-v3: Remove Mediatek pseudo-NMI firmware
- quirk handling
-In-Reply-To: <CAD=FV=UVkE9k=o3-3UT2L172hhAH-gtpe5ByELN8srC+a-7mJw@mail.gmail.com>
-References: <20231006151547.1.Ide945748593cffd8ff0feb9ae22b795935b944d6@changeid>
- <20231006151547.3.Ie582d33cfe46f9ec2248e7f2dabdd6bbd66486a6@changeid>
- <ZS-8k22ZWgn5hcCd@FVFF77S0Q05N>
- <CAD=FV=UVkE9k=o3-3UT2L172hhAH-gtpe5ByELN8srC+a-7mJw@mail.gmail.com>
-User-Agent: Roundcube Webmail/1.4.15
-Message-ID: <0efbd5a2cfb5dab0876038ae726dc180@kernel.org>
-X-Sender: maz@kernel.org
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
 Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 217.182.43.188
-X-SA-Exim-Rcpt-To: dianders@chromium.org, mark.rutland@arm.com, catalin.marinas@arm.com, will@kernel.org, wenst@chromium.org, angelogioacchino.delregno@collabora.com, matthias.bgg@gmail.com, tglx@linutronix.de, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-10-30 23:01, Doug Anderson wrote:
-> Hi,
-> 
-> On Wed, Oct 18, 2023 at 4:08 AM Mark Rutland <mark.rutland@arm.com> 
-> wrote:
->> 
->> On Fri, Oct 06, 2023 at 03:15:53PM -0700, Douglas Anderson wrote:
->> > This is a partial revert of commit 44bd78dd2b88 ("irqchip/gic-v3:
->> > Disable pseudo NMIs on Mediatek devices w/ firmware issues"). In the
->> > patch ("arm64: Disable GiC priorities on Mediatek devices w/ firmware
->> > issues") we've moved the quirk handling to another place and so it's
->> > not needed in the GiC driver.
->> >
->> > NOTE: this isn't a full revert because it leaves some of the changes
->> > to the "quirks" structure around in case future code needs it.
->> >
->> > Signed-off-by: Douglas Anderson <dianders@chromium.org>
->> > ---
->> 
->> I think it might make sense to fold this into the patch adding the 
->> cpucap
->> detection. Otherwise, if you apply my suggestions to the first patch, 
->> there's a
->> 2-commit window where we'll have two places that log that NMI is being 
->> disabled
->> due to the FW issue. That's not a functional issue, so doesn't matter 
->> that
->> much.
->> 
->> Either way:
->> 
->> Acked-by: Mark Rutland <mark.rutland@arm.com>
-> 
-> I'm happy to go either way so I'd love some advice from maintainers
-> (Marc Zyngier, Catalin Marinas, Will Deacon) about what you'd prefer.
+From: Gairuboina Sirisha <sirisha.gairuboina@ltts.com>
 
-I honestly don't mind either way. The sooner we have these fixes
-upstream, the better, so my only advise would be to respin it
-shortly.
+> On 10/26/23 15:32, Gairuboina Sirisha wrote:
+> > Added support for TPS65224 PMIC in linux.
+> > This patch set includes driver for core, i2c and pfsm.
+> > The driver was tested on TI's custom AM62A EVM.
+> >
+> > Gairuboina Sirisha (3):
+> >    drivers: mfd: Add support for TPS65224
+> >    drivers: mfd: Add support for TPS65224 i2c driver
+> >    drivers: misc: Add support for TPS65224 pfsm driver
+> >
+> >   drivers/mfd/Kconfig                |  19 +
+> >   drivers/mfd/Makefile               |   2 +
+> >   drivers/mfd/tps65224-core.c        | 291 ++++++++++++
+> >   drivers/mfd/tps65224-i2c.c         | 245 ++++++++++
+> >   drivers/misc/Kconfig               |  12 +
+> >   drivers/misc/Makefile              |   1 +
+> >   drivers/misc/tps65224-pfsm.c       | 290 ++++++++++++
+> >   include/linux/mfd/tps65224.h       | 735 +++++++++++++++++++++++++++++
+> >   include/uapi/linux/tps65224_pfsm.h |  36 ++
+> >   9 files changed, 1631 insertions(+)
+> >   create mode 100644 drivers/mfd/tps65224-core.c
+> >   create mode 100644 drivers/mfd/tps65224-i2c.c
+> >   create mode 100644 drivers/misc/tps65224-pfsm.c
+> >   create mode 100644 include/linux/mfd/tps65224.h
+> >   create mode 100644 include/uapi/linux/tps65224_pfsm.h
+>
+> Hi Sirisha,
+>
+> These drivers strongly look like TPS6594 drivers.
+>
+> Instead of submitting new drivers, you should consider reusing and
+> modifying the existing ones for TPS6594. You might add your new 'compatible'
+> entry ("ti,tps65224-q1") in TPS6594 dt-bindings (see 'ti,tps6594.yaml' file)
+> to identify your TPS65224 PMIC. This new 'compatible' would also be added
+> in the existing 'tps6594_i2c_of_match_table'. You can have a look at
+> 'tps->chip_id' in 'tps6594-core.c' and see how we use it to deal with slight
+> differences between different PMIC IDs.
 
-Thanks,
+Thanks for the response. While the TPS65224 drivers follow the format and
+structure of TPS6594, the register maps, masks, and ADC feature differ.
+The two PMICs have overlapping features but TPS65224 is not treated as a subset.
+TPS65224 is treated as a separate and independent driver instead of adding
+compatibility to the existing TPS6594 driver that would then support 3 PMICS.
+This separation will better support our differing PMICs.
 
-         M.
--- 
-Jazz is not dead. It just smells funny...
+Thanks & Regards,
+Sirisha G.
