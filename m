@@ -2,42 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8039A7E3D9D
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 13:29:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA96A7E3D94
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 13:29:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234767AbjKGM3u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 07:29:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36352 "EHLO
+        id S234519AbjKGM32 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 07:29:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234714AbjKGM3V (ORCPT
+        with ESMTP id S234125AbjKGM3K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 07:29:21 -0500
+        Tue, 7 Nov 2023 07:29:10 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82BA73493E;
-        Tue,  7 Nov 2023 04:20:05 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06FA1C433CB;
-        Tue,  7 Nov 2023 12:20:03 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E617528FC4;
+        Tue,  7 Nov 2023 04:20:06 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7FC07C433C8;
+        Tue,  7 Nov 2023 12:20:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699359605;
-        bh=jzqatYmOq2buJSDJED14vbZpnhdtsSxyyg6oWwGzXzk=;
+        s=k20201202; t=1699359606;
+        bh=p0mex8bBv1TTORPMIHzWnMsEXyAsprynyz1dfSu86+8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sLbB2zIOot9bch11nWVHeVCy/spNXwCW/hh+cPP3v+qGBWLE322hqvz2jXr+fBjHG
-         z2KF6diXgnbPq4pzMyR2GrEKJ4SZT+UH4MPVcSuuc+PGgErLLEJ3H235P3hq79hb7m
-         KoKzSPKwK2RPJjkdSWDO1fTv5JCuRKKfQ9Sbf1Wz6LbuHarG/mC1bZytQPNIBF6Rn4
-         aOTuDcd9awQvQ+CTOlz5tmelatD7MwS1aPsmzMcc4UxNnw5hrCXroe6Uld+Xb67guS
-         OtnlP/gZ/9P4V8bCRvy6nytSlK3/EgqJTgXeiHHlCXfM5hdQ6ctuv4nequDVbozFH+
-         V7Q3GmbPYY+wg==
+        b=M9n2ZLGTQF1UGoU8ZS7QCcqQITJvlXwtPIyPBNnY7y7WG2KrDA7sQAcIniwHRyYVJ
+         FHMU9crYMFcjlhjzqivQ3NVPgPl1H68gCMGYG51x95l8ss+I0l+s1m8ELI1IMCBUgP
+         DNEtKrZ11E4jYJDR9ujEcP5e9A2ItQ4xyd1vG+NSXjfk+IAoeOuv+vEZgbPXLZWWmc
+         9lYmfu9Ie4h+ntG4QXPr5kJKJUd/QF2brfoCyo0AlbpzJe8KQZ7A9P5ggo3ikTRCMN
+         jt01X5ffxBt8Z+CrTONCPvOVn4VC0OqsPZPavO0lnr2tZeLZDkhthmNJvMxf/Yrk9k
+         7osrZMaF6Kkzw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Philipp Stanner <pstanner@redhat.com>,
-        David Airlie <airlied@redhat.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        David Airlie <airlied@redhat.com>, Baoquan He <bhe@redhat.com>,
         Kees Cook <keescook@chromium.org>,
         Zack Rusin <zackr@vmware.com>, Sasha Levin <sashal@kernel.org>,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 14/40] string.h: add array-wrappers for (v)memdup_user()
-Date:   Tue,  7 Nov 2023 07:16:16 -0500
-Message-ID: <20231107121837.3759358-14-sashal@kernel.org>
+        ebiederm@xmission.com, kexec@lists.infradead.org
+Subject: [PATCH AUTOSEL 6.6 15/40] kernel: kexec: copy user-array safely
+Date:   Tue,  7 Nov 2023 07:16:17 -0500
+Message-ID: <20231107121837.3759358-15-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231107121837.3759358-1-sashal@kernel.org>
 References: <20231107121837.3759358-1-sashal@kernel.org>
@@ -58,90 +57,38 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Philipp Stanner <pstanner@redhat.com>
 
-[ Upstream commit 313ebe47d75558511aa1237b6e35c663b5c0ec6f ]
+[ Upstream commit 569c8d82f95eb5993c84fb61a649a9c4ddd208b3 ]
 
-Currently, user array duplications are sometimes done without an
-overflow check. Sometimes the checks are done manually; sometimes the
-array size is calculated with array_size() and sometimes by calculating
-n * size directly in code.
+Currently, there is no overflow-check with memdup_user().
 
-Introduce wrappers for arrays for memdup_user() and vmemdup_user() to
-provide a standardized and safe way for duplicating user arrays.
-
-This is both for new code as well as replacing usage of (v)memdup_user()
-in existing code that uses, e.g., n * size to calculate array sizes.
+Use the new function memdup_array_user() instead of memdup_user() for
+duplicating the user-space array safely.
 
 Suggested-by: David Airlie <airlied@redhat.com>
 Signed-off-by: Philipp Stanner <pstanner@redhat.com>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Acked-by: Baoquan He <bhe@redhat.com>
 Reviewed-by: Kees Cook <keescook@chromium.org>
 Reviewed-by: Zack Rusin <zackr@vmware.com>
 Signed-off-by: Dave Airlie <airlied@redhat.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20230920123612.16914-3-pstanner@redhat.com
+Link: https://patchwork.freedesktop.org/patch/msgid/20230920123612.16914-4-pstanner@redhat.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/string.h | 40 ++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 40 insertions(+)
+ kernel/kexec.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/linux/string.h b/include/linux/string.h
-index dbfc66400050f..debf4ef1098f6 100644
---- a/include/linux/string.h
-+++ b/include/linux/string.h
-@@ -5,7 +5,9 @@
- #include <linux/compiler.h>	/* for inline */
- #include <linux/types.h>	/* for size_t */
- #include <linux/stddef.h>	/* for NULL */
-+#include <linux/err.h>		/* for ERR_PTR() */
- #include <linux/errno.h>	/* for E2BIG */
-+#include <linux/overflow.h>	/* for check_mul_overflow() */
- #include <linux/stdarg.h>
- #include <uapi/linux/string.h>
+diff --git a/kernel/kexec.c b/kernel/kexec.c
+index 107f355eac101..8f35a5a42af85 100644
+--- a/kernel/kexec.c
++++ b/kernel/kexec.c
+@@ -247,7 +247,7 @@ SYSCALL_DEFINE4(kexec_load, unsigned long, entry, unsigned long, nr_segments,
+ 		((flags & KEXEC_ARCH_MASK) != KEXEC_ARCH_DEFAULT))
+ 		return -EINVAL;
  
-@@ -14,6 +16,44 @@ extern void *memdup_user(const void __user *, size_t);
- extern void *vmemdup_user(const void __user *, size_t);
- extern void *memdup_user_nul(const void __user *, size_t);
+-	ksegments = memdup_user(segments, nr_segments * sizeof(ksegments[0]));
++	ksegments = memdup_array_user(segments, nr_segments, sizeof(ksegments[0]));
+ 	if (IS_ERR(ksegments))
+ 		return PTR_ERR(ksegments);
  
-+/**
-+ * memdup_array_user - duplicate array from user space
-+ * @src: source address in user space
-+ * @n: number of array members to copy
-+ * @size: size of one array member
-+ *
-+ * Return: an ERR_PTR() on failure. Result is physically
-+ * contiguous, to be freed by kfree().
-+ */
-+static inline void *memdup_array_user(const void __user *src, size_t n, size_t size)
-+{
-+	size_t nbytes;
-+
-+	if (check_mul_overflow(n, size, &nbytes))
-+		return ERR_PTR(-EOVERFLOW);
-+
-+	return memdup_user(src, nbytes);
-+}
-+
-+/**
-+ * vmemdup_array_user - duplicate array from user space
-+ * @src: source address in user space
-+ * @n: number of array members to copy
-+ * @size: size of one array member
-+ *
-+ * Return: an ERR_PTR() on failure. Result may be not
-+ * physically contiguous. Use kvfree() to free.
-+ */
-+static inline void *vmemdup_array_user(const void __user *src, size_t n, size_t size)
-+{
-+	size_t nbytes;
-+
-+	if (check_mul_overflow(n, size, &nbytes))
-+		return ERR_PTR(-EOVERFLOW);
-+
-+	return vmemdup_user(src, nbytes);
-+}
-+
- /*
-  * Include machine specific inline routines
-  */
 -- 
 2.42.0
 
