@@ -2,100 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5588E7E4566
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 17:06:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 859CE7E4567
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 17:07:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343796AbjKGQGw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 11:06:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55456 "EHLO
+        id S1343703AbjKGQHW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 11:07:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235354AbjKGQGd (ORCPT
+        with ESMTP id S1344207AbjKGQHE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 11:06:33 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E5F310FF;
-        Tue,  7 Nov 2023 07:57:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-        bh=5vVjpIK/xSOI0XfHhUdCNQN5Ynt+pxBZ4C8bQOCgVkM=; b=IORmO3pEwqpO41NPi9ZsB4XeQ3
-        2LFuVrsr7iLUoljFBrgU12y1gIvqJR+UczOz0yAGgM5PKNtdPlhwA3XdiBhLLVer9B9EBZ8BqM5up
-        AkKnifJ87rzrz22sl/9g6eA54G5FjQX9NKrB3K5h+XEkU11Pl5IC+eDzAmnIjf8+7iD/+YFwLQsEl
-        vTzJCT+j3YYTqktCrV2y5s+uCvMHrRrqamailCon2Hp4DMKvDGfdL4p66s7FCnbn/C+F9b+ZR09x0
-        CTaHi4oWQm15vpAOF8L2HWrdSa+nPKcYC6Tz0Rp4gyfgRKLq/M+fxzMcFyx2JEBpIGIMIkYC/h+Xv
-        376COy6Q==;
-Received: from [50.53.46.231] (helo=[192.168.254.15])
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1r0OSI-001w95-2I;
-        Tue, 07 Nov 2023 15:57:30 +0000
-Message-ID: <2a50dc4b-2b8b-4685-82f9-c521c665abff@infradead.org>
-Date:   Tue, 7 Nov 2023 07:57:29 -0800
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] clk: qcom: Fix SM_CAMCC_8550 dependencies
-Content-Language: en-US
-To:     Jagadeesh Kona <quic_jkona@quicinc.com>,
-        Andy Gross <agross@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>
-Cc:     Taniya Das <quic_tdas@quicinc.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Ajit Pandey <quic_ajipan@quicinc.com>,
-        Imran Shaik <quic_imrashai@quicinc.com>,
-        kernel test robot <lkp@intel.com>
-References: <20231107064545.13120-1-quic_jkona@quicinc.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20231107064545.13120-1-quic_jkona@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+        Tue, 7 Nov 2023 11:07:04 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 534045FC3
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 07:57:55 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EBE7BC43397;
+        Tue,  7 Nov 2023 15:57:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699372675;
+        bh=4qZ57p+se+lldaWS7s9e1b0DMLm3jcjKsw+WU9Y1aOg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=qLmtdnoVEFGfsgxbmZ+k8kHChpNsfN5MOK127ynyp4av+3KWxfEGHuyOPWRPZJ/T/
+         zgNWLAWyqs4lBXNcbqKXQwXBr3KpE8UqlyD8pqffwyiQwjWt4TSaI2zjKXjte2/4MC
+         SavbghBuG2e41GTEyqIz+EzmbIVHJxGh2Mz81lJ9d1U0N904QnioW/ifGRRunZ7SIR
+         CNpEom1dJrgms23LKkIwE8SB1MVNbiITYlb8w4VDZVhWgWssDUZ4jcxx/GzB4WBNah
+         FSsZZDiRR/GQWCQF3Izm3wSNo8eIgpm23sklqIIP9TendXDfWIzHILGczwxaLYuKi9
+         2gSkf/KIVMCZA==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1r0OSe-00BB79-Lz;
+        Tue, 07 Nov 2023 15:57:52 +0000
+Date:   Tue, 07 Nov 2023 15:57:52 +0000
+Message-ID: <86bkc51rpb.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Douglas Anderson <dianders@chromium.org>
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Chen-Yu Tsai <wenst@chromium.org>,
+        D Scott Phillips <scott@os.amperecomputing.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Valentin Schneider <vschneid@redhat.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] Revert "arm64: smp: avoid NMI IPIs with broken MediaTek FW"
+In-Reply-To: <20231107072651.v2.2.I2c5fa192e767eb3ee233bc28eb60e2f8656c29a6@changeid>
+References: <20231107072651.v2.1.Ide945748593cffd8ff0feb9ae22b795935b944d6@changeid>
+        <20231107072651.v2.2.I2c5fa192e767eb3ee233bc28eb60e2f8656c29a6@changeid>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: dianders@chromium.org, mark.rutland@arm.com, catalin.marinas@arm.com, will@kernel.org, wenst@chromium.org, scott@os.amperecomputing.com, frederic@kernel.org, jpoimboe@kernel.org, peterz@infradead.org, swboyd@chromium.org, tglx@linutronix.de, vschneid@redhat.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 11/6/23 22:45, Jagadeesh Kona wrote:
-> SM_GCC_8550 depends on ARM64 but it is selected by
-> SM_CAMCC_8550, which should have the same dependencies
-> as SM_GCC_8550 to avoid the below Kconfig warning reported
-> by kernel test robot.
+On Tue, 07 Nov 2023 15:26:57 +0000,
+Douglas Anderson <dianders@chromium.org> wrote:
 > 
-> WARNING: unmet direct dependencies detected for SM_GCC_8550
->   Depends on [n]: COMMON_CLK [=y] && COMMON_CLK_QCOM [=y] && (ARM64 || COMPILE_TEST [=n])
->   Selected by [y]:
->   - SM_CAMCC_8550 [=y] && COMMON_CLK [=y] && COMMON_CLK_QCOM [=y]
+> This reverts commit a07a594152173a3dd3bdd12fc7d73dbba54cdbca.
 > 
-> Fixes: ccc4e6a061a2 ("clk: qcom: camcc-sm8550: Add camera clock controller driver for SM8550")
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202311062309.XugQH7AH-lkp@intel.com/
-> Signed-off-by: Jagadeesh Kona <quic_jkona@quicinc.com>
-
-Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
-Tested-by: Randy Dunlap <rdunlap@infradead.org>
-
-Thanks.
-
-> ---
->  drivers/clk/qcom/Kconfig | 1 +
->  1 file changed, 1 insertion(+)
+> This is no longer needed after the patch ("arm64: Move Mediatek GIC
+> quirk handling from irqchip to core).
 > 
-> diff --git a/drivers/clk/qcom/Kconfig b/drivers/clk/qcom/Kconfig
-> index ad1acd9b7426..dbc3950c5960 100644
-> --- a/drivers/clk/qcom/Kconfig
-> +++ b/drivers/clk/qcom/Kconfig
-> @@ -767,6 +767,7 @@ config SM_CAMCC_8450
->  
->  config SM_CAMCC_8550
->  	tristate "SM8550 Camera Clock Controller"
-> +	depends on ARM64 || COMPILE_TEST
->  	select SM_GCC_8550
->  	help
->  	  Support for the camera clock controller on SM8550 devices.
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+
+Acked-by: Marc Zyngier <maz@kernel.org>
+
+	M.
 
 -- 
-~Randy
+Without deviation from the norm, progress is not possible.
