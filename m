@@ -2,115 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 84C947E4C12
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 23:56:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FD737E4C16
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 23:57:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343704AbjKGW4h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 17:56:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53738 "EHLO
+        id S1343934AbjKGW5O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 17:57:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232452AbjKGW4f (ORCPT
+        with ESMTP id S232452AbjKGW5M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 17:56:35 -0500
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EE0918C;
-        Tue,  7 Nov 2023 14:56:33 -0800 (PST)
-Received: from notapiano.myfiosgateway.com (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: nfraprado)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id F2FAD66074D4;
-        Tue,  7 Nov 2023 22:56:28 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1699397791;
-        bh=+pDcPxfGlA0dL3Lp3d6m5ZR8VLuzhaRJSUxxc7deZkY=;
-        h=From:To:Cc:Subject:Date:From;
-        b=TSRwOKldf9y0mBtzI4DQa9H5Sut50EXy9J5zVXmcBHeE+8v9iL2TsLhtRXbyzPOJ4
-         Gz5rkIQ9WpHc5J0adUZmoxuwzgOZzpTq7pFP5oHy0qJd2sv2yA4pa/cJ7sFgr00OiC
-         hFLkg/yXTFxij0m3cg3wGm8y1LBV88LfpMMZveYtdH7Ys2rC6L62Rq5X2Swhw7iu47
-         1iXwOwUXoIM5l+nWmexqJQZsQqhCC0cak6RWYMwDeqCisQbjYv4DoRCKGWqkUDCw7d
-         EbtVsZUwEeQb8rPlKE5r7U86lpfq2xu57iRagX5HxtzhbkThlVJ0Q6XX8ZmupfBDEm
-         2Y9Mdr98cAH0w==
-From:   =?UTF-8?q?N=C3=ADcolas=20F=2E=20R=2E=20A=2E=20Prado?= 
-        <nfraprado@collabora.com>
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Aishwarya TCV <aishwarya.tcv@arm.com>,
-        Mark Brown <broonie@kernel.org>, kernel@collabora.com,
-        =?UTF-8?q?N=C3=ADcolas=20F=2E=20R=2E=20A=2E=20Prado?= 
-        <nfraprado@collabora.com>, Frank Rowand <frowand.list@gmail.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] dt: dt-extract-compatibles: Don't follow symlinks when walking tree
-Date:   Tue,  7 Nov 2023 17:55:28 -0500
-Message-ID: <20231107225624.9811-1-nfraprado@collabora.com>
-X-Mailer: git-send-email 2.42.0
+        Tue, 7 Nov 2023 17:57:12 -0500
+Received: from smtp.forwardemail.net (smtp.forwardemail.net [149.28.215.223])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D2DB18C;
+        Tue,  7 Nov 2023 14:57:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kwiboo.se;
+ h=Content-Transfer-Encoding: Content-Type: In-Reply-To: From: References:
+ Cc: To: Subject: MIME-Version: Date: Message-ID; q=dns/txt;
+ s=fe-e1b5cab7be; t=1699397823;
+ bh=63OQgizHEU87zRiwSvu33mfZCT/ztnxnRkDGWR/1lLU=;
+ b=bIDMRN/VYHY1n0fc2dDmI+neX3bp6WW8KAO8Ay7WzNULVEbC6DG52D8ez1vm9JUl6QF7v83U7
+ p9EIYWOptKN7GLbNxAJRsa4exZT6zEbUID1FdFrWa8izpMNq6oIuNvqYr/MJvQDsDBF/vcrFGIE
+ KNB0FyOH+9qfhqdqREejPRIAfkmsa90OfRcRMg9QbdRIE7d1iy3daTk3SuHatusuLireZe6aX6V
+ /gTuAn6ciEjGbNn3kOThRAzaX0zqqd9GIkoI+LhnEYTb1xjl7yX5EYRvZiyfmrzjEXPkey3seAU
+ tXtIvvAtyN+kVQkmkPi82FgAqgpp1WwP92K/E0tK1W7g==
+Message-ID: <bfabc182-4113-46fb-85e9-8550c97d132b@kwiboo.se>
+Date:   Tue, 7 Nov 2023 23:56:57 +0100
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 05/11] media: rkvdec: h264: Remove SPS validation at
+ streaming start
+Content-Language: en-US
+To:     Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>
+Cc:     Alex Bee <knaerzche@gmail.com>,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        Sebastian Fricke <sebastian.fricke@collabora.com>,
+        Christopher Obbard <chris.obbard@collabora.com>,
+        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20231105165521.3592037-1-jonas@kwiboo.se>
+ <20231105165521.3592037-6-jonas@kwiboo.se>
+ <c75c894a09292775773ad338121ee81924337cf0.camel@collabora.com>
+From:   Jonas Karlman <jonas@kwiboo.se>
+In-Reply-To: <c75c894a09292775773ad338121ee81924337cf0.camel@collabora.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-Report-Abuse-To: abuse@forwardemail.net
+X-Report-Abuse: abuse@forwardemail.net
+X-Complaints-To: abuse@forwardemail.net
+X-ForwardEmail-Version: 0.4.40
+X-ForwardEmail-Sender: rfc822; jonas@kwiboo.se, smtp.forwardemail.net,
+ 149.28.215.223
+X-ForwardEmail-ID: 654ac0bea95f640b16f9fb5f
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The iglob function, which we use to find C source files in the kernel
-tree, always follows symbolic links. This can cause unintentional
-recursions whenever a symbolic link points to a parent directory. A
-common scenario is building the kernel with the output set to a
-directory inside the kernel tree, which will contain such a symlink.
+On 2023-11-07 23:01, Nicolas Dufresne wrote:
+> Le dimanche 05 novembre 2023 à 16:55 +0000, Jonas Karlman a écrit :
+>> SPS parameters is validated in try_ctrl() ops so there is no need to
+> 
+>                  are
+> 
+>> re-validate when streaming starts.
+>>
+>> Remove the unnecessary call to validate sps at streaming start.
+> 
+> This patch is not working since user may change the format after the
+> control have been set. The proper fix should actually reset the SPS
+> (well all header controls) to match the the newly set format. Then this
+> validation won't be needed anymore.
+> 
+> The sequence that is problematic after this patch is:
+> 
+> S_FMT (OUTPUT, width, height);
+> S_CTRL (SPS) // valid
+> S_FMT(OUTPUT, width', height'); // SPS is no longer valid
+> 
+> One suggestion I may make is to add a ops so that each codec
+> implementation can reset their header controls to make it valid against
+> the new resolution. With that in place you'll be able drop the check.
 
-Instead of using the iglob function, use os.walk to traverse the
-directory tree, which by default doesn't follow symbolic links. fnmatch
-is then used to match the glob on the filename, as well as ignore hidden
-files (which were ignored by default with iglob).
+According to the Initialization section of the V4L2 stateless
+documentation a client is supposed to S_CTRL(SPS) after S_FMT(OUTPUT).
 
-This approach runs just as fast as using iglob.
+https://docs.kernel.org/userspace-api/media/v4l/dev-stateless-decoder.html#initialization
 
-Fixes: b6acf8073517 ("dt: Add a check for undocumented compatible strings in kernel")
-Reported-by: Aishwarya TCV <aishwarya.tcv@arm.com>
-Closes: https://lore.kernel.org/all/e90cb52f-d55b-d3ba-3933-6cc7b43fcfbc@arm.com
-Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
+I guess that all stateless decoders probably should reset all ctrls to
+default value on S_FMT(OUTPUT) or decoders may end up in an unexpected
+state?
 
----
+Is resetting a ctrl value back to default something that is supported by
+v4l2 ctrl core? Did not find any obvious way to reset a ctrl value.
 
- scripts/dtc/dt-extract-compatibles | 14 ++++++++++++--
- 1 file changed, 12 insertions(+), 2 deletions(-)
+Will probably just drop this patch in v5.
 
-diff --git a/scripts/dtc/dt-extract-compatibles b/scripts/dtc/dt-extract-compatibles
-index bd07477dd144..5ffb2364409b 100755
---- a/scripts/dtc/dt-extract-compatibles
-+++ b/scripts/dtc/dt-extract-compatibles
-@@ -1,8 +1,8 @@
- #!/usr/bin/env python3
- # SPDX-License-Identifier: GPL-2.0-only
- 
-+import fnmatch
- import os
--import glob
- import re
- import argparse
- 
-@@ -81,10 +81,20 @@ def print_compat(filename, compatibles):
- 	else:
- 		print(*compatibles, sep='\n')
- 
-+def glob_without_symlinks(root, glob):
-+	for path, dirs, files in os.walk(root):
-+		# Ignore hidden directories
-+		for d in dirs:
-+			if fnmatch.fnmatch(d, ".*"):
-+				dirs.remove(d)
-+		for f in files:
-+			if fnmatch.fnmatch(f, glob):
-+				yield os.path.join(path, f)
-+
- def files_to_parse(path_args):
- 	for f in path_args:
- 		if os.path.isdir(f):
--			for filename in glob.iglob(f + "/**/*.c", recursive=True):
-+			for filename in glob_without_symlinks(f, "*.c"):
- 				yield filename
- 		else:
- 			yield f
--- 
-2.42.0
+Regards,
+Jonas
+
+> 
+> Nicolas
+> 
+> p.s. you can also just drop this patch from the series and revisit it
+> later, though I think its worth fixing.
+> 
+>>
+>> Suggested-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+>> Signed-off-by: Jonas Karlman <jonas@kwiboo.se>
+>> ---
+>> v4:
+>> - No change
+>>
+>> v3:
+>> - New patch
+>>
+>>  drivers/staging/media/rkvdec/rkvdec-h264.c | 19 ++-----------------
+>>  1 file changed, 2 insertions(+), 17 deletions(-)
+>>
+>> diff --git a/drivers/staging/media/rkvdec/rkvdec-h264.c b/drivers/staging/media/rkvdec/rkvdec-h264.c
+>> index 8bce8902b8dd..815d5359ddd5 100644
+>> --- a/drivers/staging/media/rkvdec/rkvdec-h264.c
+>> +++ b/drivers/staging/media/rkvdec/rkvdec-h264.c
+>> @@ -1070,17 +1070,6 @@ static int rkvdec_h264_start(struct rkvdec_ctx *ctx)
+>>  	struct rkvdec_dev *rkvdec = ctx->dev;
+>>  	struct rkvdec_h264_priv_tbl *priv_tbl;
+>>  	struct rkvdec_h264_ctx *h264_ctx;
+>> -	struct v4l2_ctrl *ctrl;
+>> -	int ret;
+>> -
+>> -	ctrl = v4l2_ctrl_find(&ctx->ctrl_hdl,
+>> -			      V4L2_CID_STATELESS_H264_SPS);
+>> -	if (!ctrl)
+>> -		return -EINVAL;
+>> -
+>> -	ret = rkvdec_h264_validate_sps(ctx, ctrl->p_new.p_h264_sps);
+>> -	if (ret)
+>> -		return ret;
+>>  
+>>  	h264_ctx = kzalloc(sizeof(*h264_ctx), GFP_KERNEL);
+>>  	if (!h264_ctx)
+>> @@ -1089,8 +1078,8 @@ static int rkvdec_h264_start(struct rkvdec_ctx *ctx)
+>>  	priv_tbl = dma_alloc_coherent(rkvdec->dev, sizeof(*priv_tbl),
+>>  				      &h264_ctx->priv_tbl.dma, GFP_KERNEL);
+>>  	if (!priv_tbl) {
+>> -		ret = -ENOMEM;
+>> -		goto err_free_ctx;
+>> +		kfree(h264_ctx);
+>> +		return -ENOMEM;
+>>  	}
+>>  
+>>  	h264_ctx->priv_tbl.size = sizeof(*priv_tbl);
+>> @@ -1100,10 +1089,6 @@ static int rkvdec_h264_start(struct rkvdec_ctx *ctx)
+>>  
+>>  	ctx->priv = h264_ctx;
+>>  	return 0;
+>> -
+>> -err_free_ctx:
+>> -	kfree(h264_ctx);
+>> -	return ret;
+>>  }
+>>  
+>>  static void rkvdec_h264_stop(struct rkvdec_ctx *ctx)
+> 
 
