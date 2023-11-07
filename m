@@ -2,66 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C290B7E4B6E
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 23:04:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 059787E4B6F
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 23:04:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344213AbjKGWEd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 17:04:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38788 "EHLO
+        id S235535AbjKGWEh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 17:04:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235438AbjKGWDq (ORCPT
+        with ESMTP id S235389AbjKGWDr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 17:03:46 -0500
+        Tue, 7 Nov 2023 17:03:47 -0500
 Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F6861996
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E17CE1999
         for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 14:00:56 -0800 (PST)
-Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A7LJpwG026315;
-        Tue, 7 Nov 2023 21:59:58 GMT
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A7LJlGq004887;
+        Tue, 7 Nov 2023 22:00:01 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references :
  content-transfer-encoding : content-type : mime-version;
- s=corp-2023-03-30; bh=rR1rkZaAcUjbJhVUuuHUsBP4wRC0wqW6GVBbfHb15x8=;
- b=AwsiFAMDdloUNUPeyvfyMO+aMi0EkQXiEasxSzq735RWh0hj65kJw3RdfSFOhYfKeDcI
- NZCBfHXLWBs9BRKzhpHfZPxM2uURobrmETAhR947ypcB/+DDyJt5zF7RMZIB7pZhwph/
- j/+hAQYbqel40grJYu+pTi4kd3lNjDNIFoqXYkAagofRMbLAzD6T/i4Vm7k1SxK5wsSD
- 0CuCCFyEg+Z/9xb/ftlJ7yBu8dI6k6rCxewAVwd+0GILv2y5S/aa/4MlD+OgTGnlckb6
- FDKrhRN2fhL3f1rGd0FA413vuVsAcLoyhNW2oVYKvigyAYb1bo+4FKN0xvJZVVYr5V/x eA== 
-Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3u7w2102q0-1
+ s=corp-2023-03-30; bh=CdxkzwCkAACo9KhjEACiAY9GZyZVnoZczDrZBjKY/sY=;
+ b=2XhRGuye2hzF0IcFdzUOMoqDe5QWyN3wJQpM9ymZ0L2eRDHhsFqcCf5SSBbNDLSRs1vm
+ /AE80sJVdHtOltwxS+GkFfFVbIRgfLtuQoRfR1BOHxk/zYaf+TBSRMVGUtLRe2d/u0j1
+ QvH7X7JnzNGWr94/ynvlJEXtuT9oGl+UXzgGLOUMocF6pKTosN9rohDXRr9cnOpSGIk6
+ BV73Uhht6Lh46qFLA+zNWnZ6I5shSU559AWdqeQ3UHVwOkVR5PM9STi1ECGMWgniG5Nx
+ J8TRHPR/3KSH4iqaj50/9hZ5Enraxfefu7QGm+JmLamWmcFhuF/BTjG5yk2p4l3QY5nA 1A== 
+Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3u7w22g2pm-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 07 Nov 2023 21:59:57 +0000
-Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3A7LJOlK023824;
-        Tue, 7 Nov 2023 21:59:57 GMT
+        Tue, 07 Nov 2023 22:00:01 +0000
+Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3A7LIqeI003884;
+        Tue, 7 Nov 2023 22:00:00 GMT
 Received: from nam04-dm6-obe.outbound.protection.outlook.com (mail-dm6nam04lp2040.outbound.protection.outlook.com [104.47.73.40])
-        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3u7w241gvt-1
+        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3u7w1vsk8m-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 07 Nov 2023 21:59:57 +0000
+        Tue, 07 Nov 2023 22:00:00 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KgOJ/mz5lOcv+9EY5ImUX1gsmXMkKYy+S/FeJA2HWTa/nGgj4KDo1dxEFP+uZpJKIquP318avQvTvXP9NRvFD9rVKsEFKL4VRVm9tnacW7XXsuNauwA1nfzR3+kv6nQLdOnBamoTQzzkx4ksDz3fH7nj3ik2XebLpjRzu2DSM01iBnvNDJpfxRpH1qXJH3dsb3w7oL0Qj+vx95E4E1ARckuLjdGy2xOYyfkaDuTgRTGIyT5kJAjt8ygsm+4StarTS/oMXq7ulJk6gKFHq9kz4sFKKUoM8Ucigz8vMVSPhq5MqOh0IQQ1evYrbNbs4oqt7/Eg32YNQaG8zD6pY/czug==
+ b=djpXAETJgBzFHOapNMQ0YIfZDpOaVHpbXzB+bfUAeJ27KpuBjQr8J08/Pw/MU89yJHl4hqV+rX7v4nZ/PljxHDraJdCa3fBwaOl1BX6x/YhQl1WJn2Jmst0VUir6GDQgTf6M8l1N/8ir95fxvCJlGXPvXYiU6odVJsBVnFvC8pbaMRKOmVjeiHXC+kWPeDuYT1aBDCbT35vjYkumzVpuuXLtm6Bs2cMthT4PrRvNNPUzhVG0zw0+/ixhCM85FzBreGAWoi5xk085Wd69ovx2AduO3DJuhULqyGKvYa6KCoJ2M6lUsL/Rng4YB0Eu3b+XPjI1qORbvxlZb3+VZhDuGw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=rR1rkZaAcUjbJhVUuuHUsBP4wRC0wqW6GVBbfHb15x8=;
- b=fD8qjFp29z2dFsmKcW9qRFcHbp+mnbwqhY0T5D2ltxokSwS4NVS0zKiepLWdajKSvs6xlBURIBeoIbLP2UfcPOFDbRWlxfWo7gX0cz8s/RMEa5JPIZ966KKZvz3ZdR+qekYC4m1X7tAXLkUNMzHqL7+xJykzNozH1r8EkS7TqGuAys+qP0H77oi9pj9Z8sCJg+3Duymo4lbB7KP7RL5UY8o1QuWfD3+n2AHnMm5Or95thDY95419F/lg/A+l4z3DqYloEc0/mV+Po6G6MgTN+Goxzlgz+XnSadZcPKFNpXu99w8aPd7fcEuUvMYs+vDIh9CKdHCAOqEGJkFKEeSJ1g==
+ bh=CdxkzwCkAACo9KhjEACiAY9GZyZVnoZczDrZBjKY/sY=;
+ b=awc9wqxnz18IHuneUt40zdduwMA8RO/vkaNA2PzA2sdX2F6rRhAG0sDFT7ba6pgyZ5Js6IC4oPYcYN/VBKBBGN5xWnFHI9EcFwVRcW3qzuxilRACkS0kmx+98LLGax90uJnkD8oFnk3uw5njOyVfhksGOKGTse22sFV9PmwJKm/zFloVE/Y28ptE+htgLSzro9N++I4FnqBOglkTTgryTGtQqP641zHOQc2davk6TUMvJBvKBWzRU2cCptu8/w7frlnWgKMotlaWfJ6sesPrEpoE1XOfap8djS8gWjTmMSkyfHbX6nqXKWEvSOCLrXz5Xb/fdhL04L0QBAgbqP3KYg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
  dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rR1rkZaAcUjbJhVUuuHUsBP4wRC0wqW6GVBbfHb15x8=;
- b=prbTUcMA3tI9tKkKd8/zkGWi0pIGVmhSAuZf2HCEYNFzhYwtqz2rlQqDz1UVLXVpuy/8KVZLTlJLHtjZz7AsYT1PKtq5HNS3aP58ypdWl13N5e7pbjTD6LINZumT3nDybQx+ehk12cdLSd15W8JqWJRRfY36YhUyvsjiVOuMycA=
+ bh=CdxkzwCkAACo9KhjEACiAY9GZyZVnoZczDrZBjKY/sY=;
+ b=G5uiIqT5Lrgxl7UeXAXXwTP4abnuAZ26aqrM1xmjZsM5isrYpLwjoT5CNYvoUsjbEfYSbXc6qo6scvupQFQA7enoL4Kin6ONPVOci+AhZWAr1iDb1g1lS0P3C1WxW9q0Rt/u41kKnrc2FjsEf+IGnfluS+dTfNa9yiko6GdUNIk=
 Received: from CO6PR10MB5409.namprd10.prod.outlook.com (2603:10b6:5:357::14)
  by CY5PR10MB6141.namprd10.prod.outlook.com (2603:10b6:930:37::21) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.28; Tue, 7 Nov
- 2023 21:59:54 +0000
+ 2023 21:59:56 +0000
 Received: from CO6PR10MB5409.namprd10.prod.outlook.com
  ([fe80::1ce3:4a8c:4c99:acea]) by CO6PR10MB5409.namprd10.prod.outlook.com
  ([fe80::1ce3:4a8c:4c99:acea%7]) with mapi id 15.20.6954.028; Tue, 7 Nov 2023
- 21:59:54 +0000
+ 21:59:56 +0000
 From:   Ankur Arora <ankur.a.arora@oracle.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     tglx@linutronix.de, peterz@infradead.org,
@@ -79,280 +79,637 @@ Cc:     tglx@linutronix.de, peterz@infradead.org,
         krypton@ulrich-teichert.org, rostedt@goodmis.org,
         David.Laight@ACULAB.COM, richard@nod.at, mjguzik@gmail.com,
         Ankur Arora <ankur.a.arora@oracle.com>
-Subject: [RFC PATCH 43/86] sched: enable PREEMPT_COUNT, PREEMPTION for all preemption models
-Date:   Tue,  7 Nov 2023 13:57:29 -0800
-Message-Id: <20231107215742.363031-44-ankur.a.arora@oracle.com>
+Subject: [RFC PATCH 44/86] sched: voluntary preemption
+Date:   Tue,  7 Nov 2023 13:57:30 -0800
+Message-Id: <20231107215742.363031-45-ankur.a.arora@oracle.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20231107215742.363031-1-ankur.a.arora@oracle.com>
 References: <20231107215742.363031-1-ankur.a.arora@oracle.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-ClientProxiedBy: MW4PR03CA0250.namprd03.prod.outlook.com
- (2603:10b6:303:b4::15) To CO6PR10MB5409.namprd10.prod.outlook.com
+X-ClientProxiedBy: MW4PR04CA0173.namprd04.prod.outlook.com
+ (2603:10b6:303:85::28) To CO6PR10MB5409.namprd10.prod.outlook.com
  (2603:10b6:5:357::14)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: CO6PR10MB5409:EE_|CY5PR10MB6141:EE_
-X-MS-Office365-Filtering-Correlation-Id: e23fc83e-3569-4276-4692-08dbdfdcdfd9
+X-MS-Office365-Filtering-Correlation-Id: fae18619-eb89-4604-2b3f-08dbdfdce0fc
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 4i1r8YnG08dLkmb/W3ggCv8d4f+0sRTbVy8b/3F5xsy7FBmrawbE7NtK1MUGNqkdR0AtB/h3WrCpQU3uDsV2y6KePXIeJ9No3f6HCTtHYm6SEdJu7Vom33RsJadq07TeOWtqGFXbBVhKZ85R7lZzaMaPDoplflD3ImHkB6cQcBX1PHcdD7WxihAaLA9YpBdI/54ZleQfh1azSAbxoDxndMQ/DFn6BUJ39jTXj2JuS3t42ROq+gYGfMbd4DhxFZJaR2j47742WlbnsOeCtACxhUozyotgudi2yF/2v6bISGo+mcUe7IBzEG8xcXoL9QLm6LgqoFkMP46LSyrPsBwrNVNX7mq+d4SP2ir+37ibkroNSder2g0YgUO3/KRT210DyOKWc1wbvOIyef/yaymY/bAcO4lKg5gI3JMsbwUdD6PPU58/RNOI3H5QpjEofTSq9zCDLEwpZJsO8JRZlPNzUmhM4K2BZyizNNLr0gawYICK9GDiBf8ggQ032nLZIr7AiCY+Qyy02tA11JzlHN7eiLCYsKvLsMIiu9xQX7l9y4zDdl5g2eUCC2kc4kRV2vlu6oAGByjf8ZNgxOsL14cXI0UG1PoJ4oiicLwCquPek+ZsiLqGYioas+tb/D8PaVCo
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO6PR10MB5409.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(396003)(376002)(39860400002)(136003)(366004)(230922051799003)(186009)(1800799009)(451199024)(64100799003)(6506007)(86362001)(103116003)(8676002)(478600001)(8936002)(6486002)(4326008)(6666004)(38100700002)(1076003)(5660300002)(36756003)(6512007)(66476007)(6916009)(66946007)(66556008)(316002)(2616005)(7416002)(107886003)(7406005)(2906002)(26005)(83380400001)(41300700001)(170073001);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: FcrHNF16HEXWKX6YVL9Qjs+62GmEz96u1A253vttgdAAtQIS/HRKC7Mejq8UOJnung8dGaVHE6C91jgHOx3iCMVpuHYfH0/Z5kvoGGwDUqMybbZeTT3iXm6VrlLBvC1HwMDq+6clo9Stzd1Qj5G7Yw1+3A/3X3mc59UW9ZcD4Q9YsI2nJPn4+mLPP1Sc3+Ihhm+nxPgVevylYUrd4jlLFmwMSnIoteARAOFoHd0irwD3ieoOVE4NIxFqtgDdb3OoXwQhJFhiaGfbf5PeJpqHkbBet/JeXooTx2iHGs200jOQW+AtequWVtJK+WDoccnLHjCZKtUzxxzOjgEtRMfPoxLzuuPJghVlRdWzzB+A03BuPHltsEiZQSpx7d8xBepwVDPlJDrnRXe9C0Aw+iss4N2blSvSVR5w65IgbPHb0SWKh4iZjRth+Y2wdF8KFBoJLsnX/qp04Vvb9gub2hb6PN2jaNqkUmq4LdSfAbLkshPPbBNlbXI0o+7BD1bXuFwFpnGVy1lFmbkV/66oT9O+b4iXeJWDWeqFq9uMViC3J5g9y0i3WJA7X94Xy9eDTDJS
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO6PR10MB5409.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(396003)(376002)(39860400002)(136003)(366004)(230922051799003)(186009)(1800799009)(451199024)(64100799003)(6506007)(86362001)(103116003)(8676002)(478600001)(8936002)(6486002)(4326008)(6666004)(38100700002)(1076003)(30864003)(5660300002)(36756003)(6512007)(66476007)(6916009)(66946007)(66556008)(316002)(2616005)(7416002)(107886003)(7406005)(2906002)(26005)(83380400001)(41300700001);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?GA0RiWnl/1dkrogtczrnNsfMGkIUWj61x5yAfnBKwG9t3oLwMx50leppf8/A?=
- =?us-ascii?Q?A+WJ+hAJZ0Noa06h5GZeW0TNFvL+QaEEkD0dnHyKMKAldxG6nBf+0ZO6Vajw?=
- =?us-ascii?Q?FvaMyNMGFTRtWQn1a54ol0lPkr+9/K28wPNZhVuRiXR+LNL7QlALpNAsSC6B?=
- =?us-ascii?Q?WGq+XH9C6I6Ryaw1/YQZWvjzopIQfl0vNZ3OmX+fdvRt/78VOWiZuH485uMG?=
- =?us-ascii?Q?834l//D4cAXfcBAT3d7VSZpvKiZ+tJN0/EnVhe6a7F6dh+6Wzw6p9DhtVknN?=
- =?us-ascii?Q?iQFcaEfSONysmXixpk+COiL1DTnzJLCcLdl4kicKJhEBMtfh8q+veJnBOMCv?=
- =?us-ascii?Q?fkvifPWoWGyhYSjmLH/SgPzszjUmDeU0JzckUH3GbXxYsCR6FuBGWgMsbKaH?=
- =?us-ascii?Q?sSTWz6IGkmpnLIRAh9r32E1DQdgM7rxLWstoOxdkTewyNGGA8E7SILQeb2ig?=
- =?us-ascii?Q?kRXUjCJopy97gGKI37uTO6br5jOVSkA3Fy5Z3vVlwH0LyOcaO1UIp5OuCr8z?=
- =?us-ascii?Q?YSlUtg4QVA6T1yc3CgvOc4nGY8ZdcSLDEwmS6BOUwzEUEJLzgnYgKtAPQQMz?=
- =?us-ascii?Q?mj56SoZJs9QTXB6ePVFi6RzULjYo5WZsRGVTbbVQrmyg2Q6MeYEUWPD2TZdv?=
- =?us-ascii?Q?CYGUoCavQssKQjE9uReC5OsQPewmFKuXmXMQIbgpf5w1oPk2CoFLZwFNcJ6l?=
- =?us-ascii?Q?P4uVkiq94mgaUr/B0n/kpNOwSOreOtmyKAsXYbmCJJqniB0VE0R9yTTPIBao?=
- =?us-ascii?Q?vCqYnUWN1mayaOEQDB+iI1KLtgKcjn/P6ppFy+fvemmVT3uXxwkY46j1nlVx?=
- =?us-ascii?Q?FyFWCWB8HNSOBVQ3ZErBKAT7tAn2rlFYEnDbdnTtO6wwSRVezQL3ZWuRrlB4?=
- =?us-ascii?Q?Jjar1w8P+uZI+BiuqIlQUVU+B+MC/FnrlTBHMIYTulfEepoviNKNPU4Smlfc?=
- =?us-ascii?Q?YWMtT1rzPL9BQdE7T3sVuX1tevqKOOAmO7slyb5SOBoki6s/zLGaH+Gxr5F9?=
- =?us-ascii?Q?sKTEOOBp9Q8AQ14WwhvH781mlRegxgsFsKrBwjzgAbj6z1ipXuiHLP98c/1/?=
- =?us-ascii?Q?4Nrn1dMiFex+ifeNJ/kTm2GE3dft/aM4QEENsWQEBfLBGQNtH5NNEEAngVSX?=
- =?us-ascii?Q?Cufu3erkcLPl0n34uiV2yM+v6EDrKj3ia9pj9cFIpNL2IvnNz0X353i7uda9?=
- =?us-ascii?Q?ZMJJtfMuiGZd1l/kMbBpgbSCQb6kcAmWZMDqJ1NHfxdCPBu0/LYMJmo4/k27?=
- =?us-ascii?Q?u+lOTOqSTs67WJFm6d/7+fR8hlQKr0jmugS/22eghqAiRaD8f/NtmHBZZm8A?=
- =?us-ascii?Q?40MC5nKwukhoge/C9ykcGdZ2UyR7VocO7jbG8708IKKtG/EOTASU4YCDpKub?=
- =?us-ascii?Q?P30RJTNM/AqIBrcPLjEjPAb+XSsihPiOxjJYSwiC8KJRXAycxK6BOpEmq0yE?=
- =?us-ascii?Q?gdZBFfU1Hxzr0C69hUx5EJxb5PS9IUYxThw58N9yKgN+2Ff5urs50O2HLGGC?=
- =?us-ascii?Q?kABb+d8aoCI54dJznM5jppvSXG3gtKhojdQ6tH72tdxOqcIEHax+pTpPrXfL?=
- =?us-ascii?Q?G1qtlHss0xZY5eOc0y46MfYt9gXbYbsbMOMKIPDMIHgB1LkHOOUAMwcSxyF+?=
- =?us-ascii?Q?VA=3D=3D?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?W3lHyT/l9tb7jyKRnD+wMaBDy2dt5fzGtoTROACr2ZIJHS0FGu0eW611HGae?=
+ =?us-ascii?Q?cVN+rYd/Y6Ljw0UYgTL3ri19mexM71COqPPZLxRo8xGhmsaXCHeQHk6trv71?=
+ =?us-ascii?Q?4xmJPFtAJtL8VwmfDABjFk3KKTHp2cxCnB8hkAsWFKIlWYo42xJorAPQyoS7?=
+ =?us-ascii?Q?n0UgszbdVbvXmjF8VSwVvAs7vWaQvZHcrcJoPGgNaJJP4nhmNQmpTeYREqfu?=
+ =?us-ascii?Q?IX3f6AIMDKp0X3OuScy8LVBBL6A3uV1pKql8H5e19QbrgTJhuvNvwnwpZYMn?=
+ =?us-ascii?Q?6+eZ1qsrCwQ7e5pkgEBKhiINOE7XkmL5B8q8MbRm84iNkHDcgjg/TpEkr5EE?=
+ =?us-ascii?Q?1TzdT85oi9G17LpAR8/5RxKt6MmWYqz1JTpG2Ph7QexaglISCIf35VGlc8Jj?=
+ =?us-ascii?Q?RSC2eEXOf7wL4ksYmGMl7+kVyic6W2zSoLsPrUG0EE2anpgUpV7gN5hUbqwK?=
+ =?us-ascii?Q?RLfuX21hG3497YQzW13Ixh2FVU17QOClMm6XPCnZih+Xl+oaJjhYLJ9ALVyH?=
+ =?us-ascii?Q?0l4haTOGs3Ux3OX5jP8julJIZz5ViboaMaMD2Wdc7tBPQzQ2LD7+04mwy58R?=
+ =?us-ascii?Q?fOngSYG9hKyVOZ/B/bVGcFsNAcNzb2vvlr/DAvgAgxTXN1n2HDotYOfbLgql?=
+ =?us-ascii?Q?hu0tCvRNNM/afnWJiY/xyOiLAT3wf3070KJtk6bwx18UFkX1L7hlM9kw6Kqj?=
+ =?us-ascii?Q?krvcRkL3YGdUihcv9rxAdvf9rduE+372dzXSIYeFaamr7HOBb0jzGsBscDVR?=
+ =?us-ascii?Q?hpQWzqN6UCjPlo6lkFC8kD/ftbxw/Ug3LYB6aPKa5QJ0HX/9RtboPN1Rlt+N?=
+ =?us-ascii?Q?nP6Oc3pn4mmqOb+xBayN0owMTZdpN5gtUkMUtAR9G6TC4XHRVvFS2UN4cxCN?=
+ =?us-ascii?Q?iZXC24yEGDZC9aKq7qVvGSSMOtAYIiRkfycXewKI/8n2TUTrzj8RrungE8/j?=
+ =?us-ascii?Q?O8uTqbC6zjAxEoH99LVehcVvwjTotMLjFLixuiXPSYo6iPL4cr+Ir2fkPVDP?=
+ =?us-ascii?Q?+cqRivDPwU1tR7+WexVhhLe99L6YofvrxiLBEkn7pvJoEKw2RDNutwb8V+Hb?=
+ =?us-ascii?Q?HZzWGG8me929I6SpD9RxiQN5MZxXyFsKF/upBD/7TstDk5TXDCBjzXYQg8HZ?=
+ =?us-ascii?Q?uzD7SuQdzBJ6FKMJ0qsQbdkdw7by8Uh95B4CQrLM5KLzYgLzGwS/X0EV7zVC?=
+ =?us-ascii?Q?mkuUiapGmY4CZAjiOgO1hQTKiO9ygT3YdLT05QeShaWTJMktEJTVSTRP92QA?=
+ =?us-ascii?Q?1Rp6zHIGYvp6snuUTE2X7j277ZalCUvFsBlF54TiAKVYAu8V5xS3CpVuEQoE?=
+ =?us-ascii?Q?s+t3tOKu7ICKjR8TJggC1sGajrXuG1kVZOCgze31IffS5PBmpuc1DhgEi1N/?=
+ =?us-ascii?Q?cnpTqwsRnkmg5F3dIeiQbrzKTVgzibCY0fBZNVURu7s8cUWn4SjDt8YjZGuj?=
+ =?us-ascii?Q?SwApFox821ev30U53oQELPz/m/6xqd+5n6QB+zO4k339C4xV8Uy0IKLXA31f?=
+ =?us-ascii?Q?DYLhtUGOg6U7NPWFHGx4720iWNs3i5zyO/OAJo0kXDJcgwbcS6q0Yy3TIG4H?=
+ =?us-ascii?Q?Hwgy9omk8VlXUz5eboSA5qBUKuoBe4l6SG1XMv8D4IzGZuZAPEb/ZE1jVZYP?=
+ =?us-ascii?Q?hA=3D=3D?=
 X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?us-ascii?Q?2KVr+PpYU0fcvinW84F0KkuRNktyirBuSwdahfWlxTo8NxW07ixmCSUZZkZ8?=
- =?us-ascii?Q?wytEtl9OjMd1arPqEmgFLkYDgSHucLQFMjKqWwdyDQwhRZx7vOQ9dY4A4BTC?=
- =?us-ascii?Q?Giv8Ewgv1dHkPtdqUd56TAqzmvZyyL+8JnaF0KUawzTQLnc2y6BFg8ZRIJvz?=
- =?us-ascii?Q?cdIHUuULK8DkBSXUIdgFATjaUBvz9mz9hXVW3HeVROe9DENFkZVCknLMtJa6?=
- =?us-ascii?Q?/H4pWykbHI2GOwk3WidrPO1t7o/lhs0e/d0EIXYFziL4kWCwfkhV/jxb1w9x?=
- =?us-ascii?Q?98I98W5cQ6wgl3m9YfXZRlUNpwqxQve6y+e3YLY2vcVRFvA7csYkUZEU9W6H?=
- =?us-ascii?Q?zxB1Um+2iP7r+aPM5iSHBR2CrWSjO8a/K1uwUy2dsSZTRjalm7P5BIftdZcu?=
- =?us-ascii?Q?syau3+68n+YX+ved5nvqlxL74TYVOCdxT+W6R42r09QvQn4H0OVxP01JWM67?=
- =?us-ascii?Q?J09dYo3rPwORTKNG7ur8lE9ZmYtv50h8jr73XJh5GAnIYscAtMeWkBN4Y2/M?=
- =?us-ascii?Q?iJ//Z7P0cUFZe4nMxvBjhgif0I6qOjgdxUt1+hyR3vkKeAOIFUQ5fkmf7YVo?=
- =?us-ascii?Q?4lW5WbBo4S9ReC/V5sx1Sxp7Pib/nDcNA1HFfj6n/BLJKtSPhqpIFNlvSUei?=
- =?us-ascii?Q?/b5w+w5xaWk/ldjQhQipkR+e/OwZFCSSMQ0N6aSuCtiZzZke9BXkEzg9EgRj?=
- =?us-ascii?Q?IU0oRUrzEQ8GPJP/6I1B3+SVop1nz1FwsWTfKDvBhzsgtnd3uL+NGz65wLep?=
- =?us-ascii?Q?bPhLbtdtrAnPPg2v/yNYiLSyjOwVJ2rfVnDLwDmr0j4qpRm90cbb7xdtgiX9?=
- =?us-ascii?Q?n1gMSzZlhJtZ3gFRySy7AhEsiqhsPZ2BHP5wNZ+55MLmJUjJlWsu0KjVXucl?=
- =?us-ascii?Q?Bvyv1NSMtCWzcT9OevTyJ+6nBxQV8gd4OsKIjvghvtfglRxK2paeUiq7b7kA?=
- =?us-ascii?Q?NWg8twT8qV0+fsXn3F6t1cLRuEQIfl8FVZs1ovLQMPKnB9l/+qPeCBGksrbm?=
- =?us-ascii?Q?dtn7cTntf6opXldiuPR6G4M/jWOxOjTTCNY1U7Jp5Bg5k0oEGOA5fl7yuJBZ?=
- =?us-ascii?Q?tGSgagLU1wkWRI8vjc7HOTpDysDdfXx/XGxxkZw4Wn6+D+u+kitLJ3CanXuv?=
- =?us-ascii?Q?3xW1aBVlvaqDgjn0PYCkBoBTPPa35SagzReKeKURvQAUoh9XRmhdQov1DaJZ?=
- =?us-ascii?Q?Zsm505bNXlrQ0Imdm57bTkKJ4UYdsBLxHIQSYechSnCTFFTY+1bV8r7GYORM?=
- =?us-ascii?Q?dafYktYausdEo1etI/AHR0GteopARaU75Jc8bRbtrGSoQLPwsseka5M5GBTL?=
- =?us-ascii?Q?3hBsDUS7LAFFCRkQH3TLXUGv8nCZjJTqOhLinm0biMlvM5eIG41xca+K+o7w?=
- =?us-ascii?Q?zj3v/2lDqMr92KF6kRnrxvla+NLi1H6QT/wX9BWpypnsQz/m2JCEprFXcXAa?=
- =?us-ascii?Q?eHP4Ak0CItZQHMB+GdCMB/BUCvNHLs2tp2cyEWzGLu9+xSX2XK37Xa7QqOOQ?=
- =?us-ascii?Q?oKp+n/QBkZwLFFdyh/Yxybh54taQLBKn5AkQsVnFK0g/eGXzzRD+AYArfg?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?us-ascii?Q?MjJ64ByBNDc46wczT0TW+PAYnw1m+ObRE1W6CAVZINNBk19j+3jV6rVs6Qzg?=
+ =?us-ascii?Q?OwKVujNAOJ9sQ0lDve0lnnWaeeOi7OH92pA5371Vut+oZNqleGAbHpnZqqN5?=
+ =?us-ascii?Q?JDpqn7rk1A9NlkdMbudOlHOzkfZNyDscNEQXx+l2ATWCtanF4nfHFpYdyIDD?=
+ =?us-ascii?Q?UA2sAoKUT8gv5UViZAGXNEURCWffJpakeBEZjziUQm4T69FlLib6BitIbLho?=
+ =?us-ascii?Q?AWDrAaPZGnwU733phc3Zk2dXR2VvGBPLVPCcKUnMpz0qPZQCsbB7VfnGa/9g?=
+ =?us-ascii?Q?OgLJkA+va4s6eHEs/Frhp/+n45B7EwWGa2cX61slY2RqLqZ7boe7U0aiWUyt?=
+ =?us-ascii?Q?O5I0tth+quyEQ3WKH4ezouzsfhWGDG2vGBAfG2PMEvAaOu6qa7XFpE5xeK4+?=
+ =?us-ascii?Q?S5kT/MeUm7TEq3e6mQiR+2Scl/sp+uTbri4VlIHovUhZo+m66qAmVNxq6uZb?=
+ =?us-ascii?Q?JdSUDPIm65XglkI7yi/ZyAN9I6m/JX9Ks9+KM8+W1D9FPWSELhm179dSEdRR?=
+ =?us-ascii?Q?ha+8ocNaa8QX0O6fnUTjO0hPci0ajObFcUJt7IEQdqAmv1/lG1zs5jtEBXkY?=
+ =?us-ascii?Q?NnadTLULxMED0Hy2OXmztu/GU3hxsEBK/6vXuG9Bed9KUu0s8+tmBydDq1s+?=
+ =?us-ascii?Q?xLF3hXbLVEouNIeldftjN+O+RMs96FsVABws7wcWi5ououmd5dCzvt8NXWl4?=
+ =?us-ascii?Q?4Mc8EiTGQZn5OW+LFUuLoq374jsbArGGnAgK7yg3CRAg61mC7KdaVh4Q/UeZ?=
+ =?us-ascii?Q?CR58+CyyAxaL5O1gd5mHdCp5RsikfRCbWaGQo0AgWQnkMA9VnPxBSnCp2BTb?=
+ =?us-ascii?Q?sTixrM/RForO5f3N7T4LgZ8N0+hQz3TK0DYQ0IDnXNiw/zrTyCjWfxjvEKSS?=
+ =?us-ascii?Q?MgYoArXXvGzsklYTK3d2RQflMUla5aj8Rmcxv1wO+2IDByDiV8C/I7/u7ac3?=
+ =?us-ascii?Q?tJXVRbCNpHYbuDDADtCE+kI3BJXJVs51byBZNCPzFacTGTs2bxnqGQ/w+yQm?=
+ =?us-ascii?Q?WsoX1RkfC4mBIhb97NV/H0dpJXSI2yNWlyTcGRXwc1Uy3OD+b0mjQcM84MS6?=
+ =?us-ascii?Q?S3coKB+Mt2wsqVAF/JttV9QL5ljj1y+h08J0X1iXolJiJ9udHudGKv1+bAUE?=
+ =?us-ascii?Q?Ir561F7H8rF7KerDfCNcJyHU83yj0NQwYqFgK/I48CBi46rCdY05ngA4ia77?=
+ =?us-ascii?Q?Vt9TQ8gs9SB3F7QsPWEt0Jjg7nkSRIguoMm7CvO7laXii7+iwQEJgfjWwfBx?=
+ =?us-ascii?Q?klDY0YbGMahzMpA2qJhvLuGw9DeuDfkZICeV54dw5/oHs+PyBZVH0dsQFuP3?=
+ =?us-ascii?Q?wvwFz/u0i9XdxfsmeTs3LbIaE0XhODAyC1Lsae6UvGR9o7dRrLCMocQ6zPnz?=
+ =?us-ascii?Q?y0I2iPNYTTYqi6tSmHeAg/T5+ePTRTgoGUTaIG8Gvvry26qg1h5JQ60K0kjp?=
+ =?us-ascii?Q?tPw8bhOywq+zZ/aVbpKQUufHLuMbcFnvgMWnm2hLywj74nEboDL7t4YG4KbL?=
+ =?us-ascii?Q?l+NW544COHKGxCjChjCiOJt2XS+uOSP4pBTjbFB6WVKy578Ml/V7GiruFA?=
  =?us-ascii?Q?=3D=3D?=
 X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e23fc83e-3569-4276-4692-08dbdfdcdfd9
+X-MS-Exchange-CrossTenant-Network-Message-Id: fae18619-eb89-4604-2b3f-08dbdfdce0fc
 X-MS-Exchange-CrossTenant-AuthSource: CO6PR10MB5409.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Nov 2023 21:59:54.5899
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Nov 2023 21:59:56.5472
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ov0nHQuUC80qS7AsA/au1oN20mO3i1UajO67O7HTy7M3+ukgONY0I2B7bLJDLBE+jyMztb/7m+wz6fxvCdOsE36pkQ/tw+Ia0+H/yaxPpow=
+X-MS-Exchange-CrossTenant-UserPrincipalName: wdPLdqeBIBX7N4Zn3RGRhPYNDrh2StKMpLniMPQN8J/os3hO7+Am5orAn5qQbqAcX9hyT0CZdb1lBXhRBem4yVdLgd00ddOcVXG3fRbak/Y=
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR10MB6141
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-11-07_13,2023-11-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=829 phishscore=0
- spamscore=0 mlxscore=0 adultscore=0 malwarescore=0 bulkscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311070182
-X-Proofpoint-GUID: HUXlBx9Ae2D8bU10bNXdXpUFrxiOPGJz
-X-Proofpoint-ORIG-GUID: HUXlBx9Ae2D8bU10bNXdXpUFrxiOPGJz
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999 mlxscore=0
+ adultscore=0 phishscore=0 suspectscore=0 spamscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311060000
+ definitions=main-2311070182
+X-Proofpoint-ORIG-GUID: jzM4HBniecIoK4u9dcdfa1gInCBXSEV-
+X-Proofpoint-GUID: jzM4HBniecIoK4u9dcdfa1gInCBXSEV-
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The scheduler uses PREEMPT_COUNT and PREEMPTION to drive
-preemption: the first to demarcate non-preemptible sections and
-the second for the actual mechanics of preemption.
+The no preemption model allows running to completion in kernel context.
+For voluntary preemption, allow preemption by higher scheduling
+classes.
 
-Enable both for voluntary preemption models.
+To do this resched_curr() now takes a parameter that specifies if the
+resched is for a scheduler class above the runqueue's current task.
+And reschedules eagerly, if so.
 
-In addition, define a new scheduler feature FORCE_PREEMPT which
-can now be used to distinguish between voluntary and full
-preemption models at runtime.
+Also define scheduler feature PREEMPT_PRIORITY which can be used to
+toggle voluntary preemption model at runtime.
 
-Originally-by: Thomas Gleixner <tglx@linutronix.de>
+TODO: Both RT, deadline work but I'm almost certainly not doing all the
+right things for both.
+
 Signed-off-by: Ankur Arora <ankur.a.arora@oracle.com>
 ---
- init/Makefile           |  2 +-
- kernel/Kconfig.preempt  | 12 ++++++++----
- kernel/entry/common.c   |  3 +--
- kernel/sched/core.c     | 26 +++++++++++---------------
- kernel/sched/features.h |  6 ++++++
- 5 files changed, 27 insertions(+), 22 deletions(-)
+ kernel/Kconfig.preempt    | 19 ++++++-------------
+ kernel/sched/core.c       | 28 +++++++++++++++++-----------
+ kernel/sched/core_sched.c |  2 +-
+ kernel/sched/deadline.c   | 22 +++++++++++-----------
+ kernel/sched/fair.c       | 18 +++++++++---------
+ kernel/sched/features.h   |  5 +++++
+ kernel/sched/idle.c       |  2 +-
+ kernel/sched/rt.c         | 26 +++++++++++++-------------
+ kernel/sched/sched.h      |  2 +-
+ 9 files changed, 64 insertions(+), 60 deletions(-)
 
-diff --git a/init/Makefile b/init/Makefile
-index 385fd80fa2ef..99e480f24cf3 100644
---- a/init/Makefile
-+++ b/init/Makefile
-@@ -24,7 +24,7 @@ mounts-$(CONFIG_BLK_DEV_INITRD)	+= do_mounts_initrd.o
- #
- 
- smp-flag-$(CONFIG_SMP)			:= SMP
--preempt-flag-$(CONFIG_PREEMPT)          := PREEMPT
-+preempt-flag-$(CONFIG_PREEMPTION)       := PREEMPT_DYNAMIC
- preempt-flag-$(CONFIG_PREEMPT_RT)	:= PREEMPT_RT
- 
- build-version = $(or $(KBUILD_BUILD_VERSION), $(build-version-auto))
 diff --git a/kernel/Kconfig.preempt b/kernel/Kconfig.preempt
-index aa87b5cd3ecc..074fe5e253b5 100644
+index 074fe5e253b5..e16114b679e3 100644
 --- a/kernel/Kconfig.preempt
 +++ b/kernel/Kconfig.preempt
-@@ -6,20 +6,23 @@ choice
- 
- config PREEMPT_NONE
- 	bool "No Forced Preemption (Server)"
-+	select PREEMPTION
- 	help
- 	  This is the traditional Linux preemption model, geared towards
- 	  throughput. It will still provide good latencies most of the
--	  time, but there are no guarantees and occasional longer delays
--	  are possible.
-+	  time, but occasional delays are possible.
- 
- 	  Select this option if you are building a kernel for a server or
- 	  scientific/computation system, or if you want to maximize the
- 	  raw processing power of the kernel, irrespective of scheduling
--	  latencies.
-+	  latencies. Unless your architecture actively disables preemption,
-+	  you can always switch to one of the other preemption models
-+	  at runtime.
+@@ -20,23 +20,16 @@ config PREEMPT_NONE
+ 	  at runtime.
  
  config PREEMPT_VOLUNTARY
- 	bool "Voluntary Kernel Preemption (Desktop)"
+-	bool "Voluntary Kernel Preemption (Desktop)"
++	bool "Voluntary Kernel Preemption"
  	depends on !ARCH_NO_PREEMPT
-+	select PREEMPTION
+ 	select PREEMPTION
  	help
- 	  This option reduces the latency of the kernel by adding more
- 	  "explicit preemption points" to the kernel code. These new
-@@ -53,7 +56,8 @@ config PREEMPT
+-	  This option reduces the latency of the kernel by adding more
+-	  "explicit preemption points" to the kernel code. These new
+-	  preemption points have been selected to reduce the maximum
+-	  latency of rescheduling, providing faster application reactions,
+-	  at the cost of slightly lower throughput.
++	  This option reduces the latency of the kernel by allowing
++	  processes in higher scheduling policy classes preempt ones
++	  lower down.
  
- 	  Select this if you are building a kernel for a desktop or
- 	  embedded system with latency requirements in the milliseconds
--	  range.
-+	  range. You can always switch to one of lower preemption options
-+	  at runtime.
+-	  This allows reaction to interactive events by allowing a
+-	  low priority process to voluntarily preempt itself even if it
+-	  is in kernel mode executing a system call. This allows
+-	  applications to run more 'smoothly' even when the system is
+-	  under load.
+-
+-	  Select this if you are building a kernel for a desktop system.
++	  Higher priority processes in the same scheduling policy class
++	  do not preempt others in the same class.
  
- config PREEMPT_RT
- 	bool "Fully Preemptible Kernel (Real-Time)"
-diff --git a/kernel/entry/common.c b/kernel/entry/common.c
-index 6433e6c77185..f7f2efabb5b5 100644
---- a/kernel/entry/common.c
-+++ b/kernel/entry/common.c
-@@ -422,8 +422,7 @@ noinstr void irqentry_exit(struct pt_regs *regs, irqentry_state_t state)
- 		}
- 
- 		instrumentation_begin();
--		if (IS_ENABLED(CONFIG_PREEMPTION))
--			irqentry_exit_cond_resched();
-+		irqentry_exit_cond_resched();
- 		/* Covers both tracing and lockdep */
- 		trace_hardirqs_on();
- 		instrumentation_end();
+ config PREEMPT
+ 	bool "Preemptible Kernel (Low-Latency Desktop)"
 diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index f65bf3ce0e9d..2a50a64255c6 100644
+index 2a50a64255c6..3fa78e8afb7d 100644
 --- a/kernel/sched/core.c
 +++ b/kernel/sched/core.c
-@@ -1065,7 +1065,7 @@ void __resched_curr(struct rq *rq, resched_t rs)
+@@ -256,7 +256,7 @@ void sched_core_dequeue(struct rq *rq, struct task_struct *p, int flags)
+ 	 */
+ 	if (!(flags & DEQUEUE_SAVE) && rq->nr_running == 1 &&
+ 	    rq->core->core_forceidle_count && rq->curr == rq->idle)
+-		resched_curr(rq);
++		resched_curr(rq, false);
+ }
+ 
+ static int sched_task_is_throttled(struct task_struct *p, int cpu)
+@@ -1074,9 +1074,12 @@ void __resched_curr(struct rq *rq, resched_t rs)
   *
-  * Always schedule eagerly, if:
+  *  - in userspace: run to completion semantics are only for kernel tasks
   *
-- *  - running under full preemption
-+ *  - running under full preemption (sched_feat(FORCE_PREEMPT))
-  *
-  *  - idle: when not polling (or if we don't have TIF_POLLING_NRFLAG)
-  *    force TIF_NEED_RESCHED to be set and send a resched IPI.
-@@ -1081,7 +1081,7 @@ void resched_curr(struct rq *rq)
+- * Otherwise (regardless of priority), run to completion.
++ *  - running under voluntary preemption (sched_feat(PREEMPT_PRIORITY))
++ *    and a task from a sched_class above wants the CPU
++ *
++ * Otherwise, run to completion.
+  */
+-void resched_curr(struct rq *rq)
++void resched_curr(struct rq *rq, bool above)
+ {
  	resched_t rs = RESCHED_lazy;
  	int context;
- 
--	if (IS_ENABLED(CONFIG_PREEMPT) ||
-+	if (sched_feat(FORCE_PREEMPT) ||
- 	    (rq->curr->sched_class == &idle_sched_class)) {
- 		rs = RESCHED_eager;
- 		goto resched;
-@@ -1108,7 +1108,6 @@ void resched_curr(struct rq *rq)
- 	context = ct_state_cpu(cpu_of(rq));
- 	if ((context == CONTEXT_USER) ||
- 	    (context == CONTEXT_GUEST)) {
--
- 		rs = RESCHED_eager;
+@@ -1112,6 +1115,9 @@ void resched_curr(struct rq *rq)
  		goto resched;
  	}
-@@ -6597,20 +6596,18 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
-  *
-  *   1. Explicit blocking: mutex, semaphore, waitqueue, etc.
-  *
-- *   2. TIF_NEED_RESCHED flag is checked on interrupt and userspace return
-- *      paths. For example, see arch/x86/entry_64.S.
-+ *   2. TIF_NEED_RESCHED flag is checked on interrupt and TIF_NEED_RESCHED[_LAZY]
-+ *      flags on userspace return paths. For example, see arch/x86/entry_64.S.
-  *
-- *      To drive preemption between tasks, the scheduler sets the flag in timer
-- *      interrupt handler scheduler_tick().
-+ *      To drive preemption between tasks, the scheduler sets one of these
-+ *      flags in timer interrupt handler scheduler_tick().
-  *
-  *   3. Wakeups don't really cause entry into schedule(). They add a
-  *      task to the run-queue and that's it.
-  *
-- *      Now, if the new task added to the run-queue preempts the current
-- *      task, then the wakeup sets TIF_NEED_RESCHED and schedule() gets
-- *      called on the nearest possible occasion:
-- *
-- *       - If the kernel is preemptible (CONFIG_PREEMPTION=y):
-+ *      - Now, if the new task added to the run-queue preempts the current
-+ *        task, then the wakeup sets TIF_NEED_RESCHED and schedule() gets
-+ *        called on the nearest possible occasion:
-  *
-  *         - in syscall or exception context, at the next outmost
-  *           preempt_enable(). (this might be as soon as the wake_up()'s
-@@ -6619,10 +6616,9 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
-  *         - in IRQ context, return from interrupt-handler to
-  *           preemptible context
-  *
-- *       - If the kernel is not preemptible (CONFIG_PREEMPTION is not set)
-- *         then at the next:
-+ *      - If the new task preempts the current task, but the scheduling
-+ *        policy is only preempt voluntarily, then at the next:
-  *
-- *          - cond_resched() call
-  *          - explicit schedule() call
-  *          - return from syscall or exception to user-space
-  *          - return from interrupt-handler to user-space
+ 
++	if (sched_feat(PREEMPT_PRIORITY) && above)
++		rs = RESCHED_eager;
++
+ resched:
+ 	__resched_curr(rq, rs);
+ }
+@@ -1123,7 +1129,7 @@ void resched_cpu(int cpu)
+ 
+ 	raw_spin_rq_lock_irqsave(rq, flags);
+ 	if (cpu_online(cpu) || cpu == smp_processor_id())
+-		resched_curr(rq);
++		resched_curr(rq, true);
+ 	raw_spin_rq_unlock_irqrestore(rq, flags);
+ }
+ 
+@@ -2277,7 +2283,7 @@ void check_preempt_curr(struct rq *rq, struct task_struct *p, int flags)
+ 	if (p->sched_class == rq->curr->sched_class)
+ 		rq->curr->sched_class->check_preempt_curr(rq, p, flags);
+ 	else if (sched_class_above(p->sched_class, rq->curr->sched_class))
+-		resched_curr(rq);
++		resched_curr(rq, true);
+ 
+ 	/*
+ 	 * A queue event has occurred, and we're going to schedule.  In
+@@ -2764,7 +2770,7 @@ int push_cpu_stop(void *arg)
+ 		deactivate_task(rq, p, 0);
+ 		set_task_cpu(p, lowest_rq->cpu);
+ 		activate_task(lowest_rq, p, 0);
+-		resched_curr(lowest_rq);
++		resched_curr(lowest_rq, true);
+ 	}
+ 
+ 	double_unlock_balance(rq, lowest_rq);
+@@ -3999,7 +4005,7 @@ void wake_up_if_idle(int cpu)
+ 	if (is_idle_task(rcu_dereference(rq->curr))) {
+ 		guard(rq_lock_irqsave)(rq);
+ 		if (is_idle_task(rq->curr))
+-			resched_curr(rq);
++			resched_curr(rq, true);
+ 	}
+ }
+ 
+@@ -6333,7 +6339,7 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+ 			continue;
+ 		}
+ 
+-		resched_curr(rq_i);
++		resched_curr(rq_i, false);
+ 	}
+ 
+ out_set_next:
+@@ -6388,7 +6394,7 @@ static bool try_steal_cookie(int this, int that)
+ 		set_task_cpu(p, this);
+ 		activate_task(dst, p, 0);
+ 
+-		resched_curr(dst);
++		resched_curr(dst, false);
+ 
+ 		success = true;
+ 		break;
+@@ -8743,7 +8749,7 @@ int __sched yield_to(struct task_struct *p, bool preempt)
+ 		 * fairness.
+ 		 */
+ 		if (preempt && rq != p_rq)
+-			resched_curr(p_rq);
++			resched_curr(p_rq, true);
+ 	}
+ 
+ out_unlock:
+@@ -10300,7 +10306,7 @@ void sched_move_task(struct task_struct *tsk)
+ 		 * throttled one but it's still the running task. Trigger a
+ 		 * resched to make sure that task can still run.
+ 		 */
+-		resched_curr(rq);
++		resched_curr(rq, true);
+ 	}
+ 
+ unlock:
+diff --git a/kernel/sched/core_sched.c b/kernel/sched/core_sched.c
+index a57fd8f27498..32f234f2a210 100644
+--- a/kernel/sched/core_sched.c
++++ b/kernel/sched/core_sched.c
+@@ -89,7 +89,7 @@ static unsigned long sched_core_update_cookie(struct task_struct *p,
+ 	 * next scheduling edge, rather than always forcing a reschedule here.
+ 	 */
+ 	if (task_on_cpu(rq, p))
+-		resched_curr(rq);
++		resched_curr(rq, false);
+ 
+ 	task_rq_unlock(rq, p, &rf);
+ 
+diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
+index e6815c3bd2f0..ecb47b5e9588 100644
+--- a/kernel/sched/deadline.c
++++ b/kernel/sched/deadline.c
+@@ -1177,7 +1177,7 @@ static enum hrtimer_restart dl_task_timer(struct hrtimer *timer)
+ 	if (dl_task(rq->curr))
+ 		check_preempt_curr_dl(rq, p, 0);
+ 	else
+-		resched_curr(rq);
++		resched_curr(rq, false);
+ 
+ #ifdef CONFIG_SMP
+ 	/*
+@@ -1367,7 +1367,7 @@ static void update_curr_dl(struct rq *rq)
+ 			enqueue_task_dl(rq, curr, ENQUEUE_REPLENISH);
+ 
+ 		if (!is_leftmost(curr, &rq->dl))
+-			resched_curr(rq);
++			resched_curr(rq, false);
+ 	}
+ 
+ 	/*
+@@ -1914,7 +1914,7 @@ static void check_preempt_equal_dl(struct rq *rq, struct task_struct *p)
+ 	    cpudl_find(&rq->rd->cpudl, p, NULL))
+ 		return;
+ 
+-	resched_curr(rq);
++	resched_curr(rq, false);
+ }
+ 
+ static int balance_dl(struct rq *rq, struct task_struct *p, struct rq_flags *rf)
+@@ -1943,7 +1943,7 @@ static void check_preempt_curr_dl(struct rq *rq, struct task_struct *p,
+ 				  int flags)
+ {
+ 	if (dl_entity_preempt(&p->dl, &rq->curr->dl)) {
+-		resched_curr(rq);
++		resched_curr(rq, false);
+ 		return;
+ 	}
+ 
+@@ -2307,7 +2307,7 @@ static int push_dl_task(struct rq *rq)
+ 	if (dl_task(rq->curr) &&
+ 	    dl_time_before(next_task->dl.deadline, rq->curr->dl.deadline) &&
+ 	    rq->curr->nr_cpus_allowed > 1) {
+-		resched_curr(rq);
++		resched_curr(rq, false);
+ 		return 0;
+ 	}
+ 
+@@ -2353,7 +2353,7 @@ static int push_dl_task(struct rq *rq)
+ 	activate_task(later_rq, next_task, 0);
+ 	ret = 1;
+ 
+-	resched_curr(later_rq);
++	resched_curr(later_rq, false);
+ 
+ 	double_unlock_balance(rq, later_rq);
+ 
+@@ -2457,7 +2457,7 @@ static void pull_dl_task(struct rq *this_rq)
+ 	}
+ 
+ 	if (resched)
+-		resched_curr(this_rq);
++		resched_curr(this_rq, false);
+ }
+ 
+ /*
+@@ -2654,7 +2654,7 @@ static void switched_to_dl(struct rq *rq, struct task_struct *p)
+ 		if (dl_task(rq->curr))
+ 			check_preempt_curr_dl(rq, p, 0);
+ 		else
+-			resched_curr(rq);
++			resched_curr(rq, false);
+ 	} else {
+ 		update_dl_rq_load_avg(rq_clock_pelt(rq), rq, 0);
+ 	}
+@@ -2687,7 +2687,7 @@ static void prio_changed_dl(struct rq *rq, struct task_struct *p,
+ 		 * runqueue.
+ 		 */
+ 		if (dl_time_before(rq->dl.earliest_dl.curr, p->dl.deadline))
+-			resched_curr(rq);
++			resched_curr(rq, false);
+ 	} else {
+ 		/*
+ 		 * Current may not be deadline in case p was throttled but we
+@@ -2697,14 +2697,14 @@ static void prio_changed_dl(struct rq *rq, struct task_struct *p,
+ 		 */
+ 		if (!dl_task(rq->curr) ||
+ 		    dl_time_before(p->dl.deadline, rq->curr->dl.deadline))
+-			resched_curr(rq);
++			resched_curr(rq, false);
+ 	}
+ #else
+ 	/*
+ 	 * We don't know if p has a earlier or later deadline, so let's blindly
+ 	 * set a (maybe not needed) rescheduling point.
+ 	 */
+-	resched_curr(rq);
++	resched_curr(rq, false);
+ #endif
+ }
+ 
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index fe7e5e9b2207..448fe36e7bbb 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -1046,7 +1046,7 @@ static void update_deadline(struct cfs_rq *cfs_rq,
+ 	if (tick && test_tsk_thread_flag(rq->curr, TIF_NEED_RESCHED_LAZY))
+ 		__resched_curr(rq, RESCHED_eager);
+ 	else
+-		resched_curr(rq);
++		resched_curr(rq, false);
+ 
+ 	clear_buddies(cfs_rq, se);
+ }
+@@ -5337,7 +5337,7 @@ entity_tick(struct cfs_rq *cfs_rq, struct sched_entity *curr, int queued)
+ 	 * validating it and just reschedule.
+ 	 */
+ 	if (queued) {
+-		resched_curr(rq_of(cfs_rq));
++		resched_curr(rq_of(cfs_rq), false);
+ 		return;
+ 	}
+ 	/*
+@@ -5483,7 +5483,7 @@ static void __account_cfs_rq_runtime(struct cfs_rq *cfs_rq, u64 delta_exec)
+ 	 * hierarchy can be throttled
+ 	 */
+ 	if (!assign_cfs_rq_runtime(cfs_rq) && likely(cfs_rq->curr))
+-		resched_curr(rq_of(cfs_rq));
++		resched_curr(rq_of(cfs_rq), false);
+ }
+ 
+ static __always_inline
+@@ -5743,7 +5743,7 @@ void unthrottle_cfs_rq(struct cfs_rq *cfs_rq)
+ 
+ 	/* Determine whether we need to wake up potentially idle CPU: */
+ 	if (rq->curr == rq->idle && rq->cfs.nr_running)
+-		resched_curr(rq);
++		resched_curr(rq, false);
+ }
+ 
+ #ifdef CONFIG_SMP
+@@ -6448,7 +6448,7 @@ static void hrtick_start_fair(struct rq *rq, struct task_struct *p)
+ 
+ 		if (delta < 0) {
+ 			if (task_current(rq, p))
+-				resched_curr(rq);
++				resched_curr(rq, false);
+ 			return;
+ 		}
+ 		hrtick_start(rq, delta);
+@@ -8143,7 +8143,7 @@ static void check_preempt_wakeup(struct rq *rq, struct task_struct *p, int wake_
+ 	return;
+ 
+ preempt:
+-	resched_curr(rq);
++	resched_curr(rq, false);
+ }
+ 
+ #ifdef CONFIG_SMP
+@@ -12294,7 +12294,7 @@ static inline void task_tick_core(struct rq *rq, struct task_struct *curr)
+ 	 */
+ 	if (rq->core->core_forceidle_count && rq->cfs.nr_running == 1 &&
+ 	    __entity_slice_used(&curr->se, MIN_NR_TASKS_DURING_FORCEIDLE))
+-		resched_curr(rq);
++		resched_curr(rq, false);
+ }
+ 
+ /*
+@@ -12459,7 +12459,7 @@ prio_changed_fair(struct rq *rq, struct task_struct *p, int oldprio)
+ 	 */
+ 	if (task_current(rq, p)) {
+ 		if (p->prio > oldprio)
+-			resched_curr(rq);
++			resched_curr(rq, false);
+ 	} else
+ 		check_preempt_curr(rq, p, 0);
+ }
+@@ -12561,7 +12561,7 @@ static void switched_to_fair(struct rq *rq, struct task_struct *p)
+ 		 * if we can still preempt the current task.
+ 		 */
+ 		if (task_current(rq, p))
+-			resched_curr(rq);
++			resched_curr(rq, false);
+ 		else
+ 			check_preempt_curr(rq, p, 0);
+ 	}
 diff --git a/kernel/sched/features.h b/kernel/sched/features.h
-index f770168230ae..9b4c2967b2b7 100644
+index 9b4c2967b2b7..9bf30732b03f 100644
 --- a/kernel/sched/features.h
 +++ b/kernel/sched/features.h
-@@ -89,3 +89,9 @@ SCHED_FEAT(UTIL_EST_FASTUP, true)
- SCHED_FEAT(LATENCY_WARN, false)
+@@ -92,6 +92,11 @@ SCHED_FEAT(HZ_BW, true)
  
- SCHED_FEAT(HZ_BW, true)
-+
-+#if defined(CONFIG_PREEMPT)
-+SCHED_FEAT(FORCE_PREEMPT, true)
-+#else
+ #if defined(CONFIG_PREEMPT)
+ SCHED_FEAT(FORCE_PREEMPT, true)
++SCHED_FEAT(PREEMPT_PRIORITY, true)
++#elif defined(CONFIG_PREEMPT_VOLUNTARY)
 +SCHED_FEAT(FORCE_PREEMPT, false)
-+#endif
++SCHED_FEAT(PREEMPT_PRIORITY, true)
+ #else
+ SCHED_FEAT(FORCE_PREEMPT, false)
++SCHED_FEAT(PREEMPT_PRIORITY, false)
+ #endif
+diff --git a/kernel/sched/idle.c b/kernel/sched/idle.c
+index eacd204e2879..3ef039869be9 100644
+--- a/kernel/sched/idle.c
++++ b/kernel/sched/idle.c
+@@ -403,7 +403,7 @@ balance_idle(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+  */
+ static void check_preempt_curr_idle(struct rq *rq, struct task_struct *p, int flags)
+ {
+-	resched_curr(rq);
++	resched_curr(rq, true);
+ }
+ 
+ static void put_prev_task_idle(struct rq *rq, struct task_struct *prev)
+diff --git a/kernel/sched/rt.c b/kernel/sched/rt.c
+index 5fdb93f1b87e..8d87e42d30d8 100644
+--- a/kernel/sched/rt.c
++++ b/kernel/sched/rt.c
+@@ -589,7 +589,7 @@ static void sched_rt_rq_enqueue(struct rt_rq *rt_rq)
+ 			enqueue_rt_entity(rt_se, 0);
+ 
+ 		if (rt_rq->highest_prio.curr < curr->prio)
+-			resched_curr(rq);
++			resched_curr(rq, false);
+ 	}
+ }
+ 
+@@ -682,7 +682,7 @@ static inline void sched_rt_rq_enqueue(struct rt_rq *rt_rq)
+ 		return;
+ 
+ 	enqueue_top_rt_rq(rt_rq);
+-	resched_curr(rq);
++	resched_curr(rq, false);
+ }
+ 
+ static inline void sched_rt_rq_dequeue(struct rt_rq *rt_rq)
+@@ -1076,7 +1076,7 @@ static void update_curr_rt(struct rq *rq)
+ 			rt_rq->rt_time += delta_exec;
+ 			exceeded = sched_rt_runtime_exceeded(rt_rq);
+ 			if (exceeded)
+-				resched_curr(rq);
++				resched_curr(rq, false);
+ 			raw_spin_unlock(&rt_rq->rt_runtime_lock);
+ 			if (exceeded)
+ 				do_start_rt_bandwidth(sched_rt_bandwidth(rt_rq));
+@@ -1691,7 +1691,7 @@ static void check_preempt_equal_prio(struct rq *rq, struct task_struct *p)
+ 	 * to try and push the current task away:
+ 	 */
+ 	requeue_task_rt(rq, p, 1);
+-	resched_curr(rq);
++	resched_curr(rq, false);
+ }
+ 
+ static int balance_rt(struct rq *rq, struct task_struct *p, struct rq_flags *rf)
+@@ -1718,7 +1718,7 @@ static int balance_rt(struct rq *rq, struct task_struct *p, struct rq_flags *rf)
+ static void check_preempt_curr_rt(struct rq *rq, struct task_struct *p, int flags)
+ {
+ 	if (p->prio < rq->curr->prio) {
+-		resched_curr(rq);
++		resched_curr(rq, false);
+ 		return;
+ 	}
+ 
+@@ -2074,7 +2074,7 @@ static int push_rt_task(struct rq *rq, bool pull)
+ 	 * just reschedule current.
+ 	 */
+ 	if (unlikely(next_task->prio < rq->curr->prio)) {
+-		resched_curr(rq);
++		resched_curr(rq, false);
+ 		return 0;
+ 	}
+ 
+@@ -2162,7 +2162,7 @@ static int push_rt_task(struct rq *rq, bool pull)
+ 	deactivate_task(rq, next_task, 0);
+ 	set_task_cpu(next_task, lowest_rq->cpu);
+ 	activate_task(lowest_rq, next_task, 0);
+-	resched_curr(lowest_rq);
++	resched_curr(lowest_rq, false);
+ 	ret = 1;
+ 
+ 	double_unlock_balance(rq, lowest_rq);
+@@ -2456,7 +2456,7 @@ static void pull_rt_task(struct rq *this_rq)
+ 	}
+ 
+ 	if (resched)
+-		resched_curr(this_rq);
++		resched_curr(this_rq, false);
+ }
+ 
+ /*
+@@ -2555,7 +2555,7 @@ static void switched_to_rt(struct rq *rq, struct task_struct *p)
+ 			rt_queue_push_tasks(rq);
+ #endif /* CONFIG_SMP */
+ 		if (p->prio < rq->curr->prio && cpu_online(cpu_of(rq)))
+-			resched_curr(rq);
++			resched_curr(rq, false);
+ 	}
+ }
+ 
+@@ -2583,11 +2583,11 @@ prio_changed_rt(struct rq *rq, struct task_struct *p, int oldprio)
+ 		 * then reschedule.
+ 		 */
+ 		if (p->prio > rq->rt.highest_prio.curr)
+-			resched_curr(rq);
++			resched_curr(rq, false);
+ #else
+ 		/* For UP simply resched on drop of prio */
+ 		if (oldprio < p->prio)
+-			resched_curr(rq);
++			resched_curr(rq, false);
+ #endif /* CONFIG_SMP */
+ 	} else {
+ 		/*
+@@ -2596,7 +2596,7 @@ prio_changed_rt(struct rq *rq, struct task_struct *p, int oldprio)
+ 		 * then reschedule.
+ 		 */
+ 		if (p->prio < rq->curr->prio)
+-			resched_curr(rq);
++			resched_curr(rq, false);
+ 	}
+ }
+ 
+@@ -2668,7 +2668,7 @@ static void task_tick_rt(struct rq *rq, struct task_struct *p, int queued)
+ 			if (test_tsk_thread_flag(rq->curr, TIF_NEED_RESCHED_LAZY))
+ 				__resched_curr(rq, RESCHED_eager);
+ 			else
+-				resched_curr(rq);
++				resched_curr(rq, false);
+ 
+ 			return;
+ 		}
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index e29a8897f573..9a745dd7482f 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -2435,7 +2435,7 @@ extern void init_sched_fair_class(void);
+ extern void reweight_task(struct task_struct *p, int prio);
+ 
+ extern void __resched_curr(struct rq *rq, resched_t rs);
+-extern void resched_curr(struct rq *rq);
++extern void resched_curr(struct rq *rq, bool above);
+ extern void resched_cpu(int cpu);
+ 
+ extern struct rt_bandwidth def_rt_bandwidth;
 -- 
 2.31.1
 
