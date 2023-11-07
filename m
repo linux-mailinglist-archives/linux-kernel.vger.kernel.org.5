@@ -2,184 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 05D8E7E3891
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 11:13:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7A967E3896
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 11:14:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233785AbjKGKN1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 05:13:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60882 "EHLO
+        id S233799AbjKGKOo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 05:14:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233794AbjKGKNZ (ORCPT
+        with ESMTP id S229543AbjKGKOm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 05:13:25 -0500
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FB62F7
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 02:12:59 -0800 (PST)
-Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1cc394f4cdfso37783255ad.0
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 02:12:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1699351978; x=1699956778; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=KW3TlcvX6A8NZwMp7f8Kxy/+sTqDmiVXoF/rJgIL6L0=;
-        b=Cah/ilRucYdGZypYAujItoCOVwxr8/LYziKacfaJReqfq4nIBx7yYZqpZ6s1yjjnaS
-         QklvZT4WSKUz6+5oacFczJ2obKP5+DoQkvu7LFqWe8ljEvNnjc0DwQz8Rp61vzonfAlu
-         +SPmoP1VjKYQYi69i5xedpFea2yBYNk/AFY7c1Tkc+qQDrPbNbaaIPQl6WJvpjd0MKFl
-         8RY9G+CGJuyTU10gtwRbKeuajU1tKZln4pFR327USvRbdk8Y557XupMVK0D6q55sgS4B
-         CN5fnd9hn+fp2ZE8JiSl+KUFiIVL+Z2+wWUlUizjDLoQqDCC8QzL9YM8T1dJ7uOd99Qu
-         zNBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699351978; x=1699956778;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=KW3TlcvX6A8NZwMp7f8Kxy/+sTqDmiVXoF/rJgIL6L0=;
-        b=HxD7us0Clkrgy+exGsISu7H/DvrEHvAiAUa20webJ5REchxEwBlXV9qIhUU21dukl7
-         MuVwm/ogPCP0a24vhWD//CWaisN2Zv3RKtjnxOo5lPAt3MVWpdAx7ciNs8wS5NAGiLwy
-         wjaVis2qlM4huOUO93AEOAmnH2Rl8rPNS9ZqG0CAjmNw+HFjbg1o/QbNqKernKa8ObXO
-         14JQOE0AWf6tr74KwCWT41EbpZ9h8AjBwXLxXRnNXyJP+vzkaQc4+vWlyt969jNyo1+3
-         j8qwLk2iFuws1OQl+JbCfQ3B6rPMQmpeMDuiImEucMHtl/s0suAk13p3p1JJLASRTgnV
-         GTbg==
-X-Gm-Message-State: AOJu0Yyx0zyr+Ehn2Lpu8MJ0OqezcxKUeQLMViv9l1h9fPXUcrQ3VAOo
-        o1xFMbViWXP8bGPR+AarpXWIwA==
-X-Google-Smtp-Source: AGHT+IEP9EA6zyhJc5rboncPFfJYUN59t5DyhE99mVuT4PEGZUOCfgPVHmXcDwoOxF4gBk6eUTZfww==
-X-Received: by 2002:a17:902:d18d:b0:1cc:1106:cf5b with SMTP id m13-20020a170902d18d00b001cc1106cf5bmr23857294plb.19.1699351978501;
-        Tue, 07 Nov 2023 02:12:58 -0800 (PST)
-Received: from [10.84.153.152] ([203.208.167.147])
-        by smtp.gmail.com with ESMTPSA id li11-20020a170903294b00b001b0358848b0sm7349793plb.161.2023.11.07.02.12.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 07 Nov 2023 02:12:58 -0800 (PST)
-Message-ID: <b2b70241-04fe-4064-ba72-c5ed03a4d4fd@bytedance.com>
-Date:   Tue, 7 Nov 2023 18:12:49 +0800
+        Tue, 7 Nov 2023 05:14:42 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5920BD;
+        Tue,  7 Nov 2023 02:14:39 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F1FA0C433C7;
+        Tue,  7 Nov 2023 10:14:35 +0000 (UTC)
+Message-ID: <b5f9d751-5425-4281-8a21-99e92bd447b7@xs4all.nl>
+Date:   Tue, 7 Nov 2023 11:14:34 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/4] sched/eevdf: O(1) fastpath for task selection
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Valentin Schneider <valentin.schneider@arm.com>
-Cc:     Barry Song <21cnbao@gmail.com>,
-        Benjamin Segall <bsegall@google.com>,
-        Chen Yu <yu.c.chen@intel.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        "Gautham R . Shenoy" <gautham.shenoy@amd.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        K Prateek Nayak <kprateek.nayak@amd.com>,
-        Mike Galbraith <efault@gmx.de>,
-        Qais Yousef <qyousef@layalina.io>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Yicong Yang <yangyicong@huawei.com>,
-        Youssef Esmat <youssefesmat@chromium.org>,
-        linux-kernel@vger.kernel.org
-References: <20231107090510.71322-1-wuyun.abel@bytedance.com>
- <20231107090510.71322-4-wuyun.abel@bytedance.com>
-Content-Language: en-US
-From:   Abel Wu <wuyun.abel@bytedance.com>
-In-Reply-To: <20231107090510.71322-4-wuyun.abel@bytedance.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Subject: Re: [RESEND PATCH v2 0/3] Fix use-after-free bug in
+ mtk_jpeg_dec_device_run and fix schedule error in mtk_jpegdec_worker
+Content-Language: en-US, nl
+To:     Zheng Wang <zyytlz.wz@163.com>, dmitry.osipenko@collabora.com
+Cc:     Kyrie.Wu@mediatek.com, bin.liu@mediatek.com, mchehab@kernel.org,
+        matthias.bgg@gmail.com, angelogioacchino.delregno@collabora.com,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, Irui.Wang@mediatek.com,
+        security@kernel.org, hackerzheng666@gmail.com,
+        amergnat@baylibre.com, wenst@chromium.org, stable@vger.kernel.org
+References: <20231106144811.868127-1-zyytlz.wz@163.com>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Autocrypt: addr=hverkuil@xs4all.nl; keydata=
+ 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
+In-Reply-To: <20231106144811.868127-1-zyytlz.wz@163.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/7/23 5:05 PM, Abel Wu Wrote:
-> Since the RB-tree is now sorted by deadline, let's first try the
-> leftmost entity which has the earliest virtual deadline. I've done
-> some benchmarks to see its effectiveness.
+On 06/11/2023 15:48, Zheng Wang wrote:
+> Hello,
 > 
-> All the benchmarks are done inside a normal cpu cgroup in a clean
-> environment with cpu turbo disabled, on a dual-CPU Intel Xeon(R)
-> Platinum 8260 with 2 NUMA nodes each of which has 24C/48T.
+> This v2 series fixes the use-after-free bug in mtk_jpeg_dec_device_run.
+> This patch fixes the security bug in chrome-os.
+> It inclues reverting the incomplete fix before and make the right fix.
+> Also,it fixes the error of timeout-worker-schedule in multiple-core
+> devices.
 > 
->    hackbench: process/thread + pipe/socket + 1/2/4/8 groups
->    netperf:   TCP/UDP + STREAM/RR + 24/48/72/96/192 threads
->    tbench:    loopback 24/48/72/96/192 threads
->    schbench:  1/2/4/8 mthreads
+> 1. Remove cancel worker in mtk_jpeg_remove for the worker is only
+> registered in single-core device but we try to cacnel it in both
+> single-core and multiple-core devices.
 > 
->    direct:    cfs_rq has only one entity
->    parity:    RUN_TO_PARITY
->    fast:      O(1) fastpath
->    slow:	     heap search
+> 2. Fix use-after-free bug by delay the schedule_delayed_work only if
+> mtk_jpeg_set_dec_dst runs successfully.
 > 
->      (%)		direct	parity	fast	slow
->    hackbench	92.95	2.02	4.91	0.12
->    netperf	68.08	6.60	24.18	1.14
->    tbench	67.55	11.22	20.61	0.62
->    schbench	69.91	2.65	25.73	1.71
+> 3. Delay the schedule_delayed_work in mtk_jpegdec_worker as it has same
+> code logic in mtk_jpeg_dec_device_run.
 > 
-> The above results indicate that this fastpath really makes task
-> selection more efficient.
+> version 2 changes
 > 
-> Signed-off-by: Abel Wu <wuyun.abel@bytedance.com>
-> ---
->   kernel/sched/fair.c | 14 +++++++++++---
->   1 file changed, 11 insertions(+), 3 deletions(-)
+> -put the patches into on series suggested by Dmitry
 > 
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 459487bf8824..a1fdd0c7a051 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -896,6 +896,7 @@ int sched_update_scaling(void)
->   static struct sched_entity *pick_eevdf(struct cfs_rq *cfs_rq)
->   {
->   	struct rb_node *node = cfs_rq->tasks_timeline.rb_root.rb_node;
-> +	struct sched_entity *se = __pick_first_entity(cfs_rq);
->   	struct sched_entity *curr = cfs_rq->curr;
->   	struct sched_entity *best = NULL;
->   
-> @@ -904,7 +905,7 @@ static struct sched_entity *pick_eevdf(struct cfs_rq *cfs_rq)
->   	 * in this cfs_rq, saving some cycles.
->   	 */
->   	if (cfs_rq->nr_running == 1)
-> -		return curr && curr->on_rq ? curr : __node_2_se(node);
-> +		return curr && curr->on_rq ? curr : se;
+> Zheng Wang (3):
+>   media: mtk-jpeg: Remove cancel worker in mtk_jpeg_remove to avoid the
+>     crash of multi-core JPEG devices
+>   media: mtk-jpeg: Fix use after free bug due to error path handling
+>     in mtk_jpeg_dec_device_run
+>   media: mtk-jpeg: Fix timeout schedule error in mtk_jpegdec_worker.
+> 
+>  .../media/platform/mediatek/jpeg/mtk_jpeg_core.c    | 13 ++++++-------
+>  1 file changed, 6 insertions(+), 7 deletions(-)
+> 
 
-Maybe we can reduce memory footprint on curr by:
+Please don't resend. If it is in patchwork.linuxtv.org then it is good.
+Fixes (unless they fix something really nasty) can take several weeks before
+they are picked up. I usually schedule 2 or 3 rounds per kernel cycle where
+I go through all the pending patches with fixes.
 
-		return se ? se : curr;
+Regards,
 
->   
->   	if (curr && (!curr->on_rq || !entity_eligible(cfs_rq, curr)))
->   		curr = NULL;
-> @@ -916,9 +917,14 @@ static struct sched_entity *pick_eevdf(struct cfs_rq *cfs_rq)
->   	if (sched_feat(RUN_TO_PARITY) && curr && curr->vlag == curr->deadline)
->   		return curr;
->   
-> +	/* Pick the leftmost entity if it's eligible */
-> +	if (se && entity_eligible(cfs_rq, se)) {
-> +		best = se;
-> +		goto found;
-> +	}
-> +
->   	/* Heap search for the EEVD entity */
->   	while (node) {
-> -		struct sched_entity *se = __node_2_se(node);
->   		struct rb_node *left = node->rb_left;
->   
->   		/*
-> @@ -931,6 +937,8 @@ static struct sched_entity *pick_eevdf(struct cfs_rq *cfs_rq)
->   			continue;
->   		}
->   
-> +		se = __node_2_se(node);
-> +
->   		/*
->   		 * The left subtree either is empty or has no eligible
->   		 * entity, so check the current node since it is the one
-> @@ -943,7 +951,7 @@ static struct sched_entity *pick_eevdf(struct cfs_rq *cfs_rq)
->   
->   		node = node->rb_right;
->   	}
-> -
-> +found:
->   	if (!best || (curr && entity_before(curr, best)))
->   		best = curr;
->   
+	Hans
