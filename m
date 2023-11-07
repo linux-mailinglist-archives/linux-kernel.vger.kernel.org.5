@@ -2,90 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 273157E4C07
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 23:50:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A83257E4C0E
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 23:55:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343574AbjKGWuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 17:50:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43668 "EHLO
+        id S1343650AbjKGWz2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 17:55:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232452AbjKGWuF (ORCPT
+        with ESMTP id S232452AbjKGWz0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 17:50:05 -0500
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3F00DA
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 14:50:03 -0800 (PST)
-Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-6c43f830566so967513b3a.2
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 14:50:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1699397403; x=1700002203; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=/+vhIz7LwiojaeUjPwh9VacelWUXCMWwhB6gmZPNvcI=;
-        b=cn0xkmTVJVoK0y2t8vNBoRqFLFEjjpAFhRExyuLliqkqN6G13Jy0Ds3Fd1tBLfY0k2
-         kqaw6nCua9OaQYMAcF5/ve6DwEzr3Iv5SOrWQCl/5lnfwoPJVaJzu4BaOY/+LB+NjX4J
-         e8zOO627E4BLk45ihcbi6KiUktJQsDgYcNLMg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699397403; x=1700002203;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/+vhIz7LwiojaeUjPwh9VacelWUXCMWwhB6gmZPNvcI=;
-        b=o+2kjIDYnCip+CobYAT+KX6xB5pd3r5YTuZB8cRth1oEbw1Q9v75shdPe6WonB/ExW
-         jrZfaJBK0iYW+BTS+7w4ZDTYh2rZXWUtUc/tmyi1whJzHPE4HY3FYfmPAknPkhdpEJct
-         2krkYmqj6SYwAnH1pqxZF/NdbGyhhKZ1Sc3gIez4Jv1AQxO3STxZDgB98aAHzja2u+6o
-         DEnyArmCXhhRi0P3ogDm2P5AXjigIvAnB0/ZXgCn5i6CW7n2sNb6BrmapQ6UWve/yJaY
-         syj5Ryay1SGYSaQS78xPgds4Ew581PSABF5L1F/xoIuxqqHcBkgWBgZ/0eduOt7lGzM/
-         KoWg==
-X-Gm-Message-State: AOJu0YySofKSw4qSPNZQGcbROlG9IlfQ+Ugo+bXO83MmYgc831v84UjH
-        EovKILQRS0PcQDTEZgCYiRM1ow==
-X-Google-Smtp-Source: AGHT+IH1d5SgbcL7itiPSWGAZKEFAhSQqcwo0xaVEpMRSh8OO+9Cff/xp9eUmO+GeaQGXC48IEgL7g==
-X-Received: by 2002:a05:6a20:3ca4:b0:140:f6c4:aa71 with SMTP id b36-20020a056a203ca400b00140f6c4aa71mr434754pzj.8.1699397403202;
-        Tue, 07 Nov 2023 14:50:03 -0800 (PST)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id jc4-20020a17090325c400b001cc52b58df6sm322717plb.215.2023.11.07.14.50.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Nov 2023 14:50:02 -0800 (PST)
-Date:   Tue, 7 Nov 2023 14:50:01 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Mateusz Guzik <mjguzik@gmail.com>
-Cc:     Josh Triplett <josh@joshtriplett.org>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] fs/exec.c: Add fast path for ENOENT on PATH search
- before allocating mm
-Message-ID: <202311071445.53E5D72C@keescook>
-References: <5c7333ea4bec2fad1b47a8fa2db7c31e4ffc4f14.1663334978.git.josh@joshtriplett.org>
- <202311071228.27D22C00@keescook>
- <20231107205151.qkwlw7aarjvkyrqs@f>
- <CAGudoHFsqMPmVvaV7BebGkpkw=pSQY8PLdB-1S3W5NpYh6trmA@mail.gmail.com>
+        Tue, 7 Nov 2023 17:55:26 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7E4118C;
+        Tue,  7 Nov 2023 14:55:24 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 75129C433C7;
+        Tue,  7 Nov 2023 22:55:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699397724;
+        bh=iB5WIQwRWCJ62sSwm7rVVjSX4KNeifY96+WD+ljQo7A=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=CwzKn3MLIlLci2fLlpr0m0pOk173vFyYAGolRpAoKUQY79y3Gsz/ZTWTY9UNQp0aT
+         j3/uplXmQpqgMLpDUu+RzQD5rtH7NsPAK+YwQhsxHqxCoHd5KNx7iYjk3XekAeOLqW
+         dmA44Lv3QYzFJDV6a7/X/M0Sk6Ch3fPiTogIrlEAa85Bytb2V42KPPN6Cu81fvUdHw
+         NNBLdE0C7ah0RV48znH8Y18XD6UzmkAh0ggCZjl9ZrKnrdnYH7YVhCnv6wk7IYHWDT
+         zTGv+xK1Anj9erQ5elOkREzeOde6rdEcp7w2E0bvGgmeVKep1IfXdMijuOwOs9FgO9
+         VYN0GSclxC51A==
+Message-ID: <a5b95e6b-8716-4e2e-9183-959b754b5b5e@kernel.org>
+Date:   Tue, 7 Nov 2023 15:55:22 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAGudoHFsqMPmVvaV7BebGkpkw=pSQY8PLdB-1S3W5NpYh6trmA@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH v3 05/12] netdev: netdevice devmem allocator
+Content-Language: en-US
+To:     Mina Almasry <almasrymina@google.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Jeroen de Borst <jeroendb@google.com>,
+        Praveen Kaligineedi <pkaligineedi@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Kaiyuan Zhang <kaiyuanz@google.com>
+References: <20231106024413.2801438-1-almasrymina@google.com>
+ <20231106024413.2801438-6-almasrymina@google.com>
+ <3b0d612c-e33b-48aa-a861-fbb042572fc9@kernel.org>
+ <CAHS8izOHYx+oYnzksUDrK1S0+6CdMJmirApntP5W862yFumezw@mail.gmail.com>
+From:   David Ahern <dsahern@kernel.org>
+In-Reply-To: <CAHS8izOHYx+oYnzksUDrK1S0+6CdMJmirApntP5W862yFumezw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 07, 2023 at 10:23:16PM +0100, Mateusz Guzik wrote:
-> If the patch which dodges second lookup still somehow appears slower a
-> flamegraph or other profile would be nice. I can volunteer to take a
-> look at what's going on provided above measurements will be done and
-> show funkyness.
+On 11/7/23 3:10 PM, Mina Almasry wrote:
+> On Mon, Nov 6, 2023 at 3:44 PM David Ahern <dsahern@kernel.org> wrote:
+>>
+>> On 11/5/23 7:44 PM, Mina Almasry wrote:
+>>> diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+>>> index eeeda849115c..1c351c138a5b 100644
+>>> --- a/include/linux/netdevice.h
+>>> +++ b/include/linux/netdevice.h
+>>> @@ -843,6 +843,9 @@ struct netdev_dmabuf_binding {
+>>>  };
+>>>
+>>>  #ifdef CONFIG_DMA_SHARED_BUFFER
+>>> +struct page_pool_iov *
+>>> +netdev_alloc_devmem(struct netdev_dmabuf_binding *binding);
+>>> +void netdev_free_devmem(struct page_pool_iov *ppiov);
+>>
+>> netdev_{alloc,free}_dmabuf?
+>>
+> 
+> Can do.
+> 
+>> I say that because a dmabuf can be host memory, at least I am not aware
+>> of a restriction that a dmabuf is device memory.
+>>
+> 
+> In my limited experience dma-buf is generally device memory, and
+> that's really its use case. CONFIG_UDMABUF is a driver that mocks
+> dma-buf with a memfd which I think is used for testing. But I can do
+> the rename, it's more clear anyway, I think.
 
-When I looked at this last, it seemed like all the work done in
-do_filp_open() (my patch, which moved the lookup earlier) was heavier
-than the duplicate filename_lookup().
+config UDMABUF
+        bool "userspace dmabuf misc driver"
+        default n
+        depends on DMA_SHARED_BUFFER
+        depends on MEMFD_CREATE || COMPILE_TEST
+        help
+          A driver to let userspace turn memfd regions into dma-bufs.
+          Qemu can use this to create host dmabufs for guest framebuffers.
 
-What I didn't test was moving the sched_exec() before the mm creation,
-which Peter confirmed shouldn't be a problem, but I think that might be
-only a tiny benefit, if at all.
 
-If you can do some comparisons, that would be great; it always takes me
-a fair bit of time to get set up for flame graph generation, etc. :)
+Qemu is just a userspace process; it is no way a special one.
 
--Kees
+Treating host memory as a dmabuf should radically simplify the io_uring
+extension of this set. That the io_uring set needs to dive into
+page_pools is just wrong - complicating the design and code and pushing
+io_uring into a realm it does not need to be involved in.
 
--- 
-Kees Cook
+Most (all?) of this patch set can work with any memory; only device
+memory is unreadable.
+
+
