@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F4DB7E4137
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 14:53:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A7CB7E4139
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 14:53:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234799AbjKGNxB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 08:53:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50244 "EHLO
+        id S234427AbjKGNxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 08:53:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234671AbjKGNwq (ORCPT
+        with ESMTP id S234244AbjKGNwr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 08:52:46 -0500
+        Tue, 7 Nov 2023 08:52:47 -0500
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FE6D30C5
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 05:51:33 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E871A1BF2
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 05:51:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699365093; x=1730901093;
+  t=1699365095; x=1730901095;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=ok+C5VgX/V+ECchmrjizFZBWxdoj6QGhMwgM03J/+rE=;
-  b=UQXXwmHm7Ryr8nkYuU+FDYLjDppQbmxhglkZmP69RT3NsGahOuVMnfK2
-   af+GRzPmM5ir0QzkuWvZkFpM3b4Apv/BBbL7vDI0N5adPjxRYJZuD3uax
-   iACefUcsX2ihpVz4KezwqXf88WhQJardq6hIEVBFOOqcjazy1t75sp2Wz
-   dXgRv5qD6sjkWYzrU30BGA0fqIPBxjijCy4MFwbm8/vIjTXMU6dMgJgAX
-   KNN+ApYI/5psangjbNEb7OiDgnRYrEOkJsgqQw9S6I7G3IiG7xcjNTGZB
-   dATVhYP+1re7PIEUDnUBoR2D6JRuw4InAKjJepbDdgZqvLAmhR7Uwtr/1
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10886"; a="420618983"
+  bh=u05kUvN+yAfDdXI2QKGLoiNXnlaVTRU1zJvK+Z7HCwY=;
+  b=IIN6lSuMyvr3GrA9i2hPP1vv1a/ruTRWzOMZEblLbLWiowlNDdVnrmaX
+   viXw27Yt2nWe9JI8kTJvjGdAYSLrQ5P5vz4XFKhVv9G0PpsB42vKF1fvI
+   PAQiAb5DxXZyT2hvY4QT3uw/R8LDoy2XO3a/bOFynBc5nPm0oZHH9xo4P
+   Ud40p+OSWg8ieb2eyFCbT06+PGcTXgBezy4uGoJziJfrTqlYqqW0yGlBh
+   4seRSEwYp6RFxrsVDMdBKhFcO6DGtkkEH3wB9D+ZVq1Q0IX4iomxZEdMz
+   ++9sSJyBnGtQz8fl44IeZ/3Cd6QooAJ+Fzb1BprdfsT2bYB9X6AtbT+Ln
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10886"; a="420618990"
 X-IronPort-AV: E=Sophos;i="6.03,283,1694761200"; 
-   d="scan'208";a="420618983"
+   d="scan'208";a="420618990"
 Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2023 05:51:32 -0800
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2023 05:51:35 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10886"; a="762705126"
+X-IronPort-AV: E=McAfee;i="6600,9927,10886"; a="762705140"
 X-IronPort-AV: E=Sophos;i="6.03,283,1694761200"; 
-   d="scan'208";a="762705126"
+   d="scan'208";a="762705140"
 Received: from sannilnx-dsk.jer.intel.com ([10.12.231.107])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2023 05:51:30 -0800
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2023 05:51:33 -0800
 From:   Alexander Usyskin <alexander.usyskin@intel.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Lucas De Marchi <lucas.demarchi@intel.com>,
@@ -48,9 +48,9 @@ Cc:     Tomas Winkler <tomas.winkler@intel.com>,
         Alexander Usyskin <alexander.usyskin@intel.com>,
         Vitaly Lubart <vitaly.lubart@intel.com>,
         intel-xe@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 3/5] mei: pxp: match without driver name
-Date:   Tue,  7 Nov 2023 15:46:04 +0200
-Message-Id: <20231107134606.316651-4-alexander.usyskin@intel.com>
+Subject: [PATCH 4/5] mei: hdcp: add dependency on Xe driver
+Date:   Tue,  7 Nov 2023 15:46:05 +0200
+Message-Id: <20231107134606.316651-5-alexander.usyskin@intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231107134606.316651-1-alexander.usyskin@intel.com>
 References: <20231107134606.316651-1-alexander.usyskin@intel.com>
@@ -67,50 +67,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove dependency on i915 driver name in component_match function.
-Use PCI header information to match Intel graphics device.
+Optionally depend on either i915 or Xe drivers.
 
 Signed-off-by: Alexander Usyskin <alexander.usyskin@intel.com>
 ---
- drivers/misc/mei/pxp/mei_pxp.c | 14 ++++++++++++--
- 1 file changed, 12 insertions(+), 2 deletions(-)
+ drivers/misc/mei/hdcp/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/misc/mei/pxp/mei_pxp.c b/drivers/misc/mei/pxp/mei_pxp.c
-index 2dcb9169e404..e74b2facfdf9 100644
---- a/drivers/misc/mei/pxp/mei_pxp.c
-+++ b/drivers/misc/mei/pxp/mei_pxp.c
-@@ -12,6 +12,7 @@
-  */
+diff --git a/drivers/misc/mei/hdcp/Kconfig b/drivers/misc/mei/hdcp/Kconfig
+index 54e1c9526909..2ac9148988d4 100644
+--- a/drivers/misc/mei/hdcp/Kconfig
++++ b/drivers/misc/mei/hdcp/Kconfig
+@@ -4,7 +4,7 @@
+ config INTEL_MEI_HDCP
+ 	tristate "Intel HDCP2.2 services of ME Interface"
+ 	select INTEL_MEI_ME
+-	depends on DRM_I915
++	depends on DRM_I915 || DRM_XE
+ 	help
+ 	  MEI Support for HDCP2.2 Services on Intel platforms.
  
- #include <linux/module.h>
-+#include <linux/pci.h>
- #include <linux/slab.h>
- #include <linux/mei.h>
- #include <linux/mei_cl_bus.h>
-@@ -154,12 +155,21 @@ static int mei_pxp_component_match(struct device *dev, int subcomponent,
- 				   void *data)
- {
- 	struct device *base = data;
-+	struct pci_dev *pdev;
- 
- 	if (!dev)
- 		return 0;
- 
--	if (!dev->driver || strcmp(dev->driver->name, "i915") ||
--	    subcomponent != I915_COMPONENT_PXP)
-+	if (!dev_is_pci(dev))
-+		return 0;
-+
-+	pdev = to_pci_dev(dev);
-+
-+	if (pdev->class != (PCI_CLASS_DISPLAY_VGA << 8) ||
-+	    pdev->vendor != PCI_VENDOR_ID_INTEL)
-+		return 0;
-+
-+	if (subcomponent != I915_COMPONENT_PXP)
- 		return 0;
- 
- 	base = base->parent;
 -- 
 2.34.1
 
