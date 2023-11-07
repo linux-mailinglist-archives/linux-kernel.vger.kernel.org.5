@@ -2,125 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D61E7E469B
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 18:13:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 034257E464B
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 17:41:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234593AbjKGRN7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 12:13:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44240 "EHLO
+        id S232970AbjKGQls (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 11:41:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229886AbjKGRN5 (ORCPT
+        with ESMTP id S229643AbjKGQlq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 12:13:57 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9456E101;
-        Tue,  7 Nov 2023 09:13:55 -0800 (PST)
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A7GlwHj024268;
-        Tue, 7 Nov 2023 17:13:55 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=J2sXMPy7YCpN3NzlE07fo1gvQe/TBf6KbHnhTydY8RY=;
- b=ON/eHTtvzsJpMG/OljG+XVN57PfOPfXjXWhn4C1lofjVkAF0M0wUyqgmAT3wwIA/TkRg
- xJEOp7w3Pg71PtlUDFD7uL9bqj8xYVFxO1//jmMQ4RBpDs3gTDctCfZEaGhnN1DLwtYA
- f3i1d9h16O2rEe3QbNS5yT/yUxx/u9ZH9vf7bZMVGkAeu3XlSHCRhjPhfRt8u0zTNnR+
- vrihsVpOZNuGDwLcx+j5hdFsxIbDt6JBu+DPXRMsRgMrt+6gtasm2jwP1Lhq4o98H6NX
- qLt53K4fv05EFB2Mv7C6FZUJKtcd/Q3VOTLsArianObscD5UOqcrIWlO/YHQUFlrX0Q1 9Q== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u7s2p94wn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 07 Nov 2023 17:13:55 +0000
-Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3A7GmNQX026870;
-        Tue, 7 Nov 2023 17:13:54 GMT
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u7s2p93u6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 07 Nov 2023 17:13:51 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3A7FNLjd007961;
-        Tue, 7 Nov 2023 17:11:15 GMT
-Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
-        by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3u60nyjbft-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 07 Nov 2023 17:11:14 +0000
-Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
-        by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3A7HBCrT51708286
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 7 Nov 2023 17:11:12 GMT
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id F1B742004D;
-        Tue,  7 Nov 2023 17:11:11 +0000 (GMT)
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9D66E20049;
-        Tue,  7 Nov 2023 17:11:11 +0000 (GMT)
-Received: from p-imbrenda (unknown [9.152.224.66])
-        by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Tue,  7 Nov 2023 17:11:11 +0000 (GMT)
-Date:   Tue, 7 Nov 2023 17:41:01 +0100
-From:   Claudio Imbrenda <imbrenda@linux.ibm.com>
-To:     Nina Schoetterl-Glausch <nsg@linux.ibm.com>
-Cc:     Alexander Gordeev <agordeev@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Sven Schnelle <svens@linux.ibm.com>,
-        linux-s390@vger.kernel.org
-Subject: Re: [PATCH v2 3/4] KVM: s390: cpu model: Use proper define for
- facility mask size
-Message-ID: <20231107174101.5fa42d06@p-imbrenda>
-In-Reply-To: <20231107123118.778364-4-nsg@linux.ibm.com>
-References: <20231107123118.778364-1-nsg@linux.ibm.com>
-        <20231107123118.778364-4-nsg@linux.ibm.com>
-Organization: IBM
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: XuF0tZ1DtLSwrYeca6fRR6FX1g_WD8ny
-X-Proofpoint-GUID: NbFqpfndV0B-S7GTYK1g5jwKFfRWgJpr
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-07_08,2023-11-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- suspectscore=0 impostorscore=0 mlxscore=0 malwarescore=0 adultscore=0
- spamscore=0 clxscore=1015 priorityscore=1501 mlxlogscore=821 bulkscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2310240000 definitions=main-2311070142
+        Tue, 7 Nov 2023 11:41:46 -0500
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB19293
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 08:41:44 -0800 (PST)
+Received: by mail-pl1-x649.google.com with SMTP id d9443c01a7336-1cc385e90a9so40804415ad.1
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 08:41:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1699375304; x=1699980104; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id
+         :mime-version:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=iJTyn/MQ0wtUc81GXLOJfql+NHWVQ1+0MlJSpHwULk4=;
+        b=Al0UgESHAjmGoQuSRzl6EWPFDZ2RPipkuFr9fojWXouNlUmEXz5f9NbzKEiLBdIGnu
+         xESK/7bvXKpFmXLiKG3rXBu9rmpaTDDgfrQNNSDwK1Ti46gIz01sF1KBhQ5B1pDRMFB9
+         sanpqTVlvfjIzOMJ1sTAa43dDjWYrPKPWSa4CQijQNo4nkP99w8TzJmmvx8yc0oOQP/E
+         buWWXbd4JnjmvXRrtUXQcJBG0KRlvw+q0wuVdx5JBOgM6F47U+8ErZH5bBeKi0fQV8rx
+         82MWZ20Sp+8qVa1zDMr8LlAdgv2k3SjdRzKIPwP5dvEAhmxUJifNwGelhFu4sqSlTqCa
+         wbVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699375304; x=1699980104;
+        h=content-transfer-encoding:cc:to:from:subject:message-id
+         :mime-version:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=iJTyn/MQ0wtUc81GXLOJfql+NHWVQ1+0MlJSpHwULk4=;
+        b=s9v3iJX/hrQa5F26Cp4lQMArQ8G2ulTGZ2J7JVN6nJHww9XZc0+T6kHtZym5kBqDmP
+         HCqI11/ZwyL304Oz00FxO18dK27MHz6VY6YEFYGX/F8uNuZ2t1T8S9e0sEpxzzuAMmDn
+         irOF8Nn5blGOLimzL4wntA+XcR1+7Ooh+bYhlUFYzfqa/SmfFZT2n6ZruBpk2mG+MetW
+         OuGUfNhlxMjyDhsfQR3j47EOTfGOAteRe6yVMkYyVyhLGiQ5NvGjbs2o8zLWqtxAp+7I
+         uQerQxEqjGTiAcb65PxycVoQBK+y3JlPKOF8EY3JMqztI/KFySbfTuHAX4NvD/cBp5L9
+         o78Q==
+X-Gm-Message-State: AOJu0YzNcxyRWoA2B8cgioe+Zu15A9gqBCRQLJhRhvDQFNM2+cXhMD0A
+        +6Iov4bXcAnPOArWk84Nci8zDbIBZQ4=
+X-Google-Smtp-Source: AGHT+IEJ0YCArcLB1KynYznhKlnI6/Z0unmvbii+kF//7GFmP3XJWVOLkXnhDLafJNk+NiIe6Wzu7TnsHIk=
+X-Received: from avagin.kir.corp.google.com ([2620:0:1008:10:38b1:2ca1:f401:605a])
+ (user=avagin job=sendgmr) by 2002:a17:903:2609:b0:1b8:8c7:31e6 with SMTP id
+ jd9-20020a170903260900b001b808c731e6mr605864plb.1.1699375304213; Tue, 07 Nov
+ 2023 08:41:44 -0800 (PST)
+Date:   Tue,  7 Nov 2023 08:41:37 -0800
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.42.0.869.gea05f2083d-goog
+Message-ID: <20231107164139.576046-1-avagin@google.com>
+Subject: [PATCH 1/2 v3] fs/proc/task_mmu: report SOFT_DIRTY bits through the
+ PAGEMAP_SCAN ioctl
+From:   Andrei Vagin <avagin@google.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Muhammad Usama Anjum <usama.anjum@collabora.com>
+Cc:     linux-kernel@vger.kernel.org, Andrei Vagin <avagin@google.com>,
+        "=?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?=" <mirq-linux@rere.qmqm.pl>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue,  7 Nov 2023 13:31:17 +0100
-Nina Schoetterl-Glausch <nsg@linux.ibm.com> wrote:
+The PAGEMAP_SCAN ioctl returns information regarding page table entries.
+It is more efficient compared to reading pagemap files. CRIU can start
+to utilize this ioctl, but it needs info about soft-dirty bits to track
+memory changes.
 
-> Use the previously unused S390_ARCH_FAC_MASK_SIZE_U64 instead of
-> S390_ARCH_FAC_LIST_SIZE_U64 for defining the fac_mask array.
-> Note that both values are the same, there is no functional change.
-> 
-> Signed-off-by: Nina Schoetterl-Glausch <nsg@linux.ibm.com>
+We are aware of a new method for tracking memory changes implemented in
+the PAGEMAP_SCAN ioctl. For CRIU, the primary advantage of this method
+is its usability by unprivileged users. However, it is not feasible to
+transparently replace the soft-dirty tracker with the new one. The main
+problem here is userfault descriptors that have to be preserved between
+pre-dump iterations.  It means criu continues supporting the soft-dirty
+method to avoid breakage for current users. The new method will be
+implemented as a separate feature.
 
-Reviewed-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
+Cc: Micha=C5=82 Miros=C5=82aw <mirq-linux@rere.qmqm.pl>
+Reviewed-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+Signed-off-by: Andrei Vagin <avagin@google.com>
+---
+v2: check the soft-dirty bit in pagemap_page_category
+v3: update tools/include/uapi/linux/fs.h
 
-> ---
->  arch/s390/include/asm/kvm_host.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/s390/include/asm/kvm_host.h b/arch/s390/include/asm/kvm_host.h
-> index 427f9528a7b6..46fcd2f9dff8 100644
-> --- a/arch/s390/include/asm/kvm_host.h
-> +++ b/arch/s390/include/asm/kvm_host.h
-> @@ -811,7 +811,7 @@ struct s390_io_adapter {
->  
->  struct kvm_s390_cpu_model {
->  	/* facility mask supported by kvm & hosting machine */
-> -	__u64 fac_mask[S390_ARCH_FAC_LIST_SIZE_U64];
-> +	__u64 fac_mask[S390_ARCH_FAC_MASK_SIZE_U64];
->  	struct kvm_s390_vm_cpu_subfunc subfuncs;
->  	/* facility list requested by guest (in dma page) */
->  	__u64 *fac_list;
+ Documentation/admin-guide/mm/pagemap.rst |  1 +
+ fs/proc/task_mmu.c                       | 17 ++++++++++++++++-
+ include/uapi/linux/fs.h                  |  1 +
+ tools/include/uapi/linux/fs.h            |  1 +
+ 4 files changed, 19 insertions(+), 1 deletion(-)
+
+diff --git a/Documentation/admin-guide/mm/pagemap.rst b/Documentation/admin=
+-guide/mm/pagemap.rst
+index fe17cf210426..f5f065c67615 100644
+--- a/Documentation/admin-guide/mm/pagemap.rst
++++ b/Documentation/admin-guide/mm/pagemap.rst
+@@ -253,6 +253,7 @@ Following flags about pages are currently supported:
+ - ``PAGE_IS_SWAPPED`` - Page is in swapped
+ - ``PAGE_IS_PFNZERO`` - Page has zero PFN
+ - ``PAGE_IS_HUGE`` - Page is THP or Hugetlb backed
++- ``PAGE_IS_SOFT_DIRTY`` - Page is soft-dirty
+=20
+ The ``struct pm_scan_arg`` is used as the argument of the IOCTL.
+=20
+diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
+index ef2eb12906da..51e0ec658457 100644
+--- a/fs/proc/task_mmu.c
++++ b/fs/proc/task_mmu.c
+@@ -1761,7 +1761,7 @@ static int pagemap_release(struct inode *inode, struc=
+t file *file)
+ #define PM_SCAN_CATEGORIES	(PAGE_IS_WPALLOWED | PAGE_IS_WRITTEN |	\
+ 				 PAGE_IS_FILE |	PAGE_IS_PRESENT |	\
+ 				 PAGE_IS_SWAPPED | PAGE_IS_PFNZERO |	\
+-				 PAGE_IS_HUGE)
++				 PAGE_IS_HUGE | PAGE_IS_SOFT_DIRTY)
+ #define PM_SCAN_FLAGS		(PM_SCAN_WP_MATCHING | PM_SCAN_CHECK_WPASYNC)
+=20
+ struct pagemap_scan_private {
+@@ -1793,6 +1793,8 @@ static unsigned long pagemap_page_category(struct pag=
+emap_scan_private *p,
+=20
+ 		if (is_zero_pfn(pte_pfn(pte)))
+ 			categories |=3D PAGE_IS_PFNZERO;
++		if (pte_soft_dirty(pte))
++			categories |=3D PAGE_IS_SOFT_DIRTY;
+ 	} else if (is_swap_pte(pte)) {
+ 		swp_entry_t swp;
+=20
+@@ -1806,6 +1808,8 @@ static unsigned long pagemap_page_category(struct pag=
+emap_scan_private *p,
+ 			    !PageAnon(pfn_swap_entry_to_page(swp)))
+ 				categories |=3D PAGE_IS_FILE;
+ 		}
++		if (pte_swp_soft_dirty(pte))
++			categories |=3D PAGE_IS_SOFT_DIRTY;
+ 	}
+=20
+ 	return categories;
+@@ -1853,12 +1857,16 @@ static unsigned long pagemap_thp_category(struct pa=
+gemap_scan_private *p,
+=20
+ 		if (is_zero_pfn(pmd_pfn(pmd)))
+ 			categories |=3D PAGE_IS_PFNZERO;
++		if (pmd_soft_dirty(pmd))
++			categories |=3D PAGE_IS_SOFT_DIRTY;
+ 	} else if (is_swap_pmd(pmd)) {
+ 		swp_entry_t swp;
+=20
+ 		categories |=3D PAGE_IS_SWAPPED;
+ 		if (!pmd_swp_uffd_wp(pmd))
+ 			categories |=3D PAGE_IS_WRITTEN;
++		if (pmd_swp_soft_dirty(pmd))
++			categories |=3D PAGE_IS_SOFT_DIRTY;
+=20
+ 		if (p->masks_of_interest & PAGE_IS_FILE) {
+ 			swp =3D pmd_to_swp_entry(pmd);
+@@ -1905,10 +1913,14 @@ static unsigned long pagemap_hugetlb_category(pte_t=
+ pte)
+ 			categories |=3D PAGE_IS_FILE;
+ 		if (is_zero_pfn(pte_pfn(pte)))
+ 			categories |=3D PAGE_IS_PFNZERO;
++		if (pte_soft_dirty(pte))
++			categories |=3D PAGE_IS_SOFT_DIRTY;
+ 	} else if (is_swap_pte(pte)) {
+ 		categories |=3D PAGE_IS_SWAPPED;
+ 		if (!pte_swp_uffd_wp_any(pte))
+ 			categories |=3D PAGE_IS_WRITTEN;
++		if (pte_swp_soft_dirty(pte))
++			categories |=3D PAGE_IS_SOFT_DIRTY;
+ 	}
+=20
+ 	return categories;
+@@ -1991,6 +2003,9 @@ static int pagemap_scan_test_walk(unsigned long start=
+, unsigned long end,
+ 	if (vma->vm_flags & VM_PFNMAP)
+ 		return 1;
+=20
++	if (vma->vm_flags & VM_SOFTDIRTY)
++		vma_category |=3D PAGE_IS_SOFT_DIRTY;
++
+ 	if (!pagemap_scan_is_interesting_vma(vma_category, p))
+ 		return 1;
+=20
+diff --git a/include/uapi/linux/fs.h b/include/uapi/linux/fs.h
+index da43810b7485..48ad69f7722e 100644
+--- a/include/uapi/linux/fs.h
++++ b/include/uapi/linux/fs.h
+@@ -316,6 +316,7 @@ typedef int __bitwise __kernel_rwf_t;
+ #define PAGE_IS_SWAPPED		(1 << 4)
+ #define PAGE_IS_PFNZERO		(1 << 5)
+ #define PAGE_IS_HUGE		(1 << 6)
++#define PAGE_IS_SOFT_DIRTY	(1 << 7)
+=20
+ /*
+  * struct page_region - Page region with flags
+diff --git a/tools/include/uapi/linux/fs.h b/tools/include/uapi/linux/fs.h
+index da43810b7485..48ad69f7722e 100644
+--- a/tools/include/uapi/linux/fs.h
++++ b/tools/include/uapi/linux/fs.h
+@@ -316,6 +316,7 @@ typedef int __bitwise __kernel_rwf_t;
+ #define PAGE_IS_SWAPPED		(1 << 4)
+ #define PAGE_IS_PFNZERO		(1 << 5)
+ #define PAGE_IS_HUGE		(1 << 6)
++#define PAGE_IS_SOFT_DIRTY	(1 << 7)
+=20
+ /*
+  * struct page_region - Page region with flags
+--=20
+2.42.0.869.gea05f2083d-goog
 
