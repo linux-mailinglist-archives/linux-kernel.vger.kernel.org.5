@@ -2,44 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DEBA17E3C5A
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 13:15:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 043B77E3C68
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 13:15:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234517AbjKGMP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 07:15:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52118 "EHLO
+        id S234490AbjKGMPu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 07:15:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234469AbjKGMOu (ORCPT
+        with ESMTP id S234130AbjKGMPF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 07:14:50 -0500
+        Tue, 7 Nov 2023 07:15:05 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80AF6422A;
-        Tue,  7 Nov 2023 04:11:19 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06E9AC43395;
-        Tue,  7 Nov 2023 12:11:17 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3350448B;
+        Tue,  7 Nov 2023 04:11:25 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7CD8AC43142;
+        Tue,  7 Nov 2023 12:11:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699359079;
-        bh=58rGdqFegt3aDt3Mcgisfy7c2gqz6EEl+7gR4Q4ZNF0=;
+        s=k20201202; t=1699359080;
+        bh=5top1FmfPMRZ0vaystmmPbJ7NjaWcmt+GUGBH6iwvIk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MDtJikBkoTuEEK+sCnkoe+eAq8rMH73HU9WHSsdGbw8/sezXKcWZFZhXW9RfTCnn8
-         I1CqphLrB2XhFfSFHA+1QuWG7ZyM9uDGQqRzSWvusGxsVK+lw5J57gWBrlSdTj+ICR
-         3zYFsVT5BOTecM2qQq4Z2mzYEVXKiJiOjgz4PTqHsdH0YVU8UGJXKPHhzo/sVc1AnN
-         qXw+uCU/ji4Tno5erFedTN9KLBkoEJw4qIEgUDD+i2X2pqfPaosF57Bf9F2eLYK7QI
-         Gj7Iy0bhv5GKngFpzg6olm1i8u8jokNeR7n0MvmXvov00c62+QjC4GUNwUg8MY94e1
-         2848ZlX1ur4yQ==
+        b=T9tfXvICQrQ7Ds01ajB8TQt/sFFdML7CvxNPHcLHrh0huJf1aa0Orge3d0aC/Eoqh
+         VQEpgBZC5oF2dx0FWsd9plrKM3u3MYAi/ktcEzVrSdctbmri8dmgchh6SASd36XNxA
+         82mpMVDrN8TrCx02y7TydnRjheF2WdG8L9Gab2gmYe4U3xyEhGFCFkZBeVLqEftjrm
+         cLNDql/ng+Km4Xmo4nEY+syU1K2P75Mru6FT6dZQHxaym/54VRsSCIFGd/Hie+c8CY
+         3AfO+jP4CBBsTZU9+XZmDTIb8JHuPC0Dlt8/Cq74nHwRkKCMvOK73a0sxb1dzVLTBU
+         6UBfp3RNVbt7A==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, daniel@iogearbox.net,
-        andrii@kernel.org, bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 05/18] bpf: Detect IP == ksym.end as part of BPF program
-Date:   Tue,  7 Nov 2023 07:10:35 -0500
-Message-ID: <20231107121104.3757943-5-sashal@kernel.org>
+Cc:     Dmitry Antipov <dmantipov@yandex.ru>,
+        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>,
+        Kalle Valo <quic_kvalo@quicinc.com>,
+        Sasha Levin <sashal@kernel.org>, kvalo@kernel.org,
+        nathan@kernel.org, ndesaulniers@google.com,
+        linux-wireless@vger.kernel.org, llvm@lists.linux.dev
+Subject: [PATCH AUTOSEL 6.1 06/18] wifi: ath9k: fix clang-specific fortify warnings
+Date:   Tue,  7 Nov 2023 07:10:36 -0500
+Message-ID: <20231107121104.3757943-6-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231107121104.3757943-1-sashal@kernel.org>
 References: <20231107121104.3757943-1-sashal@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.1.61
@@ -54,95 +57,97 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+From: Dmitry Antipov <dmantipov@yandex.ru>
 
-[ Upstream commit 66d9111f3517f85ef2af0337ece02683ce0faf21 ]
+[ Upstream commit 95f97fe0ac974467ab4da215985a32b2fdf48af0 ]
 
-Now that bpf_throw kfunc is the first such call instruction that has
-noreturn semantics within the verifier, this also kicks in dead code
-elimination in unprecedented ways. For one, any instruction following
-a bpf_throw call will never be marked as seen. Moreover, if a callchain
-ends up throwing, any instructions after the call instruction to the
-eventually throwing subprog in callers will also never be marked as
-seen.
+When compiling with clang 16.0.6 and CONFIG_FORTIFY_SOURCE=y, I've
+noticed the following (somewhat confusing due to absence of an actual
+source code location):
 
-The tempting way to fix this would be to emit extra 'int3' instructions
-which bump the jited_len of a program, and ensure that during runtime
-when a program throws, we can discover its boundaries even if the call
-instruction to bpf_throw (or to subprogs that always throw) is emitted
-as the final instruction in the program.
+In file included from drivers/net/wireless/ath/ath9k/debug.c:17:
+In file included from ./include/linux/slab.h:16:
+In file included from ./include/linux/gfp.h:7:
+In file included from ./include/linux/mmzone.h:8:
+In file included from ./include/linux/spinlock.h:56:
+In file included from ./include/linux/preempt.h:79:
+In file included from ./arch/x86/include/asm/preempt.h:9:
+In file included from ./include/linux/thread_info.h:60:
+In file included from ./arch/x86/include/asm/thread_info.h:53:
+In file included from ./arch/x86/include/asm/cpufeature.h:5:
+In file included from ./arch/x86/include/asm/processor.h:23:
+In file included from ./arch/x86/include/asm/msr.h:11:
+In file included from ./arch/x86/include/asm/cpumask.h:5:
+In file included from ./include/linux/cpumask.h:12:
+In file included from ./include/linux/bitmap.h:11:
+In file included from ./include/linux/string.h:254:
+./include/linux/fortify-string.h:592:4: warning: call to '__read_overflow2_field'
+declared with 'warning' attribute: detected read beyond size of field (2nd
+parameter); maybe use struct_group()? [-Wattribute-warning]
+                        __read_overflow2_field(q_size_field, size);
 
-An example of such a program would be this:
+In file included from drivers/net/wireless/ath/ath9k/htc_drv_debug.c:17:
+In file included from drivers/net/wireless/ath/ath9k/htc.h:20:
+In file included from ./include/linux/module.h:13:
+In file included from ./include/linux/stat.h:19:
+In file included from ./include/linux/time.h:60:
+In file included from ./include/linux/time32.h:13:
+In file included from ./include/linux/timex.h:67:
+In file included from ./arch/x86/include/asm/timex.h:5:
+In file included from ./arch/x86/include/asm/processor.h:23:
+In file included from ./arch/x86/include/asm/msr.h:11:
+In file included from ./arch/x86/include/asm/cpumask.h:5:
+In file included from ./include/linux/cpumask.h:12:
+In file included from ./include/linux/bitmap.h:11:
+In file included from ./include/linux/string.h:254:
+./include/linux/fortify-string.h:592:4: warning: call to '__read_overflow2_field'
+declared with 'warning' attribute: detected read beyond size of field (2nd
+parameter); maybe use struct_group()? [-Wattribute-warning]
+                        __read_overflow2_field(q_size_field, size);
 
-do_something():
-	...
-	r0 = 0
-	exit
+The compiler actually complains on 'ath9k_get_et_strings()' and
+'ath9k_htc_get_et_strings()' due to the same reason: fortification logic
+inteprets call to 'memcpy()' as an attempt to copy the whole array from
+it's first member and so issues an overread warning. These warnings may
+be silenced by passing an address of the whole array and not the first
+member to 'memcpy()'.
 
-foo():
-	r1 = 0
-	call bpf_throw
-	r0 = 0
-	exit
-
-bar(cond):
-	if r1 != 0 goto pc+2
-	call do_something
-	exit
-	call foo
-	r0 = 0  // Never seen by verifier
-	exit	//
-
-main(ctx):
-	r1 = ...
-	call bar
-	r0 = 0
-	exit
-
-Here, if we do end up throwing, the stacktrace would be the following:
-
-bpf_throw
-foo
-bar
-main
-
-In bar, the final instruction emitted will be the call to foo, as such,
-the return address will be the subsequent instruction (which the JIT
-emits as int3 on x86). This will end up lying outside the jited_len of
-the program, thus, when unwinding, we will fail to discover the return
-address as belonging to any program and end up in a panic due to the
-unreliable stack unwinding of BPF programs that we never expect.
-
-To remedy this case, make bpf_prog_ksym_find treat IP == ksym.end as
-part of the BPF program, so that is_bpf_text_address returns true when
-such a case occurs, and we are able to unwind reliably when the final
-instruction ends up being a call instruction.
-
-Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Link: https://lore.kernel.org/r/20230912233214.1518551-12-memxor@gmail.com
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Signed-off-by: Dmitry Antipov <dmantipov@yandex.ru>
+Acked-by: Toke Høiland-Jørgensen <toke@toke.dk>
+Signed-off-by: Kalle Valo <quic_kvalo@quicinc.com>
+Link: https://lore.kernel.org/r/20230829093856.234584-1-dmantipov@yandex.ru
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/bpf/core.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath9k/debug.c         | 2 +-
+ drivers/net/wireless/ath/ath9k/htc_drv_debug.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index 64706723624b9..7225cb67c0d3a 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -608,7 +608,11 @@ static __always_inline int bpf_tree_comp(void *key, struct latch_tree_node *n)
+diff --git a/drivers/net/wireless/ath/ath9k/debug.c b/drivers/net/wireless/ath/ath9k/debug.c
+index fb7a2952d0ce8..d9bac1c343490 100644
+--- a/drivers/net/wireless/ath/ath9k/debug.c
++++ b/drivers/net/wireless/ath/ath9k/debug.c
+@@ -1333,7 +1333,7 @@ void ath9k_get_et_strings(struct ieee80211_hw *hw,
+ 			  u32 sset, u8 *data)
+ {
+ 	if (sset == ETH_SS_STATS)
+-		memcpy(data, *ath9k_gstrings_stats,
++		memcpy(data, ath9k_gstrings_stats,
+ 		       sizeof(ath9k_gstrings_stats));
+ }
  
- 	if (val < ksym->start)
- 		return -1;
--	if (val >= ksym->end)
-+	/* Ensure that we detect return addresses as part of the program, when
-+	 * the final instruction is a call for a program part of the stack
-+	 * trace. Therefore, do val > ksym->end instead of val >= ksym->end.
-+	 */
-+	if (val > ksym->end)
- 		return  1;
+diff --git a/drivers/net/wireless/ath/ath9k/htc_drv_debug.c b/drivers/net/wireless/ath/ath9k/htc_drv_debug.c
+index c55aab01fff5d..e79bbcd3279af 100644
+--- a/drivers/net/wireless/ath/ath9k/htc_drv_debug.c
++++ b/drivers/net/wireless/ath/ath9k/htc_drv_debug.c
+@@ -428,7 +428,7 @@ void ath9k_htc_get_et_strings(struct ieee80211_hw *hw,
+ 			      u32 sset, u8 *data)
+ {
+ 	if (sset == ETH_SS_STATS)
+-		memcpy(data, *ath9k_htc_gstrings_stats,
++		memcpy(data, ath9k_htc_gstrings_stats,
+ 		       sizeof(ath9k_htc_gstrings_stats));
+ }
  
- 	return 0;
 -- 
 2.42.0
 
