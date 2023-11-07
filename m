@@ -2,147 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 528307E45FC
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 17:30:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B6F67E461B
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 17:35:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230000AbjKGQaH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 11:30:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52290 "EHLO
+        id S234038AbjKGQfb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 11:35:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229535AbjKGQaG (ORCPT
+        with ESMTP id S230523AbjKGQf3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 11:30:06 -0500
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C57BF83
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 08:30:03 -0800 (PST)
-Received: from [100.107.97.3] (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        Tue, 7 Nov 2023 11:35:29 -0500
+Received: from mx2.securetransport.de (mx2.securetransport.de [188.68.39.254])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 78AC783
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 08:35:26 -0800 (PST)
+Received: from mail.dh-electronics.com (unknown [77.24.89.57])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 21AE3660746E;
-        Tue,  7 Nov 2023 16:30:01 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1699374602;
-        bh=RHKkcTh5W8SNMFNToY6SNfNKENo7Fq1KXtu4W+ceTuE=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=LAf+hzM9mXiDoJToArNMavA1JgIt6kye5VZXmT3OvHSGeBG67O9MR+7rGDoCaCH6j
-         gMWqoNuNwDQhrO4Eo6xgrLtlnXT4efBtHTpDZRcSuWmSigRZciginRoOJCKGz6ZicK
-         SM8xl3EvAqBURHXnIbDVPDcF17bJZ6qIsOf6AdcyXlk3POaB2GunoYjxojA5wZgBtf
-         PyCby+CaYh1i9gpXCQWpIyLqH1KXwIVPvqkNhjzrR4D4eAVMa96dFKDlItLVt2YvQu
-         aPQ5AHQLrlgVWoIgXfezQ2BtN5gn7IryiF2Yv4g9XWTqU8eVa8pBWSUT6jX6r+n1g6
-         09h8PECT66eUw==
-Message-ID: <9b2e37a0-32ee-4aa4-99e8-d37103674847@collabora.com>
-Date:   Tue, 7 Nov 2023 17:29:58 +0100
+        by mx2.securetransport.de (Postfix) with ESMTPSA id 8BF085E8E0;
+        Tue,  7 Nov 2023 17:34:24 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dh-electronics.com;
+        s=dhelectronicscom; t=1699374865;
+        bh=/6rLoGMICSuiHaXxLKc1zcRf/OWuoJW4dmdquv6xRk4=;
+        h=From:To:CC:Subject:Date:From;
+        b=LD8dc0JJ1a40j0ROun3FsclkQle9pFlXJin4eADT7B+E48YA6mSPSVU3gKKgXB0dJ
+         0ykflkZc6+WnNU8wHCSuF/tuK3RL2gTLPHWc66h3kyZPzEcinGk1yFLk2WgW2t4Dlt
+         D4rJhJcDA3U+EftfHS504rnrcVeYi/eZoyky8Du+x4KIsB1OhnSHHYSJj7bLmhqUXX
+         57Btwn7PsPhN9hNSLIx42zY+dPOJt+P56aVaSGWRL5KzY/mx3iLtQgP3tSmUpBWdYk
+         gIzerZckpAx1dZnS0pwB5CXnGBoboyRfbBPgBoManNBiz/5Rx/IbFXHccAZEYSulXO
+         9MhweAkNDprkg==
+Received: from DHPWEX01.DH-ELECTRONICS.ORG (10.64.2.30) by
+ DHPWEX01.DH-ELECTRONICS.ORG (10.64.2.30) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.27; Tue, 7 Nov 2023 17:34:14 +0100
+Received: from localhost.localdomain (172.16.51.3) by
+ DHPWEX01.DH-ELECTRONICS.ORG (10.64.2.30) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.27 via Frontend Transport; Tue, 7 Nov 2023 17:34:14 +0100
+From:   Christoph Niedermaier <cniedermaier@dh-electronics.com>
+To:     <linux-arm-kernel@lists.infradead.org>
+CC:     Christoph Niedermaier <cniedermaier@dh-electronics.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        =?UTF-8?q?S=C3=A9bastien=20Szymanski?= 
+        <sebastien.szymanski@armadeus.com>, Stefan Agner <stefan@agner.ch>,
+        Shawn Guo <shawnguo@kernel.org>, Marek Vasut <marex@denx.de>,
+        Fabio Estevam <festevam@denx.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] cpufreq: imx6q: Only disabling 792MHz OPP for i.MX6ULL types below 792MHz
+Date:   Tue, 7 Nov 2023 17:31:36 +0100
+Message-ID: <20231107163136.63440-1-cniedermaier@dh-electronics.com>
+X-Mailer: git-send-email 2.11.0
+X-klartext: yes
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/2] arm64: Move Mediatek GIC quirk handling from
- irqchip to core
-To:     Douglas Anderson <dianders@chromium.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Chen-Yu Tsai <wenst@chromium.org>
-Cc:     Amit Daniel Kachhap <amit.kachhap@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Joey Gouly <joey.gouly@arm.com>,
-        Mark Brown <broonie@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org
-References: <20231107072651.v2.1.Ide945748593cffd8ff0feb9ae22b795935b944d6@changeid>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Content-Language: en-US
-In-Reply-To: <20231107072651.v2.1.Ide945748593cffd8ff0feb9ae22b795935b944d6@changeid>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 07/11/23 16:26, Douglas Anderson ha scritto:
-> In commit 44bd78dd2b88 ("irqchip/gic-v3: Disable pseudo NMIs on
-> Mediatek devices w/ firmware issues") we added a method for detecting
-> Mediatek devices with broken firmware and disabled pseudo-NMI. While
-> that worked, it didn't address the problem at a deep enough level.
-> 
-> The fundamental issue with this broken firmware is that it's not
-> saving and restoring several important GICR registers. The current
-> list is believed to be:
-> * GICR_NUM_IPRIORITYR
-> * GICR_CTLR
-> * GICR_ISPENDR0
-> * GICR_ISACTIVER0
-> * GICR_NSACR
-> 
-> Pseudo-NMI didn't work because it was the only thing (currently) in
-> the kernel that relied on the broken registers, so forcing pseudo-NMI
-> off was an effective fix. However, it could be observed that calling
-> system_uses_irq_prio_masking() on these systems still returned
-> "true". That caused confusion and led to the need for
-> commit a07a59415217 ("arm64: smp: avoid NMI IPIs with broken MediaTek
-> FW"). It's worried that the incorrect value returned by
-> system_uses_irq_prio_masking() on these systems will continue to
-> confuse future developers.
-> 
-> Let's fix the issue a little more completely by disabling IRQ
-> priorities at a deeper level in the kernel. Once we do this we can
-> revert some of the other bits of code dealing with this quirk.
-> 
-> This includes a partial revert of commit 44bd78dd2b88
-> ("irqchip/gic-v3: Disable pseudo NMIs on Mediatek devices w/ firmware
-> issues"). This isn't a full revert because it leaves some of the
-> changes to the "quirks" structure around in case future code needs it.
-> 
-> Suggested-by: Mark Rutland <mark.rutland@arm.com>
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> ---
-> 
-> Changes in v2:
-> - Just detect the quirk once at init time.
-> - Fixed typo in subject: s/GiC/GIC.
-> - Squash in ("Remove Mediatek pseudo-NMI firmware quirk handling").
-> 
->   arch/arm64/kernel/cpufeature.c | 46 ++++++++++++++++++++++++++++------
->   drivers/irqchip/irq-gic-v3.c   | 22 +---------------
->   2 files changed, 39 insertions(+), 29 deletions(-)
-> 
-> diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
-> index f6b2e2906fc9..928124ea2e96 100644
-> --- a/arch/arm64/kernel/cpufeature.c
-> +++ b/arch/arm64/kernel/cpufeature.c
-> @@ -999,6 +999,37 @@ static void init_32bit_cpu_features(struct cpuinfo_32bit *info)
->   	init_cpu_ftr_reg(SYS_MVFR2_EL1, info->reg_mvfr2);
->   }
->   
-> +#ifdef CONFIG_ARM64_PSEUDO_NMI
-> +static bool enable_pseudo_nmi;
-> +
-> +static int __init early_enable_pseudo_nmi(char *p)
-> +{
-> +	return kstrtobool(p, &enable_pseudo_nmi);
-> +}
-> +early_param("irqchip.gicv3_pseudo_nmi", early_enable_pseudo_nmi);
-> +
-> +static __init void detect_system_supports_pseudo_nmi(void)
-> +{
-> +	struct device_node *np;
-> +
-> +	if (!enable_pseudo_nmi)
-> +		return;
-> +
-> +	/*
-> +	 * Detect broken Mediatek firmware that doesn't properly save and
+For a 900MHz i.MX6ULL CPU the 792MHz OPP is disabled. There is no
+convincing reason to disable this OPP. If a CPU can run at 900MHz,
+it should also be able to cope with 792MHz. Looking at the voltage
+level of 792MHz in [1] (page 24, table 10. "Operating Ranges") the
+current defined OPP is above the minimum. So the voltage level
+shouldn't be a problem. Although in [2] (page 24, table 10.
+"Operating Ranges") 792MHz isn't mentioned there isn't note that
+792MHz OPP isn't allowed. Change it to only disable 792MHz OPP for
+i.MX6ULL types below 792 MHz.
 
-s/Mediatek/MediaTek/g
+[1] https://www.nxp.com/docs/en/data-sheet/IMX6ULLIEC.pdf
+[2] https://www.nxp.com/docs/en/data-sheet/IMX6ULLCEC.pdf
 
-Apart from that,
+Signed-off-by: Christoph Niedermaier <cniedermaier@dh-electronics.com>
+Reviewed-by: Marek Vasut <marex@denx.de>
+---
+Cc: Viresh Kumar <viresh.kumar@linaro.org>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: Sébastien Szymanski <sebastien.szymanski@armadeus.com>
+Cc: Stefan Agner <stefan@agner.ch>
+Cc: Shawn Guo <shawnguo@kernel.org>
+Cc: Marek Vasut <marex@denx.de>
+Cc: Fabio Estevam <festevam@denx.de>
+Cc: NXP Linux Team <linux-imx@nxp.com>
+Cc: linux-pm@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+To: linux-arm-kernel@lists.infradead.org
+---
+ drivers/cpufreq/imx6q-cpufreq.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-
-On MT8195, MT8192, MT8186:
-Tested-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+diff --git a/drivers/cpufreq/imx6q-cpufreq.c b/drivers/cpufreq/imx6q-cpufreq.c
+index 494d044b9e72..33728c242f66 100644
+--- a/drivers/cpufreq/imx6q-cpufreq.c
++++ b/drivers/cpufreq/imx6q-cpufreq.c
+@@ -327,7 +327,7 @@ static int imx6ul_opp_check_speed_grading(struct device *dev)
+ 			imx6x_disable_freq_in_opp(dev, 696000000);
+ 
+ 	if (of_machine_is_compatible("fsl,imx6ull")) {
+-		if (val != OCOTP_CFG3_6ULL_SPEED_792MHZ)
++		if (val < OCOTP_CFG3_6ULL_SPEED_792MHZ)
+ 			imx6x_disable_freq_in_opp(dev, 792000000);
+ 
+ 		if (val != OCOTP_CFG3_6ULL_SPEED_900MHZ)
+-- 
+2.11.0
 
