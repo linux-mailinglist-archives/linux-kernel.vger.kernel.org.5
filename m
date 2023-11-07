@@ -2,182 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 53FA47E4D60
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 00:29:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BC7C7E4D65
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 00:29:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344490AbjKGX2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 18:28:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58462 "EHLO
+        id S235438AbjKGX3L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 18:29:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344601AbjKGX2b (ORCPT
+        with ESMTP id S235442AbjKGX2q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 18:28:31 -0500
+        Tue, 7 Nov 2023 18:28:46 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 056CC4207;
-        Tue,  7 Nov 2023 15:25:29 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ADB84C433C7;
-        Tue,  7 Nov 2023 23:25:27 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98F9C4499;
+        Tue,  7 Nov 2023 15:25:35 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2009EC433C9;
+        Tue,  7 Nov 2023 23:25:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699399528;
-        bh=RPFwJHoSKgAKZzLI003rgLww/1xDeDFB8XZlORcrZGM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iSVUyPbkAlKqlgtqWY/se4LhbTjbrizwfTOimmwNqxbqxXX3sPNjIpnezuhCS+MNP
-         3cu5AmrgZ5Pi690mpwVFsmoKXhLySOaJGxrQ1HPMx7jSsvbDyGuB/0usAUvhJ75kMl
-         EwX/JBqy6IaBCNrZ/Jt5yRmDfq3rcTZWZNM3ELcXRQpSe0/rGHAl2DzxTd+2bKaKf0
-         lFMA3kUVyiu5Yc2BsFY9J/GO/1n9wnOc6NuGEFtTEET9HjHgNA8pQOaqh9+ltZMpLR
-         GQP4FgXqk2gz06ko/6Q3b6ywoHnk+WkE2O2ZCKRm1gqP3t0BMFmEmNsTR7hrZjPVgO
-         gOhsiSslTCD2A==
+        s=k20201202; t=1699399535;
+        bh=CX7tqLdpw6VsO1drUWFzFUM2xGluXB2Dd54jC87LLGk=;
+        h=From:To:Cc:Subject:Date:From;
+        b=h4uRf6Tl/SwBud5FTs7sPXX8Tnz+CKF1TFyVBQmm81qbtA4eaPhkKLfrsNoVaN6VU
+         QMrOtqVLD70sWN45duFc6DISUs6RUjVxwcB6ajDF+dLZ5B4USA4TXQfJza7BsLGkSv
+         W5msD3vpUEXmvg+H2oVmaWv1W2Om+cqYceb43cSXJ4+dYcmQXucCFZgC5oKlLVLX34
+         Ba9lhYSAk7z2YZo72QZ+3HuIP2pHtaJK6msPXiqmmYCFgDqxNg2Qu5HzsckSs+ESOq
+         OjJZFF0fOwHoTo1fiSM2Zan+2MAE8AJzO+xPlNJNmYb0CQ4u8h+xySCuJfNvmBeuoE
+         zwdff9eRXUfjA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Hardik Gajjar <hgajjar@de.adit-jv.com>,
+Cc:     Yi Yang <yiyang13@huawei.com>, Jiri Slaby <jirislaby@kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>, quic_linyyuan@quicinc.com,
-        maze@google.com, quic_kriskura@quicinc.com,
-        linux-usb@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 4/4] usb: gadget: f_ncm: Always set current gadget in ncm_bind()
-Date:   Tue,  7 Nov 2023 18:25:16 -0500
-Message-ID: <20231107232519.3776922-4-sashal@kernel.org>
+        Sasha Levin <sashal@kernel.org>, davem@davemloft.net,
+        sparclinux@vger.kernel.org, linux-serial@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 1/3] tty: vcc: Add check for kstrdup() in vcc_probe()
+Date:   Tue,  7 Nov 2023 18:25:27 -0500
+Message-ID: <20231107232532.3777022-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231107232519.3776922-1-sashal@kernel.org>
-References: <20231107232519.3776922-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.4.259
+X-stable-base: Linux 4.19.297
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hardik Gajjar <hgajjar@de.adit-jv.com>
+From: Yi Yang <yiyang13@huawei.com>
 
-[ Upstream commit a04224da1f3424b2c607b12a3bd1f0e302fb8231 ]
+[ Upstream commit d81ffb87aaa75f842cd7aa57091810353755b3e6 ]
 
-Previously, gadget assignment to the net device occurred exclusively
-during the initial binding attempt.
+Add check for the return value of kstrdup() and return the error, if it
+fails in order to avoid NULL pointer dereference.
 
-Nevertheless, the gadget pointer could change during bind/unbind
-cycles due to various conditions, including the unloading/loading
-of the UDC device driver or the detachment/reconnection of an
-OTG-capable USB hub device.
-
-This patch relocates the gether_set_gadget() function out from
-ncm_opts->bound condition check, ensuring that the correct gadget
-is assigned during each bind request.
-
-The provided logs demonstrate the consistency of ncm_opts throughout
-the power cycle, while the gadget may change.
-
-* OTG hub connected during boot up and assignment of gadget and
-  ncm_opts pointer
-
-[    2.366301] usb 2-1.5: New USB device found, idVendor=2996, idProduct=0105
-[    2.366304] usb 2-1.5: New USB device strings: Mfr=1, Product=2, SerialNumber=3
-[    2.366306] usb 2-1.5: Product: H2H Bridge
-[    2.366308] usb 2-1.5: Manufacturer: Aptiv
-[    2.366309] usb 2-1.5: SerialNumber: 13FEB2021
-[    2.427989] usb 2-1.5: New USB device found, VID=2996, PID=0105
-[    2.428959] dabridge 2-1.5:1.0: dabridge 2-4 total endpoints=5, 0000000093a8d681
-[    2.429710] dabridge 2-1.5:1.0: P(0105) D(22.06.22) F(17.3.16) H(1.1) high-speed
-[    2.429714] dabridge 2-1.5:1.0: Hub 2-2 P(0151) V(06.87)
-[    2.429956] dabridge 2-1.5:1.0: All downstream ports in host mode
-
-[    2.430093] gadget 000000003c414d59 ------> gadget pointer
-
-* NCM opts and associated gadget pointer during First ncm_bind
-
-[   34.763929] NCM opts 00000000aa304ac9
-[   34.763930] NCM gadget 000000003c414d59
-
-* OTG capable hub disconnecte or assume driver unload.
-
-[   97.203114] usb 2-1: USB disconnect, device number 2
-[   97.203118] usb 2-1.1: USB disconnect, device number 3
-[   97.209217] usb 2-1.5: USB disconnect, device number 4
-[   97.230990] dabr_udc deleted
-
-* Reconnect the OTG hub or load driver assaign new gadget pointer.
-
-[  111.534035] usb 2-1.1: New USB device found, idVendor=2996, idProduct=0120, bcdDevice= 6.87
-[  111.534038] usb 2-1.1: New USB device strings: Mfr=1, Product=2, SerialNumber=3
-[  111.534040] usb 2-1.1: Product: Vendor
-[  111.534041] usb 2-1.1: Manufacturer: Aptiv
-[  111.534042] usb 2-1.1: SerialNumber: Superior
-[  111.535175] usb 2-1.1: New USB device found, VID=2996, PID=0120
-[  111.610995] usb 2-1.5: new high-speed USB device number 8 using xhci-hcd
-[  111.630052] usb 2-1.5: New USB device found, idVendor=2996, idProduct=0105, bcdDevice=21.02
-[  111.630055] usb 2-1.5: New USB device strings: Mfr=1, Product=2, SerialNumber=3
-[  111.630057] usb 2-1.5: Product: H2H Bridge
-[  111.630058] usb 2-1.5: Manufacturer: Aptiv
-[  111.630059] usb 2-1.5: SerialNumber: 13FEB2021
-[  111.687464] usb 2-1.5: New USB device found, VID=2996, PID=0105
-[  111.690375] dabridge 2-1.5:1.0: dabridge 2-8 total endpoints=5, 000000000d87c961
-[  111.691172] dabridge 2-1.5:1.0: P(0105) D(22.06.22) F(17.3.16) H(1.1) high-speed
-[  111.691176] dabridge 2-1.5:1.0: Hub 2-6 P(0151) V(06.87)
-[  111.691646] dabridge 2-1.5:1.0: All downstream ports in host mode
-
-[  111.692298] gadget 00000000dc72f7a9 --------> new gadget ptr on connect
-
-* NCM opts and associated gadget pointer during second ncm_bind
-
-[  113.271786] NCM opts 00000000aa304ac9 -----> same opts ptr used during first bind
-[  113.271788] NCM gadget 00000000dc72f7a9 ----> however new gaget ptr, that will not set
-                                                 in net_device due to ncm_opts->bound = true
-
-Signed-off-by: Hardik Gajjar <hgajjar@de.adit-jv.com>
-Link: https://lore.kernel.org/r/20231020153324.82794-1-hgajjar@de.adit-jv.com
+Signed-off-by: Yi Yang <yiyang13@huawei.com>
+Reviewed-by: Jiri Slaby <jirislaby@kernel.org>
+Link: https://lore.kernel.org/r/20230904035220.48164-1-yiyang13@huawei.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/gadget/function/f_ncm.c | 27 +++++++++++----------------
- 1 file changed, 11 insertions(+), 16 deletions(-)
+ drivers/tty/vcc.c | 16 +++++++++++++---
+ 1 file changed, 13 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/usb/gadget/function/f_ncm.c b/drivers/usb/gadget/function/f_ncm.c
-index 8d23a870b7b7f..2ef2464a50432 100644
---- a/drivers/usb/gadget/function/f_ncm.c
-+++ b/drivers/usb/gadget/function/f_ncm.c
-@@ -1435,7 +1435,7 @@ static int ncm_bind(struct usb_configuration *c, struct usb_function *f)
- 	struct usb_composite_dev *cdev = c->cdev;
- 	struct f_ncm		*ncm = func_to_ncm(f);
- 	struct usb_string	*us;
--	int			status;
-+	int			status = 0;
- 	struct usb_ep		*ep;
- 	struct f_ncm_opts	*ncm_opts;
+diff --git a/drivers/tty/vcc.c b/drivers/tty/vcc.c
+index 10a832a2135e2..31ecba1133159 100644
+--- a/drivers/tty/vcc.c
++++ b/drivers/tty/vcc.c
+@@ -586,18 +586,22 @@ static int vcc_probe(struct vio_dev *vdev, const struct vio_device_id *id)
+ 		return -ENOMEM;
  
-@@ -1453,22 +1453,17 @@ static int ncm_bind(struct usb_configuration *c, struct usb_function *f)
- 		f->os_desc_table[0].os_desc = &ncm_opts->ncm_os_desc;
+ 	name = kstrdup(dev_name(&vdev->dev), GFP_KERNEL);
++	if (!name) {
++		rv = -ENOMEM;
++		goto free_port;
++	}
+ 
+ 	rv = vio_driver_init(&port->vio, vdev, VDEV_CONSOLE_CON, vcc_versions,
+ 			     ARRAY_SIZE(vcc_versions), NULL, name);
+ 	if (rv)
+-		goto free_port;
++		goto free_name;
+ 
+ 	port->vio.debug = vcc_dbg_vio;
+ 	vcc_ldc_cfg.debug = vcc_dbg_ldc;
+ 
+ 	rv = vio_ldc_alloc(&port->vio, &vcc_ldc_cfg, port);
+ 	if (rv)
+-		goto free_port;
++		goto free_name;
+ 
+ 	spin_lock_init(&port->lock);
+ 
+@@ -631,6 +635,11 @@ static int vcc_probe(struct vio_dev *vdev, const struct vio_device_id *id)
+ 		goto unreg_tty;
  	}
+ 	port->domain = kstrdup(domain, GFP_KERNEL);
++	if (!port->domain) {
++		rv = -ENOMEM;
++		goto unreg_tty;
++	}
++
  
--	/*
--	 * in drivers/usb/gadget/configfs.c:configfs_composite_bind()
--	 * configurations are bound in sequence with list_for_each_entry,
--	 * in each configuration its functions are bound in sequence
--	 * with list_for_each_entry, so we assume no race condition
--	 * with regard to ncm_opts->bound access
--	 */
--	if (!ncm_opts->bound) {
--		mutex_lock(&ncm_opts->lock);
--		gether_set_gadget(ncm_opts->net, cdev->gadget);
-+	mutex_lock(&ncm_opts->lock);
-+	gether_set_gadget(ncm_opts->net, cdev->gadget);
-+	if (!ncm_opts->bound)
- 		status = gether_register_netdev(ncm_opts->net);
--		mutex_unlock(&ncm_opts->lock);
--		if (status)
--			goto fail;
--		ncm_opts->bound = true;
--	}
-+	mutex_unlock(&ncm_opts->lock);
-+
-+	if (status)
-+		goto fail;
-+
-+	ncm_opts->bound = true;
-+
- 	us = usb_gstrings_attach(cdev, ncm_strings,
- 				 ARRAY_SIZE(ncm_string_defs));
- 	if (IS_ERR(us)) {
+ 	mdesc_release(hp);
+ 
+@@ -660,8 +669,9 @@ static int vcc_probe(struct vio_dev *vdev, const struct vio_device_id *id)
+ 	vcc_table_remove(port->index);
+ free_ldc:
+ 	vio_ldc_free(&port->vio);
+-free_port:
++free_name:
+ 	kfree(name);
++free_port:
+ 	kfree(port);
+ 
+ 	return rv;
 -- 
 2.42.0
 
