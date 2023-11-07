@@ -2,41 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 121717E4CCA
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 00:23:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AAF27E4CCF
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 00:23:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344407AbjKGXXY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 18:23:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47320 "EHLO
+        id S1344371AbjKGXXn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 18:23:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235321AbjKGXXE (ORCPT
+        with ESMTP id S1344423AbjKGXXZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 18:23:04 -0500
+        Tue, 7 Nov 2023 18:23:25 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A37C51992;
-        Tue,  7 Nov 2023 15:22:52 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 652BCC433C7;
-        Tue,  7 Nov 2023 23:22:51 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8DD11BFF;
+        Tue,  7 Nov 2023 15:22:59 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23C69C433C9;
+        Tue,  7 Nov 2023 23:22:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699399372;
-        bh=T+VF2SfYqdlsFE0o5OEbuT79GlyXUHL7Mt9mzqFNmuU=;
+        s=k20201202; t=1699399379;
+        bh=L7HfHggP7La2WxO4b+wi8+jV0sCcL0qwBD/f1qZrh3M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=COz9cd6UwFwzM80mj+gUleHVlDIUMnfT2aRGHI92nMU/fYunQyK9vb2M9ax1BWuRy
-         cOKHc2a/QJS4/lWX9mz3Cxu3WlZiqO0nDaNbVvfshSPUL1ZKCQs9pgKe+XXx+WfLtJ
-         DdxO9FNytisxbsbjaV2H81c+5PZ+T5ju309tUDpINNpcWr7tDIoKN56CI+i7jZPczA
-         KB8r70jYO7t4I+c27Um9D1YvlLd0AHNLkdQ3AoGN5TjJT90Ve8lNEHfSng1HeeitZv
-         enoCmXRdZZ4x3Gik05nv/4Qxs2/uWKI3Yzulpqsg0zTvzn0Dg5gtGDLKkkKEzGkEWJ
-         TJJKIELHkkUIg==
+        b=dE2dDCqBO2rE0QZ125a8FdRMN4g1EOUBb9ufHR0ew+p+tHk3PkvH0ii2Owldy2MoU
+         O/B8nerN4+q5Yn81qku984RGSAS5f1DmVdr1Zr7dzkmTau0AWOsG6h3g6iAkENNQQx
+         cl/9+zAY70GJRTDa2vghFtd5gXmac46/uDJokxy7ufAnPz5PBC9Cg+XZtCJHm7eD9W
+         zqazxJG6aVum3npdaUoca0RTccn9RS8kzCoCToppbgXtLL3ItdJtnaI+pK5/ZGTi11
+         CEEFBtqOGc56gO9cX+JKA/oQeI7g2G/AE3YuXMbnJolVRQsVIHMqIoiw3v0QB5qbcV
+         XOKgTFc3mxphg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Niklas Schnelle <schnelle@linux.ibm.com>,
-        Arnd Bergmann <arnd@kernel.org>,
+Cc:     Neil Armstrong <neil.armstrong@linaro.org>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>, mathias.nyman@intel.com,
-        linux-usb@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 10/18] usb: pci-quirks: handle HAS_IOPORT dependency for UHCI handoff
-Date:   Tue,  7 Nov 2023 18:22:04 -0500
-Message-ID: <20231107232231.3775605-10-sashal@kernel.org>
+        Sasha Levin <sashal@kernel.org>, minhuadotchen@gmail.com,
+        robh@kernel.org, linux-usb@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.6 11/18] usb: ucsi: glink: use the connector orientation GPIO to provide switch events
+Date:   Tue,  7 Nov 2023 18:22:05 -0500
+Message-ID: <20231107232231.3775605-11-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231107232231.3775605-1-sashal@kernel.org>
 References: <20231107232231.3775605-1-sashal@kernel.org>
@@ -49,76 +51,127 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Niklas Schnelle <schnelle@linux.ibm.com>
+From: Neil Armstrong <neil.armstrong@linaro.org>
 
-[ Upstream commit 358ad297e379ff548247e3e24c6619559942bfdd ]
+[ Upstream commit c6165ed2f425c273244191930a47c8be23bc51bd ]
 
-In a future patch HAS_IOPORT=n will result in inb()/outb() and friends
-not being declared. With the AMD quirk handled USB PCI quirks still use
-inw() in uhci_check_and_reset_hc() and thus indirectly in
-quirk_usb_handoff_uhci(). Handle this by conditionally compiling
-uhci_check_and_reset_hc() and stubbing out quirk_usb_handoff_uhci() when
-HAS_IOPORT is not available.
+On SM8550, the non-altmode orientation is not given anymore within
+altmode events, even with USB SVIDs events.
 
-Co-developed-by: Arnd Bergmann <arnd@kernel.org>
-Signed-off-by: Arnd Bergmann <arnd@kernel.org>
-Signed-off-by: Niklas Schnelle <schnelle@linux.ibm.com>
-Link: https://lore.kernel.org/r/20230911125653.1393895-4-schnelle@linux.ibm.com
+On the other side, the Type-C connector orientation is correctly
+reported by a signal from the PMIC.
+
+Take this gpio signal when we detect some Type-C port activity
+to notify any Type-C switches tied to the Type-C port connectors.
+
+Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Acked-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+Link: https://lore.kernel.org/r/20231002-topic-sm8550-upstream-type-c-orientation-v2-2-125410d3ff95@linaro.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/host/pci-quirks.c | 23 ++++++++++++++++-------
- 1 file changed, 16 insertions(+), 7 deletions(-)
+ drivers/usb/typec/ucsi/ucsi_glink.c | 54 ++++++++++++++++++++++++++++-
+ 1 file changed, 53 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/usb/host/pci-quirks.c b/drivers/usb/host/pci-quirks.c
-index 10813096d00c6..1f9c1b1435d86 100644
---- a/drivers/usb/host/pci-quirks.c
-+++ b/drivers/usb/host/pci-quirks.c
-@@ -634,6 +634,16 @@ void usb_asmedia_modifyflowcontrol(struct pci_dev *pdev)
- }
- EXPORT_SYMBOL_GPL(usb_asmedia_modifyflowcontrol);
+diff --git a/drivers/usb/typec/ucsi/ucsi_glink.c b/drivers/usb/typec/ucsi/ucsi_glink.c
+index bb1854b3311dc..db6e248f82083 100644
+--- a/drivers/usb/typec/ucsi/ucsi_glink.c
++++ b/drivers/usb/typec/ucsi/ucsi_glink.c
+@@ -8,9 +8,13 @@
+ #include <linux/mutex.h>
+ #include <linux/property.h>
+ #include <linux/soc/qcom/pdr.h>
++#include <linux/usb/typec_mux.h>
++#include <linux/gpio/consumer.h>
+ #include <linux/soc/qcom/pmic_glink.h>
+ #include "ucsi.h"
  
-+static inline int io_type_enabled(struct pci_dev *pdev, unsigned int mask)
-+{
-+	u16 cmd;
++#define PMIC_GLINK_MAX_PORTS	2
 +
-+	return !pci_read_config_word(pdev, PCI_COMMAND, &cmd) && (cmd & mask);
-+}
-+
-+#define mmio_enabled(dev) io_type_enabled(dev, PCI_COMMAND_MEMORY)
-+
-+#if defined(CONFIG_HAS_IOPORT) && IS_ENABLED(CONFIG_USB_UHCI_HCD)
- /*
-  * Make sure the controller is completely inactive, unable to
-  * generate interrupts or do DMA.
-@@ -715,14 +725,7 @@ int uhci_check_and_reset_hc(struct pci_dev *pdev, unsigned long base)
- }
- EXPORT_SYMBOL_GPL(uhci_check_and_reset_hc);
+ #define UCSI_BUF_SIZE                   48
  
--static inline int io_type_enabled(struct pci_dev *pdev, unsigned int mask)
--{
--	u16 cmd;
--	return !pci_read_config_word(pdev, PCI_COMMAND, &cmd) && (cmd & mask);
--}
--
- #define pio_enabled(dev) io_type_enabled(dev, PCI_COMMAND_IO)
--#define mmio_enabled(dev) io_type_enabled(dev, PCI_COMMAND_MEMORY)
+ #define MSG_TYPE_REQ_RESP               1
+@@ -52,6 +56,9 @@ struct ucsi_notify_ind_msg {
+ struct pmic_glink_ucsi {
+ 	struct device *dev;
  
- static void quirk_usb_handoff_uhci(struct pci_dev *pdev)
++	struct gpio_desc *port_orientation[PMIC_GLINK_MAX_PORTS];
++	struct typec_switch *port_switch[PMIC_GLINK_MAX_PORTS];
++
+ 	struct pmic_glink_client *client;
+ 
+ 	struct ucsi *ucsi;
+@@ -220,8 +227,20 @@ static void pmic_glink_ucsi_notify(struct work_struct *work)
+ 	}
+ 
+ 	con_num = UCSI_CCI_CONNECTOR(cci);
+-	if (con_num)
++	if (con_num) {
++		if (con_num < PMIC_GLINK_MAX_PORTS &&
++		    ucsi->port_orientation[con_num - 1]) {
++			int orientation = gpiod_get_value(ucsi->port_orientation[con_num - 1]);
++
++			if (orientation >= 0) {
++				typec_switch_set(ucsi->port_switch[con_num - 1],
++						 orientation ? TYPEC_ORIENTATION_REVERSE
++							     : TYPEC_ORIENTATION_NORMAL);
++			}
++		}
++
+ 		ucsi_connector_change(ucsi->ucsi, con_num);
++	}
+ 
+ 	if (ucsi->sync_pending && cci & UCSI_CCI_BUSY) {
+ 		ucsi->sync_val = -EBUSY;
+@@ -282,6 +301,7 @@ static int pmic_glink_ucsi_probe(struct auxiliary_device *adev,
  {
-@@ -742,6 +745,12 @@ static void quirk_usb_handoff_uhci(struct pci_dev *pdev)
- 		uhci_check_and_reset_hc(pdev, base);
- }
+ 	struct pmic_glink_ucsi *ucsi;
+ 	struct device *dev = &adev->dev;
++	struct fwnode_handle *fwnode;
+ 	int ret;
  
-+#else /* defined(CONFIG_HAS_IOPORT && IS_ENABLED(CONFIG_USB_UHCI_HCD) */
+ 	ucsi = devm_kzalloc(dev, sizeof(*ucsi), GFP_KERNEL);
+@@ -309,6 +329,38 @@ static int pmic_glink_ucsi_probe(struct auxiliary_device *adev,
+ 
+ 	ucsi_set_drvdata(ucsi->ucsi, ucsi);
+ 
++	device_for_each_child_node(dev, fwnode) {
++		struct gpio_desc *desc;
++		u32 port;
 +
-+static void quirk_usb_handoff_uhci(struct pci_dev *pdev) {}
++		ret = fwnode_property_read_u32(fwnode, "reg", &port);
++		if (ret < 0) {
++			dev_err(dev, "missing reg property of %pOFn\n", fwnode);
++			return ret;
++		}
 +
-+#endif /* defined(CONFIG_HAS_IOPORT && IS_ENABLED(CONFIG_USB_UHCI_HCD) */
++		if (port >= PMIC_GLINK_MAX_PORTS) {
++			dev_warn(dev, "invalid connector number, ignoring\n");
++			continue;
++		}
 +
- static int mmio_resource_enabled(struct pci_dev *pdev, int idx)
- {
- 	return pci_resource_start(pdev, idx) && mmio_enabled(pdev);
++		desc = devm_gpiod_get_index_optional(&adev->dev, "orientation", port, GPIOD_IN);
++
++		/* If GPIO isn't found, continue */
++		if (!desc)
++			continue;
++
++		if (IS_ERR(desc))
++			return dev_err_probe(dev, PTR_ERR(desc),
++					     "unable to acquire orientation gpio\n");
++		ucsi->port_orientation[port] = desc;
++
++		ucsi->port_switch[port] = fwnode_typec_switch_get(fwnode);
++		if (IS_ERR(ucsi->port_switch[port]))
++			return dev_err_probe(dev, PTR_ERR(ucsi->port_switch[port]),
++					"failed to acquire orientation-switch\n");
++	}
++
+ 	ucsi->client = devm_pmic_glink_register_client(dev,
+ 						       PMIC_GLINK_OWNER_USBC,
+ 						       pmic_glink_ucsi_callback,
 -- 
 2.42.0
 
