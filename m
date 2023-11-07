@@ -2,349 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D325F7E3546
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 07:37:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE14F7E353F
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 07:34:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233550AbjKGGhl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 01:37:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53716 "EHLO
+        id S232365AbjKGGek (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 01:34:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231481AbjKGGhc (ORCPT
+        with ESMTP id S229558AbjKGGei (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 01:37:32 -0500
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71C6910F;
-        Mon,  6 Nov 2023 22:37:27 -0800 (PST)
-X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 3A76aE2u94026654, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36505.realtek.com.tw[172.21.6.25])
-        by rtits2.realtek.com.tw (8.15.2/2.95/5.92) with ESMTPS id 3A76aE2u94026654
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 7 Nov 2023 14:36:14 +0800
-Received: from RTEXMBS02.realtek.com.tw (172.21.6.95) by
- RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.32; Tue, 7 Nov 2023 14:36:15 +0800
-Received: from RTEXH36505.realtek.com.tw (172.21.6.25) by
- RTEXMBS02.realtek.com.tw (172.21.6.95) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.7; Tue, 7 Nov 2023 14:36:14 +0800
-Received: from localhost.localdomain (172.21.252.101) by
- RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server id
- 15.1.2375.32 via Frontend Transport; Tue, 7 Nov 2023 14:36:14 +0800
-From:   Stanley Chang <stanley_chang@realtek.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC:     Stanley Chang <stanley_chang@realtek.com>,
-        Vinod Koul <vkoul@kernel.org>, Johan Hovold <johan@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Jinjie Ruan <ruanjinjie@huawei.com>,
-        Rob Herring <robh@kernel.org>,
-        "Alan Stern" <stern@rowland.harvard.edu>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        Roy Luo <royluo@google.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        =?UTF-8?q?Ricardo=20Ca=C3=B1uelo?= <ricardo.canuelo@collabora.com>,
-        Ray Chi <raychi@google.com>, <linux-phy@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-usb@vger.kernel.org>
-Subject: [PATCH v1 4/4] usb: core: add phy notify connect and disconnect
-Date:   Tue, 7 Nov 2023 14:33:47 +0800
-Message-ID: <20231107063518.27824-4-stanley_chang@realtek.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231107063518.27824-1-stanley_chang@realtek.com>
-References: <20231107063518.27824-1-stanley_chang@realtek.com>
+        Tue, 7 Nov 2023 01:34:38 -0500
+Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5AB3110;
+        Mon,  6 Nov 2023 22:34:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1699338874; x=1730874874;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=BZOUKef8XnMxZtGy2xqoSV8Tn9ptlXd8U7y8CTGYCPU=;
+  b=lZ5BRp9xImDfKIW+q80GbNEyDbJ9/ursCIdjmnKND8C1IhqzqFM+XfM2
+   2IN6Jmu4ti6IrNV4TiMLpz0/MEbiDxuW3ss/yBIG9ulwKKH5zx1qwkIyN
+   PW0jERut2a+qzfMIZXbMhczSAXfhhhLPd6Bb6yJI8XV0+6NM2MBJstvX3
+   pj1VlTAxI9m3IBHS2C4ej9nxvyW3HfqPWQCTpY8LaLMTRZBtfj+sCs6tV
+   ByP6uZ8VCYvBUo8+n7frkIrXIIIRxGEIYDJjvPhLLiP577w7vFSm++abw
+   8FhyeFg1kz+GTFKwoZDJU1myc+Z4OEOfCVegv4edPmlNt5H0Ow+aIUPR5
+   g==;
+X-IronPort-AV: E=Sophos;i="6.03,282,1694728800"; 
+   d="scan'208";a="33839681"
+Received: from vtuxmail01.tq-net.de ([10.115.0.20])
+  by mx1.tq-group.com with ESMTP; 07 Nov 2023 07:34:31 +0100
+Received: from steina-w.localnet (steina-w.tq-net.de [10.123.53.18])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by vtuxmail01.tq-net.de (Postfix) with ESMTPSA id 4BBA828007F;
+        Tue,  7 Nov 2023 07:34:31 +0100 (CET)
+From:   Alexander Stein <alexander.stein@ew.tq-group.com>
+To:     =?ISO-8859-1?Q?Jo=E3o?= Rodrigues <jrodrigues@ubimet.com>,
+        Bruno Thomsen <bruno.thomsen@gmail.com>,
+        Fabio Estevam <festevam@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1] ARM: dts: imx: tqma7: add lm75a sensor (rev. 01xxx)
+Date:   Tue, 07 Nov 2023 07:34:32 +0100
+Message-ID: <2253436.iZASKD2KPV@steina-w>
+Organization: TQ-Systems GmbH
+In-Reply-To: <CAOMZO5C8wq=72HUqSb9bdQK2ji2zcEKByByovnKzUt6A5H3K8Q@mail.gmail.com>
+References: <20231102231130.13ca0513@pcn112> <CAOMZO5C8wq=72HUqSb9bdQK2ji2zcEKByByovnKzUt6A5H3K8Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-KSE-ServerInfo: RTEXMBS02.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-Antivirus-Interceptor-Info: fallback
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-ServerInfo: RTEXH36505.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-Antivirus-Interceptor-Info: fallback
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Recently added Realtek PHY driver depends on new port status
-Notification mechanism built on the deprecated USB PHY implementation.
-It's broken by design.
+Hi,
 
-Therefore, USB port status notifications on legacy USB PHYs should be
-removed. New mechanism for connect and disconnect USB devices using
-to replace it on generic phy.
+Am Freitag, 3. November 2023, 22:07:08 CET schrieb Fabio Estevam:
+> [Adding Bruno and Alexander]
+>=20
+> On Thu, Nov 2, 2023 at 7:12=E2=80=AFPM Jo=C3=A3o Rodrigues <jrodrigues@ub=
+imet.com> wrote:
+> > From: Jo=C3=A3o Rodrigues <jrodrigues@ubimet.com>
+> >=20
+> > TQMa7x (revision 01xxx) uses a LM75A temperature sensor.
+> > The two sensors use different I2C addresses, so we can set both sensors
+> > simultaneously.
 
-Additionally, the generic phy only specifies primary_hcd in the original
-design. Added specific "usb2-phy" on primary_hcd and "usb3-phy" on
-shared_hcd.
+I've contacted responsible department and I am waiting for more details.
 
-In Realtek SoC, the parameter of usb phy is designed to can dynamic
-tuning base on device connect and disconnect. Therefore, add a notify
-callback of generic phy driver when usb device connection change.
+Best regards,
+Alexander
 
-Check if portstatus is USB_PORT_STAT_CONNECTION and portchange is
-USB_PORT_STAT_C_CONNECTION.
-1. The device is connected, notify phy driver to calibrates
-   the phy parameters.
-2. The device disconnects, also notify driver to calibrates
-   the phy parameters.
+> > Signed-off-by: Jo=C3=A3o Rodrigues <jrodrigues@ubimet.com>
+> > ---
+> >=20
+> >  arch/arm/boot/dts/nxp/imx/imx7-tqma7.dtsi | 9 +++++++--
+> >  1 file changed, 7 insertions(+), 2 deletions(-)
+> >=20
+> > diff --git a/arch/arm/boot/dts/nxp/imx/imx7-tqma7.dtsi
+> > b/arch/arm/boot/dts/nxp/imx/imx7-tqma7.dtsi index
+> > fe42b0a4683..3fc3130f9de 100644
+> > --- a/arch/arm/boot/dts/nxp/imx/imx7-tqma7.dtsi
+> > +++ b/arch/arm/boot/dts/nxp/imx/imx7-tqma7.dtsi
+> > @@ -128,11 +128,16 @@ vgen6_reg: vldo4 {
+> >=20
+> >                 };
+> >        =20
+> >         };
+> >=20
+> > -       /* NXP SE97BTP with temperature sensor + eeprom */
+> > +       /* LM75A temperature sensor, TQMa7x 01xx */
+> > +       lm75a: temperature-sensor@48 {
+> > +               compatible =3D "national,lm75a";
+> > +               reg =3D <0x48>;
+> > +       };
+> > +
+> > +       /* NXP SE97BTP with temperature sensor + eeprom, TQMa7x 02xx */
+> >=20
+> >         se97b: temperature-sensor-eeprom@1e {
+> >        =20
+> >                 compatible =3D "nxp,se97b", "jedec,jc-42.4-temp";
+> >                 reg =3D <0x1e>;
+> >=20
+> > -               status =3D "okay";
+> >=20
+> >         };
+> >        =20
+> >         /* ST M24C64 */
+> >=20
+> > --
+> > 2.25.1
 
-Signed-off-by: Stanley Chang <stanley_chang@realtek.com>
----
- drivers/usb/core/hcd.c  | 14 ++++--
- drivers/usb/core/hub.c  | 16 ++++---
- drivers/usb/core/phy.c  | 94 +++++++++++++++++++++++++++++++++++++++++
- drivers/usb/core/phy.h  |  3 ++
- include/linux/usb/phy.h | 13 ------
- 5 files changed, 118 insertions(+), 22 deletions(-)
 
-diff --git a/drivers/usb/core/hcd.c b/drivers/usb/core/hcd.c
-index 12b6dfeaf658..992284461ad8 100644
---- a/drivers/usb/core/hcd.c
-+++ b/drivers/usb/core/hcd.c
-@@ -2794,10 +2794,16 @@ int usb_add_hcd(struct usb_hcd *hcd,
- 	struct usb_device *rhdev;
- 	struct usb_hcd *shared_hcd;
- 
--	if (!hcd->skip_phy_initialization && usb_hcd_is_primary_hcd(hcd)) {
--		hcd->phy_roothub = usb_phy_roothub_alloc(hcd->self.sysdev);
--		if (IS_ERR(hcd->phy_roothub))
--			return PTR_ERR(hcd->phy_roothub);
-+	if (!hcd->skip_phy_initialization) {
-+		if (usb_hcd_is_primary_hcd(hcd)) {
-+			hcd->phy_roothub = usb_phy_roothub_alloc(hcd->self.sysdev);
-+			if (IS_ERR(hcd->phy_roothub))
-+				return PTR_ERR(hcd->phy_roothub);
-+		} else {
-+			hcd->phy_roothub = usb_phy_roothub_alloc_usb3_phy(hcd->self.sysdev);
-+			if (IS_ERR(hcd->phy_roothub))
-+				return PTR_ERR(hcd->phy_roothub);
-+		}
- 
- 		retval = usb_phy_roothub_init(hcd->phy_roothub);
- 		if (retval)
-diff --git a/drivers/usb/core/hub.c b/drivers/usb/core/hub.c
-index b4584a0cd484..65c0454ee70a 100644
---- a/drivers/usb/core/hub.c
-+++ b/drivers/usb/core/hub.c
-@@ -37,6 +37,7 @@
- #include <asm/byteorder.h>
- 
- #include "hub.h"
-+#include "phy.h"
- #include "otg_productlist.h"
- 
- #define USB_VENDOR_GENESYS_LOGIC		0x05e3
-@@ -632,16 +633,21 @@ static int hub_ext_port_status(struct usb_hub *hub, int port1, int type,
- 		struct usb_device *hdev = hub->hdev;
- 
- 		/*
--		 * Only roothub will be notified of port state changes,
-+		 * Only roothub will be notified of connection changes,
- 		 * since the USB PHY only cares about changes at the next
- 		 * level.
- 		 */
- 		if (is_root_hub(hdev)) {
- 			struct usb_hcd *hcd = bus_to_hcd(hdev->bus);
--
--			if (hcd->usb_phy)
--				usb_phy_notify_port_status(hcd->usb_phy,
--							   port1 - 1, *status, *change);
-+			bool connect;
-+			bool connect_change;
-+
-+			connect_change = *change & USB_PORT_STAT_C_CONNECTION;
-+			connect = *status & USB_PORT_STAT_CONNECTION;
-+			if (connect_change && connect)
-+				usb_phy_roothub_notify_connect(hcd->phy_roothub, port1 - 1);
-+			else if (connect_change)
-+				usb_phy_roothub_notify_disconnect(hcd->phy_roothub, port1 - 1);
- 		}
- 	}
- 
-diff --git a/drivers/usb/core/phy.c b/drivers/usb/core/phy.c
-index fb1588e7c282..26585fc1ec32 100644
---- a/drivers/usb/core/phy.c
-+++ b/drivers/usb/core/phy.c
-@@ -19,6 +19,29 @@ struct usb_phy_roothub {
- 	struct list_head	list;
- };
- 
-+static int usb_phy_roothub_add_phy_by_name(struct device *dev, const char *name,
-+					   struct list_head *list)
-+{
-+	struct usb_phy_roothub *roothub_entry;
-+	struct phy *phy;
-+
-+	phy = devm_of_phy_get(dev, dev->of_node, name);
-+	if (IS_ERR(phy))
-+		return PTR_ERR(phy);
-+
-+	roothub_entry = devm_kzalloc(dev, sizeof(*roothub_entry), GFP_KERNEL);
-+	if (!roothub_entry)
-+		return -ENOMEM;
-+
-+	INIT_LIST_HEAD(&roothub_entry->list);
-+
-+	roothub_entry->phy = phy;
-+
-+	list_add_tail(&roothub_entry->list, list);
-+
-+	return 0;
-+}
-+
- static int usb_phy_roothub_add_phy(struct device *dev, int index,
- 				   struct list_head *list)
- {
-@@ -65,6 +88,9 @@ struct usb_phy_roothub *usb_phy_roothub_alloc(struct device *dev)
- 
- 	INIT_LIST_HEAD(&phy_roothub->list);
- 
-+	if (!usb_phy_roothub_add_phy_by_name(dev, "usb2-phy", &phy_roothub->list))
-+		return phy_roothub;
-+
- 	for (i = 0; i < num_phys; i++) {
- 		err = usb_phy_roothub_add_phy(dev, i, &phy_roothub->list);
- 		if (err)
-@@ -75,6 +101,32 @@ struct usb_phy_roothub *usb_phy_roothub_alloc(struct device *dev)
- }
- EXPORT_SYMBOL_GPL(usb_phy_roothub_alloc);
- 
-+struct usb_phy_roothub *usb_phy_roothub_alloc_usb3_phy(struct device *dev)
-+{
-+	struct usb_phy_roothub *phy_roothub;
-+	int num_phys;
-+
-+	if (!IS_ENABLED(CONFIG_GENERIC_PHY))
-+		return NULL;
-+
-+	num_phys = of_count_phandle_with_args(dev->of_node, "phys",
-+					      "#phy-cells");
-+	if (num_phys <= 0)
-+		return NULL;
-+
-+	phy_roothub = devm_kzalloc(dev, sizeof(*phy_roothub), GFP_KERNEL);
-+	if (!phy_roothub)
-+		return ERR_PTR(-ENOMEM);
-+
-+	INIT_LIST_HEAD(&phy_roothub->list);
-+
-+	if (!usb_phy_roothub_add_phy_by_name(dev, "usb3-phy", &phy_roothub->list))
-+		return phy_roothub;
-+
-+	return NULL;
-+}
-+EXPORT_SYMBOL_GPL(usb_phy_roothub_alloc_usb3_phy);
-+
- int usb_phy_roothub_init(struct usb_phy_roothub *phy_roothub)
- {
- 	struct usb_phy_roothub *roothub_entry;
-@@ -172,6 +224,48 @@ int usb_phy_roothub_calibrate(struct usb_phy_roothub *phy_roothub)
- }
- EXPORT_SYMBOL_GPL(usb_phy_roothub_calibrate);
- 
-+int usb_phy_roothub_notify_connect(struct usb_phy_roothub *phy_roothub, int port)
-+{
-+	struct usb_phy_roothub *roothub_entry;
-+	struct list_head *head;
-+	int err;
-+
-+	if (!phy_roothub)
-+		return 0;
-+
-+	head = &phy_roothub->list;
-+
-+	list_for_each_entry(roothub_entry, head, list) {
-+		err = phy_notify_connect(roothub_entry->phy, port);
-+		if (err)
-+			return err;
-+	}
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(usb_phy_roothub_notify_connect);
-+
-+int usb_phy_roothub_notify_disconnect(struct usb_phy_roothub *phy_roothub, int port)
-+{
-+	struct usb_phy_roothub *roothub_entry;
-+	struct list_head *head;
-+	int err;
-+
-+	if (!phy_roothub)
-+		return 0;
-+
-+	head = &phy_roothub->list;
-+
-+	list_for_each_entry(roothub_entry, head, list) {
-+		err = phy_notify_disconnect(roothub_entry->phy, port);
-+		if (err)
-+			return err;
-+	}
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(usb_phy_roothub_notify_disconnect);
-+
- int usb_phy_roothub_power_on(struct usb_phy_roothub *phy_roothub)
- {
- 	struct usb_phy_roothub *roothub_entry;
-diff --git a/drivers/usb/core/phy.h b/drivers/usb/core/phy.h
-index 20a267cd986b..88b49c0ea6b5 100644
---- a/drivers/usb/core/phy.h
-+++ b/drivers/usb/core/phy.h
-@@ -12,6 +12,7 @@ struct device;
- struct usb_phy_roothub;
- 
- struct usb_phy_roothub *usb_phy_roothub_alloc(struct device *dev);
-+struct usb_phy_roothub *usb_phy_roothub_alloc_usb3_phy(struct device *dev);
- 
- int usb_phy_roothub_init(struct usb_phy_roothub *phy_roothub);
- int usb_phy_roothub_exit(struct usb_phy_roothub *phy_roothub);
-@@ -19,6 +20,8 @@ int usb_phy_roothub_exit(struct usb_phy_roothub *phy_roothub);
- int usb_phy_roothub_set_mode(struct usb_phy_roothub *phy_roothub,
- 			     enum phy_mode mode);
- int usb_phy_roothub_calibrate(struct usb_phy_roothub *phy_roothub);
-+int usb_phy_roothub_notify_connect(struct usb_phy_roothub *phy_roothub, int port);
-+int usb_phy_roothub_notify_disconnect(struct usb_phy_roothub *phy_roothub, int port);
- int usb_phy_roothub_power_on(struct usb_phy_roothub *phy_roothub);
- void usb_phy_roothub_power_off(struct usb_phy_roothub *phy_roothub);
- 
-diff --git a/include/linux/usb/phy.h b/include/linux/usb/phy.h
-index b513749582d7..e4de6bc1f69b 100644
---- a/include/linux/usb/phy.h
-+++ b/include/linux/usb/phy.h
-@@ -144,10 +144,6 @@ struct usb_phy {
- 	 */
- 	int	(*set_wakeup)(struct usb_phy *x, bool enabled);
- 
--	/* notify phy port status change */
--	int	(*notify_port_status)(struct usb_phy *x, int port,
--				      u16 portstatus, u16 portchange);
--
- 	/* notify phy connect status change */
- 	int	(*notify_connect)(struct usb_phy *x,
- 			enum usb_device_speed speed);
-@@ -320,15 +316,6 @@ usb_phy_set_wakeup(struct usb_phy *x, bool enabled)
- 		return 0;
- }
- 
--static inline int
--usb_phy_notify_port_status(struct usb_phy *x, int port, u16 portstatus, u16 portchange)
--{
--	if (x && x->notify_port_status)
--		return x->notify_port_status(x, port, portstatus, portchange);
--	else
--		return 0;
--}
--
- static inline int
- usb_phy_notify_connect(struct usb_phy *x, enum usb_device_speed speed)
- {
--- 
-2.34.1
+=2D-=20
+TQ-Systems GmbH | M=C3=BChlstra=C3=9Fe 2, Gut Delling | 82229 Seefeld, Germ=
+any
+Amtsgericht M=C3=BCnchen, HRB 105018
+Gesch=C3=A4ftsf=C3=BChrer: Detlef Schneider, R=C3=BCdiger Stahl, Stefan Sch=
+neider
+http://www.tq-group.com/
+
 
