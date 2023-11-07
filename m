@@ -2,46 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD4977E3BB2
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 13:08:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 730BD7E3BB5
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 13:09:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234096AbjKGMI7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 07:08:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55212 "EHLO
+        id S234168AbjKGMJB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 07:09:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234079AbjKGMIk (ORCPT
+        with ESMTP id S234042AbjKGMIm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 07:08:40 -0500
+        Tue, 7 Nov 2023 07:08:42 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68D82170B;
-        Tue,  7 Nov 2023 04:08:01 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4469FC433C9;
-        Tue,  7 Nov 2023 12:07:59 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F4FC1729;
+        Tue,  7 Nov 2023 04:08:04 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A80C2C433CD;
+        Tue,  7 Nov 2023 12:08:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699358881;
-        bh=YTyv8HJFV07JTyfEcbnVeoTNlm0GOpkdppOSK7jQbjc=;
+        s=k20201202; t=1699358882;
+        bh=ot6EmVyV5kHVSx9pYd3IZabniwyvi12IYtnXA4JRK+M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ac/X6xfWt0oQPG5YEXB19Fzr3YVwYAk20xouHyThRLditKwPLkqtDPOJzXmVzyJZ/
-         bUGZXruu8LCo9T9QLBlo/WKs3i0+nPzpOLNXc8B2Xzk5kIx9YC4Q6mRIWzdX4JF5Vw
-         u5ABYNQv9sboPTnh843T4CxnNA+CBHGpmeFQz0lIwmNa7n6x9nmRg0r2ULGwHiNavi
-         o+CK3mq858NPMo6xDkxNIROak4m3MPXoJpGEBWgKZS2aXzuQd2matuWOiu0p1phJyK
-         6L91KjXPtLrf4f4I0iOLr32TxeBdr9QaBs7DYexWAq9iJD2rL8Oxn5jRB1qmVsGTS9
-         m3Ee/DEqz/xNA==
+        b=od0YN4Cxz2O3VBLSVCcdfinstFS41hzdmfnLkUBsHuONBkRx5TyIm4uBAijDYpYQF
+         PSQsXhDyjPxq5bDh+JjhvT7uTvF1urg4fYz6C+2HpDGNyO9z3+O4cpOTEMltguKaAx
+         0BeWcBWF0DpOSqozJ4iwgw8hzAdKziu6aY0Hnf4p8RgAGjtxPdHDpIE9n3/XBv1579
+         TBC48MwPYRpCBjTE8eowpnOrU1MIWBggmL2baH5TsyBCUKucyqvoBjOICUChyR7Fvu
+         Qr17P9ClsI25XLZdD/AmI3zdQtuFq5g5lpP1tO5CWdduIJEO3YlqsNiocaAgEVTZ+F
+         L09OjOV1lceKw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     StanleyYP Wang <StanleyYP.Wang@mediatek.com>,
-        Evelyn Tsai <evelyn.tsai@mediatek.com>,
-        Shayne Chen <shayne.chen@mediatek.com>,
-        Felix Fietkau <nbd@nbd.name>, Sasha Levin <sashal@kernel.org>,
-        lorenzo@kernel.org, ryder.lee@mediatek.com, kvalo@kernel.org,
-        matthias.bgg@gmail.com, angelogioacchino.delregno@collabora.com,
-        chui-hao.chiu@mediatek.com, meichia.chiu@mediatek.com,
-        howard-yh.hsu@mediatek.com, linux-wireless@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: [PATCH AUTOSEL 6.6 15/31] wifi: mt76: get rid of false alamrs of tx emission issues
-Date:   Tue,  7 Nov 2023 07:06:02 -0500
-Message-ID: <20231107120704.3756327-15-sashal@kernel.org>
+Cc:     Eric Dumazet <edumazet@google.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>, kuba@kernel.org,
+        pabeni@redhat.com, netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.6 16/31] net: annotate data-races around sk->sk_tx_queue_mapping
+Date:   Tue,  7 Nov 2023 07:06:03 -0500
+Message-ID: <20231107120704.3756327-16-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231107120704.3756327-1-sashal@kernel.org>
 References: <20231107120704.3756327-1-sashal@kernel.org>
@@ -60,62 +54,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: StanleyYP Wang <StanleyYP.Wang@mediatek.com>
+From: Eric Dumazet <edumazet@google.com>
 
-[ Upstream commit 413f05d68d11981f5984b49214d3a5a0d88079b1 ]
+[ Upstream commit 0bb4d124d34044179b42a769a0c76f389ae973b6 ]
 
-When the set_chan_info command is set with CH_SWITCH_NORMAL reason,
-even if the action is UNI_CHANNEL_RX_PATH, it'll still generate some
-unexpected tones, which might confuse DFS CAC tests that there are some
-tone leakages. To get rid of these kinds of false alarms, always bypass
-DPD calibration when IEEE80211_CONF_IDLE is set.
+This field can be read or written without socket lock being held.
 
-Reviewed-by: Evelyn Tsai <evelyn.tsai@mediatek.com>
-Signed-off-by: StanleyYP Wang <StanleyYP.Wang@mediatek.com>
-Signed-off-by: Shayne Chen <shayne.chen@mediatek.com>
-Signed-off-by: Felix Fietkau <nbd@nbd.name>
+Add annotations to avoid load-store tearing.
+
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/mediatek/mt76/mt7915/mcu.c | 6 +++---
- drivers/net/wireless/mediatek/mt76/mt7996/mcu.c | 6 +++---
- 2 files changed, 6 insertions(+), 6 deletions(-)
+ include/net/sock.h | 20 ++++++++++++++++----
+ 1 file changed, 16 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c b/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c
-index 50ae7bf3af91c..b8bc7a885b108 100644
---- a/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c
-+++ b/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c
-@@ -2725,10 +2725,10 @@ int mt7915_mcu_set_chan_info(struct mt7915_phy *phy, int cmd)
- 	if (mt76_connac_spe_idx(phy->mt76->antenna_mask))
- 		req.tx_path_num = fls(phy->mt76->antenna_mask);
+diff --git a/include/net/sock.h b/include/net/sock.h
+index 92f7ea62a9159..97f7fbcbf61ed 100644
+--- a/include/net/sock.h
++++ b/include/net/sock.h
+@@ -2006,21 +2006,33 @@ static inline void sk_tx_queue_set(struct sock *sk, int tx_queue)
+ 	/* sk_tx_queue_mapping accept only upto a 16-bit value */
+ 	if (WARN_ON_ONCE((unsigned short)tx_queue >= USHRT_MAX))
+ 		return;
+-	sk->sk_tx_queue_mapping = tx_queue;
++	/* Paired with READ_ONCE() in sk_tx_queue_get() and
++	 * other WRITE_ONCE() because socket lock might be not held.
++	 */
++	WRITE_ONCE(sk->sk_tx_queue_mapping, tx_queue);
+ }
  
--	if (cmd == MCU_EXT_CMD(SET_RX_PATH) ||
--	    dev->mt76.hw->conf.flags & IEEE80211_CONF_MONITOR)
-+	if (dev->mt76.hw->conf.flags & IEEE80211_CONF_MONITOR)
- 		req.switch_reason = CH_SWITCH_NORMAL;
--	else if (phy->mt76->hw->conf.flags & IEEE80211_CONF_OFFCHANNEL)
-+	else if (phy->mt76->hw->conf.flags & IEEE80211_CONF_OFFCHANNEL ||
-+		 phy->mt76->hw->conf.flags & IEEE80211_CONF_IDLE)
- 		req.switch_reason = CH_SWITCH_SCAN_BYPASS_DPD;
- 	else if (!cfg80211_reg_can_beacon(phy->mt76->hw->wiphy, chandef,
- 					  NL80211_IFTYPE_AP))
-diff --git a/drivers/net/wireless/mediatek/mt76/mt7996/mcu.c b/drivers/net/wireless/mediatek/mt76/mt7996/mcu.c
-index 4a30db49ef33f..a9bd7e0d93595 100644
---- a/drivers/net/wireless/mediatek/mt76/mt7996/mcu.c
-+++ b/drivers/net/wireless/mediatek/mt76/mt7996/mcu.c
-@@ -2960,10 +2960,10 @@ int mt7996_mcu_set_chan_info(struct mt7996_phy *phy, u16 tag)
- 		.channel_band = ch_band[chandef->chan->band],
- 	};
+ #define NO_QUEUE_MAPPING	USHRT_MAX
  
--	if (tag == UNI_CHANNEL_RX_PATH ||
--	    dev->mt76.hw->conf.flags & IEEE80211_CONF_MONITOR)
-+	if (dev->mt76.hw->conf.flags & IEEE80211_CONF_MONITOR)
- 		req.switch_reason = CH_SWITCH_NORMAL;
--	else if (phy->mt76->hw->conf.flags & IEEE80211_CONF_OFFCHANNEL)
-+	else if (phy->mt76->hw->conf.flags & IEEE80211_CONF_OFFCHANNEL ||
-+		 phy->mt76->hw->conf.flags & IEEE80211_CONF_IDLE)
- 		req.switch_reason = CH_SWITCH_SCAN_BYPASS_DPD;
- 	else if (!cfg80211_reg_can_beacon(phy->mt76->hw->wiphy, chandef,
- 					  NL80211_IFTYPE_AP))
+ static inline void sk_tx_queue_clear(struct sock *sk)
+ {
+-	sk->sk_tx_queue_mapping = NO_QUEUE_MAPPING;
++	/* Paired with READ_ONCE() in sk_tx_queue_get() and
++	 * other WRITE_ONCE() because socket lock might be not held.
++	 */
++	WRITE_ONCE(sk->sk_tx_queue_mapping, NO_QUEUE_MAPPING);
+ }
+ 
+ static inline int sk_tx_queue_get(const struct sock *sk)
+ {
+-	if (sk && sk->sk_tx_queue_mapping != NO_QUEUE_MAPPING)
+-		return sk->sk_tx_queue_mapping;
++	if (sk) {
++		/* Paired with WRITE_ONCE() in sk_tx_queue_clear()
++		 * and sk_tx_queue_set().
++		 */
++		int val = READ_ONCE(sk->sk_tx_queue_mapping);
+ 
++		if (val != NO_QUEUE_MAPPING)
++			return val;
++	}
+ 	return -1;
+ }
+ 
 -- 
 2.42.0
 
