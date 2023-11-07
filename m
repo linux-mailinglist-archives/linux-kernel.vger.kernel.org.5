@@ -2,103 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D88197E4AAB
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 22:28:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92D787E4AB3
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 22:29:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343982AbjKGV2f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 16:28:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56784 "EHLO
+        id S1343997AbjKGV36 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 16:29:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235267AbjKGV2d (ORCPT
+        with ESMTP id S235256AbjKGV35 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 16:28:33 -0500
-Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ABBCD7A;
-        Tue,  7 Nov 2023 13:28:31 -0800 (PST)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id D92F740E014B;
-        Tue,  7 Nov 2023 21:28:28 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id FJ3LN0HSu5qX; Tue,  7 Nov 2023 21:28:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1699392506; bh=bD4Og8jExEEHYDDGD4aZjJ2Y/F4MpIKryEXuaQivTig=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QorMM4SuZdiKp7t2nZwe81UY7vOudNKGUcUY+TlNg43O9zYwwHCB7pozpT9nnl6q7
-         C/9DBfHFH7707N+ejUdjvjHyZllhX7kFCBjKoWk16nzMPlB2BAx+9SirMdgaWjLq4q
-         GZCIhpj5To82xighWq74IFenape1WM3joOJuPmKsRTErh0iRJjKt2sxvxpQRol7vxS
-         pHfJnnQGyq5L2W0OKXy0tcOO3oqw57IuzP7tLT0yis/CkXSGt1rp6miiOUMp7NGt69
-         9FornBvMJX5oj7URL8rY6jBvJ55f8LubZ9LR/Mhb2Svr3H57LsKQ8s6bv3C3isgv+R
-         CkJlDmrwArgtzgFYsAISBw4FPh5DWOrTMVBNk+ZDXRZwaUxfixd5IfXXMXFzAkR2KJ
-         5SYifm7Ha0z0OLS/FEiuAhta0XbUky8UtoyodNL9OOtOCy/A2/n7EMWgCHQrKiGfqj
-         qsl8iQptQLX56l5VUfaKv9pTlF/WwoIzeLXS96gjdBq71S/LFfc6SGaTlhFN9pM+9u
-         9h0iHI7asY53l9+P6SAeHxtynHF+/j/xMAwG+PpOtSPwAVjef6j95Y20t96CQufTOa
-         LHb0OkqGowP6Rma1TpewhEYi6LnIvvZfhAgvm3A7/QIAQImr1nIPZa1usK5EloRu/e
-         7JIp4HZbQd3iCQjhw3NydAg8=
-Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 2926A40E0192;
-        Tue,  7 Nov 2023 21:27:46 +0000 (UTC)
-Date:   Tue, 7 Nov 2023 22:27:40 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     "Kalra, Ashish" <ashish.kalra@amd.com>
-Cc:     Michael Roth <michael.roth@amd.com>, kvm@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
-        jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com,
-        ardb@kernel.org, pbonzini@redhat.com, seanjc@google.com,
-        vkuznets@redhat.com, jmattson@google.com, luto@kernel.org,
-        dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com,
-        peterz@infradead.org, srinivas.pandruvada@linux.intel.com,
-        rientjes@google.com, dovmurik@linux.ibm.com, tobin@ibm.com,
-        vbabka@suse.cz, kirill@shutemov.name, ak@linux.intel.com,
-        tony.luck@intel.com, marcorr@google.com,
-        sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com,
-        jarkko@kernel.org, nikunj.dadhania@amd.com, pankaj.gupta@amd.com,
-        liam.merwick@oracle.com, zhi.a.wang@intel.com,
-        Brijesh Singh <brijesh.singh@amd.com>
-Subject: Re: [PATCH v10 06/50] x86/sev: Add the host SEV-SNP initialization
- support
-Message-ID: <20231107212740.GFZUqrzK7yzy41dRKp@fat_crate.local>
-References: <20231016132819.1002933-1-michael.roth@amd.com>
- <20231016132819.1002933-7-michael.roth@amd.com>
- <20231107163142.GAZUpmbt/i3himIf+E@fat_crate.local>
- <4a2016d6-dc1f-ff68-9827-0b72b7c8eac2@amd.com>
- <20231107191931.GCZUqNwxP8JcSbjZ0/@fat_crate.local>
- <20231107202757.GEZUqdzYyzVBHTBhZX@fat_crate.local>
- <250f5513-91c0-d0b5-cb59-439e26ba16dc@amd.com>
+        Tue, 7 Nov 2023 16:29:57 -0500
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF66D10C9
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 13:29:54 -0800 (PST)
+Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2c503dbe50dso84697931fa.1
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 13:29:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1699392593; x=1699997393; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=/Ne2c9ju+9bn3Zice6izrVWXVkuEMpaweGZBq2tsOcY=;
+        b=fqNvVEDfXZxqcyPv87zXIznJXrF3mxveQmvZprIvMJbT2M7248aj8QyLTcBZ/elw/g
+         IXYb0OaVEqlvfM0/2ZKdfeaLOiP1IYnhExl1m4G+VwETExp75tIghsgtTIhUMYZ4rzIK
+         KmJFxaEOJRtIVWwwke2nLGDncp8MBmO+/hXmgPCuj0oSDhnG9rKAsFHTSsi4VXO+Dn0b
+         j/qVh8tpwxBN0ZWpFD8A7bA7GXPPPaD4SEEZDB4qh2bad1q6TuqpmVlb7y1yCqWtgnh8
+         WWu/WxRgfhoUQfQ1dY+u1S4VQFuprUTGsj7WdCEsOn/HE4EapfvhXBkkrhEwBkKAbjZu
+         +ENA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699392593; x=1699997393;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/Ne2c9ju+9bn3Zice6izrVWXVkuEMpaweGZBq2tsOcY=;
+        b=YwqeuAh71EKEgU/dG31jQ50P2zlAbk1vsiHuzXEETTCotXOtcY5fra5wtzOddI/DYA
+         XB3YkMUJc2hqfLYthqia0bVSrDTBV9PhdqeI+2ORrBJ3jUkz0Up+bWBuiVrtk/B0fEuO
+         KJntMlVPFQ5cSdzTFxchSnknOhTLJgFBo/CwPc5ivxzITIfIjBLA31YaebJvKbwXKRJ+
+         I6r/gG2qgiujTEmDBK4mAp7EvxZxpuyoV/Jf/YJyKX0WAMhOJRlC+T+sdIqLidJvcyX6
+         THCh0bd3U3AlGHZUqs6BFu6zNxNt9UBkY0gLAd5nHKNvuuzI/KAvGQh0QU35mXmM40Ru
+         HkNw==
+X-Gm-Message-State: AOJu0YzVW2tqeAoi/Xwj4DQ4LeRQsDb1F0wZJp/yxQYJuyv4TwEUzOGL
+        qHqVfs/CNBhIYuDtuoOIrkO97A==
+X-Google-Smtp-Source: AGHT+IFItNos92G2Fef/m/cJIcLTaZPhUJCAiAccAcfKSmQhgxJraEQl0R/ly17xOKTTQlxmPAi/8Q==
+X-Received: by 2002:a2e:3c05:0:b0:2c5:b3c4:7b17 with SMTP id j5-20020a2e3c05000000b002c5b3c47b17mr182193lja.38.1699392592906;
+        Tue, 07 Nov 2023 13:29:52 -0800 (PST)
+Received: from [172.30.205.109] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
+        by smtp.gmail.com with ESMTPSA id t4-20020a05651c148400b002b6daa3fa2csm1607587lje.69.2023.11.07.13.29.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 07 Nov 2023 13:29:52 -0800 (PST)
+Message-ID: <9c3dad0b-b5c9-4d73-8fea-1b3a44d89c62@linaro.org>
+Date:   Tue, 7 Nov 2023 22:29:50 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <250f5513-91c0-d0b5-cb59-439e26ba16dc@amd.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 7/8] arm64: dts: qcom: Add PM8937 PMIC
+Content-Language: en-US
+To:     Dang Huynh <danct12@riseup.net>, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Robert Marko <robimarko@gmail.com>
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+References: <20231106-pm8937-v1-0-ec51d9eeec53@riseup.net>
+ <20231106-pm8937-v1-7-ec51d9eeec53@riseup.net>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <20231106-pm8937-v1-7-ec51d9eeec53@riseup.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 07, 2023 at 03:21:29PM -0600, Kalra, Ashish wrote:
-> No, this is not correct as this will always enable SNP support on
-> IOMMU even when SNP support is not supported and enabled on the
-> platform,
 
-You see that we set or clear X86_FEATURE_SEV_SNP depending on support,
-right?
 
-Which means, you need to test that bit in amd_iommu_snp_enable() first.
+On 11/6/23 13:08, Dang Huynh wrote:
+> The PM8937 features integrated peripherals like ADC, GPIO controller,
+> MPPs, PON keys and others.
+> 
+> Add the device tree so that any boards with this PMIC can use it.
+> 
+> Signed-off-by: Dang Huynh <danct12@riseup.net>
+> ---
+>   arch/arm64/boot/dts/qcom/pm8937.dtsi | 202 +++++++++++++++++++++++++++++++++++
+>   1 file changed, 202 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/pm8937.dtsi b/arch/arm64/boot/dts/qcom/pm8937.dtsi
+> new file mode 100644
+> index 000000000000..6091d6938885
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/qcom/pm8937.dtsi
+> @@ -0,0 +1,202 @@
+> +// SPDX-License-Identifier: BSD-3-Clause
+> +/*
+> + * Copyright (c) 2023, Dang Huynh <danct12@riseup.net>
+> + */
+> +
+> +#include <dt-bindings/iio/qcom,spmi-vadc.h>
+> +#include <dt-bindings/input/linux-event-codes.h>
+> +#include <dt-bindings/interrupt-controller/irq.h>
+> +#include <dt-bindings/pinctrl/qcom,pmic-mpp.h>
+> +#include <dt-bindings/spmi/spmi.h>
+> +
+> +/ {
+> +	thermal-zones {
+> +		pm8937-thermal {
+> +			polling-delay-passive = <0>;
+> +			polling-delay = <0>;
+> +			thermal-sensors = <&pm8937_temp>;
+> +
+> +			trips {
+> +				pm8937_trip0: pm8937-trip0 {
+> +					temperature = <105000>;
+> +					hysteresis = <0>;
+> +					type = "passive";
+> +				};
+Add a newline between the subnodes, please
 
-> And isn't IOMMU driver always going to be built-in and isn't it part of the
-> platform support (not arch code, but surely platform specific code)?
-> (IOMMU enablement is requirement for SNP).
+[...]
 
-Read the note again about the fragile ordering in my previous mail.
+> +			pm8937_resin: resin {
+> +				compatible = "qcom,pm8941-resin";
+> +				interrupts = <0 0x8 1 IRQ_TYPE_EDGE_BOTH>;
+> +				debounce = <15625>;
+> +				bias-pull-up;
+> +				linux,code = <KEY_VOLUMEDOWN>;
+This keycode varies per-device, please move it out
 
--- 
-Regards/Gruss,
-    Boris.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+> +			};
+> +		};
+> +
+> +		pm8937_gpios: gpio@c000 {
+> +			compatible = "qcom,pm8937-gpio", "qcom,spmi-gpio";
+> +			reg = <0xc000>;
+> +			gpio-controller;
+> +			gpio-ranges = <&pm8937_gpios 0 0 8>;
+> +			#gpio-cells = <2>;
+> +			interrupt-controller;
+> +			#interrupt-cells = <2>;
+> +		};
+> +
+> +		pm8937_mpps: mpps@a000 {
+> +			compatible = "qcom,pm8937-mpp", "qcom,spmi-mpp";
+> +			reg = <0xa000>;
+
+[...]
+
+> +
+> +		rtc@6000 {
+> +			compatible = "qcom,pm8941-rtc";
+> +			reg = <0x6000>, <0x6100>;
+> +			reg-names = "rtc", "alarm";
+> +			interrupts = <0x0 0x61 0x1 IRQ_TYPE_NONE>;
+This is probably IRQ_TYPE_EDGE_RISING
+
+Konrad
