@@ -2,46 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AAF167E4118
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 14:50:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFAA37E3FA8
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 14:08:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234127AbjKGNu2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 08:50:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58118 "EHLO
+        id S234818AbjKGNIZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 08:08:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234841AbjKGNuI (ORCPT
+        with ESMTP id S234510AbjKGNIK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 08:50:08 -0500
+        Tue, 7 Nov 2023 08:08:10 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2336D30153;
-        Tue,  7 Nov 2023 04:31:28 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74D62C433C8;
-        Tue,  7 Nov 2023 12:31:26 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F24F211E;
+        Tue,  7 Nov 2023 04:31:30 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 36691C433C7;
+        Tue,  7 Nov 2023 12:31:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699360287;
-        bh=2uCsRE/8c6B0RMRw5fnErNNJ+mLfF4psmSlh3dF0mbU=;
+        s=k20201202; t=1699360289;
+        bh=tx3KRHlt+m5YKkdow1scgL5QoTP7fdogK+Z0v/A4ucM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=e2wbwPbv6x3zrT3drv5YlafGf5udnWsCwXyctqTjC7gEryeqUqN+nBabe8+hCk+nb
-         88DjvM1VoKCVykuI32LHIBM5bQBA3nmvnBjf/rSRBjdp3Lou+nSP9CEdB0XqE+wfKM
-         PpNjOUEbu5Q9mCxCwpSPUrXgJ4aod4IZj/Vhg9tZRA5wb29D8LsbNftV/FvfLVtOd4
-         63mwsZXnk9bY6+h/iHITx54LOLzKKTSpKq+Eb4Ni8ZD/5cEdV3W0ty+AxtbncpfaHa
-         P5k7vnGbkVSYxhoNAvQ2+f/fIigF/WVgTz2JgdPjv9cqXnbNkfHeDVYHSVboFBD/ZI
-         +shG0n+yDQ6fA==
+        b=A3fI1Obyyj8sAMce9F3t9MkMvjUA8eyYTXhN4Dff/JW0lydnXVM7fny8UKTIKpTGq
+         guw9buYas0Lueq/NYaY8EVMsGI2qtoc5eFMhKZHjm9hk80dFZkAaI3dvGQEW7ZNp/2
+         cBcaQqVMxQm3K66yc/V6T6vTu4LU6wP3sUilH0/YwPQlDZYqCTOcf47gXYfzmOIiVK
+         V9G1GzXItXAB1lFPuoxQRcxLVZ9MidIfyi9Ftwk19OAMDa1OL6Jcw/WQk7ESvus3Ra
+         ZisW+W26ksnIl1sRp0vCwwxFmC6KAhGnXyRFQCzsH029jmVVnT1qc938lbXcvYGgI0
+         xlEwhH4SYeNjA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Ma Ke <make_ruc2021@163.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Sasha Levin <sashal@kernel.org>, linus.walleij@linaro.org,
+Cc:     Ondrej Jirman <megi@xff.cz>, Frank Oltmanns <frank@oltmanns.dev>,
+        Samuel Holland <samuel@sholland.org>,
+        =?UTF-8?q?Guido=20G=C3=BCnther?= <agx@sigxcpu.org>,
+        Sasha Levin <sashal@kernel.org>, neil.armstrong@linaro.org,
         maarten.lankhorst@linux.intel.com, mripard@kernel.org,
         tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
         dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 5.10 08/11] drm/panel/panel-tpo-tpg110: fix a possible null pointer dereference
-Date:   Tue,  7 Nov 2023 07:30:41 -0500
-Message-ID: <20231107123100.3762796-8-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 09/11] drm/panel: st7703: Pick different reset sequence
+Date:   Tue,  7 Nov 2023 07:30:42 -0500
+Message-ID: <20231107123100.3762796-9-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231107123100.3762796-1-sashal@kernel.org>
 References: <20231107123100.3762796-1-sashal@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.10.199
@@ -56,37 +58,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ma Ke <make_ruc2021@163.com>
+From: Ondrej Jirman <megi@xff.cz>
 
-[ Upstream commit f22def5970c423ea7f87d5247bd0ef91416b0658 ]
+[ Upstream commit d12d635bb03c7cb4830acb641eb176ee9ff2aa89 ]
 
-In tpg110_get_modes(), the return value of drm_mode_duplicate() is
-assigned to mode, which will lead to a NULL pointer dereference on
-failure of drm_mode_duplicate(). Add a check to avoid npd.
+Switching to a different reset sequence, enabling IOVCC before enabling
+VCC.
 
-Signed-off-by: Ma Ke <make_ruc2021@163.com>
-Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
-Link: https://lore.kernel.org/r/20231009090446.4043798-1-make_ruc2021@163.com
-Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
-Link: https://patchwork.freedesktop.org/patch/msgid/20231009090446.4043798-1-make_ruc2021@163.com
+There also needs to be a delay after enabling the supplies and before
+deasserting the reset. The datasheet specifies 1ms after the supplies
+reach the required voltage. Use 10-20ms to also give the power supplies
+some time to reach the required voltage, too.
+
+This fixes intermittent panel initialization failures and screen
+corruption during resume from sleep on panel xingbangda,xbd599 (e.g.
+used in PinePhone).
+
+Signed-off-by: Ondrej Jirman <megi@xff.cz>
+Signed-off-by: Frank Oltmanns <frank@oltmanns.dev>
+Reported-by: Samuel Holland <samuel@sholland.org>
+Reviewed-by: Guido Günther <agx@sigxcpu.org>
+Tested-by: Guido Günther <agx@sigxcpu.org>
+Signed-off-by: Guido Günther <agx@sigxcpu.org>
+Link: https://patchwork.freedesktop.org/patch/msgid/20230211171748.36692-2-frank@oltmanns.dev
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/panel/panel-tpo-tpg110.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/gpu/drm/panel/panel-sitronix-st7703.c | 25 ++++++++++---------
+ 1 file changed, 13 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/gpu/drm/panel/panel-tpo-tpg110.c b/drivers/gpu/drm/panel/panel-tpo-tpg110.c
-index d57ed75a977c3..494cec50a682b 100644
---- a/drivers/gpu/drm/panel/panel-tpo-tpg110.c
-+++ b/drivers/gpu/drm/panel/panel-tpo-tpg110.c
-@@ -378,6 +378,8 @@ static int tpg110_get_modes(struct drm_panel *panel,
- 	connector->display_info.bus_flags = tpg->panel_mode->bus_flags;
+diff --git a/drivers/gpu/drm/panel/panel-sitronix-st7703.c b/drivers/gpu/drm/panel/panel-sitronix-st7703.c
+index c22e7c49e0778..67e1da0a7db53 100644
+--- a/drivers/gpu/drm/panel/panel-sitronix-st7703.c
++++ b/drivers/gpu/drm/panel/panel-sitronix-st7703.c
+@@ -428,29 +428,30 @@ static int st7703_prepare(struct drm_panel *panel)
+ 		return 0;
  
- 	mode = drm_mode_duplicate(connector->dev, &tpg->panel_mode->mode);
-+	if (!mode)
-+		return -ENOMEM;
- 	drm_mode_set_name(mode);
- 	mode->type = DRM_MODE_TYPE_DRIVER | DRM_MODE_TYPE_PREFERRED;
+ 	dev_dbg(ctx->dev, "Resetting the panel\n");
+-	ret = regulator_enable(ctx->vcc);
++	gpiod_set_value_cansleep(ctx->reset_gpio, 1);
++
++	ret = regulator_enable(ctx->iovcc);
+ 	if (ret < 0) {
+-		dev_err(ctx->dev, "Failed to enable vcc supply: %d\n", ret);
++		dev_err(ctx->dev, "Failed to enable iovcc supply: %d\n", ret);
+ 		return ret;
+ 	}
+-	ret = regulator_enable(ctx->iovcc);
++
++	ret = regulator_enable(ctx->vcc);
+ 	if (ret < 0) {
+-		dev_err(ctx->dev, "Failed to enable iovcc supply: %d\n", ret);
+-		goto disable_vcc;
++		dev_err(ctx->dev, "Failed to enable vcc supply: %d\n", ret);
++		regulator_disable(ctx->iovcc);
++		return ret;
+ 	}
  
+-	gpiod_set_value_cansleep(ctx->reset_gpio, 1);
+-	usleep_range(20, 40);
++	/* Give power supplies time to stabilize before deasserting reset. */
++	usleep_range(10000, 20000);
++
+ 	gpiod_set_value_cansleep(ctx->reset_gpio, 0);
+-	msleep(20);
++	usleep_range(15000, 20000);
+ 
+ 	ctx->prepared = true;
+ 
+ 	return 0;
+-
+-disable_vcc:
+-	regulator_disable(ctx->vcc);
+-	return ret;
+ }
+ 
+ static int st7703_get_modes(struct drm_panel *panel,
 -- 
 2.42.0
 
