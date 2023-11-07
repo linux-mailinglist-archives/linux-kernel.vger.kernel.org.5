@@ -2,81 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6869E7E3B28
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 12:35:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F97B7E3B2A
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 12:37:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232216AbjKGLfK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 06:35:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33842 "EHLO
+        id S232667AbjKGLhZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 06:37:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229541AbjKGLfJ (ORCPT
+        with ESMTP id S229541AbjKGLhY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 06:35:09 -0500
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FA40FA;
-        Tue,  7 Nov 2023 03:35:02 -0800 (PST)
-Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4SPmND4SC8zfZyB;
-        Tue,  7 Nov 2023 19:34:52 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.56) by
- dggpemm500005.china.huawei.com (7.185.36.74) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Tue, 7 Nov 2023 19:34:25 +0800
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>, <pabeni@redhat.com>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>
-Subject: [PATCH net] page_pool: Add myself as page pool reviewer in MAINTAINERS
-Date:   Tue, 7 Nov 2023 19:34:40 +0800
-Message-ID: <20231107113440.59794-1-linyunsheng@huawei.com>
-X-Mailer: git-send-email 2.33.0
+        Tue, 7 Nov 2023 06:37:24 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CC13EA
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 03:37:21 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23444C433C7;
+        Tue,  7 Nov 2023 11:37:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699357041;
+        bh=txhWC7Qk/B+OuUbVMEFoUuEQ+inCT1iopvkXocpTbpQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=nLI4zejY3Awsws4zBH2Um0JJUz32OBAW7xmtGH7vvZ1dz1Wu0Rp63D1NMYOQXwRJ+
+         e2a8+oHGAthz7QNzYYBdR5AUn4kOpZzbO6Cjmcbj7eg1/erqLEYbnyQvAskU3bHWbu
+         2oObyICVXiIDe2rEgcmPqBhe6flbtAbFCFwxEP8IanBA1QiVHM9LEi0YoeALUlV071
+         s0vILooiXx8N8Nn5zY1nzleZOTlHZ9R6Gq6PZrkmvOCUimLuASBXz9YsTwaR8tjryv
+         +fxmj+smX+T4+1+fa/9brOIy0AdErquwXKZJekQLIaOoaMWlBpKNrlZ4k3xgVdNZ2Q
+         yKkzmCLIX72DQ==
+Received: from disco-boy.misterjones.org ([217.182.43.188] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1r0KOU-00B4hc-CM;
+        Tue, 07 Nov 2023 11:37:18 +0000
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.69.192.56]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Date:   Tue, 07 Nov 2023 11:37:18 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Chen-Yu Tsai <wenst@chromium.org>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH 3/3] irqchip/gic-v3: Remove Mediatek pseudo-NMI firmware
+ quirk handling
+In-Reply-To: <CAD=FV=UVkE9k=o3-3UT2L172hhAH-gtpe5ByELN8srC+a-7mJw@mail.gmail.com>
+References: <20231006151547.1.Ide945748593cffd8ff0feb9ae22b795935b944d6@changeid>
+ <20231006151547.3.Ie582d33cfe46f9ec2248e7f2dabdd6bbd66486a6@changeid>
+ <ZS-8k22ZWgn5hcCd@FVFF77S0Q05N>
+ <CAD=FV=UVkE9k=o3-3UT2L172hhAH-gtpe5ByELN8srC+a-7mJw@mail.gmail.com>
+User-Agent: Roundcube Webmail/1.4.15
+Message-ID: <0efbd5a2cfb5dab0876038ae726dc180@kernel.org>
+X-Sender: maz@kernel.org
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 217.182.43.188
+X-SA-Exim-Rcpt-To: dianders@chromium.org, mark.rutland@arm.com, catalin.marinas@arm.com, will@kernel.org, wenst@chromium.org, angelogioacchino.delregno@collabora.com, matthias.bgg@gmail.com, tglx@linutronix.de, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I have added frag support for page pool, made some improvement
-for it recently, and reviewed some related patches too.
+On 2023-10-30 23:01, Doug Anderson wrote:
+> Hi,
+> 
+> On Wed, Oct 18, 2023 at 4:08 AM Mark Rutland <mark.rutland@arm.com> 
+> wrote:
+>> 
+>> On Fri, Oct 06, 2023 at 03:15:53PM -0700, Douglas Anderson wrote:
+>> > This is a partial revert of commit 44bd78dd2b88 ("irqchip/gic-v3:
+>> > Disable pseudo NMIs on Mediatek devices w/ firmware issues"). In the
+>> > patch ("arm64: Disable GiC priorities on Mediatek devices w/ firmware
+>> > issues") we've moved the quirk handling to another place and so it's
+>> > not needed in the GiC driver.
+>> >
+>> > NOTE: this isn't a full revert because it leaves some of the changes
+>> > to the "quirks" structure around in case future code needs it.
+>> >
+>> > Signed-off-by: Douglas Anderson <dianders@chromium.org>
+>> > ---
+>> 
+>> I think it might make sense to fold this into the patch adding the 
+>> cpucap
+>> detection. Otherwise, if you apply my suggestions to the first patch, 
+>> there's a
+>> 2-commit window where we'll have two places that log that NMI is being 
+>> disabled
+>> due to the FW issue. That's not a functional issue, so doesn't matter 
+>> that
+>> much.
+>> 
+>> Either way:
+>> 
+>> Acked-by: Mark Rutland <mark.rutland@arm.com>
+> 
+> I'm happy to go either way so I'd love some advice from maintainers
+> (Marc Zyngier, Catalin Marinas, Will Deacon) about what you'd prefer.
 
-So add myself as reviewer so that future patch will be cc'ed
-to my email.
+I honestly don't mind either way. The sooner we have these fixes
+upstream, the better, so my only advise would be to respin it
+shortly.
 
-Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
-CC: Jesper Dangaard Brouer <hawk@kernel.org>
-CC: Ilias Apalodimas <ilias.apalodimas@linaro.org>
-CC: David S. Miller <davem@davemloft.net>
-CC: Jakub Kicinski <kuba@kernel.org>
-CC: Paolo Abeni <pabeni@redhat.com>
-CC: Netdev <netdev@vger.kernel.org>
----
- MAINTAINERS | 1 +
- 1 file changed, 1 insertion(+)
+Thanks,
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 14e1194faa4b..5d20efb9021a 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -16242,6 +16242,7 @@ F:	mm/truncate.c
- PAGE POOL
- M:	Jesper Dangaard Brouer <hawk@kernel.org>
- M:	Ilias Apalodimas <ilias.apalodimas@linaro.org>
-+R	Yunsheng Lin <linyunsheng@huawei.com>
- L:	netdev@vger.kernel.org
- S:	Supported
- F:	Documentation/networking/page_pool.rst
+         M.
 -- 
-2.33.0
-
+Jazz is not dead. It just smells funny...
