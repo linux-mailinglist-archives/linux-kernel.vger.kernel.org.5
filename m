@@ -2,138 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DE14F7E353F
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 07:34:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CDD47E3541
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 07:35:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232365AbjKGGek (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 01:34:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60352 "EHLO
+        id S233360AbjKGGfD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 01:35:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229558AbjKGGei (ORCPT
+        with ESMTP id S231481AbjKGGfB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 01:34:38 -0500
-Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5AB3110;
-        Mon,  6 Nov 2023 22:34:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1699338874; x=1730874874;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=BZOUKef8XnMxZtGy2xqoSV8Tn9ptlXd8U7y8CTGYCPU=;
-  b=lZ5BRp9xImDfKIW+q80GbNEyDbJ9/ursCIdjmnKND8C1IhqzqFM+XfM2
-   2IN6Jmu4ti6IrNV4TiMLpz0/MEbiDxuW3ss/yBIG9ulwKKH5zx1qwkIyN
-   PW0jERut2a+qzfMIZXbMhczSAXfhhhLPd6Bb6yJI8XV0+6NM2MBJstvX3
-   pj1VlTAxI9m3IBHS2C4ej9nxvyW3HfqPWQCTpY8LaLMTRZBtfj+sCs6tV
-   ByP6uZ8VCYvBUo8+n7frkIrXIIIRxGEIYDJjvPhLLiP577w7vFSm++abw
-   8FhyeFg1kz+GTFKwoZDJU1myc+Z4OEOfCVegv4edPmlNt5H0Ow+aIUPR5
-   g==;
-X-IronPort-AV: E=Sophos;i="6.03,282,1694728800"; 
-   d="scan'208";a="33839681"
-Received: from vtuxmail01.tq-net.de ([10.115.0.20])
-  by mx1.tq-group.com with ESMTP; 07 Nov 2023 07:34:31 +0100
-Received: from steina-w.localnet (steina-w.tq-net.de [10.123.53.18])
+        Tue, 7 Nov 2023 01:35:01 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EBB911F
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 22:34:55 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by vtuxmail01.tq-net.de (Postfix) with ESMTPSA id 4BBA828007F;
-        Tue,  7 Nov 2023 07:34:31 +0100 (CET)
-From:   Alexander Stein <alexander.stein@ew.tq-group.com>
-To:     =?ISO-8859-1?Q?Jo=E3o?= Rodrigues <jrodrigues@ubimet.com>,
-        Bruno Thomsen <bruno.thomsen@gmail.com>,
-        Fabio Estevam <festevam@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] ARM: dts: imx: tqma7: add lm75a sensor (rev. 01xxx)
-Date:   Tue, 07 Nov 2023 07:34:32 +0100
-Message-ID: <2253436.iZASKD2KPV@steina-w>
-Organization: TQ-Systems GmbH
-In-Reply-To: <CAOMZO5C8wq=72HUqSb9bdQK2ji2zcEKByByovnKzUt6A5H3K8Q@mail.gmail.com>
-References: <20231102231130.13ca0513@pcn112> <CAOMZO5C8wq=72HUqSb9bdQK2ji2zcEKByByovnKzUt6A5H3K8Q@mail.gmail.com>
-MIME-Version: 1.0
+        by smtp-out2.suse.de (Postfix) with ESMTPS id EB22F206E5;
+        Tue,  7 Nov 2023 06:34:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1699338893; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=WcQhuTNvhk6n4P8PBBtNtmdgRCUryDqiWrT6/OvGzQ4=;
+        b=nu2Sxv+TTiTeTgTWKVX5ZmNif53TRFe12XQnrlSGWUPx5O6+Ujdz57aXPr/aT3wraCn9FW
+        n5WAgDa2iOe+ktY2VOu0Fr4By3PwitSOCoufFfZV8peV48o9idk72Dqrdiy8nZ6zXQvT4P
+        be3fKuNeKauSr2PqVWuGs7DUS9hqvWY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1699338893;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=WcQhuTNvhk6n4P8PBBtNtmdgRCUryDqiWrT6/OvGzQ4=;
+        b=g+Wc2avwP5C4iRRjRbbEmwUSh28T44CnXELC97jeCfi7y1yzHziBk8S86tEedRWykbhbA+
+        Z37hVlFM4wSlfgCg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CCAA2132FD;
+        Tue,  7 Nov 2023 06:34:51 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id QKoxIovaSWUIHgAAMHmgww
+        (envelope-from <colyli@suse.de>); Tue, 07 Nov 2023 06:34:51 +0000
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.200.91.1.1\))
+Subject: Re: drivers/md/bcache/btree.c:1511 btree_gc_rewrite_node() error: 'n'
+ dereferencing possible ERR_PTR()
+From:   Coly Li <colyli@suse.de>
+In-Reply-To: <a754f8a3-cbfb-42bb-b776-94ecac062daf@kadam.mountain>
+Date:   Tue, 7 Nov 2023 14:34:38 +0800
+Cc:     oe-kbuild@lists.linux.dev, Zheng Wang <zyytlz.wz@163.com>,
+        lkp@intel.com, oe-kbuild-all@lists.linux.dev,
+        linux-kernel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>
 Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Message-Id: <6AAB7139-DE98-49BC-9DF9-F1819A39795E@suse.de>
+References: <a754f8a3-cbfb-42bb-b776-94ecac062daf@kadam.mountain>
+To:     Dan Carpenter <dan.carpenter@linaro.org>
+X-Mailer: Apple Mail (2.3774.200.91.1.1)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-Am Freitag, 3. November 2023, 22:07:08 CET schrieb Fabio Estevam:
-> [Adding Bruno and Alexander]
+
+> 2023=E5=B9=B411=E6=9C=886=E6=97=A5 17:11=EF=BC=8CDan Carpenter =
+<dan.carpenter@linaro.org> =E5=86=99=E9=81=93=EF=BC=9A
 >=20
-> On Thu, Nov 2, 2023 at 7:12=E2=80=AFPM Jo=C3=A3o Rodrigues <jrodrigues@ub=
-imet.com> wrote:
-> > From: Jo=C3=A3o Rodrigues <jrodrigues@ubimet.com>
-> >=20
-> > TQMa7x (revision 01xxx) uses a LM75A temperature sensor.
-> > The two sensors use different I2C addresses, so we can set both sensors
-> > simultaneously.
+> Hi Zheng,
+>=20
+> FYI, the error/warning was bisected to this commit, please ignore it =
+if it's irrelevant.
+>=20
+> tree:   =
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git =
+master
+> head:   77fa2fbe87fc605c4bfa87dff87be9bfded0e9a3
+> commit: 028ddcac477b691dd9205c92f991cc15259d033e bcache: Remove =
+unnecessary NULL point check in node allocations
+> config: x86_64-randconfig-161-20231102 =
+(https://download.01.org/0day-ci/archive/20231106/202311060857.2jHVe0uk-lk=
+p@intel.com/config)
+> compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
+> reproduce: =
+(https://download.01.org/0day-ci/archive/20231106/202311060857.2jHVe0uk-lk=
+p@intel.com/reproduce)
+>=20
+> If you fix the issue in a separate patch/commit (i.e. not just a new =
+version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+> | Closes: =
+https://lore.kernel.org/r/202311060857.2jHVe0uk-lkp@intel.com/
+>=20
+> New smatch warnings:
+> drivers/md/bcache/btree.c:1511 btree_gc_rewrite_node() error: 'n' =
+dereferencing possible ERR_PTR()
+>=20
+> Old smatch warnings:
+> drivers/md/bcache/btree.c:1527 btree_gc_rewrite_node() error: 'n' =
+dereferencing possible ERR_PTR()
+>=20
+> vim +/n +1511 drivers/md/bcache/btree.c
+>=20
+> 0a63b66db566cf Kent Overstreet 2014-03-17  1497  static int =
+btree_gc_rewrite_node(struct btree *b, struct btree_op *op,
+> 0a63b66db566cf Kent Overstreet 2014-03-17  1498   struct btree =
+*replace)
+> 0a63b66db566cf Kent Overstreet 2014-03-17  1499  {
+> 0a63b66db566cf Kent Overstreet 2014-03-17  1500   struct keylist keys;
+> 0a63b66db566cf Kent Overstreet 2014-03-17  1501   struct btree *n;
+> 0a63b66db566cf Kent Overstreet 2014-03-17  1502 =20
+> 0a63b66db566cf Kent Overstreet 2014-03-17  1503   if =
+(btree_check_reserve(b, NULL))
+> 0a63b66db566cf Kent Overstreet 2014-03-17  1504   return 0;
+> 0a63b66db566cf Kent Overstreet 2014-03-17  1505 =20
+> 0a63b66db566cf Kent Overstreet 2014-03-17  1506   n =3D =
+btree_node_alloc_replacement(replace, NULL);
+>=20
+> Needs some error handling.  I don't know why the zero day bot is
+> sending repeat warnings today but this one is still worth fixing.
+> I guess the zero day bot sent the previous warning to the wrong people
+> last time.
 
-I've contacted responsible department and I am waiting for more details.
+Yes this is a valid report. I feel checking n after =
+btree_node_alloc_replacement() is necessary, and recent change from =
+Zheng exported this potential issue to static code checking tool.
 
-Best regards,
-Alexander
+Since Zheng doesn=E2=80=99t respond yet, I will post a patch to fix the =
+potential issue.
 
-> > Signed-off-by: Jo=C3=A3o Rodrigues <jrodrigues@ubimet.com>
-> > ---
-> >=20
-> >  arch/arm/boot/dts/nxp/imx/imx7-tqma7.dtsi | 9 +++++++--
-> >  1 file changed, 7 insertions(+), 2 deletions(-)
-> >=20
-> > diff --git a/arch/arm/boot/dts/nxp/imx/imx7-tqma7.dtsi
-> > b/arch/arm/boot/dts/nxp/imx/imx7-tqma7.dtsi index
-> > fe42b0a4683..3fc3130f9de 100644
-> > --- a/arch/arm/boot/dts/nxp/imx/imx7-tqma7.dtsi
-> > +++ b/arch/arm/boot/dts/nxp/imx/imx7-tqma7.dtsi
-> > @@ -128,11 +128,16 @@ vgen6_reg: vldo4 {
-> >=20
-> >                 };
-> >        =20
-> >         };
-> >=20
-> > -       /* NXP SE97BTP with temperature sensor + eeprom */
-> > +       /* LM75A temperature sensor, TQMa7x 01xx */
-> > +       lm75a: temperature-sensor@48 {
-> > +               compatible =3D "national,lm75a";
-> > +               reg =3D <0x48>;
-> > +       };
-> > +
-> > +       /* NXP SE97BTP with temperature sensor + eeprom, TQMa7x 02xx */
-> >=20
-> >         se97b: temperature-sensor-eeprom@1e {
-> >        =20
-> >                 compatible =3D "nxp,se97b", "jedec,jc-42.4-temp";
-> >                 reg =3D <0x1e>;
-> >=20
-> > -               status =3D "okay";
-> >=20
-> >         };
-> >        =20
-> >         /* ST M24C64 */
-> >=20
-> > --
-> > 2.25.1
+Thanks.
 
 
-=2D-=20
-TQ-Systems GmbH | M=C3=BChlstra=C3=9Fe 2, Gut Delling | 82229 Seefeld, Germ=
-any
-Amtsgericht M=C3=BCnchen, HRB 105018
-Gesch=C3=A4ftsf=C3=BChrer: Detlef Schneider, R=C3=BCdiger Stahl, Stefan Sch=
-neider
-http://www.tq-group.com/
+Coly Li
 
+
+>=20
+> =
+https://lore.kernel.org/all/bab6966d-3f96-44a0-b666-ddf976179eab@kadam.mou=
+ntain/
+>=20
+> 0a63b66db566cf Kent Overstreet 2014-03-17  1507 =20
+> 0a63b66db566cf Kent Overstreet 2014-03-17  1508   /* recheck reserve =
+after allocating replacement node */
+> 0a63b66db566cf Kent Overstreet 2014-03-17  1509   if =
+(btree_check_reserve(b, NULL)) {
+> 0a63b66db566cf Kent Overstreet 2014-03-17  1510   btree_node_free(n);
+> 0a63b66db566cf Kent Overstreet 2014-03-17 @1511   rw_unlock(true, n);
+> 0a63b66db566cf Kent Overstreet 2014-03-17  1512   return 0;
+> 0a63b66db566cf Kent Overstreet 2014-03-17  1513   }
+> 0a63b66db566cf Kent Overstreet 2014-03-17  1514 =20
+> 0a63b66db566cf Kent Overstreet 2014-03-17  1515   =
+bch_btree_node_write_sync(n);
+> 0a63b66db566cf Kent Overstreet 2014-03-17  1516 =20
+> 0a63b66db566cf Kent Overstreet 2014-03-17  1517   =
+bch_keylist_init(&keys);
+> 0a63b66db566cf Kent Overstreet 2014-03-17  1518   =
+bch_keylist_add(&keys, &n->key);
+> 0a63b66db566cf Kent Overstreet 2014-03-17  1519 =20
+> 0a63b66db566cf Kent Overstreet 2014-03-17  1520   =
+make_btree_freeing_key(replace, keys.top);
+> 0a63b66db566cf Kent Overstreet 2014-03-17  1521   =
+bch_keylist_push(&keys);
+> 0a63b66db566cf Kent Overstreet 2014-03-17  1522 =20
+> 0a63b66db566cf Kent Overstreet 2014-03-17  1523   =
+bch_btree_insert_node(b, op, &keys, NULL, NULL);
+> 0a63b66db566cf Kent Overstreet 2014-03-17  1524   =
+BUG_ON(!bch_keylist_empty(&keys));
+> 0a63b66db566cf Kent Overstreet 2014-03-17  1525 =20
+> 0a63b66db566cf Kent Overstreet 2014-03-17  1526   =
+btree_node_free(replace);
+> 0a63b66db566cf Kent Overstreet 2014-03-17  1527   rw_unlock(true, n);
+> 0a63b66db566cf Kent Overstreet 2014-03-17  1528 =20
+> 0a63b66db566cf Kent Overstreet 2014-03-17  1529   /* Invalidated our =
+iterator */
+> 0a63b66db566cf Kent Overstreet 2014-03-17  1530   return -EINTR;
+> 0a63b66db566cf Kent Overstreet 2014-03-17  1531  }
+>=20
+> --=20
+> 0-DAY CI Kernel Test Service
+> https://github.com/intel/lkp-tests/wiki
+>=20
 
