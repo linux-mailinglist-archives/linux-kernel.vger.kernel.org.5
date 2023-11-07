@@ -2,40 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 606737E3C6D
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 13:16:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E009F7E3C6C
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 13:15:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234372AbjKGMQA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 07:16:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40160 "EHLO
+        id S234119AbjKGMPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 07:15:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234275AbjKGMPN (ORCPT
+        with ESMTP id S234276AbjKGMPN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 7 Nov 2023 07:15:13 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EF3019AD;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 274B119B1;
         Tue,  7 Nov 2023 04:11:29 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E671DC433AB;
-        Tue,  7 Nov 2023 12:11:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 33449C433C8;
+        Tue,  7 Nov 2023 12:11:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699359083;
-        bh=HosigZLCgVHcVuK1XRCgbsR8H5p2UJesHmUKIZ1aO20=;
+        s=k20201202; t=1699359087;
+        bh=101wZJ1/FrLD54tyO3ehlrcuxfnFLq7HMAwm0zqhnUs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QQZF63+c8VsdlkxsSa2zFrQIA5kIWQhurgOlvq/Owm2h3qjmBqczmhYRwHZERr2zk
-         QNDP0CUCbrSAGeNfyeiQKOXcUJddtid/WWepspVqb1veYcTLQcY1YFbevvqepPWPGQ
-         gbOoSCAIAAVaNS81Se84OvnJaT5Yw3HhJTSbJI5LGYsjCMTICdAlPjAV+y06h/QJol
-         9TFJHneGPJW/hiAoTAzL300VrM9rPBA53dJ1IBF2VBG6lR6R8nqnNw11Zdk3Wu6JWz
-         9zlVJhujmUu6eFWJlOIEKYcWaSmL3I0iaPiVTtATleCLqzbW597mDw+0AyAFPs638o
-         FSqtSIhFoSHjw==
+        b=aSZ8qenfBhZgdadsQBI/80g7/Wt/6uFZiYFFk0DlslH7cd0i0BrHfsYJliDojvx8f
+         7j5oHG6g4PxvSWWV9XTj1AzDYHkzGzdG4S7bwgCpX9NgzNlTSi1HO5zHEvZwHxC3YN
+         kPpX4W86ZwMGZmRcEla6Unj/0z5kCptccVpPwPVm2TvClOG+OTbFKW+PplQlCrmkVy
+         /L8HJDiUfP+g/IHRhym9tGMn6zX1uy1BA78RIZc9Nptb7V+JBARgKoJNNCwI8mftbA
+         sLA3g3Cf5Dt+jenN67x2jAszXA8yw7crXiWjwFIcpfVAOLsw+fD3BfiHwUuT5L1nPj
+         nQZ2ih66ibd4Q==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Eric Dumazet <edumazet@google.com>,
         "David S . Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>, kuba@kernel.org,
-        pabeni@redhat.com, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 08/18] net: annotate data-races around sk->sk_tx_queue_mapping
-Date:   Tue,  7 Nov 2023 07:10:38 -0500
-Message-ID: <20231107121104.3757943-8-sashal@kernel.org>
+        pabeni@redhat.com, dsahern@kernel.org, kuniyu@amazon.com,
+        wuyun.abel@bytedance.com, leitao@debian.org,
+        alexander@mihalicyn.com, dhowells@redhat.com,
+        netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.1 09/18] net: annotate data-races around sk->sk_dst_pending_confirm
+Date:   Tue,  7 Nov 2023 07:10:39 -0500
+Message-ID: <20231107121104.3757943-9-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231107121104.3757943-1-sashal@kernel.org>
 References: <20231107121104.3757943-1-sashal@kernel.org>
@@ -56,7 +59,7 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Eric Dumazet <edumazet@google.com>
 
-[ Upstream commit 0bb4d124d34044179b42a769a0c76f389ae973b6 ]
+[ Upstream commit eb44ad4e635132754bfbcb18103f1dcb7058aedd ]
 
 This field can be read or written without socket lock being held.
 
@@ -66,51 +69,68 @@ Signed-off-by: Eric Dumazet <edumazet@google.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/net/sock.h | 20 ++++++++++++++++----
- 1 file changed, 16 insertions(+), 4 deletions(-)
+ include/net/sock.h    | 6 +++---
+ net/core/sock.c       | 2 +-
+ net/ipv4/tcp_output.c | 2 +-
+ 3 files changed, 5 insertions(+), 5 deletions(-)
 
 diff --git a/include/net/sock.h b/include/net/sock.h
-index a1fcbb2a8a2ce..8d98fcd9e89a9 100644
+index 8d98fcd9e89a9..b6027b01c2455 100644
 --- a/include/net/sock.h
 +++ b/include/net/sock.h
-@@ -2032,21 +2032,33 @@ static inline void sk_tx_queue_set(struct sock *sk, int tx_queue)
- 	/* sk_tx_queue_mapping accept only upto a 16-bit value */
- 	if (WARN_ON_ONCE((unsigned short)tx_queue >= USHRT_MAX))
- 		return;
--	sk->sk_tx_queue_mapping = tx_queue;
-+	/* Paired with READ_ONCE() in sk_tx_queue_get() and
-+	 * other WRITE_ONCE() because socket lock might be not held.
-+	 */
-+	WRITE_ONCE(sk->sk_tx_queue_mapping, tx_queue);
+@@ -2207,7 +2207,7 @@ static inline void __dst_negative_advice(struct sock *sk)
+ 		if (ndst != dst) {
+ 			rcu_assign_pointer(sk->sk_dst_cache, ndst);
+ 			sk_tx_queue_clear(sk);
+-			sk->sk_dst_pending_confirm = 0;
++			WRITE_ONCE(sk->sk_dst_pending_confirm, 0);
+ 		}
+ 	}
  }
+@@ -2224,7 +2224,7 @@ __sk_dst_set(struct sock *sk, struct dst_entry *dst)
+ 	struct dst_entry *old_dst;
  
- #define NO_QUEUE_MAPPING	USHRT_MAX
+ 	sk_tx_queue_clear(sk);
+-	sk->sk_dst_pending_confirm = 0;
++	WRITE_ONCE(sk->sk_dst_pending_confirm, 0);
+ 	old_dst = rcu_dereference_protected(sk->sk_dst_cache,
+ 					    lockdep_sock_is_held(sk));
+ 	rcu_assign_pointer(sk->sk_dst_cache, dst);
+@@ -2237,7 +2237,7 @@ sk_dst_set(struct sock *sk, struct dst_entry *dst)
+ 	struct dst_entry *old_dst;
  
- static inline void sk_tx_queue_clear(struct sock *sk)
- {
--	sk->sk_tx_queue_mapping = NO_QUEUE_MAPPING;
-+	/* Paired with READ_ONCE() in sk_tx_queue_get() and
-+	 * other WRITE_ONCE() because socket lock might be not held.
-+	 */
-+	WRITE_ONCE(sk->sk_tx_queue_mapping, NO_QUEUE_MAPPING);
+ 	sk_tx_queue_clear(sk);
+-	sk->sk_dst_pending_confirm = 0;
++	WRITE_ONCE(sk->sk_dst_pending_confirm, 0);
+ 	old_dst = xchg((__force struct dst_entry **)&sk->sk_dst_cache, dst);
+ 	dst_release(old_dst);
  }
+diff --git a/net/core/sock.c b/net/core/sock.c
+index 0ee2e33bbe5f8..4305e55dbfba4 100644
+--- a/net/core/sock.c
++++ b/net/core/sock.c
+@@ -596,7 +596,7 @@ struct dst_entry *__sk_dst_check(struct sock *sk, u32 cookie)
+ 	    INDIRECT_CALL_INET(dst->ops->check, ip6_dst_check, ipv4_dst_check,
+ 			       dst, cookie) == NULL) {
+ 		sk_tx_queue_clear(sk);
+-		sk->sk_dst_pending_confirm = 0;
++		WRITE_ONCE(sk->sk_dst_pending_confirm, 0);
+ 		RCU_INIT_POINTER(sk->sk_dst_cache, NULL);
+ 		dst_release(dst);
+ 		return NULL;
+diff --git a/net/ipv4/tcp_output.c b/net/ipv4/tcp_output.c
+index cc7ed86fb0a57..5b93d1ed1ed19 100644
+--- a/net/ipv4/tcp_output.c
++++ b/net/ipv4/tcp_output.c
+@@ -1319,7 +1319,7 @@ static int __tcp_transmit_skb(struct sock *sk, struct sk_buff *skb,
+ 	skb->destructor = skb_is_tcp_pure_ack(skb) ? __sock_wfree : tcp_wfree;
+ 	refcount_add(skb->truesize, &sk->sk_wmem_alloc);
  
- static inline int sk_tx_queue_get(const struct sock *sk)
- {
--	if (sk && sk->sk_tx_queue_mapping != NO_QUEUE_MAPPING)
--		return sk->sk_tx_queue_mapping;
-+	if (sk) {
-+		/* Paired with WRITE_ONCE() in sk_tx_queue_clear()
-+		 * and sk_tx_queue_set().
-+		 */
-+		int val = READ_ONCE(sk->sk_tx_queue_mapping);
+-	skb_set_dst_pending_confirm(skb, sk->sk_dst_pending_confirm);
++	skb_set_dst_pending_confirm(skb, READ_ONCE(sk->sk_dst_pending_confirm));
  
-+		if (val != NO_QUEUE_MAPPING)
-+			return val;
-+	}
- 	return -1;
- }
- 
+ 	/* Build TCP header and checksum it. */
+ 	th = (struct tcphdr *)skb->data;
 -- 
 2.42.0
 
