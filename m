@@ -2,359 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FC967E3A55
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 11:51:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DABF7E3A5B
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 11:55:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233962AbjKGKvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 05:51:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34332 "EHLO
+        id S233949AbjKGKzg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 05:55:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234241AbjKGKvY (ORCPT
+        with ESMTP id S229541AbjKGKze (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 05:51:24 -0500
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60A3910E4;
-        Tue,  7 Nov 2023 02:51:21 -0800 (PST)
-Received: by mail-ed1-x542.google.com with SMTP id 4fb4d7f45d1cf-5441ba3e53cso6783180a12.1;
-        Tue, 07 Nov 2023 02:51:21 -0800 (PST)
+        Tue, 7 Nov 2023 05:55:34 -0500
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35A17101
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 02:55:28 -0800 (PST)
+Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-40859c466efso40166535e9.3
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 02:55:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699354280; x=1699959080; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=coaWb7mkmt/6LxRuFv3ptidxFk602lwpzwu0xZUpXsE=;
-        b=XC+XyCerVjzA4tNHrHrEPN6PJIl2ydgIk5j0Xf/PH+jbmLOQuGpZX04C4y/wthTXqc
-         rML1Qif1pe5klNh0gcuaeC0oktqWe51Q0fmL88ThGVG7cOhrX/MkxLJwSN+culWCAEfG
-         kz1iXp0TfZW0AnbBxXFKc2LozJozrgRVqwByxQjJHsCds8KRF+wNgHSBr5vtdmExOYzV
-         BfzU0R3azyFvV8mCyr18XEm7Lq0uTpicek6n3Lyj9pZxyvxVHUuXYJlUVDGL7qhM2gwT
-         VeuRQbyOLvTc4DIrpxTChlNAvCJtTKAAoFzBWSVT9Pp9fTWJNohgxrOdi3gCMFZtPcRK
-         xa9w==
+        d=linaro.org; s=google; t=1699354526; x=1699959326; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=9YR3HyIcWUCtOVLP7VoPEa4NXJBtPEhrFvCreFh9ZV8=;
+        b=VVZ4AG1vhGCbALpfV8Ugd4SIprlDADjT0xix1Q5fSvPzfwkATJAsQV9e67xD5+lehd
+         Nry9SdweUzcx6YmGAMZHNJkAEAIIyAj857pf/ierCS4byw18v8Z3Qvo5HVpK05g0yPIg
+         /x0CrU77ut860S01NLHgLVt6njNhCRqQReuC6Qgfj/XK2EKsh38Vey6ijO/vNL9H/zRZ
+         n/T7odO30sY5/lt1vP3tdijwPcLcaesw9aCBviKM09CmE/6zGFC6bj2CEVK3xGRz93rQ
+         LZQG5gobadvRRfpzYLCP0QpOG/1MiP/z/5NJLv4+sbUhOLZjg7KvYi11PlhlpUiGKdX5
+         CmEQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699354280; x=1699959080;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=coaWb7mkmt/6LxRuFv3ptidxFk602lwpzwu0xZUpXsE=;
-        b=LrvfTUPoWGEwMiwJgrxaQrKBlN2jIkm3OFHAQwWNq7XA2DfigH51nwTsjaPzIQcWTJ
-         qX8BKvOFLjSEHaaZO6+cfB+rg7R8sPbI6fNTLq6g4xON24h+khIVECq/HiT2l4BRLKK9
-         rhfkftF6XIJlAzbiG8xoDux7HJza7HrtEKsMxp3xR9ZKyMWcY0jll45PMgaXGLjcuzWe
-         pZBNShv+dIBa+kJFeGy3EZAkv5EozESDvt8/1XeXCddgrBWVXsYIHXbhW3vQcExzlDfz
-         qDv9EI67n8NgdX464DH70TDiZwH7VKAvbzU1MfmXoERDVUxWG7N5PVqlEJS4SGrqve/v
-         p31Q==
-X-Gm-Message-State: AOJu0YzTFdaZNoZlr7UggH8ahbFdTjqesJYq16jLmOsxuRabqDhbPusq
-        SG9uzbHpG6CzDjEFb2JvEstN71IZ/rNKQwa94Lw=
-X-Google-Smtp-Source: AGHT+IHJ6QYQnWgoMx2Yvec+D7D1TMWtMKnGpR7FU98HC25IDoaNN3aCNO4z4aI6R8C6S+3PS1ZcSIFoecWr3BWB/j0=
-X-Received: by 2002:aa7:c595:0:b0:541:783:4b17 with SMTP id
- g21-20020aa7c595000000b0054107834b17mr25055855edq.7.1699354279604; Tue, 07
- Nov 2023 02:51:19 -0800 (PST)
+        d=1e100.net; s=20230601; t=1699354526; x=1699959326;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=9YR3HyIcWUCtOVLP7VoPEa4NXJBtPEhrFvCreFh9ZV8=;
+        b=X7rOD+6zEfVtwWyzlAc6v0suZPuINqBJUFQaBmVt6i5iwxwF2oXzXQpiZIUOm0aOn+
+         Bb6RzHZdlvDctjVJ3Twm7qnxnKFjxxOqzfwd1ZIhYiSFYOR9/THb0qsYPiyt51qMwSCM
+         LqnyLY0O/yRBRL1C+M8CibtjVj71EqK0MeBmjBsD00EYrLjwppImLqtiJiGKEHFdOP05
+         msQ2h7YiDJFE4HD6/W9EqPA6M2OVNz/tDgO8ec23Q9SDngfmMX9Tjeyi608eJo8YHy1c
+         DAM3CcKY+KEjPBM2ohAlep3ki/7fHhmu9uxas1MTy/eXdaQQDCF8dP3c5RRpWQ1YLeRL
+         hZzg==
+X-Gm-Message-State: AOJu0YycYwLfjakVvn6BCc66rlOTxveng+k96gu+oUSyFTfiQXhjXxpc
+        0CqApvPtuJZJ3LMyxYSBIHcHXg==
+X-Google-Smtp-Source: AGHT+IGJhP7SgEGrSMxqmO/hcQGe8Dh/czcY9QMxuvEh3I2lNVZq1cwfNUr3DfJnKmQwX4kPVuuU/A==
+X-Received: by 2002:a05:600c:46c6:b0:406:5308:cfeb with SMTP id q6-20020a05600c46c600b004065308cfebmr2281387wmo.11.1699354526560;
+        Tue, 07 Nov 2023 02:55:26 -0800 (PST)
+Received: from [192.168.100.102] ([37.228.218.3])
+        by smtp.gmail.com with ESMTPSA id t14-20020a05600c198e00b00405d9a950a2sm15456999wmq.28.2023.11.07.02.55.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 07 Nov 2023 02:55:26 -0800 (PST)
+Message-ID: <4b3e1f66-31e0-4b7a-9cc0-0b7a7a6ef2f5@linaro.org>
+Date:   Tue, 7 Nov 2023 10:55:24 +0000
 MIME-Version: 1.0
-References: <20231104000239.367005-1-seanjc@google.com> <20231104000239.367005-10-seanjc@google.com>
- <CALMp9eT22j2Ob9ihva41p2JRufR5P+xnzsm99LEd1quxnfCyWA@mail.gmail.com>
- <e704b8ef-7488-96f4-27a8-35af722d4a3f@gmail.com> <ZUlPT6ed5d0FCLYL@google.com>
-In-Reply-To: <ZUlPT6ed5d0FCLYL@google.com>
-From:   Jinrong Liang <ljr.kernel@gmail.com>
-Date:   Tue, 7 Nov 2023 18:51:08 +0800
-Message-ID: <CAFg_LQVAfS_neNsZftUMTN33-ZhzNBdnOhELCPPksdkK8peZGw@mail.gmail.com>
-Subject: Re: [PATCH v6 09/20] KVM: selftests: Add pmu.h and lib/pmu.c for
- common PMU assets
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Jim Mattson <jmattson@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC 2/8] usb: dwc3: core: Register vendor hooks for dwc3-qcom
+Content-Language: en-US
+From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+To:     Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     linux-usb@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         linux-kernel@vger.kernel.org,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Dapeng Mi <dapeng1.mi@linux.intel.com>,
-        Like Xu <likexu@tencent.com>,
-        Aaron Lewis <aaronlewis@google.com>,
-        Jinrong Liang <cloudliang@tencent.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        quic_ppratap@quicinc.com, quic_jackp@quicinc.com,
+        quic_wcheng@quicinc.com, Andy Gross <agross@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>
+References: <20231017131851.8299-1-quic_kriskura@quicinc.com>
+ <20231017131851.8299-3-quic_kriskura@quicinc.com>
+ <e700133b-58f7-4a4d-8e5c-0d04441b789b@linaro.org>
+ <5ef66bdc-9645-4bbe-8182-baa7fe4c583a@quicinc.com>
+ <3be5e95f-85d2-4abf-a8b4-18b019341602@quicinc.com>
+ <cf553cd8-45f8-4a61-b016-69e7a80eee9f@linaro.org>
+ <ea919050-22a8-4d28-ade2-fd16a99876cb@quicinc.com>
+ <105d84b6-cbea-4758-9eba-1c104fa7a670@quicinc.com>
+ <f94ca738-476c-4664-a8f1-e3ef3ac8220a@linaro.org>
+In-Reply-To: <f94ca738-476c-4664-a8f1-e3ef3ac8220a@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        UPPERCASE_50_75 autolearn=no autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sean Christopherson <seanjc@google.com> =E4=BA=8E2023=E5=B9=B411=E6=9C=887=
-=E6=97=A5=E5=91=A8=E4=BA=8C 04:40=E5=86=99=E9=81=93=EF=BC=9A
->
-> On Mon, Nov 06, 2023, JinrongLiang wrote:
-> > =E5=9C=A8 2023/11/4 21:20, Jim Mattson =E5=86=99=E9=81=93:
-> > > > diff --git a/tools/testing/selftests/kvm/include/pmu.h b/tools/test=
-ing/selftests/kvm/include/pmu.h
-> > > > new file mode 100644
-> > > > index 000000000000..987602c62b51
-> > > > --- /dev/null
-> > > > +++ b/tools/testing/selftests/kvm/include/pmu.h
-> > > > @@ -0,0 +1,84 @@
-> > > > +/* SPDX-License-Identifier: GPL-2.0-only */
-> > > > +/*
-> > > > + * Copyright (C) 2023, Tencent, Inc.
-> > > > + */
-> > > > +#ifndef SELFTEST_KVM_PMU_H
-> > > > +#define SELFTEST_KVM_PMU_H
-> > > > +
-> > > > +#include <stdint.h>
-> > > > +
-> > > > +#define X86_PMC_IDX_MAX                                64
-> > > > +#define INTEL_PMC_MAX_GENERIC                          32
-> > >
-> > > I think this is actually 15. Note that IA32_PMC0 through IA32_PMC7
-> > > have MSR indices from 0xc1 through 0xc8, and MSR 0xcf is
-> > > IA32_CORE_CAPABILITIES. At the very least, we have to handle
-> > > non-contiguous MSR indices if we ever go beyond IA32_PMC14.
->
-> There's no reason to define this, it's not used in selftests.
->
-> > > > +#define KVM_PMU_EVENT_FILTER_MAX_EVENTS                300
-> > > > +
-> > > > +#define GP_COUNTER_NR_OFS_BIT                          8
-> > > > +#define EVENT_LENGTH_OFS_BIT                           24
-> > > > +
-> > > > +#define PMU_VERSION_MASK                               GENMASK_ULL=
-(7, 0)
-> > > > +#define EVENT_LENGTH_MASK                              GENMASK_ULL=
-(31, EVENT_LENGTH_OFS_BIT)
-> > > > +#define GP_COUNTER_NR_MASK                             GENMASK_ULL=
-(15, GP_COUNTER_NR_OFS_BIT)
-> > > > +#define FIXED_COUNTER_NR_MASK                          GENMASK_ULL=
-(4, 0)
->
-> These are also unneeded, they're superseded by CPUID properties.
->
-> > > > +#define ARCH_PERFMON_EVENTSEL_EVENT                    GENMASK_ULL=
-(7, 0)
-> > > > +#define ARCH_PERFMON_EVENTSEL_UMASK                    GENMASK_ULL=
-(15, 8)
-> > > > +#define ARCH_PERFMON_EVENTSEL_USR                      BIT_ULL(16)
-> > > > +#define ARCH_PERFMON_EVENTSEL_OS                       BIT_ULL(17)
-> > > > +#define ARCH_PERFMON_EVENTSEL_EDGE                     BIT_ULL(18)
-> > > > +#define ARCH_PERFMON_EVENTSEL_PIN_CONTROL              BIT_ULL(19)
-> > > > +#define ARCH_PERFMON_EVENTSEL_INT                      BIT_ULL(20)
-> > > > +#define ARCH_PERFMON_EVENTSEL_ANY                      BIT_ULL(21)
-> > > > +#define ARCH_PERFMON_EVENTSEL_ENABLE                   BIT_ULL(22)
-> > > > +#define ARCH_PERFMON_EVENTSEL_INV                      BIT_ULL(23)
-> > > > +#define ARCH_PERFMON_EVENTSEL_CMASK                    GENMASK_ULL=
-(31, 24)
-> > > > +
-> > > > +#define PMC_MAX_FIXED                                  16
->
-> Also unneeded.
->
-> > > > +#define PMC_IDX_FIXED                                  32
->
-> This one is absolutely ridiculous.  It's the shift for the enable bit in =
-global
-> control, which is super obvious from the name. /s
->
-> > > > +
-> > > > +/* RDPMC offset for Fixed PMCs */
-> > > > +#define PMC_FIXED_RDPMC_BASE                           BIT_ULL(30)
-> > > > +#define PMC_FIXED_RDPMC_METRICS                        BIT_ULL(29)
-> > > > +
-> > > > +#define FIXED_BITS_MASK                                0xFULL
-> > > > +#define FIXED_BITS_STRIDE                              4
-> > > > +#define FIXED_0_KERNEL                                 BIT_ULL(0)
-> > > > +#define FIXED_0_USER                                   BIT_ULL(1)
-> > > > +#define FIXED_0_ANYTHREAD                              BIT_ULL(2)
-> > > > +#define FIXED_0_ENABLE_PMI                             BIT_ULL(3)
-> > > > +
-> > > > +#define fixed_bits_by_idx(_idx, _bits)                 \
-> > > > +       ((_bits) << ((_idx) * FIXED_BITS_STRIDE))
->
-> *sigh*  And now I see where the "i * 4" stuff in the new test comes from.=
-  My
-> plan is to redo the above as:
->
-> /* RDPMC offset for Fixed PMCs */
-> #define FIXED_PMC_RDPMC_METRICS                 BIT_ULL(29)
-> #define FIXED_PMC_RDPMC_BASE                    BIT_ULL(30)
->
-> #define FIXED_PMC_GLOBAL_CTRL_ENABLE(_idx)      BIT_ULL((32 + (_idx)))
->
-> #define FIXED_PMC_KERNEL                        BIT_ULL(0)
-> #define FIXED_PMC_USER                          BIT_ULL(1)
-> #define FIXED_PMC_ANYTHREAD                     BIT_ULL(2)
-> #define FIXED_PMC_ENABLE_PMI                    BIT_ULL(3)
-> #define FIXED_PMC_NR_BITS                       4
-> #define FIXED_PMC_CTRL(_idx, _val)              ((_val) << ((_idx) * FIXE=
-D_PMC_NR_BITS))
->
-> > > > +#define AMD64_NR_COUNTERS                              4
-> > > > +#define AMD64_NR_COUNTERS_CORE                         6
->
-> These too can be dropped for now.
->
-> > > > +#define PMU_CAP_FW_WRITES                              BIT_ULL(13)
-> > > > +#define PMU_CAP_LBR_FMT                                0x3f
-> > > > +
-> > > > +enum intel_pmu_architectural_events {
-> > > > +       /*
-> > > > +        * The order of the architectural events matters as support=
- for each
-> > > > +        * event is enumerated via CPUID using the index of the eve=
-nt.
-> > > > +        */
-> > > > +       INTEL_ARCH_CPU_CYCLES,
-> > > > +       INTEL_ARCH_INSTRUCTIONS_RETIRED,
-> > > > +       INTEL_ARCH_REFERENCE_CYCLES,
-> > > > +       INTEL_ARCH_LLC_REFERENCES,
-> > > > +       INTEL_ARCH_LLC_MISSES,
-> > > > +       INTEL_ARCH_BRANCHES_RETIRED,
-> > > > +       INTEL_ARCH_BRANCHES_MISPREDICTED,
-> > > > +       NR_INTEL_ARCH_EVENTS,
-> > > > +};
-> > > > +
-> > > > +enum amd_pmu_k7_events {
-> > > > +       AMD_ZEN_CORE_CYCLES,
-> > > > +       AMD_ZEN_INSTRUCTIONS,
-> > > > +       AMD_ZEN_BRANCHES,
-> > > > +       AMD_ZEN_BRANCH_MISSES,
-> > > > +       NR_AMD_ARCH_EVENTS,
-> > > > +};
-> > > > +
-> > > > +extern const uint64_t intel_pmu_arch_events[];
-> > > > +extern const uint64_t amd_pmu_arch_events[];
-> > >
-> > > AMD doesn't define *any* architectural events. Perhaps
-> > > amd_pmu_zen_events[], though who knows what Zen5 and  beyond will
-> > > bring?
-> > >
-> > > > +extern const int intel_pmu_fixed_pmc_events[];
-> > > > +
-> > > > +#endif /* SELFTEST_KVM_PMU_H */
-> > > > diff --git a/tools/testing/selftests/kvm/lib/pmu.c b/tools/testing/=
-selftests/kvm/lib/pmu.c
-> > > > new file mode 100644
-> > > > index 000000000000..27a6c35f98a1
-> > > > --- /dev/null
-> > > > +++ b/tools/testing/selftests/kvm/lib/pmu.c
-> > > > @@ -0,0 +1,28 @@
-> > > > +// SPDX-License-Identifier: GPL-2.0-only
-> > > > +/*
-> > > > + * Copyright (C) 2023, Tencent, Inc.
-> > > > + */
-> > > > +
-> > > > +#include <stdint.h>
-> > > > +
-> > > > +#include "pmu.h"
-> > > > +
-> > > > +/* Definitions for Architectural Performance Events */
-> > > > +#define ARCH_EVENT(select, umask) (((select) & 0xff) | ((umask) & =
-0xff) << 8)
-> > >
-> > > There's nothing architectural about this. Perhaps RAW_EVENT() for
-> > > consistency with perf?
->
-> Works for me.
->
-> > > > +const uint64_t intel_pmu_arch_events[] =3D {
-> > > > +       [INTEL_ARCH_CPU_CYCLES]                 =3D ARCH_EVENT(0x3c=
-, 0x0),
-> > > > +       [INTEL_ARCH_INSTRUCTIONS_RETIRED]       =3D ARCH_EVENT(0xc0=
-, 0x0),
-> > > > +       [INTEL_ARCH_REFERENCE_CYCLES]           =3D ARCH_EVENT(0x3c=
-, 0x1),
-> > > > +       [INTEL_ARCH_LLC_REFERENCES]             =3D ARCH_EVENT(0x2e=
-, 0x4f),
-> > > > +       [INTEL_ARCH_LLC_MISSES]                 =3D ARCH_EVENT(0x2e=
-, 0x41),
-> > > > +       [INTEL_ARCH_BRANCHES_RETIRED]           =3D ARCH_EVENT(0xc4=
-, 0x0),
-> > > > +       [INTEL_ARCH_BRANCHES_MISPREDICTED]      =3D ARCH_EVENT(0xc5=
-, 0x0),
-> > >
-> > > [INTEL_ARCH_TOPDOWN_SLOTS] =3D ARCH_EVENT(0xa4, 1),
->
-> ...
->
-> > > > @@ -63,7 +50,6 @@
-> > > >
-> > > >   #define AMD_ZEN_BR_RETIRED EVENT(0xc2, 0)
-> > >
-> > > Now AMD_ZEN_BRANCHES, above?
-> >
-> > Yes, I forgot to replace INTEL_BR_RETIRED, AMD_ZEN_BR_RETIRED and
-> > INST_RETIRED in pmu_event_filter_test.c and remove their macro definiti=
-ons.
->
-> Having to go through an array to get a hardcoded value is silly, e.g. it =
-makes
-> it unnecessarily difficult to reference the encodings because they aren't=
- simple
-> literals.
->
-> My vote is this:
->
-> #define INTEL_ARCH_CPU_CYCLES                   RAW_EVENT(0x3c, 0x00)
-> #define INTEL_ARCH_INSTRUCTIONS_RETIRED         RAW_EVENT(0xc0, 0x00)
-> #define INTEL_ARCH_REFERENCE_CYCLES             RAW_EVENT(0x3c, 0x01)
-> #define INTEL_ARCH_LLC_REFERENCES               RAW_EVENT(0x2e, 0x4f)
-> #define INTEL_ARCH_LLC_MISSES                   RAW_EVENT(0x2e, 0x41)
-> #define INTEL_ARCH_BRANCHES_RETIRED             RAW_EVENT(0xc4, 0x00)
-> #define INTEL_ARCH_BRANCHES_MISPREDICTED        RAW_EVENT(0xc5, 0x00)
-> #define INTEL_ARCH_TOPDOWN_SLOTS                RAW_EVENT(0xa4, 0x01)
->
-> #define AMD_ZEN_CORE_CYCLES                     RAW_EVENT(0x76, 0x00)
-> #define AMD_ZEN_INSTRUCTIONS_RETIRED            RAW_EVENT(0xc0, 0x00)
-> #define AMD_ZEN_BRANCHES_RETIRED                RAW_EVENT(0xc2, 0x00)
-> #define AMD_ZEN_BRANCHES_MISPREDICTED           RAW_EVENT(0xc3, 0x00)
->
-> /*
->  * Note!  The order and thus the index of the architectural events matter=
-s as
->  * support for each event is enumerated via CPUID using the index of the =
-event.
->  */
-> enum intel_pmu_architectural_events {
->         INTEL_ARCH_CPU_CYCLES_INDEX,
->         INTEL_ARCH_INSTRUCTIONS_RETIRED_INDEX,
->         INTEL_ARCH_REFERENCE_CYCLES_INDEX,
->         INTEL_ARCH_LLC_REFERENCES_INDEX,
->         INTEL_ARCH_LLC_MISSES_INDEX,
->         INTEL_ARCH_BRANCHES_RETIRED_INDEX,
->         INTEL_ARCH_BRANCHES_MISPREDICTED_INDEX,
->         INTEL_ARCH_TOPDOWN_SLOTS_INDEX,
->         NR_INTEL_ARCH_EVENTS,
-> };
->
-> enum amd_pmu_zen_events {
->         AMD_ZEN_CORE_CYCLES_INDEX,
->         AMD_ZEN_INSTRUCTIONS_INDEX,
->         AMD_ZEN_BRANCHES_INDEX,
->         AMD_ZEN_BRANCH_MISSES_INDEX,
->         NR_AMD_ZEN_EVENTS,
-> };
->
-> extern const uint64_t intel_pmu_arch_events[];
-> extern const uint64_t amd_pmu_zen_events[];
->
-> ...
->
->
-> const uint64_t intel_pmu_arch_events[] =3D {
->         INTEL_ARCH_CPU_CYCLES,
->         INTEL_ARCH_INSTRUCTIONS_RETIRED,
->         INTEL_ARCH_REFERENCE_CYCLES,
->         INTEL_ARCH_LLC_REFERENCES,
->         INTEL_ARCH_LLC_MISSES,
->         INTEL_ARCH_BRANCHES_RETIRED,
->         INTEL_ARCH_BRANCHES_MISPREDICTED,
->         INTEL_ARCH_TOPDOWN_SLOTS,
-> };
-> kvm_static_assert(ARRAY_SIZE(intel_pmu_arch_events) =3D=3D NR_INTEL_ARCH_=
-EVENTS);
->
-> const uint64_t amd_pmu_zen_events[] =3D {
->         AMD_ZEN_CORE_CYCLES,
->         AMD_ZEN_INSTRUCTIONS_RETIRED,
->         AMD_ZEN_BRANCHES_RETIRED,
->         AMD_ZEN_BRANCHES_MISPREDICTED,
-> };
-> kvm_static_assert(ARRAY_SIZE(amd_pmu_zen_events) =3D=3D NR_AMD_ZEN_EVENTS=
-);
+On 07/11/2023 10:41, Bryan O'Donoghue wrote:
+> On 07/11/2023 08:33, Krishna Kurapati PSSNV wrote:
+>>
+>>
+>> On 11/4/2023 10:32 PM, Krishna Kurapati PSSNV wrote:
+>>>>
+>>>> Are you saying to you require/rely on both of these series being 
+>>>> applied first ?
+>>>>
+>>>> [1]: 
+>>>> https://lore.kernel.org/all/af60c05b-4a0f-51b8-486a-1fc601602515@quicinc.com/
+>>>> [2]: 
+>>>> https://lore.kernel.org/all/20231016-dwc3-refactor-v1-0-ab4a84165470@quicinc.com/
+>>>>
+>>>> Must be, nothing applies for me in this series.
+>>>
+>>> The first one is not a patch. It is just a discussion thread I 
+>>> started to get community's opinion before on disconnect interrupt 
+>>> handling. The current series is based on top of [2] made by Bjorn (as 
+>>> you already found out) and as I mentioned in cover letter of my series.
+>>>
+>>
+>> Hi Bryan,
+>>
+>>    Are you able to apply the series after including Bjorn's patches ? 
+>> Also can you confirm if the comments provided to your queries on [1] 
+>> are proper and if you have any other comments w.r.t probe deferral.
+>>
+>> [1]: 
+>> https://lore.kernel.org/all/e700133b-58f7-4a4d-8e5c-0d04441b789b@linaro.org/
+>>
+>> Regards,
+>> Krishna,
+> 
+> I wonder could you give a base SHA to apply the various series on ?
+> 
+> Your referenced precursor doesn't apply to usb-next
 
-LGTM, thanks.
+Well now, that doesn't point where I thought it pointed usb-next/master 
+is extremely old
+
+  b3a9e3b9622ae - (HEAD -> usb-next-23-10-07-usb-glue-test, tag: 
+v5.8-rc1, usb-next/master, origin/tracking-qcomlt-sm8150-gcc, 
+linaro/tracking-qcomlt-sm8150-gcc, fecked-old, delete-this-branch2, 
+delete-this-branch) Linux 5.8-rc1 (3 years, 5 months ago)
+
+I want usb-next/main
+
+*   d2f51b3516dad - (usb-next/usb-testing, usb-next/usb-next, 
+usb-next/main) Merge tag 'rtc-6.7' of 
+git://git.kernel.org/pub/scm/linux/kernel/git/abelloni/linux (32 hours ago)
+
+Everything applies there.
+
+Anyway, your pointing to Bjorn's series answers my question re: 
+sequencing of the probe.
+
+---
+bod
+
