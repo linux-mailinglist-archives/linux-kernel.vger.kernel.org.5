@@ -2,102 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A54CD7E4D6F
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 00:30:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69A477E4D70
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 00:30:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344414AbjKGXaS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 18:30:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44788 "EHLO
+        id S1344395AbjKGXap (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 18:30:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235680AbjKGXaG (ORCPT
+        with ESMTP id S1344523AbjKGXaX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 18:30:06 -0500
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B00B26A3
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 15:26:19 -0800 (PST)
-Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1cc411be7e5so30815ad.1
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 15:26:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1699399578; x=1700004378; darn=vger.kernel.org;
-        h=mime-version:message-id:date:user-agent:references:in-reply-to
-         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=jPPnskYZVL6mU7Q20mEI31+/XvVKTBOV8ZJ82vFZ/qQ=;
-        b=uCH4VZunGoEi81bBKxmtxuk3uY2XzbgaeBI2+vNsESfUs09G1PRq5jKYTsRyVqiXjm
-         Ms8+6q7SsbJYlWIwkvrH97YZlLGgTEX9r5Q2wzRC6jlFa9GlObjKga81v3tvIle8Hcpt
-         hK9cfXzHKDDq2OiHMtawyEUV24pay4IICpxaLEt3vd42sG2Fnc1qClKBaGZmT8OqX1jf
-         8A4B6R/twRP/nRzqnuvuIPtOVr4lUe9dMuZK1OGswg3s5B/BVVWyeP2/2emKPUaOU7KE
-         BMaHFEuYQh6zaSyWsRjiOhajCTodi1hy+87S2xyD3C+LS67WFNuyAZo9TtxkMfPxIT9s
-         r/Qw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699399578; x=1700004378;
-        h=mime-version:message-id:date:user-agent:references:in-reply-to
-         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jPPnskYZVL6mU7Q20mEI31+/XvVKTBOV8ZJ82vFZ/qQ=;
-        b=ZklFLZP+qSjeDxE1MrQej1LSW7FTJbw+l28j8+u9iwMKou0pPh/9Yz8l3/HNwaa5Ja
-         cfpcrH4S9sD7W/WGPykF12iD1LWLDfGrUDGzusEHs0Q9BQL9Lk/2dSskW0v1HaKYQ0MK
-         6YoVpNzGZ4Pqg811wXvFNWFlW1Zf85Mr0tyOEEAmg+EFFYxlxWHB/CSJdfOFU3b+COkQ
-         M/9GGhmqqavaHyVEG3RVFVfDouOicQLDb8d4GodxkxZ+fzGjdfiqB58wrnGsYpSDMLBg
-         oh4KLi5BYjkaBAPCK5OQQqChdI2iO+bg2Jg7k4YRzTJdu2aIF/YC8JJVrWTwZV5+dxk4
-         NbAg==
-X-Gm-Message-State: AOJu0Yy4F/cQsLBHidJ8x43ZbjDQYNsSBkMHonOIGJEE9V/QfpSHYB8P
-        JCMXrK1Ugu4vl2GUzw+qn+byN3m7aiXwyovww4IVMZp5
-X-Google-Smtp-Source: AGHT+IHFsmQNwBUjEzHipgR3fAq4qBy4q9iht1RG03HgRtJsVGhoghnKBCawxutbEvgzUSHE/gC/Ig==
-X-Received: by 2002:a17:902:8e82:b0:1cc:569b:1ddf with SMTP id bg2-20020a1709028e8200b001cc569b1ddfmr380249plb.18.1699399578086;
-        Tue, 07 Nov 2023 15:26:18 -0800 (PST)
-Received: from bsegall-glaptop.localhost (c-73-158-249-138.hsd1.ca.comcast.net. [73.158.249.138])
-        by smtp.gmail.com with ESMTPSA id cu1-20020a17090afa8100b0027d12b1e29dsm327114pjb.25.2023.11.07.15.26.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Nov 2023 15:26:17 -0800 (PST)
-From:   Benjamin Segall <bsegall@google.com>
-To:     Abel Wu <wuyun.abel@bytedance.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Barry Song <21cnbao@gmail.com>, Chen Yu <yu.c.chen@intel.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        "Gautham R . Shenoy" <gautham.shenoy@amd.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        K Prateek Nayak <kprateek.nayak@amd.com>,
-        Mike Galbraith <efault@gmx.de>,
-        Qais Yousef <qyousef@layalina.io>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Yicong Yang <yangyicong@huawei.com>,
-        Youssef Esmat <youssefesmat@chromium.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/4] sched/eevdf: Sort the rbtree by virtual deadline
-In-Reply-To: <20231107090510.71322-3-wuyun.abel@bytedance.com> (Abel Wu's
-        message of "Tue, 7 Nov 2023 17:05:08 +0800")
-References: <20231107090510.71322-1-wuyun.abel@bytedance.com>
-        <20231107090510.71322-3-wuyun.abel@bytedance.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
-Date:   Tue, 07 Nov 2023 15:26:14 -0800
-Message-ID: <xm26h6lxuovd.fsf@google.com>
+        Tue, 7 Nov 2023 18:30:23 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C45C22707
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 15:26:40 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87A71C433C7;
+        Tue,  7 Nov 2023 23:26:36 +0000 (UTC)
+Date:   Tue, 7 Nov 2023 18:26:37 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Ankur Arora <ankur.a.arora@oracle.com>
+Cc:     linux-kernel@vger.kernel.org, tglx@linutronix.de,
+        peterz@infradead.org, torvalds@linux-foundation.org,
+        paulmck@kernel.org, linux-mm@kvack.org, x86@kernel.org,
+        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
+        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        willy@infradead.org, mgorman@suse.de, jon.grimm@amd.com,
+        bharata@amd.com, raghavendra.kt@amd.com,
+        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
+        jgross@suse.com, andrew.cooper3@citrix.com, mingo@kernel.org,
+        bristot@kernel.org, mathieu.desnoyers@efficios.com,
+        geert@linux-m68k.org, glaubitz@physik.fu-berlin.de,
+        anton.ivanov@cambridgegreys.com, mattst88@gmail.com,
+        krypton@ulrich-teichert.org, David.Laight@ACULAB.COM,
+        richard@nod.at, mjguzik@gmail.com
+Subject: Re: [RFC PATCH 31/86] x86/thread_info: add TIF_NEED_RESCHED_LAZY
+Message-ID: <20231107182637.20f71eba@gandalf.local.home>
+In-Reply-To: <20231107215742.363031-32-ankur.a.arora@oracle.com>
+References: <20231107215742.363031-1-ankur.a.arora@oracle.com>
+        <20231107215742.363031-32-ankur.a.arora@oracle.com>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Abel Wu <wuyun.abel@bytedance.com> writes:
+On Tue,  7 Nov 2023 13:57:17 -0800
+Ankur Arora <ankur.a.arora@oracle.com> wrote:
 
-> Sort the task timeline by virtual deadline and keep the min_vruntime
-> in the augmented tree, so we can avoid doubling the worst case cost
-> and make full use of the cached leftmost node to enable O(1) fastpath
-> picking in next patch.
->
-> This patch also cleans up the unused max_vruntime() and adjusts pos
-> for some functions.
->
-> Signed-off-by: Abel Wu <wuyun.abel@bytedance.com>
+> Add a new flag, TIF_NEED_RESCHED_LAZY which with TIF_NEED_RESCHED
+> gives the scheduler two levels of rescheduling priority:
+> TIF_NEED_RESCHED means that rescheduling happens at the next
+> opportunity; TIF_NEED_RESCHED_LAZY is used to note that a
+> reschedule is needed but does not impose any other constraints
+> on the scheduler.
+
+Please add:
+
+Link: https://lore.kernel.org/lkml/87cyyfxd4k.ffs@tglx/
+Link: https://lore.kernel.org/lkml/87jzshhexi.ffs@tglx/
+
+For each of the patches that were based off of Thomas's patch.
+
+Thanks!
+
+-- Steve
+
+
+
+> 
+> Originally-by: Thomas Gleixner <tglx@linutronix.de>
+> Signed-off-by: Ankur Arora <ankur.a.arora@oracle.com>
 > ---
+>  arch/x86/include/asm/thread_info.h | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/x86/include/asm/thread_info.h b/arch/x86/include/asm/thread_info.h
+> index d63b02940747..114d12120051 100644
+> --- a/arch/x86/include/asm/thread_info.h
+> +++ b/arch/x86/include/asm/thread_info.h
+> @@ -81,8 +81,9 @@ struct thread_info {
+>  #define TIF_NOTIFY_RESUME	1	/* callback before returning to user */
+>  #define TIF_SIGPENDING		2	/* signal pending */
+>  #define TIF_NEED_RESCHED	3	/* rescheduling necessary */
+> -#define TIF_SINGLESTEP		4	/* reenable singlestep on user return*/
+> -#define TIF_SSBD		5	/* Speculative store bypass disable */
+> +#define TIF_NEED_RESCHED_LAZY	4	/* Lazy rescheduling */
+> +#define TIF_SINGLESTEP		5	/* reenable singlestep on user return*/
+> +#define TIF_SSBD		6	/* Speculative store bypass disable */
+>  #define TIF_SPEC_IB		9	/* Indirect branch speculation mitigation */
+>  #define TIF_SPEC_L1D_FLUSH	10	/* Flush L1D on mm switches (processes) */
+>  #define TIF_USER_RETURN_NOTIFY	11	/* notify kernel of userspace return */
+> @@ -104,6 +105,7 @@ struct thread_info {
+>  #define _TIF_NOTIFY_RESUME	(1 << TIF_NOTIFY_RESUME)
+>  #define _TIF_SIGPENDING		(1 << TIF_SIGPENDING)
+>  #define _TIF_NEED_RESCHED	(1 << TIF_NEED_RESCHED)
+> +#define _TIF_NEED_RESCHED_LAZY	(1 << TIF_NEED_RESCHED_LAZY)
+>  #define _TIF_SINGLESTEP		(1 << TIF_SINGLESTEP)
+>  #define _TIF_SSBD		(1 << TIF_SSBD)
+>  #define _TIF_SPEC_IB		(1 << TIF_SPEC_IB)
 
-I've run this through my tester and it agrees that it does fulfil the
-EEVDF pick (though this implementation is trivial enough that that's
-fairly obvious just by reading the code, which is a nice bonus upgrade).
-
-And it makes sense that this would help for performance, and the
-fastpath seems likely to trigger most of the time for even better
-results.
