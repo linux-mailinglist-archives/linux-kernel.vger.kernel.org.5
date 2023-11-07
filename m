@@ -2,189 +2,464 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EB76B7E4206
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 15:45:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 815597E420B
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 15:47:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234670AbjKGOpT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 09:45:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59334 "EHLO
+        id S231602AbjKGOri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 09:47:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234474AbjKGOpP (ORCPT
+        with ESMTP id S229886AbjKGOrg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 09:45:15 -0500
-Received: from mail-ua1-x935.google.com (mail-ua1-x935.google.com [IPv6:2607:f8b0:4864:20::935])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B55AC122
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 06:45:11 -0800 (PST)
-Received: by mail-ua1-x935.google.com with SMTP id a1e0cc1a2514c-7b9dc244151so4293713241.1
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 06:45:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699368311; x=1699973111; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=wyN2qeNAfzq8T3+c7zpkeHbe0JGvUl4QQakn3ilisA8=;
-        b=WO2FruOS+35EeokZGi3+p8AOKgGFYvA2aODoy4OuFhgECOK9oG6fBf53WnxJ+D9cns
-         qzQ+igZhuW3ExWxZSZ4TlDOB1yBGfXiL5ibaaqAs8F4DO+npv1wXHxC8rSxjmUknBCXw
-         m0az9UntG32K2E765UHwXhMBjmlsCwTK0ZljmclPMyF+f9ul1Y/iaVlcCvVvWG7OA6jo
-         v/2iCC8RmSIOFa4YII5iLGcA+FBZglhFCruksYCCVTWOyfVIKsutuXke0f+4fE2YIstS
-         exYlEe+3VSd8UaxGST7PP42p+JfdWvrzUrl+ZXv6FBCLCs6JOLgqhfE1oBp9tZG+AarI
-         purg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699368311; x=1699973111;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=wyN2qeNAfzq8T3+c7zpkeHbe0JGvUl4QQakn3ilisA8=;
-        b=Cfqr3eS0dlPnBXq0E4ESpQgkuFtSWgO5M76hu52+HAdlKcK0hdJI0KwSB2pAS3kz+s
-         6ukEKoxktyusBXShSX3mwJfXP6dYwffCo8iETd7e53zI2q5dAem6hoXWdgDbTVSZXIRy
-         XQIQCD+KJl6ahwM++ikKFUXrVack+zalK4MgpqVPZUMfgfxH410OiMnqiE4W5rQYEOij
-         UMa8jWseBA8gAW6wirYG1SOUIuMOyaf0zTFTVD0rnRuL3Hq+bbBFKa/yHav2al5oBmw0
-         zAxt5rTYeCkpPmqSWsd7ybn7Obd6aqrQFAQOOusi9IHD76vtY8sECt6mYv8TV1mCtFGx
-         k0Xw==
-X-Gm-Message-State: AOJu0YwmcQol9nSMBYdbpgG3to14CLyDj8GBhBDNVznIElbC177Hw5zV
-        ZY1MC/o5r2Tft24iXQ3GCu44c4khTTUKoizSVjfzSg==
-X-Google-Smtp-Source: AGHT+IFEKYNQ1IZRyacc+TbJB29Eep3DcxhfqJjpGlrvXPJYZx9aeEnU8QXk3++wPel+Ov/4o7VWGAN3Q3SDq1/ZiFI=
-X-Received: by 2002:a05:6102:2d01:b0:457:c953:bc39 with SMTP id
- ih1-20020a0561022d0100b00457c953bc39mr1586305vsb.1.1699368310737; Tue, 07 Nov
- 2023 06:45:10 -0800 (PST)
+        Tue, 7 Nov 2023 09:47:36 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C64FA11B;
+        Tue,  7 Nov 2023 06:47:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699368453; x=1730904453;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version:content-id;
+  bh=sT5tAxf6CBPW1atcuunDNs1cdrZElj1Vg7o3NAek2FY=;
+  b=i2eweWes6W3JCVNXz6/KPUWIFpo5GcNaVtbTikO0IErKiPei4nIbiBST
+   NZNkhkNdmPZY4qQABbQErHLFDjaLAldE96/JeRUKLA6B9BwG55ZyXKJIn
+   GaWmGYUiW3HZ3+aApRVmyZVO0k96qj2CK7WqDqNEH+gtDcx6aEp/K08Wn
+   i4GBkN4X3bLqBQt/8PeJV0aMOmIeQBT2BQFgSUjxriJSZNHA2OmO7FUDP
+   e0wnT9jaMPxKz76NRGYLSJqWQs3ViFw/0/0PNZh7jmob7fnpy+ItzitnU
+   THM6Gvi05welWv66dEkIOW9nPlEQL1S7x7PPDIBKkPX0JvQYckCKd2CED
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10887"; a="456005944"
+X-IronPort-AV: E=Sophos;i="6.03,284,1694761200"; 
+   d="scan'208";a="456005944"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2023 06:47:09 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.03,284,1694761200"; 
+   d="scan'208";a="4013432"
+Received: from pathanas-mobl1.ger.corp.intel.com ([10.252.37.194])
+  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2023 06:47:05 -0800
+Date:   Tue, 7 Nov 2023 16:47:02 +0200 (EET)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     Henry Shi <henryshi2018@gmail.com>
+cc:     hbshi69@hotmail.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
+        hpa@zytor.com, Hans de Goede <hdegoede@redhat.com>,
+        markgross@kernel.org, jdelvare@suse.com, linux@roeck-us.net,
+        LKML <linux-kernel@vger.kernel.org>,
+        platform-driver-x86@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        hb_shi2003@yahoo.com, henrys@silicom-usa.com, wenw@silicom-usa.com
+Subject: Re: [PATCH v11] platform/x86: Add Silicom Platform Driver
+In-Reply-To: <20231106220709.25229-1-henryshi2018@gmail.com>
+Message-ID: <ed1aeecf-ecc4-ad39-5af-f8a24ffba459@linux.intel.com>
+References: <20231106220709.25229-1-henryshi2018@gmail.com>
 MIME-Version: 1.0
-References: <CA+G9fYsrLTbFkz-LJmAY9efDyEr-8bHcxivBDPToPjBxjStoDg@mail.gmail.com>
- <ZUpH0FNTYAl9Z+L6@finisterre.sirena.org.uk>
-In-Reply-To: <ZUpH0FNTYAl9Z+L6@finisterre.sirena.org.uk>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 7 Nov 2023 20:14:59 +0530
-Message-ID: <CA+G9fYta5cUpFArGfON3R+HUGxJRyEsc9zdTwwk5Un+wHqLN8g@mail.gmail.com>
-Subject: Re: selftests: arm64: fp-stress: Unable to handle kernel paging
- request at virtual address
-To:     Mark Brown <broonie@kernel.org>
-Cc:     linux-stable <stable@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        lkft-triage@lists.linaro.org,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>,
-        Dan Carpenter <dan.carpenter@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>, Shuah Khan <shuah@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/mixed; BOUNDARY="8323329-1084432088-1699368138=:1851"
+Content-ID: <7a4c418b-d6a5-57c3-bf46-92aba40e464@linux.intel.com>
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 7 Nov 2023 at 19:51, Mark Brown <broonie@kernel.org> wrote:
->
-> On Tue, Nov 07, 2023 at 06:43:25PM +0530, Naresh Kamboju wrote:
->
-> > # # SVE-VL-64-0: Expected
-> > [3904000039044000390480003904c0003904000139044001390480013904c0013904000239044002390480023904c0023904000339044003390480033904c003]
-> > <>
->
-> You've elided *lots* of error reports from the actual test which suggest
-> that there is substantial memory corruption, it looks like tearing part
-> way through loading or saving the values - the start of the vectors
-> looks fine but at some point they get what looks like a related process'
-> data, eg:
->
-> # # SVE-VL-64-0:        Expected [3904000039044000390480003904c0003904000139044001390480013904c0013904000239044002390480023904c0023904000339044003390480033904c003]
-> # # SVE-VL-64-0:        Got      [3904000039044000390480003904c000390480003904c00039040001390440013904000139044001390480013904c001390480013904c0013904000239044002]
->
-> This only appears to affect SVE and SME, I didn't spot any FPSIMD
-> corruption but then that is the smallest case (and I didn't notice any
-> VL 16 cases either).  It looks like the corruption is on the first thing
-> we check each time (either register 0 or the highest ZA.H vector for
-> ZA), all the values do look lke they were plausibly generated by
-> fp-stress test programs.
->
-> Then we get what looks like memory corruption:
->
-> > # # SVE-VL-256-<1>[   88.160313] Unable to handle kernel paging
-> > request at virtual address 00550f0344550f02
->
-> > <4>[   88.195706] Call trace:
-> > <4>[ 88.196098] percpu_ref_get_many
-> > (include/linux/percpu-refcount.h:174 (discriminator 2)
-> > include/linux/percpu-refcount.h:204 (discriminator 2))
-> > <4>[ 88.196815] refill_obj_stock (mm/memcontrol.c:3339 (discriminator 2))
-> > <4>[ 88.197367] obj_cgroup_uncharge (mm/memcontrol.c:3406)
-> > <4>[ 88.197835] kmem_cache_free (include/linux/mm.h:1630
-> > include/linux/mm.h:1849 include/linux/mm.h:1859 mm/slab.h:208
-> > mm/slab.h:572 mm/slub.c:3804 mm/slub.c:3831)
-> > <4>[ 88.198407] put_pid.part.0 (kernel/pid.c:118)
-> > <4>[ 88.198870] delayed_put_pid (kernel/pid.c:127)
-> > <4>[ 88.200527] rcu_core (arch/arm64/include/asm/preempt.h:13
-> > (discriminator 1) kernel/rcu/tree.c:2146 (discriminator 1)
-> > kernel/rcu/tree.c:2403 (discriminator 1))
->
-> This all seems very surprising, especially given that AFAICT there are
-> no changes in stable-6.6-rc for arch/arm64.
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-We do not see on the mainline and next.
-Is this reported problems on stable-rc 6.6 and 6.5 are due to running
-latest kselftest on older kernels ?
+--8323329-1084432088-1699368138=:1851
+Content-Type: text/plain; CHARSET=ISO-8859-15
+Content-Transfer-Encoding: 8BIT
+Content-ID: <4fdc79e-d8ab-f7e3-2f31-bbb9b7f1f31@linux.intel.com>
 
---
-# # SSVE-VL-32-1: Mismatch: PID=641, iteration=0, reg=0
-# # SSVE-VL-128-1: Got         [<junk>]
-# # SSVE-VL-256-1: Got       [<junk>]
+On Mon, 6 Nov 2023, Henry Shi wrote:
 
-Unable to handle kernel paging request at virtual address 00740f0322740f02
-0<1>[   89.400173] Mem abort info:
-<1>[   89.400844]   ESR = 0x0000000096000004
-<1>[   89.401974]   EC = 0x25: DABT (current EL), IL = 32 bits
-<1>[   89.403399]   SET = 0, FnV = 0
-<1>[   89.404421]   EA = 0, S1PTW = 0
-<1>[   89.405317]   FSC = 0x04: level 0 translation fault
-<1>[   89.406545] Data abort info:
-<1>[   89.407493]   ISV = 0, ISS = 0x00000004, ISS2 = 0x00000000
-<1>[   89.408785]   CM = 0, WnR = 0, TnD = 0, TagAccess = 0
-<1>[   89.410001]   GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
-<1>[   89.411485] [00740f0322740f02] address between user and kernel
-address ranges
-<0>[   89.413851] Internal error: Oops: 0000000096000004 [#1] PREEMPT SMP
-<4>[   89.415573] Modules linked in: crct10dif_ce sm3_ce sm3 sha3_ce
-sha512_ce sha512_arm64 fuse drm dm_mod ip_tables x_tables
-<4>[   89.419561] CPU: 1 PID: 22 Comm: ksoftirqd/1 Not tainted 6.5.11-rc1 #1
-<4>[   89.420795] Hardware name: linux,dummy-virt (DT)
-<4>[   89.422676] pstate: 624000c9 (nZCv daIF +PAN -UAO +TCO -DIT
--SSBS BTYPE=--)
-<4>[   89.424344] pc : refill_obj_stock+0x6c/0x250
-<4>[   89.426324] lr : refill_obj_stock+0x6c/0x250
-<trim>
-<4>[   89.447170] Call trace:
-<4>[   89.447756]  refill_obj_stock+0x6c/0x250
-<4>[   89.449033]  obj_cgroup_uncharge+0x20/0x38
-<4>[   89.450457]  kmem_cache_free+0xf8/0x500
-<4>[   89.451066]  delayed_put_pid+0x50/0xb0
-<4>[   89.452401]  rcu_core+0x3cc/0x950
-<4>[   89.453369]  rcu_core_si+0x1c/0x30
-<4>[   89.454465]  __do_softirq+0x118/0x438
-<4>[   89.455738]  run_ksoftirqd+0x40/0xf8
-<4>[   89.456893]  smpboot_thread_fn+0x1d0/0x248
-<4>[   89.457969]  kthread+0xfc/0x1a0
-<4>[   89.459171]  ret_from_fork+0x10/0x20
-<0>[   89.460445] Code: aa1603e0 97fffef8 aa0003f4 97f6cbf6 (f9400269)
-<4>[   89.462028] ---[ end trace 0000000000000000 ]---
-<0>[   89.463494] Kernel panic - not syncing: Oops: Fatal exception in interrupt
-<2>[   89.465046] SMP: stopping secondary CPUs
-<0>[   89.466327] Kernel Offset: 0x2dabffa00000 from 0xffff800080000000
-<0>[   89.467385] PHYS_OFFSET: 0x40000000
-<0>[   89.468131] CPU features: 0x00000000,68f167a1,cce6773f
-<0>[   89.469850] Memory Limit: none
-<0>[   89.470836] ---[ end Kernel panic - not syncing: Oops: Fatal
-exception in interrupt ]---
+> platform/x86: Add Silicom Platform Driver
+> 
+> Add Silicom platform (silicom-platform) Linux driver for Swisscom
+> Business Box (Swisscom BB) as well as Cordoba family products.
+> 
+> This platform driver provides support for various functions via
+> the Linux LED framework, GPIO framework, Hardware Monitoring (HWMON)
+> and device attributes.
+> 
+> Signed-off-by: Henry Shi <henryshi2018@gmail.com>
+> ---
+> 
+> Changes from v1 to v2:
+> ===========================
+> 
+> Suggested by Hans de Goede <hdegoede@redhat.com>
+> .Use git send-email to submit patch.
+> .patch contents should be in message body.
+> .Kconfig bit for the driver should be in drivers/platform/x86/Kconfig.
+> 
+> changes from patch v2 to v3
+> ===========================
+> 
+> changes suggested by Guenter Roeck <groeck7@gmail.com>
+> .Removed unnecessary include file linux/thermal.h.
+> .Removed EXPORT_SYMBOL for mutex lock/unlock function.
+> 
+> Changes suggested by Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+> .Remove extra new line in code on multiple position.
+> .Use table instead of space in code.
+> .Uss Linux defined bit operation MACRO define.
+> .Removed local variable in rpm_get().
+> .Corrected typo in comments.
+> .Corrected incorrect indentation.
+> .Removed unnecessary comments in silicom_mc_leds_register().
+> .Rewrite efuse_status_show() to used defined variable and removed 
+> uncessary local variables.
+> .Rewrite uc_version_show() to used defined variable and removed 
+> uncessary local variables.
+> .Removed unused MACRO define: #define CHANNEL_TO_BIT(chan) ((chan) & 0x07).
+> .Rewrite powercycle_uc() to used defined variable and removed uncessary 
+> local variables.
+> .use GENMASK() and use FIELD_GET() instead of bit shift.
+> .Added define for constant 0x28 used in  efuse_status_show().
+> .Added define for constant 0x0 used in  uc_version_show().
+> .Added define for constant 0x0 used in  powercycle_uc().
+> .Rearrange functions to avoid uncessary pre-define.
+> .Rewrite rpm_get() to used defined variable and removed uncessary 
+> local variables.
+> .Rewrite temp_get() to used defined variable and removed uncessary 
+> local variables.
+> .Use FIELD_GET instead of bit shift in temp_get().
+> .Used #define for constant variable 0/1.
+> 
+> Changes suggested by Christophe JAILLET <christophe.jaillet@wanadoo.fr>:
+> .use "if (!led->subled_info)" instead of
+> "if (IS_ERR_OR_NULL(led->subled_info))
+> "in silicom_mc_leds_register
+> 
+> changes from patch v3 to v4
+> ===========================
+> 
+> changes suggested by Guenter Roeck <groeck7@gmail.com>
+> 
+> Changes suggested by Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>:
+> .Rewrite silicom_mec_led/gpip_set/get() functions to use two newly created
+> silicom_mec_port_get()/silicom_mec_port_set() which have common code.
+> .Remove duplicate code in silicom_mec_port_get()
+> .Rewrite uc_version_show() to use Linux bit operation MACRO, and add
+> logic to check un-supported register value.
+> .Added "#define MEC_EFUSE_LSB_ADDR 0x28" and "#define
+> MEC_POWER_CYCLE_ADDR 0x24"
+> .Added "#define MEC_VERSION_MAJOR GENMASK(15, 14)" and "#define
+> MEC_VERSION_MINOR GENMASK(13, 8)".
+> 
+> Changes suggested by Christophe JAILLET <christophe.jaillet@wanadoo.fr>:
+> .Used a local variable to store "sizeof(struct mc_subled)" in function
+> silicom_mc_leds_register().
+> 
+> change from patch v4 to v5
+> ===========================================
+> 
+> changes suggested by Guenter Roeck <groeck7@gmail.com>:
+> .Corrected return value in temp_get() to return 1/10000th degree.
+> .Removed local variable struct silicom_fan_control_data *ctl in
+> silicom_fan_control_read_fan(),
+> removed storing rpm value to ctl variable.
+> .Removed local variable struct silicom_fan_control_data *ctl in 
+> silicom_fan_control_read_temp(),
+> .removed storing rpm value to ctl variable.
+> .Changed return string in silicom_fan_control_read_labels() to 
+> specific string for Silicom platform driver.
+> .Removed silicom_fan_control_data structure.
+> .Removed static variable mec_io_base and mec_io_len, and added
+> "#define MEC_IO_BASE 0x0800 and #define MEC_IO_LEN 0x8".
+> .Removed ".write = NULL" in silicom_fan_control_hwmon_ops
+> structure defination.
+> .Removed unnecessary function silicom_fan_control_write().
+> .Removed unnecessary check for silicom_led_info in function
+> silicom_platform_probe.
+> .Removed unnecessary local variable "silicom_fan_control_data *ctl"
+> in silicom_platform_probe().
+> .Clean out driver initialization error handling in
+> silicom_platform_init();
+> .Add patch version and changelog for patch submission.
+> 
+> Changes suggested by Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>:
+> .Rename "#define MEC_DATA(offset) to "#define MEC_DATA_OFFSET(offset).
+> .Use constant defined in include/linux/units.h instead of a literal.
+> .return directly instead of go to err condition when
+> platform_device_register_simple() failed.
+> .Remove unnecessary check for silicom_led_info and silicom_gpiochip.
+> .Use a local variable to how multiple use of array size.
+> .Align the arguments to the same column in
+> silicom_mec_led_mc_brightness_set.
+> .Add patch version and changelog that shows version to version changes
+> for patch submission.
+> 
+> Changes suggested by Christophe JAILLET <christophe.jaillet@wanadoo.fr>:
+> .Use "sizeof(*led)" instead of "sizeof(struct led_classdev_mc)"
+> .Use "if (!led)" instead of "if (IS_ERR_OR_NULL(led))" 
+> .Removed unnecessary error message:
+> "dev_err(dev, "Failed to alloc led_classdev_mc[%d]:
+> %ld\n", i, PTR_ERR(led)).
+> 
+> change from patch vv5 to v6
+> ===========================================
+> 
+> changes suggested by Guenter Roeck <groeck7@gmail.com>:
+> .Removed checkpath warnings. 
+> .Resoved dependencies between CONFIG_HWMON and CONFIG_SILICOM_PLATFORM.
+> 
+> change from patch v6 to v7
+> ===========================================
+> 
+> changes suggested by Hans de Goede <hdegoede@redhat.com>:
+> .Usa a proper subsystem prefix for this patch subject:
+> Subject: platform/x86: Add Silicom Platform Driver.
+> 
+> change from patch v7 to v8
+> ===========================================
+> 
+> changes suggested by Hans de Goede <hdegoede@redhat.com>:
+> .Chnage commit message of this driver.
+> .Adjust location of change log and signed-off-by.
+> .Change "config SILICOM_PLATFORM" and help contents location,
+> and put it to source "drivers/platform/x86/siemens/Kconfig".
+> .Set editor tab to 8 and align the start of extra function
+> parameters to directly after (. This should be applied for
+> all function.
+> .Do not manually create a sysfs dir and register sysfs attribute,
+> instead define a platform_driver structure.
+> .Move MODULE_DEVICE_TABLE(dmi, silicom_dmi_ids) directly after
+> table declaration.
+> .Using pr_info() instead of dev_info() in function
+> silicom_platform_info_init().
+> .Made dmi_check_system() check the first thing to do in
+> silicom_platform_init().
+> .Instead of separate platform_device creation + driver registration,
+> switched to using platform_create_bundle().
+> .Removed mutex_destroy(&mec_io_mutex).
+> 
+> 
+> Changes suggested by Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>:
+> .Too many GENMASK() within to code itself, need put them to
+> #define. Removed all GENMASK() in c functions.
+> 
+> change from patch v8 to v9
+> ===========================================
+> 
+> Changes suggested by Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>:
+> .Just do the same (like MEC_VERSION_MAJOR) with all places in the where
+> you previously had GENMASK() in the code (currently MEC_GET_BITS()
+> is there, obviously, but it should go away and be replaced with
+> FIELD_GET(GOODPREFIX_GOODNAME, ...))).
+> .This is sysfs so it's odd to print pr_err() like that here. If the driver
+> does not support those versions at all, the probe should fail. If driver is
+> fine but just doesn't know how to interpret such a version, you should
+> return -Esomething here. Driver returns -EINVAL here.
+> .Replace CENTI with 100
+> .Align FIELD_GET()s to the same column for line 661.
+> .Change variables efuse_status, mec_uc_version, power_cycle to unsigned
+> int from int.
+> 
+> changes suggested by Hans de Goede <hdegoede@redhat.com>:
+> .Please add a Documentation/ABI/testing/sysfs-platform-silicom
+> file to document driver specific the sysfs attributes of this driver.
+> .Like with the Kconfig part, group this together with the other industrial
+> PC drivers we have at the end of the Makefile after Siemens
+> Simatic Industrial PCs.
+> 
+> change from patch v9 to v10
+> ===========================================
+> 
+> Changes suggested by Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>:
+> .Added missing newline in kernel document file.
+> .Changed the order #define to make sure they are in increasing order.
+> .Removed printing in init function silicom_platform_info_init();
+> .Changed #define name MEC_PREFIX_HIGH_BYTES to MEC_TEMPERATURE.
+> .Removed dev_err(dev, "Failed to register[%d]: %d\n", i, err)
+> in function silicom_mc_leds_register() before ruturn err.
+> .Changed %du to %u in function power_cycle_store(...).
+> .Chnaged sprintf() to sysfs_emit().
+> .Changed start point for multi-line comments.
+> .Added empty line to seperate #define.
+> .Remove parenthesis around MEC_IO_BASE.
+> .Changed #define EC_ADDR_MSB (MEC_IO_BASE + 0x3), use
+> a constant value instead of MEC_DATA_OFFSET_MASK.
+> .Changed define name MEC_PREFIX_NAME to MEC_PORT_LOC.
+> .Changed define MEC_PREFIX_HIGH_BYTES to MEC_TEMP_LOC.
+> .Removed "PREFIX" from define name, changed
+> MEC_PREFIX_SEC_BYTE to MEC_VERSION_LOC.
+> 
+> change from patch v10 to v11 (current patch)
+> ===========================================
+> 
+> Changes suggested by Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>:
+> .Don't print anything when userspace gives an invalid value,
+> just return -EINVAL in function power_cycle_store().
+> .The includes should be in alphabethical order.
+> .Just make the calculation once and store into a local variable
+> in function silicom_mec_port_set().
+> .Use GENMASK for MEC_PORT_OFFSET_MASK, MEC_PORT_CHANNEL_MASK,
+> MEC_DATA_OFFSET_MASK.
+> .Rename MEC_PORT_LOC to MEC_PORT_DWORD_OFFSET.
+> .Add local variable to function silicom_mec_port_set() and
+> silicom_mec_port_get() to make the code less heavy to read.
+> .Allgned defines start from same column mostly.
+> .Kernel test robot WARNING sys/devices/platform/silicom-platform/hwmon/hwmon1/
+> is defined 4 times.
+> 
+
+Thanks, seems almost there now, a few editorial things below.
 
 
+> +#include <linux/dmi.h>
+> +#include <linux/gpio/driver.h>
+> +#include <linux/hwmon.h>
 
-Links:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.5.y/build/v6.5.10-89-g73d52afec3ab/testrun/20963504/suite/log-parser-test/tests/
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.5.y/build/v6.5.10-89-g73d52afec3ab/testrun/20963709/suite/log-parser-test/tests/
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.5.y/build/v6.5.10-89-g73d52afec3ab/testrun/20963709/suite/log-parser-test/test/check-kernel-oops/log
+The usual convention is to put the subdir headers separately:
 
-- Naresh
+#include <linux/dmi.h>
+#include <linux/hwmon.h>
+[... more include files under linux/ ...]
+#include <linux/units.h>
+
+#include <linux/gpio/driver.h>
+
+> +#define MEC_POWER_CYCLE_ADDR 0x24
+> +#define MEC_EFUSE_LSB_ADDR   0x28
+> +#define MEC_GPIO_IN_POS      0x08
+> +#define MEC_IO_BASE          0x0800
+> +#define MEC_IO_LEN           0x8
+> +#define IO_REG_BANK          0x0
+> +#define DEFAULT_CHAN_LO      0
+> +#define DEFAULT_CHAN_HI      0
+> +#define DEFAULT_CHAN_LO_T    0xc
+> +#define MEC_ADDR             (MEC_IO_BASE + 0x02)
+> +#define EC_ADDR_LSB          MEC_ADDR
+> +#define SILICOM_MEC_MAGIC    0x5a
+> +
+> +#define MEC_PORT_CHANNEL_MASK GENMASK(2, 0)
+> +#define MEC_PORT_DWORD_OFFSET GENMASK(31, 3)
+> +#define MEC_DATA_OFFSET_MASK  GENMASK(1, 0)
+> +#define MEC_PORT_OFFSET_MASK  GENMASK(7, 2)
+
+Newline here
+
+> +#define MEC_TEMP_LOC          GENMASK(31, 16)
+> +#define MEC_VERSION_LOC       GENMASK(15, 8)
+> +#define MEC_VERSION_MAJOR     GENMASK(15, 14)
+> +#define MEC_VERSION_MINOR     GENMASK(13, 8)
+
+Newline here
+
+> +#define EC_ADDR_MSB           (MEC_IO_BASE + 0x3)
+> +#define MEC_DATA_OFFSET(offset) (MEC_IO_BASE + 0x04 + offset)
+
+Newline here
+
+> +#define OFFSET_BIT_TO_CHANNEL(off, bit) (((off + 0x014) << 3) | bit)
+> +#define CHANNEL_TO_OFFSET(chan) ((chan >> 3) - 0x14)
+
+Please use () around all macro arguments to be on the safe side, so
+the last one becomes:
+
+#define CHANNEL_TO_OFFSET(chan) (((chan) >> 3) - 0x14)
+
+(Please do this for all your macros, if I counted correctly, there are 3 
+of such macros with unprotected arguments currently).
+
+> +static int silicom_mec_port_get(unsigned int offset)
+> +{
+> +	u8 reg;
+> +	unsigned short mec_data_addr;
+> +	unsigned short mec_port_addr;
+> +
+> +	mec_data_addr = FIELD_GET(MEC_PORT_DWORD_OFFSET, offset) & MEC_DATA_OFFSET_MASK;
+> +	mec_port_addr = FIELD_GET(MEC_PORT_DWORD_OFFSET, offset) & MEC_PORT_OFFSET_MASK;
+
+Newline here since you're starting a critical section.
+
+> +	mutex_lock(&mec_io_mutex);
+> +	/* Get the dword offset from the channel */
+
+This comment is out of place, perhaps it isn't really needed at all.
+
+> +	outb(mec_port_addr, MEC_ADDR);
+> +	/* Get the current register */
+
+This comment too is pretty obvious from the code so it should be dropped.
+
+> +	reg = inb(MEC_DATA_OFFSET(mec_data_addr));
+> +	mutex_unlock(&mec_io_mutex);
+> +
+> +	return (reg >> (offset & MEC_PORT_CHANNEL_MASK)) & 0x01;
+
+FIELD_GET(MEC_PORT_CHANNEL_MASK, offset)
+
+This function is much easier to read now!
+
+> +}
+> +
+> +static enum led_brightness silicom_mec_led_get(int channel)
+> +{
+> +	/* Outputs are active low */
+> +	return silicom_mec_port_get(channel) ? LED_OFF : LED_ON;
+> +}
+> +
+> +static void silicom_mec_port_set(int channel, int on)
+> +{
+> +	u8 reg;
+> +	unsigned short mec_data_addr;
+> +	unsigned short mec_port_addr;
+> +
+> +	mec_data_addr = FIELD_GET(MEC_PORT_DWORD_OFFSET, channel) & MEC_DATA_OFFSET_MASK;
+> +	mec_port_addr = FIELD_GET(MEC_PORT_DWORD_OFFSET, channel) & MEC_PORT_OFFSET_MASK;
+
+Newline due to start of critical section.
+
+> +	mutex_lock(&mec_io_mutex);
+> +	/* Get the dword offset from the channel */
+
+Same comment related feedback applies to here too.
+
+> +	outb(mec_port_addr, MEC_ADDR);
+> +	/* Get the current port settings */
+> +	reg = inb(MEC_DATA_OFFSET(mec_data_addr));
+> +	/* Outputs are active low, so clear the bit for on, or set it for off */
+
+This is useful comment and should not be dropped.
+
+> +	if (on)
+> +		reg &= ~(1 << (channel & MEC_PORT_CHANNEL_MASK));
+> +	else
+> +		reg |= 1 << (channel & MEC_PORT_CHANNEL_MASK);
+> +	/* Write back the updated register */
+
+Extremely obvious thing, just drop this comment.
+
+> +	outb(reg, MEC_DATA_OFFSET(mec_data_addr));
+> +	mutex_unlock(&mec_io_mutex);
+> +}
+
+
+> +static u32 rpm_get(void)
+> +{
+> +	u32 reg;
+> +
+> +	mutex_lock(&mec_io_mutex);
+> +	/* Select memory region */
+> +	outb(IO_REG_BANK, EC_ADDR_MSB);
+> +	outb(DEFAULT_CHAN_LO_T, EC_ADDR_LSB);
+> +	/* Get current data from the address */
+
+This is again a comment which is not very useful and should just dropped
+(check if you have similar ones, I won't mark more of them in this reply).
+
+> +	reg = inw(MEC_DATA_OFFSET(DEFAULT_CHAN_LO));
+> +	mutex_unlock(&mec_io_mutex);
+> +
+> +	return reg;
+> +}
+
+
+-- 
+ i.
+--8323329-1084432088-1699368138=:1851--
