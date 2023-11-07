@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C42D17E3BA4
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 13:08:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 336C27E3BAD
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 13:08:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234329AbjKGMIU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 07:08:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55144 "EHLO
+        id S234303AbjKGMIj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 07:08:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234250AbjKGMHz (ORCPT
+        with ESMTP id S234327AbjKGMIT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 07:07:55 -0500
+        Tue, 7 Nov 2023 07:08:19 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70A6C173B;
-        Tue,  7 Nov 2023 04:07:38 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD27EC433CB;
-        Tue,  7 Nov 2023 12:07:35 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B212510D3;
+        Tue,  7 Nov 2023 04:07:50 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 19F1FC433C8;
+        Tue,  7 Nov 2023 12:07:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699358857;
-        bh=s7IkpwFkvc63VeyiRhEpqYii0TAbOTbVdNVK41uQ8yE=;
+        s=k20201202; t=1699358870;
+        bh=6gwu+odNl+aqXisUwCqknnGvlBvMjl2uK0UlmaVeAC4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=n0FAgYfUWostZTAzlsE+DFZsR9+r+CFeDugaZId5BiNY9/sCjrP6esgmarSpKltyd
-         JJ0QQene7pH5PT/ReNI7HIcsWPI0HCilnPLUn+K0eQuccGger1/wOaRFaHXo0lVxzb
-         5qnEDasf2aNgi8q2YvhhMA/X4AwfoXNQuw+L07+Nh7selII/fWvvUV7EVII3A4NtIP
-         OP/C7yDMJAZwpkJJ9A0m1g6qNvdVFyVNiLmMkSJUUUAG8Jero6ZEO4tf3wzViUPna6
-         ouiZlopoY9jrzYbDVdXkbMZpnlWg/9t9SGKE7diXG4tiPGwTRvsML8EILAarQJajau
-         PfwsBtJ1fYRUQ==
+        b=ZJwE9g/HIPygxZg50mV5Fqq6cOy+Bx0G4J+uABsZwZelt+euU1n9YP4Fk504FCjsK
+         cqJ1MpLn0IHrJ2rha63NhQmRwA/Eh4MHDIgPP1z4UQG6FAGSD95MHPF8Uf+yt3rh87
+         jYuRPUGrRb6SqXlMq7XNPYMzoXFxzMdRZS5273LBQPxlkP4uldDWNIiuGbTzQ4/C0V
+         mOiD5BsnP7ivniQZD8YeK56MoEV3xY3Rp7ilrb/18x1uVeM9ltp3Fasqn4fbgNE2IK
+         u+aBy66XQCbuVfecyojJ0A4Hox6pC0vA56g88dceT8xAxod4xcWZii4bkTcKqf8GNp
+         jVX0LQGSUsIeA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Ingo Rohloff <lundril@gmx.de>, Felix Fietkau <nbd@nbd.name>,
+Cc:     Dmitry Antipov <dmantipov@yandex.ru>, Felix Fietkau <nbd@nbd.name>,
         Sasha Levin <sashal@kernel.org>, lorenzo@kernel.org,
         ryder.lee@mediatek.com, kvalo@kernel.org, matthias.bgg@gmail.com,
-        angelogioacchino.delregno@collabora.com, bhelgaas@google.com,
-        deren.wu@mediatek.com, sean.wang@mediatek.com,
-        quan.zhou@mediatek.com, Leon.Yen@mediatek.com,
-        linux-wireless@vger.kernel.org,
+        angelogioacchino.delregno@collabora.com, nathan@kernel.org,
+        ndesaulniers@google.com, shayne.chen@mediatek.com,
+        chui-hao.chiu@mediatek.com, howard-yh.hsu@mediatek.com,
+        rany_hany@riseup.net, linux-wireless@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-pci@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 13/31] wifi: mt76: mt7921e: Support MT7992 IP in Xiaomi Redmibook 15 Pro (2023)
-Date:   Tue,  7 Nov 2023 07:06:00 -0500
-Message-ID: <20231107120704.3756327-13-sashal@kernel.org>
+        linux-mediatek@lists.infradead.org, llvm@lists.linux.dev
+Subject: [PATCH AUTOSEL 6.6 14/31] wifi: mt76: fix clang-specific fortify warnings
+Date:   Tue,  7 Nov 2023 07:06:01 -0500
+Message-ID: <20231107120704.3756327-14-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231107120704.3756327-1-sashal@kernel.org>
 References: <20231107120704.3756327-1-sashal@kernel.org>
@@ -59,55 +59,117 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ingo Rohloff <lundril@gmx.de>
+From: Dmitry Antipov <dmantipov@yandex.ru>
 
-[ Upstream commit fce9c967820a72f600abbf061d7077861685a14d ]
+[ Upstream commit 03f0e11da7fb26db4f27e6b83a223512db9f7ca5 ]
 
-In the Xiaomi Redmibook 15 Pro (2023) laptop I have got, a wifi chip is
-used, which according to its PCI Vendor ID is from "ITTIM Technology".
+When compiling with clang 16.0.6 and CONFIG_FORTIFY_SOURCE=y, I've
+noticed the following (somewhat confusing due to absence of an actual
+source code location):
 
-This chip works flawlessly with the mt7921e module.  The driver doesn't
-bind to this PCI device, because the Vendor ID from "ITTIM Technology" is
-not recognized.
+In file included from drivers/net/wireless/mediatek/mt76/mt792x_core.c:4:
+In file included from ./include/linux/module.h:13:
+In file included from ./include/linux/stat.h:19:
+In file included from ./include/linux/time.h:60:
+In file included from ./include/linux/time32.h:13:
+In file included from ./include/linux/timex.h:67:
+In file included from ./arch/x86/include/asm/timex.h:5:
+In file included from ./arch/x86/include/asm/processor.h:23:
+In file included from ./arch/x86/include/asm/msr.h:11:
+In file included from ./arch/x86/include/asm/cpumask.h:5:
+In file included from ./include/linux/cpumask.h:12:
+In file included from ./include/linux/bitmap.h:11:
+In file included from ./include/linux/string.h:254:
+./include/linux/fortify-string.h:592:4: warning: call to '__read_overflow2_field'
+declared with 'warning' attribute: detected read beyond size of field (2nd
+parameter); maybe use struct_group()? [-Wattribute-warning]
+                        __read_overflow2_field(q_size_field, size);
 
-This patch adds the PCI Vendor ID from "ITTIM Technology" to the list of
-PCI Vendor IDs and lets the mt7921e driver bind to the mentioned wifi
-chip.
+In file included from drivers/net/wireless/mediatek/mt76/mt7915/main.c:4:
+In file included from ./include/linux/etherdevice.h:20:
+In file included from ./include/linux/if_ether.h:19:
+In file included from ./include/linux/skbuff.h:15:
+In file included from ./include/linux/time.h:60:
+In file included from ./include/linux/time32.h:13:
+In file included from ./include/linux/timex.h:67:
+In file included from ./arch/x86/include/asm/timex.h:5:
+In file included from ./arch/x86/include/asm/processor.h:23:
+In file included from ./arch/x86/include/asm/msr.h:11:
+In file included from ./arch/x86/include/asm/cpumask.h:5:
+In file included from ./include/linux/cpumask.h:12:
+In file included from ./include/linux/bitmap.h:11:
+In file included from ./include/linux/string.h:254:
+./include/linux/fortify-string.h:592:4: warning: call to '__read_overflow2_field'
+declared with 'warning' attribute: detected read beyond size of field (2nd
+parameter); maybe use struct_group()? [-Wattribute-warning]
+                        __read_overflow2_field(q_size_field, size);
 
-Signed-off-by: Ingo Rohloff <lundril@gmx.de>
+In file included from drivers/net/wireless/mediatek/mt76/mt7996/main.c:6:
+In file included from drivers/net/wireless/mediatek/mt76/mt7996/mt7996.h:9:
+In file included from ./include/linux/interrupt.h:8:
+In file included from ./include/linux/cpumask.h:12:
+In file included from ./include/linux/bitmap.h:11:
+In file included from ./include/linux/string.h:254:
+./include/linux/fortify-string.h:592:4: warning: call to '__read_overflow2_field'
+declared with 'warning' attribute: detected read beyond size of field (2nd
+parameter); maybe use struct_group()? [-Wattribute-warning]
+                        __read_overflow2_field(q_size_field, size);
+
+The compiler actually complains on 'mt7915_get_et_strings()',
+'mt792x_get_et_strings()' and 'mt7996_get_et_strings()' due to the same
+reason: fortification logic inteprets call to 'memcpy()' as an attempt
+to copy the whole array from its first member and so issues an overread
+warning. These warnings may be silenced by passing an address of the whole
+array and not the first member to 'memcpy()'.
+
+Signed-off-by: Dmitry Antipov <dmantipov@yandex.ru>
 Signed-off-by: Felix Fietkau <nbd@nbd.name>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/mediatek/mt76/mt7921/pci.c | 2 ++
- include/linux/pci_ids.h                         | 2 ++
- 2 files changed, 4 insertions(+)
+ drivers/net/wireless/mediatek/mt76/mt7915/main.c | 2 +-
+ drivers/net/wireless/mediatek/mt76/mt792x_core.c | 2 +-
+ drivers/net/wireless/mediatek/mt76/mt7996/main.c | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/wireless/mediatek/mt76/mt7921/pci.c b/drivers/net/wireless/mediatek/mt76/mt7921/pci.c
-index 3dda84a937175..f04e7095e1810 100644
---- a/drivers/net/wireless/mediatek/mt76/mt7921/pci.c
-+++ b/drivers/net/wireless/mediatek/mt76/mt7921/pci.c
-@@ -17,6 +17,8 @@ static const struct pci_device_id mt7921_pci_device_table[] = {
- 		.driver_data = (kernel_ulong_t)MT7921_FIRMWARE_WM },
- 	{ PCI_DEVICE(PCI_VENDOR_ID_MEDIATEK, 0x7922),
- 		.driver_data = (kernel_ulong_t)MT7922_FIRMWARE_WM },
-+	{ PCI_DEVICE(PCI_VENDOR_ID_ITTIM, 0x7922),
-+		.driver_data = (kernel_ulong_t)MT7922_FIRMWARE_WM },
- 	{ PCI_DEVICE(PCI_VENDOR_ID_MEDIATEK, 0x0608),
- 		.driver_data = (kernel_ulong_t)MT7921_FIRMWARE_WM },
- 	{ PCI_DEVICE(PCI_VENDOR_ID_MEDIATEK, 0x0616),
-diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
-index 5fb3d4c393a9e..0328a4c01e0bf 100644
---- a/include/linux/pci_ids.h
-+++ b/include/linux/pci_ids.h
-@@ -180,6 +180,8 @@
- #define PCI_DEVICE_ID_BERKOM_A4T		0xffa4
- #define PCI_DEVICE_ID_BERKOM_SCITEL_QUADRO	0xffa8
+diff --git a/drivers/net/wireless/mediatek/mt76/mt7915/main.c b/drivers/net/wireless/mediatek/mt76/mt7915/main.c
+index 8ebbf186fab23..53348dd80c3b3 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt7915/main.c
++++ b/drivers/net/wireless/mediatek/mt76/mt7915/main.c
+@@ -1386,7 +1386,7 @@ void mt7915_get_et_strings(struct ieee80211_hw *hw,
+ 	if (sset != ETH_SS_STATS)
+ 		return;
  
-+#define PCI_VENDOR_ID_ITTIM		0x0b48
-+
- #define PCI_VENDOR_ID_COMPAQ		0x0e11
- #define PCI_DEVICE_ID_COMPAQ_TOKENRING	0x0508
- #define PCI_DEVICE_ID_COMPAQ_TACHYON	0xa0fc
+-	memcpy(data, *mt7915_gstrings_stats, sizeof(mt7915_gstrings_stats));
++	memcpy(data, mt7915_gstrings_stats, sizeof(mt7915_gstrings_stats));
+ 	data += sizeof(mt7915_gstrings_stats);
+ 	page_pool_ethtool_stats_get_strings(data);
+ }
+diff --git a/drivers/net/wireless/mediatek/mt76/mt792x_core.c b/drivers/net/wireless/mediatek/mt76/mt792x_core.c
+index 46be7f996c7e1..81f316ddc1115 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt792x_core.c
++++ b/drivers/net/wireless/mediatek/mt76/mt792x_core.c
+@@ -358,7 +358,7 @@ void mt792x_get_et_strings(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
+ 	if (sset != ETH_SS_STATS)
+ 		return;
+ 
+-	memcpy(data, *mt792x_gstrings_stats, sizeof(mt792x_gstrings_stats));
++	memcpy(data, mt792x_gstrings_stats, sizeof(mt792x_gstrings_stats));
+ 
+ 	data += sizeof(mt792x_gstrings_stats);
+ 	page_pool_ethtool_stats_get_strings(data);
+diff --git a/drivers/net/wireless/mediatek/mt76/mt7996/main.c b/drivers/net/wireless/mediatek/mt76/mt7996/main.c
+index c3a479dc3f533..2405ec1a663fe 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt7996/main.c
++++ b/drivers/net/wireless/mediatek/mt76/mt7996/main.c
+@@ -1192,7 +1192,7 @@ void mt7996_get_et_strings(struct ieee80211_hw *hw,
+ 			   u32 sset, u8 *data)
+ {
+ 	if (sset == ETH_SS_STATS)
+-		memcpy(data, *mt7996_gstrings_stats,
++		memcpy(data, mt7996_gstrings_stats,
+ 		       sizeof(mt7996_gstrings_stats));
+ }
+ 
 -- 
 2.42.0
 
