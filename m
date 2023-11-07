@@ -2,111 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 445507E43AA
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 16:41:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6895C7E43AE
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 16:42:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234830AbjKGPlX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 10:41:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40864 "EHLO
+        id S1343999AbjKGPmZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 10:42:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343999AbjKGPlS (ORCPT
+        with ESMTP id S1343863AbjKGPmX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 10:41:18 -0500
-Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C57889F
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 07:41:15 -0800 (PST)
-Received: by mail-qv1-xf33.google.com with SMTP id 6a1803df08f44-66d17bdabe1so40535746d6.0
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 07:41:15 -0800 (PST)
+        Tue, 7 Nov 2023 10:42:23 -0500
+X-Greylist: delayed 97395 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 07 Nov 2023 07:42:21 PST
+Received: from mailrelay1-1.pub.mailoutpod2-cph3.one.com (mailrelay1-1.pub.mailoutpod2-cph3.one.com [46.30.211.176])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CE8A94
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 07:42:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699371675; x=1699976475; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ObVN4OHcPVQWsUpE/966fOo3IFl5zYaTQP4Ff/lWTe4=;
-        b=bobyiEHOE/h+zyutQu+5a0gnvPgFSPrrT4+U1u8DurMIYe4ptBGJeD+tik60wnZi14
-         72omqUgdyTtzYvpf356qjrkRaVws/loTRdm5KlRyVpTBW0zhKE5JbLFKRZkFfrOdKDFU
-         W0pVty06+n2qHyLea6AMNi7REzYHFBeIxO+mDMaV9Wph0PJB//g1q0VcLoshD6I3LKzm
-         UJCEjASGjIMYX4c53LIdEGBwkdutXq6GtDzYcXQuQf1AHeuB9swVe8xmvYLeHw+XN97j
-         E11QS5WUQCHpoCiOI1HdaofNcbwYI3R4xJfEHc4xCizsje8/mdPL1VIg7PUNnrR/gYOd
-         /pMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699371675; x=1699976475;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ObVN4OHcPVQWsUpE/966fOo3IFl5zYaTQP4Ff/lWTe4=;
-        b=gDYGKuGZc33IComrSjmUIJ7lbVIMRq/nl0aN/7pKg5RbOarwxV3lzG4hnekDqdr0Db
-         /GJk5L7FxPZVmp8tt5d31QFAXl3e66smcHjtkmUpi4lNI6g/aLaBSNAlfUM1FpR/cIvm
-         II1ZKhESjxY48D1f8291Io891ZUAIG/awYl2mFEgscHMWamFT0wE+6qeKCSYei1hSojA
-         p8Usy7m2D7LO81/SDq6dSZV5/AdQ0vx6bMe8zkG/ziIWCfYLSZ0vZ3kjV4ZghbFyo9j1
-         EhT/TcrBHVTTx0c66eX3ssydx+pOh4DmdSjqkqZf6A9yhrvFxohof7d3zOOd++kVZiGo
-         Rp3Q==
-X-Gm-Message-State: AOJu0YxV8aUJa8PHpTfSJ10rqMbpbHG+8jBZ90YErIzAxfUqbH9LzGwX
-        rx7UEu9U1nV9lDc1l/XkG9TFOdbRGOGUg5u0SA==
-X-Google-Smtp-Source: AGHT+IHHqmworfLQWEekvi8UO9gWd02E+Uc289e8Y39lqPlgbomqRT6SyOFmuPC/YBTPy52YJ0fB4w==
-X-Received: by 2002:ad4:5ca2:0:b0:66d:3723:294b with SMTP id q2-20020ad45ca2000000b0066d3723294bmr34665070qvh.64.1699371674936;
-        Tue, 07 Nov 2023 07:41:14 -0800 (PST)
-Received: from localhost.localdomain ([117.217.186.253])
-        by smtp.gmail.com with ESMTPSA id u3-20020a0cb403000000b0064f43efc844sm4565789qve.32.2023.11.07.07.41.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Nov 2023 07:41:14 -0800 (PST)
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     mhi@lists.linux.dev
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: [PATCH] bus: mhi: host: pci_generic: Add local VID definitions for Telit and Sierra
-Date:   Tue,  7 Nov 2023 21:11:00 +0530
-Message-Id: <20231107154100.154492-1-manivannan.sadhasivam@linaro.org>
-X-Mailer: git-send-email 2.25.1
+        d=ravnborg.org; s=rsa2;
+        h=in-reply-to:content-type:mime-version:references:message-id:subject:cc:to:
+         from:date:from;
+        bh=r4pS3nzg1xHsTPROp8NMUMZcT6aPPgnVU+KRkpioBHA=;
+        b=gjsapIyc2vwjxnaisvqK9yQebWHeP7F/rxPVU/9qvnVqohA3dIo2HPJ72ldLQQ1nUS8gCOv4jzuSo
+         B9+7A5BI3UYe23FGkZbn4NqMTpPLQb0t94Z4K5zgYYipdhkJARHTWiHivdV2TZWOXmU54JiMNdwpCX
+         QsaO39o1dExXbjsB5LlxPYlFU5rjD9JOR2kTDVw1zi42hXYQWEbJIcmkYi/+BKY9ahfFowZ/OvBlZG
+         EyYVFsbLxlZLeZB2HLJBilE2grCc7mgwPBhHVx9ScabZ6ZbP+rAEmDZ8lvQt7TiY+AMYDhbjodtOxt
+         HYyFP7cbjbZiVQjXFZl08ITh+VCMjnQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed;
+        d=ravnborg.org; s=ed2;
+        h=in-reply-to:content-type:mime-version:references:message-id:subject:cc:to:
+         from:date:from;
+        bh=r4pS3nzg1xHsTPROp8NMUMZcT6aPPgnVU+KRkpioBHA=;
+        b=AqDvLY68qSvpYK0M6v2AFgdtAJSxj+atFt3Pbp78PJGiSuGbTqa+15txBENi21GWvuCMEC4LDLWTu
+         SEss8K9BQ==
+X-HalOne-ID: 15d52a21-7d84-11ee-8d75-2b733b0ff8f0
+Received: from ravnborg.org (2-105-2-98-cable.dk.customer.tdc.net [2.105.2.98])
+        by mailrelay1 (Halon) with ESMTPSA
+        id 15d52a21-7d84-11ee-8d75-2b733b0ff8f0;
+        Tue, 07 Nov 2023 15:41:16 +0000 (UTC)
+Date:   Tue, 7 Nov 2023 16:41:15 +0100
+From:   Sam Ravnborg <sam@ravnborg.org>
+To:     Aradhya Bhatia <a-bhatia1@ti.com>
+Cc:     Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
+        Devarsh Thakkar <devarsht@ti.com>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        DRI Development List <dri-devel@lists.freedesktop.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Robert Foss <rfoss@kernel.org>,
+        Francesco Dolcini <francesco@dolcini.it>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Maxime Ripard <mripard@kernel.org>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Jayesh Choudhary <j-choudhary@ti.com>,
+        Tomi Valkeinen <tomba@kernel.org>,
+        Linux Kernel List <linux-kernel@vger.kernel.org>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Jyri Sarha <jyri.sarha@iki.fi>
+Subject: Re: [PATCH] drm/bridge: tc358767: Support input format negotiation
+ hook
+Message-ID: <20231107154115.GA100782@ravnborg.org>
+References: <20231030192846.27934-1-a-bhatia1@ti.com>
+ <20231106123800.GC47195@ravnborg.org>
+ <7ddf0edb-2925-4b7c-ad07-27c030dd0232@ti.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7ddf0edb-2925-4b7c-ad07-27c030dd0232@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the definitions locally for now since it was agreed earlier that we
-keep it this way until the definitions show up in other drivers.
+Hi Aradhya,
 
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
----
- drivers/bus/mhi/host/pci_generic.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+On Tue, Nov 07, 2023 at 01:17:03AM +0530, Aradhya Bhatia wrote:
+> Hi Sam,
+> 
+> Thank you for the suggestion!
+> 
+> On 06-Nov-23 18:08, Sam Ravnborg wrote:
+> > Hi Aradhya,
+> > 
+> > On Tue, Oct 31, 2023 at 12:58:46AM +0530, Aradhya Bhatia wrote:
+> >> With new connector model, tc358767 will not create the connector, when
+> >> DRM_BRIDGE_ATTACH_NO_CONNECTOR is set and display-controller driver will
+> >> rely on format negotiation to setup the encoder format.
+> >>
+> >> Add the missing input-format negotiation hook in the
+> >> drm_bridge_funcs to complete DRM_BRIDGE_ATTACH_NO_CONNECTOR support.
+> >>
+> >> Input format is selected to MEDIA_BUS_FMT_RGB888_1X24 as default, as is
+> >> the case with older model.
+> >>
+> >> Reported-by: Jan Kiszka <jan.kiszka@siemens.com>
+> >> Signed-off-by: Aradhya Bhatia <a-bhatia1@ti.com>
+> >> ---
+> >>
+> >> Notes:
+> >>
+> >>   * Since I do not have hardware with me, this was just build tested. I would
+> >>     appreciate it if someone could test and review it, especically somebody, who
+> >>     uses the bridge for DPI/DSI to eDP format conversion.
+> >>
+> >>   * The Toshiba TC358767 bridge is not enabled in arm64 defconfig by default,
+> >>     when it should be. Hence, I sent a quick patch[0] earlier.
+> >>
+> >> [0]: https://lore.kernel.org/all/20231030152834.18450-1-a-bhatia1@ti.com/
+> >>
+> >>  drivers/gpu/drm/bridge/tc358767.c | 25 +++++++++++++++++++++++++
+> >>  1 file changed, 25 insertions(+)
+> >>
+> >> diff --git a/drivers/gpu/drm/bridge/tc358767.c b/drivers/gpu/drm/bridge/tc358767.c
+> >> index ef2e373606ba..0affcefdeb1c 100644
+> >> --- a/drivers/gpu/drm/bridge/tc358767.c
+> >> +++ b/drivers/gpu/drm/bridge/tc358767.c
+> >> @@ -1751,6 +1751,30 @@ tc_dpi_atomic_get_input_bus_fmts(struct drm_bridge *bridge,
+> >>  	return input_fmts;
+> >>  }
+> >>  
+> >> +static u32 *
+> >> +tc_edp_atomic_get_input_bus_fmts(struct drm_bridge *bridge,
+> >> +				 struct drm_bridge_state *bridge_state,
+> >> +				 struct drm_crtc_state *crtc_state,
+> >> +				 struct drm_connector_state *conn_state,
+> >> +				 u32 output_fmt,
+> >> +				 unsigned int *num_input_fmts)
+> >> +{
+> >> +	u32 *input_fmts;
+> >> +
+> >> +	*num_input_fmts = 0;
+> >> +
+> >> +	input_fmts = kcalloc(MAX_INPUT_SEL_FORMATS, sizeof(*input_fmts),
+> >> +			     GFP_KERNEL);
+> >> +	if (!input_fmts)
+> >> +		return NULL;
+> >> +
+> >> +	/* This is the DSI/DPI-end bus format */
+> >> +	input_fmts[0] = MEDIA_BUS_FMT_RGB888_1X24;
+> >> +	*num_input_fmts = 1;
+> >> +
+> >> +	return input_fmts;
+> >> +}
+> > 
+> > You could benefit from using the helper:
+> > drm_atomic_helper_bridge_propagate_bus_fmt()
+> 
+> You are right!
+> 
+> Upon taking a second look, I realize that the bridge chain works with
+> MEDIA_BUS_FMT_FIXED bus format, when tc358767 is being used in DPI/DSI
+> to eDP mode (because the panel-bridge does not have a get_output_bus_fmt
+> hook, and uses the same helper for its get_input_bus_fmt hook). My patch
+> creates a deviation from that, by forcing MEDIA_BUS_FMT_RGB888_1X24 even
+> when eDP is involved.
+> 
+> Using the helper here, will certainly address this deviation.
+> 
+> However, for the DPI/DSI to DP mode, MEDIA_BUS_FMT_RGB888_1X24 bus
+> format is required, and *just* using the helper as its get_input_bus_fmt
+> hook, might not be enough.
+> 
+> Since tc358767 is the last bridge in DPI/DSI to DP mode, the
+> output_fmt parameter get defaulted to MEDIA_BUS_FMT_FIXED too, as there
+> is no get_output_bus_fmt hook present in the driver. If we simply us
+> the helper here, the input_fmt will also get set to MEDIA_BUS_FMT_FIXED.
+> This too is an unwanted deviation.
+> 
+> It seems like the right way to address both the cases, would be by
+> adding the get_output_bus_fmt hook that sets output_fmt to
+> MEDIA_BUS_FMT_RGB888_1X24, as well as using the helper as the
+> get_input_bus_fmt hook.
+> 
+> If this seems good to you too, I will send a new version of Tomi's
+> series[0] which incorporates this patch.
 
-diff --git a/drivers/bus/mhi/host/pci_generic.c b/drivers/bus/mhi/host/pci_generic.c
-index 08f3f039dbdd..58ce1ecddd19 100644
---- a/drivers/bus/mhi/host/pci_generic.c
-+++ b/drivers/bus/mhi/host/pci_generic.c
-@@ -25,6 +25,8 @@
- 
- /* PCI VID definitions */
- #define PCI_VENDOR_ID_THALES	0x1269
-+#define PCI_VENDOR_ID_SIERRA	0x18d7
-+#define PCI_VENDOR_ID_TELIT	0x1c5d
- #define PCI_VENDOR_ID_QUECTEL	0x1eac
- 
- /**
-@@ -585,18 +587,18 @@ static const struct pci_device_id mhi_pci_id_table[] = {
- 	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_QCOM, 0x0306, PCI_VENDOR_ID_QCOM, 0x010c),
- 		.driver_data = (kernel_ulong_t) &mhi_foxconn_sdx55_info },
- 	/* EM919x (sdx55), use the same vid:pid as qcom-sdx55m */
--	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_QCOM, 0x0306, 0x18d7, 0x0200),
-+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_QCOM, 0x0306, PCI_VENDOR_ID_SIERRA, 0x0200),
- 		.driver_data = (kernel_ulong_t) &mhi_sierra_em919x_info },
- 	/* Telit FN980 hardware revision v1 */
--	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_QCOM, 0x0306, 0x1C5D, 0x2000),
-+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_QCOM, 0x0306, PCI_VENDOR_ID_TELIT, 0x2000),
- 		.driver_data = (kernel_ulong_t) &mhi_telit_fn980_hw_v1_info },
- 	{ PCI_DEVICE(PCI_VENDOR_ID_QCOM, 0x0306),
- 		.driver_data = (kernel_ulong_t) &mhi_qcom_sdx55_info },
- 	/* Telit FN990 */
--	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_QCOM, 0x0308, 0x1c5d, 0x2010),
-+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_QCOM, 0x0308, PCI_VENDOR_ID_TELIT, 0x2010),
- 		.driver_data = (kernel_ulong_t) &mhi_telit_fn990_info },
- 	/* Telit FE990 */
--	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_QCOM, 0x0308, 0x1c5d, 0x2015),
-+	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_QCOM, 0x0308, PCI_VENDOR_ID_TELIT, 0x2015),
- 		.driver_data = (kernel_ulong_t) &mhi_telit_fn990_info },
- 	{ PCI_DEVICE(PCI_VENDOR_ID_QCOM, 0x0308),
- 		.driver_data = (kernel_ulong_t) &mhi_qcom_sdx65_info },
--- 
-2.25.1
+I never managed to fully wrap my head around the bus fmt negotiation,
+and as I am trying to recover from a flu this is not the time to try.
+Your explanations sounds like you have grasped it so I suggest to move
+ahead.
 
+	Sam
