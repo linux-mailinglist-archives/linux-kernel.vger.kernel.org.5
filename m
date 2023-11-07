@@ -2,41 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 788EA7E4D0D
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 00:25:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EFF97E4D14
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 00:25:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344311AbjKGXZB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 18:25:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36864 "EHLO
+        id S1344262AbjKGXZP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 18:25:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235472AbjKGXY2 (ORCPT
+        with ESMTP id S235635AbjKGXYf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 18:24:28 -0500
+        Tue, 7 Nov 2023 18:24:35 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF4082134;
-        Tue,  7 Nov 2023 15:23:45 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2473C433CB;
-        Tue,  7 Nov 2023 23:23:44 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B0592596;
+        Tue,  7 Nov 2023 15:23:49 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 78F8EC433C8;
+        Tue,  7 Nov 2023 23:23:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699399425;
-        bh=mNS2ieooXTNx+RIemYthCnioFicOnssqyrXz53LBz5U=;
+        s=k20201202; t=1699399429;
+        bh=QQsBk4ut56v15msTI3SKjV52RZJFC+wtnyW5/V/mzR8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=a/fmexsL6PRWR+5KM5l4XRNgkiWwu3WcxDuBcqDZMVDQJjVlryIcnj7Tt6b/McfwD
-         DyN3emN6M6X9cqy1aXvTMFbKY0xJREXvGR+f2tP4uAskr56eMTGjD416RNFFwNOmgI
-         SB88xVjFSHElCpC0h+ifOkVi0Q1JSEAq/qnQgmQkXWfmmK4B4k6SA90iwQnMECbYxM
-         IHOn3iCbmsjMUDUtxDGFk0gCySYzH/o3wSRAGEUY9G+0tR1McMNc2gbNB5VndOLq6f
-         grYhDRqGwLie7f66qmijJTVE6p8GV4x51O9wJ/SmAQ1Lgprzs4A1RGofXgXAZLGjw/
-         b+OoYyI82BYjA==
+        b=oBTZzYS92GLw3/ejYjRR+1w14RTA/6gyGqLW9sFR6fdF8jINDTDugzp+XnOGOCfzb
+         JeXf3b/KVctKj/5mMzqA452N8/jncMdGJeVEryh1acTu6G7lH0fz/cKdaTD3ygVTRT
+         UmK3I2Tv4U0qwQXQJdlZrMDIjttn4Nad4uymSxQsmdSdqVbTJRbsV3kpH4MDJvBJtf
+         eXhTgCgf+Mh/8ogc8NqsjtNjvAvyFKf8DiviccTulTfSnjIyyxtGo/OG9FqbVE58qi
+         IzmrZLzaFVJzU9785aX4oMFP+hVV5ktW0FB01UkbO/KNXsjOTHojOXqD2iS4lC+Obi
+         1jWOsk18XYImg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Niklas Schnelle <schnelle@linux.ibm.com>,
         Arnd Bergmann <arnd@kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Sasha Levin <sashal@kernel.org>, mathias.nyman@intel.com,
+        stern@rowland.harvard.edu, Basavaraj.Natikar@amd.com,
         linux-usb@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.5 08/18] usb: pci-quirks: group AMD specific quirk code together
-Date:   Tue,  7 Nov 2023 18:23:03 -0500
-Message-ID: <20231107232330.3776001-8-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.5 09/18] usb: pci-quirks: handle HAS_IOPORT dependency for AMD quirk
+Date:   Tue,  7 Nov 2023 18:23:04 -0500
+Message-ID: <20231107232330.3776001-9-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231107232330.3776001-1-sashal@kernel.org>
 References: <20231107232330.3776001-1-sashal@kernel.org>
@@ -51,221 +52,170 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Niklas Schnelle <schnelle@linux.ibm.com>
 
-[ Upstream commit 7ca9f9ba8aa7380dee5dd8346b57bbaf198b075a ]
+[ Upstream commit 52e24f8c0a102ac76649c6b71224fadcc82bd5da ]
 
-A follow on patch will introduce CONFIG_USB_PCI_AMD governing the AMD
-quirk and adding its compile time dependency on HAS_IOPORT. In order to
-minimize the number of #ifdefs in C files and make that patch easier
-to read first group the code together. This is pure code movement
-no functional change is intended.
+In a future patch HAS_IOPORT=n will result in inb()/outb() and friends
+not being declared. In the pci-quirks case the I/O port acceses are
+used in the quirks for several AMD south bridges, Add a config option
+for the AMD quirks to depend on HAS_IOPORT and #ifdef the quirk code.
 
 Co-developed-by: Arnd Bergmann <arnd@kernel.org>
 Signed-off-by: Arnd Bergmann <arnd@kernel.org>
 Signed-off-by: Niklas Schnelle <schnelle@linux.ibm.com>
-Link: https://lore.kernel.org/r/20230911125653.1393895-2-schnelle@linux.ibm.com
+Link: https://lore.kernel.org/r/20230911125653.1393895-3-schnelle@linux.ibm.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/host/pci-quirks.c | 119 +++++++++++++++++-----------------
- drivers/usb/host/pci-quirks.h |  14 ++--
- 2 files changed, 68 insertions(+), 65 deletions(-)
+ drivers/usb/Kconfig           | 10 ++++++++++
+ drivers/usb/core/hcd-pci.c    |  3 +--
+ drivers/usb/host/pci-quirks.c |  2 ++
+ drivers/usb/host/pci-quirks.h | 30 ++++++++++++++++++++++--------
+ include/linux/usb/hcd.h       | 17 +++++++++++++++++
+ 5 files changed, 52 insertions(+), 10 deletions(-)
 
+diff --git a/drivers/usb/Kconfig b/drivers/usb/Kconfig
+index 7f33bcc315f27..abf8c6cdea9ea 100644
+--- a/drivers/usb/Kconfig
++++ b/drivers/usb/Kconfig
+@@ -91,6 +91,16 @@ config USB_PCI
+ 	  If you have such a device you may say N here and PCI related code
+ 	  will not be built in the USB driver.
+ 
++config USB_PCI_AMD
++	bool "AMD PCI USB host support"
++	depends on USB_PCI && HAS_IOPORT
++	default X86 || MACH_LOONGSON64 || PPC_PASEMI
++	help
++	  Enable workarounds for USB implementation quirks in SB600/SB700/SB800
++	  and later south bridge implementations. These are common on x86 PCs
++	  with AMD CPUs but rarely used elsewhere, with the exception of a few
++	  powerpc and mips desktop machines.
++
+ if USB
+ 
+ source "drivers/usb/core/Kconfig"
+diff --git a/drivers/usb/core/hcd-pci.c b/drivers/usb/core/hcd-pci.c
+index 990280688b254..ee3156f495338 100644
+--- a/drivers/usb/core/hcd-pci.c
++++ b/drivers/usb/core/hcd-pci.c
+@@ -206,8 +206,7 @@ int usb_hcd_pci_probe(struct pci_dev *dev, const struct hc_driver *driver)
+ 		goto free_irq_vectors;
+ 	}
+ 
+-	hcd->amd_resume_bug = (usb_hcd_amd_remote_wakeup_quirk(dev) &&
+-			driver->flags & (HCD_USB11 | HCD_USB3)) ? 1 : 0;
++	hcd->amd_resume_bug = usb_hcd_amd_resume_bug(dev, driver);
+ 
+ 	if (driver->flags & HCD_MEMORY) {
+ 		/* EHCI, OHCI */
 diff --git a/drivers/usb/host/pci-quirks.c b/drivers/usb/host/pci-quirks.c
-index 2665832f9addf..5e06fad82a228 100644
+index 5e06fad82a228..10813096d00c6 100644
 --- a/drivers/usb/host/pci-quirks.c
 +++ b/drivers/usb/host/pci-quirks.c
-@@ -60,6 +60,22 @@
- #define EHCI_USBLEGCTLSTS	4		/* legacy control/status */
- #define EHCI_USBLEGCTLSTS_SOOE	(1 << 13)	/* SMI on ownership change */
+@@ -76,6 +76,7 @@
+ #define USB_INTEL_USB3_PSSEN   0xD8
+ #define USB_INTEL_USB3PRM      0xDC
  
-+/* ASMEDIA quirk use */
-+#define ASMT_DATA_WRITE0_REG	0xF8
-+#define ASMT_DATA_WRITE1_REG	0xFC
-+#define ASMT_CONTROL_REG	0xE0
-+#define ASMT_CONTROL_WRITE_BIT	0x02
-+#define ASMT_WRITEREG_CMD	0x10423
-+#define ASMT_FLOWCTL_ADDR	0xFA30
-+#define ASMT_FLOWCTL_DATA	0xBA
-+#define ASMT_PSEUDO_DATA	0
-+
-+/* Intel quirk use */
-+#define USB_INTEL_XUSB2PR      0xD0
-+#define USB_INTEL_USB2PRM      0xD4
-+#define USB_INTEL_USB3_PSSEN   0xD8
-+#define USB_INTEL_USB3PRM      0xDC
-+
++#ifdef CONFIG_USB_PCI_AMD
  /* AMD quirk use */
  #define	AB_REG_BAR_LOW		0xe0
  #define	AB_REG_BAR_HIGH		0xe1
-@@ -93,21 +109,6 @@
- #define	NB_PIF0_PWRDOWN_0	0x01100012
- #define	NB_PIF0_PWRDOWN_1	0x01100013
- 
--#define USB_INTEL_XUSB2PR      0xD0
--#define USB_INTEL_USB2PRM      0xD4
--#define USB_INTEL_USB3_PSSEN   0xD8
--#define USB_INTEL_USB3PRM      0xDC
--
--/* ASMEDIA quirk use */
--#define ASMT_DATA_WRITE0_REG	0xF8
--#define ASMT_DATA_WRITE1_REG	0xFC
--#define ASMT_CONTROL_REG	0xE0
--#define ASMT_CONTROL_WRITE_BIT	0x02
--#define ASMT_WRITEREG_CMD	0x10423
--#define ASMT_FLOWCTL_ADDR	0xFA30
--#define ASMT_FLOWCTL_DATA	0xBA
--#define ASMT_PSEUDO_DATA	0
--
- /*
-  * amd_chipset_gen values represent AMD different chipset generations
-  */
-@@ -458,50 +459,6 @@ void usb_amd_quirk_pll_disable(void)
- }
- EXPORT_SYMBOL_GPL(usb_amd_quirk_pll_disable);
- 
--static int usb_asmedia_wait_write(struct pci_dev *pdev)
--{
--	unsigned long retry_count;
--	unsigned char value;
--
--	for (retry_count = 1000; retry_count > 0; --retry_count) {
--
--		pci_read_config_byte(pdev, ASMT_CONTROL_REG, &value);
--
--		if (value == 0xff) {
--			dev_err(&pdev->dev, "%s: check_ready ERROR", __func__);
--			return -EIO;
--		}
--
--		if ((value & ASMT_CONTROL_WRITE_BIT) == 0)
--			return 0;
--
--		udelay(50);
--	}
--
--	dev_warn(&pdev->dev, "%s: check_write_ready timeout", __func__);
--	return -ETIMEDOUT;
--}
--
--void usb_asmedia_modifyflowcontrol(struct pci_dev *pdev)
--{
--	if (usb_asmedia_wait_write(pdev) != 0)
--		return;
--
--	/* send command and address to device */
--	pci_write_config_dword(pdev, ASMT_DATA_WRITE0_REG, ASMT_WRITEREG_CMD);
--	pci_write_config_dword(pdev, ASMT_DATA_WRITE1_REG, ASMT_FLOWCTL_ADDR);
--	pci_write_config_byte(pdev, ASMT_CONTROL_REG, ASMT_CONTROL_WRITE_BIT);
--
--	if (usb_asmedia_wait_write(pdev) != 0)
--		return;
--
--	/* send data to device */
--	pci_write_config_dword(pdev, ASMT_DATA_WRITE0_REG, ASMT_FLOWCTL_DATA);
--	pci_write_config_dword(pdev, ASMT_DATA_WRITE1_REG, ASMT_PSEUDO_DATA);
--	pci_write_config_byte(pdev, ASMT_CONTROL_REG, ASMT_CONTROL_WRITE_BIT);
--}
--EXPORT_SYMBOL_GPL(usb_asmedia_modifyflowcontrol);
--
- void usb_amd_quirk_pll_enable(void)
- {
- 	usb_amd_quirk_pll(0);
-@@ -631,6 +588,50 @@ bool usb_amd_pt_check_port(struct device *device, int port)
+@@ -587,6 +588,7 @@ bool usb_amd_pt_check_port(struct device *device, int port)
+ 	return !(value & BIT(port_shift));
  }
  EXPORT_SYMBOL_GPL(usb_amd_pt_check_port);
++#endif /* CONFIG_USB_PCI_AMD */
  
-+static int usb_asmedia_wait_write(struct pci_dev *pdev)
-+{
-+	unsigned long retry_count;
-+	unsigned char value;
-+
-+	for (retry_count = 1000; retry_count > 0; --retry_count) {
-+
-+		pci_read_config_byte(pdev, ASMT_CONTROL_REG, &value);
-+
-+		if (value == 0xff) {
-+			dev_err(&pdev->dev, "%s: check_ready ERROR", __func__);
-+			return -EIO;
-+		}
-+
-+		if ((value & ASMT_CONTROL_WRITE_BIT) == 0)
-+			return 0;
-+
-+		udelay(50);
-+	}
-+
-+	dev_warn(&pdev->dev, "%s: check_write_ready timeout", __func__);
-+	return -ETIMEDOUT;
-+}
-+
-+void usb_asmedia_modifyflowcontrol(struct pci_dev *pdev)
-+{
-+	if (usb_asmedia_wait_write(pdev) != 0)
-+		return;
-+
-+	/* send command and address to device */
-+	pci_write_config_dword(pdev, ASMT_DATA_WRITE0_REG, ASMT_WRITEREG_CMD);
-+	pci_write_config_dword(pdev, ASMT_DATA_WRITE1_REG, ASMT_FLOWCTL_ADDR);
-+	pci_write_config_byte(pdev, ASMT_CONTROL_REG, ASMT_CONTROL_WRITE_BIT);
-+
-+	if (usb_asmedia_wait_write(pdev) != 0)
-+		return;
-+
-+	/* send data to device */
-+	pci_write_config_dword(pdev, ASMT_DATA_WRITE0_REG, ASMT_FLOWCTL_DATA);
-+	pci_write_config_dword(pdev, ASMT_DATA_WRITE1_REG, ASMT_PSEUDO_DATA);
-+	pci_write_config_byte(pdev, ASMT_CONTROL_REG, ASMT_CONTROL_WRITE_BIT);
-+}
-+EXPORT_SYMBOL_GPL(usb_asmedia_modifyflowcontrol);
-+
- /*
-  * Make sure the controller is completely inactive, unable to
-  * generate interrupts or do DMA.
+ static int usb_asmedia_wait_write(struct pci_dev *pdev)
+ {
 diff --git a/drivers/usb/host/pci-quirks.h b/drivers/usb/host/pci-quirks.h
-index e729de21fad7a..cde2263a9d2e4 100644
+index cde2263a9d2e4..a5230b0b9e913 100644
 --- a/drivers/usb/host/pci-quirks.h
 +++ b/drivers/usb/host/pci-quirks.h
-@@ -3,8 +3,6 @@
+@@ -2,7 +2,7 @@
+ #ifndef __LINUX_USB_PCI_QUIRKS_H
  #define __LINUX_USB_PCI_QUIRKS_H
  
- #ifdef CONFIG_USB_PCI
--void uhci_reset_hc(struct pci_dev *pdev, unsigned long base);
--int uhci_check_and_reset_hc(struct pci_dev *pdev, unsigned long base);
+-#ifdef CONFIG_USB_PCI
++#ifdef CONFIG_USB_PCI_AMD
  int usb_hcd_amd_remote_wakeup_quirk(struct pci_dev *pdev);
  bool usb_amd_hang_symptom_quirk(void);
  bool usb_amd_prefetch_quirk(void);
-@@ -12,23 +10,27 @@ void usb_amd_dev_put(void);
- bool usb_amd_quirk_pll_check(void);
- void usb_amd_quirk_pll_disable(void);
+@@ -12,23 +12,37 @@ void usb_amd_quirk_pll_disable(void);
  void usb_amd_quirk_pll_enable(void);
-+void sb800_prefetch(struct device *dev, int on);
-+bool usb_amd_pt_check_port(struct device *device, int port);
-+
-+void uhci_reset_hc(struct pci_dev *pdev, unsigned long base);
-+int uhci_check_and_reset_hc(struct pci_dev *pdev, unsigned long base);
- void usb_asmedia_modifyflowcontrol(struct pci_dev *pdev);
- void usb_enable_intel_xhci_ports(struct pci_dev *xhci_pdev);
- void usb_disable_xhci_ports(struct pci_dev *xhci_pdev);
--void sb800_prefetch(struct device *dev, int on);
--bool usb_amd_pt_check_port(struct device *device, int port);
+ void sb800_prefetch(struct device *dev, int on);
+ bool usb_amd_pt_check_port(struct device *device, int port);
+-
+-void uhci_reset_hc(struct pci_dev *pdev, unsigned long base);
+-int uhci_check_and_reset_hc(struct pci_dev *pdev, unsigned long base);
+-void usb_asmedia_modifyflowcontrol(struct pci_dev *pdev);
+-void usb_enable_intel_xhci_ports(struct pci_dev *xhci_pdev);
+-void usb_disable_xhci_ports(struct pci_dev *xhci_pdev);
  #else
- struct pci_dev;
+-struct pci_dev;
++static inline bool usb_amd_hang_symptom_quirk(void)
++{
++	return false;
++};
++static inline bool usb_amd_prefetch_quirk(void)
++{
++	return false;
++}
  static inline void usb_amd_quirk_pll_disable(void) {}
  static inline void usb_amd_quirk_pll_enable(void) {}
--static inline void usb_asmedia_modifyflowcontrol(struct pci_dev *pdev) {}
  static inline void usb_amd_dev_put(void) {}
--static inline void usb_disable_xhci_ports(struct pci_dev *xhci_pdev) {}
++static inline bool usb_amd_quirk_pll_check(void)
++{
++	return false;
++}
  static inline void sb800_prefetch(struct device *dev, int on) {}
  static inline bool usb_amd_pt_check_port(struct device *device, int port)
  {
  	return false;
  }
-+
-+static inline void usb_asmedia_modifyflowcontrol(struct pci_dev *pdev) {}
-+static inline void usb_disable_xhci_ports(struct pci_dev *xhci_pdev) {}
- #endif  /* CONFIG_USB_PCI */
++#endif /* CONFIG_USB_PCI_AMD */
  
- #endif  /*  __LINUX_USB_PCI_QUIRKS_H  */
++#ifdef CONFIG_USB_PCI
++void uhci_reset_hc(struct pci_dev *pdev, unsigned long base);
++int uhci_check_and_reset_hc(struct pci_dev *pdev, unsigned long base);
++void usb_asmedia_modifyflowcontrol(struct pci_dev *pdev);
++void usb_enable_intel_xhci_ports(struct pci_dev *xhci_pdev);
++void usb_disable_xhci_ports(struct pci_dev *xhci_pdev);
++#else
++struct pci_dev;
+ static inline void usb_asmedia_modifyflowcontrol(struct pci_dev *pdev) {}
+ static inline void usb_disable_xhci_ports(struct pci_dev *xhci_pdev) {}
+ #endif  /* CONFIG_USB_PCI */
+diff --git a/include/linux/usb/hcd.h b/include/linux/usb/hcd.h
+index 4e9623e8492b3..e1d6fc7e6932f 100644
+--- a/include/linux/usb/hcd.h
++++ b/include/linux/usb/hcd.h
+@@ -486,8 +486,25 @@ extern int usb_hcd_pci_probe(struct pci_dev *dev,
+ extern void usb_hcd_pci_remove(struct pci_dev *dev);
+ extern void usb_hcd_pci_shutdown(struct pci_dev *dev);
+ 
++#ifdef CONFIG_USB_PCI_AMD
+ extern int usb_hcd_amd_remote_wakeup_quirk(struct pci_dev *dev);
+ 
++static inline bool usb_hcd_amd_resume_bug(struct pci_dev *dev,
++					  const struct hc_driver *driver)
++{
++	if (!usb_hcd_amd_remote_wakeup_quirk(dev))
++		return false;
++	if (driver->flags & (HCD_USB11 | HCD_USB3))
++		return true;
++	return false;
++}
++#else /* CONFIG_USB_PCI_AMD */
++static inline bool usb_hcd_amd_resume_bug(struct pci_dev *dev,
++					  const struct hc_driver *driver)
++{
++	return false;
++}
++#endif
+ extern const struct dev_pm_ops usb_hcd_pci_pm_ops;
+ #endif /* CONFIG_USB_PCI */
+ 
 -- 
 2.42.0
 
