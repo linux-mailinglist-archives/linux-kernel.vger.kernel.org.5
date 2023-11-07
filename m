@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 945757E3C71
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 13:16:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14D827E3C72
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 13:16:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234151AbjKGMQQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 07:16:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52138 "EHLO
+        id S234471AbjKGMQT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 07:16:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234118AbjKGMP1 (ORCPT
+        with ESMTP id S234440AbjKGMP2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 07:15:27 -0500
+        Tue, 7 Nov 2023 07:15:28 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 863EA271D;
-        Tue,  7 Nov 2023 04:11:38 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 062C7C433CD;
-        Tue,  7 Nov 2023 12:11:36 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A53B82721;
+        Tue,  7 Nov 2023 04:11:39 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 69162C433CA;
+        Tue,  7 Nov 2023 12:11:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699359097;
-        bh=0FZBBY4FEI4IDoU5OfijIoJghOLY17V/pnKHyEPfq80=;
+        s=k20201202; t=1699359099;
+        bh=4oOYIcnoxIxV6g1ChuQv7zCVzuFMdjbfN1SJdr13zis=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=K6U9VkvQTLWWq+4+FGrFgPZ2GLpU9oB8MW7h6CLgC7y22fV1ptT5y4wZOOL89M1JM
-         4qsnzWp8ZAvA+1s1n01ynih0QXL0L+VUnFIh+ZRaOTVHJbhhvTlcC/zoiccNgqtxam
-         v9Qe6fs9xfD4jxvtsvBdky81k3IG6ZPyh3WtEPKBHbA6gf76Hvf8Nh4faI7jEpSYsV
-         PGdmYqx27NzEuN75v8zQUjAMpjcMcPXAxvthdFmdSWRayEMjSS24uVITN2BnHc/oZI
-         eZSydNIdHFMr4cEo7W/h8PKdw74g3qDdqvGOYaChuXnDuXdxluRyn3ItobIbUHXNJL
-         ptNThDAb+FkUg==
+        b=FKSKN3YxDp/Az4dvizf1bUI5LcaWkcThntW6OjPQJh+iO0UnVPRrUW4fHuwev2oMv
+         aOkI98KWEj+bxSi8KASKfeC14T/NFEN3fmLtT3JK2Xnr5Om+WZaCr8hms5EOSUy39D
+         TNA4Zeg63KahhTXEFsnFy9I3TxI3XJps5Ohn7ARJ3kwLaa/+mkjHtK1XPfCGsnv2NT
+         tDTdiN7pwKfZiMHkIbDwC/YNmwxAj7DbcTBPk4pKz9A/Mf6yxrdKVaKjaLim2pbJxN
+         Jd6s3/Iee8KGa+qaySUJUOkYfe0UrWwJ3EfcPCqWQfQfYbfyQ6ktiyxaKhSGLbYBj7
+         R7k2mKEc0SBvw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     ZhengHan Wang <wzhmmmmm@gmail.com>,
-        Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
-        Sasha Levin <sashal@kernel.org>, marcel@holtmann.org,
-        johan.hedberg@gmail.com, luiz.dentz@gmail.com,
-        linux-bluetooth@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 14/18] Bluetooth: Fix double free in hci_conn_cleanup
-Date:   Tue,  7 Nov 2023 07:10:44 -0500
-Message-ID: <20231107121104.3757943-14-sashal@kernel.org>
+Cc:     Jonathan Denose <jdenose@chromium.org>,
+        Jonathan Denose <jdenose@google.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Sasha Levin <sashal@kernel.org>, rafael@kernel.org,
+        linux-acpi@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.1 15/18] ACPI: EC: Add quirk for HP 250 G7 Notebook PC
+Date:   Tue,  7 Nov 2023 07:10:45 -0500
+Message-ID: <20231107121104.3757943-15-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231107121104.3757943-1-sashal@kernel.org>
 References: <20231107121104.3757943-1-sashal@kernel.org>
@@ -55,137 +55,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: ZhengHan Wang <wzhmmmmm@gmail.com>
+From: Jonathan Denose <jdenose@chromium.org>
 
-[ Upstream commit a85fb91e3d728bdfc80833167e8162cce8bc7004 ]
+[ Upstream commit 891ddc03e2f4395e24795596e032f57d5ab37fe7 ]
 
-syzbot reports a slab use-after-free in hci_conn_hash_flush [1].
-After releasing an object using hci_conn_del_sysfs in the
-hci_conn_cleanup function, releasing the same object again
-using the hci_dev_put and hci_conn_put functions causes a double free.
-Here's a simplified flow:
+Add GPE quirk entry for HP 250 G7 Notebook PC.
 
-hci_conn_del_sysfs:
-  hci_dev_put
-    put_device
-      kobject_put
-        kref_put
-          kobject_release
-            kobject_cleanup
-              kfree_const
-                kfree(name)
+This change allows the lid switch to be identified as the lid switch
+and not a keyboard button. With the lid switch properly identified, the
+device triggers suspend correctly on lid close.
 
-hci_dev_put:
-  ...
-    kfree(name)
-
-hci_conn_put:
-  put_device
-    ...
-      kfree(name)
-
-This patch drop the hci_dev_put and hci_conn_put function
-call in hci_conn_cleanup function, because the object is
-freed in hci_conn_del_sysfs function.
-
-This patch also fixes the refcounting in hci_conn_add_sysfs() and
-hci_conn_del_sysfs() to take into account device_add() failures.
-
-This fixes CVE-2023-28464.
-
-Link: https://syzkaller.appspot.com/bug?id=1bb51491ca5df96a5f724899d1dbb87afda61419 [1]
-
-Signed-off-by: ZhengHan Wang <wzhmmmmm@gmail.com>
-Co-developed-by: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
-Signed-off-by: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
+Signed-off-by: Jonathan Denose <jdenose@google.com>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/bluetooth/hci_conn.c  |  6 ++----
- net/bluetooth/hci_sysfs.c | 23 ++++++++++++-----------
- 2 files changed, 14 insertions(+), 15 deletions(-)
+ drivers/acpi/ec.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/net/bluetooth/hci_conn.c b/net/bluetooth/hci_conn.c
-index 728be9307f526..55e0ecd88543e 100644
---- a/net/bluetooth/hci_conn.c
-+++ b/net/bluetooth/hci_conn.c
-@@ -168,13 +168,11 @@ static void hci_conn_cleanup(struct hci_conn *conn)
- 			hdev->notify(hdev, HCI_NOTIFY_CONN_DEL);
- 	}
- 
--	hci_conn_del_sysfs(conn);
--
- 	debugfs_remove_recursive(conn->debugfs);
- 
--	hci_dev_put(hdev);
-+	hci_conn_del_sysfs(conn);
- 
--	hci_conn_put(conn);
-+	hci_dev_put(hdev);
- }
- 
- static void le_scan_cleanup(struct work_struct *work)
-diff --git a/net/bluetooth/hci_sysfs.c b/net/bluetooth/hci_sysfs.c
-index 08542dfc2dc53..633b82d542728 100644
---- a/net/bluetooth/hci_sysfs.c
-+++ b/net/bluetooth/hci_sysfs.c
-@@ -33,7 +33,7 @@ void hci_conn_init_sysfs(struct hci_conn *conn)
- {
- 	struct hci_dev *hdev = conn->hdev;
- 
--	BT_DBG("conn %p", conn);
-+	bt_dev_dbg(hdev, "conn %p", conn);
- 
- 	conn->dev.type = &bt_link;
- 	conn->dev.class = bt_class;
-@@ -46,27 +46,30 @@ void hci_conn_add_sysfs(struct hci_conn *conn)
- {
- 	struct hci_dev *hdev = conn->hdev;
- 
--	BT_DBG("conn %p", conn);
-+	bt_dev_dbg(hdev, "conn %p", conn);
- 
- 	if (device_is_registered(&conn->dev))
- 		return;
- 
- 	dev_set_name(&conn->dev, "%s:%d", hdev->name, conn->handle);
- 
--	if (device_add(&conn->dev) < 0) {
-+	if (device_add(&conn->dev) < 0)
- 		bt_dev_err(hdev, "failed to register connection device");
--		return;
--	}
--
--	hci_dev_hold(hdev);
- }
- 
- void hci_conn_del_sysfs(struct hci_conn *conn)
- {
- 	struct hci_dev *hdev = conn->hdev;
- 
--	if (!device_is_registered(&conn->dev))
-+	bt_dev_dbg(hdev, "conn %p", conn);
-+
-+	if (!device_is_registered(&conn->dev)) {
-+		/* If device_add() has *not* succeeded, use *only* put_device()
-+		 * to drop the reference count.
+diff --git a/drivers/acpi/ec.c b/drivers/acpi/ec.c
+index 8bb233d2d1e48..77d1f2cb89ef3 100644
+--- a/drivers/acpi/ec.c
++++ b/drivers/acpi/ec.c
+@@ -1897,6 +1897,16 @@ static const struct dmi_system_id ec_dmi_table[] __initconst = {
+ 			DMI_MATCH(DMI_PRODUCT_NAME, "HP Pavilion Gaming Laptop 15-dk1xxx"),
+ 		},
+ 	},
++	{
++		/*
++		 * HP 250 G7 Notebook PC
 +		 */
-+		put_device(&conn->dev);
- 		return;
-+	}
- 
- 	while (1) {
- 		struct device *dev;
-@@ -78,9 +81,7 @@ void hci_conn_del_sysfs(struct hci_conn *conn)
- 		put_device(dev);
- 	}
- 
--	device_del(&conn->dev);
--
--	hci_dev_put(hdev);
-+	device_unregister(&conn->dev);
- }
- 
- static void bt_host_release(struct device *dev)
++		.callback = ec_honor_dsdt_gpe,
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "HP"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "HP 250 G7 Notebook PC"),
++		},
++	},
+ 	{
+ 		/*
+ 		 * Samsung hardware
 -- 
 2.42.0
 
