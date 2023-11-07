@@ -2,84 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB7F67E4C86
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 00:11:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8B1E7E4C96
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 00:13:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235475AbjKGXK7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 18:10:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34868 "EHLO
+        id S1344427AbjKGXNZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 18:13:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235487AbjKGXKX (ORCPT
+        with ESMTP id S235346AbjKGXMc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 18:10:23 -0500
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C26F199A
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 15:10:05 -0800 (PST)
-Received: by mail-pl1-x649.google.com with SMTP id d9443c01a7336-1cc1682607eso49650515ad.1
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 15:10:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1699398604; x=1700003404; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=+MhGzAd189djAcHtpfQuANQf9GCRzOFZiv20M9Q/FQY=;
-        b=Kr0OE8g57m6fmvWbd9Fn7l1PjEP/0pwffK6GpFHKYIrKVGAa8fD7Qn/s+4MjrBv2gE
-         Cj697TN97TnaNVnCcdHOMuO5y2jPI3Lixh3TVQiBab3xTKy5iQ2nFW6EuPK7cGEId86P
-         LxcloMJlqBVGzDSygTLwVhnpSrDO2wAulGcIjSqvPyS+OsephMFJKNaa7FLHOGEX8QVP
-         heKeX2K2mNBMCvKoQGVDUU9rlxO1wYm/ZMKUH1ebqGN9uWLPV+MwZ8RvV2R5JexC1emW
-         05eOgvW4YH6So7Yjg1SL2M9bHfTS1yHI8JkuILIKpz8NhKDdhTY4GPV8Vf9lUwNaSijl
-         Ohag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699398604; x=1700003404;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+MhGzAd189djAcHtpfQuANQf9GCRzOFZiv20M9Q/FQY=;
-        b=gJarykxZ0GL7saWyZ3vYu/DQ74gX873YBUB6Y5XOqdGjW1QBeMkhzlgC15cifSuFbI
-         RlLzw7BD+5OeNsIgi3S2AYsvKqRbatlhfs4fFpdGTZeXPWE6rWXVw2g8UuUj474BvKDI
-         qj8g22ncUWMIvT8URcADk9gKDerOf5zoebFCcch75qn313seuyHOWhov4J1FO/mXfH6D
-         999nitp5gXQtu2KhHaujLLlnJc8Mo5CpbtEqfU9KslrEd1xIeEc6/t9LclNc2k3pAB6j
-         oAMz5fMM2J904U/I/NuGtWfKUY50XuS/dxhfb5aMZUFnBtDyM35PPCLjYlWDPApHJQ0I
-         ksdQ==
-X-Gm-Message-State: AOJu0YyNDvTXXEg1pXuOlJqwN8BhYC96osK8NypAsVD4crxzV2oKHDfh
-        ihOU9vswDAHfxoPPNzoQ//l1TlqcMis=
-X-Google-Smtp-Source: AGHT+IHXw4ruuMN9510jTMEQylrvlGOQL4x+riapUEeOGqH+xy8A01/RrDz2wfubezgYgQbwN6JnNYGVgd4=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:902:6b02:b0:1cc:3597:9e2f with SMTP id
- o2-20020a1709026b0200b001cc35979e2fmr7836plk.2.1699398604419; Tue, 07 Nov
- 2023 15:10:04 -0800 (PST)
-Date:   Tue, 7 Nov 2023 15:10:02 -0800
-In-Reply-To: <2b27196c2b5d10625e10ea73e9f270c7ef0bf5a0.camel@redhat.com>
-Mime-Version: 1.0
-References: <20231010200220.897953-1-john.allen@amd.com> <20231010200220.897953-4-john.allen@amd.com>
- <8484053f-2777-eb55-a30c-64125fbfc3ec@amd.com> <ZS7PubpX4k/LXGNq@johallen-workstation>
- <c65817b0-7fa6-7c0b-6423-5f33062c9665@amd.com> <874ae0019fb33784520270db7d5213af0d42290d.camel@redhat.com>
- <ZUkYPfxHmMZB03iv@google.com> <2b27196c2b5d10625e10ea73e9f270c7ef0bf5a0.camel@redhat.com>
-Message-ID: <ZUrDyqXAQZsQzCzl@google.com>
-Subject: Re: [PATCH 3/9] KVM: x86: SVM: Pass through shadow stack MSRs
-From:   Sean Christopherson <seanjc@google.com>
-To:     Maxim Levitsky <mlevitsk@redhat.com>
-Cc:     nikunj@amd.com, John Allen <john.allen@amd.com>,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        pbonzini@redhat.com, weijiang.yang@intel.com,
-        rick.p.edgecombe@intel.com, x86@kernel.org,
-        thomas.lendacky@amd.com, bp@alien8.de
-Content-Type: text/plain; charset="us-ascii"
+        Tue, 7 Nov 2023 18:12:32 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E998319B4
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 15:10:58 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82322C433C8;
+        Tue,  7 Nov 2023 23:10:54 +0000 (UTC)
+Date:   Tue, 7 Nov 2023 18:10:57 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Ankur Arora <ankur.a.arora@oracle.com>
+Cc:     linux-kernel@vger.kernel.org, tglx@linutronix.de,
+        peterz@infradead.org, torvalds@linux-foundation.org,
+        paulmck@kernel.org, linux-mm@kvack.org, x86@kernel.org,
+        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
+        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        willy@infradead.org, mgorman@suse.de, jon.grimm@amd.com,
+        bharata@amd.com, raghavendra.kt@amd.com,
+        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
+        jgross@suse.com, andrew.cooper3@citrix.com, mingo@kernel.org,
+        bristot@kernel.org, mathieu.desnoyers@efficios.com,
+        geert@linux-m68k.org, glaubitz@physik.fu-berlin.de,
+        anton.ivanov@cambridgegreys.com, mattst88@gmail.com,
+        krypton@ulrich-teichert.org, David.Laight@ACULAB.COM,
+        richard@nod.at, mjguzik@gmail.com
+Subject: Re: [RFC PATCH 03/86] Revert "ftrace: Use preemption model
+ accessors for trace header printout"
+Message-ID: <20231107181057.334c815f@gandalf.local.home>
+In-Reply-To: <20231107215742.363031-4-ankur.a.arora@oracle.com>
+References: <20231107215742.363031-1-ankur.a.arora@oracle.com>
+        <20231107215742.363031-4-ankur.a.arora@oracle.com>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 07, 2023, Maxim Levitsky wrote:
-> Since no sane L1 hypervisor will ever allow access to all its msrs from L2,
-> it might make sense to always use a dedicated MSR bitmap for L2.
+On Tue,  7 Nov 2023 13:56:49 -0800
+Ankur Arora <ankur.a.arora@oracle.com> wrote:
 
-Hmm, there might be a full passthrough use case out there, but in general, yeah,
-I agree.  I think even kernel hardening use cases where the "hypervisor" is just
-a lowvisor would utilize MSR bitmaps to prevent modifying the de-privileged
-kernel from modifying select MSRs.
+> This reverts commit 089c02ae2771a14af2928c59c56abfb9b885a8d7.
 
-> Also since all sane L1 hypervisors do use a msr bitmap means that
-> dedicated code path that doesn't use it is not well tested.
-> 
-> On VMX if I am not mistaken, this is not an issue because either all
-> MSRS are intercepted or a bitmap is used.
+I rather not revert this.
 
-Yep, if the MSR bitmaps aren't used then all MSR accesses are intercepted.
+If user space can decided between various version of preemption, then the
+trace should reflect that. At least state what the preemption model was when
+a trace started, or currently is.
+
+That is, the model may not be "static" per boot. Anyway, the real change here should be:
+
+diff --git a/include/linux/sched.h b/include/linux/sched.h
+index 7b4b1fcd6f93..2553c4efca15 100644
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -2208,14 +2208,6 @@ static inline void cond_resched_rcu(void)
+ #endif
+ }
+ 
+-#ifdef CONFIG_PREEMPT_DYNAMIC
+-
+-extern bool preempt_model_none(void);
+-extern bool preempt_model_voluntary(void);
+-extern bool preempt_model_full(void);
+-
+-#else
+-
+ static inline bool preempt_model_none(void)
+ {
+ 	return IS_ENABLED(CONFIG_PREEMPT_NONE);
+@@ -2229,8 +2221,6 @@ static inline bool preempt_model_full(void)
+ 	return IS_ENABLED(CONFIG_PREEMPT);
+ }
+ 
+-#endif
+-
+ static inline bool preempt_model_rt(void)
+ {
+ 	return IS_ENABLED(CONFIG_PREEMPT_RT);
+
+
+Then this way we can decided to make it runtime dynamic, we don't need to
+fiddle with the tracing code again.
+
+-- Steve
