@@ -2,91 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ABC227E498B
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 21:05:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BD987E498E
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 21:06:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235022AbjKGUFk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 15:05:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42370 "EHLO
+        id S235032AbjKGUGX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 15:06:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234007AbjKGUFh (ORCPT
+        with ESMTP id S234754AbjKGUGU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 15:05:37 -0500
-Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::228])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83CD2D79;
-        Tue,  7 Nov 2023 12:05:35 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id C67FB1BF203;
-        Tue,  7 Nov 2023 20:05:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1699387531;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=up5G4JkOGGZoc69qm3iAEp8guw6jmtg55oaRWOq/JG0=;
-        b=o55PrWbSYwa7R6zU1dDymzJkIH34CmW4j8vKvin99gE+ZoOWlRe1W51/GziAxiD7MHLhGM
-        hdctrdjoQP6lX81RIjRgUC2M+rV9rGFSczQlg6GvYEz0gRjge9SH9TP0kUr2b1nfenLb1Z
-        onhZE5MVfVjLuGfCQf+eOFxEh6Lf6w7EwpQTJ0dbn8ymvfLPBKP/3LLdqMl4XWtIfWDfFf
-        lE/TmUgIIpYEy34iwiDjvFYyq8ndsaMADqoT0T4Z27XB29oRze/pzdZjoV54fBeyJg7yUe
-        JvA1z6ivvE8mvO9Ew7zjjmGioCcQiOHJ8mAYLCJKciVt1kKO+DCoQs77pVLgLg==
-From:   Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-To:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Sakari Ailus <sakari.ailus@iki.fi>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-Subject: [PATCH] media: v4l2-dev: Check that g/s_selection are valid before selecting crop
-Date:   Tue,  7 Nov 2023 21:05:09 +0100
-Message-ID: <20231107200509.485071-1-paul.kocialkowski@bootlin.com>
-X-Mailer: git-send-email 2.42.0
+        Tue, 7 Nov 2023 15:06:20 -0500
+Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85CBED78
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 12:06:18 -0800 (PST)
+Received: by mail-qt1-x82b.google.com with SMTP id d75a77b69052e-41cb76f3cf0so38624581cf.2
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 12:06:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1699387577; x=1699992377; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=55lKD58CSWiBTKri8vJYjhibnCHFWQzcAQZlaP1nFrQ=;
+        b=bSnv5Eku580EiuXUbs0cd0BzNSXL4espHh2AiirJrmY+cKR9pMJxJAV/588lqsOLcZ
+         mJZBrH9TqOkSlp/F/PHAth6WSnWlJ0gNR2nHMHKMBUa+lOMNPeOvRSlcXiCjoBeecozu
+         o70MMbVqBMm2L8QEVn4ATWab17SfmyDE7+X89cpqnurrVgAbN7HgesqEc/GiyeRO2mzT
+         JmjkUyUg/tEPU41dWFTpBSfIGWhtu6BpGacNfFa3tA8f3nLgDQsUjEcKPbHyUpvlfql6
+         kwF3LKqpILl4T/zqO6P3OQ7Tp72/qlMToKapcyQ4zyX3qnyF8rLrHaWl1sI26bbiIuCv
+         j3nw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699387577; x=1699992377;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=55lKD58CSWiBTKri8vJYjhibnCHFWQzcAQZlaP1nFrQ=;
+        b=Hi/hmwy2R6UAN2jn4jx7lpcGzfx0WhCRTTZBA376bCsQJ+XHx/PuI0HXnkAceyNzfY
+         qOGQ/AjvOCXWim0PQjsNQgvBtBJOmKU63VFaUdC/wIC35aPJdrCKT6LJbIl0df8XcVLC
+         U7LIZIUeyOM4f0V/Pf/YT0/Fj1xrm2G8afK1kitebvtahdhiwiry91/8Wkj+tV0jx9MI
+         Uf9GcORyvWKu3FkZy4vorpSly7y2gpj1Bcg0vTrwcl6f3g1BvW0ym1KO2FSKFLxWix2e
+         xQlviS68dgTclEdPu6qTHSnycudLHAQe2WknQkwaaiO4ZHnQQ4N3OCtslccxhCOMy1YK
+         83IA==
+X-Gm-Message-State: AOJu0YzxMvVSnPueP1pZgRYTJOkXhXblzelfKVS2UbBDN6x4OU9Wa0iq
+        P9zckwjzZzd1HIGBym9IGVeAgQ==
+X-Google-Smtp-Source: AGHT+IHNGyiB71fHv3CuAu7RO94OVfUQtCEaLhqImk34eBJ7oT5XoYlB7MvDeInK08DfY8GkHNDOFw==
+X-Received: by 2002:a05:622a:2cd:b0:41c:bbbc:2ede with SMTP id a13-20020a05622a02cd00b0041cbbbc2edemr36123938qtx.14.1699387577691;
+        Tue, 07 Nov 2023 12:06:17 -0800 (PST)
+Received: from localhost ([2620:10d:c091:400::5:86b7])
+        by smtp.gmail.com with ESMTPSA id k16-20020ac84750000000b004033c3948f9sm16296qtp.42.2023.11.07.12.06.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Nov 2023 12:06:17 -0800 (PST)
+Date:   Tue, 7 Nov 2023 15:06:16 -0500
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Stefan Roesch <shr@devkernel.io>, kernel-team@fb.com,
+        akpm@linux-foundation.org, riel@surriel.com,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH v2] mm: Fix for negative counter: nr_file_hugepages
+Message-ID: <20231107200616.GA3797353@cmpxchg.org>
+References: <20231107181805.4188397-1-shr@devkernel.io>
+ <ZUqRia1Ww0+wNfKr@casper.infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: paul.kocialkowski@bootlin.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZUqRia1Ww0+wNfKr@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The cropcap and g/s_crop ioctls are automatically marked as valid whenever the
-g/s_selection ops are filled. The rationale is to auto-enable these legacy
-cropcap and g/s_crop ioctls that rely on g/s_selection.
+On Tue, Nov 07, 2023 at 07:35:37PM +0000, Matthew Wilcox wrote:
+> On Tue, Nov 07, 2023 at 10:18:05AM -0800, Stefan Roesch wrote:
+> > +++ b/mm/huge_memory.c
+> > @@ -2740,7 +2740,7 @@ int split_huge_page_to_list(struct page *page, struct list_head *list)
+> >  			if (folio_test_swapbacked(folio)) {
+> >  				__lruvec_stat_mod_folio(folio, NR_SHMEM_THPS,
+> >  							-nr);
+> > -			} else {
+> > +			} else if (folio_test_pmd_mappable(folio)) {
+> >  				__lruvec_stat_mod_folio(folio, NR_FILE_THPS,
+> >  							-nr);
+> >  				filemap_nr_thps_dec(mapping);
+> 
+> As I said, we also need the folio_test_pmd_mappable() for swapbacked.
+> Not because there's currently a problem, but because we don't leave
+> landmines for other people to trip over in future!
 
-However it's possible that the ops are filled but explicitly disabled with
-calls to v4l2_disable_ioctl. In this situation the legacy ioctls should not
-be enabled.
-
-Add a check on the video device's valid ioctls field before auto-selecting
-them to honor the driver's choice. Note that the meaning of the bitfield
-stored in the video device is the opposite of what the name suggests as
-v4l2_disable_ioctl will set the bits. Their meaning will be reversed at
-the end of the function.
-
-Signed-off-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
----
- drivers/media/v4l2-core/v4l2-dev.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/media/v4l2-core/v4l2-dev.c b/drivers/media/v4l2-core/v4l2-dev.c
-index f81279492682..d13954bd31fd 100644
---- a/drivers/media/v4l2-core/v4l2-dev.c
-+++ b/drivers/media/v4l2-core/v4l2-dev.c
-@@ -642,11 +642,13 @@ static void determine_valid_ioctls(struct video_device *vdev)
- 		SET_VALID_IOCTL(ops, VIDIOC_TRY_DECODER_CMD, vidioc_try_decoder_cmd);
- 		SET_VALID_IOCTL(ops, VIDIOC_ENUM_FRAMESIZES, vidioc_enum_framesizes);
- 		SET_VALID_IOCTL(ops, VIDIOC_ENUM_FRAMEINTERVALS, vidioc_enum_frameintervals);
--		if (ops->vidioc_g_selection) {
-+		if (ops->vidioc_g_selection &&
-+		    !test_bit(_IOC_NR(VIDIOC_G_SELECTION), vdev->valid_ioctls)) {
- 			__set_bit(_IOC_NR(VIDIOC_G_CROP), valid_ioctls);
- 			__set_bit(_IOC_NR(VIDIOC_CROPCAP), valid_ioctls);
- 		}
--		if (ops->vidioc_s_selection)
-+		if (ops->vidioc_s_selection &&
-+		    !test_bit(_IOC_NR(VIDIOC_S_SELECTION), vdev->valid_ioctls))
- 			__set_bit(_IOC_NR(VIDIOC_S_CROP), valid_ioctls);
- 		SET_VALID_IOCTL(ops, VIDIOC_G_SELECTION, vidioc_g_selection);
- 		SET_VALID_IOCTL(ops, VIDIOC_S_SELECTION, vidioc_s_selection);
--- 
-2.42.0
-
+Do we need to fix filemap_unaccount_folio() as well?
