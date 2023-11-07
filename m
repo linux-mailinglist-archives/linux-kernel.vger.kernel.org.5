@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 776047E4496
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 16:55:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE6B07E4498
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 16:55:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235479AbjKGPzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 10:55:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35886 "EHLO
+        id S235474AbjKGPzX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 10:55:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344077AbjKGPyh (ORCPT
+        with ESMTP id S235440AbjKGPyy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 10:54:37 -0500
+        Tue, 7 Nov 2023 10:54:54 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E38E54218;
-        Tue,  7 Nov 2023 07:50:32 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9E9C9C433CB;
-        Tue,  7 Nov 2023 15:50:30 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 755A444A4;
+        Tue,  7 Nov 2023 07:50:35 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E8286C433C8;
+        Tue,  7 Nov 2023 15:50:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699372231;
-        bh=87AgN44e90o+8QZ3n+Qf174TYRprCozyfcD2gEtlpkc=;
+        s=k20201202; t=1699372235;
+        bh=mKHAdUG1uTSSUK6nPjP51IPtm6q3+JhAE2VDSCzWBdM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=o2wezMM3M2U+ZWXUE84vW/FtodZV3c93QWBeL9SL+LAJQfFbGO4rQyuAjYCUP+rkP
-         wcsUo3NtQ0jwBptIx/ES8BEHNKaYTCdihKOq5KHe1GcQBmiOc7xeAtZMrKcwNwINaC
-         qtJtgpYaQiKsF0GO0wyqENGs43LoQ1LRPAES0JIUVSux0EUIQhfri9jvZgQdG+8cX6
-         x+Bk46jaz5KTVWkz6t5EoXbmzawgKjGsh6k+JV3oiCFUy2DUfvy2qt7U1k239q1kTV
-         I2FHL/BcgGSvvbCLB8IuRY+07OpK2baCD2VxMFpm4OFbegV+9BZx4sWMHfvGRVWg6S
-         FE88y/Teor0fQ==
+        b=FrDyvnUu9KdejaO6i/MeGpaKE5Tjwt5CaS5zidkLicyO5drf5vuu9vY0wNeY9UkVt
+         dYTG4nAkLFEVvAZeHuH4cElSf+JY8oypUSDir/uCbzZhlHiHSd/007rVjqP3iljGdT
+         k+pNdn3k0z4Dxfi+Ssrz89h/5enqjOIHVXkM47w3C9jz2j/h2ha0CbpkDKikBGo3AI
+         q6vWRFgvxBqDsZHauAa9i+UGAWIjSbTsCP80pz8Ud/TdnExsjC8q3m+OIIUra0+fUw
+         1bXsIh7w5tt6lNfiDuJuPQ2PmzZErX45xe3bxbC3VLTdlOlZK+Cf5VyQ95dn2ED9SB
+         TedCvrAP4sqMw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Lu Jialin <lujialin4@huawei.com>, Guo Zihua <guozihua@huawei.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Sasha Levin <sashal@kernel.org>, steffen.klassert@secunet.com,
-        davem@davemloft.net, daniel.m.jordan@oracle.com,
-        linux-crypto@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 03/30] crypto: pcrypt - Fix hungtask for PADATA_RESET
-Date:   Tue,  7 Nov 2023 10:49:37 -0500
-Message-ID: <20231107155024.3766950-3-sashal@kernel.org>
+Cc:     "Geoffrey D. Bennett" <g@b4.vu>,
+        Philippe Perrot <philippe@perrot-net.fr>,
+        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>,
+        perex@perex.cz, tiwai@suse.com, peter.ujfalusi@linux.intel.com,
+        linux-sound@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.1 04/30] ALSA: scarlett2: Move USB IDs out from device_info struct
+Date:   Tue,  7 Nov 2023 10:49:38 -0500
+Message-ID: <20231107155024.3766950-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231107155024.3766950-1-sashal@kernel.org>
 References: <20231107155024.3766950-1-sashal@kernel.org>
@@ -49,103 +49,192 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lu Jialin <lujialin4@huawei.com>
+From: "Geoffrey D. Bennett" <g@b4.vu>
 
-[ Upstream commit 8f4f68e788c3a7a696546291258bfa5fdb215523 ]
+[ Upstream commit d98cc489029dba4d99714c2e8ec4f5ba249f6851 ]
 
-We found a hungtask bug in test_aead_vec_cfg as follows:
+By moving the USB IDs from the device_info struct into
+scarlett2_devices[], that will allow for devices with different
+USB IDs to share the same device_info.
 
-INFO: task cryptomgr_test:391009 blocked for more than 120 seconds.
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-Call trace:
- __switch_to+0x98/0xe0
- __schedule+0x6c4/0xf40
- schedule+0xd8/0x1b4
- schedule_timeout+0x474/0x560
- wait_for_common+0x368/0x4e0
- wait_for_completion+0x20/0x30
- wait_for_completion+0x20/0x30
- test_aead_vec_cfg+0xab4/0xd50
- test_aead+0x144/0x1f0
- alg_test_aead+0xd8/0x1e0
- alg_test+0x634/0x890
- cryptomgr_test+0x40/0x70
- kthread+0x1e0/0x220
- ret_from_fork+0x10/0x18
- Kernel panic - not syncing: hung_task: blocked tasks
-
-For padata_do_parallel, when the return err is 0 or -EBUSY, it will call
-wait_for_completion(&wait->completion) in test_aead_vec_cfg. In normal
-case, aead_request_complete() will be called in pcrypt_aead_serial and the
-return err is 0 for padata_do_parallel. But, when pinst->flags is
-PADATA_RESET, the return err is -EBUSY for padata_do_parallel, and it
-won't call aead_request_complete(). Therefore, test_aead_vec_cfg will
-hung at wait_for_completion(&wait->completion), which will cause
-hungtask.
-
-The problem comes as following:
-(padata_do_parallel)                 |
-    rcu_read_lock_bh();              |
-    err = -EINVAL;                   |   (padata_replace)
-                                     |     pinst->flags |= PADATA_RESET;
-    err = -EBUSY                     |
-    if (pinst->flags & PADATA_RESET) |
-        rcu_read_unlock_bh()         |
-        return err
-
-In order to resolve the problem, we replace the return err -EBUSY with
--EAGAIN, which means parallel_data is changing, and the caller should call
-it again.
-
-v3:
-remove retry and just change the return err.
-v2:
-introduce padata_try_do_parallel() in pcrypt_aead_encrypt and
-pcrypt_aead_decrypt to solve the hungtask.
-
-Signed-off-by: Lu Jialin <lujialin4@huawei.com>
-Signed-off-by: Guo Zihua <guozihua@huawei.com>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Tested-by: Philippe Perrot <philippe@perrot-net.fr>
+Signed-off-by: Geoffrey D. Bennett <g@b4.vu>
+Link: https://lore.kernel.org/r/8263368e8d49e6fcebc709817bd82ab79b404468.1694705811.git.g@b4.vu
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- crypto/pcrypt.c | 4 ++++
- kernel/padata.c | 2 +-
- 2 files changed, 5 insertions(+), 1 deletion(-)
+ sound/usb/mixer_scarlett_gen2.c | 63 ++++++++++++---------------------
+ 1 file changed, 23 insertions(+), 40 deletions(-)
 
-diff --git a/crypto/pcrypt.c b/crypto/pcrypt.c
-index 9d10b846ccf73..005a36cb21bc4 100644
---- a/crypto/pcrypt.c
-+++ b/crypto/pcrypt.c
-@@ -117,6 +117,8 @@ static int pcrypt_aead_encrypt(struct aead_request *req)
- 	err = padata_do_parallel(ictx->psenc, padata, &ctx->cb_cpu);
- 	if (!err)
- 		return -EINPROGRESS;
-+	if (err == -EBUSY)
-+		return -EAGAIN;
+diff --git a/sound/usb/mixer_scarlett_gen2.c b/sound/usb/mixer_scarlett_gen2.c
+index 9d11bb08667e7..48f5c9b9790dc 100644
+--- a/sound/usb/mixer_scarlett_gen2.c
++++ b/sound/usb/mixer_scarlett_gen2.c
+@@ -317,8 +317,6 @@ struct scarlett2_mux_entry {
+ };
  
- 	return err;
- }
-@@ -164,6 +166,8 @@ static int pcrypt_aead_decrypt(struct aead_request *req)
- 	err = padata_do_parallel(ictx->psdec, padata, &ctx->cb_cpu);
- 	if (!err)
- 		return -EINPROGRESS;
-+	if (err == -EBUSY)
-+		return -EAGAIN;
+ struct scarlett2_device_info {
+-	u32 usb_id; /* USB device identifier */
+-
+ 	/* Gen 3 devices have an internal MSD mode switch that needs
+ 	 * to be disabled in order to access the full functionality of
+ 	 * the device.
+@@ -440,8 +438,6 @@ struct scarlett2_data {
+ /*** Model-specific data ***/
  
- 	return err;
- }
-diff --git a/kernel/padata.c b/kernel/padata.c
-index de90af5fcbe6b..91d3eea36dd44 100644
---- a/kernel/padata.c
-+++ b/kernel/padata.c
-@@ -194,7 +194,7 @@ int padata_do_parallel(struct padata_shell *ps,
- 		*cb_cpu = cpu;
- 	}
+ static const struct scarlett2_device_info s6i6_gen2_info = {
+-	.usb_id = USB_ID(0x1235, 0x8203),
+-
+ 	.config_set = SCARLETT2_CONFIG_SET_GEN_2,
+ 	.level_input_count = 2,
+ 	.pad_input_count = 2,
+@@ -486,8 +482,6 @@ static const struct scarlett2_device_info s6i6_gen2_info = {
+ };
  
--	err =  -EBUSY;
-+	err = -EBUSY;
- 	if ((pinst->flags & PADATA_RESET))
- 		goto out;
+ static const struct scarlett2_device_info s18i8_gen2_info = {
+-	.usb_id = USB_ID(0x1235, 0x8204),
+-
+ 	.config_set = SCARLETT2_CONFIG_SET_GEN_2,
+ 	.level_input_count = 2,
+ 	.pad_input_count = 4,
+@@ -535,8 +529,6 @@ static const struct scarlett2_device_info s18i8_gen2_info = {
+ };
+ 
+ static const struct scarlett2_device_info s18i20_gen2_info = {
+-	.usb_id = USB_ID(0x1235, 0x8201),
+-
+ 	.config_set = SCARLETT2_CONFIG_SET_GEN_2,
+ 	.line_out_hw_vol = 1,
+ 
+@@ -589,8 +581,6 @@ static const struct scarlett2_device_info s18i20_gen2_info = {
+ };
+ 
+ static const struct scarlett2_device_info solo_gen3_info = {
+-	.usb_id = USB_ID(0x1235, 0x8211),
+-
+ 	.has_msd_mode = 1,
+ 	.config_set = SCARLETT2_CONFIG_SET_NO_MIXER,
+ 	.level_input_count = 1,
+@@ -602,8 +592,6 @@ static const struct scarlett2_device_info solo_gen3_info = {
+ };
+ 
+ static const struct scarlett2_device_info s2i2_gen3_info = {
+-	.usb_id = USB_ID(0x1235, 0x8210),
+-
+ 	.has_msd_mode = 1,
+ 	.config_set = SCARLETT2_CONFIG_SET_NO_MIXER,
+ 	.level_input_count = 2,
+@@ -614,8 +602,6 @@ static const struct scarlett2_device_info s2i2_gen3_info = {
+ };
+ 
+ static const struct scarlett2_device_info s4i4_gen3_info = {
+-	.usb_id = USB_ID(0x1235, 0x8212),
+-
+ 	.has_msd_mode = 1,
+ 	.config_set = SCARLETT2_CONFIG_SET_GEN_3,
+ 	.level_input_count = 2,
+@@ -660,8 +646,6 @@ static const struct scarlett2_device_info s4i4_gen3_info = {
+ };
+ 
+ static const struct scarlett2_device_info s8i6_gen3_info = {
+-	.usb_id = USB_ID(0x1235, 0x8213),
+-
+ 	.has_msd_mode = 1,
+ 	.config_set = SCARLETT2_CONFIG_SET_GEN_3,
+ 	.level_input_count = 2,
+@@ -713,8 +697,6 @@ static const struct scarlett2_device_info s8i6_gen3_info = {
+ };
+ 
+ static const struct scarlett2_device_info s18i8_gen3_info = {
+-	.usb_id = USB_ID(0x1235, 0x8214),
+-
+ 	.has_msd_mode = 1,
+ 	.config_set = SCARLETT2_CONFIG_SET_GEN_3,
+ 	.line_out_hw_vol = 1,
+@@ -783,8 +765,6 @@ static const struct scarlett2_device_info s18i8_gen3_info = {
+ };
+ 
+ static const struct scarlett2_device_info s18i20_gen3_info = {
+-	.usb_id = USB_ID(0x1235, 0x8215),
+-
+ 	.has_msd_mode = 1,
+ 	.config_set = SCARLETT2_CONFIG_SET_GEN_3,
+ 	.line_out_hw_vol = 1,
+@@ -848,8 +828,6 @@ static const struct scarlett2_device_info s18i20_gen3_info = {
+ };
+ 
+ static const struct scarlett2_device_info clarett_8pre_info = {
+-	.usb_id = USB_ID(0x1235, 0x820c),
+-
+ 	.config_set = SCARLETT2_CONFIG_SET_CLARETT,
+ 	.line_out_hw_vol = 1,
+ 	.level_input_count = 2,
+@@ -902,25 +880,30 @@ static const struct scarlett2_device_info clarett_8pre_info = {
+ 	} },
+ };
+ 
+-static const struct scarlett2_device_info *scarlett2_devices[] = {
++struct scarlett2_device_entry {
++	const u32 usb_id; /* USB device identifier */
++	const struct scarlett2_device_info *info;
++};
++
++static const struct scarlett2_device_entry scarlett2_devices[] = {
+ 	/* Supported Gen 2 devices */
+-	&s6i6_gen2_info,
+-	&s18i8_gen2_info,
+-	&s18i20_gen2_info,
++	{ USB_ID(0x1235, 0x8203), &s6i6_gen2_info },
++	{ USB_ID(0x1235, 0x8204), &s18i8_gen2_info },
++	{ USB_ID(0x1235, 0x8201), &s18i20_gen2_info },
+ 
+ 	/* Supported Gen 3 devices */
+-	&solo_gen3_info,
+-	&s2i2_gen3_info,
+-	&s4i4_gen3_info,
+-	&s8i6_gen3_info,
+-	&s18i8_gen3_info,
+-	&s18i20_gen3_info,
++	{ USB_ID(0x1235, 0x8211), &solo_gen3_info },
++	{ USB_ID(0x1235, 0x8210), &s2i2_gen3_info },
++	{ USB_ID(0x1235, 0x8212), &s4i4_gen3_info },
++	{ USB_ID(0x1235, 0x8213), &s8i6_gen3_info },
++	{ USB_ID(0x1235, 0x8214), &s18i8_gen3_info },
++	{ USB_ID(0x1235, 0x8215), &s18i20_gen3_info },
+ 
+ 	/* Supported Clarett+ devices */
+-	&clarett_8pre_info,
++	{ USB_ID(0x1235, 0x820c), &clarett_8pre_info },
+ 
+ 	/* End of list */
+-	NULL
++	{ 0, NULL },
+ };
+ 
+ /* get the starting port index number for a given port type/direction */
+@@ -4072,17 +4055,17 @@ static int scarlett2_init_notify(struct usb_mixer_interface *mixer)
+ 
+ static int snd_scarlett_gen2_controls_create(struct usb_mixer_interface *mixer)
+ {
+-	const struct scarlett2_device_info **info = scarlett2_devices;
++	const struct scarlett2_device_entry *entry = scarlett2_devices;
+ 	int err;
+ 
+-	/* Find device in scarlett2_devices */
+-	while (*info && (*info)->usb_id != mixer->chip->usb_id)
+-		info++;
+-	if (!*info)
++	/* Find entry in scarlett2_devices */
++	while (entry->usb_id && entry->usb_id != mixer->chip->usb_id)
++		entry++;
++	if (!entry->usb_id)
+ 		return -EINVAL;
+ 
+ 	/* Initialise private data */
+-	err = scarlett2_init_private(mixer, *info);
++	err = scarlett2_init_private(mixer, entry->info);
+ 	if (err < 0)
+ 		return err;
  
 -- 
 2.42.0
