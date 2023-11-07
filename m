@@ -2,116 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3977E7E343F
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 04:40:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D3927E3441
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 04:41:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233330AbjKGDk3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 22:40:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58642 "EHLO
+        id S233357AbjKGDlo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 22:41:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230208AbjKGDk0 (ORCPT
+        with ESMTP id S230208AbjKGDln (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 22:40:26 -0500
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6E24D47
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 19:40:23 -0800 (PST)
-Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-54357417e81so6991a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 19:40:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1699328422; x=1699933222; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lYCIndK7nTAWFMNojgp2tg2y2sSFZQckk0xx9RL2AOM=;
-        b=3eSobFRETsHq9uZVd6u88PAq0GAttSvgXUyXYT88R564pFZos4u0wA7nIoPrZDVHFg
-         6354A+u9njIrNIcTTtaSrOed98C4FiP1PYva+KMVHqkogAK0g/e/RQ8GjmOf88YZkQAI
-         i9WUNytpAFlBFOCmHPIH84YkPfY/G7mgWue68mkaDi3JrV2IG1BrZgH9+uXiE1kw5nPw
-         JcAxL7TcQy9xIJhJfV38wtQrMfs47xy5fzA+j/MDjaNJykuxQWfxw/8Wme4nQGWhqESt
-         kpuNFRhMtMe51nqmrPUI9aQUfWBr6XePmwTLHr5NxNNyVu64LVXZT8YWLrnrRt2Uf1oF
-         AWYQ==
+        Mon, 6 Nov 2023 22:41:43 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2F2C10C
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 19:40:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1699328457;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=l/objqiOqc8rOZeftx45k4hz0QbDrfEnyUw5mk2OXW0=;
+        b=g+4M7wWJMYK85vexchST82OP+Go0OFbtt0qTBoI3HVcDdLWA+QaeXek+RoTzO1Ih74vKE2
+        Ppj62+YWOcb5NNC1AClU4ckODt39Ip1nakCNLYqJDKpsN5KHsIfwRqbeZ7awsF7K0luc3R
+        4PquomYUtSn6Lf991OtuzUgJNi6xtXs=
+Received: from mail-oi1-f198.google.com (mail-oi1-f198.google.com
+ [209.85.167.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-605-HK0wgq5FNJuZbQcLGt5_YA-1; Mon, 06 Nov 2023 22:40:49 -0500
+X-MC-Unique: HK0wgq5FNJuZbQcLGt5_YA-1
+Received: by mail-oi1-f198.google.com with SMTP id 5614622812f47-3b2ef9e4c25so7864586b6e.1
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 19:40:49 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699328422; x=1699933222;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1699328449; x=1699933249;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=lYCIndK7nTAWFMNojgp2tg2y2sSFZQckk0xx9RL2AOM=;
-        b=QNWbiW/fGchefXh/B+CiqRjL5+V4wVlusPiEustPwa5YCe6rbLP3rgsLqSJeqCjau4
-         wdKPRrZjaZB00CXdX3/TdTSJA1k9IRFMk1/44SACReRJV+xRsxYWW+OjUgbLvTKR35TR
-         nccjfSYCgbzyA4AGzFOHAk6r4534DeYMvQr0n6nNMc1JiIKu6xwXq2QhvtVP9Eq4W7wq
-         CZe8ha/N+nPWzW9nuxAoUomhFkpVhg63z3hMw6eAlkX3kxzMZSP4FawYJDyFcx4LUkgv
-         Hk90In17yExRmy432+yizbU0ZXaooNCW6K7hPDKLO0Y21rqlK9EdJ0w3Wd+d5mGUar2W
-         jJHg==
-X-Gm-Message-State: AOJu0YxuY5rXAOx3ba0TyYLCn77pXAEUWQBQ5t6RD6HM1SH53xmOGdEZ
-        XfTVS0bJMK7LWzWVWCJL36JljV+fGn+7vgUkVBDF2A==
-X-Google-Smtp-Source: AGHT+IH0QiR6VsLI/3UP+6avx6qTbRgvfRUAwcSMLx2Ci0aCQ9197Fet5uwI9pffHELnV68wOz0D3/HXDmK/AGmf4BM=
-X-Received: by 2002:a50:9eeb:0:b0:544:4762:608 with SMTP id
- a98-20020a509eeb000000b0054447620608mr76680edf.2.1699328421980; Mon, 06 Nov
- 2023 19:40:21 -0800 (PST)
-MIME-Version: 1.0
-References: <20231107023444.3141-1-duminjie@vivo.com>
-In-Reply-To: <20231107023444.3141-1-duminjie@vivo.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Tue, 7 Nov 2023 04:40:08 +0100
-Message-ID: <CANn89iKGqObLBOx-ZMJbYOJ3OSETDestrcf6Yj5HON0Pbda9tA@mail.gmail.com>
-Subject: Re: [PATCH v1] net/tcp: use kfree_sensitive() instend of kfree() in tcp_md5_twsk_free_rcu()
-To:     Minjie Du <duminjie@vivo.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "open list:NETWORKING [TCP]" <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        opensource.kernel@vivo.com
-Content-Type: text/plain; charset="UTF-8"
+        bh=l/objqiOqc8rOZeftx45k4hz0QbDrfEnyUw5mk2OXW0=;
+        b=uM4FYplkwmgJ0HBIqK8CzIqs2ZF6lVmInPLw/zq14OLjvboGNZu8o4GIm/3+9QNWI3
+         kx9LU6EZ7bsnX11cYJEHSDHGJvl+GoA8DJA9MwFDQrL64xGlntisl3+CuEn0MePxnuo/
+         5tis6EuYtdIrq800XQ1sxtnw+yqjLeE5niiwHw95GsY92AOgP0awnGNFOKgnR4kf5wdn
+         oMGi70FZrx3A+7cGa5JFp3+SMmtisCrcnlFHwc7cqND9EO8zwbKI4BlKcw9xmodBN1jT
+         hWZQBhJL049au5hMhBSKz7Qtf+qyywzH6QJQ1zThJCXxbqYu5TDH+uafhzue8D/+KrMC
+         fcaQ==
+X-Gm-Message-State: AOJu0YyY2mgm9lcBsTujfjXPsnsyq2pECK6iYlaoG2+M6xWPU9+TVpa0
+        0+4NOj7W7DAyaE1a09StZAYNw8rY3txOoniXZai6TM9CEEdvDdQPnKaSDWh7QFry5euLMCPpysq
+        vWJ/ilKMBu5MH2tCELXgeQh3A
+X-Received: by 2002:a05:6808:14c4:b0:3b5:663c:9b91 with SMTP id f4-20020a05680814c400b003b5663c9b91mr25811114oiw.12.1699328449191;
+        Mon, 06 Nov 2023 19:40:49 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFMGTYxK/HZxGKY3L0S3GbNNZ/EC6n9a4m3WUGhPB5VEAdGD9voUf1lVcBOeJk2sYQMF/7lsg==
+X-Received: by 2002:a05:6808:14c4:b0:3b5:663c:9b91 with SMTP id f4-20020a05680814c400b003b5663c9b91mr25811099oiw.12.1699328448914;
+        Mon, 06 Nov 2023 19:40:48 -0800 (PST)
+Received: from smtpclient.apple ([115.96.144.207])
+        by smtp.gmail.com with ESMTPSA id h15-20020aa786cf000000b006c06779e593sm6480721pfo.16.2023.11.06.19.40.45
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 06 Nov 2023 19:40:48 -0800 (PST)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3696.120.41.1.4\))
+Subject: Re: [PATCH] hv/hv_kvp_daemon: Some small fixes for handling NM
+ keyfiles
+From:   Ani Sinha <anisinha@redhat.com>
+In-Reply-To: <E44432C5-17B2-47FC-B382-384659B21DCF@redhat.com>
+Date:   Tue, 7 Nov 2023 09:10:43 +0530
+Cc:     "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        Saurabh Sengar <ssengar@linux.microsoft.com>,
+        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Message-Id: <5D793B43-B5DB-4BA2-9F1E-B01D5E2487D2@redhat.com>
+References: <20231016133122.2419537-1-anisinha@redhat.com>
+ <20231023053746.GA11148@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+ <E44432C5-17B2-47FC-B382-384659B21DCF@redhat.com>
+To:     Shradha Gupta <shradhagupta@linux.microsoft.com>
+X-Mailer: Apple Mail (2.3696.120.41.1.4)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 7, 2023 at 3:35=E2=80=AFAM Minjie Du <duminjie@vivo.com> wrote:
->
-> key might contain private information, so better use
-> kfree_sensitive to free it.
-> In tcp_md5_twsk_free_rcu() use kfree_sensitive().
->
-> Signed-off-by: Minjie Du <duminjie@vivo.com>
-> ---
->  net/ipv4/tcp_minisocks.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/net/ipv4/tcp_minisocks.c b/net/ipv4/tcp_minisocks.c
-> index a9807eeb311c..a7be78096783 100644
-> --- a/net/ipv4/tcp_minisocks.c
-> +++ b/net/ipv4/tcp_minisocks.c
-> @@ -368,7 +368,7 @@ static void tcp_md5_twsk_free_rcu(struct rcu_head *he=
-ad)
->         struct tcp_md5sig_key *key;
->
->         key =3D container_of(head, struct tcp_md5sig_key, rcu);
-> -       kfree(key);
-> +       kfree_sensitive(key);
->         static_branch_slow_dec_deferred(&tcp_md5_needed);
->         tcp_md5_release_sigpool();
->  }
-> --
-> 2.39.0
->
 
 
+> On 30-Oct-2023, at 10:45 AM, Ani Sinha <anisinha@redhat.com> wrote:
+>=20
+>=20
+>=20
+>> On 23-Oct-2023, at 11:07 AM, Shradha Gupta =
+<shradhagupta@linux.microsoft.com> wrote:
+>>=20
+>> On Mon, Oct 16, 2023 at 07:01:22PM +0530, Ani Sinha wrote:
+>>> Some small fixes:
+>>> - lets make sure we are not adding ipv4 addresses in ipv6 section in
+>>>  keyfile and vice versa.
+>>> - ADDR_FAMILY_IPV6 is a bit in addr_family. Test that bit instead of
+>>>  checking the whole value of addr_family.
+>>> - Some trivial fixes in hv_set_ifconfig.sh.
+>>>=20
+>>> These fixes are proposed after doing some internal testing at Red =
+Hat.
+>>>=20
+>>> CC: Shradha Gupta <shradhagupta@linux.microsoft.com>
+>>> CC: Saurabh Sengar <ssengar@linux.microsoft.com>
+>>> Fixes: 42999c904612 ("hv/hv_kvp_daemon:Support for keyfile based =
+connection profile")
+>>> Signed-off-by: Ani Sinha <anisinha@redhat.com>
+>>> ---
+>>> tools/hv/hv_kvp_daemon.c    | 20 ++++++++++++--------
+>>> tools/hv/hv_set_ifconfig.sh |  4 ++--
+>>> 2 files changed, 14 insertions(+), 10 deletions(-)
+>>>=20
+>>> diff --git a/tools/hv/hv_kvp_daemon.c b/tools/hv/hv_kvp_daemon.c
+>>> index 264eeb9c46a9..318e2dad27e0 100644
+>>> --- a/tools/hv/hv_kvp_daemon.c
+>>> +++ b/tools/hv/hv_kvp_daemon.c
+>>> @@ -1421,7 +1421,7 @@ static int kvp_set_ip_info(char *if_name, =
+struct hv_kvp_ipaddr_value *new_val)
+>>> 	if (error)
+>>> 		goto setval_error;
+>>>=20
+>>> -	if (new_val->addr_family =3D=3D ADDR_FAMILY_IPV6) {
+>>> +	if (new_val->addr_family & ADDR_FAMILY_IPV6) {
+>>> 		error =3D fprintf(nmfile, "\n[ipv6]\n");
+>>> 		if (error < 0)
+>>> 			goto setval_error;
+>>> @@ -1455,14 +1455,18 @@ static int kvp_set_ip_info(char *if_name, =
+struct hv_kvp_ipaddr_value *new_val)
+>>> 	if (error < 0)
+>>> 		goto setval_error;
+>>>=20
+>>> -	error =3D fprintf(nmfile, "gateway=3D%s\n", (char =
+*)new_val->gate_way);
+>>> -	if (error < 0)
+>>> -		goto setval_error;
+>>> -
+>>> -	error =3D fprintf(nmfile, "dns=3D%s\n", (char =
+*)new_val->dns_addr);
+>>> -	if (error < 0)
+>>> -		goto setval_error;
+>>> +	/* we do not want ipv4 addresses in ipv6 section and vice versa =
+*/
+>>> +	if (is_ipv6 !=3D is_ipv4((char *)new_val->gate_way)) {
+>>> +		error =3D fprintf(nmfile, "gateway=3D%s\n", (char =
+*)new_val->gate_way);
+>>> +		if (error < 0)
+>>> +			goto setval_error;
+>>> +	}
+>>>=20
+>>> +	if (is_ipv6 !=3D is_ipv4((char *)new_val->dns_addr)) {
+>>> +		error =3D fprintf(nmfile, "dns=3D%s\n", (char =
+*)new_val->dns_addr);
+>>> +		if (error < 0)
+>>> +			goto setval_error;
+>>> +	}
+>>> 	fclose(nmfile);
+>>> 	fclose(ifcfg_file);
+>>>=20
+>>> diff --git a/tools/hv/hv_set_ifconfig.sh =
+b/tools/hv/hv_set_ifconfig.sh
+>>> index ae5a7a8249a2..440a91b35823 100755
+>>> --- a/tools/hv/hv_set_ifconfig.sh
+>>> +++ b/tools/hv/hv_set_ifconfig.sh
+>>> @@ -53,7 +53,7 @@
+>>> #                       or "manual" if no boot-time protocol should =
+be used)
+>>> #
+>>> # address1=3Dipaddr1/plen
+>>> -# address=3Dipaddr2/plen
+>>> +# address2=3Dipaddr2/plen
+>>> #
+>>> # gateway=3Dgateway1;gateway2
+>>> #
+>>> @@ -61,7 +61,7 @@
+>>> #
+>>> # [ipv6]
+>>> # address1=3Dipaddr1/plen
+>>> -# address2=3Dipaddr1/plen
+>>> +# address2=3Dipaddr2/plen
+>>> #
+>>> # gateway=3Dgateway1;gateway2
+>>> #
+>>> --=20
+>>> 2.39.2
+>> Reviewed-by: Shradha Gupta <Shradhagupta@linux.microsoft.com>
+>=20
+> Ping. Can anyone please queue this?
+>>=20
 
-1) net-next is currently closed.
+Ping again =E2=80=A6 Please pick this up.
 
-2) such patch could send a wrong signal (false sense of security with MD5)
+>=20
 
-3) You forgot tcp_time_wait_init(), tcp_md5_do_del(), tcp_md5_key_copy(),
-    tcp_md5_do_add(), tcp_clear_md5_list().
-
-More work is needed I am afraid, please wait until next week when
-6-7-rc1 is tagged and net-next opens again.
