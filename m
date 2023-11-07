@@ -2,47 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A7A37E3E1F
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 13:33:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D88467E3E02
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 13:32:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234658AbjKGMdW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 07:33:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35572 "EHLO
+        id S234808AbjKGMcc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 07:32:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234621AbjKGMc5 (ORCPT
+        with ESMTP id S234881AbjKGMcH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 07:32:57 -0500
+        Tue, 7 Nov 2023 07:32:07 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51DF132B4B;
-        Tue,  7 Nov 2023 04:21:09 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3B11CC433C8;
-        Tue,  7 Nov 2023 12:21:06 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4938032B56;
+        Tue,  7 Nov 2023 04:21:13 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3B7A3C433C9;
+        Tue,  7 Nov 2023 12:21:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699359668;
-        bh=Os/ZvETFoFPYYGZspBCeDqKnqlyuNkYjB8BIGvaMwU0=;
+        s=k20201202; t=1699359673;
+        bh=zRLYVJzEmMHhUfyTzu7p4rra2CVJwPd4o1lufCaMcWs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GEQpRNhsi/VUfl++6Vh4XxEswyCIj8j7d33hjOI9bI9/8D/NqKtKo1VemdmXiWtpK
-         /V2DT8iRo9ubUfsLxWae78hAnO8mQyqSGQKeZR7u9KhHPcHcU6H3L6cSyoBUMA1JjX
-         VFmeQ9bUEOy3tFSlYNqA546dtG8cRNBEpS22CHqpATRhg6hPYG9A20urcz8eBndJu7
-         4ACylLAX90hX2nKu9XrrG6vGbMgQj+iQtCVkIkhNgi33Kkt7/DXB0eWcyZYmEeEG3V
-         oFLiaHYBkW1pKsjkBxD7/cU2IHpGH8qnOauvW03cb0RLwmrmT30SvgwuIXLPoGoM72
-         XQpZnjfvlOPZg==
+        b=YlwHoh4WMeqOKBDjLEZN7VGsuee58puePyVkjR1RZfWQG8EYqVluzcCUwKxjtd65Y
+         2iSDMbB+53wwCabxGgui/gaoaydnd+v1vXNFdyCIyk05YJVxaZViSJtPdc2X5ByC+9
+         b0+bQoJqaJ1og5udGKHzZ6fXx5pcB836b4BVmkjcEkpOuvE4DP9Nb4eYyE+J+Rqnaf
+         g68hymVqYr/34H1T1naiYkGOK9sp/pXJL4wBwGNT2lJo5E6XZfIr6O7YnJpYgbNXYJ
+         QM82QTPcipe9xiuLpZuZ0Du4W9MOlY0uyLoGlFe0dkElF9iprCb6XvE6YJtT2YpQix
+         vO5q6xUlPNyrw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Samson Tam <samson.tam@amd.com>, Alvin Lee <alvin.lee2@amd.com>,
-        Roman Li <roman.li@amd.com>,
-        Daniel Wheeler <daniel.wheeler@amd.com>,
+Cc:     "Lin.Cao" <lincao12@amd.com>, Jingwen Chen <Jingwen.Chen2@amd.com>,
         Alex Deucher <alexander.deucher@amd.com>,
-        Sasha Levin <sashal@kernel.org>, harry.wentland@amd.com,
-        sunpeng.li@amd.com, Rodrigo.Siqueira@amd.com,
+        Sasha Levin <sashal@kernel.org>, evan.quan@amd.com,
         christian.koenig@amd.com, Xinhui.Pan@amd.com, airlied@gmail.com,
-        daniel@ffwll.ch, Alvin.Lee2@amd.com, qingqing.zhuo@amd.com,
-        jun.lei@amd.com, wenjing.liu@amd.com, syedsaaem.rizvi@amd.com,
-        Dillon.Varone@amd.com, moadhuri@amd.com,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 6.6 32/40] drm/amd/display: fix num_ways overflow error
-Date:   Tue,  7 Nov 2023 07:16:34 -0500
-Message-ID: <20231107121837.3759358-32-sashal@kernel.org>
+        daniel@ffwll.ch, lijo.lazar@amd.com, mario.limonciello@amd.com,
+        Hawking.Zhang@amd.com, guchun.chen@amd.com, Lyndon.Li@amd.com,
+        bokun.zhang@amd.com, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH AUTOSEL 6.6 33/40] drm/amd: check num of link levels when update pcie param
+Date:   Tue,  7 Nov 2023 07:16:35 -0500
+Message-ID: <20231107121837.3759358-33-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231107121837.3759358-1-sashal@kernel.org>
 References: <20231107121837.3759358-1-sashal@kernel.org>
@@ -61,62 +58,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Samson Tam <samson.tam@amd.com>
+From: "Lin.Cao" <lincao12@amd.com>
 
-[ Upstream commit 79f3f1b66753b3a3a269d73676bf50987921f267 ]
+[ Upstream commit 406e8845356d18bdf3d3a23b347faf67706472ec ]
 
-[Why]
-Helper function calculates num_ways using 32-bit.  But is
- returned as 8-bit.  If num_ways exceeds 8-bit, then it
- reports back the incorrect num_ways and erroneously
- uses MALL when it should not
+In SR-IOV environment, the value of pcie_table->num_of_link_levels will
+be 0, and num_of_levels - 1 will cause array index out of bounds
 
-[How]
-Make returned value 32-bit and convert after it checks
- against caps.cache_num_ways, which is under 8-bit
-
-Reviewed-by: Alvin Lee <alvin.lee2@amd.com>
-Acked-by: Roman Li <roman.li@amd.com>
-Signed-off-by: Samson Tam <samson.tam@amd.com>
-Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
+Signed-off-by: Lin.Cao <lincao12@amd.com>
+Acked-by: Jingwen Chen <Jingwen.Chen2@amd.com>
 Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/display/dc/dcn32/dcn32_hwseq.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ drivers/gpu/drm/amd/pm/swsmu/smu13/smu_v13_0.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/dcn32/dcn32_hwseq.c b/drivers/gpu/drm/amd/display/dc/dcn32/dcn32_hwseq.c
-index 018376146d977..be59e1c02f8aa 100644
---- a/drivers/gpu/drm/amd/display/dc/dcn32/dcn32_hwseq.c
-+++ b/drivers/gpu/drm/amd/display/dc/dcn32/dcn32_hwseq.c
-@@ -214,7 +214,7 @@ static bool dcn32_check_no_memory_request_for_cab(struct dc *dc)
- static uint32_t dcn32_calculate_cab_allocation(struct dc *dc, struct dc_state *ctx)
- {
- 	int i;
--	uint8_t num_ways = 0;
-+	uint32_t num_ways = 0;
- 	uint32_t mall_ss_size_bytes = 0;
+diff --git a/drivers/gpu/drm/amd/pm/swsmu/smu13/smu_v13_0.c b/drivers/gpu/drm/amd/pm/swsmu/smu13/smu_v13_0.c
+index 4aeb84572e5b8..5355f621388bb 100644
+--- a/drivers/gpu/drm/amd/pm/swsmu/smu13/smu_v13_0.c
++++ b/drivers/gpu/drm/amd/pm/swsmu/smu13/smu_v13_0.c
+@@ -2430,6 +2430,9 @@ int smu_v13_0_update_pcie_parameters(struct smu_context *smu,
+ 	uint32_t smu_pcie_arg;
+ 	int ret, i;
  
- 	mall_ss_size_bytes = ctx->bw_ctx.bw.dcn.mall_ss_size_bytes;
-@@ -244,7 +244,8 @@ static uint32_t dcn32_calculate_cab_allocation(struct dc *dc, struct dc_state *c
- bool dcn32_apply_idle_power_optimizations(struct dc *dc, bool enable)
- {
- 	union dmub_rb_cmd cmd;
--	uint8_t ways, i;
-+	uint8_t i;
-+	uint32_t ways;
- 	int j;
- 	bool mall_ss_unsupported = false;
- 	struct dc_plane_state *plane = NULL;
-@@ -304,7 +305,7 @@ bool dcn32_apply_idle_power_optimizations(struct dc *dc, bool enable)
- 				cmd.cab.header.type = DMUB_CMD__CAB_FOR_SS;
- 				cmd.cab.header.sub_type = DMUB_CMD__CAB_DCN_SS_FIT_IN_CAB;
- 				cmd.cab.header.payload_bytes = sizeof(cmd.cab) - sizeof(cmd.cab.header);
--				cmd.cab.cab_alloc_ways = ways;
-+				cmd.cab.cab_alloc_ways = (uint8_t)ways;
- 
- 				dm_execute_dmub_cmd(dc->ctx, &cmd, DM_DMUB_WAIT_TYPE_NO_WAIT);
- 
++	if (!num_of_levels)
++		return 0;
++
+ 	if (!(smu->adev->pm.pp_feature & PP_PCIE_DPM_MASK)) {
+ 		if (pcie_table->pcie_gen[num_of_levels - 1] < pcie_gen_cap)
+ 			pcie_gen_cap = pcie_table->pcie_gen[num_of_levels - 1];
 -- 
 2.42.0
 
