@@ -2,127 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA22B7E381C
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 10:49:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ECB287E382B
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 10:52:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233844AbjKGJtE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 04:49:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46492 "EHLO
+        id S233854AbjKGJwO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 04:52:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233819AbjKGJtD (ORCPT
+        with ESMTP id S233830AbjKGJwN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 04:49:03 -0500
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C3CD11A
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 01:49:00 -0800 (PST)
-Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-6bd0e1b1890so4112898b3a.3
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 01:49:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699350539; x=1699955339; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=gKDbEWjNDihVEusNrHvP99SNchk1IxSs3nYi8Mg0EtY=;
-        b=Lc9/MO/jJzI7wSJKM/5lFFxeU6s5HIV2rlzQHt7lQ1BQZlZJUtTVMQml20We2BomRG
-         P+SaMiR8oWtz+e3UIJPpVLwYHfJkN3TohTQoREaGVUIE3sC56yl+k0/agQumSOPyZhN6
-         cNqIhOTyDsl90FmKLjl2C6lMEJ+kkwgxMXoQ57sEAM4tYtkW+8HOzrFYahAeq0nz6N8E
-         7wN3/7uYFavnkYhDr7QhYBz3abV9NKM4NHqKMb3QkNtO1AnvTj6/R4Nu1uLwlaFJX2m1
-         UUnxCykIPtirdY0aFmIIPQ2x8GsEpYfl0zxT5wL82d3bNXZSNvLEDbpvIYeV3mm29zXc
-         6iOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699350539; x=1699955339;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gKDbEWjNDihVEusNrHvP99SNchk1IxSs3nYi8Mg0EtY=;
-        b=k7MYLiTUj6gmvFamH1RKmMOLesbqMgqiYI4ApX0ZtrElHCa9v0qpfQejqbJNY2ybWg
-         YywuaTIXRdwCsypSdToN2x2ruCT6vzX4qhtgUl8T4g4hcz+TZFIUyXwx4oDtAAh+prd0
-         KfB9+vERnOUzx5oh/U33A7fO9aekSf9gtQ7KidCAJ1Ibr3QiZjiBmwxSHs1/oZZ4Bs+r
-         APTToC2rR+DjuWTIrKuF7m7mpd7SyUIpzl+Vu52ssrLhn08YVfj3kA5WFx5YPfTSGgnr
-         uTAXAI50N1vvwplQFq7dm6b7WJTIDHUsH90tKp0auDv1JsKf6JN/VmRzhxPACSKQ/4i9
-         grUA==
-X-Gm-Message-State: AOJu0YxDLVT2Jo7MBcoyR2STxwQ68A7gi8W1Vnsi+iloV8fWblTqcSp9
-        xLiQfCLDAiQbcrehA6UbAOdZYw==
-X-Google-Smtp-Source: AGHT+IFytYM9dTytfxK06/FWlQFdFksipje5fVp6slwpg8pspDEos+KIlzPl7KMJ0OEB8RCbv33JIA==
-X-Received: by 2002:a05:6a00:15d4:b0:68e:3eb6:d45 with SMTP id o20-20020a056a0015d400b0068e3eb60d45mr30066840pfu.30.1699350539364;
-        Tue, 07 Nov 2023 01:48:59 -0800 (PST)
-Received: from leoy-yangtze.lan ([98.98.115.250])
-        by smtp.gmail.com with ESMTPSA id x10-20020aa793aa000000b006bff78b7526sm6874040pff.20.2023.11.07.01.48.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Nov 2023 01:48:58 -0800 (PST)
-Date:   Tue, 7 Nov 2023 17:48:52 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Adrian Hunter <adrian.hunter@intel.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        James Clark <james.clark@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        John Garry <john.g.garry@oracle.com>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>, coresight@lists.linaro.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 1/2] perf auxtrace: Add 'T' itrace option for
- timestamp trace
-Message-ID: <20231107094852.GA656098@leoy-yangtze.lan>
-References: <20231014074513.1668000-1-leo.yan@linaro.org>
- <20231014074513.1668000-2-leo.yan@linaro.org>
- <8a2ea58f-f835-4d1a-8bd6-3a63b3b0db94@intel.com>
- <ZUlgM8pgf19UeyM9@kernel.org>
- <2940af18-8bcd-4456-a8ed-e77cade1b160@intel.com>
+        Tue, 7 Nov 2023 04:52:13 -0500
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6053D11A;
+        Tue,  7 Nov 2023 01:52:10 -0800 (PST)
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A799pOg025340;
+        Tue, 7 Nov 2023 09:52:02 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=gRVHVnW6RyQwwjooSESskhWPcW7DSJvleK6kuyrci1I=;
+ b=ACEiJAQ5jeZHVrKBDyF9zzLJm1VDx2EpVvySo2qSLgBkwvXyJkLFxuihA920CYUmXBAd
+ J2CAjEHYwSsajCQ0X3RUig7Waur3lyeYFQ/BsdGU9NX26a6brRxLbz4uAcrrsCB1vbF7
+ X4DH5cKGAX3tnV5Mz1uh+rk8oftOrRoaM31BpZrCuaeBun53/KtTEGhU+yvFtyAn9ijZ
+ YvIFLP9FJfCRD0wurYe/hNRdCkRdgQs6lt/sI0fQS9Zx2dihLUKHbWPcyItWL5F0PmyX
+ LVTNSZz/z/xSYoHS5cZI2heZvMD74QoKyKT4jMBoIMQlbJ4x//ODBM841s9rsYEJ3rqN ew== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u71bracdp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 07 Nov 2023 09:52:01 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3A79q0Yr026189
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 7 Nov 2023 09:52:00 GMT
+Received: from [10.218.41.203] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Tue, 7 Nov
+ 2023 01:51:54 -0800
+Message-ID: <9ce28fea-ab3e-0737-6749-3e00be6cc380@quicinc.com>
+Date:   Tue, 7 Nov 2023 15:21:51 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2940af18-8bcd-4456-a8ed-e77cade1b160@intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.13.1
+Subject: Re: [PATCH 1/2] dt-bindings: phy: qcom,qmp: Add PCIe
+ qcom,refclk-always-on property
+Content-Language: en-US
+To:     Bjorn Andersson <andersson@kernel.org>
+CC:     Andy Gross <agross@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-phy@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <quic_vbadigan@quicinc.com>, <quic_ramkri@quicinc.com>,
+        <quic_nitegupt@quicinc.com>, <quic_skananth@quicinc.com>,
+        <quic_vpernami@quicinc.com>, <quic_parass@quicinc.com>
+References: <20231106-refclk_always_on-v1-0-17a7fd8b532b@quicinc.com>
+ <20231106-refclk_always_on-v1-1-17a7fd8b532b@quicinc.com>
+ <wt47mf6vx5fx5ddghwb4aljfjqftkplsc2zieays2xwjhkxag3@plromlkrbyxz>
+From:   Krishna Chaitanya Chundru <quic_krichai@quicinc.com>
+In-Reply-To: <wt47mf6vx5fx5ddghwb4aljfjqftkplsc2zieays2xwjhkxag3@plromlkrbyxz>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: 9wAizPbfiZzIX16tqmpdgZw4uO-g1Boe
+X-Proofpoint-GUID: 9wAizPbfiZzIX16tqmpdgZw4uO-g1Boe
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-06_15,2023-11-02_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 mlxscore=0
+ malwarescore=0 spamscore=0 adultscore=0 suspectscore=0 bulkscore=0
+ lowpriorityscore=0 mlxlogscore=999 phishscore=0 impostorscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2310240000 definitions=main-2311070081
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Adrian,
 
-On Tue, Nov 07, 2023 at 09:19:10AM +0200, Adrian Hunter wrote:
-> On 6/11/23 23:52, Arnaldo Carvalho de Melo wrote:
-> > Em Thu, Oct 19, 2023 at 01:47:15PM +0300, Adrian Hunter escreveu:
-> >> On 14/10/23 10:45, Leo Yan wrote:
-> >>> An AUX trace can contain timestamp, but in some situations, the hardware
-> >>> trace module (e.g. Arm CoreSight) cannot decide the traced timestamp is
-> >>> the same source with CPU's time, thus the decoder can not use the
-> >>> timestamp trace for samples.
-> >>>
-> >>> This patch introduces 'T' itrace option. If users know the platforms
-> >>
-> >> "If users know" <- how would users know?  Could the kernel
-> >> or tools also figure it out?
-> > 
-> > Adrian, I'm trying to go all the outstanding patches, do you still have
-> > any issues with this series?
-> 
-> No, although the question wasn't actually answered.  I presume users
-> just have to try the 'T' option and see if it helps.
+On 11/6/2023 9:50 PM, Bjorn Andersson wrote:
+> On Mon, Nov 06, 2023 at 05:22:34PM +0530, Krishna chaitanya chundru wrote:
+>> Document qcom,refclk-always-on property which is needed in some platforms
+>> to supply refclk even in PCIe low power states.
+>>
+>> Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
+>> ---
+>>   .../devicetree/bindings/phy/qcom,sc8280xp-qmp-pcie-phy.yaml          | 5 +++++
+>>   1 file changed, 5 insertions(+)
+>>
+>> diff --git a/Documentation/devicetree/bindings/phy/qcom,sc8280xp-qmp-pcie-phy.yaml b/Documentation/devicetree/bindings/phy/qcom,sc8280xp-qmp-pcie-phy.yaml
+>> index 2c3d6553a7ba..9daf0556ed3b 100644
+>> --- a/Documentation/devicetree/bindings/phy/qcom,sc8280xp-qmp-pcie-phy.yaml
+>> +++ b/Documentation/devicetree/bindings/phy/qcom,sc8280xp-qmp-pcie-phy.yaml
+>> @@ -93,6 +93,11 @@ properties:
+>>     "#phy-cells":
+>>       const: 0
+>>   
+>> +  qcom,refclk-always-on:
+>> +    type: boolean
+>> +    description: A boolean property indicating the refclk is
+>> +      always on even in Low power states (optional)
+> As with the driver patch, please improve this description (and use your
+> 80 characters).
+>
+>
+> It would also be preferable to capture (or at least indicate) the
+> problem that this flash is working around - so that future readers
+> doesn't need to go look in the commit history for the phy driver to
+> figure out what this is doing.
+>
+> Regards,
+> Bjorn
 
-Sometimes, users are software developers in SoC companies, they can
-know well for the hardware design but are confused why current
-implementation cannot use timestamp trace.  This is the main reason
-I sent this patch set.
+Sure I will update this in my next patch.
 
-An example hardware platform is DB410c [1], we know its CoreSight can
-support timestamp trace, but if without this adding option 'T', we
-have no chance to use it due to it its CPU arch is prior to Armv8.4.
+- Krishna Chaitanya.
 
-@Arnaldo, since James gave comments in his replying, I will respin new
-patch set and send out.  Thanks for popping up this patch set!
-
-Leo
-
-[1] https://developer.qualcomm.com/hardware/dragonboard-410c
+>> +
+>>   required:
+>>     - compatible
+>>     - reg
+>>
+>> -- 
+>> 2.42.0
+>>
