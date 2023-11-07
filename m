@@ -2,169 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FD737E4C16
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 23:57:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCBF77E4C64
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 00:02:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343934AbjKGW5O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 17:57:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37604 "EHLO
+        id S234575AbjKGXCI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 18:02:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232452AbjKGW5M (ORCPT
+        with ESMTP id S235215AbjKGXCG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 17:57:12 -0500
-Received: from smtp.forwardemail.net (smtp.forwardemail.net [149.28.215.223])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D2DB18C;
-        Tue,  7 Nov 2023 14:57:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kwiboo.se;
- h=Content-Transfer-Encoding: Content-Type: In-Reply-To: From: References:
- Cc: To: Subject: MIME-Version: Date: Message-ID; q=dns/txt;
- s=fe-e1b5cab7be; t=1699397823;
- bh=63OQgizHEU87zRiwSvu33mfZCT/ztnxnRkDGWR/1lLU=;
- b=bIDMRN/VYHY1n0fc2dDmI+neX3bp6WW8KAO8Ay7WzNULVEbC6DG52D8ez1vm9JUl6QF7v83U7
- p9EIYWOptKN7GLbNxAJRsa4exZT6zEbUID1FdFrWa8izpMNq6oIuNvqYr/MJvQDsDBF/vcrFGIE
- KNB0FyOH+9qfhqdqREejPRIAfkmsa90OfRcRMg9QbdRIE7d1iy3daTk3SuHatusuLireZe6aX6V
- /gTuAn6ciEjGbNn3kOThRAzaX0zqqd9GIkoI+LhnEYTb1xjl7yX5EYRvZiyfmrzjEXPkey3seAU
- tXtIvvAtyN+kVQkmkPi82FgAqgpp1WwP92K/E0tK1W7g==
-Message-ID: <bfabc182-4113-46fb-85e9-8550c97d132b@kwiboo.se>
-Date:   Tue, 7 Nov 2023 23:56:57 +0100
+        Tue, 7 Nov 2023 18:02:06 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CF65D7A
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 15:01:55 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B3139C433C8;
+        Tue,  7 Nov 2023 23:01:51 +0000 (UTC)
+Date:   Tue, 7 Nov 2023 18:01:53 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Ankur Arora <ankur.a.arora@oracle.com>
+Cc:     linux-kernel@vger.kernel.org, tglx@linutronix.de,
+        peterz@infradead.org, torvalds@linux-foundation.org,
+        paulmck@kernel.org, linux-mm@kvack.org, x86@kernel.org,
+        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
+        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        willy@infradead.org, mgorman@suse.de, jon.grimm@amd.com,
+        bharata@amd.com, raghavendra.kt@amd.com,
+        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
+        jgross@suse.com, andrew.cooper3@citrix.com, mingo@kernel.org,
+        bristot@kernel.org, mathieu.desnoyers@efficios.com,
+        geert@linux-m68k.org, glaubitz@physik.fu-berlin.de,
+        anton.ivanov@cambridgegreys.com, mattst88@gmail.com,
+        krypton@ulrich-teichert.org, David.Laight@ACULAB.COM,
+        richard@nod.at, mjguzik@gmail.com
+Subject: Re: [RFC PATCH 00/86] Make the kernel preemptible
+Message-ID: <20231107180153.4a02d2ba@gandalf.local.home>
+In-Reply-To: <20231107215742.363031-1-ankur.a.arora@oracle.com>
+References: <20231107215742.363031-1-ankur.a.arora@oracle.com>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 05/11] media: rkvdec: h264: Remove SPS validation at
- streaming start
-Content-Language: en-US
-To:     Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>
-Cc:     Alex Bee <knaerzche@gmail.com>,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        Sebastian Fricke <sebastian.fricke@collabora.com>,
-        Christopher Obbard <chris.obbard@collabora.com>,
-        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-References: <20231105165521.3592037-1-jonas@kwiboo.se>
- <20231105165521.3592037-6-jonas@kwiboo.se>
- <c75c894a09292775773ad338121ee81924337cf0.camel@collabora.com>
-From:   Jonas Karlman <jonas@kwiboo.se>
-In-Reply-To: <c75c894a09292775773ad338121ee81924337cf0.camel@collabora.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Report-Abuse-To: abuse@forwardemail.net
-X-Report-Abuse: abuse@forwardemail.net
-X-Complaints-To: abuse@forwardemail.net
-X-ForwardEmail-Version: 0.4.40
-X-ForwardEmail-Sender: rfc822; jonas@kwiboo.se, smtp.forwardemail.net,
- 149.28.215.223
-X-ForwardEmail-ID: 654ac0bea95f640b16f9fb5f
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-11-07 23:01, Nicolas Dufresne wrote:
-> Le dimanche 05 novembre 2023 à 16:55 +0000, Jonas Karlman a écrit :
->> SPS parameters is validated in try_ctrl() ops so there is no need to
-> 
->                  are
-> 
->> re-validate when streaming starts.
->>
->> Remove the unnecessary call to validate sps at streaming start.
-> 
-> This patch is not working since user may change the format after the
-> control have been set. The proper fix should actually reset the SPS
-> (well all header controls) to match the the newly set format. Then this
-> validation won't be needed anymore.
-> 
-> The sequence that is problematic after this patch is:
-> 
-> S_FMT (OUTPUT, width, height);
-> S_CTRL (SPS) // valid
-> S_FMT(OUTPUT, width', height'); // SPS is no longer valid
-> 
-> One suggestion I may make is to add a ops so that each codec
-> implementation can reset their header controls to make it valid against
-> the new resolution. With that in place you'll be able drop the check.
+On Tue,  7 Nov 2023 13:56:46 -0800
+Ankur Arora <ankur.a.arora@oracle.com> wrote:
 
-According to the Initialization section of the V4L2 stateless
-documentation a client is supposed to S_CTRL(SPS) after S_FMT(OUTPUT).
+> Hi,
 
-https://docs.kernel.org/userspace-api/media/v4l/dev-stateless-decoder.html#initialization
+Hi Ankur,
 
-I guess that all stateless decoders probably should reset all ctrls to
-default value on S_FMT(OUTPUT) or decoders may end up in an unexpected
-state?
-
-Is resetting a ctrl value back to default something that is supported by
-v4l2 ctrl core? Did not find any obvious way to reset a ctrl value.
-
-Will probably just drop this patch in v5.
-
-Regards,
-Jonas
+Thanks for doing this!
 
 > 
-> Nicolas
+> We have two models of preemption: voluntary and full (and RT which is
+> a fuller form of full preemption.) In this series -- which is based
+> on Thomas' PoC (see [1]), we try to unify the two by letting the
+> scheduler enforce policy for the voluntary preemption models as well.
+
+I would say there's "NONE" which is really just a "voluntary" but with
+fewer preemption points ;-) But still should be mentioned, otherwise people
+may get confused.
+
 > 
-> p.s. you can also just drop this patch from the series and revisit it
-> later, though I think its worth fixing.
-> 
->>
->> Suggested-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
->> Signed-off-by: Jonas Karlman <jonas@kwiboo.se>
->> ---
->> v4:
->> - No change
->>
->> v3:
->> - New patch
->>
->>  drivers/staging/media/rkvdec/rkvdec-h264.c | 19 ++-----------------
->>  1 file changed, 2 insertions(+), 17 deletions(-)
->>
->> diff --git a/drivers/staging/media/rkvdec/rkvdec-h264.c b/drivers/staging/media/rkvdec/rkvdec-h264.c
->> index 8bce8902b8dd..815d5359ddd5 100644
->> --- a/drivers/staging/media/rkvdec/rkvdec-h264.c
->> +++ b/drivers/staging/media/rkvdec/rkvdec-h264.c
->> @@ -1070,17 +1070,6 @@ static int rkvdec_h264_start(struct rkvdec_ctx *ctx)
->>  	struct rkvdec_dev *rkvdec = ctx->dev;
->>  	struct rkvdec_h264_priv_tbl *priv_tbl;
->>  	struct rkvdec_h264_ctx *h264_ctx;
->> -	struct v4l2_ctrl *ctrl;
->> -	int ret;
->> -
->> -	ctrl = v4l2_ctrl_find(&ctx->ctrl_hdl,
->> -			      V4L2_CID_STATELESS_H264_SPS);
->> -	if (!ctrl)
->> -		return -EINVAL;
->> -
->> -	ret = rkvdec_h264_validate_sps(ctx, ctrl->p_new.p_h264_sps);
->> -	if (ret)
->> -		return ret;
->>  
->>  	h264_ctx = kzalloc(sizeof(*h264_ctx), GFP_KERNEL);
->>  	if (!h264_ctx)
->> @@ -1089,8 +1078,8 @@ static int rkvdec_h264_start(struct rkvdec_ctx *ctx)
->>  	priv_tbl = dma_alloc_coherent(rkvdec->dev, sizeof(*priv_tbl),
->>  				      &h264_ctx->priv_tbl.dma, GFP_KERNEL);
->>  	if (!priv_tbl) {
->> -		ret = -ENOMEM;
->> -		goto err_free_ctx;
->> +		kfree(h264_ctx);
->> +		return -ENOMEM;
->>  	}
->>  
->>  	h264_ctx->priv_tbl.size = sizeof(*priv_tbl);
->> @@ -1100,10 +1089,6 @@ static int rkvdec_h264_start(struct rkvdec_ctx *ctx)
->>  
->>  	ctx->priv = h264_ctx;
->>  	return 0;
->> -
->> -err_free_ctx:
->> -	kfree(h264_ctx);
->> -	return ret;
->>  }
->>  
->>  static void rkvdec_h264_stop(struct rkvdec_ctx *ctx)
+> (Note that this is about preemption when executing in the kernel.
+> Userspace is always preemptible.)
 > 
 
+
+> Design
+> ==
+> 
+> As Thomas outlines in [1], to unify the preemption models we
+> want to: always have the preempt_count enabled and allow the scheduler
+> to drive preemption policy based on the model in effect.
+> 
+> Policies:
+> 
+> - preemption=none: run to completion
+> - preemption=voluntary: run to completion, unless a task of higher
+>   sched-class awaits
+> - preemption=full: optimized for low-latency. Preempt whenever a higher
+>   priority task awaits.
+> 
+> To do this add a new flag, TIF_NEED_RESCHED_LAZY which allows the
+> scheduler to mark that a reschedule is needed, but is deferred until
+> the task finishes executing in the kernel -- voluntary preemption
+> as it were.
+> 
+> The TIF_NEED_RESCHED flag is evaluated at all three of the preemption
+> points. TIF_NEED_RESCHED_LAZY only needs to be evaluated at ret-to-user.
+> 
+>          ret-to-user    ret-to-kernel    preempt_count()
+> none           Y              N                N
+> voluntary      Y              Y                Y
+> full           Y              Y                Y
+
+Wait. The above is for when RESCHED_LAZY is to preempt, right?
+
+Then, shouldn't voluntary be:
+
+ voluntary      Y              N                N
+
+For LAZY, but 
+
+ voluntary      Y              Y                Y
+
+For NEED_RESCHED (without lazy)
+
+That is, the only difference between voluntary and none (as you describe
+above) is that when an RT task wakes up, on voluntary, it sets NEED_RESCHED,
+but on none, it still sets NEED_RESCHED_LAZY?
+
+> 
+> 
+> There's just one remaining issue: now that explicit preemption points are
+> gone, processes that spread a long time in the kernel have no way to give
+> up the CPU.
+
+I wonder if this needs to be solved by with a user space knob, to trigger
+the time that "NEED_RESCHED" will force a schedule?
+
+> 
+> For full preemption, that is a non-issue as we always use TIF_NEED_RESCHED.
+> 
+> For none/voluntary preemption, we handle that by upgrading to TIF_NEED_RESCHED
+> if a task marked TIF_NEED_RESCHED_LAZY hasn't preempted away by the next tick.
+> (This would cause preemption either at ret-to-kernel, or if the task is in
+> a non-preemptible section, when it exits that section.)
+> 
+> Arguably this provides for much more consistent maximum latency (~2 tick
+> lengths + length of non-preemptible section) as compared to the old model
+> where the maximum latency depended on the dynamic distribution of
+> cond_resched() points.
+
+Again, why I think we probably want to set a knob  for users to adjust
+this. Default, it will be set to "tick" but if not, then we need to add
+another timer to trigger before then. And this would only be available with
+HRTIMERS of course ;-)
+
+> 
+> (As a bonus it handles code that is preemptible but cannot call
+> cond_resched() completely trivially: ex. long running Xen hypercalls, or
+> this series which started this discussion:
+>  https://lore.kernel.org/all/20230830184958.2333078-8-ankur.a.arora@oracle.com/)
+> 
+> 
+> Status
+> ==
+> 
+> What works:
+>  - The system seems to keep ticking over with the normal scheduling
+> policies (SCHED_OTHER). The support for the realtime policies is somewhat
+> more half baked.)
+>  - The basic performance numbers seem pretty close to 6.6-rc7 baseline
+> 
+> What's broken:
+>  - ARCH_NO_PREEMPT (See patch-45 "preempt: ARCH_NO_PREEMPT only preempts
+>    lazily")
+>  - Non-x86 architectures. It's trivial to support other archs (only need
+>    to add TIF_NEED_RESCHED_LAZY) but wanted to hold off until I got some
+>    comments on the series.
+>    (From some testing on arm64, didn't find any surprises.)
+
+
+>  - livepatch: livepatch depends on using _cond_resched() to provide
+>    low-latency patching. That is obviously difficult with cond_resched()
+>    gone. We could get a similar effect by using a static_key in
+>    preempt_enable() but at least with inline locks, that might be end
+>    up bloating the kernel quite a bit.
+
+Maybe if we have that timer, livepatch could set it to be temporarily
+shorter?
+
+>  - Documentation/ and comments mention cond_resched()
+
+>  - ftrace support for need-resched-lazy is incomplete
+
+Shouldn't be a problem.
+
+> 
+> What needs more discussion:
+>  - Should cond_resched_lock() etc be scheduling out for TIF_NEED_RESCHED
+>    only or both TIF_NEED_RESCHED_LAZY as well? (See patch 35 "thread_info:
+>    change to tif_need_resched(resched_t)")
+
+I would say NEED_RESCHED only, then it would match the description of the
+different models above.
+
+>  - Tracking whether a task in userspace or in the kernel (See patch-40
+>    "context_tracking: add ct_state_cpu()")
+>  - The right model for preempt=voluntary. (See patch 44 "sched: voluntary
+>    preemption")
+> 
+> 
+> Performance
+> ==
+> 
+
+
+>   * optimal-load (-j 1024)
+> 
+>            6.6-rc7                                    +series
+>         
+> 
+>   wall        139.2 +-       0.3             wall       138.8  +-
+> 0.2 utime     11161.0 +-    3360.4             utime    11061.2  +-
+> 3244.9 stime      1357.6 +-     199.3             stime     1366.6  +-
+>  216.3 %cpu       9108.8 +-    2431.4             %cpu      9081.0  +-
+> 2351.1 csw     2078599   +- 2013320.0             csw    1970610    +-
+> 1969030.0
+> 
+> 
+>   For both of these the wallclock, utime, stime etc are pretty much
+>   identical. The one interesting difference is that the number of
+>   context switches are fewer. This intuitively makes sense given that
+>   we reschedule threads lazily rather than rescheduling if we encounter
+>   a cond_resched() and there's a thread wanting to be scheduled.
+> 
+>   The max-load numbers (not posted here) also behave similarly.
+
+It would be interesting to run any "latency sensitive" benchmarks.
+
+I wounder how cyclictest would work under each model with and without this
+patch?
+
+-- Steve
