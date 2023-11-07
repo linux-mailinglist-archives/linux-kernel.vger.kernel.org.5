@@ -2,67 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 85C887E3486
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 05:28:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F9F17E3487
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 05:29:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233287AbjKGE17 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 23:27:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33566 "EHLO
+        id S233410AbjKGE3j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 23:29:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233369AbjKGE1z (ORCPT
+        with ESMTP id S233360AbjKGE3g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 23:27:55 -0500
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24F81FE
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 20:27:52 -0800 (PST)
-Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-507ad511315so7551936e87.0
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 20:27:52 -0800 (PST)
+        Mon, 6 Nov 2023 23:29:36 -0500
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC337FD
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 20:29:32 -0800 (PST)
+Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-53e3b8f906fso8718112a12.2
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 20:29:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699331270; x=1699936070; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
-         :to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Bz4ibFEani6ikAiwKtvYQFIOOBnNzX2wLnv6rOwCCMs=;
-        b=GNqp7n1p66wPlnB4E/S3CX+7x5J6beEzFXIv/prYoqTcsPbzO4SVmaVMGWDxh7lObN
-         iBovWIZ2P4EJmBEc+MkFXX+r73s0gJ7APcmP0utgD6+/OdoI2F8wmIfBn+fWQpNOhkkT
-         vqg49l4XVxJTyff01ai/ha0+MPrE1pL4CRuk8fxWy6TncAF7wjWoQmIOOfn2lJRhHP8M
-         6oTCM1p5DOWOpIrze+KGn+WZqnnpULP/dJ5uzD9wlzH+XtRUxYD9gXzLRcwZ3dhyEKcL
-         RqO7UbUcXH7GSajFKHVfEfvMo2wX+dmVyU8RsqxO3upjtnCf2XDMTvCLsksEIZIcolrZ
-         BO5w==
+        d=linaro.org; s=google; t=1699331371; x=1699936171; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=XQPupM1di7b1ZBbV6KY9DZ/O22wNMYRCE8a+kZseFTo=;
+        b=TH0F2xAzbb8tqQJPNw/iEHMRV3bE6v3vjSTuPKv9BMBHkWQqJINq0nXT/1y7fecLv9
+         ix/vSNkDwXFidk1MDTbrsKsAdpZ7oqSLJCcQA9DFS8CZHB7HlzMbbIDd03cdDWuA35I7
+         MttQtXtZmHea+DIrknvqgQ6H+qTlzbi2zpMAScfBoLeADfc4f8J3IBGj7qxcP1zhMvlw
+         pmS5JOI3QOYwx/6qYG4QxCFzFuwj2Q5ByxnuvzuvA9j07JwoEbDgwPi8C0svVAa6H1ej
+         anf2Jtg8ztvTURj9dQW4fcUFrqAg3Fmz5JRVwoP0uPZ0a/UVXkmC7BoXyV3+NEzpEG2B
+         JniA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699331270; x=1699936070;
-        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
-         :to:from:date:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Bz4ibFEani6ikAiwKtvYQFIOOBnNzX2wLnv6rOwCCMs=;
-        b=xMyLamKNezDXcLpvgV7QXqUjTqcRGPWi1SrBQ3OgwMAmD3IRfqtbEPCgrkAzzsjH7W
-         ThwoIzgIB2ttKO4DM4ic9aA1w2AoE+WtNa/Og3LQnlSfNTrSaMnrvlrK+GUbUzEUwoRN
-         JjZmgbuwc5AWRwNdlBlrKm9PogiZPkBFOQ2H6urDFww9pODODZ1Iivn9ExJZQOC2r4Nx
-         z+uTVHz0FuywUDBDndD2mDdPT0+nbZVSODCn486kOYXb7vawrBRMxHBMlT4cbRwgXC1g
-         6g0G0wuWnNE70rxPsXZNmpYEYQWCTWV8+F7FxK0y4SaqYJykEYe+ILGTdCCszGLofNzb
-         uUTg==
-X-Gm-Message-State: AOJu0YxQSA0rJZkl0GNJDJWE6wj13xf+RzCavFnqINr/SH34WohT6FLh
-        QvrNwpuusoqKdbxhwtn7LWVQyw==
-X-Google-Smtp-Source: AGHT+IFk9UPUznehgtsFa3wG1YIBTyBLMwYw8zTr1jNMtB7C1OcB8sHn4sRwgOB6wi5Zu5GGegmbOw==
-X-Received: by 2002:ac2:4850:0:b0:507:a089:caf4 with SMTP id 16-20020ac24850000000b00507a089caf4mr23066306lfy.60.1699331270333;
-        Mon, 06 Nov 2023 20:27:50 -0800 (PST)
+        d=1e100.net; s=20230601; t=1699331371; x=1699936171;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=XQPupM1di7b1ZBbV6KY9DZ/O22wNMYRCE8a+kZseFTo=;
+        b=ED7J1hnzNHF2f+gPhPG++98jB7+jBWUrJojpdXuqeeOAjEyLjhIb1sIWXHWUj7rAWy
+         nGLrrOL3uEq45yAOYtTrIfgJX3qcF9lQrFT7dDLnYGDMQnxZBgKSPvLC6lAqCwL7Io4D
+         1CmsNNGvZfsFiwdxahU+EHcAI3qr1WP7HDTxbfO7UMzRDGRHoKNx6aRxZ6IpnKSp7Zc+
+         +gsQYRDO1yrG8lkCf65BcUMtul+H7qcxIhfM5/Wo9TKYEuRB53HCjJK3T2UzXaGh1fiX
+         fbyCThv8E1ovN3EBRGML4mPdNmFBJYijSgrOsBUUcQz6qRHkh+MkJD2VuDmQFFbflPYf
+         g85w==
+X-Gm-Message-State: AOJu0Yx+kOd50omltmt8Xhu9AyD7ZJRHA0sWVl27QiL8koiNbQ0JTIFe
+        tX5CQhPRaG7/uRCggeC6YkX5ee0f0YyZ2sKlK7A=
+X-Google-Smtp-Source: AGHT+IE3ONDYmgnxRFMxvojQ+tQ5zt/oZDZhMVQWIp3GH2Q1sfQixeF4Snh10gF6cjzCMiWLj6E1dA==
+X-Received: by 2002:a50:cd5d:0:b0:543:d584:7d8f with SMTP id d29-20020a50cd5d000000b00543d5847d8fmr10459341edj.32.1699331371328;
+        Mon, 06 Nov 2023 20:29:31 -0800 (PST)
 Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id d26-20020a50cd5a000000b0053dab756073sm5148167edj.84.2023.11.06.20.27.49
+        by smtp.gmail.com with ESMTPSA id t26-20020a056402241a00b00543597cd190sm4972319eda.47.2023.11.06.20.29.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Nov 2023 20:27:50 -0800 (PST)
-Date:   Tue, 7 Nov 2023 07:27:47 +0300
+        Mon, 06 Nov 2023 20:29:31 -0800 (PST)
+Date:   Tue, 7 Nov 2023 07:29:28 +0300
 From:   Dan Carpenter <dan.carpenter@linaro.org>
-To:     oe-kbuild@lists.linux.dev, Zhou Jifeng <zhoujifeng@kylinos.com.cn>,
-        miklos@szeredi.hu
+To:     oe-kbuild@lists.linux.dev, Arnd Bergmann <arnd@arndb.de>
 Cc:     lkp@intel.com, oe-kbuild-all@lists.linux.dev,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Zhou Jifeng <zhoujifeng@kylinos.com.cn>
-Subject: Re: [PATCH] fuse: Track process write operations in both direct and
- writethrough modes
-Message-ID: <70dde24c-5aee-4752-a14e-74ffdc6f7359@kadam.mountain>
+        linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Javier Martinez Canillas <javierm@redhat.com>
+Subject: drivers/video/fbdev/hyperv_fb.c:1077 hvfb_getmem() error:
+ uninitialized symbol 'base'.
+Message-ID: <f08ac5bc-23af-4334-a045-e417e9a9d76b@kadam.mountain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231028065912.6084-1-zhoujifeng@kylinos.com.cn>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -73,93 +71,137 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Zhou,
-
-kernel test robot noticed the following build warnings:
-
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Zhou-Jifeng/fuse-Track-process-write-operations-in-both-direct-and-writethrough-modes/20231028-150119
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/mszeredi/fuse.git for-next
-patch link:    https://lore.kernel.org/r/20231028065912.6084-1-zhoujifeng%40kylinos.com.cn
-patch subject: [PATCH] fuse: Track process write operations in both direct and writethrough modes
-config: x86_64-randconfig-161-20231103 (https://download.01.org/0day-ci/archive/20231107/202311070338.uJNMq6Sh-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20231107/202311070338.uJNMq6Sh-lkp@intel.com/reproduce)
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   d2f51b3516dade79269ff45eae2a7668ae711b25
+commit: a07b50d80ab621f4f18d429068a43cffec26691f hyperv: avoid dependency on screen_info
+config: x86_64-randconfig-161-20231106 (https://download.01.org/0day-ci/archive/20231107/202311070802.YCpvehaz-lkp@intel.com/config)
+compiler: gcc-11 (Debian 11.3.0-12) 11.3.0
+reproduce: (https://download.01.org/0day-ci/archive/20231107/202311070802.YCpvehaz-lkp@intel.com/reproduce)
 
 If you fix the issue in a separate patch/commit (i.e. not just a new version of
 the same patch/commit), kindly add following tags
 | Reported-by: kernel test robot <lkp@intel.com>
 | Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-| Closes: https://lore.kernel.org/r/202311070338.uJNMq6Sh-lkp@intel.com/
+| Closes: https://lore.kernel.org/r/202311070802.YCpvehaz-lkp@intel.com/
 
 smatch warnings:
-fs/fuse/file.c:1359 fuse_cache_write_iter() error: uninitialized symbol 'err'.
+drivers/video/fbdev/hyperv_fb.c:1077 hvfb_getmem() error: uninitialized symbol 'base'.
+drivers/video/fbdev/hyperv_fb.c:1077 hvfb_getmem() error: uninitialized symbol 'size'.
 
-vim +/err +1359 fs/fuse/file.c
+vim +/base +1077 drivers/video/fbdev/hyperv_fb.c
 
-55752a3aba1387 Miklos Szeredi    2019-01-24  1302  static ssize_t fuse_cache_write_iter(struct kiocb *iocb, struct iov_iter *from)
-ea9b9907b82a09 Nicholas Piggin   2008-04-30  1303  {
-ea9b9907b82a09 Nicholas Piggin   2008-04-30  1304  	struct file *file = iocb->ki_filp;
-ea9b9907b82a09 Nicholas Piggin   2008-04-30  1305  	struct address_space *mapping = file->f_mapping;
-ea9b9907b82a09 Nicholas Piggin   2008-04-30  1306  	ssize_t written = 0;
-ea9b9907b82a09 Nicholas Piggin   2008-04-30  1307  	struct inode *inode = mapping->host;
-ea9b9907b82a09 Nicholas Piggin   2008-04-30  1308  	ssize_t err;
-56597c4ddc107c Zhou Jifeng       2023-10-28  1309  	ssize_t count;
-8981bdfda7445a Vivek Goyal       2020-10-09  1310  	struct fuse_conn *fc = get_fuse_conn(inode);
-ea9b9907b82a09 Nicholas Piggin   2008-04-30  1311  
-8981bdfda7445a Vivek Goyal       2020-10-09  1312  	if (fc->writeback_cache) {
-4d99ff8f12eb20 Pavel Emelyanov   2013-10-10  1313  		/* Update size (EOF optimization) and mode (SUID clearing) */
-c6c745b81033a4 Miklos Szeredi    2021-10-22  1314  		err = fuse_update_attributes(mapping->host, file,
-c6c745b81033a4 Miklos Szeredi    2021-10-22  1315  					     STATX_SIZE | STATX_MODE);
-4d99ff8f12eb20 Pavel Emelyanov   2013-10-10  1316  		if (err)
-4d99ff8f12eb20 Pavel Emelyanov   2013-10-10  1317  			return err;
-4d99ff8f12eb20 Pavel Emelyanov   2013-10-10  1318  
-8981bdfda7445a Vivek Goyal       2020-10-09  1319  		if (fc->handle_killpriv_v2 &&
-9452e93e6dae86 Christian Brauner 2023-01-13  1320  		    setattr_should_drop_suidgid(&nop_mnt_idmap,
-9452e93e6dae86 Christian Brauner 2023-01-13  1321  						file_inode(file))) {
-8981bdfda7445a Vivek Goyal       2020-10-09  1322  			goto writethrough;
-8981bdfda7445a Vivek Goyal       2020-10-09  1323  		}
-8981bdfda7445a Vivek Goyal       2020-10-09  1324  
-84c3d55cc474f9 Al Viro           2014-04-03  1325  		return generic_file_write_iter(iocb, from);
-4d99ff8f12eb20 Pavel Emelyanov   2013-10-10  1326  	}
-4d99ff8f12eb20 Pavel Emelyanov   2013-10-10  1327  
-8981bdfda7445a Vivek Goyal       2020-10-09  1328  writethrough:
-5955102c9984fa Al Viro           2016-01-22  1329  	inode_lock(inode);
-ea9b9907b82a09 Nicholas Piggin   2008-04-30  1330  
-56597c4ddc107c Zhou Jifeng       2023-10-28  1331  	count = generic_write_checks(iocb, from);
-56597c4ddc107c Zhou Jifeng       2023-10-28  1332  	if (count <= 0)
-ea9b9907b82a09 Nicholas Piggin   2008-04-30  1333  		goto out;
+3546448338e76a drivers/video/fbdev/hyperv_fb.c Jake Oshins       2015-08-05   992  static int hvfb_getmem(struct hv_device *hdev, struct fb_info *info)
+68a2d20b79b105 drivers/video/hyperv_fb.c       Haiyang Zhang     2013-04-29   993  {
+9069fd54960304 drivers/video/hyperv_fb.c       Gerd Hoffmann     2014-02-26   994  	struct hvfb_par *par = info->par;
+9069fd54960304 drivers/video/hyperv_fb.c       Gerd Hoffmann     2014-02-26   995  	struct pci_dev *pdev  = NULL;
+68a2d20b79b105 drivers/video/hyperv_fb.c       Haiyang Zhang     2013-04-29   996  	void __iomem *fb_virt;
+9069fd54960304 drivers/video/hyperv_fb.c       Gerd Hoffmann     2014-02-26   997  	int gen2vm = efi_enabled(EFI_BOOT);
+81d2393485f099 drivers/video/fbdev/hyperv_fb.c Thomas Zimmermann 2022-12-19   998  	resource_size_t base, size;
+3a6fb6c4255c38 drivers/video/fbdev/hyperv_fb.c Wei Hu            2019-12-09   999  	phys_addr_t paddr;
+9069fd54960304 drivers/video/hyperv_fb.c       Gerd Hoffmann     2014-02-26  1000  	int ret;
+68a2d20b79b105 drivers/video/hyperv_fb.c       Haiyang Zhang     2013-04-29  1001  
+3a6fb6c4255c38 drivers/video/fbdev/hyperv_fb.c Wei Hu            2019-12-09  1002  	if (!gen2vm) {
+68a2d20b79b105 drivers/video/hyperv_fb.c       Haiyang Zhang     2013-04-29  1003  		pdev = pci_get_device(PCI_VENDOR_ID_MICROSOFT,
+68a2d20b79b105 drivers/video/hyperv_fb.c       Haiyang Zhang     2013-04-29  1004  			PCI_DEVICE_ID_HYPERV_VIDEO, NULL);
+68a2d20b79b105 drivers/video/hyperv_fb.c       Haiyang Zhang     2013-04-29  1005  		if (!pdev) {
+68a2d20b79b105 drivers/video/hyperv_fb.c       Haiyang Zhang     2013-04-29  1006  			pr_err("Unable to find PCI Hyper-V video\n");
+68a2d20b79b105 drivers/video/hyperv_fb.c       Haiyang Zhang     2013-04-29  1007  			return -ENODEV;
+68a2d20b79b105 drivers/video/hyperv_fb.c       Haiyang Zhang     2013-04-29  1008  		}
+68a2d20b79b105 drivers/video/hyperv_fb.c       Haiyang Zhang     2013-04-29  1009  
+81d2393485f099 drivers/video/fbdev/hyperv_fb.c Thomas Zimmermann 2022-12-19  1010  		base = pci_resource_start(pdev, 0);
+81d2393485f099 drivers/video/fbdev/hyperv_fb.c Thomas Zimmermann 2022-12-19  1011  		size = pci_resource_len(pdev, 0);
+3a6fb6c4255c38 drivers/video/fbdev/hyperv_fb.c Wei Hu            2019-12-09  1012  
+3a6fb6c4255c38 drivers/video/fbdev/hyperv_fb.c Wei Hu            2019-12-09  1013  		/*
+3a6fb6c4255c38 drivers/video/fbdev/hyperv_fb.c Wei Hu            2019-12-09  1014  		 * For Gen 1 VM, we can directly use the contiguous memory
+3a6fb6c4255c38 drivers/video/fbdev/hyperv_fb.c Wei Hu            2019-12-09  1015  		 * from VM. If we succeed, deferred IO happens directly
+3a6fb6c4255c38 drivers/video/fbdev/hyperv_fb.c Wei Hu            2019-12-09  1016  		 * on this allocated framebuffer memory, avoiding extra
+3a6fb6c4255c38 drivers/video/fbdev/hyperv_fb.c Wei Hu            2019-12-09  1017  		 * memory copy.
+3a6fb6c4255c38 drivers/video/fbdev/hyperv_fb.c Wei Hu            2019-12-09  1018  		 */
+3a6fb6c4255c38 drivers/video/fbdev/hyperv_fb.c Wei Hu            2019-12-09  1019  		paddr = hvfb_get_phymem(hdev, screen_fb_size);
+3a6fb6c4255c38 drivers/video/fbdev/hyperv_fb.c Wei Hu            2019-12-09  1020  		if (paddr != (phys_addr_t) -1) {
+3a6fb6c4255c38 drivers/video/fbdev/hyperv_fb.c Wei Hu            2019-12-09  1021  			par->mmio_pp = paddr;
+3a6fb6c4255c38 drivers/video/fbdev/hyperv_fb.c Wei Hu            2019-12-09  1022  			par->mmio_vp = par->dio_vp = __va(paddr);
+3a6fb6c4255c38 drivers/video/fbdev/hyperv_fb.c Wei Hu            2019-12-09  1023  
+3a6fb6c4255c38 drivers/video/fbdev/hyperv_fb.c Wei Hu            2019-12-09  1024  			info->fix.smem_start = paddr;
+3a6fb6c4255c38 drivers/video/fbdev/hyperv_fb.c Wei Hu            2019-12-09  1025  			info->fix.smem_len = screen_fb_size;
+3a6fb6c4255c38 drivers/video/fbdev/hyperv_fb.c Wei Hu            2019-12-09  1026  			info->screen_base = par->mmio_vp;
+3a6fb6c4255c38 drivers/video/fbdev/hyperv_fb.c Wei Hu            2019-12-09  1027  			info->screen_size = screen_fb_size;
+3a6fb6c4255c38 drivers/video/fbdev/hyperv_fb.c Wei Hu            2019-12-09  1028  
+3a6fb6c4255c38 drivers/video/fbdev/hyperv_fb.c Wei Hu            2019-12-09  1029  			par->need_docopy = false;
+3a6fb6c4255c38 drivers/video/fbdev/hyperv_fb.c Wei Hu            2019-12-09  1030  			goto getmem_done;
+3a6fb6c4255c38 drivers/video/fbdev/hyperv_fb.c Wei Hu            2019-12-09  1031  		}
+3a6fb6c4255c38 drivers/video/fbdev/hyperv_fb.c Wei Hu            2019-12-09  1032  		pr_info("Unable to allocate enough contiguous physical memory on Gen 1 VM. Using MMIO instead.\n");
+a07b50d80ab621 drivers/video/fbdev/hyperv_fb.c Arnd Bergmann     2023-10-09  1033  	} else if (IS_ENABLED(CONFIG_SYSFB)) {
+81d2393485f099 drivers/video/fbdev/hyperv_fb.c Thomas Zimmermann 2022-12-19  1034  		base = screen_info.lfb_base;
+81d2393485f099 drivers/video/fbdev/hyperv_fb.c Thomas Zimmermann 2022-12-19  1035  		size = screen_info.lfb_size;
+3a6fb6c4255c38 drivers/video/fbdev/hyperv_fb.c Wei Hu            2019-12-09  1036  	}
 
-Missing error code?
+base and size not initialized on else path.
 
-ea9b9907b82a09 Nicholas Piggin   2008-04-30  1334  
-56597c4ddc107c Zhou Jifeng       2023-10-28  1335  	task_io_account_write(count);
-56597c4ddc107c Zhou Jifeng       2023-10-28  1336  
-5fa8e0a1c6a762 Jan Kara          2015-05-21  1337  	err = file_remove_privs(file);
-ea9b9907b82a09 Nicholas Piggin   2008-04-30  1338  	if (err)
-ea9b9907b82a09 Nicholas Piggin   2008-04-30  1339  		goto out;
-ea9b9907b82a09 Nicholas Piggin   2008-04-30  1340  
-c3b2da31483449 Josef Bacik       2012-03-26  1341  	err = file_update_time(file);
-c3b2da31483449 Josef Bacik       2012-03-26  1342  	if (err)
-c3b2da31483449 Josef Bacik       2012-03-26  1343  		goto out;
-ea9b9907b82a09 Nicholas Piggin   2008-04-30  1344  
-2ba48ce513c4e5 Al Viro           2015-04-09  1345  	if (iocb->ki_flags & IOCB_DIRECT) {
-1af5bb491fbb41 Christoph Hellwig 2016-04-07  1346  		written = generic_file_direct_write(iocb, from);
-84c3d55cc474f9 Al Viro           2014-04-03  1347  		if (written < 0 || !iov_iter_count(from))
-4273b793ec6875 Anand Avati       2012-02-17  1348  			goto out;
-64d1b4dd826d88 Christoph Hellwig 2023-06-01  1349  		written = direct_write_fallback(iocb, from, written,
-64d1b4dd826d88 Christoph Hellwig 2023-06-01  1350  				fuse_perform_write(iocb, from));
-4273b793ec6875 Anand Avati       2012-02-17  1351  	} else {
-596df33d673d9d Christoph Hellwig 2023-06-01  1352  		written = fuse_perform_write(iocb, from);
-4273b793ec6875 Anand Avati       2012-02-17  1353  	}
-ea9b9907b82a09 Nicholas Piggin   2008-04-30  1354  out:
-5955102c9984fa Al Viro           2016-01-22  1355  	inode_unlock(inode);
-e1c0eecba1a415 Miklos Szeredi    2017-09-12  1356  	if (written > 0)
-e1c0eecba1a415 Miklos Szeredi    2017-09-12  1357  		written = generic_write_sync(iocb, written);
-ea9b9907b82a09 Nicholas Piggin   2008-04-30  1358  
-ea9b9907b82a09 Nicholas Piggin   2008-04-30 @1359  	return written ? written : err;
-ea9b9907b82a09 Nicholas Piggin   2008-04-30  1360  }
+3a6fb6c4255c38 drivers/video/fbdev/hyperv_fb.c Wei Hu            2019-12-09  1037  
+3a6fb6c4255c38 drivers/video/fbdev/hyperv_fb.c Wei Hu            2019-12-09  1038  	/*
+3a6fb6c4255c38 drivers/video/fbdev/hyperv_fb.c Wei Hu            2019-12-09  1039  	 * Cannot use the contiguous physical memory.
+3a6fb6c4255c38 drivers/video/fbdev/hyperv_fb.c Wei Hu            2019-12-09  1040  	 * Allocate mmio space for framebuffer.
+3a6fb6c4255c38 drivers/video/fbdev/hyperv_fb.c Wei Hu            2019-12-09  1041  	 */
+3a6fb6c4255c38 drivers/video/fbdev/hyperv_fb.c Wei Hu            2019-12-09  1042  	dio_fb_size =
+3a6fb6c4255c38 drivers/video/fbdev/hyperv_fb.c Wei Hu            2019-12-09  1043  		screen_width * screen_height * screen_depth / 8;
+3a6fb6c4255c38 drivers/video/fbdev/hyperv_fb.c Wei Hu            2019-12-09  1044  
+c4b4d7047f16a8 drivers/video/fbdev/hyperv_fb.c Saurabh Sengar    2022-04-27  1045  	ret = vmbus_allocate_mmio(&par->mem, hdev, 0, -1,
+3546448338e76a drivers/video/fbdev/hyperv_fb.c Jake Oshins       2015-08-05  1046  				  screen_fb_size, 0x100000, true);
+9069fd54960304 drivers/video/hyperv_fb.c       Gerd Hoffmann     2014-02-26  1047  	if (ret != 0) {
+3546448338e76a drivers/video/fbdev/hyperv_fb.c Jake Oshins       2015-08-05  1048  		pr_err("Unable to allocate framebuffer memory\n");
+68a2d20b79b105 drivers/video/hyperv_fb.c       Haiyang Zhang     2013-04-29  1049  		goto err1;
+9069fd54960304 drivers/video/hyperv_fb.c       Gerd Hoffmann     2014-02-26  1050  	}
+68a2d20b79b105 drivers/video/hyperv_fb.c       Haiyang Zhang     2013-04-29  1051  
+5f1251a48c17b5 drivers/video/fbdev/hyperv_fb.c Dexuan Cui        2020-11-17  1052  	/*
+5f1251a48c17b5 drivers/video/fbdev/hyperv_fb.c Dexuan Cui        2020-11-17  1053  	 * Map the VRAM cacheable for performance. This is also required for
+5f1251a48c17b5 drivers/video/fbdev/hyperv_fb.c Dexuan Cui        2020-11-17  1054  	 * VM Connect to display properly for ARM64 Linux VM, as the host also
+5f1251a48c17b5 drivers/video/fbdev/hyperv_fb.c Dexuan Cui        2020-11-17  1055  	 * maps the VRAM cacheable.
+5f1251a48c17b5 drivers/video/fbdev/hyperv_fb.c Dexuan Cui        2020-11-17  1056  	 */
+5f1251a48c17b5 drivers/video/fbdev/hyperv_fb.c Dexuan Cui        2020-11-17  1057  	fb_virt = ioremap_cache(par->mem->start, screen_fb_size);
+68a2d20b79b105 drivers/video/hyperv_fb.c       Haiyang Zhang     2013-04-29  1058  	if (!fb_virt)
+68a2d20b79b105 drivers/video/hyperv_fb.c       Haiyang Zhang     2013-04-29  1059  		goto err2;
+68a2d20b79b105 drivers/video/hyperv_fb.c       Haiyang Zhang     2013-04-29  1060  
+d21987d709e807 drivers/video/fbdev/hyperv_fb.c Wei Hu            2019-09-18  1061  	/* Allocate memory for deferred IO */
+d21987d709e807 drivers/video/fbdev/hyperv_fb.c Wei Hu            2019-09-18  1062  	par->dio_vp = vzalloc(round_up(dio_fb_size, PAGE_SIZE));
+d21987d709e807 drivers/video/fbdev/hyperv_fb.c Wei Hu            2019-09-18  1063  	if (par->dio_vp == NULL)
+d21987d709e807 drivers/video/fbdev/hyperv_fb.c Wei Hu            2019-09-18  1064  		goto err3;
+d21987d709e807 drivers/video/fbdev/hyperv_fb.c Wei Hu            2019-09-18  1065  
+d21987d709e807 drivers/video/fbdev/hyperv_fb.c Wei Hu            2019-09-18  1066  	/* Physical address of FB device */
+d21987d709e807 drivers/video/fbdev/hyperv_fb.c Wei Hu            2019-09-18  1067  	par->mmio_pp = par->mem->start;
+d21987d709e807 drivers/video/fbdev/hyperv_fb.c Wei Hu            2019-09-18  1068  	/* Virtual address of FB device */
+d21987d709e807 drivers/video/fbdev/hyperv_fb.c Wei Hu            2019-09-18  1069  	par->mmio_vp = (unsigned char *) fb_virt;
+d21987d709e807 drivers/video/fbdev/hyperv_fb.c Wei Hu            2019-09-18  1070  
+3546448338e76a drivers/video/fbdev/hyperv_fb.c Jake Oshins       2015-08-05  1071  	info->fix.smem_start = par->mem->start;
+d21987d709e807 drivers/video/fbdev/hyperv_fb.c Wei Hu            2019-09-18  1072  	info->fix.smem_len = dio_fb_size;
+d21987d709e807 drivers/video/fbdev/hyperv_fb.c Wei Hu            2019-09-18  1073  	info->screen_base = par->dio_vp;
+d21987d709e807 drivers/video/fbdev/hyperv_fb.c Wei Hu            2019-09-18  1074  	info->screen_size = dio_fb_size;
+68a2d20b79b105 drivers/video/hyperv_fb.c       Haiyang Zhang     2013-04-29  1075  
+3a6fb6c4255c38 drivers/video/fbdev/hyperv_fb.c Wei Hu            2019-12-09  1076  getmem_done:
+5fbcc6708fe32e drivers/video/fbdev/hyperv_fb.c Daniel Vetter     2023-04-06 @1077  	aperture_remove_conflicting_devices(base, size, KBUILD_MODNAME);
+3cb73bc3fa2a3c drivers/video/fbdev/hyperv_fb.c Kairui Song       2020-10-14  1078  
+a07b50d80ab621 drivers/video/fbdev/hyperv_fb.c Arnd Bergmann     2023-10-09  1079  	if (!gen2vm) {
+a07b50d80ab621 drivers/video/fbdev/hyperv_fb.c Arnd Bergmann     2023-10-09  1080  		pci_dev_put(pdev);
+a07b50d80ab621 drivers/video/fbdev/hyperv_fb.c Arnd Bergmann     2023-10-09  1081  	} else if (IS_ENABLED(CONFIG_SYSFB)) {
+3cb73bc3fa2a3c drivers/video/fbdev/hyperv_fb.c Kairui Song       2020-10-14  1082  		/* framebuffer is reallocated, clear screen_info to avoid misuse from kexec */
+3cb73bc3fa2a3c drivers/video/fbdev/hyperv_fb.c Kairui Song       2020-10-14  1083  		screen_info.lfb_size = 0;
+3cb73bc3fa2a3c drivers/video/fbdev/hyperv_fb.c Kairui Song       2020-10-14  1084  		screen_info.lfb_base = 0;
+3cb73bc3fa2a3c drivers/video/fbdev/hyperv_fb.c Kairui Song       2020-10-14  1085  		screen_info.orig_video_isVGA = 0;
+3cb73bc3fa2a3c drivers/video/fbdev/hyperv_fb.c Kairui Song       2020-10-14  1086  	}
+9069fd54960304 drivers/video/hyperv_fb.c       Gerd Hoffmann     2014-02-26  1087  
+68a2d20b79b105 drivers/video/hyperv_fb.c       Haiyang Zhang     2013-04-29  1088  	return 0;
+68a2d20b79b105 drivers/video/hyperv_fb.c       Haiyang Zhang     2013-04-29  1089  
+68a2d20b79b105 drivers/video/hyperv_fb.c       Haiyang Zhang     2013-04-29  1090  err3:
+68a2d20b79b105 drivers/video/hyperv_fb.c       Haiyang Zhang     2013-04-29  1091  	iounmap(fb_virt);
+68a2d20b79b105 drivers/video/hyperv_fb.c       Haiyang Zhang     2013-04-29  1092  err2:
+696ca5e82c057a drivers/video/fbdev/hyperv_fb.c Jake Oshins       2016-04-05  1093  	vmbus_free_mmio(par->mem->start, screen_fb_size);
+3546448338e76a drivers/video/fbdev/hyperv_fb.c Jake Oshins       2015-08-05  1094  	par->mem = NULL;
+68a2d20b79b105 drivers/video/hyperv_fb.c       Haiyang Zhang     2013-04-29  1095  err1:
+9069fd54960304 drivers/video/hyperv_fb.c       Gerd Hoffmann     2014-02-26  1096  	if (!gen2vm)
+68a2d20b79b105 drivers/video/hyperv_fb.c       Haiyang Zhang     2013-04-29  1097  		pci_dev_put(pdev);
+9069fd54960304 drivers/video/hyperv_fb.c       Gerd Hoffmann     2014-02-26  1098  
+68a2d20b79b105 drivers/video/hyperv_fb.c       Haiyang Zhang     2013-04-29  1099  	return -ENOMEM;
+68a2d20b79b105 drivers/video/hyperv_fb.c       Haiyang Zhang     2013-04-29  1100  }
 
 -- 
 0-DAY CI Kernel Test Service
