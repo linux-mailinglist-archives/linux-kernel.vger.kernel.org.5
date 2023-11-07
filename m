@@ -2,97 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B2CB7E4CA1
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 00:20:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D72857E4CA5
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 00:22:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234840AbjKGXUf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 18:20:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59610 "EHLO
+        id S234821AbjKGXWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 18:22:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229896AbjKGXUd (ORCPT
+        with ESMTP id S234038AbjKGXWi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 18:20:33 -0500
+        Tue, 7 Nov 2023 18:22:38 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9065410C3
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 15:20:31 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8FFDDC433C8;
-        Tue,  7 Nov 2023 23:20:27 +0000 (UTC)
-Date:   Tue, 7 Nov 2023 18:20:30 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Ankur Arora <ankur.a.arora@oracle.com>
-Cc:     linux-kernel@vger.kernel.org, tglx@linutronix.de,
-        peterz@infradead.org, torvalds@linux-foundation.org,
-        paulmck@kernel.org, linux-mm@kvack.org, x86@kernel.org,
-        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
-        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        willy@infradead.org, mgorman@suse.de, jon.grimm@amd.com,
-        bharata@amd.com, raghavendra.kt@amd.com,
-        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
-        jgross@suse.com, andrew.cooper3@citrix.com, mingo@kernel.org,
-        bristot@kernel.org, mathieu.desnoyers@efficios.com,
-        geert@linux-m68k.org, glaubitz@physik.fu-berlin.de,
-        anton.ivanov@cambridgegreys.com, mattst88@gmail.com,
-        krypton@ulrich-teichert.org, David.Laight@ACULAB.COM,
-        richard@nod.at, mjguzik@gmail.com
-Subject: Re: [RFC PATCH 14/86] Revert "preempt/dynamic: Fix
- setup_preempt_mode() return value"
-Message-ID: <20231107182030.0dfc4e78@gandalf.local.home>
-In-Reply-To: <20231107215742.363031-15-ankur.a.arora@oracle.com>
-References: <20231107215742.363031-1-ankur.a.arora@oracle.com>
-        <20231107215742.363031-15-ankur.a.arora@oracle.com>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31CE5D79;
+        Tue,  7 Nov 2023 15:22:36 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0A5B1C433C7;
+        Tue,  7 Nov 2023 23:22:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699399355;
+        bh=+CbiV6rpXCNM6vhS/PR5+TmIMmNSjDz1OXp5IClnHWY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=ppLF/uAX6TCx6i0kRXOW+epaJ/1C9INp1UglbkanA6RtlUloLywiBg0Iuxtawgg9H
+         2Tt6BPxkT3Xb6NOuIExSc5dNX8bGVDlRb6FPL/S4AFl+yPFcADIpPyfDxkahI4tXVf
+         b4z9nprXsiifyxHq5/Rwp/WZRnvsyZkeKuYMJnCil0pZ5LpN7SD0WOTHG5zBDcKxJl
+         F3HCFnaw+S/dsyKhL9Iy3iyN0rofoydLK2RWH91oIppExdX8QVTXMozO2C1LLeTHB8
+         JUQz3VJSxq5HMHDyf3dF2nVDSal8c4xN4uXS9cUWfSjMm6jycqmkjJYP+KJ+RoQ4Ja
+         pYMW8Wyk4aQSg==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Zhang Shurong <zhang_shurong@foxmail.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Sasha Levin <sashal@kernel.org>, jic23@kernel.org,
+        mcoquelin.stm32@gmail.com, alexandre.torgue@foss.st.com,
+        robh@kernel.org, u.kleine-koenig@pengutronix.de, frank.li@vivo.com,
+        heiko@sntech.de, olivier.moysan@foss.st.com,
+        linux-iio@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH AUTOSEL 6.6 01/18] iio: adc: stm32-adc: harden against NULL pointer deref in stm32_adc_probe()
+Date:   Tue,  7 Nov 2023 18:21:55 -0500
+Message-ID: <20231107232231.3775605-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 6.6
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue,  7 Nov 2023 13:57:00 -0800
-Ankur Arora <ankur.a.arora@oracle.com> wrote:
+From: Zhang Shurong <zhang_shurong@foxmail.com>
 
-> This reverts commit 9ed20bafc85806ca6c97c9128cec46c3ef80ae86.
+[ Upstream commit 3a23b384e7e3d64d5587ad10729a34d4f761517e ]
 
-Note, it's better to just do a big revert of related code than to have to
-revert every individual commit.
+of_match_device() may fail and returns a NULL pointer.
 
-You can do one big commit that states:
+In practice there is no known reasonable way to trigger this, but
+in case one is added in future, harden the code by adding the check
 
-This reverts commits:
+Signed-off-by: Zhang Shurong <zhang_shurong@foxmail.com>
+Link: https://lore.kernel.org/r/tencent_994DA85912C937E3B5405BA960B31ED90A08@qq.com
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/iio/adc/stm32-adc-core.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-  ....
-
-And list the commits.
-
-That is, for commits that affect a single file, do not cherry-pick commits
-to remove, just remove them all in one go.
-
--- Steve
-
-
-> 
-> Signed-off-by: Ankur Arora <ankur.a.arora@oracle.com>
-> ---
->  kernel/sched/core.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index f8bbddd729db..50e1133cacc9 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -7062,11 +7062,11 @@ static int __init setup_preempt_mode(char *str)
->  	int mode = sched_dynamic_mode(str);
->  	if (mode < 0) {
->  		pr_warn("Dynamic Preempt: unsupported mode: %s\n", str);
-> -		return 0;
-> +		return 1;
->  	}
->  
->  	sched_dynamic_update(mode);
-> -	return 1;
-> +	return 0;
->  }
->  __setup("preempt=", setup_preempt_mode);
->  
+diff --git a/drivers/iio/adc/stm32-adc-core.c b/drivers/iio/adc/stm32-adc-core.c
+index 2f082006550fd..bbd5bdd732f01 100644
+--- a/drivers/iio/adc/stm32-adc-core.c
++++ b/drivers/iio/adc/stm32-adc-core.c
+@@ -708,6 +708,8 @@ static int stm32_adc_probe(struct platform_device *pdev)
+ 	struct stm32_adc_priv *priv;
+ 	struct device *dev = &pdev->dev;
+ 	struct device_node *np = pdev->dev.of_node;
++	const struct of_device_id *of_id;
++
+ 	struct resource *res;
+ 	u32 max_rate;
+ 	int ret;
+@@ -720,8 +722,11 @@ static int stm32_adc_probe(struct platform_device *pdev)
+ 		return -ENOMEM;
+ 	platform_set_drvdata(pdev, &priv->common);
+ 
+-	priv->cfg = (const struct stm32_adc_priv_cfg *)
+-		of_match_device(dev->driver->of_match_table, dev)->data;
++	of_id = of_match_device(dev->driver->of_match_table, dev);
++	if (!of_id)
++		return -ENODEV;
++
++	priv->cfg = (const struct stm32_adc_priv_cfg *)of_id->data;
+ 	priv->nb_adc_max = priv->cfg->num_adcs;
+ 	spin_lock_init(&priv->common.lock);
+ 
+-- 
+2.42.0
 
