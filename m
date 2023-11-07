@@ -2,105 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 443767E362D
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 09:01:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC7D87E3656
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 09:07:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233686AbjKGIBt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 03:01:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53556 "EHLO
+        id S233684AbjKGIHx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 03:07:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233590AbjKGIBs (ORCPT
+        with ESMTP id S229580AbjKGIHv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 03:01:48 -0500
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 256F2E8;
-        Tue,  7 Nov 2023 00:01:45 -0800 (PST)
-Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4SPgf74yFYzvQS6;
-        Tue,  7 Nov 2023 16:01:35 +0800 (CST)
-Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Tue, 7 Nov
- 2023 16:00:33 +0800
-Subject: Re: [RFC PATCH v3 07/12] page-pool: device memory support
-To:     Mina Almasry <almasrymina@google.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-arch@vger.kernel.org>,
-        <linux-kselftest@vger.kernel.org>, <linux-media@vger.kernel.org>,
-        <dri-devel@lists.freedesktop.org>, <linaro-mm-sig@lists.linaro.org>
-CC:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        David Ahern <dsahern@kernel.org>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Jeroen de Borst <jeroendb@google.com>,
-        Praveen Kaligineedi <pkaligineedi@google.com>
-References: <20231106024413.2801438-1-almasrymina@google.com>
- <20231106024413.2801438-8-almasrymina@google.com>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <4a0e9d53-324d-e19b-2a30-ba86f9e5569e@huawei.com>
-Date:   Tue, 7 Nov 2023 16:00:32 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
-MIME-Version: 1.0
-In-Reply-To: <20231106024413.2801438-8-almasrymina@google.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Tue, 7 Nov 2023 03:07:51 -0500
+X-Greylist: delayed 387 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 07 Nov 2023 00:07:47 PST
+Received: from sym2.noone.org (sym.noone.org [178.63.92.236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45C57EA;
+        Tue,  7 Nov 2023 00:07:47 -0800 (PST)
+Received: by sym2.noone.org (Postfix, from userid 1002)
+        id 4SPgdp2ctLzvjhV; Tue,  7 Nov 2023 09:01:17 +0100 (CET)
+From:   Tobias Klauser <tklauser@distanz.ch>
+To:     Paolo Abeni <pabeni@redhat.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net] indirect_call_wrapper: Fix typo in INDIRECT_CALL_$NR kerneldoc
+Date:   Tue,  7 Nov 2023 09:01:17 +0100
+Message-Id: <20231107080117.29511-1-tklauser@distanz.ch>
+X-Mailer: git-send-email 2.11.0
+X-Spam-Status: No, score=-0.3 required=5.0 tests=BAYES_05,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/11/6 10:44, Mina Almasry wrote:
-> Overload the LSB of struct page* to indicate that it's a page_pool_iov.
-> 
-> Refactor mm calls on struct page* into helpers, and add page_pool_iov
-> handling on those helpers. Modify callers of these mm APIs with calls to
-> these helpers instead.
-> 
-> In areas where struct page* is dereferenced, add a check for special
-> handling of page_pool_iov.
-> 
-> Signed-off-by: Mina Almasry <almasrymina@google.com>
-> 
-> ---
->  include/net/page_pool/helpers.h | 74 ++++++++++++++++++++++++++++++++-
->  net/core/page_pool.c            | 63 ++++++++++++++++++++--------
->  2 files changed, 118 insertions(+), 19 deletions(-)
-> 
-> diff --git a/include/net/page_pool/helpers.h b/include/net/page_pool/helpers.h
-> index b93243c2a640..08f1a2cc70d2 100644
-> --- a/include/net/page_pool/helpers.h
-> +++ b/include/net/page_pool/helpers.h
-> @@ -151,6 +151,64 @@ static inline struct page_pool_iov *page_to_page_pool_iov(struct page *page)
->  	return NULL;
->  }
->  
-> +static inline int page_pool_page_ref_count(struct page *page)
-> +{
-> +	if (page_is_page_pool_iov(page))
-> +		return page_pool_iov_refcount(page_to_page_pool_iov(page));
+Fix a small typo in the kerneldoc comment of the INDIRECT_CALL_$NR
+macro.
 
-We have added a lot of 'if' for the devmem case, it would be better to
-make it more generic so that we can have more unified metadata handling
-for normal page and devmem. If we add another memory type here, do we
-need another 'if' here?
-That is part of the reason I suggested using a more unified metadata for
-all the types of memory chunks used by page_pool.
+Signed-off-by: Tobias Klauser <tklauser@distanz.ch>
+---
+ include/linux/indirect_call_wrapper.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/linux/indirect_call_wrapper.h b/include/linux/indirect_call_wrapper.h
+index c1c76a70a6ce..adb83a42a6b9 100644
+--- a/include/linux/indirect_call_wrapper.h
++++ b/include/linux/indirect_call_wrapper.h
+@@ -11,7 +11,7 @@
+  *  @__VA_ARGS__: arguments for @f
+  *
+  * Avoid retpoline overhead for known builtin, checking @f vs each of them and
+- * eventually invoking directly the builtin function. The functions are check
++ * eventually invoking directly the builtin function. The functions are checked
+  * in the given order. Fallback to the indirect call.
+  */
+ #define INDIRECT_CALL_1(f, f1, ...)					\
+-- 
+2.42.0
+
