@@ -2,238 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E7E077E4B20
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 22:49:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86C2B7E4B1B
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 22:49:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344129AbjKGVti (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 16:49:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53830 "EHLO
+        id S1344122AbjKGVtI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 16:49:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235310AbjKGVth (ORCPT
+        with ESMTP id S234954AbjKGVtH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 16:49:37 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95E3010E2
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 13:49:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699393775; x=1730929775;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=b+q5jfs/hj2QgcyRXxN6WEKGacc8928DRRx5Awu7oFw=;
-  b=I70elGWOBI8Tg7EFzpdDth0vzNfauRM2PqBTbLWBKDHUKHInIepvA+Kr
-   GSZdVx07yiDVWPmz6nPpaPWxcS8BqyTh+ppmuXlnjiBrnW6BXHzExJwsG
-   AdmDF6+mqCzwldkYy7P/8WCLWV5Z7IuluSDOx4STqDmhFsv4zPDQTKJFj
-   MHcG4qOQEekgQzZS5BTB9pocTtqS8793DKxZDAENLxFr2PSjxAoqiv3gc
-   NIH1ckeyuGmkEVjXDbR+7OJZfG3L0M5XlxrTDP5tHnMIYB2z/nUrLJKRW
-   HVnp7ZiOsaY4p7FQYzFMBFd73h+hT1dDlx86L9MA+KbALUUWZk+ZUMh80
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10887"; a="393553003"
-X-IronPort-AV: E=Sophos;i="6.03,284,1694761200"; 
-   d="scan'208";a="393553003"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2023 13:49:35 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10887"; a="936297189"
-X-IronPort-AV: E=Sophos;i="6.03,284,1694761200"; 
-   d="scan'208";a="936297189"
-Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by orsmga005.jf.intel.com with ESMTP; 07 Nov 2023 13:49:33 -0800
-Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r0Twx-0007Pl-0M;
-        Tue, 07 Nov 2023 21:49:31 +0000
-Date:   Wed, 8 Nov 2023 05:48:25 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: mm/vmstat.c:358:9: sparse: sparse: incorrect type in argument 1
- (different address spaces)
-Message-ID: <202311080409.LlOfTR3m-lkp@intel.com>
+        Tue, 7 Nov 2023 16:49:07 -0500
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CE8010DF
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 13:49:05 -0800 (PST)
+Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-50943ccbbaeso8911097e87.2
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 13:49:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1699393743; x=1699998543; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=pa2zOyttqh4Cplc0zA1ry0ffJuSQYlFA+LZe6ZD7ldM=;
+        b=Hufx2xDPb9KDPontC2VtafLgnOhnW4B/HzXkuFuavnMsL3FZTuKGxYLKEMm05Dk6ni
+         WZcI3D6ygnwp4MJToxdrpH1H8Rt8crBdxi92vD91UlLpHB2mcme5uWlpLzqgG7YFkXWG
+         kmBhoJNL1o1t+c40sefrceaxROJAKba1fUnzkrThrZKH+gr8H6W7J57uSe0NXFbATXvT
+         80jVqTMiBKTAeoc/y5lX40AdR12oeAYuT6tP7MRB3cq8wdryUl6quCE/ptHhyolp5zAk
+         Zl8+1yDZ4hYroKQr46easG9hPIuDMxZbHkOetk8XE3W7dj8C69bklbluOfvpUvVfQ7N6
+         Stsw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699393743; x=1699998543;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=pa2zOyttqh4Cplc0zA1ry0ffJuSQYlFA+LZe6ZD7ldM=;
+        b=bSRRWGxP92KgVmhaq4l5AuPuo9bcGYtjmJfYkB9Wi3iudKoISxNit/RvB4IGF0i+/h
+         D1be5NtI2J+7R6z7jWQXBKiZVqj+EYvsW9EcDXOnt8OFrNy1fEX3uqHQJD3fZPMAtEFN
+         gr5IisWrA8d8D0IJVjE3++jmFaXUngiAoLQ8yEBguWvB0AbDjqsrhwi09FfGmVv2M0tS
+         8O/uANi9jh2IV55fzdxgLIcIOoVy+qhum9CFQR2+YzI/IeF3vde9DxKYwAQ6OBqTlGz1
+         /73jE3pj6T7mC8J6rcJt6JGPicyZzG7tIR0E5jxxk79lsCZdy772RWWCw3GKct/eWpPN
+         T6eg==
+X-Gm-Message-State: AOJu0YwRbZuXlIgEeVsQuD8BSBula7u3qViO7vAIZtEoNHmtsVAUF48j
+        er9lPst+eCRwELeNSPZcnAHHnw==
+X-Google-Smtp-Source: AGHT+IFh5oBvg3I2V8XiC2QUVEVBT2NMtmPppf2TWbUUy3IzPlecfjStcf1cU5vniuztKcOHfTrCHw==
+X-Received: by 2002:a05:6512:3d0b:b0:500:8f66:5941 with SMTP id d11-20020a0565123d0b00b005008f665941mr32260653lfv.50.1699393743368;
+        Tue, 07 Nov 2023 13:49:03 -0800 (PST)
+Received: from [172.30.205.109] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
+        by smtp.gmail.com with ESMTPSA id i27-20020a0565123e1b00b00507d219596dsm465396lfv.268.2023.11.07.13.49.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 07 Nov 2023 13:49:03 -0800 (PST)
+Message-ID: <871e668a-1732-4ed6-9d12-818504296464@linaro.org>
+Date:   Tue, 7 Nov 2023 22:48:59 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 4/6] media: qcom: camss: Add sc8280xp resource details
+Content-Language: en-US
+To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        hverkuil-cisco@xs4all.nl, laurent.pinchart@ideasonboard.com,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Todor Tomov <todor.too@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, vincent.knecht@mailoo.org,
+        matti.lehtimaki@gmail.com, quic_grosikop@quicinc.com
+Cc:     linux-arm-msm@vger.kernel.org, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231105-b4-camss-sc8280xp-v3-0-4b3c372ff0f4@linaro.org>
+ <20231105-b4-camss-sc8280xp-v3-4-4b3c372ff0f4@linaro.org>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <20231105-b4-camss-sc8280xp-v3-4-4b3c372ff0f4@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   be3ca57cfb777ad820c6659d52e60bbdd36bf5ff
-commit: 7a025e91abd23effe869a05d037b26770ffa0309 mm/vmstat: Use preempt_[dis|en]able_nested()
-date:   1 year, 2 months ago
-config: loongarch-randconfig-r123-20231107 (https://download.01.org/0day-ci/archive/20231108/202311080409.LlOfTR3m-lkp@intel.com/config)
-compiler: loongarch64-linux-gcc (GCC) 13.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20231108/202311080409.LlOfTR3m-lkp@intel.com/reproduce)
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311080409.LlOfTR3m-lkp@intel.com/
 
-sparse warnings: (new ones prefixed by >>)
->> mm/vmstat.c:358:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
-   mm/vmstat.c:358:9: sparse:     expected void *ptr
-   mm/vmstat.c:358:9: sparse:     got unsigned int [noderef] __percpu *
->> mm/vmstat.c:358:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
-   mm/vmstat.c:358:9: sparse:     expected void *ptr
-   mm/vmstat.c:358:9: sparse:     got unsigned int [noderef] __percpu *
->> mm/vmstat.c:358:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
-   mm/vmstat.c:358:9: sparse:     expected void *ptr
-   mm/vmstat.c:358:9: sparse:     got unsigned int [noderef] __percpu *
->> mm/vmstat.c:358:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
-   mm/vmstat.c:358:9: sparse:     expected void *ptr
-   mm/vmstat.c:358:9: sparse:     got unsigned int [noderef] __percpu *
->> mm/vmstat.c:358:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
-   mm/vmstat.c:358:9: sparse:     expected void *ptr
-   mm/vmstat.c:358:9: sparse:     got int [noderef] __percpu *
->> mm/vmstat.c:358:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
-   mm/vmstat.c:358:9: sparse:     expected void *ptr
-   mm/vmstat.c:358:9: sparse:     got int [noderef] __percpu *
->> mm/vmstat.c:358:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
-   mm/vmstat.c:358:9: sparse:     expected void *ptr
-   mm/vmstat.c:358:9: sparse:     got int [noderef] __percpu *
->> mm/vmstat.c:358:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
-   mm/vmstat.c:358:9: sparse:     expected void *ptr
-   mm/vmstat.c:358:9: sparse:     got int [noderef] __percpu *
-   mm/vmstat.c:394:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
-   mm/vmstat.c:394:9: sparse:     expected void *ptr
-   mm/vmstat.c:394:9: sparse:     got unsigned int [noderef] __percpu *
-   mm/vmstat.c:394:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
-   mm/vmstat.c:394:9: sparse:     expected void *ptr
-   mm/vmstat.c:394:9: sparse:     got unsigned int [noderef] __percpu *
-   mm/vmstat.c:394:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
-   mm/vmstat.c:394:9: sparse:     expected void *ptr
-   mm/vmstat.c:394:9: sparse:     got unsigned int [noderef] __percpu *
-   mm/vmstat.c:394:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
-   mm/vmstat.c:394:9: sparse:     expected void *ptr
-   mm/vmstat.c:394:9: sparse:     got unsigned int [noderef] __percpu *
-   mm/vmstat.c:394:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
-   mm/vmstat.c:394:9: sparse:     expected void *ptr
-   mm/vmstat.c:394:9: sparse:     got int [noderef] __percpu *
-   mm/vmstat.c:394:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
-   mm/vmstat.c:394:9: sparse:     expected void *ptr
-   mm/vmstat.c:394:9: sparse:     got int [noderef] __percpu *
-   mm/vmstat.c:394:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
-   mm/vmstat.c:394:9: sparse:     expected void *ptr
-   mm/vmstat.c:394:9: sparse:     got int [noderef] __percpu *
-   mm/vmstat.c:394:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
-   mm/vmstat.c:394:9: sparse:     expected void *ptr
-   mm/vmstat.c:394:9: sparse:     got int [noderef] __percpu *
-   mm/vmstat.c:440:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
-   mm/vmstat.c:440:9: sparse:     expected void *ptr
-   mm/vmstat.c:440:9: sparse:     got unsigned int [noderef] __percpu *
-   mm/vmstat.c:440:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
-   mm/vmstat.c:440:9: sparse:     expected void *ptr
-   mm/vmstat.c:440:9: sparse:     got unsigned int [noderef] __percpu *
-   mm/vmstat.c:440:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
-   mm/vmstat.c:440:9: sparse:     expected void *ptr
-   mm/vmstat.c:440:9: sparse:     got unsigned int [noderef] __percpu *
-   mm/vmstat.c:440:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
-   mm/vmstat.c:440:9: sparse:     expected void *ptr
-   mm/vmstat.c:440:9: sparse:     got unsigned int [noderef] __percpu *
-   mm/vmstat.c:440:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
-   mm/vmstat.c:440:9: sparse:     expected void *ptr
-   mm/vmstat.c:440:9: sparse:     got int [noderef] __percpu *
-   mm/vmstat.c:440:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
-   mm/vmstat.c:440:9: sparse:     expected void *ptr
-   mm/vmstat.c:440:9: sparse:     got int [noderef] __percpu *
-   mm/vmstat.c:440:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
-   mm/vmstat.c:440:9: sparse:     expected void *ptr
-   mm/vmstat.c:440:9: sparse:     got int [noderef] __percpu *
-   mm/vmstat.c:440:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
-   mm/vmstat.c:440:9: sparse:     expected void *ptr
-   mm/vmstat.c:440:9: sparse:     got int [noderef] __percpu *
-   mm/vmstat.c:463:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
-   mm/vmstat.c:463:9: sparse:     expected void *ptr
-   mm/vmstat.c:463:9: sparse:     got unsigned int [noderef] __percpu *
-   mm/vmstat.c:463:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
-   mm/vmstat.c:463:9: sparse:     expected void *ptr
-   mm/vmstat.c:463:9: sparse:     got unsigned int [noderef] __percpu *
-   mm/vmstat.c:463:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
-   mm/vmstat.c:463:9: sparse:     expected void *ptr
-   mm/vmstat.c:463:9: sparse:     got unsigned int [noderef] __percpu *
-   mm/vmstat.c:463:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
-   mm/vmstat.c:463:9: sparse:     expected void *ptr
-   mm/vmstat.c:463:9: sparse:     got unsigned int [noderef] __percpu *
-   mm/vmstat.c:463:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
-   mm/vmstat.c:463:9: sparse:     expected void *ptr
-   mm/vmstat.c:463:9: sparse:     got int [noderef] __percpu *
-   mm/vmstat.c:463:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
-   mm/vmstat.c:463:9: sparse:     expected void *ptr
-   mm/vmstat.c:463:9: sparse:     got int [noderef] __percpu *
-   mm/vmstat.c:463:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
-   mm/vmstat.c:463:9: sparse:     expected void *ptr
-   mm/vmstat.c:463:9: sparse:     got int [noderef] __percpu *
-   mm/vmstat.c:463:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
-   mm/vmstat.c:463:9: sparse:     expected void *ptr
-   mm/vmstat.c:463:9: sparse:     got int [noderef] __percpu *
-   mm/vmstat.c:496:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
-   mm/vmstat.c:496:9: sparse:     expected void *ptr
-   mm/vmstat.c:496:9: sparse:     got unsigned int [noderef] __percpu *
-   mm/vmstat.c:496:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
-   mm/vmstat.c:496:9: sparse:     expected void *ptr
-   mm/vmstat.c:496:9: sparse:     got unsigned int [noderef] __percpu *
-   mm/vmstat.c:496:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
-   mm/vmstat.c:496:9: sparse:     expected void *ptr
-   mm/vmstat.c:496:9: sparse:     got unsigned int [noderef] __percpu *
-   mm/vmstat.c:496:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
-   mm/vmstat.c:496:9: sparse:     expected void *ptr
-   mm/vmstat.c:496:9: sparse:     got unsigned int [noderef] __percpu *
-   mm/vmstat.c:496:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
-   mm/vmstat.c:496:9: sparse:     expected void *ptr
-   mm/vmstat.c:496:9: sparse:     got int [noderef] __percpu *
-   mm/vmstat.c:496:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
-   mm/vmstat.c:496:9: sparse:     expected void *ptr
-   mm/vmstat.c:496:9: sparse:     got int [noderef] __percpu *
-   mm/vmstat.c:496:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
-   mm/vmstat.c:496:9: sparse:     expected void *ptr
-   mm/vmstat.c:496:9: sparse:     got int [noderef] __percpu *
-   mm/vmstat.c:496:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
-   mm/vmstat.c:496:9: sparse:     expected void *ptr
-   mm/vmstat.c:496:9: sparse:     got int [noderef] __percpu *
-   mm/vmstat.c:519:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
-   mm/vmstat.c:519:9: sparse:     expected void *ptr
+On 11/5/23 18:45, Bryan O'Donoghue wrote:
+> This commit describes the hardware layout for the sc8280xp for the
+> following hardware blocks:
+> 
+> - 4 x VFE, 4 RDI per VFE
+> - 4 x VFE Lite, 4 RDI per VFE
+> - 4 x CSID
+> - 4 x CSID Lite
+> - 4 x CSI PHY
+> 
+> Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+> ---
+>   drivers/media/platform/qcom/camss/camss.c | 383 ++++++++++++++++++++++++++++++
+>   1 file changed, 383 insertions(+)
+> 
+> diff --git a/drivers/media/platform/qcom/camss/camss.c b/drivers/media/platform/qcom/camss/camss.c
+> index 8778fdc1ee342..51619842f3925 100644
+> --- a/drivers/media/platform/qcom/camss/camss.c
+> +++ b/drivers/media/platform/qcom/camss/camss.c
+> @@ -941,6 +941,374 @@ static const struct resources_icc icc_res_sm8250[] = {
+>   	},
+>   };
+>   
+> +static const struct camss_subdev_resources csiphy_res_sc8280xp[] = {
+> +	/* CSIPHY0 */
+> +	{
+> +		.regulators = {},
+> +		.clock = { "csiphy0", "csiphy0_timer" },
+> +		.clock_rate = { { 400000000 },
+> +				{ 300000000 } },
+> +		.reg = { "csiphy0" },
+> +		.interrupt = { "csiphy0" },
+> +		.ops = &csiphy_ops_3ph_1_0
+> +	},
+> +	/* CSIPHY1 */
+> +	{
+> +		.regulators = {},
+> +		.clock = { "csiphy1", "csiphy1_timer" },
+> +		.clock_rate = { { 400000000 },
+> +				{ 300000000 } },
+> +		.reg = { "csiphy1" },
+> +		.interrupt = { "csiphy1" },
+> +		.ops = &csiphy_ops_3ph_1_0
+> +	},
+> +	/* CSIPHY2 */
+> +	{
+> +		.regulators = {},
+> +		.clock = { "csiphy2", "csiphy2_timer" },
+> +		.clock_rate = { { 400000000 },
+> +				{ 300000000 } },
+> +		.reg = { "csiphy2" },
+> +		.interrupt = { "csiphy2" },
+> +		.ops = &csiphy_ops_3ph_1_0
+> +	},
+> +	/* CSIPHY3 */
+> +	{
+> +		.regulators = {},
+> +		.clock = { "csiphy3", "csiphy3_timer" },
+> +		.clock_rate = { { 400000000 },
+> +				{ 300000000 } },
+> +		.reg = { "csiphy3" },
+> +		.interrupt = { "csiphy3" },
+> +		.ops = &csiphy_ops_3ph_1_0
+> +	},
+> +};
+> +
+> +static const struct camss_subdev_resources csid_res_sc8280xp[] = {
+> +	/* CSID0 */
+> +	{
+> +		.regulators = { "vdda-phy", "vdda-pll" },
+> +		.clock = { "vfe0_csid_src", "vfe0_csid", "cphy_rx_src",
+> +			   "vfe0_cphy_rx", "vfe0_src", "vfe0", "vfe0_axi" },
+This looks like downstream hack copypasta.. All the _src clocks
+should be axed from here, from the camss bindings and simply be
+enabled with CLK_OPS_PARENT_ENABLE on their children (which should
+be the default for all branch clocks anyway eh)
 
-vim +358 mm/vmstat.c
-
-   337	
-   338	/*
-   339	 * For use when we know that interrupts are disabled,
-   340	 * or when we know that preemption is disabled and that
-   341	 * particular counter cannot be updated from interrupt context.
-   342	 */
-   343	void __mod_zone_page_state(struct zone *zone, enum zone_stat_item item,
-   344				   long delta)
-   345	{
-   346		struct per_cpu_zonestat __percpu *pcp = zone->per_cpu_zonestats;
-   347		s8 __percpu *p = pcp->vm_stat_diff + item;
-   348		long x;
-   349		long t;
-   350	
-   351		/*
-   352		 * Accurate vmstat updates require a RMW. On !PREEMPT_RT kernels,
-   353		 * atomicity is provided by IRQs being disabled -- either explicitly
-   354		 * or via local_lock_irq. On PREEMPT_RT, local_lock_irq only disables
-   355		 * CPU migrations and preemption potentially corrupts a counter so
-   356		 * disable preemption.
-   357		 */
- > 358		preempt_disable_nested();
-   359	
-   360		x = delta + __this_cpu_read(*p);
-   361	
-   362		t = __this_cpu_read(pcp->stat_threshold);
-   363	
-   364		if (unlikely(abs(x) > t)) {
-   365			zone_page_state_add(x, zone, item);
-   366			x = 0;
-   367		}
-   368		__this_cpu_write(*p, x);
-   369	
-   370		preempt_enable_nested();
-   371	}
-   372	EXPORT_SYMBOL(__mod_zone_page_state);
-   373	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Konrad
