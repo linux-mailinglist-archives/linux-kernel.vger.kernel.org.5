@@ -2,85 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3035B7E32D1
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 03:10:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C299F7E32D3
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 03:12:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233282AbjKGCKA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 21:10:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38018 "EHLO
+        id S233248AbjKGCMU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 21:12:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231975AbjKGCJ6 (ORCPT
+        with ESMTP id S229646AbjKGCMT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 21:09:58 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9877010A;
-        Mon,  6 Nov 2023 18:09:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699322991; x=1730858991;
-  h=to:cc:subject:references:date:mime-version:
-   content-transfer-encoding:from:message-id:in-reply-to;
-  bh=ZHhrLsAbY+01aibkrj3PgqbaJGRt7ZXSmtweYn7WIYc=;
-  b=Q7Zux7xEXzW/9zVxdKq/1PfgbTLRqa+utCLA87Yv5qrWCRgHHEoATaLU
-   5czn346oHl2vcKDJGQaZvNp1tjTBcAR0oMDsk5qUeYVid/zk4g4TzgBK4
-   7iO4YJj6aimdVjyXhHr5hdKvZzJG7I6eJd1aEZRlEqwuwG/xpmevs8gY+
-   eEUPZv4k1JRdJ36jXO1p+O/YOs099xW3s2AhpPE5BLWcLRjbm507FyNWA
-   Qz3N5L6bm194Ksef+gaSuHqeDaqukkGac+npVa/nDGFKSzLdJirjq60ij
-   GMbXc1yFPxihmUKAdCgkExPP961ch3aEpajoMyHsdXjPQuuJ0hFebjE1A
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10886"; a="475652929"
-X-IronPort-AV: E=Sophos;i="6.03,282,1694761200"; 
-   d="scan'208";a="475652929"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Nov 2023 18:08:46 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10886"; a="766148743"
-X-IronPort-AV: E=Sophos;i="6.03,282,1694761200"; 
-   d="scan'208";a="766148743"
-Received: from hhuan26-mobl.amr.corp.intel.com ([10.93.50.175])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 06 Nov 2023 18:08:44 -0800
-Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
-To:     "mingo@redhat.com" <mingo@redhat.com>,
-        "jarkko@kernel.org" <jarkko@kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
-        "mkoutny@suse.com" <mkoutny@suse.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "tj@kernel.org" <tj@kernel.org>,
-        "Mehta, Sohil" <sohil.mehta@intel.com>,
-        "bp@alien8.de" <bp@alien8.de>, "Huang, Kai" <kai.huang@intel.com>,
-        "Haitao Huang" <haitao.huang@linux.intel.com>
-Cc:     "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
-        "Christopherson,, Sean" <seanjc@google.com>,
-        "Zhang, Bo" <zhanb@microsoft.com>,
-        "kristen@linux.intel.com" <kristen@linux.intel.com>,
-        "anakrish@microsoft.com" <anakrish@microsoft.com>,
-        "sean.j.christopherson@intel.com" <sean.j.christopherson@intel.com>,
-        "Li, Zhiquan1" <zhiquan1.li@intel.com>,
-        "yangjie@microsoft.com" <yangjie@microsoft.com>
-Subject: Re: [PATCH v6 04/12] x86/sgx: Implement basic EPC misc cgroup
- functionality
-References: <20231030182013.40086-1-haitao.huang@linux.intel.com>
- <20231030182013.40086-5-haitao.huang@linux.intel.com>
- <ad7aafb88e45e5176d15eedea60695e104d24751.camel@intel.com>
- <op.2dz4d5b2wjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <34a337b96a5a917612c4ec4eff2b5a378c21879b.camel@intel.com>
- <op.2d0ltsxxwjvjmi@hhuan26-mobl.amr.corp.intel.com>
-Date:   Mon, 06 Nov 2023 20:08:43 -0600
+        Mon, 6 Nov 2023 21:12:19 -0500
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9EBB11F
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 18:12:14 -0800 (PST)
+Received: by mail-pg1-x52d.google.com with SMTP id 41be03b00d2f7-5bd306f86a8so3064112a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 18:12:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=heitbaum.com; s=google; t=1699323134; x=1699927934; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=yl+i+/Zm12KSu2JEDO2OvhxPRMv4CU9Hn46hRXkuPys=;
+        b=koN5DtF5NedRqabFprBecBiWQi8a3HCtB6MO5TQ7VjpU8KID8c78jUg1fl+tgNCUmL
+         /kNmRuPdzXWkbYYuQTA3tY9uHmX3+NUWNSxLTpDXlfvpjglOmR+y61Q1ZKUIo0sL8LWh
+         +mbP5pPs0qWrR1wE88WvnuH7xXApEQxSpXWlA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699323134; x=1699927934;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yl+i+/Zm12KSu2JEDO2OvhxPRMv4CU9Hn46hRXkuPys=;
+        b=aCDX67lUzyEVxT68TxXW4olXrOHVXeol9Uzw+UkdP622srheS2xL3BOP+buOdhycrt
+         ZCQqoErtm6R8LHpHUrYGtENrv1NY3mYlhYq3wtWDDF/yTwj4JUiLjaqE3meeeDtO/e9s
+         mEVjINBHyrwGbzrRb+FOt5smb7um1UOphYcnh72J76kepcF0CxdZh6tW/WEoqy1pfog1
+         GJZUgHIegRDjn16KkRLV1uWBSsdgq8F9LNXpJ19K3jW7mE6VdJFIf1sKp9Ct1LLaCy2k
+         a4hELhp3HyXTq6oydpfSSSf3K/O59bC73DIZYd8ZU04Get1uGlGu5kXg8FzuSdCBw6Oj
+         l6qw==
+X-Gm-Message-State: AOJu0Yz1L/Hn5lHcLXqkHRE0e+oZDSSVFP5Ufm7YhBKyfIrJtpw67lSS
+        roXhmg10Gi6bWmY1GdxNTSzuPw==
+X-Google-Smtp-Source: AGHT+IEdmPnG/wOAxpAHwbWAT0HofcxKZAgNSheVQUDbL7y4zHPyjkjZVLx/p0kiTC3AAF8uElMg3A==
+X-Received: by 2002:a05:6a20:1595:b0:17b:3822:e5ea with SMTP id h21-20020a056a20159500b0017b3822e5eamr31125121pzj.19.1699323134100;
+        Mon, 06 Nov 2023 18:12:14 -0800 (PST)
+Received: from 8a2541e20aa7 ([122.199.31.3])
+        by smtp.gmail.com with ESMTPSA id u22-20020a056a00159600b00687fcb1e609sm6123026pfk.116.2023.11.06.18.12.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 Nov 2023 18:12:13 -0800 (PST)
+Date:   Tue, 7 Nov 2023 02:12:05 +0000
+From:   Rudi Heitbaum <rudi@heitbaum.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org
+Subject: Re: [PATCH 6.6 00/30] 6.6.1-rc1 review
+Message-ID: <ZUmc9RaUwJhBXI+y@8a2541e20aa7>
+References: <20231106130257.903265688@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-From:   "Haitao Huang" <haitao.huang@linux.intel.com>
-Organization: Intel
-Message-ID: <op.2d0n8tjtwjvjmi@hhuan26-mobl.amr.corp.intel.com>
-In-Reply-To: <op.2d0ltsxxwjvjmi@hhuan26-mobl.amr.corp.intel.com>
-User-Agent: Opera Mail/1.0 (Win32)
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231106130257.903265688@linuxfoundation.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -88,201 +73,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 06 Nov 2023 19:16:30 -0600, Haitao Huang  
-<haitao.huang@linux.intel.com> wrote:
+On Mon, Nov 06, 2023 at 02:03:18PM +0100, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.6.1 release.
+> There are 30 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 08 Nov 2023 13:02:46 +0000.
+> Anything received after that time might be too late.
 
-> On Mon, 06 Nov 2023 16:18:30 -0600, Huang, Kai <kai.huang@intel.com>  
-> wrote:
->
->>>
->>> > > +/**
->>> > > + * sgx_epc_cgroup_try_charge() - hierarchically try to charge a  
->>> single
->>> > > EPC page
->>> > > + *
->>> > > + * Returns EPC cgroup or NULL on success, -errno on failure.
->>> > > + */
->>> > > +struct sgx_epc_cgroup *sgx_epc_cgroup_try_charge(void)
->>> > > +{
->>> > > +	struct sgx_epc_cgroup *epc_cg;
->>> > > +	int ret;
->>> > > +
->>> > > +	if (sgx_epc_cgroup_disabled())
->>> > > +		return NULL;
->>> > > +
->>> > > +	epc_cg = sgx_epc_cgroup_from_misc_cg(get_current_misc_cg());
->>> > > +	ret = misc_cg_try_charge(MISC_CG_RES_SGX_EPC, epc_cg->cg,  
->>> PAGE_SIZE);
->>> > > +
->>> > > +	if (!ret) {
->>> > > +		/* No epc_cg returned, release ref from get_current_misc_cg() */
->>> > > +		put_misc_cg(epc_cg->cg);
->>> > > +		return ERR_PTR(-ENOMEM);
->>> >
->>> > misc_cg_try_charge() returns 0 when successfully charged, no?
->>>
->>> Right. I really made some mess in rebasing :-(
->>>
->>> >
->>> > > +	}
->>> > > +
->>> > > +	/* Ref released in sgx_epc_cgroup_uncharge() */
->>> > > +	return epc_cg;
->>> > > +}
->>> >
->>> > IMHO the above _try_charge() returning a pointer of EPC cgroup is a
->>> > little bit
->>> > odd, because it doesn't match the existing misc_cg_try_charge() which
->>> > returns
->>> > whether the charge is successful or not.  sev_misc_cg_try_charge()
->>> > matches
->>> > misc_cg_try_charge() too.
->>> >
->>> > I think it's better to split "getting EPC cgroup" part out as a  
->>> separate
->>> > helper,
->>> > and make this _try_charge() match existing pattern:
->>> >
->>> > 	struct sgx_epc_cgroup *sgx_get_current_epc_cg(void)
->>> > 	{
->>> > 		if (sgx_epc_cgroup_disabled())
->>> > 			return NULL;
->>> > 	
->>> > 		return sgx_epc_cgroup_from_misc_cg(get_current_misc_cg());
->>> > 	}
->>> >
->>> > 	int sgx_epc_cgroup_try_charge(struct sgx_epc_cgroup *epc_cg)
->>> > 	{
->>> > 		if (!epc_cg)
->>> > 			return -EINVAL;
->>> > 	
->>> > 		return misc_cg_try_charge(epc_cg->cg);
->>> > 	}
->>> >
->>> > Having sgx_get_current_epc_cg() also makes the caller easier to read,
->>> > because we
->>> > can immediately know we are going to charge the *current* EPC cgroup,
->>> > but not
->>> > some cgroup hidden within sgx_epc_cgroup_try_charge().
->>> >
->>>
->>> Actually, unlike other misc controllers, we need charge and get the  
->>> epc_cg
->>> reference at the same time.
->>
->> Can you elaborate?
->>
->> And in practice you always call sgx_epc_cgroup_try_charge() right after
->> sgx_get_current_epc_cg() anyway.  The only difference is the whole  
->> thing is done
->> in one function or in separate functions.
->>
->> [...]
->>
->
-> That's true. I was thinking no need to have them done in separate calls.  
-> The caller has to check the return value for epc_cg instance first, then  
-> check result of try_charge. But there is really only one caller,  
-> sgx_alloc_epc_page() below, so I don't have strong opinions now.
->
-> With them separate, the checks will look like this:
-> if (epc_cg = sgx_get_current_epc_cg()) // NULL means cgroup disabled,  
-> should continue for allocation
-> {
-> 	if (ret =  sgx_epc_cgroup_try_charge())
-> 		return ret
-> }
-> // continue...
->
-> I can go either way.
->
->>
->>> > >  struct sgx_epc_page *sgx_alloc_epc_page(void *owner, bool reclaim)
->>> > >  {
->>> > >  	struct sgx_epc_page *page;
->>> > > +	struct sgx_epc_cgroup *epc_cg;
->>> > > +
->>> > > +	epc_cg = sgx_epc_cgroup_try_charge();
->>> > > +	if (IS_ERR(epc_cg))
->>> > > +		return ERR_CAST(epc_cg);
->>> > >
->>> > >  	for ( ; ; ) {
->>> > >  		page = __sgx_alloc_epc_page();
->>> > > @@ -580,10 +587,21 @@ struct sgx_epc_page *sgx_alloc_epc_page(void
->>> > > *owner, bool reclaim)
->>> > >  			break;
->>> > >  		}
->>> > >
->>> > > +		/*
->>> > > +		 * Need to do a global reclamation if cgroup was not full but  
->>> free
->>> > > +		 * physical pages run out, causing __sgx_alloc_epc_page() to  
->>> fail.
->>> > > +		 */
->>> > >  		sgx_reclaim_pages();
->>> >
->>> > What's the final behaviour?  IIUC it should be reclaiming from the
->>> > *current* EPC
->>> > cgroup?  If so shouldn't we just pass the @epc_cg to it here?
->>> >
->>> > I think we can make this patch as "structure" patch w/o actually  
->>> having
->>> > EPC
->>> > cgroup enabled, i.e., sgx_get_current_epc_cg() always return NULL.
->>> >
->>> > And we can have one patch to change sgx_reclaim_pages() to take the
->>> > 'struct
->>> > sgx_epc_lru_list *' as argument:
->>> >
->>> > 	void sgx_reclaim_pages_lru(struct sgx_epc_lru_list * lru)
->>> > 	{
->>> > 		...
->>> > 	}
->>> >
->>> > Then here we can have something like:
->>> >
->>> > 	void sgx_reclaim_pages(struct sgx_epc_cg *epc_cg)
->>> > 	{
->>> > 		struct sgx_epc_lru_list *lru =			epc_cg ? &epc_cg->lru :
->>> > &sgx_global_lru;
->>> >
->>> > 		sgx_reclaim_pages_lru(lru);
->>> > 	}
->>> >
->>> > Makes sense?
->>> >
->>>
->>> This is purely global reclamation. No cgroup involved.
->>
->> Again why?  Here you are allocating one EPC page for enclave in a  
->> particular EPC
->> cgroup.  When that fails, shouldn't you try only to reclaim from the  
->> *current*
->> EPC cgroup?  Or at least you should try to reclaim from the *current*  
->> EPC cgroup
->> first?
->>
->
-> Later sgx_epc_cg_try_charge will take a 'reclaim' flag, if true, cgroup  
-> reclaims synchronously, otherwise in background and returns -EBUSY in  
-> that case. This function also returns if no valid epc_cg pointer  
-> returned.
->
-> All reclamation for *current* cgroup is done in sgx_epc_cg_try_charge().
->
-> So, by reaching to this point,  a valid epc_cg pointer was returned,  
-> that means allocation is allowed for the cgroup (it has reclaimed if  
-> necessary, and its usage is not above limit after charging).
->
-> But the system level free count may be low (e.g., limits of all cgroups  
-> may add up to be more than capacity). so we need to do a global  
-> reclamation here, which may involve reclaiming a few pages (from current  
-> or other groups) so the system can be at a performant state with minimal  
-> free count. (current behavior of ksgxd).
->
-I should have sticked to the orignial comment added in code. Actually  
-__sgx_alloc_epc_page() can fail if system runs out of EPC. That's the  
-really reason for global reclaim. The free count enforcement is near the  
-end of this method after should_reclaim() check.
+Hi Greg,
 
-Haitao
+6.6.1-rc1 tested.
+
+Run tested on:
+- Allwinner H6 (Tanix TX6)
+- Intel Alder Lake x86_64 (nuc12 i7-1260P)
+
+In addition - build tested for:
+- Allwinner A64
+- Allwinner H3
+- Allwinner H5
+- NXP iMX6
+- NXP iMX8
+- Qualcomm Dragonboard
+- Rockchip RK3288
+- Rockchip RK3328
+- Rockchip RK3399pro
+- Samsung Exynos
+
+Tested-by: Rudi Heitbaum <rudi@heitbaum.com>
+--
+Rudi
