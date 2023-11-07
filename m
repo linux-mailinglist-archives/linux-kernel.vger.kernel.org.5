@@ -2,98 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 073537E386E
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 11:09:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4812B7E3884
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 11:12:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233699AbjKGKJD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 05:09:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49318 "EHLO
+        id S233642AbjKGKMN convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 7 Nov 2023 05:12:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229543AbjKGKJB (ORCPT
+        with ESMTP id S230082AbjKGKML (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 05:09:01 -0500
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 176D5BD;
-        Tue,  7 Nov 2023 02:08:59 -0800 (PST)
-Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 5DF7C468;
-        Tue,  7 Nov 2023 11:08:36 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1699351716;
-        bh=mI+C9BE7qHDgUYbgoCaEsi8LmHTuqyG8+n8yBehjAyg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iRnYmivbqQSMQ0lFul0jCE5kcvHGedMK15bZUtIJdb4uAJOiHTEue6ck1FLRQHHtv
-         5X/vEVVWgPHkqKir3Pjh+um3SZe/jpZ/hzvSOj/3WhpFfH9UNkJW8mKlVlKSAmswx4
-         vWMWR7t07TlcL2YnK/776DBW9uAXDk9oDeaV5Mv4=
-Date:   Tue, 7 Nov 2023 12:09:05 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Jack Zhu <jack.zhu@starfivetech.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Todor Tomov <todor.too@gmail.com>, bryan.odonoghue@linaro.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-staging@lists.linux.dev,
-        changhuang.liang@starfivetech.com,
-        Kieran Bingham <kieran.bingham@ideasonboard.com>
-Subject: Re: [PATCH v11 0/9] Add StarFive Camera Subsystem driver
-Message-ID: <20231107100905.GA27932@pendragon.ideasonboard.com>
-References: <20231025031422.3695-1-jack.zhu@starfivetech.com>
- <15ef0a70-734e-280a-f014-41914a55d8cf@starfivetech.com>
- <a3a2c179-2cbe-5a55-a21e-b45abfb6d494@starfivetech.com>
- <2023110745-tableful-trapezoid-4206@gregkh>
- <2023110730-thousand-skyrocket-d6ba@gregkh>
- <a2dbb182-2573-4c86-7e18-319d26a6593c@starfivetech.com>
- <2023110756-alto-stream-eb92@gregkh>
+        Tue, 7 Nov 2023 05:12:11 -0500
+Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com [209.85.219.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 831AEF7
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 02:12:08 -0800 (PST)
+Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-d9a3d737d66so4774648276.2
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 02:12:08 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699351927; x=1699956727;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=m3doRBvs6M5ROo+hysSTR74MqETRZ8K/t4qsZqgMtVs=;
+        b=P/QG+iQc8xIqEmusVbxmfBGnsGP+X7D83h41J4anSOY1/YkJxbZ7+kMX8XeK8ZL1CV
+         YQFhDXzA92LazZ6WAotyWc9tScICpBHK1uMNb3o5sC0edsGqucNOJz9xIVM6YAkpUnAA
+         sBXalk/bEIE4uGdkZJYWf3PuUIkAy/LQb2/NWPuRyhOyg8t+GLu4bxebfsWGDrVZ9D12
+         4TEQkeocMEGqrnQ9qv1yJKK8wq0ToNb/H61Dbk50A2izD5C/77mgxz0Zcgzfom8q50dq
+         swTWLwoesrUKgo6hlqWbXzbgeUSHkFptm9CuOPmS/4wx5Aeeq4FJlSuH5JEP7rVkicRb
+         kZsQ==
+X-Gm-Message-State: AOJu0YxsnAxj2n3vwEI/PjjYvZMQlIgEbpvkC03jnMwfb4NG1rdye9/I
+        amro0CdITyu2j/RGzOEDH4E1LCxBbhSThg==
+X-Google-Smtp-Source: AGHT+IE1NaIE8QK3swsvBn8ccpib7h1sI7oOXD4siAluTma7flbF79dgWwf0RzC3G6k+eKXlVOmBYQ==
+X-Received: by 2002:a25:d047:0:b0:da0:3b6c:fc22 with SMTP id h68-20020a25d047000000b00da03b6cfc22mr27417107ybg.31.1699351927505;
+        Tue, 07 Nov 2023 02:12:07 -0800 (PST)
+Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com. [209.85.128.172])
+        by smtp.gmail.com with ESMTPSA id d135-20020a25688d000000b00d8168e226e6sm5005556ybc.47.2023.11.07.02.12.07
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 07 Nov 2023 02:12:07 -0800 (PST)
+Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-5a82c2eb50cso59688717b3.2
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 02:12:07 -0800 (PST)
+X-Received: by 2002:a25:ad11:0:b0:d9b:81a2:b83e with SMTP id
+ y17-20020a25ad11000000b00d9b81a2b83emr23604994ybi.46.1699351927036; Tue, 07
+ Nov 2023 02:12:07 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <2023110756-alto-stream-eb92@gregkh>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <202311062309.XugQH7AH-lkp@intel.com>
+In-Reply-To: <202311062309.XugQH7AH-lkp@intel.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 7 Nov 2023 11:11:54 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdUPR2tZmE9AKxa0QWrJJd=tju8=2bPBWQgcPs6_d0sOag@mail.gmail.com>
+Message-ID: <CAMuHMdUPR2tZmE9AKxa0QWrJJd=tju8=2bPBWQgcPs6_d0sOag@mail.gmail.com>
+Subject: Re: kismet: WARNING: unmet direct dependencies detected for
+ SM_GCC_8550 when selected by SM_CAMCC_8550
+To:     kernel test robot <lkp@intel.com>
+Cc:     Jagadeesh Kona <quic_jkona@quicinc.com>,
+        Paul Gazzillo <paul@pgazz.com>,
+        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
+        oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Bjorn Andersson <andersson@kernel.org>,
+        Taniya Das <quic_tdas@quicinc.com>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+Hi Robot,
 
-On Tue, Nov 07, 2023 at 09:27:34AM +0100, Greg Kroah-Hartman wrote:
-> On Tue, Nov 07, 2023 at 04:05:11PM +0800, Jack Zhu wrote:
-> > > Also, while you wait, why not just finish off the last 3 items on the
-> > > TODO list which would make your code not be required to go into the
-> > > staging portion of the tree at all?  You've had a few weeks now, what is
-> > > preventing that from happening, and when will that work actually be
-> > > done?
-> > 
-> > One of my colleagues is doing related development, but he also has other
-> > projects at the same time, so he cannot devote all his efforts to this
-> > development. And we expect to use libcamera, which may take some time.
-> 
-> So that means there is no real plan at all to get this out of the
-> staging directory?  If so, why should we take it at all as obviously
-> this means that the code is now abandoned?
+On Mon, Nov 6, 2023 at 4:06 PM kernel test robot <lkp@intel.com> wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   d2f51b3516dade79269ff45eae2a7668ae711b25
+> commit: ccc4e6a061a21d75b96d82fc4b084a8d96df6eb4 clk: qcom: camcc-sm8550: Add camera clock controller driver for SM8550
+> date:   7 weeks ago
+> config: arm-kismet-CONFIG_SM_GCC_8550-CONFIG_SM_CAMCC_8550-0-0 (https://download.01.org/0day-ci/archive/20231106/202311062309.XugQH7AH-lkp@intel.com/config)
+> reproduce: (https://download.01.org/0day-ci/archive/20231106/202311062309.XugQH7AH-lkp@intel.com/reproduce)
+>
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202311062309.XugQH7AH-lkp@intel.com/
+>
+> kismet warnings: (new ones prefixed by >>)
+> >> kismet: WARNING: unmet direct dependencies detected for SM_GCC_8550 when selected by SM_CAMCC_8550
+>    .config:7280:warning: symbol value 'ONFIG_ARCH_MMAP_RND_BITS_MI' invalid for ARCH_MMAP_RND_BITS
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Where is this coming from? I have seen this warning in several build
+reports (earliest 2023-01-31), but cannot reproduce it with the provided
+commit and config.
 
-"Taking some time" doesn't necessarily mean "abandoned". I agree that
-more often that not we've seen code dumped in staging and left there
-unmaintained. Once bitten, twice shy (or as we say in French, a scalded
-cat fears cold water), but let's not necessarily assume the worst
-possible outcome :-)
+Gr{oetje,eeting}s,
 
-Of course, if StarFive wants to speed up development of the ISP support,
-both on the kernel side and libcamera side, I'm sure Kieran and I can
-help (possibly not very fast if it is only done in our spare time
-though, but that's a separate discussion).
+                        Geert
 
--- 
-Regards,
 
-Laurent Pinchart
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
