@@ -2,44 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4960D7E3D11
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 13:25:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C941A7E3D80
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 13:29:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234637AbjKGMZk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 07:25:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52460 "EHLO
+        id S234395AbjKGM27 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 07:28:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234683AbjKGMZ0 (ORCPT
+        with ESMTP id S234236AbjKGM2s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 07:25:26 -0500
+        Tue, 7 Nov 2023 07:28:48 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 356933846;
-        Tue,  7 Nov 2023 04:10:45 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E5E80C433CA;
-        Tue,  7 Nov 2023 12:10:43 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D9F610D2;
+        Tue,  7 Nov 2023 04:10:46 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49DB9C43395;
+        Tue,  7 Nov 2023 12:10:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699359044;
-        bh=dN7/KtImMvyag0cEUmZ23oKenryc3mgEBKQkieEj3Gk=;
+        s=k20201202; t=1699359046;
+        bh=DmmQYiuRtDL3w9tDkClWDx/jA1i/khpGIyX3phtTh5I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ULo87XkEjTt8dimqE17voZhEbfrJ4YTftBrfor5T6Y2C/gsFTokvRdvjbHJDbSwsW
-         Cb3sRNDCAOoec+J5F8Nr+eY6n3k26hBazN0oyqqKhDHfkiHXxbcRzUmO8lhX6PY3oB
-         2GzZoR3djCoHNioCTydoGPnGqePg5+1hrWoyE53O838Hh23AwS0JJfWklk8nn3jClP
-         Yblud6HePp7AFrXjBQUWHeyGxKY7/TJypXz59nwa26WTbE7OIoCwrbjQ+fSIVpofW+
-         X/rmoPekBrfNZV50e0m8Qdc1BI7SuHp2eHmKCi//zGVgvHf8gxO94MWkmAXzYbZRXs
-         fyya1ZOw2M4wQ==
+        b=I6xo2WZmTAY/1pHMVgDZzYjZ77DDtagpiyUineMF4opf+aoFWVYUked0HV8CKpj2W
+         h/OMXY+BOX6KFufz/1TrVKAJQFc7RK486jXcVNjrHXsqUFYkEasPGeNY4CstQHx5MC
+         2HhIIMsQSIv60lo9vcV3QIcUNSdSgW8DAdnZr7YlKSDYelSoEOP181lvq5T5+ws2wI
+         UFAa3gWsCu2JEgKTIQp4bKCVqyQGjS99QUCQkjz27ygms2JYlynvPIyX78x8WusjbY
+         SVPlwCFxF5Vjd3RYK0kNLAIqWL+NtK604GHOQHt1/LwsV10MyHD9324aY3nzUuIyTv
+         wJj+4Wg4+AURw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Herve Codina <herve.codina@bootlin.com>,
-        Rob Herring <robh@kernel.org>, Sasha Levin <sashal@kernel.org>,
-        robh+dt@kernel.org, frowand.list@gmail.com,
-        devicetree@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.5 29/30] of: address: Fix address translation when address-size is greater than 2
-Date:   Tue,  7 Nov 2023 07:08:44 -0500
-Message-ID: <20231107120922.3757126-29-sashal@kernel.org>
+Cc:     Olli Asikainen <olli.asikainen@gmail.com>,
+        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        Sasha Levin <sashal@kernel.org>, hmh@hmh.eng.br,
+        hdegoede@redhat.com, markgross@kernel.org,
+        ibm-acpi-devel@lists.sourceforge.net,
+        platform-driver-x86@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.5 30/30] platform/x86: thinkpad_acpi: Add battery quirk for Thinkpad X120e
+Date:   Tue,  7 Nov 2023 07:08:45 -0500
+Message-ID: <20231107120922.3757126-30-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231107120922.3757126-1-sashal@kernel.org>
 References: <20231107120922.3757126-1-sashal@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.5.10
@@ -54,125 +57,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Herve Codina <herve.codina@bootlin.com>
+From: Olli Asikainen <olli.asikainen@gmail.com>
 
-[ Upstream commit 42604f8eb7ba04b589375049cc76282dad4677d2 ]
+[ Upstream commit 916646758aea81a143ce89103910f715ed923346 ]
 
-With the recent addition of of_pci_prop_ranges() in commit 407d1a51921e
-("PCI: Create device tree node for bridge"), the ranges property can
-have a 3 cells child address, a 3 cells parent address and a 2 cells
-child size.
+Thinkpad X120e also needs this battery quirk.
 
-A range item property for a PCI device is filled as follow:
-  <BAR_nbr> 0 0 <phys.hi> <phys.mid> <phys.low> <BAR_sizeh> <BAR_sizel>
-  <-- Child --> <-- Parent (PCI definition) --> <- BAR size (64bit) -->
-
-This allow to translate BAR addresses from the DT. For instance:
-pci@0,0 {
-  #address-cells = <0x03>;
-  #size-cells = <0x02>;
-  device_type = "pci";
-  compatible = "pci11ab,100", "pciclass,060400", "pciclass,0604";
-  ranges = <0x82000000 0x00 0xe8000000
-            0x82000000 0x00 0xe8000000
-	    0x00 0x4400000>;
-  ...
-  dev@0,0 {
-    #address-cells = <0x03>;
-    #size-cells = <0x02>;
-    compatible = "pci1055,9660", "pciclass,020000", "pciclass,0200";
-    /* Translations for BAR0 to BAR5 */
-    ranges = <0x00 0x00 0x00 0x82010000 0x00 0xe8000000 0x00 0x2000000
-              0x01 0x00 0x00 0x82010000 0x00 0xea000000 0x00 0x1000000
-              0x02 0x00 0x00 0x82010000 0x00 0xeb000000 0x00 0x800000
-              0x03 0x00 0x00 0x82010000 0x00 0xeb800000 0x00 0x800000
-              0x04 0x00 0x00 0x82010000 0x00 0xec000000 0x00 0x20000
-              0x05 0x00 0x00 0x82010000 0x00 0xec020000 0x00 0x2000>;
-    ...
-    pci-ep-bus@0 {
-      #address-cells = <0x01>;
-      #size-cells = <0x01>;
-      compatible = "simple-bus";
-      /* Translate 0xe2000000 to BAR0 and 0xe0000000 to BAR1 */
-      ranges = <0xe2000000 0x00 0x00 0x00 0x2000000
-                0xe0000000 0x01 0x00 0x00 0x1000000>;
-      ...
-    };
-  };
-};
-
-During the translation process, the "default-flags" map() function is
-used to select the matching item in the ranges table and determine the
-address offset from this matching item.
-This map() function simply calls of_read_number() and when address-size
-is greater than 2, the map() function skips the extra high address part
-(ie part over 64bit). This lead to a wrong matching item and a wrong
-offset computation.
-Also during the translation itself, the extra high part related to the
-parent address is not present in the translated address.
-
-Fix the "default-flags" map() and translate() in order to take into
-account the child extra high address part in map() and the parent extra
-high address part in translate() and so having a correct address
-translation for ranges patterns such as the one given in the example
-above.
-
-Signed-off-by: Herve Codina <herve.codina@bootlin.com>
-Link: https://lore.kernel.org/r/20231017110221.189299-2-herve.codina@bootlin.com
-Signed-off-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Olli Asikainen <olli.asikainen@gmail.com>
+Link: https://lore.kernel.org/r/20231024190922.2742-1-olli.asikainen@gmail.com
+Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/of/address.c | 30 ++++++++++++++++++++++++++++--
- 1 file changed, 28 insertions(+), 2 deletions(-)
+ drivers/platform/x86/thinkpad_acpi.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/of/address.c b/drivers/of/address.c
-index e692809ff8227..3219c51777507 100644
---- a/drivers/of/address.c
-+++ b/drivers/of/address.c
-@@ -100,6 +100,32 @@ static unsigned int of_bus_default_get_flags(const __be32 *addr)
- 	return IORESOURCE_MEM;
- }
- 
-+static u64 of_bus_default_flags_map(__be32 *addr, const __be32 *range, int na,
-+				    int ns, int pna)
-+{
-+	u64 cp, s, da;
-+
-+	/* Check that flags match */
-+	if (*addr != *range)
-+		return OF_BAD_ADDR;
-+
-+	/* Read address values, skipping high cell */
-+	cp = of_read_number(range + 1, na - 1);
-+	s  = of_read_number(range + na + pna, ns);
-+	da = of_read_number(addr + 1, na - 1);
-+
-+	pr_debug("default flags map, cp=%llx, s=%llx, da=%llx\n", cp, s, da);
-+
-+	if (da < cp || da >= (cp + s))
-+		return OF_BAD_ADDR;
-+	return da - cp;
-+}
-+
-+static int of_bus_default_flags_translate(__be32 *addr, u64 offset, int na)
-+{
-+	/* Keep "flags" part (high cell) in translated address */
-+	return of_bus_default_translate(addr + 1, offset, na - 1);
-+}
- 
- #ifdef CONFIG_PCI
- static unsigned int of_bus_pci_get_flags(const __be32 *addr)
-@@ -374,8 +400,8 @@ static struct of_bus of_busses[] = {
- 		.addresses = "reg",
- 		.match = of_bus_default_flags_match,
- 		.count_cells = of_bus_default_count_cells,
--		.map = of_bus_default_map,
--		.translate = of_bus_default_translate,
-+		.map = of_bus_default_flags_map,
-+		.translate = of_bus_default_flags_translate,
- 		.has_flags = true,
- 		.get_flags = of_bus_default_flags_get_flags,
- 	},
+diff --git a/drivers/platform/x86/thinkpad_acpi.c b/drivers/platform/x86/thinkpad_acpi.c
+index ad460417f901a..4b13d3e704bf3 100644
+--- a/drivers/platform/x86/thinkpad_acpi.c
++++ b/drivers/platform/x86/thinkpad_acpi.c
+@@ -9810,6 +9810,7 @@ static const struct tpacpi_quirk battery_quirk_table[] __initconst = {
+ 	 * Individual addressing is broken on models that expose the
+ 	 * primary battery as BAT1.
+ 	 */
++	TPACPI_Q_LNV('8', 'F', true),       /* Thinkpad X120e */
+ 	TPACPI_Q_LNV('J', '7', true),       /* B5400 */
+ 	TPACPI_Q_LNV('J', 'I', true),       /* Thinkpad 11e */
+ 	TPACPI_Q_LNV3('R', '0', 'B', true), /* Thinkpad 11e gen 3 */
 -- 
 2.42.0
 
