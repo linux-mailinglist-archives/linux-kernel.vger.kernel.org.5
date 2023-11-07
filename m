@@ -2,42 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 18A757E44D2
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 16:58:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 513C17E44D5
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 16:58:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343676AbjKGP6E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 10:58:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55126 "EHLO
+        id S235240AbjKGP6K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 10:58:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235549AbjKGP5f (ORCPT
+        with ESMTP id S235224AbjKGP5h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 10:57:35 -0500
+        Tue, 7 Nov 2023 10:57:37 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 029845BBF;
-        Tue,  7 Nov 2023 07:51:10 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 56F2BC433C7;
-        Tue,  7 Nov 2023 15:51:08 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6303B5FD3;
+        Tue,  7 Nov 2023 07:51:11 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1D569C433CA;
+        Tue,  7 Nov 2023 15:51:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699372269;
-        bh=xnwLLrOtV0XNMAWL9nFKXKRIvwqgnK5CKXFhpg70WoA=;
+        s=k20201202; t=1699372271;
+        bh=ObV63lVX05hmXmgj3m7KAMx/1PHOu0b5v8rpcuC0s5U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hQQdJWwJA7IJnxBK/uJoTkiCfwSCvHxaS+LAXOtCu+4IzxAMvcKn9yN1mmKUfsBOy
-         gUtPmpYyrlIqw+hMsvlvUvMLv0YV2g4/kLqAnA2KIIzyjwSD+Ai6ZawmaCIt/0pSIC
-         1ipgqSBTxmhrsSeIdBlelyOMzQKMU2oTeDIFM/4mKhpbd7U+AuyFvjD9NwjbDP6iVx
-         I4LPto8tWqKxGmdwms81zSvVK46BtXWmYV/mMYxEWyfXEi7Q4WeiL59B5lnlETjj48
-         eNRl0M3rIS6Pz6SDGwJBEW5Wdix/3Og93kN9EeR2kvULrI5UufqxZjSkYRYTkt5Xhe
-         uka45h3ntejVw==
+        b=ePKyoGY5xtGp/Ubm4xrfaxbu5HKX/ZOtlBOLi3+mcxCFcauXzi01g0xHXJcR82Pqd
+         0RgcaivMpbYBHurAj7ocpsRlK9OgG6O/lFpFPnVNjrXJfAkozUlQR7lW46DTi/3DLz
+         DLo8Ez3cTMFSeZ0lEGpEv47pd2TBGiehV9I5MjpDHzxb4vra/jYCvcjCqwshOsdefM
+         ax0htkH16ryrulMzK/70vAs5FfRNA4wG9Pv5JWxi2oAeIcYATHLcix8w/GiQbfpDHH
+         yP8YI+TUm3RWQxr3S5KPnzbMR2rEEO79gIyNUWaBT7JnVqWydYZiqH4Lh7cxdP1xyd
+         G8cP58JQQNkjw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
         Bjorn Helgaas <bhelgaas@google.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Sasha Levin <sashal@kernel.org>, thomas.petazzoni@bootlin.com,
-        pali@kernel.org, lpieralisi@kernel.org, kw@linux.com,
-        linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: [PATCH AUTOSEL 6.1 17/30] PCI: mvebu: Use FIELD_PREP() with Link Width
-Date:   Tue,  7 Nov 2023 10:49:51 -0500
-Message-ID: <20231107155024.3766950-17-sashal@kernel.org>
+        Sasha Levin <sashal@kernel.org>, 3chas3@gmail.com,
+        linux-atm-general@lists.sourceforge.net, netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.1 18/30] atm: iphase: Do PCI error checks on own line
+Date:   Tue,  7 Nov 2023 10:49:52 -0500
+Message-ID: <20231107155024.3766950-18-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231107155024.3766950-1-sashal@kernel.org>
 References: <20231107155024.3766950-1-sashal@kernel.org>
@@ -53,35 +51,61 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
 
-[ Upstream commit 408599ec561ad5862cda4f107626009f6fa97a74 ]
+[ Upstream commit c28742447ca9879b52fbaf022ad844f0ffcd749c ]
 
-mvebu_pcie_setup_hw() setups the Maximum Link Width field in the Link
-Capabilities registers using an open-coded variant of FIELD_PREP() with
-a literal in shift. Improve readability by using
-FIELD_PREP(PCI_EXP_LNKCAP_MLW, ...).
+In get_esi() PCI errors are checked inside line-split "if" conditions (in
+addition to the file not following the coding style). To make the code in
+get_esi() more readable, fix the coding style and use the usual error
+handling pattern with a separate variable.
 
-Link: https://lore.kernel.org/r/20230919125648.1920-6-ilpo.jarvinen@linux.intel.com
+In addition, initialization of 'error' variable at declaration is not
+needed.
+
+No functional changes intended.
+
+Link: https://lore.kernel.org/r/20230911125354.25501-4-ilpo.jarvinen@linux.intel.com
 Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
 Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/controller/pci-mvebu.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/atm/iphase.c | 20 +++++++++++---------
+ 1 file changed, 11 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/pci/controller/pci-mvebu.c b/drivers/pci/controller/pci-mvebu.c
-index 1ced73726a267..668601fd0b296 100644
---- a/drivers/pci/controller/pci-mvebu.c
-+++ b/drivers/pci/controller/pci-mvebu.c
-@@ -264,7 +264,7 @@ static void mvebu_pcie_setup_hw(struct mvebu_pcie_port *port)
- 	 */
- 	lnkcap = mvebu_readl(port, PCIE_CAP_PCIEXP + PCI_EXP_LNKCAP);
- 	lnkcap &= ~PCI_EXP_LNKCAP_MLW;
--	lnkcap |= (port->is_x4 ? 4 : 1) << 4;
-+	lnkcap |= FIELD_PREP(PCI_EXP_LNKCAP_MLW, port->is_x4 ? 4 : 1);
- 	mvebu_writel(port, lnkcap, PCIE_CAP_PCIEXP + PCI_EXP_LNKCAP);
- 
- 	/* Disable Root Bridge I/O space, memory space and bus mastering. */
+diff --git a/drivers/atm/iphase.c b/drivers/atm/iphase.c
+index 3241486869530..9bba8f280a4d4 100644
+--- a/drivers/atm/iphase.c
++++ b/drivers/atm/iphase.c
+@@ -2291,19 +2291,21 @@ static int get_esi(struct atm_dev *dev)
+ static int reset_sar(struct atm_dev *dev)  
+ {  
+ 	IADEV *iadev;  
+-	int i, error = 1;  
++	int i, error;
+ 	unsigned int pci[64];  
+ 	  
+ 	iadev = INPH_IA_DEV(dev);  
+-	for(i=0; i<64; i++)  
+-	  if ((error = pci_read_config_dword(iadev->pci,  
+-				i*4, &pci[i])) != PCIBIOS_SUCCESSFUL)  
+-  	      return error;  
++	for (i = 0; i < 64; i++) {
++		error = pci_read_config_dword(iadev->pci, i * 4, &pci[i]);
++		if (error != PCIBIOS_SUCCESSFUL)
++			return error;
++	}
+ 	writel(0, iadev->reg+IPHASE5575_EXT_RESET);  
+-	for(i=0; i<64; i++)  
+-	  if ((error = pci_write_config_dword(iadev->pci,  
+-					i*4, pci[i])) != PCIBIOS_SUCCESSFUL)  
+-	    return error;  
++	for (i = 0; i < 64; i++) {
++		error = pci_write_config_dword(iadev->pci, i * 4, pci[i]);
++		if (error != PCIBIOS_SUCCESSFUL)
++			return error;
++	}
+ 	udelay(5);  
+ 	return 0;  
+ }  
 -- 
 2.42.0
 
