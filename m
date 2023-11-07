@@ -2,106 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC4007E4AAC
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 22:28:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0338D7E45FD
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 17:30:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344013AbjKGV2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 16:28:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35712 "EHLO
+        id S231774AbjKGQab (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 11:30:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235295AbjKGV2n (ORCPT
+        with ESMTP id S229535AbjKGQa3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 16:28:43 -0500
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1807FD7A
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 13:28:41 -0800 (PST)
-Received: by mail-yb1-xb2d.google.com with SMTP id 3f1490d57ef6-d9abc069c8bso5568556276.3
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 13:28:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ncf.edu; s=google; t=1699392520; x=1699997320; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=5GrfKC2IvsZBEgQFQYe2RhJApLNUugeSPWTjf04uUac=;
-        b=SZ75Mow2RJnjfqUkUo9Ts/5nTwSU6WLwQRugmCLkr2Dik0rDWkSLg+zY627HR/FGwb
-         JolNPghyYsQsAI8uVDP+ygzbZI9x3wP+M9hEQvwXg6kef/SSNP7sHBV0ZJ+znZ/Mlda8
-         j2YAc9Sk6VHWOUGvs+UrVrWg3L/VGyFQFST0s4OA5UMoAWzBQDT4735cLlr14mlM45xH
-         ISE3qBrFDADzc8G3fui9Z5lR1FTUsaYGLtlJNNXXUrgwIxBvIOqTUYvUf02lBOP/Z0IT
-         t5lkx9zVe+dYweRbN6YaDZMaN7AdyOlVUeRHucnWtX8eBiw00lZFIktcwh/Yzm2sOI6Y
-         hEKQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699392520; x=1699997320;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=5GrfKC2IvsZBEgQFQYe2RhJApLNUugeSPWTjf04uUac=;
-        b=u2ezOEOmUs3JEv8nfWTAuWXXgml6EXkTyl3vMCHzJGCjNn3ciXieQsT9CubecAgvxZ
-         OAMu8lK2Weru/JergTx//AvGKDkvV3wunu0I+srPumfV/75FLvPPlgz0Foz8/BAgGuaz
-         tt2q5l1+0h37ocA3xS2Fkpm/3glOsi/0HvNDa33UaK1WxbLQ6NA2wOiWYVRSiba85lPn
-         bW6taUBh2rSNO5vOBcjdEbZP3BK8z7HAN3tzmIFyza7s03iTYTEOIPFE0sjLXXpcg0OW
-         94c2zsE3YV+UW4HPTn9HFrplG39BuaJbTU3u3GofAmzI6Krz+ma1UJzTxFLtPr1nMi81
-         7i+g==
-X-Gm-Message-State: AOJu0YxvU0Sd7h4oQeMQHuC6b4jzsvA/Q9YluwivDV5kN27PR+DyyDS/
-        Jyb65qAID5/+n8HahFdAgy0kj/O+WvUwfRFcljguni/zTlop4D7dPQflrIQ3S5axjFHBKuayseg
-        qpMsf0hSxsBmKEvtFt5IPXji/C67xVuOTAUuf4UfhopjpHgfxmeu0jg7xaZrRLG5aqFbzJNlxi0
-        b7De6TLcxjjUHvleM=
-X-Google-Smtp-Source: AGHT+IEVGxWjSPfH29B0f+BhNDDfe9GVs/2MnfzycBPjOvD0xg9LpfAOaj+zUSsjtvyDbSoQfjhDcg==
-X-Received: by 2002:a25:97c8:0:b0:d9a:6b46:f49d with SMTP id j8-20020a2597c8000000b00d9a6b46f49dmr9749055ybo.59.1699392519826;
-        Tue, 07 Nov 2023 13:28:39 -0800 (PST)
-Received: from Lux.hsd1.fl.comcast.net ([2601:580:8201:d0::4174])
-        by smtp.gmail.com with ESMTPSA id j186-20020a25d2c3000000b00da06575fbc8sm5657649ybg.2.2023.11.07.13.28.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Nov 2023 13:28:39 -0800 (PST)
-From:   Hunter Chasens <hunter.chasens18@ncf.edu>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-doc@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        amd-gfx@lists.freedesktop.org, daniel@ffwll.ch, airlied@gmail.com,
-        Xinhui.Pan@amd.com, christian.koenig@amd.com,
-        alexander.deucher@amd.com,
-        Hunter Chasens <hunter.chasens18@ncf.edu>
-Subject: [PATCH v3] drm: amd: Resolve Sphinx unexpected indentation warning
-Date:   Tue,  7 Nov 2023 11:28:30 -0500
-Message-ID: <20231107162830.36856-1-hunter.chasens18@ncf.edu>
-X-Mailer: git-send-email 2.42.0
+        Tue, 7 Nov 2023 11:30:29 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9CC583
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 08:30:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699374626; x=1730910626;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=abtFY7YsoLZNUrdKLvq3nUwks/oKbdC5tqfjzJ0a+9A=;
+  b=gTJFgkxj7QN07fCg3IJF+spdLr+4D4eq7YkYGGeGISXgRv/wNOMpN5tx
+   2cvR3ofuqiiQm9iCCNZ9VFcuZ3QTSCzWr+ONLEq7ZUBF++3zuzos30V5q
+   PqGmIhQVObZpYLLduEmVf1QVTNkQSjXtS0MhJ/++CTQWgM5bBRyPUm3hb
+   0YbCkQK6XtBvavQLczG1rDianh6uP9c4++smzLYlbDGO5h0lV8UP87c6Q
+   BT1z/CR7d+bFHms7ElqORI0FfyGmprCkKSesJ4l5h8jUQh6r698+ojd9n
+   w+lJDFddIx1EkjT/i7Wvj/G9Po5fDrdOY0n1IIBiDjppbe8q5o0U87o+N
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10887"; a="420657288"
+X-IronPort-AV: E=Sophos;i="6.03,284,1694761200"; 
+   d="scan'208";a="420657288"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2023 08:30:26 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10887"; a="879870029"
+X-IronPort-AV: E=Sophos;i="6.03,284,1694761200"; 
+   d="scan'208";a="879870029"
+Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
+  by fmsmga002.fm.intel.com with ESMTP; 07 Nov 2023 08:30:24 -0800
+Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r0Oy6-0007Da-0c;
+        Tue, 07 Nov 2023 16:30:22 +0000
+Date:   Wed, 8 Nov 2023 00:29:33 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Nhat Pham <nphamcs@gmail.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>
+Subject: mm/filemap.c:4249:1: sparse: sparse: Using plain integer as NULL
+ pointer
+Message-ID: <202311080014.GABRIG2T-lkp@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Resolves Sphinx unexpected indentation warning when compiling
-documentation (e.g. `make htmldocs`). Replaces tabs with spaces and adds
-a literal block to keep vertical formatting of the
-example power state list.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   be3ca57cfb777ad820c6659d52e60bbdd36bf5ff
+commit: cf264e1329fb0307e044f7675849f9f38b44c11a cachestat: implement cachestat syscall
+date:   5 months ago
+config: s390-randconfig-r123-20231107 (https://download.01.org/0day-ci/archive/20231108/202311080014.GABRIG2T-lkp@intel.com/config)
+compiler: s390-linux-gcc (GCC) 13.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20231108/202311080014.GABRIG2T-lkp@intel.com/reproduce)
 
-Signed-off-by: Hunter Chasens <hunter.chasens18@ncf.edu>
----
- drivers/gpu/drm/amd/pm/amdgpu_pm.c | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311080014.GABRIG2T-lkp@intel.com/
 
-diff --git a/drivers/gpu/drm/amd/pm/amdgpu_pm.c b/drivers/gpu/drm/amd/pm/amdgpu_pm.c
-index 517b9fb4624c..576202bf64f3 100644
---- a/drivers/gpu/drm/amd/pm/amdgpu_pm.c
-+++ b/drivers/gpu/drm/amd/pm/amdgpu_pm.c
-@@ -989,12 +989,13 @@ static ssize_t amdgpu_get_pp_features(struct device *dev,
-  * Reading back the files will show you the available power levels within
-  * the power state and the clock information for those levels. If deep sleep is
-  * applied to a clock, the level will be denoted by a special level 'S:'
-- * E.g.,
-- *	S: 19Mhz *
-- *	0: 615Mhz
-- *	1: 800Mhz
-- *	2: 888Mhz
-- *	3: 1000Mhz
-+ * E.g., ::
-+ *
-+ *  S: 19Mhz *
-+ *  0: 615Mhz
-+ *  1: 800Mhz
-+ *  2: 888Mhz
-+ *  3: 1000Mhz
-  *
-  *
-  * To manually adjust these states, first select manual using
+sparse warnings: (new ones prefixed by >>)
+   mm/filemap.c:1416:17: sparse: sparse: context imbalance in 'migration_entry_wait_on_locked' - unexpected unlock
+>> mm/filemap.c:4249:1: sparse: sparse: Using plain integer as NULL pointer
+>> mm/filemap.c:4249:1: sparse: sparse: Using plain integer as NULL pointer
+>> mm/filemap.c:4249:1: sparse: sparse: Using plain integer as NULL pointer
+>> mm/filemap.c:4249:1: sparse: sparse: Using plain integer as NULL pointer
+
+vim +4249 mm/filemap.c
+
+  4214	
+  4215	/*
+  4216	 * The cachestat(2) system call.
+  4217	 *
+  4218	 * cachestat() returns the page cache statistics of a file in the
+  4219	 * bytes range specified by `off` and `len`: number of cached pages,
+  4220	 * number of dirty pages, number of pages marked for writeback,
+  4221	 * number of evicted pages, and number of recently evicted pages.
+  4222	 *
+  4223	 * An evicted page is a page that is previously in the page cache
+  4224	 * but has been evicted since. A page is recently evicted if its last
+  4225	 * eviction was recent enough that its reentry to the cache would
+  4226	 * indicate that it is actively being used by the system, and that
+  4227	 * there is memory pressure on the system.
+  4228	 *
+  4229	 * `off` and `len` must be non-negative integers. If `len` > 0,
+  4230	 * the queried range is [`off`, `off` + `len`]. If `len` == 0,
+  4231	 * we will query in the range from `off` to the end of the file.
+  4232	 *
+  4233	 * The `flags` argument is unused for now, but is included for future
+  4234	 * extensibility. User should pass 0 (i.e no flag specified).
+  4235	 *
+  4236	 * Currently, hugetlbfs is not supported.
+  4237	 *
+  4238	 * Because the status of a page can change after cachestat() checks it
+  4239	 * but before it returns to the application, the returned values may
+  4240	 * contain stale information.
+  4241	 *
+  4242	 * return values:
+  4243	 *  zero        - success
+  4244	 *  -EFAULT     - cstat or cstat_range points to an illegal address
+  4245	 *  -EINVAL     - invalid flags
+  4246	 *  -EBADF      - invalid file descriptor
+  4247	 *  -EOPNOTSUPP - file descriptor is of a hugetlbfs file
+  4248	 */
+> 4249	SYSCALL_DEFINE4(cachestat, unsigned int, fd,
+
 -- 
-2.42.0
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
