@@ -2,87 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D66E7E3F1B
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 13:47:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA7E37E3F31
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 13:50:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235431AbjKGMr0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 07:47:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54982 "EHLO
+        id S232667AbjKGMuS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 07:50:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235354AbjKGMrB (ORCPT
+        with ESMTP id S1344345AbjKGMtc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 07:47:01 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F8CAC95D;
-        Tue,  7 Nov 2023 04:33:09 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26390C433CC;
-        Tue,  7 Nov 2023 12:33:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699360388;
-        bh=IaD5LuAKOSRiEqSUbXrGBACv2jpcb8C7CQaFLspeXIg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=R52i5plICzcXNAQx4OvNfu6UCj81TZF0cr6Z8QpR1bBU+YjeMlqpFR9E1I+PnD8nv
-         clq2m7ir5oIZPjQ79WR4mlNi+VGeydCpR+FIm0yZLCR7LzJNtArp4R0u9DX8pi7KWv
-         nj+UUGCYqNBTsRDWK2/H9e61T5HKEI/gfJDeQNMnZ3XdN2HIJGyvcczjIjSS47fdMr
-         JVb1n+V/Xn8S0fObSlwRLSmTrs2fL+2tfOvGRCxh6i9ewnBJ/WdKXxpTFHC8kU34uc
-         C/Y0nlXzljWTuChK7w0dLybw4yI6KeEB33BBhg9zxT1ZAgtPllNS+RA2VIr4Vq/Aip
-         eMsUtsHYP2Sjg==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     zhujun2 <zhujun2@cmss.chinamobile.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>, shuah@kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 4/4] selftests/efivarfs: create-read: fix a resource leak
-Date:   Tue,  7 Nov 2023 07:32:41 -0500
-Message-ID: <20231107123256.3763357-4-sashal@kernel.org>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231107123256.3763357-1-sashal@kernel.org>
-References: <20231107123256.3763357-1-sashal@kernel.org>
+        Tue, 7 Nov 2023 07:49:32 -0500
+Received: from mail.nppct.ru (mail.nppct.ru [195.133.245.4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8394913AF5
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 04:36:19 -0800 (PST)
+Received: from mail.nppct.ru (localhost [127.0.0.1])
+        by mail.nppct.ru (Postfix) with ESMTP id C011D1C0DB4
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 15:36:15 +0300 (MSK)
+Authentication-Results: mail.nppct.ru (amavisd-new); dkim=pass (1024-bit key)
+        reason="pass (just generated, assumed good)" header.d=nppct.ru
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=nppct.ru; h=
+        content-transfer-encoding:mime-version:x-mailer:message-id:date
+        :date:subject:subject:to:from:from; s=dkim; t=1699360573; x=
+        1700224574; bh=x6jysyZ5oZimszC/+KWYqfqt9dmO+sPqmSEiLu28WpI=; b=J
+        iV0qAZeIgdJp13a2vKcTuf+PBzKnYdQyrtDViKNZqjzNxHq0yguncKnwVxhEBczY
+        mzGFKXzuesk4tuUnvg6Xb89omDVJTgKVv6BpySWtatPFs80N7Iq3AtK5uVSRHWGo
+        JNUfRhCxMwkPv+1HVx9IEskkQK+P1TRq1B18qsnDHY=
+X-Virus-Scanned: Debian amavisd-new at mail.nppct.ru
+Received: from mail.nppct.ru ([127.0.0.1])
+        by mail.nppct.ru (mail.nppct.ru [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id jWjaalifFrqu for <linux-kernel@vger.kernel.org>;
+        Tue,  7 Nov 2023 15:36:13 +0300 (MSK)
+Received: from localhost.localdomain (mail.dev-ai-melanoma.ru [185.130.227.204])
+        by mail.nppct.ru (Postfix) with ESMTPSA id 236B81C0CB3;
+        Tue,  7 Nov 2023 15:36:12 +0300 (MSK)
+From:   Andrey Shumilin <shum.sdl@nppct.ru>
+To:     3chas3@gmail.com
+Cc:     Andrey Shumilin <shum.sdl@nppct.ru>,
+        linux-atm-general@lists.sourceforge.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, lvc-project@linuxtesting.org,
+        khoroshilov@ispras.ru, ykarpov@ispras.ru, vmerzlyakov@ispras.ru,
+        vefanov@ispras.ru
+Subject: [PATCH] iphase: Adding a null pointer check
+Date:   Tue,  7 Nov 2023 15:36:00 +0300
+Message-Id: <20231107123600.14529-1-shum.sdl@nppct.ru>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 4.14.328
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: zhujun2 <zhujun2@cmss.chinamobile.com>
+The pointer <dev->desc_tbl[i].iavcc> is dereferenced on line 195.
+Further in the code, it is checked for null on line 204.
+It is proposed to add a check before dereferencing the pointer.
 
-[ Upstream commit 3f6f8a8c5e11a9b384a36df4f40f0c9a653b6975 ]
+Found by Linux Verification Center (linuxtesting.org) with SVACE.
 
-The opened file should be closed in main(), otherwise resource
-leak will occur that this problem was discovered by code reading
-
-Signed-off-by: zhujun2 <zhujun2@cmss.chinamobile.com>
-Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Andrey Shumilin <shum.sdl@nppct.ru>
 ---
- tools/testing/selftests/efivarfs/create-read.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/atm/iphase.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/tools/testing/selftests/efivarfs/create-read.c b/tools/testing/selftests/efivarfs/create-read.c
-index 9674a19396a32..7bc7af4eb2c17 100644
---- a/tools/testing/selftests/efivarfs/create-read.c
-+++ b/tools/testing/selftests/efivarfs/create-read.c
-@@ -32,8 +32,10 @@ int main(int argc, char **argv)
- 	rc = read(fd, buf, sizeof(buf));
- 	if (rc != 0) {
- 		fprintf(stderr, "Reading a new var should return EOF\n");
-+		close(fd);
- 		return EXIT_FAILURE;
- 	}
- 
-+	close(fd);
- 	return EXIT_SUCCESS;
- }
+diff --git a/drivers/atm/iphase.c b/drivers/atm/iphase.c
+index 324148686953..596422fbfacc 100644
+--- a/drivers/atm/iphase.c
++++ b/drivers/atm/iphase.c
+@@ -192,6 +192,11 @@ static u16 get_desc (IADEV *dev, struct ia_vcc *iavcc) {
+            i++;
+            continue;
+         }
++       if (!(iavcc_r = dev->desc_tbl[i].iavcc)) {
++	   printk("Fatal err, desc table vcc or skb is NULL\n");
++	   i++;
++	   continue;
++	}
+         ltimeout = dev->desc_tbl[i].iavcc->ltimeout; 
+         delta = jiffies - dev->desc_tbl[i].timestamp;
+         if (delta >= ltimeout) {
 -- 
-2.42.0
+2.30.2
 
