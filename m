@@ -2,479 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C5D1A7E45F7
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 17:26:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E3407E4623
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 17:36:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235288AbjKGQ0x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 11:26:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36950 "EHLO
+        id S234981AbjKGQgG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 11:36:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343887AbjKGQ0e (ORCPT
+        with ESMTP id S234583AbjKGQfx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 11:26:34 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51AA32D51;
-        Tue,  7 Nov 2023 08:22:52 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0E9EC433C8;
-        Tue,  7 Nov 2023 16:22:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699374172;
-        bh=oEEeVwYnDflAWQUdmWxA+uKK5d3q1w1QuqPhPVZtnfs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lkVp3FgFUTez6P2DY2BpCXkx+JapuOkwl82+e40NbKzKXp93H6P88ljygV+OSy812
-         uRLnVQ/lMoA+5/3HWioXucF3YWJmgzPfXVpFkDmVt5bl7EPDJLWysCxeduGzRkFfQP
-         w21Zg4x/JSXtIRlfvRqKGfasoCEDx6TUKjB8D5X7vfdW2TBFWWgdQeP4vNfhYt6m+q
-         SOt52vdG+xLEsA99fawA/zjBjuWdaQpyxN/JKc6hfQHNaP+v/00s3PJSeilEt4p11i
-         +tp+CLA6tRe9GdslazMcWtIb05Rdn60OX3ZAPZnB8YJS+8vyA/6hHbWrzK7KXMp0ys
-         DEHeaM2ASRrmA==
-Date:   Tue, 7 Nov 2023 08:22:51 -0800
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     j.granados@samsung.com
-Cc:     Luis Chamberlain <mcgrof@kernel.org>, willy@infradead.org,
-        josh@joshtriplett.org, Kees Cook <keescook@chromium.org>,
-        David Howells <dhowells@redhat.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        Benjamin LaHaise <bcrl@kvack.org>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Jeff Layton <jlayton@kernel.org>, Neil Brown <neilb@suse.de>,
-        Olga Kornievskaia <kolga@netapp.com>,
-        Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
-        Jan Kara <jack@suse.cz>, Amir Goldstein <amir73il@gmail.com>,
-        Matthew Bobrowski <repnop@google.com>,
-        Anton Altaparmakov <anton@tuxera.com>,
-        Namjae Jeon <linkinjeon@kernel.org>,
-        Mark Fasheh <mark@fasheh.com>,
-        Joel Becker <jlbec@evilplan.org>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Chandan Babu R <chandan.babu@oracle.com>,
-        Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
-        linux-cachefs@redhat.com, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-aio@kvack.org,
-        linux-mm@kvack.org, linux-nfs@vger.kernel.org,
-        linux-ntfs-dev@lists.sourceforge.net, ocfs2-devel@lists.linux.dev,
-        fsverity@lists.linux.dev, linux-xfs@vger.kernel.org,
-        codalist@coda.cs.cmu.edu
-Subject: Re: [PATCH 2/4] aio: Remove the now superfluous sentinel elements
- from ctl_table array
-Message-ID: <20231107162251.GL1205143@frogsfrogsfrogs>
-References: <20231107-jag-sysctl_remove_empty_elem_fs-v1-0-7176632fea9f@samsung.com>
- <20231107-jag-sysctl_remove_empty_elem_fs-v1-2-7176632fea9f@samsung.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231107-jag-sysctl_remove_empty_elem_fs-v1-2-7176632fea9f@samsung.com>
+        Tue, 7 Nov 2023 11:35:53 -0500
+Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0367F1BCF;
+        Tue,  7 Nov 2023 08:28:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
+        ; s=x; h=Subject:Content-Transfer-Encoding:Mime-Version:Message-Id:Cc:To:From
+        :Date:subject:date:message-id:reply-to;
+        bh=QR8eNGZtZ5/4gDAfH5F8xdJ5v45aXKC3TOBwTCF9ej8=; b=ajgl1Gz6XOyG4dhnPFkvUlQBx1
+        M7E8WvCd7CqEbNY6qVXRXFdh3EUHT3GUSQTqUOvHtdNYPDu8iSaro4oddNA9caXjPU7otOvdZiv85
+        pFLtkNCqgyLLF+Ys/fThfiTX4SDgNzznSx9dx0mmViWNm/nqXhAdiFNbBlaqf3/8OwoQ=;
+Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:60652 helo=pettiford)
+        by mail.hugovil.com with esmtpa (Exim 4.92)
+        (envelope-from <hugo@hugovil.com>)
+        id 1r0Ovt-0007qL-5P; Tue, 07 Nov 2023 11:28:05 -0500
+Date:   Tue, 7 Nov 2023 11:28:04 -0500
+From:   Hugo Villeneuve <hugo@hugovil.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Hugo Villeneuve <hvilleneuve@dimonoff.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Message-Id: <20231107112804.e854521b47caeafdc642a2f3@hugovil.com>
+In-Reply-To: <8534fc67-83b3-4f41-a1e3-635866e1dd9c@linaro.org>
+References: <20231107160122.1648093-1-hugo@hugovil.com>
+        <8534fc67-83b3-4f41-a1e3-635866e1dd9c@linaro.org>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 70.80.174.168
+X-SA-Exim-Mail-From: hugo@hugovil.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.hugovil.com
+X-Spam-Level: 
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
+        * -2.3 NICE_REPLY_A Looks like a legit reply (A)
+X-Spam-Status: No, score=-3.4 required=5.0 tests=ALL_TRUSTED,NICE_REPLY_A,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.2
+Subject: Re: [PATCH] arm64: dts: imx8mn-var-som: reorder reg properties
+ after compatible strings
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 07, 2023 at 02:44:21PM +0100, Joel Granados via B4 Relay wrote:
-> From: Joel Granados <j.granados@samsung.com>
-> 
-> This commit comes at the tail end of a greater effort to remove the
-> empty elements at the end of the ctl_table arrays (sentinels) which
-> will reduce the overall build time size of the kernel and run time
-> memory bloat by ~64 bytes per sentinel (further information Link :
-> https://lore.kernel.org/all/ZO5Yx5JFogGi%2FcBo@bombadil.infradead.org/)
-> 
-> Remove sentinel elements ctl_table struct. Special attention was placed in
-> making sure that an empty directory for fs/verity was created when
-> CONFIG_FS_VERITY_BUILTIN_SIGNATURES is not defined. In this case we use the
-> register sysctl call that expects a size.
-> 
-> Signed-off-by: Joel Granados <j.granados@samsung.com>
-> ---
->  fs/aio.c                           | 1 -
->  fs/coredump.c                      | 1 -
->  fs/dcache.c                        | 1 -
->  fs/devpts/inode.c                  | 1 -
->  fs/eventpoll.c                     | 1 -
->  fs/exec.c                          | 1 -
->  fs/file_table.c                    | 1 -
->  fs/inode.c                         | 1 -
->  fs/lockd/svc.c                     | 1 -
->  fs/locks.c                         | 1 -
->  fs/namei.c                         | 1 -
->  fs/namespace.c                     | 1 -
->  fs/nfs/nfs4sysctl.c                | 1 -
->  fs/nfs/sysctl.c                    | 1 -
->  fs/notify/dnotify/dnotify.c        | 1 -
->  fs/notify/fanotify/fanotify_user.c | 1 -
->  fs/notify/inotify/inotify_user.c   | 1 -
->  fs/ntfs/sysctl.c                   | 1 -
->  fs/ocfs2/stackglue.c               | 1 -
->  fs/pipe.c                          | 1 -
->  fs/proc/proc_sysctl.c              | 1 -
->  fs/quota/dquot.c                   | 1 -
->  fs/sysctls.c                       | 1 -
->  fs/userfaultfd.c                   | 1 -
->  fs/verity/fsverity_private.h       | 2 +-
->  fs/verity/init.c                   | 8 +++++---
->  fs/xfs/xfs_sysctl.c                | 2 --
+On Tue, 7 Nov 2023 17:19:20 +0100
+Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> wrote:
 
-Not sure why an xfs change came in on a patch tagged "aio:"; I would
-have expected "fs:" or "vfs:" or something.  For the XFS part:
-
-Reviewed-by: Darrick J. Wong <djwong@kernel.org>
-
---D
-
->  27 files changed, 6 insertions(+), 30 deletions(-)
+> On 07/11/2023 17:01, Hugo Villeneuve wrote:
+> > From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+> > 
+> > Move reg nodes after the compatible string, to follow DT conventions.
 > 
-> diff --git a/fs/aio.c b/fs/aio.c
-> index a4c2a6bac72c..da069d6b6c66 100644
-> --- a/fs/aio.c
-> +++ b/fs/aio.c
-> @@ -239,7 +239,6 @@ static struct ctl_table aio_sysctls[] = {
->  		.mode		= 0644,
->  		.proc_handler	= proc_doulongvec_minmax,
->  	},
-> -	{}
->  };
->  
->  static void __init aio_sysctl_init(void)
-> diff --git a/fs/coredump.c b/fs/coredump.c
-> index 9d235fa14ab9..f258c17c1841 100644
-> --- a/fs/coredump.c
-> +++ b/fs/coredump.c
-> @@ -981,7 +981,6 @@ static struct ctl_table coredump_sysctls[] = {
->  		.mode		= 0644,
->  		.proc_handler	= proc_dointvec,
->  	},
-> -	{ }
->  };
->  
->  static int __init init_fs_coredump_sysctls(void)
-> diff --git a/fs/dcache.c b/fs/dcache.c
-> index 25ac74d30bff..bafdd455b0fe 100644
-> --- a/fs/dcache.c
-> +++ b/fs/dcache.c
-> @@ -191,7 +191,6 @@ static struct ctl_table fs_dcache_sysctls[] = {
->  		.mode		= 0444,
->  		.proc_handler	= proc_nr_dentry,
->  	},
-> -	{ }
->  };
->  
->  static int __init init_fs_dcache_sysctls(void)
-> diff --git a/fs/devpts/inode.c b/fs/devpts/inode.c
-> index 299c295a27a0..a4de1612b1db 100644
-> --- a/fs/devpts/inode.c
-> +++ b/fs/devpts/inode.c
-> @@ -69,7 +69,6 @@ static struct ctl_table pty_table[] = {
->  		.data		= &pty_count,
->  		.proc_handler	= proc_dointvec,
->  	},
-> -	{}
->  };
->  
->  struct pts_mount_opts {
-> diff --git a/fs/eventpoll.c b/fs/eventpoll.c
-> index 1d9a71a0c4c1..975fc5623102 100644
-> --- a/fs/eventpoll.c
-> +++ b/fs/eventpoll.c
-> @@ -322,7 +322,6 @@ static struct ctl_table epoll_table[] = {
->  		.extra1		= &long_zero,
->  		.extra2		= &long_max,
->  	},
-> -	{ }
->  };
->  
->  static void __init epoll_sysctls_init(void)
-> diff --git a/fs/exec.c b/fs/exec.c
-> index 6518e33ea813..7a18bde22f25 100644
-> --- a/fs/exec.c
-> +++ b/fs/exec.c
-> @@ -2167,7 +2167,6 @@ static struct ctl_table fs_exec_sysctls[] = {
->  		.extra1		= SYSCTL_ZERO,
->  		.extra2		= SYSCTL_TWO,
->  	},
-> -	{ }
->  };
->  
->  static int __init init_fs_exec_sysctls(void)
-> diff --git a/fs/file_table.c b/fs/file_table.c
-> index ee21b3da9d08..544f7d4f166f 100644
-> --- a/fs/file_table.c
-> +++ b/fs/file_table.c
-> @@ -137,7 +137,6 @@ static struct ctl_table fs_stat_sysctls[] = {
->  		.extra1		= &sysctl_nr_open_min,
->  		.extra2		= &sysctl_nr_open_max,
->  	},
-> -	{ }
->  };
->  
->  static int __init init_fs_stat_sysctls(void)
-> diff --git a/fs/inode.c b/fs/inode.c
-> index 35fd688168c5..ce16e3cda7bf 100644
-> --- a/fs/inode.c
-> +++ b/fs/inode.c
-> @@ -129,7 +129,6 @@ static struct ctl_table inodes_sysctls[] = {
->  		.mode		= 0444,
->  		.proc_handler	= proc_nr_inodes,
->  	},
-> -	{ }
->  };
->  
->  static int __init init_fs_inode_sysctls(void)
-> diff --git a/fs/lockd/svc.c b/fs/lockd/svc.c
-> index 6579948070a4..f784ff58bfd3 100644
-> --- a/fs/lockd/svc.c
-> +++ b/fs/lockd/svc.c
-> @@ -474,7 +474,6 @@ static struct ctl_table nlm_sysctls[] = {
->  		.mode		= 0644,
->  		.proc_handler	= proc_dointvec,
->  	},
-> -	{ }
->  };
->  
->  #endif	/* CONFIG_SYSCTL */
-> diff --git a/fs/locks.c b/fs/locks.c
-> index 76ad05f8070a..6ecfc422fb37 100644
-> --- a/fs/locks.c
-> +++ b/fs/locks.c
-> @@ -111,7 +111,6 @@ static struct ctl_table locks_sysctls[] = {
->  		.proc_handler	= proc_dointvec,
->  	},
->  #endif /* CONFIG_MMU */
-> -	{}
->  };
->  
->  static int __init init_fs_locks_sysctls(void)
-> diff --git a/fs/namei.c b/fs/namei.c
-> index 567ee547492b..fb552161c981 100644
-> --- a/fs/namei.c
-> +++ b/fs/namei.c
-> @@ -1070,7 +1070,6 @@ static struct ctl_table namei_sysctls[] = {
->  		.extra1		= SYSCTL_ZERO,
->  		.extra2		= SYSCTL_TWO,
->  	},
-> -	{ }
->  };
->  
->  static int __init init_fs_namei_sysctls(void)
-> diff --git a/fs/namespace.c b/fs/namespace.c
-> index e157efc54023..e95d4328539d 100644
-> --- a/fs/namespace.c
-> +++ b/fs/namespace.c
-> @@ -5008,7 +5008,6 @@ static struct ctl_table fs_namespace_sysctls[] = {
->  		.proc_handler	= proc_dointvec_minmax,
->  		.extra1		= SYSCTL_ONE,
->  	},
-> -	{ }
->  };
->  
->  static int __init init_fs_namespace_sysctls(void)
-> diff --git a/fs/nfs/nfs4sysctl.c b/fs/nfs/nfs4sysctl.c
-> index e776200e9a11..886a7c4c60b3 100644
-> --- a/fs/nfs/nfs4sysctl.c
-> +++ b/fs/nfs/nfs4sysctl.c
-> @@ -34,7 +34,6 @@ static struct ctl_table nfs4_cb_sysctls[] = {
->  		.mode = 0644,
->  		.proc_handler = proc_dointvec,
->  	},
-> -	{ }
->  };
->  
->  int nfs4_register_sysctl(void)
-> diff --git a/fs/nfs/sysctl.c b/fs/nfs/sysctl.c
-> index f39e2089bc4c..e645be1a3381 100644
-> --- a/fs/nfs/sysctl.c
-> +++ b/fs/nfs/sysctl.c
-> @@ -29,7 +29,6 @@ static struct ctl_table nfs_cb_sysctls[] = {
->  		.mode		= 0644,
->  		.proc_handler	= proc_dointvec,
->  	},
-> -	{ }
->  };
->  
->  int nfs_register_sysctl(void)
-> diff --git a/fs/notify/dnotify/dnotify.c b/fs/notify/dnotify/dnotify.c
-> index ebdcc25df0f7..8151ed5ddefc 100644
-> --- a/fs/notify/dnotify/dnotify.c
-> +++ b/fs/notify/dnotify/dnotify.c
-> @@ -29,7 +29,6 @@ static struct ctl_table dnotify_sysctls[] = {
->  		.mode		= 0644,
->  		.proc_handler	= proc_dointvec,
->  	},
-> -	{}
->  };
->  static void __init dnotify_sysctl_init(void)
->  {
-> diff --git a/fs/notify/fanotify/fanotify_user.c b/fs/notify/fanotify/fanotify_user.c
-> index f69c451018e3..80539839af0c 100644
-> --- a/fs/notify/fanotify/fanotify_user.c
-> +++ b/fs/notify/fanotify/fanotify_user.c
-> @@ -86,7 +86,6 @@ static struct ctl_table fanotify_table[] = {
->  		.proc_handler	= proc_dointvec_minmax,
->  		.extra1		= SYSCTL_ZERO
->  	},
-> -	{ }
->  };
->  
->  static void __init fanotify_sysctls_init(void)
-> diff --git a/fs/notify/inotify/inotify_user.c b/fs/notify/inotify/inotify_user.c
-> index 1c4bfdab008d..3e222a271da6 100644
-> --- a/fs/notify/inotify/inotify_user.c
-> +++ b/fs/notify/inotify/inotify_user.c
-> @@ -85,7 +85,6 @@ static struct ctl_table inotify_table[] = {
->  		.proc_handler	= proc_dointvec_minmax,
->  		.extra1		= SYSCTL_ZERO
->  	},
-> -	{ }
->  };
->  
->  static void __init inotify_sysctls_init(void)
-> diff --git a/fs/ntfs/sysctl.c b/fs/ntfs/sysctl.c
-> index 174fe536a1c0..4e980170d86a 100644
-> --- a/fs/ntfs/sysctl.c
-> +++ b/fs/ntfs/sysctl.c
-> @@ -28,7 +28,6 @@ static struct ctl_table ntfs_sysctls[] = {
->  		.mode		= 0644,			/* Mode, proc handler. */
->  		.proc_handler	= proc_dointvec
->  	},
-> -	{}
->  };
->  
->  /* Storage for the sysctls header. */
-> diff --git a/fs/ocfs2/stackglue.c b/fs/ocfs2/stackglue.c
-> index a8d5ca98fa57..20aa37b67cfb 100644
-> --- a/fs/ocfs2/stackglue.c
-> +++ b/fs/ocfs2/stackglue.c
-> @@ -658,7 +658,6 @@ static struct ctl_table ocfs2_nm_table[] = {
->  		.mode		= 0644,
->  		.proc_handler	= proc_dostring,
->  	},
-> -	{ }
->  };
->  
->  static struct ctl_table_header *ocfs2_table_header;
-> diff --git a/fs/pipe.c b/fs/pipe.c
-> index 6c1a9b1db907..6bc1c4ae81d5 100644
-> --- a/fs/pipe.c
-> +++ b/fs/pipe.c
-> @@ -1492,7 +1492,6 @@ static struct ctl_table fs_pipe_sysctls[] = {
->  		.mode		= 0644,
->  		.proc_handler	= proc_doulongvec_minmax,
->  	},
-> -	{ }
->  };
->  #endif
->  
-> diff --git a/fs/proc/proc_sysctl.c b/fs/proc/proc_sysctl.c
-> index de484195f49f..4e06c4d69906 100644
-> --- a/fs/proc/proc_sysctl.c
-> +++ b/fs/proc/proc_sysctl.c
-> @@ -71,7 +71,6 @@ static struct ctl_table root_table[] = {
->  		.procname = "",
->  		.mode = S_IFDIR|S_IRUGO|S_IXUGO,
->  	},
-> -	{ }
->  };
->  static struct ctl_table_root sysctl_table_root = {
->  	.default_set.dir.header = {
-> diff --git a/fs/quota/dquot.c b/fs/quota/dquot.c
-> index 9e72bfe8bbad..69b03e13e6f2 100644
-> --- a/fs/quota/dquot.c
-> +++ b/fs/quota/dquot.c
-> @@ -2949,7 +2949,6 @@ static struct ctl_table fs_dqstats_table[] = {
->  		.proc_handler	= proc_dointvec,
->  	},
->  #endif
-> -	{ },
->  };
->  
->  static int __init dquot_init(void)
-> diff --git a/fs/sysctls.c b/fs/sysctls.c
-> index 76a0aee8c229..8dbde9a802fa 100644
-> --- a/fs/sysctls.c
-> +++ b/fs/sysctls.c
-> @@ -26,7 +26,6 @@ static struct ctl_table fs_shared_sysctls[] = {
->  		.extra1		= SYSCTL_ZERO,
->  		.extra2		= SYSCTL_MAXOLDUID,
->  	},
-> -	{ }
->  };
->  
->  static int __init init_fs_sysctls(void)
-> diff --git a/fs/userfaultfd.c b/fs/userfaultfd.c
-> index 56eaae9dac1a..7668285779c1 100644
-> --- a/fs/userfaultfd.c
-> +++ b/fs/userfaultfd.c
-> @@ -45,7 +45,6 @@ static struct ctl_table vm_userfaultfd_table[] = {
->  		.extra1		= SYSCTL_ZERO,
->  		.extra2		= SYSCTL_ONE,
->  	},
-> -	{ }
->  };
->  #endif
->  
-> diff --git a/fs/verity/fsverity_private.h b/fs/verity/fsverity_private.h
-> index d071a6e32581..8191bf7ad706 100644
-> --- a/fs/verity/fsverity_private.h
-> +++ b/fs/verity/fsverity_private.h
-> @@ -122,8 +122,8 @@ void __init fsverity_init_info_cache(void);
->  
->  /* signature.c */
->  
-> -#ifdef CONFIG_FS_VERITY_BUILTIN_SIGNATURES
->  extern int fsverity_require_signatures;
-> +#ifdef CONFIG_FS_VERITY_BUILTIN_SIGNATURES
->  int fsverity_verify_signature(const struct fsverity_info *vi,
->  			      const u8 *signature, size_t sig_size);
->  
-> diff --git a/fs/verity/init.c b/fs/verity/init.c
-> index a29f062f6047..e31045dd4f6c 100644
-> --- a/fs/verity/init.c
-> +++ b/fs/verity/init.c
-> @@ -13,7 +13,6 @@
->  static struct ctl_table_header *fsverity_sysctl_header;
->  
->  static struct ctl_table fsverity_sysctl_table[] = {
-> -#ifdef CONFIG_FS_VERITY_BUILTIN_SIGNATURES
->  	{
->  		.procname       = "require_signatures",
->  		.data           = &fsverity_require_signatures,
-> @@ -23,14 +22,17 @@ static struct ctl_table fsverity_sysctl_table[] = {
->  		.extra1         = SYSCTL_ZERO,
->  		.extra2         = SYSCTL_ONE,
->  	},
-> -#endif
-> -	{ }
->  };
->  
->  static void __init fsverity_init_sysctl(void)
->  {
-> +#ifdef CONFIG_FS_VERITY_BUILTIN_SIGNATURES
->  	fsverity_sysctl_header = register_sysctl("fs/verity",
->  						 fsverity_sysctl_table);
-> +#else
-> +	fsverity_sysctl_header = register_sysctl_sz("fs/verity",
-> +						 fsverity_sysctl_table, 0);
-> +#endif
->  	if (!fsverity_sysctl_header)
->  		panic("fsverity sysctl registration failed");
->  }
-> diff --git a/fs/xfs/xfs_sysctl.c b/fs/xfs/xfs_sysctl.c
-> index fade33735393..a191f6560f98 100644
-> --- a/fs/xfs/xfs_sysctl.c
-> +++ b/fs/xfs/xfs_sysctl.c
-> @@ -206,8 +206,6 @@ static struct ctl_table xfs_table[] = {
->  		.extra2		= &xfs_params.stats_clear.max
->  	},
->  #endif /* CONFIG_PROC_FS */
-> -
-> -	{}
->  };
->  
->  int
-> 
-> -- 
-> 2.30.2
-> 
+> This is a bit of churn... like patches for checkpatch. But unlike
+> checkpatch, it's not even documented.
+
+Hi,
+I do not really understand your point or if I must change
+something...
+
+But looking at a lot of dts, the reg property is always following the
+compatible string, so I assumed it was an undocumented convention or
+best practice...
+
+Hugo.
