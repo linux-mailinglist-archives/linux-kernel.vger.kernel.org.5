@@ -2,48 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 246707E41EC
+	by mail.lfdr.de (Postfix) with ESMTP id 7E6D97E41ED
 	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 15:36:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233886AbjKGOgJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 09:36:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41744 "EHLO
+        id S234536AbjKGOgL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 09:36:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229738AbjKGOgH (ORCPT
+        with ESMTP id S229789AbjKGOgH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 7 Nov 2023 09:36:07 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAD6A98
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 06:36:02 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DDB05C433C8;
-        Tue,  7 Nov 2023 14:36:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1699367762;
-        bh=K3rekygBEwbjKu81yXel/MYn4q9jsZqaJD0PXd0KmRE=;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 769C9101;
+        Tue,  7 Nov 2023 06:36:05 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87E2EC433C7;
+        Tue,  7 Nov 2023 14:36:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699367765;
+        bh=Wo+OkR2SJcTjqFCSIGnmQqSy64cw3QrZuHtNre/B8bI=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=0XgA6bHSuFP5ciVHfbpE0EVStAnHNQZTHVwV2aLr+pbP8XQS6R+bqycl+D0F3rwQH
-         aLvKqL0DBp7+/ndbqkFybXn/fEGYjyupjx7owKOFkoSYrVmMYOCKIeOVkVoGBch8iv
-         a9GoAyrG7Jk5g/YYuROH8HbvDv1GkILGgm40KTK0=
-Date:   Tue, 7 Nov 2023 15:35:56 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     "Usyskin, Alexander" <alexander.usyskin@intel.com>
-Cc:     "De Marchi, Lucas" <lucas.demarchi@intel.com>,
-        "Ceraolo Spurio, Daniele" <daniele.ceraolospurio@intel.com>,
-        "Vivi, Rodrigo" <rodrigo.vivi@intel.com>,
-        "Winkler, Tomas" <tomas.winkler@intel.com>,
-        "Lubart, Vitaly" <vitaly.lubart@intel.com>,
-        "intel-xe@lists.freedesktop.org" <intel-xe@lists.freedesktop.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 5/5] mei: pxp: add dependency on Xe driver
-Message-ID: <2023110718-obscure-carrot-3467@gregkh>
-References: <20231107134606.316651-1-alexander.usyskin@intel.com>
- <20231107134606.316651-6-alexander.usyskin@intel.com>
- <2023110700-emptier-retrain-08fd@gregkh>
- <CY5PR11MB6366D1F5EB27DA07628B42DCEDA9A@CY5PR11MB6366.namprd11.prod.outlook.com>
+        b=tscldE+NLcdAAiT/hy775GjoAKr9qz5Bu31hJqKNOw0pBBJGCTEAU4ZKRpFSh5/Fa
+         WfdtPQE4Ghpt9hguNoCBCtTgizgLOeg5e8u9TpSDxrXGiCTX/lXzhzBBvScOt+FwJ+
+         S73pX/e/42xjy3fAm6tBy7AYbreeF4SPI/H+EFxuw0ZfJ75kxFs/li8S8pNw7MVIzX
+         fgg5EbE6QWg/SlFTKOqMm8CUDokKrArJSDLKoO3o3xiHVbc7Pbx9JOQ+ekqWAqdccp
+         pQFWBrl1ZrIZ5CTOLggpLWvgnvKZcptbbUHV2enzuQ1hDz+1N14bsAE0C3UcLTdXZd
+         1TgCxjCH7IaAA==
+Date:   Tue, 7 Nov 2023 14:36:01 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     =?iso-8859-1?Q?N=EDcolas_F=2E_R=2E_A=2E?= Prado 
+        <nfraprado@collabora.com>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Aishwarya TCV <aishwarya.tcv@arm.com>,
+        kernelci@lists.linux.dev, kernel@collabora.com,
+        Guenter Roeck <groeck@chromium.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Frank Rowand <frowand.list@gmail.com>,
+        Shuah Khan <shuah@kernel.org>
+Subject: Re: [PATCH v3 3/3] kselftest: Add new test for detecting unprobed
+ Devicetree devices
+Message-ID: <ZUpLUd+Q0MyYC6io@finisterre.sirena.org.uk>
+References: <20230828211424.2964562-1-nfraprado@collabora.com>
+ <20230828211424.2964562-4-nfraprado@collabora.com>
+ <e90cb52f-d55b-d3ba-3933-6cc7b43fcfbc@arm.com>
+ <CA+G9fYsbq28w7m-sf6LhMscXHdPs0cGXU7kK6YzjKdUFKuQ+6A@mail.gmail.com>
+ <e72e144a-c617-4a9e-adfb-e25ddabeb4c7@sirena.org.uk>
+ <CAL_JsqL-3O6omPf4HcPFctgid+br04QW5p81qDx0CPMqh_eXTg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="FfS63bym1dSwnNAk"
 Content-Disposition: inline
-In-Reply-To: <CY5PR11MB6366D1F5EB27DA07628B42DCEDA9A@CY5PR11MB6366.namprd11.prod.outlook.com>
+In-Reply-To: <CAL_JsqL-3O6omPf4HcPFctgid+br04QW5p81qDx0CPMqh_eXTg@mail.gmail.com>
+X-Cookie: Slow day.  Practice crawling.
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -54,36 +66,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 07, 2023 at 02:26:17PM +0000, Usyskin, Alexander wrote:
-> > 
-> > On Tue, Nov 07, 2023 at 03:46:06PM +0200, Alexander Usyskin wrote:
-> > > Optionally depend on either i915 or Xe drivers.
-> > >
-> > > Signed-off-by: Alexander Usyskin <alexander.usyskin@intel.com>
-> > > ---
-> > >  drivers/misc/mei/pxp/Kconfig | 3 +--
-> > >  1 file changed, 1 insertion(+), 2 deletions(-)
-> > >
-> > > diff --git a/drivers/misc/mei/pxp/Kconfig b/drivers/misc/mei/pxp/Kconfig
-> > > index 4029b96afc04..d9ae5483567f 100644
-> > > --- a/drivers/misc/mei/pxp/Kconfig
-> > > +++ b/drivers/misc/mei/pxp/Kconfig
-> > > @@ -1,11 +1,10 @@
-> > > -
-> > 
-> > Why this change here?
-> 
-> I've been told that SPDX should be the first line in the file,
-> but here fist line is an empty line.
 
-That is correct, and should be fixed up, but you didn't say that you
-made this change in your changelog text so I didn't know why it was
-there.
+--FfS63bym1dSwnNAk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> I can drop this change if it is inappropriate to put it in this patch.
+On Mon, Nov 06, 2023 at 11:09:44AM -0600, Rob Herring wrote:
 
-It should go in a separate patch please.
+> A simple solution would be instead of passing the source tree root to
+> dt-extract-compatibles, pass 'arch', 'drivers', and 'sound' instead.
+> There shouldn't be compatibles anywhere else.
 
-thanks,
+This does seem like a reasonable quick fix that avoids the issue for
+now - nothing would stop someone implementing a more complete solution
+later.
 
-greg k-h
+--FfS63bym1dSwnNAk
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmVKS1EACgkQJNaLcl1U
+h9D+Bgf9HspkikyOl/hR8HPz+Oo8/wKTHACheiwhnT4RkfFcAbXX+kDJBjHC3b8R
+F/dsfrL9G/LEvf1MoPIqr7LxmrGDUeVz/oirAlIsoJoRYJPPTwKE6zwH9S2AVU9x
+1GFd84WdvTRSHRvPvxFe/EnyxfbL4InoEiG0c3qiI2pXze3EkdW5X/JSZ1hhvUsX
+kqMN/TltmRFQAbDrIklsnkpU17Fae9Mi6tNe1xtcOlRfGlJicuOwReFSkanW50nH
+ki2kXTbaLboOHmHXi3lSmMj4tMpHCtgfi3pVNsgwhOR9k2yW4/MrEGtQ9dSnKcUP
+V5hhqjVNMF3TOOPlbEuEbTTjZMpULw==
+=ALf9
+-----END PGP SIGNATURE-----
+
+--FfS63bym1dSwnNAk--
