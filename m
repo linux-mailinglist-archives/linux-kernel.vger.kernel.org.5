@@ -2,104 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7888B7E3555
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 07:44:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D42847E3558
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 07:46:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232365AbjKGGot (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 01:44:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39860 "EHLO
+        id S232666AbjKGGql (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 01:46:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231529AbjKGGor (ORCPT
+        with ESMTP id S230283AbjKGGqj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 01:44:47 -0500
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3159B11A;
-        Mon,  6 Nov 2023 22:44:41 -0800 (PST)
-X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 3A76iR5114033888, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36506.realtek.com.tw[172.21.6.27])
-        by rtits2.realtek.com.tw (8.15.2/2.95/5.92) with ESMTPS id 3A76iR5114033888
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 7 Nov 2023 14:44:27 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXH36506.realtek.com.tw (172.21.6.27) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.17; Tue, 7 Nov 2023 14:44:27 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXMBS04.realtek.com.tw (172.21.6.97) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.7; Tue, 7 Nov 2023 14:44:26 +0800
-Received: from RTEXMBS04.realtek.com.tw ([fe80::40c2:6c24:2df4:e6c7]) by
- RTEXMBS04.realtek.com.tw ([fe80::40c2:6c24:2df4:e6c7%5]) with mapi id
- 15.01.2375.007; Tue, 7 Nov 2023 14:44:26 +0800
-From:   =?big5?B?U3RhbmxleSBDaGFuZ1up96h8vHdd?= <stanley_chang@realtek.com>
-To:     Vinod Koul <vkoul@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC:     Johan Hovold <johan+linaro@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-phy@lists.infradead.org" <linux-phy@lists.infradead.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>
-Subject: RE: [PATCH 0/3] Revert "usb: phy: add usb phy notify port status API"
-Thread-Topic: [PATCH 0/3] Revert "usb: phy: add usb phy notify port status
- API"
-Thread-Index: AQHaEKFYYUMOc04m8UWBbMSA7W5TDrBsnd2AgAACc4CAAcfbIA==
-Date:   Tue, 7 Nov 2023 06:44:26 +0000
-Message-ID: <28e77cbc531248bf913ceedba6425cf6@realtek.com>
-References: <20231106110654.31090-1-johan+linaro@kernel.org>
- <2023110623-pointing-stump-643d@gregkh> <ZUjM/VEliT5c8H4C@matsya>
-In-Reply-To: <ZUjM/VEliT5c8H4C@matsya>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-x-originating-ip: [172.21.190.159]
-x-kse-serverinfo: RTEXMBS04.realtek.com.tw, 9
-x-kse-antispam-interceptor-info: fallback
-x-kse-antivirus-interceptor-info: fallback
-Content-Type: text/plain; charset="big5"
-Content-Transfer-Encoding: base64
+        Tue, 7 Nov 2023 01:46:39 -0500
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 900A6E8;
+        Mon,  6 Nov 2023 22:46:36 -0800 (PST)
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A75SuHY023467;
+        Tue, 7 Nov 2023 06:46:27 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=qcppdkim1;
+ bh=Rug+1Ge2zGYjSRgUXFw2EyLeaRalbAmz3hyCXghH2IY=;
+ b=cPZ7sJaRM5gN0hr2FWeoAbpGfzVUiBHVgAyEAM6AotS1NGH5gFHR3qYx6p6+YJ5UXGYy
+ 50w7RThFV726jj/nyhOiLWi/jm+fuA8U7ZgS4XYpjjPdvumFWi95i//wtV3uMb2tfwyZ
+ 6dpEeI0SELUD8eZMb/OhH5q7ZoCVbjZTFE1JHmjCiN2XYCC7MkEurLqhW0V/0COnH5CU
+ 2myqDKZYMiLSs0//9iEzWgLPnDKTPW6jePpsU3w/KJjHZkad68oiruO+1Er5n9mGjN7v
+ A7zqQRJu5pKEXjKXiqlxYQTgx6G1KTVA9OdQJCQGaLxr1EL/NdDOggP1Yf11hEYvYT0A nw== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u72bthv5f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 07 Nov 2023 06:46:27 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3A76kQCq017940
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 7 Nov 2023 06:46:26 GMT
+Received: from hu-jkona-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.39; Mon, 6 Nov 2023 22:46:21 -0800
+From:   Jagadeesh Kona <quic_jkona@quicinc.com>
+To:     Andy Gross <agross@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>
+CC:     Jagadeesh Kona <quic_jkona@quicinc.com>,
+        Taniya Das <quic_tdas@quicinc.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Ajit Pandey <quic_ajipan@quicinc.com>,
+        "Imran Shaik" <quic_imrashai@quicinc.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH] clk: qcom: Fix SM_CAMCC_8550 dependencies
+Date:   Tue, 7 Nov 2023 12:15:45 +0530
+Message-ID: <20231107064545.13120-1-quic_jkona@quicinc.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: k_5763SrfRN3gAcz7i1COOnwgRTvvUaS
+X-Proofpoint-GUID: k_5763SrfRN3gAcz7i1COOnwgRTvvUaS
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-06_15,2023-11-02_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=683 mlxscore=0
+ bulkscore=0 phishscore=0 impostorscore=0 adultscore=0 suspectscore=0
+ clxscore=1011 priorityscore=1501 spamscore=0 malwarescore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2310240000 definitions=main-2311070054
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgSm9oYW4gYW5kIFZpbm9kLA0KDQpJIG1vZGlmaWVkIHRoZSBSZWFsdGVrIHBoeSB0byBzb2x2
-ZSB0aGlzIGlzc3VlIGFuZCBvbmx5IHVzZSB0aGUgZ2VuZXJpYyBQSFkuDQpBbmQgc3VibWl0dGVk
-IHRoZXNlIHBhdGNoZXMgdG9kYXkgYXMgZm9sbG93cw0KaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcv
-bGludXgtdXNiLzIwMjMxMTA3MDYzNTE4LjI3ODI0LTEtc3RhbmxleV9jaGFuZ0ByZWFsdGVrLmNv
-bS8NCmh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2xpbnV4LXVzYi8yMDIzMTEwNzA2MzUxOC4yNzgy
-NC0yLXN0YW5sZXlfY2hhbmdAcmVhbHRlay5jb20vDQpodHRwczovL2xvcmUua2VybmVsLm9yZy9s
-aW51eC11c2IvMjAyMzExMDcwNjM1MTguMjc4MjQtMy1zdGFubGV5X2NoYW5nQHJlYWx0ZWsuY29t
-Lw0KaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvbGludXgtdXNiLzIwMjMxMTA3MDYzNTE4LjI3ODI0
-LTQtc3RhbmxleV9jaGFuZ0ByZWFsdGVrLmNvbS8NCg0KSSBkb24ndCB0aGluayB0aGlzIHBhdGNo
-IGlzIG5lZWRlZCB0byByZXZlcnQgYTA4Nzk5Y2YxN2MyICgidXNiOnBoeTogTmV3IHVzYiBwaHkg
-bm90aWZpY2F0aW9uIHBvcnQgc3RhdHVzIEFQSSIpLg0KDQpUaGFua3MsDQpTdGFubGV5DQoNCj4g
-T24gMDYtMTEtMjMsIDEyOjE1LCBHcmVnIEtyb2FoLUhhcnRtYW4gd3JvdGU6DQo+ID4gT24gTW9u
-LCBOb3YgMDYsIDIwMjMgYXQgMTI6MDY6NTFQTSArMDEwMCwgSm9oYW4gSG92b2xkIHdyb3RlOg0K
-PiA+ID4gVGhlIHJlY2VudGx5IGFkZGVkIFJlYWx0ZWsgUEhZIGRyaXZlcnMgZGVwZW5kIG9uIHRo
-ZSBuZXcgcG9ydCBzdGF0dXMNCj4gPiA+IG5vdGlmaWNhdGlvbiBtZWNoYW5pc20gd2hpY2ggd2Fz
-IGJ1aWx0IG9uIHRoZSBkZXByZWNhdGVkIFVTQiBQSFkNCj4gPiA+IGltcGxlbWVudGF0aW9uIGFu
-ZCBkZXZpY2V0cmVlIGJpbmRpbmcuDQo+ID4gPg0KPiA+ID4gU3BlY2lmaWNhbGx5LCB1c2luZyB0
-aGVzZSBQSFlzIHdvdWxkIHJlcXVpcmUgZGVzY3JpYmluZyB0aGUgdmVyeQ0KPiA+ID4gc2FtZSBQ
-SFkgdXNpbmcgYm90aCB0aGUgZ2VuZXJpYyAicGh5IiBwcm9wZXJ0eSBhbmQgdGhlIGRlcHJlY2F0
-ZWQNCj4gInVzYi1waHkiDQo+ID4gPiBwcm9wZXJ0eSB3aGljaCBpcyBjbGVhcmx5IHdyb25nLg0K
-PiA+ID4NCj4gPiA+IFdlIHNob3VsZCBub3QgYmUgYnVpbGRpbmcgbmV3IGZ1bmN0aW9uYWxpdHkg
-b24gdG9wIG9mIHRoZSBsZWdhY3kgVVNCDQo+ID4gPiBQSFkgaW1wbGVtZW50YXRpb24gZXZlbiBp
-ZiBpdCBpcyBjdXJyZW50bHkgc3R1Y2sgaW4gc29tZSBraW5kIG9mDQo+ID4gPiB0cmFuc2l0aW9u
-YWwgbGltYm8uDQo+ID4gPg0KPiA+ID4gUmV2ZXJ0IHRoZSBuZXcgUmVhbHRlayBQSFkgZHJpdmVy
-cyBmb3Igbm93IHNvIHRoYXQgdGhlIHBvcnQgc3RhdHVzDQo+ID4gPiBub3RpZmljYXRpb24gaW50
-ZXJmYWNlIGNhbiBiZSByZXZlcnRlZCBhbmQgcmVwbGFjZWQgYmVmb3JlIHdlIGRpZw0KPiA+ID4g
-b3Vyc2VsdmVzIGludG8gYW4gZXZlbiBkZWVwZXIgaG9sZSB3aXRoIHRoaXMgUEhZIG1lc3MuDQo+
-ID4gPg0KPiA+ID4gTm90ZSB0aGF0IHRoZXJlIGFyZSBubyB1cHN0cmVhbSB1c2VycyBvZiB0aGVz
-ZSBQSFlzIGFuZCB0aGUgZHJpdmVycw0KPiA+ID4gd2VyZSBvbmx5IGluY2x1ZGVkIGluIDYuNiBz
-byB0aGVyZSBzaG91bGQgc3RpbGwgYmUgdGltZSB0byB1bmRvIHRoaXMuDQo+ID4NCj4gPiBObyB1
-c2VycyBvZiB0aGVzZSBwaHkgZHJpdmVycyB5ZXQ/ICBXaHkgd2VyZSB0aGV5IGFkZGVkPw0KPiAN
-Cj4gTm90IHN1cmUgd2h5LCB0aGV5IGRpZG50IGdvIHRocnUgcGh5IHNzIQ0KPiANCj4gPg0KPiA+
-ID4gUHJlZmVyYWJseSB0aGVzZSBzaG91bGQgZ28gaW4gdGhyb3VnaCBHcmVnJ3MgdHJlZSBmb3Ig
-Ni43LXJjMS4NCj4gPg0KPiA+IEknbGwgYmUgZ2xhZCB0byB0YWtlIHRoaXMgaWYgSSBjYW4gZ2V0
-IGFuIGFjayBmb3IgaXQuDQo+IA0KPiBQbHMgZG8gZHJvcCB0aGlzOg0KPiANCj4gQWNrZWQtYnk6
-IFZpbm9kIEtvdWwgPHZrb3VsQGtlcm5lbC5vcmc+DQo+IA0KPiAtLQ0KPiB+Vmlub2QNCg==
+SM_GCC_8550 depends on ARM64 but it is selected by
+SM_CAMCC_8550, which should have the same dependencies
+as SM_GCC_8550 to avoid the below Kconfig warning reported
+by kernel test robot.
+
+WARNING: unmet direct dependencies detected for SM_GCC_8550
+  Depends on [n]: COMMON_CLK [=y] && COMMON_CLK_QCOM [=y] && (ARM64 || COMPILE_TEST [=n])
+  Selected by [y]:
+  - SM_CAMCC_8550 [=y] && COMMON_CLK [=y] && COMMON_CLK_QCOM [=y]
+
+Fixes: ccc4e6a061a2 ("clk: qcom: camcc-sm8550: Add camera clock controller driver for SM8550")
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202311062309.XugQH7AH-lkp@intel.com/
+Signed-off-by: Jagadeesh Kona <quic_jkona@quicinc.com>
+---
+ drivers/clk/qcom/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/clk/qcom/Kconfig b/drivers/clk/qcom/Kconfig
+index ad1acd9b7426..dbc3950c5960 100644
+--- a/drivers/clk/qcom/Kconfig
++++ b/drivers/clk/qcom/Kconfig
+@@ -767,6 +767,7 @@ config SM_CAMCC_8450
+ 
+ config SM_CAMCC_8550
+ 	tristate "SM8550 Camera Clock Controller"
++	depends on ARM64 || COMPILE_TEST
+ 	select SM_GCC_8550
+ 	help
+ 	  Support for the camera clock controller on SM8550 devices.
+-- 
+2.41.0
+
