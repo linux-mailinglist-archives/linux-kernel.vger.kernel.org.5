@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B05D7E3EA2
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 13:40:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90E407E3EA3
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 13:40:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235155AbjKGMkM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 07:40:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46158 "EHLO
+        id S1343594AbjKGMkQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 07:40:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235215AbjKGMid (ORCPT
+        with ESMTP id S235243AbjKGMif (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 07:38:33 -0500
+        Tue, 7 Nov 2023 07:38:35 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BD991FE4;
-        Tue,  7 Nov 2023 04:26:51 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC413C433CA;
-        Tue,  7 Nov 2023 12:26:49 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB60C59DF;
+        Tue,  7 Nov 2023 04:26:58 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 47380C433CA;
+        Tue,  7 Nov 2023 12:26:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699360011;
-        bh=jd/DPURIzBIXexjIFq3NWbyaTqbwZSsDDhq7FjwBp5E=;
+        s=k20201202; t=1699360018;
+        bh=3zdn/xAE4+pyIvadW5DRQWZFaXeQ2YLq9a+v8tV8wJ8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=k9cu6n0JzFx0dQfI1WGFUOwbrz/XAaGL/wKO5FDQyHPD45MapTS+nYgLd6XzZ+uP8
-         klnu2X8bc7DqodvJKdzPQMc15d5Ah0lihIG0pchpOt+S9f3e5jc/8frrzLWw6OC4Lu
-         a64u8WhT3Gi0anMmAOXKUOxNmpGu/XIYnGMBBl3BauE4cbXvRI+s5jEz5TKTYwiVpf
-         JxqcBtSMrqSzrwGbbRPxeJqHD89iC+QciXBT0V1BjXH71GjCRl6Gql+MOnd/b+3Fa8
-         q3MpCKhJdSS/Bts5SIzVerHhm3/CyiqQQD3QoE7NpidjGpwby1DjFuUpc1GD3Wb2F3
-         YUiAF9WxCf9kw==
+        b=LWzJzbwueqSgNSLWFf0sL5hwHpycqGDOa9pamHd4c0XloUhr95jRFrXimM0VsY7U+
+         uYi3fMmcl52pqv98VTJZl3TS0ElV2Fgq1lQtKbTS3A8trcIxsjmF7RSDrqQaNl0sy7
+         jJqx/0F2g0I4bWBQFPBvbDY4NlzMot9HDfNJnxCFmGv2OCPRLcXpZjoL9/RIauhU/K
+         kI+RvDabXFJasJbhJkWozkilcN1SP3EdYRaa5Kpi+9hCFMP3AbgvWQmQsVfmyKo8ZQ
+         0CBv1jMKxQ8mZhd0mS8PscX0GfLji19abWVvMNUfaJf3Jp3EpR4AbvZRwjW1OrDnX5
+         M1WO0r4aIzR2g==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Chris Morgan <macromorgan@hotmail.com>,
@@ -36,9 +36,9 @@ Cc:     Chris Morgan <macromorgan@hotmail.com>,
         jagan@edgeble.ai, devicetree@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org,
         linux-rockchip@lists.infradead.org
-Subject: [PATCH AUTOSEL 6.5 34/37] arm64: dts: rockchip: add PCIe to rk3588s-indiedroid-nova
-Date:   Tue,  7 Nov 2023 07:21:45 -0500
-Message-ID: <20231107122407.3760584-34-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.5 35/37] arm64: dts: rockchip: add USB2 to rk3588s-indiedroid
+Date:   Tue,  7 Nov 2023 07:21:46 -0500
+Message-ID: <20231107122407.3760584-35-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231107122407.3760584-1-sashal@kernel.org>
 References: <20231107122407.3760584-1-sashal@kernel.org>
@@ -59,60 +59,71 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Chris Morgan <macromorgan@hotmail.com>
 
-[ Upstream commit f5fb02c7125e3564aa773f54add37655d09e64f1 ]
+[ Upstream commit aee432b50f6e15886bddcb6f92028265db4b254e ]
 
-Add the necessary nodes to the Indiedroid Nova to activate the PCI
-express port that is used by the RTL8111 ethernet controller.
+Enable USB2 (EHCI and OCHI mode) support for the Indiedroid Nova. This
+adds support for USB for the 4 full size USB-A ports. Note that USB 3
+(the two blue full-size USB-A ports) is still outstanding, as is
+support for USB on the USB-C ports. The controller is not yet supported
+for these ports.
 
 Signed-off-by: Chris Morgan <macromorgan@hotmail.com>
-Link: https://lore.kernel.org/r/20230918173255.1325-2-macroalpha82@gmail.com
+Link: https://lore.kernel.org/r/20230918173255.1325-3-macroalpha82@gmail.com
 Signed-off-by: Heiko Stuebner <heiko@sntech.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../dts/rockchip/rk3588s-indiedroid-nova.dts     | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+ .../dts/rockchip/rk3588s-indiedroid-nova.dts  | 34 +++++++++++++++++++
+ 1 file changed, 34 insertions(+)
 
 diff --git a/arch/arm64/boot/dts/rockchip/rk3588s-indiedroid-nova.dts b/arch/arm64/boot/dts/rockchip/rk3588s-indiedroid-nova.dts
-index 1a60a275ddf9b..6fecdb511061e 100644
+index 6fecdb511061e..0ee9b562094ca 100644
 --- a/arch/arm64/boot/dts/rockchip/rk3588s-indiedroid-nova.dts
 +++ b/arch/arm64/boot/dts/rockchip/rk3588s-indiedroid-nova.dts
-@@ -109,6 +109,10 @@ vcc5v0_usbdcin: vcc5v0-usbdcin-regulator {
- 	};
+@@ -753,6 +753,24 @@ &tsadc {
+ 	status = "okay";
  };
  
-+&combphy0_ps {
++&u2phy2 {
 +	status = "okay";
 +};
 +
- &cpu_l0 {
- 	cpu-supply = <&vdd_cpu_lit_s0>;
- };
-@@ -348,6 +352,12 @@ i2s0_8ch_p0_0: endpoint {
- 	};
- };
- 
-+&pcie2x1l2 {
-+	pinctrl-0 = <&rtl8111_perstb>;
-+	pinctrl-names = "default";
++&u2phy2_host {
++	phy-supply = <&vcc5v0_usb>;
 +	status = "okay";
 +};
 +
- &pinctrl {
- 	bluetooth-pins {
- 		bt_reset: bt-reset {
-@@ -366,6 +376,12 @@ bt_wake_host: bt-wake-host {
- 		};
- 	};
- 
-+	ethernet-pins {
-+		rtl8111_perstb: rtl8111-perstb {
-+			rockchip,pins = <3 RK_PD1 RK_FUNC_GPIO &pcfg_pull_up>;
-+		};
-+	};
++&u2phy3 {
++	status = "okay";
++};
 +
- 	hym8563 {
- 
- 		hym8563_int: hym8563-int {
++&u2phy3_host {
++	phy-supply = <&vcc5v0_usb>;
++	status = "okay";
++};
++
+ &uart2 {
+ 	pinctrl-0 = <&uart2m0_xfer>;
+ 	status = "okay";
+@@ -777,3 +795,19 @@ bluetooth {
+ 		pinctrl-names = "default";
+ 	};
+ };
++
++&usb_host0_ehci {
++	status = "okay";
++};
++
++&usb_host0_ohci {
++	status = "okay";
++};
++
++&usb_host1_ehci {
++	status = "okay";
++};
++
++&usb_host1_ohci {
++	status = "okay";
++};
 -- 
 2.42.0
 
