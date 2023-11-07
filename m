@@ -2,153 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 02E9D7E4A14
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 21:49:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30EA77E4A21
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 21:51:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234904AbjKGUtM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 15:49:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57132 "EHLO
+        id S234539AbjKGUvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 15:51:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229650AbjKGUtL (ORCPT
+        with ESMTP id S229650AbjKGUvC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 15:49:11 -0500
-Received: from EUR01-DB5-obe.outbound.protection.outlook.com (mail-db5eur01olkn2027.outbound.protection.outlook.com [40.92.64.27])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1F09137;
-        Tue,  7 Nov 2023 12:49:08 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=la779b/t01xjaBIE/5uFHz5GT7hX7wsHGJTdcCcUsqUyML7QRNn//mKXF+EyJyx6Pnr7+hebuoIAT1EXkeyXSH8eiSHXZfksqdWZyF6bd6fvAZdbH2sti+WzlYhhL9BwgOWsWgKxTmJq4WgvHV6fWmAqNmt6cRPsuwBUa03/YCvJaG8mtz2tvuLKCBpDpRj+PctQ1waQN4+MMPoNMhgbJmh3FwrFwYJQQ/HxWCm7JhTJOuwNLWPm6qDVzDYeWNNfsIrbEfSMBvWo+z4ddOS2cRGh16f/PuM0o1xccE7QNGMnWxxnuvYdpJYzsKqcqsn8xFj2nUukgCu5QJ1rcVcfvg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ef5iHiCKbRYWS5/Qdr3Ca5Osk+32uM084HHn4E63OBQ=;
- b=cppQCEqaS31ue5xaa2XRUX2O7f3ptk7NWVNlQqEn/ZFWvjVJeVMcZz2Mwa2ZO1sWA4L9wKpgPHy5hKTDGi0MnnlTfXd37uMACYq167cK1rBS8pLS6tvB1JoBJJwRKl0KDEOE33I8SU/lvLsPEenG9hHaMQgA+2EAKqpwBzBjB9a2KDoZoJrtO8fmIf6zzNBAvCxg/1plirxk8BQaPq04rOOsfdTP16qzA8p/87Njp95WfBsD6WgYjtSa3MTWqeNtDf3oXK28Kwk7CX1nxv/23z/fDiF3rv8GO/1yK8e26fYeLDdSLWg9IsXrxn9zjbafamjDrbAsUvNCZENpDW/hpA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ef5iHiCKbRYWS5/Qdr3Ca5Osk+32uM084HHn4E63OBQ=;
- b=hqSXVrbA+ZHIFdYaA6S1NmolrQTqqs9HrNzNkNsSw4q8gohMBP1bq6/VFI/lbGrenfg6mJtVMR00VDsfaFygA6ZFOpYwmqM5tnhCzsZorSg0tXzI9SoogsT6npsdtpC5T4aeTAK7uNzYdfJ1uIh/RvxSVb2ozqtM8C5gLXPRrLrKEs4ExvWWr0ryAZW0zYpto8aNu4rejcKx+XFrcYYylvNpiFxV8zzW1t61W4D7uczo7XoWhWf3xEE2AqKT1PZwlo6KWOL3PLTDG5wBxyHDN91ym6KVZR/HdEyIa9k5mixHgj23XajzUYtWLlpUWCIRU/eIlvLNuXa8qXjKb9z+dg==
-Received: from DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:42a::7)
- by AS4PR10MB6277.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:58c::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.28; Tue, 7 Nov
- 2023 20:49:06 +0000
-Received: from DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::e2b0:8d7e:e293:bd97]) by DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::e2b0:8d7e:e293:bd97%7]) with mapi id 15.20.6954.028; Tue, 7 Nov 2023
- 20:49:06 +0000
-From:   Yuran Pereira <yuran.pereira@hotmail.com>
-To:     richardcochran@gmail.com, netdev@vger.kernel.org
-Cc:     Yuran Pereira <yuran.pereira@hotmail.com>, eadavis@qq.com,
-        davem@davemloft.net, reibax@gmail.com,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+8a78ecea7ac1a2ea26e5@syzkaller.appspotmail.com
-Subject: [PATCH RESEND] ptp: Fixes a null pointer dereference in ptp_ioctl
-Date:   Wed,  8 Nov 2023 02:18:36 +0530
-Message-ID: <DB3PR10MB6835D68E7E632532155AE585E8A9A@DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM>
-X-Mailer: git-send-email 2.25.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TMN:  [B6YInlTCs1itY/5b2VoSgRX8XVO9e89Q]
-X-ClientProxiedBy: JNAP275CA0047.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4e::8)
- To DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:42a::7)
-X-Microsoft-Original-Message-ID: <20231107204836.1849214-1-yuran.pereira@hotmail.com>
+        Tue, 7 Nov 2023 15:51:02 -0500
+Received: from mail-vk1-xa34.google.com (mail-vk1-xa34.google.com [IPv6:2607:f8b0:4864:20::a34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2772310CC
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 12:51:00 -0800 (PST)
+Received: by mail-vk1-xa34.google.com with SMTP id 71dfb90a1353d-4a13374a1e8so2661491e0c.1
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 12:51:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699390259; x=1699995059; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vekju1KMs5CW5Xn64e+qJMXt5jILCHDisKThefITH0I=;
+        b=fhvUYUaa+tw3w+quHMwLdX2zATGgmY5Qdw7Vka606MFfFDnGG5FnME4rK6KoJfu7fJ
+         VYCmGXn094MFUOm9U1ICBy6FDH40O8u+ZR/vLxy94J6A7E+Lgida4ADKX0O6RxbRxOsC
+         UDMrJZjdzcezqqSKRLjyx8mfjsGg80yOyZqq1wMR8Liqnd6dpeJeYfhvYsiP+R4kgMmI
+         VRElbM/4yPXLLrWs1YJ3C6pRpMrnwVtf1b48qbD5c0F2zpmGQa237KJ0ykIGAOJk80yJ
+         G7dtYqXN8R/z2RpehwVi93WEF76/jpq1F5T89nx0SxKjPpvEbBEWEfi26b0Ry7b+SZs2
+         /2aQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699390259; x=1699995059;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vekju1KMs5CW5Xn64e+qJMXt5jILCHDisKThefITH0I=;
+        b=jTzdUxPH0qFoPxJr/7w+KguZ3RHohinw5k73pav1iKbq6ubYH4AKO4oxuOxtuJZZal
+         +HgshAOOhFpmYwhEfBO+4mCB9lI9OgGL6SrcUlW4KLU9iMVmcK+q6ythDHfRRFAbqOOb
+         HhxiTgFSBA4KeP8j/a8YqAJRg/KOypxfoTJyIrrb6LGKBSaCn4eIKO5gqWEjdCy4x4yE
+         74smfM4dEKV2gbXygLJOaRx3tOXwwONOWIJaY7/NNDzyZxk03EtQE7FMWnFcvx9D/mok
+         YC80LFVXfvhqj9g5vGQiP2rSLkkZ8UF1l8wgfLos1aetPedFg2vtxBkS0adoZGuxiu6W
+         CjbA==
+X-Gm-Message-State: AOJu0Ywp+xkYT6Rmk8QpToCUIDtAs6WsQCZaABNXlmSxj/6RLBhBxmvi
+        f/nDOLrFTbOG5vDQOh+FCzdTlCwc9WbJ6BVq2cI=
+X-Google-Smtp-Source: AGHT+IEsjhCBSQNPhCIobyEzL+51aFPawFNigHITYI3WoLoOE4v8jd4TaQrJzQhU+TdlDhqgBUwGES1YCX/c5SwRqe4=
+X-Received: by 2002:a05:6102:23f7:b0:457:bc52:9b04 with SMTP id
+ p23-20020a05610223f700b00457bc529b04mr27393994vsc.35.1699390259218; Tue, 07
+ Nov 2023 12:50:59 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DB3PR10MB6835:EE_|AS4PR10MB6277:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0efd67a0-a413-4c91-51d1-08dbdfd2fbc4
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: UBOAbIPrBjHr6/Z7piI0E4eatt5N+ejzLjXWNDC6i0B/NaVdqq3AK3xAlBG8YB6SJDsrZinmneZrrXk4zVpfoksKvt39cZ/l7Ls6yiDec3VENs6HvhlDECcmhVVA8XgDyNPCwvQLxT3KQUu1X1/MzI9JyYjYBa+J1gCfihZIdMG2hW4KQ1+V45N/g13AG7QjR8V2cPM2JTQAPG1cVHDpURxdQsQjP+qOdXhEjuepcOrUJ4Th7YeabfIja46BiwVMDAHOBoHaWk4lTYWSMPMzOgdMAo20nx+yx6PDU2cVaKMiYzSRPsurcF9BJcPh3Ha3q9xtT/7+3DOGIoQ8T00GUf9lHa/pMPse6GogjWq+YtwJ0RGCZMCRnx0I31bQuGTzCZ2y7JaBCF2TUj7NX2drc/JDnXb9XQSNJGVSV7vUqH8cSrqZZ1ikLcDb34bIlcQC4jzYYj0PDiYO2x0IvyN4YFgvCBoixwo//qABOZtN9rG22gGzaEOD+R8FQEr4v1kaTEtaSHlhQkviG3PlCqZzjIMp+skUAbRIHHlxsOZT1qe1BTKtmxwjc6iuVM/Rvxfo73YN5+3sfeqhHFp4AXmt5woO7gclLaHgvEdkEJujv8fUAIoBOcMgqoooMQs95Bzn
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?C4krEYX4C6kZRUJfnQm2GgGxaATTS2ck86KNE6G/RL23bYyNfCbSNVLHF5z1?=
- =?us-ascii?Q?KPWlddNXjoym1Vhy4ixAM3RZAPul6a6MgQ/IBBYKwESzZ5b6kQa0/ok+WLTc?=
- =?us-ascii?Q?LKAdDVmBd4ZcCZHfdP1MzrumfYRhoOZbDLYBSBv/PWlIGND+j/sLIQv7t757?=
- =?us-ascii?Q?H1HGMsN/YMNxStUFoT095mt0d+oQFzy4eDjTfYj82ySEh7xwfRYuhRgx+fEE?=
- =?us-ascii?Q?RJ5A3K+DnHobISWc/VokVHT8W3/wiUQW9ft3Inv6Ifrpe6E/S0Py4A3PyfNl?=
- =?us-ascii?Q?xiqAFTJnJIde2u5lTx0robLJ+Kv06PODSyuvM4Zwz+hyMDQBDiha8TbFTDHX?=
- =?us-ascii?Q?qKs/j3h80OnGYz5kk/GiMZH7tHFlWb9eKBC9CNz4zxyqYfpnY5H0/N8hJW8c?=
- =?us-ascii?Q?cNvlk2Rq08kZpXPVAjz6nhjqvbcBmPw3yXhhgLDCTJJCUP0sKydoho4KdC5T?=
- =?us-ascii?Q?sJTC4/0y6OEzh3vkjT3XtUpWtbkuD3USbkHMoBBGdIGwU3mGFVjXL4Hivz3E?=
- =?us-ascii?Q?YYv0UfM+linU++8cLMwg1PZK7gHodwERC/3klnQ76vwQIe6pKX+uCUCIa2Zk?=
- =?us-ascii?Q?zSOi4o6KdRwHRQuZJPC0meOYgo9WRWRQg1n+OkSxP8Ru8n1VCPRfC0t69vr7?=
- =?us-ascii?Q?AI+fW72sy2iYi+rvmPe3s0PsM9Hp3XDUMT+rTKeGZ9ffTQM9SZDtUViP9Pmb?=
- =?us-ascii?Q?ArDsTLbtBzzcyCO30wB3+LhM84HcmO5i3YhkezZWnP6hYazn9DIV2obePtE6?=
- =?us-ascii?Q?mgruUzia4LJPYobHbCvr9D9IrWQWXbRerCWVbckoDTx2j266lpsxwEIdwfS0?=
- =?us-ascii?Q?a9NtkNz4E1EoRcciK34LJL6gOScN/uQiteq7ipst3fg1N2cE00SPpL9NJEjZ?=
- =?us-ascii?Q?Pcccr2nbwtDJG93ZjNsMtc9dx8pgmOcIvhLMDxSJHZHvnB8zFSbbdGg0MsQO?=
- =?us-ascii?Q?PjDbqaOmr6OkrOWWEG6csyf739GBu1q02/86T8Tm/3p7XPEihkx7uWjHhppk?=
- =?us-ascii?Q?kwenoDNPhb7+ZlOaTTErfEyaTYO1/pOu2hA/3iRDCsuOOHjyQXIHraHrTVSJ?=
- =?us-ascii?Q?C5dv32W0bMAh3SJMkZuKo8p4yAOLVfKqDGqljNT/d88pktHPhnr9Z6RJBE8+?=
- =?us-ascii?Q?V+cAV8RAjt+mzRUMW4cB7CQK12COsG3lKQHnt6j6BLRE8iirCIF3l6mO9Eyw?=
- =?us-ascii?Q?Nq9ocTMI5dYe14e9d4v/WtGgdAxwWuNqHTJfL8dtu+Zp22VLnZT4fP9svSU?=
- =?us-ascii?Q?=3D?=
-X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-6b909.templateTenant
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0efd67a0-a413-4c91-51d1-08dbdfd2fbc4
-X-MS-Exchange-CrossTenant-AuthSource: DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Nov 2023 20:49:06.6723
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS4PR10MB6277
+References: <ae3115778a3fa10ec77152e18beed54fafe0f6e7.1698151516.git.baolin.wang@linux.alibaba.com>
+ <CAGsJ_4zgdAmyU-075jd8KfXn=CdAVC8Rs481sCOd5N2a68yPUg@mail.gmail.com>
+ <44e32b0e-0e41-4055-bdb9-15bc7d47197c@intel.com> <20231107101221.GB18944@willie-the-truck>
+In-Reply-To: <20231107101221.GB18944@willie-the-truck>
+From:   Barry Song <21cnbao@gmail.com>
+Date:   Wed, 8 Nov 2023 04:50:46 +0800
+Message-ID: <CAGsJ_4z3hTeOnMct4wZwDPQzWRn2h4as=-+82DSTT45RH7dQeA@mail.gmail.com>
+Subject: Re: [PATCH] arm64: mm: drop tlb flush operation when clearing the
+ access bit
+To:     Will Deacon <will@kernel.org>
+Cc:     "Yin, Fengwei" <fengwei.yin@intel.com>,
+        Baolin Wang <baolin.wang@linux.alibaba.com>,
+        catalin.marinas@arm.com, akpm@linux-foundation.org,
+        v-songbaohua@oppo.com, yuzhao@google.com, linux-mm@kvack.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Syzkaller found a null pointer dereference in ptp_ioctl
-originating from the lack of a null check for tsevq.
+On Tue, Nov 7, 2023 at 6:12=E2=80=AFPM Will Deacon <will@kernel.org> wrote:
+>
+> On Wed, Oct 25, 2023 at 09:39:19AM +0800, Yin, Fengwei wrote:
+> >
+> > >> diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/a=
+sm/pgtable.h
+> > >> index 0bd18de9fd97..2979d796ba9d 100644
+> > >> --- a/arch/arm64/include/asm/pgtable.h
+> > >> +++ b/arch/arm64/include/asm/pgtable.h
+> > >> @@ -905,21 +905,22 @@ static inline int ptep_test_and_clear_young(st=
+ruct vm_area_struct *vma,
+> > >>  static inline int ptep_clear_flush_young(struct vm_area_struct *vma=
+,
+> > >>                                          unsigned long address, pte_=
+t *ptep)
+> > >>  {
+> > >> -       int young =3D ptep_test_and_clear_young(vma, address, ptep);
+> > >> -
+> > >> -       if (young) {
+> > >> -               /*
+> > >> -                * We can elide the trailing DSB here since the wors=
+t that can
+> > >> -                * happen is that a CPU continues to use the young e=
+ntry in its
+> > >> -                * TLB and we mistakenly reclaim the associated page=
+. The
+> > >> -                * window for such an event is bounded by the next
+> > >> -                * context-switch, which provides a DSB to complete =
+the TLB
+> > >> -                * invalidation.
+> > >> -                */
+> > >> -               flush_tlb_page_nosync(vma, address);
+> > >> -       }
+> > >> -
+> > >> -       return young;
+> > >> +       /*
+> > >> +        * This comment is borrowed from x86, but applies equally to=
+ ARM64:
+> > >> +        *
+> > >> +        * Clearing the accessed bit without a TLB flush doesn't cau=
+se
+> > >> +        * data corruption. [ It could cause incorrect page aging an=
+d
+> > >> +        * the (mistaken) reclaim of hot pages, but the chance of th=
+at
+> > >> +        * should be relatively low. ]
+> > >> +        *
+> > >> +        * So as a performance optimization don't flush the TLB when
+> > >> +        * clearing the accessed bit, it will eventually be flushed =
+by
+> > >> +        * a context switch or a VM operation anyway. [ In the rare
+> > >> +        * event of it not getting flushed for a long time the delay
+> > >> +        * shouldn't really matter because there's no real memory
+> > >> +        * pressure for swapout to react to. ]
+> > >> +        */
+> > >> +       return ptep_test_and_clear_young(vma, address, ptep);
+> > >>  }
+> > From https://lore.kernel.org/lkml/20181029105515.GD14127@arm.com/:
+> >
+> > This is blindly copied from x86 and isn't true for us: we don't invalid=
+ate
+> > the TLB on context switch. That means our window for keeping the stale
+> > entries around is potentially much bigger and might not be a great idea=
+.
+>
+> I completely agree.
+>
+> > My understanding is that arm64 doesn't do invalidate the TLB during
+> > context switch. The flush_tlb_page_nosync() here + DSB during context
+> > switch make sure the TLB is invalidated during context switch.
+> > So we can't remove flush_tlb_page_nosync() here? Or something was chang=
+ed
+> > for arm64 (I have zero knowledge to TLB on arm64. So some obvious thing
+> > may be missed)? Thanks.
+>
+> As you point out, we already elide the DSB here but I don't think we shou=
+ld
+> remove the TLB invalidation entirely because then we lose the guarantee
+> that the update ever becomes visible to the page-table walker.
+>
+> I'm surprised that the TLBI is showing up as a performance issue without
+> the DSB present. Is it because we're walking over a large VA range and
+> invalidating on a per-page basis? If so, we'd be better off batching them
 
-```
-general protection fault, probably for non-canonical
-	address 0xdffffc000000020b: 0000 [#1] PREEMPT SMP KASAN
-KASAN: probably user-memory-access in range
-	[0x0000000000001058-0x000000000000105f]
-CPU: 0 PID: 5053 Comm: syz-executor353 Not tainted
-	6.6.0-syzkaller-10396-g4652b8e4f3ff #0
-Hardware name: Google Google Compute Engine/Google Compute Engine,
-	BIOS Google 10/09/2023
-RIP: 0010:ptp_ioctl+0xcb7/0x1d10 drivers/ptp/ptp_chardev.c:476
-...
-Call Trace:
- <TASK>
- posix_clock_ioctl+0xf8/0x160 kernel/time/posix-clock.c:86
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:871 [inline]
- __se_sys_ioctl fs/ioctl.c:857 [inline]
- __x64_sys_ioctl+0x18f/0x210 fs/ioctl.c:857
- do_syscall_x64 arch/x86/entry/common.c:51 [inline]
- do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:82
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-```
+nop. in lru cases, there are thousands of pages in LRU list. doing vmscan,
+we depend on rmap to find their PTEs, then read and clear AF to figure out
+if a page is young. So it is not from a big VM area to those pages in this =
+VA
+range. There are just too many pages from lots of processes in LRU to be
+scanned. The thing is done by rmap.
 
-This patch fixes the issue by adding a check for tsevq and
-ensuring ptp_ioctl returns with an error if tsevq is null.
+> up and doing the invalidation at the end (which will be upgraded to a
+> full-mm invalidation if the range is large enough).
 
-Reported-by: syzbot+8a78ecea7ac1a2ea26e5@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=8a78ecea7ac1a2ea26e5
-Fixes: c5a445b1e934 ("ptp: support event queue reader channel masks")
-Signed-off-by: Yuran Pereira <yuran.pereira@hotmail.com>
----
- drivers/ptp/ptp_chardev.c | 2 ++
- 1 file changed, 2 insertions(+)
+Those pages in LRU could be from hundreds of different processes, they are
+not in just one process. i guess one possibility is that hardware has a lim=
+ited
+tlbi/nosync buffer, once the buffer is full, something similar with dsb wil=
+l be
+done automatically by hardware. So too many tlbi even without dsb can still
+harm performance.
 
-diff --git a/drivers/ptp/ptp_chardev.c b/drivers/ptp/ptp_chardev.c
-index 282cd7d24077..5b36c34629a0 100644
---- a/drivers/ptp/ptp_chardev.c
-+++ b/drivers/ptp/ptp_chardev.c
-@@ -173,6 +173,8 @@ long ptp_ioctl(struct posix_clock_context *pccontext, unsigned int cmd,
- 	int enable, err = 0;
- 
- 	tsevq = pccontext->private_clkdata;
-+	if (!tsevq)
-+		return -EINVAL;
- 
- 	switch (cmd) {
- 
--- 
-2.25.1
+>
+> Will
 
+Thanks
+Barry
