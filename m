@@ -2,81 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F6A87E4A88
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 22:23:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8B727E4A8B
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 22:23:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344001AbjKGVX0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 16:23:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39346 "EHLO
+        id S235222AbjKGVXk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 16:23:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234888AbjKGVXZ (ORCPT
+        with ESMTP id S234888AbjKGVXi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 16:23:25 -0500
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D6EDD7A;
-        Tue,  7 Nov 2023 13:23:22 -0800 (PST)
-Received: from localhost (unknown [IPv6:2601:281:8300:73::646])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id F31F12E6;
-        Tue,  7 Nov 2023 21:23:21 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net F31F12E6
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1699392202; bh=2bPfjR7kBNZGvheEbYB67hyrLGZvMBmZpVWx1tFetOc=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=rK+OnYx1kL0a3bjZDfsENQn/36liPQbikm+cF0IIL7uoRqvigxogbLjdpPCqpOUL4
-         20vKdaAIOJQTqgbNBat7EE54SVjzJ1cB0r+6Hj6klHk0UaQtTvHi0zzjA7q+UtIOBg
-         eLOp8qgztGXW1kIIl+AOBvajTaaMWbbj3biCrXYq4GjtY/78SLhH2r2hHMkfr8Qz1N
-         IuCUc1qUEkHhZdyLr3nsjFMAHG6n+Ha22XOXRgKRcG+R0zXHSP/SXwwziD9EBQ+TvJ
-         0a0H3NY+qRfmDvAUoyLtplpp3HfufK2AolwLLciPpzLM1PTay0YOi1/RLDhckMUJMD
-         yFMw/uISJbmyg==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Miklos Szeredi <mszeredi@redhat.com>, linux-fsdevel@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        linux-man@vger.kernel.org, linux-security-module@vger.kernel.org,
-        Karel Zak <kzak@redhat.com>, Ian Kent <raven@themaw.net>,
-        David Howells <dhowells@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <christian@brauner.io>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Matthew House <mattlloydhouse@gmail.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH v4 5/6] add listmount(2) syscall
-In-Reply-To: <20231025140205.3586473-6-mszeredi@redhat.com>
-References: <20231025140205.3586473-1-mszeredi@redhat.com>
- <20231025140205.3586473-6-mszeredi@redhat.com>
-Date:   Tue, 07 Nov 2023 14:23:21 -0700
-Message-ID: <87il6d1cmu.fsf@meer.lwn.net>
+        Tue, 7 Nov 2023 16:23:38 -0500
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E3AF10D5
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 13:23:36 -0800 (PST)
+Received: by mail-io1-xd2f.google.com with SMTP id ca18e2360f4ac-7a950f1451fso50075539f.1
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 13:23:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google; t=1699392215; x=1699997015; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=wtzi+TszAqVWEZJQWIHSFO/HSHZJHi2BvQ12spn5fho=;
+        b=ZQb9I1hQiQxV5PND4Ea68bZEmNh19y0Zs+jwJHjplPT3KmtnP+XGBP1M7rivOZYZui
+         ibA1Qi3yIQnttKYUxiEv6k+dJZp1AjbQbRVKGEZxSlbnRKdJMWts5O8yt9ei4MPkoM/V
+         BLQ+fgde4E7YVbglbSKbuNrbokmReirkwmeQ8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699392215; x=1699997015;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=wtzi+TszAqVWEZJQWIHSFO/HSHZJHi2BvQ12spn5fho=;
+        b=QQ7tB0kYD77kbzMzOUb/vfFfIjmO6qPI5bQxOIIfkDgpF+FZhkB1Bx+3ITB3sb6vkB
+         yhdDcg8MUgf3hR1Njs8kGRJUtXdm7r9d84JqI6Qby3BTKlzgpCHUXxGP14zDxgyreaZ/
+         zlkoQ6xA1kPmn7vemPjQMYNwALnM3hxsFQXIiy71WB2Xiri7zVMd175sT6DcsAPFDhn9
+         FWuLI9/NnXyZPIn1TlOoiy8dWzXI6Jp/N63Ruj1wM3PJ4z2kGZ3isbpp5BzWCStEo1m2
+         ni915hDP2RrqhtjZGuM38QOozRQTp8/ROxRoUo/fIjCmTjfZ8CMOs33ZKrJLsuIWB2QB
+         r50Q==
+X-Gm-Message-State: AOJu0Yywl9PtaCo5WxCjvvWQsR89mR29CWPRSEwzNGzuK9iMFPG5lb1/
+        LRiOcVQRQIF53sXvmVbbAua4UA==
+X-Google-Smtp-Source: AGHT+IFUJw2/d40v1RpVWENnkltY7sbFKy+YRt8lL1zimhATc9h6LLV6++VkRY9Dgw1ERsUTIleVdw==
+X-Received: by 2002:a5d:8ad7:0:b0:7ad:3ee0:86fc with SMTP id e23-20020a5d8ad7000000b007ad3ee086fcmr80165iot.1.1699392215338;
+        Tue, 07 Nov 2023 13:23:35 -0800 (PST)
+Received: from [192.168.1.128] ([38.175.170.29])
+        by smtp.gmail.com with ESMTPSA id gq10-20020a0566382d0a00b00458edc46632sm2883067jab.156.2023.11.07.13.23.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 07 Nov 2023 13:23:34 -0800 (PST)
+Message-ID: <0f3a63ff-cbf9-4e06-8f4f-fd22bafa26fe@linuxfoundation.org>
+Date:   Tue, 7 Nov 2023 14:23:34 -0700
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] selftests: capabilities: namespace create varies for root
+ and normal user
+Content-Language: en-US
+To:     Swarup Laxman Kotiaklapudi <swarupkotikalapudi@gmail.com>,
+        shuah@kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20230929125348.13302-1-swarupkotikalapudi@gmail.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <20230929125348.13302-1-swarupkotikalapudi@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Miklos Szeredi <mszeredi@redhat.com> writes:
+On 9/29/23 06:53, Swarup Laxman Kotiaklapudi wrote:
+> Change namespace creation for root and non-root
+> user differently in create_and_enter_ns() function
+> 
 
-> Add way to query the children of a particular mount.  This is a more
-> flexible way to iterate the mount tree than having to parse the complete
-> /proc/self/mountinfo.
->
-> Allow listing either
->
->  - immediate child mounts only, or
->
->  - recursively all descendant mounts (depth first).
+Sorry for the delay on reviewing this.
 
-So I have one probably silly question:
+Can you tell me more about why this change is needed and
+include it in the change log.
 
-> +SYSCALL_DEFINE4(listmount, const struct __mount_arg __user *, req,
-> +		u64 __user *, buf, size_t, bufsize, unsigned int, flags)
-> +{
-
-Why use struct __mount_arg (or struct mnt_id_req :) here rather than
-just passing in the mount ID directly?  You don't use the request_mask
-field anywhere.
-
-Thanks,
-
-jon
+thanks,
+-- Shuah
