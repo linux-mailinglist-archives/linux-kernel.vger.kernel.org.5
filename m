@@ -2,137 +2,331 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A28227E320E
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 01:12:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B62017E3216
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 01:15:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233436AbjKGAMT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 19:12:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48262 "EHLO
+        id S233495AbjKGAPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 19:15:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230248AbjKGAMR (ORCPT
+        with ESMTP id S230248AbjKGAPG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 19:12:17 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3506BB
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 16:12:14 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 71E1FC433C8;
-        Tue,  7 Nov 2023 00:12:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699315934;
-        bh=IzvDcSXVc6Sv1zIOCJrJxYCGu8IPPHkKg7fcM6qoiKw=;
-        h=From:Date:Subject:To:Cc:Reply-To:From;
-        b=iS2m562nrCl1RiKX+Sy1RYiunIDGdiPcDySe5O4CZMNtjC83k6cd0IFZQBUoyP6En
-         vrvhJ1P4lLueHCUDlA0vqNJnmLZwNsAPscRt1Zx+x3n0xL/NUOk8GjE5oTvn/HqRdQ
-         Dd2afZgesSkF0Ox6WEAfoM7jdhVQO8QFsw3LI3h/rxZFhy29zGyft7PTfB/p4oXYxQ
-         lqgTq/pqJ33QiB0GNjpSWb9Zk/timrYiIzLFiOWS29ALBzDdJisVc1zYOGe5WEk10I
-         /WAEFww3iu25SOTtLJsGHO+cSN5v/U20sR2IzOlAEs6Q7ay/2ZVjT8O+kp0azA4OGw
-         IDWMf14m+H7FQ==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by smtp.lore.kernel.org (Postfix) with ESMTP id 54BD3C4332F;
-        Tue,  7 Nov 2023 00:12:14 +0000 (UTC)
-From:   Steev Klimaszewski via B4 Relay 
-        <devnull+steev.kali.org@kernel.org>
-Date:   Mon, 06 Nov 2023 18:12:11 -0600
-Subject: [PATCH] arm64: dts: qcom: sdm850-lenovo-yoga: Add wakeup-sources
-MIME-Version: 1.0
+        Mon, 6 Nov 2023 19:15:06 -0500
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 372B1125
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 16:14:58 -0800 (PST)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5afa071d100so103189197b3.1
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 16:14:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1699316097; x=1699920897; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=NJOStCOVHOX8afjyhZUr3wHzG9caGrOyErBNJl+fQsE=;
+        b=WE79hAX87+nIxWPR1D1J0tdDpfokHaZko4+1kE0GZHSqYby78LJistdanP8UHFH/n5
+         OVVy0gLSVQu0dHTAUNrVF5H0Q0+0uanIljNl/Rt0WAyC4MOA+2OiHJWrRJxfOpcbKHfw
+         cl2QwP+wG0qJ0phaK/aES5F3VOQKaySU8YxY546daZyIPBpNn8fC0FNGyABgV0pjp4DX
+         ia+KfV7jds3McoDhe6qy3VyY6cW9VaQqPJ02QK2+SdP3BXL/vUNta1tTNG1g8mvBbiSX
+         wsbrkN0v89rRFCXwHKDtLefwrEaDMKN8ViZ2JIvguPGFGQJNZg8vXhCOyTEAsKdoWn8t
+         zhdw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699316097; x=1699920897;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=NJOStCOVHOX8afjyhZUr3wHzG9caGrOyErBNJl+fQsE=;
+        b=LKX7QqdZbmbiF3zip1oaKEejpBCcftIiVmmRpevUS1TVNLdkzA8CzcrA44HjH9Ox6N
+         enIEV6nWNU0chFXF/3acXj0aOCt1+14yxooWGPwR0QqrU1W8kNC77JyPo1+m/gSx2K5B
+         5I4cqJze+Zf40fEU95XSEGRl35TVi8NCEgkzihDHSvZqQPasCaPK62veY/TCoh8WupZl
+         76rk/xWpRyawCrRZ4FVwuGV/rwQOVg4Kr9qerEv7zTd/GfBElTVCefFON/ITulwiEDXP
+         lfitT+47rO+nSvCZWvkGjVRmBLLQPW/JE4b/3Cc6Vnsk6Ds7Ad818wgAtVoEUHWprUL+
+         T+dA==
+X-Gm-Message-State: AOJu0YxPrYQR/QdApg/I39cJy72It6ibWVJFZF8+7MvmN8W348h+sJgR
+        eRepa4shdxPI9P3J82jnOjy6XTQ=
+X-Google-Smtp-Source: AGHT+IHee5oEAGC8m+DVisVJTqhCxMx4WoxETbeYezr61DtzdGwZMzI7W/00cgynnvTwgZdWg/F4Ggw=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a25:d785:0:b0:da0:5af7:d51a with SMTP id
+ o127-20020a25d785000000b00da05af7d51amr642776ybg.0.1699316097113; Mon, 06 Nov
+ 2023 16:14:57 -0800 (PST)
+Date:   Mon, 6 Nov 2023 16:14:55 -0800
+In-Reply-To: <CAF=yD-+BuKXoVL8UF+No1s0TsHSzBTz7UrB1Djt_BrM74uLLcg@mail.gmail.com>
+Mime-Version: 1.0
+References: <20231106024413.2801438-10-almasrymina@google.com>
+ <ZUk03DhWxV-bOFJL@google.com> <19129763-6f74-4b04-8a5f-441255b76d34@kernel.org>
+ <CAHS8izMrnVUfbbS=OcJ6JT9SZRRfZ2MC7UnggthpZT=zf2BGLA@mail.gmail.com>
+ <ZUlhu4hlTaqR3CTh@google.com> <CAHS8izMaAhoae5ChnzO4gny1cYYnqV1cB8MC2cAF3eoyt+Sf4A@mail.gmail.com>
+ <ZUlvzm24SA3YjirV@google.com> <CAHS8izMQ5Um_ScY0VgAjaEaT-hRh4tFoTgc6Xr9Tj5rEj0fijA@mail.gmail.com>
+ <CAKH8qBsbh8qYxNHZ6111RQFFpNWbWZtg0LDXkn15xcsbAq4R6w@mail.gmail.com> <CAF=yD-+BuKXoVL8UF+No1s0TsHSzBTz7UrB1Djt_BrM74uLLcg@mail.gmail.com>
+Message-ID: <ZUmBf7E8ZoTQwThL@google.com>
+Subject: Re: [RFC PATCH v3 09/12] net: add support for skbs with unreadable frags
+From:   Stanislav Fomichev <sdf@google.com>
+To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Cc:     Mina Almasry <almasrymina@google.com>,
+        David Ahern <dsahern@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>, Shuah Khan <shuah@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        "Christian =?utf-8?B?S8O2bmln?=" <christian.koenig@amd.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Jeroen de Borst <jeroendb@google.com>,
+        Praveen Kaligineedi <pkaligineedi@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Kaiyuan Zhang <kaiyuanz@google.com>
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231106-wakeup-source-v1-1-36b1f39e67fd@kali.org>
-X-B4-Tracking: v=1; b=H4sIANqASWUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDI2NDQwMz3fLE7NTSAt3i/NKi5FRdQ9PENLM000QzYyNLJaCegqLUtMwKsHn
- RsbW1AGuFZptfAAAA
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Steev Klimaszewski <steev@kali.org>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1699315933; l=1648;
- i=steev@kali.org; s=20231106; h=from:subject:message-id;
- bh=XxMr1pRCV6LxTCL9BHo4MJtPNXm2qJQqiz+fIboTk1I=;
- b=vjaUjZqT8uoer/iEV4k7jfxyJNb8OqOWndAP7CAxWb8vSu85CqW+CrAoPCv+59Z0xqc9erI5Z
- +Yjw6KDVd3UCDvzeJtXYgZ7om7X9WAhiQfVPZbUTqH4bva01E/4mHYB
-X-Developer-Key: i=steev@kali.org; a=ed25519;
- pk=KY+JnLRNy7Hdf04yfpE5ubOsDBIIfXAWnBijkySXbb4=
-X-Endpoint-Received: by B4 Relay for steev@kali.org/20231106 with auth_id=97
-X-Original-From: Steev Klimaszewski <steev@kali.org>
-Reply-To: <steev@kali.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Steev Klimaszewski <steev@kali.org>
+On 11/06, Willem de Bruijn wrote:
+> On Mon, Nov 6, 2023 at 3:55=E2=80=AFPM Stanislav Fomichev <sdf@google.com=
+> wrote:
+> >
+> > On Mon, Nov 6, 2023 at 3:27=E2=80=AFPM Mina Almasry <almasrymina@google=
+.com> wrote:
+> > >
+> > > On Mon, Nov 6, 2023 at 2:59=E2=80=AFPM Stanislav Fomichev <sdf@google=
+.com> wrote:
+> > > >
+> > > > On 11/06, Mina Almasry wrote:
+> > > > > On Mon, Nov 6, 2023 at 1:59=E2=80=AFPM Stanislav Fomichev <sdf@go=
+ogle.com> wrote:
+> > > > > >
+> > > > > > On 11/06, Mina Almasry wrote:
+> > > > > > > On Mon, Nov 6, 2023 at 11:34=E2=80=AFAM David Ahern <dsahern@=
+kernel.org> wrote:
+> > > > > > > >
+> > > > > > > > On 11/6/23 11:47 AM, Stanislav Fomichev wrote:
+> > > > > > > > > On 11/05, Mina Almasry wrote:
+> > > > > > > > >> For device memory TCP, we expect the skb headers to be a=
+vailable in host
+> > > > > > > > >> memory for access, and we expect the skb frags to be in =
+device memory
+> > > > > > > > >> and unaccessible to the host. We expect there to be no m=
+ixing and
+> > > > > > > > >> matching of device memory frags (unaccessible) with host=
+ memory frags
+> > > > > > > > >> (accessible) in the same skb.
+> > > > > > > > >>
+> > > > > > > > >> Add a skb->devmem flag which indicates whether the frags=
+ in this skb
+> > > > > > > > >> are device memory frags or not.
+> > > > > > > > >>
+> > > > > > > > >> __skb_fill_page_desc() now checks frags added to skbs fo=
+r page_pool_iovs,
+> > > > > > > > >> and marks the skb as skb->devmem accordingly.
+> > > > > > > > >>
+> > > > > > > > >> Add checks through the network stack to avoid accessing =
+the frags of
+> > > > > > > > >> devmem skbs and avoid coalescing devmem skbs with non de=
+vmem skbs.
+> > > > > > > > >>
+> > > > > > > > >> Signed-off-by: Willem de Bruijn <willemb@google.com>
+> > > > > > > > >> Signed-off-by: Kaiyuan Zhang <kaiyuanz@google.com>
+> > > > > > > > >> Signed-off-by: Mina Almasry <almasrymina@google.com>
+> > > > > > > > >>
+> > > > > > > > >> ---
+> > > > > > > > >>  include/linux/skbuff.h | 14 +++++++-
+> > > > > > > > >>  include/net/tcp.h      |  5 +--
+> > > > > > > > >>  net/core/datagram.c    |  6 ++++
+> > > > > > > > >>  net/core/gro.c         |  5 ++-
+> > > > > > > > >>  net/core/skbuff.c      | 77 +++++++++++++++++++++++++++=
++++++++++------
+> > > > > > > > >>  net/ipv4/tcp.c         |  6 ++++
+> > > > > > > > >>  net/ipv4/tcp_input.c   | 13 +++++--
+> > > > > > > > >>  net/ipv4/tcp_output.c  |  5 ++-
+> > > > > > > > >>  net/packet/af_packet.c |  4 +--
+> > > > > > > > >>  9 files changed, 115 insertions(+), 20 deletions(-)
+> > > > > > > > >>
+> > > > > > > > >> diff --git a/include/linux/skbuff.h b/include/linux/skbu=
+ff.h
+> > > > > > > > >> index 1fae276c1353..8fb468ff8115 100644
+> > > > > > > > >> --- a/include/linux/skbuff.h
+> > > > > > > > >> +++ b/include/linux/skbuff.h
+> > > > > > > > >> @@ -805,6 +805,8 @@ typedef unsigned char *sk_buff_data_=
+t;
+> > > > > > > > >>   *  @csum_level: indicates the number of consecutive ch=
+ecksums found in
+> > > > > > > > >>   *          the packet minus one that have been verifie=
+d as
+> > > > > > > > >>   *          CHECKSUM_UNNECESSARY (max 3)
+> > > > > > > > >> + *  @devmem: indicates that all the fragments in this s=
+kb are backed by
+> > > > > > > > >> + *          device memory.
+> > > > > > > > >>   *  @dst_pending_confirm: need to confirm neighbour
+> > > > > > > > >>   *  @decrypted: Decrypted SKB
+> > > > > > > > >>   *  @slow_gro: state present at GRO time, slower prepar=
+e step required
+> > > > > > > > >> @@ -991,7 +993,7 @@ struct sk_buff {
+> > > > > > > > >>  #if IS_ENABLED(CONFIG_IP_SCTP)
+> > > > > > > > >>      __u8                    csum_not_inet:1;
+> > > > > > > > >>  #endif
+> > > > > > > > >> -
+> > > > > > > > >> +    __u8                    devmem:1;
+> > > > > > > > >>  #if defined(CONFIG_NET_SCHED) || defined(CONFIG_NET_XGR=
+ESS)
+> > > > > > > > >>      __u16                   tc_index;       /* traffic =
+control index */
+> > > > > > > > >>  #endif
+> > > > > > > > >> @@ -1766,6 +1768,12 @@ static inline void skb_zcopy_down=
+grade_managed(struct sk_buff *skb)
+> > > > > > > > >>              __skb_zcopy_downgrade_managed(skb);
+> > > > > > > > >>  }
+> > > > > > > > >>
+> > > > > > > > >> +/* Return true if frags in this skb are not readable by=
+ the host. */
+> > > > > > > > >> +static inline bool skb_frags_not_readable(const struct =
+sk_buff *skb)
+> > > > > > > > >> +{
+> > > > > > > > >> +    return skb->devmem;
+> > > > > > > > >
+> > > > > > > > > bikeshedding: should we also rename 'devmem' sk_buff flag=
+ to 'not_readable'?
+> > > > > > > > > It better communicates the fact that the stack shouldn't =
+dereference the
+> > > > > > > > > frags (because it has 'devmem' fragments or for some othe=
+r potential
+> > > > > > > > > future reason).
+> > > > > > > >
+> > > > > > > > +1.
+> > > > > > > >
+> > > > > > > > Also, the flag on the skb is an optimization - a high level=
+ signal that
+> > > > > > > > one or more frags is in unreadable memory. There is no requ=
+irement that
+> > > > > > > > all of the frags are in the same memory type.
+> > > > > >
+> > > > > > David: maybe there should be such a requirement (that they all =
+are
+> > > > > > unreadable)? Might be easier to support initially; we can relax=
+ later
+> > > > > > on.
+> > > > > >
+> > > > >
+> > > > > Currently devmem =3D=3D not_readable, and the restriction is that=
+ all the
+> > > > > frags in the same skb must be either all readable or all unreadab=
+le
+> > > > > (all devmem or all non-devmem).
+> > > > >
+> > > > > > > The flag indicates that the skb contains all devmem dma-buf m=
+emory
+> > > > > > > specifically, not generic 'not_readable' frags as the comment=
+ says:
+> > > > > > >
+> > > > > > > + *     @devmem: indicates that all the fragments in this skb=
+ are backed by
+> > > > > > > + *             device memory.
+> > > > > > >
+> > > > > > > The reason it's not a generic 'not_readable' flag is because =
+handing
+> > > > > > > off a generic not_readable skb to the userspace is semantical=
+ly not
+> > > > > > > what we're doing. recvmsg() is augmented in this patch series=
+ to
+> > > > > > > return a devmem skb to the user via a cmsg_devmem struct whic=
+h refers
+> > > > > > > specifically to the memory in the dma-buf. recvmsg() in this =
+patch
+> > > > > > > series is not augmented to give any 'not_readable' skb to the
+> > > > > > > userspace.
+> > > > > > >
+> > > > > > > IMHO skb->devmem + an skb_frags_not_readable() as implemented=
+ is
+> > > > > > > correct. If a new type of unreadable skbs are introduced to t=
+he stack,
+> > > > > > > I imagine the stack would implement:
+> > > > > > >
+> > > > > > > 1. new header flag: skb->newmem
+> > > > > > > 2.
+> > > > > > >
+> > > > > > > static inline bool skb_frags_not_readable(const struct skb_bu=
+ff *skb)
+> > > > > > > {
+> > > > > > >     return skb->devmem || skb->newmem;
+> > > > > > > }
+> > > > > > >
+> > > > > > > 3. tcp_recvmsg_devmem() would handle skb->devmem skbs is in t=
+his patch
+> > > > > > > series, but tcp_recvmsg_newmem() would handle skb->newmem skb=
+s.
+> > > > > >
+> > > > > > You copy it to the userspace in a special way because your frag=
+s
+> > > > > > are page_is_page_pool_iov(). I agree with David, the skb bit is
+> > > > > > just and optimization.
+> > > > > >
+> > > > > > For most of the core stack, it doesn't matter why your skb is n=
+ot
+> > > > > > readable. For a few places where it matters (recvmsg?), you can
+> > > > > > double-check your frags (all or some) with page_is_page_pool_io=
+v.
+> > > > > >
+> > > > >
+> > > > > I see, we can do that then. I.e. make the header flag 'not_readab=
+le'
+> > > > > and check the frags to decide to delegate to tcp_recvmsg_devmem()=
+ or
+> > > > > something else. We can even assume not_readable =3D=3D devmem bec=
+ause
+> > > > > currently devmem is the only type of unreadable frag currently.
+> > > > >
+> > > > > > Unrelated: we probably need socket to dmabuf association as wel=
+l (via
+> > > > > > netlink or something).
+> > > > >
+> > > > > Not sure this is possible. The dma-buf is bound to the rx-queue, =
+and
+> > > > > any packets that land on that rx-queue are bound to that dma-buf,
+> > > > > regardless of which socket that packet belongs to. So the associa=
+tion
+> > > > > IMO must be rx-queue to dma-buf, not socket to dma-buf.
+> > > >
+> > > > But there is still always 1 dmabuf to 1 socket association (on rx),=
+ right?
+> > > > Because otherwise, there is no way currently to tell, at recvmsg, w=
+hich
+> > > > dmabuf the received token belongs to.
+> > > >
+> > >
+> > > Yes, but this 1 dma-buf to 1 socket association happens because the
+> > > user binds the dma-buf to an rx-queue and configures flow steering of
+> > > the socket to that rx-queue.
+> >
+> > It's still fixed and won't change during the socket lifetime, right?
+> > And the socket has to know this association; otherwise those tokens
+> > are useless since they don't carry anything to identify the dmabuf.
+> >
+> > I think my other issue with MSG_SOCK_DEVMEM being on recvmsg is that
+> > it somehow implies that I have an option of passing or not passing it
+> > for an individual system call.
+> > If we know that we're going to use dmabuf with the socket, maybe we
+> > should move this flag to the socket() syscall?
+> >
+> > fd =3D socket(AF_INET6, SOCK_STREAM, SOCK_DEVMEM);
+> >
+> > ?
+>=20
+> I think it should then be a setsockopt called before any data is
+> exchanged, with no change of modifying mode later. We generally use
+> setsockopts for the mode of a socket. This use of the protocol field
+> in socket() for setting a mode would be novel. Also, it might miss
+> passively opened connections, or be overly restrictive: one approach
+> for all accepted child sockets.
 
-The keyboard, touchpad and touchscreen can all be used to wake the
-computer up from sleep, so mark them as such in the dts file.
-
-Signed-off-by: Steev Klimaszewski <steev@kali.org>
----
-It would be nice to wake up the Lenovo Yoga C630 from suspend by hitting
-the keyboard or touchpad or even touchscreen, so this patch enables that
-ability.
-
-I'm not married to enabling it for the touchscreen, so if anyone wants
-me to drop that hunk, I'd be fine with it.
----
- arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts b/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
-index 92a812b5f423..9ddffb98408d 100644
---- a/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
-+++ b/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
-@@ -384,6 +384,8 @@ tsel: hid@15 {
- 		hid-descr-addr = <0x1>;
- 
- 		interrupts-extended = <&tlmm 37 IRQ_TYPE_LEVEL_HIGH>;
-+
-+		wakeup-source;
- 	};
- 
- 	tsc2: hid@2c {
-@@ -392,6 +394,8 @@ tsc2: hid@2c {
- 		hid-descr-addr = <0x20>;
- 
- 		interrupts-extended = <&tlmm 37 IRQ_TYPE_LEVEL_HIGH>;
-+
-+		wakeup-source;
- 	};
- };
- 
-@@ -408,6 +412,8 @@ tsc1: hid@10 {
- 
- 		pinctrl-names = "default";
- 		pinctrl-0 = <&i2c5_hid_active>;
-+
-+		wakeup-source;
- 	};
- };
- 
-@@ -482,6 +488,8 @@ ecsh: hid@5c {
- 
- 		pinctrl-names = "default";
- 		pinctrl-0 = <&i2c11_hid_active>;
-+
-+		wakeup-source;
- 	};
- };
- 
-
----
-base-commit: 3ff7a5781ceee3befb9224d29cef6e6a4766c5fe
-change-id: 20231106-wakeup-source-15af6f5a6329
-
-Best regards,
--- 
-Steev Klimaszewski <steev@kali.org>
-
+I was thinking this is similar to SOCK_CLOEXEC or SOCK_NONBLOCK? There
+are plenty of bits we can grab. But setsockopt works as well!
