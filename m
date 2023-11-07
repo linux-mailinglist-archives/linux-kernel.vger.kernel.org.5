@@ -2,120 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D42847E3558
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 07:46:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B37177E355E
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 07:50:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232666AbjKGGql (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 01:46:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60124 "EHLO
+        id S233567AbjKGGuj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 01:50:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230283AbjKGGqj (ORCPT
+        with ESMTP id S230283AbjKGGue (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 01:46:39 -0500
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 900A6E8;
-        Mon,  6 Nov 2023 22:46:36 -0800 (PST)
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A75SuHY023467;
-        Tue, 7 Nov 2023 06:46:27 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=qcppdkim1;
- bh=Rug+1Ge2zGYjSRgUXFw2EyLeaRalbAmz3hyCXghH2IY=;
- b=cPZ7sJaRM5gN0hr2FWeoAbpGfzVUiBHVgAyEAM6AotS1NGH5gFHR3qYx6p6+YJ5UXGYy
- 50w7RThFV726jj/nyhOiLWi/jm+fuA8U7ZgS4XYpjjPdvumFWi95i//wtV3uMb2tfwyZ
- 6dpEeI0SELUD8eZMb/OhH5q7ZoCVbjZTFE1JHmjCiN2XYCC7MkEurLqhW0V/0COnH5CU
- 2myqDKZYMiLSs0//9iEzWgLPnDKTPW6jePpsU3w/KJjHZkad68oiruO+1Er5n9mGjN7v
- A7zqQRJu5pKEXjKXiqlxYQTgx6G1KTVA9OdQJCQGaLxr1EL/NdDOggP1Yf11hEYvYT0A nw== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u72bthv5f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 07 Nov 2023 06:46:27 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3A76kQCq017940
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 7 Nov 2023 06:46:26 GMT
-Received: from hu-jkona-hyd.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.39; Mon, 6 Nov 2023 22:46:21 -0800
-From:   Jagadeesh Kona <quic_jkona@quicinc.com>
-To:     Andy Gross <agross@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>
-CC:     Jagadeesh Kona <quic_jkona@quicinc.com>,
-        Taniya Das <quic_tdas@quicinc.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Ajit Pandey <quic_ajipan@quicinc.com>,
-        "Imran Shaik" <quic_imrashai@quicinc.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCH] clk: qcom: Fix SM_CAMCC_8550 dependencies
-Date:   Tue, 7 Nov 2023 12:15:45 +0530
-Message-ID: <20231107064545.13120-1-quic_jkona@quicinc.com>
-X-Mailer: git-send-email 2.41.0
+        Tue, 7 Nov 2023 01:50:34 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 691D211D
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 22:50:27 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id EC18DC433CB;
+        Tue,  7 Nov 2023 06:50:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699339827;
+        bh=qbNyvpCu834BElj57LNyccltMncgWk9IvDmnQ9vJRjA=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=shl5AXMxRxwe5t1DNYT7WfQcfWTp5KXYl8lVkW14F07S/gYNH/2CKdgrecwJ5Ubce
+         T442EIVmb7yPMI2N5NuWUX/vqUZPdERJ9THQS6pQDDw7eT1Lp8bFqMoPOxnNdB/P4U
+         zOlRRTkE7WyE1eCkgBPLRSqc50K8KsFAmRNiL9+YWNM9Ee6pKf9f8YDBTmnFiC5G6N
+         mU++k62dTUiOKWDbzidfpie3V1bk4VkGFj8rLfEIiJuqMeCcHEOysn8gROq8ZoICEg
+         n5kMpGZQKLF9dxmu96ON3yGEmxpDXXelk/6/MxS4y7nfjyfEQ+1TcEJnok4uNXZHuw
+         Xh1oEWun9T2dg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id D1506E00096;
+        Tue,  7 Nov 2023 06:50:26 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: k_5763SrfRN3gAcz7i1COOnwgRTvvUaS
-X-Proofpoint-GUID: k_5763SrfRN3gAcz7i1COOnwgRTvvUaS
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-06_15,2023-11-02_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=683 mlxscore=0
- bulkscore=0 phishscore=0 impostorscore=0 adultscore=0 suspectscore=0
- clxscore=1011 priorityscore=1501 spamscore=0 malwarescore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2310240000 definitions=main-2311070054
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Subject: Re: [PATCH v6 0/4] riscv: tlb flush improvements
+From:   patchwork-bot+linux-riscv@kernel.org
+Message-Id: <169933982685.6233.4393621260958877500.git-patchwork-notify@kernel.org>
+Date:   Tue, 07 Nov 2023 06:50:26 +0000
+References: <20231030133027.19542-1-alexghiti@rivosinc.com>
+In-Reply-To: <20231030133027.19542-1-alexghiti@rivosinc.com>
+To:     Alexandre Ghiti <alexghiti@rivosinc.com>
+Cc:     linux-riscv@lists.infradead.org, will@kernel.org,
+        aneesh.kumar@linux.ibm.com, akpm@linux-foundation.org,
+        npiggin@gmail.com, peterz@infradead.org, mchitale@ventanamicro.com,
+        vincent.chen@sifive.com, paul.walmsley@sifive.com,
+        palmer@dabbelt.com, aou@eecs.berkeley.edu,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, samuel@sholland.org,
+        prabhakar.csengg@gmail.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SM_GCC_8550 depends on ARM64 but it is selected by
-SM_CAMCC_8550, which should have the same dependencies
-as SM_GCC_8550 to avoid the below Kconfig warning reported
-by kernel test robot.
+Hello:
 
-WARNING: unmet direct dependencies detected for SM_GCC_8550
-  Depends on [n]: COMMON_CLK [=y] && COMMON_CLK_QCOM [=y] && (ARM64 || COMPILE_TEST [=n])
-  Selected by [y]:
-  - SM_CAMCC_8550 [=y] && COMMON_CLK [=y] && COMMON_CLK_QCOM [=y]
+This series was applied to riscv/linux.git (for-next)
+by Palmer Dabbelt <palmer@rivosinc.com>:
 
-Fixes: ccc4e6a061a2 ("clk: qcom: camcc-sm8550: Add camera clock controller driver for SM8550")
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202311062309.XugQH7AH-lkp@intel.com/
-Signed-off-by: Jagadeesh Kona <quic_jkona@quicinc.com>
----
- drivers/clk/qcom/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+On Mon, 30 Oct 2023 14:30:24 +0100 you wrote:
+> This series optimizes the tlb flushes on riscv which used to simply
+> flush the whole tlb whatever the size of the range to flush or the size
+> of the stride.
+> 
+> Patch 3 introduces a threshold that is microarchitecture specific and
+> will very likely be modified by vendors, not sure though which mechanism
+> we'll use to do that (dt? alternatives? vendor initialization code?).
+> 
+> [...]
 
-diff --git a/drivers/clk/qcom/Kconfig b/drivers/clk/qcom/Kconfig
-index ad1acd9b7426..dbc3950c5960 100644
---- a/drivers/clk/qcom/Kconfig
-+++ b/drivers/clk/qcom/Kconfig
-@@ -767,6 +767,7 @@ config SM_CAMCC_8450
- 
- config SM_CAMCC_8550
- 	tristate "SM8550 Camera Clock Controller"
-+	depends on ARM64 || COMPILE_TEST
- 	select SM_GCC_8550
- 	help
- 	  Support for the camera clock controller on SM8550 devices.
+Here is the summary with links:
+  - [v6,1/4] riscv: Improve tlb_flush()
+    https://git.kernel.org/riscv/c/c5e9b2c2ae82
+  - [v6,2/4] riscv: Improve flush_tlb_range() for hugetlb pages
+    https://git.kernel.org/riscv/c/c962a6e74639
+  - [v6,3/4] riscv: Make __flush_tlb_range() loop over pte instead of flushing the whole tlb
+    https://git.kernel.org/riscv/c/9d4e8d5fa7db
+  - [v6,4/4] riscv: Improve flush_tlb_kernel_range()
+    https://git.kernel.org/riscv/c/5e22bfd520ea
+
+You are awesome, thank you!
 -- 
-2.41.0
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
