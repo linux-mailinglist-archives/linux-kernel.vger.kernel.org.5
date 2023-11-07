@@ -2,330 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FE027E36CD
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 09:38:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5427D7E36B3
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 09:33:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233773AbjKGIic (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 03:38:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49786 "EHLO
+        id S233746AbjKGIdb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 03:33:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233761AbjKGIia (ORCPT
+        with ESMTP id S233668AbjKGId3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 03:38:30 -0500
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E522AF3;
-        Tue,  7 Nov 2023 00:38:26 -0800 (PST)
-X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 3A78agszF4084642, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36505.realtek.com.tw[172.21.6.25])
-        by rtits2.realtek.com.tw (8.15.2/2.95/5.92) with ESMTPS id 3A78agszF4084642
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 7 Nov 2023 16:36:42 +0800
-Received: from RTEXMBS05.realtek.com.tw (172.21.6.98) by
- RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.32; Tue, 7 Nov 2023 16:36:43 +0800
-Received: from RTEXH36505.realtek.com.tw (172.21.6.25) by
- RTEXMBS05.realtek.com.tw (172.21.6.98) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.34; Tue, 7 Nov 2023 16:36:42 +0800
-Received: from localhost.localdomain (172.21.252.101) by
- RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server id
- 15.1.2375.32 via Frontend Transport; Tue, 7 Nov 2023 16:36:42 +0800
-From:   Stanley Chang <stanley_chang@realtek.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC:     Stanley Chang <stanley_chang@realtek.com>,
-        Vinod Koul <vkoul@kernel.org>, Johan Hovold <johan@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Jinjie Ruan <ruanjinjie@huawei.com>,
-        Rob Herring <robh@kernel.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        "Roy Luo" <royluo@google.com>,
-        =?UTF-8?q?Ricardo=20Ca=C3=B1uelo?= <ricardo.canuelo@collabora.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Flavio Suligoi <f.suligoi@asem.it>,
-        "Ray Chi" <raychi@google.com>, <linux-kernel@vger.kernel.org>,
-        <linux-phy@lists.infradead.org>, <linux-usb@vger.kernel.org>
-Subject: [PATCH v2 4/4] usb: core: add phy notify connect and disconnect
-Date:   Tue, 7 Nov 2023 16:31:43 +0800
-Message-ID: <20231107083525.24901-4-stanley_chang@realtek.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231107083525.24901-1-stanley_chang@realtek.com>
-References: <20231107083525.24901-1-stanley_chang@realtek.com>
+        Tue, 7 Nov 2023 03:33:29 -0500
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D336DF;
+        Tue,  7 Nov 2023 00:33:26 -0800 (PST)
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A77hVNl006949;
+        Tue, 7 Nov 2023 08:33:10 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : from : to : cc : references : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=/nEoz6wsh2BK2CcmGmCpnKnja94acjsJDTHtIkJb7Bo=;
+ b=EuQrmeycJ7E7lUpNazqxtk1tmn26RJsbLIxLKDLYkxABpY0fJMExxvsCsF7NJNftVkql
+ Ro/0pi3gmMna5CLLOiBi50eyjrSzCwwgAGiBueZ48soFWD9s1v1DD6C8YUgkw1TULo7N
+ Nu8fLeiQQBjLLzqp+YKMk2duVbcU5AXxxNXX1uwB7kyTGgYdn17PeXHWZ3pQLBDWB0T9
+ i5k0+tEeBnsRm9Y2EL+tdq+p5TkKqL3ILGb9UPXIEdQWPzlCx0AdAh0yt1tIjO8RYIlR
+ U2oegltmp3PqAe7OFHvsiwxIXvrgi5Irmi6dodQLwiBKu/Xa0+Jx1cdOw4CiRTE0nJOg Jg== 
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u7dbs8ks9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 07 Nov 2023 08:33:10 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3A78X9HF018569
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 7 Nov 2023 08:33:09 GMT
+Received: from [10.249.29.138] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Tue, 7 Nov
+ 2023 00:33:03 -0800
+Message-ID: <105d84b6-cbea-4758-9eba-1c104fa7a670@quicinc.com>
+Date:   Tue, 7 Nov 2023 14:03:00 +0530
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-KSE-ServerInfo: RTEXMBS05.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-Antivirus-Interceptor-Info: fallback
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-ServerInfo: RTEXH36505.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-Antivirus-Interceptor-Info: fallback
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC 2/8] usb: dwc3: core: Register vendor hooks for dwc3-qcom
+Content-Language: en-US
+From:   Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
+To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        "Conor Dooley" <conor+dt@kernel.org>
+CC:     <linux-usb@vger.kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        <linux-kernel@vger.kernel.org>,
+        "Thinh Nguyen" <Thinh.Nguyen@synopsys.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <quic_ppratap@quicinc.com>, <quic_jackp@quicinc.com>,
+        <quic_wcheng@quicinc.com>, Andy Gross <agross@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>
+References: <20231017131851.8299-1-quic_kriskura@quicinc.com>
+ <20231017131851.8299-3-quic_kriskura@quicinc.com>
+ <e700133b-58f7-4a4d-8e5c-0d04441b789b@linaro.org>
+ <5ef66bdc-9645-4bbe-8182-baa7fe4c583a@quicinc.com>
+ <3be5e95f-85d2-4abf-a8b4-18b019341602@quicinc.com>
+ <cf553cd8-45f8-4a61-b016-69e7a80eee9f@linaro.org>
+ <ea919050-22a8-4d28-ade2-fd16a99876cb@quicinc.com>
+In-Reply-To: <ea919050-22a8-4d28-ade2-fd16a99876cb@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: omcTK0fYLieAfLf4f7DHAdO-gfWm-XNk
+X-Proofpoint-GUID: omcTK0fYLieAfLf4f7DHAdO-gfWm-XNk
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-06_15,2023-11-02_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ clxscore=1015 bulkscore=0 mlxscore=0 malwarescore=0 suspectscore=0
+ spamscore=0 impostorscore=0 mlxlogscore=558 phishscore=0
+ priorityscore=1501 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2310240000 definitions=main-2311070069
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In Realtek SoC, the parameter of usb phy is designed to can dynamic
-tuning base on port status. Therefore, add a notify callback of generic
-phy driver when usb device connect and disconnect change.
 
-The Realtek phy driver is designed to dynamically adjust disconnection
-level and calibrate phy parameters. When the device connected bit changes
-and when the disconnected bit changes, do connection change notification:
 
-Check if portstatus is USB_PORT_STAT_CONNECTION and portchange is
-USB_PORT_STAT_C_CONNECTION.
-1. The device is connected, the driver lowers the disconnection level and
-   calibrates the phy parameters.
-2. The device disconnects, the driver increases the disconnect level and
-   calibrates the phy parameters.
+On 11/4/2023 10:32 PM, Krishna Kurapati PSSNV wrote:
+>>
+>> Are you saying to you require/rely on both of these series being 
+>> applied first ?
+>>
+>> [1]: 
+>> https://lore.kernel.org/all/af60c05b-4a0f-51b8-486a-1fc601602515@quicinc.com/
+>> [2]: 
+>> https://lore.kernel.org/all/20231016-dwc3-refactor-v1-0-ab4a84165470@quicinc.com/
+>>
+>> Must be, nothing applies for me in this series.
+> 
+> The first one is not a patch. It is just a discussion thread I started 
+> to get community's opinion before on disconnect interrupt handling. The 
+> current series is based on top of [2] made by Bjorn (as you already 
+> found out) and as I mentioned in cover letter of my series.
+> 
 
-Generic phy driver in usb core framework does not support device connect
-and disconnect notifications. Therefore, we add an api to notify phy
-the connection changes.
+Hi Bryan,
 
-Additionally, the generic phy only specifies primary_hcd in the original
-design. Added specific "usb2-phy" on primary_hcd and "usb3-phy" on
-shared_hcd.
+   Are you able to apply the series after including Bjorn's patches ? 
+Also can you confirm if the comments provided to your queries on [1] are 
+proper and if you have any other comments w.r.t probe deferral.
 
-Signed-off-by: Stanley Chang <stanley_chang@realtek.com>
----
-v1 to v2 change:
-    rebase the driver to remove the part of usb phy notify API
----
- drivers/usb/core/hcd.c | 14 +++++--
- drivers/usb/core/hub.c | 29 +++++++++++++
- drivers/usb/core/phy.c | 94 ++++++++++++++++++++++++++++++++++++++++++
- drivers/usb/core/phy.h |  3 ++
- 4 files changed, 136 insertions(+), 4 deletions(-)
+[1]: 
+https://lore.kernel.org/all/e700133b-58f7-4a4d-8e5c-0d04441b789b@linaro.org/
 
-diff --git a/drivers/usb/core/hcd.c b/drivers/usb/core/hcd.c
-index 12b6dfeaf658..992284461ad8 100644
---- a/drivers/usb/core/hcd.c
-+++ b/drivers/usb/core/hcd.c
-@@ -2794,10 +2794,16 @@ int usb_add_hcd(struct usb_hcd *hcd,
- 	struct usb_device *rhdev;
- 	struct usb_hcd *shared_hcd;
- 
--	if (!hcd->skip_phy_initialization && usb_hcd_is_primary_hcd(hcd)) {
--		hcd->phy_roothub = usb_phy_roothub_alloc(hcd->self.sysdev);
--		if (IS_ERR(hcd->phy_roothub))
--			return PTR_ERR(hcd->phy_roothub);
-+	if (!hcd->skip_phy_initialization) {
-+		if (usb_hcd_is_primary_hcd(hcd)) {
-+			hcd->phy_roothub = usb_phy_roothub_alloc(hcd->self.sysdev);
-+			if (IS_ERR(hcd->phy_roothub))
-+				return PTR_ERR(hcd->phy_roothub);
-+		} else {
-+			hcd->phy_roothub = usb_phy_roothub_alloc_usb3_phy(hcd->self.sysdev);
-+			if (IS_ERR(hcd->phy_roothub))
-+				return PTR_ERR(hcd->phy_roothub);
-+		}
- 
- 		retval = usb_phy_roothub_init(hcd->phy_roothub);
- 		if (retval)
-diff --git a/drivers/usb/core/hub.c b/drivers/usb/core/hub.c
-index 87480a6e6d93..65c0454ee70a 100644
---- a/drivers/usb/core/hub.c
-+++ b/drivers/usb/core/hub.c
-@@ -37,6 +37,7 @@
- #include <asm/byteorder.h>
- 
- #include "hub.h"
-+#include "phy.h"
- #include "otg_productlist.h"
- 
- #define USB_VENDOR_GENESYS_LOGIC		0x05e3
-@@ -622,6 +623,34 @@ static int hub_ext_port_status(struct usb_hub *hub, int port1, int type,
- 		ret = 0;
- 	}
- 	mutex_unlock(&hub->status_mutex);
-+
-+	/*
-+	 * There is no need to lock status_mutex here, because status_mutex
-+	 * protects hub->status, and the phy driver only checks the port
-+	 * status without changing the status.
-+	 */
-+	if (!ret) {
-+		struct usb_device *hdev = hub->hdev;
-+
-+		/*
-+		 * Only roothub will be notified of connection changes,
-+		 * since the USB PHY only cares about changes at the next
-+		 * level.
-+		 */
-+		if (is_root_hub(hdev)) {
-+			struct usb_hcd *hcd = bus_to_hcd(hdev->bus);
-+			bool connect;
-+			bool connect_change;
-+
-+			connect_change = *change & USB_PORT_STAT_C_CONNECTION;
-+			connect = *status & USB_PORT_STAT_CONNECTION;
-+			if (connect_change && connect)
-+				usb_phy_roothub_notify_connect(hcd->phy_roothub, port1 - 1);
-+			else if (connect_change)
-+				usb_phy_roothub_notify_disconnect(hcd->phy_roothub, port1 - 1);
-+		}
-+	}
-+
- 	return ret;
- }
- 
-diff --git a/drivers/usb/core/phy.c b/drivers/usb/core/phy.c
-index fb1588e7c282..26585fc1ec32 100644
---- a/drivers/usb/core/phy.c
-+++ b/drivers/usb/core/phy.c
-@@ -19,6 +19,29 @@ struct usb_phy_roothub {
- 	struct list_head	list;
- };
- 
-+static int usb_phy_roothub_add_phy_by_name(struct device *dev, const char *name,
-+					   struct list_head *list)
-+{
-+	struct usb_phy_roothub *roothub_entry;
-+	struct phy *phy;
-+
-+	phy = devm_of_phy_get(dev, dev->of_node, name);
-+	if (IS_ERR(phy))
-+		return PTR_ERR(phy);
-+
-+	roothub_entry = devm_kzalloc(dev, sizeof(*roothub_entry), GFP_KERNEL);
-+	if (!roothub_entry)
-+		return -ENOMEM;
-+
-+	INIT_LIST_HEAD(&roothub_entry->list);
-+
-+	roothub_entry->phy = phy;
-+
-+	list_add_tail(&roothub_entry->list, list);
-+
-+	return 0;
-+}
-+
- static int usb_phy_roothub_add_phy(struct device *dev, int index,
- 				   struct list_head *list)
- {
-@@ -65,6 +88,9 @@ struct usb_phy_roothub *usb_phy_roothub_alloc(struct device *dev)
- 
- 	INIT_LIST_HEAD(&phy_roothub->list);
- 
-+	if (!usb_phy_roothub_add_phy_by_name(dev, "usb2-phy", &phy_roothub->list))
-+		return phy_roothub;
-+
- 	for (i = 0; i < num_phys; i++) {
- 		err = usb_phy_roothub_add_phy(dev, i, &phy_roothub->list);
- 		if (err)
-@@ -75,6 +101,32 @@ struct usb_phy_roothub *usb_phy_roothub_alloc(struct device *dev)
- }
- EXPORT_SYMBOL_GPL(usb_phy_roothub_alloc);
- 
-+struct usb_phy_roothub *usb_phy_roothub_alloc_usb3_phy(struct device *dev)
-+{
-+	struct usb_phy_roothub *phy_roothub;
-+	int num_phys;
-+
-+	if (!IS_ENABLED(CONFIG_GENERIC_PHY))
-+		return NULL;
-+
-+	num_phys = of_count_phandle_with_args(dev->of_node, "phys",
-+					      "#phy-cells");
-+	if (num_phys <= 0)
-+		return NULL;
-+
-+	phy_roothub = devm_kzalloc(dev, sizeof(*phy_roothub), GFP_KERNEL);
-+	if (!phy_roothub)
-+		return ERR_PTR(-ENOMEM);
-+
-+	INIT_LIST_HEAD(&phy_roothub->list);
-+
-+	if (!usb_phy_roothub_add_phy_by_name(dev, "usb3-phy", &phy_roothub->list))
-+		return phy_roothub;
-+
-+	return NULL;
-+}
-+EXPORT_SYMBOL_GPL(usb_phy_roothub_alloc_usb3_phy);
-+
- int usb_phy_roothub_init(struct usb_phy_roothub *phy_roothub)
- {
- 	struct usb_phy_roothub *roothub_entry;
-@@ -172,6 +224,48 @@ int usb_phy_roothub_calibrate(struct usb_phy_roothub *phy_roothub)
- }
- EXPORT_SYMBOL_GPL(usb_phy_roothub_calibrate);
- 
-+int usb_phy_roothub_notify_connect(struct usb_phy_roothub *phy_roothub, int port)
-+{
-+	struct usb_phy_roothub *roothub_entry;
-+	struct list_head *head;
-+	int err;
-+
-+	if (!phy_roothub)
-+		return 0;
-+
-+	head = &phy_roothub->list;
-+
-+	list_for_each_entry(roothub_entry, head, list) {
-+		err = phy_notify_connect(roothub_entry->phy, port);
-+		if (err)
-+			return err;
-+	}
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(usb_phy_roothub_notify_connect);
-+
-+int usb_phy_roothub_notify_disconnect(struct usb_phy_roothub *phy_roothub, int port)
-+{
-+	struct usb_phy_roothub *roothub_entry;
-+	struct list_head *head;
-+	int err;
-+
-+	if (!phy_roothub)
-+		return 0;
-+
-+	head = &phy_roothub->list;
-+
-+	list_for_each_entry(roothub_entry, head, list) {
-+		err = phy_notify_disconnect(roothub_entry->phy, port);
-+		if (err)
-+			return err;
-+	}
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(usb_phy_roothub_notify_disconnect);
-+
- int usb_phy_roothub_power_on(struct usb_phy_roothub *phy_roothub)
- {
- 	struct usb_phy_roothub *roothub_entry;
-diff --git a/drivers/usb/core/phy.h b/drivers/usb/core/phy.h
-index 20a267cd986b..88b49c0ea6b5 100644
---- a/drivers/usb/core/phy.h
-+++ b/drivers/usb/core/phy.h
-@@ -12,6 +12,7 @@ struct device;
- struct usb_phy_roothub;
- 
- struct usb_phy_roothub *usb_phy_roothub_alloc(struct device *dev);
-+struct usb_phy_roothub *usb_phy_roothub_alloc_usb3_phy(struct device *dev);
- 
- int usb_phy_roothub_init(struct usb_phy_roothub *phy_roothub);
- int usb_phy_roothub_exit(struct usb_phy_roothub *phy_roothub);
-@@ -19,6 +20,8 @@ int usb_phy_roothub_exit(struct usb_phy_roothub *phy_roothub);
- int usb_phy_roothub_set_mode(struct usb_phy_roothub *phy_roothub,
- 			     enum phy_mode mode);
- int usb_phy_roothub_calibrate(struct usb_phy_roothub *phy_roothub);
-+int usb_phy_roothub_notify_connect(struct usb_phy_roothub *phy_roothub, int port);
-+int usb_phy_roothub_notify_disconnect(struct usb_phy_roothub *phy_roothub, int port);
- int usb_phy_roothub_power_on(struct usb_phy_roothub *phy_roothub);
- void usb_phy_roothub_power_off(struct usb_phy_roothub *phy_roothub);
- 
--- 
-2.34.1
-
+Regards,
+Krishna,
