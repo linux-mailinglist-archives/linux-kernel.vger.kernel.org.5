@@ -2,135 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 25C317E31FD
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 01:07:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B08D7E31FB
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 01:06:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233470AbjKGAHS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 19:07:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50256 "EHLO
+        id S233442AbjKGAG4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 19:06:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233111AbjKGAHQ (ORCPT
+        with ESMTP id S229517AbjKGAGy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 19:07:16 -0500
-Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 583C0C0
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 16:07:13 -0800 (PST)
-Received: by mail-ot1-x330.google.com with SMTP id 46e09a7af769-6d2efe8c43eso2903295a34.0
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 16:07:13 -0800 (PST)
+        Mon, 6 Nov 2023 19:06:54 -0500
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BBEB1BC
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 16:06:51 -0800 (PST)
+Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1cc1e1e74beso46253655ad.1
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 16:06:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1699315632; x=1699920432; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7cHGqwr/FHVu3p4GyALWjXSrLk+5zJSi7Gdv9HvbuNk=;
-        b=bibxmAUiYbtreS8SAnZnwfDKsLd/kiHOLH7TLdVT29iyj/90IkibPtz9BpC++P5D2Y
-         20tb8B5Z9Fg7MbitCHcC3rhu3T/2ee+xhX1AiyMuV3rsGcOI0jChuUSZDAF+N1x0a9e9
-         UugYJQUttL8fvsbnC7NHBAgIsYWVTM0S0T+gc=
+        d=chromium.org; s=google; t=1699315611; x=1699920411; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=s3lHltmHAT3Zjs2Or9HI9VhRMd3mEFK2uKST2wN2rlk=;
+        b=BBv9tJ05TyDM6ruq5aLaQG6bBpSjbAi22255S4eTkR3+Wt6CCj6eLdFORVXaj4cAIS
+         e8Qp6m2gtuaiKUBIurLBSJ8m1k95L24J0an7pbMqNr8aAk8yj1MsUaedccNQ8NbexXPX
+         DbG9xbQzCBsAgdjSupa4nzqhER4PMH0zyur0w=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699315632; x=1699920432;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7cHGqwr/FHVu3p4GyALWjXSrLk+5zJSi7Gdv9HvbuNk=;
-        b=uN0vut/7qrsqAYiPhUT+s+z84ExStZtfkH4JWCK4e1eGtpVmKFjsgTned1LwTBFkrJ
-         Fllrn2EbWmlXbvPt6Xe2QerUSjA3CsTmGkyUBeGPb5+LxUH5YX36Xzs028JzSxEqv0dE
-         pSQnr2PdNBkRuN3UI4SwN3Ijr0jEz/pgrb1RSlMULaIaszJa5ZxJGhbXvoaKEixB46CC
-         HJbTF7To7h4pHU+G6WuppM02vXbmvLeK6U7Lk4gEa1fHzE3v0sL2mjHSwa6AK/AckQZO
-         +6vYHDFP1zHgLldOnDYUI5AXSf3WlyVhjgq3QYWSrOl+B/jLEmP6uLE0mhSATkQBEpo6
-         KrzA==
-X-Gm-Message-State: AOJu0YxdO+gJNyIXJ6dyZ/oPxcSDxETfbQksvRG5X3G2DjSA6TkxopSz
-        6oToed5y/wjX7dT3opjpmttODFqtALD3Z7JhCJSq9Q==
-X-Google-Smtp-Source: AGHT+IENHrOhym+rA5phQNAQlQnTl0J1Yf0p/IXYFY/lzE41izBGs9kLX+KWkiFR8RZhF3D96REHcZDidQFi3eITnVQ=
-X-Received: by 2002:a9d:6515:0:b0:6c7:b299:530c with SMTP id
- i21-20020a9d6515000000b006c7b299530cmr563485otl.3.1699315632648; Mon, 06 Nov
- 2023 16:07:12 -0800 (PST)
+        d=1e100.net; s=20230601; t=1699315611; x=1699920411;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=s3lHltmHAT3Zjs2Or9HI9VhRMd3mEFK2uKST2wN2rlk=;
+        b=wL07tPpAL0PuvGzR9VT6UbOaQP/CKpURKN2RceWJXIfUsUGFaft5Oj6C2RnPKHu3o1
+         evDDA6KKgO49+Wzam2fsQ4OnFEBwsB9hkPz3hVNiMuIERJ6YhUvvWIMdwr7DcO2WaNXK
+         IzD5jqP4kbyajVhJMlkr8WcU7nAphy2DpGd/JUi10HnsnuwsVXrrIH9H3jVDc4k6d/se
+         P5bVcLAcbC71QvU1wFcuULqxzmVgnPDp6bUfS7zt+vlCYhWduZnl2YcIN6QQJk/+r3Ev
+         xjwPPxBIJDOkUHaVRWbIi2LbCA8sE3S3A/5w1wChFDOb6P6tVjH5JiAEXbNXVXCJj2zu
+         v+sg==
+X-Gm-Message-State: AOJu0Yw0zztcZhdcpq9yPqHDOGxxT8oi265xyXv3Mv2ilrLPY/QwdMfU
+        yoAw6LYW3oEVWfk0VKc2YP1U+A==
+X-Google-Smtp-Source: AGHT+IE9z6AcBHk9ED2kB1KouwueOG1tOWlEHOZOuaUzdUabyJxe5oUCUNA4++KR+8Vk6f8c04Ot/w==
+X-Received: by 2002:a17:903:2594:b0:1c6:117b:7086 with SMTP id jb20-20020a170903259400b001c6117b7086mr27742336plb.5.1699315610900;
+        Mon, 06 Nov 2023 16:06:50 -0800 (PST)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id j9-20020a17090276c900b001ca82a4a9c8sm6307809plt.269.2023.11.06.16.06.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 Nov 2023 16:06:50 -0800 (PST)
+Date:   Mon, 6 Nov 2023 16:06:49 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Kent Overstreet <kent.overstreet@linux.dev>,
+        Brian Foster <bfoster@redhat.com>,
+        linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH][next] bcachefs: Fix multiple -Warray-bounds warnings
+Message-ID: <202311061606.29DB1C09@keescook>
+References: <ZUldRv35EXKHAt3L@work>
 MIME-Version: 1.0
-References: <20231107000023.2928195-1-hsinyi@chromium.org> <20231107000023.2928195-2-hsinyi@chromium.org>
-In-Reply-To: <20231107000023.2928195-2-hsinyi@chromium.org>
-From:   Hsin-Yi Wang <hsinyi@chromium.org>
-Date:   Mon, 6 Nov 2023 16:06:46 -0800
-Message-ID: <CAJMQK-gF5VcXrkrX+Z4wcbf87tm-1fTkVUNdJjX648CBz2EGyg@mail.gmail.com>
-Subject: Re: [PATCH v5 1/4] drm/panel-edp: drm/panel-edp: Fix AUO B116XTN02,
- B116XAK01 name and timing
-To:     Douglas Anderson <dianders@chromium.org>
-Cc:     Neil Armstrong <neil.armstrong@linaro.org>,
-        Jessica Zhang <quic_jesszhan@quicinc.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZUldRv35EXKHAt3L@work>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 6, 2023 at 4:00=E2=80=AFPM Hsin-Yi Wang <hsinyi@chromium.org> w=
-rote:
->
-> According to decoding edid and datahseet:
-> - Rename AUO 0x235c B116XTN02 to B116XTN02.3
-> - Rename AUO 0x405c B116XAK01 to B116XAK01.0 and adjust the timing of
-> auo_b116xak01: T3=3D200, T12=3D500, T7_max =3D 50.
->
-> Fixes: 3db2420422a5 ("drm/panel-edp: Add AUO B116XTN02, BOE NT116WHM-N21,=
-836X2, NV116WHM-N49 V8.0")
-> Fixes: da458286a5e2 ("drm/panel: Add support for AUO B116XAK01 panel")
-> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
-> Reviewed-by: Douglas Anderson <dianders@chromium.org>
-Cc: stable@vger.kernel.org
-> ---
-> v4->v5: separate fixes patch.
-> ---
->  drivers/gpu/drm/panel/panel-edp.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/gpu/drm/panel/panel-edp.c b/drivers/gpu/drm/panel/pa=
-nel-edp.c
-> index 9dce4c702414..d41d205f7f5b 100644
-> --- a/drivers/gpu/drm/panel/panel-edp.c
-> +++ b/drivers/gpu/drm/panel/panel-edp.c
-> @@ -973,6 +973,8 @@ static const struct panel_desc auo_b116xak01 =3D {
->         },
->         .delay =3D {
->                 .hpd_absent =3D 200,
-> +               .unprepare =3D 500,
-> +               .enable =3D 50,
->         },
->  };
->
-> @@ -1869,8 +1871,8 @@ static const struct edp_panel_entry edp_panels[] =
-=3D {
->         EDP_PANEL_ENTRY('A', 'U', 'O', 0x145c, &delay_200_500_e50, "B116X=
-AB01.4"),
->         EDP_PANEL_ENTRY('A', 'U', 'O', 0x1e9b, &delay_200_500_e50, "B133U=
-AN02.1"),
->         EDP_PANEL_ENTRY('A', 'U', 'O', 0x1ea5, &delay_200_500_e50, "B116X=
-AK01.6"),
-> -       EDP_PANEL_ENTRY('A', 'U', 'O', 0x235c, &delay_200_500_e50, "B116X=
-TN02"),
-> -       EDP_PANEL_ENTRY('A', 'U', 'O', 0x405c, &auo_b116xak01.delay, "B11=
-6XAK01"),
-> +       EDP_PANEL_ENTRY('A', 'U', 'O', 0x235c, &delay_200_500_e50, "B116X=
-TN02.3"),
-> +       EDP_PANEL_ENTRY('A', 'U', 'O', 0x405c, &auo_b116xak01.delay, "B11=
-6XAK01.0"),
->         EDP_PANEL_ENTRY('A', 'U', 'O', 0x582d, &delay_200_500_e50, "B133U=
-AN01.0"),
->         EDP_PANEL_ENTRY('A', 'U', 'O', 0x615c, &delay_200_500_e50, "B116X=
-AN06.1"),
->         EDP_PANEL_ENTRY('A', 'U', 'O', 0x8594, &delay_200_500_e50, "B133U=
-AN01.0"),
-> --
-> 2.42.0.869.gea05f2083d-goog
->
+On Mon, Nov 06, 2023 at 03:40:22PM -0600, Gustavo A. R. Silva wrote:
+> Transform zero-length array `entries` into a proper flexible-array
+> member in `struct journal_seq_blacklist_table`; and fix the following
+> -Warray-bounds warnings:
+> 
+> fs/bcachefs/journal_seq_blacklist.c:148:26: warning: array subscript idx is outside array bounds of 'struct journal_seq_blacklist_table_entry[0]' [-Warray-bounds=]
+> fs/bcachefs/journal_seq_blacklist.c:150:30: warning: array subscript idx is outside array bounds of 'struct journal_seq_blacklist_table_entry[0]' [-Warray-bounds=]
+> fs/bcachefs/journal_seq_blacklist.c:154:27: warning: array subscript idx is outside array bounds of 'struct journal_seq_blacklist_table_entry[0]' [-Warray-bounds=]
+> fs/bcachefs/journal_seq_blacklist.c:176:27: warning: array subscript i is outside array bounds of 'struct journal_seq_blacklist_table_entry[0]' [-Warray-bounds=]
+> fs/bcachefs/journal_seq_blacklist.c:177:27: warning: array subscript i is outside array bounds of 'struct journal_seq_blacklist_table_entry[0]' [-Warray-bounds=]
+> fs/bcachefs/journal_seq_blacklist.c:297:34: warning: array subscript i is outside array bounds of 'struct journal_seq_blacklist_table_entry[0]' [-Warray-bounds=]
+> fs/bcachefs/journal_seq_blacklist.c:298:34: warning: array subscript i is outside array bounds of 'struct journal_seq_blacklist_table_entry[0]' [-Warray-bounds=]
+> fs/bcachefs/journal_seq_blacklist.c:300:31: warning: array subscript i is outside array bounds of 'struct journal_seq_blacklist_table_entry[0]' [-Warray-bounds=]
+> 
+> This results in no differences in binary output.
+> 
+> This helps with the ongoing efforts to globally enable -Warray-bounds.
+> 
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+
+Thanks; that looks right to me.
+
+-Kees
+
+-- 
+Kees Cook
