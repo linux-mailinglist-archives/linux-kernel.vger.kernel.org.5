@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 475EE7E4644
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 17:41:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64D927E456A
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 17:10:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234110AbjKGQlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 11:41:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48204 "EHLO
+        id S1344045AbjKGQAC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 11:00:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234929AbjKGQk5 (ORCPT
+        with ESMTP id S1344052AbjKGP61 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 11:40:57 -0500
+        Tue, 7 Nov 2023 10:58:27 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7EC16A54;
-        Tue,  7 Nov 2023 07:51:29 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F37B5C433BC;
-        Tue,  7 Nov 2023 15:51:27 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB3566A65;
+        Tue,  7 Nov 2023 07:51:30 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82586C433C8;
+        Tue,  7 Nov 2023 15:51:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699372289;
-        bh=q3BITIy8opuIjS+oLemqzqpgPqKW0JqkXmNUxSWmM7Y=;
+        s=k20201202; t=1699372290;
+        bh=DO4fpqc4U5U4PKy2Hakqr/6aYN5jt0n5NWZpwDLc8GU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SxGqfy7ZcWKUuUEqQ3nBqZolxWmombWaar1UxQfLYO2YT5iMyv77ZrKtao625SMm5
-         T+NimugxWddRk1wN6mZqhQQAlBca+SZHQ0nFD/4CwpdSkYJA/lXW1guQUL0zOgenQh
-         nuwOTffDARCz6GyoCgNrQnIYHF9IylRukaSqfWFQ/eZpTNOqfytbJJqFGIgz/rjZAu
-         diqqiin5jGauTbCsMF//iMALgFTYpdkaKqqa/qkV+0ijpV++KjswCN3xGX3o/uJQPZ
-         VbZADBa/v10YESoPkU1mfG/3FKXWtnT7cwi6PTiQbUX5d9F0CjOguyvlueXt6+2030
-         ONDUmrOpyF5wA==
+        b=nok9b4sTRP1/La1ZvPqShAARq+zsIUP/odeUHQUKdmjth2o7vTKtTLnTjLysSv2WT
+         1MwrCRYrMUxYg5VTlN/ojoZxVG3z7kHrHiWsSF0VpKSSSJm1B3oJ8BE3owHaQyc5fm
+         oZOHfFYnn+M6r31GberOee5wUvppk2UN46LSDBV4Xrx6JOfhJOnNJJmAtrV0d3tYUk
+         aCVxFMVXMNv5N2kGFg4mJb2T/5upwNC0VW54PT2ig/MWlonYK5xeIoL1lnnsr1GxEw
+         0xKcvMaRv1/X6YXtitifkiKkNo5GqzFM8pwe61f/J9ENij5jV5/X6BmADA2jjR2NDk
+         sizlyValGtcuw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Yuezhang Mo <Yuezhang.Mo@sony.com>, Andy Wu <Andy.Wu@sony.com>,
-        Aoyama Wataru <wataru.aoyama@sony.com>,
-        Namjae Jeon <linkinjeon@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, sj1557.seo@samsung.com,
-        linux-fsdevel@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 29/30] exfat: support handle zero-size directory
-Date:   Tue,  7 Nov 2023 10:50:03 -0500
-Message-ID: <20231107155024.3766950-29-sashal@kernel.org>
+Cc:     Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+        Lee Jones <lee@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.1 30/30] mfd: intel-lpss: Add Intel Lunar Lake-M PCI IDs
+Date:   Tue,  7 Nov 2023 10:50:04 -0500
+Message-ID: <20231107155024.3766950-30-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231107155024.3766950-1-sashal@kernel.org>
 References: <20231107155024.3766950-1-sashal@kernel.org>
@@ -49,101 +46,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yuezhang Mo <Yuezhang.Mo@sony.com>
+From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
 
-[ Upstream commit dab48b8f2fe7264d51ec9eed0adea0fe3c78830a ]
+[ Upstream commit e53b22b10c6e0de0cf2a03a92b18fdad70f266c7 ]
 
-After repairing a corrupted file system with exfatprogs' fsck.exfat,
-zero-size directories may result. It is also possible to create
-zero-size directories in other exFAT implementation, such as Paragon
-ufsd dirver.
+Add Intel Lunar Lake-M SoC PCI IDs.
 
-As described in the specification, the lower directory size limits
-is 0 bytes.
-
-Without this commit, sub-directories and files cannot be created
-under a zero-size directory, and it cannot be removed.
-
-Signed-off-by: Yuezhang Mo <Yuezhang.Mo@sony.com>
-Reviewed-by: Andy Wu <Andy.Wu@sony.com>
-Reviewed-by: Aoyama Wataru <wataru.aoyama@sony.com>
-Signed-off-by: Namjae Jeon <linkinjeon@kernel.org>
+Signed-off-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Link: https://lore.kernel.org/r/20231002083344.75611-1-jarkko.nikula@linux.intel.com
+Signed-off-by: Lee Jones <lee@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/exfat/namei.c | 29 ++++++++++++++++++++++-------
- 1 file changed, 22 insertions(+), 7 deletions(-)
+ drivers/mfd/intel-lpss-pci.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-diff --git a/fs/exfat/namei.c b/fs/exfat/namei.c
-index 90b0477911449..30e97c51f0e14 100644
---- a/fs/exfat/namei.c
-+++ b/fs/exfat/namei.c
-@@ -338,14 +338,20 @@ static int exfat_find_empty_entry(struct inode *inode,
- 		if (exfat_check_max_dentries(inode))
- 			return -ENOSPC;
- 
--		/* we trust p_dir->size regardless of FAT type */
--		if (exfat_find_last_cluster(sb, p_dir, &last_clu))
--			return -EIO;
--
- 		/*
- 		 * Allocate new cluster to this directory
- 		 */
--		exfat_chain_set(&clu, last_clu + 1, 0, p_dir->flags);
-+		if (ei->start_clu != EXFAT_EOF_CLUSTER) {
-+			/* we trust p_dir->size regardless of FAT type */
-+			if (exfat_find_last_cluster(sb, p_dir, &last_clu))
-+				return -EIO;
-+
-+			exfat_chain_set(&clu, last_clu + 1, 0, p_dir->flags);
-+		} else {
-+			/* This directory is empty */
-+			exfat_chain_set(&clu, EXFAT_EOF_CLUSTER, 0,
-+					ALLOC_NO_FAT_CHAIN);
-+		}
- 
- 		/* allocate a cluster */
- 		ret = exfat_alloc_cluster(inode, 1, &clu, IS_DIRSYNC(inode));
-@@ -355,6 +361,11 @@ static int exfat_find_empty_entry(struct inode *inode,
- 		if (exfat_zeroed_cluster(inode, clu.dir))
- 			return -EIO;
- 
-+		if (ei->start_clu == EXFAT_EOF_CLUSTER) {
-+			ei->start_clu = clu.dir;
-+			p_dir->dir = clu.dir;
-+		}
-+
- 		/* append to the FAT chain */
- 		if (clu.flags != p_dir->flags) {
- 			/* no-fat-chain bit is disabled,
-@@ -644,7 +655,7 @@ static int exfat_find(struct inode *dir, struct qstr *qname,
- 	info->type = exfat_get_entry_type(ep);
- 	info->attr = le16_to_cpu(ep->dentry.file.attr);
- 	info->size = le64_to_cpu(ep2->dentry.stream.valid_size);
--	if ((info->type == TYPE_FILE) && (info->size == 0)) {
-+	if (info->size == 0) {
- 		info->flags = ALLOC_NO_FAT_CHAIN;
- 		info->start_clu = EXFAT_EOF_CLUSTER;
- 	} else {
-@@ -888,6 +899,9 @@ static int exfat_check_dir_empty(struct super_block *sb,
- 
- 	dentries_per_clu = sbi->dentries_per_clu;
- 
-+	if (p_dir->dir == EXFAT_EOF_CLUSTER)
-+		return 0;
-+
- 	exfat_chain_dup(&clu, p_dir);
- 
- 	while (clu.dir != EXFAT_EOF_CLUSTER) {
-@@ -1262,7 +1276,8 @@ static int __exfat_rename(struct inode *old_parent_inode,
- 		}
- 
- 		/* Free the clusters if new_inode is a dir(as if exfat_rmdir) */
--		if (new_entry_type == TYPE_DIR) {
-+		if (new_entry_type == TYPE_DIR &&
-+		    new_ei->start_clu != EXFAT_EOF_CLUSTER) {
- 			/* new_ei, new_clu_to_free */
- 			struct exfat_chain new_clu_to_free;
- 
+diff --git a/drivers/mfd/intel-lpss-pci.c b/drivers/mfd/intel-lpss-pci.c
+index 699f44ffff0e4..ae5759200622c 100644
+--- a/drivers/mfd/intel-lpss-pci.c
++++ b/drivers/mfd/intel-lpss-pci.c
+@@ -561,6 +561,19 @@ static const struct pci_device_id intel_lpss_pci_ids[] = {
+ 	{ PCI_VDEVICE(INTEL, 0xa3e2), (kernel_ulong_t)&spt_i2c_info },
+ 	{ PCI_VDEVICE(INTEL, 0xa3e3), (kernel_ulong_t)&spt_i2c_info },
+ 	{ PCI_VDEVICE(INTEL, 0xa3e6), (kernel_ulong_t)&spt_uart_info },
++	/* LNL-M */
++	{ PCI_VDEVICE(INTEL, 0xa825), (kernel_ulong_t)&bxt_uart_info },
++	{ PCI_VDEVICE(INTEL, 0xa826), (kernel_ulong_t)&bxt_uart_info },
++	{ PCI_VDEVICE(INTEL, 0xa827), (kernel_ulong_t)&tgl_info },
++	{ PCI_VDEVICE(INTEL, 0xa830), (kernel_ulong_t)&tgl_info },
++	{ PCI_VDEVICE(INTEL, 0xa846), (kernel_ulong_t)&tgl_info },
++	{ PCI_VDEVICE(INTEL, 0xa850), (kernel_ulong_t)&ehl_i2c_info },
++	{ PCI_VDEVICE(INTEL, 0xa851), (kernel_ulong_t)&ehl_i2c_info },
++	{ PCI_VDEVICE(INTEL, 0xa852), (kernel_ulong_t)&bxt_uart_info },
++	{ PCI_VDEVICE(INTEL, 0xa878), (kernel_ulong_t)&ehl_i2c_info },
++	{ PCI_VDEVICE(INTEL, 0xa879), (kernel_ulong_t)&ehl_i2c_info },
++	{ PCI_VDEVICE(INTEL, 0xa87a), (kernel_ulong_t)&ehl_i2c_info },
++	{ PCI_VDEVICE(INTEL, 0xa87b), (kernel_ulong_t)&ehl_i2c_info },
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(pci, intel_lpss_pci_ids);
 -- 
 2.42.0
 
