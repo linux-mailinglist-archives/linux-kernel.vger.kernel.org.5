@@ -2,148 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D77E17E45B7
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 17:17:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C2C07E4645
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 17:41:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344394AbjKGQRr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 11:17:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40938 "EHLO
+        id S234797AbjKGQlG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 11:41:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343924AbjKGQRG (ORCPT
+        with ESMTP id S235117AbjKGQk6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 11:17:06 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0B8F2137;
-        Tue,  7 Nov 2023 07:52:34 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 600A4C433C7;
-        Tue,  7 Nov 2023 15:52:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699372354;
-        bh=TNpmrZSK9554Iry28Fguo9FF8hXEOjC7aB0QMR68kTg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XdMHrRbC2k0uRjWewj0pR8XeiSkCtRW0LY/mt4E/fUl0/g6+5LIBf9/+kD/TkDpc1
-         k2mdda+/WBGR3VZAD2rllJNdUGPLvM8lAa1HwRgCbcZI6AVWfyOkfqp7NyPPNv+8vj
-         wlxh2k+GNfnoWjCRsVCeNvAZVepNoMxOtYMcJQTEDb7cBk3TXFIrgJlUtGj+ZP4733
-         9h1ZkLQY8d92zdw2YS63/Dh6NCFZEA1Qp4P94g96Y3fyfR3mTxe5q8yx6T5Np+Cngq
-         jqypUDTtsc4tdzFl8oQ0TY4aWW/bL7Vb0niyyVWtBD84F7lhBMuJlOdvR97EK9rJxC
-         vHlkntm4QtcYQ==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Yuezhang Mo <Yuezhang.Mo@sony.com>, Andy Wu <Andy.Wu@sony.com>,
-        Aoyama Wataru <wataru.aoyama@sony.com>,
-        Namjae Jeon <linkinjeon@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, sj1557.seo@samsung.com,
-        linux-fsdevel@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 22/22] exfat: support handle zero-size directory
-Date:   Tue,  7 Nov 2023 10:51:31 -0500
-Message-ID: <20231107155146.3767610-22-sashal@kernel.org>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231107155146.3767610-1-sashal@kernel.org>
-References: <20231107155146.3767610-1-sashal@kernel.org>
+        Tue, 7 Nov 2023 11:40:58 -0500
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D58A019AC
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 07:51:34 -0800 (PST)
+Received: by mail-io1-xd2b.google.com with SMTP id ca18e2360f4ac-7a9447c828aso3374539f.1
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 07:51:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google; t=1699372294; x=1699977094; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=LAzxkP10OQDM9YOWOWaJJRML05AHefjemOIWQGzk+qI=;
+        b=NXD+GXMygJbxokOI9+pUGnO4C9RUv1da8ZVPhePattmiJrKqbAeCt0sCuGtXKEJ8E1
+         n2Prvim4rXxGJuhqPhucPB9eesKfuYVzePKIo6ifTMn0L4fmq3x723ChpW1dXwQyigt8
+         qqjyYn93pZt4YxNGkrOKSCPRWAYaewDscE70M=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699372294; x=1699977094;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=LAzxkP10OQDM9YOWOWaJJRML05AHefjemOIWQGzk+qI=;
+        b=oSF4xDoDn/nStkIt45L38p4SZK0v7wh9hszx7QkJdh0tcDK6EIy8LHl1006cg2snup
+         0cug5VkjrErSNgz9fNrWzDb1A/3u+Jr1f1b5vA3ZZ2WZlKx3cZUPzW5ccvG14SjzGY5Z
+         VrGhCc0s1B4O6AKq4oncuD9Fcy5XZjTFRWUxLdZoGHlwUlHGck44D9LMWltbPRKwPVA+
+         HyyS5uJ+im94FHjbfN7oog8iCZzJPJW1ZUAWNEEaibqNXu0K7ZdW9VS0Tawqq2pokjvk
+         v/Ha1WAvTobQsLayTUf/X4XVIJidcQdRcyDwx4DBg26B6+BXR1dJI99TO+Kc02scEqW9
+         hu2w==
+X-Gm-Message-State: AOJu0Yy6r7xhH0ORouvpJs7buC+xAEM5iL86ILEicZOpphmNB9HCNXQc
+        +7SKhPFbMckYCR1PcRp71DSlsQ==
+X-Google-Smtp-Source: AGHT+IGv36r+ShQUykCndJzyqw+Ib+370gxiK90Ut8FZCZBzlh3wm4c/To1ndWM2b46rlfXQKkxINA==
+X-Received: by 2002:a5e:a80c:0:b0:792:8011:22f with SMTP id c12-20020a5ea80c000000b007928011022fmr36342555ioa.0.1699372294206;
+        Tue, 07 Nov 2023 07:51:34 -0800 (PST)
+Received: from [192.168.1.128] ([38.175.170.29])
+        by smtp.gmail.com with ESMTPSA id m8-20020a6b7f48000000b007a278f16881sm2899101ioq.42.2023.11.07.07.51.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 07 Nov 2023 07:51:33 -0800 (PST)
+Message-ID: <ae5bf8c4-23b8-43cc-b6bb-ce89076fef4c@linuxfoundation.org>
+Date:   Tue, 7 Nov 2023 08:51:32 -0700
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.15.137
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 5.4 00/74] 5.4.260-rc1 review
+Content-Language: en-US
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20231106130301.687882731@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <20231106130301.687882731@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yuezhang Mo <Yuezhang.Mo@sony.com>
+On 11/6/23 06:03, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.4.260 release.
+> There are 74 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 08 Nov 2023 13:02:46 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.260-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-[ Upstream commit dab48b8f2fe7264d51ec9eed0adea0fe3c78830a ]
+Compiled and booted on my test system. No dmesg regressions.
 
-After repairing a corrupted file system with exfatprogs' fsck.exfat,
-zero-size directories may result. It is also possible to create
-zero-size directories in other exFAT implementation, such as Paragon
-ufsd dirver.
+Tested-by: Shuah Khan <skhan@linuxfoundation.org>
 
-As described in the specification, the lower directory size limits
-is 0 bytes.
-
-Without this commit, sub-directories and files cannot be created
-under a zero-size directory, and it cannot be removed.
-
-Signed-off-by: Yuezhang Mo <Yuezhang.Mo@sony.com>
-Reviewed-by: Andy Wu <Andy.Wu@sony.com>
-Reviewed-by: Aoyama Wataru <wataru.aoyama@sony.com>
-Signed-off-by: Namjae Jeon <linkinjeon@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- fs/exfat/namei.c | 29 ++++++++++++++++++++++-------
- 1 file changed, 22 insertions(+), 7 deletions(-)
-
-diff --git a/fs/exfat/namei.c b/fs/exfat/namei.c
-index b22d6c984f8c7..cfa46d8cf5b39 100644
---- a/fs/exfat/namei.c
-+++ b/fs/exfat/namei.c
-@@ -330,14 +330,20 @@ static int exfat_find_empty_entry(struct inode *inode,
- 		if (exfat_check_max_dentries(inode))
- 			return -ENOSPC;
- 
--		/* we trust p_dir->size regardless of FAT type */
--		if (exfat_find_last_cluster(sb, p_dir, &last_clu))
--			return -EIO;
--
- 		/*
- 		 * Allocate new cluster to this directory
- 		 */
--		exfat_chain_set(&clu, last_clu + 1, 0, p_dir->flags);
-+		if (ei->start_clu != EXFAT_EOF_CLUSTER) {
-+			/* we trust p_dir->size regardless of FAT type */
-+			if (exfat_find_last_cluster(sb, p_dir, &last_clu))
-+				return -EIO;
-+
-+			exfat_chain_set(&clu, last_clu + 1, 0, p_dir->flags);
-+		} else {
-+			/* This directory is empty */
-+			exfat_chain_set(&clu, EXFAT_EOF_CLUSTER, 0,
-+					ALLOC_NO_FAT_CHAIN);
-+		}
- 
- 		/* allocate a cluster */
- 		ret = exfat_alloc_cluster(inode, 1, &clu, IS_DIRSYNC(inode));
-@@ -347,6 +353,11 @@ static int exfat_find_empty_entry(struct inode *inode,
- 		if (exfat_zeroed_cluster(inode, clu.dir))
- 			return -EIO;
- 
-+		if (ei->start_clu == EXFAT_EOF_CLUSTER) {
-+			ei->start_clu = clu.dir;
-+			p_dir->dir = clu.dir;
-+		}
-+
- 		/* append to the FAT chain */
- 		if (clu.flags != p_dir->flags) {
- 			/* no-fat-chain bit is disabled,
-@@ -644,7 +655,7 @@ static int exfat_find(struct inode *dir, struct qstr *qname,
- 	info->type = exfat_get_entry_type(ep);
- 	info->attr = le16_to_cpu(ep->dentry.file.attr);
- 	info->size = le64_to_cpu(ep2->dentry.stream.valid_size);
--	if ((info->type == TYPE_FILE) && (info->size == 0)) {
-+	if (info->size == 0) {
- 		info->flags = ALLOC_NO_FAT_CHAIN;
- 		info->start_clu = EXFAT_EOF_CLUSTER;
- 	} else {
-@@ -891,6 +902,9 @@ static int exfat_check_dir_empty(struct super_block *sb,
- 
- 	dentries_per_clu = sbi->dentries_per_clu;
- 
-+	if (p_dir->dir == EXFAT_EOF_CLUSTER)
-+		return 0;
-+
- 	exfat_chain_dup(&clu, p_dir);
- 
- 	while (clu.dir != EXFAT_EOF_CLUSTER) {
-@@ -1274,7 +1288,8 @@ static int __exfat_rename(struct inode *old_parent_inode,
- 		}
- 
- 		/* Free the clusters if new_inode is a dir(as if exfat_rmdir) */
--		if (new_entry_type == TYPE_DIR) {
-+		if (new_entry_type == TYPE_DIR &&
-+		    new_ei->start_clu != EXFAT_EOF_CLUSTER) {
- 			/* new_ei, new_clu_to_free */
- 			struct exfat_chain new_clu_to_free;
- 
--- 
-2.42.0
-
+thanks,
+-- Shuah
