@@ -2,41 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 742E47E3B9E
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 13:08:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C42D17E3BA4
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 13:08:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234193AbjKGMIL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 07:08:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42384 "EHLO
+        id S234329AbjKGMIU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 07:08:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234106AbjKGMHw (ORCPT
+        with ESMTP id S234250AbjKGMHz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 07:07:52 -0500
+        Tue, 7 Nov 2023 07:07:55 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E2A710C1;
-        Tue,  7 Nov 2023 04:07:33 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8236FC433C7;
-        Tue,  7 Nov 2023 12:07:31 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70A6C173B;
+        Tue,  7 Nov 2023 04:07:38 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD27EC433CB;
+        Tue,  7 Nov 2023 12:07:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699358852;
-        bh=FAWCFLcUr/wF8J1ZlkDOwgRRgSOhuDGORbWhEjATuZ0=;
+        s=k20201202; t=1699358857;
+        bh=s7IkpwFkvc63VeyiRhEpqYii0TAbOTbVdNVK41uQ8yE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vHjGqbzQPgcPpsPVWiQEz4aAWXw9Hr/ORq5/UBa84ASXDcV+Lcvl10/eiPG5fj2wL
-         7NkwZmUfzHvnMGXfD4nj9KQIL5BQDszPXByXi/kKF2LDKM5OFMAZm0uiSmnMGg6sos
-         75zxdIktWQkZvR1FDc9YYxrR1v8Z15uV9msOE9yUoYFp3WG1VLylSQR+PzalD/JaYL
-         sjgivuf8HWsjH5emHW9Emhn/EQI3P0Xl6g+JrRDow0/IPXPGcJU8hAJny6Z87GnzPD
-         UnfS+hGwmCKKyV/EGRvXFk2xdegnSh/c1YDfqrs0jqduKA+27pFx4kWFlhEUD6wWOQ
-         zNyhMivJRSyzQ==
+        b=n0FAgYfUWostZTAzlsE+DFZsR9+r+CFeDugaZId5BiNY9/sCjrP6esgmarSpKltyd
+         JJ0QQene7pH5PT/ReNI7HIcsWPI0HCilnPLUn+K0eQuccGger1/wOaRFaHXo0lVxzb
+         5qnEDasf2aNgi8q2YvhhMA/X4AwfoXNQuw+L07+Nh7selII/fWvvUV7EVII3A4NtIP
+         OP/C7yDMJAZwpkJJ9A0m1g6qNvdVFyVNiLmMkSJUUUAG8Jero6ZEO4tf3wzViUPna6
+         ouiZlopoY9jrzYbDVdXkbMZpnlWg/9t9SGKE7diXG4tiPGwTRvsML8EILAarQJajau
+         PfwsBtJ1fYRUQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Christian Marangi <ansuelsmth@gmail.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Sasha Levin <sashal@kernel.org>, linux@armlinux.org.uk,
-        andrew@lunn.ch, hkallweit1@gmail.com, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 12/31] net: sfp: add quirk for Fiberstone GPON-ONU-34-20BI
-Date:   Tue,  7 Nov 2023 07:05:59 -0500
-Message-ID: <20231107120704.3756327-12-sashal@kernel.org>
+Cc:     Ingo Rohloff <lundril@gmx.de>, Felix Fietkau <nbd@nbd.name>,
+        Sasha Levin <sashal@kernel.org>, lorenzo@kernel.org,
+        ryder.lee@mediatek.com, kvalo@kernel.org, matthias.bgg@gmail.com,
+        angelogioacchino.delregno@collabora.com, bhelgaas@google.com,
+        deren.wu@mediatek.com, sean.wang@mediatek.com,
+        quan.zhou@mediatek.com, Leon.Yen@mediatek.com,
+        linux-wireless@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-pci@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.6 13/31] wifi: mt76: mt7921e: Support MT7992 IP in Xiaomi Redmibook 15 Pro (2023)
+Date:   Tue,  7 Nov 2023 07:06:00 -0500
+Message-ID: <20231107120704.3756327-13-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231107120704.3756327-1-sashal@kernel.org>
 References: <20231107120704.3756327-1-sashal@kernel.org>
@@ -55,40 +59,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christian Marangi <ansuelsmth@gmail.com>
+From: Ingo Rohloff <lundril@gmx.de>
 
-[ Upstream commit d387e34fec407f881fdf165b5d7ec128ebff362f ]
+[ Upstream commit fce9c967820a72f600abbf061d7077861685a14d ]
 
-Fiberstone GPON-ONU-34-20B can operate at 2500base-X, but report 1.2GBd
-NRZ in their EEPROM.
+In the Xiaomi Redmibook 15 Pro (2023) laptop I have got, a wifi chip is
+used, which according to its PCI Vendor ID is from "ITTIM Technology".
 
-The module also require the ignore tx fault fixup similar to Huawei MA5671A
-as it gets disabled on error messages with serial redirection enabled.
+This chip works flawlessly with the mt7921e module.  The driver doesn't
+bind to this PCI device, because the Vendor ID from "ITTIM Technology" is
+not recognized.
 
-Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
-Link: https://lore.kernel.org/r/20230919124720.8210-1-ansuelsmth@gmail.com
-Signed-off-by: Paolo Abeni <pabeni@redhat.com>
+This patch adds the PCI Vendor ID from "ITTIM Technology" to the list of
+PCI Vendor IDs and lets the mt7921e driver bind to the mentioned wifi
+chip.
+
+Signed-off-by: Ingo Rohloff <lundril@gmx.de>
+Signed-off-by: Felix Fietkau <nbd@nbd.name>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/phy/sfp.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/net/wireless/mediatek/mt76/mt7921/pci.c | 2 ++
+ include/linux/pci_ids.h                         | 2 ++
+ 2 files changed, 4 insertions(+)
 
-diff --git a/drivers/net/phy/sfp.c b/drivers/net/phy/sfp.c
-index 4ecfac2278651..a50038a452507 100644
---- a/drivers/net/phy/sfp.c
-+++ b/drivers/net/phy/sfp.c
-@@ -452,6 +452,11 @@ static const struct sfp_quirk sfp_quirks[] = {
- 	// Rollball protocol to talk to the PHY.
- 	SFP_QUIRK_F("FS", "SFP-10G-T", sfp_fixup_fs_10gt),
+diff --git a/drivers/net/wireless/mediatek/mt76/mt7921/pci.c b/drivers/net/wireless/mediatek/mt76/mt7921/pci.c
+index 3dda84a937175..f04e7095e1810 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt7921/pci.c
++++ b/drivers/net/wireless/mediatek/mt76/mt7921/pci.c
+@@ -17,6 +17,8 @@ static const struct pci_device_id mt7921_pci_device_table[] = {
+ 		.driver_data = (kernel_ulong_t)MT7921_FIRMWARE_WM },
+ 	{ PCI_DEVICE(PCI_VENDOR_ID_MEDIATEK, 0x7922),
+ 		.driver_data = (kernel_ulong_t)MT7922_FIRMWARE_WM },
++	{ PCI_DEVICE(PCI_VENDOR_ID_ITTIM, 0x7922),
++		.driver_data = (kernel_ulong_t)MT7922_FIRMWARE_WM },
+ 	{ PCI_DEVICE(PCI_VENDOR_ID_MEDIATEK, 0x0608),
+ 		.driver_data = (kernel_ulong_t)MT7921_FIRMWARE_WM },
+ 	{ PCI_DEVICE(PCI_VENDOR_ID_MEDIATEK, 0x0616),
+diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
+index 5fb3d4c393a9e..0328a4c01e0bf 100644
+--- a/include/linux/pci_ids.h
++++ b/include/linux/pci_ids.h
+@@ -180,6 +180,8 @@
+ #define PCI_DEVICE_ID_BERKOM_A4T		0xffa4
+ #define PCI_DEVICE_ID_BERKOM_SCITEL_QUADRO	0xffa8
  
-+	// Fiberstore GPON-ONU-34-20BI can operate at 2500base-X, but report 1.2GBd
-+	// NRZ in their EEPROM
-+	SFP_QUIRK("FS", "GPON-ONU-34-20BI", sfp_quirk_2500basex,
-+		  sfp_fixup_ignore_tx_fault),
++#define PCI_VENDOR_ID_ITTIM		0x0b48
 +
- 	SFP_QUIRK_F("HALNy", "HL-GSFP", sfp_fixup_halny_gsfp),
- 
- 	// HG MXPD-483II-F 2.5G supports 2500Base-X, but incorrectly reports
+ #define PCI_VENDOR_ID_COMPAQ		0x0e11
+ #define PCI_DEVICE_ID_COMPAQ_TOKENRING	0x0508
+ #define PCI_DEVICE_ID_COMPAQ_TACHYON	0xa0fc
 -- 
 2.42.0
 
