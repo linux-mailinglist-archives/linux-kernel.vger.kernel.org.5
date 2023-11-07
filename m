@@ -2,118 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A00C77E4677
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 17:58:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20A717E467C
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 17:58:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234969AbjKGQ6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 11:58:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57736 "EHLO
+        id S1343610AbjKGQ6v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 11:58:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229737AbjKGQ6m (ORCPT
+        with ESMTP id S235014AbjKGQ6t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 11:58:42 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F35A193
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 08:58:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699376319; x=1730912319;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=88aQzXP3D0IAQZ/WFA4CjozxHNibdPYVgfCMXdrwJLU=;
-  b=FbHYtwfurFYwRSK+d+s6teY00CnHtpon3taLudCGWbm1lPTxLIX0F7yM
-   JEL/nAx8558n2hInr3P9LXV80+X//MCcEdYgFgW30l5NGcKfeikzEVLZ9
-   K08Y+HfYUF/hMLqfkfIQJgbaoXxQ9S6Lg1rCy2ZcFlpLLsR1tdasnj51S
-   yEKJPXdYXkBc1nbfdQNiRqLXKMEvbRsIJkMHMVjrQOM39EZlzZTeKmduU
-   ClVrO40XvlG3LMliSldK0hWTspczmcRhLbGNtZQpGGMfe03PsXuCmfpK5
-   7N5ydjB7SDmDbQLI7e80hPkT6m2k2PmZ6ySG5p2y8unNbyPcqE/04cdOI
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10887"; a="389359549"
-X-IronPort-AV: E=Sophos;i="6.03,284,1694761200"; 
-   d="scan'208";a="389359549"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2023 08:58:39 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10887"; a="762764648"
-X-IronPort-AV: E=Sophos;i="6.03,284,1694761200"; 
-   d="scan'208";a="762764648"
-Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by orsmga002.jf.intel.com with ESMTP; 07 Nov 2023 08:58:37 -0800
-Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r0PPP-0007F9-1U;
-        Tue, 07 Nov 2023 16:58:35 +0000
-Date:   Wed, 8 Nov 2023 00:57:46 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Damien Le Moal <damien.lemoal@opensource.wdc.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Subject: drivers/scsi/mpt3sas/mpt3sas_base.c:4323:9: sparse: sparse: cast
- from restricted __le32
-Message-ID: <202311080059.uscQqMAV-lkp@intel.com>
+        Tue, 7 Nov 2023 11:58:49 -0500
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C65A493
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 08:58:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Pi14+M8YZTs7ZpFURF2MntpNytBNcRUCua0Q2SosK3w=; b=RqbX9Y7dK12OYwfJn84pkfmpQN
+        p4TyalJVGp3A8U43RL03GojXOCIdottKT9RJy/TPkByrl0Ac6nH2JFkp96DTfXIhxNJuUKLY5W81I
+        TgzQ6g6An7gQrxB27MdImUr00Pqqx5/wb/bnaemp0/OohgdJ5uiXaa3Mub3X/Pqn6gaEXGo1ew9O9
+        H4tz7yN2GCzA+Mn79xY6+rRgnBzYc+a7Ntek49uhET9ZXyJVZAEANwIkUwzq05WWGTB/2bYP+cQgz
+        0vi1RTTkA4ReqZrtQ5XoVbc2fMXzh+t20MQHEL45kQDIq4p8gOF1wlnKS9SgFBsY1xMw3JWinIY8v
+        8p8CV23w==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1r0PPN-00C9Rr-1O;
+        Tue, 07 Nov 2023 16:58:33 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 19B0030049D; Tue,  7 Nov 2023 17:58:33 +0100 (CET)
+Date:   Tue, 7 Nov 2023 17:58:33 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Bai, Shuangpeng" <baisp@psu.edu>
+Cc:     "mingo@redhat.com" <mingo@redhat.com>,
+        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
+        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
+        "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "bsegall@google.com" <bsegall@google.com>,
+        "mgorman@suse.de" <mgorman@suse.de>,
+        "bristot@redhat.com" <bristot@redhat.com>,
+        "vschneid@redhat.com" <vschneid@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: KASAN slab-use-after-free in __lock_acquire
+Message-ID: <20231107165833.GB8262@noisy.programming.kicks-ass.net>
+References: <SA0PR02MB7276F5C039350B2CA1532773BFA7A@SA0PR02MB7276.namprd02.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <SA0PR02MB7276F5C039350B2CA1532773BFA7A@SA0PR02MB7276.namprd02.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   be3ca57cfb777ad820c6659d52e60bbdd36bf5ff
-commit: d82e68483b81768c8d19bc7529635dad741607ce scsi: mpt3sas: Revert "scsi: mpt3sas: Fix ioc->base_readl() use"
-date:   1 year, 1 month ago
-config: riscv-randconfig-r121-20231107 (https://download.01.org/0day-ci/archive/20231108/202311080059.uscQqMAV-lkp@intel.com/config)
-compiler: riscv64-linux-gcc (GCC) 13.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20231108/202311080059.uscQqMAV-lkp@intel.com/reproduce)
+On Wed, Nov 01, 2023 at 07:22:31PM +0000, Bai, Shuangpeng wrote:
+> Dear Kernel Maintainers,
+> 
+> We found a new kernel bug. Please see the details below.
+> 
+> A slab-use-after-free bug can be triggered when kernel dereferences a task pointer that has been freed in function delayed_put_task_struct before.
+> I'm sorry for bothering you if this bug is not related to you. I will appreciate if you help me find the person responsible. Thank you!
+> 
+> Kenrel commit: 8bc9e6515183935fa0cccaf67455c439afe4982b (recent upstream)
+> Kernel config: attachment
+> C/Syz reproducer: attachment
+> 
+> [  314.465397][    C1] ==================================================================
+> [ 314.467080][ C1] BUG: KASAN: slab-use-after-free in __lock_acquire (kernel/locking/lockdep.c:5004)
+> [  314.469666][    C1] Read of size 8 at addr ffff88801bd9ad08 by task systemd-udevd/8228
+> [  314.471271][    C1]
+> [  314.471719][    C1] CPU: 1 PID: 8228 Comm: systemd-udevd Not tainted 6.6.0-06824-g8bc9e6515183 #4
+> [  314.473512][    C1] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1 04/01/2014
+> [  314.475321][    C1] Call Trace:
+> [  314.475991][    C1]  <IRQ>
+> [ 314.476576][ C1] dump_stack_lvl (lib/dump_stack.c:107)
+> [ 314.478518][ C1] print_report (mm/kasan/report.c:365 mm/kasan/report.c:475)
+> [ 314.479423][ C1] ? __virt_addr_valid (arch/x86/mm/physaddr.c:66)
+> [ 314.480440][ C1] ? __phys_addr (arch/x86/mm/physaddr.c:32 (discriminator 4))
+> [ 314.481348][ C1] ? __lock_acquire (kernel/locking/lockdep.c:5004)
+> [ 314.482328][ C1] kasan_report (mm/kasan/report.c:590)
+> [ 314.483164][ C1] ? __lock_acquire (kernel/locking/lockdep.c:5004)
+> [ 314.484185][ C1] __lock_acquire (kernel/locking/lockdep.c:5004)
+> [ 314.485199][ C1] ? lockdep_hardirqs_on_prepare (kernel/locking/lockdep.c:4992)
+> [ 314.486418][ C1] ? lockdep_unlock (kernel/locking/lockdep.c:157)
+> [ 314.487390][ C1] ? __lock_acquire (kernel/locking/lockdep.c:186 kernel/locking/lockdep.c:3872 kernel/locking/lockdep.c:5136)
+> [ 314.488411][ C1] lock_acquire (kernel/locking/lockdep.c:467 kernel/locking/lockdep.c:5755 kernel/locking/lockdep.c:5718)
+> [ 314.489329][ C1] ? try_to_wake_up (kernel/sched/core.c:4049 kernel/sched/core.c:4228)
+> [ 314.490296][ C1] ? lock_sync (kernel/locking/lockdep.c:5721)
+> [ 314.491182][ C1] ? __lock_acquire (./arch/x86/include/asm/bitops.h:228 ./arch/x86/include/asm/bitops.h:240 ./include/asm-generic/bitops/instrumented-non-atomic.h:142 kernel/locking/lockdep.c:228 kernel/locking/lockdep.c:3780 kernel/locking/lockdep.c:3836 kernel/locking/lockdep.c:5136)
+> [ 314.492196][ C1] ? _raw_spin_lock_irqsave (./include/linux/spinlock_api_smp.h:108 kernel/locking/spinlock.c:162)
+> [ 314.493263][ C1] ? nilfs_segctor_zeropad_segsum (fs/nilfs2/segment.c:2441)
+> [ 314.494511][ C1] _raw_spin_lock_irqsave (./include/linux/spinlock_api_smp.h:111 kernel/locking/spinlock.c:162)
+> [ 314.495579][ C1] ? try_to_wake_up (kernel/sched/core.c:4049 kernel/sched/core.c:4228)
+> [ 314.496572][ C1] try_to_wake_up (kernel/sched/core.c:4049 kernel/sched/core.c:4228)
+> [ 314.497480][ C1] ? sched_ttwu_pending (kernel/sched/core.c:4196)
+> [ 314.498493][ C1] ? do_raw_spin_unlock (./arch/x86/include/asm/atomic.h:23 ./include/linux/atomic/atomic-arch-fallback.h:457 ./include/linux/atomic/atomic-instrumented.h:33 ./include/asm-generic/qspinlock.h:57 kernel/locking/spinlock_debug.c:100 kernel/locking/spinlock_debug.c:140)
+> [ 314.499518][ C1] ? nilfs_segctor_zeropad_segsum (fs/nilfs2/segment.c:2441)
+> [ 314.500737][ C1] call_timer_fn (./arch/x86/include/asm/jump_label.h:27 ./include/linux/jump_label.h:207 ./include/trace/events/timer.h:127 kernel/time/timer.c:1701)
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311080059.uscQqMAV-lkp@intel.com/
-
-sparse warnings: (new ones prefixed by >>)
-   WARNING: invalid argument to '-march': '_zicbom_zihintpause'
->> drivers/scsi/mpt3sas/mpt3sas_base.c:4323:9: sparse: sparse: cast from restricted __le32
-   drivers/scsi/mpt3sas/mpt3sas_base.c:4345:9: sparse: sparse: cast from restricted __le32
-   drivers/scsi/mpt3sas/mpt3sas_base.c:4368:9: sparse: sparse: cast from restricted __le32
-   drivers/scsi/mpt3sas/mpt3sas_base.c:4389:9: sparse: sparse: cast from restricted __le32
-   drivers/scsi/mpt3sas/mpt3sas_base.c:7066:17: sparse: sparse: cast from restricted __le32
-   drivers/scsi/mpt3sas/mpt3sas_base.c:7085:20: sparse: sparse: cast to restricted __le16
-   drivers/scsi/mpt3sas/mpt3sas_base.c:7093:20: sparse: sparse: cast to restricted __le16
-   drivers/scsi/mpt3sas/mpt3sas_base.c:7106:36: sparse: sparse: cast to restricted __le16
-
-vim +4323 drivers/scsi/mpt3sas/mpt3sas_base.c
-
-f92363d1235949 Sreekanth Reddy  2012-11-30  4302  
-79c74d03d527f8 Suganath Prabu S 2019-05-31  4303  /**
-79c74d03d527f8 Suganath Prabu S 2019-05-31  4304   * _base_put_smid_scsi_io_atomic - send SCSI_IO request to firmware using
-79c74d03d527f8 Suganath Prabu S 2019-05-31  4305   *   Atomic Request Descriptor
-79c74d03d527f8 Suganath Prabu S 2019-05-31  4306   * @ioc: per adapter object
-79c74d03d527f8 Suganath Prabu S 2019-05-31  4307   * @smid: system request message index
-79c74d03d527f8 Suganath Prabu S 2019-05-31  4308   * @handle: device handle, unused in this function, for function type match
-79c74d03d527f8 Suganath Prabu S 2019-05-31  4309   *
-2910a4a9e90a58 Randy Dunlap     2021-04-18  4310   * Return: nothing.
-79c74d03d527f8 Suganath Prabu S 2019-05-31  4311   */
-79c74d03d527f8 Suganath Prabu S 2019-05-31  4312  static void
-79c74d03d527f8 Suganath Prabu S 2019-05-31  4313  _base_put_smid_scsi_io_atomic(struct MPT3SAS_ADAPTER *ioc, u16 smid,
-79c74d03d527f8 Suganath Prabu S 2019-05-31  4314  	u16 handle)
-79c74d03d527f8 Suganath Prabu S 2019-05-31  4315  {
-79c74d03d527f8 Suganath Prabu S 2019-05-31  4316  	Mpi26AtomicRequestDescriptor_t descriptor;
-79c74d03d527f8 Suganath Prabu S 2019-05-31  4317  	u32 *request = (u32 *)&descriptor;
-79c74d03d527f8 Suganath Prabu S 2019-05-31  4318  
-79c74d03d527f8 Suganath Prabu S 2019-05-31  4319  	descriptor.RequestFlags = MPI2_REQ_DESCRIPT_FLAGS_SCSI_IO;
-998c3001d31a27 Suganath Prabu S 2019-05-31  4320  	descriptor.MSIxIndex = _base_set_and_get_msix_index(ioc, smid);
-79c74d03d527f8 Suganath Prabu S 2019-05-31  4321  	descriptor.SMID = cpu_to_le16(smid);
-79c74d03d527f8 Suganath Prabu S 2019-05-31  4322  
-f920642e406cfa Damien Le Moal   2022-09-16 @4323  	writel(cpu_to_le32(*request), &ioc->chip->AtomicRequestDescriptorPost);
-79c74d03d527f8 Suganath Prabu S 2019-05-31  4324  }
-79c74d03d527f8 Suganath Prabu S 2019-05-31  4325  
-
-:::::: The code at line 4323 was first introduced by commit
-:::::: f920642e406cfa17ebecf03d5b83a02273ec718e scsi: mpt3sas: Revert "scsi: mpt3sas: Fix writel() use"
-
-:::::: TO: Damien Le Moal <damien.lemoal@opensource.wdc.com>
-:::::: CC: Martin K. Petersen <martin.petersen@oracle.com>
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+For some reason the backtrace fails to mention which timer function is
+called. Having that would be helpful.
