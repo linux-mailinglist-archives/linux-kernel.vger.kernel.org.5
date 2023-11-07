@@ -2,42 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AD5F7E457F
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 17:10:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A3597E4589
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 17:10:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343896AbjKGQKI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 11:10:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33028 "EHLO
+        id S1344479AbjKGQKm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 11:10:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344433AbjKGQD7 (ORCPT
+        with ESMTP id S1344443AbjKGQEA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 11:03:59 -0500
+        Tue, 7 Nov 2023 11:04:00 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F9F34205;
-        Tue,  7 Nov 2023 07:54:58 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A8AD2C433C8;
-        Tue,  7 Nov 2023 15:54:56 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 819A49015;
+        Tue,  7 Nov 2023 07:54:59 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E204C433C7;
+        Tue,  7 Nov 2023 15:54:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699372497;
-        bh=KKVOSFWX8D0W4AmLBc1V7Sjr/r0TX9nN9OmaPKHqY70=;
+        s=k20201202; t=1699372499;
+        bh=ibE5PhuADZQ/mFJYNdpQuScEX16DqtCzYWqHqWiPKq4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rShubFmGG0lpmmyQJgvX+3LpH3Jo9ebkxVeNQBP0x7kRWXqsI9COsVCQzrh+N9Ycv
-         6gFNjxuZR07f0oby9voAZMR4IXvqO0ns23jQ90DvjEKz3j/KGBWWH5WvGcsP+x94Ne
-         Ts1gWsmMnG0Pv2AW2Z9mgOqH+ZK5wZPgPu10mrenUVcC6BVYTfDwH4kMefo9avSDUG
-         dmsuP3sMBgu9Ww/WPh3CWCCVU5ZM1HfRJ0i/cKRqUI4rS96lQ5A2X1o0WTAzHrHVmq
-         wO8vbwcsQO/e8m3mseM4LfN+Iegv8fjT0Z1LdWK6dJLhvKRFyEWAojp2/y/Cj4BqNr
-         pj+o9A+bCdyYw==
+        b=BqA4lUABBjcLP9/Rhz+92KNHuwOBAme+xVh0eO0kept57F7DnyVF9IPOqc33gCIlG
+         LRvj+Dtv4Da5F6Ow8ffjbRCkmRCqzTzX4ph2iiQ+LjpIXYiQZKdu0jctKl4QQtRRaW
+         gTZQ4U0Gb7lomesitDdbA7nN/HB1mKLT9+Klzg+d19ZygvlJeYvWOp6UarFEK+PyTY
+         SF4h6zlgdG+k8J2uWAcZVSsc0+hiXf/Fv/qm0JXSYmzmqJaNnXgkC7DpKf18vUWG0a
+         kl1F0gLI9AbdJxy+KeEsAu4QgBRzyj0KcEAOEs8pax0x/XsH/pip9PSpw/ctki7/A5
+         0bRoTQyTyIpEg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Wenchao Hao <haowenchao2@huawei.com>,
-        Simon Horman <horms@kernel.org>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>, hare@suse.de,
-        jejb@linux.ibm.com, richardcochran@gmail.com,
-        linux-scsi@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 10/11] scsi: libfc: Fix potential NULL pointer dereference in fc_lport_ptp_setup()
-Date:   Tue,  7 Nov 2023 10:54:18 -0500
-Message-ID: <20231107155430.3768779-10-sashal@kernel.org>
+Cc:     Jiri Kosina <jkosina@suse.cz>,
+        Robert Ayrapetyan <robert.ayrapetyan@gmail.com>,
+        Sasha Levin <sashal@kernel.org>, jikos@kernel.org,
+        benjamin.tissoires@redhat.com, linux-input@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 11/11] HID: Add quirk for Dell Pro Wireless Keyboard and Mouse KM5221W
+Date:   Tue,  7 Nov 2023 10:54:19 -0500
+Message-ID: <20231107155430.3768779-11-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231107155430.3768779-1-sashal@kernel.org>
 References: <20231107155430.3768779-1-sashal@kernel.org>
@@ -50,41 +48,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wenchao Hao <haowenchao2@huawei.com>
+From: Jiri Kosina <jkosina@suse.cz>
 
-[ Upstream commit 4df105f0ce9f6f30cda4e99f577150d23f0c9c5f ]
+[ Upstream commit 62cc9c3cb3ec1bf31cc116146185ed97b450836a ]
 
-fc_lport_ptp_setup() did not check the return value of fc_rport_create()
-which can return NULL and would cause a NULL pointer dereference. Address
-this issue by checking return value of fc_rport_create() and log error
-message on fc_rport_create() failed.
+This device needs ALWAYS_POLL quirk, otherwise it keeps reconnecting
+indefinitely.
 
-Signed-off-by: Wenchao Hao <haowenchao2@huawei.com>
-Link: https://lore.kernel.org/r/20231011130350.819571-1-haowenchao2@huawei.com
-Reviewed-by: Simon Horman <horms@kernel.org>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Reported-by: Robert Ayrapetyan <robert.ayrapetyan@gmail.com>
+Signed-off-by: Jiri Kosina <jkosina@suse.cz>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/libfc/fc_lport.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/hid/hid-ids.h    | 1 +
+ drivers/hid/hid-quirks.c | 1 +
+ 2 files changed, 2 insertions(+)
 
-diff --git a/drivers/scsi/libfc/fc_lport.c b/drivers/scsi/libfc/fc_lport.c
-index f653109d56af0..f84c8a9846abb 100644
---- a/drivers/scsi/libfc/fc_lport.c
-+++ b/drivers/scsi/libfc/fc_lport.c
-@@ -250,6 +250,12 @@ static void fc_lport_ptp_setup(struct fc_lport *lport,
- 	}
- 	mutex_lock(&lport->disc.disc_mutex);
- 	lport->ptp_rdata = fc_rport_create(lport, remote_fid);
-+	if (!lport->ptp_rdata) {
-+		printk(KERN_WARNING "libfc: Failed to setup lport 0x%x\n",
-+			lport->port_id);
-+		mutex_unlock(&lport->disc.disc_mutex);
-+		return;
-+	}
- 	kref_get(&lport->ptp_rdata->kref);
- 	lport->ptp_rdata->ids.port_name = remote_wwpn;
- 	lport->ptp_rdata->ids.node_name = remote_wwnn;
+diff --git a/drivers/hid/hid-ids.h b/drivers/hid/hid-ids.h
+index a9d6f8acf70b5..93faf083e550b 100644
+--- a/drivers/hid/hid-ids.h
++++ b/drivers/hid/hid-ids.h
+@@ -343,6 +343,7 @@
+ 
+ #define USB_VENDOR_ID_DELL				0x413c
+ #define USB_DEVICE_ID_DELL_PIXART_USB_OPTICAL_MOUSE	0x301a
++#define USB_DEVICE_ID_DELL_PRO_WIRELESS_KM5221W		0x4503
+ 
+ #define USB_VENDOR_ID_DELORME		0x1163
+ #define USB_DEVICE_ID_DELORME_EARTHMATE	0x0100
+diff --git a/drivers/hid/hid-quirks.c b/drivers/hid/hid-quirks.c
+index a2ab338166e61..0b85f95810b30 100644
+--- a/drivers/hid/hid-quirks.c
++++ b/drivers/hid/hid-quirks.c
+@@ -68,6 +68,7 @@ static const struct hid_device_id hid_quirks[] = {
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_CORSAIR, USB_DEVICE_ID_CORSAIR_STRAFE), HID_QUIRK_NO_INIT_REPORTS | HID_QUIRK_ALWAYS_POLL },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_CREATIVELABS, USB_DEVICE_ID_CREATIVE_SB_OMNI_SURROUND_51), HID_QUIRK_NOGET },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_DELL, USB_DEVICE_ID_DELL_PIXART_USB_OPTICAL_MOUSE), HID_QUIRK_ALWAYS_POLL },
++	{ HID_USB_DEVICE(USB_VENDOR_ID_DELL, USB_DEVICE_ID_DELL_PRO_WIRELESS_KM5221W), HID_QUIRK_ALWAYS_POLL },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_DMI, USB_DEVICE_ID_DMI_ENC), HID_QUIRK_NOGET },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_DRACAL_RAPHNET, USB_DEVICE_ID_RAPHNET_2NES2SNES), HID_QUIRK_MULTI_INPUT },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_DRACAL_RAPHNET, USB_DEVICE_ID_RAPHNET_4NES4SNES), HID_QUIRK_MULTI_INPUT },
 -- 
 2.42.0
 
