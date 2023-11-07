@@ -2,125 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B8B67E439D
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 16:39:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFAE97E43A4
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 16:40:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343950AbjKGPj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 10:39:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57226 "EHLO
+        id S1343979AbjKGPk7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 10:40:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235283AbjKGPjz (ORCPT
+        with ESMTP id S235283AbjKGPk6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 10:39:55 -0500
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B6E994
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 07:39:52 -0800 (PST)
-Received: by mail-ot1-x334.google.com with SMTP id 46e09a7af769-6d30d9f4549so3736105a34.0
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 07:39:52 -0800 (PST)
+        Tue, 7 Nov 2023 10:40:58 -0500
+Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D85DD95
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 07:40:55 -0800 (PST)
+Received: by mail-il1-x12d.google.com with SMTP id e9e14a558f8ab-35950819c97so3879985ab.0
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 07:40:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699371591; x=1699976391; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JW7foL1oxcRpbeUsbIlYVRRPx5rqbcU/gbE+Wj+BaFE=;
-        b=fen5jdeU+DNPR6z4fZONGR9aYqZf6PTMqRjolZuwZP+vzoxR3IPtGhmE4JSxql+XmL
-         gHpqBOTm3UhDZK+4uhR7qTtm4NwUrSpvhTYY/HZjUfVUqx4tF5r8VHvtKwjDOPFLltn3
-         dQJ2bQ3MLFXwkoOCn1ENQyI9liznz1LZA2Ro5o42o+cihQ7ixBOzWfqkvDWUduMn3HKH
-         yzJCyxt3RrEfFa1px63xaaFUIRkGzosbaE0WmWi8tIATTvFLKKZ+WFfDJyarRE/cs5/d
-         oqtkNGZHqj3UTn/0xrGgJBJOIJ8ik/yYKw8syF7WCG6DSwQVLIHvQ7GtElXz0ig3eHh8
-         teZA==
+        d=linuxfoundation.org; s=google; t=1699371655; x=1699976455; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Tz/3EAWv61f6wEBvRr3aAF3KcbwKrMc//gR1rrcsb8w=;
+        b=ZG4OKm6zMrrXdkvuZ0QCVXeRczq2fmT8EB5BUSJjdpR7g0V4HOyYn5B4YhWUutTqeQ
+         5Lslwl8VRDivK96GSmAt0R/e5ulKT8d+jzUUOofS3t1gSDkv0JXYje3H8e6ULAx3B6hR
+         5nBWCAviP8VK3dbcO6O64OHhXWd/k8KCVBI8w=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699371591; x=1699976391;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JW7foL1oxcRpbeUsbIlYVRRPx5rqbcU/gbE+Wj+BaFE=;
-        b=jBuX6uqMDh6zBq+q9qAZwm2jWKGZFKALoOMVnUjyVoDRwR6DvKpabGceR0YMG4PWbq
-         asZj5nO4yIQGSBkZdPXsexiMbWIzuOQhk2FwxEDkpXXvPyDr3yGTjsppMKgPmT1o7xKE
-         3QvGc815AjfJNoifBBRi+QH/FTOohK3SqHYyad4tqMGwnKodTOmEDxJdaYPHlbiOVmQd
-         /VIWicQ7Iu97d236iQ6+5p7F5J8JD+Ev8VL9M9EmZ1QZssIGo21kQp4a6DKuUjY9apgc
-         BLlQHuD841pT0MZGZO62EDmcuC0yjkeSrFVPM8Gle7i0IYfkMg43dA498XFbjj6b79nD
-         O78Q==
-X-Gm-Message-State: AOJu0YxneTtmhmNEhlSyDHXp2sl1CTSs9lIQW+mkNJk7Yia2e5hBkcdH
-        +53jp1tanCfGfL/thHYXXoU5I2aOoqc7MbApQEY=
-X-Google-Smtp-Source: AGHT+IFvtIGgWBLyu7RRG3uFcIzUM0xQQOleEl4WYezcoWx58X/a2dPjF56SgV0wq6ut3+Af0EixxFZNfu5sL4Wnq0k=
-X-Received: by 2002:a05:6870:168a:b0:1ef:bae2:e3ac with SMTP id
- j10-20020a056870168a00b001efbae2e3acmr3487366oae.55.1699371591585; Tue, 07
- Nov 2023 07:39:51 -0800 (PST)
+        d=1e100.net; s=20230601; t=1699371655; x=1699976455;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Tz/3EAWv61f6wEBvRr3aAF3KcbwKrMc//gR1rrcsb8w=;
+        b=s4g3CKDzQE1a4lUMo3QMo6Vx+AhdojmM/EA1mqR99ptKEErcTtkxIiRIl6N2Ky84iu
+         C8PVCAJ0InpgM5blk7tBmzBA+14D+3TXm69a+/I6t3EesJm/t9Ct9YYYdVZgcjLK7E8c
+         cyQtxVfe9fUH8p8mQp9TxuCtNWT75Da3ASkp8ar1QwvZJV+lDVtAP9Q5Xde8B7aQAg1D
+         E/cCNsmxAwxQWTxuRWEg35tAT5X8NX+d8Qur4h8NasTFD2LY1LXtQpQNSZ0LDBzy7Vz+
+         zmP8H5wgaOB9zO8eNCSkVUVIuIVvl+0BpWRKBQEqkGXf+ESyImAe24ZB/TxqJtXHp8mv
+         y79Q==
+X-Gm-Message-State: AOJu0YzKJKPKcbR03Hwk60GXyv5R0RqXTh4X7QT5gumb9dxY0/UOU2+W
+        lw0xJ3XFF+XjIMzixGS4CAdSCg==
+X-Google-Smtp-Source: AGHT+IGQAWYgGlHvzGOchOtYfwGf4w5IoTPD/+kKzlZTcA7bY03Zr+sGBRvCeJPucCtA1SCy16Gjew==
+X-Received: by 2002:a05:6e02:168c:b0:359:4db7:102a with SMTP id f12-20020a056e02168c00b003594db7102amr25003454ila.0.1699371655252;
+        Tue, 07 Nov 2023 07:40:55 -0800 (PST)
+Received: from [192.168.1.128] ([38.175.170.29])
+        by smtp.gmail.com with ESMTPSA id f8-20020a056e0204c800b00357fc1e2ffesm766889ils.23.2023.11.07.07.40.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 07 Nov 2023 07:40:54 -0800 (PST)
+Message-ID: <48432650-09c9-4cf6-8ec7-9c4577c18e38@linuxfoundation.org>
+Date:   Tue, 7 Nov 2023 08:40:54 -0700
 MIME-Version: 1.0
-References: <20231107082839.92061-1-jose.pekkarinen@foxhound.fi>
-In-Reply-To: <20231107082839.92061-1-jose.pekkarinen@foxhound.fi>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Tue, 7 Nov 2023 10:39:40 -0500
-Message-ID: <CADnq5_NpMmo5SdXdStcRMGfcz0v6Nu-ZTORsSHo4_m_piAB77Q@mail.gmail.com>
-Subject: Re: [PATCH] drm/amd/display: clean up redundant conversions to bool
-To:     =?UTF-8?Q?Jos=C3=A9_Pekkarinen?= <jose.pekkarinen@foxhound.fi>
-Cc:     harry.wentland@amd.com, sunpeng.li@amd.com,
-        Rodrigo.Siqueira@amd.com, alexander.deucher@amd.com,
-        christian.koenig@amd.com, Xinhui.Pan@amd.com,
-        skhan@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
-        Bhawanpreet.Lakha@amd.com, linux-kernel-mentees@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 5.10 00/95] 5.10.200-rc1 review
+Content-Language: en-US
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20231106130304.678610325@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <20231106130304.678610325@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 7, 2023 at 4:44=E2=80=AFAM Jos=C3=A9 Pekkarinen
-<jose.pekkarinen@foxhound.fi> wrote:
->
-> This patch will address the following couple of warnings retrieved by
-> using coccinelle, where there is an explicit conversion to bool that
-> are redundant.
->
-> drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_replay.c:94:102-107: WARN=
-ING: conversion to bool not needed here
-> drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_replay.c:102:72-77: WARNI=
-NG: conversion to bool not needed here
->
-> Signed-off-by: Jos=C3=A9 Pekkarinen <jose.pekkarinen@foxhound.fi>
+On 11/6/23 06:03, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.200 release.
+> There are 95 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 08 Nov 2023 13:02:46 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.200-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-Thanks for the patch, but this was already fixed by Srinivasan a while ago.
+Compiled and booted on my test system. No dmesg regressions.
 
-Alex
+Tested-by: Shuah Khan <skhan@linuxfoundation.org>
 
-> ---
->  drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_replay.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_replay.c b/d=
-rivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_replay.c
-> index 32d3086c4cb7..5ce542b1f860 100644
-> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_replay.c
-> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_replay.c
-> @@ -91,7 +91,7 @@ bool amdgpu_dm_setup_replay(struct dc_link *link, struc=
-t amdgpu_dm_connector *ac
->         pr_config.replay_supported =3D true;
->         pr_config.replay_power_opt_supported =3D 0;
->         pr_config.replay_enable_option |=3D pr_enable_option_static_scree=
-n;
-> -       pr_config.replay_timing_sync_supported =3D aconnector->max_vfreq =
->=3D 2 * aconnector->min_vfreq ? true : false;
-> +       pr_config.replay_timing_sync_supported =3D aconnector->max_vfreq =
->=3D 2 * aconnector->min_vfreq;
->
->         if (!pr_config.replay_timing_sync_supported)
->                 pr_config.replay_enable_option &=3D ~pr_enable_option_gen=
-eral_ui;
-> @@ -99,7 +99,7 @@ bool amdgpu_dm_setup_replay(struct dc_link *link, struc=
-t amdgpu_dm_connector *ac
->         debug_flags =3D (union replay_debug_flags *)&pr_config.debug_flag=
-s;
->         debug_flags->u32All =3D 0;
->         debug_flags->bitfields.visual_confirm =3D
-> -               link->ctx->dc->debug.visual_confirm =3D=3D VISUAL_CONFIRM=
-_REPLAY ? true : false;
-> +               link->ctx->dc->debug.visual_confirm =3D=3D VISUAL_CONFIRM=
-_REPLAY;
->
->         link->replay_settings.replay_feature_enabled =3D true;
->
-> --
-> 2.39.2
->
+thanks,
+-- Shuah
