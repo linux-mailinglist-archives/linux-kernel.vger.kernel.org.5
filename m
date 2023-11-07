@@ -2,46 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 39F5B7E442E
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 16:50:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FE797E442F
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 16:50:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343681AbjKGPuk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 10:50:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49456 "EHLO
+        id S235120AbjKGPun (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 10:50:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235462AbjKGPr2 (ORCPT
+        with ESMTP id S235538AbjKGPr3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 10:47:28 -0500
+        Tue, 7 Nov 2023 10:47:29 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6359918D;
-        Tue,  7 Nov 2023 07:47:15 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43E1FC433CA;
-        Tue,  7 Nov 2023 15:47:13 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D744B10C1;
+        Tue,  7 Nov 2023 07:47:16 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84D2BC433CC;
+        Tue,  7 Nov 2023 15:47:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699372035;
-        bh=s/Mh36tJN3/055JmMnC8ctPCLi14V6zbTn9rZWmotJY=;
+        s=k20201202; t=1699372036;
+        bh=bQ5rTp0APnfKUW9+ij3qpkqKF5SbS+O/oljqrb2DO88=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ga8VRgHYLSgTaw3kb2LM/z0F1HdXiAGGS9gdP4vIyMBScYhLe54CGAJq2l01b/4cq
-         WDkc+mu9OJ7B4yGKEZKGe/znGWpazWjXqk9W4s3Qh13+kqhvT0s4WcbppmIVRCU7DR
-         BiNwOq3UBDGqfcmm/DgY5H96rhAmwwswIvSfQ2ZSX0fTB2RlTdIwAhttkmSBbqvhSj
-         2yRC9gLBpxU5vh6tDAkmPOpsuDcz7GVNDAFZxR4xEXu19gDmvWo7Gp9cjcauCZlglU
-         UPS7YQM6wlCwuM2EhY78QUVA1HlLIaz1jl/G906zFpDcQh76ZzNHJNYiAnRo71/gJj
-         4jrpoNHiTPknQ==
+        b=VKkbY0BygtrqEV5uRBGznp/Bpiqib8PdEv4Az+xwJ4Fv/TiRdhUSuQAKdXAQCgV1E
+         mAGrDJTQupK84XuqaCbCgs/T4oW4Dc6sh5Rq5EU4dtv8+9gY0tsfRZmc9xq8NH+017
+         cIQjbHUlEczYXQVQY6q3amXBnLC2Kd0Wja1NCwbk5SzIaEnfzq+Izr9UehHo5WQZkW
+         X8qBJFxjx4HIDpobP7VEMIdi1ZeTWcztvnLIH1/LP3AYkpwVmxcB3EB003KL+7JJLG
+         vBzqU+48bneIAmFVjvhTKVJXclHPQ0HsFZIkUBvkHjIR0yE9mUeDPfT2yh0nKaUK3n
+         11RMbm16dWEKw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Rander Wang <rander.wang@intel.com>,
-        =?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, lgirdwood@gmail.com,
-        yung-chuan.liao@linux.intel.com, ranjani.sridharan@linux.intel.com,
-        daniel.baluta@nxp.com, perex@perex.cz, tiwai@suse.com,
-        sound-open-firmware@alsa-project.org, linux-sound@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 08/36] ASoC: SOF: ipc4: handle EXCEPTION_CAUGHT notification from firmware
-Date:   Tue,  7 Nov 2023 10:45:50 -0500
-Message-ID: <20231107154654.3765336-8-sashal@kernel.org>
+Cc:     =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Dean Luick <dean.luick@cornelisnetworks.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Sasha Levin <sashal@kernel.org>,
+        dennis.dalessandro@cornelisnetworks.com, linux-rdma@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.6 09/36] RDMA/hfi1: Use FIELD_GET() to extract Link Width
+Date:   Tue,  7 Nov 2023 10:45:51 -0500
+Message-ID: <20231107154654.3765336-9-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231107154654.3765336-1-sashal@kernel.org>
 References: <20231107154654.3765336-1-sashal@kernel.org>
@@ -55,40 +51,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rander Wang <rander.wang@intel.com>
+From: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
 
-[ Upstream commit c1c48fd6bbe788458e3685fea74bdb3cb148ff93 ]
+[ Upstream commit 8bf7187d978610b9e327a3d92728c8864a575ebd ]
 
-Driver will receive exception IPC message and process it by
-snd_sof_dsp_panic.
+Use FIELD_GET() to extract PCIe Negotiated Link Width field instead of
+custom masking and shifting, and remove extract_width() which only
+wraps that FIELD_GET().
 
-Signed-off-by: Rander Wang <rander.wang@intel.com>
-Reviewed-by: Péter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Link: https://lore.kernel.org/r/20230919092416.4137-10-peter.ujfalusi@linux.intel.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+Link: https://lore.kernel.org/r/20230919125648.1920-2-ilpo.jarvinen@linux.intel.com
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Reviewed-by: Dean Luick <dean.luick@cornelisnetworks.com>
+Signed-off-by: Leon Romanovsky <leon@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/sof/ipc4.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/infiniband/hw/hfi1/pcie.c | 9 ++-------
+ 1 file changed, 2 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/sof/ipc4.c b/sound/soc/sof/ipc4.c
-index ab6eddd91bb77..1b09496733fb8 100644
---- a/sound/soc/sof/ipc4.c
-+++ b/sound/soc/sof/ipc4.c
-@@ -614,6 +614,9 @@ static void sof_ipc4_rx_msg(struct snd_sof_dev *sdev)
- 	case SOF_IPC4_NOTIFY_LOG_BUFFER_STATUS:
- 		sof_ipc4_mtrace_update_pos(sdev, SOF_IPC4_LOG_CORE_GET(ipc4_msg->primary));
- 		break;
-+	case SOF_IPC4_NOTIFY_EXCEPTION_CAUGHT:
-+		snd_sof_dsp_panic(sdev, 0, true);
-+		break;
- 	default:
- 		dev_dbg(sdev->dev, "Unhandled DSP message: %#x|%#x\n",
- 			ipc4_msg->primary, ipc4_msg->extension);
+diff --git a/drivers/infiniband/hw/hfi1/pcie.c b/drivers/infiniband/hw/hfi1/pcie.c
+index 08732e1ac9662..c132a9c073bff 100644
+--- a/drivers/infiniband/hw/hfi1/pcie.c
++++ b/drivers/infiniband/hw/hfi1/pcie.c
+@@ -3,6 +3,7 @@
+  * Copyright(c) 2015 - 2019 Intel Corporation.
+  */
+ 
++#include <linux/bitfield.h>
+ #include <linux/pci.h>
+ #include <linux/io.h>
+ #include <linux/delay.h>
+@@ -210,12 +211,6 @@ static u32 extract_speed(u16 linkstat)
+ 	return speed;
+ }
+ 
+-/* return the PCIe link speed from the given link status */
+-static u32 extract_width(u16 linkstat)
+-{
+-	return (linkstat & PCI_EXP_LNKSTA_NLW) >> PCI_EXP_LNKSTA_NLW_SHIFT;
+-}
+-
+ /* read the link status and set dd->{lbus_width,lbus_speed,lbus_info} */
+ static void update_lbus_info(struct hfi1_devdata *dd)
+ {
+@@ -228,7 +223,7 @@ static void update_lbus_info(struct hfi1_devdata *dd)
+ 		return;
+ 	}
+ 
+-	dd->lbus_width = extract_width(linkstat);
++	dd->lbus_width = FIELD_GET(PCI_EXP_LNKSTA_NLW, linkstat);
+ 	dd->lbus_speed = extract_speed(linkstat);
+ 	snprintf(dd->lbus_info, sizeof(dd->lbus_info),
+ 		 "PCIe,%uMHz,x%u", dd->lbus_speed, dd->lbus_width);
 -- 
 2.42.0
 
