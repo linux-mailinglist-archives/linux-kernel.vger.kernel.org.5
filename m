@@ -2,92 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EFE67E3EA0
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 13:40:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 581B47E3F33
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 13:50:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343585AbjKGMkI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 07:40:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46104 "EHLO
+        id S234352AbjKGMuZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 07:50:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235276AbjKGMic (ORCPT
+        with ESMTP id S1343645AbjKGMjH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 07:38:32 -0500
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F06F1711;
-        Tue,  7 Nov 2023 04:26:47 -0800 (PST)
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A7Bqufj004981;
-        Tue, 7 Nov 2023 12:26:43 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : date :
- subject : mime-version : content-type : content-transfer-encoding :
- message-id : references : in-reply-to : to : cc; s=qcppdkim1;
- bh=1+9ZqMfTmOVm6k2O/7cypKmKcfs7Lw4ecgmh68LjS5M=;
- b=bBKanvrGRqem3I0j0VN3YleGu6/FXSAZOMm8kynqqbOTzpS0HeaF6HumUbt1zJ5p9qQ9
- 1tHAXgiqYZJjdF7FVC0k4fpjA6FddFbySPh+6JWdwIbWFVw2XlrAZHOOnqL+jfe9NttG
- M3m+31UKyCSydGQZ0aSLbWL7nkcADel54z1IeoxxxpwHjirCEi8PZVOXDRJyvZBOFstC
- VysCumeG2fVAil6CHDSiAjXf55x8JL8Qs43QBSmZcvxlx/gQWiitU6vD0izeNBzCdVAV
- zExpNPhoQM8eatN/YAsm0R+n7vW4oJJ8KX35CjnJqA5bH1WTqQ3jHnmBONqM7L8U9Xi1 zw== 
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u72c02j8q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 07 Nov 2023 12:26:42 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3A7CQgN1016439
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 7 Nov 2023 12:26:42 GMT
-Received: from hu-krichai-hyd.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.39; Tue, 7 Nov 2023 04:26:36 -0800
-From:   Krishna chaitanya chundru <quic_krichai@quicinc.com>
-Date:   Tue, 7 Nov 2023 17:56:15 +0530
-Subject: [PATCH v2 3/3] phy: qcom-qmp-pcie: Add support for keeping refclk
- always on
+        Tue, 7 Nov 2023 07:39:07 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32FDD6E8B;
+        Tue,  7 Nov 2023 04:27:49 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94C01C433C8;
+        Tue,  7 Nov 2023 12:27:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699360068;
+        bh=gyO7pKhpw7VjRi5Sk9hIVCjSM/9Okm+Q2b7CXRwXlOY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=m4ZZH6SlDHRN4FTEFUZIUWDzAFpgh6ChB+Da1r4h8qTo8XSm/3/p/ozciJLYMYqZA
+         YNEMVtDZgRpn+6DYgH/TxT2EfIdz1D2FI/3gnxWeYPTKkky484/pt8U37IRBxLOLHZ
+         Wng7wdJnca62eAdLssGpgm6XhUXRKGBU1rub7G7PIy7E9lvjBNaXLjoq/rsdUDeylW
+         v+btpGsuD3j8cvIFCa6a/R3LJLTQZj2IhZJCQffyuUWyPmaWVpRsYQcwBgcE2h1vHO
+         0V9ekAGXTzozh6zTcqNF+jJUU0ugfqCdqh0lH7GSF79jiz10LWqpXW9qTJkgGHON6s
+         0EzR6lhbWjhwA==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Sui Jingfeng <suijingfeng@loongson.cn>,
+        Patrik Jakobsson <patrik.r.jakobsson@gmail.com>,
+        Sasha Levin <sashal@kernel.org>,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH AUTOSEL 6.1 01/25] drm/gma500: Fix call trace when psb_gem_mm_init() fails
+Date:   Tue,  7 Nov 2023 07:26:40 -0500
+Message-ID: <20231107122745.3761613-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <20231107-refclk_always_on-v2-3-de23962fc4b3@quicinc.com>
-References: <20231107-refclk_always_on-v2-0-de23962fc4b3@quicinc.com>
-In-Reply-To: <20231107-refclk_always_on-v2-0-de23962fc4b3@quicinc.com>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-CC:     <linux-arm-msm@vger.kernel.org>, <linux-phy@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <quic_vbadigan@quicinc.com>, <quic_ramkri@quicinc.com>,
-        <quic_nitegupt@quicinc.com>, <quic_skananth@quicinc.com>,
-        <quic_vpernami@quicinc.com>, <quic_parass@quicinc.com>,
-        "Krishna chaitanya chundru" <quic_krichai@quicinc.com>
-X-Mailer: b4 0.13-dev-83828
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1699359980; l=2354;
- i=quic_krichai@quicinc.com; s=20230907; h=from:subject:message-id;
- bh=JUk/FJ9xXUwVyUZKmKOaplZAA11pO+CSXisdJEVQfMI=;
- b=jj+fJ1UdhMPYxXep+1d1C+YY3FbEJCWNbzCj4/x28dGib8YJmQ/2yaiStFPYYjeV5L9I6OJ5t
- 94g2ELn1WTvBN1hEbkZIGRmTwRMBFVinYHXq0ILXfdpLsiI4Qmkt22s
-X-Developer-Key: i=quic_krichai@quicinc.com; a=ed25519;
- pk=10CL2pdAKFyzyOHbfSWHCD0X0my7CXxj8gJScmn1FAg=
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: K17XiqBscUn3sI-3vsp3g-DXUJ9Hlfr-
-X-Proofpoint-GUID: K17XiqBscUn3sI-3vsp3g-DXUJ9Hlfr-
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-07_02,2023-11-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- impostorscore=0 mlxscore=0 mlxlogscore=999 clxscore=1015
- priorityscore=1501 malwarescore=0 bulkscore=0 lowpriorityscore=0
- adultscore=0 spamscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2310240000 definitions=main-2311070102
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 6.1.61
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -96,69 +54,136 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In PCIe low power states like L1.1 or L1.2 the phy will stop
-supplying refclk to endpoint. If endpoint asserts clkreq to bring
-back link L0, then RC needs to provide refclk to endpoint.
+From: Sui Jingfeng <suijingfeng@loongson.cn>
 
-If there is some issues in platform with clkreq signal propagation
-to host and due to that host will not send refclk which results PCIe link
-down. For those platforms phy needs to provide refclk even in low power
-states.
+[ Upstream commit da596080b2b400c50fe9f8f237bcaf09fed06af8 ]
 
-Add a flag to keep refclk always supplied to endpoint.
+Because the gma_irq_install() is call after psb_gem_mm_init() function,
+when psb_gem_mm_init() fails, the interrupt line haven't been allocated.
+Yet the gma_irq_uninstall() is called in the psb_driver_unload() function
+without checking if checking the irq is registered or not.
 
-Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
+The calltrace is appended as following:
+
+[   20.539253] ioremap memtype_reserve failed -16
+[   20.543895] gma500 0000:00:02.0: Failure to map stolen base.
+[   20.565049] ------------[ cut here ]------------
+[   20.565066] Trying to free already-free IRQ 16
+[   20.565087] WARNING: CPU: 1 PID: 381 at kernel/irq/manage.c:1893 free_irq+0x209/0x370
+[   20.565316] CPU: 1 PID: 381 Comm: systemd-udevd Tainted: G         C         6.5.0-rc1+ #368
+[   20.565329] Hardware name: To Be Filled By O.E.M. To Be Filled By O.E.M./IMB-140D Plus, BIOS P1.10 11/18/2013
+[   20.565338] RIP: 0010:free_irq+0x209/0x370
+[   20.565357] Code: 41 5d 41 5e 41 5f 5d 31 d2 89 d1 89 d6 89 d7 41 89 d1 c3 cc cc cc cc 8b 75 d0 48 c7 c7 e0 77 12 9f 4c 89 4d c8 e8 57 fe f4 ff <0f> 0b 48 8b 75 c8 4c 89 f7 e8 29 f3 f1 00 49 8b 47 40 48 8b 40 78
+[   20.565369] RSP: 0018:ffffae3b40733808 EFLAGS: 00010046
+[   20.565382] RAX: 0000000000000000 RBX: ffff9f8082bfe000 RCX: 0000000000000000
+[   20.565390] RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+[   20.565397] RBP: ffffae3b40733840 R08: 0000000000000000 R09: 0000000000000000
+[   20.565405] R10: 0000000000000000 R11: 0000000000000000 R12: ffff9f80871c3100
+[   20.565413] R13: ffff9f80835d3360 R14: ffff9f80835d32a4 R15: ffff9f80835d3200
+[   20.565424] FS:  00007f13d36458c0(0000) GS:ffff9f8138880000(0000) knlGS:0000000000000000
+[   20.565434] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   20.565441] CR2: 00007f0d046f3f20 CR3: 0000000006c8c000 CR4: 00000000000006e0
+[   20.565450] Call Trace:
+[   20.565458]  <TASK>
+[   20.565470]  ? show_regs+0x72/0x90
+[   20.565488]  ? free_irq+0x209/0x370
+[   20.565504]  ? __warn+0x8d/0x160
+[   20.565520]  ? free_irq+0x209/0x370
+[   20.565536]  ? report_bug+0x1bb/0x1d0
+[   20.565555]  ? handle_bug+0x46/0x90
+[   20.565572]  ? exc_invalid_op+0x19/0x80
+[   20.565587]  ? asm_exc_invalid_op+0x1b/0x20
+[   20.565607]  ? free_irq+0x209/0x370
+[   20.565625]  ? free_irq+0x209/0x370
+[   20.565644]  gma_irq_uninstall+0x15b/0x1e0 [gma500_gfx]
+[   20.565728]  psb_driver_unload+0x27/0x190 [gma500_gfx]
+[   20.565800]  psb_pci_probe+0x5d2/0x790 [gma500_gfx]
+[   20.565873]  local_pci_probe+0x48/0xb0
+[   20.565892]  pci_device_probe+0xc8/0x280
+[   20.565912]  really_probe+0x1d2/0x440
+[   20.565929]  __driver_probe_device+0x8a/0x190
+[   20.565944]  driver_probe_device+0x23/0xd0
+[   20.565957]  __driver_attach+0x10f/0x220
+[   20.565971]  ? __pfx___driver_attach+0x10/0x10
+[   20.565984]  bus_for_each_dev+0x7a/0xe0
+[   20.566002]  driver_attach+0x1e/0x30
+[   20.566014]  bus_add_driver+0x127/0x240
+[   20.566029]  driver_register+0x64/0x140
+[   20.566043]  ? __pfx_psb_init+0x10/0x10 [gma500_gfx]
+[   20.566111]  __pci_register_driver+0x68/0x80
+[   20.566128]  psb_init+0x2c/0xff0 [gma500_gfx]
+[   20.566194]  do_one_initcall+0x46/0x330
+[   20.566214]  ? kmalloc_trace+0x2a/0xb0
+[   20.566233]  do_init_module+0x6a/0x270
+[   20.566250]  load_module+0x207f/0x23a0
+[   20.566278]  init_module_from_file+0x9c/0xf0
+[   20.566293]  ? init_module_from_file+0x9c/0xf0
+[   20.566315]  idempotent_init_module+0x184/0x240
+[   20.566335]  __x64_sys_finit_module+0x64/0xd0
+[   20.566352]  do_syscall_64+0x59/0x90
+[   20.566366]  ? ksys_mmap_pgoff+0x123/0x270
+[   20.566378]  ? __secure_computing+0x9b/0x110
+[   20.566392]  ? exit_to_user_mode_prepare+0x39/0x190
+[   20.566406]  ? syscall_exit_to_user_mode+0x2a/0x50
+[   20.566420]  ? do_syscall_64+0x69/0x90
+[   20.566433]  ? do_syscall_64+0x69/0x90
+[   20.566445]  ? do_syscall_64+0x69/0x90
+[   20.566458]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+[   20.566472] RIP: 0033:0x7f13d351ea3d
+[   20.566485] Code: 5b 41 5c c3 66 0f 1f 84 00 00 00 00 00 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d c3 a3 0f 00 f7 d8 64 89 01 48
+[   20.566496] RSP: 002b:00007ffe566c1fd8 EFLAGS: 00000246 ORIG_RAX: 0000000000000139
+[   20.566510] RAX: ffffffffffffffda RBX: 000055e66806eec0 RCX: 00007f13d351ea3d
+[   20.566519] RDX: 0000000000000000 RSI: 00007f13d36d9441 RDI: 0000000000000010
+[   20.566527] RBP: 0000000000020000 R08: 0000000000000000 R09: 0000000000000002
+[   20.566535] R10: 0000000000000010 R11: 0000000000000246 R12: 00007f13d36d9441
+[   20.566543] R13: 000055e6681108c0 R14: 000055e66805ba70 R15: 000055e66819a9c0
+[   20.566559]  </TASK>
+[   20.566566] ---[ end trace 0000000000000000 ]---
+
+Signed-off-by: Sui Jingfeng <suijingfeng@loongson.cn>
+Signed-off-by: Patrik Jakobsson <patrik.r.jakobsson@gmail.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20230727185855.713318-1-suijingfeng@loongson.cn
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/phy/qualcomm/phy-qcom-qmp-pcie.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ drivers/gpu/drm/gma500/psb_drv.h | 1 +
+ drivers/gpu/drm/gma500/psb_irq.c | 5 +++++
+ 2 files changed, 6 insertions(+)
 
-diff --git a/drivers/phy/qualcomm/phy-qcom-qmp-pcie.c b/drivers/phy/qualcomm/phy-qcom-qmp-pcie.c
-index 74d03d217ff2..a8d6d69e3f74 100644
---- a/drivers/phy/qualcomm/phy-qcom-qmp-pcie.c
-+++ b/drivers/phy/qualcomm/phy-qcom-qmp-pcie.c
-@@ -43,6 +43,8 @@
- /* QPHY_PCS_STATUS bit */
- #define PHYSTATUS				BIT(6)
- #define PHYSTATUS_4_20				BIT(7)
-+/* PCS_PCIE_ENDPOINT_REFCLK_CNTRL */
-+#define EPCLK_ALWAYS_ON_EN			BIT(6)
+diff --git a/drivers/gpu/drm/gma500/psb_drv.h b/drivers/gpu/drm/gma500/psb_drv.h
+index ae544b69fc475..52f9ed3c24b8e 100644
+--- a/drivers/gpu/drm/gma500/psb_drv.h
++++ b/drivers/gpu/drm/gma500/psb_drv.h
+@@ -426,6 +426,7 @@ struct drm_psb_private {
+ 	uint32_t pipestat[PSB_NUM_PIPE];
  
- #define PHY_INIT_COMPLETE_TIMEOUT		10000
+ 	spinlock_t irqmask_lock;
++	bool irq_enabled;
  
-@@ -2264,6 +2266,8 @@ struct qmp_pcie {
- 	struct phy *phy;
- 	int mode;
+ 	/* Power */
+ 	bool pm_initialized;
+diff --git a/drivers/gpu/drm/gma500/psb_irq.c b/drivers/gpu/drm/gma500/psb_irq.c
+index d421031462df6..ab2d49dab35a0 100644
+--- a/drivers/gpu/drm/gma500/psb_irq.c
++++ b/drivers/gpu/drm/gma500/psb_irq.c
+@@ -338,6 +338,8 @@ int gma_irq_install(struct drm_device *dev)
  
-+	bool refclk_always_on;
+ 	gma_irq_postinstall(dev);
+ 
++	dev_priv->irq_enabled = true;
 +
- 	struct clk_fixed_rate pipe_clk_fixed;
- };
+ 	return 0;
+ }
  
-@@ -3179,6 +3183,10 @@ static void qmp_pcie_init_registers(struct qmp_pcie *qmp, const struct qmp_phy_c
- 	qmp_pcie_configure(pcs, tbls->pcs, tbls->pcs_num);
- 	qmp_pcie_configure(pcs_misc, tbls->pcs_misc, tbls->pcs_misc_num);
+@@ -348,6 +350,9 @@ void gma_irq_uninstall(struct drm_device *dev)
+ 	unsigned long irqflags;
+ 	unsigned int i;
  
-+	if (qmp->refclk_always_on && cfg->regs[QPHY_PCS_ENDPOINT_REFCLK_CNTRL])
-+		qphy_setbits(pcs_misc, cfg->regs[QPHY_PCS_ENDPOINT_REFCLK_CNTRL],
-+			     EPCLK_ALWAYS_ON_EN);
++	if (!dev_priv->irq_enabled)
++		return;
 +
- 	if (cfg->lanes >= 4 && qmp->tcsr_4ln_config) {
- 		qmp_pcie_configure(serdes, cfg->serdes_4ln_tbl, cfg->serdes_4ln_num);
- 		qmp_pcie_init_port_b(qmp, tbls);
-@@ -3701,6 +3709,12 @@ static int qmp_pcie_probe(struct platform_device *pdev)
- 	if (ret)
- 		goto err_node_put;
+ 	spin_lock_irqsave(&dev_priv->irqmask_lock, irqflags);
  
-+	qmp->refclk_always_on = of_property_read_bool(dev->of_node, "qcom,refclk-always-on");
-+	if (qmp->refclk_always_on && !qmp->cfg->regs[QPHY_PCS_ENDPOINT_REFCLK_CNTRL]) {
-+		dev_err(dev, "refclk is always on is present but refclk cntrl offset is not present\n");
-+		goto err_node_put;
-+	}
-+
- 	ret = phy_pipe_clk_register(qmp, np);
- 	if (ret)
- 		goto err_node_put;
-
+ 	if (dev_priv->ops->hotplug_enable)
 -- 
 2.42.0
 
