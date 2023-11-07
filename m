@@ -2,94 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 573B67E47FA
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 19:13:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFC867E4801
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 19:14:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343772AbjKGSN0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 13:13:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57884 "EHLO
+        id S1343650AbjKGSOb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 13:14:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234669AbjKGSNZ (ORCPT
+        with ESMTP id S232171AbjKGSOa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 13:13:25 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55370132
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 10:13:23 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 71478C433CA;
-        Tue,  7 Nov 2023 18:13:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1699380802;
-        bh=gazaRc+aEiIyTzNinDjx0ki65vH/wKHbHk/6Ydw3L4E=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oOcX6UKm4/PBOxQiHjHPNKhhHh8phKJLtEmQmdaIx/e2sKj7d2IAKTNYQvTivuHUn
-         xraxU6y5AcfE409OESVyY5/VZ252r+5wV3YgMD5VkT6UM5y8QAwvaCTdgFFNrNTLBj
-         EdtMiqBCv1CN+yhovvAYxyu4j+UAUaXDk8pJPQig=
-Date:   Tue, 7 Nov 2023 19:13:13 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Yuran Pereira <yuran.pereira@hotmail.com>
-Cc:     linux-bluetooth@vger.kernel.org, johan.hedberg@gmail.com,
-        marcel@holtmann.org, linux-kernel@vger.kernel.org,
-        luiz.dentz@gmail.com,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: Re: [PATCH 2/2] Bluetooth: Replaces printk with pr_debug in bt_dbg
-Message-ID: <2023110752-laundry-stiffness-9f34@gregkh>
-References: <DB3PR10MB6835C002EB4C5A05AD17610BE8AAA@DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM>
- <DB3PR10MB6835DE6D279B65EC040B92AEE8AAA@DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM>
- <2023110752-headset-gains-41a7@gregkh>
- <DB3PR10MB6835DDFE9086DAC4B01C7508E8A9A@DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <DB3PR10MB6835DDFE9086DAC4B01C7508E8A9A@DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM>
+        Tue, 7 Nov 2023 13:14:30 -0500
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3011713A
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 10:14:28 -0800 (PST)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-da0631f977bso7161268276.2
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 10:14:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1699380867; x=1699985667; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=8HeHeN/xiCMz8DEWBM6X0ByYPySZA5Zqi9Xr6EDBkSs=;
+        b=aPll66bWlARwkRPRwtl9t0tL+XQORS/aSFcO3RAkPU4vzASryDOwL81gKljBMo9dBg
+         IY1SV4CtO1hVUfPV8ZbWr06dweCWaAmg6OSQx8E3/Zp/bPOCjEXGZKZUpsA+agmOEtgs
+         BdJT2C7NT2byWGnugH/vyfvagYoL1uV/vkbTSJd1l9vUVBYEyzMt9Epiukd6GOSvvTYT
+         TaNhydc7MUXdh8IInp71NWrEdcE4HSLuwTKa7WZQg01uL8NWJWzl73VNrlAogM+Kvx4w
+         yY5haY2tdluVkBeMCl4iYQbLWfK6mxe2wuh4N1Mi02wvNDXShxl6qlH+fAfGks3Encrc
+         Vi9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699380867; x=1699985667;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=8HeHeN/xiCMz8DEWBM6X0ByYPySZA5Zqi9Xr6EDBkSs=;
+        b=omjBQ+SOoRcViDEN18HZ2O8/JD06k1zWa7YlpYGQHMLP/xC/Z7yXy2H6Aqf8MGOkdB
+         +KUv3FfgwG9eIZBnHuW8DLRa43IdHy+nGueKXG1qxA5Aafg1cKBaDD/OmSXYbU22Bbfn
+         AGF2ZO9MBGLpnawctZFvBWrDZ7YqfYWFgUk6CUluGdyCA+6a/lxXvS9iOFmLcZLRM7yZ
+         mJaiJrmKd1u5PgqMQWWPKC3WDYPkZCym4Ot63Um3U39xpu3XydtxpjjTGY9TTqxpWQCe
+         Lwq75h4zK2BhH3egT/P2LrzY53tA5Pio8fU/SPnF7BETfmotp8C1MZxuHMeLIFGdk0Xh
+         /OTw==
+X-Gm-Message-State: AOJu0Yz4ygyJQoQIes/KMbjkwwVsa4GgaT03PcxZxuIQKhHzuQce+HIq
+        jNPC13fRmTpxAMLNuYfYnT7/h/E=
+X-Google-Smtp-Source: AGHT+IEFH3S1Xddt5/l1kHplzp6Kf3Zu4Jc1nx0T2cx1iq2FT0uS/xoaqN5IyidpJIJBKzD/qi9XQZ0=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a25:494:0:b0:d13:856b:c10a with SMTP id
+ 142-20020a250494000000b00d13856bc10amr597853ybe.3.1699380867206; Tue, 07 Nov
+ 2023 10:14:27 -0800 (PST)
+Date:   Tue, 7 Nov 2023 10:14:25 -0800
+In-Reply-To: <CAF=yD-Ltd0REhOS78q_t8bSEpefQsZuJV_Aq7zxXmFDh+BmJhg@mail.gmail.com>
+Mime-Version: 1.0
+References: <CAHS8izMaAhoae5ChnzO4gny1cYYnqV1cB8MC2cAF3eoyt+Sf4A@mail.gmail.com>
+ <ZUlvzm24SA3YjirV@google.com> <CAHS8izMQ5Um_ScY0VgAjaEaT-hRh4tFoTgc6Xr9Tj5rEj0fijA@mail.gmail.com>
+ <CAKH8qBsbh8qYxNHZ6111RQFFpNWbWZtg0LDXkn15xcsbAq4R6w@mail.gmail.com>
+ <CAF=yD-+BuKXoVL8UF+No1s0TsHSzBTz7UrB1Djt_BrM74uLLcg@mail.gmail.com>
+ <ZUmBf7E8ZoTQwThL@google.com> <ZUmMBZpLPQkRS9bg@google.com>
+ <CAF=yD-+tZ7xaU0rKWBuVbfdVWptj88Z=Xf4Mqx+zaC-gZ1U1mw@mail.gmail.com>
+ <ZUp3j2TLNKhPYwch@google.com> <CAF=yD-Ltd0REhOS78q_t8bSEpefQsZuJV_Aq7zxXmFDh+BmJhg@mail.gmail.com>
+Message-ID: <ZUp-gYT7OMb9wun3@google.com>
+Subject: Re: [RFC PATCH v3 09/12] net: add support for skbs with unreadable frags
+From:   Stanislav Fomichev <sdf@google.com>
+To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Cc:     Mina Almasry <almasrymina@google.com>,
+        David Ahern <dsahern@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>, Shuah Khan <shuah@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        "Christian =?utf-8?B?S8O2bmln?=" <christian.koenig@amd.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Jeroen de Borst <jeroendb@google.com>,
+        Praveen Kaligineedi <pkaligineedi@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Kaiyuan Zhang <kaiyuanz@google.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 07, 2023 at 09:32:51PM +0530, Yuran Pereira wrote:
-> Hello Greg,
-> On Tue, Nov 07, 2023 at 07:31:27AM +0100, Greg KH wrote:
-> > 
-> > You might have just changed the functionality here, are you SURE this is
-> > identical to the original code?  How was it tested?
-> > 
-> > I'm not saying this is a bad idea to do, just be aware of the
-> > consequences for this change and document it properly (hint, the
-> > changelog does not document the user-visible change that just happened.)
-> > 
-> > Note, pr_debug() is NOT identical to printk(), look at the source for
-> > the full details.
-> > 
-> 
-> Thank you for the heads-up. 
-> Yes, you're right.
-> 
-> I just took another look and it seems that using pr_debug here
-> does defeat the purpose of bt_dbg which was created for situations
-> where `DYNAMIC_DEBUG` and `DEBUG` are disabled.
-> 
-> The likely equivalent would have been `pr_devel` but that also
-> depends on `DEBUG`.
-> 
-> Do you think that a new `pr_devel_uncond` like the one below
-> (only to be used in exceptional scenarios) would be a good idea?
-> 
-> ```
-> #define pr_devel_uncond(fmt, ...) \
->     printk(KERN_DEBUG pr_fmt(fmt), ##__VA_ARGS__)
-> ```
-> 
-> This would neither depend on `DYNAMIC_DEBUG` nor on `DEBUG`.
+On 11/07, Willem de Bruijn wrote:
+> On Tue, Nov 7, 2023 at 12:44=E2=80=AFPM Stanislav Fomichev <sdf@google.co=
+m> wrote:
+> >
+> > On 11/06, Willem de Bruijn wrote:
+> > > > > > > I think my other issue with MSG_SOCK_DEVMEM being on recvmsg =
+is that
+> > > > > > > it somehow implies that I have an option of passing or not pa=
+ssing it
+> > > > > > > for an individual system call.
+> > > > > > > If we know that we're going to use dmabuf with the socket, ma=
+ybe we
+> > > > > > > should move this flag to the socket() syscall?
+> > > > > > >
+> > > > > > > fd =3D socket(AF_INET6, SOCK_STREAM, SOCK_DEVMEM);
+> > > > > > >
+> > > > > > > ?
+> > > > > >
+> > > > > > I think it should then be a setsockopt called before any data i=
+s
+> > > > > > exchanged, with no change of modifying mode later. We generally=
+ use
+> > > > > > setsockopts for the mode of a socket. This use of the protocol =
+field
+> > > > > > in socket() for setting a mode would be novel. Also, it might m=
+iss
+> > > > > > passively opened connections, or be overly restrictive: one app=
+roach
+> > > > > > for all accepted child sockets.
+> > > > >
+> > > > > I was thinking this is similar to SOCK_CLOEXEC or SOCK_NONBLOCK? =
+There
+> > > > > are plenty of bits we can grab. But setsockopt works as well!
+> > > >
+> > > > To follow up: if we have this flag on a socket, not on a per-messag=
+e
+> > > > basis, can we also use recvmsg for the recycling part maybe?
+> > > >
+> > > > while (true) {
+> > > >         memset(msg, 0, ...);
+> > > >
+> > > >         /* receive the tokens */
+> > > >         ret =3D recvmsg(fd, &msg, 0);
+> > > >
+> > > >         /* recycle the tokens from the above recvmsg() */
+> > > >         ret =3D recvmsg(fd, &msg, MSG_RECYCLE);
+> > > > }
+> > > >
+> > > > recvmsg + MSG_RECYCLE can parse the same format that regular recvms=
+g
+> > > > exports (SO_DEVMEM_OFFSET) and we can also add extra cmsg option
+> > > > to recycle a range.
+> > > >
+> > > > Will this be more straightforward than a setsockopt(SO_DEVMEM_DONTN=
+EED)?
+> > > > Or is it more confusing?
+> > >
+> > > It would have to be sendmsg, as recvmsg is a copy_to_user operation.
+> > >
+> > >
+> > > I am not aware of any precedent in multiplexing the data stream and a
+> > > control operation stream in this manner. It would also require adding
+> > > a branch in the sendmsg hot path.
+> >
+> > Is it too much plumbing to copy_from_user msg_control deep in recvmsg
+> > stack where we need it? Mixing in sendmsg is indeed ugly :-(
+>=20
+> I tried exactly the inverse of that when originally adding
+> MSG_ZEROCOPY: to allow piggy-backing zerocopy completion notifications
+> on sendmsg calls by writing to sendmsg msg_control on return to user.
+> It required significant code churn, which the performance gains did
+> not warrant. Doing so also breaks the simple rule that recv is for
+> reading and send is for writing.
 
-No, not at all, the bluetooth subsystem should move to actually use the
-proper dynamic debug infrastructure and not have their own "special"
-subsystem loging macros/functions.  What you are doing here is the
-proper way forward, BUT you need to make everyone aware that it is going
-to change how things work from what they do today.
+We're breaking so many rules here, so not sure we should be super
+constrained :-D
 
-In other words, it's not just a "trivial" change, you need to get
-approval to change this type of functionality from the Bluetooth
-developers/maintainers.
+> > Regarding hot patch: aren't we already doing copy_to_user for the token=
+s in
+> > this hot path, so having one extra condition shouldn't hurt too much?
+>=20
+> We're doing that in the optional cmsg handling of recvmsg, which is
+> already a slow path (compared to the data read() itself).
+>=20
+> > > The memory is associated with the socket, freed when the socket is
+> > > closed as well as on SO_DEVMEM_DONTNEED. Fundamentally it is a socket
+> > > state operation, for which setsockopt is the socket interface.
+> > >
+> > > Is your request purely a dislike, or is there some technical concern
+> > > with BPF and setsockopt?
+> >
+> > It's mostly because I've been bitten too much by custom socket options =
+that
+> > are not really on/off/update-value operations:
+> >
+> > 29ebbba7d461 - bpf: Don't EFAULT for {g,s}setsockopt with wrong optlen
+> > 00e74ae08638 - bpf: Don't EFAULT for getsockopt with optval=3DNULL
+> > 9cacf81f8161 - bpf: Remove extra lock_sock for TCP_ZEROCOPY_RECEIVE
+> > d8fe449a9c51 - bpf: Don't return EINVAL from {get,set}sockopt when optl=
+en > PAGE_SIZE
+> >
+> > I do agree that this particular case of SO_DEVMEM_DONTNEED seems ok, bu=
+t
+> > things tend to evolve and change.
+>=20
+> I see. I'm a bit concerned if we start limiting what we can do in
+> sockets because of dependencies that BPF processing places on them.
+> The use case for BPF [gs]etsockopt is limited to specific control mode
+> calls. Would it make sense to just exclude calls like
+> SO_DEVMEM_DONTNEED from this interpositioning?
 
-thanks,
+Yup, that's why I'm asking. We already have ->bpf_bypass_getsockopt()
+to special-case tcp zerocopy. We might add another bpf_bypass_setsockopt
+to special case SO_DEVMEM_DONTNEED. That's why I'm trying to see if
+there is a better alternative.
 
-greg k-h
+> At a high level what we really want is a high rate metadata path from
+> user to kernel. And there are no perfect solutions. From kernel to
+> user we use the socket error queue for this. That was never intended
+> for high event rate itself, dealing with ICMP errors and the like
+> before timestamps and zerocopy notifications were added.
+>
+> If I squint hard enough I can see some prior art in mixing data and
+> high rate state changes within the same channel in NIC descriptor
+> queues, where some devices do this, e.g.,  { "insert encryption key",
+> "send packet" }. But fundamentally I think we should keep the socket
+> queues for data only.
+
++1, we keep taking an easy route with using sockopt for this :-(
+
+Anyway, let's see if any better suggestions pop up. Worst case - we stick
+with a socket option and will add a bypass on the bpf side.
