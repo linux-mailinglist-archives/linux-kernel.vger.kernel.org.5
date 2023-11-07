@@ -2,80 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0610D7E4815
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 19:19:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 588167E481F
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 19:20:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344002AbjKGSTX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 13:19:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34012 "EHLO
+        id S1344003AbjKGSU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 13:20:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232166AbjKGSTV (ORCPT
+        with ESMTP id S230505AbjKGSU4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 13:19:21 -0500
-Received: from out-184.mta1.migadu.com (out-184.mta1.migadu.com [IPv6:2001:41d0:203:375::b8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6987D95
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 10:19:19 -0800 (PST)
-Message-ID: <c57eb649-c573-4e41-85f4-870d08cf88b9@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1699381155;
+        Tue, 7 Nov 2023 13:20:56 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B46E95
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 10:20:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1699381208;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=1SYU5AGliZDMiJuvJsLLE/DfMMqTHAyyyFpsXtmPwzQ=;
-        b=OBDN7qmBAfW8hsrK34ClHPpDCEgqpiuozjOBcqXlHM7PEzP7b+lFLs3BUpCAP3AQHIZ4KE
-        5G4dcV/X1e+pdm9WLW3kZYWPVdCEeXw566pDFhFqgQXEjz46lo1CotV4EU8X93tzKzA/bd
-        aJWSY7HRFDU7Mb5N7/DnoCWH0iua2EM=
-Date:   Tue, 7 Nov 2023 21:19:11 +0300
+        bh=CIrX8yzdRcgaUlR140dceKARZTzBkQcALUFzRiLkSM4=;
+        b=V7qo2Ib/awNTviZVa0Fw3FV+7E4L2/Umt4Kgiy/Txe4dvp2EvAIUCH/LRGzWu4DQxcrCin
+        enVFqNK905Vp2ETxunC0z+WuckzRV6z0/oaBaUbgaI3eKOLG/3FvMdRxkexMmuLUdN0oKb
+        prgL9M25OBc94lWKOsra3sL7KnQHsLI=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-103-PDEGBE3VNseEn3CrtItnxQ-1; Tue, 07 Nov 2023 13:20:07 -0500
+X-MC-Unique: PDEGBE3VNseEn3CrtItnxQ-1
+Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-32de9f93148so3149027f8f.2
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 10:20:06 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699381206; x=1699986006;
+        h=content-transfer-encoding:mime-version:user-agent:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=CIrX8yzdRcgaUlR140dceKARZTzBkQcALUFzRiLkSM4=;
+        b=f6ap5o498VzlydKjH8xEzjdc3FP6amy4cbJ5eM7vkpjvfjhLycFI6H33hrricMf755
+         qluHvfMBSvVWqjQUgc3e6iBkRFr54mVKqleQ6NztIbQ4hVyIhsbysG73QDOy1AycklZp
+         uZWpVtlFS0y1Tg+UF8VbGFt6gbUrR9c4hB4B8zsNuzmWcDXN/iK8L2vOpYCFvDEzcPTE
+         ALst2KWKwQLxEKX2g9fywtRDj0ijrWEZ1Rk8z1cnUwc/LQWPea5Dhbggz5gFBoNfGUTC
+         L9hs7jz+I/1UXxjXz1JokJrB3BwhSAgrGSnPj27PMvpf/fLyR5LevD7Y5bWxRvBQldUH
+         oHqw==
+X-Gm-Message-State: AOJu0Yy2QG0R4tcGxmexz0GMKnZGhs7eICWYM16n+YFm/oG+2FHXV+Qj
+        DB4/vgEGHQdzpTCiRR4tY/m39z43D7z6RUIWfUXb97Kza7SNwrYCNe53aLEQPaE8Co5KX9SqzNm
+        3TOkAm6x0yGYIhJOMBcZn5W5h
+X-Received: by 2002:adf:fd8d:0:b0:321:68fa:70aa with SMTP id d13-20020adffd8d000000b0032168fa70aamr28273903wrr.9.1699381206049;
+        Tue, 07 Nov 2023 10:20:06 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGGYfquYiUPbszRtdTWIZp3BhzaSiH9Sx0a3duijCjXrtvUiIEt23V3KyXLGrnPbGbaSlW5NA==
+X-Received: by 2002:adf:fd8d:0:b0:321:68fa:70aa with SMTP id d13-20020adffd8d000000b0032168fa70aamr28273880wrr.9.1699381205719;
+        Tue, 07 Nov 2023 10:20:05 -0800 (PST)
+Received: from starship ([89.237.99.95])
+        by smtp.gmail.com with ESMTPSA id o15-20020adfcf0f000000b003296b488961sm2984893wrj.31.2023.11.07.10.20.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Nov 2023 10:20:05 -0800 (PST)
+Message-ID: <2b27196c2b5d10625e10ea73e9f270c7ef0bf5a0.camel@redhat.com>
+Subject: Re: [PATCH 3/9] KVM: x86: SVM: Pass through shadow stack MSRs
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     nikunj@amd.com, John Allen <john.allen@amd.com>,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        pbonzini@redhat.com, weijiang.yang@intel.com,
+        rick.p.edgecombe@intel.com, x86@kernel.org,
+        thomas.lendacky@amd.com, bp@alien8.de
+Date:   Tue, 07 Nov 2023 20:20:03 +0200
+In-Reply-To: <ZUkYPfxHmMZB03iv@google.com>
+References: <20231010200220.897953-1-john.allen@amd.com>
+         <20231010200220.897953-4-john.allen@amd.com>
+         <8484053f-2777-eb55-a30c-64125fbfc3ec@amd.com>
+         <ZS7PubpX4k/LXGNq@johallen-workstation>
+         <c65817b0-7fa6-7c0b-6423-5f33062c9665@amd.com>
+         <874ae0019fb33784520270db7d5213af0d42290d.camel@redhat.com>
+         <ZUkYPfxHmMZB03iv@google.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Vasily Averin <vasily.averin@linux.dev>
-Subject: Re: [PATCH] zram: unsafe zram_get_element call in zram_read_page()
-To:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Minchan Kim <minchan@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org
-References: <d10cdf1d-4a67-48df-b389-3a51f60e9431@linux.dev>
- <20231107073911.GB11577@google.com> <20231107104041.GC11577@google.com>
-Content-Language: en-US
-In-Reply-To: <20231107104041.GC11577@google.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/7/23 13:40, Sergey Senozhatsky wrote:
-> On (23/11/07 16:39), Sergey Senozhatsky wrote:
->> Hmmm,
->> We may want to do more here. Basically, we probably need to re-confirm
->> after read_from_bdev() that the entry at index still has ZRAM_WB set
->> and, if so, that it points to the same blk_idx. IOW, check that it has
->> not been free-ed and re-used under us.
-> --- a/drivers/block/zram/zram_drv.c
-> +++ b/drivers/block/zram/zram_drv.c
-> @@ -1364,14 +1364,21 @@ static int zram_read_page(struct zram *zram, struct page *page, u32 index,
->  		ret = zram_read_from_zspool(zram, page, index);
->  		zram_slot_unlock(zram, index);
->  	} else {
-> +		unsigned long idx = zram_get_element(zram, index);
->  		/*
->  		 * The slot should be unlocked before reading from the backing
->  		 * device.
->  		 */
->  		zram_slot_unlock(zram, index);
->  
-> -		ret = read_from_bdev(zram, page, zram_get_element(zram, index),
-> -				     parent);
-> +		ret = read_from_bdev(zram, page, idx, parent);
-> +		if (ret == 0) {
-> +			zram_slot_lock(zram, index);
-> +			if (!zram_test_flag(zram, index, ZRAM_WB) ||
-> +			    idx != zram_get_element(zram, index))
-> +				ret = -EINVAL;
-> +			zram_slot_unlock(zram, index);
-> +		}
+On Mon, 2023-11-06 at 08:45 -0800, Sean Christopherson wrote:
+> On Thu, Nov 02, 2023, Maxim Levitsky wrote:
+> > On Wed, 2023-10-18 at 16:57 +0530, Nikunj A. Dadhania wrote:
+> > > On 10/17/2023 11:47 PM, John Allen wrote:
+> > > In that case, intercept should be cleared from the very beginning.
+> > > 
+> > > +	{ .index = MSR_IA32_PL0_SSP,                    .always = true },
+> > > +	{ .index = MSR_IA32_PL1_SSP,                    .always = true },
+> > > +	{ .index = MSR_IA32_PL2_SSP,                    .always = true },
+> > > +	{ .index = MSR_IA32_PL3_SSP,                    .always = true },
+> > 
+> > .always is only true when a MSR is *always* passed through. CET msrs are only
+> > passed through when CET is supported.
+> > 
+> > Therefore I don't expect that we ever add another msr to this list which has
+> > .always = true.
+> > 
+> > In fact the .always = True for X86_64 arch msrs like MSR_GS_BASE/MSR_FS_BASE
+> > and such is not 100% correct too - when we start a VM which doesn't have
+> > cpuid bit X86_FEATURE_LM, these msrs should not exist and I think that we
+> > have a kvm unit test that fails because of this on 32 bit but I didn't bother
+> > yet to fix it.
+> > 
+> > .always probably needs to be dropped completely.
+> 
+> FWIW, I have a half-baked series to clean up SVM's MSR interception code and
+> converge the SVM and VMX APIs.  E.g. set_msr_interception_bitmap()'s inverted
+> polarity confuses me every time I look at its usage.
 
-Why overwritten page can not be pushed to WB to the same blk_idx? 
-However I'm agree that this is VERY unlikely case, and this check is better than nothing.
- 
+100% agree. Any refactoring here is very welcome!
+
+> 
+> I can hunt down the branch if someone plans on tackling this code.
+
+One of the things I don't like that much in the SVM msr's bitmap code
+is that it uses L1's msr bitmap when the guest's msr interception is disabled,
+and the combined msr bitmap otherwise.
+
+This is very fragile and one mistake away from a CVE.
+
+Since no sane L1 hypervisor will ever allow access to all its msrs from L2,
+it might make sense to always use a dedicated MSR bitmap for L2.
+
+Also since all sane L1 hypervisors do use a msr bitmap means that
+dedicated code path that doesn't use it is not well tested.
+
+On VMX if I am not mistaken, this is not an issue because either all
+MSRS are intercepted or a bitmap is used.
+
+> 
+
+Best regards,
+	Maxim Levitsky
+
