@@ -2,91 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A3597E4589
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 17:10:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 071EC7E4583
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 17:10:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344479AbjKGQKm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 11:10:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33072 "EHLO
+        id S1344121AbjKGQKO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 11:10:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344443AbjKGQEA (ORCPT
+        with ESMTP id S1344521AbjKGQEE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 11:04:00 -0500
+        Tue, 7 Nov 2023 11:04:04 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 819A49015;
-        Tue,  7 Nov 2023 07:54:59 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E204C433C7;
-        Tue,  7 Nov 2023 15:54:58 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC3959027;
+        Tue,  7 Nov 2023 07:55:12 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 37E22C4339A;
+        Tue,  7 Nov 2023 15:55:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699372499;
-        bh=ibE5PhuADZQ/mFJYNdpQuScEX16DqtCzYWqHqWiPKq4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BqA4lUABBjcLP9/Rhz+92KNHuwOBAme+xVh0eO0kept57F7DnyVF9IPOqc33gCIlG
-         LRvj+Dtv4Da5F6Ow8ffjbRCkmRCqzTzX4ph2iiQ+LjpIXYiQZKdu0jctKl4QQtRRaW
-         gTZQ4U0Gb7lomesitDdbA7nN/HB1mKLT9+Klzg+d19ZygvlJeYvWOp6UarFEK+PyTY
-         SF4h6zlgdG+k8J2uWAcZVSsc0+hiXf/Fv/qm0JXSYmzmqJaNnXgkC7DpKf18vUWG0a
-         kl1F0gLI9AbdJxy+KeEsAu4QgBRzyj0KcEAOEs8pax0x/XsH/pip9PSpw/ctki7/A5
-         0bRoTQyTyIpEg==
+        s=k20201202; t=1699372512;
+        bh=rN34HJccc0MgnxiL7U+b7CMTWpNgY13wMW9CktmJ3bI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=DFlkUy2RX3kAUtDXc76yeVcvkDWX1yimD8IhcWFctJ92Coin61EnYdf+bFm5CKmut
+         X1Yahvd5630OLxovMoTu33Toa0sdviSelQQ+1a7AnQeTYBUSP1r+zfrpa68lCJKFhm
+         CwtwTyX4D5mP/7WHdJPuUN84y+AFapnJ/d9EhzNIOtKnqyw14HWY+TAt7sXv5kVzTr
+         0upRfMXGJ0hqs5w8GmPGwQjqQ9lRJXrQyHJMLCMSD+hRqnwmOj+rPzu9RxbM3Lz/kq
+         c7+74Yc0sHHUV6oQ9URfH10zFcUstGTVaflhxBdabSsPu7gUPfzuTc18PN8EmnT1Em
+         S2ck/52HDnK0Q==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Jiri Kosina <jkosina@suse.cz>,
-        Robert Ayrapetyan <robert.ayrapetyan@gmail.com>,
-        Sasha Levin <sashal@kernel.org>, jikos@kernel.org,
-        benjamin.tissoires@redhat.com, linux-input@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 11/11] HID: Add quirk for Dell Pro Wireless Keyboard and Mouse KM5221W
-Date:   Tue,  7 Nov 2023 10:54:19 -0500
-Message-ID: <20231107155430.3768779-11-sashal@kernel.org>
+Cc:     Lu Jialin <lujialin4@huawei.com>, Guo Zihua <guozihua@huawei.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Sasha Levin <sashal@kernel.org>, steffen.klassert@secunet.com,
+        davem@davemloft.net, daniel.m.jordan@oracle.com,
+        linux-crypto@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.14 1/9] crypto: pcrypt - Fix hungtask for PADATA_RESET
+Date:   Tue,  7 Nov 2023 10:54:51 -0500
+Message-ID: <20231107155509.3769038-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231107155430.3768779-1-sashal@kernel.org>
-References: <20231107155430.3768779-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 4.19.297
+X-stable-base: Linux 4.14.328
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jiri Kosina <jkosina@suse.cz>
+From: Lu Jialin <lujialin4@huawei.com>
 
-[ Upstream commit 62cc9c3cb3ec1bf31cc116146185ed97b450836a ]
+[ Upstream commit 8f4f68e788c3a7a696546291258bfa5fdb215523 ]
 
-This device needs ALWAYS_POLL quirk, otherwise it keeps reconnecting
-indefinitely.
+We found a hungtask bug in test_aead_vec_cfg as follows:
 
-Reported-by: Robert Ayrapetyan <robert.ayrapetyan@gmail.com>
-Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+INFO: task cryptomgr_test:391009 blocked for more than 120 seconds.
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+Call trace:
+ __switch_to+0x98/0xe0
+ __schedule+0x6c4/0xf40
+ schedule+0xd8/0x1b4
+ schedule_timeout+0x474/0x560
+ wait_for_common+0x368/0x4e0
+ wait_for_completion+0x20/0x30
+ wait_for_completion+0x20/0x30
+ test_aead_vec_cfg+0xab4/0xd50
+ test_aead+0x144/0x1f0
+ alg_test_aead+0xd8/0x1e0
+ alg_test+0x634/0x890
+ cryptomgr_test+0x40/0x70
+ kthread+0x1e0/0x220
+ ret_from_fork+0x10/0x18
+ Kernel panic - not syncing: hung_task: blocked tasks
+
+For padata_do_parallel, when the return err is 0 or -EBUSY, it will call
+wait_for_completion(&wait->completion) in test_aead_vec_cfg. In normal
+case, aead_request_complete() will be called in pcrypt_aead_serial and the
+return err is 0 for padata_do_parallel. But, when pinst->flags is
+PADATA_RESET, the return err is -EBUSY for padata_do_parallel, and it
+won't call aead_request_complete(). Therefore, test_aead_vec_cfg will
+hung at wait_for_completion(&wait->completion), which will cause
+hungtask.
+
+The problem comes as following:
+(padata_do_parallel)                 |
+    rcu_read_lock_bh();              |
+    err = -EINVAL;                   |   (padata_replace)
+                                     |     pinst->flags |= PADATA_RESET;
+    err = -EBUSY                     |
+    if (pinst->flags & PADATA_RESET) |
+        rcu_read_unlock_bh()         |
+        return err
+
+In order to resolve the problem, we replace the return err -EBUSY with
+-EAGAIN, which means parallel_data is changing, and the caller should call
+it again.
+
+v3:
+remove retry and just change the return err.
+v2:
+introduce padata_try_do_parallel() in pcrypt_aead_encrypt and
+pcrypt_aead_decrypt to solve the hungtask.
+
+Signed-off-by: Lu Jialin <lujialin4@huawei.com>
+Signed-off-by: Guo Zihua <guozihua@huawei.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hid/hid-ids.h    | 1 +
- drivers/hid/hid-quirks.c | 1 +
- 2 files changed, 2 insertions(+)
+ crypto/pcrypt.c | 4 ++++
+ kernel/padata.c | 2 +-
+ 2 files changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/hid/hid-ids.h b/drivers/hid/hid-ids.h
-index a9d6f8acf70b5..93faf083e550b 100644
---- a/drivers/hid/hid-ids.h
-+++ b/drivers/hid/hid-ids.h
-@@ -343,6 +343,7 @@
+diff --git a/crypto/pcrypt.c b/crypto/pcrypt.c
+index 62e11835f220e..1e9de81ef84fa 100644
+--- a/crypto/pcrypt.c
++++ b/crypto/pcrypt.c
+@@ -174,6 +174,8 @@ static int pcrypt_aead_encrypt(struct aead_request *req)
+ 	err = pcrypt_do_parallel(padata, &ctx->cb_cpu, &pencrypt);
+ 	if (!err)
+ 		return -EINPROGRESS;
++	if (err == -EBUSY)
++		return -EAGAIN;
  
- #define USB_VENDOR_ID_DELL				0x413c
- #define USB_DEVICE_ID_DELL_PIXART_USB_OPTICAL_MOUSE	0x301a
-+#define USB_DEVICE_ID_DELL_PRO_WIRELESS_KM5221W		0x4503
+ 	return err;
+ }
+@@ -218,6 +220,8 @@ static int pcrypt_aead_decrypt(struct aead_request *req)
+ 	err = pcrypt_do_parallel(padata, &ctx->cb_cpu, &pdecrypt);
+ 	if (!err)
+ 		return -EINPROGRESS;
++	if (err == -EBUSY)
++		return -EAGAIN;
  
- #define USB_VENDOR_ID_DELORME		0x1163
- #define USB_DEVICE_ID_DELORME_EARTHMATE	0x0100
-diff --git a/drivers/hid/hid-quirks.c b/drivers/hid/hid-quirks.c
-index a2ab338166e61..0b85f95810b30 100644
---- a/drivers/hid/hid-quirks.c
-+++ b/drivers/hid/hid-quirks.c
-@@ -68,6 +68,7 @@ static const struct hid_device_id hid_quirks[] = {
- 	{ HID_USB_DEVICE(USB_VENDOR_ID_CORSAIR, USB_DEVICE_ID_CORSAIR_STRAFE), HID_QUIRK_NO_INIT_REPORTS | HID_QUIRK_ALWAYS_POLL },
- 	{ HID_USB_DEVICE(USB_VENDOR_ID_CREATIVELABS, USB_DEVICE_ID_CREATIVE_SB_OMNI_SURROUND_51), HID_QUIRK_NOGET },
- 	{ HID_USB_DEVICE(USB_VENDOR_ID_DELL, USB_DEVICE_ID_DELL_PIXART_USB_OPTICAL_MOUSE), HID_QUIRK_ALWAYS_POLL },
-+	{ HID_USB_DEVICE(USB_VENDOR_ID_DELL, USB_DEVICE_ID_DELL_PRO_WIRELESS_KM5221W), HID_QUIRK_ALWAYS_POLL },
- 	{ HID_USB_DEVICE(USB_VENDOR_ID_DMI, USB_DEVICE_ID_DMI_ENC), HID_QUIRK_NOGET },
- 	{ HID_USB_DEVICE(USB_VENDOR_ID_DRACAL_RAPHNET, USB_DEVICE_ID_RAPHNET_2NES2SNES), HID_QUIRK_MULTI_INPUT },
- 	{ HID_USB_DEVICE(USB_VENDOR_ID_DRACAL_RAPHNET, USB_DEVICE_ID_RAPHNET_4NES4SNES), HID_QUIRK_MULTI_INPUT },
+ 	return err;
+ }
+diff --git a/kernel/padata.c b/kernel/padata.c
+index f56ec63f60ba8..82f6d5bf5cb45 100644
+--- a/kernel/padata.c
++++ b/kernel/padata.c
+@@ -120,7 +120,7 @@ int padata_do_parallel(struct padata_instance *pinst,
+ 	if (!cpumask_test_cpu(cb_cpu, pd->cpumask.cbcpu))
+ 		goto out;
+ 
+-	err =  -EBUSY;
++	err = -EBUSY;
+ 	if ((pinst->flags & PADATA_RESET))
+ 		goto out;
+ 
 -- 
 2.42.0
 
