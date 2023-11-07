@@ -2,43 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 613867E3F56
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 13:56:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C836A7E3E29
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 13:34:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234575AbjKGM4S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 07:56:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42194 "EHLO
+        id S234130AbjKGMeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 07:34:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234558AbjKGMzz (ORCPT
+        with ESMTP id S234977AbjKGMdl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 07:55:55 -0500
+        Tue, 7 Nov 2023 07:33:41 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4866D3A22A;
-        Tue,  7 Nov 2023 04:21:42 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6ADCAC433C8;
-        Tue,  7 Nov 2023 12:21:40 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 127943A234;
+        Tue,  7 Nov 2023 04:21:44 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6B7DEC433C7;
+        Tue,  7 Nov 2023 12:21:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699359701;
-        bh=fbCE/3wGbrk0VpscWgRWMhvjTR4+0eLeBxvgG53oMa0=;
+        s=k20201202; t=1699359703;
+        bh=2zbrzKpabxnWLwoLUzcvzgh7tyD/KjiahFGmtsSlE+k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XTGhxBv5xY2zGgTFp7ip1XJKUJVdc9RBmZv9of7lOmB6p4wLpWvGfbpdYwBHUt0HH
-         FhW+fMxpqlmJfNDUcnQFuoVOaXRzPjfDgzDjORSwAzTudLfwF4lbLg8TZCsmIWuoWj
-         B4HKTJ0TzJUOTwOX1Z++R/tUvo1dbRzUItxT/hCLGhnbCOi/1kAqAY5Ung5wmUD5A6
-         YdkOquJX0croYu7xZnigqGbdgfqk9UePk6o1yRXyuKKM2m/TFPriOXEFGGaGDyWr5P
-         KNz/sinTtR81oH228rsps8hD9pVmLx5oMBwqq0BqQX5KzysFhN826sRRKwMouQxz2/
-         N7gGqFqU1RpQw==
+        b=IF1ZDzf64jOVU0I1hKeqiMqsv/q6Hwv6roTymDw9apgcsMRuI+oxzeCtTGluhyXh5
+         bFVsTIrJYdGf13g15kx8+1UUYx6VN8eR4WTKEQyxsoCkhykn5UWjd4/U04AUvFb/nL
+         qF4GNyzrbfrf2oE4iIhYcsEuX8IbJknDOaOYvt8iZXiFQROE+FXgqtFRm2vTgghomS
+         H//qu6lPzzIAcVZ6gn2Nt4EmvR71KqoVYymWQFVhNuuiCClGayKqBtt0ehJFA8231w
+         lWDpqexie8etEyaTCbbyu38jANFFVbA9HvdV1zdI6f44u15s6NtxgA0rjU+R1d7Uy/
+         NhSCbCezr7Ayw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     John Clark <inindev@gmail.com>, Heiko Stuebner <heiko@sntech.de>,
-        Sasha Levin <sashal@kernel.org>, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        macromorgan@hotmail.com, jagan@edgeble.ai,
-        tmckahan@singleboardsolutions.com, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org
-Subject: [PATCH AUTOSEL 6.6 38/40] arm64: dts: rockchip: Add NanoPC T6 PCIe e-key support
-Date:   Tue,  7 Nov 2023 07:16:40 -0500
-Message-ID: <20231107121837.3759358-38-sashal@kernel.org>
+Cc:     Laurentiu Tudor <laurentiu.tudor@nxp.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, leoyang.li@nxp.com,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, linux-arm-kernel@lists.infradead.org,
+        devicetree@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.6 39/40] arm64: dts: ls208xa: use a pseudo-bus to constrain usb dma size
+Date:   Tue,  7 Nov 2023 07:16:41 -0500
+Message-ID: <20231107121837.3759358-39-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231107121837.3759358-1-sashal@kernel.org>
 References: <20231107121837.3759358-1-sashal@kernel.org>
@@ -57,96 +56,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: John Clark <inindev@gmail.com>
+From: Laurentiu Tudor <laurentiu.tudor@nxp.com>
 
-[ Upstream commit ac76b786cc370b000c76f3115a5d2ee76ff05c08 ]
+[ Upstream commit b39d5016456871a88f5cd141914a5043591b46f3 ]
 
-before
-~~~~
-0000:00:00.0 PCI bridge: Rockchip Electronics Co., Ltd RK3588 (rev 01)
-0002:20:00.0 PCI bridge: Rockchip Electronics Co., Ltd RK3588 (rev 01)
-0002:21:00.0 Ethernet controller: Realtek Semiconductor Co., Ltd. RTL8125 2.5GbE Controller (rev 05)
-0004:40:00.0 PCI bridge: Rockchip Electronics Co., Ltd RK3588 (rev 01)
-0004:41:00.0 Ethernet controller: Realtek Semiconductor Co., Ltd. RTL8125 2.5GbE Controller (rev 05)
+Wrap the usb controllers in an intermediate simple-bus and use it to
+constrain the dma address size of these usb controllers to the 40b
+that they generate toward the interconnect. This is required because
+the SoC uses 48b address sizes and this mismatch would lead to smmu
+context faults [1] because the usb generates 40b addresses while the
+smmu page tables are populated with 48b wide addresses.
 
-after
-~~~
-0000:00:00.0 PCI bridge: Rockchip Electronics Co., Ltd RK3588 (rev 01)
-0002:20:00.0 PCI bridge: Rockchip Electronics Co., Ltd RK3588 (rev 01)
-0002:21:00.0 Ethernet controller: Realtek Semiconductor Co., Ltd. RTL8125 2.5GbE Controller (rev 05)
-0003:30:00.0 PCI bridge: Rockchip Electronics Co., Ltd RK3588 (rev 01)
-0003:31:00.0 Network controller: Realtek Semiconductor Co., Ltd. RTL8822CE 802.11ac PCIe Wireless Network Adapter
-0004:40:00.0 PCI bridge: Rockchip Electronics Co., Ltd RK3588 (rev 01)
-0004:41:00.0 Ethernet controller: Realtek Semiconductor Co., Ltd. RTL8125 2.5GbE Controller (rev 05)
+[1]
+xhci-hcd xhci-hcd.0.auto: xHCI Host Controller
+xhci-hcd xhci-hcd.0.auto: new USB bus registered, assigned bus number 1
+xhci-hcd xhci-hcd.0.auto: hcc params 0x0220f66d hci version 0x100 quirks 0x0000000002000010
+xhci-hcd xhci-hcd.0.auto: irq 108, io mem 0x03100000
+xhci-hcd xhci-hcd.0.auto: xHCI Host Controller
+xhci-hcd xhci-hcd.0.auto: new USB bus registered, assigned bus number 2
+xhci-hcd xhci-hcd.0.auto: Host supports USB 3.0 SuperSpeed
+arm-smmu 5000000.iommu: Unhandled context fault: fsr=0x402, iova=0xffffffb000, fsynr=0x0, cbfrsynra=0xc01, cb=3
 
-Signed-off-by: John Clark <inindev@gmail.com>
-Link: https://lore.kernel.org/r/20230906012305.7113-1-inindev@gmail.com
-Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+Signed-off-by: Laurentiu Tudor <laurentiu.tudor@nxp.com>
+Signed-off-by: Shawn Guo <shawnguo@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../boot/dts/rockchip/rk3588-nanopc-t6.dts    | 28 +++++++++++++++++++
- 1 file changed, 28 insertions(+)
+ .../arm64/boot/dts/freescale/fsl-ls208xa.dtsi | 46 +++++++++++--------
+ 1 file changed, 27 insertions(+), 19 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3588-nanopc-t6.dts b/arch/arm64/boot/dts/rockchip/rk3588-nanopc-t6.dts
-index 0bd80e5157544..97af4f9128285 100644
---- a/arch/arm64/boot/dts/rockchip/rk3588-nanopc-t6.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3588-nanopc-t6.dts
-@@ -137,6 +137,18 @@ vbus5v0_typec: vbus5v0-typec-regulator {
- 		vin-supply = <&vcc5v0_sys>;
- 	};
- 
-+	vcc3v3_pcie2x1l0: vcc3v3-pcie2x1l0-regulator {
-+		compatible = "regulator-fixed";
-+		enable-active-high;
-+		gpio = <&gpio4 RK_PC2 GPIO_ACTIVE_HIGH>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pcie_m2_1_pwren>;
-+		regulator-name = "vcc3v3_pcie2x1l0";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		vin-supply = <&vcc5v0_sys>;
-+	};
-+
- 	vcc3v3_pcie30: vcc3v3-pcie30-regulator {
- 		compatible = "regulator-fixed";
- 		enable-active-high;
-@@ -421,6 +433,14 @@ &pcie2x1l0 {
- 	status = "okay";
- };
- 
-+&pcie2x1l1 {
-+	reset-gpios = <&gpio4 RK_PA2 GPIO_ACTIVE_HIGH>;
-+	vpcie3v3-supply = <&vcc3v3_pcie2x1l0>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pcie2_1_rst>;
-+	status = "okay";
-+};
-+
- &pcie2x1l2 {
- 	reset-gpios = <&gpio4 RK_PA4 GPIO_ACTIVE_HIGH>;
- 	vpcie3v3-supply = <&vcc_3v3_pcie20>;
-@@ -467,6 +487,10 @@ pcie2_0_rst: pcie2-0-rst {
- 			rockchip,pins = <4 RK_PB3 RK_FUNC_GPIO &pcfg_pull_none>;
+diff --git a/arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi
+index d2f5345d05600..717288bbdb8b6 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi
++++ b/arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi
+@@ -1186,26 +1186,34 @@ sata1: sata@3210000 {
+ 			dma-coherent;
  		};
  
-+		pcie2_1_rst: pcie2-1-rst {
-+			rockchip,pins = <4 RK_PA2 RK_FUNC_GPIO &pcfg_pull_none>;
-+		};
+-		usb0: usb@3100000 {
+-			status = "disabled";
+-			compatible = "snps,dwc3";
+-			reg = <0x0 0x3100000 0x0 0x10000>;
+-			interrupts = <0 80 0x4>; /* Level high type */
+-			dr_mode = "host";
+-			snps,quirk-frame-length-adjustment = <0x20>;
+-			snps,dis_rxdet_inp3_quirk;
+-			snps,incr-burst-type-adjustment = <1>, <4>, <8>, <16>;
+-		};
++		bus: bus {
++			#address-cells = <2>;
++			#size-cells = <2>;
++			compatible = "simple-bus";
++			ranges;
++			dma-ranges = <0x0 0x0 0x0 0x0 0x100 0x00000000>;
 +
- 		pcie2_2_rst: pcie2-2-rst {
- 			rockchip,pins = <4 RK_PA4 RK_FUNC_GPIO &pcfg_pull_none>;
- 		};
-@@ -474,6 +498,10 @@ pcie2_2_rst: pcie2-2-rst {
- 		pcie_m2_0_pwren: pcie-m20-pwren {
- 			rockchip,pins = <2 RK_PC5 RK_FUNC_GPIO &pcfg_pull_none>;
- 		};
-+
-+		pcie_m2_1_pwren: pcie-m21-pwren {
-+			rockchip,pins = <4 RK_PC2 RK_FUNC_GPIO &pcfg_pull_none>;
-+		};
- 	};
++			usb0: usb@3100000 {
++				compatible = "snps,dwc3";
++				reg = <0x0 0x3100000 0x0 0x10000>;
++				interrupts = <0 80 0x4>; /* Level high type */
++				dr_mode = "host";
++				snps,quirk-frame-length-adjustment = <0x20>;
++				snps,dis_rxdet_inp3_quirk;
++				snps,incr-burst-type-adjustment = <1>, <4>, <8>, <16>;
++				status = "disabled";
++			};
  
- 	usb {
+-		usb1: usb@3110000 {
+-			status = "disabled";
+-			compatible = "snps,dwc3";
+-			reg = <0x0 0x3110000 0x0 0x10000>;
+-			interrupts = <0 81 0x4>; /* Level high type */
+-			dr_mode = "host";
+-			snps,quirk-frame-length-adjustment = <0x20>;
+-			snps,dis_rxdet_inp3_quirk;
+-			snps,incr-burst-type-adjustment = <1>, <4>, <8>, <16>;
++			usb1: usb@3110000 {
++				compatible = "snps,dwc3";
++				reg = <0x0 0x3110000 0x0 0x10000>;
++				interrupts = <0 81 0x4>; /* Level high type */
++				dr_mode = "host";
++				snps,quirk-frame-length-adjustment = <0x20>;
++				snps,dis_rxdet_inp3_quirk;
++				snps,incr-burst-type-adjustment = <1>, <4>, <8>, <16>;
++				status = "disabled";
++			};
+ 		};
+ 
+ 		ccn@4000000 {
 -- 
 2.42.0
 
