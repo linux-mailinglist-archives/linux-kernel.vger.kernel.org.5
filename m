@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 513C17E44D5
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 16:58:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB98B7E44D6
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 16:58:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235240AbjKGP6K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 10:58:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52772 "EHLO
+        id S1344118AbjKGP6N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 10:58:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235224AbjKGP5h (ORCPT
+        with ESMTP id S235299AbjKGP5j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 10:57:37 -0500
+        Tue, 7 Nov 2023 10:57:39 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6303B5FD3;
-        Tue,  7 Nov 2023 07:51:11 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1D569C433CA;
-        Tue,  7 Nov 2023 15:51:10 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A98EF1FF3;
+        Tue,  7 Nov 2023 07:51:12 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98E5EC433C9;
+        Tue,  7 Nov 2023 15:51:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699372271;
-        bh=ObV63lVX05hmXmgj3m7KAMx/1PHOu0b5v8rpcuC0s5U=;
+        s=k20201202; t=1699372272;
+        bh=NSK1dxeDum5f5YsDexNT1QjgDZjR1dW6TiOfflAgeoU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ePKyoGY5xtGp/Ubm4xrfaxbu5HKX/ZOtlBOLi3+mcxCFcauXzi01g0xHXJcR82Pqd
-         0RgcaivMpbYBHurAj7ocpsRlK9OgG6O/lFpFPnVNjrXJfAkozUlQR7lW46DTi/3DLz
-         DLo8Ez3cTMFSeZ0lEGpEv47pd2TBGiehV9I5MjpDHzxb4vra/jYCvcjCqwshOsdefM
-         ax0htkH16ryrulMzK/70vAs5FfRNA4wG9Pv5JWxi2oAeIcYATHLcix8w/GiQbfpDHH
-         yP8YI+TUm3RWQxr3S5KPnzbMR2rEEO79gIyNUWaBT7JnVqWydYZiqH4Lh7cxdP1xyd
-         G8cP58JQQNkjw==
+        b=kkx55NbDmBPW1r6XWfuNVxQZ2Bi5tUnQH/lLXjHS5ckCe/bdJM6HSdKk86WbCW84/
+         1NxHQLf+K/L6qqwx+Op6XwedOcQcOqYJwstUxGcPOQhv49E52yrDobaYhI73HCh4Sb
+         QHoN7MFDOjE/N32tP5y5Ep7KjGdvWZ3ipZ+9A+WRd3pw+9+jlszKYxkZ/zEdVu6J7S
+         VRq6XQDGxQO0r+P4BOiaNrrcWqSWinGYtF2/U2LUNefnVLv6AXtCDX+MPcieU2j94p
+         bnfsEitQgIFS0BEPrbdvyp6Ls4GU2BkOMlxfmy0stecVelAjIz8XKp6/AQQiDW7UoG
+         ecLu783RvDuog==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
         Bjorn Helgaas <bhelgaas@google.com>,
-        Sasha Levin <sashal@kernel.org>, 3chas3@gmail.com,
-        linux-atm-general@lists.sourceforge.net, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 18/30] atm: iphase: Do PCI error checks on own line
-Date:   Tue,  7 Nov 2023 10:49:52 -0500
-Message-ID: <20231107155024.3766950-18-sashal@kernel.org>
+        Sasha Levin <sashal@kernel.org>, linux-pci@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.1 19/30] PCI: Do error check on own line to split long "if" conditions
+Date:   Tue,  7 Nov 2023 10:49:53 -0500
+Message-ID: <20231107155024.3766950-19-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231107155024.3766950-1-sashal@kernel.org>
 References: <20231107155024.3766950-1-sashal@kernel.org>
@@ -51,61 +50,102 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
 
-[ Upstream commit c28742447ca9879b52fbaf022ad844f0ffcd749c ]
+[ Upstream commit d15f18053e5cc5576af9e7eef0b2a91169b6326d ]
 
-In get_esi() PCI errors are checked inside line-split "if" conditions (in
-addition to the file not following the coding style). To make the code in
-get_esi() more readable, fix the coding style and use the usual error
-handling pattern with a separate variable.
+Placing PCI error code check inside "if" condition usually results in need
+to split lines. Combined with additional conditions the "if" condition
+becomes messy.
 
-In addition, initialization of 'error' variable at declaration is not
-needed.
+Convert to the usual error handling pattern with an additional variable to
+improve code readability. In addition, reverse the logic in
+pci_find_vsec_capability() to get rid of &&.
 
 No functional changes intended.
 
-Link: https://lore.kernel.org/r/20230911125354.25501-4-ilpo.jarvinen@linux.intel.com
+Link: https://lore.kernel.org/r/20230911125354.25501-5-ilpo.jarvinen@linux.intel.com
 Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+[bhelgaas: PCI_POSSIBLE_ERROR()]
 Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/atm/iphase.c | 20 +++++++++++---------
- 1 file changed, 11 insertions(+), 9 deletions(-)
+ drivers/pci/pci.c    | 9 ++++++---
+ drivers/pci/probe.c  | 6 +++---
+ drivers/pci/quirks.c | 6 +++---
+ 3 files changed, 12 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/atm/iphase.c b/drivers/atm/iphase.c
-index 3241486869530..9bba8f280a4d4 100644
---- a/drivers/atm/iphase.c
-+++ b/drivers/atm/iphase.c
-@@ -2291,19 +2291,21 @@ static int get_esi(struct atm_dev *dev)
- static int reset_sar(struct atm_dev *dev)  
- {  
- 	IADEV *iadev;  
--	int i, error = 1;  
-+	int i, error;
- 	unsigned int pci[64];  
- 	  
- 	iadev = INPH_IA_DEV(dev);  
--	for(i=0; i<64; i++)  
--	  if ((error = pci_read_config_dword(iadev->pci,  
--				i*4, &pci[i])) != PCIBIOS_SUCCESSFUL)  
--  	      return error;  
-+	for (i = 0; i < 64; i++) {
-+		error = pci_read_config_dword(iadev->pci, i * 4, &pci[i]);
-+		if (error != PCIBIOS_SUCCESSFUL)
-+			return error;
-+	}
- 	writel(0, iadev->reg+IPHASE5575_EXT_RESET);  
--	for(i=0; i<64; i++)  
--	  if ((error = pci_write_config_dword(iadev->pci,  
--					i*4, pci[i])) != PCIBIOS_SUCCESSFUL)  
--	    return error;  
-+	for (i = 0; i < 64; i++) {
-+		error = pci_write_config_dword(iadev->pci, i * 4, pci[i]);
-+		if (error != PCIBIOS_SUCCESSFUL)
-+			return error;
-+	}
- 	udelay(5);  
- 	return 0;  
- }  
+diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+index 835e9ea14b3a1..59b5c017d6c38 100644
+--- a/drivers/pci/pci.c
++++ b/drivers/pci/pci.c
+@@ -717,15 +717,18 @@ u16 pci_find_vsec_capability(struct pci_dev *dev, u16 vendor, int cap)
+ {
+ 	u16 vsec = 0;
+ 	u32 header;
++	int ret;
+ 
+ 	if (vendor != dev->vendor)
+ 		return 0;
+ 
+ 	while ((vsec = pci_find_next_ext_capability(dev, vsec,
+ 						     PCI_EXT_CAP_ID_VNDR))) {
+-		if (pci_read_config_dword(dev, vsec + PCI_VNDR_HEADER,
+-					  &header) == PCIBIOS_SUCCESSFUL &&
+-		    PCI_VNDR_HEADER_ID(header) == cap)
++		ret = pci_read_config_dword(dev, vsec + PCI_VNDR_HEADER, &header);
++		if (ret != PCIBIOS_SUCCESSFUL)
++			continue;
++
++		if (PCI_VNDR_HEADER_ID(header) == cap)
+ 			return vsec;
+ 	}
+ 
+diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
+index 0945f50fe94ff..e19b79821dd6d 100644
+--- a/drivers/pci/probe.c
++++ b/drivers/pci/probe.c
+@@ -1643,15 +1643,15 @@ static void pci_set_removable(struct pci_dev *dev)
+ static bool pci_ext_cfg_is_aliased(struct pci_dev *dev)
+ {
+ #ifdef CONFIG_PCI_QUIRKS
+-	int pos;
++	int pos, ret;
+ 	u32 header, tmp;
+ 
+ 	pci_read_config_dword(dev, PCI_VENDOR_ID, &header);
+ 
+ 	for (pos = PCI_CFG_SPACE_SIZE;
+ 	     pos < PCI_CFG_SPACE_EXP_SIZE; pos += PCI_CFG_SPACE_SIZE) {
+-		if (pci_read_config_dword(dev, pos, &tmp) != PCIBIOS_SUCCESSFUL
+-		    || header != tmp)
++		ret = pci_read_config_dword(dev, pos, &tmp);
++		if ((ret != PCIBIOS_SUCCESSFUL) || (header != tmp))
+ 			return false;
+ 	}
+ 
+diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
+index 472fa2c8ebcec..1070ddc4f3d3f 100644
+--- a/drivers/pci/quirks.c
++++ b/drivers/pci/quirks.c
+@@ -5286,7 +5286,7 @@ int pci_dev_specific_disable_acs_redir(struct pci_dev *dev)
+  */
+ static void quirk_intel_qat_vf_cap(struct pci_dev *pdev)
+ {
+-	int pos, i = 0;
++	int pos, i = 0, ret;
+ 	u8 next_cap;
+ 	u16 reg16, *cap;
+ 	struct pci_cap_saved_state *state;
+@@ -5332,8 +5332,8 @@ static void quirk_intel_qat_vf_cap(struct pci_dev *pdev)
+ 		pdev->pcie_mpss = reg16 & PCI_EXP_DEVCAP_PAYLOAD;
+ 
+ 		pdev->cfg_size = PCI_CFG_SPACE_EXP_SIZE;
+-		if (pci_read_config_dword(pdev, PCI_CFG_SPACE_SIZE, &status) !=
+-		    PCIBIOS_SUCCESSFUL || (status == 0xffffffff))
++		ret = pci_read_config_dword(pdev, PCI_CFG_SPACE_SIZE, &status);
++		if ((ret != PCIBIOS_SUCCESSFUL) || (PCI_POSSIBLE_ERROR(status)))
+ 			pdev->cfg_size = PCI_CFG_SPACE_SIZE;
+ 
+ 		if (pci_find_saved_cap(pdev, PCI_CAP_ID_EXP))
 -- 
 2.42.0
 
