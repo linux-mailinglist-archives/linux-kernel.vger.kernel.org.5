@@ -2,157 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F6977E49EC
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 21:34:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5414A7E4391
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 16:35:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343945AbjKGUeu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 15:34:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55086 "EHLO
+        id S235315AbjKGPfg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 10:35:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343812AbjKGUek (ORCPT
+        with ESMTP id S235327AbjKGPf0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 15:34:40 -0500
-Received: from mail-yw1-x112b.google.com (mail-yw1-x112b.google.com [IPv6:2607:f8b0:4864:20::112b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F22811702
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 12:34:37 -0800 (PST)
-Received: by mail-yw1-x112b.google.com with SMTP id 00721157ae682-5a87ac9d245so73965777b3.3
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 12:34:37 -0800 (PST)
+        Tue, 7 Nov 2023 10:35:26 -0500
+Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B75219E
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 07:35:23 -0800 (PST)
+Received: by mail-il1-x132.google.com with SMTP id e9e14a558f8ab-35950819c97so3870715ab.0
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 07:35:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ncf.edu; s=google; t=1699389277; x=1699994077; darn=vger.kernel.org;
-        h=mime-version:references:in-reply-to:organization:message-id:date
-         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=aWp5Pb+/LdzWJWf4DW8IBglT8Le0ScvSI5TXWdEwNqg=;
-        b=n8C8txHOJBRMO50qXHXTqN3QJ+ZXK1GiARcrHelqpI2qz2ElJyziOHqgfFgtNQ4ch+
-         DG3xM/n8Jovv5wdHAuIY3mh8quCFmMuYu/zzVEb83xaMnBtvEYQys2+4O2YzMwXdnetd
-         ngt1QyG6ec2ShYEYLLGSw4KyMtXRXxIs+p2ZR2vdxSwkRPwSH2D9YxSlsp5daGR5FNlV
-         LFnEmZ2PR1qdkbne8qFyrHKO9yh2nKHbMU/AsSgMVrH0GppibjDI1+eF1GoZNJcz4cy1
-         F4NbrHFQ7E1WPHEnWCazBvwDIZjxIFwR9nXr2M3QVrrsH8GPCPlDshz2xmVKceul2rD/
-         x2Ig==
+        d=linuxfoundation.org; s=google; t=1699371323; x=1699976123; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=u0Q97ZjZqObFPBaDoJRqfB46zlWgq8JESlNpJLuVSWY=;
+        b=d6kjRvnzLbRG17B+9z4CkpSc+mL12VW/5vWqPibjVOPOeNNgpuWtoXUXA/rZp4uaOn
+         WwLjBJbcOQqEPsIW51k6O1DbjZc83B9uqcXdQ/p6Y3zSafcHR7EtoLdAwLhdkpEOcqh1
+         iBh/E0Vgy+eOwD9LQnhFWJTc2U5ofnWzVgksA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699389277; x=1699994077;
-        h=mime-version:references:in-reply-to:organization:message-id:date
-         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=aWp5Pb+/LdzWJWf4DW8IBglT8Le0ScvSI5TXWdEwNqg=;
-        b=ZnqlYtNE+PIsWNhie8dfWerpfBVoNOQwVzvnoiDVPOKg8OWEAewcZ/FG7PdlFpkFiy
-         5Slb2WL1JI4lzapNqSjsKPEN81YV66DKSJ9aKD4tv/+nDgol8WGRgkBxFbPyIbnirQfE
-         dTHOSizp6+jaDJOo2VKznWdOco0NFGhQLolpKpSkDP1hDaohCRX4FKmWQOBhndswfSVZ
-         +x28UfijRMhcoN3jPKKugotuQwHKyA5db7BPEaig877JFvaa6AYZFStlrDGJQEEVc9RJ
-         KB07jwsnoh49iuVWyManAERUILfU/SKmnLAtuyIpuaNIi6n7AyWLcHCECw5iEQol2b+I
-         zg6w==
-X-Gm-Message-State: AOJu0YzyPPBhZXtCRMwjK9qSuXyN2kfehFRzfcBnwgcXF2u7nV9hKaTo
-        B9P4wGQOftTAqOkLGELCL6C6DKzI5Irfi+s5bzVE/621hXktU95lSsra9WgPdHjRb9jIEz/JAXk
-        lvHU6O7fkbjP2Hzca+HbSpbHTFxxmb4dYVbC6k5EiWLnfvPSWHozjqj9FLNR/qVT7TQa678KkCi
-        9ExLlggLArjxRbnW8=
-X-Google-Smtp-Source: AGHT+IFCLuTnYPZoOwFZ96oW9PizZC3cqb+219coA5tTSa7FD5yZSWjW9IZIkFPmXv9f3dw6ESaCng==
-X-Received: by 2002:a0d:cb16:0:b0:5a7:c6bd:7ac0 with SMTP id n22-20020a0dcb16000000b005a7c6bd7ac0mr14965043ywd.13.1699389276735;
-        Tue, 07 Nov 2023 12:34:36 -0800 (PST)
-Received: from lux.localnet ([2601:580:8201:d0::4174])
-        by smtp.gmail.com with ESMTPSA id u82-20020a816055000000b0059c0629d59csm6051836ywb.115.2023.11.07.12.34.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Nov 2023 12:34:36 -0800 (PST)
-From:   Hunter Chasens <hunter.chasens18@ncf.edu>
-To:     linux-kernel@vger.kernel.org, "Lazar, Lijo" <lijo.lazar@amd.com>
-Cc:     linux-doc@vger.kernel.org, Xinhui.Pan@amd.com,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        daniel@ffwll.ch, alexander.deucher@amd.com, airlied@gmail.com,
-        christian.koenig@amd.com
-Subject: Re: [PATCH v2] drm: amd: Resolve Sphinx unexpected indentation warning
-Date:   Tue, 07 Nov 2023 10:34:35 -0500
-Message-ID: <22087039.EfDdHjke4D@lux>
-Organization: New College of Florida
-In-Reply-To: <6bd4f6d9-07c9-9ac1-2f3f-bb083b9c8085@amd.com>
-References: <20231106201739.29507-1-hunter.chasens18@ncf.edu>
- <6bd4f6d9-07c9-9ac1-2f3f-bb083b9c8085@amd.com>
+        d=1e100.net; s=20230601; t=1699371323; x=1699976123;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=u0Q97ZjZqObFPBaDoJRqfB46zlWgq8JESlNpJLuVSWY=;
+        b=UvRh2qcOHYWgKPe8bbpEFZ8diRcGMr2ZPdl17PVzhuljj+MtJaHemDjZxy+X54lhM2
+         zu4glfhpzQjRqYJsa2Ihzgl4OcTtu13ane5YDuaZTk4B7D56DLnYGwfStb5uSTEji8aX
+         hjy9xz8ydVLrLxvWFXHz+KcStRsYqiaznT8OmfQzMIW53hFuFgrdexk7U6jb4J75dixx
+         TC9gLXlohdyweCHYxKtB12TNoZxsa4T6dJ0gtqoG8kWn3pv+5O1/Q3cvd5sPd7+R21hh
+         jZxeMnxYHrBst8LN6XuySPtPSup1sV1u8lGHnwIhAg0ucO9zT1SO54afBqonE07Oy/nN
+         2mCw==
+X-Gm-Message-State: AOJu0YxyIvq9wqbxzSuFZb1aJ4rx8rbnAa0XvF1e7iCd1RtWLfhAT/J1
+        rx0pycMrYknpnnQEI53HYAwICw==
+X-Google-Smtp-Source: AGHT+IGu0+OjpZ9c5GFN+YtEXHATCgKN5f1JuHTU2tvvV8AFosus9NykJaZw8geqLpsU/G11l9HIEg==
+X-Received: by 2002:a05:6e02:168c:b0:359:4db7:102a with SMTP id f12-20020a056e02168c00b003594db7102amr24982430ila.0.1699371323093;
+        Tue, 07 Nov 2023 07:35:23 -0800 (PST)
+Received: from [192.168.1.128] ([38.175.170.29])
+        by smtp.gmail.com with ESMTPSA id y12-20020a92090c000000b00357f3790ab3sm3160589ilg.25.2023.11.07.07.35.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 07 Nov 2023 07:35:22 -0800 (PST)
+Message-ID: <df4b4f69-5fb0-4247-9eef-057efcd33f10@linuxfoundation.org>
+Date:   Tue, 7 Nov 2023 08:35:21 -0700
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart7603761.EvYhyI6sBW";
- micalg="pgp-sha256"; protocol="application/pgp-signature"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 6.1 00/62] 6.1.62-rc1 review
+Content-Language: en-US
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20231106130301.807965064@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <20231106130301.807965064@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---nextPart7603761.EvYhyI6sBW
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"; protected-headers="v1"
-From: Hunter Chasens <hunter.chasens18@ncf.edu>
-To: linux-kernel@vger.kernel.org, "Lazar, Lijo" <lijo.lazar@amd.com>
-Date: Tue, 07 Nov 2023 10:34:35 -0500
-Message-ID: <22087039.EfDdHjke4D@lux>
-Organization: New College of Florida
-In-Reply-To: <6bd4f6d9-07c9-9ac1-2f3f-bb083b9c8085@amd.com>
-MIME-Version: 1.0
-
-On Monday, November 6, 2023 11:45:24 PM EST Lazar, Lijo wrote:
-> On 11/7/2023 1:47 AM, Hunter Chasens wrote:
-> > Resolves Sphinx unexpected indentation warning when compiling
-> > documentation (e.g. `make htmldocs`). Replaces tabs with spaces and
-> > adds
-> > a literal block to keep vertical formatting of the
-> > example power state list.
-> > 
-> > Signed-off-by: Hunter Chasens <hunter.chasens18@ncf.edu>
-> > ---
-> > 
-> >   drivers/gpu/drm/amd/pm/amdgpu_pm.c | 13 +++++++------
-> >   1 file changed, 7 insertions(+), 6 deletions(-)
-> > 
-> > diff --git a/drivers/gpu/drm/amd/pm/amdgpu_pm.c
-> > b/drivers/gpu/drm/amd/pm/amdgpu_pm.c index 517b9fb4624c..81b8ceb26890
-> > 100644
-> > --- a/drivers/gpu/drm/amd/pm/amdgpu_pm.c
-> > +++ b/drivers/gpu/drm/amd/pm/amdgpu_pm.c
-> > @@ -989,12 +989,13 @@ static ssize_t amdgpu_get_pp_features(struct
-> > device *dev,> 
-> >    * Reading back the files will show you the available power levels
-> >    within
-> >    * the power state and the clock information for those levels. If
-> >    deep sleep is * applied to a clock, the level will be denoted by a
-> >    special level 'S:'> 
-> > - * E.g.,
-> > - *	S: 19Mhz *
-> > - *	0: 615Mhz
-> > - *	1: 800Mhz
-> > - *	2: 888Mhz
-> > - *	3: 1000Mhz
+On 11/6/23 06:03, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.1.62 release.
+> There are 62 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> > + * E.g.::
-> This will be like E.g.: Could you keep it like E.g.,<space>:: so that ::
-> is taken out?
+> Responses should be made by Wed, 08 Nov 2023 13:02:46 +0000.
+> Anything received after that time might be too late.
 > 
-> Thanks,
-> Lijo
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.62-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
+> and the diffstat can be found below.
 > 
-> > + *
-> > + *  S: 19Mhz *
-> > + *  0: 615Mhz
-> > + *  1: 800Mhz
-> > + *  2: 888Mhz
-> > + *  3: 1000Mhz
-> > 
-> >    *
-> >    *
-> >    * To manually adjust these states, first select manual using
+> thanks,
+> 
+> greg k-h
+> 
 
-No problem. I'll send a v3 out in a bit.
+Compiled and booted on my test system. No dmesg regressions.
 
---nextPart7603761.EvYhyI6sBW
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
+Tested-by: Shuah Khan <skhan@linuxfoundation.org>
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEFaTi3I3XEd+IzfdZZz/o+CKADX8FAmVKWQsACgkQZz/o+CKA
-DX8MxQf+OReDu+tIzKqafU63tL2/DgaIr4JodkrKVsbt+QyEfbmSWS9mwP5KsOgf
-3Rzv37K/A2OTkRbuWMKE1k+ZJHp/2qrZUJIzZHEE/P9g/LV91biimlgXl9/OI2cp
-nAKt6aPapq6ZqyZrVt+5kmIGgUc+7p71dMJ8H89BLTTx29/mOziAHEV38FdWbQO7
-OEYDa4c1ugKbxqsnU3ni18PFdMxapGIT6mmr4P7GtD+ikCqireQ1zY+VkeefDOu7
-uppL3QTO+AXMNkwhiR6NbaLYyX98pcg6d7Gq3LeGf9CShx+Pz6c28aIiF4KcSk4W
-JBL1EslGewkEHY9C3LlIuow9Pkg30Q==
-=sA05
------END PGP SIGNATURE-----
-
---nextPart7603761.EvYhyI6sBW--
-
-
-
+thanks,
+-- Shuah
