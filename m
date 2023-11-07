@@ -2,191 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 56A617E37FD
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 10:41:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9487F7E3801
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 10:42:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233826AbjKGJlS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 04:41:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40858 "EHLO
+        id S233829AbjKGJmn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 04:42:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229580AbjKGJlP (ORCPT
+        with ESMTP id S229776AbjKGJml (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 04:41:15 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AD7C102;
-        Tue,  7 Nov 2023 01:41:12 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DCE9CC433C7;
-        Tue,  7 Nov 2023 09:41:05 +0000 (UTC)
-Message-ID: <0db3d822-9bfa-4efc-bf9d-3ae218b6815d@xs4all.nl>
-Date:   Tue, 7 Nov 2023 10:41:04 +0100
+        Tue, 7 Nov 2023 04:42:41 -0500
+Received: from de-smtp-delivery-113.mimecast.com (de-smtp-delivery-113.mimecast.com [194.104.111.113])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 940A910A
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 01:42:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=toradex.com; s=toradex-com;
+        t=1699350157;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=iw7QAZJpv2/t/WEGNgJgX9o82ZsApkInULH6r4kuz00=;
+        b=ByLq7H8KmRReII3TnjowXg8iFJXq4z6sAUg4y/rJ8EKAcs02D+x+cZ9ZpiIonMMAmQbAaJ
+        wkIK+Y7v5hZDl47u4SBnLiqd7+z9y3nm+lICuBnQBQNoWfSp7bihlQjACVopR7S2gaTUHP
+        FhXSoXtirC+ZLnxRnxfJbT2nIIbmyBI=
+Received: from CHE01-ZR0-obe.outbound.protection.outlook.com
+ (mail-zr0che01lp2105.outbound.protection.outlook.com [104.47.22.105]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ de-mta-18-MKV1JAO2NeWu6yRcufyytA-2; Tue, 07 Nov 2023 10:42:32 +0100
+X-MC-Unique: MKV1JAO2NeWu6yRcufyytA-2
+Received: from GV0P278MB0589.CHEP278.PROD.OUTLOOK.COM (2603:10a6:710:40::8) by
+ GVAP278MB0120.CHEP278.PROD.OUTLOOK.COM (2603:10a6:710:22::11) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6954.29; Tue, 7 Nov 2023 09:42:29 +0000
+Received: from GV0P278MB0589.CHEP278.PROD.OUTLOOK.COM
+ ([fe80::c00:111c:9d5c:7066]) by GV0P278MB0589.CHEP278.PROD.OUTLOOK.COM
+ ([fe80::c00:111c:9d5c:7066%7]) with mapi id 15.20.6954.029; Tue, 7 Nov 2023
+ 09:42:29 +0000
+From:   Stefan Eichenberger <stefan.eichenberger@toradex.com>
+To:     Johan Hovold <johan@kernel.org>
+CC:     Francesco Dolcini <francesco@dolcini.it>,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Felipe Balbi <balbi@ti.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Francesco Dolcini <francesco.dolcini@toradex.com>
+Subject: Re: [PATCH v1] USB: dwc3: only call usb_phy_set_suspend in
+ suspend/resume
+Thread-Topic: [PATCH v1] USB: dwc3: only call usb_phy_set_suspend in
+ suspend/resume
+Thread-Index: AQHaDj+z53GEj9qQB0uSGx9v53wrl7Bozv+AgAE8U8KAAux5AIABqPKW
+Date:   Tue, 7 Nov 2023 09:42:29 +0000
+Message-ID: <GV0P278MB05896EF2725F208A93C0294FE8A9A@GV0P278MB0589.CHEP278.PROD.OUTLOOK.COM>
+References: <20231103102236.13656-1-francesco@dolcini.it>
+ <ZUUkqeKFZmsubxu5@hovoldconsulting.com>
+ <GV0P278MB0589921FFF5487D2F94D3FF2E8A4A@GV0P278MB0589.CHEP278.PROD.OUTLOOK.COM>
+ <ZUih4BJLkslLIMx5@hovoldconsulting.com>
+In-Reply-To: <ZUih4BJLkslLIMx5@hovoldconsulting.com>
+Accept-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: 
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: GV0P278MB0589:EE_|GVAP278MB0120:EE_
+x-ms-office365-filtering-correlation-id: b813b5da-b5d5-4dd8-52a8-08dbdf75dbd3
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0
+x-microsoft-antispam-message-info: RoNYUrz/91bIkzVQM022r3qjqY3QdodRa+vs9mYUDAcScGHoX7JCPZe3SzjCmcesfaSOTNoze7qnVput5c4Ttcy2c2psJF6W7L7mSwtfYb/kKhV/d1xU+jSIL7NOCvQIhy5p1YtJfcTa7F8sNzllggomfoEMaUbl0Fff2tGtgn2CrMMNHm7WgXxGizz52iEHcKeNOW7nOUgR9C5W9RqZ5U7bbharSPhpZ1F66gqBxrPeV7KKGqvwE9I9JACSa3JaaZ8lfTnGnPUqs6ULK7fXkyOsRthYwk4KCfMBMZphB8TFSsvhY1DYDwkC12eaFMWlcyvdcVn9qTMDDwhejVE+5CIwsP08v+Uey5QWsZOWnhmaQwlxGLSZSJcSM6qbTS3lqNcoTD9OFPd5c9l/KyWU3TrGR63jFujv9480GVQPI7VbyodzAWrBO9yAhNpRQE0TMEP2d1mixvclLHyt5hvrum6l4SqBRl2o4CzDR7ey8v35DVClikxLbzFRhusu+xxSusjPv/GWJtHN6SRvK/xd3o6M5tmArEeMUwUlxHHujldhjy4y0iE9NQy3Hkjv0XYa9Qim35HWAHf/vf/1FL1t5x9DaoV7pITCGrnzZrSgSzNpI9fXH+tmkpljI0JIztbI2UlPOOwCQ9gjgNzfoX6+vNl7bo9kP+zq5zfGtpBYOmo=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:GV0P278MB0589.CHEP278.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(136003)(376002)(346002)(39850400004)(366004)(396003)(230173577357003)(230273577357003)(230922051799003)(451199024)(186009)(1800799009)(64100799003)(122000001)(83380400001)(9686003)(7696005)(71200400001)(107886003)(6506007)(6916009)(478600001)(316002)(66946007)(55016003)(66556008)(76116006)(4326008)(8936002)(8676002)(52536014)(64756008)(66446008)(66476007)(54906003)(38100700002)(4744005)(15650500001)(2906002)(41300700001)(33656002)(44832011)(86362001)(5660300002)(38070700009);DIR:OUT;SFP:1102
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?u47blGj/Jd75Twf4bTys+Lo/TG4onlDSxmMO1EKBxoV4Pcd4gm2E+NMTca?=
+ =?iso-8859-1?Q?G43oKQHFZSPBIMlBAztUj9hFZp/JqEJO9xMQzh4UCziawosXkwhcMg3BVE?=
+ =?iso-8859-1?Q?6GopeGawaDYra/1qONRjNAaawhzRcUzVrpI486iS+yWYgu6zywBPTHFiFT?=
+ =?iso-8859-1?Q?oTXiBNb3mxPbCGL8/2Od1cRbd1VcdR5ocfmhx6gaOH3mwRsmhLpfC0u1jf?=
+ =?iso-8859-1?Q?O/V/ojgrxGRG3sOwwx6g8pTPEIWBni7Z7aBjHe9SjfPAu6FYpiS+IyyxWE?=
+ =?iso-8859-1?Q?sIDt/0688rehgLqouH90TsDeMG2umR5G4ThdVbf8gTXLH9RtCVOD4SkMt8?=
+ =?iso-8859-1?Q?/eg73vcV+r+RRpRC+SAy+jp6qPGNYqN9uOZN7q4hnS7/LxN+Tp/bxv5P+m?=
+ =?iso-8859-1?Q?vb2oINzBX5ShevjzU8JDuxh91Sm/0Kp2Fmmx7jxpcGHGRKTnBlD3Y5A0U/?=
+ =?iso-8859-1?Q?OOPrSqNZNt8PDk3ClqC7TrbGbUWsGJrGepxQFP8gCBIaFnpkAhQ4ZEkurd?=
+ =?iso-8859-1?Q?tTN5ZOYnPql2OiTUzuM0VJ8iLR1VeRh4OUQ74nWfHMFfhW3rOOiXumHW+X?=
+ =?iso-8859-1?Q?kFSXUSiZuvWe8hLWnWI99MflX71F9N4DY02cKWoKvUXxkHeEUejwJ1sA79?=
+ =?iso-8859-1?Q?4URPLAJdEA0/M5hY1o0i5srAqVbXBJ5iI0Y83WJvOS/nuUbJ4wYblTcnZK?=
+ =?iso-8859-1?Q?xRdNz2/g2a7wvdD2/rRsDTva8t0SWijIftBrB5YsmmOWrS7rUmR/CIqMxF?=
+ =?iso-8859-1?Q?ntWUm1wI2rL7xFWlSrFQdKZ/nE7oat7UlKWEGNOCpB18U8whiFp3CZEIwh?=
+ =?iso-8859-1?Q?WQqUUw17Foy8oQ9w1Ic9e20LleR8prBQkZeWK3I67YVDWua7pohb5h8v5/?=
+ =?iso-8859-1?Q?JRLTKTrSz8dmB8xJxhcFx1WJDbDBNCXcT0A60e+VXin1O/c0gK8W9ErGtz?=
+ =?iso-8859-1?Q?0oiqxqnW1c7KuOSxUFNV/LL71FsIlX0IFPULTynMHGJvSURTYSN2zMVOkp?=
+ =?iso-8859-1?Q?rhWoDbP3DBEZcTo2zQKXRxHDwDpUGuXWvp7Coxr88QAdHcCeSy+x04Uw0c?=
+ =?iso-8859-1?Q?uBIhSDb34y2b3FjinwWQnRnqxx2ArK19iqPLAwaU5bMq5EvLdSI6A+9+/0?=
+ =?iso-8859-1?Q?xk9g6IUUDZlsHQwlOQ/78DzXxSvDojuZTtiFhSS4IT+EbKN70nSxTmJYKI?=
+ =?iso-8859-1?Q?YGYQ1kBPe4balXm2xQ1/qj+jPGffoMEmAKUUInQK903Ln/9uDmXjeokj/3?=
+ =?iso-8859-1?Q?PLcDz/dpeZoHF9+KUM+oZJGf1uZmjKkJNBpSt0L+Uev/v8hoO3CcxXIk2e?=
+ =?iso-8859-1?Q?mNTGE2NkxvSXxleqZjw5zF79uO9j27trP4kZwh01frYH2Bsbc/IoXYI9fL?=
+ =?iso-8859-1?Q?vE2Mp56B0FruHrkPh22qHI6bJHFXC/LyckfOja0rI0AVDi98edRrAdFT52?=
+ =?iso-8859-1?Q?d1yaTszmq9XZVrHCf7zlg4gX2YOxVrIQfDmpUJ7LQbaj5M3cYVvSsp0khH?=
+ =?iso-8859-1?Q?hV9HIp4pzQIr6s5HCsZ7Dzy5mc3BZdLtu93v1A3isU8p94BWot8mN3TAA2?=
+ =?iso-8859-1?Q?2PuOahKTSe4dVvqIunVyqDMVFYYt0xwFJsg2UbmenGHjZnESsEb5aduKJk?=
+ =?iso-8859-1?Q?rO4dn2lkZUJwRNVlv5AlFMhNLfsPJFEoYwnvzGb0R55XnM3C+ijR0JnwDA?=
+ =?iso-8859-1?Q?RyyldhAdOTU8xr5H0JTUIPzHhH7zC8/j1Sfh9KsxLeq8mvqJNdDY18k7Qj?=
+ =?iso-8859-1?Q?LxRQ=3D=3D?=
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v8 13/13] media: vim2m_audio: add virtual driver for
- audio memory to memory
-Content-Language: en-US, nl
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-To:     Shengjiu Wang <shengjiu.wang@nxp.com>, sakari.ailus@iki.fi,
-        tfiga@chromium.org, m.szyprowski@samsung.com, mchehab@kernel.org,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        shengjiu.wang@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
-        nicoleotsuka@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
-        perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
-        linuxppc-dev@lists.ozlabs.org
-References: <1698402948-10618-1-git-send-email-shengjiu.wang@nxp.com>
- <1698402948-10618-14-git-send-email-shengjiu.wang@nxp.com>
- <c7daf33d-9d6d-499e-b477-35176dbaca38@xs4all.nl>
-Autocrypt: addr=hverkuil@xs4all.nl; keydata=
- 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
-In-Reply-To: <c7daf33d-9d6d-499e-b477-35176dbaca38@xs4all.nl>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-OriginatorOrg: toradex.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: GV0P278MB0589.CHEP278.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: b813b5da-b5d5-4dd8-52a8-08dbdf75dbd3
+X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Nov 2023 09:42:29.5009
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: d9995866-0d9b-4251-8315-093f062abab4
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: S0zI67mdoH6Bgkx7CIdsyEf2txhccgqESkx09zz7cfcAWvMK68ip55dQ1aGg3yZ6rW9LWj+spBO92Tb8J5/1PNgnGcUG7zMG47cIVZRgCwQ=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: GVAP278MB0120
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: toradex.com
+Content-Language: en-US
+Content-Type: text/plain; charset=WINDOWS-1252
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/11/2023 14:58, Hans Verkuil wrote:
-> On 27/10/2023 12:35, Shengjiu Wang wrote:
->> Audio memory to memory virtual driver use video memory to memory
->> virtual driver vim2m.c as example. The main difference is
->> device type is VFL_TYPE_AUDIO and device cap type is V4L2_CAP_AUDIO_M2M.
->>
->> The device_run function is a dummy function, which is simply
->> copy the data from input buffer to output buffer.
-> 
-> I started work on the v4l-utils part of this, using this driver.
-> 
-> I noticed that this driver doesn't expose the V4L2_CID_M2M_AUDIO_SOURCE/SINK_RATE
-> controls, and it really should, otherwise it is not representative of this
-> type of device.
-> 
-> It is enough to start with just a single fixed rate listed for each control.
-> 
-> It would be even nicer if you can have two rates such as 24000 and 48000 and
-> do the actual rate conversion, i.e. dropping every other sample or duplicating
-> each sample depending on whether you're halving or doubling the rate. That
-> should be easy to implement, and it makes this driver much more realistic.
-
-Update: I have finished the v4l-utils update (I'll post a patch for that later).
-
-But while testing I noticed that this driver does not set up the sequence number
-and it doesn't copy the timestamp. So the patch below needs to be applied.
-
-Just squash it together with your patch. Note that you need to do the same for
-your alsa driver.
-
-Also, please rename the source name from vim2m_audio.c to vim2m-audio.c. That is
-consistent with the naming elsewhere in test-drivers.
-
-I also want to have support for the MEDIA_CONTROLLER here. See vim2m, search for
-CONFIG_MEDIA_CONTROLLER. Both in this test driver and also in your audio driver.
-
-This will require adding a new media entity (MEDIA_ENT_F_PROC_AUDIO_RESAMPLER?).
-And you also need to add a new MEDIA_INTF_T_V4L_AUDIO interface type that will be
-used by v4l2_m2m_register_media_controller(). That function can check vdev->vfl_type
-to see if it needs to use MEDIA_INTF_T_V4L_VIDEO or MEDIA_INTF_T_V4L_AUDIO.
-Remember to update the documentation as well!
-
-The reason for using the media controller here is that it turns out to be very useful
-for application to detect what sort of m2m device it is dealing with: it has proven
-it worth for video codecs, and I think it should be standard for new m2m devices, and
-especially for a completely new type of m2m device.
-
-Regards,
-
-	Hans
-
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
----
-diff --git a/drivers/media/test-drivers/vim2m_audio.c b/drivers/media/test-drivers/vim2m_audio.c
-index 2134e8338417..e8aa2bb0aa77 100644
---- a/drivers/media/test-drivers/vim2m_audio.c
-+++ b/drivers/media/test-drivers/vim2m_audio.c
-@@ -62,6 +62,7 @@ struct audm2m_q_data {
- 	unsigned int		channels;
- 	unsigned int		buffersize;
- 	u32			fourcc;
-+	unsigned int		sequence;
- };
-
- enum {
-@@ -170,6 +171,9 @@ static void device_run(void *priv)
-
- 	src_buf = v4l2_m2m_src_buf_remove(ctx->fh.m2m_ctx);
- 	dst_buf = v4l2_m2m_dst_buf_remove(ctx->fh.m2m_ctx);
-+	src_buf->sequence = q_data_src->sequence++;
-+	dst_buf->sequence = q_data_dst->sequence++;
-+	v4l2_m2m_buf_copy_metadata(src_buf, dst_buf, false);
-
- 	v4l2_m2m_buf_done(src_buf, VB2_BUF_STATE_DONE);
- 	v4l2_m2m_buf_done(dst_buf, VB2_BUF_STATE_DONE);
-@@ -423,6 +427,15 @@ static void audm2m_buf_queue(struct vb2_buffer *vb)
- 	v4l2_m2m_buf_queue(ctx->fh.m2m_ctx, vbuf);
- }
-
-+static int audm2m_start_streaming(struct vb2_queue *q, unsigned int count)
-+{
-+	struct audm2m_ctx *ctx = vb2_get_drv_priv(q);
-+	struct audm2m_q_data *q_data = get_q_data(ctx, q->type);
-+
-+	q_data->sequence = 0;
-+	return 0;
-+}
-+
- static void audm2m_stop_streaming(struct vb2_queue *q)
- {
- 	struct audm2m_ctx *ctx = vb2_get_drv_priv(q);
-@@ -442,6 +455,7 @@ static void audm2m_stop_streaming(struct vb2_queue *q)
- static const struct vb2_ops audm2m_qops = {
- 	.queue_setup	 = audm2m_queue_setup,
- 	.buf_queue	 = audm2m_buf_queue,
-+	.start_streaming  = audm2m_start_streaming,
- 	.stop_streaming  = audm2m_stop_streaming,
- 	.wait_prepare	 = vb2_ops_wait_prepare,
- 	.wait_finish	 = vb2_ops_wait_finish,
+> From: Johan Hovold <johan@kernel.org>=0A> >=0A> > We have an external hub=
+ that we want to turn off when the system goes=0A> > into suspend. For the =
+i.MX8MM we use the phy-generic driver to achieve=0A> > this. When I saw tha=
+t the dwc3 driver would support the phy-generic via=0A> > usb-phy, I though=
+t we could use the same approach for the i.MX8MP and,=0A> > in the future, =
+the AM62. Maybe I misunderstood, would the right solution=0A> > be to add a=
+ suspend function to the fsl,imx8mp-usb-phy driver and use=0A> > vbus inste=
+ad? But what would we do for the AM62, as it doesn't have a=0A> > phy drive=
+r if I'm not mistaken.=0A>=0A> That's not how the phy driver is supposed be=
+ used, and for on-board hubs=0A> we now have:=0A>=0A>         drivers/usb/m=
+isc/onboard_usb_hub.c=0A>=0A> Have you tried using that one instead?=0A=0AT=
+hanks for the tip. I have now tested it and it seems to work for our=0Ause =
+case. I will see if I can use it for the other devices as well.=0A=0ABest r=
+egards,=0AStefan
 
