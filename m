@@ -2,101 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 503747E40FA
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 14:48:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E35E7E412B
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 14:51:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234666AbjKGNsl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 08:48:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42684 "EHLO
+        id S234696AbjKGNvT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 08:51:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234946AbjKGNsQ (ORCPT
+        with ESMTP id S234642AbjKGNu5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 08:48:16 -0500
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C632D2D54
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 05:46:34 -0800 (PST)
-Received: by mail-pl1-x649.google.com with SMTP id d9443c01a7336-1cc391ca417so45633365ad.0
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 05:46:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1699364794; x=1699969594; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=KRZW8kevjh4aZ31PiUOxCku+9NRp8iX+bdfbv+Qzu7I=;
-        b=sH2Vbork7s2X3eU4RjIVBjkHEe2qAJzOOE4K7IfELcpA+Aztp4NvlROoZxxRJcMPY3
-         t7NeMlc0VsvkyguWQGhyZcB82XXNFRkptKeVSk4WulLmVQd5/ek6AfmNABDENsEeyTVo
-         rceYCWcO0Sz96gPc877UZ5cOoMPCyqClLiQEggSj/xwOPVA1SYWqhH+HVSGmzCWSCt2R
-         TM7ntVhjMgj6g9hD0Q2y6dG8dMvRGg6eqyYYMcvoa4nP0BnBZjvK9eU4EEqlsb7DJzoP
-         1NkZpHqfTCEcwiqWgMtKgEpwk0TB5Kzlx96RzmFbpUZzclQ2tXV8jFBBHSP5X65xmN5u
-         79Bg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699364794; x=1699969594;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=KRZW8kevjh4aZ31PiUOxCku+9NRp8iX+bdfbv+Qzu7I=;
-        b=OyPFAKRG2ljpciGR//HqXtu+0ydEvGZEdYaBLcj4Kojj8S4MrnG3iSaqAXmTKkvi6I
-         5vMKB2/0VWDTmxyxELOTt246M4YaPUwDTe+7qwpmqT/wB2lHBWIue2N/gJd7OQytUfO/
-         LFs2QC/kzi+TM1ixHvdp31IX7S8CnDPumHrw4jj1aI/amyl/brFGlAjw7oN0JHWkT7p8
-         t8FPZtPuZdJOXy93FTLnXmwKZcyyBSOCYzluyF0s5SH8Tl2gVu8l/4UhByEVb/gh8Z8y
-         3JZgC7U3ISSvLG+d28nqx2gT1Th7lBLht8SJzHPcYc5EZ7N8YqXpO6TAITL0vdfnTWWd
-         z9mw==
-X-Gm-Message-State: AOJu0YyoJyHndN8KZtpanIEjGK2oCCJel/jeKc6DPh4jUqwSONnl6mAf
-        MtibnfiA9Rd1AYlN8Wk77BUsFi3aapsKGQ==
-X-Google-Smtp-Source: AGHT+IEwFapbdsh5pEB9VSu6Xx0POX8X14oXwHK2HqW/z8ziL+svc7eapTp7HYjscOU8GhqJ+Pj+oCpEClThjg==
-X-Received: from mmandlik-cloudtop.c.googlers.com ([fda3:e722:ac3:cc00:24:72f4:c0a8:2893])
- (user=mmandlik job=sendgmr) by 2002:a17:903:2591:b0:1cc:bb7f:bd5a with SMTP
- id jb17-20020a170903259100b001ccbb7fbd5amr144886plb.6.1699364793747; Tue, 07
- Nov 2023 05:46:33 -0800 (PST)
-Date:   Tue,  7 Nov 2023 05:46:10 -0800
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.42.0.869.gea05f2083d-goog
-Message-ID: <20231107054609.1.I4c7ab22148e168e3cde00f27b89748ff4bc651c2@changeid>
-Subject: [PATCH] Bluetooth: btusb: Return when coredump trigger cmd fails
-From:   Manish Mandlik <mmandlik@google.com>
-To:     marcel@holtmann.org, luiz.dentz@gmail.com
-Cc:     chromeos-bluetooth-upstreaming@chromium.org,
-        linux-bluetooth@vger.kernel.org,
-        Manish Mandlik <mmandlik@google.com>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Tim Jiang <quic_tjiang@quicinc.com>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 7 Nov 2023 08:50:57 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC62C2D45
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 05:48:47 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C9E55C433C7;
+        Tue,  7 Nov 2023 13:48:45 +0000 (UTC)
+Date:   Tue, 7 Nov 2023 08:48:44 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Florent Revest <revest@chromium.org>,
+        linux-trace-kernel@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alan Maguire <alan.maguire@oracle.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Guo Ren <guoren@kernel.org>
+Subject: Re: [RFC PATCH 24/32] x86/ftrace: Enable HAVE_FUNCTION_GRAPH_FREGS
+Message-ID: <20231107084844.7a39ac3f@gandalf.local.home>
+In-Reply-To: <20231107144328.cc763a2a137391ceb105e9db@kernel.org>
+References: <169920038849.482486.15796387219966662967.stgit@devnote2>
+        <169920068069.482486.6540417903833579700.stgit@devnote2>
+        <20231105172536.GA7124@noisy.programming.kicks-ass.net>
+        <20231105141130.6ef7d8bd@rorschach.local.home>
+        <20231105231734.GE3818@noisy.programming.kicks-ass.net>
+        <20231105183301.38be5598@rorschach.local.home>
+        <20231106100549.33f6ce30d968906979ca3954@kernel.org>
+        <20231106113710.3bf69211@gandalf.local.home>
+        <20231107094258.d41a46c202197e92bc6d9656@kernel.org>
+        <20231106220617.5eb73f2f@gandalf.local.home>
+        <20231107144328.cc763a2a137391ceb105e9db@kernel.org>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Avoid freeing NULL skb when hci command fails.
+On Tue, 7 Nov 2023 14:43:28 +0900
+Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
 
-Fixes: 20981ce2d5a5 ("Bluetooth: btusb: Add WCN6855 devcoredump support")
+> > 
+> > It's only needed if an architecture supports direct trampolines.  
+> 
+> I see, and x86_64 needs it.
+> OK, maybe better to keep it clear on x86-64 even on the
+> return handler.
 
-Signed-off-by: Manish Mandlik <mmandlik@google.com>
----
+As it is arch specific, I'm not sure it matters for the return handler, as
+the return should never call a direct trampoline.
 
- drivers/bluetooth/btusb.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
-index b8e9de887b5d..a0359702c0a1 100644
---- a/drivers/bluetooth/btusb.c
-+++ b/drivers/bluetooth/btusb.c
-@@ -3463,8 +3463,11 @@ static void btusb_coredump_qca(struct hci_dev *hdev)
- 	struct sk_buff *skb;
- 
- 	skb = __hci_cmd_sync(hdev, 0xfc0c, 1, param, HCI_CMD_TIMEOUT);
--	if (IS_ERR(skb))
-+	if (IS_ERR(skb)) {
- 		bt_dev_err(hdev, "%s: triggle crash failed (%ld)", __func__, PTR_ERR(skb));
-+		return;
-+	}
-+
- 	kfree_skb(skb);
- }
- 
--- 
-2.42.0.869.gea05f2083d-goog
-
+-- Steve
