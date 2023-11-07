@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D7607E4553
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 17:04:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 579547E4554
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 17:04:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344128AbjKGQEc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 11:04:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48134 "EHLO
+        id S1344291AbjKGQEf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 11:04:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344541AbjKGQEG (ORCPT
+        with ESMTP id S1344551AbjKGQEH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 11:04:06 -0500
+        Tue, 7 Nov 2023 11:04:07 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03D5F448B;
-        Tue,  7 Nov 2023 07:55:18 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 04EC3C433C8;
-        Tue,  7 Nov 2023 15:55:15 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B294D423E;
+        Tue,  7 Nov 2023 07:55:21 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7F0F7C433C7;
+        Tue,  7 Nov 2023 15:55:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699372517;
-        bh=KvtWCvAGFHyQPEJ2pkrCkk3wYO5o/6slB/36anAWT30=;
+        s=k20201202; t=1699372521;
+        bh=PSUN0NMqDA37h3T4x2vv+KNlbTSCbCjyf1dceKw3+eY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FLG++ZysS3j+9dtZGkncwE5VDy+TR6tDY1/ORD7kwDG/zQdoMeZmnNBLLOaMard3Q
-         5Sr+cSq0o9gWqtxh4LmVmBF4ItTNm60Majsl0wSwqqNQouRQeMZ0aTToq2k3Hi1j1C
-         AK6XLeFNmRgQ+wjYcgdz4Dwn8epd0cEW08hb3qk7LUAs9+ZdPL3yCx9LFBFiYUNg10
-         tGkyMbvOFy1D3u/2DRQuFCW3CcuOOaC12wbx/pZrWaHGyh2ATWyj30+zQ6YrTV4Zrc
-         F5MkOVRSznuanbAOJaJjcLoaZSwP2O2NH9QROBTgu4PZgK5yRVkUM8NCdIbX8v3GdN
-         1Q90w8jMKQd+w==
+        b=RnRQFOqFlnboJETOzeFV2c5L+v5dX+mpXQuVTrxxOolLFhel3R46BYmzRDwKlQPwH
+         BCu3yMbULhdKvJLw+mgsMhqfPalvjB2Dg3TNu6Esj//Y+8j0X6AlXU7MQr3YC8C3m5
+         1d/ilTYPJXbzGWKB+PblA2I54eV4kLZOISwQLBlGaRc9Lc4O10uvCDWeuA8PXoV9Sw
+         IX+UjztFHtz/N1k47X8yJJOsv7Y2YtbbuKzPmlDaYFb/pad/84R+472RsM4uzQ+CYz
+         KrLrhDFsKsuO275k3gqMU92kV5thHxrVfnp91p+5xIo5A+myGBlM00I/58MmOLraLK
+         CRQv2ZPqEUItw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Juntong Deng <juntong.deng@outlook.com>,
-        syzbot+debee9ab7ae2b34b0307@syzkaller.appspotmail.com,
+        syzbot+38e876a8aa44b7115c76@syzkaller.appspotmail.com,
         Dave Kleikamp <dave.kleikamp@oracle.com>,
         Sasha Levin <sashal@kernel.org>, shaggy@kernel.org,
-        ghandatmanas@gmail.com, wonguk.lee1023@gmail.com,
-        liushixin2@huawei.com, andrew.kanner@gmail.com, code@siddh.me,
-        yogi.kernel@gmail.com, jfs-discussion@lists.sourceforge.net
-Subject: [PATCH AUTOSEL 4.14 3/9] fs/jfs: Add check for negative db_l2nbperpage
-Date:   Tue,  7 Nov 2023 10:54:53 -0500
-Message-ID: <20231107155509.3769038-3-sashal@kernel.org>
+        wonguk.lee1023@gmail.com, liushixin2@huawei.com,
+        andrew.kanner@gmail.com, yogi.kernel@gmail.com, code@siddh.me,
+        ghandatmanas@gmail.com, jfs-discussion@lists.sourceforge.net
+Subject: [PATCH AUTOSEL 4.14 4/9] fs/jfs: Add validity check for db_maxag and db_agpref
+Date:   Tue,  7 Nov 2023 10:54:54 -0500
+Message-ID: <20231107155509.3769038-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231107155509.3769038-1-sashal@kernel.org>
 References: <20231107155509.3769038-1-sashal@kernel.org>
@@ -53,42 +53,46 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Juntong Deng <juntong.deng@outlook.com>
 
-[ Upstream commit 525b861a008143048535011f3816d407940f4bfa ]
+[ Upstream commit 64933ab7b04881c6c18b21ff206c12278341c72e ]
 
-l2nbperpage is log2(number of blks per page), and the minimum legal
-value should be 0, not negative.
+Both db_maxag and db_agpref are used as the index of the
+db_agfree array, but there is currently no validity check for
+db_maxag and db_agpref, which can lead to errors.
 
-In the case of l2nbperpage being negative, an error will occur
-when subsequently used as shift exponent.
+The following is related bug reported by Syzbot:
 
-Syzbot reported this bug:
+UBSAN: array-index-out-of-bounds in fs/jfs/jfs_dmap.c:639:20
+index 7936 is out of range for type 'atomic_t[128]'
 
-UBSAN: shift-out-of-bounds in fs/jfs/jfs_dmap.c:799:12
-shift exponent -16777216 is negative
+Add checking that the values of db_maxag and db_agpref are valid
+indexes for the db_agfree array.
 
-Reported-by: syzbot+debee9ab7ae2b34b0307@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=debee9ab7ae2b34b0307
+Reported-by: syzbot+38e876a8aa44b7115c76@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?extid=38e876a8aa44b7115c76
 Signed-off-by: Juntong Deng <juntong.deng@outlook.com>
 Signed-off-by: Dave Kleikamp <dave.kleikamp@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/jfs/jfs_dmap.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ fs/jfs/jfs_dmap.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
 diff --git a/fs/jfs/jfs_dmap.c b/fs/jfs/jfs_dmap.c
-index 95e8f031c3f11..070638718be32 100644
+index 070638718be32..713f11dee52aa 100644
 --- a/fs/jfs/jfs_dmap.c
 +++ b/fs/jfs/jfs_dmap.c
-@@ -193,7 +193,8 @@ int dbMount(struct inode *ipbmap)
- 	bmp->db_nfree = le64_to_cpu(dbmp_le->dn_nfree);
- 
- 	bmp->db_l2nbperpage = le32_to_cpu(dbmp_le->dn_l2nbperpage);
--	if (bmp->db_l2nbperpage > L2PSIZE - L2MINBLOCKSIZE) {
-+	if (bmp->db_l2nbperpage > L2PSIZE - L2MINBLOCKSIZE ||
-+		bmp->db_l2nbperpage < 0) {
- 		err = -EINVAL;
- 		goto err_release_metapage;
- 	}
+@@ -208,6 +208,12 @@ int dbMount(struct inode *ipbmap)
+ 	bmp->db_maxlevel = le32_to_cpu(dbmp_le->dn_maxlevel);
+ 	bmp->db_maxag = le32_to_cpu(dbmp_le->dn_maxag);
+ 	bmp->db_agpref = le32_to_cpu(dbmp_le->dn_agpref);
++	if (bmp->db_maxag >= MAXAG || bmp->db_maxag < 0 ||
++		bmp->db_agpref >= MAXAG || bmp->db_agpref < 0) {
++		err = -EINVAL;
++		goto err_release_metapage;
++	}
++
+ 	bmp->db_aglevel = le32_to_cpu(dbmp_le->dn_aglevel);
+ 	bmp->db_agheight = le32_to_cpu(dbmp_le->dn_agheight);
+ 	bmp->db_agwidth = le32_to_cpu(dbmp_le->dn_agwidth);
 -- 
 2.42.0
 
