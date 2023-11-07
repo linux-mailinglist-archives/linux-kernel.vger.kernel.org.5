@@ -2,125 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A95677E46DA
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 18:25:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E6EE7E46D4
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 18:25:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343641AbjKGRZY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 12:25:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53514 "EHLO
+        id S1343648AbjKGRZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 12:25:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234913AbjKGRZV (ORCPT
+        with ESMTP id S235014AbjKGRZI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 12:25:21 -0500
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D932101;
-        Tue,  7 Nov 2023 09:25:19 -0800 (PST)
-Received: from pps.filterd (m0353722.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A7GZhEa020682;
-        Tue, 7 Nov 2023 17:24:57 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=3etUmHlLQoqkujeMpctTSui817APH+WOGe3bUcUWroU=;
- b=ObmbUZhiaRKd/RiPTFKyzWd3y/wu1zATeU6YMLSaoh36onMNYSAvzwabFU++4KXt69K1
- BNmH5Idi/zQDgIUPp+ge5AboPc7TNeA3wB33SVVlxZgTefIDsNkc3jbBsbAqOKEa6uRI
- 54sObPMnq3Rfd97qLIfiv/nT0vdKc4HDBkWYcIihtO6o6rZvaokyqx0GAs5XlR3oGW4m
- JuwTgWXF/FZuBaLgCbOnGdRcaVMIcmHO4UzJ3jbc4aQuJH4UNB7WVbmZjCQ9XJZmfzub
- qsrJCxehLHtrWWL3y/vljlHjvqxiOXwL1TA+zLoONjna2hfzciof50G7r08N/dmtWH0B Fw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u7rw2a9a0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 07 Nov 2023 17:24:56 +0000
-Received: from m0353722.ppops.net (m0353722.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3A7HKR3P007621;
-        Tue, 7 Nov 2023 17:24:55 GMT
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u7rw2a94k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 07 Nov 2023 17:24:55 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3A7H8vpN012797;
-        Tue, 7 Nov 2023 17:24:42 GMT
-Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
-        by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3u609stjb0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 07 Nov 2023 17:24:42 +0000
-Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
-        by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3A7HOdL540501948
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 7 Nov 2023 17:24:39 GMT
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 273EE20043;
-        Tue,  7 Nov 2023 17:24:39 +0000 (GMT)
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id ED0E520040;
-        Tue,  7 Nov 2023 17:24:38 +0000 (GMT)
-Received: from li-ce58cfcc-320b-11b2-a85c-85e19b5285e0 (unknown [9.152.224.212])
-        by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Tue,  7 Nov 2023 17:24:38 +0000 (GMT)
-Date:   Tue, 7 Nov 2023 18:24:37 +0100
-From:   Halil Pasic <pasic@linux.ibm.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Petr =?UTF-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Petr Tesarik <petr.tesarik1@huawei-partners.com>,
-        Ross Lagerwall <ross.lagerwall@citrix.com>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, iommu@lists.linux.dev,
-        Matthew Rosato <mjrosato@linux.ibm.com>,
-        Halil Pasic <pasic@linux.ibm.com>,
-        Jianxiong Gao <jxgao@google.com>
-Subject: Re: Memory corruption with CONFIG_SWIOTLB_DYNAMIC=y
-Message-ID: <20231107182437.06632f6e.pasic@linux.ibm.com>
-In-Reply-To: <20231106074243.GA17777@lst.de>
-References: <104a8c8fedffd1ff8a2890983e2ec1c26bff6810.camel@linux.ibm.com>
-        <20231103171447.02759771.pasic@linux.ibm.com>
-        <20231103214831.26d29f4d@meshulam.tesarici.cz>
-        <20231106074243.GA17777@lst.de>
-Organization: IBM
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        Tue, 7 Nov 2023 12:25:08 -0500
+Received: from sonic302-28.consmr.mail.ne1.yahoo.com (sonic302-28.consmr.mail.ne1.yahoo.com [66.163.186.154])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60C2D116
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 09:25:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1699377903; bh=l7R28lHtFp5EdS/aj2WxyRDnyhb99pkJphheQAqdRxg=; h=Date:Subject:To:Cc:References:From:In-Reply-To:From:Subject:Reply-To; b=UkQJh0wUq5PeviWHc4DNjDzc9V3yIc2gSJbABIW4TZunY/rcFFCX2j26y9A+F31GoqOD0OWnOv8UebDyz7ZhVmMIMDFpMQp9F/xui8KK9LfPzxkRU78gK36N/YON5CmoYj1PNPOAoTanZZJ+jw1+zEuGzik53fyjG21Bfj+9BduZ3linEo4E1d9v5sroSfaVg/znVI6cFPeSsgcdRkezu6bc7/oBl8kyMcWL42MKtTuMInxjj3KuZKXeQWncyve8hnrbaDe0jOzpSDBNhdE5jS021Dg/k1BHOpoMW6CkAOaljX4ankbhpxGSNiHqjIZ2hdS6hMDNMaV9uLMY6htbdw==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1699377903; bh=GRgH+s4/IRaSLLR4w6JHnzwpv6vnd1VGXIbLpqyi8rR=; h=X-Sonic-MF:Date:Subject:To:From:From:Subject; b=Xf+w+xNkO5cLIMDBQ9f8XsznXFk9e4v+6b9uxDg+aiZeic7YGadXlG8DsY74LaAvmYxfKqXbdPO3DB2sSUQTOLpV+a8adE5mgft25c15pngFQFj49No3JdwKVPnmhAw6NnavjdXl+rMWiXbFRYKOQ+goJYUMZEg7HiwT4nhbE1E5nuqRfXL7MNw5x7t9QVuqCjmT2NQAkajX/1Yf3lZ2kLwk0wIHo3x3EwYl/yy66iy9FV5xtLabzt4ZtvL3ibTO7mdCPf2idvLiJQnl7IeWFL+uYJQPykxbChUJ6mDmIHlj5N9LnmJpeXqL/cE2G1IhzXDHPESg6+j3r6ZkXog/Mg==
+X-YMail-OSG: 15dPgDYVM1lf7LYU5YjICDb4.o.KG8mT0z6WpqNOAcpdAJ3UiLF2BWtFy_t6daB
+ mEMj77_vtJ5vcyI5TokoUuk43iJOD9UW23GclLeFQpSKWxwAvUwdj3el7uZfcHblVc3MbTufcn1d
+ J.WIcDSnz2Od09NL5bY2eQyOmvObb3LMrZFsCeF3AyDOrko8Onk4i_fSTPBCm7LNFRvMSAwnhRl3
+ HHA3TMUlE0o2XRwYFmsQt4_GLuQnkyXrj_T0giLxHs6wihUKAYzJQiT7Ji5fyyemPLsVOAvSKvB6
+ Y5votF10Bw9E3Rp_jazHViHfRLeZsMzGBKTEb2fRoBJU0vZTRYLzFb6JCODeY2lG98ccMwudFmXy
+ YN3qIgwxBQASD1a2r7lfdWnbW3mLI4nH_F.fpfLzPiV8nF4RJU4946pS8DVQ3qz34QXPoyqTWBod
+ hKjXf1mxFG1hx7cTj6_X54kZKM6hySGeWtIAo1_MzO6Eg079oVFGs7tOrgv7XRVXxmfnhm2OTl0Q
+ MtWGWzJPh6b4boLLISpVqdkWRtUiP6WXQGe98VNTKvcRo28TYv4sF_lxQGKj6BTrq.lsB.LokMll
+ enN3XblyUhpQMdvOQ6ZhtVY33IRv20f3igChMcyvTHIf4jyMdoeRRcmb3mAUKOVlVNmgtpxJGQCn
+ AIdgjd0J7a_jP2o6O14qu50hFQORoRxMVZH.CcwEyuutfgT9a.6i3VOOyUGSm8V0TrjN.VdSQfn0
+ r_tRPEsq5YLqkpsu40m3pHmA7m2.9O.Zrvq73.Fb2Vw3dQwwrgQIGqhRbb9RFP974PntHQEzSi7i
+ xLXRMI9aOak7_miy2CLecQ0yl6cRgCB_6ep63lIVTiM5Gdp9QtkxbOgBXAF4Ps.sijwVZZ0qbI1k
+ OrsKd_e9OwIEwyzEdqzxF.MtwxLfWZUWklWL.6rV2J49Esq2vXiEvImC3yKJRLBQto9E_iGliWAk
+ q6v7krb6wwnWvXYGFpqME_4_5mAWD5tq535LUB_.Zb3d.92lJ71PW0rsnhfkya.9of2k.8KhB8pR
+ wOmvN3GVMPQo5sN2ZL7eqnogaE09QGwMm6hNNLqtWhcpByPhZUCSGKwGOYhdCBsie2lPy_vIV4wW
+ 2ghN6.C2B_1TTUaD5X12KiHL.kPFi3eKExMV_F2UTUf.IqJhbHvcMWW73DepokXIoWUOAIetCqBI
+ BvZwZ2lGDNL3gcpPL8Hg2yYzQZRTihShr0cjXOfjhYVQBDEYLTIvwCc_5fV8Ck28pXcVRcYfYiCO
+ ItNM92.lsHy_xKOGiMieNNCrSw.tsWHotMqg3YRK4DwzTtod2fFcepNBLNy97EHjeK1ROgQbr.Rw
+ FPr10vOzA4QQGAIrKd_1b6NZvm3.1Lw_Y_8zW4061TkJmiKk2IlmVtyldHqjYdoBiVil3SSyCESd
+ wXHI7a7hKg8Cynhvw7JExoh2S9p5XAUeDRogCb9GPuSBnH4MfzFTpGG8PTJD4KVbaOpqop_D3syp
+ MBsxd90qFdApM0pU_CQ5ahLh0xR0PanCB8bSonTfNY3ajPvvZlj9WtO._BIM1SSQGICE8Xhxa8Nv
+ w2zkeI7SZYVyKXfmDzZXn04J6GGe7A6XES7hLRHLaXy2aEQPMh7MnLg0kegvpKgEVQ3l3aDkZ67p
+ ATRuw_f.sr8dNjy2i.ZD6ZoNBu6Wj2BVBdi_E1CPz1F0tcqvI9qsxtz7yOYcw7Cu0ldHLdeUS2.U
+ SOTDCal36iim5Ff.n.KfPxaaMeIEoFScYYy0q1MUoUcqgvy1c8iSiH4IE.Gcw9UQT2zmavpzJLtd
+ QvSM5bLfP_jkoNWVOIlEhzQQRhiIaKt9ThqBrtPtsTq31aLW2MDY43bNnxsR3nCpEYeduMy3mRda
+ Qinmvtl5hN4iC0366Uva1_UGZkkfe6N4fP_8B2MfsOkQndeKqvQskQMC6zyZE48QKRYaqGPuyJIF
+ rn2LrllM4ClqXVyjfy0yM1QQypSrFPAm8LNBZA0DdRlKE.rJP4Z6XBGHBOrCHED96yG7ETAvAy5K
+ uycjqBdpsh2Av3qXPQqij.naiVO72nhwC7JyEy1OXdIukI0C_ZDBLa7KtIUF8fywl3luTz9N99ji
+ OWbijCMglyWA7al7YyuWxMMpsK_DYJOt3dk0zFGdSTde4GcgXqExibwjgRt4ZLLu2Slj5juh9H6w
+ JjU9kl_TTLvczGE1yle41DFXPzj9lGkSeiphD5IT5TAx_gRk1Ay6_Sa0LBJjQT_ixbsrFjF8C5Yq
+ 3Ud_kVTIB_iJdzIJ_Bb3UuPt.H04Y_oLRN2b91nTow0KOrwYUDFvBwX1ibTzvjQzQH1e_2QPGLQ-
+ -
+X-Sonic-MF: <casey@schaufler-ca.com>
+X-Sonic-ID: 5de0a5c7-bf41-4c18-9ffb-97f58d603d7b
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic302.consmr.mail.ne1.yahoo.com with HTTP; Tue, 7 Nov 2023 17:25:03 +0000
+Received: by hermes--production-ne1-56df75844-8k4lp (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID ffeb3ddfe1dfa694d24e3ced306e1385;
+          Tue, 07 Nov 2023 17:25:01 +0000 (UTC)
+Message-ID: <8477b471-2d57-4b16-912c-64002edc4f6d@schaufler-ca.com>
+Date:   Tue, 7 Nov 2023 09:25:01 -0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: rlOMfE6v9Jv1K1zh90qVbbSrtVVgtlIr
-X-Proofpoint-GUID: p1cNH5AcjioJZXwoiozkBShsYX00e0kl
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-07_08,2023-11-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- phishscore=0 malwarescore=0 priorityscore=1501 impostorscore=0 bulkscore=0
- suspectscore=0 spamscore=0 clxscore=1015 adultscore=0 mlxscore=0
- mlxlogscore=596 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2310240000 definitions=main-2311070142
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 05/23] ima: Align ima_post_read_file() definition with
+ LSM infrastructure
+Content-Language: en-US
+To:     Roberto Sassu <roberto.sassu@huaweicloud.com>,
+        viro@zeniv.linux.org.uk, brauner@kernel.org,
+        chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
+        kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
+        paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
+        zohar@linux.ibm.com, dmitry.kasatkin@gmail.com,
+        dhowells@redhat.com, jarkko@kernel.org,
+        stephen.smalley.work@gmail.com, eparis@parisplace.org,
+        mic@digikod.net
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
+        selinux@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>,
+        Stefan Berger <stefanb@linux.ibm.com>,
+        Casey Schaufler <casey@schaufler-ca.com>
+References: <20231107134012.682009-1-roberto.sassu@huaweicloud.com>
+ <20231107134012.682009-6-roberto.sassu@huaweicloud.com>
+From:   Casey Schaufler <casey@schaufler-ca.com>
+In-Reply-To: <20231107134012.682009-6-roberto.sassu@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Mailer: WebService/1.1.21896 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 6 Nov 2023 08:42:43 +0100
-Christoph Hellwig <hch@lst.de> wrote:
+On 11/7/2023 5:39 AM, Roberto Sassu wrote:
+> From: Roberto Sassu <roberto.sassu@huawei.com>
+>
+> Change ima_post_read_file() definition, by making "void *buf" a
+> "char *buf", so that it can be registered as implementation of the
+> post_read_file hook.
+>
+> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> Reviewed-by: Stefan Berger <stefanb@linux.ibm.com>
 
-> > 1. hardware which cannot handle an unaligned base address (presumably
-> >    because the chip performs a simple OR operation to get the addresses
-> >    of individual fields);  
-> 
-> There's all kinds of weird encodings that discard the low bits.
-> For NVMe it's the PRPs (that is actually documented in the NVMe
-> spec, so it might be easiest to grasp), but except for a Mellox
-> vendor extension this is also how all RDMA memory registrations
-> work.
+Reviewed-by: Casey Schaufler <casey@schaufler-ca.com>
 
-Thanks Christoph! So for NVMe in certain contexts the low
-bits of addresses get discarded, but in other contexts the high bits
-of addresses get discarded and the low bits need to remain the same
-after the bounce (and that's why we need commits 36950f2da1ea ("driver
-core: add a min_align_mask) and 1f221a0d0dbf ("swiotlb: respect
-min_align_mask").
 
-Does that sound about right?
-
-Regards,
-Halil
+> ---
+>  include/linux/ima.h               | 4 ++--
+>  security/integrity/ima/ima_main.c | 2 +-
+>  2 files changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/include/linux/ima.h b/include/linux/ima.h
+> index 678a03fddd7e..31ef6c3c3207 100644
+> --- a/include/linux/ima.h
+> +++ b/include/linux/ima.h
+> @@ -30,7 +30,7 @@ extern int ima_post_load_data(char *buf, loff_t size,
+>  			      enum kernel_load_data_id id, char *description);
+>  extern int ima_read_file(struct file *file, enum kernel_read_file_id id,
+>  			 bool contents);
+> -extern int ima_post_read_file(struct file *file, void *buf, loff_t size,
+> +extern int ima_post_read_file(struct file *file, char *buf, loff_t size,
+>  			      enum kernel_read_file_id id);
+>  extern void ima_post_path_mknod(struct mnt_idmap *idmap,
+>  				struct dentry *dentry);
+> @@ -108,7 +108,7 @@ static inline int ima_read_file(struct file *file, enum kernel_read_file_id id,
+>  	return 0;
+>  }
+>  
+> -static inline int ima_post_read_file(struct file *file, void *buf, loff_t size,
+> +static inline int ima_post_read_file(struct file *file, char *buf, loff_t size,
+>  				     enum kernel_read_file_id id)
+>  {
+>  	return 0;
+> diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
+> index b3f5e8401056..02021ee467d3 100644
+> --- a/security/integrity/ima/ima_main.c
+> +++ b/security/integrity/ima/ima_main.c
+> @@ -803,7 +803,7 @@ const int read_idmap[READING_MAX_ID] = {
+>   * On success return 0.  On integrity appraisal error, assuming the file
+>   * is in policy and IMA-appraisal is in enforcing mode, return -EACCES.
+>   */
+> -int ima_post_read_file(struct file *file, void *buf, loff_t size,
+> +int ima_post_read_file(struct file *file, char *buf, loff_t size,
+>  		       enum kernel_read_file_id read_id)
+>  {
+>  	enum ima_hooks func;
