@@ -2,212 +2,276 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1373E7E3B56
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 12:51:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCA7A7E3B62
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 12:59:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234253AbjKGLv1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 06:51:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47584 "EHLO
+        id S233873AbjKGL7E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 06:59:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232216AbjKGLvZ (ORCPT
+        with ESMTP id S231192AbjKGL7D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 06:51:25 -0500
-Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3462110A
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 03:51:22 -0800 (PST)
-Received: by mail-qk1-x733.google.com with SMTP id af79cd13be357-7789cc5c8ccso454358585a.0
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 03:51:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1699357881; x=1699962681; darn=vger.kernel.org;
-        h=in-reply-to:subject:from:references:cc:to:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=KfGukndTfZn7lUpfQ1IsQc5TQNkCRCSKE4dSFMGPFlc=;
-        b=DDQMDqwufCdJHIaLULtqWaUf6H9k1KTiW2xNFTGDX/JzXXs3tqMFbt1epcVhSbvS4l
-         wZ27XGpNe+mgcdUiX5rkPI4rSI340TT3wNyP6BW0qNYr+5AeqVA36lFkuYo1A5IxLGcC
-         unLSgJbulWaedSgwTT5CLGgLnOvygX0iaUQhM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699357881; x=1699962681;
-        h=in-reply-to:subject:from:references:cc:to:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KfGukndTfZn7lUpfQ1IsQc5TQNkCRCSKE4dSFMGPFlc=;
-        b=Gxf9QuVHFkkY1Lvtv0FWmwqTCN3vn7xW21pup/Vp3DrcvYK2UYUp8/RYC5mWyVcOle
-         8LuRecE2/5qr6m8nUj7BD6JoeMC42B3cdO3c4gDZM7kzPICHJrP0cWCA9Femmul7UUXE
-         o8smAdlvAhKLbsYHZgfMhuTsufATzxwxMtFDt0foFB77UgmXOBCZPIDSNzUUVRwYnaFM
-         RE5gS8f/iu1DaySD5wZVMYnpmHou5cEEEAtJBMBB6cuZjvHRIQPVG5/eVKliYLvMWccq
-         jAgpDBLkV+HLuPah0rLTUoOM5jvzzyvNaoKxaeuOb0e/f3VhGxzTOJtlGWRRjQCrLgDI
-         QLbQ==
-X-Gm-Message-State: AOJu0YzyOzK1u/PCXL27RB/Rhf5gKJJP2/6kxwMfWQ5K+S77E0f3Tut4
-        OKzaSq5TbOOuAUDS5z3ETjP7Ig==
-X-Google-Smtp-Source: AGHT+IFvgUWtfscqkZJzZDVJmKySykQRefvRV1W0q+QU0YaoZqOxO80J9TMsjuwKeYeX87etQ4Q79Q==
-X-Received: by 2002:a05:620a:1903:b0:767:f178:b571 with SMTP id bj3-20020a05620a190300b00767f178b571mr2846185qkb.10.1699357881269;
-        Tue, 07 Nov 2023 03:51:21 -0800 (PST)
-Received: from [10.176.68.61] ([192.19.148.250])
-        by smtp.gmail.com with ESMTPSA id x1-20020a05620a0b4100b0076d6a08ac98sm4116701qkg.76.2023.11.07.03.51.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 07 Nov 2023 03:51:19 -0800 (PST)
-Message-ID: <25e43cd3-45e6-d775-87c4-9ed7cdfe3e2d@broadcom.com>
-Date:   Tue, 7 Nov 2023 12:51:17 +0100
+        Tue, 7 Nov 2023 06:59:03 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9612B10A
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 03:59:00 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5EC5AC433C8;
+        Tue,  7 Nov 2023 11:58:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699358340;
+        bh=hru7SqaljxjJQ2Z7l0e/UMeTPje7tHCbfMGysXSXcYk=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=SWQlN3C3kLv3o6MX4KOMeyvRWX8q8/YSp976siNCHqBe7fcz5XQoQ7AGWQNHJ8HEV
+         iratbJpM4vZv7KAGkMP35Bz5qwr9LRJ+XekNTflJZShRq9qnf2e/WdDP2cMRJvYWyv
+         2pb1YF5y1VfEnIZ+nuG0vjrG9D4tUwrf7foLK0Hh9bhqujmJO2sBfkVCuBDCEBDthW
+         Y/HxjI0YjBiITZV1idxh+DOyjGH9zE0kOZyogc0OD/UC5x+CNg+sCrJctcAL9CDt2+
+         psFPe5PmoZZbmm+rBQFeLOjsU1xHubo0VSbd6+agsoz3svF7CfQMoui6GKwbpxM8ta
+         EAo3ZKbgEJAsA==
+Message-ID: <d6811957-1cb7-489d-a3da-f38622d7f515@kernel.org>
+Date:   Tue, 7 Nov 2023 12:58:48 +0100
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-To:     Hector Martin <marcan@marcan.st>,
-        Daniel Berlin <dberlin@dberlin.org>,
-        Arend van Spriel <aspriel@gmail.com>,
-        Franky Lin <franky.lin@broadcom.com>,
-        Hante Meuleman <hante.meuleman@broadcom.com>
-Cc:     linux-wireless@vger.kernel.org,
-        brcm80211-dev-list.pdl@broadcom.com,
-        SHA-cyfmac-dev-list@infineon.com, linux-kernel@vger.kernel.org
-References: <cover.1697650207.git.dberlin@dberlin.org>
- <079882bf4a7c026547ecf8ad50a2b7a49ade7130.1697650207.git.dberlin@dberlin.org>
- <b907f696-c966-54ef-3267-12833c6f5d91@broadcom.com>
- <26a081e6-032a-b58d-851c-eaac745e7c87@marcan.st>
-From:   Arend van Spriel <arend.vanspriel@broadcom.com>
-Subject: Re: [PATCH 4/5] wifi: brcmfmac: Support bss_info up to v112
-In-Reply-To: <26a081e6-032a-b58d-851c-eaac745e7c87@marcan.st>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000e03f9a06098e96a3"
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 6/7] sched/deadline: Deferrable dl server
+Content-Language: en-US, pt-BR, it-IT
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        linux-kernel@vger.kernel.org,
+        Luca Abeni <luca.abeni@santannapisa.it>,
+        Tommaso Cucinotta <tommaso.cucinotta@santannapisa.it>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vineeth Pillai <vineeth@bitbyteword.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Phil Auld <pauld@redhat.com>
+References: <cover.1699095159.git.bristot@kernel.org>
+ <c7b706d30d6316c52853ca056db5beb82ba72863.1699095159.git.bristot@kernel.org>
+ <CAEXW_YS=PrWDx+YGVR7bmq0_SoKNztzGrreApCd9qk1yBLA5bA@mail.gmail.com>
+ <CAEXW_YQ8kv3tXQJexLSguPuWi0bXiReKDyYNo9+A-Hgp=Zo1vA@mail.gmail.com>
+ <CAEXW_YSjsZSrJK_RbGmbLNy4UrLCgu+7NPZjg-wiLuNbGOGr+w@mail.gmail.com>
+From:   Daniel Bristot de Oliveira <bristot@kernel.org>
+In-Reply-To: <CAEXW_YSjsZSrJK_RbGmbLNy4UrLCgu+7NPZjg-wiLuNbGOGr+w@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000e03f9a06098e96a3
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-
-On 11/7/2023 12:11 PM, Hector Martin wrote:
-> On 20/10/2023 18.59, Arend van Spriel wrote:
->> On 10/19/2023 3:42 AM, Daniel Berlin wrote:
->>> From: Hector Martin <marcan@marcan.st>
+On 11/6/23 22:37, Joel Fernandes wrote:
+> On Mon, Nov 6, 2023 at 4:32 PM Joel Fernandes <joel@joelfernandes.org> wrote:
+>>
+>> On Mon, Nov 6, 2023 at 2:32 PM Joel Fernandes <joel@joelfernandes.org> wrote:
 >>>
->>> The structures are compatible and just add fields, so we can just treat
->>> it as always v112. If we start using new fields, that will have to be
->>> gated on the version.
->>
->> Seems EHT is creeping in here.
->>
->> Having doubts about compatibility statement (see below)...
->>
->>> Signed-off-by: Hector Martin <marcan@marcan.st>
->>> ---
->>>    .../broadcom/brcm80211/brcmfmac/cfg80211.c    |  5 ++-
->>>    .../broadcom/brcm80211/brcmfmac/fwil_types.h  | 37 +++++++++++++++++--
->>>    2 files changed, 36 insertions(+), 6 deletions(-)
+>>> Hi Daniel,
 >>>
-
-[...]
-
->>> @@ -323,28 +324,56 @@ struct brcmf_bss_info_le {
->>>    	__le16 capability;	/* Capability information */
->>>    	u8 SSID_len;
->>>    	u8 SSID[32];
->>> +	u8 bcnflags;		/* additional flags w.r.t. beacon */
+>>> On Sat, Nov 4, 2023 at 6:59 AM Daniel Bristot de Oliveira
+>>> <bristot@kernel.org> wrote:
+>>>>
+>>>> Among the motivations for the DL servers is the real-time throttling
+>>>> mechanism. This mechanism works by throttling the rt_rq after
+>>>> running for a long period without leaving space for fair tasks.
+>>>>
+>>>> The base dl server avoids this problem by boosting fair tasks instead
+>>>> of throttling the rt_rq. The point is that it boosts without waiting
+>>>> for potential starvation, causing some non-intuitive cases.
+>>>>
+>>>> For example, an IRQ dispatches two tasks on an idle system, a fair
+>>>> and an RT. The DL server will be activated, running the fair task
+>>>> before the RT one. This problem can be avoided by deferring the
+>>>> dl server activation.
+>>>>
+>>>> By setting the zerolax option, the dl_server will dispatch an
+>>>> SCHED_DEADLINE reservation with replenished runtime, but throttled.
+>>>>
+>>>> The dl_timer will be set for (period - runtime) ns from start time.
+>>>> Thus boosting the fair rq on its 0-laxity time with respect to
+>>>> rt_rq.
+>>>>
+>>>> If the fair scheduler has the opportunity to run while waiting
+>>>> for zerolax time, the dl server runtime will be consumed. If
+>>>> the runtime is completely consumed before the zerolax time, the
+>>>> server will be replenished while still in a throttled state. Then,
+>>>> the dl_timer will be reset to the new zerolax time
+>>>>
+>>>> If the fair server reaches the zerolax time without consuming
+>>>> its runtime, the server will be boosted, following CBS rules
+>>>> (thus without breaking SCHED_DEADLINE).
+>>>>
+>>>> Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
+>>>> ---
+>>>>  include/linux/sched.h   |   2 +
+>>>>  kernel/sched/deadline.c | 100 +++++++++++++++++++++++++++++++++++++++-
+>>>>  kernel/sched/fair.c     |   3 ++
+>>>>  3 files changed, 103 insertions(+), 2 deletions(-)
+>>>>
+>>>> diff --git a/include/linux/sched.h b/include/linux/sched.h
+>>>> index 5ac1f252e136..56e53e6fd5a0 100644
+>>>> --- a/include/linux/sched.h
+>>>> +++ b/include/linux/sched.h
+>>>> @@ -660,6 +660,8 @@ struct sched_dl_entity {
+>>>>         unsigned int                    dl_non_contending : 1;
+>>>>         unsigned int                    dl_overrun        : 1;
+>>>>         unsigned int                    dl_server         : 1;
+>>>> +       unsigned int                    dl_zerolax        : 1;
+>>>> +       unsigned int                    dl_zerolax_armed  : 1;
+>>>>
+>>>>         /*
+>>>>          * Bandwidth enforcement timer. Each -deadline task has its
+>>>> diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
+>>>> index 1d7b96ca9011..69ee1fbd60e4 100644
+>>>> --- a/kernel/sched/deadline.c
+>>>> +++ b/kernel/sched/deadline.c
+>>>> @@ -772,6 +772,14 @@ static inline void replenish_dl_new_period(struct sched_dl_entity *dl_se,
+>>>>         /* for non-boosted task, pi_of(dl_se) == dl_se */
+>>>>         dl_se->deadline = rq_clock(rq) + pi_of(dl_se)->dl_deadline;
+>>>>         dl_se->runtime = pi_of(dl_se)->dl_runtime;
+>>>> +
+>>>> +       /*
+>>>> +        * If it is a zerolax reservation, throttle it.
+>>>> +        */
+>>>> +       if (dl_se->dl_zerolax) {
+>>>> +               dl_se->dl_throttled = 1;
+>>>> +               dl_se->dl_zerolax_armed = 1;
+>>>> +       }
+>>>>  }
+>>>>
+>>>>  /*
+>>>> @@ -828,6 +836,7 @@ static inline void setup_new_dl_entity(struct sched_dl_entity *dl_se)
+>>>>   * could happen are, typically, a entity voluntarily trying to overcome its
+>>>>   * runtime, or it just underestimated it during sched_setattr().
+>>>>   */
+>>>> +static int start_dl_timer(struct sched_dl_entity *dl_se);
+>>>>  static void replenish_dl_entity(struct sched_dl_entity *dl_se)
+>>>>  {
+>>>>         struct dl_rq *dl_rq = dl_rq_of_se(dl_se);
+>>>> @@ -874,6 +883,28 @@ static void replenish_dl_entity(struct sched_dl_entity *dl_se)
+>>>>                 dl_se->dl_yielded = 0;
+>>>>         if (dl_se->dl_throttled)
+>>>>                 dl_se->dl_throttled = 0;
+>>>> +
+>>>> +       /*
+>>>> +        * If this is the replenishment of a zerolax reservation,
+>>>> +        * clear the flag and return.
+>>>> +        */
+>>>> +       if (dl_se->dl_zerolax_armed) {
+>>>> +               dl_se->dl_zerolax_armed = 0;
+>>>> +               return;
+>>>> +       }
+>>>> +
+>>>> +       /*
+>>>> +        * A this point, if the zerolax server is not armed, and the deadline
+>>>> +        * is in the future, throttle the server and arm the zerolax timer.
+>>>> +        */
+>>>> +       if (dl_se->dl_zerolax &&
+>>>> +           dl_time_before(dl_se->deadline - dl_se->runtime, rq_clock(rq))) {
+>>>> +               if (!is_dl_boosted(dl_se)) {
+>>>> +                       dl_se->dl_zerolax_armed = 1;
+>>>> +                       dl_se->dl_throttled = 1;
+>>>> +                       start_dl_timer(dl_se);
+>>>> +               }
+>>>> +       }
+>>>>  }
+>>>>
+>>>>  /*
+>>>> @@ -1024,6 +1055,13 @@ static void update_dl_entity(struct sched_dl_entity *dl_se)
+>>>>                 }
+>>>>
+>>>>                 replenish_dl_new_period(dl_se, rq);
+>>>> +       } else if (dl_server(dl_se) && dl_se->dl_zerolax) {
+>>>> +               /*
+>>>> +                * The server can still use its previous deadline, so throttle
+>>>> +                * and arm the zero-laxity timer.
+>>>> +                */
+>>>> +               dl_se->dl_zerolax_armed = 1;
+>>>> +               dl_se->dl_throttled = 1;
+>>>>         }
+>>>>  }
+>>>>
+>>>> @@ -1056,8 +1094,20 @@ static int start_dl_timer(struct sched_dl_entity *dl_se)
+>>>>          * We want the timer to fire at the deadline, but considering
+>>>>          * that it is actually coming from rq->clock and not from
+>>>>          * hrtimer's time base reading.
+>>>> +        *
+>>>> +        * The zerolax reservation will have its timer set to the
+>>>> +        * deadline - runtime. At that point, the CBS rule will decide
+>>>> +        * if the current deadline can be used, or if a replenishment
+>>>> +        * is required to avoid add too much pressure on the system
+>>>> +        * (current u > U).
+>>>>          */
+>>>> -       act = ns_to_ktime(dl_next_period(dl_se));
+>>>> +       if (dl_se->dl_zerolax_armed) {
+>>>> +               WARN_ON_ONCE(!dl_se->dl_throttled);
+>>>> +               act = ns_to_ktime(dl_se->deadline - dl_se->runtime);
+>>>
+>>> Just a question, here if dl_se->deadline - dl_se->runtime is large,
+>>> then does that mean that server activation will be much more into the
+>>> future? So say I want to give CFS 30%, then it will take 70% of the
+>>> period before CFS preempts RT thus "starving" CFS for this duration. I
+>>> think that's Ok for smaller periods and runtimes, though.
+>>>
+>>> I think it does reserve the amount of required CFS bandwidth so it is
+>>> probably OK, though it is perhaps letting RT run more initially (say
+>>> if CFS tasks are not CPU bound and occasionally wake up, they will
+>>> always be hit by the 70% latency AFAICS which may be large for large
+>>> periods and small runtimes).
+>>>
 >>
->> Ehm. Coming back to your statement "structures are compatible and just
->> add fields". How are they compatible? You now treat v109 struct as v112
->> so fields below are shifted because of bcnflags. So you read invalid
->> information. This does not fly or I am missing something here.
+>> One more consideration I guess is, because the server is throttled
+>> till 0-laxity time, it is possible that if CFS sleeps even a bit
+>> (after the DL-server is unthrottled), then it will be pushed out to a
+>> full current deadline + period due to CBS. In such a situation,  if
+>> CFS-server is the only DL task running, it might starve RT for a bit
+>> more time.
+>>
+>> Example, say CFS runtime is 0.3s and period is 1s. At 0.7s, 0-laxity
+>> timer fires. CFS runs for 0.29s, then sleeps for 0.005s and wakes up
+>> at 0.295s (its remaining runtime is 0.01s at this point which is < the
+>> "time till deadline" of 0.005s). Now the runtime of the CFS-server
+>> will be replenished to the full 3s (due to CBS) and the deadline
+>> pushed out. The end result is the total runtime that the CFS-server
+>> actually gets is 0.0595s (though yes it did sleep for 5ms in between,
+>> still that's tiny -- say if it briefly blocked on a kernel mutex).
 > 
-> bcmflags was previously an implied padding byte. If you actually check
-> the offsets of the subsequent fields, you'll see they haven't changed.
-> In fact this was added at some point in the past and just missing here,
-> and is a general case of "padding bytes were not explicitly specified"
-> which is arguably an anti-pattern and should never have been the case.
+> Blah, I got lost in decimal points. Here's the example again:
+> 
+> Say CFS-server runtime is 0.3s and period is 1s.
+> 
+> At 0.7s, 0-laxity timer fires. CFS runs for 0.29s, then sleeps for
+> 0.005s and wakes up at 0.295s (its remaining runtime is 0.01s at this
+> point which is < the "time till deadline" of 0.005s)
+> 
+> Now the runtime of the CFS-server will be replenished to the full 0.3s
+> (due to CBS) and the deadline
+> pushed out.
+> 
+> The end result is, the total runtime that the CFS-server actually gets
+> is 0.595s (though yes it did sleep for 5ms in between, still that's
+> tiny -- say if it briefly blocked on a kernel mutex). That's almost
+> double the allocated runtime.
 
-Yeah. Let's not argue ;-) I did miss something here and leave it with 
-that. What about the EHT stuff? I would prefer to keep it out unless 
-full EHT support is added.
+I think I got what you mean, and I think I took for granted that we were
+doing overload control on the replenishment, but it seems that we are not..
 
-Regards,
-Arend
+I just got back from a doct appt, I will do a proper reply later today.
 
---000000000000e03f9a06098e96a3
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+Thanks Joel!
+-- Daniel
 
-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
-2Gzj3QNJRLsZu1TLyOyBBIr/BE7UiY3RabgRzknBGAPmzhS+fmyM8OtM5BYBsFBrSUFtZZO2p/tf
-Nbc24J2zf2peoZ8MK+7WQqummYlOnz+FyDkA9EybeNMcS5C+xi/PAgMBAAGjggHdMIIB2TAOBgNV
-HQ8BAf8EBAMCBaAwgaMGCCsGAQUFBwEBBIGWMIGTME4GCCsGAQUFBzAChkJodHRwOi8vc2VjdXJl
-Lmdsb2JhbHNpZ24uY29tL2NhY2VydC9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAyMC5jcnQwQQYI
-KwYBBQUHMAGGNWh0dHA6Ly9vY3NwLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24y
-Y2EyMDIwME0GA1UdIARGMEQwQgYKKwYBBAGgMgEoCjA0MDIGCCsGAQUFBwIBFiZodHRwczovL3d3
-dy5nbG9iYWxzaWduLmNvbS9yZXBvc2l0b3J5LzAJBgNVHRMEAjAAMEkGA1UdHwRCMEAwPqA8oDqG
-OGh0dHA6Ly9jcmwuZ2xvYmFsc2lnbi5jb20vZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3Js
-MCcGA1UdEQQgMB6BHGFyZW5kLnZhbnNwcmllbEBicm9hZGNvbS5jb20wEwYDVR0lBAwwCgYIKwYB
-BQUHAwQwHwYDVR0jBBgwFoAUljPR5lgXWzR1ioFWZNW+SN6hj88wHQYDVR0OBBYEFIikAXd8CEtv
-ZbDflDRnf3tuStPuMA0GCSqGSIb3DQEBCwUAA4IBAQCdS5XCYx6k2GGZui9DlFsFm75khkqAU7rT
-zBX04sJU1+B1wtgmWTVIzW7ugdtDZ4gzaV0S9xRhpDErjJaltxPbCylb1DEsLj+AIvBR34caW6ZG
-sQk444t0HPb29HnWYj+OllIGMbdJWr0/P95ZrKk2bP24ub3ZP/8SyzrohfIba9WZKMq6g2nTLZE3
-BtkeSGJx/8dy0h8YmRn+adOrxKXHxhSL8BNn8wsmIZyYWe6fRcBtO3Ks2DOLyHCdkoFlN8x9VUQF
-N2ulEgqCbRKkx+qNirW86eF138lr1gRxzclu/38ko//MmkAYR/+hP3WnBll7zbpIt0jc9wyFkSqH
-p8a1MYICbTCCAmkCAQEwazBbMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1z
-YTExMC8GA1UEAxMoR2xvYmFsU2lnbiBHQ0MgUjMgUGVyc29uYWxTaWduIDIgQ0EgMjAyMAIMTv1t
-bpIzNUky46LXMA0GCWCGSAFlAwQCAQUAoIHUMC8GCSqGSIb3DQEJBDEiBCA+eeT/laDBazGubtgX
-OlbCPGhyuxh58ab2J/JoMzKZdjAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwGCSqGSIb3DQEJ
-BTEPFw0yMzExMDcxMTUxMjFaMGkGCSqGSIb3DQEJDzFcMFowCwYJYIZIAWUDBAEqMAsGCWCGSAFl
-AwQBFjALBglghkgBZQMEAQIwCgYIKoZIhvcNAwcwCwYJKoZIhvcNAQEKMAsGCSqGSIb3DQEBBzAL
-BglghkgBZQMEAgEwDQYJKoZIhvcNAQEBBQAEggEAJCCfq9ZgYljyicO5QknwL6mGv1g3yvm+TqUe
-IUxHZBSsIjT2kwnIGtM0LghTuPJjvpCXgb5PzNQ5X7/yNGedeM9iNnS29Jfd78uMSso5OU81sOyK
-4ZwchFyUz2gKk5yoHduQkRBPz5Ml6r79FwXNh4AK1dlDY0G2GgzMdX0keQXFMM+o7bvl3dzFqIru
-lxaAyFqSX5NrrUDhyHoNUfvozD9LYXImy8I06wToMFKVVtfAj+cl0+0h4EubJyu90WkL5OZhxrs7
-EbZqStdNdmXPGjjtZkdFBf4aSQBOEAxMaqQG1RtMGznQu3zQZp9mLKfYTz8J9/CaE60JJzKFssVb
-mg==
---000000000000e03f9a06098e96a3--
+
+> This is just theoretical and I have yet to see if it is actually an
+> issue in practice.
+> 
+> Thanks.
+
