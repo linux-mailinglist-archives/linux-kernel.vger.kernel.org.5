@@ -2,46 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C4207E3EF1
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 13:44:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1D137E3EF5
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 13:44:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235220AbjKGMov (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 07:44:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38362 "EHLO
+        id S1343545AbjKGMoy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 07:44:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343539AbjKGMnn (ORCPT
+        with ESMTP id S235019AbjKGMnp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 07:43:43 -0500
+        Tue, 7 Nov 2023 07:43:45 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5E2F34928;
-        Tue,  7 Nov 2023 04:30:39 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0618EC433CA;
-        Tue,  7 Nov 2023 12:30:36 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E9CA34937;
+        Tue,  7 Nov 2023 04:30:41 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A420FC433C7;
+        Tue,  7 Nov 2023 12:30:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699360239;
-        bh=Gv2zy/TdS1K+ZFw4+H2FZtph57+p8umPLiqmwTzFHtI=;
+        s=k20201202; t=1699360240;
+        bh=FCraxpZ/ln5cZ32lci7Dq7LGqWdWc8yhBgLj5dz5k+Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jtKdJNxCvngWHYmyhTCZNyoChs5slHIZxlAxkHgV45KoE8bBvDg+3gNoGHgjrVuO7
-         3X8bLw+h6Bd+2zD32/++oMrNnEfEmxMscHHG9d2HGAKTOBkYjtKlAGvGgjLlu3j3pY
-         zpOe+Smalby9mCLITKLB24BgaoDifoZtSkCv9AGaIxkrpa77drfQTJFOCD0/lOmcmQ
-         Osz3NytFdfixzlf12tJQAbG4c31wlRZ51yTiFgBz1QB8SP3HeXiD6qX35LxCZG09H2
-         IXTNYnnKpE5JMlXpGU54b6GP+rEgo1haxQ6iLoR5MV8aXj29Fd4YCq5SJcaK8ZIhmL
-         ipStnblhaI//A==
+        b=mAYEOZAczWsw1fnIs8fPaBoxVyoQfL4e49vc7vTS/0JH4Q0summAgREES5nI5sRkS
+         U8NJSzYaBpNMcryXYrof+l9O0z7AE17sbD0lLrYvzDXlzGNXNjCqjfXe3QcSgT3Oiu
+         Y9vBZCUGSnrLBm36lXPZblWi8LbCgirWqznIdzMBjUPm2jkx/MvDjX5RTJo/dMB1tv
+         VhPNCChuX48wZc2Y2y9xs0egNj19BFcfAKU/8uZgHBdirpJtqt58LFCzY/+h2BptlB
+         8I7tJhc2ptd2QHcBg7PfDz2QpYG2GbMBi2bA6SRMVdLGi/epPA8qjr5oETugqw20T7
+         7GiqoP63LKLRA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Qu Huang <qu.huang@linux.dev>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Sasha Levin <sashal@kernel.org>, christian.koenig@amd.com,
-        Xinhui.Pan@amd.com, airlied@gmail.com, daniel@ffwll.ch,
-        keescook@chromium.org, srinivasan.shanmugam@amd.com,
-        shashank.sharma@amd.com, Hawking.Zhang@amd.com,
-        dan.carpenter@linaro.org, tom.stdenis@amd.com,
-        Praful.Swarnakar@amd.com, le.ma@amd.com, andrealmeid@igalia.com,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 18/20] drm/amdgpu: Fix a null pointer access when the smc_rreg pointer is NULL
-Date:   Tue,  7 Nov 2023 07:29:12 -0500
-Message-ID: <20231107122940.3762228-18-sashal@kernel.org>
+Cc:     Laurentiu Tudor <laurentiu.tudor@nxp.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, leoyang.li@nxp.com,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, linux-arm-kernel@lists.infradead.org,
+        devicetree@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.15 19/20] arm64: dts: ls208xa: use a pseudo-bus to constrain usb dma size
+Date:   Tue,  7 Nov 2023 07:29:13 -0500
+Message-ID: <20231107122940.3762228-19-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231107122940.3762228-1-sashal@kernel.org>
 References: <20231107122940.3762228-1-sashal@kernel.org>
@@ -60,102 +56,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qu Huang <qu.huang@linux.dev>
+From: Laurentiu Tudor <laurentiu.tudor@nxp.com>
 
-[ Upstream commit 5104fdf50d326db2c1a994f8b35dcd46e63ae4ad ]
+[ Upstream commit b39d5016456871a88f5cd141914a5043591b46f3 ]
 
-In certain types of chips, such as VEGA20, reading the amdgpu_regs_smc file could result in an abnormal null pointer access when the smc_rreg pointer is NULL. Below are the steps to reproduce this issue and the corresponding exception log:
+Wrap the usb controllers in an intermediate simple-bus and use it to
+constrain the dma address size of these usb controllers to the 40b
+that they generate toward the interconnect. This is required because
+the SoC uses 48b address sizes and this mismatch would lead to smmu
+context faults [1] because the usb generates 40b addresses while the
+smmu page tables are populated with 48b wide addresses.
 
-1. Navigate to the directory: /sys/kernel/debug/dri/0
-2. Execute command: cat amdgpu_regs_smc
-3. Exception Log::
-[4005007.702554] BUG: kernel NULL pointer dereference, address: 0000000000000000
-[4005007.702562] #PF: supervisor instruction fetch in kernel mode
-[4005007.702567] #PF: error_code(0x0010) - not-present page
-[4005007.702570] PGD 0 P4D 0
-[4005007.702576] Oops: 0010 [#1] SMP NOPTI
-[4005007.702581] CPU: 4 PID: 62563 Comm: cat Tainted: G           OE     5.15.0-43-generic #46-Ubunt       u
-[4005007.702590] RIP: 0010:0x0
-[4005007.702598] Code: Unable to access opcode bytes at RIP 0xffffffffffffffd6.
-[4005007.702600] RSP: 0018:ffffa82b46d27da0 EFLAGS: 00010206
-[4005007.702605] RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffffa82b46d27e68
-[4005007.702609] RDX: 0000000000000001 RSI: 0000000000000000 RDI: ffff9940656e0000
-[4005007.702612] RBP: ffffa82b46d27dd8 R08: 0000000000000000 R09: ffff994060c07980
-[4005007.702615] R10: 0000000000020000 R11: 0000000000000000 R12: 00007f5e06753000
-[4005007.702618] R13: ffff9940656e0000 R14: ffffa82b46d27e68 R15: 00007f5e06753000
-[4005007.702622] FS:  00007f5e0755b740(0000) GS:ffff99479d300000(0000) knlGS:0000000000000000
-[4005007.702626] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[4005007.702629] CR2: ffffffffffffffd6 CR3: 00000003253fc000 CR4: 00000000003506e0
-[4005007.702633] Call Trace:
-[4005007.702636]  <TASK>
-[4005007.702640]  amdgpu_debugfs_regs_smc_read+0xb0/0x120 [amdgpu]
-[4005007.703002]  full_proxy_read+0x5c/0x80
-[4005007.703011]  vfs_read+0x9f/0x1a0
-[4005007.703019]  ksys_read+0x67/0xe0
-[4005007.703023]  __x64_sys_read+0x19/0x20
-[4005007.703028]  do_syscall_64+0x5c/0xc0
-[4005007.703034]  ? do_user_addr_fault+0x1e3/0x670
-[4005007.703040]  ? exit_to_user_mode_prepare+0x37/0xb0
-[4005007.703047]  ? irqentry_exit_to_user_mode+0x9/0x20
-[4005007.703052]  ? irqentry_exit+0x19/0x30
-[4005007.703057]  ? exc_page_fault+0x89/0x160
-[4005007.703062]  ? asm_exc_page_fault+0x8/0x30
-[4005007.703068]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-[4005007.703075] RIP: 0033:0x7f5e07672992
-[4005007.703079] Code: c0 e9 b2 fe ff ff 50 48 8d 3d fa b2 0c 00 e8 c5 1d 02 00 0f 1f 44 00 00 f3 0f        1e fa 64 8b 04 25 18 00 00 00 85 c0 75 10 0f 05 <48> 3d 00 f0 ff ff 77 56 c3 0f 1f 44 00 00 48 83 e       c 28 48 89 54 24
-[4005007.703083] RSP: 002b:00007ffe03097898 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
-[4005007.703088] RAX: ffffffffffffffda RBX: 0000000000020000 RCX: 00007f5e07672992
-[4005007.703091] RDX: 0000000000020000 RSI: 00007f5e06753000 RDI: 0000000000000003
-[4005007.703094] RBP: 00007f5e06753000 R08: 00007f5e06752010 R09: 00007f5e06752010
-[4005007.703096] R10: 0000000000000022 R11: 0000000000000246 R12: 0000000000022000
-[4005007.703099] R13: 0000000000000003 R14: 0000000000020000 R15: 0000000000020000
-[4005007.703105]  </TASK>
-[4005007.703107] Modules linked in: nf_tables libcrc32c nfnetlink algif_hash af_alg binfmt_misc nls_       iso8859_1 ipmi_ssif ast intel_rapl_msr intel_rapl_common drm_vram_helper drm_ttm_helper amd64_edac t       tm edac_mce_amd kvm_amd ccp mac_hid k10temp kvm acpi_ipmi ipmi_si rapl sch_fq_codel ipmi_devintf ipm       i_msghandler msr parport_pc ppdev lp parport mtd pstore_blk efi_pstore ramoops pstore_zone reed_solo       mon ip_tables x_tables autofs4 ib_uverbs ib_core amdgpu(OE) amddrm_ttm_helper(OE) amdttm(OE) iommu_v       2 amd_sched(OE) amdkcl(OE) drm_kms_helper syscopyarea sysfillrect sysimgblt fb_sys_fops cec rc_core        drm igb ahci xhci_pci libahci i2c_piix4 i2c_algo_bit xhci_pci_renesas dca
-[4005007.703184] CR2: 0000000000000000
-[4005007.703188] ---[ end trace ac65a538d240da39 ]---
-[4005007.800865] RIP: 0010:0x0
-[4005007.800871] Code: Unable to access opcode bytes at RIP 0xffffffffffffffd6.
-[4005007.800874] RSP: 0018:ffffa82b46d27da0 EFLAGS: 00010206
-[4005007.800878] RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffffa82b46d27e68
-[4005007.800881] RDX: 0000000000000001 RSI: 0000000000000000 RDI: ffff9940656e0000
-[4005007.800883] RBP: ffffa82b46d27dd8 R08: 0000000000000000 R09: ffff994060c07980
-[4005007.800886] R10: 0000000000020000 R11: 0000000000000000 R12: 00007f5e06753000
-[4005007.800888] R13: ffff9940656e0000 R14: ffffa82b46d27e68 R15: 00007f5e06753000
-[4005007.800891] FS:  00007f5e0755b740(0000) GS:ffff99479d300000(0000) knlGS:0000000000000000
-[4005007.800895] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[4005007.800898] CR2: ffffffffffffffd6 CR3: 00000003253fc000 CR4: 00000000003506e0
+[1]
+xhci-hcd xhci-hcd.0.auto: xHCI Host Controller
+xhci-hcd xhci-hcd.0.auto: new USB bus registered, assigned bus number 1
+xhci-hcd xhci-hcd.0.auto: hcc params 0x0220f66d hci version 0x100 quirks 0x0000000002000010
+xhci-hcd xhci-hcd.0.auto: irq 108, io mem 0x03100000
+xhci-hcd xhci-hcd.0.auto: xHCI Host Controller
+xhci-hcd xhci-hcd.0.auto: new USB bus registered, assigned bus number 2
+xhci-hcd xhci-hcd.0.auto: Host supports USB 3.0 SuperSpeed
+arm-smmu 5000000.iommu: Unhandled context fault: fsr=0x402, iova=0xffffffb000, fsynr=0x0, cbfrsynra=0xc01, cb=3
 
-Signed-off-by: Qu Huang <qu.huang@linux.dev>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Laurentiu Tudor <laurentiu.tudor@nxp.com>
+Signed-off-by: Shawn Guo <shawnguo@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ .../arm64/boot/dts/freescale/fsl-ls208xa.dtsi | 46 +++++++++++--------
+ 1 file changed, 27 insertions(+), 19 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c
-index 348629ea0e153..beb199d13451b 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c
-@@ -458,6 +458,9 @@ static ssize_t amdgpu_debugfs_regs_smc_read(struct file *f, char __user *buf,
- 	ssize_t result = 0;
- 	int r;
+diff --git a/arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi
+index 12e59777363fe..9bb360db6b195 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi
++++ b/arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi
+@@ -1179,26 +1179,34 @@ sata1: sata@3210000 {
+ 			dma-coherent;
+ 		};
  
-+	if (!adev->smc_rreg)
-+		return -EPERM;
+-		usb0: usb@3100000 {
+-			status = "disabled";
+-			compatible = "snps,dwc3";
+-			reg = <0x0 0x3100000 0x0 0x10000>;
+-			interrupts = <0 80 0x4>; /* Level high type */
+-			dr_mode = "host";
+-			snps,quirk-frame-length-adjustment = <0x20>;
+-			snps,dis_rxdet_inp3_quirk;
+-			snps,incr-burst-type-adjustment = <1>, <4>, <8>, <16>;
+-		};
++		bus: bus {
++			#address-cells = <2>;
++			#size-cells = <2>;
++			compatible = "simple-bus";
++			ranges;
++			dma-ranges = <0x0 0x0 0x0 0x0 0x100 0x00000000>;
 +
- 	if (size & 0x3 || *pos & 0x3)
- 		return -EINVAL;
++			usb0: usb@3100000 {
++				compatible = "snps,dwc3";
++				reg = <0x0 0x3100000 0x0 0x10000>;
++				interrupts = <0 80 0x4>; /* Level high type */
++				dr_mode = "host";
++				snps,quirk-frame-length-adjustment = <0x20>;
++				snps,dis_rxdet_inp3_quirk;
++				snps,incr-burst-type-adjustment = <1>, <4>, <8>, <16>;
++				status = "disabled";
++			};
  
-@@ -517,6 +520,9 @@ static ssize_t amdgpu_debugfs_regs_smc_write(struct file *f, const char __user *
- 	ssize_t result = 0;
- 	int r;
+-		usb1: usb@3110000 {
+-			status = "disabled";
+-			compatible = "snps,dwc3";
+-			reg = <0x0 0x3110000 0x0 0x10000>;
+-			interrupts = <0 81 0x4>; /* Level high type */
+-			dr_mode = "host";
+-			snps,quirk-frame-length-adjustment = <0x20>;
+-			snps,dis_rxdet_inp3_quirk;
+-			snps,incr-burst-type-adjustment = <1>, <4>, <8>, <16>;
++			usb1: usb@3110000 {
++				compatible = "snps,dwc3";
++				reg = <0x0 0x3110000 0x0 0x10000>;
++				interrupts = <0 81 0x4>; /* Level high type */
++				dr_mode = "host";
++				snps,quirk-frame-length-adjustment = <0x20>;
++				snps,dis_rxdet_inp3_quirk;
++				snps,incr-burst-type-adjustment = <1>, <4>, <8>, <16>;
++				status = "disabled";
++			};
+ 		};
  
-+	if (!adev->smc_wreg)
-+		return -EPERM;
-+
- 	if (size & 0x3 || *pos & 0x3)
- 		return -EINVAL;
- 
+ 		ccn@4000000 {
 -- 
 2.42.0
 
