@@ -2,147 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CEB957E37F5
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 10:38:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48CDF7E37FF
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 10:41:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233819AbjKGJiX convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 7 Nov 2023 04:38:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53564 "EHLO
+        id S233833AbjKGJly (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 04:41:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229536AbjKGJiW (ORCPT
+        with ESMTP id S233828AbjKGJlv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 04:38:22 -0500
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22FB292;
-        Tue,  7 Nov 2023 01:38:19 -0800 (PST)
-Received: from lhrpeml100001.china.huawei.com (unknown [172.18.147.200])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4SPjjl0dvWz67mKT;
-        Tue,  7 Nov 2023 17:34:51 +0800 (CST)
-Received: from lhrpeml500006.china.huawei.com (7.191.161.198) by
- lhrpeml100001.china.huawei.com (7.191.160.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Tue, 7 Nov 2023 09:38:16 +0000
-Received: from lhrpeml500006.china.huawei.com ([7.191.161.198]) by
- lhrpeml500006.china.huawei.com ([7.191.161.198]) with mapi id 15.01.2507.031;
- Tue, 7 Nov 2023 09:38:16 +0000
-From:   Shiju Jose <shiju.jose@huawei.com>
-To:     Ira Weiny <ira.weiny@intel.com>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>
-CC:     Dan Williams <dan.j.williams@intel.com>,
-        Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>,
-        Yazen Ghannam <yazen.ghannam@amd.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Alison Schofield <alison.schofield@intel.com>,
-        "Vishal Verma" <vishal.l.verma@intel.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        "linux-efi@vger.kernel.org" <linux-efi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-cxl@vger.kernel.org" <linux-cxl@vger.kernel.org>
-Subject: RE: [PATCH RFC v3 1/6] cxl/trace: Remove uuid from event trace known
- events
-Thread-Topic: [PATCH RFC v3 1/6] cxl/trace: Remove uuid from event trace known
- events
-Thread-Index: AQHaDQgRQ2vINXGk70OHbaqSCzYaYrBoqc8AgAAYFhCABR7LgIAAwHxA
-Date:   Tue, 7 Nov 2023 09:38:16 +0000
-Message-ID: <36f2d12934d64a278f2c0313cbd01abc@huawei.com>
-References: <20230601-cxl-cper-v3-0-0189d61f7956@intel.com>
- <20230601-cxl-cper-v3-1-0189d61f7956@intel.com>
- <20231103142756.00000e20@Huawei.com>
- <547d055eb85d4cee9c636c69e89a82ed@huawei.com>
- <65496333c1dc9_90fed29479@iweiny-mobl.notmuch>
-In-Reply-To: <65496333c1dc9_90fed29479@iweiny-mobl.notmuch>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.126.168.44]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-MIME-Version: 1.0
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Tue, 7 Nov 2023 04:41:51 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2F29102
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 01:41:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699350107; x=1730886107;
+  h=date:from:to:cc:subject:message-id;
+  bh=aWnobbj7ijjsUwE7TJ7MtNqMrt0SU8Vz0j3P6/6ZrzY=;
+  b=PeDmCDKlErJNa2IZb1bP7rjQsLy7KHHVhIytfJDByP7OLwMeQ1AA70hG
+   etvSk/DeZiuRr1GPoMb/ZkKkwFiyKWlFACu8R3Lvby1Dq3hPpzJqLb+h8
+   5LobJcRn1XFOgMIYLrFSj7yCPTntS+oo9TX6hAZZDqnW2DVVxKWFenELO
+   quyciLY7gr/bQIhusHxvhJKkT12fFg/IujisqN7uq/blrmhJfRP0cxTDZ
+   mJuS5wyez7NWQFNaXrkXsN0Yn0rrATpA3ZUJ/h/T5kVNq2eqODJ+IuYzh
+   kiQoHGoUM55yKb4sgKh11ThcffhWSKnJ853vnyu1veooXZb6N0OYt5RnI
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10886"; a="374498375"
+X-IronPort-AV: E=Sophos;i="6.03,283,1694761200"; 
+   d="scan'208";a="374498375"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2023 01:41:47 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10886"; a="1094109683"
+X-IronPort-AV: E=Sophos;i="6.03,283,1694761200"; 
+   d="scan'208";a="1094109683"
+Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
+  by fmsmga005.fm.intel.com with ESMTP; 07 Nov 2023 01:41:46 -0800
+Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r0Iae-00070m-0Y;
+        Tue, 07 Nov 2023 09:41:44 +0000
+Date:   Tue, 07 Nov 2023 17:40:48 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:irq/urgent] BUILD SUCCESS
+ d3badb15613c14dd35d3495b1dde5c90fcd616dd
+Message-ID: <202311071743.BnpyZ4Of-lkp@intel.com>
+User-Agent: s-nail v14.9.24
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ira,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git irq/urgent
+branch HEAD: d3badb15613c14dd35d3495b1dde5c90fcd616dd  irqchip/gic-v3-its: Flush ITS tables correctly in non-coherent GIC designs
 
->-----Original Message-----
->From: Ira Weiny <ira.weiny@intel.com>
->Sent: 06 November 2023 22:06
->To: Shiju Jose <shiju.jose@huawei.com>; Jonathan Cameron
-><jonathan.cameron@huawei.com>; Ira Weiny <ira.weiny@intel.com>
->Cc: Dan Williams <dan.j.williams@intel.com>; Smita Koralahalli
-><Smita.KoralahalliChannabasappa@amd.com>; Yazen Ghannam
-><yazen.ghannam@amd.com>; Davidlohr Bueso <dave@stgolabs.net>; Dave
->Jiang <dave.jiang@intel.com>; Alison Schofield <alison.schofield@intel.com>;
->Vishal Verma <vishal.l.verma@intel.com>; Ard Biesheuvel <ardb@kernel.org>;
->linux-efi@vger.kernel.org; linux-kernel@vger.kernel.org; linux-
->cxl@vger.kernel.org
->Subject: RE: [PATCH RFC v3 1/6] cxl/trace: Remove uuid from event trace known
->events
->
->Shiju Jose wrote:
->>
->>
->> >-----Original Message-----
->> >From: Jonathan Cameron <jonathan.cameron@huawei.com>
->> >Sent: 03 November 2023 14:28
->> >To: Ira Weiny <ira.weiny@intel.com>
->> >Cc: Dan Williams <dan.j.williams@intel.com>; Smita Koralahalli
->> ><Smita.KoralahalliChannabasappa@amd.com>; Yazen Ghannam
->> ><yazen.ghannam@amd.com>; Davidlohr Bueso <dave@stgolabs.net>; Dave
->> >Jiang <dave.jiang@intel.com>; Alison Schofield
->> ><alison.schofield@intel.com>; Vishal Verma
->> ><vishal.l.verma@intel.com>; Ard Biesheuvel <ardb@kernel.org>;
->> >linux-efi@vger.kernel.org; linux-kernel@vger.kernel.org; linux-
->> >cxl@vger.kernel.org; Shiju Jose <shiju.jose@huawei.com>
->> >Subject: Re: [PATCH RFC v3 1/6] cxl/trace: Remove uuid from event
->> >trace known events
->> >
->> >On Wed, 01 Nov 2023 14:11:18 -0700
->> >Ira Weiny <ira.weiny@intel.com> wrote:
->> >
->> >> The uuid printed in the well known events is redundant.  The uuid
->> >> defines what the event was.
->> >>
->> >> Remove the uuid from the known events and only report it in the
->> >> generic event as it remains informative there.
->> >>
->> >> Reviewed-by: Davidlohr Bueso <dave@stgolabs.net>
->> >> Reviewed-by: Dan Williams <dan.j.williams@intel.com>
->> >> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
->> >
->> >Removing the print is fine, but look like this also removes the
->> >actual trace point field.  That's userspace ABI.  Expanding it is
->> >fine, but taking fields away is more problematic.
->> >
->> >Are we sure we don't break anyone?  Shiju, will rasdaemon be fine
->> >with this change?
->>
->> The field hdr_uuid is removed from the common CXL_EVT_TP_entry shared
->> by the trace events cxl_generic_event, cxl_general_media, cxl_dram and
->cxl_memory_module .
->> rasdaemon will break because of this while processing these trace
->> events and also affects the corresponding error records in the SQLite data
->base.
->> Rasdaemon needs update to avoid this.
->>
->
->Ok we can leave the uuid field in easy enough.
->
->But does rasdaemon use the value of the field for anything?  In other words does
->CPER record processing need to generate a proper UUID value?
-No. Presently used for logging purpose only in the rasdaemon.
+elapsed time: 1990m
 
->
->Ira
+configs tested: 121
+configs skipped: 2
 
-Thanks,
-Shiju
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                   randconfig-001-20231106   gcc  
+arc                   randconfig-002-20231106   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                                 defconfig   gcc  
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+csky                  randconfig-001-20231106   gcc  
+csky                  randconfig-002-20231106   gcc  
+i386                             allmodconfig   gcc  
+i386                                defconfig   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                        allyesconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch             randconfig-001-20231106   gcc  
+loongarch             randconfig-002-20231106   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                             allmodconfig   gcc  
+mips                              allnoconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                          ath79_defconfig   clang
+mips                         rt305x_defconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+nios2                 randconfig-001-20231107   gcc  
+nios2                 randconfig-002-20231107   gcc  
+openrisc                         allmodconfig   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc                randconfig-001-20231107   gcc  
+parisc                randconfig-002-20231107   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                        warp_defconfig   gcc  
+riscv                            allmodconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                 randconfig-001-20231107   gcc  
+riscv                 randconfig-002-20231107   gcc  
+riscv                          rv32_defconfig   gcc  
+s390                             allmodconfig   gcc  
+s390                              allnoconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+s390                  randconfig-001-20231107   gcc  
+s390                  randconfig-002-20231107   gcc  
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                                  defconfig   gcc  
+sh                    randconfig-001-20231107   gcc  
+sh                    randconfig-002-20231107   gcc  
+sh                      rts7751r2d1_defconfig   gcc  
+sparc                            allmodconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                            allyesconfig   gcc  
+sparc                               defconfig   gcc  
+sparc                 randconfig-001-20231107   gcc  
+sparc                 randconfig-002-20231107   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+sparc64               randconfig-001-20231107   gcc  
+sparc64               randconfig-002-20231107   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   clang
+um                                  defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                    randconfig-001-20231107   gcc  
+um                    randconfig-002-20231107   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                            allnoconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64       buildonly-randconfig-001-20231107   gcc  
+x86_64       buildonly-randconfig-002-20231107   gcc  
+x86_64       buildonly-randconfig-003-20231107   gcc  
+x86_64       buildonly-randconfig-004-20231107   gcc  
+x86_64       buildonly-randconfig-005-20231107   gcc  
+x86_64       buildonly-randconfig-006-20231107   gcc  
+x86_64                              defconfig   gcc  
+x86_64                                  kexec   gcc  
+x86_64                randconfig-001-20231107   gcc  
+x86_64                randconfig-002-20231107   gcc  
+x86_64                randconfig-003-20231107   gcc  
+x86_64                randconfig-004-20231107   gcc  
+x86_64                randconfig-005-20231107   gcc  
+x86_64                randconfig-006-20231107   gcc  
+x86_64                          rhel-8.3-func   gcc  
+x86_64                    rhel-8.3-kselftests   gcc  
+x86_64                           rhel-8.3-ltp   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+xtensa                            allnoconfig   gcc  
+xtensa                           allyesconfig   gcc  
+xtensa                randconfig-001-20231107   gcc  
+xtensa                randconfig-002-20231107   gcc  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
