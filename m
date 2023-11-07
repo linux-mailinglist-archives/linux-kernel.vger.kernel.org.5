@@ -2,162 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 70F307E46E6
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 18:27:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0E637E4730
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 18:39:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343656AbjKGR1P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 12:27:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50188 "EHLO
+        id S231519AbjKGRjz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 12:39:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234926AbjKGR1M (ORCPT
+        with ESMTP id S1343785AbjKGR1Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 12:27:12 -0500
-Received: from sonic312-30.consmr.mail.ne1.yahoo.com (sonic312-30.consmr.mail.ne1.yahoo.com [66.163.191.211])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B59E710A
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 09:27:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1699378029; bh=6q0cWNpiI24bxTkhdHgeBp7Vw++Z68dhLPZ7Hg4uKl0=; h=Date:Subject:To:Cc:References:From:In-Reply-To:From:Subject:Reply-To; b=c0p0EafKosFMT5TfbeHHbeVsHl3PPvJJYNbtsYn6BUQqw7pH5Jr8GGfvul+q3PaDvQ+PeqLPjyibYqrvZLkdqBO5uiXgbTnsz2hwpiRedZbsX8ruVzVeoDGTwp4TVP0j5WR3OL6cWRQR73FVci2TYqZak1o95Q3DlnvjLcxTmv7N7Xbt3oQUfw5bLoulpTLUPTlQVlzmylE1+mcUdchRzXZLTkqTFIV5KOc4+zgnzfwYyFx4iWo9McpdgRgZV2G0bnbdP822xP3VouHhWrMdTGbrjAxu0fL9EJsZwf8icTBSRSIvmMqbgEBarcLBH0EO9ZnDfPLptUY7lKZvXHaNXg==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1699378029; bh=ZC7+KihxtgbNsPip57C2uUGv48dOj4ZEzyPEmNPmX//=; h=X-Sonic-MF:Date:Subject:To:From:From:Subject; b=sfdxJBwbxD0sgdjbzSImTKu9GRRVEDZGQoO785lWKczfFeEj5afpXos2ijHFDDMuNQqetxb4zMyHverpgR8hlZ7gP5364mX/79vUFvofwLCk2HU98uqJkbTpEOaB/iOLO1imkm+xs4GoDghrZrhnTwv/xrWbtz/Z5uY8IWTgk1LaMNQU01a6MbNTpHIahczDLH/NkqVj28K9QPfggav/IScp4EnW+idLjjlsMarBatN1ISaHkgc0P3Iy9rZkssu5I7tSQ28oIN8Al3QlYYhDzQ7k0iBd2hi60Fo9MWkXFxQ2MSEgtMYnm8g41j+uesgGWMTofLfQCbHd3+3DP+kcQA==
-X-YMail-OSG: 2ZRxZEEVM1kqlg7kxupQjl7rLLlyDa5CV91MLQcVFr6qWnYSVtcnZSdcdVYchvF
- 1J6Kav6jXA8BmBQHq5xtGiPF28VWRvCvnYkZbRE_Arc.DoDzjry8ZcYm7_zFy2iEHAP5edgeCDxG
- p2NTiTspELaKH0Wd7iHGSxnfWzSiR3NKGtPrQ9K.WQJ.AMigUDOyVJ8LnecLXliojxs3gg0ZMdxV
- gzTReu2C_dtMXLHf5ICzTUb6vmJ8A_3K6YWjtxOymJqSM56uYvspHm6SGCUovdvH2MtYfAPmNcDE
- DHJRNog9xIXsHRsOkABhfbPJ6ctnPm344.d7i_N.VsmTPCyNR8JD_rQGiWHbjMkm3.hZmI7BQgB5
- B0mccNppsBc9zRihkazw9w0cai_2TKBWd88_U6c.HoEaHUHFgJHmPJFMJPURsXuFV_mI5wqYyaxw
- veSekkuM101HvdZKCwOT1P3bktNawvrWJhBsC4CzEQehXSzO6CQ7ERGd8PJTi.EalauGbAjeA95g
- xilj9kHYPOheZ5gSBQWBA4JY_A.ci5uV1p_OCZZRall8KuPM9eFP69XIQ.xaz12qHuAqHrwHBiBH
- Xhs0z46.X61H0uk7mcIq1wSUupjel_SNJrUkKlUGaMUiC7GAM0c79p1P5lGyDfnxzybzWPIIkSQj
- bjbBVLhub3c3_D9tQH42tQSvAWd5yfqJBmCpbiDkPNeNiiR06C1ojHiMwURDUh3rWw2bhYYkabeZ
- EIJRVaA1utxaX8d4esGHGERmG3eRpTVYV8BoNV_8o7C_.Xlg_st1mrcqJQGS5cp61gSacCnU74Ph
- 0ewerl7sgrmQAccPEdb5I7MogCZ44Jna6ZaZDcBlHdyND2oA6B9bXCjlblCjga_DasUI40N4yxan
- gbe8sSG4_MonmUkM7TWnSK36JpU5FGncTm68Pi7yKuG87Rwzb3G43kvMh3yOVyjf8ZwM2YHVMJg_
- oC42_F96vvs4xF8AqkdDhbsVKfgFHZOADWilyo_xFknyPPATYvGK1h7RiWifYsTghr1V5KoXDgzK
- 9ZlDGytaoBfKdvPlmCd1D4rA.8UDNGIrbRR.uxOi2DCadoDOnUpfZ.lTW98ZC5UAZZTaEglzwp_k
- etK7LRrPbitDLB64r3Un5MFouRzp0eHL4pITfZPkhOAMLO86VKgn21iQmHKyNXU7SPJvNqx0pulE
- db3ayser1YyriCfvZrXM2GIWoxDDGnvoMbaBtm8Bn7r8_4XQQ3gjp.ylqYA5Jo2U7DjT6VkDc3c0
- bvGn2edkZaZbjV44G.yO9L4NHtEB6EIFNT8ARpDPbsk5q0dcm0rWsyqzBFMc.zaSK_2rWKuhI.ak
- J8xbHkhQl2kpWkTK87plr1yMAMm88hwzo5Q.oBlDImGL9j.VFMAloNmZuveBVg5CxNIeqDjRS7BI
- 7k8RK3xh4asckd4MPRSxMEQCRJNouCwiT25.OHid2ymZLp1_tDsVQNBWu30nblQmJOH0T_k3Byd0
- 7YAbMVM8QyJMP3Gy4kA8mDn_vU5nwtcyXGdutyrC49j9UImXsV0NRzzXKjXkgPH3oNnK2i6EX7kD
- cubgGR5F9VKaOm0z4Bsep1Vqafpe2375PZkLlciENlvYy6uBEyPsVcs8W6733k_kSBKhooNJPjDV
- 9ZWmHsnWGNEcy17wpXNlmsa4b1JYen.TUpMOaBlT3ib.WCHnpy2yeuaI3I6hYnzgEsOmLKHcxI09
- tMcNPP8LuNhAaCw_neZs2TDHhblqQL0iZVr8XvyiIBw_.moxct8fqmXGjekDw9Vdb0ngUFo0wBKN
- pWYj2C0TKQpNLVaEd2p_Oo7t6a1q7DbAQdvEJU8NkUSRWvaFHc2hjha29zYaQn3zXCVC_4wFxMD0
- lkXe6jBihJc.vhTPZkC_.73WSNEJzZXBCLiU_tJYKmu2.vajnw_2WpaX_Df7fO_EJIJcLpz_dPpu
- ciZCy519kfyk485xtvW_ja9TKqL.C_qe5r9jQygMa.w.lhoSmNCOo.hYf5Ha9g6O3N_BDUHe.DoZ
- lAeBCMY2lOdHkQ1R9KZPbykS0H8WgZSXbpZvtU6GAJ4FzuUVmFWqYx8qzoiW3D7flTedAnker4nj
- ePSyWkaoRJ.tTvT7YU._zn6LYhSmDGtRrHczTbeS5mJXv0QxhonWgW442uMkvxDPpJRrwvWIrMSD
- ZFajOrCWruMaoSf9F4ZQ69kWhrJ1ZchYDteHmWr_4poS8oWTn_U1B6mwjJgO5uRww1hBitsimzDE
- PnIuj_8wifXXvKdI4UMkinL5A0oj1w06QvuNfcHuh0FJ2C3jHfKueX.Fhgy7CFYNg4JtJpYI-
-X-Sonic-MF: <casey@schaufler-ca.com>
-X-Sonic-ID: 757de431-ef3b-4289-bc0c-fb2e05a72139
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic312.consmr.mail.ne1.yahoo.com with HTTP; Tue, 7 Nov 2023 17:27:09 +0000
-Received: by hermes--production-ne1-56df75844-sgvl5 (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID dd1678dbc22e7c871f89610e29169f07;
-          Tue, 07 Nov 2023 17:27:06 +0000 (UTC)
-Message-ID: <d8094860-f0a3-48f1-a38c-3829d501a6bc@schaufler-ca.com>
-Date:   Tue, 7 Nov 2023 09:27:05 -0800
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 07/23] evm: Align evm_inode_setxattr() definition with
- LSM infrastructure
-Content-Language: en-US
-To:     Roberto Sassu <roberto.sassu@huaweicloud.com>,
-        viro@zeniv.linux.org.uk, brauner@kernel.org,
-        chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
-        kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
-        paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
-        zohar@linux.ibm.com, dmitry.kasatkin@gmail.com,
-        dhowells@redhat.com, jarkko@kernel.org,
-        stephen.smalley.work@gmail.com, eparis@parisplace.org,
-        mic@digikod.net
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
-        selinux@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>,
-        Stefan Berger <stefanb@linux.ibm.com>,
-        Casey Schaufler <casey@schaufler-ca.com>
-References: <20231107134012.682009-1-roberto.sassu@huaweicloud.com>
- <20231107134012.682009-8-roberto.sassu@huaweicloud.com>
-From:   Casey Schaufler <casey@schaufler-ca.com>
-In-Reply-To: <20231107134012.682009-8-roberto.sassu@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Mailer: WebService/1.1.21896 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
+        Tue, 7 Nov 2023 12:27:24 -0500
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A559111F
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 09:27:22 -0800 (PST)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5afa86b8d66so80313587b3.3
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 09:27:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1699378042; x=1699982842; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Qa2wFXn+fN/9MOzm2p0htr7TnYIvjcbd3WdjaN07M/k=;
+        b=SApOfQWYC9LmzzbP04Sz03KN1j6GWowzoqVDrR+eoszpBD1+TxUbsDYAGtwPxXkqyk
+         NqCQ6sGrOYtCKxKtZAzeLOGpotn0YcpE8m92mC+H24JuUAsB2/MEdFzowPNLz90XlGqx
+         keSEhAKp/PG9GixQhyllTirYiuYEQyVNJhFjzz94Y8ap4TejoMErlXnHvq1UlS/sexBv
+         A026cfYfXu1SvfH/0fNJziIahS07Dwpup/3cdwzl5lzxU+EDImxf4H1zW8vWtteL0STB
+         5q6wH0wof9W6FhaXdj3/IgHerOtS5l1Wu23VmqMSWGifaRf51QvCmiuVGhOL+EOYE+i5
+         Y8Ww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699378042; x=1699982842;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=Qa2wFXn+fN/9MOzm2p0htr7TnYIvjcbd3WdjaN07M/k=;
+        b=KcDWXVm48dMb5p4AwX3sWWHUfb1YZesxQShZcNd6ouydgbt/fDCLzX9BEAE92D3WSn
+         oGFYyWgtyNHRQINVVgRldn6ImPeziKjtdOmQf6dhQi/aXYYShporoOt2OPGXlCTeICdw
+         mxB4SL1S6RX+zOnSFbG/m/FqnNARgJVt525HtLSZ5pj5Ew3TcZrhRIy6Q0ucok4V1Gpk
+         0kNSxDdBLSqTY7wQg6KS5H0YqcnKU7p4lxlYs8iUI9KzN3VtTMYZtfJ8J3Ee+iJ98QAv
+         LYCW3MAoEncWNgfgXASW/4sD6jlAsaz4VCZpMTpyuxDJ3iIrrgpaR4hV/+dl+r4blQrR
+         JQkQ==
+X-Gm-Message-State: AOJu0YzHMeZ3laVWFYpMFw7CpPRM+qs6vF2ydcA2bIsxXosomjYGLEwH
+        zntBmafhw+p0ZzY/vkhEQ51qE+NFqPU=
+X-Google-Smtp-Source: AGHT+IEfx2xJRyHlzos0vemGZEAAO4aiy00M2pBqcV8b4prgzhoMSWSgigaGYOWEUbs4hq72Zazg1t3nACs=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a0d:d88e:0:b0:5a8:33ab:d545 with SMTP id
+ a136-20020a0dd88e000000b005a833abd545mr290916ywe.2.1699378041829; Tue, 07 Nov
+ 2023 09:27:21 -0800 (PST)
+Date:   Tue, 7 Nov 2023 09:27:20 -0800
+In-Reply-To: <2c804098-af2b-4f1d-a39f-eb42f58635d7@linux.intel.com>
+Mime-Version: 1.0
+References: <20231104000239.367005-1-seanjc@google.com> <20231104000239.367005-4-seanjc@google.com>
+ <CALMp9eTvR1mNw7PEms7840t13dD_VGhEWpaz9w6prSiyDR9GtA@mail.gmail.com> <2c804098-af2b-4f1d-a39f-eb42f58635d7@linux.intel.com>
+Message-ID: <ZUpzeGnWtExCxhcS@google.com>
+Subject: Re: [PATCH v6 03/20] KVM: x86/pmu: Don't enumerate arch events KVM
+ doesn't support
+From:   Sean Christopherson <seanjc@google.com>
+To:     Dapeng Mi <dapeng1.mi@linux.intel.com>
+Cc:     Jim Mattson <jmattson@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Jinrong Liang <cloudliang@tencent.com>,
+        Like Xu <likexu@tencent.com>,
+        Aaron Lewis <aaronlewis@google.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/7/2023 5:39 AM, Roberto Sassu wrote:
-> From: Roberto Sassu <roberto.sassu@huawei.com>
->
-> Change evm_inode_setxattr() definition, so that it can be registered as
-> implementation of the inode_setxattr hook.
->
-> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> Reviewed-by: Stefan Berger <stefanb@linux.ibm.com>
-> Reviewed-by: Mimi Zohar <zohar@linux.ibm.com>
+On Tue, Nov 07, 2023, Dapeng Mi wrote:
+>=20
+> On 11/4/2023 8:41 PM, Jim Mattson wrote:
+> > On Fri, Nov 3, 2023 at 5:02=E2=80=AFPM Sean Christopherson <seanjc@goog=
+le.com> wrote:
+> > > Don't advertise support to userspace for architectural events that KV=
+M
+> > > doesn't support, i.e. for "real" events that aren't listed in
+> > > intel_pmu_architectural_events.  On current hardware, this effectivel=
+y
+> > > means "don't advertise support for Top Down Slots".
+> > NR_REAL_INTEL_ARCH_EVENTS is only used in intel_hw_event_available().
+> > As discussed (https://lore.kernel.org/kvm/ZUU12-TUR_1cj47u@google.com/)=
+,
+> > intel_hw_event_available() should go away.
+> >=20
+> > Aside from mapping fixed counters to event selector and unit mask
+> > (fixed_pmc_events[]), KVM has no reason to know when a new
+> > architectural event is defined.
+>=20
+>=20
+> Since intel_hw_event_available() would be removed, it looks the enum
+> intel_pmu_architectural_events and intel_arch_events[] array become usele=
+ss.
+> We can directly simply modify current fixed_pmc_events[] array and use it=
+ to
+> store fixed counter events code and umask.
 
-Reviewed-by: Casey Schaufler <casey@schaufler-ca.com>
+Yep, I came to the same conclusion.  This is what I ended up with yesterday=
+:
+
+/*
+ * Map fixed counter events to architectural general purpose event encoding=
+s.
+ * Perf doesn't provide APIs to allow KVM to directly program a fixed count=
+er,
+ * and so KVM instead programs the architectural event to effectively reque=
+st
+ * the fixed counter.  Perf isn't guaranteed to use a fixed counter and may
+ * instead program the encoding into a general purpose counter, e.g. if a
+ * different perf_event is already utilizing the requested counter, but the=
+ end
+ * result is the same (ignoring the fact that using a general purpose count=
+er
+ * will likely exacerbate counter contention).
+ *
+ * Note, reference cycles is counted using a perf-defined "psuedo-encoding"=
+,
+ * there is no architectural general purpose encoding for reference TSC cyc=
+les.
+ */
+static u64 intel_get_fixed_pmc_eventsel(int index)
+{
+        const struct {
+                u8 eventsel;
+                u8 unit_mask;
+        } fixed_pmc_events[] =3D {
+                [0] =3D { 0xc0, 0x00 }, /* Instruction Retired / PERF_COUNT=
+_HW_INSTRUCTIONS. */
+                [1] =3D { 0x3c, 0x00 }, /* CPU Cycles/ PERF_COUNT_HW_CPU_CY=
+CLES. */
+                [2] =3D { 0x00, 0x03 }, /* Reference TSC Cycles / PERF_COUN=
+T_HW_REF_CPU_CYCLES*/
+        };
+
+        BUILD_BUG_ON(ARRAY_SIZE(fixed_pmc_events) !=3D KVM_PMC_MAX_FIXED);
+
+        return (fixed_pmc_events[index].unit_mask << 8) |
+               fixed_pmc_events[index].eventsel;
+}
+
+...
+
+static void intel_pmu_init(struct kvm_vcpu *vcpu)
+{
+        int i;
+        struct kvm_pmu *pmu =3D vcpu_to_pmu(vcpu);
+        struct lbr_desc *lbr_desc =3D vcpu_to_lbr_desc(vcpu);
+
+        for (i =3D 0; i < KVM_INTEL_PMC_MAX_GENERIC; i++) {
+                pmu->gp_counters[i].type =3D KVM_PMC_GP;
+                pmu->gp_counters[i].vcpu =3D vcpu;
+                pmu->gp_counters[i].idx =3D i;
+                pmu->gp_counters[i].current_config =3D 0;
+        }
+
+        for (i =3D 0; i < KVM_PMC_MAX_FIXED; i++) {
+                pmu->fixed_counters[i].type =3D KVM_PMC_FIXED;
+                pmu->fixed_counters[i].vcpu =3D vcpu;
+                pmu->fixed_counters[i].idx =3D i + INTEL_PMC_IDX_FIXED;
+                pmu->fixed_counters[i].current_config =3D 0;
+                pmu->fixed_counters[i].eventsel =3D intel_get_fixed_pmc_eve=
+ntsel(i);
+        }
+
+        lbr_desc->records.nr =3D 0;
+        lbr_desc->event =3D NULL;
+        lbr_desc->msr_passthrough =3D false;
+}
 
 
-> ---
->  include/linux/evm.h               | 4 ++--
->  security/integrity/evm/evm_main.c | 3 ++-
->  security/security.c               | 2 +-
->  3 files changed, 5 insertions(+), 4 deletions(-)
->
-> diff --git a/include/linux/evm.h b/include/linux/evm.h
-> index cf976d8dbd7a..7c6a74dbc093 100644
-> --- a/include/linux/evm.h
-> +++ b/include/linux/evm.h
-> @@ -27,7 +27,7 @@ extern void evm_inode_post_setattr(struct mnt_idmap *idmap,
->  				   struct dentry *dentry, int ia_valid);
->  extern int evm_inode_setxattr(struct mnt_idmap *idmap,
->  			      struct dentry *dentry, const char *name,
-> -			      const void *value, size_t size);
-> +			      const void *value, size_t size, int flags);
->  extern void evm_inode_post_setxattr(struct dentry *dentry,
->  				    const char *xattr_name,
->  				    const void *xattr_value,
-> @@ -106,7 +106,7 @@ static inline void evm_inode_post_setattr(struct mnt_idmap *idmap,
->  
->  static inline int evm_inode_setxattr(struct mnt_idmap *idmap,
->  				     struct dentry *dentry, const char *name,
-> -				     const void *value, size_t size)
-> +				     const void *value, size_t size, int flags)
->  {
->  	return 0;
->  }
-> diff --git a/security/integrity/evm/evm_main.c b/security/integrity/evm/evm_main.c
-> index d452d469c503..7fc083d53fdf 100644
-> --- a/security/integrity/evm/evm_main.c
-> +++ b/security/integrity/evm/evm_main.c
-> @@ -558,6 +558,7 @@ static int evm_protect_xattr(struct mnt_idmap *idmap,
->   * @xattr_name: pointer to the affected extended attribute name
->   * @xattr_value: pointer to the new extended attribute value
->   * @xattr_value_len: pointer to the new extended attribute value length
-> + * @flags: flags to pass into filesystem operations
->   *
->   * Before allowing the 'security.evm' protected xattr to be updated,
->   * verify the existing value is valid.  As only the kernel should have
-> @@ -567,7 +568,7 @@ static int evm_protect_xattr(struct mnt_idmap *idmap,
->   */
->  int evm_inode_setxattr(struct mnt_idmap *idmap, struct dentry *dentry,
->  		       const char *xattr_name, const void *xattr_value,
-> -		       size_t xattr_value_len)
-> +		       size_t xattr_value_len, int flags)
->  {
->  	const struct evm_ima_xattr_data *xattr_data = xattr_value;
->  
-> diff --git a/security/security.c b/security/security.c
-> index 358ec01a5492..ae3625198c9f 100644
-> --- a/security/security.c
-> +++ b/security/security.c
-> @@ -2272,7 +2272,7 @@ int security_inode_setxattr(struct mnt_idmap *idmap,
->  	ret = ima_inode_setxattr(idmap, dentry, name, value, size, flags);
->  	if (ret)
->  		return ret;
-> -	return evm_inode_setxattr(idmap, dentry, name, value, size);
-> +	return evm_inode_setxattr(idmap, dentry, name, value, size, flags);
->  }
->  
->  /**
