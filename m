@@ -2,44 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DEFE7E4444
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 16:51:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA8A97E4448
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 16:51:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343719AbjKGPvl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 10:51:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56712 "EHLO
+        id S1343730AbjKGPvq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 10:51:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235008AbjKGPvE (ORCPT
+        with ESMTP id S234583AbjKGPvF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 10:51:04 -0500
+        Tue, 7 Nov 2023 10:51:05 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2D4F173A;
-        Tue,  7 Nov 2023 07:48:54 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F2F9BC433C7;
-        Tue,  7 Nov 2023 15:48:52 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B08D10D2;
+        Tue,  7 Nov 2023 07:48:56 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1D0A1C433CA;
+        Tue,  7 Nov 2023 15:48:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699372134;
-        bh=pi2z8HUoclDElANTQvfcRRzmsc61kwBhLNan5saUD8E=;
+        s=k20201202; t=1699372136;
+        bh=qBKMETckBgBbMcCPW7XTW+CWAMoYwZANCe7KSA9l/uk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ndNyqvSeOsvCBK2TW7maRFjSbKkvw/UdNSuumC8hkiu+HzZdeGyA7AuNGvET++yyO
-         mCmmhC9/wy7Ad9ntjDR996fFwWvLGPE6hw9Xqn7yQNt7ch5gIe7Ad8m9j6LSSOuBmq
-         7ObVB5UEivL4Hk6z+M4IdEmYWGgJ/APcmV+7QsScNkmJpUMX1Rn1CWDh16zzt8pkfa
-         lZljx/qaw1BkGy12ODug/Iw+2X8lVoUpUfnz3tNcXARmD/A9DI4FEabSDZJjmbi2iY
-         whOP6lNiunKzMTDn+SY/CcZdh+t6j5inBsq9K+p8adHjWP0HrurdJUAA6x8EOfcFAB
-         fiJAzSMG1cHlQ==
+        b=MLRfjKUN6keR90OmB+A08DuYw+qdoD51bAhccr/3WG9hT+W3YgahgvmBmdwMq6zYT
+         3LB2es7PHFFHLQPRZeIl6/t7nh0/hMHkYiM9BGeXZbiu8yidGP2YowSct3RvV4tG9f
+         KV1isUz+g/OTPnulUVuEXbw7hXWKgO5YwY3fLJ5NZ5/qPLSpEDtiN3++/DDJEfuM6h
+         l0TNr4oydSf8YUT+3HnpuMheV3HjV7ljTGsWoNP7Cfrsg7bYNei5NYadVaFTC2Bs/u
+         xMXSwTCH0UpM0cl6g/xC4h+xL7Osx75IMtVKknYqa+7gam6anSiILro+fOPRPycaN5
+         T88wSBjRzuKDg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Richard Fitzgerald <rf@opensource.cirrus.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, lgirdwood@gmail.com,
-        perex@perex.cz, tiwai@suse.com, peter.ujfalusi@linux.intel.com,
-        yung-chuan.liao@linux.intel.com, ranjani.sridharan@linux.intel.com,
-        daniel.baluta@nxp.com, linux-sound@vger.kernel.org,
-        sound-open-firmware@alsa-project.org
-Subject: [PATCH AUTOSEL 6.5 03/34] ASoC: SOF: Pass PCI SSID to machine driver
-Date:   Tue,  7 Nov 2023 10:47:43 -0500
-Message-ID: <20231107154846.3766119-3-sashal@kernel.org>
+Cc:     Lu Jialin <lujialin4@huawei.com>, Guo Zihua <guozihua@huawei.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Sasha Levin <sashal@kernel.org>, steffen.klassert@secunet.com,
+        davem@davemloft.net, daniel.m.jordan@oracle.com,
+        linux-crypto@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.5 04/34] crypto: pcrypt - Fix hungtask for PADATA_RESET
+Date:   Tue,  7 Nov 2023 10:47:44 -0500
+Message-ID: <20231107154846.3766119-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231107154846.3766119-1-sashal@kernel.org>
 References: <20231107154846.3766119-1-sashal@kernel.org>
@@ -52,129 +49,103 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Richard Fitzgerald <rf@opensource.cirrus.com>
+From: Lu Jialin <lujialin4@huawei.com>
 
-[ Upstream commit ba2de401d32625fe538d3f2c00ca73740dd2d516 ]
+[ Upstream commit 8f4f68e788c3a7a696546291258bfa5fdb215523 ]
 
-Pass the PCI SSID of the audio interface through to the machine driver.
-This allows the machine driver to use the SSID to uniquely identify the
-specific hardware configuration and apply any platform-specific
-configuration.
+We found a hungtask bug in test_aead_vec_cfg as follows:
 
-struct snd_sof_pdata is passed around inside the SOF code, but it then
-passes configuration information to the machine driver through
-struct snd_soc_acpi_mach and struct snd_soc_acpi_mach_params. So SSID
-information has been added to both snd_sof_pdata and
-snd_soc_acpi_mach_params.
+INFO: task cryptomgr_test:391009 blocked for more than 120 seconds.
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+Call trace:
+ __switch_to+0x98/0xe0
+ __schedule+0x6c4/0xf40
+ schedule+0xd8/0x1b4
+ schedule_timeout+0x474/0x560
+ wait_for_common+0x368/0x4e0
+ wait_for_completion+0x20/0x30
+ wait_for_completion+0x20/0x30
+ test_aead_vec_cfg+0xab4/0xd50
+ test_aead+0x144/0x1f0
+ alg_test_aead+0xd8/0x1e0
+ alg_test+0x634/0x890
+ cryptomgr_test+0x40/0x70
+ kthread+0x1e0/0x220
+ ret_from_fork+0x10/0x18
+ Kernel panic - not syncing: hung_task: blocked tasks
 
-PCI does not define 0x0000 as an invalid value so we can't use zero to
-indicate that the struct member was not written. Instead a flag is
-included to indicate that a value has been written to the
-subsystem_vendor and subsystem_device members.
+For padata_do_parallel, when the return err is 0 or -EBUSY, it will call
+wait_for_completion(&wait->completion) in test_aead_vec_cfg. In normal
+case, aead_request_complete() will be called in pcrypt_aead_serial and the
+return err is 0 for padata_do_parallel. But, when pinst->flags is
+PADATA_RESET, the return err is -EBUSY for padata_do_parallel, and it
+won't call aead_request_complete(). Therefore, test_aead_vec_cfg will
+hung at wait_for_completion(&wait->completion), which will cause
+hungtask.
 
-sof_pci_probe() creates the struct snd_sof_pdata. It is passed a struct
-pci_dev so it can fill in the SSID value.
+The problem comes as following:
+(padata_do_parallel)                 |
+    rcu_read_lock_bh();              |
+    err = -EINVAL;                   |   (padata_replace)
+                                     |     pinst->flags |= PADATA_RESET;
+    err = -EBUSY                     |
+    if (pinst->flags & PADATA_RESET) |
+        rcu_read_unlock_bh()         |
+        return err
 
-sof_machine_check() finds the appropriate struct snd_soc_acpi_mach. It
-copies the SSID information across to the struct snd_soc_acpi_mach_params.
-This done before calling any custom set_mach_params() so that it could be
-used by the set_mach_params() callback to apply variant params.
+In order to resolve the problem, we replace the return err -EBUSY with
+-EAGAIN, which means parallel_data is changing, and the caller should call
+it again.
 
-The machine driver receives the struct snd_soc_acpi_mach as its
-platform_data.
+v3:
+remove retry and just change the return err.
+v2:
+introduce padata_try_do_parallel() in pcrypt_aead_encrypt and
+pcrypt_aead_decrypt to solve the hungtask.
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20230912163207.3498161-3-rf@opensource.cirrus.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Lu Jialin <lujialin4@huawei.com>
+Signed-off-by: Guo Zihua <guozihua@huawei.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/sound/soc-acpi.h    | 7 +++++++
- include/sound/sof.h         | 8 ++++++++
- sound/soc/sof/sof-audio.c   | 7 +++++++
- sound/soc/sof/sof-pci-dev.c | 8 ++++++++
- 4 files changed, 30 insertions(+)
+ crypto/pcrypt.c | 4 ++++
+ kernel/padata.c | 2 +-
+ 2 files changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/include/sound/soc-acpi.h b/include/sound/soc-acpi.h
-index 528279056b3ab..1a5f90b0a5463 100644
---- a/include/sound/soc-acpi.h
-+++ b/include/sound/soc-acpi.h
-@@ -67,6 +67,10 @@ static inline struct snd_soc_acpi_mach *snd_soc_acpi_codec_list(void *arg)
-  * @i2s_link_mask: I2S/TDM links enabled on the board
-  * @num_dai_drivers: number of elements in @dai_drivers
-  * @dai_drivers: pointer to dai_drivers, used e.g. in nocodec mode
-+ * @subsystem_vendor: optional PCI SSID vendor value
-+ * @subsystem_device: optional PCI SSID device value
-+ * @subsystem_id_set: true if a value has been written to
-+ *		      subsystem_vendor and subsystem_device.
-  */
- struct snd_soc_acpi_mach_params {
- 	u32 acpi_ipc_irq_index;
-@@ -79,6 +83,9 @@ struct snd_soc_acpi_mach_params {
- 	u32 i2s_link_mask;
- 	u32 num_dai_drivers;
- 	struct snd_soc_dai_driver *dai_drivers;
-+	unsigned short subsystem_vendor;
-+	unsigned short subsystem_device;
-+	bool subsystem_id_set;
- };
+diff --git a/crypto/pcrypt.c b/crypto/pcrypt.c
+index 8c1d0ca412137..d0d954fe9d54f 100644
+--- a/crypto/pcrypt.c
++++ b/crypto/pcrypt.c
+@@ -117,6 +117,8 @@ static int pcrypt_aead_encrypt(struct aead_request *req)
+ 	err = padata_do_parallel(ictx->psenc, padata, &ctx->cb_cpu);
+ 	if (!err)
+ 		return -EINPROGRESS;
++	if (err == -EBUSY)
++		return -EAGAIN;
  
- /**
-diff --git a/include/sound/sof.h b/include/sound/sof.h
-index d3c41f87ac319..51294f2ba302c 100644
---- a/include/sound/sof.h
-+++ b/include/sound/sof.h
-@@ -64,6 +64,14 @@ struct snd_sof_pdata {
- 	const char *name;
- 	const char *platform;
+ 	return err;
+ }
+@@ -164,6 +166,8 @@ static int pcrypt_aead_decrypt(struct aead_request *req)
+ 	err = padata_do_parallel(ictx->psdec, padata, &ctx->cb_cpu);
+ 	if (!err)
+ 		return -EINPROGRESS;
++	if (err == -EBUSY)
++		return -EAGAIN;
  
-+	/*
-+	 * PCI SSID. As PCI does not define 0 as invalid, the subsystem_id_set
-+	 * flag indicates that a value has been written to these members.
-+	 */
-+	unsigned short subsystem_vendor;
-+	unsigned short subsystem_device;
-+	bool subsystem_id_set;
-+
- 	struct device *dev;
+ 	return err;
+ }
+diff --git a/kernel/padata.c b/kernel/padata.c
+index 222d60195de66..81c8183f3176a 100644
+--- a/kernel/padata.c
++++ b/kernel/padata.c
+@@ -202,7 +202,7 @@ int padata_do_parallel(struct padata_shell *ps,
+ 		*cb_cpu = cpu;
+ 	}
  
- 	/*
-diff --git a/sound/soc/sof/sof-audio.c b/sound/soc/sof/sof-audio.c
-index e5405f854a910..563fe6f7789f7 100644
---- a/sound/soc/sof/sof-audio.c
-+++ b/sound/soc/sof/sof-audio.c
-@@ -1032,6 +1032,13 @@ int sof_machine_check(struct snd_sof_dev *sdev)
- 		mach = snd_sof_machine_select(sdev);
- 		if (mach) {
- 			sof_pdata->machine = mach;
-+
-+			if (sof_pdata->subsystem_id_set) {
-+				mach->mach_params.subsystem_vendor = sof_pdata->subsystem_vendor;
-+				mach->mach_params.subsystem_device = sof_pdata->subsystem_device;
-+				mach->mach_params.subsystem_id_set = true;
-+			}
-+
- 			snd_sof_set_mach_params(mach, sdev);
- 			return 0;
- 		}
-diff --git a/sound/soc/sof/sof-pci-dev.c b/sound/soc/sof/sof-pci-dev.c
-index f5ece43d0ec24..146d25983b08b 100644
---- a/sound/soc/sof/sof-pci-dev.c
-+++ b/sound/soc/sof/sof-pci-dev.c
-@@ -214,6 +214,14 @@ int sof_pci_probe(struct pci_dev *pci, const struct pci_device_id *pci_id)
- 		return ret;
- 
- 	sof_pdata->name = pci_name(pci);
-+
-+	/* PCI defines a vendor ID of 0xFFFF as invalid. */
-+	if (pci->subsystem_vendor != 0xFFFF) {
-+		sof_pdata->subsystem_vendor = pci->subsystem_vendor;
-+		sof_pdata->subsystem_device = pci->subsystem_device;
-+		sof_pdata->subsystem_id_set = true;
-+	}
-+
- 	sof_pdata->desc = desc;
- 	sof_pdata->dev = dev;
+-	err =  -EBUSY;
++	err = -EBUSY;
+ 	if ((pinst->flags & PADATA_RESET))
+ 		goto out;
  
 -- 
 2.42.0
