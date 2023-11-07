@@ -2,260 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 41F167E3476
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 05:18:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E10167E3475
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 05:18:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233339AbjKGESK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 23:18:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60412 "EHLO
+        id S233463AbjKGESX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 23:18:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230208AbjKGESH (ORCPT
+        with ESMTP id S233371AbjKGESV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 23:18:07 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EC94ED
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 20:18:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699330684; x=1730866684;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=2y3uporpF2COlT0IGH1V69g5DypnAAlqd6KpQjDUrJg=;
-  b=P/XVu29+2McDOrT0V/LEyVGBXFQkvGFUSRnjWaaKVrG5ODAcg18aTQ/a
-   nOdzy0C7Z6BlVangn70YRk8F3NyUumRDSgVl6ZSdgpsz3NG1xbv5MFN0O
-   h8JTe4NK+0oxIx/pdJLhUlD0HS+tfdw6KEFNP65eoMh5HHG+o+qR36iv/
-   kQCEUg9e1rdY/XdnolX5XLIAou6RVhJ3lixQ+CrCmSuYYekYb+Gsv8yRi
-   e8LtC/d7dOQp5S7c2O5eG+DHTdXCPr2axp4FH384UGJQ8dI3S+kptVHhx
-   bg9m1eHzX/a8O0z+st6VIJVfQnEDb/GT1y5wOLzIpktja75Dqq/mOqU4G
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10886"; a="475667103"
-X-IronPort-AV: E=Sophos;i="6.03,282,1694761200"; 
-   d="scan'208";a="475667103"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Nov 2023 20:18:04 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10886"; a="797522432"
-X-IronPort-AV: E=Sophos;i="6.03,282,1694761200"; 
-   d="scan'208";a="797522432"
-Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by orsmga001.jf.intel.com with ESMTP; 06 Nov 2023 20:18:02 -0800
-Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r0DXL-0006va-2n;
-        Tue, 07 Nov 2023 04:17:59 +0000
-Date:   Tue, 7 Nov 2023 12:16:50 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "wuqiang.matt" <wuqiang.matt@bytedance.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Subject: lib/test_objpool.c:323:3: sparse: sparse: symbol 'g_ot_sync_ops' was
- not declared. Should it be static?
-Message-ID: <202311071229.WGrWUjM1-lkp@intel.com>
+        Mon, 6 Nov 2023 23:18:21 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53AE9110
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 20:17:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1699330651;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=OEClqip8Hd/4yw5LjGu4+pn6BbKEnTze4Tcl/EjSE1A=;
+        b=ghefhjECicNOHDe6F2R7btmcAx3IEyvUmJ5FBEu4nonJzvZ52lv94RAWnozoxV+zJQySl/
+        UADRqh+PMbiTaJOy3PRaxOLQPwW5EBnSeflGgTnKJwSaXXCLoUGNt3nDIkDfgoauFgaRfc
+        HEbBU4h0tuBOPVjoOnJC3vhV+la1UQw=
+Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com
+ [209.85.214.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-387-13QoEQJrNvy6nUbjCg3Zeg-1; Mon, 06 Nov 2023 23:17:29 -0500
+X-MC-Unique: 13QoEQJrNvy6nUbjCg3Zeg-1
+Received: by mail-pl1-f197.google.com with SMTP id d9443c01a7336-1cc502d401eso47890525ad.0
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 20:17:29 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699330648; x=1699935448;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=OEClqip8Hd/4yw5LjGu4+pn6BbKEnTze4Tcl/EjSE1A=;
+        b=nustBb0pmPQxpfrtIfAZqiqVM+SnzPTcoaoQP91m1H8S2lKoP6+ms9h2h8IH+hygYJ
+         kiwqvgiQABXKkMP4SxGAnryHpYU4JVaSrB0SlP7Gb/8C7wddPCJ+7TLEsB89jvyYnBCE
+         9Qux+j9pYwnlPIx+Tv5kACRtF0vtDXl0xB5ljJlMYXQx7PpQP+Y/aZAJY2tiR22eWJhb
+         HEnTd/2byuiUemM78gLwv6xcAM3/HPvWWfY25Kr/61hQ0KRpJAkVptpfLEF1ESTWs8th
+         W4OLvJaRxgg7lS2TS/vdnfzFdGqq4XSaBfnGYazh+/nsPTUvDVe9pBAuU9N97PO93hbd
+         A1iQ==
+X-Gm-Message-State: AOJu0YyWWO6+iiBB8iYDRZQd37pf/VM/De234YAmMkS16rZLSMTfin9e
+        Ynyt5KnJoc7VwN6n/MkSe8gwvLwcq9nPi78n8LXQLNrUFCp/L73a4sFXpxTSF2OWqEsapXht3+t
+        rBUNctMI5dVF1FDrbDIz7NMHhTnDRNR0S
+X-Received: by 2002:a17:902:da87:b0:1cc:548d:4252 with SMTP id j7-20020a170902da8700b001cc548d4252mr27501631plx.57.1699330647980;
+        Mon, 06 Nov 2023 20:17:27 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IH/bDSpYLFMGA8/IP0/ZDBgoerLMJpNRCRJpSAHrDXrDr7fFUbf3eUOwgyPRyBg+Ru2wXoVVg==
+X-Received: by 2002:a17:902:da87:b0:1cc:548d:4252 with SMTP id j7-20020a170902da8700b001cc548d4252mr27501620plx.57.1699330647618;
+        Mon, 06 Nov 2023 20:17:27 -0800 (PST)
+Received: from [192.168.68.219] (159-196-82-144.9fc452.per.static.aussiebb.net. [159.196.82.144])
+        by smtp.gmail.com with ESMTPSA id h4-20020a170902f54400b001c898328289sm6636558plf.158.2023.11.06.20.17.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 06 Nov 2023 20:17:27 -0800 (PST)
+Message-ID: <26101f57-e5b3-e07b-c67f-259ab820cb0d@redhat.com>
+Date:   Tue, 7 Nov 2023 12:17:22 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Content-Language: en-US
+To:     autofs mailing list <autofs@vger.kernel.org>
+Cc:     linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Kernel Mailing List <linux-kernel@vger.kernel.org>
+From:   Ian Kent <ikent@redhat.com>
+Subject: [ANNOUNCE] autofs 5.1.9 release
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   be3ca57cfb777ad820c6659d52e60bbdd36bf5ff
-commit: 92f90d3b0d5e384f218c8068138ed1b3afa025af lib: objpool test module added
-date:   3 weeks ago
-config: i386-randconfig-062-20231107 (https://download.01.org/0day-ci/archive/20231107/202311071229.WGrWUjM1-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231107/202311071229.WGrWUjM1-lkp@intel.com/reproduce)
+Hi all,
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311071229.WGrWUjM1-lkp@intel.com/
+A release is long overdue so here it is, autofs-5.1.9.
 
-sparse warnings: (new ones prefixed by >>)
->> lib/test_objpool.c:323:3: sparse: sparse: symbol 'g_ot_sync_ops' was not declared. Should it be static?
->> lib/test_objpool.c:487:3: sparse: sparse: symbol 'g_ot_async_ops' was not declared. Should it be static?
->> lib/test_objpool.c:641:16: sparse: sparse: symbol 'g_testcases' was not declared. Should it be static?
+There are quite a lot of changes in the release but they are mostly
+bug fixes arising from a number significant improvements done over
+the last several releases.
 
-vim +/g_ot_sync_ops +323 lib/test_objpool.c
+Some general performance overheads have crept in over quite a while
+and work has been done to improve on it but once the obvious is done
+it gets much harder to improve, so that's ongoing as time permits.
 
-   319	
-   320	struct {
-   321		struct ot_context * (*init)(struct ot_test *oc);
-   322		void (*fini)(struct ot_context *sop);
- > 323	} g_ot_sync_ops[] = {
-   324		{.init = ot_init_sync_m0, .fini = ot_fini_sync},
-   325	};
-   326	
-   327	/*
-   328	 * synchronous test cases: performance mode
-   329	 */
-   330	
-   331	static void ot_bulk_sync(struct ot_item *item, int irq)
-   332	{
-   333		struct ot_node *nods[OT_NR_MAX_BULK];
-   334		int i;
-   335	
-   336		for (i = 0; i < item->bulk[irq]; i++)
-   337			nods[i] = objpool_pop(item->pool);
-   338	
-   339		if (!irq && (item->delay || !(++(item->niters) & 0x7FFF)))
-   340			msleep(item->delay);
-   341	
-   342		while (i-- > 0) {
-   343			struct ot_node *on = nods[i];
-   344			if (on) {
-   345				on->refs++;
-   346				objpool_push(on, item->pool);
-   347				item->stat[irq].nhits++;
-   348			} else {
-   349				item->stat[irq].nmiss++;
-   350			}
-   351		}
-   352	}
-   353	
-   354	static int ot_start_sync(struct ot_test *test)
-   355	{
-   356		struct ot_context *sop;
-   357		ktime_t start;
-   358		u64 duration;
-   359		unsigned long timeout;
-   360		int cpu;
-   361	
-   362		/* initialize objpool for syncrhonous testcase */
-   363		sop = g_ot_sync_ops[test->mode].init(test);
-   364		if (!sop)
-   365			return -ENOMEM;
-   366	
-   367		/* grab rwsem to block testing threads */
-   368		down_write(&test->data.start);
-   369	
-   370		for_each_possible_cpu(cpu) {
-   371			struct ot_item *item = per_cpu_ptr(&ot_pcup_items, cpu);
-   372			struct task_struct *work;
-   373	
-   374			ot_init_cpu_item(item, test, &sop->pool, ot_bulk_sync);
-   375	
-   376			/* skip offline cpus */
-   377			if (!cpu_online(cpu))
-   378				continue;
-   379	
-   380			work = kthread_create_on_node(ot_thread_worker, item,
-   381					cpu_to_node(cpu), "ot_worker_%d", cpu);
-   382			if (IS_ERR(work)) {
-   383				pr_err("failed to create thread for cpu %d\n", cpu);
-   384			} else {
-   385				kthread_bind(work, cpu);
-   386				wake_up_process(work);
-   387			}
-   388		}
-   389	
-   390		/* wait a while to make sure all threads waiting at start line */
-   391		msleep(20);
-   392	
-   393		/* in case no threads were created: memory insufficient ? */
-   394		if (atomic_dec_and_test(&test->data.nthreads))
-   395			complete(&test->data.wait);
-   396	
-   397		// sched_set_fifo_low(current);
-   398	
-   399		/* start objpool testing threads */
-   400		start = ktime_get();
-   401		up_write(&test->data.start);
-   402	
-   403		/* yeild cpu to worker threads for duration ms */
-   404		timeout = msecs_to_jiffies(test->duration);
-   405		schedule_timeout_interruptible(timeout);
-   406	
-   407		/* tell workers threads to quit */
-   408		atomic_set_release(&test->data.stop, 1);
-   409	
-   410		/* wait all workers threads finish and quit */
-   411		wait_for_completion(&test->data.wait);
-   412		duration = (u64) ktime_us_delta(ktime_get(), start);
-   413	
-   414		/* cleanup objpool */
-   415		g_ot_sync_ops[test->mode].fini(sop);
-   416	
-   417		/* report testing summary and performance results */
-   418		ot_perf_report(test, duration);
-   419	
-   420		/* report memory allocation summary */
-   421		ot_mem_report(test);
-   422	
-   423		return 0;
-   424	}
-   425	
-   426	/*
-   427	 * asynchronous test cases: pool lifecycle controlled by refcount
-   428	 */
-   429	
-   430	static void ot_fini_async_rcu(struct rcu_head *rcu)
-   431	{
-   432		struct ot_context *sop = container_of(rcu, struct ot_context, rcu);
-   433		struct ot_test *test = sop->test;
-   434	
-   435		/* here all cpus are aware of the stop event: test->data.stop = 1 */
-   436		WARN_ON(!atomic_read_acquire(&test->data.stop));
-   437	
-   438		objpool_fini(&sop->pool);
-   439		complete(&test->data.rcu);
-   440	}
-   441	
-   442	static void ot_fini_async(struct ot_context *sop)
-   443	{
-   444		/* make sure the stop event is acknowledged by all cores */
-   445		call_rcu(&sop->rcu, ot_fini_async_rcu);
-   446	}
-   447	
-   448	static int ot_objpool_release(struct objpool_head *head, void *context)
-   449	{
-   450		struct ot_context *sop = context;
-   451	
-   452		WARN_ON(!head || !sop || head != &sop->pool);
-   453	
-   454		/* do context cleaning if needed */
-   455		if (sop)
-   456			ot_kfree(sop->test, sop, sizeof(*sop));
-   457	
-   458		return 0;
-   459	}
-   460	
-   461	static struct ot_context *ot_init_async_m0(struct ot_test *test)
-   462	{
-   463		struct ot_context *sop = NULL;
-   464		int max = num_possible_cpus() << 3;
-   465		gfp_t gfp = GFP_KERNEL;
-   466	
-   467		sop = (struct ot_context *)ot_kzalloc(test, sizeof(*sop));
-   468		if (!sop)
-   469			return NULL;
-   470		sop->test = test;
-   471		if (test->objsz < 512)
-   472			gfp = GFP_ATOMIC;
-   473	
-   474		if (objpool_init(&sop->pool, max, test->objsz, gfp, sop,
-   475				 ot_init_node, ot_objpool_release)) {
-   476			ot_kfree(test, sop, sizeof(*sop));
-   477			return NULL;
-   478		}
-   479		WARN_ON(max != sop->pool.nr_objs);
-   480	
-   481		return sop;
-   482	}
-   483	
-   484	struct {
-   485		struct ot_context * (*init)(struct ot_test *oc);
-   486		void (*fini)(struct ot_context *sop);
- > 487	} g_ot_async_ops[] = {
-   488		{.init = ot_init_async_m0, .fini = ot_fini_async},
-   489	};
-   490	
+autofs
+======
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+The package can be found at:
+https://www.kernel.org/pub/linux/daemons/autofs/v5/
+
+It is autofs-5.1.9.tar.[gz|xz]
+
+No source rpm is there as it can be produced by using:
+
+rpmbuild -ts autofs-5.1.9.tar.gz
+
+and the binary rpm by using:
+
+rpmbuild -tb autofs-5.1.9.tar.gz
+
+Here are the entries from the CHANGELOG which outline the updates:
+
+- fix kernel mount status notification.
+- fix fedfs build flags.
+- fix set open file limit.
+- improve descriptor open error reporting.
+- fix root offset error handling.
+- fix fix root offset error handling.
+- fix nonstrict fail handling of last offset mount.
+- dont fail on duplicate offset entry tree add.
+- fix loop under run in cache_get_offset_parent().
+- bailout on rpc systemerror.
+- fix nfsv4 only mounts should not use rpcbind.
+- simplify cache_add() a little.
+- fix use after free in tree_mapent_delete_offset_tree().
+- fix memory leak in xdr_exports().
+- avoid calling pthread_getspecific() with NULL key_thread_attempt_id.
+- fix sysconf(3) return handling.
+- remove nonstrict parameter from tree_mapent_umount_offsets().
+- fix handling of incorrect return from umount_ent().
+- dont use initgroups() at spawn.
+- fix bashism in configure.
+- musl: fix missing include in hash.h.
+- musl: define fallback dummy NSS config path
+- musl: avoid internal stat.h definitions.
+- musl: add missing include to hash.h for _WORDSIZE.
+- musl: add missing include to log.h for pid_t.
+- musl: define _SWORD_TYPE.
+- add autofs_strerror_r() helper for musl.
+- update configure.
+- handle innetgr() not present in musl.
+- fix missing unlock in sasl_do_kinit_ext_cc().
+- fix a couple of null cache locking problems.
+- restore gcc flags after autoconf Kerberos 5 check.
+- prepare for OpenLDAP SASL binding.
+- let OpenLDAP handle SASL binding.
+- configure: LDAP function checks ignore implicit declarations.
+- improve debug logging of LDAP binds.
+- improve debug logging of SASL binds.
+- internal SASL logging only in debug log mode.
+- more comprehensive verbose logging for LDAP maps.
+- fix invalid tsv access.
+- support SCRAM for SASL binding.
+- ldap_sasl_interactive_bind() needs credentials for auto-detection.
+- fix autofs regression due to positive_timeout.
+- fix parse module instance mutex naming.
+- serialise lookup module open and reinit.
+- coverity fix for invalid access.
+- fix hosts map deadlock on restart.
+- fix deadlock with hosts map reload.
+- fix memory leak in update_hosts_mounts().
+- fix minus only option handling in concat_options().
+- fix incorrect path for is_mounted() in try_remount().
+- fix additional tsv invalid access.
+- fix use_ignore_mount_option description.
+- include addtional log info for mounts.
+- fail on empty replicated host name.
+- improve handling of ENOENT in sss setautomntent().
+- don't immediately call function when waiting.
+- define LDAP_DEPRECATED during LDAP configure check.
+- fix return status of mount_autofs().
+- don't close lookup at umount.
+- fix deadlock in lookups.
+- dont delay expire.
+- make amd mapent search function name clear.
+- rename statemachine() to signal_handler().
+- make signal handling consistent.
+- eliminate last remaining state_pipe usage.
+- add function master_find_mapent_by_devid().
+- use device id to locate autofs_point when setting log priotity.
+- add command pipe handling functions.
+- switch to application wide command pipe.
+- get rid of unused field submnt_count.
+- fix mount tree startup reconnect.
+- fix unterminated read in handle_cmd_pipe_fifo_message().
+- fix memory leak in sasl_do_kinit()
+- fix fix mount tree startup reconnect.
+- fix amd selector function matching.
+- get rid entry thid field.
+- continue expire immediately after submount check.
+- eliminate realpath from mount of submount.
+- eliminate root param from autofs mount and umount.
+- remove redundant fstat from do_mount_direct().
+- get rid of strlen call in handle_packet_missing_direct().
+- remove redundant stat call in lookup_ghost().
+- set mapent dev and ino before adding to index.
+- change to use printf functions in amd parser.
+- dont call umount_subtree_mounts() on parent at umount.
+- dont take parent source lock at mount shutdown.
+- fix possible use after free in handle_mounts_exit().
+- make submount cleanup the same as top level mounts.
+- add soucre parameter to module functions.
+- add ioctlfd open helper.
+- make open files limit configurable.
+- use correct reference for IN6 macro call.
+- dont probe interface that cant send packet.
+- fix some sss error return cases.
+- fix incorrect matching of cached wildcard key.
+- fix expire retry looping.
+- allow -null map in indirect maps.
+- fix multi-mount check.
+- fix let OpenLDAP handle SASL binding.
+- always recreate credential cache.
+- fix ldap_parse_page_control() check.
+- fix typo in create_cmd_pipe_fifo().
+- add null check in master_kill().
+- be more careful with cmd pipe at exit.
+- rename configure.in to configure.ac.
+- update autoconf macros.
+- update autoconf release.
+- update autofs release.
+
+Ian
+
