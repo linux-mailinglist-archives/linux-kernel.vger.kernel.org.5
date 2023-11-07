@@ -2,121 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D94147E3AF8
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 12:18:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A8B17E3AFA
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 12:22:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234253AbjKGLSv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 06:18:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34740 "EHLO
+        id S233987AbjKGLWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 06:22:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234241AbjKGLSs (ORCPT
+        with ESMTP id S233747AbjKGLV7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 06:18:48 -0500
-Received: from mail-yw1-x1132.google.com (mail-yw1-x1132.google.com [IPv6:2607:f8b0:4864:20::1132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1BA111D
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 03:18:45 -0800 (PST)
-Received: by mail-yw1-x1132.google.com with SMTP id 00721157ae682-5a90d6ab962so64672837b3.2
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 03:18:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699355925; x=1699960725; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=oQGe6mNztA93E1vhMaP9OoY2/CZNCEpDDK/s+WkFPnI=;
-        b=EnFiixIytwk3XoCxhb3yPTrknvALwow6D5TsvQnzBJwNpCecBOyzkhJ337yXvCXdvX
-         vHzjxIJnCUmIy9HpxrFhtKQoJ783iHCkUmF0OlOpZBHcyd6yXdW4J8528FIBO242Y0wR
-         pwW1GUbPVplxMJ1ZyITIyPqjZt6vKRC+H1fXUJrqU7PWXkasbD2iF2M8WM+HrqDBGaE/
-         7JEZ3D9QW1DLXzDUsWntDgAiyNK2VHaMLp2wTVOxvqSIcsugqlOHLxNw31ka+Jn09oCe
-         +GJI0e2a+87rIqUnOIhY64ThY1FbbWd+C+CTJjsCe/CtLnrvRONVFV4oc9iikj2HS+RH
-         eAAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699355925; x=1699960725;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=oQGe6mNztA93E1vhMaP9OoY2/CZNCEpDDK/s+WkFPnI=;
-        b=Tg/Gm3rtJ7oDd4AgvJkVYkLg9AqwqBq/shps+gA/dq+vQZxrYqTQ0TAYPS7Rahl+PU
-         7zaOUQpQmpNIHz7UUA2VdgvdNjIdj9ooFli4lNjCCUfU0sd3TRISsJ9cglce+6la+HKj
-         f4FYLgnnrogs5HOtUkSGfUDEnhN0L4CejrAffoe2gjtwlTXRoHghvCCSfO9F3X1sdj8B
-         uxMRvznXv84VIEtjheDRP7wIgBoSoxkT0SYM/9zKsu7Hg7Ru3VmLq99p8PWL0Tv1KF0g
-         F4QBSA9HqBGQCm9Hkqa2oWh1WKwX0F36uHi5W+nUWbrM/6MfSnISMT9G1l50C5M5YMlx
-         xHrA==
-X-Gm-Message-State: AOJu0YxmEzDby4576YR/s/D1OCdGPRe4pff9xnbvLZIM/bWno2nlEiBS
-        1yOPRwkJduMEoKdCF8XI8q+N3hSSX+3KU7+qL9u7Fw==
-X-Google-Smtp-Source: AGHT+IFFsEhPnerAY8XwonvVxogJKJiZC9RcaEADdZ7gCKoSrkvwJ/ancft1LPF0r9cwbvoXEpKqianptNR/KAZyYJU=
-X-Received: by 2002:a25:900b:0:b0:d9a:e129:92a1 with SMTP id
- s11-20020a25900b000000b00d9ae12992a1mr31802617ybl.54.1699355924917; Tue, 07
- Nov 2023 03:18:44 -0800 (PST)
+        Tue, 7 Nov 2023 06:21:59 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A89491;
+        Tue,  7 Nov 2023 03:21:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699356116; x=1730892116;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=M4Tpz5L6PCxNOS3E/Mpmben/vumZjjJ+Uyr4CUFs7VU=;
+  b=D42oczmo5P6ehk84XyX3PDRwcKWAUXm1yek00Cp6XNqJYIeXto5z6YEZ
+   vXG6yF71EGKO4RAe5It+fR2CuUthZa7s/Rs/UW+PjHVKgWvmti4nZ2dta
+   nsL2ZY8+eaEYJv5fzrSeQKRqu79EgIZM2y8UW7T4ZTLRoXcbeLBR45RH0
+   2Ps8UYsJGcAXC3GFZrP5tCzFYmdIIF+xNf8kibPj7IWQyx9Z5q9e2ohgt
+   afppx+TUWURRanR+2bG/luKhbXe0uQjx4wlWAxXGS3NUVVCdW3YoBG3On
+   RI52vkF5A6Qv8uCdiH88hJoFHHD6ObnJuqYXzn62fYVRccirNtLCswQzw
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10886"; a="475727076"
+X-IronPort-AV: E=Sophos;i="6.03,283,1694761200"; 
+   d="scan'208";a="475727076"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2023 03:21:55 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10886"; a="828579774"
+X-IronPort-AV: E=Sophos;i="6.03,283,1694761200"; 
+   d="scan'208";a="828579774"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga008.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2023 03:21:54 -0800
+Received: from mohdfai2-iLBPG12-1.png.intel.com (mohdfai2-iLBPG12-1.png.intel.com [10.88.227.73])
+        by linux.intel.com (Postfix) with ESMTP id C4038580D61;
+        Tue,  7 Nov 2023 03:21:51 -0800 (PST)
+From:   Faizal Rahim <faizal.abdul.rahim@linux.intel.com>
+To:     Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Vinicius Costa Gomes <vinicius.gomes@intel.com>,
+        Jamal Hadi Salim <jhs@mojatatu.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 net 0/7] qbv cycle time extension/truncation
+Date:   Tue,  7 Nov 2023 06:20:16 -0500
+Message-Id: <20231107112023.676016-1-faizal.abdul.rahim@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20231107064545.13120-1-quic_jkona@quicinc.com>
-In-Reply-To: <20231107064545.13120-1-quic_jkona@quicinc.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Tue, 7 Nov 2023 13:18:33 +0200
-Message-ID: <CAA8EJpoLaXgxue-+pry8VK4Ln00Dk-jXG_Ev9ot5k8bbonP3Qw@mail.gmail.com>
-Subject: Re: [PATCH] clk: qcom: Fix SM_CAMCC_8550 dependencies
-To:     Jagadeesh Kona <quic_jkona@quicinc.com>
-Cc:     Andy Gross <agross@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Taniya Das <quic_tdas@quicinc.com>,
-        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Ajit Pandey <quic_ajipan@quicinc.com>,
-        Imran Shaik <quic_imrashai@quicinc.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        kernel test robot <lkp@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.0 required=5.0 tests=AC_FROM_MANY_DOTS,BAYES_00,
+        DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 7 Nov 2023 at 08:46, Jagadeesh Kona <quic_jkona@quicinc.com> wrote:
->
-> SM_GCC_8550 depends on ARM64 but it is selected by
-> SM_CAMCC_8550, which should have the same dependencies
-> as SM_GCC_8550 to avoid the below Kconfig warning reported
-> by kernel test robot.
->
-> WARNING: unmet direct dependencies detected for SM_GCC_8550
->   Depends on [n]: COMMON_CLK [=y] && COMMON_CLK_QCOM [=y] && (ARM64 || COMPILE_TEST [=n])
->   Selected by [y]:
->   - SM_CAMCC_8550 [=y] && COMMON_CLK [=y] && COMMON_CLK_QCOM [=y]
->
-> Fixes: ccc4e6a061a2 ("clk: qcom: camcc-sm8550: Add camera clock controller driver for SM8550")
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202311062309.XugQH7AH-lkp@intel.com/
-> Signed-off-by: Jagadeesh Kona <quic_jkona@quicinc.com>
+According to IEEE Std. 802.1Q-2018 section Q.5 CycleTimeExtension,
+the Cycle Time Extension variable allows this extension of the last old
+cycle to be done in a defined way. If the last complete old cycle would
+normally end less than OperCycleTimeExtension nanoseconds before the new
+base time, then the last complete cycle before AdminBaseTime is reached
+is extended so that it ends at AdminBaseTime.
 
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Changes in v2:
 
-> ---
->  drivers/clk/qcom/Kconfig | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/drivers/clk/qcom/Kconfig b/drivers/clk/qcom/Kconfig
-> index ad1acd9b7426..dbc3950c5960 100644
-> --- a/drivers/clk/qcom/Kconfig
-> +++ b/drivers/clk/qcom/Kconfig
-> @@ -767,6 +767,7 @@ config SM_CAMCC_8450
->
->  config SM_CAMCC_8550
->         tristate "SM8550 Camera Clock Controller"
-> +       depends on ARM64 || COMPILE_TEST
->         select SM_GCC_8550
->         help
->           Support for the camera clock controller on SM8550 devices.
-> --
-> 2.41.0
->
+- Added 's64 cycle_time_correction' in 'sched_gate_list struct'.
+- Removed sched_changed created in v1 since the new cycle_time_correction
+  field can also serve to indicate the need for a schedule change.
+- Added 'bool correction_active' in 'struct sched_entry' to represent
+  the correction state from the entry's perspective and return corrected
+  interval value when active.
+- Fix cycle time correction logics for the next entry in advance_sched()
+- Fix and implement proper cycle time correction logics for current
+  entry in taprio_start_sched()
 
+v1 at:
+https://lore.kernel.org/lkml/20230530082541.495-1-muhammad.husaini.zulkifli@intel.com/
+
+Faizal Rahim (7):
+  net/sched: taprio: fix too early schedules switching
+  net/sched: taprio: fix cycle time adjustment for next entry
+  net/sched: taprio: update impacted fields during cycle time adjustment
+  net/sched: taprio: get corrected value of cycle_time and interval
+  net/sched: taprio: fix delayed switching to new schedule after timer
+    expiry
+  net/sched: taprio: fix q->current_entry is NULL before its expiry
+  net/sched: taprio: enable cycle time adjustment for current entry
+
+ net/sched/sch_taprio.c | 263 ++++++++++++++++++++++++++++++++---------
+ 1 file changed, 209 insertions(+), 54 deletions(-)
 
 -- 
-With best wishes
-Dmitry
+2.25.1
+
