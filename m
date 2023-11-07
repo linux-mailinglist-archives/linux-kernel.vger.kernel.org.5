@@ -2,86 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B7A967E3896
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 11:14:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35A437E38A4
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 11:16:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233799AbjKGKOo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 05:14:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48260 "EHLO
+        id S233843AbjKGKQz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 05:16:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229543AbjKGKOm (ORCPT
+        with ESMTP id S233785AbjKGKQx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 05:14:42 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5920BD;
-        Tue,  7 Nov 2023 02:14:39 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F1FA0C433C7;
-        Tue,  7 Nov 2023 10:14:35 +0000 (UTC)
-Message-ID: <b5f9d751-5425-4281-8a21-99e92bd447b7@xs4all.nl>
-Date:   Tue, 7 Nov 2023 11:14:34 +0100
+        Tue, 7 Nov 2023 05:16:53 -0500
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13409ED
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 02:16:49 -0800 (PST)
+Received: from dggpemm500020.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4SPkf02dH9zfZxn;
+        Tue,  7 Nov 2023 18:16:40 +0800 (CST)
+Received: from [10.174.176.88] (10.174.176.88) by
+ dggpemm500020.china.huawei.com (7.185.36.49) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Tue, 7 Nov 2023 18:16:00 +0800
+Message-ID: <d3a50c46-93c9-4b60-8609-9465e1605f77@huawei.com>
+Date:   Tue, 7 Nov 2023 18:16:00 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RESEND PATCH v2 0/3] Fix use-after-free bug in
- mtk_jpeg_dec_device_run and fix schedule error in mtk_jpegdec_worker
-Content-Language: en-US, nl
-To:     Zheng Wang <zyytlz.wz@163.com>, dmitry.osipenko@collabora.com
-Cc:     Kyrie.Wu@mediatek.com, bin.liu@mediatek.com, mchehab@kernel.org,
-        matthias.bgg@gmail.com, angelogioacchino.delregno@collabora.com,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, Irui.Wang@mediatek.com,
-        security@kernel.org, hackerzheng666@gmail.com,
-        amergnat@baylibre.com, wenst@chromium.org, stable@vger.kernel.org
-References: <20231106144811.868127-1-zyytlz.wz@163.com>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-Autocrypt: addr=hverkuil@xs4all.nl; keydata=
- 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
-In-Reply-To: <20231106144811.868127-1-zyytlz.wz@163.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
+Subject: Re: [PATCH -next,V2] fscache: support to disable assert macro
+To:     <dhowells@redhat.com>
+CC:     <linux-cachefs@redhat.com>, <linux-kernel@vger.kernel.org>,
+        <yangerkun@huawei.com>, <hsiangkao@linux.alibaba.com>
+References: <20231101163414.2105727-1-wozizhi@huawei.com>
+From:   Zizhi Wo <wozizhi@huawei.com>
+In-Reply-To: <20231101163414.2105727-1-wozizhi@huawei.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.176.88]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpemm500020.china.huawei.com (7.185.36.49)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -89,45 +48,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/11/2023 15:48, Zheng Wang wrote:
-> Hello,
-> 
-> This v2 series fixes the use-after-free bug in mtk_jpeg_dec_device_run.
-> This patch fixes the security bug in chrome-os.
-> It inclues reverting the incomplete fix before and make the right fix.
-> Also,it fixes the error of timeout-worker-schedule in multiple-core
-> devices.
-> 
-> 1. Remove cancel worker in mtk_jpeg_remove for the worker is only
-> registered in single-core device but we try to cacnel it in both
-> single-core and multiple-core devices.
-> 
-> 2. Fix use-after-free bug by delay the schedule_delayed_work only if
-> mtk_jpeg_set_dec_dst runs successfully.
-> 
-> 3. Delay the schedule_delayed_work in mtk_jpegdec_worker as it has same
-> code logic in mtk_jpeg_dec_device_run.
-> 
-> version 2 changes
-> 
-> -put the patches into on series suggested by Dmitry
-> 
-> Zheng Wang (3):
->   media: mtk-jpeg: Remove cancel worker in mtk_jpeg_remove to avoid the
->     crash of multi-core JPEG devices
->   media: mtk-jpeg: Fix use after free bug due to error path handling
->     in mtk_jpeg_dec_device_run
->   media: mtk-jpeg: Fix timeout schedule error in mtk_jpegdec_worker.
-> 
->  .../media/platform/mediatek/jpeg/mtk_jpeg_core.c    | 13 ++++++-------
->  1 file changed, 6 insertions(+), 7 deletions(-)
-> 
+friendly ping
 
-Please don't resend. If it is in patchwork.linuxtv.org then it is good.
-Fixes (unless they fix something really nasty) can take several weeks before
-they are picked up. I usually schedule 2 or 3 rounds per kernel cycle where
-I go through all the pending patches with fixes.
-
-Regards,
-
-	Hans
+在 2023/11/2 0:34, WoZ1zh1 写道:
+> In fs/fscache/internal.h, ASSERT macro is enabled by default and can not
+> be disabled, then assert failure will crash the kernel as the BUG() is
+> included in the ASSERT macro. Therefore, add FSCACHE_ASSERT to control it.
+>
+> Signed-off-by: WoZ1zh1 <wozizhi@huawei.com>
+> ---
+>   fs/fscache/Kconfig    | 10 ++++++++++
+>   fs/fscache/internal.h |  2 +-
+>   2 files changed, 11 insertions(+), 1 deletion(-)
+>
+> diff --git a/fs/fscache/Kconfig b/fs/fscache/Kconfig
+> index b313a978ae0a..7ff844038bc3 100644
+> --- a/fs/fscache/Kconfig
+> +++ b/fs/fscache/Kconfig
+> @@ -38,3 +38,13 @@ config FSCACHE_DEBUG
+>   	  enabled by setting bits in /sys/modules/fscache/parameter/debug.
+>   
+>   	  See Documentation/filesystems/caching/fscache.rst for more information.
+> +
+> +config FSCACHE_ASSERT
+> +	bool "FSCACHE asserts"
+> +	default n
+> +	depends on FSCACHE
+> +	help
+> +	  Support the ASSERT mode for failure behavior.
+> +	  Say N here to disable the ASSERT by default.
+> +	  Say Y to add assertion checks in some places. But the assertion
+> +	  failure will result in fatal errors that BUG() the kernel.
+> diff --git a/fs/fscache/internal.h b/fs/fscache/internal.h
+> index 1336f517e9b1..951166ed772f 100644
+> --- a/fs/fscache/internal.h
+> +++ b/fs/fscache/internal.h
+> @@ -225,7 +225,7 @@ do {						\
+>   /*
+>    * assertions
+>    */
+> -#if 1 /* defined(__KDEBUGALL) */
+> +#ifdef CONFIG_FSCACHE_ASSERT
+>   
+>   #define ASSERT(X)							\
+>   do {									\
