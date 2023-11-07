@@ -2,103 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BABA7E4194
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 15:10:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EA967E4196
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 15:10:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233982AbjKGOKD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 09:10:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50328 "EHLO
+        id S233924AbjKGOKQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 09:10:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229643AbjKGOKB (ORCPT
+        with ESMTP id S234165AbjKGOKO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 09:10:01 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E539FC1
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 06:09:58 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BE13AC433C7;
-        Tue,  7 Nov 2023 14:09:56 +0000 (UTC)
-Date:   Tue, 7 Nov 2023 09:09:59 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Florent Revest <revest@chromium.org>,
-        linux-trace-kernel@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Guo Ren <guoren@kernel.org>
-Subject: Re: [RFC PATCH 24/32] x86/ftrace: Enable HAVE_FUNCTION_GRAPH_FREGS
-Message-ID: <20231107090959.1328bf62@gandalf.local.home>
-In-Reply-To: <20231107084844.7a39ac3f@gandalf.local.home>
-References: <169920038849.482486.15796387219966662967.stgit@devnote2>
-        <169920068069.482486.6540417903833579700.stgit@devnote2>
-        <20231105172536.GA7124@noisy.programming.kicks-ass.net>
-        <20231105141130.6ef7d8bd@rorschach.local.home>
-        <20231105231734.GE3818@noisy.programming.kicks-ass.net>
-        <20231105183301.38be5598@rorschach.local.home>
-        <20231106100549.33f6ce30d968906979ca3954@kernel.org>
-        <20231106113710.3bf69211@gandalf.local.home>
-        <20231107094258.d41a46c202197e92bc6d9656@kernel.org>
-        <20231106220617.5eb73f2f@gandalf.local.home>
-        <20231107144328.cc763a2a137391ceb105e9db@kernel.org>
-        <20231107084844.7a39ac3f@gandalf.local.home>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
+        Tue, 7 Nov 2023 09:10:14 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AB77C2
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 06:10:11 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 45C8E2190B;
+        Tue,  7 Nov 2023 14:10:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1699366210; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=H5cjZNHpxuGWSmT2zmwf2NB+u/SGgNHH2dKh8C7ovmk=;
+        b=em5ODSq5zm1cU4/E2lGJvYbN3/faZaJLhRnH8l0Bebg9dF8o01A4EhPHSP4hOoO0OR1hVS
+        SWa+gG5bYa3jWCdEs/ysYAAwJVqhhkyl0IIl2JNg7KqViT64fXfFUzyKqDkFT4ADcv5YLx
+        lf8VZuisabHMAaWQZGa4s7J5IpkT+vQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1699366210;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=H5cjZNHpxuGWSmT2zmwf2NB+u/SGgNHH2dKh8C7ovmk=;
+        b=bB+GevcQ8b7XJFT+2UMNwxkG5W8gXYf4ALOgK/EDcEjK1ac+cX798wwzvckItKgT1Sg3Np
+        /iZkUCfqP4T5CxDQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1487913907;
+        Tue,  7 Nov 2023 14:10:10 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id CNYmBEJFSmUFdwAAMHmgww
+        (envelope-from <tiwai@suse.de>); Tue, 07 Nov 2023 14:10:10 +0000
+Date:   Tue, 07 Nov 2023 15:10:09 +0100
+Message-ID: <87v8adr6wu.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Alexander Koskovich <AKoskovich@pm.me>
+Cc:     perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
+        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        Alexander Koskovich <akoskovich@pm.me>
+Subject: Re: [PATCH 1/1] ALSA: hda: Add ASRock X670E Taichi to denylist
+In-Reply-To: <20231105152834.5620-1-akoskovich@pm.me>
+References: <20231105152834.5620-1-akoskovich@pm.me>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 7 Nov 2023 08:48:44 -0500
-Steven Rostedt <rostedt@goodmis.org> wrote:
-
-> On Tue, 7 Nov 2023 14:43:28 +0900
-> Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
+On Sun, 05 Nov 2023 16:29:29 +0100,
+Alexander Koskovich wrote:
 > 
-> > > 
-> > > It's only needed if an architecture supports direct trampolines.    
-> > 
-> > I see, and x86_64 needs it.
-> > OK, maybe better to keep it clear on x86-64 even on the
-> > return handler.  
+> Recent AMD platforms expose an HD-audio bus but without any actual
+> codecs, which is internally tied with a USB-audio device, supposedly.
+> It results in "no codecs" error of HD-audio bus driver, and it's
+> nothing but a waste of resources.
 > 
-> As it is arch specific, I'm not sure it matters for the return handler, as
-> the return should never call a direct trampoline.
+> snd_hda_intel 0000:59:00.6: no codecs found!
+> 
+> Signed-off-by: Alexander Koskovich <akoskovich@pm.me>
 
-Just to clarify, the return trampoline should not bother touching that
-register. The register was cleared in the fentry trampoline before calling
-all the callbacks because the arch_ftrace_set_direct_caller() would set it.
-Then on return of calling the function callbacks, it would test if
-something set it or not.
+Thanks, applied now.
 
-If the return trampoline is not testing it after the return from the
-callbacks, there's no reason to clear it. The fentry trampoline used it to
-communicate to itself:
 
-	orig_rax = 0;
-
-	call ftrace_ops_list_func()
-
-	/* Did something set orig_rax? */
-	if (orig_rax != 0)
-		return orig_rax;
-
-It's not setting it to communicate with the callbacks. That is, the
-callback does not expect it to be set.
-
--- Steve
-
+Takashi
