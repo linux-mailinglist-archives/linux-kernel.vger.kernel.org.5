@@ -2,527 +2,371 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6543A7E31F6
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 01:05:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47A367E31F9
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 01:06:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229646AbjKGAFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 19:05:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60402 "EHLO
+        id S233410AbjKGAG2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 19:06:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229517AbjKGAFw (ORCPT
+        with ESMTP id S229517AbjKGAG0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 19:05:52 -0500
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F75F125
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 16:05:48 -0800 (PST)
-Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1cc34c3420bso41315175ad.3
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 16:05:48 -0800 (PST)
+        Mon, 6 Nov 2023 19:06:26 -0500
+Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44440BB
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 16:06:21 -0800 (PST)
+Received: by mail-il1-x134.google.com with SMTP id e9e14a558f8ab-35809893291so20135375ab.1
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 16:06:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1699315548; x=1699920348; darn=vger.kernel.org;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1699315580; x=1699920380; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=7QJFQDzeUVX+vloytR85R4pK8I9Zva7Zk04TYVn93mA=;
-        b=bxfENR61MK5UwHfdAWlojnoP6e/+yz5lFRjNWaSzeImimuGCk8DxSDnpuc0VXDkQSN
-         lJUCE8T+UTjRrZnWCRh6INwY3zpriH5dpEIpGUh81F5N8vhN73d129LnyBrHPt9gOrMw
-         Pbp4Z8sKTO7XTHqmfyONEdTxPVsidsu8B2Nvs=
+        bh=/Mf5g5Mm+du9QPsx6fgXbExZqjKh6NGageD+9eQdsEU=;
+        b=tDWtFmQ+/ki0PLTxKznwnq8NxcYfFaYtzbX5z7CX39dqY1JM5S8g6JwjcuCYQv+3A0
+         1/BpWv+mOuvw50fdaXcFofcChVH9Mgduf5/1+N16BRzjQjuZ7FWEpdEvw1G+u/d6J2wR
+         zlMSUxzmqCHORhu+GLFZDOiUB+fa5YeCPE1iYV6YRhKWySCIlzjokXlZpx57xRX4G9gc
+         T1fhtTXROC+QxAzaBOhXZK4UaNflIT0/xj7+pH7+VPoFjJMtcXQBNOdtaKzOVwig98UL
+         724J/y1V5o9vnX1Yo/tSA5XnrjGZUaDOk3J8Ig1amlPLgCJxd5CW3JJV9e0MqcPROdKW
+         dsVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699315548; x=1699920348;
+        d=1e100.net; s=20230601; t=1699315580; x=1699920380;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=7QJFQDzeUVX+vloytR85R4pK8I9Zva7Zk04TYVn93mA=;
-        b=M/Jt2yZD67FvG3Z6Al/tmfbQM7PDvh1V3bP3WkaBqCEhLicRSwu+Q6Rm0RFnroW3KM
-         qHfvdBqt8d9mRmtpNk03yBQZWhvbzv/D2zyRtpbNc0xRidCylmWk8xYIV4dKSLOtMcDB
-         sqNXTecOj+vNXMuV2NaAknGSyqRPQ9rJVgSLrCyjHvFYxmPY1KNEOuVZsAlrDKtYfNWY
-         BwIYNl3AK3iKXArPfhtHCPy9D+vyv11od4mrPUi8pJtxeeb5LzZDz8ad3Km/nrTqhuSM
-         TWwjB7EWEfVDlf0NmfrPTdGzqRUFlqZHv6Ic42Z2tTdhJAnovWfQk1kbH9U/ecbLGzQI
-         lf6Q==
-X-Gm-Message-State: AOJu0YzyTvBVxSBp90w55mqP9KgM15vmlZ5rY5CO7toE2226ucroEAYE
-        bif2o/stHHeWLOqxcvLIeOA5HA==
-X-Google-Smtp-Source: AGHT+IG+PIacReeHRWabu7Z+06nTvqNpG9vAyKM5Dj0syAJ9VIXxH7xzpXc0d0gxDApuLXlGEIDIkg==
-X-Received: by 2002:a17:902:d2cf:b0:1cc:3302:7354 with SMTP id n15-20020a170902d2cf00b001cc33027354mr23215187plc.17.1699315547650;
-        Mon, 06 Nov 2023 16:05:47 -0800 (PST)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id j5-20020a170902c08500b001cc0e3a29a8sm6436234pld.89.2023.11.06.16.05.46
+        bh=/Mf5g5Mm+du9QPsx6fgXbExZqjKh6NGageD+9eQdsEU=;
+        b=E3slWyP9N+pRAFo+Btxs7+9+Ij0zAsfghBpvqANi+EGymfVEQ+VJWzJlfcBEGLkXlE
+         p798dglipcr9bBXVP2KIfurRYxK4U+KOOl8TKtFriE88dwIGT1+KxSqBzxjgOWVD0Ven
+         mIiF+2SVjo3cx+wBfkqg/yig1GToEErao8YKadWBkGD5ls5hXtjjp2894jmYYR8ZY9hO
+         butb8BkWzzu9/mPo3x0M37QhHeiuvPgtz3yEPEI5Eljtjb1CdoMcCAVr6wnMID6vua6Y
+         Cn6gsgUPYaNlc87iZwdoJQrlBv7CclK94oofZzg/S1p9OsY/KKycXlkHv4nzud6renry
+         3pFg==
+X-Gm-Message-State: AOJu0YzHp1ez7/BW8SeVqc0N59Cv7BRUvh2NZqrdWrfM2P/X0zJ7QEBp
+        eWsN5O6QVtow3IDFwkJ4AphnTg==
+X-Google-Smtp-Source: AGHT+IGXGG7HlkQp7iDky/26odlQ2a4tHbOjMyliqsuluLh9F4tJK0Fjp95oKzUTCi0p0F55n2bikA==
+X-Received: by 2002:a05:6e02:1bc3:b0:352:a73a:16f5 with SMTP id x3-20020a056e021bc300b00352a73a16f5mr1132291ilv.18.1699315580523;
+        Mon, 06 Nov 2023 16:06:20 -0800 (PST)
+Received: from x1 ([2601:1c2:1800:f680:9fcd:449f:a3b9:e442])
+        by smtp.gmail.com with ESMTPSA id i14-20020aa787ce000000b006b76cb6523dsm6108528pfo.165.2023.11.06.16.06.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Nov 2023 16:05:47 -0800 (PST)
-Date:   Mon, 6 Nov 2023 16:05:46 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Sargun Dhillon <sargun@sargun.me>,
-        Serge Hallyn <serge@hallyn.com>, Jann Horn <jannh@google.com>,
-        Henning Schild <henning.schild@siemens.com>,
-        Andrei Vagin <avagin@gmail.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Laurent Vivier <laurent@vivier.eu>,
-        linux-fsdevel@vger.kernel.org,
-        Christian Brauner <brauner@kernel.org>, linux-mm@kvack.org
-Subject: Re: [PATCH AUTOSEL 4.14 2/4] binfmt_misc: cleanup on filesystem
- umount
-Message-ID: <202311061605.4B418CD7@keescook>
-References: <20231106231728.3736117-1-sashal@kernel.org>
- <20231106231728.3736117-2-sashal@kernel.org>
+        Mon, 06 Nov 2023 16:06:19 -0800 (PST)
+Date:   Mon, 6 Nov 2023 16:06:15 -0800
+From:   Drew Fustini <dfustini@baylibre.com>
+To:     Adrian Hunter <adrian.hunter@intel.com>
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Jisheng Zhang <jszhang@kernel.org>,
+        Guo Ren <guoren@kernel.org>, Fu Wei <wefu@redhat.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Conor Dooley <conor@kernel.org>,
+        Robert Nelson <robertcnelson@beagleboard.org>,
+        Jason Kridner <jkridner@beagleboard.org>,
+        Xi Ruoyao <xry111@xry111.site>, Han Gao <gaohan@iscas.ac.cn>,
+        Icenowy Zheng <uwu@icenowy.me>, linux-mmc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org
+Subject: Re: [PATCH v4 3/7] mmc: sdhci-of-dwcmshc: Add support for T-Head
+ TH1520
+Message-ID: <ZUl/dw8/SnBpgLeG@x1>
+References: <20231101-th1520-mmc-v4-0-86e0216b5994@baylibre.com>
+ <20231101-th1520-mmc-v4-3-86e0216b5994@baylibre.com>
+ <6f68ab16-5512-4a48-ae28-e86ce989f578@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231106231728.3736117-2-sashal@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <6f68ab16-5512-4a48-ae28-e86ce989f578@intel.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-And just to be clear, please drop this (and the binfmt_elf change) from
-all -stable versions, not just 6.6. :)
+On Mon, Nov 06, 2023 at 08:42:38PM +0200, Adrian Hunter wrote:
+> On 2/11/23 04:48, Drew Fustini wrote:
+> > Add support for the mmc controller in the T-Head TH1520 with the new
+> > compatible "thead,th1520-dwcmshc". Implement custom sdhci_ops for
+> > set_uhs_signaling, reset, voltage_switch, and platform_execute_tuning.
+> > 
+> > Signed-off-by: Drew Fustini <dfustini@baylibre.com>
+> 
+> One question below, otherwise:
+> 
+> Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+> 
+> > ---
+> >  drivers/mmc/host/sdhci-of-dwcmshc.c | 348 ++++++++++++++++++++++++++++++++++++
+> >  1 file changed, 348 insertions(+)
+> > 
+> > diff --git a/drivers/mmc/host/sdhci-of-dwcmshc.c b/drivers/mmc/host/sdhci-of-dwcmshc.c
+> > index 3a3bae6948a8..1a1386b742c1 100644
+> > --- a/drivers/mmc/host/sdhci-of-dwcmshc.c
+> > +++ b/drivers/mmc/host/sdhci-of-dwcmshc.c
+> > @@ -8,6 +8,7 @@
+> >   */
+> >  
+> >  #include <linux/acpi.h>
+> > +#include <linux/bitfield.h>
+> >  #include <linux/clk.h>
+> >  #include <linux/dma-mapping.h>
+> >  #include <linux/iopoll.h>
+> > @@ -35,6 +36,21 @@
+> >  #define DWCMSHC_CARD_IS_EMMC		BIT(0)
+> >  #define DWCMSHC_ENHANCED_STROBE		BIT(8)
+> >  #define DWCMSHC_EMMC_ATCTRL		0x40
+> > +/* Tuning and auto-tuning fields in AT_CTRL_R control register */
+> > +#define AT_CTRL_AT_EN			BIT(0) /* autotuning is enabled */
+> > +#define AT_CTRL_CI_SEL			BIT(1) /* interval to drive center phase select */
+> > +#define AT_CTRL_SWIN_TH_EN		BIT(2) /* sampling window threshold enable */
+> > +#define AT_CTRL_RPT_TUNE_ERR		BIT(3) /* enable reporting framing errors */
+> > +#define AT_CTRL_SW_TUNE_EN		BIT(4) /* enable software managed tuning */
+> > +#define AT_CTRL_WIN_EDGE_SEL_MASK	GENMASK(11, 8) /* bits [11:8] */
+> > +#define AT_CTRL_WIN_EDGE_SEL		0xf /* sampling window edge select */
+> > +#define AT_CTRL_TUNE_CLK_STOP_EN	BIT(16) /* clocks stopped during phase code change */
+> > +#define AT_CTRL_PRE_CHANGE_DLY_MASK	GENMASK(18, 17) /* bits [18:17] */
+> > +#define AT_CTRL_PRE_CHANGE_DLY		0x1  /* 2-cycle latency */
+> > +#define AT_CTRL_POST_CHANGE_DLY_MASK	GENMASK(20, 19) /* bits [20:19] */
+> > +#define AT_CTRL_POST_CHANGE_DLY		0x3  /* 4-cycle latency */
+> > +#define AT_CTRL_SWIN_TH_VAL_MASK	GENMASK(31, 24) /* bits [31:24] */
+> > +#define AT_CTRL_SWIN_TH_VAL		0x9  /* sampling window threshold */
+> >  
+> >  /* Rockchip specific Registers */
+> >  #define DWCMSHC_EMMC_DLL_CTRL		0x800
+> > @@ -72,6 +88,82 @@
+> >  	(((x) & DWCMSHC_EMMC_DLL_TIMEOUT) == 0))
+> >  #define RK35xx_MAX_CLKS 3
+> >  
+> > +/* PHY register area pointer */
+> > +#define DWC_MSHC_PTR_PHY_R	0x300
+> > +
+> > +/* PHY general configuration */
+> > +#define PHY_CNFG_R		(DWC_MSHC_PTR_PHY_R + 0x00)
+> > +#define PHY_CNFG_RSTN_DEASSERT	0x1  /* Deassert PHY reset */
+> > +#define PHY_CNFG_PAD_SP_MASK	GENMASK(19, 16) /* bits [19:16] */
+> > +#define PHY_CNFG_PAD_SP		0x0c /* PMOS TX drive strength */
+> > +#define PHY_CNFG_PAD_SN_MASK	GENMASK(23, 20) /* bits [23:20] */
+> > +#define PHY_CNFG_PAD_SN		0x0c /* NMOS TX drive strength */
+> > +
+> > +/* PHY command/response pad settings */
+> > +#define PHY_CMDPAD_CNFG_R	(DWC_MSHC_PTR_PHY_R + 0x04)
+> > +
+> > +/* PHY data pad settings */
+> > +#define PHY_DATAPAD_CNFG_R	(DWC_MSHC_PTR_PHY_R + 0x06)
+> > +
+> > +/* PHY clock pad settings */
+> > +#define PHY_CLKPAD_CNFG_R	(DWC_MSHC_PTR_PHY_R + 0x08)
+> > +
+> > +/* PHY strobe pad settings */
+> > +#define PHY_STBPAD_CNFG_R	(DWC_MSHC_PTR_PHY_R + 0x0a)
+> > +
+> > +/* PHY reset pad settings */
+> > +#define PHY_RSTNPAD_CNFG_R	(DWC_MSHC_PTR_PHY_R + 0x0c)
+> > +
+> > +/* Bitfields are common for all pad settings */
+> > +#define PHY_PAD_RXSEL_1V8		0x1 /* Receiver type select for 1.8V */
+> > +#define PHY_PAD_RXSEL_3V3		0x2 /* Receiver type select for 3.3V */
+> > +
+> > +#define PHY_PAD_WEAKPULL_MASK		GENMASK(4, 3) /* bits [4:3] */
+> > +#define PHY_PAD_WEAKPULL_PULLUP		0x1 /* Weak pull up enabled */
+> > +#define PHY_PAD_WEAKPULL_PULLDOWN	0x2 /* Weak pull down enabled */
+> > +
+> > +#define PHY_PAD_TXSLEW_CTRL_P_MASK	GENMASK(8, 5) /* bits [8:5] */
+> > +#define PHY_PAD_TXSLEW_CTRL_P		0x3 /* Slew control for P-Type pad TX */
+> > +#define PHY_PAD_TXSLEW_CTRL_N_MASK	GENMASK(12, 9) /* bits [12:9] */
+> > +#define PHY_PAD_TXSLEW_CTRL_N		0x3 /* Slew control for N-Type pad TX */
+> > +
+> > +/* PHY CLK delay line settings */
+> > +#define PHY_SDCLKDL_CNFG_R		(DWC_MSHC_PTR_PHY_R + 0x1d)
+> > +#define PHY_SDCLKDL_CNFG_UPDATE	BIT(4) /* set before writing to SDCLKDL_DC */
+> > +
+> > +/* PHY CLK delay line delay code */
+> > +#define PHY_SDCLKDL_DC_R		(DWC_MSHC_PTR_PHY_R + 0x1e)
+> > +#define PHY_SDCLKDL_DC_INITIAL		0x40 /* initial delay code */
+> > +#define PHY_SDCLKDL_DC_DEFAULT		0x32 /* default delay code */
+> > +#define PHY_SDCLKDL_DC_HS400		0x18 /* delay code for HS400 mode */
+> > +
+> > +/* PHY drift_cclk_rx delay line configuration setting */
+> > +#define PHY_ATDL_CNFG_R			(DWC_MSHC_PTR_PHY_R + 0x21)
+> > +#define PHY_ATDL_CNFG_INPSEL_MASK	GENMASK(3, 2) /* bits [3:2] */
+> > +#define PHY_ATDL_CNFG_INPSEL		0x3 /* delay line input source */
+> > +
+> > +/* PHY DLL control settings */
+> > +#define PHY_DLL_CTRL_R			(DWC_MSHC_PTR_PHY_R + 0x24)
+> > +#define PHY_DLL_CTRL_DISABLE		0x0 /* PHY DLL is enabled */
+> > +#define PHY_DLL_CTRL_ENABLE		0x1 /* PHY DLL is disabled */
+> > +
+> > +/* PHY DLL  configuration register 1 */
+> > +#define PHY_DLL_CNFG1_R			(DWC_MSHC_PTR_PHY_R + 0x25)
+> > +#define PHY_DLL_CNFG1_SLVDLY_MASK	GENMASK(5, 4) /* bits [5:4] */
+> > +#define PHY_DLL_CNFG1_SLVDLY		0x2 /* DLL slave update delay input */
+> > +#define PHY_DLL_CNFG1_WAITCYCLE		0x5 /* DLL wait cycle input */
+> > +
+> > +/* PHY DLL configuration register 2 */
+> > +#define PHY_DLL_CNFG2_R			(DWC_MSHC_PTR_PHY_R + 0x26)
+> > +#define PHY_DLL_CNFG2_JUMPSTEP		0xa /* DLL jump step input */
+> > +
+> > +/* PHY DLL master and slave delay line configuration settings */
+> > +#define PHY_DLLDL_CNFG_R		(DWC_MSHC_PTR_PHY_R + 0x28)
+> > +#define PHY_DLLDL_CNFG_SLV_INPSEL_MASK	GENMASK(6, 5) /* bits [6:5] */
+> > +#define PHY_DLLDL_CNFG_SLV_INPSEL	0x3 /* clock source select for slave DL */
+> > +
+> > +#define FLAG_IO_FIXED_1V8	BIT(0)
+> > +
+> >  #define BOUNDARY_OK(addr, len) \
+> >  	((addr | (SZ_128M - 1)) == ((addr + len - 1) | (SZ_128M - 1)))
+> >  
+> > @@ -92,6 +184,8 @@ struct dwcmshc_priv {
+> >  	struct clk	*bus_clk;
+> >  	int vendor_specific_area1; /* P_VENDOR_SPECIFIC_AREA reg */
+> >  	void *priv; /* pointer to SoC private stuff */
+> > +	u16 delay_line;
+> > +	u16 flags;
+> >  };
+> >  
+> >  /*
+> > @@ -157,6 +251,126 @@ static void dwcmshc_request(struct mmc_host *mmc, struct mmc_request *mrq)
+> >  	sdhci_request(mmc, mrq);
+> >  }
+> >  
+> > +static void dwcmshc_phy_1_8v_init(struct sdhci_host *host)
+> > +{
+> > +	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
+> > +	struct dwcmshc_priv *priv = sdhci_pltfm_priv(pltfm_host);
+> > +	u32 val;
+> > +
+> > +	/* deassert phy reset & set tx drive strength */
+> > +	val = PHY_CNFG_RSTN_DEASSERT;
+> > +	val |= FIELD_PREP(PHY_CNFG_PAD_SP_MASK, PHY_CNFG_PAD_SP);
+> > +	val |= FIELD_PREP(PHY_CNFG_PAD_SN_MASK, PHY_CNFG_PAD_SN);
+> > +	sdhci_writel(host, val, PHY_CNFG_R);
+> > +
+> > +	/* disable delay line */
+> > +	sdhci_writeb(host, PHY_SDCLKDL_CNFG_UPDATE, PHY_SDCLKDL_CNFG_R);
+> > +
+> > +	/* set delay line */
+> > +	sdhci_writeb(host, priv->delay_line, PHY_SDCLKDL_DC_R);
+> > +	sdhci_writeb(host, PHY_DLL_CNFG2_JUMPSTEP, PHY_DLL_CNFG2_R);
+> > +
+> > +	/* enable delay lane */
+> > +	val = sdhci_readb(host, PHY_SDCLKDL_CNFG_R);
+> > +	val &= ~(PHY_SDCLKDL_CNFG_UPDATE);
+> > +	sdhci_writeb(host, val, PHY_SDCLKDL_CNFG_R);
+> > +
+> > +	/* configure phy pads */
+> > +	val = PHY_PAD_RXSEL_1V8;
+> > +	val |= FIELD_PREP(PHY_PAD_WEAKPULL_MASK, PHY_PAD_WEAKPULL_PULLUP);
+> > +	val |= FIELD_PREP(PHY_PAD_TXSLEW_CTRL_P_MASK, PHY_PAD_TXSLEW_CTRL_P);
+> > +	val |= FIELD_PREP(PHY_PAD_TXSLEW_CTRL_N_MASK, PHY_PAD_TXSLEW_CTRL_N);
+> > +	sdhci_writew(host, val, PHY_CMDPAD_CNFG_R);
+> > +	sdhci_writew(host, val, PHY_DATAPAD_CNFG_R);
+> > +	sdhci_writew(host, val, PHY_RSTNPAD_CNFG_R);
+> > +
+> > +	val = FIELD_PREP(PHY_PAD_TXSLEW_CTRL_P_MASK, PHY_PAD_TXSLEW_CTRL_P);
+> > +	val |= FIELD_PREP(PHY_PAD_TXSLEW_CTRL_N_MASK, PHY_PAD_TXSLEW_CTRL_N);
+> > +	sdhci_writew(host, val, PHY_CLKPAD_CNFG_R);
+> > +
+> > +	val = PHY_PAD_RXSEL_1V8;
+> > +	val |= FIELD_PREP(PHY_PAD_WEAKPULL_MASK, PHY_PAD_WEAKPULL_PULLDOWN);
+> > +	val |= FIELD_PREP(PHY_PAD_TXSLEW_CTRL_P_MASK, PHY_PAD_TXSLEW_CTRL_P);
+> > +	val |= FIELD_PREP(PHY_PAD_TXSLEW_CTRL_N_MASK, PHY_PAD_TXSLEW_CTRL_N);
+> > +	sdhci_writew(host, val, PHY_STBPAD_CNFG_R);
+> > +
+> > +	/* enable data strobe mode */
+> > +	sdhci_writeb(host, FIELD_PREP(PHY_DLLDL_CNFG_SLV_INPSEL_MASK, PHY_DLLDL_CNFG_SLV_INPSEL),
+> > +		     PHY_DLLDL_CNFG_R);
+> > +
+> > +	/* enable phy dll */
+> > +	sdhci_writeb(host, PHY_DLL_CTRL_ENABLE, PHY_DLL_CTRL_R);
+> > +}
+> > +
+> > +static void dwcmshc_phy_3_3v_init(struct sdhci_host *host)
+> > +{
+> > +	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
+> > +	struct dwcmshc_priv *priv = sdhci_pltfm_priv(pltfm_host);
+> > +	u32 val;
+> > +
+> > +	/* deassert phy reset & set tx drive strength */
+> > +	val = PHY_CNFG_RSTN_DEASSERT;
+> > +	val |= FIELD_PREP(PHY_CNFG_PAD_SP_MASK, PHY_CNFG_PAD_SP);
+> > +	val |= FIELD_PREP(PHY_CNFG_PAD_SN_MASK, PHY_CNFG_PAD_SN);
+> > +	sdhci_writel(host, val, PHY_CNFG_R);
+> > +
+> > +	/* disable delay line */
+> > +	sdhci_writeb(host, PHY_SDCLKDL_CNFG_UPDATE, PHY_SDCLKDL_CNFG_R);
+> > +
+> > +	/* set delay line */
+> > +	sdhci_writeb(host, priv->delay_line, PHY_SDCLKDL_DC_R);
+> > +	sdhci_writeb(host, PHY_DLL_CNFG2_JUMPSTEP, PHY_DLL_CNFG2_R);
+> > +
+> > +	/* enable delay lane */
+> > +	val = sdhci_readb(host, PHY_SDCLKDL_CNFG_R);
+> > +	val &= ~(PHY_SDCLKDL_CNFG_UPDATE);
+> > +	sdhci_writeb(host, val, PHY_SDCLKDL_CNFG_R);
+> > +
+> > +	/* configure phy pads */
+> > +	val = PHY_PAD_RXSEL_3V3;
+> > +	val |= FIELD_PREP(PHY_PAD_WEAKPULL_MASK, PHY_PAD_WEAKPULL_PULLUP);
+> > +	val |= FIELD_PREP(PHY_PAD_TXSLEW_CTRL_P_MASK, PHY_PAD_TXSLEW_CTRL_P);
+> > +	val |= FIELD_PREP(PHY_PAD_TXSLEW_CTRL_N_MASK, PHY_PAD_TXSLEW_CTRL_N);
+> > +	sdhci_writew(host, val, PHY_CMDPAD_CNFG_R);
+> > +	sdhci_writew(host, val, PHY_DATAPAD_CNFG_R);
+> > +	sdhci_writew(host, val, PHY_RSTNPAD_CNFG_R);
+> > +
+> > +	val = FIELD_PREP(PHY_PAD_TXSLEW_CTRL_P_MASK, PHY_PAD_TXSLEW_CTRL_P);
+> > +	val |= FIELD_PREP(PHY_PAD_TXSLEW_CTRL_N_MASK, PHY_PAD_TXSLEW_CTRL_N);
+> > +	sdhci_writew(host, val, PHY_CLKPAD_CNFG_R);
+> > +
+> > +	val = PHY_PAD_RXSEL_3V3;
+> > +	val |= FIELD_PREP(PHY_PAD_WEAKPULL_MASK, PHY_PAD_WEAKPULL_PULLDOWN);
+> > +	val |= FIELD_PREP(PHY_PAD_TXSLEW_CTRL_P_MASK, PHY_PAD_TXSLEW_CTRL_P);
+> > +	val |= FIELD_PREP(PHY_PAD_TXSLEW_CTRL_N_MASK, PHY_PAD_TXSLEW_CTRL_N);
+> > +	sdhci_writew(host, val, PHY_STBPAD_CNFG_R);
+> > +
+> > +	/* enable phy dll */
+> > +	sdhci_writeb(host, PHY_DLL_CTRL_ENABLE, PHY_DLL_CTRL_R);
+> > +}
+> > +
+> > +static void th1520_sdhci_set_phy(struct sdhci_host *host)
+> > +{
+> > +	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
+> > +	struct dwcmshc_priv *priv = sdhci_pltfm_priv(pltfm_host);
+> > +	u16 emmc_ctrl;
+> > +
+> > +	/* Before power on, set PHY configs */
+> > +	if (priv->flags & FLAG_IO_FIXED_1V8)
+> > +		dwcmshc_phy_1_8v_init(host);
+> > +	else
+> > +		dwcmshc_phy_3_3v_init(host);
+> > +
+> > +	if (host->mmc->caps2 & (MMC_CAP2_NO_SD | MMC_CAP2_NO_SDIO)) {
+> 
+> Perhaps you mean both MMC_CAP2_NO_SD and MMC_CAP2_NO_SDIO which would be as below?
+> 
+> 	if ((host->mmc->caps2 & (MMC_CAP2_NO_SD | MMC_CAP2_NO_SDIO)) == (MMC_CAP2_NO_SD | MMC_CAP2_NO_SDIO)) {
+> 
+> or
+> 
+> 	if (host->mmc->caps2 & MMC_CAP2_NO_SD && host->mmc->caps2 & MMC_CAP2_NO_SDIO) {
+> 
+> or some such?
 
-Thanks!
+Thanks for catching this. Yes, what I did is incorrect.
 
--Kees
+In fact, Jisheng had suggested this code in the v2 thread:
 
-On Mon, Nov 06, 2023 at 06:17:23PM -0500, Sasha Levin wrote:
-> From: Christian Brauner <christian.brauner@ubuntu.com>
-> 
-> [ Upstream commit 1c5976ef0f7ad76319df748ccb99a4c7ba2ba464 ]
-> 
-> Currently, registering a new binary type pins the binfmt_misc
-> filesystem. Specifically, this means that as long as there is at least
-> one binary type registered the binfmt_misc filesystem survives all
-> umounts, i.e. the superblock is not destroyed. Meaning that a umount
-> followed by another mount will end up with the same superblock and the
-> same binary type handlers. This is a behavior we tend to discourage for
-> any new filesystems (apart from a few special filesystems such as e.g.
-> configfs or debugfs). A umount operation without the filesystem being
-> pinned - by e.g. someone holding a file descriptor to an open file -
-> should usually result in the destruction of the superblock and all
-> associated resources. This makes introspection easier and leads to
-> clearly defined, simple and clean semantics. An administrator can rely
-> on the fact that a umount will guarantee a clean slate making it
-> possible to reinitialize a filesystem. Right now all binary types would
-> need to be explicitly deleted before that can happen.
-> 
-> This allows us to remove the heavy-handed calls to simple_pin_fs() and
-> simple_release_fs() when creating and deleting binary types. This in
-> turn allows us to replace the current brittle pinning mechanism abusing
-> dget() which has caused a range of bugs judging from prior fixes in [2]
-> and [3]. The additional dget() in load_misc_binary() pins the dentry but
-> only does so for the sake to prevent ->evict_inode() from freeing the
-> node when a user removes the binary type and kill_node() is run. Which
-> would mean ->interpreter and ->interp_file would be freed causing a UAF.
-> 
-> This isn't really nicely documented nor is it very clean because it
-> relies on simple_pin_fs() pinning the filesystem as long as at least one
-> binary type exists. Otherwise it would cause load_misc_binary() to hold
-> on to a dentry belonging to a superblock that has been shutdown.
-> Replace that implicit pinning with a clean and simple per-node refcount
-> and get rid of the ugly dget() pinning. A similar mechanism exists for
-> e.g. binderfs (cf. [4]). All the cleanup work can now be done in
-> ->evict_inode().
-> 
-> In a follow-up patch we will make it possible to use binfmt_misc in
-> sandboxes. We will use the cleaner semantics where a umount for the
-> filesystem will cause the superblock and all resources to be
-> deallocated. In preparation for this apply the same semantics to the
-> initial binfmt_misc mount. Note, that this is a user-visible change and
-> as such a uapi change but one that we can reasonably risk. We've
-> discussed this in earlier versions of this patchset (cf. [1]).
-> 
-> The main user and provider of binfmt_misc is systemd. Systemd provides
-> binfmt_misc via autofs since it is configurable as a kernel module and
-> is used by a few exotic packages and users. As such a binfmt_misc mount
-> is triggered when /proc/sys/fs/binfmt_misc is accessed and is only
-> provided on demand. Other autofs on demand filesystems include EFI ESP
-> which systemd umounts if the mountpoint stays idle for a certain amount
-> of time. This doesn't apply to the binfmt_misc autofs mount which isn't
-> touched once it is mounted meaning this change can't accidently wipe
-> binary type handlers without someone having explicitly unmounted
-> binfmt_misc. After speaking to systemd folks they don't expect this
-> change to affect them.
-> 
-> In line with our general policy, if we see a regression for systemd or
-> other users with this change we will switch back to the old behavior for
-> the initial binfmt_misc mount and have binary types pin the filesystem
-> again. But while we touch this code let's take the chance and let's
-> improve on the status quo.
-> 
-> [1]: https://lore.kernel.org/r/20191216091220.465626-2-laurent@vivier.eu
-> [2]: commit 43a4f2619038 ("exec: binfmt_misc: fix race between load_misc_binary() and kill_node()"
-> [3]: commit 83f918274e4b ("exec: binfmt_misc: shift filp_close(interp_file) from kill_node() to bm_evict_inode()")
-> [4]: commit f0fe2c0f050d ("binder: prevent UAF for binderfs devices II")
-> 
-> Link: https://lore.kernel.org/r/20211028103114.2849140-1-brauner@kernel.org (v1)
-> Cc: Sargun Dhillon <sargun@sargun.me>
-> Cc: Serge Hallyn <serge@hallyn.com>
-> Cc: Jann Horn <jannh@google.com>
-> Cc: Henning Schild <henning.schild@siemens.com>
-> Cc: Andrei Vagin <avagin@gmail.com>
-> Cc: Al Viro <viro@zeniv.linux.org.uk>
-> Cc: Laurent Vivier <laurent@vivier.eu>
-> Cc: linux-fsdevel@vger.kernel.org
-> Acked-by: Serge Hallyn <serge@hallyn.com>
-> Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
-> Signed-off-by: Christian Brauner <brauner@kernel.org>
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> ---
-> /* v2 */
-> - Christian Brauner <christian.brauner@ubuntu.com>:
->   - Add more comments that explain what's going on.
->   - Rename functions while changing them to better reflect what they are
->     doing to make the code easier to understand.
->   - In the first version when a specific binary type handler was removed
->     either through a write to the entry's file or all binary type
->     handlers were removed by a write to the binfmt_misc mount's status
->     file all cleanup work happened during inode eviction.
->     That includes removal of the relevant entries from entry list. While
->     that works fine I disliked that model after thinking about it for a
->     bit. Because it means that there was a window were someone has
->     already removed a or all binary handlers but they could still be
->     safely reached from load_misc_binary() when it has managed to take
->     the read_lock() on the entries list while inode eviction was already
->     happening. Again, that perfectly benign but it's cleaner to remove
->     the binary handler from the list immediately meaning that ones the
->     write to then entry's file or the binfmt_misc status file returns
->     the binary type cannot be executed anymore. That gives stronger
->     guarantees to the user.
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
-> ---
->  fs/binfmt_misc.c | 216 ++++++++++++++++++++++++++++++++++++-----------
->  1 file changed, 168 insertions(+), 48 deletions(-)
-> 
-> diff --git a/fs/binfmt_misc.c b/fs/binfmt_misc.c
-> index c19bf5c2fbec9..e768cd60ff999 100644
-> --- a/fs/binfmt_misc.c
-> +++ b/fs/binfmt_misc.c
-> @@ -58,12 +58,11 @@ typedef struct {
->  	char *name;
->  	struct dentry *dentry;
->  	struct file *interp_file;
-> +	refcount_t users;		/* sync removal with load_misc_binary() */
->  } Node;
->  
->  static DEFINE_RWLOCK(entries_lock);
->  static struct file_system_type bm_fs_type;
-> -static struct vfsmount *bm_mnt;
-> -static int entry_count;
->  
->  /*
->   * Max length of the register string.  Determined by:
-> @@ -80,19 +79,23 @@ static int entry_count;
->   */
->  #define MAX_REGISTER_LENGTH 1920
->  
-> -/*
-> - * Check if we support the binfmt
-> - * if we do, return the node, else NULL
-> - * locking is done in load_misc_binary
-> +/**
-> + * search_binfmt_handler - search for a binary handler for @bprm
-> + * @misc: handle to binfmt_misc instance
-> + * @bprm: binary for which we are looking for a handler
-> + *
-> + * Search for a binary type handler for @bprm in the list of registered binary
-> + * type handlers.
-> + *
-> + * Return: binary type list entry on success, NULL on failure
->   */
-> -static Node *check_file(struct linux_binprm *bprm)
-> +static Node *search_binfmt_handler(struct linux_binprm *bprm)
->  {
->  	char *p = strrchr(bprm->interp, '.');
-> -	struct list_head *l;
-> +	Node *e;
->  
->  	/* Walk all the registered handlers. */
-> -	list_for_each(l, &entries) {
-> -		Node *e = list_entry(l, Node, list);
-> +	list_for_each_entry(e, &entries, list) {
->  		char *s;
->  		int j;
->  
-> @@ -121,9 +124,49 @@ static Node *check_file(struct linux_binprm *bprm)
->  		if (j == e->size)
->  			return e;
->  	}
-> +
->  	return NULL;
->  }
->  
-> +/**
-> + * get_binfmt_handler - try to find a binary type handler
-> + * @misc: handle to binfmt_misc instance
-> + * @bprm: binary for which we are looking for a handler
-> + *
-> + * Try to find a binfmt handler for the binary type. If one is found take a
-> + * reference to protect against removal via bm_{entry,status}_write().
-> + *
-> + * Return: binary type list entry on success, NULL on failure
-> + */
-> +static Node *get_binfmt_handler(struct linux_binprm *bprm)
-> +{
-> +	Node *e;
-> +
-> +	read_lock(&entries_lock);
-> +	e = search_binfmt_handler(bprm);
-> +	if (e)
-> +		refcount_inc(&e->users);
-> +	read_unlock(&entries_lock);
-> +	return e;
-> +}
-> +
-> +/**
-> + * put_binfmt_handler - put binary handler node
-> + * @e: node to put
-> + *
-> + * Free node syncing with load_misc_binary() and defer final free to
-> + * load_misc_binary() in case it is using the binary type handler we were
-> + * requested to remove.
-> + */
-> +static void put_binfmt_handler(Node *e)
-> +{
-> +	if (refcount_dec_and_test(&e->users)) {
-> +		if (e->flags & MISC_FMT_OPEN_FILE)
-> +			filp_close(e->interp_file, NULL);
-> +		kfree(e);
-> +	}
-> +}
-> +
->  /*
->   * the loader itself
->   */
-> @@ -138,12 +181,7 @@ static int load_misc_binary(struct linux_binprm *bprm)
->  	if (!enabled)
->  		return retval;
->  
-> -	/* to keep locking time low, we copy the interpreter string */
-> -	read_lock(&entries_lock);
-> -	fmt = check_file(bprm);
-> -	if (fmt)
-> -		dget(fmt->dentry);
-> -	read_unlock(&entries_lock);
-> +	fmt = get_binfmt_handler(bprm);
->  	if (!fmt)
->  		return retval;
->  
-> @@ -237,7 +275,16 @@ static int load_misc_binary(struct linux_binprm *bprm)
->  		goto error;
->  
->  ret:
-> -	dput(fmt->dentry);
-> +
-> +	/*
-> +	 * If we actually put the node here all concurrent calls to
-> +	 * load_misc_binary() will have finished. We also know
-> +	 * that for the refcount to be zero ->evict_inode() must have removed
-> +	 * the node to be deleted from the list. All that is left for us is to
-> +	 * close and free.
-> +	 */
-> +	put_binfmt_handler(fmt);
-> +
->  	return retval;
->  error:
->  	if (fd_binary > 0)
-> @@ -598,30 +645,90 @@ static struct inode *bm_get_inode(struct super_block *sb, int mode)
->  	return inode;
->  }
->  
-> +/**
-> + * bm_evict_inode - cleanup data associated with @inode
-> + * @inode: inode to which the data is attached
-> + *
-> + * Cleanup the binary type handler data associated with @inode if a binary type
-> + * entry is removed or the filesystem is unmounted and the super block is
-> + * shutdown.
-> + *
-> + * If the ->evict call was not caused by a super block shutdown but by a write
-> + * to remove the entry or all entries via bm_{entry,status}_write() the entry
-> + * will have already been removed from the list. We keep the list_empty() check
-> + * to make that explicit.
-> +*/
->  static void bm_evict_inode(struct inode *inode)
->  {
->  	Node *e = inode->i_private;
->  
-> -	if (e && e->flags & MISC_FMT_OPEN_FILE)
-> -		filp_close(e->interp_file, NULL);
-> -
->  	clear_inode(inode);
-> -	kfree(e);
-> +
-> +	if (e) {
-> +		write_lock(&entries_lock);
-> +		if (!list_empty(&e->list))
-> +			list_del_init(&e->list);
-> +		write_unlock(&entries_lock);
-> +		put_binfmt_handler(e);
-> +	}
->  }
->  
-> -static void kill_node(Node *e)
-> +/**
-> + * unlink_binfmt_dentry - remove the dentry for the binary type handler
-> + * @dentry: dentry associated with the binary type handler
-> + *
-> + * Do the actual filesystem work to remove a dentry for a registered binary
-> + * type handler. Since binfmt_misc only allows simple files to be created
-> + * directly under the root dentry of the filesystem we ensure that we are
-> + * indeed passed a dentry directly beneath the root dentry, that the inode
-> + * associated with the root dentry is locked, and that it is a regular file we
-> + * are asked to remove.
-> + */
-> +static void unlink_binfmt_dentry(struct dentry *dentry)
->  {
-> -	struct dentry *dentry;
-> +	struct dentry *parent = dentry->d_parent;
-> +	struct inode *inode, *parent_inode;
-> +
-> +	/* All entries are immediate descendants of the root dentry. */
-> +	if (WARN_ON_ONCE(dentry->d_sb->s_root != parent))
-> +		return;
->  
-> +	/* We only expect to be called on regular files. */
-> +	inode = d_inode(dentry);
-> +	if (WARN_ON_ONCE(!S_ISREG(inode->i_mode)))
-> +		return;
-> +
-> +	/* The parent inode must be locked. */
-> +	parent_inode = d_inode(parent);
-> +	if (WARN_ON_ONCE(!inode_is_locked(parent_inode)))
-> +		return;
-> +
-> +	if (simple_positive(dentry)) {
-> +		dget(dentry);
-> +		simple_unlink(parent_inode, dentry);
-> +		d_delete(dentry);
-> +		dput(dentry);
-> +	}
-> +}
-> +
-> +/**
-> + * remove_binfmt_handler - remove a binary type handler
-> + * @misc: handle to binfmt_misc instance
-> + * @e: binary type handler to remove
-> + *
-> + * Remove a binary type handler from the list of binary type handlers and
-> + * remove its associated dentry. This is called from
-> + * binfmt_{entry,status}_write(). In the future, we might want to think about
-> + * adding a proper ->unlink() method to binfmt_misc instead of forcing caller's
-> + * to use writes to files in order to delete binary type handlers. But it has
-> + * worked for so long that it's not a pressing issue.
-> + */
-> +static void remove_binfmt_handler(Node *e)
-> +{
->  	write_lock(&entries_lock);
->  	list_del_init(&e->list);
->  	write_unlock(&entries_lock);
-> -
-> -	dentry = e->dentry;
-> -	drop_nlink(d_inode(dentry));
-> -	d_drop(dentry);
-> -	dput(dentry);
-> -	simple_release_fs(&bm_mnt, &entry_count);
-> +	unlink_binfmt_dentry(e->dentry);
->  }
->  
->  /* /<entry> */
-> @@ -648,8 +755,8 @@ bm_entry_read(struct file *file, char __user *buf, size_t nbytes, loff_t *ppos)
->  static ssize_t bm_entry_write(struct file *file, const char __user *buffer,
->  				size_t count, loff_t *ppos)
->  {
-> -	struct dentry *root;
-> -	Node *e = file_inode(file)->i_private;
-> +	struct inode *inode = file_inode(file);
-> +	Node *e = inode->i_private;
->  	int res = parse_command(buffer, count);
->  
->  	switch (res) {
-> @@ -663,13 +770,22 @@ static ssize_t bm_entry_write(struct file *file, const char __user *buffer,
->  		break;
->  	case 3:
->  		/* Delete this handler. */
-> -		root = file_inode(file)->i_sb->s_root;
-> -		inode_lock(d_inode(root));
-> +		inode = d_inode(inode->i_sb->s_root);
-> +		inode_lock(inode);
->  
-> +		/*
-> +		 * In order to add new element or remove elements from the list
-> +		 * via bm_{entry,register,status}_write() inode_lock() on the
-> +		 * root inode must be held.
-> +		 * The lock is exclusive ensuring that the list can't be
-> +		 * modified. Only load_misc_binary() can access but does so
-> +		 * read-only. So we only need to take the write lock when we
-> +		 * actually remove the entry from the list.
-> +		 */
->  		if (!list_empty(&e->list))
-> -			kill_node(e);
-> +			remove_binfmt_handler(e);
->  
-> -		inode_unlock(d_inode(root));
-> +		inode_unlock(inode);
->  		break;
->  	default:
->  		return res;
-> @@ -728,13 +844,7 @@ static ssize_t bm_register_write(struct file *file, const char __user *buffer,
->  	if (!inode)
->  		goto out2;
->  
-> -	err = simple_pin_fs(&bm_fs_type, &bm_mnt, &entry_count);
-> -	if (err) {
-> -		iput(inode);
-> -		inode = NULL;
-> -		goto out2;
-> -	}
-> -
-> +	refcount_set(&e->users, 1);
->  	e->dentry = dget(dentry);
->  	inode->i_private = e;
->  	inode->i_fop = &bm_entry_operations;
-> @@ -778,7 +888,8 @@ static ssize_t bm_status_write(struct file *file, const char __user *buffer,
->  		size_t count, loff_t *ppos)
->  {
->  	int res = parse_command(buffer, count);
-> -	struct dentry *root;
-> +	Node *e, *next;
-> +	struct inode *inode;
->  
->  	switch (res) {
->  	case 1:
-> @@ -791,13 +902,22 @@ static ssize_t bm_status_write(struct file *file, const char __user *buffer,
->  		break;
->  	case 3:
->  		/* Delete all handlers. */
-> -		root = file_inode(file)->i_sb->s_root;
-> -		inode_lock(d_inode(root));
-> +		inode = d_inode(file_inode(file)->i_sb->s_root);
-> +		inode_lock(inode);
->  
-> -		while (!list_empty(&entries))
-> -			kill_node(list_first_entry(&entries, Node, list));
-> +		/*
-> +		 * In order to add new element or remove elements from the list
-> +		 * via bm_{entry,register,status}_write() inode_lock() on the
-> +		 * root inode must be held.
-> +		 * The lock is exclusive ensuring that the list can't be
-> +		 * modified. Only load_misc_binary() can access but does so
-> +		 * read-only. So we only need to take the write lock when we
-> +		 * actually remove the entry from the list.
-> +		 */
-> +		list_for_each_entry_safe(e, next, &entries, list)
-> +			remove_binfmt_handler(e);
->  
-> -		inode_unlock(d_inode(root));
-> +		inode_unlock(inode);
->  		break;
->  	default:
->  		return res;
-> -- 
-> 2.42.0
-> 
+u32 tmp = MMC_CAP2_NO_SD | MMC_CAP2_NO_SDIO;
+if ((cap2 & tmp) == tmp) {
+	blablabla...
+}
 
--- 
-Kees Cook
+This is similar to your first suggestion above.
+
+I'll fix this in v5.
+
+thanks,
+drew
