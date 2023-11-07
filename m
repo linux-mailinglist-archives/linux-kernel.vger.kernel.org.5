@@ -2,45 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 36C517E4524
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 17:01:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A84FC7E4527
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 17:02:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344028AbjKGQBy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 11:01:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60688 "EHLO
+        id S1343863AbjKGQCX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 11:02:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344196AbjKGQAV (ORCPT
+        with ESMTP id S1343835AbjKGQAg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 11:00:21 -0500
+        Tue, 7 Nov 2023 11:00:36 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F3BC8690;
-        Tue,  7 Nov 2023 07:53:23 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32944C433C8;
-        Tue,  7 Nov 2023 15:53:22 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BDAF869B;
+        Tue,  7 Nov 2023 07:53:25 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7DB22C433CB;
+        Tue,  7 Nov 2023 15:53:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699372403;
-        bh=1VrpY8f18sd1ZaHiBeKxawaxuzNJFQ3cwRVXmmuosGw=;
+        s=k20201202; t=1699372404;
+        bh=TxO+xCiY4eH2/AfVA5mEkt7Go34h1a1zFP9teb2wC+k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=S7kx/x8yzj7mNNA3tcZyjhVdniG1cBmkerKDEv4/sH2rE/+AEySD4Sc4m+h4lI4wC
-         n30hAnaY5VJ7C95B1nR0NHL71x8iAeZ0tEMRg7IK9h1vIBGVITi4nzXWJl7ytucVbW
-         DsV+bQ0jKaWOZtQPIGdp7cjRsY39IlcpRdEowuLXtZv5QxtZ+Va6bMIAksyEYRBmlT
-         gRRpW6NI2aj7ZWtH3ld8Hk1hSiizH3naPrO5pzgAsVZtWTJlbNh1x4gdNv3jMoyWd+
-         HcUXcnFPmicKnIkk/aoG9OLnn1GzYEbuXYfWAAL8/qDYozH0JmRCF7X3NtN8qaT0od
-         +k7yyyf4esz9A==
+        b=BZGQjWkzZt9WbnlcdCOap5rFEnbEdBTeINmBiIwJ717zGuBa1sFRT1hcmkqW+TB9r
+         TM4+7Agj4uv4DgkJHdfSArYI6di8r6wK22uJX6++5HH28T4qehHa/txbup4KSb3sbw
+         P4gvvfQT29yoDc0AhsUlX3LH2hmqWZQ+7D6nPTynxVFbMo3mYN2VOo7u/ltewcDq34
+         nQ0n4gS75y+kipb3aDgAMxB717t5WYNNCDKWCMp2du6Ng8u06p9FJVfgAUdMqhtdKW
+         rt5SXCC+foRoR+v+W2gnkPiguuHZ1IfEygVQK9SQTgWBrk41NuiBh9ILSAmmIByogK
+         a2KMgId1P2URg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Sasha Levin <sashal@kernel.org>, 3chas3@gmail.com,
-        linux-atm-general@lists.sourceforge.net, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 12/16] atm: iphase: Do PCI error checks on own line
-Date:   Tue,  7 Nov 2023 10:52:31 -0500
-Message-ID: <20231107155249.3768098-12-sashal@kernel.org>
+Cc:     Wenchao Hao <haowenchao2@huawei.com>,
+        Simon Horman <horms@kernel.org>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>, hare@suse.de,
+        jejb@linux.ibm.com, richardcochran@gmail.com,
+        linux-scsi@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.10 13/16] scsi: libfc: Fix potential NULL pointer dereference in fc_lport_ptp_setup()
+Date:   Tue,  7 Nov 2023 10:52:32 -0500
+Message-ID: <20231107155249.3768098-13-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231107155249.3768098-1-sashal@kernel.org>
 References: <20231107155249.3768098-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.10.199
@@ -49,63 +50,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+From: Wenchao Hao <haowenchao2@huawei.com>
 
-[ Upstream commit c28742447ca9879b52fbaf022ad844f0ffcd749c ]
+[ Upstream commit 4df105f0ce9f6f30cda4e99f577150d23f0c9c5f ]
 
-In get_esi() PCI errors are checked inside line-split "if" conditions (in
-addition to the file not following the coding style). To make the code in
-get_esi() more readable, fix the coding style and use the usual error
-handling pattern with a separate variable.
+fc_lport_ptp_setup() did not check the return value of fc_rport_create()
+which can return NULL and would cause a NULL pointer dereference. Address
+this issue by checking return value of fc_rport_create() and log error
+message on fc_rport_create() failed.
 
-In addition, initialization of 'error' variable at declaration is not
-needed.
-
-No functional changes intended.
-
-Link: https://lore.kernel.org/r/20230911125354.25501-4-ilpo.jarvinen@linux.intel.com
-Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+Signed-off-by: Wenchao Hao <haowenchao2@huawei.com>
+Link: https://lore.kernel.org/r/20231011130350.819571-1-haowenchao2@huawei.com
+Reviewed-by: Simon Horman <horms@kernel.org>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/atm/iphase.c | 20 +++++++++++---------
- 1 file changed, 11 insertions(+), 9 deletions(-)
+ drivers/scsi/libfc/fc_lport.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/atm/iphase.c b/drivers/atm/iphase.c
-index a59554e5b8b0f..cc90f550ab75a 100644
---- a/drivers/atm/iphase.c
-+++ b/drivers/atm/iphase.c
-@@ -2290,19 +2290,21 @@ static int get_esi(struct atm_dev *dev)
- static int reset_sar(struct atm_dev *dev)  
- {  
- 	IADEV *iadev;  
--	int i, error = 1;  
-+	int i, error;
- 	unsigned int pci[64];  
- 	  
- 	iadev = INPH_IA_DEV(dev);  
--	for(i=0; i<64; i++)  
--	  if ((error = pci_read_config_dword(iadev->pci,  
--				i*4, &pci[i])) != PCIBIOS_SUCCESSFUL)  
--  	      return error;  
-+	for (i = 0; i < 64; i++) {
-+		error = pci_read_config_dword(iadev->pci, i * 4, &pci[i]);
-+		if (error != PCIBIOS_SUCCESSFUL)
-+			return error;
+diff --git a/drivers/scsi/libfc/fc_lport.c b/drivers/scsi/libfc/fc_lport.c
+index abb14b206be04..82b8477c7d737 100644
+--- a/drivers/scsi/libfc/fc_lport.c
++++ b/drivers/scsi/libfc/fc_lport.c
+@@ -238,6 +238,12 @@ static void fc_lport_ptp_setup(struct fc_lport *lport,
+ 	}
+ 	mutex_lock(&lport->disc.disc_mutex);
+ 	lport->ptp_rdata = fc_rport_create(lport, remote_fid);
++	if (!lport->ptp_rdata) {
++		printk(KERN_WARNING "libfc: Failed to setup lport 0x%x\n",
++			lport->port_id);
++		mutex_unlock(&lport->disc.disc_mutex);
++		return;
 +	}
- 	writel(0, iadev->reg+IPHASE5575_EXT_RESET);  
--	for(i=0; i<64; i++)  
--	  if ((error = pci_write_config_dword(iadev->pci,  
--					i*4, pci[i])) != PCIBIOS_SUCCESSFUL)  
--	    return error;  
-+	for (i = 0; i < 64; i++) {
-+		error = pci_write_config_dword(iadev->pci, i * 4, pci[i]);
-+		if (error != PCIBIOS_SUCCESSFUL)
-+			return error;
-+	}
- 	udelay(5);  
- 	return 0;  
- }  
+ 	kref_get(&lport->ptp_rdata->kref);
+ 	lport->ptp_rdata->ids.port_name = remote_wwpn;
+ 	lport->ptp_rdata->ids.node_name = remote_wwnn;
 -- 
 2.42.0
 
