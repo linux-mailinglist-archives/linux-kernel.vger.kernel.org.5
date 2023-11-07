@@ -2,223 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC13E7E359E
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 08:15:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE0D67E35A6
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 08:16:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233481AbjKGHQA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 02:16:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33862 "EHLO
+        id S233601AbjKGHQu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 02:16:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233360AbjKGHP5 (ORCPT
+        with ESMTP id S233549AbjKGHQn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 02:15:57 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4734711F;
-        Mon,  6 Nov 2023 23:15:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699341354; x=1730877354;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=TyCAbVwX14pmdNrNARKvdC5oei0EiaO7XnUOLpcDubc=;
-  b=H5terDM5HmCpnykOBUj/Nu6rtMKnRDrf0s8XC7c2yr+1oUSJAOGUsJZ2
-   ps7iMLrxsbzj1j5RnQbQtgFhnot8nz/AgGKI6rACF+gIHEeXW2XBJoe30
-   w9w0u49zrHUFFPn/E+ZXNo8O/G6bwtHyrIIL9AyIl6v0DhNMYNameKOP2
-   ri00XbHG+719jMfmfpw0kE7Rid29Hq2ZS2IaavXE+FoGR26xTNjXYQDuG
-   5q97ZF2kTOV4WfkNoN0xsZrmC+cLKD9VzPcSQsMlgGETRhqqjr7/kX6uM
-   jODL5dNbb0+OHFy7ycYPR53cARKLzC+xOuMQtRrNGVXq1zLN0xGW6xSoB
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10886"; a="379839028"
-X-IronPort-AV: E=Sophos;i="6.03,282,1694761200"; 
-   d="scan'208";a="379839028"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Nov 2023 23:15:52 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10886"; a="906327033"
-X-IronPort-AV: E=Sophos;i="6.03,282,1694761200"; 
-   d="scan'208";a="906327033"
-Received: from dapengmi-mobl1.ccr.corp.intel.com (HELO [10.238.1.248]) ([10.238.1.248])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Nov 2023 23:15:49 -0800
-Message-ID: <2537aa0b-8893-4df6-9cfc-c33bad9e7515@linux.intel.com>
-Date:   Tue, 7 Nov 2023 15:15:49 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 05/20] KVM: x86/pmu: Allow programming events that
- match unsupported arch events
-Content-Language: en-US
-To:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Jinrong Liang <cloudliang@tencent.com>,
-        Like Xu <likexu@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Aaron Lewis <aaronlewis@google.com>
-References: <20231104000239.367005-1-seanjc@google.com>
- <20231104000239.367005-6-seanjc@google.com>
-From:   "Mi, Dapeng" <dapeng1.mi@linux.intel.com>
-In-Reply-To: <20231104000239.367005-6-seanjc@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 7 Nov 2023 02:16:43 -0500
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7416A120;
+        Mon,  6 Nov 2023 23:16:41 -0800 (PST)
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A76gJqU019185;
+        Tue, 7 Nov 2023 07:16:27 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id; s=qcppdkim1;
+ bh=T6ZU3qrjKOp6bLuMLr6UI++p/4ZwG1wrO/3tH33fHbs=;
+ b=L3ZY6ISdIe5n64623bqUExuevVJUvpTeJ5VeR4bEsRFujSnABQ9LZOFAykBcXh0LhbBU
+ jmJTDCs7vT4Xr9aRtzatlskYrItCQGfALqv73Dp0FGKGBinjyUESiY+KOi6EY4Wzg8Hf
+ HAunIHZMYTjGYbU5Jo9qzzezH5297Neoz0al5cwmH8Q/3aWyPTzgFS1lkGxGqz8Wv6i8
+ H848NiKx5RxMBJ2rXOz2MC+gPfZpnkv0ELLqhrlKfL/f1eufyfTDR7sUtgWzy2H0HvpV
+ t6MHACeDH2D+TYmEciENTPMl8E5keFFUO8DOzkPsdGlYfkFTA8Y0BprGO8zH5f3poS4P pw== 
+Received: from aptaippmta01.qualcomm.com (tpe-colo-wan-fw-bordernet.qualcomm.com [103.229.16.4])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u72avswwh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 07 Nov 2023 07:16:27 +0000
+Received: from pps.filterd (APTAIPPMTA01.qualcomm.com [127.0.0.1])
+        by APTAIPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 3A77G8Rv028683;
+        Tue, 7 Nov 2023 07:16:08 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by APTAIPPMTA01.qualcomm.com (PPS) with ESMTP id 3u5f1m6637-1;
+        Tue, 07 Nov 2023 07:16:08 +0000
+Received: from APTAIPPMTA01.qualcomm.com (APTAIPPMTA01.qualcomm.com [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3A77G8QG028678;
+        Tue, 7 Nov 2023 07:16:08 GMT
+Received: from cbsp-sh-gv.qualcomm.com (CBSP-SH-gv.ap.qualcomm.com [10.231.249.68])
+        by APTAIPPMTA01.qualcomm.com (PPS) with ESMTP id 3A77G8EI028676;
+        Tue, 07 Nov 2023 07:16:08 +0000
+Received: by cbsp-sh-gv.qualcomm.com (Postfix, from userid 4098150)
+        id 0B6965441; Tue,  7 Nov 2023 15:16:07 +0800 (CST)
+From:   Qiang Yu <quic_qianyu@quicinc.com>
+To:     mani@kernel.org, quic_jhugo@quicinc.com
+Cc:     mhi@lists.linux.dev, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, quic_cang@quicinc.com,
+        quic_mrana@quicinc.com, Qiang Yu <quic_qianyu@quicinc.com>
+Subject: [PATCH v3 0/4] bus: mhi: host: Add lock to avoid race when ringing channel DB
+Date:   Tue,  7 Nov 2023 15:16:01 +0800
+Message-Id: <1699341365-47737-1-git-send-email-quic_qianyu@quicinc.com>
+X-Mailer: git-send-email 2.7.4
+X-QCInternal: smtphost
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: G5j_soQib9wIzqCpEQbnyV20VSJ-142M
+X-Proofpoint-GUID: G5j_soQib9wIzqCpEQbnyV20VSJ-142M
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-06_15,2023-11-02_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
+ mlxlogscore=452 impostorscore=0 phishscore=0 bulkscore=0 adultscore=0
+ priorityscore=1501 clxscore=1015 spamscore=0 suspectscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2310240000 definitions=main-2311070059
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/4/2023 8:02 AM, Sean Christopherson wrote:
-> Remove KVM's bogus restriction that the guest can't program an event whose
-> encoding matches an unsupported architectural event.  The enumeration of
-> an architectural event only says that if a CPU supports an architectural
-> event, then the event can be programmed using the architectural encoding.
-> The enumeration does NOT say anything about the encoding when the CPU
-> doesn't report support the architectural event.
->
-> Preventing the guest from counting events whose encoding happens to match
-> an architectural event breaks existing functionality whenever Intel adds
-> an architectural encoding that was *ever* used for a CPU that doesn't
-> enumerate support for the architectural event, even if the encoding is for
-> the exact same event!
->
-> E.g. the architectural encoding for Top-Down Slots is 0x01a4.  Broadwell
-> CPUs, which do not support the Top-Down Slots architectural event, 0x10a4
-> is a valid, model-specific event.  Denying guest usage of 0x01a4 if/when
-> KVM adds support for Top-Down slots would break any Broadwell-based guest.
->
-> Reported-by: Kan Liang <kan.liang@linux.intel.com>
-> Closes: https://lore.kernel.org/all/2004baa6-b494-462c-a11f-8104ea152c6a@linux.intel.com
-> Cc: Dapeng Mi <dapeng1.mi@linux.intel.com>
-> Fixes: a21864486f7e ("KVM: x86/pmu: Fix available_event_types check for REF_CPU_CYCLES event")
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->   arch/x86/include/asm/kvm-x86-pmu-ops.h |  1 -
->   arch/x86/kvm/pmu.c                     |  1 -
->   arch/x86/kvm/pmu.h                     |  1 -
->   arch/x86/kvm/svm/pmu.c                 |  6 ----
->   arch/x86/kvm/vmx/pmu_intel.c           | 38 --------------------------
->   5 files changed, 47 deletions(-)
->
-> diff --git a/arch/x86/include/asm/kvm-x86-pmu-ops.h b/arch/x86/include/asm/kvm-x86-pmu-ops.h
-> index 6c98f4bb4228..884af8ef7657 100644
-> --- a/arch/x86/include/asm/kvm-x86-pmu-ops.h
-> +++ b/arch/x86/include/asm/kvm-x86-pmu-ops.h
-> @@ -12,7 +12,6 @@ BUILD_BUG_ON(1)
->    * a NULL definition, for example if "static_call_cond()" will be used
->    * at the call sites.
->    */
-> -KVM_X86_PMU_OP(hw_event_available)
->   KVM_X86_PMU_OP(pmc_idx_to_pmc)
->   KVM_X86_PMU_OP(rdpmc_ecx_to_pmc)
->   KVM_X86_PMU_OP(msr_idx_to_pmc)
-> diff --git a/arch/x86/kvm/pmu.c b/arch/x86/kvm/pmu.c
-> index 9ae07db6f0f6..99ed72966528 100644
-> --- a/arch/x86/kvm/pmu.c
-> +++ b/arch/x86/kvm/pmu.c
-> @@ -374,7 +374,6 @@ static bool check_pmu_event_filter(struct kvm_pmc *pmc)
->   static bool pmc_event_is_allowed(struct kvm_pmc *pmc)
->   {
->   	return pmc_is_globally_enabled(pmc) && pmc_speculative_in_use(pmc) &&
-> -	       static_call(kvm_x86_pmu_hw_event_available)(pmc) &&
->   	       check_pmu_event_filter(pmc);
->   }
->   
-> diff --git a/arch/x86/kvm/pmu.h b/arch/x86/kvm/pmu.h
-> index 5341e8f69a22..f3e7a356fd81 100644
-> --- a/arch/x86/kvm/pmu.h
-> +++ b/arch/x86/kvm/pmu.h
-> @@ -20,7 +20,6 @@
->   
->   struct kvm_pmu_ops {
->   	void (*init_pmu_capability)(void);
-> -	bool (*hw_event_available)(struct kvm_pmc *pmc);
->   	struct kvm_pmc *(*pmc_idx_to_pmc)(struct kvm_pmu *pmu, int pmc_idx);
->   	struct kvm_pmc *(*rdpmc_ecx_to_pmc)(struct kvm_vcpu *vcpu,
->   		unsigned int idx, u64 *mask);
-> diff --git a/arch/x86/kvm/svm/pmu.c b/arch/x86/kvm/svm/pmu.c
-> index 373ff6a6687b..5596fe816ea8 100644
-> --- a/arch/x86/kvm/svm/pmu.c
-> +++ b/arch/x86/kvm/svm/pmu.c
-> @@ -73,11 +73,6 @@ static inline struct kvm_pmc *get_gp_pmc_amd(struct kvm_pmu *pmu, u32 msr,
->   	return amd_pmc_idx_to_pmc(pmu, idx);
->   }
->   
-> -static bool amd_hw_event_available(struct kvm_pmc *pmc)
-> -{
-> -	return true;
-> -}
-> -
->   static bool amd_is_valid_rdpmc_ecx(struct kvm_vcpu *vcpu, unsigned int idx)
->   {
->   	struct kvm_pmu *pmu = vcpu_to_pmu(vcpu);
-> @@ -249,7 +244,6 @@ static void amd_pmu_reset(struct kvm_vcpu *vcpu)
->   }
->   
->   struct kvm_pmu_ops amd_pmu_ops __initdata = {
-> -	.hw_event_available = amd_hw_event_available,
->   	.pmc_idx_to_pmc = amd_pmc_idx_to_pmc,
->   	.rdpmc_ecx_to_pmc = amd_rdpmc_ecx_to_pmc,
->   	.msr_idx_to_pmc = amd_msr_idx_to_pmc,
-> diff --git a/arch/x86/kvm/vmx/pmu_intel.c b/arch/x86/kvm/vmx/pmu_intel.c
-> index b239e7dbdc9b..9bf700da1e17 100644
-> --- a/arch/x86/kvm/vmx/pmu_intel.c
-> +++ b/arch/x86/kvm/vmx/pmu_intel.c
-> @@ -140,43 +140,6 @@ static struct kvm_pmc *intel_pmc_idx_to_pmc(struct kvm_pmu *pmu, int pmc_idx)
->   	}
->   }
->   
-> -static bool intel_hw_event_available(struct kvm_pmc *pmc)
-> -{
-> -	struct kvm_pmu *pmu = pmc_to_pmu(pmc);
-> -	u8 event_select = pmc->eventsel & ARCH_PERFMON_EVENTSEL_EVENT;
-> -	u8 unit_mask = (pmc->eventsel & ARCH_PERFMON_EVENTSEL_UMASK) >> 8;
-> -	int i;
-> -
-> -	/*
-> -	 * Fixed counters are always available if KVM reaches this point.  If a
-> -	 * fixed counter is unsupported in hardware or guest CPUID, KVM doesn't
-> -	 * allow the counter's corresponding MSR to be written.  KVM does use
-> -	 * architectural events to program fixed counters, as the interface to
-> -	 * perf doesn't allow requesting a specific fixed counter, e.g. perf
-> -	 * may (sadly) back a guest fixed PMC with a general purposed counter.
-> -	 * But if _hardware_ doesn't support the associated event, KVM simply
-> -	 * doesn't enumerate support for the fixed counter.
-> -	 */
-> -	if (pmc_is_fixed(pmc))
-> -		return true;
-> -
-> -	BUILD_BUG_ON(ARRAY_SIZE(intel_arch_events) != NR_INTEL_ARCH_EVENTS);
-> -
-> -	/*
-> -	 * Disallow events reported as unavailable in guest CPUID.  Note, this
-> -	 * doesn't apply to pseudo-architectural events (see above).
-> -	 */
-> -	for (i = 0; i < NR_REAL_INTEL_ARCH_EVENTS; i++) {
-> -		if (intel_arch_events[i].eventsel != event_select ||
-> -		    intel_arch_events[i].unit_mask != unit_mask)
-> -			continue;
-> -
-> -		return pmu->available_event_types & BIT(i);
-> -	}
-> -
-> -	return true;
-> -}
-> -
->   static bool intel_is_valid_rdpmc_ecx(struct kvm_vcpu *vcpu, unsigned int idx)
->   {
->   	struct kvm_pmu *pmu = vcpu_to_pmu(vcpu);
-> @@ -842,7 +805,6 @@ void intel_pmu_cross_mapped_check(struct kvm_pmu *pmu)
->   
->   struct kvm_pmu_ops intel_pmu_ops __initdata = {
->   	.init_pmu_capability = intel_init_pmu_capability,
-> -	.hw_event_available = intel_hw_event_available,
->   	.pmc_idx_to_pmc = intel_pmc_idx_to_pmc,
->   	.rdpmc_ecx_to_pmc = intel_rdpmc_ecx_to_pmc,
->   	.msr_idx_to_pmc = intel_msr_idx_to_pmc,
+1. We need a write lock in mhi_gen_tre otherwise there is race of the WP
+used for ringing channel DB between mhi_queue and M0 transition.
+2. We can not invoke local_bh_enable() when irqs are disabled, so move
+read_lock_irqsave() under the mhi_gen_tre() since we add write_lock_bh() in
+mhi_gen_tre().
+3. Unlock xfer_cb to prevent potential lockup
+4. After re-lock, check mhi channel state again to stop processing of a
+disabled or stopped channel.  
 
+v1 -> v2:
+Added write_unlock_bh(&mhi_chan->lock) in mhi_gen_tre() before return
+because of error process.
 
-Reviewed-by:  Dapeng Mi <dapeng1.mi@linux.intel.com>
+v2 -> v3:
+1. split protecting WP and unlocking xfer_cb into two patches
+2. Add a new patch to stop processing buffer and eventof a disabled or
+stopped channel.
+
+Bhaumik Bhatt (1):
+  bus: mhi: host: Add spinlock to protect WP access when queueing TREs
+
+Hemant Kumar (1):
+  bus: mhi: host: Take irqsave lock after TRE is generated
+
+Qiang Yu (2):
+  bus: mhi: host: Drop chan lock before queuing buffers
+  bus: mhi: host: Avoid processing buffer and event of a disable channel
+
+ drivers/bus/mhi/host/main.c | 30 +++++++++++++++++++++---------
+ 1 file changed, 21 insertions(+), 9 deletions(-)
+
+-- 
+2.7.4
 
