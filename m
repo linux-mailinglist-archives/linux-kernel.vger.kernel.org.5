@@ -2,137 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD84D7E4A4E
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 22:07:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90B667E4A5A
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 22:12:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343647AbjKGVHr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 16:07:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37784 "EHLO
+        id S234991AbjKGVMR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 16:12:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231519AbjKGVHo (ORCPT
+        with ESMTP id S234062AbjKGVMQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 16:07:44 -0500
-Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 170A211F;
-        Tue,  7 Nov 2023 13:07:42 -0800 (PST)
-Received: by mail-yb1-xb2e.google.com with SMTP id 3f1490d57ef6-d9a518d66a1so6391764276.0;
-        Tue, 07 Nov 2023 13:07:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699391261; x=1699996061; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3aeXicRU4lHcbU3yR6buQ02C3rtZDXKLpVxEjoF0J04=;
-        b=Hdazj6scuSKVJFr0hsDXNcWkK9eAZCiJl+M2ohu3IkmeJIIUlWzr0LklXjhHDVylU7
-         sIyFHJJ43z0ycC4fExyejx6DYPBJFb0zDBBjQ5MarAfzCAsqLFoDrHVUe9JHqQfOQhEm
-         WWKQHcYffK17k5ALqk3vBid0Od0Qg5IwsGOoBC/rfytHPl3oIyMlNWEKvdpaYmou85Ue
-         P3EwZo9wMAIhUCH6UCBkrHfqu1Dp8zyTLPW3nZ6T/6T/5xpQdFg5UyCciqgfCVQp/eJg
-         XbcsXgqbzc+S4t5lt6YaBxNaxkqOaOajo/Poi2INEvtch2WIF2zKtgzTTzdCP1jgSF2W
-         cCcg==
+        Tue, 7 Nov 2023 16:12:16 -0500
+Received: from mail-oa1-f70.google.com (mail-oa1-f70.google.com [209.85.160.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 273B31734
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 13:12:14 -0800 (PST)
+Received: by mail-oa1-f70.google.com with SMTP id 586e51a60fabf-1eb43ff49b2so7935992fac.2
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 13:12:14 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699391261; x=1699996061;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3aeXicRU4lHcbU3yR6buQ02C3rtZDXKLpVxEjoF0J04=;
-        b=vzCxYqCVYTqDxHip4QkaeosJ0maDLAt8MQ9HLJCLQZ06ZPe//8jg+xrr5dWiIQgMI4
-         ZVWz6jpt2QVfN09RjAjF3NJpc04XNLid9Fnb3/fcGMMVPndycTmxtD6XXmag680XHnAe
-         Sqnx2N412m6MybmJWJYYCcAbbRdNiSC0+dFxlGVIzT65i65ytUm2qqgCy2YdskVMo0bF
-         1HhYARNx0TV9z6W2AAv1EpZX3RbkogfUZazlUWTchRjKH8B1a7TxkFWRDAd0VR7c5zLM
-         FKNpZJa+KjOiGGRiy+1P5K90vsUwXbGHZ9Y0GBEiL54tXm3DZsDspf6KIaVLwwGiBaoH
-         TlxQ==
-X-Gm-Message-State: AOJu0YyVpEUkMXczFQtJAFn4rhKY2yCPTiSlW7fdyvdMrYNNTZ7rWeLt
-        8pCKsCItpaAFhXvow2oON6ne2pR+V5zjNPIkxfw=
-X-Google-Smtp-Source: AGHT+IHBQNOhwgC6AxM8bJ1Gh1+f7qmlz8lu7XimL4LhQXXqoZ70t5a2uJdxqXFzjjss++G8Sfe494JrytOk+d+WafE=
-X-Received: by 2002:a25:348b:0:b0:d9a:4f14:5bf9 with SMTP id
- b133-20020a25348b000000b00d9a4f145bf9mr615820yba.26.1699391261066; Tue, 07
- Nov 2023 13:07:41 -0800 (PST)
+        d=1e100.net; s=20230601; t=1699391533; x=1699996333;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=DZWvcvFWT3P94ESec92OyEYUrt6Ss1wkXtTKq4rDYxM=;
+        b=vic60QLbX0yZ8A4LJDhBTVWS87mDZQjOD2i4G+CH3YBO3BWfVYTb3038Q01shUmv/L
+         cIM9bmqpLM0HRh9oph4Zfq+yA5V2R/ZKMBmDg1nhdtXZNYhEj9KVJJzy0Yq/02FtJLNU
+         ca5SdHQO2kXgmnjXA+DBxWOiMLpCdO8eGyO2Q1osmT6rafuOoR+ziqHV8es/lr5Hxgo7
+         7fL9apFNh/CW/mVyysukYqbOnzJ0xuMRV3QVxKPnL2pfsRjrvDmQjZHT/bKSbdNw1Rgi
+         z8nUCW3SwH07gNkDQHrQidXNBPXbnLzh/nFQYfV9lVisp459PtOC3Pr2n0UUPPuibGrI
+         pZWQ==
+X-Gm-Message-State: AOJu0Yx7uc9qLm0Mz6cz3swrARSR5aERe8zjw0s1qz9tfiu5ZtXoj6vV
+        hCnrU6UaB0dPIePJFHn4/XG433Nm7zglNZHMwFVyOza1e5Po
+X-Google-Smtp-Source: AGHT+IGLHHUmMnRU46DQFfD8S2H72t+cm9IJUOhFoEozLFTonUls6+08qYbjyWR1qTuXgbDu8Q8Varcnsio8An9CiRXWhSej/lyS
 MIME-Version: 1.0
-References: <20231106065045.895874-1-amir73il@gmail.com> <CAHk-=whgCwcUGKvoZX0OSAFi9fTye3BOfOCY+wR=t7W8xS_oGQ@mail.gmail.com>
-In-Reply-To: <CAHk-=whgCwcUGKvoZX0OSAFi9fTye3BOfOCY+wR=t7W8xS_oGQ@mail.gmail.com>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Tue, 7 Nov 2023 23:07:29 +0200
-Message-ID: <CAOQ4uxhfanssN=GdxfC7ANG=it=VMJz549z0zZ5uEGULeGK6yA@mail.gmail.com>
-Subject: Re: [GIT PULL] overlayfs update for 6.7
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Miklos Szeredi <miklos@szeredi.hu>,
-        Christian Brauner <brauner@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-unionfs@vger.kernel.org
+X-Received: by 2002:a05:6870:2397:b0:1e9:8db0:383 with SMTP id
+ e23-20020a056870239700b001e98db00383mr2216610oap.1.1699391533429; Tue, 07 Nov
+ 2023 13:12:13 -0800 (PST)
+Date:   Tue, 07 Nov 2023 13:12:13 -0800
+In-Reply-To: <0000000000003ee3610599d20096@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000af3ad30609966cee@google.com>
+Subject: Re: [syzbot] KASAN: use-after-free Read in __media_entity_remove_links
+From:   syzbot <syzbot+0b0095300dfeb8a83dc8@syzkaller.appspotmail.com>
+To:     andreyknvl@google.com, laurent.pinchart@ideasonboard.com,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-usb@vger.kernel.org, mchehab@kernel.org, nogikh@google.com,
+        sakari.ailus@linux.intel.com, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 7, 2023 at 9:54=E2=80=AFPM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> On Sun, 5 Nov 2023 at 22:50, Amir Goldstein <amir73il@gmail.com> wrote:
-> >
-> > - Overlayfs aio cleanups and fixes [1]
-> >
-> > - Overlayfs lock ordering changes [2]
-> >
-> > - Add support for nesting overlayfs private xattrs [3]
-> >
-> > - Add new mount options for appending lowerdirs [4]
-> >
-> > [1] https://lore.kernel.org/r/20230912173653.3317828-1-amir73il@gmail.c=
-om/
-> > [2] https://lore.kernel.org/r/20230816152334.924960-1-amir73il@gmail.co=
-m/
-> > [3] https://lore.kernel.org/r/cover.1694512044.git.alexl@redhat.com/
-> > [4] https://lore.kernel.org/r/20231030120419.478228-1-amir73il@gmail.co=
-m/
->
-> *Please* don't make me have to follow links just to see basic details.
->
+This bug is marked as fixed by commit:
+media: uvcvideo: Avoid cyclic entity chains due to malformed USB descriptors
 
-No problem.
+But I can't find it in the tested trees[1] for more than 90 days.
+Is it a correct commit? Please update it by replying:
 
-> Merge messages should stand on their own, not just point to "look,
-> here are the details in our lore archives". Yes, even when having
-> internet access is much more common, there are situations where it's
-> not there or is slow. Or maybe lore has issues. Or maybe people just
-> don't want to switch to a browser to look up details that may or may
-> not be relevant to them.
->
-> I copied the relevant stuff into my merge, but please don't make me do
-> this next time.
+#syz fix: exact-commit-title
 
-Thanks for adding this information - I certainly didn't intend for
-you to do this extra work.
+Until then the bug is still considered open and new crashes with
+the same signature are ignored.
 
-> Just give me a merge message with the details spelled
-> out, not some link to a cover letter for a patch series.
->
+Kernel: Linux
+Dashboard link: https://syzkaller.appspot.com/bug?extid=0b0095300dfeb8a83dc8
 
-OK.
+---
+[1] I expect the commit to be present in:
 
-To explain the reason why I add those links:
+1. for-kernelci branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git
 
-A while ago, I was helping out with backporting many xfs patches
-to stable tree after a long period of neglection.
+2. master branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
 
-I found the need to point back from fix commits to patch series
-because the cover letters often contained important information
-relevant for backporting and testing.
+3. master branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
 
-So I hacked up a small b4 gadget to disassemble a PR
-into lore links to patch series:
-(*) you don't have to follow this link unless you are curious ;)
-https://github.com/amir73il/b4/commit/f5966362a524182206d5c5e8a4f96fba5d4c9=
-2ca
+4. main branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next.git
 
-At the time, I had wished that the links to the patch series
-composing the PR would have been in the PR email
-(doesn't really matter if you take them into the merge commit).
-
-This is why I included this "debug info" of the PR.
-Next time, if I include the lore links, I will separate
-them to a different section, so it is clear that I do not
-require them to be in the merge commit.
-
-Thanks,
-Amir.
+The full list of 9 trees can be found at
+https://syzkaller.appspot.com/upstream/repos
