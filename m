@@ -2,42 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E0D67E3F71
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 13:57:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B2727E3F6F
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 13:57:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235000AbjKGM5h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 07:57:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49876 "EHLO
+        id S234975AbjKGM5b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 07:57:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234583AbjKGM44 (ORCPT
+        with ESMTP id S234835AbjKGM45 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 07:56:56 -0500
+        Tue, 7 Nov 2023 07:56:57 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0A2E10D2;
-        Tue,  7 Nov 2023 04:28:55 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B32AC433AB;
-        Tue,  7 Nov 2023 12:28:53 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5819F3273;
+        Tue,  7 Nov 2023 04:28:57 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DAFA1C433C9;
+        Tue,  7 Nov 2023 12:28:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699360135;
-        bh=08wVeho/h7zu8NFzvtzxBVHn96ozwyPNrg+RJm8HEzY=;
+        s=k20201202; t=1699360137;
+        bh=glK+fc6SkALhklAyab2VVmEAZfVWmTE/zUuxVHevs6E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ue4OJy9+aBhG5RIiqIVn73coKBsirjAvbZiHHOl59RR/2LkoDAvS5f8Y0caV7Mz9U
-         RfjF+Mq2a1Er52QHPyskqw7sBBVK+S3nZd8U5y0WwC9gGiX2JPfXqR5lUFDtEOgWaF
-         ofqFsO1+rOWj+tuwDkKuhYqU/4lRErflP3ksLRR2HLkucd2ckz1d5xRk6E2KC+Ahhn
-         S2e5yiwXYxfqQ4e588R6Zj8JojIOcd1h//fWFNs9qNetdSrpoHev+Poi1yMI65lwM9
-         PrgRO4xolpc/zxFgj7RfB1F2Ldh0ubbSQf6uiSc06mYhs/i5DGwa6daPznxobhfyXf
-         gfgwKsHzFcmEA==
+        b=WZXCcPmCP2KeSiqARRh/OtK9GrpCcoSmaLcQhmf3/IYzD7RyREV66aTtYURC+MR9T
+         b6Zx6y9qWQSLMKO5k1ccySvTCYjdMip4RD/7kEGB9r3kywg2Nh5hzd/NVEW46DScRj
+         jblaV0exYwhRhd3JU0wAJr9GzcuEkEOf04ltrhysS85rqys1c6/y4z+SrZ/vAADHTi
+         pUy+shgzeCWFZ4TJDvU6a/E0arrB3gVTn22W3Sikv66vCAabWhyv3QCDbpkFavRVDw
+         zrbouVo4UTRl6uaGwB/TQM7f79YHzwc64D22fmdi/8GRdZRFpu5bC3KPeesT5kfJ6l
+         zvM2uvHQcwgfg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Ma Ke <make_ruc2021@163.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Sasha Levin <sashal@kernel.org>, linus.walleij@linaro.org,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 6.1 18/25] drm/panel/panel-tpo-tpg110: fix a possible null pointer dereference
-Date:   Tue,  7 Nov 2023 07:26:57 -0500
-Message-ID: <20231107122745.3761613-18-sashal@kernel.org>
+        Alex Deucher <alexander.deucher@amd.com>,
+        Sasha Levin <sashal@kernel.org>, christian.koenig@amd.com,
+        Xinhui.Pan@amd.com, airlied@gmail.com, daniel@ffwll.ch,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
+Subject: [PATCH AUTOSEL 6.1 19/25] drm/radeon: fix a possible null pointer dereference
+Date:   Tue,  7 Nov 2023 07:26:58 -0500
+Message-ID: <20231107122745.3761613-19-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231107122745.3761613-1-sashal@kernel.org>
 References: <20231107122745.3761613-1-sashal@kernel.org>
@@ -58,35 +57,33 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Ma Ke <make_ruc2021@163.com>
 
-[ Upstream commit f22def5970c423ea7f87d5247bd0ef91416b0658 ]
+[ Upstream commit 2c1fe3c480f9e1deefd50d4b18be4a046011ee1f ]
 
-In tpg110_get_modes(), the return value of drm_mode_duplicate() is
-assigned to mode, which will lead to a NULL pointer dereference on
-failure of drm_mode_duplicate(). Add a check to avoid npd.
+In radeon_tv_get_modes(), the return value of drm_cvt_mode()
+is assigned to mode, which will lead to a NULL pointer
+dereference on failure of drm_cvt_mode(). Add a check to
+avoid null point dereference.
 
 Signed-off-by: Ma Ke <make_ruc2021@163.com>
-Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
-Link: https://lore.kernel.org/r/20231009090446.4043798-1-make_ruc2021@163.com
-Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
-Link: https://patchwork.freedesktop.org/patch/msgid/20231009090446.4043798-1-make_ruc2021@163.com
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/panel/panel-tpo-tpg110.c | 2 ++
+ drivers/gpu/drm/radeon/radeon_connectors.c | 2 ++
  1 file changed, 2 insertions(+)
 
-diff --git a/drivers/gpu/drm/panel/panel-tpo-tpg110.c b/drivers/gpu/drm/panel/panel-tpo-tpg110.c
-index 0b1f5a11a0554..735f1ea25c121 100644
---- a/drivers/gpu/drm/panel/panel-tpo-tpg110.c
-+++ b/drivers/gpu/drm/panel/panel-tpo-tpg110.c
-@@ -379,6 +379,8 @@ static int tpg110_get_modes(struct drm_panel *panel,
- 	connector->display_info.bus_flags = tpg->panel_mode->bus_flags;
- 
- 	mode = drm_mode_duplicate(connector->dev, &tpg->panel_mode->mode);
-+	if (!mode)
-+		return -ENOMEM;
- 	drm_mode_set_name(mode);
- 	mode->type = DRM_MODE_TYPE_DRIVER | DRM_MODE_TYPE_PREFERRED;
- 
+diff --git a/drivers/gpu/drm/radeon/radeon_connectors.c b/drivers/gpu/drm/radeon/radeon_connectors.c
+index f7431d2246044..5837af5123a9f 100644
+--- a/drivers/gpu/drm/radeon/radeon_connectors.c
++++ b/drivers/gpu/drm/radeon/radeon_connectors.c
+@@ -1122,6 +1122,8 @@ static int radeon_tv_get_modes(struct drm_connector *connector)
+ 	else {
+ 		/* only 800x600 is supported right now on pre-avivo chips */
+ 		tv_mode = drm_cvt_mode(dev, 800, 600, 60, false, false, false);
++		if (!tv_mode)
++			return 0;
+ 		tv_mode->type = DRM_MODE_TYPE_DRIVER | DRM_MODE_TYPE_PREFERRED;
+ 		drm_mode_probed_add(connector, tv_mode);
+ 	}
 -- 
 2.42.0
 
