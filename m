@@ -2,164 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CC2E7E46DE
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 18:26:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 207C07E46E2
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 18:26:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234840AbjKGR0I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 12:26:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56122 "EHLO
+        id S1343599AbjKGR0r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 12:26:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234926AbjKGR0G (ORCPT
+        with ESMTP id S229738AbjKGR0o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 12:26:06 -0500
-Received: from sonic302-28.consmr.mail.ne1.yahoo.com (sonic302-28.consmr.mail.ne1.yahoo.com [66.163.186.154])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3205C11B
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 09:26:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1699377963; bh=qO4NEDUtnx/yjPD7AaF/5TOOtuISQMQiUsBsGQRYEZ4=; h=Date:Subject:To:Cc:References:From:In-Reply-To:From:Subject:Reply-To; b=Krbf4stkcKfj8KHMh4FkNnwnCaXQuw6Xa5gwR/5/oSFa8IeaH1z9kpYVGtXFflL3qrPhrMnd0Sd3cL3U4H+9YOS6/lZYkgTYcKDliTNYDOTCalzTUgqY3jwy+6Anw5dfyO/yUg7ebOvyc4Arx+0pt6TQqWLbOLjEXlbZhDFOR8Zu/aA52axFXsrqtPGoA8uvoobFwWo0zLr/YQKTYjUsb8xPZdKKROaqt2BydEnbOUWFgnlMY16xyLvWianNjGHx65bWJDUJWhlWEBkGJn6hy0EXL/TuDH5Q0ldxbSCRZ371ypcgPV8Ro+7CUAVk+LnDf4suQt6oEt51Gf+V730vqA==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1699377963; bh=hMcHEXnMA105vSkQfNfMQ43caYxZPHAKELFtgvHNs5A=; h=X-Sonic-MF:Date:Subject:To:From:From:Subject; b=Mi/caqnggXKn8uOPS9zpxFB24aCjV8VIBNiMQdTCAkE2a7YQVpMOG644YjfNHTBeeLAxMD4w3ffDsf9mAKoAx4XIQnRbBKvimz8Nfwp97DSzSvNpRbLkZqGg3t0rYw/IP9K77QVc1yuBPKhZ3dXLwkJ5VgoxwbCnt4/Oz7EZMlD2wLA+iUbHqHJlPNBe7omNCTpynfPYmhTXtwcAYOeaHcMuNKRkOz/jUMGU6cmSspESG7iR8OM/aBU4m+Ridyzm2hlS6DkzSCwc6iULMfDcd8SFAgy99WxAoccnSpqBZIYnkikrfFdtpkLFNpuHe44KoE/fTDtpSgw31InAxKW6Sg==
-X-YMail-OSG: WI_4YOkVM1lmwqv7gxEz3HfzLtwSRuWKojtBNXnmYWnLRFS7je9lzJVC3lEhhbD
- CqYLywfNhmJ4RGe4VyDKPkaz5rO4czXuW_X5E7EEvqr705jmY.C5RM1BrTn9fbXCFy4_CcJ52Ha8
- uDZHNQeVEMz1jecZEfRLWsYAk9D9dd3SLcUKkK8DE8AnbXMA5SZF9GUUjUvyFjp4gqi_JlDITAs.
- YWAjLwFHXQ0T.mKXSdhnPdYDVmz1dsQ5BsDhxQLyrN6Rq3TD_7TovXmhvlSu58liQIpuGKL53iTm
- 5OMfFWHj2o8FxwifBX1VwCJC8KZruwdKq7ootBMc5y_SgzHSz612aubNck_Irm8GQ9daoHP0he6v
- vUzFAA28qsczG6LDMs7AYyQeI.M6b1kuszm3IrAEFSKLtuzFKvhl2kKV_dzPJyEn967kPPz1T9J1
- 4UK1X8HLOvTnj.qkrpR6X9O1YjCC8xJokpH13NDFVls0HO1ze7EZLffEoJ5TiN63cBSMb_FDgSL6
- SjpGPv_40ZbU3cASRWP28RQBh97LaXWX9QhQacmMOHC5IktjQLbL9KQNMYZ12Si6iioAe7jeZ6mf
- Lnl.aCjzyQ6KDc1jRxH8XMvV9Xy6dI9g4muRqPbwLiSF.kD_0ZpwYtCInqnyGbovHmIJymKJITF4
- cZfoi4A1Pkrrw1Y2yQP0wtKKt_w5C6tEeEk8QKaSyP8UorwykGSHOCkJOxXXGsJO9cY.4Y1lfdF6
- o_ExYh6Waoy2BIAAAPb8dACSw.15C8CY.IVHkhqi.xIs27NKFXu57OsuYv50u5JzE4o84R2o6cf4
- 0BTCB2l_MgRxxo6rqz0bPtgw7pfdyFhvKf7SrSjVjMnDQN3EX0YRxOcdwqr_9QwWZ1JS3wJBC1iH
- xG7thx71JIVbSVV8oTaaXAUUXKJ71emo96jFk03HpQxckgQKCJ6d6PudLGOLESIynDyJSvfdC6kL
- 5euoGw1jBNxmlV5EPkqgRR5Xr3pb_4YvUbFmc45OWzw7gPsmYpW8Lv.LOPLvhVGsgeL2IWloiGUC
- ZY76sX5bhpr8rlAry3fKNWRQwMetYAQM4VjvaiTGUqnLn_odvYM6lQoxD2uYpLqkVvEX8aAJmjVr
- 5yEcLvpaZh2Wlil3ALipg6s.dvFn3TMN._3BfneJhyXGPfyDbyJM._lN3XMc4zVoUcnHdTJoA.nU
- cpQr4KePDjHs3P43yXsPGcmJWbYmlO5aycW6EqDzGSOs3EODidzMExzC0hbm5bR2dmNBJZqCmBr7
- 95qRFzIh.f77HPVk2NrFoxd.efeNCEU1EovBaQREXqQDwBEucZky4u7vtn.G9Y33Xd5WcBglM_jh
- Tv.gNYkB8Ttm9ibR9AiuIt99cX4B6YM8vbbKUfidbBVQwoZ1rK4VNXzeNo.Ir4Wr3PLqh9zaYsqo
- xyQfRMAR09OwS6xUnMLav5cB9H4yIBxTT2E0FNOm6hreO1.1nydsmBzLlqJ54cCMThZbFC7VAOEO
- 6kh6c0WGOkfVsuohPF7b_Qm6Pbd86OjCsrRq5n4DZRrYwxsuCGGfHdYPyK7fxTJXhY3KpWN5BUV_
- xTdJrFynipbz7WULDsVo1DUWnfx8jbtNSbJLrulX992.jhAxnWYXHxMmsQTHAtzI2lzRJ4xpNoFr
- y7pOd_rN8857wPJvhE9fdvfuoQATp2PsKWCJZ2FbJGIs43xOKT8NY16kjI2Mt7Ud.sN2Pe.PvwNu
- M.jFU7kUnkDrXpThrHFLibOjS_Ga57Bhch72CIq.5aTTv.jz.85BHET6liVbN63NHNdFYp0xPPQF
- PeqrpNuznrG2I58vEFj.qxphaNsI.f_VkbwAjqTtwumd4ThUHKq11nExqcvOnUjlJTj1IpYhdzHR
- SMTMRMUBV1RIsr.pPVId_mq.LUOie5RUbN7T.Sbb5BMx.6CyHb55qWE6LTeRNuFAXPtljU.nS_5W
- sODSjuBTnScNCYP.zMEoCIwH4LeB2rRt2l7RhUOu4naKF9GDCobgbA9OgBpGHLFPGaAPnBJRQgpl
- jCIpVoQsSBHvKOvkWaFe7AQSPszLalviIvLcH21I5bx6BW1BERPhJKRXudOb32KljIGleCw3WsKe
- u6Tefe59rlBUmkIkk22ps56ISR_N6UWmDOtHEThlJfkgl.Nb1.xsrAeq3YNKmKsQI9_rOkrFWPvD
- JwYOLlZIWWUvMQ7XXVkR0q3kD2siwUy7lfG.mCABP9y5YAUvHizSYHJwkDtfX8637hUT6tLuD750
- jnWEdc0p7pC14BhtIRYf41TFZH5UoXdyA2VFzWDLE.vY3Yg7aDYJd0S8TDwuBKeXwl9KDiew-
-X-Sonic-MF: <casey@schaufler-ca.com>
-X-Sonic-ID: 24599b41-3e06-454a-9983-5f3fa9fdee5b
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic302.consmr.mail.ne1.yahoo.com with HTTP; Tue, 7 Nov 2023 17:26:03 +0000
-Received: by hermes--production-ne1-56df75844-79fgv (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID 521851d72cce979ed62dc1adf02bfced;
-          Tue, 07 Nov 2023 17:26:02 +0000 (UTC)
-Message-ID: <4788b9a4-4d95-4e10-84d6-bf947f72b6df@schaufler-ca.com>
-Date:   Tue, 7 Nov 2023 09:26:01 -0800
+        Tue, 7 Nov 2023 12:26:44 -0500
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 102159C
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 09:26:42 -0800 (PST)
+Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-2c59a4dd14cso79707401fa.2
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 09:26:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1699378000; x=1699982800; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OZkd52T+YeGKBl1CYuJ00AYOxiV6R4Ssf73ETNqj2ro=;
+        b=wfpI4fZIYD2FY18rmTuqhs1y8OIUW5vd6zjPiM3NTOu7cjDhq1p0We7z8CKVu4oAvb
+         jOETT44cZumddSwF1DOP/dNIRrfetCrwniUHtiOFGv2EN7mZm5tLF7GuUvEt2qTHPGiu
+         J8KM9QJdbY00BOgrGlbbSYzZ4C7qpD3uFASqJecrhchYvuMSwuvNgePdWzyheIbSgD+N
+         UYKFPh0QJgx3X1AzYUZE65MRm+wi6DAYh1zOJId7wHHXkwvSmWMoAbFCxKvEHvvuuWeG
+         8b4Qw/QFQwqJmWbHQ9hwy/M1+O/cOs+b1oMokWCYy4dpchsp6x5V6A0mdyqY85sSPFqz
+         L2sg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699378000; x=1699982800;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=OZkd52T+YeGKBl1CYuJ00AYOxiV6R4Ssf73ETNqj2ro=;
+        b=swAaMXGR289rrJ4R/Psz1NR+w9hGfPUTmqzjiGHQHgm2wzkB99WfImVhNx4mYO16Ph
+         81NKYA/9egQndfAiIADpKDvacOA0nwEWoPuU62UoF5M02ky0W85GRw8RCnRwntJBpcnH
+         KQx3SK27Io7FuKtxG+GWtOJwnwZk/j/Yb+gjj9g3uSLKIoyIZQPK0JcJPvn4QrA317w5
+         1MTwzZmi1VEivV1y6Cn46IxPm/ZWhAJ/3wdjjCoOUJlZWsS1WQb0Htt+YDc7LsLGIbzO
+         hDoKdwvsrfB16+ObfJmQT3CqE51ywaDIwxjvzQhUvMQTOmZ7U2xLK//NN0HYfdTGLjrd
+         YlLA==
+X-Gm-Message-State: AOJu0Yz5ss99/rdRdTKdLueAajQX0XQSLqUPdYCwc84MVZCF0NwTPCa9
+        XLQwuRLZADWQBgfte6QIjyyWIPC6Kt2TC35YjCSLlQ==
+X-Google-Smtp-Source: AGHT+IGl3P2xisn8Pi9jVTal1vZEOJryHpdqi/VfjD1sA5j/mthxIgAxL+CVC4H+Kt5HKX96fyStWaaIsFoUI3IyO/o=
+X-Received: by 2002:a2e:5056:0:b0:2c5:1640:3c97 with SMTP id
+ v22-20020a2e5056000000b002c516403c97mr27445634ljd.22.1699378000137; Tue, 07
+ Nov 2023 09:26:40 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 06/23] evm: Align evm_inode_post_setattr() definition
- with LSM infrastructure
-Content-Language: en-US
-To:     Roberto Sassu <roberto.sassu@huaweicloud.com>,
-        viro@zeniv.linux.org.uk, brauner@kernel.org,
-        chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
-        kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
-        paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
-        zohar@linux.ibm.com, dmitry.kasatkin@gmail.com,
-        dhowells@redhat.com, jarkko@kernel.org,
-        stephen.smalley.work@gmail.com, eparis@parisplace.org,
-        mic@digikod.net
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
-        selinux@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>,
-        Stefan Berger <stefanb@linux.ibm.com>,
-        Casey Schaufler <casey@schaufler-ca.com>
-References: <20231107134012.682009-1-roberto.sassu@huaweicloud.com>
- <20231107134012.682009-7-roberto.sassu@huaweicloud.com>
-From:   Casey Schaufler <casey@schaufler-ca.com>
-In-Reply-To: <20231107134012.682009-7-roberto.sassu@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Mailer: WebService/1.1.21896 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
+References: <20231106225855.3121724-1-evan@rivosinc.com> <20231107083411.J3ga0YmA@linutronix.de>
+In-Reply-To: <20231107083411.J3ga0YmA@linutronix.de>
+From:   Evan Green <evan@rivosinc.com>
+Date:   Tue, 7 Nov 2023 09:26:03 -0800
+Message-ID: <CALs-HsvX=zHvSKV5Skuxk=7jWq_mGqhsRSeuefD7OiYOCr3Gkw@mail.gmail.com>
+Subject: Re: [PATCH v3] RISC-V: Probe misaligned access speed in parallel
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     Palmer Dabbelt <palmer@rivosinc.com>,
+        Jisheng Zhang <jszhang@kernel.org>,
+        David Laight <David.Laight@aculab.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        Anup Patel <apatel@ventanamicro.com>,
+        =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Greentime Hu <greentime.hu@sifive.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Ley Foon Tan <leyfoon.tan@starfivetech.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Sunil V L <sunilvl@ventanamicro.com>,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/7/2023 5:39 AM, Roberto Sassu wrote:
-> From: Roberto Sassu <roberto.sassu@huawei.com>
+On Tue, Nov 7, 2023 at 12:34=E2=80=AFAM Sebastian Andrzej Siewior
+<bigeasy@linutronix.de> wrote:
 >
-> Change evm_inode_post_setattr() definition, so that it can be registered as
-> implementation of the inode_post_setattr hook (to be introduced).
+> On 2023-11-06 14:58:55 [-0800], Evan Green wrote:
+> > Probing for misaligned access speed takes about 0.06 seconds. On a
+> > system with 64 cores, doing this in smp_callin() means it's done
+> > serially, extending boot time by 3.8 seconds. That's a lot of boot time=
+.
+> >
+> > Instead of measuring each CPU serially, let's do the measurements on
+> > all CPUs in parallel. If we disable preemption on all CPUs, the
+> > jiffies stop ticking, so we can do this in stages of 1) everybody
+> > except core 0, then 2) core 0. The allocations are all done outside of
+> > on_each_cpu() to avoid calling alloc_pages() with interrupts disabled.
+> >
+> > For hotplugged CPUs that come in after the boot time measurement,
+> > register CPU hotplug callbacks, and do the measurement there. Interrupt=
+s
+> > are enabled in those callbacks, so they're fine to do alloc_pages() in.
 >
-> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> Reviewed-by: Stefan Berger <stefanb@linux.ibm.com>
+> I think this is dragged out of proportion. I would do this (if needed
+> can can't be identified by CPU-ID or so) on boot CPU only. If there is
+> evidence/ proof/ blessing from the high RiscV council that different
+> types of CPU cores are mixed together then this could be extended.
+> You brought Big-Little up in the other thread. This is actually known.
+> Same as with hyper-threads on x86, you know which CPU is the core and
+> which hyper thread (CPU) belongs to it.
+> So in terms of BigLittle you _could_ limit this to one Big and one
+> Little core instead running it on all.
 
-Reviewed-by: Casey Schaufler <casey@schaufler-ca.com>
+Doing it on one per cluster might also happen to work, but I still see
+nothing that prevents variety within a cluster, so I'm not comfortable
+with that assumption. It also doesn't buy much. I'm not sure what kind
+of guidance RVI is providing on integrating multiple CPUs into a
+system. I haven't seen any myself, but am happy to reassess if there's
+documentation banning the scenarios I'm imagining.
 
-
-> ---
->  fs/attr.c                         | 2 +-
->  include/linux/evm.h               | 6 ++++--
->  security/integrity/evm/evm_main.c | 4 +++-
->  3 files changed, 8 insertions(+), 4 deletions(-)
 >
-> diff --git a/fs/attr.c b/fs/attr.c
-> index 9bddc0a6352c..498e673bdf06 100644
-> --- a/fs/attr.c
-> +++ b/fs/attr.c
-> @@ -503,7 +503,7 @@ int notify_change(struct mnt_idmap *idmap, struct dentry *dentry,
->  	if (!error) {
->  		fsnotify_change(dentry, ia_valid);
->  		ima_inode_post_setattr(idmap, dentry, ia_valid);
-> -		evm_inode_post_setattr(dentry, ia_valid);
-> +		evm_inode_post_setattr(idmap, dentry, ia_valid);
->  	}
->  
->  	return error;
-> diff --git a/include/linux/evm.h b/include/linux/evm.h
-> index 01fc495a83e2..cf976d8dbd7a 100644
-> --- a/include/linux/evm.h
-> +++ b/include/linux/evm.h
-> @@ -23,7 +23,8 @@ extern enum integrity_status evm_verifyxattr(struct dentry *dentry,
->  					     struct integrity_iint_cache *iint);
->  extern int evm_inode_setattr(struct mnt_idmap *idmap,
->  			     struct dentry *dentry, struct iattr *attr);
-> -extern void evm_inode_post_setattr(struct dentry *dentry, int ia_valid);
-> +extern void evm_inode_post_setattr(struct mnt_idmap *idmap,
-> +				   struct dentry *dentry, int ia_valid);
->  extern int evm_inode_setxattr(struct mnt_idmap *idmap,
->  			      struct dentry *dentry, const char *name,
->  			      const void *value, size_t size);
-> @@ -97,7 +98,8 @@ static inline int evm_inode_setattr(struct mnt_idmap *idmap,
->  	return 0;
->  }
->  
-> -static inline void evm_inode_post_setattr(struct dentry *dentry, int ia_valid)
-> +static inline void evm_inode_post_setattr(struct mnt_idmap *idmap,
-> +					  struct dentry *dentry, int ia_valid)
->  {
->  	return;
->  }
-> diff --git a/security/integrity/evm/evm_main.c b/security/integrity/evm/evm_main.c
-> index 894570fe39bc..d452d469c503 100644
-> --- a/security/integrity/evm/evm_main.c
-> +++ b/security/integrity/evm/evm_main.c
-> @@ -840,6 +840,7 @@ int evm_inode_setattr(struct mnt_idmap *idmap, struct dentry *dentry,
->  
->  /**
->   * evm_inode_post_setattr - update 'security.evm' after modifying metadata
-> + * @idmap: idmap of the idmapped mount
->   * @dentry: pointer to the affected dentry
->   * @ia_valid: for the UID and GID status
->   *
-> @@ -849,7 +850,8 @@ int evm_inode_setattr(struct mnt_idmap *idmap, struct dentry *dentry,
->   * This function is called from notify_change(), which expects the caller
->   * to lock the inode's i_mutex.
->   */
-> -void evm_inode_post_setattr(struct dentry *dentry, int ia_valid)
-> +void evm_inode_post_setattr(struct mnt_idmap *idmap, struct dentry *dentry,
-> +			    int ia_valid)
->  {
->  	if (!evm_revalidate_status(NULL))
->  		return;
+> But this is just my few on this. From PREEMPT_RT's point of view, the
+> way you restructured the memory allocation should work now.
+
+Thanks!
+
+>
+> > Reported-by: Jisheng Zhang <jszhang@kernel.org>
+> > Closes: https://lore.kernel.org/all/mhng-9359993d-6872-4134-83ce-c97deb=
+e1cf9a@palmer-ri-x1c9/T/#mae9b8f40016f9df428829d33360144dc5026bcbf
+> > Fixes: 584ea6564bca ("RISC-V: Probe for unaligned access speed")
+> > Signed-off-by: Evan Green <evan@rivosinc.com>
+> >
+> >
+> > diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeat=
+ure.c
+> > index 6a01ded615cd..fe59e18dbd5b 100644
+> > --- a/arch/riscv/kernel/cpufeature.c
+> > +++ b/arch/riscv/kernel/cpufeature.c
+> =E2=80=A6
+> >
+> > -static int __init check_unaligned_access_boot_cpu(void)
+> > +/* Measure unaligned access on all CPUs present at boot in parallel. *=
+/
+> > +static int check_unaligned_access_all_cpus(void)
+> >  {
+> > -     check_unaligned_access(0);
+> > +     unsigned int cpu;
+> > +     unsigned int cpu_count =3D num_possible_cpus();
+> > +     struct page **bufs =3D kzalloc(cpu_count * sizeof(struct page *),
+> > +                                  GFP_KERNEL);
+>
+> kcalloc(). For beauty reasons you could try a reverse xmas tree.
+>
+> > +
+> > +     if (!bufs) {
+> > +             pr_warn("Allocation failure, not measuring misaligned per=
+formance\n");
+> > +             return 0;
+> > +     }
+> > +
+> > +     /*
+> > +      * Allocate separate buffers for each CPU so there's no fighting =
+over
+> > +      * cache lines.
+> > +      */
+> > +     for_each_cpu(cpu, cpu_online_mask) {
+> > +             bufs[cpu] =3D alloc_pages(GFP_KERNEL, MISALIGNED_BUFFER_O=
+RDER);
+> > +             if (!bufs[cpu]) {
+> > +                     pr_warn("Allocation failure, not measuring misali=
+gned performance\n");
+> > +                     goto out;
+> > +             }
+> > +     }
+> > +
+> > +     /* Check everybody except 0, who stays behind to tend jiffies. */
+> > +     on_each_cpu(check_unaligned_access_nonboot_cpu, bufs, 1);
+>
+> comments! _HOW_ do you ensure that CPU0 is left out? You don't. CPU0
+> does this and the leaves which is a waste. Using on_each_cpu_cond()
+> could deal with this. And you have the check within the wrapper
+> (check_unaligned_access_nonboot_cpu()) anyway.
+>
+> > +     /* Check core 0. */
+> > +     smp_call_on_cpu(0, check_unaligned_access, bufs[0], true);
+>
+> Now that comment is obvious. If you want to add a comment, why not state
+> why CPU0 has to be done last?
+>
+> > +
+> > +     /* Setup hotplug callback for any new CPUs that come online. */
+> > +     cpuhp_setup_state_nocalls(CPUHP_AP_ONLINE_DYN, "riscv:online",
+> > +                               riscv_online_cpu, NULL);
+> Instead riscv:online you could use riscv:unaliged_check or something
+> that pin points the callback to something obvious. This is exported via
+> sysfs.
+>
+> Again, comment is obvious. For that to make sense would require RiscV to
+> support physical-hotplug. For KVM like environment (where you can plug in
+> CPUs later) this probably doesn't make sense at all. Why not? Because
+>
+> - without explicit CPU pinning your slow/ fast CPU mapping (host <->
+>   guest) could change if the scheduler on the host moves the threads
+>   around.
+
+Taking a system with non-identical cores and allowing vcpus to bounce
+between them sounds like a hypervisor configuration issue to me,
+regardless of this patch.
+
+>
+> - without explicit task offload and resource partitioning on the host
+>   your guest thread might get interrupt during the measurement. This is
+>   done during boot so chances are high that it runs 100% of its time
+>   slice and will be preempted once other tasks on the host ask for CPU
+>   run time.
+
+The measurement takes the best (lowest time) iteration. So unless
+every iteration gets interrupted, I should get a good read in there
+somewhere.
+-Evan
