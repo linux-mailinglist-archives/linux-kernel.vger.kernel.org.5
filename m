@@ -2,46 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 620BE7E43F6
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 16:49:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E7CF7E43FB
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 16:49:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344166AbjKGPtF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 10:49:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49474 "EHLO
+        id S1344038AbjKGPtL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 10:49:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235568AbjKGPsO (ORCPT
+        with ESMTP id S235569AbjKGPsO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 7 Nov 2023 10:48:14 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 199281705;
-        Tue,  7 Nov 2023 07:47:53 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96DA2C433C8;
-        Tue,  7 Nov 2023 15:47:51 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 774C91999;
+        Tue,  7 Nov 2023 07:47:54 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4DD04C433CB;
+        Tue,  7 Nov 2023 15:47:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699372072;
-        bh=zelHw0MvsgMhJEF3TCNNAeS+IjZM0jqwzwLJAQ/4FE4=;
+        s=k20201202; t=1699372074;
+        bh=WtcUiSA5dnfv2VK8lmxzh4gugyNnWTsAs4G6Ahd3Vm4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iI3ifJOKetCxl62NIzbjdPhVXv4B4EjE9X5Kd0uOYhn2eAI5T0k97l3RjJM54HxhP
-         ryAUAa1tlMfB971BdttgssOBsH5/KofHF5/arxEdZUASyz49eZvcMDmJDa2toCsspk
-         Sit2UnIvTdKAsIHpCibvKkbGcay9YiQGRVpwusDscp0oQWD/0USVROw9SWxvaNVcck
-         UVsF0fm6lVMZPVP4JIMZXFFF8PCetmr9S0+ZPWVaTbH0b1j0Z8FVDv3RHvcHCe89io
-         CxeXG7nXMqWF0V1NHn0dGLw1emHEFouwWJm5jgACPqJ32YUgeTCdsFCq1QiNEkaSsW
-         HmibRgqXrDpMg==
+        b=kq44vCINqU9FIKFrqni2LlbpyLpYildaPAydBFkt8QHCH9srpJbn4ESRHDwNvTiJ9
+         jHxG/z5MMlMQTY/y+/Zh+R0+qAM7zFf3HOjG7H92Tbz2TgkLcWeU2H2RzzmlM0tbZm
+         P/ZKmulqKzHaC3d+yDI8gPWEzT5pzrjY1hAc5oYd6kqlDYqdUWXJlRo7S4WSCOY/ny
+         VJrTGU2yhLGpr/rVLypiC4n8hEyQFujgLLb1MghVn1UXVnDHpeaKxpiRFen3kwuV74
+         YCIaMzQYIEHTBeJUXPWebYHjVQ9FqNbM7M7VRJEafWeaoS160VSj1FrwAQlWw0LkwB
+         YtgxvjozH22GA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Wenchao Hao <haowenchao2@huawei.com>,
-        Simon Horman <horms@kernel.org>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>, hare@suse.de,
-        jejb@linux.ibm.com, richardcochran@gmail.com,
-        linux-scsi@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 24/36] scsi: libfc: Fix potential NULL pointer dereference in fc_lport_ptp_setup()
-Date:   Tue,  7 Nov 2023 10:46:06 -0500
-Message-ID: <20231107154654.3765336-24-sashal@kernel.org>
+Cc:     =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Sasha Levin <sashal@kernel.org>, linux-pci@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.6 25/36] PCI: Use FIELD_GET() to extract Link Width
+Date:   Tue,  7 Nov 2023 10:46:07 -0500
+Message-ID: <20231107154654.3765336-25-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231107154654.3765336-1-sashal@kernel.org>
 References: <20231107154654.3765336-1-sashal@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.6
@@ -50,41 +49,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wenchao Hao <haowenchao2@huawei.com>
+From: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
 
-[ Upstream commit 4df105f0ce9f6f30cda4e99f577150d23f0c9c5f ]
+[ Upstream commit d1f9b39da4a5347150246871325190018cda8cb3 ]
 
-fc_lport_ptp_setup() did not check the return value of fc_rport_create()
-which can return NULL and would cause a NULL pointer dereference. Address
-this issue by checking return value of fc_rport_create() and log error
-message on fc_rport_create() failed.
+Use FIELD_GET() to extract PCIe Negotiated and Maximum Link Width fields
+instead of custom masking and shifting.
 
-Signed-off-by: Wenchao Hao <haowenchao2@huawei.com>
-Link: https://lore.kernel.org/r/20231011130350.819571-1-haowenchao2@huawei.com
-Reviewed-by: Simon Horman <horms@kernel.org>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Link: https://lore.kernel.org/r/20230919125648.1920-7-ilpo.jarvinen@linux.intel.com
+Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+[bhelgaas: drop duplicate include of <linux/bitfield.h>]
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/libfc/fc_lport.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/pci/pci-sysfs.c | 5 ++---
+ drivers/pci/pci.c       | 5 ++---
+ 2 files changed, 4 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/scsi/libfc/fc_lport.c b/drivers/scsi/libfc/fc_lport.c
-index 9c02c9523c4d4..ab06e9aeb613e 100644
---- a/drivers/scsi/libfc/fc_lport.c
-+++ b/drivers/scsi/libfc/fc_lport.c
-@@ -241,6 +241,12 @@ static void fc_lport_ptp_setup(struct fc_lport *lport,
- 	}
- 	mutex_lock(&lport->disc.disc_mutex);
- 	lport->ptp_rdata = fc_rport_create(lport, remote_fid);
-+	if (!lport->ptp_rdata) {
-+		printk(KERN_WARNING "libfc: Failed to setup lport 0x%x\n",
-+			lport->port_id);
-+		mutex_unlock(&lport->disc.disc_mutex);
-+		return;
-+	}
- 	kref_get(&lport->ptp_rdata->kref);
- 	lport->ptp_rdata->ids.port_name = remote_wwpn;
- 	lport->ptp_rdata->ids.node_name = remote_wwnn;
+diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.c
+index d9eede2dbc0e1..5a6241044c3c8 100644
+--- a/drivers/pci/pci-sysfs.c
++++ b/drivers/pci/pci-sysfs.c
+@@ -12,7 +12,7 @@
+  * Modeled after usb's driverfs.c
+  */
+ 
+-
++#include <linux/bitfield.h>
+ #include <linux/kernel.h>
+ #include <linux/sched.h>
+ #include <linux/pci.h>
+@@ -230,8 +230,7 @@ static ssize_t current_link_width_show(struct device *dev,
+ 	if (err)
+ 		return -EINVAL;
+ 
+-	return sysfs_emit(buf, "%u\n",
+-		(linkstat & PCI_EXP_LNKSTA_NLW) >> PCI_EXP_LNKSTA_NLW_SHIFT);
++	return sysfs_emit(buf, "%u\n", FIELD_GET(PCI_EXP_LNKSTA_NLW, linkstat));
+ }
+ static DEVICE_ATTR_RO(current_link_width);
+ 
+diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+index 5e51e8bd5c13a..ec43ebfc24a5d 100644
+--- a/drivers/pci/pci.c
++++ b/drivers/pci/pci.c
+@@ -6260,8 +6260,7 @@ u32 pcie_bandwidth_available(struct pci_dev *dev, struct pci_dev **limiting_dev,
+ 		pcie_capability_read_word(dev, PCI_EXP_LNKSTA, &lnksta);
+ 
+ 		next_speed = pcie_link_speed[lnksta & PCI_EXP_LNKSTA_CLS];
+-		next_width = (lnksta & PCI_EXP_LNKSTA_NLW) >>
+-			PCI_EXP_LNKSTA_NLW_SHIFT;
++		next_width = FIELD_GET(PCI_EXP_LNKSTA_NLW, lnksta);
+ 
+ 		next_bw = next_width * PCIE_SPEED2MBS_ENC(next_speed);
+ 
+@@ -6333,7 +6332,7 @@ enum pcie_link_width pcie_get_width_cap(struct pci_dev *dev)
+ 
+ 	pcie_capability_read_dword(dev, PCI_EXP_LNKCAP, &lnkcap);
+ 	if (lnkcap)
+-		return (lnkcap & PCI_EXP_LNKCAP_MLW) >> 4;
++		return FIELD_GET(PCI_EXP_LNKCAP_MLW, lnkcap);
+ 
+ 	return PCIE_LNK_WIDTH_UNKNOWN;
+ }
 -- 
 2.42.0
 
