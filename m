@@ -2,144 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC13A7E436E
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 16:29:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DCAC07E4370
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 16:30:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343658AbjKGP3l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 10:29:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34500 "EHLO
+        id S1343853AbjKGPaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 10:30:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233946AbjKGP3j (ORCPT
+        with ESMTP id S234940AbjKGP36 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 10:29:39 -0500
+        Tue, 7 Nov 2023 10:29:58 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EC9C95;
-        Tue,  7 Nov 2023 07:29:37 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2C83C433C7;
-        Tue,  7 Nov 2023 15:29:36 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBF169E
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 07:29:56 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 648F4C433C8;
+        Tue,  7 Nov 2023 15:29:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699370977;
-        bh=ZlerLC4HZoG58tR/d9/VGC2fvwvlupCnuLnLcuhHslc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=GKrnWUqGyjFFJUOOFqpAD/GW+5ajiQ3w8D/RgPNiDEheo3qDW16M6FaIdlL2XH3Gy
-         yMMA/dVFaIbIx56GONlTzSN20Iq+jpZ78pxpH3w7rQBdb1hi7VnbsM2IywUHwd8xNz
-         0JFFA+uHh1zD9fG96P8NsFBFBXMiSyko3aj24i6fpJAfemhgG/dC3At5doCuYuYZ/q
-         p72xQ6Y/RlJlG/1lsUrN2MFbSUzGhcyXnjDd7lJDwpup1cMD5NMZV5JM8JIVE6OCsk
-         PE91P/E1WiBBnRVlGPAL+MzhR1yIvWtFhukFj1O1qU0+P1cjJybRDtBX9hZFjr28Z2
-         F5xZ/onpsH6tg==
-Date:   Tue, 7 Nov 2023 09:29:29 -0600
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Vidya Sagar <vidyas@nvidia.com>
-Cc:     Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Vikram Sethi <vsethi@nvidia.com>,
-        Thierry Reding <treding@nvidia.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Krishna Thota <kthota@nvidia.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: Question: Clearing error bits in the root port post enumeration
-Message-ID: <20231107152929.GA289532@bhelgaas>
+        s=k20201202; t=1699370996;
+        bh=cmxamXDMEWUMn8cEgNqWaQdc+pX1ObexCCh/OMwnfHI=;
+        h=Date:To:Cc:References:From:Subject:In-Reply-To:From;
+        b=b4FN91eqriAaFztaTy2f+42mALgF03S0uKEpBnmgUhocuaniZd6h7Y8UPj3uEMr0q
+         0OPCW/creEavn5kKuhQSbll4vxj25ID2Docy0fwdZsJsHQFUFFhUsgH6ug7XRdqt3h
+         YNi9CPucW3PUjALzU/Zv328qAy32nRVtX0KbQu13wCTY1CcukMGx0x9W7L9YWcc2hr
+         FGu1cFpqh20d2escaYfKmj2KDmj4aVQ2Fu+FQGpgWffFQopIsTnTYeJySCIpXibp3q
+         Hfosa/XQ5yjnau/o+Aw82wsAVV+YcsnI/6R1UUxNmFYWGb6UIH8JkF7z/VfE/fRwkK
+         ULfd7rEmE7s0Q==
+Message-ID: <e2167506-2b0a-a0f5-c0e9-0e8b6139c69e@kernel.org>
+Date:   Tue, 7 Nov 2023 23:29:53 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0d217128-b08c-4c56-ba7c-ed7b7ddfb75a@nvidia.com>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Content-Language: en-US
+To:     Sergey Shtylyov <s.shtylyov@omp.ru>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        linux-f2fs-devel@lists.sourceforge.net
+Cc:     linux-kernel@vger.kernel.org
+References: <20231025202019.5228-1-s.shtylyov@omp.ru>
+From:   Chao Yu <chao@kernel.org>
+Subject: Re: [PATCH] f2fs: data: fix possible overflow in
+ check_swap_activate()
+In-Reply-To: <20231025202019.5228-1-s.shtylyov@omp.ru>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 07, 2023 at 08:44:53AM +0530, Vidya Sagar wrote:
-> On 11/3/2023 11:50 PM, Bjorn Helgaas wrote:
-> > On Tue, Oct 31, 2023 at 12:26:31PM +0000, Vidya Sagar wrote:
-> > > Hi folks,
-> > > 
-> > > I would like to know your comments on the following scenario where
-> > > we are observing the root port logging errors because of the
-> > > enumeration flow being followed.
-> > > 
-> > > DUT information:
-> > > - Has a root port and an endpoint connected to it
-> > > - Uses ECAM mechanism to access the configuration space
-> > > - Booted through ACPI flow
-> > > - Has a Firmware-First approach for handling the errors
-> > > - System is configured to treat Unsupported Requests as
-> > >    AdvisoryNon-Fatal errors
-> > > 
-> > > As we all know, when a configuration read request comes in for a
-> > > device number that is not implemented, a UR would be returned as per
-> > > the PCIe spec.
-> > > 
-> > > As part of the enumeration flow on DUT, when the kernel reads offset
-> > > 0x0 of B:D:F=0:0:0, the root port responds with its valid Vendor-ID
-> > > and Device-ID values.  But, when B:D:F=0:1:0 is probed, since there
-> > > is no device present there, the root port responds with an
-> > > Unsupported Request and simultaneously logs the same in the Device
-> > > Status register (i.e. bit-3).  Because of it, there is a UR logged
-> > > in the Device Status register of the RP by the time enumeration is
-> > > complete.
-> > > 
-> > > In the case of AER capability natively owned by the kernel, the AER
-> > > driver's init call would clear all such pending bits.
-> > > 
-> > > Since we are going with the Firmware-First approach, and the system
-> > > is configured to treat Unsupported Requests as AdvisoryNon-Fatal
-> > > errors, only a correctable error interrupt can be raised to the
-> > > Firmware which takes care of clearing the corresponding status
-> > > registers.  The firmware can't know about the UnsupReq bit being set
-> > > as the interrupt it received is for a correctable error hence it
-> > > clears only bits related to correctable error.
-> > > 
-> > > All these events leave a freshly booted system with the following
-> > > bits set.
-> > > 
-> > > Secondary status: 66MHz- FastB2B- ParErr- DEVSEL=fast >TAbort- <TAbort- <MAbort+ <SERR- <PERR-          (MAbort)
-> > > DevSta: CorrErr- NonFatalErr- FatalErr- UnsupReq+ AuxPwr- TransPend-                                                              (UnsupReq)
-> > > UESta:  DLP- SDES- TLP- FCP- CmpltTO- CmpltAbrt- UnxCmplt- RxOF- MalfTLP- ECRC- UnsupReq+ ACSViol-   (UnsupReq)
-> > > 
-> > > Since the reason for UR is well understood at this point, I would
-> > > like to weigh in on the idea of clearing the aforementioned bits in
-> > > the root port once the enumeration is done particularly to cater to
-> > > the configurations where Firmware-First approach is in place.
-> > > Please let me know your comments on this approach.
-> > 
-> > I think Secondary status (PCI_SEC_STATUS) is always owned by the OS
-> > and is not affected by _OSC negotiation, right?  Linux does basically
-> > nothing with that today, but I think it *could* clear the "Received
-> > Master Abort" bit.
->
-> Yes. PCI_SEC_STATUS is always owned by the OS and _OSC negotiation doesn't
-> really affect that.
+Hi Sergey,
+
+Thanks for the patch.
+
+On 2023/10/26 4:20, Sergey Shtylyov wrote:
+> In check_swap_activate(), if the *while* loop exits early (0- or 1-page
+> long swap file), an overflow happens while calculating the value of the
+> span parameter as the lowest_pblock variable ends up being greater than
+> the highest_pblock variable. Let's set *span to 0 in this case...
+
+What do you think of returning -EINVAL for such case? I assume this is a
+corner case.
+
 > 
-> > I'm not very familiar with Advisory Non-Fatal errors.  I'm curious
-> > about the UESta situation: why can't firmware know about UnsupReq
-> > being set?  I assume PCI_ERR_COR_ADV_NFAT is the Correctable Error
-> > Status bit the firmware *does* see and clear.
->
-> Yes, PCI_ERR_COR_ADV_NFAT is indeed cleared by the firmware.
-> > 
-> > But isn't the whole point of Advisory Non-Fatal errors that an error
-> > that is logged as an Uncorrectable Error and that normally would be
-> > signaled with ERR_NONFATAL is signaled with ERR_COR instead?  So
-> > doesn't PCI_ERR_COR_ADV_NFAT being set imply that some
-> > PCI_ERR_UNCOR_STATUS must be set as well?  If so, I would think
-> > firmware *could* figure that out and clear the PCI_ERR_UNCOR_STATUS
-> > bit.
->
-> So, are you suggesting that let the firmware only clear the
-> PCI_ERR_UNCOR_STATUS also?
+> Found by Linux Verification Center (linuxtesting.org) with the SVACE static
+> analysis tool.
+> 
+> Signed-off-by: Sergey Shtylyov <s.shtylyov@omp.ru>
+> ---
+> This patch is against the 'master' branch of Jaegeuk Kim's F2FS repo...
+> 
+>   fs/f2fs/data.c | 5 ++++-
+>   1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+> index 916e317ac925..342cb0d5056d 100644
+> --- a/fs/f2fs/data.c
+> +++ b/fs/f2fs/data.c
+> @@ -4047,7 +4047,10 @@ static int check_swap_activate(struct swap_info_struct *sis,
+>   		cur_lblock += nr_pblocks;
+>   	}
+>   	ret = nr_extents;
+> -	*span = 1 + highest_pblock - lowest_pblock;
+> +	if (lowest_pblock <= highest_pblock)
 
-In this firmware-first scenario, I'm assuming the platform retained
-ownership of the AER capability, so I would think firmware certainly
-should be allowed to clear PCI_ERR_UNCOR_STATUS.
+if (unlikely(higest_pblock < lowest_pblock))
+	return -EINVAL;
 
-> if so, then, I can even make the firmware clear the PCI_SEC_STATUS
-> also thereby leaving the firmware responsible for clearing all the
-> error bits. Does that sound ok?
+*span = 1 + highest_pblock - lowest_pblock;
 
-It doesn't sound quite right to me for firmware to clear
-PCI_SEC_STATUS because it doesn't own that register.  I suspect we
-would probably see the "Received Master Abort" bit set after
-enumeration even on Conventional PCI systems, so I doubt this is
-anything specific to PCIe or AER, and maybe Linux should clear it
-after enumerating devices below the bridge.
+Thanks,
 
-Bjorn
+> +		*span = 1 + highest_pblock - lowest_pblock;
+> +	else
+> +		*span = 0;
+>   	if (cur_lblock == 0)
+>   		cur_lblock = 1;	/* force Empty message */
+>   	sis->max = cur_lblock;
