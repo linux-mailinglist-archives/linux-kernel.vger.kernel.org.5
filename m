@@ -2,66 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 558A67E3838
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 10:53:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA27E7E383A
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 10:53:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233886AbjKGJxV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 04:53:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44434 "EHLO
+        id S233936AbjKGJxa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 04:53:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233843AbjKGJxT (ORCPT
+        with ESMTP id S233843AbjKGJx2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 04:53:19 -0500
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6E9AF3
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 01:53:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=U9Lxg3/IVucuIC640LqW8ilJ5zaulupFWF0vr4KtYrg=; b=Stu257lWKjxfNCZfd1EP7b6ILg
-        vEzYEVGlco351B0NniblkYUjrLT8Zom9+EqpcMDRX/Fm471HyQV+oO/BXfY40y0nI2+3NwvrxEAov
-        rdyIctVtd8S0zxkIa3rU+aompLQf62eI/rC7jBaVrSEJidG/TlwZovb/GMUovH9X8/Txqs7FKmLd/
-        /K8C5VIoo+350XFLePmr6tNWxEHnVFF0RJEwE0j+xU/6t//VxZRNfRrPop496WV4uDspjoVdRendz
-        7g+sT40fC+4NehODv+5eXUteopJ5cTUxXRe56mXxkM5JTivXZrBUcwj9ejU26x7Y9PpNG3/0a2vWz
-        fBLw8ADw==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1r0Il6-00Btnf-2Q;
-        Tue, 07 Nov 2023 09:52:33 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id E6E3B30049D; Tue,  7 Nov 2023 10:52:31 +0100 (CET)
-Date:   Tue, 7 Nov 2023 10:52:31 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Abel Wu <wuyun.abel@bytedance.com>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Barry Song <21cnbao@gmail.com>,
-        Benjamin Segall <bsegall@google.com>,
-        Chen Yu <yu.c.chen@intel.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        "Gautham R . Shenoy" <gautham.shenoy@amd.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        K Prateek Nayak <kprateek.nayak@amd.com>,
-        Mike Galbraith <efault@gmx.de>,
-        Qais Yousef <qyousef@layalina.io>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Yicong Yang <yangyicong@huawei.com>,
-        Youssef Esmat <youssefesmat@chromium.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/4] sched/eevdf: Fix vruntime adjustment on reweight
-Message-ID: <20231107095231.GS8262@noisy.programming.kicks-ass.net>
-References: <20231107090510.71322-1-wuyun.abel@bytedance.com>
- <20231107090510.71322-2-wuyun.abel@bytedance.com>
+        Tue, 7 Nov 2023 04:53:28 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C25111D;
+        Tue,  7 Nov 2023 01:53:25 -0800 (PST)
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A75EGmk016905;
+        Tue, 7 Nov 2023 09:53:10 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=JJyqOeDVKPnGpmsy8rK0MY4A/PgRThwklgkRF/cIzpY=;
+ b=U72jG0bIl9KTpsPSfw7f1ugM34wJ2fwoaq+5/PAV+Zalu4hqa6Q2vBSCg419f+BE2QzE
+ 7gDh5c50tNZ5jWDAgCji2apzgc91vincZfjJCORI2MWfB9ItGFF7tEqs2qwYNMXXYk0q
+ kfTPvSZTRe70hOjBpu2g6BQ1POEqZwYlAs2ASz/pNfqfqgOc70b77a2KtdWerQuXqPIW
+ MFpbNReg6VlRuMbEMmNneC9nr/zPWOY4IH5cAK0AEiSIFKHf6+pBKLaMcEgqFedy6P9k
+ Z0/Fq1gm85SzRzsJyYNEVLDbzjVzciuLw6bHgTbBY58zygd9zU3ocnFNtgEVT836KmEK JA== 
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u758n1qnq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 07 Nov 2023 09:53:10 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3A79rAbj012332
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 7 Nov 2023 09:53:10 GMT
+Received: from [10.218.41.203] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Tue, 7 Nov
+ 2023 01:53:03 -0800
+Message-ID: <996d4368-57d9-43cf-381b-4d4c5ded9fdc@quicinc.com>
+Date:   Tue, 7 Nov 2023 15:23:00 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231107090510.71322-2-wuyun.abel@bytedance.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.13.1
+Subject: Re: [PATCH 2/2] phy: qcom-qmp-pcie: Add support for keeping refclk
+ always on
+Content-Language: en-US
+To:     Bjorn Andersson <andersson@kernel.org>
+CC:     Andy Gross <agross@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-phy@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <quic_vbadigan@quicinc.com>, <quic_ramkri@quicinc.com>,
+        <quic_nitegupt@quicinc.com>, <quic_skananth@quicinc.com>,
+        <quic_vpernami@quicinc.com>, <quic_parass@quicinc.com>
+References: <20231106-refclk_always_on-v1-0-17a7fd8b532b@quicinc.com>
+ <20231106-refclk_always_on-v1-2-17a7fd8b532b@quicinc.com>
+ <p3ozkq2rjkl2qowkbb5oq2bk33s476ismuxhkxv3ttlvafjyis@ctmowtnwg4rp>
+From:   Krishna Chaitanya Chundru <quic_krichai@quicinc.com>
+In-Reply-To: <p3ozkq2rjkl2qowkbb5oq2bk33s476ismuxhkxv3ttlvafjyis@ctmowtnwg4rp>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: JfbwFeJkvyn76N6Sx05YKPT4RNeSE8Dw
+X-Proofpoint-ORIG-GUID: JfbwFeJkvyn76N6Sx05YKPT4RNeSE8Dw
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-06_15,2023-11-02_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ bulkscore=0 mlxscore=0 mlxlogscore=999 spamscore=0 suspectscore=0
+ adultscore=0 impostorscore=0 clxscore=1015 malwarescore=0
+ priorityscore=1501 phishscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2310240000 definitions=main-2311070081
+X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,24 +92,112 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 07, 2023 at 05:05:07PM +0800, Abel Wu wrote:
-> vruntime of the (on_rq && !0-lag) entity needs to be adjusted when
-> it gets re-weighted, and the calculations can be simplified based
-> on the fact that re-weight won't change the w-average of all the
-> entities. Please check the proofs in comments.
-> 
-> But adjusting vruntime can also cause position change in RB-tree
-> hence require re-queue to fix up which might be costly. This might
-> be avoided by deferring adjustment to the time the entity actually
-> leaves tree (dequeue/pick), but that will negatively affect task
-> selection and probably not good enough either.
-> 
-> Fixes: 147f3efaa241 ("sched/fair: Implement an EEVDF-like scheduling policy")
-> Signed-off-by: Abel Wu <wuyun.abel@bytedance.com>
 
-Very good, thanks!
+On 11/6/2023 9:47 PM, Bjorn Andersson wrote:
+> On Mon, Nov 06, 2023 at 05:22:35PM +0530, Krishna chaitanya chundru wrote:
+>> In PCIe low power states like L1.1 or L1.2 the phy will stop
+>> supplying refclk to endpoint. If endpoint asserts clkreq to bring
+>> back link L0, then RC needs to provide refclk to endpoint.
+>>
+>> If there is some issues in platform with clkreq signal propagation
+>> to host and due to that host will not send refclk which results PCIe link
+>> down. For those platforms  phy needs to provide refclk even in low power
+> Double <space> ------------^^
+ACK
+>> states.
+>>
+>> Add a flag which indicates refclk is always supplied to endpoint.
+>>
+> The patch itself look good, the problem description looks good, but if
+> you have an indication that the refclk "is always supplied to the
+> endpoint", then you don't have a problem with refclk and I don't think
+> you need this patch.
+>
+> Something to the tune of "keep refclk always supplied to endpoint" seems
+> to more appropriately describe what this flag is doing.
+Sure I will change it in my next patch.
+>> Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
+>> ---
+>>   drivers/phy/qualcomm/phy-qcom-qmp-pcie.c | 21 +++++++++++++++++----
+>>   1 file changed, 17 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/drivers/phy/qualcomm/phy-qcom-qmp-pcie.c b/drivers/phy/qualcomm/phy-qcom-qmp-pcie.c
+>> index a63ca7424974..d7e377a7d96e 100644
+>> --- a/drivers/phy/qualcomm/phy-qcom-qmp-pcie.c
+>> +++ b/drivers/phy/qualcomm/phy-qcom-qmp-pcie.c
+>> @@ -43,6 +43,8 @@
+>>   /* QPHY_PCS_STATUS bit */
+>>   #define PHYSTATUS				BIT(6)
+>>   #define PHYSTATUS_4_20				BIT(7)
+>> +/* PCS_PCIE_ENDPOINT_REFCLK_CNTRL */
+>> +#define EPCLK_ALWAYS_ON_EN			BIT(6)
+>>   
+>>   #define PHY_INIT_COMPLETE_TIMEOUT		10000
+>>   
+>> @@ -77,6 +79,7 @@ enum qphy_reg_layout {
+>>   	QPHY_START_CTRL,
+>>   	QPHY_PCS_STATUS,
+>>   	QPHY_PCS_POWER_DOWN_CONTROL,
+>> +	QPHY_PCS_ENDPOINT_REFCLK_CNTRL,
+>>   	/* Keep last to ensure regs_layout arrays are properly initialized */
+>>   	QPHY_LAYOUT_SIZE
+>>   };
+>> @@ -103,10 +106,11 @@ static const unsigned int sdm845_qhp_pciephy_regs_layout[QPHY_LAYOUT_SIZE] = {
+>>   };
+>>   
+>>   static const unsigned int pciephy_v4_regs_layout[QPHY_LAYOUT_SIZE] = {
+>> -	[QPHY_SW_RESET]			= QPHY_V4_PCS_SW_RESET,
+>> -	[QPHY_START_CTRL]		= QPHY_V4_PCS_START_CONTROL,
+>> -	[QPHY_PCS_STATUS]		= QPHY_V4_PCS_PCS_STATUS1,
+>> -	[QPHY_PCS_POWER_DOWN_CONTROL]	= QPHY_V4_PCS_POWER_DOWN_CONTROL,
+>> +	[QPHY_SW_RESET]				= QPHY_V4_PCS_SW_RESET,
+>> +	[QPHY_START_CTRL]			= QPHY_V4_PCS_START_CONTROL,
+>> +	[QPHY_PCS_STATUS]			= QPHY_V4_PCS_PCS_STATUS1,
+>> +	[QPHY_PCS_POWER_DOWN_CONTROL]		= QPHY_V4_PCS_POWER_DOWN_CONTROL,
+>> +	[QPHY_PCS_ENDPOINT_REFCLK_CNTRL]	= QPHY_V4_PCS_PCIE_ENDPOINT_REFCLK_CNTRL,
+>>   };
+>>   
+>>   static const unsigned int pciephy_v5_regs_layout[QPHY_LAYOUT_SIZE] = {
+>> @@ -2244,6 +2248,8 @@ struct qmp_pcie {
+>>   	struct phy *phy;
+>>   	int mode;
+>>   
+>> +	bool refclk_always_on;
+>> +
+>>   	struct clk_fixed_rate pipe_clk_fixed;
+>>   };
+>>   
+>> @@ -3159,6 +3165,10 @@ static void qmp_pcie_init_registers(struct qmp_pcie *qmp, const struct qmp_phy_c
+>>   	qmp_pcie_configure(pcs, tbls->pcs, tbls->pcs_num);
+>>   	qmp_pcie_configure(pcs_misc, tbls->pcs_misc, tbls->pcs_misc_num);
+>>   
+>> +	if (qmp->refclk_always_on && cfg->regs[QPHY_PCS_ENDPOINT_REFCLK_CNTRL])
+>> +		qphy_setbits(pcs_misc, cfg->regs[QPHY_PCS_ENDPOINT_REFCLK_CNTRL],
+>> +			     EPCLK_ALWAYS_ON_EN);
+>> +
+>>   	if (cfg->lanes >= 4 && qmp->tcsr_4ln_config) {
+>>   		qmp_pcie_configure(serdes, cfg->serdes_4ln_tbl, cfg->serdes_4ln_num);
+>>   		qmp_pcie_init_port_b(qmp, tbls);
+>> @@ -3681,6 +3691,9 @@ static int qmp_pcie_probe(struct platform_device *pdev)
+>>   	if (ret)
+>>   		goto err_node_put;
+>>   
+>> +	qmp->refclk_always_on = of_property_read_bool(dev->of_node,
+>> +						      "qcom,refclk-always-on");
+> Leave this line unwrapped, for readability.
+>
+> Regards,
+> Bjorn
 
-It's a bit sad we have to muck about with the tree now, but alas.
+sure I will update this in next patch.
 
-If only Google and FB could agree on what to do with this cgroup
-nonsense, then maybe we could get rid of all this.
+- Krishna Chaitanya.
+
+>> +
+>>   	ret = phy_pipe_clk_register(qmp, np);
+>>   	if (ret)
+>>   		goto err_node_put;
+>>
+>> -- 
+>> 2.42.0
+>>
