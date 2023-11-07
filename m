@@ -2,199 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AA407E4119
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 14:50:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D9A097E3F00
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 13:45:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234840AbjKGNud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 08:50:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56342 "EHLO
+        id S1343599AbjKGMpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 07:45:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234859AbjKGNuK (ORCPT
+        with ESMTP id S1344204AbjKGMod (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 08:50:10 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39B863852;
-        Tue,  7 Nov 2023 04:31:29 -0800 (PST)
-Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A7CBTWV029828;
-        Tue, 7 Nov 2023 12:31:29 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=1rDzNZOxGCbWORgaAkmxmEzDcsAgHeDAJTTvkMZ0zYM=;
- b=Pkss4ln2TcKrKmjeQfWNh+CI1x+nQpZ8IFkDolbs8gQ+fmWEurRhJdguCJh9sXt+snkc
- u6niJpNNTHoUJNX6IOfXYE81hFlFPpZ88n7eB0w6ofPd4hJmnXCuZRD6kS3tYg69N5O0
- qUVMZHFbKt+vDJWVTszZgoAXV4eHVqGAJ4oQtoXXUFdfcR59OFgeGlPDKc7d0f/m4x7w
- sE0u6TJFAU0lqIyf28IbvG0bOFoAdyJdNjl5zE+7VPl47ZTGPSVrJlXJboUg7Iv/NhYi
- ChpVueMFwabBBUaIU3c8RJtZRfYyhvx9Q5QmFtqeCCAdtxfsNGh0Qw4Q8Z4mWwHGy9fw GA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u7mknscu1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 07 Nov 2023 12:31:28 +0000
-Received: from m0353726.ppops.net (m0353726.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3A7CD8rw005474;
-        Tue, 7 Nov 2023 12:31:28 GMT
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u7mknscte-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 07 Nov 2023 12:31:28 +0000
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3A7AaQDt008078;
-        Tue, 7 Nov 2023 12:31:26 GMT
-Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
-        by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3u61skgc41-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 07 Nov 2023 12:31:26 +0000
-Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
-        by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3A7CVNmo33358294
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 7 Nov 2023 12:31:24 GMT
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C7CA120043;
-        Tue,  7 Nov 2023 12:31:23 +0000 (GMT)
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6B92B20040;
-        Tue,  7 Nov 2023 12:31:23 +0000 (GMT)
-Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
-        by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Tue,  7 Nov 2023 12:31:23 +0000 (GMT)
-From:   Nina Schoetterl-Glausch <nsg@linux.ibm.com>
-To:     Vasily Gorbik <gor@linux.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>
-Cc:     Nina Schoetterl-Glausch <nsg@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-s390@vger.kernel.org, David Hildenbrand <david@redhat.com>
-Subject: [PATCH v2 4/4] KVM: s390: Minor refactor of base/ext facility lists
-Date:   Tue,  7 Nov 2023 13:31:18 +0100
-Message-Id: <20231107123118.778364-5-nsg@linux.ibm.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231107123118.778364-1-nsg@linux.ibm.com>
-References: <20231107123118.778364-1-nsg@linux.ibm.com>
+        Tue, 7 Nov 2023 07:44:33 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24D413B728;
+        Tue,  7 Nov 2023 04:31:52 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5E83EC433B6;
+        Tue,  7 Nov 2023 12:31:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699360311;
+        bh=wCsWxP/PWKw83mp4RtmuAGcT8+XdnGYPRPwxZb+St/8=;
+        h=From:To:Cc:Subject:Date:From;
+        b=eDmIBjm6Q4sAGQKjHPgrrN+fSSFU7WIdy1xC7b1J2US/aol7dJowlITTWmL02kiz8
+         fC1hRaSxFvE+k2zJwI7h28S580xn+MJ4c3X5D7id4WNmiRIJ256g1qimM40YUuy+V0
+         kQZIU43U4dnyLoiGPAEpppcuNJ1klWfD+pJ9wcz+spjD/D3u1eweJFvdLADf5gHXFg
+         f0zuFgeZcKOxu5GShhmaF43XXrU670AB/R3+I5gDeyy5KlWFZkG4Knzz8KiDdteWBJ
+         B5iDCZneEoE8crNzlDa5qgmecNO6yuo5yRZMYjvU/46SJnZxTY4CIXF5hw7s3g2r84
+         rhtdWQKNnkWzQ==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     "baozhu.liu" <lucas.liu@siengine.com>,
+        "menghui . huang" <menghui.huang@siengine.com>,
+        Liviu Dudau <liviu.dudau@arm.com>,
+        Sasha Levin <sashal@kernel.org>,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH AUTOSEL 5.4 1/6] drm/komeda: drop all currently held locks if deadlock happens
+Date:   Tue,  7 Nov 2023 07:31:32 -0500
+Message-ID: <20231107123148.3763062-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 5.4.259
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: vFdZPUFm24ttymlI1Ip7Y4lAShD2i02_
-X-Proofpoint-GUID: Q8S7es-ISoX6rWXlktAY6_7UoXA4B7_1
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-07_02,2023-11-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 lowpriorityscore=0
- malwarescore=0 clxscore=1015 spamscore=0 suspectscore=0 priorityscore=1501
- impostorscore=0 adultscore=0 phishscore=0 bulkscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2310240000
- definitions=main-2311070103
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Directly use the size of the arrays instead of going through the
-indirection of kvm_s390_fac_size().
-Don't use magic number for the number of entries in the non hypervisor
-managed facility bit mask list.
-Make the constraint of that number on kvm_s390_fac_base obvious.
-Get rid of implicit double anding of stfle_fac_list.
+From: "baozhu.liu" <lucas.liu@siengine.com>
 
-Signed-off-by: Nina Schoetterl-Glausch <nsg@linux.ibm.com>
+[ Upstream commit 19ecbe8325a2a7ffda5ff4790955b84eaccba49f ]
+
+If komeda_pipeline_unbound_components() returns -EDEADLK,
+it means that a deadlock happened in the locking context.
+Currently, komeda is not dealing with the deadlock properly,producing the
+following output when CONFIG_DEBUG_WW_MUTEX_SLOWPATH is enabled:
+
+ ------------[ cut here ]------------
+[   26.103984] WARNING: CPU: 2 PID: 345 at drivers/gpu/drm/arm/display/komeda/komeda_pipeline_state.c:1248
+	       komeda_release_unclaimed_resources+0x13c/0x170
+[   26.117453] Modules linked in:
+[   26.120511] CPU: 2 PID: 345 Comm: composer@2.1-se Kdump: loaded Tainted: G   W  5.10.110-SE-SDK1.8-dirty #16
+[   26.131374] Hardware name: Siengine Se1000 Evaluation board (DT)
+[   26.137379] pstate: 20400009 (nzCv daif +PAN -UAO -TCO BTYPE=--)
+[   26.143385] pc : komeda_release_unclaimed_resources+0x13c/0x170
+[   26.149301] lr : komeda_release_unclaimed_resources+0xbc/0x170
+[   26.155130] sp : ffff800017b8b8d0
+[   26.158442] pmr_save: 000000e0
+[   26.161493] x29: ffff800017b8b8d0 x28: ffff000cf2f96200
+[   26.166805] x27: ffff000c8f5a8800 x26: 0000000000000000
+[   26.172116] x25: 0000000000000038 x24: ffff8000116a0140
+[   26.177428] x23: 0000000000000038 x22: ffff000cf2f96200
+[   26.182739] x21: ffff000cfc300300 x20: ffff000c8ab77080
+[   26.188051] x19: 0000000000000003 x18: 0000000000000000
+[   26.193362] x17: 0000000000000000 x16: 0000000000000000
+[   26.198672] x15: b400e638f738ba38 x14: 0000000000000000
+[   26.203983] x13: 0000000106400a00 x12: 0000000000000000
+[   26.209294] x11: 0000000000000000 x10: 0000000000000000
+[   26.214604] x9 : ffff800012f80000 x8 : ffff000ca3308000
+[   26.219915] x7 : 0000000ff3000000 x6 : ffff80001084034c
+[   26.225226] x5 : ffff800017b8bc40 x4 : 000000000000000f
+[   26.230536] x3 : ffff000ca3308000 x2 : 0000000000000000
+[   26.235847] x1 : 0000000000000000 x0 : ffffffffffffffdd
+[   26.241158] Call trace:
+[   26.243604] komeda_release_unclaimed_resources+0x13c/0x170
+[   26.249175] komeda_crtc_atomic_check+0x68/0xf0
+[   26.253706] drm_atomic_helper_check_planes+0x138/0x1f4
+[   26.258929] komeda_kms_check+0x284/0x36c
+[   26.262939] drm_atomic_check_only+0x40c/0x714
+[   26.267381] drm_atomic_nonblocking_commit+0x1c/0x60
+[   26.272344] drm_mode_atomic_ioctl+0xa3c/0xb8c
+[   26.276787] drm_ioctl_kernel+0xc4/0x120
+[   26.280708] drm_ioctl+0x268/0x534
+[   26.284109] __arm64_sys_ioctl+0xa8/0xf0
+[   26.288030] el0_svc_common.constprop.0+0x80/0x240
+[   26.292817] do_el0_svc+0x24/0x90
+[   26.296132] el0_svc+0x20/0x30
+[   26.299185] el0_sync_handler+0xe8/0xf0
+[   26.303018] el0_sync+0x1a4/0x1c0
+[   26.306330] irq event stamp: 0
+[   26.309384] hardirqs last  enabled at (0): [<0000000000000000>] 0x0
+[   26.315650] hardirqs last disabled at (0): [<ffff800010056d34>] copy_process+0x5d0/0x183c
+[   26.323825] softirqs last  enabled at (0): [<ffff800010056d34>] copy_process+0x5d0/0x183c
+[   26.331997] softirqs last disabled at (0): [<0000000000000000>] 0x0
+[   26.338261] ---[ end trace 20ae984fa860184a ]---
+[   26.343021] ------------[ cut here ]------------
+[   26.347646] WARNING: CPU: 3 PID: 345 at drivers/gpu/drm/drm_modeset_lock.c:228 drm_modeset_drop_locks+0x84/0x90
+[   26.357727] Modules linked in:
+[   26.360783] CPU: 3 PID: 345 Comm: composer@2.1-se Kdump: loaded Tainted: G   W  5.10.110-SE-SDK1.8-dirty #16
+[   26.371645] Hardware name: Siengine Se1000 Evaluation board (DT)
+[   26.377647] pstate: 20400009 (nzCv daif +PAN -UAO -TCO BTYPE=--)
+[   26.383649] pc : drm_modeset_drop_locks+0x84/0x90
+[   26.388351] lr : drm_mode_atomic_ioctl+0x860/0xb8c
+[   26.393137] sp : ffff800017b8bb10
+[   26.396447] pmr_save: 000000e0
+[   26.399497] x29: ffff800017b8bb10 x28: 0000000000000001
+[   26.404807] x27: 0000000000000038 x26: 0000000000000002
+[   26.410115] x25: ffff000cecbefa00 x24: ffff000cf2f96200
+[   26.415423] x23: 0000000000000001 x22: 0000000000000018
+[   26.420731] x21: 0000000000000001 x20: ffff800017b8bc10
+[   26.426039] x19: 0000000000000000 x18: 0000000000000000
+[   26.431347] x17: 0000000002e8bf2c x16: 0000000002e94c6b
+[   26.436655] x15: 0000000002ea48b9 x14: ffff8000121f0300
+[   26.441963] x13: 0000000002ee2ca8 x12: ffff80001129cae0
+[   26.447272] x11: ffff800012435000 x10: ffff000ed46b5e88
+[   26.452580] x9 : ffff000c9935e600 x8 : 0000000000000000
+[   26.457888] x7 : 000000008020001e x6 : 000000008020001f
+[   26.463196] x5 : ffff80001085fbe0 x4 : fffffe0033a59f20
+[   26.468504] x3 : 000000008020001e x2 : 0000000000000000
+[   26.473813] x1 : 0000000000000000 x0 : ffff000c8f596090
+[   26.479122] Call trace:
+[   26.481566] drm_modeset_drop_locks+0x84/0x90
+[   26.485918] drm_mode_atomic_ioctl+0x860/0xb8c
+[   26.490359] drm_ioctl_kernel+0xc4/0x120
+[   26.494278] drm_ioctl+0x268/0x534
+[   26.497677] __arm64_sys_ioctl+0xa8/0xf0
+[   26.501598] el0_svc_common.constprop.0+0x80/0x240
+[   26.506384] do_el0_svc+0x24/0x90
+[   26.509697] el0_svc+0x20/0x30
+[   26.512748] el0_sync_handler+0xe8/0xf0
+[   26.516580] el0_sync+0x1a4/0x1c0
+[   26.519891] irq event stamp: 0
+[   26.522943] hardirqs last  enabled at (0): [<0000000000000000>] 0x0
+[   26.529207] hardirqs last disabled at (0): [<ffff800010056d34>] copy_process+0x5d0/0x183c
+[   26.537379] softirqs last  enabled at (0): [<ffff800010056d34>] copy_process+0x5d0/0x183c
+[   26.545550] softirqs last disabled at (0): [<0000000000000000>] 0x0
+[   26.551812] ---[ end trace 20ae984fa860184b ]---
+
+According to the call trace information,it can be located to be
+WARN_ON(IS_ERR(c_st)) in the komeda_pipeline_unbound_components function;
+Then follow the function.
+komeda_pipeline_unbound_components
+-> komeda_component_get_state_and_set_user
+  -> komeda_pipeline_get_state_and_set_crtc
+    -> komeda_pipeline_get_state
+      ->drm_atomic_get_private_obj_state
+        -> drm_atomic_get_private_obj_state
+          -> drm_modeset_lock
+
+komeda_pipeline_unbound_components
+-> komeda_component_get_state_and_set_user
+  -> komeda_component_get_state
+    -> drm_atomic_get_private_obj_state
+     -> drm_modeset_lock
+
+ret = drm_modeset_lock(&obj->lock, state->acquire_ctx); if (ret)
+	return ERR_PTR(ret);
+Here it return -EDEADLK.
+
+deal with the deadlock as suggested by [1], using the
+function drm_modeset_backoff().
+[1] https://docs.kernel.org/gpu/drm-kms.html?highlight=kms#kms-locking
+
+Therefore, handling this problem can be solved
+by adding return -EDEADLK back to the drm_modeset_backoff processing flow
+in the drm_mode_atomic_ioctl function.
+
+Signed-off-by: baozhu.liu <lucas.liu@siengine.com>
+Signed-off-by: menghui.huang <menghui.huang@siengine.com>
+Reviewed-by: Liviu Dudau <liviu.dudau@arm.com>
+Signed-off-by: Liviu Dudau <liviu.dudau@arm.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20230804013117.6870-1-menghui.huang@siengine.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
+ .../gpu/drm/arm/display/komeda/komeda_pipeline_state.c   | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-Notes:
-    I think it's nicer this way but it might be needless churn.
-
- arch/s390/kvm/kvm-s390.c | 44 +++++++++++++++++-----------------------
- 1 file changed, 19 insertions(+), 25 deletions(-)
-
-diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
-index b3f17e014cab..e00ab2f38c89 100644
---- a/arch/s390/kvm/kvm-s390.c
-+++ b/arch/s390/kvm/kvm-s390.c
-@@ -217,33 +217,25 @@ static int async_destroy = 1;
- module_param(async_destroy, int, 0444);
- MODULE_PARM_DESC(async_destroy, "Asynchronous destroy for protected guests");
+diff --git a/drivers/gpu/drm/arm/display/komeda/komeda_pipeline_state.c b/drivers/gpu/drm/arm/display/komeda/komeda_pipeline_state.c
+index b848270e0a1f4..31527fb66b5c5 100644
+--- a/drivers/gpu/drm/arm/display/komeda/komeda_pipeline_state.c
++++ b/drivers/gpu/drm/arm/display/komeda/komeda_pipeline_state.c
+@@ -1171,7 +1171,7 @@ int komeda_build_display_data_flow(struct komeda_crtc *kcrtc,
+ 	return 0;
+ }
  
--/*
-- * For now we handle at most 16 double words as this is what the s390 base
-- * kernel handles and stores in the prefix page. If we ever need to go beyond
-- * this, this requires changes to code, but the external uapi can stay.
-- */
--#define SIZE_INTERNAL 16
--
-+#define HMFAI_DWORDS 16
- /*
-  * Base feature mask that defines default mask for facilities. Consists of the
-  * defines in FACILITIES_KVM and the non-hypervisor managed bits.
-  */
--static unsigned long kvm_s390_fac_base[SIZE_INTERNAL] = { FACILITIES_KVM };
-+static unsigned long kvm_s390_fac_base[HMFAI_DWORDS] = { FACILITIES_KVM };
-+static_assert(ARRAY_SIZE(((long[]){ FACILITIES_KVM })) <= HMFAI_DWORDS);
-+static_assert(ARRAY_SIZE(kvm_s390_fac_base) <= S390_ARCH_FAC_MASK_SIZE_U64);
-+static_assert(ARRAY_SIZE(kvm_s390_fac_base) <= S390_ARCH_FAC_LIST_SIZE_U64);
-+static_assert(ARRAY_SIZE(kvm_s390_fac_base) <= ARRAY_SIZE(stfle_fac_list));
+-static void
++static int
+ komeda_pipeline_unbound_components(struct komeda_pipeline *pipe,
+ 				   struct komeda_pipeline_state *new)
+ {
+@@ -1190,8 +1190,12 @@ komeda_pipeline_unbound_components(struct komeda_pipeline *pipe,
+ 		c = komeda_pipeline_get_component(pipe, id);
+ 		c_st = komeda_component_get_state_and_set_user(c,
+ 				drm_st, NULL, new->crtc);
++		if (PTR_ERR(c_st) == -EDEADLK)
++			return -EDEADLK;
+ 		WARN_ON(IS_ERR(c_st));
+ 	}
 +
- /*
-  * Extended feature mask. Consists of the defines in FACILITIES_KVM_CPUMODEL
-  * and defines the facilities that can be enabled via a cpu model.
-  */
--static unsigned long kvm_s390_fac_ext[SIZE_INTERNAL] = { FACILITIES_KVM_CPUMODEL };
--
--static unsigned long kvm_s390_fac_size(void)
--{
--	BUILD_BUG_ON(SIZE_INTERNAL > S390_ARCH_FAC_MASK_SIZE_U64);
--	BUILD_BUG_ON(SIZE_INTERNAL > S390_ARCH_FAC_LIST_SIZE_U64);
--	BUILD_BUG_ON(SIZE_INTERNAL * sizeof(unsigned long) >
--		sizeof(stfle_fac_list));
--
--	return SIZE_INTERNAL;
--}
-+static const unsigned long kvm_s390_fac_ext[] = { FACILITIES_KVM_CPUMODEL };
-+static_assert(ARRAY_SIZE(kvm_s390_fac_ext) <= S390_ARCH_FAC_MASK_SIZE_U64);
-+static_assert(ARRAY_SIZE(kvm_s390_fac_ext) <= S390_ARCH_FAC_LIST_SIZE_U64);
-+static_assert(ARRAY_SIZE(kvm_s390_fac_ext) <= ARRAY_SIZE(stfle_fac_list));
++	return 0;
+ }
  
- /* available cpu features supported by kvm */
- static DECLARE_BITMAP(kvm_s390_available_cpu_feat, KVM_S390_VM_CPU_FEAT_NR_BITS);
-@@ -3341,13 +3333,16 @@ int kvm_arch_init_vm(struct kvm *kvm, unsigned long type)
- 	kvm->arch.sie_page2->kvm = kvm;
- 	kvm->arch.model.fac_list = kvm->arch.sie_page2->fac_list;
- 
--	for (i = 0; i < kvm_s390_fac_size(); i++) {
-+	for (i = 0; i < ARRAY_SIZE(kvm_s390_fac_base); i++) {
- 		kvm->arch.model.fac_mask[i] = stfle_fac_list[i] &
--					      (kvm_s390_fac_base[i] |
--					       kvm_s390_fac_ext[i]);
-+					      kvm_s390_fac_base[i];
- 		kvm->arch.model.fac_list[i] = stfle_fac_list[i] &
- 					      kvm_s390_fac_base[i];
- 	}
-+	for (i = 0; i < ARRAY_SIZE(kvm_s390_fac_ext); i++) {
-+		kvm->arch.model.fac_mask[i] |= stfle_fac_list[i] &
-+					       kvm_s390_fac_ext[i];
-+	}
- 	kvm->arch.model.subfuncs = kvm_s390_available_subfunc;
- 
- 	/* we are always in czam mode - even on pre z14 machines */
-@@ -5859,9 +5854,8 @@ static int __init kvm_s390_init(void)
+ /* release unclaimed pipeline resource */
+@@ -1213,9 +1217,8 @@ int komeda_release_unclaimed_resources(struct komeda_pipeline *pipe,
+ 	if (WARN_ON(IS_ERR_OR_NULL(st)))
  		return -EINVAL;
- 	}
  
--	for (i = 0; i < 16; i++)
--		kvm_s390_fac_base[i] |=
--			stfle_fac_list[i] & nonhyp_mask(i);
-+	for (i = 0; i < HMFAI_DWORDS; i++)
-+		kvm_s390_fac_base[i] |= nonhyp_mask(i);
+-	komeda_pipeline_unbound_components(pipe, st);
++	return komeda_pipeline_unbound_components(pipe, st);
  
- 	r = __kvm_s390_init();
- 	if (r)
+-	return 0;
+ }
+ 
+ void komeda_pipeline_disable(struct komeda_pipeline *pipe,
 -- 
-2.39.2
+2.42.0
 
