@@ -2,67 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 414857E4128
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 14:51:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06B077E402A
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 14:40:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234137AbjKGNvG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 08:51:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36850 "EHLO
+        id S233927AbjKGNkr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 08:40:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232686AbjKGNug (ORCPT
+        with ESMTP id S232686AbjKGNko (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 08:50:36 -0500
-Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9167719B2;
-        Tue,  7 Nov 2023 05:48:26 -0800 (PST)
-Received: from mail02.huawei.com (unknown [172.18.147.229])
-        by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4SPq2v4Sdsz9y5h2;
-        Tue,  7 Nov 2023 21:35:03 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.204.63.22])
-        by APP1 (Coremail) with SMTP id LxC2BwDHtXXdP0pltoA3AA--.60646S5;
-        Tue, 07 Nov 2023 14:47:58 +0100 (CET)
-From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
-To:     viro@zeniv.linux.org.uk, brauner@kernel.org,
-        chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
-        kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
-        paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
-        zohar@linux.ibm.com, dmitry.kasatkin@gmail.com,
-        dhowells@redhat.com, jarkko@kernel.org,
-        stephen.smalley.work@gmail.com, eparis@parisplace.org,
-        casey@schaufler-ca.com, mic@digikod.net
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
-        selinux@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>
-Subject: [PATCH v5 23/23] integrity: Switch from rbtree to LSM-managed blob for integrity_iint_cache
-Date:   Tue,  7 Nov 2023 14:40:12 +0100
-Message-Id: <20231107134012.682009-24-roberto.sassu@huaweicloud.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231107134012.682009-1-roberto.sassu@huaweicloud.com>
-References: <20231107134012.682009-1-roberto.sassu@huaweicloud.com>
+        Tue, 7 Nov 2023 08:40:44 -0500
+Received: from mailout1n.rrzn.uni-hannover.de (mailout1n.rrzn.uni-hannover.de [130.75.2.107])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B60C9F;
+        Tue,  7 Nov 2023 05:40:41 -0800 (PST)
+Received: from [10.23.33.142] (mmsrv.sra.uni-hannover.de [130.75.33.181])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mailout1n.rrzn.uni-hannover.de (Postfix) with ESMTPSA id D83B11B6;
+        Tue,  7 Nov 2023 14:40:39 +0100 (CET)
+Message-ID: <7bcf210f-c68f-4ffc-b84f-f4c47bdbbf62@sra.uni-hannover.de>
+Date:   Tue, 7 Nov 2023 14:40:39 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: LxC2BwDHtXXdP0pltoA3AA--.60646S5
-X-Coremail-Antispam: 1UD129KBjvJXoWxKryfJr4xZFyxGr4fuF1kuFg_yoWxuF48pF
-        42gay8Jws8ZFWq9F4vyFW5Zr4fKFyqgFZ7W34Ykw1kAFyvvr1YqFs8AryUZF15GrW5t34I
-        qr1Ykr4UuF1qyrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUBYb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUWw
-        A2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-        w2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-        WxJr0_GcWl84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
-        Cr1j6rxdM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMc
-        Ij6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_
-        Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij64
-        vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8G
-        jcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE2I
-        x0cI8IcVAFwI0_Xr0_Ar1lIxAIcVC0I7IYx2IY6xkF7I0E14v26F4UJVW0owCI42IY6xAI
-        w20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z280aVCY1x
-        0267AKxVWxJr0_GcJvcSsGvfC2KfnxnUUI43ZEXa7IU1ebytUUUUU==
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgAOBF1jj5IbhgAAs2
-X-CFilter-Loop: Reflected
+User-Agent: Mozilla Thunderbird
+From:   Illia Ostapyshyn <ostapyshyn@sra.uni-hannover.de>
+Subject: Re: Requesting your attention and expertise regarding a Tablet/Kernel
+ issue
+To:     Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Cc:     David Revoy <davidrevoy@protonmail.com>, jkosina@suse.cz,
+        jason.gerecke@wacom.com, jose.exposito89@gmail.com,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        nils@nilsfuhler.de, peter.hutterer@who-t.net, ping.cheng@wacom.com,
+        bagasdotme@gmail.com
+References: <nycvar.YFH.7.76.2311012033290.29220@cbobk.fhfr.pm>
+ <20231103200524.53930-1-ostapyshyn@sra.uni-hannover.de>
+ <bokQB3BK040-4fGy8tNfZrdM2mNmWxZud9O-KMmYqOkfa1JTC1ocUjoAzCEpPsbsAvY5qb5TcSP6XsQLaja2XO0gapOcsZyeVdCvq6T31qA=@protonmail.com>
+ <CAO-hwJLpKTb9yxvxaPDLZkF9kDF8u2VRJUf9yiQd+neOyxPeug@mail.gmail.com>
+ <eb8e22f3-77dc-4923-a7ba-e237ee226edb@sra.uni-hannover.de>
+ <CAO-hwJKVwZK00yZFjuyyR9Xt4Y2-r8eLJNZfnyeopHxoZQ0eGA@mail.gmail.com>
+Content-Language: en-US
+In-Reply-To: <CAO-hwJKVwZK00yZFjuyyR9Xt4Y2-r8eLJNZfnyeopHxoZQ0eGA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Virus-Scanned: clamav-milter 0.103.9 at mailout1n
+X-Virus-Status: Clean
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,221 +55,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Roberto Sassu <roberto.sassu@huawei.com>
+Sending again because the mail bounced from the mailing list due to the
+attachment.
 
-Before the security field of kernel objects could be shared among LSMs with
-the LSM stacking feature, IMA and EVM had to rely on an alternative storage
-of inode metadata. The association between inode metadata and inode is
-maintained through an rbtree.
+Benjamin Tissoires <benjamin.tissoires@redhat.com> writes:
 
-Because of this alternative storage mechanism, there was no need to use
-disjoint inode metadata, so IMA and EVM today still share them.
+> And BTW, if you have a tool affected by 276e14e6c3, I'd be curious to
+> get a hid-recorder sample for it so I can get regression tests for it.
 
-With the reservation mechanism offered by the LSM infrastructure, the
-rbtree is no longer necessary, as each LSM could reserve a space in the
-security blob for each inode. However, since IMA and EVM share the
-inode metadata, they cannot directly reserve the space for them.
+I have attached [3] the recording of me:
 
-Instead, request from the 'integrity' LSM a space in the security blob for
-the pointer of inode metadata (integrity_iint_cache structure). The other
-reason for keeping the 'integrity' LSM is to preserve the original ordering
-of IMA and EVM functions as when they were hardcoded.
+(1) Bringing the stylus in range, touching the screen with the tip and
+    bringing the stylus out of range.
 
-Prefer reserving space for a pointer to allocating the integrity_iint_cache
-structure directly, as IMA would require it only for a subset of inodes.
-Always allocating it would cause a waste of memory.
+(2) Bringing the stylus in range, pressing the top barrel button and
+    bringing the stylus out of range.
 
-Introduce two primitives for getting and setting the pointer of
-integrity_iint_cache in the security blob, respectively
-integrity_inode_get_iint() and integrity_inode_set_iint(). This would make
-the code more understandable, as they directly replace rbtree operations.
+(3) Bringing the stylus in range, touching the screen with the tip again
+    and bringing the stylus out of range.
 
-Locking is not needed, as access to inode metadata is not shared, it is per
-inode.
+The digitizer is the one of the two that David uses, XP-Pen Artist 24.
+I don't have the other one with two erasers here, so we'd have to wait
+for David's recording to investigate further.
 
-Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-Reviewed-by: Casey Schaufler <casey@schaufler-ca.com>
----
- security/integrity/iint.c      | 71 +++++-----------------------------
- security/integrity/integrity.h | 20 +++++++++-
- 2 files changed, 29 insertions(+), 62 deletions(-)
+If you revert 276e14e6c3, you can observe that after pressing the eraser
+button, neither BTN_TOOL_PEN nor BTN_TOUCH events will appear in evdev
+anymore for (3).
 
-diff --git a/security/integrity/iint.c b/security/integrity/iint.c
-index 882fde2a2607..a5edd3c70784 100644
---- a/security/integrity/iint.c
-+++ b/security/integrity/iint.c
-@@ -14,56 +14,25 @@
- #include <linux/slab.h>
- #include <linux/init.h>
- #include <linux/spinlock.h>
--#include <linux/rbtree.h>
- #include <linux/file.h>
- #include <linux/uaccess.h>
- #include <linux/security.h>
- #include <linux/lsm_hooks.h>
- #include "integrity.h"
- 
--static struct rb_root integrity_iint_tree = RB_ROOT;
--static DEFINE_RWLOCK(integrity_iint_lock);
- static struct kmem_cache *iint_cache __ro_after_init;
- 
- struct dentry *integrity_dir;
- 
--/*
-- * __integrity_iint_find - return the iint associated with an inode
-- */
--static struct integrity_iint_cache *__integrity_iint_find(struct inode *inode)
--{
--	struct integrity_iint_cache *iint;
--	struct rb_node *n = integrity_iint_tree.rb_node;
--
--	while (n) {
--		iint = rb_entry(n, struct integrity_iint_cache, rb_node);
--
--		if (inode < iint->inode)
--			n = n->rb_left;
--		else if (inode > iint->inode)
--			n = n->rb_right;
--		else
--			return iint;
--	}
--
--	return NULL;
--}
--
- /*
-  * integrity_iint_find - return the iint associated with an inode
-  */
- struct integrity_iint_cache *integrity_iint_find(struct inode *inode)
- {
--	struct integrity_iint_cache *iint;
--
- 	if (!IS_IMA(inode))
- 		return NULL;
- 
--	read_lock(&integrity_iint_lock);
--	iint = __integrity_iint_find(inode);
--	read_unlock(&integrity_iint_lock);
--
--	return iint;
-+	return integrity_inode_get_iint(inode);
- }
- 
- #define IMA_MAX_NESTING (FILESYSTEM_MAX_STACK_DEPTH+1)
-@@ -123,9 +92,7 @@ static void iint_free(struct integrity_iint_cache *iint)
-  */
- struct integrity_iint_cache *integrity_inode_get(struct inode *inode)
- {
--	struct rb_node **p;
--	struct rb_node *node, *parent = NULL;
--	struct integrity_iint_cache *iint, *test_iint;
-+	struct integrity_iint_cache *iint;
- 
- 	iint = integrity_iint_find(inode);
- 	if (iint)
-@@ -137,31 +104,10 @@ struct integrity_iint_cache *integrity_inode_get(struct inode *inode)
- 
- 	iint_init_always(iint, inode);
- 
--	write_lock(&integrity_iint_lock);
--
--	p = &integrity_iint_tree.rb_node;
--	while (*p) {
--		parent = *p;
--		test_iint = rb_entry(parent, struct integrity_iint_cache,
--				     rb_node);
--		if (inode < test_iint->inode) {
--			p = &(*p)->rb_left;
--		} else if (inode > test_iint->inode) {
--			p = &(*p)->rb_right;
--		} else {
--			write_unlock(&integrity_iint_lock);
--			kmem_cache_free(iint_cache, iint);
--			return test_iint;
--		}
--	}
--
- 	iint->inode = inode;
--	node = &iint->rb_node;
- 	inode->i_flags |= S_IMA;
--	rb_link_node(node, parent, p);
--	rb_insert_color(node, &integrity_iint_tree);
-+	integrity_inode_set_iint(inode, iint);
- 
--	write_unlock(&integrity_iint_lock);
- 	return iint;
- }
- 
-@@ -178,10 +124,8 @@ static void integrity_inode_free(struct inode *inode)
- 	if (!IS_IMA(inode))
- 		return;
- 
--	write_lock(&integrity_iint_lock);
--	iint = __integrity_iint_find(inode);
--	rb_erase(&iint->rb_node, &integrity_iint_tree);
--	write_unlock(&integrity_iint_lock);
-+	iint = integrity_iint_find(inode);
-+	integrity_inode_set_iint(inode, NULL);
- 
- 	iint_free(iint);
- }
-@@ -231,6 +175,10 @@ static int __init integrity_lsm_init(void)
- 	return 0;
- }
- 
-+struct lsm_blob_sizes integrity_blob_sizes __ro_after_init = {
-+	.lbs_inode = sizeof(struct integrity_iint_cache *),
-+};
-+
- /*
-  * Keep it until IMA and EVM can use disjoint integrity metadata, and their
-  * initialization order can be swapped without change in their behavior.
-@@ -239,6 +187,7 @@ DEFINE_LSM(integrity) = {
- 	.name = "integrity",
- 	.init = integrity_lsm_init,
- 	.order = LSM_ORDER_LAST,
-+	.blobs = &integrity_blob_sizes,
- };
- 
- /*
-diff --git a/security/integrity/integrity.h b/security/integrity/integrity.h
-index e4df82d6f6e7..ef2689b5264d 100644
---- a/security/integrity/integrity.h
-+++ b/security/integrity/integrity.h
-@@ -158,7 +158,6 @@ struct ima_file_id {
- 
- /* integrity data associated with an inode */
- struct integrity_iint_cache {
--	struct rb_node rb_node;	/* rooted in integrity_iint_tree */
- 	struct mutex mutex;	/* protects: version, flags, digest */
- 	struct inode *inode;	/* back pointer to inode in question */
- 	u64 version;		/* track inode changes */
-@@ -192,6 +191,25 @@ int integrity_kernel_read(struct file *file, loff_t offset,
- #define INTEGRITY_KEYRING_MAX		4
- 
- extern struct dentry *integrity_dir;
-+extern struct lsm_blob_sizes integrity_blob_sizes;
-+
-+static inline struct integrity_iint_cache *
-+integrity_inode_get_iint(const struct inode *inode)
-+{
-+	struct integrity_iint_cache **iint_sec;
-+
-+	iint_sec = inode->i_security + integrity_blob_sizes.lbs_inode;
-+	return *iint_sec;
-+}
-+
-+static inline void integrity_inode_set_iint(const struct inode *inode,
-+					    struct integrity_iint_cache *iint)
-+{
-+	struct integrity_iint_cache **iint_sec;
-+
-+	iint_sec = inode->i_security + integrity_blob_sizes.lbs_inode;
-+	*iint_sec = iint;
-+}
- 
- struct modsig;
- 
--- 
-2.34.1
+> I must confess, being the one who refactored everything, I still don't
+> believe this is as simple as it may seem. I paged out all of the
+> special cases, and now, without seeing the event flow I just can not
+> understand why this would fix the situation.
+
+David uses hwdb to remap Eraser (0xd0045) to BTN_STYLUS2 (0x14c) [1]:
+
+evdev:input:b0003v28BDp092De0100-e0*
+ KEYBOARD_KEY_d0045=0x14c
+
+In the end, this translates to a hidinput_setkeycode with the respective
+arguments, setting usage->code to BTN_STYLUS2.  In the current state,
+doing so results in BTN_STYLUS2 being permanently set and never released
+when pressing the top barrel switch.  You can replay and observe this
+with the attached [3] recording.
+
+The if statement [2] is there to release BTN_TOOL_RUBBER if the device
+has no Invert, but only after BTN_TOUCH has been released.  Eraser with
+value 0 releases BTN_TOUCH in the first iteration and BTN_TOOL_RUBBER in
+the second (when BTN_TOUCH is not in input->key anymore).
+
+The problem is that the condition assumes usage->code is BTN_TOUCH.
+When this is not the case, (!test_bit(BTN_TOUCH, input->key)) is always
+true, we release the tool and return prematurely.  Therefore,
+usage->code is never released.
+
+As such, BTN_TOOL_RUBBER is not the problem and does no harm (except for
+maybe showing the rubber icon in Krita).  It is required, however, for a
+functional eraser out of the box.  I think, in the HID_QUIRK_NOINVERT
+case, BTN_TOOL_RUBBER should better be omitted if Eraser is remapped to
+something else, like BTN_STYLUS2.  Hence the second proposal.
+
+> So either the explanation was wrong, or it's not explaining the
+> situation (I also understand that this is not a formal submission, so
+> maybe that's the reason why the comment is not updated).
+
+Right, the example was not meant as a formal submission, that's why I
+didn't change the comment.  Sorry for that.  We should fix the comment
+below it (line 1603) too after this is resolved.
+
+Cheers,
+Illia
+
+[1]
+https://www.davidrevoy.com/article842/review-xp-pen-artist-24-pro-on-linux
+[2]
+https://elixir.bootlin.com/linux/latest/source/drivers/hid/hid-input.c#L1594
+[3] https://dl.uni-h.de/?t=dc4a5542a8e4d54964e298045a173049
 
