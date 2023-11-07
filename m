@@ -2,159 +2,279 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 013D27E47BF
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 19:03:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4FB67E47CD
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 19:05:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234700AbjKGSD7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 13:03:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51668 "EHLO
+        id S1343875AbjKGSFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 13:05:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232355AbjKGSDw (ORCPT
+        with ESMTP id S232362AbjKGSFs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 13:03:52 -0500
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB8F68F;
-        Tue,  7 Nov 2023 10:03:50 -0800 (PST)
-Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-6be0277c05bso5132887b3a.0;
-        Tue, 07 Nov 2023 10:03:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699380230; x=1699985030; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=+7XZp8TY75sF7U5h9nw0ejrOlAspCCqCAM2E9Vc6lJo=;
-        b=Cdi2LIs0kGALPNgANdRq88HIA92FHiY8GKKocnrrphbPZvpDKUlTqvXL949N38T+Gs
-         MVYiFDfdEX9VBIbUlM3Pv5+CFNBuphywc21W34xwSTlWQ8tzVnLQDbJUstVvrsCclzmT
-         lymlvCFJzacmCxcqlxr6N/WwvQTDVbLY22/ha/UCp1MogQLpzKR9CG40yBJHYBEjcuI+
-         3/tLQ7GRx0Ma+VnU+BxIGUYSvQ9ncQ2k8F4BmAr3GMD0lleoQYkW2I2YezNvS6KxqNS1
-         TnH1Tz7LKV/A9kNW6kbTQVa7p5EMmolyGZqJAqpN1m3EvOIuxzp4hIEl8kA2tudLmEYX
-         1x5g==
+        Tue, 7 Nov 2023 13:05:48 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F88A8F
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 10:04:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1699380298;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5SnfWst7YWy/G8qn8/lbczAXS0PlzIdVfaEM1EG2S9A=;
+        b=idiss7u7OBlUMrlxnu8OGF1llsrzcZCvdUxVJYWAqual2huAcpwDwc0jqiqYLWkRTYBITm
+        HEW+1Z4VsN0jz9slH9zccmQymKYthZ7SDjpY/zEwBavghlHpPdXtgrwT+D21cExh7UoS1N
+        Z1jJaUv3eUGHGcvUPoZwO0Z5d/fE3pU=
+Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
+ [209.85.167.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-594-iFex5utUNkezWLXbUF7npg-1; Tue, 07 Nov 2023 13:04:57 -0500
+X-MC-Unique: iFex5utUNkezWLXbUF7npg-1
+Received: by mail-lf1-f70.google.com with SMTP id 2adb3069b0e04-5079f6c127cso6510381e87.3
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 10:04:56 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699380230; x=1699985030;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=+7XZp8TY75sF7U5h9nw0ejrOlAspCCqCAM2E9Vc6lJo=;
-        b=PdYkqYbbT94VaqAkhVTn8ZVKv1nE1JJnvQk3s+R8ZZbQbPHnkOgXF8QR2AUbEKNG3C
-         L67wdlq+An21gQ2HhBOPcbXrMCrnKO7P8G4RfdYoUBhMo4AVDJqiNc10VxLYIze9oCZT
-         x9Mc0TFML/xS4sFBFQgAWtVApMjdVh389fzFdfQFTkbealZzGVsS8rnEWYItPMWZGMEV
-         E/k+6SEAFpTJ2bsgNCTiGtQ/XwSlLP6kBYkQ1dIGIu2ODR/4Gd5lOUPCXA3LjuD5s8Eb
-         6QZ3tZw3CrZGDM31EjtqJ0uA8JOeax34Tugy/AGgVa/HQ8K23J8Uy9DyhSUgh7oPBtnI
-         dOxA==
-X-Gm-Message-State: AOJu0YwL5lGkyJrJXyRm5zKrUggqBti0daeiiO+NYsGiG3Dd86dM4lw2
-        tRX6x6GZzpmayGCIrDLPfmQ=
-X-Google-Smtp-Source: AGHT+IGQmOk5Vlvefa201+fp88HLQxdIENvDptE6tnHClw/M6ybyq5Z+coNiU1SmroFLsDGsbOeZqA==
-X-Received: by 2002:a05:6a20:8f03:b0:12f:c0c1:d70 with SMTP id b3-20020a056a208f0300b0012fc0c10d70mr34253111pzk.40.1699380230066;
-        Tue, 07 Nov 2023 10:03:50 -0800 (PST)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id u17-20020a056a00125100b0069102aa1918sm7457304pfi.48.2023.11.07.10.03.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 07 Nov 2023 10:03:49 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <f98d840d-f3ff-47e1-b609-2cfe33c65cb5@roeck-us.net>
-Date:   Tue, 7 Nov 2023 10:03:47 -0800
+        d=1e100.net; s=20230601; t=1699380295; x=1699985095;
+        h=content-transfer-encoding:mime-version:user-agent:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=5SnfWst7YWy/G8qn8/lbczAXS0PlzIdVfaEM1EG2S9A=;
+        b=nJNg7W6X2rpg/1pgyBHJ5zKvHpg+kSz4hkQT794CzAGL5vioSi494iGQnQmXNMlb/Z
+         v/XH5f8Ssj2YIBF5cKUlSFbTPfyLT6TsY6aNtndbIgSQ3Xf9R1O2jNrzosopXOLeW3uj
+         BkLNomdVYQGeoSbK/Uz4r8ZD5WwFI0favqdp3b/2dwJ/CotJDsm3A9hVZnyHzoyEHQAb
+         dXqqSM9DYReuTZwByj1i1EyuHEl/J4r9wt1DvGg5IG5LkI9nsXioP4cpGScazVEQ7jzD
+         S5zyej0MF9LMAaffIK2OAz/boAWxELJkp18H4ykvFFja1Jf+Ke9QsTBvf0XxIjy6rmBw
+         9K1g==
+X-Gm-Message-State: AOJu0YxqrFLhz9OF4ak14jcAgyqajzlCKyqM98TdFKZ8uvNQtiiQ7mBJ
+        LR6s+WoSjaIDLzsxxn930F5jUBVKxsql02PvlVf2FPRWxef09MyeOQ7/t3kiGrt1G/Z7tPzyL58
+        1rTYPMbVeEqTJ04fxqc84qKjj
+X-Received: by 2002:ac2:4c94:0:b0:507:96cd:e641 with SMTP id d20-20020ac24c94000000b0050796cde641mr21537269lfl.51.1699380295582;
+        Tue, 07 Nov 2023 10:04:55 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEP/jjMpM0e94iMbsSJJ3TYIhtbA/6z1Q2YJPC6dgbMVm/NhXwMv1W9zc9A8qb9G1+rsqzP+w==
+X-Received: by 2002:ac2:4c94:0:b0:507:96cd:e641 with SMTP id d20-20020ac24c94000000b0050796cde641mr21537245lfl.51.1699380295203;
+        Tue, 07 Nov 2023 10:04:55 -0800 (PST)
+Received: from starship ([89.237.99.95])
+        by smtp.gmail.com with ESMTPSA id l41-20020a05600c1d2900b004083a105f27sm16726022wms.26.2023.11.07.10.04.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Nov 2023 10:04:54 -0800 (PST)
+Message-ID: <a7c23f74187b5042814341ce5d2e749408d24650.camel@redhat.com>
+Subject: Re: [PATCH v6 06/25] x86/fpu/xstate: Opt-in kernel dynamic bits
+ when calculate guest xstate size
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Weijiang Yang <weijiang.yang@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>, pbonzini@redhat.com,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        peterz@infradead.org, chao.gao@intel.com,
+        rick.p.edgecombe@intel.com, john.allen@amd.com
+Date:   Tue, 07 Nov 2023 20:04:52 +0200
+In-Reply-To: <ZUUEnXcqgY7O0jp7@google.com>
+References: <20230914063325.85503-1-weijiang.yang@intel.com>
+         <20230914063325.85503-7-weijiang.yang@intel.com>
+         <e0db6ffd-5d92-2a1a-bdfb-a190fe1ccd25@intel.com>
+         <1347cf03-4598-f923-74e4-a3d193d9d2e9@intel.com>
+         <ZTf5wPKXuHBQk0AN@google.com>
+         <de1b148c-45c6-6517-0926-53d1aad8978e@intel.com>
+         <ZTqgzZl-reO1m01I@google.com>
+         <d6eb8a9dc5b0e4b83e1944d7e0bb8ee2cb9cc111.camel@redhat.com>
+         <ZUJdohf6wLE5LrCN@google.com>
+         <f4e2d8c79ca3f238aafd61a82a3f5ad5c2d6bcab.camel@redhat.com>
+         <ZUUEnXcqgY7O0jp7@google.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] drm/amd/pm: clean up redundant comparisons with 0
-Content-Language: en-US
-To:     =?UTF-8?Q?Jos=C3=A9_Pekkarinen?= <jose.pekkarinen@foxhound.fi>
-Cc:     evan.quan@amd.com, alexander.deucher@amd.com,
-        christian.koenig@amd.com, Xinhui.Pan@amd.com,
-        skhan@linuxfoundation.org, airlied@gmail.com, daniel@ffwll.ch,
-        jdelvare@suse.com, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-hwmon@vger.kernel.org, linux-kernel-mentees@lists.linux.dev
-References: <20231107082910.92508-1-jose.pekkarinen@foxhound.fi>
- <98e8490e-6608-47a8-890c-f1fe894dac7f@roeck-us.net>
- <65d132b0dbef66039fd6938ecbc2bf68@foxhound.fi>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-In-Reply-To: <65d132b0dbef66039fd6938ecbc2bf68@foxhound.fi>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/7/23 09:26, José Pekkarinen wrote:
-> On 2023-11-07 16:08, Guenter Roeck wrote:
->> On 11/7/23 00:29, José Pekkarinen wrote:
->>> There is a couple of function return checks of functions that return
->>> unsigned values, and local variables to hold them are also unsigned, so
->>> checking if they are negative will always return false. This patch will
->>> remove them, as well as the never reached code.
->>>
->>> drivers/gpu/drm/amd/pm/amdgpu_pm.c:2801:5-8: WARNING: Unsigned expression compared with zero: val < 0
->>> drivers/gpu/drm/amd/pm/amdgpu_pm.c:2814:5-8: WARNING: Unsigned expression compared with zero: val < 0
->>>
->>> Signed-off-by: José Pekkarinen <jose.pekkarinen@foxhound.fi>
->>> ---
->>>   drivers/gpu/drm/amd/pm/amdgpu_pm.c | 4 ----
->>>   1 file changed, 4 deletions(-)
->>>
->>> diff --git a/drivers/gpu/drm/amd/pm/amdgpu_pm.c b/drivers/gpu/drm/amd/pm/amdgpu_pm.c
->>> index 8bb2da13826f..e7bb1d324084 100644
->>> --- a/drivers/gpu/drm/amd/pm/amdgpu_pm.c
->>> +++ b/drivers/gpu/drm/amd/pm/amdgpu_pm.c
->>> @@ -2798,8 +2798,6 @@ static ssize_t amdgpu_hwmon_show_power_avg(struct device *dev,
->>>       unsigned int val;
->>>         val = amdgpu_hwmon_get_power(dev, AMDGPU_PP_SENSOR_GPU_AVG_POWER);
->>> -    if (val < 0)
->>> -        return val;
->>>
->>
->> This is reporting errors returned from amdgpu_hwmon_get_power() as
->> large integers.
+On Fri, 2023-11-03 at 07:33 -0700, Sean Christopherson wrote:
+> On Thu, Nov 02, 2023, Maxim Levitsky wrote:
+> > On Wed, 2023-11-01 at 07:16 -0700, Sean Christopherson wrote:
+> > > On Tue, Oct 31, 2023, Maxim Levitsky wrote:
+> > > > On Thu, 2023-10-26 at 10:24 -0700, Sean Christopherson wrote:
+> > > > > --
+> > > > > From: Sean Christopherson <seanjc@google.com>
+> > > > > Date: Thu, 26 Oct 2023 10:17:33 -0700
+> > > > > Subject: [PATCH] x86/fpu/xstate: Always preserve non-user xfeatures/flags in
+> > > > >  __state_perm
+> > > > > 
+> > > > > Fixes: 781c64bfcb73 ("x86/fpu/xstate: Handle supervisor states in XSTATE permissions")
+> > > > > Signed-off-by: Sean Christopherson <seanjc@google.com>
+> > > > > ---
+> > > > >  arch/x86/kernel/fpu/xstate.c | 18 +++++++++++-------
+> > > > >  1 file changed, 11 insertions(+), 7 deletions(-)
+> > > > > 
+> > > > > diff --git a/arch/x86/kernel/fpu/xstate.c b/arch/x86/kernel/fpu/xstate.c
+> > > > > index ef6906107c54..73f6bc00d178 100644
+> > > > > --- a/arch/x86/kernel/fpu/xstate.c
+> > > > > +++ b/arch/x86/kernel/fpu/xstate.c
+> > > > > @@ -1601,16 +1601,20 @@ static int __xstate_request_perm(u64 permitted, u64 requested, bool guest)
+> > > > >  	if ((permitted & requested) == requested)
+> > > > >  		return 0;
+> > > > >  
+> > > > > -	/* Calculate the resulting kernel state size */
+> > > > > +	/*
+> > > > > +	 * Calculate the resulting kernel state size.  Note, @permitted also
+> > > > > +	 * contains supervisor xfeatures even though supervisor are always
+> > > > > +	 * permitted for kernel and guest FPUs, and never permitted for user
+> > > > > +	 * FPUs.
+> > > > > +	 */
+> > > > >  	mask = permitted | requested;
+> > > > > -	/* Take supervisor states into account on the host */
+> > > > > -	if (!guest)
+> > > > > -		mask |= xfeatures_mask_supervisor();
+> > > > >  	ksize = xstate_calculate_size(mask, compacted);
+> > > > 
+> > > > This might not work with kernel dynamic features, because
+> > > > xfeatures_mask_supervisor() will return all supported supervisor features.
+> > > 
+> > > I don't understand what you mean by "This".
+> > > Somewhat of a side topic, I feel very strongly that we should use "guest only"
+> > > terminology instead of "dynamic".  There is nothing dynamic about whether or not
+> > > XFEATURE_CET_KERNEL is allowed; there's not even a real "decision" beyond checking
+> > > wheter or not CET is supported.
+> > > > Therefore at least until we have an actual kernel dynamic feature (a feature
+> > > > used by the host kernel and not KVM, and which has to be dynamic like AMX),
+> > > > I suggest that KVM stops using the permission API completely for the guest
+> > > > FPU state, and just gives all the features it wants to enable right to
+> > > 
+> > > By "it", I assume you mean userspace?
+> > > 
+> > > > __fpu_alloc_init_guest_fpstate() (Guest FPU permission API IMHO should be
+> > > > deprecated and ignored)
+> > > 
+> > > KVM allocates guest FPU state during KVM_CREATE_VCPU, so not using prctl() would
+> > > either require KVM to defer allocating guest FPU state until KVM_SET_CPUID{,2},
+> > > or would require a VM-scoped KVM ioctl() to let userspace opt-in to
+> > > 
+> > > Allocating guest FPU state during KVM_SET_CPUID{,2} would get messy, 
+> > > as KVM allows
+> > > multiple calls to KVM_SET_CPUID{,2} so long as the vCPU hasn't done KVM_RUN.  E.g.
+> > > KVM would need to support actually resizing guest FPU state, which would be extra
+> > > complexity without any meaningful benefit.
+> > 
+> > OK, I understand you now. What you claim is that it is legal to do this:
+> > 
+> > - KVM_SET_XSAVE
+> > - KVM_SET_CPUID (with AMX enabled)
+> > 
+> > KVM_SET_CPUID will have to resize the xstate which is already valid.
 > 
->      Alright, that case it is a false positive, thanks for the comment!
+> I was actually talking about
+> 
+>   KVM_SET_CPUID2 (with dynamic user feature #1)
+>   KVM_SET_CPUID2 (with dynamic user feature #2)
+> 
+> The second call through __xstate_request_perm() will be done with only user
+> xfeatures in @permitted and so the kernel will compute the wrong ksize.
+> 
+> > Your patch to fix the __xstate_request_perm() does seem to be correct in a
+> > sense that it will preserve the kernel fpu components in the fpu permissions.
+> > 
+> > However note that kernel fpu permissions come from
+> > 'fpu_kernel_cfg.default_features' which don't include the dynamic kernel
+> > xfeatures (added a few patches before this one).
+> 
+> CET_KERNEL isn't dynamic!  It's guest-only.  There are no runtime decisions as to
+> whether or not CET_KERNEL is allowed.  All guest FPU get CET_KERNEL, no kernel FPUs
+> get CET_KERNEL.
+> 
+> That matters because I am also proposing that we add a dedicated, defined-at-boot
+> fpu_guest_cfg instead of bolting on a "dynamic", which is what I meant by this:
+
+Seems fair.
+
+> 
+>  : Or even better if it doesn't cause weirdness elsewhere, a dedicated
+>  : fpu_guest_cfg.  For me at least, a fpu_guest_cfg would make it easier to
+>  : understand what all is going on.
+This is a very good idea.
+
+> 
+> That way, initialization of permissions is simply
+> 
+> 	fpu->guest_perm = fpu_guest_cfg.default_features;
+> 
+> and there's no need to differentiate between guest and kernel FPUs when reallocating
+> for dynamic user xfeatures because guest_perm.__state_perm already holds the correct
+> data.
+> 
+> > Therefore an attempt to resize the xstate to include a kernel dynamic feature by
+> > __xfd_enable_feature will fail.
+> > 
+> > If kvm on the other hand includes all the kernel dynamic features in the
+> > initial allocation of FPU state (not optimal but possible),
+> 
+> This is what I am suggesting.
+
+This is a valid solution.
+
+> 
+>  : There are definitely scenarios where CET will not be exposed to KVM guests, but
+>  : I don't see any reason to make the guest FPU space dynamically sized for CET.
+>  : It's what, 40 bytes?
+
+I don't disagree with this. Allocating all guest kernel features is a valid solution
+for now although this can change in the future if a 'heavy' kernel feature comes.
+
+Also IMHO its not a question of space but more question of run-time overhead.
+I don't know how well the INIT/MODIFIED ucode state tracking works (on Intel and AMD)
+and what are the costs of saving/restoring an unused feature.
+
+But again this is a valid solution and as long as the code works, I don't have
+anything against it.
+
+> 
+> > then later call to __xstate_request_perm for a userspace dynamic feature
+> > (which can still happen) will mess the the xstate, because again the
+> > permission code assumes that only default kernel features were granted the
+> > permissions.
+> > 
+> > 
+> > This has to be solved this way or another.
+> > 
+> > > The only benefit I can think of for a VM-scoped ioctl() is that it would allow a
+> > > single process to host multiple VMs with different dynamic xfeature requirements.
+> > > But such a setup is mostly theoretical.  Maybe it'll affect the SEV migration
+> > > helper at some point?  But even that isn't guaranteed.
+> > > 
+> > > So while I agree that ARCH_GET_XCOMP_GUEST_PERM isn't ideal, practically speaking
+> > > it's sufficient for all current use cases.  Unless a concrete use case comes along,
+> > > deprecating ARCH_GET_XCOMP_GUEST_PERM in favor of a KVM ioctl() would be churn for
+> > > both the kernel and userspace without any meaningful benefit, or really even any
+> > > true change in behavior.
+> > 
+> > ARCH_GET_XCOMP_GUEST_PERM/ARCH_SET_XCOMP_GUEST_PERM is not a good API from
+> > usability POV, because it is redundant.
+> > 
+> > KVM already has API called KVM_SET_CPUID2, by which the qemu/userspace
+> > instructs the KVM, how much space to allocate, to support a VM with *this*
+> > CPUID.
+> > 
+> > For example if qemu asks for nested SVM/VMX, then kvm will allocate on demand
+> > state for it (also at least 8K/vCPU btw).  The same should apply for AMX -
+> > Qemu sets AMX xsave bit in CPUID - that permits KVM to allocate the extra
+> > state when needed.
+> > 
+> > I don't see why we need an extra and non KVM API for that.
+> 
+> I don't necessarily disagree, but what's done is done.  We missed our chance to
+> propose a different mechanism, and at this point undoing all of that without good
+> cause is unlikely to benefit anyone.  If a use comes along that needs something
+> "better" than the prctl() API, then I agree it'd be worth revisiting.
+
+I do think that it is not too late to deprecate the ARCH_GET_XCOMP_GUEST_PERM/ARCH_SET_XCOMP_GUEST_PERM,
+and just ignore it, instead taking the guest CPUID as the source of truth.
+
+That API was out only for a few releases and only has to be used for AMX which is a very new feature.
+
+Also if we let the guest call the deprecated API but ignore it (allow everything regardless if the userspace
+called the permission API) that will not break the existing code IMHO.
+
+Best regards,
+	Maxim Levitsky
+
+
 > 
 
-
-No, it isn't a false positive. The fix is wrong. The variable should be declared
-'int val', not 'unsigned int val'.
-
-Guenter
 
