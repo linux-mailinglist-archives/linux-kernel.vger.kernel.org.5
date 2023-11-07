@@ -2,42 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC8CE7E3E5C
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 13:37:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5551A7E3E5B
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 13:37:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234595AbjKGMhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 07:37:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46384 "EHLO
+        id S234551AbjKGMhL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 07:37:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235183AbjKGMgj (ORCPT
+        with ESMTP id S235186AbjKGMgn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 07:36:39 -0500
+        Tue, 7 Nov 2023 07:36:43 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 904A930F1;
-        Tue,  7 Nov 2023 04:25:38 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C13ADC433C8;
-        Tue,  7 Nov 2023 12:25:36 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 601364EC2;
+        Tue,  7 Nov 2023 04:25:40 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF0C3C433C7;
+        Tue,  7 Nov 2023 12:25:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699359938;
-        bh=J2/ZSTFxMXWZAF9LbVEw/H44CaL0fMQINqnPX0GQpdA=;
+        s=k20201202; t=1699359940;
+        bh=EAin0Iz7HjJBvD7enrdAOQwKVvCQ/htBJNRVoA2Zma4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=k3UvmaRVC1Jb9k0q7rVl3R5uVe9Oad/fp4rvfofbPKMv3RlqPnPeck1XO509YV9sG
-         o8kfW9SNH0f9xgdoSzENFAmZIAKDgXnXCopvc3F4xCe8c+xxIXy5ZZ1mnI4CMRG5PH
-         YwadOv/5Zis0CvOmOz0Nl66uklbCrqFKG304GDGav987F0YVJ0TWSsLhRjgZyJOgMX
-         Ab8DSBWQdCenO1jDWlPi3pqK4hYOVeVjxxPhDjR42Fx8f29ECANzp7diT+N4NHnDFV
-         +ynmi9T762anMvbuAYK3TKoLTG84qBgiWoca0wW6Uhj7w5zdZnVhe5n4KEZhiFnWjZ
-         SQrJhcYfZGKCA==
+        b=GbSGjZTManrSpHu5JeDX18TLi5XVFREhl60RKnwjfwJI6fj2QJhhKMWt9tvaDFyp5
+         slRMiWpCibNGx0Ah6QwBelPrOcSz/f2EZnPAWrVN9vZv98hdbnZUEqvpsdrA6cP/ZE
+         ikTvRL6XFnCasbVRDH6xujaKNDWNcsnGom5BUQ14Atigazvrr/62pnPjXeG3+5Hl0T
+         EGkmEsBZiVCtPi+64g6zk9yd0TCQJcSYKuIkj1/LGk2AtSzgjXSZXtDzd+nc8yuLZd
+         rdUvfQtuwl/GWUY6vBCivZBj8mR2RPoLu2kq/b8uLxWwD0Mc1vdATkG3ahpp7qAMIH
+         y8FQtOb14A2FQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Philipp Stanner <pstanner@redhat.com>,
         David Airlie <airlied@redhat.com>,
         Kees Cook <keescook@chromium.org>,
         Zack Rusin <zackr@vmware.com>, Sasha Levin <sashal@kernel.org>,
-        brauner@kernel.org, ddiss@suse.de, nick.alcock@oracle.com,
-        dhowells@redhat.com, code@siddh.me
-Subject: [PATCH AUTOSEL 6.5 15/37] kernel: watch_queue: copy user-array safely
-Date:   Tue,  7 Nov 2023 07:21:26 -0500
-Message-ID: <20231107122407.3760584-15-sashal@kernel.org>
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH AUTOSEL 6.5 16/37] drm_lease.c: copy user-array safely
+Date:   Tue,  7 Nov 2023 07:21:27 -0500
+Message-ID: <20231107122407.3760584-16-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231107122407.3760584-1-sashal@kernel.org>
 References: <20231107122407.3760584-1-sashal@kernel.org>
@@ -58,7 +59,7 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Philipp Stanner <pstanner@redhat.com>
 
-[ Upstream commit ca0776571d3163bd03b3e8c9e3da936abfaecbf6 ]
+[ Upstream commit f37d63e219c39199a59b8b8a211412ff27192830 ]
 
 Currently, there is no overflow-check with memdup_user().
 
@@ -70,25 +71,27 @@ Signed-off-by: Philipp Stanner <pstanner@redhat.com>
 Reviewed-by: Kees Cook <keescook@chromium.org>
 Reviewed-by: Zack Rusin <zackr@vmware.com>
 Signed-off-by: Dave Airlie <airlied@redhat.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20230920123612.16914-5-pstanner@redhat.com
+Link: https://patchwork.freedesktop.org/patch/msgid/20230920123612.16914-6-pstanner@redhat.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/watch_queue.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/drm_lease.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/watch_queue.c b/kernel/watch_queue.c
-index d0b6b390ee423..778b4056700ff 100644
---- a/kernel/watch_queue.c
-+++ b/kernel/watch_queue.c
-@@ -331,7 +331,7 @@ long watch_queue_set_filter(struct pipe_inode_info *pipe,
- 	    filter.__reserved != 0)
- 		return -EINVAL;
- 
--	tf = memdup_user(_filter->filters, filter.nr_filters * sizeof(*tf));
-+	tf = memdup_array_user(_filter->filters, filter.nr_filters, sizeof(*tf));
- 	if (IS_ERR(tf))
- 		return PTR_ERR(tf);
- 
+diff --git a/drivers/gpu/drm/drm_lease.c b/drivers/gpu/drm/drm_lease.c
+index 150fe15550680..94375c6a54256 100644
+--- a/drivers/gpu/drm/drm_lease.c
++++ b/drivers/gpu/drm/drm_lease.c
+@@ -510,8 +510,8 @@ int drm_mode_create_lease_ioctl(struct drm_device *dev,
+ 	/* Handle leased objects, if any */
+ 	idr_init(&leases);
+ 	if (object_count != 0) {
+-		object_ids = memdup_user(u64_to_user_ptr(cl->object_ids),
+-					 array_size(object_count, sizeof(__u32)));
++		object_ids = memdup_array_user(u64_to_user_ptr(cl->object_ids),
++					       object_count, sizeof(__u32));
+ 		if (IS_ERR(object_ids)) {
+ 			ret = PTR_ERR(object_ids);
+ 			idr_destroy(&leases);
 -- 
 2.42.0
 
