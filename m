@@ -2,70 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF9CF7E3255
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 01:44:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BC577E3259
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 01:45:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233080AbjKGAoU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 19:44:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60494 "EHLO
+        id S233324AbjKGApE convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 6 Nov 2023 19:45:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229517AbjKGAoT (ORCPT
+        with ESMTP id S229517AbjKGApC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 19:44:19 -0500
-Received: from out-173.mta1.migadu.com (out-173.mta1.migadu.com [IPv6:2001:41d0:203:375::ad])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E4C5D57
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 16:44:16 -0800 (PST)
-Date:   Mon, 6 Nov 2023 19:44:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1699317854;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=6D02KJAK52DJD0acvzBTsRcEYJsd3WdwHRXSAUb1Ym8=;
-        b=aDCHFWOvyuvLEYy0M1h2gFhgUVjw8fNcDT5vEcxZ540cnaqcF6h058VvBTyjz/dhTJGhcO
-        jiSgTl++Pknyoeg1jlRD0sKGi7vE8rxgMBL093Vs1F5kPA+oamyzWbQjvFApGk29EGAWph
-        +u4FFBwMl/gByt8WmoZNrZp4dXn82E0=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Kent Overstreet <kent.overstreet@linux.dev>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Brian Foster <bfoster@redhat.com>, linux-bcachefs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH][next] bcachefs: Fix multiple -Warray-bounds warnings
-Message-ID: <20231107004412.kase3fiwyr5p37gd@moria.home.lan>
-References: <ZUldRv35EXKHAt3L@work>
+        Mon, 6 Nov 2023 19:45:02 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA12E9C
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 16:44:59 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EDC22C433C7;
+        Tue,  7 Nov 2023 00:44:57 +0000 (UTC)
+Date:   Mon, 6 Nov 2023 19:45:00 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     =?UTF-8?B?xYF1a2Fzeg==?= Bartosik <lb@semihalf.com>
+Cc:     Jason Baron <jbaron@akamai.com>, Jim Cromie <jim.cromie@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Guenter Roeck <groeck@google.com>,
+        Yaniv Tzoreff <yanivt@google.com>,
+        Benson Leung <bleung@google.com>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        Pekka Paalanen <ppaalanen@gmail.com>,
+        Sean Paul <seanpaul@chromium.org>,
+        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org,
+        upstream@semihalf.com
+Subject: Re: [PATCH v1 06/12] trace: use TP_printk_no_nl in
+ dyndbg:prdbg,devdbg
+Message-ID: <20231106194500.123a517e@gandalf.local.home>
+In-Reply-To: <20231103131011.1316396-7-lb@semihalf.com>
+References: <20231103131011.1316396-1-lb@semihalf.com>
+        <20231103131011.1316396-7-lb@semihalf.com>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZUldRv35EXKHAt3L@work>
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 06, 2023 at 03:40:22PM -0600, Gustavo A. R. Silva wrote:
-> Transform zero-length array `entries` into a proper flexible-array
-> member in `struct journal_seq_blacklist_table`; and fix the following
-> -Warray-bounds warnings:
-> 
-> fs/bcachefs/journal_seq_blacklist.c:148:26: warning: array subscript idx is outside array bounds of 'struct journal_seq_blacklist_table_entry[0]' [-Warray-bounds=]
-> fs/bcachefs/journal_seq_blacklist.c:150:30: warning: array subscript idx is outside array bounds of 'struct journal_seq_blacklist_table_entry[0]' [-Warray-bounds=]
-> fs/bcachefs/journal_seq_blacklist.c:154:27: warning: array subscript idx is outside array bounds of 'struct journal_seq_blacklist_table_entry[0]' [-Warray-bounds=]
-> fs/bcachefs/journal_seq_blacklist.c:176:27: warning: array subscript i is outside array bounds of 'struct journal_seq_blacklist_table_entry[0]' [-Warray-bounds=]
-> fs/bcachefs/journal_seq_blacklist.c:177:27: warning: array subscript i is outside array bounds of 'struct journal_seq_blacklist_table_entry[0]' [-Warray-bounds=]
-> fs/bcachefs/journal_seq_blacklist.c:297:34: warning: array subscript i is outside array bounds of 'struct journal_seq_blacklist_table_entry[0]' [-Warray-bounds=]
-> fs/bcachefs/journal_seq_blacklist.c:298:34: warning: array subscript i is outside array bounds of 'struct journal_seq_blacklist_table_entry[0]' [-Warray-bounds=]
-> fs/bcachefs/journal_seq_blacklist.c:300:31: warning: array subscript i is outside array bounds of 'struct journal_seq_blacklist_table_entry[0]' [-Warray-bounds=]
-> 
-> This results in no differences in binary output.
-> 
-> This helps with the ongoing efforts to globally enable -Warray-bounds.
-> 
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+On Fri,  3 Nov 2023 14:10:05 +0100
+Łukasz Bartosik <lb@semihalf.com> wrote:
 
-Thanks, applied
+> index ccc5bcb070f9..91dcdbe059c0 100644
+> --- a/include/trace/events/dyndbg.h
+> +++ b/include/trace/events/dyndbg.h
+> @@ -20,20 +20,10 @@ TRACE_EVENT(prdbg,
+>  
+>  	    TP_fast_assign(
+>  			__entry->desc = desc;
+> -			/*
+> -			 * Each trace entry is printed in a new line.
+> -			 * If the msg finishes with '\n', cut it off
+> -			 * to avoid blank lines in the trace.
+> -			 */
+> -			if (len > 0 && (text[len - 1] == '\n'))
+> -				len -= 1;
+> -
+>  			memcpy(__get_str(msg), text, len);
+> -			__get_str(msg)[len] = 0;
+>  		    ),
+>  
+> -	    TP_printk("%s.%s %s", __entry->desc->modname,
+> -		      __entry->desc->function, __get_str(msg))
+> +	    TP_printk_no_nl("%s", __get_str(msg))
+>  );
+>  
+
+Instead of adding the TP_printk_no_nl() (Which I still do not like), we
+could add a:
+
+	__get_str_strip_nl(msg)
+
+That will do the above loop. Which will move the processing to read side
+(slow path).
+
+And then we could update libtraceevent to handle that too.
+
+-- Steve
