@@ -2,42 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 833387E3CA1
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 13:18:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69D327E3CA4
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 13:18:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234492AbjKGMSZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 07:18:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40980 "EHLO
+        id S234083AbjKGMS1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 07:18:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232731AbjKGMRl (ORCPT
+        with ESMTP id S234633AbjKGMRm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 07:17:41 -0500
+        Tue, 7 Nov 2023 07:17:42 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDE2930E3;
-        Tue,  7 Nov 2023 04:12:33 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6E8D5C433C9;
-        Tue,  7 Nov 2023 12:12:32 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E11AB26A9;
+        Tue,  7 Nov 2023 04:12:35 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2DFE4C43395;
+        Tue,  7 Nov 2023 12:12:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699359153;
-        bh=t06F4182s1CQIPKmO/VTxFxifi+kM3GFNCKICCAeqLo=;
-        h=From:To:Cc:Subject:Date:From;
-        b=usM/ATfmI6xBCUJMMc2aMnvzB48VVwzAAqA6VNgkAAqGVGSgJw59HnDgoU0pk0mV7
-         l0XHYGpCGl/M8RNsknLEdo/3Sdpbus4ZmKoiZGHIpdIO/t8tyHzXJdeONI6ZTd3QL6
-         7hpaNAmADtz5G5mW548IF23PyyJGlv7ml/u2UZw0ZSjOD/gwyp7AYOSHoB6CSngs0O
-         lIXD3LOfyZTui+5poA/O+Kh6/MeLXgYjFJHt3bx6k4Jpmz3IsnolIAySMioVzApHDC
-         zrV+ZiVbE5raf3RDhFIJbEOp2ewYbNJ9dmPmMl8uOe010DryM9PIawy29a9SZaPcQN
-         oKWp0iqkg1mEg==
+        s=k20201202; t=1699359155;
+        bh=cYmZsL8f0x/yljOBP/ipObqQSXEDxf1vk1TY8G4z8PU=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=KZ9ET1w1FG3szWTOS6kkvkAMYVguI5GW50SsNyZN4msWZxsLmUeiC+V1++kZwBDwC
+         S2Kzm22pLOrU2oee80jUzeMpGMMoN40rIjH5fck/XTSH75y1GDActSSxKUFQIRwPxa
+         bIeNW9gye96ZDoJ3zO6nP+7a1ZOd5g2M8b4igqBiUUnc/O2xvyEbEBNuXCp+CMuXrA
+         Ych/nA5LK8pkRaj0zkeyKzhIip7PSD9ZuPCVmbJW3D8K9mfqPSYxaDLH3e2I3taxpc
+         Z4+uG0A+/b/ZDCn8p1myVh93CIS5Fu5pL8CY2BAk7OEaos9l8zA1Z47RHVu2IeCcK/
+         dnV9IgXiUaZxA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Dmitry Antipov <dmantipov@yandex.ru>,
+Cc:     Ping-Ke Shih <pkshih@realtek.com>,
+        Zong-Zhe Yang <kevin_yang@realtek.com>,
         Johannes Berg <johannes.berg@intel.com>,
-        Sasha Levin <sashal@kernel.org>, kvalo@kernel.org,
-        nathan@kernel.org, ndesaulniers@google.com,
-        linux-wireless@vger.kernel.org, llvm@lists.linux.dev
-Subject: [PATCH AUTOSEL 5.10 01/11] wifi: mac80211_hwsim: fix clang-specific fortify warning
-Date:   Tue,  7 Nov 2023 07:12:16 -0500
-Message-ID: <20231107121230.3758617-1-sashal@kernel.org>
+        Sasha Levin <sashal@kernel.org>, johannes@sipsolutions.net,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.10 02/11] wifi: mac80211: don't return unset power in ieee80211_get_tx_power()
+Date:   Tue,  7 Nov 2023 07:12:17 -0500
+Message-ID: <20231107121230.3758617-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20231107121230.3758617-1-sashal@kernel.org>
+References: <20231107121230.3758617-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -53,60 +57,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dmitry Antipov <dmantipov@yandex.ru>
+From: Ping-Ke Shih <pkshih@realtek.com>
 
-[ Upstream commit cbaccdc42483c65016f1bae89128c08dc17cfb2a ]
+[ Upstream commit e160ab85166e77347d0cbe5149045cb25e83937f ]
 
-When compiling with clang 16.0.6 and CONFIG_FORTIFY_SOURCE=y, I've
-noticed the following (somewhat confusing due to absence of an actual
-source code location):
+We can get a UBSAN warning if ieee80211_get_tx_power() returns the
+INT_MIN value mac80211 internally uses for "unset power level".
 
-In file included from drivers/net/wireless/virtual/mac80211_hwsim.c:18:
-In file included from ./include/linux/slab.h:16:
-In file included from ./include/linux/gfp.h:7:
-In file included from ./include/linux/mmzone.h:8:
-In file included from ./include/linux/spinlock.h:56:
-In file included from ./include/linux/preempt.h:79:
-In file included from ./arch/x86/include/asm/preempt.h:9:
-In file included from ./include/linux/thread_info.h:60:
-In file included from ./arch/x86/include/asm/thread_info.h:53:
-In file included from ./arch/x86/include/asm/cpufeature.h:5:
-In file included from ./arch/x86/include/asm/processor.h:23:
-In file included from ./arch/x86/include/asm/msr.h:11:
-In file included from ./arch/x86/include/asm/cpumask.h:5:
-In file included from ./include/linux/cpumask.h:12:
-In file included from ./include/linux/bitmap.h:11:
-In file included from ./include/linux/string.h:254:
-./include/linux/fortify-string.h:592:4: warning: call to '__read_overflow2_field'
-declared with 'warning' attribute: detected read beyond size of field (2nd
-parameter); maybe use struct_group()? [-Wattribute-warning]
-                        __read_overflow2_field(q_size_field, size);
+ UBSAN: signed-integer-overflow in net/wireless/nl80211.c:3816:5
+ -2147483648 * 100 cannot be represented in type 'int'
+ CPU: 0 PID: 20433 Comm: insmod Tainted: G        WC OE
+ Call Trace:
+  dump_stack+0x74/0x92
+  ubsan_epilogue+0x9/0x50
+  handle_overflow+0x8d/0xd0
+  __ubsan_handle_mul_overflow+0xe/0x10
+  nl80211_send_iface+0x688/0x6b0 [cfg80211]
+  [...]
+  cfg80211_register_wdev+0x78/0xb0 [cfg80211]
+  cfg80211_netdev_notifier_call+0x200/0x620 [cfg80211]
+  [...]
+  ieee80211_if_add+0x60e/0x8f0 [mac80211]
+  ieee80211_register_hw+0xda5/0x1170 [mac80211]
 
-The compiler actually complains on 'mac80211_hwsim_get_et_strings()' where
-fortification logic inteprets call to 'memcpy()' as an attempt to copy the
-whole 'mac80211_hwsim_gstrings_stats' array from its first member and so
-issues an overread warning. This warning may be silenced by passing
-an address of the whole array and not the first member to 'memcpy()'.
+In this case, simply return an error instead, to indicate
+that no data is available.
 
-Signed-off-by: Dmitry Antipov <dmantipov@yandex.ru>
-Link: https://lore.kernel.org/r/20230829094140.234636-1-dmantipov@yandex.ru
+Cc: Zong-Zhe Yang <kevin_yang@realtek.com>
+Signed-off-by: Ping-Ke Shih <pkshih@realtek.com>
+Link: https://lore.kernel.org/r/20230203023636.4418-1-pkshih@realtek.com
 Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/mac80211_hwsim.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/mac80211/cfg.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/net/wireless/mac80211_hwsim.c b/drivers/net/wireless/mac80211_hwsim.c
-index 0d41f172a1dc2..037358606a51a 100644
---- a/drivers/net/wireless/mac80211_hwsim.c
-+++ b/drivers/net/wireless/mac80211_hwsim.c
-@@ -2543,7 +2543,7 @@ static void mac80211_hwsim_get_et_strings(struct ieee80211_hw *hw,
- 					  u32 sset, u8 *data)
- {
- 	if (sset == ETH_SS_STATS)
--		memcpy(data, *mac80211_hwsim_gstrings_stats,
-+		memcpy(data, mac80211_hwsim_gstrings_stats,
- 		       sizeof(mac80211_hwsim_gstrings_stats));
+diff --git a/net/mac80211/cfg.c b/net/mac80211/cfg.c
+index c6a7f1c99abc5..45bb6f2755987 100644
+--- a/net/mac80211/cfg.c
++++ b/net/mac80211/cfg.c
+@@ -2726,6 +2726,10 @@ static int ieee80211_get_tx_power(struct wiphy *wiphy,
+ 	else
+ 		*dbm = sdata->vif.bss_conf.txpower;
+ 
++	/* INT_MIN indicates no power level was set yet */
++	if (*dbm == INT_MIN)
++		return -EINVAL;
++
+ 	return 0;
  }
  
 -- 
