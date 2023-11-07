@@ -2,46 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC75C7E3DEA
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 13:31:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 008E67E3DF1
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 13:32:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234688AbjKGMbs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 07:31:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35592 "EHLO
+        id S234866AbjKGMcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 07:32:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234845AbjKGMbM (ORCPT
+        with ESMTP id S234598AbjKGMb2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 07:31:12 -0500
+        Tue, 7 Nov 2023 07:31:28 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93D023016D;
-        Tue,  7 Nov 2023 04:20:34 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F92CC433CA;
-        Tue,  7 Nov 2023 12:20:32 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F38983017B;
+        Tue,  7 Nov 2023 04:20:35 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94CAEC433C8;
+        Tue,  7 Nov 2023 12:20:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699359634;
-        bh=8qPmg3p7TrEeuRpjbr3QOOhYNjKYFvwrW1zji8RBe1I=;
+        s=k20201202; t=1699359635;
+        bh=SVFAmaxVAKpmkmwbZ/KzKgNcJKhakvwFy9xtqRoAh1w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gWBPRaz9oQ85P7cRiHrVVlCMQHwifKIQoLXpV/GgghSffWbqOvOaiT5gyZ9FNf+2Y
-         CWjOBKShBbHAOWGxFALiLCF05A45dhddXt2fVQI/VO8/XWF8fOiNFUoWpYtwBMc+75
-         Dlq9B+25tYSyhY1daot+AoslvDcthXWd3lUJejoxz6LtupjVmmD/CyJ+J3bVDyxZ9D
-         fE4/8qawsMvLprUt2wpPtjvwWPvH8SGPTS1bzYe91RstBtIkAXuT1vxMSfyAJLHaJh
-         GYzDoaGDpuUfTDgEGKi1V+w2etb65VUZOUDXhBk5dwlc1xURLP7ugdM8jVvAjDZQdL
-         mHdLYk5p4x9bg==
+        b=RujQmPNO1/nyo8GxE1flxy9hUZfXJ90Dw8LixGYp6EBjtDa8TjAk9zfADUtaMsnll
+         q1H1Sz4e1f8Itgbt5ABYdpIs3bpvsypGUxWHtDxa7fxm3S+YJmQoLEGMh/TAQRgYx1
+         2B46HrS4lAlikjfdSkUDY1Wn+YmPsRTQ0IlSo2N116RBxlO0rAulVA57JdfTFYlIaU
+         TyPsLPGYmHaRKpGUuFX1qSt7ZxBEtyRTD3jnPpu5k+Y0IjNVbOap4Y6MTQtvsF/RBa
+         O9hCw3vGvhPjYRJU6l10X+D2lQXzsi+BdvAeDlfwExhzJgk+Y0SffCGkIJj2WGvf2O
+         KjkwulcfHZRVA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     "Stanley.Yang" <Stanley.Yang@amd.com>,
-        Tao Zhou <tao.zhou1@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Sasha Levin <sashal@kernel.org>, christian.koenig@amd.com,
-        Xinhui.Pan@amd.com, airlied@gmail.com, daniel@ffwll.ch,
-        mario.limonciello@amd.com, Hawking.Zhang@amd.com,
-        lijo.lazar@amd.com, candice.li@amd.com, le.ma@amd.com,
-        shashank.sharma@amd.com, andrealmeid@igalia.com,
-        srinivasan.shanmugam@amd.com, amd-gfx@lists.freedesktop.org,
+Cc:     Ma Ke <make_ruc2021@163.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Sasha Levin <sashal@kernel.org>, linus.walleij@linaro.org,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
         dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 6.6 23/40] drm/amdgpu: Fix potential null pointer derefernce
-Date:   Tue,  7 Nov 2023 07:16:25 -0500
-Message-ID: <20231107121837.3759358-23-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.6 24/40] drm/panel: fix a possible null pointer dereference
+Date:   Tue,  7 Nov 2023 07:16:26 -0500
+Message-ID: <20231107121837.3759358-24-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231107121837.3759358-1-sashal@kernel.org>
 References: <20231107121837.3759358-1-sashal@kernel.org>
@@ -60,35 +56,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Stanley.Yang" <Stanley.Yang@amd.com>
+From: Ma Ke <make_ruc2021@163.com>
 
-[ Upstream commit 80285ae1ec8717b597b20de38866c29d84d321a1 ]
+[ Upstream commit 924e5814d1f84e6fa5cb19c6eceb69f066225229 ]
 
-The amdgpu_ras_get_context may return NULL if device
-not support ras feature, so add check before using.
+In versatile_panel_get_modes(), the return value of drm_mode_duplicate()
+is assigned to mode, which will lead to a NULL pointer dereference
+on failure of drm_mode_duplicate(). Add a check to avoid npd.
 
-Signed-off-by: Stanley.Yang <Stanley.Yang@amd.com>
-Reviewed-by: Tao Zhou <tao.zhou1@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Ma Ke <make_ruc2021@163.com>
+Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
+Link: https://lore.kernel.org/r/20231007033105.3997998-1-make_ruc2021@163.com
+Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+Link: https://patchwork.freedesktop.org/patch/msgid/20231007033105.3997998-1-make_ruc2021@163.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_device.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/panel/panel-arm-versatile.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
-index 2b8356699f235..69f72bca229c9 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
-@@ -5183,7 +5183,8 @@ int amdgpu_device_gpu_recover(struct amdgpu_device *adev,
- 	 * Flush RAM to disk so that after reboot
- 	 * the user can read log and see why the system rebooted.
- 	 */
--	if (need_emergency_restart && amdgpu_ras_get_context(adev)->reboot) {
-+	if (need_emergency_restart && amdgpu_ras_get_context(adev) &&
-+		amdgpu_ras_get_context(adev)->reboot) {
- 		DRM_WARN("Emergency reboot.");
+diff --git a/drivers/gpu/drm/panel/panel-arm-versatile.c b/drivers/gpu/drm/panel/panel-arm-versatile.c
+index abb0788843c60..503ecea72c5ea 100644
+--- a/drivers/gpu/drm/panel/panel-arm-versatile.c
++++ b/drivers/gpu/drm/panel/panel-arm-versatile.c
+@@ -267,6 +267,8 @@ static int versatile_panel_get_modes(struct drm_panel *panel,
+ 	connector->display_info.bus_flags = vpanel->panel_type->bus_flags;
  
- 		ksys_sync_helper();
+ 	mode = drm_mode_duplicate(connector->dev, &vpanel->panel_type->mode);
++	if (!mode)
++		return -ENOMEM;
+ 	drm_mode_set_name(mode);
+ 	mode->type = DRM_MODE_TYPE_DRIVER | DRM_MODE_TYPE_PREFERRED;
+ 
 -- 
 2.42.0
 
