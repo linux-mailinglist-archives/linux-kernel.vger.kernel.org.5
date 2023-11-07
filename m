@@ -2,48 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 185B27E3E49
+	by mail.lfdr.de (Postfix) with ESMTP id E09AF7E3E4A
 	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 13:36:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234709AbjKGMgO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 07:36:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53178 "EHLO
+        id S234740AbjKGMgS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 07:36:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234598AbjKGMfk (ORCPT
+        with ESMTP id S235084AbjKGMfl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 07:35:40 -0500
+        Tue, 7 Nov 2023 07:35:41 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ED9A386E;
-        Tue,  7 Nov 2023 04:25:01 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9720AC433C7;
-        Tue,  7 Nov 2023 12:24:59 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 870ED4229;
+        Tue,  7 Nov 2023 04:25:02 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5619CC433C8;
+        Tue,  7 Nov 2023 12:25:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699359900;
-        bh=1OcoPziCnbrGV4/qJy8m8eXtgw1Fw8ZAvVQ3Tqrsmug=;
+        s=k20201202; t=1699359902;
+        bh=mRQkG+dfopQNvnmWgZT+CDWwvaNhCd4CsE5PudPi6lo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=E23bv9pnbjOkkLfJ5vjqZKje73blIZYIaVJ4nUI3zUloo/1/C/mWnDez6Ea+E7wD3
-         rrLdcabZAk0vsWbUnsFOdbyHXlFXGxZpFcA9pkKa9Lc6TO+t1ggViT+76+AtO+/ZTV
-         Ko7l1zrUW4o60e/4I4x5vUvRWVM6+dKEZYQy78Z3QuPBcaqyGb9PHL+D1WAC+6tbws
-         5xyccPLnd+UB9feX7ZammucxYPnqtSMGselheWhpAzRBtPTTxHuPsTKrR5J3TNIOhP
-         rVSPu4lzOD61dOTiCkEuSPSkNtRuCC3goRLzl50FoNZRYWdEqa1wYNejt7c9/Ce++R
-         YRgOdRtYdsEEw==
+        b=VKTcGyQyNi0NVzJ9bMPRdv28lS48DLHaXSQbrS9AIr4s5udNe/oCa/WHvunaz0tAp
+         JnOVGuEmIfqtFNC7l1jKL0wQxezzloC3JE9rPzP/NFIlyrmvaiQ1h+3L9a+6si4tPq
+         XJA1dXTX6dED4S8EWwV+Bp+MpIlN2HnfCz5U7JCjOWteGxYqYbTrbxAoPfYmxKDI/7
+         5unfJ8kiU72e4ZLD/5mqNKGhJwwu2yOJ6sRyhVoU8MmWXzVNbioA5cah4I6vxDzFkJ
+         0oOvyIbkLhZcsRv6YjLq85pHpZdtRcVWECSTOIkTiyQj2tPeZK1G1ueeoIsQlW7WKg
+         o8EBS6qaMxNhQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
-        <ville.syrjala@linux.intel.com>,
-        Jani Nikula <jani.nikula@intel.com>,
-        Sasha Levin <sashal@kernel.org>,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 6.5 07/37] drm/edid: Fixup h/vsync_end instead of h/vtotal
-Date:   Tue,  7 Nov 2023 07:21:18 -0500
-Message-ID: <20231107122407.3760584-7-sashal@kernel.org>
+Cc:     Yu Kuai <yukuai3@huawei.com>, Song Liu <song@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, linux-raid@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.5 08/37] md: don't rely on 'mddev->pers' to be set in mddev_suspend()
+Date:   Tue,  7 Nov 2023 07:21:19 -0500
+Message-ID: <20231107122407.3760584-8-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231107122407.3760584-1-sashal@kernel.org>
 References: <20231107122407.3760584-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.5.10
@@ -58,89 +52,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ville Syrjälä <ville.syrjala@linux.intel.com>
+From: Yu Kuai <yukuai3@huawei.com>
 
-[ Upstream commit 2682768bde745b10ae126a322cdcaf532cf88851 ]
+[ Upstream commit b721e7885eb242aa2459ee66bb42ceef1bcf0f0c ]
 
-There are some weird EDIDs floating around that have the sync
-pulse extending beyond the end of the blanking period.
+'active_io' used to be initialized while the array is running, and
+'mddev->pers' is set while the array is running as well. Hence caller
+must hold 'reconfig_mutex' and guarantee 'mddev->pers' is set before
+calling mddev_suspend().
 
-On the currently problemtic machine (HP Omni 120) EDID reports
-the following mode:
-"1600x900": 60 108000 1600 1780 1860 1800 900 910 913 1000 0x40 0x5
-which is then "corrected" to have htotal=1861 by the current drm_edid.c
-code.
+Now that 'active_io' is initialized when mddev is allocated, such
+restriction doesn't exist anymore. In the meantime, follow up patches
+will refactor mddev_suspend(), hence add checking for 'mddev->pers' to
+prevent null-ptr-deref.
 
-The fixup code was originally added in commit 7064fef56369 ("drm: work
-around EDIDs with bad htotal/vtotal values"). Googling around we end up in
-https://bugs.launchpad.net/ubuntu/hardy/+source/xserver-xorg-video-intel/+bug/297245
-where we find an EDID for a Dell Studio 15, which reports:
-(II) VESA(0): clock: 65.0 MHz   Image Size:  331 x 207 mm
-(II) VESA(0): h_active: 1280  h_sync: 1328  h_sync_end 1360 h_blank_end 1337 h_border: 0
-(II) VESA(0): v_active: 800  v_sync: 803  v_sync_end 809 v_blanking: 810 v_border: 0
-
-Note that if we use the hblank size (as opposed of the hsync_end)
-from the DTD to determine htotal we get exactly 60Hz refresh rate in
-both cases, whereas using hsync_end to determine htotal we get a
-slightly lower refresh rates. This makes me believe the using the
-hblank size is what was intended even in those cases.
-
-Also note that in case of the HP Onmi 120 the VBIOS boots with these:
-  crtc timings: 108000 1600 1780 1860 1800 900 910 913 1000, type: 0x40 flags: 0x5
-ie. it just blindly stuffs the bogus hsync_end and htotal from the DTD
-into the transcoder timing registers, and the display works. I believe
-the (at least more modern) hardware will automagically terminate the hsync
-pulse when the timing generator reaches htotal, which again points that we
-should use the hblank size to determine htotal. Unfortunatley the old bug
-reports for the Dell machines are extremely lacking in useful details so
-we have no idea what kind of timings the VBIOS programmed into the
-hardware :(
-
-Let's just flip this quirk around and reduce the length of the sync
-pulse instead of extending the blanking period. This at least seems
-to be the correct thing to do on more modern hardware. And if any
-issues crop up on older hardware we need to debug them properly.
-
-v2: Add debug message breadcrumbs (Jani)
-
-Reviewed-by: Jani Nikula <jani.nikula@intel.com>
-Closes: https://gitlab.freedesktop.org/drm/intel/-/issues/8895
-Signed-off-by: Ville Syrjälä <ville.syrjala@linux.intel.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20230920211934.14920-1-ville.syrjala@linux.intel.com
+Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+Signed-off-by: Song Liu <song@kernel.org>
+Link: https://lore.kernel.org/r/20230825030956.1527023-4-yukuai1@huaweicloud.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/drm_edid.c | 18 +++++++++++++-----
- 1 file changed, 13 insertions(+), 5 deletions(-)
+ drivers/md/md.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/drm_edid.c b/drivers/gpu/drm/drm_edid.c
-index 69d855123d3e3..f1ceb7d08519e 100644
---- a/drivers/gpu/drm/drm_edid.c
-+++ b/drivers/gpu/drm/drm_edid.c
-@@ -3499,11 +3499,19 @@ static struct drm_display_mode *drm_mode_detailed(struct drm_connector *connecto
- 	mode->vsync_end = mode->vsync_start + vsync_pulse_width;
- 	mode->vtotal = mode->vdisplay + vblank;
+diff --git a/drivers/md/md.c b/drivers/md/md.c
+index 78d51dddf3a00..34b7196d9634c 100644
+--- a/drivers/md/md.c
++++ b/drivers/md/md.c
+@@ -449,7 +449,7 @@ void mddev_suspend(struct mddev *mddev)
+ 	set_bit(MD_ALLOW_SB_UPDATE, &mddev->flags);
+ 	percpu_ref_kill(&mddev->active_io);
  
--	/* Some EDIDs have bogus h/vtotal values */
--	if (mode->hsync_end > mode->htotal)
--		mode->htotal = mode->hsync_end + 1;
--	if (mode->vsync_end > mode->vtotal)
--		mode->vtotal = mode->vsync_end + 1;
-+	/* Some EDIDs have bogus h/vsync_end values */
-+	if (mode->hsync_end > mode->htotal) {
-+		drm_dbg_kms(dev, "[CONNECTOR:%d:%s] reducing hsync_end %d->%d\n",
-+			    connector->base.id, connector->name,
-+			    mode->hsync_end, mode->htotal);
-+		mode->hsync_end = mode->htotal;
-+	}
-+	if (mode->vsync_end > mode->vtotal) {
-+		drm_dbg_kms(dev, "[CONNECTOR:%d:%s] reducing vsync_end %d->%d\n",
-+			    connector->base.id, connector->name,
-+			    mode->vsync_end, mode->vtotal);
-+		mode->vsync_end = mode->vtotal;
-+	}
+-	if (mddev->pers->prepare_suspend)
++	if (mddev->pers && mddev->pers->prepare_suspend)
+ 		mddev->pers->prepare_suspend(mddev);
  
- 	drm_mode_do_interlace_quirk(mode, pt);
- 
+ 	wait_event(mddev->sb_wait, percpu_ref_is_zero(&mddev->active_io));
 -- 
 2.42.0
 
