@@ -2,171 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DDCC27E3323
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 03:37:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C419B7E332E
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 03:48:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233295AbjKGChc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 21:37:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47688 "EHLO
+        id S233312AbjKGCrd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 21:47:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229646AbjKGChb (ORCPT
+        with ESMTP id S229646AbjKGCrb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 21:37:31 -0500
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B1C7129
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 18:37:27 -0800 (PST)
-Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-2c5056059e0so74173551fa.3
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 18:37:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=arista.com; s=google; t=1699324645; x=1699929445; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=G2ag1vqlZRaktWdg6szgML9cajZnEi6ZYK3MTjrbTdg=;
-        b=JlfLPzha0yJfaAZPfxhTA4qtghQ2mVNhXKnfKH4oLwhrZ5J4nCBj85RbmFTYcrIk3D
-         PSV89sEKZa3FL/pYfI2dG/2W47xLvaMSX0JqrT9PelxlH9gmfDMGl/lJ8sEpe5ef+DiJ
-         HSVeCntlxRdN3GyC3R/7tfvtcy6RNZws7bp3m/rO4ls/SdOLBINJMRT6ZyQZSW1c+UbT
-         JNjFHuaXNCLG8wHl1vM2sWEW9szBELg1PwHJx4zr8HtBYPShh1kg+F8CuGHHgGunZNQC
-         ZqpeAK+HFahN7OInPsPbCiA9PCYsW9RPZRppA0qYAT4pl8U8AZ+6mViZuBOfDLAyCKk6
-         S8qA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699324645; x=1699929445;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=G2ag1vqlZRaktWdg6szgML9cajZnEi6ZYK3MTjrbTdg=;
-        b=caeArhQ4AM8zxa01kVv16ZFBF5adVWVcr1M14zWDN/mzpqh/tMPeuWots89g5nLKfZ
-         tvaFuHO7h/8S+9mkairxzQp0fTrZy0QDDzf/DCatq2g3kO+bvtQ4GLravFNFr3en6eeq
-         9svtoOI+QFm6J30kXLEJLYlqNjW56RMC2GT2rooWY2bLH/SJUiywqKL6OpYsdWV0UFQN
-         C2IjgZcKZQ78QYqf4tOLAKosUG6FVmxzGVYuj1KtH3kh5W2z6/F7Ocx9FXNxu5JE/z1r
-         vpNp1SCduiZRQexLmRZemCxfqLGUS1ZsOr/eAAiNiJc9HPncL/zwH157eDOKmFLENKem
-         Bw6Q==
-X-Gm-Message-State: AOJu0Yya4a9pF9pL9chF/or+dD6ASaXnzqN/tFfz0/edArPGAfnCeaP5
-        po2EeNPwVdd3dEtIPPnQ9/870g==
-X-Google-Smtp-Source: AGHT+IHW1r1GDscl/3LTXeATPrP+sGKKFYl+mpOOf5TrjPtTC+ZJxF1cjKDEqt+QizXIr6dGf0sv7g==
-X-Received: by 2002:a2e:b0dc:0:b0:2c5:174b:9a53 with SMTP id g28-20020a2eb0dc000000b002c5174b9a53mr23870747ljl.26.1699324645325;
-        Mon, 06 Nov 2023 18:37:25 -0800 (PST)
-Received: from Mindolluin.ire.aristanetworks.com ([217.173.96.166])
-        by smtp.gmail.com with ESMTPSA id s7-20020a05600c45c700b003fc16ee2864sm13949594wmo.48.2023.11.06.18.37.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Nov 2023 18:37:24 -0800 (PST)
-From:   Dmitry Safonov <dima@arista.com>
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     linux-kernel@vger.kernel.org, Dmitry Safonov <dima@arista.com>,
-        David Ahern <dsahern@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Eric Biggers <ebiggers@google.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Francesco Ruggeri <fruggeri05@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Salam Noureddine <noureddine@arista.com>,
-        netdev@vger.kernel.org, linux-crypto@vger.kernel.org
-Subject: [PATCH] crypto: ahash - Set using_shash for cloned ahash wrapper over shash
-Date:   Tue,  7 Nov 2023 02:37:17 +0000
-Message-ID: <20231107023717.820093-1-dima@arista.com>
-X-Mailer: git-send-email 2.42.0
-MIME-Version: 1.0
+        Mon, 6 Nov 2023 21:47:31 -0500
+Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01on2115.outbound.protection.outlook.com [40.107.215.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64D8FFA;
+        Mon,  6 Nov 2023 18:47:28 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bRZIrnG43hmBpxffTtB2oBP4CyrKcvPIuLS2TdfUfpVBBvCMU8vJLlExkeE+JloWWN3q1WO17LVb7YulwVOKM4/sgNazH0TF0L0Br6BbYuAB8MSoGWZaVrBSXeehybtKdzEuPlwHRacS8EzBLKXZsw3CtZ6RLxy9lYX+mxhxoZbMXA7RSzPrJYvSTT57gviXr49bsG84iFP4GUND3/gdkvWUKXXDSM9tiB//qhpeZ600iYISqT/1w6wGaTvL/8LUwFC2BGTh8h0EAi1irTzCYUObW19emRIN6DNAYZN1L9dmIE3x3p7t26QgCktfEzEK2okxaHA5zRrGBUJRMEb46Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=qDRL7rHqrBv75f0UrjX5kr+iJG9vqSz1EcWBWq/avzY=;
+ b=Nh8+iZZf20K3VnagGAYvyOv6yODl2YMOdYAMoi4xtjavLUefm7aOzISzSMRz34KEw3urjA6SqmsODZKDhFTyeqkCVwlEYPqoRWKiE9aOqEYEMbA02B/mSpLN/ykGrfiR3m5iKXPikrWgIm9jMcW4EI+uK46ae8JLonC5QPKVRv7tg8NTcJDoOv22dyD7g59C2bd2le3Ez9dcjDUIycHNB+XY7T/CTw0ODH5JD+6BRA2caboS7OUCifaWeFapiRYhLD7Ggy+Yfx/Rp9BCRiUSbjcZ4p7oJyRtNqdXidxZ492PPRThd20p9f89aWki1Yy6ZUse5pJ8HCPYvcOaDAYpqg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qDRL7rHqrBv75f0UrjX5kr+iJG9vqSz1EcWBWq/avzY=;
+ b=g5RSiNPapygj7S23dZDLjbevqtkO54NzkjXjnHweL9Hw/KLmyKK+6es4aoBwYx1HThCNXy5y3xGya+PZOgo1DWKvwEjwnTczJsltjz18JvPs6NmlTyPMsCNJ2F+QjgTRXodlH2ZmacU2bHsVJ+W1IgNzvcX81uY2fNuzfcNDqmYXm2rOgXWuv/ntD1EoJ8Bp0Vn5vX5ZcRdMpSMoc0dd89A1fiODzWu6gfnZKQWyxV2ReIxXxj4IaAu8q8flPIVLolRE75xkIOO1M6m10Ixu9n7UbVnzV5Dnh2/J8LQS00CUNfFcEJtAsFscWllA/L6XpkHQHpOteOLwKU0hBaJFSg==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=vivo.com;
+Received: from SG2PR06MB5288.apcprd06.prod.outlook.com (2603:1096:4:1dc::9) by
+ SI2PR06MB5242.apcprd06.prod.outlook.com (2603:1096:4:1e2::14) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6954.25; Tue, 7 Nov 2023 02:47:22 +0000
+Received: from SG2PR06MB5288.apcprd06.prod.outlook.com
+ ([fe80::f3c:e509:94c2:122d]) by SG2PR06MB5288.apcprd06.prod.outlook.com
+ ([fe80::f3c:e509:94c2:122d%6]) with mapi id 15.20.6954.027; Tue, 7 Nov 2023
+ 02:47:22 +0000
+From:   Minjie Du <duminjie@vivo.com>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-fsdevel@vger.kernel.org (open list:PAGE CACHE),
+        linux-mm@kvack.org (open list:MEMORY MANAGEMENT),
+        linux-kernel@vger.kernel.org (open list)
+Cc:     opensource.kernel@vivo.com, Minjie Du <duminjie@vivo.com>
+Subject: [PATCH v1] mm/filemap: increase usage of folio_next_index() helper
+Date:   Tue,  7 Nov 2023 10:46:34 +0800
+Message-Id: <20231107024635.4512-1-duminjie@vivo.com>
+X-Mailer: git-send-email 2.39.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-ClientProxiedBy: TYCPR01CA0094.jpnprd01.prod.outlook.com
+ (2603:1096:405:3::34) To SG2PR06MB5288.apcprd06.prod.outlook.com
+ (2603:1096:4:1dc::9)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SG2PR06MB5288:EE_|SI2PR06MB5242:EE_
+X-MS-Office365-Filtering-Correlation-Id: dd3d0404-a7c2-4bf5-25c6-08dbdf3bddda
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: r4OhjqJ5ZSF4zf5WcN4wTUlENlwvV+AwIHup9kYbPt34yVSf1xWEgp6NOtvnBDaB9LnlYKOwVMMDuG1TJVAYbsaafcSnWwiRIutH+8exvyw7kFX1HJjP90g5GEo/nbRpm+5pBNPWv0MUEJvFJJkGqMRbmRbmlh0fELT0So87z46KkyJPPI7VsGMbnhXI+kuEHFbrNZBXQyppkxIz+c54EcjPncML0LzGyEiot1SAVDXVVzE6TH7VBsjoI8DsOVZD9r1CD+2QZjZjeWlQ1oFCHGiSkQ2fB8oanwyxL0SD195gGkUkKxjp4sdiAYdWrS73AxQHMa3I0z4TQ7ZlEzEMQRQD7ITsa07BQBB6ob+CftV5h+u08aTrb5yu90OUmuBGkUfBWrauLWP7HTVVmQ6Fj4jGV0i8tBpr87cJ7yZD7QKJEWU02Qb98p4ZXe1AOCqM/B5+566/HKAB8fzDp262FVmsC7p99GDg1ZvGOwK9C8Gvf9PO67TsCCvwuHyeQDvTpm8jctcyikbFS9BVfdSnztQPxXAPun9Sbpk2Bat1DUW6rziFs4Ca1EFIsoUpgOO1ienI53nb2sb/iXygvHaB4hrrGJn0INT9v2ZfyGFP/GEnXGSLcJb/re3pdDD37Lk9
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SG2PR06MB5288.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(136003)(396003)(346002)(39860400002)(366004)(230922051799003)(451199024)(1800799009)(186009)(64100799003)(86362001)(66476007)(66556008)(2906002)(41300700001)(4744005)(5660300002)(38350700005)(110136005)(8676002)(8936002)(316002)(36756003)(4326008)(38100700002)(52116002)(6506007)(66946007)(26005)(1076003)(2616005)(6512007)(478600001)(6486002)(107886003)(83380400001)(6666004);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?qvxEnNjvatv8HzBsOU9JcZ+Uei9KQKn0IazAlQKrzPBj9H4FTe7fVXAVtgbj?=
+ =?us-ascii?Q?1PjOWJYfB1tKmME0cMoPfnUrhhsahqstND/2ni6jn8V835dLnYyqh0NKKsY+?=
+ =?us-ascii?Q?3wCSuS2I6lZSULBC8MDGAIR3+Winu4IZJm4C5wjZ+1AEm6403HgZZEkR0t/W?=
+ =?us-ascii?Q?qjgJbGohL2RRyb7t9kDbzLYMz9kq2EtuHH5FnmZTT8A3p3MF9lWxbNot8xEV?=
+ =?us-ascii?Q?r1tIChKc6NL0wzXNKRxPbz9wBJ13lvvOZl+Akb/57Sg1hRRh2PUL1Cvc0dRu?=
+ =?us-ascii?Q?rVHpPuz10CAfJ/fTLmIzWGWa6BD21DZVBDRyB2CU76YCKJqsA7DDbYZ9OIYJ?=
+ =?us-ascii?Q?FAKrpuFdBquCJgRxv0oxXHxy43oRE1M4IzxO9KDvNpyOaqrZHxJkUaN5GCFy?=
+ =?us-ascii?Q?Vpg4UCicDqymPeQfKRm9mXckoOc4IdYRIM+l21uuz2PaMK2U4DQLYEMFnH6o?=
+ =?us-ascii?Q?N566/6DKm/uX1PZYv7tVppY5ZLVr/Nl4mNlwrhBDeHhae++e9gAsGrKg/v39?=
+ =?us-ascii?Q?Hwe3pBSNhvMrBkuaWmxfaffTWb07fnzPlCzzYAVjFnhyIvI9I+c0LK29XJM+?=
+ =?us-ascii?Q?H2tomB+229uICSRay7JK9gSY5QBrB+DxJW1Wa0fuFq70JtH5Goo31qis6IT0?=
+ =?us-ascii?Q?Kmp0kWMTV0rKhArxejRqA52HRgphlZj1ywp7hjtNSgSVRUgqrI/fOQB9vaTH?=
+ =?us-ascii?Q?AQ978qjHtOFt/JWd76qvoS2SCCe4VPIm4UVYrH8ivZrK3moM/vE7XJQuM6I7?=
+ =?us-ascii?Q?/WU2jqLqznq2Jck+lQt8bfn8ooS+f1ybNCFG1WhD2NVSXhKs/CqqDlScrvGs?=
+ =?us-ascii?Q?sLIzyxHih5tsNPBaxxJu3kjIwrxyVWccBrt0ewR9RCJXdBid3+6NSoDT/97D?=
+ =?us-ascii?Q?T/Nzfr3XzRwhFai/kj5PTyVYaR1TFZnMS5h36nW5ts4sF8hSS7d6gYCfKgPX?=
+ =?us-ascii?Q?Yyksfeo8I9RExF/A3fULlGJ3+0Qgr8nwmt+fQ5LwThRpFVXbXt4xLlUUzRuH?=
+ =?us-ascii?Q?fqWcpG2Cmor872bbrjlByxzpgpfi71MipAO7fmEFRvcg1isy84KQ2eljqyGH?=
+ =?us-ascii?Q?2Xxs3KGOzU/qtZxVpBZ8ichTDGo5JbORMPJlv0OhRaOwVpl2t1km4SqyRozP?=
+ =?us-ascii?Q?wHoH0PpeRlWdW/cXw/I3aAg0KVDCpKMUk3dAsNdZkbpqyaw1dTTbcVx/2en/?=
+ =?us-ascii?Q?S5H2wUFOI5InY8RHhWObpJqb3eRWboM0cFnjM/DrXYCRozMn0eQG0b8ZK+QX?=
+ =?us-ascii?Q?HoX9m4VB+hKzSPXaHMCG8abCJdduzc/DenCo/CX8qq5xcCe8NnCkzpnVJP7F?=
+ =?us-ascii?Q?W6kIHkBjNWocCqYQ9RNoMe9CVKsx26s6ma8fNB52xyPUlOV4CJ5w7k+89OjI?=
+ =?us-ascii?Q?5kutzO4Yy0FV0luaBDZdHOTkxgJvxwf6d61dKhvqYbBIhg/DkGaR1s4CPvmo?=
+ =?us-ascii?Q?An9OVdBjAN8772Hc1aLBpg9BLMdoZRDEh6aRVrzByXzuR4Uz5yE59HIk5tdr?=
+ =?us-ascii?Q?JHB9RdX0cI81MxvT4bLKCj3q5uAtktUOAK7EXjvihrqNa6G/WjmqcH4hKAGt?=
+ =?us-ascii?Q?jh/45JBmg9Pd1jHEBAF1cvAIYKdTkBL29Di0YXzy?=
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: dd3d0404-a7c2-4bf5-25c6-08dbdf3bddda
+X-MS-Exchange-CrossTenant-AuthSource: SG2PR06MB5288.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Nov 2023 02:47:22.3280
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Z6E1+BxVMIJA19j3Oit65OluC5nl4JVsHevQlxvulsolTFjvKyB4Emi5L/l+ZtMbKSDkmjnZ8RbWE0/3IlOFhQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SI2PR06MB5242
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The cloned child of ahash that uses shash under the hood should use
-shash helpers (like crypto_shash_setkey()).
+Simplify code pattern of 'folio->index + folio_nr_pages(folio)' by using
+the existing helper folio_next_index() in filemap_get_folios_contig().
 
-The following panic may be observed on TCP-AO selftests:
-
-> ==================================================================
-> BUG: KASAN: wild-memory-access in crypto_mod_get+0x1b/0x60
-> Write of size 4 at addr 5d5be0ff5c415e14 by task connect_ipv4/1397
->
-> CPU: 0 PID: 1397 Comm: connect_ipv4 Tainted: G        W          6.6.0+ #47
-> Call Trace:
->  <TASK>
->  dump_stack_lvl+0x46/0x70
->  kasan_report+0xc3/0xf0
->  kasan_check_range+0xec/0x190
->  crypto_mod_get+0x1b/0x60
->  crypto_spawn_alg+0x53/0x140
->  crypto_spawn_tfm2+0x13/0x60
->  hmac_init_tfm+0x25/0x60
->  crypto_ahash_setkey+0x8b/0x100
->  tcp_ao_add_cmd+0xe7a/0x1120
->  do_tcp_setsockopt+0x5ed/0x12a0
->  do_sock_setsockopt+0x82/0x100
->  __sys_setsockopt+0xe9/0x160
->  __x64_sys_setsockopt+0x60/0x70
->  do_syscall_64+0x3c/0xe0
->  entry_SYSCALL_64_after_hwframe+0x46/0x4e
-> ==================================================================
-> general protection fault, probably for non-canonical address 0x5d5be0ff5c415e14: 0000 [#1] PREEMPT SMP KASAN
-> CPU: 0 PID: 1397 Comm: connect_ipv4 Tainted: G    B   W          6.6.0+ #47
-> Call Trace:
->  <TASK>
->  ? die_addr+0x3c/0xa0
->  ? exc_general_protection+0x144/0x210
->  ? asm_exc_general_protection+0x22/0x30
->  ? add_taint+0x26/0x90
->  ? crypto_mod_get+0x20/0x60
->  ? crypto_mod_get+0x1b/0x60
->  ? ahash_def_finup_done1+0x58/0x80
->  crypto_spawn_alg+0x53/0x140
->  crypto_spawn_tfm2+0x13/0x60
->  hmac_init_tfm+0x25/0x60
->  crypto_ahash_setkey+0x8b/0x100
->  tcp_ao_add_cmd+0xe7a/0x1120
->  do_tcp_setsockopt+0x5ed/0x12a0
->  do_sock_setsockopt+0x82/0x100
->  __sys_setsockopt+0xe9/0x160
->  __x64_sys_setsockopt+0x60/0x70
->  do_syscall_64+0x3c/0xe0
->  entry_SYSCALL_64_after_hwframe+0x46/0x4e
->  </TASK>
-> RIP: 0010:crypto_mod_get+0x20/0x60
-
-Make sure that the child/clone has using_shash set when parent is
-an shash user.
-
-Fixes: 2f1f34c1bf7b ("crypto: ahash - optimize performance when wrapping shash")
-Cc: David Ahern <dsahern@kernel.org>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Dmitry Safonov <0x7f454c46@gmail.com>
-Cc: Eric Biggers <ebiggers@google.com>
-Cc: Eric Dumazet <edumazet@google.com>
-Cc: Francesco Ruggeri <fruggeri05@gmail.com>
-To: Herbert Xu <herbert@gondor.apana.org.au>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: Paolo Abeni <pabeni@redhat.com>
-Cc: Salam Noureddine <noureddine@arista.com>
-Cc: netdev@vger.kernel.org
-Cc: linux-crypto@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Dmitry Safonov <dima@arista.com>
+Signed-off-by: Minjie Du <duminjie@vivo.com>
 ---
- crypto/ahash.c | 1 +
- 1 file changed, 1 insertion(+)
+ mm/filemap.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/crypto/ahash.c b/crypto/ahash.c
-index deee55f939dc..80c3e5354711 100644
---- a/crypto/ahash.c
-+++ b/crypto/ahash.c
-@@ -651,6 +651,7 @@ struct crypto_ahash *crypto_clone_ahash(struct crypto_ahash *hash)
- 			err = PTR_ERR(shash);
- 			goto out_free_nhash;
- 		}
-+		nhash->using_shash = true;
- 		*nctx = shash;
- 		return nhash;
+diff --git a/mm/filemap.c b/mm/filemap.c
+index 9710f43a89ac..ec8a3bbddab4 100644
+--- a/mm/filemap.c
++++ b/mm/filemap.c
+@@ -2173,7 +2173,7 @@ unsigned filemap_get_folios_contig(struct address_space *mapping,
+ 
+ 	if (nr) {
+ 		folio = fbatch->folios[nr - 1];
+-		*start = folio->index + folio_nr_pages(folio);
++		*start = folio_next_index(folio);
  	}
-
-base-commit: be3ca57cfb777ad820c6659d52e60bbdd36bf5ff
+ out:
+ 	rcu_read_unlock();
 -- 
-2.42.0
+2.39.0
 
