@@ -2,234 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BDD0F7E35F1
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 08:30:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 877267E3603
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 08:42:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233559AbjKGHaT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 02:30:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41662 "EHLO
+        id S233612AbjKGHmB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 02:42:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229551AbjKGHaR (ORCPT
+        with ESMTP id S229551AbjKGHl7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 02:30:17 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C769C6
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 23:30:14 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 865C7C433C8;
-        Tue,  7 Nov 2023 07:30:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699342214;
-        bh=hjDvQUTop7NyWWazze5QWPyGZ/OWLEbXaDZXlgkkNdY=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=N5mzIYyZOc+WPvX85IxkaF9m7qcVR72y35MHUSncA30GalSk7MTBvhIky1XWQocVw
-         XauT/FillqV9pGTiFZwObACoz6b3ChQ7AoPHwqAiVvbM3TDCSepnMjr4OS1NMcnU4j
-         s7seXE+A0UALKHRds7F+LmAE+DscIgs8yqFNSdVM5b4/L1TcVssr1/RaH+3m8jkPN2
-         b89bxTRB659gwqT64c36BZdaJEQ7fQDL8glcSkGctJ7+bxqBi75odnrvo5NSJDR6V4
-         Ar/8T0rkNuMhkFne59BixrHq4OSJEml8sd/eEtShlmsmnNIcURUtEoNxZCBbhqDgwg
-         Da8SSYHkft7fw==
-Message-ID: <2359b646-a4a7-460a-b240-4becfc0551d4@kernel.org>
-Date:   Tue, 7 Nov 2023 08:30:08 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 6/7] sched/deadline: Deferrable dl server
-Content-Language: en-US, pt-BR, it-IT
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
+        Tue, 7 Nov 2023 02:41:59 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CBC5FD
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 23:41:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1699342872;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1/lx1rypKszE80C3svlF1BPeyS2bMagooOeOTmeIu3k=;
+        b=IVUuW5804zR2ByxGjv/zRqZrUm5Vys9I3jS7wCzXcueRtfE1IjhSAHV6vAvANho5uUqYTU
+        bHW8EaJ1kM0AGj3OwR2n8IXGIn0Dn0oH1m5UWGhgOGiEwcFDUdgBv6657gZuEJHebKtxoO
+        iucUhfP8V6OnVamlw3liL8SdPYG6obs=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-136-g0ek8r0KN7u39RVuLGoPaQ-1; Tue, 07 Nov 2023 02:30:40 -0500
+X-MC-Unique: g0ek8r0KN7u39RVuLGoPaQ-1
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-40855a91314so34724285e9.1
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 23:30:40 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699342239; x=1699947039;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1/lx1rypKszE80C3svlF1BPeyS2bMagooOeOTmeIu3k=;
+        b=MVthN/+Pq/KW+djVSo55MvUkkkVks2X0IDyD7iISxa4ay8zTlSNF4m6QD7QsdTJ2DC
+         92XjmBcfkiJ1mKRxYVXhSBTRZGkguzrZ9vTEejQ0dLdRqimhUj8tw6gRUCd2T7VFjnSH
+         c9QifnlzJdd54R9m6hUbgDxgH13tWw/jU1EtXLV7OL4caH7VJeWqHhb5Rl3cXIfaaZxC
+         SkhF3nzK80MkkPQ3350STWUaPw4A42fGW929GI+B0TWWl1fnvF+abJ6oyhJJTn+vJJpA
+         ukuWyqP0SCZet0XMGydJZI9cBGGyV1wL/UULgT1XIHMnxIQ1Y1uZXdv4TpMeggu+SWhe
+         SP1w==
+X-Gm-Message-State: AOJu0YxcxTG5hbOdfIw0ePo3LNsPIP3Iz7a5skI8k7yPTq8Qg0CZvErA
+        7+d91iapZKl1URfFqmYgnigO/c0y36VMbqwipcLMPvUDdv/eO8shCFPlpjjlmD2FYzm+Ft0CSJF
+        GUFkMzwEpbXWgoioj8ZRVfHlA
+X-Received: by 2002:a05:600c:1c06:b0:405:3ab3:e640 with SMTP id j6-20020a05600c1c0600b004053ab3e640mr1563993wms.20.1699342239048;
+        Mon, 06 Nov 2023 23:30:39 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFKOvrGmXKbiJ4vIeoxB/aU3PS4p7CWdE7g1MzeenXV0fuHrqF0EyczH4kRYvPFqPW5dbKFQg==
+X-Received: by 2002:a05:600c:1c06:b0:405:3ab3:e640 with SMTP id j6-20020a05600c1c0600b004053ab3e640mr1563976wms.20.1699342238687;
+        Mon, 06 Nov 2023 23:30:38 -0800 (PST)
+Received: from redhat.com ([2.55.5.143])
+        by smtp.gmail.com with ESMTPSA id e12-20020adffd0c000000b0032d893d8dc8sm1555331wrr.2.2023.11.06.23.30.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 Nov 2023 23:30:38 -0800 (PST)
+Date:   Tue, 7 Nov 2023 02:30:34 -0500
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Cindy Lu <lulu@redhat.com>
+Cc:     jasowang@redhat.com, yi.l.liu@intel.com, jgg@nvidia.com,
         linux-kernel@vger.kernel.org,
-        Luca Abeni <luca.abeni@santannapisa.it>,
-        Tommaso Cucinotta <tommaso.cucinotta@santannapisa.it>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vineeth Pillai <vineeth@bitbyteword.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Phil Auld <pauld@redhat.com>
-References: <cover.1699095159.git.bristot@kernel.org>
- <c7b706d30d6316c52853ca056db5beb82ba72863.1699095159.git.bristot@kernel.org>
- <CAEXW_YS=PrWDx+YGVR7bmq0_SoKNztzGrreApCd9qk1yBLA5bA@mail.gmail.com>
-From:   Daniel Bristot de Oliveira <bristot@kernel.org>
-In-Reply-To: <CAEXW_YS=PrWDx+YGVR7bmq0_SoKNztzGrreApCd9qk1yBLA5bA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
+Subject: Re: [RFC v1 0/8] vhost-vdpa: add support for iommufd
+Message-ID: <20231107022847-mutt-send-email-mst@kernel.org>
+References: <20231103171641.1703146-1-lulu@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231103171641.1703146-1-lulu@redhat.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/6/23 20:32, Joel Fernandes wrote:
-> Hi Daniel,
+On Sat, Nov 04, 2023 at 01:16:33AM +0800, Cindy Lu wrote:
 > 
-> On Sat, Nov 4, 2023 at 6:59 AM Daniel Bristot de Oliveira
-> <bristot@kernel.org> wrote:
->>
->> Among the motivations for the DL servers is the real-time throttling
->> mechanism. This mechanism works by throttling the rt_rq after
->> running for a long period without leaving space for fair tasks.
->>
->> The base dl server avoids this problem by boosting fair tasks instead
->> of throttling the rt_rq. The point is that it boosts without waiting
->> for potential starvation, causing some non-intuitive cases.
->>
->> For example, an IRQ dispatches two tasks on an idle system, a fair
->> and an RT. The DL server will be activated, running the fair task
->> before the RT one. This problem can be avoided by deferring the
->> dl server activation.
->>
->> By setting the zerolax option, the dl_server will dispatch an
->> SCHED_DEADLINE reservation with replenished runtime, but throttled.
->>
->> The dl_timer will be set for (period - runtime) ns from start time.
->> Thus boosting the fair rq on its 0-laxity time with respect to
->> rt_rq.
->>
->> If the fair scheduler has the opportunity to run while waiting
->> for zerolax time, the dl server runtime will be consumed. If
->> the runtime is completely consumed before the zerolax time, the
->> server will be replenished while still in a throttled state. Then,
->> the dl_timer will be reset to the new zerolax time
->>
->> If the fair server reaches the zerolax time without consuming
->> its runtime, the server will be boosted, following CBS rules
->> (thus without breaking SCHED_DEADLINE).
->>
->> Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
->> ---
->>  include/linux/sched.h   |   2 +
->>  kernel/sched/deadline.c | 100 +++++++++++++++++++++++++++++++++++++++-
->>  kernel/sched/fair.c     |   3 ++
->>  3 files changed, 103 insertions(+), 2 deletions(-)
->>
->> diff --git a/include/linux/sched.h b/include/linux/sched.h
->> index 5ac1f252e136..56e53e6fd5a0 100644
->> --- a/include/linux/sched.h
->> +++ b/include/linux/sched.h
->> @@ -660,6 +660,8 @@ struct sched_dl_entity {
->>         unsigned int                    dl_non_contending : 1;
->>         unsigned int                    dl_overrun        : 1;
->>         unsigned int                    dl_server         : 1;
->> +       unsigned int                    dl_zerolax        : 1;
->> +       unsigned int                    dl_zerolax_armed  : 1;
->>
->>         /*
->>          * Bandwidth enforcement timer. Each -deadline task has its
->> diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
->> index 1d7b96ca9011..69ee1fbd60e4 100644
->> --- a/kernel/sched/deadline.c
->> +++ b/kernel/sched/deadline.c
->> @@ -772,6 +772,14 @@ static inline void replenish_dl_new_period(struct sched_dl_entity *dl_se,
->>         /* for non-boosted task, pi_of(dl_se) == dl_se */
->>         dl_se->deadline = rq_clock(rq) + pi_of(dl_se)->dl_deadline;
->>         dl_se->runtime = pi_of(dl_se)->dl_runtime;
->> +
->> +       /*
->> +        * If it is a zerolax reservation, throttle it.
->> +        */
->> +       if (dl_se->dl_zerolax) {
->> +               dl_se->dl_throttled = 1;
->> +               dl_se->dl_zerolax_armed = 1;
->> +       }
->>  }
->>
->>  /*
->> @@ -828,6 +836,7 @@ static inline void setup_new_dl_entity(struct sched_dl_entity *dl_se)
->>   * could happen are, typically, a entity voluntarily trying to overcome its
->>   * runtime, or it just underestimated it during sched_setattr().
->>   */
->> +static int start_dl_timer(struct sched_dl_entity *dl_se);
->>  static void replenish_dl_entity(struct sched_dl_entity *dl_se)
->>  {
->>         struct dl_rq *dl_rq = dl_rq_of_se(dl_se);
->> @@ -874,6 +883,28 @@ static void replenish_dl_entity(struct sched_dl_entity *dl_se)
->>                 dl_se->dl_yielded = 0;
->>         if (dl_se->dl_throttled)
->>                 dl_se->dl_throttled = 0;
->> +
->> +       /*
->> +        * If this is the replenishment of a zerolax reservation,
->> +        * clear the flag and return.
->> +        */
->> +       if (dl_se->dl_zerolax_armed) {
->> +               dl_se->dl_zerolax_armed = 0;
->> +               return;
->> +       }
->> +
->> +       /*
->> +        * A this point, if the zerolax server is not armed, and the deadline
->> +        * is in the future, throttle the server and arm the zerolax timer.
->> +        */
->> +       if (dl_se->dl_zerolax &&
->> +           dl_time_before(dl_se->deadline - dl_se->runtime, rq_clock(rq))) {
->> +               if (!is_dl_boosted(dl_se)) {
->> +                       dl_se->dl_zerolax_armed = 1;
->> +                       dl_se->dl_throttled = 1;
->> +                       start_dl_timer(dl_se);
->> +               }
->> +       }
->>  }
->>
->>  /*
->> @@ -1024,6 +1055,13 @@ static void update_dl_entity(struct sched_dl_entity *dl_se)
->>                 }
->>
->>                 replenish_dl_new_period(dl_se, rq);
->> +       } else if (dl_server(dl_se) && dl_se->dl_zerolax) {
->> +               /*
->> +                * The server can still use its previous deadline, so throttle
->> +                * and arm the zero-laxity timer.
->> +                */
->> +               dl_se->dl_zerolax_armed = 1;
->> +               dl_se->dl_throttled = 1;
->>         }
->>  }
->>
->> @@ -1056,8 +1094,20 @@ static int start_dl_timer(struct sched_dl_entity *dl_se)
->>          * We want the timer to fire at the deadline, but considering
->>          * that it is actually coming from rq->clock and not from
->>          * hrtimer's time base reading.
->> +        *
->> +        * The zerolax reservation will have its timer set to the
->> +        * deadline - runtime. At that point, the CBS rule will decide
->> +        * if the current deadline can be used, or if a replenishment
->> +        * is required to avoid add too much pressure on the system
->> +        * (current u > U).
->>          */
->> -       act = ns_to_ktime(dl_next_period(dl_se));
->> +       if (dl_se->dl_zerolax_armed) {
->> +               WARN_ON_ONCE(!dl_se->dl_throttled);
->> +               act = ns_to_ktime(dl_se->deadline - dl_se->runtime);
+> Hi All
+> This code provides the iommufd support for vdpa device
+> This code fixes the bugs from the last version and also add the asid support. rebase on kernel
+> v6,6-rc3
+> Test passed in the physical device (vp_vdpa), but  there are still some problems in the emulated device (vdpa_sim_net), 
+
+What kind of problems? Understanding that will make it easier
+to figure out whether this is worth reviewing.
+
+> I will continue working on it
 > 
-> Just a question, here if dl_se->deadline - dl_se->runtime is large,
-> then does that mean that server activation will be much more into the
-> future? So say I want to give CFS 30%, then it will take 70% of the
-> period before CFS preempts RT thus "starving" CFS for this duration. I
-> think that's Ok for smaller periods and runtimes, though.
+> The kernel code is
+> https://gitlab.com/lulu6/vhost/-/tree/iommufdRFC_v1
+> 
+> Signed-off-by: Cindy Lu <lulu@redhat.com>
 
-I think you are answering yourself here :-)
+Please also Cc iommufd maintainers:
 
-If the default values are not good, change them o/
+Jason Gunthorpe <jgg@ziepe.ca> (maintainer:IOMMUFD)
+Kevin Tian <kevin.tian@intel.com> (maintainer:IOMMUFD)
+Joerg Roedel <joro@8bytes.org> (maintainer:IOMMU SUBSYSTEM)
+Will Deacon <will@kernel.org> (maintainer:IOMMU SUBSYSTEM)
+Robin Murphy <robin.murphy@arm.com> (reviewer:IOMMU SUBSYSTEM)
+iommu@lists.linux.dev (open list:IOMMUFD)
+linux-kernel@vger.kernel.org (open list)
 
-The current interface allows you to have more responsive/small chuck of CPU
-or less responsive/large chucks of CPU... you can even place RT bellow CFS
-for a "bounded amount of time" by disabling the defer option... per CPU.
-All at once with different periods patterns on CPUs to increase the
-changes of having a cfs rq ready on another CPU... like...
-
-[3/10 - 2/6 - 1.5/5 - 1/3 no defer] in a 4 cpus system :-).
-
-The default setup is based on the throttling to avoid changing
-the historical behavior for those that... are happy with them.
-
--- Daniel
->  - Joel
+-- 
+MST
 
