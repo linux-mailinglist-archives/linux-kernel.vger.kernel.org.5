@@ -2,220 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C9B057E4A76
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 22:19:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A98497E4A7D
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 22:21:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343987AbjKGVTw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 16:19:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58596 "EHLO
+        id S234107AbjKGVVX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 16:21:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232753AbjKGVTu (ORCPT
+        with ESMTP id S234127AbjKGVVV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 16:19:50 -0500
-Received: from mail-ua1-x934.google.com (mail-ua1-x934.google.com [IPv6:2607:f8b0:4864:20::934])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC20110C1
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 13:19:47 -0800 (PST)
-Received: by mail-ua1-x934.google.com with SMTP id a1e0cc1a2514c-7ba0d338367so2749103241.2
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 13:19:47 -0800 (PST)
+        Tue, 7 Nov 2023 16:21:21 -0500
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27BF410C9
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 13:21:19 -0800 (PST)
+Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-5094727fa67so8340944e87.3
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 13:21:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1699391987; x=1699996787; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=H6vtB6oGNeNraeO1yfc6WDVHQCGu06A7XkYHqu97D2c=;
-        b=0qCpusB5cgJsovyh+pflw6eb7M0+rxhkXqUUV57dWxTspNfOyvZJzzSCqvkW+N1FrS
-         KiR8RmuRy7bxGqZE4qdy3tCGanjdKdDgC7beNnOEoYptIBik1gKxC/6ON4ZOg/Z2hNyj
-         DAKipbvHGVeOHp7RyWj2RS9aE30t0vT836lR/ctBajfm2ZrzTmX7Lakc7QhXGOqyElwC
-         c/WVUv+dUkQ7kX/oL9GKWoos1K2b9SkmmQiKLGchPwdr8JV1bGaQz8B+g5PVoxIHPTze
-         4X8Gy+wOTF2R+6DUDjmTO+pHw/79tXdvy3SFPimRaaJC0d/M9p2BbWGdKUeRDi2ltsZx
-         ebMg==
+        d=linaro.org; s=google; t=1699392077; x=1699996877; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=TP91kUeFUdw5BHZzOadp5Ri1kmnZ7KqGB8htiz8sgvM=;
+        b=QCcldNw3mN3z0Z8vUZCd5DNeglbPRGEEkhyOXF9Wpo2HF8ts8KxTp2geNmnwtDJszr
+         3/juF4/yhivoSZNtL/r0Oe15snGiUrJq+6PcohgCMrhXjEG15ocxHNplTYogBc0qf5kT
+         M0ysQKEju8xvbOK+BuaG7lQlljwwVN1yv+NPokJtZLsG3s1pXVtRW0y/QEYke7HT2mvC
+         w32bliZ6S3gkqtazxwzuAZ7Tr4ZGPXMO0scVx8Aw1eTrkuWGrSkx2P99yQA+IWQEcm2N
+         xd8rvt//zoXivVKs/Z3VjQDGkhN/dKq9t/LR7goPKAtJ7LiLsCOImnkovefWQR1MbFNt
+         LRww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699391987; x=1699996787;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=H6vtB6oGNeNraeO1yfc6WDVHQCGu06A7XkYHqu97D2c=;
-        b=hJXvE/Z4TpFWrP+8Ii1caRGA+AzRlTKbKs4n/JvQqJvZW0saL4lTU/82OjPdZXVGVl
-         9r8M2KzSq7ViNypsDbnOijLONhxtIxci5wMnOkDYxs+6Re6hEFISCP0/LGCpYuJs7cs1
-         tUHO/J+Nu9AD9IgUHEjqK7uJFpHWtdNrUo1CsTlp8iN9346DH4GgGSi2QLPrYh7qO92A
-         R8fNxaiWMRemHRc6ueAoqtoUJ8VlKMEmb2RAHkZeM5J7l+gxPoGoqbSU5SDYthSIubKO
-         o1Qde5EO0yQDepAvwtFkPtagV30lsaaEv044mp1fcvvX80BqiULmQvf3KfZNLRbWIak1
-         bq2A==
-X-Gm-Message-State: AOJu0YzfoHsMWrvnTeO0z/vUTYPWpOIQ86gio/B8yTcunY+Oc9BjGGz9
-        OvOrSRy7ganw8rYTJ2k0qMiwvfOrNb0ensHnPmL/2Q==
-X-Google-Smtp-Source: AGHT+IGP/CXPxw/3EMz20UnoxCfjtef8X0h1zK6Yh6FlZoE34oBHf9lsr5FmmVHSCxlfjvy68G8o2l++xlKxI0QUgP0=
-X-Received: by 2002:a05:6102:4712:b0:45d:91b3:74b7 with SMTP id
- ei18-20020a056102471200b0045d91b374b7mr12087084vsb.27.1699391986590; Tue, 07
- Nov 2023 13:19:46 -0800 (PST)
+        d=1e100.net; s=20230601; t=1699392077; x=1699996877;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=TP91kUeFUdw5BHZzOadp5Ri1kmnZ7KqGB8htiz8sgvM=;
+        b=gGanVijD3pjtTAq9ttGu3pQMq6OsoId9RBNVNFzcQXeamYg8G+qyHoO+fQvEJOSJFa
+         hp7FCJixgK3X595J5yBhADYok+zXZxjp4dyFiLc0ZvPMGWmddz137FT7CKe+9A4QmniF
+         6xZl1359zfgZ2nnP569rLPptyaN1IoF3hmB+cSdjK8AeToO1iREp7kq+6BBWZ5pcyoiU
+         za3Ni4R5QeDtvOkCX80XqzT1OZwPrKEySPxp8p0/Sm9gN891E/pvQ9c3s0sQB6MCkXat
+         KpSFgzgTW3zUylKD+U4ds5/5ARWL8kwwKoV6uqbdPOXUihiXFCtXd7ePh7jZ4wtJAYKd
+         ge0Q==
+X-Gm-Message-State: AOJu0Ywt95HSYAQ9/dJSMvkczYtm8wof0KwL7o340WrV6+lmSqByzsw7
+        hinxkh7bl5JD8f0czMe3UluXtw==
+X-Google-Smtp-Source: AGHT+IG28nfpF/t/GwBx+w4KQQPZXMRL2WGhzbKjj0Jgx7Vh3vZ3wycUfSAG8mv+ArdcXqahB4xabQ==
+X-Received: by 2002:a05:6512:358e:b0:505:6cc7:e0f7 with SMTP id m14-20020a056512358e00b005056cc7e0f7mr21874519lfr.44.1699392077343;
+        Tue, 07 Nov 2023 13:21:17 -0800 (PST)
+Received: from [172.30.205.109] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
+        by smtp.gmail.com with ESMTPSA id g33-20020a0565123ba100b00503200ce35bsm461520lfv.136.2023.11.07.13.21.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 07 Nov 2023 13:21:16 -0800 (PST)
+Message-ID: <82a25b12-7a63-4c75-8a46-624bc35c6752@linaro.org>
+Date:   Tue, 7 Nov 2023 22:21:15 +0100
 MIME-Version: 1.0
-References: <20231106024413.2801438-1-almasrymina@google.com>
- <20231106024413.2801438-9-almasrymina@google.com> <7e851882-9a85-3672-c3d5-73b47599873c@huawei.com>
-In-Reply-To: <7e851882-9a85-3672-c3d5-73b47599873c@huawei.com>
-From:   Mina Almasry <almasrymina@google.com>
-Date:   Tue, 7 Nov 2023 13:19:32 -0800
-Message-ID: <CAHS8izPGa99LyEc=AeqNaK8X68b7dovxCHOLbR=hnbaybN_zgQ@mail.gmail.com>
-Subject: Re: [RFC PATCH v3 08/12] net: support non paged skb frags
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        David Ahern <dsahern@kernel.org>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Jeroen de Borst <jeroendb@google.com>,
-        Praveen Kaligineedi <pkaligineedi@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RESEND v3 4/5] clk: qcom: Use HW_CTRL_TRIGGER flag to
+ switch video GDSC to HW mode
+To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Abel Vesa <abel.vesa@linaro.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Kevin Hilman <khilman@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
+        Vikash Garodia <quic_vgarodia@quicinc.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     Taniya Das <tdas@qti.qualcomm.com>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-media@vger.kernel.org,
+        Jagadeesh Kona <quic_jkona@quicinc.com>
+References: <20231101-gdsc-hwctrl-v3-0-0740ae6b2b04@linaro.org>
+ <20231101-gdsc-hwctrl-v3-4-0740ae6b2b04@linaro.org>
+ <835a6add-81e9-42e4-abbe-91632aaa6bc9@linaro.org>
+Content-Language: en-US
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <835a6add-81e9-42e4-abbe-91632aaa6bc9@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 7, 2023 at 1:00=E2=80=AFAM Yunsheng Lin <linyunsheng@huawei.com=
-> wrote:
->
-> On 2023/11/6 10:44, Mina Almasry wrote:
-> > Make skb_frag_page() fail in the case where the frag is not backed
-> > by a page, and fix its relevent callers to handle this case.
-> >
-> > Correctly handle skb_frag refcounting in the page_pool_iovs case.
-> >
-> > Signed-off-by: Mina Almasry <almasrymina@google.com>
-> >
->
-> ...
->
-> >  /**
-> >   * skb_frag_page - retrieve the page referred to by a paged fragment
-> >   * @frag: the paged fragment
-> >   *
-> > - * Returns the &struct page associated with @frag.
-> > + * Returns the &struct page associated with @frag. Returns NULL if thi=
-s frag
-> > + * has no associated page.
-> >   */
-> >  static inline struct page *skb_frag_page(const skb_frag_t *frag)
-> >  {
-> > -     return frag->bv_page;
-> > +     if (!page_is_page_pool_iov(frag->bv_page))
-> > +             return frag->bv_page;
-> > +
-> > +     return NULL;
->
-> It seems most of callers don't expect NULL returning for skb_frag_page(),
-> and this patch only changes a few relevant callers to handle the NULL cas=
-e.
->
 
-Yes, I did not change code that I guessed was not likely to be
-affected or enable the devmem TCP case. Here is my breakdown:
 
-=E2=9E=9C  cos-kernel git:(tcpdevmem) =E2=9C=97 ack -i "skb_frag_page\("
---ignore-dir=3Ddrivers -t cc -l
-net/core/dev.c
-net/core/datagram.c
-net/core/xdp.c
-net/core/skbuff.c
-net/core/filter.c
-net/core/gro.c
-net/appletalk/ddp.c
-net/wireless/util.c
-net/tls/tls_device.c
-net/tls/tls_device_fallback.c
-net/ipv4/tcp.c
-net/ipv4/tcp_output.c
-net/bpf/test_run.c
-include/linux/skbuff.h
+On 11/7/23 14:05, Bryan O'Donoghue wrote:
+> On 01/11/2023 09:04, Abel Vesa wrote:
+>> From: Jagadeesh Kona <quic_jkona@quicinc.com>
+>>
+>> The current HW_CTRL flag switches the video GDSC to HW control mode as
+>> part of GDSC enable itself, instead of that use HW_CTRL_TRIGGER flag to
+>> give consumer drivers more control and switch the GDSC mode as and when
+>> required.
+>>
+>> HW_CTRL_TRIGGER flag allows consumer drivers to switch the video GDSC to
+>> HW/SW control modes at runtime using dev_pm_genpd_set_hwmode API.
+>>
+>> Signed-off-by: Jagadeesh Kona <quic_jkona@quicinc.com>
+>> Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+>> ---
+>>   drivers/clk/qcom/videocc-sc7180.c | 2 +-
+>>   drivers/clk/qcom/videocc-sc7280.c | 2 +-
+>>   drivers/clk/qcom/videocc-sdm845.c | 4 ++--
+>>   drivers/clk/qcom/videocc-sm8250.c | 4 ++--
+>>   drivers/clk/qcom/videocc-sm8550.c | 4 ++--
+>>   5 files changed, 8 insertions(+), 8 deletions(-)
+> 
+> So.
+> 
+> I'm assuming the rest of this series works however for sc8250 at least this is a NAK, breaks venus on rb5.
+Are you saying that applying this patch alone causes the attached crash?
 
-I'm ignoring ank skb_frag_page() calls in drivers because drivers need
-to add support for devmem TCP, and handle these calls at time of
-adding support, I think that's reasonable.
-
-net/core/dev.c:
-I think I missed ilegal_highdma()
-
-net/core/datagram.c:
-__skb_datagram_iter() protected by not_readable(skb) check.
-
-net/core/skbuff.c:
-protected by not_readable(skb) check.
-
-net/core/filter.c:
-bpf_xdp_frags_shrink_tail seems like xdp specific, not sure it's relevant h=
-ere.
-
-net/core/gro.c:
-skb_gro_reset_offset: protected by NULL check
-
-net/ipv4/tcp.c:
-tcp_zerocopy_receive protected by NULL check.
-
-net/ipv4/tcp_output.c:
-tcp_clone_payload: handles NULL return fine.
-
-net/bpf/test_run.c:
-seems xdp specific and not sure if it can run into devmem issues.
-
-include/linux/skbuff.h:
-I think the multiple calls here are being handled correctly, but let
-me know if not.
-
-All the calls in these files, I think, are code paths not possible to
-hit devmem TCP with the current support, I think:
-net/core/xdp.c
-net/appletalk/ddp.c
-net/wireless/util.c
-net/tls/tls_device.c
-net/tls/tls_device_fallback.c
-
-All in all I think maybe all in all I missed illegal_highdma(). I'll
-fix it in the next iteration.
-
-> It may make more sense to add a new helper to do the above checking, and
-> add a warning in skb_frag_page() to catch any missing NULL checking for
-> skb_frag_page() caller, something like below?
->
->  static inline struct page *skb_frag_page(const skb_frag_t *frag)
->  {
-> -       return frag->bv_page;
-> +       struct page *page =3D frag->bv_page;
-> +
-> +       BUG_ON(page_is_page_pool_iov(page));
-> +
-> +       return page;
-> +}
-> +
-> +static inline struct page *skb_frag_readable_page(const skb_frag_t *frag=
-)
-> +{
-> +       struct page *page =3D frag->bv_page;
-> +
-> +       if (!page_is_page_pool_iov(page))
-> +               return page;
-> +
-> +       return NULL;
->  }
->
->
-
-My personal immediate reaction is that this may just introduce code
-churn without significant benefit. If an unsuspecting caller call
-skb_frag_page() on devmem frag and doesn't correctly handle NULL
-return, it will crash or error out anyway, and likely in some obvious
-way, so maybe the BUG_ON() isn't so useful that it's worth changing
-all the call sites. But if there is consensus on adding a change like
-you propose, I have no problem adding it.
-
---=20
-Thanks,
-Mina
+Konrad
