@@ -2,98 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EFAE97E43A4
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 16:40:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 445507E43AA
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 16:41:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343979AbjKGPk7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 10:40:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40756 "EHLO
+        id S234830AbjKGPlX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 10:41:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235283AbjKGPk6 (ORCPT
+        with ESMTP id S1343999AbjKGPlS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 10:40:58 -0500
-Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D85DD95
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 07:40:55 -0800 (PST)
-Received: by mail-il1-x12d.google.com with SMTP id e9e14a558f8ab-35950819c97so3879985ab.0
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 07:40:55 -0800 (PST)
+        Tue, 7 Nov 2023 10:41:18 -0500
+Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C57889F
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 07:41:15 -0800 (PST)
+Received: by mail-qv1-xf33.google.com with SMTP id 6a1803df08f44-66d17bdabe1so40535746d6.0
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 07:41:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1699371655; x=1699976455; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Tz/3EAWv61f6wEBvRr3aAF3KcbwKrMc//gR1rrcsb8w=;
-        b=ZG4OKm6zMrrXdkvuZ0QCVXeRczq2fmT8EB5BUSJjdpR7g0V4HOyYn5B4YhWUutTqeQ
-         5Lslwl8VRDivK96GSmAt0R/e5ulKT8d+jzUUOofS3t1gSDkv0JXYje3H8e6ULAx3B6hR
-         5nBWCAviP8VK3dbcO6O64OHhXWd/k8KCVBI8w=
+        d=linaro.org; s=google; t=1699371675; x=1699976475; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ObVN4OHcPVQWsUpE/966fOo3IFl5zYaTQP4Ff/lWTe4=;
+        b=bobyiEHOE/h+zyutQu+5a0gnvPgFSPrrT4+U1u8DurMIYe4ptBGJeD+tik60wnZi14
+         72omqUgdyTtzYvpf356qjrkRaVws/loTRdm5KlRyVpTBW0zhKE5JbLFKRZkFfrOdKDFU
+         W0pVty06+n2qHyLea6AMNi7REzYHFBeIxO+mDMaV9Wph0PJB//g1q0VcLoshD6I3LKzm
+         UJCEjASGjIMYX4c53LIdEGBwkdutXq6GtDzYcXQuQf1AHeuB9swVe8xmvYLeHw+XN97j
+         E11QS5WUQCHpoCiOI1HdaofNcbwYI3R4xJfEHc4xCizsje8/mdPL1VIg7PUNnrR/gYOd
+         /pMA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699371655; x=1699976455;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Tz/3EAWv61f6wEBvRr3aAF3KcbwKrMc//gR1rrcsb8w=;
-        b=s4g3CKDzQE1a4lUMo3QMo6Vx+AhdojmM/EA1mqR99ptKEErcTtkxIiRIl6N2Ky84iu
-         C8PVCAJ0InpgM5blk7tBmzBA+14D+3TXm69a+/I6t3EesJm/t9Ct9YYYdVZgcjLK7E8c
-         cyQtxVfe9fUH8p8mQp9TxuCtNWT75Da3ASkp8ar1QwvZJV+lDVtAP9Q5Xde8B7aQAg1D
-         E/cCNsmxAwxQWTxuRWEg35tAT5X8NX+d8Qur4h8NasTFD2LY1LXtQpQNSZ0LDBzy7Vz+
-         zmP8H5wgaOB9zO8eNCSkVUVIuIVvl+0BpWRKBQEqkGXf+ESyImAe24ZB/TxqJtXHp8mv
-         y79Q==
-X-Gm-Message-State: AOJu0YzKJKPKcbR03Hwk60GXyv5R0RqXTh4X7QT5gumb9dxY0/UOU2+W
-        lw0xJ3XFF+XjIMzixGS4CAdSCg==
-X-Google-Smtp-Source: AGHT+IGQAWYgGlHvzGOchOtYfwGf4w5IoTPD/+kKzlZTcA7bY03Zr+sGBRvCeJPucCtA1SCy16Gjew==
-X-Received: by 2002:a05:6e02:168c:b0:359:4db7:102a with SMTP id f12-20020a056e02168c00b003594db7102amr25003454ila.0.1699371655252;
-        Tue, 07 Nov 2023 07:40:55 -0800 (PST)
-Received: from [192.168.1.128] ([38.175.170.29])
-        by smtp.gmail.com with ESMTPSA id f8-20020a056e0204c800b00357fc1e2ffesm766889ils.23.2023.11.07.07.40.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 07 Nov 2023 07:40:54 -0800 (PST)
-Message-ID: <48432650-09c9-4cf6-8ec7-9c4577c18e38@linuxfoundation.org>
-Date:   Tue, 7 Nov 2023 08:40:54 -0700
+        d=1e100.net; s=20230601; t=1699371675; x=1699976475;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ObVN4OHcPVQWsUpE/966fOo3IFl5zYaTQP4Ff/lWTe4=;
+        b=gDYGKuGZc33IComrSjmUIJ7lbVIMRq/nl0aN/7pKg5RbOarwxV3lzG4hnekDqdr0Db
+         /GJk5L7FxPZVmp8tt5d31QFAXl3e66smcHjtkmUpi4lNI6g/aLaBSNAlfUM1FpR/cIvm
+         II1ZKhESjxY48D1f8291Io891ZUAIG/awYl2mFEgscHMWamFT0wE+6qeKCSYei1hSojA
+         p8Usy7m2D7LO81/SDq6dSZV5/AdQ0vx6bMe8zkG/ziIWCfYLSZ0vZ3kjV4ZghbFyo9j1
+         EhT/TcrBHVTTx0c66eX3ssydx+pOh4DmdSjqkqZf6A9yhrvFxohof7d3zOOd++kVZiGo
+         Rp3Q==
+X-Gm-Message-State: AOJu0YxV8aUJa8PHpTfSJ10rqMbpbHG+8jBZ90YErIzAxfUqbH9LzGwX
+        rx7UEu9U1nV9lDc1l/XkG9TFOdbRGOGUg5u0SA==
+X-Google-Smtp-Source: AGHT+IHHqmworfLQWEekvi8UO9gWd02E+Uc289e8Y39lqPlgbomqRT6SyOFmuPC/YBTPy52YJ0fB4w==
+X-Received: by 2002:ad4:5ca2:0:b0:66d:3723:294b with SMTP id q2-20020ad45ca2000000b0066d3723294bmr34665070qvh.64.1699371674936;
+        Tue, 07 Nov 2023 07:41:14 -0800 (PST)
+Received: from localhost.localdomain ([117.217.186.253])
+        by smtp.gmail.com with ESMTPSA id u3-20020a0cb403000000b0064f43efc844sm4565789qve.32.2023.11.07.07.41.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Nov 2023 07:41:14 -0800 (PST)
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     mhi@lists.linux.dev
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Subject: [PATCH] bus: mhi: host: pci_generic: Add local VID definitions for Telit and Sierra
+Date:   Tue,  7 Nov 2023 21:11:00 +0530
+Message-Id: <20231107154100.154492-1-manivannan.sadhasivam@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 5.10 00/95] 5.10.200-rc1 review
-Content-Language: en-US
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20231106130304.678610325@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <20231106130304.678610325@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/6/23 06:03, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.200 release.
-> There are 95 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 08 Nov 2023 13:02:46 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.200-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+Add the definitions locally for now since it was agreed earlier that we
+keep it this way until the definitions show up in other drivers.
 
-Compiled and booted on my test system. No dmesg regressions.
+Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+---
+ drivers/bus/mhi/host/pci_generic.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+diff --git a/drivers/bus/mhi/host/pci_generic.c b/drivers/bus/mhi/host/pci_generic.c
+index 08f3f039dbdd..58ce1ecddd19 100644
+--- a/drivers/bus/mhi/host/pci_generic.c
++++ b/drivers/bus/mhi/host/pci_generic.c
+@@ -25,6 +25,8 @@
+ 
+ /* PCI VID definitions */
+ #define PCI_VENDOR_ID_THALES	0x1269
++#define PCI_VENDOR_ID_SIERRA	0x18d7
++#define PCI_VENDOR_ID_TELIT	0x1c5d
+ #define PCI_VENDOR_ID_QUECTEL	0x1eac
+ 
+ /**
+@@ -585,18 +587,18 @@ static const struct pci_device_id mhi_pci_id_table[] = {
+ 	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_QCOM, 0x0306, PCI_VENDOR_ID_QCOM, 0x010c),
+ 		.driver_data = (kernel_ulong_t) &mhi_foxconn_sdx55_info },
+ 	/* EM919x (sdx55), use the same vid:pid as qcom-sdx55m */
+-	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_QCOM, 0x0306, 0x18d7, 0x0200),
++	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_QCOM, 0x0306, PCI_VENDOR_ID_SIERRA, 0x0200),
+ 		.driver_data = (kernel_ulong_t) &mhi_sierra_em919x_info },
+ 	/* Telit FN980 hardware revision v1 */
+-	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_QCOM, 0x0306, 0x1C5D, 0x2000),
++	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_QCOM, 0x0306, PCI_VENDOR_ID_TELIT, 0x2000),
+ 		.driver_data = (kernel_ulong_t) &mhi_telit_fn980_hw_v1_info },
+ 	{ PCI_DEVICE(PCI_VENDOR_ID_QCOM, 0x0306),
+ 		.driver_data = (kernel_ulong_t) &mhi_qcom_sdx55_info },
+ 	/* Telit FN990 */
+-	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_QCOM, 0x0308, 0x1c5d, 0x2010),
++	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_QCOM, 0x0308, PCI_VENDOR_ID_TELIT, 0x2010),
+ 		.driver_data = (kernel_ulong_t) &mhi_telit_fn990_info },
+ 	/* Telit FE990 */
+-	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_QCOM, 0x0308, 0x1c5d, 0x2015),
++	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_QCOM, 0x0308, PCI_VENDOR_ID_TELIT, 0x2015),
+ 		.driver_data = (kernel_ulong_t) &mhi_telit_fn990_info },
+ 	{ PCI_DEVICE(PCI_VENDOR_ID_QCOM, 0x0308),
+ 		.driver_data = (kernel_ulong_t) &mhi_qcom_sdx65_info },
+-- 
+2.25.1
 
-thanks,
--- Shuah
