@@ -2,97 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 78B107E468E
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 18:10:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C3647E4692
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 18:11:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234493AbjKGRKY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 12:10:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49410 "EHLO
+        id S234488AbjKGRLx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 12:11:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229665AbjKGRKW (ORCPT
+        with ESMTP id S229458AbjKGRLv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 12:10:22 -0500
-Received: from mail-ua1-x931.google.com (mail-ua1-x931.google.com [IPv6:2607:f8b0:4864:20::931])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 885C9DA
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 09:10:20 -0800 (PST)
-Received: by mail-ua1-x931.google.com with SMTP id a1e0cc1a2514c-7b9bd9f8bfaso2092561241.0
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 09:10:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699377019; x=1699981819; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=5B3xt+TAu4pFRHAyTC3xHUtVUIvM518CKJZsirqrIvg=;
-        b=FDre5BUWMbluRkS5PkIPLL+JrLHjIUeMrJFUVMo6z/CCVU30QDCrUw7xrhA7ZPzZut
-         8LxyAUEVihd9pKqBzTCVPDCt+G7SDUc3zk2p2QqkWGpZ1ycQiP7uy8uSF27sPOJ0uQtp
-         1Jzb/woBSUrOmw/5LJuKHXCa+Vj5nfqd/axC3MXeLII+Zp3NmUu9Kalig4BclxvDwa6T
-         SYJ3f+Y2J1uusbLuzbKSEA1Yiy3VORp5ynBPursCqI/ru/uHQn7qFTWgxo9poaE0ox3n
-         N8ShfbHGxDzySfe11U75moThrad619mb1HQ/J3kccwyVVmgxuwd2kYlnrkALmQDoeHBC
-         8Qlg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699377019; x=1699981819;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=5B3xt+TAu4pFRHAyTC3xHUtVUIvM518CKJZsirqrIvg=;
-        b=YaGh/6UAnQNNo37f3Gu1glzCTCiM9+bt5b3KtY7U52mrWU4ZfAdXe6nDtQbXykrYvs
-         oP7NktdlwYkWWjZutCWov6mxwOGnkoUIv/Jn5eITjYaTExDOtRAZVnbSmanWmWN+zzwR
-         UAJwDgtbGS+KdZIkvj05VpNws1L9UcTHYNazv38Ne9FkgJZy0N/nw5dXoguMo5N2RV0i
-         BszmLJp+4/wJy8KV8uIGEPfX0uAApf6TWt47cZxJ+Kxd8mu8t6wOfwymYhfbL0BuIa1D
-         4uEFr4fOTIzpUGNz9ja49G/I8Az/TqTTovJdrVThN4zPQ74POk/Zs8yXwUaWfXFYWkrQ
-         DgNw==
-X-Gm-Message-State: AOJu0YzdwyKyri07uy2TsfuPQ+eOPEHNmfpTrUoK6bVeMjV5PiwETGmy
-        ryd6vL5eRb7upRK9VEoz7cGO1DLV22tvyeIe553aoA==
-X-Google-Smtp-Source: AGHT+IHHLjLZNx461l95CH5j88c0qIdP29a5XEHIywb0uRZjCTZu8h74GPpAYdKJVoKlL7K3lvtZ3zUex753wv62pcc=
-X-Received: by 2002:a05:6102:20cc:b0:45f:8ceb:ce13 with SMTP id
- i12-20020a05610220cc00b0045f8cebce13mr1344535vsr.5.1699377019563; Tue, 07 Nov
- 2023 09:10:19 -0800 (PST)
+        Tue, 7 Nov 2023 12:11:51 -0500
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C29649B;
+        Tue,  7 Nov 2023 09:11:49 -0800 (PST)
+Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A7GwXYg029699;
+        Tue, 7 Nov 2023 17:11:49 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=P2/0r41YhdGhqR0vt7CFe2kQwbY5e3cpRfy81sHeWe4=;
+ b=eeo87wUhH3XYt+LRH2bgxqCBjEVCVMi0dZtVUbM6XPdUE6rvky+tziXIhEMpBMjRF8re
+ 05+zsaKXsUSnJIksXlt3mBUh8CC+iwOObZbEN1LBfK0Zg6fADtLcHUMLVluNKG3RqA6N
+ cQjaaezJVLMZOIeCDen3IPn4v11FuXbbN/OUCFfioTkAvNbcxl1w7ijDWHj8fvXkmmT0
+ 8pjuIAFQ8stmNuCkSkFiCz2KO2lEbNJxC8OC7Olg4M3o0HmW764ZvtIcZliLGnVgEUCF
+ G5mK/OQDvXN2lyW3yRulxs8ELgAtlNZAQAaFFxziQ+MQw6XlveR1P0YDffcXrxBGbI4s ig== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u7s2n91f6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 07 Nov 2023 17:11:48 +0000
+Received: from m0353726.ppops.net (m0353726.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3A7HBmIn000413;
+        Tue, 7 Nov 2023 17:11:48 GMT
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u7s2n9128-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 07 Nov 2023 17:11:47 +0000
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3A7Gae3N028230;
+        Tue, 7 Nov 2023 17:11:16 GMT
+Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
+        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3u62gk1uqf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 07 Nov 2023 17:11:16 +0000
+Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
+        by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3A7HBDqC22807054
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 7 Nov 2023 17:11:13 GMT
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A3A2B2004D;
+        Tue,  7 Nov 2023 17:11:13 +0000 (GMT)
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4DCE020049;
+        Tue,  7 Nov 2023 17:11:13 +0000 (GMT)
+Received: from p-imbrenda (unknown [9.152.224.66])
+        by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Tue,  7 Nov 2023 17:11:13 +0000 (GMT)
+Date:   Tue, 7 Nov 2023 18:11:05 +0100
+From:   Claudio Imbrenda <imbrenda@linux.ibm.com>
+To:     Nina Schoetterl-Glausch <nsg@linux.ibm.com>
+Cc:     Janosch Frank <frankja@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        linux-s390@vger.kernel.org, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Sven Schnelle <svens@linux.ibm.com>
+Subject: Re: [PATCH v2 2/4] KVM: s390: vsie: Fix length of facility list
+ shadowed
+Message-ID: <20231107181105.3143f8f7@p-imbrenda>
+In-Reply-To: <20231107123118.778364-3-nsg@linux.ibm.com>
+References: <20231107123118.778364-1-nsg@linux.ibm.com>
+        <20231107123118.778364-3-nsg@linux.ibm.com>
+Organization: IBM
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-References: <CA+G9fYsrLTbFkz-LJmAY9efDyEr-8bHcxivBDPToPjBxjStoDg@mail.gmail.com>
- <ZUpH0FNTYAl9Z+L6@finisterre.sirena.org.uk> <CA+G9fYta5cUpFArGfON3R+HUGxJRyEsc9zdTwwk5Un+wHqLN8g@mail.gmail.com>
- <ZUpgZ65SYqKVeQoo@finisterre.sirena.org.uk>
-In-Reply-To: <ZUpgZ65SYqKVeQoo@finisterre.sirena.org.uk>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 7 Nov 2023 22:40:07 +0530
-Message-ID: <CA+G9fYu=9qH+9f1bv0NqUTi-VTTzhBNUYiWjwSmrdDtuhAo69w@mail.gmail.com>
-Subject: Re: selftests: arm64: fp-stress: Unable to handle kernel paging
- request at virtual address
-To:     Mark Brown <broonie@kernel.org>
-Cc:     linux-stable <stable@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        lkft-triage@lists.linaro.org,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>,
-        Dan Carpenter <dan.carpenter@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>, Shuah Khan <shuah@kernel.org>,
-        =?UTF-8?B?QWxleCBCZW5uw6ll?= <alex.bennee@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: iXE-Ie6CzKNY1mPDELbBM-zBi2lMQ6IN
+X-Proofpoint-ORIG-GUID: Red-iamF0QfLzJwuSLGiBcAKemFbA9eN
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-07_08,2023-11-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 bulkscore=0
+ mlxlogscore=648 impostorscore=0 lowpriorityscore=0 clxscore=1015
+ malwarescore=0 mlxscore=0 priorityscore=1501 adultscore=0 phishscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2310240000 definitions=main-2311070142
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mark,
+On Tue,  7 Nov 2023 13:31:16 +0100
+Nina Schoetterl-Glausch <nsg@linux.ibm.com> wrote:
 
-On Tue, 7 Nov 2023 at 21:37, Mark Brown <broonie@kernel.org> wrote:
->
-> On Tue, Nov 07, 2023 at 08:14:59PM +0530, Naresh Kamboju wrote:
-> > On Tue, 7 Nov 2023 at 19:51, Mark Brown <broonie@kernel.org> wrote:
->
-> > > This all seems very surprising, especially given that AFAICT there are
-> > > no changes in stable-6.6-rc for arch/arm64.
->
-> > We do not see on the mainline and next.
-> > Is this reported problems on stable-rc 6.6 and 6.5 are due to running
-> > latest kselftest on older kernels ?
->
-> There's also no backports I can see in the selftests (at all, never mind
-> just arm64).  There were a small number of selftest changes for arm64
-> went in during the merge window but nothing that looks super relevant.
+[...]
 
-The Qemu version got updated from v8.0 to v8.1 and started getting these
-test failures.
+> -obj-y	+= smp.o text_amode31.o stacktrace.o abs_lowcore.o
+> +obj-y	+= smp.o text_amode31.o stacktrace.o abs_lowcore.o facility.o
+>  
+>  extra-y				+= vmlinux.lds
+>  
+> diff --git a/arch/s390/kernel/facility.c b/arch/s390/kernel/facility.c
+> new file mode 100644
+> index 000000000000..5e80a4f65363
+> --- /dev/null
+> +++ b/arch/s390/kernel/facility.c
 
-- Naresh
+I wonder if this is the right place for this?
+
+This function seems to be used only for vsie, maybe you can just move
+it to vsie.c? or do you think it will be used elsewhere too?
+
+[...]
