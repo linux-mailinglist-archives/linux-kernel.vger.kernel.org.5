@@ -2,67 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A6EF27E39D1
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 11:33:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C0207E3324
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 03:39:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233947AbjKGKdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 05:33:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37096 "EHLO
+        id S233284AbjKGCj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 21:39:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233859AbjKGKcv (ORCPT
+        with ESMTP id S229646AbjKGCjz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 05:32:51 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 862C4D57;
-        Tue,  7 Nov 2023 02:31:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Date:Sender:Message-Id:Content-Type:
-        Content-Transfer-Encoding:MIME-Version:Subject:Cc:To:From:References:
-        In-Reply-To:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=s/nJSc12wTo3rC59/Tj7C6Qxk/YhPkpMlGmhBF4UOwQ=; b=iBWuSBO8byS44iey2YnZSgJM8U
-        MFt1NMp2w5pAfZ6wCLyhFFlLsovAEisNzEANGVeTWzW/SvgUOWs8hzrl8E6fK+iTUQlweEEngqE3f
-        clKt8RH9RkEOEHOUca70RLavt4Q4aMF3hqPZwPOI9vFg9kh++U7+bjIdhqcec+iRE9IOnhXewhCqH
-        6LPO3PA4SHNnRIpc2kCc3AAFwOldWLYZ8485pEq5BSo1Ktymanumc1ZnMMGf0asTqW9d5XypAMciV
-        XC9/SCnbDNdQN4NpBcW4WiP5nljAPkKxazCZz/vCJxqPKHMlq3Z6Rfls/ZgiL/ixuTbrlcSmxHnl7
-        BTSz1Lxg==;
-Received: from e0022681537dd.dyn.armlinux.org.uk ([fd8f:7570:feb6:1:222:68ff:fe15:37dd]:51274 helo=rmk-PC.armlinux.org.uk)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <rmk@armlinux.org.uk>)
-        id 1r0JMT-0000Kg-2d;
-        Tue, 07 Nov 2023 10:31:09 +0000
-Received: from rmk by rmk-PC.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <rmk@rmk-PC.armlinux.org.uk>)
-        id 1r0JMV-00CTyh-It; Tue, 07 Nov 2023 10:31:11 +0000
-In-Reply-To: <ZUoRY33AAHMc5ThW@shell.armlinux.org.uk>
-References: <ZUoRY33AAHMc5ThW@shell.armlinux.org.uk>
-From:   "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>
-To:     linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
-        linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev,
-        x86@kernel.org, linux-csky@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-parisc@vger.kernel.org
-Cc:     Salil Mehta <salil.mehta@huawei.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        jianyong.wu@arm.com, justin.he@arm.com,
-        James Morse <james.morse@arm.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-Subject: [PATCH RFC 22/22] riscv: convert to use arch_cpu_is_hotpluggable()
+        Mon, 6 Nov 2023 21:39:55 -0500
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52716115;
+        Mon,  6 Nov 2023 18:39:52 -0800 (PST)
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4SPXVq0jb5z4f3l7D;
+        Tue,  7 Nov 2023 10:39:47 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+        by mail.maildlp.com (Postfix) with ESMTP id 220661A0177;
+        Tue,  7 Nov 2023 10:39:48 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.104.67])
+        by APP1 (Coremail) with SMTP id cCh0CgBXWhBxo0ll3yj7AA--.25469S4;
+        Tue, 07 Nov 2023 10:39:47 +0800 (CST)
+From:   Li Lingfeng <lilingfeng@huaweicloud.com>
+To:     josef@toxicpanda.com
+Cc:     linux-kernel@vger.kernel.org, hch@lst.de,
+        linux-block@vger.kernel.org, nbd@other.debian.org, axboe@kernel.dk,
+        chaitanya.kulkarni@wdc.com, yukuai1@huaweicloud.com,
+        houtao1@huawei.com, yi.zhang@huawei.com, yangerkun@huawei.com,
+        lilingfeng@huaweicloud.com, lilingfeng3@huawei.com
+Subject: [PATCH v2] nbd: fix uaf in nbd_open
+Date:   Tue,  7 Nov 2023 18:34:35 +0800
+Message-Id: <20231107103435.2074904-1-lilingfeng@huaweicloud.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain; charset="utf-8"
-Message-Id: <E1r0JMV-00CTyh-It@rmk-PC.armlinux.org.uk>
-Sender: Russell King <rmk@armlinux.org.uk>
-Date:   Tue, 07 Nov 2023 10:31:11 +0000
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
+X-CM-TRANSID: cCh0CgBXWhBxo0ll3yj7AA--.25469S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7Ar4rur1ktr1xKryUWw1kGrg_yoW8ZryxpF
+        s8XF4DKay8Gw4Iga18Jw43Xr1rKw18G3yIgFW7u34avF93ArZIqFyvyFy8XFn0qrWxJFsr
+        AF4jqryxZ3WxCrDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUU9S14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2jI8I6cxK62vIxIIY0VWUZVW8XwA2ocxC64kIII
+        0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xv
+        wVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4
+        x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG
+        64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r
+        1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAq
+        YI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij64vIr41l4I8I3I0E4I
+        kC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWU
+        WwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr
+        0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWr
+        Zr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr
+        1UYxBIdaVFxhVjvjDU0xZFpf9x0pRQo7tUUUUU=
+X-CM-SenderInfo: polox0xjih0w46kxt4xhlfz01xgou0bp/
+X-Spam-Status: No, score=0.0 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_06_12,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,33 +64,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert riscv to use the arch_cpu_is_hotpluggable() helper rather than
-arch_register_cpu().
+From: Li Lingfeng <lilingfeng3@huawei.com>
 
-Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+Commit 4af5f2e03013 ("nbd: use blk_mq_alloc_disk and
+blk_cleanup_disk") cleans up disk by blk_cleanup_disk() and it won't set
+disk->private_data as NULL as before. UAF may be triggered in nbd_open()
+if someone tries to open nbd device right after nbd_put() since nbd has
+been free in nbd_dev_remove().
+
+Fix this by implementing ->free_disk and free private data in it.
+
+Fixes: 4af5f2e03013 ("nbd: use blk_mq_alloc_disk and blk_cleanup_disk")
+Signed-off-by: Li Lingfeng <lilingfeng3@huawei.com>
 ---
- arch/riscv/kernel/setup.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+  v1->v2: Implemente ->free_disk and free nbd in it instead of setting
+          disk->private_data as NULL before free nbd.
 
-diff --git a/arch/riscv/kernel/setup.c b/arch/riscv/kernel/setup.c
-index f8875ae1b0aa..168f0db63d53 100644
---- a/arch/riscv/kernel/setup.c
-+++ b/arch/riscv/kernel/setup.c
-@@ -294,12 +294,9 @@ void __init setup_arch(char **cmdline_p)
- 	riscv_set_dma_cache_alignment();
+ drivers/block/nbd.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
+index 800f131222fc..855fdf5c3b4e 100644
+--- a/drivers/block/nbd.c
++++ b/drivers/block/nbd.c
+@@ -250,7 +250,6 @@ static void nbd_dev_remove(struct nbd_device *nbd)
+ 	struct gendisk *disk = nbd->disk;
+ 
+ 	del_gendisk(disk);
+-	put_disk(disk);
+ 	blk_mq_free_tag_set(&nbd->tag_set);
+ 
+ 	/*
+@@ -261,7 +260,7 @@ static void nbd_dev_remove(struct nbd_device *nbd)
+ 	idr_remove(&nbd_index_idr, nbd->index);
+ 	mutex_unlock(&nbd_index_mutex);
+ 	destroy_workqueue(nbd->recv_workq);
+-	kfree(nbd);
++	put_disk(disk);
  }
  
--int arch_register_cpu(int cpu)
-+bool arch_cpu_is_hotpluggable(int cpu)
+ static void nbd_dev_remove_work(struct work_struct *work)
+@@ -1608,6 +1607,13 @@ static void nbd_release(struct gendisk *disk)
+ 	nbd_put(nbd);
+ }
+ 
++static void nbd_free_disk(struct gendisk *disk)
++{
++	struct nbd_device *nbd = disk->private_data;
++
++	kfree(nbd);
++}
++
+ static const struct block_device_operations nbd_fops =
  {
--	struct cpu *c = &per_cpu(cpu_devices, cpu);
--
--	c->hotpluggable = cpu_has_hotplug(cpu);
--	return register_cpu(c, cpu);
-+	return cpu_has_hotplug(cpu);
- }
+ 	.owner =	THIS_MODULE,
+@@ -1615,6 +1621,7 @@ static const struct block_device_operations nbd_fops =
+ 	.release =	nbd_release,
+ 	.ioctl =	nbd_ioctl,
+ 	.compat_ioctl =	nbd_ioctl,
++	.free_disk =	nbd_free_disk,
+ };
  
- void free_initmem(void)
+ #if IS_ENABLED(CONFIG_DEBUG_FS)
 -- 
-2.30.2
+2.31.1
 
