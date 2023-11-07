@@ -2,76 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 148D97E4D77
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 00:34:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90CB27E4D89
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 00:39:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235412AbjKGXek (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 18:34:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49552 "EHLO
+        id S1344232AbjKGXjc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 18:39:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235268AbjKGXe3 (ORCPT
+        with ESMTP id S230158AbjKGXja (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 18:34:29 -0500
+        Tue, 7 Nov 2023 18:39:30 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7B5310D2
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 15:34:26 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E27B9C433C9;
-        Tue,  7 Nov 2023 23:34:22 +0000 (UTC)
-Date:   Tue, 7 Nov 2023 18:34:25 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Ankur Arora <ankur.a.arora@oracle.com>
-Cc:     linux-kernel@vger.kernel.org, tglx@linutronix.de,
-        peterz@infradead.org, torvalds@linux-foundation.org,
-        paulmck@kernel.org, linux-mm@kvack.org, x86@kernel.org,
-        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
-        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        willy@infradead.org, mgorman@suse.de, jon.grimm@amd.com,
-        bharata@amd.com, raghavendra.kt@amd.com,
-        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
-        jgross@suse.com, andrew.cooper3@citrix.com, mingo@kernel.org,
-        bristot@kernel.org, mathieu.desnoyers@efficios.com,
-        geert@linux-m68k.org, glaubitz@physik.fu-berlin.de,
-        anton.ivanov@cambridgegreys.com, mattst88@gmail.com,
-        krypton@ulrich-teichert.org, David.Laight@ACULAB.COM,
-        richard@nod.at, mjguzik@gmail.com
-Subject: Re: [RFC PATCH 03/86] Revert "ftrace: Use preemption model
- accessors for trace header printout"
-Message-ID: <20231107183425.2f8b98a1@gandalf.local.home>
-In-Reply-To: <20231107183154.7f6db059@gandalf.local.home>
-References: <20231107215742.363031-1-ankur.a.arora@oracle.com>
-        <20231107215742.363031-4-ankur.a.arora@oracle.com>
-        <20231107181057.334c815f@gandalf.local.home>
-        <877cmtywpy.fsf@oracle.com>
-        <20231107183154.7f6db059@gandalf.local.home>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0FF910D2
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 15:39:28 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2CC3DC433C8;
+        Tue,  7 Nov 2023 23:39:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699400368;
+        bh=Mj2pwAn8Ayyso+nFqVs/qWRLklVo1CoXY6S2HNE1B58=;
+        h=Date:From:To:CC:Subject:In-Reply-To:References:From;
+        b=rAPIXaHIDgIZQR3P2JuU+NcVe9EuOwlx1iNGZeG2Xi0sJ1W4HVZWsehsjhPNPtE8V
+         5snCqAbXmW73htMvn4b9I2v5cLJixZj8rJP4xRliGNmioL1VP13RRGTuL9yzdbXYyp
+         KHzgmLAy8w804FnWscmh1RaG400zjPNJNVoyIzNf56CNMsMOdEgJNYCOuGT20J7+XR
+         Jvav0JCcHP3SguaQ27D756T7GOQ/TCVxzViillu0sUNXYblFiuu2IsIBfch33DoVAF
+         qfkNysMAoD7qQuVW11YeGV8t4ZIQslOJ4fLOXSO6HJ3b5S6xIQhx1iZ6MWZZNRk3jq
+         I53rTUVpcsKXg==
+Date:   Tue, 07 Nov 2023 15:39:28 -0800
+From:   Kees Cook <kees@kernel.org>
+To:     Mateusz Guzik <mjguzik@gmail.com>,
+        Kees Cook <keescook@chromium.org>
+CC:     Josh Triplett <josh@joshtriplett.org>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: =?US-ASCII?Q?Re=3A_=5BPATCH=5D_fs/exec=2Ec=3A_Add_fast_path_for_?= =?US-ASCII?Q?ENOENT_on_PATH_search_before_allocating_mm?=
+User-Agent: K-9 Mail for Android
+In-Reply-To: <CAGudoHF5mYFWtzrv539W8Uc1aO_u6+UJOoDqWY0pePc+cofziw@mail.gmail.com>
+References: <5c7333ea4bec2fad1b47a8fa2db7c31e4ffc4f14.1663334978.git.josh@joshtriplett.org> <202311071228.27D22C00@keescook> <20231107205151.qkwlw7aarjvkyrqs@f> <CAGudoHFsqMPmVvaV7BebGkpkw=pSQY8PLdB-1S3W5NpYh6trmA@mail.gmail.com> <202311071445.53E5D72C@keescook> <CAGudoHF5mYFWtzrv539W8Uc1aO_u6+UJOoDqWY0pePc+cofziw@mail.gmail.com>
+Message-ID: <A7FFA44F-F7DD-477F-83A6-44AF71D6775E@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 7 Nov 2023 18:31:54 -0500
-Steven Rostedt <rostedt@goodmis.org> wrote:
 
-> On Tue, 07 Nov 2023 15:23:05 -0800
-> Ankur Arora <ankur.a.arora@oracle.com> wrote:
-> 
-> > Or would you prefer these not be reverted (and reapplied) at all -- just fixed
-> > as you describe here?  
-> 
-> Yes, exactly that.
-> 
 
-Note, a revert usually means, "get rid of something because it's broken", it
-shouldn't be used for "I'm implementing this differently, and need to
-remove the old code first"
+On November 7, 2023 3:08:47 PM PST, Mateusz Guzik <mjguzik@gmail=2Ecom> wr=
+ote:
+>On 11/7/23, Kees Cook <keescook@chromium=2Eorg> wrote:
+>> On Tue, Nov 07, 2023 at 10:23:16PM +0100, Mateusz Guzik wrote:
+>>> If the patch which dodges second lookup still somehow appears slower a
+>>> flamegraph or other profile would be nice=2E I can volunteer to take a
+>>> look at what's going on provided above measurements will be done and
+>>> show funkyness=2E
+>>
+>> When I looked at this last, it seemed like all the work done in
+>> do_filp_open() (my patch, which moved the lookup earlier) was heavier
+>> than the duplicate filename_lookup()=2E
+>>
+>> What I didn't test was moving the sched_exec() before the mm creation,
+>> which Peter confirmed shouldn't be a problem, but I think that might be
+>> only a tiny benefit, if at all=2E
+>>
+>> If you can do some comparisons, that would be great; it always takes me
+>> a fair bit of time to get set up for flame graph generation, etc=2E :)
+>>
+>
+>So I spawned *one* process executing one statocally linked binary in a
+>loop, test case from http://apollo=2Ebackplane=2Ecom/DFlyMisc/doexec=2Ec =
+=2E
+>
+>The profile is definitely not what I expected:
+>   5=2E85%  [kernel]           [k] asm_exc_page_fault
+>   5=2E84%  [kernel]           [k] __pv_queued_spin_lock_slowpath
+>[snip]
+>
+>I'm going to have to recompile with lock profiling, meanwhile
+>according to bpftrace
+>(bpftrace -e 'kprobe:__pv_queued_spin_lock_slowpath { @[kstack()] =3D cou=
+nt(); }')
+>top hits would be:
+>
+>@[
+>    __pv_queued_spin_lock_slowpath+1
+>    _raw_spin_lock+37
+>    __schedule+192
+>    schedule_idle+38
+>    do_idle+366
+>    cpu_startup_entry+38
+>    start_secondary+282
+>    secondary_startup_64_no_verify+381
+>]: 181
+>@[
+>    __pv_queued_spin_lock_slowpath+1
+>    _raw_spin_lock_irq+43
+>    wait_for_completion+141
+>    stop_one_cpu+127
+>    sched_exec+165
 
-For the latter case, just remove what you don't need for the reason why
-it's being removed. Reverting commits is confusing, because when you see a
-revert in a git log, you think that commit was broken and needed to be taken
-out.
+There's the suspicious sched_exec() I was talking about! :)
 
--- Steve
+I think it needs to be moved, and perhaps _later_ instead of earlier? Hmm=
+=2E=2E=2E
 
+-Kees
+
+>    bprm_execve+328
+>    do_execveat_common=2Eisra=2E0+429
+>    __x64_sys_execve+50
+>    do_syscall_64+46
+>    entry_SYSCALL_64_after_hwframe+110
+>]: 206
+>
+>I did not see this coming for sure=2E I'll poke around maybe this weekend=
+=2E
+>
+
+--=20
+Kees Cook
