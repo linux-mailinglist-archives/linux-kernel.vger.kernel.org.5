@@ -2,163 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E4E447E485C
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 19:36:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB7597E4860
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 19:38:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232233AbjKGSgo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 13:36:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38126 "EHLO
+        id S232166AbjKGSiw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 13:38:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229886AbjKGSgn (ORCPT
+        with ESMTP id S229565AbjKGSiu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 13:36:43 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50680B9;
-        Tue,  7 Nov 2023 10:36:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699382201; x=1730918201;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=niQ8FAZVB7tsHM0LZXi5A+2Rr2dzc9RtaVvyV81wfiw=;
-  b=h8Z4lKZSQmtZhnCBjXDw/pRo0S/U7h+T/2s6S4U/FcRQZ4gb0ikZjBCy
-   pZHa1cim3L/BJfen0dQRjLfHW7XYjyYpCChDhYmDTZojQhzWwgs/LwX1Q
-   UKYiRYYI6t6D8Xo5NshDte1OHRdRw4RLGeqmDSFnBoux/2dL+axRRo0NC
-   njU/DPE6l2wnLmVJcg7+NQ/1Y3Wq3LaN2ZgOpC8Th0W9cuXOxLeVJ1Smp
-   Dys/iPKxht3EJM0fm91LEXFkN2dcdhy0ALu1IeeRTCHRRbXopJayUlWVP
-   c4xGSF+SNiz0x5bI9ELCn0oPWszASjnBNBdGMhDjXPz3H3+ULKNRld9Hu
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10887"; a="386761366"
-X-IronPort-AV: E=Sophos;i="6.03,284,1694761200"; 
-   d="scan'208";a="386761366"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2023 10:36:40 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10887"; a="1094232376"
-X-IronPort-AV: E=Sophos;i="6.03,284,1694761200"; 
-   d="scan'208";a="1094232376"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga005.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2023 10:36:40 -0800
-Received: from [10.209.174.91] (kliang2-mobl1.ccr.corp.intel.com [10.209.174.91])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by linux.intel.com (Postfix) with ESMTPS id B83DC580D9B;
-        Tue,  7 Nov 2023 10:36:38 -0800 (PST)
-Message-ID: <eff62fd6-10f4-4548-8fab-c6c56338be66@linux.intel.com>
-Date:   Tue, 7 Nov 2023 13:36:37 -0500
+        Tue, 7 Nov 2023 13:38:50 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D578212B
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 10:38:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1699382285;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=InIrBHm4KFm9lYj657uNMT2gFwfHIWbZC6mGLJVc7tk=;
+        b=GbdaPaKRkBakd3HJcPOoWygTfRSgxtERwAgLcXW34amVudlnLXtSyL31l7pzd1Q9b1i70c
+        adtsCffv4mGRUAJA7l1ohQf/ak6gJLuUke3MSB/WcYcK3fx6qSBGVgWZxNZjh3iHaOHGHy
+        MhmOoTaqjaOYhHVNUQWYDUcPHDV4ckc=
+Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
+ [209.85.222.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-481-K9XZb1qaP9OwIKIWVZtGbA-1; Tue, 07 Nov 2023 13:38:02 -0500
+X-MC-Unique: K9XZb1qaP9OwIKIWVZtGbA-1
+Received: by mail-qk1-f199.google.com with SMTP id af79cd13be357-77a29e32885so650843385a.1
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 10:38:02 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699382282; x=1699987082;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=InIrBHm4KFm9lYj657uNMT2gFwfHIWbZC6mGLJVc7tk=;
+        b=ra51jnP2lyMF9fFv8c5q10xl92oBD2/1GYK5coITr9FZ/mOymMncb/yN8LhrfmUohQ
+         OQij84BacMIbewq5jpOUSBIFx/i0PWrFUsSmcBBo9RL5rdBJXcSe8S19A62aTtQ3+Fce
+         poJBbe6aD0MBqDvcoWofVW5KfOJsA4Jl6i2Bf30+3ISjFpklRIpqc+8+bEP1PGAJqBN+
+         vk/EPEkeeLGJpWR4txlAaJNZjpSELlT/8NnzqzfL71ZKC8KSoMXes4dC4AJ4mYbqQaWk
+         pCbOosMhUXmJinqg1PJ6jU3HMISh3xHVyOTP6WiR2vAUj8HyxnvomZGJ+036C9vHx6as
+         5YMw==
+X-Gm-Message-State: AOJu0YwoQ4xDiAOtYSccYn68bcUTzjiH8iFtZ9+Qhcgy1X8uLUKUwcxL
+        Mbjj8IiUHn3gyZwrXLgSGOukm3El0euGNPnZc1A6PMi2bRCuJX0PdRH4eSfAdoI2xUJ/Dr82E/B
+        2Dd63ZKXJOwtVs8J50lwLeO+O
+X-Received: by 2002:a05:620a:1373:b0:778:912b:6014 with SMTP id d19-20020a05620a137300b00778912b6014mr29659779qkl.37.1699382282147;
+        Tue, 07 Nov 2023 10:38:02 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFFLmjKNv/RxgHklKcgSXkz+1uBlm0nE2/KM8eT7xeJCPC73MWGdrxaRj8lE8j078oEsKC3SQ==
+X-Received: by 2002:a05:620a:1373:b0:778:912b:6014 with SMTP id d19-20020a05620a137300b00778912b6014mr29659755qkl.37.1699382281862;
+        Tue, 07 Nov 2023 10:38:01 -0800 (PST)
+Received: from fedora ([2600:1700:1ff0:d0e0::37])
+        by smtp.gmail.com with ESMTPSA id g12-20020a05620a218c00b00767da10efb6sm153350qka.97.2023.11.07.10.38.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Nov 2023 10:38:01 -0800 (PST)
+Date:   Tue, 7 Nov 2023 12:37:58 -0600
+From:   Andrew Halaney <ahalaney@redhat.com>
+To:     Mrinmay Sarkar <quic_msarkar@quicinc.com>
+Cc:     agross@kernel.org, andersson@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        konrad.dybcio@linaro.org, mani@kernel.org, robh+dt@kernel.org,
+        quic_shazhuss@quicinc.com, quic_nitegupt@quicinc.com,
+        quic_ramkri@quicinc.com, quic_nayiluri@quicinc.com,
+        dmitry.baryshkov@linaro.org, robh@kernel.org,
+        quic_krichai@quicinc.com, quic_vbadigan@quicinc.com,
+        quic_parass@quicinc.com, quic_schintav@quicinc.com,
+        quic_shijjose@quicinc.com, Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-phy@lists.infradead.org
+Subject: Re: [PATCH v1 2/2] arm64: dts: qcom: sa8775p: Add ep pcie1
+ controller node
+Message-ID: <i3yum3wbko33jwn7tfbcflpcxe5k5j5ituhyxtucx6gk2bs3gz@7ncewfmepnai>
+References: <1699362294-15558-1-git-send-email-quic_msarkar@quicinc.com>
+ <1699362294-15558-3-git-send-email-quic_msarkar@quicinc.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] perf test: Basic branch counter support
-To:     Ian Rogers <irogers@google.com>
-Cc:     acme@kernel.org, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, peterz@infradead.org,
-        mingo@redhat.com, jolsa@kernel.org, namhyung@kernel.org,
-        adrian.hunter@intel.com, tinghao.zhang@intel.com
-References: <20231107174411.1496958-1-kan.liang@linux.intel.com>
- <CAP-5=fWjXS43xBujQ2DOAeo41WX5L4hfTfJVEV8h6i1Uu2HBEA@mail.gmail.com>
-Content-Language: en-US
-From:   "Liang, Kan" <kan.liang@linux.intel.com>
-In-Reply-To: <CAP-5=fWjXS43xBujQ2DOAeo41WX5L4hfTfJVEV8h6i1Uu2HBEA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1699362294-15558-3-git-send-email-quic_msarkar@quicinc.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Nov 07, 2023 at 06:34:53PM +0530, Mrinmay Sarkar wrote:
+> Add ep pcie dtsi node for pcie1 controller found on sa8775p platform.
+> It supports gen4 and x4 link width. Limiting the speed to Gen3 due to
+> stability issues.
 
+I wouldn't mind a bit more information on what "stability" issues
+entails! I'm a sucker for details in a commit message.
 
-On 2023-11-07 1:05 p.m., Ian Rogers wrote:
-> On Tue, Nov 7, 2023 at 9:44 AM <kan.liang@linux.intel.com> wrote:
->>
->> From: Kan Liang <kan.liang@linux.intel.com>
->>
->> Add a basic test for the branch counter feature.
->>
->> The test verifies that
->> - The new filter can be successfully applied on the supported platforms.
->> - The counter value can be outputted via the perf report -D
->>
->> Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
 > 
-> Thanks Kan!
+> Signed-off-by: Mrinmay Sarkar <quic_msarkar@quicinc.com>
+> ---
+>  arch/arm64/boot/dts/qcom/sa8775p.dtsi | 48 +++++++++++++++++++++++++++++++++++
+>  1 file changed, 48 insertions(+)
 > 
->> ---
->>  tools/perf/tests/shell/record.sh | 30 ++++++++++++++++++++++++++++++
->>  1 file changed, 30 insertions(+)
->>
->> diff --git a/tools/perf/tests/shell/record.sh b/tools/perf/tests/shell/record.sh
->> index 4fbc74805d52..2783e867c07c 100755
->> --- a/tools/perf/tests/shell/record.sh
->> +++ b/tools/perf/tests/shell/record.sh
->> @@ -11,6 +11,9 @@ err=0
->>  perfdata=$(mktemp /tmp/__perf_test.perf.data.XXXXX)
->>  testprog="perf test -w thloop"
->>  testsym="test_loop"
->> +cpu_pmu_dir="/sys/bus/event_source/devices/cpu*"
->> +br_cntr_file="/caps/branch_counter_nr"
->> +br_cntr_output="branch stack counters"
->>
->>  cleanup() {
->>    rm -rf "${perfdata}"
->> @@ -154,10 +157,37 @@ test_workload() {
->>    echo "Basic target workload test [Success]"
->>  }
->>
->> +test_branch_counter() {
->> +  echo "Basic branch counter test"
->> +  # Check if the branch counter feature is supported
+> diff --git a/arch/arm64/boot/dts/qcom/sa8775p.dtsi b/arch/arm64/boot/dts/qcom/sa8775p.dtsi
+> index 7eab458..acd7bd8 100644
+> --- a/arch/arm64/boot/dts/qcom/sa8775p.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sa8775p.dtsi
+> @@ -3732,6 +3732,54 @@
+>  		status = "disabled";
+>  	};
+>  
+> +	pcie1_ep: pcie-ep@1c10000 {
+> +		compatible = "qcom,sa8775p-pcie-ep";
+> +		reg = <0x0 0x01c10000 0x0 0x3000>,
+> +		      <0x0 0x60000000 0x0 0xf20>,
+> +		      <0x0 0x60000f20 0x0 0xa8>,
+> +		      <0x0 0x60001000 0x0 0x4000>,
+> +		      <0x0 0x60200000 0x0 0x100000>,
+> +		      <0x0 0x01c13000 0x0 0x1000>,
+> +			  <0x0 0x60005000 0x0 0x2000>;
+> +		reg-names = "parf", "dbi", "elbi", "atu", "addr_space",
+> +			    "mmio", "dma";
+> +
+> +		clocks = <&gcc GCC_PCIE_1_AUX_CLK>,
+> +			 <&gcc GCC_PCIE_1_CFG_AHB_CLK>,
+> +			 <&gcc GCC_PCIE_1_MSTR_AXI_CLK>,
+> +			 <&gcc GCC_PCIE_1_SLV_AXI_CLK>,
+> +			 <&gcc GCC_PCIE_1_SLV_Q2A_AXI_CLK>;
+> +
+> +		clock-names = "aux",
+> +			      "cfg",
+> +			      "bus_master",
+> +			      "bus_slave",
+> +			      "slave_q2a";
+> +
+> +		interrupts = <GIC_SPI 518 IRQ_TYPE_LEVEL_HIGH>,
+> +					 <GIC_SPI 152 IRQ_TYPE_LEVEL_HIGH>,
+> +					 <GIC_SPI 474 IRQ_TYPE_LEVEL_HIGH>;
+> +
+> +		interrupt-names = "global", "doorbell", "dma";
+> +
+> +		interconnects = <&pcie_anoc MASTER_PCIE_1 0 &mc_virt SLAVE_EBI1 0>,
+> +				<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_PCIE_1 0>;
+
+I keep seeing Konrad requesting that we use the #define instead of a raw
+number 0, i.e. something like QCOM_ICC_TAG_ALWAYS (although if I'm
+reading that correctly QCOM_ICC_TAG_ALWAYS doesn't evaluate to 0, so
+make sure you pick the appropriate one).
+
+> +		interconnect-names = "pcie-mem", "cpu-pcie";
+
+This is nitpicky, but unless someone told you to do the whitespace
+between some of these properties I'd get more consistent. i.e. reg and
+reg-names has no newline between them, but clocks and clock-names does,
+and then interconnects/interconnect-names does not.
+
+> +
+> +		dma-coherent;
+> +
+> +		iommus = <&pcie_smmu 0x80 0x7f>;
+> +		resets = <&gcc GCC_PCIE_1_BCR>;
+> +		reset-names = "core";
+> +		power-domains = <&gcc PCIE_1_GDSC>;
+> +		phys = <&pcie1_phy>;
+> +		phy-names = "pciephy";
+> +		max-link-speed = <3>; /* FIXME: Limiting the Gen speed due to stability issues */
+> +		num-lanes = <4>;
+> +
+> +		status = "disabled";
+> +	};
+> +
+>  	pcie1_phy: phy@1c14000 {
+>  		compatible = "qcom,sa8775p-qmp-gen4x4-pcie-phy";
+>  		reg = <0x0 0x1c14000 0x0 0x4000>;
+> -- 
+> 2.7.4
 > 
-> If $cpu_pmu_dir is empty, e.g. ARM and S390, this should also skip.
 > 
 
-Yes, I've tested with a fake unsupported dir. The test case is skipped
-as well.
-
->> +  for dir in $cpu_pmu_dir
->> +  do
->> +    if [ ! -e "$dir$br_cntr_file" ]
->> +    then
->> +      echo "Not support branch counter feature [Skipped]"
-> 
-> Perhaps here it'd be clearer to output:
-> echo "branch counter feature not supported on all core PMUs ($dir) [Skipped]"
-> 
-
-Sure, I will change it in V2.
-
-Thanks,
-Kan
-
-> Thanks,
-> Ian
-> 
->> +      return
->> +    fi
->> +  done
->> +  if ! perf record -o "${perfdata}" -j any,counter ${testprog} 2> /dev/null
->> +  then
->> +    echo "Basic branch counter test [Failed record]"
->> +    err=1
->> +    return
->> +  fi
->> +  if ! perf report -i "${perfdata}" -D -q | grep -q "$br_cntr_output"
->> +  then
->> +    echo "Basic branch record test [Failed missing output]"
->> +    err=1
->> +    return
->> +  fi
->> +  echo "Basic branch counter test [Success]"
->> +}
->> +
->>  test_per_thread
->>  test_register_capture
->>  test_system_wide
->>  test_workload
->> +test_branch_counter
->>
->>  cleanup
->>  exit $err
->> --
->> 2.35.1
->>
-> 
