@@ -2,101 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 47AC17E3525
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 07:16:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3FF67E352F
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 07:24:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233561AbjKGGQb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 01:16:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46284 "EHLO
+        id S232535AbjKGGYT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 01:24:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232645AbjKGGQ3 (ORCPT
+        with ESMTP id S229559AbjKGGYS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 01:16:29 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EB1A183;
-        Mon,  6 Nov 2023 22:16:25 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5F54C433C7;
-        Tue,  7 Nov 2023 06:16:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1699337785;
-        bh=1DUHo7iF0MscewlRLmsCnEFojb1hLmgMueDa31SA3HI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=L/NMHSLsuVo6pPDoLri5kcaBoy85g2/eKu5UTOkbwYpm3i/KD+gH+WauQ+9KVfFpQ
-         iFO3C7yR0oGwnu4yyPmPBiLNXv1UdiG0TrvMMJpwm9jKP5xzAFZqcS0EgCTAUrA/so
-         YRm2fx7FJ3Q4Rx1jIE27S5elCI4svAQUVk1dSYPs=
-Date:   Tue, 7 Nov 2023 07:16:19 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Jack Zhu <jack.zhu@starfivetech.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Todor Tomov <todor.too@gmail.com>, bryan.odonoghue@linaro.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-staging@lists.linux.dev,
-        changhuang.liang@starfivetech.com
-Subject: Re: [PATCH v11 0/9] Add StarFive Camera Subsystem driver
-Message-ID: <2023110730-thousand-skyrocket-d6ba@gregkh>
-References: <20231025031422.3695-1-jack.zhu@starfivetech.com>
- <15ef0a70-734e-280a-f014-41914a55d8cf@starfivetech.com>
- <a3a2c179-2cbe-5a55-a21e-b45abfb6d494@starfivetech.com>
- <2023110745-tableful-trapezoid-4206@gregkh>
+        Tue, 7 Nov 2023 01:24:18 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AD9C101;
+        Mon,  6 Nov 2023 22:24:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699338255; x=1730874255;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=xMd2rVgz/0nCDHGO5G5Cgmns963Fjfa40nHUcD2LIxI=;
+  b=IGCMk8ZZpOLcTsOgycxyY4TH3dQ/eEP5ApYP7g3QYG2nqGBUAliuOluS
+   5q0Nz+BKL2CeVuwhRrIK8vN1mQEN37rWnUNnI1BxvrXCo+05EWGnNTi1a
+   v0CS1yb/0h97f5ax1fmFs62RLrv9b8S/jp6ZWJnJBMIpQNvLbykJfLf2g
+   rNGe2YlKqBXrWEN561Ln0J9ZPIlalDjgXgkN7YnreOfgI5XG4VSa6AX7F
+   vArXh463zL2b9g2BwG+UkgLqjUbL1QWzwUxvGEE1WFQ3ROxRSdHNFEo9H
+   S5O6TpHxQWi8cqEM+Y1t2t7jqE0j+jbZLdSqqwa251uJAq1k49tAaNClj
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10886"; a="475682216"
+X-IronPort-AV: E=Sophos;i="6.03,282,1694761200"; 
+   d="scan'208";a="475682216"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Nov 2023 22:24:15 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10886"; a="1094047505"
+X-IronPort-AV: E=Sophos;i="6.03,282,1694761200"; 
+   d="scan'208";a="1094047505"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga005.fm.intel.com with ESMTP; 06 Nov 2023 22:24:07 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1001)
+        id 15A0E3CC; Tue,  7 Nov 2023 08:24:05 +0200 (EET)
+Date:   Tue, 7 Nov 2023 08:24:05 +0200
+From:   Mika Westerberg <mika.westerberg@linux.intel.com>
+To:     Lukas Wunner <lukas@wunner.de>
+Cc:     Mario Limonciello <mario.limonciello@amd.com>,
+        Karol Herbst <kherbst@redhat.com>,
+        Lyude Paul <lyude@redhat.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>,
+        Danilo Krummrich <dakr@redhat.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Xinhui Pan <Xinhui.Pan@amd.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Mark Gross <markgross@kernel.org>,
+        Andreas Noever <andreas.noever@gmail.com>,
+        Michael Jamet <michael.jamet@intel.com>,
+        Yehezkel Bernat <YehezkelShB@gmail.com>,
+        Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>,
+        Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
+        "Maciej W . Rozycki" <macro@orcam.me.uk>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        "open list:DRM DRIVER FOR NVIDIA GEFORCE/QUADRO GPUS" 
+        <dri-devel@lists.freedesktop.org>,
+        "open list:DRM DRIVER FOR NVIDIA GEFORCE/QUADRO GPUS" 
+        <nouveau@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:RADEON and AMDGPU DRM DRIVERS" 
+        <amd-gfx@lists.freedesktop.org>,
+        "open list:PCI SUBSYSTEM" <linux-pci@vger.kernel.org>,
+        "open list:ACPI" <linux-acpi@vger.kernel.org>,
+        "open list:X86 PLATFORM DRIVERS" 
+        <platform-driver-x86@vger.kernel.org>,
+        "open list:THUNDERBOLT DRIVER" <linux-usb@vger.kernel.org>
+Subject: Re: [PATCH v2 8/9] PCI: Exclude PCIe ports used for tunneling in
+ pcie_bandwidth_available()
+Message-ID: <20231107062405.GU17433@black.fi.intel.com>
+References: <20231103190758.82911-1-mario.limonciello@amd.com>
+ <20231103190758.82911-9-mario.limonciello@amd.com>
+ <20231106181022.GA18564@wunner.de>
+ <712ebb25-3fc0-49b5-96a1-a13c3c4c4921@amd.com>
+ <20231106185652.GA3360@wunner.de>
+ <20231107054526.GT17433@black.fi.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <2023110745-tableful-trapezoid-4206@gregkh>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231107054526.GT17433@black.fi.intel.com>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 07, 2023 at 07:15:10AM +0100, Greg Kroah-Hartman wrote:
-> On Tue, Nov 07, 2023 at 11:27:27AM +0800, Jack Zhu wrote:
-> > 
-> > 
-> > On 2023/10/31 9:09, Jack Zhu wrote:
-> > > 
-> > > 
-> > > On 2023/10/25 11:14, Jack Zhu wrote:
-> > >> Hi,
-> > >> 
-> > >> This series is the v11 series that attempts to support the Camera Subsystem
-> > >> found on StarFive JH7110 SoC.
-> > > 
-> > > Hi Hans and Laurent,
-> > > 
-> > > Could you please help review the code?
-> > > Thank you for your time!
-> > > 
-> > 
-> > Hi,
-> > 
-> > Could you please take some time to help review the code? Thank you so much!
+On Tue, Nov 07, 2023 at 07:45:26AM +0200, Mika Westerberg wrote:
+> Hi,
 > 
-> It is the middle of the merge window, no new code can be added to any
-> maintainers tree at this point in time, please relax there is no rush or
-> deadline at all here.
+> On Mon, Nov 06, 2023 at 07:56:52PM +0100, Lukas Wunner wrote:
+> > On Mon, Nov 06, 2023 at 12:44:25PM -0600, Mario Limonciello wrote:
+> > > Tangentially related; the link speed is currently symmetric but there are
+> > > two sysfs files.  Mika left a comment in drivers/thunderbolt/switch.c it may
+> > > be asymmetric in the future. So we may need to keep that in mind on any
+> > > design that builds on top of them.
+> > 
+> > Aren't asymmetric Thunderbolt speeds just a DisplayPort thing?
 > 
-> While you wait, why not help out and review other patch submissions from
-> other developers, which will help your changes get to the top of the
-> queue?  That way everyone's load is reduced and you are not just asking
-> for others to do work for you with nothing in return.
+> No, they affect the whole fabric. We have the initial code for
+> asymmetric switching in v6.7-rc1.
+> 
+> > > As 'thunderbolt' can be a module or built in, we need to bring code into PCI
+> > > core so that it works in early boot before it loads.
+> > 
+> > tb_switch_get_generation() is small enough that it could be moved to the
+> > PCI core.  I doubt that we need to make thunderbolt built-in only
+> > or move a large amount of code to the PCI core.
+> 
+> If at all possible I would like to avoid this and littering PCI side
+> with non-PCI stuff. There could be other similar "mediums" in the future
+> where you can transfer packets of "native" protocols such as PCIe so
+> instead of making it Thunderbolt/USB4 specific it should be generic
+> enough to support future extensions.
+> 
+> In case of Thunderbolt/USB4 there is no real way to figure out how much
+> bandwidth each PCIe tunnel gets (it is kind of bulk traffic that gets
+> what is left from isochronous protocols) so I would not even try that
+> and instead use the real PCIe links in pcie_bandwidth_available() and
+> skip all the "virtual" ones.
 
-Also, while you wait, why not just finish off the last 3 items on the
-TODO list which would make your code not be required to go into the
-staging portion of the tree at all?  You've had a few weeks now, what is
-preventing that from happening, and when will that work actually be
-done?
-
-thanks,
-
-greg k-h
+Actually can we call the new function something like pci_link_is_virtual()
+instead and make pcie_bandwidth_available() call it? That would be more
+future proof IMHO.
