@@ -2,216 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A3967E477A
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 18:47:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CA387E4780
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 18:47:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231962AbjKGRrl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 12:47:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59136 "EHLO
+        id S235130AbjKGRro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 12:47:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235495AbjKGRr1 (ORCPT
+        with ESMTP id S232723AbjKGRrj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 12:47:27 -0500
-Received: from sonic312-30.consmr.mail.ne1.yahoo.com (sonic312-30.consmr.mail.ne1.yahoo.com [66.163.191.211])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98CEE134
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 09:47:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1699379244; bh=38RfSpPHsNTdkGAJZ1Cpe3eRvw1Uu1WMAb9d+ryxzFI=; h=Date:Subject:To:Cc:References:From:In-Reply-To:From:Subject:Reply-To; b=Qjdg3WuHNP4790kkeN66Nha6ibeLxdjPYB+xdZ+3YFV+0hIxzbZaVCXv+NCH1o0+S8ekhkFDdwjeM3oipxuPhJXi8WYtQTqdbcnt6pD+KWW6Ge5emLGns7+y2UAbdKsTRDH4wzxrXEy8/wtIB2u4ptzDBVxlZtwD9Y19HXtgFXVfwVdA3NyXtilJeXVfD5TjSkdRZ0SZ7d08RnLtU3qVmclicC1pfsd+T1lcZFBpIfi1VYnqagoBPZxKQDTaZkbYA3HEFktOHbksYy62Bx+B6U7/OVoky0vvfYlW6pDjkN02pZRtt1qPYRUaIsY+81egKIbAocE/DnnfZ3ynoxZO4A==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1699379244; bh=A36urbN7+ml2fIfPSunkiEEopRcWqP2695GNmlQ/FJ3=; h=X-Sonic-MF:Date:Subject:To:From:From:Subject; b=Axq8d0BSrnFiRTX8V8LBMNmVJKHbDpu7yPtdp1pO9eXJJ1W63dlf8jqKez2AOOwXA9xwfZqWhzPXzvxYVNWyN5KSsmD0rcAHMs3Y1Z1p4y3X2q2+4VFhrq0D+YRha1NXkDYXxzOFbR6b+RvnahSdzeKZotPSUL+ctasORDRLEzVA1H0/sGfg3sgUPB6iQAqpzxq3FCuzivg0AW3rMM7M9E7GFNVLqvBzl/tqWR8O8TvQNXDYXznhSuN8e8guVA8rKkyBH6q5Z/C58XoMj4eqB3fw0VqamNqYsNKXwrrEia6y9/5MPO9cHsbrqUoRiEjsjBenpKUrouNtl2nLdf1xzg==
-X-YMail-OSG: tdq7hlQVM1nowFRoqEGdYpI8CfTEE1V.S0WsleKnI6h8rWXgFLVh7JOyxpUQ70D
- X1TUr3.Dg3io0vtPMtwidF4ohmDhpq.gilEHRrzQCMuaHoFACSwX3xuHt1mLdqbCZ_H2tv4Zk.aq
- 7iQhIoS5Me7jjNt9xo9xGCJVhZu5bggePbfX0pgyyBeMu3p1ulONeE8JjR_Eg2mipcC4cyi2noCu
- qJ2WBjueS046aRTgkhpbakV_g1MeUigLEGJvPM8gCVOcXc8OJH1JP5gJtySzrwftOkyBqAVXMtO6
- m1nElJT5IJ7qWGa28oKByuhO0ftXJdaSla8yuALzJisP1iCpoScLN2miM.7MTFIwxwgRRtHA7qgO
- 9l9oRT6QQ5hJagmia6DVx__JOG0086Um5Sc6x4jOrCrD7iiSuDFwNnd2AEW1SWeI5.mVY7e7vwJh
- qBA5ypIbO8QVdC1WxI3CWWyuUzJk3Hx8fU3XdsllqPRaVCsOzU_y5iQUrkI5rDihDXGakqOCizjP
- j5Pyafbk0iGKQsDrOpT07qkYPvhEHx1LIDPLF17LiC.QfmhZwIzvnRpC1k56LoNf6RlVJe118ynt
- vyPB_LNaz2JMHp2P3v6t5FSztWZx0FgzNwS7q1qJtmAwumaZegBwGXLOEkIxZm9OOiHUjqm6j7SS
- x5wF5s7dVbq3QfZf6eIroWJ2MTVZc12L_6edbuBDq4C8G8I9RxQ2bJlCSXnnT5ZMpOjFGPz_kgAL
- Z6gKbjRJvEVN.uz8GH_Qrbz6j5bMS4hj0utyZW721G9aFTyNfHVi3aUOarZNJtMhBhpWgJeYw2Tf
- LN3kq.GTr__bv8DT3Mu.MNpkxN1X5UwliVh3g1Jfvd4uqCu2yyDXiUWgaBAZEaVLIrsXBlLGVHwy
- 4K8W7Yk6HrWPbWsPcDdQ5G53BBQVdr._gC3hBlUCul2I_ZFdXeReXM_mPwXl25ApT4u.ruoSU0AQ
- 69OIY8hmhEa5Ct5MJsMdZqHUUYdv6kVeitLxZ_v9lbx7ZbBfTLOSVt0mNxB21uHcUsUGvGXRcKct
- CqAVOlu5JpFk1CfcBUzdbvl8W22YSeDi_tEAqUcdbufg2tV1RKTPfyO1Q8fOojQZeBL9i8qODW1X
- 1lh50_BXc3lvV893qa8MWvDPZP9Wi0ZruQXYd.6w8PeJ0bEVeUFwmQv.ijUH.lvO4Gimyf6ud9pB
- V2rtas7qOel.jxHSjydxBAdFfayw1APtgrcPVQFoDXtG.DMyPWmL48kOhF1yJJ4jvNf_tRTQXR6u
- G52_NPoIt8orPdi3x5w2yPgq_747sYgb.atEISGrg2uaDIX.0rETX_cE5.fHqPYZvVW8ciaKO7wo
- bNIMbP2UxXf6rJC926Y09KKtg8O766phO8Lx1S.vgjMM8CwJzLGDXX24KthJxYtBijBuPdDi2.V4
- Rwt05FMo5eiesrt8..xryhDdSyJHlLlaIMC9e0a020Bv0HcEDPkO3S2y7oAToWrrIT0XWV_buy_Z
- lNoakfWRdlaec1N1LQ7kA_lIEdOjT0CJOdkowEnrlQLCbbUZRO6cklyKsc7IDCS3oEgBf6NR.d0L
- CZxPItzHP2wIKw76loeUkE3eMSmY7YMN7pyZSXc1cOwEYenWalqyG_Jby_RVGVaiutowxvdRYsCI
- 7KMrVGXvP313dz2b9ns7R.pOxCoPbYVEpBKeJMCUa0Rc3MMHwyTdJ.HzyhkZ1ssB.pOGsNxTW2ae
- EbQrVWAsCDBnz3bpMyTAmBic2DtDoCP4_3H77sGLsg7xaClxvMf5.G2mW.lnaripAundNTiTxD28
- 9zZeElU5vZU1zKNvrAYSbd5GzBc9ifwhL0qPnDM5R7VqS03QDUNtfu4vqA1imY.tPar0WlNv_QY7
- 7RSSXQ8kG7Jk5xbxGtrX467ZI8PBDs535G2k4OlkfvbSUV2viA.37Fk9AyKvnpSwx6dffvlZlVnF
- 8m7JUrWurgl0qpqRPZss1IGmaEOopcgfRBN6YFVOCMXoADJc_xl_5QCfHk__OXkI.hgbsfLo2Ty_
- u1yC0iYYLrtm0N7Pq8pnQnjlZzd98l0qmwjhraRfFYYlF6nITbxeLaU8SkI_b488c8LYj3nf_gvZ
- 5XGaTissOuS.vXLL7mCgCvgBpEwfzw7ktMCNjDWTsZn2IzN2NL6xvWhfpDQiB2tB0aJ3Kw1ahtEX
- oKa3N3sOtYGHHArgE9VqZVjSVqFoNl9vrVyIOoyFcbo6S55tTYgVzXI3QKDZOkXeBGbRmpcod7wi
- Cz1RAtLMVINxTiN22jla0IpIgaY00uv.RRsIWCV7wiiv4aU4wbnk0_2ZLf8S7bwM8XsnoF831JyJ
- Sd4l_
-X-Sonic-MF: <casey@schaufler-ca.com>
-X-Sonic-ID: fcf060aa-773d-4602-aaf2-19925cb0ef88
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic312.consmr.mail.ne1.yahoo.com with HTTP; Tue, 7 Nov 2023 17:47:24 +0000
-Received: by hermes--production-ne1-56df75844-jh4w4 (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID 5935d0c12330d2dd3580b3918d117964;
-          Tue, 07 Nov 2023 17:47:23 +0000 (UTC)
-Message-ID: <d32add2c-26ed-4988-990b-3014d7727645@schaufler-ca.com>
-Date:   Tue, 7 Nov 2023 09:47:22 -0800
+        Tue, 7 Nov 2023 12:47:39 -0500
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67B1A12A
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 09:47:37 -0800 (PST)
+Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-9c2a0725825so899083066b.2
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 09:47:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1699379256; x=1699984056; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=WSmUDYezrRMsQxCZGKuJaXceyDK4AjhEJzY0uxoMoug=;
+        b=dzvKNjIEDQa0VtPhxodAhvWZTrhL3MiOgeyAlbQ8X22jE4ThK3KNbOrGUQ1V7ZQHSj
+         y0Y0+chu6OR5BN7QD/gZh21tJ5bTFOXunNP/43NzigaPrf4KpSIWd9g54ivhEkzJ40F8
+         ptfyQjy7HCaBNXr0BcPJd5JBIhlH/aKqOA5BpdksaR++Y0r93VuHOtOGqgM3ae1DiIQ6
+         tS5zohkmFkZwJauHHdpLtKZyvzwFLDrZQEfH4ZktGR6K6k2CmW7VYd9hE96DHPBKeUL/
+         XwaAMxwIpUmdCvmTeMe6ter5dMqMkZS6kBb7vKNTjNPP/AzJ5V3QlfdXjmYoV+W7UiQk
+         D0ZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699379256; x=1699984056;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=WSmUDYezrRMsQxCZGKuJaXceyDK4AjhEJzY0uxoMoug=;
+        b=HvD7ucvuLOF2wBwyWlIOmrHUFKrhrf982De7W3ckCP7w6dUhq6EJ24Y+inguLLxybt
+         L3+q0fmzR4YUD1wCxDNfHLIN+OYZgbYe6TsH++S0W1yxcPD/H9pYD0MWKaiMhDVSt+Cp
+         OKfLjydPc7Hfb83PXued6Z/XiaNJZKEWvThkRpws5frzgj1CekQY8chbEEIu//rEeqJi
+         6rP914BQgF9jZO4hO/l1RE0w1lD+4XUYt6ojxmZ+Y659GhgKxsm6acL9F0c0ZvGJACPj
+         G7O0NG3wmglQReLj+cLXXrsIH1EclWGRYpofFceVWC+c4XIqVgwvMi5MCDkTRSjUmECc
+         /D9A==
+X-Gm-Message-State: AOJu0YwJceBV2oXJ1eNX3S1kqbrRK52WDFGqcBA5pzgsm7okBS85LNYU
+        d6qGC4d0N4I9xhR5tW7RU59q0iD3OjAXltkuRTc=
+X-Google-Smtp-Source: AGHT+IHZt7HQgSljJImaRxyY9TMyowW0nqCjfkOaHJNL5xG/2Y1xYnrOOIiXaOSqEyyvpJZDCaX2wA==
+X-Received: by 2002:a17:907:3f03:b0:9be:aebc:d479 with SMTP id hq3-20020a1709073f0300b009beaebcd479mr16973571ejc.19.1699379255769;
+        Tue, 07 Nov 2023 09:47:35 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.218.126])
+        by smtp.gmail.com with ESMTPSA id ox11-20020a170907100b00b009dd949b75c7sm1288243ejb.151.2023.11.07.09.47.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 07 Nov 2023 09:47:35 -0800 (PST)
+Message-ID: <1d5d1357-0b53-4639-add9-2b3f38aae744@linaro.org>
+Date:   Tue, 7 Nov 2023 18:47:34 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 18/23] security: Introduce key_post_create_or_update
- hook
+Subject: Re: [PATCH 2/3] dt-bindings: trivial-devices: add asair,ags02ma
 Content-Language: en-US
-To:     Roberto Sassu <roberto.sassu@huaweicloud.com>,
-        viro@zeniv.linux.org.uk, brauner@kernel.org,
-        chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
-        kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
-        paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
-        zohar@linux.ibm.com, dmitry.kasatkin@gmail.com,
-        dhowells@redhat.com, jarkko@kernel.org,
-        stephen.smalley.work@gmail.com, eparis@parisplace.org,
-        mic@digikod.net
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
-        selinux@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>,
-        Stefan Berger <stefanb@linux.ibm.com>,
-        Casey Schaufler <casey@schaufler-ca.com>
-References: <20231107134012.682009-1-roberto.sassu@huaweicloud.com>
- <20231107134012.682009-19-roberto.sassu@huaweicloud.com>
-From:   Casey Schaufler <casey@schaufler-ca.com>
-In-Reply-To: <20231107134012.682009-19-roberto.sassu@huaweicloud.com>
+To:     Anshul Dalal <anshulusr@gmail.com>, linux-kernel@vger.kernel.org,
+        linux-iio@vger.kernel.org, devicetree@vger.kernel.org
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org
+References: <20231107173100.62715-1-anshulusr@gmail.com>
+ <20231107173100.62715-2-anshulusr@gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
+ cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
+ JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
+ gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
+ J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
+ NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
+ BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
+ vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
+ Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
+ TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzTRLcnp5c3p0b2Yg
+ S296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+wsGUBBMBCgA+FiEE
+ m9B+DgxR+NWWd7dUG5NDfTtBYpsFAmI+BxMCGwMFCRRfreEFCwkIBwIGFQoJCAsCBBYCAwEC
+ HgECF4AACgkQG5NDfTtBYptgbhAAjAGunRoOTduBeC7V6GGOQMYIT5n3OuDSzG1oZyM4kyvO
+ XeodvvYv49/ng473E8ZFhXfrre+c1olbr1A8pnz9vKVQs9JGVa6wwr/6ddH7/yvcaCQnHRPK
+ mnXyP2BViBlyDWQ71UC3N12YCoHE2cVmfrn4JeyK/gHCvcW3hUW4i5rMd5M5WZAeiJj3rvYh
+ v8WMKDJOtZFXxwaYGbvFJNDdvdTHc2x2fGaWwmXMJn2xs1ZyFAeHQvrp49mS6PBQZzcx0XL5
+ cU9ZjhzOZDn6Apv45/C/lUJvPc3lo/pr5cmlOvPq1AsP6/xRXsEFX/SdvdxJ8w9KtGaxdJuf
+ rpzLQ8Ht+H0lY2On1duYhmro8WglOypHy+TusYrDEry2qDNlc/bApQKtd9uqyDZ+rx8bGxyY
+ qBP6bvsQx5YACI4p8R0J43tSqWwJTP/R5oPRQW2O1Ye1DEcdeyzZfifrQz58aoZrVQq+innR
+ aDwu8qDB5UgmMQ7cjDSeAQABdghq7pqrA4P8lkA7qTG+aw8Z21OoAyZdUNm8NWJoQy8m4nUP
+ gmeeQPRc0vjp5JkYPgTqwf08cluqO6vQuYL2YmwVBIbO7cE7LNGkPDA3RYMu+zPY9UUi/ln5
+ dcKuEStFZ5eqVyqVoZ9eu3RTCGIXAHe1NcfcMT9HT0DPp3+ieTxFx6RjY3kYTGLOwU0EVUNc
+ NAEQAM2StBhJERQvgPcbCzjokShn0cRA4q2SvCOvOXD+0KapXMRFE+/PZeDyfv4dEKuCqeh0
+ hihSHlaxTzg3TcqUu54w2xYskG8Fq5tg3gm4kh1Gvh1LijIXX99ABA8eHxOGmLPRIBkXHqJY
+ oHtCvPc6sYKNM9xbp6I4yF56xVLmHGJ61KaWKf5KKWYgA9kfHufbja7qR0c6H79LIsiYqf92
+ H1HNq1WlQpu/fh4/XAAaV1axHFt/dY/2kU05tLMj8GjeQDz1fHas7augL4argt4e+jum3Nwt
+ yupodQBxncKAUbzwKcDrPqUFmfRbJ7ARw8491xQHZDsP82JRj4cOJX32sBg8nO2N5OsFJOcd
+ 5IE9v6qfllkZDAh1Rb1h6DFYq9dcdPAHl4zOj9EHq99/CpyccOh7SrtWDNFFknCmLpowhct9
+ 5ZnlavBrDbOV0W47gO33WkXMFI4il4y1+Bv89979rVYn8aBohEgET41SpyQz7fMkcaZU+ok/
+ +HYjC/qfDxT7tjKXqBQEscVODaFicsUkjheOD4BfWEcVUqa+XdUEciwG/SgNyxBZepj41oVq
+ FPSVE+Ni2tNrW/e16b8mgXNngHSnbsr6pAIXZH3qFW+4TKPMGZ2rZ6zITrMip+12jgw4mGjy
+ 5y06JZvA02rZT2k9aa7i9dUUFggaanI09jNGbRA/ABEBAAHCwXwEGAEKACYCGwwWIQSb0H4O
+ DFH41ZZ3t1Qbk0N9O0FimwUCYDzvagUJFF+UtgAKCRAbk0N9O0Fim9JzD/0auoGtUu4mgnna
+ oEEpQEOjgT7l9TVuO3Qa/SeH+E0m55y5Fjpp6ZToc481za3xAcxK/BtIX5Wn1mQ6+szfrJQ6
+ 59y2io437BeuWIRjQniSxHz1kgtFECiV30yHRgOoQlzUea7FgsnuWdstgfWi6LxstswEzxLZ
+ Sj1EqpXYZE4uLjh6dW292sO+j4LEqPYr53hyV4I2LPmptPE9Rb9yCTAbSUlzgjiyyjuXhcwM
+ qf3lzsm02y7Ooq+ERVKiJzlvLd9tSe4jRx6Z6LMXhB21fa5DGs/tHAcUF35hSJrvMJzPT/+u
+ /oVmYDFZkbLlqs2XpWaVCo2jv8+iHxZZ9FL7F6AHFzqEFdqGnJQqmEApiRqH6b4jRBOgJ+cY
+ qc+rJggwMQcJL9F+oDm3wX47nr6jIsEB5ZftdybIzpMZ5V9v45lUwmdnMrSzZVgC4jRGXzsU
+ EViBQt2CopXtHtYfPAO5nAkIvKSNp3jmGxZw4aTc5xoAZBLo0OV+Ezo71pg3AYvq0a3/oGRG
+ KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
+ fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231107173100.62715-2-anshulusr@gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Mailer: WebService/1.1.21896 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/7/2023 5:40 AM, Roberto Sassu wrote:
-> From: Roberto Sassu <roberto.sassu@huawei.com>
->
-> In preparation for moving IMA and EVM to the LSM infrastructure, introduce
-> the key_post_create_or_update hook.
->
-> Depending on policy, IMA measures the key content after creation or update,
-> so that remote verifiers are aware of the operation.
->
-> Other LSMs could similarly take some action after successful key creation
-> or update.
->
-> The new hook cannot return an error and cannot cause the operation to be
-> reverted.
->
-> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> Reviewed-by: Stefan Berger <stefanb@linux.ibm.com>
-
-Acked-by: Casey Schaufler <casey@schaufler-ca.com>
-
+On 07/11/2023 18:30, Anshul Dalal wrote:
+> Add bindings for Asair AGS02MA TVOC sensor to trivial devices.
+> 
+> The sensor communicates over i2c with the default address 0x1a.
+> TVOC values can be read in the units of ppb and ug/m^3 at register 0x00.
+> 
+> Datasheet:
+>   https://asairsensors.com/wp-content/uploads/2021/09/AGS02MA.pdf
+> Product-Page:
+>   http://www.aosong.com/m/en/products-33.html
+> 
+> Signed-off-by: Anshul Dalal <anshulusr@gmail.com>
 > ---
->  include/linux/lsm_hook_defs.h |  3 +++
->  include/linux/security.h      | 11 +++++++++++
->  security/keys/key.c           |  7 ++++++-
->  security/security.c           | 19 +++++++++++++++++++
->  4 files changed, 39 insertions(+), 1 deletion(-)
->
-> diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_defs.h
-> index 2bf128f7cbae..ec5d160c32ba 100644
-> --- a/include/linux/lsm_hook_defs.h
-> +++ b/include/linux/lsm_hook_defs.h
-> @@ -403,6 +403,9 @@ LSM_HOOK(void, LSM_RET_VOID, key_free, struct key *key)
->  LSM_HOOK(int, 0, key_permission, key_ref_t key_ref, const struct cred *cred,
->  	 enum key_need_perm need_perm)
->  LSM_HOOK(int, 0, key_getsecurity, struct key *key, char **buffer)
-> +LSM_HOOK(void, LSM_RET_VOID, key_post_create_or_update, struct key *keyring,
-> +	 struct key *key, const void *payload, size_t payload_len,
-> +	 unsigned long flags, bool create)
->  #endif /* CONFIG_KEYS */
->  
->  #ifdef CONFIG_AUDIT
-> diff --git a/include/linux/security.h b/include/linux/security.h
-> index 7cd7126f6545..1cd84970ab4c 100644
-> --- a/include/linux/security.h
-> +++ b/include/linux/security.h
-> @@ -1995,6 +1995,9 @@ void security_key_free(struct key *key);
->  int security_key_permission(key_ref_t key_ref, const struct cred *cred,
->  			    enum key_need_perm need_perm);
->  int security_key_getsecurity(struct key *key, char **_buffer);
-> +void security_key_post_create_or_update(struct key *keyring, struct key *key,
-> +					const void *payload, size_t payload_len,
-> +					unsigned long flags, bool create);
->  
->  #else
->  
-> @@ -2022,6 +2025,14 @@ static inline int security_key_getsecurity(struct key *key, char **_buffer)
->  	return 0;
->  }
->  
-> +static inline void security_key_post_create_or_update(struct key *keyring,
-> +						      struct key *key,
-> +						      const void *payload,
-> +						      size_t payload_len,
-> +						      unsigned long flags,
-> +						      bool create)
-> +{ }
-> +
->  #endif
->  #endif /* CONFIG_KEYS */
->  
-> diff --git a/security/keys/key.c b/security/keys/key.c
-> index 0260a1902922..f75fe66c2f03 100644
-> --- a/security/keys/key.c
-> +++ b/security/keys/key.c
-> @@ -935,6 +935,8 @@ static key_ref_t __key_create_or_update(key_ref_t keyring_ref,
->  		goto error_link_end;
->  	}
->  
-> +	security_key_post_create_or_update(keyring, key, payload, plen, flags,
-> +					   true);
->  	ima_post_key_create_or_update(keyring, key, payload, plen,
->  				      flags, true);
->  
-> @@ -968,10 +970,13 @@ static key_ref_t __key_create_or_update(key_ref_t keyring_ref,
->  
->  	key_ref = __key_update(key_ref, &prep);
->  
-> -	if (!IS_ERR(key_ref))
-> +	if (!IS_ERR(key_ref)) {
-> +		security_key_post_create_or_update(keyring, key, payload, plen,
-> +						   flags, false);
->  		ima_post_key_create_or_update(keyring, key,
->  					      payload, plen,
->  					      flags, false);
-> +	}
->  
->  	goto error_free_prep;
->  }
-> diff --git a/security/security.c b/security/security.c
-> index 6eb7c9cff1e5..859189722ab8 100644
-> --- a/security/security.c
-> +++ b/security/security.c
-> @@ -5406,6 +5406,25 @@ int security_key_getsecurity(struct key *key, char **buffer)
->  	*buffer = NULL;
->  	return call_int_hook(key_getsecurity, 0, key, buffer);
->  }
-> +
-> +/**
-> + * security_key_post_create_or_update() - Notification of key create or update
-> + * @keyring: keyring to which the key is linked to
-> + * @key: created or updated key
-> + * @payload: data used to instantiate or update the key
-> + * @payload_len: length of payload
-> + * @flags: key flags
-> + * @create: flag indicating whether the key was created or updated
-> + *
-> + * Notify the caller of a key creation or update.
-> + */
-> +void security_key_post_create_or_update(struct key *keyring, struct key *key,
-> +					const void *payload, size_t payload_len,
-> +					unsigned long flags, bool create)
-> +{
-> +	call_void_hook(key_post_create_or_update, keyring, key, payload,
-> +		       payload_len, flags, create);
-> +}
->  #endif	/* CONFIG_KEYS */
->  
->  #ifdef CONFIG_AUDIT
+>  Documentation/devicetree/bindings/trivial-devices.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/trivial-devices.yaml b/Documentation/devicetree/bindings/trivial-devices.yaml
+> index cd58179ae337..9cd67b758a88 100644
+> --- a/Documentation/devicetree/bindings/trivial-devices.yaml
+> +++ b/Documentation/devicetree/bindings/trivial-devices.yaml
+> @@ -47,6 +47,8 @@ properties:
+>            - adi,lt7182s
+>              # AMS iAQ-Core VOC Sensor
+>            - ams,iaq-core
+> +            # TVOC (Total Volatile Organic Compounds) i2c sensor
+> +          - asair,ags02ma
+
+I think you miss VDD supply.
+
+Best regards,
+Krzysztof
+
