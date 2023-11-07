@@ -2,95 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5378D7E3653
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 09:06:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DEDB97E365C
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 09:08:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233612AbjKGIG7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 03:06:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49034 "EHLO
+        id S233743AbjKGIIR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 03:08:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229580AbjKGIG4 (ORCPT
+        with ESMTP id S233703AbjKGIIO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 03:06:56 -0500
-Received: from mail-yw1-x112d.google.com (mail-yw1-x112d.google.com [IPv6:2607:f8b0:4864:20::112d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED3F3EA
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 00:06:53 -0800 (PST)
-Received: by mail-yw1-x112d.google.com with SMTP id 00721157ae682-5b31c5143a0so64349107b3.3
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 00:06:53 -0800 (PST)
+        Tue, 7 Nov 2023 03:08:14 -0500
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 702C2129;
+        Tue,  7 Nov 2023 00:08:08 -0800 (PST)
+Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-6b497c8575aso5693566b3a.1;
+        Tue, 07 Nov 2023 00:08:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699344413; x=1699949213; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kUJsPs5h4dMzP+QB89ARP4Mh+Ywy+SZafpMELyFGsZk=;
-        b=sNBLPe/WXi0zlrzu7zXUE26A5SLiDXqs6RiJyJfu0pGApG5cT1EgEQ94F1JbZnN46q
-         8GaCpJdXZ4Zt2CYkVEj1tueR2JYV/shHhUyeM45Ezupo+P3sKO39g0ZAierHLXide/95
-         bWc86BaEWYTqi7KargSeBX+T30vzGTo+rfwWxhO7j2xMKa88JLoIh2JicRXTTtfCI6F6
-         U/pDcgrTkjR5cRnQxFEGOKXdu7xB2yZlJIwFyPc2h8y6kJCJINp8GUC3acDSb3FiJXDD
-         UBdjE/Givc0wuZRkwYnI9iQGuqqXUrsxqlhmHH9vYdtGOWEvBCgbDvEkfMU7F4kUst0g
-         klxg==
+        d=gmail.com; s=20230601; t=1699344488; x=1699949288; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ttXqTP+4Vn5umWykt6+NuZt9O79QAnsU1LGP6YXU9Zk=;
+        b=nOq+TIFdoZ9YDPP6S06U/qln8h+8+p6GvQ9CIwjanfZOItZ59CZ5730n/8+j6wMtSn
+         65AFjC0Dcx1BejqRVFEBt+zXcBdSJ9w0L3FOetiD6uv1MesuUHognXnb24/zA8QUOC5I
+         1j3106UoIN2lLkaZ5Lb86MVs7VerS9YwczgdUo7SMSz39N00kSKwQuMHpk1OPHJj+PJE
+         zCfRo4HGjhJ3rp9mP/OlVscGeLcWZuXB3o8KU4Uf1vxeYZfQ+Ex0q9MtRQ6jwoi5CxuX
+         OXZvkAp2zmWGhrJZhkKqccknNsdfmYDTHJqIp34d/3/KD9qxLjJnvnqH9N10qCsWHCxi
+         VPhQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699344413; x=1699949213;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kUJsPs5h4dMzP+QB89ARP4Mh+Ywy+SZafpMELyFGsZk=;
-        b=RFBqySSI+Oz5lqwO+LFKFCOC0fg1MydD3KQ12i8hMH/Dr8XN4J1fSma/FHNVpvmVhZ
-         t6xMaqfVV8LkhKzZAfIXBskVW90saO0CeiIcRAwtqVjKsiU+iSWevVv7JWKe9N59E9vW
-         2/S4jmzj6ZOFaUuxJo0FciRZwSCHbVyQKa3SC6efQM/Lh/hsIS/Ftl+xWbLOturtDENw
-         V3VbnnS210GPRljbw6Kwmks7XpqpJ29vFWB65nldH74KxfUGiv9K3C6Y2B8NSocIRJ+G
-         mVDUQOpkYZVid1PdQ8L6a9/9bgnhglqaYqrDbw6rA4O3rrzheas84V/gQac4qdIYosAV
-         Dh1A==
-X-Gm-Message-State: AOJu0YyvdKs6v1MyIern/zH4dEQQh8xVPUA1co8viXN9snFMQPLgJuUD
-        5LxovE+wR157I95cvp7TOxEX8goRNSJ+GIc2b5jMMkPl5DqfaAYO
-X-Google-Smtp-Source: AGHT+IE7d3Kze4zoxfGZhZBBF402Jw5zAXD3ojtBzTrxh8AqoiccxgGCOfF7FL603CmDsZuQ4weTyq0dtC0V95L9E/Y=
-X-Received: by 2002:a81:6582:0:b0:5a8:960d:e538 with SMTP id
- z124-20020a816582000000b005a8960de538mr13935556ywb.47.1699344413174; Tue, 07
- Nov 2023 00:06:53 -0800 (PST)
+        d=1e100.net; s=20230601; t=1699344488; x=1699949288;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ttXqTP+4Vn5umWykt6+NuZt9O79QAnsU1LGP6YXU9Zk=;
+        b=uyAPvyOJXKtM6CLlOHeG16KWN/3myp95PAMCK+X59RoHXdpH5vG8MWxwjtZB/MoOTZ
+         rAAJNtE3ROPcwB4qMp2DNtn1jpZPA6SwYzlOm+4UA1ErbtarUWm14JV7ypqi8bXJKqe4
+         3ujcNYtSzVYINsOWxgs1Cx6DSrEO7/r5/b7eg3jUTUPWlSvkhmuqPskxbOVklVDOeav+
+         c8PtqFxeVHGRPhWtngjTIp4rAz80HKlv4TyFNzqPfEtScUV4T99En2zK9miMBz2Mm4hZ
+         QaZtHcY54oLpCykP3VFf19bcsmQijsb1bOxpx5oKjVKQ2vGTUgW6ZEDOhgljlUWZfXQT
+         cmkA==
+X-Gm-Message-State: AOJu0YyXMa+JccRA+g3xN2QIgOSX7/GQQzbuJXXqTevU7boPE3XdpNLV
+        ZxzWQvNj8ri2yHONtVQWqIyjG+z5cPeJ0A==
+X-Google-Smtp-Source: AGHT+IGC5IkahBSjMohONTov0dfX7L8VtsuNs4X0P2KeXZfzd3gzSmHwdNM2Jbr2u4FrddXTkIPd/Q==
+X-Received: by 2002:a05:6a00:2d09:b0:6bc:f819:fcf0 with SMTP id fa9-20020a056a002d0900b006bcf819fcf0mr37849993pfb.1.1699344487663;
+        Tue, 07 Nov 2023 00:08:07 -0800 (PST)
+Received: from dragonet (dragonet.kaist.ac.kr. [143.248.133.220])
+        by smtp.gmail.com with ESMTPSA id w2-20020a056a0014c200b0069ee4242f89sm6941581pfu.13.2023.11.07.00.08.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Nov 2023 00:08:07 -0800 (PST)
+Date:   Tue, 7 Nov 2023 17:07:03 +0900
+From:   "Dae R. Jeong" <threeearcat@gmail.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     borisp@nvidia.com, john.fastabend@gmail.com, davem@davemloft.net,
+        edumazet@google.com, pabeni@redhat.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ywchoi@casys.kaist.ac.kr
+Subject: Re: Missing a write memory barrier in tls_init()
+Message-ID: <ZUnwJwuqZMFNYE3x@dragonet>
+References: <ZUNLocdNkny6QPn8@dragonet>
+ <20231106143659.12e0d126@kernel.org>
 MIME-Version: 1.0
-References: <20231106-virt-to-pfn-fix-ppc-v1-1-93197a7ccab4@linaro.org> <87ttpyw1ez.fsf@mail.lhotse>
-In-Reply-To: <87ttpyw1ez.fsf@mail.lhotse>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 7 Nov 2023 09:06:41 +0100
-Message-ID: <CACRpkdbL1mfcAz9sPn89UGSQ6tb=jF6nRYAwp9Qz8zLXLLU_UA@mail.gmail.com>
-Subject: Re: [PATCH] powerpc: Fix signature of pfn_to_kaddr()
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        kernel test robot <lkp@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231106143659.12e0d126@kernel.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 7, 2023 at 6:57=E2=80=AFAM Michael Ellerman <mpe@ellerman.id.au=
-> wrote:
+Hi, Jakub,
 
-> I'm struggling to connect the removal of const with those bug reports.
-> It looks like all those warnings are about 0xc000000000000000 being
-> outside the range of unsigned long when building 32-bit.
+Thank you for your reply.
 
-Aha right. I wonder what actually causes that.
+On Mon, Nov 06, 2023 at 02:36:59PM -0800, Jakub Kicinski wrote:
+> On Thu, 2 Nov 2023 16:11:29 +0900 Dae R. Jeong wrote:
+> > In addition, I believe the {tls_setsockopt, tls_getsockopt}
+> > implementation is fine because of the address dependency. I think
+> > load-load reordering is prohibited in this case so we don't need a
+> > read barrier.
+> 
+> Sounds plausible, could you send a patch?
 
-> Is it the right bug report link?
+Sure. I am doing something else today, so I will send a patch tomorrow
+or the day after tomorrow.
 
-Yeah I'm just bad at understanding these reports.
 
-> The current signature of:
->
->   static inline const void *pfn_to_kaddr(unsigned long pfn) ...
->
-> seems OK to me.
+> The smb_wmb() would be better placed in tls_init(), IMHO.
 
-OK then, drop this patch.
+It sounds better. I will write a patch in that way.
 
-Yours,
-Linus Walleij
+
+Best regards,
+Dae R. Jeong
