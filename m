@@ -2,106 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CFCD17E49C1
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 21:21:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35DAC7E49C3
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 21:22:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235508AbjKGUVx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 15:21:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45378 "EHLO
+        id S235510AbjKGUW2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 15:22:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235505AbjKGUV3 (ORCPT
+        with ESMTP id S235591AbjKGUWJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 15:21:29 -0500
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AAD51726
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 12:20:59 -0800 (PST)
-Received: by mail-qk1-x72d.google.com with SMTP id af79cd13be357-7789a4c01ddso404740685a.1
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 12:20:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1699388458; x=1699993258; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=hSdfUIdEj0JA4xAkLjr8iNFR7V/inKgzjZ3p1JC+wVI=;
-        b=wbTGB4vXh45h82huHIt/7BpA/ApT3oOCzdgFWO0nJsdiffpoag2wBNSp+bjLqGo7aO
-         uznIXl5OzHlQd9s9F/XawbHziOP5ivXaHQugrXXGG69ypLt7ug+B0o9Okyvsa6078/pF
-         KKIma+wLrPZGeDiGaYou882zt625KPE/kgdwLbpMJJ1iZIbgxWr+ApURdRfFc1jMj0sY
-         dM2AP4Ie1pdnj5UdkMez2tCx75oOic72fdWapsOhjUPZRpNCBCHv75fI76NmWBt9ZSco
-         ow2h8RobhB2PfSl1kQxO0MmiS9OaI7Md59Nff3NHuAvnJzaJ9j8gRFz4WKhQHtAnmNyS
-         1IFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699388458; x=1699993258;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hSdfUIdEj0JA4xAkLjr8iNFR7V/inKgzjZ3p1JC+wVI=;
-        b=KYphEAI8KrJm784bc47ufFuT6qTAcKx9ydl+4gHGn0bfmfog+1MsafEqp55ih3NNF7
-         YUFZUq7qS92JGLPkkQX9KHilzr1SwVId1qbnIlxpBTADtfIA+peORt7mNKkmPF7TDdul
-         7KAEj9yl0jU0b73gEIxziIjfzKJ/VVK3gNmHGbLd0LlwMsHds2tLlm9qCFRw59AVaIOf
-         WGR3pyWZsGg7XGQ6TPePZgHjdieZG8ddF0wB+C0hQT0tsLCIqXOcQGY1brU2olmVH4gk
-         lXYhQalwsKlkv66TbFUfwrmwrZ5v4S6SrIGY07AO6VpJ3Lz0bU4IPsnD1dPKjT9yutzH
-         joGQ==
-X-Gm-Message-State: AOJu0YzxCGN1xwtGq3m9LzLGGj90jos8VunHHAEEyGZDcxiU98oloUHT
-        HWvToNt7I0flcRxA6h/R1pOqOQ==
-X-Google-Smtp-Source: AGHT+IGAqZDGsu4Irs+7ieqmt9vQpahnugUEkyICW5wIB+nND391lD3smddVlqQSiC/XBVJyLF9xcA==
-X-Received: by 2002:a05:620a:459f:b0:772:64cb:bc64 with SMTP id bp31-20020a05620a459f00b0077264cbbc64mr36515549qkb.12.1699388458324;
-        Tue, 07 Nov 2023 12:20:58 -0800 (PST)
-Received: from localhost ([2620:10d:c091:400::5:86b7])
-        by smtp.gmail.com with ESMTPSA id o4-20020a05620a228400b007678973eaa1sm245681qkh.127.2023.11.07.12.20.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Nov 2023 12:20:58 -0800 (PST)
-Date:   Tue, 7 Nov 2023 15:20:57 -0500
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Stefan Roesch <shr@devkernel.io>, kernel-team@fb.com,
-        akpm@linux-foundation.org, riel@surriel.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH v2] mm: Fix for negative counter: nr_file_hugepages
-Message-ID: <20231107202057.GA3798394@cmpxchg.org>
-References: <20231107181805.4188397-1-shr@devkernel.io>
- <ZUqRia1Ww0+wNfKr@casper.infradead.org>
- <20231107200616.GA3797353@cmpxchg.org>
- <ZUqZH2jUgrYeCY3z@casper.infradead.org>
+        Tue, 7 Nov 2023 15:22:09 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD5DC10F0;
+        Tue,  7 Nov 2023 12:21:36 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C4E5DC433C7;
+        Tue,  7 Nov 2023 20:21:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1699388496;
+        bh=0ZrrlUoDaDnYyIbMCJ+OpPT6t/CuFoTIItvkmvLiM0s=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dNrpqd1p31hy95o3OLzLLZalzfvoirNfdbgMYo/3TCxQ6z2+IIx6YjixetYBq2eYT
+         KABA0Fe9sXU2J3xNWOC45HvNvzX1Px9ce8/y4yIip56e4BLY472avZ8qtsYrIrqloA
+         hIMSZK0ytpkh5HN9DcDLBW9u6w5GN7fJ/WCBD+oU=
+Date:   Tue, 7 Nov 2023 21:21:33 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+Cc:     stable@vger.kernel.org, Sasha Levin <sashal@kernel.org>,
+        mizhang@google.com, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org, Vegard Nossum <vegard.nossum@oracle.com>,
+        Darren Kenny <darren.kenny@oracle.com>
+Subject: Re: [PATCH 5.15 000/128] 5.15.138-rc1 review
+Message-ID: <2023110717-saddlebag-reflected-ed93@gregkh>
+References: <20231106130309.112650042@linuxfoundation.org>
+ <2665d8bc-111c-45ca-a473-b1c892867e9c@oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <ZUqZH2jUgrYeCY3z@casper.infradead.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <2665d8bc-111c-45ca-a473-b1c892867e9c@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 07, 2023 at 08:07:59PM +0000, Matthew Wilcox wrote:
-> On Tue, Nov 07, 2023 at 03:06:16PM -0500, Johannes Weiner wrote:
-> > On Tue, Nov 07, 2023 at 07:35:37PM +0000, Matthew Wilcox wrote:
-> > > On Tue, Nov 07, 2023 at 10:18:05AM -0800, Stefan Roesch wrote:
-> > > > +++ b/mm/huge_memory.c
-> > > > @@ -2740,7 +2740,7 @@ int split_huge_page_to_list(struct page *page, struct list_head *list)
-> > > >  			if (folio_test_swapbacked(folio)) {
-> > > >  				__lruvec_stat_mod_folio(folio, NR_SHMEM_THPS,
-> > > >  							-nr);
-> > > > -			} else {
-> > > > +			} else if (folio_test_pmd_mappable(folio)) {
-> > > >  				__lruvec_stat_mod_folio(folio, NR_FILE_THPS,
-> > > >  							-nr);
-> > > >  				filemap_nr_thps_dec(mapping);
-> > > 
-> > > As I said, we also need the folio_test_pmd_mappable() for swapbacked.
-> > > Not because there's currently a problem, but because we don't leave
-> > > landmines for other people to trip over in future!
+On Mon, Nov 06, 2023 at 08:24:43PM +0530, Harshit Mogalapalli wrote:
+> Hello Greg,
+> 
+> On 06/11/23 6:32 pm, Greg Kroah-Hartman wrote:
+> > This is the start of the stable review cycle for the 5.15.138 release.
+> > There are 128 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
 > > 
-> > Do we need to fix filemap_unaccount_folio() as well?
+> > Responses should be made by Wed, 08 Nov 2023 13:02:46 +0000.
+> > Anything received after that time might be too late.
+> > 
 > 
-> Looks to me like it is already correct?
+> I am seeing a build failure with perf:
 > 
->         __lruvec_stat_mod_folio(folio, NR_FILE_PAGES, -nr);
->         if (folio_test_swapbacked(folio)) {
->                 __lruvec_stat_mod_folio(folio, NR_SHMEM, -nr);
->                 if (folio_test_pmd_mappable(folio))
->                         __lruvec_stat_mod_folio(folio, NR_SHMEM_THPS, -nr);
->         } else if (folio_test_pmd_mappable(folio)) {
->                 __lruvec_stat_mod_folio(folio, NR_FILE_THPS, -nr);
->                 filemap_nr_thps_dec(mapping);
->         }
+> tools/perf/util/evlist.c: In function evlist__add_aux_dummy:
+> tools/perf/util/evlist.c:266:31: error: implicit declaration of function
+> evlist__dummy_event; did you mean evlist__add_sb_eventâ€™?
+> [-Werror=implicit-function-declaration]
+>   266 |         struct evsel *evsel = evlist__dummy_event(evlist);
+>       |                               ^~~~~~~~~~~~~~~~~~~
+>       |                               evlist__add_sb_event
+> 
+> 
+> I think we should drop these three commits:
+> 
+> 20a5799cae7dc perf evlist: Avoid frequency mode for the dummy event
+> 7de783c81c7e7 perf tools: Get rid of evlist__add_on_all_cpus()
+> 141ce9207068e perf evlist: Add evlist__add_dummy_on_all_cpus()
 
-Argh, I overlooked it because it's nested further in due to that
-NR_SHMEM update. Sorry about the noise.
+Thanks, I've dropped all of these from 5.15.y and 5.10.y now.
+
+greg k-h
