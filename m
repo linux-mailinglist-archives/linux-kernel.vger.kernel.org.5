@@ -2,141 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 14C8A7E37F0
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 10:33:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06E217E37F2
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 10:36:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233657AbjKGJdy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 04:33:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33596 "EHLO
+        id S229776AbjKGJgv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 04:36:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229541AbjKGJdw (ORCPT
+        with ESMTP id S229536AbjKGJgs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 04:33:52 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C2C710A;
-        Tue,  7 Nov 2023 01:33:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699349629; x=1730885629;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=HD+xhbXA3RArZTDKEIxJ27T8R5ZBDZSHAAH/cebZ7DQ=;
-  b=nZaMC9R5JJCghRNxBdsNOLhwROH6U0lN2BCcM0P1kB/04hOYBPcakh25
-   VMkjmhqAdJV8tRhO+K7RvBSAHzUoOzNfjOf0nIUaWJ/1yZxtR5BRgwQVi
-   aQU2Pe6qFS0QZPcvuyuiUS4eadonNqvXeGA8ziyqvWWKrXZ8F/Y7eVrf8
-   DwPwDIRXVB36868LXlsnbKNl84r62L4E3K0raBGWQMTMqJyuNYOqJwkjb
-   KDlOIyROWrGpytSqOb8JDx5M1wZ1WysLDFO1Gv89hkCn7/gms1KxSfHH0
-   gR9bHJYS3fjQgZ3xXniRZ8NKGx/TmEBFGINH6XbglGcwVHB4HdZGwfnW5
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10886"; a="392344136"
-X-IronPort-AV: E=Sophos;i="6.03,283,1694761200"; 
-   d="scan'208";a="392344136"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2023 01:33:48 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10886"; a="712508902"
-X-IronPort-AV: E=Sophos;i="6.03,283,1694761200"; 
-   d="scan'208";a="712508902"
-Received: from pathanas-mobl1.ger.corp.intel.com ([10.252.37.194])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2023 01:33:46 -0800
-Date:   Tue, 7 Nov 2023 11:33:40 +0200 (EET)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Reinette Chatre <reinette.chatre@intel.com>
-cc:     linux-kselftest@vger.kernel.org, Shuah Khan <shuah@kernel.org>,
-        Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>,
-        =?ISO-8859-15?Q?Maciej_Wiecz=F3r-Retman?= 
-        <maciej.wieczor-retman@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 23/24] selftests/resctrl: Add L2 CAT test
-In-Reply-To: <af68ec80-7511-4861-b4ec-0fb9c7284513@intel.com>
-Message-ID: <d3dc1393-f51d-1fea-2787-4063abdc7c33@linux.intel.com>
-References: <20231024092634.7122-1-ilpo.jarvinen@linux.intel.com> <20231024092634.7122-24-ilpo.jarvinen@linux.intel.com> <8051f3ef-1126-41fb-b6cc-f48441936dd7@intel.com> <2514e73e-2419-7c88-3f22-469db4b2fa25@linux.intel.com> <48c6795b-554a-4019-bb8d-a2ca0f6fbb2b@intel.com>
- <4008929-d12b-793e-dce8-eb5ba03b4ebb@linux.intel.com> <755ed028-f73a-47ed-a58a-65f4f48eaee3@intel.com> <af68ec80-7511-4861-b4ec-0fb9c7284513@intel.com>
+        Tue, 7 Nov 2023 04:36:48 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0CFF511A;
+        Tue,  7 Nov 2023 01:36:46 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5CFBFFEC;
+        Tue,  7 Nov 2023 01:37:30 -0800 (PST)
+Received: from [192.168.1.3] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9E4F73F703;
+        Tue,  7 Nov 2023 01:36:43 -0800 (PST)
+Message-ID: <c4304ad4-0aba-9ab4-1473-0f790d011da6@arm.com>
+Date:   Tue, 7 Nov 2023 09:36:45 +0000
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-1825553086-1699349628=:1851"
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v1 1/2] perf auxtrace: Add 'T' itrace option for timestamp
+ trace
+Content-Language: en-US
+To:     Adrian Hunter <adrian.hunter@intel.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Leo Yan <leo.yan@linaro.org>
+Cc:     Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        John Garry <john.g.garry@oracle.com>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>, coresight@lists.linaro.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231014074513.1668000-1-leo.yan@linaro.org>
+ <20231014074513.1668000-2-leo.yan@linaro.org>
+ <8a2ea58f-f835-4d1a-8bd6-3a63b3b0db94@intel.com>
+ <ZUlgM8pgf19UeyM9@kernel.org>
+ <2940af18-8bcd-4456-a8ed-e77cade1b160@intel.com>
+From:   James Clark <james.clark@arm.com>
+In-Reply-To: <2940af18-8bcd-4456-a8ed-e77cade1b160@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
 
---8323329-1825553086-1699349628=:1851
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
 
-On Mon, 6 Nov 2023, Reinette Chatre wrote:
-> On 11/6/2023 9:03 AM, Reinette Chatre wrote:
-> > On 11/6/2023 1:53 AM, Ilpo Järvinen wrote:
-> >> On Fri, 3 Nov 2023, Reinette Chatre wrote:
-> >>> On 11/3/2023 3:39 AM, Ilpo Järvinen wrote:
-> >>>> On Thu, 2 Nov 2023, Reinette Chatre wrote:
-> >>>>> On 10/24/2023 2:26 AM, Ilpo Järvinen wrote:
-> >>>>
-> >>>>>> Add L2 CAT selftest. As measuring L2 misses is not easily available
-> >>>>>> with perf, use L3 accesses as a proxy for L2 CAT working or not.
-> >>>>>
-> >>>>> I understand the exact measurement is not available but I do notice some
-> >>>>> L2 related symbolic counters when I run "perf list". l2_rqsts.all_demand_miss
-> >>>>> looks promising.
-> >>>>
-> >>>> Okay, I was under impression that L2 misses are not available. Both based 
-> >>>> on what you mentioned to me half an year ago and because of what flags I 
-> >>>> found from the header. But I'll take another look into it.
-> >>>
-> >>> You are correct that when I did L2 testing a long time ago I used
-> >>> the model specific L2 miss counts. I was hoping that things have improved
-> >>> so that model specific counters are not needed, as you have tried here.
-> >>> I found the l2_rqsts symbol while looking for alternatives but I am not
-> >>> familiar enough with perf to know how these symbolic names are mapped.
-> >>> I was hoping that they could be a simple drop-in replacement to
-> >>> experiment with.
-> >>
-> >> According to perf_event_open() manpage, mapping those symbolic names 
-> >> requires libpfm so this would add a library dependency?
-> > 
-> > I do not see perf list using this library to determine the event and
-> > umask but I am in unfamiliar territory. I'll have to spend some more
-> > time here to determine options.
+On 07/11/2023 07:19, Adrian Hunter wrote:
+> On 6/11/23 23:52, Arnaldo Carvalho de Melo wrote:
+>> Em Thu, Oct 19, 2023 at 01:47:15PM +0300, Adrian Hunter escreveu:
+>>> On 14/10/23 10:45, Leo Yan wrote:
+>>>> An AUX trace can contain timestamp, but in some situations, the hardware
+>>>> trace module (e.g. Arm CoreSight) cannot decide the traced timestamp is
+>>>> the same source with CPU's time, thus the decoder can not use the
+>>>> timestamp trace for samples.
+>>>>
+>>>> This patch introduces 'T' itrace option. If users know the platforms
+>>>
+>>> "If users know" <- how would users know?  Could the kernel
+>>> or tools also figure it out?
+>>
+>> Adrian, I'm trying to go all the outstanding patches, do you still have
+>> any issues with this series?
 > 
-> tools/perf/pmu-events/README cleared it up for me. The architecture specific
-> tables are included in the perf binary. Potentially pmu-events.h could be
-> included or the test could just stick with the architectural events.
-> A quick look at the various cache.json files created the impression that
-> the events of interest may actually have the same event code and umask across
-> platforms.
-> I am not familiar with libpfm. This can surely be considered if it supports
-> this testing. Several selftests have library dependencies.
+> No, although the question wasn't actually answered.  I presume users
+> just have to try the 'T' option and see if it helps.
+> 
 
-man perf_event_open() says this:
+I suppose my previous answer about discoverability was more general. To 
+answer the specific question "how would users know?", it would have to 
+be mentioned in the reference manual of their device that this is how 
+the timers are set up.
 
-"If type is PERF_TYPE_RAW, then a custom "raw" config  value  is  needed.
-Most  CPUs  support  events  that  are  not covered by the "generalized"
-events.  These are implementation defined; see your CPU manual (for  ex-
-ample  the  Intel Volume 3B documentation or the AMD BIOS and Kernel De-
-veloper Guide).  The libpfm4 library can be used to translate  from  the
-name in the architectural manuals to the raw hex value perf_event_open()
-expects in this field."
-
-...I've not come across libpfm myself either but to me it looks libpfm 
-bridges between those architecture specific tables and perf_event_open(). 
-That is, it could provide the binary value necessary in constructing the 
-perf_event_attr struct.
-
-I think this is probably the function which maps string -> 
-perf_event_attr:
-
-https://man7.org/linux/man-pages/man3/pfm_get_os_event_encoding.3.html
-
-
--- 
- i.
-
---8323329-1825553086-1699349628=:1851--
+But I don't see this being a common use case, as I mentioned before, in 
+newer arm platforms this is discoverable and just works.
