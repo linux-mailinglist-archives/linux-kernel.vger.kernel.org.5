@@ -2,119 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DF4817E3703
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 09:57:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E43D7E3715
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 10:00:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233743AbjKGI5A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 03:57:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46668 "EHLO
+        id S233508AbjKGJAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 04:00:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233616AbjKGI45 (ORCPT
+        with ESMTP id S229541AbjKGJAo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 03:56:57 -0500
-Received: from omta038.useast.a.cloudfilter.net (omta038.useast.a.cloudfilter.net [44.202.169.37])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42D57AB
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 00:56:53 -0800 (PST)
-Received: from eig-obgw-5010a.ext.cloudfilter.net ([10.0.29.199])
-        by cmsmtp with ESMTPS
-        id 0HgkrisVZWcCI0HtErebPU; Tue, 07 Nov 2023 08:56:52 +0000
-Received: from box5620.bluehost.com ([162.241.219.59])
-        by cmsmtp with ESMTPS
-        id 0HtDrHzAhoIDw0HtErwtzl; Tue, 07 Nov 2023 08:56:52 +0000
-X-Authority-Analysis: v=2.4 cv=TP1W9npa c=1 sm=1 tr=0 ts=6549fbd4
- a=30941lsx5skRcbJ0JMGu9A==:117 a=30941lsx5skRcbJ0JMGu9A==:17
- a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
- a=IkcTkHD0fZMA:10 a=BNY50KLci1gA:10 a=-Ou01B_BuAIA:10 a=VwQbUJbxAAAA:8
- a=HaFmDPmJAAAA:8 a=49j0FZ7RFL9ueZfULrUA:9 a=QEXdDO2ut3YA:10
- a=AjGcO6oz07-iQ99wixmX:22 a=nmWuMzfKamIsx3l42hEX:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=w6rz.net;
-        s=default; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Date:
-        Message-ID:From:In-Reply-To:References:Cc:To:Subject:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=LeRZVWfhQBUx62FjwdSykil5+EjPFUXjfV9K/vHxrOk=; b=25ap56hs221JGp5MqoOVSTgzYa
-        SAbGfXMa9f6RKhZGl5G/p37HqBPVOIyehPFz//tfb8vzcnxs+3fhokVanZJjGE+p6wK3AMQmqeo/H
-        SkHkKRmFuGjQ1QYibZkRojZNu88HgwTfywNrqa0q6peH/jaitN/NMgavNtwLpTSUUJQTvSxioUZr7
-        RsmQHorBW6bwm/JcApB1hxdEj+MFZaA3hmf3x7QPelZrnHoS2AhPcQtmHTIausPCOtp6VQR/IRFfl
-        4D3EphMeStX4CMfkfKPHKryChp3Fn734doZr8T77rvWrIeAa2qdgcbxHwy1knz5EkzxMzFbBIVgh3
-        w0N4uwrQ==;
-Received: from c-98-207-139-8.hsd1.ca.comcast.net ([98.207.139.8]:54226 helo=[10.0.1.47])
-        by box5620.bluehost.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.96.2)
-        (envelope-from <re@w6rz.net>)
-        id 1r0HtB-0008Ta-30;
-        Tue, 07 Nov 2023 01:56:49 -0700
-Subject: Re: [PATCH 5.15 000/128] 5.15.138-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
-References: <20231106130309.112650042@linuxfoundation.org>
-In-Reply-To: <20231106130309.112650042@linuxfoundation.org>
-From:   Ron Economos <re@w6rz.net>
-Message-ID: <686bff39-e016-adaa-9d0e-2e7edfb0b21e@w6rz.net>
-Date:   Tue, 7 Nov 2023 00:56:47 -0800
-User-Agent: Mozilla/5.0 (X11; Linux armv7l; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Tue, 7 Nov 2023 04:00:44 -0500
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 928DD101;
+        Tue,  7 Nov 2023 01:00:41 -0800 (PST)
+Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4SPhtd20XRzrTwF;
+        Tue,  7 Nov 2023 16:57:29 +0800 (CST)
+Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Tue, 7 Nov
+ 2023 17:00:07 +0800
+Subject: Re: [RFC PATCH v3 08/12] net: support non paged skb frags
+To:     Mina Almasry <almasrymina@google.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-arch@vger.kernel.org>,
+        <linux-kselftest@vger.kernel.org>, <linux-media@vger.kernel.org>,
+        <dri-devel@lists.freedesktop.org>, <linaro-mm-sig@lists.linaro.org>
+CC:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        David Ahern <dsahern@kernel.org>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Jeroen de Borst <jeroendb@google.com>,
+        Praveen Kaligineedi <pkaligineedi@google.com>
+References: <20231106024413.2801438-1-almasrymina@google.com>
+ <20231106024413.2801438-9-almasrymina@google.com>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <7e851882-9a85-3672-c3d5-73b47599873c@huawei.com>
+Date:   Tue, 7 Nov 2023 17:00:06 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20231106024413.2801438-9-almasrymina@google.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - box5620.bluehost.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - w6rz.net
-X-BWhitelist: no
-X-Source-IP: 98.207.139.8
-X-Source-L: No
-X-Exim-ID: 1r0HtB-0008Ta-30
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: c-98-207-139-8.hsd1.ca.comcast.net ([10.0.1.47]) [98.207.139.8]:54226
-X-Source-Auth: re@w6rz.net
-X-Email-Count: 55
-X-Org:  HG=bhshared;ORG=bluehost;
-X-Source-Cap: d3NpeHJ6bmU7d3NpeHJ6bmU7Ym94NTYyMC5ibHVlaG9zdC5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfKLAIiebt8DcFm3IQmXBDTz9eAAyYMK2aUiEkYE8VnZRNRUY6GlGvNUGthCWuAWVXHk60afetBFa1R15sFomZic9R6lvlD0FmIMLe1OqyB5j3Dn/d3HH
- A1ljaLbmHFElp5MsYKAD5yXz9FQcASdB/k6O1kJR5AHpDskXj2jWaiX9ZTk+LlWfybFBYoaqGE70Drw+AacvjPMOOIVHAaP9Qks=
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-6.6 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/6/23 5:02 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.15.138 release.
-> There are 128 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 08 Nov 2023 13:02:46 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.138-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On 2023/11/6 10:44, Mina Almasry wrote:
+> Make skb_frag_page() fail in the case where the frag is not backed
+> by a page, and fix its relevent callers to handle this case.
+> 
+> Correctly handle skb_frag refcounting in the page_pool_iovs case.
+> 
+> Signed-off-by: Mina Almasry <almasrymina@google.com>
+> 
 
-Built and booted successfully on RISC-V RV64 (HiFive Unmatched).
+...
 
-Tested-by: Ron Economos <re@w6rz.net>
+>  /**
+>   * skb_frag_page - retrieve the page referred to by a paged fragment
+>   * @frag: the paged fragment
+>   *
+> - * Returns the &struct page associated with @frag.
+> + * Returns the &struct page associated with @frag. Returns NULL if this frag
+> + * has no associated page.
+>   */
+>  static inline struct page *skb_frag_page(const skb_frag_t *frag)
+>  {
+> -	return frag->bv_page;
+> +	if (!page_is_page_pool_iov(frag->bv_page))
+> +		return frag->bv_page;
+> +
+> +	return NULL;
+
+It seems most of callers don't expect NULL returning for skb_frag_page(),
+and this patch only changes a few relevant callers to handle the NULL case.
+
+It may make more sense to add a new helper to do the above checking, and
+add a warning in skb_frag_page() to catch any missing NULL checking for
+skb_frag_page() caller, something like below?
+
+ static inline struct page *skb_frag_page(const skb_frag_t *frag)
+ {
+-       return frag->bv_page;
++       struct page *page = frag->bv_page;
++
++       BUG_ON(page_is_page_pool_iov(page));
++
++       return page;
++}
++
++static inline struct page *skb_frag_readable_page(const skb_frag_t *frag)
++{
++       struct page *page = frag->bv_page;
++
++       if (!page_is_page_pool_iov(page))
++               return page;
++
++       return NULL;
+ }
+
 
