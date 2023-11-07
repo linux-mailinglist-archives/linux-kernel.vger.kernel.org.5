@@ -2,128 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 18A957E4C76
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 00:08:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB7F67E4C86
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 00:11:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234993AbjKGXIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 18:08:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36662 "EHLO
+        id S235475AbjKGXK7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 18:10:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229722AbjKGXIu (ORCPT
+        with ESMTP id S235487AbjKGXKX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 18:08:50 -0500
-Received: from mail-oo1-xc35.google.com (mail-oo1-xc35.google.com [IPv6:2607:f8b0:4864:20::c35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4534D10C8;
-        Tue,  7 Nov 2023 15:08:48 -0800 (PST)
-Received: by mail-oo1-xc35.google.com with SMTP id 006d021491bc7-5842c251d7cso3328643eaf.1;
-        Tue, 07 Nov 2023 15:08:48 -0800 (PST)
+        Tue, 7 Nov 2023 18:10:23 -0500
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C26F199A
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 15:10:05 -0800 (PST)
+Received: by mail-pl1-x649.google.com with SMTP id d9443c01a7336-1cc1682607eso49650515ad.1
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 15:10:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699398527; x=1700003327; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:references:in-reply-to
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Xdszqg8GuNrbv2D5/m8sAm5VRvjmMoJFaLE7yW2b4M0=;
-        b=nSYt28QZoCWOc/07oMh7Ifv2yJx7eOlv4tZvh/KXJyFxJwTzNG+mT5sIPppEyfdFGe
-         WcZTf0Xcu+OfgHLeTnLsbg6GaYxlQJwgTt5XkOe4fIqNZzLnPtq8bzIOntnpJtg9/cPK
-         68CHnd8G4LS4MBXxrXTlK4i8D84Z2gxSo6xwQVMFbg6Cymh+jvNqBIz+yq86ED3QFnPU
-         ajE4+8s8NrZxHacknkbRHQiMmJ4lpS05uhfFmnMm5iVTbFDSum5/SAdJsJekQ/Kupr0L
-         p6K063vzAEEuwgBunOqtxjrq24p0jI4HdPaLan2WLgB57ZTGh5pAWgy0Kn9OtA+VNsnw
-         j9yA==
+        d=google.com; s=20230601; t=1699398604; x=1700003404; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=+MhGzAd189djAcHtpfQuANQf9GCRzOFZiv20M9Q/FQY=;
+        b=Kr0OE8g57m6fmvWbd9Fn7l1PjEP/0pwffK6GpFHKYIrKVGAa8fD7Qn/s+4MjrBv2gE
+         Cj697TN97TnaNVnCcdHOMuO5y2jPI3Lixh3TVQiBab3xTKy5iQ2nFW6EuPK7cGEId86P
+         LxcloMJlqBVGzDSygTLwVhnpSrDO2wAulGcIjSqvPyS+OsephMFJKNaa7FLHOGEX8QVP
+         heKeX2K2mNBMCvKoQGVDUU9rlxO1wYm/ZMKUH1ebqGN9uWLPV+MwZ8RvV2R5JexC1emW
+         05eOgvW4YH6So7Yjg1SL2M9bHfTS1yHI8JkuILIKpz8NhKDdhTY4GPV8Vf9lUwNaSijl
+         Ohag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699398527; x=1700003327;
-        h=cc:to:subject:message-id:date:from:references:in-reply-to
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Xdszqg8GuNrbv2D5/m8sAm5VRvjmMoJFaLE7yW2b4M0=;
-        b=LsDi8/PxoMhhBMkH5Jt0K8MZYYiK9nwHMKul2pr3FkkWI7OHzAFrsvD834frI+A8Ip
-         a42y96LLtU0a4MOHCRo6LNLYmgPsVtl+UOfYrDuRlehh575uK0UQ15DdMtWvmx+kmLQX
-         qLhMhKjcGmL18TyAnJcvqUFliPf+BFDkOnp65+Zj+DamXYCMRDfRM8m0VNdXkg8VUWA3
-         pJU9jnoHh0Hx1VNGC7cKa11/rkbxBb3XkSyTPm/wSNYuRwi5exDUBisP0qS1dtlnp7wx
-         3WTl4npOAch+PT2mkhtEquwvnCjKlFENxT8pB9fvusfw2IdrL1Z9PKzyMHw2DC77ufjM
-         w8kA==
-X-Gm-Message-State: AOJu0Yz5URsZr0mJVvs1OGo+MlFHYZS1q/iLAjAudvwXI2LhK36sDzg6
-        xLHS0ROGh8vOQ2C2QuJHM3KGeQCp8L7cYKAGEVb3Lrxz
-X-Google-Smtp-Source: AGHT+IHsp0JJKejPgiujjZaFuuv8e9Qy38owaFGrdM72IJx+emIxMLP+QGs0DogjaSs1V4wz96473ZBZbE9tYUFVT8M=
-X-Received: by 2002:a4a:3152:0:b0:587:9928:a0f1 with SMTP id
- v18-20020a4a3152000000b005879928a0f1mr264895oog.0.1699398527593; Tue, 07 Nov
- 2023 15:08:47 -0800 (PST)
-MIME-Version: 1.0
-Received: by 2002:a8a:158f:0:b0:4f0:1250:dd51 with HTTP; Tue, 7 Nov 2023
- 15:08:47 -0800 (PST)
-In-Reply-To: <202311071445.53E5D72C@keescook>
-References: <5c7333ea4bec2fad1b47a8fa2db7c31e4ffc4f14.1663334978.git.josh@joshtriplett.org>
- <202311071228.27D22C00@keescook> <20231107205151.qkwlw7aarjvkyrqs@f>
- <CAGudoHFsqMPmVvaV7BebGkpkw=pSQY8PLdB-1S3W5NpYh6trmA@mail.gmail.com> <202311071445.53E5D72C@keescook>
-From:   Mateusz Guzik <mjguzik@gmail.com>
-Date:   Wed, 8 Nov 2023 00:08:47 +0100
-Message-ID: <CAGudoHF5mYFWtzrv539W8Uc1aO_u6+UJOoDqWY0pePc+cofziw@mail.gmail.com>
-Subject: Re: [PATCH] fs/exec.c: Add fast path for ENOENT on PATH search before
- allocating mm
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Josh Triplett <josh@joshtriplett.org>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        d=1e100.net; s=20230601; t=1699398604; x=1700003404;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=+MhGzAd189djAcHtpfQuANQf9GCRzOFZiv20M9Q/FQY=;
+        b=gJarykxZ0GL7saWyZ3vYu/DQ74gX873YBUB6Y5XOqdGjW1QBeMkhzlgC15cifSuFbI
+         RlLzw7BD+5OeNsIgi3S2AYsvKqRbatlhfs4fFpdGTZeXPWE6rWXVw2g8UuUj474BvKDI
+         qj8g22ncUWMIvT8URcADk9gKDerOf5zoebFCcch75qn313seuyHOWhov4J1FO/mXfH6D
+         999nitp5gXQtu2KhHaujLLlnJc8Mo5CpbtEqfU9KslrEd1xIeEc6/t9LclNc2k3pAB6j
+         oAMz5fMM2J904U/I/NuGtWfKUY50XuS/dxhfb5aMZUFnBtDyM35PPCLjYlWDPApHJQ0I
+         ksdQ==
+X-Gm-Message-State: AOJu0YyNDvTXXEg1pXuOlJqwN8BhYC96osK8NypAsVD4crxzV2oKHDfh
+        ihOU9vswDAHfxoPPNzoQ//l1TlqcMis=
+X-Google-Smtp-Source: AGHT+IHXw4ruuMN9510jTMEQylrvlGOQL4x+riapUEeOGqH+xy8A01/RrDz2wfubezgYgQbwN6JnNYGVgd4=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:902:6b02:b0:1cc:3597:9e2f with SMTP id
+ o2-20020a1709026b0200b001cc35979e2fmr7836plk.2.1699398604419; Tue, 07 Nov
+ 2023 15:10:04 -0800 (PST)
+Date:   Tue, 7 Nov 2023 15:10:02 -0800
+In-Reply-To: <2b27196c2b5d10625e10ea73e9f270c7ef0bf5a0.camel@redhat.com>
+Mime-Version: 1.0
+References: <20231010200220.897953-1-john.allen@amd.com> <20231010200220.897953-4-john.allen@amd.com>
+ <8484053f-2777-eb55-a30c-64125fbfc3ec@amd.com> <ZS7PubpX4k/LXGNq@johallen-workstation>
+ <c65817b0-7fa6-7c0b-6423-5f33062c9665@amd.com> <874ae0019fb33784520270db7d5213af0d42290d.camel@redhat.com>
+ <ZUkYPfxHmMZB03iv@google.com> <2b27196c2b5d10625e10ea73e9f270c7ef0bf5a0.camel@redhat.com>
+Message-ID: <ZUrDyqXAQZsQzCzl@google.com>
+Subject: Re: [PATCH 3/9] KVM: x86: SVM: Pass through shadow stack MSRs
+From:   Sean Christopherson <seanjc@google.com>
+To:     Maxim Levitsky <mlevitsk@redhat.com>
+Cc:     nikunj@amd.com, John Allen <john.allen@amd.com>,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        pbonzini@redhat.com, weijiang.yang@intel.com,
+        rick.p.edgecombe@intel.com, x86@kernel.org,
+        thomas.lendacky@amd.com, bp@alien8.de
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/7/23, Kees Cook <keescook@chromium.org> wrote:
-> On Tue, Nov 07, 2023 at 10:23:16PM +0100, Mateusz Guzik wrote:
->> If the patch which dodges second lookup still somehow appears slower a
->> flamegraph or other profile would be nice. I can volunteer to take a
->> look at what's going on provided above measurements will be done and
->> show funkyness.
->
-> When I looked at this last, it seemed like all the work done in
-> do_filp_open() (my patch, which moved the lookup earlier) was heavier
-> than the duplicate filename_lookup().
->
-> What I didn't test was moving the sched_exec() before the mm creation,
-> which Peter confirmed shouldn't be a problem, but I think that might be
-> only a tiny benefit, if at all.
->
-> If you can do some comparisons, that would be great; it always takes me
-> a fair bit of time to get set up for flame graph generation, etc. :)
->
+On Tue, Nov 07, 2023, Maxim Levitsky wrote:
+> Since no sane L1 hypervisor will ever allow access to all its msrs from L2,
+> it might make sense to always use a dedicated MSR bitmap for L2.
 
-So I spawned *one* process executing one statocally linked binary in a
-loop, test case from http://apollo.backplane.com/DFlyMisc/doexec.c .
+Hmm, there might be a full passthrough use case out there, but in general, yeah,
+I agree.  I think even kernel hardening use cases where the "hypervisor" is just
+a lowvisor would utilize MSR bitmaps to prevent modifying the de-privileged
+kernel from modifying select MSRs.
 
-The profile is definitely not what I expected:
-   5.85%  [kernel]           [k] asm_exc_page_fault
-   5.84%  [kernel]           [k] __pv_queued_spin_lock_slowpath
-[snip]
+> Also since all sane L1 hypervisors do use a msr bitmap means that
+> dedicated code path that doesn't use it is not well tested.
+> 
+> On VMX if I am not mistaken, this is not an issue because either all
+> MSRS are intercepted or a bitmap is used.
 
-I'm going to have to recompile with lock profiling, meanwhile
-according to bpftrace
-(bpftrace -e 'kprobe:__pv_queued_spin_lock_slowpath { @[kstack()] = count(); }')
-top hits would be:
-
-@[
-    __pv_queued_spin_lock_slowpath+1
-    _raw_spin_lock+37
-    __schedule+192
-    schedule_idle+38
-    do_idle+366
-    cpu_startup_entry+38
-    start_secondary+282
-    secondary_startup_64_no_verify+381
-]: 181
-@[
-    __pv_queued_spin_lock_slowpath+1
-    _raw_spin_lock_irq+43
-    wait_for_completion+141
-    stop_one_cpu+127
-    sched_exec+165
-    bprm_execve+328
-    do_execveat_common.isra.0+429
-    __x64_sys_execve+50
-    do_syscall_64+46
-    entry_SYSCALL_64_after_hwframe+110
-]: 206
-
-I did not see this coming for sure. I'll poke around maybe this weekend.
-
--- 
-Mateusz Guzik <mjguzik gmail.com>
+Yep, if the MSR bitmaps aren't used then all MSR accesses are intercepted.
