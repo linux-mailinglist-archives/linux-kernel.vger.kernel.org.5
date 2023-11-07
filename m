@@ -2,85 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BAED07E3625
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 09:00:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB8557E3629
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 09:00:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233642AbjKGIAE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 03:00:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54654 "EHLO
+        id S233685AbjKGIAz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 03:00:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229580AbjKGIAD (ORCPT
+        with ESMTP id S233681AbjKGIAx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 03:00:03 -0500
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 254A3E8;
-        Tue,  7 Nov 2023 00:00:00 -0800 (PST)
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A76eXJH018774;
-        Tue, 7 Nov 2023 07:59:54 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=NDucsj2q75e98JcNIa4TZAP69g3rwEi7mKSn4CFEMBU=;
- b=Us2e+i2PXGtk2wpqideV659ZhYUno2778ZsxkuKHVYOAK/tObf2iOf7lWgwc/vo31tSa
- jsL45xPwV4J621+Z/ObpKwtfgo8WcddDe2JA7ptHZfTD9HG04KscovN+rsVQdZ5Nvt9Q
- POn9rGKTxC3GXbFTFcZQTH5NBeX5V6RgfzkCs7yOGginv/MCOwoGHbzSDjqSpdEHsk7J
- I2ggwTlF1bJxCexj2e/77rN7Z8/FF3H2gRZxDq2Q/gKxW18UTy/nWL7BO1/sgcmd9rCz
- MCJji/nHjVW8bnpqsa4p0ck+3o7zZ9f1eNzvhvZ8V/QlsQysg+Tfhma/gLxjHkaMMWEc 0A== 
-Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u6wer2vqs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 07 Nov 2023 07:59:54 +0000
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-        by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3A77xrj1014858
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 7 Nov 2023 07:59:53 GMT
-Received: from [10.253.15.27] (10.80.80.8) by nasanex01b.na.qualcomm.com
- (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Mon, 6 Nov
- 2023 23:59:51 -0800
-Message-ID: <00305327-d866-4da4-916c-fb414398bc3a@quicinc.com>
-Date:   Tue, 7 Nov 2023 15:59:49 +0800
+        Tue, 7 Nov 2023 03:00:53 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5C9AFD
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 00:00:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1699344004;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=fS33WX/TP1PBbgnGRlYS4ZqDoFTuXKV4PZ845SjCyEc=;
+        b=YA2lBfx7Wrd6i8FuWBzkq4X7pJVh541adBHrnb3yUmUAnW/g3b89YC89YPMa6SKzDzxy0S
+        ILZhK8saSBPDiwXMywkvdWKH/L3aguSIray4rptfuA9laMyQOKFSMjR6PL5nyl91oFqylK
+        SJ+MC9rPfWBK6WfbcFX16iupp/33oP8=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-126-1_8S739kOQ6q5yGm9A9SSg-1; Tue, 07 Nov 2023 03:00:03 -0500
+X-MC-Unique: 1_8S739kOQ6q5yGm9A9SSg-1
+Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-9dd489c98e7so256513666b.2
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 00:00:03 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699344002; x=1699948802;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fS33WX/TP1PBbgnGRlYS4ZqDoFTuXKV4PZ845SjCyEc=;
+        b=MP6pXTlEKEm0k967ai5f9TY0kmmJrRYRqcwL2aar89yMFkk63UGlvDJSw9qDaZaAOy
+         /zlTlu7BiesfIS1OeJ565KLFJmMblKQWZJdtZ+Xz9eNEOrw970TVGR+hjHTDwqaO0Q7A
+         mC40xq+80bMFjdwdMmTgqbYQUyL8sS0Jf0wOSo3ycmgyqVhQbs0FxbtHwV/BEbyPjwLK
+         sEjz09zsdSoTp5K96lzElo8LOroO34urADWUHcknTiFma4ciAy9uqcdlNkEm2Qc2XmFi
+         Sl4ykOP6/EHGxfWxC+JRvnnjilur6azhfr3ttNxKPtprCHoOFHgisTqF0YrqatsKd3+D
+         t0Hg==
+X-Gm-Message-State: AOJu0YzBffoLIWeRmdSLZfA4tjSCF7aVbkz9p7bbG8jN+1fjPU4LDmmb
+        Er6AvMyinSRfz2lWciroU9BVQDcBEvSyAvS0DstQTEMPR69wWsNFPiNnOMJulbO0c0ZgfdmA/l3
+        3rTd5BjUGgJhI4kfpYnZ6y13OAfS0j5jcuANl1Lef
+X-Received: by 2002:a17:907:1392:b0:9d6:e1b5:1afa with SMTP id vs18-20020a170907139200b009d6e1b51afamr10270530ejb.46.1699344002158;
+        Tue, 07 Nov 2023 00:00:02 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFA8+5QQSDmxCU+xJTHQaQQA6ateLho1sCb2m5X93a+V/hkk0uakR0CKeLROgbnj7bo4pQQdVBXLsuog22tlTw=
+X-Received: by 2002:a17:907:1392:b0:9d6:e1b5:1afa with SMTP id
+ vs18-20020a170907139200b009d6e1b51afamr10270509ejb.46.1699344001694; Tue, 07
+ Nov 2023 00:00:01 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/2] bus: mhi: host: Add spinlock to protect WP access
- when queueing TREs
-Content-Language: en-US
-To:     Manivannan Sadhasivam <mani@kernel.org>,
-        Jeffrey Hugo <quic_jhugo@quicinc.com>
-CC:     <mhi@lists.linux.dev>, <linux-arm-msm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <quic_cang@quicinc.com>,
-        <quic_mrana@quicinc.com>
-References: <1694594861-12691-1-git-send-email-quic_qianyu@quicinc.com>
- <1694594861-12691-2-git-send-email-quic_qianyu@quicinc.com>
- <af4fc816-d75b-997d-6d37-a774f5eb96ae@quicinc.com>
- <dfeb6071-8ae4-38ba-5273-59478ea8e178@quicinc.com>
- <c30c9c68-bfe1-0cc5-c511-218f7d1da92d@quicinc.com>
- <15526b95-518c-445a-be64-6a15259405fb@quicinc.com>
- <472817a7-78bb-25d9-b8c6-2d70f713b7fb@quicinc.com>
- <20231106045119.GB2474@thinkpad>
-From:   Qiang Yu <quic_qianyu@quicinc.com>
-In-Reply-To: <20231106045119.GB2474@thinkpad>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: owIEIQkDwFhbK7exT3Kb00mP_xfOVM9N
-X-Proofpoint-GUID: owIEIQkDwFhbK7exT3Kb00mP_xfOVM9N
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-06_15,2023-11-02_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 malwarescore=0
- spamscore=0 lowpriorityscore=0 clxscore=1015 impostorscore=0 phishscore=0
- mlxscore=0 priorityscore=1501 adultscore=0 mlxlogscore=999 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2310240000
- definitions=main-2311070065
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+References: <nycvar.YFH.7.76.2311012033290.29220@cbobk.fhfr.pm>
+ <20231103200524.53930-1-ostapyshyn@sra.uni-hannover.de> <bokQB3BK040-4fGy8tNfZrdM2mNmWxZud9O-KMmYqOkfa1JTC1ocUjoAzCEpPsbsAvY5qb5TcSP6XsQLaja2XO0gapOcsZyeVdCvq6T31qA=@protonmail.com>
+ <CAO-hwJLpKTb9yxvxaPDLZkF9kDF8u2VRJUf9yiQd+neOyxPeug@mail.gmail.com> <eb8e22f3-77dc-4923-a7ba-e237ee226edb@sra.uni-hannover.de>
+In-Reply-To: <eb8e22f3-77dc-4923-a7ba-e237ee226edb@sra.uni-hannover.de>
+From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Date:   Tue, 7 Nov 2023 08:59:50 +0100
+Message-ID: <CAO-hwJKVwZK00yZFjuyyR9Xt4Y2-r8eLJNZfnyeopHxoZQ0eGA@mail.gmail.com>
+Subject: Re: Requesting your attention and expertise regarding a Tablet/Kernel issue
+To:     Illia Ostapyshyn <ostapyshyn@sra.uni-hannover.de>
+Cc:     David Revoy <davidrevoy@protonmail.com>, jkosina@suse.cz,
+        jason.gerecke@wacom.com, jose.exposito89@gmail.com,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        nils@nilsfuhler.de, peter.hutterer@who-t.net, ping.cheng@wacom.com,
+        bagasdotme@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -88,110 +81,125 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 11/6/2023 12:51 PM, Manivannan Sadhasivam wrote:
-> On Fri, Oct 20, 2023 at 09:07:35AM -0600, Jeffrey Hugo wrote:
->> On 10/16/2023 2:46 AM, Qiang Yu wrote:
->>> On 9/29/2023 11:22 PM, Jeffrey Hugo wrote:
->>>> On 9/24/2023 9:10 PM, Qiang Yu wrote:
->>>>> On 9/22/2023 10:44 PM, Jeffrey Hugo wrote:
->>>>>> On 9/13/2023 2:47 AM, Qiang Yu wrote:
->>>>>>> From: Bhaumik Bhatt <bbhatt@codeaurora.org>
->>>>>>>
->>>>>>> Protect WP accesses such that multiple threads queueing buffers for
->>>>>>> incoming data do not race and access the same WP twice.
->>>>>>> Ensure read and
->>>>>>> write locks for the channel are not taken in succession
->>>>>>> by dropping the
->>>>>>> read lock from parse_xfer_event() such that a callback given to client
->>>>>>> can potentially queue buffers and acquire the write lock
->>>>>>> in that process.
->>>>>>> Any queueing of buffers should be done without channel
->>>>>>> read lock acquired
->>>>>>> as it can result in multiple locks and a soft lockup.
->>>>>>>
->>>>>>> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
->>>>>>> Signed-off-by: Qiang Yu <quic_qianyu@quicinc.com>
->>>>>>> ---
->>>>>>>    drivers/bus/mhi/host/main.c | 11 ++++++++++-
->>>>>>>    1 file changed, 10 insertions(+), 1 deletion(-)
->>>>>>>
->>>>>>> diff --git a/drivers/bus/mhi/host/main.c b/drivers/bus/mhi/host/main.c
->>>>>>> index dcf627b..13c4b89 100644
->>>>>>> --- a/drivers/bus/mhi/host/main.c
->>>>>>> +++ b/drivers/bus/mhi/host/main.c
->>>>>>> @@ -642,6 +642,7 @@ static int parse_xfer_event(struct
->>>>>>> mhi_controller *mhi_cntrl,
->>>>>>>                mhi_del_ring_element(mhi_cntrl, tre_ring);
->>>>>>>                local_rp = tre_ring->rp;
->>>>>>>    +            read_unlock_bh(&mhi_chan->lock);
->>>>>> This doesn't work due to the
->>>>>> write_lock_irqsave(&mhi_chan->lock, flags); on line 591.
->>>>> Write_lock_irqsave(&mhi_chan->lock, flags) is used in case of
->>>>> ev_code >= MHI_EV_CC_OOB. We only read_lock/read_unlock the
->>>>> mhi_chan while ev_code < MHI_EV_CC_OOB.
->>>> Sorry.  OOB != EOB
->>>>
->>>>>> I really don't like that we are unlocking the mhi_chan while
->>>>>> still using it.  It opens up a window where the mhi_chan
->>>>>> state can be updated between here and the client using the
->>>>>> callback to queue a buf.
->>>>>>
->>>>>> Perhaps we need a new lock that just protects the wp, and
->>>>>> needs to be only grabbed while mhi_chan->lock is held?
->>>>> Since we have employed mhi_chan lock to protect the channel and
->>>>> what we are concerned here is that client may queue buf to a
->>>>> disabled or stopped channel, can we check channel state after
->>>>> getting mhi_chan->lock like line 595.
->>>>>
->>>>> We can add the check after getting write lock in mhi_gen_tre()
->>>>> and after getting read lock again here.
->>>> I'm not sure that is sufficient.  After you unlock to notify the
->>>> client, MHI is going to manipulate the packet count and runtime_pm
->>>> without the lock (648-652).  It seems like that adds additional
->>>> races which won't be covered by the additional check you propose.
->>> I don't think read_lock_bh(&mhi_chan->lock) can protect runtime_pm and
->>> the packet count here. Even if we do not unlock, mhi state and packet
->>> count can still be changed because we did not get pm_lock here, which is
->>> used in all mhi state transition function.
->>>
->>> I also checked all places that mhi_chan->lock is grabbed, did not see
->>> packet count and runtime_pm be protected by write_lock(&mhi_chan->lock).
->>>
->>>
->>> If you really don't like the unlock operation, we can also take a new
->>> lock. But I think we only need to add the new lock in two places,
->>> mhi_gen_tre and mhi_pm_m0_transition while mhi_chan->lock is held.
->> Mani, if I recall correctly, you were the architect of the locking.  Do you
->> have an opinion?
->>
-> TBH, the locking situation is a mess with MHI. Initially, we happen to have
-> separate locks for protecting various operations, but then during review, it was
-> advised to reuse existing locks and avoid having too many separate locks.
+On Mon, Nov 6, 2023 at 9:06=E2=80=AFPM Illia Ostapyshyn
+<ostapyshyn@sra.uni-hannover.de> wrote:
 >
-> This worked well but then we kind of abused the locks over time. I asked Hemant
-> and Bhaumik to audit the locks and fix them, but both of them left Qcom.
+> On 11/6/23 17:59, Benjamin Tissoires wrote:
 >
-> So in this situation, the intent of the pm_lock was to protect concurrent access
-> against updating the pm_state. And it also happen to protect _other_things_ such
-> as runtime_put, pending_pkts etc... But not properly, because most of the time
-> read lock is taken in places where pm_state is being read. So there is still a
-> possibility of race while accessing these _other_things_.
+> > If the pen has 2 buttons, and an eraser side, it would be a serious
+> > design flow for XPPEN to report both as eraser.
+> >
+> > Could you please use sudo hid-recorder from hid-tools[1] on any kernel
+> > version and send us the logs here?
+> > I'll be able to replay the events locally, and understand why the
+> > kernel doesn't work properly.
+> >
+> > And if there is a design flaw that can be fixed, we might even be able
+> > to use hid-bpf to change it :)
 >
-> For this patch, I'm happy with dropping chan->lock before calling xfer_cb() and
-> I want someone (maybe Qiang) to do the audit of locking in general and come up
-> with fixes where needed.
+> My wild guess is that XP-Pen 16 Artist Pro reports an Eraser usage
+> without Invert for the upper button and Eraser with Invert for the
+> eraser tip.  A device-specific driver could work with that, but there
+> seems to be no way to incorporate two different erasers (thus, allowing
+> userspace to map them to different actions arbitrarily) in the generic
+> driver currently.
+
+That's exactly why I want to see the exact event flow. We can not do
+"wild guesses" unfortunately (not meaning any offenses).
+And I am very suspicious about the fact that the stylus reports 2
+identical erasers. Because in the past David seemed to be able to have
+2 distincts behaviors for the 2 "buttons" (physical button and eraser
+tail).
+
 >
-> - Mani
+>
+> > Generally speaking, relying on X to fix your hardware is going to be a
+> > dead end. When you switch to wayland, you'll lose all of your fixes,
+> > which isn't great.
+>
+> > AFAIU, the kernel now "merges" both buttons, which is a problem. It
+> > seems to be a serious regression. This case is also worrying because I
+> > added regression tests on hid, but I don't have access to all of the
+> > various tablets, so I implemented them from the Microsoft
+> > specification[0]. We need a special case for you here.
+>
+> The issue preventing David from mapping HID_DG_ERASER to BTN_STYLUS2 is
+> that the hidinput_hid_event is not compatible with hidinput_setkeycode.
+> If usage->code is no longer BTN_TOUCH after remapping, it won't be
+> released when Eraser reports 0.  A simple fix is:
 
-As discussed with Jeff before, we also need to check channel state 
-before queue buffer and after re-lock
+I must confess, being the one who refactored everything, I still don't
+believe this is as simple as it may seem. I paged out all of the
+special cases, and now, without seeing the event flow I just can not
+understand why this would fix the situation.
 
-in parse_xfer_event, so I also add the channel state check in next 
-version patch.
+And BTW, if you have a tool affected by 276e14e6c3, I'd be curious to
+get a hid-recorder sample for it so I can get regression tests for it.
 
-Probably I can do the audit of locking. It's a good chance for me to 
-understand various locks in MHI host
+>
+> --- a/drivers/hid/hid-input.c
+> +++ b/drivers/hid/hid-input.c
+> @@ -1589,7 +1589,7 @@ void hidinput_hid_event(struct hid_device *hid,
+> struct hid_field *field, struct
+>                         /* value is off, tool is not rubber, ignore */
+>                         return;
+>                 else if (*quirks & HID_QUIRK_NOINVERT &&
+> -                        !test_bit(BTN_TOUCH, input->key)) {
+> +                        !test_bit(usage->code, input->key)) {
 
-driver completely.
+I don't want to be rude, but this feels very much like black magic,
+especially because there is a comment just below and it is not
+updated. So either the explanation was wrong, or it's not explaining
+the situation (I also understand that this is not a formal submission,
+so maybe that's the reason why the comment is not updated).
+
+>                         /*
+>                          * There is no invert to release the tool, let hi=
+d_input
+>                          * send BTN_TOUCH with scancode and release the t=
+ool after.
+>
+> This change alone fixes David's problem and the right-click mapping in
+> hwdb works again.  However, the tool switches to rubber for the remapped
+> eraser (here BTN_STYLUS2) events, both for devices with and without
+> Invert.  This does no harm but is not useful either.  A cleaner solution
+> for devices without Invert would be to omit the whole tool switching
+> logic in this case:
+>
+> @@ -1577,6 +1577,9 @@ void hidinput_hid_event(struct hid_device *hid,
+> struct hid_field *field, struct
+>
+>         switch (usage->hid) {
+>         case HID_DG_ERASER:
+> +               if (*quirks & HID_QUIRK_NOINVERT && usage->code !=3D BTN_=
+TOUCH)
+> +                       break;
+> +
+>                 report->tool_active |=3D !!value;
+>
+> Remapping Invert does not work anyway as the Invert tool is hardcoded in
+> hidinput_hid_event.  Even worse, I guess (not tested) trying to do so
+> would mask BTN_TOOL_RUBBER from dev->keybit and could cause weird
+> behavior similar to one between 87562fcd1342 and 276e14e6c3.  This
+> raises the question: should users be able to remap Invert after all?
+>
+
+The kernel is supposed to transfer what the device is. So if it says
+this is an eraser, we should not try to change it. Users can then
+tweak their own device if they wish through hid-bpf or through
+libinput quirks, but when you install a fresh kernel without tweaks,
+we should be as accurate as possible.
+
+My main concern is that now we have a device which exports 2 different
+interactions as being the same. So either the firmware is wrong, and
+we need to quirk it, or the kernel is wrong and merges both, and this
+needs fixes as well.
+
+Once every interaction on the device gets its own behavior, userspace
+can do whatever they want. It's not the kernel's concern anymore.
+
+BTW, David, were you able to do a revert of 276e14e6c3?
+
+Cheers,
+Benjamin
 
