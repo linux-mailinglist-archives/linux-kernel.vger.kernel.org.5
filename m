@@ -2,133 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F0CCE7E3B1D
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 12:27:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD4A67E3B1F
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 12:27:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234262AbjKGL1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 06:27:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35826 "EHLO
+        id S234288AbjKGL14 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 06:27:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229643AbjKGL1n (ORCPT
+        with ESMTP id S234289AbjKGL1s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 06:27:43 -0500
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2042.outbound.protection.outlook.com [40.107.243.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4E98DF;
-        Tue,  7 Nov 2023 03:27:40 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JiF8smrMS1/D9Kpo0YoaQpc8dc9Rq/uCtHxGCTJP2ObW87A96xrmHQxjdwHB6jIunCSZ780vdERurbr637wbMjvxjirmHow1iPtq91a+I3sDuBMrjkOFWhaRH9JifPh1qXnXp0dReLkYdJKf3zoYhpo1DEKAvYlmXgEd4hPiKbiKm55WWc/AKxcJjN3yvhdFkKU9dyVa5GdokpbojMEovzb/1FVubHsO1aA98G0Wq4wmAmPwzkvJxLri3HpklVTSSBeDAewB+iT6NuwcNYmJp/pNkPj/spbPc3SjbXDBShhRUARpPyu/vI8F5dVxX8crcoXtfwaCEiYiNtoJiNH3mA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=sspIu6XK9f3c34wn6yaEXHQXT3giRkm2/LVKfiWRT9o=;
- b=epGQ98VtOBkyo193u/zdEP636ij81ENRdYCCY779NgKfFw2kolVTIedwb1vwp+fYk3CoDpdii4fDqg6epgRqGQuVO9v78r8ZJrb5C5c1UF6YGuegmuKwibuKzRIU5mliBNa/gco4YBHe0isfPzg3ZPrX11sQg9tmXNF+afS46xsY4GFMhfrpV+iPB23eQhm0En3ah1ETTIdct120k+6GGt9JBdBDKJn4HFu5R1+UDqG3vXqkpoCuohBB2zgeA0QXAoztWEKtAhbvT1ZzcCdAMaupIJtDFvfwe42D8ieebHXIJVzxYnM477JDwMZsAyM2lERH7Rw7sqtwwpzXLiYYyQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.160) smtp.rcpttodomain=linaro.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sspIu6XK9f3c34wn6yaEXHQXT3giRkm2/LVKfiWRT9o=;
- b=AvUURPkxdnLr9BH5hrl5I+leJCSFkV+gHrdDykNjMjkzQtHLGppWvwjT10Gv57CNH+fvl4D30aBRZDZUUmne32WS+0HwPTXmNrGvKbjWdr9zMrINFlgomxyGONMwwI+C7vArhTRoaz5WZ7Q/TQb9uIDM105zHdmdX7Xh6+3ipWO9Ac8+cxUs7F1BfRqv3P3AfEzvjn3DF+898ft/BF/aUb5DIi6Bpv8df4GDc4KoGQM0IS7ynExVp63gze3FmyUcSxQ3zXY34dodBhfVaVgbbLjo8Iyp2FEKim/t2PmYlcYqZOLLILEfZ7nvaUnoPUoslPHaLCqe6Pb9sE3v/nwOmQ==
-Received: from MW3PR06CA0012.namprd06.prod.outlook.com (2603:10b6:303:2a::17)
- by DM4PR12MB6303.namprd12.prod.outlook.com (2603:10b6:8:a3::6) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6954.28; Tue, 7 Nov 2023 11:27:37 +0000
-Received: from CO1PEPF000042A7.namprd03.prod.outlook.com
- (2603:10b6:303:2a:cafe::94) by MW3PR06CA0012.outlook.office365.com
- (2603:10b6:303:2a::17) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.27 via Frontend
- Transport; Tue, 7 Nov 2023 11:27:37 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.160) by
- CO1PEPF000042A7.mail.protection.outlook.com (10.167.243.36) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6977.16 via Frontend Transport; Tue, 7 Nov 2023 11:27:36 +0000
-Received: from rnnvmail203.nvidia.com (10.129.68.9) by mail.nvidia.com
- (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Tue, 7 Nov 2023
- 03:27:22 -0800
-Received: from rnnvmail203.nvidia.com (10.129.68.9) by rnnvmail203.nvidia.com
- (10.129.68.9) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Tue, 7 Nov 2023
- 03:27:21 -0800
-Received: from amhetre.nvidia.com (10.127.8.9) by mail.nvidia.com
- (10.129.68.9) with Microsoft SMTP Server id 15.2.986.41 via Frontend
- Transport; Tue, 7 Nov 2023 03:27:19 -0800
-From:   Ashish Mhetre <amhetre@nvidia.com>
-To:     <krzysztof.kozlowski@linaro.org>, <thierry.reding@gmail.com>,
-        <jonathanh@nvidia.com>, <dmitry.osipenko@collabora.com>
-CC:     <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        "Ashish Mhetre" <amhetre@nvidia.com>
-Subject: [Patch V2 2/2] memory: tegra: Skip SID programming if SID registers aren't set
-Date:   Tue, 7 Nov 2023 16:57:13 +0530
-Message-ID: <20231107112713.21399-2-amhetre@nvidia.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20231107112713.21399-1-amhetre@nvidia.com>
-References: <20231107112713.21399-1-amhetre@nvidia.com>
-X-NVConfidentiality: public
+        Tue, 7 Nov 2023 06:27:48 -0500
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A622102
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 03:27:45 -0800 (PST)
+Received: by mail-wr1-x42e.google.com with SMTP id ffacd0b85a97d-32dc918d454so3291694f8f.2
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 03:27:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1699356463; x=1699961263; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=zLgz4qAS5Dldr72CBEwbotz7bAslWZ8hRwCSwW7KT0M=;
+        b=MYUsom9DxwuwLOeNxonaSaiWR2I3ZOmzF7/xvP4Z75tN8yjdveSwQfhGJgexNKuoNW
+         QwLQf/MS6tHR90hdWoWQzeLT9W4tI/PFfNZs5sh3BBs2Hf2Ts8vt/MBeuPhqSOIl9UYX
+         sghes/8+keq863q9snpBP/4v/Z+VWakj41LsDdKyEkHHTDdxTZNtLCspn07cNf7bkmQw
+         RayHnOYkiB7+JbJBo0NGaV6l68Lw+5SEqbbQo/3Pq2KkLZsmiZf5QeAFYVR6JO0/0ZXt
+         CGlQTRWvQoptySpXXfuWbUyd7gXF0F/OaJetUGxkl3EsCyh4Ef+AWnF4R+o9SKRVUgQ+
+         AtXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699356463; x=1699961263;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zLgz4qAS5Dldr72CBEwbotz7bAslWZ8hRwCSwW7KT0M=;
+        b=OgI4ri3ILiDYWJmXXamCSDfjlAQGXamqjRf1wIVtZ4nmJA318PihS1dGVxhNtZ/E1J
+         GnqYe/Qn1M9mFLUUOYgh6WtmJU1w7RqmerFpQbUiiXTMy2/IF3EoErSu6L1aYgSJeRcE
+         Lv5A9tJyyl6YZmWwW0q59GbEz9Cp6petkzc05K3AeVqfgkd7aGgOjDy/hzYdfQ5WB/tK
+         hAgIUqwgoEcSAzlxOkidwTyzsZ3qMiq0t6L0pVghCe6bbAmK2fDY2LDiNLqVFOewLxr3
+         pGesdrZp71shkoeTMX/8WR8CqkjDnNItZ9eEUWeY+JS0YYc6G+BvmLm7a8uu2qLUEj45
+         kLhg==
+X-Gm-Message-State: AOJu0YzHEzdWseV5Q7XWjpBK7VkK/YXWgZjuLviUgBQBfQ0w3j3xrJu6
+        NuCrzk+ob5ISvMLIWwxj6cKfHA==
+X-Google-Smtp-Source: AGHT+IEJryg0bfnHZBY1aY5PGE39a6YSE34sk223QMpe3XZmALCLT+EOciIGmaoV8igRw7Zwtz3N2A==
+X-Received: by 2002:a05:6000:3c3:b0:31a:d9bc:47a2 with SMTP id b3-20020a05600003c300b0031ad9bc47a2mr30119265wrg.53.1699356463599;
+        Tue, 07 Nov 2023 03:27:43 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.218.126])
+        by smtp.gmail.com with ESMTPSA id x17-20020adfffd1000000b0032710f5584fsm2120264wrs.25.2023.11.07.03.27.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 07 Nov 2023 03:27:43 -0800 (PST)
+Message-ID: <e9fef49e-c0ca-4f7d-9618-151216e25280@linaro.org>
+Date:   Tue, 7 Nov 2023 12:27:41 +0100
 MIME-Version: 1.0
-Content-Type: text/plain
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1PEPF000042A7:EE_|DM4PR12MB6303:EE_
-X-MS-Office365-Filtering-Correlation-Id: e97d1d28-dcd2-4511-9332-08dbdf848b61
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: GGjSDYnK+9oxoEhlmNoPdyxwxdUEasiizcGQ+P32x+kkDzEJhsi3ZoijsbZhReOGXQlcXfBwi4NUDxI5Ktyie8pN9NMo7ukAXjBG7/Zo/xqFWFFp/5AmihvcwjEpYA83zojDhmBc+jNzpcsXTZUVKPSYSq8RSCGPnhfV55pW75uFWrGZiwUhXAcZRGdpAgUMznGqSHthE+WWYmqgM7jXQLA8eFexh3HmCS5HzVzZ9RYlTq5XSC+ZgkDsHRPzr1F9EHGfJbsV0txuFl2y0l1fDZuQQ9QcYqbexqYT92OaI9vrEdYiop8e7fpvJba6Wpacm9qj/8veXYemLBLQAF7+taus5MmTAqj+B57+NqJhnCWMryYAt8us/O4YJ5Ybop7aXgWMSJUjMJiaVlwsEO77G9b0hTgIma8zDf9ueai4xk2GiIRzi2HAXWnq+9x+YsA11f4LcvyRlr2jt8mSas6hi34uwx4TeyB8bVixZSd9ItrxljRKH/hndkq9+PttE7SjRffV8gBXF9YRcTilyboyv0eig3aWWwPYVg+3kyxLYTGF3GbqGg/su7W+Fk5Dds4ILmKnZDoAfhv6GCgERBktsTJsL+tXhzW+Hz6LcSHUOlhbdE0rUQVn3k9ffKDylnS18qf/rV7LMsgbkxH6hfakmmf8qzBk1JAtF7qVdBvI61fA+HW77zMmjhtIcq6KTr5iKstOS+v56pgRbjwpiGrn78KlMcPWPmFXK7PUcY6L2qZr2TQRx05uFdYpTnQfWgls
-X-Forefront-Antispam-Report: CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(376002)(346002)(136003)(396003)(39860400002)(230922051799003)(186009)(1800799009)(451199024)(64100799003)(82310400011)(36840700001)(40470700004)(46966006)(82740400003)(1076003)(2616005)(107886003)(426003)(336012)(40460700003)(26005)(110136005)(70206006)(83380400001)(7696005)(478600001)(6666004)(70586007)(2906002)(4326008)(41300700001)(8676002)(40480700001)(8936002)(36756003)(36860700001)(5660300002)(4744005)(86362001)(47076005)(54906003)(316002)(356005)(7636003);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Nov 2023 11:27:36.8599
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: e97d1d28-dcd2-4511-9332-08dbdf848b61
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1PEPF000042A7.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB6303
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] dt-bindings: soc: Add new board description for
+ MicroBlaze V
+To:     Michal Simek <michal.simek@amd.com>,
+        Conor Dooley <conor@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, monstr@monstr.eu,
+        michal.simek@xilinx.com, git@xilinx.com,
+        Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
+References: <50c277c92c41a582ef171fb75efc6a6a4f860be2.1699271616.git.michal.simek@amd.com>
+ <20231106-hangnail-prankster-a04e713bed35@spud>
+ <4223470c-5596-4168-9c89-e701559fbbed@amd.com>
+Content-Language: en-US
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <4223470c-5596-4168-9c89-e701559fbbed@amd.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are few MC clients where SID security and override register
-offsets are not specified like "sw_cluster0" in tegra234. Don't program
-SID override for such clients because it leads to access to invalid
-addresses.
+On 07/11/2023 12:09, Michal Simek wrote:
+> 
+> 
+> On 11/6/23 18:07, Conor Dooley wrote:
+>> On Mon, Nov 06, 2023 at 12:53:40PM +0100, Michal Simek wrote:
+>>> MicroBlaze V is new AMD/Xilinx soft-core 32bit RISC-V processor IP.
+>>> It is hardware compatible with classic MicroBlaze processor. Processor can
+>>> be used with standard AMD/Xilinx IPs including interrupt controller and
+>>> timer.
+>>>
+>>> Signed-off-by: Michal Simek <michal.simek@amd.com>
+>>> ---
+>>>
+>>>   .../devicetree/bindings/soc/amd/amd.yaml      | 26 +++++++++++++++++++
+>>
+>> Bindings for SoCs (and by extension boards with them) usually go to in
+>> $arch/$vendor.yaml not into soc/$vendor/$vendor.yaml. Why is this any
+>> different?
+> 
+> I actually found it based on tracking renesas.yaml which describes one of risc-v 
+> board. No problem to move it under bindings/riscv/
+> 
+>>
+>>>   1 file changed, 26 insertions(+)
+>>>   create mode 100644 Documentation/devicetree/bindings/soc/amd/amd.yaml
+>>>
+>>> diff --git a/Documentation/devicetree/bindings/soc/amd/amd.yaml b/Documentation/devicetree/bindings/soc/amd/amd.yaml
+>>> new file mode 100644
+>>> index 000000000000..21adf28756fa
+>>> --- /dev/null
+>>> +++ b/Documentation/devicetree/bindings/soc/amd/amd.yaml
+>>> @@ -0,0 +1,26 @@
+>>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>>> +%YAML 1.2
+>>> +---
+>>> +$id: http://devicetree.org/schemas/soc/amd/amd.yaml#
+>>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>>> +
+>>> +title: AMD Platforms
+>>> +
+>>> +maintainers:
+>>> +  - Michal Simek <michal.simek@amd.com>
+>>> +
+>>> +description: |
+>>> +  AMD boards with MicroBlaze V SOC
+>>> +
+>>> +properties:
+>>> +  $nodename:
+>>> +    const: '/'
+>>> +  compatible:
+>>> +    oneOf:
+>>> +      - description: AMD MicroBlaze V
+>>> +        items:
+>>> +          - const: amd,mbv
+>>
+>> You don't actually list any boards here, but instead permit having only
+>> the SoC compatible and no board one. The SoC compatible is also
+>> incredibly generic. Personally I don't think this binding makes any
+>> sense as it appears to exist as a catch all for anything using your
+>> new cores in any combination.
+> 
+> I think I need to define any string for compatibility because it is standard 
+> property. Because this is soft core it can be added to any board with AMD/Xilinx 
+> chip. I don't have really an option to list all boards.
 
-Signed-off-by: Ashish Mhetre <amhetre@nvidia.com>
----
- drivers/memory/tegra/tegra186.c | 3 +++
- 1 file changed, 3 insertions(+)
+Why? Either there is a product with this soft-core or there is not. It
+cannot be both.
 
-diff --git a/drivers/memory/tegra/tegra186.c b/drivers/memory/tegra/tegra186.c
-index 8203f0db1350..d1f1dfb42716 100644
---- a/drivers/memory/tegra/tegra186.c
-+++ b/drivers/memory/tegra/tegra186.c
-@@ -75,6 +75,9 @@ static void tegra186_mc_client_sid_override(struct tegra_mc *mc,
- {
- 	u32 value, old;
- 
-+	if (client->regs.sid.security == 0 && client->regs.sid.override == 0)
-+		return;
-+
- 	value = readl(mc->regs + client->regs.sid.security);
- 	if ((value & MC_SID_STREAMID_SECURITY_OVERRIDE) == 0) {
- 		/*
--- 
-2.17.1
+> 
+> I am happy to change it to something else but not sure to what.
+
+Alone this compatible does not bring you anything.
+
+Best regards,
+Krzysztof
 
