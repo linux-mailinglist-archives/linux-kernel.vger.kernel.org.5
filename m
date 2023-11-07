@@ -2,73 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D2D487E3B64
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 13:00:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AD0F7E3B66
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 13:01:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233882AbjKGMAj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 07:00:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54528 "EHLO
+        id S233642AbjKGMBS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 07:01:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233823AbjKGMAh (ORCPT
+        with ESMTP id S230082AbjKGMBQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 07:00:37 -0500
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B9BEF7
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 04:00:34 -0800 (PST)
-Received: by mail-lj1-x229.google.com with SMTP id 38308e7fff4ca-2c6b30acacdso74065291fa.2
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 04:00:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dberlin.org; s=google; t=1699358432; x=1699963232; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=L95ez5A4n9QHf1D8VLYBAIlRuv3kU+vYgZcEfG+m+f4=;
-        b=lOHStBwvEJW/z9lR+usVjaJwFjbKsBNT5YH3AI8Bd6yS1lFO9RRCoF6C8NsphzZnb5
-         PjNUCDFvhhPI+kM0sJb63IhXbhu9Kmy397qvLf02GbxfxZpC1pixR+WP0noqI7PoDAAR
-         6dcOkgCf7a5h4qgxVXxz1GCwKDwl9cJaThMNv+6iKK1xfkQ4n7T69qWNsuaFcAAvZdEB
-         S0I/ALf0dne41uRw3uu3ITV9XaRUs65VKg826aszuq8uAYrgFrXONdASJKeSvHrB4xI4
-         BZEhTNcpGysOXNmu+ZsXYTZEP5Kkw8YHjzhA4C4BayOrgYXOkhXnLanebAfxNV4uy2YV
-         eKkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699358432; x=1699963232;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=L95ez5A4n9QHf1D8VLYBAIlRuv3kU+vYgZcEfG+m+f4=;
-        b=q3cW1adWw7ZLHcapZFgbNWIhX7rCSWt2Pv1uydhzU1eSrpaRK6WKczzV86sb1073Mw
-         yykJ+Ns0ho3UAzSpyksx3zxDLcx+B98hUzq0CiTMIcNVOdvYshv6jtiG8gMJ8o54xi52
-         s1OLjNdzlkyIERrS1CImriDhs7hBMYAbiQbEsXEioeZ+BsyudUa3CJnAwRTZnIB+D8Ts
-         z1s93ZhRDP1JSYWzQZWGM1ePpxh4D0O4jWkcM3JKp+gFI3G5GYNPKY3sXuV8jqrXC7xu
-         GPGTQrR3IQ2I3B5o3BzhsvhQcnyztJn11c2H+vxwYWEgfLliU7GNjm8Zn2ziaIGENImw
-         Nvwg==
-X-Gm-Message-State: AOJu0YyM7FWqy+470Ii8i8nAD1CWUvJJMgYojIUJWd02y/Wl+VIcw+/H
-        rDLvcSvFEBHxRsrzWUqTKRIsHZQKDyF3W7iwez3Vhg==
-X-Google-Smtp-Source: AGHT+IG5rc7x9o0jJVh9h79Tb60MT+HTw/cZ7zSVnENop7Wm/YFTjOPuq/2DhQ6u9VwRPMoXmiI0kTH8nEuQhrsVpLM=
-X-Received: by 2002:a2e:8684:0:b0:2c6:f945:d95a with SMTP id
- l4-20020a2e8684000000b002c6f945d95amr9578220lji.36.1699358431957; Tue, 07 Nov
- 2023 04:00:31 -0800 (PST)
+        Tue, 7 Nov 2023 07:01:16 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3987113;
+        Tue,  7 Nov 2023 04:01:13 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9E6A0C433C7;
+        Tue,  7 Nov 2023 12:01:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699358473;
+        bh=tVWRGGc71sN6ZG4ZOL5Bnx/rxUu20LoXAci7bQ26qpg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dBqe9XvBR+ZlWTzfjrZfXvXyM+zZdPEKwwYg2CIlyTrOS/DKjxejuSgEEgf2H37TG
+         edaV5smRAEYnefcZu2Zh3/co1ONyekPN6FOgy4RVpmXzB9sg8+X2tc/jCd2ZPr/jAE
+         5lbbkGIf+rZk4850UpmwarrbeFDoY0KoZuw2awLB7p/y76Vtz0nDPQRC87LGtQmZIb
+         Kj/EFJdN01iL4vLvgSu7N/XPyxOt97yKXs7t/YTkzGGE5zOzc5S41woEsklqRwZWDG
+         qhmZiD22GJicMnFQ+HtBXkmq8ad33U0E7TrpVDebamqOp/DN6qrPez5725c61DBlFx
+         z7FTxjR8WbDsQ==
+Date:   Tue, 7 Nov 2023 12:01:03 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     linux@armlinux.org.uk, catalin.marinas@arm.com,
+        paul.walmsley@sifive.com, palmer@dabbelt.com,
+        aou@eecs.berkeley.edu, sudeep.holla@arm.com,
+        gregkh@linuxfoundation.org, rafael@kernel.org, mingo@redhat.com,
+        peterz@infradead.org, juri.lelli@redhat.com,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
+        viresh.kumar@linaro.org, lenb@kernel.org, robert.moore@intel.com,
+        lukasz.luba@arm.com, ionela.voinescu@arm.com,
+        pierre.gondois@arm.com, beata.michalska@arm.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-pm@vger.kernel.org,
+        linux-acpi@vger.kernel.org, conor.dooley@microchip.com,
+        suagrfillet@gmail.com, ajones@ventanamicro.com, lftan@kernel.org
+Subject: Re: [PATCH v5 7/7] arm64/amu: Use capacity_ref_freq to set AMU ratio
+Message-ID: <20231107120103.GA19367@willie-the-truck>
+References: <20231104105907.1365392-1-vincent.guittot@linaro.org>
+ <20231104105907.1365392-8-vincent.guittot@linaro.org>
+ <20231107103808.GF18944@willie-the-truck>
+ <CAKfTPtBb+qea61OH-B0L=MHJWnQMLL80EBR-nSHZtoWTbYeHhw@mail.gmail.com>
 MIME-Version: 1.0
-References: <cover.1697650207.git.dberlin@dberlin.org> <079882bf4a7c026547ecf8ad50a2b7a49ade7130.1697650207.git.dberlin@dberlin.org>
- <b907f696-c966-54ef-3267-12833c6f5d91@broadcom.com> <26a081e6-032a-b58d-851c-eaac745e7c87@marcan.st>
- <25e43cd3-45e6-d775-87c4-9ed7cdfe3e2d@broadcom.com>
-In-Reply-To: <25e43cd3-45e6-d775-87c4-9ed7cdfe3e2d@broadcom.com>
-From:   Daniel Berlin <dberlin@dberlin.org>
-Date:   Tue, 7 Nov 2023 07:00:20 -0500
-Message-ID: <CAF4BwTV=S39mUcbhoxCf6Z6+gGGFy5ctfYwbKt5yDMUYD5r3gw@mail.gmail.com>
-Subject: Re: [PATCH 4/5] wifi: brcmfmac: Support bss_info up to v112
-To:     Arend van Spriel <arend.vanspriel@broadcom.com>
-Cc:     Hector Martin <marcan@marcan.st>,
-        Arend van Spriel <aspriel@gmail.com>,
-        Franky Lin <franky.lin@broadcom.com>,
-        Hante Meuleman <hante.meuleman@broadcom.com>,
-        linux-wireless@vger.kernel.org,
-        brcm80211-dev-list.pdl@broadcom.com,
-        SHA-cyfmac-dev-list@infineon.com, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAKfTPtBb+qea61OH-B0L=MHJWnQMLL80EBR-nSHZtoWTbYeHhw@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,55 +66,100 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 7, 2023 at 6:51=E2=80=AFAM Arend van Spriel
-<arend.vanspriel@broadcom.com> wrote:
->
-> On 11/7/2023 12:11 PM, Hector Martin wrote:
-> > On 20/10/2023 18.59, Arend van Spriel wrote:
-> >> On 10/19/2023 3:42 AM, Daniel Berlin wrote:
-> >>> From: Hector Martin <marcan@marcan.st>
-> >>>
-> >>> The structures are compatible and just add fields, so we can just tre=
-at
-> >>> it as always v112. If we start using new fields, that will have to be
-> >>> gated on the version.
-> >>
-> >> Seems EHT is creeping in here.
-> >>
-> >> Having doubts about compatibility statement (see below)...
-> >>
-> >>> Signed-off-by: Hector Martin <marcan@marcan.st>
-> >>> ---
-> >>>    .../broadcom/brcm80211/brcmfmac/cfg80211.c    |  5 ++-
-> >>>    .../broadcom/brcm80211/brcmfmac/fwil_types.h  | 37 +++++++++++++++=
-++--
-> >>>    2 files changed, 36 insertions(+), 6 deletions(-)
-> >>>
->
-> [...]
->
-> >>> @@ -323,28 +324,56 @@ struct brcmf_bss_info_le {
-> >>>     __le16 capability;      /* Capability information */
-> >>>     u8 SSID_len;
-> >>>     u8 SSID[32];
-> >>> +   u8 bcnflags;            /* additional flags w.r.t. beacon */
-> >>
-> >> Ehm. Coming back to your statement "structures are compatible and just
-> >> add fields". How are they compatible? You now treat v109 struct as v11=
-2
-> >> so fields below are shifted because of bcnflags. So you read invalid
-> >> information. This does not fly or I am missing something here.
+On Tue, Nov 07, 2023 at 12:18:20PM +0100, Vincent Guittot wrote:
+> On Tue, 7 Nov 2023 at 11:38, Will Deacon <will@kernel.org> wrote:
 > >
-> > bcmflags was previously an implied padding byte. If you actually check
-> > the offsets of the subsequent fields, you'll see they haven't changed.
-> > In fact this was added at some point in the past and just missing here,
-> > and is a general case of "padding bytes were not explicitly specified"
-> > which is arguably an anti-pattern and should never have been the case.
->
-> Yeah. Let's not argue ;-) I did miss something here and leave it with
-> that. What about the EHT stuff? I would prefer to keep it out unless
-> full EHT support is added.
+> > On Sat, Nov 04, 2023 at 11:59:07AM +0100, Vincent Guittot wrote:
+> > > Use the new capacity_ref_freq to set the ratio that is used by AMU for
+> > > computing the arch_scale_freq_capacity().
+> > > This helps to keep everything aligned using the same reference for
+> > > computing CPUs capacity.
+> > >
+> > > The default value of the ratio (stored in per_cpu(arch_max_freq_scale))
+> > > ensures that arch_scale_freq_capacity() returns max capacity until it is
+> > > set to its correct value with the cpu capacity and capacity_ref_freq.
+> > >
+> > > Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
+> > > ---
+> > >  arch/arm64/kernel/topology.c  | 26 ++++++++++++++------------
+> > >  drivers/base/arch_topology.c  | 12 +++++++++++-
+> > >  include/linux/arch_topology.h |  1 +
+> > >  3 files changed, 26 insertions(+), 13 deletions(-)
+> > >
+> > > diff --git a/arch/arm64/kernel/topology.c b/arch/arm64/kernel/topology.c
+> > > index 817d788cd866..615c1a20129f 100644
+> > > --- a/arch/arm64/kernel/topology.c
+> > > +++ b/arch/arm64/kernel/topology.c
+> > > @@ -82,7 +82,12 @@ int __init parse_acpi_topology(void)
+> > >  #undef pr_fmt
+> > >  #define pr_fmt(fmt) "AMU: " fmt
+> > >
+> > > -static DEFINE_PER_CPU_READ_MOSTLY(unsigned long, arch_max_freq_scale);
+> > > +/*
+> > > + * Ensure that amu_scale_freq_tick() will return SCHED_CAPACITY_SCALE until
+> > > + * the CPU capacity and its associated frequency have been correctly
+> > > + * initialized.
+> > > + */
+> > > +static DEFINE_PER_CPU_READ_MOSTLY(unsigned long, arch_max_freq_scale) =  1UL << (2 * SCHED_CAPACITY_SHIFT);
+> >
+> > This doesn't seem to match the comment? SCHED_CAPACITY_SCALE doesn't have
+> > the '2 *' multiplier.
+> 
+> The comment in freq_inv_set_max_ratio() says:
+> 
+> * We use a factor of 2 * SCHED_CAPACITY_SHIFT -> SCHED_CAPACITY_SCALE²
+> * in order to ensure a good resolution for arch_max_freq_scale for
+> * very low reference frequencies (down to the KHz range which should
+> * be unlikely).
+> 
+> Then there is a  "  * arch_max_freq_scale) >> SCHED_CAPACITY_SHIFT"
+> when computing the scale which brings the result back to
+> SCHED_CAPACITY_SHIFT
 
-The EHT stuff you flagged (defines, etc) in the other patches can be
-left out - this one can't since it is definitionally part of the v112
-struct.
+Ah, I see; I'd not spotted that amu_scale_freq_tick() is doing some
+arithmetic on the value (it doesn't return anything because it's 'void').
+It's slightly confusing because the comment talks about SCHED_CAPACITY_SCALE
+whereas all the code works on the shift, but I get it now.
+
+> > >  static DEFINE_PER_CPU(u64, arch_const_cycles_prev);
+> > >  static DEFINE_PER_CPU(u64, arch_core_cycles_prev);
+> > >  static cpumask_var_t amu_fie_cpus;
+> > > @@ -112,14 +117,14 @@ static inline bool freq_counters_valid(int cpu)
+> > >       return true;
+> > >  }
+> > >
+> > > -static int freq_inv_set_max_ratio(int cpu, u64 max_rate, u64 ref_rate)
+> > > +void freq_inv_set_max_ratio(int cpu, u64 max_rate)
+> > >  {
+> > > -     u64 ratio;
+> > > +     u64 ratio, ref_rate = arch_timer_get_rate();
+> > >
+> > >       if (unlikely(!max_rate || !ref_rate)) {
+> > > -             pr_debug("CPU%d: invalid maximum or reference frequency.\n",
+> > > +             WARN_ONCE(1, "CPU%d: invalid maximum or reference frequency.\n",
+> > >                        cpu);
+> > > -             return -EINVAL;
+> > > +             return;
+> > >       }
+> > >
+> > >       /*
+> > > @@ -139,12 +144,12 @@ static int freq_inv_set_max_ratio(int cpu, u64 max_rate, u64 ref_rate)
+> > >       ratio = div64_u64(ratio, max_rate);
+> > >       if (!ratio) {
+> > >               WARN_ONCE(1, "Reference frequency too low.\n");
+> > > -             return -EINVAL;
+> > > +             return;
+> > >       }
+> > >
+> > > -     per_cpu(arch_max_freq_scale, cpu) = (unsigned long)ratio;
+> > > +     WRITE_ONCE(per_cpu(arch_max_freq_scale, cpu), (unsigned long)ratio);
+> >
+> > Why is WRITE_ONCE() now needed?
+> 
+> the tick can already use it. We want to make sure to use either the
+> old or the new one but not an intermediate value
+
+Isn't that already the case without this patch? In other words, this should
+be a separate change.
+
+Will
