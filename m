@@ -2,143 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BEF67E4A46
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 22:06:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD84D7E4A4E
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 22:07:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235104AbjKGVGD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 16:06:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60844 "EHLO
+        id S1343647AbjKGVHr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 16:07:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234658AbjKGVF7 (ORCPT
+        with ESMTP id S231519AbjKGVHo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 16:05:59 -0500
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B15AFD79
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 13:05:57 -0800 (PST)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5ae5b12227fso83288607b3.0
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 13:05:57 -0800 (PST)
+        Tue, 7 Nov 2023 16:07:44 -0500
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 170A211F;
+        Tue,  7 Nov 2023 13:07:42 -0800 (PST)
+Received: by mail-yb1-xb2e.google.com with SMTP id 3f1490d57ef6-d9a518d66a1so6391764276.0;
+        Tue, 07 Nov 2023 13:07:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1699391157; x=1699995957; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=JeYrzwOr78xPwcpsKE4mhPZUV4HYgKXqTY0m7zX5WN8=;
-        b=CLrc7Vs/1PCELHyGusVoDCPf/52uCjYwq6cI2ser3URI83cqD1/t2QsbqpK5DNa3zx
-         PRu9K0gZTWpt8b27n97Bi4vWIxaaMlxJnIhqAgxQxXUmTDNgROTHOTDvz6vsRnQBW8kd
-         iMAG2TYBabVgWWCXYY43noeUEA3P4v5OcByvPUgHM5PacDJw0bwsJYCON+w6GUXHLsEZ
-         Iu0IMsJKN4msjEdymno0rhKDwXebRmdyr/NVJLVdVR+Kz6nzuSWAVqEwtFh02xC8hKxm
-         zCPGqkCz2ENS2Y+/X0D92XvNPCJICf5Hkn0E/djFFMUgumX3IIoV8rU1okD1hg95vWtE
-         zLNw==
+        d=gmail.com; s=20230601; t=1699391261; x=1699996061; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3aeXicRU4lHcbU3yR6buQ02C3rtZDXKLpVxEjoF0J04=;
+        b=Hdazj6scuSKVJFr0hsDXNcWkK9eAZCiJl+M2ohu3IkmeJIIUlWzr0LklXjhHDVylU7
+         sIyFHJJ43z0ycC4fExyejx6DYPBJFb0zDBBjQ5MarAfzCAsqLFoDrHVUe9JHqQfOQhEm
+         WWKQHcYffK17k5ALqk3vBid0Od0Qg5IwsGOoBC/rfytHPl3oIyMlNWEKvdpaYmou85Ue
+         P3EwZo9wMAIhUCH6UCBkrHfqu1Dp8zyTLPW3nZ6T/6T/5xpQdFg5UyCciqgfCVQp/eJg
+         XbcsXgqbzc+S4t5lt6YaBxNaxkqOaOajo/Poi2INEvtch2WIF2zKtgzTTzdCP1jgSF2W
+         cCcg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699391157; x=1699995957;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=JeYrzwOr78xPwcpsKE4mhPZUV4HYgKXqTY0m7zX5WN8=;
-        b=k0k/oV322H6Wal/v4Uq/vHqDzN2jHlWPkxq/gSStrirxzmcibtEms5hUKQuEYUyzJh
-         HsArRz8Z1wRjGsbqKIEc/4ysvECasUV0YlksPDjOeeCe1NplG7s8sUEz1MNq5rROG58b
-         Hr47UdsTm+UXAc27zZNPVgfY7mvS1OUMgdX7O46ondr6EoXfxRlrHmv/dFo8RPprgXNP
-         D9cD/LwPF35sZBALgfY3/kVCavoTCpCxeN+WvoDlv/zNcQYJ5QyymhlloLgUb20zjobC
-         HUZUn6o+yLvMb6iXjISb1aBqv4syFlfdC7D/FazPe0pRztPlZuzbFwBfZzdmVLrQhzpm
-         hoOw==
-X-Gm-Message-State: AOJu0YzQiLVFaAWB5JN/xetwh9+1XOZJFIgHHGtptxXmX1ymirLAeCC6
-        5cP/raFi32UdV947zJ78vtjIsZg=
-X-Google-Smtp-Source: AGHT+IE4UIBdCOBSahaHbXIaAM3E3QwhCi94Cvn3aJLHOo+p0gLkdCty9bKUvZY7uZa3X7IxK0NG/CQ=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a81:830d:0:b0:5a8:6162:b69 with SMTP id
- t13-20020a81830d000000b005a861620b69mr287016ywf.3.1699391156928; Tue, 07 Nov
- 2023 13:05:56 -0800 (PST)
-Date:   Tue, 7 Nov 2023 13:05:55 -0800
-In-Reply-To: <CAHS8izNTDsHTahkd17zQVQnjzniZAk-dKNs-Mq0E4shdrXOJbg@mail.gmail.com>
-Mime-Version: 1.0
-References: <CAHS8izMrnVUfbbS=OcJ6JT9SZRRfZ2MC7UnggthpZT=zf2BGLA@mail.gmail.com>
- <ZUlhu4hlTaqR3CTh@google.com> <CAHS8izMaAhoae5ChnzO4gny1cYYnqV1cB8MC2cAF3eoyt+Sf4A@mail.gmail.com>
- <ZUlvzm24SA3YjirV@google.com> <CAHS8izMQ5Um_ScY0VgAjaEaT-hRh4tFoTgc6Xr9Tj5rEj0fijA@mail.gmail.com>
- <CAKH8qBsbh8qYxNHZ6111RQFFpNWbWZtg0LDXkn15xcsbAq4R6w@mail.gmail.com>
- <CAF=yD-+BuKXoVL8UF+No1s0TsHSzBTz7UrB1Djt_BrM74uLLcg@mail.gmail.com>
- <CAHS8izNxKHhW5uCqmfau6n3c18=hE3RXzA+ng5LEGiKj12nGcg@mail.gmail.com>
- <ZUmNk98LyO_Ntcy7@google.com> <CAHS8izNTDsHTahkd17zQVQnjzniZAk-dKNs-Mq0E4shdrXOJbg@mail.gmail.com>
-Message-ID: <ZUqms8QzQpfPQWyy@google.com>
-Subject: Re: [RFC PATCH v3 09/12] net: add support for skbs with unreadable frags
-From:   Stanislav Fomichev <sdf@google.com>
-To:     Mina Almasry <almasrymina@google.com>
-Cc:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        David Ahern <dsahern@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>, Shuah Khan <shuah@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        "Christian =?utf-8?B?S8O2bmln?=" <christian.koenig@amd.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Jeroen de Borst <jeroendb@google.com>,
-        Praveen Kaligineedi <pkaligineedi@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Kaiyuan Zhang <kaiyuanz@google.com>
-Content-Type: text/plain; charset="utf-8"
+        d=1e100.net; s=20230601; t=1699391261; x=1699996061;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3aeXicRU4lHcbU3yR6buQ02C3rtZDXKLpVxEjoF0J04=;
+        b=vzCxYqCVYTqDxHip4QkaeosJ0maDLAt8MQ9HLJCLQZ06ZPe//8jg+xrr5dWiIQgMI4
+         ZVWz6jpt2QVfN09RjAjF3NJpc04XNLid9Fnb3/fcGMMVPndycTmxtD6XXmag680XHnAe
+         Sqnx2N412m6MybmJWJYYCcAbbRdNiSC0+dFxlGVIzT65i65ytUm2qqgCy2YdskVMo0bF
+         1HhYARNx0TV9z6W2AAv1EpZX3RbkogfUZazlUWTchRjKH8B1a7TxkFWRDAd0VR7c5zLM
+         FKNpZJa+KjOiGGRiy+1P5K90vsUwXbGHZ9Y0GBEiL54tXm3DZsDspf6KIaVLwwGiBaoH
+         TlxQ==
+X-Gm-Message-State: AOJu0YyVpEUkMXczFQtJAFn4rhKY2yCPTiSlW7fdyvdMrYNNTZ7rWeLt
+        8pCKsCItpaAFhXvow2oON6ne2pR+V5zjNPIkxfw=
+X-Google-Smtp-Source: AGHT+IHBQNOhwgC6AxM8bJ1Gh1+f7qmlz8lu7XimL4LhQXXqoZ70t5a2uJdxqXFzjjss++G8Sfe494JrytOk+d+WafE=
+X-Received: by 2002:a25:348b:0:b0:d9a:4f14:5bf9 with SMTP id
+ b133-20020a25348b000000b00d9a4f145bf9mr615820yba.26.1699391261066; Tue, 07
+ Nov 2023 13:07:41 -0800 (PST)
+MIME-Version: 1.0
+References: <20231106065045.895874-1-amir73il@gmail.com> <CAHk-=whgCwcUGKvoZX0OSAFi9fTye3BOfOCY+wR=t7W8xS_oGQ@mail.gmail.com>
+In-Reply-To: <CAHk-=whgCwcUGKvoZX0OSAFi9fTye3BOfOCY+wR=t7W8xS_oGQ@mail.gmail.com>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Tue, 7 Nov 2023 23:07:29 +0200
+Message-ID: <CAOQ4uxhfanssN=GdxfC7ANG=it=VMJz549z0zZ5uEGULeGK6yA@mail.gmail.com>
+Subject: Re: [GIT PULL] overlayfs update for 6.7
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Miklos Szeredi <miklos@szeredi.hu>,
+        Christian Brauner <brauner@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-unionfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/07, Mina Almasry wrote:
-> On Mon, Nov 6, 2023 at 5:06=E2=80=AFPM Stanislav Fomichev <sdf@google.com=
-> wrote:
-> [..]
-> > > > > And the socket has to know this association; otherwise those toke=
-ns
-> > > > > are useless since they don't carry anything to identify the dmabu=
-f.
-> > > > >
-> > > > > I think my other issue with MSG_SOCK_DEVMEM being on recvmsg is t=
-hat
-> > > > > it somehow implies that I have an option of passing or not passin=
-g it
-> > > > > for an individual system call.
-> > >
-> > > You do have the option of passing it or not passing it per system
-> > > call. The MSG_SOCK_DEVMEM says the application is willing to receive
-> > > devmem cmsgs - that's all. The application doesn't get to decide
-> > > whether it's actually going to receive a devmem cmsg or not, because
-> > > that's dictated by the type of skb that is present in the receive
-> > > queue, and not up to the application. I should explain this in the
-> > > commit message...
+On Tue, Nov 7, 2023 at 9:54=E2=80=AFPM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> On Sun, 5 Nov 2023 at 22:50, Amir Goldstein <amir73il@gmail.com> wrote:
 > >
-> > What would be the case of passing it or not passing it? Some fallback t=
-o
-> > the host memory after flow steering update? Yeah, would be useful to
-> > document those constrains. I'd lean on starting stricter and relaxing
-> > those conditions if we find the use-cases.
+> > - Overlayfs aio cleanups and fixes [1]
 > >
->=20
-> MSG_SOCK_DEVMEM (or its replacement SOCK_DEVMEM or SO_SOCK_DEVMEM),
-> just says that the application is able to receive devmem cmsgs and
-> will parse them. The use case for not setting that flag is existing
-> applications that are not aware of devmem cmsgs. I don't want those
-> applications to think they're receiving data in the linear buffer only
-> to find out that the data is in devmem and they ignored the devmem
-> cmsg.
->=20
-> So, what happens:
->=20
-> - MSG_SOCK_DEVMEM provided and next skb in the queue is devmem:
-> application receives cmsgs.
-> - MSG_SOCK_DEVMEM provided and next skb in the queue is non-devmem:
-> application receives in the linear buffer.
-> - MSG_SOCK_DEVMEM not provided and net skb is devmem: application
-> receives EFAULT.
-> - MSG_SOCK_DEVMEM not provided and next skb is non-devmem: application
-> receives in the linear buffer.
->=20
-> My bad on not including some docs about this. The next version should
-> have the commit message beefed up to explain all this, or a docs
-> patch.
+> > - Overlayfs lock ordering changes [2]
+> >
+> > - Add support for nesting overlayfs private xattrs [3]
+> >
+> > - Add new mount options for appending lowerdirs [4]
+> >
+> > [1] https://lore.kernel.org/r/20230912173653.3317828-1-amir73il@gmail.c=
+om/
+> > [2] https://lore.kernel.org/r/20230816152334.924960-1-amir73il@gmail.co=
+m/
+> > [3] https://lore.kernel.org/r/cover.1694512044.git.alexl@redhat.com/
+> > [4] https://lore.kernel.org/r/20231030120419.478228-1-amir73il@gmail.co=
+m/
+>
+> *Please* don't make me have to follow links just to see basic details.
+>
 
-I don't understand. We require an elaborate setup to receive devmem cmsgs,
-why would some random application receive those?
+No problem.
+
+> Merge messages should stand on their own, not just point to "look,
+> here are the details in our lore archives". Yes, even when having
+> internet access is much more common, there are situations where it's
+> not there or is slow. Or maybe lore has issues. Or maybe people just
+> don't want to switch to a browser to look up details that may or may
+> not be relevant to them.
+>
+> I copied the relevant stuff into my merge, but please don't make me do
+> this next time.
+
+Thanks for adding this information - I certainly didn't intend for
+you to do this extra work.
+
+> Just give me a merge message with the details spelled
+> out, not some link to a cover letter for a patch series.
+>
+
+OK.
+
+To explain the reason why I add those links:
+
+A while ago, I was helping out with backporting many xfs patches
+to stable tree after a long period of neglection.
+
+I found the need to point back from fix commits to patch series
+because the cover letters often contained important information
+relevant for backporting and testing.
+
+So I hacked up a small b4 gadget to disassemble a PR
+into lore links to patch series:
+(*) you don't have to follow this link unless you are curious ;)
+https://github.com/amir73il/b4/commit/f5966362a524182206d5c5e8a4f96fba5d4c9=
+2ca
+
+At the time, I had wished that the links to the patch series
+composing the PR would have been in the PR email
+(doesn't really matter if you take them into the merge commit).
+
+This is why I included this "debug info" of the PR.
+Next time, if I include the lore links, I will separate
+them to a different section, so it is clear that I do not
+require them to be in the merge commit.
+
+Thanks,
+Amir.
