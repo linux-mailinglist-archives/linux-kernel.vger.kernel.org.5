@@ -2,84 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B9147E4AA9
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 22:27:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D88197E4AAB
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 22:28:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343946AbjKGV1k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 16:27:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42936 "EHLO
+        id S1343982AbjKGV2f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 16:28:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235185AbjKGV1i (ORCPT
+        with ESMTP id S235267AbjKGV2d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 16:27:38 -0500
-Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7ABA10C1
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 13:27:36 -0800 (PST)
-Received: by mail-il1-x12c.google.com with SMTP id e9e14a558f8ab-357bc05f94dso4169355ab.1
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 13:27:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1699392456; x=1699997256; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=pAsdvc2tC0sZt5WnSCuHJooOBmtzWwDbQfPc2qj2gPk=;
-        b=ZO3LDLzd6BQA3wJzRa+jiKr+PjkD3R34WcTTTRVEEn8M5cCgv0XMyGyIAXd7FNgd7/
-         DnRFUgLWcMcteggwLGfudp8Ov5nouLuKU921diuXmUouypcpGyM06a80sA5QYnw7NAby
-         H8OqmNRyHP+rwh3WOpstcr3z/5dZlw7iNNCCY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699392456; x=1699997256;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=pAsdvc2tC0sZt5WnSCuHJooOBmtzWwDbQfPc2qj2gPk=;
-        b=Px26aOg2NFi1fYst6DsB9MxaepKTIdHA8IN55yIMX6otT0Pn/vfP6cBcjMS6Zp0X+V
-         oVg+xIfeBxHtq8tj9KhUsGTrIE0UjDS3nS1s2mB4WyHwYZjNUbhhKeo7YMuawjvIqt/R
-         VIqVsk25An08afHXon/R+nTEwS4FDCZvhNs7juU7W2cN7uyog8vF+68m9jaKFATlqkF7
-         d8+ZPawYB3HPcZc89mdaQsc+vKtlu2b/iTCVDmwd/gQnGm/5CbhMrY7RUQQmuR8AFuzg
-         q7yXG9SCvtRi/ARN/tcrbklYJF3EOmaDn3op58EyE8iu+D+6rUaEYIsqCPrxNfqJl/Ii
-         9jlQ==
-X-Gm-Message-State: AOJu0YyPxPkwbOAwl976CutrxXl+XVCJSUK25SzNzBAXL6E5tgzTkU1y
-        k5ih8QRuxKsnysWaLmNWFfQGeA==
-X-Google-Smtp-Source: AGHT+IGYtf5cyHwW5eJuAjjUmSGEMSQJ1dHkg8TrWpxZ3Ug1cH9OGIvl+qJ+v74/c3leRuemUosFxg==
-X-Received: by 2002:a05:6602:b8c:b0:792:7c78:55be with SMTP id fm12-20020a0566020b8c00b007927c7855bemr176006iob.0.1699392456202;
-        Tue, 07 Nov 2023 13:27:36 -0800 (PST)
-Received: from [192.168.1.128] ([38.175.170.29])
-        by smtp.gmail.com with ESMTPSA id m15-20020a056638224f00b004500f7a5903sm2937020jas.102.2023.11.07.13.27.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 07 Nov 2023 13:27:35 -0800 (PST)
-Message-ID: <22df3ecb-488c-4d58-8efe-4638fa3d614b@linuxfoundation.org>
-Date:   Tue, 7 Nov 2023 14:27:35 -0700
+        Tue, 7 Nov 2023 16:28:33 -0500
+Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ABBCD7A;
+        Tue,  7 Nov 2023 13:28:31 -0800 (PST)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id D92F740E014B;
+        Tue,  7 Nov 2023 21:28:28 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id FJ3LN0HSu5qX; Tue,  7 Nov 2023 21:28:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1699392506; bh=bD4Og8jExEEHYDDGD4aZjJ2Y/F4MpIKryEXuaQivTig=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QorMM4SuZdiKp7t2nZwe81UY7vOudNKGUcUY+TlNg43O9zYwwHCB7pozpT9nnl6q7
+         C/9DBfHFH7707N+ejUdjvjHyZllhX7kFCBjKoWk16nzMPlB2BAx+9SirMdgaWjLq4q
+         GZCIhpj5To82xighWq74IFenape1WM3joOJuPmKsRTErh0iRJjKt2sxvxpQRol7vxS
+         pHfJnnQGyq5L2W0OKXy0tcOO3oqw57IuzP7tLT0yis/CkXSGt1rp6miiOUMp7NGt69
+         9FornBvMJX5oj7URL8rY6jBvJ55f8LubZ9LR/Mhb2Svr3H57LsKQ8s6bv3C3isgv+R
+         CkJlDmrwArgtzgFYsAISBw4FPh5DWOrTMVBNk+ZDXRZwaUxfixd5IfXXMXFzAkR2KJ
+         5SYifm7Ha0z0OLS/FEiuAhta0XbUky8UtoyodNL9OOtOCy/A2/n7EMWgCHQrKiGfqj
+         qsl8iQptQLX56l5VUfaKv9pTlF/WwoIzeLXS96gjdBq71S/LFfc6SGaTlhFN9pM+9u
+         9h0iHI7asY53l9+P6SAeHxtynHF+/j/xMAwG+PpOtSPwAVjef6j95Y20t96CQufTOa
+         LHb0OkqGowP6Rma1TpewhEYi6LnIvvZfhAgvm3A7/QIAQImr1nIPZa1usK5EloRu/e
+         7JIp4HZbQd3iCQjhw3NydAg8=
+Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 2926A40E0192;
+        Tue,  7 Nov 2023 21:27:46 +0000 (UTC)
+Date:   Tue, 7 Nov 2023 22:27:40 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     "Kalra, Ashish" <ashish.kalra@amd.com>
+Cc:     Michael Roth <michael.roth@amd.com>, kvm@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
+        jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com,
+        ardb@kernel.org, pbonzini@redhat.com, seanjc@google.com,
+        vkuznets@redhat.com, jmattson@google.com, luto@kernel.org,
+        dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com,
+        peterz@infradead.org, srinivas.pandruvada@linux.intel.com,
+        rientjes@google.com, dovmurik@linux.ibm.com, tobin@ibm.com,
+        vbabka@suse.cz, kirill@shutemov.name, ak@linux.intel.com,
+        tony.luck@intel.com, marcorr@google.com,
+        sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com,
+        jarkko@kernel.org, nikunj.dadhania@amd.com, pankaj.gupta@amd.com,
+        liam.merwick@oracle.com, zhi.a.wang@intel.com,
+        Brijesh Singh <brijesh.singh@amd.com>
+Subject: Re: [PATCH v10 06/50] x86/sev: Add the host SEV-SNP initialization
+ support
+Message-ID: <20231107212740.GFZUqrzK7yzy41dRKp@fat_crate.local>
+References: <20231016132819.1002933-1-michael.roth@amd.com>
+ <20231016132819.1002933-7-michael.roth@amd.com>
+ <20231107163142.GAZUpmbt/i3himIf+E@fat_crate.local>
+ <4a2016d6-dc1f-ff68-9827-0b72b7c8eac2@amd.com>
+ <20231107191931.GCZUqNwxP8JcSbjZ0/@fat_crate.local>
+ <20231107202757.GEZUqdzYyzVBHTBhZX@fat_crate.local>
+ <250f5513-91c0-d0b5-cb59-439e26ba16dc@amd.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6] selftests: rtc: Fixes rtctest error handling.
-Content-Language: en-US
-To:     Atul Kumar Pant <atulpant.linux@gmail.com>, a.zummo@towertech.it,
-        alexandre.belloni@bootlin.com
-Cc:     shuah@kernel.org, linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-rtc@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20230817091401.72674-1-atulpant.linux@gmail.com>
- <20230923173652.GC159038@atom0118> <20231007154318.GC20160@atom0118>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <20231007154318.GC20160@atom0118>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <250f5513-91c0-d0b5-cb59-439e26ba16dc@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/7/23 09:43, Atul Kumar Pant wrote:
-> On Sat, Sep 23, 2023 at 11:06:58PM +0530, Atul Kumar Pant wrote:
->> On Thu, Aug 17, 2023 at 02:44:01PM +0530, Atul Kumar Pant wrote:
->>> Adds a check to verify if the rtc device file is valid or not
->>> and prints a useful error message if the file is not accessible.
->>>
->>> Signed-off-by: Atul Kumar Pant <atulpant.linux@gmail.com>
->>> ---
+On Tue, Nov 07, 2023 at 03:21:29PM -0600, Kalra, Ashish wrote:
+> No, this is not correct as this will always enable SNP support on
+> IOMMU even when SNP support is not supported and enabled on the
+> platform,
 
+You see that we set or clear X86_FEATURE_SEV_SNP depending on support,
+right?
 
-Sorry for the delay. I will pick this up for the next rc.
+Which means, you need to test that bit in amd_iommu_snp_enable() first.
 
-thanks,
--- Shuah
+> And isn't IOMMU driver always going to be built-in and isn't it part of the
+> platform support (not arch code, but surely platform specific code)?
+> (IOMMU enablement is requirement for SNP).
+
+Read the note again about the fragile ordering in my previous mail.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
