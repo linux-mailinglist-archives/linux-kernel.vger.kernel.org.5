@@ -2,44 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 871767E3E74
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 13:38:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8F907E3E77
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 13:38:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343524AbjKGMiZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 07:38:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49674 "EHLO
+        id S235248AbjKGMif (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 07:38:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235206AbjKGMhr (ORCPT
+        with ESMTP id S235190AbjKGMh4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 07:37:47 -0500
+        Tue, 7 Nov 2023 07:37:56 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E0CC7EEF;
-        Tue,  7 Nov 2023 04:26:16 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 41158C433C9;
-        Tue,  7 Nov 2023 12:26:14 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3C9383CF;
+        Tue,  7 Nov 2023 04:26:20 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 64D71C433CB;
+        Tue,  7 Nov 2023 12:26:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699359975;
-        bh=cyyZMm5k68Zi88voa8LZQa9s0u00WKVsQKSQpgKUKCY=;
+        s=k20201202; t=1699359980;
+        bh=K/gS877B85ohNGuYvcJChduQQJzzNLmmMz1wHm+8D+Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZrEcrqvcRGp3I2HgEKRiRlA+gGpNisrRKKgu98D2w/qMlWXvqKHSCjQ8lTQBI3vzS
-         K296tFKBxPgFtoZVDPY5kyUP6iGtDn3HpYAftLECOijw/23NyYQRhgmcbSmg1ECT2Y
-         wLaMte2xHp4OVnHsww1PlRYjSFeuShtvLsLbaW1osGqtDqo4dnJ8wQLGrTYxzNdS0c
-         1u3cQ/oWsjqlFSOxS+ho4uabuimcRijIFi/KaiSD+99anL8XLp7TOckwTeOOTtjmfS
-         8RMNDFve3W538m4E18HN2TopK+/n7qfavQ0Ks1TGGtg903zNDxelPp7OWa4KaQV3uC
-         akM+8XJgYSYSQ==
+        b=eEvF7JolPZA2g8i8BLHbGvRFWv7sY3/8bdv7IXOu8RaBnBim1Lv0DGEUeY4rbT+JO
+         YmFRI4uzsOkObgrYHy2cmxTE9G9SXniK3YmWs3fMaxy2kZ5J0heXvENn3OpA+WJ0RI
+         LeAyK9XBFALbaxLAkgTfrYA2SjYvNh7K0CRz5x04tqD9mINFES3gYqb5UzU116V1AH
+         f9QUA7YkrFg1gEzwPTkgdfs2cG4NTNVmu2FXXmdo7tkfChYjqvyHmjj0aXJEBd0dTY
+         gXqfFJXDdV6PZTqziniegI1M3SwvJxW5dIl8tHWC+3PhlE4WC0o7NBBnSN5/iT+vAJ
+         kZ8BDAqWYCHQA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Jesse Zhang <jesse.zhang@amd.com>,
-        Philip Yang <Philip.Yang@amd.com>,
-        Yifan Zhang <yifan1.zhang@amd.com>,
+Cc:     Qu Huang <qu.huang@linux.dev>,
         Alex Deucher <alexander.deucher@amd.com>,
-        Sasha Levin <sashal@kernel.org>, Felix.Kuehling@amd.com,
-        christian.koenig@amd.com, Xinhui.Pan@amd.com, airlied@gmail.com,
-        daniel@ffwll.ch, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 6.5 28/37] drm/amdkfd: Fix shift out-of-bounds issue
-Date:   Tue,  7 Nov 2023 07:21:39 -0500
-Message-ID: <20231107122407.3760584-28-sashal@kernel.org>
+        Sasha Levin <sashal@kernel.org>, christian.koenig@amd.com,
+        Xinhui.Pan@amd.com, airlied@gmail.com, daniel@ffwll.ch,
+        keescook@chromium.org, srinivasan.shanmugam@amd.com,
+        shashank.sharma@amd.com, Hawking.Zhang@amd.com,
+        andrealmeid@igalia.com, victorchengchi.lu@amd.com,
+        dan.carpenter@linaro.org, tom.stdenis@amd.com, le.ma@amd.com,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.5 29/37] drm/amdgpu: Fix a null pointer access when the smc_rreg pointer is NULL
+Date:   Tue,  7 Nov 2023 07:21:40 -0500
+Message-ID: <20231107122407.3760584-29-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231107122407.3760584-1-sashal@kernel.org>
 References: <20231107122407.3760584-1-sashal@kernel.org>
@@ -58,58 +60,102 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jesse Zhang <jesse.zhang@amd.com>
+From: Qu Huang <qu.huang@linux.dev>
 
-[ Upstream commit 282c1d793076c2edac6c3db51b7e8ed2b41d60a5 ]
+[ Upstream commit 5104fdf50d326db2c1a994f8b35dcd46e63ae4ad ]
 
-[  567.613292] shift exponent 255 is too large for 64-bit type 'long unsigned int'
-[  567.614498] CPU: 5 PID: 238 Comm: kworker/5:1 Tainted: G           OE      6.2.0-34-generic #34~22.04.1-Ubuntu
-[  567.614502] Hardware name: AMD Splinter/Splinter-RPL, BIOS WS43927N_871 09/25/2023
-[  567.614504] Workqueue: events send_exception_work_handler [amdgpu]
-[  567.614748] Call Trace:
-[  567.614750]  <TASK>
-[  567.614753]  dump_stack_lvl+0x48/0x70
-[  567.614761]  dump_stack+0x10/0x20
-[  567.614763]  __ubsan_handle_shift_out_of_bounds+0x156/0x310
-[  567.614769]  ? srso_alias_return_thunk+0x5/0x7f
-[  567.614773]  ? update_sd_lb_stats.constprop.0+0xf2/0x3c0
-[  567.614780]  svm_range_split_by_granularity.cold+0x2b/0x34 [amdgpu]
-[  567.615047]  ? srso_alias_return_thunk+0x5/0x7f
-[  567.615052]  svm_migrate_to_ram+0x185/0x4d0 [amdgpu]
-[  567.615286]  do_swap_page+0x7b6/0xa30
-[  567.615291]  ? srso_alias_return_thunk+0x5/0x7f
-[  567.615294]  ? __free_pages+0x119/0x130
-[  567.615299]  handle_pte_fault+0x227/0x280
-[  567.615303]  __handle_mm_fault+0x3c0/0x720
-[  567.615311]  handle_mm_fault+0x119/0x330
-[  567.615314]  ? lock_mm_and_find_vma+0x44/0x250
-[  567.615318]  do_user_addr_fault+0x1a9/0x640
-[  567.615323]  exc_page_fault+0x81/0x1b0
-[  567.615328]  asm_exc_page_fault+0x27/0x30
-[  567.615332] RIP: 0010:__get_user_8+0x1c/0x30
+In certain types of chips, such as VEGA20, reading the amdgpu_regs_smc file could result in an abnormal null pointer access when the smc_rreg pointer is NULL. Below are the steps to reproduce this issue and the corresponding exception log:
 
-Signed-off-by: Jesse Zhang <jesse.zhang@amd.com>
-Suggested-by: Philip Yang <Philip.Yang@amd.com>
-Reviewed-by: Yifan Zhang <yifan1.zhang@amd.com>
+1. Navigate to the directory: /sys/kernel/debug/dri/0
+2. Execute command: cat amdgpu_regs_smc
+3. Exception Log::
+[4005007.702554] BUG: kernel NULL pointer dereference, address: 0000000000000000
+[4005007.702562] #PF: supervisor instruction fetch in kernel mode
+[4005007.702567] #PF: error_code(0x0010) - not-present page
+[4005007.702570] PGD 0 P4D 0
+[4005007.702576] Oops: 0010 [#1] SMP NOPTI
+[4005007.702581] CPU: 4 PID: 62563 Comm: cat Tainted: G           OE     5.15.0-43-generic #46-Ubunt       u
+[4005007.702590] RIP: 0010:0x0
+[4005007.702598] Code: Unable to access opcode bytes at RIP 0xffffffffffffffd6.
+[4005007.702600] RSP: 0018:ffffa82b46d27da0 EFLAGS: 00010206
+[4005007.702605] RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffffa82b46d27e68
+[4005007.702609] RDX: 0000000000000001 RSI: 0000000000000000 RDI: ffff9940656e0000
+[4005007.702612] RBP: ffffa82b46d27dd8 R08: 0000000000000000 R09: ffff994060c07980
+[4005007.702615] R10: 0000000000020000 R11: 0000000000000000 R12: 00007f5e06753000
+[4005007.702618] R13: ffff9940656e0000 R14: ffffa82b46d27e68 R15: 00007f5e06753000
+[4005007.702622] FS:  00007f5e0755b740(0000) GS:ffff99479d300000(0000) knlGS:0000000000000000
+[4005007.702626] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[4005007.702629] CR2: ffffffffffffffd6 CR3: 00000003253fc000 CR4: 00000000003506e0
+[4005007.702633] Call Trace:
+[4005007.702636]  <TASK>
+[4005007.702640]  amdgpu_debugfs_regs_smc_read+0xb0/0x120 [amdgpu]
+[4005007.703002]  full_proxy_read+0x5c/0x80
+[4005007.703011]  vfs_read+0x9f/0x1a0
+[4005007.703019]  ksys_read+0x67/0xe0
+[4005007.703023]  __x64_sys_read+0x19/0x20
+[4005007.703028]  do_syscall_64+0x5c/0xc0
+[4005007.703034]  ? do_user_addr_fault+0x1e3/0x670
+[4005007.703040]  ? exit_to_user_mode_prepare+0x37/0xb0
+[4005007.703047]  ? irqentry_exit_to_user_mode+0x9/0x20
+[4005007.703052]  ? irqentry_exit+0x19/0x30
+[4005007.703057]  ? exc_page_fault+0x89/0x160
+[4005007.703062]  ? asm_exc_page_fault+0x8/0x30
+[4005007.703068]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+[4005007.703075] RIP: 0033:0x7f5e07672992
+[4005007.703079] Code: c0 e9 b2 fe ff ff 50 48 8d 3d fa b2 0c 00 e8 c5 1d 02 00 0f 1f 44 00 00 f3 0f        1e fa 64 8b 04 25 18 00 00 00 85 c0 75 10 0f 05 <48> 3d 00 f0 ff ff 77 56 c3 0f 1f 44 00 00 48 83 e       c 28 48 89 54 24
+[4005007.703083] RSP: 002b:00007ffe03097898 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
+[4005007.703088] RAX: ffffffffffffffda RBX: 0000000000020000 RCX: 00007f5e07672992
+[4005007.703091] RDX: 0000000000020000 RSI: 00007f5e06753000 RDI: 0000000000000003
+[4005007.703094] RBP: 00007f5e06753000 R08: 00007f5e06752010 R09: 00007f5e06752010
+[4005007.703096] R10: 0000000000000022 R11: 0000000000000246 R12: 0000000000022000
+[4005007.703099] R13: 0000000000000003 R14: 0000000000020000 R15: 0000000000020000
+[4005007.703105]  </TASK>
+[4005007.703107] Modules linked in: nf_tables libcrc32c nfnetlink algif_hash af_alg binfmt_misc nls_       iso8859_1 ipmi_ssif ast intel_rapl_msr intel_rapl_common drm_vram_helper drm_ttm_helper amd64_edac t       tm edac_mce_amd kvm_amd ccp mac_hid k10temp kvm acpi_ipmi ipmi_si rapl sch_fq_codel ipmi_devintf ipm       i_msghandler msr parport_pc ppdev lp parport mtd pstore_blk efi_pstore ramoops pstore_zone reed_solo       mon ip_tables x_tables autofs4 ib_uverbs ib_core amdgpu(OE) amddrm_ttm_helper(OE) amdttm(OE) iommu_v       2 amd_sched(OE) amdkcl(OE) drm_kms_helper syscopyarea sysfillrect sysimgblt fb_sys_fops cec rc_core        drm igb ahci xhci_pci libahci i2c_piix4 i2c_algo_bit xhci_pci_renesas dca
+[4005007.703184] CR2: 0000000000000000
+[4005007.703188] ---[ end trace ac65a538d240da39 ]---
+[4005007.800865] RIP: 0010:0x0
+[4005007.800871] Code: Unable to access opcode bytes at RIP 0xffffffffffffffd6.
+[4005007.800874] RSP: 0018:ffffa82b46d27da0 EFLAGS: 00010206
+[4005007.800878] RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffffa82b46d27e68
+[4005007.800881] RDX: 0000000000000001 RSI: 0000000000000000 RDI: ffff9940656e0000
+[4005007.800883] RBP: ffffa82b46d27dd8 R08: 0000000000000000 R09: ffff994060c07980
+[4005007.800886] R10: 0000000000020000 R11: 0000000000000000 R12: 00007f5e06753000
+[4005007.800888] R13: ffff9940656e0000 R14: ffffa82b46d27e68 R15: 00007f5e06753000
+[4005007.800891] FS:  00007f5e0755b740(0000) GS:ffff99479d300000(0000) knlGS:0000000000000000
+[4005007.800895] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[4005007.800898] CR2: ffffffffffffffd6 CR3: 00000003253fc000 CR4: 00000000003506e0
+
+Signed-off-by: Qu Huang <qu.huang@linux.dev>
 Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/amdkfd/kfd_svm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_svm.c b/drivers/gpu/drm/amd/amdkfd/kfd_svm.c
-index ed365f8ebf53f..6b5747b35a31e 100644
---- a/drivers/gpu/drm/amd/amdkfd/kfd_svm.c
-+++ b/drivers/gpu/drm/amd/amdkfd/kfd_svm.c
-@@ -756,7 +756,7 @@ svm_range_apply_attrs(struct kfd_process *p, struct svm_range *prange,
- 			prange->flags &= ~attrs[i].value;
- 			break;
- 		case KFD_IOCTL_SVM_ATTR_GRANULARITY:
--			prange->granularity = attrs[i].value;
-+			prange->granularity = min_t(uint32_t, attrs[i].value, 0x3F);
- 			break;
- 		default:
- 			WARN_ONCE(1, "svm_range_check_attrs wasn't called?");
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c
+index 56e89e76ff179..33cada366eeb1 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c
+@@ -747,6 +747,9 @@ static ssize_t amdgpu_debugfs_regs_smc_read(struct file *f, char __user *buf,
+ 	ssize_t result = 0;
+ 	int r;
+ 
++	if (!adev->smc_rreg)
++		return -EPERM;
++
+ 	if (size & 0x3 || *pos & 0x3)
+ 		return -EINVAL;
+ 
+@@ -803,6 +806,9 @@ static ssize_t amdgpu_debugfs_regs_smc_write(struct file *f, const char __user *
+ 	ssize_t result = 0;
+ 	int r;
+ 
++	if (!adev->smc_wreg)
++		return -EPERM;
++
+ 	if (size & 0x3 || *pos & 0x3)
+ 		return -EINVAL;
+ 
 -- 
 2.42.0
 
