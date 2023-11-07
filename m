@@ -2,88 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9052E7E440E
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 16:49:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 179657E443B
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 16:51:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344395AbjKGPtm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 10:49:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49844 "EHLO
+        id S1343553AbjKGPvZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 10:51:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344360AbjKGPs4 (ORCPT
+        with ESMTP id S1343749AbjKGPvB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 10:48:56 -0500
+        Tue, 7 Nov 2023 10:51:01 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3822699;
-        Tue,  7 Nov 2023 07:48:13 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 533BBC433CA;
-        Tue,  7 Nov 2023 15:48:12 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18DB4211D;
+        Tue,  7 Nov 2023 07:48:51 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D39AC433C9;
+        Tue,  7 Nov 2023 15:48:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699372092;
-        bh=DO4fpqc4U5U4PKy2Hakqr/6aYN5jt0n5NWZpwDLc8GU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=t8svN/OmOKhjTj0oilagKitRB3k3ICs3g7VY5YqJWy9dWUFlAsGiIg8UKWFwXK7Ar
-         YTahIWcSa/30r4/s2aE91SJT4397600aZpYpcE6RzTTlxRc0WkTOp1gKViW0OR9uDO
-         4RdyBT7vBW2srtPnpQc2ZnL4QbRhkO0p0ak8tl1uvzvqcKLQDmYV1cou7HoWVJLP39
-         Q2UoX934b+a3Uhwkt0T7upEfph9nA/TTtmY8VeFeRj/Urp8+rCiBtA+Puf7hC/QK2w
-         D9i3UYAS9Sb1t7+4KM9cv7Vng6HBY0IF+pMVe/ZY6nFtmRzGIuopbpZbLZV7qp4+Na
-         WkLaCGF1YeNmw==
+        s=k20201202; t=1699372130;
+        bh=NSY1IFlDv4rVL8cXqlzKdvVbDftfZI0kP20/Mj3znx0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=lM4m/Jt47wxKdXw1JLPkbUn6ObX8ve7rbmTuQdIRWS8MW6Dpx6q8ujfx5xfMw8RwR
+         +3J9bOzuLqTgLRtWMYvpiBCpahPO1H/8xhoR0ODDMfzI7ljicLHHc3fXpwpzyZeEnR
+         bDfZP4pXsU/pJMTbi95z9v6wlm7/ek6avL8KagBt9CbBfqnbsqld6cDGqoNQI7Rewr
+         VkabjMTxWac7BRm5C+XSS7qT4Y2G07SyAO9E7rL9ogqDl3QJBHNGc0tsitGxxpSfeK
+         3BJYKu2B29OBPRKASuXGuRllY4N5VpnF8Jd43m+UXMRaIzEW1KKE08aoWRIITj1RHT
+         lBOnU6EOExZ7g==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Lee Jones <lee@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 6.6 36/36] mfd: intel-lpss: Add Intel Lunar Lake-M PCI IDs
-Date:   Tue,  7 Nov 2023 10:46:18 -0500
-Message-ID: <20231107154654.3765336-36-sashal@kernel.org>
+Cc:     Trevor Wu <trevor.wu@mediatek.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, lgirdwood@gmail.com,
+        perex@perex.cz, tiwai@suse.com, matthias.bgg@gmail.com,
+        amergnat@baylibre.com, ckeepax@opensource.cirrus.com,
+        robh@kernel.org, dan.carpenter@linaro.org,
+        kuninori.morimoto.gx@renesas.com,
+        xiazhengqiao@huaqin.corp-partner.google.com,
+        linux-sound@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: [PATCH AUTOSEL 6.5 01/34] ASoC: mediatek: mt8188-mt6359: support dynamic pinctrl
+Date:   Tue,  7 Nov 2023 10:47:41 -0500
+Message-ID: <20231107154846.3766119-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231107154654.3765336-1-sashal@kernel.org>
-References: <20231107154654.3765336-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.6
+X-stable-base: Linux 6.5.10
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+From: Trevor Wu <trevor.wu@mediatek.com>
 
-[ Upstream commit e53b22b10c6e0de0cf2a03a92b18fdad70f266c7 ]
+[ Upstream commit d601bb78f06b9e3cbb52e6b87b88add9920a11b6 ]
 
-Add Intel Lunar Lake-M SoC PCI IDs.
+To avoid power leakage, it is recommended to replace the default pinctrl
+state with dynamic pinctrl since certain audio pinmux functions can
+remain in a HIGH state even when audio is disabled. Linking pinctrl with
+DAPM using SND_SOC_DAPM_PINCTRL will ensure that audio pins remain in
+GPIO mode by default and only switch to an audio function when necessary.
 
-Signed-off-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Link: https://lore.kernel.org/r/20231002083344.75611-1-jarkko.nikula@linux.intel.com
-Signed-off-by: Lee Jones <lee@kernel.org>
+Signed-off-by: Trevor Wu <trevor.wu@mediatek.com>
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Link: https://lore.kernel.org/r/20230825024935.10878-2-trevor.wu@mediatek.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mfd/intel-lpss-pci.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ sound/soc/mediatek/mt8188/mt8188-mt6359.c | 21 +++++++++++++++++++++
+ 1 file changed, 21 insertions(+)
 
-diff --git a/drivers/mfd/intel-lpss-pci.c b/drivers/mfd/intel-lpss-pci.c
-index 699f44ffff0e4..ae5759200622c 100644
---- a/drivers/mfd/intel-lpss-pci.c
-+++ b/drivers/mfd/intel-lpss-pci.c
-@@ -561,6 +561,19 @@ static const struct pci_device_id intel_lpss_pci_ids[] = {
- 	{ PCI_VDEVICE(INTEL, 0xa3e2), (kernel_ulong_t)&spt_i2c_info },
- 	{ PCI_VDEVICE(INTEL, 0xa3e3), (kernel_ulong_t)&spt_i2c_info },
- 	{ PCI_VDEVICE(INTEL, 0xa3e6), (kernel_ulong_t)&spt_uart_info },
-+	/* LNL-M */
-+	{ PCI_VDEVICE(INTEL, 0xa825), (kernel_ulong_t)&bxt_uart_info },
-+	{ PCI_VDEVICE(INTEL, 0xa826), (kernel_ulong_t)&bxt_uart_info },
-+	{ PCI_VDEVICE(INTEL, 0xa827), (kernel_ulong_t)&tgl_info },
-+	{ PCI_VDEVICE(INTEL, 0xa830), (kernel_ulong_t)&tgl_info },
-+	{ PCI_VDEVICE(INTEL, 0xa846), (kernel_ulong_t)&tgl_info },
-+	{ PCI_VDEVICE(INTEL, 0xa850), (kernel_ulong_t)&ehl_i2c_info },
-+	{ PCI_VDEVICE(INTEL, 0xa851), (kernel_ulong_t)&ehl_i2c_info },
-+	{ PCI_VDEVICE(INTEL, 0xa852), (kernel_ulong_t)&bxt_uart_info },
-+	{ PCI_VDEVICE(INTEL, 0xa878), (kernel_ulong_t)&ehl_i2c_info },
-+	{ PCI_VDEVICE(INTEL, 0xa879), (kernel_ulong_t)&ehl_i2c_info },
-+	{ PCI_VDEVICE(INTEL, 0xa87a), (kernel_ulong_t)&ehl_i2c_info },
-+	{ PCI_VDEVICE(INTEL, 0xa87b), (kernel_ulong_t)&ehl_i2c_info },
- 	{ }
+diff --git a/sound/soc/mediatek/mt8188/mt8188-mt6359.c b/sound/soc/mediatek/mt8188/mt8188-mt6359.c
+index ac69c23e0da1c..7048ff52ab86a 100644
+--- a/sound/soc/mediatek/mt8188/mt8188-mt6359.c
++++ b/sound/soc/mediatek/mt8188/mt8188-mt6359.c
+@@ -246,6 +246,11 @@ static const struct snd_soc_dapm_widget mt8188_mt6359_widgets[] = {
+ 	SND_SOC_DAPM_MIC("Headset Mic", NULL),
+ 	SND_SOC_DAPM_SINK("HDMI"),
+ 	SND_SOC_DAPM_SINK("DP"),
++
++	/* dynamic pinctrl */
++	SND_SOC_DAPM_PINCTRL("ETDM_SPK_PIN", "aud_etdm_spk_on", "aud_etdm_spk_off"),
++	SND_SOC_DAPM_PINCTRL("ETDM_HP_PIN", "aud_etdm_hp_on", "aud_etdm_hp_off"),
++	SND_SOC_DAPM_PINCTRL("MTKAIF_PIN", "aud_mtkaif_on", "aud_mtkaif_off"),
  };
- MODULE_DEVICE_TABLE(pci, intel_lpss_pci_ids);
+ 
+ static const struct snd_kcontrol_new mt8188_mt6359_controls[] = {
+@@ -267,6 +272,7 @@ static int mt8188_mt6359_mtkaif_calibration(struct snd_soc_pcm_runtime *rtd)
+ 		snd_soc_rtdcom_lookup(rtd, AFE_PCM_NAME);
+ 	struct snd_soc_component *cmpnt_codec =
+ 		asoc_rtd_to_codec(rtd, 0)->component;
++	struct snd_soc_dapm_widget *pin_w = NULL, *w;
+ 	struct mtk_base_afe *afe;
+ 	struct mt8188_afe_private *afe_priv;
+ 	struct mtkaif_param *param;
+@@ -306,6 +312,18 @@ static int mt8188_mt6359_mtkaif_calibration(struct snd_soc_pcm_runtime *rtd)
+ 		return 0;
+ 	}
+ 
++	for_each_card_widgets(rtd->card, w) {
++		if (!strcmp(w->name, "MTKAIF_PIN")) {
++			pin_w = w;
++			break;
++		}
++	}
++
++	if (pin_w)
++		dapm_pinctrl_event(pin_w, NULL, SND_SOC_DAPM_PRE_PMU);
++	else
++		dev_dbg(afe->dev, "%s(), no pinmux widget, please check if default on\n", __func__);
++
+ 	pm_runtime_get_sync(afe->dev);
+ 	mt6359_mtkaif_calibration_enable(cmpnt_codec);
+ 
+@@ -403,6 +421,9 @@ static int mt8188_mt6359_mtkaif_calibration(struct snd_soc_pcm_runtime *rtd)
+ 	for (i = 0; i < MT8188_MTKAIF_MISO_NUM; i++)
+ 		param->mtkaif_phase_cycle[i] = mtkaif_phase_cycle[i];
+ 
++	if (pin_w)
++		dapm_pinctrl_event(pin_w, NULL, SND_SOC_DAPM_POST_PMD);
++
+ 	dev_dbg(afe->dev, "%s(), end, calibration ok %d\n",
+ 		__func__, param->mtkaif_calibration_ok);
+ 
 -- 
 2.42.0
 
