@@ -2,111 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 718E47E44BD
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 16:56:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED6EE7E44F4
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 17:00:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343788AbjKGP4m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 10:56:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35740 "EHLO
+        id S1344299AbjKGQAH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 11:00:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343759AbjKGP4T (ORCPT
+        with ESMTP id S1344417AbjKGP67 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 10:56:19 -0500
-Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F3DB4EEC;
-        Tue,  7 Nov 2023 07:50:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
-        ; s=x; h=Subject:Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Cc:To
-        :From:subject:date:message-id:reply-to;
-        bh=r0TYUpnREGJ0KanYJfwzlHomepGsTlvaq5o9zs4sWSs=; b=vdwCz6yQyVDp/gzLzzMkGyqrBP
-        FXNkjbLi1mhe3jlBKl24nPernItP1XoDYFZIIwicL1eL5IBUF/nkDS2YFX9OxzFnHa5HO5Q8m/Mf7
-        j8Wdf9LV24O7zAtE0zWgNCPsoUZWfjCXfsQdSE5v3TzCRql+QZHtUTFoMhcvEaqBmJMs=;
-Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:41044 helo=pettiford.lan)
-        by mail.hugovil.com with esmtpa (Exim 4.92)
-        (envelope-from <hugo@hugovil.com>)
-        id 1r0OLi-0007bH-VP; Tue, 07 Nov 2023 10:50:43 -0500
-From:   Hugo Villeneuve <hugo@hugovil.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>
-Cc:     hugo@hugovil.com, Hugo Villeneuve <hvilleneuve@dimonoff.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Date:   Tue,  7 Nov 2023 10:50:40 -0500
-Message-Id: <20231107155040.1644169-1-hugo@hugovil.com>
-X-Mailer: git-send-email 2.39.2
+        Tue, 7 Nov 2023 10:58:59 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30F2719BE;
+        Tue,  7 Nov 2023 07:51:50 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AD092C433C8;
+        Tue,  7 Nov 2023 15:51:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699372309;
+        bh=HUOqiqgzeVydpLtci+jTckqJxzO/mCgFr/7a1OhQ/pY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Os/zD56zafYeKBrX+6RGddAyK+S3keBc6tP0nt8oCSGUXEFRjM/IdzWJR0d752KZ4
+         mh623U6oJC4AOq+w/PfsgszstuB3aJs+GIySoAKhkrSuMj5YoIfdfD4e2oDYAh9RaL
+         DW8vjsb2s/bCoYfXGdXhNpekEMyxYO1/XkzFYiLtOvCOqUPWxzahUgUmWaGLFc3Odv
+         NlhgnPS2aH0HZb7buf11FuIb26ABOL8Ya9v5hygA+R8gEblMhOgLa1h1ODQRCHgpo4
+         9J+rkpb9H6K+Qy5ZfAaWdL+oJbbGrt0byor9NHhQ4gGxvrTNKlAtrXQw8qiHCdgy9m
+         8FtooyM91+2Fw==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Richard Fitzgerald <rf@opensource.cirrus.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, lgirdwood@gmail.com,
+        perex@perex.cz, tiwai@suse.com, linux-sound@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.15 01/22] ASoC: soc-card: Add storage for PCI SSID
+Date:   Tue,  7 Nov 2023 10:51:10 -0500
+Message-ID: <20231107155146.3767610-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 5.15.137
 Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 70.80.174.168
-X-SA-Exim-Mail-From: hugo@hugovil.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.hugovil.com
-X-Spam-Level: 
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
-X-Spam-Status: No, score=-1.0 required=5.0 tests=ALL_TRUSTED,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.2
-Subject: [PATCH v2] arm64: dts: imx8mn-var-som-symphony: add vcc supply for PCA9534
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+From: Richard Fitzgerald <rf@opensource.cirrus.com>
 
-The following warning is shown when probing device:
+[ Upstream commit 47f56e38a199bd45514b8e0142399cba4feeaf1a ]
 
-    pca953x 1-0020: supply vcc not found, using dummy regulator
+Add members to struct snd_soc_card to store the PCI subsystem ID (SSID)
+of the soundcard.
 
-Define a new fixed 3.3v regulator for carrier board peripherals,
-enabled by mosfet switch Q2 after the SOM_3V3 supply rises (no software
-control).
+The PCI specification provides two registers to store a vendor-specific
+SSID that can be read by drivers to uniquely identify a particular
+"soundcard". This is defined in the PCI specification to distinguish
+products that use the same silicon (and therefore have the same silicon
+ID) so that product-specific differences can be applied.
 
-Add this new regulator as vcc supply to the PCA9534 to silence the warning.
+PCI only defines 0xFFFF as an invalid value. 0x0000 is not defined as
+invalid. So the usual pattern of zero-filling the struct and then
+assuming a zero value unset will not work. A flag is included to
+indicate when the SSID information has been filled in.
 
-Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+Unlike DMI information, which has a free-format entirely up to the vendor,
+the PCI SSID has a strictly defined format and a registry of vendor IDs.
+
+It is usual in Windows drivers that the SSID is used as the sole identifier
+of the specific end-product and the Windows driver contains tables mapping
+that to information about the hardware setup, rather than using ACPI
+properties.
+
+This SSID is important information for ASoC components that need to apply
+hardware-specific configuration on PCI-based systems.
+
+As the SSID is a generic part of the PCI specification and is treated as
+identifying the "soundcard", it is reasonable to include this information
+in struct snd_soc_card, instead of components inventing their own custom
+ways to pass this information around.
+
+Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20230912163207.3498161-2-rf@opensource.cirrus.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
-Changes for V2:
-- add peripherals regulator and update commit message for Q2 mosfet.
+ include/sound/soc-card.h | 37 +++++++++++++++++++++++++++++++++++++
+ include/sound/soc.h      | 11 +++++++++++
+ 2 files changed, 48 insertions(+)
 
- .../boot/dts/freescale/imx8mn-var-som-symphony.dts     | 10 ++++++++++
- 1 file changed, 10 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/freescale/imx8mn-var-som-symphony.dts b/arch/arm64/boot/dts/freescale/imx8mn-var-som-symphony.dts
-index a7a57442cb81..a6b94d1957c9 100644
---- a/arch/arm64/boot/dts/freescale/imx8mn-var-som-symphony.dts
-+++ b/arch/arm64/boot/dts/freescale/imx8mn-var-som-symphony.dts
-@@ -57,6 +57,15 @@ led {
- 			linux,default-trigger = "heartbeat";
- 		};
- 	};
+diff --git a/include/sound/soc-card.h b/include/sound/soc-card.h
+index 4f2cc4fb56b7f..9a5429260ece5 100644
+--- a/include/sound/soc-card.h
++++ b/include/sound/soc-card.h
+@@ -40,6 +40,43 @@ int snd_soc_card_add_dai_link(struct snd_soc_card *card,
+ void snd_soc_card_remove_dai_link(struct snd_soc_card *card,
+ 				  struct snd_soc_dai_link *dai_link);
+ 
++#ifdef CONFIG_PCI
++static inline void snd_soc_card_set_pci_ssid(struct snd_soc_card *card,
++					     unsigned short vendor,
++					     unsigned short device)
++{
++	card->pci_subsystem_vendor = vendor;
++	card->pci_subsystem_device = device;
++	card->pci_subsystem_set = true;
++}
 +
-+	/* Peripherals supply, enabled by Q2 after SOM_3V3 rises. */
-+	reg_per_3v3: regulator-peripheral-3v3 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "per_3v3";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		regulator-always-on;
-+	};
- };
++static inline int snd_soc_card_get_pci_ssid(struct snd_soc_card *card,
++					    unsigned short *vendor,
++					    unsigned short *device)
++{
++	if (!card->pci_subsystem_set)
++		return -ENOENT;
++
++	*vendor = card->pci_subsystem_vendor;
++	*device = card->pci_subsystem_device;
++
++	return 0;
++}
++#else /* !CONFIG_PCI */
++static inline void snd_soc_card_set_pci_ssid(struct snd_soc_card *card,
++					     unsigned short vendor,
++					     unsigned short device)
++{
++}
++
++static inline int snd_soc_card_get_pci_ssid(struct snd_soc_card *card,
++					    unsigned short *vendor,
++					    unsigned short *device)
++{
++	return -ENOENT;
++}
++#endif /* CONFIG_PCI */
++
+ /* device driver data */
+ static inline void snd_soc_card_set_drvdata(struct snd_soc_card *card,
+ 					    void *data)
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 5872a8864f3b6..3f0369aae2faf 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -880,6 +880,17 @@ struct snd_soc_card {
+ #ifdef CONFIG_DMI
+ 	char dmi_longname[80];
+ #endif /* CONFIG_DMI */
++
++#ifdef CONFIG_PCI
++	/*
++	 * PCI does not define 0 as invalid, so pci_subsystem_set indicates
++	 * whether a value has been written to these fields.
++	 */
++	unsigned short pci_subsystem_vendor;
++	unsigned short pci_subsystem_device;
++	bool pci_subsystem_set;
++#endif /* CONFIG_PCI */
++
+ 	char topology_shortname[32];
  
- &ethphy {
-@@ -79,6 +88,7 @@ pca9534: gpio@20 {
- 		interrupts = <7 IRQ_TYPE_EDGE_FALLING>;
- 		#gpio-cells = <2>;
- 		wakeup-source;
-+		vcc-supply = <&reg_per_3v3>;
- 
- 		/* USB 3.0 OTG (usbotg1) / SATA port switch, set to USB 3.0 */
- 		usb3-sata-sel-hog {
-
-base-commit: be3ca57cfb777ad820c6659d52e60bbdd36bf5ff
+ 	struct device *dev;
 -- 
-2.39.2
+2.42.0
 
