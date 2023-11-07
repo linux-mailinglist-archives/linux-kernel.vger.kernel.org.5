@@ -2,204 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ED147E36B8
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 09:34:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92C787E36BA
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 09:35:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233760AbjKGIeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 03:34:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50878 "EHLO
+        id S233747AbjKGIf1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 03:35:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233747AbjKGIeT (ORCPT
+        with ESMTP id S231893AbjKGIfY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 03:34:19 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF20FBD
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 00:34:15 -0800 (PST)
-Date:   Tue, 7 Nov 2023 09:34:11 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1699346053;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zWJk9nL8xlrcEUZ19TjgnfyXI3oFOA97vzHt9B/TpHU=;
-        b=2BAOVEM2MkhWFzYNhU0L0NWAgz71dhhwB/EyqNU3aPKvT/3kM5Xr7bz9jweX0fuVrm++Cl
-        jJrRF3OH0M0pdXlr2jEbXyWMtJ4xZk4OoqBgPwYz1qkkkbKJ7aX05Fq8dmCZgEu/pb7YZH
-        ZSMq3m5BetHLlW9LU2z7Q5hnPDzInWJKnRdTBRBvn0usqMgO7Mdrf65DdKEX67yoVboafl
-        556MILwGAOPrnSgzHOcIKzkHipW7rRJODJSl5dbgo/AiIukwnLfV3dydZWzZ29eQcGwvPe
-        Z2fAHCLqOq/ihgFQuWwk+Bnkh5T98+AmQSdQaCzVXwuLd3D6D0biXSAiBOsojw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1699346053;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zWJk9nL8xlrcEUZ19TjgnfyXI3oFOA97vzHt9B/TpHU=;
-        b=l8ekf5952TYSX13DM2PgLJGVKnksuDGDa4y/Hi+ZLOejIQVBdacpg1hHI+cGLPnzdyXPtB
-        9HNl1WjpJDpY0hCw==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Evan Green <evan@rivosinc.com>
-Cc:     Palmer Dabbelt <palmer@rivosinc.com>,
-        Jisheng Zhang <jszhang@kernel.org>,
-        David Laight <David.Laight@aculab.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Andrew Jones <ajones@ventanamicro.com>,
-        Anup Patel <apatel@ventanamicro.com>,
-        =?utf-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Greentime Hu <greentime.hu@sifive.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Ley Foon Tan <leyfoon.tan@starfivetech.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Sunil V L <sunilvl@ventanamicro.com>,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
-Subject: Re: [PATCH v3] RISC-V: Probe misaligned access speed in parallel
-Message-ID: <20231107083411.J3ga0YmA@linutronix.de>
-References: <20231106225855.3121724-1-evan@rivosinc.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+        Tue, 7 Nov 2023 03:35:24 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94D63113;
+        Tue,  7 Nov 2023 00:35:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699346121; x=1730882121;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=9RPOqD6bUd9PqgplKMEPcmh7JS+OPU3p6nj6C9GruAw=;
+  b=IWDzkwc1wjIqCj43Tb0sKwBaCTVTTtqaT64GpUIQ19c275r92kUNa5wK
+   Zv0QuQ2Jqs8rjAk8B7FrDpPqe/p3Dcm8eXKrX0FD728S4uilSeSMEbvQU
+   c56AcYUStW5gQVJ3ZPrTIB0wgtVR9WXVyEB4YhgJ07w/xTQ+lQmp2xONP
+   OhAejtmosbP0DFIuLJkIFc9aP6DUWoVmSOQMQNJ/BpKO+oAMdkBF77omK
+   v+AOv01WUEclIx5PS9UzMcfzqeKwfoveIwPFU60bSTyLL0kOWBjYmCRcY
+   Lc+0qZ0/fawzk+iymEyrT4IRA8wkHSsvNZNOkcEYyECw2wHmunHCP8UBr
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10886"; a="2389284"
+X-IronPort-AV: E=Sophos;i="6.03,283,1694761200"; 
+   d="scan'208";a="2389284"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2023 00:35:21 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10886"; a="1009810001"
+X-IronPort-AV: E=Sophos;i="6.03,283,1694761200"; 
+   d="scan'208";a="1009810001"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by fmsmga006.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 07 Nov 2023 00:35:21 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Tue, 7 Nov 2023 00:35:20 -0800
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34 via Frontend Transport; Tue, 7 Nov 2023 00:35:20 -0800
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.100)
+ by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.34; Tue, 7 Nov 2023 00:35:12 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FowRPCFV5hJdPQT4PciJOUXwdX7qh3Rb/BK5D+6e2Azu7Hw21WpWpy/HlhY2GBXVKlXYef+0T6GkFNiBLSUNqAFTS2WsJyTici0BgHHSWfkdYdilIWNW7ZiJtLJD+7KHlVc/90aYjbVE9DAaol6SUiylH+4EoATBpaidUwi61tTHgge+ActcsISozbg9gC51Ttmf82tO1dmQTmLn90tPiZ2N9qdMdZWVUjHrV9gjhZCtyOQkjr+UMKNmbJNG6FWAzE/BA8B0qJlJBSw2PAU3EViV+w9fINNQW4CwxWvkIxMP4lCnrA5WzWDXtB4XQD54bFFwdl5VHsfZdjIrvJ8giQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=9RPOqD6bUd9PqgplKMEPcmh7JS+OPU3p6nj6C9GruAw=;
+ b=Ulcb8YKtg19eao5sGCkCdoAq62rr3whdf9Tiag0x7wTE5PXyi64hqvsslztBMvw4ac1FyrCZxpCOW+P62ysd9IZtp9ZljhVhkldMc0/L4Qkkb3CKXw8SGEecT4EpSiM60MoMuMPkxvTNx5WZVabjjScQpxtjJ2dF6IYNlZhlCn2QJQdMx/drKUNcKSzMUHfjbagm8otvIAaKFeTuryNG0QY3+91YP++ULjBnn3FBXURrYvuvQu7YWid6T5Nm1BLI1oirN4BRKCL6QBz3Lb2DxUkOdqQoxLP/kdUGEPkai5A0TpiR3lq67sfLsrjJHOXhnPxv4/x2co/2x3hRUStcQA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from BN9PR11MB5276.namprd11.prod.outlook.com (2603:10b6:408:135::18)
+ by CH0PR11MB5460.namprd11.prod.outlook.com (2603:10b6:610:d3::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.28; Tue, 7 Nov
+ 2023 08:35:10 +0000
+Received: from BN9PR11MB5276.namprd11.prod.outlook.com
+ ([fe80::e7a4:a757:2f2e:f96a]) by BN9PR11MB5276.namprd11.prod.outlook.com
+ ([fe80::e7a4:a757:2f2e:f96a%3]) with mapi id 15.20.6954.029; Tue, 7 Nov 2023
+ 08:35:10 +0000
+From:   "Tian, Kevin" <kevin.tian@intel.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>, Lu Baolu <baolu.lu@linux.intel.com>
+CC:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        "Robin Murphy" <robin.murphy@arm.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Nicolin Chen <nicolinc@nvidia.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v2 0/6] IOMMUFD: Deliver IO page faults to user space
+Thread-Topic: [PATCH v2 0/6] IOMMUFD: Deliver IO page faults to user space
+Thread-Index: AQHaB7ekIyYD98ruGE6A75OvyWpVCrBnBhoAgAeTvxA=
+Date:   Tue, 7 Nov 2023 08:35:10 +0000
+Message-ID: <BN9PR11MB5276B1582CED568795725C198CA9A@BN9PR11MB5276.namprd11.prod.outlook.com>
+References: <20231026024930.382898-1-baolu.lu@linux.intel.com>
+ <20231102124742.GA4634@ziepe.ca>
+In-Reply-To: <20231102124742.GA4634@ziepe.ca>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BN9PR11MB5276:EE_|CH0PR11MB5460:EE_
+x-ms-office365-filtering-correlation-id: c9b46b12-bd66-49f3-6f43-08dbdf6c749d
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: cS94xQ5HG9rW2kdWo5jGbwdk6gc3+OHTA9a5abs1zyAynjvISS6JQXvX5lLb35eumwoCNZZszPl6/JDBbXmRPunx46CYZJlE0thyFEGarnclroTeQFlIxCsnV5U1x7QXVL4BRwqUPHPrrns2vDbP2bz5oKEeVwG59Brhd00kzNeCA2+RdyPfyZUC/ixHy85QUXxMZo932+Zd34N7fzGDYrNb0nKCFkziMhafmmo7vVYFJzFs71UQD71GQSmFe8f9eEF810A6nI1xssJ+UfPHMr02JyE37Ebtvl688CGT0OLEOz7OPfRmxHE1HpUtOzkjtoil73uKFaYdjngMDaeEHMguWkItuGqKr6ruMDH3QSEcc3H/KEm+avMpkD0kMbuJfuRLqSjhCMDadcCbEx3K8+F4CsIXYCPAbPeBNsQyRVNvXlni+GT6L1DtunpSonmcPYw+gPRXIZLWs8lI7opDEwrfKdGrP3ql1QxORrEFtu1FEQXZXxCycccKByMJ96x4Dy8gtJoEvVPVfz0ykuNqwbvE+UvEyynC6LUmILjhLfxoYdyvRR3Zq1RZGtcDDvlhDGSRe7ghRiNSyVny5N7ojiHD8pJgszg60ocJdVL0WHHAR2mrAoVZKu3uXTVxN3dE
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR11MB5276.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(376002)(136003)(346002)(39860400002)(366004)(230922051799003)(64100799003)(186009)(1800799009)(451199024)(38100700002)(86362001)(7416002)(5660300002)(41300700001)(2906002)(38070700009)(33656002)(82960400001)(122000001)(478600001)(83380400001)(110136005)(9686003)(66946007)(26005)(76116006)(66476007)(316002)(64756008)(66446008)(54906003)(66556008)(7696005)(71200400001)(6506007)(55016003)(8936002)(4326008)(8676002)(52536014);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?4zXvH3Nv2UJS8DYrCScCjgNA7ad30vTdz2YBQJgquNS8TOvCY+lqFHV1Ob7B?=
+ =?us-ascii?Q?bklf3a4AX+Fxqj3yqT8T3EBoz0EjFYg5wu893XDNlPakM8xd7tWSLaMw8Z14?=
+ =?us-ascii?Q?yQlgW4nv5qbIPXmdV/xDRTYhohrhthOj+Tcb9v6vxJ9FvcRCpjDebV+bUUx3?=
+ =?us-ascii?Q?jvPnnlR/FlWVBFKRLzESPzQfb31158aJHkex6sr4aOfsadFUOph7R2miuBu+?=
+ =?us-ascii?Q?nJ7sTp5crBBQS4z+w9n2xmpgWyAfGjnRw9lcQj08/bcjKTvI4StCM5+AIhCc?=
+ =?us-ascii?Q?rcSsGAd6w//C2V+1FU+cDKtd9s7X4b+bb0Kdbm/xlg66fQhhAyZ1ecw3T8Tk?=
+ =?us-ascii?Q?1ZH1DmVMPPDUUhUI6s7NxeP/kIA4qBx5c0M9zON/d7EJ9fBtjBNrHf1SeyAM?=
+ =?us-ascii?Q?DQUZkJH7LIMLGfy0JwAX5VSRC5Xa25QGhHGwQaUfXSEU3hfqnPuRmyA7Th1c?=
+ =?us-ascii?Q?tmzxAJqQ/7Cn6r/xqD274zh/I14c50yMD+S3Zp2F5bRG54ljIlUJ9XUyDJKO?=
+ =?us-ascii?Q?B+tgOGfa5MmPG5oFtqO420GbNvB/kzERmh+3CL2mLrWGXHeoXGkQ+fmMlxJ3?=
+ =?us-ascii?Q?vlAWBWOSkvcyfUQJzr5++XMib2n/cRTXiHsqE9XUAkHHhmNMoC2qf0o8vaLn?=
+ =?us-ascii?Q?Z6Z6zTES3YV+MM46h2UQmiYwX50TQEFW/+ky1a2hCqH4+GmqxKiHDNXtNQGm?=
+ =?us-ascii?Q?TLykcUkFCX1gHWitmGwlMOa7TlPJSrneAgOkDBg+MYr/pCoVNaUL51DI4+d1?=
+ =?us-ascii?Q?DMWQXu7wl+sZSVuKqWMHX/VadomHW6HCVJmsjZT2vyZmG2e8UCFy8u/A/W6t?=
+ =?us-ascii?Q?aTBck2tu9rLPPP7tmGPIrAIrP8suFuJUEUmJDKB0ZmtPifsmlsLCqJ19ZB6L?=
+ =?us-ascii?Q?PDJXMO+KvmnV5fwwVKdZFMpAhBKDdv2v90YoUADQQGRGbhEER7hwwFB2z1or?=
+ =?us-ascii?Q?O40ZniIhg9kGT6uQ96k2AqZUzMPwhaMbqifGYhU4zCN3Ar4wggWLN4g8PTVQ?=
+ =?us-ascii?Q?9ovMtg9a5Y+NTQzsBoXz0U/9k+jsl9sHP68prQZUst8XZW0/6+xi4VcqsXoS?=
+ =?us-ascii?Q?iFhi7slb+mc8HUIIUJOFjbu2EUf0MNQvhs2dAv09GylvdiLgvml8pXBhy4i6?=
+ =?us-ascii?Q?wy444vTGVg8PLmdtFPeookKO1ZHERnOhboYdbedMjEg6Od98ww/+uvYjGgt1?=
+ =?us-ascii?Q?TbHJiKGS4Y1sAy+zXYCGw3lamuH2HvVYsOEevvB3R2MuMAHW5i8uU2nGgZi+?=
+ =?us-ascii?Q?hmm9EVVlYYDnAEXZ9JiAtKMADDYC/9Fb28TUdF3I48uDEtUAAPkxtg8jEONt?=
+ =?us-ascii?Q?nfweExSeReMny43kTst31KMurUkssFaAZPRYSRMQQF0BrjOane3h6ORn5cIY?=
+ =?us-ascii?Q?mltweNKtdIBXOcWahP76O4RZ/rvBjNdZxpWLHLDQAxQcK93vw4Be2vN5/tm+?=
+ =?us-ascii?Q?pqWCXH01cW00EkV7P5oRqKiyzk9l+ZTNvX4uLUffKg9kVAygzw8F+JE38XsD?=
+ =?us-ascii?Q?dSXpY62Q50mHPtx6ZWrUqVoULtchFVZ93SfiCxrcelIMA3uqWU1CiBh9hckD?=
+ =?us-ascii?Q?SOpEbnjPOagBtQKcZFj5yj/DPRYyIp9f/rdrevD2?=
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20231106225855.3121724-1-evan@rivosinc.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BN9PR11MB5276.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c9b46b12-bd66-49f3-6f43-08dbdf6c749d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Nov 2023 08:35:10.8906
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 3KDPsm7Mbq861Z96PlMmWKNpJJLVhWoAKIjig5p/2LWRJAC1aTCWETcrbD0qG7XIX8uOj37v/jr8h3Ubp/OKxA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR11MB5460
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-11-06 14:58:55 [-0800], Evan Green wrote:
-> Probing for misaligned access speed takes about 0.06 seconds. On a
-> system with 64 cores, doing this in smp_callin() means it's done
-> serially, extending boot time by 3.8 seconds. That's a lot of boot time.
+> From: Jason Gunthorpe <jgg@ziepe.ca>
+> Sent: Thursday, November 2, 2023 8:48 PM
+>
+> On Thu, Oct 26, 2023 at 10:49:24AM +0800, Lu Baolu wrote:
+> > Hi folks,
+> >
+> > This series implements the functionality of delivering IO page faults t=
+o
+> > user space through the IOMMUFD framework for nested translation.
+> Nested
+> > translation is a hardware feature that supports two-stage translation
+> > tables for IOMMU. The second-stage translation table is managed by the
+> > host VMM, while the first-stage translation table is owned by user
+> > space. This allows user space to control the IOMMU mappings for its
+> > devices.
 >=20
-> Instead of measuring each CPU serially, let's do the measurements on
-> all CPUs in parallel. If we disable preemption on all CPUs, the
-> jiffies stop ticking, so we can do this in stages of 1) everybody
-> except core 0, then 2) core 0. The allocations are all done outside of
-> on_each_cpu() to avoid calling alloc_pages() with interrupts disabled.
+> Having now looked more closely at the ARM requirements it seems we
+> will need generic events, not just page fault events to have a
+> complete emulation.
+
+Can you elaborate?
+
 >=20
-> For hotplugged CPUs that come in after the boot time measurement,
-> register CPU hotplug callbacks, and do the measurement there. Interrupts
-> are enabled in those callbacks, so they're fine to do alloc_pages() in.
-
-I think this is dragged out of proportion. I would do this (if needed
-can can't be identified by CPU-ID or so) on boot CPU only. If there is
-evidence/ proof/ blessing from the high RiscV council that different
-types of CPU cores are mixed together then this could be extended.
-You brought Big-Little up in the other thread. This is actually known.
-Same as with hyper-threads on x86, you know which CPU is the core and
-which hyper thread (CPU) belongs to it.
-So in terms of BigLittle you _could_ limit this to one Big and one
-Little core instead running it on all.
-
-But this is just my few on this. From PREEMPT_RT's point of view, the
-way you restructured the memory allocation should work now.
-
-> Reported-by: Jisheng Zhang <jszhang@kernel.org>
-> Closes: https://lore.kernel.org/all/mhng-9359993d-6872-4134-83ce-c97debe1=
-cf9a@palmer-ri-x1c9/T/#mae9b8f40016f9df428829d33360144dc5026bcbf
-> Fixes: 584ea6564bca ("RISC-V: Probe for unaligned access speed")
-> Signed-off-by: Evan Green <evan@rivosinc.com>
+> So I'd like to see this generalized into a channel to carry any
+> events..
 >=20
+> > User space indicates its capability of handling IO page faults by
+> > setting the IOMMU_HWPT_ALLOC_IOPF_CAPABLE flag when allocating a
+> > hardware page table (HWPT). IOMMUFD will then set up its infrastructure
+> > for page fault delivery. On a successful return of HWPT allocation, the
+> > user can retrieve and respond to page faults by reading and writing to
+> > the file descriptor (FD) returned in out_fault_fd.
 >=20
-> diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeatur=
-e.c
-> index 6a01ded615cd..fe59e18dbd5b 100644
-> --- a/arch/riscv/kernel/cpufeature.c
-> +++ b/arch/riscv/kernel/cpufeature.c
-=E2=80=A6
-> =20
-> -static int __init check_unaligned_access_boot_cpu(void)
-> +/* Measure unaligned access on all CPUs present at boot in parallel. */
-> +static int check_unaligned_access_all_cpus(void)
->  {
-> -	check_unaligned_access(0);
-> +	unsigned int cpu;
-> +	unsigned int cpu_count =3D num_possible_cpus();
-> +	struct page **bufs =3D kzalloc(cpu_count * sizeof(struct page *),
-> +				     GFP_KERNEL);
+> This is the right way to approach it, and more broadly this shouldn't
+> be an iommufd specific thing. Kernel drivers will also need to create
+> fault capable PAGING iommu domains.
+>=20
 
-kcalloc(). For beauty reasons you could try a reverse xmas tree.=20
+Are you suggesting a common interface used by both iommufd and
+kernel drivers?
 
-> +
-> +	if (!bufs) {
-> +		pr_warn("Allocation failure, not measuring misaligned performance\n");
-> +		return 0;
-> +	}
-> +
-> +	/*
-> +	 * Allocate separate buffers for each CPU so there's no fighting over
-> +	 * cache lines.
-> +	 */
-> +	for_each_cpu(cpu, cpu_online_mask) {
-> +		bufs[cpu] =3D alloc_pages(GFP_KERNEL, MISALIGNED_BUFFER_ORDER);
-> +		if (!bufs[cpu]) {
-> +			pr_warn("Allocation failure, not measuring misaligned performance\n");
-> +			goto out;
-> +		}
-> +	}
-> +
-> +	/* Check everybody except 0, who stays behind to tend jiffies. */
-> +	on_each_cpu(check_unaligned_access_nonboot_cpu, bufs, 1);
-
-comments! _HOW_ do you ensure that CPU0 is left out? You don't. CPU0
-does this and the leaves which is a waste. Using on_each_cpu_cond()
-could deal with this. And you have the check within the wrapper
-(check_unaligned_access_nonboot_cpu()) anyway.
-
-> +	/* Check core 0. */
-> +	smp_call_on_cpu(0, check_unaligned_access, bufs[0], true);
-
-Now that comment is obvious. If you want to add a comment, why not state
-why CPU0 has to be done last?
-
-> +
-> +	/* Setup hotplug callback for any new CPUs that come online. */
-> +	cpuhp_setup_state_nocalls(CPUHP_AP_ONLINE_DYN, "riscv:online",
-> +				  riscv_online_cpu, NULL);
-Instead riscv:online you could use riscv:unaliged_check or something
-that pin points the callback to something obvious. This is exported via
-sysfs.
-
-Again, comment is obvious. For that to make sense would require RiscV to
-support physical-hotplug. For KVM like environment (where you can plug in
-CPUs later) this probably doesn't make sense at all. Why not? Because
-
-- without explicit CPU pinning your slow/ fast CPU mapping (host <->
-  guest) could change if the scheduler on the host moves the threads
-  around.
-
-- without explicit task offload and resource partitioning on the host
-  your guest thread might get interrupt during the measurement. This is
-  done during boot so chances are high that it runs 100% of its time
-  slice and will be preempted once other tasks on the host ask for CPU
-  run time.
-
-Both points mean, that the results may not be accurate over time. Maybe
-a KVM-hint if this is so important (along with other restrictions).
-
-> +
-> +out:
->  	unaligned_emulation_finish();
-> +	for_each_cpu(cpu, cpu_online_mask) {
-> +		if (bufs[cpu])
-> +			__free_pages(bufs[cpu], MISALIGNED_BUFFER_ORDER);
-> +	}
-> +
-> +	kfree(bufs);
->  	return 0;
->  }
-> =20
-> -arch_initcall(check_unaligned_access_boot_cpu);
-> +arch_initcall(check_unaligned_access_all_cpus);
-> =20
->  void riscv_user_isa_enable(void)
->  {
-
-Sebastian
+but I didn't get the last piece. If those domains are created by kernel
+drivers why would they require a uAPI for userspace to specify fault
+capable?
