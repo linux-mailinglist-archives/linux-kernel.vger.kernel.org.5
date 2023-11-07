@@ -2,124 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E92237E4B15
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 22:47:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87A017E4B17
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 22:48:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343880AbjKGVre (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 16:47:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59120 "EHLO
+        id S1343810AbjKGVsL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 16:48:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233982AbjKGVrd (ORCPT
+        with ESMTP id S234954AbjKGVsK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 16:47:33 -0500
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A345710CF;
-        Tue,  7 Nov 2023 13:47:31 -0800 (PST)
-Received: from [100.84.166.245] (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: nicolas)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 454726607479;
-        Tue,  7 Nov 2023 21:47:28 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1699393650;
-        bh=Wd+mOYLiwknQrs4ZPLDPT6EpeXqS6AylXK6ib0MoKl0=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=N6s+zGIaJQIu+GyjfbOPaXqUulA7JbVvTIvQ0BC4cVN1VwzrHlsV8Owqf1bsBBx4m
-         gI611QH0C+/Lx8UE9Tliq0sH8y8b1bCMEBGArH8vwU8yPvkHerj3cE/n/WvuBsl/Vp
-         gSkTX8Ki+Chix3P+QASp5i3BsaKU8N//8xGxRJKdmVSIMK2VURcTzCxyYQFy8phTpa
-         t+CzbM6ZuDwJClbanRn11huUw82j6juvbIyAKwLBtLTcSNm0TJEQWn3dp7B0OKkZH8
-         VyPzsVBYnI0RiE02VfLSxHdLK2DV21re9bTFVAm/7WbFF7jI2izeaqpv/SYAM9WPo8
-         DCNil1/6BLacw==
-Message-ID: <7d4a1662ad9bb3531793c47b6c41dad3215f9162.camel@collabora.com>
-Subject: Re: [PATCH v4 04/11] media: rkvdec: h264: Don't hardcode SPS/PPS
- parameters
-From:   Nicolas Dufresne <nicolas.dufresne@collabora.com>
-To:     Jonas Karlman <jonas@kwiboo.se>,
-        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Alex Bee <knaerzche@gmail.com>,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        Sebastian Fricke <sebastian.fricke@collabora.com>,
-        Christopher Obbard <chris.obbard@collabora.com>,
-        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Date:   Tue, 07 Nov 2023 16:47:17 -0500
-In-Reply-To: <20231105165521.3592037-5-jonas@kwiboo.se>
-References: <20231105165521.3592037-1-jonas@kwiboo.se>
-         <20231105165521.3592037-5-jonas@kwiboo.se>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Tue, 7 Nov 2023 16:48:10 -0500
+Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FDD110CF
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 13:48:08 -0800 (PST)
+Received: by mail-il1-x132.google.com with SMTP id e9e14a558f8ab-359343e399fso21026795ab.0
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 13:48:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1699393687; x=1699998487; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=s08RBoZSpHbsDlBdpZDIYrmoRYe1Os4Jlgu75g52b+A=;
+        b=as2UIWGOz3L39ymOa4CeOga1gFYC3tdHuxoIU/rRKRus8baoxZQQNznmQYFbwl2rI9
+         YMeaoA/sn8ozW9XYN5z+scyhxmBaF+M+PZ9JFWN4RS8UrZnP10IWn4PJfcQMmMLBf2xT
+         LB8RJ0MpJ7di7v7bm60CTjGyKGSgboOw8Q9/A=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699393687; x=1699998487;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=s08RBoZSpHbsDlBdpZDIYrmoRYe1Os4Jlgu75g52b+A=;
+        b=mAlfWSwxCbpIsteuEFoG2kfF0HOWSezmRNKQM5+yOrXyEOcQaj1qKewlEqiLXoXpyi
+         SzpAeVJXHb2Po8nONxQDntWyfdqnPoKNEVT5dk+jp3r5S3VmWFVROz7UspooDdWqVs3v
+         VhneAJLcyhr0VazqjGm0KlNYt43z5R9ekmExhXJJon/7T/wjoFdkHk1EonHMR72fSaP3
+         02AE5AwHdR79EbQPbgnHb4PnbLHhYLMN8x/YLuQ5llV21L5IgMx2+5C817lXZ5tpUE9j
+         VXZEJ1OZo65r0ZfrZDrBVxz+3gCCkybb9QGdBFz2MxNY57cNFaovHCBYroKpDc+R7Gur
+         SRkQ==
+X-Gm-Message-State: AOJu0YybX+LSx4HY8KXi6AjmS01Q/vmA72yy51vBtUqU2do0SyiRSuqT
+        ezAXUWgAoyEKDnjIXPnSNOh2vfh+UrkamJTme/Q=
+X-Google-Smtp-Source: AGHT+IGFkrXZWf+NvDPMtqiW6zyxFWsm4GDluk9yZviTuskanTcQ7EsMpWBGuOMRHG9x/57ueEbISw==
+X-Received: by 2002:a92:cd82:0:b0:359:4287:28fc with SMTP id r2-20020a92cd82000000b00359428728fcmr147662ilb.7.1699393687330;
+        Tue, 07 Nov 2023 13:48:07 -0800 (PST)
+Received: from markhas1.corp.google.com ([100.107.108.162])
+        by smtp.gmail.com with ESMTPSA id l2-20020a056e020e4200b0035161817c37sm3389024ilk.1.2023.11.07.13.48.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Nov 2023 13:48:07 -0800 (PST)
+From:   Mark Hasemeyer <markhas@chromium.org>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Mark Hasemeyer <markhas@chromium.org>,
+        Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org
+Subject: [PATCH v1] spi: Fix null dereference on suspend
+Date:   Tue,  7 Nov 2023 14:47:43 -0700
+Message-ID: <20231107144743.v1.1.I7987f05f61901f567f7661763646cb7d7919b528@changeid>
+X-Mailer: git-send-email 2.42.0.869.gea05f2083d-goog
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le dimanche 05 novembre 2023 =C3=A0 16:55 +0000, Jonas Karlman a =C3=A9crit=
-=C2=A0:
-> From: Alex Bee <knaerzche@gmail.com>
->=20
-> Some SPS/PPS parameters are currently hardcoded in the driver even
-> though they exist in the stable uapi controls.
->=20
-> Use values from SPS/PPS controls instead of hardcoding them.
->=20
-> Signed-off-by: Alex Bee <knaerzche@gmail.com>
-> [jonas@kwiboo.se: constraint_set_flags condition, commit message]
-> Signed-off-by: Jonas Karlman <jonas@kwiboo.se>
+A race condition exists where a synchronous (noqueue) transfer can be
+active during a system suspend. This can cause a null pointer
+dereference exception to occur when the system resumes.
 
-Reviewed-by: Nicolas Dufresne <nicolas.dufresne@collabora.com>
+Example order of events leading to the exception:
+1. spi_sync() calls __spi_transfer_message_noqueue() which sets
+   ctlr->cur_msg
+2. Spi transfer begins via spi_transfer_one_message()
+3. System is suspended interrupting the transfer context
+4. System is resumed
+6. spi_controller_resume() calls spi_start_queue() which resets cur_msg
+   to NULL
+7. Spi transfer context resumes and spi_finalize_current_message() is
+   called which dereferences cur_msg (which is now NULL)
 
-> ---
-> v4:
-> - No change
->=20
-> v3:
-> - New patch
->=20
->  drivers/staging/media/rkvdec/rkvdec-h264.c | 13 +++++++------
->  1 file changed, 7 insertions(+), 6 deletions(-)
->=20
-> diff --git a/drivers/staging/media/rkvdec/rkvdec-h264.c b/drivers/staging=
-/media/rkvdec/rkvdec-h264.c
-> index 7a1e76d423df..8bce8902b8dd 100644
-> --- a/drivers/staging/media/rkvdec/rkvdec-h264.c
-> +++ b/drivers/staging/media/rkvdec/rkvdec-h264.c
-> @@ -655,13 +655,14 @@ static void assemble_hw_pps(struct rkvdec_ctx *ctx,
-> =20
->  #define WRITE_PPS(value, field) set_ps_field(hw_ps->info, field, value)
->  	/* write sps */
-> -	WRITE_PPS(0xf, SEQ_PARAMETER_SET_ID);
-> -	WRITE_PPS(0xff, PROFILE_IDC);
-> -	WRITE_PPS(1, CONSTRAINT_SET3_FLAG);
-> +	WRITE_PPS(sps->seq_parameter_set_id, SEQ_PARAMETER_SET_ID);
-> +	WRITE_PPS(sps->profile_idc, PROFILE_IDC);
-> +	WRITE_PPS(!!(sps->constraint_set_flags & (1 << 3)), CONSTRAINT_SET3_FLA=
-G);
->  	WRITE_PPS(sps->chroma_format_idc, CHROMA_FORMAT_IDC);
->  	WRITE_PPS(sps->bit_depth_luma_minus8, BIT_DEPTH_LUMA);
->  	WRITE_PPS(sps->bit_depth_chroma_minus8, BIT_DEPTH_CHROMA);
-> -	WRITE_PPS(0, QPPRIME_Y_ZERO_TRANSFORM_BYPASS_FLAG);
-> +	WRITE_PPS(!!(sps->flags & V4L2_H264_SPS_FLAG_QPPRIME_Y_ZERO_TRANSFORM_B=
-YPASS),
-> +		  QPPRIME_Y_ZERO_TRANSFORM_BYPASS_FLAG);
->  	WRITE_PPS(sps->log2_max_frame_num_minus4, LOG2_MAX_FRAME_NUM_MINUS4);
->  	WRITE_PPS(sps->max_num_ref_frames, MAX_NUM_REF_FRAMES);
->  	WRITE_PPS(sps->pic_order_cnt_type, PIC_ORDER_CNT_TYPE);
-> @@ -688,8 +689,8 @@ static void assemble_hw_pps(struct rkvdec_ctx *ctx,
->  		  DIRECT_8X8_INFERENCE_FLAG);
-> =20
->  	/* write pps */
-> -	WRITE_PPS(0xff, PIC_PARAMETER_SET_ID);
-> -	WRITE_PPS(0x1f, PPS_SEQ_PARAMETER_SET_ID);
-> +	WRITE_PPS(pps->pic_parameter_set_id, PIC_PARAMETER_SET_ID);
-> +	WRITE_PPS(pps->seq_parameter_set_id, PPS_SEQ_PARAMETER_SET_ID);
->  	WRITE_PPS(!!(pps->flags & V4L2_H264_PPS_FLAG_ENTROPY_CODING_MODE),
->  		  ENTROPY_CODING_MODE_FLAG);
->  	WRITE_PPS(!!(pps->flags & V4L2_H264_PPS_FLAG_BOTTOM_FIELD_PIC_ORDER_IN_=
-FRAME_PRESENT),
+Wait for synchronous transfers to complete before suspending by
+acquiring the bus mutex and setting/checking a suspend flag.
+
+Signed-off-by: Mark Hasemeyer <markhas@chromium.org>
+---
+
+ drivers/spi/spi.c       | 56 ++++++++++++++++++++++++++++-------------
+ include/linux/spi/spi.h |  1 +
+ 2 files changed, 40 insertions(+), 17 deletions(-)
+
+diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
+index 791df0e69105..8ead7acb99f3 100644
+--- a/drivers/spi/spi.c
++++ b/drivers/spi/spi.c
+@@ -3317,33 +3317,52 @@ void spi_unregister_controller(struct spi_controller *ctlr)
+ }
+ EXPORT_SYMBOL_GPL(spi_unregister_controller);
+ 
++static inline int __spi_check_suspended(const struct spi_controller *ctlr)
++{
++	return ctlr->flags & SPI_CONTROLLER_SUSPENDED ? -ESHUTDOWN : 0;
++}
++
++static inline void __spi_mark_suspended(struct spi_controller *ctlr)
++{
++	mutex_lock(&ctlr->bus_lock_mutex);
++	ctlr->flags |= SPI_CONTROLLER_SUSPENDED;
++	mutex_unlock(&ctlr->bus_lock_mutex);
++}
++
++static inline void __spi_mark_resumed(struct spi_controller *ctlr)
++{
++	mutex_lock(&ctlr->bus_lock_mutex);
++	ctlr->flags &= ~SPI_CONTROLLER_SUSPENDED;
++	mutex_unlock(&ctlr->bus_lock_mutex);
++}
++
+ int spi_controller_suspend(struct spi_controller *ctlr)
+ {
+-	int ret;
++	int ret = 0;
+ 
+ 	/* Basically no-ops for non-queued controllers */
+-	if (!ctlr->queued)
+-		return 0;
+-
+-	ret = spi_stop_queue(ctlr);
+-	if (ret)
+-		dev_err(&ctlr->dev, "queue stop failed\n");
++	if (ctlr->queued) {
++		ret = spi_stop_queue(ctlr);
++		if (ret)
++			dev_err(&ctlr->dev, "queue stop failed\n");
++	}
+ 
++	__spi_mark_suspended(ctlr);
+ 	return ret;
+ }
+ EXPORT_SYMBOL_GPL(spi_controller_suspend);
+ 
+ int spi_controller_resume(struct spi_controller *ctlr)
+ {
+-	int ret;
+-
+-	if (!ctlr->queued)
+-		return 0;
++	int ret = 0;
+ 
+-	ret = spi_start_queue(ctlr);
+-	if (ret)
+-		dev_err(&ctlr->dev, "queue restart failed\n");
++	__spi_mark_resumed(ctlr);
+ 
++	if (ctlr->queued) {
++		ret = spi_start_queue(ctlr);
++		if (ret)
++			dev_err(&ctlr->dev, "queue restart failed\n");
++	}
+ 	return ret;
+ }
+ EXPORT_SYMBOL_GPL(spi_controller_resume);
+@@ -4147,8 +4166,7 @@ static void __spi_transfer_message_noqueue(struct spi_controller *ctlr, struct s
+ 	ctlr->cur_msg = msg;
+ 	ret = __spi_pump_transfer_message(ctlr, msg, was_busy);
+ 	if (ret)
+-		goto out;
+-
++		dev_err(&ctlr->dev, "noqueue transfer failed\n");
+ 	ctlr->cur_msg = NULL;
+ 	ctlr->fallback = false;
+ 
+@@ -4164,7 +4182,6 @@ static void __spi_transfer_message_noqueue(struct spi_controller *ctlr, struct s
+ 		spi_idle_runtime_pm(ctlr);
+ 	}
+ 
+-out:
+ 	mutex_unlock(&ctlr->io_mutex);
+ }
+ 
+@@ -4187,6 +4204,11 @@ static int __spi_sync(struct spi_device *spi, struct spi_message *message)
+ 	int status;
+ 	struct spi_controller *ctlr = spi->controller;
+ 
++	if (__spi_check_suspended(ctlr)) {
++		dev_warn_once(&spi->dev, "Attempted to sync while suspend\n");
++		return -ESHUTDOWN;
++	}
++
+ 	status = __spi_validate(spi, message);
+ 	if (status != 0)
+ 		return status;
+diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
+index 86825c88b576..255a0562aea5 100644
+--- a/include/linux/spi/spi.h
++++ b/include/linux/spi/spi.h
+@@ -566,6 +566,7 @@ struct spi_controller {
+ #define SPI_CONTROLLER_MUST_RX		BIT(3)	/* Requires rx */
+ #define SPI_CONTROLLER_MUST_TX		BIT(4)	/* Requires tx */
+ #define SPI_CONTROLLER_GPIO_SS		BIT(5)	/* GPIO CS must select slave */
++#define SPI_CONTROLLER_SUSPENDED	BIT(6)	/* Currently suspended */
+ 
+ 	/* Flag indicating if the allocation of this struct is devres-managed */
+ 	bool			devm_allocated;
+-- 
+2.42.0.869.gea05f2083d-goog
 
