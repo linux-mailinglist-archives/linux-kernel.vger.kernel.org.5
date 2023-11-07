@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB71F7E4CDF
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 00:24:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60BCA7E4CE3
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 00:24:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343587AbjKGXYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 18:24:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33988 "EHLO
+        id S1344389AbjKGXYF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 18:24:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235406AbjKGXXf (ORCPT
+        with ESMTP id S235346AbjKGXXk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 18:23:35 -0500
+        Tue, 7 Nov 2023 18:23:40 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8FDB1724;
-        Tue,  7 Nov 2023 15:23:04 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A9492C433C8;
-        Tue,  7 Nov 2023 23:23:03 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC5541731;
+        Tue,  7 Nov 2023 15:23:08 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3A3B8C433C7;
+        Tue,  7 Nov 2023 23:23:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699399384;
-        bh=HeuXjB9ry7UWrBEOK7BH9QL7/sg6wvEu3xUQvQ6r7Ro=;
+        s=k20201202; t=1699399388;
+        bh=Ef4ppjEog/CNHXp3MayGGiXm19WJPo4oow2iwz+xiNA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PfTJX/Igz5260JQv64h+TcTdIhFH0RLAqiYLoE6WC/KyZV6OGh6FJolV0W04uMKnK
-         NltzHsFBqYGQRpEPAuSlN3geOGy8DOM1FsLjq5j1tL2Lz0lOYgOZnElcVSsnkasKRa
-         CWvjpgL5oIWqpQ2pO8AKnnhNHGoEqGGqnOUHb+OdabOuTcy7/UPMzSbinU7F9CMsQB
-         NzIAdgV0rBexIzQPXpimyIzNrL91dc2fz0qihe0FpYsYrpmo8s9VUdzqPNVopn+OUl
-         NBTGRts93vj+Daw/F0fuVgaMpgzFboR68C7Q833kaE9cyJ3Z6KZcE1i10RsMgal3Zu
-         xxatmcvPO26Kw==
+        b=upRT8unz8H1Dh8iiX65rqpIE47lh3G6Oty1E5MA5z9h3gW96owevqSqr4V6uw5UEs
+         e90wUJgZrxQeoMwEh73/109RiaaiVwM6/zXCim/HG9yBz1FDGKEGdy7Y5iIW0i6Qah
+         Ci03SV5fSUG45nhdYNR/gHAerjlsSFaC3goMjp77fR9daXVy7aNRTOIFoXw4EjkA5z
+         9icpkVNtJspPjX98ZrzkcGSCu3yG/cM/vmPiDlbwIGH9FTvq/58ojdLiizfI76mz2Q
+         R+15lmVsDJcnahaC8QAOd+/ePaFV67qNBS+f6IgNu2uDIDGHO4tU2AkApJmqbq5vo5
+         FjYjVhDEiSbbQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Wesley Cheng <quic_wcheng@quicinc.com>,
-        Mathias Nyman <mathias.nyman@linux.intel.com>,
+Cc:     Hardik Gajjar <hgajjar@de.adit-jv.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>, mathias.nyman@intel.com,
+        Sasha Levin <sashal@kernel.org>, quic_linyyuan@quicinc.com,
+        maze@google.com, quic_kriskura@quicinc.com,
         linux-usb@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 15/18] usb: host: xhci: Avoid XHCI resume delay if SSUSB device is not present
-Date:   Tue,  7 Nov 2023 18:22:09 -0500
-Message-ID: <20231107232231.3775605-15-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.6 16/18] usb: gadget: f_ncm: Always set current gadget in ncm_bind()
+Date:   Tue,  7 Nov 2023 18:22:10 -0500
+Message-ID: <20231107232231.3775605-16-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231107232231.3775605-1-sashal@kernel.org>
 References: <20231107232231.3775605-1-sashal@kernel.org>
@@ -49,69 +49,135 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wesley Cheng <quic_wcheng@quicinc.com>
+From: Hardik Gajjar <hgajjar@de.adit-jv.com>
 
-[ Upstream commit 6add6dd345cb754ce18ff992c7264cabf31e59f6 ]
+[ Upstream commit a04224da1f3424b2c607b12a3bd1f0e302fb8231 ]
 
-There is a 120ms delay implemented for allowing the XHCI host controller to
-detect a U3 wakeup pulse.  The intention is to wait for the device to retry
-the wakeup event if the USB3 PORTSC doesn't reflect the RESUME link status
-by the time it is checked.  As per the USB3 specification:
+Previously, gadget assignment to the net device occurred exclusively
+during the initial binding attempt.
 
-  tU3WakeupRetryDelay ("Table 7-12. LTSSM State Transition Timeouts")
+Nevertheless, the gadget pointer could change during bind/unbind
+cycles due to various conditions, including the unloading/loading
+of the UDC device driver or the detachment/reconnection of an
+OTG-capable USB hub device.
 
-This would allow the XHCI resume sequence to determine if the root hub
-needs to be also resumed.  However, in case there is no device connected,
-or if there is only a HSUSB device connected, this delay would still affect
-the overall resume timing.
+This patch relocates the gether_set_gadget() function out from
+ncm_opts->bound condition check, ensuring that the correct gadget
+is assigned during each bind request.
 
-Since this delay is solely for detecting U3 wake events (USB3 specific)
-then ignore this delay for the disconnected case and the HSUSB connected
-only case.
+The provided logs demonstrate the consistency of ncm_opts throughout
+the power cycle, while the gadget may change.
 
-[skip helper function, rename usb3_connected variable -Mathias ]
+* OTG hub connected during boot up and assignment of gadget and
+  ncm_opts pointer
 
-Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
-Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
-Link: https://lore.kernel.org/r/20231019102924.2797346-20-mathias.nyman@linux.intel.com
+[    2.366301] usb 2-1.5: New USB device found, idVendor=2996, idProduct=0105
+[    2.366304] usb 2-1.5: New USB device strings: Mfr=1, Product=2, SerialNumber=3
+[    2.366306] usb 2-1.5: Product: H2H Bridge
+[    2.366308] usb 2-1.5: Manufacturer: Aptiv
+[    2.366309] usb 2-1.5: SerialNumber: 13FEB2021
+[    2.427989] usb 2-1.5: New USB device found, VID=2996, PID=0105
+[    2.428959] dabridge 2-1.5:1.0: dabridge 2-4 total endpoints=5, 0000000093a8d681
+[    2.429710] dabridge 2-1.5:1.0: P(0105) D(22.06.22) F(17.3.16) H(1.1) high-speed
+[    2.429714] dabridge 2-1.5:1.0: Hub 2-2 P(0151) V(06.87)
+[    2.429956] dabridge 2-1.5:1.0: All downstream ports in host mode
+
+[    2.430093] gadget 000000003c414d59 ------> gadget pointer
+
+* NCM opts and associated gadget pointer during First ncm_bind
+
+[   34.763929] NCM opts 00000000aa304ac9
+[   34.763930] NCM gadget 000000003c414d59
+
+* OTG capable hub disconnecte or assume driver unload.
+
+[   97.203114] usb 2-1: USB disconnect, device number 2
+[   97.203118] usb 2-1.1: USB disconnect, device number 3
+[   97.209217] usb 2-1.5: USB disconnect, device number 4
+[   97.230990] dabr_udc deleted
+
+* Reconnect the OTG hub or load driver assaign new gadget pointer.
+
+[  111.534035] usb 2-1.1: New USB device found, idVendor=2996, idProduct=0120, bcdDevice= 6.87
+[  111.534038] usb 2-1.1: New USB device strings: Mfr=1, Product=2, SerialNumber=3
+[  111.534040] usb 2-1.1: Product: Vendor
+[  111.534041] usb 2-1.1: Manufacturer: Aptiv
+[  111.534042] usb 2-1.1: SerialNumber: Superior
+[  111.535175] usb 2-1.1: New USB device found, VID=2996, PID=0120
+[  111.610995] usb 2-1.5: new high-speed USB device number 8 using xhci-hcd
+[  111.630052] usb 2-1.5: New USB device found, idVendor=2996, idProduct=0105, bcdDevice=21.02
+[  111.630055] usb 2-1.5: New USB device strings: Mfr=1, Product=2, SerialNumber=3
+[  111.630057] usb 2-1.5: Product: H2H Bridge
+[  111.630058] usb 2-1.5: Manufacturer: Aptiv
+[  111.630059] usb 2-1.5: SerialNumber: 13FEB2021
+[  111.687464] usb 2-1.5: New USB device found, VID=2996, PID=0105
+[  111.690375] dabridge 2-1.5:1.0: dabridge 2-8 total endpoints=5, 000000000d87c961
+[  111.691172] dabridge 2-1.5:1.0: P(0105) D(22.06.22) F(17.3.16) H(1.1) high-speed
+[  111.691176] dabridge 2-1.5:1.0: Hub 2-6 P(0151) V(06.87)
+[  111.691646] dabridge 2-1.5:1.0: All downstream ports in host mode
+
+[  111.692298] gadget 00000000dc72f7a9 --------> new gadget ptr on connect
+
+* NCM opts and associated gadget pointer during second ncm_bind
+
+[  113.271786] NCM opts 00000000aa304ac9 -----> same opts ptr used during first bind
+[  113.271788] NCM gadget 00000000dc72f7a9 ----> however new gaget ptr, that will not set
+                                                 in net_device due to ncm_opts->bound = true
+
+Signed-off-by: Hardik Gajjar <hgajjar@de.adit-jv.com>
+Link: https://lore.kernel.org/r/20231020153324.82794-1-hgajjar@de.adit-jv.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/host/xhci.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+ drivers/usb/gadget/function/f_ncm.c | 27 +++++++++++----------------
+ 1 file changed, 11 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
-index e1b1b64a07232..132b76fa7ca60 100644
---- a/drivers/usb/host/xhci.c
-+++ b/drivers/usb/host/xhci.c
-@@ -968,6 +968,7 @@ int xhci_resume(struct xhci_hcd *xhci, pm_message_t msg)
- 	int			retval = 0;
- 	bool			comp_timer_running = false;
- 	bool			pending_portevent = false;
-+	bool			suspended_usb3_devs = false;
- 	bool			reinit_xhc = false;
+diff --git a/drivers/usb/gadget/function/f_ncm.c b/drivers/usb/gadget/function/f_ncm.c
+index e6ab8cc225ffd..cc0ed29a4adc0 100644
+--- a/drivers/usb/gadget/function/f_ncm.c
++++ b/drivers/usb/gadget/function/f_ncm.c
+@@ -1410,7 +1410,7 @@ static int ncm_bind(struct usb_configuration *c, struct usb_function *f)
+ 	struct usb_composite_dev *cdev = c->cdev;
+ 	struct f_ncm		*ncm = func_to_ncm(f);
+ 	struct usb_string	*us;
+-	int			status;
++	int			status = 0;
+ 	struct usb_ep		*ep;
+ 	struct f_ncm_opts	*ncm_opts;
  
- 	if (!hcd->state)
-@@ -1115,10 +1116,17 @@ int xhci_resume(struct xhci_hcd *xhci, pm_message_t msg)
- 		/*
- 		 * Resume roothubs only if there are pending events.
- 		 * USB 3 devices resend U3 LFPS wake after a 100ms delay if
--		 * the first wake signalling failed, give it that chance.
-+		 * the first wake signalling failed, give it that chance if
-+		 * there are suspended USB 3 devices.
- 		 */
-+		if (xhci->usb3_rhub.bus_state.suspended_ports ||
-+		    xhci->usb3_rhub.bus_state.bus_suspended)
-+			suspended_usb3_devs = true;
+@@ -1428,22 +1428,17 @@ static int ncm_bind(struct usb_configuration *c, struct usb_function *f)
+ 		f->os_desc_table[0].os_desc = &ncm_opts->ncm_os_desc;
+ 	}
+ 
+-	/*
+-	 * in drivers/usb/gadget/configfs.c:configfs_composite_bind()
+-	 * configurations are bound in sequence with list_for_each_entry,
+-	 * in each configuration its functions are bound in sequence
+-	 * with list_for_each_entry, so we assume no race condition
+-	 * with regard to ncm_opts->bound access
+-	 */
+-	if (!ncm_opts->bound) {
+-		mutex_lock(&ncm_opts->lock);
+-		gether_set_gadget(ncm_opts->net, cdev->gadget);
++	mutex_lock(&ncm_opts->lock);
++	gether_set_gadget(ncm_opts->net, cdev->gadget);
++	if (!ncm_opts->bound)
+ 		status = gether_register_netdev(ncm_opts->net);
+-		mutex_unlock(&ncm_opts->lock);
+-		if (status)
+-			goto fail;
+-		ncm_opts->bound = true;
+-	}
++	mutex_unlock(&ncm_opts->lock);
 +
- 		pending_portevent = xhci_pending_portevent(xhci);
--		if (!pending_portevent && msg.event == PM_EVENT_AUTO_RESUME) {
++	if (status)
++		goto fail;
 +
-+		if (suspended_usb3_devs && !pending_portevent &&
-+		    msg.event == PM_EVENT_AUTO_RESUME) {
- 			msleep(120);
- 			pending_portevent = xhci_pending_portevent(xhci);
- 		}
++	ncm_opts->bound = true;
++
+ 	us = usb_gstrings_attach(cdev, ncm_strings,
+ 				 ARRAY_SIZE(ncm_string_defs));
+ 	if (IS_ERR(us)) {
 -- 
 2.42.0
 
