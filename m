@@ -2,67 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CDE47E422C
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 15:56:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E59397E430A
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 16:13:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234700AbjKGO4n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 09:56:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57062 "EHLO
+        id S235090AbjKGPNw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 10:13:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234559AbjKGO4k (ORCPT
+        with ESMTP id S234994AbjKGPNZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 09:56:40 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60E2F113
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 06:56:38 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5F4F0C433C7;
-        Tue,  7 Nov 2023 14:56:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699368998;
-        bh=l1ZYfffC8O+aReYdWjMaCT0Mwo0ccB4D+3F/B6MBj3c=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=M7YFzhYjMZlrzGd8ah5eKsEd7JrZ2FMPduPsfxDC1cHTGkX8V+fF/2pUn2lYZWc+D
-         gJIy/XHWSx30Yw6jmVrUspsPkck2iIh3NSQXMb2gA8lYXeYD+BL9KHkuZqmMlU8YBJ
-         GrI9bpnkW6dl3oSHEmT3zH0RkL9s8lSD27Zk2Ua+JFeSV/dQb6PVCdx6p190mTIftx
-         eJvCCJ4TAs8eSWuwerOGQvadl3X7zHtAqRZorL9jjP2BXfM4ZJcaiRc03D/JY+JNAK
-         6P749INlnfnaD/I4u5nDnwqXfTsDWXChDLOv5hCMrOjbQFHJ+X95z5UDzX81q2pSzo
-         on7nFlLK3l4SQ==
-Message-ID: <86cf3a62-975c-92cf-672d-5103416592d9@kernel.org>
-Date:   Tue, 7 Nov 2023 22:56:33 +0800
+        Tue, 7 Nov 2023 10:13:25 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 441FA210A;
+        Tue,  7 Nov 2023 07:00:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699369255; x=1730905255;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=bGcR5JIP8U4Y/wZxznPJUFcxeja4IPH8raMWmzND7FA=;
+  b=PLuvWTpiL5bWonmuX0C+e7WJOhCiLZCqBLa7qvOFDE4CCJEN18TYH9Su
+   WgfWC7BM1/O9sTIBrdPXRTI5D26tqYy0rivRNRG6oVaKmzLZJ7953DgVj
+   ladDE0HCvi+vlsFCjO0imgP/vriabtuaPXEV+mBtNVPe5azhpFmQV8YEt
+   qtEgt5L+02rsdhStttvHKAIZOEFe6JmRq5VticPNCLe587VWpmXLOVzT4
+   zWlXqDy0n5BZBjyrTEUSnvCx4/bXMGW84SIynDuNy7wnD6bD8/bmafElH
+   5KiS/NEvH+OOc8Av2R2Fdl4PDAToRUYAr6/Ygd7e86liPBqBvHAFwlynv
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10887"; a="2462446"
+X-IronPort-AV: E=Sophos;i="6.03,284,1694761200"; 
+   d="scan'208";a="2462446"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2023 06:58:19 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.03,284,1694761200"; 
+   d="scan'208";a="10851465"
+Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2023 06:58:18 -0800
+From:   isaku.yamahata@intel.com
+To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     isaku.yamahata@intel.com, isaku.yamahata@gmail.com,
+        Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
+        Sean Christopherson <seanjc@google.com>,
+        Sagi Shahar <sagis@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Kai Huang <kai.huang@intel.com>,
+        Zhi Wang <zhi.wang.linux@gmail.com>, chen.bo@intel.com,
+        hang.yuan@intel.com, tina.zhang@intel.com,
+        Yang Weijiang <weijiang.yang@intel.com>
+Subject: [PATCH v17 067/116] KVM: TDX: Add TSX_CTRL msr into uret_msrs list
+Date:   Tue,  7 Nov 2023 06:56:33 -0800
+Message-Id: <d6cf62e22e97330c94aedb1e4df1d6528eeb7a42.1699368322.git.isaku.yamahata@intel.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <cover.1699368322.git.isaku.yamahata@intel.com>
+References: <cover.1699368322.git.isaku.yamahata@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH] f2fs: the name of a struct is wrong in a comment.
-Content-Language: en-US
-To:     dslab@lzu.edu.cn, jaegeuk@kernel.org
-Cc:     linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, Yang Hubin <yanghb2019@lzu.edu.cn>,
-        Qian Haolai <qianhl2023@lzu.edu.cn>
-References: <20231104074501.13998-1-dslab@lzu.edu.cn>
-From:   Chao Yu <chao@kernel.org>
-In-Reply-To: <20231104074501.13998-1-dslab@lzu.edu.cn>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-        lindbergh.monkeyblade.net
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/11/4 15:45, dslab@lzu.edu.cn wrote:
-> From: Yang Hubin <yanghb2019@lzu.edu.cn>
-> 
-> The macro SUMMARY_SIZE represents the size of the struct f2fs_summary,
-> 
-> instead of the size of the struct summary.
-> 
-> Signed-off-by: Yang Hubin <yanghb2019@lzu.edu.cn>
-> Signed-off-by: Qian Haolai <qianhl2023@lzu.edu.cn>
+From: Yang Weijiang <weijiang.yang@intel.com>
 
-Reviewed-by: Chao Yu <chao@kernel.org>
+TDX module resets the TSX_CTRL MSR to 0 at TD exit if TSX is enabled for
+TD. Or it preserves the TSX_CTRL MSR if TSX is disabled for TD.  VMM can
+rely on uret_msrs mechanism to defer the reload of host value until exiting
+to user space.
 
-Thanks,
+Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
+Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+---
+ arch/x86/kvm/vmx/tdx.c | 33 +++++++++++++++++++++++++++++++--
+ arch/x86/kvm/vmx/tdx.h |  8 ++++++++
+ 2 files changed, 39 insertions(+), 2 deletions(-)
+
+diff --git a/arch/x86/kvm/vmx/tdx.c b/arch/x86/kvm/vmx/tdx.c
+index fbc3a1920f79..3ee65df99421 100644
+--- a/arch/x86/kvm/vmx/tdx.c
++++ b/arch/x86/kvm/vmx/tdx.c
+@@ -521,14 +521,21 @@ static struct tdx_uret_msr tdx_uret_msrs[] = {
+ 	{.msr = MSR_LSTAR,},
+ 	{.msr = MSR_TSC_AUX,},
+ };
++static unsigned int tdx_uret_tsx_ctrl_slot;
+ 
+-static void tdx_user_return_update_cache(void)
++static void tdx_user_return_update_cache(struct kvm_vcpu *vcpu)
+ {
+ 	int i;
+ 
+ 	for (i = 0; i < ARRAY_SIZE(tdx_uret_msrs); i++)
+ 		kvm_user_return_update_cache(tdx_uret_msrs[i].slot,
+ 					     tdx_uret_msrs[i].defval);
++	/*
++	 * TSX_CTRL is reset to 0 if guest TSX is supported. Otherwise
++	 * preserved.
++	 */
++	if (to_kvm_tdx(vcpu->kvm)->tsx_supported && tdx_uret_tsx_ctrl_slot != -1)
++		kvm_user_return_update_cache(tdx_uret_tsx_ctrl_slot, 0);
+ }
+ 
+ static void tdx_restore_host_xsave_state(struct kvm_vcpu *vcpu)
+@@ -623,7 +630,7 @@ fastpath_t tdx_vcpu_run(struct kvm_vcpu *vcpu)
+ 
+ 	tdx_vcpu_enter_exit(tdx);
+ 
+-	tdx_user_return_update_cache();
++	tdx_user_return_update_cache(vcpu);
+ 	tdx_restore_host_xsave_state(vcpu);
+ 	tdx->host_state_need_restore = true;
+ 
+@@ -1149,6 +1156,22 @@ static int setup_tdparams_xfam(struct kvm_cpuid2 *cpuid, struct td_params *td_pa
+ 	return 0;
+ }
+ 
++static bool tdparams_tsx_supported(struct kvm_cpuid2 *cpuid)
++{
++	const struct kvm_cpuid_entry2 *entry;
++	u64 mask;
++	u32 ebx;
++
++	entry = kvm_find_cpuid_entry2(cpuid->entries, cpuid->nent, 0x7, 0);
++	if (entry)
++		ebx = entry->ebx;
++	else
++		ebx = 0;
++
++	mask = __feature_bit(X86_FEATURE_HLE) | __feature_bit(X86_FEATURE_RTM);
++	return ebx & mask;
++}
++
+ static int setup_tdparams(struct kvm *kvm, struct td_params *td_params,
+ 			struct kvm_tdx_init_vm *init_vm)
+ {
+@@ -1194,6 +1217,7 @@ static int setup_tdparams(struct kvm *kvm, struct td_params *td_params,
+ 	MEMCPY_SAME_SIZE(td_params->mrowner, init_vm->mrowner);
+ 	MEMCPY_SAME_SIZE(td_params->mrownerconfig, init_vm->mrownerconfig);
+ 
++	to_kvm_tdx(kvm)->tsx_supported = tdparams_tsx_supported(cpuid);
+ 	return 0;
+ }
+ 
+@@ -1857,6 +1881,11 @@ int __init tdx_hardware_setup(struct kvm_x86_ops *x86_ops)
+ 			return -EIO;
+ 		}
+ 	}
++	tdx_uret_tsx_ctrl_slot = kvm_find_user_return_msr(MSR_IA32_TSX_CTRL);
++	if (tdx_uret_tsx_ctrl_slot == -1 && boot_cpu_has(X86_FEATURE_MSR_TSX_CTRL)) {
++		pr_err("MSR_IA32_TSX_CTRL isn't included by kvm_find_user_return_msr\n");
++		return -EIO;
++	}
+ 
+ 	max_pkgs = topology_max_packages();
+ 	tdx_mng_key_config_lock = kcalloc(max_pkgs, sizeof(*tdx_mng_key_config_lock),
+diff --git a/arch/x86/kvm/vmx/tdx.h b/arch/x86/kvm/vmx/tdx.h
+index 610bd3f4e952..45f5c2744d78 100644
+--- a/arch/x86/kvm/vmx/tdx.h
++++ b/arch/x86/kvm/vmx/tdx.h
+@@ -17,6 +17,14 @@ struct kvm_tdx {
+ 	u64 xfam;
+ 	int hkid;
+ 
++	/*
++	 * Used on each TD-exit, see tdx_user_return_update_cache().
++	 * TSX_CTRL value on TD exit
++	 * - set 0     if guest TSX enabled
++	 * - preserved if guest TSX disabled
++	 */
++	bool tsx_supported;
++
+ 	hpa_t source_pa;
+ 
+ 	bool finalized;
+-- 
+2.25.1
+
