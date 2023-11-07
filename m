@@ -2,48 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C34007E3EC2
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 13:41:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A68217E3EB9
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 13:41:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235329AbjKGMl3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 07:41:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43964 "EHLO
+        id S1343687AbjKGMlC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 07:41:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234462AbjKGMju (ORCPT
+        with ESMTP id S1344037AbjKGMji (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 07:39:50 -0500
+        Tue, 7 Nov 2023 07:39:38 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 405D683E4;
-        Tue,  7 Nov 2023 04:29:14 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28941C433C8;
-        Tue,  7 Nov 2023 12:29:13 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A40D36F91
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 04:28:43 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A0DEFC433CB;
+        Tue,  7 Nov 2023 12:28:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699360153;
-        bh=IaD5LuAKOSRiEqSUbXrGBACv2jpcb8C7CQaFLspeXIg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=h0fhDC+IphIuuwSCWbMmr7LeFitcjkPePmbdK8yQJ+M54AXH6h6dg+JYm+8FNlb+a
-         HlvOBscagWiRpO+ztsR8U/x07GSvkwEfdWTdzY2Ad9JFIRsqXx7HhYAAJ+xV2vS1H6
-         h0z+e7oh5+VxtVEh2Exj6bG5T9/+HuJGE8xxo6VItqvmM35ajv/+fKxEbvMENC5lU0
-         5rnT6D3q85YYzXElF8wdFjszfdqs/JTw9vfzwwNb0bolhw4qiL7cUNkevv2XNvkXDx
-         dZaorbJVaH0/qCqt+euWxUTq/iuhI4UhpUe/RMYVzvg3pEtfBfm0LMHhnklcS+TLti
-         qyagdz731COvg==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     zhujun2 <zhujun2@cmss.chinamobile.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>, shuah@kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 25/25] selftests/efivarfs: create-read: fix a resource leak
-Date:   Tue,  7 Nov 2023 07:27:04 -0500
-Message-ID: <20231107122745.3761613-25-sashal@kernel.org>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231107122745.3761613-1-sashal@kernel.org>
-References: <20231107122745.3761613-1-sashal@kernel.org>
+        s=k20201202; t=1699360123;
+        bh=UT5lonrit2LlwIl4rjREVNZ9SW/5EAlLOpoZpmK5k7M=;
+        h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
+        b=Nj/eqrYonXF9Ey1XVs4bi2m8NCH39uN/5Jk1/OzY/ljhQc+SstaXiZsVReDpzavau
+         yp50EwXgmu8CNpW2tSd68BvrYHO/X4bKKJPG8B28nDpHyC/eT1gw1WNNhfvoRw4CxK
+         /bHyQrexQeaA4+Tsqr2Vtc+jHVbl8DGOl9GzpdfFIhfwvR2m+5shuMpKjQsF/X24Ft
+         twJxlq60JLJw/nA6BXfGHpehUZriNiR5rJnthEXp5l9olR8SFflQRVlS89DbAQE6U/
+         3GWWuyk29p27/yGTbVUp9exAmjulih20pLukuyVyJjrJSdn5nIjSChJJD/E8DWryir
+         RL682gtcIwEmw==
+Message-ID: <973bcee0-a382-4a8d-8a2c-1be9b6d9d7ad@kernel.org>
+Date:   Tue, 7 Nov 2023 13:28:39 +0100
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.1.61
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Cc:     hawk@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Subject: Re: [PATCH net] page_pool: Add myself as page pool reviewer in
+ MAINTAINERS
+Content-Language: en-US
+To:     Yunsheng Lin <linyunsheng@huawei.com>, davem@davemloft.net,
+        kuba@kernel.org, pabeni@redhat.com
+References: <20231107113440.59794-1-linyunsheng@huawei.com>
+From:   Jesper Dangaard Brouer <hawk@kernel.org>
+In-Reply-To: <20231107113440.59794-1-linyunsheng@huawei.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -54,35 +54,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: zhujun2 <zhujun2@cmss.chinamobile.com>
 
-[ Upstream commit 3f6f8a8c5e11a9b384a36df4f40f0c9a653b6975 ]
 
-The opened file should be closed in main(), otherwise resource
-leak will occur that this problem was discovered by code reading
+On 07/11/2023 12.34, Yunsheng Lin wrote:
+> I have added frag support for page pool, made some improvement
+> for it recently, and reviewed some related patches too.
+> 
 
-Signed-off-by: zhujun2 <zhujun2@cmss.chinamobile.com>
-Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- tools/testing/selftests/efivarfs/create-read.c | 2 ++
- 1 file changed, 2 insertions(+)
+Yes, notice your frag stuff was applied while I was on vacation.
+Thanks to Ilias, Jakub and other reviewers for handling this.
 
-diff --git a/tools/testing/selftests/efivarfs/create-read.c b/tools/testing/selftests/efivarfs/create-read.c
-index 9674a19396a32..7bc7af4eb2c17 100644
---- a/tools/testing/selftests/efivarfs/create-read.c
-+++ b/tools/testing/selftests/efivarfs/create-read.c
-@@ -32,8 +32,10 @@ int main(int argc, char **argv)
- 	rc = read(fd, buf, sizeof(buf));
- 	if (rc != 0) {
- 		fprintf(stderr, "Reading a new var should return EOF\n");
-+		close(fd);
- 		return EXIT_FAILURE;
- 	}
- 
-+	close(fd);
- 	return EXIT_SUCCESS;
- }
--- 
-2.42.0
+> So add myself as reviewer so that future patch will be cc'ed
+> to my email.
 
+I think is a good idea and I appreciate that you will review your
+changes to page_pool.
+
+There is a format issue below in patch.
+
+
+> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+> CC: Jesper Dangaard Brouer <hawk@kernel.org>
+> CC: Ilias Apalodimas <ilias.apalodimas@linaro.org>
+> CC: David S. Miller <davem@davemloft.net>
+> CC: Jakub Kicinski <kuba@kernel.org>
+> CC: Paolo Abeni <pabeni@redhat.com>
+> CC: Netdev <netdev@vger.kernel.org>
+> ---
+>   MAINTAINERS | 1 +
+>   1 file changed, 1 insertion(+)
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 14e1194faa4b..5d20efb9021a 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -16242,6 +16242,7 @@ F:	mm/truncate.c
+>   PAGE POOL
+>   M:	Jesper Dangaard Brouer <hawk@kernel.org>
+>   M:	Ilias Apalodimas <ilias.apalodimas@linaro.org>
+> +R	Yunsheng Lin <linyunsheng@huawei.com>
+
+I think there is missing a colon ":" after "R".
+
+>   L:	netdev@vger.kernel.org
+>   S:	Supported
+>   F:	Documentation/networking/page_pool.rst
