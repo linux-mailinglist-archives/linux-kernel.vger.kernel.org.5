@@ -2,48 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DEF407E3FA6
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 14:08:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45B967E3EFB
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 13:45:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234423AbjKGNIU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 08:08:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33314 "EHLO
+        id S1343659AbjKGMpJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 07:45:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235056AbjKGNIH (ORCPT
+        with ESMTP id S1343971AbjKGMoQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 08:08:07 -0500
+        Tue, 7 Nov 2023 07:44:16 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D90F8856;
-        Tue,  7 Nov 2023 04:31:08 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6B1D8C433CA;
-        Tue,  7 Nov 2023 12:31:06 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E2F53712C;
+        Tue,  7 Nov 2023 04:31:14 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A3A2FC433C7;
+        Tue,  7 Nov 2023 12:31:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699360268;
-        bh=eNA5gp6HFbGz4UtiuIERCsSvA6OW8EkQ0csvECZGDtA=;
+        s=k20201202; t=1699360274;
+        bh=QyiHapZ20/9//0cQM4qI2xwTS4V7gnbM3E9whm3FeIM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RB7mRNIU8z+kHvFGrW+NZpHruIkq85Ej69syzqdtBHOHh1TdN6v5kjXfKBRudOEXS
-         wWOTVO/XklO4H/sBok/1Dqb5LD2XymvKjBPINPR3xlCYvuWhHi8SXeX5zcfxX89Pev
-         yQkpOR/TTIKZsUy9BQKElarfcghNJQdd6gD3n7yzGGCRG7qAiixHRr1S1MR8ozyta6
-         0cXQOZ4Fsr1UaG+oLY9Rhmj0ZZuN4E+veK7mpT8rdMLiYe2uQ90+j746tLFrkNRp1e
-         7h1xS8AQIaldA8bUXygZ93h0w23wM1OxXHDIaYJslutjhYtdQRegH/2i+HyLMd7LPA
-         wTZUnjcCk2nbQ==
+        b=LMAp0i48FUL6gDNx6CTqwZUZuUhRGCppsc4dguibgqYCwXJdP6v250tjpHcrXrNh3
+         SLZf8BNmgJvAkNr2Dy1RhUGosfPcnv8ye5GPo96jax/w7PYPZJXrYQRsuh4hneHoJW
+         Zp24UFSwQUwX8bv9xaxipMzTlMnegt3L1ZRtwbTHREsqueFYZbIc0mN2piEyOnwT9u
+         zMXa5vtoprIJuHUOJgFXIn0A1pu7X3S9VKNNbNrJLpyQv6+Yt7y5BzrIL2mxwmrgPr
+         ae9M2TtyNdfQq6JBS5cJ7gkAESWUeWFJYukzICfUOWp9r0yNYvL2htPtAdYzhNneYg
+         hpgLvfxZ04VPA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Jani Nikula <jani.nikula@intel.com>,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Kuogee Hsieh <khsieh@codeaurora.org>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        Stephen Boyd <swboyd@chromium.org>,
-        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
-        Kuogee Hsieh <quic_khsieh@quicinc.com>,
-        Sasha Levin <sashal@kernel.org>, airlied@gmail.com,
-        daniel@ffwll.ch, quic_vpolimer@quicinc.com,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 5.10 02/11] drm/msm/dp: skip validity check for DP CTS EDID checksum
-Date:   Tue,  7 Nov 2023 07:30:35 -0500
-Message-ID: <20231107123100.3762796-2-sashal@kernel.org>
+Cc:     Mario Limonciello <mario.limonciello@amd.com>,
+        Felix Held <felix.held@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Sasha Levin <sashal@kernel.org>, christian.koenig@amd.com,
+        Xinhui.Pan@amd.com, airlied@gmail.com, daniel@ffwll.ch,
+        evan.quan@amd.com, sunran001@208suo.com,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
+Subject: [PATCH AUTOSEL 5.10 03/11] drm/amd: Fix UBSAN array-index-out-of-bounds for SMU7
+Date:   Tue,  7 Nov 2023 07:30:36 -0500
+Message-ID: <20231107123100.3762796-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231107123100.3762796-1-sashal@kernel.org>
 References: <20231107123100.3762796-1-sashal@kernel.org>
@@ -62,77 +57,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jani Nikula <jani.nikula@intel.com>
+From: Mario Limonciello <mario.limonciello@amd.com>
 
-[ Upstream commit a251c9d8e30833b260101edb9383b176ee2b7cb1 ]
+[ Upstream commit 760efbca74a405dc439a013a5efaa9fadc95a8c3 ]
 
-The DP CTS test for EDID last block checksum expects the checksum for
-the last block, invalid or not. Skip the validity check.
+For pptable structs that use flexible array sizes, use flexible arrays.
 
-For the most part (*), the EDIDs returned by drm_get_edid() will be
-valid anyway, and there's the CTS workaround to get the checksum for
-completely invalid EDIDs. See commit 7948fe12d47a ("drm/msm/dp: return
-correct edid checksum after corrupted edid checksum read").
-
-This lets us remove one user of drm_edid_block_valid() with hopes the
-function can be removed altogether in the future.
-
-(*) drm_get_edid() ignores checksum errors on CTA extensions.
-
-Cc: Abhinav Kumar <quic_abhinavk@quicinc.com>
-Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc: Kuogee Hsieh <khsieh@codeaurora.org>
-Cc: Marijn Suijten <marijn.suijten@somainline.org>
-Cc: Rob Clark <robdclark@gmail.com>
-Cc: Sean Paul <sean@poorly.run>
-Cc: Stephen Boyd <swboyd@chromium.org>
-Cc: linux-arm-msm@vger.kernel.org
-Cc: freedreno@lists.freedesktop.org
-Signed-off-by: Jani Nikula <jani.nikula@intel.com>
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-Reviewed-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
-Reviewed-by: Kuogee Hsieh <quic_khsieh@quicinc.com>
-Patchwork: https://patchwork.freedesktop.org/patch/555361/
-Link: https://lore.kernel.org/r/20230901142034.580802-1-jani.nikula@intel.com
-Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Suggested-by: Felix Held <felix.held@amd.com>
+Link: https://gitlab.freedesktop.org/drm/amd/-/issues/2874
+Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
+Acked-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/msm/dp/dp_panel.c | 21 ++-------------------
- 1 file changed, 2 insertions(+), 19 deletions(-)
+ drivers/gpu/drm/amd/include/pptable.h                 | 4 ++--
+ drivers/gpu/drm/amd/pm/powerplay/hwmgr/pptable_v1_0.h | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/gpu/drm/msm/dp/dp_panel.c b/drivers/gpu/drm/msm/dp/dp_panel.c
-index 4e8a19114e87d..93a2ee0f772fc 100644
---- a/drivers/gpu/drm/msm/dp/dp_panel.c
-+++ b/drivers/gpu/drm/msm/dp/dp_panel.c
-@@ -264,26 +264,9 @@ int dp_panel_get_modes(struct dp_panel *dp_panel,
- 
- static u8 dp_panel_get_edid_checksum(struct edid *edid)
+diff --git a/drivers/gpu/drm/amd/include/pptable.h b/drivers/gpu/drm/amd/include/pptable.h
+index 0b6a057e0a4c4..5aac8d545bdc6 100644
+--- a/drivers/gpu/drm/amd/include/pptable.h
++++ b/drivers/gpu/drm/amd/include/pptable.h
+@@ -78,7 +78,7 @@ typedef struct _ATOM_PPLIB_THERMALCONTROLLER
+ typedef struct _ATOM_PPLIB_STATE
  {
--	struct edid *last_block;
--	u8 *raw_edid;
--	bool is_edid_corrupt = false;
-+	edid += edid->extensions;
+     UCHAR ucNonClockStateIndex;
+-    UCHAR ucClockStateIndices[1]; // variable-sized
++    UCHAR ucClockStateIndices[]; // variable-sized
+ } ATOM_PPLIB_STATE;
  
--	if (!edid) {
--		DRM_ERROR("invalid edid input\n");
--		return 0;
--	}
--
--	raw_edid = (u8 *)edid;
--	raw_edid += (edid->extensions * EDID_LENGTH);
--	last_block = (struct edid *)raw_edid;
--
--	/* block type extension */
--	drm_edid_block_valid(raw_edid, 1, false, &is_edid_corrupt);
--	if (!is_edid_corrupt)
--		return last_block->checksum;
--
--	DRM_ERROR("Invalid block, no checksum\n");
--	return 0;
-+	return edid->checksum;
- }
  
- void dp_panel_handle_sink_request(struct dp_panel *dp_panel)
+@@ -473,7 +473,7 @@ typedef struct _ATOM_PPLIB_STATE_V2
+       /**
+       * Driver will read the first ucNumDPMLevels in this array
+       */
+-      UCHAR clockInfoIndex[1];
++      UCHAR clockInfoIndex[];
+ } ATOM_PPLIB_STATE_V2;
+ 
+ typedef struct _StateArray{
+diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/pptable_v1_0.h b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/pptable_v1_0.h
+index 1e870f58dd12a..d5a4a08c6d392 100644
+--- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/pptable_v1_0.h
++++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/pptable_v1_0.h
+@@ -179,7 +179,7 @@ typedef struct _ATOM_Tonga_MCLK_Dependency_Record {
+ typedef struct _ATOM_Tonga_MCLK_Dependency_Table {
+ 	UCHAR ucRevId;
+ 	UCHAR ucNumEntries; 										/* Number of entries. */
+-	ATOM_Tonga_MCLK_Dependency_Record entries[1];				/* Dynamically allocate entries. */
++	ATOM_Tonga_MCLK_Dependency_Record entries[];				/* Dynamically allocate entries. */
+ } ATOM_Tonga_MCLK_Dependency_Table;
+ 
+ typedef struct _ATOM_Tonga_SCLK_Dependency_Record {
+@@ -194,7 +194,7 @@ typedef struct _ATOM_Tonga_SCLK_Dependency_Record {
+ typedef struct _ATOM_Tonga_SCLK_Dependency_Table {
+ 	UCHAR ucRevId;
+ 	UCHAR ucNumEntries; 										/* Number of entries. */
+-	ATOM_Tonga_SCLK_Dependency_Record entries[1];				 /* Dynamically allocate entries. */
++	ATOM_Tonga_SCLK_Dependency_Record entries[];				 /* Dynamically allocate entries. */
+ } ATOM_Tonga_SCLK_Dependency_Table;
+ 
+ typedef struct _ATOM_Polaris_SCLK_Dependency_Record {
 -- 
 2.42.0
 
