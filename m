@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 471187E4D42
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 00:27:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5934B7E4D44
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 00:27:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344352AbjKGX07 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 18:26:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47202 "EHLO
+        id S1344480AbjKGX1G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 18:27:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344516AbjKGX0b (ORCPT
+        with ESMTP id S235505AbjKGX0d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 18:26:31 -0500
+        Tue, 7 Nov 2023 18:26:33 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 134E21BDB;
-        Tue,  7 Nov 2023 15:24:33 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2A6BC433C9;
-        Tue,  7 Nov 2023 23:24:31 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DB6D1BE4;
+        Tue,  7 Nov 2023 15:24:34 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 460FBC433C8;
+        Tue,  7 Nov 2023 23:24:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699399472;
-        bh=Gl9SuUNgp53c9A2XY9WRzZmWHWKI1qzZxd2y9nAFbXU=;
+        s=k20201202; t=1699399474;
+        bh=0QeHBJN2Gbtm3RGYJj2Ttnw64A1bJVNTHtV4HZxRMnA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NaZmiYjHg0NnLZ5YWRjNSL8NoYwvdqqnXtnhl6uuv9rXZWFbP+stNrePfsEp7wo/G
-         bZMVQebA4AqHVGfIFy5JqVh5s9xQEEg2Gje7ayTOZUmXAS5z45Pi1B7eEfQnXLZZmg
-         DODj9pkquIC/adG8rxTEM8+wRPV2StpFjTxuhtfUt0rTahgDAu/npz/u8c2SKWgzUy
-         sF2J8R6D3Ajy++9Jl68DCMkNBAFix2I5HihmNlDiVAXhf/2j1OfXw7L0AKyAjg9i1q
-         DaJ4jdbcAu02XEjm/JnfzpBuuGw8GJxG7yS8vP6GnW5dv9ye/PSehj4ASukCJ6LzYb
-         Gb0LIVJxOaTzw==
+        b=J2Da6MXzUGGHUSYzAmPT44C9HFRSh8Yyfq9RmE2JZ6TbDAW2T5TcrLsW9hpStmApF
+         oDKjsAtsUZmIUW2v9Crqol/GROkV/5+eqgpGUEg6M7EyXyu4mu4ceyiO2sdBXFq5e2
+         A4Gc/pCpi0phwaDqbl/juCUDyx27kBapfr2eRKVD4fNiKcM9OU7Goh1q3ayAfmouhR
+         AHrwgmRaSkkH7A8QP40+FbBh/7TyPy+MNFMord/jogpNHuhTD+xs3lmlIS7vR93CXw
+         NUaifAuoDxCnafj7czdJjM6Q6VI5QZMLOnAIZs4MyQG0bhKvFIxl0r753cP/q/d1Ca
+         iu+c20IcTFW1w==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Rander Wang <rander.wang@intel.com>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>,
-        alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 6.1 07/11] soundwire: dmi-quirks: update HP Omen match
-Date:   Tue,  7 Nov 2023 18:24:08 -0500
-Message-ID: <20231107232420.3776419-7-sashal@kernel.org>
+Cc:     Zhiguo Niu <zhiguo.niu@unisoc.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, chao@kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net
+Subject: [PATCH AUTOSEL 6.1 08/11] f2fs: fix error handling of __get_node_page
+Date:   Tue,  7 Nov 2023 18:24:09 -0500
+Message-ID: <20231107232420.3776419-8-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231107232420.3776419-1-sashal@kernel.org>
 References: <20231107232420.3776419-1-sashal@kernel.org>
@@ -49,37 +48,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+From: Zhiguo Niu <zhiguo.niu@unisoc.com>
 
-[ Upstream commit 4ea2b6d3128ea4d502c4015df0dc16b7d1070954 ]
+[ Upstream commit 9b4c8dd99fe48721410741651d426015e03a4b7a ]
 
-New platforms have a slightly different DMI product name, remove
-trailing characters/digits to handle all cases
+Use f2fs_handle_error to record inconsistent node block error
+and return -EFSCORRUPTED instead of -EINVAL.
 
-Closes: https://github.com/thesofproject/linux/issues/4611
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Rander Wang <rander.wang@intel.com>
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Link: https://lore.kernel.org/r/20231013010833.114271-1-yung-chuan.liao@linux.intel.com
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Signed-off-by: Zhiguo Niu <zhiguo.niu@unisoc.com>
+Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/soundwire/dmi-quirks.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/f2fs/node.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/soundwire/dmi-quirks.c b/drivers/soundwire/dmi-quirks.c
-index 2a1096dab63d3..9ebdd0cd0b1cf 100644
---- a/drivers/soundwire/dmi-quirks.c
-+++ b/drivers/soundwire/dmi-quirks.c
-@@ -141,7 +141,7 @@ static const struct dmi_system_id adr_remap_quirk_table[] = {
- 	{
- 		.matches = {
- 			DMI_MATCH(DMI_SYS_VENDOR, "HP"),
--			DMI_MATCH(DMI_PRODUCT_NAME, "OMEN by HP Gaming Laptop 16-k0xxx"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "OMEN by HP Gaming Laptop 16"),
- 		},
- 		.driver_data = (void *)hp_omen_16,
- 	},
+diff --git a/fs/f2fs/node.c b/fs/f2fs/node.c
+index a010b4bc36d2c..b73d44df9423b 100644
+--- a/fs/f2fs/node.c
++++ b/fs/f2fs/node.c
+@@ -1455,7 +1455,8 @@ static struct page *__get_node_page(struct f2fs_sb_info *sbi, pgoff_t nid,
+ 			  ofs_of_node(page), cpver_of_node(page),
+ 			  next_blkaddr_of_node(page));
+ 	set_sbi_flag(sbi, SBI_NEED_FSCK);
+-	err = -EINVAL;
++	f2fs_handle_error(sbi, ERROR_INCONSISTENT_FOOTER);
++	err = -EFSCORRUPTED;
+ out_err:
+ 	ClearPageUptodate(page);
+ out_put_err:
 -- 
 2.42.0
 
