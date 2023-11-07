@@ -2,161 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FA0B7E3FCA
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 14:10:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38E2C7E3FCC
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 14:10:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234819AbjKGNKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 08:10:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33154 "EHLO
+        id S235206AbjKGNKp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 08:10:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234797AbjKGNKR (ORCPT
+        with ESMTP id S234635AbjKGNK3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 08:10:17 -0500
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F01C30E7;
-        Tue,  7 Nov 2023 05:05:14 -0800 (PST)
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A7BUEgO011638;
-        Tue, 7 Nov 2023 13:05:03 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references; s=qcppdkim1;
- bh=LYIjBF5JP/2bLliJ47+748C3UONippzd0SirokcGhoQ=;
- b=Da/+w396bv3hPS0OIvgwI24w5QCdQ51IAEtgT2161YDvpPn9K1fj2/4u7VPPcm0mtKxq
- Jlr01RbGePRj3JmX7WirnBvasTdizdQYaSUlcBuwmGYdqzE0WotiYEyuf3qN6JBgmtaM
- jkTGGu+ShAh1Hvwci8mlMZcadYGFAyFWrjNYUSHG4UlaqgcWDpXS7HEwZpI0eD3h6Ffq
- n8znGZLNO5eFcU85eS5CXrk0gCQclxOL6+0Ens+AkGm4ttm4/HraHbMkC23UPwrGdIIj
- nTDRVqv1tLss7odY+6Itb6cQLuYAK64F2TJ5aCTjWWezy28mU0+8D50HVJorK2fq8Y3N 5w== 
-Received: from apblrppmta01.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u758n237f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 07 Nov 2023 13:05:02 +0000
-Received: from pps.filterd (APBLRPPMTA01.qualcomm.com [127.0.0.1])
-        by APBLRPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 3A7D4vmV010872;
-        Tue, 7 Nov 2023 13:04:59 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by APBLRPPMTA01.qualcomm.com (PPS) with ESMTP id 3u5f1kwjg6-1;
-        Tue, 07 Nov 2023 13:04:59 +0000
-Received: from APBLRPPMTA01.qualcomm.com (APBLRPPMTA01.qualcomm.com [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3A7D4xKV010909;
-        Tue, 7 Nov 2023 13:04:59 GMT
-Received: from hu-sgudaval-hyd.qualcomm.com (hu-msarkar-hyd.qualcomm.com [10.213.111.194])
-        by APBLRPPMTA01.qualcomm.com (PPS) with ESMTP id 3A7D4wQ2010907;
-        Tue, 07 Nov 2023 13:04:59 +0000
-Received: by hu-sgudaval-hyd.qualcomm.com (Postfix, from userid 3891782)
-        id CA6184C76; Tue,  7 Nov 2023 18:34:57 +0530 (+0530)
-From:   Mrinmay Sarkar <quic_msarkar@quicinc.com>
-To:     agross@kernel.org, andersson@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        konrad.dybcio@linaro.org, mani@kernel.org, robh+dt@kernel.org
-Cc:     quic_shazhuss@quicinc.com, quic_nitegupt@quicinc.com,
-        quic_ramkri@quicinc.com, quic_nayiluri@quicinc.com,
-        dmitry.baryshkov@linaro.org, robh@kernel.org,
-        quic_krichai@quicinc.com, quic_vbadigan@quicinc.com,
-        quic_parass@quicinc.com, quic_schintav@quicinc.com,
-        quic_shijjose@quicinc.com,
-        Mrinmay Sarkar <quic_msarkar@quicinc.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-phy@lists.infradead.org
-Subject: [PATCH v1 2/2] arm64: dts: qcom: sa8775p: Add ep pcie1 controller node
-Date:   Tue,  7 Nov 2023 18:34:53 +0530
-Message-Id: <1699362294-15558-3-git-send-email-quic_msarkar@quicinc.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1699362294-15558-1-git-send-email-quic_msarkar@quicinc.com>
-References: <1699362294-15558-1-git-send-email-quic_msarkar@quicinc.com>
-X-QCInternal: smtphost
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: WQQYaKHxbPVlsMUQkAf1BeCwVuVPH4so
-X-Proofpoint-ORIG-GUID: WQQYaKHxbPVlsMUQkAf1BeCwVuVPH4so
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-07_04,2023-11-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- bulkscore=0 mlxscore=0 mlxlogscore=999 spamscore=0 suspectscore=0
- adultscore=0 impostorscore=0 clxscore=1015 malwarescore=0
- priorityscore=1501 phishscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2310240000 definitions=main-2311070108
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+        Tue, 7 Nov 2023 08:10:29 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9076D2100;
+        Tue,  7 Nov 2023 05:05:39 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2743CC433C9;
+        Tue,  7 Nov 2023 13:05:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699362339;
+        bh=RruP1QGaZvTuXJrll5bj84ebMUg3UJxqsTsrVsJCqms=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=bgcmAr0ekyPjtlHlJRSPoSGWONG64/XmcaIrdKW4mI3D+o6ctW5e4A+4ERsddqsg8
+         Acv+3kdbcNT3MoTiufI565Pu0r+e4QwHMlOmga69I0TEwjvBp/1/uRKu+byguAtB2j
+         rNFwGxzIoEOChohuCTot/fFBVh+aEa1+mDYPhQZaKiCsCFT0ArI/r+KCFt81aznIkP
+         MNy0APlt90qjAtX+9sGlQdqVYmJ6F2BRooRI9kP+9ROi9JzV9Z4vYXYSbRukg5LWY7
+         KDmTsFn+ZxmsuU3qTVJdED7vNIqJ7q4cKx4KCXhniaEDd3j+kqIVFCr2v7xgo6IVEM
+         jPHPBSMXOLEpQ==
+Received: by mail-oa1-f47.google.com with SMTP id 586e51a60fabf-1ead2e6fab7so3355299fac.0;
+        Tue, 07 Nov 2023 05:05:39 -0800 (PST)
+X-Gm-Message-State: AOJu0YzK7L/xFOY6MBophJf46lT3vehkJjZDuMvtoErK1HRodcWLm4b/
+        lbkPVMNUSPTpoMN282ZPljsW7GmEVBAwrkXSO18=
+X-Google-Smtp-Source: AGHT+IEMhw9WYqCbJTZndEZaZJUtNVpum44vv8O60uyxnlRHxP3PHUzubA1MYIHj/VkTdRa2z2aQxv757U3hRX3iZOI=
+X-Received: by 2002:a05:6871:42c4:b0:1ea:4338:20b7 with SMTP id
+ lt4-20020a05687142c400b001ea433820b7mr3600723oab.20.1699362338526; Tue, 07
+ Nov 2023 05:05:38 -0800 (PST)
+MIME-Version: 1.0
+References: <20231104194207.3370542-1-sjg@chromium.org> <20231104194207.3370542-4-sjg@chromium.org>
+In-Reply-To: <20231104194207.3370542-4-sjg@chromium.org>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Tue, 7 Nov 2023 15:05:01 +0200
+X-Gmail-Original-Message-ID: <CAK7LNAQCu9tWcjEtak3sBVo5mQYu1abu-v-GQ0b5h7PhzuHKww@mail.gmail.com>
+Message-ID: <CAK7LNAQCu9tWcjEtak3sBVo5mQYu1abu-v-GQ0b5h7PhzuHKww@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] arm64: boot: Support Flat Image Tree
+To:     Simon Glass <sjg@chromium.org>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        U-Boot Mailing List <u-boot@lists.denx.de>,
+        Tom Rini <trini@konsulko.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nick Terrell <terrelln@fb.com>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        Will Deacon <will@kernel.org>, linux-kbuild@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_PDS_OTHER_BAD_TLD,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add ep pcie dtsi node for pcie1 controller found on sa8775p platform.
-It supports gen4 and x4 link width. Limiting the speed to Gen3 due to
-stability issues.
+On Sat, Nov 4, 2023 at 9:42=E2=80=AFPM Simon Glass <sjg@chromium.org> wrote=
+:
+>  PHONY +=3D $(BOOT_TARGETS)
+>
+> @@ -215,6 +215,7 @@ virtconfig:
+>  define archhelp
+>    echo  '* Image.gz      - Compressed kernel image (arch/$(ARCH)/boot/Im=
+age.gz)'
+>    echo  '  Image         - Uncompressed kernel image (arch/$(ARCH)/boot/=
+Image)'
+> +$(if $(CONFIG_EFI_ZBOOT),,echo  '  image.fit     - Flat Image Tree (arch=
+/$(ARCH)/boot/image.fit)')
 
-Signed-off-by: Mrinmay Sarkar <quic_msarkar@quicinc.com>
----
- arch/arm64/boot/dts/qcom/sa8775p.dtsi | 48 +++++++++++++++++++++++++++++++++++
- 1 file changed, 48 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/qcom/sa8775p.dtsi b/arch/arm64/boot/dts/qcom/sa8775p.dtsi
-index 7eab458..acd7bd8 100644
---- a/arch/arm64/boot/dts/qcom/sa8775p.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sa8775p.dtsi
-@@ -3732,6 +3732,54 @@
- 		status = "disabled";
- 	};
- 
-+	pcie1_ep: pcie-ep@1c10000 {
-+		compatible = "qcom,sa8775p-pcie-ep";
-+		reg = <0x0 0x01c10000 0x0 0x3000>,
-+		      <0x0 0x60000000 0x0 0xf20>,
-+		      <0x0 0x60000f20 0x0 0xa8>,
-+		      <0x0 0x60001000 0x0 0x4000>,
-+		      <0x0 0x60200000 0x0 0x100000>,
-+		      <0x0 0x01c13000 0x0 0x1000>,
-+			  <0x0 0x60005000 0x0 0x2000>;
-+		reg-names = "parf", "dbi", "elbi", "atu", "addr_space",
-+			    "mmio", "dma";
-+
-+		clocks = <&gcc GCC_PCIE_1_AUX_CLK>,
-+			 <&gcc GCC_PCIE_1_CFG_AHB_CLK>,
-+			 <&gcc GCC_PCIE_1_MSTR_AXI_CLK>,
-+			 <&gcc GCC_PCIE_1_SLV_AXI_CLK>,
-+			 <&gcc GCC_PCIE_1_SLV_Q2A_AXI_CLK>;
-+
-+		clock-names = "aux",
-+			      "cfg",
-+			      "bus_master",
-+			      "bus_slave",
-+			      "slave_q2a";
-+
-+		interrupts = <GIC_SPI 518 IRQ_TYPE_LEVEL_HIGH>,
-+					 <GIC_SPI 152 IRQ_TYPE_LEVEL_HIGH>,
-+					 <GIC_SPI 474 IRQ_TYPE_LEVEL_HIGH>;
-+
-+		interrupt-names = "global", "doorbell", "dma";
-+
-+		interconnects = <&pcie_anoc MASTER_PCIE_1 0 &mc_virt SLAVE_EBI1 0>,
-+				<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_PCIE_1 0>;
-+		interconnect-names = "pcie-mem", "cpu-pcie";
-+
-+		dma-coherent;
-+
-+		iommus = <&pcie_smmu 0x80 0x7f>;
-+		resets = <&gcc GCC_PCIE_1_BCR>;
-+		reset-names = "core";
-+		power-domains = <&gcc PCIE_1_GDSC>;
-+		phys = <&pcie1_phy>;
-+		phy-names = "pciephy";
-+		max-link-speed = <3>; /* FIXME: Limiting the Gen speed due to stability issues */
-+		num-lanes = <4>;
-+
-+		status = "disabled";
-+	};
-+
- 	pcie1_phy: phy@1c14000 {
- 		compatible = "qcom,sa8775p-qmp-gen4x4-pcie-phy";
- 		reg = <0x0 0x1c14000 0x0 0x4000>;
--- 
-2.7.4
 
+Why should this be hidden when CONFIG_EFI_ZBOOT=3Dy?
+
+
+
+
+>    echo  '  install       - Install uncompressed kernel'
+>    echo  '  zinstall      - Install compressed kernel'
+>    echo  '                  Install using (your) ~/bin/installkernel or'
+> diff --git a/arch/arm64/boot/.gitignore b/arch/arm64/boot/.gitignore
+> index af5dc61f8b43..f84a7073dbcd 100644
+> --- a/arch/arm64/boot/.gitignore
+> +++ b/arch/arm64/boot/.gitignore
+> @@ -2,3 +2,5 @@
+>  Image
+>  Image.gz
+>  vmlinuz*
+> +image.itk
+> +image.fit
+> diff --git a/arch/arm64/boot/Makefile b/arch/arm64/boot/Makefile
+> index 1761f5972443..2681f54cd2c8 100644
+> --- a/arch/arm64/boot/Makefile
+> +++ b/arch/arm64/boot/Makefile
+> @@ -16,7 +16,8 @@
+>
+>  OBJCOPYFLAGS_Image :=3D-O binary -R .note -R .note.gnu.build-id -R .comm=
+ent -S
+>
+> -targets :=3D Image Image.bz2 Image.gz Image.lz4 Image.lzma Image.lzo Ima=
+ge.zst
+> +targets :=3D Image Image.bz2 Image.gz Image.lz4 Image.lzma Image.lzo \
+> +       Image.zst image.fit
+>
+>  $(obj)/Image: vmlinux FORCE
+>         $(call if_changed,objcopy)
+> @@ -39,6 +40,10 @@ $(obj)/Image.lzo: $(obj)/Image FORCE
+>  $(obj)/Image.zst: $(obj)/Image FORCE
+>         $(call if_changed,zstd)
+>
+> +# Provide the kernel for the FIT
+> +$(obj)/image.itk: $(obj)/Image FORCE
+> +       $(call if_changed,copy)
+> +
+>  EFI_ZBOOT_PAYLOAD      :=3D Image
+>  EFI_ZBOOT_BFD_TARGET   :=3D elf64-littleaarch64
+>  EFI_ZBOOT_MACH_TYPE    :=3D ARM64
+> @@ -48,3 +53,5 @@ EFI_ZBOOT_OBJCOPY_FLAGS       =3D --add-symbol zboot_co=
+de_size=3D0x$(shell \
+>                                 $(NM) vmlinux|grep _kernel_codesize|cut -=
+d' ' -f1)
+>
+>  include $(srctree)/drivers/firmware/efi/libstub/Makefile.zboot
+> +
+> +clean-files :=3D image.itk
+> diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
+> index 03e79e319293..1427dba4f0f9 100644
+> --- a/scripts/Makefile.lib
+> +++ b/scripts/Makefile.lib
+> @@ -494,7 +494,23 @@ quiet_cmd_uimage =3D UIMAGE  $@
+>                         -C $(UIMAGE_COMPRESSION) $(UIMAGE_OPTS-y) \
+>                         -T $(UIMAGE_TYPE) \
+>                         -a $(UIMAGE_LOADADDR) -e $(UIMAGE_ENTRYADDR) \
+> -                       -n $(UIMAGE_NAME) -d $< $@
+> +                       -n "$(UIMAGE_NAME)" -d $< $@
+
+
+Please do not do this.
+Just drop 2/3.
+
+
+
+
+> +
+> +# Flat Image Tree (FIT)
+> +# This allows for packaging of a kernel and all devicetrees files, using
+> +# compression.
+> +# ----------------------------------------------------------------------=
+-----
+> +
+> +MAKE_FIT :=3D $(srctree)/scripts/make_fit.py
+> +
+> +quiet_cmd_fit =3D FIT     $@
+> +      cmd_fit =3D $(MAKE_FIT) -f $@ --arch $(UIMAGE_ARCH) --os linux \
+> +                       --name "$(UIMAGE_NAME)" \
+> +                       --compress $(UIMAGE_COMPRESSION) -k $< \
+> +                       $(dir $<)/dts
+> +
+> +$(obj)/%.fit: $(obj)/%.itk $(MAKE_FIT) FORCE
+> +       $(call if_changed,fit,gzip)
+
+
+No. This is worse than v1.
+
+Please do not create a silly copy.
+
+
+
+
+
+As I said in v1, this if_changed does not catch the DTS updates.
+So, there is no point in using it.
+
+I recommend just use 'cmd'.
+
+
+$(obj)/image.fit: $(obj)/Image FORCE
+        $(call cmd,fit)
+
+
+
+
+
+> +
+> +    Returns:
+> +        tuple:
+> +            str: Model name
+> +            bytes: Compatible stringlist
+> +    """
+> +    with fsw.add_node(f'fdt-{seq}'):
+> +        # Get the compatible / model information
+> +        with open(fname, 'rb') as inf:
+> +            data =3D inf.read()
+> +        fdt =3D libfdt.FdtRo(data)
+> +        model =3D fdt.getprop(0, 'model').as_str()
+> +        compat =3D fdt.getprop(0, 'compatible')
+> +
+> +        fsw.property_string('description', model)
+> +        fsw.property_string('type', 'flat_dt')
+> +        fsw.property_string('arch', 'arm64')
+
+
+Why hard-code 'arm64' ?
+
+
+
+
+
+--=20
+Best Regards
+Masahiro Yamada
