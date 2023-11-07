@@ -2,100 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 596C97E4B77
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 23:05:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 94E6C7E4B7D
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 23:07:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235552AbjKGWFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 17:05:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38620 "EHLO
+        id S235285AbjKGWHK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 17:07:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235551AbjKGWE5 (ORCPT
+        with ESMTP id S235256AbjKGWGw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 17:04:57 -0500
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A01353879;
-        Tue,  7 Nov 2023 14:01:25 -0800 (PST)
-Received: by mail-qt1-x82b.google.com with SMTP id d75a77b69052e-41e3e77e675so41173391cf.1;
-        Tue, 07 Nov 2023 14:01:25 -0800 (PST)
+        Tue, 7 Nov 2023 17:06:52 -0500
+Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7406225BB
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 14:02:26 -0800 (PST)
+Received: by mail-io1-xd2c.google.com with SMTP id ca18e2360f4ac-7a67b9cd230so228068839f.1
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 14:02:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699394484; x=1699999284; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=2CJun7UB52S4zZmzZk7Tc5+t2/EYY1acmDjuc/JVwgQ=;
-        b=UMENwc5hcJtwPUmADRD81+YK5+JPqKU5/uV81TXA/tTYQdKnFDGRLhx5G7bKX7H5hL
-         N+tY3ORbrSrZ8+F3CbYpuflKq40WaYg2to6P0R0l3cKV2w015DB660fGSB3LPGzmG2Fi
-         FIRmoJXbD1y1Yumefu92lTvO4WyyWlM348csa+gaPpOTdlg92nYc3VHT2hwlcOF5roRx
-         +mQ2HcdTTZib1ArcI8YVjf8UZpy3ItT+lBYLM/ZydPNPHHyuwk5V1z5uEiD/dowoFGcf
-         Lgok+y1kI/0klyDX//FlthpUCQmF9vFd5KxSHVba2KRhJ8I/YEGry2QNMRaT/oaYP0ez
-         ZipA==
+        d=gmail.com; s=20230601; t=1699394546; x=1699999346; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/9GMN59KG9vz4YUQQehaTwQYKj13ptJRqtnV+YMinhk=;
+        b=Tlfb7chF+kSksZaATbJuEfFi7NR0ctrrhOXvoU58A6NSatMce6eskh/BVVnQXBfXVs
+         +mpO2b2mxkUxoZ3aWi7f4ngQQIbwA+ujlCjOoez8LYdnQagStK+sW2dnUEXBntUw2qVg
+         LnOrj+IxgM3G/yfxZuJnSJedujwzM3o+67uh+54BpR4ynHdxoX+qkMvAyo714tfTfVNh
+         r3mdLS3z9Utfz4S5fKen7EQyXs5CIhlrRaN/pAGqxONJAu+weASrQ20DvshJtEpD4mWw
+         o5xZUf5miD8E/nyZFH+x6qku2uxd78Gn+0YGBIz7BiWAu73FqnfeY05/OQgudn9XRHs+
+         /gyQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699394484; x=1699999284;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2CJun7UB52S4zZmzZk7Tc5+t2/EYY1acmDjuc/JVwgQ=;
-        b=vc/lYOekr9HFH6seya1RIA+ygDWXUPIFwfGuiU8xKCZWJM0vFbhEDWj8rSm0tlYVhZ
-         ucVdZZ5L7GmwnSSFRwd9XwM8vxrnfyw8oKDm+7MyaU2n9EyMt3XzWCF99iZodynNyJ1J
-         cqwl7d6xo2TRL2PFeSorEpiZxxdEBudO0IDlfdv8PnjnB9P+GSjfYkPw5s7xRMmSVxGF
-         YLuln92U6x1z4aQmtGwjWGllieuGEbp/j/7vJuuhbY+afBBrHGSVWMRHLbYtBxtsJ7cF
-         VZH1eSgESm+ftHBs8+wpRgmoFxzm4hsp1c1PX1nOQt//KO5BNnxW3geOFgcXuYf0t6Pr
-         YDjg==
-X-Gm-Message-State: AOJu0Yy8fx2e8ufmCxghvVAG20XzZ1aOFXgNV/Nuc8BVBJgMrrpIg6HJ
-        Z/350nt5d3RcFj/PIolrBClTur1430Q=
-X-Google-Smtp-Source: AGHT+IFTHyw9DU2WGhjY6FcF6KtbfcVzCzuY8S2stcJyiOKpBL+mrrHEXciP/HQOemZYy2hIv7k0IA==
-X-Received: by 2002:a05:6214:e64:b0:672:118e:e368 with SMTP id jz4-20020a0562140e6400b00672118ee368mr49430qvb.24.1699394484288;
-        Tue, 07 Nov 2023 14:01:24 -0800 (PST)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id nd10-20020a056214420a00b0066d0ab215b5sm340940qvb.13.2023.11.07.14.01.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 07 Nov 2023 14:01:23 -0800 (PST)
-Message-ID: <847671d3-efef-465b-af9c-f9789f9cc1ef@gmail.com>
-Date:   Tue, 7 Nov 2023 14:01:21 -0800
+        d=1e100.net; s=20230601; t=1699394546; x=1699999346;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/9GMN59KG9vz4YUQQehaTwQYKj13ptJRqtnV+YMinhk=;
+        b=pdtfxA5L5Q4RXNWQ/bOQgtneCie2vLcNLauKIBqJjoQebeuexNxz5p+JfC2PyfV2Xd
+         qnVIF60n+rqEeEDrDnhPtl6PkcqL6yxV0U/Xv1Yf5bMIePwfl7GuA2IFCVr+Q2PBQmiF
+         0Ge1Zv1RVkoZ4epJRCRTb7LpLvAxLp3EYLHyXvj6QRYRUyX365UDoeCTmF9Csrtn3f1s
+         NA/SXVcvaeJQmv+U5XeOdAA19Y+9ZikeOh4aHnKI7V9buvd83zsYEW44dBOUo1VPtf7C
+         9m7YTYjSfI7ofmLWRZqqRNEQNsM8HSKQQPuAkxwdk/9xjOVagPwbVYwR7Ifr+ZEwnHNs
+         9kCg==
+X-Gm-Message-State: AOJu0YznQrIMghy6CPioiWC6fg/Sq5yHEI3FavKng9ai5cc6eMSW+dAH
+        FQMGNovdy/QD5BrOlNkgfFFooxYepgxTUSCSiBw9hwoc7cka8g==
+X-Google-Smtp-Source: AGHT+IEXEJb5mp/ZFOCjoV7fb92ReUAqfJH6RHtIx7OQj90gjipcbZuQmyjA/E0uRMirYr3XKgvS/ti/YIQFA/QMwXc=
+X-Received: by 2002:a5d:8c87:0:b0:7a9:a9c6:d6b2 with SMTP id
+ g7-20020a5d8c87000000b007a9a9c6d6b2mr152870ion.16.1699394545675; Tue, 07 Nov
+ 2023 14:02:25 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 5.10 00/91] 5.10.200-rc2 review
-Content-Language: en-US
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org
-References: <20231107202447.670990820@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <20231107202447.670990820@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <202311080014.GABRIG2T-lkp@intel.com>
+In-Reply-To: <202311080014.GABRIG2T-lkp@intel.com>
+From:   Nhat Pham <nphamcs@gmail.com>
+Date:   Tue, 7 Nov 2023 14:02:14 -0800
+Message-ID: <CAKEwX=OBONGNw0omoEVNW29akLJ7WgvTjiOBqF0Bq8xmB7gbaA@mail.gmail.com>
+Subject: Re: mm/filemap.c:4249:1: sparse: sparse: Using plain integer as NULL pointer
+To:     kernel test robot <lkp@intel.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/7/23 12:24, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.200 release.
-> There are 91 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Thu, 09 Nov 2023 20:24:28 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.200-rc2.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+On Tue, Nov 7, 2023 at 8:30=E2=80=AFAM kernel test robot <lkp@intel.com> wr=
+ote:
+>
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.gi=
+t master
+> head:   be3ca57cfb777ad820c6659d52e60bbdd36bf5ff
+> commit: cf264e1329fb0307e044f7675849f9f38b44c11a cachestat: implement cac=
+hestat syscall
+> date:   5 months ago
+> config: s390-randconfig-r123-20231107 (https://download.01.org/0day-ci/ar=
+chive/20231108/202311080014.GABRIG2T-lkp@intel.com/config)
+> compiler: s390-linux-gcc (GCC) 13.2.0
+> reproduce: (https://download.01.org/0day-ci/archive/20231108/202311080014=
+.GABRIG2T-lkp@intel.com/reproduce)
+>
+> If you fix the issue in a separate patch/commit (i.e. not just a new vers=
+ion of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202311080014.GABRIG2T-lkp=
+@intel.com/
+>
+> sparse warnings: (new ones prefixed by >>)
+>    mm/filemap.c:1416:17: sparse: sparse: context imbalance in 'migration_=
+entry_wait_on_locked' - unexpected unlock
+> >> mm/filemap.c:4249:1: sparse: sparse: Using plain integer as NULL point=
+er
+> >> mm/filemap.c:4249:1: sparse: sparse: Using plain integer as NULL point=
+er
+> >> mm/filemap.c:4249:1: sparse: sparse: Using plain integer as NULL point=
+er
+> >> mm/filemap.c:4249:1: sparse: sparse: Using plain integer as NULL point=
+er
+>
+> vim +4249 mm/filemap.c
+>
+>   4214
+>   4215  /*
+>   4216   * The cachestat(2) system call.
+>   4217   *
+>   4218   * cachestat() returns the page cache statistics of a file in the
+>   4219   * bytes range specified by `off` and `len`: number of cached pag=
+es,
+>   4220   * number of dirty pages, number of pages marked for writeback,
+>   4221   * number of evicted pages, and number of recently evicted pages.
+>   4222   *
+>   4223   * An evicted page is a page that is previously in the page cache
+>   4224   * but has been evicted since. A page is recently evicted if its =
+last
+>   4225   * eviction was recent enough that its reentry to the cache would
+>   4226   * indicate that it is actively being used by the system, and tha=
+t
+>   4227   * there is memory pressure on the system.
+>   4228   *
+>   4229   * `off` and `len` must be non-negative integers. If `len` > 0,
+>   4230   * the queried range is [`off`, `off` + `len`]. If `len` =3D=3D 0=
+,
+>   4231   * we will query in the range from `off` to the end of the file.
+>   4232   *
+>   4233   * The `flags` argument is unused for now, but is included for fu=
+ture
+>   4234   * extensibility. User should pass 0 (i.e no flag specified).
+>   4235   *
+>   4236   * Currently, hugetlbfs is not supported.
+>   4237   *
+>   4238   * Because the status of a page can change after cachestat() chec=
+ks it
+>   4239   * but before it returns to the application, the returned values =
+may
+>   4240   * contain stale information.
+>   4241   *
+>   4242   * return values:
+>   4243   *  zero        - success
+>   4244   *  -EFAULT     - cstat or cstat_range points to an illegal addre=
+ss
+>   4245   *  -EINVAL     - invalid flags
+>   4246   *  -EBADF      - invalid file descriptor
+>   4247   *  -EOPNOTSUPP - file descriptor is of a hugetlbfs file
+>   4248   */
+> > 4249  SYSCALL_DEFINE4(cachestat, unsigned int, fd,
+>
+> --
+> 0-DAY CI Kernel Test Service
+> https://github.com/intel/lkp-tests/wiki
 
-On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels, build tested on 
-BMIPS_GENERIC:
-
-Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
--- 
-Florian
-
+This is a known false positive with s390. See this thread:
+https://lore.kernel.org/linux-mm/202305070840.X0G3ofjl-lkp@intel.com/
