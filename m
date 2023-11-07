@@ -2,66 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A5B6B7E4C99
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 00:14:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 27B767E4C9E
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 00:17:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344336AbjKGXOM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 18:14:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45904 "EHLO
+        id S1344225AbjKGXRF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 18:17:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344455AbjKGXNn (ORCPT
+        with ESMTP id S229896AbjKGXQz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 18:13:43 -0500
+        Tue, 7 Nov 2023 18:16:55 -0500
 Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 100B32D4C
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 15:11:16 -0800 (PST)
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A7LJxpn005003;
-        Tue, 7 Nov 2023 23:10:04 GMT
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A50110F3
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 15:16:53 -0800 (PST)
+Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A7LJqb1022727;
+        Tue, 7 Nov 2023 23:11:28 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references :
- content-transfer-encoding : content-type : mime-version;
- s=corp-2023-03-30; bh=k15juSm04x0tXyAu/KVbvACcXdJqJhxN8ZJRpjJLcno=;
- b=djlzHqV+4JY4Hf/meVarhHorTwhmJS5R2j7FqLTPd9ML5eZzqDftD2+g0OY0YyNr3Yua
- 7SWn/CV6BNuAzwKN6la7l5rMUGK6H8mm2sM1BPJrNbRT5ouu8qHRpcFcifordgYcFKwa
- TURJbHuAElR3k6CTwKVci4c/LP43VzvKKKm8jomqxMK0fS1/1r6Bv5SMreG+88SDtc80
- NZvKLVnDkb+fuI/eag4y9ALQjOTVQ8lBlFolggCYnHVktfZJN77jJqEYBjzGRmLC7+V7
- VtQX+PH+ERd9eKt+Uag8QgOPmGi10ZMJ/7o4j0K/wwwMiVc5TkytjfKUOj3eJOmCLT4y Ag== 
+ subject : date : message-id : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=corp-2023-03-30;
+ bh=bnOsTQbfjeCIBrAeCLl3w+O5mhu2+1S+mL/poDVtqmI=;
+ b=X5CvKLhHa6azy/mrK3p8tfydOoyBHYChc/UtaET1mG9AbOGzmslrGKMkKIb7++0oEU58
+ IZNHZID3o8oVAmXRUw38EBWGBxiKntxxtp61p6EmaUtXps5qtUIUnYUWsjQ1aLc9rohH
+ 6vH7n7gECuEfc+NnCFn0Ji6RO5DuM9P4+ptskwOeqVXa1rAW8K52gkYHT+2IMU96vy1D
+ hyGvsCJqUEf1oXiQN7XKbdAvPI24obKZ5bRkLJurcjfIhpTBvp/9NwUuzZeY8TwbwV34
+ E7cIl0vCpG8S+ieq5a6AKmb3CFwUmFczHNGIYqeky/K+FZ7iEh/ftbxlqVc3cjLrI2u3 AA== 
 Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3u7w22g6cj-1
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3u7w2006h0-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 07 Nov 2023 23:10:04 +0000
+        Tue, 07 Nov 2023 23:10:12 +0000
 Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3A7N1Mwx004090;
-        Tue, 7 Nov 2023 23:10:02 GMT
-Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2041.outbound.protection.outlook.com [104.47.66.41])
-        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3u7w1vvcm9-1
+        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3A7N2hO8003851;
+        Tue, 7 Nov 2023 23:10:09 GMT
+Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2168.outbound.protection.outlook.com [104.47.58.168])
+        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3u7w1vvcpu-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 07 Nov 2023 23:10:02 +0000
+        Tue, 07 Nov 2023 23:10:09 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=g++vlHR0e6HKiaDG5QgeW78ELgON9OYl7ZPWFE+1fBkd3Vc/OhhIdG/C53yjZN9FFGqABW+U/QmuWkDCbXVV8bY9cp7LQ37gBTrc7ihsyyoHVTLUrQyM95P0SgwMuvMKcxnqNmgnGUObJa1lXrf78i60Kj17gUCr4xkrJBSY6+UfbnGr+YZfkDUqezwtSlA4tbg7jRzRlc6JJyk7EH0g5DM++xAGwEYNKc6u9o4Ynb2mI0ejGqZrfkSELULYJ225pTStR5JUI4n6qX3Kfy9T8xCuT7UtylIaZ1I4FpLWkoEfCvP5B07gcMfplKkM7qt5nwzN/e3INE8mG/dZr5mWhQ==
+ b=C20WCijwzwdmdHY5kBE1tTvqFnW6GUl59HNQHaeNb6NVwtfbdaV2CjUapcT6o0Bp4mOXmdl1mf07VNF5ZTfiX3tEHHVthuvduWJQ0eoEaEnbMVv/N4NSgTNXHeSY6D1YwuJWOSQcgsbCFyMleWEN2xc42mD0xxxV5IDBMkNQHuECTNDHKC1Q2s5q+8LnGiPwVu+vyRr9w1aXa10OQurh3xXG9hmHx9tVL2+nz3xeABrwbHwV8w00JWRa58CaGylLf9HVKUbYrxBAP4FzpG3zJkozsVOEu2fPqP7iJQmasJ9b4ZllYa5IBoPmenpTyEURg17A04mAyuGR2S/IfiazBw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=k15juSm04x0tXyAu/KVbvACcXdJqJhxN8ZJRpjJLcno=;
- b=n6k5mt5LSdGNddw48nwLAzW8xSSnynIiR2+mMhsoqt4zkWlI2uP5Yytsw2aD8VyzO3D5s0XobEUpmelEKDkguw9G+wbOXWvzh6Xl59LTNvBvleG04P7uj3zQaZPSobAHCgBAaIFm0gnwRPPiIfS40zIEesplyvMYdpX/dBLKCAhjp829kOC01MSbjOELcCXF0vM0Pi3F/CkCsBtQnKNbiQfjuylbiQ7Yeazv9u7WIWNQVjAxVW1mPxEdgNyAFJ93fgD6V5N/M9pvCl58F5W9gFsEA8FaqGgtKlQsTmkR69rw+7x6Ndd808SLH+3aBV1BCrJeHFX1ZIAbNoXA4d5B1g==
+ bh=bnOsTQbfjeCIBrAeCLl3w+O5mhu2+1S+mL/poDVtqmI=;
+ b=FhIhvQRQ3u/4P/pZq7RyQs0Gck9IpYRxh3OKNpg0ER1OwEX/q7yF6RlUOnQOWAJM3f6FBqyGqJv4MJIx+pkRtQp5gq5UmksCWFYxIy9ZDdhYkd2uQI7IGtXOBW1e9kUgx8CxG/08oFQrUYFyO3cfenZ523kdKJFFGchHT+VifJJFZ2afGjllybT+lSIY8/W4li25g2E5GtnN6RQA/pyibyCqKH3So9hyj4F280cBJLVZi6CmGdWDhOXU1UDf5FUM2MgTKoyk9y39xXVt29ri73/ylHelLUhRgd8+MWzA8raw23K5xzwbuVqtEH+XLgPhuo/y2o9RrvNsJjWp0up9bA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
  dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=k15juSm04x0tXyAu/KVbvACcXdJqJhxN8ZJRpjJLcno=;
- b=IrHVf0cYx0GjTtB3KNnwUmjKOj3uCownPNQCBSU/q2pYWFXx350UTPUeCfYN51fEPLVJBQ6TyBO8/uGJc0C56DYqKXO7LQRDE2iPjJqww2Y6lXifJHlqMCpvZnjMin4ZRDxx0NJofO+hawJwtopF00c0GZsctqW6Ej9vhmqVVPQ=
+ bh=bnOsTQbfjeCIBrAeCLl3w+O5mhu2+1S+mL/poDVtqmI=;
+ b=KeLPJvRUDA573NJwgN30v4qzGpQB7X4arhLZ5pXQmO6GewLsb1pXcRKfJl3VAqoQVsgfkEG2dxUC5Qfvc8dJuZZPJK4UeCaV70k0gUtL7hAaEqOvIil0FkIXVQnQt4wGKrDRgHj2/Z/wDRC3nfKFbQfnezzI0oq8SeM99HU94TE=
 Received: from DM8PR10MB5416.namprd10.prod.outlook.com (2603:10b6:8:3f::19) by
- IA1PR10MB7261.namprd10.prod.outlook.com (2603:10b6:208:3f6::11) with
+ BY5PR10MB4369.namprd10.prod.outlook.com (2603:10b6:a03:204::11) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.28; Tue, 7 Nov
- 2023 23:09:58 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.29; Tue, 7 Nov
+ 2023 23:10:03 +0000
 Received: from DM8PR10MB5416.namprd10.prod.outlook.com
  ([fe80::c72:c098:4fc2:629b]) by DM8PR10MB5416.namprd10.prod.outlook.com
  ([fe80::c72:c098:4fc2:629b%4]) with mapi id 15.20.6954.028; Tue, 7 Nov 2023
- 23:09:58 +0000
+ 23:10:02 +0000
 From:   Ankur Arora <ankur.a.arora@oracle.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     tglx@linutronix.de, peterz@infradead.org,
@@ -79,118 +79,165 @@ Cc:     tglx@linutronix.de, peterz@infradead.org,
         krypton@ulrich-teichert.org, rostedt@goodmis.org,
         David.Laight@ACULAB.COM, richard@nod.at, mjguzik@gmail.com,
         Ankur Arora <ankur.a.arora@oracle.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Felix Fietkau <nbd@nbd.name>,
-        John Crispin <john@phrozen.org>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Mark Lee <Mark-MC.Lee@mediatek.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
+        Oded Gabbay <ogabbay@kernel.org>,
+        Miguel Ojeda <ojeda@kernel.org>, Jens Axboe <axboe@kernel.dk>,
+        Minchan Kim <minchan@kernel.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Amit Shah <amit@kernel.org>, Gonglei <arei.gonglei@huawei.com>,
         "Michael S. Tsirkin" <mst@redhat.com>,
         Jason Wang <jasowang@redhat.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Kalle Valo <kvalo@kernel.org>,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        Loic Poulain <loic.poulain@linaro.org>,
-        Sergey Ryazanov <ryazanov.s.a@gmail.com>
-Subject: [RFC PATCH 84/86] treewide: net: remove cond_resched()
-Date:   Tue,  7 Nov 2023 15:08:20 -0800
-Message-Id: <20231107230822.371443-28-ankur.a.arora@oracle.com>
+        "David S. Miller" <davem@davemloft.net>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Alison Schofield <alison.schofield@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Andi Shyti <andi.shyti@kernel.org>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        Chris Packham <chris.packham@alliedtelesis.co.nz>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Junxian Huang <huangjunxian6@hisilicon.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Will Deacon <will@kernel.org>, Joerg Roedel <joro@8bytes.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        Mark Gross <markgross@kernel.org>,
+        Finn Thain <fthain@linux-m68k.org>,
+        Michael Schmitz <schmitzmic@gmail.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Kashyap Desai <kashyap.desai@broadcom.com>,
+        Sumit Saxena <sumit.saxena@broadcom.com>,
+        Shivasharan S <shivasharan.srikanteshwara@broadcom.com>,
+        Mark Brown <broonie@kernel.org>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Jens Wiklander <jens.wiklander@linaro.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Helge Deller <deller@gmx.de>,
+        David Hildenbrand <david@redhat.com>
+Subject: [RFC PATCH 85/86] treewide: drivers: remove cond_resched()
+Date:   Tue,  7 Nov 2023 15:08:21 -0800
+Message-Id: <20231107230822.371443-29-ankur.a.arora@oracle.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20231107230822.371443-1-ankur.a.arora@oracle.com>
 References: <20231107215742.363031-1-ankur.a.arora@oracle.com>
  <20231107230822.371443-1-ankur.a.arora@oracle.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: MW4PR03CA0289.namprd03.prod.outlook.com
- (2603:10b6:303:b5::24) To DM8PR10MB5416.namprd10.prod.outlook.com
+X-ClientProxiedBy: MW4PR03CA0315.namprd03.prod.outlook.com
+ (2603:10b6:303:dd::20) To DM8PR10MB5416.namprd10.prod.outlook.com
  (2603:10b6:8:3f::19)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM8PR10MB5416:EE_|IA1PR10MB7261:EE_
-X-MS-Office365-Filtering-Correlation-Id: f87f1887-20d9-44fe-a06c-08dbdfe6a968
+X-MS-TrafficTypeDiagnostic: DM8PR10MB5416:EE_|BY5PR10MB4369:EE_
+X-MS-Office365-Filtering-Correlation-Id: f71382c8-a5f5-4dea-8729-08dbdfe6abd4
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Km3ZTcR+tGuSR8x8uMKMEluwl9Hk3KHAowZSxMZrUS+Gorq21LUUyC8yCj6cS+kEEa6pez2yFK69MC0djkI4lLip9qqpJg8W3iCWMWo7AFc5PuxzgdJLMH2JcO8hvYLg+o3UJ60lrKkcZ4FPwNZE3v0DO4OabvLGSX1Gap0Bi9o+o/u2e++7T+PmKUa5wAyQUjX/o343XLU6SpACgcgF4rNaz7ttWaiJhGXHN0t0zyGlApR135ReUlwJGybHxIUkiQorIOAQ2q4E2oyWDIhKFCRYPLufn/9wSH2f9E+iyoT9W5sUWvdujbAoBD+NhTuRw89l/IK/h1vR0O6ooa9iIPhA1Q7c21LuI4RsKGK77f3XVO/rcoj7D35kZbKBnrH6RJN8ByHCihETczTfxod/E8SOSb/yv/1+o/gcgK4aMnzCIQJp5YqWwrvG89kO/h1sDnN+3p+nMmqW+rhPDFFDf/7ocohLfDi6lg2s29w4xn4yqOF+TwAEPt+xinDr75ZrCxNncTvygCuinxZJLIafhKjp3FUmx4xX+M6tO3FLOdk=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM8PR10MB5416.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(346002)(376002)(136003)(396003)(366004)(230922051799003)(451199024)(64100799003)(186009)(1800799009)(66899024)(30864003)(6506007)(478600001)(6512007)(2616005)(6486002)(966005)(6666004)(7406005)(36756003)(103116003)(38100700002)(86362001)(1076003)(41300700001)(7366002)(7416002)(5660300002)(316002)(66556008)(66476007)(83380400001)(2906002)(54906003)(26005)(66946007)(6916009)(8676002)(4326008)(8936002);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: IGlZM9iC5FoeqiYdFDc+LzAp70ALbEAy6J2WBOKLXCPckRGSblNaf/KIXUFzdMi2VwRyuc+IyZYrGXW4asz0YKzrOzdMJxi6f1HEos9jH/bikZBhVKbWDGueJbmEc0NN/shZ4ZJwV5F7go3vORq5cAaBCzbcGIaMgu+yCjC5mIK+UTxh3w987dqj5ZiJw/nujxebSsf6GbEG5+OuAQpYz8aJ0DW6sQ0nXuohNRANe1+jpXMa2VrAK5lu2ThPTZktF4GFMwW0prpAttVKCJWV15/sreWnvM+nphr83d77ACUnM9ugkAQXJQXDMJCbZzvEFGD7zIVETWby5Y5Q//y6JHRh5N8bMI93mwPGQONKdlm6X1+81oDG2MLQUcWFXR7GG5Z1UTNgc3VTtE44blSUAvFnh4YEMm+5nQ7RJWnREYEGTNYOG6cBGC8mMWSQiBoWqFptNnk6lf9YBmxMMEYcSPoVy589u3+cXSetHejBbLngJnnLFrAmaT013TwTil/zUD5F3ah237wHdimLlusGuvsn4+kQKBJjV/qWdogRZTU2/ucHGtgW1p1KsJUV0qsoDI7ZDuTNiwbIn6fnkI53Rtq7yzt8vbRlAZOd8kHlRx16vM99RLElXgz55rl6Ugzi
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM8PR10MB5416.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(366004)(376002)(39860400002)(346002)(230922051799003)(230273577357003)(230173577357003)(186009)(451199024)(1800799009)(64100799003)(66899024)(66476007)(66946007)(66556008)(54906003)(38100700002)(36756003)(86362001)(103116003)(83380400001)(26005)(66574015)(2616005)(6666004)(1076003)(6512007)(6506007)(6916009)(45080400002)(7336002)(7416002)(7406005)(7366002)(2906002)(316002)(6486002)(966005)(478600001)(8936002)(5660300002)(30864003)(4326008)(8676002)(41300700001)(579004)(559001);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Fo/tk6gJUJUZNlUU+v0tzkEJNJBmURfa1lvp2BCtt/u2wd04KRraLXMo3Sh+?=
- =?us-ascii?Q?t8HVQ0pLZ6dsv+FptUAe8pXjfwTxxyw80RBHJrCdSxf/LvbW7GICtLRNSvQP?=
- =?us-ascii?Q?o8Q+9NDvVLJiYaVThLzl17+/e5ozu20UaynofEpnr4DtXKYBDbOm6ayClRHu?=
- =?us-ascii?Q?1MboBEx95rcxAsDdvyZFPLDbOQKT0DthxtEbXv1dGwWrXSFotlrJHh8clTTQ?=
- =?us-ascii?Q?wNVC6ABmeRqIrq+gpCENT0S6OdAPjOxcgpBgjfcKJjTIcUS70Ae65w/HTtCP?=
- =?us-ascii?Q?irBYE93FJq3Hh1FOagHET57k2H6qTsm/AUyZuPE0AQDWWl4SxpbdQYWZYLqX?=
- =?us-ascii?Q?llx1IC0pU5EwFkzGoKoR9kSY7sDmg9io349Va/GGVAX51jhaO8cEOYHMwd3W?=
- =?us-ascii?Q?QKb92YPpGoONAvCbNgwh8TS5E8tmzQ35D322Mk6xMfd7WcZJMPLaK7WMWRFM?=
- =?us-ascii?Q?3cdqBF10yCMXHTi7O9nkQ3Y6NCOAo0XaWll6h/nu7a2884HoOVFBn14pPFIo?=
- =?us-ascii?Q?goOQWwRQ+P086aDoPY8GjdZ/f4M8DJYXw3YBizEzIftNEFsiiuZfjqyG0WXg?=
- =?us-ascii?Q?ulZE2i6+/cgjLLLcOx+e4QYp0oTL9T/JFAkXxP0joOmMxk2MdCcfPRK0RsjN?=
- =?us-ascii?Q?Lz3FYNm8cwHe3Wv7XfINRRB1e2zF0sXTHRle9dbLfxGVExSl7I4ZmZzNgYOd?=
- =?us-ascii?Q?B66Nd/AnTn1h875vXytSVHwJQwC9AkIBZXiLbU1sBE2SI87N9GcBiDaa10qc?=
- =?us-ascii?Q?4PkkN+fMIE/tlNtyfOXT8X24Y+nL9njpceDvFbpx8MjsdJjM3iLUrfzBdmH6?=
- =?us-ascii?Q?JIon5xSViyVYZyjik0AFwgl/NA7guS8aQpas853uAjLQlbB5g8D+Dq3GASYN?=
- =?us-ascii?Q?ynAAuAnvMWKBnaRGK2OMpM1aSG8yQY29r49JtqQBmF1cWi7BsLrsWPnoPr2k?=
- =?us-ascii?Q?sI4N1Tt7NavF5k5NBIFSs8iKC100fR3e/4/qmQU3jnaqgQXJ1SU+uyu70bWa?=
- =?us-ascii?Q?cYKKO2SN/Kno9psYORVeCOqD7Fcf3HD/PDU+TzfGYLYbeRP3vszBVpMCI73t?=
- =?us-ascii?Q?hoKp8kvtSQwAJzsTvzCJrKmmHRUuXq3stCxjnZ9iWdi5E2/69hQ7P4cczdBL?=
- =?us-ascii?Q?yoZmi/8kz2Jb1z9/O9/iwG6OX1m8F3IpS0kttJKb7cLgSmkgMjt4ge5VkXF9?=
- =?us-ascii?Q?N+l0BxHVqnjmqGUvsXnFJnOVUR7b9uD0lcEXyGrOzx0flgUUppeZNUqXGcgA?=
- =?us-ascii?Q?yJWFLJwFZ7fYeQcqKhWtMsxYRz1SDkWoPwfWfl6fiv83dvshi/4fZpFoBd9a?=
- =?us-ascii?Q?dBR2QyR9Jrz+ilhjj2+LB2djVH8unJU/WEz7DOI6XRjPXD6xi6fdH/SStizA?=
- =?us-ascii?Q?yMiDJzD2PYO5pMpC5OLywshTurvN7F8pfym+CTjuV50BqR99EcZoHaFLYAJ4?=
- =?us-ascii?Q?2Qsof90GU0LZlKHABsRDIWyHnDyTwzTmx90ZntSc63vjcxxyHQxk8K3Eb5dS?=
- =?us-ascii?Q?7Hwh3swJXFdg6huSGx1vfeB2lUhyEORZWA7qApA1J0gJ5UOXfpH1q1asyvUT?=
- =?us-ascii?Q?B0qJv3UAZZROhDjgLw/LXwBo6fXF4LA2NdlA9rqM4OGe1Dar+XiJoay+52yt?=
- =?us-ascii?Q?7A=3D=3D?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?YkQ0dXBXcE9tOWcrbFB2R0ZnbkhWZmRNMENlSmxSVFhhNjQzcFZOc0lneVZC?=
+ =?utf-8?B?Ry81cWdkb2lsM3ZiczNRaW04cklzZHFkWG0xekY2RHJHbHhUbXRDRkFScnJD?=
+ =?utf-8?B?U0N4MFNkK2t5S25zaWVLamtRdkM1aFIzNHFMajZ5L21mZWFEbk1tOHJIUVZ4?=
+ =?utf-8?B?cmkwMnZ1WUVuNEIvcjhBMWIrRmtMaXpRQmNBaFpDZVVKam51Y0VtMDA5Sm8z?=
+ =?utf-8?B?SVBoK3g0RGtoVGxRRkpHVnBnQWoxU2VyVlpLQjVQQU10eHpvdktqMXU5YWVi?=
+ =?utf-8?B?aE8rQjRUU3pUWTQ0SjZKUS8vYzVpM1BLbnFEQ2pvTlhGTGtJSTNZa2p6NHVz?=
+ =?utf-8?B?NDZwM2dtankwbWxyTkJvWEhmYWxWbWpOem5VTFoxWTZGbmZOQnhtUGx0WkM4?=
+ =?utf-8?B?eEJYMFQveCs5cUZHUjQ5dFBuL3J4bk9qWGJJRjZydkxCY0wwYWdTbVRvRDh3?=
+ =?utf-8?B?TFJRSlo4eVFVQzUxOGc1T1BxY2FaUUIxTUt5QnVFYzdSVHRqZEF0azByWHJ2?=
+ =?utf-8?B?VVlhcDBwTDdDTjdKWGhiYU1FQkNlQTVCTWhZeUl1bi9maHV1dEdRVHBXZENB?=
+ =?utf-8?B?MjNBbGpWVkpLQ0UzY1FXR0QzdThkQmR5YTl1OVhDdmlSbUxna2tGY25EczlU?=
+ =?utf-8?B?eW92RmVqNGZ5MUJqU3JiS1JGMmRTZkJqRmxiM2pEcndTbXk5WG8wSXpxNHB3?=
+ =?utf-8?B?M3ZTRVQwUTNBd3hVUm5LR3BtQnUvS2VlaGlZMlFJdUp2NnZwKzBxMmdONnc2?=
+ =?utf-8?B?V28xL09zbnJtRkdCNy92Ykhsa2Vka2d1UnNZNWxDNk5aRXdESlpNaHFaSEdG?=
+ =?utf-8?B?d3dsdFZFUkVoTDB6aUZ6bXp2Z2c1ODlHMHdzeUY5K1NmRUV0WGppZGVXOVVB?=
+ =?utf-8?B?cDVUNjduckxiQ3Fjc3dqeW1HMFJ0NzJGQk94cE4zWEl2NStrcW1qb29CT1JR?=
+ =?utf-8?B?bWR3RE04dVVaUVdOV2tCQktrZWNqRW5pY3c2QmczY2pXa0Z4VHdvS2wvTUtX?=
+ =?utf-8?B?UFYzaC91Z3VvaGRwSTljaXk4ajNpSnB0WDQ1ZEhDV2xselg3SCtJOGs5YXpV?=
+ =?utf-8?B?S2g5OHRKTmNOd3ExbnEwdFdHKzY3WThaRFFWRVZQRWxJSEdYUGFNVFM3VXA2?=
+ =?utf-8?B?UVV1YjhQczU3bkxhUHdLTFRoUnZFU2tPRmpmM1dLQ09iVUFuOGJrZkpCQkx2?=
+ =?utf-8?B?WUZMbmZacjB2VE9aQzRRL1V5OWhuOURtTFBaRnNtdmNvbnlSS2lkRHU4VnQ1?=
+ =?utf-8?B?NjlUd1hGdjl6VUhLWUw5a1lIQ3ViRk1hTlV5UXlVS0Q1YWlPMVh5Ti8rMFVS?=
+ =?utf-8?B?SWpOcEZ1cXE2KzA1cTR1WkpoUkIyK3dhdGdnQTJ6aWJVMENMVnlXWmVVaVFG?=
+ =?utf-8?B?RHdoMmhQS0VHdWJlTVpQcmF5cnNPR1dEU0srUjRLMlRMSXZUYVkxZHNlUy9a?=
+ =?utf-8?B?M0t0ejZiZmZTVXRWRHQwZ2s2ZHp1VjQ3ZTJ0Q05Pa2FwWnV4Rzh4VUR0VWwy?=
+ =?utf-8?B?dlZSNEsrL2dTV3BpMnBUdkU0a0lrMEdhZWUvU1djWFJJN3ZHOERzYThhTFJB?=
+ =?utf-8?B?RS9CV3M4dDhsMVJaY0ttTU1JUUVKaDY4OWo3aUlMWmkxNzRnUXJQa3d4MmpS?=
+ =?utf-8?B?WnByQ2pwQzhBQzNvU3c5SG4xUElmVE1tTVYxbDAvczVqTHB2cGlXTkp0dkZI?=
+ =?utf-8?B?ZUl0bkFTcW5YYnBjenZjdFJsejUvbkpJaE4vWWlTZVJOWURWQ25iMGZEZnBw?=
+ =?utf-8?B?eUgzSWs5VSs1N1V5ZmRkOG0zamE5Y1RFNkliQXpZNTdYbURPVjZaMENuNVpx?=
+ =?utf-8?B?V1c2SmNJY1NmM1hTY0xobjY5OUN2Rm5ReG9TUmVSUno4VEhQWlBIQ3UxR2RM?=
+ =?utf-8?B?SnVEN1J3VGx2SnBTNjhjRm1tTzY1RW5RZERxeXVkZEQzODRZMFJiRjkzUzBj?=
+ =?utf-8?B?REsyamQyUGM4ekdnTXlJbmFCVFozaktLTzZNdngzaGs0RlFvMGZqRTY0LzEr?=
+ =?utf-8?B?eFRXamtjVm9QejNuYWZpTlo5RnhWNjBrSno5Tk5nQWdDamIrdUxLeE1PVDEx?=
+ =?utf-8?B?RGRoMjdZSFIxb2dtMmFYbVJoZTN3eDBTQkM2bHQvS3kxYUdtRERvd1A5c0tX?=
+ =?utf-8?B?aHQxTzZpM1NUbFZ3U1RLdzExOW5tbjNiVHFNdkpIdWVZQUcwTUFsMHkvdzN0?=
+ =?utf-8?B?N0E9PQ==?=
 X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 2
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?us-ascii?Q?445F6eUuhC6TasiwbKDXtXI2ol701bZxWgEj9GJJ8gNI8a6bkDsJ5kKPYgYI?=
- =?us-ascii?Q?J4pw+TGPG2Q8Cl1puF3ygWBMvBQ7H7lPLLKqIe4b8+lHZPefNXnJh7TwFY42?=
- =?us-ascii?Q?YDsveFELplan376gsdV2hXCuoYCICOXB8YLbqnoTHFIdPJkFaXxN/8T73raS?=
- =?us-ascii?Q?mMEsT5Zp64uVG+vVwoK+1b//p5vtHiPRgC9Cl+kfBZ16aldnqPSEPnCryCPa?=
- =?us-ascii?Q?8yT/OplMv/s4EVRqiy4yAQhSia0IzXhYNJ2xsl1x04e77GG1cYSvi15aFaZq?=
- =?us-ascii?Q?EcNTYClv++vo+82RUvvNYm0IU+Ff1j5lLhO/9xaO8FGzxTC98xlwXJrxOlo/?=
- =?us-ascii?Q?wXR7As97A/ZaYcvpb04A5GhEYfZD3w4KYhinmnzp9fqJslShGy7NHHS7u8un?=
- =?us-ascii?Q?mkkIYC91Xq9lA9Imze+5UBC2MOdlY8powlZUGDLIl7QwQLInOuKG0+Vt0c+P?=
- =?us-ascii?Q?/chr4ylKHLadgvlE20/IA6fTc+E5VPaw3w673doLAskHz3+ZojlZWDPXymfT?=
- =?us-ascii?Q?8afDWNC3IyksT7hhZor2nCCmx0aUh4Y27fRNp1whlLdilCBuWT9MEtgfalFr?=
- =?us-ascii?Q?Pk8Z1AQIu5bq8MT1c4raWGGnbFkG/RftxcYgEoT7CtF1uAUdbtmYh/7gMPGG?=
- =?us-ascii?Q?0PN30foqy3/ph3DS/TDARwYDuQEU2nQKRHHzA8LpyNp7uzFbd6DxfuMW/Cl3?=
- =?us-ascii?Q?M8VtghpDXK2RhMuOOZR90U53uIarPuuYguqOl2/3HH5AEhIMqWat/e+i68Aj?=
- =?us-ascii?Q?8uT2K+YQq3mXG16Aunl4bRCQ1Mk9TcyTj3V0tAq15JGD/dxTI48BWmDGPv6M?=
- =?us-ascii?Q?awctQpNkBlY7LtQYep3HrZ6LkJ+bKE4MIs38vBwBH+2t20vxe7CFX7i/UGFv?=
- =?us-ascii?Q?ABmGXM4jg9vk/JH1R32RHoeMTs07SslETWhXAfk7xjVom0tboX3msMb1p2Xf?=
- =?us-ascii?Q?dZ1WwnEmCS27mzbUeYYdZQcWKkU1eD4R3V++tJdzvETW+IxMNLA3ImUUB0+U?=
- =?us-ascii?Q?SEp/iDmiXXZYrqtSUr63c0yqME39OCEE/wi7/uCzvKfEPMJc7edq24l6BVbD?=
- =?us-ascii?Q?cZQF+v/nl32Lvud6NxDO1bH9uMu70BYkS1InycvhSAvCxspSAc826gPGDVxH?=
- =?us-ascii?Q?xT5ZW2XuviYjKPIgIr9+XngCPD+1nuUn3OZBqXW0lrYmwrvzfZgnCvFZSKp8?=
- =?us-ascii?Q?5+WtI7D6RO8dO9v1ydwlpQAFsYiCO08oay5aVLnouhGSwo1wdsbvMNUh694n?=
- =?us-ascii?Q?3i6AxNU4LPI947JH4r8QJvnWlDC0ilvuJpeMgGEl36VlWuau7stilhhbFjWR?=
- =?us-ascii?Q?VeOzRq1bBU5F8VJWM0bjcC/eF+WG3H7mkXfVGHx0gD40eeN38c6vTB158KPg?=
- =?us-ascii?Q?31W5a+t1PpVCkFd88oduh2UHFEmJZMZmoMxtnVpv6pL+EtEslMdNIZe2tFi3?=
- =?us-ascii?Q?pPEWLPS9mi/d9z2TrVwxG5U7VL1haCJUPRE27XEp3wiudsUx7batdLFuwscG?=
- =?us-ascii?Q?ZTlITZFDPjlxqoSbWf3KNxlPvPolItWwD1iSBM+w3H+H83Ii07URfzDLXfJT?=
- =?us-ascii?Q?NJHDdqy7cCBtWwsNyIVx4ydYo2geSrJimKsSsUkQc3cH+S8kgf2N5P8U1huA?=
- =?us-ascii?Q?n44hfIIXBOLNcHrTmNvAR26HtSItNiQuQVJ8fb0QXQG88rGsDuJ+dAb0gnGG?=
- =?us-ascii?Q?28HwNgtq6Blp6ZtPt6UrvtaFg6UJXwzKXrkaSSUaf2Ey5DOSwdUYsuK/KjNH?=
- =?us-ascii?Q?5RPH5JQzdVsaTE5RO+B+XesiwRSPCn+NwaspvwQfOeUkgM/Mk1/Fh71SIcb2?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-1: 6YFP4qr7mLQNpA==
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?utf-8?B?LzFoRzZ1eDQ2RHRLdldIY1E3ajZkY1N3RS9LeVB2V0o2ekFzNmEvWEdQWllT?=
+ =?utf-8?B?YmRsK0lJT2VoYmYwNUtEWDk0RHpPMWhlTmZzVG5SaStrZmNuQVpLd1ZRanND?=
+ =?utf-8?B?UHc4MzFqM1phdWx1TEdVMDZLVS9UbzJzc0xHMjIzRnR1NFZBcUxSVkEzMzMz?=
+ =?utf-8?B?bXB0YjBSY0pqOGhMOStwWS9nQ3RzWHhrU0hodkpxMW1JTjRzS3JaazNuNGN6?=
+ =?utf-8?B?ZFZ1RzU0NFlSeTdQYmZ3UFpzS2s0UncrY1h3L0pGMFF0bkJOZVFLamFGU01N?=
+ =?utf-8?B?Z2VsY2lvWXpuYXFEU0pxY3pORW5tMS8vYVhUQlJwQktIWEZGSmdkZlFhclVy?=
+ =?utf-8?B?UTRNQmRVYy9tT01ra3lmQUpOTUM2ZWt3dk82MlJWTHFFNVVUOTRRMUdQdTEz?=
+ =?utf-8?B?OWMwSjVaRG1KcGNEeG84ZVIxK3FxbjBGaEpmeEU5Qk5qUFdxWm1kWW5wYzRD?=
+ =?utf-8?B?TlNuUldRaFQzeXRTalBxTFV4VjdkTjBIMDVPOU93bHVWKzJxV2s2SVhxZkJk?=
+ =?utf-8?B?T25SOXZXUXlGeWdaSDBRSm1DQmhiWC85VTRWazJjMGtBaEJZcEZXdEhPVHJt?=
+ =?utf-8?B?TjhSUCttMHBrMGNuV3pZaXE1SDBJWGlScURMVXgzVmRJcHh3elgvSDJ6RFBq?=
+ =?utf-8?B?K0t1OEczNGdYU0JsdlNpWkZsaTluT2FHUVdsbktDUGFnTXNPTGhUUmxjWGpl?=
+ =?utf-8?B?VndtN2ZjK0RuNmRLR3BMaWFqMEJDL0wwRWg3WFBHcEl6bEdVMEwzQmt5cU92?=
+ =?utf-8?B?UVhsZ1FJVkdHL2RrSXoyTVhjcnNKZmQrekl1TTNmOUJjQWFXd2R2OWxiSmdI?=
+ =?utf-8?B?SW1CcjRKMWpVUUUrWHFoUGxyallaOWhZajUxNFF1dGRzZnJTdGZiS2YxdzR5?=
+ =?utf-8?B?YmJmM3NEcitJeE5ETHhIdTRxWkt5VzhWczdEaG9SdTkvMzduTGl1MmJLMENC?=
+ =?utf-8?B?N3E5dnNWK0pKbHAydnBYZUYwVDNLc0ZwaVZjcEJmTVd4YWpZUmE5OGFDUEZ1?=
+ =?utf-8?B?aU55WXNGWko2RmRGdFNYUVV2SDQzbjZiR1dsZkNWMk9oLzlaUDNnNGhaSWov?=
+ =?utf-8?B?UVc1d1FSOTlLVjVwRGFJbkR5bk9IQndZTE9SZnhJTzBZdDhta2tvMUZXMkZO?=
+ =?utf-8?B?Qk5rN2FFNmw1RkJwRkRoVnlaWld1QjZGallVRi90RjVPa0ZRTGErb09SRkdJ?=
+ =?utf-8?B?ZzVHaUFJY2twRnVMU0lFbjVBcWZ2cFZKUEM2NVdYQitQOUhFT0VudW5QRFky?=
+ =?utf-8?B?NTRhOVQ4Y3JPL01xdFFmaTlxcmN0a0JWWFpXZlYzSGFWaVpQNU85bkRteE8y?=
+ =?utf-8?B?V2VyWUZKQXE2TUtJVy9LeTdIUmxMazd4OUU1OG90UEx5bTJKbUlEdzg0RUlS?=
+ =?utf-8?B?bXRzS0NhbS9zbUJBR0FXVzFhaHdMVFgxbTFoZ2hyOCtCQjIzZE5DR1VEdWNP?=
+ =?utf-8?B?ZTBzYWFiZHVObWtPc1U4L21ZWlRlbHBPcnMvZnowY040RWxvcGw3Z0JVWGl1?=
+ =?utf-8?B?TmcyMThobGdYakZjVEpqRTUxVTg2Zm1XVlVaekRacENxdlE5cll1NENNeFd0?=
+ =?utf-8?B?L0EwenI3U0llMlZmekE3QlE0Mk9KRXRZU0JMcnFYLzNqdDJSV2Zhc3NqTEZo?=
+ =?utf-8?B?K1hWU3crbkNKSm9TTTl2M0xVWmFrWnczSVNMcXc1WndqZ1VMVjlheFpDTlNi?=
+ =?utf-8?B?dzZoamRBaXF5UTVEaXJsNUZob28xaUNrVHp1NXNKSExibDhDWjFta2VXdWJR?=
+ =?utf-8?B?OXl5VXFzbDhPSG9iZHhsblpSL0VIbklQaVdpa2VBV0VnaVVtcHVKcG1wUnFQ?=
+ =?utf-8?B?M2kzdGc0L0ZMeFZncHFXanVhVkVTVDFsbE0yU2VpVDBOMlFzYVNMS3o3bXhj?=
+ =?utf-8?B?VklBeUFDMURNRzZFK3p3azAvM2xKZ1I2bGFCQWdRdC9FUkNReFdtK3JET2Za?=
+ =?utf-8?B?WFRVNGdFUnNHempKQXYrbjdCVGlxeGxGVWpXZkRsY1BKRnRnNllOcDI1dXM5?=
+ =?utf-8?B?d1hlNHNYUkFLOHFzdkN5bVFoV003Y1dPbkZVV2FKVlBUaU1MNGthY1BYclBP?=
+ =?utf-8?B?VlhjV0gvSXpPa05iTUZSQXlBK1h3Ris2RTFCQ3JkKzBXdkJNWmNITEJkelc1?=
+ =?utf-8?B?V2M3MnozTndNRDZVaHllSDk2NHBXZjZBcCt2U3UrRi9pc3JhM0g4aXJVVzJ6?=
+ =?utf-8?B?aHdKRE5vWUxqaXNPREdMKzNobXRsZHpoV0Q1SzhJSTRsd0JjQ2M5QW5Uak91?=
+ =?utf-8?B?MVNNbnBTdnZwSEdMTGZkRWlOcDFjTUFub3JrUWtoVDdRQ292cFE4amVXQTNm?=
+ =?utf-8?B?NUVQSWE0RnN0MXJuNTZsM2phc0lBWTZNcTFtbGxvdnNLSHRLVTN1VlRuUjRV?=
+ =?utf-8?Q?lBD5zh9oEq6JNbV2s4qSlEF8iVLcZT0dbwpUoXgYUtoJk?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-1: jxRLUkvkNaTELVcAIFtjfoddys3ZnzNW+VAD4eP9Kb2tp03N4ZxXBknFwHxphj1RAejV/Sbnf5pB85yr4bMd/xHaKo9Ab4qmXnBsyddZm9EL1XawvtQTKCzDtSRKHREYSHBwhBaYlDE7s6VJsRqGRdHFm+1YTZ1prX/nfuugQDEWt1b63QyjFLcEOpTu5BybMxrJzWTZYnsJnkCLWYDaBdDlxiRr7TxdKuucz5DW89aYgE395Q2KTIQ/
 X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f87f1887-20d9-44fe-a06c-08dbdfe6a968
+X-MS-Exchange-CrossTenant-Network-Message-Id: f71382c8-a5f5-4dea-8729-08dbdfe6abd4
 X-MS-Exchange-CrossTenant-AuthSource: DM8PR10MB5416.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Nov 2023 23:09:58.3193
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Nov 2023 23:10:02.6678
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: tRKLVBoZYFdyqQLA90rMG2SHrhJNZSJgqM2cVeNPrzSQStJ2ddIpbaRMHgotdKbmyFadSyp/M/BPKARiUaJ9eESw51e9HixxyvYvovjX6Rc=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR10MB7261
+X-MS-Exchange-CrossTenant-UserPrincipalName: bOrPVwLWrBdgGibc5ZVKru25iResNf7qVJwFa4avaDgxflczKz/0CwrpJr0BssO0P15N251XVfYWfh3mbBF5qajgXrQF9m7o2k7z6X/S7J4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR10MB4369
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-11-07_13,2023-11-07_01,2023-05-22_02
@@ -198,8 +245,8 @@ X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlo
  adultscore=0 phishscore=0 suspectscore=0 spamscore=0 malwarescore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311060000
  definitions=main-2311070189
-X-Proofpoint-ORIG-GUID: rWHSZnaHdLbSTm-26AfDLNgH3os3dYOa
-X-Proofpoint-GUID: rWHSZnaHdLbSTm-26AfDLNgH3os3dYOa
+X-Proofpoint-ORIG-GUID: F6lsT5xpG88aXfqNGpfe5b-DJNewMqX3
+X-Proofpoint-GUID: F6lsT5xpG88aXfqNGpfe5b-DJNewMqX3
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -237,784 +284,1715 @@ with some kind of timed or event wait.
 For now we use cond_resched_stall(), which tries to schedule if
 possible, and executes a cpu_relax() if not.
 
-Most of the uses here are in set-1 (some right after we give up a lock,
-causing an explicit preemption check.)
+The cond_resched() calls here are all kinds. Those from set-1
+or set-2 are quite straight-forward to handle.
 
-There are some uses from set-3 where we busy wait: ex. mlx4/mlx5
-drivers, mtk_mdio_busy_wait() and similar. Replaced with
-cond_resched_stall().  Some of those places, however, have wait-times
-in milliseconds, so maybe we should just be a timed-wait?
+There are quite a few from set-3, where as noted above, we
+use cond_resched() as if it were a amulent. Which I supppose
+it is, in that it wards off softlockup or RCU splats.
 
-Note: there are also a few other cases, where I've replaced by
-cond_resched_stall() (ex mhi_net_rx_refill_work() or
-broadcom/b43::lo_measure_feedthrough()) where it doesn't seem
-like the right thing.
+Those are now cond_resched_stall(), but in most cases, given
+that the timeouts are in milliseconds, they could be easily
+timed waits.
 
 [1] https://lore.kernel.org/lkml/20231107215742.363031-1-ankur.a.arora@oracle.com/
 
-Cc: "David S. Miller" <davem@davemloft.net> 
-Cc: Eric Dumazet <edumazet@google.com> 
-Cc: Jakub Kicinski <kuba@kernel.org> 
-Cc: Paolo Abeni <pabeni@redhat.com> 
-Cc: Felix Fietkau <nbd@nbd.name> 
-Cc: John Crispin <john@phrozen.org> 
-Cc: Sean Wang <sean.wang@mediatek.com> 
-Cc: Mark Lee <Mark-MC.Lee@mediatek.com> 
-Cc: Lorenzo Bianconi <lorenzo@kernel.org> 
-Cc: Matthias Brugger <matthias.bgg@gmail.com> 
-Cc: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com> 
+Cc: Oded Gabbay <ogabbay@kernel.org> 
+Cc: Miguel Ojeda <ojeda@kernel.org> 
+Cc: Jens Axboe <axboe@kernel.dk> 
+Cc: Minchan Kim <minchan@kernel.org> 
+Cc: Sergey Senozhatsky <senozhatsky@chromium.org> 
+Cc: Sudip Mukherjee <sudipm.mukherjee@gmail.com> 
+Cc: "Theodore Ts'o" <tytso@mit.edu> 
+Cc: "Jason A. Donenfeld" <Jason@zx2c4.com> 
+Cc: Amit Shah <amit@kernel.org> 
+Cc: Gonglei <arei.gonglei@huawei.com> 
 Cc: "Michael S. Tsirkin" <mst@redhat.com> 
 Cc: Jason Wang <jasowang@redhat.com> 
-Cc: "Jason A. Donenfeld" <Jason@zx2c4.com> 
-Cc: Kalle Valo <kvalo@kernel.org> 
-Cc: Larry Finger <Larry.Finger@lwfinger.net> 
-Cc: Ryder Lee <ryder.lee@mediatek.com> 
-Cc: Loic Poulain <loic.poulain@linaro.org> 
-Cc: Sergey Ryazanov <ryazanov.s.a@gmail.com> 
+Cc: "David S. Miller" <davem@davemloft.net> 
+Cc: Davidlohr Bueso <dave@stgolabs.net> 
+Cc: Jonathan Cameron <jonathan.cameron@huawei.com> 
+Cc: Dave Jiang <dave.jiang@intel.com> 
+Cc: Alison Schofield <alison.schofield@intel.com> 
+Cc: Vishal Verma <vishal.l.verma@intel.com> 
+Cc: Ira Weiny <ira.weiny@intel.com> 
+Cc: Dan Williams <dan.j.williams@intel.com> 
+Cc: Sumit Semwal <sumit.semwal@linaro.org> 
+Cc: "Christian König" <christian.koenig@amd.com> 
+Cc: Andi Shyti <andi.shyti@kernel.org> 
+Cc: Ray Jui <rjui@broadcom.com> 
+Cc: Scott Branden <sbranden@broadcom.com> 
+Cc: Chris Packham <chris.packham@alliedtelesis.co.nz> 
+Cc: Shawn Guo <shawnguo@kernel.org> 
+Cc: Sascha Hauer <s.hauer@pengutronix.de> 
+Cc: Junxian Huang <huangjunxian6@hisilicon.com> 
+Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com> 
+Cc: Will Deacon <will@kernel.org> 
+Cc: Joerg Roedel <joro@8bytes.org> 
+Cc: Mauro Carvalho Chehab <mchehab@kernel.org> 
+Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com> 
+Cc: Hans de Goede <hdegoede@redhat.com> 
+Cc: "Ilpo Järvinen" <ilpo.jarvinen@linux.intel.com> 
+Cc: Mark Gross <markgross@kernel.org> 
+Cc: Finn Thain <fthain@linux-m68k.org> 
+Cc: Michael Schmitz <schmitzmic@gmail.com> 
+Cc: "James E.J. Bottomley" <jejb@linux.ibm.com> 
+Cc: "Martin K. Petersen" <martin.petersen@oracle.com> 
+Cc: Kashyap Desai <kashyap.desai@broadcom.com> 
+Cc: Sumit Saxena <sumit.saxena@broadcom.com> 
+Cc: Shivasharan S <shivasharan.srikanteshwara@broadcom.com> 
+Cc: Mark Brown <broonie@kernel.org> 
+Cc: Neil Armstrong <neil.armstrong@linaro.org> 
+Cc: Jens Wiklander <jens.wiklander@linaro.org> 
+Cc: Alex Williamson <alex.williamson@redhat.com> 
+Cc: Helge Deller <deller@gmx.de> 
+Cc: David Hildenbrand <david@redhat.com> 
 Signed-off-by: Ankur Arora <ankur.a.arora@oracle.com>
 ---
- drivers/net/dummy.c                                 |  1 -
- drivers/net/ethernet/broadcom/tg3.c                 |  2 +-
- drivers/net/ethernet/intel/e1000/e1000_hw.c         |  3 ---
- drivers/net/ethernet/mediatek/mtk_eth_soc.c         |  2 +-
- drivers/net/ethernet/mellanox/mlx4/catas.c          |  2 +-
- drivers/net/ethernet/mellanox/mlx4/cmd.c            | 13 ++++++-------
- .../net/ethernet/mellanox/mlx4/resource_tracker.c   |  9 ++++++++-
- drivers/net/ethernet/mellanox/mlx5/core/cmd.c       |  4 +---
- drivers/net/ethernet/mellanox/mlx5/core/fw.c        |  3 +--
- drivers/net/ethernet/mellanox/mlxsw/i2c.c           |  5 -----
- drivers/net/ethernet/mellanox/mlxsw/pci.c           |  2 --
- drivers/net/ethernet/pasemi/pasemi_mac.c            |  3 ---
- .../net/ethernet/qlogic/netxen/netxen_nic_init.c    |  2 --
- .../net/ethernet/qlogic/qlcnic/qlcnic_83xx_init.c   |  1 -
- drivers/net/ethernet/qlogic/qlcnic/qlcnic_init.c    |  1 -
- .../net/ethernet/qlogic/qlcnic/qlcnic_minidump.c    |  2 --
- drivers/net/ethernet/sfc/falcon/falcon.c            |  6 ------
- drivers/net/ifb.c                                   |  1 -
- drivers/net/ipvlan/ipvlan_core.c                    |  1 -
- drivers/net/macvlan.c                               |  2 --
- drivers/net/mhi_net.c                               |  4 ++--
- drivers/net/netdevsim/fib.c                         |  1 -
- drivers/net/virtio_net.c                            |  2 --
- drivers/net/wireguard/ratelimiter.c                 |  2 --
- drivers/net/wireguard/receive.c                     |  3 ---
- drivers/net/wireguard/send.c                        |  4 ----
- drivers/net/wireless/broadcom/b43/lo.c              |  6 +++---
- drivers/net/wireless/broadcom/b43/pio.c             |  1 -
- drivers/net/wireless/broadcom/b43legacy/phy.c       |  5 -----
- .../wireless/broadcom/brcm80211/brcmfmac/cfg80211.c |  1 -
- drivers/net/wireless/cisco/airo.c                   |  2 --
- drivers/net/wireless/intel/iwlwifi/pcie/trans.c     |  2 --
- drivers/net/wireless/marvell/mwl8k.c                |  2 --
- drivers/net/wireless/mediatek/mt76/util.c           |  1 -
- drivers/net/wwan/mhi_wwan_mbim.c                    |  2 +-
- drivers/net/wwan/t7xx/t7xx_hif_dpmaif_tx.c          |  3 ---
- drivers/net/xen-netback/netback.c                   |  1 -
- drivers/net/xen-netback/rx.c                        |  2 --
- 38 files changed, 25 insertions(+), 84 deletions(-)
+ drivers/accel/ivpu/ivpu_drv.c                      |  2 --
+ drivers/accel/ivpu/ivpu_gem.c                      |  1 -
+ drivers/accel/ivpu/ivpu_pm.c                       |  8 ++++++--
+ drivers/accel/qaic/qaic_data.c                     |  2 --
+ drivers/auxdisplay/charlcd.c                       | 11 -----------
+ drivers/base/power/domain.c                        |  1 -
+ drivers/block/aoe/aoecmd.c                         |  3 +--
+ drivers/block/brd.c                                |  1 -
+ drivers/block/drbd/drbd_bitmap.c                   |  4 ----
+ drivers/block/drbd/drbd_debugfs.c                  |  1 -
+ drivers/block/loop.c                               |  3 ---
+ drivers/block/xen-blkback/blkback.c                |  3 ---
+ drivers/block/zram/zram_drv.c                      |  2 --
+ drivers/bluetooth/virtio_bt.c                      |  1 -
+ drivers/char/hw_random/arm_smccc_trng.c            |  1 -
+ drivers/char/lp.c                                  |  2 --
+ drivers/char/mem.c                                 |  4 ----
+ drivers/char/mwave/3780i.c                         |  4 +---
+ drivers/char/ppdev.c                               |  4 ----
+ drivers/char/random.c                              |  2 --
+ drivers/char/virtio_console.c                      |  1 -
+ drivers/crypto/virtio/virtio_crypto_core.c         |  1 -
+ drivers/cxl/pci.c                                  |  1 -
+ drivers/dma-buf/selftest.c                         |  1 -
+ drivers/dma-buf/st-dma-fence-chain.c               |  1 -
+ drivers/fsi/fsi-sbefifo.c                          | 14 ++++++++++++--
+ drivers/i2c/busses/i2c-bcm-iproc.c                 |  9 +++++++--
+ drivers/i2c/busses/i2c-highlander.c                |  9 +++++++--
+ drivers/i2c/busses/i2c-ibm_iic.c                   | 11 +++++++----
+ drivers/i2c/busses/i2c-mpc.c                       |  2 +-
+ drivers/i2c/busses/i2c-mxs.c                       |  9 ++++++++-
+ drivers/i2c/busses/scx200_acb.c                    |  9 +++++++--
+ drivers/infiniband/core/umem.c                     |  1 -
+ drivers/infiniband/hw/hfi1/driver.c                |  1 -
+ drivers/infiniband/hw/hfi1/firmware.c              |  2 +-
+ drivers/infiniband/hw/hfi1/init.c                  |  1 -
+ drivers/infiniband/hw/hfi1/ruc.c                   |  1 -
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c         |  5 ++++-
+ drivers/infiniband/hw/qib/qib_init.c               |  1 -
+ drivers/infiniband/sw/rxe/rxe_qp.c                 |  3 +--
+ drivers/infiniband/sw/rxe/rxe_task.c               |  4 ++--
+ drivers/input/evdev.c                              |  1 -
+ drivers/input/keyboard/clps711x-keypad.c           |  2 +-
+ drivers/input/misc/uinput.c                        |  1 -
+ drivers/input/mousedev.c                           |  1 -
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c        |  2 --
+ drivers/media/i2c/vpx3220.c                        |  3 ---
+ drivers/media/pci/cobalt/cobalt-i2c.c              |  4 ++--
+ drivers/misc/bcm-vk/bcm_vk_dev.c                   |  3 +--
+ drivers/misc/bcm-vk/bcm_vk_msg.c                   |  3 +--
+ drivers/misc/genwqe/card_base.c                    |  3 +--
+ drivers/misc/genwqe/card_ddcb.c                    |  6 ------
+ drivers/misc/genwqe/card_dev.c                     |  2 --
+ drivers/misc/vmw_balloon.c                         |  4 ----
+ drivers/mmc/host/mmc_spi.c                         |  3 ---
+ drivers/nvdimm/btt.c                               |  2 --
+ drivers/nvme/target/zns.c                          |  2 --
+ drivers/parport/parport_ip32.c                     |  1 -
+ drivers/parport/parport_pc.c                       |  4 ----
+ drivers/pci/pci-sysfs.c                            |  1 -
+ drivers/pci/proc.c                                 |  1 -
+ .../x86/intel/speed_select_if/isst_if_mbox_pci.c   |  4 ++--
+ drivers/s390/cio/css.c                             |  8 --------
+ drivers/scsi/NCR5380.c                             |  2 --
+ drivers/scsi/megaraid.c                            |  1 -
+ drivers/scsi/qedi/qedi_main.c                      |  1 -
+ drivers/scsi/qla2xxx/qla_nx.c                      |  2 --
+ drivers/scsi/qla2xxx/qla_sup.c                     |  5 -----
+ drivers/scsi/qla4xxx/ql4_nx.c                      |  1 -
+ drivers/scsi/xen-scsifront.c                       |  2 +-
+ drivers/spi/spi-lantiq-ssc.c                       |  3 +--
+ drivers/spi/spi-meson-spifc.c                      |  2 +-
+ drivers/spi/spi.c                                  |  2 +-
+ drivers/staging/rtl8723bs/core/rtw_mlme_ext.c      |  2 +-
+ drivers/staging/rtl8723bs/core/rtw_pwrctrl.c       |  2 --
+ drivers/tee/optee/ffa_abi.c                        |  1 -
+ drivers/tee/optee/smc_abi.c                        |  1 -
+ drivers/tty/hvc/hvc_console.c                      |  6 ++----
+ drivers/tty/tty_buffer.c                           |  3 ---
+ drivers/tty/tty_io.c                               |  1 -
+ drivers/usb/gadget/udc/max3420_udc.c               |  1 -
+ drivers/usb/host/max3421-hcd.c                     |  2 +-
+ drivers/usb/host/xen-hcd.c                         |  2 +-
+ drivers/vfio/vfio_iommu_spapr_tce.c                |  2 --
+ drivers/vfio/vfio_iommu_type1.c                    |  7 -------
+ drivers/vhost/vhost.c                              |  1 -
+ drivers/video/console/vgacon.c                     |  4 ----
+ drivers/virtio/virtio_mem.c                        |  8 --------
+ 88 files changed, 82 insertions(+), 190 deletions(-)
 
-diff --git a/drivers/net/dummy.c b/drivers/net/dummy.c
-index c4b1b0aa438a..dfebf6387d8a 100644
---- a/drivers/net/dummy.c
-+++ b/drivers/net/dummy.c
-@@ -182,7 +182,6 @@ static int __init dummy_init_module(void)
- 
- 	for (i = 0; i < numdummies && !err; i++) {
- 		err = dummy_init_one();
--		cond_resched();
- 	}
- 	if (err < 0)
- 		__rtnl_link_unregister(&dummy_link_ops);
-diff --git a/drivers/net/ethernet/broadcom/tg3.c b/drivers/net/ethernet/broadcom/tg3.c
-index 14b311196b8f..ad511d721db3 100644
---- a/drivers/net/ethernet/broadcom/tg3.c
-+++ b/drivers/net/ethernet/broadcom/tg3.c
-@@ -12040,7 +12040,7 @@ static int tg3_get_eeprom(struct net_device *dev, struct ethtool_eeprom *eeprom,
- 				ret = -EINTR;
- 				goto eeprom_done;
- 			}
--			cond_resched();
-+			cond_resched_stall();
- 		}
- 	}
- 	eeprom->len += i;
-diff --git a/drivers/net/ethernet/intel/e1000/e1000_hw.c b/drivers/net/ethernet/intel/e1000/e1000_hw.c
-index 4542e2bc28e8..22a419bdc6b7 100644
---- a/drivers/net/ethernet/intel/e1000/e1000_hw.c
-+++ b/drivers/net/ethernet/intel/e1000/e1000_hw.c
-@@ -3937,7 +3937,6 @@ static s32 e1000_do_read_eeprom(struct e1000_hw *hw, u16 offset, u16 words,
- 			 */
- 			data[i] = e1000_shift_in_ee_bits(hw, 16);
- 			e1000_standby_eeprom(hw);
--			cond_resched();
- 		}
- 	}
- 
-@@ -4088,7 +4087,6 @@ static s32 e1000_write_eeprom_spi(struct e1000_hw *hw, u16 offset, u16 words,
- 			return -E1000_ERR_EEPROM;
- 
- 		e1000_standby_eeprom(hw);
--		cond_resched();
- 
- 		/*  Send the WRITE ENABLE command (8 bit opcode )  */
- 		e1000_shift_out_ee_bits(hw, EEPROM_WREN_OPCODE_SPI,
-@@ -4198,7 +4196,6 @@ static s32 e1000_write_eeprom_microwire(struct e1000_hw *hw, u16 offset,
- 
- 		/* Recover from write */
- 		e1000_standby_eeprom(hw);
--		cond_resched();
- 
- 		words_written++;
- 	}
-diff --git a/drivers/net/ethernet/mediatek/mtk_eth_soc.c b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
-index 20afe79f380a..26a9f293ed32 100644
---- a/drivers/net/ethernet/mediatek/mtk_eth_soc.c
-+++ b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
-@@ -309,7 +309,7 @@ static int mtk_mdio_busy_wait(struct mtk_eth *eth)
- 			return 0;
- 		if (time_after(jiffies, t_start + PHY_IAC_TIMEOUT))
+diff --git a/drivers/accel/ivpu/ivpu_drv.c b/drivers/accel/ivpu/ivpu_drv.c
+index 7e9359611d69..479801a1d961 100644
+--- a/drivers/accel/ivpu/ivpu_drv.c
++++ b/drivers/accel/ivpu/ivpu_drv.c
+@@ -314,8 +314,6 @@ static int ivpu_wait_for_ready(struct ivpu_device *vdev)
+ 		ret = ivpu_ipc_receive(vdev, &cons, &ipc_hdr, NULL, 0);
+ 		if (ret != -ETIMEDOUT || time_after_eq(jiffies, timeout))
  			break;
--		cond_resched();
-+		cond_resched_stall();
- 	}
- 
- 	dev_err(eth->dev, "mdio: MDIO timeout\n");
-diff --git a/drivers/net/ethernet/mellanox/mlx4/catas.c b/drivers/net/ethernet/mellanox/mlx4/catas.c
-index 0d8a362c2673..f013eb3fa6f8 100644
---- a/drivers/net/ethernet/mellanox/mlx4/catas.c
-+++ b/drivers/net/ethernet/mellanox/mlx4/catas.c
-@@ -148,7 +148,7 @@ static int mlx4_reset_slave(struct mlx4_dev *dev)
- 			mlx4_warn(dev, "VF Reset succeed\n");
- 			return 0;
- 		}
--		cond_resched();
-+		cond_resched_stall();
- 	}
- 	mlx4_err(dev, "Fail to send reset over the communication channel\n");
- 	return -ETIMEDOUT;
-diff --git a/drivers/net/ethernet/mellanox/mlx4/cmd.c b/drivers/net/ethernet/mellanox/mlx4/cmd.c
-index f5b1f8c7834f..259918642b50 100644
---- a/drivers/net/ethernet/mellanox/mlx4/cmd.c
-+++ b/drivers/net/ethernet/mellanox/mlx4/cmd.c
-@@ -312,7 +312,8 @@ static int mlx4_comm_cmd_poll(struct mlx4_dev *dev, u8 cmd, u16 param,
- 
- 	end = msecs_to_jiffies(timeout) + jiffies;
- 	while (comm_pending(dev) && time_before(jiffies, end))
--		cond_resched();
-+		cond_resched_stall();
-+
- 	ret_from_pending = comm_pending(dev);
- 	if (ret_from_pending) {
- 		/* check if the slave is trying to boot in the middle of
-@@ -387,7 +388,7 @@ static int mlx4_comm_cmd_wait(struct mlx4_dev *dev, u8 vhcr_cmd,
- 	if (!(dev->persist->state & MLX4_DEVICE_STATE_INTERNAL_ERROR)) {
- 		end = msecs_to_jiffies(timeout) + jiffies;
- 		while (comm_pending(dev) && time_before(jiffies, end))
--			cond_resched();
-+			cond_resched_stall();
- 	}
- 	goto out;
- 
-@@ -470,7 +471,7 @@ static int mlx4_cmd_post(struct mlx4_dev *dev, u64 in_param, u64 out_param,
- 			mlx4_err(dev, "%s:cmd_pending failed\n", __func__);
- 			goto out;
- 		}
--		cond_resched();
-+		cond_resched_stall();
- 	}
- 
- 	/*
-@@ -621,8 +622,7 @@ static int mlx4_cmd_poll(struct mlx4_dev *dev, u64 in_param, u64 *out_param,
- 			err = mlx4_internal_err_ret_value(dev, op, op_modifier);
- 			goto out;
- 		}
 -
 -		cond_resched();
-+		cond_resched_stall();
  	}
  
- 	if (cmd_pending(dev)) {
-@@ -2324,8 +2324,7 @@ static int sync_toggles(struct mlx4_dev *dev)
- 			priv->cmd.comm_toggle = rd_toggle >> 31;
- 			return 0;
+ 	ivpu_ipc_consumer_del(vdev, &cons);
+diff --git a/drivers/accel/ivpu/ivpu_gem.c b/drivers/accel/ivpu/ivpu_gem.c
+index d09f13b35902..06e4c1eceae8 100644
+--- a/drivers/accel/ivpu/ivpu_gem.c
++++ b/drivers/accel/ivpu/ivpu_gem.c
+@@ -156,7 +156,6 @@ static int __must_check internal_alloc_pages_locked(struct ivpu_bo *bo)
+ 			ret = -ENOMEM;
+ 			goto err_free_pages;
  		}
--
+-		cond_resched();
+ 	}
+ 
+ 	bo->pages = pages;
+diff --git a/drivers/accel/ivpu/ivpu_pm.c b/drivers/accel/ivpu/ivpu_pm.c
+index ffff2496e8e8..aa9cc4a1903c 100644
+--- a/drivers/accel/ivpu/ivpu_pm.c
++++ b/drivers/accel/ivpu/ivpu_pm.c
+@@ -105,7 +105,7 @@ static void ivpu_pm_recovery_work(struct work_struct *work)
+ retry:
+ 	ret = pci_try_reset_function(to_pci_dev(vdev->drm.dev));
+ 	if (ret == -EAGAIN && !drm_dev_is_unplugged(&vdev->drm)) {
 -		cond_resched();
 +		cond_resched_stall();
+ 		goto retry;
  	}
  
- 	/*
-diff --git a/drivers/net/ethernet/mellanox/mlx4/resource_tracker.c b/drivers/net/ethernet/mellanox/mlx4/resource_tracker.c
-index 771b92019af1..c8127acea986 100644
---- a/drivers/net/ethernet/mellanox/mlx4/resource_tracker.c
-+++ b/drivers/net/ethernet/mellanox/mlx4/resource_tracker.c
-@@ -4649,7 +4649,14 @@ static int move_all_busy(struct mlx4_dev *dev, int slave,
- 		if (time_after(jiffies, begin + 5 * HZ))
- 			break;
- 		if (busy)
--			cond_resched();
-+			/*
-+			 * Giving up the spinlock in _move_all_busy() will
-+			 * reschedule if needed.
-+			 * Add a cpu_relax() here to ensure that we give
-+			 * others a chance to acquire the lock.
-+			 */
-+			cpu_relax();
-+
- 	} while (busy);
+@@ -146,7 +146,11 @@ int ivpu_pm_suspend_cb(struct device *dev)
  
- 	if (busy)
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/cmd.c b/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
-index c22b0ad0c870..3c5bfa8eda00 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
-@@ -285,7 +285,7 @@ static void poll_timeout(struct mlx5_cmd_work_ent *ent)
- 			ent->ret = 0;
+ 	timeout = jiffies + msecs_to_jiffies(vdev->timeout.tdr);
+ 	while (!ivpu_hw_is_idle(vdev)) {
+-		cond_resched();
++
++		/* The timeout is in thousands of msecs. Maybe this should be a
++		 * timed wait instead?
++		 */
++		cond_resched_stall();
+ 		if (time_after_eq(jiffies, timeout)) {
+ 			ivpu_err(vdev, "Failed to enter idle on system suspend\n");
+ 			return -EBUSY;
+diff --git a/drivers/accel/qaic/qaic_data.c b/drivers/accel/qaic/qaic_data.c
+index f4b06792c6f1..d06fd9d765f2 100644
+--- a/drivers/accel/qaic/qaic_data.c
++++ b/drivers/accel/qaic/qaic_data.c
+@@ -1516,7 +1516,6 @@ void irq_polling_work(struct work_struct *work)
  			return;
  		}
--		cond_resched();
-+		cond_resched_stall();
- 	} while (time_before(jiffies, poll_end));
  
- 	ent->ret = -ETIMEDOUT;
-@@ -1773,13 +1773,11 @@ void mlx5_cmd_flush(struct mlx5_core_dev *dev)
- 	for (i = 0; i < cmd->vars.max_reg_cmds; i++) {
- 		while (down_trylock(&cmd->vars.sem)) {
- 			mlx5_cmd_trigger_completions(dev);
--			cond_resched();
- 		}
+-		cond_resched();
+ 		usleep_range(datapath_poll_interval_us, 2 * datapath_poll_interval_us);
  	}
- 
- 	while (down_trylock(&cmd->vars.pages_sem)) {
- 		mlx5_cmd_trigger_completions(dev);
--		cond_resched();
- 	}
- 
- 	/* Unlock cmdif */
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/fw.c b/drivers/net/ethernet/mellanox/mlx5/core/fw.c
-index 58f4c0d0fafa..a08ca20ceeda 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/fw.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/fw.c
-@@ -373,8 +373,7 @@ int mlx5_cmd_fast_teardown_hca(struct mlx5_core_dev *dev)
- 	do {
- 		if (mlx5_get_nic_state(dev) == MLX5_NIC_IFC_DISABLED)
- 			break;
--
--		cond_resched();
-+		cond_resched_stall();
- 	} while (!time_after(jiffies, end));
- 
- 	if (mlx5_get_nic_state(dev) != MLX5_NIC_IFC_DISABLED) {
-diff --git a/drivers/net/ethernet/mellanox/mlxsw/i2c.c b/drivers/net/ethernet/mellanox/mlxsw/i2c.c
-index d23f293e285c..1a11f8cd6bb9 100644
---- a/drivers/net/ethernet/mellanox/mlxsw/i2c.c
-+++ b/drivers/net/ethernet/mellanox/mlxsw/i2c.c
-@@ -180,7 +180,6 @@ static int mlxsw_i2c_wait_go_bit(struct i2c_client *client,
- 				break;
- 			}
- 		}
--		cond_resched();
- 	} while ((time_before(jiffies, end)) || (i++ < MLXSW_I2C_RETRY));
- 
- 	if (wait_done) {
-@@ -361,8 +360,6 @@ mlxsw_i2c_write(struct device *dev, size_t in_mbox_size, u8 *in_mbox, int num,
- 			err = i2c_transfer(client->adapter, &write_tran, 1);
- 			if (err == 1)
- 				break;
--
--			cond_resched();
- 		} while ((time_before(jiffies, end)) ||
- 			 (j++ < MLXSW_I2C_RETRY));
- 
-@@ -473,8 +470,6 @@ mlxsw_i2c_cmd(struct device *dev, u16 opcode, u32 in_mod, size_t in_mbox_size,
- 					   ARRAY_SIZE(read_tran));
- 			if (err == ARRAY_SIZE(read_tran))
- 				break;
--
--			cond_resched();
- 		} while ((time_before(jiffies, end)) ||
- 			 (j++ < MLXSW_I2C_RETRY));
- 
-diff --git a/drivers/net/ethernet/mellanox/mlxsw/pci.c b/drivers/net/ethernet/mellanox/mlxsw/pci.c
-index 51eea1f0529c..8124b27d0eaa 100644
---- a/drivers/net/ethernet/mellanox/mlxsw/pci.c
-+++ b/drivers/net/ethernet/mellanox/mlxsw/pci.c
-@@ -1455,7 +1455,6 @@ static int mlxsw_pci_sys_ready_wait(struct mlxsw_pci *mlxsw_pci,
- 		val = mlxsw_pci_read32(mlxsw_pci, FW_READY);
- 		if ((val & MLXSW_PCI_FW_READY_MASK) == MLXSW_PCI_FW_READY_MAGIC)
- 			return 0;
--		cond_resched();
- 	} while (time_before(jiffies, end));
- 
- 	*p_sys_status = val & MLXSW_PCI_FW_READY_MASK;
-@@ -1824,7 +1823,6 @@ static int mlxsw_pci_cmd_exec(void *bus_priv, u16 opcode, u8 opcode_mod,
- 				*p_status = ctrl >> MLXSW_PCI_CIR_CTRL_STATUS_SHIFT;
- 				break;
- 			}
--			cond_resched();
- 		} while (time_before(jiffies, end));
- 	} else {
- 		wait_event_timeout(mlxsw_pci->cmd.wait, *p_wait_done, timeout);
-diff --git a/drivers/net/ethernet/pasemi/pasemi_mac.c b/drivers/net/ethernet/pasemi/pasemi_mac.c
-index ed7dd0a04235..3ec6ac758878 100644
---- a/drivers/net/ethernet/pasemi/pasemi_mac.c
-+++ b/drivers/net/ethernet/pasemi/pasemi_mac.c
-@@ -1225,7 +1225,6 @@ static void pasemi_mac_pause_txchan(struct pasemi_mac *mac)
- 		sta = read_dma_reg(PAS_DMA_TXCHAN_TCMDSTA(txch));
- 		if (!(sta & PAS_DMA_TXCHAN_TCMDSTA_ACT))
- 			break;
--		cond_resched();
- 	}
- 
- 	if (sta & PAS_DMA_TXCHAN_TCMDSTA_ACT)
-@@ -1246,7 +1245,6 @@ static void pasemi_mac_pause_rxchan(struct pasemi_mac *mac)
- 		sta = read_dma_reg(PAS_DMA_RXCHAN_CCMDSTA(rxch));
- 		if (!(sta & PAS_DMA_RXCHAN_CCMDSTA_ACT))
- 			break;
--		cond_resched();
- 	}
- 
- 	if (sta & PAS_DMA_RXCHAN_CCMDSTA_ACT)
-@@ -1265,7 +1263,6 @@ static void pasemi_mac_pause_rxint(struct pasemi_mac *mac)
- 		sta = read_dma_reg(PAS_DMA_RXINT_RCMDSTA(mac->dma_if));
- 		if (!(sta & PAS_DMA_RXINT_RCMDSTA_ACT))
- 			break;
--		cond_resched();
- 	}
- 
- 	if (sta & PAS_DMA_RXINT_RCMDSTA_ACT)
-diff --git a/drivers/net/ethernet/qlogic/netxen/netxen_nic_init.c b/drivers/net/ethernet/qlogic/netxen/netxen_nic_init.c
-index 35ec9aab3dc7..c26c43a7a83c 100644
---- a/drivers/net/ethernet/qlogic/netxen/netxen_nic_init.c
-+++ b/drivers/net/ethernet/qlogic/netxen/netxen_nic_init.c
-@@ -326,8 +326,6 @@ static int netxen_wait_rom_done(struct netxen_adapter *adapter)
- 	long timeout = 0;
- 	long done = 0;
- 
--	cond_resched();
--
- 	while (done == 0) {
- 		done = NXRD32(adapter, NETXEN_ROMUSB_GLB_STATUS);
- 		done &= 2;
-diff --git a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_83xx_init.c b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_83xx_init.c
-index c95d56e56c59..359db1fa500f 100644
---- a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_83xx_init.c
-+++ b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_83xx_init.c
-@@ -2023,7 +2023,6 @@ static void qlcnic_83xx_exec_template_cmd(struct qlcnic_adapter *p_dev,
- 			break;
- 		}
- 		entry += p_hdr->size;
--		cond_resched();
- 	}
- 	p_dev->ahw->reset.seq_index = index;
  }
-diff --git a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_init.c b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_init.c
-index 09f20c794754..110b1ea921e5 100644
---- a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_init.c
-+++ b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_init.c
-@@ -295,7 +295,6 @@ static int qlcnic_wait_rom_done(struct qlcnic_adapter *adapter)
- 	long done = 0;
- 	int err = 0;
+@@ -1547,7 +1546,6 @@ irqreturn_t dbc_irq_threaded_fn(int irq, void *data)
  
--	cond_resched();
- 	while (done == 0) {
- 		done = QLCRD32(adapter, QLCNIC_ROMUSB_GLB_STATUS, &err);
- 		done &= 2;
-diff --git a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_minidump.c b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_minidump.c
-index 7ecb3dfe30bd..38b4f56fc464 100644
---- a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_minidump.c
-+++ b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_minidump.c
-@@ -702,7 +702,6 @@ static u32 qlcnic_read_memory_test_agent(struct qlcnic_adapter *adapter,
- 		addr += 16;
- 		reg_read -= 16;
- 		ret += 16;
--		cond_resched();
- 	}
- out:
- 	mutex_unlock(&adapter->ahw->mem_lock);
-@@ -1383,7 +1382,6 @@ int qlcnic_dump_fw(struct qlcnic_adapter *adapter)
- 		buf_offset += entry->hdr.cap_size;
- 		entry_offset += entry->hdr.offset;
- 		buffer = fw_dump->data + buf_offset;
+ 	if (!event_count) {
+ 		event_count = NUM_EVENTS;
 -		cond_resched();
  	}
  
- 	fw_dump->clr = 1;
-diff --git a/drivers/net/ethernet/sfc/falcon/falcon.c b/drivers/net/ethernet/sfc/falcon/falcon.c
-index 7a1c9337081b..44cc6e1bef57 100644
---- a/drivers/net/ethernet/sfc/falcon/falcon.c
-+++ b/drivers/net/ethernet/sfc/falcon/falcon.c
-@@ -630,8 +630,6 @@ falcon_spi_read(struct ef4_nic *efx, const struct falcon_spi_device *spi,
- 			break;
- 		pos += block_len;
+ 	/*
+diff --git a/drivers/auxdisplay/charlcd.c b/drivers/auxdisplay/charlcd.c
+index 6d309e4971b6..cb1213e292f4 100644
+--- a/drivers/auxdisplay/charlcd.c
++++ b/drivers/auxdisplay/charlcd.c
+@@ -470,14 +470,6 @@ static ssize_t charlcd_write(struct file *file, const char __user *buf,
+ 	char c;
  
--		/* Avoid locking up the system */
+ 	for (; count-- > 0; (*ppos)++, tmp++) {
+-		if (((count + 1) & 0x1f) == 0) {
+-			/*
+-			 * charlcd_write() is invoked as a VFS->write() callback
+-			 * and as such it is always invoked from preemptible
+-			 * context and may sleep.
+-			 */
+-			cond_resched();
+-		}
+ 
+ 		if (get_user(c, tmp))
+ 			return -EFAULT;
+@@ -539,9 +531,6 @@ static void charlcd_puts(struct charlcd *lcd, const char *s)
+ 	int count = strlen(s);
+ 
+ 	for (; count-- > 0; tmp++) {
+-		if (((count + 1) & 0x1f) == 0)
+-			cond_resched();
+-
+ 		charlcd_write_char(lcd, *tmp);
+ 	}
+ }
+diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
+index 5cb2023581d4..6b77bdfe1de9 100644
+--- a/drivers/base/power/domain.c
++++ b/drivers/base/power/domain.c
+@@ -2696,7 +2696,6 @@ static void genpd_dev_pm_detach(struct device *dev, bool power_off)
+ 			break;
+ 
+ 		mdelay(i);
 -		cond_resched();
- 		if (signal_pending(current)) {
- 			rc = -EINTR;
- 			break;
-@@ -723,8 +721,6 @@ falcon_spi_write(struct ef4_nic *efx, const struct falcon_spi_device *spi,
+ 	}
  
- 		pos += block_len;
+ 	if (ret < 0) {
+diff --git a/drivers/block/aoe/aoecmd.c b/drivers/block/aoe/aoecmd.c
+index d7317425be51..d212b0df661f 100644
+--- a/drivers/block/aoe/aoecmd.c
++++ b/drivers/block/aoe/aoecmd.c
+@@ -1235,8 +1235,7 @@ kthread(void *vp)
+ 		if (!more) {
+ 			schedule();
+ 			remove_wait_queue(k->waitq, &wait);
+-		} else
+-			cond_resched();
++		}
+ 	} while (!kthread_should_stop());
+ 	complete(&k->rendez);	/* tell spawner we're stopping */
+ 	return 0;
+diff --git a/drivers/block/brd.c b/drivers/block/brd.c
+index 970bd6ff38c4..be1577cd4d4b 100644
+--- a/drivers/block/brd.c
++++ b/drivers/block/brd.c
+@@ -111,7 +111,6 @@ static void brd_free_pages(struct brd_device *brd)
  
--		/* Avoid locking up the system */
+ 	xa_for_each(&brd->brd_pages, idx, page) {
+ 		__free_page(page);
 -		cond_resched();
- 		if (signal_pending(current)) {
- 			rc = -EINTR;
+ 	}
+ 
+ 	xa_destroy(&brd->brd_pages);
+diff --git a/drivers/block/drbd/drbd_bitmap.c b/drivers/block/drbd/drbd_bitmap.c
+index 85ca000a0564..f12de044c540 100644
+--- a/drivers/block/drbd/drbd_bitmap.c
++++ b/drivers/block/drbd/drbd_bitmap.c
+@@ -563,7 +563,6 @@ static unsigned long bm_count_bits(struct drbd_bitmap *b)
+ 		p_addr = __bm_map_pidx(b, idx);
+ 		bits += bitmap_weight(p_addr, BITS_PER_PAGE);
+ 		__bm_unmap(p_addr);
+-		cond_resched();
+ 	}
+ 	/* last (or only) page */
+ 	last_word = ((b->bm_bits - 1) & BITS_PER_PAGE_MASK) >> LN2_BPL;
+@@ -1118,7 +1117,6 @@ static int bm_rw(struct drbd_device *device, const unsigned int flags, unsigned
+ 			atomic_inc(&ctx->in_flight);
+ 			bm_page_io_async(ctx, i);
+ 			++count;
+-			cond_resched();
+ 		}
+ 	} else if (flags & BM_AIO_WRITE_HINTED) {
+ 		/* ASSERT: BM_AIO_WRITE_ALL_PAGES is not set. */
+@@ -1158,7 +1156,6 @@ static int bm_rw(struct drbd_device *device, const unsigned int flags, unsigned
+ 			atomic_inc(&ctx->in_flight);
+ 			bm_page_io_async(ctx, i);
+ 			++count;
+-			cond_resched();
+ 		}
+ 	}
+ 
+@@ -1545,7 +1542,6 @@ void _drbd_bm_set_bits(struct drbd_device *device, const unsigned long s, const
+ 	for (page_nr = first_page; page_nr < last_page; page_nr++) {
+ 		bm_set_full_words_within_one_page(device->bitmap, page_nr, first_word, last_word);
+ 		spin_unlock_irq(&b->bm_lock);
+-		cond_resched();
+ 		first_word = 0;
+ 		spin_lock_irq(&b->bm_lock);
+ 	}
+diff --git a/drivers/block/drbd/drbd_debugfs.c b/drivers/block/drbd/drbd_debugfs.c
+index 12460b584bcb..48a85882dfc4 100644
+--- a/drivers/block/drbd/drbd_debugfs.c
++++ b/drivers/block/drbd/drbd_debugfs.c
+@@ -318,7 +318,6 @@ static void seq_print_resource_transfer_log_summary(struct seq_file *m,
+ 			struct drbd_request *req_next;
+ 			kref_get(&req->kref);
+ 			spin_unlock_irq(&resource->req_lock);
+-			cond_resched();
+ 			spin_lock_irq(&resource->req_lock);
+ 			req_next = list_next_entry(req, tl_requests);
+ 			if (kref_put(&req->kref, drbd_req_destroy))
+diff --git a/drivers/block/loop.c b/drivers/block/loop.c
+index 9f2d412fc560..0ea0d37b2f28 100644
+--- a/drivers/block/loop.c
++++ b/drivers/block/loop.c
+@@ -271,7 +271,6 @@ static int lo_write_simple(struct loop_device *lo, struct request *rq,
+ 		ret = lo_write_bvec(lo->lo_backing_file, &bvec, &pos);
+ 		if (ret < 0)
  			break;
-@@ -839,8 +835,6 @@ falcon_spi_erase(struct falcon_mtd_partition *part, loff_t start, size_t len)
- 		if (memcmp(empty, buffer, block_len))
+-		cond_resched();
+ 	}
+ 
+ 	return ret;
+@@ -300,7 +299,6 @@ static int lo_read_simple(struct loop_device *lo, struct request *rq,
+ 				zero_fill_bio(bio);
+ 			break;
+ 		}
+-		cond_resched();
+ 	}
+ 
+ 	return 0;
+@@ -1948,7 +1946,6 @@ static void loop_process_work(struct loop_worker *worker,
+ 		spin_unlock_irq(&lo->lo_work_lock);
+ 
+ 		loop_handle_cmd(cmd);
+-		cond_resched();
+ 
+ 		spin_lock_irq(&lo->lo_work_lock);
+ 	}
+diff --git a/drivers/block/xen-blkback/blkback.c b/drivers/block/xen-blkback/blkback.c
+index c362f4ad80ab..9bcef880df30 100644
+--- a/drivers/block/xen-blkback/blkback.c
++++ b/drivers/block/xen-blkback/blkback.c
+@@ -1259,9 +1259,6 @@ __do_block_io_op(struct xen_blkif_ring *ring, unsigned int *eoi_flags)
+ 				goto done;
+ 			break;
+ 		}
+-
+-		/* Yield point for this unbounded loop. */
+-		cond_resched();
+ 	}
+ done:
+ 	return more_to_do;
+diff --git a/drivers/block/zram/zram_drv.c b/drivers/block/zram/zram_drv.c
+index 06673c6ca255..b1f9312e7905 100644
+--- a/drivers/block/zram/zram_drv.c
++++ b/drivers/block/zram/zram_drv.c
+@@ -1819,8 +1819,6 @@ static ssize_t recompress_store(struct device *dev,
+ 			ret = err;
+ 			break;
+ 		}
+-
+-		cond_resched();
+ 	}
+ 
+ 	__free_page(page);
+diff --git a/drivers/bluetooth/virtio_bt.c b/drivers/bluetooth/virtio_bt.c
+index 2ac70b560c46..c570c45d1480 100644
+--- a/drivers/bluetooth/virtio_bt.c
++++ b/drivers/bluetooth/virtio_bt.c
+@@ -79,7 +79,6 @@ static int virtbt_close_vdev(struct virtio_bluetooth *vbt)
+ 
+ 		while ((skb = virtqueue_detach_unused_buf(vq)))
+ 			kfree_skb(skb);
+-		cond_resched();
+ 	}
+ 
+ 	return 0;
+diff --git a/drivers/char/hw_random/arm_smccc_trng.c b/drivers/char/hw_random/arm_smccc_trng.c
+index 7e954341b09f..f60d101920e4 100644
+--- a/drivers/char/hw_random/arm_smccc_trng.c
++++ b/drivers/char/hw_random/arm_smccc_trng.c
+@@ -84,7 +84,6 @@ static int smccc_trng_read(struct hwrng *rng, void *data, size_t max, bool wait)
+ 			tries++;
+ 			if (tries >= SMCCC_TRNG_MAX_TRIES)
+ 				return copied;
+-			cond_resched();
+ 			break;
+ 		default:
  			return -EIO;
+diff --git a/drivers/char/lp.c b/drivers/char/lp.c
+index 2f171d14b9b5..1d58105112b5 100644
+--- a/drivers/char/lp.c
++++ b/drivers/char/lp.c
+@@ -478,8 +478,6 @@ static ssize_t lp_read(struct file *file, char __user *buf,
+ 			retval = -ERESTARTSYS;
+ 			break;
+ 		}
+-
+-		cond_resched();
+ 	}
+ 	parport_negotiate(lp_table[minor].dev->port, IEEE1284_MODE_COMPAT);
+  out:
+diff --git a/drivers/char/mem.c b/drivers/char/mem.c
+index 1052b0f2d4cf..6f97ab7004d9 100644
+--- a/drivers/char/mem.c
++++ b/drivers/char/mem.c
+@@ -92,8 +92,6 @@ static inline int range_is_allowed(unsigned long pfn, unsigned long size)
  
--		/* Avoid locking up the system */
+ static inline bool should_stop_iteration(void)
+ {
+-	if (need_resched())
+-		cond_resched();
+ 	return signal_pending(current);
+ }
+ 
+@@ -497,7 +495,6 @@ static ssize_t read_iter_zero(struct kiocb *iocb, struct iov_iter *iter)
+ 			continue;
+ 		if (iocb->ki_flags & IOCB_NOWAIT)
+ 			return written ? written : -EAGAIN;
+-		cond_resched();
+ 	}
+ 	return written;
+ }
+@@ -523,7 +520,6 @@ static ssize_t read_zero(struct file *file, char __user *buf,
+ 
+ 		if (signal_pending(current))
+ 			break;
+-		cond_resched();
+ 	}
+ 
+ 	return cleared;
+diff --git a/drivers/char/mwave/3780i.c b/drivers/char/mwave/3780i.c
+index 4a8937f80570..927a1cca1168 100644
+--- a/drivers/char/mwave/3780i.c
++++ b/drivers/char/mwave/3780i.c
+@@ -51,7 +51,7 @@
+ #include <linux/delay.h>
+ #include <linux/ioport.h>
+ #include <linux/bitops.h>
+-#include <linux/sched.h>	/* cond_resched() */
++#include <linux/sched.h>
+ 
+ #include <asm/io.h>
+ #include <linux/uaccess.h>
+@@ -64,9 +64,7 @@ static DEFINE_SPINLOCK(dsp_lock);
+ 
+ static void PaceMsaAccess(unsigned short usDspBaseIO)
+ {
+-	cond_resched();
+ 	udelay(100);
+-	cond_resched();
+ }
+ 
+ unsigned short dsp3780I_ReadMsaCfg(unsigned short usDspBaseIO,
+diff --git a/drivers/char/ppdev.c b/drivers/char/ppdev.c
+index 4c188e9e477c..7463228ba9bf 100644
+--- a/drivers/char/ppdev.c
++++ b/drivers/char/ppdev.c
+@@ -176,8 +176,6 @@ static ssize_t pp_read(struct file *file, char __user *buf, size_t count,
+ 			bytes_read = -ERESTARTSYS;
+ 			break;
+ 		}
+-
+-		cond_resched();
+ 	}
+ 
+ 	parport_set_timeout(pp->pdev, pp->default_inactivity);
+@@ -256,8 +254,6 @@ static ssize_t pp_write(struct file *file, const char __user *buf,
+ 
+ 		if (signal_pending(current))
+ 			break;
+-
+-		cond_resched();
+ 	}
+ 
+ 	parport_set_timeout(pp->pdev, pp->default_inactivity);
+diff --git a/drivers/char/random.c b/drivers/char/random.c
+index 3cb37760dfec..9e25f3a5c83d 100644
+--- a/drivers/char/random.c
++++ b/drivers/char/random.c
+@@ -457,7 +457,6 @@ static ssize_t get_random_bytes_user(struct iov_iter *iter)
+ 		if (ret % PAGE_SIZE == 0) {
+ 			if (signal_pending(current))
+ 				break;
+-			cond_resched();
+ 		}
+ 	}
+ 
+@@ -1417,7 +1416,6 @@ static ssize_t write_pool_user(struct iov_iter *iter)
+ 		if (ret % PAGE_SIZE == 0) {
+ 			if (signal_pending(current))
+ 				break;
+-			cond_resched();
+ 		}
+ 	}
+ 
+diff --git a/drivers/char/virtio_console.c b/drivers/char/virtio_console.c
+index 680d1ef2a217..1f8da0a71ce9 100644
+--- a/drivers/char/virtio_console.c
++++ b/drivers/char/virtio_console.c
+@@ -1936,7 +1936,6 @@ static void remove_vqs(struct ports_device *portdev)
+ 		flush_bufs(vq, true);
+ 		while ((buf = virtqueue_detach_unused_buf(vq)))
+ 			free_buf(buf, true);
+-		cond_resched();
+ 	}
+ 	portdev->vdev->config->del_vqs(portdev->vdev);
+ 	kfree(portdev->in_vqs);
+diff --git a/drivers/crypto/virtio/virtio_crypto_core.c b/drivers/crypto/virtio/virtio_crypto_core.c
+index 43a0838d31ff..3842915ea743 100644
+--- a/drivers/crypto/virtio/virtio_crypto_core.c
++++ b/drivers/crypto/virtio/virtio_crypto_core.c
+@@ -490,7 +490,6 @@ static void virtcrypto_free_unused_reqs(struct virtio_crypto *vcrypto)
+ 			kfree(vc_req->req_data);
+ 			kfree(vc_req->sgs);
+ 		}
+-		cond_resched();
+ 	}
+ }
+ 
+diff --git a/drivers/cxl/pci.c b/drivers/cxl/pci.c
+index 44a21ab7add5..2c7e670d9a91 100644
+--- a/drivers/cxl/pci.c
++++ b/drivers/cxl/pci.c
+@@ -634,7 +634,6 @@ static irqreturn_t cxl_event_thread(int irq, void *id)
+ 		if (!status)
+ 			break;
+ 		cxl_mem_get_event_records(mds, status);
+-		cond_resched();
+ 	} while (status);
+ 
+ 	return IRQ_HANDLED;
+diff --git a/drivers/dma-buf/selftest.c b/drivers/dma-buf/selftest.c
+index c60b6944b4bd..ddf94da3d412 100644
+--- a/drivers/dma-buf/selftest.c
++++ b/drivers/dma-buf/selftest.c
+@@ -93,7 +93,6 @@ __subtests(const char *caller, const struct subtest *st, int count, void *data)
+ 	int err;
+ 
+ 	for (; count--; st++) {
 -		cond_resched();
  		if (signal_pending(current))
  			return -EINTR;
- 	}
-diff --git a/drivers/net/ifb.c b/drivers/net/ifb.c
-index 78253ad57b2e..ffd23d862967 100644
---- a/drivers/net/ifb.c
-+++ b/drivers/net/ifb.c
-@@ -434,7 +434,6 @@ static int __init ifb_init_module(void)
  
- 	for (i = 0; i < numifbs && !err; i++) {
- 		err = ifb_init_one(i);
+diff --git a/drivers/dma-buf/st-dma-fence-chain.c b/drivers/dma-buf/st-dma-fence-chain.c
+index c0979c8049b5..cde69fadb4f4 100644
+--- a/drivers/dma-buf/st-dma-fence-chain.c
++++ b/drivers/dma-buf/st-dma-fence-chain.c
+@@ -431,7 +431,6 @@ static int __find_race(void *arg)
+ signal:
+ 		seqno = get_random_u32_below(data->fc.chain_length - 1);
+ 		dma_fence_signal(data->fc.fences[seqno]);
 -		cond_resched();
  	}
- 	if (err)
- 		__rtnl_link_unregister(&ifb_link_ops);
-diff --git a/drivers/net/ipvlan/ipvlan_core.c b/drivers/net/ipvlan/ipvlan_core.c
-index c0c49f181367..91a4d1bda8a0 100644
---- a/drivers/net/ipvlan/ipvlan_core.c
-+++ b/drivers/net/ipvlan/ipvlan_core.c
-@@ -292,7 +292,6 @@ void ipvlan_process_multicast(struct work_struct *work)
- 				kfree_skb(skb);
+ 
+ 	if (atomic_dec_and_test(&data->children))
+diff --git a/drivers/fsi/fsi-sbefifo.c b/drivers/fsi/fsi-sbefifo.c
+index 0a98517f3959..0e58ebae0130 100644
+--- a/drivers/fsi/fsi-sbefifo.c
++++ b/drivers/fsi/fsi-sbefifo.c
+@@ -372,7 +372,13 @@ static int sbefifo_request_reset(struct sbefifo *sbefifo)
+ 			return 0;
  		}
- 		dev_put(dev);
+ 
+-		cond_resched();
++		/*
++		 * Use cond_resched_stall() to avoid spinning in a
++		 * tight loop.
++		 * Though, given that the timeout is in milliseconds,
++		 * maybe this should be a timed or event wait?
++		 */
++		cond_resched_stall();
+ 	}
+ 	dev_err(dev, "FIFO reset timed out\n");
+ 
+@@ -462,7 +468,11 @@ static int sbefifo_wait(struct sbefifo *sbefifo, bool up,
+ 
+ 	end_time = jiffies + timeout;
+ 	while (!time_after(jiffies, end_time)) {
+-		cond_resched();
++		/*
++		 * As above, maybe this should be a timed or event wait?
++		 */
++		cond_resched_stall();
++
+ 		rc = sbefifo_regr(sbefifo, addr, &sts);
+ 		if (rc < 0) {
+ 			dev_err(dev, "FSI error %d reading status register\n", rc);
+diff --git a/drivers/i2c/busses/i2c-bcm-iproc.c b/drivers/i2c/busses/i2c-bcm-iproc.c
+index 51aab662050b..6efe6d18d859 100644
+--- a/drivers/i2c/busses/i2c-bcm-iproc.c
++++ b/drivers/i2c/busses/i2c-bcm-iproc.c
+@@ -788,8 +788,13 @@ static int bcm_iproc_i2c_xfer_wait(struct bcm_iproc_i2c_dev *iproc_i2c,
+ 				break;
+ 			}
+ 
+-			cpu_relax();
+-			cond_resched();
++			/*
++			 * Use cond_resched_stall() to avoid spinning in a
++			 * tight loop.
++			 * Though, given that the timeout is in milliseconds,
++			 * maybe this should be a timed or event wait?
++			 */
++			cond_resched_stall();
+ 		} while (!iproc_i2c->xfer_is_done);
+ 	}
+ 
+diff --git a/drivers/i2c/busses/i2c-highlander.c b/drivers/i2c/busses/i2c-highlander.c
+index 7922bc917c33..06eed7e1c4f3 100644
+--- a/drivers/i2c/busses/i2c-highlander.c
++++ b/drivers/i2c/busses/i2c-highlander.c
+@@ -187,8 +187,13 @@ static void highlander_i2c_poll(struct highlander_i2c_dev *dev)
+ 		if (time_after(jiffies, timeout))
+ 			break;
+ 
+-		cpu_relax();
+-		cond_resched();
++		/*
++		 * Use cond_resched_stall() to avoid spinning in a
++		 * tight loop.
++		 * Though, given that the timeout is in milliseconds,
++		 * maybe this should be a timed or event wait?
++		 */
++		cond_resched_stall();
+ 	}
+ 
+ 	dev_err(dev->dev, "polling timed out\n");
+diff --git a/drivers/i2c/busses/i2c-ibm_iic.c b/drivers/i2c/busses/i2c-ibm_iic.c
+index 408820319ec4..b486d8b9636b 100644
+--- a/drivers/i2c/busses/i2c-ibm_iic.c
++++ b/drivers/i2c/busses/i2c-ibm_iic.c
+@@ -207,9 +207,6 @@ static void iic_dev_reset(struct ibm_iic_private* dev)
+ 			udelay(10);
+ 			dc ^= DIRCNTL_SCC;
+ 			out_8(&iic->directcntl, dc);
+-
+-			/* be nice */
+-			cond_resched();
+ 		}
+ 	}
+ 
+@@ -231,7 +228,13 @@ static int iic_dc_wait(volatile struct iic_regs __iomem *iic, u8 mask)
+ 	while ((in_8(&iic->directcntl) & mask) != mask){
+ 		if (unlikely(time_after(jiffies, x)))
+ 			return -1;
+-		cond_resched();
++		/*
++		 * Use cond_resched_stall() to avoid spinning in a
++		 * tight loop.
++		 * Though, given that the timeout is in milliseconds,
++		 * maybe this should be a timed or event wait?
++		 */
++		cond_resched_stall();
+ 	}
+ 	return 0;
+ }
+diff --git a/drivers/i2c/busses/i2c-mpc.c b/drivers/i2c/busses/i2c-mpc.c
+index e4e4995ab224..82d24523c6a7 100644
+--- a/drivers/i2c/busses/i2c-mpc.c
++++ b/drivers/i2c/busses/i2c-mpc.c
+@@ -712,7 +712,7 @@ static int mpc_i2c_execute_msg(struct mpc_i2c *i2c)
+ 			}
+ 			return -EIO;
+ 		}
+-		cond_resched();
++		cond_resched_stall();
+ 	}
+ 
+ 	return i2c->rc;
+diff --git a/drivers/i2c/busses/i2c-mxs.c b/drivers/i2c/busses/i2c-mxs.c
+index 36def0a9c95c..d4d69cd7ef46 100644
+--- a/drivers/i2c/busses/i2c-mxs.c
++++ b/drivers/i2c/busses/i2c-mxs.c
+@@ -310,7 +310,14 @@ static int mxs_i2c_pio_wait_xfer_end(struct mxs_i2c_dev *i2c)
+ 			return -ENXIO;
+ 		if (time_after(jiffies, timeout))
+ 			return -ETIMEDOUT;
+-		cond_resched();
++
++		/*
++		 * Use cond_resched_stall() to avoid spinning in a
++		 * tight loop.
++		 * Though, given that the timeout is in milliseconds,
++		 * maybe this should be a timed or event wait?
++		 */
++		cond_resched_stall();
+ 	}
+ 
+ 	return 0;
+diff --git a/drivers/i2c/busses/scx200_acb.c b/drivers/i2c/busses/scx200_acb.c
+index 83c1db610f54..5646130c003f 100644
+--- a/drivers/i2c/busses/scx200_acb.c
++++ b/drivers/i2c/busses/scx200_acb.c
+@@ -232,8 +232,13 @@ static void scx200_acb_poll(struct scx200_acb_iface *iface)
+ 		}
+ 		if (time_after(jiffies, timeout))
+ 			break;
+-		cpu_relax();
+-		cond_resched();
++		/*
++		 * Use cond_resched_stall() to avoid spinning in a
++		 * tight loop.
++		 * Though, given that the timeout is in milliseconds,
++		 * maybe this should timeout or event wait?
++		 */
++		cond_resched_stall();
+ 	}
+ 
+ 	dev_err(&iface->adapter.dev, "timeout in state %s\n",
+diff --git a/drivers/infiniband/core/umem.c b/drivers/infiniband/core/umem.c
+index f9ab671c8eda..6b4d3d3193a2 100644
+--- a/drivers/infiniband/core/umem.c
++++ b/drivers/infiniband/core/umem.c
+@@ -215,7 +215,6 @@ struct ib_umem *ib_umem_get(struct ib_device *device, unsigned long addr,
+ 		gup_flags |= FOLL_WRITE;
+ 
+ 	while (npages) {
+-		cond_resched();
+ 		pinned = pin_user_pages_fast(cur_base,
+ 					  min_t(unsigned long, npages,
+ 						PAGE_SIZE /
+diff --git a/drivers/infiniband/hw/hfi1/driver.c b/drivers/infiniband/hw/hfi1/driver.c
+index f4492fa407e0..b390eb169a60 100644
+--- a/drivers/infiniband/hw/hfi1/driver.c
++++ b/drivers/infiniband/hw/hfi1/driver.c
+@@ -668,7 +668,6 @@ static noinline int max_packet_exceeded(struct hfi1_packet *packet, int thread)
+ 		if ((packet->numpkt & (MAX_PKT_RECV_THREAD - 1)) == 0)
+ 			/* allow defered processing */
+ 			process_rcv_qp_work(packet);
+-		cond_resched();
+ 		return RCV_PKT_OK;
+ 	} else {
+ 		this_cpu_inc(*packet->rcd->dd->rcv_limit);
+diff --git a/drivers/infiniband/hw/hfi1/firmware.c b/drivers/infiniband/hw/hfi1/firmware.c
+index 0c0cef5b1e0e..717ccb0e69b4 100644
+--- a/drivers/infiniband/hw/hfi1/firmware.c
++++ b/drivers/infiniband/hw/hfi1/firmware.c
+@@ -560,7 +560,7 @@ static void __obtain_firmware(struct hfi1_devdata *dd)
+ 		 * something that holds for 30 seconds.  If we do that twice
+ 		 * in a row it triggers task blocked warning.
+ 		 */
+-		cond_resched();
++		cond_resched_stall();
+ 		if (fw_8051_load)
+ 			dispose_one_firmware(&fw_8051);
+ 		if (fw_fabric_serdes_load)
+diff --git a/drivers/infiniband/hw/hfi1/init.c b/drivers/infiniband/hw/hfi1/init.c
+index 6de37c5d7d27..3b5abcd72660 100644
+--- a/drivers/infiniband/hw/hfi1/init.c
++++ b/drivers/infiniband/hw/hfi1/init.c
+@@ -1958,7 +1958,6 @@ int hfi1_setup_eagerbufs(struct hfi1_ctxtdata *rcd)
+ 	for (idx = 0; idx < rcd->egrbufs.alloced; idx++) {
+ 		hfi1_put_tid(dd, rcd->eager_base + idx, PT_EAGER,
+ 			     rcd->egrbufs.rcvtids[idx].dma, order);
 -		cond_resched();
  	}
- }
  
-diff --git a/drivers/net/macvlan.c b/drivers/net/macvlan.c
-index 02bd201bc7e5..120af3235f4d 100644
---- a/drivers/net/macvlan.c
-+++ b/drivers/net/macvlan.c
-@@ -341,8 +341,6 @@ static void macvlan_process_broadcast(struct work_struct *w)
- 		if (src)
- 			dev_put(src->dev);
- 		consume_skb(skb);
+ 	return 0;
+diff --git a/drivers/infiniband/hw/hfi1/ruc.c b/drivers/infiniband/hw/hfi1/ruc.c
+index b0151b7293f5..35fa25211351 100644
+--- a/drivers/infiniband/hw/hfi1/ruc.c
++++ b/drivers/infiniband/hw/hfi1/ruc.c
+@@ -459,7 +459,6 @@ bool hfi1_schedule_send_yield(struct rvt_qp *qp, struct hfi1_pkt_state *ps,
+ 			return true;
+ 		}
+ 
+-		cond_resched();
+ 		this_cpu_inc(*ps->ppd->dd->send_schedule);
+ 		ps->timeout = jiffies + ps->timeout_int;
+ 	}
+diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+index d82daff2d9bd..c76610422255 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
++++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+@@ -2985,7 +2985,10 @@ static int v2_wait_mbox_complete(struct hns_roce_dev *hr_dev, u32 timeout,
+ 			return -ETIMEDOUT;
+ 		}
+ 
+-		cond_resched();
++		/* The timeout is in hundreds of msecs. Maybe this should be a
++		 * timed wait instead?
++		 */
++		cond_resched_stall();
+ 		ret = -EBUSY;
+ 	}
+ 
+diff --git a/drivers/infiniband/hw/qib/qib_init.c b/drivers/infiniband/hw/qib/qib_init.c
+index 33667becd52b..0d8e0abb5090 100644
+--- a/drivers/infiniband/hw/qib/qib_init.c
++++ b/drivers/infiniband/hw/qib/qib_init.c
+@@ -1674,7 +1674,6 @@ int qib_setup_eagerbufs(struct qib_ctxtdata *rcd)
+ 					  RCVHQ_RCV_TYPE_EAGER, pa);
+ 			pa += egrsize;
+ 		}
+-		cond_resched(); /* don't hog the cpu */
+ 	}
+ 
+ 	return 0;
+diff --git a/drivers/infiniband/sw/rxe/rxe_qp.c b/drivers/infiniband/sw/rxe/rxe_qp.c
+index 28e379c108bc..b0fb5a993bae 100644
+--- a/drivers/infiniband/sw/rxe/rxe_qp.c
++++ b/drivers/infiniband/sw/rxe/rxe_qp.c
+@@ -778,12 +778,11 @@ int rxe_qp_to_attr(struct rxe_qp *qp, struct ib_qp_attr *attr, int mask)
+ 	rxe_av_to_attr(&qp->alt_av, &attr->alt_ah_attr);
+ 
+ 	/* Applications that get this state typically spin on it.
+-	 * Yield the processor
++	 * Giving up the spinlock will reschedule if needed.
+ 	 */
+ 	spin_lock_irqsave(&qp->state_lock, flags);
+ 	if (qp->attr.sq_draining) {
+ 		spin_unlock_irqrestore(&qp->state_lock, flags);
+-		cond_resched();
+ 	} else {
+ 		spin_unlock_irqrestore(&qp->state_lock, flags);
+ 	}
+diff --git a/drivers/infiniband/sw/rxe/rxe_task.c b/drivers/infiniband/sw/rxe/rxe_task.c
+index 1501120d4f52..692f57fdfdc9 100644
+--- a/drivers/infiniband/sw/rxe/rxe_task.c
++++ b/drivers/infiniband/sw/rxe/rxe_task.c
+@@ -227,7 +227,7 @@ void rxe_cleanup_task(struct rxe_task *task)
+ 	 * for the previously scheduled tasks to finish.
+ 	 */
+ 	while (!is_done(task))
+-		cond_resched();
++		cond_resched_stall();
+ 
+ 	spin_lock_irqsave(&task->lock, flags);
+ 	task->state = TASK_STATE_INVALID;
+@@ -289,7 +289,7 @@ void rxe_disable_task(struct rxe_task *task)
+ 	spin_unlock_irqrestore(&task->lock, flags);
+ 
+ 	while (!is_done(task))
+-		cond_resched();
++		cond_resched_stall();
+ 
+ 	spin_lock_irqsave(&task->lock, flags);
+ 	task->state = TASK_STATE_DRAINED;
+diff --git a/drivers/input/evdev.c b/drivers/input/evdev.c
+index 95f90699d2b1..effbc991be41 100644
+--- a/drivers/input/evdev.c
++++ b/drivers/input/evdev.c
+@@ -529,7 +529,6 @@ static ssize_t evdev_write(struct file *file, const char __user *buffer,
+ 
+ 		input_inject_event(&evdev->handle,
+ 				   event.type, event.code, event.value);
+-		cond_resched();
+ 	}
+ 
+  out:
+diff --git a/drivers/input/keyboard/clps711x-keypad.c b/drivers/input/keyboard/clps711x-keypad.c
+index 4c1a3e611edd..e02f6d35ed51 100644
+--- a/drivers/input/keyboard/clps711x-keypad.c
++++ b/drivers/input/keyboard/clps711x-keypad.c
+@@ -52,7 +52,7 @@ static void clps711x_keypad_poll(struct input_dev *input)
+ 			/* Read twice for protection against fluctuations */
+ 			do {
+ 				state = gpiod_get_value_cansleep(data->desc);
+-				cond_resched();
++				cond_resched_stall();
+ 				state1 = gpiod_get_value_cansleep(data->desc);
+ 			} while (state != state1);
+ 
+diff --git a/drivers/input/misc/uinput.c b/drivers/input/misc/uinput.c
+index d98212d55108..a6c95916ac7e 100644
+--- a/drivers/input/misc/uinput.c
++++ b/drivers/input/misc/uinput.c
+@@ -624,7 +624,6 @@ static ssize_t uinput_inject_events(struct uinput_device *udev,
+ 
+ 		input_event(udev->dev, ev.type, ev.code, ev.value);
+ 		bytes += input_event_size();
+-		cond_resched();
+ 	}
+ 
+ 	return bytes;
+diff --git a/drivers/input/mousedev.c b/drivers/input/mousedev.c
+index 505c562a5daa..7ce9ffca6d12 100644
+--- a/drivers/input/mousedev.c
++++ b/drivers/input/mousedev.c
+@@ -704,7 +704,6 @@ static ssize_t mousedev_write(struct file *file, const char __user *buffer,
+ 		mousedev_generate_response(client, c);
+ 
+ 		spin_unlock_irq(&client->packet_lock);
+-		cond_resched();
+ 	}
+ 
+ 	kill_fasync(&client->fasync, SIGIO, POLL_IN);
+diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+index bd0a596f9863..8f517a80a831 100644
+--- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
++++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+@@ -1582,8 +1582,6 @@ static irqreturn_t arm_smmu_evtq_thread(int irq, void *dev)
+ 			for (i = 0; i < ARRAY_SIZE(evt); ++i)
+ 				dev_info(smmu->dev, "\t0x%016llx\n",
+ 					 (unsigned long long)evt[i]);
+-
+-			cond_resched();
+ 		}
+ 
+ 		/*
+diff --git a/drivers/media/i2c/vpx3220.c b/drivers/media/i2c/vpx3220.c
+index 1eaae886f217..c673dba9a592 100644
+--- a/drivers/media/i2c/vpx3220.c
++++ b/drivers/media/i2c/vpx3220.c
+@@ -81,9 +81,6 @@ static int vpx3220_fp_status(struct v4l2_subdev *sd)
+ 			return 0;
+ 
+ 		udelay(10);
+-
+-		if (need_resched())
+-			cond_resched();
+ 	}
+ 
+ 	return -1;
+diff --git a/drivers/media/pci/cobalt/cobalt-i2c.c b/drivers/media/pci/cobalt/cobalt-i2c.c
+index 10c9ee33f73e..2a11dd49559a 100644
+--- a/drivers/media/pci/cobalt/cobalt-i2c.c
++++ b/drivers/media/pci/cobalt/cobalt-i2c.c
+@@ -140,7 +140,7 @@ static int cobalt_tx_bytes(struct cobalt_i2c_regs __iomem *regs,
+ 		while (status & M00018_SR_BITMAP_TIP_MSK) {
+ 			if (time_after(jiffies, start_time + adap->timeout))
+ 				return -ETIMEDOUT;
+-			cond_resched();
++			cond_resched_stall();
+ 			status = ioread8(&regs->cr_sr);
+ 		}
+ 
+@@ -199,7 +199,7 @@ static int cobalt_rx_bytes(struct cobalt_i2c_regs __iomem *regs,
+ 		while (status & M00018_SR_BITMAP_TIP_MSK) {
+ 			if (time_after(jiffies, start_time + adap->timeout))
+ 				return -ETIMEDOUT;
+-			cond_resched();
++			cond_resched_stall();
+ 			status = ioread8(&regs->cr_sr);
+ 		}
+ 
+diff --git a/drivers/misc/bcm-vk/bcm_vk_dev.c b/drivers/misc/bcm-vk/bcm_vk_dev.c
+index d4a96137728d..d262e4c5b4e3 100644
+--- a/drivers/misc/bcm-vk/bcm_vk_dev.c
++++ b/drivers/misc/bcm-vk/bcm_vk_dev.c
+@@ -364,8 +364,7 @@ static inline int bcm_vk_wait(struct bcm_vk *vk, enum pci_barno bar,
+ 		if (time_after(jiffies, timeout))
+ 			return -ETIMEDOUT;
+ 
+-		cpu_relax();
+-		cond_resched();
++		cond_resched_stall();
+ 	} while ((rd_val & mask) != value);
+ 
+ 	return 0;
+diff --git a/drivers/misc/bcm-vk/bcm_vk_msg.c b/drivers/misc/bcm-vk/bcm_vk_msg.c
+index e17d81231ea6..1b5a71382e76 100644
+--- a/drivers/misc/bcm-vk/bcm_vk_msg.c
++++ b/drivers/misc/bcm-vk/bcm_vk_msg.c
+@@ -1295,8 +1295,7 @@ int bcm_vk_release(struct inode *inode, struct file *p_file)
+ 			break;
+ 		}
+ 		dma_cnt = atomic_read(&ctx->dma_cnt);
+-		cpu_relax();
+-		cond_resched();
++		cond_resched_stall();
+ 	} while (dma_cnt);
+ 	dev_dbg(dev, "Draining for [fd-%d] pid %d - delay %d ms\n",
+ 		ctx->idx, pid, jiffies_to_msecs(jiffies - start_time));
+diff --git a/drivers/misc/genwqe/card_base.c b/drivers/misc/genwqe/card_base.c
+index 224a7e97cbea..03ed8a426d49 100644
+--- a/drivers/misc/genwqe/card_base.c
++++ b/drivers/misc/genwqe/card_base.c
+@@ -1004,7 +1004,6 @@ static int genwqe_health_thread(void *data)
+ 		}
+ 
+ 		cd->last_gfir = gfir;
+-		cond_resched();
+ 	}
+ 
+ 	return 0;
+@@ -1041,7 +1040,7 @@ static int genwqe_health_thread(void *data)
+ 
+ 	/* genwqe_bus_reset failed(). Now wait for genwqe_remove(). */
+ 	while (!kthread_should_stop())
+-		cond_resched();
++		cond_resched_stall();
+ 
+ 	return -EIO;
+ }
+diff --git a/drivers/misc/genwqe/card_ddcb.c b/drivers/misc/genwqe/card_ddcb.c
+index 500b1feaf1f6..793faf4bdc06 100644
+--- a/drivers/misc/genwqe/card_ddcb.c
++++ b/drivers/misc/genwqe/card_ddcb.c
+@@ -1207,12 +1207,6 @@ static int genwqe_card_thread(void *data)
+ 		}
+ 		if (should_stop)
+ 			break;
+-
+-		/*
+-		 * Avoid soft lockups on heavy loads; we do not want
+-		 * to disable our interrupts.
+-		 */
+-		cond_resched();
+ 	}
+ 	return 0;
+ }
+diff --git a/drivers/misc/genwqe/card_dev.c b/drivers/misc/genwqe/card_dev.c
+index 55fc5b80e649..ec1112dc7d5a 100644
+--- a/drivers/misc/genwqe/card_dev.c
++++ b/drivers/misc/genwqe/card_dev.c
+@@ -1322,7 +1322,6 @@ static int genwqe_inform_and_stop_processes(struct genwqe_dev *cd)
+ 			     genwqe_open_files(cd); i++) {
+ 			dev_info(&pci_dev->dev, "  %d sec ...", i);
+ 
+-			cond_resched();
+ 			msleep(1000);
+ 		}
+ 
+@@ -1340,7 +1339,6 @@ static int genwqe_inform_and_stop_processes(struct genwqe_dev *cd)
+ 				     genwqe_open_files(cd); i++) {
+ 				dev_warn(&pci_dev->dev, "  %d sec ...", i);
+ 
+-				cond_resched();
+ 				msleep(1000);
+ 			}
+ 		}
+diff --git a/drivers/misc/vmw_balloon.c b/drivers/misc/vmw_balloon.c
+index 9ce9b9e0e9b6..7cf977e70935 100644
+--- a/drivers/misc/vmw_balloon.c
++++ b/drivers/misc/vmw_balloon.c
+@@ -1158,8 +1158,6 @@ static void vmballoon_inflate(struct vmballoon *b)
+ 			vmballoon_split_refused_pages(&ctl);
+ 			ctl.page_size--;
+ 		}
 -
 -		cond_resched();
  	}
- }
  
-diff --git a/drivers/net/mhi_net.c b/drivers/net/mhi_net.c
-index ae169929a9d8..cbb59a94b083 100644
---- a/drivers/net/mhi_net.c
-+++ b/drivers/net/mhi_net.c
-@@ -291,9 +291,9 @@ static void mhi_net_rx_refill_work(struct work_struct *work)
- 		}
- 
- 		/* Do not hog the CPU if rx buffers are consumed faster than
--		 * queued (unlikely).
-+		 * queued (uhlikely).
- 		 */
--		cond_resched();
-+		cond_resched_stall();
- 	}
- 
- 	/* If we're still starved of rx buffers, reschedule later */
-diff --git a/drivers/net/netdevsim/fib.c b/drivers/net/netdevsim/fib.c
-index a1f91ff8ec56..7b7a37b247d1 100644
---- a/drivers/net/netdevsim/fib.c
-+++ b/drivers/net/netdevsim/fib.c
-@@ -1492,7 +1492,6 @@ static void nsim_fib_event_work(struct work_struct *work)
- 		nsim_fib_event(fib_event);
- 		list_del(&fib_event->list);
- 		kfree(fib_event);
--		cond_resched();
- 	}
- 	mutex_unlock(&data->fib_lock);
- }
-diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index d67f742fbd4c..d0d7cd077a85 100644
---- a/drivers/net/virtio_net.c
-+++ b/drivers/net/virtio_net.c
-@@ -4015,7 +4015,6 @@ static void free_unused_bufs(struct virtnet_info *vi)
- 		struct virtqueue *vq = vi->sq[i].vq;
- 		while ((buf = virtqueue_detach_unused_buf(vq)) != NULL)
- 			virtnet_sq_free_unused_buf(vq, buf);
--		cond_resched();
- 	}
- 
- 	for (i = 0; i < vi->max_queue_pairs; i++) {
-@@ -4023,7 +4022,6 @@ static void free_unused_bufs(struct virtnet_info *vi)
- 
- 		while ((buf = virtnet_rq_detach_unused_buf(rq)) != NULL)
- 			virtnet_rq_free_unused_buf(rq->vq, buf);
--		cond_resched();
- 	}
- }
- 
-diff --git a/drivers/net/wireguard/ratelimiter.c b/drivers/net/wireguard/ratelimiter.c
-index dd55e5c26f46..c9c411ec377a 100644
---- a/drivers/net/wireguard/ratelimiter.c
-+++ b/drivers/net/wireguard/ratelimiter.c
-@@ -74,8 +74,6 @@ static void wg_ratelimiter_gc_entries(struct work_struct *work)
- 		}
- #endif
- 		spin_unlock(&table_lock);
--		if (likely(work))
--			cond_resched();
- 	}
- 	if (likely(work))
- 		queue_delayed_work(system_power_efficient_wq, &gc_work, HZ);
-diff --git a/drivers/net/wireguard/receive.c b/drivers/net/wireguard/receive.c
-index 0b3f0c843550..8468b041e786 100644
---- a/drivers/net/wireguard/receive.c
-+++ b/drivers/net/wireguard/receive.c
-@@ -213,7 +213,6 @@ void wg_packet_handshake_receive_worker(struct work_struct *work)
- 		wg_receive_handshake_packet(wg, skb);
- 		dev_kfree_skb(skb);
- 		atomic_dec(&wg->handshake_queue_len);
--		cond_resched();
- 	}
- }
- 
-@@ -501,8 +500,6 @@ void wg_packet_decrypt_worker(struct work_struct *work)
- 			likely(decrypt_packet(skb, PACKET_CB(skb)->keypair)) ?
- 				PACKET_STATE_CRYPTED : PACKET_STATE_DEAD;
- 		wg_queue_enqueue_per_peer_rx(skb, state);
--		if (need_resched())
--			cond_resched();
- 	}
- }
- 
-diff --git a/drivers/net/wireguard/send.c b/drivers/net/wireguard/send.c
-index 95c853b59e1d..aa122729d802 100644
---- a/drivers/net/wireguard/send.c
-+++ b/drivers/net/wireguard/send.c
-@@ -279,8 +279,6 @@ void wg_packet_tx_worker(struct work_struct *work)
- 
- 		wg_noise_keypair_put(keypair, false);
- 		wg_peer_put(peer);
--		if (need_resched())
--			cond_resched();
- 	}
- }
- 
-@@ -303,8 +301,6 @@ void wg_packet_encrypt_worker(struct work_struct *work)
- 			}
- 		}
- 		wg_queue_enqueue_per_peer_tx(first, state);
--		if (need_resched())
--			cond_resched();
- 	}
- }
- 
-diff --git a/drivers/net/wireless/broadcom/b43/lo.c b/drivers/net/wireless/broadcom/b43/lo.c
-index 338b6545a1e7..0fc018a706f3 100644
---- a/drivers/net/wireless/broadcom/b43/lo.c
-+++ b/drivers/net/wireless/broadcom/b43/lo.c
-@@ -112,10 +112,10 @@ static u16 lo_measure_feedthrough(struct b43_wldev *dev,
- 	udelay(21);
- 	feedthrough = b43_phy_read(dev, B43_PHY_LO_LEAKAGE);
- 
--	/* This is a good place to check if we need to relax a bit,
-+	/* This is a good place to check if we need to relax a bit
- 	 * as this is the main function called regularly
--	 * in the LO calibration. */
--	cond_resched();
-+	 * in the L0 calibration. */
-+	cond_resched_stall();
- 
- 	return feedthrough;
- }
-diff --git a/drivers/net/wireless/broadcom/b43/pio.c b/drivers/net/wireless/broadcom/b43/pio.c
-index 8c28a9250cd1..44f5920ab6ff 100644
---- a/drivers/net/wireless/broadcom/b43/pio.c
-+++ b/drivers/net/wireless/broadcom/b43/pio.c
-@@ -768,7 +768,6 @@ void b43_pio_rx(struct b43_pio_rxqueue *q)
- 		stop = !pio_rx_frame(q);
- 		if (stop)
- 			break;
--		cond_resched();
- 		if (WARN_ON_ONCE(++count > 10000))
- 			break;
- 	}
-diff --git a/drivers/net/wireless/broadcom/b43legacy/phy.c b/drivers/net/wireless/broadcom/b43legacy/phy.c
-index c1395e622759..d6d2cf2a38fe 100644
---- a/drivers/net/wireless/broadcom/b43legacy/phy.c
-+++ b/drivers/net/wireless/broadcom/b43legacy/phy.c
-@@ -1113,7 +1113,6 @@ static u16 b43legacy_phy_lo_b_r15_loop(struct b43legacy_wldev *dev)
- 		ret += b43legacy_phy_read(dev, 0x002C);
- 	}
- 	local_irq_restore(flags);
--	cond_resched();
- 
- 	return ret;
- }
-@@ -1242,7 +1241,6 @@ u16 b43legacy_phy_lo_g_deviation_subval(struct b43legacy_wldev *dev,
- 	}
- 	ret = b43legacy_phy_read(dev, 0x002D);
- 	local_irq_restore(flags);
--	cond_resched();
- 
- 	return ret;
- }
-@@ -1580,7 +1578,6 @@ void b43legacy_phy_lo_g_measure(struct b43legacy_wldev *dev)
- 			b43legacy_radio_write16(dev, 0x43, i);
- 			b43legacy_radio_write16(dev, 0x52, phy->txctl2);
- 			udelay(10);
--			cond_resched();
- 
- 			b43legacy_phy_set_baseband_attenuation(dev, j * 2);
- 
-@@ -1631,7 +1628,6 @@ void b43legacy_phy_lo_g_measure(struct b43legacy_wldev *dev)
- 					      phy->txctl2
- 					      | (3/*txctl1*/ << 4));
- 			udelay(10);
--			cond_resched();
- 
- 			b43legacy_phy_set_baseband_attenuation(dev, j * 2);
- 
-@@ -1654,7 +1650,6 @@ void b43legacy_phy_lo_g_measure(struct b43legacy_wldev *dev)
- 		b43legacy_phy_write(dev, 0x0812, (r27 << 8) | 0xA2);
- 		udelay(2);
- 		b43legacy_phy_write(dev, 0x0812, (r27 << 8) | 0xA3);
--		cond_resched();
- 	} else
- 		b43legacy_phy_write(dev, 0x0015, r27 | 0xEFA0);
- 	b43legacy_phy_lo_adjust(dev, is_initializing);
-diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
-index 2a90bb24ba77..3cc5476c529d 100644
---- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
-+++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
-@@ -3979,7 +3979,6 @@ static int brcmf_cfg80211_sched_scan_stop(struct wiphy *wiphy,
- static __always_inline void brcmf_delay(u32 ms)
- {
- 	if (ms < 1000 / HZ) {
--		cond_resched();
- 		mdelay(ms);
- 	} else {
- 		msleep(ms);
-diff --git a/drivers/net/wireless/cisco/airo.c b/drivers/net/wireless/cisco/airo.c
-index dbd13f7aa3e6..f15a55138dd9 100644
---- a/drivers/net/wireless/cisco/airo.c
-+++ b/drivers/net/wireless/cisco/airo.c
-@@ -3988,8 +3988,6 @@ static u16 issuecommand(struct airo_info *ai, Cmd *pCmd, Resp *pRsp,
- 		if ((IN4500(ai, COMMAND)) == pCmd->cmd)
- 			// PC4500 didn't notice command, try again
- 			OUT4500(ai, COMMAND, pCmd->cmd);
--		if (may_sleep && (max_tries & 255) == 0)
--			cond_resched();
- 	}
- 
- 	if (max_tries == -1) {
-diff --git a/drivers/net/wireless/intel/iwlwifi/pcie/trans.c b/drivers/net/wireless/intel/iwlwifi/pcie/trans.c
-index 198933f853c5..9ab63ff0b6aa 100644
---- a/drivers/net/wireless/intel/iwlwifi/pcie/trans.c
-+++ b/drivers/net/wireless/intel/iwlwifi/pcie/trans.c
-@@ -2309,8 +2309,6 @@ static int iwl_trans_pcie_read_mem(struct iwl_trans *trans, u32 addr,
- 			}
- 			iwl_trans_release_nic_access(trans);
- 
--			if (resched)
--				cond_resched();
- 		} else {
- 			return -EBUSY;
- 		}
-diff --git a/drivers/net/wireless/marvell/mwl8k.c b/drivers/net/wireless/marvell/mwl8k.c
-index 13bcb123d122..9b4341da3163 100644
---- a/drivers/net/wireless/marvell/mwl8k.c
-+++ b/drivers/net/wireless/marvell/mwl8k.c
-@@ -632,7 +632,6 @@ mwl8k_send_fw_load_cmd(struct mwl8k_priv *priv, void *data, int length)
+ 	/*
+@@ -1282,8 +1280,6 @@ static unsigned long vmballoon_deflate(struct vmballoon *b, uint64_t n_frames,
  				break;
- 			}
+ 			ctl.page_size++;
  		}
+-
 -		cond_resched();
- 		udelay(1);
- 	} while (--loops);
- 
-@@ -795,7 +794,6 @@ static int mwl8k_load_firmware(struct ieee80211_hw *hw)
- 			break;
- 		}
- 
--		cond_resched();
- 		udelay(1);
- 	} while (--loops);
- 
-diff --git a/drivers/net/wireless/mediatek/mt76/util.c b/drivers/net/wireless/mediatek/mt76/util.c
-index fc76c66ff1a5..54ffe67d1365 100644
---- a/drivers/net/wireless/mediatek/mt76/util.c
-+++ b/drivers/net/wireless/mediatek/mt76/util.c
-@@ -130,7 +130,6 @@ int __mt76_worker_fn(void *ptr)
- 		set_bit(MT76_WORKER_RUNNING, &w->state);
- 		set_current_state(TASK_RUNNING);
- 		w->fn(w);
--		cond_resched();
- 		clear_bit(MT76_WORKER_RUNNING, &w->state);
  	}
  
-diff --git a/drivers/net/wwan/mhi_wwan_mbim.c b/drivers/net/wwan/mhi_wwan_mbim.c
-index 3f72ae943b29..d8aaf476f25d 100644
---- a/drivers/net/wwan/mhi_wwan_mbim.c
-+++ b/drivers/net/wwan/mhi_wwan_mbim.c
-@@ -400,7 +400,7 @@ static void mhi_net_rx_refill_work(struct work_struct *work)
- 		/* Do not hog the CPU if rx buffers are consumed faster than
- 		 * queued (unlikely).
- 		 */
+ 	return deflated_frames;
+diff --git a/drivers/mmc/host/mmc_spi.c b/drivers/mmc/host/mmc_spi.c
+index cc333ad67cac..e05d99437547 100644
+--- a/drivers/mmc/host/mmc_spi.c
++++ b/drivers/mmc/host/mmc_spi.c
+@@ -192,9 +192,6 @@ static int mmc_spi_skip(struct mmc_spi_host *host, unsigned long timeout,
+ 			if (cp[i] != byte)
+ 				return cp[i];
+ 		}
+-
+-		/* If we need long timeouts, we may release the CPU */
 -		cond_resched();
-+		cond_resched_stall();
+ 	} while (time_is_after_jiffies(start + timeout));
+ 	return -ETIMEDOUT;
+ }
+diff --git a/drivers/nvdimm/btt.c b/drivers/nvdimm/btt.c
+index d5593b0dc700..5e97555db441 100644
+--- a/drivers/nvdimm/btt.c
++++ b/drivers/nvdimm/btt.c
+@@ -435,7 +435,6 @@ static int btt_map_init(struct arena_info *arena)
+ 
+ 		offset += size;
+ 		mapsize -= size;
+-		cond_resched();
  	}
  
- 	/* If we're still starved of rx buffers, reschedule later */
-diff --git a/drivers/net/wwan/t7xx/t7xx_hif_dpmaif_tx.c b/drivers/net/wwan/t7xx/t7xx_hif_dpmaif_tx.c
-index 8dab025a088a..52420b1f3669 100644
---- a/drivers/net/wwan/t7xx/t7xx_hif_dpmaif_tx.c
-+++ b/drivers/net/wwan/t7xx/t7xx_hif_dpmaif_tx.c
-@@ -423,7 +423,6 @@ static void t7xx_do_tx_hw_push(struct dpmaif_ctrl *dpmaif_ctrl)
- 		drb_send_cnt = t7xx_txq_burst_send_skb(txq);
- 		if (drb_send_cnt <= 0) {
- 			usleep_range(10, 20);
+  free:
+@@ -479,7 +478,6 @@ static int btt_log_init(struct arena_info *arena)
+ 
+ 		offset += size;
+ 		logsize -= size;
+-		cond_resched();
+ 	}
+ 
+ 	for (i = 0; i < arena->nfree; i++) {
+diff --git a/drivers/nvme/target/zns.c b/drivers/nvme/target/zns.c
+index 5b5c1e481722..12eee9a87e42 100644
+--- a/drivers/nvme/target/zns.c
++++ b/drivers/nvme/target/zns.c
+@@ -432,8 +432,6 @@ static u16 nvmet_bdev_zone_mgmt_emulate_all(struct nvmet_req *req)
+ 				zsa_req_op(req->cmd->zms.zsa) | REQ_SYNC,
+ 				GFP_KERNEL);
+ 			bio->bi_iter.bi_sector = sector;
+-			/* This may take a while, so be nice to others */
 -			cond_resched();
+ 		}
+ 		sector += bdev_zone_sectors(bdev);
+ 	}
+diff --git a/drivers/parport/parport_ip32.c b/drivers/parport/parport_ip32.c
+index 0919ed99ba94..8c52008bbb7c 100644
+--- a/drivers/parport/parport_ip32.c
++++ b/drivers/parport/parport_ip32.c
+@@ -1238,7 +1238,6 @@ static size_t parport_ip32_epp_write_addr(struct parport *p, const void *buf,
+ static unsigned int parport_ip32_fifo_wait_break(struct parport *p,
+ 						 unsigned long expire)
+ {
+-	cond_resched();
+ 	if (time_after(jiffies, expire)) {
+ 		pr_debug1(PPIP32 "%s: FIFO write timed out\n", p->name);
+ 		return 1;
+diff --git a/drivers/parport/parport_pc.c b/drivers/parport/parport_pc.c
+index 1f236aaf7867..a482b5b835ec 100644
+--- a/drivers/parport/parport_pc.c
++++ b/drivers/parport/parport_pc.c
+@@ -663,8 +663,6 @@ static size_t parport_pc_fifo_write_block_dma(struct parport *port,
+ 		}
+ 		/* Is serviceIntr set? */
+ 		if (!(inb(ECONTROL(port)) & (1<<2))) {
+-			cond_resched();
+-
+ 			goto false_alarm;
+ 		}
+ 
+@@ -674,8 +672,6 @@ static size_t parport_pc_fifo_write_block_dma(struct parport *port,
+ 		count = get_dma_residue(port->dma);
+ 		release_dma_lock(dmaflag);
+ 
+-		cond_resched(); /* Can't yield the port. */
+-
+ 		/* Anyone else waiting for the port? */
+ 		if (port->waithead) {
+ 			printk(KERN_DEBUG "Somebody wants the port\n");
+diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.c
+index d9eede2dbc0e..e7bb03c3c148 100644
+--- a/drivers/pci/pci-sysfs.c
++++ b/drivers/pci/pci-sysfs.c
+@@ -719,7 +719,6 @@ static ssize_t pci_read_config(struct file *filp, struct kobject *kobj,
+ 		data[off - init_off + 3] = (val >> 24) & 0xff;
+ 		off += 4;
+ 		size -= 4;
+-		cond_resched();
+ 	}
+ 
+ 	if (size >= 2) {
+diff --git a/drivers/pci/proc.c b/drivers/pci/proc.c
+index f967709082d6..7d3cd2201e64 100644
+--- a/drivers/pci/proc.c
++++ b/drivers/pci/proc.c
+@@ -83,7 +83,6 @@ static ssize_t proc_bus_pci_read(struct file *file, char __user *buf,
+ 		buf += 4;
+ 		pos += 4;
+ 		cnt -= 4;
+-		cond_resched();
+ 	}
+ 
+ 	if (cnt >= 2) {
+diff --git a/drivers/platform/x86/intel/speed_select_if/isst_if_mbox_pci.c b/drivers/platform/x86/intel/speed_select_if/isst_if_mbox_pci.c
+index df1fc6c719f3..c202ae0d0656 100644
+--- a/drivers/platform/x86/intel/speed_select_if/isst_if_mbox_pci.c
++++ b/drivers/platform/x86/intel/speed_select_if/isst_if_mbox_pci.c
+@@ -56,7 +56,7 @@ static int isst_if_mbox_cmd(struct pci_dev *pdev,
+ 			ret = -EBUSY;
+ 			tm_delta = ktime_us_delta(ktime_get(), tm);
+ 			if (tm_delta > OS_MAILBOX_TIMEOUT_AVG_US)
+-				cond_resched();
++				cond_resched_stall();
+ 			continue;
+ 		}
+ 		ret = 0;
+@@ -95,7 +95,7 @@ static int isst_if_mbox_cmd(struct pci_dev *pdev,
+ 			ret = -EBUSY;
+ 			tm_delta = ktime_us_delta(ktime_get(), tm);
+ 			if (tm_delta > OS_MAILBOX_TIMEOUT_AVG_US)
+-				cond_resched();
++				cond_resched_stall();
  			continue;
  		}
  
-@@ -437,8 +436,6 @@ static void t7xx_do_tx_hw_push(struct dpmaif_ctrl *dpmaif_ctrl)
- 
- 		t7xx_dpmaif_ul_update_hw_drb_cnt(&dpmaif_ctrl->hw_info, txq->index,
- 						 drb_send_cnt * DPMAIF_UL_DRB_SIZE_WORD);
--
+diff --git a/drivers/s390/cio/css.c b/drivers/s390/cio/css.c
+index 3ff46fc694f8..6122a4a057fa 100644
+--- a/drivers/s390/cio/css.c
++++ b/drivers/s390/cio/css.c
+@@ -659,11 +659,6 @@ static int slow_eval_known_fn(struct subchannel *sch, void *data)
+ 		rc = css_evaluate_known_subchannel(sch, 1);
+ 		if (rc == -EAGAIN)
+ 			css_schedule_eval(sch->schid);
+-		/*
+-		 * The loop might take long time for platforms with lots of
+-		 * known devices. Allow scheduling here.
+-		 */
 -		cond_resched();
- 	} while (!t7xx_tx_lists_are_all_empty(dpmaif_ctrl) && !kthread_should_stop() &&
- 		 (dpmaif_ctrl->state == DPMAIF_STATE_PWRON));
+ 	}
+ 	return 0;
  }
-diff --git a/drivers/net/xen-netback/netback.c b/drivers/net/xen-netback/netback.c
-index 88f760a7cbc3..a540e95ba58f 100644
---- a/drivers/net/xen-netback/netback.c
-+++ b/drivers/net/xen-netback/netback.c
-@@ -1571,7 +1571,6 @@ int xenvif_dealloc_kthread(void *data)
- 			break;
+@@ -695,9 +690,6 @@ static int slow_eval_unknown_fn(struct subchannel_id schid, void *data)
+ 		default:
+ 			rc = 0;
+ 		}
+-		/* Allow scheduling here since the containing loop might
+-		 * take a while.  */
+-		cond_resched();
+ 	}
+ 	return rc;
+ }
+diff --git a/drivers/scsi/NCR5380.c b/drivers/scsi/NCR5380.c
+index cea3a79d538e..40e66afd77cf 100644
+--- a/drivers/scsi/NCR5380.c
++++ b/drivers/scsi/NCR5380.c
+@@ -738,8 +738,6 @@ static void NCR5380_main(struct work_struct *work)
+ 			maybe_release_dma_irq(instance);
+ 		}
+ 		spin_unlock_irq(&hostdata->lock);
+-		if (!done)
+-			cond_resched();
+ 	} while (!done);
+ }
  
- 		xenvif_tx_dealloc_action(queue);
+diff --git a/drivers/scsi/megaraid.c b/drivers/scsi/megaraid.c
+index e92f1a73cc9b..675504f8149a 100644
+--- a/drivers/scsi/megaraid.c
++++ b/drivers/scsi/megaraid.c
+@@ -1696,7 +1696,6 @@ __mega_busywait_mbox (adapter_t *adapter)
+ 		if (!mbox->m_in.busy)
+ 			return 0;
+ 		udelay(100);
+-		cond_resched();
+ 	}
+ 	return -1;		/* give up after 1 second */
+ }
+diff --git a/drivers/scsi/qedi/qedi_main.c b/drivers/scsi/qedi/qedi_main.c
+index cd0180b1f5b9..9e2596199458 100644
+--- a/drivers/scsi/qedi/qedi_main.c
++++ b/drivers/scsi/qedi/qedi_main.c
+@@ -1943,7 +1943,6 @@ static int qedi_percpu_io_thread(void *arg)
+ 				if (!work->is_solicited)
+ 					kfree(work);
+ 			}
+-			cond_resched();
+ 			spin_lock_irqsave(&p->p_work_lock, flags);
+ 		}
+ 		set_current_state(TASK_INTERRUPTIBLE);
+diff --git a/drivers/scsi/qla2xxx/qla_nx.c b/drivers/scsi/qla2xxx/qla_nx.c
+index 6dfb70edb9a6..e1a5c2dbe134 100644
+--- a/drivers/scsi/qla2xxx/qla_nx.c
++++ b/drivers/scsi/qla2xxx/qla_nx.c
+@@ -972,7 +972,6 @@ qla82xx_flash_wait_write_finish(struct qla_hw_data *ha)
+ 		if (ret < 0 || (val & 1) == 0)
+ 			return ret;
+ 		udelay(10);
+-		cond_resched();
+ 	}
+ 	ql_log(ql_log_warn, vha, 0xb00d,
+ 	       "Timeout reached waiting for write finish.\n");
+@@ -1037,7 +1036,6 @@ ql82xx_rom_lock_d(struct qla_hw_data *ha)
+ 
+ 	while ((qla82xx_rom_lock(ha) != 0) && (loops < 50000)) {
+ 		udelay(100);
+-		cond_resched();
+ 		loops++;
+ 	}
+ 	if (loops >= 50000) {
+diff --git a/drivers/scsi/qla2xxx/qla_sup.c b/drivers/scsi/qla2xxx/qla_sup.c
+index c092a6b1ced4..40fc521ba89f 100644
+--- a/drivers/scsi/qla2xxx/qla_sup.c
++++ b/drivers/scsi/qla2xxx/qla_sup.c
+@@ -463,7 +463,6 @@ qla24xx_read_flash_dword(struct qla_hw_data *ha, uint32_t addr, uint32_t *data)
+ 			return QLA_SUCCESS;
+ 		}
+ 		udelay(10);
 -		cond_resched();
  	}
  
- 	/* Unmap anything remaining*/
-diff --git a/drivers/net/xen-netback/rx.c b/drivers/net/xen-netback/rx.c
-index 0ba754ebc5ba..bccefaec5312 100644
---- a/drivers/net/xen-netback/rx.c
-+++ b/drivers/net/xen-netback/rx.c
-@@ -669,8 +669,6 @@ int xenvif_kthread_guest_rx(void *data)
- 		 * slots.
+ 	ql_log(ql_log_warn, pci_get_drvdata(ha->pdev), 0x7090,
+@@ -505,7 +504,6 @@ qla24xx_write_flash_dword(struct qla_hw_data *ha, uint32_t addr, uint32_t data)
+ 		if (!(rd_reg_dword(&reg->flash_addr) & FARX_DATA_FLAG))
+ 			return QLA_SUCCESS;
+ 		udelay(10);
+-		cond_resched();
+ 	}
+ 
+ 	ql_log(ql_log_warn, pci_get_drvdata(ha->pdev), 0x7090,
+@@ -2151,7 +2149,6 @@ qla2x00_poll_flash(struct qla_hw_data *ha, uint32_t addr, uint8_t poll_data,
+ 		}
+ 		udelay(10);
+ 		barrier();
+-		cond_resched();
+ 	}
+ 	return status;
+ }
+@@ -2301,7 +2298,6 @@ qla2x00_read_flash_data(struct qla_hw_data *ha, uint8_t *tmp_buf,
+ 		if (saddr % 100)
+ 			udelay(10);
+ 		*tmp_buf = data;
+-		cond_resched();
+ 	}
+ }
+ 
+@@ -2589,7 +2585,6 @@ qla2x00_write_optrom_data(struct scsi_qla_host *vha, void *buf,
+ 				rval = QLA_FUNCTION_FAILED;
+ 				break;
+ 			}
+-			cond_resched();
+ 		}
+ 	} while (0);
+ 	qla2x00_flash_disable(ha);
+diff --git a/drivers/scsi/qla4xxx/ql4_nx.c b/drivers/scsi/qla4xxx/ql4_nx.c
+index 47adff9f0506..e40a525a2202 100644
+--- a/drivers/scsi/qla4xxx/ql4_nx.c
++++ b/drivers/scsi/qla4xxx/ql4_nx.c
+@@ -3643,7 +3643,6 @@ qla4_82xx_read_flash_data(struct scsi_qla_host *ha, uint32_t *dwptr,
+ 	int loops = 0;
+ 	while ((qla4_82xx_rom_lock(ha) != 0) && (loops < 50000)) {
+ 		udelay(100);
+-		cond_resched();
+ 		loops++;
+ 	}
+ 	if (loops >= 50000) {
+diff --git a/drivers/scsi/xen-scsifront.c b/drivers/scsi/xen-scsifront.c
+index 9ec55ddc1204..6f8e0c69f832 100644
+--- a/drivers/scsi/xen-scsifront.c
++++ b/drivers/scsi/xen-scsifront.c
+@@ -442,7 +442,7 @@ static irqreturn_t scsifront_irq_fn(int irq, void *dev_id)
+ 
+ 	while (scsifront_cmd_done(info, &eoiflag))
+ 		/* Yield point for this unbounded loop. */
+-		cond_resched();
++		cond_resched_stall();
+ 
+ 	xen_irq_lateeoi(irq, eoiflag);
+ 
+diff --git a/drivers/spi/spi-lantiq-ssc.c b/drivers/spi/spi-lantiq-ssc.c
+index 938e9e577e4f..151b381fc098 100644
+--- a/drivers/spi/spi-lantiq-ssc.c
++++ b/drivers/spi/spi-lantiq-ssc.c
+@@ -775,8 +775,7 @@ static void lantiq_ssc_bussy_work(struct work_struct *work)
+ 			spi_finalize_current_transfer(spi->host);
+ 			return;
+ 		}
+-
+-		cond_resched();
++		cond_resched_stall();
+ 	} while (!time_after_eq(jiffies, end));
+ 
+ 	if (spi->host->cur_msg)
+diff --git a/drivers/spi/spi-meson-spifc.c b/drivers/spi/spi-meson-spifc.c
+index 06626f406f68..ff3550ebb22b 100644
+--- a/drivers/spi/spi-meson-spifc.c
++++ b/drivers/spi/spi-meson-spifc.c
+@@ -100,7 +100,7 @@ static int meson_spifc_wait_ready(struct meson_spifc *spifc)
+ 		regmap_read(spifc->regmap, REG_SLAVE, &data);
+ 		if (data & SLAVE_TRST_DONE)
+ 			return 0;
+-		cond_resched();
++		cond_resched_stall();
+ 	} while (!time_after(jiffies, deadline));
+ 
+ 	return -ETIMEDOUT;
+diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
+index 8d6304cb061e..3ddbfa9babdc 100644
+--- a/drivers/spi/spi.c
++++ b/drivers/spi/spi.c
+@@ -1808,7 +1808,7 @@ static void __spi_pump_messages(struct spi_controller *ctlr, bool in_kthread)
+ 
+ 	/* Prod the scheduler in case transfer_one() was busy waiting */
+ 	if (!ret)
+-		cond_resched();
++		cond_resched_stall();
+ 	return;
+ 
+ out_unlock:
+diff --git a/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c b/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
+index 985683767a40..2a2ebdf12a45 100644
+--- a/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
++++ b/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
+@@ -3775,7 +3775,7 @@ unsigned int send_beacon(struct adapter *padapter)
+ 		issue_beacon(padapter, 100);
+ 		issue++;
+ 		do {
+-			cond_resched();
++			cond_resched_stall();
+ 			rtw_hal_get_hwreg(padapter, HW_VAR_BCN_VALID, (u8 *)(&bxmitok));
+ 			poll++;
+ 		} while ((poll%10) != 0 && false == bxmitok && !padapter->bSurpriseRemoved && !padapter->bDriverStopped);
+diff --git a/drivers/staging/rtl8723bs/core/rtw_pwrctrl.c b/drivers/staging/rtl8723bs/core/rtw_pwrctrl.c
+index a392d5b4caf2..c263fbc71201 100644
+--- a/drivers/staging/rtl8723bs/core/rtw_pwrctrl.c
++++ b/drivers/staging/rtl8723bs/core/rtw_pwrctrl.c
+@@ -576,8 +576,6 @@ void LPS_Leave_check(struct adapter *padapter)
+ 	bReady = false;
+ 	start_time = jiffies;
+ 
+-	cond_resched();
+-
+ 	while (1) {
+ 		mutex_lock(&pwrpriv->lock);
+ 
+diff --git a/drivers/tee/optee/ffa_abi.c b/drivers/tee/optee/ffa_abi.c
+index 0828240f27e6..49f55c051d71 100644
+--- a/drivers/tee/optee/ffa_abi.c
++++ b/drivers/tee/optee/ffa_abi.c
+@@ -581,7 +581,6 @@ static int optee_ffa_yielding_call(struct tee_context *ctx,
+ 		 * filled in by ffa_mem_ops->sync_send_receive() returning
+ 		 * above.
  		 */
- 		xenvif_rx_queue_drop_expired(queue);
+-		cond_resched();
+ 		optee_handle_ffa_rpc(ctx, optee, data->data1, rpc_arg);
+ 		cmd = OPTEE_FFA_YIELDING_CALL_RESUME;
+ 		data->data0 = cmd;
+diff --git a/drivers/tee/optee/smc_abi.c b/drivers/tee/optee/smc_abi.c
+index d5b28fd35d66..86e01454422c 100644
+--- a/drivers/tee/optee/smc_abi.c
++++ b/drivers/tee/optee/smc_abi.c
+@@ -943,7 +943,6 @@ static int optee_smc_do_call_with_arg(struct tee_context *ctx,
+ 			 */
+ 			optee_cq_wait_for_completion(&optee->call_queue, &w);
+ 		} else if (OPTEE_SMC_RETURN_IS_RPC(res.a0)) {
+-			cond_resched();
+ 			param.a0 = res.a0;
+ 			param.a1 = res.a1;
+ 			param.a2 = res.a2;
+diff --git a/drivers/tty/hvc/hvc_console.c b/drivers/tty/hvc/hvc_console.c
+index 959fae54ca39..11bb4204b78d 100644
+--- a/drivers/tty/hvc/hvc_console.c
++++ b/drivers/tty/hvc/hvc_console.c
+@@ -538,7 +538,6 @@ static ssize_t hvc_write(struct tty_struct *tty, const u8 *buf, size_t count)
+ 		if (count) {
+ 			if (hp->n_outbuf > 0)
+ 				hvc_flush(hp);
+-			cond_resched();
+ 		}
+ 	}
+ 
+@@ -653,7 +652,7 @@ static int __hvc_poll(struct hvc_struct *hp, bool may_sleep)
+ 
+ 	if (may_sleep) {
+ 		spin_unlock_irqrestore(&hp->lock, flags);
+-		cond_resched();
++
+ 		spin_lock_irqsave(&hp->lock, flags);
+ 	}
+ 
+@@ -725,7 +724,7 @@ static int __hvc_poll(struct hvc_struct *hp, bool may_sleep)
+ 	if (may_sleep) {
+ 		/* Keep going until the flip is full */
+ 		spin_unlock_irqrestore(&hp->lock, flags);
+-		cond_resched();
++
+ 		spin_lock_irqsave(&hp->lock, flags);
+ 		goto read_again;
+ 	} else if (read_total < HVC_ATOMIC_READ_MAX) {
+@@ -802,7 +801,6 @@ static int khvcd(void *unused)
+ 			mutex_lock(&hvc_structs_mutex);
+ 			list_for_each_entry(hp, &hvc_structs, next) {
+ 				poll_mask |= __hvc_poll(hp, true);
+-				cond_resched();
+ 			}
+ 			mutex_unlock(&hvc_structs_mutex);
+ 		} else
+diff --git a/drivers/tty/tty_buffer.c b/drivers/tty/tty_buffer.c
+index 5f6d0cf67571..c70d695ed69d 100644
+--- a/drivers/tty/tty_buffer.c
++++ b/drivers/tty/tty_buffer.c
+@@ -498,9 +498,6 @@ static void flush_to_ldisc(struct work_struct *work)
+ 			lookahead_bufs(port, head);
+ 		if (!rcvd)
+ 			break;
+-
+-		if (need_resched())
+-			cond_resched();
+ 	}
+ 
+ 	mutex_unlock(&buf->lock);
+diff --git a/drivers/tty/tty_io.c b/drivers/tty/tty_io.c
+index 8a94e5a43c6d..0221ff17a4bf 100644
+--- a/drivers/tty/tty_io.c
++++ b/drivers/tty/tty_io.c
+@@ -1032,7 +1032,6 @@ static ssize_t iterate_tty_write(struct tty_ldisc *ld, struct tty_struct *tty,
+ 		ret = -ERESTARTSYS;
+ 		if (signal_pending(current))
+ 			break;
+-		cond_resched();
+ 	}
+ 	if (written) {
+ 		tty_update_time(tty, true);
+diff --git a/drivers/usb/gadget/udc/max3420_udc.c b/drivers/usb/gadget/udc/max3420_udc.c
+index 2d57786d3db7..b9051c341b10 100644
+--- a/drivers/usb/gadget/udc/max3420_udc.c
++++ b/drivers/usb/gadget/udc/max3420_udc.c
+@@ -451,7 +451,6 @@ static void __max3420_start(struct max3420_udc *udc)
+ 		val = spi_rd8(udc, MAX3420_REG_USBIRQ);
+ 		if (val & OSCOKIRQ)
+ 			break;
+-		cond_resched();
+ 	}
+ 
+ 	/* Enable PULL-UP only when Vbus detected */
+diff --git a/drivers/usb/host/max3421-hcd.c b/drivers/usb/host/max3421-hcd.c
+index d152d72de126..64f12f5113a2 100644
+--- a/drivers/usb/host/max3421-hcd.c
++++ b/drivers/usb/host/max3421-hcd.c
+@@ -1294,7 +1294,7 @@ max3421_reset_hcd(struct usb_hcd *hcd)
+ 				"timed out waiting for oscillator OK signal");
+ 			return 1;
+ 		}
+-		cond_resched();
++		cond_resched_stall();
+ 	}
+ 
+ 	/*
+diff --git a/drivers/usb/host/xen-hcd.c b/drivers/usb/host/xen-hcd.c
+index 46fdab940092..0b78f371c30a 100644
+--- a/drivers/usb/host/xen-hcd.c
++++ b/drivers/usb/host/xen-hcd.c
+@@ -1086,7 +1086,7 @@ static irqreturn_t xenhcd_int(int irq, void *dev_id)
+ 	while (xenhcd_urb_request_done(info, &eoiflag) |
+ 	       xenhcd_conn_notify(info, &eoiflag))
+ 		/* Yield point for this unbounded loop. */
+-		cond_resched();
++		cond_resched_stall();
+ 
+ 	xen_irq_lateeoi(irq, eoiflag);
+ 	return IRQ_HANDLED;
+diff --git a/drivers/vfio/vfio_iommu_spapr_tce.c b/drivers/vfio/vfio_iommu_spapr_tce.c
+index a94ec6225d31..523c6685818d 100644
+--- a/drivers/vfio/vfio_iommu_spapr_tce.c
++++ b/drivers/vfio/vfio_iommu_spapr_tce.c
+@@ -457,8 +457,6 @@ static int tce_iommu_clear(struct tce_container *container,
+ 			}
+ 		}
+ 
+-		cond_resched();
+-
+ 		direction = DMA_NONE;
+ 		oldhpa = 0;
+ 		ret = iommu_tce_xchg_no_kill(container->mm, tbl, entry, &oldhpa,
+diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
+index eacd6ec04de5..afc9724051ce 100644
+--- a/drivers/vfio/vfio_iommu_type1.c
++++ b/drivers/vfio/vfio_iommu_type1.c
+@@ -962,8 +962,6 @@ static long vfio_sync_unpin(struct vfio_dma *dma, struct vfio_domain *domain,
+ 		kfree(entry);
+ 	}
+ 
+-	cond_resched();
+-
+ 	return unlocked;
+ }
+ 
+@@ -1029,7 +1027,6 @@ static size_t unmap_unpin_slow(struct vfio_domain *domain,
+ 						     unmapped >> PAGE_SHIFT,
+ 						     false);
+ 		*iova += unmapped;
+-		cond_resched();
+ 	}
+ 	return unmapped;
+ }
+@@ -1062,7 +1059,6 @@ static long vfio_unmap_unpin(struct vfio_iommu *iommu, struct vfio_dma *dma,
+ 
+ 	list_for_each_entry_continue(d, &iommu->domain_list, next) {
+ 		iommu_unmap(d->domain, dma->iova, dma->size);
+-		cond_resched();
+ 	}
+ 
+ 	iommu_iotlb_gather_init(&iotlb_gather);
+@@ -1439,8 +1435,6 @@ static int vfio_iommu_map(struct vfio_iommu *iommu, dma_addr_t iova,
+ 				GFP_KERNEL);
+ 		if (ret)
+ 			goto unwind;
 -
 -		cond_resched();
  	}
  
- 	/* Bin any remaining skbs */
+ 	return 0;
+@@ -1448,7 +1442,6 @@ static int vfio_iommu_map(struct vfio_iommu *iommu, dma_addr_t iova,
+ unwind:
+ 	list_for_each_entry_continue_reverse(d, &iommu->domain_list, next) {
+ 		iommu_unmap(d->domain, iova, npage << PAGE_SHIFT);
+-		cond_resched();
+ 	}
+ 
+ 	return ret;
+diff --git a/drivers/vhost/vhost.c b/drivers/vhost/vhost.c
+index e0c181ad17e3..8939be49c47d 100644
+--- a/drivers/vhost/vhost.c
++++ b/drivers/vhost/vhost.c
+@@ -410,7 +410,6 @@ static bool vhost_worker(void *data)
+ 			kcov_remote_start_common(worker->kcov_handle);
+ 			work->fn(work);
+ 			kcov_remote_stop();
+-			cond_resched();
+ 		}
+ 	}
+ 
+diff --git a/drivers/video/console/vgacon.c b/drivers/video/console/vgacon.c
+index 7ad047bcae17..e17e7937e11d 100644
+--- a/drivers/video/console/vgacon.c
++++ b/drivers/video/console/vgacon.c
+@@ -870,12 +870,10 @@ static int vgacon_do_font_op(struct vgastate *state, char *arg, int set,
+ 		if (set)
+ 			for (i = 0; i < cmapsz; i++) {
+ 				vga_writeb(arg[i], charmap + i);
+-				cond_resched();
+ 			}
+ 		else
+ 			for (i = 0; i < cmapsz; i++) {
+ 				arg[i] = vga_readb(charmap + i);
+-				cond_resched();
+ 			}
+ 
+ 		/*
+@@ -889,12 +887,10 @@ static int vgacon_do_font_op(struct vgastate *state, char *arg, int set,
+ 			if (set)
+ 				for (i = 0; i < cmapsz; i++) {
+ 					vga_writeb(arg[i], charmap + i);
+-					cond_resched();
+ 				}
+ 			else
+ 				for (i = 0; i < cmapsz; i++) {
+ 					arg[i] = vga_readb(charmap + i);
+-					cond_resched();
+ 				}
+ 		}
+ 	}
+diff --git a/drivers/virtio/virtio_mem.c b/drivers/virtio/virtio_mem.c
+index fa5226c198cc..c9c66aac49ca 100644
+--- a/drivers/virtio/virtio_mem.c
++++ b/drivers/virtio/virtio_mem.c
+@@ -1754,7 +1754,6 @@ static int virtio_mem_sbm_plug_request(struct virtio_mem *vm, uint64_t diff)
+ 			rc = virtio_mem_sbm_plug_any_sb(vm, mb_id, &nb_sb);
+ 			if (rc || !nb_sb)
+ 				goto out_unlock;
+-			cond_resched();
+ 		}
+ 	}
+ 
+@@ -1772,7 +1771,6 @@ static int virtio_mem_sbm_plug_request(struct virtio_mem *vm, uint64_t diff)
+ 		rc = virtio_mem_sbm_plug_and_add_mb(vm, mb_id, &nb_sb);
+ 		if (rc || !nb_sb)
+ 			return rc;
+-		cond_resched();
+ 	}
+ 
+ 	/* Try to prepare, plug and add new blocks */
+@@ -1786,7 +1784,6 @@ static int virtio_mem_sbm_plug_request(struct virtio_mem *vm, uint64_t diff)
+ 		rc = virtio_mem_sbm_plug_and_add_mb(vm, mb_id, &nb_sb);
+ 		if (rc)
+ 			return rc;
+-		cond_resched();
+ 	}
+ 
+ 	return 0;
+@@ -1869,7 +1866,6 @@ static int virtio_mem_bbm_plug_request(struct virtio_mem *vm, uint64_t diff)
+ 			nb_bb--;
+ 		if (rc || !nb_bb)
+ 			return rc;
+-		cond_resched();
+ 	}
+ 
+ 	/* Try to prepare, plug and add new big blocks */
+@@ -1885,7 +1881,6 @@ static int virtio_mem_bbm_plug_request(struct virtio_mem *vm, uint64_t diff)
+ 			nb_bb--;
+ 		if (rc)
+ 			return rc;
+-		cond_resched();
+ 	}
+ 
+ 	return 0;
+@@ -2107,7 +2102,6 @@ static int virtio_mem_sbm_unplug_request(struct virtio_mem *vm, uint64_t diff)
+ 			if (rc || !nb_sb)
+ 				goto out_unlock;
+ 			mutex_unlock(&vm->hotplug_mutex);
+-			cond_resched();
+ 			mutex_lock(&vm->hotplug_mutex);
+ 		}
+ 		if (!unplug_online && i == 1) {
+@@ -2250,8 +2244,6 @@ static int virtio_mem_bbm_unplug_request(struct virtio_mem *vm, uint64_t diff)
+ 	 */
+ 	for (i = 0; i < 3; i++) {
+ 		virtio_mem_bbm_for_each_bb_rev(vm, bb_id, VIRTIO_MEM_BBM_BB_ADDED) {
+-			cond_resched();
+-
+ 			/*
+ 			 * As we're holding no locks, these checks are racy,
+ 			 * but we don't care.
 -- 
 2.31.1
 
