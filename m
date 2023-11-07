@@ -2,145 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 65A167E4D92
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 00:48:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC61D7E4D98
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 00:55:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234445AbjKGXsA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 18:48:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42188 "EHLO
+        id S234154AbjKGXzu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 18:55:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229994AbjKGXr7 (ORCPT
+        with ESMTP id S229994AbjKGXzs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 18:47:59 -0500
-Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1050C10CB
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 15:47:57 -0800 (PST)
-Received: by mail-qv1-xf35.google.com with SMTP id 6a1803df08f44-6754b4091b6so39117136d6.3
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 15:47:57 -0800 (PST)
+        Tue, 7 Nov 2023 18:55:48 -0500
+Received: from mail-ua1-x92b.google.com (mail-ua1-x92b.google.com [IPv6:2607:f8b0:4864:20::92b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70C2110CB
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 15:55:46 -0800 (PST)
+Received: by mail-ua1-x92b.google.com with SMTP id a1e0cc1a2514c-7b9dc92881eso2570107241.2
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 15:55:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1699400876; x=1700005676; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1699401345; x=1700006145; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=AwiYwgDPePRyKDhIdyq+gxbwUtv6ztRkGu1vD58BCfU=;
-        b=GLE6YcUXiZVaDhNRRBgDrrb8ptklAXljZEHWD8CwEmtasOQcPBvNpnid408+nHv/uX
-         a4kuyX1FEQShivBIGM/OhSU99Fo0G3UqWzucD/2X8K7xHDNwnlDfVkmQOnwgsAd6ZPtQ
-         dG4+D7RySa8YJ+03c+J4CWvs+9Jdl1jkEPtS9pMPNv9sf2OaMPfwvKHrvA6gC+updWYQ
-         ETwz6bdI3TmeDhY7twFETJPK3HyMu9G0WgmeQEA9cJpw1ceKoHOuVIfBkfOile5Q9gFR
-         Dzcy/srqa1F7WU0OGKAk+LL7sQi/AlKrYAaoZQjR7fV7UfafwZANwxJ9noO1kOxhUJVL
-         36pQ==
+        bh=PNu6xIseaeQdGwpUSRstKqA7TEpi7Fwk8Tof0W7Ynro=;
+        b=w050P91670V31SiipDnCoZIMevD5IoGEKlyZ/HpxTt0BuhaeLMnpREfCWdCsQk4gdA
+         DC9buuUb29GyFREs4BahodE6tyf7272GU96HUZNis/9He1cvt3Wdj9TUJLotU8vMhMuu
+         wbQsm6hTFR9ryeWa9TZxItXmkl22WJNZ4ihqK8K4/wffkPI+F8bD3O1x2X3/ZHJYPXbn
+         ldiIEydyA80PjPY8DKz5uz44QFilagFQ4XqQDjs8kfQehOK6FabjnRGooj4kEj6K4b+C
+         PsxBBVRrZj6TfKbma6TT2W5PmhtksOz2/fn5C4n/MIcKY9sbyGCo73jxOE0W/AniiMqK
+         h33Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699400876; x=1700005676;
+        d=1e100.net; s=20230601; t=1699401345; x=1700006145;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=AwiYwgDPePRyKDhIdyq+gxbwUtv6ztRkGu1vD58BCfU=;
-        b=kTBgT8QUTtEggDHPnkL4p3tooTp+YEfpzmSs/qLQpSdVKfcPYoruMYR56wk9KNOVnM
-         PEA1qSF5QeH/P+zMwWIeSak2UT2iF58OhnKPr4xBAulQD6gchr+7husemGbyRGQi8jA/
-         +yEx53JCbD/ENR2xJcjhhzcUWxAUhiuy4VmZS5g1eipCF73G4zYEwC4LaVPBiEDP0oeD
-         zjlnj/8oKlX4aQJ/eD/2TnPKGCXPO+B350lIIyjbobuV5NcevAyrPCBa+dizV2YBuyOy
-         VvrWjsXyLZJdLEc7iAIQJsqiuN1GziTcqj0asvVHDcK7fLqst47/TyPm5b8x5nMmKrQ4
-         MXFQ==
-X-Gm-Message-State: AOJu0YzipB6WHeGN5eQwNoLnXBp6Cx2kHGIr7h99n1vKO/O9J/xChTSA
-        O8OcjlKddQL3x3tbZOIZXqlEPM4MlsRBJ50+JkC81g==
-X-Google-Smtp-Source: AGHT+IHssMMrX4lEp4vtt6ZlKyyydttGs0SzYQgAkmOanWn/emWbZcA3IgXFKH4igP3ZN3Aj2LGnIA+vG2fFNRyrMfU=
-X-Received: by 2002:a05:6214:e8d:b0:66f:bcc5:cf70 with SMTP id
- hf13-20020a0562140e8d00b0066fbcc5cf70mr313097qvb.42.1699400876052; Tue, 07
- Nov 2023 15:47:56 -0800 (PST)
+        bh=PNu6xIseaeQdGwpUSRstKqA7TEpi7Fwk8Tof0W7Ynro=;
+        b=EaaZaViP8J0qdzzMSdqP8f+6ax0TJ+M7zHN/X1qeUa1kSp1MnIh2/SYdupkyCSEfz0
+         ByLSrFSp/8LrWzpvEiKsu+lDNMUGNlvTCH1xZQkG9XVcxuOrY5E0DF5fR8aYQbZ0m3hQ
+         f9/WqPjesvgLVpZliFlsBIjcocFC207ZMSuIwf+fc2QCFYKICgvqO+sQg8wNLflHrbo5
+         z5y2QhNBfZ8A1VU00JMy5J/j4zgJatWsRUtEyWfK3PyWOtNCUsuVn1XgpH5Kk38n49t2
+         F35jBzF9wKLAKLErO3KgaZcD1i41/try0qvyWz7V+k8RQ8rOCtMdF9IMTkdLiSxq6d6e
+         09hA==
+X-Gm-Message-State: AOJu0Yx7SG+5D2gVx4qmSLS3bp1BuWI1KsTp9NOiXx0VDWciWQj2oV0p
+        W0oVm4qVYbNdzWlZy6T35DJaQ2xLmPNnag+Z8lWkXw==
+X-Google-Smtp-Source: AGHT+IGAhMHfijiOgGFQJswkLry8kjZeu/iVYNuDlNtd8WO059Ha5h/GvIFdFrsJHAgrw88t80FpdwX0AhNrgdX2dVY=
+X-Received: by 2002:a67:e782:0:b0:45d:9083:f876 with SMTP id
+ hx2-20020a67e782000000b0045d9083f876mr265655vsb.6.1699401345241; Tue, 07 Nov
+ 2023 15:55:45 -0800 (PST)
 MIME-Version: 1.0
-References: <20231107183605.409588-1-seanjc@google.com> <ZUqSQKHwvKQs7_qA@google.com>
- <ZUrCE9j1Gvw4zacY@google.com>
-In-Reply-To: <ZUrCE9j1Gvw4zacY@google.com>
-From:   Mingwei Zhang <mizhang@google.com>
-Date:   Tue, 7 Nov 2023 15:47:19 -0800
-Message-ID: <CAL715WL3Uo-XjH=GYW9vybDJTscE4-f2a_fndUpOEig1JhkwvQ@mail.gmail.com>
-Subject: Re: [PATCH] perf/x86: Don't enforce minimum period for KVM guest-only events
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Like Xu <likexu@tencent.com>, Jim Mattson <jmattson@google.com>
+References: <20231106024413.2801438-1-almasrymina@google.com>
+ <20231106024413.2801438-11-almasrymina@google.com> <ZUk0FGuJ28s1d9OX@google.com>
+ <CAHS8izNFv7r6vqYR_TYqcCuDO61F+nnNMhsSu=DrYWSr3sVgrA@mail.gmail.com>
+ <CAF=yD-+MFpO5Hdqn+Q9X54SBpgcBeJvKTRD53X2oM4s8uVqnAQ@mail.gmail.com>
+ <ZUlp8XutSAScKs_0@google.com> <CAF=yD-JZ88j+44MYgX-=oYJngz4Z0zw6Y0V3nHXisZJtNu7q6A@mail.gmail.com>
+ <CAKH8qBueYgpxQTvTwngOs6RNjy9yvLF92s1p5nFrobw_UprNMQ@mail.gmail.com>
+ <93eb6a2b-a991-40ca-8f26-f520c986729a@kernel.org> <CAF=yD-Ln4v8orUne8E7D2_eHu39PWPCrMR3Qtuh312pCu=erng@mail.gmail.com>
+In-Reply-To: <CAF=yD-Ln4v8orUne8E7D2_eHu39PWPCrMR3Qtuh312pCu=erng@mail.gmail.com>
+From:   Mina Almasry <almasrymina@google.com>
+Date:   Tue, 7 Nov 2023 15:55:31 -0800
+Message-ID: <CAHS8izOU06ceKyc5oVZhdCKJqmeRdcRyJBFpjGe=u2yh=V52dQ@mail.gmail.com>
+Subject: Re: [RFC PATCH v3 10/12] tcp: RX path for devmem TCP
+To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Cc:     David Ahern <dsahern@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>, Shuah Khan <shuah@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Jeroen de Borst <jeroendb@google.com>,
+        Praveen Kaligineedi <pkaligineedi@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Kaiyuan Zhang <kaiyuanz@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 7, 2023 at 3:02=E2=80=AFPM Sean Christopherson <seanjc@google.c=
-om> wrote:
+On Mon, Nov 6, 2023 at 4:03=E2=80=AFPM Willem de Bruijn
+<willemdebruijn.kernel@gmail.com> wrote:
 >
-> On Tue, Nov 07, 2023, Mingwei Zhang wrote:
-> > On Tue, Nov 07, 2023, Sean Christopherson wrote:
-> > >  arch/x86/events/core.c | 21 +++++++++++++++------
-> > >  1 file changed, 15 insertions(+), 6 deletions(-)
+> On Mon, Nov 6, 2023 at 3:55=E2=80=AFPM David Ahern <dsahern@kernel.org> w=
+rote:
+> >
+> > On 11/6/23 4:32 PM, Stanislav Fomichev wrote:
+> > >> The concise notification API returns tokens as a range for
+> > >> compression, encoding as two 32-bit unsigned integers start + length=
+.
+> > >> It allows for even further batching by returning multiple such range=
+s
+> > >> in a single call.
 > > >
-> > > diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
-> > > index 40ad1425ffa2..f8a8a4ea4d47 100644
-> > > --- a/arch/x86/events/core.c
-> > > +++ b/arch/x86/events/core.c
-> > > @@ -1388,16 +1388,25 @@ int x86_perf_event_set_period(struct perf_eve=
-nt *event)
-> > >             hwc->last_period =3D period;
-> > >             ret =3D 1;
-> > >     }
-> > > -   /*
-> > > -    * Quirk: certain CPUs dont like it if just 1 hw_event is left:
-> > > -    */
-> > > -   if (unlikely(left < 2))
-> > > -           left =3D 2;
-> > >
-> > >     if (left > x86_pmu.max_period)
-> > >             left =3D x86_pmu.max_period;
-> > >
-> > > -   static_call_cond(x86_pmu_limit_period)(event, &left);
-> > > +   /*
-> > > +    * Exempt KVM guest events from the minimum period requirements. =
- It's
-> > > +    * the guest's responsibility to ensure it can make forward progr=
-ess,
-> > > +    * and it's KVM's responsibility to configure an appropriate "per=
-iod"
-> > > +    * to correctly virtualize overflow for the guest's PMCs.
-> > > +    */
-> > > +   if (!event->attr.exclude_host) {
-> > > +           /*
-> > > +            * Quirk: certain CPUs dont like it if just 1 event is le=
-ft:
-> > > +            */
-> > > +           if (unlikely(left < 2))
-> > > +                   left =3D 2;
-> > > +
-> > > +           static_call_cond(x86_pmu_limit_period)(event, &left);
-> > > +   }
-> > >
-> > >     this_cpu_write(pmc_prev_left[idx], left);
+> > > Tangential: should tokens be u64? Otherwise we can't have more than
+> > > 4gb unacknowledged. Or that's a reasonable constraint?
 > > >
 > >
-> > Nice one. I am curious how you tested this one? I would like to
-> > reproduce that one on my side.
+> > Was thinking the same and with bits reserved for a dmabuf id to allow
+> > multiple dmabufs in a single rx queue (future extension, but build the
+> > capability in now). e.g., something like a 37b offset (128GB dmabuf
+> > size), 19b length (large GRO), 8b dmabuf id (lots of dmabufs to a queue=
+).
 >
-> The check_emulated_instr() sub-test in KVM-Unit-Tests's x86/pmu.c fails w=
-hen run
-> with "my" (which is really yours) fix for the KVM's handling of emulated =
-PMC
-> events[*].  If KVM synthesizes an "instructions retired" event that bumps=
- the
-> PMC to all ones, i.e. -1 for all intents and purposes, the test fails bec=
-ause
-> KVM creates a sample_period of '1', but perf programs a period of '2'.
->
-> I suspect a very simple test of writing -1 to a PMC from the guest would =
-exhibit
-> the same behavior.
->
-> [*] https://lkml.kernel.org/r/ZUWAg3WP2XESCAR4%40google.com
+> Agreed. Converting to 64b now sounds like a good forward looking revision=
+.
 
-Nice, I will try that and see if I can reproduce. Will give
-Reviewed-by after testing it on my side.
+The concept of IDing a dma-buf came up in a couple of different
+contexts. First, in the context of us giving the dma-buf ID to the
+user on recvmsg() to tell the user the data is in this specific
+dma-buf. The second context is here, to bind dma-bufs with multiple
+user-visible IDs to an rx queue.
 
-Thanks.
--Mingwei
+My issue here is that I don't see anything in the struct dma_buf that
+can practically serve as an ID:
+
+https://elixir.bootlin.com/linux/v6.6-rc7/source/include/linux/dma-buf.h#L3=
+02
+
+Actually, from the userspace, only the name of the dma-buf seems
+queryable. That's only unique if the user sets it as such. The dmabuf
+FD can't serve as an ID. For our use case we need to support 1 process
+doing the dma-buf bind via netlink, sharing the dma-buf FD to another
+process, and that process receives the data.  In this case the FDs
+shown by the 2 processes may be different. Converting to 64b is a
+trivial change I can make now, but I'm not sure how to ID these
+dma-bufs. Suggestions welcome. I'm not sure the dma-buf guys will
+allow adding a new ID + APIs to query said dma-buf ID.
+
+--
+Thanks,
+Mina
