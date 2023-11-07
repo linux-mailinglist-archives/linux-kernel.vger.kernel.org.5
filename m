@@ -2,136 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A8DA17E389D
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 11:16:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1A6A7E38A2
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 11:16:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233779AbjKGKQW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 05:16:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33734 "EHLO
+        id S233796AbjKGKQk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 05:16:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233508AbjKGKQV (ORCPT
+        with ESMTP id S233813AbjKGKQh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 05:16:21 -0500
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51967116
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 02:16:17 -0800 (PST)
-Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-507b9408c61so7204258e87.0
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 02:16:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699352175; x=1699956975; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=95vD72c+bC2P8X8C/IdsTMXs0cKxT+IRop924lJhGj8=;
-        b=hm/XMT7SZKzjyj8Ebsm372Kt5mKKn0eOerShTN0y4EaqYFGyT2nkRO7v1MDHjaBH6l
-         FvyoRJZ4orOeOHCNBqBcU0vlncqIvAPJUkDvRc1/RR+rYmToBFrxwSr1RRjP0GD7skPk
-         jggaO0Eox2MG8CPXzvNfK6L1hiZ8m8Klm2kLmsE1mOAXysg/79hDSUX80k1BCT57D991
-         oguSIftO5JTQ+9YbqGhtyxUahhWNyKCUuu/n2RUuDmskDNZOenjvotUrPPDvSyIzJutK
-         9KCKOhb8PCi5z5ByEpipK91gmSZcdHntPZyRrYeKuZn/d1omLndnW4rGvH2hyuNwH+Lb
-         2OdA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699352175; x=1699956975;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=95vD72c+bC2P8X8C/IdsTMXs0cKxT+IRop924lJhGj8=;
-        b=ejrc25Wlrb376VqHhMK+HaGcBapYOpVHn49EkcSXXhCJRSjwQWYjpDh+7y2yydOruC
-         ZCPfXDJmKUQJEMZFOc4oHgVEnq7KZv2wOGXw2Z2g2yneM4s1h8bLUjDeehDVOhFBJXmL
-         Khj4JH2OkTELV22oum/Ual/sJ6Oeq1yYb6UxYM3xfWVlXKOPNffJ+ovlbW2IN79cS3CU
-         guNvz2lkxWurKuKrDh0U45c9VXj2mD9H9LfRpQPHu7hMr1px00ha1qyy3XbBYCYRz0uy
-         TPXdU5fuS0ypiSQhecgDcFii+iSDXb8NAly0g8q/tP28gVeUik48bnMzU26Wd8fw3YIv
-         HipQ==
-X-Gm-Message-State: AOJu0Yzt4NjNrhLsT/LrJ3/IkHHVw0UGGwNO9EHXSpJSfEKrporcAjl6
-        iaDLDYRsx10wMWQZudDlQr9wvQ==
-X-Google-Smtp-Source: AGHT+IGJuO6mk0T3Wt1edO/lmNN8eTn2eGwaG7+JJc/a3UervFShShCwhOClqq8GfMz5fuLE3zkgEA==
-X-Received: by 2002:ac2:546e:0:b0:507:9855:bc68 with SMTP id e14-20020ac2546e000000b005079855bc68mr23509396lfn.37.1699352175531;
-        Tue, 07 Nov 2023 02:16:15 -0800 (PST)
-Received: from krzk-bin.. ([178.197.218.126])
-        by smtp.gmail.com with ESMTPSA id l3-20020a05600c4f0300b003fc0505be19sm15249922wmq.37.2023.11.07.02.16.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Nov 2023 02:16:14 -0800 (PST)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Banajit Goswami <bgoswami@quicinc.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Ryan Lee <ryans.lee@analog.com>, linux-sound@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Neil Armstrong <neil.armstrong@linaro.org>
-Subject: [PATCH] ASoC: dt-bindings: use "soundwire" as controller's node name in examples
-Date:   Tue,  7 Nov 2023 11:16:10 +0100
-Message-Id: <20231107101610.13728-1-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
+        Tue, 7 Nov 2023 05:16:37 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D3CBED;
+        Tue,  7 Nov 2023 02:16:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699352195; x=1730888195;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=eGwALYACwi9GTa9+cK3u9YrctMaWgutJvGUdFWLOeoM=;
+  b=oCtdGlbWgpB+zHNJA3xUJBHzB5oANaJsCBAJ4HT39R3y+xTKM7cz0spF
+   70784zt+l8b4ugdT973WcUPLx1BPaSnVfRhFgcI6clBuxGk/hiWKGYlp2
+   +3LVBPHFiLvgxc4PO+X54tWgYM4qremymxZaYovBBcIC4DbBedEpkxmTw
+   oW/4+VKlEYpaT3vEa4f8omuIroErG6hztk9M9dEM5/ArTdATRmNsRy466
+   R7LhdOxkjwqnqiQhEb0mZJJ9JIVVUbRk0gk4sqbgSbffP2ji4xMcESeFQ
+   +TDkoWaMnfwC/KGuNIlcs9p36ywZHuB8nLud1BQXbRt0Dx0lgqOfQGGSi
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10886"; a="11016595"
+X-IronPort-AV: E=Sophos;i="6.03,283,1694761200"; 
+   d="scan'208";a="11016595"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2023 02:16:35 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10886"; a="886243075"
+X-IronPort-AV: E=Sophos;i="6.03,283,1694761200"; 
+   d="scan'208";a="886243075"
+Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.252.52.31])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2023 02:16:30 -0800
+Message-ID: <6fc8bc4c-abc3-45d5-a8c8-045f91adfebf@intel.com>
+Date:   Tue, 7 Nov 2023 12:16:25 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 1/2] perf auxtrace: Add 'T' itrace option for timestamp
+ trace
+Content-Language: en-US
+To:     Leo Yan <leo.yan@linaro.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        James Clark <james.clark@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        John Garry <john.g.garry@oracle.com>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>, coresight@lists.linaro.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231014074513.1668000-1-leo.yan@linaro.org>
+ <20231014074513.1668000-2-leo.yan@linaro.org>
+ <8a2ea58f-f835-4d1a-8bd6-3a63b3b0db94@intel.com>
+ <ZUlgM8pgf19UeyM9@kernel.org>
+ <2940af18-8bcd-4456-a8ed-e77cade1b160@intel.com>
+ <20231107094852.GA656098@leoy-yangtze.lan>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+In-Reply-To: <20231107094852.GA656098@leoy-yangtze.lan>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Soundwire Devicetree bindings expect the Soundwire controller device
-node to be named just "soundwire".  Correct examples, so the incorrect
-code will not be re-used.
+On 7/11/23 11:48, Leo Yan wrote:
+> Hi Adrian,
+> 
+> On Tue, Nov 07, 2023 at 09:19:10AM +0200, Adrian Hunter wrote:
+>> On 6/11/23 23:52, Arnaldo Carvalho de Melo wrote:
+>>> Em Thu, Oct 19, 2023 at 01:47:15PM +0300, Adrian Hunter escreveu:
+>>>> On 14/10/23 10:45, Leo Yan wrote:
+>>>>> An AUX trace can contain timestamp, but in some situations, the hardware
+>>>>> trace module (e.g. Arm CoreSight) cannot decide the traced timestamp is
+>>>>> the same source with CPU's time, thus the decoder can not use the
+>>>>> timestamp trace for samples.
+>>>>>
+>>>>> This patch introduces 'T' itrace option. If users know the platforms
+>>>>
+>>>> "If users know" <- how would users know?  Could the kernel
+>>>> or tools also figure it out?
+>>>
+>>> Adrian, I'm trying to go all the outstanding patches, do you still have
+>>> any issues with this series?
+>>
+>> No, although the question wasn't actually answered.  I presume users
+>> just have to try the 'T' option and see if it helps.
+> 
+> Sometimes, users are software developers in SoC companies, they can
+> know well for the hardware design but are confused why current
+> implementation cannot use timestamp trace.  This is the main reason
+> I sent this patch set.
+> 
+> An example hardware platform is DB410c [1], we know its CoreSight can
+> support timestamp trace, but if without this adding option 'T', we
+> have no chance to use it due to it its CPU arch is prior to Armv8.4.
 
-Reported-by: Neil Armstrong <neil.armstrong@linaro.org>
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
----
- Documentation/devicetree/bindings/sound/adi,max98363.yaml | 2 +-
- Documentation/devicetree/bindings/sound/qcom,wsa883x.yaml | 2 +-
- Documentation/devicetree/bindings/sound/qcom,wsa8840.yaml | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+perf config might be better than an itrace option, but you decide.
 
-diff --git a/Documentation/devicetree/bindings/sound/adi,max98363.yaml b/Documentation/devicetree/bindings/sound/adi,max98363.yaml
-index a844b63f3930..c388cda56011 100644
---- a/Documentation/devicetree/bindings/sound/adi,max98363.yaml
-+++ b/Documentation/devicetree/bindings/sound/adi,max98363.yaml
-@@ -39,7 +39,7 @@ unevaluatedProperties: false
- 
- examples:
-   - |
--    soundwire-controller@3250000 {
-+    soundwire@3250000 {
-         #address-cells = <2>;
-         #size-cells = <0>;
-         reg = <0x3250000 0x2000>;
-diff --git a/Documentation/devicetree/bindings/sound/qcom,wsa883x.yaml b/Documentation/devicetree/bindings/sound/qcom,wsa883x.yaml
-index ba572a7f4f3c..8e462cdf0018 100644
---- a/Documentation/devicetree/bindings/sound/qcom,wsa883x.yaml
-+++ b/Documentation/devicetree/bindings/sound/qcom,wsa883x.yaml
-@@ -52,7 +52,7 @@ examples:
-   - |
-     #include <dt-bindings/gpio/gpio.h>
- 
--    soundwire-controller@3250000 {
-+    soundwire@3250000 {
-         #address-cells = <2>;
-         #size-cells = <0>;
-         reg = <0x3250000 0x2000>;
-diff --git a/Documentation/devicetree/bindings/sound/qcom,wsa8840.yaml b/Documentation/devicetree/bindings/sound/qcom,wsa8840.yaml
-index e6723c9e312a..d717017b0fdb 100644
---- a/Documentation/devicetree/bindings/sound/qcom,wsa8840.yaml
-+++ b/Documentation/devicetree/bindings/sound/qcom,wsa8840.yaml
-@@ -48,7 +48,7 @@ examples:
-   - |
-     #include <dt-bindings/gpio/gpio.h>
- 
--    soundwire-controller {
-+    soundwire {
-         #address-cells = <2>;
-         #size-cells = <0>;
- 
--- 
-2.34.1
+> 
+> @Arnaldo, since James gave comments in his replying, I will respin new
+> patch set and send out.  Thanks for popping up this patch set!
+> 
+> Leo
+> 
+> [1] https://developer.qualcomm.com/hardware/dragonboard-410c
 
