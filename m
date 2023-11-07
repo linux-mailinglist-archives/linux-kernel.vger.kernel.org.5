@@ -2,75 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 226997E8122
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Nov 2023 19:24:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 341877E4A5F
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 22:14:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344675AbjKJSYK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Nov 2023 13:24:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40976 "EHLO
+        id S234877AbjKGVOg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 16:14:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344798AbjKJSXF (ORCPT
+        with ESMTP id S231844AbjKGVOf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Nov 2023 13:23:05 -0500
-Received: from cmccmta1.chinamobile.com (cmccmta8.chinamobile.com [111.22.67.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BDC0428B08
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Nov 2023 02:23:22 -0800 (PST)
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM-FLAG: 00000000
-Received: from spf.mail.chinamobile.com (unknown[10.188.0.87])
-        by rmmx-syy-dmz-app02-12002 (RichMail) with SMTP id 2ee2654e04959aa-37cd9;
-        Fri, 10 Nov 2023 18:23:20 +0800 (CST)
-X-RM-TRANSID: 2ee2654e04959aa-37cd9
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM-FLAG: 00000000
-Received: from localhost.localdomain.localdomain (unknown[10.54.5.252])
-        by rmsmtp-syy-appsvr08-12008 (RichMail) with SMTP id 2ee8654e0496769-12c5b;
-        Fri, 10 Nov 2023 18:23:20 +0800 (CST)
-X-RM-TRANSID: 2ee8654e0496769-12c5b
-From:   zhaimingbing <zhaimingbing@cmss.chinamobile.com>
-To:     rdunlap@infradead.org
-Cc:     James.Bottomley@hansenpartnership.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        zhaimingbing@cmss.chinamobile.com
-Subject: [PATCH V2] mm:hugetlb_cgroup: Optimize variable initialization
-Date:   Wed,  8 Nov 2023 05:13:07 +0800
-Message-Id: <20231107211307.14279-1-zhaimingbing@cmss.chinamobile.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <785e7f99-ccb9-4640-b554-825061f73ee1@infradead.org>
-References: <785e7f99-ccb9-4640-b554-825061f73ee1@infradead.org>
+        Tue, 7 Nov 2023 16:14:35 -0500
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84DF810DB;
+        Tue,  7 Nov 2023 13:14:33 -0800 (PST)
+Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A7KgJ7B007108;
+        Tue, 7 Nov 2023 21:14:33 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=TMhfvhA0X/u9TXZrMObivgO6mBs5hQRS9QvWQagTBio=;
+ b=h45ry+pUzqbVguAvktWdj2dByrdV6LD7Afkihn+R95au9UE4Fb0lPp+4rILoWdl9lTeN
+ aaCeRMJ0xN1X4uCNCtd5cboPaHsiBCiNJi3raaHjN0bte556t3MAdKo92TkGrRFoFotT
+ A3Jtl9gkHjwyjZrVvbF+crUsH1Udi3Umsj985ehiaADva7z9Px+T2RP9XbIcuXj2viFw
+ ujNsOb55/tkAUWs47hDaAdXI8vS+OYEpK9VbjUV+oEezgtdzn6AzNV7RfBxouB6hCTtk
+ Sjf3R98YDC7cKscjVE/H65IVEct4SW+lVQyNZF3+QLOchESYD78uL9eI4XKaDikiIzK1 wg== 
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u7vgs12s6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 07 Nov 2023 21:14:32 +0000
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3A7KvbXn007930;
+        Tue, 7 Nov 2023 21:14:31 GMT
+Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
+        by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3u61skkd98-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 07 Nov 2023 21:14:31 +0000
+Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
+        by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3A7LEScP46400248
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 7 Nov 2023 21:14:28 GMT
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7E47C2004B;
+        Tue,  7 Nov 2023 21:14:28 +0000 (GMT)
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id CCB4220043;
+        Tue,  7 Nov 2023 21:14:27 +0000 (GMT)
+Received: from localhost (unknown [9.171.71.57])
+        by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+        Tue,  7 Nov 2023 21:14:27 +0000 (GMT)
+Date:   Tue, 7 Nov 2023 22:14:26 +0100
+From:   Vasily Gorbik <gor@linux.ibm.com>
+To:     Vineeth Vijayan <vneethv@linux.ibm.com>
+Cc:     Halil Pasic <pasic@linux.ibm.com>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Eric Farman <farman@linux.ibm.com>,
+        Matthew Rosato <mjrosato@linux.ibm.com>,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Subject: Re: [PATCH 1/1] s390/cio: make sch->lock a spinlock (is a pointer)
+Message-ID: <your-ad-here.call-01699391666-ext-4064@work.hours>
+References: <20231101115751.2308307-1-pasic@linux.ibm.com>
+ <b54e18a9-582d-3619-773e-695dcf19eaad@linux.ibm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-        lindbergh.monkeyblade.net
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <b54e18a9-582d-3619-773e-695dcf19eaad@linux.ibm.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: G5dCms-vtx56K441SPN4yNgy-HO017vq
+X-Proofpoint-ORIG-GUID: G5dCms-vtx56K441SPN4yNgy-HO017vq
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-07_13,2023-11-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 clxscore=1011
+ impostorscore=0 mlxlogscore=612 phishscore=0 priorityscore=1501
+ bulkscore=0 malwarescore=0 lowpriorityscore=0 mlxscore=0 spamscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2310240000 definitions=main-2311070175
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Initialize 'max' with 'unsigned long' instead of 'long'.
+On Tue, Nov 07, 2023 at 01:39:00PM +0100, Vineeth Vijayan wrote:
+> 
+> 
+> On 11/1/23 12:57, Halil Pasic wrote:
+> > The lock member of struct subchannel used to be a spinlock, but became
+> > a pointer to a spinlock with commit 2ec2298412e1 ("[S390] subchannel
+> > lock conversion."). This might have been justified back then, but with
+> > the current state of affairs, there is no reason to manage a separate
+> > spinlock object.
+> > 
+> > Let's simplify things and pull the spinlock back into struct subchannel.
+> > 
+> > Signed-off-by: Halil Pasic<pasic@linux.ibm.com>
+> > ---
+> > I know it is a lot of churn, but I do believe in the end it does make
+> > the code more maintainable.
+> 
+> You are right. Makes the code easy to read and a bit less complex.
+> Looks good to me. Thanks
+> 
+> Reviewed-by: Vineeth Vijayan <vneethv@linux.ibm.com>
 
-Signed-off-by: zhaimingbing <zhaimingbing@cmss.chinamobile.com>
----
- mm/hugetlb_cgroup.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/mm/hugetlb_cgroup.c b/mm/hugetlb_cgroup.c
-index dedd2edb0..d4ca2ac55 100644
---- a/mm/hugetlb_cgroup.c
-+++ b/mm/hugetlb_cgroup.c
-@@ -685,7 +685,7 @@ static char *mem_fmt(char *buf, int size, unsigned long hsize)
- static int __hugetlb_events_show(struct seq_file *seq, bool local)
- {
- 	int idx;
--	long max;
-+	unsigned long max;
- 	struct cftype *cft = seq_cft(seq);
- 	struct hugetlb_cgroup *h_cg = hugetlb_cgroup_from_css(seq_css(seq));
- 
--- 
-2.33.0
-
-
-
+Applied, thank you.
