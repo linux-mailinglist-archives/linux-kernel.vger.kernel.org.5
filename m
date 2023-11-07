@@ -2,41 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 14D827E3C72
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 13:16:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5C7B7E3C75
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 13:16:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234471AbjKGMQT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 07:16:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52226 "EHLO
+        id S234545AbjKGMQa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 07:16:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234440AbjKGMP2 (ORCPT
+        with ESMTP id S234036AbjKGMPj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 07:15:28 -0500
+        Tue, 7 Nov 2023 07:15:39 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A53B82721;
-        Tue,  7 Nov 2023 04:11:39 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 69162C433CA;
-        Tue,  7 Nov 2023 12:11:38 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5846544AD;
+        Tue,  7 Nov 2023 04:11:45 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 64839C43395;
+        Tue,  7 Nov 2023 12:11:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699359099;
-        bh=4oOYIcnoxIxV6g1ChuQv7zCVzuFMdjbfN1SJdr13zis=;
+        s=k20201202; t=1699359105;
+        bh=asByYHsdBksFuI0CrpUpI8UvGIEJQr2ZQy7TgjzrI4Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FKSKN3YxDp/Az4dvizf1bUI5LcaWkcThntW6OjPQJh+iO0UnVPRrUW4fHuwev2oMv
-         aOkI98KWEj+bxSi8KASKfeC14T/NFEN3fmLtT3JK2Xnr5Om+WZaCr8hms5EOSUy39D
-         TNA4Zeg63KahhTXEFsnFy9I3TxI3XJps5Ohn7ARJ3kwLaa/+mkjHtK1XPfCGsnv2NT
-         tDTdiN7pwKfZiMHkIbDwC/YNmwxAj7DbcTBPk4pKz9A/Mf6yxrdKVaKjaLim2pbJxN
-         Jd6s3/Iee8KGa+qaySUJUOkYfe0UrWwJ3EfcPCqWQfQfYbfyQ6ktiyxaKhSGLbYBj7
-         R7k2mKEc0SBvw==
+        b=C0NRDTfZHt2iuR4CpiG9prrhleGQ0Y4RYu+jweQuMRW45buYtjZTxD2YsymTvTk2a
+         5/ok2KT+Dg/GTTTJxGdUvRh9otpke1WhxOzTF2R7t08YV8UTCqggTJpFSMteVmUose
+         pSmey9fXxUnjVVlIqZ7siGbaKndsPlPRWOna6xXU+eXK4WDWFhGy930uHcZ+dvHJuN
+         O/J/PXQJXEQFnQ5b3pF5lj7NW1gV+V+FUu+z/2kfcPx0I6SC0vyGhOCgs2Hq0geWPg
+         JbOgni/vhlzs3mEIqAbTT5rMexvrPNlTNOjx3oPAPQr2lDpeZNNk8odaHwqvmCwLPA
+         nMO2arwnBnZow==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Jonathan Denose <jdenose@chromium.org>,
-        Jonathan Denose <jdenose@google.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Sasha Levin <sashal@kernel.org>, rafael@kernel.org,
-        linux-acpi@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 15/18] ACPI: EC: Add quirk for HP 250 G7 Notebook PC
-Date:   Tue,  7 Nov 2023 07:10:45 -0500
-Message-ID: <20231107121104.3757943-15-sashal@kernel.org>
+Cc:     Gerhard Engleder <gerhard@engleder-embedded.com>,
+        kernel test robot <lkp@intel.com>,
+        Jacob Keller <jacob.e.keller@intel.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, davem@davemloft.net,
+        edumazet@google.com, pabeni@redhat.com,
+        maciej.fijalkowski@intel.com, alexanderduyck@fb.com,
+        netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.1 16/18] tsnep: Fix tsnep_request_irq() format-overflow warning
+Date:   Tue,  7 Nov 2023 07:10:46 -0500
+Message-ID: <20231107121104.3757943-16-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231107121104.3757943-1-sashal@kernel.org>
 References: <20231107121104.3757943-1-sashal@kernel.org>
@@ -55,44 +58,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jonathan Denose <jdenose@chromium.org>
+From: Gerhard Engleder <gerhard@engleder-embedded.com>
 
-[ Upstream commit 891ddc03e2f4395e24795596e032f57d5ab37fe7 ]
+[ Upstream commit 00e984cb986b31e9313745e51daceaa1e1eb7351 ]
 
-Add GPE quirk entry for HP 250 G7 Notebook PC.
+Compiler warns about a possible format-overflow in tsnep_request_irq():
+drivers/net/ethernet/engleder/tsnep_main.c:884:55: warning: 'sprintf' may write a terminating nul past the end of the destination [-Wformat-overflow=]
+                         sprintf(queue->name, "%s-rx-%d", name,
+                                                       ^
+drivers/net/ethernet/engleder/tsnep_main.c:881:55: warning: 'sprintf' may write a terminating nul past the end of the destination [-Wformat-overflow=]
+                         sprintf(queue->name, "%s-tx-%d", name,
+                                                       ^
+drivers/net/ethernet/engleder/tsnep_main.c:878:49: warning: '-txrx-' directive writing 6 bytes into a region of size between 5 and 25 [-Wformat-overflow=]
+                         sprintf(queue->name, "%s-txrx-%d", name,
+                                                 ^~~~~~
 
-This change allows the lid switch to be identified as the lid switch
-and not a keyboard button. With the lid switch properly identified, the
-device triggers suspend correctly on lid close.
+Actually overflow cannot happen. Name is limited to IFNAMSIZ, because
+netdev_name() is called during ndo_open(). queue_index is single char,
+because less than 10 queues are supported.
 
-Signed-off-by: Jonathan Denose <jdenose@google.com>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Fix warning with snprintf(). Additionally increase buffer to 32 bytes,
+because those 7 additional bytes were unused anyway.
+
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202310182028.vmDthIUa-lkp@intel.com/
+Signed-off-by: Gerhard Engleder <gerhard@engleder-embedded.com>
+Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
+Link: https://lore.kernel.org/r/20231023183856.58373-1-gerhard@engleder-embedded.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/acpi/ec.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ drivers/net/ethernet/engleder/tsnep.h      |  2 +-
+ drivers/net/ethernet/engleder/tsnep_main.c | 12 ++++++------
+ 2 files changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/acpi/ec.c b/drivers/acpi/ec.c
-index 8bb233d2d1e48..77d1f2cb89ef3 100644
---- a/drivers/acpi/ec.c
-+++ b/drivers/acpi/ec.c
-@@ -1897,6 +1897,16 @@ static const struct dmi_system_id ec_dmi_table[] __initconst = {
- 			DMI_MATCH(DMI_PRODUCT_NAME, "HP Pavilion Gaming Laptop 15-dk1xxx"),
- 		},
- 	},
-+	{
-+		/*
-+		 * HP 250 G7 Notebook PC
-+		 */
-+		.callback = ec_honor_dsdt_gpe,
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "HP"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "HP 250 G7 Notebook PC"),
-+		},
-+	},
- 	{
- 		/*
- 		 * Samsung hardware
+diff --git a/drivers/net/ethernet/engleder/tsnep.h b/drivers/net/ethernet/engleder/tsnep.h
+index 09a723b827c77..0a0d3d7ba63b3 100644
+--- a/drivers/net/ethernet/engleder/tsnep.h
++++ b/drivers/net/ethernet/engleder/tsnep.h
+@@ -123,7 +123,7 @@ struct tsnep_rx {
+ 
+ struct tsnep_queue {
+ 	struct tsnep_adapter *adapter;
+-	char name[IFNAMSIZ + 9];
++	char name[IFNAMSIZ + 16];
+ 
+ 	struct tsnep_tx *tx;
+ 	struct tsnep_rx *rx;
+diff --git a/drivers/net/ethernet/engleder/tsnep_main.c b/drivers/net/ethernet/engleder/tsnep_main.c
+index 2be518db04270..c86dfbce787f1 100644
+--- a/drivers/net/ethernet/engleder/tsnep_main.c
++++ b/drivers/net/ethernet/engleder/tsnep_main.c
+@@ -973,14 +973,14 @@ static int tsnep_request_irq(struct tsnep_queue *queue, bool first)
+ 		dev = queue->adapter;
+ 	} else {
+ 		if (queue->tx && queue->rx)
+-			sprintf(queue->name, "%s-txrx-%d", name,
+-				queue->rx->queue_index);
++			snprintf(queue->name, sizeof(queue->name), "%s-txrx-%d",
++				 name, queue->rx->queue_index);
+ 		else if (queue->tx)
+-			sprintf(queue->name, "%s-tx-%d", name,
+-				queue->tx->queue_index);
++			snprintf(queue->name, sizeof(queue->name), "%s-tx-%d",
++				 name, queue->tx->queue_index);
+ 		else
+-			sprintf(queue->name, "%s-rx-%d", name,
+-				queue->rx->queue_index);
++			snprintf(queue->name, sizeof(queue->name), "%s-rx-%d",
++				 name, queue->rx->queue_index);
+ 		handler = tsnep_irq_txrx;
+ 		dev = queue;
+ 	}
 -- 
 2.42.0
 
