@@ -2,110 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DFABF7E4364
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 16:27:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EADF7E4366
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 16:27:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235130AbjKGP1W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 10:27:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60362 "EHLO
+        id S1343839AbjKGP1b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 10:27:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234375AbjKGP1J (ORCPT
+        with ESMTP id S234099AbjKGP10 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 10:27:09 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F36C30C4
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 07:26:38 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E20CC433C7;
-        Tue,  7 Nov 2023 15:26:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1699370798;
-        bh=ljmnGxLYReiQWa6Iv86aTfS9zhxAvbUWtes+QtFunpE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=m63ny3zpg+SV/+cDpDbbJmMFdZ0EBKySKBGuQAqjxFNkqQGhaOdWSgvY56ZF7FxX5
-         kuHXtm0T3Wc4V1mbYpuqOn+x5n3xTZQtKiq/5u5bnCpOOZcQDSk8kE5CciAZ88Uh9/
-         aPKVARvlyxzu/U+Qj2T7+Sxos5JQIV3/OL2G8F1g=
-Date:   Tue, 7 Nov 2023 16:26:34 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Maxime Ripard <mripard@kernel.org>
-Cc:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Douglas Anderson <dianders@chromium.org>,
-        Rob Clark <robdclark@gmail.com>,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Sean Paul <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Jessica Zhang <quic_jesszhan@quicinc.com>,
-        Marek Vasut <marex@denx.de>, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        freedreno@lists.freedesktop.org
-Subject: Re: [RFC PATCH 03/10] drm/mipi-dsi: add API for manual control over
- the DSI link power state
-Message-ID: <2023110704-deem-jigsaw-0bbf@gregkh>
-References: <20231016165355.1327217-4-dmitry.baryshkov@linaro.org>
- <7e4ak4e77fp5dat2aopyq3g4wnqu3tt7di7ytdr3dvgjviyhrd@vqiqx6iso6vg>
- <CAA8EJpp48AdJmx_U=bEJZUWZgOiT1Ctz6Lpe9QwjLXkMQvsw5w@mail.gmail.com>
- <uj6rtlionmacnwlqxy6ejt5iaczgbbe5z54ipte5ffbixcx3p4@pps7fcr3uqhf>
- <1696f131-83fb-4d0c-b4d7-0bdb61e4ae65@linaro.org>
- <mxtb6vymowutj7whbrygwlcupbdnfqxjralc3nwwapsbvrcmbm@sewxtdslfoen>
- <CAA8EJpozZkEswnioKjRCqBg4fcjVHFwGivoFNTNHVwyocKprQw@mail.gmail.com>
- <2z3yvvtd6ttsd7qw43sl5svtfijxevdr6omxxmws64k6l5qv55@5nnh2b32h2ep>
- <2023110704-playback-grit-7a27@gregkh>
- <hkzoi4sazufi5xdgr6hacuzk72cnbtmm6dwm2bzfgwh5yij6wj@2g4eb6ea4dgd>
+        Tue, 7 Nov 2023 10:27:26 -0500
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B339A113
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 07:27:24 -0800 (PST)
+Received: by mail-pg1-x533.google.com with SMTP id 41be03b00d2f7-5bd306f86a8so3523340a12.0
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 07:27:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1699370844; x=1699975644; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=PtKbq6gTZrURkQc/6QWUt4p94lELBM6ajnXaIsFT5Fk=;
+        b=ktHQmlUvEGh07IudoE1GTRc0X95raVD2ulViS3JxZHCPViJrwKn1UxqWFxRLb9hPOz
+         DDe+SBLtcTampfozU9+pM1EKIZUj8O4n5qCxujnfE9F5IYUS0RoEx2/FIBhvLgUUVCzV
+         MJwZEFquJhjFBDcxsw5aoaXk2N9hvTOuzCdn4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699370844; x=1699975644;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=PtKbq6gTZrURkQc/6QWUt4p94lELBM6ajnXaIsFT5Fk=;
+        b=Txil+CLscrlTUpryj3V3jUMVKiplw0Q+MrAnfbI1VjR4TriTWHlmECU6ibjAC9+vu7
+         8PdBEMAclPYvoQR1q5Kn51b+tUkPFIuoJDm4QgeQ3mE91d1ItO5uLwgE4fvwVKGmajw5
+         Gv7QgvTk5mLz3/hwvwNbVFpvligJyjc2pFXXYw8sdiK5oOBCHweyY+tsM7GLB7e/gUHF
+         YBnk5qEcm5w5p1uQjDXIgX+3zEoIxlrINfhOe7zdIf5lhOk5q9WgWeGclt4uxU2Oc1oJ
+         XIc0eiYcTup9tai5bUKhWEhUatSjTYYB2d93XwKfhHESf7wSLBmjtVkkiIBu4VibtOfO
+         SrRw==
+X-Gm-Message-State: AOJu0YwBBIiD05paPuI7bwBixxriP/+6e1SQ9r6bYMXmteFEADxqEzG6
+        TY0fSlurOmDnblMZpROiB5kzL6/TUei3EjtLG2j+rtmz
+X-Google-Smtp-Source: AGHT+IHafIx1Q/o+gcv8lXxYe8zv4qDYCy+lE7q7ku/ptgvSuHNV1DRwv7swhq+N2yuts6PwX8ie6A==
+X-Received: by 2002:a17:90b:4b11:b0:281:d55:6fe8 with SMTP id lx17-20020a17090b4b1100b002810d556fe8mr4416063pjb.24.1699370844108;
+        Tue, 07 Nov 2023 07:27:24 -0800 (PST)
+Received: from tictac2.mtv.corp.google.com ([2620:15c:9d:2:16a7:2c01:9126:36a4])
+        by smtp.gmail.com with ESMTPSA id l7-20020a17090a49c700b002808c9e3095sm7066259pjm.26.2023.11.07.07.27.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Nov 2023 07:27:23 -0800 (PST)
+From:   Douglas Anderson <dianders@chromium.org>
+To:     Marc Zyngier <maz@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Chen-Yu Tsai <wenst@chromium.org>
+Cc:     Douglas Anderson <dianders@chromium.org>,
+        Amit Daniel Kachhap <amit.kachhap@arm.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        James Morse <james.morse@arm.com>,
+        Joey Gouly <joey.gouly@arm.com>,
+        Mark Brown <broonie@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org
+Subject: [PATCH v2 1/2] arm64: Move Mediatek GIC quirk handling from irqchip to core
+Date:   Tue,  7 Nov 2023 07:26:56 -0800
+Message-ID: <20231107072651.v2.1.Ide945748593cffd8ff0feb9ae22b795935b944d6@changeid>
+X-Mailer: git-send-email 2.42.0.869.gea05f2083d-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <hkzoi4sazufi5xdgr6hacuzk72cnbtmm6dwm2bzfgwh5yij6wj@2g4eb6ea4dgd>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 07, 2023 at 01:18:14PM +0100, Maxime Ripard wrote:
-> On Tue, Nov 07, 2023 at 12:22:21PM +0100, Greg Kroah-Hartman wrote:
-> > On Tue, Nov 07, 2023 at 11:57:49AM +0100, Maxime Ripard wrote:
-> > > +GKH
-> > 
-> > Why?  I don't see a question for me here, sorry.
-> 
-> I guess the question is: we have a bus with various power states
-> (powered off, low power, high speed)
+In commit 44bd78dd2b88 ("irqchip/gic-v3: Disable pseudo NMIs on
+Mediatek devices w/ firmware issues") we added a method for detecting
+Mediatek devices with broken firmware and disabled pseudo-NMI. While
+that worked, it didn't address the problem at a deep enough level.
 
-Great, have fun!  And is this per-device or per-bus-instance?
+The fundamental issue with this broken firmware is that it's not
+saving and restoring several important GICR registers. The current
+list is believed to be:
+* GICR_NUM_IPRIORITYR
+* GICR_CTLR
+* GICR_ISPENDR0
+* GICR_ISACTIVER0
+* GICR_NSACR
 
-> low power is typically used to send commands to a device, high speed to
-> transmit pixels, but still allows to send commands.
-> 
-> Depending on the devices, there's different requirements about the state
-> devices expect the bus to be in to send commands. Some will need to send
-> all the commands in the low power state, some don't care, etc. See
-> the mail I was replying too for more details.
-> 
-> We've tried so far to model that in KMS itself, so the framework the
-> drivers would register too, but we're kind of reaching the limits of
-> what we can do there. It also feels to me that "the driver can't access
-> its device" is more of a problem for the bus to solve rather than the
-> framework.
+Pseudo-NMI didn't work because it was the only thing (currently) in
+the kernel that relied on the broken registers, so forcing pseudo-NMI
+off was an effective fix. However, it could be observed that calling
+system_uses_irq_prio_masking() on these systems still returned
+"true". That caused confusion and led to the need for
+commit a07a59415217 ("arm64: smp: avoid NMI IPIs with broken MediaTek
+FW"). It's worried that the incorrect value returned by
+system_uses_irq_prio_masking() on these systems will continue to
+confuse future developers.
 
-This is up to the specific bus to resolve, there's nothing special
-needed in the driver core for it, right?
+Let's fix the issue a little more completely by disabling IRQ
+priorities at a deeper level in the kernel. Once we do this we can
+revert some of the other bits of code dealing with this quirk.
 
-> Do you agree? Are you aware of any other bus in Linux with similar
-> requirements we could look at? Or any suggestion on how to solve it?
+This includes a partial revert of commit 44bd78dd2b88
+("irqchip/gic-v3: Disable pseudo NMIs on Mediatek devices w/ firmware
+issues"). This isn't a full revert because it leaves some of the
+changes to the "quirks" structure around in case future code needs it.
 
-There might be others, yes, look at how the dynamic power management
-works for different devices on most busses, that might help you out
-here.
+Suggested-by: Mark Rutland <mark.rutland@arm.com>
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+---
 
-good luck!
+Changes in v2:
+- Just detect the quirk once at init time.
+- Fixed typo in subject: s/GiC/GIC.
+- Squash in ("Remove Mediatek pseudo-NMI firmware quirk handling").
 
-greg k-h
+ arch/arm64/kernel/cpufeature.c | 46 ++++++++++++++++++++++++++++------
+ drivers/irqchip/irq-gic-v3.c   | 22 +---------------
+ 2 files changed, 39 insertions(+), 29 deletions(-)
+
+diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
+index f6b2e2906fc9..928124ea2e96 100644
+--- a/arch/arm64/kernel/cpufeature.c
++++ b/arch/arm64/kernel/cpufeature.c
+@@ -999,6 +999,37 @@ static void init_32bit_cpu_features(struct cpuinfo_32bit *info)
+ 	init_cpu_ftr_reg(SYS_MVFR2_EL1, info->reg_mvfr2);
+ }
+ 
++#ifdef CONFIG_ARM64_PSEUDO_NMI
++static bool enable_pseudo_nmi;
++
++static int __init early_enable_pseudo_nmi(char *p)
++{
++	return kstrtobool(p, &enable_pseudo_nmi);
++}
++early_param("irqchip.gicv3_pseudo_nmi", early_enable_pseudo_nmi);
++
++static __init void detect_system_supports_pseudo_nmi(void)
++{
++	struct device_node *np;
++
++	if (!enable_pseudo_nmi)
++		return;
++
++	/*
++	 * Detect broken Mediatek firmware that doesn't properly save and
++	 * restore GIC priorities.
++	 */
++	np = of_find_compatible_node(NULL, NULL, "arm,gic-v3");
++	if (np && of_property_read_bool(np, "mediatek,broken-save-restore-fw")) {
++		pr_info("Pseudo-NMI disabled due to Mediatek Chromebook GICR save problem\n");
++		enable_pseudo_nmi = false;
++	}
++	of_node_put(np);
++}
++#else /* CONFIG_ARM64_PSEUDO_NMI */
++static inline void detect_system_supports_pseudo_nmi(void) { }
++#endif
++
+ void __init init_cpu_features(struct cpuinfo_arm64 *info)
+ {
+ 	/* Before we start using the tables, make sure it is sorted */
+@@ -1057,6 +1088,13 @@ void __init init_cpu_features(struct cpuinfo_arm64 *info)
+ 	 */
+ 	init_cpucap_indirect_list();
+ 
++	/*
++	 * Detect broken pseudo-NMI. Must be called _before_ the call to
++	 * setup_boot_cpu_capabilities() since it interacts with
++	 * can_use_gic_priorities().
++	 */
++	detect_system_supports_pseudo_nmi();
++
+ 	/*
+ 	 * Detect and enable early CPU capabilities based on the boot CPU,
+ 	 * after we have initialised the CPU feature infrastructure.
+@@ -2085,14 +2123,6 @@ static void cpu_enable_e0pd(struct arm64_cpu_capabilities const *cap)
+ #endif /* CONFIG_ARM64_E0PD */
+ 
+ #ifdef CONFIG_ARM64_PSEUDO_NMI
+-static bool enable_pseudo_nmi;
+-
+-static int __init early_enable_pseudo_nmi(char *p)
+-{
+-	return kstrtobool(p, &enable_pseudo_nmi);
+-}
+-early_param("irqchip.gicv3_pseudo_nmi", early_enable_pseudo_nmi);
+-
+ static bool can_use_gic_priorities(const struct arm64_cpu_capabilities *entry,
+ 				   int scope)
+ {
+diff --git a/drivers/irqchip/irq-gic-v3.c b/drivers/irqchip/irq-gic-v3.c
+index 68d11ccee441..1ba674367ee3 100644
+--- a/drivers/irqchip/irq-gic-v3.c
++++ b/drivers/irqchip/irq-gic-v3.c
+@@ -39,8 +39,7 @@
+ 
+ #define FLAGS_WORKAROUND_GICR_WAKER_MSM8996	(1ULL << 0)
+ #define FLAGS_WORKAROUND_CAVIUM_ERRATUM_38539	(1ULL << 1)
+-#define FLAGS_WORKAROUND_MTK_GICR_SAVE		(1ULL << 2)
+-#define FLAGS_WORKAROUND_ASR_ERRATUM_8601001	(1ULL << 3)
++#define FLAGS_WORKAROUND_ASR_ERRATUM_8601001	(1ULL << 2)
+ 
+ #define GIC_IRQ_TYPE_PARTITION	(GIC_IRQ_TYPE_LPI + 1)
+ 
+@@ -1779,15 +1778,6 @@ static bool gic_enable_quirk_msm8996(void *data)
+ 	return true;
+ }
+ 
+-static bool gic_enable_quirk_mtk_gicr(void *data)
+-{
+-	struct gic_chip_data *d = data;
+-
+-	d->flags |= FLAGS_WORKAROUND_MTK_GICR_SAVE;
+-
+-	return true;
+-}
+-
+ static bool gic_enable_quirk_cavium_38539(void *data)
+ {
+ 	struct gic_chip_data *d = data;
+@@ -1888,11 +1878,6 @@ static const struct gic_quirk gic_quirks[] = {
+ 		.compatible = "asr,asr8601-gic-v3",
+ 		.init	= gic_enable_quirk_asr8601,
+ 	},
+-	{
+-		.desc	= "GICv3: Mediatek Chromebook GICR save problem",
+-		.property = "mediatek,broken-save-restore-fw",
+-		.init	= gic_enable_quirk_mtk_gicr,
+-	},
+ 	{
+ 		.desc	= "GICv3: HIP06 erratum 161010803",
+ 		.iidr	= 0x0204043b,
+@@ -1959,11 +1944,6 @@ static void gic_enable_nmi_support(void)
+ 	if (!gic_prio_masking_enabled())
+ 		return;
+ 
+-	if (gic_data.flags & FLAGS_WORKAROUND_MTK_GICR_SAVE) {
+-		pr_warn("Skipping NMI enable due to firmware issues\n");
+-		return;
+-	}
+-
+ 	rdist_nmi_refs = kcalloc(gic_data.ppi_nr + SGI_NR,
+ 				 sizeof(*rdist_nmi_refs), GFP_KERNEL);
+ 	if (!rdist_nmi_refs)
+-- 
+2.42.0.869.gea05f2083d-goog
+
