@@ -2,128 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D7AD77E48BD
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 19:51:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 27FBD7E48B7
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 19:50:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235246AbjKGSvL convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 7 Nov 2023 13:51:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53726 "EHLO
+        id S233046AbjKGSu7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 13:50:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234969AbjKGSvI (ORCPT
+        with ESMTP id S234981AbjKGSu4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 13:51:08 -0500
-Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC64299;
-        Tue,  7 Nov 2023 10:51:06 -0800 (PST)
-Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-5a82f176860so72250917b3.1;
-        Tue, 07 Nov 2023 10:51:06 -0800 (PST)
+        Tue, 7 Nov 2023 13:50:56 -0500
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ADCB99
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 10:50:54 -0800 (PST)
+Received: by mail-pj1-x1044.google.com with SMTP id 98e67ed59e1d1-2800bdf888dso4617055a91.1
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 10:50:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699383054; x=1699987854; darn=vger.kernel.org;
+        h=to:subject:message-id:date:from:sender:reply-to:mime-version:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=a5/WA6a8L/bC89Es8MR4LSB2IBSHjNn0z8GWYcaUP84=;
+        b=ICLtyrQA8GK7QUJBI6cX7VG0Q6SfoUruQDrNpWQ1ce6NpBvpHv74sWex7uQmeX/4GG
+         U0JdGs2lOtG9TZ1Y9+MlIp7ugNepiWoWzr4ApBzxXiKYjJOorGxMOIh/uV+gQN+rLNWE
+         OdEN0+DeatzEtED6j5Ong1hjIhJ9cEquU1z9bMVdj2yvm/r1YbF1zkSpO6hwT7HP+4/C
+         4/vWkHc8uAtk6WoHQ0o2NHGv/QGFCDavQlncSdhYiEdZTnCAhF8ZlsvbJl81sYbPY1Hv
+         W17Zhb0FrmCO1AvywvH1U8X+o9SdfxdV1Dpsfag/fzk+BKbGKlpy/pfQ4u46Ml6/KcAT
+         dO+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699383065; x=1699987865;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Zo2CIx1raepgvOnpR/3U87T9vjTq67Lepg+WhUeVktg=;
-        b=c3jv4BMD3eFCmXRUCFuQR4wOfOGUhg2C0gNCMYWPIoWhqYi1N3IrAcOTSJmh4MOTEM
-         aJvIpXMXfTI+7aN4oQsjDS1teevGTd1cL4Om4qyKIu90gaZn1RTlh1nsriYKZ0awTPr/
-         CvSpTlYTpRm59knEX/m8p1A4hrpbvHb/DuDDPlMIVvHKxvW07lrlTyD/MAc3kB3ZCfwL
-         ViQdDRX3LWMLItkOMlvwxSHD19bpNMb7ylqIPoX7H/JIVSbuuu5wuPZeOuOBwakia/c0
-         /Y4r8574ff7yZXyRzp0TMMbkmP69VSqT6H3RoBBCfn+0c+7XlCRkXTUMjIAsTHuuri0U
-         horw==
-X-Gm-Message-State: AOJu0YySRk4OJ56OrUfOv9iW78aHri8fr1AqSR9PXf5hGWNSwgnnzQKc
-        Co+FcH5Y0JO9bw09GKJaRyUjN7BQKjZiMw==
-X-Google-Smtp-Source: AGHT+IEa3m70HLSR2443dJmQvoFAF6d3QbBgIpVtG1/pi5KU/4OOblVJ5w3bxxmVUjhnsb3n93cpkg==
-X-Received: by 2002:a0d:ea43:0:b0:595:e1b:b978 with SMTP id t64-20020a0dea43000000b005950e1bb978mr14304338ywe.21.1699383065677;
-        Tue, 07 Nov 2023 10:51:05 -0800 (PST)
-Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com. [209.85.128.172])
-        by smtp.gmail.com with ESMTPSA id v202-20020a8148d3000000b005a7bbd713ddsm5860358ywa.108.2023.11.07.10.51.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 07 Nov 2023 10:51:05 -0800 (PST)
-Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-5a81ab75f21so72211987b3.2;
-        Tue, 07 Nov 2023 10:51:05 -0800 (PST)
-X-Received: by 2002:a0d:ebc5:0:b0:5a7:aa54:42b1 with SMTP id
- u188-20020a0debc5000000b005a7aa5442b1mr14354385ywe.28.1699383064754; Tue, 07
- Nov 2023 10:51:04 -0800 (PST)
+        d=1e100.net; s=20230601; t=1699383054; x=1699987854;
+        h=to:subject:message-id:date:from:sender:reply-to:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=a5/WA6a8L/bC89Es8MR4LSB2IBSHjNn0z8GWYcaUP84=;
+        b=Os/llN2sTaECAaHgOCLAKMw7kpzAk4pPV84q8khB96VnjnDnUwJGx4vEtNxHYicihx
+         YptlGfywyhhBWRxrA4emYC2VFSs51RxLHNCdAB/424w7nJ84ItnlqbxAFh/ch22crUlD
+         lIPj8YX4KaicDhO2jmpvgB2wiGHTfXWWFMQsijZlydr9eRJN4nM8wep4f7LpKWlmKtIE
+         xkKA1aqZFeJxiNG3u7QFh+C061/jJDJwfWs1XptPxsMHKkg/QHJOfhTUf4WFKI9xlfbb
+         RpNWZn7POPVM5NxeSfMJIUKujiFCNdpvF5b/eqPKiC5/MtpURBTGPvYO92OqQhMDNGo6
+         o5Jw==
+X-Gm-Message-State: AOJu0YzDjrrn4R8IeTm9FvMoVH2DWnZCa0AjkYhAqmecR4+FYwe3jqPO
+        /454IGtappNHkZfGLEoUUKez/GyWbkXQg0CBbPI=
+X-Google-Smtp-Source: AGHT+IFrSkLRyXGHgESRiq4B2Mpi+QDvY+k7zeLmCwZi3Wyy/WE4ZAuozWrnMNN0mYokVNmq075IA0H4R5rnn8AMNAI=
+X-Received: by 2002:a17:902:f7c1:b0:1cc:4810:6f2c with SMTP id
+ h1-20020a170902f7c100b001cc48106f2cmr4078288plw.33.1699383053614; Tue, 07 Nov
+ 2023 10:50:53 -0800 (PST)
 MIME-Version: 1.0
-References: <20231107121837.3759358-1-sashal@kernel.org> <20231107121837.3759358-34-sashal@kernel.org>
-In-Reply-To: <20231107121837.3759358-34-sashal@kernel.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 7 Nov 2023 19:50:52 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdXWBzM41KjWCVRTmncJa=e2degFqXpRG0M7jE+s-Rkysw@mail.gmail.com>
-Message-ID: <CAMuHMdXWBzM41KjWCVRTmncJa=e2degFqXpRG0M7jE+s-Rkysw@mail.gmail.com>
-Subject: Re: [PATCH AUTOSEL 6.6 34/40] arm64: dts: renesas: r8a779f0: spider:
- Enable PCIe Host ch0
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        magnus.damm@gmail.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org
+Reply-To: dear01776@gmail.com
+Sender: bintousawadogo4@gmail.com
+Received: by 2002:a17:903:2596:b0:1b8:9bba:768d with HTTP; Tue, 7 Nov 2023
+ 10:50:52 -0800 (PST)
+From:   David <dearrest01011@gmail.com>
+Date:   Tue, 7 Nov 2023 10:50:52 -0800
+X-Google-Sender-Auth: A5grz3qa3qVFicl4v2aKfxWpT8Y
+Message-ID: <CAMroiSNMo2TnQcL71ZfG2T=o1A-OOWFJKMUMP7cmb1qyr6yCgg@mail.gmail.com>
+Subject: Dear Friend,
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sasha,
-
-On Tue, Nov 7, 2023 at 1:21 PM Sasha Levin <sashal@kernel.org> wrote:
-> From: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
->
-> [ Upstream commit c588e1c9846b32182fd5a0ceb637b983810e7100 ]
->
-> Enable PCIe Host controller channel 0 on R-Car S4-8 Spider board.
->
-> Since this board has an Oculink connector, CLKREQ# pin of PFC for PCIe
-> should not be used. So, using a GPIO is used to output the clock instead.
-> Otherwise the controller cannot detect a PCIe device.
->
-> Signed-off-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> Link: https://lore.kernel.org/r/20230905012404.2915246-3-yoshihiro.shimoda.uh@renesas.com
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
-
-Thanks for your patch!
-
-> --- a/arch/arm64/boot/dts/renesas/r8a779f0-spider-cpu.dtsi
-> +++ b/arch/arm64/boot/dts/renesas/r8a779f0-spider-cpu.dtsi
-
-> @@ -145,6 +157,18 @@ &mmc0 {
->         status = "okay";
->  };
->
-> +&pcie0_clkref {
-> +       compatible = "gpio-gate-clock";
-> +       clocks = <&rc21012_pci>;
-> +       enable-gpios = <&gpio2 15 GPIO_ACTIVE_LOW>;
-> +       /delete-property/ clock-frequency;
-> +};
-> +
-> +&pciec0 {
-> +       reset-gpio = <&gpio_exp_20 0 GPIO_ACTIVE_LOW>;
-> +       status = "okay";
-> +};
-> +
->  &pfc {
->         pinctrl-0 = <&scif_clk_pins>;
->         pinctrl-names = "default";
-
-These references have a hard dependency on commit 183a709d3719e5c9
-("arm64: dts: renesas: r8a779f0: Add PCIe Host and Endpoint nodes")
-in v6.6+ (i.e. v6.7-rc1 soon).
-
-To actually work, this has a soft (runtime) dependency on commit
-0d0c551011df4519 ("PCI: rcar-gen4: Add R-Car Gen4 PCIe controller
-support for host mode") in v6.6+.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+Dear Friend,
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+?I know that this email will come to you as a surprise. Please, do not
+worry at all. This is a lifetime opportunity and I want you to partner
+with me to make it a huge success for the mutual benefit of our both
+families.
+
+My name is Mr. David, I am working with one of the prime banks in
+Burkina Faso. Here in this bank existed a dormant account for many
+years, which belonged to one of our late foreign customers. The amount
+in this account stands at $13,300,000.00 (Thirteen Million Three
+Hundred Thousand US Dollars).
+
+?It will be in my interest to transfer this fund in an offshore
+account. I am seeking your assistance as the beneficiary of this
+unclaimed fund. Everything will be done conveniently and the funds
+will be safely and successfully transferred into your reliable bank
+account as the next of kin to the deceased.
+
+This is a genuine, risk free and legal business transaction. Once you
+indicate your interest, I will send you more details on how the
+business will be executed.
+
+If you are really sure of your sincerity, trustworthiness,
+accountability and confidentiality over this transaction,
+
+Best regards,
+
+Mr. David
