@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B3F077E452E
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 17:02:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DBA47E452F
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 17:02:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344371AbjKGQCj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 11:02:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49724 "EHLO
+        id S1343810AbjKGQCm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 11:02:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344385AbjKGQBQ (ORCPT
+        with ESMTP id S1344391AbjKGQBR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 11:01:16 -0500
+        Tue, 7 Nov 2023 11:01:17 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E497586BA;
-        Tue,  7 Nov 2023 07:53:27 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9527C433CA;
-        Tue,  7 Nov 2023 15:53:26 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F14D8841;
+        Tue,  7 Nov 2023 07:53:29 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 139C5C433C9;
+        Tue,  7 Nov 2023 15:53:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699372407;
-        bh=tSN4fN6Zw5oCp4DHfOlFz51f6tGda9N1b5bVnZQaJJI=;
+        s=k20201202; t=1699372409;
+        bh=anaqLde6XpseD/Q55oLTl7JeTv0p7RjRbfN7Ws6xtpc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=M+n7eOtZlNTG6y3ihBP6ST/PqdhaLvk6s9DaAx3rA49vOeNiwULzSIraIKDIInJ+e
-         75mI1lj2YU+KDBO26almJAlEz29kTq0l1hTULXRl2Q7AgeJY3nYDONzzFZdyYOEps/
-         cCNm1qscg2XRObHWCM8vFsjxlnoBv6lmsIm2FtjV2OPkKzXJ1sy4Dkv44xZc9YCe2I
-         HKoPRZ09aGl1T8coVV8h4aNoqkpBwZbLy/7gluH+41ha8zjygmrM5tUhB6Ik6Tazk5
-         0v6ukmPiuRvhqBS+PUuJZCrEdzLS8Y5xISK+YYZxN2gfiWwOqLufMaAnr25tiIVEeE
-         qKKo5ir5RYJ7Q==
+        b=OCJYp3ayvkVsHEi5p8X74hryXBOtfLKRYxOgR79PFfnMyY30WTMdSdViP9frDrB1Y
+         DUQqJTGr4fzpp5zhwjs0wzabzqVX0iBOMTd5gQbZRWQNWABEKwikx1U7O0W8h82/kz
+         Ilxs6r23vvSPvRdJCzFFqrzZghaU5QS3ghHX1YucYOBiWKmE2H7jWdKXISfqra0CbI
+         mOaBmcp0gmLKPdPpZTwtMzWxYNStHKJ46bGQRUgBXFoY7Enj2AJcwfTBF3uXb3CsPG
+         gP+iZ9bEWvfU2RaYYqWxRylDVyg5v8vZRUPiJwhSdQnVFu4xMQ3bf+z+NiOQTOjbyi
+         Ev8BSAVH5QJbw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Jiri Kosina <jkosina@suse.cz>,
-        Robert Ayrapetyan <robert.ayrapetyan@gmail.com>,
-        Sasha Levin <sashal@kernel.org>, jikos@kernel.org,
-        benjamin.tissoires@redhat.com, linux-input@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 15/16] HID: Add quirk for Dell Pro Wireless Keyboard and Mouse KM5221W
-Date:   Tue,  7 Nov 2023 10:52:34 -0500
-Message-ID: <20231107155249.3768098-15-sashal@kernel.org>
+Cc:     Yuezhang Mo <Yuezhang.Mo@sony.com>, Andy Wu <Andy.Wu@sony.com>,
+        Aoyama Wataru <wataru.aoyama@sony.com>,
+        Namjae Jeon <linkinjeon@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, sj1557.seo@samsung.com,
+        linux-fsdevel@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.10 16/16] exfat: support handle zero-size directory
+Date:   Tue,  7 Nov 2023 10:52:35 -0500
+Message-ID: <20231107155249.3768098-16-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231107155249.3768098-1-sashal@kernel.org>
 References: <20231107155249.3768098-1-sashal@kernel.org>
@@ -48,45 +49,101 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jiri Kosina <jkosina@suse.cz>
+From: Yuezhang Mo <Yuezhang.Mo@sony.com>
 
-[ Upstream commit 62cc9c3cb3ec1bf31cc116146185ed97b450836a ]
+[ Upstream commit dab48b8f2fe7264d51ec9eed0adea0fe3c78830a ]
 
-This device needs ALWAYS_POLL quirk, otherwise it keeps reconnecting
-indefinitely.
+After repairing a corrupted file system with exfatprogs' fsck.exfat,
+zero-size directories may result. It is also possible to create
+zero-size directories in other exFAT implementation, such as Paragon
+ufsd dirver.
 
-Reported-by: Robert Ayrapetyan <robert.ayrapetyan@gmail.com>
-Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+As described in the specification, the lower directory size limits
+is 0 bytes.
+
+Without this commit, sub-directories and files cannot be created
+under a zero-size directory, and it cannot be removed.
+
+Signed-off-by: Yuezhang Mo <Yuezhang.Mo@sony.com>
+Reviewed-by: Andy Wu <Andy.Wu@sony.com>
+Reviewed-by: Aoyama Wataru <wataru.aoyama@sony.com>
+Signed-off-by: Namjae Jeon <linkinjeon@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hid/hid-ids.h    | 1 +
- drivers/hid/hid-quirks.c | 1 +
- 2 files changed, 2 insertions(+)
+ fs/exfat/namei.c | 29 ++++++++++++++++++++++-------
+ 1 file changed, 22 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/hid/hid-ids.h b/drivers/hid/hid-ids.h
-index 6712d99ad80da..7c688d7f8ccff 100644
---- a/drivers/hid/hid-ids.h
-+++ b/drivers/hid/hid-ids.h
-@@ -345,6 +345,7 @@
+diff --git a/fs/exfat/namei.c b/fs/exfat/namei.c
+index bd00afc5e4c16..d62d961e278d9 100644
+--- a/fs/exfat/namei.c
++++ b/fs/exfat/namei.c
+@@ -330,14 +330,20 @@ static int exfat_find_empty_entry(struct inode *inode,
+ 		if (exfat_check_max_dentries(inode))
+ 			return -ENOSPC;
  
- #define USB_VENDOR_ID_DELL				0x413c
- #define USB_DEVICE_ID_DELL_PIXART_USB_OPTICAL_MOUSE	0x301a
-+#define USB_DEVICE_ID_DELL_PRO_WIRELESS_KM5221W		0x4503
+-		/* we trust p_dir->size regardless of FAT type */
+-		if (exfat_find_last_cluster(sb, p_dir, &last_clu))
+-			return -EIO;
+-
+ 		/*
+ 		 * Allocate new cluster to this directory
+ 		 */
+-		exfat_chain_set(&clu, last_clu + 1, 0, p_dir->flags);
++		if (ei->start_clu != EXFAT_EOF_CLUSTER) {
++			/* we trust p_dir->size regardless of FAT type */
++			if (exfat_find_last_cluster(sb, p_dir, &last_clu))
++				return -EIO;
++
++			exfat_chain_set(&clu, last_clu + 1, 0, p_dir->flags);
++		} else {
++			/* This directory is empty */
++			exfat_chain_set(&clu, EXFAT_EOF_CLUSTER, 0,
++					ALLOC_NO_FAT_CHAIN);
++		}
  
- #define USB_VENDOR_ID_DELORME		0x1163
- #define USB_DEVICE_ID_DELORME_EARTHMATE	0x0100
-diff --git a/drivers/hid/hid-quirks.c b/drivers/hid/hid-quirks.c
-index 4229e5de06745..787349f2de01d 100644
---- a/drivers/hid/hid-quirks.c
-+++ b/drivers/hid/hid-quirks.c
-@@ -66,6 +66,7 @@ static const struct hid_device_id hid_quirks[] = {
- 	{ HID_USB_DEVICE(USB_VENDOR_ID_CORSAIR, USB_DEVICE_ID_CORSAIR_STRAFE), HID_QUIRK_NO_INIT_REPORTS | HID_QUIRK_ALWAYS_POLL },
- 	{ HID_USB_DEVICE(USB_VENDOR_ID_CREATIVELABS, USB_DEVICE_ID_CREATIVE_SB_OMNI_SURROUND_51), HID_QUIRK_NOGET },
- 	{ HID_USB_DEVICE(USB_VENDOR_ID_DELL, USB_DEVICE_ID_DELL_PIXART_USB_OPTICAL_MOUSE), HID_QUIRK_ALWAYS_POLL },
-+	{ HID_USB_DEVICE(USB_VENDOR_ID_DELL, USB_DEVICE_ID_DELL_PRO_WIRELESS_KM5221W), HID_QUIRK_ALWAYS_POLL },
- 	{ HID_USB_DEVICE(USB_VENDOR_ID_DMI, USB_DEVICE_ID_DMI_ENC), HID_QUIRK_NOGET },
- 	{ HID_USB_DEVICE(USB_VENDOR_ID_DRACAL_RAPHNET, USB_DEVICE_ID_RAPHNET_2NES2SNES), HID_QUIRK_MULTI_INPUT },
- 	{ HID_USB_DEVICE(USB_VENDOR_ID_DRACAL_RAPHNET, USB_DEVICE_ID_RAPHNET_4NES4SNES), HID_QUIRK_MULTI_INPUT },
+ 		/* allocate a cluster */
+ 		ret = exfat_alloc_cluster(inode, 1, &clu);
+@@ -347,6 +353,11 @@ static int exfat_find_empty_entry(struct inode *inode,
+ 		if (exfat_zeroed_cluster(inode, clu.dir))
+ 			return -EIO;
+ 
++		if (ei->start_clu == EXFAT_EOF_CLUSTER) {
++			ei->start_clu = clu.dir;
++			p_dir->dir = clu.dir;
++		}
++
+ 		/* append to the FAT chain */
+ 		if (clu.flags != p_dir->flags) {
+ 			/* no-fat-chain bit is disabled,
+@@ -644,7 +655,7 @@ static int exfat_find(struct inode *dir, struct qstr *qname,
+ 	info->type = exfat_get_entry_type(ep);
+ 	info->attr = le16_to_cpu(ep->dentry.file.attr);
+ 	info->size = le64_to_cpu(ep2->dentry.stream.valid_size);
+-	if ((info->type == TYPE_FILE) && (info->size == 0)) {
++	if (info->size == 0) {
+ 		info->flags = ALLOC_NO_FAT_CHAIN;
+ 		info->start_clu = EXFAT_EOF_CLUSTER;
+ 	} else {
+@@ -890,6 +901,9 @@ static int exfat_check_dir_empty(struct super_block *sb,
+ 
+ 	dentries_per_clu = sbi->dentries_per_clu;
+ 
++	if (p_dir->dir == EXFAT_EOF_CLUSTER)
++		return 0;
++
+ 	exfat_chain_dup(&clu, p_dir);
+ 
+ 	while (clu.dir != EXFAT_EOF_CLUSTER) {
+@@ -1296,7 +1310,8 @@ static int __exfat_rename(struct inode *old_parent_inode,
+ 		}
+ 
+ 		/* Free the clusters if new_inode is a dir(as if exfat_rmdir) */
+-		if (new_entry_type == TYPE_DIR) {
++		if (new_entry_type == TYPE_DIR &&
++		    new_ei->start_clu != EXFAT_EOF_CLUSTER) {
+ 			/* new_ei, new_clu_to_free */
+ 			struct exfat_chain new_clu_to_free;
+ 
 -- 
 2.42.0
 
