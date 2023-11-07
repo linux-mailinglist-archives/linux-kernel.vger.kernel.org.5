@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A9887E4243
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 15:58:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8C8D7E4244
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 15:58:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343498AbjKGO6b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 09:58:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34992 "EHLO
+        id S235074AbjKGO6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 09:58:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234781AbjKGO5z (ORCPT
+        with ESMTP id S234727AbjKGO5z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 7 Nov 2023 09:57:55 -0500
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4FC1D7A;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCF03D7D;
         Tue,  7 Nov 2023 06:57:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699369070; x=1730905070;
+  t=1699369071; x=1730905071;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=vLgUmjmBLc3J6I9Eg/cKgAU8/9ugkH9ESWoL90woQ1s=;
-  b=PaoNax7s6zPkyYU0WFPWnwuQVGIgXc1onZr0x5lHRASY2MCZGZ9u0Ktp
-   V12RIWGOe3MuGRedDIaZrtsgw8UzMPFZrmvQ7va+iYMZV4GZNrRFPdoR3
-   dmb60tnKosAJYD5FA/Frns6ay5Pf0c/UOdt6IY4eGzZCRWcMqIZM9GQ1G
-   bxvoAKxhcc5hf5crbIxjG1BjccTrxt0SxONQkiay8jMBUakBxZaleFunF
-   NRKsUbXXuPzmQ6EuCcoHMqTLndnt2UkwL36+1oVaALK0up1QHevyqeUvy
-   c38EeFaTtaxAbPOYR940gWJEsdu6qnxgwSqwN+ioRMy7QmuuQXiUlw/Jc
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10887"; a="374555728"
+  bh=Xf9JEbEMSZzihI7UxRNf62gli24ANbkgRb0nh8DgInY=;
+  b=CcLrZh/Vn5PbAKrp17pPcSnm42bH1jTieCtNmmzI8dQWQiop/f+yZPsT
+   bulx/EAFDLfk3JTdJn1jS6dwLgzCqRRdPR5ggPHV+g46m6G6KwA4491kC
+   2OLRon6UDZxoXNiMVYdWtxCtG7fUvWr/1hFIdQUqLsNbnVLgrfWIJUix1
+   z6Qh+pGqKOy1QXpj4AzPlIZ5ILrvXjjoxHl+yzkdcIxF0bMqF0FU3C1Cs
+   Cq5XY8jkIHo1eMLcZKzkusQavxAGU4pWOkOsTH/zvd61CFsTFES2pLKuN
+   VNptrAeSUOtlEImgyTfiQzuhxFCpeMoxDQX3QLRdA/OxhKbcXbUVreCDV
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10887"; a="374555743"
 X-IronPort-AV: E=Sophos;i="6.03,284,1694761200"; 
-   d="scan'208";a="374555728"
+   d="scan'208";a="374555743"
 Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2023 06:57:47 -0800
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2023 06:57:48 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.03,284,1694761200"; 
-   d="scan'208";a="10444001"
+   d="scan'208";a="10444011"
 Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2023 06:57:47 -0800
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2023 06:57:48 -0800
 From:   isaku.yamahata@intel.com
 To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc:     isaku.yamahata@intel.com, isaku.yamahata@gmail.com,
@@ -48,9 +48,9 @@ Cc:     isaku.yamahata@intel.com, isaku.yamahata@gmail.com,
         Kai Huang <kai.huang@intel.com>,
         Zhi Wang <zhi.wang.linux@gmail.com>, chen.bo@intel.com,
         hang.yuan@intel.com, tina.zhang@intel.com
-Subject: [PATCH v17 012/116] KVM: TDX: Retry SEAMCALL on the lack of entropy error
-Date:   Tue,  7 Nov 2023 06:55:38 -0800
-Message-Id: <a67c877521a6913911bd569c38c772ade6a1403b.1699368322.git.isaku.yamahata@intel.com>
+Subject: [PATCH v17 013/116] KVM: TDX: Add helper functions to print TDX SEAMCALL error
+Date:   Tue,  7 Nov 2023 06:55:39 -0800
+Message-Id: <c81e63be8ecaceb5df49d6355cc091c7966afe4e.1699368322.git.isaku.yamahata@intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1699368322.git.isaku.yamahata@intel.com>
 References: <cover.1699368322.git.isaku.yamahata@intel.com>
@@ -68,88 +68,79 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Isaku Yamahata <isaku.yamahata@intel.com>
 
-Some SEAMCALL may return TDX_RND_NO_ENTROPY error when the entropy is
-lacking.  Retry SEAMCALL on the error following rdrand_long() to retry
-RDRAND_RETRY_LOOPS times.
+Add helper functions to print out errors from the TDX module in a uniform
+manner.
 
 Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
 ---
- arch/x86/kvm/vmx/tdx_errno.h |  1 +
- arch/x86/kvm/vmx/tdx_ops.h   | 40 +++++++++++++++++++++---------------
- 2 files changed, 24 insertions(+), 17 deletions(-)
+ arch/x86/kvm/Makefile        |  2 +-
+ arch/x86/kvm/vmx/tdx_error.c | 20 ++++++++++++++++++++
+ arch/x86/kvm/vmx/tdx_ops.h   |  5 +++++
+ 3 files changed, 26 insertions(+), 1 deletion(-)
+ create mode 100644 arch/x86/kvm/vmx/tdx_error.c
 
-diff --git a/arch/x86/kvm/vmx/tdx_errno.h b/arch/x86/kvm/vmx/tdx_errno.h
-index 7f96696b8e7c..bb093e292fef 100644
---- a/arch/x86/kvm/vmx/tdx_errno.h
-+++ b/arch/x86/kvm/vmx/tdx_errno.h
-@@ -14,6 +14,7 @@
- #define TDX_OPERAND_INVALID			0xC000010000000000ULL
- #define TDX_OPERAND_BUSY			0x8000020000000000ULL
- #define TDX_PREVIOUS_TLB_EPOCH_BUSY		0x8000020100000000ULL
-+#define TDX_RND_NO_ENTROPY			0x8000020300000000ULL
- #define TDX_VCPU_NOT_ASSOCIATED			0x8000070200000000ULL
- #define TDX_KEY_GENERATION_FAILED		0x8000080000000000ULL
- #define TDX_KEY_STATE_INCORRECT			0xC000081100000000ULL
+diff --git a/arch/x86/kvm/Makefile b/arch/x86/kvm/Makefile
+index 4b01ab842ab7..e3354b784e10 100644
+--- a/arch/x86/kvm/Makefile
++++ b/arch/x86/kvm/Makefile
+@@ -25,7 +25,7 @@ kvm-$(CONFIG_KVM_SMM)	+= smm.o
+ kvm-intel-y		+= vmx/vmx.o vmx/vmenter.o vmx/pmu_intel.o vmx/vmcs12.o \
+ 			   vmx/hyperv.o vmx/nested.o vmx/posted_intr.o vmx/main.o
+ kvm-intel-$(CONFIG_X86_SGX_KVM)	+= vmx/sgx.o
+-kvm-intel-$(CONFIG_INTEL_TDX_HOST)	+= vmx/tdx.o
++kvm-intel-$(CONFIG_INTEL_TDX_HOST)	+= vmx/tdx.o vmx/tdx_error.o
+ 
+ kvm-amd-y		+= svm/svm.o svm/vmenter.o svm/pmu.o svm/nested.o svm/avic.o \
+ 			   svm/sev.o svm/hyperv.o
+diff --git a/arch/x86/kvm/vmx/tdx_error.c b/arch/x86/kvm/vmx/tdx_error.c
+new file mode 100644
+index 000000000000..d083c79a2331
+--- /dev/null
++++ b/arch/x86/kvm/vmx/tdx_error.c
+@@ -0,0 +1,20 @@
++// SPDX-License-Identifier: GPL-2.0
++/* functions to record TDX SEAMCALL error */
++
++#include <linux/kernel.h>
++#include <linux/bug.h>
++
++#include "tdx_ops.h"
++
++void pr_tdx_error(u64 op, u64 error_code, const struct tdx_module_args *out)
++{
++	if (!out) {
++		pr_err_ratelimited("SEAMCALL[%lld] failed: 0x%llx\n",
++				   op, error_code);
++		return;
++	}
++
++#define MSG	"SEAMCALL[%lld] failed: 0x%llx RCX 0x%llx RDX 0x%llx R8 0x%llx R9 0x%llx R10 0x%llx R11 0x%llx\n"
++	pr_err_ratelimited(MSG, op, error_code, out->rcx, out->rdx, out->r8,
++			   out->r9, out->r10, out->r11);
++}
 diff --git a/arch/x86/kvm/vmx/tdx_ops.h b/arch/x86/kvm/vmx/tdx_ops.h
-index 12fd6b8d49e0..a55977626ae3 100644
+index a55977626ae3..c9f74b2400a7 100644
 --- a/arch/x86/kvm/vmx/tdx_ops.h
 +++ b/arch/x86/kvm/vmx/tdx_ops.h
-@@ -6,6 +6,7 @@
- 
- #include <linux/compiler.h>
- 
-+#include <asm/archrandom.h>
+@@ -10,6 +10,7 @@
  #include <asm/cacheflush.h>
  #include <asm/asm.h>
  #include <asm/kvm_host.h>
-@@ -17,25 +18,30 @@
- static inline u64 tdx_seamcall(u64 op, u64 rcx, u64 rdx, u64 r8, u64 r9,
- 			       struct tdx_module_args *out)
- {
-+	int retry;
- 	u64 ret;
++#include <asm/tdx.h>
  
--	if (out) {
--		*out = (struct tdx_module_args) {
--			.rcx = rcx,
--			.rdx = rdx,
--			.r8 = r8,
--			.r9 = r9,
--		};
--		ret = __seamcall_ret(op, out);
--	} else {
--		struct tdx_module_args args = {
--			.rcx = rcx,
--			.rdx = rdx,
--			.r8 = r8,
--			.r9 = r9,
--		};
--		ret = __seamcall(op, &args);
--	}
-+	/* Mimic the existing rdrand_long() to retry RDRAND_RETRY_LOOPS times. */
-+	retry = RDRAND_RETRY_LOOPS;
-+	do {
-+		if (out) {
-+			*out = (struct tdx_module_args) {
-+				.rcx = rcx,
-+				.rdx = rdx,
-+				.r8 = r8,
-+				.r9 = r9,
-+			};
-+			ret = __seamcall_ret(op, out);
-+		} else {
-+			struct tdx_module_args args = {
-+				.rcx = rcx,
-+				.rdx = rdx,
-+				.r8 = r8,
-+				.r9 = r9,
-+			};
-+			ret = __seamcall(op, &args);
-+		}
-+	} while (unlikely(ret == TDX_RND_NO_ENTROPY) && --retry);
- 	if (unlikely(ret == TDX_SEAMCALL_UD)) {
- 		/*
- 		 * SEAMCALLs fail with TDX_SEAMCALL_UD returned when VMX is off.
+ #include "tdx_errno.h"
+ #include "tdx_arch.h"
+@@ -57,6 +58,10 @@ static inline u64 tdx_seamcall(u64 op, u64 rcx, u64 rdx, u64 r8, u64 r9,
+ 	return ret;
+ }
+ 
++#ifdef CONFIG_INTEL_TDX_HOST
++void pr_tdx_error(u64 op, u64 error_code, const struct tdx_module_args *out);
++#endif
++
+ static inline u64 tdh_mng_addcx(hpa_t tdr, hpa_t addr)
+ {
+ 	clflush_cache_range(__va(addr), PAGE_SIZE);
 -- 
 2.25.1
 
