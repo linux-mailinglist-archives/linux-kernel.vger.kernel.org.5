@@ -2,41 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F7F57E3B97
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 13:07:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C8727E3B9B
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 13:08:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234243AbjKGMHy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 07:07:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43882 "EHLO
+        id S234286AbjKGMIG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 07:08:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234115AbjKGMHg (ORCPT
+        with ESMTP id S234171AbjKGMHu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 07:07:36 -0500
+        Tue, 7 Nov 2023 07:07:50 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1137D7D;
-        Tue,  7 Nov 2023 04:07:26 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BE930C433CD;
-        Tue,  7 Nov 2023 12:07:25 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B841C171B;
+        Tue,  7 Nov 2023 04:07:31 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 192C8C433CA;
+        Tue,  7 Nov 2023 12:07:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699358846;
-        bh=P9rL5XMEPWqnbn1dV4tZ7tJMGhMfWOFZSH9upBdniI4=;
+        s=k20201202; t=1699358851;
+        bh=IRBKkKgv5aR88byIZ6Re2E0UvtxYIrRtCbz9MOSX40g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pVBukNpYqZctptDD0NLCocq6C/clUij9cGN7WIj4iPEwv8OxwpXVQTUlFYWcGpmjz
-         rqmt4oxpadIw+xm1jH/4vudvvOMrxKey5ZdAPhzED3QlOREBsnvTSY2V0jdOCo8keE
-         0+2hSUYuy0oIs9IHa3wpec948BNqVSebHGOcW533qVPq7xwlHWQKQych2si+oLjqFu
-         B1nNruzV5aP/mA1MPiyuwbckpZ1pyDQwqAyLLA0w8ffWtvYQS9AaZ7M6ftEeQ+DxE7
-         C9cr/3qvQn/j0w+cMcta8D21rgf1UZ+5MK7l3cK2g6E/S2+Bmc7fBOJbIXQKl2SLux
-         0yVdIcpnq6a8g==
+        b=I1pkrHzSP0vFV+JJD7NtKgcQPP+JjC9OWdPQkkPv2aKVjBigVIqzt6l1e43229GIT
+         H7Se785jE467lbpE+MdZ6Q2blOlTpr15gpRjfziVNnThWWV6wYUmXwSj7otTtAJYOb
+         o/dskAUygHHRHznqO8hrFFYNbP6m826dZPjFOBlKmGqO5YBogbeJcgunGxq/X48iq9
+         ssTd2FpWukR3sPHY1ggpLSrKYFRTuCCONX2NIvBD/NSxr5LTyuF3adIRWHBkIY+dOl
+         ptwap3F/V/oNIR7JdMDlYzCUey1n0E2KlRxrnp8twiWJRU10xk3oNSGzll/w6Xq37o
+         S4nYtGmhAZIOQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Baochen Qiang <quic_bqiang@quicinc.com>,
-        Jeff Johnson <quic_jjohnson@quicinc.com>,
-        Kalle Valo <quic_kvalo@quicinc.com>,
-        Sasha Levin <sashal@kernel.org>, kvalo@kernel.org,
-        ath12k@lists.infradead.org, linux-wireless@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 10/31] wifi: ath12k: fix possible out-of-bound write in ath12k_wmi_ext_hal_reg_caps()
-Date:   Tue,  7 Nov 2023 07:05:57 -0500
-Message-ID: <20231107120704.3756327-10-sashal@kernel.org>
+Cc:     Shiju Jose <shiju.jose@huawei.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Sasha Levin <sashal@kernel.org>, rafael@kernel.org,
+        mahesh@linux.ibm.com, robert.moore@intel.com, kvalo@kernel.org,
+        tony.luck@intel.com, leoyang.li@nxp.com, linmiaohe@huawei.com,
+        rostedt@goodmis.org, linux-acpi@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-pci@vger.kernel.org,
+        acpica-devel@lists.linuxfoundation.org
+Subject: [PATCH AUTOSEL 6.6 11/31] ACPI: APEI: Fix AER info corruption when error status data has multiple sections
+Date:   Tue,  7 Nov 2023 07:05:58 -0500
+Message-ID: <20231107120704.3756327-11-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231107120704.3756327-1-sashal@kernel.org>
 References: <20231107120704.3756327-1-sashal@kernel.org>
@@ -55,44 +60,134 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Baochen Qiang <quic_bqiang@quicinc.com>
+From: Shiju Jose <shiju.jose@huawei.com>
 
-[ Upstream commit b302dce3d9edea5b93d1902a541684a967f3c63c ]
+[ Upstream commit e2abc47a5a1a9f641e7cacdca643fdd40729bf6e ]
 
-reg_cap.phy_id is extracted from WMI event and could be an unexpected value
-in case some errors happen. As a result out-of-bound write may occur to
-soc->hal_reg_cap. Fix it by validating reg_cap.phy_id before using it.
+ghes_handle_aer() passes AER data to the PCI core for logging and
+recovery by calling aer_recover_queue() with a pointer to struct
+aer_capability_regs.
 
-This is found during code review.
+The problem was that aer_recover_queue() queues the pointer directly
+without copying the aer_capability_regs data.  The pointer was to
+the ghes->estatus buffer, which could be reused before
+aer_recover_work_func() reads the data.
 
-Compile tested only.
+To avoid this problem, allocate a new aer_capability_regs structure
+from the ghes_estatus_pool, copy the AER data from the ghes->estatus
+buffer into it, pass a pointer to the new struct to
+aer_recover_queue(), and free it after aer_recover_work_func() has
+processed it.
 
-Signed-off-by: Baochen Qiang <quic_bqiang@quicinc.com>
-Acked-by: Jeff Johnson <quic_jjohnson@quicinc.com>
-Signed-off-by: Kalle Valo <quic_kvalo@quicinc.com>
-Link: https://lore.kernel.org/r/20230830020716.5420-1-quic_bqiang@quicinc.com
+Reported-by: Bjorn Helgaas <helgaas@kernel.org>
+Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+Signed-off-by: Shiju Jose <shiju.jose@huawei.com>
+[ rjw: Subject edits ]
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath12k/wmi.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/acpi/apei/ghes.c | 23 ++++++++++++++++++++++-
+ drivers/pci/pcie/aer.c   | 10 ++++++++++
+ include/acpi/ghes.h      |  4 ++++
+ 3 files changed, 36 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath12k/wmi.c b/drivers/net/wireless/ath/ath12k/wmi.c
-index ef0f3cf35cfd1..bddf4571d50c1 100644
---- a/drivers/net/wireless/ath/ath12k/wmi.c
-+++ b/drivers/net/wireless/ath/ath12k/wmi.c
-@@ -3876,6 +3876,12 @@ static int ath12k_wmi_ext_hal_reg_caps(struct ath12k_base *soc,
- 			ath12k_warn(soc, "failed to extract reg cap %d\n", i);
- 			return ret;
- 		}
+diff --git a/drivers/acpi/apei/ghes.c b/drivers/acpi/apei/ghes.c
+index ef59d6ea16da0..63ad0541db381 100644
+--- a/drivers/acpi/apei/ghes.c
++++ b/drivers/acpi/apei/ghes.c
+@@ -209,6 +209,20 @@ int ghes_estatus_pool_init(unsigned int num_ghes)
+ 	return -ENOMEM;
+ }
+ 
++/**
++ * ghes_estatus_pool_region_free - free previously allocated memory
++ *				   from the ghes_estatus_pool.
++ * @addr: address of memory to free.
++ * @size: size of memory to free.
++ *
++ * Returns none.
++ */
++void ghes_estatus_pool_region_free(unsigned long addr, u32 size)
++{
++	gen_pool_free(ghes_estatus_pool, addr, size);
++}
++EXPORT_SYMBOL_GPL(ghes_estatus_pool_region_free);
 +
-+		if (reg_cap.phy_id >= MAX_RADIOS) {
-+			ath12k_warn(soc, "unexpected phy id %u\n", reg_cap.phy_id);
-+			return -EINVAL;
-+		}
+ static int map_gen_v2(struct ghes *ghes)
+ {
+ 	return apei_map_generic_address(&ghes->generic_v2->read_ack_register);
+@@ -564,6 +578,7 @@ static void ghes_handle_aer(struct acpi_hest_generic_data *gdata)
+ 	    pcie_err->validation_bits & CPER_PCIE_VALID_AER_INFO) {
+ 		unsigned int devfn;
+ 		int aer_severity;
++		u8 *aer_info;
+ 
+ 		devfn = PCI_DEVFN(pcie_err->device_id.device,
+ 				  pcie_err->device_id.function);
+@@ -577,11 +592,17 @@ static void ghes_handle_aer(struct acpi_hest_generic_data *gdata)
+ 		if (gdata->flags & CPER_SEC_RESET)
+ 			aer_severity = AER_FATAL;
+ 
++		aer_info = (void *)gen_pool_alloc(ghes_estatus_pool,
++						  sizeof(struct aer_capability_regs));
++		if (!aer_info)
++			return;
++		memcpy(aer_info, pcie_err->aer_info, sizeof(struct aer_capability_regs));
 +
- 		soc->hal_reg_cap[reg_cap.phy_id] = reg_cap;
+ 		aer_recover_queue(pcie_err->device_id.segment,
+ 				  pcie_err->device_id.bus,
+ 				  devfn, aer_severity,
+ 				  (struct aer_capability_regs *)
+-				  pcie_err->aer_info);
++				  aer_info);
  	}
- 	return 0;
+ #endif
+ }
+diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
+index 9c8fd69ae5ad8..40d84cb0c601e 100644
+--- a/drivers/pci/pcie/aer.c
++++ b/drivers/pci/pcie/aer.c
+@@ -29,6 +29,7 @@
+ #include <linux/kfifo.h>
+ #include <linux/slab.h>
+ #include <acpi/apei.h>
++#include <acpi/ghes.h>
+ #include <ras/ras_event.h>
+ 
+ #include "../pci.h"
+@@ -997,6 +998,15 @@ static void aer_recover_work_func(struct work_struct *work)
+ 			continue;
+ 		}
+ 		cper_print_aer(pdev, entry.severity, entry.regs);
++		/*
++		 * Memory for aer_capability_regs(entry.regs) is being allocated from the
++		 * ghes_estatus_pool to protect it from overwriting when multiple sections
++		 * are present in the error status. Thus free the same after processing
++		 * the data.
++		 */
++		ghes_estatus_pool_region_free((unsigned long)entry.regs,
++					      sizeof(struct aer_capability_regs));
++
+ 		if (entry.severity == AER_NONFATAL)
+ 			pcie_do_recovery(pdev, pci_channel_io_normal,
+ 					 aer_root_reset);
+diff --git a/include/acpi/ghes.h b/include/acpi/ghes.h
+index 3c8bba9f1114a..be1dd4c1a9174 100644
+--- a/include/acpi/ghes.h
++++ b/include/acpi/ghes.h
+@@ -73,8 +73,12 @@ int ghes_register_vendor_record_notifier(struct notifier_block *nb);
+ void ghes_unregister_vendor_record_notifier(struct notifier_block *nb);
+ 
+ struct list_head *ghes_get_devices(void);
++
++void ghes_estatus_pool_region_free(unsigned long addr, u32 size);
+ #else
+ static inline struct list_head *ghes_get_devices(void) { return NULL; }
++
++static inline void ghes_estatus_pool_region_free(unsigned long addr, u32 size) { return; }
+ #endif
+ 
+ int ghes_estatus_pool_init(unsigned int num_ghes);
 -- 
 2.42.0
 
