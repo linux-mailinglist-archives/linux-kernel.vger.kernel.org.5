@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C69327E3BE5
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 13:10:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C114B7E3BCB
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 13:09:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234102AbjKGMKr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 07:10:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42476 "EHLO
+        id S234178AbjKGMJx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 07:09:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234115AbjKGMKW (ORCPT
+        with ESMTP id S234374AbjKGMJ3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 07:10:22 -0500
+        Tue, 7 Nov 2023 07:09:29 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EC301BDB;
-        Tue,  7 Nov 2023 04:08:36 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84465C433C8;
-        Tue,  7 Nov 2023 12:08:34 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FF3010C2;
+        Tue,  7 Nov 2023 04:08:38 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96D4EC433C7;
+        Tue,  7 Nov 2023 12:08:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699358916;
-        bh=936W0rPH+PKEckvlRda9toa0h6+ypEp/Jq+8y6KUhsQ=;
+        s=k20201202; t=1699358917;
+        bh=wdiInk9T1JqhqxMF/AobLGrru/KAemyiOiVhZCBoZ2Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AkXHwMLJGKMMq1evRkfY/kJx0RCqoI6qmoGPeg7xjdMmH+en+MbQm+cp7EUWOvwNS
-         XEPQEVz7LVLc265VZJZDQ5xABX65H+g3z8KX+gh5/PtFQQBDBIDKpJlPpBw7fGFPwN
-         CCxkVCDLrwZwXnvQzDEMwZ/YTT6lMSJoZdCArDQtJheZfyd8Z4UnFUpo+4hX7UHeHt
-         xtOEgfUoBpqCKf4RG4NVuCKAuGt+Uowei9VKGLjzoSwboz7IqMBCtVhge71K2v2Jw2
-         Mmn6UFjO8SoINzQiqS3lSyyeiozlM/erbrhIfzY17URuW3XK9UUb+OL9UQQW8pFn3b
-         uhAA0je1+FuTw==
+        b=d8g6Mk3cdcP2BuKTwYXesCVM05KI/S4ao8k/GEioBLUVdn1iXHd6vLWXbizfuwmS4
+         IxWDkcXstsZVxZgoeDwhcq2VQCze07BjxRDLZhzhhgi2BWhVNlt2t2S4wwuwQkd27i
+         7kmCQEOh/Tj8IXjJ9uocKzLLflEKMHY/ufoOVcWI+s90lHi/IUpddUynII2DhK/jTf
+         y0/p8HXEzd4vxk2JkLGOjFPL+T1i7NEouMmNrBY2WJKPwfm/6s/YYtHFYBjNl5fEaq
+         uqIwYQBvF+lG4BUoaCCYTEqCMJ+d3vAT2ExJw5xt7iqeJocGzPruGScbYvXaXMzd6E
+         /K4jz9aWK8NQw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Gerhard Engleder <gerhard@engleder-embedded.com>,
-        kernel test robot <lkp@intel.com>,
-        Jacob Keller <jacob.e.keller@intel.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, davem@davemloft.net,
-        edumazet@google.com, pabeni@redhat.com,
-        maciej.fijalkowski@intel.com, hawk@kernel.org,
-        alexanderduyck@fb.com, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 27/31] tsnep: Fix tsnep_request_irq() format-overflow warning
-Date:   Tue,  7 Nov 2023 07:06:14 -0500
-Message-ID: <20231107120704.3756327-27-sashal@kernel.org>
+Cc:     Hans de Goede <hdegoede@redhat.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        Sasha Levin <sashal@kernel.org>,
+        andriy.shevchenko@linux.intel.com, brgl@bgdev.pl,
+        linux-gpio@vger.kernel.org, linux-acpi@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.6 28/31] gpiolib: acpi: Add a ignore interrupt quirk for Peaq C1010
+Date:   Tue,  7 Nov 2023 07:06:15 -0500
+Message-ID: <20231107120704.3756327-28-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231107120704.3756327-1-sashal@kernel.org>
 References: <20231107120704.3756327-1-sashal@kernel.org>
@@ -58,78 +58,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gerhard Engleder <gerhard@engleder-embedded.com>
+From: Hans de Goede <hdegoede@redhat.com>
 
-[ Upstream commit 00e984cb986b31e9313745e51daceaa1e1eb7351 ]
+[ Upstream commit 6cc64f6173751d212c9833bde39e856b4f585a3e ]
 
-Compiler warns about a possible format-overflow in tsnep_request_irq():
-drivers/net/ethernet/engleder/tsnep_main.c:884:55: warning: 'sprintf' may write a terminating nul past the end of the destination [-Wformat-overflow=]
-                         sprintf(queue->name, "%s-rx-%d", name,
-                                                       ^
-drivers/net/ethernet/engleder/tsnep_main.c:881:55: warning: 'sprintf' may write a terminating nul past the end of the destination [-Wformat-overflow=]
-                         sprintf(queue->name, "%s-tx-%d", name,
-                                                       ^
-drivers/net/ethernet/engleder/tsnep_main.c:878:49: warning: '-txrx-' directive writing 6 bytes into a region of size between 5 and 25 [-Wformat-overflow=]
-                         sprintf(queue->name, "%s-txrx-%d", name,
-                                                 ^~~~~~
+On the Peaq C1010 2-in-1 INT33FC:00 pin 3 is connected to
+a "dolby" button. At the ACPI level an _AEI event-handler
+is connected which sets an ACPI variable to 1 on both
+edges. This variable can be polled + cleared to 0 using WMI.
 
-Actually overflow cannot happen. Name is limited to IFNAMSIZ, because
-netdev_name() is called during ndo_open(). queue_index is single char,
-because less than 10 queues are supported.
+Since the variable is set on both edges the WMI interface is pretty
+useless even when polling. So instead of writing a custom WMI
+driver for this the x86-android-tablets code instantiates
+a gpio-keys platform device for the "dolby" button.
 
-Fix warning with snprintf(). Additionally increase buffer to 32 bytes,
-because those 7 additional bytes were unused anyway.
+Add an ignore_interrupt quirk for INT33FC:00 pin 3 on the Peaq C1010,
+so that it is not seen as busy when the gpio-keys driver requests it.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202310182028.vmDthIUa-lkp@intel.com/
-Signed-off-by: Gerhard Engleder <gerhard@engleder-embedded.com>
-Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
-Link: https://lore.kernel.org/r/20231023183856.58373-1-gerhard@engleder-embedded.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Note this replaces a hack in x86-android-tablets where it would
+call acpi_gpiochip_free_interrupts() on the INT33FC:00 GPIO
+controller. acpi_gpiochip_free_interrupts() is considered private
+(internal) gpiolib API so x86-android-tablets should stop using it.
+
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+Acked-by: Linus Walleij <linus.walleij@linaro.org>
+Acked-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Link: https://lore.kernel.org/r/20230909141816.58358-3-hdegoede@redhat.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/engleder/tsnep.h      |  2 +-
- drivers/net/ethernet/engleder/tsnep_main.c | 12 ++++++------
- 2 files changed, 7 insertions(+), 7 deletions(-)
+ drivers/gpio/gpiolib-acpi.c | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
 
-diff --git a/drivers/net/ethernet/engleder/tsnep.h b/drivers/net/ethernet/engleder/tsnep.h
-index 6e14c918e3fb7..f188fba021a62 100644
---- a/drivers/net/ethernet/engleder/tsnep.h
-+++ b/drivers/net/ethernet/engleder/tsnep.h
-@@ -143,7 +143,7 @@ struct tsnep_rx {
+diff --git a/drivers/gpio/gpiolib-acpi.c b/drivers/gpio/gpiolib-acpi.c
+index 51e41676de0b8..5d04720107ef5 100644
+--- a/drivers/gpio/gpiolib-acpi.c
++++ b/drivers/gpio/gpiolib-acpi.c
+@@ -1655,6 +1655,26 @@ static const struct dmi_system_id gpiolib_acpi_quirks[] __initconst = {
+ 			.ignore_wake = "SYNA1202:00@16",
+ 		},
+ 	},
++	{
++		/*
++		 * On the Peaq C1010 2-in-1 INT33FC:00 pin 3 is connected to
++		 * a "dolby" button. At the ACPI level an _AEI event-handler
++		 * is connected which sets an ACPI variable to 1 on both
++		 * edges. This variable can be polled + cleared to 0 using
++		 * WMI. But since the variable is set on both edges the WMI
++		 * interface is pretty useless even when polling.
++		 * So instead the x86-android-tablets code instantiates
++		 * a gpio-keys platform device for it.
++		 * Ignore the _AEI handler for the pin, so that it is not busy.
++		 */
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "PEAQ"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "PEAQ PMM C1010 MD99187"),
++		},
++		.driver_data = &(struct acpi_gpiolib_dmi_quirk) {
++			.ignore_interrupt = "INT33FC:00@3",
++		},
++	},
+ 	{} /* Terminating entry */
+ };
  
- struct tsnep_queue {
- 	struct tsnep_adapter *adapter;
--	char name[IFNAMSIZ + 9];
-+	char name[IFNAMSIZ + 16];
- 
- 	struct tsnep_tx *tx;
- 	struct tsnep_rx *rx;
-diff --git a/drivers/net/ethernet/engleder/tsnep_main.c b/drivers/net/ethernet/engleder/tsnep_main.c
-index 8b992dc9bb52b..38da2d6c250e6 100644
---- a/drivers/net/ethernet/engleder/tsnep_main.c
-+++ b/drivers/net/ethernet/engleder/tsnep_main.c
-@@ -1779,14 +1779,14 @@ static int tsnep_request_irq(struct tsnep_queue *queue, bool first)
- 		dev = queue->adapter;
- 	} else {
- 		if (queue->tx && queue->rx)
--			sprintf(queue->name, "%s-txrx-%d", name,
--				queue->rx->queue_index);
-+			snprintf(queue->name, sizeof(queue->name), "%s-txrx-%d",
-+				 name, queue->rx->queue_index);
- 		else if (queue->tx)
--			sprintf(queue->name, "%s-tx-%d", name,
--				queue->tx->queue_index);
-+			snprintf(queue->name, sizeof(queue->name), "%s-tx-%d",
-+				 name, queue->tx->queue_index);
- 		else
--			sprintf(queue->name, "%s-rx-%d", name,
--				queue->rx->queue_index);
-+			snprintf(queue->name, sizeof(queue->name), "%s-rx-%d",
-+				 name, queue->rx->queue_index);
- 		handler = tsnep_irq_txrx;
- 		dev = queue;
- 	}
 -- 
 2.42.0
 
