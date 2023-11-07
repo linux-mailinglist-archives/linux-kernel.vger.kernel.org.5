@@ -2,198 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 48CDF7E37FF
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 10:41:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56A617E37FD
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 10:41:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233833AbjKGJly (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 04:41:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55252 "EHLO
+        id S233826AbjKGJlS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 04:41:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233828AbjKGJlv (ORCPT
+        with ESMTP id S229580AbjKGJlP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 04:41:51 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2F29102
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 01:41:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699350107; x=1730886107;
-  h=date:from:to:cc:subject:message-id;
-  bh=aWnobbj7ijjsUwE7TJ7MtNqMrt0SU8Vz0j3P6/6ZrzY=;
-  b=PeDmCDKlErJNa2IZb1bP7rjQsLy7KHHVhIytfJDByP7OLwMeQ1AA70hG
-   etvSk/DeZiuRr1GPoMb/ZkKkwFiyKWlFACu8R3Lvby1Dq3hPpzJqLb+h8
-   5LobJcRn1XFOgMIYLrFSj7yCPTntS+oo9TX6hAZZDqnW2DVVxKWFenELO
-   quyciLY7gr/bQIhusHxvhJKkT12fFg/IujisqN7uq/blrmhJfRP0cxTDZ
-   mJuS5wyez7NWQFNaXrkXsN0Yn0rrATpA3ZUJ/h/T5kVNq2eqODJ+IuYzh
-   kiQoHGoUM55yKb4sgKh11ThcffhWSKnJ853vnyu1veooXZb6N0OYt5RnI
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10886"; a="374498375"
-X-IronPort-AV: E=Sophos;i="6.03,283,1694761200"; 
-   d="scan'208";a="374498375"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2023 01:41:47 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10886"; a="1094109683"
-X-IronPort-AV: E=Sophos;i="6.03,283,1694761200"; 
-   d="scan'208";a="1094109683"
-Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by fmsmga005.fm.intel.com with ESMTP; 07 Nov 2023 01:41:46 -0800
-Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r0Iae-00070m-0Y;
-        Tue, 07 Nov 2023 09:41:44 +0000
-Date:   Tue, 07 Nov 2023 17:40:48 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:irq/urgent] BUILD SUCCESS
- d3badb15613c14dd35d3495b1dde5c90fcd616dd
-Message-ID: <202311071743.BnpyZ4Of-lkp@intel.com>
-User-Agent: s-nail v14.9.24
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+        Tue, 7 Nov 2023 04:41:15 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AD7C102;
+        Tue,  7 Nov 2023 01:41:12 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DCE9CC433C7;
+        Tue,  7 Nov 2023 09:41:05 +0000 (UTC)
+Message-ID: <0db3d822-9bfa-4efc-bf9d-3ae218b6815d@xs4all.nl>
+Date:   Tue, 7 Nov 2023 10:41:04 +0100
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH v8 13/13] media: vim2m_audio: add virtual driver for
+ audio memory to memory
+Content-Language: en-US, nl
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+To:     Shengjiu Wang <shengjiu.wang@nxp.com>, sakari.ailus@iki.fi,
+        tfiga@chromium.org, m.szyprowski@samsung.com, mchehab@kernel.org,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        shengjiu.wang@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
+        nicoleotsuka@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
+        perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
+        linuxppc-dev@lists.ozlabs.org
+References: <1698402948-10618-1-git-send-email-shengjiu.wang@nxp.com>
+ <1698402948-10618-14-git-send-email-shengjiu.wang@nxp.com>
+ <c7daf33d-9d6d-499e-b477-35176dbaca38@xs4all.nl>
+Autocrypt: addr=hverkuil@xs4all.nl; keydata=
+ xsFNBFQ84W0BEAC7EF1iL4s3tY8cRTVkJT/297h0Hz0ypA+ByVM4CdU9sN6ua/YoFlr9k0K4
+ BFUlg7JzJoUuRbKxkYb8mmqOe722j7N3HO8+ofnio5cAP5W0WwDpM0kM84BeHU0aPSTsWiGR
+ yw55SOK2JBSq7hueotWLfJLobMWhQii0Zd83hGT9SIt9uHaHjgwmtTH7MSTIiaY6N14nw2Ud
+ C6Uykc1va0Wqqc2ov5ihgk/2k2SKa02ookQI3e79laOrbZl5BOXNKR9LguuOZdX4XYR3Zi6/
+ BsJ7pVCK9xkiVf8svlEl94IHb+sa1KrlgGv3fn5xgzDw8Z222TfFceDL/2EzUyTdWc4GaPMC
+ E/c1B4UOle6ZHg02+I8tZicjzj5+yffv1lB5A1btG+AmoZrgf0X2O1B96fqgHx8w9PIpVERN
+ YsmkfxvhfP3MO3oHh8UY1OLKdlKamMneCLk2up1Zlli347KMjHAVjBAiy8qOguKF9k7HOjif
+ JCLYTkggrRiEiE1xg4tblBNj8WGyKH+u/hwwwBqCd/Px2HvhAsJQ7DwuuB3vBAp845BJYUU3
+ 06kRihFqbO0vEt4QmcQDcbWINeZ2zX5TK7QQ91ldHdqJn6MhXulPKcM8tCkdD8YNXXKyKqNl
+ UVqXnarz8m2JCbHgjEkUlAJCNd6m3pfESLZwSWsLYL49R5yxIwARAQABzSFIYW5zIFZlcmt1
+ aWwgPGh2ZXJrdWlsQHhzNGFsbC5ubD7CwZUEEwECACgFAlQ84W0CGwMFCRLMAwAGCwkIBwMC
+ BhUIAgkKCwQWAgMBAh4BAheAACEJEL0tYUhmFDtMFiEEBSzee8IVBTtonxvKvS1hSGYUO0wT
+ 7w//frEmPBAwu3OdvAk9VDkH7X+7RcFpiuUcJxs3Xl6jpaA+SdwtZra6W1uMrs2RW8eXXiq/
+ 80HXJtYnal1Y8MKUBoUVhT/+5+KcMyfVQK3VFRHnNxCmC9HZV+qdyxAGwIscUd4hSlweuU6L
+ 6tI7Dls6NzKRSTFbbGNZCRgl8OrF01TBH+CZrcFIoDgpcJA5Pw84mxo+wd2BZjPA4TNyq1od
+ +slSRbDqFug1EqQaMVtUOdgaUgdlmjV0+GfBHoyCGedDE0knv+tRb8v5gNgv7M3hJO3Nrl+O
+ OJVoiW0G6OWVyq92NNCKJeDy8XCB1yHCKpBd4evO2bkJNV9xcgHtLrVqozqxZAiCRKN1elWF
+ 1fyG8KNquqItYedUr+wZZacqW+uzpVr9pZmUqpVCk9s92fzTzDZcGAxnyqkaO2QTgdhPJT2m
+ wpG2UwIKzzi13tmwakY7OAbXm76bGWVZCO3QTHVnNV8ku9wgeMc/ZGSLUT8hMDZlwEsW7u/D
+ qt+NlTKiOIQsSW7u7h3SFm7sMQo03X/taK9PJhS2BhhgnXg8mOa6U+yNaJy+eU0Lf5hEUiDC
+ vDOI5x++LD3pdrJVr/6ZB0Qg3/YzZ0dk+phQ+KlP6HyeO4LG662toMbFbeLcBjcC/ceEclII
+ 90QNEFSZKM6NVloM+NaZRYVO3ApxWkFu+1mrVTXOwU0EVDzhbQEQANzLiI6gHkIhBQKeQaYs
+ p2SSqF9c++9LOy5x6nbQ4s0X3oTKaMGfBZuiKkkU6NnHCSa0Az5ScRWLaRGu1PzjgcVwzl5O
+ sDawR1BtOG/XoPRNB2351PRp++W8TWo2viYYY0uJHKFHML+ku9q0P+NkdTzFGJLP+hn7x0RT
+ DMbhKTHO3H2xJz5TXNE9zTJuIfGAz3ShDpijvzYieY330BzZYfpgvCllDVM5E4XgfF4F/N90
+ wWKu50fMA01ufwu+99GEwTFVG2az5T9SXd7vfSgRSkzXy7hcnxj4IhOfM6Ts85/BjMeIpeqy
+ TDdsuetBgX9DMMWxMWl7BLeiMzMGrfkJ4tvlof0sVjurXibTibZyfyGR2ricg8iTbHyFaAzX
+ 2uFVoZaPxrp7udDfQ96sfz0hesF9Zi8d7NnNnMYbUmUtaS083L/l2EDKvCIkhSjd48XF+aO8
+ VhrCfbXWpGRaLcY/gxi2TXRYG9xCa7PINgz9SyO34sL6TeFPSZn4bPQV5O1j85Dj4jBecB1k
+ z2arzwlWWKMZUbR04HTeAuuvYvCKEMnfW3ABzdonh70QdqJbpQGfAF2p4/iCETKWuqefiOYn
+ pR8PqoQA1DYv3t7y9DIN5Jw/8Oj5wOeEybw6vTMB0rrnx+JaXvxeHSlFzHiD6il/ChDDkJ9J
+ /ejCHUQIl40wLSDRABEBAAHCwXwEGAECAA8FAlQ84W0CGwwFCRLMAwAAIQkQvS1hSGYUO0wW
+ IQQFLN57whUFO2ifG8q9LWFIZhQ7TA1WD/9yxJvQrpf6LcNrr8uMlQWCg2iz2q1LGt1Itkuu
+ KaavEF9nqHmoqhSfZeAIKAPn6xuYbGxXDrpN7dXCOH92fscLodZqZtK5FtbLvO572EPfxneY
+ UT7JzDc/5LT9cFFugTMOhq1BG62vUm/F6V91+unyp4dRlyryAeqEuISykhvjZCVHk/woaMZv
+ c1Dm4Uvkv0Ilelt3Pb9J7zhcx6sm5T7v16VceF96jG61bnJ2GFS+QZerZp3PY27XgtPxRxYj
+ AmFUeF486PHx/2Yi4u1rQpIpC5inPxIgR1+ZFvQrAV36SvLFfuMhyCAxV6WBlQc85ArOiQZB
+ Wm7L0repwr7zEJFEkdy8C81WRhMdPvHkAIh3RoY1SGcdB7rB3wCzfYkAuCBqaF7Zgfw8xkad
+ KEiQTexRbM1sc/I8ACpla3N26SfQwrfg6V7TIoweP0RwDrcf5PVvwSWsRQp2LxFCkwnCXOra
+ gYmkrmv0duG1FStpY+IIQn1TOkuXrciTVfZY1cZD0aVxwlxXBnUNZZNslldvXFtndxR0SFat
+ sflovhDxKyhFwXOP0Rv8H378/+14TaykknRBIKEc0+lcr+EMOSUR5eg4aURb8Gc3Uc7fgQ6q
+ UssTXzHPyj1hAyDpfu8DzAwlh4kKFTodxSsKAjI45SLjadSc94/5Gy8645Y1KgBzBPTH7Q==
+In-Reply-To: <c7daf33d-9d6d-499e-b477-35176dbaca38@xs4all.nl>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git irq/urgent
-branch HEAD: d3badb15613c14dd35d3495b1dde5c90fcd616dd  irqchip/gic-v3-its: Flush ITS tables correctly in non-coherent GIC designs
+On 06/11/2023 14:58, Hans Verkuil wrote:
+> On 27/10/2023 12:35, Shengjiu Wang wrote:
+>> Audio memory to memory virtual driver use video memory to memory
+>> virtual driver vim2m.c as example. The main difference is
+>> device type is VFL_TYPE_AUDIO and device cap type is V4L2_CAP_AUDIO_M2M.
+>>
+>> The device_run function is a dummy function, which is simply
+>> copy the data from input buffer to output buffer.
+> 
+> I started work on the v4l-utils part of this, using this driver.
+> 
+> I noticed that this driver doesn't expose the V4L2_CID_M2M_AUDIO_SOURCE/SINK_RATE
+> controls, and it really should, otherwise it is not representative of this
+> type of device.
+> 
+> It is enough to start with just a single fixed rate listed for each control.
+> 
+> It would be even nicer if you can have two rates such as 24000 and 48000 and
+> do the actual rate conversion, i.e. dropping every other sample or duplicating
+> each sample depending on whether you're halving or doubling the rate. That
+> should be easy to implement, and it makes this driver much more realistic.
 
-elapsed time: 1990m
+Update: I have finished the v4l-utils update (I'll post a patch for that later).
 
-configs tested: 121
-configs skipped: 2
+But while testing I noticed that this driver does not set up the sequence number
+and it doesn't copy the timestamp. So the patch below needs to be applied.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Just squash it together with your patch. Note that you need to do the same for
+your alsa driver.
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                   randconfig-001-20231106   gcc  
-arc                   randconfig-002-20231106   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                                 defconfig   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-csky                  randconfig-001-20231106   gcc  
-csky                  randconfig-002-20231106   gcc  
-i386                             allmodconfig   gcc  
-i386                                defconfig   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                        allyesconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20231106   gcc  
-loongarch             randconfig-002-20231106   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                             allmodconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                          ath79_defconfig   clang
-mips                         rt305x_defconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-nios2                 randconfig-001-20231107   gcc  
-nios2                 randconfig-002-20231107   gcc  
-openrisc                         allmodconfig   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc                randconfig-001-20231107   gcc  
-parisc                randconfig-002-20231107   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                        warp_defconfig   gcc  
-riscv                            allmodconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                 randconfig-001-20231107   gcc  
-riscv                 randconfig-002-20231107   gcc  
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                              allnoconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                  randconfig-001-20231107   gcc  
-s390                  randconfig-002-20231107   gcc  
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sh                    randconfig-001-20231107   gcc  
-sh                    randconfig-002-20231107   gcc  
-sh                      rts7751r2d1_defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc                 randconfig-001-20231107   gcc  
-sparc                 randconfig-002-20231107   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-sparc64               randconfig-001-20231107   gcc  
-sparc64               randconfig-002-20231107   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                    randconfig-001-20231107   gcc  
-um                    randconfig-002-20231107   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64       buildonly-randconfig-001-20231107   gcc  
-x86_64       buildonly-randconfig-002-20231107   gcc  
-x86_64       buildonly-randconfig-003-20231107   gcc  
-x86_64       buildonly-randconfig-004-20231107   gcc  
-x86_64       buildonly-randconfig-005-20231107   gcc  
-x86_64       buildonly-randconfig-006-20231107   gcc  
-x86_64                              defconfig   gcc  
-x86_64                                  kexec   gcc  
-x86_64                randconfig-001-20231107   gcc  
-x86_64                randconfig-002-20231107   gcc  
-x86_64                randconfig-003-20231107   gcc  
-x86_64                randconfig-004-20231107   gcc  
-x86_64                randconfig-005-20231107   gcc  
-x86_64                randconfig-006-20231107   gcc  
-x86_64                          rhel-8.3-func   gcc  
-x86_64                    rhel-8.3-kselftests   gcc  
-x86_64                           rhel-8.3-ltp   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                            allnoconfig   gcc  
-xtensa                           allyesconfig   gcc  
-xtensa                randconfig-001-20231107   gcc  
-xtensa                randconfig-002-20231107   gcc  
+Also, please rename the source name from vim2m_audio.c to vim2m-audio.c. That is
+consistent with the naming elsewhere in test-drivers.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+I also want to have support for the MEDIA_CONTROLLER here. See vim2m, search for
+CONFIG_MEDIA_CONTROLLER. Both in this test driver and also in your audio driver.
+
+This will require adding a new media entity (MEDIA_ENT_F_PROC_AUDIO_RESAMPLER?).
+And you also need to add a new MEDIA_INTF_T_V4L_AUDIO interface type that will be
+used by v4l2_m2m_register_media_controller(). That function can check vdev->vfl_type
+to see if it needs to use MEDIA_INTF_T_V4L_VIDEO or MEDIA_INTF_T_V4L_AUDIO.
+Remember to update the documentation as well!
+
+The reason for using the media controller here is that it turns out to be very useful
+for application to detect what sort of m2m device it is dealing with: it has proven
+it worth for video codecs, and I think it should be standard for new m2m devices, and
+especially for a completely new type of m2m device.
+
+Regards,
+
+	Hans
+
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+---
+diff --git a/drivers/media/test-drivers/vim2m_audio.c b/drivers/media/test-drivers/vim2m_audio.c
+index 2134e8338417..e8aa2bb0aa77 100644
+--- a/drivers/media/test-drivers/vim2m_audio.c
++++ b/drivers/media/test-drivers/vim2m_audio.c
+@@ -62,6 +62,7 @@ struct audm2m_q_data {
+ 	unsigned int		channels;
+ 	unsigned int		buffersize;
+ 	u32			fourcc;
++	unsigned int		sequence;
+ };
+
+ enum {
+@@ -170,6 +171,9 @@ static void device_run(void *priv)
+
+ 	src_buf = v4l2_m2m_src_buf_remove(ctx->fh.m2m_ctx);
+ 	dst_buf = v4l2_m2m_dst_buf_remove(ctx->fh.m2m_ctx);
++	src_buf->sequence = q_data_src->sequence++;
++	dst_buf->sequence = q_data_dst->sequence++;
++	v4l2_m2m_buf_copy_metadata(src_buf, dst_buf, false);
+
+ 	v4l2_m2m_buf_done(src_buf, VB2_BUF_STATE_DONE);
+ 	v4l2_m2m_buf_done(dst_buf, VB2_BUF_STATE_DONE);
+@@ -423,6 +427,15 @@ static void audm2m_buf_queue(struct vb2_buffer *vb)
+ 	v4l2_m2m_buf_queue(ctx->fh.m2m_ctx, vbuf);
+ }
+
++static int audm2m_start_streaming(struct vb2_queue *q, unsigned int count)
++{
++	struct audm2m_ctx *ctx = vb2_get_drv_priv(q);
++	struct audm2m_q_data *q_data = get_q_data(ctx, q->type);
++
++	q_data->sequence = 0;
++	return 0;
++}
++
+ static void audm2m_stop_streaming(struct vb2_queue *q)
+ {
+ 	struct audm2m_ctx *ctx = vb2_get_drv_priv(q);
+@@ -442,6 +455,7 @@ static void audm2m_stop_streaming(struct vb2_queue *q)
+ static const struct vb2_ops audm2m_qops = {
+ 	.queue_setup	 = audm2m_queue_setup,
+ 	.buf_queue	 = audm2m_buf_queue,
++	.start_streaming  = audm2m_start_streaming,
+ 	.stop_streaming  = audm2m_stop_streaming,
+ 	.wait_prepare	 = vb2_ops_wait_prepare,
+ 	.wait_finish	 = vb2_ops_wait_finish,
+
