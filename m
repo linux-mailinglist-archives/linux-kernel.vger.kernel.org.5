@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A81527E44BC
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 16:56:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7111B7E44BF
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 16:56:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344160AbjKGP4i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 10:56:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55992 "EHLO
+        id S1344065AbjKGP4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 10:56:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344087AbjKGP4N (ORCPT
+        with ESMTP id S1344257AbjKGP4b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 10:56:13 -0500
+        Tue, 7 Nov 2023 10:56:31 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B0314EC9;
-        Tue,  7 Nov 2023 07:50:49 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C097C433C7;
-        Tue,  7 Nov 2023 15:50:47 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB6F75253;
+        Tue,  7 Nov 2023 07:50:52 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED863C433C8;
+        Tue,  7 Nov 2023 15:50:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699372248;
-        bh=zPuj+7wJ/fJkRDsF0PJO5Pdp5Gu5+SHumWVG27THUqc=;
+        s=k20201202; t=1699372252;
+        bh=wGpR/iqOxT5RoXHY3SjJnVIZtTWQ/1aJYOpj9w3/i6U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fprYvFw+ubEXqzFPtRGJdNuBPoAdthecR8/vwEQ5drVJp00u+AXCRzUkfxTYl+pVA
-         t0N5Rg8rltZj5YolPnRUtRotlkFWsxdpm1lHq0ET58AauH8lUt0+pZbKFemyA06rZQ
-         SU4oHjpJEluI3f22HLNFKiNv+8dbjaTZwBgyfP6G3YWgl4cX+KMrT3fhzfdYLVMmLP
-         YJuou3aGyB8Q+GRog+oATRgDoGbTVjfivsnDkKuW9D5ih7GmgvrB9zq2VsWnUvmTTu
-         WEnmKKyWOatV2D0dwohBSVT5fafbBK4lWGH911sWOxfocqyc7IsB1/S2y28tOBUhT0
-         3c5EEfEXce7gQ==
+        b=GT4QrRtUuKubz8FugSF3satvmbMMcJ9L4vwBJDf5WmzVCe89sZHZ+Mw2fVqYnYyke
+         +8H70M8U9NY2qZfR7bjH9Y/NjszhtohvA6nMxuW/5+oYDBpK2SkqrKHDixHPdCKtC6
+         FSqCoGPkxtOduuilRBk7rW+CqxoRHMvDLbm3tNJErAuQX9FJMhevZQ6LXMLvYlkIiC
+         Bnlkuk87EkJe1/2EWZm2i8dv0wKS7FLOX81yyGqMzChrL04Q0X9iiXJpSFSn67Eo6O
+         EL6W8ffmRxt8GhjOteXRhGO84WwjkMEBndvfo5XcCM1+dYXykUmP80a7+s0axmcozE
+         9ZOiRSFCX841Q==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Juntong Deng <juntong.deng@outlook.com>,
-        syzbot+38e876a8aa44b7115c76@syzkaller.appspotmail.com,
+Cc:     Manas Ghandat <ghandatmanas@gmail.com>,
+        syzbot+aea1ad91e854d0a83e04@syzkaller.appspotmail.com,
         Dave Kleikamp <dave.kleikamp@oracle.com>,
         Sasha Levin <sashal@kernel.org>, shaggy@kernel.org,
-        code@siddh.me, yogi.kernel@gmail.com, liushixin2@huawei.com,
-        jfs-discussion@lists.sourceforge.net, ghandatmanas@gmail.com,
-        wonguk.lee1023@gmail.com
-Subject: [PATCH AUTOSEL 6.1 10/30] fs/jfs: Add validity check for db_maxag and db_agpref
-Date:   Tue,  7 Nov 2023 10:49:44 -0500
-Message-ID: <20231107155024.3766950-10-sashal@kernel.org>
+        juntong.deng@outlook.com, andrew.kanner@gmail.com,
+        liushixin2@huawei.com, code@siddh.me, yogi.kernel@gmail.com,
+        jfs-discussion@lists.sourceforge.net, wonguk.lee1023@gmail.com
+Subject: [PATCH AUTOSEL 6.1 11/30] jfs: fix array-index-out-of-bounds in dbFindLeaf
+Date:   Tue,  7 Nov 2023 10:49:45 -0500
+Message-ID: <20231107155024.3766950-11-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231107155024.3766950-1-sashal@kernel.org>
 References: <20231107155024.3766950-1-sashal@kernel.org>
@@ -51,48 +51,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Juntong Deng <juntong.deng@outlook.com>
+From: Manas Ghandat <ghandatmanas@gmail.com>
 
-[ Upstream commit 64933ab7b04881c6c18b21ff206c12278341c72e ]
+[ Upstream commit 22cad8bc1d36547cdae0eef316c47d917ce3147c ]
 
-Both db_maxag and db_agpref are used as the index of the
-db_agfree array, but there is currently no validity check for
-db_maxag and db_agpref, which can lead to errors.
+Currently while searching for dmtree_t for sufficient free blocks there
+is an array out of bounds while getting element in tp->dm_stree. To add
+the required check for out of bound we first need to determine the type
+of dmtree. Thus added an extra parameter to dbFindLeaf so that the type
+of tree can be determined and the required check can be applied.
 
-The following is related bug reported by Syzbot:
-
-UBSAN: array-index-out-of-bounds in fs/jfs/jfs_dmap.c:639:20
-index 7936 is out of range for type 'atomic_t[128]'
-
-Add checking that the values of db_maxag and db_agpref are valid
-indexes for the db_agfree array.
-
-Reported-by: syzbot+38e876a8aa44b7115c76@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=38e876a8aa44b7115c76
-Signed-off-by: Juntong Deng <juntong.deng@outlook.com>
+Reported-by: syzbot+aea1ad91e854d0a83e04@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?extid=aea1ad91e854d0a83e04
+Signed-off-by: Manas Ghandat <ghandatmanas@gmail.com>
 Signed-off-by: Dave Kleikamp <dave.kleikamp@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/jfs/jfs_dmap.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ fs/jfs/jfs_dmap.c | 14 ++++++++++----
+ 1 file changed, 10 insertions(+), 4 deletions(-)
 
 diff --git a/fs/jfs/jfs_dmap.c b/fs/jfs/jfs_dmap.c
-index ee949e329c6e0..e2927d1f3d1d3 100644
+index e2927d1f3d1d3..4d56f6081a5d2 100644
 --- a/fs/jfs/jfs_dmap.c
 +++ b/fs/jfs/jfs_dmap.c
-@@ -195,6 +195,12 @@ int dbMount(struct inode *ipbmap)
- 	bmp->db_maxlevel = le32_to_cpu(dbmp_le->dn_maxlevel);
- 	bmp->db_maxag = le32_to_cpu(dbmp_le->dn_maxag);
- 	bmp->db_agpref = le32_to_cpu(dbmp_le->dn_agpref);
-+	if (bmp->db_maxag >= MAXAG || bmp->db_maxag < 0 ||
-+		bmp->db_agpref >= MAXAG || bmp->db_agpref < 0) {
-+		err = -EINVAL;
-+		goto err_release_metapage;
-+	}
+@@ -87,7 +87,7 @@ static int dbAllocCtl(struct bmap * bmp, s64 nblocks, int l2nb, s64 blkno,
+ static int dbExtend(struct inode *ip, s64 blkno, s64 nblocks, s64 addnblocks);
+ static int dbFindBits(u32 word, int l2nb);
+ static int dbFindCtl(struct bmap * bmp, int l2nb, int level, s64 * blkno);
+-static int dbFindLeaf(dmtree_t * tp, int l2nb, int *leafidx);
++static int dbFindLeaf(dmtree_t *tp, int l2nb, int *leafidx, bool is_ctl);
+ static int dbFreeBits(struct bmap * bmp, struct dmap * dp, s64 blkno,
+ 		      int nblocks);
+ static int dbFreeDmap(struct bmap * bmp, struct dmap * dp, s64 blkno,
+@@ -1717,7 +1717,7 @@ static int dbFindCtl(struct bmap * bmp, int l2nb, int level, s64 * blkno)
+ 		 * dbFindLeaf() returns the index of the leaf at which
+ 		 * free space was found.
+ 		 */
+-		rc = dbFindLeaf((dmtree_t *) dcp, l2nb, &leafidx);
++		rc = dbFindLeaf((dmtree_t *) dcp, l2nb, &leafidx, true);
+ 
+ 		/* release the buffer.
+ 		 */
+@@ -1964,7 +1964,7 @@ dbAllocDmapLev(struct bmap * bmp,
+ 	 * free space.  if sufficient free space is found, dbFindLeaf()
+ 	 * returns the index of the leaf at which free space was found.
+ 	 */
+-	if (dbFindLeaf((dmtree_t *) & dp->tree, l2nb, &leafidx))
++	if (dbFindLeaf((dmtree_t *) &dp->tree, l2nb, &leafidx, false))
+ 		return -ENOSPC;
+ 
+ 	if (leafidx < 0)
+@@ -2928,14 +2928,18 @@ static void dbAdjTree(dmtree_t * tp, int leafno, int newval)
+  *	leafidx	- return pointer to be set to the index of the leaf
+  *		  describing at least l2nb free blocks if sufficient
+  *		  free blocks are found.
++ *	is_ctl	- determines if the tree is of type ctl
+  *
+  * RETURN VALUES:
+  *	0	- success
+  *	-ENOSPC	- insufficient free blocks.
+  */
+-static int dbFindLeaf(dmtree_t * tp, int l2nb, int *leafidx)
++static int dbFindLeaf(dmtree_t *tp, int l2nb, int *leafidx, bool is_ctl)
+ {
+ 	int ti, n = 0, k, x = 0;
++	int max_size;
 +
- 	bmp->db_aglevel = le32_to_cpu(dbmp_le->dn_aglevel);
- 	bmp->db_agheight = le32_to_cpu(dbmp_le->dn_agheight);
- 	bmp->db_agwidth = le32_to_cpu(dbmp_le->dn_agwidth);
++	max_size = is_ctl ? CTLTREESIZE : TREESIZE;
+ 
+ 	/* first check the root of the tree to see if there is
+ 	 * sufficient free space.
+@@ -2956,6 +2960,8 @@ static int dbFindLeaf(dmtree_t * tp, int l2nb, int *leafidx)
+ 			/* sufficient free space found.  move to the next
+ 			 * level (or quit if this is the last level).
+ 			 */
++			if (x + n > max_size)
++				return -ENOSPC;
+ 			if (l2nb <= tp->dmt_stree[x + n])
+ 				break;
+ 		}
 -- 
 2.42.0
 
