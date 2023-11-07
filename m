@@ -2,221 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 54AD27E37E7
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 10:32:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14C8A7E37F0
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 10:33:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233612AbjKGJcR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 04:32:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52274 "EHLO
+        id S233657AbjKGJdy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 04:33:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229543AbjKGJcP (ORCPT
+        with ESMTP id S229541AbjKGJdw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 04:32:15 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC53F114;
-        Tue,  7 Nov 2023 01:32:12 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA885C433C7;
-        Tue,  7 Nov 2023 09:32:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699349532;
-        bh=2de/ujfjpG8mGlZWE7v/o1nNFaTyVAJBU4Ts5xFC4U0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=LNyTBRsD05STGYMOgAp7X7/N0gA+x1NsiEoSS9iKpCh7a3mCWBTau6vGYnAjuUXfw
-         CJWgEeO9HFa7knJEmYnCEG30wnz+oNoIhDQKXlWq70W6BC/NyqxgajmtDgHzZ2Shle
-         Cjjpukmc2z9RJ6V3ngSJKpEI8DgRCk1zmPP7J9imVDfx1Ii6XeQmKNGFgKHSgqbfo+
-         qTM1Lv+gAGaNTmROZVigZlRoR6PnBbBpaIzgSPK6vq+uVLHudGOl58oyEhaJfH/WYp
-         am1yeP2MM2KY5omGv3KBPE+AJ346FMudJYcicBuxYh2EIGi/d24+PEEHkLi5ltuVXJ
-         T9U6eMbLNszNw==
-Date:   Tue, 7 Nov 2023 18:32:07 +0900
-From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Stephane Eranian <eranian@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        linux-toolchains@vger.kernel.org, linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH 33/48] perf dwarf-aux: Check allowed DWARF Ops
-Message-Id: <20231107183207.2e3aded5985f699fdb3bcd16@kernel.org>
-In-Reply-To: <20231012035111.676789-34-namhyung@kernel.org>
-References: <20231012035111.676789-1-namhyung@kernel.org>
-        <20231012035111.676789-34-namhyung@kernel.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 7 Nov 2023 04:33:52 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C2C710A;
+        Tue,  7 Nov 2023 01:33:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699349629; x=1730885629;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=HD+xhbXA3RArZTDKEIxJ27T8R5ZBDZSHAAH/cebZ7DQ=;
+  b=nZaMC9R5JJCghRNxBdsNOLhwROH6U0lN2BCcM0P1kB/04hOYBPcakh25
+   VMkjmhqAdJV8tRhO+K7RvBSAHzUoOzNfjOf0nIUaWJ/1yZxtR5BRgwQVi
+   aQU2Pe6qFS0QZPcvuyuiUS4eadonNqvXeGA8ziyqvWWKrXZ8F/Y7eVrf8
+   DwPwDIRXVB36868LXlsnbKNl84r62L4E3K0raBGWQMTMqJyuNYOqJwkjb
+   KDlOIyROWrGpytSqOb8JDx5M1wZ1WysLDFO1Gv89hkCn7/gms1KxSfHH0
+   gR9bHJYS3fjQgZ3xXniRZ8NKGx/TmEBFGINH6XbglGcwVHB4HdZGwfnW5
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10886"; a="392344136"
+X-IronPort-AV: E=Sophos;i="6.03,283,1694761200"; 
+   d="scan'208";a="392344136"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2023 01:33:48 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10886"; a="712508902"
+X-IronPort-AV: E=Sophos;i="6.03,283,1694761200"; 
+   d="scan'208";a="712508902"
+Received: from pathanas-mobl1.ger.corp.intel.com ([10.252.37.194])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2023 01:33:46 -0800
+Date:   Tue, 7 Nov 2023 11:33:40 +0200 (EET)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     Reinette Chatre <reinette.chatre@intel.com>
+cc:     linux-kselftest@vger.kernel.org, Shuah Khan <shuah@kernel.org>,
+        Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>,
+        =?ISO-8859-15?Q?Maciej_Wiecz=F3r-Retman?= 
+        <maciej.wieczor-retman@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 23/24] selftests/resctrl: Add L2 CAT test
+In-Reply-To: <af68ec80-7511-4861-b4ec-0fb9c7284513@intel.com>
+Message-ID: <d3dc1393-f51d-1fea-2787-4063abdc7c33@linux.intel.com>
+References: <20231024092634.7122-1-ilpo.jarvinen@linux.intel.com> <20231024092634.7122-24-ilpo.jarvinen@linux.intel.com> <8051f3ef-1126-41fb-b6cc-f48441936dd7@intel.com> <2514e73e-2419-7c88-3f22-469db4b2fa25@linux.intel.com> <48c6795b-554a-4019-bb8d-a2ca0f6fbb2b@intel.com>
+ <4008929-d12b-793e-dce8-eb5ba03b4ebb@linux.intel.com> <755ed028-f73a-47ed-a58a-65f4f48eaee3@intel.com> <af68ec80-7511-4861-b4ec-0fb9c7284513@intel.com>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="8323329-1825553086-1699349628=:1851"
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 11 Oct 2023 20:50:56 -0700
-Namhyung Kim <namhyung@kernel.org> wrote:
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-> The DWARF location expression can be fairly complex and it'd be hard
-> to match it with the condition correctly.  So let's be conservative
-> and only allow simple expressions.  For now it just checks the first
-> operation in the list.  The following operations looks ok:
-> 
->  * DW_OP_stack_value
->  * DW_OP_deref_size
->  * DW_OP_deref
->  * DW_OP_piece
-> 
-> To refuse complex (and unsupported) location expressions, add
-> check_allowed_ops() to compare the rest of the list.  It seems earlier
-> result contained those unsupported expressions.  For example, I found
-> some local struct variable is placed like below.
-> 
->  <2><43d1517>: Abbrev Number: 62 (DW_TAG_variable)
->     <43d1518>   DW_AT_location    : 15 byte block: 91 50 93 8 91 78 93 4 93 84 8 91 68 93 4
->         (DW_OP_fbreg: -48; DW_OP_piece: 8;
->          DW_OP_fbreg: -8; DW_OP_piece: 4;
->          DW_OP_piece: 1028;
->          DW_OP_fbreg: -24; DW_OP_piece: 4)
-> 
-> Another example is something like this.
-> 
->     0057c8be ffffffffffffffff ffffffff812109f0 (base address)
->     0057c8ce ffffffff812112b5 ffffffff812112c8 (DW_OP_breg3 (rbx): 0;
->                                                 DW_OP_constu: 18446744073709551612;
->                                                 DW_OP_and;
->                                                 DW_OP_stack_value)
-> 
-> It should refuse them.  After the change, the stat shows:
-> 
->   Annotate data type stats:
->   total 294, ok 158 (53.7%), bad 136 (46.3%)
->   -----------------------------------------------------------
->           30 : no_sym
->           32 : no_mem_ops
->           53 : no_var
->           14 : no_typeinfo
->            7 : bad_offset
-> 
+--8323329-1825553086-1699349628=:1851
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 
-The code itself looks good to me.
-
-Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-
-If this fixes the previous patch in the same series (this seems a fix for the
-main usecase), please make it to a single patch.
-
-Thank you,
-
-> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> ---
->  tools/perf/util/dwarf-aux.c | 44 +++++++++++++++++++++++++++++++++----
->  1 file changed, 40 insertions(+), 4 deletions(-)
+On Mon, 6 Nov 2023, Reinette Chatre wrote:
+> On 11/6/2023 9:03 AM, Reinette Chatre wrote:
+> > On 11/6/2023 1:53 AM, Ilpo Järvinen wrote:
+> >> On Fri, 3 Nov 2023, Reinette Chatre wrote:
+> >>> On 11/3/2023 3:39 AM, Ilpo Järvinen wrote:
+> >>>> On Thu, 2 Nov 2023, Reinette Chatre wrote:
+> >>>>> On 10/24/2023 2:26 AM, Ilpo Järvinen wrote:
+> >>>>
+> >>>>>> Add L2 CAT selftest. As measuring L2 misses is not easily available
+> >>>>>> with perf, use L3 accesses as a proxy for L2 CAT working or not.
+> >>>>>
+> >>>>> I understand the exact measurement is not available but I do notice some
+> >>>>> L2 related symbolic counters when I run "perf list". l2_rqsts.all_demand_miss
+> >>>>> looks promising.
+> >>>>
+> >>>> Okay, I was under impression that L2 misses are not available. Both based 
+> >>>> on what you mentioned to me half an year ago and because of what flags I 
+> >>>> found from the header. But I'll take another look into it.
+> >>>
+> >>> You are correct that when I did L2 testing a long time ago I used
+> >>> the model specific L2 miss counts. I was hoping that things have improved
+> >>> so that model specific counters are not needed, as you have tried here.
+> >>> I found the l2_rqsts symbol while looking for alternatives but I am not
+> >>> familiar enough with perf to know how these symbolic names are mapped.
+> >>> I was hoping that they could be a simple drop-in replacement to
+> >>> experiment with.
+> >>
+> >> According to perf_event_open() manpage, mapping those symbolic names 
+> >> requires libpfm so this would add a library dependency?
+> > 
+> > I do not see perf list using this library to determine the event and
+> > umask but I am in unfamiliar territory. I'll have to spend some more
+> > time here to determine options.
 > 
-> diff --git a/tools/perf/util/dwarf-aux.c b/tools/perf/util/dwarf-aux.c
-> index 7f3822d08ab7..093d7e82b333 100644
-> --- a/tools/perf/util/dwarf-aux.c
-> +++ b/tools/perf/util/dwarf-aux.c
-> @@ -1305,6 +1305,34 @@ static bool match_var_offset(Dwarf_Die *die_mem, struct find_var_data *data,
->  	return true;
->  }
->  
-> +static bool check_allowed_ops(Dwarf_Op *ops, size_t nops)
-> +{
-> +	/* The first op is checked separately */
-> +	ops++;
-> +	nops--;
-> +
-> +	/*
-> +	 * It needs to make sure if the location expression matches to the given
-> +	 * register and offset exactly.  Thus it rejects any complex expressions
-> +	 * and only allows a few of selected operators that doesn't change the
-> +	 * location.
-> +	 */
-> +	while (nops) {
-> +		switch (ops->atom) {
-> +		case DW_OP_stack_value:
-> +		case DW_OP_deref_size:
-> +		case DW_OP_deref:
-> +		case DW_OP_piece:
-> +			break;
-> +		default:
-> +			return false;
-> +		}
-> +		ops++;
-> +		nops--;
-> +	}
-> +	return true;
-> +}
-> +
->  /* Only checks direct child DIEs in the given scope. */
->  static int __die_find_var_reg_cb(Dwarf_Die *die_mem, void *arg)
->  {
-> @@ -1332,25 +1360,31 @@ static int __die_find_var_reg_cb(Dwarf_Die *die_mem, void *arg)
->  		/* Local variables accessed using frame base register */
->  		if (data->is_fbreg && ops->atom == DW_OP_fbreg &&
->  		    data->offset >= (int)ops->number &&
-> +		    check_allowed_ops(ops, nops) &&
->  		    match_var_offset(die_mem, data, data->offset, ops->number))
->  			return DIE_FIND_CB_END;
->  
->  		/* Only match with a simple case */
->  		if (data->reg < DWARF_OP_DIRECT_REGS) {
-> -			if (ops->atom == (DW_OP_reg0 + data->reg) && nops == 1)
-> +			/* pointer variables saved in a register 0 to 31 */
-> +			if (ops->atom == (DW_OP_reg0 + data->reg) &&
-> +			    check_allowed_ops(ops, nops))
->  				return DIE_FIND_CB_END;
->  
->  			/* Local variables accessed by a register + offset */
->  			if (ops->atom == (DW_OP_breg0 + data->reg) &&
-> +			    check_allowed_ops(ops, nops) &&
->  			    match_var_offset(die_mem, data, data->offset, ops->number))
->  				return DIE_FIND_CB_END;
->  		} else {
-> +			/* pointer variables saved in a register 32 or above */
->  			if (ops->atom == DW_OP_regx && ops->number == data->reg &&
-> -			    nops == 1)
-> +			    check_allowed_ops(ops, nops))
->  				return DIE_FIND_CB_END;
->  
->  			/* Local variables accessed by a register + offset */
->  			if (ops->atom == DW_OP_bregx && data->reg == ops->number &&
-> +			    check_allowed_ops(ops, nops) &&
->  			    match_var_offset(die_mem, data, data->offset, ops->number2))
->  				return DIE_FIND_CB_END;
->  		}
-> @@ -1412,7 +1446,8 @@ static int __die_find_var_addr_cb(Dwarf_Die *die_mem, void *arg)
->  		if (data->addr < ops->number)
->  			continue;
->  
-> -		if (match_var_offset(die_mem, data, data->addr, ops->number))
-> +		if (check_allowed_ops(ops, nops) &&
-> +		    match_var_offset(die_mem, data, data->addr, ops->number))
->  			return DIE_FIND_CB_END;
->  	}
->  	return DIE_FIND_CB_SIBLING;
-> @@ -1501,7 +1536,8 @@ int die_get_cfa(Dwarf *dwarf, u64 pc, int *preg, int *poffset)
->  		return -1;
->  
->  	if (!dwarf_cfi_addrframe(cfi, pc, &frame) &&
-> -	    !dwarf_frame_cfa(frame, &ops, &nops) && nops == 1) {
-> +	    !dwarf_frame_cfa(frame, &ops, &nops) &&
-> +	    check_allowed_ops(ops, nops)) {
->  		*preg = reg_from_dwarf_op(ops);
->  		*poffset = offset_from_dwarf_op(ops);
->  		return 0;
-> -- 
-> 2.42.0.655.g421f12c284-goog
-> 
+> tools/perf/pmu-events/README cleared it up for me. The architecture specific
+> tables are included in the perf binary. Potentially pmu-events.h could be
+> included or the test could just stick with the architectural events.
+> A quick look at the various cache.json files created the impression that
+> the events of interest may actually have the same event code and umask across
+> platforms.
+> I am not familiar with libpfm. This can surely be considered if it supports
+> this testing. Several selftests have library dependencies.
+
+man perf_event_open() says this:
+
+"If type is PERF_TYPE_RAW, then a custom "raw" config  value  is  needed.
+Most  CPUs  support  events  that  are  not covered by the "generalized"
+events.  These are implementation defined; see your CPU manual (for  ex-
+ample  the  Intel Volume 3B documentation or the AMD BIOS and Kernel De-
+veloper Guide).  The libpfm4 library can be used to translate  from  the
+name in the architectural manuals to the raw hex value perf_event_open()
+expects in this field."
+
+...I've not come across libpfm myself either but to me it looks libpfm 
+bridges between those architecture specific tables and perf_event_open(). 
+That is, it could provide the binary value necessary in constructing the 
+perf_event_attr struct.
+
+I think this is probably the function which maps string -> 
+perf_event_attr:
+
+https://man7.org/linux/man-pages/man3/pfm_get_os_event_encoding.3.html
 
 
 -- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+ i.
+
+--8323329-1825553086-1699349628=:1851--
