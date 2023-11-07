@@ -2,41 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA4257E43B4
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 16:47:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 395EC7E43B6
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 16:47:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344030AbjKGPrI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 10:47:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49466 "EHLO
+        id S1344068AbjKGPrK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 10:47:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235361AbjKGPrC (ORCPT
+        with ESMTP id S235401AbjKGPrE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 10:47:02 -0500
+        Tue, 7 Nov 2023 10:47:04 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04A9195;
-        Tue,  7 Nov 2023 07:47:00 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 89422C433C7;
-        Tue,  7 Nov 2023 15:46:58 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C2769B;
+        Tue,  7 Nov 2023 07:47:02 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 47182C433C9;
+        Tue,  7 Nov 2023 15:47:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699372019;
-        bh=vjX++tIlj3pheLvr5gTY4P5rpT/RmON/Unril6lXfA0=;
+        s=k20201202; t=1699372021;
+        bh=ZZzQWtWILnQqcAK37+19t0eGPcBD80A3T0ZM+mYw7zc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=F9njV73laRltOJjWtc6gTUtYpdC41qwzeSxmFetbp4KbPCdN+/L/QVRMDrMbcGpW8
-         UQrKCEwdqLOFVAK4a2BHFJvHycQ3ItpXMTYcEfGB8GxbJlU0Pz15Cs1L3HmIbevDLY
-         gGk1poRfgPy7rZRjWhDru0jXd54PeTLWctxNyfbMxfkfya7TIbRekRHp/7zwbPFH85
-         /s4R/ZA33Ln+DCeb9iZYoCSgZwFvOLkzDjexP8imqxuMgE7oTXWNiV3MMBuXXmGy+8
-         aeqptruZBS9lkV8G/Zke+P/0tkkzMOKwnRrxRtL3HoHq/p4ovW4lJKqYT1aEdothhA
-         Y/ZM5Bu/XzrKg==
+        b=DLx+UHynquL3LDzKYDT4VZUBLBy6/PetOjVYkQnuOfNZlGWImUfM/zOg6nANbM9Ps
+         Tl2CcWakWZ+V53xc0iyt0zkfejWjF3NDeB1W2Xx7n2IZzyy4TuvSBi3E1LecJis7Ps
+         T/rZyLQrawcZMPOmDm/dzH2pXJ9F7SUKVcmk//cbh+zLUyhX+7z857ADYI6kkxZMjB
+         uM2HxU+uPsuBlxeY9zBK7QvOynXubQ1pi5FBlgFTSiGsUcjDmaZg9eZs/dCWRphJs1
+         oShx2hT3EbmHQ5g3pUeVeikhUw8Hdwju9+f/Md2QxhOZVeWauZUvOfUVo6zY60eltg
+         ruHXA8IwSKHMQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Richard Fitzgerald <rf@opensource.cirrus.com>,
         Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
         Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>, lgirdwood@gmail.com,
-        perex@perex.cz, tiwai@suse.com, linux-sound@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 02/36] ASoC: soc-card: Add storage for PCI SSID
-Date:   Tue,  7 Nov 2023 10:45:44 -0500
-Message-ID: <20231107154654.3765336-2-sashal@kernel.org>
+        perex@perex.cz, tiwai@suse.com, peter.ujfalusi@linux.intel.com,
+        yung-chuan.liao@linux.intel.com, ranjani.sridharan@linux.intel.com,
+        daniel.baluta@nxp.com, linux-sound@vger.kernel.org,
+        sound-open-firmware@alsa-project.org
+Subject: [PATCH AUTOSEL 6.6 03/36] ASoC: SOF: Pass PCI SSID to machine driver
+Date:   Tue,  7 Nov 2023 10:45:45 -0500
+Message-ID: <20231107154654.3765336-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231107154654.3765336-1-sashal@kernel.org>
 References: <20231107154654.3765336-1-sashal@kernel.org>
@@ -51,118 +54,128 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Richard Fitzgerald <rf@opensource.cirrus.com>
 
-[ Upstream commit 47f56e38a199bd45514b8e0142399cba4feeaf1a ]
+[ Upstream commit ba2de401d32625fe538d3f2c00ca73740dd2d516 ]
 
-Add members to struct snd_soc_card to store the PCI subsystem ID (SSID)
-of the soundcard.
+Pass the PCI SSID of the audio interface through to the machine driver.
+This allows the machine driver to use the SSID to uniquely identify the
+specific hardware configuration and apply any platform-specific
+configuration.
 
-The PCI specification provides two registers to store a vendor-specific
-SSID that can be read by drivers to uniquely identify a particular
-"soundcard". This is defined in the PCI specification to distinguish
-products that use the same silicon (and therefore have the same silicon
-ID) so that product-specific differences can be applied.
+struct snd_sof_pdata is passed around inside the SOF code, but it then
+passes configuration information to the machine driver through
+struct snd_soc_acpi_mach and struct snd_soc_acpi_mach_params. So SSID
+information has been added to both snd_sof_pdata and
+snd_soc_acpi_mach_params.
 
-PCI only defines 0xFFFF as an invalid value. 0x0000 is not defined as
-invalid. So the usual pattern of zero-filling the struct and then
-assuming a zero value unset will not work. A flag is included to
-indicate when the SSID information has been filled in.
+PCI does not define 0x0000 as an invalid value so we can't use zero to
+indicate that the struct member was not written. Instead a flag is
+included to indicate that a value has been written to the
+subsystem_vendor and subsystem_device members.
 
-Unlike DMI information, which has a free-format entirely up to the vendor,
-the PCI SSID has a strictly defined format and a registry of vendor IDs.
+sof_pci_probe() creates the struct snd_sof_pdata. It is passed a struct
+pci_dev so it can fill in the SSID value.
 
-It is usual in Windows drivers that the SSID is used as the sole identifier
-of the specific end-product and the Windows driver contains tables mapping
-that to information about the hardware setup, rather than using ACPI
-properties.
+sof_machine_check() finds the appropriate struct snd_soc_acpi_mach. It
+copies the SSID information across to the struct snd_soc_acpi_mach_params.
+This done before calling any custom set_mach_params() so that it could be
+used by the set_mach_params() callback to apply variant params.
 
-This SSID is important information for ASoC components that need to apply
-hardware-specific configuration on PCI-based systems.
-
-As the SSID is a generic part of the PCI specification and is treated as
-identifying the "soundcard", it is reasonable to include this information
-in struct snd_soc_card, instead of components inventing their own custom
-ways to pass this information around.
+The machine driver receives the struct snd_soc_acpi_mach as its
+platform_data.
 
 Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20230912163207.3498161-2-rf@opensource.cirrus.com
+Link: https://lore.kernel.org/r/20230912163207.3498161-3-rf@opensource.cirrus.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/sound/soc-card.h | 37 +++++++++++++++++++++++++++++++++++++
- include/sound/soc.h      | 11 +++++++++++
- 2 files changed, 48 insertions(+)
+ include/sound/soc-acpi.h    | 7 +++++++
+ include/sound/sof.h         | 8 ++++++++
+ sound/soc/sof/sof-audio.c   | 7 +++++++
+ sound/soc/sof/sof-pci-dev.c | 8 ++++++++
+ 4 files changed, 30 insertions(+)
 
-diff --git a/include/sound/soc-card.h b/include/sound/soc-card.h
-index fc94dfb0021fd..e8ff2e089cd00 100644
---- a/include/sound/soc-card.h
-+++ b/include/sound/soc-card.h
-@@ -59,6 +59,43 @@ int snd_soc_card_add_dai_link(struct snd_soc_card *card,
- void snd_soc_card_remove_dai_link(struct snd_soc_card *card,
- 				  struct snd_soc_dai_link *dai_link);
+diff --git a/include/sound/soc-acpi.h b/include/sound/soc-acpi.h
+index 6d31d535e8f6d..23d6d6bfb0736 100644
+--- a/include/sound/soc-acpi.h
++++ b/include/sound/soc-acpi.h
+@@ -68,6 +68,10 @@ static inline struct snd_soc_acpi_mach *snd_soc_acpi_codec_list(void *arg)
+  * @i2s_link_mask: I2S/TDM links enabled on the board
+  * @num_dai_drivers: number of elements in @dai_drivers
+  * @dai_drivers: pointer to dai_drivers, used e.g. in nocodec mode
++ * @subsystem_vendor: optional PCI SSID vendor value
++ * @subsystem_device: optional PCI SSID device value
++ * @subsystem_id_set: true if a value has been written to
++ *		      subsystem_vendor and subsystem_device.
+  */
+ struct snd_soc_acpi_mach_params {
+ 	u32 acpi_ipc_irq_index;
+@@ -80,6 +84,9 @@ struct snd_soc_acpi_mach_params {
+ 	u32 i2s_link_mask;
+ 	u32 num_dai_drivers;
+ 	struct snd_soc_dai_driver *dai_drivers;
++	unsigned short subsystem_vendor;
++	unsigned short subsystem_device;
++	bool subsystem_id_set;
+ };
  
-+#ifdef CONFIG_PCI
-+static inline void snd_soc_card_set_pci_ssid(struct snd_soc_card *card,
-+					     unsigned short vendor,
-+					     unsigned short device)
-+{
-+	card->pci_subsystem_vendor = vendor;
-+	card->pci_subsystem_device = device;
-+	card->pci_subsystem_set = true;
-+}
-+
-+static inline int snd_soc_card_get_pci_ssid(struct snd_soc_card *card,
-+					    unsigned short *vendor,
-+					    unsigned short *device)
-+{
-+	if (!card->pci_subsystem_set)
-+		return -ENOENT;
-+
-+	*vendor = card->pci_subsystem_vendor;
-+	*device = card->pci_subsystem_device;
-+
-+	return 0;
-+}
-+#else /* !CONFIG_PCI */
-+static inline void snd_soc_card_set_pci_ssid(struct snd_soc_card *card,
-+					     unsigned short vendor,
-+					     unsigned short device)
-+{
-+}
-+
-+static inline int snd_soc_card_get_pci_ssid(struct snd_soc_card *card,
-+					    unsigned short *vendor,
-+					    unsigned short *device)
-+{
-+	return -ENOENT;
-+}
-+#endif /* CONFIG_PCI */
-+
- /* device driver data */
- static inline void snd_soc_card_set_drvdata(struct snd_soc_card *card,
- 					    void *data)
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 37f9d3fe302a6..49ec688eed606 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -932,6 +932,17 @@ struct snd_soc_card {
- #ifdef CONFIG_DMI
- 	char dmi_longname[80];
- #endif /* CONFIG_DMI */
-+
-+#ifdef CONFIG_PCI
+ /**
+diff --git a/include/sound/sof.h b/include/sound/sof.h
+index d3c41f87ac319..51294f2ba302c 100644
+--- a/include/sound/sof.h
++++ b/include/sound/sof.h
+@@ -64,6 +64,14 @@ struct snd_sof_pdata {
+ 	const char *name;
+ 	const char *platform;
+ 
 +	/*
-+	 * PCI does not define 0 as invalid, so pci_subsystem_set indicates
-+	 * whether a value has been written to these fields.
++	 * PCI SSID. As PCI does not define 0 as invalid, the subsystem_id_set
++	 * flag indicates that a value has been written to these members.
 +	 */
-+	unsigned short pci_subsystem_vendor;
-+	unsigned short pci_subsystem_device;
-+	bool pci_subsystem_set;
-+#endif /* CONFIG_PCI */
++	unsigned short subsystem_vendor;
++	unsigned short subsystem_device;
++	bool subsystem_id_set;
 +
- 	char topology_shortname[32];
- 
  	struct device *dev;
+ 
+ 	/*
+diff --git a/sound/soc/sof/sof-audio.c b/sound/soc/sof/sof-audio.c
+index e5405f854a910..563fe6f7789f7 100644
+--- a/sound/soc/sof/sof-audio.c
++++ b/sound/soc/sof/sof-audio.c
+@@ -1032,6 +1032,13 @@ int sof_machine_check(struct snd_sof_dev *sdev)
+ 		mach = snd_sof_machine_select(sdev);
+ 		if (mach) {
+ 			sof_pdata->machine = mach;
++
++			if (sof_pdata->subsystem_id_set) {
++				mach->mach_params.subsystem_vendor = sof_pdata->subsystem_vendor;
++				mach->mach_params.subsystem_device = sof_pdata->subsystem_device;
++				mach->mach_params.subsystem_id_set = true;
++			}
++
+ 			snd_sof_set_mach_params(mach, sdev);
+ 			return 0;
+ 		}
+diff --git a/sound/soc/sof/sof-pci-dev.c b/sound/soc/sof/sof-pci-dev.c
+index f5ece43d0ec24..146d25983b08b 100644
+--- a/sound/soc/sof/sof-pci-dev.c
++++ b/sound/soc/sof/sof-pci-dev.c
+@@ -214,6 +214,14 @@ int sof_pci_probe(struct pci_dev *pci, const struct pci_device_id *pci_id)
+ 		return ret;
+ 
+ 	sof_pdata->name = pci_name(pci);
++
++	/* PCI defines a vendor ID of 0xFFFF as invalid. */
++	if (pci->subsystem_vendor != 0xFFFF) {
++		sof_pdata->subsystem_vendor = pci->subsystem_vendor;
++		sof_pdata->subsystem_device = pci->subsystem_device;
++		sof_pdata->subsystem_id_set = true;
++	}
++
+ 	sof_pdata->desc = desc;
+ 	sof_pdata->dev = dev;
+ 
 -- 
 2.42.0
 
