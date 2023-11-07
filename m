@@ -2,212 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BDCB47E4765
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 18:45:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85A657E476A
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 18:46:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235469AbjKGRps (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 12:45:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46824 "EHLO
+        id S235430AbjKGRqI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 12:46:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235327AbjKGRpR (ORCPT
+        with ESMTP id S235424AbjKGRpn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 12:45:17 -0500
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8665C10FA
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 09:45:12 -0800 (PST)
-Received: by mail-ot1-x335.google.com with SMTP id 46e09a7af769-6ce532451c7so3139174a34.2
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 09:45:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20230601.gappssmtp.com; s=20230601; t=1699379111; x=1699983911; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:to:from:cc
-         :in-reply-to:subject:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=xLw1ycS53eoBey8p/LpxiLSZTGGyXo8/Ae2SXePJVaQ=;
-        b=bfGGWXex+cAK0UYoTmP2CGyY6S565VVNbCKViz/b3tQDGJBJWlHsJ7JVqQo1grFzPP
-         RIzBdUcBrOwyQiM39IxIM6e/6SYkbSiNxc+Sa9z/yFQNRIC8dgBsUr1r/HIbkVGPtq2d
-         FhhvMcBQKi+4FWU4ZLOhlf1L1bMV9CQJcO+UDgBH/HfK15wWmxdLUjdZXE+o6eHdLxC4
-         8FwAfZUoasy9UKdX/7QPUZHzrU0CoRVl5d0Ghd+TGVPe7LKA0eL4Fch91Pupe6KFdFS0
-         fbSLaD4yRe6CAYzORsilY2+0+vvlPEdUkoBs86HP9gPbZW4BQbC4hsEbYx3ieuMu1Czm
-         O0Ew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699379111; x=1699983911;
-        h=content-transfer-encoding:mime-version:message-id:to:from:cc
-         :in-reply-to:subject:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xLw1ycS53eoBey8p/LpxiLSZTGGyXo8/Ae2SXePJVaQ=;
-        b=FAKwWUJm3DJlmT07Pz+DSIqgmnf9QCV/Gg2iI9YW3uucuFyf23QY83ERv8me6f4a1A
-         ICFS+SQ9d/aZKWA5RgQeYeA1Ean0cE0gNC3xDy7YjvQeiukuBCQnyQt/JMAJVuy5zKGP
-         WiSQC/pYI9TWWSnkk4ExFLQD05bpUkPji15rRt4MTpSE7lH8PGB0DsRO+aguWhWSor1G
-         5XxU6GYUPQ7786wvJV4yGQsXUOuJqyijf96QCQ+kJrQK8ixuHQ2lJKo6x2X2LxXlgWV2
-         xIcF7nxg2dJt3TALMkabYaEhnzT6NQnRaQ00X79re/hkZv/n9mm7m7BKvjlcXC6s8A1H
-         EaEw==
-X-Gm-Message-State: AOJu0Yw64HvxN1UeYNOk8pPeEeJFezKZfmW9BZMJUKJj+2ayIhug9EGa
-        AOPC8iG3+IFuVNKN6sb6XmafJg==
-X-Google-Smtp-Source: AGHT+IHlLVdERqtE0XvCqLkdz065+DVCPLV1AtuGY6e3yJ09g92r1jrGx//kJTvNDqRtAkpZI5gK9A==
-X-Received: by 2002:a54:4114:0:b0:3a8:4d1f:9da5 with SMTP id l20-20020a544114000000b003a84d1f9da5mr28836438oic.31.1699379110989;
-        Tue, 07 Nov 2023 09:45:10 -0800 (PST)
-Received: from localhost ([192.184.165.199])
-        by smtp.gmail.com with ESMTPSA id j26-20020aca171a000000b003b2df32d9a9sm1617905oii.19.2023.11.07.09.45.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Nov 2023 09:45:10 -0800 (PST)
-Date:   Tue, 07 Nov 2023 09:45:10 -0800 (PST)
-X-Google-Original-Date: Tue, 07 Nov 2023 09:45:08 PST (-0800)
-Subject:     Re: [PATCH v3] RISC-V: Probe misaligned access speed in parallel
-In-Reply-To: <CALs-HsvX=zHvSKV5Skuxk=7jWq_mGqhsRSeuefD7OiYOCr3Gkw@mail.gmail.com>
-CC:     bigeasy@linutronix.de, jszhang@kernel.org, David.Laight@aculab.com,
-        aou@eecs.berkeley.edu, ajones@ventanamicro.com,
-        apatel@ventanamicro.com, cleger@rivosinc.com,
-        Conor Dooley <conor.dooley@microchip.com>,
-        greentime.hu@sifive.com, heiko@sntech.de,
-        leyfoon.tan@starfivetech.com, Marc Zyngier <maz@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        sunilvl@ventanamicro.com, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     Evan Green <evan@rivosinc.com>
-Message-ID: <mhng-7b97d1d2-d230-42ef-b3e8-5312da36495e@palmer-ri-x1c9>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        Tue, 7 Nov 2023 12:45:43 -0500
+Received: from sonic302-28.consmr.mail.ne1.yahoo.com (sonic302-28.consmr.mail.ne1.yahoo.com [66.163.186.154])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C86E170B
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 09:45:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1699379131; bh=NwU+RgVG8TKK4jDvSYrLBmaejPxFumVI0ipB6rLItm8=; h=Date:Subject:To:Cc:References:From:In-Reply-To:From:Subject:Reply-To; b=MoMXgn/9cHIj/8HgmWc39JZWg0keFe2hQJR7CmYj65PGIcGEellaeJxtb9NqdefUWIYtq+YhWJtqdBZ43QHK8KOZE0j1gdafe0nbaUmZXVaoYvGS7PsjbrdsElEKCr2hhal1F65UuBFliipqenDy8v/Tjp++qTQnjEc/MqPI/peZ4Pjp6zHheytA4+RIXONB5W9dJyHmDNX5YCjWUAzvo3tPx8eqDe/T9FnPUs1YE/uw+7bzSWQ+ym50VeAlwA9S6JOyKJgfW6H+LjA0f0bli18cgvkgs9W/cuDaHY0dzI8cWtPLJxEX+E5rXv3EjYDlMkcHXKhx2fO+Uoey25G78A==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1699379131; bh=V4p4hoo1U4EUhzDb7VxLUdaRGGoiBgIsgBN1l+wMu4R=; h=X-Sonic-MF:Date:Subject:To:From:From:Subject; b=Xtf4gmBXaWvc7aRXa1pddV/jJDw7z7XxJzf9Tm3AEGgXOyipCCGMNNWe7Ehi418dRjc+DDk+obBpTw3DQibImShdZ23HqJ0Koec65HO2iTgDUiYcIUBZABQoBRONOabEbqkcPGXI+FTiS5uCS4ewkaImpJC6u7uAzZ3LfBf7fj0BaOEAXEC+2bsZthAUVxoScn0qWDmuMBNvtYl5M2vTbvdLUk3qr/4S85W3mb1ODd5PabaIuJPHbfxrW+jWqdSsT0LuLTLCpPCsl0QMng250qSWCIpCmf9Xc3CuKUda2BlwbSHEIJDbxfccpbFlYsJhYcz8xooIcg6obOz0w9g3Gw==
+X-YMail-OSG: 4uelLmwVM1nt1HAGqxoCmO359G7WFI9cx2sLJGdIw9D00PuE.cOXWJrEosXFCYe
+ _DjoFjsrnwX7a5EFAURZslpA05von5myRRQfjKACXTsm6l_F7k7GP4sm8GEYFmtQA.HKQYDj7sjX
+ _Wo03DlYaDIIGTi0TIE0spWNSXOmDI_oUtoNxm0JvB11b95R.cEHTuz8yho.wQjSt9fyGMkmmVZP
+ bzE7v6h7SzBSVgQFuR9ILMz_pG.dk9wy54GZ4GnV48h6XqxSSmL.2xToZha8MHApi87pWxHVKUkm
+ RZRVZjE4FYHcd4KMtfC26JIEu21i9UWkGNeOmmpEldMrCksLGkRPm2aTCIoe4FVd91cCm04noPas
+ EV6VsY3d3_khjLwra0N_D0ojGBTjpYvXuro1EL7WbHBiVLMaPbiXiGA2oDqVygc3TgkaOYvc30JZ
+ e0kZ1jh9Ce4LlFdHgn6kq6oD1QTJLBafl..QEFGxkdkvyDl2zKUwhkmFxoM_cpxvFEkdHBzUK6Dz
+ iuCMDGekJOlGMMYrumUsDgkDQyv33ASzVnEiV4s8V8tlNUUZ9PxEFrdf0HVj_7zaWLf_4xS3U.F0
+ XMXfVnZwNCkgGsqyfhs0bQywV1AhV36Fh4u5YGbCC92sR9mo3OkMlucPNu1XV2X9.9wtHSXrUz4O
+ IKZBW5jy4u.Yg_M9MYyJk6i.LurTeecTHVi1BeM7uaxAE3a_Ljj.mR.T4wQDrhj3vVJJp7_YF307
+ JlaKmFiPWN9SilmMKNqb9jQOPK7v9x2JX8_B5A9oVAUN8OyVrl9Py7vIFVaUTwWqFf63Z.YZVqhQ
+ RM_8UuPWrA7pcaNY5ppGGIElm_o_93BwuO.6TglRzAO5IBEXkf.McOF4FRqJ4whBo7sCtxPQ2emV
+ JmSi.eaaw8GwcwiHh6vsE4fnVbfurgd7io9vkRlVDqj6H0LfPMXCogri_aPeMNDiK8pgknLaobxH
+ E6TswzEXxRZFcM7Lw_W6RdsPcfMrwaVhifJNErH_vsYfEmAY88IdqT9rq2ezQCt_mn7v4AWZCcZ1
+ POfZh8E6ML_7AUVHxZlwPzUTd1HWkCFRwylmdaG3Z.eXA5a9iM1s3eca9.Z8hjWAvQAX1gEUIvOT
+ _8ZpLLVp_ss0LaYdArn5viTyhvxCVOsXPNNpOhsA0olK5Fz0ManBJ9o5Ieweldf3xdoTJkaFwzo3
+ 81J2mDIrsCbC_qegBOHBKZh8wjoPwpMfrqsH2ZLfv0_9OLeJ0AcP26DIoFdvam41.z_ugvoToZIV
+ CzWxQqBYD00FEsfonT_tbtQxwzRcIukvVSOGmCwdrwmKGra4_cjJgyF43r4Ssw92maFiRSboWK.W
+ GaOQh9DMT1lFOLAZEygmklE5qyJP5d7M0LeuP0CarQ59Rcl_7nyZLdFftm.8fLrz5Ek8F1amEuSR
+ S7I3yaMbNgGPPAe63WRCjoBorTwvaoPT4v5Upb_wf95mKiAQp9eLYuj0jYUQAFrB6wTgdVwM5KPV
+ QwXNKp8XUK7TXpeiN1F3ti2sOtclEubmOsUvpi1ITqzgMZmpi75g0.CoAAz0VEk5h.MqvWnM3gs5
+ TgZv1yySpK570VfugbsDRFV1dks8vLaNSAbUNZgqW4AO98PquQORlrc4To1hpqGTz7JulblaPiq3
+ kxIyz0k4MDEROrYgqRpBW1WoFIpRm8s6iTcKKH4pQeXSZZ9WheWkhp_jOwWEn4AFKrEPp_DtCZyJ
+ upUevLlypa_CIMi.Mh8vuPuT85uvA3YewFGkaD.GhjpKeiJjXuzOdVkq4VRqhJdWaljELv5q4.4P
+ 7jdHeSs9OdUGErxNZ5jEx2u9Jnw13_6wQFMe_6MQWNeO3Vc0p.b.M4P1fvFAblbD3REBUixuSSS7
+ gOKL33I_j6UBqqAFXulsWnm6qGfrr4bGIuDZwlbEmlSHmRdS9jatXtZ67EEhVp2depWx6GliX6yH
+ JahRD10ue0My2HHSDC3xa1je6zZ7_cyFgXKUqZbQXjBKh59GxX7_gwpl4Y4K6emOuRpNCumsFtRx
+ 6htGpv5NSuPnsKT32qGCHE_H178c9BbuRXr8JmgQLVZW8N_1J4bXeV.R_QAcVWNiqu.oEaQCpxx7
+ GDsI5x14haJxEQzcRzvZM3MAbM4YjRP_7VxezCCujtaUaaimDUdZE9lhXvd9.EUYdoL8Cp92Jptu
+ 6dlQ_jmJvIHHhsQ4_JoalExsFoTEZOQUlxogKoLxwYZgVsxzFpLImN7Yycu2pguK7BJtS1i9bj.y
+ cjPBbckePK2hy84Oi6P5KEHhaARS.ztTEf4Xn6GOfmyAAVnRyvKlBJZRerQKBnqeYUOdnJiK0kJP
+ 1JJbR
+X-Sonic-MF: <casey@schaufler-ca.com>
+X-Sonic-ID: 847fea1a-0c7c-4cf7-bb66-77cc3d5c55d5
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic302.consmr.mail.ne1.yahoo.com with HTTP; Tue, 7 Nov 2023 17:45:31 +0000
+Received: by hermes--production-ne1-56df75844-8rgn8 (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID dfaa5d1dae8975599027f84a9858e3dc;
+          Tue, 07 Nov 2023 17:45:25 +0000 (UTC)
+Message-ID: <ee0773b4-74c2-425d-b4fb-db58688ebbfc@schaufler-ca.com>
+Date:   Tue, 7 Nov 2023 09:45:24 -0800
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 17/23] security: Introduce inode_post_remove_acl hook
+Content-Language: en-US
+To:     Roberto Sassu <roberto.sassu@huaweicloud.com>,
+        viro@zeniv.linux.org.uk, brauner@kernel.org,
+        chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
+        kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
+        paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
+        zohar@linux.ibm.com, dmitry.kasatkin@gmail.com,
+        dhowells@redhat.com, jarkko@kernel.org,
+        stephen.smalley.work@gmail.com, eparis@parisplace.org,
+        mic@digikod.net
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
+        selinux@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>,
+        Stefan Berger <stefanb@linux.ibm.com>,
+        Casey Schaufler <casey@schaufler-ca.com>
+References: <20231107134012.682009-1-roberto.sassu@huaweicloud.com>
+ <20231107134012.682009-18-roberto.sassu@huaweicloud.com>
+From:   Casey Schaufler <casey@schaufler-ca.com>
+In-Reply-To: <20231107134012.682009-18-roberto.sassu@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Mailer: WebService/1.1.21896 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 07 Nov 2023 09:26:03 PST (-0800), Evan Green wrote:
-> On Tue, Nov 7, 2023 at 12:34 AM Sebastian Andrzej Siewior
-> <bigeasy@linutronix.de> wrote:
->>
->> On 2023-11-06 14:58:55 [-0800], Evan Green wrote:
->> > Probing for misaligned access speed takes about 0.06 seconds. On a
->> > system with 64 cores, doing this in smp_callin() means it's done
->> > serially, extending boot time by 3.8 seconds. That's a lot of boot time.
->> >
->> > Instead of measuring each CPU serially, let's do the measurements on
->> > all CPUs in parallel. If we disable preemption on all CPUs, the
->> > jiffies stop ticking, so we can do this in stages of 1) everybody
->> > except core 0, then 2) core 0. The allocations are all done outside of
->> > on_each_cpu() to avoid calling alloc_pages() with interrupts disabled.
->> >
->> > For hotplugged CPUs that come in after the boot time measurement,
->> > register CPU hotplug callbacks, and do the measurement there. Interrupts
->> > are enabled in those callbacks, so they're fine to do alloc_pages() in.
->>
->> I think this is dragged out of proportion. I would do this (if needed
->> can can't be identified by CPU-ID or so) on boot CPU only. If there is
->> evidence/ proof/ blessing from the high RiscV council that different
->> types of CPU cores are mixed together then this could be extended.
->> You brought Big-Little up in the other thread. This is actually known.
->> Same as with hyper-threads on x86, you know which CPU is the core and
->> which hyper thread (CPU) belongs to it.
->> So in terms of BigLittle you _could_ limit this to one Big and one
->> Little core instead running it on all.
+On 11/7/2023 5:40 AM, Roberto Sassu wrote:
+> From: Roberto Sassu <roberto.sassu@huawei.com>
 >
-> Doing it on one per cluster might also happen to work, but I still see
-> nothing that prevents variety within a cluster, so I'm not comfortable
-> with that assumption. It also doesn't buy much. I'm not sure what kind
-> of guidance RVI is providing on integrating multiple CPUs into a
-> system. I haven't seen any myself, but am happy to reassess if there's
-> documentation banning the scenarios I'm imagining.
+> In preparation for moving IMA and EVM to the LSM infrastructure, introduce
+> the inode_post_remove_acl hook.
+>
+> At inode_remove_acl hook, EVM verifies the file's existing HMAC value. At
+> inode_post_remove_acl, EVM re-calculates the file's HMAC with the passed
+> POSIX ACL removed and other file metadata.
+>
+> Other LSMs could similarly take some action after successful POSIX ACL
+> removal.
+>
+> The new hook cannot return an error and cannot cause the operation to be
+> reverted.
+>
+> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> Reviewed-by: Stefan Berger <stefanb@linux.ibm.com>
 
-IIUC there's pretty much no rules here, and vendors are already building 
-wacky systems (the K230 just showed up with heterogenous-ISA cores, 
-we've got a handful now).  I guess we could write up some guidance in 
-Documentation/riscv describing what sort of systems we generally test 
-on, but given how RISC-V generally goes vendors are just going to build 
-the crazy stuff anyway and we'll have to deal with it.
+Acked-by: Casey Schaufler <casey@schaufler-ca.com>
 
+
+> ---
+>  fs/posix_acl.c                |  1 +
+>  include/linux/lsm_hook_defs.h |  2 ++
+>  include/linux/security.h      |  8 ++++++++
+>  security/security.c           | 17 +++++++++++++++++
+>  4 files changed, 28 insertions(+)
 >
->>
->> But this is just my few on this. From PREEMPT_RT's point of view, the
->> way you restructured the memory allocation should work now.
->
-> Thanks!
->
->>
->> > Reported-by: Jisheng Zhang <jszhang@kernel.org>
->> > Closes: https://lore.kernel.org/all/mhng-9359993d-6872-4134-83ce-c97debe1cf9a@palmer-ri-x1c9/T/#mae9b8f40016f9df428829d33360144dc5026bcbf
->> > Fixes: 584ea6564bca ("RISC-V: Probe for unaligned access speed")
->> > Signed-off-by: Evan Green <evan@rivosinc.com>
->> >
->> >
->> > diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.c
->> > index 6a01ded615cd..fe59e18dbd5b 100644
->> > --- a/arch/riscv/kernel/cpufeature.c
->> > +++ b/arch/riscv/kernel/cpufeature.c
->> …
->> >
->> > -static int __init check_unaligned_access_boot_cpu(void)
->> > +/* Measure unaligned access on all CPUs present at boot in parallel. */
->> > +static int check_unaligned_access_all_cpus(void)
->> >  {
->> > -     check_unaligned_access(0);
->> > +     unsigned int cpu;
->> > +     unsigned int cpu_count = num_possible_cpus();
->> > +     struct page **bufs = kzalloc(cpu_count * sizeof(struct page *),
->> > +                                  GFP_KERNEL);
->>
->> kcalloc(). For beauty reasons you could try a reverse xmas tree.
->>
->> > +
->> > +     if (!bufs) {
->> > +             pr_warn("Allocation failure, not measuring misaligned performance\n");
->> > +             return 0;
->> > +     }
->> > +
->> > +     /*
->> > +      * Allocate separate buffers for each CPU so there's no fighting over
->> > +      * cache lines.
->> > +      */
->> > +     for_each_cpu(cpu, cpu_online_mask) {
->> > +             bufs[cpu] = alloc_pages(GFP_KERNEL, MISALIGNED_BUFFER_ORDER);
->> > +             if (!bufs[cpu]) {
->> > +                     pr_warn("Allocation failure, not measuring misaligned performance\n");
->> > +                     goto out;
->> > +             }
->> > +     }
->> > +
->> > +     /* Check everybody except 0, who stays behind to tend jiffies. */
->> > +     on_each_cpu(check_unaligned_access_nonboot_cpu, bufs, 1);
->>
->> comments! _HOW_ do you ensure that CPU0 is left out? You don't. CPU0
->> does this and the leaves which is a waste. Using on_each_cpu_cond()
->> could deal with this. And you have the check within the wrapper
->> (check_unaligned_access_nonboot_cpu()) anyway.
->>
->> > +     /* Check core 0. */
->> > +     smp_call_on_cpu(0, check_unaligned_access, bufs[0], true);
->>
->> Now that comment is obvious. If you want to add a comment, why not state
->> why CPU0 has to be done last?
->>
->> > +
->> > +     /* Setup hotplug callback for any new CPUs that come online. */
->> > +     cpuhp_setup_state_nocalls(CPUHP_AP_ONLINE_DYN, "riscv:online",
->> > +                               riscv_online_cpu, NULL);
->> Instead riscv:online you could use riscv:unaliged_check or something
->> that pin points the callback to something obvious. This is exported via
->> sysfs.
->>
->> Again, comment is obvious. For that to make sense would require RiscV to
->> support physical-hotplug. For KVM like environment (where you can plug in
->> CPUs later) this probably doesn't make sense at all. Why not? Because
->>
->> - without explicit CPU pinning your slow/ fast CPU mapping (host <->
->>   guest) could change if the scheduler on the host moves the threads
->>   around.
->
-> Taking a system with non-identical cores and allowing vcpus to bounce
-> between them sounds like a hypervisor configuration issue to me,
-> regardless of this patch.
->
->>
->> - without explicit task offload and resource partitioning on the host
->>   your guest thread might get interrupt during the measurement. This is
->>   done during boot so chances are high that it runs 100% of its time
->>   slice and will be preempted once other tasks on the host ask for CPU
->>   run time.
->
-> The measurement takes the best (lowest time) iteration. So unless
-> every iteration gets interrupted, I should get a good read in there
-> somewhere.
-> -Evan
+> diff --git a/fs/posix_acl.c b/fs/posix_acl.c
+> index 58e3c1e2fbbc..e3fbe1a9f3f5 100644
+> --- a/fs/posix_acl.c
+> +++ b/fs/posix_acl.c
+> @@ -1246,6 +1246,7 @@ int vfs_remove_acl(struct mnt_idmap *idmap, struct dentry *dentry,
+>  		error = -EIO;
+>  	if (!error) {
+>  		fsnotify_xattr(dentry);
+> +		security_inode_post_remove_acl(idmap, dentry, acl_name);
+>  		evm_inode_post_remove_acl(idmap, dentry, acl_name);
+>  	}
+>  
+> diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_defs.h
+> index 6a671616196f..2bf128f7cbae 100644
+> --- a/include/linux/lsm_hook_defs.h
+> +++ b/include/linux/lsm_hook_defs.h
+> @@ -163,6 +163,8 @@ LSM_HOOK(int, 0, inode_get_acl, struct mnt_idmap *idmap,
+>  	 struct dentry *dentry, const char *acl_name)
+>  LSM_HOOK(int, 0, inode_remove_acl, struct mnt_idmap *idmap,
+>  	 struct dentry *dentry, const char *acl_name)
+> +LSM_HOOK(void, LSM_RET_VOID, inode_post_remove_acl, struct mnt_idmap *idmap,
+> +	 struct dentry *dentry, const char *acl_name)
+>  LSM_HOOK(int, 0, inode_need_killpriv, struct dentry *dentry)
+>  LSM_HOOK(int, 0, inode_killpriv, struct mnt_idmap *idmap,
+>  	 struct dentry *dentry)
+> diff --git a/include/linux/security.h b/include/linux/security.h
+> index d71d0b08e9fe..7cd7126f6545 100644
+> --- a/include/linux/security.h
+> +++ b/include/linux/security.h
+> @@ -378,6 +378,9 @@ int security_inode_get_acl(struct mnt_idmap *idmap,
+>  			   struct dentry *dentry, const char *acl_name);
+>  int security_inode_remove_acl(struct mnt_idmap *idmap,
+>  			      struct dentry *dentry, const char *acl_name);
+> +void security_inode_post_remove_acl(struct mnt_idmap *idmap,
+> +				    struct dentry *dentry,
+> +				    const char *acl_name);
+>  void security_inode_post_setxattr(struct dentry *dentry, const char *name,
+>  				  const void *value, size_t size, int flags);
+>  int security_inode_getxattr(struct dentry *dentry, const char *name);
+> @@ -934,6 +937,11 @@ static inline int security_inode_remove_acl(struct mnt_idmap *idmap,
+>  	return 0;
+>  }
+>  
+> +static inline void security_inode_post_remove_acl(struct mnt_idmap *idmap,
+> +						  struct dentry *dentry,
+> +						  const char *acl_name)
+> +{ }
+> +
+>  static inline void security_inode_post_setxattr(struct dentry *dentry,
+>  		const char *name, const void *value, size_t size, int flags)
+>  { }
+> diff --git a/security/security.c b/security/security.c
+> index d2dbea54a63a..6eb7c9cff1e5 100644
+> --- a/security/security.c
+> +++ b/security/security.c
+> @@ -2413,6 +2413,23 @@ int security_inode_remove_acl(struct mnt_idmap *idmap,
+>  	return evm_inode_remove_acl(idmap, dentry, acl_name);
+>  }
+>  
+> +/**
+> + * security_inode_post_remove_acl() - Update inode security after rm posix acls
+> + * @idmap: idmap of the mount
+> + * @dentry: file
+> + * @acl_name: acl name
+> + *
+> + * Update inode security data after successfully removing posix acls on
+> + * @dentry in @idmap. The posix acls are identified by @acl_name.
+> + */
+> +void security_inode_post_remove_acl(struct mnt_idmap *idmap,
+> +				    struct dentry *dentry, const char *acl_name)
+> +{
+> +	if (unlikely(IS_PRIVATE(d_backing_inode(dentry))))
+> +		return;
+> +	call_void_hook(inode_post_remove_acl, idmap, dentry, acl_name);
+> +}
+> +
+>  /**
+>   * security_inode_post_setxattr() - Update the inode after a setxattr operation
+>   * @dentry: file
