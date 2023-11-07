@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EEFF87E4CBA
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 00:22:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E95027E4CC1
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 00:23:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344255AbjKGXW5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 18:22:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36916 "EHLO
+        id S235436AbjKGXXG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 18:23:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344375AbjKGXWs (ORCPT
+        with ESMTP id S235357AbjKGXWy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 18:22:48 -0500
+        Tue, 7 Nov 2023 18:22:54 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A9331701;
-        Tue,  7 Nov 2023 15:22:45 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6EBF8C433C7;
-        Tue,  7 Nov 2023 23:22:44 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 340F81709;
+        Tue,  7 Nov 2023 15:22:47 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC00CC433C9;
+        Tue,  7 Nov 2023 23:22:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699399365;
-        bh=/psGUBIAHHvGIAJ+Cj6bUH3jKXCj4WPo9cxOccD1O3Y=;
+        s=k20201202; t=1699399366;
+        bh=mNS2ieooXTNx+RIemYthCnioFicOnssqyrXz53LBz5U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZEsszFcx/weA7C75JZLrTx/efBqgvA95TTTuMVJ1rBt4ho+1zWEOie8L1iy2M6ptc
-         3vRua+CHgzp33kPLkwsqTW77SP5bIOwb+lMzU7vkL5Soe46s3CfdywQjeUDalqXnw9
-         ctsDyBNrKL86UxUFAnrPonKab7d1h55gHTaP4sWkNGN6Cek+k9zuAHW1nvGrMJNUJV
-         r1VUlTgS9SfqPok41N51WdCkrVHjlhLwZNtNovlH8rTmYLJgsZWUWfwiHBSsW26pcJ
-         KDvN26lGbujEif5Ty9HfAWXcUG1Df2qMMDBV2WCD7g7WXVExtsGyUnQI6qriWaKq7s
-         9FLwqMKJ7K7CQ==
+        b=KkipTMVr5LoPFMfqaPCJxH5bYITGaNY12t2OYduFkTAa4Ua8Fe0mmnS6IwA+ma5c6
+         R0GwTnnXFvIS1YbY4hgbK+lLu58ivTzI0p3DEi+6hZhCT8pab/NRcjoS1PcirUh4Is
+         GTQ+xSZTMN2ES9Dc442kmvzBBrmb1VqtxZr6lWIO72g905DID2CGM26bMkVO3bQTwn
+         lV9zypwnGswj9yeCgsnspYUXSqgo+O0ncFiAhjWNQynRB0UIapz8KjqIes000qV5O7
+         RokeTcI3qlusz1ChhEVQbMTYiQTn13ireY+6SyQrMpwXD4chbK0uhua0KUrrd2TsXA
+         /3zp5w2NAwKNA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Stanley Chang <stanley_chang@realtek.com>,
-        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+Cc:     Niklas Schnelle <schnelle@linux.ibm.com>,
+        Arnd Bergmann <arnd@kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>, linux-usb@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 07/18] usb: dwc3: core: configure TX/RX threshold for DWC3_IP
-Date:   Tue,  7 Nov 2023 18:22:01 -0500
-Message-ID: <20231107232231.3775605-7-sashal@kernel.org>
+        Sasha Levin <sashal@kernel.org>, mathias.nyman@intel.com,
+        linux-usb@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.6 08/18] usb: pci-quirks: group AMD specific quirk code together
+Date:   Tue,  7 Nov 2023 18:22:02 -0500
+Message-ID: <20231107232231.3775605-8-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231107232231.3775605-1-sashal@kernel.org>
 References: <20231107232231.3775605-1-sashal@kernel.org>
@@ -48,266 +49,223 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stanley Chang <stanley_chang@realtek.com>
+From: Niklas Schnelle <schnelle@linux.ibm.com>
 
-[ Upstream commit e72fc8d6a12af7ae8dd1b52cf68ed68569d29f80 ]
+[ Upstream commit 7ca9f9ba8aa7380dee5dd8346b57bbaf198b075a ]
 
-In Synopsys's dwc3 data book:
-To avoid underrun and overrun during the burst, in a high-latency bus
-system (like USB), threshold and burst size control is provided through
-GTXTHRCFG and GRXTHRCFG registers.
+A follow on patch will introduce CONFIG_USB_PCI_AMD governing the AMD
+quirk and adding its compile time dependency on HAS_IOPORT. In order to
+minimize the number of #ifdefs in C files and make that patch easier
+to read first group the code together. This is pure code movement
+no functional change is intended.
 
-In Realtek DHC SoC, DWC3 USB 3.0 uses AHB system bus. When dwc3 is
-connected with USB 2.5G Ethernet, there will be overrun problem.
-Therefore, setting TX/RX thresholds can avoid this issue.
-
-Signed-off-by: Stanley Chang <stanley_chang@realtek.com>
-Acked-by: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
-Link: https://lore.kernel.org/r/20230912041904.30721-1-stanley_chang@realtek.com
+Co-developed-by: Arnd Bergmann <arnd@kernel.org>
+Signed-off-by: Arnd Bergmann <arnd@kernel.org>
+Signed-off-by: Niklas Schnelle <schnelle@linux.ibm.com>
+Link: https://lore.kernel.org/r/20230911125653.1393895-2-schnelle@linux.ibm.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/dwc3/core.c | 160 +++++++++++++++++++++++++++++++---------
- drivers/usb/dwc3/core.h |  13 ++++
- 2 files changed, 137 insertions(+), 36 deletions(-)
+ drivers/usb/host/pci-quirks.c | 119 +++++++++++++++++-----------------
+ drivers/usb/host/pci-quirks.h |  14 ++--
+ 2 files changed, 68 insertions(+), 65 deletions(-)
 
-diff --git a/drivers/usb/dwc3/core.c b/drivers/usb/dwc3/core.c
-index 343d2570189ff..d25490965b27f 100644
---- a/drivers/usb/dwc3/core.c
-+++ b/drivers/usb/dwc3/core.c
-@@ -1094,6 +1094,111 @@ static void dwc3_set_power_down_clk_scale(struct dwc3 *dwc)
- 	}
- }
+diff --git a/drivers/usb/host/pci-quirks.c b/drivers/usb/host/pci-quirks.c
+index 2665832f9addf..5e06fad82a228 100644
+--- a/drivers/usb/host/pci-quirks.c
++++ b/drivers/usb/host/pci-quirks.c
+@@ -60,6 +60,22 @@
+ #define EHCI_USBLEGCTLSTS	4		/* legacy control/status */
+ #define EHCI_USBLEGCTLSTS_SOOE	(1 << 13)	/* SMI on ownership change */
  
-+static void dwc3_config_threshold(struct dwc3 *dwc)
++/* ASMEDIA quirk use */
++#define ASMT_DATA_WRITE0_REG	0xF8
++#define ASMT_DATA_WRITE1_REG	0xFC
++#define ASMT_CONTROL_REG	0xE0
++#define ASMT_CONTROL_WRITE_BIT	0x02
++#define ASMT_WRITEREG_CMD	0x10423
++#define ASMT_FLOWCTL_ADDR	0xFA30
++#define ASMT_FLOWCTL_DATA	0xBA
++#define ASMT_PSEUDO_DATA	0
++
++/* Intel quirk use */
++#define USB_INTEL_XUSB2PR      0xD0
++#define USB_INTEL_USB2PRM      0xD4
++#define USB_INTEL_USB3_PSSEN   0xD8
++#define USB_INTEL_USB3PRM      0xDC
++
+ /* AMD quirk use */
+ #define	AB_REG_BAR_LOW		0xe0
+ #define	AB_REG_BAR_HIGH		0xe1
+@@ -93,21 +109,6 @@
+ #define	NB_PIF0_PWRDOWN_0	0x01100012
+ #define	NB_PIF0_PWRDOWN_1	0x01100013
+ 
+-#define USB_INTEL_XUSB2PR      0xD0
+-#define USB_INTEL_USB2PRM      0xD4
+-#define USB_INTEL_USB3_PSSEN   0xD8
+-#define USB_INTEL_USB3PRM      0xDC
+-
+-/* ASMEDIA quirk use */
+-#define ASMT_DATA_WRITE0_REG	0xF8
+-#define ASMT_DATA_WRITE1_REG	0xFC
+-#define ASMT_CONTROL_REG	0xE0
+-#define ASMT_CONTROL_WRITE_BIT	0x02
+-#define ASMT_WRITEREG_CMD	0x10423
+-#define ASMT_FLOWCTL_ADDR	0xFA30
+-#define ASMT_FLOWCTL_DATA	0xBA
+-#define ASMT_PSEUDO_DATA	0
+-
+ /*
+  * amd_chipset_gen values represent AMD different chipset generations
+  */
+@@ -458,50 +459,6 @@ void usb_amd_quirk_pll_disable(void)
+ }
+ EXPORT_SYMBOL_GPL(usb_amd_quirk_pll_disable);
+ 
+-static int usb_asmedia_wait_write(struct pci_dev *pdev)
+-{
+-	unsigned long retry_count;
+-	unsigned char value;
+-
+-	for (retry_count = 1000; retry_count > 0; --retry_count) {
+-
+-		pci_read_config_byte(pdev, ASMT_CONTROL_REG, &value);
+-
+-		if (value == 0xff) {
+-			dev_err(&pdev->dev, "%s: check_ready ERROR", __func__);
+-			return -EIO;
+-		}
+-
+-		if ((value & ASMT_CONTROL_WRITE_BIT) == 0)
+-			return 0;
+-
+-		udelay(50);
+-	}
+-
+-	dev_warn(&pdev->dev, "%s: check_write_ready timeout", __func__);
+-	return -ETIMEDOUT;
+-}
+-
+-void usb_asmedia_modifyflowcontrol(struct pci_dev *pdev)
+-{
+-	if (usb_asmedia_wait_write(pdev) != 0)
+-		return;
+-
+-	/* send command and address to device */
+-	pci_write_config_dword(pdev, ASMT_DATA_WRITE0_REG, ASMT_WRITEREG_CMD);
+-	pci_write_config_dword(pdev, ASMT_DATA_WRITE1_REG, ASMT_FLOWCTL_ADDR);
+-	pci_write_config_byte(pdev, ASMT_CONTROL_REG, ASMT_CONTROL_WRITE_BIT);
+-
+-	if (usb_asmedia_wait_write(pdev) != 0)
+-		return;
+-
+-	/* send data to device */
+-	pci_write_config_dword(pdev, ASMT_DATA_WRITE0_REG, ASMT_FLOWCTL_DATA);
+-	pci_write_config_dword(pdev, ASMT_DATA_WRITE1_REG, ASMT_PSEUDO_DATA);
+-	pci_write_config_byte(pdev, ASMT_CONTROL_REG, ASMT_CONTROL_WRITE_BIT);
+-}
+-EXPORT_SYMBOL_GPL(usb_asmedia_modifyflowcontrol);
+-
+ void usb_amd_quirk_pll_enable(void)
+ {
+ 	usb_amd_quirk_pll(0);
+@@ -631,6 +588,50 @@ bool usb_amd_pt_check_port(struct device *device, int port)
+ }
+ EXPORT_SYMBOL_GPL(usb_amd_pt_check_port);
+ 
++static int usb_asmedia_wait_write(struct pci_dev *pdev)
 +{
-+	u32 reg;
-+	u8 rx_thr_num;
-+	u8 rx_maxburst;
-+	u8 tx_thr_num;
-+	u8 tx_maxburst;
++	unsigned long retry_count;
++	unsigned char value;
 +
-+	/*
-+	 * Must config both number of packets and max burst settings to enable
-+	 * RX and/or TX threshold.
-+	 */
-+	if (!DWC3_IP_IS(DWC3) && dwc->dr_mode == USB_DR_MODE_HOST) {
-+		rx_thr_num = dwc->rx_thr_num_pkt_prd;
-+		rx_maxburst = dwc->rx_max_burst_prd;
-+		tx_thr_num = dwc->tx_thr_num_pkt_prd;
-+		tx_maxburst = dwc->tx_max_burst_prd;
++	for (retry_count = 1000; retry_count > 0; --retry_count) {
 +
-+		if (rx_thr_num && rx_maxburst) {
-+			reg = dwc3_readl(dwc->regs, DWC3_GRXTHRCFG);
-+			reg |= DWC31_RXTHRNUMPKTSEL_PRD;
++		pci_read_config_byte(pdev, ASMT_CONTROL_REG, &value);
 +
-+			reg &= ~DWC31_RXTHRNUMPKT_PRD(~0);
-+			reg |= DWC31_RXTHRNUMPKT_PRD(rx_thr_num);
-+
-+			reg &= ~DWC31_MAXRXBURSTSIZE_PRD(~0);
-+			reg |= DWC31_MAXRXBURSTSIZE_PRD(rx_maxburst);
-+
-+			dwc3_writel(dwc->regs, DWC3_GRXTHRCFG, reg);
++		if (value == 0xff) {
++			dev_err(&pdev->dev, "%s: check_ready ERROR", __func__);
++			return -EIO;
 +		}
 +
-+		if (tx_thr_num && tx_maxburst) {
-+			reg = dwc3_readl(dwc->regs, DWC3_GTXTHRCFG);
-+			reg |= DWC31_TXTHRNUMPKTSEL_PRD;
++		if ((value & ASMT_CONTROL_WRITE_BIT) == 0)
++			return 0;
 +
-+			reg &= ~DWC31_TXTHRNUMPKT_PRD(~0);
-+			reg |= DWC31_TXTHRNUMPKT_PRD(tx_thr_num);
-+
-+			reg &= ~DWC31_MAXTXBURSTSIZE_PRD(~0);
-+			reg |= DWC31_MAXTXBURSTSIZE_PRD(tx_maxburst);
-+
-+			dwc3_writel(dwc->regs, DWC3_GTXTHRCFG, reg);
-+		}
++		udelay(50);
 +	}
 +
-+	rx_thr_num = dwc->rx_thr_num_pkt;
-+	rx_maxburst = dwc->rx_max_burst;
-+	tx_thr_num = dwc->tx_thr_num_pkt;
-+	tx_maxburst = dwc->tx_max_burst;
-+
-+	if (DWC3_IP_IS(DWC3)) {
-+		if (rx_thr_num && rx_maxburst) {
-+			reg = dwc3_readl(dwc->regs, DWC3_GRXTHRCFG);
-+			reg |= DWC3_GRXTHRCFG_PKTCNTSEL;
-+
-+			reg &= ~DWC3_GRXTHRCFG_RXPKTCNT(~0);
-+			reg |= DWC3_GRXTHRCFG_RXPKTCNT(rx_thr_num);
-+
-+			reg &= ~DWC3_GRXTHRCFG_MAXRXBURSTSIZE(~0);
-+			reg |= DWC3_GRXTHRCFG_MAXRXBURSTSIZE(rx_maxburst);
-+
-+			dwc3_writel(dwc->regs, DWC3_GRXTHRCFG, reg);
-+		}
-+
-+		if (tx_thr_num && tx_maxburst) {
-+			reg = dwc3_readl(dwc->regs, DWC3_GTXTHRCFG);
-+			reg |= DWC3_GTXTHRCFG_PKTCNTSEL;
-+
-+			reg &= ~DWC3_GTXTHRCFG_TXPKTCNT(~0);
-+			reg |= DWC3_GTXTHRCFG_TXPKTCNT(tx_thr_num);
-+
-+			reg &= ~DWC3_GTXTHRCFG_MAXTXBURSTSIZE(~0);
-+			reg |= DWC3_GTXTHRCFG_MAXTXBURSTSIZE(tx_maxburst);
-+
-+			dwc3_writel(dwc->regs, DWC3_GTXTHRCFG, reg);
-+		}
-+	} else {
-+		if (rx_thr_num && rx_maxburst) {
-+			reg = dwc3_readl(dwc->regs, DWC3_GRXTHRCFG);
-+			reg |= DWC31_GRXTHRCFG_PKTCNTSEL;
-+
-+			reg &= ~DWC31_GRXTHRCFG_RXPKTCNT(~0);
-+			reg |= DWC31_GRXTHRCFG_RXPKTCNT(rx_thr_num);
-+
-+			reg &= ~DWC31_GRXTHRCFG_MAXRXBURSTSIZE(~0);
-+			reg |= DWC31_GRXTHRCFG_MAXRXBURSTSIZE(rx_maxburst);
-+
-+			dwc3_writel(dwc->regs, DWC3_GRXTHRCFG, reg);
-+		}
-+
-+		if (tx_thr_num && tx_maxburst) {
-+			reg = dwc3_readl(dwc->regs, DWC3_GTXTHRCFG);
-+			reg |= DWC31_GTXTHRCFG_PKTCNTSEL;
-+
-+			reg &= ~DWC31_GTXTHRCFG_TXPKTCNT(~0);
-+			reg |= DWC31_GTXTHRCFG_TXPKTCNT(tx_thr_num);
-+
-+			reg &= ~DWC31_GTXTHRCFG_MAXTXBURSTSIZE(~0);
-+			reg |= DWC31_GTXTHRCFG_MAXTXBURSTSIZE(tx_maxburst);
-+
-+			dwc3_writel(dwc->regs, DWC3_GTXTHRCFG, reg);
-+		}
-+	}
++	dev_warn(&pdev->dev, "%s: check_write_ready timeout", __func__);
++	return -ETIMEDOUT;
 +}
 +
- /**
-  * dwc3_core_init - Low-level initialization of DWC3 Core
-  * @dwc: Pointer to our controller context structure
-@@ -1246,42 +1351,7 @@ static int dwc3_core_init(struct dwc3 *dwc)
- 		dwc3_writel(dwc->regs, DWC3_GUCTL1, reg);
- 	}
- 
--	/*
--	 * Must config both number of packets and max burst settings to enable
--	 * RX and/or TX threshold.
--	 */
--	if (!DWC3_IP_IS(DWC3) && dwc->dr_mode == USB_DR_MODE_HOST) {
--		u8 rx_thr_num = dwc->rx_thr_num_pkt_prd;
--		u8 rx_maxburst = dwc->rx_max_burst_prd;
--		u8 tx_thr_num = dwc->tx_thr_num_pkt_prd;
--		u8 tx_maxburst = dwc->tx_max_burst_prd;
--
--		if (rx_thr_num && rx_maxburst) {
--			reg = dwc3_readl(dwc->regs, DWC3_GRXTHRCFG);
--			reg |= DWC31_RXTHRNUMPKTSEL_PRD;
--
--			reg &= ~DWC31_RXTHRNUMPKT_PRD(~0);
--			reg |= DWC31_RXTHRNUMPKT_PRD(rx_thr_num);
--
--			reg &= ~DWC31_MAXRXBURSTSIZE_PRD(~0);
--			reg |= DWC31_MAXRXBURSTSIZE_PRD(rx_maxburst);
--
--			dwc3_writel(dwc->regs, DWC3_GRXTHRCFG, reg);
--		}
--
--		if (tx_thr_num && tx_maxburst) {
--			reg = dwc3_readl(dwc->regs, DWC3_GTXTHRCFG);
--			reg |= DWC31_TXTHRNUMPKTSEL_PRD;
--
--			reg &= ~DWC31_TXTHRNUMPKT_PRD(~0);
--			reg |= DWC31_TXTHRNUMPKT_PRD(tx_thr_num);
--
--			reg &= ~DWC31_MAXTXBURSTSIZE_PRD(~0);
--			reg |= DWC31_MAXTXBURSTSIZE_PRD(tx_maxburst);
--
--			dwc3_writel(dwc->regs, DWC3_GTXTHRCFG, reg);
--		}
--	}
-+	dwc3_config_threshold(dwc);
- 
- 	return 0;
- 
-@@ -1417,6 +1487,10 @@ static void dwc3_get_properties(struct dwc3 *dwc)
- 	u8			lpm_nyet_threshold;
- 	u8			tx_de_emphasis;
- 	u8			hird_threshold;
-+	u8			rx_thr_num_pkt = 0;
-+	u8			rx_max_burst = 0;
-+	u8			tx_thr_num_pkt = 0;
-+	u8			tx_max_burst = 0;
- 	u8			rx_thr_num_pkt_prd = 0;
- 	u8			rx_max_burst_prd = 0;
- 	u8			tx_thr_num_pkt_prd = 0;
-@@ -1479,6 +1553,14 @@ static void dwc3_get_properties(struct dwc3 *dwc)
- 				"snps,usb2-lpm-disable");
- 	dwc->usb2_gadget_lpm_disable = device_property_read_bool(dev,
- 				"snps,usb2-gadget-lpm-disable");
-+	device_property_read_u8(dev, "snps,rx-thr-num-pkt",
-+				&rx_thr_num_pkt);
-+	device_property_read_u8(dev, "snps,rx-max-burst",
-+				&rx_max_burst);
-+	device_property_read_u8(dev, "snps,tx-thr-num-pkt",
-+				&tx_thr_num_pkt);
-+	device_property_read_u8(dev, "snps,tx-max-burst",
-+				&tx_max_burst);
- 	device_property_read_u8(dev, "snps,rx-thr-num-pkt-prd",
- 				&rx_thr_num_pkt_prd);
- 	device_property_read_u8(dev, "snps,rx-max-burst-prd",
-@@ -1560,6 +1642,12 @@ static void dwc3_get_properties(struct dwc3 *dwc)
- 
- 	dwc->hird_threshold = hird_threshold;
- 
-+	dwc->rx_thr_num_pkt = rx_thr_num_pkt;
-+	dwc->rx_max_burst = rx_max_burst;
++void usb_asmedia_modifyflowcontrol(struct pci_dev *pdev)
++{
++	if (usb_asmedia_wait_write(pdev) != 0)
++		return;
 +
-+	dwc->tx_thr_num_pkt = tx_thr_num_pkt;
-+	dwc->tx_max_burst = tx_max_burst;
++	/* send command and address to device */
++	pci_write_config_dword(pdev, ASMT_DATA_WRITE0_REG, ASMT_WRITEREG_CMD);
++	pci_write_config_dword(pdev, ASMT_DATA_WRITE1_REG, ASMT_FLOWCTL_ADDR);
++	pci_write_config_byte(pdev, ASMT_CONTROL_REG, ASMT_CONTROL_WRITE_BIT);
 +
- 	dwc->rx_thr_num_pkt_prd = rx_thr_num_pkt_prd;
- 	dwc->rx_max_burst_prd = rx_max_burst_prd;
- 
-diff --git a/drivers/usb/dwc3/core.h b/drivers/usb/dwc3/core.h
-index a69ac67d89fe6..6782ec8bfd64c 100644
---- a/drivers/usb/dwc3/core.h
-+++ b/drivers/usb/dwc3/core.h
-@@ -211,6 +211,11 @@
- #define DWC3_GRXTHRCFG_RXPKTCNT(n) (((n) & 0xf) << 24)
- #define DWC3_GRXTHRCFG_PKTCNTSEL BIT(29)
- 
-+/* Global TX Threshold Configuration Register */
-+#define DWC3_GTXTHRCFG_MAXTXBURSTSIZE(n) (((n) & 0xff) << 16)
-+#define DWC3_GTXTHRCFG_TXPKTCNT(n) (((n) & 0xf) << 24)
-+#define DWC3_GTXTHRCFG_PKTCNTSEL BIT(29)
++	if (usb_asmedia_wait_write(pdev) != 0)
++		return;
 +
- /* Global RX Threshold Configuration Register for DWC_usb31 only */
- #define DWC31_GRXTHRCFG_MAXRXBURSTSIZE(n)	(((n) & 0x1f) << 16)
- #define DWC31_GRXTHRCFG_RXPKTCNT(n)		(((n) & 0x1f) << 21)
-@@ -1045,6 +1050,10 @@ struct dwc3_scratchpad_array {
-  * @test_mode_nr: test feature selector
-  * @lpm_nyet_threshold: LPM NYET response threshold
-  * @hird_threshold: HIRD threshold
-+ * @rx_thr_num_pkt: USB receive packet count
-+ * @rx_max_burst: max USB receive burst size
-+ * @tx_thr_num_pkt: USB transmit packet count
-+ * @tx_max_burst: max USB transmit burst size
-  * @rx_thr_num_pkt_prd: periodic ESS receive packet count
-  * @rx_max_burst_prd: max periodic ESS receive burst size
-  * @tx_thr_num_pkt_prd: periodic ESS transmit packet count
-@@ -1273,6 +1282,10 @@ struct dwc3 {
- 	u8			test_mode_nr;
- 	u8			lpm_nyet_threshold;
- 	u8			hird_threshold;
-+	u8			rx_thr_num_pkt;
-+	u8			rx_max_burst;
-+	u8			tx_thr_num_pkt;
-+	u8			tx_max_burst;
- 	u8			rx_thr_num_pkt_prd;
- 	u8			rx_max_burst_prd;
- 	u8			tx_thr_num_pkt_prd;
++	/* send data to device */
++	pci_write_config_dword(pdev, ASMT_DATA_WRITE0_REG, ASMT_FLOWCTL_DATA);
++	pci_write_config_dword(pdev, ASMT_DATA_WRITE1_REG, ASMT_PSEUDO_DATA);
++	pci_write_config_byte(pdev, ASMT_CONTROL_REG, ASMT_CONTROL_WRITE_BIT);
++}
++EXPORT_SYMBOL_GPL(usb_asmedia_modifyflowcontrol);
++
+ /*
+  * Make sure the controller is completely inactive, unable to
+  * generate interrupts or do DMA.
+diff --git a/drivers/usb/host/pci-quirks.h b/drivers/usb/host/pci-quirks.h
+index e729de21fad7a..cde2263a9d2e4 100644
+--- a/drivers/usb/host/pci-quirks.h
++++ b/drivers/usb/host/pci-quirks.h
+@@ -3,8 +3,6 @@
+ #define __LINUX_USB_PCI_QUIRKS_H
+ 
+ #ifdef CONFIG_USB_PCI
+-void uhci_reset_hc(struct pci_dev *pdev, unsigned long base);
+-int uhci_check_and_reset_hc(struct pci_dev *pdev, unsigned long base);
+ int usb_hcd_amd_remote_wakeup_quirk(struct pci_dev *pdev);
+ bool usb_amd_hang_symptom_quirk(void);
+ bool usb_amd_prefetch_quirk(void);
+@@ -12,23 +10,27 @@ void usb_amd_dev_put(void);
+ bool usb_amd_quirk_pll_check(void);
+ void usb_amd_quirk_pll_disable(void);
+ void usb_amd_quirk_pll_enable(void);
++void sb800_prefetch(struct device *dev, int on);
++bool usb_amd_pt_check_port(struct device *device, int port);
++
++void uhci_reset_hc(struct pci_dev *pdev, unsigned long base);
++int uhci_check_and_reset_hc(struct pci_dev *pdev, unsigned long base);
+ void usb_asmedia_modifyflowcontrol(struct pci_dev *pdev);
+ void usb_enable_intel_xhci_ports(struct pci_dev *xhci_pdev);
+ void usb_disable_xhci_ports(struct pci_dev *xhci_pdev);
+-void sb800_prefetch(struct device *dev, int on);
+-bool usb_amd_pt_check_port(struct device *device, int port);
+ #else
+ struct pci_dev;
+ static inline void usb_amd_quirk_pll_disable(void) {}
+ static inline void usb_amd_quirk_pll_enable(void) {}
+-static inline void usb_asmedia_modifyflowcontrol(struct pci_dev *pdev) {}
+ static inline void usb_amd_dev_put(void) {}
+-static inline void usb_disable_xhci_ports(struct pci_dev *xhci_pdev) {}
+ static inline void sb800_prefetch(struct device *dev, int on) {}
+ static inline bool usb_amd_pt_check_port(struct device *device, int port)
+ {
+ 	return false;
+ }
++
++static inline void usb_asmedia_modifyflowcontrol(struct pci_dev *pdev) {}
++static inline void usb_disable_xhci_ports(struct pci_dev *xhci_pdev) {}
+ #endif  /* CONFIG_USB_PCI */
+ 
+ #endif  /*  __LINUX_USB_PCI_QUIRKS_H  */
 -- 
 2.42.0
 
