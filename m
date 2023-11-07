@@ -2,174 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EDD357E3233
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 01:24:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D2C07E3237
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 01:25:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233169AbjKGAYL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 19:24:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55910 "EHLO
+        id S233143AbjKGAZT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 19:25:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232821AbjKGAYK (ORCPT
+        with ESMTP id S230248AbjKGAZQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 19:24:10 -0500
-Received: from mail-vs1-xe35.google.com (mail-vs1-xe35.google.com [IPv6:2607:f8b0:4864:20::e35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 935461BC
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 16:24:04 -0800 (PST)
-Received: by mail-vs1-xe35.google.com with SMTP id ada2fe7eead31-45d96a9eac8so1485420137.0
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 16:24:04 -0800 (PST)
+        Mon, 6 Nov 2023 19:25:16 -0500
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44FD410D;
+        Mon,  6 Nov 2023 16:25:14 -0800 (PST)
+Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1cc3388621cso47154485ad.1;
+        Mon, 06 Nov 2023 16:25:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1699316643; x=1699921443; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VpkgociZWtNmHNqup8fc4OP6m9kvy0WIbsUu3JqjrFo=;
-        b=GaVApw0hOud1Xw6db4glBTFJo8iBe1OqNQoGimb+Dtp+ClwWvIbxnPmHJakYWqO+nk
-         3LOPE8evloiG3m1Pd5se8xet9e5/WYduh1HWtdb2sFo8NMQdTVmqqsXWVeY0MwtqsQZi
-         gB3NNIn71w9awI2qYBu2Myc1kvU4uf1TI5DGSk7x6aASQCpqONOGkSpWiqpW/NFSs2IQ
-         usMwoNyRZMjfyhLcoW8a9IWrmKwglyEw+wwAMfQ6HTTvr6mIoZ3CEMf3JiUqWgFP7Sse
-         yZXJQLVIB87K6smWXXP7X5aKZQsVpqTJ0C413h8hgLX7qnkz2MGnj6u9e1+qzgH1phWZ
-         4Haw==
+        d=gmail.com; s=20230601; t=1699316714; x=1699921514; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=KvNevDILmrFumM2oQIUBMvMXYtsYvLzdrTujg9hVkHI=;
+        b=Zul2s9N2KkSupO/TwA8UHr+KHM7UiZM3IB+LVdsZRPKHAWdNbdyV1q8GVJe15D+0Br
+         /ikMyE0wcNDlnhrfmX25lUyLq4gyt5Ma5FzTMVz2XPO2yl7Eke7nJQWGxvvlpHQ0wpSe
+         vIhhzDTVrUb9z9zP40iyYM+xrhPZMZfRtfR4W8vRn4uG1SkqkRZS/Jh4Qay47PIG8xog
+         Khi16id+QOq0tgs9kCuW8YSVvHrUPyg8Y1VfWGWp7bVEWXOOOjneZaEt8kzEO96lTVvx
+         xXiszhidi4TZb0YvWV5Q6Sz/HD4DBYj+KzIlSWVRjHYoNW3Y3KnqQRVocsk/QUIhRwih
+         dusQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699316643; x=1699921443;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VpkgociZWtNmHNqup8fc4OP6m9kvy0WIbsUu3JqjrFo=;
-        b=FexO+nxz8Rf09to4BO2OypdWjFrDp5XHPiTmCJl6QhhNU9yrGV0Jd3PMJvAKkOGSxj
-         /eiu4m5bvzPbARE2t6lhF6y1tHwV7qviwNiYvravm61CxG60h/6vu8cPcQzyB5UY2wO2
-         ypzIboI7OsNiTnmfwa78BK9DDUMACaKXR+x9GXzx7yhVatzXKPrHVVqo1m4XbWDXFa5S
-         bzuEWZS/sQDm8OzkZ1DOTHvjre87zIj6c6L58hRqYj7RFN26mZBc7Y16gER/1+WvKthw
-         5wyNmegU+e4v7wtlhboTQNMbbjhJ68S9D5XmE1scYi6ib4cc0CaV6X1ByuETkQ3Bc2Pw
-         i5Tw==
-X-Gm-Message-State: AOJu0Yx+rto2uAgBoz/S+YwnNAap6iCWkCqaYGac57Jiq4Rc8Y+HCcbT
-        9w9JY76NtQ0D0NbEMzhde+DTvWZrkS2blmlmPnLHKQ==
-X-Google-Smtp-Source: AGHT+IETMKyQIhhyycP7VfpcyOAP+36Ndh1eORahNjRPB1IML5/P0pzLe4lyVRhYqpQBeNyazLdIIUZ8jHzBSAAkKuo=
-X-Received: by 2002:a05:6102:2049:b0:45f:642e:41c with SMTP id
- q9-20020a056102204900b0045f642e041cmr2136927vsr.13.1699316643304; Mon, 06 Nov
- 2023 16:24:03 -0800 (PST)
+        d=1e100.net; s=20230601; t=1699316714; x=1699921514;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KvNevDILmrFumM2oQIUBMvMXYtsYvLzdrTujg9hVkHI=;
+        b=IQJ6KTzEk03TNEHrYet6bDo62UWBqSksV7kwJIQpS1/wNU48BmtUdwMTkvXneqsnk8
+         /1TSWCKPoim3hF7dyfQqu5fY9tPuGrSuXhmkTZUu95jTEWKTubkQwlISCrZQUkl9ebsS
+         v9iNtDAugmGws3mKs9x+qk31AvwjohtxBLa3eCaWPO20HeHzQRGvwwKBJB9hDNF6qJ0M
+         +lN4/FS1zMC/QZCjWTTdNK3i6nElZiqU3808JQOGMwH7MORj7ISErTduc8ZJSbwIiQzE
+         8BN7d7RxEtYG4dqB44BTDm3QFjlipt0JdN8DK80LRwPGqpQwuBv1QlBrCwJhBZx8VcS3
+         JrRg==
+X-Gm-Message-State: AOJu0YyMSJp+Y7NWgcpAYwABaAaD7MvCnfzmDSVZ++oaf8IiiD3d3iHT
+        rKb5+PSYYG48galZc5oWqvG+jbx9+tk=
+X-Google-Smtp-Source: AGHT+IFpEJjW+6bQ6vlcdu8jbIyxxRW7ZMOKGK03NP4M1Mz4NcROaycZ11XDShYh+2rBgXl2g25WXw==
+X-Received: by 2002:a17:902:e551:b0:1cc:51ee:5faf with SMTP id n17-20020a170902e55100b001cc51ee5fafmr1650822plf.7.1699316713622;
+        Mon, 06 Nov 2023 16:25:13 -0800 (PST)
+Received: from debian.me ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id d7-20020a170902654700b001bb1f0605b2sm6573600pln.214.2023.11.06.16.25.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 Nov 2023 16:25:13 -0800 (PST)
+Received: by debian.me (Postfix, from userid 1000)
+        id 63C18817FA85; Tue,  7 Nov 2023 07:25:00 +0700 (WIB)
+Date:   Tue, 7 Nov 2023 07:24:58 +0700
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+To:     Hunter Chasens <hunter.chasens18@ncf.edu>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Cc:     Linux Documentation <linux-doc@vger.kernel.org>,
+        alexander.deucher@amd.com, christian.koenig@amd.com,
+        Xinhui.Pan@amd.com, airlied@gmail.com, daniel@ffwll.ch,
+        Linux AMDGPU <amd-gfx@lists.freedesktop.org>,
+        Linux DRI Development <dri-devel@lists.freedesktop.org>,
+        Lijo Lazar <lijo.lazar@amd.com>
+Subject: Re: [PATCH v2] drm: amd: Resolve Sphinx unexpected indentation
+ warning
+Message-ID: <ZUmD2u7qZS9XWRRz@debian.me>
+References: <20231106201739.29507-1-hunter.chasens18@ncf.edu>
 MIME-Version: 1.0
-References: <20231106024413.2801438-1-almasrymina@google.com>
- <20231106024413.2801438-10-almasrymina@google.com> <fa44c3d1-92b9-4686-ab3b-4fcda257aafd@kernel.org>
-In-Reply-To: <fa44c3d1-92b9-4686-ab3b-4fcda257aafd@kernel.org>
-From:   Mina Almasry <almasrymina@google.com>
-Date:   Mon, 6 Nov 2023 16:23:52 -0800
-Message-ID: <CAHS8izPW++mf1rq2XdezvXJpxhc6Ey1-_2nbpEymm5KThV18yw@mail.gmail.com>
-Subject: Re: [RFC PATCH v3 09/12] net: add support for skbs with unreadable frags
-To:     David Ahern <dsahern@kernel.org>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Jeroen de Borst <jeroendb@google.com>,
-        Praveen Kaligineedi <pkaligineedi@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Kaiyuan Zhang <kaiyuanz@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="/im2KQQsxOjeQDIO"
+Content-Disposition: inline
+In-Reply-To: <20231106201739.29507-1-hunter.chasens18@ncf.edu>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 6, 2023 at 4:16=E2=80=AFPM David Ahern <dsahern@kernel.org> wro=
-te:
->
-> On 11/5/23 7:44 PM, Mina Almasry wrote:
-> > diff --git a/net/core/datagram.c b/net/core/datagram.c
-> > index 176eb5834746..cdd4fb129968 100644
-> > --- a/net/core/datagram.c
-> > +++ b/net/core/datagram.c
-> > @@ -425,6 +425,9 @@ static int __skb_datagram_iter(const struct sk_buff=
- *skb, int offset,
-> >                       return 0;
-> >       }
-> >
-> > +     if (skb_frags_not_readable(skb))
-> > +             goto short_copy;
-> > +
-> >       /* Copy paged appendix. Hmm... why does this look so complicated?=
- */
-> >       for (i =3D 0; i < skb_shinfo(skb)->nr_frags; i++) {
-> >               int end;
-> > @@ -616,6 +619,9 @@ int __zerocopy_sg_from_iter(struct msghdr *msg, str=
-uct sock *sk,
-> >  {
-> >       int frag;
-> >
-> > +     if (skb_frags_not_readable(skb))
-> > +             return -EFAULT;
->
-> This check ....
-> > +
-> >       if (msg && msg->msg_ubuf && msg->sg_from_iter)
-> >               return msg->sg_from_iter(sk, skb, from, length);
->
->
-> ... should go here. That allows custome sg_from_iter to have access to
-> the skb. What matters is not expecting struct page (e.g., refcounting);
-> if the custom iter does not do that then all is well. io_uring's iter
-> does not look at the pages, so all good.
->
-> >
-> > diff --git a/net/core/gro.c b/net/core/gro.c
-> > index 42d7f6755f32..56046d65386a 100644
-> > --- a/net/core/gro.c
-> > +++ b/net/core/gro.c
-> > @@ -390,6 +390,9 @@ static void gro_pull_from_frag0(struct sk_buff *skb=
-, int grow)
-> >  {
-> >       struct skb_shared_info *pinfo =3D skb_shinfo(skb);
-> >
-> > +     if (WARN_ON_ONCE(skb_frags_not_readable(skb)))
-> > +             return;
-> > +
-> >       BUG_ON(skb->end - skb->tail < grow);
-> >
-> >       memcpy(skb_tail_pointer(skb), NAPI_GRO_CB(skb)->frag0, grow);
-> > @@ -411,7 +414,7 @@ static void gro_try_pull_from_frag0(struct sk_buff =
-*skb)
-> >  {
-> >       int grow =3D skb_gro_offset(skb) - skb_headlen(skb);
-> >
-> > -     if (grow > 0)
-> > +     if (grow > 0 && !skb_frags_not_readable(skb))
-> >               gro_pull_from_frag0(skb, grow);
-> >  }
-> >
-> > diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-> > index 13eca4fd25e1..f01673ed2eff 100644
-> > --- a/net/core/skbuff.c
-> > +++ b/net/core/skbuff.c
-> > @@ -1230,6 +1230,14 @@ void skb_dump(const char *level, const struct sk=
-_buff *skb, bool full_pkt)
-> >               struct page *p;
-> >               u8 *vaddr;
-> >
-> > +             if (skb_frag_is_page_pool_iov(frag)) {
->
-> Why skb_frag_is_page_pool_iov here vs skb_frags_not_readable?
 
-Seems like a silly choice on my end. I should probably check
-skb_frags_not_readable() and not kmap any frags in that case. Will do.
+--/im2KQQsxOjeQDIO
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Mon, Nov 06, 2023 at 03:17:39PM -0500, Hunter Chasens wrote:
+> diff --git a/drivers/gpu/drm/amd/pm/amdgpu_pm.c b/drivers/gpu/drm/amd/pm/=
+amdgpu_pm.c
+> index 517b9fb4624c..81b8ceb26890 100644
+> --- a/drivers/gpu/drm/amd/pm/amdgpu_pm.c
+> +++ b/drivers/gpu/drm/amd/pm/amdgpu_pm.c
+> @@ -989,12 +989,13 @@ static ssize_t amdgpu_get_pp_features(struct device=
+ *dev,
+>   * Reading back the files will show you the available power levels within
+>   * the power state and the clock information for those levels. If deep s=
+leep is
+>   * applied to a clock, the level will be denoted by a special level 'S:'
+> - * E.g.,
+> - *	S: 19Mhz *
+> - *	0: 615Mhz
+> - *	1: 800Mhz
+> - *	2: 888Mhz
+> - *	3: 1000Mhz
+> + * E.g.::
+> + *
+> + *  S: 19Mhz *
+> + *  0: 615Mhz
+> + *  1: 800Mhz
+> + *  2: 888Mhz
+> + *  3: 1000Mhz
+>   *
+>   *
+>   * To manually adjust these states, first select manual using
+
+LGTM, thanks!
+
+Reviewed-by: Bagas Sanjaya <bagasdotme@gmail.com>
 
 --=20
-Thanks,
-Mina
+An old man doll... just what I always wanted! - Clara
+
+--/im2KQQsxOjeQDIO
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZUmDrQAKCRD2uYlJVVFO
+o3+ZAQDfjlESW3+XuDhrOEojS9fqik7nCHXgYFOPvulyC48CzwEAmlHOs12KiwgZ
+BP9nE37zIUNmEkWjNU+PCfws51OmbgE=
+=JkyO
+-----END PGP SIGNATURE-----
+
+--/im2KQQsxOjeQDIO--
