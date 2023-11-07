@@ -2,189 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DFF07E3626
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 09:00:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BAED07E3625
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 09:00:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233680AbjKGIA2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 03:00:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43654 "EHLO
+        id S233642AbjKGIAE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 03:00:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233658AbjKGIA1 (ORCPT
+        with ESMTP id S229580AbjKGIAD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 03:00:27 -0500
-Received: from m1380.mail.163.com (m1380.mail.163.com [220.181.13.80])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 18B7011F;
-        Tue,  7 Nov 2023 00:00:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=Date:From:Subject:Content-Type:MIME-Version:
-        Message-ID; bh=HByXJJsOLd4AJra/H4KO/IT7Sn1NRLOvjFfe8DTdSSE=; b=B
-        vq85G9alh2bTopdOq7r2hsH7txhXcEdA6F8h1UknLaqOhSDPGhMmYp1/bdbfAoAy
-        0u9Tk/Ghnul7SrD/Vu27HhxCIzrBUuGvtWjzlH7tWKtn5ddvnWPKSMt8qJVSMxQf
-        4Vw6QmotTY4N/a7/Z2riFUrKxOk/J4rptErmsbScZM=
-Received: from be286$163.com ( [171.83.46.2] ) by ajax-webmail-wmsvr80
- (Coremail) ; Tue, 7 Nov 2023 15:59:43 +0800 (CST)
-X-Originating-IP: [171.83.46.2]
-Date:   Tue, 7 Nov 2023 15:59:43 +0800 (CST)
-From:   be286 <be286@163.com>
-To:     "Rahul Rameshbabu" <sergeantsagara@protonmail.com>
-Cc:     jikos@kernel.org, benjamin.tissoires@redhat.com,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re:Re: [PATCH v2] HID: fix a crash in hid_debug_events_release
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.14 build 20230109(dcb5de15)
- Copyright (c) 2002-2023 www.mailtech.cn 163com
-In-Reply-To: <87ttpzzdpm.fsf@protonmail.com>
-References: <20231031043239.157943-1-be286@163.com>
- <87ttpzzdpm.fsf@protonmail.com>
-X-NTES-SC: AL_QuySC/+fvEEj5SKeZekWnkwahec9XsK3vPQi349TN5k0hyr/5ScJQkBCN3/o4MGUES+Ajye6SRRe8cF1ZLd9U4ESs5wxnTTTli1NUkurYfIe
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=GBK
+        Tue, 7 Nov 2023 03:00:03 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 254A3E8;
+        Tue,  7 Nov 2023 00:00:00 -0800 (PST)
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A76eXJH018774;
+        Tue, 7 Nov 2023 07:59:54 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=NDucsj2q75e98JcNIa4TZAP69g3rwEi7mKSn4CFEMBU=;
+ b=Us2e+i2PXGtk2wpqideV659ZhYUno2778ZsxkuKHVYOAK/tObf2iOf7lWgwc/vo31tSa
+ jsL45xPwV4J621+Z/ObpKwtfgo8WcddDe2JA7ptHZfTD9HG04KscovN+rsVQdZ5Nvt9Q
+ POn9rGKTxC3GXbFTFcZQTH5NBeX5V6RgfzkCs7yOGginv/MCOwoGHbzSDjqSpdEHsk7J
+ I2ggwTlF1bJxCexj2e/77rN7Z8/FF3H2gRZxDq2Q/gKxW18UTy/nWL7BO1/sgcmd9rCz
+ MCJji/nHjVW8bnpqsa4p0ck+3o7zZ9f1eNzvhvZ8V/QlsQysg+Tfhma/gLxjHkaMMWEc 0A== 
+Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u6wer2vqs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 07 Nov 2023 07:59:54 +0000
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+        by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3A77xrj1014858
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 7 Nov 2023 07:59:53 GMT
+Received: from [10.253.15.27] (10.80.80.8) by nasanex01b.na.qualcomm.com
+ (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Mon, 6 Nov
+ 2023 23:59:51 -0800
+Message-ID: <00305327-d866-4da4-916c-fb414398bc3a@quicinc.com>
+Date:   Tue, 7 Nov 2023 15:59:49 +0800
 MIME-Version: 1.0
-Message-ID: <4dcce25f.452e.18ba8cb629e.Coremail.be286@163.com>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: UMGowADnz1xv7kllDGUZAA--.1309W
-X-CM-SenderInfo: dehsmli6rwjhhfrp/1tbiPg4g0lxBunNB5AADsw
-X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/2] bus: mhi: host: Add spinlock to protect WP access
+ when queueing TREs
+Content-Language: en-US
+To:     Manivannan Sadhasivam <mani@kernel.org>,
+        Jeffrey Hugo <quic_jhugo@quicinc.com>
+CC:     <mhi@lists.linux.dev>, <linux-arm-msm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <quic_cang@quicinc.com>,
+        <quic_mrana@quicinc.com>
+References: <1694594861-12691-1-git-send-email-quic_qianyu@quicinc.com>
+ <1694594861-12691-2-git-send-email-quic_qianyu@quicinc.com>
+ <af4fc816-d75b-997d-6d37-a774f5eb96ae@quicinc.com>
+ <dfeb6071-8ae4-38ba-5273-59478ea8e178@quicinc.com>
+ <c30c9c68-bfe1-0cc5-c511-218f7d1da92d@quicinc.com>
+ <15526b95-518c-445a-be64-6a15259405fb@quicinc.com>
+ <472817a7-78bb-25d9-b8c6-2d70f713b7fb@quicinc.com>
+ <20231106045119.GB2474@thinkpad>
+From:   Qiang Yu <quic_qianyu@quicinc.com>
+In-Reply-To: <20231106045119.GB2474@thinkpad>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: owIEIQkDwFhbK7exT3Kb00mP_xfOVM9N
+X-Proofpoint-GUID: owIEIQkDwFhbK7exT3Kb00mP_xfOVM9N
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-06_15,2023-11-02_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 malwarescore=0
+ spamscore=0 lowpriorityscore=0 clxscore=1015 impostorscore=0 phishscore=0
+ mlxscore=0 priorityscore=1501 adultscore=0 mlxlogscore=999 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2310240000
+ definitions=main-2311070065
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgUmFodWwsCgpUaGFuayB5b3UgZm9yIHlvdXIgcmVwbHkuIEl0IGhhcyBiZWVuIHZlcnkgaGVs
-cGZ1bCB0byBtZSBhbmQgSSBhY2NlcHQgaXQuCgpXaXRoIHJlZ2FyZHMsCgpDaGFybGVzIFlpCgoK
-CgpBdCAyMDIzLTExLTA2IDEyOjUxOjM4LCAiUmFodWwgUmFtZXNoYmFidSIgPHNlcmdlYW50c2Fn
-YXJhQHByb3Rvbm1haWwuY29tPiB3cm90ZToKPkxldHMgY2xlYW4gdXAgdGhlIHN1YmplY3QvY29t
-bWl0IG1lc3NhZ2UgaGVhZGluZy4KPgo+ICBISUQ6IGZpeCBISUQgZGV2aWNlIHJlc291cmNlIHJh
-Y2UgYmV0d2VlbiBISUQgY29yZSBhbmQgZGVidWdnaW5nIHN1cHBvcnQKPgo+SW4gdGhlIGNvbW1p
-dCBtZXNzYWdlIGJvZHksIHdlIGNhbiBleHBhbmQgb24gdGhlIGRldGFpbHMgYSBiaXQgbW9yZS4K
-Pgo+T24gVHVlLCAzMSBPY3QsIDIwMjMgMTI6MzI6MzkgKzA4MDAgIkNoYXJsZXMgWWkiIDxiZTI4
-NkAxNjMuY29tPiB3cm90ZToKPj4gaGlkX2RlYnVnX2V2ZW50c19yZWxlYXNlKCkgYWNjZXNzIHJl
-bGVhc2VkIG1lbW9yeSBieQo+PiBoaWRfZGV2aWNlX3JlbGVhc2UoKS4gVGhpcyBpcyBmaXhlZCBi
-eSB0aGUgcGF0Y2guCj4+Cj4+IFdoZW4gaGlkX2RlYnVnX2V2ZW50c19yZWxlYXNlKCkgd2FzIGJl
-aW5nIGNhbGxlZCwgaW4gbW9zdCBjYXNlLAo+PiBoaWRfZGV2aWNlX3JlbGVhc2UoKSBmaW5pc2gg
-YWxyZWFkeSwgdGhlIG1lbW9yeSBvZiBsaXN0LT5oZGV2Cj4+IGZyZWVkIGJ5IGhpZF9kZXZpY2Vf
-cmVsZWFzZSgpLCBpZiBsaXN0LT5oZGV2IG1lbW9yeQo+PiByZWFsbG9jYXRlIGJ5IG90aGVycywg
-YW5kIGl0J3MgbW9kaWZpZWQsIHplcm9lZCwgdGhlbgo+PiBsaXN0LT5oZGV2LT5kZWJ1Z19saXN0
-X2xvY2sgb2NjYXNpb25lZCBjcmFzaCBjb21lIG91dC4KPgo+TGV0cyBjbGVhbiB1cCB0aGVzZSBw
-YXJhZ3JhcGhzIGEgYml0Lgo+Cj4gIGhpZF9kZWJ1Z19ldmVudHNfcmVsZWFzZSByZWxlYXNlcyBy
-ZXNvdXJjZXMgYm91bmQgdG8gdGhlIEhJRCBkZXZpY2UKPiAgaW5zdGFuY2UuIGhpZF9kZXZpY2Vf
-cmVsZWFzZSByZWxlYXNlcyB0aGUgdW5kZXJseWluZyBISUQgZGV2aWNlCj4gIGluc3RhbmNlIHBv
-dGVudGlhbGx5IGJlZm9yZSBoaWRfZGVidWdfZXZlbnRzX3JlbGVhc2UgaGFzIGNvbXBsZXRlZAo+
-ICByZWxlYXNpbmcgZGVidWcgcmVzb3VyY2VzIGJvdW5kIHRvIHRoZSBzYW1lIEhJRCBkZXZpY2Ug
-aW5zdGFuY2UuCj4KPiAgUmVmZXJlbmNlIGNvdW50IHRvIHByZXZlbnQgdGhlIEhJRCBkZXZpY2Ug
-aW5zdGFuY2UgZnJvbSBiZWluZyB0b3JuCj4gIGRvd24gcHJlZW1wdGl2ZWx5IHdoZW4gSElEIGRl
-YnVnZ2luZyBzdXBwb3J0IGlzIHVzZWQuIFdoZW4gY291bnQKPiAgcmVhY2hlcyB6ZXJvLCByZWxl
-YXNlIGNvcmUgcmVzb3VyY2VzIG9mIEhJRCBkZXZpY2UgaW5zdGFuY2UgdXNpbmcKPiAgaGlkZGV2
-X2ZyZWUuCj4KPkZlZWwgZnJlZSB0byB1c2UgdGhlIGFib3ZlIGlmIHlvdSB0aGluayBpdHMgbmlj
-ZSBvciBmZWVsIGZyZWUgdG8gcG9saXNoCj51cCB0aGUgY29tbWl0IG1lc3NhZ2UgYm9keSB5b3Ug
-b3JpZ2luYWxseSBoYWQgYSBiaXQgbW9yZS4KPgo+Pgo+PiBUaGUgY3Jhc2g6Cj4+Cj4+IFsgIDEy
-MC43Mjg0NzddWyBUNDM5Nl0ga2VybmVsIEJVRyBhdCBsaWIvbGlzdF9kZWJ1Zy5jOjUzIQo+PiBb
-ICAxMjAuNzI4NTA1XVsgVDQzOTZdIEludGVybmFsIGVycm9yOiBPb3BzIC0gQlVHOiAwIFsjMV0g
-UFJFRU1QVCBTTVAKPj4gWyAgMTIwLjczOTgwNl1bIFQ0Mzk2XSBNb2R1bGVzIGxpbmtlZCBpbjog
-YmNtZGhkIGRoZF9zdGF0aWNfYnVmIDg4MjJjdSBwY2llX21oaSByODE2OAo+PiBbICAxMjAuNzQ3
-Mzg2XVsgVDQzOTZdIENQVTogMSBQSUQ6IDQzOTYgQ29tbTogaGlkdF9icmlkZ2UgTm90IHRhaW50
-ZWQgNS4xMC4xMTAgIzI1Nwo+PiBbICAxMjAuNzU0NzcxXVsgVDQzOTZdIEhhcmR3YXJlIG5hbWU6
-IFJvY2tjaGlwIFJLMzU4OCBFVkI0IExQNCBWMTAgQm9hcmQgKERUKQo+PiBbICAxMjAuNzYxNjQz
-XVsgVDQzOTZdIHBzdGF0ZTogNjA0MDAwODkgKG5aQ3YgZGFJZiArUEFOIC1VQU8gLVRDTyBCVFlQ
-RT0tLSkKPj4gWyAgMTIwLjc2ODMzOF1bIFQ0Mzk2XSBwYyA6IF9fbGlzdF9kZWxfZW50cnlfdmFs
-aWQrMHg5OC8weGFjCj4+IFsgIDEyMC43NzM3MzBdWyBUNDM5Nl0gbHIgOiBfX2xpc3RfZGVsX2Vu
-dHJ5X3ZhbGlkKzB4OTgvMHhhYwo+PiBbICAxMjAuNzc5MTIwXVsgVDQzOTZdIHNwIDogZmZmZmZm
-YzAxZTYyYmI2MAo+PiBbICAxMjAuNzgzMTI2XVsgVDQzOTZdIHgyOTogZmZmZmZmYzAxZTYyYmI2
-MCB4Mjg6IGZmZmZmZjgxOGNlM2EyMDAKPj4gWyAgMTIwLjc4OTEyNl1bIFQ0Mzk2XSB4Mjc6IDAw
-MDAwMDAwMDAwMDAwMDkgeDI2OiAwMDAwMDAwMDAwOTgwMDAwCj4+IFsgIDEyMC43OTUxMjZdWyBU
-NDM5Nl0geDI1OiBmZmZmZmZjMDEyNDMxMDAwIHgyNDogZmZmZmZmODAyYzZkNGUwMAo+PiBbICAx
-MjAuODAxMTI1XVsgVDQzOTZdIHgyMzogZmZmZmZmODAwNWM2NmYwMCB4MjI6IGZmZmZmZmMwMTE4
-M2I1YjgKPj4gWyAgMTIwLjgwNzEyNV1bIFQ0Mzk2XSB4MjE6IGZmZmZmZjgxOWRmMmYxMDAgeDIw
-OiAwMDAwMDAwMDAwMDAwMDAwCj4+IFsgIDEyMC44MTMxMjRdWyBUNDM5Nl0geDE5OiBmZmZmZmY4
-MDJjM2YwNzAwIHgxODogZmZmZmZmYzAxZDJjZDA1OAo+PiBbICAxMjAuODE5MTI0XVsgVDQzOTZd
-IHgxNzogMDAwMDAwMDAwMDAwMDAwMCB4MTY6IDAwMDAwMDAwMDAwMDAwMDAKPj4gWyAgMTIwLjgy
-NTEyNF1bIFQ0Mzk2XSB4MTU6IDAwMDAwMDAwMDAwMDAwMDQgeDE0OiAwMDAwMDAwMDAwMDAzZmZm
-Cj4+IFsgIDEyMC44MzExMjNdWyBUNDM5Nl0geDEzOiBmZmZmZmZjMDEyMDg1NTg4IHgxMjogMDAw
-MDAwMDAwMDAwMDAwMwo+PiBbICAxMjAuODM3MTIzXVsgVDQzOTZdIHgxMTogMDAwMDAwMDBmZmZm
-YmZmZiB4MTA6IDAwMDAwMDAwMDAwMDAwMDMKPj4gWyAgMTIwLjg0MzEyM11bIFQ0Mzk2XSB4OSA6
-IDQ1NTEwM2Q0NmIzMjkzMDAgeDggOiA0NTUxMDNkNDZiMzI5MzAwCj4+IFsgIDEyMC44NDkxMjRd
-WyBUNDM5Nl0geDcgOiA3NDcwNzU3MjcyNmY2MzIwIHg2IDogZmZmZmZmYzAxMjRiOGNiNQo+PiBb
-ICAxMjAuODU1MTI0XVsgVDQzOTZdIHg1IDogZmZmZmZmZmZmZmZmZmZmZiB4NCA6IDAwMDAwMDAw
-MDAwMDAwMDAKPj4gWyAgMTIwLjg2MTEyM11bIFQ0Mzk2XSB4MyA6IGZmZmZmZmMwMTFjZjRmOTAg
-eDIgOiBmZmZmZmY4MWZlZTdiOTQ4Cj4+IFsgIDEyMC44NjcxMjJdWyBUNDM5Nl0geDEgOiBmZmZm
-ZmZjMDExY2Y0ZjkwIHgwIDogMDAwMDAwMDAwMDAwMDA1NAo+PiBbICAxMjAuODczMTIyXVsgVDQz
-OTZdIENhbGwgdHJhY2U6Cj4+IFsgIDEyMC44NzYyNTldWyBUNDM5Nl0gIF9fbGlzdF9kZWxfZW50
-cnlfdmFsaWQrMHg5OC8weGFjCj4+IFsgIDEyMC44ODEzMDRdWyBUNDM5Nl0gIGhpZF9kZWJ1Z19l
-dmVudHNfcmVsZWFzZSsweDQ4LzB4MTJjCj4+IFsgIDEyMC44ODY2MTddWyBUNDM5Nl0gIGZ1bGxf
-cHJveHlfcmVsZWFzZSsweDUwLzB4YmMKPj4gWyAgMTIwLjg5MTMyM11bIFQ0Mzk2XSAgX19mcHV0
-KzB4ZGMvMHgyMzgKPj4gWyAgMTIwLjg5NTA3NV1bIFQ0Mzk2XSAgX19fX2ZwdXQrMHgxNC8weDI0
-Cj4+IFsgIDEyMC44OTg5MTFdWyBUNDM5Nl0gIHRhc2tfd29ya19ydW4rMHg5MC8weDE0OAo+PiBb
-ICAxMjAuOTAzMjY4XVsgVDQzOTZdICBkb19leGl0KzB4MWJjLzB4OGE0Cj4+IFsgIDEyMC45MDcx
-OTNdWyBUNDM5Nl0gIGRvX2dyb3VwX2V4aXQrMHg4Yy8weGE0Cj4+IFsgIDEyMC45MTE0NThdWyBU
-NDM5Nl0gIGdldF9zaWduYWwrMHg0NjgvMHg3NDQKPj4gWyAgMTIwLjkxNTY0M11bIFQ0Mzk2XSAg
-ZG9fc2lnbmFsKzB4ODQvMHgyODAKPj4gWyAgMTIwLjkxOTY1MF1bIFQ0Mzk2XSAgZG9fbm90aWZ5
-X3Jlc3VtZSsweGQwLzB4MjE4Cj4+IFsgIDEyMC45MjQyNjJdWyBUNDM5Nl0gIHdvcmtfcGVuZGlu
-ZysweGMvMHgzZjAKPj4KPj4gRml4ZXM6IDxjZDY2N2NlMjQ3OTY+IChISUQ6IHVzZSBkZWJ1Z2Zz
-IGZvciBldmVudHMvcmVwb3J0cyBkdW1waW5nKQo+Cj5UaGUgZm9ybWF0dGluZyBvZiB0aGUgRml4
-ZXM6IHRhZyB3b3VsZCBsb29rIGxpa2UgdGhlIGZvbGxvd2luZy4KPgo+ICBGaXhlczogY2Q2Njdj
-ZTI0Nzk2ICgiSElEOiB1c2UgZGVidWdmcyBmb3IgZXZlbnRzL3JlcG9ydHMgZHVtcGluZyIpCj4K
-PllvdSBjYW4gYWxzbyBlbGltaW5hdGUgdGhlIHdoaXRlc3BhY2UgYmV0d2VlbiB5b3VyIGdpdCB0
-cmFpbGVycywgc28gdGhlCj5lbmQgcmVzdWx0IGxvb2tzIGxpa2UgdGhlIGZvbGxvd2luZyAobWlu
-dXMgdGhlIGluZGVudGF0aW9uKS4KPgo+ICBGaXhlczogY2Q2NjdjZTI0Nzk2ICgiSElEOiB1c2Ug
-ZGVidWdmcyBmb3IgZXZlbnRzL3JlcG9ydHMgZHVtcGluZyIpCj4gIFNpZ25lZC1vZmYtYnk6IENo
-YXJsZXMgWWkgPGJlMjg2QDE2My5jb20+Cj4KPj4KPj4gU2lnbmVkLW9mZi1ieTogQ2hhcmxlcyBZ
-aSA8YmUyODZAMTYzLmNvbT4KPj4KPj4gLS0tCj4+IENoYW5nZXMgaW4gVjI6Cj4+IC0gQWRkICJG
-aXhlczoiIHRhZyBhbmQgY2FsbCB0cmFjZSB0byBjb21taXQgbWVzc2FnZS4KPj4gLS0tCj4+ICBk
-cml2ZXJzL2hpZC9oaWQtY29yZS5jICB8IDEyICsrKysrKysrKystLQo+PiAgZHJpdmVycy9oaWQv
-aGlkLWRlYnVnLmMgfCAgMyArKysKPj4gIGluY2x1ZGUvbGludXgvaGlkLmggICAgIHwgIDMgKysr
-Cj4+ICAzIGZpbGVzIGNoYW5nZWQsIDE2IGluc2VydGlvbnMoKyksIDIgZGVsZXRpb25zKC0pCj4+
-Cj4+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2hpZC9oaWQtY29yZS5jIGIvZHJpdmVycy9oaWQvaGlk
-LWNvcmUuYwo+PiBpbmRleCA4OTkyZTNjMWU3NjkuLmUwMTgxMjE4YWQ4NSAxMDA2NDQKPj4gLS0t
-IGEvZHJpdmVycy9oaWQvaGlkLWNvcmUuYwo+PiArKysgYi9kcml2ZXJzL2hpZC9oaWQtY29yZS5j
-Cj4+IEBAIC03MDIsMTUgKzcwMiwyMiBAQCBzdGF0aWMgdm9pZCBoaWRfY2xvc2VfcmVwb3J0KHN0
-cnVjdCBoaWRfZGV2aWNlICpkZXZpY2UpCj4+ICAgKiBGcmVlIGEgZGV2aWNlIHN0cnVjdHVyZSwg
-YWxsIHJlcG9ydHMsIGFuZCBhbGwgZmllbGRzLgo+PiAgICovCj4+Cj4+IC1zdGF0aWMgdm9pZCBo
-aWRfZGV2aWNlX3JlbGVhc2Uoc3RydWN0IGRldmljZSAqZGV2KQo+PiArdm9pZCBoaWRkZXZfZnJl
-ZShzdHJ1Y3Qga3JlZiAqcmVmKQo+Cj5MZXRzIGNhbGwgdGhpcyBoaWRfaGlkZGV2X2ZyZWUuIFRv
-b2sgYSBsb29rIHRocm91Z2ggaGlkLWNvcmUuYywgYW5kIEkKPnRoaW5rIHRoaXMgd291bGQgYmUg
-YmV0dGVyIHRoYW4gY2FsbGluZyBpdCBqdXN0IGhpZGRldl9mcmVlLgo+Cj4+ICB7Cj4+IC0Jc3Ry
-dWN0IGhpZF9kZXZpY2UgKmhpZCA9IHRvX2hpZF9kZXZpY2UoZGV2KTsKPj4gKwlzdHJ1Y3QgaGlk
-X2RldmljZSAqaGlkID0gY29udGFpbmVyX29mKHJlZiwgc3RydWN0IGhpZF9kZXZpY2UsIHJlZik7
-Cj4+Cj4+ICAJaGlkX2Nsb3NlX3JlcG9ydChoaWQpOwo+PiAgCWtmcmVlKGhpZC0+ZGV2X3JkZXNj
-KTsKPj4gIAlrZnJlZShoaWQpOwo+PiAgfQo+Pgo+PiArc3RhdGljIHZvaWQgaGlkX2RldmljZV9y
-ZWxlYXNlKHN0cnVjdCBkZXZpY2UgKmRldikKPj4gK3sKPj4gKwlzdHJ1Y3QgaGlkX2RldmljZSAq
-aGlkID0gdG9faGlkX2RldmljZShkZXYpOwo+PiArCj4+ICsJa3JlZl9wdXQoJmhpZC0+cmVmLCBo
-aWRkZXZfZnJlZSk7Cj4+ICt9Cj4+ICsKPj4gIC8qCj4+ICAgKiBGZXRjaCBhIHJlcG9ydCBkZXNj
-cmlwdGlvbiBpdGVtIGZyb20gdGhlIGRhdGEgc3RyZWFtLiBXZSBzdXBwb3J0IGxvbmcKPj4gICAq
-IGl0ZW1zLCB0aG91Z2ggdGhleSBhcmUgbm90IHVzZWQgeWV0Lgo+PiBAQCAtMjg0Niw2ICsyODUz
-LDcgQEAgc3RydWN0IGhpZF9kZXZpY2UgKmhpZF9hbGxvY2F0ZV9kZXZpY2Uodm9pZCkKPj4gIAlz
-cGluX2xvY2tfaW5pdCgmaGRldi0+ZGVidWdfbGlzdF9sb2NrKTsKPj4gIAlzZW1hX2luaXQoJmhk
-ZXYtPmRyaXZlcl9pbnB1dF9sb2NrLCAxKTsKPj4gIAltdXRleF9pbml0KCZoZGV2LT5sbF9vcGVu
-X2xvY2spOwo+PiArCWtyZWZfaW5pdCgmaGRldi0+cmVmKTsKPj4KPj4gIAloaWRfYnBmX2Rldmlj
-ZV9pbml0KGhkZXYpOwo+Pgo+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9oaWQvaGlkLWRlYnVnLmMg
-Yi9kcml2ZXJzL2hpZC9oaWQtZGVidWcuYwo+PiBpbmRleCBlN2VmMWVhMTA3YzkuLjdkZDgzZWM3
-NGY4YSAxMDA2NDQKPj4gLS0tIGEvZHJpdmVycy9oaWQvaGlkLWRlYnVnLmMKPj4gKysrIGIvZHJp
-dmVycy9oaWQvaGlkLWRlYnVnLmMKPj4gQEAgLTExMzUsNiArMTEzNSw3IEBAIHN0YXRpYyBpbnQg
-aGlkX2RlYnVnX2V2ZW50c19vcGVuKHN0cnVjdCBpbm9kZSAqaW5vZGUsIHN0cnVjdCBmaWxlICpm
-aWxlKQo+PiAgCQlnb3RvIG91dDsKPj4gIAl9Cj4+ICAJbGlzdC0+aGRldiA9IChzdHJ1Y3QgaGlk
-X2RldmljZSAqKSBpbm9kZS0+aV9wcml2YXRlOwo+PiArCWtyZWZfZ2V0KCZsaXN0LT5oZGV2LT5y
-ZWYpOwo+PiAgCWZpbGUtPnByaXZhdGVfZGF0YSA9IGxpc3Q7Cj4+ICAJbXV0ZXhfaW5pdCgmbGlz
-dC0+cmVhZF9tdXRleCk7Cj4+Cj4+IEBAIC0xMjI3LDYgKzEyMjgsOCBAQCBzdGF0aWMgaW50IGhp
-ZF9kZWJ1Z19ldmVudHNfcmVsZWFzZShzdHJ1Y3QgaW5vZGUgKmlub2RlLCBzdHJ1Y3QgZmlsZSAq
-ZmlsZSkKPj4gIAlsaXN0X2RlbCgmbGlzdC0+bm9kZSk7Cj4+ICAJc3Bpbl91bmxvY2tfaXJxcmVz
-dG9yZSgmbGlzdC0+aGRldi0+ZGVidWdfbGlzdF9sb2NrLCBmbGFncyk7Cj4+ICAJa2ZpZm9fZnJl
-ZSgmbGlzdC0+aGlkX2RlYnVnX2ZpZm8pOwo+PiArCj4+ICsJa3JlZl9wdXQoJmxpc3QtPmhkZXYt
-PnJlZiwgaGlkZGV2X2ZyZWUpOwo+PiAgCWtmcmVlKGxpc3QpOwo+Pgo+PiAgCXJldHVybiAwOwo+
-PiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS9saW51eC9oaWQuaCBiL2luY2x1ZGUvbGludXgvaGlkLmgK
-Pj4gaW5kZXggOTY0Y2ExZjE1ZTNmLi4zYjA4YTI5NTcyMjkgMTAwNjQ0Cj4+IC0tLSBhL2luY2x1
-ZGUvbGludXgvaGlkLmgKPj4gKysrIGIvaW5jbHVkZS9saW51eC9oaWQuaAo+PiBAQCAtNjc5LDYg
-KzY3OSw3IEBAIHN0cnVjdCBoaWRfZGV2aWNlIHsJCQkJCQkJLyogZGV2aWNlIHJlcG9ydCBkZXNj
-cmlwdG9yICovCj4+ICAJc3RydWN0IGxpc3RfaGVhZCBkZWJ1Z19saXN0Owo+PiAgCXNwaW5sb2Nr
-X3QgIGRlYnVnX2xpc3RfbG9jazsKPj4gIAl3YWl0X3F1ZXVlX2hlYWRfdCBkZWJ1Z193YWl0Owo+
-PiArCXN0cnVjdCBrcmVmCQkJcmVmOwo+Pgo+PiAgCXVuc2lnbmVkIGludCBpZDsJCQkJCQkvKiBz
-eXN0ZW0gdW5pcXVlIGlkICovCj4+Cj4+IEBAIC02ODcsNiArNjg4LDggQEAgc3RydWN0IGhpZF9k
-ZXZpY2UgewkJCQkJCQkvKiBkZXZpY2UgcmVwb3J0IGRlc2NyaXB0b3IgKi8KPj4gICNlbmRpZiAv
-KiBDT05GSUdfQlBGICovCj4+ICB9Owo+Pgo+PiArdm9pZCBoaWRkZXZfZnJlZShzdHJ1Y3Qga3Jl
-ZiAqcmVmKTsKPj4gKwo+PiAgI2RlZmluZSB0b19oaWRfZGV2aWNlKHBkZXYpIFwKPj4gIAljb250
-YWluZXJfb2YocGRldiwgc3RydWN0IGhpZF9kZXZpY2UsIGRldikKPgo+LS0KPlRoYW5rcyBmb3Ig
-dGhlIHBhdGNoLAo+Cj5SYWh1bCBSYW1lc2hiYWJ1Cg==
+
+On 11/6/2023 12:51 PM, Manivannan Sadhasivam wrote:
+> On Fri, Oct 20, 2023 at 09:07:35AM -0600, Jeffrey Hugo wrote:
+>> On 10/16/2023 2:46 AM, Qiang Yu wrote:
+>>> On 9/29/2023 11:22 PM, Jeffrey Hugo wrote:
+>>>> On 9/24/2023 9:10 PM, Qiang Yu wrote:
+>>>>> On 9/22/2023 10:44 PM, Jeffrey Hugo wrote:
+>>>>>> On 9/13/2023 2:47 AM, Qiang Yu wrote:
+>>>>>>> From: Bhaumik Bhatt <bbhatt@codeaurora.org>
+>>>>>>>
+>>>>>>> Protect WP accesses such that multiple threads queueing buffers for
+>>>>>>> incoming data do not race and access the same WP twice.
+>>>>>>> Ensure read and
+>>>>>>> write locks for the channel are not taken in succession
+>>>>>>> by dropping the
+>>>>>>> read lock from parse_xfer_event() such that a callback given to client
+>>>>>>> can potentially queue buffers and acquire the write lock
+>>>>>>> in that process.
+>>>>>>> Any queueing of buffers should be done without channel
+>>>>>>> read lock acquired
+>>>>>>> as it can result in multiple locks and a soft lockup.
+>>>>>>>
+>>>>>>> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+>>>>>>> Signed-off-by: Qiang Yu <quic_qianyu@quicinc.com>
+>>>>>>> ---
+>>>>>>>    drivers/bus/mhi/host/main.c | 11 ++++++++++-
+>>>>>>>    1 file changed, 10 insertions(+), 1 deletion(-)
+>>>>>>>
+>>>>>>> diff --git a/drivers/bus/mhi/host/main.c b/drivers/bus/mhi/host/main.c
+>>>>>>> index dcf627b..13c4b89 100644
+>>>>>>> --- a/drivers/bus/mhi/host/main.c
+>>>>>>> +++ b/drivers/bus/mhi/host/main.c
+>>>>>>> @@ -642,6 +642,7 @@ static int parse_xfer_event(struct
+>>>>>>> mhi_controller *mhi_cntrl,
+>>>>>>>                mhi_del_ring_element(mhi_cntrl, tre_ring);
+>>>>>>>                local_rp = tre_ring->rp;
+>>>>>>>    +            read_unlock_bh(&mhi_chan->lock);
+>>>>>> This doesn't work due to the
+>>>>>> write_lock_irqsave(&mhi_chan->lock, flags); on line 591.
+>>>>> Write_lock_irqsave(&mhi_chan->lock, flags) is used in case of
+>>>>> ev_code >= MHI_EV_CC_OOB. We only read_lock/read_unlock the
+>>>>> mhi_chan while ev_code < MHI_EV_CC_OOB.
+>>>> Sorry.  OOB != EOB
+>>>>
+>>>>>> I really don't like that we are unlocking the mhi_chan while
+>>>>>> still using it.  It opens up a window where the mhi_chan
+>>>>>> state can be updated between here and the client using the
+>>>>>> callback to queue a buf.
+>>>>>>
+>>>>>> Perhaps we need a new lock that just protects the wp, and
+>>>>>> needs to be only grabbed while mhi_chan->lock is held?
+>>>>> Since we have employed mhi_chan lock to protect the channel and
+>>>>> what we are concerned here is that client may queue buf to a
+>>>>> disabled or stopped channel, can we check channel state after
+>>>>> getting mhi_chan->lock like line 595.
+>>>>>
+>>>>> We can add the check after getting write lock in mhi_gen_tre()
+>>>>> and after getting read lock again here.
+>>>> I'm not sure that is sufficient.  After you unlock to notify the
+>>>> client, MHI is going to manipulate the packet count and runtime_pm
+>>>> without the lock (648-652).  It seems like that adds additional
+>>>> races which won't be covered by the additional check you propose.
+>>> I don't think read_lock_bh(&mhi_chan->lock) can protect runtime_pm and
+>>> the packet count here. Even if we do not unlock, mhi state and packet
+>>> count can still be changed because we did not get pm_lock here, which is
+>>> used in all mhi state transition function.
+>>>
+>>> I also checked all places that mhi_chan->lock is grabbed, did not see
+>>> packet count and runtime_pm be protected by write_lock(&mhi_chan->lock).
+>>>
+>>>
+>>> If you really don't like the unlock operation, we can also take a new
+>>> lock. But I think we only need to add the new lock in two places,
+>>> mhi_gen_tre and mhi_pm_m0_transition while mhi_chan->lock is held.
+>> Mani, if I recall correctly, you were the architect of the locking.  Do you
+>> have an opinion?
+>>
+> TBH, the locking situation is a mess with MHI. Initially, we happen to have
+> separate locks for protecting various operations, but then during review, it was
+> advised to reuse existing locks and avoid having too many separate locks.
+>
+> This worked well but then we kind of abused the locks over time. I asked Hemant
+> and Bhaumik to audit the locks and fix them, but both of them left Qcom.
+>
+> So in this situation, the intent of the pm_lock was to protect concurrent access
+> against updating the pm_state. And it also happen to protect _other_things_ such
+> as runtime_put, pending_pkts etc... But not properly, because most of the time
+> read lock is taken in places where pm_state is being read. So there is still a
+> possibility of race while accessing these _other_things_.
+>
+> For this patch, I'm happy with dropping chan->lock before calling xfer_cb() and
+> I want someone (maybe Qiang) to do the audit of locking in general and come up
+> with fixes where needed.
+>
+> - Mani
+
+As discussed with Jeff before, we also need to check channel state 
+before queue buffer and after re-lock
+
+in parse_xfer_event, so I also add the channel state check in next 
+version patch.
+
+Probably I can do the audit of locking. It's a good chance for me to 
+understand various locks in MHI host
+
+driver completely.
+
