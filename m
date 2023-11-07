@@ -2,77 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2090C7E34B4
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 05:52:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D48267E34B7
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 05:52:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233455AbjKGEw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 23:52:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48502 "EHLO
+        id S233518AbjKGEw3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 23:52:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233287AbjKGEwY (ORCPT
+        with ESMTP id S233370AbjKGEwZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 23:52:24 -0500
-Received: from mail-ot1-f72.google.com (mail-ot1-f72.google.com [209.85.210.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80707110
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 20:52:21 -0800 (PST)
-Received: by mail-ot1-f72.google.com with SMTP id 46e09a7af769-6cf61d80fafso7681336a34.1
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 20:52:21 -0800 (PST)
+        Mon, 6 Nov 2023 23:52:25 -0500
+Received: from mail-oi1-f198.google.com (mail-oi1-f198.google.com [209.85.167.198])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A990114
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 20:52:23 -0800 (PST)
+Received: by mail-oi1-f198.google.com with SMTP id 5614622812f47-3b565d23148so8068328b6e.3
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 20:52:23 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1699332741; x=1699937541;
         h=to:from:subject:message-id:date:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=t/J6gmDbQjP/TFJmAULSRdCpcUMKFc9rZqPxxyJQhR4=;
-        b=Qx7xSzy5dJYgEFZ2tMgcSSRsQKQuIaeBs4f4nqBodRuDlsdAo1MWTcVad9qdpsaMOX
-         HIfLbIhjTa68PFUSEtDu5tsIJMFmaTshg5dea+7pin1QRZTuI29fnPqMS2xC6yHQ61QQ
-         6mpbfzO/800lpRBpF1p8Bhll3GVMGXWn8aDy77HK9OT2Fl3OC1QyjgHYaLnC9AaJYFgJ
-         tcT3+k+cYIelSdSElxosDeU/U8lkymnnH+Qr1tyvuUQHFPzakeXtIBp5BJkwG0MLqKTx
-         /yPIoEgPsYbOPm/50tEybXhxz+LxKDyjy6fkls6c3NFGlXnlnT4NDQOgrAMS8sWNMBVZ
-         XdiA==
-X-Gm-Message-State: AOJu0YyXHerNRgZU+jfmlPAR+A7QPHzTHYSEfUtMM+nL8Al4bPGwjXfY
-        6hBAr4BWvL6p2khPnMpydFTxJ9kJtYR1wjB3GuSRPAzGs/1X
-X-Google-Smtp-Source: AGHT+IHqdi4UQQzYxr0wyEwVhIWf0fWL5fmJKFNkagPoxLXXt2ZZQA2KsCpcZhCgAUmQ0sqiIvwz6UgpnlBu/trUFVP7eHz4iu37
+        bh=nAp6NrkzveDLTFcK/QBlyXampAT5bnoWcodW9DteIEY=;
+        b=VAZQ6YHB2bfk08o2KQQhd5NueWezM2kZL9yyQpUlpFx2glwm8ClvePjOyKPk+SB0AI
+         sTeu4RfOBKPYo+QhIlmUdEt5Pl8qqpHi2ofwQyBG0YRzU7OS0JE+ofhrQlCfmHpE8V/G
+         6+3J48wxKSmiuTJZcQRLWpXwnixtKUNEXsV83OWfuG+mzZ3VerywJb+KUKlha/Cm69nf
+         YqczrGV/Xp4W9I4WUA1tv5NZp9gz/8JeNsSkAZ07J4dzeh9hprxlqNwhH/K5+SYBTqTu
+         7oBHC4CUO8JzYGPoOkG9FrKVzjG3mphJyWDn9BOU9YtYGF/F87CnWT8hIPAnvphr029G
+         kbxA==
+X-Gm-Message-State: AOJu0Yy9Jzxk+gOVkgj4BEsvLKeQ8jXHdFvW3m3QgPQnV2/+DsdpCQQo
+        dvxcw0mHwOxy4z2dvEcd6GGFRUmzKnwMfb3K7j5SJ0fBKnjZ
+X-Google-Smtp-Source: AGHT+IFF27op/Kwmmbi3biZNw7HPBJKNkjRdM+sIHsqhwmEFp3rYvx1gTgztLCdObmJvkS/O2IcmmDN+HGs/YgX5sOuJQS0Rr5qt
 MIME-Version: 1.0
-X-Received: by 2002:a05:6870:9194:b0:1f0:36b6:ef37 with SMTP id
- b20-20020a056870919400b001f036b6ef37mr814026oaf.4.1699332740939; Mon, 06 Nov
- 2023 20:52:20 -0800 (PST)
-Date:   Mon, 06 Nov 2023 20:52:20 -0800
+X-Received: by 2002:a05:6808:128a:b0:3ae:5aab:a6f3 with SMTP id
+ a10-20020a056808128a00b003ae5aaba6f3mr11617841oiw.5.1699332741146; Mon, 06
+ Nov 2023 20:52:21 -0800 (PST)
+Date:   Mon, 06 Nov 2023 20:52:21 -0800
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000610902060988bc69@google.com>
-Subject: [syzbot] Monthly bpf report (Nov 2023)
-From:   syzbot <syzbot+listd7a341b46610ac5f4d9a@syzkaller.appspotmail.com>
-To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
+Message-ID: <000000000000642e40060988bc45@google.com>
+Subject: [syzbot] Monthly dccp report (Nov 2023)
+From:   syzbot <syzbot+listc2ee659ad54baf9fc752@syzkaller.appspotmail.com>
+To:     dccp@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello bpf maintainers/developers,
+Hello dccp maintainers/developers,
 
-This is a 31-day syzbot report for the bpf subsystem.
+This is a 31-day syzbot report for the dccp subsystem.
 All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/bpf
+https://syzkaller.appspot.com/upstream/s/dccp
 
-During the period, 2 new issues were detected and 2 were fixed.
-In total, 5 issues are still open and 200 have been fixed so far.
+During the period, 1 new issues were detected and 0 were fixed.
+In total, 5 issues are still open and 6 have been fixed so far.
 
 Some of the still happening issues:
 
 Ref Crashes Repro Title
-<1> 152     No    KMSAN: uninit-value in bpf_prog_run_generic_xdp
-                  https://syzkaller.appspot.com/bug?extid=0e6ddb1ef80986bdfe64
-<2> 9       Yes   BUG: unable to handle kernel NULL pointer dereference in sk_msg_recvmsg
-                  https://syzkaller.appspot.com/bug?extid=84f695756ed0c4bb3aba
-<3> 2       Yes   BUG: unable to handle kernel NULL pointer dereference in sk_psock_verdict_data_ready
-                  https://syzkaller.appspot.com/bug?extid=fd7b34375c1c8ce29c93
+<1> 102     Yes   KASAN: use-after-free Read in ccid2_hc_tx_packet_recv
+                  https://syzkaller.appspot.com/bug?extid=554ccde221001ab5479a
+<2> 50      Yes   BUG: "hc->tx_t_ipi == NUM" holds (exception!) at net/dccp/ccids/ccid3.c:LINE/ccid3_update_send_interval()
+                  https://syzkaller.appspot.com/bug?extid=94641ba6c1d768b1e35e
+<3> 13      Yes   BUG: stored value of X_recv is zero at net/dccp/ccids/ccid3.c:LINE/ccid3_first_li() (3)
+                  https://syzkaller.appspot.com/bug?extid=2ad8ef335371014d4dc7
 
 ---
 This report is generated by a bot. It may contain errors.
