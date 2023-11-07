@@ -2,123 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 20DE87E4C65
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 00:03:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2F4E7E4C69
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 00:04:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343574AbjKGXCt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 18:02:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52424 "EHLO
+        id S235072AbjKGXEC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 18:04:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234175AbjKGXCs (ORCPT
+        with ESMTP id S235241AbjKGXEA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 18:02:48 -0500
-Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AD8C10C2
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 15:02:46 -0800 (PST)
-Received: by mail-pl1-x64a.google.com with SMTP id d9443c01a7336-1cc1682607eso49599595ad.1
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 15:02:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1699398165; x=1700002965; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=8EVsKpDQ2kjOduD9kf9++j1jY5Py297YD+PLdhOq3bk=;
-        b=mTM9+LoPPe5ZETe1SinIcv6pmXVJ9H1CwVrT11XSmRiiHqfYFhjgdM03zf3WdJWTTG
-         D1W9KBBn/YtjJBs7E9IlfVghrULoNHBj3ML8g0Dcxjw6jTwlSV27u8XJRMdIvf28smnN
-         We0+fAs1U39aLGhqBUKpgGAVqdTt9nCcH+n3NK/t4+XWkzG3SWbaEMDan0hxnknnl/hz
-         B9TeWrXN13+RLbRKqNk41PRXNzn9Ck/M6oCGsqcr7A9LoQIv5tQJdGosWxNytefga0Ed
-         RJLVJUN1Ovs3Ix1Fn0cLX5mMeATRqdyGjWk+uL3uDlebcEHI1Gvax1VPsNcgBWHUF2pH
-         MSEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699398165; x=1700002965;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8EVsKpDQ2kjOduD9kf9++j1jY5Py297YD+PLdhOq3bk=;
-        b=PzrXE4F6jPzHECtNyibA511FUY722GRmdvf/2Qh+SFiADhAzlx+oZDC6pUkwttE8z1
-         pKJJZ13zU7qV7/nGMolO+WoZi8O+vdvur8mdOVll9wRFSeasK0HJYtqKykfmFiJ24Zwe
-         tH9N5Q7cx9mCRmAs5ehsHKMlserxl9Gaw4D6iEwXamt9poWuemML5vbu82lK4jnPIdkw
-         XzEugUUaCvQ19uVQXyIjgjquzB47xUR/3/NTY8VpQ0vJvoDeS7dmwBxHahOtYcpXB+SR
-         xdi0qYAdub3clLHw3LNn1KPqlJhw4TLz9MbbedSQjgr1ehxJj3DnKoH1p2GhTofQkLVL
-         AwsQ==
-X-Gm-Message-State: AOJu0Yy17nYJKg5oyWfGAn3yfm2MDJ53LDaQrLfzuk3UH7RigFTAlj9c
-        n4MklrrfgHNWgTJybvZ7RZFCeYmw4M0=
-X-Google-Smtp-Source: AGHT+IFLGhmdifdfEZseQ28YW9EhMqsnGxCCvj5bzGJ8Mr/sYu8XEsUXxO+Dn9NoXwtjRS0sPvB8BCRLmO4=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:902:ef84:b0:1cc:b65:fdb5 with SMTP id
- iz4-20020a170902ef8400b001cc0b65fdb5mr8143plb.0.1699398165461; Tue, 07 Nov
- 2023 15:02:45 -0800 (PST)
-Date:   Tue, 7 Nov 2023 15:02:43 -0800
-In-Reply-To: <ZUqSQKHwvKQs7_qA@google.com>
-Mime-Version: 1.0
-References: <20231107183605.409588-1-seanjc@google.com> <ZUqSQKHwvKQs7_qA@google.com>
-Message-ID: <ZUrCE9j1Gvw4zacY@google.com>
-Subject: Re: [PATCH] perf/x86: Don't enforce minimum period for KVM guest-only events
-From:   Sean Christopherson <seanjc@google.com>
-To:     Mingwei Zhang <mizhang@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Like Xu <likexu@tencent.com>, Jim Mattson <jmattson@google.com>
-Content-Type: text/plain; charset="us-ascii"
+        Tue, 7 Nov 2023 18:04:00 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB24610C9
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 15:03:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699398239; x=1730934239;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=gvMsD4vup1yDr8Oge4Pea1tRQMCRXNHZSf4KJ7myNls=;
+  b=mBUleS6Zupa5BwYF6b5FeT6BGwJqSBq3UEW7HZhe+8mVDrDq1h6BQ1jg
+   rd8Sli9ZXwzrjCcDK2WHQQb2l0+V4cGhelpJYW+7P5GPtbjpFqqYzimq+
+   EV4sPjPr2zAxMYknIiAbTe2I9klVvt0Z4OzvP9jHGbwAFqNXAGfTD0lXR
+   FLq6z0tEIaZFmiKco1ZQPn24SyY68jnnVeDsbitA4tkZcRYR92BqHcDbf
+   4vpmmzD64rHE4hmANZeEAgezmhURJq8PzK8eLj/ynYJVOJCTG7xHVcMcj
+   +ky6itnIcItIMSlpaTHxnhzqP021zm7yFvIIpEp7myt246LkAlltAgRUr
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10887"; a="8294042"
+X-IronPort-AV: E=Sophos;i="6.03,284,1694761200"; 
+   d="scan'208";a="8294042"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2023 15:03:59 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10887"; a="1010072952"
+X-IronPort-AV: E=Sophos;i="6.03,284,1694761200"; 
+   d="scan'208";a="1010072952"
+Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
+  by fmsmga006.fm.intel.com with ESMTP; 07 Nov 2023 15:03:56 -0800
+Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r0V6w-0007Sm-1S;
+        Tue, 07 Nov 2023 23:03:54 +0000
+Date:   Wed, 8 Nov 2023 07:02:44 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Geoffrey D. Bennett" <g@b4.vu>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Takashi Iwai <tiwai@suse.de>
+Subject: sound/usb/mixer_scarlett2.c:3226:48: error: ' Volume Control
+ Playback Enum' directive output may be truncated writing 29 bytes into a
+ region of size between 25 and 33
+Message-ID: <202311080640.fM2RLOUC-lkp@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 07, 2023, Mingwei Zhang wrote:
-> On Tue, Nov 07, 2023, Sean Christopherson wrote:
-> >  arch/x86/events/core.c | 21 +++++++++++++++------
-> >  1 file changed, 15 insertions(+), 6 deletions(-)
-> > 
-> > diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
-> > index 40ad1425ffa2..f8a8a4ea4d47 100644
-> > --- a/arch/x86/events/core.c
-> > +++ b/arch/x86/events/core.c
-> > @@ -1388,16 +1388,25 @@ int x86_perf_event_set_period(struct perf_event *event)
-> >  		hwc->last_period = period;
-> >  		ret = 1;
-> >  	}
-> > -	/*
-> > -	 * Quirk: certain CPUs dont like it if just 1 hw_event is left:
-> > -	 */
-> > -	if (unlikely(left < 2))
-> > -		left = 2;
-> >  
-> >  	if (left > x86_pmu.max_period)
-> >  		left = x86_pmu.max_period;
-> >  
-> > -	static_call_cond(x86_pmu_limit_period)(event, &left);
-> > +	/*
-> > +	 * Exempt KVM guest events from the minimum period requirements.  It's
-> > +	 * the guest's responsibility to ensure it can make forward progress,
-> > +	 * and it's KVM's responsibility to configure an appropriate "period"
-> > +	 * to correctly virtualize overflow for the guest's PMCs.
-> > +	 */
-> > +	if (!event->attr.exclude_host) {
-> > +		/*
-> > +		 * Quirk: certain CPUs dont like it if just 1 event is left:
-> > +		 */
-> > +		if (unlikely(left < 2))
-> > +			left = 2;
-> > +
-> > +		static_call_cond(x86_pmu_limit_period)(event, &left);
-> > +	}
-> >  
-> >  	this_cpu_write(pmc_prev_left[idx], left);
-> >  
-> 
-> Nice one. I am curious how you tested this one? I would like to
-> reproduce that one on my side.
+Hi Geoffrey,
 
-The check_emulated_instr() sub-test in KVM-Unit-Tests's x86/pmu.c fails when run
-with "my" (which is really yours) fix for the KVM's handling of emulated PMC
-events[*].  If KVM synthesizes an "instructions retired" event that bumps the
-PMC to all ones, i.e. -1 for all intents and purposes, the test fails because
-KVM creates a sample_period of '1', but perf programs a period of '2'.
+First bad commit (maybe != root cause):
 
-I suspect a very simple test of writing -1 to a PMC from the guest would exhibit
-the same behavior.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   13d88ac54ddd1011b6e94443958e798aa06eb835
+commit: efc3d7d20361cc59325a9f0525e079333b4459c0 ALSA: scarlett2: Rename scarlett_gen2 to scarlett2
+date:   12 days ago
+config: x86_64-sof-customedconfig-memory-debug-defconfig (https://download.01.org/0day-ci/archive/20231108/202311080640.fM2RLOUC-lkp@intel.com/config)
+compiler: gcc-11 (Debian 11.3.0-12) 11.3.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231108/202311080640.fM2RLOUC-lkp@intel.com/reproduce)
 
-[*] https://lkml.kernel.org/r/ZUWAg3WP2XESCAR4%40google.com
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311080640.fM2RLOUC-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   sound/usb/mixer_scarlett2.c: In function 'snd_scarlett2_init':
+>> sound/usb/mixer_scarlett2.c:3226:48: error: ' Volume Control Playback Enum' directive output may be truncated writing 29 bytes into a region of size between 25 and 33 [-Werror=format-truncation=]
+    3226 |                                  "Line Out %02d Volume Control Playback Enum",
+         |                                                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   sound/usb/mixer_scarlett2.c:3225:25: note: 'snprintf' output between 41 and 49 bytes into a destination of size 44
+    3225 |                         snprintf(s, sizeof(s),
+         |                         ^~~~~~~~~~~~~~~~~~~~~~
+    3226 |                                  "Line Out %02d Volume Control Playback Enum",
+         |                                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    3227 |                                  i + 1);
+         |                                  ~~~~~~
+   cc1: all warnings being treated as errors
+
+
+vim +3226 sound/usb/mixer_scarlett2.c
+
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3166  
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3167  static int scarlett2_add_line_out_ctls(struct usb_mixer_interface *mixer)
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3168  {
+e46f2195c86b00 sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2021-06-21  3169  	struct scarlett2_data *private = mixer->private_data;
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3170  	const struct scarlett2_device_info *info = private->info;
+e2cc91ac8f4e1b sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2021-06-22  3171  	const int (*port_count)[SCARLETT2_PORT_DIRNS] = info->port_count;
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3172  	int num_line_out =
+e2cc91ac8f4e1b sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2021-06-22  3173  		port_count[SCARLETT2_PORT_TYPE_ANALOGUE][SCARLETT2_PORT_OUT];
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3174  	int err, i;
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3175  	char s[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3176  
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3177  	/* Add R/O HW volume control */
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3178  	if (info->line_out_hw_vol) {
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3179  		snprintf(s, sizeof(s), "Master HW Playback Volume");
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3180  		err = scarlett2_add_new_ctl(mixer,
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3181  					    &scarlett2_master_volume_ctl,
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3182  					    0, 1, s, &private->master_vol_ctl);
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3183  		if (err < 0)
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3184  			return err;
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3185  	}
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3186  
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3187  	/* Add volume controls */
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3188  	for (i = 0; i < num_line_out; i++) {
+9cfe1276a6736f sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2021-06-23  3189  		int index = line_out_remap(private, i);
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3190  
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3191  		/* Fader */
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3192  		if (info->line_out_descrs[i])
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3193  			snprintf(s, sizeof(s),
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3194  				 "Line %02d (%s) Playback Volume",
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3195  				 i + 1, info->line_out_descrs[i]);
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3196  		else
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3197  			snprintf(s, sizeof(s),
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3198  				 "Line %02d Playback Volume",
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3199  				 i + 1);
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3200  		err = scarlett2_add_new_ctl(mixer,
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3201  					    &scarlett2_line_out_volume_ctl,
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3202  					    i, 1, s, &private->vol_ctls[i]);
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3203  		if (err < 0)
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3204  			return err;
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3205  
+0c88f9db1910ff sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2021-06-22  3206  		/* Mute Switch */
+0c88f9db1910ff sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2021-06-22  3207  		snprintf(s, sizeof(s),
+0c88f9db1910ff sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2021-06-22  3208  			 "Line %02d Mute Playback Switch",
+0c88f9db1910ff sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2021-06-22  3209  			 i + 1);
+0c88f9db1910ff sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2021-06-22  3210  		err = scarlett2_add_new_ctl(mixer,
+0c88f9db1910ff sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2021-06-22  3211  					    &scarlett2_mute_ctl,
+0c88f9db1910ff sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2021-06-22  3212  					    i, 1, s,
+0c88f9db1910ff sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2021-06-22  3213  					    &private->mute_ctls[i]);
+0c88f9db1910ff sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2021-06-22  3214  		if (err < 0)
+0c88f9db1910ff sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2021-06-22  3215  			return err;
+0c88f9db1910ff sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2021-06-22  3216  
+0c88f9db1910ff sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2021-06-22  3217  		/* Make the fader and mute controls read-only if the
+0c88f9db1910ff sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2021-06-22  3218  		 * SW/HW switch is set to HW
+0c88f9db1910ff sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2021-06-22  3219  		 */
+9cfe1276a6736f sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2021-06-23  3220  		if (private->vol_sw_hw_switch[index])
+06250c89d47cef sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2021-06-22  3221  			scarlett2_vol_ctl_set_writable(mixer, i, 0);
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3222  
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3223  		/* SW/HW Switch */
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3224  		if (info->line_out_hw_vol) {
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3225  			snprintf(s, sizeof(s),
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29 @3226  				 "Line Out %02d Volume Control Playback Enum",
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3227  				 i + 1);
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3228  			err = scarlett2_add_new_ctl(mixer,
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3229  						    &scarlett2_sw_hw_enum_ctl,
+f02da6534810ac sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2021-06-23  3230  						    i, 1, s,
+f02da6534810ac sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2021-06-23  3231  						    &private->sw_hw_ctls[i]);
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3232  			if (err < 0)
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3233  				return err;
+e914d8432cb4b9 sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2021-06-23  3234  
+e914d8432cb4b9 sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2021-06-23  3235  			/* Make the switch read-only if the line is
+e914d8432cb4b9 sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2021-06-23  3236  			 * involved in speaker switching
+e914d8432cb4b9 sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2021-06-23  3237  			 */
+e914d8432cb4b9 sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2021-06-23  3238  			if (private->speaker_switching_switch && i < 4)
+e914d8432cb4b9 sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2021-06-23  3239  				scarlett2_sw_hw_ctl_ro(private, i);
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3240  		}
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3241  	}
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3242  
+dbd82c0550633c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2021-06-21  3243  	/* Add dim/mute controls */
+03bdbcf08a8cb7 sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2021-06-21  3244  	if (info->line_out_hw_vol)
+dbd82c0550633c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2021-06-21  3245  		for (i = 0; i < SCARLETT2_DIM_MUTE_COUNT; i++) {
+03bdbcf08a8cb7 sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2021-06-21  3246  			err = scarlett2_add_new_ctl(
+dbd82c0550633c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2021-06-21  3247  				mixer, &scarlett2_dim_mute_ctl,
+dbd82c0550633c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2021-06-21  3248  				i, 1, scarlett2_dim_mute_names[i],
+dbd82c0550633c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2021-06-21  3249  				&private->dim_mute_ctls[i]);
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3250  			if (err < 0)
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3251  				return err;
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3252  		}
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3253  
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3254  	return 0;
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3255  }
+9e4d5c1be21f0c sound/usb/mixer_scarlett_gen2.c Geoffrey D. Bennett 2019-07-29  3256  
+
+:::::: The code at line 3226 was first introduced by commit
+:::::: 9e4d5c1be21f0c00e747e92186784f3298309b3e ALSA: usb-audio: Scarlett Gen 2 mixer interface
+
+:::::: TO: Geoffrey D. Bennett <g@b4.vu>
+:::::: CC: Takashi Iwai <tiwai@suse.de>
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
