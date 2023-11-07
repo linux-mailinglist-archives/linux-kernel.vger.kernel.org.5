@@ -2,43 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7413C7E3DB5
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 13:30:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C49C07E3F68
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 13:57:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234549AbjKGMaX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 07:30:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35860 "EHLO
+        id S234822AbjKGM5V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 07:57:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234709AbjKGM3s (ORCPT
+        with ESMTP id S234827AbjKGM4t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 07:29:48 -0500
+        Tue, 7 Nov 2023 07:56:49 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F66D4C3F;
-        Tue,  7 Nov 2023 04:13:10 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26E2EC433C9;
-        Tue,  7 Nov 2023 12:13:08 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1DA44EC7;
+        Tue,  7 Nov 2023 04:13:11 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 37763C433CA;
+        Tue,  7 Nov 2023 12:13:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699359189;
-        bh=wYqQ/g7P5oblTakKY84QJvuC5vKp9a9P74NqFJyA0KM=;
+        s=k20201202; t=1699359191;
+        bh=auizaxjZWo181eTIjXWSFYxTaHqzBhVli8xUWRJcofo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LjdEXwnvJQ22ACmuPQSe3OMC6nc0OZq4l7r6Y26jUBT9AsY5YUvanPR/5s/AK0w5o
-         o2pljV5Ac/LBaxS7JN9WrTJ7ogx9MbFZ1VcZa2lkRrcLGpnwcNtBczz7JvAEYZITzJ
-         a2fK0lo+kYJYeerKXjh0cuEkSEuPcJMYavJ8NvdzsohIxqxpICnH5YKhzxU75mTImM
-         hUAS9xbsqX9OXuvpazbRSlXicsAhKNLvVe/AP/Ad0afYnqG6tUjbj3zUf6Ywni6CnY
-         aIYPq6mF9tc7EC/sbgNVvTHyjM7qIwTZZGMm4WXUFC9XiUGJmfi8/AtE2E0tYSIZqo
-         tU6JggiaSy1kg==
+        b=X45mnEXxxxgx3DZ9EgCxqKnhehn+l9aKJcVLztuZQW3zai+qQfdP/fIvPwIxyRLJP
+         DOXtllbE2zAKy1jFEh3D8I5mMAzUPC6fHZRqmkjbLijGiqqEordeaVogja2Lk36SEU
+         XI9KLcXpfxqpoJmEIxL0ojNP5wiBs1KDY3LKEqWBS+r9+kLgrHzQYtnkIWvlPozvIe
+         1AjkZVgS8brVaYAVuDWUNoWHnRmwIXtCkH7YeHNZxhvB4Pr+VvOFsdrJKxprWUHjfm
+         cc7YFa5vVCmSjQcKRisAksPndVXnxQnnvOqAPDXx1Y46Ivw/ky7wLH9O1Jn8mgamnr
+         OW7/izF9YOOjw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Eric Dumazet <edumazet@google.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>, kuba@kernel.org,
-        pabeni@redhat.com, dsahern@kernel.org, kuniyu@amazon.com,
-        wuyun.abel@bytedance.com, leitao@debian.org,
-        alexander@mihalicyn.com, dhowells@redhat.com,
-        netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 6/9] net: annotate data-races around sk->sk_dst_pending_confirm
-Date:   Tue,  7 Nov 2023 07:12:49 -0500
-Message-ID: <20231107121256.3758858-6-sashal@kernel.org>
+Cc:     Douglas Anderson <dianders@chromium.org>,
+        Kalle Valo <quic_kvalo@quicinc.com>,
+        Sasha Levin <sashal@kernel.org>, kvalo@kernel.org,
+        quic_jjohnson@quicinc.com, ath10k@lists.infradead.org,
+        linux-wireless@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 7/9] wifi: ath10k: Don't touch the CE interrupt registers after power up
+Date:   Tue,  7 Nov 2023 07:12:50 -0500
+Message-ID: <20231107121256.3758858-7-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231107121256.3758858-1-sashal@kernel.org>
 References: <20231107121256.3758858-1-sashal@kernel.org>
@@ -57,80 +55,120 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+From: Douglas Anderson <dianders@chromium.org>
 
-[ Upstream commit eb44ad4e635132754bfbcb18103f1dcb7058aedd ]
+[ Upstream commit 170c75d43a77dc937c58f07ecf847ba1b42ab74e ]
 
-This field can be read or written without socket lock being held.
+As talked about in commit d66d24ac300c ("ath10k: Keep track of which
+interrupts fired, don't poll them"), if we access the copy engine
+register at a bad time then ath10k can go boom. However, it's not
+necessarily easy to know when it's safe to access them.
 
-Add annotations to avoid load-store tearing.
+The ChromeOS test labs saw a crash that looked like this at
+shutdown/reboot time (on a chromeos-5.15 kernel, but likely the
+problem could also reproduce upstream):
 
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Internal error: synchronous external abort: 96000010 [#1] PREEMPT SMP
+...
+CPU: 4 PID: 6168 Comm: reboot Not tainted 5.15.111-lockdep-19350-g1d624fe6758f #1 010b9b233ab055c27c6dc88efb0be2f4e9e86f51
+Hardware name: Google Kingoftown (DT)
+...
+pc : ath10k_snoc_read32+0x50/0x74 [ath10k_snoc]
+lr : ath10k_snoc_read32+0x24/0x74 [ath10k_snoc]
+...
+Call trace:
+ath10k_snoc_read32+0x50/0x74 [ath10k_snoc ...]
+ath10k_ce_disable_interrupt+0x190/0x65c [ath10k_core ...]
+ath10k_ce_disable_interrupts+0x8c/0x120 [ath10k_core ...]
+ath10k_snoc_hif_stop+0x78/0x660 [ath10k_snoc ...]
+ath10k_core_stop+0x13c/0x1ec [ath10k_core ...]
+ath10k_halt+0x398/0x5b0 [ath10k_core ...]
+ath10k_stop+0xfc/0x1a8 [ath10k_core ...]
+drv_stop+0x148/0x6b4 [mac80211 ...]
+ieee80211_stop_device+0x70/0x80 [mac80211 ...]
+ieee80211_do_stop+0x10d8/0x15b0 [mac80211 ...]
+ieee80211_stop+0x144/0x1a0 [mac80211 ...]
+__dev_close_many+0x1e8/0x2c0
+dev_close_many+0x198/0x33c
+dev_close+0x140/0x210
+cfg80211_shutdown_all_interfaces+0xc8/0x1e0 [cfg80211 ...]
+ieee80211_remove_interfaces+0x118/0x5c4 [mac80211 ...]
+ieee80211_unregister_hw+0x64/0x1f4 [mac80211 ...]
+ath10k_mac_unregister+0x4c/0xf0 [ath10k_core ...]
+ath10k_core_unregister+0x80/0xb0 [ath10k_core ...]
+ath10k_snoc_free_resources+0xb8/0x1ec [ath10k_snoc ...]
+ath10k_snoc_shutdown+0x98/0xd0 [ath10k_snoc ...]
+platform_shutdown+0x7c/0xa0
+device_shutdown+0x3e0/0x58c
+kernel_restart_prepare+0x68/0xa0
+kernel_restart+0x28/0x7c
+
+Though there's no known way to reproduce the problem, it makes sense
+that it would be the same issue where we're trying to access copy
+engine registers when it's not allowed.
+
+Let's fix this by changing how we "disable" the interrupts. Instead of
+tweaking the copy engine registers we'll just use disable_irq() and
+enable_irq(). Then we'll configure the interrupts once at power up
+time.
+
+Tested-on: WCN3990 hw1.0 SNOC WLAN.HL.3.2.2.c10-00754-QCAHLSWMTPL-1
+
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+Signed-off-by: Kalle Valo <quic_kvalo@quicinc.com>
+Link: https://lore.kernel.org/r/20230630151842.1.If764ede23c4e09a43a842771c2ddf99608f25f8e@changeid
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/net/sock.h    | 6 +++---
- net/core/sock.c       | 2 +-
- net/ipv4/tcp_output.c | 2 +-
- 3 files changed, 5 insertions(+), 5 deletions(-)
+ drivers/net/wireless/ath/ath10k/snoc.c | 18 ++++++++++++++----
+ 1 file changed, 14 insertions(+), 4 deletions(-)
 
-diff --git a/include/net/sock.h b/include/net/sock.h
-index b021c8912e2cf..5293f2b65fb55 100644
---- a/include/net/sock.h
-+++ b/include/net/sock.h
-@@ -1941,7 +1941,7 @@ static inline void dst_negative_advice(struct sock *sk)
- 		if (ndst != dst) {
- 			rcu_assign_pointer(sk->sk_dst_cache, ndst);
- 			sk_tx_queue_clear(sk);
--			sk->sk_dst_pending_confirm = 0;
-+			WRITE_ONCE(sk->sk_dst_pending_confirm, 0);
- 		}
+diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
+index b6762fe2efe26..29d52f7b4336d 100644
+--- a/drivers/net/wireless/ath/ath10k/snoc.c
++++ b/drivers/net/wireless/ath/ath10k/snoc.c
+@@ -821,12 +821,20 @@ static void ath10k_snoc_hif_get_default_pipe(struct ath10k *ar,
+ 
+ static inline void ath10k_snoc_irq_disable(struct ath10k *ar)
+ {
+-	ath10k_ce_disable_interrupts(ar);
++	struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
++	int id;
++
++	for (id = 0; id < CE_COUNT_MAX; id++)
++		disable_irq(ar_snoc->ce_irqs[id].irq_line);
+ }
+ 
+ static inline void ath10k_snoc_irq_enable(struct ath10k *ar)
+ {
+-	ath10k_ce_enable_interrupts(ar);
++	struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
++	int id;
++
++	for (id = 0; id < CE_COUNT_MAX; id++)
++		enable_irq(ar_snoc->ce_irqs[id].irq_line);
+ }
+ 
+ static void ath10k_snoc_rx_pipe_cleanup(struct ath10k_snoc_pipe *snoc_pipe)
+@@ -1042,6 +1050,8 @@ static int ath10k_snoc_hif_power_up(struct ath10k *ar,
+ 		goto err_free_rri;
  	}
- }
-@@ -1952,7 +1952,7 @@ __sk_dst_set(struct sock *sk, struct dst_entry *dst)
- 	struct dst_entry *old_dst;
  
- 	sk_tx_queue_clear(sk);
--	sk->sk_dst_pending_confirm = 0;
-+	WRITE_ONCE(sk->sk_dst_pending_confirm, 0);
- 	old_dst = rcu_dereference_protected(sk->sk_dst_cache,
- 					    lockdep_sock_is_held(sk));
- 	rcu_assign_pointer(sk->sk_dst_cache, dst);
-@@ -1965,7 +1965,7 @@ sk_dst_set(struct sock *sk, struct dst_entry *dst)
- 	struct dst_entry *old_dst;
++	ath10k_ce_enable_interrupts(ar);
++
+ 	return 0;
  
- 	sk_tx_queue_clear(sk);
--	sk->sk_dst_pending_confirm = 0;
-+	WRITE_ONCE(sk->sk_dst_pending_confirm, 0);
- 	old_dst = xchg((__force struct dst_entry **)&sk->sk_dst_cache, dst);
- 	dst_release(old_dst);
- }
-diff --git a/net/core/sock.c b/net/core/sock.c
-index 9979cd602dfac..2c3c5df139345 100644
---- a/net/core/sock.c
-+++ b/net/core/sock.c
-@@ -545,7 +545,7 @@ struct dst_entry *__sk_dst_check(struct sock *sk, u32 cookie)
+ err_free_rri:
+@@ -1196,8 +1206,8 @@ static int ath10k_snoc_request_irq(struct ath10k *ar)
  
- 	if (dst && dst->obsolete && dst->ops->check(dst, cookie) == NULL) {
- 		sk_tx_queue_clear(sk);
--		sk->sk_dst_pending_confirm = 0;
-+		WRITE_ONCE(sk->sk_dst_pending_confirm, 0);
- 		RCU_INIT_POINTER(sk->sk_dst_cache, NULL);
- 		dst_release(dst);
- 		return NULL;
-diff --git a/net/ipv4/tcp_output.c b/net/ipv4/tcp_output.c
-index 16e0249b11f6c..97bee820799ee 100644
---- a/net/ipv4/tcp_output.c
-+++ b/net/ipv4/tcp_output.c
-@@ -1103,7 +1103,7 @@ static int __tcp_transmit_skb(struct sock *sk, struct sk_buff *skb,
- 	skb_set_hash_from_sk(skb, sk);
- 	refcount_add(skb->truesize, &sk->sk_wmem_alloc);
- 
--	skb_set_dst_pending_confirm(skb, sk->sk_dst_pending_confirm);
-+	skb_set_dst_pending_confirm(skb, READ_ONCE(sk->sk_dst_pending_confirm));
- 
- 	/* Build TCP header and checksum it. */
- 	th = (struct tcphdr *)skb->data;
+ 	for (id = 0; id < CE_COUNT_MAX; id++) {
+ 		ret = request_irq(ar_snoc->ce_irqs[id].irq_line,
+-				  ath10k_snoc_per_engine_handler, 0,
+-				  ce_name[id], ar);
++				  ath10k_snoc_per_engine_handler,
++				  IRQF_NO_AUTOEN, ce_name[id], ar);
+ 		if (ret) {
+ 			ath10k_err(ar,
+ 				   "failed to register IRQ handler for CE %d: %d",
 -- 
 2.42.0
 
