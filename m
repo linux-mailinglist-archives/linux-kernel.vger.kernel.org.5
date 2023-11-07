@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 88A3A7E49B6
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 21:21:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD5B27E49B9
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 21:21:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343961AbjKGUVD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 15:21:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45418 "EHLO
+        id S1343881AbjKGUVO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 15:21:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235233AbjKGUUt (ORCPT
+        with ESMTP id S1343919AbjKGUUv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 15:20:49 -0500
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 088011717
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 12:20:29 -0800 (PST)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5aecf6e30e9so82679177b3.1
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 12:20:29 -0800 (PST)
+        Tue, 7 Nov 2023 15:20:51 -0500
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 468D710C6
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 12:20:34 -0800 (PST)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5a8ee6a1801so83052767b3.3
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 12:20:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1699388429; x=1699993229; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1699388433; x=1699993233; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=a2ib+rA4T4utSqnHV+qndOZ+e9EwMCLw6LRU8MPurDQ=;
-        b=UYF06aXJeSpvK3/nTxALeIgmnd0m/9ul+VrZoKeDewIsSEJqkBiRqAs/UbYWoUZfW3
-         bTkVKEghkat6844l8IaUS4Qe5csmMcNjdXOyxwvndqja6o+6nmC2476dBjc6UMf+3K+O
-         YtzTSelKwPYtijur3z+TmHt3O7D9EShzuuYRlXFbvS/7PnY77v7YB4CVRVftyxlNh58/
-         2/o84mQSVaJ5ALdYCECn8yNJpRfXlEaJHOtc0O+ueLbejm8wN3OkxJy19R9CHDQiwOn4
-         R9NVGh81QzF6thS8qGH+bakiFdqopSUYPg6n+cJcX+EjFGmubyx5BQTGHC2Tw5UDYNrk
-         LEqg==
+        bh=VURm3qKFEkUFzQoKppzRo3P8sq2mC6pF6UQMbNFBuGU=;
+        b=S1fI+QILCpc7OMYIunVKk6SGSAgd243rL8Lj3ZEB/CjL2SRWRXhvhXUkK3A+0d68yS
+         hA64NjlyA3Ewt6lZpWFbcyUdLdCzmBH6r7npStgq+M8/DWYp536IzLyNrjKXM+FL3ZIB
+         gmak3PsOo424N4f63KkSO7ObobdFLaZbha0wIpyztWeNJMIANF7W85NBbCszWCoUbhWz
+         4N7IVNNKBa8mIBsn1aqgT1M3NAJ1k8Z1PndRtfrAAO5IP9UQ84p1ZEKm/MPwTnQo4h33
+         8lFuC8Rpb2MJq+RbvrERdHJzQEjS+rQP3h3BOugmxKTbEDh1eRHENIw1NNmZ4oeAZQx9
+         vn7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699388429; x=1699993229;
+        d=1e100.net; s=20230601; t=1699388433; x=1699993233;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=a2ib+rA4T4utSqnHV+qndOZ+e9EwMCLw6LRU8MPurDQ=;
-        b=NL5Hnt0L3nkFBTQIt99G7WGK4kingT37c6N+BOcDeYhNim7eKMxoHT0XnbuUbqDD+/
-         j1Py1UFMFCb/9kkegg6YK5oXqbBPJQKE3L90USa1N1bhcpFarDZs1Lt3WVSj3M1Bu6R0
-         rg6CmuPNhtWRCNHnOp2r/W/OF8vMlvJmDLvl45BM11Dq2Ses43KMbIQ0tT7i1+tAZ1TA
-         AY9Vji2M9ZPHZZ3RStdhRG6odPFusCgUiu2WCX/PS7qje6n8lc2YMaSVirUPi6frciSV
-         qtYfJaIVdgkNKhVRO4PCksImSjn8cgoMhbdWrpaqN5UurVe9Oyi782BZhgDQ1jwwkdpx
-         2loQ==
-X-Gm-Message-State: AOJu0YwMnQRzo/socyhywsj/QQ1UbMU7X2nn1RD7DE/Fnptl2oAWu4t3
-        61XNwIErGZ0s8ckSPdgnhBqV5VWiQcdtcg==
-X-Google-Smtp-Source: AGHT+IHHtbOnHl93HG8ZXUVwWTOGVN0m/BXCyF0SZXevfyIsFrPX0M12OPNWezfirtAPs4IcbWCrJMOA0zCGyA==
+        bh=VURm3qKFEkUFzQoKppzRo3P8sq2mC6pF6UQMbNFBuGU=;
+        b=vwqV6/zxtXttp1Tgu4ieXG7kMhQrVx4wwGf1kJ6kKQkBmPKXk1E4Y13Zw7ShHwD/NI
+         AGeI+THLd86aLvjbUYLEYQp5ET+NsNRUUqRGrGGm2Z5rwjBaGAyTDmqpHz93RAVRRytS
+         z8UIT8G0sLHgwhCjqHAnZDw73C3syqPL6G08ENWjHGLcmS5Dtd61p6t1cfK3C+rCKTuz
+         hFaKNqeHONkaWBQfow4WYfAh35UDUdfoJ6aIlszorw9SWCm3fpshEH1AgtB670yXVAXx
+         YpsiuboUVS1zowPyvhHbTYe5MykZdHXL/kLHJqgzp9629c/fdADrbeXN6dP+ShKHFvtS
+         7dlg==
+X-Gm-Message-State: AOJu0Yxo2boVK8G5XLqWfW9n6fu3lFPNrRtE64rlEm8omIoJ/8MydQ+6
+        FL/WzSIrRWke7dipCSjEa5krNqulgAqdeQ==
+X-Google-Smtp-Source: AGHT+IFYlMTykIoHKWEWEDPriu/uKFKRlV6F2t2qSqzBMtA10UXuJ3YvEShZloxNkRDrWSf1n76Juc61Tk6I7w==
 X-Received: from aghulati-dev.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:18bb])
- (user=aghulati job=sendgmr) by 2002:a81:9182:0:b0:59b:e81f:62ab with SMTP id
- i124-20020a819182000000b0059be81f62abmr294528ywg.7.1699388429222; Tue, 07 Nov
- 2023 12:20:29 -0800 (PST)
-Date:   Tue,  7 Nov 2023 20:19:56 +0000
+ (user=aghulati job=sendgmr) by 2002:a0d:e24b:0:b0:59b:eb63:4beb with SMTP id
+ l72-20020a0de24b000000b0059beb634bebmr282724ywe.7.1699388433543; Tue, 07 Nov
+ 2023 12:20:33 -0800 (PST)
+Date:   Tue,  7 Nov 2023 20:19:57 +0000
 In-Reply-To: <20231107202002.667900-1-aghulati@google.com>
 Mime-Version: 1.0
 References: <20231107202002.667900-1-aghulati@google.com>
 X-Mailer: git-send-email 2.42.0.869.gea05f2083d-goog
-Message-ID: <20231107202002.667900-9-aghulati@google.com>
-Subject: [RFC PATCH 08/14] KVM: VMX: Move shared VMX data structures into VAC
+Message-ID: <20231107202002.667900-10-aghulati@google.com>
+Subject: [RFC PATCH 09/14] KVM: x86: Move shared KVM state into VAC
 From:   Anish Ghulati <aghulati@google.com>
 To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
         Sean Christopherson <seanjc@google.com>,
@@ -63,228 +63,80 @@ To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
         hpa@zytor.com, Vitaly Kuznetsov <vkuznets@redhat.com>,
         peterz@infradead.org, paulmck@kernel.org,
         Mark Rutland <mark.rutland@arm.com>
-Cc:     Anish Ghulati <aghulati@google.com>,
-        Venkatesh Srinivas <venkateshs@chromium.org>
+Cc:     Venkatesh Srinivas <venkateshs@chromium.org>,
+        Anish Ghulati <aghulati@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move vmxarea and current_vmcs into VAC.
+From: Venkatesh Srinivas <venkateshs@chromium.org>
 
-Move VPID bitmap into the VAC
+Move kcpu_kick_mask and vm_running_vcpu* from arch neutral KVM code into
+VAC.
 
-TODO: Explain why this data needs to be shared among multiple KVM
-modules and moved into VAC.
+TODO: Explain why this needs to be moved into VAC.
 
 Signed-off-by: Venkatesh Srinivas <venkateshs@chromium.org>
 Signed-off-by: Anish Ghulati <aghulati@google.com>
 ---
- arch/x86/kvm/vmx/nested.c |  1 +
- arch/x86/kvm/vmx/vac.c    | 47 +++++++++++++++++++++++++++++++++++++++
- arch/x86/kvm/vmx/vac.h    | 12 ++++++++++
- arch/x86/kvm/vmx/vmx.c    | 41 +++++-----------------------------
- arch/x86/kvm/vmx/vmx.h    |  2 --
- 5 files changed, 65 insertions(+), 38 deletions(-)
- create mode 100644 arch/x86/kvm/vmx/vac.h
+ virt/kvm/kvm_main.c | 6 ++++--
+ virt/kvm/vac.c      | 5 +++++
+ virt/kvm/vac.h      | 3 +++
+ 3 files changed, 12 insertions(+), 2 deletions(-)
 
-diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-index c5ec0ef51ff7..5c6ac7662453 100644
---- a/arch/x86/kvm/vmx/nested.c
-+++ b/arch/x86/kvm/vmx/nested.c
-@@ -14,6 +14,7 @@
- #include "pmu.h"
- #include "sgx.h"
- #include "trace.h"
-+#include "vac.h"
- #include "vmx.h"
- #include "x86.h"
- #include "smm.h"
-diff --git a/arch/x86/kvm/vmx/vac.c b/arch/x86/kvm/vmx/vac.c
-index 4aabf16d2fc0..7b8ade0fb97f 100644
---- a/arch/x86/kvm/vmx/vac.c
-+++ b/arch/x86/kvm/vmx/vac.c
-@@ -1,2 +1,49 @@
- // SPDX-License-Identifier: GPL-2.0-only
+diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+index fb50deaad3fd..575f044fd842 100644
+--- a/virt/kvm/kvm_main.c
++++ b/virt/kvm/kvm_main.c
+@@ -108,7 +108,6 @@ LIST_HEAD(vm_list);
+ static struct kmem_cache *kvm_vcpu_cache;
  
-+#include <asm/percpu.h>
-+#include <linux/percpu-defs.h>
-+
-+#include "vac.h"
-+
-+
-+static DEFINE_PER_CPU(struct vmcs *, vmxarea);
-+
-+DEFINE_PER_CPU(struct vmcs *, current_vmcs);
-+
-+void vac_set_vmxarea(struct vmcs *vmcs, int cpu)
-+{
-+	per_cpu(vmxarea, cpu) = vmcs;
-+}
-+
-+struct vmcs *vac_get_vmxarea(int cpu)
-+{
-+	return per_cpu(vmxarea, cpu);
-+}
-+
-+static DECLARE_BITMAP(vmx_vpid_bitmap, VMX_NR_VPIDS);
-+static DEFINE_SPINLOCK(vmx_vpid_lock);
-+
-+int allocate_vpid(void)
-+{
-+	int vpid;
-+
-+	if (!enable_vpid)
-+		return 0;
-+	spin_lock(&vmx_vpid_lock);
-+	vpid = find_first_zero_bit(vmx_vpid_bitmap, VMX_NR_VPIDS);
-+	if (vpid < VMX_NR_VPIDS)
-+		__set_bit(vpid, vmx_vpid_bitmap);
-+	else
-+		vpid = 0;
-+	spin_unlock(&vmx_vpid_lock);
-+	return vpid;
-+}
-+
-+void free_vpid(int vpid)
-+{
-+	if (!enable_vpid || vpid == 0)
-+		return;
-+	spin_lock(&vmx_vpid_lock);
-+	__clear_bit(vpid, vmx_vpid_bitmap);
-+	spin_unlock(&vmx_vpid_lock);
-+}
-diff --git a/arch/x86/kvm/vmx/vac.h b/arch/x86/kvm/vmx/vac.h
-new file mode 100644
-index 000000000000..46c54fe7447d
---- /dev/null
-+++ b/arch/x86/kvm/vmx/vac.h
-@@ -0,0 +1,12 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+
-+#include <asm/vmx.h>
-+
-+#include "../vac.h"
-+#include "vmcs.h"
-+
-+void vac_set_vmxarea(struct vmcs *vmcs, int cpu);
-+
-+struct vmcs *vac_get_vmxarea(int cpu);
-+int allocate_vpid(void);
-+void free_vpid(int vpid);
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index 7fea84a17edf..407e37810419 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -60,6 +60,7 @@
- #include "pmu.h"
- #include "sgx.h"
- #include "trace.h"
-+#include "vac.h"
- #include "vmcs.h"
- #include "vmcs12.h"
- #include "vmx.h"
-@@ -455,17 +456,12 @@ noinline void invept_error(unsigned long ext, u64 eptp, gpa_t gpa)
- 			ext, eptp, gpa);
- }
+ static __read_mostly struct preempt_ops kvm_preempt_ops;
+-static DEFINE_PER_CPU(struct kvm_vcpu *, kvm_running_vcpu);
  
--static DEFINE_PER_CPU(struct vmcs *, vmxarea);
--DEFINE_PER_CPU(struct vmcs *, current_vmcs);
- /*
-  * We maintain a per-CPU linked-list of VMCS loaded on that CPU. This is needed
-  * when a CPU is brought down, and we need to VMCLEAR all VMCSs loaded on it.
-  */
- static DEFINE_PER_CPU(struct list_head, loaded_vmcss_on_cpu);
+ struct dentry *kvm_debugfs_dir;
+ EXPORT_SYMBOL_GPL(kvm_debugfs_dir);
+@@ -150,7 +149,10 @@ static void kvm_uevent_notify_change(unsigned int type, struct kvm *kvm);
+ static unsigned long long kvm_createvm_count;
+ static unsigned long long kvm_active_vms;
  
--static DECLARE_BITMAP(vmx_vpid_bitmap, VMX_NR_VPIDS);
--static DEFINE_SPINLOCK(vmx_vpid_lock);
--
- struct vmcs_config vmcs_config __ro_after_init;
- struct vmx_capability vmx_capability __ro_after_init;
+-static DEFINE_PER_CPU(cpumask_var_t, cpu_kick_mask);
++__weak void kvm_arch_mmu_notifier_invalidate_range(struct kvm *kvm,
++						   unsigned long start, unsigned long end)
++{
++}
  
-@@ -2792,7 +2788,7 @@ static int kvm_cpu_vmxon(u64 vmxon_pointer)
- static int vmx_hardware_enable(void)
+ __weak void kvm_arch_guest_memory_reclaimed(struct kvm *kvm)
  {
- 	int cpu = raw_smp_processor_id();
--	u64 phys_addr = __pa(per_cpu(vmxarea, cpu));
-+	u64 phys_addr = __pa(vac_get_vmxarea(cpu));
- 	int r;
+diff --git a/virt/kvm/vac.c b/virt/kvm/vac.c
+index ff034a53af50..c628afeb3d4b 100644
+--- a/virt/kvm/vac.c
++++ b/virt/kvm/vac.c
+@@ -6,6 +6,11 @@
+ #include <linux/percpu.h>
+ #include <linux/mutex.h>
  
- 	if (cr4_read_shadow() & X86_CR4_VMXE)
-@@ -2921,8 +2917,8 @@ static void free_kvm_area(void)
- 	int cpu;
++DEFINE_PER_CPU(cpumask_var_t, cpu_kick_mask);
++EXPORT_SYMBOL(cpu_kick_mask);
++
++DEFINE_PER_CPU(struct kvm_vcpu *, kvm_running_vcpu);
++
+ #ifdef CONFIG_KVM_GENERIC_HARDWARE_ENABLING
+ DEFINE_MUTEX(vac_lock);
  
- 	for_each_possible_cpu(cpu) {
--		free_vmcs(per_cpu(vmxarea, cpu));
--		per_cpu(vmxarea, cpu) = NULL;
-+		free_vmcs(vac_get_vmxarea(cpu));
-+		vac_set_vmxarea(NULL, cpu);
- 	}
+diff --git a/virt/kvm/vac.h b/virt/kvm/vac.h
+index aed178a16bdb..f3e7b08168df 100644
+--- a/virt/kvm/vac.h
++++ b/virt/kvm/vac.h
+@@ -29,4 +29,7 @@ static inline void hardware_disable_all(void)
  }
+ #endif /* CONFIG_KVM_GENERIC_HARDWARE_ENABLING */
  
-@@ -2952,7 +2948,7 @@ static __init int alloc_kvm_area(void)
- 		if (kvm_is_using_evmcs())
- 			vmcs->hdr.revision_id = vmcs_config.revision_id;
- 
--		per_cpu(vmxarea, cpu) = vmcs;
-+		vac_set_vmxarea(vmcs, cpu);
- 	}
- 	return 0;
- }
-@@ -3897,31 +3893,6 @@ static void seg_setup(int seg)
- 	vmcs_write32(sf->ar_bytes, ar);
- }
- 
--int allocate_vpid(void)
--{
--	int vpid;
--
--	if (!enable_vpid)
--		return 0;
--	spin_lock(&vmx_vpid_lock);
--	vpid = find_first_zero_bit(vmx_vpid_bitmap, VMX_NR_VPIDS);
--	if (vpid < VMX_NR_VPIDS)
--		__set_bit(vpid, vmx_vpid_bitmap);
--	else
--		vpid = 0;
--	spin_unlock(&vmx_vpid_lock);
--	return vpid;
--}
--
--void free_vpid(int vpid)
--{
--	if (!enable_vpid || vpid == 0)
--		return;
--	spin_lock(&vmx_vpid_lock);
--	__clear_bit(vpid, vmx_vpid_bitmap);
--	spin_unlock(&vmx_vpid_lock);
--}
--
- static void vmx_msr_bitmap_l01_changed(struct vcpu_vmx *vmx)
- {
- 	/*
-@@ -8538,8 +8509,6 @@ static __init int hardware_setup(void)
- 	kvm_caps.has_bus_lock_exit = cpu_has_vmx_bus_lock_detection();
- 	kvm_caps.has_notify_vmexit = cpu_has_notify_vmexit();
- 
--	set_bit(0, vmx_vpid_bitmap); /* 0 is reserved for host */
--
- 	if (enable_ept)
- 		kvm_mmu_set_ept_masks(enable_ept_ad_bits,
- 				      cpu_has_vmx_ept_execute_only());
-diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
-index 476119670d82..03b11159fde5 100644
---- a/arch/x86/kvm/vmx/vmx.h
-+++ b/arch/x86/kvm/vmx/vmx.h
-@@ -376,8 +376,6 @@ struct kvm_vmx {
- 
- void vmx_vcpu_load_vmcs(struct kvm_vcpu *vcpu, int cpu,
- 			struct loaded_vmcs *buddy);
--int allocate_vpid(void);
--void free_vpid(int vpid);
- void vmx_set_constant_host_state(struct vcpu_vmx *vmx);
- void vmx_prepare_switch_to_guest(struct kvm_vcpu *vcpu);
- void vmx_set_host_fs_gs(struct vmcs_host_state *host, u16 fs_sel, u16 gs_sel,
++DECLARE_PER_CPU(cpumask_var_t, cpu_kick_mask);
++DECLARE_PER_CPU(struct kvm_vcpu *, kvm_running_vcpu);
++
+ #endif
 -- 
 2.42.0.869.gea05f2083d-goog
 
