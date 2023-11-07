@@ -2,44 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D88467E3E02
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 13:32:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 420837E3E09
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 13:32:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234808AbjKGMcc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 07:32:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41310 "EHLO
+        id S234849AbjKGMch (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 07:32:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234881AbjKGMcH (ORCPT
+        with ESMTP id S234895AbjKGMcN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 07:32:07 -0500
+        Tue, 7 Nov 2023 07:32:13 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4938032B56;
-        Tue,  7 Nov 2023 04:21:13 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3B7A3C433C9;
-        Tue,  7 Nov 2023 12:21:11 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF04032B5F;
+        Tue,  7 Nov 2023 04:21:14 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8FFDCC433C7;
+        Tue,  7 Nov 2023 12:21:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699359673;
-        bh=zRLYVJzEmMHhUfyTzu7p4rra2CVJwPd4o1lufCaMcWs=;
+        s=k20201202; t=1699359674;
+        bh=+rywkNCJu5rHEIKiRGZYvVfFeXYV2uIwC+GFP24j8ws=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YlwHoh4WMeqOKBDjLEZN7VGsuee58puePyVkjR1RZfWQG8EYqVluzcCUwKxjtd65Y
-         2iSDMbB+53wwCabxGgui/gaoaydnd+v1vXNFdyCIyk05YJVxaZViSJtPdc2X5ByC+9
-         b0+bQoJqaJ1og5udGKHzZ6fXx5pcB836b4BVmkjcEkpOuvE4DP9Nb4eYyE+J+Rqnaf
-         g68hymVqYr/34H1T1naiYkGOK9sp/pXJL4wBwGNT2lJo5E6XZfIr6O7YnJpYgbNXYJ
-         QM82QTPcipe9xiuLpZuZ0Du4W9MOlY0uyLoGlFe0dkElF9iprCb6XvE6YJtT2YpQix
-         vO5q6xUlPNyrw==
+        b=gpT2+9Ei01waIECjKVEA/uHdhRp8X64vnb/YR/wMypPF4tA4y9DYcnq/UUxdZraAc
+         AkvbVfbN68DsWg5H8tuPf3zMTPhD6N94LATpckxkxajY2kjemgcvxVgQCD3rGMmYAs
+         I+roAx4T+0zdThlAgls1VIOiMVEiajWM0u0k/8/dnZeGupfRmw1wZZMBU2N6vIpvRY
+         VEgjgyNEydZiCVr0C8XJS7lOo/rPmCtnX1lGgiSYKTARdorv6zbX5XVksjPOzJwkKA
+         y6bgPMl6mSmkqBjkXhq5e6cH5Y4xZO09GpTjHAeyXngzO4JTmnW41goxzcB8hWN/rp
+         0nsKy8+r/yuzQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     "Lin.Cao" <lincao12@amd.com>, Jingwen Chen <Jingwen.Chen2@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Sasha Levin <sashal@kernel.org>, evan.quan@amd.com,
-        christian.koenig@amd.com, Xinhui.Pan@amd.com, airlied@gmail.com,
-        daniel@ffwll.ch, lijo.lazar@amd.com, mario.limonciello@amd.com,
-        Hawking.Zhang@amd.com, guchun.chen@amd.com, Lyndon.Li@amd.com,
-        bokun.zhang@amd.com, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 6.6 33/40] drm/amd: check num of link levels when update pcie param
-Date:   Tue,  7 Nov 2023 07:16:35 -0500
-Message-ID: <20231107121837.3759358-33-sashal@kernel.org>
+Cc:     Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Sasha Levin <sashal@kernel.org>, magnus.damm@gmail.com,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, linux-renesas-soc@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.6 34/40] arm64: dts: renesas: r8a779f0: spider: Enable PCIe Host ch0
+Date:   Tue,  7 Nov 2023 07:16:36 -0500
+Message-ID: <20231107121837.3759358-34-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231107121837.3759358-1-sashal@kernel.org>
 References: <20231107121837.3759358-1-sashal@kernel.org>
@@ -58,35 +56,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Lin.Cao" <lincao12@amd.com>
+From: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
 
-[ Upstream commit 406e8845356d18bdf3d3a23b347faf67706472ec ]
+[ Upstream commit c588e1c9846b32182fd5a0ceb637b983810e7100 ]
 
-In SR-IOV environment, the value of pcie_table->num_of_link_levels will
-be 0, and num_of_levels - 1 will cause array index out of bounds
+Enable PCIe Host controller channel 0 on R-Car S4-8 Spider board.
 
-Signed-off-by: Lin.Cao <lincao12@amd.com>
-Acked-by: Jingwen Chen <Jingwen.Chen2@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Since this board has an Oculink connector, CLKREQ# pin of PFC for PCIe
+should not be used. So, using a GPIO is used to output the clock instead.
+Otherwise the controller cannot detect a PCIe device.
+
+Signed-off-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Link: https://lore.kernel.org/r/20230905012404.2915246-3-yoshihiro.shimoda.uh@renesas.com
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/pm/swsmu/smu13/smu_v13_0.c | 3 +++
- 1 file changed, 3 insertions(+)
+ .../boot/dts/renesas/r8a779f0-spider-cpu.dtsi | 24 +++++++++++++++++++
+ 1 file changed, 24 insertions(+)
 
-diff --git a/drivers/gpu/drm/amd/pm/swsmu/smu13/smu_v13_0.c b/drivers/gpu/drm/amd/pm/swsmu/smu13/smu_v13_0.c
-index 4aeb84572e5b8..5355f621388bb 100644
---- a/drivers/gpu/drm/amd/pm/swsmu/smu13/smu_v13_0.c
-+++ b/drivers/gpu/drm/amd/pm/swsmu/smu13/smu_v13_0.c
-@@ -2430,6 +2430,9 @@ int smu_v13_0_update_pcie_parameters(struct smu_context *smu,
- 	uint32_t smu_pcie_arg;
- 	int ret, i;
+diff --git a/arch/arm64/boot/dts/renesas/r8a779f0-spider-cpu.dtsi b/arch/arm64/boot/dts/renesas/r8a779f0-spider-cpu.dtsi
+index 5cbde8e8fcd5c..477f3114d2fd4 100644
+--- a/arch/arm64/boot/dts/renesas/r8a779f0-spider-cpu.dtsi
++++ b/arch/arm64/boot/dts/renesas/r8a779f0-spider-cpu.dtsi
+@@ -53,6 +53,12 @@ memory@480000000 {
+ 		reg = <0x4 0x80000000 0x0 0x80000000>;
+ 	};
  
-+	if (!num_of_levels)
-+		return 0;
++	rc21012_pci: clk-rc21012-pci {
++		compatible = "fixed-clock";
++		clock-frequency = <100000000>;
++		#clock-cells = <0>;
++	};
 +
- 	if (!(smu->adev->pm.pp_feature & PP_PCIE_DPM_MASK)) {
- 		if (pcie_table->pcie_gen[num_of_levels - 1] < pcie_gen_cap)
- 			pcie_gen_cap = pcie_table->pcie_gen[num_of_levels - 1];
+ 	rc21012_ufs: clk-rc21012-ufs {
+ 		compatible = "fixed-clock";
+ 		clock-frequency = <38400000>;
+@@ -106,6 +112,12 @@ gpio_exp_20: gpio@20 {
+ 		reg = <0x20>;
+ 		gpio-controller;
+ 		#gpio-cells = <2>;
++
++		rc21012-gpio2-hog {
++			gpio-hog;
++			gpios = <5 GPIO_ACTIVE_LOW>;
++			output-high;
++		};
+ 	};
+ };
+ 
+@@ -145,6 +157,18 @@ &mmc0 {
+ 	status = "okay";
+ };
+ 
++&pcie0_clkref {
++	compatible = "gpio-gate-clock";
++	clocks = <&rc21012_pci>;
++	enable-gpios = <&gpio2 15 GPIO_ACTIVE_LOW>;
++	/delete-property/ clock-frequency;
++};
++
++&pciec0 {
++	reset-gpio = <&gpio_exp_20 0 GPIO_ACTIVE_LOW>;
++	status = "okay";
++};
++
+ &pfc {
+ 	pinctrl-0 = <&scif_clk_pins>;
+ 	pinctrl-names = "default";
 -- 
 2.42.0
 
