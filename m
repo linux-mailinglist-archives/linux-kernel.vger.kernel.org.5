@@ -2,42 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 51EB87E4CC6
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 00:23:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 121717E4CCA
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 00:23:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344370AbjKGXXS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 18:23:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47226 "EHLO
+        id S1344407AbjKGXXY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 18:23:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344401AbjKGXXD (ORCPT
+        with ESMTP id S235321AbjKGXXE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 18:23:03 -0500
+        Tue, 7 Nov 2023 18:23:04 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46AB41987;
-        Tue,  7 Nov 2023 15:22:51 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A9374C433C8;
-        Tue,  7 Nov 2023 23:22:49 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A37C51992;
+        Tue,  7 Nov 2023 15:22:52 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 652BCC433C7;
+        Tue,  7 Nov 2023 23:22:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699399370;
-        bh=ODQxPb0cYVskkQLSAD6mZtDs/FHqTQTDlp2qY4AN6q4=;
+        s=k20201202; t=1699399372;
+        bh=T+VF2SfYqdlsFE0o5OEbuT79GlyXUHL7Mt9mzqFNmuU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pytPkoxTH3hjdYoReL+MSy487bPyPBvnNmaECthBNTVdt04Xn2nGhEOjso60URjCa
-         cCAJ6pmnS04NBHJUtNH1r6FEt9j11lL0QytgJDsCzRRG7gsAZH5+5zg5/dujDitC0w
-         0zLZ/OzgW8fvaDW2CB00qNujOSBp3Ik7FbDzn51VE5O790kOhzIAmGUFF9GInLFwY4
-         RohamHVVsUgzxJQTzTvcUX+T5alBw2uCyUO8VnmWpqq62E34sfkZCvlwIPhACHcisE
-         uv4RaNVbf6SkixuJbH/kvaMQm2Uf2Z9aT7JJYSk4vNONT+E/TwxroFupfHyNY38EkS
-         vf82GO8i8KmoQ==
+        b=COz9cd6UwFwzM80mj+gUleHVlDIUMnfT2aRGHI92nMU/fYunQyK9vb2M9ax1BWuRy
+         cOKHc2a/QJS4/lWX9mz3Cxu3WlZiqO0nDaNbVvfshSPUL1ZKCQs9pgKe+XXx+WfLtJ
+         DdxO9FNytisxbsbjaV2H81c+5PZ+T5ju309tUDpINNpcWr7tDIoKN56CI+i7jZPczA
+         KB8r70jYO7t4I+c27Um9D1YvlLd0AHNLkdQ3AoGN5TjJT90Ve8lNEHfSng1HeeitZv
+         enoCmXRdZZ4x3Gik05nv/4Qxs2/uWKI3Yzulpqsg0zTvzn0Dg5gtGDLKkkKEzGkEWJ
+         TJJKIELHkkUIg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Niklas Schnelle <schnelle@linux.ibm.com>,
         Arnd Bergmann <arnd@kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Sasha Levin <sashal@kernel.org>, mathias.nyman@intel.com,
-        stern@rowland.harvard.edu, Basavaraj.Natikar@amd.com,
         linux-usb@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 09/18] usb: pci-quirks: handle HAS_IOPORT dependency for AMD quirk
-Date:   Tue,  7 Nov 2023 18:22:03 -0500
-Message-ID: <20231107232231.3775605-9-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.6 10/18] usb: pci-quirks: handle HAS_IOPORT dependency for UHCI handoff
+Date:   Tue,  7 Nov 2023 18:22:04 -0500
+Message-ID: <20231107232231.3775605-10-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231107232231.3775605-1-sashal@kernel.org>
 References: <20231107232231.3775605-1-sashal@kernel.org>
@@ -52,170 +51,74 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Niklas Schnelle <schnelle@linux.ibm.com>
 
-[ Upstream commit 52e24f8c0a102ac76649c6b71224fadcc82bd5da ]
+[ Upstream commit 358ad297e379ff548247e3e24c6619559942bfdd ]
 
 In a future patch HAS_IOPORT=n will result in inb()/outb() and friends
-not being declared. In the pci-quirks case the I/O port acceses are
-used in the quirks for several AMD south bridges, Add a config option
-for the AMD quirks to depend on HAS_IOPORT and #ifdef the quirk code.
+not being declared. With the AMD quirk handled USB PCI quirks still use
+inw() in uhci_check_and_reset_hc() and thus indirectly in
+quirk_usb_handoff_uhci(). Handle this by conditionally compiling
+uhci_check_and_reset_hc() and stubbing out quirk_usb_handoff_uhci() when
+HAS_IOPORT is not available.
 
 Co-developed-by: Arnd Bergmann <arnd@kernel.org>
 Signed-off-by: Arnd Bergmann <arnd@kernel.org>
 Signed-off-by: Niklas Schnelle <schnelle@linux.ibm.com>
-Link: https://lore.kernel.org/r/20230911125653.1393895-3-schnelle@linux.ibm.com
+Link: https://lore.kernel.org/r/20230911125653.1393895-4-schnelle@linux.ibm.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/Kconfig           | 10 ++++++++++
- drivers/usb/core/hcd-pci.c    |  3 +--
- drivers/usb/host/pci-quirks.c |  2 ++
- drivers/usb/host/pci-quirks.h | 30 ++++++++++++++++++++++--------
- include/linux/usb/hcd.h       | 17 +++++++++++++++++
- 5 files changed, 52 insertions(+), 10 deletions(-)
+ drivers/usb/host/pci-quirks.c | 23 ++++++++++++++++-------
+ 1 file changed, 16 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/usb/Kconfig b/drivers/usb/Kconfig
-index 7f33bcc315f27..abf8c6cdea9ea 100644
---- a/drivers/usb/Kconfig
-+++ b/drivers/usb/Kconfig
-@@ -91,6 +91,16 @@ config USB_PCI
- 	  If you have such a device you may say N here and PCI related code
- 	  will not be built in the USB driver.
- 
-+config USB_PCI_AMD
-+	bool "AMD PCI USB host support"
-+	depends on USB_PCI && HAS_IOPORT
-+	default X86 || MACH_LOONGSON64 || PPC_PASEMI
-+	help
-+	  Enable workarounds for USB implementation quirks in SB600/SB700/SB800
-+	  and later south bridge implementations. These are common on x86 PCs
-+	  with AMD CPUs but rarely used elsewhere, with the exception of a few
-+	  powerpc and mips desktop machines.
-+
- if USB
- 
- source "drivers/usb/core/Kconfig"
-diff --git a/drivers/usb/core/hcd-pci.c b/drivers/usb/core/hcd-pci.c
-index 990280688b254..ee3156f495338 100644
---- a/drivers/usb/core/hcd-pci.c
-+++ b/drivers/usb/core/hcd-pci.c
-@@ -206,8 +206,7 @@ int usb_hcd_pci_probe(struct pci_dev *dev, const struct hc_driver *driver)
- 		goto free_irq_vectors;
- 	}
- 
--	hcd->amd_resume_bug = (usb_hcd_amd_remote_wakeup_quirk(dev) &&
--			driver->flags & (HCD_USB11 | HCD_USB3)) ? 1 : 0;
-+	hcd->amd_resume_bug = usb_hcd_amd_resume_bug(dev, driver);
- 
- 	if (driver->flags & HCD_MEMORY) {
- 		/* EHCI, OHCI */
 diff --git a/drivers/usb/host/pci-quirks.c b/drivers/usb/host/pci-quirks.c
-index 5e06fad82a228..10813096d00c6 100644
+index 10813096d00c6..1f9c1b1435d86 100644
 --- a/drivers/usb/host/pci-quirks.c
 +++ b/drivers/usb/host/pci-quirks.c
-@@ -76,6 +76,7 @@
- #define USB_INTEL_USB3_PSSEN   0xD8
- #define USB_INTEL_USB3PRM      0xDC
- 
-+#ifdef CONFIG_USB_PCI_AMD
- /* AMD quirk use */
- #define	AB_REG_BAR_LOW		0xe0
- #define	AB_REG_BAR_HIGH		0xe1
-@@ -587,6 +588,7 @@ bool usb_amd_pt_check_port(struct device *device, int port)
- 	return !(value & BIT(port_shift));
+@@ -634,6 +634,16 @@ void usb_asmedia_modifyflowcontrol(struct pci_dev *pdev)
  }
- EXPORT_SYMBOL_GPL(usb_amd_pt_check_port);
-+#endif /* CONFIG_USB_PCI_AMD */
+ EXPORT_SYMBOL_GPL(usb_asmedia_modifyflowcontrol);
  
- static int usb_asmedia_wait_write(struct pci_dev *pdev)
- {
-diff --git a/drivers/usb/host/pci-quirks.h b/drivers/usb/host/pci-quirks.h
-index cde2263a9d2e4..a5230b0b9e913 100644
---- a/drivers/usb/host/pci-quirks.h
-+++ b/drivers/usb/host/pci-quirks.h
-@@ -2,7 +2,7 @@
- #ifndef __LINUX_USB_PCI_QUIRKS_H
- #define __LINUX_USB_PCI_QUIRKS_H
++static inline int io_type_enabled(struct pci_dev *pdev, unsigned int mask)
++{
++	u16 cmd;
++
++	return !pci_read_config_word(pdev, PCI_COMMAND, &cmd) && (cmd & mask);
++}
++
++#define mmio_enabled(dev) io_type_enabled(dev, PCI_COMMAND_MEMORY)
++
++#if defined(CONFIG_HAS_IOPORT) && IS_ENABLED(CONFIG_USB_UHCI_HCD)
+ /*
+  * Make sure the controller is completely inactive, unable to
+  * generate interrupts or do DMA.
+@@ -715,14 +725,7 @@ int uhci_check_and_reset_hc(struct pci_dev *pdev, unsigned long base)
+ }
+ EXPORT_SYMBOL_GPL(uhci_check_and_reset_hc);
  
--#ifdef CONFIG_USB_PCI
-+#ifdef CONFIG_USB_PCI_AMD
- int usb_hcd_amd_remote_wakeup_quirk(struct pci_dev *pdev);
- bool usb_amd_hang_symptom_quirk(void);
- bool usb_amd_prefetch_quirk(void);
-@@ -12,23 +12,37 @@ void usb_amd_quirk_pll_disable(void);
- void usb_amd_quirk_pll_enable(void);
- void sb800_prefetch(struct device *dev, int on);
- bool usb_amd_pt_check_port(struct device *device, int port);
+-static inline int io_type_enabled(struct pci_dev *pdev, unsigned int mask)
+-{
+-	u16 cmd;
+-	return !pci_read_config_word(pdev, PCI_COMMAND, &cmd) && (cmd & mask);
+-}
 -
--void uhci_reset_hc(struct pci_dev *pdev, unsigned long base);
--int uhci_check_and_reset_hc(struct pci_dev *pdev, unsigned long base);
--void usb_asmedia_modifyflowcontrol(struct pci_dev *pdev);
--void usb_enable_intel_xhci_ports(struct pci_dev *xhci_pdev);
--void usb_disable_xhci_ports(struct pci_dev *xhci_pdev);
- #else
--struct pci_dev;
-+static inline bool usb_amd_hang_symptom_quirk(void)
-+{
-+	return false;
-+};
-+static inline bool usb_amd_prefetch_quirk(void)
-+{
-+	return false;
-+}
- static inline void usb_amd_quirk_pll_disable(void) {}
- static inline void usb_amd_quirk_pll_enable(void) {}
- static inline void usb_amd_dev_put(void) {}
-+static inline bool usb_amd_quirk_pll_check(void)
-+{
-+	return false;
-+}
- static inline void sb800_prefetch(struct device *dev, int on) {}
- static inline bool usb_amd_pt_check_port(struct device *device, int port)
+ #define pio_enabled(dev) io_type_enabled(dev, PCI_COMMAND_IO)
+-#define mmio_enabled(dev) io_type_enabled(dev, PCI_COMMAND_MEMORY)
+ 
+ static void quirk_usb_handoff_uhci(struct pci_dev *pdev)
  {
- 	return false;
+@@ -742,6 +745,12 @@ static void quirk_usb_handoff_uhci(struct pci_dev *pdev)
+ 		uhci_check_and_reset_hc(pdev, base);
  }
-+#endif /* CONFIG_USB_PCI_AMD */
  
-+#ifdef CONFIG_USB_PCI
-+void uhci_reset_hc(struct pci_dev *pdev, unsigned long base);
-+int uhci_check_and_reset_hc(struct pci_dev *pdev, unsigned long base);
-+void usb_asmedia_modifyflowcontrol(struct pci_dev *pdev);
-+void usb_enable_intel_xhci_ports(struct pci_dev *xhci_pdev);
-+void usb_disable_xhci_ports(struct pci_dev *xhci_pdev);
-+#else
-+struct pci_dev;
- static inline void usb_asmedia_modifyflowcontrol(struct pci_dev *pdev) {}
- static inline void usb_disable_xhci_ports(struct pci_dev *xhci_pdev) {}
- #endif  /* CONFIG_USB_PCI */
-diff --git a/include/linux/usb/hcd.h b/include/linux/usb/hcd.h
-index 61d4f0b793dcd..00724b4f6e122 100644
---- a/include/linux/usb/hcd.h
-+++ b/include/linux/usb/hcd.h
-@@ -484,8 +484,25 @@ extern int usb_hcd_pci_probe(struct pci_dev *dev,
- extern void usb_hcd_pci_remove(struct pci_dev *dev);
- extern void usb_hcd_pci_shutdown(struct pci_dev *dev);
- 
-+#ifdef CONFIG_USB_PCI_AMD
- extern int usb_hcd_amd_remote_wakeup_quirk(struct pci_dev *dev);
- 
-+static inline bool usb_hcd_amd_resume_bug(struct pci_dev *dev,
-+					  const struct hc_driver *driver)
-+{
-+	if (!usb_hcd_amd_remote_wakeup_quirk(dev))
-+		return false;
-+	if (driver->flags & (HCD_USB11 | HCD_USB3))
-+		return true;
-+	return false;
-+}
-+#else /* CONFIG_USB_PCI_AMD */
-+static inline bool usb_hcd_amd_resume_bug(struct pci_dev *dev,
-+					  const struct hc_driver *driver)
-+{
-+	return false;
-+}
-+#endif
- extern const struct dev_pm_ops usb_hcd_pci_pm_ops;
- #endif /* CONFIG_USB_PCI */
- 
++#else /* defined(CONFIG_HAS_IOPORT && IS_ENABLED(CONFIG_USB_UHCI_HCD) */
++
++static void quirk_usb_handoff_uhci(struct pci_dev *pdev) {}
++
++#endif /* defined(CONFIG_HAS_IOPORT && IS_ENABLED(CONFIG_USB_UHCI_HCD) */
++
+ static int mmio_resource_enabled(struct pci_dev *pdev, int idx)
+ {
+ 	return pci_resource_start(pdev, idx) && mmio_enabled(pdev);
 -- 
 2.42.0
 
