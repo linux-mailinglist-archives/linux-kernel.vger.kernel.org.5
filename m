@@ -2,73 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E09C77E4B9A
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 23:20:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 230F67E4BA3
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 23:23:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233886AbjKGWU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 17:20:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38236 "EHLO
+        id S234722AbjKGWX0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 17:23:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229650AbjKGWU1 (ORCPT
+        with ESMTP id S232540AbjKGWXY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 17:20:27 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94D16101
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 14:20:25 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 0D131C433C8;
-        Tue,  7 Nov 2023 22:20:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699395625;
-        bh=u5ZRGxzcwj01x84zTuvGZgszUEpJS89vsjD7KAezq/0=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=tSykE0H1u85coMDP5Xdy7J+bUXexqNZl9lXvjN4C3ejZPCKZyufiIkyYyBUp6Yba9
-         7cnAkDmNNS0shN5P/W9v9Y58NxjNlUqwZFJ9iwmpcLSyaooyVv6uYrnxBON+TK+H2r
-         8WI63hGGbFe5J1hMZWqOUNh7F01rzu85LLu1sg3T2t/g/o144LVx5bBSia4TVKNkSa
-         YpBMF6FTZIi0Jb2MjAxFe0TefPkjxefF3KB4XVinSLrEKJVnUBFsx2pkkspVlH5Uo3
-         0vCOUcn1TXUAy+hTPEpsvNiWM2Edga3lhwc7ySqsPUjhQRidKLP/4Yzv48EQONhvS3
-         TFYR29OVTa5pA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id E71C0E00083;
-        Tue,  7 Nov 2023 22:20:24 +0000 (UTC)
+        Tue, 7 Nov 2023 17:23:24 -0500
+Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D657114
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 14:23:22 -0800 (PST)
+Received: by mail-pl1-x64a.google.com with SMTP id d9443c01a7336-1cc56a9ece7so54966535ad.3
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 14:23:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1699395802; x=1700000602; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=0Pmozh0ybI7SbfNg64kEULMiwr3zKJkFxXH8jQ6gCVM=;
+        b=izoEPk39tqUfOifZkL9mKfl1YAU7GCXRX/ZXJXZRdlk+1UH2+aWafH+4gnT8MnBwdC
+         +ASbrpYY5N55torcG421dxWhTV7MlYXPxEh5e+e3Ws3IWrtjPKS3pC9wqWJudPuRD6Nx
+         sl0ICx5rQ2VCQVdIuEQ6IUatHJE7zHCE14Sw0o3nSIqyHaGQSkhrm2zMd9edZUqxqPTc
+         23p/J4VlnYYqkYtx1bfuffQ9KG/gcdhsPsH1hsSA1e5f/FMDubp992lKv0HoI1ZivSJW
+         QZNieQvsuMR9zN4pa/mES1gpDpL9xCyKp2xy6AXbpfHOtIwz57BYwQUGaxDsn2tBTCRz
+         azow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699395802; x=1700000602;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=0Pmozh0ybI7SbfNg64kEULMiwr3zKJkFxXH8jQ6gCVM=;
+        b=m8l7ZoOE6aRb7Zvj5rLdVysjiUKKsquFlZT1Vty9+wofYvZZdHLzX/ASp9fXq3J8z3
+         lCxctnKG2ori5xmILZzaX0/VAGoQAJFlsLVOdFm72PoDU8ZAgSZiaDtSf4t1qIef9U6s
+         5pZNx89Jfq38JzOxN1d0reLfi/qgtBGgp186rOjEiG2J0hn0sWIr9S63TaCuzJb/+kC3
+         r1+i6zaCaKd2x/0+yDhK+ksvghQ+CX0uH6YYyA6TdM3zUmc/Zn1dfkxwcXtGYkxFjN+s
+         MN3UxY04maVnEZ+YeWM5MLx3+U6zok0ak4fU5Q/+XHA6aaPm5cAAKB8rzC/uEKozG2Dm
+         wXZA==
+X-Gm-Message-State: AOJu0Ywy9snIT+1Wcn+rdbhTHTxBg2DRI1RlaZligR19VG2RZU8kKpLK
+        5ym4OXuEd3zG7zL4A0pyuEsrYnQ=
+X-Google-Smtp-Source: AGHT+IH1xKdg+nrZdYHc/L2SejfqkQOSdqRffH8LAz7J5HMiZt1d8BbpMO2b6yTqmZzIZmhgTiZbQUk=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a17:903:3244:b0:1cc:bb7f:bd60 with SMTP id
+ ji4-20020a170903324400b001ccbb7fbd60mr6825plb.6.1699395801930; Tue, 07 Nov
+ 2023 14:23:21 -0800 (PST)
+Date:   Tue, 7 Nov 2023 14:23:20 -0800
+In-Reply-To: <CANn89iJNR8bYYBO92=f5_2hFoTK8+giH11o-7NHURoahwvV11w@mail.gmail.com>
+Mime-Version: 1.0
+References: <CAHS8izMaAhoae5ChnzO4gny1cYYnqV1cB8MC2cAF3eoyt+Sf4A@mail.gmail.com>
+ <ZUlvzm24SA3YjirV@google.com> <CAHS8izMQ5Um_ScY0VgAjaEaT-hRh4tFoTgc6Xr9Tj5rEj0fijA@mail.gmail.com>
+ <CAKH8qBsbh8qYxNHZ6111RQFFpNWbWZtg0LDXkn15xcsbAq4R6w@mail.gmail.com>
+ <CAF=yD-+BuKXoVL8UF+No1s0TsHSzBTz7UrB1Djt_BrM74uLLcg@mail.gmail.com>
+ <CAHS8izNxKHhW5uCqmfau6n3c18=hE3RXzA+ng5LEGiKj12nGcg@mail.gmail.com>
+ <ZUmNk98LyO_Ntcy7@google.com> <CAHS8izNTDsHTahkd17zQVQnjzniZAk-dKNs-Mq0E4shdrXOJbg@mail.gmail.com>
+ <ZUqms8QzQpfPQWyy@google.com> <CANn89iJNR8bYYBO92=f5_2hFoTK8+giH11o-7NHURoahwvV11w@mail.gmail.com>
+Message-ID: <ZUq42Po1Pn-9QxrM@google.com>
+Subject: Re: [RFC PATCH v3 09/12] net: add support for skbs with unreadable frags
+From:   Stanislav Fomichev <sdf@google.com>
+To:     Eric Dumazet <edumazet@google.com>
+Cc:     Mina Almasry <almasrymina@google.com>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        David Ahern <dsahern@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>, Shuah Khan <shuah@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        "Christian =?utf-8?B?S8O2bmln?=" <christian.koenig@amd.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Jeroen de Borst <jeroendb@google.com>,
+        Praveen Kaligineedi <pkaligineedi@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Kaiyuan Zhang <kaiyuanz@google.com>
 Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v3] tg3: Fix the TX ring stall
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <169939562494.24931.8185977865842706438.git-patchwork-notify@kernel.org>
-Date:   Tue, 07 Nov 2023 22:20:24 +0000
-References: <20231105185828.287004-1-alexey.pakhunov@spacex.com>
-In-Reply-To: <20231105185828.287004-1-alexey.pakhunov@spacex.com>
-To:     Alex Pakhunov <alexey.pakhunov@spacex.com>
-Cc:     mchan@broadcom.com, vincent.wong2@spacex.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        siva.kallam@broadcom.com, prashant@broadcom.com
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+On 11/07, Eric Dumazet wrote:
+> On Tue, Nov 7, 2023 at 10:05=E2=80=AFPM Stanislav Fomichev <sdf@google.co=
+m> wrote:
+>=20
+> >
+> > I don't understand. We require an elaborate setup to receive devmem cms=
+gs,
+> > why would some random application receive those?
+>=20
+>=20
+> A TCP socket can receive 'valid TCP packets' from many different sources,
+> especially with BPF hooks...
+>=20
+> Think of a bonding setup, packets being mirrored by some switches or
+> even from tc.
+>=20
+> Better double check than be sorry.
+>=20
+> We have not added a 5th component in the 4-tuple lookups, being "is
+> this socket a devmem one".
+>=20
+> A mix of regular/devmem skb is supported.
 
-This patch was applied to netdev/net.git (main)
-by David S. Miller <davem@davemloft.net>:
+Can we mark a socket as devmem-only? Do we have any use-case for those
+hybrid setups? Or, let me put it that way: do we expect API callers
+to handle both linear and non-linear cases correctly?
+As a consumer of the previous versions of these apis internally,
+I find all those corner cases confusing :-( Hence trying to understand
+whether we can make it a bit more rigid and properly defined upstream.
 
-On Sun, 5 Nov 2023 10:58:28 -0800 you wrote:
-> From: Alex Pakhunov <alexey.pakhunov@spacex.com>
-> 
-> The TX ring maintained by the tg3 driver can end up in the state, when it
-> has packets queued for sending but the NIC hardware is not informed, so no
-> progress is made. This leads to a multi-second interruption in network
-> traffic followed by dev_watchdog() firing and resetting the queue.
-> 
-> [...]
-
-Here is the summary with links:
-  - [v3] tg3: Fix the TX ring stall
-    https://git.kernel.org/netdev/net/c/c542b39b607d
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+But going back to that MSG_SOCK_DEVMEM flag. If the application is
+supposed to handle both linear and devmem chucks, why do we need
+this extra MSG_SOCK_DEVMEM opt-in to signal that it's able to process
+it? From Mina's reply, it seemed like MSG_SOCK_DEVMEM is there to
+protect random applications that get misrouted devmem skb. I don't
+see how returning EFAULT helps in that case.
