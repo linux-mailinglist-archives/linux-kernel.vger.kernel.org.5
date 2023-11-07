@@ -2,44 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BAA67E3C78
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 13:16:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 045757E3C7A
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 13:16:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234647AbjKGMQc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 07:16:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40128 "EHLO
+        id S234653AbjKGMQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 07:16:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234081AbjKGMPl (ORCPT
+        with ESMTP id S234584AbjKGMPm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 07:15:41 -0500
+        Tue, 7 Nov 2023 07:15:42 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A3E844B5;
-        Tue,  7 Nov 2023 04:11:47 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4AC3CC43397;
-        Tue,  7 Nov 2023 12:11:46 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFB832D43;
+        Tue,  7 Nov 2023 04:11:48 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C653C433BA;
+        Tue,  7 Nov 2023 12:11:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699359107;
-        bh=Gs8lRYHG/QEOT40sG68E/a1IAjmfaXVTdhAS+MD2BBY=;
+        s=k20201202; t=1699359108;
+        bh=50XWSrO2j1ZmUj0alw7A6c6O/ZecdZAsHmNeeD3ql14=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hfw8FOgxTt1M/QZh0zIgsO/i08gGko3/+IZN49TubCtBfRhDTfF5Mojl0i+byULCa
-         rhoOuyQ38rNuFoKTcDJmluxVLgpXyCbxIf2Zh7JPtwSn+73ZSAAnY/O/dw3T6RzVIv
-         r3eOA2J1XxUC6PknAtS6163gKOPh+E/IWSrrZDkBBuezAearFXD1xKXhfTAq7OlGb3
-         SEiR8qSfRb0iiUjLMHxOx2lZr2rzAWwqzdB0hJfIKUIdUiHSpxDuKVhwPMKfhKJSwy
-         gVZJ058qcDYdsxsPlUPG1fcYhGRZSOMhxX2tf34dQt/vmCfgYaT6zZ67vZfTgXeLq0
-         t8YHC6n88faWw==
+        b=tI5GbfevW1iM6rKvxGqJmwscl0ldpfLbXN+eeuNK6H4NIi9eaoR19M9M+z52IhsSP
+         gOP36BR+KrpfjPAZTqTD0CENI31p/gjq40VzJY8NC/UjP2+PcNmFGkGnD2TDlUIOfs
+         3Ei1b83nJEaNTEY4HsXu5kPISeN+i07BXt3S/n5Nndk2NX/dmqJQX0KzPRbTH0dxQx
+         7i14EKVm4wOVlA7UU+ClxldMeDQ4RavV4ATJgljdxuerRQs2eNlq6iE2q0u0uZoz7H
+         eCkpmFmw3oQNnHoo3KqLrhFn1QpqwvbVUAO0liJ+69QhrYehfmff0AjZoNuc7ODs2E
+         j5v9JAgEnjDAg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Tzung-Bi Shih <tzungbi@kernel.org>,
-        Guenter Roeck <groeck@chromium.org>,
-        Sasha Levin <sashal@kernel.org>, bleung@chromium.org,
-        chrome-platform@lists.linux.dev
-Subject: [PATCH AUTOSEL 6.1 17/18] platform/chrome: kunit: initialize lock for fake ec_dev
-Date:   Tue,  7 Nov 2023 07:10:47 -0500
-Message-ID: <20231107121104.3757943-17-sashal@kernel.org>
+Cc:     Olli Asikainen <olli.asikainen@gmail.com>,
+        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        Sasha Levin <sashal@kernel.org>, hmh@hmh.eng.br,
+        hdegoede@redhat.com, markgross@kernel.org,
+        ibm-acpi-devel@lists.sourceforge.net,
+        platform-driver-x86@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.1 18/18] platform/x86: thinkpad_acpi: Add battery quirk for Thinkpad X120e
+Date:   Tue,  7 Nov 2023 07:10:48 -0500
+Message-ID: <20231107121104.3757943-18-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231107121104.3757943-1-sashal@kernel.org>
 References: <20231107121104.3757943-1-sashal@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.1.61
@@ -54,42 +57,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tzung-Bi Shih <tzungbi@kernel.org>
+From: Olli Asikainen <olli.asikainen@gmail.com>
 
-[ Upstream commit e410b4ade83d06a046f6e32b5085997502ba0559 ]
+[ Upstream commit 916646758aea81a143ce89103910f715ed923346 ]
 
-cros_ec_cmd_xfer() uses ec_dev->lock.  Initialize it.
+Thinkpad X120e also needs this battery quirk.
 
-Otherwise, dmesg shows the following:
-> DEBUG_LOCKS_WARN_ON(lock->magic != lock)
-> ...
-> Call Trace:
->  ? __mutex_lock
->  ? __warn
->  ? __mutex_lock
->  ...
->  ? cros_ec_cmd_xfer
-
-Reviewed-by: Guenter Roeck <groeck@chromium.org>
-Link: https://lore.kernel.org/r/20231003080504.4011337-1-tzungbi@kernel.org
-Signed-off-by: Tzung-Bi Shih <tzungbi@kernel.org>
+Signed-off-by: Olli Asikainen <olli.asikainen@gmail.com>
+Link: https://lore.kernel.org/r/20231024190922.2742-1-olli.asikainen@gmail.com
+Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/platform/chrome/cros_ec_proto_test.c | 1 +
+ drivers/platform/x86/thinkpad_acpi.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/platform/chrome/cros_ec_proto_test.c b/drivers/platform/chrome/cros_ec_proto_test.c
-index c6a83df91ae1e..b46a8bc2196fe 100644
---- a/drivers/platform/chrome/cros_ec_proto_test.c
-+++ b/drivers/platform/chrome/cros_ec_proto_test.c
-@@ -2667,6 +2667,7 @@ static int cros_ec_proto_test_init(struct kunit *test)
- 	ec_dev->dev->release = cros_ec_proto_test_release;
- 	ec_dev->cmd_xfer = cros_kunit_ec_xfer_mock;
- 	ec_dev->pkt_xfer = cros_kunit_ec_xfer_mock;
-+	mutex_init(&ec_dev->lock);
- 
- 	priv->msg = (struct cros_ec_command *)priv->_msg;
- 
+diff --git a/drivers/platform/x86/thinkpad_acpi.c b/drivers/platform/x86/thinkpad_acpi.c
+index e7ece2738de94..c7a0921844dc8 100644
+--- a/drivers/platform/x86/thinkpad_acpi.c
++++ b/drivers/platform/x86/thinkpad_acpi.c
+@@ -9946,6 +9946,7 @@ static const struct tpacpi_quirk battery_quirk_table[] __initconst = {
+ 	 * Individual addressing is broken on models that expose the
+ 	 * primary battery as BAT1.
+ 	 */
++	TPACPI_Q_LNV('8', 'F', true),       /* Thinkpad X120e */
+ 	TPACPI_Q_LNV('J', '7', true),       /* B5400 */
+ 	TPACPI_Q_LNV('J', 'I', true),       /* Thinkpad 11e */
+ 	TPACPI_Q_LNV3('R', '0', 'B', true), /* Thinkpad 11e gen 3 */
 -- 
 2.42.0
 
