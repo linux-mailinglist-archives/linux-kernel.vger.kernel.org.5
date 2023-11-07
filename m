@@ -2,45 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D230B7E45A8
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 17:17:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B6597E450E
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 17:00:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234575AbjKGQRN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 11:17:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39884 "EHLO
+        id S1343943AbjKGQAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 11:00:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343530AbjKGQQv (ORCPT
+        with ESMTP id S1344692AbjKGP7a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 11:16:51 -0500
+        Tue, 7 Nov 2023 10:59:30 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09EDF1BCA;
-        Tue,  7 Nov 2023 07:52:17 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61CD8C433C7;
-        Tue,  7 Nov 2023 15:52:16 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 491A97DA3;
+        Tue,  7 Nov 2023 07:52:22 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1DEE3C433C8;
+        Tue,  7 Nov 2023 15:52:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699372337;
-        bh=Hi4ahaJUaPkJz0w6M6TzWZNeU9v/cKUfV97yidC2350=;
+        s=k20201202; t=1699372341;
+        bh=Uf97kONez/vCKWsXsmx59dIbWr+W5iilYM9iQ5jVqaQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qsxcy4MGdGP4D+1sz0xIJbO4dAi12hl86q91Dj6eY+CrTKA/SVpL7l3VeJQo5zq04
-         Bs9JgOOtJRmq1XZPdjs01mDTbd6L5K/+ho8xJCoOyAyHi9rgM94n9+dVsCMEpDZlhb
-         dDDNDpsIsTGGmvnanFKW/2FM5KW58sx0rdfom6LknsCVtxvjTY9YDLG8Y9lC2eanPQ
-         9RjNGC9uQmP+EHZXyZAyDj6IcqOx2Yi0GTIm15Mc15Pt3oOhik6lIXVmzKi5oGVOu2
-         CvHApCTm3V7dHid22wyeFQAF8ZwrFhu3y4Dj3K8lgnbIwX2ZEG2ycY431/y1RDNTwD
-         zVLDEt4srHmcw==
+        b=fVZWcMu+TxEC1fPum4VE88M7uSBW5xg50pzSBVnrU+fXRBmbKz4TDMNEOAdqpCudW
+         /LJZhh0m/ynYYaNxw/QwLvYaFl5d6eZ0SZ58p8faUnhoFg77Y/tI/RygPQyqY+kmrN
+         mV3J8i2omcwWVrcNvX+1PMIkyBQFO7nIZ4H8ja8z9SbhecZevd20w/Dw/EzEGeTe2L
+         fvae1fdZ88H+nPYrBUW7ZxTqZXIoCW1lN1O+9tcZsp3LDoLU0c6IuVqW2iFgF88iYM
+         1ZyFC50t5d60pbzjA6Ql6/cFaSg8KyPSi18AGytwa5/nzvlbQPjkd9J88fx2GLprTu
+         /+IjIWHZX+/Zg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Cezary Rojewski <cezary.rojewski@intel.com>,
-        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>,
-        perex@perex.cz, tiwai@suse.com, broonie@kernel.org,
-        siyanteng@loongson.cn, zhangyiqun@phytium.com.cn,
-        linux-sound@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 12/22] ALSA: hda: Fix possible null-ptr-deref when assigning a stream
-Date:   Tue,  7 Nov 2023 10:51:21 -0500
-Message-ID: <20231107155146.3767610-12-sashal@kernel.org>
+Cc:     =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Sasha Levin <sashal@kernel.org>, lpieralisi@kernel.org,
+        kw@linux.com, thierry.reding@gmail.com, jonathanh@nvidia.com,
+        mani@kernel.org, sumitg@nvidia.com, u.kleine-koenig@pengutronix.de,
+        vidyas@nvidia.com, yoshihiro.shimoda.uh@renesas.com,
+        linux-pci@vger.kernel.org, linux-tegra@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.15 13/22] PCI: tegra194: Use FIELD_GET()/FIELD_PREP() with Link Width fields
+Date:   Tue,  7 Nov 2023 10:51:22 -0500
+Message-ID: <20231107155146.3767610-13-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231107155146.3767610-1-sashal@kernel.org>
 References: <20231107155146.3767610-1-sashal@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.15.137
@@ -49,40 +53,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Cezary Rojewski <cezary.rojewski@intel.com>
+From: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
 
-[ Upstream commit f93dc90c2e8ed664985e366aa6459ac83cdab236 ]
+[ Upstream commit 759574abd78e3b47ec45bbd31a64e8832cf73f97 ]
 
-While AudioDSP drivers assign streams exclusively of HOST or LINK type,
-nothing blocks a user to attempt to assign a COUPLED stream. As
-supplied substream instance may be a stub, what is the case when
-code-loading, such scenario ends with null-ptr-deref.
+Use FIELD_GET() to extract PCIe Negotiated Link Width field instead of
+custom masking and shifting.
 
-Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
-Link: https://lore.kernel.org/r/20231006102857.749143-2-cezary.rojewski@intel.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Similarly, change custom code that misleadingly used
+PCI_EXP_LNKSTA_NLW_SHIFT to prepare value for PCI_EXP_LNKCAP write
+to use FIELD_PREP() with correct field define (PCI_EXP_LNKCAP_MLW).
+
+Link: https://lore.kernel.org/r/20230919125648.1920-5-ilpo.jarvinen@linux.intel.com
+Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/hda/hdac_stream.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/pci/controller/dwc/pcie-tegra194.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
-diff --git a/sound/hda/hdac_stream.c b/sound/hda/hdac_stream.c
-index eea22cf72aefd..ec95d0449bfe9 100644
---- a/sound/hda/hdac_stream.c
-+++ b/sound/hda/hdac_stream.c
-@@ -320,8 +320,10 @@ struct hdac_stream *snd_hdac_stream_assign(struct hdac_bus *bus,
- 	struct hdac_stream *res = NULL;
+diff --git a/drivers/pci/controller/dwc/pcie-tegra194.c b/drivers/pci/controller/dwc/pcie-tegra194.c
+index 765abe0732282..2f82da76e3711 100644
+--- a/drivers/pci/controller/dwc/pcie-tegra194.c
++++ b/drivers/pci/controller/dwc/pcie-tegra194.c
+@@ -7,6 +7,7 @@
+  * Author: Vidya Sagar <vidyas@nvidia.com>
+  */
  
- 	/* make a non-zero unique key for the substream */
--	int key = (substream->pcm->device << 16) | (substream->number << 2) |
--		(substream->stream + 1);
-+	int key = (substream->number << 2) | (substream->stream + 1);
-+
-+	if (substream->pcm)
-+		key |= (substream->pcm->device << 16);
++#include <linux/bitfield.h>
+ #include <linux/clk.h>
+ #include <linux/debugfs.h>
+ #include <linux/delay.h>
+@@ -328,8 +329,7 @@ static void apply_bad_link_workaround(struct pcie_port *pp)
+ 	 */
+ 	val = dw_pcie_readw_dbi(pci, pcie->pcie_cap_base + PCI_EXP_LNKSTA);
+ 	if (val & PCI_EXP_LNKSTA_LBMS) {
+-		current_link_width = (val & PCI_EXP_LNKSTA_NLW) >>
+-				     PCI_EXP_LNKSTA_NLW_SHIFT;
++		current_link_width = FIELD_GET(PCI_EXP_LNKSTA_NLW, val);
+ 		if (pcie->init_link_width > current_link_width) {
+ 			dev_warn(pci->dev, "PCIe link is bad, width reduced\n");
+ 			val = dw_pcie_readw_dbi(pci, pcie->pcie_cap_base +
+@@ -731,8 +731,7 @@ static void tegra_pcie_enable_system_interrupts(struct pcie_port *pp)
  
- 	spin_lock_irq(&bus->reg_lock);
- 	list_for_each_entry(azx_dev, &bus->stream_list, list) {
+ 	val_w = dw_pcie_readw_dbi(&pcie->pci, pcie->pcie_cap_base +
+ 				  PCI_EXP_LNKSTA);
+-	pcie->init_link_width = (val_w & PCI_EXP_LNKSTA_NLW) >>
+-				PCI_EXP_LNKSTA_NLW_SHIFT;
++	pcie->init_link_width = FIELD_GET(PCI_EXP_LNKSTA_NLW, val_w);
+ 
+ 	val_w = dw_pcie_readw_dbi(&pcie->pci, pcie->pcie_cap_base +
+ 				  PCI_EXP_LNKCTL);
+@@ -889,7 +888,7 @@ static int tegra_pcie_dw_host_init(struct pcie_port *pp)
+ 	/* Configure Max lane width from DT */
+ 	val = dw_pcie_readl_dbi(pci, pcie->pcie_cap_base + PCI_EXP_LNKCAP);
+ 	val &= ~PCI_EXP_LNKCAP_MLW;
+-	val |= (pcie->num_lanes << PCI_EXP_LNKSTA_NLW_SHIFT);
++	val |= FIELD_PREP(PCI_EXP_LNKCAP_MLW, pcie->num_lanes);
+ 	dw_pcie_writel_dbi(pci, pcie->pcie_cap_base + PCI_EXP_LNKCAP, val);
+ 
+ 	config_gen3_gen4_eq_presets(pcie);
 -- 
 2.42.0
 
