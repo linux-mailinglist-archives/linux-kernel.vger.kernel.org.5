@@ -2,95 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A08E7E49D7
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 21:31:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A5067E49D5
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 21:30:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235185AbjKGUbB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 15:31:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49886 "EHLO
+        id S234735AbjKGUan (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 15:30:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235104AbjKGUa6 (ORCPT
+        with ESMTP id S232479AbjKGUal (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 15:30:58 -0500
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C68010D0
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 12:30:56 -0800 (PST)
-Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-53d9f001b35so10346242a12.2
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 12:30:56 -0800 (PST)
+        Tue, 7 Nov 2023 15:30:41 -0500
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E0C910D3
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 12:30:39 -0800 (PST)
+Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1cc53d0030fso640755ad.0
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 12:30:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1699389054; x=1699993854; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Yw7CS/F9NhUtUI8gorhN6ZH3SNhxyTq9HRKbQWVFK2s=;
-        b=JPzMHTYKNlRlBSaW3zZcZMo0zD1RFv6Q8pGUFri7rSBnoSuR59HP/GkuPDC/4604M7
-         f6x03HdmRekcTeQxlg4D6e5Z0lxH/BD8P/Mq+67sWIS4eD2/ZRqLA7djBmbFS9HCI2/F
-         gp1td6+TG8jkhboGpoKkj7IBbWAepYAhCjUbM=
+        d=chromium.org; s=google; t=1699389039; x=1699993839; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=kMKC+f3GuoNBGpjpvUIzL6NWxNO/+YBarjXdWe3vCGU=;
+        b=GLxwEucgk24yIIVqxRiHq7gNCsO7wLNcBR8CwhFyGx0o0ZKVC0pCkPzRFUZ9wEP+JE
+         HtU5BD8uw/g6Fd3H5ECSiZjBf/tCAit/1AFswZhJIhsudqWtU7hO1xt7r92ussc+wGSK
+         vtcFo241znSfq6uomTd15OzKoXoSHowxIBJd0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699389054; x=1699993854;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Yw7CS/F9NhUtUI8gorhN6ZH3SNhxyTq9HRKbQWVFK2s=;
-        b=LBKt6ApZSVbHInk6OQhf+2FM/RHD9uVxrSaCvQK0MeokXIYNW8Pzg5hkZvKdlxU9Fj
-         FQ3yQZfDVBbgu5zCYzHakiwf43WX/stWgkdkkToQUU1TWcrz6wNpqtvgRnlTAjYHRL9v
-         3/8E51hB9zu5pKBzF4dd3GdtTyebUbzstDX2qSU5XDi6uEGBQBn+Om8XHBaVWnyfTLQZ
-         OU0NdsHjpBDbNf+UNpXBPRcJnI0AH6Z4FYEQtDhxx8V7jR8glwUFtwtMpQKbpenfYogm
-         7kBqyqQ56XAHzOVSjcPtswZwMjjAXflYnmp1tNv31M6sOALRXzV1y9oYO9boWEzhlgd4
-         YhMg==
-X-Gm-Message-State: AOJu0Yymt4KbLmcBLTKnNv3kfqZvleHONYrjTelkyhgUkP7yiO+ZroLi
-        LedTkDNDeqoAtCe37G4fOvuXERiS9H6YOi8RWMNiGA==
-X-Google-Smtp-Source: AGHT+IGqeRfo8g/GTdhi1iIImokcOWRX4Qrj5oal+JAXOFJaamOf2ifPQcEka49nonWq9fvX3FE/pw==
-X-Received: by 2002:a17:906:7310:b0:9d2:44e9:7670 with SMTP id di16-20020a170906731000b009d244e97670mr19219141ejc.19.1699389054260;
-        Tue, 07 Nov 2023 12:30:54 -0800 (PST)
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com. [209.85.208.54])
-        by smtp.gmail.com with ESMTPSA id f8-20020a17090624c800b009aa292a2df2sm1432420ejb.217.2023.11.07.12.30.53
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 07 Nov 2023 12:30:53 -0800 (PST)
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-53dfc28a2afso10359284a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 12:30:53 -0800 (PST)
-X-Received: by 2002:a17:906:51ce:b0:9bd:a5a3:3328 with SMTP id
- v14-20020a17090651ce00b009bda5a33328mr15423134ejk.13.1699389053151; Tue, 07
- Nov 2023 12:30:53 -0800 (PST)
+        d=1e100.net; s=20230601; t=1699389039; x=1699993839;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kMKC+f3GuoNBGpjpvUIzL6NWxNO/+YBarjXdWe3vCGU=;
+        b=LjnsmAU4Sv47lcTRWwjja7E7tc3yNwKH5sqalt3kGZszw5LpV+Emx6W6N+07uJOYNL
+         +iKxsMXRnB5laH5quI1TZZeneXTEjW9PfN6swrtxxXwxCb5L59eCLe+zuZi11+1BPN7y
+         MzsK8GujzKrTf2pe57sqvwNoNCSjwbalt8fzIvf1jeGD74hyHRns2I3454Wp/iStYyZa
+         q6IVAXJV9+PgrQZdHE2RTtDJf5alWwD0bq5pVKzVrc1juOPb2APd/sAUiPYKbxGh0/Fo
+         XbIIs9jffozhLGCBc+n8+4hf3PCVzHFvBA7ojINTnp8G/WTBedP9mEXg2HyV6XqPyuvY
+         KDPg==
+X-Gm-Message-State: AOJu0YzYpkX6+HPOwhGdvMEc3dhE4JIrso21lKXklhkzy3WTZsF0CUhO
+        8t8gXC+HL5PobzPsfW1ZHvpZGg==
+X-Google-Smtp-Source: AGHT+IE+tNZ4JB+XVmT1foSgL0lugYRgOWvRkGk+9lpLcUqnOxA3uaZasFMQofi47dyLmcuOIes3PA==
+X-Received: by 2002:a17:903:41c6:b0:1c9:9fa6:ce5b with SMTP id u6-20020a17090341c600b001c99fa6ce5bmr5127588ple.16.1699389038799;
+        Tue, 07 Nov 2023 12:30:38 -0800 (PST)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id s14-20020a170902b18e00b001cc5225c220sm237006plr.15.2023.11.07.12.30.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Nov 2023 12:30:38 -0800 (PST)
+Date:   Tue, 7 Nov 2023 12:30:37 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Josh Triplett <josh@joshtriplett.org>
+Cc:     Eric Biederman <ebiederm@xmission.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] fs/exec.c: Add fast path for ENOENT on PATH search
+ before allocating mm
+Message-ID: <202311071228.27D22C00@keescook>
+References: <5c7333ea4bec2fad1b47a8fa2db7c31e4ffc4f14.1663334978.git.josh@joshtriplett.org>
 MIME-Version: 1.0
-References: <20231107142154.613991-1-agruenba@redhat.com>
-In-Reply-To: <20231107142154.613991-1-agruenba@redhat.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 7 Nov 2023 12:30:36 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wie7WsYHkEChV0hpcf7CRRJQw9-E8O8RxrFGKF6mEJ73g@mail.gmail.com>
-Message-ID: <CAHk-=wie7WsYHkEChV0hpcf7CRRJQw9-E8O8RxrFGKF6mEJ73g@mail.gmail.com>
-Subject: Re: [GIT PULL] gfs2 fixes
-To:     Andreas Gruenbacher <agruenba@redhat.com>
-Cc:     gfs2@lists.linux.dev, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5c7333ea4bec2fad1b47a8fa2db7c31e4ffc4f14.1663334978.git.josh@joshtriplett.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 7 Nov 2023 at 06:22, Andreas Gruenbacher <agruenba@redhat.com> wrote:
->
-> please consider pulling the following gfs2 fixes.
+On Fri, Sep 16, 2022 at 02:41:30PM +0100, Josh Triplett wrote:
+> Currently, execve allocates an mm and parses argv and envp before
+> checking if the path exists. However, the common case of a $PATH search
+> may have several failed calls to exec before a single success. Do a
+> filename lookup for the purposes of returning ENOENT before doing more
+> expensive operations.
+> 
+> This does not create a TOCTTOU race, because this can only happen if the
+> file didn't exist at some point during the exec call, and that point is
+> permitted to be when we did our lookup.
+> 
+> To measure performance, I ran 2000 fork and execvpe calls with a
+> seven-element PATH in which the file was found in the seventh directory
+> (representative of the common case as /usr/bin is the seventh directory
+> on my $PATH), as well as 2000 fork and execve calls with an absolute
+> path to an existing binary. I recorded the minimum time for each, to
+> eliminate noise from context switches and similar.
+> 
+> Without fast-path:
+> fork/execvpe: 49876ns
+> fork/execve:  32773ns
+> 
+> With fast-path:
+> fork/execvpe: 36890ns
+> fork/execve:  32069ns
+> 
+> The cost of the additional lookup seems to be in the noise for a
+> successful exec, but it provides a 26% improvement for the path search
+> case by speeding up the six failed execs.
+> 
+> Signed-off-by: Josh Triplett <josh@joshtriplett.org>
 
-You are officially on my shit-list for
+*thread necromancy*
 
- (a) claiming it's fixes
+I'll snag this patch after -rc1 is out. Based on the research we both
+did in the rest of this thread, this original patch is a clear win.
+Let's get it into linux-next and see if anything else falls out of it.
 
- (b) apparently lying about that fact to make it appear that it's ok
-that this wasn't in linux-next and was committed within the last few
-days
+I did, however, scratch my head over the 0-day report:
+https://lore.kernel.org/lkml/202209221401.90061e56-yujie.liu@intel.com/
 
-about half of the commits in that pull request are very recent,
-weren't in linux-next when the merge window started, and while a
-couple of of them are fixes, most of them are just minor cleanups.
+But I can't see why this patch could trigger those problems...
 
-DON'T LIE ABOUT THINGS. It only annoys the hell out of me when I
-notice that somebody was trying to pull wool over my eyes.
+Thanks!
 
-I've pulled this and I'll let it be (because I already merged other
-stuff on top), but dammit, just be honest about what happened, don't
-try to claim this is somehow "fixes" and thus ok to not have gone
-through linux-next.
+-Kees
 
-Or, better yet, get your ducks actually lined up before the merge window.
-
-                        Linus
+-- 
+Kees Cook
