@@ -2,124 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A5687E3AAD
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 12:02:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31AE47E3AAE
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 12:02:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233938AbjKGLCA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 06:02:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36392 "EHLO
+        id S233961AbjKGLCc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 06:02:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232141AbjKGLB6 (ORCPT
+        with ESMTP id S233935AbjKGLCa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 06:01:58 -0500
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BE98EA
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 03:01:55 -0800 (PST)
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A7A8O9D024099;
-        Tue, 7 Nov 2023 11:01:48 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=hYFzKG0Bzit1hbzSGTpLmhkQeKvJs4Z83u1O4jqdkcM=;
- b=QoVP9h8fEBKk86hL2oeidTKHE2MX6lNAJ2pAt93FpHT8va4mWxHig5qdqmPBYJJh4aDs
- bA6zIsNmjfS0tI7CMr3kIanVnN+bZasQFmdH8myqIw4UwPg3T6G8T7Gl1e0p26IRnWJ5
- hJYkiN9eco5lF45X1XKPpc3vrApWwxJ83JUZnNTOUsYhMo4nNzoBgmZ9CzuMWdyXHLDB
- z5SuZKrDmfQTgzO8ZJq4AciWrGHHNURonTuE7UAuxMiv3DSpcRQYk7vkjDMT7erYiiq9
- ZSFvkomIPawylWqRP+gQMmslm8tQvE2RurLzyM8i7zeGKyGrZfWQp01Q+aqDHYKJT9ou 9w== 
-Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u6wer38s6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 07 Nov 2023 11:01:48 +0000
-Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
-        by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3A7B1lDL022013
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 7 Nov 2023 11:01:47 GMT
-Received: from [10.214.66.81] (10.80.80.8) by nasanex01c.na.qualcomm.com
- (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Tue, 7 Nov
- 2023 03:01:46 -0800
-Message-ID: <57d38bd4-d9ea-6ce4-b7c1-1a05097c7338@quicinc.com>
-Date:   Tue, 7 Nov 2023 16:31:42 +0530
+        Tue, 7 Nov 2023 06:02:30 -0500
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D4F0B6
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 03:02:27 -0800 (PST)
+Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-507a3b8b113so7004229e87.0
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 03:02:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1699354945; x=1699959745; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=G0anm7ddVMrR6+VdyylWCA9JmbbtcqiR4CvxRpAtSqU=;
+        b=ewRlXGBeQP4Gx9dXaL7v8cx+GXGqnsoWXg0Jn1CXHG2TyOspqagVUEHvnaDcFnf1M6
+         YIcsEwELdH6O1BwCHF7PgtgO1Wvxn3++Tvq6BoX55e3sXcfiRPb0fgGv1hxTV0lXMKjp
+         in5ozuYTFzlOz33qlai8r0Luoc3eZr39zFI9B9ICSEMzy0DMdlswFC4GIVi9lLDoxEED
+         63RB26amswf1RfO/r2+Stixf/6xv9dMuRVOQEWurOzTJq8pcGlbTpA+wr8Vf4uKsiwGe
+         7taufWFrjvgePYxHpqohXF2f2L+4+vgCY3jDTo90I9vzp905I0yyNsI+tbeD+/0LmFPC
+         cjNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699354945; x=1699959745;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=G0anm7ddVMrR6+VdyylWCA9JmbbtcqiR4CvxRpAtSqU=;
+        b=t09+7ax7N0psoQ8B7Ls/NSFXlMLjrpeSNVb+1UXCmhaTCLdjRBEhHmUi0OEoXUlT6r
+         udz3f9oXMhF9cqN9xeyb9482+ynj8UeOW+CQNzKA4e28hMqWcL+KhGf/UpL5FmRCC0xK
+         jXy0/QavJ6x77CxTeoXthWIPQkTYLXB0XdaTarktLoc2CGGpXfDSlahHRrl9WEJ4GjRV
+         1PewFVXhyAw7wyzZBubUj8sftJd9YmSLk07307AhIrcJvQO17wMSLRViFB3U/2XP+Cvo
+         wjQg6QJoRxarcvBP7LRUKGtbO2lMA3RG8dzObNO5dOFRtC4aqXOpzY1ywDy7PhK2Tskx
+         sMNQ==
+X-Gm-Message-State: AOJu0YwVv++Q3tgnMi5eSjkiFUKcc6ChVKq/RunJyFX//n1C6WFX3aER
+        kaLxJ3mTcc05uZaHGt4pfn4HqejowbvNJY+WSneWZQ==
+X-Google-Smtp-Source: AGHT+IF9mMjePxVnT2UWthnbRjqVoUWNpE4h4aQeAHsFAxK8YtqMNeLy01N3FPGF34fov+gfhqcBec3cXyXvtp+CxiA=
+X-Received: by 2002:a05:6512:695:b0:509:297d:b7a2 with SMTP id
+ t21-20020a056512069500b00509297db7a2mr21252888lfe.65.1699354945283; Tue, 07
+ Nov 2023 03:02:25 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] devcoredump: Send uevent once devcd is ready
-Content-Language: en-US
-To:     Johannes Berg <johannes@sipsolutions.net>,
-        Greg KH <gregkh@linuxfoundation.org>
-CC:     <rafael@kernel.org>, <linux-kernel@vger.kernel.org>
-References: <1699280735-31482-1-git-send-email-quic_mojha@quicinc.com>
- <2023110659-december-cranium-c98e@gregkh>
- <c4abc49c31643baa34bf889d689e8c587c28da54.camel@sipsolutions.net>
-From:   Mukesh Ojha <quic_mojha@quicinc.com>
-In-Reply-To: <c4abc49c31643baa34bf889d689e8c587c28da54.camel@sipsolutions.net>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01c.na.qualcomm.com (10.45.79.139)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: ZJ_YJMCkt_zGn7mLM6yPlVB_IgzHIeTh
-X-Proofpoint-GUID: ZJ_YJMCkt_zGn7mLM6yPlVB_IgzHIeTh
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-07_01,2023-11-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 malwarescore=0
- spamscore=0 lowpriorityscore=0 clxscore=1015 impostorscore=0 phishscore=0
- mlxscore=0 priorityscore=1501 adultscore=0 mlxlogscore=611 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2310240000
- definitions=main-2311070091
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231107054057.1893-1-masahisa.kojima@linaro.org>
+In-Reply-To: <20231107054057.1893-1-masahisa.kojima@linaro.org>
+From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Date:   Tue, 7 Nov 2023 13:01:49 +0200
+Message-ID: <CAC_iWjLmv52BQ_k8UrFAaMUTkg6f2uGhsb=SzUnkiSkS16JYRg@mail.gmail.com>
+Subject: Re: [PATCH v10 0/5] introduce tee-based EFI Runtime Variable Service
+To:     Masahisa Kojima <masahisa.kojima@linaro.org>
+Cc:     Ard Biesheuvel <ardb@kernel.org>,
+        Jens Wiklander <jens.wiklander@linaro.org>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        linux-kernel@vger.kernel.org, op-tee@lists.trustedfirmware.org,
+        Johan Hovold <johan+linaro@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Heinrich Schuchardt <heinrich.schuchardt@canonical.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Kojima-san
+
+patch #5 wasn't applying correctly. I guess this is based on efi-next?
+
+On Tue, 7 Nov 2023 at 07:41, Masahisa Kojima <masahisa.kojima@linaro.org> wrote:
+>
+> This series introduces the tee-based EFI Runtime Variable Service.
+>
+> The eMMC device is typically owned by the non-secure world(linux in
+> this case). There is an existing solution utilizing eMMC RPMB partition
+> for EFI Variables, it is implemented by interacting with
+> OP-TEE, StandaloneMM(as EFI Variable Service Pseudo TA), eMMC driver
+> and tee-supplicant. The last piece is the tee-based variable access
+> driver to interact with OP-TEE and StandaloneMM.
+>
+> This driver depends on the tee-supplicant. When the tee-supplicant
+> stops, this driver needs to be unbound from user-space script or tool,
+> relevant patch is posted[1].
+>
+> [1] https://lore.kernel.org/all/20231102073056.174480-2-sumit.garg@linaro.org/
+
+I managed to test with Sumit's patch on top. Unbinding the device
+works nicely and mounts the efivarfs as RO.
+
+Reading and writing authenticated and non authenticated variables
+works as well.  The only 'problem' I found was this sequence
+
+efi-updatevar -f PK.auth PK
+efivar -w -n 8be4df61-93ca-11d2-aa0d-00e098032b8c-PK -f noPK.auth
+efivar -w -n 8be4df61-93ca-11d2-aa0d-00e098032b8c-PK -f noPK.auth
+efi-updatevar -f PK.auth PK
+
+For some reason this leaves an empty 'PK' in the database.  But that
+PK only appears in Linux not in the firmware and if you reboot, it's
+gone.  I am pretty sure this isn't related to this patchset
+
+Doing
+efi-updatevar -f PK.auth PK
+efivar -w -n 8be4df61-93ca-11d2-aa0d-00e098032b8c-PK -f noPK.auth
+efi-updatevar -f PK.auth PK
+
+works fine.
+
+For the series
+Tested-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>
 
 
-On 11/7/2023 1:07 AM, Johannes Berg wrote:
-> On Mon, 2023-11-06 at 20:36 +0100, Greg KH wrote:
->> On Mon, Nov 06, 2023 at 07:55:35PM +0530, Mukesh Ojha wrote:
->>> dev_coredumpm() creates a devcoredump device and adds it
->>> to the core kernel framework which eventually end up
->>> sending uevent to the user space and later creates a
->>> symbolic link to the failed device. An application
->>> running in userspace may be interested in this symbolic
->>> link to get the name of the failed device.
->>>
->>> In a issue scenario, once uevent sent to the user space
->>> it start reading '/sys/class/devcoredump/devcdX/failing_device'
->>> to get the actual name of the device which might not been
->>> created and it is in its path of creation.
->>>
->>> To fix this, suppress sending uevent till the failing device
->>> symbolic link gets created and send uevent once symbolic
->>> link is created successfully.
->>>
->>> Signed-off-by: Mukesh Ojha <quic_mojha@quicinc.com>
->>
->> What commit id does this fix?
->>
-> 
-> I guess the original introduction.
-> 
->>   What in-kernel driver does this affect
->> that is using devcoredump?
->>
-> 
-> All of them really, it's really about how fast userspace is to access it
-> after the event.
-> 
-> Looks fine to me, FWIW, but a Fixes tag wouldn't hurt.
-
-Thanks, will add the Fixes tag.
-
--Mukesh
-> 
-> johannes
+>
+> Changelog:
+> v9 -> v10
+> - patch #6 "tee: optee: restore efivars ops when tee-supplicant stops"
+>   is removed
+>
+> v8 -> v9
+> - patch #6 "tee: optee: restore efivars ops when tee-supplicant stops"
+>   is newly added
+> - remove !EFI_VARS_PSTORE Kconfig dependency, we have added a non-blocking
+>   set_variable and it just returns EFI_UNSUPPORTED.
+> - remove obvious comments
+>
+> v7 -> v8
+> Only patch #3 "efi: Add tee-based EFI variable driver" is updated.
+> - fix typos
+> - refactor error handling, direct return if applicable
+> - use devm_add_action_or_reset() for closing of tee context/session
+> - remove obvious comment
+>
+> v6 -> v7
+> Patch #1-#4 are not updated.
+> Patch #5 is added into this series, original patch is here:
+> https://lore.kernel.org/all/20230609094532.562934-1-ilias.apalodimas@linaro.org/
+>
+> There are two issues in the v6 series and v7 series addresses those.
+>
+> 1) efivar ops is not restored when the tee-supplicant daemon terminates.
+>  -> As the following patch says, user must remove the device before
+>     terminating tee-supplicant daemon.
+>     https://lore.kernel.org/all/20230728134832.326467-1-sumit.garg@linaro.org/
+>
+> 2) cause panic when someone remounts the efivarfs as RW even if
+> SetVariable is not supported
+>  -> The fifth patch addresses this issue.
+>    "[PATCH v7 5/5] efivarfs: force RO when remounting if SetVariable is
+>     not supported"
+>
+> v5 -> v6
+> - new patch #4 is added in this series, #1-#3 patches are unchanged.
+>   automatically update super block flag when the efivarops support
+>   SetVariable runtime service, so that user does not need to manually
+>   remount the efivarfs as RW.
+>
+> v4 -> v5
+> - rebase to efi-next based on v6.4-rc1
+> - set generic_ops.query_variable_info, it works as expected as follows.
+> $ df -h /sys/firmware/efi/efivars/
+> Filesystem      Size  Used Avail Use% Mounted on
+> efivarfs         16K  1.3K   15K   8% /sys/firmware/efi/efivars
+>
+> v3 -> v4:
+> - replace the reference from EDK2 to PI Specification
+> - remove EDK2 source code reference comments
+> - prepare nonblocking variant of set_variable, it just returns
+>   EFI_UNSUPPORTED
+> - remove redundant buffer size check
+> - argument name change in mm_communicate
+> - function interface changes in setup_mm_hdr to remove (void **) cast
+>
+> v2 -> v3:
+> - add CONFIG_EFI dependency to TEE_STMM_EFI
+> - add missing return code check for tee_client_invoke_func()
+> - directly call efivars_register/unregister from tee_stmm_efi.c
+>
+> rfc v1 -> v2:
+> - split patch into three patches, one for drivers/tee,
+>   one for include/linux/efi.h, and one for the driver/firmware/efi/stmm
+> - context/session management into probe() and remove() same as other tee
+> client driver
+> - StMM variable driver is moved from driver/tee/optee to driver/firmware/efi
+> - use "tee" prefix instead of "optee" in driver/firmware/efi/stmm/tee_stmm_efi.c,
+>   this file does not contain op-tee specific code, abstracted by tee layer and
+>   StMM variable driver will work on other tee implementation.
+> - PTA_STMM_CMD_COMMUNICATE -> PTA_STMM_CMD_COMMUNICATE
+> - implement query_variable_store() but currently not used
+> - no use of TEEC_SUCCESS, it is defined in driver/tee/optee/optee_private.h.
+>   Other tee client drivers use 0 instead of using TEEC_SUCCESS
+> - remove TEEC_ERROR_EXCESS_DATA status, it is referred just to output
+> error message
+>
+> Ilias Apalodimas (1):
+>   efivarfs: force RO when remounting if SetVariable is not supported
+>
+> Masahisa Kojima (4):
+>   efi: expose efivar generic ops register function
+>   efi: Add EFI_ACCESS_DENIED status code
+>   efi: Add tee-based EFI variable driver
+>   efivarfs: automatically update super block flag
+>
+>  drivers/firmware/efi/Kconfig                 |  15 +
+>  drivers/firmware/efi/Makefile                |   1 +
+>  drivers/firmware/efi/efi.c                   |  18 +
+>  drivers/firmware/efi/stmm/mm_communication.h | 236 +++++++
+>  drivers/firmware/efi/stmm/tee_stmm_efi.c     | 616 +++++++++++++++++++
+>  drivers/firmware/efi/vars.c                  |   8 +
+>  fs/efivarfs/super.c                          |  45 ++
+>  include/linux/efi.h                          |  12 +
+>  8 files changed, 951 insertions(+)
+>  create mode 100644 drivers/firmware/efi/stmm/mm_communication.h
+>  create mode 100644 drivers/firmware/efi/stmm/tee_stmm_efi.c
+>
+>
+> base-commit: 5329aa5101f73c451bcd48deaf3f296685849d9c
+> --
+> 2.39.2
+>
