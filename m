@@ -2,66 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 118B87E4C95
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 00:13:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EED237E4C93
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 00:13:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235353AbjKGXNV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 18:13:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34766 "EHLO
+        id S1344412AbjKGXM6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 18:12:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235215AbjKGXMa (ORCPT
+        with ESMTP id S235563AbjKGXMO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 18:12:30 -0500
+        Tue, 7 Nov 2023 18:12:14 -0500
 Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CD5A19AE
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 15:10:57 -0800 (PST)
-Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A7LK6M0026463;
-        Tue, 7 Nov 2023 23:09:46 GMT
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6A031994
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 15:10:51 -0800 (PST)
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A7LJl4Q004882;
+        Tue, 7 Nov 2023 23:09:52 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references :
  content-transfer-encoding : content-type : mime-version;
- s=corp-2023-03-30; bh=SWrIc5qkOrQC/kCCWcA3axDsd3JASb6UTB+1aGhysyU=;
- b=c9NS75+tcFO6kUB8nHnl0MU3NQyZ882Asa/K2y0yl8D4GfCjK5dx652QonYR5GwtnpSV
- /hc/v7kS8yaxE6oke2L+Khui/jgYKFJ4pVCIClWhB+psObYnL29pBP/8rTJ1L53X+g4f
- R4uU+0M2SHhA784C4sm66TLbnQydU1NF1SrTioHugVrZfCBG4efJR0lohUuGVYi2peFx
- aiF7QASfElHVeVz2acIppV9QAk6L5ICOHl83kcBWTJsjW6AVZaVT1pmbla7FOYmJUk1U
- qUvAk559Fy9MamWipMzymYpZLGMSEo2SODxrFNrGLbsCpeRZ6Ef4GelUiJJGSD8Ugfbx 7w== 
-Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3u7w2106ww-1
+ s=corp-2023-03-30; bh=T7AofHyoW9OieGwkjaBnQeFwRFnyjYF+C4gjUWOGxKI=;
+ b=WLPw6oTov2cZzVooRPEFkqXV5w5nH7A8SNuaw8GyCdihTZZaI//byVDqaNrdV9Fv5gU1
+ 0lPmk0BhX8qGNvECaG70jQqMby+WxqvDcC6LNuRLpapmg2gcmxFd1YVVH26AmgdhNc49
+ mCI8ptMk7AGNc7Ct6DRXs/0+9no9RYiUP1RJw0XmNUAWXvwOwpwgenZvb6NKbg4CFROm
+ UElWMMNKQWRhw8MAQk1kxK1SQEgeMn/kzGItyxOg+EABr9KczCrkl8hqL7METrnfmaeu
+ 6hbS75Aq+HXy118AfU3sahID6+VNyiYdToilTBmt2LHvWAWqUPgAFfZNL9ajiOwmk8el cA== 
+Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3u7w22g6c1-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 07 Nov 2023 23:09:45 +0000
-Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3A7N40cc031940;
-        Tue, 7 Nov 2023 23:09:45 GMT
+        Tue, 07 Nov 2023 23:09:51 +0000
+Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3A7N3k1D000664;
+        Tue, 7 Nov 2023 23:09:50 GMT
 Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2040.outbound.protection.outlook.com [104.47.66.40])
-        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3u7w2248q4-2
+        by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3u7w1wve2k-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 07 Nov 2023 23:09:45 +0000
+        Tue, 07 Nov 2023 23:09:50 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=b9K/obVfLKtgaHtTxuErP+t+/1aeNIAWC0WZkvq4yHl6qfMxUZm0toyvRn8VxouJlPI9KRUJFGUEq1o50mBZWHufmw4DKYwquogXbkEbSIA6fpc4PIHX0VQtpUAWbE8S2rsjPsUJ9hikZsJcpaqSfs7CU3AITATPclnJzRpmMFdRUMzfA+YoGmtgupqOtlP880l6tlk/Vk3X1ngauo8WhVeWylXVlLwsyNnYLwjxrOu/FqsDFUwd0YTiGVCZmXJn/eIgYsE4EhAKhA4z2KvKzBFTI67M8+pCPYazX3itusal2xAHIWVKlwrD+vZxKP3xiKm3m0VkwhuA6tMJeBeu8g==
+ b=XUL1OXJDUOHV0UDXGC2XiHHJho2Yjm5QLOh+VZZFraool2BKYJVUZXYVQ+qWD2dU/UbobLFzPoP3pKcJF+QyCqVEZ3Fu/Q/dzClHX5UdpHBzcJX6PyIRQOPrVPpntLEMtYMo74VxCev+WGs8Os/5Em5VtUPkZQwkuwNQITYx6C3Yd/Ir7TDqEXhWXR7oyvANilbSCNCPC0sLJhz3qt+qZEG/jHvZeh6HZTQsGJ8W70+UKgaBFkUtcUyEKcuLGvRgMx9QpiGChsF2z8YkrI3+5P33NHqKbdObQKOC3wMd8JzQOTpEIQigEqt+9K7LKFqM0TrQ3duWs9+c4qL0gfIM4Q==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=SWrIc5qkOrQC/kCCWcA3axDsd3JASb6UTB+1aGhysyU=;
- b=aaDC5rB4+BPT0TSvrmowBiQ8H1A658G1JlV474NpMbYY1Hqnex3um5emMI5uklajYWaNYWCYKOqxkwSlvwalOq5p0tCovjD0rU8oxiG9mx88Dc/iXxV1HHMiSjipaiFCxxW39Sxfgk2ed3tRVLEymqXu+QpgBc6bZPzwIgnoxz0msE5wKaTxBUBo1ql+y1Cjd0E30JolYP/Eel8pthytkSZFCr7Zahim8G9zXZkikhe96Zhm5SmeQO1nzBGcN5XbitORS3ruOTgDAMufnVRISWZnHBE/a8gYwgfpaqIIa0q3xtf7sZ/JIV327j/qilO8mLm1s5otnL1g6j8kedUOqg==
+ bh=T7AofHyoW9OieGwkjaBnQeFwRFnyjYF+C4gjUWOGxKI=;
+ b=O9T0HKuedHr4zS8lRrDg39T3Jm8w++rhqSkXr8IC3qJeaF9jyomk9raiiEF2H+zdk+X4sL/TmtsmxJYv0X1dQbnLweaz4KCb738Dvl2432KW0iM5W4BHIOak76XBGU25jfBQUTz22AFiJpKEv8wWGFNYDABQs4L6ECoEVxTTblsUchNyH71LpZ7/bNuQyS9nhZd8qk2jQHqzKol37/eZa9xGVgL/n5kjgLrsX18+0S3dqf7DtvTVLGEJC5LQH68hwJEmAbmNW70w3r7W2F9hqgpmK2roxtcgJeXixvz+EdMYkoj0Rx026Jp3BsP87cQiYiKZM+wjLHUIpfbazcGGhw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
  dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=SWrIc5qkOrQC/kCCWcA3axDsd3JASb6UTB+1aGhysyU=;
- b=P4kWfySGCs2i1g216EfMHJvEgn9XVcKgs86SPcuO4wbVanykvrh+n4cyeKv4CWtCsKWrOXliG9FrPEKtdK/KBRRrJK6mzFRik3WsCSzJwj9gP0l3jphkRqgJ38cLwtWTGKacV586i4y0p7N0Upf4MYJB+q98Z2WQHxYzXcS489M=
+ bh=T7AofHyoW9OieGwkjaBnQeFwRFnyjYF+C4gjUWOGxKI=;
+ b=rioEJkhr4Xn9Zn6tyhNVL7q0HU/mVxmreytdzIdIDuTXNwHItsndBs6eee6kZaNPOSBj7rNN/q09N4CBfWh28gKiRXKdJSQFgsaQdE1Ha1BwniZad50F3ZDJSwPCiwAWBrDiU6Pb+8WlGtNH5yrNiyTOmYAT/xE3Ab8o7Tueg4U=
 Received: from DM8PR10MB5416.namprd10.prod.outlook.com (2603:10b6:8:3f::19) by
  IA1PR10MB7261.namprd10.prod.outlook.com (2603:10b6:208:3f6::11) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.28; Tue, 7 Nov
- 2023 23:09:42 +0000
+ 2023 23:09:47 +0000
 Received: from DM8PR10MB5416.namprd10.prod.outlook.com
  ([fe80::c72:c098:4fc2:629b]) by DM8PR10MB5416.namprd10.prod.outlook.com
  ([fe80::c72:c098:4fc2:629b%4]) with mapi id 15.20.6954.028; Tue, 7 Nov 2023
- 23:09:42 +0000
+ 23:09:47 +0000
 From:   Ankur Arora <ankur.a.arora@oracle.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     tglx@linutronix.de, peterz@infradead.org,
@@ -79,105 +79,108 @@ Cc:     tglx@linutronix.de, peterz@infradead.org,
         krypton@ulrich-teichert.org, rostedt@goodmis.org,
         David.Laight@ACULAB.COM, richard@nod.at, mjguzik@gmail.com,
         Ankur Arora <ankur.a.arora@oracle.com>,
-        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Subject: [RFC PATCH 80/86] treewide: sound: remove cond_resched()
-Date:   Tue,  7 Nov 2023 15:08:16 -0800
-Message-Id: <20231107230822.371443-24-ankur.a.arora@oracle.com>
+        Coly Li <colyli@suse.de>,
+        Kent Overstreet <kent.overstreet@gmail.com>,
+        Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@kernel.org>
+Subject: [RFC PATCH 81/86] treewide: md: remove cond_resched()
+Date:   Tue,  7 Nov 2023 15:08:17 -0800
+Message-Id: <20231107230822.371443-25-ankur.a.arora@oracle.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20231107230822.371443-1-ankur.a.arora@oracle.com>
 References: <20231107215742.363031-1-ankur.a.arora@oracle.com>
  <20231107230822.371443-1-ankur.a.arora@oracle.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-ClientProxiedBy: MW2PR16CA0048.namprd16.prod.outlook.com
- (2603:10b6:907:1::25) To DM8PR10MB5416.namprd10.prod.outlook.com
+X-ClientProxiedBy: MW4PR03CA0350.namprd03.prod.outlook.com
+ (2603:10b6:303:dc::25) To DM8PR10MB5416.namprd10.prod.outlook.com
  (2603:10b6:8:3f::19)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: DM8PR10MB5416:EE_|IA1PR10MB7261:EE_
-X-MS-Office365-Filtering-Correlation-Id: 3716c9f3-1e5b-4069-7bfa-08dbdfe69faf
+X-MS-Office365-Filtering-Correlation-Id: 2b566b49-4f0f-46e4-0b76-08dbdfe6a305
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: r54WqXo7qpQfC1ZU5ipUs6VIkeWNoOoL46n+x6PXQRcb/IcNe+i7IDzobLVTOmmxjHWMZUDzYnz39ZEhdnGZkQ/0lFTPMaqFUAg+0woZna4S5TagLhVjgsaZmzp4SX9gWYr3pp/mpg+CS3pTEUHYanF68QQUx9Y5RgTr84d8ynjM5H5Vcxo6snjfSWigRUTMfijnx84kktluegX1sJixMmF7lTDCQuXW/VLVVedVetB1bISxG38vt+kINNqY2AFWBWns3kHaQ5rN2LK+5oUgic5bfuSJjmJ6qR0nqbuvpsdiuMfKwtcLjpwR4tH8wrtUCG1XLwWavZK9C3wyzMA/P8XGYrmRseFD0RF4d7z9bbhsiYswnNXe7lsF9/VYLESa5oWGSGA4Efd862K2YafrqT2k8mmwYhukW8kYqs/lP94n180Otq7B12xVxSa61vbBKl8Dkiu5xu3uGt6Rm69YUwfFn6k3/FPAxGOYvo1pKUPulJ0eggiuhwV5fD2ZYDG1dfNI+CufuhLf7bGnDMfbOTk/AeEXjy5bOmgAS5D2iNI=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM8PR10MB5416.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(346002)(376002)(136003)(396003)(366004)(230922051799003)(451199024)(64100799003)(186009)(1800799009)(66899024)(6506007)(478600001)(6512007)(2616005)(6486002)(966005)(6666004)(7406005)(36756003)(103116003)(38100700002)(86362001)(1076003)(41300700001)(7416002)(5660300002)(316002)(66556008)(66476007)(83380400001)(2906002)(54906003)(26005)(66946007)(6916009)(8676002)(4326008)(8936002);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: 2sCaoZroLzPRjkR1IwkyKsJzphCb8TsDSx0NCmD8DER1G80QTbamdYBOxgDMOPhZUrmRcnRQpSTpl0PRaOqqHvcO+q1eiJGalxO8R4qG6m+mDJpQBnwLZHwhdkW9rno8gDO/Ayk1xQ5ocqpB3awMIkWIP2eR6UStN/VNbklwGZ1qNM9+O9QLIC0wBQJpiwg3rU+2Ehi1MjRY9GQXrYKWErF/D9SWqzrQqo7gYZJoz+2gdBJIR6HQ3iQFHvqsFIDkUovTgiPmgevvIprHiahJ68om/WEkBJU+8Qh3DVf7XW2JNHN6FsuDIz/TFR7LiB1eaHEVMBn3tWIPAHbAaw1fHnW/w7Xng3ng0sTQBYtKypDHxpfCafPoj9oimQqpHdxV/6E7DKK1Q47cVc/i74My0ZLddsNonGMCiIA9iNsbJqkDj8GuYka8D3ZkHh9GuQVGf6UL8o5HcQGtcQTbWep6Vx3ycvEOwuKtH1uj97Ks91IjMaSiE2Plp0fONOWWtnLcR/LlrQ+uv2G7fMlamzKKTis158jvpeARDh4L0mqt3ojKpXwashHBYY1PzkwEBB1V8Engi3jmepPKOhWlY+uY69vMN+vpsQ1GVT6BezjMhvZ2dUTosmk5TFZIJITv5GAO
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM8PR10MB5416.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(346002)(376002)(136003)(396003)(366004)(230922051799003)(451199024)(64100799003)(186009)(1800799009)(66899024)(30864003)(6506007)(478600001)(6512007)(2616005)(6486002)(966005)(6666004)(7406005)(36756003)(103116003)(38100700002)(86362001)(1076003)(41300700001)(7416002)(5660300002)(316002)(66556008)(66476007)(83380400001)(2906002)(54906003)(26005)(66946007)(6916009)(8676002)(4326008)(8936002)(473944003)(414714003);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?F9lZ7WbEj7HxCeUuhux5K7fw+jooIZjB/jmsMl9KmxfV/Sr0eMgDXcxFrT+F?=
- =?us-ascii?Q?JYC5rlaMvbL3s5tRz8Ex4i9P8fdjD+n+s3+yDqQcXpwQAMgqjrTbAIphW4um?=
- =?us-ascii?Q?rSj45UuYimefwckH6ZlUonm8nz2l4V3Smgh1L8N+x7ybz6dhk2D4DhoO1KO5?=
- =?us-ascii?Q?ZydiT0/k71cfbDTLcpIWyFaJJsiTGorxOZXdMcV4mPpFyY0PiV3DnnWuiLaI?=
- =?us-ascii?Q?HZdjphkNhu+EBFtDF/cdgYWMnJH5Ro4sNaaY+cggE1ghgl0r2ciSGJJEMgcd?=
- =?us-ascii?Q?vIjOTr7aXp6rlWAM4AvSiQ4uqrfjbVa/wFlhZLWXjxgFDWkO3WIN9zfMS+FB?=
- =?us-ascii?Q?YLIpmLiu0tCq0E5Uexyh6beJZzLvzrQ2Vot/6Iuh7RPJ1qpn+rORE4bc85HO?=
- =?us-ascii?Q?sAL026NlCOsuHzM93Jrr6BTPajMxGU63fpNYE9q5GIqN4V4tv7dngbN5Tu1U?=
- =?us-ascii?Q?vT6BJEDOmnY9VzKF++c7j1GSB6WqlPEWFxumALXQBB2XcU6Ab6+QHIUlIOqH?=
- =?us-ascii?Q?ughXLc4cMH21RyzaYH5rfS477EU5cDzE+/PYj1FCaf6zFrRdT2f1E94COgI2?=
- =?us-ascii?Q?6RMdEKkSE08ATD5aN9MAWlAm4RUTD2cnSWIzgVW9K7zqCo/edA4va9/9fpH/?=
- =?us-ascii?Q?hXm3pRoJLggAIkJME2zyKJ/gUXhHM/qAXxebLYWb6Hi6F+klduJo0WeH1ZCX?=
- =?us-ascii?Q?gqXmGyJld4HG3vLD2AETfQsUQ8W/4aDQ8t2FRo0JEzeiLqjOfFkwukhLuN2E?=
- =?us-ascii?Q?HdH8pnC/af7sZQUkVwM4Pzur8nxT+Ph76yWS0M78Rk6ZsM2S14+bqBPaGzhb?=
- =?us-ascii?Q?qCaCgxYTLmBV0MPh2bPkBf8wx6UWV/krSEJvqxLW9gw2L4D3rt4X5M7YD1fK?=
- =?us-ascii?Q?b0lyqGOkExNYPHWClai3QF76nGx5l2Z1+3nMtnkl6ee/NZGyxBxnoH3cW/uQ?=
- =?us-ascii?Q?z+SdulAc9rhypkdWH+vv92ldf87sarsqINktds0MdShsSrqfzx6FFF7krCzq?=
- =?us-ascii?Q?CCx93qTrxqm3MKrwsAW8EAhE65/ab/80raHb5QFd0KhEnLcgyUCgQ7AjdYG0?=
- =?us-ascii?Q?AayyixrzBlHORu8VV/UsnrwwlHf6tqCqRi9GrEoiz2vaN6WdmBBDk4kRFHYf?=
- =?us-ascii?Q?edZBcUOwZDeQeFdk6iaEkceHwEaZg9LZ6kuL+lUq+QenSlUHQnSW/jqCsTey?=
- =?us-ascii?Q?VCcPB31bog5cn/hNCVR0ldApFftW5cymqVLFbCKcl18e8EXMTC69MCaeWdPw?=
- =?us-ascii?Q?K/nckB1iQGnuN8fqcXuutFWm/TpNGQABYaMjTL61hffslfO5NarJZL8s42EC?=
- =?us-ascii?Q?jQIXcO50eNmlLEKmkCHJM9D685oEffeOxFGqEo17wpGZGsDHWuIZGPr5Cnf6?=
- =?us-ascii?Q?4YnlHd5eFD81UPvXQYCv9sN/YT6QiPOegTH7a/x4J9fOMoK+snwsk2Hmb7xU?=
- =?us-ascii?Q?mCjEaY/s56bT230J/njr7GfckUbhgcUuuhhQ+6c1JcgWRvie+Vn5zagvumw1?=
- =?us-ascii?Q?uiZkcIeed7CikdN2Bmny+IRhYeqJM3YmrnNXAM/rarQfnGY0hmIM6NOc7EA9?=
- =?us-ascii?Q?0FPzjauoMDfwoKNNuqL4eo1+QzMIiU4MCm3YUyzkDOPK3jN+hOlQmadwEPIy?=
- =?us-ascii?Q?pg=3D=3D?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?rbxvBp/ngSI1LK3DHJGvmW5T2gNsOSjJXWA8CtaYxPm0t10xJ63XwR3X9nxo?=
+ =?us-ascii?Q?0H+aanUQuD8r/xHBaVeHG1giFj4qHFXe4mI7x946UtMN4oCH0gDenixQpVk2?=
+ =?us-ascii?Q?TTtFh+YS7DN2uEY1Aa1nEVEvd54Z3otwobOULDINldiK0X66XU98OtBXgPKE?=
+ =?us-ascii?Q?kTYiBDqXXL34P2y3G/rf2Z/Izmy5sqnlBaM6iM6X1G6IZ0y1oesLLnCeHwFN?=
+ =?us-ascii?Q?zW+xta7u/0ruAKm8APtHZvvAMLex3HQCCwgCCTDkTuGzk5jF6zXeouCBmCLr?=
+ =?us-ascii?Q?AXPaMdqw4oXDqd2jhgBpq96h1nQGU/gf8WDCAam/dHkMMEyJ2AQGYbPgt3RM?=
+ =?us-ascii?Q?OOAg86BF3A9npC9lZ9BaKKrGTBEPJn/Gd3H7UH76h1jGo02FvxxHlm15HIld?=
+ =?us-ascii?Q?vRnrkfTwQG0NOq9DnoqcdF5iOBbGJKj56d9kQQpRI5CT3lvCoD+t2xm3JfNa?=
+ =?us-ascii?Q?2uDqYXxeeh7F0LoOS1LTLn8ObFtwEPyytzT/yVua0RWbyPQzxGlt18PVQ3U0?=
+ =?us-ascii?Q?Y1s6tvuh6hxmueNCCTlMeIHikYccqFfKDfb0g03DwN0EsJryEUf4rpPH35im?=
+ =?us-ascii?Q?Wc1ba7cP6UIUQniwFLbxNmG42tVcE7hsd/3teJaj4Zwlv/kvc74ff5msBGAO?=
+ =?us-ascii?Q?i7T1NzfqNo+v5isiyXktXg8VZ83aDFzA4RFa2t0slMony6Q8SHTfBaRcz3zr?=
+ =?us-ascii?Q?7zgc/OSH/Aa3LjPO/IllZD9AZ3Yg0Ruk3o0TbMNnBhQSR1Amd4J+CH5y13Be?=
+ =?us-ascii?Q?l24k+8GbSePH0lv7FId1DbGqIZmMvWzWuUZKAQ/KwLslW8pICWCYwoCOT7Iv?=
+ =?us-ascii?Q?11vifQdFIvYLP/leOSNYbmvLjhrKJLIepMOSW/AigcAAy8w2S0uobxlhDiaf?=
+ =?us-ascii?Q?W548gjk+0cJGb1U9KVIFdRylP6d49lDwYIdW1N7pnRiNe0z5Wdsgst8+i29d?=
+ =?us-ascii?Q?jvgK6Da//bJN7M0Pt5tdJ1ZFq0PWqYKxpGoV3rKELrQ7NWJDwgZp+SqkSzE7?=
+ =?us-ascii?Q?LZcaumqvcCsxUbjFUHdNtbnZKf0eU7J+I4nzLR/jzik4XQtl8fkTrCXBDRjt?=
+ =?us-ascii?Q?ZtFXCxiw1MyOLACYIpt2AivCgIUTJOUBTRPM3vMkVy9VQv1oNUvRz5UknDGY?=
+ =?us-ascii?Q?oXFOUHjKt9DYOLIFJAaNlmYZDl2pXIHwDzUSkhoMBAU7rYEqKTzdlbld3sak?=
+ =?us-ascii?Q?ZMYDXDqBBUzLDZ0jnqlq3iB0dG96asj+bZ0ZOuYeYeBeCA2RyOOuN+sZM1bt?=
+ =?us-ascii?Q?dGc0GA882gqDV5HHjG5kuhgclB1s89Pg9tYugUml2eW2zLJilHsT5aiwInzI?=
+ =?us-ascii?Q?ZEa2FZsSY5oK3e/dya4nzms8oKcCFOkWWLoCvZketndyHro6U7AWqCpDaXaw?=
+ =?us-ascii?Q?sM4q0C0dnwSWxb7AWv8cmMWfviKY+/9F145bdq/50TXzyLut8p+EU9Kf+6zJ?=
+ =?us-ascii?Q?qkhaqlh06KIZTiPZrjJr1fgSJh1+O5nQQmp3a/d8Y2e0x6Rjm+USahgumyDX?=
+ =?us-ascii?Q?sSkdJ2gC6KlCXNAdY3IiZ2PRLAaA+KjnsRongO+ee12isYo7cA0BIWHaS61X?=
+ =?us-ascii?Q?cbRy5gUp4H492Z2KCphkTf3c3D1AKtmlWxam9PI4QmZv4QCwxcKSLUg1jYnu?=
+ =?us-ascii?Q?6g=3D=3D?=
 X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?us-ascii?Q?rJ8GzffImUr7rWkk6n6x6FyqQ4J7R1CKoywi+hFocLVbCPZiQMWPBu4z0h/h?=
- =?us-ascii?Q?z37KxCIhjKLCr8ArGynOh2+0ts/BDUR5OalgCGyd4/nKfQ4umA6teLmgzl1f?=
- =?us-ascii?Q?tExm+sb1XM0FprhcIoPvtMmmJBveN0GPLnvNIv5PdYtxApJ8sAjWKgnpbWpG?=
- =?us-ascii?Q?PaGL3yqhs2dvKhbvOhKhDifh732mUyqrBox8BD+g5d/43gUbEbwFiLgk5Ioa?=
- =?us-ascii?Q?gOSjhTtmFQQ5XuYN+FBfDjPmnEJ4qGUHS/otiIA45EgkX6lb74n1tmG/wKoO?=
- =?us-ascii?Q?haOwyOfc88riPjMe2bhihjUtM5w+IwrUGZfdODnxXHwMuvyB8at+EW61wbR9?=
- =?us-ascii?Q?Cr/KJBQ4Pjq7YWC1PtqkIpBWwyCI18Bdx5x7Tbng6h9WIVFZR70YcQnfAsLs?=
- =?us-ascii?Q?dh6GBN28PyeqYGZs7nt06nFoFviXPpHihrDuzgslM8TEnbzHTBhj/0/RA9NR?=
- =?us-ascii?Q?Jy5Qsw5MAo9wz5grNLoVCxOcJlZ0yh0kfaI+QFAmLF6r2l37J0ObstoQ0nio?=
- =?us-ascii?Q?D4zphX6OtjS036RRsED4Ka4c1Ue1hsZtleCo8Lj/Ln9J+n2KuIOSBL0rGMME?=
- =?us-ascii?Q?BhIgaqVjqA/Io6gK0ijq71FcoACgsTuILVHGd/A1MPsvy60Lw62JSG0BZRg3?=
- =?us-ascii?Q?Bb1CeM6ptqNSx+TrfS9HUw88X+T4D9hc56CM9BwIjDXHkZb+j86DiY0ZlbdN?=
- =?us-ascii?Q?X94CeRPJjQqVTXQwjKNsiNgRHXQokWMQgJSNOW23506xISPDzXiomCZJYFXK?=
- =?us-ascii?Q?xAT7TM6cykRudgQ04byrBKk4VgP/wQaT8SBIvpP65gYBHHWA76XbOYJGdWc4?=
- =?us-ascii?Q?XPMZGcgH42/ChED2smIN80LpNsIvjJiSHWxRyXe5uqV14nXfkgvExMSpWJnz?=
- =?us-ascii?Q?fPX6Aycb2Qq5Lit0BOoWeLMAGzJ/RjQQn8H7goHPA87UuCP0XiYmGpbFaKqO?=
- =?us-ascii?Q?O7kq/pLkQW+O2U30OK4kQ0NByaeiiDXrYUM730OwLfaGpbXCnvxWDIgxFbkD?=
- =?us-ascii?Q?SfUN0TGUxTcV5J1ij+RlG88vtAXfB+lJ2YWj5EpVGD9vE8ZZhl4fTRp2ahAf?=
- =?us-ascii?Q?IcOo0Xc4ggxUzB5UENSNXzuBWeSJ3RRkU5ozaPv+7ZG/cfeVYEm55FAac9X7?=
- =?us-ascii?Q?XAl+3SVPIXmghpXjlx1VAxjhT1pjAwjKcyrocNtdcqw4QI7epUZ+7ApLtNZd?=
- =?us-ascii?Q?wAxg+/oJh5X/qEiK+sESKoHZh7mkxnRq4b6/WzFlGXPcB9ptCHe63cQUbt5O?=
- =?us-ascii?Q?+3gntbsXA2XTTuVH95hQwRusyjErSaIWN3OjYWAgPn+z8kkSBPRe4G/cTTGQ?=
- =?us-ascii?Q?TKgO/ZvvX9thsMI0pfi2dWRu+eEEExOiBqELqehaMNNwY3Em3qduiTeelIFV?=
- =?us-ascii?Q?ppA6rf318iHKTWyNuJPQQw/ox6qz1OmY5zEndlFJzoZvNsjOWiEPRTN4RPya?=
- =?us-ascii?Q?Ahes6lT0ys6B7sQ0PsXCOOo4p7m0tH5njS68OJLG8iZDBvGx9FGtt7pzczcM?=
- =?us-ascii?Q?R+vN7TbhclkGcAfU7rzrJwa05a0FT1Vn1XOtrcbIp32v2kDHBwWeQgOQFvyZ?=
- =?us-ascii?Q?GfkUAmE2N0+ra08+qYo=3D?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?us-ascii?Q?iuTAoR4hIIKeb2bjZMPtmCU0l/UPWpWeGnYAkxcN5rzXcdF6VrngPmulD57A?=
+ =?us-ascii?Q?lS1VtlF2S+L5XAdfTYQOqKZBK2jELdQBM/vTgiJRNgUvX2is9VeNSxrWbjmF?=
+ =?us-ascii?Q?odC/4zRYY7/iND3hz8vSgsB/ozssV7i7QZpLrS3BlZDcEZN10rm+fO/WpAvk?=
+ =?us-ascii?Q?MqE1H6S3XWspnh4nklXtZfOz4Q3f3IERaLwo2IVxvPdr6zgq5hrNHjqLawSz?=
+ =?us-ascii?Q?j8L/oSpjjMt7KYiQPB74kBvj1xkheHAr+Y1duXOT8+8M2UC6M1tdqxxJB+fV?=
+ =?us-ascii?Q?KNhb6wnvyqSRyCGpha79S90eOWhPpF21ASoHmCpDnp/qG4qO+wIpUleiISc5?=
+ =?us-ascii?Q?eq8rSmnEt9Ve6cr6lfOwa5HwC8Xr1XIGNYOAQwW9dQLTglYMRSedVuxQeuih?=
+ =?us-ascii?Q?N5M+xYt0AXDC7R7C93Ya1aHg00cZ15t5e2WAqtrZ9bSX0Q0mL+Wil/BCqhtb?=
+ =?us-ascii?Q?oak7X05uiKGMVj4EuDe/0TU7JqSzi+q/nbXBA/6nKVLXQjCMvJJ5GR2IwGB9?=
+ =?us-ascii?Q?Pg4jGVNImFlct846nj3TJsM+6pLhVAOu9uqlLQzm18f/iWfBnYm/6nEZ710h?=
+ =?us-ascii?Q?GqfizjoZA3GZFuaCknBQ6W0/5rVLtKlXOT1JQoDVoOqe5ZwDodLqt0hJkRh7?=
+ =?us-ascii?Q?8eGvNS9CmgBxX4FI0smKJcNKd7QzXbEpdlSk3py7YWKu7lTJbSEdqnimglk/?=
+ =?us-ascii?Q?zmZglAakKUGsqykKSteOzLPCRBQi5/d4o3kpROQNxWu1L+K4eSyf5OK64U8w?=
+ =?us-ascii?Q?2ODhtAiGY803Slob9zry23A07So9jQeRpbp0G5gr/prbAD3x7Fw8M3KopAR+?=
+ =?us-ascii?Q?uyXeZyytIsCTsosU57zi+eKIP7FT+x8tq80QNmKBFAB+UlF7hzXfrG+r8RJH?=
+ =?us-ascii?Q?yLcd0IEzFzfwp9QcMYW8kXOYrfsKbimPz8ad2REXzLrRvSkoqcaZZP0xq18k?=
+ =?us-ascii?Q?xAntWCgtYqdYUUTOj3F/FNkTqhCUkqAUWouokgwRQceeMzR5rNLe8qdeIugE?=
+ =?us-ascii?Q?V5Eft3avcDW+4+bmB8sjWuesPk6SF95f5eZ3Qym1pri8L3SaoTNcvenXIgLd?=
+ =?us-ascii?Q?yVOhLnjvufZmNsrNKHzLQaswlBJ/N1yvkuQXt0puAsFqx2MFMUjukt3VJzQJ?=
+ =?us-ascii?Q?pkP4s/eAu3E462HX6UQwd7prU6ucEQqgpLs8nsZHgQAF44kqI15NHIVO34rs?=
+ =?us-ascii?Q?oIomjLEz6cDVQ+kwG5xdAYaOvB72WQUV/dGl6YOokOsMBCY0Nxd9l7gmVGzI?=
+ =?us-ascii?Q?G37lQqYTmiWUb88YyR34qpZ10j5IPfAHo0o7h5vMdDlq9buemfO9gsfB8WWj?=
+ =?us-ascii?Q?+YEGFvEfzhtcUQlyfI0PRkw4IoAANVZM0lido/CeiabCQG+wXAcKh8D05hdP?=
+ =?us-ascii?Q?jIpenUn+DmO6YXDBcADBIuUQEHctlOkUKjtbyE2SF0n2C6jDyfaD4PzBd/bw?=
+ =?us-ascii?Q?CVS3ExbU/uARVIliJQlAmAelivzBVAYih+uCzZbGXo5AbDt8OjngutkjVLmr?=
+ =?us-ascii?Q?T5wMJgDJlkEEPXVVz2Td2sKePdOMUtXtAaZEyzAUQUJsqI4oJvHFl5Rj8w?=
+ =?us-ascii?Q?=3D=3D?=
 X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3716c9f3-1e5b-4069-7bfa-08dbdfe69faf
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2b566b49-4f0f-46e4-0b76-08dbdfe6a305
 X-MS-Exchange-CrossTenant-AuthSource: DM8PR10MB5416.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Nov 2023 23:09:42.0087
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Nov 2023 23:09:47.6108
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: GQJ5mgVXbePOtzD7HUOiU3xbvP72MbUzYVF6okip1z9RUZbvWQTh5V+KOqjZS9CF1dwA2Gq62O58XQ/q6ISe2TiNdmUZ3YhAyOKbmTky7KM=
+X-MS-Exchange-CrossTenant-UserPrincipalName: W7f/4LiKkP6+6Xx6N7vWrPSr6lNUPL6omYQG+0KBDAtTHx9WGXNuUnHPPcpCUrylj/ArddG9JgCIubvQiTnzDor5UoPZD8UymIBze/t2au4=
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR10MB7261
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-11-07_13,2023-11-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 phishscore=0
- mlxlogscore=944 mlxscore=0 suspectscore=0 adultscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311060000
- definitions=main-2311070189
-X-Proofpoint-GUID: piiHRmYcU7l3D34LXQADxLl5dI9qXFwB
-X-Proofpoint-ORIG-GUID: piiHRmYcU7l3D34LXQADxLl5dI9qXFwB
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0
+ suspectscore=0 mlxlogscore=999 adultscore=0 spamscore=0 bulkscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311070189
+X-Proofpoint-ORIG-GUID: YEtXCCsHJMIbhjkyBfA4u7vrCk7b880N
+X-Proofpoint-GUID: YEtXCCsHJMIbhjkyBfA4u7vrCk7b880N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -215,231 +218,564 @@ with some kind of timed or event wait.
 For now we use cond_resched_stall(), which tries to schedule if
 possible, and executes a cpu_relax() if not.
 
-Most uses here are from set-1 when we are executing in extended
-loops. Remove them.
-
-In addition there are a few set-3 cases in the neighbourhood of
-HW register access. Replace those instances with cond_resched_stall()
+Most of the uses here are in set-1. Remove them.
 
 [1] https://lore.kernel.org/lkml/20231107215742.363031-1-ankur.a.arora@oracle.com/
 
-Cc: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.com>
+Cc: Coly Li <colyli@suse.de> 
+Cc: Kent Overstreet <kent.overstreet@gmail.com> 
+Cc: Alasdair Kergon <agk@redhat.com> 
+Cc: Mike Snitzer <snitzer@kernel.org> 
 Signed-off-by: Ankur Arora <ankur.a.arora@oracle.com>
 ---
- sound/arm/aaci.c                    | 2 +-
- sound/core/seq/seq_virmidi.c        | 2 --
- sound/hda/hdac_controller.c         | 1 -
- sound/isa/sb/emu8000_patch.c        | 5 -----
- sound/isa/sb/emu8000_pcm.c          | 2 +-
- sound/isa/wss/wss_lib.c             | 1 -
- sound/pci/echoaudio/echoaudio_dsp.c | 2 --
- sound/pci/ens1370.c                 | 1 -
- sound/pci/es1968.c                  | 2 +-
- sound/pci/lola/lola.c               | 1 -
- sound/pci/mixart/mixart_hwdep.c     | 2 +-
- sound/pci/pcxhr/pcxhr_core.c        | 5 -----
- sound/pci/vx222/vx222_ops.c         | 2 --
- sound/x86/intel_hdmi_audio.c        | 1 -
- 14 files changed, 4 insertions(+), 25 deletions(-)
+ drivers/md/bcache/btree.c     |  5 -----
+ drivers/md/bcache/journal.c   |  2 --
+ drivers/md/bcache/sysfs.c     |  1 -
+ drivers/md/bcache/writeback.c |  2 --
+ drivers/md/dm-bufio.c         | 14 --------------
+ drivers/md/dm-cache-target.c  |  4 ----
+ drivers/md/dm-crypt.c         |  3 ---
+ drivers/md/dm-integrity.c     |  3 ---
+ drivers/md/dm-kcopyd.c        |  2 --
+ drivers/md/dm-snap.c          |  1 -
+ drivers/md/dm-stats.c         |  8 --------
+ drivers/md/dm-thin.c          |  2 --
+ drivers/md/dm-writecache.c    | 11 -----------
+ drivers/md/dm.c               |  4 ----
+ drivers/md/md.c               |  1 -
+ drivers/md/raid1.c            |  2 --
+ drivers/md/raid10.c           |  3 ---
+ drivers/md/raid5.c            |  2 --
+ 18 files changed, 70 deletions(-)
 
-diff --git a/sound/arm/aaci.c b/sound/arm/aaci.c
-index 0817ad21af74..d216f4859e61 100644
---- a/sound/arm/aaci.c
-+++ b/sound/arm/aaci.c
-@@ -145,7 +145,7 @@ static unsigned short aaci_ac97_read(struct snd_ac97 *ac97, unsigned short reg)
- 	timeout = FRAME_PERIOD_US * 8;
+diff --git a/drivers/md/bcache/btree.c b/drivers/md/bcache/btree.c
+index fd121a61f17c..b9389d3c39d7 100644
+--- a/drivers/md/bcache/btree.c
++++ b/drivers/md/bcache/btree.c
+@@ -1826,7 +1826,6 @@ static void bch_btree_gc(struct cache_set *c)
  	do {
- 		udelay(1);
+ 		ret = bcache_btree_root(gc_root, c, &op, &writes, &stats);
+ 		closure_sync(&writes);
 -		cond_resched();
-+		cond_resched_stall();
- 		v = readl(aaci->base + AACI_SLFR) & (SLFR_1RXV|SLFR_2RXV);
- 	} while ((v != (SLFR_1RXV|SLFR_2RXV)) && --timeout);
  
-diff --git a/sound/core/seq/seq_virmidi.c b/sound/core/seq/seq_virmidi.c
-index 1b9260108e48..99226da86d3c 100644
---- a/sound/core/seq/seq_virmidi.c
-+++ b/sound/core/seq/seq_virmidi.c
-@@ -154,8 +154,6 @@ static void snd_vmidi_output_work(struct work_struct *work)
- 			if (ret < 0)
- 				break;
+ 		if (ret == -EAGAIN)
+ 			schedule_timeout_interruptible(msecs_to_jiffies
+@@ -1981,7 +1980,6 @@ static int bch_btree_check_thread(void *arg)
+ 				goto out;
+ 			}
+ 			skip_nr--;
+-			cond_resched();
  		}
--		/* rawmidi input might be huge, allow to have a break */
+ 
+ 		if (p) {
+@@ -2005,7 +2003,6 @@ static int bch_btree_check_thread(void *arg)
+ 		}
+ 		p = NULL;
+ 		prev_idx = cur_idx;
+-		cond_resched();
+ 	}
+ 
+ out:
+@@ -2670,8 +2667,6 @@ void bch_refill_keybuf(struct cache_set *c, struct keybuf *buf,
+ 	struct bkey start = buf->last_scanned;
+ 	struct refill refill;
+ 
+-	cond_resched();
+-
+ 	bch_btree_op_init(&refill.op, -1);
+ 	refill.nr_found	= 0;
+ 	refill.buf	= buf;
+diff --git a/drivers/md/bcache/journal.c b/drivers/md/bcache/journal.c
+index c182c21de2e8..5e06a665d082 100644
+--- a/drivers/md/bcache/journal.c
++++ b/drivers/md/bcache/journal.c
+@@ -384,8 +384,6 @@ int bch_journal_replay(struct cache_set *s, struct list_head *list)
+ 
+ 			BUG_ON(!bch_keylist_empty(&keylist));
+ 			keys++;
+-
+-			cond_resched();
+ 		}
+ 
+ 		if (i->pin)
+diff --git a/drivers/md/bcache/sysfs.c b/drivers/md/bcache/sysfs.c
+index 0e2c1880f60b..d7e248b54abd 100644
+--- a/drivers/md/bcache/sysfs.c
++++ b/drivers/md/bcache/sysfs.c
+@@ -1030,7 +1030,6 @@ KTYPE(bch_cache_set_internal);
+ 
+ static int __bch_cache_cmp(const void *l, const void *r)
+ {
+-	cond_resched();
+ 	return *((uint16_t *)r) - *((uint16_t *)l);
+ }
+ 
+diff --git a/drivers/md/bcache/writeback.c b/drivers/md/bcache/writeback.c
+index 24c049067f61..7da09bba3067 100644
+--- a/drivers/md/bcache/writeback.c
++++ b/drivers/md/bcache/writeback.c
+@@ -863,8 +863,6 @@ static int sectors_dirty_init_fn(struct btree_op *_op, struct btree *b,
+ 					     KEY_START(k), KEY_SIZE(k));
+ 
+ 	op->count++;
+-	if (!(op->count % INIT_KEYS_EACH_TIME))
+-		cond_resched();
+ 
+ 	return MAP_CONTINUE;
+ }
+diff --git a/drivers/md/dm-bufio.c b/drivers/md/dm-bufio.c
+index bc309e41d074..0b8f3341fa79 100644
+--- a/drivers/md/dm-bufio.c
++++ b/drivers/md/dm-bufio.c
+@@ -294,8 +294,6 @@ static struct lru_entry *lru_evict(struct lru *lru, le_predicate pred, void *con
+ 		}
+ 
+ 		h = h->next;
+-
+-		cond_resched();
+ 	}
+ 
+ 	return NULL;
+@@ -762,7 +760,6 @@ static void __cache_iterate(struct dm_buffer_cache *bc, int list_mode,
+ 		case IT_COMPLETE:
+ 			return;
+ 		}
+-		cond_resched();
+ 
+ 		le = to_le(le->list.next);
+ 	} while (le != first);
+@@ -890,8 +887,6 @@ static void __remove_range(struct dm_buffer_cache *bc,
+ 	struct dm_buffer *b;
+ 
+ 	while (true) {
+-		cond_resched();
+-
+ 		b = __find_next(root, begin);
+ 		if (!b || (b->block >= end))
+ 			break;
+@@ -1435,7 +1430,6 @@ static void __flush_write_list(struct list_head *write_list)
+ 			list_entry(write_list->next, struct dm_buffer, write_list);
+ 		list_del(&b->write_list);
+ 		submit_io(b, REQ_OP_WRITE, write_endio);
+-		cond_resched();
+ 	}
+ 	blk_finish_plug(&plug);
+ }
+@@ -1953,8 +1947,6 @@ void dm_bufio_prefetch(struct dm_bufio_client *c,
+ 				submit_io(b, REQ_OP_READ, read_endio);
+ 			dm_bufio_release(b);
+ 
+-			cond_resched();
+-
+ 			if (!n_blocks)
+ 				goto flush_plug;
+ 			dm_bufio_lock(c);
+@@ -2093,8 +2085,6 @@ int dm_bufio_write_dirty_buffers(struct dm_bufio_client *c)
+ 			cache_mark(&c->cache, b, LIST_CLEAN);
+ 
+ 		cache_put_and_wake(c, b);
+-
+-		cond_resched();
+ 	}
+ 	lru_iter_end(&it);
+ 
+@@ -2350,7 +2340,6 @@ static void __scan(struct dm_bufio_client *c)
+ 
+ 			atomic_long_dec(&c->need_shrink);
+ 			freed++;
+-			cond_resched();
+ 		}
+ 	}
+ }
+@@ -2659,8 +2648,6 @@ static unsigned long __evict_many(struct dm_bufio_client *c,
+ 
+ 		__make_buffer_clean(b);
+ 		__free_buffer_wake(b);
+-
+-		cond_resched();
+ 	}
+ 
+ 	return count;
+@@ -2802,7 +2789,6 @@ static void evict_old(void)
+ 	while (dm_bufio_current_allocated > threshold) {
+ 		if (!__evict_a_few(64))
+ 			break;
+-		cond_resched();
+ 	}
+ 	mutex_unlock(&dm_bufio_clients_lock);
+ }
+diff --git a/drivers/md/dm-cache-target.c b/drivers/md/dm-cache-target.c
+index 911f73f7ebba..df136b29471a 100644
+--- a/drivers/md/dm-cache-target.c
++++ b/drivers/md/dm-cache-target.c
+@@ -1829,7 +1829,6 @@ static void process_deferred_bios(struct work_struct *ws)
+ 
+ 		else
+ 			commit_needed = process_bio(cache, bio) || commit_needed;
+-		cond_resched();
+ 	}
+ 
+ 	if (commit_needed)
+@@ -1853,7 +1852,6 @@ static void requeue_deferred_bios(struct cache *cache)
+ 	while ((bio = bio_list_pop(&bios))) {
+ 		bio->bi_status = BLK_STS_DM_REQUEUE;
+ 		bio_endio(bio);
 -		cond_resched();
  	}
  }
  
-diff --git a/sound/hda/hdac_controller.c b/sound/hda/hdac_controller.c
-index 7f3a000fab0c..9b6df2f541ca 100644
---- a/sound/hda/hdac_controller.c
-+++ b/sound/hda/hdac_controller.c
-@@ -284,7 +284,6 @@ int snd_hdac_bus_get_response(struct hdac_bus *bus, unsigned int addr,
- 			msleep(2); /* temporary workaround */
- 		} else {
- 			udelay(10);
+@@ -1894,8 +1892,6 @@ static void check_migrations(struct work_struct *ws)
+ 		r = mg_start(cache, op, NULL);
+ 		if (r)
+ 			break;
+-
+-		cond_resched();
+ 	}
+ }
+ 
+diff --git a/drivers/md/dm-crypt.c b/drivers/md/dm-crypt.c
+index 5315fd261c23..70a24ade34af 100644
+--- a/drivers/md/dm-crypt.c
++++ b/drivers/md/dm-crypt.c
+@@ -1629,8 +1629,6 @@ static blk_status_t crypt_convert(struct crypt_config *cc,
+ 			atomic_dec(&ctx->cc_pending);
+ 			ctx->cc_sector += sector_step;
+ 			tag_offset++;
+-			if (!atomic)
+-				cond_resched();
+ 			continue;
+ 		/*
+ 		 * There was a data integrity error.
+@@ -1965,7 +1963,6 @@ static int dmcrypt_write(void *data)
+ 			io = crypt_io_from_node(rb_first(&write_tree));
+ 			rb_erase(&io->rb_node, &write_tree);
+ 			kcryptd_io_write(io);
+-			cond_resched();
+ 		} while (!RB_EMPTY_ROOT(&write_tree));
+ 		blk_finish_plug(&plug);
+ 	}
+diff --git a/drivers/md/dm-integrity.c b/drivers/md/dm-integrity.c
+index 97a8d5fc9ebb..63c88f23b585 100644
+--- a/drivers/md/dm-integrity.c
++++ b/drivers/md/dm-integrity.c
+@@ -2717,12 +2717,10 @@ static void integrity_recalc(struct work_struct *w)
+ 				       ic->sectors_per_block, BITMAP_OP_TEST_ALL_CLEAR)) {
+ 			logical_sector += ic->sectors_per_block;
+ 			n_sectors -= ic->sectors_per_block;
+-			cond_resched();
+ 		}
+ 		while (block_bitmap_op(ic, ic->recalc_bitmap, logical_sector + n_sectors - ic->sectors_per_block,
+ 				       ic->sectors_per_block, BITMAP_OP_TEST_ALL_CLEAR)) {
+ 			n_sectors -= ic->sectors_per_block;
+-			cond_resched();
+ 		}
+ 		get_area_and_offset(ic, logical_sector, &area, &offset);
+ 	}
+@@ -2782,7 +2780,6 @@ static void integrity_recalc(struct work_struct *w)
+ 	}
+ 
+ advance_and_next:
+-	cond_resched();
+ 
+ 	spin_lock_irq(&ic->endio_wait.lock);
+ 	remove_range_unlocked(ic, &range);
+diff --git a/drivers/md/dm-kcopyd.c b/drivers/md/dm-kcopyd.c
+index d01807c50f20..8a91e83188e7 100644
+--- a/drivers/md/dm-kcopyd.c
++++ b/drivers/md/dm-kcopyd.c
+@@ -512,8 +512,6 @@ static int run_complete_job(struct kcopyd_job *job)
+ 	if (atomic_dec_and_test(&kc->nr_jobs))
+ 		wake_up(&kc->destroyq);
+ 
+-	cond_resched();
+-
+ 	return 0;
+ }
+ 
+diff --git a/drivers/md/dm-snap.c b/drivers/md/dm-snap.c
+index bf7a574499a3..cd8891c12cca 100644
+--- a/drivers/md/dm-snap.c
++++ b/drivers/md/dm-snap.c
+@@ -1762,7 +1762,6 @@ static void copy_callback(int read_err, unsigned long write_err, void *context)
+ 			s->exception_complete_sequence++;
+ 			rb_erase(&pe->out_of_order_node, &s->out_of_order_tree);
+ 			complete_exception(pe);
+-			cond_resched();
+ 		}
+ 	} else {
+ 		struct rb_node *parent = NULL;
+diff --git a/drivers/md/dm-stats.c b/drivers/md/dm-stats.c
+index db2d997a6c18..d6878cb7b0ef 100644
+--- a/drivers/md/dm-stats.c
++++ b/drivers/md/dm-stats.c
+@@ -230,7 +230,6 @@ void dm_stats_cleanup(struct dm_stats *stats)
+ 				       atomic_read(&shared->in_flight[READ]),
+ 				       atomic_read(&shared->in_flight[WRITE]));
+ 			}
+-			cond_resched();
+ 		}
+ 		dm_stat_free(&s->rcu_head);
+ 	}
+@@ -336,7 +335,6 @@ static int dm_stats_create(struct dm_stats *stats, sector_t start, sector_t end,
+ 	for (ni = 0; ni < n_entries; ni++) {
+ 		atomic_set(&s->stat_shared[ni].in_flight[READ], 0);
+ 		atomic_set(&s->stat_shared[ni].in_flight[WRITE], 0);
+-		cond_resched();
+ 	}
+ 
+ 	if (s->n_histogram_entries) {
+@@ -350,7 +348,6 @@ static int dm_stats_create(struct dm_stats *stats, sector_t start, sector_t end,
+ 		for (ni = 0; ni < n_entries; ni++) {
+ 			s->stat_shared[ni].tmp.histogram = hi;
+ 			hi += s->n_histogram_entries + 1;
 -			cond_resched();
  		}
  	}
  
-diff --git a/sound/isa/sb/emu8000_patch.c b/sound/isa/sb/emu8000_patch.c
-index 8c1e7f2bfc34..d808c461be35 100644
---- a/sound/isa/sb/emu8000_patch.c
-+++ b/sound/isa/sb/emu8000_patch.c
-@@ -218,11 +218,6 @@ snd_emu8000_sample_new(struct snd_emux *rec, struct snd_sf_sample *sp,
- 		offset++;
- 		write_word(emu, &dram_offset, s);
- 
--		/* we may take too long time in this loop.
--		 * so give controls back to kernel if needed.
--		 */
+@@ -372,7 +369,6 @@ static int dm_stats_create(struct dm_stats *stats, sector_t start, sector_t end,
+ 			for (ni = 0; ni < n_entries; ni++) {
+ 				p[ni].histogram = hi;
+ 				hi += s->n_histogram_entries + 1;
+-				cond_resched();
+ 			}
+ 		}
+ 	}
+@@ -512,7 +508,6 @@ static int dm_stats_list(struct dm_stats *stats, const char *program,
+ 			}
+ 			DMEMIT("\n");
+ 		}
 -		cond_resched();
+ 	}
+ 	mutex_unlock(&stats->mutex);
+ 
+@@ -794,7 +789,6 @@ static void __dm_stat_clear(struct dm_stat *s, size_t idx_start, size_t idx_end,
+ 				local_irq_enable();
+ 			}
+ 		}
+-		cond_resched();
+ 	}
+ }
+ 
+@@ -910,8 +904,6 @@ static int dm_stats_print(struct dm_stats *stats, int id,
+ 
+ 		if (unlikely(sz + 1 >= maxlen))
+ 			goto buffer_overflow;
 -
- 		if (i == sp->v.loopend &&
- 		    (sp->v.mode_flags & (SNDRV_SFNT_SAMPLE_BIDIR_LOOP|SNDRV_SFNT_SAMPLE_REVERSE_LOOP)))
- 		{
-diff --git a/sound/isa/sb/emu8000_pcm.c b/sound/isa/sb/emu8000_pcm.c
-index 9234d4fe8ada..fd18c7cf1812 100644
---- a/sound/isa/sb/emu8000_pcm.c
-+++ b/sound/isa/sb/emu8000_pcm.c
-@@ -404,7 +404,7 @@ static int emu8k_pcm_trigger(struct snd_pcm_substream *subs, int cmd)
-  */
- #define CHECK_SCHEDULER() \
- do { \
--	cond_resched();\
-+	cond_resched_stall();\
- 	if (signal_pending(current))\
- 		return -EAGAIN;\
- } while (0)
-diff --git a/sound/isa/wss/wss_lib.c b/sound/isa/wss/wss_lib.c
-index 026061b55ee9..97c74e8c26ee 100644
---- a/sound/isa/wss/wss_lib.c
-+++ b/sound/isa/wss/wss_lib.c
-@@ -1159,7 +1159,6 @@ static int snd_ad1848_probe(struct snd_wss *chip)
- 	while (wss_inb(chip, CS4231P(REGSEL)) & CS4231_INIT) {
- 		if (time_after(jiffies, timeout))
- 			return -ENODEV;
 -		cond_resched();
  	}
- 	spin_lock_irqsave(&chip->reg_lock, flags);
  
-diff --git a/sound/pci/echoaudio/echoaudio_dsp.c b/sound/pci/echoaudio/echoaudio_dsp.c
-index 2a40091d472c..085b229c83b5 100644
---- a/sound/pci/echoaudio/echoaudio_dsp.c
-+++ b/sound/pci/echoaudio/echoaudio_dsp.c
-@@ -100,7 +100,6 @@ static int write_dsp(struct echoaudio *chip, u32 data)
- 			return 0;
+ 	if (clear)
+diff --git a/drivers/md/dm-thin.c b/drivers/md/dm-thin.c
+index 07c7f9795b10..52e4a7dc6923 100644
+--- a/drivers/md/dm-thin.c
++++ b/drivers/md/dm-thin.c
+@@ -2234,7 +2234,6 @@ static void process_thin_deferred_bios(struct thin_c *tc)
+ 			throttle_work_update(&pool->throttle);
+ 			dm_pool_issue_prefetches(pool->pmd);
  		}
- 		udelay(1);
 -		cond_resched();
  	}
- 
- 	chip->bad_board = true;		/* Set true until DSP re-loaded */
-@@ -123,7 +122,6 @@ static int read_dsp(struct echoaudio *chip, u32 *data)
- 			return 0;
+ 	blk_finish_plug(&plug);
+ }
+@@ -2317,7 +2316,6 @@ static void process_thin_deferred_cells(struct thin_c *tc)
+ 			else
+ 				pool->process_cell(tc, cell);
  		}
- 		udelay(1);
 -		cond_resched();
- 	}
+ 	} while (!list_empty(&cells));
+ }
  
- 	chip->bad_board = true;		/* Set true until DSP re-loaded */
-diff --git a/sound/pci/ens1370.c b/sound/pci/ens1370.c
-index 89210b2c7342..4948ae411a94 100644
---- a/sound/pci/ens1370.c
-+++ b/sound/pci/ens1370.c
-@@ -501,7 +501,6 @@ static unsigned int snd_es1371_wait_src_ready(struct ensoniq * ensoniq)
- 		r = inl(ES_REG(ensoniq, 1371_SMPRATE));
- 		if ((r & ES_1371_SRC_RAM_BUSY) == 0)
- 			return r;
--		cond_resched();
- 	}
- 	dev_err(ensoniq->card->dev, "wait src ready timeout 0x%lx [0x%x]\n",
- 		   ES_REG(ensoniq, 1371_SMPRATE), r);
-diff --git a/sound/pci/es1968.c b/sound/pci/es1968.c
-index 4bc0f53c223b..1598880cfeea 100644
---- a/sound/pci/es1968.c
-+++ b/sound/pci/es1968.c
-@@ -612,7 +612,7 @@ static int snd_es1968_ac97_wait(struct es1968 *chip)
- 	while (timeout-- > 0) {
- 		if (!(inb(chip->io_port + ESM_AC97_INDEX) & 1))
- 			return 0;
--		cond_resched();
-+		cond_resched_stall();
- 	}
- 	dev_dbg(chip->card->dev, "ac97 timeout\n");
- 	return 1; /* timeout */
-diff --git a/sound/pci/lola/lola.c b/sound/pci/lola/lola.c
-index 1aa30e90b86a..3c18b5543512 100644
---- a/sound/pci/lola/lola.c
-+++ b/sound/pci/lola/lola.c
-@@ -166,7 +166,6 @@ static int rirb_get_response(struct lola *chip, unsigned int *val,
- 		if (time_after(jiffies, timeout))
+diff --git a/drivers/md/dm-writecache.c b/drivers/md/dm-writecache.c
+index 074cb785eafc..75ecc26915a1 100644
+--- a/drivers/md/dm-writecache.c
++++ b/drivers/md/dm-writecache.c
+@@ -321,8 +321,6 @@ static int persistent_memory_claim(struct dm_writecache *wc)
+ 			while (daa-- && i < p) {
+ 				pages[i++] = pfn_t_to_page(pfn);
+ 				pfn.val++;
+-				if (!(i & 15))
+-					cond_resched();
+ 			}
+ 		} while (i < p);
+ 		wc->memory_map = vmap(pages, p, VM_MAP, PAGE_KERNEL);
+@@ -819,7 +817,6 @@ static void writecache_flush(struct dm_writecache *wc)
+ 		if (writecache_entry_is_committed(wc, e2))
  			break;
- 		udelay(20);
+ 		e = e2;
 -		cond_resched();
  	}
- 	dev_warn(chip->card->dev, "RIRB response error\n");
- 	if (!chip->polling_mode) {
-diff --git a/sound/pci/mixart/mixart_hwdep.c b/sound/pci/mixart/mixart_hwdep.c
-index 689c0f995a9c..1906cb861002 100644
---- a/sound/pci/mixart/mixart_hwdep.c
-+++ b/sound/pci/mixart/mixart_hwdep.c
-@@ -41,7 +41,7 @@ static int mixart_wait_nice_for_register_value(struct mixart_mgr *mgr,
- 	do {	/* we may take too long time in this loop.
- 		 * so give controls back to kernel if needed.
+ 	writecache_commit_flushed(wc, true);
+ 
+@@ -848,7 +845,6 @@ static void writecache_flush(struct dm_writecache *wc)
+ 		if (unlikely(e->lru.prev == &wc->lru))
+ 			break;
+ 		e = container_of(e->lru.prev, struct wc_entry, lru);
+-		cond_resched();
+ 	}
+ 
+ 	if (need_flush_after_free)
+@@ -970,7 +966,6 @@ static int writecache_alloc_entries(struct dm_writecache *wc)
+ 
+ 		e->index = b;
+ 		e->write_in_progress = false;
+-		cond_resched();
+ 	}
+ 
+ 	return 0;
+@@ -1058,7 +1053,6 @@ static void writecache_resume(struct dm_target *ti)
+ 			e->original_sector = le64_to_cpu(wme.original_sector);
+ 			e->seq_count = le64_to_cpu(wme.seq_count);
+ 		}
+-		cond_resched();
+ 	}
+ #endif
+ 	for (b = 0; b < wc->n_blocks; b++) {
+@@ -1093,7 +1087,6 @@ static void writecache_resume(struct dm_target *ti)
+ 				}
+ 			}
+ 		}
+-		cond_resched();
+ 	}
+ 
+ 	if (need_flush) {
+@@ -1824,7 +1817,6 @@ static void __writeback_throttle(struct dm_writecache *wc, struct writeback_list
+ 			wc_unlock(wc);
+ 		}
+ 	}
+-	cond_resched();
+ }
+ 
+ static void __writecache_writeback_pmem(struct dm_writecache *wc, struct writeback_list *wbl)
+@@ -2024,7 +2016,6 @@ static void writecache_writeback(struct work_struct *work)
+ 				     read_original_sector(wc, e))) {
+ 				BUG_ON(!f->write_in_progress);
+ 				list_move(&e->lru, &skipped);
+-				cond_resched();
+ 				continue;
+ 			}
+ 		}
+@@ -2079,7 +2070,6 @@ static void writecache_writeback(struct work_struct *work)
+ 				break;
+ 			}
+ 		}
+-		cond_resched();
+ 	}
+ 
+ 	if (!list_empty(&skipped)) {
+@@ -2168,7 +2158,6 @@ static int init_memory(struct dm_writecache *wc)
+ 
+ 	for (b = 0; b < wc->n_blocks; b++) {
+ 		write_original_sector_seq_count(wc, &wc->entries[b], -1, -1);
+-		cond_resched();
+ 	}
+ 
+ 	writecache_flush_all_metadata(wc);
+diff --git a/drivers/md/dm.c b/drivers/md/dm.c
+index 64a1f306c96c..ac0aff4de190 100644
+--- a/drivers/md/dm.c
++++ b/drivers/md/dm.c
+@@ -996,7 +996,6 @@ static void dm_wq_requeue_work(struct work_struct *work)
+ 		io->next = NULL;
+ 		__dm_io_complete(io, false);
+ 		io = next;
+-		cond_resched();
+ 	}
+ }
+ 
+@@ -1379,12 +1378,10 @@ static noinline void __set_swap_bios_limit(struct mapped_device *md, int latch)
+ {
+ 	mutex_lock(&md->swap_bios_lock);
+ 	while (latch < md->swap_bios) {
+-		cond_resched();
+ 		down(&md->swap_bios_semaphore);
+ 		md->swap_bios--;
+ 	}
+ 	while (latch > md->swap_bios) {
+-		cond_resched();
+ 		up(&md->swap_bios_semaphore);
+ 		md->swap_bios++;
+ 	}
+@@ -2583,7 +2580,6 @@ static void dm_wq_work(struct work_struct *work)
+ 			break;
+ 
+ 		submit_bio_noacct(bio);
+-		cond_resched();
+ 	}
+ }
+ 
+diff --git a/drivers/md/md.c b/drivers/md/md.c
+index a104a025084d..88e8148be28f 100644
+--- a/drivers/md/md.c
++++ b/drivers/md/md.c
+@@ -9048,7 +9048,6 @@ void md_do_sync(struct md_thread *thread)
+ 		 * about not overloading the IO subsystem. (things like an
+ 		 * e2fsck being done on the RAID array should execute fast)
  		 */
 -		cond_resched();
-+		cond_resched_stall();
  
- 		read = readl_be( MIXART_MEM( mgr, offset ));
- 		if(is_egal) {
-diff --git a/sound/pci/pcxhr/pcxhr_core.c b/sound/pci/pcxhr/pcxhr_core.c
-index 23f253effb4f..221eb6570c5e 100644
---- a/sound/pci/pcxhr/pcxhr_core.c
-+++ b/sound/pci/pcxhr/pcxhr_core.c
-@@ -304,8 +304,6 @@ int pcxhr_load_xilinx_binary(struct pcxhr_mgr *mgr,
- 			PCXHR_OUTPL(mgr, PCXHR_PLX_CHIPSC, chipsc);
- 			mask >>= 1;
+ 		recovery_done = io_sectors - atomic_read(&mddev->recovery_active);
+ 		currspeed = ((unsigned long)(recovery_done - mddev->resync_mark_cnt))/2
+diff --git a/drivers/md/raid1.c b/drivers/md/raid1.c
+index 2aabac773fe7..71bd8d8d1d1c 100644
+--- a/drivers/md/raid1.c
++++ b/drivers/md/raid1.c
+@@ -807,7 +807,6 @@ static void flush_bio_list(struct r1conf *conf, struct bio *bio)
+ 
+ 		raid1_submit_write(bio);
+ 		bio = next;
+-		cond_resched();
+ 	}
+ }
+ 
+@@ -2613,7 +2612,6 @@ static void raid1d(struct md_thread *thread)
+ 		else
+ 			WARN_ON_ONCE(1);
+ 
+-		cond_resched();
+ 		if (mddev->sb_flags & ~(1<<MD_SB_CHANGE_PENDING))
+ 			md_check_recovery(mddev);
+ 	}
+diff --git a/drivers/md/raid10.c b/drivers/md/raid10.c
+index 023413120851..d41f856ebcf4 100644
+--- a/drivers/md/raid10.c
++++ b/drivers/md/raid10.c
+@@ -916,7 +916,6 @@ static void flush_pending_writes(struct r10conf *conf)
+ 
+ 			raid1_submit_write(bio);
+ 			bio = next;
+-			cond_resched();
  		}
--		/* don't take too much time in this loop... */
--		cond_resched();
- 	}
- 	chipsc &= ~(PCXHR_CHIPSC_DATA_CLK | PCXHR_CHIPSC_DATA_IN);
- 	PCXHR_OUTPL(mgr, PCXHR_PLX_CHIPSC, chipsc);
-@@ -356,9 +354,6 @@ static int pcxhr_download_dsp(struct pcxhr_mgr *mgr, const struct firmware *dsp)
- 		PCXHR_OUTPB(mgr, PCXHR_DSP_TXH, data[0]);
- 		PCXHR_OUTPB(mgr, PCXHR_DSP_TXM, data[1]);
- 		PCXHR_OUTPB(mgr, PCXHR_DSP_TXL, data[2]);
--
--		/* don't take too much time in this loop... */
--		cond_resched();
- 	}
- 	/* give some time to boot the DSP */
- 	msleep(PCXHR_WAIT_DEFAULT);
-diff --git a/sound/pci/vx222/vx222_ops.c b/sound/pci/vx222/vx222_ops.c
-index 3e7e928b24f8..84a59566b036 100644
---- a/sound/pci/vx222/vx222_ops.c
-+++ b/sound/pci/vx222/vx222_ops.c
-@@ -376,8 +376,6 @@ static int vx2_load_xilinx_binary(struct vx_core *chip, const struct firmware *x
- 	for (i = 0; i < xilinx->size; i++, image++) {
- 		if (put_xilinx_data(chip, port, 8, *image) < 0)
- 			return -EINVAL;
--		/* don't take too much time in this loop... */
--		cond_resched();
- 	}
- 	put_xilinx_data(chip, port, 4, 0xff); /* end signature */
+ 		blk_finish_plug(&plug);
+ 	} else
+@@ -1132,7 +1131,6 @@ static void raid10_unplug(struct blk_plug_cb *cb, bool from_schedule)
  
-diff --git a/sound/x86/intel_hdmi_audio.c b/sound/x86/intel_hdmi_audio.c
-index ab95fb34a635..e734d2f5f711 100644
---- a/sound/x86/intel_hdmi_audio.c
-+++ b/sound/x86/intel_hdmi_audio.c
-@@ -1020,7 +1020,6 @@ static void wait_clear_underrun_bit(struct snd_intelhad *intelhaddata)
- 		if (!(val & AUD_HDMI_STATUS_MASK_UNDERRUN))
- 			return;
- 		udelay(100);
+ 		raid1_submit_write(bio);
+ 		bio = next;
 -		cond_resched();
- 		had_write_register(intelhaddata, AUD_HDMI_STATUS, val);
  	}
- 	dev_err(intelhaddata->dev, "Unable to clear UNDERRUN bits\n");
+ 	kfree(plug);
+ }
+@@ -3167,7 +3165,6 @@ static void raid10d(struct md_thread *thread)
+ 		else
+ 			WARN_ON_ONCE(1);
+ 
+-		cond_resched();
+ 		if (mddev->sb_flags & ~(1<<MD_SB_CHANGE_PENDING))
+ 			md_check_recovery(mddev);
+ 	}
+diff --git a/drivers/md/raid5.c b/drivers/md/raid5.c
+index 284cd71bcc68..47b995c97363 100644
+--- a/drivers/md/raid5.c
++++ b/drivers/md/raid5.c
+@@ -6727,8 +6727,6 @@ static int handle_active_stripes(struct r5conf *conf, int group,
+ 		handle_stripe(batch[i]);
+ 	log_write_stripe_run(conf);
+ 
+-	cond_resched();
+-
+ 	spin_lock_irq(&conf->device_lock);
+ 	for (i = 0; i < batch_size; i++) {
+ 		hash = batch[i]->hash_lock_index;
 -- 
 2.31.1
 
