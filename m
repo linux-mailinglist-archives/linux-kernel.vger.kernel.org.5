@@ -2,152 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 748C47E4B73
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 23:05:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 596C97E4B77
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 23:05:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234377AbjKGWFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 17:05:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33094 "EHLO
+        id S235552AbjKGWFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 17:05:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235430AbjKGWEK (ORCPT
+        with ESMTP id S235551AbjKGWE5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 17:04:10 -0500
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEDB635AB;
-        Tue,  7 Nov 2023 14:01:14 -0800 (PST)
-Received: from [100.84.166.245] (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: nicolas)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 9073C66074B5;
-        Tue,  7 Nov 2023 22:01:11 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1699394473;
-        bh=kl2jjVmIoGV4j4wny32gFtvgWSKHKwWLI3Ngr8+kGgE=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=B//ZgroOgxg/nhU4EmN+zhYY3+pIKTam4MPNMg0n87Wd4iQVXG9FyhsDMWcKj75iR
-         PIQIIq1j9o62aRqKWUWbhAzx725msK3iXOghpJrk6nyHSjNwEciklkmq30s7dz+Was
-         drfy0fX7WCjRiEv1LLED1TwbPVEHkj4wvU5NyK1g3kFI+q5JnSE87LMDYhzfjshraC
-         VZ6abiqhAx0oA1Rrz0jMxTDhj52FqckO7wfszj09SEfeVETfqebqf7gE+2lOkgZWCx
-         bpU/QQDtAsWuZX97J8LdWNfZ8cF/fOjI4hNwO4djFeeTDN3ZWRQqbfWCyuWtrI8EMp
-         bHH+KpW/08Q9g==
-Message-ID: <c75c894a09292775773ad338121ee81924337cf0.camel@collabora.com>
-Subject: Re: [PATCH v4 05/11] media: rkvdec: h264: Remove SPS validation at
- streaming start
-From:   Nicolas Dufresne <nicolas.dufresne@collabora.com>
-To:     Jonas Karlman <jonas@kwiboo.se>,
-        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Alex Bee <knaerzche@gmail.com>,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        Sebastian Fricke <sebastian.fricke@collabora.com>,
-        Christopher Obbard <chris.obbard@collabora.com>,
-        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Date:   Tue, 07 Nov 2023 17:01:02 -0500
-In-Reply-To: <20231105165521.3592037-6-jonas@kwiboo.se>
-References: <20231105165521.3592037-1-jonas@kwiboo.se>
-         <20231105165521.3592037-6-jonas@kwiboo.se>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Tue, 7 Nov 2023 17:04:57 -0500
+Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A01353879;
+        Tue,  7 Nov 2023 14:01:25 -0800 (PST)
+Received: by mail-qt1-x82b.google.com with SMTP id d75a77b69052e-41e3e77e675so41173391cf.1;
+        Tue, 07 Nov 2023 14:01:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699394484; x=1699999284; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=2CJun7UB52S4zZmzZk7Tc5+t2/EYY1acmDjuc/JVwgQ=;
+        b=UMENwc5hcJtwPUmADRD81+YK5+JPqKU5/uV81TXA/tTYQdKnFDGRLhx5G7bKX7H5hL
+         N+tY3ORbrSrZ8+F3CbYpuflKq40WaYg2to6P0R0l3cKV2w015DB660fGSB3LPGzmG2Fi
+         FIRmoJXbD1y1Yumefu92lTvO4WyyWlM348csa+gaPpOTdlg92nYc3VHT2hwlcOF5roRx
+         +mQ2HcdTTZib1ArcI8YVjf8UZpy3ItT+lBYLM/ZydPNPHHyuwk5V1z5uEiD/dowoFGcf
+         Lgok+y1kI/0klyDX//FlthpUCQmF9vFd5KxSHVba2KRhJ8I/YEGry2QNMRaT/oaYP0ez
+         ZipA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699394484; x=1699999284;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=2CJun7UB52S4zZmzZk7Tc5+t2/EYY1acmDjuc/JVwgQ=;
+        b=vc/lYOekr9HFH6seya1RIA+ygDWXUPIFwfGuiU8xKCZWJM0vFbhEDWj8rSm0tlYVhZ
+         ucVdZZ5L7GmwnSSFRwd9XwM8vxrnfyw8oKDm+7MyaU2n9EyMt3XzWCF99iZodynNyJ1J
+         cqwl7d6xo2TRL2PFeSorEpiZxxdEBudO0IDlfdv8PnjnB9P+GSjfYkPw5s7xRMmSVxGF
+         YLuln92U6x1z4aQmtGwjWGllieuGEbp/j/7vJuuhbY+afBBrHGSVWMRHLbYtBxtsJ7cF
+         VZH1eSgESm+ftHBs8+wpRgmoFxzm4hsp1c1PX1nOQt//KO5BNnxW3geOFgcXuYf0t6Pr
+         YDjg==
+X-Gm-Message-State: AOJu0Yy8fx2e8ufmCxghvVAG20XzZ1aOFXgNV/Nuc8BVBJgMrrpIg6HJ
+        Z/350nt5d3RcFj/PIolrBClTur1430Q=
+X-Google-Smtp-Source: AGHT+IFTHyw9DU2WGhjY6FcF6KtbfcVzCzuY8S2stcJyiOKpBL+mrrHEXciP/HQOemZYy2hIv7k0IA==
+X-Received: by 2002:a05:6214:e64:b0:672:118e:e368 with SMTP id jz4-20020a0562140e6400b00672118ee368mr49430qvb.24.1699394484288;
+        Tue, 07 Nov 2023 14:01:24 -0800 (PST)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id nd10-20020a056214420a00b0066d0ab215b5sm340940qvb.13.2023.11.07.14.01.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 07 Nov 2023 14:01:23 -0800 (PST)
+Message-ID: <847671d3-efef-465b-af9c-f9789f9cc1ef@gmail.com>
+Date:   Tue, 7 Nov 2023 14:01:21 -0800
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 5.10 00/91] 5.10.200-rc2 review
+Content-Language: en-US
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org
+References: <20231107202447.670990820@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <20231107202447.670990820@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le dimanche 05 novembre 2023 =C3=A0 16:55 +0000, Jonas Karlman a =C3=A9crit=
-=C2=A0:
-> SPS parameters is validated in try_ctrl() ops so there is no need to
+On 11/7/23 12:24, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.200 release.
+> There are 91 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Thu, 09 Nov 2023 20:24:28 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.200-rc2.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-                 are
+On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels, build tested on 
+BMIPS_GENERIC:
 
-> re-validate when streaming starts.
->=20
-> Remove the unnecessary call to validate sps at streaming start.
-
-This patch is not working since user may change the format after the
-control have been set. The proper fix should actually reset the SPS
-(well all header controls) to match the the newly set format. Then this
-validation won't be needed anymore.
-
-The sequence that is problematic after this patch is:
-
-S_FMT (OUTPUT, width, height);
-S_CTRL (SPS) // valid
-S_FMT(OUTPUT, width', height'); // SPS is no longer valid
-
-One suggestion I may make is to add a ops so that each codec
-implementation can reset their header controls to make it valid against
-the new resolution. With that in place you'll be able drop the check.
-
-Nicolas
-
-p.s. you can also just drop this patch from the series and revisit it
-later, though I think its worth fixing.
-
->=20
-> Suggested-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-> Signed-off-by: Jonas Karlman <jonas@kwiboo.se>
-> ---
-> v4:
-> - No change
->=20
-> v3:
-> - New patch
->=20
->  drivers/staging/media/rkvdec/rkvdec-h264.c | 19 ++-----------------
->  1 file changed, 2 insertions(+), 17 deletions(-)
->=20
-> diff --git a/drivers/staging/media/rkvdec/rkvdec-h264.c b/drivers/staging=
-/media/rkvdec/rkvdec-h264.c
-> index 8bce8902b8dd..815d5359ddd5 100644
-> --- a/drivers/staging/media/rkvdec/rkvdec-h264.c
-> +++ b/drivers/staging/media/rkvdec/rkvdec-h264.c
-> @@ -1070,17 +1070,6 @@ static int rkvdec_h264_start(struct rkvdec_ctx *ct=
-x)
->  	struct rkvdec_dev *rkvdec =3D ctx->dev;
->  	struct rkvdec_h264_priv_tbl *priv_tbl;
->  	struct rkvdec_h264_ctx *h264_ctx;
-> -	struct v4l2_ctrl *ctrl;
-> -	int ret;
-> -
-> -	ctrl =3D v4l2_ctrl_find(&ctx->ctrl_hdl,
-> -			      V4L2_CID_STATELESS_H264_SPS);
-> -	if (!ctrl)
-> -		return -EINVAL;
-> -
-> -	ret =3D rkvdec_h264_validate_sps(ctx, ctrl->p_new.p_h264_sps);
-> -	if (ret)
-> -		return ret;
-> =20
->  	h264_ctx =3D kzalloc(sizeof(*h264_ctx), GFP_KERNEL);
->  	if (!h264_ctx)
-> @@ -1089,8 +1078,8 @@ static int rkvdec_h264_start(struct rkvdec_ctx *ctx=
-)
->  	priv_tbl =3D dma_alloc_coherent(rkvdec->dev, sizeof(*priv_tbl),
->  				      &h264_ctx->priv_tbl.dma, GFP_KERNEL);
->  	if (!priv_tbl) {
-> -		ret =3D -ENOMEM;
-> -		goto err_free_ctx;
-> +		kfree(h264_ctx);
-> +		return -ENOMEM;
->  	}
-> =20
->  	h264_ctx->priv_tbl.size =3D sizeof(*priv_tbl);
-> @@ -1100,10 +1089,6 @@ static int rkvdec_h264_start(struct rkvdec_ctx *ct=
-x)
-> =20
->  	ctx->priv =3D h264_ctx;
->  	return 0;
-> -
-> -err_free_ctx:
-> -	kfree(h264_ctx);
-> -	return ret;
->  }
-> =20
->  static void rkvdec_h264_stop(struct rkvdec_ctx *ctx)
+Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
+-- 
+Florian
 
