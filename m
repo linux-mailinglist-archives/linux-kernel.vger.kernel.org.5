@@ -2,82 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 502487E4D4B
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 00:27:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACEA47E4D4F
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 00:27:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344595AbjKGX1c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 18:27:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36926 "EHLO
+        id S1344387AbjKGX1o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 18:27:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235583AbjKGX0u (ORCPT
+        with ESMTP id S1344516AbjKGX1J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 18:26:50 -0500
-Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83C232D71
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 15:24:43 -0800 (PST)
-Received: by mail-qv1-xf35.google.com with SMTP id 6a1803df08f44-66d00415a92so6876606d6.1
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 15:24:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699399482; x=1700004282; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XlH3yDHH8VWiFHnu4y1ED06RXF9ED0I+ELE6Udjp544=;
-        b=FkAU1OfO61MwzNiTE9DY1OG26wLHZwtikTLq217fhiY4FMaver2eQyKp+zIzMovtZe
-         6aE8SxLFf4820yikQP33WS2EiAodjhJpETBk391erb/RLjbtEXU8u5S3Dz6iN8oWM3xw
-         nflqXSrEGs/OXnuSQBYIrHEm0CJaEh2pLDwFLhajZzlP7sCj5ZIMMvp0MlNzZRXC29fu
-         JqW+gURKQLr/MctyuoLGeEjsACBOoUQizUYA7Eupu1UqsxQ90EioE/okDCaU7iDqAOpb
-         CCBgZ2O7kyLJYCEnLJP0lUn5kO5cBFvHo1wj+wwEpz7S4Aavgi6pLpIl2lNdMqFwDZWh
-         OPaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699399482; x=1700004282;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XlH3yDHH8VWiFHnu4y1ED06RXF9ED0I+ELE6Udjp544=;
-        b=UOpvBv91ctBnFpotwkLFXDNaRHfTl8UUMKobtTrk5xBaX2o5RdwIo7t1zg0sXwCyEP
-         ImjGKN60Se0PCjvBqL+5J3ekmhlO0HrvatWgH0HVfC3BwyjGWz1katnyKaqGPmBqhEvF
-         f6O4Obr31EEAJYAv8cMY4FMwcCUSCwPxVRU4Q1CIXDlYv3bi5DIEI6h+WlhOVl190L5q
-         cLwBe4soTP+asc5sFyh1C1xvFaVMg37rJBN1m/zzvkuYXH6+atW0ZR+IKu4LoGrzs3xh
-         Qy0Z+2eN/uVdE7MM9M5pbrQFsJBIT8oxCI+zMOo4PeH4B+t/SMKBym7Blx6/Oh5TR20M
-         nJ/A==
-X-Gm-Message-State: AOJu0YwlprjNhfamrv1elBH4tvJJ6REdRxhby/TFkGyV/QNlJKfYYBFF
-        zpZjOnLB13mruSG62HtkEpMM5QK8M1aTaQei8o8=
-X-Google-Smtp-Source: AGHT+IFzKOfsxUAOyTg4/B2c2+FRm2EghLOHHC6yIj5u4gceOSiG2NGcXwnnyvJ1a+etNcEqJQcS0E/2GW5KCMNNzcE=
-X-Received: by 2002:a0c:ee6c:0:b0:671:1408:d46e with SMTP id
- n12-20020a0cee6c000000b006711408d46emr293062qvs.0.1699399482480; Tue, 07 Nov
- 2023 15:24:42 -0800 (PST)
+        Tue, 7 Nov 2023 18:27:09 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E94F30CF;
+        Tue,  7 Nov 2023 15:24:49 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10998C433C9;
+        Tue,  7 Nov 2023 23:24:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699399489;
+        bh=qeUmJb38F8VSget3hlVLVnA1e/X50cj7G6L5KJmkZEU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=eZzDmNnHI0kMWcNpw8ig/y2NLhy/fktKBt6Xr5LKOo1D/0IxWfPDFgvSRcl2WqIWV
+         RFSrJLYrR85z9QrzUBQ83+GrQpDMBaNSVKZ9D4VyHmFu3H4fRWQExiP3CHW1iUlXLr
+         g+R+/SzwY/FE22OEq1JdOUAjFyL07yzVXcoWImrjO01fZkGnp1TTiXry++nvNu980k
+         35/vdHfDRTHWFAWIvhPEK3mbbkYtBZfvv+ipCdd5hF3PNuaoXDV3e/NYBbqi8CDrPl
+         wfEFibUh/TfBfXBiC0Xu7ko2ue2nuPxClCP8OYoZDcwt8fGuz46ALu6Ul2edv0SQ9f
+         A0w2e6Ohzajzw==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Yi Yang <yiyang13@huawei.com>, Jiri Slaby <jirislaby@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>, davem@davemloft.net,
+        sparclinux@vger.kernel.org, linux-serial@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.15 1/6] tty: vcc: Add check for kstrdup() in vcc_probe()
+Date:   Tue,  7 Nov 2023 18:24:37 -0500
+Message-ID: <20231107232446.3776662-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-References: <CABXGCsNsDLvZR8RGf9ji5938QreSix89FCpGHju+9in2x6OfDw@mail.gmail.com>
- <CADnq5_ObMvxN4pFAsWU7OM3SAtYCNHKE_fHsLqizGm0p1ubp=w@mail.gmail.com>
- <CABXGCsPXp_pWZcyVQajYSTZKeViRqjfXK2=jmuRXh0yug_OoWQ@mail.gmail.com> <CADnq5_ND_aBmsD3X=tx2==EM7VOz4EBwid4hRVZ79mbi6bWq1w@mail.gmail.com>
-In-Reply-To: <CADnq5_ND_aBmsD3X=tx2==EM7VOz4EBwid4hRVZ79mbi6bWq1w@mail.gmail.com>
-From:   Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
-Date:   Wed, 8 Nov 2023 04:24:31 +0500
-Message-ID: <CABXGCsOn2a9vZj_1yET96mum=wjGmer6tHG=XgToS76L9ihdUg@mail.gmail.com>
-Subject: Re: 6.7/regression/KASAN: null-ptr-deref in amdgpu_ras_reset_error_count+0x2d6
-To:     Alex Deucher <alexdeucher@gmail.com>
-Cc:     "Deucher, Alexander" <alexander.deucher@amd.com>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 5.15.137
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 8, 2023 at 12:12=E2=80=AFAM Alex Deucher <alexdeucher@gmail.com=
-> wrote:
->
-> The attached patch should fix it.  Not sure why your GPU shows up as
-> busy.  The AGP aperture was just disabled.
+From: Yi Yang <yiyang13@huawei.com>
 
-Tested-by: Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
-Thanks, after applying the patch GPU loading meets expectations.
-Games are working so overall all looking good for now.
+[ Upstream commit d81ffb87aaa75f842cd7aa57091810353755b3e6 ]
 
---=20
-Best Regards,
-Mike Gavrilov.
+Add check for the return value of kstrdup() and return the error, if it
+fails in order to avoid NULL pointer dereference.
+
+Signed-off-by: Yi Yang <yiyang13@huawei.com>
+Reviewed-by: Jiri Slaby <jirislaby@kernel.org>
+Link: https://lore.kernel.org/r/20230904035220.48164-1-yiyang13@huawei.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/tty/vcc.c | 16 +++++++++++++---
+ 1 file changed, 13 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/tty/vcc.c b/drivers/tty/vcc.c
+index e11383ae1e7e3..71356d9684bac 100644
+--- a/drivers/tty/vcc.c
++++ b/drivers/tty/vcc.c
+@@ -578,18 +578,22 @@ static int vcc_probe(struct vio_dev *vdev, const struct vio_device_id *id)
+ 		return -ENOMEM;
+ 
+ 	name = kstrdup(dev_name(&vdev->dev), GFP_KERNEL);
++	if (!name) {
++		rv = -ENOMEM;
++		goto free_port;
++	}
+ 
+ 	rv = vio_driver_init(&port->vio, vdev, VDEV_CONSOLE_CON, vcc_versions,
+ 			     ARRAY_SIZE(vcc_versions), NULL, name);
+ 	if (rv)
+-		goto free_port;
++		goto free_name;
+ 
+ 	port->vio.debug = vcc_dbg_vio;
+ 	vcc_ldc_cfg.debug = vcc_dbg_ldc;
+ 
+ 	rv = vio_ldc_alloc(&port->vio, &vcc_ldc_cfg, port);
+ 	if (rv)
+-		goto free_port;
++		goto free_name;
+ 
+ 	spin_lock_init(&port->lock);
+ 
+@@ -623,6 +627,11 @@ static int vcc_probe(struct vio_dev *vdev, const struct vio_device_id *id)
+ 		goto unreg_tty;
+ 	}
+ 	port->domain = kstrdup(domain, GFP_KERNEL);
++	if (!port->domain) {
++		rv = -ENOMEM;
++		goto unreg_tty;
++	}
++
+ 
+ 	mdesc_release(hp);
+ 
+@@ -652,8 +661,9 @@ static int vcc_probe(struct vio_dev *vdev, const struct vio_device_id *id)
+ 	vcc_table_remove(port->index);
+ free_ldc:
+ 	vio_ldc_free(&port->vio);
+-free_port:
++free_name:
+ 	kfree(name);
++free_port:
+ 	kfree(port);
+ 
+ 	return rv;
+-- 
+2.42.0
+
