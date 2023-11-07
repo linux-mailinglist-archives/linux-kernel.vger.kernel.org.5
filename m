@@ -2,45 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 437D27E4548
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 17:03:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B0AC7E4543
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 17:03:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344238AbjKGQDt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 11:03:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60654 "EHLO
+        id S1343961AbjKGQDp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 11:03:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344207AbjKGQDJ (ORCPT
+        with ESMTP id S1344215AbjKGQDJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 7 Nov 2023 11:03:09 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 781171BEE;
-        Tue,  7 Nov 2023 07:54:14 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A9687C433C7;
-        Tue,  7 Nov 2023 15:54:10 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C56CB1BE5;
+        Tue,  7 Nov 2023 07:54:15 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99E33C433CC;
+        Tue,  7 Nov 2023 15:54:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699372454;
-        bh=GJk6VtX9KcQNF05eVT2gpcdGJFJpO2ySrp1YkCvR5a0=;
+        s=k20201202; t=1699372455;
+        bh=D2ifMf8weUkab998trSoLuaVweCIqkI1KaVlq6HwFyk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AoAJTDrPPGCS+3akntxQ4nu3qLHLsasvO9JIje96VJpXaDZZyY2Nu0cIOs3rVhHo2
-         EIS4zsJRl6GS/4n/1gM/xMnWatYmHEpUzxHOJSkRMcOOopCXFn1Up2PVDhjZTA5K91
-         MytlYwTRNGrdfQjNdm2OrnMDHWipToiNuGEjT6nyEq5jr11OWYKrNv3bZ30mBlotWL
-         T91Czc3s8GPctnmSeRLhjmCVEQCIZF3E0CBK/nZLZgMgxnrYdBDsCoO8qpDr/KAE94
-         x9OzY20gdG5Sh0UHvDhNH/7zd30zmiTzlxoyBKl/Q3dr/q7htsX+uqCWPAu7KQaeeK
-         Vrbm162aI4/zQ==
+        b=ubIQpORKGiOCBnZHFEff3kx8EPqWLs+2JxAviNCpsW0xhb0q56tPNNGTLibRRgzC2
+         0Y7C+8jx5Fsm/soOz5MfnAzO+rvS/Z8hMcV2vRt/PRB2MDmdcAMzXteyayT5dVZ1y4
+         x/eFcvAuXgg6X8Bv/1mdcbY3WP8ct9G1AXbhdiT3bqXdq4Hqg1u9kVbEAjsfpQxTCa
+         IB5rSG0RNqYBL/aPa6tV23GL3Qtno6fRY7weudc1r0vXetNY+9VYz0YA4NIpQHNNZj
+         ScypKfUHr1b2sLwcsgUstS6PTN5DZ3yF9z0BR4FINvKlgq6DqR+ALwuCaZMhrvBkwo
+         fZ2W8oJwH+FHQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
         Bjorn Helgaas <bhelgaas@google.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Sasha Levin <sashal@kernel.org>, lpieralisi@kernel.org,
-        kw@linux.com, thierry.reding@gmail.com, jonathanh@nvidia.com,
-        mani@kernel.org, vidyas@nvidia.com, sumitg@nvidia.com,
-        robh@kernel.org, yoshihiro.shimoda.uh@renesas.com,
-        u.kleine-koenig@pengutronix.de, linux-pci@vger.kernel.org,
-        linux-tegra@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 09/12] PCI: tegra194: Use FIELD_GET()/FIELD_PREP() with Link Width fields
-Date:   Tue,  7 Nov 2023 10:53:27 -0500
-Message-ID: <20231107155343.3768464-9-sashal@kernel.org>
+        Sasha Levin <sashal@kernel.org>, 3chas3@gmail.com,
+        linux-atm-general@lists.sourceforge.net, netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 10/12] atm: iphase: Do PCI error checks on own line
+Date:   Tue,  7 Nov 2023 10:53:28 -0500
+Message-ID: <20231107155343.3768464-10-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231107155343.3768464-1-sashal@kernel.org>
 References: <20231107155343.3768464-1-sashal@kernel.org>
@@ -56,65 +51,61 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
 
-[ Upstream commit 759574abd78e3b47ec45bbd31a64e8832cf73f97 ]
+[ Upstream commit c28742447ca9879b52fbaf022ad844f0ffcd749c ]
 
-Use FIELD_GET() to extract PCIe Negotiated Link Width field instead of
-custom masking and shifting.
+In get_esi() PCI errors are checked inside line-split "if" conditions (in
+addition to the file not following the coding style). To make the code in
+get_esi() more readable, fix the coding style and use the usual error
+handling pattern with a separate variable.
 
-Similarly, change custom code that misleadingly used
-PCI_EXP_LNKSTA_NLW_SHIFT to prepare value for PCI_EXP_LNKCAP write
-to use FIELD_PREP() with correct field define (PCI_EXP_LNKCAP_MLW).
+In addition, initialization of 'error' variable at declaration is not
+needed.
 
-Link: https://lore.kernel.org/r/20230919125648.1920-5-ilpo.jarvinen@linux.intel.com
+No functional changes intended.
+
+Link: https://lore.kernel.org/r/20230911125354.25501-4-ilpo.jarvinen@linux.intel.com
 Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
 Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/controller/dwc/pcie-tegra194.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+ drivers/atm/iphase.c | 20 +++++++++++---------
+ 1 file changed, 11 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/pci/controller/dwc/pcie-tegra194.c b/drivers/pci/controller/dwc/pcie-tegra194.c
-index 120d64c1a27fd..1cf94854c44fd 100644
---- a/drivers/pci/controller/dwc/pcie-tegra194.c
-+++ b/drivers/pci/controller/dwc/pcie-tegra194.c
-@@ -7,6 +7,7 @@
-  * Author: Vidya Sagar <vidyas@nvidia.com>
-  */
- 
-+#include <linux/bitfield.h>
- #include <linux/clk.h>
- #include <linux/debugfs.h>
- #include <linux/delay.h>
-@@ -321,8 +322,7 @@ static void apply_bad_link_workaround(struct pcie_port *pp)
- 	 */
- 	val = dw_pcie_readw_dbi(pci, pcie->pcie_cap_base + PCI_EXP_LNKSTA);
- 	if (val & PCI_EXP_LNKSTA_LBMS) {
--		current_link_width = (val & PCI_EXP_LNKSTA_NLW) >>
--				     PCI_EXP_LNKSTA_NLW_SHIFT;
-+		current_link_width = FIELD_GET(PCI_EXP_LNKSTA_NLW, val);
- 		if (pcie->init_link_width > current_link_width) {
- 			dev_warn(pci->dev, "PCIe link is bad, width reduced\n");
- 			val = dw_pcie_readw_dbi(pci, pcie->pcie_cap_base +
-@@ -596,8 +596,7 @@ static void tegra_pcie_enable_system_interrupts(struct pcie_port *pp)
- 
- 	val_w = dw_pcie_readw_dbi(&pcie->pci, pcie->pcie_cap_base +
- 				  PCI_EXP_LNKSTA);
--	pcie->init_link_width = (val_w & PCI_EXP_LNKSTA_NLW) >>
--				PCI_EXP_LNKSTA_NLW_SHIFT;
-+	pcie->init_link_width = FIELD_GET(PCI_EXP_LNKSTA_NLW, val_w);
- 
- 	val_w = dw_pcie_readw_dbi(&pcie->pci, pcie->pcie_cap_base +
- 				  PCI_EXP_LNKCTL);
-@@ -773,7 +772,7 @@ static void tegra_pcie_prepare_host(struct pcie_port *pp)
- 	/* Configure Max lane width from DT */
- 	val = dw_pcie_readl_dbi(pci, pcie->pcie_cap_base + PCI_EXP_LNKCAP);
- 	val &= ~PCI_EXP_LNKCAP_MLW;
--	val |= (pcie->num_lanes << PCI_EXP_LNKSTA_NLW_SHIFT);
-+	val |= FIELD_PREP(PCI_EXP_LNKCAP_MLW, pcie->num_lanes);
- 	dw_pcie_writel_dbi(pci, pcie->pcie_cap_base + PCI_EXP_LNKCAP, val);
- 
- 	config_gen3_gen4_eq_presets(pcie);
+diff --git a/drivers/atm/iphase.c b/drivers/atm/iphase.c
+index 46990352b5d3f..bfc889367d5e3 100644
+--- a/drivers/atm/iphase.c
++++ b/drivers/atm/iphase.c
+@@ -2290,19 +2290,21 @@ static int get_esi(struct atm_dev *dev)
+ static int reset_sar(struct atm_dev *dev)  
+ {  
+ 	IADEV *iadev;  
+-	int i, error = 1;  
++	int i, error;
+ 	unsigned int pci[64];  
+ 	  
+ 	iadev = INPH_IA_DEV(dev);  
+-	for(i=0; i<64; i++)  
+-	  if ((error = pci_read_config_dword(iadev->pci,  
+-				i*4, &pci[i])) != PCIBIOS_SUCCESSFUL)  
+-  	      return error;  
++	for (i = 0; i < 64; i++) {
++		error = pci_read_config_dword(iadev->pci, i * 4, &pci[i]);
++		if (error != PCIBIOS_SUCCESSFUL)
++			return error;
++	}
+ 	writel(0, iadev->reg+IPHASE5575_EXT_RESET);  
+-	for(i=0; i<64; i++)  
+-	  if ((error = pci_write_config_dword(iadev->pci,  
+-					i*4, pci[i])) != PCIBIOS_SUCCESSFUL)  
+-	    return error;  
++	for (i = 0; i < 64; i++) {
++		error = pci_write_config_dword(iadev->pci, i * 4, pci[i]);
++		if (error != PCIBIOS_SUCCESSFUL)
++			return error;
++	}
+ 	udelay(5);  
+ 	return 0;  
+ }  
 -- 
 2.42.0
 
