@@ -2,63 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C64BC7E458E
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 17:11:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EBE17E4592
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 17:13:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344336AbjKGQLk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 11:11:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49980 "EHLO
+        id S235406AbjKGQNO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 11:13:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235531AbjKGQLG (ORCPT
+        with ESMTP id S231540AbjKGQMz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 11:11:06 -0500
+        Tue, 7 Nov 2023 11:12:55 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAE2322DC0
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 08:03:09 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A14E8C433C8;
-        Tue,  7 Nov 2023 16:03:08 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45AE13C39;
+        Tue,  7 Nov 2023 08:04:09 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE6B1C433C7;
+        Tue,  7 Nov 2023 16:04:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699372989;
-        bh=W71zoZNN8hkPqINZEfjTZGltuBT4tagvw/usts6LFTg=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Dc3zcXlMLGMnSKwrZiPh0TZwAyew+PRGweWeUUk0LXFDsu58ZfByZ+o31SSf3eeVS
-         TVdhRmrybeaZAPwqmX77HaYUMgE/LyajrNHY2ENwCxnIzKH8rdCftEYbEe+bGqinTC
-         zDh56ZX0Cvc2GOADsVk4qZ8agLXxFGMv+gcu/ui/deV8cHto4BhgTyoHeBw7XanC+x
-         1qU6XTgu5vM27F0zIySqFKv4mpuSREhW4HP67euYCN3E8jP0F45DBXCYUfxs7WG0OK
-         OFBJ6aZlMuMZsyz01w5w4t7mLS4fOZhAa7aAMRlYy8UykZ+UZOxlCIFarlaa1tNAtf
-         K2b4tVBMsB+4A==
-Message-ID: <e3356ba4abdbbb74002a76ea30dd6a4e.broonie@kernel.org>
-From:   Mark Brown <broonie@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
-Subject: [GIT PULL] regmap fixes for v6.7-merge-window
-Date:   Tue, 07 Nov 2023 16:03:00 +0000
+        s=k20201202; t=1699373048;
+        bh=6Ltdah9mCFeI/88AKF+yviX8tIaHDZ2JZ6F9zZ8Bxjo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=a9GcOPDjMz0EuSc/0ZcGwE7OO/7w0n0eRCh7F0WIRVZYgzqqpd1g7flxtct1Lk1s6
+         LTIR+X0v1Oac1gGmIKz14dYmVoxnA9lKa8cKCvGYyhcVqZdqorx4SP8g7z23m9n6rz
+         NM2kXkLSVgT9JD3VBo9mYCKUKHfrR9tgPNtbNOBRZnL/HNjkNwsMLymAjre6mXVLU0
+         jjHpBFfU1NaIO1U8z/qR5KZMmH4XFA+cHr/uuuIz7zZi95YriSS4maDcRg5HN0Uq84
+         NLaa/HWFHcef99UNQmL3diJaQ9FB7B/zfvGFSlmvHVTckaUOem7CH3ybVhxu3qevgm
+         xMACCnZyBy5Mg==
+Date:   Tue, 7 Nov 2023 16:04:03 +0000
+From:   Conor Dooley <conor@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de
+Subject: Re: [PATCH 6.5 00/88] 6.5.11-rc1 review
+Message-ID: <20231107-figurine-deserve-b5677ca6017f@spud>
+References: <20231106130305.772449722@linuxfoundation.org>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="JUBJBIyF0IcL+fyw"
+Content-Disposition: inline
+In-Reply-To: <20231106130305.772449722@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 6a2e332c2cbddd17d7dcb8f334953593f1324c8e:
 
-  regmap: kunit: Add test for cache sync interaction with ranges (2023-10-26 14:00:42 +0100)
+--JUBJBIyF0IcL+fyw
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-are available in the Git repository at:
+On Mon, Nov 06, 2023 at 02:02:54PM +0100, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.5.11 release.
+> There are 88 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>=20
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regmap.git tags/regmap-fix-v6.7-merge-window
+Tested-by: Conor Dooley <conor.dooley@microchip.com>
 
-for you to fetch changes up to 984a4afdc87a1fc226fd657b1cd8255c13d3fc1a:
+Cheers,
+Conor.
 
-  regmap: prevent noinc writes from clobbering cache (2023-11-01 20:22:55 +0000)
+--JUBJBIyF0IcL+fyw
+Content-Type: application/pgp-signature; name="signature.asc"
 
-----------------------------------------------------------------
-regmap: Fix for v6.7
+-----BEGIN PGP SIGNATURE-----
 
-One fix here, for an interaction between noinc registers and caches - if
-a device uses noinc registers (which is rare) then we could corrupt
-registers after the noinc register in the cache.
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZUpf8wAKCRB4tDGHoIJi
+0pSGAP0QOqLRCXKDCzBHTJnfJFZa9Xb20pXhlYdnuds4NhYWhwEArCcXeM+WBatD
+/fdMHf/oQVVPUsHClbF19kBDeWwUEAY=
+=H2dY
+-----END PGP SIGNATURE-----
 
-----------------------------------------------------------------
-Ben Wolsieffer (1):
-      regmap: prevent noinc writes from clobbering cache
-
- drivers/base/regmap/regmap.c | 16 +++++++++-------
- 1 file changed, 9 insertions(+), 7 deletions(-)
+--JUBJBIyF0IcL+fyw--
