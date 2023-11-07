@@ -2,130 +2,452 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B2267E4917
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 20:20:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A46007E4914
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 20:19:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233167AbjKGTUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 14:20:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46276 "EHLO
+        id S1343812AbjKGTTv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 14:19:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230523AbjKGTUT (ORCPT
+        with ESMTP id S233167AbjKGTTs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 14:20:19 -0500
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6016910A;
-        Tue,  7 Nov 2023 11:20:17 -0800 (PST)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 6476340E01A4;
-        Tue,  7 Nov 2023 19:20:14 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 95wN8euUxzc8; Tue,  7 Nov 2023 19:20:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1699384812; bh=45+Y4ZldnKZEWvtvZx7/+i+9LPa3k5MrmiBFv7on6aw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Mcjp72gfr5TIXzL3LOnywlS0Oc7dftWQNXzRJinscdoNgSnV/MTK4g3JQZUhvheZu
-         KZSGTEjsek7HFioitGZaeM/aDsoGq7jNrfj1Fn2PvpK/gD+rzuE0clPUobE3fBBV83
-         +ByJ0SkyLFRFnnP/ddJ5ZCZ1lrVrUX4//6slNDkugyJruEPBitwnckl09v7MMjP11d
-         wFKpPSTopH31YMCMfQmVzO4FjxNtCE47XLH4mjlSJlszErJWtjqlslGkOh3MxCrPae
-         FYThLNAJc2xof/XXXLlJpGJxGzs0lvhtKRiwxHNDYyqlDYkPR4y3bCwn/7JbeHjiGr
-         47rNQGUtzeKjYQPpF5OKU0sSoIpY5hodnA58uyFFMEMeTgN+FDfKiuZHaFqRW1U46P
-         CJWMGLWuRqhFYqgUaXvBGN9/VGmkF9kDiuLpt0iegWRSlKGG8qAhAe11tp0UbPZn5y
-         WRTZBx7Wdx+v52nrsWkZgytOrM+OiKPkKdZHFbLyh/1hkOLmcZGvceTPsYQ7cDChME
-         sYEzyM3+fZTULAVQIUJfxdk5szlVClAIH1HWpNchhR0zNpq8seYmwXpPf45vb2o1pz
-         4R4jSwqVR7gxmBqkznhzfEh2Su2UPQe7qddaicycaE6MZR9m4Xvd9gy0dvvawof5uB
-         bC9MB+QAvPpbJxnkQuUuxom4=
-Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
+        Tue, 7 Nov 2023 14:19:48 -0500
+Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AB5110CC;
+        Tue,  7 Nov 2023 11:19:45 -0800 (PST)
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.2.0)
+ id 6658b2aaae48dc69; Tue, 7 Nov 2023 20:19:43 +0100
+Received: from kreacher.localnet (unknown [195.136.19.94])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id C822D40E0191;
-        Tue,  7 Nov 2023 19:19:31 +0000 (UTC)
-Date:   Tue, 7 Nov 2023 20:19:31 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     "Kalra, Ashish" <ashish.kalra@amd.com>
-Cc:     Michael Roth <michael.roth@amd.com>, kvm@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
-        jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com,
-        ardb@kernel.org, pbonzini@redhat.com, seanjc@google.com,
-        vkuznets@redhat.com, jmattson@google.com, luto@kernel.org,
-        dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com,
-        peterz@infradead.org, srinivas.pandruvada@linux.intel.com,
-        rientjes@google.com, dovmurik@linux.ibm.com, tobin@ibm.com,
-        vbabka@suse.cz, kirill@shutemov.name, ak@linux.intel.com,
-        tony.luck@intel.com, marcorr@google.com,
-        sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com,
-        jarkko@kernel.org, nikunj.dadhania@amd.com, pankaj.gupta@amd.com,
-        liam.merwick@oracle.com, zhi.a.wang@intel.com,
-        Brijesh Singh <brijesh.singh@amd.com>
-Subject: Re: [PATCH v10 06/50] x86/sev: Add the host SEV-SNP initialization
- support
-Message-ID: <20231107191931.GCZUqNwxP8JcSbjZ0/@fat_crate.local>
-References: <20231016132819.1002933-1-michael.roth@amd.com>
- <20231016132819.1002933-7-michael.roth@amd.com>
- <20231107163142.GAZUpmbt/i3himIf+E@fat_crate.local>
- <4a2016d6-dc1f-ff68-9827-0b72b7c8eac2@amd.com>
+        by cloudserver094114.home.pl (Postfix) with ESMTPSA id C4130667B16;
+        Tue,  7 Nov 2023 20:19:42 +0100 (CET)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux ACPI <linux-acpi@vger.kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Subject: [PATCH v3.1 5/7] ACPI: scan: Extract MIPI DisCo for Imaging data into swnodes
+Date:   Tue, 07 Nov 2023 20:19:42 +0100
+Message-ID: <5749680.DvuYhMxLoT@kreacher>
+In-Reply-To: <4542595.LvFx2qVVIh@kreacher>
+References: <4542595.LvFx2qVVIh@kreacher>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <4a2016d6-dc1f-ff68-9827-0b72b7c8eac2@amd.com>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 195.136.19.94
+X-CLIENT-HOSTNAME: 195.136.19.94
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedruddujedgfedvucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepjeehvdelteekjeelffffudfhffejveetffdtveeuffegffeujeethfeutdefgfeknecuffhomhgrihhnpehmihhpihdrohhrghenucfkphepudelhedrudefiedrudelrdelgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduleehrddufeeirdduledrleegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhnsggprhgtphhtthhopeefpdhrtghpthhtoheplhhinhhugidqrggtphhisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepshgrkhgrrhhirdgrihhluhhssehlihhnuhigrdhinhhtvghlrdgtohhmpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhg
+X-DCC--Metrics: v370.home.net.pl 1024; Body=3 Fuz1=3 Fuz2=3
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 07, 2023 at 01:00:00PM -0600, Kalra, Ashish wrote:
-> > First of all, use the APM bit name here pls: MtrrFixDramModEn.
-> > 
-> > And then, for the life of me, I can't find any mention in the APM why
-> > this bit is needed. Neither in "15.36.2 Enabling SEV-SNP" nor in
-> > "15.34.3 Enabling SEV".
-> > 
-> > Looking at the bit defintions of WrMem an RdMem - read and write
-> > requests get directed to system memory instead of MMIO so I guess you
-> > don't want to be able to write MMIO for certain physical ranges when SNP
-> > is enabled but it'll be good to have this properly explained instead of
-> > a "this must happen" information-less sentence.
-> 
-> This is a per-requisite for SNP_INIT as per the SNP Firmware ABI
-> specifications, section 8.8.2:
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-Did you even read the text you're responding to?
+Add information extracted from the MIPI DisCo for Imaging device
+properties to software nodes created during the CSI-2 connection graph
+discovery.
 
-> > This looks backwards. AFAICT, the IOMMU code should call arch code to
-> > enable SNP at the right time, not the other way around - arch code
-> > calling driver code.
-> > 
-> > Especially if the SNP table enablement depends on some exact IOMMU
-> > init_state:
-> > 
-> >          if (init_state > IOMMU_ENABLED) {
-> > 		pr_err("SNP: Too late to enable SNP for IOMMU.\n");
-> > 
-> > 
-> 
-> This is again as per SNP_INIT requirements, that SNP support is enabled in
-> the IOMMU before SNP_INIT is done. The above function snp_rmptable_init()
-> only calls the IOMMU driver to enable SNP support when it has detected and
-> enabled platform support for SNP.
->v
-> It is not that IOMMU driver has to call the arch code to enable SNP at the
-> right time but it is the other way around that once platform support for SNP
-> is enabled then the IOMMU driver has to be called to enable the same for the
-> IOMMU and this needs to be done before the CCP driver is loaded and does
-> SNP_INIT.
+Link: https://www.mipi.org/specifications/mipi-disco-imaging
+Co-developed-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Tested-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+---
 
-You again didn't read the text you're responding to.
+v3 -> v3.1:
+   * Merge lane-polarities property parsing fix from Sakari
+   * Add Tested-by: tag from Sakari
 
-Arch code does not call drivers - arch code sets up the arch and
-provides facilities which the drivers use.
+v2 -> v3:
+   * Change the name of the new file to mipi-disco-img.c
+   * "DiSco" -> "DisCo" in multiple places
+   * Fix the link in the Link: tag
+   * Change the number of data lanes limit and add a comment regarding it
+   * Use ACPI_DEVICE_CSI2_DATA_LANES directly in several places instead
+     of array sizes equal to it
 
--- 
-Regards/Gruss,
-    Boris.
+---
+ drivers/acpi/internal.h       |    1 
+ drivers/acpi/mipi-disco-img.c |  252 +++++++++++++++++++++++++++++++++++++++++-
+ drivers/acpi/scan.c           |   12 +-
+ include/acpi/acpi_bus.h       |   17 ++
+ 4 files changed, 278 insertions(+), 4 deletions(-)
 
-https://people.kernel.org/tglx/notes-about-netiquette
+Index: linux-pm/drivers/acpi/mipi-disco-img.c
+===================================================================
+--- linux-pm.orig/drivers/acpi/mipi-disco-img.c
++++ linux-pm/drivers/acpi/mipi-disco-img.c
+@@ -6,12 +6,16 @@
+  *
+  * Support MIPI DisCo for Imaging by parsing ACPI _CRS CSI-2 records defined in
+  * Section 6.4.3.8.2.4 "Camera Serial Interface (CSI-2) Connection Resource
+- * Descriptor" of ACPI 6.5.
++ * Descriptor" of ACPI 6.5 and using device properties defined by the MIPI DisCo
++ * for Imaging specification.
+  *
+  * The implementation looks for the information in the ACPI namespace (CSI-2
+  * resource descriptors in _CRS) and constructs software nodes compatible with
+  * Documentation/firmware-guide/acpi/dsd/graph.rst to represent the CSI-2
+- * connection graph.
++ * connection graph.  The software nodes are then populated with the data
++ * extracted from the _CRS CSI-2 resource descriptors and the MIPI DisCo
++ * for Imaging device properties present in _DSD for the ACPI device objects
++ * with CSI-2 connections.
+  */
+ 
+ #include <linux/acpi.h>
+@@ -431,6 +435,250 @@ void acpi_mipi_scan_crs_csi2(void)
+ 		prepare_crs_csi2_swnodes(csi2);
+ }
+ 
++/*
++ * Get the index of the next property in the property array, with a given
++ * maximum value.
++ */
++#define NEXT_PROPERTY(index, max)			\
++	(WARN_ON((index) > ACPI_DEVICE_SWNODE_##max) ?	\
++	 ACPI_DEVICE_SWNODE_##max : (index)++)
++
++static void init_csi2_port_local(struct acpi_device *adev,
++				 struct acpi_device_software_node_port *port,
++				 struct fwnode_handle *port_fwnode,
++				 unsigned int index)
++{
++	acpi_handle handle = acpi_device_handle(adev);
++	unsigned int num_link_freqs;
++	int ret;
++
++	ret = fwnode_property_count_u64(port_fwnode, "mipi-img-link-frequencies");
++	if (ret <= 0)
++		return;
++
++	num_link_freqs = ret;
++	if (num_link_freqs > ACPI_DEVICE_CSI2_DATA_LANES) {
++		acpi_handle_info(handle, "Too many link frequencies: %u\n",
++				 num_link_freqs);
++		num_link_freqs = ACPI_DEVICE_CSI2_DATA_LANES;
++	}
++
++	ret = fwnode_property_read_u64_array(port_fwnode,
++					     "mipi-img-link-frequencies",
++					     port->link_frequencies,
++					     num_link_freqs);
++	if (ret) {
++		acpi_handle_info(handle, "Unable to get link frequencies (%d)\n",
++				 ret);
++		return;
++	}
++
++	port->ep_props[NEXT_PROPERTY(index, EP_LINK_FREQUENCIES)] =
++				PROPERTY_ENTRY_U64_ARRAY_LEN("link-frequencies",
++							     port->link_frequencies,
++							     num_link_freqs);
++}
++
++static void init_csi2_port(struct acpi_device *adev,
++			   struct acpi_device_software_nodes *swnodes,
++			   struct acpi_device_software_node_port *port,
++			   struct fwnode_handle *port_fwnode,
++			   unsigned int port_index)
++{
++	unsigned int ep_prop_index = ACPI_DEVICE_SWNODE_EP_CLOCK_LANES;
++	acpi_handle handle = acpi_device_handle(adev);
++	u8 val[ACPI_DEVICE_CSI2_DATA_LANES];
++	int num_lanes = 0;
++	int ret;
++
++	if (GRAPH_PORT_NAME(port->port_name, port->port_nr))
++		return;
++
++	swnodes->nodes[ACPI_DEVICE_SWNODE_PORT(port_index)] =
++			SOFTWARE_NODE(port->port_name, port->port_props,
++				      &swnodes->nodes[ACPI_DEVICE_SWNODE_ROOT]);
++
++	ret = fwnode_property_read_u8(port_fwnode, "mipi-img-clock-lane", val);
++	if (!ret)
++		port->ep_props[NEXT_PROPERTY(ep_prop_index, EP_CLOCK_LANES)] =
++			PROPERTY_ENTRY_U32("clock-lanes", val[0]);
++
++	ret = fwnode_property_count_u8(port_fwnode, "mipi-img-data-lanes");
++	if (ret > 0) {
++		num_lanes = ret;
++
++		if (num_lanes > ACPI_DEVICE_CSI2_DATA_LANES) {
++			acpi_handle_info(handle, "Too many data lanes: %u\n",
++					 num_lanes);
++			num_lanes = ACPI_DEVICE_CSI2_DATA_LANES;
++		}
++
++		ret = fwnode_property_read_u8_array(port_fwnode,
++						    "mipi-img-data-lanes",
++						    val, num_lanes);
++		if (!ret) {
++			unsigned int i;
++
++			for (i = 0; i < num_lanes; i++)
++				port->data_lanes[i] = val[i];
++
++			port->ep_props[NEXT_PROPERTY(ep_prop_index, EP_DATA_LANES)] =
++				PROPERTY_ENTRY_U32_ARRAY_LEN("data-lanes",
++							     port->data_lanes,
++							     num_lanes);
++		}
++	}
++
++	ret = fwnode_property_count_u8(port_fwnode, "mipi-img-lane-polarities");
++	if (ret < 0) {
++		acpi_handle_debug(handle, "Lane polarity bytes missing\n");
++	} else if (ret * BITS_PER_TYPE(u8) < num_lanes + 1) {
++		acpi_handle_info(handle, "Too few lane polarity bytes (%lu vs. %d)\n",
++				 ret * BITS_PER_TYPE(u8), num_lanes + 1);
++	} else {
++		unsigned long mask = 0;
++		int byte_count = ret;
++		unsigned int i;
++
++		/*
++		 * The total number of lanes is ACPI_DEVICE_CSI2_DATA_LANES + 1
++		 * (data lanes + clock lane).  It is not expected to ever be
++		 * greater than the number of bits in an unsigned long
++		 * variable, but ensure that this is the case.
++		 */
++		BUILD_BUG_ON(BITS_PER_TYPE(unsigned long) <= ACPI_DEVICE_CSI2_DATA_LANES);
++
++		if (byte_count > sizeof(mask)) {
++			acpi_handle_info(handle, "Too many lane polarities: %d\n",
++					 byte_count);
++			byte_count = sizeof(mask);
++		}
++		fwnode_property_read_u8_array(port_fwnode, "mipi-img-lane-polarities",
++					      val, byte_count);
++
++		for (i = 0; i < byte_count; i++)
++			mask |= (unsigned long)val[i] << BITS_PER_TYPE(u8) * i;
++
++		for (i = 0; i <= num_lanes; i++)
++			port->lane_polarities[i] = test_bit(i, &mask);
++
++		port->ep_props[NEXT_PROPERTY(ep_prop_index, EP_LANE_POLARITIES)] =
++				PROPERTY_ENTRY_U32_ARRAY_LEN("lane-polarities",
++							     port->lane_polarities,
++							     num_lanes + 1);
++	}
++
++	swnodes->nodes[ACPI_DEVICE_SWNODE_EP(port_index)] =
++		SOFTWARE_NODE("endpoint@0", swnodes->ports[port_index].ep_props,
++			      &swnodes->nodes[ACPI_DEVICE_SWNODE_PORT(port_index)]);
++
++	if (port->crs_csi2_local)
++		init_csi2_port_local(adev, port, port_fwnode, ep_prop_index);
++}
++
++#define MIPI_IMG_PORT_PREFIX "mipi-img-port-"
++
++static struct fwnode_handle *get_mipi_port_handle(struct fwnode_handle *adev_fwnode,
++						  unsigned int port_nr)
++{
++	char port_name[sizeof(MIPI_IMG_PORT_PREFIX) + 2];
++
++	if (snprintf(port_name, sizeof(port_name), "%s%u",
++		     MIPI_IMG_PORT_PREFIX, port_nr) >= sizeof(port_name))
++		return NULL;
++
++	return fwnode_get_named_child_node(adev_fwnode, port_name);
++}
++
++static void init_crs_csi2_swnodes(struct crs_csi2 *csi2)
++{
++	struct acpi_buffer buffer = { .length = ACPI_ALLOCATE_BUFFER };
++	struct acpi_device_software_nodes *swnodes = csi2->swnodes;
++	acpi_handle handle = csi2->handle;
++	struct fwnode_handle *adev_fwnode;
++	struct acpi_device *adev;
++	acpi_status status;
++	unsigned int i;
++	int ret;
++
++	/*
++	 * Bail out if the swnodes are not available (either they have not been
++	 * allocated or they have been assigned to the device already).
++	 */
++	if (!swnodes)
++		return;
++
++	adev = acpi_fetch_acpi_dev(handle);
++	if (!adev)
++		return;
++
++	adev_fwnode = acpi_fwnode_handle(adev);
++
++	status = acpi_get_name(handle, ACPI_FULL_PATHNAME, &buffer);
++	if (ACPI_FAILURE(status)) {
++		acpi_handle_info(handle, "Unable to get the path name\n");
++		return;
++	}
++
++	swnodes->nodes[ACPI_DEVICE_SWNODE_ROOT] =
++			SOFTWARE_NODE(buffer.pointer, swnodes->dev_props, NULL);
++
++	for (i = 0; i < swnodes->num_ports; i++) {
++		struct acpi_device_software_node_port *port = &swnodes->ports[i];
++		struct fwnode_handle *port_fwnode;
++
++		/*
++		 * The MIPI DisCo for Imaging specification defines _DSD device
++		 * properties for providing CSI-2 port parameters that can be
++		 * accessed through the generic device properties framework.  To
++		 * access them, it is first necessary to find the data node
++		 * representing the port under the given ACPI device object.
++		 */
++		port_fwnode = get_mipi_port_handle(adev_fwnode, port->port_nr);
++		if (!port_fwnode) {
++			acpi_handle_info(handle,
++					 "MIPI port name too long for port %u\n",
++					 port->port_nr);
++			continue;
++		}
++
++		init_csi2_port(adev, swnodes, port, port_fwnode, i);
++
++		fwnode_handle_put(port_fwnode);
++	}
++
++	ret = software_node_register_node_group(swnodes->nodeptrs);
++	if (ret < 0) {
++		acpi_handle_info(handle,
++				 "Unable to register software nodes (%d)\n", ret);
++		return;
++	}
++
++	adev->swnodes = swnodes;
++	adev_fwnode->secondary = software_node_fwnode(swnodes->nodes);
++
++	/*
++	 * Prevents the swnodes from this csi2 entry from being assigned again
++	 * or freed prematurely.
++	 */
++	csi2->swnodes = NULL;
++}
++
++/**
++ * acpi_mipi_init_crs_csi2_swnodes - Initialize _CRS CSI-2 software nodes
++ *
++ * Use MIPI DisCo for Imaging device properties to finalize the initialization
++ * of CSI-2 software nodes for all ACPI device objects that have been already
++ * enumerated.
++ */
++void acpi_mipi_init_crs_csi2_swnodes(void)
++{
++	struct crs_csi2 *csi2, *csi2_tmp;
++
++	list_for_each_entry_safe(csi2, csi2_tmp, &acpi_mipi_crs_csi2_list, entry)
++		init_crs_csi2_swnodes(csi2);
++}
++
+ /**
+  * acpi_mipi_crs_csi2_cleanup - Free _CRS CSI-2 temporary data
+  */
+Index: linux-pm/drivers/acpi/internal.h
+===================================================================
+--- linux-pm.orig/drivers/acpi/internal.h
++++ linux-pm/drivers/acpi/internal.h
+@@ -287,6 +287,7 @@ static inline void acpi_init_lpit(void)
+ 
+ void acpi_mipi_check_crs_csi2(acpi_handle handle);
+ void acpi_mipi_scan_crs_csi2(void);
++void acpi_mipi_init_crs_csi2_swnodes(void);
+ void acpi_mipi_crs_csi2_cleanup(void);
+ 
+ #endif /* _ACPI_INTERNAL_H_ */
+Index: linux-pm/drivers/acpi/scan.c
+===================================================================
+--- linux-pm.orig/drivers/acpi/scan.c
++++ linux-pm/drivers/acpi/scan.c
+@@ -2447,6 +2447,13 @@ static void acpi_scan_postponed_branch(a
+ 
+ 	acpi_walk_namespace(ACPI_TYPE_ANY, handle, ACPI_UINT32_MAX,
+ 			    acpi_bus_check_add_2, NULL, NULL, (void **)&adev);
++
++	/*
++	 * Populate the ACPI _CRS CSI-2 software nodes for the ACPI devices that
++	 * have been added above.
++	 */
++	acpi_mipi_init_crs_csi2_swnodes();
++
+ 	acpi_bus_attach(adev, NULL);
+ }
+ 
+@@ -2516,11 +2523,12 @@ int acpi_bus_scan(acpi_handle handle)
+ 		return -ENODEV;
+ 
+ 	/*
+-	 * Allocate ACPI _CRS CSI-2 software nodes using information extracted
++	 * Set up ACPI _CRS CSI-2 software nodes using information extracted
+ 	 * from the _CRS CSI-2 resource descriptors during the ACPI namespace
+-	 * walk above.
++	 * walk above and MIPI DisCo for Imaging device properties.
+ 	 */
+ 	acpi_mipi_scan_crs_csi2();
++	acpi_mipi_init_crs_csi2_swnodes();
+ 
+ 	acpi_bus_attach(device, (void *)true);
+ 
+Index: linux-pm/include/acpi/acpi_bus.h
+===================================================================
+--- linux-pm.orig/include/acpi/acpi_bus.h
++++ linux-pm/include/acpi/acpi_bus.h
+@@ -366,10 +366,24 @@ struct acpi_device_data {
+ 
+ struct acpi_gpio_mapping;
+ 
++#define ACPI_DEVICE_SWNODE_ROOT			0
++
++/*
++ * The maximum expected number of CSI-2 data lanes.
++ *
++ * This number is not expected to ever have to be equal to or greater than the
++ * number of bits in an unsigned long variable, but if it needs to be increased
++ * above that limit, code will need to be adjusted accordingly.
++ */
+ #define ACPI_DEVICE_CSI2_DATA_LANES		8
+ 
+ #define ACPI_DEVICE_SWNODE_PORT_NAME_LENGTH	8
+ 
++enum acpi_device_swnode_dev_props {
++	ACPI_DEVICE_SWNODE_DEV_NUM_OF,
++	ACPI_DEVICE_SWNODE_DEV_NUM_ENTRIES
++};
++
+ enum acpi_device_swnode_port_props {
+ 	ACPI_DEVICE_SWNODE_PORT_REG,
+ 	ACPI_DEVICE_SWNODE_PORT_NUM_OF,
+@@ -425,12 +439,14 @@ struct acpi_device_software_node_port {
+ 
+ /**
+  * struct acpi_device_software_nodes - Software nodes for an ACPI device
++ * @dev_props: Device properties.
+  * @nodes: Software nodes for root as well as ports and endpoints.
+  * @nodeprts: Array of software node pointers, for (un)registering them.
+  * @ports: Information related to each port and endpoint within a port.
+  * @num_ports: The number of ports.
+  */
+ struct acpi_device_software_nodes {
++	struct property_entry dev_props[ACPI_DEVICE_SWNODE_DEV_NUM_ENTRIES];
+ 	struct software_node *nodes;
+ 	const struct software_node **nodeptrs;
+ 	struct acpi_device_software_node_port *ports;
+@@ -455,6 +471,7 @@ struct acpi_device {
+ 	struct acpi_device_data data;
+ 	struct acpi_scan_handler *handler;
+ 	struct acpi_hotplug_context *hp;
++	struct acpi_device_software_nodes *swnodes;
+ 	const struct acpi_gpio_mapping *driver_gpios;
+ 	void *driver_data;
+ 	struct device dev;
+
+
+
