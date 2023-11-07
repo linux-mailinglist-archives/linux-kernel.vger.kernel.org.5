@@ -2,64 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D31C27E32C6
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 03:05:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3697C7E32C7
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 03:05:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233230AbjKGCDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 21:03:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56910 "EHLO
+        id S233279AbjKGCFX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 21:05:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230208AbjKGCDR (ORCPT
+        with ESMTP id S231975AbjKGCFV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 21:03:17 -0500
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E5D7115
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 18:03:14 -0800 (PST)
-Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-9d10f94f70bso762336966b.3
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 18:03:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699322592; x=1699927392; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=dU4Qw2GINVAql19xsrhiUd3GEOwNexkdbZX6XUVtGec=;
-        b=iQHMfQ83B2tpe4e8X/yOGObyzuOdKVjCyISNa6h3hy1I2t+KHT6dDYExzTXjydMXxV
-         zsCu+dmWp5vjDlySj0zDKRQ0nhNinsnqUCm9WIRq9oZ0jZSXir3e8Uhv64fPyliPG0Q4
-         ylJi8Ef4yvIctMasvGOR422sbc6pIyjsEG87MakTWKSR3Mb73FG0PyM9lCDQ8EWoAVr5
-         1c4uYRQzbJoh+Xh6xYynXiJlCneyqylY0MVrQ28xA/Y8Ek1E2laPReurYQ/v4PU7apvH
-         x9ma0K0z5jYUM+eOxXkdqb8Dc5DOc9Y8BccXv8EgOmG4eK9k+iUPEhhx9TpyUdwRl5qh
-         sUGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699322592; x=1699927392;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=dU4Qw2GINVAql19xsrhiUd3GEOwNexkdbZX6XUVtGec=;
-        b=NMK2qIoJwBjucqVvchPAcfbsTPrCSnlLZNShVGjcnGHQWD3yw28NSpOYWbSEfsTXOs
-         4TVq+ZhBqt7OsDoMbkuCrBGI9+We8n7rEZz6/h8ubl1e3ZlSbWNakAdMb4IKNrG4hErV
-         Tsv6GtAUdGnQ6vbST1xQdknbmCKN7d9m0yeVgBihiEy/vHtHbwCusMzXWKXrQ1VApnEF
-         nkrBwqX/FA/Yd4UgabJNgxFbD7OU3il/8CpPJAd779FU3IGmSX7B53D5CPJpuiqfSWLr
-         KrfsNqZ/DnxVyyxYMrD3gRIP/AUzR9pIzBJPp0YXd49/FlCPCzcGarVyLN9A5KPUZG/c
-         b6EA==
-X-Gm-Message-State: AOJu0YzoFuiEKtgDaMlj4S3nlZ+uCEr8UxqssmvFhZqDwn7uHF0ohv0y
-        0GhKVENxQm4MOxjy2VVBzTq20CmGFcTTqXS6csA=
-X-Google-Smtp-Source: AGHT+IEHQSGxgZT2Egj7uT0tv/QqfFdOoEhYT01rBJIyyZ5YCAcZVFfwXw4JhN7+h5GI8+f16UAUqfZxpxE50UhxKPE=
-X-Received: by 2002:a17:907:7ea5:b0:9ad:9225:ced2 with SMTP id
- qb37-20020a1709077ea500b009ad9225ced2mr14573622ejc.62.1699322592231; Mon, 06
- Nov 2023 18:03:12 -0800 (PST)
+        Mon, 6 Nov 2023 21:05:21 -0500
+Received: from mailout2.samsung.com (mailout2.samsung.com [203.254.224.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6751C115
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 18:05:16 -0800 (PST)
+Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20231107020511epoutp02c87cfdc06709a1d378856e08d5359da4~VNQC1zWU-1533915339epoutp02r
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 02:05:11 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20231107020511epoutp02c87cfdc06709a1d378856e08d5359da4~VNQC1zWU-1533915339epoutp02r
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1699322711;
+        bh=TBL8+EFA/ZaaK31h63r/ZXqTOOqEdXbFSJSw9cNVIVg=;
+        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
+        b=XbTxIL8NU9n6yj2/wPZ2f6Q+EmSmvA3fKocxJWRiYemY8chJD5oBMa1Jqcp7dU50H
+         WIRzauz5Tq5W4ratroBNkBTbvngy8xrh+ybcVS2Lex22/oOXIovWNk5nF7W4cItexH
+         Lt+2uaiv8dB1MH9CN5PHEeyFkTrxbsO7F7dnLIHw=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+        epcas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20231107020511epcas1p129b5e8910b71d15b254780b51500a537~VNQCY-N_L2181021810epcas1p1w;
+        Tue,  7 Nov 2023 02:05:11 +0000 (GMT)
+Received: from epsmges1p5.samsung.com (unknown [182.195.38.248]) by
+        epsnrtp2.localdomain (Postfix) with ESMTP id 4SPWkt4jHkz4x9QK; Tue,  7 Nov
+        2023 02:05:10 +0000 (GMT)
+Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
+        epsmges1p5.samsung.com (Symantec Messaging Gateway) with SMTP id
+        4C.42.10025.45B99456; Tue,  7 Nov 2023 11:05:08 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas1p3.samsung.com (KnoxPortal) with ESMTPA id
+        20231107020508epcas1p3e3f47fab18e52248f64bfdde05b1e53b~VNP-96Y7T0586405864epcas1p36;
+        Tue,  7 Nov 2023 02:05:08 +0000 (GMT)
+Received: from epsmgmcp1.samsung.com (unknown [182.195.42.82]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20231107020508epsmtrp2b7d91d55d9b40193aa0ad8ad85310877~VNP-9Tzs62332523325epsmtrp2L;
+        Tue,  7 Nov 2023 02:05:08 +0000 (GMT)
+X-AuditID: b6c32a39-c2bf870000002729-40-65499b54bb3c
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgmcp1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        D1.53.18939.45B99456; Tue,  7 Nov 2023 11:05:08 +0900 (KST)
+Received: from jongeonpark03 (unknown [10.253.101.166]) by
+        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20231107020508epsmtip12401683f6021257597dc66f70e2f7ff1~VNP-zFqrW0626206262epsmtip1G;
+        Tue,  7 Nov 2023 02:05:08 +0000 (GMT)
+From:   "Jong eon Park" <jongeon.park@samsung.com>
+To:     "'Jakub Kicinski'" <kuba@kernel.org>,
+        "'Paolo Abeni'" <pabeni@redhat.com>
+Cc:     "'David S. Miller'" <davem@davemloft.net>,
+        "'Eric Dumazet'" <edumazet@google.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        "'Dong ha Kang'" <dongha7.kang@samsung.com>
+In-Reply-To: <20231106154812.14c470c2@kernel.org>
+Subject: RE: [PATCH] netlink: introduce netlink poll to resolve fast return
+ issue
+Date:   Tue, 7 Nov 2023 11:05:08 +0900
+Message-ID: <25c501da111e$d527b010$7f771030$@samsung.com>
 MIME-Version: 1.0
-From:   Dave Airlie <airlied@gmail.com>
-Date:   Tue, 7 Nov 2023 12:03:00 +1000
-Message-ID: <CAPM=9twtAbAqnZKRTk9tKLXpJeU6azx+TM4Ep3yJHQJtCFvK7Q@mail.gmail.com>
-Subject: [git pull] drm next + fixes for 6.7-rc1
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQJoS8HO+cSy/HZb7h5ntB8MEORIdAHf29cGAkyoXsSvMDrooA==
+Content-Language: ko
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprKJsWRmVeSWpSXmKPExsWy7bCmgW7IbM9Ug961NhZzzrewWEy/OZXZ
+        4umxR+wWF7b1sVpc3jWHzeLYAjGLb6ffMDqwe2xZeZPJY8GmUo9NqzrZPN7vu8rm0bdlFaPH
+        501yAWxR2TYZqYkpqUUKqXnJ+SmZeem2St7B8c7xpmYGhrqGlhbmSgp5ibmptkouPgG6bpk5
+        QJcoKZQl5pQChQISi4uV9O1sivJLS1IVMvKLS2yVUgtScgrMCvSKE3OLS/PS9fJSS6wMDQyM
+        TIEKE7IzbizMLlgsXtG1bi9jA+MLoS5GDg4JAROJeVs8uxg5OYQEdjBK7FvL1cXIBWR/YpSY
+        eu0AG5xzbdlUVpAqkIbmxztYIBI7GSUWtqxjgWh/wyjxZLs+iM0mYCBx7MdPRpANIgL+Erfv
+        eYPUMwscYJRY8OYtWD2ngKHE23dzmEBsYYFgie0/FoLFWQRUJKY/+sMMYvMKWEp8n/WbFcIW
+        lDg58wlYDbOAvMT2t3OYIQ5SkPj5dBlYjYiAk8TkBT/ZIWpEJGZ3tjGDLJYQmMoh8fHuQXaI
+        BheJ2X+PQdnCEq+Ob4GypSQ+v9vLBmFnS7w4dowVEkQFElePKEGY9hLvL1mAmMwCmhLrd+lD
+        FCtK7Pw9lxFiK5/Eu689UI28Eh1tQhAlahIPT76FhqCMxOoVd9kmMCrNQvLXLCR/zUJy/yyE
+        ZQsYWVYxiqUWFOempxYbFpjC4zk5P3cTIzh9alnuYJz+9oPeIUYmDsZDjBIczEoivH/tPVKF
+        eFMSK6tSi/Lji0pzUosPMZoCQ3ois5Rocj4wgeeVxBuaWBqYmBmZWBhbGpspifOee9ubIiSQ
+        nliSmp2aWpBaBNPHxMEp1cBktWZylvJz/qMnBXf2me+tdj9u9aBv2/uNfbtclvXpZDMyCD2d
+        MvlCZd4jRhNGuacfNLi8HJacUM4zsiicHLVM3u5L6ORKXm+GdWkV50oW6ctX9PNuN5CWvnD+
+        5IEtRtEnEoP9fohP32tUKPuEwfjbEZaCzh/HtvxUaMvwiitsf/5I9leO2NYZv6wZNH4bvv97
+        7NfHFZrJJ3LezPL4t/HOm2XiC5MZ2k7yl4mf+/VQvsv72rHEP1bL3u3uM16bVcx0MnNLwkbL
+        AjG1nusfW8QO/HG0jjv9Z06mbmWkbRqTx/k0S41aRttZjuI/9wkw5ayueCt6WJbZ6P9LSZ6C
+        4MoDbDv8n3FozGK69KLZ6J8SS3FGoqEWc1FxIgBWo/7NKAQAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpikeLIzCtJLcpLzFFi42LZdlhJTjdktmeqwe/FEhZzzrewWEy/OZXZ
+        4umxR+wWF7b1sVpc3jWHzeLYAjGLb6ffMDqwe2xZeZPJY8GmUo9NqzrZPN7vu8rm0bdlFaPH
+        501yAWxRXDYpqTmZZalF+nYJXBk3FmYXLBav6Fq3l7GB8YVQFyMnh4SAiUTz4x0sXYxcHEIC
+        2xklHk9YzgiRkJG4vmAfUIIDyBaWOHy4GKLmFaPEwzXXWUBq2AQMJI79+AlWLyLgL9E04yMb
+        SBGzwBFGicmLnzNDdGxjlJg/ZzcbSBWngKHE23dzmEBsYYFAifcbv4LFWQRUJKY/+sMMYvMK
+        WEp8n/WbFcIWlDg58wnYNmYBPYn16+cwQtjyEtvfzmGGuFRB4ufTZawQVzhJTF7wkx2iRkRi
+        dmcb8wRG4VlIRs1CMmoWklGzkLQsYGRZxSiaWlCcm56bXGCoV5yYW1yal66XnJ+7iREcTVpB
+        OxiXrf+rd4iRiYPxEKMEB7OSCO9fe49UId6UxMqq1KL8+KLSnNTiQ4zSHCxK4rzKOZ0pQgLp
+        iSWp2ampBalFMFkmDk6pBibZ5+nGrUumOMq4SaYdSMub92DtJ2W+8obbfOtv/TJd0zhr1vzP
+        M89MYDYtUWCNDvsk/EelYhGDv378md2fSxJPP+DrFHIN7d18jFOvnynXMMMlvccm6E+gtOeG
+        rx3tIomrisMaa+y+V+azPDjyR/X9Krm5ccx/t6gXHE76ouRy4pPAoinSM66xWvKLa4p7PNv6
+        YXfBEZYdl/comeiVZJ16sT3xe1yuRLJmyYEooboPigk2sY2rTn17+9JMleHbDLOQ4jwG9b+5
+        tTWWqW81WOvf7Cm88t6iP/Xqq5J9Bj+tmZdM3XPG0i572oEbK9bd6L8yg4FPY+OlCKaj+dt/
+        Kl2Va94iq5AW/y9hkdI3LSWW4oxEQy3mouJEADGTrwAVAwAA
+X-CMS-MailID: 20231107020508epcas1p3e3f47fab18e52248f64bfdde05b1e53b
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20231103072245epcas1p4471a31e9f579e38501c8c856d3ca2a77
+References: <CGME20231103072245epcas1p4471a31e9f579e38501c8c856d3ca2a77@epcas1p4.samsung.com>
+        <20231103072209.1005409-1-jongeon.park@samsung.com>
+        <20231106154812.14c470c2@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,332 +122,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
 
-Geert pointed out I missed the renesas reworks in my main pull, so
-this pull contains the renesas next work for atomic conversion and DT
-support. It also contains a bunch of amdgpu and some small ssd13xx
-fixes.
 
-I'm going to be travelling from tomorrow, I should in theory have
-access to send MRs on the road, but it relies on a VPN connection I'm
-not confident in surviving long enough, we shall see.
+> -----Original Message-----
+> From: Jakub Kicinski <kuba@kernel.org>
+> Sent: Tuesday, November 7, 2023 8:48 AM
+> To: Jong eon Park <jongeon.park@samsung.com>; Paolo Abeni
+> <pabeni@redhat.com>
+> Cc: David S. Miller <davem@davemloft.net>; Eric Dumazet
+> <edumazet@google.com>; netdev@vger.kernel.org; linux-
+> kernel@vger.kernel.org; Dong ha Kang <dongha7.kang@samsung.com>
+> Subject: Re: [PATCH] netlink: introduce netlink poll to resolve fast
+> return issue
+> 
+> On Fri,  3 Nov 2023 16:22:09 +0900 Jong eon Park wrote:
+> > In very rare cases, there was an issue where a user's poll function
+> > waiting for a uevent would continuously return very quickly, causing
+> > excessive CPU usage due to the following scenario.
+> >
+> > Once sk_rcvbuf becomes full netlink_broadcast_deliver returns an error
+> > and netlink_overrun is called. However, if netlink_overrun was called
+> > in a context just before a another context returns from the poll and
+> > recv is invoked, emptying the rcvbuf, sk->sk_err = ENOBUF is written
+> > to the netlink socket belatedly and it enters the NETLINK_S_CONGESTED
+> state.
+> > If the user does not check for POLLERR, they cannot consume and clean
+> > sk_err and repeatedly enter the situation where they call poll again
+> > but return immediately.
+> >
+> > To address this issue, I would like to introduce the following netlink
+> > poll.
+> >
+> > After calling the datagram_poll, netlink poll checks the
+> > NETLINK_S_CONGESTED status and rcv queue, and this make the user to be
+> > readable once more even if the user has already emptied rcv queue.
+> > This allows the user to be able to consume sk->sk_err value through
+> > netlink_recvmsg, thus the situation described above can be avoided
+> 
+> The explanation makes sense, but I'm not able to make the jump in
+> understanding how this is a netlink problem. datagram_poll() returns
+> EPOLLERR because sk_err is set, what makes netlink special?
+> The fact that we can have an sk_err with nothing in the recv queue?
+> 
+> Paolo understands this better, maybe he can weigh in tomorrow...
 
-Dave.
+Perhaps my explanation was not comprehensive enough.
 
-drm-next-2023-11-07:
-drm next and fixes for 6.7-rc1
+The issue at hand is that once it occurs, users cannot escape from this 
+"busy running" situation, and the inadequate handling of EPOLLERR by users 
+imposes a heavy burden on the entire system, which seems quite harsh.
 
-renesas:
-- atomic conversion
-- DT support
+The reason for a separate netlink poll is related to the netlink state. 
+When it enters the NETLINK_S_CONGESTED state, sk can no longer receive or 
+deliver skb, and the receive_queue must be completely emptied to clear the 
+state. However, it was found that the NETLINK_S_CONGESTED state was still 
+maintained even when the receive_queue was empty, which was incorrect, and 
+that's why I implemented the handling in poll.
 
-ssd13xx:
-- dt binding fix for ssd132x
-- Initialize ssd130x crtc_state to NULL.
+I don't consider this approach to be the best way, so if you have any 
+recommendations for a better solution, I would appreciate it.
 
-amdgpu:
-- Fix RAS support check
-- RAS fixes
-- MES fixes
-- SMU13 fixes
-- Contiguous memory allocation fix
-- BACO fixes
-- GPU reset fixes
-- Min power limit fixes
-- GFX11 fixes
-- USB4/TB hotplug fixes
-- ARM regression fix
-- GFX9.4.3 fixes
-- KASAN/KCSAN stack size check fixes
-- SR-IOV fixes
-- SMU14 fixes
-- PSP13 fixes
-- Display blend fixes
-- Flexible array size fixes
+Regards.
+JE Park.
 
-amdkfd:
-- GPUVM fix
 
-radeon:
-- Flexible array size fixes
-The following changes since commit 631808095a82e6b6f8410a95f8b12b8d0d38b161=
-:
-
-  Merge tag 'amd-drm-next-6.7-2023-10-27' of
-https://gitlab.freedesktop.org/agd5f/linux into drm-next (2023-10-31
-12:37:19 +1000)
-
-are available in the Git repository at:
-
-  git://anongit.freedesktop.org/drm/drm tags/drm-next-2023-11-07
-
-for you to fetch changes up to 9ccde17d46554dbb2757c427f2cdf67688701f96:
-
-  Merge tag 'amd-drm-next-6.7-2023-11-03' of
-https://gitlab.freedesktop.org/agd5f/linux into drm-next (2023-11-06
-11:25:14 +1000)
-
-----------------------------------------------------------------
-drm next and fixes for 6.7-rc1
-
-renesas:
-- atomic conversion
-- DT support
-
-ssd13xx:
-- dt binding fix for ssd132x
-- Initialize ssd130x crtc_state to NULL.
-
-amdgpu:
-- Fix RAS support check
-- RAS fixes
-- MES fixes
-- SMU13 fixes
-- Contiguous memory allocation fix
-- BACO fixes
-- GPU reset fixes
-- Min power limit fixes
-- GFX11 fixes
-- USB4/TB hotplug fixes
-- ARM regression fix
-- GFX9.4.3 fixes
-- KASAN/KCSAN stack size check fixes
-- SR-IOV fixes
-- SMU14 fixes
-- PSP13 fixes
-- Display blend fixes
-- Flexible array size fixes
-
-amdkfd:
-- GPUVM fix
-
-radeon:
-- Flexible array size fixes
-
-----------------------------------------------------------------
-Alex Deucher (7):
-      drm/amdgpu/gfx10,11: use memcpy_to/fromio for MQDs
-      drm/amdgpu: don't use ATRM for external devices
-      drm/amdgpu: don't use pci_is_thunderbolt_attached()
-      drm/amd: Fix UBSAN array-index-out-of-bounds for Powerplay headers
-      drm/amdgpu: add a retry for IP discovery init
-      drm/amdgpu/smu13: drop compute workload workaround
-      drm/amdgpu: don't put MQDs in VRAM on ARM | ARM64
-
-Arunpravin Paneer Selvam (1):
-      drm/amdgpu: Fix the vram base start address
-
-Candice Li (1):
-      drm/amdgpu: Drop deferred error in uncorrectable error check
-
-Dave Airlie (3):
-      Merge tag 'shmob-drm-atomic-dt-tag2' of
-git://git.kernel.org/pub/scm/linux/kernel/git/geert/renesas-drivers
-into drm-next
-      Merge tag 'drm-misc-next-fixes-2023-11-02' of
-git://anongit.freedesktop.org/drm/drm-misc into drm-next
-      Merge tag 'amd-drm-next-6.7-2023-11-03' of
-https://gitlab.freedesktop.org/agd5f/linux into drm-next
-
-Felix Kuehling (2):
-      drm/amdkfd: Improve amdgpu_vm_handle_moved
-      drm/amdgpu: Attach eviction fence on alloc
-
-Geert Uytterhoeven (36):
-      MAINTAINER: Create entry for Renesas SH-Mobile DRM drivers
-      dt-bindings: display: Add Renesas SH-Mobile LCDC bindings
-      media: uapi: Add MEDIA_BUS_FMT_RGB666_2X9_BE format
-      drm: renesas: shmobile: Fix overlay plane disable
-      drm: renesas: shmobile: Fix ARGB32 overlay format typo
-      drm: renesas: shmobile: Correct encoder/connector types
-      drm: renesas: shmobile: Add support for Runtime PM
-      drm: renesas: shmobile: Restore indentation of shmob_drm_setup_clocks=
-()
-      drm: renesas: shmobile: Use %p4cc to print fourcc code
-      drm: renesas: shmobile: Add missing YCbCr formats
-      drm: renesas: shmobile: Improve shmob_drm_format_info table
-      drm: renesas: shmobile: Improve error handling
-      drm: renesas: shmobile: Convert to use devm_request_irq()
-      drm: renesas: shmobile: Remove custom plane destroy callback
-      drm: renesas: shmobile: Use drmm_universal_plane_alloc()
-      drm: renesas: shmobile: Embed drm_device in shmob_drm_device
-      drm: renesas: shmobile: Convert container helpers to static
-inline functions
-      drm: renesas: shmobile: Replace .dev_private with container_of()
-      drm: renesas: shmobile: Use media bus formats in platform data
-      drm: renesas: shmobile: Move interface handling to connector setup
-      drm: renesas: shmobile: Unify plane allocation
-      drm: renesas: shmobile: Rename shmob_drm_crtc.crtc
-      drm: renesas: shmobile: Rename shmob_drm_connector.connector
-      drm: renesas: shmobile: Rename shmob_drm_plane.plane
-      drm: renesas: shmobile: Use drm_crtc_handle_vblank()
-      drm: renesas: shmobile: Move shmob_drm_crtc_finish_page_flip()
-      drm: renesas: shmobile: Wait for page flip when turning CRTC off
-      drm: renesas: shmobile: Turn vblank on/off when enabling/disabling CR=
-TC
-      drm: renesas: shmobile: Shutdown the display on remove
-      drm: renesas: shmobile: Cleanup encoder
-      drm: renesas: shmobile: Atomic conversion part 1
-      drm: renesas: shmobile: Atomic conversion part 2
-      drm: renesas: shmobile: Use suspend/resume helpers
-      drm: renesas: shmobile: Remove internal CRTC state tracking
-      drm: renesas: shmobile: Atomic conversion part 3
-      drm: renesas: shmobile: Add DT support
-
-Hawking Zhang (3):
-      drm/amdgpu: Add C2PMSG_109/126 reg field shift/masks
-      drm/amdgpu: Add psp v13 function to query boot status
-      drm/amdgpu: Query and report boot status
-
-Ilya Bakoulin (2):
-      drm/amd/display: Fix blend LUT programming
-      drm/amd/display: Enable fast update on blendTF change
-
-Javier Martinez Canillas (2):
-      dt-bindings: display: ssd132x: Remove '-' before compatible enum
-      drm/ssd130x: Fix possible uninitialized usage of crtc_state variable
-
-Jos=C3=A9 Pekkarinen (1):
-      drm/radeon: replace 1-element arrays with flexible-array members
-
-Kenneth Feng (1):
-      drm/amd/pm: fix the high voltage and temperature issue
-
-Laurent Pinchart (5):
-      drm: renesas: shmobile: Remove backlight support
-      drm: renesas: shmobile: Don't set display info width and height twice
-      drm: renesas: shmobile: Rename input clocks
-      drm: renesas: shmobile: Remove support for SYS panels
-      drm: renesas: shmobile: Use struct videomode in platform data
-
-Li Ma (2):
-      drm/amd/swsmu: update smu v14_0_0 driver if and metrics table
-      drm/amd/swsmu: remove fw version check in sw_init.
-
-Lijo Lazar (1):
-      drm/amd/pm: Fix warnings
-
-Lin.Cao (1):
-      drm/amdgpu doorbell range should be set when gpu recovery
-
-Ma Jun (4):
-      drm/amd/pm: Fix error of MACO flag setting code
-      drm/amd/pm: Return 0 as default min power limit for legacy asics
-      drm/amd/pm: only check sriov vf flag once when creating hwmon sysfs
-      drm/amdgpu: Optimize the asic type fix code
-
-Mukul Joshi (2):
-      drm/amdkfd: Populate cache info for GFX 9.4.3
-      drm/amdkfd: Update cache info for GFX 9.4.3
-
-Nathan Chancellor (1):
-      drm/amd/display: Increase frame warning limit with KASAN or KCSAN in =
-dml2
-
-Perry Yuan (1):
-      drm/amdgpu: ungate power gating when system suspend
-
-Sung Joon Kim (1):
-      drm/amd/display: Program plane color setting correctly
-
-Tao Zhou (4):
-      drm/amdgpu: check RAS supported first in ras_reset_error_count
-      drm/amdgpu: set XGMI IP version manually for v6_4
-      drm/amdgpu: use mode-2 reset for RAS poison consumption
-      drm/amdgpu: check recovery status of xgmi hive in ras_reset_error_cou=
-nt
-
-Tim Huang (1):
-      drm/amdgpu: fix GRBM read timeout when do mes_self_test
-
-Tong Liu01 (1):
-      drm/amdgpu: add unmap latency when gfx11 set kiq resources
-
-Wayne Lin (1):
-      drm/amd/display: Avoid NULL dereference of timing generator
-
-Yang Wang (1):
-      drm/amdgpu: remove unused macro HW_REV
-
-Yifan Zhang (1):
-      drm/amdgpu: remove amdgpu_mes_self_test in gpu recover
-
- .../bindings/display/renesas,shmobile-lcdc.yaml    | 130 +++++
- .../bindings/display/solomon,ssd132x.yaml          |   8 +-
- .../userspace-api/media/v4l/subdev-formats.rst     |  72 +++
- MAINTAINERS                                        |  13 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu.h                |   3 -
- drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gpuvm.c   |  79 ++-
- drivers/gpu/drm/amd/amdgpu/amdgpu_bios.c           |   5 +
- drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c             |   7 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_device.c         |  38 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_discovery.c      |  26 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_dma_buf.c        |   2 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c            |  35 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_gfx.c            |   2 +
- drivers/gpu/drm/amd/amdgpu/amdgpu_mes.c            |  16 +
- drivers/gpu/drm/amd/amdgpu/amdgpu_psp.c            |  15 +
- drivers/gpu/drm/amd/amdgpu/amdgpu_psp.h            |   3 +
- drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c            |  19 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_umc.c            |   6 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c             |  19 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_vm.h             |   3 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c       |  15 +-
- drivers/gpu/drm/amd/amdgpu/gfx_v10_0.c             |  28 +-
- drivers/gpu/drm/amd/amdgpu/gfx_v11_0.c             |  13 +-
- drivers/gpu/drm/amd/amdgpu/nbio_v2_3.c             |   5 +-
- drivers/gpu/drm/amd/amdgpu/psp_v13_0.c             |  78 +++
- drivers/gpu/drm/amd/amdgpu/umc_v12_0.c             |   3 +-
- drivers/gpu/drm/amd/amdkfd/kfd_crat.c              |  66 ++-
- drivers/gpu/drm/amd/amdkfd/kfd_topology.c          |  18 +-
- drivers/gpu/drm/amd/display/dc/core/dc.c           |   1 -
- drivers/gpu/drm/amd/display/dc/core/dc_stream.c    |   4 +-
- drivers/gpu/drm/amd/display/dc/dcn30/dcn30_dpp.c   |   3 +
- drivers/gpu/drm/amd/display/dc/dcn30/dcn30_hubp.c  |   2 +-
- drivers/gpu/drm/amd/display/dc/dcn30/dcn30_hubp.h  |   5 +
- drivers/gpu/drm/amd/display/dc/dcn32/dcn32_mpc.c   |   3 +
- drivers/gpu/drm/amd/display/dc/dcn35/dcn35_hubp.c  | 137 ++++-
- drivers/gpu/drm/amd/display/dc/dcn35/dcn35_hubp.h  |  14 +
- drivers/gpu/drm/amd/display/dc/dml2/Makefile       |   4 +
- .../amd/include/asic_reg/mp/mp_13_0_2_sh_mask.h    |  28 +
- drivers/gpu/drm/amd/include/kgd_pp_interface.h     |  30 +-
- drivers/gpu/drm/amd/pm/amdgpu_pm.c                 |  27 +-
- drivers/gpu/drm/amd/pm/powerplay/amd_powerplay.c   |   3 +
- .../gpu/drm/amd/pm/powerplay/hwmgr/pptable_v1_0.h  |   4 +-
- .../drm/amd/pm/powerplay/hwmgr/vega10_pptable.h    |  24 +-
- drivers/gpu/drm/amd/pm/swsmu/amdgpu_smu.c          |  33 +-
- drivers/gpu/drm/amd/pm/swsmu/inc/amdgpu_smu.h      |   1 +
- .../pm/swsmu/inc/pmfw_if/smu14_driver_if_v14_0_0.h | 120 +---
- drivers/gpu/drm/amd/pm/swsmu/inc/smu_v13_0.h       |   2 +
- drivers/gpu/drm/amd/pm/swsmu/smu11/vangogh_ppt.c   |  17 +-
- drivers/gpu/drm/amd/pm/swsmu/smu13/smu_v13_0.c     |  13 +
- .../gpu/drm/amd/pm/swsmu/smu13/smu_v13_0_0_ppt.c   |  58 +-
- .../gpu/drm/amd/pm/swsmu/smu13/smu_v13_0_6_ppt.c   |   2 +-
- .../gpu/drm/amd/pm/swsmu/smu13/smu_v13_0_7_ppt.c   |  27 +-
- drivers/gpu/drm/amd/pm/swsmu/smu14/smu_v14_0.c     |   4 +-
- .../gpu/drm/amd/pm/swsmu/smu14/smu_v14_0_0_ppt.c   | 260 ++-------
- drivers/gpu/drm/amd/pm/swsmu/smu_cmn.c             |   3 +
- drivers/gpu/drm/radeon/atombios.h                  |  42 +-
- drivers/gpu/drm/renesas/shmobile/Kconfig           |   3 +-
- drivers/gpu/drm/renesas/shmobile/Makefile          |   3 +-
- .../gpu/drm/renesas/shmobile/shmob_drm_backlight.c |  82 ---
- .../gpu/drm/renesas/shmobile/shmob_drm_backlight.h |  19 -
- drivers/gpu/drm/renesas/shmobile/shmob_drm_crtc.c  | 650 +++++++++--------=
-----
- drivers/gpu/drm/renesas/shmobile/shmob_drm_crtc.h  |  27 +-
- drivers/gpu/drm/renesas/shmobile/shmob_drm_drv.c   | 179 +++---
- drivers/gpu/drm/renesas/shmobile/shmob_drm_drv.h   |  18 +-
- drivers/gpu/drm/renesas/shmobile/shmob_drm_kms.c   |  77 ++-
- drivers/gpu/drm/renesas/shmobile/shmob_drm_kms.h   |   9 +-
- drivers/gpu/drm/renesas/shmobile/shmob_drm_plane.c | 326 ++++++-----
- drivers/gpu/drm/renesas/shmobile/shmob_drm_plane.h |   5 +-
- drivers/gpu/drm/solomon/ssd130x.c                  |   2 +-
- include/drm/amd_asic_type.h                        |   5 +
- include/linux/platform_data/shmob_drm.h            |  57 +-
- include/uapi/linux/media-bus-format.h              |   3 +-
- 72 files changed, 1718 insertions(+), 1345 deletions(-)
- create mode 100644
-Documentation/devicetree/bindings/display/renesas,shmobile-lcdc.yaml
- delete mode 100644 drivers/gpu/drm/renesas/shmobile/shmob_drm_backlight.c
- delete mode 100644 drivers/gpu/drm/renesas/shmobile/shmob_drm_backlight.h
