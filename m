@@ -2,363 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 486FE7E45FB
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 17:28:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A67E7E45A3
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 17:16:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235660AbjKGQ2m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 11:28:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36840 "EHLO
+        id S235286AbjKGQQb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 11:16:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235589AbjKGQ23 (ORCPT
+        with ESMTP id S235451AbjKGQQN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 11:28:29 -0500
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E065A275
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 08:07:23 -0800 (PST)
-Received: by mail-pg1-x532.google.com with SMTP id 41be03b00d2f7-5bcf83a8f6cso4402623a12.2
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 08:07:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699373243; x=1699978043; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ax3rw5j93gR8kifbRCXEEtxtkHqwBSo8uAJ32Orsuu0=;
-        b=icgR7qEEvtIeLmIpYyRB8YxMPm4aKXb7Von6dTvL55L8aF5/uOd/Fuu459UhjeX5RW
-         GqHmSvmOm/RCdDtu2Jnl7cBaMuhRX5PlMZfynfvHi0aRMiq7BOo18WhBr5g3dPQmYhBH
-         eJXlsQVq7DtZPJdgw24S5nmfVKFsurYQgOwl0U1DWQy85TDkMrqUCyFfQ3RxIUzj/MPa
-         HGxiMp6eqE2Ml+fk8DkrxvlWm/faHhfAnSSHJqJNVGnKA1em/6ZXzXkkuJw1QLmDM60k
-         L2vhhXo5tLtt9sRhlkuYQO4MFHC5KzKX8ymxWdZHFm0RpjOL8Xqh5gwQ4DruDZOkOoOR
-         mlPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699373243; x=1699978043;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ax3rw5j93gR8kifbRCXEEtxtkHqwBSo8uAJ32Orsuu0=;
-        b=A6OhJLQY9Pt1I5QF5JAbNlYNHvBRO/tzp1jQh07uWqZT+Y28DCQEB7Rq0HDUuERr19
-         +F20Kcz4hzhM18cRZvA4QmnIbGLgT4mEFQcrqZ90BNJEJT0s+4laPyvH0aQD4oj65jbp
-         bgv+OFV+IJf9BGgCoSen3QQAm8Wt8OGJNmJI/gwOtlYBqHKpM43JKGmMdNWRi9CPo+QH
-         nkg5d48xi8Kwiw36ayS6BoMPu+CvbVEkbJXwYduUZNKeMOPIMLBNopJGNg6kyxuyWufa
-         I41LF1DeegXxZUbs8cCRDrHe48KkcXbhTd0P4joqHnyWl+A87Lqup4wP2T9qu20q45gj
-         YsWA==
-X-Gm-Message-State: AOJu0Yxr2Az6NfTSAJgCeNe2v65fxd2rWHonPFJrn6xlvQaI4zoxrv+x
-        /mw8FAzAJ+h68csNspz9fSlItGEU9p3cvQ5DPhQ=
-X-Google-Smtp-Source: AGHT+IHLnOK+WdwAxlJLVVAapbuBd56AtLS/B597Q980YSWOYjRVJKamoPDFGv5VgAPCV+I97Q11lQ==
-X-Received: by 2002:a17:90b:4ac8:b0:281:b51:a06d with SMTP id mh8-20020a17090b4ac800b002810b51a06dmr4631049pjb.33.1699373242616;
-        Tue, 07 Nov 2023 08:07:22 -0800 (PST)
-Received: from rayden.urgonet (h-217-31-164-171.A175.priv.bahnhof.se. [217.31.164.171])
-        by smtp.gmail.com with ESMTPSA id o3-20020a17090ab88300b002775281b9easm13437pjr.50.2023.11.07.08.07.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Nov 2023 08:07:22 -0800 (PST)
-From:   Jens Wiklander <jens.wiklander@linaro.org>
-To:     linux-kernel@vger.kernel.org, op-tee@lists.trustedfirmware.org
-Cc:     Sumit Garg <sumit.garg@linaro.org>,
-        Jerome Forissier <jerome.forissier@linaro.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Marc Bonnici <marc.bonnici@arm.com>,
-        Olivier Deprez <Olivier.Deprez@arm.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Jens Wiklander <jens.wiklander@linaro.org>
-Subject: [PATCH v2 2/2] optee: ffa_abi: add asynchronous notifications
-Date:   Tue,  7 Nov 2023 17:06:57 +0100
-Message-Id: <20231107160657.3798803-3-jens.wiklander@linaro.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231107160657.3798803-1-jens.wiklander@linaro.org>
-References: <20231107160657.3798803-1-jens.wiklander@linaro.org>
+        Tue, 7 Nov 2023 11:16:13 -0500
+Received: from AUS01-SY4-obe.outbound.protection.outlook.com (mail-sy4aus01olkn2165.outbound.protection.outlook.com [40.92.62.165])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47E5E6E9F;
+        Tue,  7 Nov 2023 08:08:40 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KtUHDfVovlUBceDWGD3M0vUTPIJDN5iekvTSyfdyuL2z7uODza+b3SukKGUpG9iUOYpCmxRvbLV0BcImz9nDrF/e6fNwQTE4P66S2RYooGBpli+TVxNQTjmagXx6YiA7ZWEAV+hmWxLYc0nT/ZOcqZsGyQvHl2zbw4t/EicxQOMNWhEC7vNTl0MmrZg1P5oDruH64hksioZsRaA8T0uRBsu6TQz2K5oNpFQhR05BvDwRCcvtNJ8yAd+IOSFjePENpn0oP6FApBKAEdQ192V3LEMMVyCXmEz6GJOSC9RLJ8FtnNaWfVikJ2LCfR6njRBUGwW7QcLcEtiH7QYRZbqskA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=e3OzNCXNVozzfZZ1+JylcAjKsf8EY4qln4KFYL6qPbw=;
+ b=NduJ89353GFmepP6nDivHtmgCAnalU+T3rXitT6UzIIRzaHumnuJfy38Mzn43V83z6tB9aVrd/4wHg8BzCCGzM7xYd366Q/+MZdT6yD1nSlI1mN/4yL7zyZYVm2amK/nsbGwfaQPKu/LXAoQxPzEYkHVUfRGFVeDbz+vrLOMkmoHkQcMGer0NZhG3PyjIRGkOHfcWIeF/H5htQ5BCRzOtOhYI5e6FPRRfzTPY+yeLTRY7zKYr79llUiWNjgPxyiJ2WfFaEM5poxCngjZYu3PHas1CdJb+gE2OenwkdfGIeRa4Y1HLPlYuWv+HaIHYX9m2UHksed81Q+Fw9jKzl3QvA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=e3OzNCXNVozzfZZ1+JylcAjKsf8EY4qln4KFYL6qPbw=;
+ b=tqKPQtlUXNELrDue5UEyZnS9MxPSHVNlYMYzsGNpXKvsrurR9CfryVlKO8X0/TIwgw1mpa3HrcRdNjhMk74mcQDQoJzzgrnmJGn0qJwreDjKWjDhNxXI7ohCST1Sh8XsctSLqdnQZxId6zWY2O3bY0ZIiBoJo8gIsYQu/oBCnZ9ByqLBls97wuySW6KVPvfUBRpb6UYtDeutK8t46XcdUujQTnL+sfZfzHuGI62ZrQsrzjYhSA20u+nAulkAhc9ZOHMO1avi/Rn5FU7Clyc45ZtMy2hVYmYZtQ0iBg/HRKUNFADTh3RPW1O7OhUmJch6GIul6UfBWcwU5v+KozK6Hg==
+Received: from MEYP282MB2103.AUSP282.PROD.OUTLOOK.COM (2603:10c6:220:bd::16)
+ by ME0P282MB4288.AUSP282.PROD.OUTLOOK.COM (2603:10c6:220:227::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.25; Tue, 7 Nov
+ 2023 16:08:36 +0000
+Received: from MEYP282MB2103.AUSP282.PROD.OUTLOOK.COM
+ ([fe80::ebc:6803:865c:451f]) by MEYP282MB2103.AUSP282.PROD.OUTLOOK.COM
+ ([fe80::ebc:6803:865c:451f%7]) with mapi id 15.20.6954.025; Tue, 7 Nov 2023
+ 16:08:36 +0000
+Date:   Wed, 8 Nov 2023 00:08:31 +0800
+From:   Yihong Cao <caoyihong4@outlook.com>
+To:     Rahul Rameshbabu <sergeantsagara@protonmail.com>
+Cc:     Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] HID: apple: add Jamesdonkey and A3R to non-apple
+ keyboards list
+Message-ID: <MEYP282MB210374CF33FEABA6231FACB19BA9A@MEYP282MB2103.AUSP282.PROD.OUTLOOK.COM>
+References: <SYYP282MB2110B4E87983EAFEDC8741E49BA2A@SYYP282MB2110.AUSP282.PROD.OUTLOOK.COM>
+ <87a5rr1sqf.fsf@protonmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87a5rr1sqf.fsf@protonmail.com>
+X-TMN:  [V95fD1Z95ZPz+G2sSa8WuU9MtnEJ95tT]
+X-ClientProxiedBy: SGXP274CA0022.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b8::34)
+ To MEYP282MB2103.AUSP282.PROD.OUTLOOK.COM (2603:10c6:220:bd::16)
+X-Microsoft-Original-Message-ID: <ZUpg_1pE892KF_tG@cao-Rog>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MEYP282MB2103:EE_|ME0P282MB4288:EE_
+X-MS-Office365-Filtering-Correlation-Id: a462a09c-c234-490c-05c8-08dbdfabcc28
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: yg8OmiBiiEImldOqznRfxTFZWCyWoxU3AvyL/QExawZQlSOz3QV7v5zOMggqhlzr1QuXIVnOMJ/TrIsPLHuXYy7UxXXJeKTDHsrJQSUW0++lsw80fQ6StjNbuIu/vyOYYfmB97Gf7VN7Mhp8uhK8zihLPiwf4eidfISv6sGCK3Ym2EnTdGDofVuWQ7i84iFpzOVjtW5AykGcE9g2lTTOQzlAXQL08QekJzBGwd0bnNX8yI19QqgZ2fMNtL871e2pOuvqEJuzHQ1Dofiu6M9b+6w+EvWCkyTLoSRVElOtfw2IuQKv1+WsaS0jNfR+PcHZd7Z0q7gdyx1VJSzXmYmHIX48xSWIs293cMqOrgzYN5GMnI11Pr7iyRMJYyTJVkQRPbiOlczIXHlrdwiHf1Nc6KqbnDtwkYQ6esPBUbPgkvEBmHmz8Izv55uEzdCZjarNULtJGzQa1kMIR682G0F3xNy/wFhfoLorSAJSWmTIOZCSRNIqE8b+zsaSM+NAht1rzHupMSUEncISYCYiuzHsZ2ZvYWQxMR0Hch/81Y23tnpE6xqP++Iu4vUtLytffqrT
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?a47ZQPznrCz47rUpyPKqKqc+wlzezZ5k+wNbLJHTfMC5XDzfIowS40+OifXx?=
+ =?us-ascii?Q?03U0GwAcdKVBBK3OEULIns8+P/PUp1fPx43UmIe5nEM5x1XYBN9Afk/bBSd0?=
+ =?us-ascii?Q?alSBqs/wbB1xTvVLOS3SIlmnuj2Lh61Uih0xDZQ8vIJsfzehsYZh9indjdh4?=
+ =?us-ascii?Q?oUaQupKiT92Ty3PBgzCNgB2CKMse5iYDouI3IkSSn6pxMjQTLvc2XMWZqrvJ?=
+ =?us-ascii?Q?rSYiG/0nYPeHLcwwIUbVAsJCt4ri4tUNJZ9Md68NeE2AgSKh2J5KCUXPZN50?=
+ =?us-ascii?Q?aPCz5JHCAYeq7t9G7Zf0/OK7B+3JwDz4cSe6Gv6O/kCMbLaL28lDO6fJrucz?=
+ =?us-ascii?Q?RCF6O/odvo3V7mjsLrgjiSdCrQDnBSOaEvNdHwSXs2zeaXgugqWQgtws8iL0?=
+ =?us-ascii?Q?f8evF5kjZV/HozI85xCzjwyuJYsbQN1b1e3gby8p9sPnBzgijFu77ml8OUiC?=
+ =?us-ascii?Q?5Hl6CH7ZLUJN1gFIWTQ5artn5jMCWc5NqVjrOWqAPBvfqPGP2skLYROQJPpc?=
+ =?us-ascii?Q?ieOjoz3jX1hLrqxTDnKinAW0jijnGUxaL4/IQG8Zp920IBcAsB+QsTU2wrbv?=
+ =?us-ascii?Q?47awRNgdHI8kUxgy0ne7DjIJZr54ESuSRE5AF08yel2spQB7eM9NUAriERJ1?=
+ =?us-ascii?Q?85n0Pd1IydLHd3K/b8BI0sEWYP+Rk1HBJObHiOZdwTBCLLdo/HeNH6kELXfG?=
+ =?us-ascii?Q?78PQLU2Igvsp942j6N04qdhxDo1nbfJl/uxD2IgdH8PaZzwvfwZwlsx4bGxG?=
+ =?us-ascii?Q?i2ppWLRwRmXY7m4ifpwtuOCWlKewsCZrbpzhaGmZf1m5kLOCZN/gz2m9qQ4k?=
+ =?us-ascii?Q?uW4jwrxfNxjEyQ/CaBnhmDWF7gslRc50BugCx2mvpoF4pvga+cwqjlgT3csr?=
+ =?us-ascii?Q?rxOX0MAnIXK4IEsD7daav2+x+OQuiTLCIH72cCtw3Qz6nBbC8DFHUImkNFUD?=
+ =?us-ascii?Q?iWXx27bLt02sMF9hUWO+z+An9fNxIkiiWF0dYkGhRMA0SRumxhhHy3ULzqid?=
+ =?us-ascii?Q?iGb+ctTvcypbCnuKaKOhzrSzmBixQgS8jBe8tRDy17NR2Qj58HYEIQV16GOG?=
+ =?us-ascii?Q?gHNI6LqeZswrZErCZWg3aBC2/UlYA+BoHXpsG/U+lwD0Bu0aPQPZG2DU1SvY?=
+ =?us-ascii?Q?E9DC/wNNjJAXUFjV0ZvBE1tmNfWaJhzdPGH/jPYcxVYeZv9eItFtLkCPZSpX?=
+ =?us-ascii?Q?HHJR9TZKaldJqYKIOk27sTs+wC9ztILM6TzC+w=3D=3D?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a462a09c-c234-490c-05c8-08dbdfabcc28
+X-MS-Exchange-CrossTenant-AuthSource: MEYP282MB2103.AUSP282.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Nov 2023 16:08:36.4472
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: ME0P282MB4288
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adds support for asynchronous notifications from OP-TEE in secure world
-when communicating via FF-A. In principle from OP-TEE and kernel driver
-point of view this works in the same way as for the SMC ABI based
-implementation.
+On Mon, Nov 06, 2023 at 03:11:09AM +0000, Rahul Rameshbabu wrote:
+> On Mon, 30 Oct, 2023 01:05:38 +0800 "Yihong Cao" <caoyihong4@outlook.com> wrote:
+> > Jamesdonkey A3R keyboard is identified as "Jamesdonkey A3R" in wired
+> > mode, "A3R-U" in wireless mode and "A3R" in bluetooth mode. Adding them
+> > to non-apple keyboards fixes function key.
+> >
+> > Signed-off-by: Yihong Cao <caoyihong4@outlook.com>
+> > ---
+> >  drivers/hid/hid-apple.c | 2 ++
+> >  1 file changed, 2 insertions(+)
+> >
+> > diff --git a/drivers/hid/hid-apple.c b/drivers/hid/hid-apple.c
+> > index 3ca45975c686..d9e9829b2200 100644
+> > --- a/drivers/hid/hid-apple.c
+> > +++ b/drivers/hid/hid-apple.c
+> > @@ -345,6 +345,8 @@ static const struct apple_non_apple_keyboard non_apple_keyboards[] = {
+> >  	{ "AONE" },
+> >  	{ "GANSS" },
+> >  	{ "Hailuck" },
+> > +	{ "Jamesdonkey" },
+> 
+> Sorry, maybe I misunderstood the commit message. In wired mode, if the
+> keyboard is identified as "Jamesdonkey A3R", shouldn't this value be
+> "Jamesdonkey A3R" instead of "Jamesdonkey"?
+> 
 
-The OP-TEE FF-A ABI is expanded in OPTEE_FFA_EXCHANGE_CAPABILITIES with
-the capability OPTEE_FFA_SEC_CAP_ASYNC_NOTIF to indicate that OP-TEE
-supports asynchronous notifications. OPTEE_FFA_ENABLE_ASYNC_NOTIF is
-also added to tell that the driver has successfully initialized these
-notifications.
+Hi!
 
-Notification capability is negotiated while the driver is initialized.
-If both sides supports these notifications then they are enabled.
+"Jamesdonkey" is the manufacturer and "A3R" is the model. I think adding
+manufacturer to non-apple list is suggested, just like commit
+c4444d8749f696384947192b602718fa310c1caf,
+20afcc462579c0bd79a59ab2b87b82ffa833d118, and
+a0a05054583fed17f522172e101594f1ff265463 did.
 
-The notification concept in this driver is merged with the FF-A concept,
-the lower 64 values are reserved for FF-A as asynchronous notifications
-while the synchronous notifications use the higher values.
+However, my keyboard's hardware is buggy, in wireless and wired mode, the
+manufacturer is empty, only model name exists. For your reference, the
+result of `lsusb -v` is pasted below.
 
-So a FF-A notification has to be allocated for each discrete
-asynchronous notification value needed. Only one asynchronous
-notification value is used at the moment, the "do bottom half"
-notification.
+In wired mode, `lsusb -v` shows:
 
-Signed-off-by: Jens Wiklander <jens.wiklander@linaro.org>
-Reviewed-by: Sumit Garg <sumit.garg@linaro.org>
----
- drivers/tee/optee/ffa_abi.c       | 93 ++++++++++++++++++++++++++++++-
- drivers/tee/optee/optee_ffa.h     | 28 ++++++++--
- drivers/tee/optee/optee_private.h |  4 +-
- 3 files changed, 117 insertions(+), 8 deletions(-)
+Bus 003 Device 002: ID 05ac:024f Apple, Inc. Aluminium Keyboard (ANSI)
+Device Descriptor:
+  bLength                18
+  bDescriptorType         1
+  bcdUSB               2.00
+  bDeviceClass            0
+  bDeviceSubClass         0
+  bDeviceProtocol         0
+  bMaxPacketSize0        64
+  idVendor           0x05ac Apple, Inc.
+  idProduct          0x024f Aluminium Keyboard (ANSI)
+  bcdDevice            1.26
+  iManufacturer           1 Jamesdonkey
+  iProduct                2 A3R
+  iSerial                 0
+  bNumConfigurations      1
 
-diff --git a/drivers/tee/optee/ffa_abi.c b/drivers/tee/optee/ffa_abi.c
-index 0828240f27e6..60823b41b9ad 100644
---- a/drivers/tee/optee/ffa_abi.c
-+++ b/drivers/tee/optee/ffa_abi.c
-@@ -1,6 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0-only
- /*
-- * Copyright (c) 2021, Linaro Limited
-+ * Copyright (c) 2021, 2023 Linaro Limited
-  */
- 
- #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-@@ -692,7 +692,8 @@ static bool optee_ffa_api_is_compatbile(struct ffa_device *ffa_dev,
- static bool optee_ffa_exchange_caps(struct ffa_device *ffa_dev,
- 				    const struct ffa_ops *ops,
- 				    u32 *sec_caps,
--				    unsigned int *rpc_param_count)
-+				    unsigned int *rpc_param_count,
-+				    unsigned int *max_notif_value)
- {
- 	struct ffa_send_direct_data data = { OPTEE_FFA_EXCHANGE_CAPABILITIES };
- 	int rc;
-@@ -709,10 +710,39 @@ static bool optee_ffa_exchange_caps(struct ffa_device *ffa_dev,
- 
- 	*rpc_param_count = (u8)data.data1;
- 	*sec_caps = data.data2;
-+	if (data.data3)
-+		*max_notif_value = data.data3;
-+	else
-+		*max_notif_value = OPTEE_DEFAULT_MAX_NOTIF_VALUE;
- 
- 	return true;
- }
- 
-+static void notif_callback(int notify_id, void *cb_data)
-+{
-+	struct optee *optee = cb_data;
-+
-+	if (notify_id == optee->ffa.bottom_half_value)
-+		optee_do_bottom_half(optee->ctx);
-+	else
-+		optee_notif_send(optee, notify_id);
-+}
-+
-+static int enable_async_notif(struct optee *optee)
-+{
-+	struct ffa_device *ffa_dev = optee->ffa.ffa_dev;
-+	struct ffa_send_direct_data data = {
-+		.data0 = OPTEE_FFA_ENABLE_ASYNC_NOTIF,
-+		.data1 = optee->ffa.bottom_half_value,
-+	};
-+	int rc;
-+
-+	rc = ffa_dev->ops->msg_ops->sync_send_receive(ffa_dev, &data);
-+	if (rc)
-+		return rc;
-+	return data.data0;
-+}
-+
- static void optee_ffa_get_version(struct tee_device *teedev,
- 				  struct tee_ioctl_version_data *vers)
- {
-@@ -775,7 +805,11 @@ static const struct optee_ops optee_ffa_ops = {
- static void optee_ffa_remove(struct ffa_device *ffa_dev)
- {
- 	struct optee *optee = ffa_dev_get_drvdata(ffa_dev);
-+	u32 bottom_half_id = optee->ffa.bottom_half_value;
- 
-+	if (bottom_half_id != U32_MAX)
-+		ffa_dev->ops->notifier_ops->notify_relinquish(ffa_dev,
-+							      bottom_half_id);
- 	optee_remove_common(optee);
- 
- 	mutex_destroy(&optee->ffa.mutex);
-@@ -784,9 +818,51 @@ static void optee_ffa_remove(struct ffa_device *ffa_dev)
- 	kfree(optee);
- }
- 
-+static int optee_ffa_async_notif_init(struct ffa_device *ffa_dev,
-+				      struct optee *optee)
-+{
-+	bool is_per_vcpu = false;
-+	u32 notif_id = 0;
-+	int rc;
-+
-+	while (true) {
-+		rc = ffa_dev->ops->notifier_ops->notify_request(ffa_dev,
-+								is_per_vcpu,
-+								notif_callback,
-+								optee,
-+								notif_id);
-+		if (!rc)
-+			break;
-+		/*
-+		 * -EACCES means that the notification ID was
-+		 * already bound, try the next one as long as we
-+		 * haven't reached the max. Any other error is a
-+		 * permanent error, so skip asynchronous
-+		 * notifications in that case.
-+		 */
-+		if (rc != -EACCES)
-+			return rc;
-+		notif_id++;
-+		if (notif_id >= OPTEE_FFA_MAX_ASYNC_NOTIF_VALUE)
-+			return rc;
-+	}
-+	optee->ffa.bottom_half_value = notif_id;
-+
-+	rc = enable_async_notif(optee);
-+	if (rc < 0) {
-+		ffa_dev->ops->notifier_ops->notify_relinquish(ffa_dev,
-+							      notif_id);
-+		optee->ffa.bottom_half_value = U32_MAX;
-+	}
-+
-+	return rc;
-+}
-+
- static int optee_ffa_probe(struct ffa_device *ffa_dev)
- {
-+	const struct ffa_notifier_ops *notif_ops;
- 	const struct ffa_ops *ffa_ops;
-+	unsigned int max_notif_value;
- 	unsigned int rpc_param_count;
- 	struct tee_shm_pool *pool;
- 	struct tee_device *teedev;
-@@ -797,12 +873,13 @@ static int optee_ffa_probe(struct ffa_device *ffa_dev)
- 	int rc;
- 
- 	ffa_ops = ffa_dev->ops;
-+	notif_ops = ffa_ops->notifier_ops;
- 
- 	if (!optee_ffa_api_is_compatbile(ffa_dev, ffa_ops))
- 		return -EINVAL;
- 
- 	if (!optee_ffa_exchange_caps(ffa_dev, ffa_ops, &sec_caps,
--				     &rpc_param_count))
-+				     &rpc_param_count, &max_notif_value))
- 		return -EINVAL;
- 	if (sec_caps & OPTEE_FFA_SEC_CAP_ARG_OFFSET)
- 		arg_cache_flags |= OPTEE_SHM_ARG_SHARED;
-@@ -820,6 +897,7 @@ static int optee_ffa_probe(struct ffa_device *ffa_dev)
- 
- 	optee->ops = &optee_ffa_ops;
- 	optee->ffa.ffa_dev = ffa_dev;
-+	optee->ffa.bottom_half_value = U32_MAX;
- 	optee->rpc_param_count = rpc_param_count;
- 
- 	teedev = tee_device_alloc(&optee_ffa_clnt_desc, NULL, optee->pool,
-@@ -864,6 +942,12 @@ static int optee_ffa_probe(struct ffa_device *ffa_dev)
- 	rc = optee_notif_init(optee, OPTEE_DEFAULT_MAX_NOTIF_VALUE);
- 	if (rc)
- 		goto err_close_ctx;
-+	if (sec_caps & OPTEE_FFA_SEC_CAP_ASYNC_NOTIF) {
-+		rc = optee_ffa_async_notif_init(ffa_dev, optee);
-+		if (rc < 0)
-+			pr_err("Failed to initialize async notifications: %d",
-+			       rc);
-+	}
- 
- 	rc = optee_enumerate_devices(PTA_CMD_GET_DEVICES);
- 	if (rc)
-@@ -874,6 +958,9 @@ static int optee_ffa_probe(struct ffa_device *ffa_dev)
- 
- err_unregister_devices:
- 	optee_unregister_devices();
-+	if (optee->ffa.bottom_half_value != U32_MAX)
-+		notif_ops->notify_relinquish(ffa_dev,
-+					     optee->ffa.bottom_half_value);
- 	optee_notif_uninit(optee);
- err_close_ctx:
- 	teedev_close_context(ctx);
-diff --git a/drivers/tee/optee/optee_ffa.h b/drivers/tee/optee/optee_ffa.h
-index 97266243deaa..5db779dc00de 100644
---- a/drivers/tee/optee/optee_ffa.h
-+++ b/drivers/tee/optee/optee_ffa.h
-@@ -1,6 +1,6 @@
- /* SPDX-License-Identifier: BSD-2-Clause */
- /*
-- * Copyright (c) 2019-2021, Linaro Limited
-+ * Copyright (c) 2019-2021, 2023 Linaro Limited
-  */
- 
- /*
-@@ -73,7 +73,7 @@
-  *
-  * Call register usage:
-  * w3:    Service ID, OPTEE_FFA_EXCHANGE_CAPABILITIES
-- * w4-w7: Note used (MBZ)
-+ * w4-w7: Not used (MBZ)
-  *
-  * Return register usage:
-  * w3:    Error code, 0 on success
-@@ -82,14 +82,16 @@
-  *                   OPTEE_FFA_YIELDING_CALL_WITH_ARG.
-  *        Bit[31:8]: Reserved (MBZ)
-  * w5:	  Bitfield of secure world capabilities OPTEE_FFA_SEC_CAP_* below,
-- *	  unused bits MBZ.
-- * w6-w7: Not used (MBZ)
-+ * w6:	  The maximum secure world notification number
-+ * w7:	  Not used (MBZ)
-  */
- /*
-  * Secure world supports giving an offset into the argument shared memory
-  * object, see also OPTEE_FFA_YIELDING_CALL_WITH_ARG
-  */
- #define OPTEE_FFA_SEC_CAP_ARG_OFFSET	BIT(0)
-+/* OP-TEE supports asynchronous notification via FF-A */
-+#define OPTEE_FFA_SEC_CAP_ASYNC_NOTIF	BIT(1)
- 
- #define OPTEE_FFA_EXCHANGE_CAPABILITIES OPTEE_FFA_BLOCKING_CALL(2)
- 
-@@ -108,6 +110,24 @@
-  */
- #define OPTEE_FFA_UNREGISTER_SHM	OPTEE_FFA_BLOCKING_CALL(3)
- 
-+/*
-+ * Inform OP-TEE that the normal world is able to receive asynchronous
-+ * notifications.
-+ *
-+ * Call register usage:
-+ * w3:    Service ID, OPTEE_FFA_ENABLE_ASYNC_NOTIF
-+ * w4:	  Notification value to request bottom half processing, should be
-+ *	  less than OPTEE_FFA_MAX_ASYNC_NOTIF_VALUE.
-+ * w5-w7: Not used (MBZ)
-+ *
-+ * Return register usage:
-+ * w3:    Error code, 0 on success
-+ * w4-w7: Note used (MBZ)
-+ */
-+#define OPTEE_FFA_ENABLE_ASYNC_NOTIF	OPTEE_FFA_BLOCKING_CALL(5)
-+
-+#define OPTEE_FFA_MAX_ASYNC_NOTIF_VALUE 64
-+
- /*
-  * Call with struct optee_msg_arg as argument in the supplied shared memory
-  * with a zero internal offset and normal cached memory attributes.
-diff --git a/drivers/tee/optee/optee_private.h b/drivers/tee/optee/optee_private.h
-index 2165bd11e6ac..91f4ec45e388 100644
---- a/drivers/tee/optee/optee_private.h
-+++ b/drivers/tee/optee/optee_private.h
-@@ -129,12 +129,14 @@ struct optee_smc {
-  * struct optee_ffa_data -  FFA communication struct
-  * @ffa_dev		FFA device, contains the destination id, the id of
-  *			OP-TEE in secure world
-- * @ffa_ops		FFA operations
-+ * @bottom_half_value	Notification ID used for bottom half signalling or
-+ *			U32_MAX if unused
-  * @mutex		Serializes access to @global_ids
-  * @global_ids		FF-A shared memory global handle translation
-  */
- struct optee_ffa {
- 	struct ffa_device *ffa_dev;
-+	u32 bottom_half_value;
- 	/* Serializes access to @global_ids */
- 	struct mutex mutex;
- 	struct rhashtable global_ids;
--- 
-2.34.1
+In wireless mode:
 
+Bus 001 Device 003: ID 05ac:024f Apple, Inc. Aluminium Keyboard (ANSI)
+Device Descriptor:
+  bLength                18
+  bDescriptorType         1
+  bcdUSB               1.10
+  bDeviceClass            0
+  bDeviceSubClass         0
+  bDeviceProtocol         0
+  bMaxPacketSize0         8
+  idVendor           0x05ac Apple, Inc.
+  idProduct          0x024f Aluminium Keyboard (ANSI)
+  bcdDevice            2.00
+  iManufacturer           0
+  iProduct                1 A3R-U
+
+And `dmesg` shows:
+
+[ 1779.692121] input: A3R-U as /devices/pci0000:00/0000:00:08.1/0000:06:00.3/usb1/1-2/1-2:1.0/0003:05AC:024F.0008/input/input35
+[ 1779.749037] apple 0003:05AC:024F.0008: input,hidraw2: USB HID v1.10 Keyboard [A3R-U] on usb-0000:06:00.3-2/input0
+
+In bluetooth mode, the iProduct is "A3R".
+
+Adding "A3R" to non-apple list makes keyboard to work in both wireless
+and bluetooth mode.
+
+Best wishes,
+
+Yihong Cao
+
+> > +	{ "A3R" },
+> >  };
+> >
+> >  static bool apple_is_non_apple_keyboard(struct hid_device *hdev)
+> 
+> --
+> Thanks,
+> 
+> Rahul Rameshbabu
+> 
