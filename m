@@ -2,134 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED8FD7E479F
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 18:54:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02EF57E47A2
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 18:54:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235117AbjKGRyL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 12:54:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36594 "EHLO
+        id S1343739AbjKGRyh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 12:54:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232544AbjKGRyK (ORCPT
+        with ESMTP id S230501AbjKGRyf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 12:54:10 -0500
-Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A427694
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 09:54:07 -0800 (PST)
-Received: by mail-qt1-x832.google.com with SMTP id d75a77b69052e-41c157bbd30so37472701cf.0
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 09:54:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1699379647; x=1699984447; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=FW0RbAVGUFb+xdBElnhNAHeQGgYiHAEYAyCOW53R3XU=;
-        b=NVYzjpB2o11B3HYLoQlgJY/f94KtpDWJKcf8D8LrVddPiy3cpoyKX3aNwiVcJjvP7X
-         0cIidQr+8Cz4ZQSDWLY8VGrxEOZgd45fZ+NsNoGvl1W+Ncq9bQbAY6ZoPDhsc3k1E0G2
-         rr7kFDpsJrddm+sVvebFAZo9fNQkbGD8JplKfablwxT+bCJovhorOL+wVr6a6pGenSpH
-         3jBloraUEFoVvCyyvufJM6nh4oCnMgbyHIHFznSwOaovnK3jzjivInedaYaHud9bLMvD
-         eprfEroTScPn5f6hgrlhLxLQv2XyUcRskwWKR4priuYcBVcfDkaJc5Ac8F2OIA+JWd21
-         Rc5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699379647; x=1699984447;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FW0RbAVGUFb+xdBElnhNAHeQGgYiHAEYAyCOW53R3XU=;
-        b=rKuYikl07BA9L6/MJBigFCrZIZf7AkSmuk10WIUdaGD1H2PpiraClHsjiKPkHZUfMQ
-         YA3k8exdDuZqUbkw3fsaP1QuiTtiy8lDy0PDcjXOQfQb+CApFvJyRm8ZY2JWENAvBx8B
-         8fKRxXMJHJJ7as1nUdfwWbCHTNjz0SznAEcS2EoCR0kCKOg1pppspNw9tdZWJJvWw21K
-         5pcIWx9qG77zccq7hleyvGaplgJKvPWcA3EQShdb9iyNDQeixl31noJVZBoe2mTv6hpu
-         RHEctcQXU2WtG/Ay+qJrbHPvbO9bbexCURpQaryZ8jF8e7k+SeMvanEKDkFsQZHz/1B9
-         L7BA==
-X-Gm-Message-State: AOJu0YxtWjXHgiPXdW+eh7lpT0pb7fmCnEnE4ojUGDkjLxJiM4bEnRho
-        mFatc03zs7odX7XHu9oBPD1kOg==
-X-Google-Smtp-Source: AGHT+IGQ+nRQt1M3ckW/OiQMHeS7z9x+pfYfws+XnYXuooXgVjVCkYIWxzYut+7AHyoqub3WHSQdKw==
-X-Received: by 2002:a05:622a:d2:b0:41c:e76e:87f8 with SMTP id p18-20020a05622a00d200b0041ce76e87f8mr38242554qtw.34.1699379646766;
-        Tue, 07 Nov 2023 09:54:06 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-68-26-201.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.26.201])
-        by smtp.gmail.com with ESMTPSA id a10-20020ac8720a000000b004181d77e08fsm107696qtp.85.2023.11.07.09.54.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Nov 2023 09:54:06 -0800 (PST)
-Received: from jgg by wakko with local (Exim 4.95)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1r0QH7-001YR3-Ob;
-        Tue, 07 Nov 2023 13:54:05 -0400
-Date:   Tue, 7 Nov 2023 13:54:05 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     "Tian, Kevin" <kevin.tian@intel.com>
-Cc:     Lu Baolu <baolu.lu@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Nicolin Chen <nicolinc@nvidia.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 0/6] IOMMUFD: Deliver IO page faults to user space
-Message-ID: <20231107175405.GD4634@ziepe.ca>
-References: <20231026024930.382898-1-baolu.lu@linux.intel.com>
- <20231102124742.GA4634@ziepe.ca>
- <BN9PR11MB5276B1582CED568795725C198CA9A@BN9PR11MB5276.namprd11.prod.outlook.com>
+        Tue, 7 Nov 2023 12:54:35 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC6C68F
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 09:54:33 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94251C433C8;
+        Tue,  7 Nov 2023 17:54:31 +0000 (UTC)
+Date:   Tue, 7 Nov 2023 12:54:34 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        linux-kernel@vger.kernel.org,
+        Luca Abeni <luca.abeni@santannapisa.it>,
+        Tommaso Cucinotta <tommaso.cucinotta@santannapisa.it>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vineeth Pillai <vineeth@bitbyteword.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Phil Auld <pauld@redhat.com>
+Subject: Re: [PATCH v5 6/7] sched/deadline: Deferrable dl server
+Message-ID: <20231107125434.284c44da@gandalf.local.home>
+In-Reply-To: <20231107123540.69038c6c@gandalf.local.home>
+References: <cover.1699095159.git.bristot@kernel.org>
+        <c7b706d30d6316c52853ca056db5beb82ba72863.1699095159.git.bristot@kernel.org>
+        <CAEXW_YS=PrWDx+YGVR7bmq0_SoKNztzGrreApCd9qk1yBLA5bA@mail.gmail.com>
+        <CAEXW_YQ8kv3tXQJexLSguPuWi0bXiReKDyYNo9+A-Hgp=Zo1vA@mail.gmail.com>
+        <CAEXW_YSjsZSrJK_RbGmbLNy4UrLCgu+7NPZjg-wiLuNbGOGr+w@mail.gmail.com>
+        <20231107114732.5dd350ec@gandalf.local.home>
+        <20231107123540.69038c6c@gandalf.local.home>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <BN9PR11MB5276B1582CED568795725C198CA9A@BN9PR11MB5276.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 07, 2023 at 08:35:10AM +0000, Tian, Kevin wrote:
-> > From: Jason Gunthorpe <jgg@ziepe.ca>
-> > Sent: Thursday, November 2, 2023 8:48 PM
-> >
-> > On Thu, Oct 26, 2023 at 10:49:24AM +0800, Lu Baolu wrote:
-> > > Hi folks,
-> > >
-> > > This series implements the functionality of delivering IO page faults to
-> > > user space through the IOMMUFD framework for nested translation.
-> > Nested
-> > > translation is a hardware feature that supports two-stage translation
-> > > tables for IOMMU. The second-stage translation table is managed by the
-> > > host VMM, while the first-stage translation table is owned by user
-> > > space. This allows user space to control the IOMMU mappings for its
-> > > devices.
-> > 
-> > Having now looked more closely at the ARM requirements it seems we
-> > will need generic events, not just page fault events to have a
-> > complete emulation.
-> 
-> Can you elaborate?
 
-There are many events related to object in guest memory or controlled
-by the guest, eg C_BAD_CD and C_BAD_STE. These should be relayed or
-the emulation is not working well.
+What's more interesting, when looking at the userspin task, I see a lot of this:
 
-> > > User space indicates its capability of handling IO page faults by
-> > > setting the IOMMU_HWPT_ALLOC_IOPF_CAPABLE flag when allocating a
-> > > hardware page table (HWPT). IOMMUFD will then set up its infrastructure
-> > > for page fault delivery. On a successful return of HWPT allocation, the
-> > > user can retrieve and respond to page faults by reading and writing to
-> > > the file descriptor (FD) returned in out_fault_fd.
-> > 
-> > This is the right way to approach it, and more broadly this shouldn't
-> > be an iommufd specific thing. Kernel drivers will also need to create
-> > fault capable PAGING iommu domains.
-> 
-> Are you suggesting a common interface used by both iommufd and
-> kernel drivers?
+         migrate-1153  [003]  1272.988097: sched_switch:         migrate:1153 [90] S ==> userspin:1135 [120]
+        userspin-1135  [003]  1272.988111: sched_switch:         userspin:1135 [120] R ==> migrate:1146 [97]
 
-Yes
- 
-> but I didn't get the last piece. If those domains are created by kernel
-> drivers why would they require a uAPI for userspace to specify fault
-> capable?
+userspin sneaks in for 14 microseconds
 
-Not to userspace, but a kapi to request a fault capable domain and to
-supply the fault handler. Eg:
+         migrate-1146  [003]  1272.988141: sched_switch:         migrate:1146 [97] R ==> migrate:1159 [84]
+         migrate-1159  [003]  1272.988159: print:                tracing_mark_write: thread 13 iter 15, took lock 15020 in 140726333419648 us
+         migrate-1159  [003]  1272.992161: print:                tracing_mark_write: thread 13 iter 15, unlock lock 6
+         migrate-1159  [003]  1272.992169: print:                tracing_mark_write: thread 13 iter 15 sleeping
+         migrate-1159  [003]  1272.992177: sched_switch:         migrate:1159 [84] S ==> userspin:1135 [120]
+        userspin-1135  [003]  1272.992190: sched_switch:         userspin:1135 [120] R ==> migrate:1150 [93]
 
- iommu_domain_alloc_faultable(dev, handler);
+Again for 13 microseconds.
 
-Jason
+         migrate-1150  [003]  1272.995118: sched_switch:         migrate:1150 [93] R ==> migrate:1153 [90]
+         migrate-1153  [003]  1272.995129: print:                tracing_mark_write: thread 7 iter 15, taking lock 5
+         migrate-1153  [003]  1272.995164: print:                tracing_mark_write: thread 7 iter 15, took lock 32 in 140726333419648 us
+         migrate-1153  [003]  1273.005166: print:                tracing_mark_write: thread 7 iter 15, unlock lock 5
+         migrate-1153  [003]  1273.005174: print:                tracing_mark_write: thread 7 iter 15 sleeping
+         migrate-1153  [003]  1273.005183: sched_switch:         migrate:1153 [90] S ==> userspin:1135 [120]
+        userspin-1135  [003]  1273.005204: sched_switch:         userspin:1135 [120] R ==> migrate:1159 [84]
+
+For 21 microseconds.
+
+         migrate-1159  [003]  1273.005216: print:                tracing_mark_write: thread 13 iter 15, taking lock 7
+         migrate-1159  [003]  1273.005271: print:                tracing_mark_write: thread 13 iter 15, took lock 53 in 140726333419648 us
+         migrate-1159  [003]  1273.009273: print:                tracing_mark_write: thread 13 iter 15, unlock lock 7
+         migrate-1159  [003]  1273.009281: print:                tracing_mark_write: thread 13 iter 15 sleeping
+         migrate-1159  [003]  1273.009289: sched_switch:         migrate:1159 [84] S ==> userspin:1135 [120]
+        userspin-1135  [003]  1273.009301: sched_switch:         userspin:1135 [120] R ==> migrate:1147 [96]
+
+12 microseconds
+
+         migrate-1147  [003]  1273.012205: sched_switch:         migrate:1147 [96] R ==> migrate:1153 [90]
+         migrate-1153  [003]  1273.012217: print:                tracing_mark_write: thread 7 iter 15, taking lock 6
+         migrate-1153  [003]  1273.012228: sched_switch:         migrate:1153 [90] S ==> userspin:1135 [120]
+        userspin-1135  [003]  1273.012242: sched_switch:         userspin:1135 [120] R ==> migrate:1146 [97]
+         migrate-1146  [003]  1273.014251: sched_switch:         migrate:1146 [97] R ==> migrate:1148 [95]
+
+2 milliseconds. (which is probably fine).
+
+         migrate-1148  [003]  1273.020300: print:                tracing_mark_write: thread 2 iter 14, unlock lock 2
+         migrate-1148  [003]  1273.020302: print:                tracing_mark_write: thread 2 iter 14 sleeping
+         migrate-1148  [003]  1273.020309: sched_switch:         migrate:1148 [95] S ==> userspin:1135 [120]
+        userspin-1135  [003]  1273.020324: sched_switch:         userspin:1135 [120] R ==> migrate:1147 [96]
+
+15 microseconds.
+
+         migrate-1147  [003]  1273.020360: print:                tracing_mark_write: thread 1 iter 14, unlock lock 1
+         migrate-1147  [003]  1273.020373: print:                tracing_mark_write: thread 1 iter 14 sleeping
+         migrate-1147  [003]  1273.020381: sched_switch:         migrate:1147 [96] S ==> userspin:1135 [120]
+        userspin-1135  [003]  1273.021397: sched_switch:         userspin:1135 [120] R ==> migrate:1147 [96]
+
+1 millisecond.
+
+         migrate-1147  [003]  1273.021402: print:                tracing_mark_write: thread 1 iter 14, taking lock 2
+         migrate-1147  [003]  1273.021404: print:                tracing_mark_write: thread 1 iter 14, took lock 1 in 140726333419648 us
+         migrate-1147  [003]  1273.022200: sched_switch:         migrate:1147 [96] R ==> migrate:1152 [91]
+         migrate-1152  [003]  1273.022206: print:                tracing_mark_write: thread 6 iter 15, taking lock 6
+         migrate-1152  [003]  1273.022217: sched_switch:         migrate:1152 [91] S ==> migrate:1147 [96]
+         migrate-1147  [003]  1273.022289: sched_switch:         migrate:1147 [96] R ==> migrate:1159 [84]
+         migrate-1159  [003]  1273.022299: print:                tracing_mark_write: thread 13 iter 16, taking lock 0
+         migrate-1159  [003]  1273.022326: print:                tracing_mark_write: thread 13 iter 16, took lock 25 in 140726333419648 us
+         migrate-1159  [003]  1273.026328: print:                tracing_mark_write: thread 13 iter 16, unlock lock 0
+         migrate-1159  [003]  1273.026337: print:                tracing_mark_write: thread 13 iter 16 sleeping
+         migrate-1159  [003]  1273.026346: sched_switch:         migrate:1159 [84] S ==> userspin:1135 [120]
+        userspin-1135  [003]  1273.026359: sched_switch:         userspin:1135 [120] R ==> migrate:1146 [97]
+
+13 microseconds, and so on...
+
+         migrate-1146  [003]  1273.027170: sched_switch:         migrate:1146 [97] R ==> migrate:1149 [94]
+         migrate-1149  [003]  1273.027189: print:                tracing_mark_write: thread 3 iter 14, took lock 1927 in 140726333419648 us
+         migrate-1149  [003]  1273.027335: sched_switch:         migrate:1149 [94] R ==> migrate:1153 [90]
+         migrate-1153  [003]  1273.027349: print:                tracing_mark_write: thread 7 iter 15, took lock 15130 in 140726333419648 us
+         migrate-1153  [003]  1273.037352: print:                tracing_mark_write: thread 7 iter 15, unlock lock 6
+         migrate-1153  [003]  1273.037362: print:                tracing_mark_write: thread 7 iter 15 sleeping
+         migrate-1153  [003]  1273.037370: sched_switch:         migrate:1153 [90] S ==> userspin:1135 [120]
+        userspin-1135  [003]  1273.037395: sched_switch:         userspin:1135 [120] R ==> migrate:1147 [96]
+         migrate-1147  [003]  1273.037406: print:                tracing_mark_write: thread 1 iter 14, unlock lock 2
+         migrate-1147  [003]  1273.037408: print:                tracing_mark_write: thread 1 iter 14 sleeping
+         migrate-1147  [003]  1273.037414: sched_switch:         migrate:1147 [96] S ==> userspin:1135 [120]
+        userspin-1135  [003]  1273.038428: sched_switch:         userspin:1135 [120] R ==> migrate:1147 [96]
+
+
+It looks like it sneaks in when it's about to schedule a new RT task.
+
+Is this expected?
+
+-- Steve
