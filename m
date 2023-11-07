@@ -2,118 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F0E37E4973
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 20:55:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49DB67E4979
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 20:56:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234501AbjKGTzp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 14:55:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33972 "EHLO
+        id S234791AbjKGT4h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 14:56:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229737AbjKGTzn (ORCPT
+        with ESMTP id S229737AbjKGT4f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 14:55:43 -0500
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6425BD7A
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 11:55:41 -0800 (PST)
-Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1cc5b6d6228so41116115ad.2
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 11:55:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1699386941; x=1699991741; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=HNeFqgo6zpROkihy0ShoA85fAr1c1+bU52BjgzWcK1o=;
-        b=Yx/c11xV+iyISUNC4tjBoSSI8tDR682FVRusZqHd8SLKwKdyfBTM8w5vQkcXgknLJ5
-         jAgQELvmzCuVCKasvH6kMnPtHvprVKl7yqS82mCfrB/C94OMNdAzRAu1PvRDjHy91cqI
-         QScGcCYchxw00U+ge59I8ZKuiL3/85122I5rI=
+        Tue, 7 Nov 2023 14:56:35 -0500
+Received: from mail-oo1-f44.google.com (mail-oo1-f44.google.com [209.85.161.44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44715184;
+        Tue,  7 Nov 2023 11:56:33 -0800 (PST)
+Received: by mail-oo1-f44.google.com with SMTP id 006d021491bc7-5841a3ffd50so1273597eaf.1;
+        Tue, 07 Nov 2023 11:56:33 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699386941; x=1699991741;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HNeFqgo6zpROkihy0ShoA85fAr1c1+bU52BjgzWcK1o=;
-        b=NSVbmLLwCR+oMnieIi7v9sb74rX35lpIfJmTmtH/aRpaaHKdbZcwd2xcf/XqzrxKxU
-         svA14sw58892Ap7HoRxurB6X2NroQ+BJ4OC+q1M+Sa5kjPX/3YygtK/WkSrFpXHZYxLR
-         z4AIYwkdSj49YC1t9XTcNNWE7w3/idOz4ZcQGkKuI/BDdZjynYjRKNYEG8V0dQohTmoq
-         K90Jxxs9ldtnxHywsbAfY4E5BaBf6PRvx40dcwJxbQ8lsVOeF2Fl/NiAc9E7xoV2QG9T
-         UALqRI0lWrYNt/KlZ1m0G1ywHsL+Z+2RFNZSwrGF57dz+pnrQ84q/Ikp5TatV6sVw9Y9
-         r1NA==
-X-Gm-Message-State: AOJu0YxudEsMA7tt13mvRKVu+rzEIoofaT8cfQBnlBgx7TFi2IHHxuaL
-        PfYybIXfhP7TtEhQbXWlDBCfVg==
-X-Google-Smtp-Source: AGHT+IEZgybC45XGlQUGbU637Xhd/YQognaCWgtAXzdYdCdXOmVngLWoQt1kbfTCkOpNfx5sZXCftA==
-X-Received: by 2002:a17:903:2282:b0:1cc:ee07:1654 with SMTP id b2-20020a170903228200b001ccee071654mr35008plh.14.1699386940686;
-        Tue, 07 Nov 2023 11:55:40 -0800 (PST)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id jw24-20020a170903279800b001cc3a8af18dsm209511plb.60.2023.11.07.11.55.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Nov 2023 11:55:39 -0800 (PST)
-Date:   Tue, 7 Nov 2023 11:55:38 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     j.granados@samsung.com
-Cc:     Luis Chamberlain <mcgrof@kernel.org>, willy@infradead.org,
-        josh@joshtriplett.org, Eric Biederman <ebiederm@xmission.com>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        John Stultz <jstultz@google.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Petr Mladek <pmladek@suse.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        linux-kernel@vger.kernel.org, kexec@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH 05/10] seccomp: Remove the now superfluous sentinel
- elements from ctl_table array
-Message-ID: <202311071155.EE9C0FBF@keescook>
-References: <20231107-jag-sysctl_remove_empty_elem_kernel-v1-0-e4ce1388dfa0@samsung.com>
- <20231107-jag-sysctl_remove_empty_elem_kernel-v1-5-e4ce1388dfa0@samsung.com>
+        d=1e100.net; s=20230601; t=1699386992; x=1699991792;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=L+67Fow4SDoQzTb3iQORdk0PeLGfng3C8Clxn36Up9o=;
+        b=PG9z78NyRpp1mjPvogIp1npJwj5XP7QWC3WVAeYq84StHmqpffwImj5DVo34D7b+Ci
+         8kV/7S5FgEplZcUkmtPEZktUKN2UyjvPrUoXB3dKKW4l6Ag5WB4t+R82p+ETzMztmTm1
+         dMQ+mXOAo067jto0JGTLpcuxcgHGdwuTDzrAmFLH60wrBVVF4Un3/R6HmfiUXXb5AKKz
+         Kb8xdkifbyc8A4tUsVOmiCNX+ZuBu4VEGMLC8rJqg6+OtcCUmLMBPCwH5Ol0HwfnJy6O
+         p2rn+RphzCJbYCHs1LwYZFuTuaVNl0NG1IupNn9mNDc9pPyQb2Nq/8xBZIZu0YHGmg+j
+         ZUpQ==
+X-Gm-Message-State: AOJu0YytX1tg6t8FMiOjouybOK9N8BupGpupWWWAVL0tnL768II23m6L
+        6yqY/PFze0ChYG6PcxAOPx52oRZCBIfXccpbcVAj4RqbqNY=
+X-Google-Smtp-Source: AGHT+IFDHEbdEEGZPP3XT78f8ZjPsc9hJlOtuXXAeyPrcJoYDnp3iBYWM3w3bcg/LScm10toBmXkTour9Cx2afeM3vQ=
+X-Received: by 2002:a05:6808:30a:b0:3b2:9c2f:50e0 with SMTP id
+ i10-20020a056808030a00b003b29c2f50e0mr29973171oie.5.1699386991944; Tue, 07
+ Nov 2023 11:56:31 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231107-jag-sysctl_remove_empty_elem_kernel-v1-5-e4ce1388dfa0@samsung.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 7 Nov 2023 20:56:20 +0100
+Message-ID: <CAJZ5v0gggsvrHYyOJn3g3Wd3M8vpG0sPdcWO8k7hDx4_wsq5cQ@mail.gmail.com>
+Subject: [GIT PULL] More power management updates for v6.7-rc1
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 07, 2023 at 02:45:05PM +0100, Joel Granados via B4 Relay wrote:
-> From: Joel Granados <j.granados@samsung.com>
-> 
-> This commit comes at the tail end of a greater effort to remove the
-> empty elements at the end of the ctl_table arrays (sentinels) which
-> will reduce the overall build time size of the kernel and run time
-> memory bloat by ~64 bytes per sentinel (further information Link :
-> https://lore.kernel.org/all/ZO5Yx5JFogGi%2FcBo@bombadil.infradead.org/)
-> 
-> Remove sentinel element from seccomp_sysctl_table.
-> 
-> Signed-off-by: Joel Granados <j.granados@samsung.com>
+Hi Linus,
 
-Acked-by: Kees Cook <keescook@chromium.org>
+Please pull from the tag
 
--- 
-Kees Cook
+ git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
+ pm-6.7-rc1-2
+
+with top-most commit 36cbb924d60bf2f1f684b3739edc61cba8350160
+
+ Merge branch 'pm-tools'
+
+on top of commit 3062a9879afbca810d9f1613698963ecfcb35701
+
+ Merge tag 'acpi-6.7-rc1-2' of
+git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm
+
+to receive more power management updates for 6.7-rc1.
+
+These add new hardware support to a cpufreq driver and fix cpupower
+utility documentation:
+
+ - Add support for several Qualcomm SoC versions to the Qualcomm cpufreq
+   driver (Robert Marko, Varadarajan Narayanan).
+
+ - Fix a reference to a removed document in the cpupower utility
+   documentation (Vegard Nossum).
+
+Thanks!
+
+
+---------------
+
+Robert Marko (1):
+      cpufreq: qcom-nvmem: add support for IPQ8074
+
+Varadarajan Narayanan (2):
+      cpufreq: qcom-nvmem: Enable cpufreq for ipq53xx
+      cpufreq: qcom-nvmem: Introduce cpufreq for ipq95xx
+
+Vegard Nossum (1):
+      cpupower: fix reference to nonexistent document
+
+---------------
+
+ drivers/cpufreq/cpufreq-dt-platdev.c              |  3 ++
+ drivers/cpufreq/qcom-cpufreq-nvmem.c              | 60 +++++++++++++++++++++++
+ tools/power/cpupower/man/cpupower-powercap-info.1 |  2 +-
+ 3 files changed, 64 insertions(+), 1 deletion(-)
