@@ -2,46 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 476EC7E3B04
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 12:22:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2004E7E3B06
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 12:22:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233796AbjKGLWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 06:22:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39858 "EHLO
+        id S234287AbjKGLWZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 06:22:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234313AbjKGLWR (ORCPT
+        with ESMTP id S234303AbjKGLWR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 7 Nov 2023 06:22:17 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBB6CD76;
-        Tue,  7 Nov 2023 03:22:08 -0800 (PST)
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 558AB10C6;
+        Tue,  7 Nov 2023 03:22:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699356129; x=1730892129;
+  t=1699356130; x=1730892130;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=GYJFMseSRujrlOpQy9nErngkfh/08yp/LL0rLTrMXX8=;
-  b=Nw+Auw9gW2dGUUuus6TzEmtVT8l/3GXveBXhiRhoLAtHh+IXAkclLPfz
-   +6hRXbTATk3oDndL5/ldf5mMWC2tdSWR0DxXMqufC4LY6+VZBHm7HtIAQ
-   C1V8JYB+KRGB3k7n+DE+oi2BpdKB7bfQoHB9qZ66Gqwsd6hE2yMABCe1C
-   Q2EDV/2YFUGsuH/SFnMhHBjJ5VDESHDxKvpJjhPpMjqVQVjoyYfK8pbXc
-   2lpiJR5g22cjxTQ9SX3t33Dl0Zs5ALdEZGz6oyi1OGt2dTXsc+xkdwN3r
-   Ll0qlsn8yBW1577igwQxLba2YQ0Q7Tcuf+MKbd/7sSNK5PssqIa+k3JFk
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10886"; a="393382961"
+  bh=bvsXSr+H0OXz+tRvroL/Z/VRfDIrygnvWqBJ8snWfQQ=;
+  b=TMO5VeKSiwfifm1LlFGCxbLJUJzYbl/zuapI0R+rT3VyInrGwS3bzkox
+   vLr40PwlQ2wFD3BuxEgX6pXRScVG85zMISeqo6ubjNG2nWqcmjruchYND
+   ygaJCkbS2w+V/QXP6aUUpCK+QpAL/F9dyIcHbD3H5f9zk/LvVBt2NxdD/
+   JHQ4dzUJevjnw67Xn0GCpIEYyQzZd9qZy451TtBGCaTdLHRQyewxqWVLS
+   uursO/m2ZcMM1Zw2ql6J4VTgd448DMrEkNR8bVZtDMtOfovG28bsuybIP
+   XdqHkKRGjmJfzHti8AC+A5ooJNI21ykwSZgpq7e1cQDi+noE8RwcXeXYc
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10886"; a="475727154"
 X-IronPort-AV: E=Sophos;i="6.03,283,1694761200"; 
-   d="scan'208";a="393382961"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2023 03:22:07 -0800
+   d="scan'208";a="475727154"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2023 03:22:09 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10886"; a="766285598"
+X-IronPort-AV: E=McAfee;i="6600,9927,10886"; a="828579830"
 X-IronPort-AV: E=Sophos;i="6.03,283,1694761200"; 
-   d="scan'208";a="766285598"
+   d="scan'208";a="828579830"
 Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga007.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2023 03:22:06 -0800
+  by fmsmga008.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2023 03:22:09 -0800
 Received: from mohdfai2-iLBPG12-1.png.intel.com (mohdfai2-iLBPG12-1.png.intel.com [10.88.227.73])
-        by linux.intel.com (Postfix) with ESMTP id DC3CA580D42;
-        Tue,  7 Nov 2023 03:22:03 -0800 (PST)
+        by linux.intel.com (Postfix) with ESMTP id D5251580DC7;
+        Tue,  7 Nov 2023 03:22:06 -0800 (PST)
 From:   Faizal Rahim <faizal.abdul.rahim@linux.intel.com>
 To:     Vladimir Oltean <vladimir.oltean@nxp.com>,
         Vinicius Costa Gomes <vinicius.gomes@intel.com>,
@@ -53,165 +53,88 @@ To:     Vladimir Oltean <vladimir.oltean@nxp.com>,
         Jakub Kicinski <kuba@kernel.org>,
         Paolo Abeni <pabeni@redhat.com>
 Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 net 4/7] net/sched: taprio: get corrected value of cycle_time and interval
-Date:   Tue,  7 Nov 2023 06:20:20 -0500
-Message-Id: <20231107112023.676016-5-faizal.abdul.rahim@linux.intel.com>
+Subject: [PATCH v2 net 5/7] net/sched: taprio: fix delayed switching to new schedule after timer expiry
+Date:   Tue,  7 Nov 2023 06:20:21 -0500
+Message-Id: <20231107112023.676016-6-faizal.abdul.rahim@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20231107112023.676016-1-faizal.abdul.rahim@linux.intel.com>
 References: <20231107112023.676016-1-faizal.abdul.rahim@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Retrieve adjusted cycle_time and interval values through new APIs.
-Note that in some cases where the original values are required,
-such as in dump_schedule() and setup_first_end_time(), direct calls
-to cycle_time and interval are retained without using the new APIs.
+If a new GCL is triggered and the new admin base time falls before the
+expiry of advance_timer (current running entry from oper),
+taprio_start_sched() resets the current advance_timer expiry to the
+new admin base time. However, upon expiry, advance_sched() doesn't
+immediately switch to the admin schedule. It continues running entries
+from the old oper schedule, and only switches to the new admin schedule
+much later. Ideally, if the advance_timer is shorten to align with the
+new admin base time, when the timer expires, advance_sched() should
+trigger switch_schedules() at the beginning.
 
-Added a new field, correction_active, in the sched_entry struct to
-determine the entry's correction state. This field is required due
-to specific flow like find_entry_to_transmit() -> get_interval_end_time()
-which retrieves the interval for each entry. During positive cycle
-time correction, it's known that the last entry interval requires
-correction. However, for negative correction, the affected entry
-is unknown, which is why this new field is necessary.
+To resolve this issue, set the cycle_time_correction to a non-initialized
+value in taprio_start_sched(). advance_sched() will use it to initiate
+switch_schedules() at the beginning.
 
+Fixes: a3d43c0d56f1 ("taprio: Add support adding an admin schedule")
 Signed-off-by: Faizal Rahim <faizal.abdul.rahim@linux.intel.com>
 ---
- net/sched/sch_taprio.c | 50 ++++++++++++++++++++++++++++++------------
- 1 file changed, 36 insertions(+), 14 deletions(-)
+ net/sched/sch_taprio.c | 21 ++++++++++++++++++---
+ 1 file changed, 18 insertions(+), 3 deletions(-)
 
 diff --git a/net/sched/sch_taprio.c b/net/sched/sch_taprio.c
-index 119dec3bbe88..f18a5fe12f0c 100644
+index f18a5fe12f0c..01b114edec30 100644
 --- a/net/sched/sch_taprio.c
 +++ b/net/sched/sch_taprio.c
-@@ -61,6 +61,7 @@ struct sched_entry {
- 	u32 gate_mask;
- 	u32 interval;
- 	u8 command;
-+	bool correction_active;
- };
- 
- struct sched_gate_list {
-@@ -215,6 +216,31 @@ static void switch_schedules(struct taprio_sched *q,
- 	*admin = NULL;
+@@ -1379,14 +1379,19 @@ static void setup_first_end_time(struct taprio_sched *q,
  }
  
-+static bool cycle_corr_active(s64 cycle_time_correction)
-+{
-+	if (cycle_time_correction == INIT_CYCLE_TIME_CORRECTION)
-+		return false;
-+	else
-+		return true;
-+}
-+
-+u32 get_interval(const struct sched_entry *entry,
-+		 const struct sched_gate_list *oper)
-+{
-+	if (entry->correction_active)
-+		return entry->interval + oper->cycle_time_correction;
-+	else
-+		return entry->interval;
-+}
-+
-+s64 get_cycle_time(const struct sched_gate_list *oper)
-+{
-+	if (cycle_corr_active(oper->cycle_time_correction))
-+		return oper->cycle_time + oper->cycle_time_correction;
-+	else
-+		return oper->cycle_time;
-+}
-+
- /* Get how much time has been already elapsed in the current cycle. */
- static s32 get_cycle_time_elapsed(struct sched_gate_list *sched, ktime_t time)
+ static void taprio_start_sched(struct Qdisc *sch,
+-			       ktime_t start, struct sched_gate_list *new)
++			       ktime_t new_base_time,
++			       struct sched_gate_list *new)
  {
-@@ -222,7 +248,7 @@ static s32 get_cycle_time_elapsed(struct sched_gate_list *sched, ktime_t time)
- 	s32 time_elapsed;
+ 	struct taprio_sched *q = qdisc_priv(sch);
+-	ktime_t expires;
++	struct sched_gate_list *oper = NULL;
++	ktime_t expires, start;
  
- 	time_since_sched_start = ktime_sub(time, sched->base_time);
--	div_s64_rem(time_since_sched_start, sched->cycle_time, &time_elapsed);
-+	div_s64_rem(time_since_sched_start, get_cycle_time(sched), &time_elapsed);
+ 	if (FULL_OFFLOAD_IS_ENABLED(q->flags))
+ 		return;
  
- 	return time_elapsed;
- }
-@@ -235,8 +261,9 @@ static ktime_t get_interval_end_time(struct sched_gate_list *sched,
- 	s32 cycle_elapsed = get_cycle_time_elapsed(sched, intv_start);
- 	ktime_t intv_end, cycle_ext_end, cycle_end;
++	oper = rcu_dereference_protected(q->oper_sched,
++					 lockdep_is_held(&q->current_entry_lock));
++
+ 	expires = hrtimer_get_expires(&q->advance_timer);
+ 	if (expires == 0)
+ 		expires = KTIME_MAX;
+@@ -1395,7 +1400,17 @@ static void taprio_start_sched(struct Qdisc *sch,
+ 	 * reprogram it to the earliest one, so we change the admin
+ 	 * schedule to the operational one at the right time.
+ 	 */
+-	start = min_t(ktime_t, start, expires);
++	start = min_t(ktime_t, new_base_time, expires);
++
++	if (expires != KTIME_MAX &&
++	    ktime_compare(start, new_base_time) == 0) {
++		/* Since timer was changed to align to the new admin schedule,
++		 * setting the variable below to a non-initialized value will
++		 * indicate to advance_sched() to call switch_schedules() after
++		 * this timer expires.
++		 */
++		oper->cycle_time_correction = 0;
++	}
  
--	cycle_end = ktime_add_ns(intv_start, sched->cycle_time - cycle_elapsed);
--	intv_end = ktime_add_ns(intv_start, entry->interval);
-+	cycle_end = ktime_add_ns(intv_start,
-+				 get_cycle_time(sched) - cycle_elapsed);
-+	intv_end = ktime_add_ns(intv_start, get_interval(entry, sched));
- 	cycle_ext_end = ktime_add(cycle_end, sched->cycle_time_extension);
- 
- 	if (ktime_before(intv_end, cycle_end))
-@@ -259,14 +286,6 @@ static int duration_to_length(struct taprio_sched *q, u64 duration)
- 	return div_u64(duration * PSEC_PER_NSEC, atomic64_read(&q->picos_per_byte));
- }
- 
--static bool cycle_corr_active(s64 cycle_time_correction)
--{
--	if (cycle_time_correction == INIT_CYCLE_TIME_CORRECTION)
--		return false;
--	else
--		return true;
--}
--
- /* Sets sched->max_sdu[] and sched->max_frm_len[] to the minimum between the
-  * q->max_sdu[] requested by the user and the max_sdu dynamically determined by
-  * the maximum open gate durations at the given link speed.
-@@ -351,7 +370,7 @@ static struct sched_entry *find_entry_to_transmit(struct sk_buff *skb,
- 	if (!sched)
- 		return NULL;
- 
--	cycle = sched->cycle_time;
-+	cycle = get_cycle_time(sched);
- 	cycle_elapsed = get_cycle_time_elapsed(sched, time);
- 	curr_intv_end = ktime_sub_ns(time, cycle_elapsed);
- 	cycle_end = ktime_add_ns(curr_intv_end, cycle);
-@@ -365,7 +384,7 @@ static struct sched_entry *find_entry_to_transmit(struct sk_buff *skb,
- 			break;
- 
- 		if (!(entry->gate_mask & BIT(tc)) ||
--		    packet_transmit_time > entry->interval)
-+		    packet_transmit_time > get_interval(entry, sched))
- 			continue;
- 
- 		txtime = entry->next_txtime;
-@@ -543,7 +562,8 @@ static long get_packet_txtime(struct sk_buff *skb, struct Qdisc *sch)
- 		 * interval starts.
- 		 */
- 		if (ktime_after(transmit_end_time, interval_end))
--			entry->next_txtime = ktime_add(interval_start, sched->cycle_time);
-+			entry->next_txtime =
-+				ktime_add(interval_start, get_cycle_time(sched));
- 	} while (sched_changed || ktime_after(transmit_end_time, interval_end));
- 
- 	entry->next_txtime = transmit_end_time;
-@@ -1045,6 +1065,7 @@ static enum hrtimer_restart advance_sched(struct hrtimer *timer)
- 
- 			oper->cycle_end_time = new_base_time;
- 			end_time = new_base_time;
-+			next->correction_active = true;
- 
- 			update_open_gate_duration(next, oper, num_tc,
- 						  new_gate_duration);
-@@ -1146,6 +1167,7 @@ static int fill_sched_entry(struct taprio_sched *q, struct nlattr **tb,
- 	}
- 
- 	entry->interval = interval;
-+	entry->correction_active = false;
- 
- 	return 0;
+ 	hrtimer_start(&q->advance_timer, start, HRTIMER_MODE_ABS);
  }
 -- 
 2.25.1
