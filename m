@@ -2,43 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B9D9E7E3C8C
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 13:17:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D59047E3C8D
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 13:17:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234711AbjKGMRd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 07:17:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38494 "EHLO
+        id S233882AbjKGMRh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 07:17:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234620AbjKGMQy (ORCPT
+        with ESMTP id S234276AbjKGMQz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 07:16:54 -0500
+        Tue, 7 Nov 2023 07:16:55 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19DE42D7F;
-        Tue,  7 Nov 2023 04:12:15 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70873C433CA;
-        Tue,  7 Nov 2023 12:12:13 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58C9846B3;
+        Tue,  7 Nov 2023 04:12:16 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 213EEC43395;
+        Tue,  7 Nov 2023 12:12:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699359134;
-        bh=nWhG2E+mi+dHrDH1P3PZFl5jlohnhwTU3pTqF65MXlI=;
+        s=k20201202; t=1699359136;
+        bh=TtWCg/eP5F31DlPLAlF2GSU1qVOUUjLiPvLmgJtHgMI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=N79kvBsdfvI85/Nb1vCFtQG0/U/7+3ACzSffZePvcVowjifN4eRobFUGwJZB7Oa+s
-         cO+bENB9+J/CKwA6zyzzK6WsVVTYw+fwuJD8G74u1GqPtjoAgnidhv5KWE0mxRhSPS
-         Q9FUUtj674wCIfor/GfENG4uwmgtFSSJXtu1VSCwnND2UohCMFV5UmqnIffLpMv7qX
-         ZaXfshdXem31tUGkbjS6PhGclZlySG765+tyklzlxMPyg8veTmi8FtAn2jW7stZ4EX
-         tTjm1V85t2g/WzA5lD2HIOp1khTEo3HLF8UfdKT+WDP8ChWZ6yvDBZ5R9yB0fwzeFW
-         w1Ooh1TxZ2gbw==
+        b=qNoWaw46Dv2XYPy5XO4E0DKWUL6GXx5S+tB/4srBU2edunhTsMS6/NIQFVOKGWC3t
+         GoZHvbkZ9u0AdJSkyQjDsV1woq9eA/zEQrnj3+otcXCWhgQ0UotS1ilGDkjWAqP+BP
+         aFvlq8b+cT7TQCv3de9N32+paHxfq0m72R3jt/H06j9gw4lBTxyZZFxjpbd68Zcbou
+         C0Ey94MmoD6bIF2aNVUi0LLSUWQlvCg3A1vzESIIpeJaUWQsSYStjoxq5ThuhHoJuF
+         GQ0nJPZC4OlsnuVsd4tF9ka6d+N+IPUyPXH8zaFOEpcvuI0Uxj0qO6fRsBV+vNjClD
+         2m0+kfyedRRxg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Dmitry Antipov <dmantipov@yandex.ru>,
-        Jeff Johnson <quic_jjohnson@quicinc.com>,
-        Kalle Valo <quic_kvalo@quicinc.com>,
-        Sasha Levin <sashal@kernel.org>, kvalo@kernel.org,
-        nathan@kernel.org, ndesaulniers@google.com,
-        ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
-        llvm@lists.linux.dev
-Subject: [PATCH AUTOSEL 5.15 06/12] wifi: ath10k: fix clang-specific fortify warning
-Date:   Tue,  7 Nov 2023 07:11:43 -0500
-Message-ID: <20231107121158.3758348-6-sashal@kernel.org>
+Cc:     Eric Dumazet <edumazet@google.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>, kuba@kernel.org,
+        pabeni@redhat.com, netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.15 07/12] net: annotate data-races around sk->sk_tx_queue_mapping
+Date:   Tue,  7 Nov 2023 07:11:44 -0500
+Message-ID: <20231107121158.3758348-7-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231107121158.3758348-1-sashal@kernel.org>
 References: <20231107121158.3758348-1-sashal@kernel.org>
@@ -57,58 +54,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dmitry Antipov <dmantipov@yandex.ru>
+From: Eric Dumazet <edumazet@google.com>
 
-[ Upstream commit cb4c132ebfeac5962f7258ffc831caa0c4dada1a ]
+[ Upstream commit 0bb4d124d34044179b42a769a0c76f389ae973b6 ]
 
-When compiling with clang 16.0.6 and CONFIG_FORTIFY_SOURCE=y, I've
-noticed the following (somewhat confusing due to absence of an actual
-source code location):
+This field can be read or written without socket lock being held.
 
-In file included from drivers/net/wireless/ath/ath10k/debug.c:8:
-In file included from ./include/linux/module.h:13:
-In file included from ./include/linux/stat.h:19:
-In file included from ./include/linux/time.h:60:
-In file included from ./include/linux/time32.h:13:
-In file included from ./include/linux/timex.h:67:
-In file included from ./arch/x86/include/asm/timex.h:5:
-In file included from ./arch/x86/include/asm/processor.h:23:
-In file included from ./arch/x86/include/asm/msr.h:11:
-In file included from ./arch/x86/include/asm/cpumask.h:5:
-In file included from ./include/linux/cpumask.h:12:
-In file included from ./include/linux/bitmap.h:11:
-In file included from ./include/linux/string.h:254:
-./include/linux/fortify-string.h:592:4: warning: call to '__read_overflow2_field'
-declared with 'warning' attribute: detected read beyond size of field (2nd
-parameter); maybe use struct_group()? [-Wattribute-warning]
-                        __read_overflow2_field(q_size_field, size);
+Add annotations to avoid load-store tearing.
 
-The compiler actually complains on 'ath10k_debug_get_et_strings()' where
-fortification logic inteprets call to 'memcpy()' as an attempt to copy
-the whole 'ath10k_gstrings_stats' array from it's first member and so
-issues an overread warning. This warning may be silenced by passing
-an address of the whole array and not the first member to 'memcpy()'.
-
-Signed-off-by: Dmitry Antipov <dmantipov@yandex.ru>
-Acked-by: Jeff Johnson <quic_jjohnson@quicinc.com>
-Signed-off-by: Kalle Valo <quic_kvalo@quicinc.com>
-Link: https://lore.kernel.org/r/20230829093652.234537-1-dmantipov@yandex.ru
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath10k/debug.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/net/sock.h | 20 ++++++++++++++++----
+ 1 file changed, 16 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
-index 39378e3f9b2bb..6e1b65b8ae656 100644
---- a/drivers/net/wireless/ath/ath10k/debug.c
-+++ b/drivers/net/wireless/ath/ath10k/debug.c
-@@ -1139,7 +1139,7 @@ void ath10k_debug_get_et_strings(struct ieee80211_hw *hw,
- 				 u32 sset, u8 *data)
+diff --git a/include/net/sock.h b/include/net/sock.h
+index 640bd7a367779..d148dc95c9e9c 100644
+--- a/include/net/sock.h
++++ b/include/net/sock.h
+@@ -1923,21 +1923,33 @@ static inline void sk_tx_queue_set(struct sock *sk, int tx_queue)
+ 	/* sk_tx_queue_mapping accept only upto a 16-bit value */
+ 	if (WARN_ON_ONCE((unsigned short)tx_queue >= USHRT_MAX))
+ 		return;
+-	sk->sk_tx_queue_mapping = tx_queue;
++	/* Paired with READ_ONCE() in sk_tx_queue_get() and
++	 * other WRITE_ONCE() because socket lock might be not held.
++	 */
++	WRITE_ONCE(sk->sk_tx_queue_mapping, tx_queue);
+ }
+ 
+ #define NO_QUEUE_MAPPING	USHRT_MAX
+ 
+ static inline void sk_tx_queue_clear(struct sock *sk)
  {
- 	if (sset == ETH_SS_STATS)
--		memcpy(data, *ath10k_gstrings_stats,
-+		memcpy(data, ath10k_gstrings_stats,
- 		       sizeof(ath10k_gstrings_stats));
+-	sk->sk_tx_queue_mapping = NO_QUEUE_MAPPING;
++	/* Paired with READ_ONCE() in sk_tx_queue_get() and
++	 * other WRITE_ONCE() because socket lock might be not held.
++	 */
++	WRITE_ONCE(sk->sk_tx_queue_mapping, NO_QUEUE_MAPPING);
+ }
+ 
+ static inline int sk_tx_queue_get(const struct sock *sk)
+ {
+-	if (sk && sk->sk_tx_queue_mapping != NO_QUEUE_MAPPING)
+-		return sk->sk_tx_queue_mapping;
++	if (sk) {
++		/* Paired with WRITE_ONCE() in sk_tx_queue_clear()
++		 * and sk_tx_queue_set().
++		 */
++		int val = READ_ONCE(sk->sk_tx_queue_mapping);
+ 
++		if (val != NO_QUEUE_MAPPING)
++			return val;
++	}
+ 	return -1;
  }
  
 -- 
