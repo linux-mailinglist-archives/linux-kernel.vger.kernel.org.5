@@ -2,90 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E8C9B7E3A1B
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 11:42:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EF497E3A24
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 11:43:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233959AbjKGKmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 05:42:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43968 "EHLO
+        id S234023AbjKGKnm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 05:43:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233796AbjKGKmx (ORCPT
+        with ESMTP id S234001AbjKGKnj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 05:42:53 -0500
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8B1BA3
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 02:42:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=VUPXmPqoD7zPq0gyHwJF1zhaeV4JZiznxUuuQGFLTF8=; b=Z3TsQ1y3zLXhKrXlNO8ZJ357kN
-        pHUq+Vbfo12EfTkZuiBl41s657o9F4AFHrdbnGcPgjGTs20KrNvw9ekzbDm331iiJJSrF+0oIfDBH
-        QytD7hDKbXHKvvPr12oV4cSysft1jCQdYFFuSfk2RRYfCmM0zgiqOiUTOlJZpEMXyrww1mb7shIpr
-        F5pqfC86L6ZS6RezRrjmu/26CQveG5OfC0tFr3jQrJRZAP/jutXlFxUcW7HwvVwA8VEOafTRbk7TF
-        pIE8aJvWB0TlCuDqMobYXr502kNB+wObx11vYiyngR9OF9XOuDIVFvKYjxjhdevUAtgymmXfH4hEg
-        5C32V5HQ==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1r0JX5-00Bvql-1d;
-        Tue, 07 Nov 2023 10:42:07 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 2DCDA30049D; Tue,  7 Nov 2023 11:42:07 +0100 (CET)
-Date:   Tue, 7 Nov 2023 11:42:07 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Abel Wu <wuyun.abel@bytedance.com>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Barry Song <21cnbao@gmail.com>,
-        Benjamin Segall <bsegall@google.com>,
-        Chen Yu <yu.c.chen@intel.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        "Gautham R . Shenoy" <gautham.shenoy@amd.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        K Prateek Nayak <kprateek.nayak@amd.com>,
-        Mike Galbraith <efault@gmx.de>,
-        Qais Yousef <qyousef@layalina.io>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Yicong Yang <yangyicong@huawei.com>,
-        Youssef Esmat <youssefesmat@chromium.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/4] sched/eevdf: O(1) fastpath for task selection
-Message-ID: <20231107104207.GT8262@noisy.programming.kicks-ass.net>
-References: <20231107090510.71322-1-wuyun.abel@bytedance.com>
- <20231107090510.71322-4-wuyun.abel@bytedance.com>
- <b2b70241-04fe-4064-ba72-c5ed03a4d4fd@bytedance.com>
+        Tue, 7 Nov 2023 05:43:39 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DB8AED
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 02:43:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699353817; x=1730889817;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=jUUzY54dsqAgUm1obJ6G2bCd3naWol3fqdxm7lVwtfk=;
+  b=e1XlN8P/mAbudNqIXWm1W+hIsIOwfRULI3n7eFsCucFb4f5MGozRoKE6
+   OUhNaQl72oXatc2L/PuzifNKtbHPXTTmR6Q5oX49r/h0+hj9+grK11y0D
+   v35+V4mfjsY7H+EFd9DIyvv+aBWD5fV46HrC057Ft79gChozyArv/lFt+
+   p8/qSiglNr/vbrYOs7RMOP9w8GLhZQnu5xqv3NHiFsGLaYNSU6ta1gu2E
+   UmFjOddoQVTCjDckrz+lPE8nrqQvaEZDsWq/FAuUC1HFSKHZQ0G7W2D8J
+   t+sK5gElyqDosgPLHnnROTKYn2y3nqD45C+JVSzh6U/Yewfhtvihx6ZU8
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10886"; a="379870230"
+X-IronPort-AV: E=Sophos;i="6.03,283,1694761200"; 
+   d="scan'208";a="379870230"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2023 02:43:36 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.03,283,1694761200"; 
+   d="scan'208";a="3948370"
+Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
+  by fmviesa002.fm.intel.com with ESMTP; 07 Nov 2023 02:43:35 -0800
+Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r0JYT-00073c-0K;
+        Tue, 07 Nov 2023 10:43:33 +0000
+Date:   Tue, 7 Nov 2023 18:42:42 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Thomas Bogendoerfer <tbogendoerfer@suse.de>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Paul Burton <paulburton@kernel.org>
+Subject: arch/mips/sgi-ip30/ip30-console.c:15:6: warning: no previous
+ prototype for 'prom_putchar'
+Message-ID: <202311071845.jPegp5hN-lkp@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <b2b70241-04fe-4064-ba72-c5ed03a4d4fd@bytedance.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 07, 2023 at 06:12:49PM +0800, Abel Wu wrote:
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   be3ca57cfb777ad820c6659d52e60bbdd36bf5ff
+commit: 7505576d1c1ac0cfe85fdf90999433dd8b673012 MIPS: add support for SGI Octane (IP30)
+date:   4 years ago
+config: mips-randconfig-r002-20230825 (https://download.01.org/0day-ci/archive/20231107/202311071845.jPegp5hN-lkp@intel.com/config)
+compiler: mips64-linux-gcc (GCC) 11.3.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231107/202311071845.jPegp5hN-lkp@intel.com/reproduce)
 
-> > @@ -904,7 +905,7 @@ static struct sched_entity *pick_eevdf(struct cfs_rq *cfs_rq)
-> >   	 * in this cfs_rq, saving some cycles.
-> >   	 */
-> >   	if (cfs_rq->nr_running == 1)
-> > -		return curr && curr->on_rq ? curr : __node_2_se(node);
-> > +		return curr && curr->on_rq ? curr : se;
-> 
-> Maybe we can reduce memory footprint on curr by:
-> 
-> 		return se ? se : curr;
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311071845.jPegp5hN-lkp@intel.com/
 
-Irrespective, I think that logic makes more sense. If we know we have
-but one task and the tree has a task, it must be that task, otherwise,
-current must be it. 
+All warnings (new ones prefixed by >>):
 
-Anyway, I was still staring at the previous patch, flipping the tree
-around like that is clever. Yes I suppose that ought to work just fine.
+>> arch/mips/sgi-ip30/ip30-console.c:15:6: warning: no previous prototype for 'prom_putchar' [-Wmissing-prototypes]
+      15 | void prom_putchar(char c)
+         |      ^~~~~~~~~~~~
+
+
+vim +/prom_putchar +15 arch/mips/sgi-ip30/ip30-console.c
+
+    14	
+  > 15	void prom_putchar(char c)
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
