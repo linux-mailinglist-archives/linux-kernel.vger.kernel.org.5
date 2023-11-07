@@ -2,48 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 34E687E3E72
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 13:38:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 871767E3E74
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 13:38:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343517AbjKGMiV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 07:38:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46450 "EHLO
+        id S1343524AbjKGMiZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 07:38:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235200AbjKGMhr (ORCPT
+        with ESMTP id S235206AbjKGMhr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 7 Nov 2023 07:37:47 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFE687EDC;
-        Tue,  7 Nov 2023 04:26:14 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39A60C43391;
-        Tue,  7 Nov 2023 12:26:12 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E0CC7EEF;
+        Tue,  7 Nov 2023 04:26:16 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 41158C433C9;
+        Tue,  7 Nov 2023 12:26:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699359973;
-        bh=rlISWo7mgLCGFzUR9A2oh033QzlDbNnpnaOmv8Vc4/g=;
+        s=k20201202; t=1699359975;
+        bh=cyyZMm5k68Zi88voa8LZQa9s0u00WKVsQKSQpgKUKCY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LQnt5sWVrt9yaC/8Mmt2E9yLNTBJaogcLvIWjgnkJLUsPMYz1exsZVivJuZU7JTN+
-         5NwuxC36JpHxZND/2EdtbLz8moHrb7W4FrxX8PKNLIkZzpkMMCGKs0ixsE/ZUgOPC4
-         rkvRZk4apaOJ3UwmfYG/D1gfbygtpWTahDpbGN1/NCcwXrhHioNsxS219Za+fPrR5+
-         jguHcPkgUaVWiUia2IhHRDocLLyiOkvaRcTXw6S1oevhGPdF2Mz4UwRdDbRh6l/Qwu
-         rQzMU2kpvakwPRjjIF9fg+JP4GwrwA+FD4UwLdrpcC3qRJdz2PQlhStwScXe7+RKeD
-         4Zes/s2QK6+zw==
+        b=ZrEcrqvcRGp3I2HgEKRiRlA+gGpNisrRKKgu98D2w/qMlWXvqKHSCjQ8lTQBI3vzS
+         K296tFKBxPgFtoZVDPY5kyUP6iGtDn3HpYAftLECOijw/23NyYQRhgmcbSmg1ECT2Y
+         wLaMte2xHp4OVnHsww1PlRYjSFeuShtvLsLbaW1osGqtDqo4dnJ8wQLGrTYxzNdS0c
+         1u3cQ/oWsjqlFSOxS+ho4uabuimcRijIFi/KaiSD+99anL8XLp7TOckwTeOOTtjmfS
+         8RMNDFve3W538m4E18HN2TopK+/n7qfavQ0Ks1TGGtg903zNDxelPp7OWa4KaQV3uC
+         akM+8XJgYSYSQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Ondrej Jirman <megi@xff.cz>, Frank Oltmanns <frank@oltmanns.dev>,
-        Samuel Holland <samuel@sholland.org>,
-        =?UTF-8?q?Guido=20G=C3=BCnther?= <agx@sigxcpu.org>,
-        Sasha Levin <sashal@kernel.org>, neil.armstrong@linaro.org,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
+Cc:     Jesse Zhang <jesse.zhang@amd.com>,
+        Philip Yang <Philip.Yang@amd.com>,
+        Yifan Zhang <yifan1.zhang@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Sasha Levin <sashal@kernel.org>, Felix.Kuehling@amd.com,
+        christian.koenig@amd.com, Xinhui.Pan@amd.com, airlied@gmail.com,
+        daniel@ffwll.ch, amd-gfx@lists.freedesktop.org,
         dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 6.5 27/37] drm/panel: st7703: Pick different reset sequence
-Date:   Tue,  7 Nov 2023 07:21:38 -0500
-Message-ID: <20231107122407.3760584-27-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.5 28/37] drm/amdkfd: Fix shift out-of-bounds issue
+Date:   Tue,  7 Nov 2023 07:21:39 -0500
+Message-ID: <20231107122407.3760584-28-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231107122407.3760584-1-sashal@kernel.org>
 References: <20231107122407.3760584-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.5.10
@@ -58,81 +58,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ondrej Jirman <megi@xff.cz>
+From: Jesse Zhang <jesse.zhang@amd.com>
 
-[ Upstream commit d12d635bb03c7cb4830acb641eb176ee9ff2aa89 ]
+[ Upstream commit 282c1d793076c2edac6c3db51b7e8ed2b41d60a5 ]
 
-Switching to a different reset sequence, enabling IOVCC before enabling
-VCC.
+[  567.613292] shift exponent 255 is too large for 64-bit type 'long unsigned int'
+[  567.614498] CPU: 5 PID: 238 Comm: kworker/5:1 Tainted: G           OE      6.2.0-34-generic #34~22.04.1-Ubuntu
+[  567.614502] Hardware name: AMD Splinter/Splinter-RPL, BIOS WS43927N_871 09/25/2023
+[  567.614504] Workqueue: events send_exception_work_handler [amdgpu]
+[  567.614748] Call Trace:
+[  567.614750]  <TASK>
+[  567.614753]  dump_stack_lvl+0x48/0x70
+[  567.614761]  dump_stack+0x10/0x20
+[  567.614763]  __ubsan_handle_shift_out_of_bounds+0x156/0x310
+[  567.614769]  ? srso_alias_return_thunk+0x5/0x7f
+[  567.614773]  ? update_sd_lb_stats.constprop.0+0xf2/0x3c0
+[  567.614780]  svm_range_split_by_granularity.cold+0x2b/0x34 [amdgpu]
+[  567.615047]  ? srso_alias_return_thunk+0x5/0x7f
+[  567.615052]  svm_migrate_to_ram+0x185/0x4d0 [amdgpu]
+[  567.615286]  do_swap_page+0x7b6/0xa30
+[  567.615291]  ? srso_alias_return_thunk+0x5/0x7f
+[  567.615294]  ? __free_pages+0x119/0x130
+[  567.615299]  handle_pte_fault+0x227/0x280
+[  567.615303]  __handle_mm_fault+0x3c0/0x720
+[  567.615311]  handle_mm_fault+0x119/0x330
+[  567.615314]  ? lock_mm_and_find_vma+0x44/0x250
+[  567.615318]  do_user_addr_fault+0x1a9/0x640
+[  567.615323]  exc_page_fault+0x81/0x1b0
+[  567.615328]  asm_exc_page_fault+0x27/0x30
+[  567.615332] RIP: 0010:__get_user_8+0x1c/0x30
 
-There also needs to be a delay after enabling the supplies and before
-deasserting the reset. The datasheet specifies 1ms after the supplies
-reach the required voltage. Use 10-20ms to also give the power supplies
-some time to reach the required voltage, too.
-
-This fixes intermittent panel initialization failures and screen
-corruption during resume from sleep on panel xingbangda,xbd599 (e.g.
-used in PinePhone).
-
-Signed-off-by: Ondrej Jirman <megi@xff.cz>
-Signed-off-by: Frank Oltmanns <frank@oltmanns.dev>
-Reported-by: Samuel Holland <samuel@sholland.org>
-Reviewed-by: Guido Günther <agx@sigxcpu.org>
-Tested-by: Guido Günther <agx@sigxcpu.org>
-Signed-off-by: Guido Günther <agx@sigxcpu.org>
-Link: https://patchwork.freedesktop.org/patch/msgid/20230211171748.36692-2-frank@oltmanns.dev
+Signed-off-by: Jesse Zhang <jesse.zhang@amd.com>
+Suggested-by: Philip Yang <Philip.Yang@amd.com>
+Reviewed-by: Yifan Zhang <yifan1.zhang@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/panel/panel-sitronix-st7703.c | 25 ++++++++++---------
- 1 file changed, 13 insertions(+), 12 deletions(-)
+ drivers/gpu/drm/amd/amdkfd/kfd_svm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/panel/panel-sitronix-st7703.c b/drivers/gpu/drm/panel/panel-sitronix-st7703.c
-index 3aa31f3d61574..687749bbec62c 100644
---- a/drivers/gpu/drm/panel/panel-sitronix-st7703.c
-+++ b/drivers/gpu/drm/panel/panel-sitronix-st7703.c
-@@ -506,29 +506,30 @@ static int st7703_prepare(struct drm_panel *panel)
- 		return 0;
- 
- 	dev_dbg(ctx->dev, "Resetting the panel\n");
--	ret = regulator_enable(ctx->vcc);
-+	gpiod_set_value_cansleep(ctx->reset_gpio, 1);
-+
-+	ret = regulator_enable(ctx->iovcc);
- 	if (ret < 0) {
--		dev_err(ctx->dev, "Failed to enable vcc supply: %d\n", ret);
-+		dev_err(ctx->dev, "Failed to enable iovcc supply: %d\n", ret);
- 		return ret;
- 	}
--	ret = regulator_enable(ctx->iovcc);
-+
-+	ret = regulator_enable(ctx->vcc);
- 	if (ret < 0) {
--		dev_err(ctx->dev, "Failed to enable iovcc supply: %d\n", ret);
--		goto disable_vcc;
-+		dev_err(ctx->dev, "Failed to enable vcc supply: %d\n", ret);
-+		regulator_disable(ctx->iovcc);
-+		return ret;
- 	}
- 
--	gpiod_set_value_cansleep(ctx->reset_gpio, 1);
--	usleep_range(20, 40);
-+	/* Give power supplies time to stabilize before deasserting reset. */
-+	usleep_range(10000, 20000);
-+
- 	gpiod_set_value_cansleep(ctx->reset_gpio, 0);
--	msleep(20);
-+	usleep_range(15000, 20000);
- 
- 	ctx->prepared = true;
- 
- 	return 0;
--
--disable_vcc:
--	regulator_disable(ctx->vcc);
--	return ret;
- }
- 
- static const u32 mantix_bus_formats[] = {
+diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_svm.c b/drivers/gpu/drm/amd/amdkfd/kfd_svm.c
+index ed365f8ebf53f..6b5747b35a31e 100644
+--- a/drivers/gpu/drm/amd/amdkfd/kfd_svm.c
++++ b/drivers/gpu/drm/amd/amdkfd/kfd_svm.c
+@@ -756,7 +756,7 @@ svm_range_apply_attrs(struct kfd_process *p, struct svm_range *prange,
+ 			prange->flags &= ~attrs[i].value;
+ 			break;
+ 		case KFD_IOCTL_SVM_ATTR_GRANULARITY:
+-			prange->granularity = attrs[i].value;
++			prange->granularity = min_t(uint32_t, attrs[i].value, 0x3F);
+ 			break;
+ 		default:
+ 			WARN_ONCE(1, "svm_range_check_attrs wasn't called?");
 -- 
 2.42.0
 
