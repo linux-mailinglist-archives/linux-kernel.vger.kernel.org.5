@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AC3B7E36B6
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 09:34:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE4537E36B7
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 09:34:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233662AbjKGIeO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 03:34:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35448 "EHLO
+        id S233752AbjKGIeT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 03:34:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233589AbjKGIeM (ORCPT
+        with ESMTP id S233612AbjKGIeR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 03:34:12 -0500
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2059.outbound.protection.outlook.com [40.107.243.59])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74D89BD;
-        Tue,  7 Nov 2023 00:34:09 -0800 (PST)
+        Tue, 7 Nov 2023 03:34:17 -0500
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2055.outbound.protection.outlook.com [40.107.93.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BECC0F3;
+        Tue,  7 Nov 2023 00:34:13 -0800 (PST)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UpDyLvgduCyd5eNoLQ0YBrU0Nwye9py/e/4GXMI9jmt6ZihNIpGXTeG3wOGA3ysgS7eb87JndQse276rCJpFN+D9D3KIGwwGUBmUAnxLbRi9FNsqJTp7wlM4cz9i9jCAxefo849Y7oOE9f3yZKM87R/R7psN5RKUnHmvcrkDBQEHO4TcibCdmhFwMNVl9oWjUofqpDsBzOW1COGHw5ie9zBmZqk/Unq2H8Ca5BBfnA/tNbfslGVLiklxvpI9RF0uyhtg0tBt4iO3fBuZLpBKd3hmaoMbEDruBXgkNw6391Ib4Hqc2PZTY4e3kYZazreX642XL8frV/Am84hEIM91/A==
+ b=gFR9MIHeXGm0ryN+KNtENWODVGGhNEgFXhAiWdL1rmn24QYukGL2L8Ug5FQlZBPGZ+kCIxkXHw3HpyC/GPKmxKE3JERaOE09wA2+mrfIksHH4gCHAwi9/QS+bfGOIiKl7OcQC1bYwcIxvc1OUeryN3/GOSPC0HWIgTHgFR8RhKMQ83hoXOfiYxHQvh97PO2PJKmx2pVrj8+rYZXlPRkgTfSf4dGmuO+kO0QbYVli5WOBPpQ7NzixE5g5KyFt/3PindRjym3SNTswkOHPaUDGpOMXEhw8IQ4D+RjTri4+IHATXMoQkT2VEairFWeLFxn60VA1ML1a1u/NhDJHgflbyQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Sb4C+yISxWXE5SS/eS2icUbogl1aN0/PbBEKFdJZZUk=;
- b=Yj8CEyOXiLkrg2g5BDC2zw5HGRXWPLsncUuO0XiC7S6MU07Ia4sKSQQc0lR2owRYSesYdBlLpHuHqADXe+m84jDMY5KyTjzotR6tAidEZ/p+rmZnLhatEn8eyBwMS7ahTHyWgnPm9wTsWqw1JClDem6IPDCLFtZFoflLpGEbqb22SBwy5YsTkmPXEQZZ6kELFxOruXkEN+qcIFx9fVpPMtVbIYYTsrXOR8gmEb2p3A6FhI7vVnvCL9Z8jcIM22hqENvaxO1JlETvrNH4HX2XHggvx+W0Qwg6gzdM4a2ptn6hFdFVL/Gp07TpC6DZRI+YMzreong4XBy36d5tWrRzYg==
+ bh=bOhHTikOsoF0CTkdslwXiC8q/bD6hc7xxoisvKv8U08=;
+ b=RkyZgTjJP22cHv0rFQ193E+6O1ww7ucbokyRS2A4Izbh1YMOt3lVZRNpxZGtt8kwIua8TlOIpZjtbY7QiKDbxP0f27iZNegjdRahfYaHfQt6ylVH0kGV57bmBb79Ez0kCZyjAWWxzF2e9l+znZoHzNOlInixPX9/jSriSx7laxX7Swkcq/ioJhj685q9IBLfPXrm0bItdSgsJ1wk6P1vFL/WZ0qKfFIXJ1DEyQWmRUwEdS2jt1lhQcpEmcPlebQFancSPsAi1pGteYCB+EW7GGBoILerBaM+uPtdv47PF1GcNuTSmiUvEUvy9NayezbtB8yRS1qXMa9eSJTwyeMREQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
  (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
  dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Sb4C+yISxWXE5SS/eS2icUbogl1aN0/PbBEKFdJZZUk=;
- b=p28BswZuj3JOggqglGMg9VYPNS5NO0d+Boz+dp3qg1ithvV0PVDp82VZKY8w3rCVr6Jw1w9pkXTwq0hkj22B9ZcpPIVozDzLrHp4rpsnS6ctmN43JhhVhfXpgf9e1N7EftRp0crBlgX1x28u2F5zsyOdkNBvZokLo5Iq0VqwM/k=
+ bh=bOhHTikOsoF0CTkdslwXiC8q/bD6hc7xxoisvKv8U08=;
+ b=R84rzsicILneBKEUBPfZ0tNMLP8/SVptGeG3DM6aoxoWeUPYEF1MOhX61QIFQ8TwG3ApGKcXWXxsx8cnAbFFLbfPqE3SiR4NauydkcdFjjOj9YWTkEF8FPxo/rLuZoCbc7fwyA1StO0opo9U3i13oFn+g/A9GTTePtcWpcqAIY0=
 Received: from BN9PR03CA0808.namprd03.prod.outlook.com (2603:10b6:408:13f::33)
- by SN7PR12MB7785.namprd12.prod.outlook.com (2603:10b6:806:346::15) with
+ by CY8PR12MB7241.namprd12.prod.outlook.com (2603:10b6:930:5a::12) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.28; Tue, 7 Nov
- 2023 08:34:06 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.29; Tue, 7 Nov
+ 2023 08:34:11 +0000
 Received: from SA2PEPF00001507.namprd04.prod.outlook.com
- (2603:10b6:408:13f:cafe::7e) by BN9PR03CA0808.outlook.office365.com
+ (2603:10b6:408:13f:cafe::87) by BN9PR03CA0808.outlook.office365.com
  (2603:10b6:408:13f::33) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.29 via Frontend
- Transport; Tue, 7 Nov 2023 08:34:06 +0000
+ Transport; Tue, 7 Nov 2023 08:34:10 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
  smtp.mailfrom=amd.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=amd.com;
@@ -49,11 +49,11 @@ Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
 Received: from SATLEXMB04.amd.com (165.204.84.17) by
  SA2PEPF00001507.mail.protection.outlook.com (10.167.242.39) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6977.16 via Frontend Transport; Tue, 7 Nov 2023 08:34:06 +0000
+ 15.20.6977.16 via Frontend Transport; Tue, 7 Nov 2023 08:34:10 +0000
 Received: from BLR-5CG113396H.amd.com (10.180.168.240) by SATLEXMB04.amd.com
  (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.32; Tue, 7 Nov
- 2023 02:33:57 -0600
+ 2023 02:34:03 -0600
 From:   Ravi Bangoria <ravi.bangoria@amd.com>
 To:     <acme@kernel.org>, <namhyung@kernel.org>
 CC:     <ravi.bangoria@amd.com>, <kim.phillips@amd.com>,
@@ -66,10 +66,12 @@ CC:     <ravi.bangoria@amd.com>, <kim.phillips@amd.com>,
         <kprateek.nayak@amd.com>, <linux-perf-users@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>, <sandipan.das@amd.com>,
         <ananth.narayan@amd.com>, <santosh.shukla@amd.com>
-Subject: [PATCH 1/2] perf tool AMD: Use non-precise cycles as default event on certain Zen2 processors
-Date:   Tue, 7 Nov 2023 14:03:30 +0530
-Message-ID: <20231107083331.901-1-ravi.bangoria@amd.com>
+Subject: [PATCH 2/2] perf header: Additional note on AMD IBS for max_precise pmu cap
+Date:   Tue, 7 Nov 2023 14:03:31 +0530
+Message-ID: <20231107083331.901-2-ravi.bangoria@amd.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231107083331.901-1-ravi.bangoria@amd.com>
+References: <20231107083331.901-1-ravi.bangoria@amd.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
@@ -78,23 +80,23 @@ X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
  (10.181.40.145)
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SA2PEPF00001507:EE_|SN7PR12MB7785:EE_
-X-MS-Office365-Filtering-Correlation-Id: 34ae9064-6986-449b-4a7a-08dbdf6c4e27
+X-MS-TrafficTypeDiagnostic: SA2PEPF00001507:EE_|CY8PR12MB7241:EE_
+X-MS-Office365-Filtering-Correlation-Id: c9376233-6d3a-43d5-5147-08dbdf6c50d8
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: gBqv0Z958Haq54bnFS2EkRIDCLz4EO5QqfKHsJt8JNm4r7xztPE79poqGE3Obp9fbai6my5lFIerTnGr/vP6mAU1LhsmdmFIRW5tWE3jLUvqsSdl7zrt0Vsk3PDBshtClaby/lDDkbAGdszSpwDmt2CrgJC2xmN2W7C6glDf4TJjdnvmSpLIczGmOw8WOp3Sgz3E7KzlHX5tM5qb2HlkrsyNmOaKVPRg3sNs/NxKQMlfB46Bvj2ezyouHEE81n6J6Qlt7/H7dUCt7VVOlm8tPPqvIdFl7E0Deax6uRyZh5FU4Mj+L0GfIgrZfIr5WzwQ7OgN9n5InV2ky8ZvyDH296aapBQh7KJ9+CZxxmcEraTs4wQnGHpx0WZwApinqUF3TZGMEG7NfpQhYzXnuHKXwshpDlqOu1/jYqmycf9eI02IyYC0a9ACHE5opIbnJsGO+3REfu3Rb5nzwNT2JM9GSH6OzKU04FJ6C7/SmzKpsNCdT9EHUxRKBXsgCmOPIZuGQt09E0WEfTrYdPwGH0fe+si2MY8qrfiF09y4bYLDCdxMqpn/6MS5a9J+O55GLmlu2cKtGCkpd0OPFUTOKGdb+WcjXa6JBUY9sICXed5/Vyxf68QyuUk13Hat0cbpK361KCca0HEILwNlVI+eqegoCzqXN2mA3C9VN/cuBOFzMbp4ZfS27jsGRRbj1MCmKdj8tjUwJ004astsgrUgVwpUMW9psbF3+5fUBBDz0K7Y9aVD2sPnBnPFVuTtMVu5J02fJ2922Qbitgr62JEqDzZWuesNXkVcRsboex/iUcIl0tzk6A5bCg40C2cmZsKEV97D
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(346002)(396003)(376002)(136003)(39860400002)(230173577357003)(230922051799003)(230273577357003)(82310400011)(1800799009)(186009)(451199024)(64100799003)(36840700001)(46966006)(40470700004)(478600001)(41300700001)(44832011)(47076005)(7416002)(7696005)(2616005)(6666004)(336012)(8676002)(83380400001)(426003)(8936002)(4326008)(316002)(5660300002)(2906002)(26005)(36860700001)(1076003)(16526019)(70206006)(110136005)(54906003)(70586007)(81166007)(356005)(86362001)(82740400003)(36756003)(40480700001)(40460700003)(36900700001);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: TAaPcx5/PuoHe3WQa4Z9K6dDNwpxTCkjGo2QSgewS6NrcUTKhn4WpeM22Plx6uJakv78YEWS5TRbj5s+GLYlmyt7nRw2ga5J0g8EXLXWY2QPOsJVb21OSGzU79VgbulGHnfHn6HsU7DmCVFjdvujgj3HS5hDnWQNc3xEF6T6GTqxsXm9e1cLB/pzbJJp4Oc1A+gH65kjGX0cPtL7DnY1H5D5obEkShhh92u8Ojh8mOFp4r9WC6Y4UO4GeYlhoNBT0YztCzSpKJo/QnLS4rCkKHXxQRFOw6Muv0VstgRJHjmLfFycdh4AZloaMdIGD/s790IRm5JDCjhiVMwUnPxPpMf8upZbjaMwIbwOcSo+DY8lFIMKJ/Bx6l9bcVIQ4br3zicrRZm+pQU/0z3b2YhNqEy+RBKUod060O7z6YYMSyC50h6c++teUpz/6hyCJj5G92cth4qycsYNaU7nBop9a8FPQgaq478WbFAUqCdRxIkTRV2/pQmN9HiEaae80Ydh5Yb2arCc9YU/UmmtfCUQ0yUMw2jr+604UoaRWf77pBJE9YFs8kWTPag4VeBP2B4hxsGrs7KjTO5osugYg7TkYflFJfxbu4E6Scqewc+c+w4vXSvgb6whCe4ApY7AERaO8PyF329Ya77X+WF0YO4z769OTwl0xis1tl4S1+Tc6BWH59dRVexToK0nGViZw3cZSVHhSPzjMBI8aOSAUq+5bengRLoX3aIPywcfx+yrVBTsxZJWZ0rIzk6Jq9GvV2VIp5K7A+nic2RpOdcxmEoKDw==
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(136003)(346002)(396003)(39860400002)(376002)(230922051799003)(451199024)(1800799009)(186009)(82310400011)(64100799003)(36840700001)(46966006)(40470700004)(40480700001)(40460700003)(2616005)(478600001)(6666004)(7696005)(36860700001)(36756003)(86362001)(81166007)(356005)(82740400003)(7416002)(5660300002)(54906003)(70586007)(70206006)(16526019)(336012)(47076005)(83380400001)(26005)(2906002)(41300700001)(426003)(1076003)(110136005)(44832011)(316002)(8676002)(4326008)(8936002)(36900700001);DIR:OUT;SFP:1101;
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Nov 2023 08:34:06.2310
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Nov 2023 08:34:10.8248
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 34ae9064-6986-449b-4a7a-08dbdf6c4e27
+X-MS-Exchange-CrossTenant-Network-Message-Id: c9376233-6d3a-43d5-5147-08dbdf6c50d8
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
 X-MS-Exchange-CrossTenant-AuthSource: SA2PEPF00001507.namprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB7785
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR12MB7241
 X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
@@ -105,145 +107,105 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-By default, Perf uses precise cycles event when no explicit event is
-specified by user. Precise cycles event is forwarded to ibs_op// pmu
-on AMD. However, IBS has hw issue on certain Zen2 processors where
-it might raise NMI without sample_valid bit set, which causes Unknown
-NMI warnings. (Erratum #1215: IBS (Instruction Based Sampling) Counter
-Valid Value May be Incorrect After Exit From Core C6 (CC6) State.) So,
-use non-precise cycles as default event on affected processors.
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
 
-This does not prevent user to use explicit precise cycles event or
-ibs_op// pmu directly.
+x86 core pmu exposes supported maximum precision level via max_precise
+pmu capability. Although, AMD core pmu does not support precise mode,
+certain core pmu events with precise_ip > 0 are allowed and forwarded
+to IBS OP pmu. Display a note about this in perf report header and
+document the details in the perf-list man page.
 
-Suggested-by: Arnaldo Carvalho de Melo <acme@kernel.org>
+Signed-off-by: Arnaldo Carvalho de Melo <acme@kernel.org>
 Signed-off-by: Ravi Bangoria <ravi.bangoria@amd.com>
 ---
- tools/perf/arch/x86/util/evlist.c | 34 +++++++++++++++++++++++++++++++
- tools/perf/builtin-record.c       |  2 +-
- tools/perf/builtin-top.c          |  2 +-
- tools/perf/util/evlist.c          | 12 ++++++++++-
- tools/perf/util/evlist.h          |  2 ++
- 5 files changed, 49 insertions(+), 3 deletions(-)
+ tools/perf/Documentation/perf-list.txt | 12 +++++++-----
+ tools/perf/util/env.c                  | 18 ++++++++++++++++++
+ tools/perf/util/env.h                  |  2 ++
+ tools/perf/util/header.c               |  8 ++++++++
+ 4 files changed, 35 insertions(+), 5 deletions(-)
 
-diff --git a/tools/perf/arch/x86/util/evlist.c b/tools/perf/arch/x86/util/evlist.c
-index b1ce0c52d88d..f4478179c91b 100644
---- a/tools/perf/arch/x86/util/evlist.c
-+++ b/tools/perf/arch/x86/util/evlist.c
-@@ -5,6 +5,8 @@
- #include "util/evlist.h"
- #include "util/parse-events.h"
- #include "util/event.h"
-+#include "util/env.h"
-+#include "linux/string.h"
- #include "topdown.h"
- #include "evsel.h"
+diff --git a/tools/perf/Documentation/perf-list.txt b/tools/perf/Documentation/perf-list.txt
+index d5f78e125efe..1b90575ee3c8 100644
+--- a/tools/perf/Documentation/perf-list.txt
++++ b/tools/perf/Documentation/perf-list.txt
+@@ -81,11 +81,13 @@ For Intel systems precise event sampling is implemented with PEBS
+ which supports up to precise-level 2, and precise level 3 for
+ some special cases
  
-@@ -92,3 +94,35 @@ int arch_evlist__cmp(const struct evsel *lhs, const struct evsel *rhs)
- 	/* Default ordering by insertion index. */
- 	return lhs->core.idx - rhs->core.idx;
+-On AMD systems it is implemented using IBS (up to precise-level 2).
+-The precise modifier works with event types 0x76 (cpu-cycles, CPU
+-clocks not halted) and 0xC1 (micro-ops retired). Both events map to
+-IBS execution sampling (IBS op) with the IBS Op Counter Control bit
+-(IbsOpCntCtl) set respectively (see the
++On AMD systems it is implemented using IBS OP (up to precise-level 2).
++Unlike Intel PEBS which provides levels of precision, AMD core pmu is
++inherently non-precise and IBS is inherently precise. (i.e. ibs_op//,
++ibs_op//p, ibs_op//pp and ibs_op//ppp are all same). The precise modifier
++works with event types 0x76 (cpu-cycles, CPU clocks not halted) and 0xC1
++(micro-ops retired). Both events map to IBS execution sampling (IBS op)
++with the IBS Op Counter Control bit (IbsOpCntCtl) set respectively (see the
+ Core Complex (CCX) -> Processor x86 Core -> Instruction Based Sampling (IBS)
+ section of the [AMD Processor Programming Reference (PPR)] relevant to the
+ family, model and stepping of the processor being used).
+diff --git a/tools/perf/util/env.c b/tools/perf/util/env.c
+index 44140b7f596a..cbc18b22ace5 100644
+--- a/tools/perf/util/env.c
++++ b/tools/perf/util/env.c
+@@ -531,6 +531,24 @@ int perf_env__numa_node(struct perf_env *env, struct perf_cpu cpu)
+ 	return cpu.cpu >= 0 && cpu.cpu < env->nr_numa_map ? env->numa_map[cpu.cpu] : -1;
  }
-+
-+/*
-+ * Precise cycles event is forwarded to ibs_op// pmu on AMD. However, IBS
-+ * has hw issue on certain Zen2 processors where it might raise NMI without
-+ * sample_valid bit set, which causes Unknown NMI warnings. So default to
-+ * non-precise cycles event on affected processors.
-+ */
-+const char *arch_evlist__default_cycles_event(bool can_profile_kernel)
+ 
++bool perf_env__has_pmu_mapping(struct perf_env *env, const char *pmu_name)
 +{
-+	struct perf_env env = { .total_mem = 0, };
-+	unsigned int family, model, stepping;
-+	bool is_amd;
-+	int ret;
++	char *pmu_mapping = env->pmu_mappings, *colon;
 +
-+	perf_env__cpuid(&env);
-+	is_amd = env.cpuid && strstarts(env.cpuid, "AuthenticAMD");
-+	if (!is_amd)
-+		goto out;
++	for (int i = 0; i < env->nr_pmu_mappings; ++i) {
++		if (strtoul(pmu_mapping, &colon, 0) == ULONG_MAX || *colon != ':')
++			goto out_error;
 +
-+	ret = sscanf(env.cpuid, "%*[^,],%u,%u,%u", &family, &model, &stepping);
-+	if (ret == 3 && family == 0x17 && (
-+	    (model >= 0x30 && model <= 0x3f) ||
-+	    (model >= 0x60 && model <= 0x7f) ||
-+	    (model >= 0x90 && model <= 0x9f))) {
-+		perf_env__exit(&env);
-+		return can_profile_kernel ? "cycles" : "cycles:u";
++		pmu_mapping = colon + 1;
++		if (strcmp(pmu_mapping, pmu_name) == 0)
++			return true;
++
++		pmu_mapping += strlen(pmu_mapping) + 1;
 +	}
-+
-+out:
-+	perf_env__exit(&env);
-+	return can_profile_kernel ? "cycles:P" : "cycles:Pu";
++out_error:
++	return false;
 +}
-diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
-index dcf288a4fb9a..e58d8ac8a77b 100644
---- a/tools/perf/builtin-record.c
-+++ b/tools/perf/builtin-record.c
-@@ -4150,7 +4150,7 @@ int cmd_record(int argc, const char **argv)
- 	if (rec->evlist->core.nr_entries == 0) {
- 		bool can_profile_kernel = perf_event_paranoid_check(1);
- 
--		err = parse_event(rec->evlist, can_profile_kernel ? "cycles:P" : "cycles:Pu");
-+		err = parse_event(rec->evlist, evlist__default_cycles_event(can_profile_kernel));
- 		if (err)
- 			goto out;
++
+ char *perf_env__find_pmu_cap(struct perf_env *env, const char *pmu_name,
+ 			     const char *cap)
+ {
+diff --git a/tools/perf/util/env.h b/tools/perf/util/env.h
+index 4566c51f2fd9..56aea562c61b 100644
+--- a/tools/perf/util/env.h
++++ b/tools/perf/util/env.h
+@@ -174,4 +174,6 @@ struct btf_node *perf_env__find_btf(struct perf_env *env, __u32 btf_id);
+ int perf_env__numa_node(struct perf_env *env, struct perf_cpu cpu);
+ char *perf_env__find_pmu_cap(struct perf_env *env, const char *pmu_name,
+ 			     const char *cap);
++
++bool perf_env__has_pmu_mapping(struct perf_env *env, const char *pmu_name);
+ #endif /* __PERF_ENV_H */
+diff --git a/tools/perf/util/header.c b/tools/perf/util/header.c
+index e86b9439ffee..3cc288d14002 100644
+--- a/tools/perf/util/header.c
++++ b/tools/perf/util/header.c
+@@ -2145,6 +2145,14 @@ static void print_pmu_caps(struct feat_fd *ff, FILE *fp)
+ 		__print_pmu_caps(fp, pmu_caps->nr_caps, pmu_caps->caps,
+ 				 pmu_caps->pmu_name);
  	}
-diff --git a/tools/perf/builtin-top.c b/tools/perf/builtin-top.c
-index ea8c7eca5eee..21368421eddd 100644
---- a/tools/perf/builtin-top.c
-+++ b/tools/perf/builtin-top.c
-@@ -1666,7 +1666,7 @@ int cmd_top(int argc, const char **argv)
- 
- 	if (!top.evlist->core.nr_entries) {
- 		bool can_profile_kernel = perf_event_paranoid_check(1);
--		int err = parse_event(top.evlist, can_profile_kernel ? "cycles:P" : "cycles:Pu");
-+		int err = parse_event(top.evlist, evlist__default_cycles_event(can_profile_kernel));
- 
- 		if (err)
- 			goto out_delete_evlist;
-diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
-index e36da58522ef..406ed851cafc 100644
---- a/tools/perf/util/evlist.c
-+++ b/tools/perf/util/evlist.c
-@@ -90,6 +90,16 @@ struct evlist *evlist__new(void)
- 	return evlist;
++
++	if (strcmp(perf_env__arch(&ff->ph->env), "x86") == 0 &&
++	    perf_env__has_pmu_mapping(&ff->ph->env, "ibs_op")) {
++		char *max_precise = perf_env__find_pmu_cap(&ff->ph->env, "cpu", "max_precise");
++
++		if (max_precise != NULL && atoi(max_precise) == 0)
++			fprintf(fp, "# AMD systems uses ibs_op// PMU for some precise events, e.g.: cycles:p, see the 'perf list' man page for further details.\n");
++	}
  }
  
-+const char * __weak arch_evlist__default_cycles_event(bool can_profile_kernel)
-+{
-+	return can_profile_kernel ? "cycles:P" : "cycles:Pu";
-+}
-+
-+const char *evlist__default_cycles_event(bool can_profile_kernel)
-+{
-+	return arch_evlist__default_cycles_event(can_profile_kernel);
-+}
-+
- struct evlist *evlist__new_default(void)
- {
- 	struct evlist *evlist = evlist__new();
-@@ -100,7 +110,7 @@ struct evlist *evlist__new_default(void)
- 		return NULL;
- 
- 	can_profile_kernel = perf_event_paranoid_check(1);
--	err = parse_event(evlist, can_profile_kernel ? "cycles:P" : "cycles:Pu");
-+	err = parse_event(evlist, evlist__default_cycles_event(can_profile_kernel));
- 	if (err) {
- 		evlist__delete(evlist);
- 		evlist = NULL;
-diff --git a/tools/perf/util/evlist.h b/tools/perf/util/evlist.h
-index 98e7ddb2bd30..7267b4fb1981 100644
---- a/tools/perf/util/evlist.h
-+++ b/tools/perf/util/evlist.h
-@@ -91,6 +91,8 @@ struct evsel_str_handler {
- 
- struct evlist *evlist__new(void);
- struct evlist *evlist__new_default(void);
-+const char *arch_evlist__default_cycles_event(bool can_profile_kernel);
-+const char *evlist__default_cycles_event(bool can_profile_kernel);
- struct evlist *evlist__new_dummy(void);
- void evlist__init(struct evlist *evlist, struct perf_cpu_map *cpus,
- 		  struct perf_thread_map *threads);
+ static void print_pmu_mappings(struct feat_fd *ff, FILE *fp)
 -- 
 2.41.0
 
