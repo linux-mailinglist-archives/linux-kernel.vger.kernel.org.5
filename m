@@ -2,46 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E3FF7E3AFE
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 12:22:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98DDA7E3AFF
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 12:22:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234236AbjKGLWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 06:22:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45238 "EHLO
+        id S229541AbjKGLWJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 06:22:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233996AbjKGLWE (ORCPT
+        with ESMTP id S234288AbjKGLWH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 06:22:04 -0500
+        Tue, 7 Nov 2023 06:22:07 -0500
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F87BEA;
-        Tue,  7 Nov 2023 03:22:01 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74EDD113;
+        Tue,  7 Nov 2023 03:22:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699356121; x=1730892121;
+  t=1699356124; x=1730892124;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=DwSdsZVrCeR+EOJgU0o0Z8bvvJ11nUwi8EXqw+a3IMY=;
-  b=kN5EZKwLIrCQJ8OWxlFQNk4xWF/ulGdvhd3PrBD2pfW1Ig+4eVEx2yEQ
-   1gTXVZyYa+0YVM0Ah5a1IKUVlaZX9teo/fh73zlbXQ8AINLabANGKzj6i
-   mi9JYNduw7GmoueeeW/kZXnDQMXToxg8oKWJHd4D2SJDiPFnBIuKAmYw7
-   I5bHXL99lded/mYwaxP8R74Ch1blCbGRhM5R1ZakQZVJ24smh+EP0VboE
-   +kjjvfMeMi+9muEDPAI3tqm9x6Y9HJb/EmYHldNPvzbF7OaWDqP2U/Kix
-   GBP6bjfNvrDCMWfsd+XRsBPQHl6cXZBRfzC+129Xin7ggYMdCFjD8NWzX
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10886"; a="475727114"
+  bh=cjQy5UhxJgB9eTPnA9Pr3M7tSlose1KGFKMwLXqwwPs=;
+  b=LxRK7ZcQ9IUBb11HgDocBBtPFui3sx7r3f/iY8LemD3C7ovwtBqxEoYr
+   uzftDDs0J740qGD/2HOw4UfpCnNWjKtjRregmR7wy7oVUGncAlhBnTPPZ
+   fMdoWXichS4/PJ9x1ivDMxMn2n62yHPGcJTlxMw7dwWgMckPs5aEV3Gbm
+   igAtwnoiNTwNAB+uMkYnZmqSVxBOJebRfV+Yr4DPOohpEc+qTV8bf/VCM
+   ByTx2j5ubV87WqOEGR7AKfGXf+qcPz8Oa4B74Y/4Iq6OfMpOxFhA//D/l
+   pyCNJl7ixe8UvqHofr+nY7FExaCBv9APGTIWI6zxbO3ILYYlIMJDgkwRs
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10886"; a="475727127"
 X-IronPort-AV: E=Sophos;i="6.03,283,1694761200"; 
-   d="scan'208";a="475727114"
+   d="scan'208";a="475727127"
 Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2023 03:22:01 -0800
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2023 03:22:04 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10886"; a="828579792"
+X-IronPort-AV: E=McAfee;i="6600,9927,10886"; a="828579811"
 X-IronPort-AV: E=Sophos;i="6.03,283,1694761200"; 
-   d="scan'208";a="828579792"
+   d="scan'208";a="828579811"
 Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga008.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2023 03:22:00 -0800
+  by fmsmga008.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2023 03:22:03 -0800
 Received: from mohdfai2-iLBPG12-1.png.intel.com (mohdfai2-iLBPG12-1.png.intel.com [10.88.227.73])
-        by linux.intel.com (Postfix) with ESMTP id BE89D580D61;
-        Tue,  7 Nov 2023 03:21:57 -0800 (PST)
+        by linux.intel.com (Postfix) with ESMTP id E9FD4580D99;
+        Tue,  7 Nov 2023 03:22:00 -0800 (PST)
 From:   Faizal Rahim <faizal.abdul.rahim@linux.intel.com>
 To:     Vladimir Oltean <vladimir.oltean@nxp.com>,
         Vinicius Costa Gomes <vinicius.gomes@intel.com>,
@@ -53,9 +53,9 @@ To:     Vladimir Oltean <vladimir.oltean@nxp.com>,
         Jakub Kicinski <kuba@kernel.org>,
         Paolo Abeni <pabeni@redhat.com>
 Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 net 2/7] net/sched: taprio: fix cycle time adjustment for next entry
-Date:   Tue,  7 Nov 2023 06:20:18 -0500
-Message-Id: <20231107112023.676016-3-faizal.abdul.rahim@linux.intel.com>
+Subject: [PATCH v2 net 3/7] net/sched: taprio: update impacted fields during cycle time adjustment
+Date:   Tue,  7 Nov 2023 06:20:19 -0500
+Message-Id: <20231107112023.676016-4-faizal.abdul.rahim@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20231107112023.676016-1-faizal.abdul.rahim@linux.intel.com>
 References: <20231107112023.676016-1-faizal.abdul.rahim@linux.intel.com>
@@ -71,211 +71,118 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-According to IEEE Std. 802.1Q-2018 section Q.5 CycleTimeExtension:
-"the Cycle Time Extension variable allows this extension of the last old
-cycle to be done in a defined way. If the last complete old cycle would
-normally end less than OperCycleTimeExtension nanoseconds before the new
-base time, then the last complete cycle before AdminBaseTime is reached
-is extended so that it ends at AdminBaseTime."
+Update impacted fields in advance_sched() if cycle_corr_active()
+is true, which indicates that the next entry is the last entry
+from oper that it will run.
 
-The current taprio implementation does not extend the last old cycle in
-the defined manner specified in the Qbv Spec. This is part of the fix
-covered in this patch.
+Update impacted fields:
 
-Here are the changes made:
+1. gate_duration[tc], max_open_gate_duration[tc]
+Created a new API update_open_gate_duration().The API sets the
+duration based on the last remaining entry, the original value
+was based on consideration of multiple entries.
 
-1. A new API, get_cycle_time_correction(), has been added to return the
-correction value. If it returns a non-initialize value, it indicates
-changes required for the next entry schedule, and upon the completion
-of the next entry's duration, entries will be loaded from the new admin
-schedule.
+2. gate_close_time[tc]
+Update next entry gate close time according to the new admin
+base time
 
-2. Store correction values in cycle_time_correction:
-a) Positive correction value/extension
-We calculate the correction between the last operational cycle and the
-new admin base time. Note that for positive correction to take place,
-the next entry should be the last entry from oper and the new admin base
-time falls within the next cycle time of old oper.
+3. max_sdu[tc], budget[tc]
+Restrict from setting to max value because there's only a single
+entry left to run from oper before changing to the new admin
+schedule, so we shouldn't set to max.
 
-b) Negative correction value
-The new admin base time starts earlier than the next entry's end time.
-
-c) Zero correction value
-The new admin base time aligns exactly with the old cycle.
-
-3. When cycle_time_correction is set to a non-initialized value, it is
-used to:
-a) Indicate that cycle correction is active to trigger adjustments in
-affected fields like interval and cycle_time. A new API,
-cycle_corr_active(), has been created to help with this purpose.
-
-b) Transition to the new admin schedule at the beginning of
-advance_sched(). A new API, should_change_sched(), has been introduced
-for this purpose.
-
-4. Remove the previous definition of should_change_scheds() API. A new
-should_change_sched() API has been introduced, but it serves a
-completely different purpose than the one that was removed.
-
-Fixes: a3d43c0d56f1 ("taprio: Add support adding an admin schedule")
 Signed-off-by: Faizal Rahim <faizal.abdul.rahim@linux.intel.com>
 ---
- net/sched/sch_taprio.c | 105 +++++++++++++++++++++++++++--------------
- 1 file changed, 70 insertions(+), 35 deletions(-)
+ net/sched/sch_taprio.c | 49 +++++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 46 insertions(+), 3 deletions(-)
 
 diff --git a/net/sched/sch_taprio.c b/net/sched/sch_taprio.c
-index dee103647823..ed32654b46f5 100644
+index ed32654b46f5..119dec3bbe88 100644
 --- a/net/sched/sch_taprio.c
 +++ b/net/sched/sch_taprio.c
-@@ -259,6 +259,14 @@ static int duration_to_length(struct taprio_sched *q, u64 duration)
- 	return div_u64(duration * PSEC_PER_NSEC, atomic64_read(&q->picos_per_byte));
- }
+@@ -288,7 +288,8 @@ static void taprio_update_queue_max_sdu(struct taprio_sched *q,
+ 		/* TC gate never closes => keep the queueMaxSDU
+ 		 * selected by the user
+ 		 */
+-		if (sched->max_open_gate_duration[tc] == sched->cycle_time) {
++		if (sched->max_open_gate_duration[tc] == sched->cycle_time &&
++		    !cycle_corr_active(sched->cycle_time_correction)) {
+ 			max_sdu_dynamic = U32_MAX;
+ 		} else {
+ 			u32 max_frm_len;
+@@ -684,7 +685,8 @@ static void taprio_set_budgets(struct taprio_sched *q,
  
-+static bool cycle_corr_active(s64 cycle_time_correction)
-+{
-+	if (cycle_time_correction == INIT_CYCLE_TIME_CORRECTION)
-+		return false;
-+	else
-+		return true;
-+}
-+
- /* Sets sched->max_sdu[] and sched->max_frm_len[] to the minimum between the
-  * q->max_sdu[] requested by the user and the max_sdu dynamically determined by
-  * the maximum open gate durations at the given link speed.
-@@ -888,38 +896,59 @@ static bool should_restart_cycle(const struct sched_gate_list *oper,
+ 	for (tc = 0; tc < num_tc; tc++) {
+ 		/* Traffic classes which never close have infinite budget */
+-		if (entry->gate_duration[tc] == sched->cycle_time)
++		if (entry->gate_duration[tc] == sched->cycle_time &&
++		    !cycle_corr_active(sched->cycle_time_correction))
+ 			budget = INT_MAX;
+ 		else
+ 			budget = div64_u64((u64)entry->gate_duration[tc] * PSEC_PER_NSEC,
+@@ -896,6 +898,32 @@ static bool should_restart_cycle(const struct sched_gate_list *oper,
  	return false;
  }
  
--static bool should_change_schedules(const struct sched_gate_list *admin,
--				    const struct sched_gate_list *oper,
--				    ktime_t end_time)
-+static bool should_change_sched(struct sched_gate_list *oper)
- {
--	ktime_t next_base_time, extension_time;
-+	bool change_to_admin_sched = false;
- 
--	if (!admin)
--		return false;
-+	if (oper->cycle_time_correction != INIT_CYCLE_TIME_CORRECTION) {
-+		/* The recent entry ran is the last one from oper */
-+		change_to_admin_sched = true;
-+		oper->cycle_time_correction = INIT_CYCLE_TIME_CORRECTION;
-+	}
- 
--	next_base_time = sched_base_time(admin);
-+	return change_to_admin_sched;
-+}
- 
--	/* This is the simple case, the end_time would fall after
--	 * the next schedule base_time.
--	 */
--	if (ktime_compare(next_base_time, end_time) <= 0)
-+static bool should_extend_cycle(const struct sched_gate_list *oper,
-+				ktime_t new_base_time,
-+				ktime_t entry_end_time,
-+				const struct sched_entry *entry)
++/* Open gate duration were calculated at the beginning with consideration of
++ * multiple entries. If cycle time correction is active, there's only a single
++ * remaining entry left from oper to run.
++ * Update open gate duration based on this last entry.
++ */
++static void update_open_gate_duration(struct sched_entry *entry,
++				      struct sched_gate_list *oper,
++				      int num_tc,
++				      u64 open_gate_duration)
 +{
-+	ktime_t next_cycle_end_time = ktime_add_ns(oper->cycle_end_time,
-+						   oper->cycle_time);
-+	bool extension_supported = oper->cycle_time_extension > 0 ? true : false;
-+	s64 extension_limit = oper->cycle_time_extension;
++	int tc;
 +
-+	if (extension_supported &&
-+	    list_is_last(&entry->list, &oper->entries) &&
-+	    ktime_before(new_base_time, next_cycle_end_time) &&
-+	    ktime_sub(new_base_time, entry_end_time) < extension_limit)
- 		return true;
-+	else
-+		return false;
-+}
- 
--	/* This is the cycle_time_extension case, if the end_time
--	 * plus the amount that can be extended would fall after the
--	 * next schedule base_time, we can extend the current schedule
--	 * for that amount.
--	 */
--	extension_time = ktime_add_ns(end_time, oper->cycle_time_extension);
-+static s64 get_cycle_time_correction(const struct sched_gate_list *oper,
-+				     ktime_t new_base_time,
-+				     ktime_t entry_end_time,
-+				     const struct sched_entry *entry)
-+{
-+	s64 correction = INIT_CYCLE_TIME_CORRECTION;
- 
--	/* FIXME: the IEEE 802.1Q-2018 Specification isn't clear about
--	 * how precisely the extension should be made. So after
--	 * conformance testing, this logic may change.
--	 */
--	if (ktime_compare(next_base_time, extension_time) <= 0)
--		return true;
 +	if (!entry || !oper)
-+		return correction;
- 
--	return false;
-+	if (ktime_compare(new_base_time, entry_end_time) <= 0) {
-+		/* negative or zero correction */
-+		correction = ktime_sub(new_base_time, entry_end_time);
-+	} else if (ktime_after(new_base_time, entry_end_time) &&
-+		   should_extend_cycle(oper, new_base_time,
-+				       entry_end_time, entry)) {
-+		/* positive correction */
-+		correction = ktime_sub(new_base_time, entry_end_time);
-+	}
++		return;
 +
-+	return correction;
- }
- 
- static enum hrtimer_restart advance_sched(struct hrtimer *timer)
-@@ -942,10 +971,8 @@ static enum hrtimer_restart advance_sched(struct hrtimer *timer)
- 	admin = rcu_dereference_protected(q->admin_sched,
- 					  lockdep_is_held(&q->current_entry_lock));
- 
--	if (!oper || oper->cycle_time_correction != INIT_CYCLE_TIME_CORRECTION) {
--		oper->cycle_time_correction = INIT_CYCLE_TIME_CORRECTION;
-+	if (!oper || should_change_sched(oper))
- 		switch_schedules(q, &admin, &oper);
--	}
- 
- 	/* This can happen in two cases: 1. this is the very first run
- 	 * of this function (i.e. we weren't running any schedule
-@@ -972,6 +999,22 @@ static enum hrtimer_restart advance_sched(struct hrtimer *timer)
- 	end_time = ktime_add_ns(entry->end_time, next->interval);
- 	end_time = min_t(ktime_t, end_time, oper->cycle_end_time);
- 
-+	if (admin) {
-+		ktime_t new_base_time = sched_base_time(admin);
-+
-+		oper->cycle_time_correction =
-+			get_cycle_time_correction(oper, new_base_time,
-+						  end_time, next);
-+
-+		if (cycle_corr_active(oper->cycle_time_correction)) {
-+			/* The next entry is the last entry we will run from
-+			 * oper, subsequent ones will take from the new admin
-+			 */
-+			oper->cycle_end_time = new_base_time;
-+			end_time = new_base_time;
++	for (tc = 0; tc < num_tc; tc++) {
++		if (entry->gate_mask & BIT(tc)) {
++			entry->gate_duration[tc] = open_gate_duration;
++			oper->max_open_gate_duration[tc] = open_gate_duration;
++		} else {
++			entry->gate_duration[tc] = 0;
++			oper->max_open_gate_duration[tc] = 0;
 +		}
 +	}
++}
 +
- 	for (tc = 0; tc < num_tc; tc++) {
- 		if (next->gate_duration[tc] == oper->cycle_time)
- 			next->gate_close_time[tc] = KTIME_MAX;
-@@ -980,14 +1023,6 @@ static enum hrtimer_restart advance_sched(struct hrtimer *timer)
- 								 next->gate_duration[tc]);
+ static bool should_change_sched(struct sched_gate_list *oper)
+ {
+ 	bool change_to_admin_sched = false;
+@@ -1010,13 +1038,28 @@ static enum hrtimer_restart advance_sched(struct hrtimer *timer)
+ 			/* The next entry is the last entry we will run from
+ 			 * oper, subsequent ones will take from the new admin
+ 			 */
++			u64 new_gate_duration =
++				next->interval + oper->cycle_time_correction;
++			struct qdisc_size_table *stab =
++				rtnl_dereference(q->root->stab);
++
+ 			oper->cycle_end_time = new_base_time;
+ 			end_time = new_base_time;
++
++			update_open_gate_duration(next, oper, num_tc,
++						  new_gate_duration);
++			taprio_update_queue_max_sdu(q, oper, stab);
+ 		}
  	}
  
--	if (should_change_schedules(admin, oper, end_time)) {
--		/* Set things so the next time this runs, the new
--		 * schedule runs.
--		 */
--		end_time = sched_base_time(admin);
--		oper->cycle_time_correction = 0;
--	}
--
- 	next->end_time = end_time;
- 	taprio_set_budgets(q, oper, next);
- 
+ 	for (tc = 0; tc < num_tc; tc++) {
+-		if (next->gate_duration[tc] == oper->cycle_time)
++		if (cycle_corr_active(oper->cycle_time_correction) &&
++		    (next->gate_mask & BIT(tc)))
++			/* Set to the new base time, ensuring a smooth transition
++			 * to the new schedule when the next entry finishes.
++			 */
++			next->gate_close_time[tc] = end_time;
++		else if (next->gate_duration[tc] == oper->cycle_time)
+ 			next->gate_close_time[tc] = KTIME_MAX;
+ 		else
+ 			next->gate_close_time[tc] = ktime_add_ns(entry->end_time,
 -- 
 2.25.1
 
