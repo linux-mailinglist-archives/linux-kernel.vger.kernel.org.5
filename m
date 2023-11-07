@@ -2,103 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D3B3D7E4907
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 20:14:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 382F47E490E
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 20:18:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234909AbjKGTOR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 14:14:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59112 "EHLO
+        id S234757AbjKGTS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 14:18:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233671AbjKGTOP (ORCPT
+        with ESMTP id S233671AbjKGTS2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 14:14:15 -0500
-Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91F8410A;
-        Tue,  7 Nov 2023 11:14:13 -0800 (PST)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id B051340E0192;
-        Tue,  7 Nov 2023 19:14:09 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id iFnUvtCdkqc2; Tue,  7 Nov 2023 19:14:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1699384447; bh=rjOtFeaNHpOrWagWwdPrXv1lywypy0gt2wnO9HYjDMg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bxqakIgKJXLvskHTp9n0kAcoxBGPd4qfa5IcthADTAYfkStA0E6pi4QMMhKL06gjy
-         f8zAf/8RicwZPLymzq9ZsvN33++Ey758DzbHN9hVX6oAmGNwEcVoaWo/H1ldCgkcKC
-         HJ8VLETimjnUYXBfin417xyvBP4EN38+0sR+ltZfbllvSdqP5eRgQEMjOErKcWzSVB
-         zpyqewOSkOCZZPJxUi75pN8fEGZ3y2J4eijXn7NTb6p1BNrDJsn2vbo6inR81p6h5M
-         pt9GzRx07Pvo3LfOSKUYlsFR403+wVPcsPC+LiU9J1K5FS8/WSbuB9SDri8rLuct+k
-         +SSREFKcdV873SXvM+Oq0hT8lVHywvQTgFXAz5WpGRue7OWnLlevd0L0fERclE6iEr
-         mvjaj2b+NS6RyDReRAwI3qcK5GOn5jI7xw3NyMTMDOVmtCMM5k5DlA5vWPJxoMVQja
-         36deXxlzh2h0T4X+/nnY1GRPAr6cNRHESVsEjdN8diqNG7o4H8jnnCCJ8ApJlONcmV
-         uPmEYJEh+yCsMlVSlo+07g8UI/X7dFP6esHrFwMehkDs0D8lripyVyDg8OKzsbVhnH
-         LMgXdUn+O4MMv01KKXV6mDb6L/qUlcsR6ha21apKa2sqeLLQSR9r5iPsbYi0zumP6G
-         S/HnHPXoM9koJGsaceJecymg=
-Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id BF8BE40E014B;
-        Tue,  7 Nov 2023 19:13:26 +0000 (UTC)
-Date:   Tue, 7 Nov 2023 20:13:21 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Tom Lendacky <thomas.lendacky@amd.com>
-Cc:     Michael Roth <michael.roth@amd.com>, kvm@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
-        jroedel@suse.de, hpa@zytor.com, ardb@kernel.org,
-        pbonzini@redhat.com, seanjc@google.com, vkuznets@redhat.com,
-        jmattson@google.com, luto@kernel.org, dave.hansen@linux.intel.com,
-        slp@redhat.com, pgonda@google.com, peterz@infradead.org,
-        srinivas.pandruvada@linux.intel.com, rientjes@google.com,
-        dovmurik@linux.ibm.com, tobin@ibm.com, vbabka@suse.cz,
-        kirill@shutemov.name, ak@linux.intel.com, tony.luck@intel.com,
-        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com,
-        alpergun@google.com, jarkko@kernel.org, ashish.kalra@amd.com,
-        nikunj.dadhania@amd.com, pankaj.gupta@amd.com,
-        liam.merwick@oracle.com, zhi.a.wang@intel.com,
-        Brijesh Singh <brijesh.singh@amd.com>
-Subject: Re: [PATCH v10 06/50] x86/sev: Add the host SEV-SNP initialization
- support
-Message-ID: <20231107191321.GBZUqMUQPMLOqhl+RH@fat_crate.local>
-References: <20231016132819.1002933-1-michael.roth@amd.com>
- <20231016132819.1002933-7-michael.roth@amd.com>
- <20231107163142.GAZUpmbt/i3himIf+E@fat_crate.local>
- <8ec38db1-5ccf-4684-bc0d-d48579ebf0d0@amd.com>
+        Tue, 7 Nov 2023 14:18:28 -0500
+Received: from mail-ua1-x934.google.com (mail-ua1-x934.google.com [IPv6:2607:f8b0:4864:20::934])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7ED2610A
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 11:18:26 -0800 (PST)
+Received: by mail-ua1-x934.google.com with SMTP id a1e0cc1a2514c-7bb44339bf7so812578241.0
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 11:18:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1699384705; x=1699989505; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xvnZXUeCL8FhD/wSOV9xBez5fYmNyK+0yuVOgsEAsH4=;
+        b=aJuLATG9ZP/C+5/wLye/plL1F3W9Z+3Qn4I74h+kKNZVXHISQTvedtA7LHnnDbFtDw
+         BAENj7LWDHgT86vh0cEJcaKuN6Bia15LG3CKiE1Dsi5qMrIc29pSRgI7Dy/rPFjzUD8b
+         ur3pGdXcgeI9q1BrrO7QUyQeMtj0w+ICLvacZU7BNaaKqhL22nE7IqCtoJz3o7pi7tag
+         U8nN7Lb6x7PGAQwELnCicY5NiKtB5D6koAKpW7ERDa5sheSTJvC2jdVuvwXo0BcxBWLb
+         POaQlrtbfbjiOJD+LVQmur+VyfHnV0/YBwPWKxdJpf7rH8GW56G7/BwuprVlaIPjtnlB
+         wb4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699384705; x=1699989505;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xvnZXUeCL8FhD/wSOV9xBez5fYmNyK+0yuVOgsEAsH4=;
+        b=ELgIkECoZDPPdtb7k289/OKBx+fE5QvFwJCW/qvF+wBLjp0cB03I1AMWpOxPX7PgBv
+         p5QMUGSjNi5tDUuiHnQGCmWZvDoLNooIJKk+99fNsZgaG50PgWdjgz4wqmdl1YVJL6UQ
+         pDSB/d9tyCUg3gh41bebpNWOjJIGgxJgiFqzq9MNXKz+dxgecc3+FYhBK3vGWdkbPyAO
+         YIvqeyt53tj42zl/ccxZVAbLoWJRu9fJIKVgfeQNw3h7AmKcw54sR6eunGAjt/b153i8
+         XA6N57zu+RWEJeWk4TZc4DWtfTEZEjDW/Klt/gKw1oO5P+iT38y9ka1tX+xV6TvGmPAm
+         bo/g==
+X-Gm-Message-State: AOJu0Yzg8GVHOjt+07gZI1TvvIikTHoldqs9FoAtGCn6wVQZ3+ZfRLM4
+        dasl8DXNY4mQtF2d8KgtaCmm75HciznqGdYXlcePOg==
+X-Google-Smtp-Source: AGHT+IFoEKGD38ubwQjgEsqRGCuPvG0XEjqsXZTKxgTt8nqnMXUURC03MKkY+3DBZ4e23cufmAhVlSEGgsKE7bPcg+E=
+X-Received: by 2002:a05:6102:3ecd:b0:45d:8b17:905b with SMTP id
+ n13-20020a0561023ecd00b0045d8b17905bmr9722877vsv.26.1699384705515; Tue, 07
+ Nov 2023 11:18:25 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <8ec38db1-5ccf-4684-bc0d-d48579ebf0d0@amd.com>
+References: <20231106130257.903265688@linuxfoundation.org>
+In-Reply-To: <20231106130257.903265688@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Wed, 8 Nov 2023 00:48:14 +0530
+Message-ID: <CA+G9fYvh7PbjPGz6AdPTzZz6_evyUjX4tedoHFb0Je6sYsYWBw@mail.gmail.com>
+Subject: Re: [PATCH 6.6 00/30] 6.6.1-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 07, 2023 at 12:32:58PM -0600, Tom Lendacky wrote:
-> It needs to be called early enough to allow for AutoIBRS to not be disabled
-> just because SNP is supported. By calling it where it is currently called,
-> the SNP feature can be cleared if, even though supported, SNP can't be used,
-> allowing AutoIBRS to be used as a more performant Spectre mitigation.
+On Mon, 6 Nov 2023 at 18:38, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 6.6.1 release.
+> There are 30 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 08 Nov 2023 13:02:46 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-=
+6.6.1-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-6.6.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-So far so good.
 
-However, early_rmptable_check -> snp_get_rmptable_info is unnecessary
-work which happens on every AP for no reason whatsoever. That's reading
-RMP_BASE and RMP_END, doing the same checks which it did on the BSP and
-then throwing away the computed rmp_base and rmp_sz, all once per AP.
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-I don't mind doing early work which needs to be done only once.
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-I mind doing work which needs to be done only once, on every AP.
+## Build
+* kernel: 6.6.1-rc1
+* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+* git branch: linux-6.6.y
+* git commit: ac6cb619d608d66d3624368b33cf8435168b0008
+* git describe: v6.6-31-gac6cb619d608
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.6.y/build/v6.6-3=
+1-gac6cb619d608
 
-Thx.
+## Test Regressions (compared to v6.6)
 
--- 
-Regards/Gruss,
-    Boris.
+## Metric Regressions (compared to v6.6)
 
-https://people.kernel.org/tglx/notes-about-netiquette
+## Test Fixes (compared to v6.6)
+
+## Metric Fixes (compared to v6.6)
+
+## Test result summary
+total: 140959, pass: 121301, fail: 2037, skip: 17621, xfail: 0
+
+## Build Summary
+* arc: 5 total, 5 passed, 0 failed
+* arm: 139 total, 139 passed, 0 failed
+* arm64: 45 total, 43 passed, 2 failed
+* i386: 36 total, 36 passed, 0 failed
+* mips: 20 total, 20 passed, 0 failed
+* parisc: 3 total, 3 passed, 0 failed
+* powerpc: 34 total, 34 passed, 0 failed
+* riscv: 21 total, 21 passed, 0 failed
+* s390: 12 total, 12 passed, 0 failed
+* sh: 10 total, 10 passed, 0 failed
+* sparc: 6 total, 6 passed, 0 failed
+* x86_64: 38 total, 38 passed, 0 failed
+
+## Test suites summary
+* boot
+* kselftest-android
+* kselftest-arm64
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers-dma-buf
+* kselftest-efivarfs
+* kselftest-exec
+* kselftest-filesystems
+* kselftest-filesystems-binderfs
+* kselftest-filesystems-epoll
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-ftrace
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-net-forwarding
+* kselftest-net-mptcp
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-user_events
+* kselftest-vDSO
+* kselftest-vm
+* kselftest-watchdog
+* kselftest-x86
+* kselftest-zram
+* kunit
+* libgpiod
+* libhugetlbfs
+* log-parser-boot
+* log-parser-test
+* ltp-cap_bounds
+* ltp-commands
+* ltp-containers
+* ltp-controllers
+* ltp-cpuhotplug
+* ltp-crypto
+* ltp-cve
+* ltp-dio
+* ltp-fcntl-locktests
+* ltp-filecaps
+* ltp-fs
+* ltp-fs_bind
+* ltp-fs_perms_simple
+* ltp-fsx
+* ltp-hugetlb
+* ltp-io
+* ltp-ipc
+* ltp-math
+* ltp-mm
+* ltp-nptl
+* ltp-pty
+* ltp-sched
+* ltp-securebits
+* ltp-smoke
+* ltp-syscalls
+* ltp-tracing
+* network-basic-tests
+* perf
+* rcutorture
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
