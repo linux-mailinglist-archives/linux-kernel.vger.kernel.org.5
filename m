@@ -2,133 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C26857E3FDC
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 14:15:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24F087E3F7F
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 14:04:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232720AbjKGNPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 08:15:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47764 "EHLO
+        id S234886AbjKGNEx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 08:04:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234989AbjKGNDy (ORCPT
+        with ESMTP id S234814AbjKGNEl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 08:03:54 -0500
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2076.outbound.protection.outlook.com [40.107.92.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9958F3C06;
-        Tue,  7 Nov 2023 04:49:06 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=X3oxFWc3euX5uloezuJ3LzXt/BrcfcEgR6pjyY0WH2bV9+EudFZN67/FTGBeQEByg7caAlRJHpb+mMOsrupX2X6bWgRB4p9Pg+SzwX+lWBV7epm3VwtwkEwUgi4J7472J3h1quZ6hGaOol7Bf0wcDy+pPHHw1bpY4UUjNgL+ttUFl/vsZ0m8+gxYXyEkFxJKG+e7yBgsiM5wKR+MX/zQE5RhC90SxzQS9siD1ggF0pfpUIAvUrELQMuAxk/fvp+CkbC4JMUIohBPyQS0z+2Fj5DcCwih8iMos3PC0BLIihoJ6L3vLFiLYYx4L7mPI3osTaxc5JO/NKrrn3imaNoIAg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=jILaPK3XW5IBAPu2pU3nmp6cIQpGpaDO+5XtMVyiczs=;
- b=GGb5qPR6spAVauDxtO6ZS+EuV12Mt19+h/5IyPcgeRZSOqDQm9mssLTHsiwpmbYISgdNlYCzmTzvX4/xlcoXnn1c2CIIxUXYxWTeltBwQYejXhN7iR2mGHjMULRcjR7GwAL4anxGRqzLxUabmUXi92M2bKM6GvTJC8d9eqq9WITjmUEc47dzvaCDarmAtDlwpGWvEFGxXd0jsSWyYYWnVushJ4dtcIau9ZawkyRirYLn3a6OYlnbdW3uQD3JjRBjO1sajR8RC1/KN7cOMIfgPDd5SkuaCSnn9aCzfMS36dBA+ERCgIUKPDiCDAALbuq0zvSxfnaOGhBDQCx6caSZXA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jILaPK3XW5IBAPu2pU3nmp6cIQpGpaDO+5XtMVyiczs=;
- b=fDi3PyKoOn4CrjQ3vH31LJPmN6n3gxat1L3HpT6+4xJFfyuOibGWJBIYyCcC9e27S2DQFEsaRpKFG1NHipqFGsP2D+yhJztuRW7sKoFaz0JGYbBWHkMJ1JW6uk8rtCM7lozwoAiT4UCbRdTRHUH+Zg15n91GsNmQJGY3sF4q1QJCbpmTCDXiXjTiOHa5ZPqI11l5g+iX4jK19lFQ+9dc5AFx+nXl0k6fVEI9I9ks51o8vahAZiBmVp/fQw1OWYUEwdGlZCwsh1LiSWA541MmiZhz8Y3lTbVAvKHZuqYKk2vFXoCb9wW+vpYQrQ5P32mzCHGboY+cByI9XdFlf0DzBg==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by MW4PR12MB6876.namprd12.prod.outlook.com (2603:10b6:303:208::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.30; Tue, 7 Nov
- 2023 12:49:03 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::b53a:1092:9be2:cfb9]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::b53a:1092:9be2:cfb9%5]) with mapi id 15.20.6954.027; Tue, 7 Nov 2023
- 12:49:03 +0000
-Date:   Tue, 7 Nov 2023 08:49:02 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Cindy Lu <lulu@redhat.com>, jasowang@redhat.com,
-        yi.l.liu@intel.com, linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
-Subject: Re: [RFC v1 0/8] vhost-vdpa: add support for iommufd
-Message-ID: <20231107124902.GJ4488@nvidia.com>
-References: <20231103171641.1703146-1-lulu@redhat.com>
- <20231107022847-mutt-send-email-mst@kernel.org>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231107022847-mutt-send-email-mst@kernel.org>
-X-ClientProxiedBy: BL1P223CA0003.NAMP223.PROD.OUTLOOK.COM
- (2603:10b6:208:2c4::8) To LV2PR12MB5869.namprd12.prod.outlook.com
- (2603:10b6:408:176::16)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|MW4PR12MB6876:EE_
-X-MS-Office365-Filtering-Correlation-Id: 460a72ab-6fde-4221-a1c3-08dbdf8fec08
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 3Q/PJQtLTIMKPQ5AIhQo6VxNIXrr4Cnbtw6ZVfznrMlH/30TddcP7+hKH9w5CYd5B4bpzmndDD7f4jakJwDWcKktger7D1OgW02xK+qgp1YszpcRSS2iSW64MyUUS1K/s854wHLZnN3hWol/9HLJDCjAvhS+SaSoq6yGVVO1NdWN6SaSR5Zhsf25pmzoLT/twARu+yATWf5AJKz3lfioEYeCjAPblzDrNGEXyjhf6o4lFuCYsDakvXY9Gkma+/mMRQZ4yRjPq0ulrAZFrbrCI3mZzDoPqfX1wLxriF2kaZPSzdNUkZ8XdbFuf/CPPTZwOcut/djM45Tuu8rtoOjhMuh4VPJlAD9zMuW6Ym7DCPHC5TQHYb/g2VS/ObbJzE+excimbXf6pXSTF5eZUvQ2/o/Yc/w9PF1pRHtsSGHJDdon9PKGUrQxKDpu8oyxGLdvzayL0JmpQ3PpPYbDIa9dy/UhWAYIPYqIiXDdPGfQDi6QQQCJrunE99pCjr5VJeFMkgrRbKRMui1HrE3cZqrDFEf5Xh5ex4t4REyz/+ZoPC1y1VRZ4/jHtFPKVHD2Fh+H
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(346002)(396003)(39860400002)(376002)(136003)(230922051799003)(451199024)(64100799003)(186009)(1800799009)(38100700002)(5660300002)(36756003)(33656002)(2906002)(4744005)(86362001)(41300700001)(8936002)(8676002)(4326008)(6512007)(2616005)(1076003)(478600001)(66556008)(316002)(6486002)(66476007)(6916009)(26005)(66946007)(6506007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?B21OuYyObUYvFbsyaptJCqB+ZaQxc589OdGxxWg14oKC2O/im5X9zxscwmN2?=
- =?us-ascii?Q?TGV/Wqh4hF5DDKTkPFJkBFi5YZVU98hkMofR9GzaJVWrsFDuRzZYd3KvoerV?=
- =?us-ascii?Q?81cnfvbXgDedrObHFemhWhoIzESLMrwVJUOlPQkuQLw9+G6htdtFN87TRHuq?=
- =?us-ascii?Q?PQfeiIIjJtYZBZKj1KPo0Q6KIer88OwjMYcNawlm6CasWI7PJZ8HoiJhCZyW?=
- =?us-ascii?Q?60tmhCAb6Sc8kh3sQXc22zc7VimOVlzjYuBamHefh+Blnqskd1MP8xE07C4J?=
- =?us-ascii?Q?gCQARjeEuJOdgevgzcrOc1ngWeuIcsXzbcHJ+YCSeL/lsjXtH5I6ya2QkEhJ?=
- =?us-ascii?Q?p3xmzLkqvBHCr+jpzxhRZw1ZXsSY6UGZVN9jBbW5UyxOQgjxJglgCfswCahm?=
- =?us-ascii?Q?fYfc68ktfoR82YOahKNdbyTi1yhqMvJIbmPdM+eYgVN0czRT7Oc0Vg+hCj8s?=
- =?us-ascii?Q?JooTfX8wz8V+r4hUV/wYNklC8Y+S43zVMZ1rPfIIJk7lKT5mXoihhATW419L?=
- =?us-ascii?Q?3h8HwrNqrsd1g0UK26CChFnsBi4z03mjcltUU9rgULHSpTDI0wWCNQmrWhii?=
- =?us-ascii?Q?YGFPcogkmZ6Iklqhit+rva71Hy27QFjUbbQCq4PACtMqhSRRl8BJCuPo6E6F?=
- =?us-ascii?Q?Qh/V/u4otssNv+E8xwCG0pLQU6i4Ob27paAZAly0kYJyl0Ojm1X66Lgf9xnz?=
- =?us-ascii?Q?SqosmkyL3uXrZQYYOt2k/lw/FRHaftuA0De1CFawbcz+qSlEJU5GOWmHbPhs?=
- =?us-ascii?Q?uCI+zecDWJlthmxtrS29MPGZJWYHVjnH2lvQrOinfqLGJjD0n+jmCRc+txSn?=
- =?us-ascii?Q?ZwFxHdaKptpF6jPnM38nGJkV5WCJz0rL9bk38ZLGX60p0JTMvpLDBG0455Sr?=
- =?us-ascii?Q?vbomfy28/mqgLx2NPISkzLJ0h+qTD4ORYGLOQ1Do2yD0IM0kF+ZYsWJP/vmN?=
- =?us-ascii?Q?ecOJb6QcvkbFfhd47NuRvo6zifT5SVUxqav5hu03eZsYsryxsCSzXi/qXR8M?=
- =?us-ascii?Q?dMocu6Lf9n8X2+5BaDmnDr2MpcFKLBo3nevlUeb5gLwArhPxBAoKloodIulq?=
- =?us-ascii?Q?MBxtZvYWMpnzurO3t6Oa+Pv6M584IhrCQBA3DJlVhAmzXv05L44MI432XDHI?=
- =?us-ascii?Q?5ZsDuBfwSRVUcpwWFk7leN0IE7tlzXT1/4wTMQeqWN1XQhxOeJAVwFoCui6q?=
- =?us-ascii?Q?deIkr9vJ2oEUQ3HXVFLoCC9wPh3+xfk83u6cyK2Zt64v5fZorlvk2QUa66Sp?=
- =?us-ascii?Q?3txBxVqzYXBmATa3ZpIUlBC6YKXMuX71B4Z4xOH3mqZXNzOuQGtYbQdIVjpt?=
- =?us-ascii?Q?dH5QyX4V++AD1WFa3ThJfwUROtnkhwgiNrtUz3loapjiU65aJCM5Zficr6SJ?=
- =?us-ascii?Q?J69QcsfVVfl/cJ1LjiGHh0VK4yEBfIOeQcIhdHzkMcv0NtIrwgOGVIXNmvW4?=
- =?us-ascii?Q?IPE3U7bEz7+eRQoaJB2PpTa1YOgX5AP6TTRbr34XpdwFLFguTx35ZotwQfSj?=
- =?us-ascii?Q?79TWD3vnBE7yxFnWuJnSkShPL/kZpilxM8zqo85U4jKlMZkiNGO9noMs6QHq?=
- =?us-ascii?Q?WmaEDuUX9O+jSUqJS7XljStp1iKCDnoLe+vrJ0jc?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 460a72ab-6fde-4221-a1c3-08dbdf8fec08
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Nov 2023 12:49:03.7684
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 3zsWd3vWwbODOmqfSKCdlGqWk0TMVG8NT06krhRA3YCZtQPew16UoKph6wMbHVeJ
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR12MB6876
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+        Tue, 7 Nov 2023 08:04:41 -0500
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12AD13AB4;
+        Tue,  7 Nov 2023 04:50:44 -0800 (PST)
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A7CRauu016029;
+        Tue, 7 Nov 2023 12:50:35 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id; s=qcppdkim1;
+ bh=BL0uDTEWGdbQxbpyn753QKl4MctRTSXPvVBmvvaABXM=;
+ b=RdAl44xLxGdOVZczCjr31nFNsCagaCrJBCsh4kk1E9+EMUV3GTdWBCgTOqsU2370GSXx
+ YRXXAu/nrXnXSR2UPOatDkc0BD3HRARngdsBhSMp1i0ZcS+280ow3dKoywnwAkWkdQ2U
+ uvfgxsxiDhEd9NwGOE3e1SK0E6BtWWuJO4YoabkbmYijw5lf2OxZL0V8dxTbsX8ZCRxn
+ krZ/bLzVz2bcjBc4Sm+GqidVdCGNxu3/B3onyiAbVN46kBXZPVg7Lm05ZlNvK57DlvKZ
+ dg3APgShIqVr3UE60AhH4N1JLjLNMdE5BHP7G3KxHjc236iIDcbYtX1wl20QcoaU5JL6 ew== 
+Received: from apblrppmta02.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u7n8u01bd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 07 Nov 2023 12:50:34 +0000
+Received: from pps.filterd (APBLRPPMTA02.qualcomm.com [127.0.0.1])
+        by APBLRPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 3A7CoVjF000705;
+        Tue, 7 Nov 2023 12:50:31 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 3u5f1m400n-1;
+        Tue, 07 Nov 2023 12:50:31 +0000
+Received: from APBLRPPMTA02.qualcomm.com (APBLRPPMTA02.qualcomm.com [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3A7CoVc7000700;
+        Tue, 7 Nov 2023 12:50:31 GMT
+Received: from hu-sgudaval-hyd.qualcomm.com (hu-msarkar-hyd.qualcomm.com [10.213.111.194])
+        by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 3A7CoVJt000699;
+        Tue, 07 Nov 2023 12:50:31 +0000
+Received: by hu-sgudaval-hyd.qualcomm.com (Postfix, from userid 3891782)
+        id 76B1F4C77; Tue,  7 Nov 2023 18:20:30 +0530 (+0530)
+From:   Mrinmay Sarkar <quic_msarkar@quicinc.com>
+To:     agross@kernel.org, andersson@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        konrad.dybcio@linaro.org, mani@kernel.org, robh+dt@kernel.org
+Cc:     quic_shazhuss@quicinc.com, quic_nitegupt@quicinc.com,
+        quic_ramkri@quicinc.com, quic_nayiluri@quicinc.com,
+        dmitry.baryshkov@linaro.org, robh@kernel.org,
+        quic_krichai@quicinc.com, quic_vbadigan@quicinc.com,
+        quic_parass@quicinc.com, quic_schintav@quicinc.com,
+        quic_shijjose@quicinc.com,
+        Mrinmay Sarkar <quic_msarkar@quicinc.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Kishon Vijay Abraham I <kishon@kernel.org>,
+        linux-pci@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mhi@lists.linux.dev
+Subject: [PATCH v7 0/4] arm64: qcom: sa8775p: add support for EP PCIe
+Date:   Tue,  7 Nov 2023 18:20:24 +0530
+Message-Id: <1699361428-12802-1-git-send-email-quic_msarkar@quicinc.com>
+X-Mailer: git-send-email 2.7.4
+X-QCInternal: smtphost
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: YwOrzkXMnxZ3kpfsyaF_Dn6U_ArYtBS2
+X-Proofpoint-ORIG-GUID: YwOrzkXMnxZ3kpfsyaF_Dn6U_ArYtBS2
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-07_02,2023-11-07_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 spamscore=0
+ malwarescore=0 clxscore=1015 phishscore=0 priorityscore=1501
+ mlxlogscore=643 adultscore=0 mlxscore=0 lowpriorityscore=0 impostorscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2310240000 definitions=main-2311070105
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 07, 2023 at 02:30:34AM -0500, Michael S. Tsirkin wrote:
-> On Sat, Nov 04, 2023 at 01:16:33AM +0800, Cindy Lu wrote:
-> > 
-> > Hi All
-> > This code provides the iommufd support for vdpa device
-> > This code fixes the bugs from the last version and also add the asid support. rebase on kernel
-> > v6,6-rc3
-> > Test passed in the physical device (vp_vdpa), but  there are still some problems in the emulated device (vdpa_sim_net), 
-> 
-> What kind of problems? Understanding that will make it easier
-> to figure out whether this is worth reviewing.
+This series adds the relavent DT bindings, new compatible string,
+add support to EPF driver and add EP PCIe node in dtsi file for
+ep pcie0 controller.
 
-IMHO, this patch series needs to spend more time internally to Red Hat
-before it is presented to the community. It is too far away from
-something worth reviewing at this point.
+v6 -> v7:
+- add reviewed by tag in commit message in all patches.
+- update commit message in patch 2 as per comment.
+- update reason for reusing PID in commit message.
 
-Jason
+v5 -> v6:
+- update cover letter.
+
+v4 -> v5:
+- add maxItems to the respective field to constrain io space and
+  interrupt in all variants.
+
+v3 -> v4:
+- add maxItems field in dt bindings
+- update comment in patch2
+- dropped PHY driver patch as it is already applied [1]
+- update comment in EPF driver patch
+- update commect in dtsi and add iommus instead of iommu-map
+
+[1] https://lore.kernel.org/all/169804254205.383714.18423881810869732517.b4-ty@kernel.org/
+
+v2 -> v3:
+- removed if/then schemas, added minItems for reg,
+  reg-bnames, interrupt and interrupt-names instead.
+- adding qcom,sa8775p-pcie-ep compitable for sa8775p
+  as we have some specific change to add.
+- reusing sm8450's pcs_misc num table as it is same as sa8775p.
+  used appropriate namespace for pcs.
+- remove const from sa8775p_header as kernel test robot
+  throwing some warnings due to this.
+- remove fallback compatiable as we are adding compatiable for sa8775p.
+
+v1 -> v2:
+- update description for dma
+- Reusing qcom,sdx55-pcie-ep compatibe so remove compaitable
+  for sa8775p
+- sort the defines in phy header file and remove extra defines
+- add const in return type pci_epf_header and remove MHI_EPF_USE_DMA
+  flag as hdma patch is not ready
+- add fallback compatiable as qcom,sdx55-pcie-ep, add iommu property
+
+Mrinmay Sarkar (4):
+  dt-bindings: PCI: qcom-ep: Add support for SA8775P SoC
+  PCI: qcom-ep: Add support for SA8775P SOC
+  PCI: epf-mhi: Add support for SA8775P
+  arm64: dts: qcom: sa8775p: Add ep pcie0 controller node
+
+ .../devicetree/bindings/pci/qcom,pcie-ep.yaml      | 64 +++++++++++++++++++++-
+ arch/arm64/boot/dts/qcom/sa8775p.dtsi              | 46 ++++++++++++++++
+ drivers/pci/controller/dwc/pcie-qcom-ep.c          |  1 +
+ drivers/pci/endpoint/functions/pci-epf-mhi.c       | 17 ++++++
+ 4 files changed, 126 insertions(+), 2 deletions(-)
+
+-- 
+2.7.4
+
