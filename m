@@ -2,180 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 39EA47E3490
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 05:37:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AA297E3499
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Nov 2023 05:46:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233411AbjKGEhM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Nov 2023 23:37:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55030 "EHLO
+        id S233370AbjKGEpn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Nov 2023 23:45:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230208AbjKGEhI (ORCPT
+        with ESMTP id S232973AbjKGEpl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Nov 2023 23:37:08 -0500
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3F0911D
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Nov 2023 20:37:05 -0800 (PST)
-Received: by mail-pg1-x533.google.com with SMTP id 41be03b00d2f7-5bd0631f630so3859188a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Nov 2023 20:37:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699331825; x=1699936625; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=WGCkBY5WRLeayy3l30tNZQ/lx6Qo6qQvQDwDMwFQ+1I=;
-        b=Dbf0Ltzk2CeiJ74RbAUUzF2RpYI6I79vUk/ID8eyXIz2G70zjULTDwSvIzz1/6L+ru
-         w20ACWkhXGWT6nfRRrDMVkPRDu0ZKlteIHalOzwuA8EXZLC37xFyiPeZPm7wwaLelrBe
-         0gzUxEkF9hscYy5eevENCGEN+PdPZ7y4ncq8QSYdL0XzN5HmQ58xKgvN34c1b07xBtDz
-         bzjDGzIFuoZt6ynJMPVCYrGjMQDVVig+Eivc/UzFDF6/so+zILinH9+w7zv0Xp4MLOkp
-         IYcd0tPxBgxqYE3AE42X6wyfLhO+H4pozqqNfNb38AmZGnLUrjU/j/5xwY6keDidzMps
-         5WKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699331825; x=1699936625;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=WGCkBY5WRLeayy3l30tNZQ/lx6Qo6qQvQDwDMwFQ+1I=;
-        b=coBrXLFXu5QvdwxtRRdPLyDK90z4nplOwUwq6c1rkxqtPdc3kUOK73QWB9EJ9XU2T/
-         bCAXKYUcWLlpzeEJsD0qV1toPHU7F6hIVL7Ihmysf6mHb/DFXAvOKfO5kwF+K7qIEzRb
-         cUakaEDf9oi+B8YWzEI5HE56Qrmc8FKhfd5Rb8+s94+xOrZexXkS4j/FpbcaPt0Ym3Bb
-         xbXYrvneWuCr+hrfnCrQPAXgGG1K1ZE+9ckx29a4Vwsx2ed+FczkSHqQdHDHtHWG4M//
-         csxahT98fZgmKVfM7/Edj2i5JcqHqI+zg2gZbCNW6C/W/SHVC9QhIAfPhmSi1ng0MuO1
-         288Q==
-X-Gm-Message-State: AOJu0YzaC7CP8VC0wlCuHhgDp1BI5jqsWZn5QG0Pr0us2UxGU+1ijEYD
-        RLbkwrCcJU6eTMCjAtS68Vi1odozriQGq2kTHieJLA==
-X-Google-Smtp-Source: AGHT+IGg4IOO6iwAswJi2mx9of/jHYKlPfVVgAfZJKHgBHD1eD+l0sMvC0aW2GnKG+Lb8F2pQhN8cJmgPngMWzUV98w=
-X-Received: by 2002:a17:90b:1d06:b0:268:808:8e82 with SMTP id
- on6-20020a17090b1d0600b0026808088e82mr2056098pjb.1.1699331824947; Mon, 06 Nov
- 2023 20:37:04 -0800 (PST)
+        Mon, 6 Nov 2023 23:45:41 -0500
+Received: from NAM04-BN8-obe.outbound.protection.outlook.com (mail-bn8nam04on2062.outbound.protection.outlook.com [40.107.100.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF1D9FE;
+        Mon,  6 Nov 2023 20:45:37 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=c4cO3ScXTQqGLZJLdVqg2HqTQcZEVvscq520SLpA9CFmu91ICcSrZskl7h39H2B8aHzNlybp4UBGfnS3MLhO8iP3iJR3Kn2BGknQVRyJomW7SsG7quIF1LXcByp/O845X/VPLUYLmBMtwCl/p7a0DRQujjL77NCKou9JwlvI5DovfVDM3UzFwEHke2Dt9iuRBUy68xG0BCTDawtGROGoXP5T1fbHqmoxydnHnar6woy1LZaQKEC+YPMnzh6nOrlv4DbbCe3t+azU10gCiQSgvj/lQARc7dbfdLwkvp28reMNtaa67q9704/W+1aygN6mmXW0KVV9wYJoZAfglhtJmw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ZBJqiXb5quAMaV4OK3wIkVWeHlBKk66b0oLyLpQOqXk=;
+ b=Jsnkx1UvAXxCmR3Ef5UxHJiMeHvnfFHPko9MdclejJvjcm2YylpA2BKu9J1GO8Ccmwg3bEkVizTEGHo/mD2AVQybMBMEeC3NZsxk0UZTNiEqdhJWdCwL2MNV0Q7tvFzGc4FHEHqdWsaD9nZ7k1sqEWXNep6/q+MuxSNmR0TRyB66ey97HUps1nKMuIAgGUJTjkcauSOHq15IIUSiEzcO8AKq8O3FSlVZOJBmziIFQqeJboYsLtB01ARqik6eAxC4AdKNNJxwMoXIkiIAdoASBbB9f56KxzwB/bLF/OSdltURgJGjbPkDUhiUNzYY3LxaVi+l1Zkx9+eUuQ3gIyx0iw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZBJqiXb5quAMaV4OK3wIkVWeHlBKk66b0oLyLpQOqXk=;
+ b=lzG+h6QMVGqDlRt1ZtD7N95ONNSLD4V2alReEse+40KduyEZrzWyCs4LNR4xqHox/NBFAr+hG0Iuy6IzqWyJ321NGAs3m9KXvUwDu7aE3PSKKXC6LRrJSjtEifWT31OzJJKwefGdF8jbHtFaoFd5Xnv6T+PtjHL7cSQmhq0jU5U=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from BYAPR12MB4614.namprd12.prod.outlook.com (2603:10b6:a03:a6::22)
+ by PH7PR12MB6563.namprd12.prod.outlook.com (2603:10b6:510:211::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.28; Tue, 7 Nov
+ 2023 04:45:35 +0000
+Received: from BYAPR12MB4614.namprd12.prod.outlook.com
+ ([fe80::ce36:81fc:9c50:c892]) by BYAPR12MB4614.namprd12.prod.outlook.com
+ ([fe80::ce36:81fc:9c50:c892%6]) with mapi id 15.20.6954.028; Tue, 7 Nov 2023
+ 04:45:35 +0000
+Message-ID: <6bd4f6d9-07c9-9ac1-2f3f-bb083b9c8085@amd.com>
+Date:   Tue, 7 Nov 2023 10:15:24 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.13.1
+Subject: Re: [PATCH v2] drm: amd: Resolve Sphinx unexpected indentation
+ warning
+Content-Language: en-US
+To:     Hunter Chasens <hunter.chasens18@ncf.edu>,
+        linux-kernel@vger.kernel.org
+Cc:     linux-doc@vger.kernel.org, Xinhui.Pan@amd.com,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        daniel@ffwll.ch, alexander.deucher@amd.com, airlied@gmail.com,
+        christian.koenig@amd.com
+References: <20231106201739.29507-1-hunter.chasens18@ncf.edu>
+From:   "Lazar, Lijo" <lijo.lazar@amd.com>
+In-Reply-To: <20231106201739.29507-1-hunter.chasens18@ncf.edu>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: PN3PR01CA0033.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:c01:97::8) To BYAPR12MB4614.namprd12.prod.outlook.com
+ (2603:10b6:a03:a6::22)
 MIME-Version: 1.0
-References: <20231013074540.8980-1-masahisa.kojima@linaro.org>
- <20231013074540.8980-7-masahisa.kojima@linaro.org> <CAFA6WYMoWn6MgoRp8hD89PwmLeHaO+X1sGB0QOMQDLJtuseP3g@mail.gmail.com>
-In-Reply-To: <CAFA6WYMoWn6MgoRp8hD89PwmLeHaO+X1sGB0QOMQDLJtuseP3g@mail.gmail.com>
-From:   Masahisa Kojima <masahisa.kojima@linaro.org>
-Date:   Tue, 7 Nov 2023 13:36:53 +0900
-Message-ID: <CADQ0-X99y_q+3L+dRWr39uV63YX6_9HrNQzFpZW5_SvmDn1vqQ@mail.gmail.com>
-Subject: Re: [PATCH v9 6/6] tee: optee: restore efivars ops when
- tee-supplicant stops
-To:     Sumit Garg <sumit.garg@linaro.org>
-Cc:     Ard Biesheuvel <ardb@kernel.org>,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        linux-kernel@vger.kernel.org, op-tee@lists.trustedfirmware.org,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Johan Hovold <johan+linaro@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Heinrich Schuchardt <heinrich.schuchardt@canonical.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        linux-efi@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BYAPR12MB4614:EE_|PH7PR12MB6563:EE_
+X-MS-Office365-Filtering-Correlation-Id: 920f9335-4f17-46ac-b2a0-08dbdf4c60db
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: YtOBkitK64/ik9BaRTOtnngxbaqS/eXhgiRVEG10qGk3X7z9aQy5C8+zmr3WU2vP9W4N1+w9j7igd+BWQd4u5Q7tYrs+0trpLVfcx+VqeMH9rsR0TbPBXUDMijwWoha7OH4sBMI7BNSWVS38NxGJqxyTUdyPY4pyw7E/OAVhDj32qdwwFZMomgOYJN/VFV4qI+mUGaLRydVaEkytlZPB4dXIZTvh76hi2UIvcJqI8nPfhlvL8C3k9x0leb2US/XWWpfHchfJ6rHofnnQU1X3hG0OCMMPLzuji86tKkIYIU5uqjVpDnw4x9eI58hBRUdGe1/CjgGegeO8TbZQ9WlwbRk/UEkPbO1MzqCSGsXnuC/7yQCReqDvl92NUTZ+CEasSOmjmRzL+GAae/ZL9IwAsDdjDjILwUMqvxRik3HCOGaC9mKzjuV81Juh2uUZaEv9u1BTRhzIaMVSyg3kuUZRNL8CuESxKv3enXWOslaQQcsKMXxAmJnr6AMN8IrjfLRyLRdI1xQ3y/AqQu+UZm1S1wZlXzXdllHL5J24O/d7ZB4oU7M1CvgwjNmj0Pea9jDZsmdtmZXt82DGjouuwd9EklrCfif42dWoUNbUE+5C1uFH5gZAV1WKsn7LkyYWSHomGgofW535D3ZX2r8s7YLY4vJGPzDvIWc4GUW6lehsW9xKY9drPbslxCkB+h+xV8as
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB4614.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(396003)(376002)(136003)(346002)(366004)(230173577357003)(230273577357003)(230922051799003)(64100799003)(451199024)(1800799009)(186009)(4326008)(8676002)(8936002)(316002)(41300700001)(36756003)(2906002)(38100700002)(5660300002)(31696002)(53546011)(6486002)(66556008)(6512007)(66476007)(31686004)(86362001)(66946007)(83380400001)(26005)(2616005)(6666004)(478600001)(6506007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?L2oyS0I3alZ6aDREeDJNc2YzdkJPTU5qcUszWUtKRHd2ZlpMSTNRc3dXWml3?=
+ =?utf-8?B?Zm1lVzV0VHYxRU9VczdJcTFCM1ZiUVRQUjZpcnlFNkx6NVRrRndRaXVqdVcy?=
+ =?utf-8?B?RGM5YzFmYkhQREhpaUQ3TWNialZtc0FGd3l3ZVI2dHVrOWtWYjJUUVRON1Iy?=
+ =?utf-8?B?U0VQb3ZQL3dpMjhHTSsyZkVGazI2TE9CaU93ZXM4TVp4d0dsZFZVUHR3VTRW?=
+ =?utf-8?B?a3lxVHBxeWpxc3JLN1dNRFRrL0xZOXNmaXI3U2JQMTBzamhZaklwR3N5OFBS?=
+ =?utf-8?B?eGVOcUNqam5ZTTYxSGJweU45N2xSR0htbnFNK2szdXM2N0xzaFJZcHZqZFZq?=
+ =?utf-8?B?OEhrNGtDVm04OVRrbUhsUk45WEMxd09vUXBUSUZCcmNKS04wbVBZR0NLK0tQ?=
+ =?utf-8?B?aTdaLysyWWFudXRlUEVsQVcrUUFGci9wN3MwUFlZRkIzMlI0RHpnR3kzeXpB?=
+ =?utf-8?B?WWJsSGx6RVRhWGtjNFBIMEVIbHhsU3lrb2d1YWlsRGNwcTdPRG1jRlYwWEVv?=
+ =?utf-8?B?aThlSXVQam85K21MYllnVUViNkpIZmVlMUh1Q2J2K2YxclZ0bmQ3OHRycWkr?=
+ =?utf-8?B?SFVnejR1SGY0YXZBblJUVzNrejJERXRZMXZqU09Ua04yTW95dEpVNElHSG1j?=
+ =?utf-8?B?N21EVSt6SGpJYUZBcW4vMlNIaS9zcnZ6N2tDbHRCaTU3ejBhT29ZNVQveWVh?=
+ =?utf-8?B?RFAvd2JxUWVCZWRTRmZEcWJydmV1MkFMVW9VaGhxcmU0RjZ4UXJWWFN5UEVv?=
+ =?utf-8?B?MEhhTjAxNUpvSHVtbjZXZGlnQzFrUi80dUxlMThYM3R6SzI1eXd3WUFFZjdP?=
+ =?utf-8?B?bHRWMG5WQVhqWTRUdFpxeW5ZWldBbjdjUzVBQmkxZnlBc1RJL2FLeWhRUFBh?=
+ =?utf-8?B?bkdmWjhFL1VmNE1KK2RsajdFWk94cnBGT0RLN1ZBRHhkamNHVjhmVzZYSFFi?=
+ =?utf-8?B?MkYyUDdnNFUrWTBIelFkaDFJSnhicHBsZnZvS2NhM3ZPSEdPeklTYk92YTc0?=
+ =?utf-8?B?dnNUeko1aXRvYkVsUVprc2NJR0szYWhPdVA4aUEvdGxQTytXQ3pWejdOc2hk?=
+ =?utf-8?B?WkY4V2RnU0xuME1ubXc0cWNIY1lSNTFIVWsvU01QY0xoaGlRdkd5TjVCT0hi?=
+ =?utf-8?B?SHpHUTdITTZQaTAwOGtCUGhuODFqWUcyT1R0elEyZVI4emJUL2ZqS1ZPL0lR?=
+ =?utf-8?B?QUplODRmVFBiYloyTWwrR0ZYTjVuNFM5Q2JRWU1PRE9pR3lkRXdoYWk1dkor?=
+ =?utf-8?B?N0ZFMXFJdm9VNEhaOThmNlpRb29DVU9kM1o5RWRUS3VDNWkwSG9KS3FGOHNG?=
+ =?utf-8?B?bmFHbmNxTGpJV1REZXRTdFpZdHJqdm1yeFBONG9wRjVqUk83bzY5R1BLSUVU?=
+ =?utf-8?B?czE4L25xZ0tEKzNpRHRIMlErVmZkVjRiWmFUL1l6bW1nOTRwTGtkeS9PcGlr?=
+ =?utf-8?B?YWpGcWlOVkdkVjNJNmJrckpSUlEvWnpHbnh4S1JQVHVEREtYSFk5Ym13OE56?=
+ =?utf-8?B?aVAzSENHY0NyZ3kvbENuT1ZYd25uazIwT0hDOW9tcC80RHA0cHprV09CMVN4?=
+ =?utf-8?B?TVFud3pkN0hZc2RERDNMV09BOWJRNG8rb2RDalBuWVZjb2o5S0x0SjB3TWh1?=
+ =?utf-8?B?VkRhN0hwY1ZsMVByWmc5b05qRHQzaVZTVTkxSGRXemhtcWpicDdRcHQycDFW?=
+ =?utf-8?B?NnBKYitGd3lTaVMzODhUYnoyL0Z6SEErR1RhYUlSRnEzdmpRaDdHQWZ3cjNW?=
+ =?utf-8?B?a1pTbzhJVjJBQXBFUm5QL3BmL0oyRTRDbG5VWVZkU0RwK1ZrTERHU0NHVlhM?=
+ =?utf-8?B?UnVwMUFITGF1c2tOdi9OTjhRQXhGWFJrV3oySWhOa1RLbUQvMzkyVTFuSk1z?=
+ =?utf-8?B?YjBhd2FuOVNrUXBFd2dvR0xTUHprWDRwYzdMWUlwWjZsamd1dU1xNGZXNW5Z?=
+ =?utf-8?B?bWtvd2U3UGtwNmhleTVnVmlBdzJIa1Zkc3B6akJYNS9WUjBoanpLZHUwVmw3?=
+ =?utf-8?B?WEtJd2kzTmJHOE5jYkZuUDRxZXU4QXN2cXprRXlWZVd3QXg4NktHTktTczgy?=
+ =?utf-8?B?MXgyaXNDa3d4cm9jUkdMa3FMd0JXTmtIT0owUkVLMUZqUG5JcG1KZlNOcGdT?=
+ =?utf-8?Q?1vNrlLYl21vPcJ0KZB1PNbD6y?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 920f9335-4f17-46ac-b2a0-08dbdf4c60db
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB4614.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Nov 2023 04:45:34.5723
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: vbDNt8cnBRHIcp1R2DLXcohAcS1BiSGfJx2SdcywaDVCuVF/ACieSaEYREicAdSR
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB6563
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sumit,
 
-On Fri, 13 Oct 2023 at 16:59, Sumit Garg <sumit.garg@linaro.org> wrote:
->
-> Hi Kojima-san,
->
-> On Fri, 13 Oct 2023 at 13:18, Masahisa Kojima
-> <masahisa.kojima@linaro.org> wrote:
-> >
-> > When tee-supplicant stops, tee-based EFI variable service
-> > is no longer available. Restore the efivars generic ops at the
-> > moment when tee-supplicant stops.
->
-> This is a layering violation as evident from below linking error. The
-> tee-supplicant is internal to how OP-TEE is implemented. I have
-> already shared a unified way to handle shutdown of supplicant
-> dependent devices here [1].
 
-I will drop this patch, and send the next version.
+On 11/7/2023 1:47 AM, Hunter Chasens wrote:
+> Resolves Sphinx unexpected indentation warning when compiling
+> documentation (e.g. `make htmldocs`). Replaces tabs with spaces and adds
+> a literal block to keep vertical formatting of the
+> example power state list.
+> 
+> Signed-off-by: Hunter Chasens <hunter.chasens18@ncf.edu>
+> ---
+>   drivers/gpu/drm/amd/pm/amdgpu_pm.c | 13 +++++++------
+>   1 file changed, 7 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/amd/pm/amdgpu_pm.c b/drivers/gpu/drm/amd/pm/amdgpu_pm.c
+> index 517b9fb4624c..81b8ceb26890 100644
+> --- a/drivers/gpu/drm/amd/pm/amdgpu_pm.c
+> +++ b/drivers/gpu/drm/amd/pm/amdgpu_pm.c
+> @@ -989,12 +989,13 @@ static ssize_t amdgpu_get_pp_features(struct device *dev,
+>    * Reading back the files will show you the available power levels within
+>    * the power state and the clock information for those levels. If deep sleep is
+>    * applied to a clock, the level will be denoted by a special level 'S:'
+> - * E.g.,
+> - *	S: 19Mhz *
+> - *	0: 615Mhz
+> - *	1: 800Mhz
+> - *	2: 888Mhz
+> - *	3: 1000Mhz
+> + * E.g.::
+
+This will be like E.g.: Could you keep it like E.g.,<space>:: so that :: 
+is taken out?
 
 Thanks,
-Masahisa Kojima
+Lijo
 
->
-> [1] https://lore.kernel.org/all/20230728134832.326467-1-sumit.garg@linaro.org/
->
-> -Sumit
->
-> >
-> > Linking error occurs if we set CONFIG_OPTEE=y and
-> > CONFIG_TEE_STMM_EFI=m. Use IS_REACHABLE() guard to call
-> > tee_stmm_restore_efivars_generic_ops() function.
-> >
-> > Signed-off-by: Masahisa Kojima <masahisa.kojima@linaro.org>
-> > ---
-> >  drivers/firmware/efi/stmm/tee_stmm_efi.c | 8 +++++++-
-> >  drivers/tee/optee/supp.c                 | 4 ++++
-> >  include/linux/efi.h                      | 1 +
-> >  3 files changed, 12 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/firmware/efi/stmm/tee_stmm_efi.c b/drivers/firmware/efi/stmm/tee_stmm_efi.c
-> > index edc165bc1bb0..e804b260edaa 100644
-> > --- a/drivers/firmware/efi/stmm/tee_stmm_efi.c
-> > +++ b/drivers/firmware/efi/stmm/tee_stmm_efi.c
-> > @@ -572,10 +572,16 @@ static int tee_stmm_efi_probe(struct device *dev)
-> >         return 0;
-> >  }
-> >
-> > -static int tee_stmm_efi_remove(struct device *dev)
-> > +void tee_stmm_restore_efivars_generic_ops(void)
-> >  {
-> >         efivars_unregister(&tee_efivars);
-> >         efivars_generic_ops_register();
-> > +}
-> > +EXPORT_SYMBOL_GPL(tee_stmm_restore_efivars_generic_ops);
-> > +
-> > +static int tee_stmm_efi_remove(struct device *dev)
-> > +{
-> > +       tee_stmm_restore_efivars_generic_ops();
-> >
-> >         return 0;
-> >  }
-> > diff --git a/drivers/tee/optee/supp.c b/drivers/tee/optee/supp.c
-> > index 322a543b8c27..d07d4fc4e72e 100644
-> > --- a/drivers/tee/optee/supp.c
-> > +++ b/drivers/tee/optee/supp.c
-> > @@ -3,6 +3,7 @@
-> >   * Copyright (c) 2015, Linaro Limited
-> >   */
-> >  #include <linux/device.h>
-> > +#include <linux/efi.h>
-> >  #include <linux/slab.h>
-> >  #include <linux/uaccess.h>
-> >  #include "optee_private.h"
-> > @@ -58,6 +59,9 @@ void optee_supp_release(struct optee_supp *supp)
-> >                 complete(&req->c);
-> >         }
-> >
-> > +       if (IS_REACHABLE(CONFIG_TEE_STMM_EFI))
-> > +               tee_stmm_restore_efivars_generic_ops();
-> > +
-> >         supp->ctx = NULL;
-> >         supp->req_id = -1;
-> >
-> > diff --git a/include/linux/efi.h b/include/linux/efi.h
-> > index 489707b9b0b0..9b60893d6299 100644
-> > --- a/include/linux/efi.h
-> > +++ b/include/linux/efi.h
-> > @@ -1365,5 +1365,6 @@ extern struct blocking_notifier_head efivar_ops_nh;
-> >
-> >  void efivars_generic_ops_register(void);
-> >  void efivars_generic_ops_unregister(void);
-> > +void tee_stmm_restore_efivars_generic_ops(void);
-> >
-> >  #endif /* _LINUX_EFI_H */
-> > --
-> > 2.30.2
-> >
+> + *
+> + *  S: 19Mhz *
+> + *  0: 615Mhz
+> + *  1: 800Mhz
+> + *  2: 888Mhz
+> + *  3: 1000Mhz
+>    *
+>    *
+>    * To manually adjust these states, first select manual using
