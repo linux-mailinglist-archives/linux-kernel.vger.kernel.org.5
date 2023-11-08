@@ -2,162 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BAD37E5D27
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 19:25:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24EC67E5D2E
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 19:27:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231628AbjKHSZ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 13:25:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38430 "EHLO
+        id S231277AbjKHS10 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 13:27:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229583AbjKHSZY (ORCPT
+        with ESMTP id S229460AbjKHS1Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 13:25:24 -0500
-Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 387851FFD
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 10:25:22 -0800 (PST)
-Received: by mail-io1-xd35.google.com with SMTP id ca18e2360f4ac-7a66aa8ebb7so284670539f.3
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 10:25:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1699467921; x=1700072721; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=1RX3+j4H1LZ9VGKq/u5AJmWjNVd+q5xbY7KEqXQdkMs=;
-        b=aGRLcYUdkNa2hK0g1KaVjgDpcn8Ld1DlJGvqCfNF5URP5mZsXhGcmvMiTnACGpFeWm
-         +iod8yD6teypdAJDjbRXMi3Ca5ai97738Xkp8eM8G/p4rWpwEgbGNlp98R/fOiy5QlAv
-         esYzLYqTQePDMuqsGPytxNmciINRar7fFjOJ4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699467921; x=1700072721;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1RX3+j4H1LZ9VGKq/u5AJmWjNVd+q5xbY7KEqXQdkMs=;
-        b=RonosTucdG17lWEOxeH4pz8+KUV8PjLNUkWFJYOFqozQ11wAhZ+GOb+VTv3ntD+BNI
-         wvH1ZJn4M+fdl5eH6ShIuM3kU2VyFOYsmUr5f93Ort6kVB5IRfV1rJqHXbe7tp2GQDb5
-         Ho7jpD+whSFirfZpNPd7pkBlATM2fqlkiub/CQyhxh6Fs4MagmpgyCEGqWDcEp3XXmbI
-         Qrm8q2OVYsi1k/mXr1vbKLTUejDQIYkHm79QClYTw1hdffHHWkCb/9Gy7SuIfbUdhmc4
-         6otr3rLvAXtZkDRiE+A2PpsZcb3TRFqzbYguefrpMgNHq3ZN6gSNLMkK3vCy3vIq5Oam
-         dHSA==
-X-Gm-Message-State: AOJu0YxWgubDRUr20D3ARBG1K99CO7dk0Y2kGZW10dFDSyan84nc9FmP
-        vSeh1Vm156SAyfKAksJUMla9ow==
-X-Google-Smtp-Source: AGHT+IFDGfBjC0DoVmppKMHmtXnvp8MRqJTflWZah7YfhYKhkAdeoKqQQTGD5/CpveBRBkm4PNhuzw==
-X-Received: by 2002:a05:6602:3812:b0:786:25a3:ef30 with SMTP id bb18-20020a056602381200b0078625a3ef30mr3712415iob.7.1699467921466;
-        Wed, 08 Nov 2023 10:25:21 -0800 (PST)
-Received: from localhost (20.10.132.34.bc.googleusercontent.com. [34.132.10.20])
-        by smtp.gmail.com with ESMTPSA id g37-20020a028528000000b00463f8b3e34asm3090404jai.23.2023.11.08.10.25.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Nov 2023 10:25:21 -0800 (PST)
-Date:   Wed, 8 Nov 2023 18:25:20 +0000
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Daniel Bristot de Oliveira <bristot@kernel.org>
-Cc:     Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Valentin Schneider <vschneid@redhat.com>,
-        linux-kernel@vger.kernel.org,
-        Luca Abeni <luca.abeni@santannapisa.it>,
-        Tommaso Cucinotta <tommaso.cucinotta@santannapisa.it>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vineeth Pillai <vineeth@bitbyteword.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Phil Auld <pauld@redhat.com>
-Subject: Re: [PATCH v5 6/7] sched/deadline: Deferrable dl server
-Message-ID: <20231108182520.GD2992223@google.com>
-References: <cover.1699095159.git.bristot@kernel.org>
- <c7b706d30d6316c52853ca056db5beb82ba72863.1699095159.git.bristot@kernel.org>
- <CAEXW_YS=PrWDx+YGVR7bmq0_SoKNztzGrreApCd9qk1yBLA5bA@mail.gmail.com>
- <CAEXW_YQ8kv3tXQJexLSguPuWi0bXiReKDyYNo9+A-Hgp=Zo1vA@mail.gmail.com>
- <CAEXW_YSjsZSrJK_RbGmbLNy4UrLCgu+7NPZjg-wiLuNbGOGr+w@mail.gmail.com>
- <20231107114732.5dd350ec@gandalf.local.home>
- <7d1ea71b-5218-4ee0-bc89-f02ee6bd5154@redhat.com>
- <3e58fad7-7f66-4e48-adcc-0fda9e9d0d07@kernel.org>
- <CAEXW_YT-d4uNr4eyfXeCdUCmYu8LgYtMXTQVN=RXkjmxPz9d0g@mail.gmail.com>
- <cc7d1140-1190-4f04-b6e6-9754aba96218@kernel.org>
+        Wed, 8 Nov 2023 13:27:24 -0500
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 667B01FF5;
+        Wed,  8 Nov 2023 10:27:22 -0800 (PST)
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A8HDAIQ028187;
+        Wed, 8 Nov 2023 18:27:12 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=J11bmhYRRVjqzK6uKgGmil7orKC0maV5Oe7XYBl64ZA=;
+ b=e7W3P1vKneYq6APiY9ejPY4e0uv3m1ZcEhxOzDqO0DkD79ysQ6eKarQl3Ua+6gOtELUs
+ NlMeOXUzedElXuee+7+edeSLlwa4LQEtpnRLci9pLaM+dp0Rm1HY8U8+czWMesufcZJJ
+ oLphID2cwPmRfoB56EvxyIXinHTnAXvRcCY/VyF7sBgP7YVTJHiOnCyaXf5vjLBlUDgs
+ j5hNKdKzxXldw0eG0pTWvS36Fm3ACOiZarJPozGddaQ333IfTnIM1nG+bkXZ+pRynk4+
+ 6EP4SlALaeaxgSw51vBiFERyMEpeAFWtAarQBgUVgX8KKV7SP/P0R1QlEVOjPSbtkU+b QA== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u8ehng5xj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 08 Nov 2023 18:27:12 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3A8IRBTB021862
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 8 Nov 2023 18:27:11 GMT
+Received: from [10.71.109.77] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Wed, 8 Nov
+ 2023 10:27:10 -0800
+Message-ID: <d597554a-ad3a-0af1-e21b-3001c80f6d30@quicinc.com>
+Date:   Wed, 8 Nov 2023 10:27:06 -0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH v7 0/7] incorporate pm runtime framework and eDP clean up
+To:     Kuogee Hsieh <quic_khsieh@quicinc.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+CC:     <dri-devel@lists.freedesktop.org>, <robdclark@gmail.com>,
+        <sean@poorly.run>, <swboyd@chromium.org>, <dianders@chromium.org>,
+        <vkoul@kernel.org>, <daniel@ffwll.ch>, <airlied@gmail.com>,
+        <agross@kernel.org>, <andersson@kernel.org>,
+        <quic_jesszhan@quicinc.com>, <quic_sbillaka@quicinc.com>,
+        <marijn.suijten@somainline.org>, <freedreno@lists.freedesktop.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <1696632910-21942-1-git-send-email-quic_khsieh@quicinc.com>
+ <CAA8EJpoFRp+7GyO=F3Ar21tfG5Yt0cL6zkAquqg7D1XXQjp50Q@mail.gmail.com>
+ <55a4f98e-2772-e4fd-ae8a-132f92582c78@quicinc.com>
+ <CAA8EJpo9CFf-Z3eiuKPvwf-y6eGkSibro-q-=SBxKK_L-zFOBA@mail.gmail.com>
+ <b708df07-6812-df43-1313-cf6f1289fd47@quicinc.com>
+Content-Language: en-US
+From:   Abhinav Kumar <quic_abhinavk@quicinc.com>
+In-Reply-To: <b708df07-6812-df43-1313-cf6f1289fd47@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <cc7d1140-1190-4f04-b6e6-9754aba96218@kernel.org>
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: mpsET-bXHslX7FhL8IJty3jKtGE9Erqf
+X-Proofpoint-GUID: mpsET-bXHslX7FhL8IJty3jKtGE9Erqf
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-08_07,2023-11-08_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ phishscore=0 mlxscore=0 mlxlogscore=609 priorityscore=1501 impostorscore=0
+ bulkscore=0 spamscore=0 suspectscore=0 malwarescore=0 clxscore=1011
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311080152
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 08, 2023 at 09:01:17AM +0100, Daniel Bristot de Oliveira wrote:
-> On 11/8/23 04:20, Joel Fernandes wrote:
-> > Hi Daniel,
-> > 
-> > On Tue, Nov 7, 2023 at 1:50 PM Daniel Bristot de Oliveira
-> > <bristot@kernel.org> wrote:
-> >>
-> >>> The code is not doing what I intended because I thought it was doing overload
-> >>> control on the replenishment, but it is not (my bad).
-> >>>
-> >>
-> >> I am still testing but... it is missing something like this (famous last words).
-> >>
-> >> diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
-> >> index 1092ca8892e0..6e2d21c47a04 100644
-> >> --- a/kernel/sched/deadline.c
-> >> +++ b/kernel/sched/deadline.c
-> >> @@ -842,6 +842,8 @@ static inline void setup_new_dl_entity(struct sched_dl_entity *dl_se)
-> >>   * runtime, or it just underestimated it during sched_setattr().
-> >>   */
-> >>  static int start_dl_timer(struct sched_dl_entity *dl_se);
-> >> +static bool dl_entity_overflow(struct sched_dl_entity *dl_se, u64 t);
-> >> +
-> >>  static void replenish_dl_entity(struct sched_dl_entity *dl_se)
-> >>  {
-> >>         struct dl_rq *dl_rq = dl_rq_of_se(dl_se);
-> >> @@ -852,9 +854,18 @@ static void replenish_dl_entity(struct sched_dl_entity *dl_se)
-> >>         /*
-> >>          * This could be the case for a !-dl task that is boosted.
-> >>          * Just go with full inherited parameters.
-> >> +        *
-> >> +        * Or, it could be the case of a zerolax reservation that
-> >> +        * was not able to consume its runtime in background and
-> >> +        * reached this point with current u > U.
-> >> +        *
-> >> +        * In both cases, set a new period.
-> >>          */
-> >> -       if (dl_se->dl_deadline == 0)
-> >> -               replenish_dl_new_period(dl_se, rq);
-> >> +       if (dl_se->dl_deadline == 0 ||
-> >> +               (dl_se->dl_zerolax_armed && dl_entity_overflow(dl_se, rq_clock(rq)))) {
-> >> +                       dl_se->deadline = rq_clock(rq) + pi_of(dl_se)->dl_deadline;
-> >> +                       dl_se->runtime = pi_of(dl_se)->dl_runtime;
-> >> +       }
-> >>
-> >>         if (dl_se->dl_yielded && dl_se->runtime > 0)
-> >>                 dl_se->runtime = 0;
-> > 
-> > I was wondering does this mean GRUB needs to be enabled? Otherwise I
-> > can see that "runtime / (deadline - t) > dl_runtime / dl_deadline"
-> > will be true almost all the time due to the constraint of executing at
-> > the 0-lax time.
+
+
+On 11/8/2023 10:10 AM, Kuogee Hsieh wrote:
 > 
-> No grub needed. It will only happen if the fair server did not have any chance to run.
-> 
-> If it happens, it is not a problem, see that timeline I replied in the previous
-> email.
+> On 11/7/2023 1:23 PM, Dmitry Baryshkov wrote:
+>> On Tue, 7 Nov 2023 at 23:01, Kuogee Hsieh <quic_khsieh@quicinc.com> 
+>> wrote:
+>>>
+>>> On 11/6/2023 5:55 PM, Dmitry Baryshkov wrote:
+>>>> On Sat, 7 Oct 2023 at 01:55, Kuogee Hsieh <quic_khsieh@quicinc.com> 
+>>>> wrote:
+>>>>> The purpose of this patch series is to incorporate pm runtime 
+>>>>> framework
+>>>>> into MSM eDP/DP driver so that eDP panel can be detected by DRM eDP 
+>>>>> panel
+>>>>> driver during system probe time. During incorporating procedure, 
+>>>>> original
+>>>>> customized pm realted fucntions, such as dp_pm_prepare(), 
+>>>>> dp_pm_suspend(),
+>>>>> dp_pm_resume() and dp_pm_prepare(), are removed and replaced with 
+>>>>> functions
+>>>>> provided by pm runtiem framework such as pm_runtime_force_suspend() 
+>>>>> and
+>>>>> pm_runtime_force_resume(). In addition, both eDP aux-bus and irq 
+>>>>> handler
+>>>>> are bound at system probe time too.
+>>>> With this patchset in place I can crash the board using the following
+>>>> sequence (SM8350-HDK):
+>>>>
+>>>> - plug the USBC DP dongle
+>>>> - run modetest at any mode, don't press Enter yet
+>>>> - unplug the dongle
+>>>> - press Enter to stop modetest
+>>>>
+>>>> => the board resets to Sahara.
+>>>>
+>>>> Please ping me if you need any additional information from my side.
+>>> questiosn,
+>>>
+>>> 1) which dongle are you used?
+>> I have used several Dell and Hama USB-C dongles.
+>>
+>>> 2) what code branch shoud I used to duplicate this problem.
+>> I have pushed my kernel tree to
+>> git.codelinaro.org/dmitry.baryshkov/linux.git, branch test-dp-rpm
+>> I had several UCSI patches on top, but they should not be relevant.
+> git.codelinaro.org/dmitry.baryshkov/linux.git, branch test-dp-rpm <== I 
+> synced out his branch and it is still work at my chromebook Kodiak DUT.
+>>
 
-Ah you're right, I mistakenly read your diff assuming you were calling
-replenish_dl_new_period() on dl_entity_overflow(). Indeed the diff is needed
-(I was actually wondering about why that was not done in my initial review as
-well -- so its good we found it in discussion).
+Perhaps the gap in test results with the same tree is due to internal 
+hpd vs hpd pin. We need to try this on a device which does not use 
+internal hpd.
 
-> We do not want a zerolax scheduler, because it breaks everything else. It is
-> a deferred EDF, that looking from wall clock, composes an "zerolaxish" timeline.
-
-Indeed. I was not intending that we do zerolax scheduler, I was merely
-misreading the diff assuming you were throttling the DL-server once again at
-the zerolax time.
-
-thanks,
-
- - Joel
-
+>>> I can not duplicate  system crash problem at my setup kodiak (SM7325)
+>>> chrome book with my PM runtime patch series.
+>>>
+>>> my code base is Linux 6.6-rc2 + pm runtime patch series (7 patches)
+>>>
+>>> I did:
+>>>
+>>> 1) plugin either apple dongle (DP-to-HDMI) + 1080p display or DP typeC
+>>> cable directly to 1080p display
+>>>
+>>> 2)  stop ui
+>>>
+>>> 3) /usr/bin/modetest -M msm -s 34:1920x1080 (see test pattern show at
+>>> display)
+>>>
+>>> 4) unplug apple dongle or DP typeC cable
+>>>
+>>> 5) hit enter key
+>>>
+>>> 6) start ui
+>>>
+>>> 7) display back to login page of chrome book
+>>>
+>>>
+>>
