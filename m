@@ -2,165 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B39D7E5EB5
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 20:36:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3D637E5EB7
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 20:36:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230175AbjKHTgB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 14:36:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41480 "EHLO
+        id S231671AbjKHTgP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 14:36:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229705AbjKHTf7 (ORCPT
+        with ESMTP id S229705AbjKHTgN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 14:35:59 -0500
-Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E70C42110;
-        Wed,  8 Nov 2023 11:35:56 -0800 (PST)
-Received: by mail-oi1-x229.google.com with SMTP id 5614622812f47-3b58d96a3bbso33549b6e.1;
-        Wed, 08 Nov 2023 11:35:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699472156; x=1700076956; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:references:in-reply-to
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=paNOpk393l1aqFflxT4hXJVPVnwtDZPbYHqWDS7Ayz0=;
-        b=ZpQUIGqYYqV3TlmAxiUD1r7bzSNPQCynmeyk9huKbV734N2JvbXO5RQ09c4MH0Oxuq
-         WCGy65SLkBb1zeYpNTkur9mLJH8qRrced2AG7QwaBAcLTfVuAf90DweS/uShSbKo2wuW
-         suDW++ttPxVSibJJejmMQLY6zUxmAE/A1deRPfSet1YfkmPPmJvjwG/3z2O7f8D4Ndx8
-         akFCWRqvblmaIV/xjLh+t3v0HNcPGrxKAMXgTXGOB6W53uMgy60vip00dC0EY3boCWYK
-         Ua1T6kGzZ4ACzPgx5sf83jhfresGnNZv+7ZUQFOKzlPSuHj0a82XIqieTcaHkxX6BLOh
-         1NdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699472156; x=1700076956;
-        h=cc:to:subject:message-id:date:from:references:in-reply-to
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=paNOpk393l1aqFflxT4hXJVPVnwtDZPbYHqWDS7Ayz0=;
-        b=bLJe5ZLSKXPRPc7svtdY5hR3x0rPN+8rKylpyvGErWliwyIaUV6MYRdzYQCawHs3qO
-         xvhRFgjH7DaLYaKE5azpB9Tf5GuYl7Gv6ZfdW0zYD7RBVJb508mc6vCQItsJdLY0UTrD
-         f9wLX2nsi+T+dM5QSxYLEvtAi9zox4ZBS/sdcZygvlRCzRIyvlLK7fOpCVq9fSUJeP0v
-         8w6Q8n91NCdFDAOvX5yXLjwgDHQTa/BYUr5cnbnkdOW7MbQ/THw8p9mbtqa6UJXiP/Wv
-         NQnLrECf/S4xzl6LmAPusDrvNoiM9/Phkrf3273/A81iwGtfQm3c/Gwi+ovi4KrKAYvQ
-         xa7w==
-X-Gm-Message-State: AOJu0Yw455Bh8YW+OZU9082h+19M0qvnFH3ePsreKvsUWDu0eT9eomfS
-        zpUSWdOMlUKdM2RF9qxTwNYOVZ439KUyu1KxBAs=
-X-Google-Smtp-Source: AGHT+IH6gyK4ACWGImYctZv4/as81sCqw8qfMghC+jEYWgfUdrQXQm8Qvqu7Sa41ug1rQgloLFib/7CUGSZCXCZjHdE=
-X-Received: by 2002:a05:6808:34b:b0:3b5:2ede:d9c1 with SMTP id
- j11-20020a056808034b00b003b52eded9c1mr2950312oie.47.1699472156262; Wed, 08
- Nov 2023 11:35:56 -0800 (PST)
+        Wed, 8 Nov 2023 14:36:13 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 414762113
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 11:36:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699472171; x=1731008171;
+  h=message-id:date:mime-version:from:subject:to:cc:
+   content-transfer-encoding;
+  bh=PchV+c3rRxtWRg/gXf4boQ6+3zxIenJU3euXcs9eVig=;
+  b=AGQAzVdr0PpH2caDPuIXCaRZZuFnLkeLJWPoc6Lmrhq1HU2QaTmWXHl5
+   o9UPY3TXKltzfOIObQUxc5gA39PSwg2QqaMhQV626f56v24f2iX2frvtC
+   YKeRx1onkeyB7zeSTLnY1nyXahi/NlCTQdBwof06E9GZJSV7YVOLGSQjd
+   b2JBkPTvKqb5mHqWaCGl0HqxXJ2LbccN0PCp/WoGpNC4iUVGExmF5D8yJ
+   W1W0dXpzIEFU2SSQaNm3oau35YhKbcAL8K1NxE2cU4kG4nl8Dn72oEhoW
+   Wgux3702POLznWLz83OEJaJQtCHr5sdH9ivvqSQiH2qlcUOikiIoZUk8o
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10888"; a="420945057"
+X-IronPort-AV: E=Sophos;i="6.03,287,1694761200"; 
+   d="scan'208";a="420945057"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2023 11:36:10 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10888"; a="906890116"
+X-IronPort-AV: E=Sophos;i="6.03,287,1694761200"; 
+   d="scan'208";a="906890116"
+Received: from pmarikan-mobl3.amr.corp.intel.com (HELO [10.212.210.66]) ([10.212.210.66])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2023 11:36:10 -0800
+Message-ID: <e851a8e5-c4c2-4b5d-887a-509e591cff49@intel.com>
+Date:   Wed, 8 Nov 2023 11:36:14 -0800
 MIME-Version: 1.0
-Received: by 2002:a8a:158f:0:b0:4f0:1250:dd51 with HTTP; Wed, 8 Nov 2023
- 11:35:55 -0800 (PST)
-In-Reply-To: <202311081129.9E1EC8D34@keescook>
-References: <5c7333ea4bec2fad1b47a8fa2db7c31e4ffc4f14.1663334978.git.josh@joshtriplett.org>
- <202311071228.27D22C00@keescook> <20231107205151.qkwlw7aarjvkyrqs@f>
- <CAGudoHFsqMPmVvaV7BebGkpkw=pSQY8PLdB-1S3W5NpYh6trmA@mail.gmail.com>
- <202311071445.53E5D72C@keescook> <CAGudoHF5mYFWtzrv539W8Uc1aO_u6+UJOoDqWY0pePc+cofziw@mail.gmail.com>
- <A7FFA44F-F7DD-477F-83A6-44AF71D6775E@kernel.org> <CAGudoHESNDTAAOGB3riYjU3tgHTXVLRdB7tknfVBem38yqkJEA@mail.gmail.com>
- <202311081129.9E1EC8D34@keescook>
-From:   Mateusz Guzik <mjguzik@gmail.com>
-Date:   Wed, 8 Nov 2023 20:35:55 +0100
-Message-ID: <CAGudoHEqv=JmMyV8vYSvhubxXaW-cK3n5WRR=nR7eDZjBOQTcw@mail.gmail.com>
-Subject: Re: [PATCH] fs/exec.c: Add fast path for ENOENT on PATH search before
- allocating mm
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>, Kees Cook <kees@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+From:   Dave Hansen <dave.hansen@intel.com>
+Subject: REMINDER: 2023 Technical Advisory Board election
+To:     linux-kernel@vger.kernel.org, ksummit@lists.linux.dev
+Cc:     "tab-elections@lists.linuxfoundation.org" 
+        <tab-elections@lists.linuxfoundation.org>
+Content-Language: en-US
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/8/23, Kees Cook <keescook@chromium.org> wrote:
-> On Wed, Nov 08, 2023 at 01:03:33AM +0100, Mateusz Guzik wrote:
->> On 11/8/23, Kees Cook <kees@kernel.org> wrote:
->> >
->> >
->> > On November 7, 2023 3:08:47 PM PST, Mateusz Guzik <mjguzik@gmail.com>
->> > wrote:
->> >>On 11/7/23, Kees Cook <keescook@chromium.org> wrote:
->> >>> On Tue, Nov 07, 2023 at 10:23:16PM +0100, Mateusz Guzik wrote:
->> >>>> If the patch which dodges second lookup still somehow appears slower
->> >>>> a
->> >>>> flamegraph or other profile would be nice. I can volunteer to take a
->> >>>> look at what's going on provided above measurements will be done and
->> >>>> show funkyness.
->> >>>
->> >>> When I looked at this last, it seemed like all the work done in
->> >>> do_filp_open() (my patch, which moved the lookup earlier) was heavier
->> >>> than the duplicate filename_lookup().
->> >>>
->> >>> What I didn't test was moving the sched_exec() before the mm
->> >>> creation,
->> >>> which Peter confirmed shouldn't be a problem, but I think that might
->> >>> be
->> >>> only a tiny benefit, if at all.
->> >>>
->> >>> If you can do some comparisons, that would be great; it always takes
->> >>> me
->> >>> a fair bit of time to get set up for flame graph generation, etc. :)
->> >>>
->> >>
->> >>So I spawned *one* process executing one statocally linked binary in a
->> >>loop, test case from http://apollo.backplane.com/DFlyMisc/doexec.c .
->> >>
->> >>The profile is definitely not what I expected:
->> >>   5.85%  [kernel]           [k] asm_exc_page_fault
->> >>   5.84%  [kernel]           [k] __pv_queued_spin_lock_slowpath
->> >>[snip]
->> >>
->> >>I'm going to have to recompile with lock profiling, meanwhile
->> >>according to bpftrace
->> >>(bpftrace -e 'kprobe:__pv_queued_spin_lock_slowpath { @[kstack()] =
->> >> count(); }')
->> >>top hits would be:
->> >>
->> >>@[
->> >>    __pv_queued_spin_lock_slowpath+1
->> >>    _raw_spin_lock+37
->> >>    __schedule+192
->> >>    schedule_idle+38
->> >>    do_idle+366
->> >>    cpu_startup_entry+38
->> >>    start_secondary+282
->> >>    secondary_startup_64_no_verify+381
->> >>]: 181
->> >>@[
->> >>    __pv_queued_spin_lock_slowpath+1
->> >>    _raw_spin_lock_irq+43
->> >>    wait_for_completion+141
->> >>    stop_one_cpu+127
->> >>    sched_exec+165
->> >
->> > There's the suspicious sched_exec() I was talking about! :)
->> >
->> > I think it needs to be moved, and perhaps _later_ instead of earlier?
->> > Hmm...
->> >
->>
->> I'm getting around 3.4k execs/s. However, if I "taskset -c 3
->> ./static-doexec 1" the number goes up to about 9.5k and lock
->> contention disappears from the profile. So off hand looks like the
->> task is walking around the box when it perhaps could be avoided -- it
->> is idle apart from running the test. Again this is going to require a
->> serious look instead of ad hoc pokes.
->
-> Peter, is this something you can speak to? It seems like execve() forces
-> a change in running CPU. Is this really something we want to be doing?
-> Or is there some better way to keep it on the same CPU unless there is
-> contention?
->
+As a reminder, the 2023 Linux Foundation Technical Advisory Board
+election will be happening from November 13 to 15.  The call for
+nominations is out with a deadline of November 13.
 
-sched_exec causes migration only for only few % of execs in the bench,
-but when it does happen there is tons of overhead elsewhere.
+Now is the time to put in your nomination if you would like to run for a
+seat on the TAB.
 
-I expect real programs which get past execve will be prone to
-migrating anyway, regardless of what sched_exec is doing.
+Original announcement appended - procrastinate no longer!
 
-That is to say, while sched_exec buggering off here would be nice, I
-think for real-world wins the thing to investigate is the overhead
-which comes from migration to begin with.
+---
 
--- 
-Mateusz Guzik <mjguzik gmail.com>
+The 2023 election for membership on the Linux Foundation Technical
+Advisory Board (TAB) will be held electronically during the 2023 Linux
+Plumbers Conference, from November 13 to 15.  This announcement covers
+both the call for candidates and the details of voting in this election.
+
+The TAB exists to provide advice from the kernel community to the Linux
+Foundation; it also serves to facilitate interactions both within the
+community and with outside entities.  Over the last year, the TAB has
+overseen the organization of the Linux Plumbers Conference, released a
+kernel  contribution maturity model for organizations, advised on
+code-of-conduct issues, and more.
+
+CALL FOR NOMINATIONS
+
+The TAB has ten members serving two-year terms; half of the board is
+elected each year.  The members whose terms are expiring this year are:
+
+ - Jonathan Corbet
+ - Greg Kroah-Hartman
+ - Sasha Levin
+ - Steve Rostedt
+ - Ted Ts'o
+
+The members whose terms expire next year are:
+
+ - Christian Brauner
+ - Kees Cook
+ - Dave Hansen
+ - Jakub Kicinski
+ - Dan Williams
+
+Anybody who meets the voting criteria (described below) may
+self-nominate to run in this election.  To nominate yourself, please
+send an email to:
+
+	tech-board-discuss@lists.linux-foundation.org
+
+Please include a short (<= 200 words) statement describing why you are
+running and what you would like to accomplish on the TAB; these
+statements will be collected and made publicly available.
+
+The nomination deadline is 9:00AM EST (GMT-5) on November 13.
+
+VOTING IN THE TAB ELECTION
+
+The criteria for voting in this year's TAB election are unchanged from
+2022.  To be eligible to vote, you must have at least three commits in a
+released mainline or stable kernel that:
+
+ - Have a commit date in 2022 or later
+ - List your email in a Signed-off-by, Tested-by, Reported-by, Reviewed-
+   by, or Acked-by tag.
+
+Everybody with at least 50 commits meeting this description will receive
+a ballot automatically; they will receive an email confirming this
+status shortly.  Eligible voters with less than 50 commits can receive a
+ballot by sending a request to tab-elections@lists.linuxfoundation.org.
+
+We will, once again, be using the Condorcet Internet Voting Service
+(CIVS) https://civs1.civs.us/ . This is a voting service focused on
+security and privacy. There are sample polls on the website if you would
+like to see what a ballot will look like.
+
+Please contact tab-elections@lists.linuxfoundation.org if you have any
+questions.
+
