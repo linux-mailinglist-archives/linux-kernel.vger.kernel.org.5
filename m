@@ -2,154 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5229A7E5EB3
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 20:35:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B39D7E5EB5
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 20:36:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229880AbjKHTfK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 14:35:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43056 "EHLO
+        id S230175AbjKHTgB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 14:36:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229473AbjKHTfJ (ORCPT
+        with ESMTP id S229705AbjKHTf7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 14:35:09 -0500
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AA232110
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 11:35:07 -0800 (PST)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5a839b31a0dso1519077b3.0
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 11:35:07 -0800 (PST)
+        Wed, 8 Nov 2023 14:35:59 -0500
+Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E70C42110;
+        Wed,  8 Nov 2023 11:35:56 -0800 (PST)
+Received: by mail-oi1-x229.google.com with SMTP id 5614622812f47-3b58d96a3bbso33549b6e.1;
+        Wed, 08 Nov 2023 11:35:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1699472106; x=1700076906; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=BeJqDywIA9SJQWdHjdlzV7j446J+Wll1DVQbRo0AN2o=;
-        b=jUxY2Rhlsfh5uuNXZV3R+rfBxqaVjmkdCNqwZYkSKFZBJQWKOmFeGfQYDGzP74ES3i
-         P2/+v0gMz6I3AN6lhaP8rTI5FHHpz3xWZMTkif1xdaKmdXbQunKDrUG2H7pb73+Ux3Lc
-         XTNWLvrfipqpYJKwbAcXVfyzZAs6qlcwjdxh2maZgLy9O8By94Oo70lxbkzqLvvnLix8
-         CB+amgoZsy5IEe/udFrJbkO8ggVBpNsxQpbQoVZ3RryuSxSp55ADUxvNyrzFKidJBR5M
-         ricNZd/qo2IS7URXwaOPmd6iuShUNq7kHzEbYU63Opslgby+jc4h4tLza31BNqn/9uOq
-         Z4aw==
+        d=gmail.com; s=20230601; t=1699472156; x=1700076956; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:references:in-reply-to
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=paNOpk393l1aqFflxT4hXJVPVnwtDZPbYHqWDS7Ayz0=;
+        b=ZpQUIGqYYqV3TlmAxiUD1r7bzSNPQCynmeyk9huKbV734N2JvbXO5RQ09c4MH0Oxuq
+         WCGy65SLkBb1zeYpNTkur9mLJH8qRrced2AG7QwaBAcLTfVuAf90DweS/uShSbKo2wuW
+         suDW++ttPxVSibJJejmMQLY6zUxmAE/A1deRPfSet1YfkmPPmJvjwG/3z2O7f8D4Ndx8
+         akFCWRqvblmaIV/xjLh+t3v0HNcPGrxKAMXgTXGOB6W53uMgy60vip00dC0EY3boCWYK
+         Ua1T6kGzZ4ACzPgx5sf83jhfresGnNZv+7ZUQFOKzlPSuHj0a82XIqieTcaHkxX6BLOh
+         1NdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699472106; x=1700076906;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=BeJqDywIA9SJQWdHjdlzV7j446J+Wll1DVQbRo0AN2o=;
-        b=wYgSNErHjJzIFuQZtVVmUsAGj6ir8s7hvXbplt+Z94M30Wl8pR/0Q9pSH0GYXUwUI3
-         3x2UVx7qW81owXBm3AoncfiRmKALyrT+vBlrwTkL+0Ub+k8cNE6dP54slxzoIHv1EkTi
-         YT40CHRMqHccL0z37epaozCpx0m/vH2ynDCKWujvqh1LCm5ysSHYHruPe383x7flbAM1
-         IXD1kzcCy6uilA6c5NNuUdQdFKs9ppG9xHgOx+w9NstQq/eNphmaBTUJAiJ+I+Ql1EBC
-         QFxTXoUaXyA1X5MduInQH810ej91S30qUtoTV8LINXNlSTHXjRGezRPLdk/Ev750PgQ0
-         qTig==
-X-Gm-Message-State: AOJu0Yy0W9VyNRDq8kxSLQtBkPbro4cHhMdy0C1XD4rQpMPS4vPXLYIe
-        TSYmETZlL4C8wWldSrYThipP3jgBznc=
-X-Google-Smtp-Source: AGHT+IGLmkrTaPP6S11ajreCCXZPcmYitlsfG2AuK9TV6sy3ukACu8QSNGsAvSLFv8j5p2OKSEkqV8vgDOs=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a81:4f8c:0:b0:5a7:bb7e:993e with SMTP id
- d134-20020a814f8c000000b005a7bb7e993emr53158ywb.9.1699472106512; Wed, 08 Nov
- 2023 11:35:06 -0800 (PST)
-Date:   Wed, 8 Nov 2023 11:35:04 -0800
-In-Reply-To: <4281eee7-6423-4ec8-bb18-c6aeee1faf2c@linux.intel.com>
-Mime-Version: 1.0
-References: <20231108003135.546002-1-seanjc@google.com> <20231108003135.546002-4-seanjc@google.com>
- <4281eee7-6423-4ec8-bb18-c6aeee1faf2c@linux.intel.com>
-Message-ID: <ZUvi6P7iKMtsS8wm@google.com>
-Subject: Re: [PATCH v7 03/19] KVM: x86/pmu: Remove KVM's enumeration of
- Intel's architectural encodings
-From:   Sean Christopherson <seanjc@google.com>
-To:     Kan Liang <kan.liang@linux.intel.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Dapeng Mi <dapeng1.mi@linux.intel.com>,
-        Jim Mattson <jmattson@google.com>,
-        Jinrong Liang <cloudliang@tencent.com>,
-        Aaron Lewis <aaronlewis@google.com>,
-        Like Xu <likexu@tencent.com>
-Content-Type: text/plain; charset="us-ascii"
+        d=1e100.net; s=20230601; t=1699472156; x=1700076956;
+        h=cc:to:subject:message-id:date:from:references:in-reply-to
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=paNOpk393l1aqFflxT4hXJVPVnwtDZPbYHqWDS7Ayz0=;
+        b=bLJe5ZLSKXPRPc7svtdY5hR3x0rPN+8rKylpyvGErWliwyIaUV6MYRdzYQCawHs3qO
+         xvhRFgjH7DaLYaKE5azpB9Tf5GuYl7Gv6ZfdW0zYD7RBVJb508mc6vCQItsJdLY0UTrD
+         f9wLX2nsi+T+dM5QSxYLEvtAi9zox4ZBS/sdcZygvlRCzRIyvlLK7fOpCVq9fSUJeP0v
+         8w6Q8n91NCdFDAOvX5yXLjwgDHQTa/BYUr5cnbnkdOW7MbQ/THw8p9mbtqa6UJXiP/Wv
+         NQnLrECf/S4xzl6LmAPusDrvNoiM9/Phkrf3273/A81iwGtfQm3c/Gwi+ovi4KrKAYvQ
+         xa7w==
+X-Gm-Message-State: AOJu0Yw455Bh8YW+OZU9082h+19M0qvnFH3ePsreKvsUWDu0eT9eomfS
+        zpUSWdOMlUKdM2RF9qxTwNYOVZ439KUyu1KxBAs=
+X-Google-Smtp-Source: AGHT+IH6gyK4ACWGImYctZv4/as81sCqw8qfMghC+jEYWgfUdrQXQm8Qvqu7Sa41ug1rQgloLFib/7CUGSZCXCZjHdE=
+X-Received: by 2002:a05:6808:34b:b0:3b5:2ede:d9c1 with SMTP id
+ j11-20020a056808034b00b003b52eded9c1mr2950312oie.47.1699472156262; Wed, 08
+ Nov 2023 11:35:56 -0800 (PST)
+MIME-Version: 1.0
+Received: by 2002:a8a:158f:0:b0:4f0:1250:dd51 with HTTP; Wed, 8 Nov 2023
+ 11:35:55 -0800 (PST)
+In-Reply-To: <202311081129.9E1EC8D34@keescook>
+References: <5c7333ea4bec2fad1b47a8fa2db7c31e4ffc4f14.1663334978.git.josh@joshtriplett.org>
+ <202311071228.27D22C00@keescook> <20231107205151.qkwlw7aarjvkyrqs@f>
+ <CAGudoHFsqMPmVvaV7BebGkpkw=pSQY8PLdB-1S3W5NpYh6trmA@mail.gmail.com>
+ <202311071445.53E5D72C@keescook> <CAGudoHF5mYFWtzrv539W8Uc1aO_u6+UJOoDqWY0pePc+cofziw@mail.gmail.com>
+ <A7FFA44F-F7DD-477F-83A6-44AF71D6775E@kernel.org> <CAGudoHESNDTAAOGB3riYjU3tgHTXVLRdB7tknfVBem38yqkJEA@mail.gmail.com>
+ <202311081129.9E1EC8D34@keescook>
+From:   Mateusz Guzik <mjguzik@gmail.com>
+Date:   Wed, 8 Nov 2023 20:35:55 +0100
+Message-ID: <CAGudoHEqv=JmMyV8vYSvhubxXaW-cK3n5WRR=nR7eDZjBOQTcw@mail.gmail.com>
+Subject: Re: [PATCH] fs/exec.c: Add fast path for ENOENT on PATH search before
+ allocating mm
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>, Kees Cook <kees@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 08, 2023, Kan Liang wrote:
-> On 2023-11-07 7:31 p.m., Sean Christopherson wrote:
-> > @@ -442,8 +396,29 @@ static int intel_pmu_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
-> >  	return 0;
-> >  }
-> >  
-> > +/*
-> > + * Map fixed counter events to architectural general purpose event encodings.
-> > + * Perf doesn't provide APIs to allow KVM to directly program a fixed counter,
-> > + * and so KVM instead programs the architectural event to effectively request
-> > + * the fixed counter.  Perf isn't guaranteed to use a fixed counter and may
-> > + * instead program the encoding into a general purpose counter, e.g. if a
-> > + * different perf_event is already utilizing the requested counter, but the end
-> > + * result is the same (ignoring the fact that using a general purpose counter
-> > + * will likely exacerbate counter contention).
-> > + *
-> > + * Note, reference cycles is counted using a perf-defined "psuedo-encoding",
-> > + * as there is no architectural general purpose encoding for reference cycles.
-> 
-> It's not the case for the latest Intel platforms anymore. Please see
-> ffbe4ab0beda ("perf/x86/intel: Extend the ref-cycles event to GP counters").
+On 11/8/23, Kees Cook <keescook@chromium.org> wrote:
+> On Wed, Nov 08, 2023 at 01:03:33AM +0100, Mateusz Guzik wrote:
+>> On 11/8/23, Kees Cook <kees@kernel.org> wrote:
+>> >
+>> >
+>> > On November 7, 2023 3:08:47 PM PST, Mateusz Guzik <mjguzik@gmail.com>
+>> > wrote:
+>> >>On 11/7/23, Kees Cook <keescook@chromium.org> wrote:
+>> >>> On Tue, Nov 07, 2023 at 10:23:16PM +0100, Mateusz Guzik wrote:
+>> >>>> If the patch which dodges second lookup still somehow appears slower
+>> >>>> a
+>> >>>> flamegraph or other profile would be nice. I can volunteer to take a
+>> >>>> look at what's going on provided above measurements will be done and
+>> >>>> show funkyness.
+>> >>>
+>> >>> When I looked at this last, it seemed like all the work done in
+>> >>> do_filp_open() (my patch, which moved the lookup earlier) was heavier
+>> >>> than the duplicate filename_lookup().
+>> >>>
+>> >>> What I didn't test was moving the sched_exec() before the mm
+>> >>> creation,
+>> >>> which Peter confirmed shouldn't be a problem, but I think that might
+>> >>> be
+>> >>> only a tiny benefit, if at all.
+>> >>>
+>> >>> If you can do some comparisons, that would be great; it always takes
+>> >>> me
+>> >>> a fair bit of time to get set up for flame graph generation, etc. :)
+>> >>>
+>> >>
+>> >>So I spawned *one* process executing one statocally linked binary in a
+>> >>loop, test case from http://apollo.backplane.com/DFlyMisc/doexec.c .
+>> >>
+>> >>The profile is definitely not what I expected:
+>> >>   5.85%  [kernel]           [k] asm_exc_page_fault
+>> >>   5.84%  [kernel]           [k] __pv_queued_spin_lock_slowpath
+>> >>[snip]
+>> >>
+>> >>I'm going to have to recompile with lock profiling, meanwhile
+>> >>according to bpftrace
+>> >>(bpftrace -e 'kprobe:__pv_queued_spin_lock_slowpath { @[kstack()] =
+>> >> count(); }')
+>> >>top hits would be:
+>> >>
+>> >>@[
+>> >>    __pv_queued_spin_lock_slowpath+1
+>> >>    _raw_spin_lock+37
+>> >>    __schedule+192
+>> >>    schedule_idle+38
+>> >>    do_idle+366
+>> >>    cpu_startup_entry+38
+>> >>    start_secondary+282
+>> >>    secondary_startup_64_no_verify+381
+>> >>]: 181
+>> >>@[
+>> >>    __pv_queued_spin_lock_slowpath+1
+>> >>    _raw_spin_lock_irq+43
+>> >>    wait_for_completion+141
+>> >>    stop_one_cpu+127
+>> >>    sched_exec+165
+>> >
+>> > There's the suspicious sched_exec() I was talking about! :)
+>> >
+>> > I think it needs to be moved, and perhaps _later_ instead of earlier?
+>> > Hmm...
+>> >
+>>
+>> I'm getting around 3.4k execs/s. However, if I "taskset -c 3
+>> ./static-doexec 1" the number goes up to about 9.5k and lock
+>> contention disappears from the profile. So off hand looks like the
+>> task is walking around the box when it perhaps could be avoided -- it
+>> is idle apart from running the test. Again this is going to require a
+>> serious look instead of ad hoc pokes.
+>
+> Peter, is this something you can speak to? It seems like execve() forces
+> a change in running CPU. Is this really something we want to be doing?
+> Or is there some better way to keep it on the same CPU unless there is
+> contention?
+>
 
-Ugh, yeah.  But that and should actually be easier to do on top.
+sched_exec causes migration only for only few % of execs in the bench,
+but when it does happen there is tons of overhead elsewhere.
 
-> Maybe perf should export .event_map to KVM somehow.
+I expect real programs which get past execve will be prone to
+migrating anyway, regardless of what sched_exec is doing.
 
-Oh for ***** sake, perf already does export this for KVM.  Untested, but the below
-should do the trick.  If I need to spin another version of this series then I'll
-fold it in, otherwise I'll post it as something on top.
+That is to say, while sched_exec buggering off here would be nice, I
+think for real-world wins the thing to investigate is the overhead
+which comes from migration to begin with.
 
-There's also an optimization to be had for kvm_pmu_trigger_event(), which incurs
-an indirect branch not only every invocation, but on every iteration.  I'll post
-this one separately.
-
-diff --git a/arch/x86/kvm/vmx/pmu_intel.c b/arch/x86/kvm/vmx/pmu_intel.c
-index 5fc5a62af428..a02e13c2e5e6 100644
---- a/arch/x86/kvm/vmx/pmu_intel.c
-+++ b/arch/x86/kvm/vmx/pmu_intel.c
-@@ -405,25 +405,32 @@ static int intel_pmu_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
-  * different perf_event is already utilizing the requested counter, but the end
-  * result is the same (ignoring the fact that using a general purpose counter
-  * will likely exacerbate counter contention).
-- *
-- * Note, reference cycles is counted using a perf-defined "psuedo-encoding",
-- * as there is no architectural general purpose encoding for reference cycles.
-  */
- static u64 intel_get_fixed_pmc_eventsel(int index)
- {
--       const struct {
--               u8 eventsel;
--               u8 unit_mask;
--       } fixed_pmc_events[] = {
--               [0] = { 0xc0, 0x00 }, /* Instruction Retired / PERF_COUNT_HW_INSTRUCTIONS. */
--               [1] = { 0x3c, 0x00 }, /* CPU Cycles/ PERF_COUNT_HW_CPU_CYCLES. */
--               [2] = { 0x00, 0x03 }, /* Reference Cycles / PERF_COUNT_HW_REF_CPU_CYCLES*/
-+       enum perf_hw_id perf_id;
-+       u64 eventsel;
-+
-+       BUILD_BUG_ON(KVM_PMC_MAX_FIXED != 3);
-+
-+       switch (index) {
-+       case 0:
-+               perf_id = PERF_COUNT_HW_INSTRUCTIONS;
-+               break;
-+       case 1:
-+               perf_id = PERF_COUNT_HW_CPU_CYCLES;
-+               break;
-+       case 2:
-+               perf_id = PERF_COUNT_HW_REF_CPU_CYCLES;
-+               break;
-+       default:
-+               WARN_ON_ONCE(1);
-+               return 0;
-        };
- 
--       BUILD_BUG_ON(ARRAY_SIZE(fixed_pmc_events) != KVM_PMC_MAX_FIXED);
--
--       return (fixed_pmc_events[index].unit_mask << 8) |
--               fixed_pmc_events[index].eventsel;
-+       eventsel = perf_get_hw_event_config(perf_id);
-+       WARN_ON_ONCE(!eventsel && index < kvm_pmu_cap.num_counters_fixed);
-+       return eventsel;
- }
- 
- static void intel_pmu_refresh(struct kvm_vcpu *vcpu)
+-- 
+Mateusz Guzik <mjguzik gmail.com>
