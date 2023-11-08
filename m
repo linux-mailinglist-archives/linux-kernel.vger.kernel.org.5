@@ -2,202 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 402867E59D5
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 16:15:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26E747E59D7
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 16:15:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232354AbjKHPPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 10:15:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56184 "EHLO
+        id S232637AbjKHPPd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 10:15:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230057AbjKHPPQ (ORCPT
+        with ESMTP id S232509AbjKHPPc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 10:15:16 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55ABD188
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 07:14:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1699456467;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=9aaIb8urRnoY67/1dS6RQ1uguu20E648z3zl88Urt0o=;
-        b=SkhwqjAUA+Pj1o4ZH2lnW3TyzdhE/i0e0aK5otVw2eoEsNCrwzErWDEO7pOqqk8Dk1ZJmZ
-        8zStTffx7bQVLo1464IHCslc5A3gPbZ5eu9xVarQCWPYOrzPclVndmVUOVjml/OZl+QGDo
-        pBctv/JglOuiHVvnQj9W3js4RhusFRU=
-Received: from mail-oi1-f197.google.com (mail-oi1-f197.google.com
- [209.85.167.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-648-ucwAoUOENe2AjMzk8hdIaQ-1; Wed, 08 Nov 2023 10:14:26 -0500
-X-MC-Unique: ucwAoUOENe2AjMzk8hdIaQ-1
-Received: by mail-oi1-f197.google.com with SMTP id 5614622812f47-3b2ef9e4c25so10081589b6e.1
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 07:14:26 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699456465; x=1700061265;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9aaIb8urRnoY67/1dS6RQ1uguu20E648z3zl88Urt0o=;
-        b=nToxSBM7VZqI8/H/m8olPLcEqDqcKwpn1pPi2sQ3+T3gUUvPqUPun9wC9vbvDak80G
-         djJFKiwzxtil4gVjSzajYr/A0UOFDNQl/7fN3QqkxAnKYY6lHpyKCjM4nUCu0g43EFNd
-         efTlo6ZBZKM+Y6rToxHk7nJxvWveQxPcwxqwBRom3ZacPccLoUs6pceL+BnlFMg9ZpoR
-         sl3BjK9NuFgrAX5RHbTV4S8fvR0bJ3e2nnJWWw6l0YI4sRtGITeQ1cW0zv/OLaZg3xxE
-         iOSU7beTcuRhzGiKP3ZAnlIx9LedwbxlA2GaQDS2Y6myecXVeZK2PJR/iC3b+FPnhGoK
-         u7lg==
-X-Gm-Message-State: AOJu0Yy+kHOZAnkQiWITnjrqL9BECosxRBB9Q3RpftuOdoz/urczBVyP
-        zfYhfNAAVwZmD1ryijMaoTUYVcH/AiJ2mWfFvwwvSe0btQcr8C3mEPc3pBKZvoFAfunawzM6paq
-        IQsionawjrO3NQpXqkyEBBqTl
-X-Received: by 2002:a05:6808:4448:b0:3b6:a883:b40e with SMTP id ep8-20020a056808444800b003b6a883b40emr2614099oib.19.1699456465508;
-        Wed, 08 Nov 2023 07:14:25 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGX3fd+7BamuSSGnb6HDg9OGQ5t2auJfMXE7nhbctPyuVjmSbWh/epeA64gm03OnKn2Msup7w==
-X-Received: by 2002:a05:6808:4448:b0:3b6:a883:b40e with SMTP id ep8-20020a056808444800b003b6a883b40emr2614074oib.19.1699456465202;
-        Wed, 08 Nov 2023 07:14:25 -0800 (PST)
-Received: from localhost.localdomain ([151.29.128.75])
-        by smtp.gmail.com with ESMTPSA id h14-20020a0cedae000000b0065af24495easm1164981qvr.51.2023.11.08.07.14.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Nov 2023 07:14:24 -0800 (PST)
-Date:   Wed, 8 Nov 2023 16:14:18 +0100
-From:   Juri Lelli <juri.lelli@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Daniel Bristot de Oliveira <bristot@kernel.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Valentin Schneider <vschneid@redhat.com>,
-        linux-kernel@vger.kernel.org,
-        Luca Abeni <luca.abeni@santannapisa.it>,
-        Tommaso Cucinotta <tommaso.cucinotta@santannapisa.it>,
+        Wed, 8 Nov 2023 10:15:32 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 330C81A1;
+        Wed,  8 Nov 2023 07:15:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=MIME-Version:Content-Type:References:
+        In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=A4jUopAmRauG3cczZCFkE62pqrZA/v974d9rzBvJxVU=; b=EFn9paMiXAVSm4zYzMH9I/h+gV
+        euSLH3p3Yvnln2edDhyMBVhrnOltrWq/PXt2XU/1b95D0BrMdp6DLXbw65Jgi+xWcscg7lV48sPLO
+        ZDsjLmz0kerS/7/uZx/SXcZDhXG+XMUuIOXSvuI3qn2ZHIcdXCDGXxY/CBsWSgPFvn+0KtJJWru91
+        JoerClk3RseN04jIjDlLid1VBOqwpXqX6LkJI8CE20FsoRPo3rZx5qn2M19+rQuTfOeaCE7IIHaqG
+        ct26ipc5CN3Z3Zy1InWiZX8nW/fgNTa5A8TE7AQuoWCedj0B6tXR1wHqH/1cNqxE0LDOZnrxV8rhA
+        I9EL71nQ==;
+Received: from [2001:8b0:10b:5:8c2f:562b:3c9a:b5d5] (helo=u3832b3a9db3152.ant.amazon.com)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1r0kH5-001i8V-5r; Wed, 08 Nov 2023 15:15:23 +0000
+Message-ID: <caad0c796b4c29a9370956a4c1c91f44f193a903.camel@infradead.org>
+Subject: Re: [PATCH v7 11/11] KVM: xen: allow vcpu_info content to be
+ 'safely' copied
+From:   David Woodhouse <dwmw2@infradead.org>
+To:     Sean Christopherson <seanjc@google.com>,
+        Paul Durrant <paul@xen.org>,
+        "Allister, Jack" <jalliste@amazon.co.uk>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Paul Durrant <pdurrant@amazon.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Vineeth Pillai <vineeth@bitbyteword.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Phil Auld <pauld@redhat.com>
-Subject: Re: [PATCH v5 6/7] sched/deadline: Deferrable dl server
-Message-ID: <ZUulyj7tXnZzv5V6@localhost.localdomain>
-References: <cover.1699095159.git.bristot@kernel.org>
- <c7b706d30d6316c52853ca056db5beb82ba72863.1699095159.git.bristot@kernel.org>
- <CAEXW_YS=PrWDx+YGVR7bmq0_SoKNztzGrreApCd9qk1yBLA5bA@mail.gmail.com>
- <CAEXW_YQ8kv3tXQJexLSguPuWi0bXiReKDyYNo9+A-Hgp=Zo1vA@mail.gmail.com>
- <CAEXW_YSjsZSrJK_RbGmbLNy4UrLCgu+7NPZjg-wiLuNbGOGr+w@mail.gmail.com>
- <20231107114732.5dd350ec@gandalf.local.home>
- <7d1ea71b-5218-4ee0-bc89-f02ee6bd5154@redhat.com>
- <3e58fad7-7f66-4e48-adcc-0fda9e9d0d07@kernel.org>
- <20231108124401.GQ8262@noisy.programming.kicks-ass.net>
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org
+Date:   Wed, 08 Nov 2023 15:15:23 +0000
+In-Reply-To: <ZUGUvdlxAoevcgJH@google.com>
+References: <20231002095740.1472907-1-paul@xen.org>
+         <20231002095740.1472907-12-paul@xen.org> <ZUGUvdlxAoevcgJH@google.com>
+Content-Type: multipart/signed; micalg="sha-256"; protocol="application/pkcs7-signature";
+        boundary="=-KjIPWBC8EkywvWLSPTOe"
+User-Agent: Evolution 3.44.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231108124401.GQ8262@noisy.programming.kicks-ass.net>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peter,
 
-On 08/11/23 13:44, Peter Zijlstra wrote:
-> On Tue, Nov 07, 2023 at 07:50:28PM +0100, Daniel Bristot de Oliveira wrote:
-> > > The code is not doing what I intended because I thought it was doing overload
-> > > control on the replenishment, but it is not (my bad).
-> > > 
-> > 
-> > I am still testing but... it is missing something like this (famous last words).
-> > 
-> > diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
-> > index 1092ca8892e0..6e2d21c47a04 100644
-> > --- a/kernel/sched/deadline.c
-> > +++ b/kernel/sched/deadline.c
-> > @@ -842,6 +842,8 @@ static inline void setup_new_dl_entity(struct sched_dl_entity *dl_se)
-> >   * runtime, or it just underestimated it during sched_setattr().
-> >   */
-> >  static int start_dl_timer(struct sched_dl_entity *dl_se);
-> > +static bool dl_entity_overflow(struct sched_dl_entity *dl_se, u64 t);
-> > +
-> >  static void replenish_dl_entity(struct sched_dl_entity *dl_se)
-> >  {
-> >  	struct dl_rq *dl_rq = dl_rq_of_se(dl_se);
-> > @@ -852,9 +854,18 @@ static void replenish_dl_entity(struct sched_dl_entity *dl_se)
-> >  	/*
-> >  	 * This could be the case for a !-dl task that is boosted.
-> >  	 * Just go with full inherited parameters.
-> > +	 *
-> > +	 * Or, it could be the case of a zerolax reservation that
-> > +	 * was not able to consume its runtime in background and
-> > +	 * reached this point with current u > U.
-> > +	 *
-> > +	 * In both cases, set a new period.
-> >  	 */
-> > -	if (dl_se->dl_deadline == 0)
-> > -		replenish_dl_new_period(dl_se, rq);
-> > +	if (dl_se->dl_deadline == 0 ||
-> > +		(dl_se->dl_zerolax_armed && dl_entity_overflow(dl_se, rq_clock(rq)))) {
-> > +			dl_se->deadline = rq_clock(rq) + pi_of(dl_se)->dl_deadline;
-> > +			dl_se->runtime = pi_of(dl_se)->dl_runtime;
-> > +	}
-> > 
-> >  	if (dl_se->dl_yielded && dl_se->runtime > 0)
-> >  		dl_se->runtime = 0;
-> 
-> Should we rather not cap the runtime, something like so?
-> 
-> Because the above also causes period drift, which we do not want.
+--=-KjIPWBC8EkywvWLSPTOe
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-I was honestly also concerned with the drift, but then thought it might
-not be an issue for the dl_server (zerolax), as it doesn't have a
-userspace counterpart that relies on synchronized clocks?
+On Tue, 2023-10-31 at 16:58 -0700, Sean Christopherson wrote:
+>=20
+> > diff --git a/arch/x86/kvm/xen.c b/arch/x86/kvm/xen.c
+> > index aafc794940e4..e645066217bb 100644
+> > --- a/arch/x86/kvm/xen.c
+> > +++ b/arch/x86/kvm/xen.c
+> > @@ -1606,9 +1606,6 @@ int kvm_xen_set_evtchn_fast(struct kvm_xen_evtchn=
+ *xe, struct kvm *kvm)
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0WRITE_ONCE(xe->vcpu_idx, vcpu->vcpu_idx);
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0}
+> > =C2=A0=20
+> > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (!vcpu->arch.xen.vcpu_inf=
+o_cache.active)
+> > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0return -EINVAL;
+> > -
+>=20
+> Hmm, maybe move this check after the "hard" error checks and explicitly d=
+o:
+>=20
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0return -EWOULDBLOCK
+>=20
+> That way it's much more obvious that this patch is safe.=C2=A0 Alternativ=
+ely, briefly
+> explain what happens if the cache is invalid in the changelog.
 
-> 
-> ---
-> diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
-> index 58b542bf2893..1453a2cd0680 100644
-> --- a/kernel/sched/deadline.c
-> +++ b/kernel/sched/deadline.c
-> @@ -829,10 +829,12 @@ static inline void setup_new_dl_entity(struct sched_dl_entity *dl_se)
->   */
->  static void replenish_dl_entity(struct sched_dl_entity *dl_se)
->  {
-> +	struct sched_dl_entity *pi_se = pi_of(dl_se);
->  	struct dl_rq *dl_rq = dl_rq_of_se(dl_se);
->  	struct rq *rq = rq_of_dl_rq(dl_rq);
-> +	u64 dl_runtime = pi_se->dl_runtime;
->  
-> -	WARN_ON_ONCE(pi_of(dl_se)->dl_runtime <= 0);
-> +	WARN_ON_ONCE(dl_runtime <= 0);
->  
->  	/*
->  	 * This could be the case for a !-dl task that is boosted.
-> @@ -851,10 +853,13 @@ static void replenish_dl_entity(struct sched_dl_entity *dl_se)
->  	 * arbitrary large.
->  	 */
->  	while (dl_se->runtime <= 0) {
-> -		dl_se->deadline += pi_of(dl_se)->dl_period;
-> -		dl_se->runtime += pi_of(dl_se)->dl_runtime;
-> +		dl_se->deadline += pi_se->dl_period;
-> +		dl_se->runtime += dl_runtime;
->  	}
->  
-> +	if (dl_se->zerolax && dl_se->runtime > dl_runtime)
-> +		dl_se->runtime = dl_runtime;
-> +
 
-Anyway, I have the impression that this breaks EDF/CBS, as we are letting
-the dl_server run with full dl_runtime w/o postponing the period
-(essentially an u = 1 reservation until runtime is depleted).
+Hm, I thought we dropped that? It doesn't want to return -EWOULDBLOCK.
+That would cause a "fast" irqfd delivery to defer to the slow
+(workqueue) path, but then the same thing would happen on that path
+*too*.
 
-I would say we need to either do
+I actually think this check needs to be dropped completely. The
+evtchn_pending_sel bit will get set in the *shadow* copy in vcpu-
+>arch.xen.evtchn_pending_sel, and will subsequently be set in the real
+vcpu_info when that is configured again. We do already handle that case
+correctly, I believe:
 
-dl_se->deadline += pi_of(dl_se)->dl_period;
-dl_se->runtime = pi_of(dl_se)->dl_runtime;
+		if (!kvm_gpc_check(gpc, sizeof(struct vcpu_info))) {
+			/*
+			 * Could not access the vcpu_info. Set the bit in-kernel
+			 * and prod the vCPU to deliver it for itself.
+			 */
+			if (!test_and_set_bit(port_word_bit, &vcpu->arch.xen.evtchn_pending_sel)=
+)
+				kick_vcpu =3D true;
+			goto out_rcu;
+		}
 
-or (as Daniel proposed)
+If we leave this check in place as it is, I think we're going to lose
+incoming events (and IPIs) directed at a vCPU while it has its
+vcpu_info temporarily removed.
 
-dl_se->deadline = rq_clock(rq) + pi_of(dl_se)->dl_deadline;
-dl_se->runtime = pi_of(dl_se)->dl_runtime;
+(We do want to "temporarily" remove the vcpu_info so that we can adjust
+memslots, because there's no way to atomically break apart a large
+memslot and overlay a single page in the middle of it. And also when a
+guest is paused for migration, it's nice to be sure that no changes
+will happen to the guest memory and trigger sanity checks that the
+memory on the destination precisely matches the source.)
 
-and I seem to be inclined towards the latter, as the former would
-essentially reduce dl_server bandwidth under dl_runtime/dl_period at
-times.
+--=-KjIPWBC8EkywvWLSPTOe
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Transfer-Encoding: base64
 
-Best,
-Juri
+MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCEkQw
+ggYQMIID+KADAgECAhBNlCwQ1DvglAnFgS06KwZPMA0GCSqGSIb3DQEBDAUAMIGIMQswCQYDVQQG
+EwJVUzETMBEGA1UECBMKTmV3IEplcnNleTEUMBIGA1UEBxMLSmVyc2V5IENpdHkxHjAcBgNVBAoT
+FVRoZSBVU0VSVFJVU1QgTmV0d29yazEuMCwGA1UEAxMlVVNFUlRydXN0IFJTQSBDZXJ0aWZpY2F0
+aW9uIEF1dGhvcml0eTAeFw0xODExMDIwMDAwMDBaFw0zMDEyMzEyMzU5NTlaMIGWMQswCQYDVQQG
+EwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYD
+VQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50
+aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
+AQEAyjztlApB/975Rrno1jvm2pK/KxBOqhq8gr2+JhwpKirSzZxQgT9tlC7zl6hn1fXjSo5MqXUf
+ItMltrMaXqcESJuK8dtK56NCSrq4iDKaKq9NxOXFmqXX2zN8HHGjQ2b2Xv0v1L5Nk1MQPKA19xeW
+QcpGEGFUUd0kN+oHox+L9aV1rjfNiCj3bJk6kJaOPabPi2503nn/ITX5e8WfPnGw4VuZ79Khj1YB
+rf24k5Ee1sLTHsLtpiK9OjG4iQRBdq6Z/TlVx/hGAez5h36bBJMxqdHLpdwIUkTqT8se3ed0PewD
+ch/8kHPo5fZl5u1B0ecpq/sDN/5sCG52Ds+QU5O5EwIDAQABo4IBZDCCAWAwHwYDVR0jBBgwFoAU
+U3m/WqorSs9UgOHYm8Cd8rIDZsswHQYDVR0OBBYEFAnA8vwL2pTbX/4r36iZQs/J4K0AMA4GA1Ud
+DwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEF
+BQcDBDARBgNVHSAECjAIMAYGBFUdIAAwUAYDVR0fBEkwRzBFoEOgQYY/aHR0cDovL2NybC51c2Vy
+dHJ1c3QuY29tL1VTRVJUcnVzdFJTQUNlcnRpZmljYXRpb25BdXRob3JpdHkuY3JsMHYGCCsGAQUF
+BwEBBGowaDA/BggrBgEFBQcwAoYzaHR0cDovL2NydC51c2VydHJ1c3QuY29tL1VTRVJUcnVzdFJT
+QUFkZFRydXN0Q0EuY3J0MCUGCCsGAQUFBzABhhlodHRwOi8vb2NzcC51c2VydHJ1c3QuY29tMA0G
+CSqGSIb3DQEBDAUAA4ICAQBBRHUAqznCFfXejpVtMnFojADdF9d6HBA4kMjjsb0XMZHztuOCtKF+
+xswhh2GqkW5JQrM8zVlU+A2VP72Ky2nlRA1GwmIPgou74TZ/XTarHG8zdMSgaDrkVYzz1g3nIVO9
+IHk96VwsacIvBF8JfqIs+8aWH2PfSUrNxP6Ys7U0sZYx4rXD6+cqFq/ZW5BUfClN/rhk2ddQXyn7
+kkmka2RQb9d90nmNHdgKrwfQ49mQ2hWQNDkJJIXwKjYA6VUR/fZUFeCUisdDe/0ABLTI+jheXUV1
+eoYV7lNwNBKpeHdNuO6Aacb533JlfeUHxvBz9OfYWUiXu09sMAviM11Q0DuMZ5760CdO2VnpsXP4
+KxaYIhvqPqUMWqRdWyn7crItNkZeroXaecG03i3mM7dkiPaCkgocBg0EBYsbZDZ8bsG3a08LwEsL
+1Ygz3SBsyECa0waq4hOf/Z85F2w2ZpXfP+w8q4ifwO90SGZZV+HR/Jh6rEaVPDRF/CEGVqR1hiuQ
+OZ1YL5ezMTX0ZSLwrymUE0pwi/KDaiYB15uswgeIAcA6JzPFf9pLkAFFWs1QNyN++niFhsM47qod
+x/PL+5jR87myx5uYdBEQkkDc+lKB1Wct6ucXqm2EmsaQ0M95QjTmy+rDWjkDYdw3Ms6mSWE3Bn7i
+5ZgtwCLXgAIe5W8mybM2JzCCBhQwggT8oAMCAQICEQDGvhmWZ0DEAx0oURL6O6l+MA0GCSqGSIb3
+DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYD
+VQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28g
+UlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMB4XDTIyMDEwNzAw
+MDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9y
+ZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3GpC2bomUqk+91wLYBzDMcCj5C9m6
+oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZHh7htyAkWYVoFsFPrwHounto8xTsy
+SSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT9YgcBqKCo65pTFmOnR/VVbjJk4K2
+xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNjP+qDrh0db7PAjO1D4d5ftfrsf+kd
+RR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy2U+eITZ5LLE5s45mX2oPFknWqxBo
+bQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3BgBEmfsYWlBXO8rVXfvPgLs32VdV
+NZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/7auNVRmPB3v5SWEsH8xi4Bez2V9U
+KxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmdlFYhAflWKQ03Ufiu8t3iBE3VJbc2
+5oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9aelIl6vtbhMA+l0nfrsORMa4kobqQ5
+C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMBAAGjggHMMIIByDAfBgNVHSMEGDAW
+gBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeDMcimo0oz8o1R1Nver3ZVpSkwDgYD
+VR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwQGCCsGAQUFBwMC
+MEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYBBQUHAgEWF2h0dHBzOi8vc2VjdGln
+by5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9jcmwuc2VjdGlnby5jb20vU2VjdGln
+b1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcmwwgYoGCCsGAQUFBwEB
+BH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdvLmNvbS9TZWN0aWdvUlNBQ2xpZW50
+QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAjBggrBgEFBQcwAYYXaHR0cDovL29j
+c3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5mcmFkZWFkLm9yZzANBgkqhkiG9w0B
+AQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQvQ/fzPXmtR9t54rpmI2TfyvcKgOXp
+qa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvIlSPrzIB4Z2wyIGQpaPLlYflrrVFK
+v9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9ChWFfgSXvrWDZspnU3Gjw/rMHrGnql
+Htlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0whpBtXdyDjzBtQTaZJ7zTT/vlehc/
+tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9IzCCBhQwggT8oAMCAQICEQDGvhmW
+Z0DEAx0oURL6O6l+MA0GCSqGSIb3DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3Jl
+YXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0
+ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJl
+IEVtYWlsIENBMB4XDTIyMDEwNzAwMDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJ
+ARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3
+GpC2bomUqk+91wLYBzDMcCj5C9m6oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZH
+h7htyAkWYVoFsFPrwHounto8xTsySSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT
+9YgcBqKCo65pTFmOnR/VVbjJk4K2xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNj
+P+qDrh0db7PAjO1D4d5ftfrsf+kdRR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy
+2U+eITZ5LLE5s45mX2oPFknWqxBobQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3
+BgBEmfsYWlBXO8rVXfvPgLs32VdVNZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/
+7auNVRmPB3v5SWEsH8xi4Bez2V9UKxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmd
+lFYhAflWKQ03Ufiu8t3iBE3VJbc25oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9ae
+lIl6vtbhMA+l0nfrsORMa4kobqQ5C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMB
+AAGjggHMMIIByDAfBgNVHSMEGDAWgBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeD
+Mcimo0oz8o1R1Nver3ZVpSkwDgYDVR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYw
+FAYIKwYBBQUHAwQGCCsGAQUFBwMCMEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYB
+BQUHAgEWF2h0dHBzOi8vc2VjdGlnby5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9j
+cmwuc2VjdGlnby5jb20vU2VjdGlnb1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1h
+aWxDQS5jcmwwgYoGCCsGAQUFBwEBBH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdv
+LmNvbS9TZWN0aWdvUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAj
+BggrBgEFBQcwAYYXaHR0cDovL29jc3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5m
+cmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQv
+Q/fzPXmtR9t54rpmI2TfyvcKgOXpqa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvI
+lSPrzIB4Z2wyIGQpaPLlYflrrVFKv9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9Ch
+WFfgSXvrWDZspnU3Gjw/rMHrGnqlHtlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0w
+hpBtXdyDjzBtQTaZJ7zTT/vlehc/tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9
+IzGCBMcwggTDAgEBMIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVz
+dGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMT
+NVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA
+xr4ZlmdAxAMdKFES+jupfjANBglghkgBZQMEAgEFAKCCAeswGAYJKoZIhvcNAQkDMQsGCSqGSIb3
+DQEHATAcBgkqhkiG9w0BCQUxDxcNMjMxMTA4MTUxNTIzWjAvBgkqhkiG9w0BCQQxIgQgdYVjfl1l
+dopn3gVJYwVQSTpnt6E8w4Nlw1fUsqZg1lswgb0GCSsGAQQBgjcQBDGBrzCBrDCBljELMAkGA1UE
+BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEYMBYG
+A1UEChMPU2VjdGlnbyBMaW1pdGVkMT4wPAYDVQQDEzVTZWN0aWdvIFJTQSBDbGllbnQgQXV0aGVu
+dGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQQIRAMa+GZZnQMQDHShREvo7qX4wgb8GCyqGSIb3
+DQEJEAILMYGvoIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVy
+MRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNl
+Y3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEAxr4Z
+lmdAxAMdKFES+jupfjANBgkqhkiG9w0BAQEFAASCAgBy92fJZrVfc+niL8iyf6v9g9a8Aq75weUr
+pSflLmENI+PQOAg+QdyXhA1I/BwvVnqjyympdi9Q0daKE2/1yw5DTWMHWaLh6hVHwpUfxCDBwOgq
+bNj1/tIsOXCwS4TcZHjmtiajtusz5O+SxQnx0pZND1DjBEDzbSVTkEQYkk+W7z9RVCTndFEqwiwN
+4XimF6D1X+WH7POvh84YSOIMJ1LKr/d1swZ3mOo+ex53VDAGslBHPG0nWuPhgAIO8sdBKWP+vOJv
+/Wz3l+Tml34WIKwgUaldzEDk3klpxFESnHvGM0UlalJFeGNPlgY4ElFJGcQXvqaPHjg1zETZLvrt
+e0nYv6Mp6KkcwSi/ybKZk6eZWKBk+qNrk/puZIsfSWauCUw29RZuVD3OmTCF1MiZ1vI1AekxRtEZ
+3T/UUEST2GcqyodWXd273/Y/1rxE7gLIDVnMzVASPfdliBXHNmLCDQUCbntijee9bE6csenhoSAM
+F2PHSadpi/qoNZwWNsUfDcV6MbbguUcpChUgYiRoOBFLFXq0gaacK2Oy8BShzuFWAz+2XIrtbPvF
+5WhXRYKWBTCXpeSt3d0Qv5uTkbqJPmoYZwN9sXw58zxH4l3e0pDyMpspXWfm+w5EY3BZrLQ52a8j
+1gc7y0GW4o61Bj0+dzxns3QJ/4Nyd43s3km24rHtlgAAAAAAAA==
 
+
+--=-KjIPWBC8EkywvWLSPTOe--
