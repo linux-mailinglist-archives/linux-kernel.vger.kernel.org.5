@@ -2,100 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C02F7E596D
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 15:45:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 267947E5970
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 15:46:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343630AbjKHOp7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 09:45:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38824 "EHLO
+        id S1344077AbjKHOqK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 09:46:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231262AbjKHOp6 (ORCPT
+        with ESMTP id S234425AbjKHOqH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 09:45:58 -0500
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AF08172E;
-        Wed,  8 Nov 2023 06:45:55 -0800 (PST)
-Received: from frapeml500002.china.huawei.com (unknown [172.18.147.206])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4SQSXx4VQQz6K8y5;
-        Wed,  8 Nov 2023 22:44:49 +0800 (CST)
-Received: from [10.195.35.156] (10.195.35.156) by
- frapeml500002.china.huawei.com (7.182.85.205) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Wed, 8 Nov 2023 15:45:51 +0100
-Message-ID: <7a4f87c3-b3c6-42c5-9200-8eb56d1c8530@huawei-partners.com>
-Date:   Wed, 8 Nov 2023 15:45:49 +0100
+        Wed, 8 Nov 2023 09:46:07 -0500
+Received: from mail-oi1-f198.google.com (mail-oi1-f198.google.com [209.85.167.198])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 074751BFA
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 06:46:05 -0800 (PST)
+Received: by mail-oi1-f198.google.com with SMTP id 5614622812f47-3b2f3015ce6so10058811b6e.3
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 06:46:04 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699454764; x=1700059564;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=eyg+x1sdBdUCTK9dEOdpm/i8Z98iZDIp/TYoaCFtNfI=;
+        b=S7KELpazm6yY9yp5qK8zk9sqwZcYdz+AOSW0jqTiwV7ZSYCyzAo9grDA+e8+39aObr
+         5lQMGHlGgz7Ux6LxLnQjeyhZaLqVm4GkrHLZamm8OkeBA6Ccx4MLhqPY3nlNmcOZcQqE
+         EIuRkk9PszJOxWnSOUlm8Z/8VDGoN43mPU1eBlvY7VR8u2yppNNalWLkaFt54eJ1gPKJ
+         3x9/WBAozJafOofGiXkmvC5u5F7n7A5QAztEqxKqwtYRLtluuDRjKX/yAfLknlfysSoh
+         bK/9xha2j/luf9W+N7uw5I13wmw5RJms35IdBTOOLEB5xCu3bQnOGRlPZ6sanRuHH/r2
+         GFsw==
+X-Gm-Message-State: AOJu0Yyc3jNG5Kr+peRVyEZiX7NuygKteBL6qu1VEPftQFh/2PLlCUAv
+        Npdsmh0ljANZZFOnS34OtTH6ARK8Ko9CKj3tpI2o7aDW3zO7
+X-Google-Smtp-Source: AGHT+IHYVbPqVKNGXu+BvwkE/pRq1+khXE9q8J8tLhTwkKxlwRoFhUls2Br/4J25UUlY0OHXWCPFT/tsDkP8SnIUAsiU7jVq8Mz6
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Memory corruption with CONFIG_SWIOTLB_DYNAMIC=y
-Content-Language: en-US
-To:     Halil Pasic <pasic@linux.ibm.com>
-CC:     =?UTF-8?B?UGV0ciBUZXNhxZnDrWs=?= <petr@tesarici.cz>,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Ross Lagerwall <ross.lagerwall@citrix.com>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <iommu@lists.linux.dev>,
-        Matthew Rosato <mjrosato@linux.ibm.com>
-References: <104a8c8fedffd1ff8a2890983e2ec1c26bff6810.camel@linux.ibm.com>
- <20231103195949.0af884d0@meshulam.tesarici.cz>
- <20231108115207.791a30d8.pasic@linux.ibm.com>
- <41c0baf6-ba4d-4876-b692-279307265466@huawei-partners.com>
- <20231108153230.6491acaa.pasic@linux.ibm.com>
-From:   Petr Tesarik <petr.tesarik1@huawei-partners.com>
-In-Reply-To: <20231108153230.6491acaa.pasic@linux.ibm.com>
+X-Received: by 2002:a05:6808:138d:b0:3a7:86b2:1950 with SMTP id
+ c13-20020a056808138d00b003a786b21950mr789798oiw.0.1699454764313; Wed, 08 Nov
+ 2023 06:46:04 -0800 (PST)
+Date:   Wed, 08 Nov 2023 06:46:04 -0800
+In-Reply-To: <0000000000002a4da90603a5cbbf@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000089f4110609a525b2@google.com>
+Subject: Re: [syzbot] [dri?] kernel BUG in vmf_insert_pfn_prot (2)
+From:   syzbot <syzbot+398e17b61dab22cc56bc@syzkaller.appspotmail.com>
+To:     airlied@gmail.com, airlied@linux.ie, christian.koenig@amd.com,
+        daniel.vetter@ffwll.ch, daniel.vetter@intel.com, daniel@ffwll.ch,
+        dri-devel@lists.freedesktop.org, hdanton@sina.com,
+        linaro-mm-sig-bounces@lists.linaro.org,
+        linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, maarten.lankhorst@linux.intel.com,
+        mripard@kernel.org, sumit.semwal@linaro.org,
+        syzkaller-bugs@googlegroups.com, tzimmermann@suse.de
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.195.35.156]
-X-ClientProxiedBy: frapeml100002.china.huawei.com (7.182.85.26) To
- frapeml500002.china.huawei.com (7.182.85.205)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/8/2023 3:32 PM, Halil Pasic wrote:
-> On Wed, 8 Nov 2023 12:04:12 +0100
-> Petr Tesarik <petr.tesarik1@huawei-partners.com> wrote:
-> [..]
->>>
->>> For the sake of simplicity let us assume we only have the min_align_mask
->>> requirement. Then I believe the worst case is that we need 
->>> (orig_addr & min_align_mask & PAGE_MASK)  + (min_align_mask & ~PAGE_MASK)
->>> extra space to fit.
->>>
->>> Depending on how the semantics pan out one may be able to replace
->>> min_align_mask with combined_mask.
->>>
->>> Is your point that for large combined_mask values 
->>> _get_free_pages(GFP_NOWAIT | __GFP_NOWARN, required_order) is not
->>> likely to complete successfully?  
->>
->> Yes, that's the reason. OTOH it's probably worth a try. The point is
->> that mapping a DMA buffer is allowed to fail, so callers should be
->> prepared anyway.
->>
->> And for the case you reported initially, I don't think there is any need
->> to preserve bit 11 (0x800) from the original buffer's physical address,
->> which is enough to fix it. See also my other email earlier today.
-> 
-> Hm. Do you mean "[PATCH 1/1] swiotlb: fix out-of-bounds TLB allocations
-> with CONFIG_SWIOTLB_DYNAMIC" or a different one?
-> 
-> I only see "[PATCH 1/1] swiotlb: fix out-of-bounds TLB allocations
-> with CONFIG_SWIOTLB_DYNAMIC" but I don't think that one takes
-> care of "I don't think there is any need to preserve bit 11 (0x800)
-> from the original buffer's physical address".
+syzbot has bisected this issue to:
 
-Yes, I mean only this patch. I want to fix memory corruption fast, while
-waiting for more feedback on my understanding of the alignment masks.
-What I'm trying to say is that your specific use case may not even need
-a bigger allocation if the page alignment should be interpreted differently.
+commit 45d9c8dde4cd8589f9180309ec60f0da2ce486e4
+Author: Daniel Vetter <daniel.vetter@ffwll.ch>
+Date:   Thu Aug 12 13:14:12 2021 +0000
 
-Again, thank you for your in-depth inspection, because it's not totally
-clear how the various alignment parameters should be interpreted. It's
-difficult to write correct code then...
+    drm/vgem: use shmem helpers
 
-Petr T
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=126094df680000
+start commit:   d2f51b3516da Merge tag 'rtc-6.7' of git://git.kernel.org/p..
+git tree:       upstream
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=116094df680000
+console output: https://syzkaller.appspot.com/x/log.txt?x=166094df680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=1ffa1cec3b40f3ce
+dashboard link: https://syzkaller.appspot.com/bug?extid=398e17b61dab22cc56bc
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16344918e80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=156bb2c0e80000
+
+Reported-by: syzbot+398e17b61dab22cc56bc@syzkaller.appspotmail.com
+Fixes: 45d9c8dde4cd ("drm/vgem: use shmem helpers")
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
