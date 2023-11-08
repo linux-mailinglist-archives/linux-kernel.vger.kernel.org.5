@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 111397E5732
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 14:01:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C70717E573D
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 14:02:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344697AbjKHNBz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 08:01:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36922 "EHLO
+        id S1344703AbjKHNCH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 08:02:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344551AbjKHNBu (ORCPT
+        with ESMTP id S1344666AbjKHNCE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 08:01:50 -0500
+        Wed, 8 Nov 2023 08:02:04 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE10D1FC2;
-        Wed,  8 Nov 2023 05:01:47 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8E3EAC433C8;
-        Wed,  8 Nov 2023 13:01:33 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 323B7B7;
+        Wed,  8 Nov 2023 05:02:02 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1E8D6C433AD;
+        Wed,  8 Nov 2023 13:01:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699448507;
-        bh=e+QnAKFOR6wNf8AU7caaDk1G44zPUvTIPn9eqgvKtVI=;
+        s=k20201202; t=1699448521;
+        bh=P3J0BM+Ztj1RDywy9VBJzXOtZYn62giSRkEPqVP9Q5s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kO32INjV4cycAjhgsoiS/RTxNc9orDpYCk0+4tO1+Gt7qOwlHokDC691On3AEseRz
-         yvvl3zTgVmsU4g0YVZaPw04fP+l56az3y5afylAuLQHL9pIQUNqDJKA/O5oXB2GOE9
-         kpTcKOXyRU8YRPtt7PmtoecXVPG0n6OLKr1MBZnj5Lgdm9FThiDsgfc7354TFlTL23
-         x4CyaJL3qAHmnf7+elMxEoKG20yxElbtDB+BUoKG6yoDK+xe+uwUqwQsziTDjj5y4A
-         IK/HwA9zBREWFPvH+XiApEACEGXb9lNAvDnPf1BVZeZvwi5m/tlIWU87hjbxo2nAjR
-         LT7tJIi+z+jFg==
+        b=burlYIIjmswCo6kZvxA/AuJo2RuSbSUh4JxXaXm/BrFLoO6sD0WbSTWokcncffA5Y
+         wo67CWy7N7wOACKbAjL4Sl4DOEFPrDKMgY2Vmh/5oPq1FFSPn3MesPrDFyK3fFfF+h
+         dk6lEsIi5AaEvBWjsExxnfkOCp+Y/j0YDMjCGWeZk4t0/cvy4o2fX7tRgRNSb6Qelx
+         p79OIkjot7Y52dQukaAiknMAc45DLBU2iLS+jxn81hgrHM+MMiDtBc6mW7+a/wwob/
+         jEghvumy9S0waHmg1Pwvnhj3TUenjvtSujPtQ86XOHtjGfPo5Pk2jGRwf2OtkS3O5k
+         /rNYAvRDuqPvA==
 From:   Arnd Bergmann <arnd@kernel.org>
 To:     Andrew Morton <akpm@linux-foundation.org>,
         linux-kernel@vger.kernel.org,
@@ -88,9 +88,9 @@ Cc:     Arnd Bergmann <arnd@arndb.de>, Matt Turner <mattst88@gmail.com>,
         linux-usb@vger.kernel.org, linux-fbdev@vger.kernel.org,
         dri-devel@lists.freedesktop.org, linux-bcachefs@vger.kernel.org,
         linux-mtd@lists.infradead.org
-Subject: [PATCH 11/22] x86: sta2x11: include header for sta2x11_get_instance() prototype
-Date:   Wed,  8 Nov 2023 13:58:32 +0100
-Message-Id: <20231108125843.3806765-12-arnd@kernel.org>
+Subject: [PATCH 12/22] csky: fix arch_jump_label_transform_static override
+Date:   Wed,  8 Nov 2023 13:58:33 +0100
+Message-Id: <20231108125843.3806765-13-arnd@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231108125843.3806765-1-arnd@kernel.org>
 References: <20231108125843.3806765-1-arnd@kernel.org>
@@ -102,31 +102,37 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-sta2x11_get_instance() is a global function declared in asm/sta2x11.h,
-but this header is not included before the definition, causing a warning:
+The arch_jump_label_transform_static() function in csky was originally meant to
+override the generic __weak function, but that got changed to an #ifndef check.
 
-arch/x86/pci/sta2x11-fixup.c:95:26: error: no previous prototype for 'sta2x11_get_instance' [-Werror=missing-prototypes]
+This showed up as a missing-prototype warning:
+arch/csky/kernel/jump_label.c:43:6: error: no previous prototype for 'arch_jump_label_transform_static' [-Werror=missing-prototypes]
 
-Add the missing #include.
+Change the method to use the new method of having a #define and a prototype
+for the global function.
 
-Fixes: 83125a3a189e ("x86, platform: Initial support for sta2x11 I/O hub")
+Fixes: 7e6b9db27de9 ("jump_label: make initial NOP patching the special case")
+Fixes: 4e8bb4ba5a55 ("csky: Add jump-label implementation")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- arch/x86/pci/sta2x11-fixup.c | 1 +
- 1 file changed, 1 insertion(+)
+ arch/csky/include/asm/jump_label.h | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/arch/x86/pci/sta2x11-fixup.c b/arch/x86/pci/sta2x11-fixup.c
-index 7368afc03998..8c8ddc4dcc08 100644
---- a/arch/x86/pci/sta2x11-fixup.c
-+++ b/arch/x86/pci/sta2x11-fixup.c
-@@ -14,6 +14,7 @@
- #include <linux/dma-map-ops.h>
- #include <linux/swiotlb.h>
- #include <asm/iommu.h>
-+#include <asm/sta2x11.h>
+diff --git a/arch/csky/include/asm/jump_label.h b/arch/csky/include/asm/jump_label.h
+index d488ba6084bc..98a3f4b168bd 100644
+--- a/arch/csky/include/asm/jump_label.h
++++ b/arch/csky/include/asm/jump_label.h
+@@ -43,5 +43,10 @@ static __always_inline bool arch_static_branch_jump(struct static_key *key,
+ 	return true;
+ }
  
- #define STA2X11_SWIOTLB_SIZE (4*1024*1024)
- 
++enum jump_label_type;
++void arch_jump_label_transform_static(struct jump_entry *entry,
++				      enum jump_label_type type);
++#define arch_jump_label_transform_static arch_jump_label_transform_static
++
+ #endif  /* __ASSEMBLY__ */
+ #endif	/* __ASM_CSKY_JUMP_LABEL_H */
 -- 
 2.39.2
 
