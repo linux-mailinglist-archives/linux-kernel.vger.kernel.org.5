@@ -2,97 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 218807E5C10
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 18:12:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A32827E5C16
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 18:12:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232506AbjKHRMK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 12:12:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53922 "EHLO
+        id S232512AbjKHRMj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 12:12:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232494AbjKHRMH (ORCPT
+        with ESMTP id S229460AbjKHRMi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 12:12:07 -0500
-Received: from mail-oo1-f47.google.com (mail-oo1-f47.google.com [209.85.161.47])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ED4E1FFB;
-        Wed,  8 Nov 2023 09:12:05 -0800 (PST)
-Received: by mail-oo1-f47.google.com with SMTP id 006d021491bc7-5875e24c749so3366866eaf.1;
-        Wed, 08 Nov 2023 09:12:05 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699463525; x=1700068325;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WoqEuJK3L2jvBHVX0Mpw971ft0z0hhSp7nlVmckWjlI=;
-        b=fBmCxu7ysdvSQqqeh9Ytg5g1/l2DKkRlxOpotUdjUNjCC8lfDcv7u8IbFzA7COEvif
-         Ir8kOaVBWF4Kb40dujeyvNdROyrX3BS3DchGEbcKAx3/VMUChlG+R+4FdmA0JdL88MK9
-         +vK6+cdWeKWS2N70KKen3MfCep/sSrVhCBkQf5GNSTNMTMhggiQflVJy+HQL3/O1psGI
-         HRZ+sXPjJvYx0+LlyqM8mGU4tJa/cQoD0tZyfZ2dSBsx+LgCtZ/cyRN5bVaXNro4+DLp
-         aZCMCm3yKIf7hG8qEyqIJmL5itBdA70i8nTmyT4tNY+xjf/pI4hjjlRKKbdOIRk6gFSO
-         vRwA==
-X-Gm-Message-State: AOJu0YzDs4RaRxOpKhnjI1flmAat9wAjpN50FFLFPpJkLFNZ2KG9tChu
-        GIlWj2oOitnUhza7CZOI5A==
-X-Google-Smtp-Source: AGHT+IFzRRe3+ULoXVKLekkDLT2E46OQ2R4s9QZ1ENZ+UvEE3WkT/0Ga2EKu7UWArEUdcFOI9ofQAQ==
-X-Received: by 2002:a05:6820:1c83:b0:589:db63:bfd1 with SMTP id ct3-20020a0568201c8300b00589db63bfd1mr2676269oob.8.1699463524765;
-        Wed, 08 Nov 2023 09:12:04 -0800 (PST)
-Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id x16-20020a4a97d0000000b0057327cecdd8sm2535510ooi.10.2023.11.08.09.12.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Nov 2023 09:12:04 -0800 (PST)
-Received: (nullmailer pid 2492952 invoked by uid 1000);
-        Wed, 08 Nov 2023 17:12:03 -0000
-Date:   Wed, 8 Nov 2023 11:12:03 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Michal Simek <michal.simek@amd.com>
-Cc:     linux-kernel@vger.kernel.org, monstr@monstr.eu,
-        michal.simek@xilinx.com, git@xilinx.com,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Conor Dooley <conor@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        devicetree@vger.kernel.org, linux-riscv@lists.infradead.org
-Subject: Re: [PATCH] dt-bindings: riscv: cpus: Add AMD MicroBlaze V compatible
-Message-ID: <20231108171203.GA2434548-robh@kernel.org>
-References: <d442d916204d26f82c1c3a924a4cdfb117960e1b.1699270661.git.michal.simek@amd.com>
+        Wed, 8 Nov 2023 12:12:38 -0500
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA66C19A3;
+        Wed,  8 Nov 2023 09:12:36 -0800 (PST)
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A8GGmq0013044;
+        Wed, 8 Nov 2023 17:12:35 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=M53atpcg7tAsjFqXGdOm7Q39THxkaM14HR+KbpU8NNQ=;
+ b=h5CT29iENerXo4BJ3Qmc8dz7ahKbznS3C5/LG6pEQor4IRuLrmpDDKaEVuxyRKUUdLUW
+ 36CQEid3kGJ+JoMiAGMNDDCTF3jT3URgmtW9Tk5oVrP5kthChrnQyh00+gWFSkuyMgFg
+ l0LJ5CCWV+/E6yp0w+s70XYvHm2D4QSREdaGAEZ69Hky43qwev/aeCPyrjOENcLYNRtY
+ zBv6m/f6xH5/PzdJ8SHZYNy7tJ6Cj8Uj1l25jSVwyDnYhBVP2WZ+y7g4oo/0QW+1Vw9e
+ G57nuUg/BaSxpqDXs//UNfPi+wGQdi7K9IC4XLGmvgDFL2V2HFe1FIj8Fg7KA7EOEyxt wA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u8dkt29hn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 08 Nov 2023 17:12:35 +0000
+Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3A8H9fZL028882;
+        Wed, 8 Nov 2023 17:12:35 GMT
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3u8dkt29h8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 08 Nov 2023 17:12:34 +0000
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3A8Gc5N7003440;
+        Wed, 8 Nov 2023 17:12:34 GMT
+Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
+        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3u7w21x946-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 08 Nov 2023 17:12:34 +0000
+Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
+        by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3A8HCVDX24511100
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 8 Nov 2023 17:12:31 GMT
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 39B0920043;
+        Wed,  8 Nov 2023 17:12:31 +0000 (GMT)
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0631D2004B;
+        Wed,  8 Nov 2023 17:12:31 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+        by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Wed,  8 Nov 2023 17:12:30 +0000 (GMT)
+From:   Nina Schoetterl-Glausch <nsg@linux.ibm.com>
+To:     Heiko Carstens <hca@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Nina Schoetterl-Glausch <nsg@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Vasily Gorbik <gor@linux.ibm.com>
+Cc:     Sven Schnelle <svens@linux.ibm.com>, linux-s390@vger.kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 0/4] KVM: s390: Fix minor bugs in STFLE shadowing
+Date:   Wed,  8 Nov 2023 18:12:25 +0100
+Message-Id: <20231108171229.3404476-1-nsg@linux.ibm.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d442d916204d26f82c1c3a924a4cdfb117960e1b.1699270661.git.michal.simek@amd.com>
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: pYfAm6Jgr_HWSqMnFExaVvP8u1dvR7W4
+X-Proofpoint-ORIG-GUID: kmav-itdVDg4M_QsYbu19NeK3oQgSkqp
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-08_05,2023-11-08_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ impostorscore=0 priorityscore=1501 mlxlogscore=931 lowpriorityscore=0
+ bulkscore=0 adultscore=0 spamscore=0 mlxscore=0 phishscore=0
+ suspectscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2311060000 definitions=main-2311080141
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 06, 2023 at 12:37:47PM +0100, Michal Simek wrote:
-> MicroBlaze V is new AMD/Xilinx soft-core 32bit RISC-V processor IP.
-> It is hardware compatible with classic MicroBlaze processor.
+v2 -> v3 (range-diff below):
+ * pick up tags (thanks Claudio)
+ * reverse Christmas tree
 
-How is that possible? It's a different instruction set, right? I suppose 
-the IP interfaces (signals) are the same/compatible.
+v1 -> v2:
+ * pick up tags (thanks {Claudio, David})
+ * drop Fixes tag on cleanup patch, change message (thanks David)
+ * drop Fixes tag on second patch since the length of the facility list
+   copied wasn't initially specified and only clarified in later
+   revisions
+ * use READ/WRITE_ONCE (thanks {David, Heiko})
 
-> 
-> Signed-off-by: Michal Simek <michal.simek@amd.com>
-> ---
-> 
->  Documentation/devicetree/bindings/riscv/cpus.yaml | 1 +
->  1 file changed, 1 insertion(+)
+Improve the STFLE vsie implementation.
+Firstly, fix a bug concerning the identification if the guest is
+intending to use interpretive execution for STFLE for its guest.
+Secondly, decrease the amount of guest memory accessed to the
+minimum.
+Also do some (optional) cleanups.
 
-Anyways,
+Nina Schoetterl-Glausch (4):
+  KVM: s390: vsie: Fix STFLE interpretive execution identification
+  KVM: s390: vsie: Fix length of facility list shadowed
+  KVM: s390: cpu model: Use proper define for facility mask size
+  KVM: s390: Minor refactor of base/ext facility lists
 
-Acked-by: Rob Herring <robh@kernel.org>
+ arch/s390/include/asm/facility.h |  6 +++++
+ arch/s390/include/asm/kvm_host.h |  2 +-
+ arch/s390/kernel/Makefile        |  2 +-
+ arch/s390/kernel/facility.c      | 21 +++++++++++++++
+ arch/s390/kvm/kvm-s390.c         | 44 ++++++++++++++------------------
+ arch/s390/kvm/vsie.c             | 15 +++++++++--
+ 6 files changed, 61 insertions(+), 29 deletions(-)
+ create mode 100644 arch/s390/kernel/facility.c
 
-> 
-> diff --git a/Documentation/devicetree/bindings/riscv/cpus.yaml b/Documentation/devicetree/bindings/riscv/cpus.yaml
-> index 97e8441eda1c..7b077af62b27 100644
-> --- a/Documentation/devicetree/bindings/riscv/cpus.yaml
-> +++ b/Documentation/devicetree/bindings/riscv/cpus.yaml
-> @@ -32,6 +32,7 @@ properties:
->      oneOf:
->        - items:
->            - enum:
-> +              - amd,mbv32
->                - andestech,ax45mp
->                - canaan,k210
->                - sifive,bullet0
-> -- 
-> 2.36.1
-> 
+Range-diff against v2:
+1:  de77a2c36786 = 1:  de77a2c36786 KVM: s390: vsie: Fix STFLE interpretive execution identification
+2:  f3b189627e96 ! 2:  e4b44c4d2400 KVM: s390: vsie: Fix length of facility list shadowed
+    @@ Commit message
+         case we'd wrongly inject a validity intercept.
+     
+         Acked-by: David Hildenbrand <david@redhat.com>
+    +    Reviewed-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
+         Signed-off-by: Nina Schoetterl-Glausch <nsg@linux.ibm.com>
+     
+      ## arch/s390/include/asm/facility.h ##
+    @@ arch/s390/kernel/facility.c (new)
+     +unsigned int stfle_size(void)
+     +{
+     +	static unsigned int size;
+    -+	u64 dummy;
+     +	unsigned int r;
+    ++	u64 dummy;
+     +
+     +	r = READ_ONCE(size);
+     +	if (!r) {
+3:  4907bb8fb2bc ! 3:  8b02ac33defb KVM: s390: cpu model: Use proper define for facility mask size
+    @@ Commit message
+         S390_ARCH_FAC_LIST_SIZE_U64 for defining the fac_mask array.
+         Note that both values are the same, there is no functional change.
+     
+    +    Reviewed-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
+         Signed-off-by: Nina Schoetterl-Glausch <nsg@linux.ibm.com>
+     
+      ## arch/s390/include/asm/kvm_host.h ##
+4:  2745898a22c3 ! 4:  a592be823576 KVM: s390: Minor refactor of base/ext facility lists
+    @@ Commit message
+         Make the constraint of that number on kvm_s390_fac_base obvious.
+         Get rid of implicit double anding of stfle_fac_list.
+     
+    +    Reviewed-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
+         Signed-off-by: Nina Schoetterl-Glausch <nsg@linux.ibm.com>
+     
+     
+
+base-commit: 05d3ef8bba77c1b5f98d941d8b2d4aeab8118ef1
+-- 
+2.39.2
+
