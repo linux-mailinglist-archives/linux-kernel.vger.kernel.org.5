@@ -2,171 +2,266 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DB6F7E546E
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 11:49:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E8FB7E5472
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 11:49:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344416AbjKHKtF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 05:49:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44944 "EHLO
+        id S1344687AbjKHKtQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 05:49:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344181AbjKHKsn (ORCPT
+        with ESMTP id S1344771AbjKHKs7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 05:48:43 -0500
-Received: from EUR02-AM0-obe.outbound.protection.outlook.com (mail-am0eur02on2078.outbound.protection.outlook.com [40.107.247.78])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0217125A9;
-        Wed,  8 Nov 2023 02:45:48 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mN0oh3684McgqVgP+j2vfo7nDUihUG2VSEdQC4dV9wf8TAcBJfguVaV0fC8/S1imPw8voEAT81W6lKmkqy2ZENy68fcEvJp8KoTrtVr+7VTUtX4tw1dM2dJwR05+xH/5SdSlm5xdIg3Jbvh9Jy1hfaGOpn3zOXLNRW8DMjrN+L1I4g3LddsVNvlHPHf12S7IxLQJqBYCVEAF6zpKQospssOs+RpTf7gsKcV4sLAw0NvZpjLLh+mZC3//SvT0lhOXPSJhdJ5Ag1k5+ruXBPTmNv/GRqh7U/VFpwBWWi8CyDOtsx/w18JBUf6hjYVdTqYX6zf0Yc2nSq/fKb2OVUdwjQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=dMDNOHv6cALsF8FKbL7GEhd7O5puP80Pw2S6mfPW0DY=;
- b=TOooKtfGhpZ/Xj8GuJhWJUQUr8qvXML7Z8L8hZXKBRG2cuq5cHsz3YAWF56P1f2u3XMzm7aEjhFQsWvqnaYehr7a7LBgQ/JENPbelSvN/kvLnuR1fdRUBojH3RqhRLZUkEJy77dx90Zu4bkwawHsLyPpVwcG3ozaI0Lqxagnym6ANKtdhUzDKawETDSvUnP9kK7VJf1/hoPYLXnit+6+KRv0z/wZPXd9ZZQuPp9B1qmImweFMY8TR+UPR9c7EtmxLtDmrHJImwcmZsFR0qOhpJ0JS/UVqN6S5VSmSTXiEiMilAZKXzCci519XVKxytUOpmjfxb8AHcjIIhPOTSNYEg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
- dkim=pass header.d=oss.nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
- s=selector2-NXP1-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=dMDNOHv6cALsF8FKbL7GEhd7O5puP80Pw2S6mfPW0DY=;
- b=WIz3ya+A257hKmSnQFFlmMOsz70VvxOyrkOjLWCP4iQNouMBv8EYb1475t3ho06QgnFuF64yxGDABVzecFyn8x0VJfdes5vqzQe814IxodyKtS9buT+kkoLUz0HjHbZ4s1fcXBDlaYYhYWPRpUjjQl3uF7rVvkoQRFQwc5cVo00=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=oss.nxp.com;
-Received: from AM9PR04MB8954.eurprd04.prod.outlook.com (2603:10a6:20b:409::7)
- by PA4PR04MB9688.eurprd04.prod.outlook.com (2603:10a6:102:271::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6977.13; Wed, 8 Nov
- 2023 10:45:45 +0000
-Received: from AM9PR04MB8954.eurprd04.prod.outlook.com
- ([fe80::e083:450:470f:fb48]) by AM9PR04MB8954.eurprd04.prod.outlook.com
- ([fe80::e083:450:470f:fb48%4]) with mapi id 15.20.6977.018; Wed, 8 Nov 2023
- 10:45:45 +0000
-Message-ID: <6907d35d-cff8-4abc-9570-0a1fa0796e97@oss.nxp.com>
-Date:   Wed, 8 Nov 2023 12:45:40 +0200
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v8 5/7] net: phy: nxp-c45-tja11xx: add MACsec
- support
-Content-Language: en-US
-To:     Simon Horman <horms@kernel.org>
-Cc:     sd@queasysnail.net, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, andrew@lunn.ch,
-        hkallweit1@gmail.com, linux@armlinux.org.uk,
-        richardcochran@gmail.com, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, sebastian.tobuschat@oss.nxp.com
-References: <20231023094327.565297-1-radu-nicolae.pirea@oss.nxp.com>
- <20231023094327.565297-6-radu-nicolae.pirea@oss.nxp.com>
- <20231104113506.GA891380@kernel.org>
-From:   "Radu Pirea (OSS)" <radu-nicolae.pirea@oss.nxp.com>
-In-Reply-To: <20231104113506.GA891380@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: AM4PR07CA0002.eurprd07.prod.outlook.com
- (2603:10a6:205:1::15) To AM9PR04MB8954.eurprd04.prod.outlook.com
- (2603:10a6:20b:409::7)
+        Wed, 8 Nov 2023 05:48:59 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADEF73860;
+        Wed,  8 Nov 2023 02:46:00 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 48CCDC433C7;
+        Wed,  8 Nov 2023 10:45:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1699440359;
+        bh=ycsS5vzKOeyQYbuLymI226e1TlLxb54IQJbiRd1v1bE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=q9zBp864WQVLRNzvBQECYVsZt1F9C7GhH7HALo8+qbEjKK3QEkW3w2I43w5mQ//z5
+         SQcO5/2KCSyQZJ6mE+aCDRefaQwo4deI5QOMRZ7PvbGibRlqtu/WfIoDFI60mp34SD
+         +3/1hhxlWB67hTgctOAzLQL2giLtG1yPca4ozQrU=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, stable@vger.kernel.org
+Cc:     lwn@lwn.net, jslaby@suse.cz,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Linux 4.14.329
+Date:   Wed,  8 Nov 2023 11:45:55 +0100
+Message-ID: <2023110855-nebulizer-amuck-3018@gregkh>
+X-Mailer: git-send-email 2.42.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM9PR04MB8954:EE_|PA4PR04MB9688:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4b76703f-8f92-4e08-43ba-08dbe047db0d
-X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: OZ26PATPDUiL105F3YzMH+lJOFQBETN8XwwVeRUyieWxc21mx+8MM9fIwxpXs43Mk5ek9mWx8XHfH2mQkkphnllF1kTRSdO/PBsxwH+F/wlbE2SAE6/SPXP6Tg6GAqJTZYR0381eGJHTrbySE4mF9b7R3smuSqukftrUVabz7bA2uZQLzUdj6b7Bna+9dMhfZvX5j+X+zYZ8yoa1zSkZvTGK16Jomm/6bp5u6iqUn4V2O+pJd/aGOqh9nkn2yMV2WEdPkOJu5inEi1aJTCzxaBQ/AkBii/xSE1niU6A8j9Lx4iEaYdOUxfLsHZF9GXhXg9FeirEl1ab5tqXTVMssqxW26/LkQURqYonSxTFvmlWCMf7g+qszqCW/S4anZRc34OhSXZnVEydClV9myyPQfwtEzScSw5qxhSWpF2etc1Q0zZ8QWFVMpbc0xJIXj+ivXDut/oSKyeW+DtoXU+oa1BL1T41oAKtY5keWd+EqMQnDuyWdBuIHoyV0gXuTFDQl/wYnwYiqqwGZ7DQB0MgzvJzcYplwlvpFC5MybHlGNnDflffiTyWIxEHuwH7y62J3YoO3Mi6hzjRLnn1BpBSzTTdc/w3is2Nt1gIBFFlcAD/4cd29fKjAA3fny6ATYRI9rGn/2JlZaISgeut34pBE5Q==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM9PR04MB8954.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(396003)(376002)(136003)(366004)(346002)(230922051799003)(64100799003)(1800799009)(186009)(451199024)(31686004)(26005)(6666004)(53546011)(38100700002)(31696002)(86362001)(6916009)(7416002)(8936002)(83380400001)(8676002)(2616005)(2906002)(6506007)(66556008)(66476007)(6512007)(478600001)(5660300002)(66946007)(6486002)(4326008)(316002)(41300700001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?M0RyUzRHYTU1bGxLOXNqdkhvdFQ0UndKYjlobzF3TXRWLy8xN2kzSVc0bFVv?=
- =?utf-8?B?aGNZUjBpSFRSVGJ3bkdmVlNYNXRpaTRETHJZZkFSbzYydXpiVzJmY0FwTlpR?=
- =?utf-8?B?U2gxWExpMnJsTy9aSUEvY0R2VmRCMVR5blZvait0ZWpxRzVUdEtxNklUQlQx?=
- =?utf-8?B?OWh3L1J4Zno4UXNkQ0xnSXg5R1FrZ2tKZzJTMjNaUUdURmVhYlZZUzQ4UGV3?=
- =?utf-8?B?NEVzSXg2S0FFRkJseE8xMmlORHpTdnlRNTJEbmhCb05HSC8rK0dLbDh2Ull3?=
- =?utf-8?B?R05NUURxL01wWVhaVlB4OW9FVDlHam94VVU4UGFYWEZxOEFsTk5sVVdjeEJR?=
- =?utf-8?B?TlB3b3dLWFljN3VrbGNQY0kxWmhFVm5LSzVHQ0YyMXN1cVJzWDJOay91enJ2?=
- =?utf-8?B?YWFHbk1VV0JTZlM5WUV1UThHRzF0b2h6UytJeXJkdFprdXplNUVqbUQ3a1Y2?=
- =?utf-8?B?ZjZ4a25uNld2OEdGQTJDTW8xUmhqMEh3QzdFZ2ROSlJ4dWdma21KbzJYK3JK?=
- =?utf-8?B?ejBFdVRSN0lpaDMvZ0Fya3drMnZFTjExSWszNW5WeThnUHZBOVhGcmV1amEv?=
- =?utf-8?B?T2orOERKZ0JnVUhnamt4bkEyRlVTcjV1cFBxQjIybzBsc21KZTY3TjBDcmZL?=
- =?utf-8?B?bWc5bGJMaENDVURkSENNcUhZUk1Oc0IzTm1TVjc2SUdDUEp1ak1ZbVRVQlgr?=
- =?utf-8?B?TXl1bHJBS0E2VXRFR3pHNFVXWmltUGNJdFF4MVdJNGNOZ09abDB1M3d0RVZm?=
- =?utf-8?B?OFB6RzcwRm1hRzQvcU5FbDlra2M5YTkvbTBlZklJdER6Nm9VR1cxSnJPYldx?=
- =?utf-8?B?dDI5YXVnTGtMbEh6T2l1WjBPYVhOWlQ4QUE1TUhXY0hvQm5qMWhPcUhxWkI4?=
- =?utf-8?B?cUlueGxlUTE2N0dYcnVtL3dFbEl2RmNHU3Q3Z2NRQ2J5QlBjanY3bWxCalE0?=
- =?utf-8?B?TFRsdWpmQnZ0VTd1cHFQeWZXRzhzbURpcm9VZmNDK2cyS3Zmc1JRUjEzM2JE?=
- =?utf-8?B?NW9KM0J6SzZjdlQxQmhLM2hFQUhKQStaM3YzakZFSWdmNTYyZ1o5ZkZwTDJJ?=
- =?utf-8?B?Z0JISmtqZmdGd0swMDl1NUNScHMrVzk2TTBYQVJXdnFLWDNaakEzSzdXRVM1?=
- =?utf-8?B?NENCRVBaYUVjWUVnYjVlazJSNWNIU1hHbnBsN2I2RjFiempGcVdxTWpMcWZM?=
- =?utf-8?B?N1Z3K2RiMXZ4WlYwUHJ5d3NpNGZVUXpwVE94VmoyN2hBNE1IQVFLcHZQazdN?=
- =?utf-8?B?c0xiTkFJcjdUNVdLays0Z09OQ1Faa1JNcjdzYUVSWmZSaVdwYi9kSE9Vb1dB?=
- =?utf-8?B?RGdrdlNLUVJjeU5zSG9YbTlHKzQ0b3Zncm5vb1dRejJpWSt0S0lUZnFXVmpL?=
- =?utf-8?B?TkhRbXJxQndIMzRlU1A4eTN2YUxITUNYYWpkbkNPTndLajBsTHAxQUFJdFJk?=
- =?utf-8?B?QWVVdVkySjJaVDRsV0N1WW96R1BxdFZWejBjZjBnNCt6YWpXVnVvSEt4elh2?=
- =?utf-8?B?ck9TL2VVN3JQN0VJaTcwZk8vVzRZcUFMMm9qVmc2VGZOVEdMUmRta3BrU0pP?=
- =?utf-8?B?U1dyMHZGRkQ0ZnRuYU1vOTRCWkJrZFAwRGxmYisrWStGZHpqdTJ3VGF2UGZZ?=
- =?utf-8?B?eUt4am12QnJ2K21oSndiZWJZUFhaT1VITWxZSE5NY2EzNVFjUXJ0M2p1c1JR?=
- =?utf-8?B?eWNqTENqaWEvWFlIeVhiZHNScWNCb0o0MGN1QzJRVHhhR1JBLzhWYXcrdlZw?=
- =?utf-8?B?OS9DMzlEV2NaWjl3TVlER3k4L0paaDhzRXR5dXIvRWRNL2N5VG1YV1lBY1F5?=
- =?utf-8?B?aDRzanNiczVWZWw3UDk3ckJVMm5RUjl3SFhldVFKSFJ4ZjB0SzYxNjRiYXl1?=
- =?utf-8?B?Z3dmUzBhYXdaNE1RVDVHVVZRcUJ6ajR6dmpzMml0MjQ0dmNwVXJLd0NwU2VX?=
- =?utf-8?B?OTJZZVU4V1VLZVN5ak0vZlpzV3d2eFB1M1dYcGIwd3RkSEpMTXlKSFVVeUkw?=
- =?utf-8?B?aVJWNEFubWFldGRoTWt6VWt0NXhjTWVCeWY3VTFkcmNNQkVVaVNZdk1KVU1F?=
- =?utf-8?B?NU8xRWxzdDRQNUcyZEdGOEhWWEtTQXZ2aE8zbTFZNWNUNVo3SkVEdFoycDNI?=
- =?utf-8?B?eDdCL0pCR2hjemhyRXJ6QnhHcDJxYWptQXlNRHZJaHcra0NENWpId0s5NHJW?=
- =?utf-8?B?L1E9PQ==?=
-X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4b76703f-8f92-4e08-43ba-08dbe047db0d
-X-MS-Exchange-CrossTenant-AuthSource: AM9PR04MB8954.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Nov 2023 10:45:45.2002
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: JMifNDkRwOCqhNkddYPbKXNmQCVCfAI22JFLG0C+xx1t2T1LKXSogMvW3/hKFjDQ3LiW/2bM9fL2LnQPpmfpsd8DD5aYOtmqdgnay9xazZk=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PA4PR04MB9688
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04.11.2023 13:35, Simon Horman wrote:
-> On Mon, Oct 23, 2023 at 12:43:25PM +0300, Radu Pirea (NXP OSS) wrote:
->> +void nxp_c45_handle_macsec_interrupt(struct phy_device *phydev,
->> +				     irqreturn_t *ret)
->> +{
->> +	struct nxp_c45_phy *priv = phydev->priv;
->> +	struct nxp_c45_secy *pos, *tmp;
->> +	struct nxp_c45_sa *sa;
->> +	u8 encoding_sa;
->> +	int secy_id;
->> +	u32 reg = 0;
->> +
->> +	if (!priv->macsec)
->> +		return;
->> +
->> +	do {
->> +		nxp_c45_macsec_read(phydev, MACSEC_EVR, &reg);
->> +		if (!reg)
->> +			return;
->> +
->> +		secy_id = MACSEC_REG_SIZE - ffs(reg);
->> +		list_for_each_entry_safe(pos, tmp, &priv->macsec->secy_list,
->> +					 list)
->> +			if (pos->secy_id == secy_id)
->> +				break;
->> +
->> +		encoding_sa = pos->secy->tx_sc.encoding_sa;
-> 
-> Hi Radu,
-> 
-> I'm unsure if this can happen, but my understanding is that if
-> priv->macsec->secy_list is empty then pos will be uninitialised here.
-> 
-> Flagged by Coccinelle.
-> 
+I'm announcing the release of the 4.14.329 kernel.
 
-True, this this should never happen. No MACsec interrupt should be 
-triggered if that list is empty. The IRQ for PN wrap is enabled only 
-when a secy is added and disabled when the secy is removed. I added a 
-safety check anyway.
+All users of the 4.14 kernel series must upgrade.
 
--- 
-Radu P.
+The updated 4.14.y git tree can be found at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git linux-4.14.y
+and can be browsed at the normal kernel.org git web browser:
+	https://git.kernel.org/?p=linux/kernel/git/stable/linux-stable.git;a=summary
+
+thanks,
+
+greg k-h
+
+------------
+
+ Makefile                                          |    2 
+ arch/arm/boot/bootp/init.S                        |    2 
+ arch/arm/boot/compressed/big-endian.S             |    2 
+ arch/arm/boot/compressed/head.S                   |    2 
+ arch/arm/boot/compressed/piggy.S                  |    2 
+ arch/arm/mm/proc-arm1020.S                        |    2 
+ arch/arm/mm/proc-arm1020e.S                       |    2 
+ arch/arm/mm/proc-arm1022.S                        |    2 
+ arch/arm/mm/proc-arm1026.S                        |    2 
+ arch/arm/mm/proc-arm720.S                         |    2 
+ arch/arm/mm/proc-arm740.S                         |    2 
+ arch/arm/mm/proc-arm7tdmi.S                       |    2 
+ arch/arm/mm/proc-arm920.S                         |    2 
+ arch/arm/mm/proc-arm922.S                         |    2 
+ arch/arm/mm/proc-arm925.S                         |    2 
+ arch/arm/mm/proc-arm926.S                         |    2 
+ arch/arm/mm/proc-arm940.S                         |    2 
+ arch/arm/mm/proc-arm946.S                         |    2 
+ arch/arm/mm/proc-arm9tdmi.S                       |    2 
+ arch/arm/mm/proc-fa526.S                          |    2 
+ arch/arm/mm/proc-feroceon.S                       |    2 
+ arch/arm/mm/proc-mohawk.S                         |    2 
+ arch/arm/mm/proc-sa110.S                          |    2 
+ arch/arm/mm/proc-sa1100.S                         |    2 
+ arch/arm/mm/proc-v6.S                             |    2 
+ arch/arm/mm/proc-v7.S                             |    2 
+ arch/arm/mm/proc-v7m.S                            |    4 
+ arch/arm/mm/proc-xsc3.S                           |    2 
+ arch/arm/mm/proc-xscale.S                         |    2 
+ arch/x86/include/asm/i8259.h                      |    2 
+ arch/x86/include/asm/setup.h                      |   46 
+ arch/x86/kernel/acpi/boot.c                       |    3 
+ arch/x86/kernel/i8259.c                           |   38 
+ arch/x86/kernel/vmlinux.lds.S                     |    2 
+ drivers/ata/ahci.h                                |  230 +-
+ drivers/base/driver.c                             |   69 
+ drivers/base/platform.c                           |   28 
+ drivers/block/Kconfig                             |    9 
+ drivers/block/Makefile                            |    2 
+ drivers/block/sx8.c                               | 1746 ----------------------
+ drivers/dma/ste_dma40.c                           |    1 
+ drivers/gpu/drm/drm_dp_mst_topology.c             |    6 
+ drivers/i2c/muxes/i2c-demux-pinctrl.c             |    2 
+ drivers/i2c/muxes/i2c-mux-gpmux.c                 |    2 
+ drivers/i2c/muxes/i2c-mux-pinctrl.c               |    2 
+ drivers/input/mouse/synaptics.c                   |    1 
+ drivers/input/rmi4/rmi_smbus.c                    |   50 
+ drivers/irqchip/irq-stm32-exti.c                  |    1 
+ drivers/mcb/mcb-lpc.c                             |   35 
+ drivers/mcb/mcb-parse.c                           |   15 
+ drivers/net/ethernet/chelsio/cxgb4/t4_hw.c        |    2 
+ drivers/net/ethernet/intel/i40e/i40e_txrx.c       |    2 
+ drivers/net/ethernet/intel/igb/igb_ethtool.c      |    6 
+ drivers/net/ethernet/toshiba/ps3_gelic_wireless.c |    2 
+ drivers/net/usb/r8152.c                           |    7 
+ drivers/pci/quirks.c                              |    9 
+ drivers/platform/x86/asus-wmi.h                   |    2 
+ drivers/rpmsg/qcom_glink_native.c                 |    1 
+ drivers/rpmsg/rpmsg_core.c                        |   34 
+ drivers/rpmsg/rpmsg_internal.h                    |    5 
+ drivers/scsi/mpt3sas/mpt3sas_scsih.c              |    4 
+ drivers/tty/serial/8250/8250_pci.c                |  122 +
+ drivers/tty/vt/vc_screen.c                        |    9 
+ drivers/usb/storage/unusual_cypress.h             |    2 
+ drivers/video/fbdev/aty/atyfb_base.c              |    4 
+ drivers/video/fbdev/uvesafb.c                     |    2 
+ drivers/virtio/virtio_balloon.c                   |    6 
+ fs/f2fs/gc.c                                      |    3 
+ fs/nfs/write.c                                    |    3 
+ fs/nfsd/vfs.c                                     |   12 
+ include/linux/device.h                            |    2 
+ include/linux/pci_ids.h                           |    1 
+ include/linux/platform_device.h                   |    6 
+ include/linux/rpmsg.h                             |   14 
+ include/uapi/linux/gtp.h                          |    2 
+ kernel/events/core.c                              |    3 
+ lib/kobject.c                                     |   12 
+ net/ipv4/tcp_input.c                              |    9 
+ net/netfilter/nfnetlink_log.c                     |    2 
+ sound/soc/codecs/rt5645.c                         |    2 
+ sound/soc/generic/simple-card.c                   |    6 
+ 81 files changed, 599 insertions(+), 2047 deletions(-)
+
+Al Viro (1):
+      nfsd: lock_rename() needs both directories to live on the same fs
+
+Arnd Bergmann (2):
+      fbdev: atyfb: only use ioremap_uc() on i386 and ia64
+      ata: ahci: fix enum constants for gcc-13
+
+Ben Wolsieffer (1):
+      irqchip/stm32-exti: add missing DT IRQ flag translation
+
+Bjorn Andersson (1):
+      rpmsg: glink: Release driver_override
+
+Cameron Williams (4):
+      tty: 8250: Remove UC-257 and UC-431
+      tty: 8250: Add support for additional Brainboxes UC cards
+      tty: 8250: Add support for Brainboxes UP cards
+      tty: 8250: Add support for Intashield IS-100
+
+Chao Yu (1):
+      f2fs: fix to do sanity check on inode type during garbage collection
+
+Christoph Hellwig (1):
+      remove the sx8 block driver
+
+Dmitry Torokhov (1):
+      Input: synaptics-rmi4 - handle reset delay when using SMBus trsnsport
+
+Douglas Anderson (1):
+      r8152: Increase USB control msg timeout to 5000ms as per spec
+
+Florian Westphal (1):
+      netfilter: nfnetlink_log: silence bogus compiler warning
+
+Fred Chen (1):
+      tcp: fix wrong RTO timeout when received SACK reneging
+
+Gavin Shan (1):
+      virtio_balloon: Fix endless deflation and inflation on arm64
+
+George Kennedy (1):
+      vc_screen: move load of struct vc_data pointer in vcs_read() to avoid UAF
+
+Greg Kroah-Hartman (1):
+      Linux 4.14.329
+
+Hangyu Hua (1):
+      rpmsg: Fix possible refcount leak in rpmsg_register_device_override()
+
+Hans de Goede (1):
+      platform/x86: asus-wmi: Change ASUS_WMI_BRN_DOWN code from 0x20 to 0x2e
+
+Herve Codina (3):
+      i2c: muxes: i2c-mux-pinctrl: Use of_get_i2c_adapter_by_node()
+      i2c: muxes: i2c-mux-gpmux: Use of_get_i2c_adapter_by_node()
+      i2c: muxes: i2c-demux-pinctrl: Use of_get_i2c_adapter_by_node()
+
+Ivan Vecera (1):
+      i40e: Fix wrong check for I40E_TXR_FLAGS_WB_ON_ITR
+
+Jorge Maidana (1):
+      fbdev: uvesafb: Call cn_del_callback() at the end of uvesafb_exit()
+
+Josh Poimboeuf (2):
+      x86/mm: Simplify RESERVE_BRK()
+      x86/mm: Fix RESERVE_BRK() for older binutils
+
+Juergen Gross (1):
+      x86: Fix .brk attribute in linker script
+
+Krzysztof Kozlowski (3):
+      driver: platform: Add helper for safer setting of driver_override
+      rpmsg: Fix kfree() of static memory on setting driver_override
+      rpmsg: Fix calling device_lock() on non-initialized device
+
+Kuninori Morimoto (1):
+      ASoC: simple-card: fixup asoc_simple_probe() error handling
+
+Kunwu Chan (1):
+      treewide: Spelling fix in comment
+
+LihaSika (1):
+      usb: storage: set 1.50 as the lower bcdDevice for older "Super Top" compatibility
+
+Lukasz Majczak (1):
+      drm/dp_mst: Fix NULL deref in get_mst_branch_device_by_guid_helper()
+
+Mateusz Palczewski (1):
+      igb: Fix potential memory leak in igb_add_ethtool_nfc_entry
+
+Nick Desaulniers (1):
+      ARM: 8933/1: replace Sun/Solaris style flag on section directive
+
+Pablo Neira Ayuso (1):
+      gtp: uapi: fix GTPA_MAX
+
+Peter Zijlstra (1):
+      perf/core: Fix potential NULL deref
+
+Rodríguez Barbarin, José Javier (2):
+      mcb: Return actual parsed size when reading chameleon table
+      mcb-lpc: Reallocate memory region to avoid memory overlapping
+
+Shuming Fan (1):
+      ASoC: rt5650: fix the wrong result of key button
+
+Su Hui (1):
+      net: chelsio: cxgb4: add an error code check in t4_load_phy_fw
+
+Thomas Gleixner (1):
+      x86/i8259: Skip probing when ACPI/MADT advertises PCAT compatibility
+
+Tomas Henzl (1):
+      scsi: mpt3sas: Fix in error path
+
+Trond Myklebust (1):
+      NFS: Don't call generic_error_remove_page() while holding locks
+
+Vicki Pfau (1):
+      PCI: Prevent xHCI driver from claiming AMD VanGogh USB3 DRD device
+
+Wang Hai (1):
+      kobject: Fix slab-out-of-bounds in fill_kobj_path()
+
+Zhang Shurong (1):
+      dmaengine: ste_dma40: Fix PM disable depth imbalance in d40_probe
+
