@@ -2,191 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ECB67E512B
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 08:37:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF71D7E5136
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 08:38:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343572AbjKHHhC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 02:37:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43434 "EHLO
+        id S1343810AbjKHHiR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 02:38:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234928AbjKHHg6 (ORCPT
+        with ESMTP id S1343756AbjKHHiP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 02:36:58 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BC9B1712;
-        Tue,  7 Nov 2023 23:36:56 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id C71AEC43391;
-        Wed,  8 Nov 2023 07:36:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699429015;
-        bh=DmQ7v8XOka3ZnDfCNSbZLIVIjhSv7gUIq7ZztoA3hr8=;
-        h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-        b=Ftzwuao33vY/id63aUiPXstAdgNG76V6GN8JuyYlc42PskxIbpzcxNm2ySgAe4nbV
-         lLRjeCLgLcw1RsvssoJ1vHMZ7TYIZnkqS3vAZ0dENTZokaVbg0KR8SK1+kd03cEgop
-         BwUoG3k5B9MDyIAlj5k3k1VsW14P9GDV9hyMeK4/K2oVu4rNunhbJtnmzYq3WfkGbZ
-         01F8g4LkLiEB0yuSxSv3fKfQ4Ie4tkzQbnifsuMSU5ow5MpMV1hgPF8d7CiKbArQ9Z
-         9WpWxXHwmZP67RoZs23Osgk+pIJMrPpagZshqrkxIFi2xFfqaXFEogRvC7wyszf9m5
-         TL/IsINLV8NLQ==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by smtp.lore.kernel.org (Postfix) with ESMTP id AF19AC41535;
-        Wed,  8 Nov 2023 07:36:55 +0000 (UTC)
-From:   Fenglin Wu via B4 Relay 
-        <devnull+quic_fenglinw.quicinc.com@kernel.org>
-Date:   Wed, 08 Nov 2023 15:36:36 +0800
-Subject: [PATCH RESEND v7 3/3] input: pm8xxx-vibrator: add new SPMI
- vibrator support
+        Wed, 8 Nov 2023 02:38:15 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C04C6170D;
+        Tue,  7 Nov 2023 23:38:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699429094; x=1730965094;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=znukz4gJNNSFkFYdHeSEpjae6onBUCfjTHzzo5l8Lj8=;
+  b=VE8UrAWt5xH2VkqOPNjudhWli/q4pqn5UBlOfr9FGqGug2ih6vvu4Zxp
+   Q9L6XtcJtXVjaQmw3tyrIx00mY1+a8EaIxLOH0mBe/Rh3XNsqUlnAYRuM
+   dvmeB4+qlupVIMt2bc2ecUlC1yiVUpsdEvjBeCRF7xlXNofX95ilEfuww
+   2YQvm84FY6oRe/eoFCgte5t2gWuJBfSOtbNjNDXY09ZJcKBkuj18UMiDR
+   dIG5K1HuQ+G06KIdDemhfl43XAlFabLHNq0tFctEu+ElwsqBFRxtNtg7r
+   +zA1yA/trixxpKRXQo3g6CHF59u9OunxBf3es1eHUvpkPS1i/+/uaYnZn
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10887"; a="8360581"
+X-IronPort-AV: E=Sophos;i="6.03,285,1694761200"; 
+   d="scan'208";a="8360581"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Nov 2023 23:38:13 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10887"; a="906690102"
+X-IronPort-AV: E=Sophos;i="6.03,285,1694761200"; 
+   d="scan'208";a="906690102"
+Received: from kuha.fi.intel.com ([10.237.72.185])
+  by fmsmga001.fm.intel.com with SMTP; 07 Nov 2023 23:38:10 -0800
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Wed, 08 Nov 2023 09:38:09 +0200
+Date:   Wed, 8 Nov 2023 09:38:09 +0200
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Badhri Jagan Sridharan <badhri@google.com>
+Cc:     gregkh@linuxfoundation.org, linux@roeck-us.net, kyletso@google.com,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH v3] usb: typec: tcpm: Fix sink caps op current check
+Message-ID: <ZUs64UHL+vMD0gq4@kuha.fi.intel.com>
+References: <20231101012845.2701348-1-badhri@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231108-pm8xxx-vibrator-v7-3-632c731d25a8@quicinc.com>
-References: <20231108-pm8xxx-vibrator-v7-0-632c731d25a8@quicinc.com>
-In-Reply-To: <20231108-pm8xxx-vibrator-v7-0-632c731d25a8@quicinc.com>
-To:     linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, quic_collinsd@quicinc.com,
-        quic_subbaram@quicinc.com, quic_kamalw@quicinc.com,
-        jestar@qti.qualcomm.com, Luca Weiss <luca.weiss@fairphone.com>,
-        Fenglin Wu <quic_fenglinw@quicinc.com>
-X-Mailer: b4 0.13-dev-83828
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1699429013; l=3749;
- i=quic_fenglinw@quicinc.com; s=20230725; h=from:subject:message-id;
- bh=wJayTUhik7klfO9cHbbqPgCXQ4qQW2jIadjS/C/xeqc=;
- b=DjrEFk0hcNjBhnUa4usIq1v7z/9LSEFGcDTvarvAIjpg6ryyFgAXUp9oaZT41mU8PvB3EjW2d
- 1Jvu/HzC7m6C9KVqVSic++o6N3LwaOyunHdtIH8xkoGDSbuBY6ZoEeE
-X-Developer-Key: i=quic_fenglinw@quicinc.com; a=ed25519;
- pk=hleIDz3Unk1zeiwwOnZUjoQVMMelRancDFXg927lNjI=
-X-Endpoint-Received: by B4 Relay for quic_fenglinw@quicinc.com/20230725 with auth_id=68
-X-Original-From: Fenglin Wu <quic_fenglinw@quicinc.com>
-Reply-To: <quic_fenglinw@quicinc.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231101012845.2701348-1-badhri@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fenglin Wu <quic_fenglinw@quicinc.com>
+On Wed, Nov 01, 2023 at 01:28:45AM +0000, Badhri Jagan Sridharan wrote:
+> TCPM checks for sink caps operational current even when PD is disabled.
+> This incorrectly sets tcpm_set_charge() when PD is disabled.
+> Check for sink caps only when PD is enabled.
+> 
+> [   97.572342] Start toggling
+> [   97.578949] CC1: 0 -> 0, CC2: 0 -> 0 [state TOGGLING, polarity 0, disconnected]
+> [   99.571648] CC1: 0 -> 0, CC2: 0 -> 4 [state TOGGLING, polarity 0, connected]
+> [   99.571658] state change TOGGLING -> SNK_ATTACH_WAIT [rev3 NONE_AMS]
+> [   99.571673] pending state change SNK_ATTACH_WAIT -> SNK_DEBOUNCED @ 170 ms [rev3 NONE_AMS]
+> [   99.741778] state change SNK_ATTACH_WAIT -> SNK_DEBOUNCED [delayed 170 ms]
+> [   99.789283] CC1: 0 -> 0, CC2: 4 -> 5 [state SNK_DEBOUNCED, polarity 0, connected]
+> [   99.789306] state change SNK_DEBOUNCED -> SNK_DEBOUNCED [rev3 NONE_AMS]
+> [   99.903584] VBUS on
+> [   99.903591] state change SNK_DEBOUNCED -> SNK_ATTACHED [rev3 NONE_AMS]
+> [   99.903600] polarity 1
+> [   99.910155] enable vbus discharge ret:0
+> [   99.910160] Requesting mux state 1, usb-role 2, orientation 2
+> [   99.946791] state change SNK_ATTACHED -> SNK_STARTUP [rev3 NONE_AMS]
+> [   99.946798] state change SNK_STARTUP -> SNK_DISCOVERY [rev3 NONE_AMS]
+> [   99.946800] Setting voltage/current limit 5000 mV 500 mA
+> [   99.946803] vbus=0 charge:=1
+> [  100.027139] state change SNK_DISCOVERY -> SNK_READY [rev3 NONE_AMS]
+> [  100.027145] Setting voltage/current limit 5000 mV 3000 mA
+> [  100.466830] VBUS on
+> 
+> Cc: stable@vger.kernel.org
+> Fixes: 803b1c8a0cea ("usb: typec: tcpm: not sink vbus if operational current is 0mA")
+> Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
 
-Add new SPMI vibrator module which is very similar to the SPMI vibrator
-module inside PM8916 but just has a finer drive voltage step (1mV vs
-100mV) hence its drive level control is expanded to across 2 registers.
-The vibrator module can be found in Qualcomm PMIC PMI632, then following
-PM7250B, PM7325B, PM7550BA PMICs.
+Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 
-Signed-off-by: Fenglin Wu <quic_fenglinw@quicinc.com>
-Tested-by: Luca Weiss <luca.weiss@fairphone.com> # sdm632-fairphone-fp3 (pmi632)
----
- drivers/input/misc/pm8xxx-vibrator.c | 42 +++++++++++++++++++++++++++++++++---
- 1 file changed, 39 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/input/misc/pm8xxx-vibrator.c b/drivers/input/misc/pm8xxx-vibrator.c
-index ba9be374f892..82c788841f1f 100644
---- a/drivers/input/misc/pm8xxx-vibrator.c
-+++ b/drivers/input/misc/pm8xxx-vibrator.c
-@@ -21,6 +21,13 @@
- #define SPMI_VIB_DRV_LEVEL_MASK		GENMASK(4, 0)
- #define SPMI_VIB_DRV_SHIFT		0
- 
-+#define SPMI_VIB_GEN2_DRV_REG		0x40
-+#define SPMI_VIB_GEN2_DRV_MASK		GENMASK(7, 0)
-+#define SPMI_VIB_GEN2_DRV_SHIFT		0
-+#define SPMI_VIB_GEN2_DRV2_REG		0x41
-+#define SPMI_VIB_GEN2_DRV2_MASK		GENMASK(3, 0)
-+#define SPMI_VIB_GEN2_DRV2_SHIFT	8
-+
- #define SPMI_VIB_EN_REG			0x46
- #define SPMI_VIB_EN_BIT			BIT(7)
- 
-@@ -33,12 +40,14 @@
- enum vib_hw_type {
- 	SSBI_VIB,
- 	SPMI_VIB,
-+	SPMI_VIB_GEN2
- };
- 
- struct pm8xxx_vib_data {
- 	enum vib_hw_type	hw_type;
- 	unsigned int		enable_addr;
- 	unsigned int		drv_addr;
-+	unsigned int		drv2_addr;
- };
- 
- static const struct pm8xxx_vib_data ssbi_vib_data = {
-@@ -52,6 +61,13 @@ static const struct pm8xxx_vib_data spmi_vib_data = {
- 	.drv_addr	= SPMI_VIB_DRV_REG,
- };
- 
-+static const struct pm8xxx_vib_data spmi_vib_gen2_data = {
-+	.hw_type	= SPMI_VIB_GEN2,
-+	.enable_addr	= SPMI_VIB_EN_REG,
-+	.drv_addr	= SPMI_VIB_GEN2_DRV_REG,
-+	.drv2_addr	= SPMI_VIB_GEN2_DRV2_REG,
-+};
-+
- /**
-  * struct pm8xxx_vib - structure to hold vibrator data
-  * @vib_input_dev: input device supporting force feedback
-@@ -96,9 +112,12 @@ static int pm8xxx_vib_set(struct pm8xxx_vib *vib, bool on)
- 		mask = SPMI_VIB_DRV_LEVEL_MASK;
- 		shift = SPMI_VIB_DRV_SHIFT;
- 		break;
-+	case SPMI_VIB_GEN2:
-+		mask = SPMI_VIB_GEN2_DRV_MASK;
-+		shift = SPMI_VIB_GEN2_DRV_SHIFT;
-+		break;
- 	default:
- 		return -EINVAL;
--
- 	}
- 
- 	if (on)
-@@ -112,6 +131,19 @@ static int pm8xxx_vib_set(struct pm8xxx_vib *vib, bool on)
- 
- 	vib->reg_vib_drv = val;
- 
-+	if (vib->data->hw_type == SPMI_VIB_GEN2) {
-+		mask = SPMI_VIB_GEN2_DRV2_MASK;
-+		shift = SPMI_VIB_GEN2_DRV2_SHIFT;
-+		if (on)
-+			val = (vib->level >> shift) & mask;
-+		else
-+			val = 0;
-+		rc = regmap_update_bits(vib->regmap,
-+				vib->reg_base + vib->data->drv2_addr, mask, val);
-+		if (rc < 0)
-+			return rc;
-+	}
-+
- 	if (vib->data->hw_type == SSBI_VIB)
- 		return 0;
- 
-@@ -136,10 +168,13 @@ static void pm8xxx_work_handler(struct work_struct *work)
- 		vib->active = true;
- 		vib->level = ((VIB_MAX_LEVELS * vib->speed) / MAX_FF_SPEED) +
- 						VIB_MIN_LEVEL_mV;
--		vib->level /= 100;
-+		if (vib->data->hw_type != SPMI_VIB_GEN2)
-+			vib->level /= 100;
- 	} else {
- 		vib->active = false;
--		vib->level = VIB_MIN_LEVEL_mV / 100;
-+		vib->level = VIB_MIN_LEVEL_mV;
-+		if (vib->data->hw_type != SPMI_VIB_GEN2)
-+			vib->level /= 100;
- 	}
- 
- 	pm8xxx_vib_set(vib, vib->active);
-@@ -274,6 +309,7 @@ static const struct of_device_id pm8xxx_vib_id_table[] = {
- 	{ .compatible = "qcom,pm8058-vib", .data = &ssbi_vib_data },
- 	{ .compatible = "qcom,pm8921-vib", .data = &ssbi_vib_data },
- 	{ .compatible = "qcom,pm8916-vib", .data = &spmi_vib_data },
-+	{ .compatible = "qcom,pmi632-vib", .data = &spmi_vib_gen2_data },
- 	{ }
- };
- MODULE_DEVICE_TABLE(of, pm8xxx_vib_id_table);
+> ---
+> Changes since v2:
+> * Fix the "Fixes" tag
+> * Refactor code based on Guenter Roeck's suggestion.
+> 
+> Changes since v1:
+> * Fix commit title and description to address comments from Guenter Roeck
+> ---
+>  drivers/usb/typec/tcpm/tcpm.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
+> index 058d5b853b57..afc791ab6d4f 100644
+> --- a/drivers/usb/typec/tcpm/tcpm.c
+> +++ b/drivers/usb/typec/tcpm/tcpm.c
+> @@ -4273,7 +4273,8 @@ static void run_state_machine(struct tcpm_port *port)
+>  				current_lim = PD_P_SNK_STDBY_MW / 5;
+>  			tcpm_set_current_limit(port, current_lim, 5000);
+>  			/* Not sink vbus if operational current is 0mA */
+> -			tcpm_set_charge(port, !!pdo_max_current(port->snk_pdo[0]));
+> +			tcpm_set_charge(port, !port->pd_supported ||
+> +					pdo_max_current(port->snk_pdo[0]));
+>  
+>  			if (!port->pd_supported)
+>  				tcpm_set_state(port, SNK_READY, 0);
+> 
+> base-commit: c70793fb7632a153862ee9060e6d48131469a29c
+> -- 
+> 2.42.0.820.g83a721a137-goog
 
 -- 
-2.25.1
-
+heikki
