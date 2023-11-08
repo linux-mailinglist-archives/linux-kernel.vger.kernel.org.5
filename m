@@ -2,137 +2,437 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 824237E59F1
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 16:24:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49F2C7E59F4
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 16:25:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232018AbjKHPYM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 10:24:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37626 "EHLO
+        id S231676AbjKHPZh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 10:25:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229579AbjKHPYL (ORCPT
+        with ESMTP id S229579AbjKHPZf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 10:24:11 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00C9E1FCF;
-        Wed,  8 Nov 2023 07:24:09 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F0A3C433C9;
-        Wed,  8 Nov 2023 15:24:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699457049;
-        bh=vUq9vUGeNt9ba5ywMzxzi9MVWrSJp4URognnPDDyJqM=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=KnUCJF77aIrfv9I59Yb9yyR+fi6BsnGhPMggt2U2y5ZaNQ+ryK8YTTq8ZC5Gm7CGu
-         7Jg+2sXRbk9hs64co61Ge20pklKE18Q/+TZAD853+LuwoKd0B02lDMWfsWmL6ZxBaI
-         Vtkiuj4coD6jVBdB51EiQuQZHkXW3odqSYiWTzdTMhClsu7/cm6txLphj+ulvefHOW
-         2rOGnxBf7zI3b5q4U/3uEEGHMFe0JT220dzt1gF9865pcm+DgDOiHGFymHntSbsqZW
-         0hZkSBisgPA6pjYh6pC5x6YfDifpupwISG+tu+jJo35LPy3otM7tx92qu0amS/lilZ
-         4qKdSY6hvQTKA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id A2E4CCE0A4F; Wed,  8 Nov 2023 07:24:07 -0800 (PST)
-Date:   Wed, 8 Nov 2023 07:24:07 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Uladzislau Rezki <urezki@gmail.com>
-Cc:     RCU <rcu@vger.kernel.org>,
-        Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Hillf Danton <hdanton@sina.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
-        Frederic Weisbecker <frederic@kernel.org>
-Subject: Re: [PATCH v2 1/3] rcu: Reduce synchronize_rcu() latency
-Message-ID: <2e4a5a1c-8fdb-4f55-8b88-4c66d3002a32@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20231030131254.488186-1-urezki@gmail.com>
- <20231030131254.488186-2-urezki@gmail.com>
- <70578164-6c12-47ca-9528-163b688c1b47@paulmck-laptop>
- <ZUjWWpqOQObm8yaz@pc636>
- <988c2023-f97b-4706-8a97-e829bc030245@paulmck-laptop>
- <ZUpH7BqS3PldQf5K@pc636>
- <9cd799fd-e4e9-4a24-9e91-0443592b2960@paulmck-laptop>
- <ZUtpWbUfdesFWvDw@pc636>
+        Wed, 8 Nov 2023 10:25:35 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 572031BF7;
+        Wed,  8 Nov 2023 07:25:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=MIME-Version:Content-Type:References:
+        In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=gYPXBFEcbjM8UetvyGMAox92A6KCFDsiwE+M6KoIx0w=; b=DKpa94mnD7761BbjSTQiP8E8W/
+        DWPfhJdISfPJf4yoKjq9ufGEln/k7vZKqGJGNtmuoluXfaeQXUzXPzJAkUg3/5Pqseq4OCVt/UA5U
+        tfv0njvZVps49xWl3llqGasKN+Wwvn32JOPX3FZcyk0UEQunR9bx4sMvBtwndBChrEDewp7UWjefX
+        tuzdWmBCf0O86gzKS8LFEZIZqQP39kgQeFEejjruA+h/LtNrgfvZBv/B2byomOYmQJIAWvykv9H2U
+        /vomngekFNLfJtBiqk2W4AWugLgLB1sqo5sq3mzmrm2f7D2O/dji7frTKMVB5dmXsCLjSq+uey8UB
+        f4JPyEDQ==;
+Received: from [2001:8b0:10b:5:8c2f:562b:3c9a:b5d5] (helo=u3832b3a9db3152.ant.amazon.com)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1r0kQr-001knj-Qe; Wed, 08 Nov 2023 15:25:30 +0000
+Message-ID: <5e0598c86361570674401f43191c3f819a6b32d2.camel@infradead.org>
+Subject: Re: [PATCH v2] KVM: x86/xen: improve accuracy of Xen timers
+From:   David Woodhouse <dwmw2@infradead.org>
+To:     Dongli Zhang <dongli.zhang@oracle.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Paul Durrant <paul@xen.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>
+Date:   Wed, 08 Nov 2023 15:25:29 +0000
+In-Reply-To: <33907a83-4e1a-f121-74f3-bde1e68b047c@oracle.com>
+References: <96da7273adfff2a346de9a4a27ce064f6fe0d0a1.camel@infradead.org>
+         <74f32bfae7243a78d0e74b1ba3a2d1ea4a4a7518.camel@infradead.org>
+         <2bd5d543-08a0-a0f6-0f59-b8724a2d8d75@oracle.com>
+         <12e8ade22fe6c1e6bec74e60e8213302a7da635e.camel@infradead.org>
+         <19f8de0a-17f7-1a25-f2e9-adbf00ecb035@oracle.com>
+         <37225cb2ab45c842275c2b5b5d84d1bb514a8640.camel@infradead.org>
+         <33907a83-4e1a-f121-74f3-bde1e68b047c@oracle.com>
+Content-Type: multipart/signed; micalg="sha-256"; protocol="application/pkcs7-signature";
+        boundary="=-smuUMfsW8xU8lAzTM98r"
+User-Agent: Evolution 3.44.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZUtpWbUfdesFWvDw@pc636>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 08, 2023 at 11:56:25AM +0100, Uladzislau Rezki wrote:
-> > > 
-> > > Do you have something that can easily trigger it? I mean some proposal
-> > > or steps to test. Probably i should try what you wrote, regarding
-> > > toggling from user space.
-> > > 
-> > > > I can imagine ways around this, but they are a bit ugly.  They end
-> > > > up being things like recording a timestamp on every sysfs change to
-> > > > rcu_normal, and then using that timestamp to deduce whether there could
-> > > > possibly have been sysfs activity on rcu_normal in the meantime.
-> > > > 
-> > > > It feels like it should be so easy...  ;-)
-> > > > 
-> > > Hmm.. Yes it requires more deep analysis :)
-> > 
-> > Maybe make that WARN_ONCE() condition also test a separate Kconfig
-> > option that depends on both DEBUG_KERNEL and RCU_EXPERT?
-> > 
-> Do you mean to introduce a new Kconfig? For example CONFIG_DEBUG_SRS:
-> 
-> <snip>
-> config DEBUG_SRS
->         bool "Provide debugging asserts for normal synchronize_rcu() call"
->         depends on DEBUG_KERNEL && RCU_EXPERT
->         help
-> 	   ...
-> <snip>
 
-Yes, in kernel/rcu/Kconfig.debug.  But please use a more self-explanatory
-name, keeping in mind that Kconfig options are a global namespace.
-Please at least have an "RCU" in there somewhere.  ;-)
+--=-smuUMfsW8xU8lAzTM98r
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-> > > > > I was thinking about read_lock()/write_lock() since we have many readers
-> > > > > and only one writer. But i do not really like it either.
-> > > > 
-> > > > This might be a hint that we should have multiple lists, perhaps one
-> > > > per CPU.  Or lock contention could be used to trigger the transition
-> > > > from a single list to multiple lists. as is done in SRCU and tasks RCU.
-> > > >
-> > > I do not consider to be a sync call as heavily used as other callbacks
-> > > which require several workers to handle, IMHO. From the other hand my
-> > > experiments show that to handle 60K-100K by NOCB gives even worse results.
-> > > 
-> > > > 
-> > > > But I bet that there are several ways to make things work.
-> > > > 
-> > > Right. The main concern with read_lock()/write_lock() is a PREEMPT_RT
-> > > kernels where it is a rt-mutex. It would be good to avoid of using any
-> > > blocking in the gp-kthread since it is a gp driver.
-> > 
-> > RCU is pretty low-level, so it is OK with a raw spinlock for the list
-> > manipulation.  But only the list manipulation itself.  Perhaps you are
-> > worried about lock contention, but in that case, there is also the issue
-> > of memory contention for the llist code.
-> > 
-> I do not consider a lock nor memory contention as an issue here. Whereas
-> blocking on rt-mutex in the gp-kthread i consider as "not good to go with".
-> raw-spinlocks are OK, but it is a per-cpu or per-node approach which i tend
-> to avoid, if not, then probably per-cpu-or-node and merge everything into
-> one llist to offload by one worker.
+On Tue, 2023-11-07 at 17:43 -0800, Dongli Zhang wrote:
+> Hi David,
+>=20
+> On 11/7/23 15:24, David Woodhouse wrote:
+> > On Tue, 2023-11-07 at 15:07 -0800, Dongli Zhang wrote:
+> > > Thank you very much for the detailed explanation.
+> > >=20
+> > > I agree it is important to resolve the "now" problem. I guess the KVM=
+ lapic
+> > > deadline timer has the "now" problem as well.
+> >=20
+> > I think so. And quite gratuitously so, since it just does:
+> >=20
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0now =3D ktime_get();
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0guest_tsc =3D kvm_read_=
+l1_tsc(vcpu, rdtsc());
+> >=20
+> >=20
+> > Couldn't that trivially be changed to kvm_get_monotonic_and_clockread()=
+?
+>=20
+> The core idea is to always capture the pair of (tsc, ns) at exactly the s=
+ame
+> time point.
+>=20
+> I have no idea how much accuracy it can improve, considering the extra co=
+sts to
+> inject the timer interrupt into the vCPU.
 
-If you have a large enough system and a high enough rate of calls to
-synchronize_rcu(), something is going to break.  The current llist
-approach will suffer from memory contention and high cache-miss rate,
-thus also suffering excessive CPU consumption.  A sleeplock will (as you
-say) suffer from excessive blocking.  A spinlock (including raw spinlocks
-on PREEMPT_RT) will suffer from excessive spinning and CPU consumption.
+Right. It's probably in the noise most of the time, unless you're
+unlucky enough to get preempted between the two TSC reads which are
+supposed to be happening "at the same time".
+>=20
 
-Which is why this optimization must continue to be default-off.
+> > I conveniently ducked this question in my patch by only supporting the
+> > CONSTANT_TSC case, and not the case where we happen to know the
+> > (potentially different) TSC frequencies on all the different pCPUs and
+> > vCPUs.
+>=20
+> This is also my question that why to support only the CONSTANT_TSC case.
+>=20
+> For the lapic timer case:
+>=20
+> The timer is always calculated based on the *current* vCPU's tsc virtuali=
+zation,
+> regardless CONSTANT_TSC or not.
+>=20
+> For the xen timer case:
+>=20
+> Why not always calculate the expire based on the *current* vCPU's time
+> virtualization? That is, why not always use the current vCPU's hv_clock,
+> regardless CONSTANT_TSC/masteclock?
 
-I agree that a change to multiple queues, perhaps up to per-CPU queueing,
-would be needed to eliminate the possibility of these problems and thus
-(hopefully!) make this safe for being a default-on option.  It might
-even need to be dynamic, as for SRCU and Tasks RCU.  But neither of
-these more-complex options need to be implemented in the initial version.
+The simple answer is because I wasn't sure it would work correctly in
+all cases, and didn't *care* enough about the non-CONSTANT_TSC case to
+prove it to myself.
 
-							Thanx, Paul
+Let's think about it...
+
+In the non-CONSTANT_TSC case, each physical CPU can have a different
+TSC frequency, yes? And KVM has a cpufreq notifier which triggers when
+the TSC changes, and make a KVM_REQ_CLOCK_UPDATE request to any vCPU
+running on the affected pCPU. With an associated IPI to ensure the vCPU
+exits guest mode and will processes the update before executing any
+further guest code.
+
+If a vCPU had *previously* been running on the affected pCPU but wasn't
+running when the notifier happened, then kvm_arch_vcpu_load() will make
+a KVM_REQ_GLOBAL_CLOCK_UPDATE request, which will immediately update
+the vCPU in question, and then trigger a deferred KVM_REQ_CLOCK_UPDATE
+for the others.
+
+So the vCPU itself, in guest mode, is always going to see *correct*
+pvclock information corresponding to the pCPU it is running on at the
+time.
+
+(I *believe* the way this works is that when a vCPU runs on a pCPU
+which has a TSC frequency lower than the vCPU should have, it runs in
+'always catchup' mode. Where the TSC offset is bumped *every* time the
+vCPU enters guest mode, so the TSC is about right on every entry, might
+seem to run a little slow if the vCPU does a tight loop of rdtsc, but
+will catch up again on next vmexit/entry?)
+
+But we aren't talking about the vCPU running in guest mode. The code in
+kvm_xen_start_timer() and in start_sw_tscdeadline() is running in the
+host kernel. How can we be sure that it's running on the *same*
+physical CPU that the vCPU was previously running on, and thus how can
+we be sure that the vcpu->arch.hv_clock is valid with respect to a
+rdtsc on the current pCPU? I don't know that we can know that.
+
+As far as I can tell, the code in start_sw_tscdeadline() makes no
+attempt to do the 'catchup' thing, and just converts the pCPU's TSC to
+guest TSC using kvm_read_l1_tsc() =E2=80=94 which uses a multiplier that's =
+set
+once and *never* recalculated when the host TSC frequency changes.
+
+On the whole, now I *have* thought about it, I'm even more convinced I
+was right in the first place that I didn't want to know :)
+
+I think I stand by my original decision that the Xen timer code in the
+non-CONSTANT_TSC case can just use get_kvmclock_ns(). The "now" problem
+is going to be in the noise if the TSC isn't constant anyway, and we
+need to fix the drift and jumps of=C2=A0get_kvmclock_ns() *anyway* rather
+than adding a temporary special case for the Xen timers.
+
+> That is: kvm lapic method with kvm_get_monotonic_and_clockread().
+>=20
+> >=20
+> >=20
+> > >=20
+> > > E.g., according to the KVM lapic deadline timer, all values are based=
+ on (1) the
+> > > tsc value, (2)on the current vCPU.
+> > >=20
+> > >=20
+> > > 1949 static void start_sw_tscdeadline(struct kvm_lapic *apic)
+> > > 1950 {
+> > > 1951=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct kvm_timer=
+ *ktimer =3D &apic->lapic_timer;
+> > > 1952=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u64 guest_tsc, t=
+scdeadline =3D ktimer->tscdeadline;
+> > > 1953=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u64 ns =3D 0;
+> > > 1954=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ktime_t expire;
+> > > 1955=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct kvm_vcpu =
+*vcpu =3D apic->vcpu;
+> > > 1956=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 unsigned long th=
+is_tsc_khz =3D vcpu->arch.virtual_tsc_khz;
+> > > 1957=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 unsigned long fl=
+ags;
+> > > 1958=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ktime_t now;
+> > > 1959
+> > > 1960=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (unlikely(!ts=
+cdeadline || !this_tsc_khz))
+> > > 1961=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return;
+> > > 1962
+> > > 1963=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 local_irq_save(f=
+lags);
+> > > 1964
+> > > 1965=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 now =3D ktime_ge=
+t();
+> > > 1966=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 guest_tsc =3D kv=
+m_read_l1_tsc(vcpu, rdtsc());
+> > > 1967
+> > > 1968=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ns =3D (tscdeadl=
+ine - guest_tsc) * 1000000ULL;
+> > > 1969=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 do_div(ns, this_=
+tsc_khz);
+> > >=20
+> > >=20
+> > > Sorry if I make the question very confusing. The core question is: wh=
+ere and
+> > > from which clocksource the abs nanosecond value is from? What will ha=
+ppen if the
+> > > Xen VM uses HPET as clocksource, while xen timer as clock event?
+> >=20
+> > If the guest uses HPET as clocksource and Xen timer as clockevents,
+> > then keeping itself in sync is the *guest's* problem. The Xen timer is
+> > defined in terms of nanoseconds since guest start, as provided in the
+> > pvclock information described above. Hope that helps!
+> >=20
+>=20
+> The "in terms of nanoseconds since guest start" refers to *one* global va=
+lue.
+> Should we use wallclock when we are referring to a global value shared by=
+ all vCPUs?
+>=20
+>=20
+> Based on the following piece of code, I do not think we may assume all vC=
+PUs
+> have the same pvclock at the same time point: line 104-108, when
+> PVCLOCK_TSC_STABLE_BIT is not set.
+>=20
+
+The *result* of calculating the pvclock should be the same on all vCPUs
+at any given moment in time.
+
+The precise *calculation* may differ, depending on the frequency of the
+TSC for that particular vCPU and the last time the pvclock information
+was created for that vCPU.
+
+
+>=20
+> =C2=A067 static __always_inline
+> =C2=A068 u64 __pvclock_clocksource_read(struct pvclock_vcpu_time_info *sr=
+c, bool dowd)
+> =C2=A069 {
+> =C2=A070=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 unsigned version=
+;
+> =C2=A071=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u64 ret;
+> =C2=A072=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u64 last;
+> =C2=A073=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u8 flags;
+> =C2=A074
+> =C2=A075=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 do {
+> =C2=A076=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 version =3D pvclock_read_begin(src);
+> =C2=A077=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D __pvclock_read_cycles(src, rdtsc_=
+ordered());
+> =C2=A078=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 flags =3D src->flags;
+> =C2=A079=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 } while (pvclock=
+_read_retry(src, version));
+> ... ...
+> 104=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 last =3D raw_atomic64=
+_read(&last_value);
+> 105=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 do {
+> 106=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (ret <=3D last)
+> 107=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+ return last;
+> 108=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 } while (!raw_atomic6=
+4_try_cmpxchg(&last_value, &last, ret));
+> 109
+> 110=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return ret;
+> 111 }
+>=20
+>=20
+> That's why I appreciate a definition of the abs nanoseconds used by the x=
+en
+> timer (e.g., derived from pvclock). If it is per-vCPU, we may not use it =
+for a
+> global "in terms of nanoseconds since guest start", when PVCLOCK_TSC_STAB=
+LE_BIT
+> is not set.
+
+It is only per-vCPU if the vCPUs have *different* TSC frequencies.
+That's because of the scaling; the guest calculates the nanoseconds
+from the *guest* TSC of course, scaled according to the pvclock
+information given to the guest by KVM.
+
+As discussed and demonstrated by http://david.woodhou.se/tsdrift.c , if
+KVM scales directly to nanoseconds from the *host* TSC at its known
+frequency, that introduces a systemic drift between what the guest
+calculates, and what KVM calculates =E2=80=94 even in the CONSTANT_TSC case=
+.
+
+How do we reconcile the two? Well, it makes no sense for the definition
+of the pvclock to be something that the guest *cannot* calculate, so
+obviously KVM must do the same calculations the guest does; scale to
+the guest TSC (kvm_read_l1_tsc()) and then apply the same pvclock
+information from vcpu->arch.hvclock to get the nanoseconds.
+
+In the sane world where the guest vCPUs all have the *same* TSC
+frequency, that's fine. The kvmclock isn't *really* per-vCPU because
+they're all the same.=20
+
+If the VMM sets up different vCPUs to have different TSC frequencies
+then yes, their kvmclock will drift slightly apart over time. That
+might be the *one* case where I will accept that the guest pvclock
+might ever change, even in the CONSTANT_TSC environment (without host
+suspend or any other nonsense).
+
+In that patch I started typing on Monday and *still* haven't got round
+to finishing because other things keep catching fire, I'm using the
+*KVM-wide* guest TSC frequency as the definition for the kvmclock.
+
+
+
+--=-smuUMfsW8xU8lAzTM98r
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Transfer-Encoding: base64
+
+MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCEkQw
+ggYQMIID+KADAgECAhBNlCwQ1DvglAnFgS06KwZPMA0GCSqGSIb3DQEBDAUAMIGIMQswCQYDVQQG
+EwJVUzETMBEGA1UECBMKTmV3IEplcnNleTEUMBIGA1UEBxMLSmVyc2V5IENpdHkxHjAcBgNVBAoT
+FVRoZSBVU0VSVFJVU1QgTmV0d29yazEuMCwGA1UEAxMlVVNFUlRydXN0IFJTQSBDZXJ0aWZpY2F0
+aW9uIEF1dGhvcml0eTAeFw0xODExMDIwMDAwMDBaFw0zMDEyMzEyMzU5NTlaMIGWMQswCQYDVQQG
+EwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYD
+VQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50
+aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
+AQEAyjztlApB/975Rrno1jvm2pK/KxBOqhq8gr2+JhwpKirSzZxQgT9tlC7zl6hn1fXjSo5MqXUf
+ItMltrMaXqcESJuK8dtK56NCSrq4iDKaKq9NxOXFmqXX2zN8HHGjQ2b2Xv0v1L5Nk1MQPKA19xeW
+QcpGEGFUUd0kN+oHox+L9aV1rjfNiCj3bJk6kJaOPabPi2503nn/ITX5e8WfPnGw4VuZ79Khj1YB
+rf24k5Ee1sLTHsLtpiK9OjG4iQRBdq6Z/TlVx/hGAez5h36bBJMxqdHLpdwIUkTqT8se3ed0PewD
+ch/8kHPo5fZl5u1B0ecpq/sDN/5sCG52Ds+QU5O5EwIDAQABo4IBZDCCAWAwHwYDVR0jBBgwFoAU
+U3m/WqorSs9UgOHYm8Cd8rIDZsswHQYDVR0OBBYEFAnA8vwL2pTbX/4r36iZQs/J4K0AMA4GA1Ud
+DwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEF
+BQcDBDARBgNVHSAECjAIMAYGBFUdIAAwUAYDVR0fBEkwRzBFoEOgQYY/aHR0cDovL2NybC51c2Vy
+dHJ1c3QuY29tL1VTRVJUcnVzdFJTQUNlcnRpZmljYXRpb25BdXRob3JpdHkuY3JsMHYGCCsGAQUF
+BwEBBGowaDA/BggrBgEFBQcwAoYzaHR0cDovL2NydC51c2VydHJ1c3QuY29tL1VTRVJUcnVzdFJT
+QUFkZFRydXN0Q0EuY3J0MCUGCCsGAQUFBzABhhlodHRwOi8vb2NzcC51c2VydHJ1c3QuY29tMA0G
+CSqGSIb3DQEBDAUAA4ICAQBBRHUAqznCFfXejpVtMnFojADdF9d6HBA4kMjjsb0XMZHztuOCtKF+
+xswhh2GqkW5JQrM8zVlU+A2VP72Ky2nlRA1GwmIPgou74TZ/XTarHG8zdMSgaDrkVYzz1g3nIVO9
+IHk96VwsacIvBF8JfqIs+8aWH2PfSUrNxP6Ys7U0sZYx4rXD6+cqFq/ZW5BUfClN/rhk2ddQXyn7
+kkmka2RQb9d90nmNHdgKrwfQ49mQ2hWQNDkJJIXwKjYA6VUR/fZUFeCUisdDe/0ABLTI+jheXUV1
+eoYV7lNwNBKpeHdNuO6Aacb533JlfeUHxvBz9OfYWUiXu09sMAviM11Q0DuMZ5760CdO2VnpsXP4
+KxaYIhvqPqUMWqRdWyn7crItNkZeroXaecG03i3mM7dkiPaCkgocBg0EBYsbZDZ8bsG3a08LwEsL
+1Ygz3SBsyECa0waq4hOf/Z85F2w2ZpXfP+w8q4ifwO90SGZZV+HR/Jh6rEaVPDRF/CEGVqR1hiuQ
+OZ1YL5ezMTX0ZSLwrymUE0pwi/KDaiYB15uswgeIAcA6JzPFf9pLkAFFWs1QNyN++niFhsM47qod
+x/PL+5jR87myx5uYdBEQkkDc+lKB1Wct6ucXqm2EmsaQ0M95QjTmy+rDWjkDYdw3Ms6mSWE3Bn7i
+5ZgtwCLXgAIe5W8mybM2JzCCBhQwggT8oAMCAQICEQDGvhmWZ0DEAx0oURL6O6l+MA0GCSqGSIb3
+DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYD
+VQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28g
+UlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMB4XDTIyMDEwNzAw
+MDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9y
+ZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3GpC2bomUqk+91wLYBzDMcCj5C9m6
+oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZHh7htyAkWYVoFsFPrwHounto8xTsy
+SSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT9YgcBqKCo65pTFmOnR/VVbjJk4K2
+xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNjP+qDrh0db7PAjO1D4d5ftfrsf+kd
+RR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy2U+eITZ5LLE5s45mX2oPFknWqxBo
+bQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3BgBEmfsYWlBXO8rVXfvPgLs32VdV
+NZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/7auNVRmPB3v5SWEsH8xi4Bez2V9U
+KxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmdlFYhAflWKQ03Ufiu8t3iBE3VJbc2
+5oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9aelIl6vtbhMA+l0nfrsORMa4kobqQ5
+C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMBAAGjggHMMIIByDAfBgNVHSMEGDAW
+gBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeDMcimo0oz8o1R1Nver3ZVpSkwDgYD
+VR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwQGCCsGAQUFBwMC
+MEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYBBQUHAgEWF2h0dHBzOi8vc2VjdGln
+by5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9jcmwuc2VjdGlnby5jb20vU2VjdGln
+b1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcmwwgYoGCCsGAQUFBwEB
+BH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdvLmNvbS9TZWN0aWdvUlNBQ2xpZW50
+QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAjBggrBgEFBQcwAYYXaHR0cDovL29j
+c3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5mcmFkZWFkLm9yZzANBgkqhkiG9w0B
+AQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQvQ/fzPXmtR9t54rpmI2TfyvcKgOXp
+qa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvIlSPrzIB4Z2wyIGQpaPLlYflrrVFK
+v9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9ChWFfgSXvrWDZspnU3Gjw/rMHrGnql
+Htlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0whpBtXdyDjzBtQTaZJ7zTT/vlehc/
+tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9IzCCBhQwggT8oAMCAQICEQDGvhmW
+Z0DEAx0oURL6O6l+MA0GCSqGSIb3DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3Jl
+YXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0
+ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJl
+IEVtYWlsIENBMB4XDTIyMDEwNzAwMDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJ
+ARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3
+GpC2bomUqk+91wLYBzDMcCj5C9m6oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZH
+h7htyAkWYVoFsFPrwHounto8xTsySSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT
+9YgcBqKCo65pTFmOnR/VVbjJk4K2xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNj
+P+qDrh0db7PAjO1D4d5ftfrsf+kdRR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy
+2U+eITZ5LLE5s45mX2oPFknWqxBobQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3
+BgBEmfsYWlBXO8rVXfvPgLs32VdVNZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/
+7auNVRmPB3v5SWEsH8xi4Bez2V9UKxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmd
+lFYhAflWKQ03Ufiu8t3iBE3VJbc25oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9ae
+lIl6vtbhMA+l0nfrsORMa4kobqQ5C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMB
+AAGjggHMMIIByDAfBgNVHSMEGDAWgBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeD
+Mcimo0oz8o1R1Nver3ZVpSkwDgYDVR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYw
+FAYIKwYBBQUHAwQGCCsGAQUFBwMCMEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYB
+BQUHAgEWF2h0dHBzOi8vc2VjdGlnby5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9j
+cmwuc2VjdGlnby5jb20vU2VjdGlnb1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1h
+aWxDQS5jcmwwgYoGCCsGAQUFBwEBBH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdv
+LmNvbS9TZWN0aWdvUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAj
+BggrBgEFBQcwAYYXaHR0cDovL29jc3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5m
+cmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQv
+Q/fzPXmtR9t54rpmI2TfyvcKgOXpqa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvI
+lSPrzIB4Z2wyIGQpaPLlYflrrVFKv9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9Ch
+WFfgSXvrWDZspnU3Gjw/rMHrGnqlHtlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0w
+hpBtXdyDjzBtQTaZJ7zTT/vlehc/tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9
+IzGCBMcwggTDAgEBMIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVz
+dGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMT
+NVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA
+xr4ZlmdAxAMdKFES+jupfjANBglghkgBZQMEAgEFAKCCAeswGAYJKoZIhvcNAQkDMQsGCSqGSIb3
+DQEHATAcBgkqhkiG9w0BCQUxDxcNMjMxMTA4MTUyNTI5WjAvBgkqhkiG9w0BCQQxIgQgNxzQWw1H
+5uK6QyFcFJZ0X3UTK7Bz5papwVMwURzefT8wgb0GCSsGAQQBgjcQBDGBrzCBrDCBljELMAkGA1UE
+BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEYMBYG
+A1UEChMPU2VjdGlnbyBMaW1pdGVkMT4wPAYDVQQDEzVTZWN0aWdvIFJTQSBDbGllbnQgQXV0aGVu
+dGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQQIRAMa+GZZnQMQDHShREvo7qX4wgb8GCyqGSIb3
+DQEJEAILMYGvoIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVy
+MRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNl
+Y3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEAxr4Z
+lmdAxAMdKFES+jupfjANBgkqhkiG9w0BAQEFAASCAgCcqK0Ysw+/Fs0RZETdto/pVREGWldtODKR
+XnaP6xebDH05DflIWkaRoUAdXyr2aDRhw5HHmhC27Y5EYnuT/QJ/3aUpsVqKmlQ3s9Z6SdpjHw4H
+Ja4oBlXdLJYbthQl76EUNdxT++RIOlSBNNhNMBKqfSWkwFZdebL/GdlEKNyr8uq7qyMrBFlZCpPA
+FDjPry3cwIVCxFQ3giAOc5n3mjvLDoO9BWbXNgOm9yVVHJ7GLm3vwRhI8QRl5fEccH6NiOJvAcDk
+voO2WUbaznLaDtPZ7gZWwWKxw85FnU2b+sawDpZR9WnFyBMG8yQfq39G/cHCJ7Uraa2gMVaDSEsW
+zqiNH8903BF313e6CZn4iv9zt0807w7ukalOOURSKTam63XjaaBhNfL5GngRepBFZtxKemwZRROY
+9nZu6FQL9tDmPVcYnkFj93+ux7HxTGc5FYXCOSRLTzN+0shn4rRme5CKxIRGplivbx9UKiYsuWtf
+fU627fDyS9wY185v1liBkwCFAI2xAi8bzZZwbTGNcCFmzHinzUSqk28ku36tpRxi09qmIm308qBc
+YZfZC+IhiCaKE4qXSkWc4IDM4RQR+qiDXfwa73TpYg3GyXg6Lh2XYvxisVvWGvbdS3CsMYEWHdvd
+qE+zw7+XYDcjChxknMXRaxAulzqsRwvnFCGYVhWlxQAAAAAAAA==
+
+
+--=-smuUMfsW8xU8lAzTM98r--
