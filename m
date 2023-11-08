@@ -2,126 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC2BD7E4F00
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 03:42:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8237A7E4F02
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 03:44:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235286AbjKHCmW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 21:42:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46440 "EHLO
+        id S235275AbjKHCoc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 21:44:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbjKHCmU (ORCPT
+        with ESMTP id S229503AbjKHCoa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 21:42:20 -0500
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28371184
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 18:42:18 -0800 (PST)
-Received: by mail-io1-xd2a.google.com with SMTP id ca18e2360f4ac-7ad501764f4so118943539f.3
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 18:42:18 -0800 (PST)
+        Tue, 7 Nov 2023 21:44:30 -0500
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA4D0184;
+        Tue,  7 Nov 2023 18:44:28 -0800 (PST)
+Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1cc3c51f830so49098595ad.1;
+        Tue, 07 Nov 2023 18:44:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1699411337; x=1700016137; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=l0/YVAel4Gttz4i2ZT43a1gG1mnikYVH5WxWUT8rkkA=;
-        b=X3IRmnQBd3UijRz2S8HIOYIOvuFYHMaBGZ+mKP2ErA9xJfEcCS1TXT9nCWTg+ZpHnm
-         mfB5bAYgVi8+GOGCFgvY3cune1fTdlNXgl+17em80ChbNeU8AtBOGOVTQ9lSCF+7rP1/
-         dRftoH/NELbyQ66eXUFMTMNKv4EIPSHe1itP4=
+        d=gmail.com; s=20230601; t=1699411468; x=1700016268; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=V/wwdfRphBwJ10ItYJstxVI8q7C8OR1Gp20sJ7bfRFs=;
+        b=A+Ui7wshVSwaOHJtbR9v+IawFMwF5KmHuhLClQbPBb9UNMtdNW7Na4rHP2421XyER7
+         d0EOfwueIh9cBVOnX4toqWYb5KpwZfhdzrmV5D7VlTht7fMri0Dywszx6atQfs60fkvQ
+         oMHF16nJImv/2V8Hu4jdnOo4RsWth0W8A0ugmdPce0fAY08WoOkexwI8WIYzXjR3KDOv
+         dbd6WyKsS3skB/yo3qdcaYme7Eb3aMZmSwZryOHMjKTWfb6kWgZfxlmaRPWRxylN10I4
+         2M1BzpWMcU1XzEgctMJhgfSKGiraEil9di2HgI3ZlgAonCZImZrRyNp5srp6g/8TsWRm
+         yOvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699411337; x=1700016137;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=l0/YVAel4Gttz4i2ZT43a1gG1mnikYVH5WxWUT8rkkA=;
-        b=VhDcjAFibo32+4OAjWc4RvejicmgTRMN6yVOnRX1hgCb7NT0ZTMol2vC/CNHS5jY10
-         zAX/oIDXKiMc6PMNsunIUSqD1NFFBuhJQNQCpclwJqCjvAL776tceQXP0lIAmHEn7KcZ
-         ALlgRzsdGsFCK5Uea9HTaAPcp9lVTssJ463UCaGbfXzvWovrSg8Ze59z4CO8Tas+CxoO
-         LMCvC4epk6g/D0O5h83ssyeBWLasAFWtLh3aVwcvsLWqi9xX1C0Ul2qcxgv5u8YNoaFg
-         0Xjh/oQX8/rUQhzMydzUIYXCHic8SN88vT/a6yv4nQI4LkLW0NNNUROeMdT4HUlyXyKH
-         B3tw==
-X-Gm-Message-State: AOJu0Yyn5CcCjpjwuif58gb9vyoLn/s5TRfkRGNyPdWXxfIbOWEIY0pn
-        InSr9aX9MFVXqINfT2lwdJMdbA==
-X-Google-Smtp-Source: AGHT+IGIIe2W7d5LVTX6AoRFW05ZsrY22EQeoefXPK016WTBYYH6khHyH8shA8THqOmVsKy3XSIzLw==
-X-Received: by 2002:a5d:9282:0:b0:794:efb0:83d6 with SMTP id s2-20020a5d9282000000b00794efb083d6mr742434iom.12.1699411337472;
-        Tue, 07 Nov 2023 18:42:17 -0800 (PST)
-Received: from localhost (20.10.132.34.bc.googleusercontent.com. [34.132.10.20])
-        by smtp.gmail.com with ESMTPSA id ft8-20020a056638660800b00452e02e784fsm3052078jab.144.2023.11.07.18.42.16
+        d=1e100.net; s=20230601; t=1699411468; x=1700016268;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=V/wwdfRphBwJ10ItYJstxVI8q7C8OR1Gp20sJ7bfRFs=;
+        b=cletc0LnNFDEIFtX7+7eqlxLp3z4fvfSiSdzZAiisJZVhz6499I2xjvhqYLsZYemvw
+         79e/rFAKipwfXtiyvsPHboeuQdh18aYX4L1k8KuQkHWJ0wdknd2hgJ8JSzkjxEfs0EZr
+         e0cTeVQtKPDVBmmj2dcCOkur0CMEzQo8UDbHo409edcbbo6X1Oj/dDfe1ePtKtKWvf84
+         rWzBBZYwbBBnHGuNfkJxi9JG7yXHg6QiANKOhix+61PtdQwhEPRWcfm9Pv7dgHVvS1Mv
+         HNZiJCij3ZlSSzBagNfqUBcJTm/WqT/q1Cwc1OlcSYaJA3bU+vzOSmd6zn1chY3rnTQG
+         PWPg==
+X-Gm-Message-State: AOJu0YzABACGwiIbK8W1/9n/BzGpzOMFseyYRsXQ5KmmsALX/U8WCxd0
+        RGszsbo7jNQwmTLn/QoQ78I=
+X-Google-Smtp-Source: AGHT+IEOr1W+M8OwGU0II7Hj4G2oaJUl4uxectMyrXLZDreeT37M3r1Jc9zixvuwENvZpSAFSNcemQ==
+X-Received: by 2002:a17:902:ead4:b0:1cc:ef37:664a with SMTP id p20-20020a170902ead400b001ccef37664amr777261pld.31.1699411468266;
+        Tue, 07 Nov 2023 18:44:28 -0800 (PST)
+Received: from peter-bmc.dhcpserver.bu9bmc.local (1-34-21-66.hinet-ip.hinet.net. [1.34.21.66])
+        by smtp.gmail.com with ESMTPSA id a3-20020a1709027d8300b001c62e3e1286sm501681plm.166.2023.11.07.18.44.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Nov 2023 18:42:16 -0800 (PST)
-Date:   Wed, 8 Nov 2023 02:42:16 +0000
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Daniel Bristot de Oliveira <bristot@kernel.org>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        linux-kernel@vger.kernel.org,
-        Luca Abeni <luca.abeni@santannapisa.it>,
-        Tommaso Cucinotta <tommaso.cucinotta@santannapisa.it>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vineeth Pillai <vineeth@bitbyteword.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Phil Auld <pauld@redhat.com>
-Subject: Re: [PATCH v5 6/7] sched/deadline: Deferrable dl server
-Message-ID: <20231108024216.GB2992223@google.com>
-References: <cover.1699095159.git.bristot@kernel.org>
- <c7b706d30d6316c52853ca056db5beb82ba72863.1699095159.git.bristot@kernel.org>
- <CAEXW_YS=PrWDx+YGVR7bmq0_SoKNztzGrreApCd9qk1yBLA5bA@mail.gmail.com>
- <CAEXW_YQ8kv3tXQJexLSguPuWi0bXiReKDyYNo9+A-Hgp=Zo1vA@mail.gmail.com>
- <CAEXW_YSjsZSrJK_RbGmbLNy4UrLCgu+7NPZjg-wiLuNbGOGr+w@mail.gmail.com>
- <d6811957-1cb7-489d-a3da-f38622d7f515@kernel.org>
+        Tue, 07 Nov 2023 18:44:27 -0800 (PST)
+From:   Peter Yin <peteryin.openbmc@gmail.com>
+X-Google-Original-From: Peter Yin <peter.yin@quantatw.com>
+To:     patrick@stwcx.xyz, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mark Brown <broonie@kernel.org>,
+        Vincent Tremblay <vincent@vtremblay.dev>,
+        Peter Yin <peteryin.openbmc@gmail.com>,
+        Michal Simek <michal.simek@amd.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Patrick Rudolph <patrick.rudolph@9elements.com>,
+        Alexander Stein <alexander.stein@ew.tq-group.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hwmon@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: [PATCH v1 0/2] hwmon: (pmbus) Add support for MPS Multi-phase mp2856/mp2857 controller
+Date:   Wed,  8 Nov 2023 10:42:17 +0800
+Message-Id: <20231108024222.2026546-1-peter.yin@quantatw.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d6811957-1cb7-489d-a3da-f38622d7f515@kernel.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 07, 2023 at 12:58:48PM +0100, Daniel Bristot de Oliveira wrote:
-[...]
-> >> One more consideration I guess is, because the server is throttled
-> >> till 0-laxity time, it is possible that if CFS sleeps even a bit
-> >> (after the DL-server is unthrottled), then it will be pushed out to a
-> >> full current deadline + period due to CBS. In such a situation,  if
-> >> CFS-server is the only DL task running, it might starve RT for a bit
-> >> more time.
-> >>
-> >> Example, say CFS runtime is 0.3s and period is 1s. At 0.7s, 0-laxity
-> >> timer fires. CFS runs for 0.29s, then sleeps for 0.005s and wakes up
-> >> at 0.295s (its remaining runtime is 0.01s at this point which is < the
-> >> "time till deadline" of 0.005s). Now the runtime of the CFS-server
-> >> will be replenished to the full 3s (due to CBS) and the deadline
-> >> pushed out. The end result is the total runtime that the CFS-server
-> >> actually gets is 0.0595s (though yes it did sleep for 5ms in between,
-> >> still that's tiny -- say if it briefly blocked on a kernel mutex).
-> > 
-> > Blah, I got lost in decimal points. Here's the example again:
-> > 
-> > Say CFS-server runtime is 0.3s and period is 1s.
-> > 
-> > At 0.7s, 0-laxity timer fires. CFS runs for 0.29s, then sleeps for
-> > 0.005s and wakes up at 0.295s (its remaining runtime is 0.01s at this
-> > point which is < the "time till deadline" of 0.005s)
-> > 
-> > Now the runtime of the CFS-server will be replenished to the full 0.3s
-> > (due to CBS) and the deadline
-> > pushed out.
-> > 
-> > The end result is, the total runtime that the CFS-server actually gets
-> > is 0.595s (though yes it did sleep for 5ms in between, still that's
-> > tiny -- say if it briefly blocked on a kernel mutex). That's almost
-> > double the allocated runtime.
-> 
-> I think I got what you mean, and I think I took for granted that we were
-> doing overload control on the replenishment, but it seems that we are not..
-> 
-> I just got back from a doct appt, I will do a proper reply later today.
+From: Peter Yin <peteryin.openbmc@gmail.com>
 
-Ah ok! Thanks Daniel! And hope the appointment went well.
+Add support for mp2856/mp2857 device from Monolithic Power Systems, Inc.
+(MPS) vendor. This is a dual-loop, digital, multi-phase,
+modulation controller.
 
- - Joel
+
+Change log:
+
+v1: Add support mp2856/mp2857
+---
+Peter Yin (2):
+  dt-bindings: Add MP2856/MP2857 voltage regulator device
+  hwmon: (pmbus) Add support for MPS Multi-phase mp2856/mp2857
+    controller
+
+ .../devicetree/bindings/trivial-devices.yaml  |   4 +
+ Documentation/hwmon/index.rst                 |   1 +
+ Documentation/hwmon/mp2856.rst                | 101 ++++++
+ drivers/hwmon/pmbus/Kconfig                   |   9 +
+ drivers/hwmon/pmbus/Makefile                  |   1 +
+ drivers/hwmon/pmbus/mp2856.c                  | 327 ++++++++++++++++++
+ 6 files changed, 443 insertions(+)
+ create mode 100644 Documentation/hwmon/mp2856.rst
+ create mode 100644 drivers/hwmon/pmbus/mp2856.c
+
+-- 
+2.25.1
 
