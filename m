@@ -2,78 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 267947E5970
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 15:46:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C74F7E5976
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 15:48:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344077AbjKHOqK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 09:46:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38972 "EHLO
+        id S232149AbjKHOst (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 09:48:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234425AbjKHOqH (ORCPT
+        with ESMTP id S230023AbjKHOsr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 09:46:07 -0500
-Received: from mail-oi1-f198.google.com (mail-oi1-f198.google.com [209.85.167.198])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 074751BFA
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 06:46:05 -0800 (PST)
-Received: by mail-oi1-f198.google.com with SMTP id 5614622812f47-3b2f3015ce6so10058811b6e.3
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 06:46:04 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699454764; x=1700059564;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=eyg+x1sdBdUCTK9dEOdpm/i8Z98iZDIp/TYoaCFtNfI=;
-        b=S7KELpazm6yY9yp5qK8zk9sqwZcYdz+AOSW0jqTiwV7ZSYCyzAo9grDA+e8+39aObr
-         5lQMGHlGgz7Ux6LxLnQjeyhZaLqVm4GkrHLZamm8OkeBA6Ccx4MLhqPY3nlNmcOZcQqE
-         EIuRkk9PszJOxWnSOUlm8Z/8VDGoN43mPU1eBlvY7VR8u2yppNNalWLkaFt54eJ1gPKJ
-         3x9/WBAozJafOofGiXkmvC5u5F7n7A5QAztEqxKqwtYRLtluuDRjKX/yAfLknlfysSoh
-         bK/9xha2j/luf9W+N7uw5I13wmw5RJms35IdBTOOLEB5xCu3bQnOGRlPZ6sanRuHH/r2
-         GFsw==
-X-Gm-Message-State: AOJu0Yyc3jNG5Kr+peRVyEZiX7NuygKteBL6qu1VEPftQFh/2PLlCUAv
-        Npdsmh0ljANZZFOnS34OtTH6ARK8Ko9CKj3tpI2o7aDW3zO7
-X-Google-Smtp-Source: AGHT+IHYVbPqVKNGXu+BvwkE/pRq1+khXE9q8J8tLhTwkKxlwRoFhUls2Br/4J25UUlY0OHXWCPFT/tsDkP8SnIUAsiU7jVq8Mz6
+        Wed, 8 Nov 2023 09:48:47 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C576619A5
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 06:48:45 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9FD32C433C8;
+        Wed,  8 Nov 2023 14:48:44 +0000 (UTC)
+Date:   Wed, 8 Nov 2023 09:48:47 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     kernel test robot <lkp@intel.com>
+Cc:     Waiman Long <longman@redhat.com>, oe-kbuild-all@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        Sui Jingfeng <suijingfeng@loongson.cn>,
+        dri-devel@lists.freedesktop.org
+Subject: Re: kernel/trace/trace.c:2430:9: sparse: sparse: incorrect type in
+ argument 1 (different address spaces)
+Message-ID: <20231108094847.236d04b2@gandalf.local.home>
+In-Reply-To: <202311081340.3k72KKdg-lkp@intel.com>
+References: <202311081340.3k72KKdg-lkp@intel.com>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6808:138d:b0:3a7:86b2:1950 with SMTP id
- c13-20020a056808138d00b003a786b21950mr789798oiw.0.1699454764313; Wed, 08 Nov
- 2023 06:46:04 -0800 (PST)
-Date:   Wed, 08 Nov 2023 06:46:04 -0800
-In-Reply-To: <0000000000002a4da90603a5cbbf@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000089f4110609a525b2@google.com>
-Subject: Re: [syzbot] [dri?] kernel BUG in vmf_insert_pfn_prot (2)
-From:   syzbot <syzbot+398e17b61dab22cc56bc@syzkaller.appspotmail.com>
-To:     airlied@gmail.com, airlied@linux.ie, christian.koenig@amd.com,
-        daniel.vetter@ffwll.ch, daniel.vetter@intel.com, daniel@ffwll.ch,
-        dri-devel@lists.freedesktop.org, hdanton@sina.com,
-        linaro-mm-sig-bounces@lists.linaro.org,
-        linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, maarten.lankhorst@linux.intel.com,
-        mripard@kernel.org, sumit.semwal@linaro.org,
-        syzkaller-bugs@googlegroups.com, tzimmermann@suse.de
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has bisected this issue to:
+On Wed, 8 Nov 2023 13:55:21 +0800
+kernel test robot <lkp@intel.com> wrote:
 
-commit 45d9c8dde4cd8589f9180309ec60f0da2ce486e4
-Author: Daniel Vetter <daniel.vetter@ffwll.ch>
-Date:   Thu Aug 12 13:14:12 2021 +0000
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   305230142ae0637213bf6e04f6d9f10bbcb74af8
+> commit: c0a581d7126c0bbc96163276f585fd7b4e4d8d0e tracing: Disable interrupt or preemption before acquiring arch_spinlock_t
+> date:   1 year, 1 month ago
+> config: loongarch-randconfig-r123-20231107 (https://download.01.org/0day-ci/archive/20231108/202311081340.3k72KKdg-lkp@intel.com/config)
+> compiler: loongarch64-linux-gcc (GCC) 13.2.0
+> reproduce: (https://download.01.org/0day-ci/archive/20231108/202311081340.3k72KKdg-lkp@intel.com/reproduce)
+> 
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202311081340.3k72KKdg-lkp@intel.com/
+> 
+> sparse warnings: (new ones prefixed by >>)
+>    kernel/trace/trace.c:406:28: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct trace_export **list @@     got struct trace_export [noderef] __rcu ** @@
+>    kernel/trace/trace.c:406:28: sparse:     expected struct trace_export **list
+>    kernel/trace/trace.c:406:28: sparse:     got struct trace_export [noderef] __rcu **
+>    kernel/trace/trace.c:420:33: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct trace_export **list @@     got struct trace_export [noderef] __rcu ** @@
+>    kernel/trace/trace.c:420:33: sparse:     expected struct trace_export **list
+>    kernel/trace/trace.c:420:33: sparse:     got struct trace_export [noderef] __rcu **
+> >> kernel/trace/trace.c:2430:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@  
+>    kernel/trace/trace.c:2430:9: sparse:     expected void *ptr
+>    kernel/trace/trace.c:2430:9: sparse:     got unsigned int [noderef] __percpu *
+> >> kernel/trace/trace.c:2430:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@  
+>    kernel/trace/trace.c:2430:9: sparse:     expected void *ptr
+>    kernel/trace/trace.c:2430:9: sparse:     got unsigned int [noderef] __percpu *
+> >> kernel/trace/trace.c:2430:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@  
+>    kernel/trace/trace.c:2430:9: sparse:     expected void *ptr
+>    kernel/trace/trace.c:2430:9: sparse:     got unsigned int [noderef] __percpu *
+> >> kernel/trace/trace.c:2430:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@  
+>    kernel/trace/trace.c:2430:9: sparse:     expected void *ptr
+>    kernel/trace/trace.c:2430:9: sparse:     got unsigned int [noderef] __percpu *
+> >> kernel/trace/trace.c:2430:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@  
+>    kernel/trace/trace.c:2430:9: sparse:     expected void *ptr
+>    kernel/trace/trace.c:2430:9: sparse:     got int [noderef] __percpu *
+> >> kernel/trace/trace.c:2430:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@  
+>    kernel/trace/trace.c:2430:9: sparse:     expected void *ptr
+>    kernel/trace/trace.c:2430:9: sparse:     got int [noderef] __percpu *
+> >> kernel/trace/trace.c:2430:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@  
+>    kernel/trace/trace.c:2430:9: sparse:     expected void *ptr
+>    kernel/trace/trace.c:2430:9: sparse:     got int [noderef] __percpu *
+> >> kernel/trace/trace.c:2430:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@  
 
-    drm/vgem: use shmem helpers
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=126094df680000
-start commit:   d2f51b3516da Merge tag 'rtc-6.7' of git://git.kernel.org/p..
-git tree:       upstream
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=116094df680000
-console output: https://syzkaller.appspot.com/x/log.txt?x=166094df680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=1ffa1cec3b40f3ce
-dashboard link: https://syzkaller.appspot.com/bug?extid=398e17b61dab22cc56bc
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16344918e80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=156bb2c0e80000
+> 
+> vim +2430 kernel/trace/trace.c
+> 
+>   2410	
+>   2411	static int trace_save_cmdline(struct task_struct *tsk)
+>   2412	{
+>   2413		unsigned tpid, idx;
+>   2414	
+>   2415		/* treat recording of idle task as a success */
+>   2416		if (!tsk->pid)
+>   2417			return 1;
+>   2418	
+>   2419		tpid = tsk->pid & (PID_MAX_DEFAULT - 1);
+>   2420	
+>   2421		/*
+>   2422		 * It's not the end of the world if we don't get
+>   2423		 * the lock, but we also don't want to spin
+>   2424		 * nor do we want to disable interrupts,
+>   2425		 * so if we miss here, then better luck next time.
+>   2426		 *
+>   2427		 * This is called within the scheduler and wake up, so interrupts
+>   2428		 * had better been disabled and run queue lock been held.
+>   2429		 */
+> > 2430		lockdep_assert_preemption_disabled();  
 
-Reported-by: syzbot+398e17b61dab22cc56bc@syzkaller.appspotmail.com
-Fixes: 45d9c8dde4cd ("drm/vgem: use shmem helpers")
+The above is a generic lockdep utility. Sounds to me that this is a bug in
+the loongarch code that doesn't handle this properly.
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+-- Steve
+
+
+>   2431		if (!arch_spin_trylock(&trace_cmdline_lock))
+>   2432			return 0;
+>   2433	
+>   2434		idx = savedcmd->map_pid_to_cmdline[tpid];
+>   2435		if (idx == NO_CMDLINE_MAP) {
+>   2436			idx = (savedcmd->cmdline_idx + 1) % savedcmd->cmdline_num;
+>   2437	
+>   2438			savedcmd->map_pid_to_cmdline[tpid] = idx;
+>   2439			savedcmd->cmdline_idx = idx;
+>   2440		}
+>   2441	
+>   2442		savedcmd->map_cmdline_to_pid[idx] = tsk->pid;
+>   2443		set_cmdline(idx, tsk->comm);
+>   2444	
+>   2445		arch_spin_unlock(&trace_cmdline_lock);
+>   2446	
+>   2447		return 1;
+>   2448	}
+>   2449	
+> 
+
