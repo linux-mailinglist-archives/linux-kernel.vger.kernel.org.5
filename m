@@ -2,107 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 75FC57E4F57
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 04:11:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDF4A7E4F5C
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 04:12:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230241AbjKHDLe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Nov 2023 22:11:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52682 "EHLO
+        id S234154AbjKHDMj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Nov 2023 22:12:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229820AbjKHDLb (ORCPT
+        with ESMTP id S229918AbjKHDMi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Nov 2023 22:11:31 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 106821B1
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 19:11:29 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3042DC433C8;
-        Wed,  8 Nov 2023 03:11:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699413088;
-        bh=XrfxF33CtZroqoRvXEVVo9b4OjgfMCzhx0zqg4YE8t4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Lo97rqIaR3NWuDiOEw/miwFH3Pk1b7BSXgLGuhlGndfslxiuIl0pn7komQiSEqjlk
-         XHBBxPiKcPKfIbWZyjhSXWUXn0FUZRSbMkIl2lrp2kFe5atwgazDzsON8ZbXHWm7of
-         Jd1Lc7nJ1x7PNLpec0Whcl2PTtTu5/GIgG1fT2GvFNbELZan2bg5nNCebBNmot8UBg
-         SQim/Y5pKsG/ZIpJODmRbXd7Ee8LtOJoH6t9usNF09jey5G+a5DFh7UFxYqAwqb77u
-         PLN9O6v3C1nDWaQ1d25LbqSGhBz9pp9AimXwT92KVrTyw0j+axo5jVbjUcmKmzoh7g
-         2hwcWarz8/yyw==
-Date:   Wed, 8 Nov 2023 12:11:23 +0900
-From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To:     "wuqiang.matt" <wuqiang.matt@bytedance.com>
-Cc:     linux-trace-kernel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lkp@intel.com, mattwu@163.com
-Subject: Re: [PATCH v1] lib: test_objpool: make global variables static
-Message-Id: <20231108121123.881efce0a736a3e98f6e99d6@kernel.org>
-In-Reply-To: <20231108012248.313574-1-wuqiang.matt@bytedance.com>
-References: <20231108012248.313574-1-wuqiang.matt@bytedance.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        Tue, 7 Nov 2023 22:12:38 -0500
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47B5A10EF
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 19:12:36 -0800 (PST)
+Received: by mail-yb1-xb35.google.com with SMTP id 3f1490d57ef6-d852b28ec3bso6956763276.2
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Nov 2023 19:12:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore.com; s=google; t=1699413155; x=1700017955; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MGQAU/F2NWyIFo06SHSGqSkCqe/uLciFGr239gofGyM=;
+        b=dLiigb+G0iX3pOCOrfkkf28qO2Xs6Eu7wDRgDm1WJl2bXrIzwkiCNlpIL02VTFI5u8
+         diuB//DonNPLggaurRe/Q0AwGqZ6PHPRcMqLqO1bZxdQMyLR7VtyEeMHOxSjGPEOdfOP
+         3+DyscCMJ4fNuopDl6HVE5SRDKMZbIQV/aEdmYzxBw/8g89N+8bHwctpraAf1tdKH4Fp
+         RAMf8r3jD7UW5VuuDkFOdY7ZmB5o+8bHo8i1ejYAR9oE2exzgOYUWHMagFYIyi6w8kPP
+         X0hW7i9r5tIireUzY6COkOdRsCY/nCY6ZD8FblJiLXcvODnxLAzKeO6snj1I26VhIGwa
+         DGQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699413155; x=1700017955;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=MGQAU/F2NWyIFo06SHSGqSkCqe/uLciFGr239gofGyM=;
+        b=dBOL1C5w0gjK6r+YI+oV+IBAf+GOGtAngwk8aFQNBD4i8XGoSZ8nu2QPorgl6CkxOe
+         /0CtQ0mN3MI4bjiGJWjj/M0uZgzgudrAy+Iij5Pg88uhAv629u+VsX5keLsnutyiNk+5
+         5kVI6dJNNos1ST5joWqbm/ZwoaO5XhYNLvwU5d9YX+N7pTM2M2MKtUP5fZdblAivBIh4
+         SEsbmZXeudn2UBKHTGc1YXUB3HGTpNQWPvP+1c4FTCg7BfBc8SJwAYukFE6hKEmBPSFA
+         lwLtegvgHYyvu3EsuIv/o22VAEdhbNZp7FmZcMMKU74FSmwiCExRrzGuqQDug6GKHXlj
+         1DFw==
+X-Gm-Message-State: AOJu0YzylXPx0huAjnsXVcPEGW19BPnCpNjjeILnCVYIqSOpjfQiFtR9
+        wfAc10WWtBI9IavkTFCLvEcwyjdrZ2jwKe/m6Sk7
+X-Google-Smtp-Source: AGHT+IG5JhNEPymnvflV2fXuHIa5f+WUp+AIrXmdrAFnAR99bef08BA8r16AQwGdqkypAMD9zwdRfg/gvm7OLwAU2K8=
+X-Received: by 2002:a25:c083:0:b0:d9a:c7af:bb4d with SMTP id
+ c125-20020a25c083000000b00d9ac7afbb4dmr597877ybf.37.1699413155449; Tue, 07
+ Nov 2023 19:12:35 -0800 (PST)
+MIME-Version: 1.0
+References: <20231031123207.758655-1-omosnace@redhat.com>
+In-Reply-To: <20231031123207.758655-1-omosnace@redhat.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Tue, 7 Nov 2023 22:12:24 -0500
+Message-ID: <CAHC9VhRo2GzW0jSqmm0Sv3z_-q9PTsvScV5oQwF5uNh+ZcWreA@mail.gmail.com>
+Subject: Re: [PATCH 0/2] lsm: fix default return values for some hooks
+To:     Ondrej Mosnacek <omosnace@redhat.com>
+Cc:     linux-security-module@vger.kernel.org,
+        Benjamin Coddington <bcodding@redhat.com>,
+        linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed,  8 Nov 2023 09:22:48 +0800
-"wuqiang.matt" <wuqiang.matt@bytedance.com> wrote:
+On Tue, Oct 31, 2023 at 8:32=E2=80=AFAM Ondrej Mosnacek <omosnace@redhat.co=
+m> wrote:
+>
+> Some of the default return values listed in <linux/lsm_hook_defs.h>
+> don't match the actual no-op value and can be trivially fixed.
+>
+> Ondrej Mosnacek (2):
+>   lsm: fix default return value for vm_enough_memory
+>   lsm: fix default return value for inode_getsecctx
+>
+>  include/linux/lsm_hook_defs.h | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 
-> Kernel test robot reported build warnings that structures g_ot_sync_ops,
-> g_ot_async_ops and g_testcases should be static. These definitions are
-> only used in test_objpool.c, so make them static
-> 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202311071229.WGrWUjM1-lkp@intel.com/
-> 
+These both look like reasonable -stable candidates to me, what do you think=
+?
 
-Looks good to me.
-
-Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-
-Let me pick this to probes/fixes.
-
-Thank you,
-
-> Signed-off-by: wuqiang.matt <wuqiang.matt@bytedance.com>
-> ---
->  lib/test_objpool.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/lib/test_objpool.c b/lib/test_objpool.c
-> index a94078402138..bfdb81599832 100644
-> --- a/lib/test_objpool.c
-> +++ b/lib/test_objpool.c
-> @@ -311,7 +311,7 @@ static void ot_fini_sync(struct ot_context *sop)
->  	ot_kfree(sop->test, sop, sizeof(*sop));
->  }
->  
-> -struct {
-> +static struct {
->  	struct ot_context * (*init)(struct ot_test *oc);
->  	void (*fini)(struct ot_context *sop);
->  } g_ot_sync_ops[] = {
-> @@ -475,7 +475,7 @@ static struct ot_context *ot_init_async_m0(struct ot_test *test)
->  	return sop;
->  }
->  
-> -struct {
-> +static struct {
->  	struct ot_context * (*init)(struct ot_test *oc);
->  	void (*fini)(struct ot_context *sop);
->  } g_ot_async_ops[] = {
-> @@ -632,7 +632,7 @@ static int ot_start_async(struct ot_test *test)
->  #define NODE_COMPACT sizeof(struct ot_node)
->  #define NODE_VMALLOC (512)
->  
-> -struct ot_test g_testcases[] = {
-> +static struct ot_test g_testcases[] = {
->  
->  	/* sync & normal */
->  	{0, 0, NODE_COMPACT, 1000, 0,  1,  0,  0, "sync: percpu objpool"},
-> -- 
-> 2.40.1
-> 
-
-
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+--=20
+paul-moore.com
