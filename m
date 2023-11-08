@@ -2,176 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 28E277E57B9
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 14:04:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 665017E56AA
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 13:59:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344767AbjKHNEe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 08:04:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45186 "EHLO
+        id S1344616AbjKHM7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 07:59:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230088AbjKHNE0 (ORCPT
+        with ESMTP id S1344583AbjKHM7J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 08:04:26 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA695B7;
-        Wed,  8 Nov 2023 05:04:23 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D9689C433C9;
-        Wed,  8 Nov 2023 13:04:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699448663;
-        bh=kegMIl+DMnSqVAHEcD2O4VmQR89XR3LaLbspvw04Tng=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eNsPlZDJtmEkAPMbBG5R4qhHte1qNJj5hivdXnhMnQEYxjWoPW4joiDtxOU68W74A
-         xYdGgBhCICOT3rUTOeUYm0Hc/0LeKHn3J/Gekc8+KTnNnPXVjHuBsHwOaN69BFuuvL
-         wN1TtfsrekXIsK010uWdjCGU5Ld5U7BPhDH+yIeFwi0DnKAb/YUl2oaW2yuZulDgnz
-         pUDyk70EhXQiruCjugsUuCxET23RnQ3wREunYYRXMrJO64AqO0M74uvMADhK6JM0RJ
-         aJLD9+iPedZDT4sOV2VEhIsUeQxuPkYhEBdNhQp3p2/UHNMVvYSvjwsw+1CsJtL+wm
-         Cl+RPNk7mv6uQ==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kbuild@vger.kernel.org
-Cc:     Arnd Bergmann <arnd@arndb.de>, Matt Turner <mattst88@gmail.com>,
-        Vineet Gupta <vgupta@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
+        Wed, 8 Nov 2023 07:59:09 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AB821BF5
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 04:59:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=sLIymDU8NTMb4JE6uhmaFeHtnc3AURJlksCh4tSko9U=; b=kPRSk5L61jcyG45/orAsN/ynkf
+        ovAdKMefXglNg6QsSI+NI0cGN5lJXK+eH3YIE9L7w9iQbEevBia/Y6ma4PeiBkBg/seESqfPZPI2n
+        Gwi/ZPKbtlEYPDJAmMsxAhUJZvY+T7Puy3AlgC2fGh3lPb1JVkBZVBccNWLRYV44iOxZtQCLOSt3w
+        I1VJ3WFbvgM4ZMjMIXtStozEQhYIAppW6VynubetqZqTUT+46CxLkJC4ky7gccmA5PjX3TMxs8MpR
+        5OV8ya4SiQmzNCDws33YhxNqcmVJlyGbVgdDIh0TZ41V+F4sMF0FKDow1TNK96iU7hhdtfy2HVmiq
+        UVeVPhrA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1r0i8v-0016aZ-7p; Wed, 08 Nov 2023 12:58:49 +0000
+Date:   Wed, 8 Nov 2023 12:58:49 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Ankur Arora <ankur.a.arora@oracle.com>
+Cc:     Yosry Ahmed <yosryahmed@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        linux-kernel@vger.kernel.org, tglx@linutronix.de,
+        peterz@infradead.org, torvalds@linux-foundation.org,
+        paulmck@kernel.org, linux-mm@kvack.org, x86@kernel.org,
+        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
+        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org, mgorman@suse.de,
+        jon.grimm@amd.com, bharata@amd.com, raghavendra.kt@amd.com,
+        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
+        jgross@suse.com, andrew.cooper3@citrix.com, mingo@kernel.org,
+        bristot@kernel.org, mathieu.desnoyers@efficios.com,
+        geert@linux-m68k.org, glaubitz@physik.fu-berlin.de,
+        anton.ivanov@cambridgegreys.com, mattst88@gmail.com,
+        krypton@ulrich-teichert.org, rostedt@goodmis.org,
+        David.Laight@aculab.com, richard@nod.at, mjguzik@gmail.com,
+        SeongJae Park <sj@kernel.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Marco Elver <elver@google.com>,
         Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Guo Ren <guoren@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Michal Simek <monstr@monstr.eu>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Geoff Levand <geoff@infradead.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-        Helge Deller <deller@gmx.de>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Timur Tabi <timur@kernel.org>,
-        Kent Overstreet <kent.overstreet@linux.dev>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, linux-alpha@vger.kernel.org,
-        linux-snps-arc@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-trace-kernel@vger.kernel.org, linux-csky@vger.kernel.org,
-        loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        netdev@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-fbdev@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-bcachefs@vger.kernel.org,
-        linux-mtd@lists.infradead.org,
-        Richard Henderson <richard.henderson@linaro.org>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        Palmer Dabbelt <palmer@rivosinc.com>
-Subject: [PATCH 22/22] Makefile.extrawarn: turn on missing-prototypes globally
-Date:   Wed,  8 Nov 2023 13:58:43 +0100
-Message-Id: <20231108125843.3806765-23-arnd@kernel.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231108125843.3806765-1-arnd@kernel.org>
-References: <20231108125843.3806765-1-arnd@kernel.org>
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        David Hildenbrand <david@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Mike Rapoport <rppt@kernel.org>, Will Deacon <will@kernel.org>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Nick Piggin <npiggin@gmail.com>,
+        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Christoph Lameter <cl@linux.com>,
+        Hugh Dickins <hughd@google.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Vitaly Wool <vitaly.wool@konsulko.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Seth Jennings <sjenning@redhat.com>,
+        Dan Streetman <ddstreet@ieee.org>
+Subject: Re: [RFC PATCH 68/86] treewide: mm: remove cond_resched()
+Message-ID: <ZUuGCekSB727c61n@casper.infradead.org>
+References: <20231107215742.363031-1-ankur.a.arora@oracle.com>
+ <20231107230822.371443-1-ankur.a.arora@oracle.com>
+ <20231107230822.371443-12-ankur.a.arora@oracle.com>
+ <20231108012823.GD11577@google.com>
+ <7155f21f-a7e5-cc36-89e5-c1ce257b9420@suse.cz>
+ <CAJD7tkYYqqYT361pbeqTFxoAep2qtTAWSQx4SzFCcEEOZgRT3Q@mail.gmail.com>
+ <87sf5gocas.fsf@oracle.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <87sf5gocas.fsf@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+On Wed, Nov 08, 2023 at 12:54:19AM -0800, Ankur Arora wrote:
+> Yosry Ahmed <yosryahmed@google.com> writes:
+> > On Tue, Nov 7, 2023 at 11:49 PM Vlastimil Babka <vbabka@suse.cz> wrote:
+> >> On 11/8/23 02:28, Sergey Senozhatsky wrote:
+> >> > I'd personally prefer to have a comment explaining why we do that
+> >> > spin_unlock/spin_lock sequence, which may look confusing to people.
+> >>
+> >> Wonder if it would make sense to have a lock operation that does the
+> >> unlock/lock as a self-documenting thing, and maybe could also be optimized
+> >> to first check if there's a actually a need for it (because TIF_NEED_RESCHED
+> >> or lock is contended).
+> >
+> > +1, I was going to suggest this as well. It can be extended to other
+> > locking types that disable preemption as well like RCU. Something like
+> > spin_lock_relax() or something.
+> 
+> Good point. We actually do have exactly that: cond_resched_lock(). (And
+> similar RW lock variants.)
 
-Over the years we went from > 1000 of warnings to under 100 earlier
-this year, and I sent patches to address all the ones that I saw with
-compile testing randcom configs on arm64, arm and x86 kernels. This is a
-really useful warning, as it catches real bugs when there are mismatched
-prototypes. In particular with kernel control flow integrity enabled,
-those are no longer allowed.
-
-I have done extensive testing to ensure that there are no new build
-errors or warnings on any configuration of x86, arm and arm64 builds.
-I also made sure that at least the both the normal defconfig and an
-allmodconfig build is clean for arc, csky, loongarch, m68k, microblaze,
-openrisc, parisc, powerpc, riscv, s390, and xtensa, with the respective
-maintainers doing most of the patches.
-
-At this point, there are five architectures with a number of known
-regressions: alpha, nios2, mips, sh and sparc. In the previous version
-of this patch, I had turned off the missing prototype warnings for the 15
-architectures that still had issues, but since there are only five left,
-I think we can leave the rest to the maintainers (Cc'd here) as well.
-
-Cc: Richard Henderson <richard.henderson@linaro.org>
-Cc: Ivan Kokshaysky <ink@jurassic.park.msu.ru>
-Cc: Matt Turner <mattst88@gmail.com>
-Cc: Dinh Nguyen <dinguyen@kernel.org>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
-Cc: Rich Felker <dalias@libc.org>
-Cc: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: linux-alpha@vger.kernel.org
-Cc: linux-mips@vger.kernel.org
-Cc: sparclinux@vger.kernel.org
-Cc: linux-sh@vger.kernel.org
-Link: https://lore.kernel.org/lkml/20230810141947.1236730-1-arnd@kernel.org/
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Acked-by: Palmer Dabbelt <palmer@rivosinc.com> # RISC-V
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- scripts/Makefile.extrawarn | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/scripts/Makefile.extrawarn b/scripts/Makefile.extrawarn
-index 2fe6f2828d37..c9725685aa76 100644
---- a/scripts/Makefile.extrawarn
-+++ b/scripts/Makefile.extrawarn
-@@ -17,6 +17,8 @@ KBUILD_CFLAGS += -Wno-format-security
- KBUILD_CFLAGS += -Wno-trigraphs
- KBUILD_CFLAGS += $(call cc-disable-warning,frame-address,)
- KBUILD_CFLAGS += $(call cc-disable-warning, address-of-packed-member)
-+KBUILD_CFLAGS += -Wmissing-declarations
-+KBUILD_CFLAGS += -Wmissing-prototypes
- 
- ifneq ($(CONFIG_FRAME_WARN),0)
- KBUILD_CFLAGS += -Wframe-larger-than=$(CONFIG_FRAME_WARN)
-@@ -95,10 +97,8 @@ export KBUILD_EXTRA_WARN
- ifneq ($(findstring 1, $(KBUILD_EXTRA_WARN)),)
- 
- KBUILD_CFLAGS += -Wextra -Wunused -Wno-unused-parameter
--KBUILD_CFLAGS += -Wmissing-declarations
- KBUILD_CFLAGS += $(call cc-option, -Wrestrict)
- KBUILD_CFLAGS += -Wmissing-format-attribute
--KBUILD_CFLAGS += -Wmissing-prototypes
- KBUILD_CFLAGS += -Wold-style-definition
- KBUILD_CFLAGS += -Wmissing-include-dirs
- KBUILD_CFLAGS += $(call cc-option, -Wunused-but-set-variable)
--- 
-2.39.2
-
+That's a shame; I was going to suggest calling it spin_cycle() ...
