@@ -2,290 +2,493 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A8E067E4FFC
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 06:23:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 126D57E5000
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 06:23:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234010AbjKHFXQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 00:23:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39778 "EHLO
+        id S234419AbjKHFXZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 00:23:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbjKHFXO (ORCPT
+        with ESMTP id S229449AbjKHFXR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 00:23:14 -0500
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9111D79;
-        Tue,  7 Nov 2023 21:23:11 -0800 (PST)
-Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2c50d1b9f22so85677991fa.0;
-        Tue, 07 Nov 2023 21:23:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699420989; x=1700025789; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vzF+451R8y+xuy+CamSX2ULAd2IoaXVNFoZ9osNmLG4=;
-        b=ffws+i/dKB/FZ5HErlF6B/SdQ4kLTjZ52rJ++Hat96Z5PQo+6585Y4saMvl1MMs/t2
-         z8yhltcSF7mKPRRNWYljeykcn02tZRwf7ktOrmID2zu4AtNOGXd+Z4+OMkIFAWzG975i
-         CobOi+vSqO71CSOJp3YnAXYowMb0YubzUdq8U3jWJn+b0kBRN1IP3gZuUF1+Ivg44XTY
-         zvDR1PnGewIJuO7tHMU9yHlUQ8QUGts2mVt8wiE5jtVC+2oXcXgf2tvKRruLVQtnyA6+
-         VJ2Hv4IFOdkKQsUFu9Mw7dHugr9fCKiJB8lSRg4AZiCGSMRyX7UnI6v5Ud3gQJoandQB
-         HUFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699420989; x=1700025789;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vzF+451R8y+xuy+CamSX2ULAd2IoaXVNFoZ9osNmLG4=;
-        b=WM2B0kjL5qtylJ/X7N6Md5V8Xe3XtVb0QsxXjO7tGtg8Vu03cA9gSzh0p9c6WPbBcA
-         r5+injPPn6Afs67O5Yv1cRDH0kVTqpWyzIDJxpc9yOpmz6Go1jPM4bN/OihkN/hN6zsT
-         XVwZhaLo3YzMWS9YGZXZ2XvtA2e8sfGmd6W6s+QgLgYtRQkn3CvvdEZbeRI0MCzzK3mq
-         z8rL50js9GBJchmbYi3wj5/ChbflW/rpZ4NqUG6lHA5V9IBh0iP22MhiDGKBiTiTOmq5
-         4XgfTtYcXPsXhiWZ9BqvfIOOqWl7eD+4ZLjqDnybSUHaqaD443+tJCJ92e7bJmBtdSas
-         WQ5g==
-X-Gm-Message-State: AOJu0YyDrxuV4SaEEIFNeAtQz2RJc4yEO0rUweK/H94VRqcwHQ5KRgkr
-        ynxIKZ6iUCVtmpGn7O1OwYo=
-X-Google-Smtp-Source: AGHT+IH0O5NqZWNqq4cBBrDKcxHwZ4nqZ6hHR0ksIO48cB9ybs7Qle5QCvqyop6Mo/RSLFB577P0aQ==
-X-Received: by 2002:a2e:3204:0:b0:2c7:fa5:6db9 with SMTP id y4-20020a2e3204000000b002c70fa56db9mr700762ljy.48.1699420989265;
-        Tue, 07 Nov 2023 21:23:09 -0800 (PST)
-Received: from dryade ([2a01:e0a:848:d9e0:bea:1748:a163:872b])
-        by smtp.gmail.com with ESMTPSA id t10-20020a05600c198a00b004064ac107cfsm17686515wmq.39.2023.11.07.21.23.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Nov 2023 21:23:09 -0800 (PST)
-Date:   Wed, 8 Nov 2023 06:23:06 +0100
-From:   Eric GOUYER <folays@gmail.com>
-To:     Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Cc:     Illia Ostapyshyn <ostapyshyn@sra.uni-hannover.de>,
-        David Revoy <davidrevoy@protonmail.com>, jkosina@suse.cz,
-        jason.gerecke@wacom.com, jose.exposito89@gmail.com,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: Requesting your attention and expertise regarding a
- Tablet/Kernel issue
-Message-ID: <20231108062306.33f5dcd0@dryade>
-In-Reply-To: <CAO-hwJKVwZK00yZFjuyyR9Xt4Y2-r8eLJNZfnyeopHxoZQ0eGA@mail.gmail.com>
-References: <nycvar.YFH.7.76.2311012033290.29220@cbobk.fhfr.pm>
- <20231103200524.53930-1-ostapyshyn@sra.uni-hannover.de>
- <bokQB3BK040-4fGy8tNfZrdM2mNmWxZud9O-KMmYqOkfa1JTC1ocUjoAzCEpPsbsAvY5qb5TcSP6XsQLaja2XO0gapOcsZyeVdCvq6T31qA=@protonmail.com>
- <CAO-hwJLpKTb9yxvxaPDLZkF9kDF8u2VRJUf9yiQd+neOyxPeug@mail.gmail.com>
- <eb8e22f3-77dc-4923-a7ba-e237ee226edb@sra.uni-hannover.de>
- <CAO-hwJKVwZK00yZFjuyyR9Xt4Y2-r8eLJNZfnyeopHxoZQ0eGA@mail.gmail.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+        Wed, 8 Nov 2023 00:23:17 -0500
+Received: from bird.elm.relay.mailchannels.net (bird.elm.relay.mailchannels.net [23.83.212.17])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD6571A2
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 21:23:14 -0800 (PST)
+X-Sender-Id: hostpapa|x-authuser|x.reply@epreston.net
+Received: from relay.mailchannels.net (localhost [127.0.0.1])
+        by relay.mailchannels.net (Postfix) with ESMTP id 33DBEC13C0;
+        Wed,  8 Nov 2023 05:23:14 +0000 (UTC)
+Received: from s147.servername.online (unknown [127.0.0.6])
+        (Authenticated sender: hostpapa)
+        by relay.mailchannels.net (Postfix) with ESMTPA id 02C70C140F;
+        Wed,  8 Nov 2023 05:23:12 +0000 (UTC)
+ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1699420993; a=rsa-sha256;
+        cv=none;
+        b=VvsSPmnIic4clobvZBUp/mYdN7hBg4U5rJJ7Dn7hKgjNt70+EmG+nBlXYu6gnRqQHwMsue
+        tzwC1mZ1aZrVxjt4C4YMOTBYXffa5Jeg5WiH+gOY5LQcB7Z7yZlXkRua/tVpS+kX0IhzaO
+        WkvSWafSLo8OIZRG6NhXCbVplFvj8eDUFwB4Nq1zLX5oWQarH9j+ibnS20AVxIjzv14Eaz
+        FGIZoqpSgDjn0ASGmGmgT/OdRT6aMQXgA+w7O5FSoJcPhs0rT26/4OZGAJRoTTHUURcQSx
+        pyVgeTGPtGOnfuSl+dfoRryfSPO6D5kHCQQ17ZcxP8tcY91fg5VUs31TMv3iMA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=mailchannels.net;
+        s=arc-2022; t=1699420993;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:dkim-signature;
+        bh=yWYZn03K0ypTuPktOXkOsEdKXZPUsCXhWsa2XXUQspk=;
+        b=6wEzByTdhwOCDeXwM0X4b4M7nccP8HKRN7VJiXzrOb+mzm5QLPdyR50Ux7NqCsEWh1yj9p
+        VPSjBDgG5P7RDRU/VbeSjdOaDa6g4Nll87YRmSKhfpXItUfEIP4Sg51/L3DvsMEaK8JK9M
+        rX0K+YmnrfpT++nSXckirT56RO1IgmJn0k9o6p+ZISiUlvOz5dIspsFwSuEA1FUE+JR++6
+        u4Fy/gVM7dg1/7AazbQBE04ODNiR03vI0Yu6duMnDC/+WB5dyGyXwnp3V+RtgWsjbNPa8J
+        NcUJaJt/fQy83LqESh//smdtQWfAZzOR60Rj6z0mry4s9P09jhnf+kaxedcdQQ==
+ARC-Authentication-Results: i=1;
+        rspamd-6f98f74948-v699j;
+        auth=pass smtp.auth=hostpapa smtp.mailfrom=x.arch@epreston.net
+X-Sender-Id: hostpapa|x-authuser|x.reply@epreston.net
+X-MC-Relay: Neutral
+X-MailChannels-SenderId: hostpapa|x-authuser|x.reply@epreston.net
+X-MailChannels-Auth-Id: hostpapa
+X-Whistle-Towering: 7f537eb47d364ffb_1699420993577_3551812287
+X-MC-Loop-Signature: 1699420993577:644350144
+X-MC-Ingress-Time: 1699420993577
+Received: from s147.servername.online (s147.servername.online
+ [204.44.192.62])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384)
+        by 100.101.67.122 (trex/6.9.2);
+        Wed, 08 Nov 2023 05:23:13 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=epreston.net; s=default; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=yWYZn03K0ypTuPktOXkOsEdKXZPUsCXhWsa2XXUQspk=; b=OAcwtOhS/WdpUIXw2tj5uru1NA
+        L5R+I369rnQz1u9SsHuAM8px37AdO9quPlqAkx9M9b1bK0ce6IoA9vOx5klcUZLR65Bv3lS64O0GV
+        Ulvo6Y3EFaOCT09SKKHhHejFjmHhN3c+IK6+0vI2oEFOKrV9NUZ1sUKtzVWMB2uulKUATTAYE0NjN
+        Ld/ZgwVy87cGRHyUR+n4YlahrdsTAFLqCGyXHqudgWwgjVTkDwRil52U5OemgbtkFv66iDhgpTh3d
+        vp6vl4YzDgQjtP0Hfj8A5tKesjFY7SJTE3L34jpT9sd21O6/uewGVdXKDLkUc5QzeNXo1I07dGGZl
+        tNej1SNw==;
+Received: from [50.35.115.28] (port=36688 helo=P70.localdomain)
+        by s147.servername.online with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96.2)
+        (envelope-from <x.arch@epreston.net>)
+        id 1r0b1w-008Rl3-25;
+        Tue, 07 Nov 2023 21:23:11 -0800
+Date:   Tue, 7 Nov 2023 21:23:07 -0800
+From:   Evan Preston <x.arch@epreston.net>
+To:     Evan Preston <x.arch@epreston.net>
+Cc:     Huacai Chen <chenhuacai@kernel.org>,
+        Linux regressions mailing list <regressions@lists.linux.dev>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        Linux DRI Development <dri-devel@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Thorsten Leemhuis <regressions@leemhuis.info>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Jaak Ristioja <jaak@ristioja.ee>,
+        Bagas Sanjaya <bagasdotme@gmail.com>
+Subject: Re: Blank screen on boot of Linux 6.5 and later on Lenovo ThinkPad
+ L570
+Message-ID: <ZUsbO7syWsbiCcdo@P70.localdomain>
+References: <CAAhV-H6GyOnTOm6b8Xp=ySctyE-T905WKDUS2AZuqnEyzM7ZEg@mail.gmail.com>
+ <ZUWtTuIcMwwCWg7z@P70.localdomain>
+ <CAAhV-H7wnjac1Znr2yh8S2bGwuxF1RRGp=cn9oracrWm6y5VVQ@mail.gmail.com>
+ <51add74a-1d1a-493d-bb50-fccdad11b22c@ristioja.ee>
+ <CAAhV-H7nhkvLoDMwQDwNEhykZANGMq-Qrzip48qYzgQs1fNUgA@mail.gmail.com>
+ <be82874b-d41b-4547-9ab5-dac9a5ddfeaf@ristioja.ee>
+ <CAAhV-H6zjW3XzDWP1_Hu-owBPLyJVB-_V3z9bMtOgubp1p5kZA@mail.gmail.com>
+ <ZUlNbpo_l8JYDdlu@P70.localdomain>
+ <CAAhV-H5vSJ+KXw3SPAsx=EEpdLhXh06kC3sj6jMrK_XUmXe8LA@mail.gmail.com>
+ <ZUnNi3q3yB3zZfTl@P70.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZUnNi3q3yB3zZfTl@P70.localdomain>
+X-AuthUser: x.reply@epreston.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sorry, below I re-send my email which bounced due to exceeding 100k
-(hid-recorder traces included), so I re-send it without them, for some
-book-keeping.
-
-I had originally replied-to-all, so mainteners involved should have
-received those traces just before (I hope).
-
-Best Regards,
-
------8<-----8<-----8<-----8<
-
-Hello, I have the same tablet than OP (David) :
-- XP-Pen Artist Pro 16 Gen 2
-- on Ubuntu 23.10 linux-image-generic 6.5.0.10.12
-
-I am not (yet ?) encountering the problem described above since I guess
-that my kernel is before the suspected regression.
-
-Here below I included much detail, but you can TL;DR + jump at the five
-hid-recorder traces below.
-
-> On Mon, Nov 6, 2023 at 9:06=E2=80=AFPM Illia Ostapyshyn
-> <ostapyshyn@sra.uni-hannover.de> wrote:
-> >
-> > On 11/6/23 17:59, Benjamin Tissoires wrote:
-> > =20
-> > > If the pen has 2 buttons, and an eraser side, it would be a
-> > > serious design flow for XPPEN to report both as eraser.
+On 2023-11-06 Mon 09:39pm, Evan Preston wrote:
+> Hi Huacai,
+> 
+> On 2023-11-07 Tue 09:49am, Huacai Chen wrote:
+> > Hi, Evan,
+> > 
+> > On Tue, Nov 7, 2023 at 4:32 AM Evan Preston <x.arch@epreston.net> wrote:
 > > >
-> > > Could you please use sudo hid-recorder from hid-tools[1] on any
-> > > kernel version and send us the logs here?
-> > > I'll be able to replay the events locally, and understand why the
-> > > kernel doesn't work properly.
+> > > Hi Huacai,
 > > >
-> > > And if there is a design flaw that can be fixed, we might even be
-> > > able to use hid-bpf to change it :) =20
-> >
-> > My wild guess is that XP-Pen 16 Artist Pro reports :
-> > - (1) an Eraser usage without Invert for the upper button
-> > - (2) and Eraser with Invert for the eraser tip.
+> > > On 2023-11-06 Mon 10:22pm, Huacai Chen wrote:
+> > > > On Mon, Nov 6, 2023 at 9:49 PM Jaak Ristioja <jaak@ristioja.ee> wrote:
+> > > > >
+> > > > > On 06.11.23 04:15, Huacai Chen wrote:
+> > > > > > Hi, Jaak and Evan,
+> > > > > >
+> > > > > > On Mon, Nov 6, 2023 at 12:28 AM Jaak Ristioja <jaak@ristioja.ee> wrote:
+> > > > > >>
+> > > > > >> On 05.11.23 14:40, Huacai Chen wrote:
+> > > > > >>> Hi, Evan,
+> > > > > >>>
+> > > > > >>> On Sat, Nov 4, 2023 at 10:50 AM Evan Preston <x.arch@epreston.net> wrote:
+> > > > > >>>>
+> > > > > >>>> Hi Huacai,
+> > > > > >>>>
+> > > > > >>>> On 2023-11-03 Fri 02:36pm, Huacai Chen wrote:
+> > > > > >>>>> Hi, Evan,
+> > > > > >>>>>
+> > > > > >>>>> On Fri, Nov 3, 2023 at 1:54 PM Evan Preston <x.arch@epreston.net> wrote:
+> > > > > >>>>>>
+> > > > > >>>>>> Hi Huacai,
+> > > > > >>>>>>
+> > > > > >>>>>> On 2023-11-02 Thu 08:38pm, Huacai Chen wrote:
+> > > > > >>>>>>> Hi, Jaak,
+> > > > > >>>>>>>
+> > > > > >>>>>>> On Wed, Nov 1, 2023 at 7:52 PM Jaak Ristioja <jaak@ristioja.ee> wrote:
+> > > > > >>>>>>>>
+> > > > > >>>>>>>> On 31.10.23 14:17, Huacai Chen wrote:
+> > > > > >>>>>>>>> Hi, Jaak and Evan,
+> > > > > >>>>>>>>>
+> > > > > >>>>>>>>> On Sun, Oct 29, 2023 at 9:42 AM Huacai Chen <chenhuacai@kernel.org> wrote:
+> > > > > >>>>>>>>>>
+> > > > > >>>>>>>>>> On Sat, Oct 28, 2023 at 7:06 PM Jaak Ristioja <jaak@ristioja.ee> wrote:
+> > > > > >>>>>>>>>>>
+> > > > > >>>>>>>>>>> On 26.10.23 03:58, Huacai Chen wrote:
+> > > > > >>>>>>>>>>>> Hi, Jaak,
+> > > > > >>>>>>>>>>>>
+> > > > > >>>>>>>>>>>> On Thu, Oct 26, 2023 at 2:49 AM Jaak Ristioja <jaak@ristioja.ee> wrote:
+> > > > > >>>>>>>>>>>>>
+> > > > > >>>>>>>>>>>>> On 25.10.23 16:23, Huacai Chen wrote:
+> > > > > >>>>>>>>>>>>>> On Wed, Oct 25, 2023 at 6:08 PM Thorsten Leemhuis
+> > > > > >>>>>>>>>>>>>> <regressions@leemhuis.info> wrote:
+> > > > > >>>>>>>>>>>>>>>
+> > > > > >>>>>>>>>>>>>>> Javier, Dave, Sima,
+> > > > > >>>>>>>>>>>>>>>
+> > > > > >>>>>>>>>>>>>>> On 23.10.23 00:54, Evan Preston wrote:
+> > > > > >>>>>>>>>>>>>>>> On 2023-10-20 Fri 05:48pm, Huacai Chen wrote:
+> > > > > >>>>>>>>>>>>>>>>> On Fri, Oct 20, 2023 at 5:35 PM Linux regression tracking (Thorsten
+> > > > > >>>>>>>>>>>>>>>>> Leemhuis) <regressions@leemhuis.info> wrote:
+> > > > > >>>>>>>>>>>>>>>>>> On 09.10.23 10:54, Huacai Chen wrote:
+> > > > > >>>>>>>>>>>>>>>>>>> On Mon, Oct 9, 2023 at 4:45 PM Bagas Sanjaya <bagasdotme@gmail.com> wrote:
+> > > > > >>>>>>>>>>>>>>>>>>>> On Mon, Oct 09, 2023 at 09:27:02AM +0800, Huacai Chen wrote:
+> > > > > >>>>>>>>>>>>>>>>>>>>> On Tue, Sep 26, 2023 at 10:31 PM Huacai Chen <chenhuacai@kernel.org> wrote:
+> > > > > >>>>>>>>>>>>>>>>>>>>>> On Tue, Sep 26, 2023 at 7:15 PM Linux regression tracking (Thorsten
+> > > > > >>>>>>>>>>>>>>>>>>>>>> Leemhuis) <regressions@leemhuis.info> wrote:
+> > > > > >>>>>>>>>>>>>>>>>>>>>>> On 13.09.23 14:02, Jaak Ristioja wrote:
+> > > > > >>>>>>>>>>>>>>>>>>>>>>>>
+> > > > > >>>>>>>>>>>>>>>>>>>>>>>> Upgrading to Linux 6.5 on a Lenovo ThinkPad L570 (Integrated Intel HD
+> > > > > >>>>>>>>>>>>>>>>>>>>>>>> Graphics 620 (rev 02), Intel(R) Core(TM) i7-7500U) results in a blank
+> > > > > >>>>>>>>>>>>>>>>>>>>>>>> screen after boot until the display manager starts... if it does start
+> > > > > >>>>>>>>>>>>>>>>>>>>>>>> at all. Using the nomodeset kernel parameter seems to be a workaround.
+> > > > > >>>>>>>>>>>>>>>>>>>>>>>>
+> > > > > >>>>>>>>>>>>>>>>>>>>>>>> I've bisected this to commit 60aebc9559492cea6a9625f514a8041717e3a2e4
+> > > > > >>>>>>>>>>>>>>>>>>>>>>>> ("drivers/firmware: Move sysfb_init() from device_initcall to
+> > > > > >>>>>>>>>>>>>>>>>>>>>>>> subsys_initcall_sync").
+> > > > > >>>>>>>>>>>>>>>>>>>>>>>
+> > > > > >>>>>>>>>>>>>>>>>>>>> As confirmed by Jaak, disabling DRM_SIMPLEDRM makes things work fine
+> > > > > >>>>>>>>>>>>>>>>>>>>> again. So I guess the reason:
+> > > > > >>>>>>>>>>>>>>>>>>
+> > > > > >>>>>>>>>>>>>>>>>> Well, this to me still looks a lot (please correct me if I'm wrong) like
+> > > > > >>>>>>>>>>>>>>>>>> regression that should be fixed, as DRM_SIMPLEDRM was enabled beforehand
+> > > > > >>>>>>>>>>>>>>>>>> if I understood things correctly. Or is there a proper fix for this
+> > > > > >>>>>>>>>>>>>>>>>> already in the works and I just missed this? Or is there some good
+> > > > > >>>>>>>>>>>>>>>>>> reason why this won't/can't be fixed?
+> > > > > >>>>>>>>>>>>>>>>>
+> > > > > >>>>>>>>>>>>>>>>> DRM_SIMPLEDRM was enabled but it didn't work at all because there was
+> > > > > >>>>>>>>>>>>>>>>> no corresponding platform device. Now DRM_SIMPLEDRM works but it has a
+> > > > > >>>>>>>>>>>>>>>>> blank screen. Of course it is valuable to investigate further about
+> > > > > >>>>>>>>>>>>>>>>> DRM_SIMPLEDRM on Jaak's machine, but that needs Jaak's effort because
+> > > > > >>>>>>>>>>>>>>>>> I don't have a same machine.
+> > > > > >>>>>>>>>>>>>>>
+> > > > > >>>>>>>>>>>>>>> Side note: Huacai, have you tried working with Jaak to get down to the
+> > > > > >>>>>>>>>>>>>>> real problem? Evan, might you be able to help out here?
+> > > > > >>>>>>>>>>>>>> No, Jaak has no response after he 'fixed' his problem by disabling SIMPLEDRM.
+> > > > > >>>>>>>>>>>>>>
+> > > > > >>>>>>>>>>>>>
+> > > > > >>>>>>>>>>>>> I'm sorry, what was it exactly you want me to do? Please be mindful that
+> > > > > >>>>>>>>>>>>> I'm not familiar with the internals of the Linux kernel and DRI, and it
+> > > > > >>>>>>>>>>>>> might sometimes take weeks before I have time to work and respond on this.
+> > > > > >>>>>>>>>>>> It doesn't matter. I hope you can do some experiments to investigate
+> > > > > >>>>>>>>>>>> deeper. The first experiment you can do is enabling SIMPLEFB (i.e.
+> > > > > >>>>>>>>>>>> CONFIG_FB_SIMPLE) instead of SIMPLEDRM (CONFIG_DRM_SIMPLEDRM) to see
+> > > > > >>>>>>>>>>>> whether there is also a blank screen. If no blank screen, that
+> > > > > >>>>>>>>>>>> probably means SIMPLEDRM has a bug, if still blank screen, that means
+> > > > > >>>>>>>>>>>> the firmware may pass wrong screen information.
+> > > > > >>>>>>>>>>>
+> > > > > >>>>>>>>>>> Testing with 6.5.9 I get a blank screen with CONFIG_DRM_SIMPLEDRM=y and
+> > > > > >>>>>>>>>>> get no blank screen with CONFIG_FB_SIMPLE=y and CONFIG_DRM_SIMPLEDRM unset.
+> > > > > >>>>>>>>>> CONFIG_FB_SIMPLE and  CONFIG_DRM_SIMPLEDRM use the same device created
+> > > > > >>>>>>>>>> by sysfb_init(). Since FB_SIMPLE works fine, I think the real problem
+> > > > > >>>>>>>>>> is that DRM_SIMPLEDRM has a bug. The next step is to enable
+> > > > > >>>>>>>>>> CONFIG_DRM_SIMPLEDRM and trace its initialization. In detail, adding
+> > > > > >>>>>>>>>> some printk() in simpledrm_probe() and its sub-routines to see where
+> > > > > >>>>>>>>>> the driver fails. The output of these printk() can be seen by the
+> > > > > >>>>>>>>>> 'dmesg' command after boot.
+> > > > > >>>>>>>>> I need your help. I tried with my laptop (ThinkPad E490, Intel Core
+> > > > > >>>>>>>>> i3-8145U, UHD Graphics 620) but I can't reproduce your problem. So
+> > > > > >>>>>>>>> please patch your 6.5.x kernel with this temporary patch [1], then
+> > > > > >>>>>>>>> build a "bad kernel" with SIMPLEDRM enabled. And after booting your
+> > > > > >>>>>>>>> machine with this "bad kernel", please give me the dmesg output. Thank
+> > > > > >>>>>>>>> you very much.
+> > > > > >>>>>>>>>
+> > > > > >>>>>>>>> [1] http://ddns.miaomiaomiao.top:9000/download/kernel/patch-6.5.9
+> > > > > >>>>>>>>
+> > > > > >>>>>>>> I'm unable to download it. Can you please send it by e-mail?
+> > > > > >>>>>>> I'm sorry, please download from attachment.
+> > > > > >>>>>>
+> > > > > >>>>>> When applying this patch the first hunk (drivers/firmware/sysfb.c) fails for
+> > > > > >>>>>> me with 6.5.9.  Attempting to load the 6.5.9 kernel without this patch
+> > > > > >>>>>> produces no dmesg output on my machine.
+> > > > > >>>>> You copy-paste the patch? If you download it directly it can be
+> > > > > >>>>> applied successfully, I think.
+> > > > > >>>>
+> > > > > >>>> The patch downloaded from your URL applies successfully.  However, I still
+> > > > > >>>> see no dmesg output using the patched 6.5.9 kernel.  'journalctl -k -b all'
+> > > > > >>>> shows no dmesg output from any 6.5.x boots, only from 6.4.12 boots.
+> > > > > >>> Thank you for your testing. Since you cannot boot to GUI successfully
+> > > > > >>> as Jaak, you may have some troubles with getting the dmesg output. But
+> > > > > >>> you can try to use "systemd.unit=multi-user.target" boot parameters.
+> > > > > >>> In this way you may boot to the login: prompt and then you can get
+> > > > > >>> dmesg output. Or if you still fail, you may use 'jornalctl -k -b -1'
+> > > > > >>> to get the previous dmesg output with 6.4.12.
+> > > > > >>>
+> > > > > >>> Hi, Jaak,
+> > > > > >>>
+> > > > > >>> Have you tested? I think you can successfully get a dmesg output with my patch.
+> > > > > >>
+> > > > > >> Yes, just tested it, here I think are the relevant parts from a dmesg
+> > > > > >> produced with CONFIG_DRM_SIMPLEDRM and the patch provided by Huacai:
+> > > > > >>
+> > > > > >> ...
+> > > > > >> [    2.909625] sysfb 1
+> > > > > >> [    2.909627] sysfb 2
+> > > > > >> ...
+> > > > > >> [    2.951477] ACPI: bus type drm_connector registered
+> > > > > >> [    2.952096] i915 0000:00:02.0: [drm] VT-d active for gfx access
+> > > > > >> [    2.952105] resource: resource sanity check: requesting [mem
+> > > > > >> 0x00000000e0000000-0x00000000efffffff], which spans more than BOOTFB
+> > > > > >> [mem 0xe0000000-0xe012bfff]
+> > > > > >> [    2.952111] caller i915_ggtt_init_hw+0x88/0x120 mapping multiple BARs
+> > > > > >> [    2.952138] i915 0000:00:02.0: [drm] Using Transparent Hugepages
+> > > > > >> [    2.953204] Loading firmware: i915/kbl_dmc_ver1_04.bin
+> > > > > >> [    2.953485] i915 0000:00:02.0: [drm] Finished loading DMC firmware
+> > > > > >> i915/kbl_dmc_ver1_04.bin (v1.4)
+> > > > > >> ...
+> > > > > >> [    4.142075] [drm] Initialized i915 1.6.0 20201103 for 0000:00:02.0 on
+> > > > > >> minor 0
+> > > > > >> [    4.144269] ACPI: video: Video Device [GFX0] (multi-head: yes  rom:
+> > > > > >> no  post: no)
+> > > > > >> [    4.144414] input: Video Bus as
+> > > > > >> /devices/LNXSYSTM:00/LNXSYBUS:00/PNP0A08:00/LNXVIDEO:00/input/input4
+> > > > > >> [    4.144580] [drm] Initialized vgem 1.0.0 20120112 for vgem on minor 1
+> > > > > >> [    4.144590] usbcore: registered new interface driver udl
+> > > > > >> [    4.144603] T: probe 1
+> > > > > >> [    4.144605] T: create 1
+> > > > > >> [    4.144610] T: create 2
+> > > > > >> [    4.144611] T: create 3a-1
+> > > > > >> [    4.144613] T: create 3a-2
+> > > > > >> [    4.144614] T: create 3a-3
+> > > > > >> [    4.144616] T: create 3a-4
+> > > > > >> [    4.144618] T: create 4
+> > > > > >> [    4.144619] T: create 5
+> > > > > >> [    4.144621] simple-framebuffer simple-framebuffer.0: [drm] display
+> > > > > >> mode={"": 60 18432 640 640 640 640 480 480 480 480 0x40 0x0}
+> > > > > >> [    4.144628] simple-framebuffer simple-framebuffer.0: [drm]
+> > > > > >> framebuffer format=XR24 little-endian (0x34325258), size=640x480,
+> > > > > >> stride=2560 byte
+> > > > > >> [    4.144633] T: create 6b-1
+> > > > > >> [    4.144635] T: create 6b-2
+> > > > > >> [    4.144637] simple-framebuffer simple-framebuffer.0: [drm] using I/O
+> > > > > >> memory framebuffer at [mem 0xe0000000-0xe012bfff flags 0x200]
+> > > > > >> [    4.144643] T: create 6b-3
+> > > > > >> [    4.144660] T: create 6b-4
+> > > > > >> [    4.144662] T: create 7
+> > > > > >> [    4.144673] T: create 8
+> > > > > >> [    4.144676] T: create 9
+> > > > > >> [    4.144678] T: create 10
+> > > > > >> [    4.144681] T: create 11
+> > > > > >> [    4.144685] T: create 12
+> > > > > >> [    4.144689] T: probe 2
+> > > > > >> [    4.144728] [drm] Initialized simpledrm 1.0.0 20200625 for
+> > > > > >> simple-framebuffer.0 on minor 2
+> > > > > >> [    4.144732] T: probe 3
+> > > > > >> [    4.145905] Console: switching to colour frame buffer device 80x30
+> > > > > >> [    4.150437] simple-framebuffer simple-framebuffer.0: [drm] fb0:
+> > > > > >> simpledrmdrmfb frame buffer device
+> > > > > >> [    4.150766] T: probe 4
+> > > > > >> [    4.151218] loop: module loaded
+> > > > > >> [    4.154434] i915 0000:00:02.0: [drm] fb1: i915drmfb frame buffer device
+> > > > > >> ...
+> > > > > >> [   44.630789] simple-framebuffer simple-framebuffer.0: swiotlb buffer
+> > > > > >> is full (sz: 1310720 bytes), total 32768 (slots), used 0 (slots)
+> > > > > >> ...
+> > > > > >>
+> > > > > >> The last message might be due to the display manager starting up.
+> > > > > >>
+> > > > > >> Hope it helps.
+> > > > > > Thank you for your testing. Jaak's problem seems related to the
+> > > > > > initialization order, you can try to modify drivers/gpu/drm/Makefile,
+> > > > > > move
+> > > > > >
+> > > > > > obj-y                  += tiny/
+> > > > > >
+> > > > > > to between these two lines
+> > > > > >
+> > > > > > obj-$(CONFIG_DRM_SCHED) += scheduler/
+> > > > > > obj-$(CONFIG_DRM_RADEON)+= radeon/
+> > > > > >
+> > > > > > then build a new 6.5.x kernel to see whether your problem is resolved.
+> > > > >
+> > > > > Yes, this seems to have resolved it.
+> > > > Hi, Jaak,
+> > > >
+> > > > Thank you very much, and I hope this also solves Evan's problem.
+> > >
+> > > I still get a blank screen if I modify drivers/gpu/drm/Makefile to move the
+> > > order of 'tiny'.
+> > You probably encounter another problem which has no relationship with
+> > 60aebc9559492cea6a9625f514a804 ("drivers/firmware: Move sysfb_init()
+> > from device_initcall to subsys_initcall_sync"). You can revert it to
+> > test 6.5.x again.
+> 
+> You are right.  I reverted "drivers/firmware: Move sysfb_init() from 
+> device_initcall to subsys_initcall_sync" on 6.5.9 and still get a blank 
+> screen immediately after boot loader entry selection.
+> 
+> Evan
+> 
 
-I think you will agree with below traces that :
-- (1) : correct (it reports invert=3D0 eraser=3D1 tipSwitch=3D1)
-- (2) : no, for the rubber tip, it reports invert=3D1 eraser=3D0 tipSwitch=
-=3D1
+Just to close the loop on my issue: after a BIOS update I can boot 6.5.x 
+successfully.
 
-> > A device-specific driver could work with that, but
-> > there seems to be no way to incorporate two different erasers
-> > (thus, allowing userspace to map them to different actions
-> > arbitrarily) in the generic driver currently. =20
->=20
-> That's exactly why I want to see the exact event flow. We can not do
-> "wild guesses" unfortunately (not meaning any offenses).
-> And I am very suspicious about the fact that the stylus reports 2
-> identical erasers. Because in the past David seemed to be able to have
-> 2 distincts behaviors for the 2 "buttons" (physical button and eraser
-> tail).
+Evan
 
-The Pen, hardware-wise, has the following possibilities :
-- The (main) pressure tip
-- The "bottom" button (nearest of the main pressure tip)
-- The "top" button (farthest of the main tip
-- The "back" pressure tip (it has pressure!) somewhat called rubber
-
-All of those works I think -natively- on my kernel version, without
-external 3rd-party kernel modules.
-
-It works especially on Blender, where I can :
-- click (or paint) with main pressure-tip
-- middle-click (to pan viewport) with "bottom" button + move main tip
-- right-click with "top" button
-- erase with backside pressure-tip
-
-I installed a .deb from the official website [1] which does not contain
-kernel modules, and seems to only contains :
-- a udev rule to, I think, chmod 0666 to input character devices
-- a Qt app to configure some behavior, only userland-side.
-
-I think I observed that before running the Qt app, there was only 3
-xinput devices, and after launching it, there were 4 more (7 total).
-
-Blender would not receive pen input without lanching the Qt app.
-Indeed, the "first" 3 /dev/input/event* associated to the pen are
-chmod'ed too restrictively (0660) for an underprivileged user.
-
-Anyway, after running the Qt App, 4 *ANOTHER* /dev/input/event* pops,
-correctly chmod'ed (thanks to the udev rules), and Blender works.
-
-My best guess would be that the first 3 very-native /dev/input/
-devices are somewhat "raw", and that the Qt app feeds those inputs to
-the Qt app's configured pressure curve + remap the button to the input
-as chosen by the user.
-
-Here is the dmesg before launching the Qt App :
------8<-----8<-----8<-----8<
-usb 3-9: new full-speed USB device number 64 using xhci_hcd
-usb 3-9: New USB device found, idVendor=3D28bd, idProduct=3D095b,
-bcdDevice=3D 0.00
-usb 3-9: New USB device strings: Mfr=3D1, Product=3D2, SerialNumber=3D3
-usb 3-9: Product: Artist Pro 16 (Gen2)
-usb 3-9: Manufacturer: UGTABLET
-usb 3-9: SerialNumber: 00000
-input: UGTABLET Artist Pro 16 (Gen2) Mouse as
-/devices/pci0000:00/0000:00:02.1/0000:04:00.0/0000:05:08.0/0000:07:00.0/
-0000:08:0c.0/0000:69:00.0/usb3/3-9/3-9:1.0/0003:28BD:095B.009E/input/input1=
-96
-input: UGTABLET Artist Pro 16 (Gen2) Keyboard as
-/devices/pci0000:00/0000:00:02.1/0000:04:00.0/0000:05:08.0/0000:07:00.0/
-0000:08:0c.0/0000:69:00.0/usb3/3-9/3-9:1.0/0003:28BD:095B.009E/input/input1=
-97
-hid-generic 0003:28BD:095B.009E: input,hidraw4: USB HID v1.00 Mouse
-[UGTABLET Artist Pro 16 (Gen2)] on usb-0000:69:00.0-9/input0
-input: UGTABLET Artist Pro 16 (Gen2) as
-/devices/pci0000:00/0000:00:02.1/0000:04:00.0/0000:05:08.0/0000:07:00.0/
-0000:08:0c.0/0000:69:00.0/usb3/3-9/3-9:1.1/0003:28BD:095B.009F/input/input1=
-98
-hid-generic 0003:28BD:095B.009F: input,hidraw7: USB HID v1.00 Device
-[UGTABLET Artist Pro 16 (Gen2)] on usb-0000:69:00.0-9/input1
-hid-generic 0003:28BD:095B.00A0: hiddev0,hidraw12: USB HID v1.00 Device
-[UGTABLET Artist Pro 16 (Gen2)] on usb-0000:69:00.0-9/input2
------8<-----8<-----8<-----8<
-
-This make "sudo xinput" reports 3 new devices :
-UGTABLET Artist Pro 16 (Gen2) Mouse id=3Dx [slave pointer (n)]
-UGTABLET Artist Pro 16 (Gen2) Keyboard id=3Dy [slave keyboard (n+1)]
-UGTABLET Artist Pro 16 (Gen2) id=3Dz [slave keyboard (n+1)]
-(sorry I've masked the id to prevent confusion, I did not run "xinput"
-at the same time/power cycle than "dmesg")
-
-Running the Qt App makes "sudo xinput" report 4 new devices :
-XP-Pen Mouse id=3Dxc [slave pointer (n)]
-XP-Pen Eraser id=3Dxa [slave keyboard (n+1)]
-XP-Pen Pen id=3Dxb [slave keyboard (n+1)] << only this chmod'ed 0666
-XP-Pen Mouse id=3Dxd [slave keyboard (n+1)]
-
-And... it suffices to make Blender works without configuring anything.
-
-Anyway, besides this user experience / userland Qt app, here are some
-five hid-recorder traces ;
-I re-used the terminology appearing in the traces :
-- "barrel" : the "bottom" button nearest of the main tip
-- "erase" : the farther "top" button, just above "barrel"
-- "back" : the "rubber" secondary pressure tip at the back of the pen
-
-(1) hidraw7_inRange_contact_move_lift_outOfRange
-I "contact" the main tip, move it, and lift it out or range.
-
-(2) hidraw7_inRange_contact_barrelPress\
-_move_barrelRelease_lift_outOfRange
-I "contact" the main tip, press "barrel" (which is the button nearest
-of the tip), move the pen, release the button, move it out of range.
-
-(3) hidraw7_inRange_contact_erasePress\
-_move_eraseRelease_lift_outOfRange
-The same than above, except that I instead use the "erase" button,
-i.e. the button just above ("vertically speaking") of the "main" button.
-
-(4) hidraw7_inRange_contact_BOTHbarrelAnderasePress_move_\
-BOTHbarrelAnderaseRelease_lift_outOfRange
-That's just plain stupid, and uncomfortable to do, but it's just to
-show an example of the capability of the hardware ;
-In this one, I'm doing the same than above, except I stupidly press BOTH
-buttons.
-It means that I "contact" the main tip, press both barrel+erase, move
-the pen, release both button, lift it out of range.
-
-(5) hidraw7_inRange_contact_backPress_move_backRelease_lift_outOfRange
-Back to non-stupid tests, here I am using the "rubber" (which has
-pressure !), i.e. I use the back of the pen.
-I contact it, press the rubber to have some pressure, move it, release
-the pressure, move the pen ouf of contact and out of range.
-
-Reading those traces, I think I observed some (to me) very logical
-behavior ;
-
-I agree that the Pen is possibly not acting in respect of the
-specification, by the fact that... the spec does not differentiate the
-"eraser" 2nd button, versus the "backside" rubber pressure tip.
-
-The traces shows that :
-- In range [0 - 1] is correctly reported, both for main tip + rubber tip
-- Tip Pressure [0 - n] is correctly reported, for both pressure tips
-
-- Tip Switch [0 - 1] is correctly set to ONE for all traces, when the
-  in-range tip goes to contact. (either main tip or rubber tip)
-
-- Barrel Switch [0 - 1] is correctly set to ONE only when pressing
-  button down, and of course only when using the main tip
-
-- Invert [0 - 1] is set to ONE when (and only) using the back rubber
-  tip, and the ERASE button (2nd button) does NOT set it, so "INVERT"
-
-- Eraser [0 - 1] is set to ONE ONLY when pressing the 2nd top button,
-  and of :
-  - ONLY when using the main itp
-  - and if you were to instead use the "back" of the pen (rubber tip),
-    then you will have invert=3D1 + eraser=3D0
-
-The main extract of those is, I think, that :
-- eraser "top" button is completely independent of the back "rubber"
-- eraser "top" button NEVER concerns itself to set invert=3D1
-- backside "rubber" pressure tip will set invert=3D1, but leave eraser=3D0
-
-So, the behavior probably breaks the specs, but sincerely I'm happy to
-have the "eraser" button independent of the "rubber eraser", which
-makes the stylus a somewhat 4-buttons stylus (tip, button1, button2,
-rubber), and I would like to keep this.
-
-Best Regards,
-
-[1] https://www.xp-pen.fr/download-1027.html ; the .deb Qt app
-
---=20
-Eric GOUYER
+> > 
+> > Huacai
+> > 
+> > >
+> > > >
+> > > > Hi, Javier,
+> > > >
+> > > > I think I have mostly found the root cause. DRM_SIMPLEDRM has no bugs,
+> > > > Jaak's problem is due to the initialization order of drivers, and this
+> > > > order depends on the Makefile.
+> > > >
+> > > > FB_SIMPLE is before native DRM drivers (e.g. i915, radeon, amdgpu, and
+> > > > so on), but DRM_SIMPLEDRM is after them. Thus, if Jaak uses FB_SIMPLE,
+> > > > I915 will takeover FB_SIMPLE, then no problem; and if Jaak uses
+> > > > DRM_SIMPLEDRM, DRM_SIMPLEDRM will try to takeover I915, but fails to
+> > > > work.
+> > > >
+> > > > So, when I move the "tiny" directory before i915, the problem is
+> > > > solved. But the new problem is: is it acceptable to solve this problem
+> > > > by adjusting Makefile?
+> > > >
+> > > > Huacai
+> > > >
+> > > > >
+> > > > > Jaak
+> > > > >
+> > > > > >
+> > > > > > Evan's problem seems a little strange, could you please give me your
+> > > > > > config files of both 6.4.12 and 6.5.x? And you can also try the above
+> > > > > > method to see if anything changes.
+> > >
+> > > I'll send you my config files.
+> > >
+> > > > > >
+> > > > > > Huacai
+> > > > > >
+> > > > > >>
+> > > > > >> J
+> > > > > >>
+> > > > > >>>
+> > > > > >>>>
+> > > > > >>>> Evan
+> > > > > >>>>
+> > > > > >>>>>
+> > > > > >>>>> Huacai
+> > > > > >>>>>
+> > > > > >>>>>>
+> > > > > >>>>>> Evan
+> > > > > >>>>>>
+> > > > > >>>>>>>
+> > > > > >>>>>>> Huacai
+> > > > > >>>>>>>
+> > > > > >>>>>>>>
+> > > > > >>>>>>>> Jaak
+> > > > > >>>>>>>>
+> > > > > >>>>>>>>>
+> > > > > >>>>>>>>>
+> > > > > >>>>>>>>> Huacai
+> > > > > >>>>>>>>>
+> > > > > >>>>>>>>>>
+> > > > > >>>>>>>>>> Huacai
+> > > > > >>>>>>>>>>
+> > > > > >>>>>>>>>>>
+> > > > > >>>>>>>>>>> Jaak
+> > > > > >>>>>>>>>>>
+> > > > > >>>>>>>>>>>>
+> > > > > >>>>>>>>>>>> Huacai
+> > > > > >>>>>>>>>>>>
+> > > > > >>>>>>>>>>>>>
+> > > > > >>>>>>>>>>>>> Jaak
+> > > > > >>>>>>>>>>>>>
+> > > > > >>>>>>>>>>>>>>>
+> > > > > >>>>>>>>>>>>>>> But I write this mail for a different reason:
+> > > > > >>>>>>>>>>>>>>>
+> > > > > >>>>>>>>>>>>>>>> I am having the same issue on a Lenovo Thinkpad P70 (Intel
+> > > > > >>>>>>>>>>>>>>>> Corporation HD Graphics 530 (rev 06), Intel(R) Core(TM) i7-6700HQ).
+> > > > > >>>>>>>>>>>>>>>> Upgrading from Linux 6.4.12 to 6.5 and later results in only a blank
+> > > > > >>>>>>>>>>>>>>>> screen after boot and a rapidly flashing device-access-status
+> > > > > >>>>>>>>>>>>>>>> indicator.
+> > > > > >>>>>>>>>>>>>>>
+> > > > > >>>>>>>>>>>>>>> This additional report makes me wonder if we should revert the culprit
+> > > > > >>>>>>>>>>>>>>> (60aebc9559492c ("drivers/firmware: Move sysfb_init() from
+> > > > > >>>>>>>>>>>>>>> device_initcall to subsys_initcall_sync") [v6.5-rc1]). But I guess that
+> > > > > >>>>>>>>>>>>>>> might lead to regressions for some users? But the patch description says
+> > > > > >>>>>>>>>>>>>>> that this is not a common configuration, so can we maybe get away with that?
+> > > > > >>>>>>>>>>>>>>      From my point of view, this is not a regression, 60aebc9559492c
+> > > > > >>>>>>>>>>>>>> doesn't cause a problem, but exposes a problem. So we need to fix the
+> > > > > >>>>>>>>>>>>>> real problem (SIMPLEDRM has a blank screen on some conditions). This
+> > > > > >>>>>>>>>>>>>> needs Jaak or Evan's help.
+> > > > > >>>>>>>>>>>>>>
+> > > > > >>>>>>>>>>>>>> Huacai
+> > > > > >>>>>>>>>>>>>>>
+> > > > > >>>>>>>>>>>>>>> Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+> > > > > >>>>>>>>>>>>>>> --
+> > > > > >>>>>>>>>>>>>>> Everything you wanna know about Linux kernel regression tracking:
+> > > > > >>>>>>>>>>>>>>> https://linux-regtracking.leemhuis.info/about/#tldr
+> > > > > >>>>>>>>>>>>>>> If I did something stupid, please tell me, as explained on that page.
+> > > > > >>>>>>>>>>>>>>>
+> > > > > >>>>>>>>>>>>>>>>>>>>> When SIMPLEDRM takes over the framebuffer, the screen is blank (don't
+> > > > > >>>>>>>>>>>>>>>>>>>>> know why). And before 60aebc9559492cea6a9625f ("drivers/firmware: Move
+> > > > > >>>>>>>>>>>>>>>>>>>>> sysfb_init() from device_initcall to subsys_initcall_sync") there is
+> > > > > >>>>>>>>>>>>>>>>>>>>> no platform device created for SIMPLEDRM at early stage, so it seems
+> > > > > >>>>>>>>>>>>>>>>>>>>> also "no problem".
+> > > > > >>>>>>>>>>>>>>>>>>>> I don't understand above. You mean that after that commit the platform
+> > > > > >>>>>>>>>>>>>>>>>>>> device is also none, right?
+> > > > > >>>>>>>>>>>>>>>>>>> No. The SIMPLEDRM driver needs a platform device to work, and that
+> > > > > >>>>>>>>>>>>>>>>>>> commit makes the platform device created earlier. So, before that
+> > > > > >>>>>>>>>>>>>>>>>>> commit, SIMPLEDRM doesn't work, but the screen isn't blank; after that
+> > > > > >>>>>>>>>>>>>>>>>>> commit, SIMPLEDRM works, but the screen is blank.
+> > > > > >>>>>>>>>>>>>>>>>>>
+> > > > > >>>>>>>>>>>>>>>>>>> Huacai
+> > > > > >>>>>>>>>>>>>>>>>>>>
+> > > > > >>>>>>>>>>>>>>>>>>>> Confused...
+> > > > > >>>>>>>>>>>>>>>>>>>>
+> > > > > >>>>>>>>>>>>>>>>>>>> --
+> > > > > >>>>>>>>>>>>>>>>>>>> An old man doll... just what I always wanted! - Clara
+> > > > > >>>>>>>>>>>>>>>>>>>
+> > > > > >>>>>>>>>>>>>>>>>>>
+> > > > > >>>>>>>>>>>>>>>>
+> > > > > >>>>>>>>>>>>>>>>
+> > > > > >>>>>>>>>>>>>
+> > > > > >>>>>>>>>>>
+> > > > > >>>>>>>>
+> > > > > >>>>>>
+> > > > > >>>>>>
+> > > > > >>
+> > > > >
