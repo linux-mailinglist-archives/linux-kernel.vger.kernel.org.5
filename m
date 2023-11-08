@@ -2,186 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BEB737E5214
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 09:44:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 241DC7E5217
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 09:44:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235149AbjKHIok (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 03:44:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41920 "EHLO
+        id S235336AbjKHIo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 03:44:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232723AbjKHIoj (ORCPT
+        with ESMTP id S232723AbjKHIo4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 03:44:39 -0500
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C2071716
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 00:44:37 -0800 (PST)
-Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-53eeb28e8e5so6964a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 00:44:37 -0800 (PST)
+        Wed, 8 Nov 2023 03:44:56 -0500
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A10FB1716
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 00:44:54 -0800 (PST)
+Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1cc5b705769so60146945ad.0
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 00:44:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1699433076; x=1700037876; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1699433094; x=1700037894; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=3qu6xuDhGJ5JPWC5oSGyyY7P53x8jjCQYiy8YEQLeeo=;
-        b=R8QooS0vDNoKoV3XJANVjelsz9aaQFjE/CtumDCIubPSnH27LQd+D7oCwCNc1wbCxn
-         fpyO/eIINl6muOmwwfmuv/yxtkTsBpf0ssKOX8Ceabhnr0Lh4qeWw914gNco4azDtiu9
-         oA3tZeLm1s5UVBfdbcz+Z3OpXsOsTZDxCErgnydcH2AI3iYhmH7163uMiQHV8JDlH8BW
-         R3Uwpi2hm1K3IVCl1Lm1Gnz+v19c0/PzurB9oPBfxDIAnf0PzmronhrJtlW+DPUK4DIn
-         v0xyTXaiVsAoh1WVDeGrtrQ5zUBupX4MW+vM3D2ZvH/AFHp96EWGhFTS7VKJ8F/gQJCs
-         v8PQ==
+        bh=8npbOELwwAaBg+fld3/JBKofkedP3ykw7h6Uj4Yzpw8=;
+        b=HPLv1EvUzxfj5/9P7BFri3oG/lvXTdxXVddw524f9wqaUPCgPzgq7I46nzJGXGARl1
+         egjXJdF6qpDIV0w701Tc8diBazAM74iX1fqqn6vca4RsFbnjRtcxZ5aLIFHE53lTpZGa
+         DQ5PSyEjQKzo6TVE0i9AEaI1CectuOQhKaLWQdRQJjPVHV86jMrBCUERfFHc9UhW/yH8
+         54eL/x6b8VqQgGoNhvKKxL7wOd4E3Nyv/pNXIuugvv0t3QJP1uo2eJq6njDNxaAU0X0l
+         OSktvXXkgj8glQ3g5SlwAx69PG64KQ9R0flO6k2yCLlm8FeMvU76KhuXmDDu9FsdE7BD
+         u7AQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699433076; x=1700037876;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1699433094; x=1700037894;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=3qu6xuDhGJ5JPWC5oSGyyY7P53x8jjCQYiy8YEQLeeo=;
-        b=cjTLpHb0+or/Ddp5TN6YQnn6Q0OywjXzJzfj+TdbBR1SZm9H9ixBpOI6pnXPc+euRP
-         YOdIF70qktnxWb1QeGc1z48qMxYxWovRWdAy7Sn4WfKvMCNFcjM0DC1mliEijf+/H7BV
-         1DwkHtYujRHeiRynRzf7FcN1DucT2Udmr3KkohjlRkQ6aUg2a8h2glkYn+pTY+eRa6Vj
-         kgG72NHr83ACdrO9F1cafQs515uVPoEd00rF8nd4rWsAtLHwgsjSiTrZ36UOqUpZDe6f
-         lTz19Vqx3dmAXZIvH256w+yGDzTGaEdiiRryMF4iIYBNzMKr55TpnayGgaOpgOP68USA
-         D7lQ==
-X-Gm-Message-State: AOJu0YxY+18ZC5tDD9p5u9mz9PPuTViIrJ35m7bcWczArrsrFKV+/lC6
-        5weTOY6m+9+/CqmiCAmhUjg11dpivStHLslDKqQWHA==
-X-Google-Smtp-Source: AGHT+IGyWNKdsQPn0juqLKFUlvmF17TwBL6KgBg6m2mliS9T29mVwbiqFgwdC+K06dLDG1APWCHyg0Dmv5+/5eV19Dg=
-X-Received: by 2002:a50:9eeb:0:b0:544:4762:608 with SMTP id
- a98-20020a509eeb000000b0054447620608mr246797edf.2.1699433075593; Wed, 08 Nov
- 2023 00:44:35 -0800 (PST)
+        bh=8npbOELwwAaBg+fld3/JBKofkedP3ykw7h6Uj4Yzpw8=;
+        b=epYuSGKnagbbd5hg6MeJprgqjUBJhuVcpdUOAkzck4XScOIHQt8M+Po5yT199iUTyo
+         h3BZQydBXQcx9iOkuOTyFFAt+tu4H7EH/SIsQu1OJv4+08gouhXruy+GQ7AcQ+/4gCY0
+         tFNoY4PQy+pYiR0OUjcBdWqUA9mAcq4es/cA2unVFmU9Da3ylpZlcuOLx5Z2XBMNVrOb
+         SSxmsQLQY9ACkzu4AFdVrmvy3VufCaUZjn9R5YZ4xYVyVY+8W+/9HkCjGl6amvCO1ZMm
+         kf0CXs1kD//09mZMjARpzmPPpCfR26nSfcqyAlXqvK5h9ro81lRzyE58szAuAEF4Ck4f
+         Wf3g==
+X-Gm-Message-State: AOJu0YweUbFvQvDVNgyZ8yykfk6xSzVyArBbrfvCOG1Ba9U5mPoil9Ol
+        0uNV/sAe9nrYhqj8JC6m4sQVEfhee6s=
+X-Google-Smtp-Source: AGHT+IGIbPZOe0q/NSPxZUXpxvQxFBOTBlTTVnQMpzk5L6uEu5N+LiM5I2pS887MrlloA7R/0mqCXQ==
+X-Received: by 2002:a17:902:e995:b0:1cc:68a5:f388 with SMTP id f21-20020a170902e99500b001cc68a5f388mr1364248plb.33.1699433093882;
+        Wed, 08 Nov 2023 00:44:53 -0800 (PST)
+Received: from localhost ([156.236.96.165])
+        by smtp.gmail.com with ESMTPSA id k4-20020a170902d58400b001c5fd2a28d3sm1190069plh.28.2023.11.08.00.44.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Nov 2023 00:44:53 -0800 (PST)
+Date:   Wed, 8 Nov 2023 16:44:47 +0800
+From:   Yue Hu <zbestahu@gmail.com>
+To:     Ferry Meng <mengferry@linux.alibaba.com>
+Cc:     linux-erofs@lists.ozlabs.org, LKML <linux-kernel@vger.kernel.org>,
+        huyue2@coolpad.com, zhangwen@coolpad.com
+Subject: Re: [PATCH] erofs: simplify erofs_read_inode()
+Message-ID: <20231108164447.000016be.zbestahu@gmail.com>
+In-Reply-To: <20231106110141.94103-1-mengferry@linux.alibaba.com>
+References: <20231106110141.94103-1-mengferry@linux.alibaba.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.34; x86_64-w64-mingw32)
 MIME-Version: 1.0
-References: <20231031093921.755204-1-guanyulin@google.com> <2023103133-kelp-copartner-8e9c@gregkh>
-In-Reply-To: <2023103133-kelp-copartner-8e9c@gregkh>
-From:   Guan-Yu Lin <guanyulin@google.com>
-Date:   Wed, 8 Nov 2023 16:44:24 +0800
-Message-ID: <CAOuDEK3x95u6+68e=fkejnjWhRrA5Yt1qTaAG3Prje8C-+6dmw@mail.gmail.com>
-Subject: Re: [PATCH] rpm: pm: enable PM_RPM_EXCEPTION config flag
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     rafael@kernel.org, len.brown@intel.com, pavel@ucw.cz,
-        stern@rowland.harvard.edu, heikki.krogerus@linux.intel.com,
-        mkl@pengutronix.de, hadess@hadess.net, mailhol.vincent@wanadoo.fr,
-        ivan.orlov0322@gmail.com, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        pumahsu@google.com, raychi@google.com, albertccwang@google.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 31, 2023 at 5:48=E2=80=AFPM Greg KH <gregkh@linuxfoundation.org=
-> wrote:
->
-> On Tue, Oct 31, 2023 at 05:38:55PM +0800, Guan-Yu Lin wrote:
-> > Introducing PM_RPM_EXCEPTION config flag, which may alter the priority
-> > between system power management and runtime power management. In
-> > suspend-to-idle flow, PM core will suspend all devices to avoid device
-> > interact with the system. However, chances are devices might be used by
-> > other systems rather than a single system. In this case, PM core should=
-n't
-> > suspend the devices. One may use PM_RPM_EXCEPTION config flag to mark
-> > such exception, and determine the power state of a device with runtime
-> > power management rather than system power management.
-> >
-> > Signed-off-by: Guan-Yu Lin <guanyulin@google.com>
-> > ---
-> >  drivers/usb/core/generic.c |  6 ++++++
-> >  drivers/usb/core/usb.h     | 16 ++++++++++++++++
-> >  kernel/power/Kconfig       |  8 ++++++++
-> >  3 files changed, 30 insertions(+)
-> >
-> > diff --git a/drivers/usb/core/generic.c b/drivers/usb/core/generic.c
-> > index 740342a2812a..bb0dfcfc9764 100644
-> > --- a/drivers/usb/core/generic.c
-> > +++ b/drivers/usb/core/generic.c
-> > @@ -266,6 +266,9 @@ int usb_generic_driver_suspend(struct usb_device *u=
-dev, pm_message_t msg)
-> >  {
-> >       int rc;
-> >
-> > +     if (usb_runtime_pm_exception(udev))
-> > +             return 0;
-> > +
-> >       /* Normal USB devices suspend through their upstream port.
-> >        * Root hubs don't have upstream ports to suspend,
-> >        * so we have to shut down their downstream HC-to-USB
-> > @@ -294,6 +297,9 @@ int usb_generic_driver_resume(struct usb_device *ud=
-ev, pm_message_t msg)
-> >  {
-> >       int rc;
-> >
-> > +     if (usb_runtime_pm_exception(udev))
-> > +             return 0;
-> > +
-> >       /* Normal USB devices resume/reset through their upstream port.
-> >        * Root hubs don't have upstream ports to resume or reset,
-> >        * so we have to start up their downstream HC-to-USB
-> > diff --git a/drivers/usb/core/usb.h b/drivers/usb/core/usb.h
-> > index 60363153fc3f..14a054f814a2 100644
-> > --- a/drivers/usb/core/usb.h
-> > +++ b/drivers/usb/core/usb.h
-> > @@ -90,6 +90,22 @@ extern void usb_major_cleanup(void);
-> >  extern int usb_device_supports_lpm(struct usb_device *udev);
-> >  extern int usb_port_disable(struct usb_device *udev);
-> >
-> > +#ifdef       CONFIG_PM_RPM_EXCEPTION
-> > +
-> > +static inline int usb_runtime_pm_exception(struct usb_device *udev)
-> > +{
-> > +     return atomic_read(&udev->dev.power.usage_count);
-> > +}
-> > +
-> > +#else
-> > +
-> > +static inline int usb_runtime_pm_exception(struct usb_device *udev)
-> > +{
-> > +     return 0;
-> > +}
-> > +
-> > +#endif
-> > +
-> >  #ifdef       CONFIG_PM
-> >
-> >  extern int usb_suspend(struct device *dev, pm_message_t msg);
-> > diff --git a/kernel/power/Kconfig b/kernel/power/Kconfig
-> > index 4b31629c5be4..beba7a0f3947 100644
-> > --- a/kernel/power/Kconfig
-> > +++ b/kernel/power/Kconfig
-> > @@ -193,6 +193,14 @@ config PM
-> >         responsible for the actual handling of device suspend requests =
-and
-> >         wake-up events.
-> >
-> > +config PM_RPM_EXCEPTION
-> > +     bool "Prioritize Runtime Power Management more than Power Managem=
-ent"
-> > +     default n
->
-> The default is always 'n' so no need to specify it.
->
+On Mon,  6 Nov 2023 19:01:41 +0800
+Ferry Meng <mengferry@linux.alibaba.com> wrote:
 
-Thanks, I will include this in the next version.
+> After commit 1c7f49a76773 ("erofs: tidy up EROFS on-disk naming"),
+> there is a unique `union erofs_inode_i_u` so that we could parse
+> the union directly.
+> 
+> Besides, it also replaces `inode->i_sb` with `sb` for simplicity.
+> 
+> Signed-off-by: Ferry Meng <mengferry@linux.alibaba.com>
+> ---
+>  fs/erofs/inode.c | 98 +++++++++++++++++-------------------------------
+>  1 file changed, 35 insertions(+), 63 deletions(-)
+> 
+> diff --git a/fs/erofs/inode.c b/fs/erofs/inode.c
+> index edc8ec7581b8..99535c8c53b5 100644
+> --- a/fs/erofs/inode.c
+> +++ b/fs/erofs/inode.c
+> @@ -15,11 +15,11 @@ static void *erofs_read_inode(struct erofs_buf *buf,
+>  	struct erofs_sb_info *sbi = EROFS_SB(sb);
+>  	struct erofs_inode *vi = EROFS_I(inode);
+>  	const erofs_off_t inode_loc = erofs_iloc(inode);
+> -
+>  	erofs_blk_t blkaddr, nblks = 0;
+>  	void *kaddr;
+>  	struct erofs_inode_compact *dic;
+>  	struct erofs_inode_extended *die, *copied = NULL;
+> +	union erofs_inode_i_u *iu;
+>  	unsigned int ifmt;
+>  	int err;
+>  
+> @@ -35,9 +35,8 @@ static void *erofs_read_inode(struct erofs_buf *buf,
+>  
+>  	dic = kaddr + *ofs;
+>  	ifmt = le16_to_cpu(dic->i_format);
+> -
+>  	if (ifmt & ~EROFS_I_ALL) {
+> -		erofs_err(inode->i_sb, "unsupported i_format %u of nid %llu",
+> +		erofs_err(sb, "unsupported i_format %u of nid %llu",
+>  			  ifmt, vi->nid);
+>  		err = -EOPNOTSUPP;
+>  		goto err_out;
+> @@ -45,7 +44,7 @@ static void *erofs_read_inode(struct erofs_buf *buf,
+>  
+>  	vi->datalayout = erofs_inode_datalayout(ifmt);
+>  	if (vi->datalayout >= EROFS_INODE_DATALAYOUT_MAX) {
+> -		erofs_err(inode->i_sb, "unsupported datalayout %u of nid %llu",
+> +		erofs_err(sb, "unsupported datalayout %u of nid %llu",
+>  			  vi->datalayout, vi->nid);
+>  		err = -EOPNOTSUPP;
+>  		goto err_out;
+> @@ -82,40 +81,15 @@ static void *erofs_read_inode(struct erofs_buf *buf,
+>  		vi->xattr_isize = erofs_xattr_ibody_size(die->i_xattr_icount);
+>  
+>  		inode->i_mode = le16_to_cpu(die->i_mode);
+> -		switch (inode->i_mode & S_IFMT) {
+> -		case S_IFREG:
+> -		case S_IFDIR:
+> -		case S_IFLNK:
+> -			vi->raw_blkaddr = le32_to_cpu(die->i_u.raw_blkaddr);
+> -			break;
+> -		case S_IFCHR:
+> -		case S_IFBLK:
+> -			inode->i_rdev =
+> -				new_decode_dev(le32_to_cpu(die->i_u.rdev));
+> -			break;
+> -		case S_IFIFO:
+> -		case S_IFSOCK:
+> -			inode->i_rdev = 0;
+> -			break;
+> -		default:
+> -			goto bogusimode;
+> -		}
+> +		iu = &die->i_u;
+>  		i_uid_write(inode, le32_to_cpu(die->i_uid));
+>  		i_gid_write(inode, le32_to_cpu(die->i_gid));
+>  		set_nlink(inode, le32_to_cpu(die->i_nlink));
+> -
+> -		/* extended inode has its own timestamp */
+> +		/* each extended inode has its own timestamp */
+>  		inode_set_ctime(inode, le64_to_cpu(die->i_mtime),
+>  				le32_to_cpu(die->i_mtime_nsec));
+>  
+>  		inode->i_size = le64_to_cpu(die->i_size);
+> -
+> -		/* total blocks for compressed files */
+> -		if (erofs_inode_is_data_compressed(vi->datalayout))
+> -			nblks = le32_to_cpu(die->i_u.compressed_blocks);
+> -		else if (vi->datalayout == EROFS_INODE_CHUNK_BASED)
+> -			/* fill chunked inode summary info */
+> -			vi->chunkformat = le16_to_cpu(die->i_u.c.format);
+>  		kfree(copied);
+>  		copied = NULL;
+>  		break;
+> @@ -125,49 +99,51 @@ static void *erofs_read_inode(struct erofs_buf *buf,
+>  		vi->xattr_isize = erofs_xattr_ibody_size(dic->i_xattr_icount);
+>  
+>  		inode->i_mode = le16_to_cpu(dic->i_mode);
+> -		switch (inode->i_mode & S_IFMT) {
+> -		case S_IFREG:
+> -		case S_IFDIR:
+> -		case S_IFLNK:
+> -			vi->raw_blkaddr = le32_to_cpu(dic->i_u.raw_blkaddr);
+> -			break;
+> -		case S_IFCHR:
+> -		case S_IFBLK:
+> -			inode->i_rdev =
+> -				new_decode_dev(le32_to_cpu(dic->i_u.rdev));
+> -			break;
+> -		case S_IFIFO:
+> -		case S_IFSOCK:
+> -			inode->i_rdev = 0;
+> -			break;
+> -		default:
+> -			goto bogusimode;
+> -		}
+> +		iu = &dic->i_u;
+>  		i_uid_write(inode, le16_to_cpu(dic->i_uid));
+>  		i_gid_write(inode, le16_to_cpu(dic->i_gid));
+>  		set_nlink(inode, le16_to_cpu(dic->i_nlink));
+> -
+>  		/* use build time for compact inodes */
+>  		inode_set_ctime(inode, sbi->build_time, sbi->build_time_nsec);
+>  
+>  		inode->i_size = le32_to_cpu(dic->i_size);
+> -		if (erofs_inode_is_data_compressed(vi->datalayout))
+> -			nblks = le32_to_cpu(dic->i_u.compressed_blocks);
+> -		else if (vi->datalayout == EROFS_INODE_CHUNK_BASED)
+> -			vi->chunkformat = le16_to_cpu(dic->i_u.c.format);
+>  		break;
+>  	default:
+> -		erofs_err(inode->i_sb,
+> -			  "unsupported on-disk inode version %u of nid %llu",
+> +		erofs_err(sb, "unsupported on-disk inode version %u of nid %llu",
+>  			  erofs_inode_version(ifmt), vi->nid);
+>  		err = -EOPNOTSUPP;
+>  		goto err_out;
+>  	}
+>  
+> -	if (vi->datalayout == EROFS_INODE_CHUNK_BASED) {
+> +	switch (inode->i_mode & S_IFMT) {
+> +	case S_IFREG:
+> +	case S_IFDIR:
+> +	case S_IFLNK:
+> +		vi->raw_blkaddr = le32_to_cpu(iu->raw_blkaddr);
 
-> > +     help
-> > +     Provides a way to prioritize Runtime Power Management more than P=
-ower
-> > +     Management. This way system can suspnd with maintaining specific
-> > +     components in operation.
->
-> This really doesn't give me a good description of why someone would ever
-> want to enable this at all.
->
-> And why does this have to be a build option?  That feels very heavy, why
-> not make it changable at runtime?
->
-> If this is a build option, how are you going to get all the distros and
-> all of the Android/ChromeOS systems in the world to enable it?
->
-> thanks,
->
-> greg k-h
+may cause use-after-free for acrossing block boundary case due to kfree(copied) before?
 
-Let's reach a consensus on what this patch should do first. I'll then
-change the description and implementation accordingly if needed. Please
-see the next reply for an explanation of my idea.
+> +		break;
+> +	case S_IFCHR:
+> +	case S_IFBLK:
+> +		inode->i_rdev = new_decode_dev(le32_to_cpu(iu->rdev));
+> +		break;
+> +	case S_IFIFO:
+> +	case S_IFSOCK:
+> +		inode->i_rdev = 0;
+> +		break;
+> +	default:
+> +		erofs_err(sb, "bogus i_mode (%o) @ nid %llu", inode->i_mode,
+> +			  vi->nid);
+> +		err = -EFSCORRUPTED;
+> +		goto err_out;
+> +	}
+> +
+> +	/* total blocks for compressed files */
+> +	if (erofs_inode_is_data_compressed(vi->datalayout)) {
+> +		nblks = le32_to_cpu(iu->compressed_blocks);
+> +	} else if (vi->datalayout == EROFS_INODE_CHUNK_BASED) {
+> +		/* fill chunked inode summary info */
+> +		vi->chunkformat = le16_to_cpu(iu->c.format);
+>  		if (vi->chunkformat & ~EROFS_CHUNK_FORMAT_ALL) {
+> -			erofs_err(inode->i_sb,
+> -				  "unsupported chunk format %x of nid %llu",
+> +			erofs_err(sb, "unsupported chunk format %x of nid %llu",
+>  				  vi->chunkformat, vi->nid);
+>  			err = -EOPNOTSUPP;
+>  			goto err_out;
+> @@ -190,10 +166,6 @@ static void *erofs_read_inode(struct erofs_buf *buf,
+>  		inode->i_blocks = nblks << (sb->s_blocksize_bits - 9);
+>  	return kaddr;
+>  
+> -bogusimode:
+> -	erofs_err(inode->i_sb, "bogus i_mode (%o) @ nid %llu",
+> -		  inode->i_mode, vi->nid);
+> -	err = -EFSCORRUPTED;
+>  err_out:
+>  	DBG_BUGON(1);
+>  	kfree(copied);
 
-Thanks,
-Guan-Yu
