@@ -2,191 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 414C07E50DF
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 08:21:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A77647E50F7
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 08:29:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234576AbjKHHVl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 02:21:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44600 "EHLO
+        id S234928AbjKHH3a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 02:29:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232633AbjKHHVi (ORCPT
+        with ESMTP id S234423AbjKHH33 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 02:21:38 -0500
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C09AF10F9;
-        Tue,  7 Nov 2023 23:21:36 -0800 (PST)
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A84TMvP024836;
-        Wed, 8 Nov 2023 07:21:24 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : from : to : cc : references : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=fWksQUMil+B/Wy7CX7XDZrLx6f9mZ/XXlqnJLxZ7SOE=;
- b=o5dEzm8YHCVTB0kZURvBFg3/cNdasvbDoIykepPDReJiDAdZ6Z5TmhjHWHAsHZGAK75+
- vbg71byyk0uCku0VNZQGRZKqciFXVXRhZysVLHV8DriiaWfKCFOCBfI1XxANn6vfzrH1
- nItuiVCqrtJTHIqtKwzTNyc4FLBismth7DwIy2o7xl9UoO51vyvpIDkowp72Yw27UfpS
- hckabGhfDqXvXFZp/4Xm12eS5BABtzJwDR3Czskts7D8adRQjJNoPggQjJhLyha8qRb6
- qX6OP/n+ncIe6TM3yocxEPlCFB9uIiDeGKh7Xc8n/ZtxZS88y+58hRxvhDYmljXyUvOI vg== 
-Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3u7w2dry84-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 08 Nov 2023 07:21:24 +0000
-Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
-        by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3A87LNLj028235
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 8 Nov 2023 07:21:23 GMT
-Received: from [10.239.133.211] (10.80.80.8) by nasanex01c.na.qualcomm.com
- (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Tue, 7 Nov
- 2023 23:21:19 -0800
-Message-ID: <d04c9db2-6198-46d4-81be-689a221a51ac@quicinc.com>
-Date:   Wed, 8 Nov 2023 15:21:17 +0800
+        Wed, 8 Nov 2023 02:29:29 -0500
+Received: from 18.mo581.mail-out.ovh.net (18.mo581.mail-out.ovh.net [188.165.56.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3A34198
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Nov 2023 23:29:26 -0800 (PST)
+Received: from director6.ghost.mail-out.ovh.net (unknown [10.109.146.76])
+        by mo581.mail-out.ovh.net (Postfix) with ESMTP id 31C1429331
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 07:22:59 +0000 (UTC)
+Received: from ghost-submission-6684bf9d7b-lrw8n (unknown [10.110.171.1])
+        by director6.ghost.mail-out.ovh.net (Postfix) with ESMTPS id C53E21FD49;
+        Wed,  8 Nov 2023 07:22:58 +0000 (UTC)
+Received: from RCM-web9.webmail.mail.ovh.net ([151.80.29.21])
+        by ghost-submission-6684bf9d7b-lrw8n with ESMTPSA
+        id kPniLlI3S2WLCwAAu1LDAQ
+        (envelope-from <jose.pekkarinen@foxhound.fi>); Wed, 08 Nov 2023 07:22:58 +0000
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/8] dt-bindings: arm: Add support for CMB element size
-From:   Tao Zhang <quic_taozha@quicinc.com>
-To:     Rob Herring <robh@kernel.org>
-CC:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Konrad Dybcio <konradybcio@gmail.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Jinlong Mao <quic_jinlmao@quicinc.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <coresight@lists.linaro.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        Tingwei Zhang <quic_tingweiz@quicinc.com>,
-        Yuanfang Zhang <quic_yuanfang@quicinc.com>,
-        Trilok Soni <quic_tsoni@quicinc.com>,
-        Song Chai <quic_songchai@quicinc.com>,
-        <linux-arm-msm@vger.kernel.org>, <andersson@kernel.org>
-References: <1698202408-14608-1-git-send-email-quic_taozha@quicinc.com>
- <1698202408-14608-2-git-send-email-quic_taozha@quicinc.com>
- <20231026212546.GA420866-robh@kernel.org>
- <15cbd29f-100c-48cc-9fc6-fde222a783b1@quicinc.com>
-Content-Language: en-US
-In-Reply-To: <15cbd29f-100c-48cc-9fc6-fde222a783b1@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Date:   Wed, 08 Nov 2023 09:22:58 +0200
+From:   =?UTF-8?Q?Jos=C3=A9_Pekkarinen?= <jose.pekkarinen@foxhound.fi>
+To:     dmitry.torokhov@gmail.com, rydberg@bitmath.org,
+        skhan@linuxfoundation.org
+Cc:     rrangel@chromium.org, linux-input@vger.kernel.org,
+        amandhoot12@gmail.com, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: Re: [PATCH] Input: synaptics: enable InterTouch for ThinkPad L14 G1
+In-Reply-To: <77a53e59cc4151c95942f37c88db8c75@foxhound.fi>
+References: <20231008080129.17931-1-jose.pekkarinen@foxhound.fi>
+ <5d857ff972e9203ef65ae2396c7285c0@foxhound.fi>
+ <77a53e59cc4151c95942f37c88db8c75@foxhound.fi>
+User-Agent: Roundcube Webmail/1.4.15
+Message-ID: <15a2424c602616e659ff3a4f1ea731d3@foxhound.fi>
+X-Sender: jose.pekkarinen@foxhound.fi
+Organization: Foxhound Ltd.
+X-Originating-IP: 192.42.116.186
+X-Webmail-UserID: jose.pekkarinen@foxhound.fi
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01c.na.qualcomm.com (10.45.79.139)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: uzRSf08sCGLtn-KirOosotmjF8pp7ERp
-X-Proofpoint-ORIG-GUID: uzRSf08sCGLtn-KirOosotmjF8pp7ERp
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-08_01,2023-11-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 spamscore=0
- lowpriorityscore=0 priorityscore=1501 impostorscore=0 adultscore=0
- clxscore=1015 mlxlogscore=999 mlxscore=0 suspectscore=0 bulkscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311080059
+X-Ovh-Tracer-Id: 3986530096636274342
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: 0
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedruddukedguddthecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecunecujfgurhepggffhffvvefujghffgfkgihoihgtgfesthekjhdttderjeenucfhrhhomheplfhoshorucfrvghkkhgrrhhinhgvnhcuoehjohhsvgdrphgvkhhkrghrihhnvghnsehfohighhhouhhnugdrfhhiqeenucggtffrrghtthgvrhhnpeejudehhfevffeuveefjeeuleejgeevtdfghfehleffkeejueetffektefhkeetjeenucffohhmrghinheplhhinhhugihfohhunhgurghtihhonhdrohhrghenucfkphepuddvjedrtddrtddruddpudelvddrgedvrdduudeirddukeeipdduhedurdektddrvdelrddvudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduvdejrddtrddtrddupdhmrghilhhfrhhomhepoehjohhsvgdrphgvkhhkrghrihhnvghnsehfohighhhouhhnugdrfhhiqedpnhgspghrtghpthhtohepuddprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdpoffvtefjohhsthepmhhoheekuddpmhhouggvpehsmhhtphhouhht
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 11/1/2023 2:29 PM, Tao Zhang wrote:
->
-> On 10/27/2023 5:25 AM, Rob Herring wrote:
->> On Wed, Oct 25, 2023 at 10:53:21AM +0800, Tao Zhang wrote:
->>> Add property "qcom,cmb-elem-size" to support CMB(Continuous
->>> Multi-Bit) element for TPDM. The associated aggregator will read
->>> this size before it is enabled. CMB element size currently only
->>> supports 32-bit and 64-bit.
->>>
->>> Signed-off-by: Tao Zhang <quic_taozha@quicinc.com>
->>> Signed-off-by: Mao Jinlong <quic_jinlmao@quicinc.com>
+On 2023-10-31 14:39, José Pekkarinen wrote:
+> On 2023-10-16 18:51, José Pekkarinen wrote:
+>> On 2023-10-08 11:01, José Pekkarinen wrote:
+>>> Observed on dmesg of my laptop I see the following
+>>> output:
+>>> 
+>>> [   19.898700] psmouse serio1: synaptics: queried max coordinates: x
+>>> [..5678], y [..4694]
+>>> [   19.936057] psmouse serio1: synaptics: queried min coordinates: x
+>>> [1266..], y [1162..]
+>>> [   19.936076] psmouse serio1: synaptics: Your touchpad (PNP: LEN0411
+>>> PNP0f13) says it can support a different bus. If i2c-hid and hid-rmi
+>>> are not used, you might want to try setting
+>>> psmouse.synaptics_intertouch to 1 and report this to
+>>> linux-input@vger.kernel.org.
+>>> [   20.008901] psmouse serio1: synaptics: Touchpad model: 1, fw:
+>>> 10.32, id: 0x1e2a1, caps: 0xf014a3/0x940300/0x12e800/0x500000, board
+>>> id: 3471, fw id: 2909640
+>>> [   20.008925] psmouse serio1: synaptics: serio: Synaptics
+>>> pass-through port at isa0060/serio1/input0
+>>> [   20.053344] input: SynPS/2 Synaptics TouchPad as
+>>> /devices/platform/i8042/serio1/input/input7
+>>> [   20.397608] mousedev: PS/2 mouse device common for all mice
+>>> 
+>>> This patch will add its pnp id to the smbus list to
+>>> produce the setup of intertouch for the device. After
+>>> applying, the ouput will look like:
+>>> 
+>>> [   19.168664] psmouse serio1: synaptics: queried max coordinates: x
+>>> [..5678], y [..4694]
+>>> [   19.206311] psmouse serio1: synaptics: queried min coordinates: x
+>>> [1266..], y [1162..]
+>>> [   19.206325] psmouse serio1: synaptics: Trying to set up SMBus 
+>>> access
+>>> [   19.209545] psmouse serio1: synaptics: SMbus companion is not 
+>>> ready yet
+>>> [   19.283845] psmouse serio1: synaptics: Touchpad model: 1, fw:
+>>> 10.32, id: 0x1e2a1, caps: 0xf014a3/0x940300/0x12e800/0x500000, board
+>>> id: 3471, fw id: 2909640
+>>> [   19.283863] psmouse serio1: synaptics: serio: Synaptics
+>>> pass-through port at isa0060/serio1/input0
+>>> [   19.328959] input: SynPS/2 Synaptics TouchPad as
+>>> /devices/platform/i8042/serio1/input/input8
+>>> [   19.706164] mousedev: PS/2 mouse device common for all mice
+>>> 
+>>> Signed-off-by: José Pekkarinen <jose.pekkarinen@foxhound.fi>
 >>> ---
->>>   .../bindings/arm/qcom,coresight-tpdm.yaml          | 27 
->>> ++++++++++++++++++++++
->>>   1 file changed, 27 insertions(+)
->>>
->>> diff --git 
->>> a/Documentation/devicetree/bindings/arm/qcom,coresight-tpdm.yaml 
->>> b/Documentation/devicetree/bindings/arm/qcom,coresight-tpdm.yaml
->>> index 61ddc3b..f9a2025 100644
->>> --- a/Documentation/devicetree/bindings/arm/qcom,coresight-tpdm.yaml
->>> +++ b/Documentation/devicetree/bindings/arm/qcom,coresight-tpdm.yaml
->>> @@ -52,6 +52,14 @@ properties:
->>>       $ref: /schemas/types.yaml#/definitions/uint8
->>>       enum: [32, 64]
->>>   +  qcom,cmb-element-size:
->> What are the units? Use '-bits' suffix.
->
-> Yes, its unit should be bit.
->
-> Do you mean that you prefer to use "qcom, cmb-element-size-bits"?
->
-> Do I also need to replace "qcom, dsb-element-size" with "qcom, 
-> dsb-element-size-bits".
-
-I will continue to use the property name "qcom, cmb-element-size" in 
-order to be consistent with "qcom, dsb-element-size".
-
-Let me know if you have any concerns about this.
-
-
-Best,
-
-Tao
-
->
->>
->>> +    description:
->>> +      Specifies the CMB(Continuous Multi-Bit) element size 
->>> supported by
->>> +      the monitor. The associated aggregator will read this size 
->>> before it
->>> +      is enabled. CMB element size currently only supports 32-bit 
->>> and 64-bit.
->> The enum says 8-bit is supported.
->
-> Yes, 8-bit is supported. I will update the description in the next 
-> patch series.
->
->
-> Best,
->
-> Tao
->
->>
->>> +    $ref: /schemas/types.yaml#/definitions/uint8
->>> +    enum: [8, 32, 64]
->>> +
->>>     qcom,dsb-msrs-num:
->>>       description:
->>>         Specifies the number of DSB(Discrete Single Bit) MSR(mux 
->>> select register)
->>> @@ -110,4 +118,23 @@ examples:
->>>         };
->>>       };
->>>   +    tpdm@6c29000 {
->>> +      compatible = "qcom,coresight-tpdm", "arm,primecell";
->>> +      reg = <0x06c29000 0x1000>;
->>> +      reg-names = "tpdm-base";
->>> +
->>> +      qcom,cmb-element-size = /bits/ 8 <64>;
->>> +
->>> +      clocks = <&aoss_qmp>;
->>> +      clock-names = "apb_pclk";
->>> +
->>> +      out-ports {
->>> +        port {
->>> +          tpdm_ipcc_out_funnel_center: endpoint {
->>> +            remote-endpoint =
->>> +              <&funnel_center_in_tpdm_ipcc>;
->>> +          };
->>> +        };
->>> +      };
->>> +    };
->>>   ...
->>> -- 
->>> 2.7.4
->>>
+>>>  drivers/input/mouse/synaptics.c | 1 +
+>>>  1 file changed, 1 insertion(+)
+>>> 
+>>> diff --git a/drivers/input/mouse/synaptics.c 
+>>> b/drivers/input/mouse/synaptics.c
+>>> index ada299ec5bba..376a041c80b2 100644
+>>> --- a/drivers/input/mouse/synaptics.c
+>>> +++ b/drivers/input/mouse/synaptics.c
+>>> @@ -183,6 +183,7 @@ static const char * const smbus_pnp_ids[] = {
+>>>  	"LEN009b", /* T580 */
+>>>  	"LEN0402", /* X1 Extreme Gen 2 / P1 Gen 2 */
+>>>  	"LEN040f", /* P1 Gen 3 */
+>>> +	"LEN0411", /* L14 Gen 1 */
+>>>  	"LEN200f", /* T450s */
+>>>  	"LEN2044", /* L470  */
+>>>  	"LEN2054", /* E480 */
+>> 
+>>     Any comments here?
+>> 
+>>     Thanks!
+>> 
+>>     José.
+>> _______________________________________________
+>> Linux-kernel-mentees mailing list
+>> Linux-kernel-mentees@lists.linuxfoundation.org
+>> https://lists.linuxfoundation.org/mailman/listinfo/linux-kernel-mentees
+> 
+>     Ping.
+> 
+>     José.
 > _______________________________________________
-> CoreSight mailing list -- coresight@lists.linaro.org
-> To unsubscribe send an email to coresight-leave@lists.linaro.org
+> Linux-kernel-mentees mailing list
+> Linux-kernel-mentees@lists.linuxfoundation.org
+> https://lists.linuxfoundation.org/mailman/listinfo/linux-kernel-mentees
+
+     Sorry to bother again, I didn't hear anything from this. Can
+you please take a look?
+
+     José.
