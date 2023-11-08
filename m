@@ -2,198 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ACB637E58F3
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 15:30:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06A9D7E5903
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 15:31:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235538AbjKHOaQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 09:30:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45938 "EHLO
+        id S234907AbjKHObV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 09:31:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344544AbjKHO3t (ORCPT
+        with ESMTP id S232459AbjKHOax (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 09:29:49 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC5602587
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 06:29:40 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7287C433C8;
-        Wed,  8 Nov 2023 14:29:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699453780;
-        bh=VzChugqmxn2FZXPNNk2q4QjwiB/rKZhvHsJJiY0UHmY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=I8huhepXEVQvNMNpwWfEIX9wzOFTV1QEUN+oYoQwLdTgIddsB7oMiIybr2+lzpPfD
-         rUDDNltUn6IhK9XI89AtW8eiNGo1V+ldonu5ycngh6tWc5BvrcDDFA6L3R8y6da5Ic
-         1N+QwS0U8sa6Z1EsUy/oKfKtJvxjsIpiv71KzEE+Va6DkegMln6KxQqapcDI2QqvgZ
-         jQNS/Gnig11abhGs92yaYfaHwwQfpNmvXXBG3AZ0KMsm0Tm2bhZmZ4Afzg2AbOe+xH
-         AHQJWoff/XL0lCZZhUdaBS28zD612mHpNbTcw1c0zUxy7QbQpdlYDgXnDR7e5OLQIM
-         wNPF1QH2j+wtw==
-From:   "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Florent Revest <revest@chromium.org>
-Cc:     linux-trace-kernel@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Guo Ren <guoren@kernel.org>
-Subject: [RFC PATCH v2 27/31] tracing/fprobe: Remove nr_maxactive from fprobe
-Date:   Wed,  8 Nov 2023 23:29:34 +0900
-Message-Id: <169945377377.55307.15759792710892266775.stgit@devnote2>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <169945345785.55307.5003201137843449313.stgit@devnote2>
-References: <169945345785.55307.5003201137843449313.stgit@devnote2>
-User-Agent: StGit/0.19
+        Wed, 8 Nov 2023 09:30:53 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F4282121
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 06:29:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1699453792;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=X+mW6S3E9PxzlJ59KYM6a9lo9aW4LQzFCn0v6EM+0/M=;
+        b=SohCgCHzOd+FtyLMSTrKLN90hXDhSqbg+OiBe+Xpdc8yipNNv0O3HuNys3qA1eArbcq8NB
+        MUq+PLlqzHMM1z5FUc19bxjZ2oF4hQFu2cn3CO2CPcoKrlRR78+SIqi1EBHK4XpSJbKFiy
+        4Gzzg36nlZrfAXkQ1uJTjSXAbxm3sy4=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-248-Rd2hbUbZN7WUv2LuyFooUA-1; Wed,
+ 08 Nov 2023 09:29:49 -0500
+X-MC-Unique: Rd2hbUbZN7WUv2LuyFooUA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 3A90D3C108D8;
+        Wed,  8 Nov 2023 14:29:49 +0000 (UTC)
+Received: from llong.com (unknown [10.22.9.17])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A90722166B26;
+        Wed,  8 Nov 2023 14:29:48 +0000 (UTC)
+From:   Waiman Long <longman@redhat.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, Haifeng Xu <haifeng.xu@shopee.com>,
+        Waiman Long <longman@redhat.com>
+Subject: [PATCH] locking/rwsem: Clarify that RWSEM_READER_OWNED is just a hint
+Date:   Wed,  8 Nov 2023 09:29:36 -0500
+Message-Id: <20231108142936.831960-1-longman@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Clarify in the comments that the RWSEM_READER_OWNED bit in the owner
+field is just a hint, not an authoritative state of the rwsem.
 
-Remove depercated fprobe::nr_maxactive. This involves fprobe events to
-rejects the maxactive number.
-
-Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Signed-off-by: Waiman Long <longman@redhat.com>
 ---
- Changes in v2:
-  - Newly added.
----
- include/linux/fprobe.h      |    2 --
- kernel/trace/trace_fprobe.c |   44 ++++++-------------------------------------
- 2 files changed, 6 insertions(+), 40 deletions(-)
+ kernel/locking/rwsem.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/include/linux/fprobe.h b/include/linux/fprobe.h
-index 08b37b0d1d05..c28d06ddfb8e 100644
---- a/include/linux/fprobe.h
-+++ b/include/linux/fprobe.h
-@@ -47,7 +47,6 @@ struct fprobe_hlist {
-  * @nmissed: The counter for missing events.
-  * @flags: The status flag.
-  * @entry_data_size: The private data storage size.
-- * @nr_maxactive: The max number of active functions. (*deprecated)
-  * @entry_handler: The callback function for function entry.
-  * @exit_handler: The callback function for function exit.
-  * @hlist_array: The fprobe_hlist for fprobe search from IP hash table.
-@@ -56,7 +55,6 @@ struct fprobe {
- 	unsigned long		nmissed;
- 	unsigned int		flags;
- 	size_t			entry_data_size;
--	int			nr_maxactive;
+diff --git a/kernel/locking/rwsem.c b/kernel/locking/rwsem.c
+index 2340b6d90ec6..c6d17aee4209 100644
+--- a/kernel/locking/rwsem.c
++++ b/kernel/locking/rwsem.c
+@@ -35,7 +35,7 @@
+ /*
+  * The least significant 2 bits of the owner value has the following
+  * meanings when set.
+- *  - Bit 0: RWSEM_READER_OWNED - The rwsem is owned by readers
++ *  - Bit 0: RWSEM_READER_OWNED - rwsem may be owned by readers (just a hint)
+  *  - Bit 1: RWSEM_NONSPINNABLE - Cannot spin on a reader-owned lock
+  *
+  * When the rwsem is reader-owned and a spinning writer has timed out,
+@@ -1002,8 +1002,8 @@ rwsem_down_read_slowpath(struct rw_semaphore *sem, long count, unsigned int stat
  
- 	int (*entry_handler)(struct fprobe *fp, unsigned long entry_ip,
- 			     unsigned long ret_ip, struct ftrace_regs *regs,
-diff --git a/kernel/trace/trace_fprobe.c b/kernel/trace/trace_fprobe.c
-index c60d0d9f1a95..59d2ef8d9552 100644
---- a/kernel/trace/trace_fprobe.c
-+++ b/kernel/trace/trace_fprobe.c
-@@ -375,7 +375,6 @@ static struct trace_fprobe *alloc_trace_fprobe(const char *group,
- 					       const char *event,
- 					       const char *symbol,
- 					       struct tracepoint *tpoint,
--					       int maxactive,
- 					       int nargs, bool is_return)
- {
- 	struct trace_fprobe *tf;
-@@ -395,7 +394,6 @@ static struct trace_fprobe *alloc_trace_fprobe(const char *group,
- 		tf->fp.entry_handler = fentry_dispatcher;
- 
- 	tf->tpoint = tpoint;
--	tf->fp.nr_maxactive = maxactive;
- 
- 	ret = trace_probe_init(&tf->tp, event, group, false);
- 	if (ret < 0)
-@@ -973,12 +971,11 @@ static int __trace_fprobe_create(int argc, const char *argv[])
- 	 *  FETCHARG:TYPE : use TYPE instead of unsigned long.
+ 	/*
+ 	 * To prevent a constant stream of readers from starving a sleeping
+-	 * waiter, don't attempt optimistic lock stealing if the lock is
+-	 * currently owned by readers.
++	 * writer, don't attempt optimistic lock stealing if the lock is
++	 * very likely owned by readers.
  	 */
- 	struct trace_fprobe *tf = NULL;
--	int i, len, new_argc = 0, ret = 0;
-+	int i, new_argc = 0, ret = 0;
- 	bool is_return = false;
- 	char *symbol = NULL;
- 	const char *event = NULL, *group = FPROBE_EVENT_SYSTEM;
- 	const char **new_argv = NULL;
--	int maxactive = 0;
- 	char buf[MAX_EVENT_NAME_LEN];
- 	char gbuf[MAX_EVENT_NAME_LEN];
- 	char sbuf[KSYM_NAME_LEN];
-@@ -999,33 +996,13 @@ static int __trace_fprobe_create(int argc, const char *argv[])
- 
- 	trace_probe_log_init("trace_fprobe", argc, argv);
- 
--	event = strchr(&argv[0][1], ':');
--	if (event)
--		event++;
--
--	if (isdigit(argv[0][1])) {
--		if (event)
--			len = event - &argv[0][1] - 1;
--		else
--			len = strlen(&argv[0][1]);
--		if (len > MAX_EVENT_NAME_LEN - 1) {
--			trace_probe_log_err(1, BAD_MAXACT);
--			goto parse_error;
--		}
--		memcpy(buf, &argv[0][1], len);
--		buf[len] = '\0';
--		ret = kstrtouint(buf, 0, &maxactive);
--		if (ret || !maxactive) {
-+	if (argv[0][1] != '\0') {
-+		if (argv[0][1] != ':') {
-+			trace_probe_log_set_index(0);
- 			trace_probe_log_err(1, BAD_MAXACT);
- 			goto parse_error;
- 		}
--		/* fprobe rethook instances are iterated over via a list. The
--		 * maximum should stay reasonable.
--		 */
--		if (maxactive > RETHOOK_MAXACTIVE_MAX) {
--			trace_probe_log_err(1, MAXACT_TOO_BIG);
--			goto parse_error;
--		}
-+		event = &argv[0][2];
- 	}
- 
- 	trace_probe_log_set_index(1);
-@@ -1035,12 +1012,6 @@ static int __trace_fprobe_create(int argc, const char *argv[])
- 	if (ret < 0)
- 		goto parse_error;
- 
--	if (!is_return && maxactive) {
--		trace_probe_log_set_index(0);
--		trace_probe_log_err(1, BAD_MAXACT_TYPE);
--		goto parse_error;
--	}
--
- 	trace_probe_log_set_index(0);
- 	if (event) {
- 		ret = traceprobe_parse_event_name(&event, &group, gbuf,
-@@ -1094,8 +1065,7 @@ static int __trace_fprobe_create(int argc, const char *argv[])
- 	}
- 
- 	/* setup a probe */
--	tf = alloc_trace_fprobe(group, event, symbol, tpoint, maxactive,
--				argc, is_return);
-+	tf = alloc_trace_fprobe(group, event, symbol, tpoint, argc, is_return);
- 	if (IS_ERR(tf)) {
- 		ret = PTR_ERR(tf);
- 		/* This must return -ENOMEM, else there is a bug */
-@@ -1171,8 +1141,6 @@ static int trace_fprobe_show(struct seq_file *m, struct dyn_event *ev)
- 		seq_putc(m, 't');
- 	else
- 		seq_putc(m, 'f');
--	if (trace_fprobe_is_return(tf) && tf->fp.nr_maxactive)
--		seq_printf(m, "%d", tf->fp.nr_maxactive);
- 	seq_printf(m, ":%s/%s", trace_probe_group_name(&tf->tp),
- 				trace_probe_name(&tf->tp));
- 
+ 	if ((atomic_long_read(&sem->owner) & RWSEM_READER_OWNED) &&
+ 	    (rcnt > 1) && !(count & RWSEM_WRITER_LOCKED))
+-- 
+2.39.3
 
