@@ -2,78 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D3B787E54AE
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 12:04:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BD5A7E54B0
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 12:04:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344307AbjKHLEM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 06:04:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53556 "EHLO
+        id S1344395AbjKHLEY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 06:04:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229579AbjKHLEK (ORCPT
+        with ESMTP id S229579AbjKHLEX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 06:04:10 -0500
-Received: from out-182.mta1.migadu.com (out-182.mta1.migadu.com [95.215.58.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73DAD101
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 03:04:08 -0800 (PST)
-Message-ID: <cfabc096-105d-438c-8dbc-cfaad5d18a35@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1699441446;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=joh5s1qOPVQ3XYcvzwXMxjT9V3/OngtYecVlKL0lXmE=;
-        b=JoRxj7cTTDLgtD4vAx1lnNR4DqOewp3D08ExgQ0jDVnS4xWotpC70l2qHdusXebjP934k4
-        TvQBsGz1ISWdzBCDSFp9SiersCwR35p5Jfg0X37825A8pS4YhNlpcpE+nXcWWDeou/bh9x
-        SwZ1p+3J01WOiwjdlEkR3BeYj7FdPQY=
-Date:   Wed, 8 Nov 2023 19:04:03 +0800
+        Wed, 8 Nov 2023 06:04:23 -0500
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 678CA19A5;
+        Wed,  8 Nov 2023 03:04:20 -0800 (PST)
+Received: from frapeml500002.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4SQMdF13hbz6K8sn;
+        Wed,  8 Nov 2023 19:03:13 +0800 (CST)
+Received: from [10.195.35.156] (10.195.35.156) by
+ frapeml500002.china.huawei.com (7.182.85.205) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Wed, 8 Nov 2023 12:04:14 +0100
+Message-ID: <41c0baf6-ba4d-4876-b692-279307265466@huawei-partners.com>
+Date:   Wed, 8 Nov 2023 12:04:12 +0100
 MIME-Version: 1.0
-Subject: Re: [PATCH v7 0/3] sched/rt: Move sched_rt_entity::back to
- CONFIG_RT_GROUP_SCHED
+User-Agent: Mozilla Thunderbird
+Subject: Re: Memory corruption with CONFIG_SWIOTLB_DYNAMIC=y
+To:     Halil Pasic <pasic@linux.ibm.com>,
+        =?UTF-8?B?UGV0ciBUZXNhxZnDrWs=?= <petr@tesarici.cz>
+CC:     Niklas Schnelle <schnelle@linux.ibm.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Ross Lagerwall <ross.lagerwall@citrix.com>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <iommu@lists.linux.dev>,
+        Matthew Rosato <mjrosato@linux.ibm.com>
+References: <104a8c8fedffd1ff8a2890983e2ec1c26bff6810.camel@linux.ibm.com>
+ <20231103195949.0af884d0@meshulam.tesarici.cz>
+ <20231108115207.791a30d8.pasic@linux.ibm.com>
 Content-Language: en-US
-To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vschneid@redhat.com
-Cc:     linux-kernel@vger.kernel.org
-References: <20231009122244.2394336-1-yajun.deng@linux.dev>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Yajun Deng <yajun.deng@linux.dev>
-In-Reply-To: <20231009122244.2394336-1-yajun.deng@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+From:   Petr Tesarik <petr.tesarik1@huawei-partners.com>
+In-Reply-To: <20231108115207.791a30d8.pasic@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.195.35.156]
+X-ClientProxiedBy: frapeml100003.china.huawei.com (7.182.85.60) To
+ frapeml500002.china.huawei.com (7.182.85.205)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 11/8/2023 11:52 AM, Halil Pasic wrote:
+> On Fri, 3 Nov 2023 19:59:49 +0100
+> Petr Tesařík <petr@tesarici.cz> wrote:
+> 
+>>> Not sure how to properly fix this as the different alignment
+>>> requirements get pretty complex quickly. So would appreciate your
+>>> input.  
+>>
+>> I don't think it's possible to improve the allocation logic without
+>> modifying the page allocator and/or the DMA atomic pool allocator to
+>> take additional constraints into account.
+> 
+> I don't understand. What speaks against calculating the amount of space
+> needed, so that with the waste we can still fit the bounce-buffer in the
+> pool?
+> 
+> I believe alloc_size + combined_mask is a trivial upper bound, but we can
+> do slightly better since we know that we allocate pages.
+> 
+> For the sake of simplicity let us assume we only have the min_align_mask
+> requirement. Then I believe the worst case is that we need 
+> (orig_addr & min_align_mask & PAGE_MASK)  + (min_align_mask & ~PAGE_MASK)
+> extra space to fit.
+> 
+> Depending on how the semantics pan out one may be able to replace
+> min_align_mask with combined_mask.
+> 
+> Is your point that for large combined_mask values 
+> _get_free_pages(GFP_NOWAIT | __GFP_NOWARN, required_order) is not
+> likely to complete successfully?
 
-Kindly ping...
+Yes, that's the reason. OTOH it's probably worth a try. The point is
+that mapping a DMA buffer is allowed to fail, so callers should be
+prepared anyway.
 
-Thanks.
+And for the case you reported initially, I don't think there is any need
+to preserve bit 11 (0x800) from the original buffer's physical address,
+which is enough to fix it. See also my other email earlier today.
 
-
-On 2023/10/9 20:22, Yajun Deng wrote:
-> The member back in struct sched_rt_entity only related to RT_GROUP_SCHED,
-> it should not place out of RT_GROUP_SCHED, move back to RT_GROUP_SCHED.
-> It will save a few bytes.
->
-> The 1st patch is introduce for_each_sched_rt_entity_back() & use it,
-> it no functional changes.
->
-> The 2nd patch is init 'back' in init_tg_rt_entry, it remove the call to
-> back when CONFIG_RT_GROUP_SCHED is disabled.
->
-> The 3rd patch is move sched_rt_entity::back to under the
-> CONFIG_RT_GROUP_SCHED block, it will save a few bytes.
->
-> Yajun Deng (3):
->    sched/rt: Introduce for_each_sched_rt_entity_back() & use it
->    sched/rt: Init 'back' in init_tg_rt_entry
->    sched/headers: Move sched_rt_entity::back to under the
->      CONFIG_RT_GROUP_SCHED block
->
->   include/linux/sched.h |  2 +-
->   kernel/sched/rt.c     | 17 ++++++++++++-----
->   2 files changed, 13 insertions(+), 6 deletions(-)
->
+Petr T
