@@ -2,170 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 836E27E5A40
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 16:37:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DEC187E5A41
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 16:38:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234720AbjKHPhw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 10:37:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36698 "EHLO
+        id S233607AbjKHPiW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 10:38:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234133AbjKHPhl (ORCPT
+        with ESMTP id S234739AbjKHPiP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 10:37:41 -0500
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 054DB1FDA;
-        Wed,  8 Nov 2023 07:37:39 -0800 (PST)
-Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-53e3b8f906fso11810675a12.2;
-        Wed, 08 Nov 2023 07:37:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699457857; x=1700062657; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=bezVq5NfxD+KhZfkFbZwhXk3BKYmWSQOuA8lFp/Q5CE=;
-        b=Gb3o2tRVoT1jK2jyT4CtxQpuSprDD5KzOM5tizpN9sEJ3fZ+cC7P3hoYKOezeh/LX9
-         6WNTPlsj8TRVhxV2QlpfQ7GUv3AvomKMv0VhBkcifmg2jSXZZ3TT9IDl1t7g9LT+8g6Q
-         DpOWdC1SuqGl+n6roua8k/53GyNOLzX4WHtX8g94CpyTFM6akSuqCZBYvFFEt5io6B3I
-         nVihQX1uGh/NGtxwMoQGYxnwvc3ipaxr+eS07nm7b4TiY5ADHNT/CVCkRtP2f05nRZga
-         dNeXyjgCYmj0gWD2zAgog7FVklRP3pW69HbxzUP+CqnZWJmzDciz6SaZs2Diej8CmaJf
-         sAYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699457857; x=1700062657;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=bezVq5NfxD+KhZfkFbZwhXk3BKYmWSQOuA8lFp/Q5CE=;
-        b=wkGM7aI0YjiQ2ggnFNADH93nTmqK8kRnn9HsPDpbGo5J11LYiikeS15u/7Z0BXxx3J
-         +XBDK82meZeUvnPk5sEd0eNoq3uk1tRNewmVmHOEHmJnnWzgberjtGXiMaT2uU7fJj+L
-         KaTk337jHtGnMcDeZ+8ClsIlkcBlFuyK1qTClzfLnlmEH8aQdOnGYFTvGWb2WBWo4Rt6
-         3kWCY1gncbzmbqvSTFvf1LyCdNoeBsH9vd7RIfvmOH8iD8NxDsoCYD+5jKbbwDplpLbX
-         GWV7xPwzkaqX66r2Ki2+Pm/MUjY56RQ9g9/RdEoR28rZaNHIULUAjKKLSGldx+OeuaAc
-         SP9g==
-X-Gm-Message-State: AOJu0Yx5xt3OSfuuk/TcTJMuRhT9fbtkOy5a6p5bFu7Z6dEY0NGfXJTV
-        xvcxJuXkz4KsyByKgG2KX2w=
-X-Google-Smtp-Source: AGHT+IFf5dosgoD1Z/beNxINcyL8uGuFojj7oTj/e5xSGmjEzmvCdA840NrOJrGiIFsuVMbiqbv4PA==
-X-Received: by 2002:a50:8d0b:0:b0:53e:37d1:a31f with SMTP id s11-20020a508d0b000000b0053e37d1a31fmr1918407eds.28.1699457857488;
-        Wed, 08 Nov 2023 07:37:37 -0800 (PST)
-Received: from [127.0.1.1] (2a02-8389-41cf-e200-840c-82c6-68fb-9a49.cable.dynamic.v6.surfer.at. [2a02:8389:41cf:e200:840c:82c6:68fb:9a49])
-        by smtp.gmail.com with ESMTPSA id j28-20020a508a9c000000b0053e3839fc79sm7009966edj.96.2023.11.08.07.37.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Nov 2023 07:37:37 -0800 (PST)
-From:   Javier Carrasco <javier.carrasco.cruz@gmail.com>
-Date:   Wed, 08 Nov 2023 16:37:30 +0100
-Subject: [PATCH v2 4/4] dt-bindings: hwmon: Add Amphenol ChipCap 2
+        Wed, 8 Nov 2023 10:38:15 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 222CD1FE1
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 07:38:13 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1699457891;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=18UXkYkGm08AQHZBxS21cLjRT0YoIXe2siFB63ueLa0=;
+        b=bCHL0UzoqJ4k+ydiCqDSGPqPJk1wUNFPASj3NywFEUtwqv3YAgQgmza2shT9fwGWz4dSLf
+        Z47yBjsBmo4xTShOD953CfYU6WeU9iYOa32v04j4K7e71oWQxN4bZ5ops6ySLFi0PboAqF
+        7+oBln+ji5AXRmrwT7LXevHuY42IMgcOgLtb6uE8yQ8NwA5EBpqkSc8yZajxkATB069U05
+        FC6m3hTwoyC3wyFG8hWCOl12LOC+x6gXW/KP17XQZfdlrPimDTrUQBzWlc2w1RygMPXGdW
+        06kgKW5NgVkFArzzednxNhbmALGRJvCRv79LVSG28eofYlglCyoIDzN/BqaGAg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1699457891;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=18UXkYkGm08AQHZBxS21cLjRT0YoIXe2siFB63ueLa0=;
+        b=IiM8I42Oi9ibnNKbFzDNnHjXg2zB7ZBR8wakKl39Y2K3ylt3Glo4UPGTNrWoNgYvRHdAJK
+        9woTxhafpSOZwGCA==
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ankur Arora <ankur.a.arora@oracle.com>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        paulmck@kernel.org, linux-mm@kvack.org, x86@kernel.org,
+        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
+        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        willy@infradead.org, mgorman@suse.de, jon.grimm@amd.com,
+        bharata@amd.com, raghavendra.kt@amd.com,
+        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
+        jgross@suse.com, andrew.cooper3@citrix.com, mingo@kernel.org,
+        bristot@kernel.org, mathieu.desnoyers@efficios.com,
+        geert@linux-m68k.org, glaubitz@physik.fu-berlin.de,
+        anton.ivanov@cambridgegreys.com, mattst88@gmail.com,
+        krypton@ulrich-teichert.org, rostedt@goodmis.org,
+        David.Laight@aculab.com, richard@nod.at, mjguzik@gmail.com
+Subject: Re: [RFC PATCH 00/86] Make the kernel preemptible
+In-Reply-To: <20231108101330.GK3818@noisy.programming.kicks-ass.net>
+References: <20231107215742.363031-1-ankur.a.arora@oracle.com>
+ <20231108085156.GD8262@noisy.programming.kicks-ass.net>
+ <87bkc4lfxp.fsf@oracle.com>
+ <20231108101330.GK3818@noisy.programming.kicks-ass.net>
+Date:   Wed, 08 Nov 2023 16:38:11 +0100
+Message-ID: <877cmsgsrg.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231020-topic-chipcap2-v2-4-f5c325966fdb@gmail.com>
-References: <20231020-topic-chipcap2-v2-0-f5c325966fdb@gmail.com>
-In-Reply-To: <20231020-topic-chipcap2-v2-0-f5c325966fdb@gmail.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        linux-doc@vger.kernel.org,
-        Javier Carrasco <javier.carrasco.cruz@gmail.com>
-X-Mailer: b4 0.12.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1699457849; l=2364;
- i=javier.carrasco.cruz@gmail.com; s=20230509; h=from:subject:message-id;
- bh=d+q16++TF3EsSideU+hM8FP/AieHkXH5vyhNQwTbFHQ=;
- b=vaBHUKRj7Ud6Yd2UG7HEi9UGVO2wB07a9nPq2uSl7p2TM4ijNt5tX9Kj4Pjen0NvzxNPd0AZZ
- g8NrFJtNv7NCbvCJ4fVjYQUEcKUv42HoMOv4KHvrKWvc4Rfol1EKHW0
-X-Developer-Key: i=javier.carrasco.cruz@gmail.com; a=ed25519;
- pk=tIGJV7M+tCizagNijF0eGMBGcOsPD+0cWGfKjl4h6K8=
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add device tree bindings and an example for the ChipCap 2 humidity
-and temperature sensor.
+On Wed, Nov 08 2023 at 11:13, Peter Zijlstra wrote:
+> On Wed, Nov 08, 2023 at 02:04:02AM -0800, Ankur Arora wrote:
+> I'm not understanding, those should stay obviously.
+>
+> The current preempt_dynamic stuff has 5 toggles:
+>
+> /*
+>  * SC:cond_resched
+>  * SC:might_resched
+>  * SC:preempt_schedule
+>  * SC:preempt_schedule_notrace
+>  * SC:irqentry_exit_cond_resched
+>  *
+>  *
+>  * NONE:
+>  *   cond_resched               <- __cond_resched
+>  *   might_resched              <- RET0
+>  *   preempt_schedule           <- NOP
+>  *   preempt_schedule_notrace   <- NOP
+>  *   irqentry_exit_cond_resched <- NOP
+>  *
+>  * VOLUNTARY:
+>  *   cond_resched               <- __cond_resched
+>  *   might_resched              <- __cond_resched
+>  *   preempt_schedule           <- NOP
+>  *   preempt_schedule_notrace   <- NOP
+>  *   irqentry_exit_cond_resched <- NOP
+>  *
+>  * FULL:
+>  *   cond_resched               <- RET0
+>  *   might_resched              <- RET0
+>  *   preempt_schedule           <- preempt_schedule
+>  *   preempt_schedule_notrace   <- preempt_schedule_notrace
+>  *   irqentry_exit_cond_resched <- irqentry_exit_cond_resched
+>  */
+>
+> If you kill voluntary as we know it today, you can remove cond_resched
+> and might_resched, but the remaining 3 are still needed to switch
+> between NONE and FULL.
 
-Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
----
- .../bindings/hwmon/amphenol,chipcap2.yaml          | 68 ++++++++++++++++++++++
- 1 file changed, 68 insertions(+)
+No. The whole point of LAZY is to keep preempt_schedule(),
+preempt_schedule_notrace(), irqentry_exit_cond_resched() always enabled.
 
-diff --git a/Documentation/devicetree/bindings/hwmon/amphenol,chipcap2.yaml b/Documentation/devicetree/bindings/hwmon/amphenol,chipcap2.yaml
-new file mode 100644
-index 000000000000..8bb6daa293d3
---- /dev/null
-+++ b/Documentation/devicetree/bindings/hwmon/amphenol,chipcap2.yaml
-@@ -0,0 +1,68 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/hwmon/amphenol,chipcap2.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: ChipCap 2 humidity and temperature iio sensor
-+
-+maintainers:
-+  - Javier Carrasco <javier.carrasco.cruz@gmail.com>
-+
-+description: |
-+  Relative humidity and temperature sensor on I2C bus.
-+
-+  Datasheets:
-+    https://www.amphenol-sensors.com/en/telaire/humidity/527-humidity-sensors/3095-chipcap-2
-+
-+properties:
-+  compatible:
-+    enum:
-+      - amphenol,cc2dxx
-+      - amphenol,cc2dxxs
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    items:
-+      - description: measurement ready indicator
-+      - description: low humidity alarm
-+      - description: high humidity alarm
-+
-+  interrupt-names:
-+    items:
-+      - const: ready
-+      - const: low
-+      - const: high
-+
-+  vdd-supply:
-+    description:
-+      Dedicated, controllable supply-regulator to reset the device and
-+      enter in command mode.
-+      If not defined, no alarms will be available.
-+
-+required:
-+  - compatible
-+  - reg
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+    i2c {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        humidity@28 {
-+            compatible = "amphenol,cc2dxxs";
-+            reg = <0x28>;
-+            interrupt-parent = <&gpio>;
-+            interrupts = <4 IRQ_TYPE_EDGE_RISING>,
-+                         <5 IRQ_TYPE_EDGE_RISING>,
-+                         <6 IRQ_TYPE_EDGE_RISING>;
-+            interrupt-names = "ready", "low", "high";
-+            vdd-supply = <&reg_vdd>;
-+        };
-+    };
+Look at my PoC: https://lore.kernel.org/lkml/87jzshhexi.ffs@tglx/
 
--- 
-2.39.2
+The idea is to always enable preempt count and keep _all_ preemption
+points enabled.
 
+For NONE/VOLUNTARY mode let the scheduler set TIF_NEED_RESCHED_LAZY
+instead of TIF_NEED_RESCHED. In full mode set TIF_NEED_RESCHED.
+
+Here is where the regular and the lazy flags are evaluated:
+
+                Ret2user        Ret2kernel      PreemptCnt=0  need_resched()
+
+NEED_RESCHED       Y                Y               Y         Y
+LAZY_RESCHED       Y                N               N         Y
+
+The trick is that LAZY is not folded into preempt_count so a 1->0
+counter transition won't cause preempt_schedule() to be invoked because
+the topmost bit (NEED_RESCHED) is set.
+
+The scheduler can still decide to set TIF_NEED_RESCHED which will cause
+an immediate preemption at the next preemption point.
+
+This allows to force out a task which loops, e.g. in a massive copy or
+clear operation, as it did not reach a point where TIF_NEED_RESCHED_LAZY
+is evaluated after a time which is defined by the scheduler itself.
+
+For my PoC I did:
+
+    1) Set TIF_NEED_RESCHED_LAZY
+
+    2) Set TIF_NEED_RESCHED when the task did not react on
+       TIF_NEED_RESCHED_LAZY within a tick
+
+I know that's crude but it just works and obviously requires quite some
+refinement.
+
+So the way how you switch between preemption modes is to select when the
+scheduler sets TIF_NEED_RESCHED/TIF_NEED_RESCHED_LAZY. No static call
+switching at all.
+
+In full preemption mode it sets always TIF_NEED_RESCHED and otherwise it
+uses the LAZY bit first, grants some time and then gets out the hammer
+and sets TIF_NEED_RESCHED when the task did not reach a LAZY preemption
+point.
+
+Which means once the whole thing is in place then the whole
+PREEMPT_DYNAMIC along with NONE, VOLUNTARY, FULL can go away along with
+the cond_resched() hackery.
+
+So I think this series is backwards.
+
+It should add the LAZY muck with a Kconfig switch like I did in my PoC
+_first_. Once that is working and agreed on, the existing muck can be
+removed.
+
+Thanks,
+
+        tglx
