@@ -2,127 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C84B47E6073
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 23:33:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A46FF7E607B
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 23:47:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230405AbjKHWds (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 17:33:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56292 "EHLO
+        id S229659AbjKHWm0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 17:42:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229506AbjKHWdr (ORCPT
+        with ESMTP id S229506AbjKHWmY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 17:33:47 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25129211B
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 14:33:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699482825; x=1731018825;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=U1SVjcAjCRbM5T3jWsqytreO2xyDEYxv08PP449oCWQ=;
-  b=EgegKi+LcQvfCZW4MqjTKiJwkPhpNdSFWHK9x5UrteEpBHezZOi9ehKu
-   Q5ZzTEPyZJ0n0cJT7/KedGImby8baa+w7kCVgKamWS8ZQd5H9f+iYGdUf
-   XeijCyn1atfj39grMtw9gvkvV7ENXLRVoyein8Dlbs0xHhRw/0T4jmzWu
-   r1BBOr0wv1oZxeVs1UMUqTv3O3Qo1S3QHRl/9mehBWAwQ7xLKHaRYS1QB
-   tr1nUD2Lieax5+3xtdLVrE1ruFSc0CYZ6u0PSFZNKr78LnEkGc5iVoYQj
-   AvmVRkagnN/aP/5RrOEKafZWzl7fjeg2UzJJNLTzN5g7uU5PPU8B2JRDx
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10888"; a="454172482"
-X-IronPort-AV: E=Sophos;i="6.03,287,1694761200"; 
-   d="scan'208";a="454172482"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2023 14:33:44 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10888"; a="886800088"
-X-IronPort-AV: E=Sophos;i="6.03,287,1694761200"; 
-   d="scan'208";a="886800088"
-Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by orsmga004.jf.intel.com with ESMTP; 08 Nov 2023 14:33:43 -0800
-Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r0r7E-0008Fg-2Q;
-        Wed, 08 Nov 2023 22:33:40 +0000
-Date:   Thu, 9 Nov 2023 06:32:59 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Kent Overstreet <kmo@daterainc.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: fs/bcachefs/journal_io.c:1839 bch2_journal_write_pick_flush() warn:
- inconsistent indenting
-Message-ID: <202311090619.Ug0DltWc-lkp@intel.com>
+        Wed, 8 Nov 2023 17:42:24 -0500
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF17D2581
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 14:42:22 -0800 (PST)
+Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-6be0277c05bso195715b3a.0
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 14:42:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1699483342; x=1700088142; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=SVpZQ2TqkbtD0eXsIko8JRS/WhVgEwgGc5rAVxKOH5g=;
+        b=DNa+5WnAOkXZPe9jRWlzk+DnkFD/hloKHcdGm7q5RfOejq7TD7PmzJMxWpok4zjO89
+         W1VRCyMqxAZyeGzXfUn99iLoLzs7YHDnsG1Te4xgSqRy3Tj2fIF1Mi91GYSuRIWww3gD
+         O5YiURAs8rN8r/v7wfO6/2OGg9tA92xxuQc+Y=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699483342; x=1700088142;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=SVpZQ2TqkbtD0eXsIko8JRS/WhVgEwgGc5rAVxKOH5g=;
+        b=BgghHbubWO4/EOJZR5c8GHUkuOKH539gdJSnJDPcW6CEyH7lT0rNOVcZ+jL+XcWWfC
+         ktHtI2ufYY1V3kisZOMB1S6i424q1kD53nkizfa7sGX5Hqo8mNg2/l5CmB3H5hU55Q6k
+         vici6q0JijrZ259aK058ZbivYPi+T4Zuq99VQanOLdqWrhrusc3KSOYbNNA02/HaodgI
+         8hVGWmc49zEOGLgMvylbdMjX2T1fKIHHquvfDmkYPcfXx8VqjxQPnKstRIHN0clGwvy7
+         LZ4e6SIYK1hMAjSnLgMNJFVs0iIowJFUWE6GseUljADNBgSot4Dez+Nt/dqdB7qXIWeo
+         Wgcw==
+X-Gm-Message-State: AOJu0Yyy1yvxrRKuykXoKnUZ98ryHHog3TOqMaBD1JQaDacp7XsaA3pQ
+        Fi/j0jVO6jxpx1+E3WROu0j14zR90MdnkQOiPfxZvw==
+X-Google-Smtp-Source: AGHT+IHE3wZkhuN2JLwODxxPG+/BjIN7tGWOJiAL/xyI3bDpvId5aRrsU/BuJouONu0EFLmW5BHiiA==
+X-Received: by 2002:a05:6a00:3a1d:b0:6be:308:e61b with SMTP id fj29-20020a056a003a1d00b006be0308e61bmr2985096pfb.10.1699483342275;
+        Wed, 08 Nov 2023 14:42:22 -0800 (PST)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id ey18-20020a056a0038d200b00690d255b5a1sm9338107pfb.217.2023.11.08.14.42.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Nov 2023 14:42:21 -0800 (PST)
+From:   Kees Cook <keescook@chromium.org>
+To:     yt.shen@mediatek.com, darren.chen@mediatek.com,
+        tony.luck@intel.com, angelogioacchino.delregno@collabora.com,
+        matthias.bgg@gmail.com, gpiccoli@igalia.com,
+        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Weichen Chen <weichen.chen@mediatek.com>
+Cc:     Kees Cook <keescook@chromium.org>
+Subject: Re: [PATCH v1 1/1] pstore/ram: Fix crash when setting number of cpus to an odd number
+Date:   Wed,  8 Nov 2023 14:42:17 -0800
+Message-Id: <169948333592.634220.3558707769669516163.b4-ty@chromium.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230224023632.6840-1-weichen.chen@mediatek.com>
+References: <20230224023632.6840-1-weichen.chen@mediatek.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   90450a06162e6c71ab813ea22a83196fe7cff4bc
-commit: 80396a47490936f73729548310ad60e9f5df61c9 bcachefs: Break up bch2_journal_write()
-date:   3 days ago
-config: i386-randconfig-141-20231108 (https://download.01.org/0day-ci/archive/20231109/202311090619.Ug0DltWc-lkp@intel.com/config)
-compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
-reproduce: (https://download.01.org/0day-ci/archive/20231109/202311090619.Ug0DltWc-lkp@intel.com/reproduce)
+On Fri, 24 Feb 2023 10:36:32 +0800, Weichen Chen wrote:
+> When the number of cpu cores is adjusted to 7 or other odd numbers,
+> the zone size will become an odd number.
+> The address of the zone will become:
+>     addr of zone0 = BASE
+>     addr of zone1 = BASE + zone_size
+>     addr of zone2 = BASE + zone_size*2
+>     ...
+> The address of zone1/3/5/7 will be mapped to non-alignment va.
+> Eventually crashes will occur when accessing these va.
+> 
+> [...]
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311090619.Ug0DltWc-lkp@intel.com/
+Applied to for-next/pstore, thanks!
 
-New smatch warnings:
-fs/bcachefs/journal_io.c:1839 bch2_journal_write_pick_flush() warn: inconsistent indenting
+[1/1] pstore/ram: Fix crash when setting number of cpus to an odd number
+      https://git.kernel.org/kees/c/1d49dee6b691
 
-Old smatch warnings:
-fs/bcachefs/journal_io.c:132 journal_entry_add() warn: missing error code 'ret'
-
-vim +1839 fs/bcachefs/journal_io.c
-
-  1808	
-  1809	static int bch2_journal_write_pick_flush(struct journal *j, struct journal_buf *w)
-  1810	{
-  1811		struct bch_fs *c = container_of(j, struct bch_fs, journal);
-  1812		int error = bch2_journal_error(j);
-  1813	
-  1814		/*
-  1815		 * If the journal is in an error state - we did an emergency shutdown -
-  1816		 * we prefer to continue doing journal writes. We just mark them as
-  1817		 * noflush so they'll never be used, but they'll still be visible by the
-  1818		 * list_journal tool - this helps in debugging.
-  1819		 *
-  1820		 * There's a caveat: the first journal write after marking the
-  1821		 * superblock dirty must always be a flush write, because on startup
-  1822		 * from a clean shutdown we didn't necessarily read the journal and the
-  1823		 * new journal write might overwrite whatever was in the journal
-  1824		 * previously - we can't leave the journal without any flush writes in
-  1825		 * it.
-  1826		 *
-  1827		 * So if we're in an error state, and we're still starting up, we don't
-  1828		 * write anything at all.
-  1829		 */
-  1830		if (error && test_bit(JOURNAL_NEED_FLUSH_WRITE, &j->flags))
-  1831			return -EIO;
-  1832	
-  1833		if (error ||
-  1834		    w->noflush ||
-  1835		    (!w->must_flush &&
-  1836		     (jiffies - j->last_flush_write) < msecs_to_jiffies(c->opts.journal_flush_delay) &&
-  1837		     test_bit(JOURNAL_MAY_SKIP_FLUSH, &j->flags))) {
-  1838			     w->noflush = true;
-> 1839			SET_JSET_NO_FLUSH(w->data, true);
-  1840			w->data->last_seq	= 0;
-  1841			w->last_seq		= 0;
-  1842	
-  1843			j->nr_noflush_writes++;
-  1844		} else {
-  1845			j->last_flush_write = jiffies;
-  1846			j->nr_flush_writes++;
-  1847			clear_bit(JOURNAL_NEED_FLUSH_WRITE, &j->flags);
-  1848		}
-  1849	
-  1850		return 0;
-  1851	}
-  1852	
+Take care,
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Kees Cook
+
