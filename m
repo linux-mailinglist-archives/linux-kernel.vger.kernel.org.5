@@ -2,104 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C4C07E5516
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 12:21:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 81EA07E551C
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 12:22:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344181AbjKHLVz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 06:21:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57450 "EHLO
+        id S1344723AbjKHLWB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 06:22:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344648AbjKHLVl (ORCPT
+        with ESMTP id S1344656AbjKHLVw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 06:21:41 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC2BE186
-        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 03:21:38 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C23FC433CA;
-        Wed,  8 Nov 2023 11:21:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699442498;
-        bh=QvsTGBMyqYpxG6wP7fIuna1QJ2h+U8Zr4q9TDrPobzY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=gWlcNiqSDq4qFVyFdJfl776u13v1D3lGiyXuHJFmCgwKAgfldkN6uhd82YmHop11n
-         ZEarMs8JL6qSsl42zZIzZTJU1/8sGKMavpJESNw8NzDgKSU+l77sm9gAX5vXmOe1XU
-         OgJKpF3GiYvn4tnDoNJVI81qZuCgCcJ5BICEMhJ5Ne55F6KpbBSyA8va+wkU7zfa+O
-         KH/t10/9RZnvi9LxpfO20JL9kQaZVd3dcssNOKSt8HA3TzSGip+jPDVl3sh6ORcczj
-         5mUR9TxtbBWl51iP4IsxeO5J4LYC+Q2DTN5ihLDIGVMpaCyQ4h1CAVej0dwivDr3Am
-         B73P5g3RoDlBw==
-Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2c5039d4e88so92527471fa.3;
-        Wed, 08 Nov 2023 03:21:38 -0800 (PST)
-X-Gm-Message-State: AOJu0Yzs7TwPMygzYUJc6/Bv+zW6dib99Aaf079cZhtHngYZtbWNbS2u
-        aSOEVC+JigNEkf1+f9ekRzcZ/gXKDA6nU4iJ1u0=
-X-Google-Smtp-Source: AGHT+IHKnW94kmpfk41V+VUBlyb5MZkNOu6rsHPRwJbnCNLDFUUTlJmQcw/1/mXOa4hPXI6dgkL15ag2oOUH+v6SQfo=
-X-Received: by 2002:a2e:9c50:0:b0:2c5:32b:28ea with SMTP id
- t16-20020a2e9c50000000b002c5032b28eamr1380107ljj.32.1699442496753; Wed, 08
- Nov 2023 03:21:36 -0800 (PST)
+        Wed, 8 Nov 2023 06:21:52 -0500
+Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 159E01BF1
+        for <linux-kernel@vger.kernel.org>; Wed,  8 Nov 2023 03:21:50 -0800 (PST)
+Received: by mail-qv1-xf30.google.com with SMTP id 6a1803df08f44-66d1a05b816so46064796d6.1
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Nov 2023 03:21:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1699442509; x=1700047309; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+WbK1qQZMhL0UyUEskip3O7w49fLhRM2vZKP3ZSvFYk=;
+        b=H+LDNwoMcxULQSifPL1N9H+HbdxJKCnvtZ9KvOaHOuU4WMisVx0wWTiYuih//dVrI4
+         KXHHgQ2KNlZv2eEdVkTeDEF3Ykdq+QJsz/Exnn9QNPL0yiwRKQftxxqYBgv8XDwUZl+l
+         eXCIYbH9hNP31ayNOl08cPlusiDzgMLuX7NUVgI52IJ7O+bv8g3PpkFP4rpZll9PvBO3
+         2pILoXmhu7DzX2WQOEiMZ+0yFhahFgDtNyRMbAWXltRM72m0oLuYVrzvSyHj5mWDJ4PR
+         B6n7BFFCg1gE779lW9BGNztKZavSGn6vP4auZsQs10iJd54vlcxlTG5SjE1Qv4APwdmc
+         OBag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699442509; x=1700047309;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+WbK1qQZMhL0UyUEskip3O7w49fLhRM2vZKP3ZSvFYk=;
+        b=JKzDNpbOwIc5HHA+QePyTMv4DucQv6ZsUnnpyp7nt7suR8LrilP75+khawksEBRtkE
+         XELwDyWW8rcRcQ3zQwPy4K333hdLU5NH1BUq5G/YNB5jEaxLYvlxLKisAR3ZcFngvirW
+         G0m/9emeS34OxKJFrO9/s8VsmZalGICaeiq3xYvHdwXty0K6qj6rl0DY/5iRQNHNs1xt
+         b6gFBHRNqCCaVz1igTVyLPdyiIHWS/BFKpAt6NarH3wpYEQrqaiWG2vzM8g1ibNI4t4j
+         XiEPJcjVaF7JdzK0sM9ejRoHkSY/O4LeUASLuP8aoctTPazfSRrGVLjDL6qdi9DiTmH6
+         H4ow==
+X-Gm-Message-State: AOJu0YxfcU8kH3foKVCp03HmShZrb6xST5VT+yxOgkmYwoMUW1vy+jVy
+        2e//CRf4COyqysozMXugP0Ai+v1jy9W25LvM2fCDKg==
+X-Google-Smtp-Source: AGHT+IHkM7Zz9YGVd5cg0w5zMDhUonnSmd8ty3Bmuen4IPcSzWl3Y7Bi/ii33xTS0GXdtkoqowbiW20l1cdep/WcKvs=
+X-Received: by 2002:ad4:5967:0:b0:66d:949d:717e with SMTP id
+ eq7-20020ad45967000000b0066d949d717emr1544322qvb.42.1699442509189; Wed, 08
+ Nov 2023 03:21:49 -0800 (PST)
 MIME-Version: 1.0
-References: <20231103151354.110636-1-michael.roth@amd.com> <30ff0335-3d9c-7d54-85d0-5898320f4e1f@suse.cz>
-In-Reply-To: <30ff0335-3d9c-7d54-85d0-5898320f4e1f@suse.cz>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Wed, 8 Nov 2023 12:21:25 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXF-B_1MJahfFg72cgcmZ9dMvqiEm8WGGejkqRFN=JreEA@mail.gmail.com>
-Message-ID: <CAMj1kXF-B_1MJahfFg72cgcmZ9dMvqiEm8WGGejkqRFN=JreEA@mail.gmail.com>
-Subject: Re: [PATCH v2] efi/unaccepted: Fix off-by-one when checking for
- overlapping ranges
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     Michael Roth <michael.roth@amd.com>, linux-efi@vger.kernel.org,
-        x86@kernel.org, linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Nikolay Borisov <nik.borisov@suse.com>, stable@kernel.org,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
+References: <20231103112237.1756288-1-anders.roxell@linaro.org> <CAEf4BzahAuskkD9YqxQpZDaUcu_jTuNAfbkkwP4dzJH=cTaVKA@mail.gmail.com>
+In-Reply-To: <CAEf4BzahAuskkD9YqxQpZDaUcu_jTuNAfbkkwP4dzJH=cTaVKA@mail.gmail.com>
+From:   Anders Roxell <anders.roxell@linaro.org>
+Date:   Wed, 8 Nov 2023 12:21:38 +0100
+Message-ID: <CADYN=9+koLV3eg85hVBkRtiAuygyngWxWChpnh=iUPVH4JeTjg@mail.gmail.com>
+Subject: Re: [PATCH] selftests: bpf: xskxceiver: ksft_print_msg: fix format
+ type error
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bjorn@kernel.org, magnus.karlsson@intel.com,
+        maciej.fijalkowski@intel.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 3 Nov 2023 at 16:30, Vlastimil Babka <vbabka@suse.cz> wrote:
+On Fri, 3 Nov 2023 at 17:26, Andrii Nakryiko <andrii.nakryiko@gmail.com> wr=
+ote:
 >
-> On 11/3/23 16:13, Michael Roth wrote:
-> > When a task needs to accept memory it will scan the accepting_list
-> > to see if any ranges already being processed by other tasks overlap
-> > with its range. Due to an off-by-one in the range comparisons, a task
-> > might falsely determine that an overlapping range is being accepted,
-> > leading to an unnecessary delay before it begins processing the range.
+> On Fri, Nov 3, 2023 at 4:23=E2=80=AFAM Anders Roxell <anders.roxell@linar=
+o.org> wrote:
 > >
-> > Fix the off-by-one in the range comparison to prevent this and slightly
-> > improve performance.
+> > Crossbuilding selftests/bpf for architecture arm64, format specifies
+> > type error show up like.
 > >
-> > Fixes: 50e782a86c98 ("efi/unaccepted: Fix soft lockups caused by parallel memory acceptance")
-> > Link: https://lore.kernel.org/linux-mm/20231101004523.vseyi5bezgfaht5i@amd.com/T/#me2eceb9906fcae5fe958b3fe88e41f920f8335b6
-> > Reviewed-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> > Signed-off-by: Michael Roth <michael.roth@amd.com>
+> > xskxceiver.c:912:34: error: format specifies type 'int' but the argumen=
+t
+> > has type '__u64' (aka 'unsigned long long') [-Werror,-Wformat]
+> >  ksft_print_msg("[%s] expected meta_count [%d], got meta_count [%d]\n",
+> >                                                                 ~~
+> >                                                                 %llu
+> >                 __func__, pkt->pkt_nb, meta->count);
+> >                                        ^~~~~~~~~~~
+> > xskxceiver.c:929:55: error: format specifies type 'unsigned long long' =
+but
+> >  the argument has type 'u64' (aka 'unsigned long') [-Werror,-Wformat]
+> >  ksft_print_msg("Frag invalid addr: %llx len: %u\n", addr, len);
+> >                                     ~~~~             ^~~~
+> >
 >
-> More justification for introducing a common ranges_overlap() helper somewhere :)
+> With u64s it might be %llx or %lx, depending on architecture, so best
+> is to force cast to (long long) or (unsigned long long) and then use
+> %llx.
+
+Thank you Andrii,
+v2 posted https://lore.kernel.org/bpf/20231108110048.1988128-1-anders.roxel=
+l@linaro.org/T/#u
+
+Cheers,
+Anders
+
 >
-> Acked-by: Vlastimil Babka <vbabka@suse.cz>
->
-
-Thanks, I'll take this as a fix.
-
-
+> > Fixing the issues by using the proposed format specifiers by the
+> > compilor.
+> >
+> > Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
 > > ---
-> > v2:
-> >  * Improve commit message terminology (Kirill)
-> > ---
-> >  drivers/firmware/efi/unaccepted_memory.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >  tools/testing/selftests/bpf/xskxceiver.c | 10 +++++-----
+> >  1 file changed, 5 insertions(+), 5 deletions(-)
 > >
-> > diff --git a/drivers/firmware/efi/unaccepted_memory.c b/drivers/firmware/efi/unaccepted_memory.c
-> > index 135278ddaf62..79fb687bb90f 100644
-> > --- a/drivers/firmware/efi/unaccepted_memory.c
-> > +++ b/drivers/firmware/efi/unaccepted_memory.c
-> > @@ -100,7 +100,7 @@ void accept_memory(phys_addr_t start, phys_addr_t end)
-> >        * overlap on physical address level.
-> >        */
-> >       list_for_each_entry(entry, &accepting_list, list) {
-> > -             if (entry->end < range.start)
-> > +             if (entry->end <= range.start)
-> >                       continue;
-> >               if (entry->start >= range.end)
-> >                       continue;
->
+> > diff --git a/tools/testing/selftests/bpf/xskxceiver.c b/tools/testing/s=
+elftests/bpf/xskxceiver.c
+> > index 591ca9637b23..dc03692f34d8 100644
+> > --- a/tools/testing/selftests/bpf/xskxceiver.c
+> > +++ b/tools/testing/selftests/bpf/xskxceiver.c
+> > @@ -908,7 +908,7 @@ static bool is_metadata_correct(struct pkt *pkt, vo=
+id *buffer, u64 addr)
+> >         struct xdp_info *meta =3D data - sizeof(struct xdp_info);
+> >
+> >         if (meta->count !=3D pkt->pkt_nb) {
+> > -               ksft_print_msg("[%s] expected meta_count [%d], got meta=
+_count [%d]\n",
+> > +               ksft_print_msg("[%s] expected meta_count [%d], got meta=
+_count [%llu]\n",
+> >                                __func__, pkt->pkt_nb, meta->count);
+> >                 return false;
+> >         }
+> > @@ -926,11 +926,11 @@ static bool is_frag_valid(struct xsk_umem_info *u=
+mem, u64 addr, u32 len, u32 exp
+> >
+> >         if (addr >=3D umem->num_frames * umem->frame_size ||
+> >             addr + len > umem->num_frames * umem->frame_size) {
+> > -               ksft_print_msg("Frag invalid addr: %llx len: %u\n", add=
+r, len);
+> > +               ksft_print_msg("Frag invalid addr: %lx len: %u\n", addr=
+, len);
+> >                 return false;
+> >         }
+> >         if (!umem->unaligned_mode && addr % umem->frame_size + len > um=
+em->frame_size) {
+> > -               ksft_print_msg("Frag crosses frame boundary addr: %llx =
+len: %u\n", addr, len);
+> > +               ksft_print_msg("Frag crosses frame boundary addr: %lx l=
+en: %u\n", addr, len);
+> >                 return false;
+> >         }
+> >
+> > @@ -1029,7 +1029,7 @@ static int complete_pkts(struct xsk_socket_info *=
+xsk, int batch_size)
+> >                         u64 addr =3D *xsk_ring_cons__comp_addr(&xsk->um=
+em->cq, idx + rcvd - 1);
+> >
+> >                         ksft_print_msg("[%s] Too many packets completed=
+\n", __func__);
+> > -                       ksft_print_msg("Last completion address: %llx\n=
+", addr);
+> > +                       ksft_print_msg("Last completion address: %lx\n"=
+, addr);
+> >                         return TEST_FAILURE;
+> >                 }
+> >
+> > @@ -1513,7 +1513,7 @@ static int validate_tx_invalid_descs(struct ifobj=
+ect *ifobject)
+> >         }
+> >
+> >         if (stats.tx_invalid_descs !=3D ifobject->xsk->pkt_stream->nb_p=
+kts / 2) {
+> > -               ksft_print_msg("[%s] tx_invalid_descs incorrect. Got [%=
+u] expected [%u]\n",
+> > +               ksft_print_msg("[%s] tx_invalid_descs incorrect. Got [%=
+llu] expected [%u]\n",
+> >                                __func__, stats.tx_invalid_descs,
+> >                                ifobject->xsk->pkt_stream->nb_pkts);
+> >                 return TEST_FAILURE;
+> > --
+> > 2.42.0
+> >
+> >
