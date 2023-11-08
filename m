@@ -2,113 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A29047E5BA9
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 17:46:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52EC57E5BAE
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 17:47:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231924AbjKHQqA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 11:46:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47860 "EHLO
+        id S232249AbjKHQq5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 11:46:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229558AbjKHQp7 (ORCPT
+        with ESMTP id S229558AbjKHQqz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 11:45:59 -0500
-Received: from mail-oi1-f170.google.com (mail-oi1-f170.google.com [209.85.167.170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5AE61FEB;
-        Wed,  8 Nov 2023 08:45:57 -0800 (PST)
-Received: by mail-oi1-f170.google.com with SMTP id 5614622812f47-3b3f55e1bbbso4396551b6e.2;
-        Wed, 08 Nov 2023 08:45:57 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699461957; x=1700066757;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+2/em8px25lvvpBU9rvHFbF1HeCeuyI1nkJj1hjrCcE=;
-        b=cdf6MVQCwN+UF1Ks6dRTdla+uJa6hPZ5/sN0UW/3Y04JkCtQSblGmqQgR+aCTW85ql
-         HSqKd21g0/vcMpFj3nUa9has388xWL0XlqjI/YkmlPd/Bxcl7RfkMEYo6gF5aPnOrhZ7
-         gH66hnnKP1OFln7f28NOvobGwH5h3mdZhbr5nvQdrIbWuu9wkD7iKH/daOY9u6+Z9yMS
-         X2gbY+uwmj/89X7oci5rJbCPpmHh9cSaSQzC/oORgvh+S4pa/m0yHyMSc3UWueCtx+aE
-         eM2AYtfsOJaaIVMflGjyGASKU0/Z28VBXiv4F12qKVv3QrZFuPcH/1jsfwVbw55MK7C8
-         EbIw==
-X-Gm-Message-State: AOJu0Yw8kAVDFG9xcUDuk8a0njsz8sjjy0RO3wod3H/OoKvD1r3ctsbk
-        /atnIW7m/0KSJ/ZmOppEWg==
-X-Google-Smtp-Source: AGHT+IFvlYjPpMwWNKajh1aieaxBmAkZnibFukFibLaHOGujo2dJzvubHc1EDt/gC2K4PeXz+9SVqw==
-X-Received: by 2002:a05:6808:f15:b0:3ac:aae1:6d63 with SMTP id m21-20020a0568080f1500b003acaae16d63mr2822787oiw.44.1699461957004;
-        Wed, 08 Nov 2023 08:45:57 -0800 (PST)
-Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id u6-20020a056808150600b003af6eeed9b6sm1951981oiw.27.2023.11.08.08.45.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Nov 2023 08:45:56 -0800 (PST)
-Received: (nullmailer pid 2370821 invoked by uid 1000);
-        Wed, 08 Nov 2023 16:45:55 -0000
-Date:   Wed, 8 Nov 2023 10:45:55 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Shiji Yang <yangshiji66@outlook.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        Conor Dooley <conor+dt@kernel.org>,
-        Jisheng Zhang <jszhang@kernel.org>, Lee Jones <lee@kernel.org>,
-        Pavel Machek <pavel@ucw.cz>, linux-kernel@vger.kernel.org,
-        linux-leds@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-Subject: Re: [PATCH v4] dt-bindings: leds: add 'internet' and 'signal'
- function definitions
-Message-ID: <169946195473.2370763.12041367537748658964.robh@kernel.org>
-References: <TYAP286MB0315F4D71698370875F58F6EBCAAA@TYAP286MB0315.JPNP286.PROD.OUTLOOK.COM>
+        Wed, 8 Nov 2023 11:46:55 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD0E21FD6;
+        Wed,  8 Nov 2023 08:46:53 -0800 (PST)
+Received: from [100.116.125.19] (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: andrzej.p)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 0ADEF6607699;
+        Wed,  8 Nov 2023 16:46:50 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1699462012;
+        bh=EeyG48ihoO4SEA/8XzhcTQbxRY9L7eiinHyNA69xzNY=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=ESr6pT+f5UmHQxoH5B2QL2SWWHnZ3IDW3t+g85ghsXjBSK8T1+8jENSXLV7GixsAj
+         BPAyBa40TM2XvyZyx3j3dohE3PERlH12LjHWvZHG7YeKWNNo2csckKlKC4nImAoh35
+         mVHK3UfT0f4ZLj4Bq+BksGnA+bn0TdudzD4MOUmBsOh0UgMenEcXaImIkN3o9qZVps
+         xVrCGMG1mC5FBV/kc9Ky+Fu5aHKRWni0vczlYaMhosT55ux5n7pINuig5s/nCKQ94K
+         TbM4X/KVNP/FxBp46aJntEZZTvCi7rQ245Pv7oQ+cnZsu3zz2i/foJOTsWC/f5LGzD
+         /zMuhB7rJQ1KA==
+Message-ID: <03557323-0a03-4833-b2de-6011e3d3acee@collabora.com>
+Date:   Wed, 8 Nov 2023 17:46:48 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <TYAP286MB0315F4D71698370875F58F6EBCAAA@TYAP286MB0315.JPNP286.PROD.OUTLOOK.COM>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v14 06/56] media: videobuf2: Remove duplicated index vs
+ q->num_buffers check
+Content-Language: en-US
+To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
+        ming.qian@nxp.com, ezequiel@vanguardiasur.com.ar,
+        p.zabel@pengutronix.de, gregkh@linuxfoundation.org,
+        hverkuil-cisco@xs4all.nl, nicolas.dufresne@collabora.com
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
+        kernel@collabora.com
+References: <20231031163104.112469-1-benjamin.gaignard@collabora.com>
+ <20231031163104.112469-7-benjamin.gaignard@collabora.com>
+From:   Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+In-Reply-To: <20231031163104.112469-7-benjamin.gaignard@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+W dniu 31.10.2023 o 17:30, Benjamin Gaignard pisze:
+> vb2_get_buffer() already checks if the requested index is valid.
+> Stop duplicating this kind of check everywhere.
+> 
+> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+Reviewed-by: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
 
-On Mon, 06 Nov 2023 14:26:51 +0800, Shiji Yang wrote:
-> These two types of LEDs are widely used in routers and NICs.
-> 
-> The 'signal' LED is used to display the wireless signal strength.
-> Usually, there are 3~4 LEDs in one group to indicate the signal
-> strength, similar to the signal icon on a mobile phone.
-> 
-> The 'internet' LED can indicate whether the device can access a
-> specific server. It's different from 'wan'. 'wan' usually indicates
-> whether the WAN port is connected to the modem (internet services
-> may still be unavailable). But the 'internet' shows if the device
-> can successfully ping servers such as 8.8.8.8 to detect the internet
-> connection status. When the router is running in AP only mode, we
-> can even connect LAN port to the AC/modem to connect to the internet.
-> In this case, the 'internet' LED should be on. On some routers, both
-> 'internet' and 'wan' are available and can be controlled separately.
-> 
-> Signed-off-by: Shiji Yang <yangshiji66@outlook.com>
 > ---
+>   drivers/media/common/videobuf2/videobuf2-v4l2.c | 8 --------
+>   1 file changed, 8 deletions(-)
 > 
-> Changes in v2:
-> * Remove the LED name sorting patch as it changes the ABI.
-> * Add "devicetree@vger.kernel.org" to '--to' list.
->   Thanks to Rob Herring and Krzysztof Kozlowski for letting me know I
->   can send patch to multiple mailing list at once.
-> 
-> Changes in v3:
-> * Add more information about the new added LEDs.
-> * Remove the missing LED fix as Jisheng Zhang has already sent a
->   similar one. I should search the mailing list first...
-> 
-> Changes in v4:
-> * Rename 'rssi' LED to more generic name 'signal'. I forgot to update
->   the source file in v3.
-> 
-> v1:
-> https://lore.kernel.org/all/TYAP286MB0315FE921FF113BF76F7B700BCA0A@TYAP286MB0315.JPNP286.PROD.OUTLOOK.COM/
-> 
-> v2:
-> https://lore.kernel.org/all/TYAP286MB03159A83A77E6FD59F271D9BBCA0A@TYAP286MB0315.JPNP286.PROD.OUTLOOK.COM/
-> 
-> v3:
-> https://lore.kernel.org/all/TYAP286MB0315AE8F62E6AB48E3F9A0DDBCA5A@TYAP286MB0315.JPNP286.PROD.OUTLOOK.COM/
-> 
->  include/dt-bindings/leds/common.h | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-
-Reviewed-by: Rob Herring <robh@kernel.org>
+> diff --git a/drivers/media/common/videobuf2/videobuf2-v4l2.c b/drivers/media/common/videobuf2/videobuf2-v4l2.c
+> index 2ffb097bf00a..c6ebc8d2c537 100644
+> --- a/drivers/media/common/videobuf2/videobuf2-v4l2.c
+> +++ b/drivers/media/common/videobuf2/videobuf2-v4l2.c
+> @@ -823,10 +823,6 @@ int vb2_qbuf(struct vb2_queue *q, struct media_device *mdev,
+>   		return -EBUSY;
+>   	}
+>   
+> -	if (b->index >= q->num_buffers) {
+> -		dprintk(q, 1, "buffer index out of range\n");
+> -		return -EINVAL;
+> -	}
+>   	vb = vb2_get_buffer(q, b->index);
+>   	if (!vb) {
+>   		dprintk(q, 1, "can't find the requested buffer %u\n", b->index);
+> @@ -898,10 +894,6 @@ int vb2_expbuf(struct vb2_queue *q, struct v4l2_exportbuffer *eb)
+>   {
+>   	struct vb2_buffer *vb;
+>   
+> -	if (eb->index >= q->num_buffers) {
+> -		dprintk(q, 1, "buffer index out of range\n");
+> -		return -EINVAL;
+> -	}
+>   	vb = vb2_get_buffer(q, eb->index);
+>   	if (!vb) {
+>   		dprintk(q, 1, "can't find the requested buffer %u\n", eb->index);
 
