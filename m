@@ -2,88 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 631397E5482
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 11:50:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 675197E5487
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Nov 2023 11:51:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344766AbjKHKuY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Nov 2023 05:50:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34802 "EHLO
+        id S1344780AbjKHKvI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Nov 2023 05:51:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344738AbjKHKts (ORCPT
+        with ESMTP id S1344572AbjKHKuy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Nov 2023 05:49:48 -0500
-Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C422E4212;
-        Wed,  8 Nov 2023 02:46:36 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 3F7B2C0004;
-        Wed,  8 Nov 2023 10:46:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1699440394;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=siQIor97Su0XRo3EQXHPwYQm+ngF5pZJt8iqxzJfevU=;
-        b=HyVMG7RRxmwZ0BbeBru3i9kSKMxxY0Fxy/D9RYUdEkzn6+FrC8UemWJajo3qt4auEbnLQS
-        ZeZlnJxsuZncUbybF7eepl18gp37yIWxuSQNpXhJMW+fTtdW0DTVPflDRsuGxlz9114FeY
-        9e9u0UG9jv/DSnW7fa3qBJ7hCve3r0BogwkaZFWW70LEGc8DG0ekQCD2p6gT8T/br1/8pn
-        PUqpYwERBurzS6z49IDjv4XaaC5I6ksECG1ukn2WwOIGvHuG3IWjMuJoTVnVvvOu7s+LAW
-        DxOCmwZhCyXYKtlc9dRDiuIW4KcOkBuRPxxpJDPi9FEA3HhfMFofF/E05IVuZQ==
-Date:   Wed, 8 Nov 2023 11:46:33 +0100
-From:   Mehdi Djait <mehdi.djait@bootlin.com>
-To:     Michael Riesch <michael.riesch@wolfvision.net>
-Cc:     mchehab@kernel.org, heiko@sntech.de, hverkuil-cisco@xs4all.nl,
-        krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
-        conor+dt@kernel.org, linux-media@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        thomas.petazzoni@bootlin.com, alexandre.belloni@bootlin.com,
-        maxime.chevallier@bootlin.com, paul.kocialkowski@bootlin.com
-Subject: Re: [PATCH v9 2/3] media: rockchip: Add a driver for Rockchip's
- camera interface
-Message-ID: <ZUtnCfAjv0P4oZvq@pc-70.home>
-References: <cover.1698666612.git.mehdi.djait@bootlin.com>
- <f7367726eb077d43446c83591ecbf9acbc77ef5f.1698666612.git.mehdi.djait@bootlin.com>
- <6f98b471-b139-4043-a8ab-e7a9f9608d60@wolfvision.net>
- <ZUSt5GC4lALz/fq5@pc-70.home>
- <2afa69d0-93f6-4033-ad87-c3bf01588ba9@wolfvision.net>
+        Wed, 8 Nov 2023 05:50:54 -0500
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4873C4C34;
+        Wed,  8 Nov 2023 02:47:53 -0800 (PST)
+Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-6bd20c30831so1253907b3a.1;
+        Wed, 08 Nov 2023 02:47:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699440473; x=1700045273; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sbWdFo7miza+LJDE+FII5IkRlW+z6I8tgEOAp/fAi2E=;
+        b=GwFfXdtI3flLgMpYFmUw+vDgxlxNNeJwujMESIjPeXEF2zIbAPoI/V8pm3Hh8/2aCW
+         jPKK/gUPhWsXSfOBnjtcXmP4FEvYmncwk5qYdPRrXKDdKeC1Eoe+LvYvXRIj/XFFUBjY
+         XTXhGTllhMcc1l4983UMzv/XgKm6DUF6glbm6S1AyjbKbj/q0/M7NmJkwuj3mlmlZwxc
+         W2Vr81KFTIn+hC7J9E0w1aN/Gtud5RTsn26631boJwOwsV40I1I6k1gcaScPzg/E/HCO
+         Z7SkPOZhufa861+h4KYBmjNSXam6dqHPy0zktUtK5qhBq5z/rTnIeiOGgPCci/X0QmEu
+         VQJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699440473; x=1700045273;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=sbWdFo7miza+LJDE+FII5IkRlW+z6I8tgEOAp/fAi2E=;
+        b=HpVdu4Z020ZIYjDqzyPkMrRbNhVH/H1aqfrDCydwJ/5vBdyeKIHy8bw9cAXPEH80O7
+         o1YRRch0vx0gt4w4o6Xm5Ncp7Np7kuePTW/rutoFkMT6sB2z1p0a07w1a2PoJpgppPML
+         z2YMAajXTHCptJjeY6u/+Y3ML4YHhVyDKm3b4hR9Ae6tw7XL3cYtZsYd1eBWjSWXgKc8
+         tQHzAEZAXRRumlmS5Z9906I6e6lQQnWhM/yh035DGt+TyvOwnxx7tKmOWf+niMGEG6y5
+         tuyd+7aJA27iSmgtYA7VpRKhMIt2vrQaLs8bcqW0ogZbZ49OXYph7DK+Hl3PmiNbKDVJ
+         SF0A==
+X-Gm-Message-State: AOJu0YymcfQRLw8MHhHT+BJG0gzuTOkxjLcwv4qqe3i8p7+r2s6EvaV4
+        YPRDyve1tUDAkCz5mEafBOE=
+X-Google-Smtp-Source: AGHT+IEakTnfI52C8pPf0ICMAQ0OdKNwvumwvOelYpYlFppmk3T3eTha1MxYy4JkbmVoaKhG3s9jxw==
+X-Received: by 2002:a62:ab12:0:b0:68f:c8b3:3077 with SMTP id p18-20020a62ab12000000b0068fc8b33077mr1611102pff.1.1699440472652;
+        Wed, 08 Nov 2023 02:47:52 -0800 (PST)
+Received: from abhinav.. ([103.75.161.208])
+        by smtp.gmail.com with ESMTPSA id fm26-20020a056a002f9a00b00694fee1011asm8617933pfb.208.2023.11.08.02.47.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Nov 2023 02:47:52 -0800 (PST)
+From:   Abhinav Singh <singhabhinav9051571833@gmail.com>
+To:     viro@zeniv.linux.org.uk, brauner@kernel.org,
+        dan.j.williams@intel.com, willy@infradead.org, jack@suse.cz
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        nvdimm@lists.linux.dev,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Abhinav Singh <singhabhinav9051571833@gmail.com>
+Subject: [PATCH] fs : Fix warning using plain integer as NULL
+Date:   Wed,  8 Nov 2023 16:17:30 +0530
+Message-Id: <20231108104730.1007713-1-singhabhinav9051571833@gmail.com>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20231108101518.e4nriftavrhw45xk@quack3>
+References: <20231108101518.e4nriftavrhw45xk@quack3>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2afa69d0-93f6-4033-ad87-c3bf01588ba9@wolfvision.net>
-X-GND-Sasl: mehdi.djait@bootlin.com
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Michael,
+Sparse static analysis tools generate a warning with this message
+"Using plain integer as NULL pointer". In this case this warning is
+being shown because we are trying to initialize  pointer to NULL using
+integer value 0.
 
-On Wed, Nov 08, 2023 at 09:50:25AM +0100, Michael Riesch wrote:
-> Hi Mehdi,
-> I applied your patches and added some modifications (= crude hacks) on
-> top of them to bring up the RK3568 VICAP (note that I don't have any
-> PX30 hardware). This setup is not yet able to capture the input stream
-> (from a HDMI receiver chip), but I am on it.
-> 
-> One question popped up: to get the cif driver to probe with my device
-> tree I had to request the IRQ with IRQF_SHARED. This is due to the
-> approach that the CIF block has one IRQ but is represented by two
-> drivers: the cif driver and the rockchip-iommu driver.
+Signed-off-by: Abhinav Singh <singhabhinav9051571833@gmail.com>
+Reviewed-by: Jan Kara <jack@suse.cz>
+---
+ fs/dax.c       | 2 +-
+ fs/direct-io.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-It was IRQF_SHARED when I submitted the v6 but changed it after reviews.
+diff --git a/fs/dax.c b/fs/dax.c
+index 3380b43cb6bb..423fc1607dfa 100644
+--- a/fs/dax.c
++++ b/fs/dax.c
+@@ -1128,7 +1128,7 @@ static int dax_iomap_copy_around(loff_t pos, uint64_t length, size_t align_size,
+ 	/* zero the edges if srcmap is a HOLE or IOMAP_UNWRITTEN */
+ 	bool zero_edge = srcmap->flags & IOMAP_F_SHARED ||
+ 			 srcmap->type == IOMAP_UNWRITTEN;
+-	void *saddr = 0;
++	void *saddr = NULL;
+ 	int ret = 0;
+ 
+ 	if (!zero_edge) {
+diff --git a/fs/direct-io.c b/fs/direct-io.c
+index 20533266ade6..60456263a338 100644
+--- a/fs/direct-io.c
++++ b/fs/direct-io.c
+@@ -1114,7 +1114,7 @@ ssize_t __blockdev_direct_IO(struct kiocb *iocb, struct inode *inode,
+ 	loff_t offset = iocb->ki_pos;
+ 	const loff_t end = offset + count;
+ 	struct dio *dio;
+-	struct dio_submit sdio = { 0, };
++	struct dio_submit sdio = { NULL, };
+ 	struct buffer_head map_bh = { 0, };
+ 	struct blk_plug plug;
+ 	unsigned long align = offset | iov_iter_alignment(iter);
+-- 
+2.39.2
 
-> 
-> Subsequently I was surprised that you are not using the MMU at all,
-> although the PX30 VIP features one. Is there any particular reason for that?
-
-No particular reason. The IOMMU did not work and was not included when the 
-patch series for this driver were submitted years ago. I focused on
-fixing all the issues I found, complying with v4l2 guidelines and
-getting an upstreamable driver: so I did not add the support.
-
-> 
-> Can we request the IRQ with IRQF_SHARED anyway?
-
-Yes I will change it back to SHARED.
-
---
-Kind Regards
-Mehdi Djait
